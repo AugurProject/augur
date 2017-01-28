@@ -2,7 +2,6 @@
  * augur.js tests
  * @author Jack Peterson (jack@tinybike.net)
  */
-
 "use strict";
 
 var assert = require("chai").assert;
@@ -10,158 +9,236 @@ var abi = require("augur-abi");
 var augur = require("../../../src");
 var constants = require("../../../src/constants");
 var utils = require("../../../src/utilities");
-// import { describe, it, afterEach } from 'mocha';
-// import { assert } from 'chai';
-// import sinon from 'sinon';
-// import proxyquire from 'proxyquire';
-// import { abi } from 'services/augurjs';
 
-// describe('modules/trade/actions/helpers/calculate-trade-ids.js', () => {
-//   proxyquire.noPreserveCache();
-//   const mockAugur = { augur: { filterByPriceAndOutcomeAndUserSortByPrice: () => {} } };
+describe("tradeActions.calculateBuyTradeIDs", function() {
+    // 3 tests total
+    var filterByPriceAndOutcomeAndUserSortByPrice = augur.filterByPriceAndOutcomeAndUserSortByPrice;
+    afterEach(function() {
+        augur.filterByPriceAndOutcomeAndUserSortByPrice = filterByPriceAndOutcomeAndUserSortByPrice;
+    });
+    var test = function(t) {
+        it(t.description, function() {
+            augur.filterByPriceAndOutcomeAndUserSortByPrice = t.filterByPriceAndOutcomeAndUserSortByPrice;
+            t.assertions(augur.calculateBuyTradeIDs(t.marketID, t.outcomeID, t.limitPrice, t.orderBooks, t.address));
+        });
+    };
+    test({
+        description: 'Should handle returning the matching sell trades',
+        marketID: '0xa1',
+        outcomeID: '1',
+        limitPrice: '0.5',
+        orderBooks: {
+        	'0xa1': {
+        		buy: {},
+        		sell: {
+                    '0xb1': { amount: '10', price: '0.5', outcome: '1', owner: '0x2', id: '0xb1'},
+                    '0xb2': { amount: '20', price: '0.4', outcome: '1', owner: '0x2', id: '0xb2'},
+                    '0xb3': { amount: '30', price: '0.6', outcome: '1', owner: '0x2', id: '0xb3'},
+                    '0xb4': { amount: '40', price: '0.45', outcome: '1', owner: '0x2', id: '0xb4'},
+        		}
+        	}
+        },
+        address: '0x1',
+        filterByPriceAndOutcomeAndUserSortByPrice: function(orders, traderOrderType, limitPrice, outcomeId, userAddress) {
+            assert.deepEqual(orders, {
+                '0xb1': { amount: '10', price: '0.5', outcome: '1', owner: '0x2', id: '0xb1'},
+                '0xb2': { amount: '20', price: '0.4', outcome: '1', owner: '0x2', id: '0xb2'},
+                '0xb3': { amount: '30', price: '0.6', outcome: '1', owner: '0x2', id: '0xb3'},
+                '0xb4': { amount: '40', price: '0.45', outcome: '1', owner: '0x2', id: '0xb4'},
+            });
+            assert.equal(limitPrice, '0.5');
+            assert.equal(outcomeId, '1');
+            assert.equal(userAddress, '0x1');
+            // mock how filterByPriceAndOutcomeAndUserSortByPrice works
+            // simply return what it would return in this situation...
+            return [{
+            	amount: '20',
+            	price: '0.4',
+            	outcome: '1',
+            	owner: '0x2',
+            	id: '0xb2'
+            }, {
+            	amount: '40',
+            	price: '0.45',
+            	outcome: '1',
+            	owner: '0x2',
+            	id: '0xb4'
+            }, {
+            	amount: '10',
+            	price: '0.5',
+            	outcome: '1',
+            	owner: '0x2',
+            	id: '0xb1'
+            }];
+        },
+        assertions(output) {
+            assert.deepEqual(output, ['0xb2', '0xb4', '0xb1']);
+        }
+    });
+    test({
+        description: 'Should handle an orderbook without the passed market',
+        marketID: '0xa1',
+        outcomeID: '1',
+        limitPrice: '0.5',
+        orderBooks: {
+        	'0xa4': {
+        		buy: {},
+        		sell: {
+                    '0xb1': { amount: '10', price: '0.5', outcome: '1', owner: '0x2', id: '0xb1'},
+                    '0xb2': { amount: '20', price: '0.4', outcome: '1', owner: '0x2', id: '0xb2'},
+                    '0xb3': { amount: '30', price: '0.6', outcome: '1', owner: '0x2', id: '0xb3'},
+                    '0xb4': { amount: '40', price: '0.45', outcome: '1', owner: '0x2', id: '0xb4'},
+        		}
+        	}
+        },
+        address: '0x1',
+        filterByPriceAndOutcomeAndUserSortByPrice: function(orders, traderOrderType, limitPrice, outcomeId, userAddress) {
+            assert.deepEqual(orders, {});
+            assert.equal(limitPrice, '0.5');
+            assert.equal(outcomeId, '1');
+            assert.equal(userAddress, '0x1');
+            // mock how filterByPriceAndOutcomeAndUserSortByPrice works
+            // simply return what it would return in this situation...
+            return [];
+        },
+        assertions(output) {
+            assert.deepEqual(output, []);
+        }
+    });
+    test({
+        description: 'Should handle an empty orderBook',
+        marketID: '0xa1',
+        outcomeID: '2',
+        limitPrice: '0.7',
+        orderBooks: {},
+        address: '0x1',
+        filterByPriceAndOutcomeAndUserSortByPrice: function(orders, traderOrderType, limitPrice, outcomeId, userAddress) {
+            assert.deepEqual(orders, {});
+            assert.equal(limitPrice, '0.7');
+            assert.equal(outcomeId, '2');
+            assert.equal(userAddress, '0x1');
+            // mock how filterByPriceAndOutcomeAndUserSortByPrice works
+            // simply return what it would return in this situation...
+            return [];
+        },
+        assertions(output) {
+            assert.deepEqual(output, []);
+        }
+    });
+});
 
-//   sinon.stub(mockAugur.augur, 'filterByPriceAndOutcomeAndUserSortByPrice', (orders, traderOrderType, limitPrice, outcomeId, userAddress) => {
-//     // assert types of all args
-//     assert.isObject(orders, `orders passed to filterByPriceAndOutcomeAndUserSortByPrice is not a Object as expected`);
-//     assert.isString(traderOrderType, `traderOrderType passed to filterByPriceAndOutcomeAndUserSortByPrice is not a String as expected`);
-//     assert.isString(limitPrice, `limitPrice passed to filterByPriceAndOutcomeAndUserSortByPrice is not a String as expected`);
-//     assert.isString(outcomeId, `outcomeId passed to filterByPriceAndOutcomeAndUserSortByPrice is not a String as expected`);
-//     assert.isString(userAddress, `userAddress passed to filterByPriceAndOutcomeAndUserSortByPrice is not a String as expected`);
-//     // mock functionality...
-//     let returnValue = [];
+describe("tradeActions.calculateSellTradeIDs", function() {
+    // 3 tests total
+    var filterByPriceAndOutcomeAndUserSortByPrice = augur.filterByPriceAndOutcomeAndUserSortByPrice;
+    afterEach(function() {
+        augur.filterByPriceAndOutcomeAndUserSortByPrice = filterByPriceAndOutcomeAndUserSortByPrice;
+    });
+    var test = function(t) {
+        it(t.description, function() {
+            augur.filterByPriceAndOutcomeAndUserSortByPrice = t.filterByPriceAndOutcomeAndUserSortByPrice;
+            t.assertions(augur.calculateSellTradeIDs(t.marketID, t.outcomeID, t.limitPrice, t.orderBooks, t.address));
+        });
+    };
+    test({
+        description: 'Should handle returning the matching buy trades',
+        marketID: '0xa1',
+        outcomeID: '1',
+        limitPrice: '0.5',
+        orderBooks: {
+            '0xa1': {
+                buy: {
+                    '0xb1': { amount: '10', price: '0.5', outcome: '1', owner: '0x2', id: '0xb1'},
+                    '0xb2': { amount: '20', price: '0.7', outcome: '1', owner: '0x2', id: '0xb2'},
+                    '0xb3': { amount: '30', price: '0.6', outcome: '1', owner: '0x2', id: '0xb3'},
+                    '0xb4': { amount: '40', price: '0.45', outcome: '1', owner: '0x2', id: '0xb4'},
+                },
+                sell: {}
+            }
+        },
+        address: '0x1',
+        filterByPriceAndOutcomeAndUserSortByPrice: function(orders, traderOrderType, limitPrice, outcomeId, userAddress) {
+            assert.deepEqual(orders, {
+                '0xb1': { amount: '10', price: '0.5', outcome: '1', owner: '0x2', id: '0xb1'},
+                '0xb2': { amount: '20', price: '0.7', outcome: '1', owner: '0x2', id: '0xb2'},
+                '0xb3': { amount: '30', price: '0.6', outcome: '1', owner: '0x2', id: '0xb3'},
+                '0xb4': { amount: '40', price: '0.45', outcome: '1', owner: '0x2', id: '0xb4'},
+            });
+            assert.equal(limitPrice, '0.5');
+            assert.equal(outcomeId, '1');
+            assert.equal(userAddress, '0x1');
+            // mock how filterByPriceAndOutcomeAndUserSortByPrice works
+            // simply return what it would return in this situation...
+            return [
+                { amount: '20', price: '0.7', outcome: '1', owner: '0x2', id: '0xb2'},
+                { amount: '30', price: '0.6', outcome: '1', owner: '0x2', id: '0xb3'},
+                { amount: '10', price: '0.5', outcome: '1', owner: '0x2', id: '0xb1'}
+            ];
+        },
+        assertions(output) {
+            assert.deepEqual(output, ['0xb2', '0xb3', '0xb1']);
+        }
+    });
+    test({
+        description: 'Should handle an orderbook without the passed market',
+        marketID: '0xa1',
+        outcomeID: '1',
+        limitPrice: '0.5',
+        orderBooks: {
+            '0xa4': {
+                buy: {
+                    '0xb1': { amount: '10', price: '0.5', outcome: '1', owner: '0x2', id: '0xb1'},
+                    '0xb2': { amount: '20', price: '0.7', outcome: '1', owner: '0x2', id: '0xb2'},
+                    '0xb3': { amount: '30', price: '0.6', outcome: '1', owner: '0x2', id: '0xb3'},
+                    '0xb4': { amount: '40', price: '0.45', outcome: '1', owner: '0x2', id: '0xb4'},
+                },
+                sell: {}
+            }
+        },
+        address: '0x1',
+        filterByPriceAndOutcomeAndUserSortByPrice: function(orders, traderOrderType, limitPrice, outcomeId, userAddress) {
+            assert.deepEqual(orders, {});
+            assert.equal(limitPrice, '0.5');
+            assert.equal(outcomeId, '1');
+            assert.equal(userAddress, '0x1');
+            // mock how filterByPriceAndOutcomeAndUserSortByPrice works
+            // simply return what it would return in this situation...
+            return [];
+        },
+        assertions(output) {
+            assert.deepEqual(output, []);
+        }
+    });
+    test({
+        description: 'Should handle an empty orderBook',
+        marketID: '0xa1',
+        outcomeID: '2',
+        limitPrice: '0.7',
+        orderBooks: {},
+        address: '0x1',
+        filterByPriceAndOutcomeAndUserSortByPrice: function(orders, traderOrderType, limitPrice, outcomeId, userAddress) {
+            assert.deepEqual(orders, {});
+            assert.equal(limitPrice, '0.7');
+            assert.equal(outcomeId, '2');
+            assert.equal(userAddress, '0x1');
+            // mock how filterByPriceAndOutcomeAndUserSortByPrice works
+            // simply return what it would return in this situation...
+            return [];
+        },
+        assertions(output) {
+            assert.deepEqual(output, []);
+        }
+    });
+});
 
-//     switch (traderOrderType) {
-//       case 'buy':
-//         if (abi.bignum(limitPrice).gte('0.4')) {
-//           returnValue = [{ id: 3 }, { id: 4 }];
-//         }
-//         break;
-//       default:
-//         if (abi.bignum(limitPrice).lte('0.45')) {
-//           returnValue = [{ id: 1 }, { id: 2 }];
-//         }
-//         break;
-//     }
-
-//     return returnValue;
-//   });
-
-//   afterEach(() => {
-//     mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.reset();
-//   });
-
-//   const helper = proxyquire('../../../../src/modules/trade/actions/helpers/calculate-trade-ids', {
-//     '../../../../services/augurjs': mockAugur
-//   });
-//   const orderBook = {
-//     market1: {
-//       buy: {
-//         order1: {
-//           id: 1,
-//           price: '0.45',
-//           outcome: '1',
-//           owner: 'owner1'
-//         },
-//         order2: {
-//           id: 2,
-//           price: '0.45',
-//           outcome: '1',
-//           owner: 'owner1'
-//         }
-//       },
-//       sell: {
-//         order3: {
-//           id: 3,
-//           price: '0.4',
-//           outcome: '1',
-//           owner: 'owner1'
-//         },
-//         order4: {
-//           id: 4,
-//           price: '0.4',
-//           outcome: '1',
-//           owner: 'owner1'
-//         }
-//       }
-//     }
-//   };
-
-//   it('should calculate trade ids for a Buy', () => {
-//     assert.deepEqual(helper.calculateBuyTradeIDs('market1', '1', '0.5', orderBook, 'taker1'), [3, 4], `Didn't return the expected tradeIDs`);
-//     assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledOnce, `Didn't call augur.filterByPriceAndOutcomeAndUserSortByPrice exactly 1 time as expected`);
-//     assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledWithExactly({
-//       order3: {
-//         id: 3,
-//         price: '0.4',
-//         outcome: '1',
-//         owner: 'owner1'
-//       },
-//       order4: {
-//         id: 4,
-//         price: '0.4',
-//         outcome: '1',
-//         owner: 'owner1'
-//       }
-//     }, 'buy', '0.5', '1', 'taker1'), `Didn't called augur.filterByPriceAndOutcomeAndUserSortByPrice with the expected args`);
-//   });
-
-//   it('should return an empty array if the trade ids for a buy at that rate are not found', () => {
-//     assert.deepEqual(helper.calculateBuyTradeIDs('market1', '1', '0.3', orderBook, 'taker1'), [], `Didn't return an empty array of tradeIDs as expected`);
-//     assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledOnce, `Didn't call augur.filterByPriceAndOutcomeAndUserSortByPrice exactly 1 time as expected`);
-//     assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledWithExactly({
-//       order3: {
-//         id: 3,
-//         price: '0.4',
-//         outcome: '1',
-//         owner: 'owner1'
-//       },
-//       order4: {
-//         id: 4,
-//         price: '0.4',
-//         outcome: '1',
-//         owner: 'owner1'
-//       }
-//     }, 'buy', '0.3', '1', 'taker1'), `Didn't called augur.filterByPriceAndOutcomeAndUserSortByPrice with the expected args`);
-//   });
-
-//   it('should calculate trade ids for a Sell', () => {
-//     assert.deepEqual(helper.calculateSellTradeIDs('market1', '1', '0.3', orderBook, 'taker1'), [1, 2], `Didn't return the expected tradeIDs`);
-//     assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledOnce, `Didn't call augur.filterByPriceAndOutcomeAndUserSortByPrice exactly 1 time as expected`);
-//     assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledWithExactly({
-//       order1: {
-//         id: 1,
-//         price: '0.45',
-//         outcome: '1',
-//         owner: 'owner1'
-//       },
-//       order2: {
-//         id: 2,
-//         price: '0.45',
-//         outcome: '1',
-//         owner: 'owner1'
-//       }
-//     }, 'sell', '0.3', '1', 'taker1'), `Didn't called augur.filterByPriceAndOutcomeAndUserSortByPrice with the expected args`);
-//   });
-
-//   it('should return an empty array if the trade IDs for a sell at the rate passed in are not found', () => {
-//     assert.deepEqual(helper.calculateSellTradeIDs('market1', '1', '0.7', orderBook, 'taker1'), [], `Didn't return an empty array of tradeIDs as expected`);
-//     assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledOnce, `Didn't call augur.filterByPriceAndOutcomeAndUserSortByPrice exactly 1 time as expected`);
-//     assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledWithExactly({
-//       order1: {
-//         id: 1,
-//         price: '0.45',
-//         outcome: '1',
-//         owner: 'owner1'
-//       },
-//       order2: {
-//         id: 2,
-//         price: '0.45',
-//         outcome: '1',
-//         owner: 'owner1'
-//       }
-//     }, 'sell', '0.7', '1', 'taker1'), `Didn't called augur.filterByPriceAndOutcomeAndUserSortByPrice with the expected args`);
-//   });
-// });
+describe("tradeActions.getTxGasEth", function() {});
+describe("tradeActions.filterByPriceAndOutcomeAndUserSortByPrice", function() {});
+describe("tradeActions.getBidAction", function() {});
+describe("tradeActions.getBuyAction", function() {});
+describe("tradeActions.getAskAction", function() {});
+describe("tradeActions.getSellAction", function() {});
+describe("tradeActions.getShortSellAction", function() {});
+describe("tradeActions.getShortAskAction", function() {});
+describe("tradeActions.calculateTradeTotals", function() {});
 
 describe("getTradingActions", function () {
 
@@ -2248,3 +2325,155 @@ describe("getTradingActions", function () {
     });
   });
 });
+// import { describe, it, afterEach } from 'mocha';
+// import { assert } from 'chai';
+// import sinon from 'sinon';
+// import proxyquire from 'proxyquire';
+// import { abi } from 'services/augurjs';
+
+// describe('modules/trade/actions/helpers/calculate-trade-ids.js', () => {
+//   proxyquire.noPreserveCache();
+//   const mockAugur = { augur: { filterByPriceAndOutcomeAndUserSortByPrice: () => {} } };
+
+//   sinon.stub(mockAugur.augur, 'filterByPriceAndOutcomeAndUserSortByPrice', (orders, traderOrderType, limitPrice, outcomeId, userAddress) => {
+//     // assert types of all args
+//     assert.isObject(orders, `orders passed to filterByPriceAndOutcomeAndUserSortByPrice is not a Object as expected`);
+//     assert.isString(traderOrderType, `traderOrderType passed to filterByPriceAndOutcomeAndUserSortByPrice is not a String as expected`);
+//     assert.isString(limitPrice, `limitPrice passed to filterByPriceAndOutcomeAndUserSortByPrice is not a String as expected`);
+//     assert.isString(outcomeId, `outcomeId passed to filterByPriceAndOutcomeAndUserSortByPrice is not a String as expected`);
+//     assert.isString(userAddress, `userAddress passed to filterByPriceAndOutcomeAndUserSortByPrice is not a String as expected`);
+//     // mock functionality...
+//     let returnValue = [];
+
+//     switch (traderOrderType) {
+//       case 'buy':
+//         if (abi.bignum(limitPrice).gte('0.4')) {
+//           returnValue = [{ id: 3 }, { id: 4 }];
+//         }
+//         break;
+//       default:
+//         if (abi.bignum(limitPrice).lte('0.45')) {
+//           returnValue = [{ id: 1 }, { id: 2 }];
+//         }
+//         break;
+//     }
+
+//     return returnValue;
+//   });
+
+//   afterEach(() => {
+//     mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.reset();
+//   });
+
+//   const helper = proxyquire('../../../../src/modules/trade/actions/helpers/calculate-trade-ids', {
+//     '../../../../services/augurjs': mockAugur
+//   });
+//   const orderBook = {
+//     market1: {
+//       buy: {
+//         order1: {
+//           id: 1,
+//           price: '0.45',
+//           outcome: '1',
+//           owner: 'owner1'
+//         },
+//         order2: {
+//           id: 2,
+//           price: '0.45',
+//           outcome: '1',
+//           owner: 'owner1'
+//         }
+//       },
+//       sell: {
+//         order3: {
+//           id: 3,
+//           price: '0.4',
+//           outcome: '1',
+//           owner: 'owner1'
+//         },
+//         order4: {
+//           id: 4,
+//           price: '0.4',
+//           outcome: '1',
+//           owner: 'owner1'
+//         }
+//       }
+//     }
+//   };
+
+//   it('should calculate trade ids for a Buy', () => {
+//     assert.deepEqual(helper.calculateBuyTradeIDs('market1', '1', '0.5', orderBook, 'taker1'), [3, 4], `Didn't return the expected tradeIDs`);
+//     assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledOnce, `Didn't call augur.filterByPriceAndOutcomeAndUserSortByPrice exactly 1 time as expected`);
+//     assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledWithExactly({
+//       order3: {
+//         id: 3,
+//         price: '0.4',
+//         outcome: '1',
+//         owner: 'owner1'
+//       },
+//       order4: {
+//         id: 4,
+//         price: '0.4',
+//         outcome: '1',
+//         owner: 'owner1'
+//       }
+//     }, 'buy', '0.5', '1', 'taker1'), `Didn't called augur.filterByPriceAndOutcomeAndUserSortByPrice with the expected args`);
+//   });
+
+//   it('should return an empty array if the trade ids for a buy at that rate are not found', () => {
+//     assert.deepEqual(helper.calculateBuyTradeIDs('market1', '1', '0.3', orderBook, 'taker1'), [], `Didn't return an empty array of tradeIDs as expected`);
+//     assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledOnce, `Didn't call augur.filterByPriceAndOutcomeAndUserSortByPrice exactly 1 time as expected`);
+//     assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledWithExactly({
+//       order3: {
+//         id: 3,
+//         price: '0.4',
+//         outcome: '1',
+//         owner: 'owner1'
+//       },
+//       order4: {
+//         id: 4,
+//         price: '0.4',
+//         outcome: '1',
+//         owner: 'owner1'
+//       }
+//     }, 'buy', '0.3', '1', 'taker1'), `Didn't called augur.filterByPriceAndOutcomeAndUserSortByPrice with the expected args`);
+//   });
+
+//   it('should calculate trade ids for a Sell', () => {
+//     assert.deepEqual(helper.calculateSellTradeIDs('market1', '1', '0.3', orderBook, 'taker1'), [1, 2], `Didn't return the expected tradeIDs`);
+//     assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledOnce, `Didn't call augur.filterByPriceAndOutcomeAndUserSortByPrice exactly 1 time as expected`);
+//     assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledWithExactly({
+//       order1: {
+//         id: 1,
+//         price: '0.45',
+//         outcome: '1',
+//         owner: 'owner1'
+//       },
+//       order2: {
+//         id: 2,
+//         price: '0.45',
+//         outcome: '1',
+//         owner: 'owner1'
+//       }
+//     }, 'sell', '0.3', '1', 'taker1'), `Didn't called augur.filterByPriceAndOutcomeAndUserSortByPrice with the expected args`);
+//   });
+
+//   it('should return an empty array if the trade IDs for a sell at the rate passed in are not found', () => {
+//     assert.deepEqual(helper.calculateSellTradeIDs('market1', '1', '0.7', orderBook, 'taker1'), [], `Didn't return an empty array of tradeIDs as expected`);
+//     assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledOnce, `Didn't call augur.filterByPriceAndOutcomeAndUserSortByPrice exactly 1 time as expected`);
+//     assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledWithExactly({
+//       order1: {
+//         id: 1,
+//         price: '0.45',
+//         outcome: '1',
+//         owner: 'owner1'
+//       },
+//       order2: {
+//         id: 2,
+//         price: '0.45',
+//         outcome: '1',
+//         owner: 'owner1'
+//       }
+//     }, 'sell', '0.7', '1', 'taker1'), `Didn't called augur.filterByPriceAndOutcomeAndUserSortByPrice with the expected args`);
+//   });
+// });

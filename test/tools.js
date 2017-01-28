@@ -41,6 +41,14 @@ module.exports = {
   // approximately equals threshold
   EPSILON: 1e-6,
 
+  // a function to quickly reset the callCounts object.
+  ClearCallCounts: function(callCounts) {
+      var keys = Object.keys(callCounts);
+      for (keys in callCounts) {
+          callCounts[keys] = 0;
+      }
+  },
+
   print_residual: function (periodLength, label) {
     var t = parseInt(new Date().getTime() / 1000);
     periodLength = parseInt(periodLength);

@@ -374,6 +374,8 @@ module.exports = {
     }
     this.augurNode.getMarketsInfo(branch, function (err, result) {
       if (err) {
+        // clear the augurNodes and try again to avoid infinite loop
+        self.augurNode.nodes = [];
         return self.getMarketsInfo(branch, offset, numMarketsToLoad, volumeMin, volumeMax, callback);
       }
       callback(JSON.parse(result));

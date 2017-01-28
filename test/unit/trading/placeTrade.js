@@ -2,1656 +2,1004 @@
 
 var assert = require('chai').assert;
 var augur = require('../../../src');
+var abi = require("augur-abi");
+var noop = require("../../../src/utilities").noop;
+// 4 tests total
 
-// var augur = require("augur.js");
-// var assert = require("chai").assert;
-// var proxyquire = require("proxyquire");
-// var sinon = require("sinon");
-// import * as mocks from 'test/mockStore';
-// import { BUY, tradeTestState, tradeConstOrderBooks, stubCalculateBuyTradeIDs, stubCalculateSellTradeIDs } from 'test/trade/constants';
+describe("placeTrade.generateTradeGroupID", function() {
+    // 1 test total
+    var test = function(t) {
+        it(t.description, function() {
+            t.assertions(augur.generateTradeGroupID());
+        });
+    };
+    test({
+        description: 'Should return a int256 string to be used as a tradeGroupID.',
+        assertions: function(output) {
+            assert.isString(output);
+            // we expect this value to be padded and prefixed, so confirm that
+            assert.include(output, '0x0');
+        }
+    });
+});
 
-// describe("placeTrade", () => {
-//   proxyquire.noPreserveCache();
-//   const { state, mockStore } = mocks.default;
-//   const testState = Object.assign({}, state, tradeTestState);
-//   testState.orderBooks = tradeConstOrderBooks;
-//   testState.tradesInProgress = {
-//     testBinaryMarketID: {
-//       2: {
-//         side: BUY,
-//         numShares: '10',
-//         limitPrice: '0.5',
-//         totalFee: '0.01',
-//         totalCost: '5.01',
-//         tradeActions: [{
-//           action: 'BID',
-//           shares: '10',
-//           gasEth: '0.01450404',
-//           feeEth: '0.01',
-//           feePercent: '0.2',
-//           costEth: '5.01',
-//           avgPrice: '0.501',
-//           noFeePrice: '0.5'
-//         }],
-//         tradingFeesEth: '0.01',
-//         gasFeesRealEth: '0.01450404',
-//         feePercent: '0.199203187250996016'
-//       }
-//     },
-//     testCategoricalMarketID: {
-//       1: {
-//         side: BUY,
-//         numShares: '10',
-//         limitPrice: '0.5',
-//         totalFee: '0.004999999999999995',
-//         totalCost: '5.004999999999999995',
-//         tradeActions: [{
-//           action: 'BID',
-//           shares: '10',
-//           gasEth: '0.01450404',
-//           feeEth: '0.004999999999999995',
-//           feePercent: '0.0999999999999999',
-//           costEth: '5.004999999999999995',
-//           avgPrice: '0.500499999999999999',
-//           noFeePrice: '0.5'
-//         }],
-//         tradingFeesEth: '0.004999999999999995',
-//         gasFeesRealEth: '0.01450404',
-//         feePercent: '0.099800399201596707'
-//       }
-//     },
-//     testScalarMarketID: {
-//       1: {
-//         side: BUY,
-//         numShares: '10',
-//         limitPrice: '55',
-//         totalFee: '5.36982248520710025',
-//         totalCost: '555.36982248520710025',
-//         tradeActions: [
-//           {
-//             action: 'BID',
-//             shares: '10',
-//             gasEth: '0.01450404',
-//             feeEth: '5.36982248520710025',
-//             feePercent: '0.9763313609467455',
-//             costEth: '555.36982248520710025',
-//             avgPrice: '55.536982248520710025',
-//             noFeePrice: '55'
-//           }
-//         ],
-//         tradingFeesEth: '5.36982248520710025',
-//         gasFeesRealEth: '0.01450404',
-//         feePercent: '0.95763203714451532'
-//       }
-//     }
-//   };
-//   const store = mockStore(testState);
-//   const mockSelectMarket = { selectMarket: () => {} };
-//   const mockCalculateTradeIDs = {
-//     calculateBuyTradeIDs: () => {},
-//     calculateSellTradeIDs: () => {}
-//   };
-//   const mockMakeOrder = {
-//     placeBid: () => {},
-//     placeAsk: () => {},
-//     placeShortAsk: () => {}
-//   };
-//   const mockTakeOrder = {
-//     placeBuy: () => {},
-//     placeSell: () => {},
-//     placeShortSell: () => {}
-//   };
-//   const mockAugur = {
-//     abi: {
-//       bignum: () => {},
-//       format_int256: () => {}
-//     },
-//     augur: {
-//       getParticipantSharesPurchased: () => {}
-//     }
-//   };
-//   sinon.stub(mockSelectMarket, 'selectMarket', marketID => store.getState().marketsData[marketID]);
-//   sinon.stub(mockCalculateTradeIDs, 'calculateBuyTradeIDs', stubCalculateBuyTradeIDs);
-//   sinon.stub(mockCalculateTradeIDs, 'calculateSellTradeIDs', stubCalculateSellTradeIDs);
-//   sinon.stub(mockMakeOrder, 'placeBid', (market, outcomeID, numShares, limitPrice, tradeGroupID) => (
-//     store.dispatch({
-//       type: 'PLACE_BID',
-//       params: [market, outcomeID, numShares, limitPrice, tradeGroupID]
-//     })
-//   ));
-//   sinon.stub(mockMakeOrder, 'placeAsk', (market, outcomeID, numShares, limitPrice, tradeGroupID) => (
-//     store.dispatch({
-//       type: 'PLACE_ASK',
-//       params: [market, outcomeID, numShares, limitPrice, tradeGroupID]
-//     })
-//   ));
-//   sinon.stub(mockMakeOrder, 'placeShortAsk', (market, outcomeID, numShares, limitPrice, tradeGroupID) => (
-//     store.dispatch({
-//       type: 'PLACE_SHORT_ASK',
-//       params: [market, outcomeID, numShares, limitPrice, tradeGroupID]
-//     })
-//   ));
-//   sinon.stub(mockTakeOrder, 'placeBuy', (market, outcomeID, numShares, limitPrice, totalCost, tradingFees, tradeGroupID) => (
-//     dispatch => store.dispatch({
-//       type: 'PLACE_BUY',
-//       params: [market, outcomeID, numShares, limitPrice, tradeGroupID]
-//     })
-//   ));
-//   sinon.stub(mockTakeOrder, 'placeSell', (market, outcomeID, numShares, limitPrice, totalCost, tradingFees, tradeGroupID) => (
-//     dispatch => store.dispatch({
-//       type: 'PLACE_SELL',
-//       params: [market, outcomeID, numShares, limitPrice, tradeGroupID]
-//     })
-//   ));
-//   sinon.stub(mockTakeOrder, 'placeShortSell', (market, outcomeID, numShares, limitPrice, totalCost, tradingFees, tradeGroupID) => (
-//     dispatch => store.dispatch({
-//       type: 'PLACE_SHORT_SELL',
-//       params: [market, outcomeID, numShares, limitPrice, tradeGroupID]
-//     })
-//   ));
-//   sinon.stub(mockAugur.abi, 'bignum', n => augur.abi.bignum(n));
-//   sinon.stub(mockAugur.abi, 'format_int256', n => augur.abi.format_int256(n));
-//   sinon.stub(mockAugur.augur, 'getParticipantSharesPurchased', (marketID, userID, outcomeID, cb) => {
-//     switch (mockAugur.augur.getParticipantSharesPurchased.callCount) {
-//       case 2:
-//         cb('5');
-//         break;
-//       case 4:
-//       case 5:
-//         cb('0');
-//         break;
-//       default:
-//         cb('10');
-//         break;
-//     }
-//   });
+describe("placeTrade.executeTradingActions", function() {
+    // 3 tests total
+    var placeTrade = augur.placeTrade;
+    var tradeGroupIDtoAssert;
+    afterEach(function() {
+        augur.placeTrade = placeTrade;
+    });
+    var test = function(t) {
+        it(t.description, function(done) {
+            augur.placeTrade = t.placeTrade;
 
-//   const action = proxyquire('../../../src/modules/trade/actions/place-trade.js', {
-//     '../../../services/augurjs': mockAugur,
-//     '../../market/selectors/market': mockSelectMarket,
-//     '../../trade/actions/helpers/calculate-trade-ids': mockCalculateTradeIDs,
-//     '../../trade/actions/make-order': mockMakeOrder,
-//     '../../trade/actions/take-order': mockTakeOrder
-//   });
+            augur.executeTradingActions(t.market, t.outcomeID, t.address, t.orderBooks, t.doNotMakeOrders, t.tradesInProgress, t.tradeCommitmentCallback, t.tradeCommitLockCallback, function(err, tradeGroupID) {
+                t.assertions(err, tradeGroupID);
+                done();
+            });
+        });
+    };
+    test({
+        description: 'Should handle an array of tradesInProgress for a given market.',
+        market: { id: '0xa1', type: 'binary' },
+        outcomeID: '1',
+        address: '0x1',
+        orderBooks: { '0xa1': {buy: {}, sell: {}}},
+        doNotMakeOrders: false,
+        tradesInProgress: [
+        	{
+                marketID: '0xa1',
+        		side: 'buy',
+        		numShares: '100',
+        		limitPrice: '0.5',
+        		tradingFeesEth: '0.01',
+        		totalCost: '51'
+        	},
+            {
+                marketID: '0xa1',
+        		side: 'buy',
+        		numShares: '50',
+        		limitPrice: '0.35',
+        		tradingFeesEth: '0.01',
+        		totalCost: '18'
+        	},
+            {
+                marketID: '0xa1',
+        		side: 'sell',
+        		numShares: '150',
+        		limitPrice: '0.75',
+        		tradingFeesEth: '0.01',
+        		totalCost: '114'
+        	}
+        ],
+        tradeCommitmentCallback: undefined,
+        tradeCommitLockCallback: undefined,
+        placeTrade: function(market, outcomeID, tradeType, numShares, limitPrice, tradingFees, address, totalCost, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback) {
+            assert.deepEqual(market, { id: '0xa1', type: 'binary' });
+            assert.deepEqual(outcomeID, '1');
+            assert.deepEqual(address, '0x1');
+            assert.isBoolean(doNotMakeOrders);
+            assert.oneOf(tradeType, ['buy', 'sell']);
+            assert.oneOf(numShares, ['100', '50', '150']);
+            assert.oneOf(limitPrice, ['0.35', '0.5', '0.75']);
+            assert.deepEqual(tradingFees, '0.01');
+            assert.oneOf(totalCost, ['114', '18', '51']);
+            // assign the tradeGroupID to our variable to test later to confirm that we get out the tradeGroupID we pass in to placeTrade.
+            tradeGroupIDtoAssert = tradeGroupID;
+            // now call the callback with no error as placeTrade would.
+            callback(null);
+        },
+        assertions: function(err, tradeGroupID) {
+            assert.isNull(err);
+            assert.deepEqual(tradeGroupID, tradeGroupIDtoAssert);
+        }
+    });
+    test({
+        description: 'Should handle an array of tradesInProgress for a given market but some of the tradesInProgress arent sent to placeTrade.',
+        market: { id: '0xa1', type: 'binary' },
+        outcomeID: '1',
+        address: '0x1',
+        orderBooks: { '0xa1': {buy: {}, sell: {}}},
+        doNotMakeOrders: false,
+        tradesInProgress: [
+            {
+                marketID: '0xa1',
+                side: 'buy',
+                numShares: '100',
+                limitPrice: '0.5',
+                tradingFeesEth: '0.01',
+                totalCost: '51'
+            },
+            {
+                marketID: '0xa1',
+                side: 'buy',
+                numShares: '25',
+                limitPrice: undefined,
+                tradingFeesEth: '0.01',
+                totalCost: '51'
+            },
+            {
+                marketID: '0xa1',
+                side: 'buy',
+                numShares: '50',
+                limitPrice: '0.35',
+                tradingFeesEth: '0.01',
+                totalCost: '18'
+            },
+            {
+                marketID: '0xa1',
+                side: 'buy',
+                numShares: undefined,
+                limitPrice: '0.24',
+                tradingFeesEth: '0.01',
+                totalCost: '51'
+            },
+            {
+                marketID: '0xa1',
+                side: 'buy',
+                numShares: '30',
+                limitPrice: '0.6',
+                tradingFeesEth: '0.01',
+                totalCost: undefined
+            },
+            {
+                marketID: '0xa1',
+                side: 'sell',
+                numShares: '150',
+                limitPrice: '0.75',
+                tradingFeesEth: '0.01',
+                totalCost: '114'
+            }
+        ],
+        tradeCommitmentCallback: undefined,
+        tradeCommitLockCallback: undefined,
+        placeTrade: function(market, outcomeID, tradeType, numShares, limitPrice, tradingFees, address, totalCost, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback) {
+            assert.deepEqual(market, { id: '0xa1', type: 'binary' });
+            assert.deepEqual(outcomeID, '1');
+            assert.deepEqual(address, '0x1');
+            assert.isBoolean(doNotMakeOrders);
+            assert.oneOf(tradeType, ['buy', 'sell']);
+            assert.oneOf(numShares, ['100', '50', '150']);
+            assert.oneOf(limitPrice, ['0.35', '0.5', '0.75']);
+            assert.deepEqual(tradingFees, '0.01');
+            assert.oneOf(totalCost, ['114', '18', '51']);
+            // assign the tradeGroupID to our variable to test later to confirm that we get out the tradeGroupID we pass in to placeTrade.
+            tradeGroupIDtoAssert = tradeGroupID;
+            // now call the callback with no error as placeTrade would.
+            callback(null);
+        },
+        assertions: function(err, tradeGroupID) {
+            assert.isNull(err);
+            assert.deepEqual(tradeGroupID, tradeGroupIDtoAssert);
+        }
+    });
+    test({
+        description: 'Should handle an error back from placeTrade',
+        market: { id: '0xa1', type: 'binary' },
+        outcomeID: '1',
+        address: '0x1',
+        orderBooks: { '0xa1': {buy: {}, sell: {}}},
+        doNotMakeOrders: false,
+        tradesInProgress: [
+            {
+                marketID: '0xa1',
+                side: 'buy',
+                numShares: '100',
+                limitPrice: '0.5',
+                tradingFeesEth: '0.01',
+                totalCost: '51'
+            },
+            {
+                marketID: '0xa1',
+                side: 'buy',
+                numShares: '50',
+                limitPrice: '0.35',
+                tradingFeesEth: '0.01',
+                totalCost: '18'
+            },
+            {
+                marketID: '0xa1',
+                side: 'sell',
+                numShares: '150',
+                limitPrice: '0.75',
+                tradingFeesEth: '0.01',
+                totalCost: '114'
+            }
+        ],
+        tradeCommitmentCallback: undefined,
+        tradeCommitLockCallback: undefined,
+        placeTrade: function(market, outcomeID, tradeType, numShares, limitPrice, tradingFees, address, totalCost, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback) {
+            assert.deepEqual(market, { id: '0xa1', type: 'binary' });
+            assert.deepEqual(outcomeID, '1');
+            assert.deepEqual(address, '0x1');
+            assert.isBoolean(doNotMakeOrders);
+            assert.oneOf(tradeType, ['buy', 'sell']);
+            assert.oneOf(numShares, ['100', '50', '150']);
+            assert.oneOf(limitPrice, ['0.35', '0.5', '0.75']);
+            assert.deepEqual(tradingFees, '0.01');
+            assert.oneOf(totalCost, ['114', '18', '51']);
+            // assign the tradeGroupID to our variable to test later to confirm that we get out the tradeGroupID we pass in to placeTrade.
+            tradeGroupIDtoAssert = tradeGroupID;
+            // now call the callback with an error as placeTrade might.
+            callback({ error: 999, message: 'Uh-Oh!' });
+        },
+        assertions: function(err, tradeGroupID) {
+            assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
+            assert.isUndefined(tradeGroupID);
+        }
+    });
+});
 
-//   beforeEach(() => {
-//     store.clearActions();
-//   });
+describe("placeTrade.placeTrade", function() {
+    // 11 tests total
+    var placeBuy = augur.placeBuy;
+    var placeBid = augur.placeBid;
+    var placeSell = augur.placeSell;
+    var placeAsk = augur.placeAsk;
+    var placeShortAsk = augur.placeShortAsk;
+    var placeShortSell = augur.placeShortSell;
+    var calculateBuyTradeIDs = augur.calculateBuyTradeIDs;
+    var calculateSellTradeIDs = augur.calculateSellTradeIDs;
+    var getParticipantSharesPurchased = augur.getParticipantSharesPurchased;
+    var callCounts = {
+        placeBuy: 0,
+        placeBid: 0,
+        placeSell: 0,
+        placeAsk: 0,
+        placeShortAsk: 0,
+        placeShortSell: 0,
+        calculateBuyTradeIDs: 0,
+        calculateSellTradeIDs: 0,
+        getParticipantSharesPurchased: 0
+    };
+    // a function to quickly reset the callCounts object.
+    function ClearCallCounts() {
+        var keys = Object.keys(callCounts);
+        for (keys in callCounts) {
+            callCounts[keys] = 0;
+        }
+    };
+    afterEach(function() {
+        // Clear the counts object after each test.
+        ClearCallCounts();
+        augur.placeBuy = placeBuy;
+        augur.placeBid = placeBid;
+        augur.placeSell = placeSell;
+        augur.placeAsk = placeAsk;
+        augur.placeShortAsk = placeShortAsk;
+        augur.placeShortSell = placeShortSell;
+        augur.calculateBuyTradeIDs = calculateBuyTradeIDs;
+        augur.calculateSellTradeIDs = calculateSellTradeIDs;
+        augur.getParticipantSharesPurchased = getParticipantSharesPurchased;
+    });
+    var test = function(t) {
+        it(t.description, function(done) {
+            augur.placeBuy = t.placeBuy;
+            augur.placeBid = t.placeBid;
+            augur.placeSell = t.placeSell;
+            augur.placeAsk = t.placeAsk;
+            augur.placeShortAsk = t.placeShortAsk;
+            augur.placeShortSell = t.placeShortSell;
+            augur.calculateBuyTradeIDs = t.calculateBuyTradeIDs;
+            augur.calculateSellTradeIDs = t.calculateSellTradeIDs;
+            augur.getParticipantSharesPurchased = t.getParticipantSharesPurchased;
 
-//   afterEach(() => {
-//     store.clearActions();
-//     if (mockAugur.augur.getParticipantSharesPurchased.callCount === 5) mockAugur.augur.getParticipantSharesPurchased.reset();
-//   });
-
-//   describe('Binary Market Place Trade Tests', () => {
-//     it('should place a BUY trade for a binary market', () => {
-//       store.dispatch(action.placeTrade('testBinaryMarketID', '2'));
-//       assert.deepEqual(store.getActions(), [{
-//         type: 'PLACE_BUY',
-//         params: [
-//           {
-//             author: 'testAuthor1',
-//             branchID: '0x010101',
-//             creationFee: '22.5',
-//             creationTime: 1475951522,
-//             cumulativeScale: '1',
-//             description: 'test binary market?',
-//             endDate: 1495317600,
-//             eventID: 'testEventID1',
-//             isLoadedMarketInfo: true,
-//             isEthical: undefined,
-//             reportedOutcome: undefined,
-//             makerFee: '0.002',
-//             maxValue: '2',
-//             minValue: '1',
-//             network: '2',
-//             numEvents: 1,
-//             numOutcomes: 2,
-//             sortOrder: 0,
-//             tags: [
-//               'binary',
-//               'markets',
-//               null
-//             ],
-//             takerFee: '0.01',
-//             tradingFee: '0.008',
-//             tradingPeriod: 8653,
-//             type: 'binary',
-//             volume: '3030',
-//             winningOutcomes: []
-//           },
-//           '2',
-//           '10',
-//           '0.5',
-//           '0x00000000000000000000000000000000c1bba17b27594861a799ebc37b7baa09'
-//         ]
-//       }, {
-//         type: 'CLEAR_TRADE_IN_PROGRESS',
-//         marketID: 'testBinaryMarketID'
-//       }]);
-//     });
-//     it('should place a BID trade for a binary market', () => {
-//       store.getState().tradesInProgress.testBinaryMarketID = {
-//         2: {
-//           side: 'buy',
-//           numShares: '10',
-//           limitPrice: '0.35',
-//           totalFee: '0.00637',
-//           totalCost: '3.50637',
-//           tradeActions: [{
-//             action: 'BID',
-//             shares: '10',
-//             gasEth: '0.01450404',
-//             feeEth: '0.00637',
-//             feePercent: '0.182',
-//             costEth: '3.50637',
-//             avgPrice: '0.350637',
-//             noFeePrice: '0.35'
-//           }],
-//           tradingFeesEth: '0.00637',
-//           gasFeesRealEth: '0.01450404',
-//           feePercent: '0.18133992268143956'
-//         }
-//       };
-//       store.dispatch(action.placeTrade('testBinaryMarketID', '2'));
-//       assert.deepEqual(store.getActions(), [{
-//         type: 'PLACE_BID',
-//         params: [
-//           {
-//             author: 'testAuthor1',
-//             branchID: '0x010101',
-//             creationFee: '22.5',
-//             creationTime: 1475951522,
-//             cumulativeScale: '1',
-//             description: 'test binary market?',
-//             endDate: 1495317600,
-//             eventID: 'testEventID1',
-//             isLoadedMarketInfo: true,
-//             isEthical: undefined,
-//             reportedOutcome: undefined,
-//             makerFee: '0.002',
-//             maxValue: '2',
-//             minValue: '1',
-//             network: '2',
-//             numEvents: 1,
-//             numOutcomes: 2,
-//             sortOrder: 0,
-//             tags: [
-//               'binary',
-//               'markets',
-//               null
-//             ],
-//             takerFee: '0.01',
-//             tradingFee: '0.008',
-//             tradingPeriod: 8653,
-//             type: 'binary',
-//             volume: '3030',
-//             winningOutcomes: []
-//           },
-//           '2',
-//           '10',
-//           '0.35',
-//           '0x00000000000000000000000000000000c1bba17b27594861a799ebc37b7baa09'
-//         ]
-//       }, {
-//         type: 'CLEAR_TRADE_IN_PROGRESS',
-//         marketID: 'testBinaryMarketID'
-//       }]);
-//     });
-//     it('should place a ASK trade for a binary market', () => {
-//       store.getState().tradesInProgress.testBinaryMarketID = {
-//         2: {
-//           side: 'sell',
-//           numShares: '10',
-//           limitPrice: '0.5',
-//           totalFee: '0.01',
-//           totalCost: '-10.01',
-//           tradeActions: [{
-//             action: 'SHORT_ASK',
-//             shares: '10',
-//             gasEth: '0.02791268',
-//             feeEth: '0.01',
-//             feePercent: '0.2',
-//             costEth: '-10.01',
-//             avgPrice: '1.001',
-//             noFeePrice: '0.5'
-//           }],
-//           tradingFeesEth: '0.01',
-//           gasFeesRealEth: '0.02791268',
-//           feePercent: '0.099800399201596806'
-//         }
-//       };
-//       store.dispatch(action.placeTrade('testBinaryMarketID', '2'));
-//       assert.deepEqual(store.getActions(), [{
-//         type: 'PLACE_ASK',
-//         params: [
-//           {
-//             author: 'testAuthor1',
-//             branchID: '0x010101',
-//             creationFee: '22.5',
-//             creationTime: 1475951522,
-//             cumulativeScale: '1',
-//             description: 'test binary market?',
-//             endDate: 1495317600,
-//             eventID: 'testEventID1',
-//             isLoadedMarketInfo: true,
-//             isEthical: undefined,
-//             reportedOutcome: undefined,
-//             makerFee: '0.002',
-//             maxValue: '2',
-//             minValue: '1',
-//             network: '2',
-//             numEvents: 1,
-//             numOutcomes: 2,
-//             sortOrder: 0,
-//             tags: [
-//               'binary',
-//               'markets',
-//               null
-//             ],
-//             takerFee: '0.01',
-//             tradingFee: '0.008',
-//             tradingPeriod: 8653,
-//             type: 'binary',
-//             volume: '3030',
-//             winningOutcomes: []
-//           },
-//           '2',
-//           '10',
-//           '0.5',
-//           '0x00000000000000000000000000000000c1bba17b27594861a799ebc37b7baa09'
-//         ]
-//       }, {
-//         type: 'CLEAR_TRADE_IN_PROGRESS',
-//         marketID: 'testBinaryMarketID'
-//       }]);
-//     });
-//     it('should place a ASK and SHORT_ASK trade for a binary market', () => {
-//       store.dispatch(action.placeTrade('testBinaryMarketID', '2'));
-//       assert.deepEqual(store.getActions(), [{
-//         type: 'PLACE_ASK',
-//         params: [
-//           {
-//             author: 'testAuthor1',
-//             branchID: '0x010101',
-//             creationFee: '22.5',
-//             creationTime: 1475951522,
-//             cumulativeScale: '1',
-//             description: 'test binary market?',
-//             endDate: 1495317600,
-//             eventID: 'testEventID1',
-//             isLoadedMarketInfo: true,
-//             isEthical: undefined,
-//             reportedOutcome: undefined,
-//             makerFee: '0.002',
-//             maxValue: '2',
-//             minValue: '1',
-//             network: '2',
-//             numEvents: 1,
-//             numOutcomes: 2,
-//             sortOrder: 0,
-//             tags: [
-//               'binary',
-//               'markets',
-//               null
-//             ],
-//             takerFee: '0.01',
-//             tradingFee: '0.008',
-//             tradingPeriod: 8653,
-//             type: 'binary',
-//             volume: '3030',
-//             winningOutcomes: []
-//           },
-//           '2',
-//           '5',
-//           '0.5',
-//           '0x00000000000000000000000000000000c1bba17b27594861a799ebc37b7baa09'
-//         ]
-//       }, {
-//         type: 'PLACE_SHORT_ASK',
-//         params: [
-//           {
-//             author: 'testAuthor1',
-//             branchID: '0x010101',
-//             creationFee: '22.5',
-//             creationTime: 1475951522,
-//             cumulativeScale: '1',
-//             description: 'test binary market?',
-//             endDate: 1495317600,
-//             eventID: 'testEventID1',
-//             isLoadedMarketInfo: true,
-//             isEthical: undefined,
-//             reportedOutcome: undefined,
-//             makerFee: '0.002',
-//             maxValue: '2',
-//             minValue: '1',
-//             network: '2',
-//             numEvents: 1,
-//             numOutcomes: 2,
-//             sortOrder: 0,
-//             tags: [
-//               'binary',
-//               'markets',
-//               null
-//             ],
-//             takerFee: '0.01',
-//             tradingFee: '0.008',
-//             tradingPeriod: 8653,
-//             type: 'binary',
-//             volume: '3030',
-//             winningOutcomes: []
-//           },
-//           '2',
-//           '5',
-//           '0.5',
-//           '0x00000000000000000000000000000000c1bba17b27594861a799ebc37b7baa09'
-//         ]
-//       }, {
-//         type: 'CLEAR_TRADE_IN_PROGRESS',
-//         marketID: 'testBinaryMarketID'
-//       }]);
-//     });
-//     it('should place a SELL trade for a binary market', () => {
-//       store.getState().tradesInProgress.testBinaryMarketID = {
-//         2: {
-//           side: 'sell',
-//           numShares: '10',
-//           limitPrice: '0.45',
-//           totalFee: '0.00891',
-//           totalCost: '-10.00891',
-//           tradeActions: [{
-//             action: 'SHORT_ASK',
-//             shares: '10',
-//             gasEth: '0.02791268',
-//             feeEth: '0.00891',
-//             feePercent: '0.198',
-//             costEth: '-10.00891',
-//             avgPrice: '1.000891',
-//             noFeePrice: '0.45'
-//           }],
-//           tradingFeesEth: '0.00891',
-//           gasFeesRealEth: '0.02791268',
-//           feePercent: '0.088941506235887648' }
-//       };
-//       store.dispatch(action.placeTrade('testBinaryMarketID', '2'));
-//       assert.deepEqual(store.getActions(), [{
-//         type: 'PLACE_SELL',
-//         params: [
-//           {
-//             author: 'testAuthor1',
-//             branchID: '0x010101',
-//             creationFee: '22.5',
-//             creationTime: 1475951522,
-//             cumulativeScale: '1',
-//             description: 'test binary market?',
-//             endDate: 1495317600,
-//             eventID: 'testEventID1',
-//             isLoadedMarketInfo: true,
-//             isEthical: undefined,
-//             reportedOutcome: undefined,
-//             makerFee: '0.002',
-//             maxValue: '2',
-//             minValue: '1',
-//             network: '2',
-//             numEvents: 1,
-//             numOutcomes: 2,
-//             sortOrder: 0,
-//             tags: [
-//               'binary',
-//               'markets',
-//               null
-//             ],
-//             takerFee: '0.01',
-//             tradingFee: '0.008',
-//             tradingPeriod: 8653,
-//             type: 'binary',
-//             volume: '3030',
-//             winningOutcomes: []
-//           },
-//           '2',
-//           '10',
-//           '0.45',
-//           '0x00000000000000000000000000000000c1bba17b27594861a799ebc37b7baa09'
-//         ]
-//       }, {
-//         type: 'CLEAR_TRADE_IN_PROGRESS',
-//         marketID: 'testBinaryMarketID'
-//       }]);
-//     });
-//     it('should place a SHORT_ASK trade for a binary market', () => {
-//       store.getState().tradesInProgress.testBinaryMarketID = {
-//         2: {
-//           side: 'sell',
-//           numShares: '10',
-//           limitPrice: '0.5',
-//           totalFee: '0.01',
-//           totalCost: '-10.01',
-//           tradeActions: [{
-//             action: 'SHORT_ASK',
-//             shares: '10',
-//             gasEth: '0.02791268',
-//             feeEth: '0.01',
-//             feePercent: '0.2',
-//             costEth: '-10.01',
-//             avgPrice: '1.001',
-//             noFeePrice: '0.5'
-//           }],
-//           tradingFeesEth: '0.01',
-//           gasFeesRealEth: '0.02791268',
-//           feePercent: '0.099800399201596806' }
-//       };
-//       store.dispatch(action.placeTrade('testBinaryMarketID', '2'));
-//       assert.deepEqual(store.getActions(), [{
-//         type: 'PLACE_SHORT_ASK',
-//         params: [
-//           {
-//             author: 'testAuthor1',
-//             branchID: '0x010101',
-//             creationFee: '22.5',
-//             creationTime: 1475951522,
-//             cumulativeScale: '1',
-//             description: 'test binary market?',
-//             endDate: 1495317600,
-//             eventID: 'testEventID1',
-//             isLoadedMarketInfo: true,
-//             isEthical: undefined,
-//             reportedOutcome: undefined,
-//             makerFee: '0.002',
-//             maxValue: '2',
-//             minValue: '1',
-//             network: '2',
-//             numEvents: 1,
-//             numOutcomes: 2,
-//             sortOrder: 0,
-//             tags: [
-//               'binary',
-//               'markets',
-//               null
-//             ],
-//             takerFee: '0.01',
-//             tradingFee: '0.008',
-//             tradingPeriod: 8653,
-//             type: 'binary',
-//             volume: '3030',
-//             winningOutcomes: []
-//           },
-//           '2',
-//           '10',
-//           '0.5',
-//           '0x00000000000000000000000000000000c1bba17b27594861a799ebc37b7baa09'
-//         ]
-//       }, {
-//         type: 'CLEAR_TRADE_IN_PROGRESS',
-//         marketID: 'testBinaryMarketID'
-//       }]);
-//     });
-//     it('should place a SHORT_SELL trade for a binary market', () => {
-//       store.getState().tradesInProgress.testBinaryMarketID = {
-//         2: {
-//           side: 'sell',
-//           numShares: '10',
-//           limitPrice: '0.45',
-//           totalFee: '0.00891',
-//           totalCost: '-10.00891',
-//           tradeActions: [{
-//             action: 'SHORT_ASK',
-//             shares: '10',
-//             gasEth: '0.02791268',
-//             feeEth: '0.00891',
-//             feePercent: '0.198',
-//             costEth: '-10.00891',
-//             avgPrice: '1.000891',
-//             noFeePrice: '0.45'
-//           }],
-//           tradingFeesEth: '0.00891',
-//           gasFeesRealEth: '0.02791268',
-//           feePercent: '0.088941506235887648'
-//         }
-//       };
-//       store.dispatch(action.placeTrade('testBinaryMarketID', '2'));
-//       assert.deepEqual(store.getActions(), [{
-//         type: 'PLACE_SHORT_SELL',
-//         params: [
-//           {
-//             author: 'testAuthor1',
-//             branchID: '0x010101',
-//             creationFee: '22.5',
-//             creationTime: 1475951522,
-//             cumulativeScale: '1',
-//             description: 'test binary market?',
-//             endDate: 1495317600,
-//             eventID: 'testEventID1',
-//             isLoadedMarketInfo: true,
-//             isEthical: undefined,
-//             reportedOutcome: undefined,
-//             makerFee: '0.002',
-//             maxValue: '2',
-//             minValue: '1',
-//             network: '2',
-//             numEvents: 1,
-//             numOutcomes: 2,
-//             sortOrder: 0,
-//             tags: [
-//               'binary',
-//               'markets',
-//               null
-//             ],
-//             takerFee: '0.01',
-//             tradingFee: '0.008',
-//             tradingPeriod: 8653,
-//             type: 'binary',
-//             volume: '3030',
-//             winningOutcomes: []
-//           },
-//           '2',
-//           '10',
-//           '0.45',
-//           '0x00000000000000000000000000000000c1bba17b27594861a799ebc37b7baa09'
-//         ]
-//       }, {
-//         type: 'CLEAR_TRADE_IN_PROGRESS',
-//         marketID: 'testBinaryMarketID'
-//       }]);
-//     });
-//   });
-
-//   describe('Categorical Market Place Trade Tests', () => {
-//     it('should place a BUY trade for a categorical market', () => {
-//       store.dispatch(action.placeTrade('testCategoricalMarketID', '1'));
-//       assert.deepEqual(store.getActions(), [{
-//         type: 'PLACE_BUY',
-//         params: [
-//           {
-//             author: 'testAuthor2',
-//             branchId: '0x010101',
-//             creationFee: '12.857142857142857142',
-//             creationTime: 1476694751,
-//             cumulativeScale: '1',
-//             description: 'test categorical market?',
-//             endDate: 2066554498,
-//             eventID: 'testEventID2',
-//             extraInfo: 'extra info',
-//             isLoadedMarketInfo: true,
-//             isEthical: undefined,
-//             reportedOutcome: undefined,
-//             makerFee: '0.001000000000000000006',
-//             maxValue: '2',
-//             minValue: '1',
-//             network: '2',
-//             numEvents: 1,
-//             numOutcomes: 4,
-//             resolution: 'http://lmgtfy.com',
-//             sortOrder: 7,
-//             tags: [
-//               'categorical',
-//               'markets',
-//               'test'
-//             ],
-//             takerFee: '0.019999999999999999994',
-//             tradingFee: '0.014',
-//             tradingPeriod: 11959,
-//             type: 'categorical',
-//             volume: '0',
-//             winningOutcomes: []
-//           },
-//           '1',
-//           '10',
-//           '0.5',
-//           '0x00000000000000000000000000000000c1bba17b27594861a799ebc37b7baa09'
-//         ]
-//       }, {
-//         type: 'CLEAR_TRADE_IN_PROGRESS',
-//         marketID: 'testCategoricalMarketID'
-//       }]);
-//     });
-
-//     it('should place a BID trade for a categorical market', () => {
-//       store.getState().tradesInProgress.testCategoricalMarketID = {
-//         1: {
-//           side: 'buy',
-//           numShares: '10',
-//           limitPrice: '0.35',
-//           totalFee: '0.003184999999999996',
-//           totalCost: '3.503184999999999996',
-//           tradeActions: [{
-//             action: 'BID',
-//             shares: '10',
-//             gasEth: '0.01450404',
-//             feeEth: '0.003184999999999996',
-//             feePercent: '0.0909999999999999',
-//             costEth: '3.503184999999999996',
-//             avgPrice: '0.350318499999999999',
-//             noFeePrice: '0.35'
-//           }],
-//           tradingFeesEth: '0.003184999999999996',
-//           gasFeesRealEth: '0.01450404',
-//           feePercent: '0.090834680880796836'
-//         }
-//       };
-//       store.dispatch(action.placeTrade('testCategoricalMarketID', '1'));
-//       assert.deepEqual(store.getActions(), [{
-//         type: 'PLACE_BID',
-//         params: [
-//           {
-//             author: 'testAuthor2',
-//             branchId: '0x010101',
-//             creationFee: '12.857142857142857142',
-//             creationTime: 1476694751,
-//             cumulativeScale: '1',
-//             description: 'test categorical market?',
-//             endDate: 2066554498,
-//             eventID: 'testEventID2',
-//             extraInfo: 'extra info',
-//             isLoadedMarketInfo: true,
-//             isEthical: undefined,
-//             reportedOutcome: undefined,
-//             makerFee: '0.001000000000000000006',
-//             maxValue: '2',
-//             minValue: '1',
-//             network: '2',
-//             numEvents: 1,
-//             numOutcomes: 4,
-//             resolution: 'http://lmgtfy.com',
-//             sortOrder: 7,
-//             tags: [
-//               'categorical',
-//               'markets',
-//               'test'
-//             ],
-//             takerFee: '0.019999999999999999994',
-//             tradingFee: '0.014',
-//             tradingPeriod: 11959,
-//             type: 'categorical',
-//             volume: '0',
-//             winningOutcomes: []
-//           },
-//           '1',
-//           '10',
-//           '0.35',
-//           '0x00000000000000000000000000000000c1bba17b27594861a799ebc37b7baa09'
-//         ]
-//       }, {
-//         type: 'CLEAR_TRADE_IN_PROGRESS',
-//         marketID: 'testCategoricalMarketID'
-//       }]);
-//     });
-//     it('should place a ASK trade for a categorical market', () => {
-//       store.getState().tradesInProgress.testCategoricalMarketID = {
-//         1: {
-//           side: 'sell',
-//           numShares: '10',
-//           limitPrice: '0.5',
-//           totalFee: '0.004999999999999995',
-//           totalCost: '-10.004999999999999995',
-//           tradeActions: [{
-//             action: 'SHORT_ASK',
-//             shares: '10',
-//             gasEth: '0.02791268',
-//             feeEth: '0.004999999999999995',
-//             feePercent: '0.0999999999999999',
-//             costEth: '-10.004999999999999995',
-//             avgPrice: '1.000499999999999999',
-//             noFeePrice: '0.5'
-//           }],
-//           tradingFeesEth: '0.004999999999999995',
-//           gasFeesRealEth: '0.02791268',
-//           feePercent: '0.0499500499500499'
-//         }
-//       };
-//       store.dispatch(action.placeTrade('testCategoricalMarketID', '1'));
-//       assert.deepEqual(store.getActions(), [{
-//         type: 'PLACE_ASK',
-//         params: [
-//           {
-//             author: 'testAuthor2',
-//             branchId: '0x010101',
-//             creationFee: '12.857142857142857142',
-//             creationTime: 1476694751,
-//             cumulativeScale: '1',
-//             description: 'test categorical market?',
-//             endDate: 2066554498,
-//             eventID: 'testEventID2',
-//             extraInfo: 'extra info',
-//             isLoadedMarketInfo: true,
-//             isEthical: undefined,
-//             reportedOutcome: undefined,
-//             makerFee: '0.001000000000000000006',
-//             maxValue: '2',
-//             minValue: '1',
-//             network: '2',
-//             numEvents: 1,
-//             numOutcomes: 4,
-//             resolution: 'http://lmgtfy.com',
-//             sortOrder: 7,
-//             tags: [
-//               'categorical',
-//               'markets',
-//               'test'
-//             ],
-//             takerFee: '0.019999999999999999994',
-//             tradingFee: '0.014',
-//             tradingPeriod: 11959,
-//             type: 'categorical',
-//             volume: '0',
-//             winningOutcomes: []
-//           },
-//           '1',
-//           '10',
-//           '0.5',
-//           '0x00000000000000000000000000000000c1bba17b27594861a799ebc37b7baa09'
-//         ]
-//       }, {
-//         type: 'CLEAR_TRADE_IN_PROGRESS',
-//         marketID: 'testCategoricalMarketID'
-//       }]);
-//     });
-//     it('should place a ASK and SHORT_ASK trade for a categorical market', () => {
-//       store.dispatch(action.placeTrade('testCategoricalMarketID', '1'));
-//       assert.deepEqual(store.getActions(), [{
-//         type: 'PLACE_ASK',
-//         params: [
-//           {
-//             author: 'testAuthor2',
-//             branchId: '0x010101',
-//             creationFee: '12.857142857142857142',
-//             creationTime: 1476694751,
-//             cumulativeScale: '1',
-//             description: 'test categorical market?',
-//             endDate: 2066554498,
-//             eventID: 'testEventID2',
-//             extraInfo: 'extra info',
-//             isLoadedMarketInfo: true,
-//             isEthical: undefined,
-//             reportedOutcome: undefined,
-//             makerFee: '0.001000000000000000006',
-//             maxValue: '2',
-//             minValue: '1',
-//             network: '2',
-//             numEvents: 1,
-//             numOutcomes: 4,
-//             resolution: 'http://lmgtfy.com',
-//             sortOrder: 7,
-//             tags: [
-//               'categorical',
-//               'markets',
-//               'test'
-//             ],
-//             takerFee: '0.019999999999999999994',
-//             tradingFee: '0.014',
-//             tradingPeriod: 11959,
-//             type: 'categorical',
-//             volume: '0',
-//             winningOutcomes: []
-//           },
-//           '1',
-//           '5',
-//           '0.5',
-//           '0x00000000000000000000000000000000c1bba17b27594861a799ebc37b7baa09'
-//         ]
-//       }, {
-//         type: 'PLACE_SHORT_ASK',
-//         params: [
-//           {
-//             author: 'testAuthor2',
-//             branchId: '0x010101',
-//             creationFee: '12.857142857142857142',
-//             creationTime: 1476694751,
-//             cumulativeScale: '1',
-//             description: 'test categorical market?',
-//             endDate: 2066554498,
-//             eventID: 'testEventID2',
-//             extraInfo: 'extra info',
-//             isLoadedMarketInfo: true,
-//             isEthical: undefined,
-//             reportedOutcome: undefined,
-//             makerFee: '0.001000000000000000006',
-//             maxValue: '2',
-//             minValue: '1',
-//             network: '2',
-//             numEvents: 1,
-//             numOutcomes: 4,
-//             resolution: 'http://lmgtfy.com',
-//             sortOrder: 7,
-//             tags: [
-//               'categorical',
-//               'markets',
-//               'test'
-//             ],
-//             takerFee: '0.019999999999999999994',
-//             tradingFee: '0.014',
-//             tradingPeriod: 11959,
-//             type: 'categorical',
-//             volume: '0',
-//             winningOutcomes: []
-//           },
-//           '1',
-//           '5',
-//           '0.5',
-//           '0x00000000000000000000000000000000c1bba17b27594861a799ebc37b7baa09'
-//         ]
-//       }, {
-//         type: 'CLEAR_TRADE_IN_PROGRESS',
-//         marketID: 'testCategoricalMarketID'
-//       }]);
-//     });
-//     it('should place a SELL trade for a categorical market', () => {
-//       store.getState().tradesInProgress.testCategoricalMarketID = {
-//         1: {
-//           side: 'sell',
-//           numShares: '10',
-//           limitPrice: '0.45',
-//           totalFee: '0.004454999999999995',
-//           totalCost: '-10.004454999999999995',
-//           tradeActions: [{
-//             action: 'SHORT_ASK',
-//             shares: '10',
-//             gasEth: '0.02791268',
-//             feeEth: '0.004454999999999995',
-//             feePercent: '0.0989999999999999',
-//             costEth: '-10.004454999999999995',
-//             avgPrice: '1.000445499999999999',
-//             noFeePrice: '0.45'
-//           }],
-//           tradingFeesEth: '0.004454999999999995',
-//           gasFeesRealEth: '0.02791268',
-//           feePercent: '0.0445103412859142'
-//         }
-//       };
-//       store.dispatch(action.placeTrade('testCategoricalMarketID', '1'));
-//       assert.deepEqual(store.getActions(), [{
-//         type: 'PLACE_SELL',
-//         params: [
-//           {
-//             author: 'testAuthor2',
-//             branchId: '0x010101',
-//             creationFee: '12.857142857142857142',
-//             creationTime: 1476694751,
-//             cumulativeScale: '1',
-//             description: 'test categorical market?',
-//             endDate: 2066554498,
-//             eventID: 'testEventID2',
-//             extraInfo: 'extra info',
-//             isLoadedMarketInfo: true,
-//             isEthical: undefined,
-//             reportedOutcome: undefined,
-//             makerFee: '0.001000000000000000006',
-//             maxValue: '2',
-//             minValue: '1',
-//             network: '2',
-//             numEvents: 1,
-//             numOutcomes: 4,
-//             resolution: 'http://lmgtfy.com',
-//             sortOrder: 7,
-//             tags: [
-//               'categorical',
-//               'markets',
-//               'test'
-//             ],
-//             takerFee: '0.019999999999999999994',
-//             tradingFee: '0.014',
-//             tradingPeriod: 11959,
-//             type: 'categorical',
-//             volume: '0',
-//             winningOutcomes: []
-//           },
-//           '1',
-//           '10',
-//           '0.45',
-//           '0x00000000000000000000000000000000c1bba17b27594861a799ebc37b7baa09'
-//         ]
-//       }, {
-//         type: 'CLEAR_TRADE_IN_PROGRESS',
-//         marketID: 'testCategoricalMarketID'
-//       }]);
-//     });
-//     it('should place a SHORT_ASK trade for a categorical market', () => {
-//       store.getState().tradesInProgress.testCategoricalMarketID = {
-//         1: {
-//           side: 'sell',
-//           numShares: '10',
-//           limitPrice: '0.5',
-//           totalFee: '0.004999999999999995',
-//           totalCost: '-10.004999999999999995',
-//           tradeActions: [{
-//             action: 'SHORT_ASK',
-//             shares: '10',
-//             gasEth: '0.02791268',
-//             feeEth: '0.004999999999999995',
-//             feePercent: '0.0999999999999999',
-//             costEth: '-10.004999999999999995',
-//             avgPrice: '1.000499999999999999',
-//             noFeePrice: '0.5'
-//           }],
-//           tradingFeesEth: '0.004999999999999995',
-//           gasFeesRealEth: '0.02791268',
-//           feePercent: '0.0499500499500499'
-//         }
-//       };
-//       store.dispatch(action.placeTrade('testCategoricalMarketID', '1'));
-//       assert.deepEqual(store.getActions(), [{
-//         type: 'PLACE_SHORT_ASK',
-//         params: [
-//           {
-//             author: 'testAuthor2',
-//             branchId: '0x010101',
-//             creationFee: '12.857142857142857142',
-//             creationTime: 1476694751,
-//             cumulativeScale: '1',
-//             description: 'test categorical market?',
-//             endDate: 2066554498,
-//             eventID: 'testEventID2',
-//             extraInfo: 'extra info',
-//             isLoadedMarketInfo: true,
-//             isEthical: undefined,
-//             reportedOutcome: undefined,
-//             makerFee: '0.001000000000000000006',
-//             maxValue: '2',
-//             minValue: '1',
-//             network: '2',
-//             numEvents: 1,
-//             numOutcomes: 4,
-//             resolution: 'http://lmgtfy.com',
-//             sortOrder: 7,
-//             tags: [
-//               'categorical',
-//               'markets',
-//               'test'
-//             ],
-//             takerFee: '0.019999999999999999994',
-//             tradingFee: '0.014',
-//             tradingPeriod: 11959,
-//             type: 'categorical',
-//             volume: '0',
-//             winningOutcomes: []
-//           },
-//           '1',
-//           '10',
-//           '0.5',
-//           '0x00000000000000000000000000000000c1bba17b27594861a799ebc37b7baa09'
-//         ]
-//       }, {
-//         type: 'CLEAR_TRADE_IN_PROGRESS',
-//         marketID: 'testCategoricalMarketID'
-//       }]);
-//     });
-
-//     it('should place a SHORT_SELL trade for a categorical market', () => {
-//       store.getState().tradesInProgress.testCategoricalMarketID = {
-//         1: {
-//           side: 'sell',
-//           numShares: '10',
-//           limitPrice: '0.45',
-//           totalFee: '0.004454999999999995',
-//           totalCost: '-10.004454999999999995',
-//           tradeActions: [{
-//             action: 'SHORT_ASK',
-//             shares: '10',
-//             gasEth: '0.02791268',
-//             feeEth: '0.004454999999999995',
-//             feePercent: '0.0989999999999999',
-//             costEth: '-10.004454999999999995',
-//             avgPrice: '1.000445499999999999',
-//             noFeePrice: '0.45'
-//           }],
-//           tradingFeesEth: '0.004454999999999995',
-//           gasFeesRealEth: '0.02791268',
-//           feePercent: '0.0445103412859142'
-//         }
-//       };
-//       store.dispatch(action.placeTrade('testCategoricalMarketID', '1'));
-//       assert.deepEqual(store.getActions(), [{
-//         type: 'PLACE_SHORT_SELL',
-//         params: [
-//           {
-//             author: 'testAuthor2',
-//             branchId: '0x010101',
-//             creationFee: '12.857142857142857142',
-//             creationTime: 1476694751,
-//             cumulativeScale: '1',
-//             description: 'test categorical market?',
-//             endDate: 2066554498,
-//             eventID: 'testEventID2',
-//             extraInfo: 'extra info',
-//             isLoadedMarketInfo: true,
-//             isEthical: undefined,
-//             reportedOutcome: undefined,
-//             makerFee: '0.001000000000000000006',
-//             maxValue: '2',
-//             minValue: '1',
-//             network: '2',
-//             numEvents: 1,
-//             numOutcomes: 4,
-//             resolution: 'http://lmgtfy.com',
-//             sortOrder: 7,
-//             tags: [
-//               'categorical',
-//               'markets',
-//               'test'
-//             ],
-//             takerFee: '0.019999999999999999994',
-//             tradingFee: '0.014',
-//             tradingPeriod: 11959,
-//             type: 'categorical',
-//             volume: '0',
-//             winningOutcomes: []
-//           },
-//           '1',
-//           '10',
-//           '0.45',
-//           '0x00000000000000000000000000000000c1bba17b27594861a799ebc37b7baa09'
-//         ]
-//       }, {
-//         type: 'CLEAR_TRADE_IN_PROGRESS',
-//         marketID: 'testCategoricalMarketID'
-//       }]);
-//     });
-//   });
-
-//   describe('Scalar Market Place Trade Tests', () => {
-//     it('should place a BUY trade for a scalar market', () => {
-//       store.dispatch(action.placeTrade('testScalarMarketID', '1'));
-//       assert.deepEqual(store.getActions(), [{
-//         type: 'PLACE_BUY',
-//         params: [
-//           {
-//             author: 'testAuthor3',
-//             branchID: '0x010101',
-//             creationFee: '9',
-//             creationTime: 1476486515,
-//             cumulativeScale: '130',
-//             description: 'test scalar market?',
-//             endDate: 1496514800,
-//             eventID: 'testEventID3',
-//             isLoadedMarketInfo: true,
-//             isEthical: undefined,
-//             reportedOutcome: undefined,
-//             makerFee: '0.01',
-//             maxValue: '120',
-//             minValue: '-10',
-//             network: '2',
-//             numEvents: 1,
-//             numOutcomes: 2,
-//             resolution: 'https://www.resolution-of-market.com',
-//             sortOrder: 3,
-//             tags: [
-//               'scalar',
-//               'markets',
-//               'test'
-//             ],
-//             takerFee: '0.02',
-//             tradingFee: '0.02',
-//             tradingPeriod: 8544,
-//             type: 'scalar',
-//             volume: '0',
-//             winningOutcomes: []
-//           },
-//           '1',
-//           '10',
-//           '55',
-//           '0x00000000000000000000000000000000c1bba17b27594861a799ebc37b7baa09'
-//         ]
-//       }, {
-//         type: 'CLEAR_TRADE_IN_PROGRESS',
-//         marketID: 'testScalarMarketID'
-//       }]);
-//     });
-
-//     it('should place a BID trade for a scalar market', () => {
-//       store.getState().tradesInProgress.testScalarMarketID = {
-//         1: {
-//           side: 'buy',
-//           numShares: '10',
-//           limitPrice: '35',
-//           totalFee: '2.754437869822485',
-//           totalCost: '352.754437869822485',
-//           tradeActions: [{
-//             action: 'BID',
-//             shares: '10',
-//             gasEth: '0.01450404',
-//             feeEth: '2.754437869822485',
-//             feePercent: '0.78698224852071',
-//             costEth: '352.754437869822485',
-//             avgPrice: '35.2754437869822485',
-//             noFeePrice: '35'
-//           }],
-//           tradingFeesEth: '2.754437869822485',
-//           gasFeesRealEth: '0.01450404',
-//           feePercent: '0.7747873703833158'
-//         }
-//       };
-//       store.dispatch(action.placeTrade('testScalarMarketID', '1'));
-//       assert.deepEqual(store.getActions(), [{
-//         type: 'PLACE_BID',
-//         params: [
-//           {
-//             author: 'testAuthor3',
-//             branchID: '0x010101',
-//             creationFee: '9',
-//             creationTime: 1476486515,
-//             cumulativeScale: '130',
-//             description: 'test scalar market?',
-//             endDate: 1496514800,
-//             eventID: 'testEventID3',
-//             isLoadedMarketInfo: true,
-//             isEthical: undefined,
-//             reportedOutcome: undefined,
-//             makerFee: '0.01',
-//             maxValue: '120',
-//             minValue: '-10',
-//             network: '2',
-//             numEvents: 1,
-//             numOutcomes: 2,
-//             resolution: 'https://www.resolution-of-market.com',
-//             sortOrder: 3,
-//             tags: [
-//               'scalar',
-//               'markets',
-//               'test'
-//             ],
-//             takerFee: '0.02',
-//             tradingFee: '0.02',
-//             tradingPeriod: 8544,
-//             type: 'scalar',
-//             volume: '0',
-//             winningOutcomes: []
-//           },
-//           '1',
-//           '10',
-//           '35',
-//           '0x00000000000000000000000000000000c1bba17b27594861a799ebc37b7baa09'
-//         ]
-//       }, {
-//         type: 'CLEAR_TRADE_IN_PROGRESS',
-//         marketID: 'testScalarMarketID'
-//       }]);
-//     });
-
-//     it('should place a ASK trade for a scalar market', () => {
-//       store.getState().tradesInProgress.testScalarMarketID = {
-//         1: {
-//           side: 'sell',
-//           numShares: '10',
-//           limitPrice: '55',
-//           totalFee: '5.36982248520710025',
-//           totalCost: '-15.36982248520710025',
-//           tradeActions: [{
-//             action: 'SHORT_ASK',
-//             shares: '10',
-//             gasEth: '0.02791268',
-//             feeEth: '5.36982248520710025',
-//             feePercent: '0.9763313609467455',
-//             costEth: '-15.36982248520710025',
-//             avgPrice: '1.536982248520710025',
-//             noFeePrice: '55'
-//           }],
-//           tradingFeesEth: '5.36982248520710025',
-//           gasFeesRealEth: '0.02791268',
-//           feePercent: '25.891583452211126167'
-//         }
-//       };
-//       store.dispatch(action.placeTrade('testScalarMarketID', '1'));
-//       assert.deepEqual(store.getActions(), [{
-//         type: 'PLACE_ASK',
-//         params: [
-//           {
-//             author: 'testAuthor3',
-//             branchID: '0x010101',
-//             creationFee: '9',
-//             creationTime: 1476486515,
-//             cumulativeScale: '130',
-//             description: 'test scalar market?',
-//             endDate: 1496514800,
-//             eventID: 'testEventID3',
-//             isLoadedMarketInfo: true,
-//             isEthical: undefined,
-//             reportedOutcome: undefined,
-//             makerFee: '0.01',
-//             maxValue: '120',
-//             minValue: '-10',
-//             network: '2',
-//             numEvents: 1,
-//             numOutcomes: 2,
-//             resolution: 'https://www.resolution-of-market.com',
-//             sortOrder: 3,
-//             tags: [
-//               'scalar',
-//               'markets',
-//               'test'
-//             ],
-//             takerFee: '0.02',
-//             tradingFee: '0.02',
-//             tradingPeriod: 8544,
-//             type: 'scalar',
-//             volume: '0',
-//             winningOutcomes: []
-//           },
-//           '1',
-//           '10',
-//           '55',
-//           '0x00000000000000000000000000000000c1bba17b27594861a799ebc37b7baa09'
-//         ]
-//       }, {
-//         type: 'CLEAR_TRADE_IN_PROGRESS',
-//         marketID: 'testScalarMarketID'
-//       }]);
-//     });
-
-//     it('should place a ASK and SHORT_ASK trade for a scalar market', () => {
-//       store.dispatch(action.placeTrade('testScalarMarketID', '1'));
-//       assert.deepEqual(store.getActions(), [{
-//         type: 'PLACE_ASK',
-//         params: [
-//           {
-//             author: 'testAuthor3',
-//             branchID: '0x010101',
-//             creationFee: '9',
-//             creationTime: 1476486515,
-//             cumulativeScale: '130',
-//             description: 'test scalar market?',
-//             endDate: 1496514800,
-//             eventID: 'testEventID3',
-//             isLoadedMarketInfo: true,
-//             isEthical: undefined,
-//             reportedOutcome: undefined,
-//             makerFee: '0.01',
-//             maxValue: '120',
-//             minValue: '-10',
-//             network: '2',
-//             numEvents: 1,
-//             numOutcomes: 2,
-//             resolution: 'https://www.resolution-of-market.com',
-//             sortOrder: 3,
-//             tags: [
-//               'scalar',
-//               'markets',
-//               'test'
-//             ],
-//             takerFee: '0.02',
-//             tradingFee: '0.02',
-//             tradingPeriod: 8544,
-//             type: 'scalar',
-//             volume: '0',
-//             winningOutcomes: []
-//           },
-//           '1',
-//           '5',
-//           '55',
-//           '0x00000000000000000000000000000000c1bba17b27594861a799ebc37b7baa09'
-//         ]
-//       }, {
-//         type: 'PLACE_SHORT_ASK',
-//         params: [
-//           {
-//             author: 'testAuthor3',
-//             branchID: '0x010101',
-//             creationFee: '9',
-//             creationTime: 1476486515,
-//             cumulativeScale: '130',
-//             description: 'test scalar market?',
-//             endDate: 1496514800,
-//             eventID: 'testEventID3',
-//             isLoadedMarketInfo: true,
-//             isEthical: undefined,
-//             reportedOutcome: undefined,
-//             makerFee: '0.01',
-//             maxValue: '120',
-//             minValue: '-10',
-//             network: '2',
-//             numEvents: 1,
-//             numOutcomes: 2,
-//             resolution: 'https://www.resolution-of-market.com',
-//             sortOrder: 3,
-//             tags: [
-//               'scalar',
-//               'markets',
-//               'test'
-//             ],
-//             takerFee: '0.02',
-//             tradingFee: '0.02',
-//             tradingPeriod: 8544,
-//             type: 'scalar',
-//             volume: '0',
-//             winningOutcomes: []
-//           },
-//           '1',
-//           '5',
-//           '55',
-//           '0x00000000000000000000000000000000c1bba17b27594861a799ebc37b7baa09'
-//         ]
-//       }, {
-//         type: 'CLEAR_TRADE_IN_PROGRESS',
-//         marketID: 'testScalarMarketID'
-//       }]);
-//     });
-//     it('should place a SELL trade for a scalar market', () => {
-//       store.getState().tradesInProgress.testScalarMarketID = {
-//         1: {
-//           side: 'sell',
-//           numShares: '10',
-//           limitPrice: '45',
-//           totalFee: '4.0739644970414199',
-//           totalCost: '-14.0739644970414199',
-//           tradeActions: [{
-//             action: 'SHORT_ASK',
-//             shares: '10',
-//             gasEth: '0.02791268',
-//             feeEth: '4.0739644970414199',
-//             feePercent: '0.9053254437869822',
-//             costEth: '-14.0739644970414199',
-//             avgPrice: '1.40739644970414199',
-//             noFeePrice: '45'
-//           }],
-//           tradingFeesEth: '4.0739644970414199',
-//           gasFeesRealEth: '0.02791268',
-//           feePercent: '22.448646886208020204'
-//         }
-//       };
-//       store.dispatch(action.placeTrade('testScalarMarketID', '1'));
-//       assert.deepEqual(store.getActions(), [{
-//         type: 'PLACE_SELL',
-//         params: [
-//           {
-//             author: 'testAuthor3',
-//             branchID: '0x010101',
-//             creationFee: '9',
-//             creationTime: 1476486515,
-//             cumulativeScale: '130',
-//             description: 'test scalar market?',
-//             endDate: 1496514800,
-//             eventID: 'testEventID3',
-//             isLoadedMarketInfo: true,
-//             isEthical: undefined,
-//             reportedOutcome: undefined,
-//             makerFee: '0.01',
-//             maxValue: '120',
-//             minValue: '-10',
-//             network: '2',
-//             numEvents: 1,
-//             numOutcomes: 2,
-//             resolution: 'https://www.resolution-of-market.com',
-//             sortOrder: 3,
-//             tags: [
-//               'scalar',
-//               'markets',
-//               'test'
-//             ],
-//             takerFee: '0.02',
-//             tradingFee: '0.02',
-//             tradingPeriod: 8544,
-//             type: 'scalar',
-//             volume: '0',
-//             winningOutcomes: []
-//           },
-//           '1',
-//           '10',
-//           '45',
-//           '0x00000000000000000000000000000000c1bba17b27594861a799ebc37b7baa09'
-//         ]
-//       }, {
-//         type: 'CLEAR_TRADE_IN_PROGRESS',
-//         marketID: 'testScalarMarketID'
-//       }]);
-//     });
-//     it('should place a SHORT_ASK trade for a scalar market', () => {
-//       store.getState().tradesInProgress.testScalarMarketID = {
-//         1: {
-//           side: 'sell',
-//           numShares: '10',
-//           limitPrice: '55',
-//           totalFee: '5.36982248520710025',
-//           totalCost: '-15.36982248520710025',
-//           tradeActions: [{
-//             action: 'SHORT_ASK',
-//             shares: '10',
-//             gasEth: '0.02791268',
-//             feeEth: '5.36982248520710025',
-//             feePercent: '0.9763313609467455',
-//             costEth: '-15.36982248520710025',
-//             avgPrice: '1.536982248520710025',
-//             noFeePrice: '55'
-//           }],
-//           tradingFeesEth: '5.36982248520710025',
-//           gasFeesRealEth: '0.02791268',
-//           feePercent: '25.891583452211126167'
-//         }
-//       };
-//       store.dispatch(action.placeTrade('testScalarMarketID', '1'));
-//       assert.deepEqual(store.getActions(), [{
-//         type: 'PLACE_SHORT_ASK',
-//         params: [
-//           {
-//             author: 'testAuthor3',
-//             branchID: '0x010101',
-//             creationFee: '9',
-//             creationTime: 1476486515,
-//             cumulativeScale: '130',
-//             description: 'test scalar market?',
-//             endDate: 1496514800,
-//             eventID: 'testEventID3',
-//             isLoadedMarketInfo: true,
-//             isEthical: undefined,
-//             reportedOutcome: undefined,
-//             makerFee: '0.01',
-//             maxValue: '120',
-//             minValue: '-10',
-//             network: '2',
-//             numEvents: 1,
-//             numOutcomes: 2,
-//             resolution: 'https://www.resolution-of-market.com',
-//             sortOrder: 3,
-//             tags: [
-//               'scalar',
-//               'markets',
-//               'test'
-//             ],
-//             takerFee: '0.02',
-//             tradingFee: '0.02',
-//             tradingPeriod: 8544,
-//             type: 'scalar',
-//             volume: '0',
-//             winningOutcomes: []
-//           },
-//           '1',
-//           '10',
-//           '55',
-//           '0x00000000000000000000000000000000c1bba17b27594861a799ebc37b7baa09'
-//         ]
-//       }, {
-//         type: 'CLEAR_TRADE_IN_PROGRESS',
-//         marketID: 'testScalarMarketID'
-//       }]);
-//     });
-
-//     it('should place a SHORT_SELL trade for a scalar market', () => {
-//       store.getState().tradesInProgress.testScalarMarketID = {
-//         1: {
-//           side: 'sell',
-//           numShares: '10',
-//           limitPrice: '45',
-//           totalFee: '4.0739644970414199',
-//           totalCost: '-14.0739644970414199',
-//           tradeActions: [{
-//             action: 'SHORT_ASK',
-//             shares: '10',
-//             gasEth: '0.02791268',
-//             feeEth: '4.0739644970414199',
-//             feePercent: '0.9053254437869822',
-//             costEth: '-14.0739644970414199',
-//             avgPrice: '1.40739644970414199',
-//             noFeePrice: '45'
-//           }],
-//           tradingFeesEth: '4.0739644970414199',
-//           gasFeesRealEth: '0.02791268',
-//           feePercent: '22.448646886208020204'
-//         }
-//       };
-//       store.dispatch(action.placeTrade('testScalarMarketID', '1'));
-//       assert.deepEqual(store.getActions(), [{
-//         type: 'PLACE_SHORT_SELL',
-//         params: [
-//           {
-//             author: 'testAuthor3',
-//             branchID: '0x010101',
-//             creationFee: '9',
-//             creationTime: 1476486515,
-//             cumulativeScale: '130',
-//             description: 'test scalar market?',
-//             endDate: 1496514800,
-//             eventID: 'testEventID3',
-//             isLoadedMarketInfo: true,
-//             isEthical: undefined,
-//             reportedOutcome: undefined,
-//             makerFee: '0.01',
-//             maxValue: '120',
-//             minValue: '-10',
-//             network: '2',
-//             numEvents: 1,
-//             numOutcomes: 2,
-//             resolution: 'https://www.resolution-of-market.com',
-//             sortOrder: 3,
-//             tags: [
-//               'scalar',
-//               'markets',
-//               'test'
-//             ],
-//             takerFee: '0.02',
-//             tradingFee: '0.02',
-//             tradingPeriod: 8544,
-//             type: 'scalar',
-//             volume: '0',
-//             winningOutcomes: []
-//           },
-//           '1',
-//           '10',
-//           '45',
-//           '0x00000000000000000000000000000000c1bba17b27594861a799ebc37b7baa09'
-//         ]
-//       }, {
-//         type: 'CLEAR_TRADE_IN_PROGRESS',
-//         marketID: 'testScalarMarketID'
-//       }]);
-//     });
-//   });
-
-//   const expectedFailedTradeActions = [{
-//     type: 'CLEAR_TRADE_IN_PROGRESS',
-//     marketID: 'testBinaryMarketID'
-//   }];
-
-//   describe('Market Type Agnostic Tests', () => {
-//     it('should handle a null/undefined outcomeID', () => {
-//       store.dispatch(action.placeTrade('testBinaryMarketID', null));
-//       assert.deepEqual(store.getActions(), expectedFailedTradeActions, `Didn't produce the expected actions for passing a null outcomeID to place-trade`);
-//       store.clearActions();
-//       store.dispatch(action.placeTrade('testBinaryMarketID', undefined));
-//       assert.deepEqual(store.getActions(), expectedFailedTradeActions, `Didn't produce the expected actions for passing a undefined outcomeID to place-trade`);
-//     });
-//     it('should handle a null/undefined marketID', () => {
-//       store.dispatch(action.placeTrade(null, '1'));
-//       assert.deepEqual(store.getActions(), [], `Didn't fail out as expected for passing a null marketID to place-trade`);
-//       store.clearActions();
-//       store.dispatch(action.placeTrade(undefined, '1'));
-//       assert.deepEqual(store.getActions(), [], `Didn't fail out as expected for passing a undefined marketID to place-trade`);
-//     });
-//   });
-// });
+            augur.placeTrade(t.market, t.outcomeID, t.tradeType, t.numShares, t.limitPrice, t.tradingFees, t.address, t.totalCost, t.orderBooks, t.doNotMakeOrders, t.tradeGroupID, t.tradeCommitmentCallback, t.tradeCommitLockCallback, function(err) {
+                t.assertions(err);
+                done();
+            });
+        });
+    };
+    test({
+        description: 'Should not place a buy trade if doNotMakeOrders is true and no matching trades can be made on the orderbook',
+        market: { id: '0xa1', type: 'binary' },
+        outcomeID: '1',
+        tradeType: 'buy',
+        numShares: '100',
+        limitPrice: '0.5',
+        tradingFees: '0.01',
+        address: '0x1',
+        totalCost: '51',
+        orderBooks: { '0xa1': { buy: {}, sell: {} } },
+        doNotMakeOrders: true,
+        tradeGroupID: '0x000abc123',
+        tradeCommitmentCallback: noop,
+        tradeCommitLockCallback: noop,
+        placeBuy: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeBuy++;
+        },
+        placeBid: function(market, outcomeID, numShares, limitPrice, tradeGroupID) {
+            callCounts.placeBid++;
+        },
+        placeSell: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeSell++;
+        },
+        placeAsk: function(market, outcomeID, askShares, limitPrice, tradeGroupID) {
+            callCounts.placeAsk++;
+        },
+        placeShortAsk: function(market, outcomeID, shortAskShares, limitPrice, tradeGroupID) {
+            callCounts.placeShortAsk++;
+        },
+        placeShortSell: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeShortSell++;
+        },
+        calculateBuyTradeIDs: function(marketID, outcomeID, limitPrice, orderBooks, address) {
+            callCounts.calculateBuyTradeIDs++;
+            return [];
+        },
+        calculateSellTradeIDs: function(marketID, outcomeID, limitPrice, orderBooks, address) {
+            callCounts.calculateSellTradeIDs++;
+        },
+        getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
+            callCounts.getParticipantSharesPurchased++;
+        },
+        assertions: function(err) {
+            assert.isNull(err);
+            // check the entire callCounts object so that we know we didn't accidently call anything...
+            assert.deepEqual(callCounts, {
+                placeBuy: 0,
+                placeBid: 0,
+                placeSell: 0,
+                placeAsk: 0,
+                placeShortAsk: 0,
+                placeShortSell: 0,
+                calculateBuyTradeIDs: 1,
+                calculateSellTradeIDs: 0,
+                getParticipantSharesPurchased: 0
+            });
+        }
+    });
+    test({
+        description: 'Should place a buy trade when a matching order is found on the order book',
+        market: { id: '0xa1', type: 'binary' },
+        outcomeID: '1',
+        tradeType: 'buy',
+        numShares: '100',
+        limitPrice: '0.5',
+        tradingFees: '0.01',
+        address: '0x1',
+        totalCost: '51',
+        orderBooks: { '0xa1': { buy: {}, sell: { '0xb1': { amount: '1000', price: '0.5' }} } },
+        doNotMakeOrders: false,
+        tradeGroupID: '0x000abc123',
+        tradeCommitmentCallback: noop,
+        tradeCommitLockCallback: noop,
+        placeBuy: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeBuy++;
+            assert.deepEqual(market, { id: '0xa1', type: 'binary' });
+            assert.equal(outcomeID, '1');
+            assert.equal(numShares, '100');
+            assert.equal(limitPrice, '0.5');
+            assert.equal(address, '0x1');
+            assert.equal(totalCost, '51');
+            assert.equal(tradingFees, '0.01');
+            assert.deepEqual(orderBooks, { '0xa1': { buy: {}, sell: { '0xb1': { amount: '1000', price: '0.5' }} } });
+            assert.isFalse(doNotMakeOrders);
+            assert.equal(tradeGroupID, '0x000abc123');
+            assert.isFunction(tradeCommitmentCallback);
+            assert.isFunction(tradeCommitLockCallback);
+        },
+        placeBid: function(market, outcomeID, numShares, limitPrice, tradeGroupID) {
+            callCounts.placeBid++;
+        },
+        placeSell: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeSell++;
+        },
+        placeAsk: function(market, outcomeID, askShares, limitPrice, tradeGroupID) {
+            callCounts.placeAsk++;
+        },
+        placeShortAsk: function(market, outcomeID, shortAskShares, limitPrice, tradeGroupID) {
+            callCounts.placeShortAsk++;
+        },
+        placeShortSell: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeShortSell++;
+        },
+        calculateBuyTradeIDs: function(marketID, outcomeID, limitPrice, orderBooks, address) {
+            callCounts.calculateBuyTradeIDs++;
+            return ['0xb1'];
+        },
+        calculateSellTradeIDs: function(marketID, outcomeID, limitPrice, orderBooks, address) {
+            callCounts.calculateSellTradeIDs++;
+        },
+        getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
+            callCounts.getParticipantSharesPurchased++;
+        },
+        assertions: function(err) {
+            assert.isNull(err);
+            // check the entire callCounts object so that we know we didn't accidently call anything...
+            assert.deepEqual(callCounts, {
+                placeBuy: 1,
+                placeBid: 0,
+                placeSell: 0,
+                placeAsk: 0,
+                placeShortAsk: 0,
+                placeShortSell: 0,
+                calculateBuyTradeIDs: 1,
+                calculateSellTradeIDs: 0,
+                getParticipantSharesPurchased: 0
+            });
+        }
+    });
+    test({
+        description: 'Should place a bid trade when no matching order is found on the order book and doNotMakeOrders is set to false',
+        market: { id: '0xa1', type: 'binary' },
+        outcomeID: '1',
+        tradeType: 'buy',
+        numShares: '120',
+        limitPrice: '0.6',
+        tradingFees: '0.01',
+        address: '0x1',
+        totalCost: '73.2',
+        orderBooks: { '0xa1': { buy: {}, sell: {} } },
+        doNotMakeOrders: false,
+        tradeGroupID: '0x000abc123',
+        tradeCommitmentCallback: noop,
+        tradeCommitLockCallback: noop,
+        placeBuy: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeBuy++;
+        },
+        placeBid: function(market, outcomeID, numShares, limitPrice, tradeGroupID) {
+            callCounts.placeBid++;
+            assert.deepEqual(market, { id: '0xa1', type: 'binary' });
+            assert.equal(outcomeID, '1');
+            assert.equal(numShares, '120');
+            assert.equal(limitPrice, '0.6');
+            assert.equal(tradeGroupID, '0x000abc123');
+        },
+        placeSell: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeSell++;
+        },
+        placeAsk: function(market, outcomeID, askShares, limitPrice, tradeGroupID) {
+            callCounts.placeAsk++;
+        },
+        placeShortAsk: function(market, outcomeID, shortAskShares, limitPrice, tradeGroupID) {
+            callCounts.placeShortAsk++;
+        },
+        placeShortSell: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeShortSell++;
+        },
+        calculateBuyTradeIDs: function(marketID, outcomeID, limitPrice, orderBooks, address) {
+            callCounts.calculateBuyTradeIDs++;
+            return [];
+        },
+        calculateSellTradeIDs: function(marketID, outcomeID, limitPrice, orderBooks, address) {
+            callCounts.calculateSellTradeIDs++;
+        },
+        getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
+            callCounts.getParticipantSharesPurchased++;
+        },
+        assertions: function(err) {
+            assert.isNull(err);
+            // check the entire callCounts object so that we know we didn't accidently call anything...
+            assert.deepEqual(callCounts, {
+                placeBuy: 0,
+                placeBid: 1,
+                placeSell: 0,
+                placeAsk: 0,
+                placeShortAsk: 0,
+                placeShortSell: 0,
+                calculateBuyTradeIDs: 1,
+                calculateSellTradeIDs: 0,
+                getParticipantSharesPurchased: 0
+            });
+        }
+    });
+    test({
+        description: 'Should not place a sell trade if getParticipantSharesPurchased returns undefined',
+        market: { id: '0xa1', type: 'binary' },
+        outcomeID: '1',
+        tradeType: 'sell',
+        numShares: '100',
+        limitPrice: '0.5',
+        tradingFees: '0.01',
+        address: '0x1',
+        totalCost: '50',
+        orderBooks: { '0xa1': { buy: {}, sell: {} } },
+        doNotMakeOrders: false,
+        tradeGroupID: '0x000abc123',
+        tradeCommitmentCallback: noop,
+        tradeCommitLockCallback: noop,
+        placeBuy: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeBuy++;
+        },
+        placeBid: function(market, outcomeID, numShares, limitPrice, tradeGroupID) {
+            callCounts.placeBid++;
+        },
+        placeSell: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeSell++;
+        },
+        placeAsk: function(market, outcomeID, askShares, limitPrice, tradeGroupID) {
+            callCounts.placeAsk++;
+        },
+        placeShortAsk: function(market, outcomeID, shortAskShares, limitPrice, tradeGroupID) {
+            callCounts.placeShortAsk++;
+        },
+        placeShortSell: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeShortSell++;
+        },
+        calculateBuyTradeIDs: function(marketID, outcomeID, limitPrice, orderBooks, address) {
+            callCounts.calculateBuyTradeIDs++;
+        },
+        calculateSellTradeIDs: function(marketID, outcomeID, limitPrice, orderBooks, address) {
+            callCounts.calculateSellTradeIDs++;
+        },
+        getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
+            callCounts.getParticipantSharesPurchased++;
+            cb(undefined);
+        },
+        assertions: function(err) {
+            assert.isUndefined(err);
+            // check the entire callCounts object so that we know we didn't accidently call anything...
+            assert.deepEqual(callCounts, {
+                placeBuy: 0,
+                placeBid: 0,
+                placeSell: 0,
+                placeAsk: 0,
+                placeShortAsk: 0,
+                placeShortSell: 0,
+                calculateBuyTradeIDs: 0,
+                calculateSellTradeIDs: 0,
+                getParticipantSharesPurchased: 1
+            });
+        }
+    });
+    test({
+        description: 'Should not place a sell trade if getParticipantSharesPurchased returns an error object',
+        market: { id: '0xa1', type: 'binary' },
+        outcomeID: '1',
+        tradeType: 'sell',
+        numShares: '100',
+        limitPrice: '0.5',
+        tradingFees: '0.01',
+        address: '0x1',
+        totalCost: '50',
+        orderBooks: { '0xa1': { buy: {}, sell: {} } },
+        doNotMakeOrders: false,
+        tradeGroupID: '0x000abc123',
+        tradeCommitmentCallback: noop,
+        tradeCommitLockCallback: noop,
+        placeBuy: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeBuy++;
+        },
+        placeBid: function(market, outcomeID, numShares, limitPrice, tradeGroupID) {
+            callCounts.placeBid++;
+        },
+        placeSell: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeSell++;
+        },
+        placeAsk: function(market, outcomeID, askShares, limitPrice, tradeGroupID) {
+            callCounts.placeAsk++;
+        },
+        placeShortAsk: function(market, outcomeID, shortAskShares, limitPrice, tradeGroupID) {
+            callCounts.placeShortAsk++;
+        },
+        placeShortSell: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeShortSell++;
+        },
+        calculateBuyTradeIDs: function(marketID, outcomeID, limitPrice, orderBooks, address) {
+            callCounts.calculateBuyTradeIDs++;
+        },
+        calculateSellTradeIDs: function(marketID, outcomeID, limitPrice, orderBooks, address) {
+            callCounts.calculateSellTradeIDs++;
+        },
+        getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
+            callCounts.getParticipantSharesPurchased++;
+            cb({ error: 999, message: 'Uh-Oh!' });
+        },
+        assertions: function(err) {
+            assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
+            // check the entire callCounts object so that we know we didn't accidently call anything...
+            assert.deepEqual(callCounts, {
+                placeBuy: 0,
+                placeBid: 0,
+                placeSell: 0,
+                placeAsk: 0,
+                placeShortAsk: 0,
+                placeShortSell: 0,
+                calculateBuyTradeIDs: 0,
+                calculateSellTradeIDs: 0,
+                getParticipantSharesPurchased: 1
+            });
+        }
+    });
+    test({
+        description: 'Should place a sell trade if there are matching orders on the book and the user has a position with enough shares to sell',
+        market: { id: '0xa1', type: 'binary' },
+        outcomeID: '1',
+        tradeType: 'sell',
+        numShares: '100',
+        limitPrice: '0.5',
+        tradingFees: '0.01',
+        address: '0x1',
+        totalCost: '50',
+        orderBooks: { '0xa1': { buy: { '0xb1': { amount: '100', price: '0.5' } }, sell: {} } },
+        doNotMakeOrders: false,
+        tradeGroupID: '0x000abc123',
+        tradeCommitmentCallback: noop,
+        tradeCommitLockCallback: noop,
+        placeBuy: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeBuy++;
+        },
+        placeBid: function(market, outcomeID, numShares, limitPrice, tradeGroupID) {
+            callCounts.placeBid++;
+        },
+        placeSell: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeSell++;
+            assert.deepEqual(market, { id: '0xa1', type: 'binary' });
+            assert.equal(outcomeID, '1');
+            assert.equal(numShares, '100');
+            assert.equal(limitPrice, '0.5');
+            assert.equal(address, '0x1');
+            assert.equal(totalCost, '50');
+            assert.equal(tradingFees, '0.01');
+            assert.deepEqual(orderBooks, { '0xa1': { buy: { '0xb1': { amount: '100', price: '0.5' }}, sell: {} } });
+            assert.isFalse(doNotMakeOrders);
+            assert.equal(tradeGroupID, '0x000abc123');
+            assert.isFunction(tradeCommitmentCallback);
+            assert.isFunction(tradeCommitLockCallback);
+        },
+        placeAsk: function(market, outcomeID, askShares, limitPrice, tradeGroupID) {
+            callCounts.placeAsk++;
+        },
+        placeShortAsk: function(market, outcomeID, shortAskShares, limitPrice, tradeGroupID) {
+            callCounts.placeShortAsk++;
+        },
+        placeShortSell: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeShortSell++;
+        },
+        calculateBuyTradeIDs: function(marketID, outcomeID, limitPrice, orderBooks, address) {
+            callCounts.calculateBuyTradeIDs++;
+        },
+        calculateSellTradeIDs: function(marketID, outcomeID, limitPrice, orderBooks, address) {
+            callCounts.calculateSellTradeIDs++;
+            return ['0xb1'];
+        },
+        getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
+            callCounts.getParticipantSharesPurchased++;
+            cb('100');
+        },
+        assertions: function(err) {
+            assert.isNull(err);
+            // check the entire callCounts object so that we know we didn't accidently call anything...
+            assert.deepEqual(callCounts, {
+                placeBuy: 0,
+                placeBid: 0,
+                placeSell: 1,
+                placeAsk: 0,
+                placeShortAsk: 0,
+                placeShortSell: 0,
+                calculateBuyTradeIDs: 0,
+                calculateSellTradeIDs: 1,
+                getParticipantSharesPurchased: 1
+            });
+        }
+    });
+    test({
+        description: 'Should not place a trade if we have a position to sell but no buy orders on the book, we also have doNotMakeOrders set to true.',
+        market: { id: '0xa1', type: 'binary' },
+        outcomeID: '1',
+        tradeType: 'sell',
+        numShares: '100',
+        limitPrice: '0.5',
+        tradingFees: '0.01',
+        address: '0x1',
+        totalCost: '50',
+        orderBooks: { '0xa1': { buy: {}, sell: {} } },
+        doNotMakeOrders: true,
+        tradeGroupID: '0x000abc123',
+        tradeCommitmentCallback: noop,
+        tradeCommitLockCallback: noop,
+        placeBuy: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeBuy++;
+        },
+        placeBid: function(market, outcomeID, numShares, limitPrice, tradeGroupID) {
+            callCounts.placeBid++;
+        },
+        placeSell: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeSell++;
+        },
+        placeAsk: function(market, outcomeID, askShares, limitPrice, tradeGroupID) {
+            callCounts.placeAsk++;
+        },
+        placeShortAsk: function(market, outcomeID, shortAskShares, limitPrice, tradeGroupID) {
+            callCounts.placeShortAsk++;
+        },
+        placeShortSell: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeShortSell++;
+        },
+        calculateBuyTradeIDs: function(marketID, outcomeID, limitPrice, orderBooks, address) {
+            callCounts.calculateBuyTradeIDs++;
+        },
+        calculateSellTradeIDs: function(marketID, outcomeID, limitPrice, orderBooks, address) {
+            callCounts.calculateSellTradeIDs++;
+            return [];
+        },
+        getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
+            callCounts.getParticipantSharesPurchased++;
+            cb('100');
+        },
+        assertions: function(err) {
+            assert.isNull(err);
+            // check the entire callCounts object so that we know we didn't accidently call anything...
+            assert.deepEqual(callCounts, {
+                placeBuy: 0,
+                placeBid: 0,
+                placeSell: 0,
+                placeAsk: 0,
+                placeShortAsk: 0,
+                placeShortSell: 0,
+                calculateBuyTradeIDs: 0,
+                calculateSellTradeIDs: 1,
+                getParticipantSharesPurchased: 1
+            });
+        }
+    });
+    test({
+        description: 'Should place an ask and a shortAsk if we have a position that is less than the amount of shares we plan to sell and doNotMakeOrders is false',
+        market: { id: '0xa1', type: 'binary' },
+        outcomeID: '1',
+        tradeType: 'sell',
+        numShares: '100',
+        limitPrice: '0.5',
+        tradingFees: '0.01',
+        address: '0x1',
+        totalCost: '50',
+        orderBooks: { '0xa1': { buy: {}, sell: {} } },
+        doNotMakeOrders: false,
+        tradeGroupID: '0x000abc123',
+        tradeCommitmentCallback: noop,
+        tradeCommitLockCallback: noop,
+        placeBuy: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeBuy++;
+        },
+        placeBid: function(market, outcomeID, numShares, limitPrice, tradeGroupID) {
+            callCounts.placeBid++;
+        },
+        placeSell: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeSell++;
+        },
+        placeAsk: function(market, outcomeID, askShares, limitPrice, tradeGroupID) {
+            callCounts.placeAsk++;
+            assert.deepEqual(market, { id: '0xa1', type: 'binary' });
+            assert.equal(outcomeID, '1');
+            assert.equal(askShares, '80');
+            assert.equal(limitPrice, '0.5');
+            assert.equal(tradeGroupID, '0x000abc123');
+        },
+        placeShortAsk: function(market, outcomeID, shortAskShares, limitPrice, tradeGroupID) {
+            callCounts.placeShortAsk++;
+            assert.deepEqual(market, { id: '0xa1', type: 'binary' });
+            assert.equal(outcomeID, '1');
+            assert.equal(shortAskShares, '20');
+            assert.equal(limitPrice, '0.5');
+            assert.equal(tradeGroupID, '0x000abc123');
+        },
+        placeShortSell: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeShortSell++;
+        },
+        calculateBuyTradeIDs: function(marketID, outcomeID, limitPrice, orderBooks, address) {
+            callCounts.calculateBuyTradeIDs++;
+        },
+        calculateSellTradeIDs: function(marketID, outcomeID, limitPrice, orderBooks, address) {
+            callCounts.calculateSellTradeIDs++;
+            return [];
+        },
+        getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
+            callCounts.getParticipantSharesPurchased++;
+            cb('80');
+        },
+        assertions: function(err) {
+            assert.isNull(err);
+            // check the entire callCounts object so that we know we didn't accidently call anything...
+            assert.deepEqual(callCounts, {
+                placeBuy: 0,
+                placeBid: 0,
+                placeSell: 0,
+                placeAsk: 1,
+                placeShortAsk: 1,
+                placeShortSell: 0,
+                calculateBuyTradeIDs: 0,
+                calculateSellTradeIDs: 1,
+                getParticipantSharesPurchased: 1
+            });
+        }
+    });
+    test({
+        description: 'Should place a shortSell trade if no position and we do have a buy order to match our sell order on the book',
+        market: { id: '0xa1', type: 'binary' },
+        outcomeID: '1',
+        tradeType: 'sell',
+        numShares: '100',
+        limitPrice: '0.5',
+        tradingFees: '0.01',
+        address: '0x1',
+        totalCost: '50',
+        orderBooks: { '0xa1': { buy: { '0xb1': { amount: '100', price: '0.5' } }, sell: {} } },
+        doNotMakeOrders: false,
+        tradeGroupID: '0x000abc123',
+        tradeCommitmentCallback: noop,
+        tradeCommitLockCallback: noop,
+        placeBuy: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeBuy++;
+        },
+        placeBid: function(market, outcomeID, numShares, limitPrice, tradeGroupID) {
+            callCounts.placeBid++;
+        },
+        placeSell: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeSell++;
+        },
+        placeAsk: function(market, outcomeID, askShares, limitPrice, tradeGroupID) {
+            callCounts.placeAsk++;
+        },
+        placeShortAsk: function(market, outcomeID, shortAskShares, limitPrice, tradeGroupID) {
+            callCounts.placeShortAsk++;
+        },
+        placeShortSell: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeShortSell++;
+            assert.deepEqual(market, { id: '0xa1', type: 'binary' });
+            assert.equal(outcomeID, '1');
+            assert.equal(numShares, '100');
+            assert.equal(limitPrice, '0.5');
+            assert.equal(address, '0x1');
+            assert.equal(totalCost, '50');
+            assert.equal(tradingFees, '0.01');
+            assert.deepEqual(orderBooks, { '0xa1': { buy: { '0xb1': { amount: '100', price: '0.5' } }, sell: {} } });
+            assert.isFalse(doNotMakeOrders);
+            assert.equal(tradeGroupID, '0x000abc123');
+            assert.isFunction(tradeCommitmentCallback);
+            assert.isFunction(tradeCommitLockCallback);
+        },
+        calculateBuyTradeIDs: function(marketID, outcomeID, limitPrice, orderBooks, address) {
+            callCounts.calculateBuyTradeIDs++;
+        },
+        calculateSellTradeIDs: function(marketID, outcomeID, limitPrice, orderBooks, address) {
+            callCounts.calculateSellTradeIDs++;
+            return ['0xb1'];
+        },
+        getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
+            callCounts.getParticipantSharesPurchased++;
+            cb('0');
+        },
+        assertions: function(err) {
+            assert.isNull(err);
+            // check the entire callCounts object so that we know we didn't accidently call anything...
+            assert.deepEqual(callCounts, {
+                placeBuy: 0,
+                placeBid: 0,
+                placeSell: 0,
+                placeAsk: 0,
+                placeShortAsk: 0,
+                placeShortSell: 1,
+                calculateBuyTradeIDs: 0,
+                calculateSellTradeIDs: 1,
+                getParticipantSharesPurchased: 1
+            });
+        }
+    });
+    test({
+        description: 'Should place a shortAsk trade if no position, no order on the book to match, and doNotMakeOrders is false',
+        market: { id: '0xa1', type: 'binary' },
+        outcomeID: '1',
+        tradeType: 'sell',
+        numShares: '100',
+        limitPrice: '0.5',
+        tradingFees: '0.01',
+        address: '0x1',
+        totalCost: '50',
+        orderBooks: { '0xa1': { buy: {}, sell: {} } },
+        doNotMakeOrders: false,
+        tradeGroupID: '0x000abc123',
+        tradeCommitmentCallback: noop,
+        tradeCommitLockCallback: noop,
+        placeBuy: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeBuy++;
+        },
+        placeBid: function(market, outcomeID, numShares, limitPrice, tradeGroupID) {
+            callCounts.placeBid++;
+        },
+        placeSell: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeSell++;
+        },
+        placeAsk: function(market, outcomeID, askShares, limitPrice, tradeGroupID) {
+            callCounts.placeAsk++;
+        },
+        placeShortAsk: function(market, outcomeID, shortAskShares, limitPrice, tradeGroupID) {
+            callCounts.placeShortAsk++;
+            assert.deepEqual(market, { id: '0xa1', type: 'binary' });
+            assert.equal(outcomeID, '1');
+            assert.equal(shortAskShares, '100');
+            assert.equal(limitPrice, '0.5');
+            assert.equal(tradeGroupID, '0x000abc123');
+        },
+        placeShortSell: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeShortSell++;
+        },
+        calculateBuyTradeIDs: function(marketID, outcomeID, limitPrice, orderBooks, address) {
+            callCounts.calculateBuyTradeIDs++;
+        },
+        calculateSellTradeIDs: function(marketID, outcomeID, limitPrice, orderBooks, address) {
+            callCounts.calculateSellTradeIDs++;
+            return [];
+        },
+        getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
+            callCounts.getParticipantSharesPurchased++;
+            cb('0');
+        },
+        assertions: function(err) {
+            assert.isNull(err);
+            // check the entire callCounts object so that we know we didn't accidently call anything...
+            assert.deepEqual(callCounts, {
+                placeBuy: 0,
+                placeBid: 0,
+                placeSell: 0,
+                placeAsk: 0,
+                placeShortAsk: 1,
+                placeShortSell: 0,
+                calculateBuyTradeIDs: 0,
+                calculateSellTradeIDs: 1,
+                getParticipantSharesPurchased: 1
+            });
+        }
+    });
+    test({
+        description: 'Should not place any trade if we have no position, no orders on the book to match and doNotMakeOrders is true.',
+        market: { id: '0xa1', type: 'binary' },
+        outcomeID: '1',
+        tradeType: 'sell',
+        numShares: '100',
+        limitPrice: '0.5',
+        tradingFees: '0.01',
+        address: '0x1',
+        totalCost: '50',
+        orderBooks: { '0xa1': { buy: {}, sell: {} } },
+        doNotMakeOrders: true,
+        tradeGroupID: '0x000abc123',
+        tradeCommitmentCallback: noop,
+        tradeCommitLockCallback: noop,
+        placeBuy: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeBuy++;
+        },
+        placeBid: function(market, outcomeID, numShares, limitPrice, tradeGroupID) {
+            callCounts.placeBid++;
+        },
+        placeSell: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeSell++;
+        },
+        placeAsk: function(market, outcomeID, askShares, limitPrice, tradeGroupID) {
+            callCounts.placeAsk++;
+        },
+        placeShortAsk: function(market, outcomeID, shortAskShares, limitPrice, tradeGroupID) {
+            callCounts.placeShortAsk++;
+        },
+        placeShortSell: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+            callCounts.placeShortSell++;
+        },
+        calculateBuyTradeIDs: function(marketID, outcomeID, limitPrice, orderBooks, address) {
+            callCounts.calculateBuyTradeIDs++;
+        },
+        calculateSellTradeIDs: function(marketID, outcomeID, limitPrice, orderBooks, address) {
+            callCounts.calculateSellTradeIDs++;
+            return [];
+        },
+        getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
+            callCounts.getParticipantSharesPurchased++;
+            cb('0');
+        },
+        assertions: function(err) {
+            assert.isNull(err);
+            // check the entire callCounts object so that we know we didn't accidently call anything...
+            assert.deepEqual(callCounts, {
+                placeBuy: 0,
+                placeBid: 0,
+                placeSell: 0,
+                placeAsk: 0,
+                placeShortAsk: 0,
+                placeShortSell: 0,
+                calculateBuyTradeIDs: 0,
+                calculateSellTradeIDs: 1,
+                getParticipantSharesPurchased: 1
+            });
+        }
+    });
+});
