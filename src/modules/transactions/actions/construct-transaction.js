@@ -358,14 +358,16 @@ export function constructLogFillTxTransaction(trade, marketID, marketType, descr
   return transaction;
 }
 
-export function constructLogShortFillTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status, dispatch) {
+export function constructLogShortFillTxTransaction(trade, marketID, marketType, maxValue, description, outcomeID, outcomeName, status, dispatch) {
   const transactionID = `${trade.transactionHash}-${trade.tradeid}`;
   const price = formatEther(trade.price);
   const shares = formatShares(trade.amount);
   const bnPrice = abi.bignum(trade.price);
   const tradingFees = abi.bignum(trade.takerFee);
   const bnShares = abi.bignum(trade.amount);
-  const totalCost = bnPrice.times(bnShares).plus(tradingFees);
+  const totalCost = marketType === SCALAR ?
+    abi.bignum(maxValue).times(bnShares).minus(bnPrice.times(bnShares).plus(tradingFees)) :
+    bnShares.minus(bnPrice.times(bnShares).plus(tradingFees));
   const totalCostPerShare = totalCost.dividedBy(bnShares);
   const action = trade.inProgress ? 'short selling' : 'short sold';
   const transaction = {
@@ -511,7 +513,7 @@ export function constructTradingTransaction(label, trade, marketID, outcomeID, s
         return constructLogFillTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status, dispatch);
       }
       case 'log_short_fill_tx': {
-        return constructLogShortFillTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status, dispatch);
+        return constructLogShortFillTxTransaction(trade, marketID, marketType, market.maxValue, description, outcomeID, outcomeName, status, dispatch);
       }
       case 'log_add_tx': {
         return constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, market, status, dispatch);
