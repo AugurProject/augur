@@ -106,17 +106,17 @@ const selectAggregatePricePoints = memoizerific(100)((outcomeID, orders, orderCa
  * @return {Object} aggregateOrdersPerPrice
  */
 function reduceSharesCountByPrice(aggregateOrdersPerPrice, order) {
-  const key = abi.bignum(order.price).toFixed();
-  if (aggregateOrdersPerPrice[key] == null) {
-    aggregateOrdersPerPrice[key] = {
-      shares: ZERO,
-      isOfCurrentUser: false
-    };
+  if (order) {
+    const key = abi.bignum(order.price).toFixed();
+    if (aggregateOrdersPerPrice[key] == null) {
+      aggregateOrdersPerPrice[key] = {
+        shares: ZERO,
+        isOfCurrentUser: false
+      };
+    }
+    aggregateOrdersPerPrice[key].shares = aggregateOrdersPerPrice[key].shares.plus(abi.bignum(order.amount));
+    aggregateOrdersPerPrice[key].isOfCurrentUser = aggregateOrdersPerPrice[key].isOfCurrentUser || order.isOfCurrentUser;
   }
-
-  aggregateOrdersPerPrice[key].shares = aggregateOrdersPerPrice[key].shares.plus(abi.bignum(order.amount));
-  aggregateOrdersPerPrice[key].isOfCurrentUser = aggregateOrdersPerPrice[key].isOfCurrentUser || order.isOfCurrentUser;
-
   return aggregateOrdersPerPrice;
 }
 

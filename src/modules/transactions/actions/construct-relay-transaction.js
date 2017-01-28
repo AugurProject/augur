@@ -51,6 +51,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
       }, order.market, order.outcome, status));
     }
     case 'commitTrade': {
+      const { isShortSell } = getState().tradeCommitment;
       dispatch(updateTradeCommitment({ transactionHash: hash }));
       const { tradeHash, orders, tradingFees, maxValue, maxAmount, gasFees } = getState().tradeCommitment;
       const numTradeIDs = orders.length;
@@ -60,7 +61,8 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         const amount = abi.bignum(maxAmount).gt(ZERO) ?
           maxAmount :
           abi.bignum(maxValue).minus(abi.bignum(tradingFees)).dividedBy(abi.bignum(order.price)).toFixed();
-        transactions[i] = dispatch(constructTradingTransaction('log_fill_tx', {
+        const label = isShortSell ? 'log_short_fill_tx' : 'log_fill_tx';
+        transactions[i] = dispatch(constructTradingTransaction(label, {
           ...p,
           inProgress: true,
           price: order.price,
@@ -72,7 +74,8 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           tradeid: order.id,
           tradeHash,
           takerFee: tradingFees,
-          gasFees
+          gasFees,
+          isShortSell
         }, order.market, order.outcome, 'committing'));
       }
       return transactions;
@@ -81,7 +84,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
       const { transactionHash, orders, tradeHash, maxAmount, tradingFees, gasFees } = getState().tradeCommitment;
       const order = orders[0];
       dispatch(deleteTransaction(`${transactionHash}-${p.buyer_trade_id}`));
-      return dispatch(constructTradingTransaction('log_short_fill_tx', {
+      return [dispatch(constructTradingTransaction('log_short_fill_tx', {
         ...p,
         price: order.price,
         outcome: parseInt(order.outcome, 10),
@@ -93,7 +96,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         takerFee: tradingFees,
         gasFees,
         isShortSell: true
-      }, order.market, order.outcome, status));
+      }, order.market, order.outcome, status))];
     }
     case 'trade': {
       const { transactionHash, orders, tradeHash, tradingFees, maxValue, maxAmount, gasFees } = getState().tradeCommitment;
