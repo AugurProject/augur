@@ -445,14 +445,14 @@ describe("executeTrade.executeTrade", function() {
         },
         assertions: function(err, res) {
             assert.isNull(err);
-            assert.deepEqual(res, {
+            assert.deepEqual(JSON.stringify(res), JSON.stringify({
                 remainingEth: new BigNumber('0'),
                 remainingShares: new BigNumber('0'),
                 filledShares: new BigNumber('100'),
                 filledEth: new BigNumber('50'),
                 tradingFees: new BigNumber('1'),
                 gasFees: new BigNumber('.27'),
-            });
+            }));
             assert.deepEqual(callCounts, {
                 getParticipantSharesPurchased: 6,
                 getCashBalance: 6,
@@ -596,7 +596,6 @@ describe("executeTrade.executeTrade", function() {
         },
         trade: function(trade) {
             callCounts.trade++;
-            console.log('trade', callCounts.trade, trade);
             assert.deepEqual(trade.trade_ids, ['0xb1', '0xb2']);
             assert.equal(trade.tradeGroupID, '0x000abc123');
             assert.equal(trade.sender, '0x1');
@@ -643,14 +642,14 @@ describe("executeTrade.executeTrade", function() {
         },
         assertions: function(err, res) {
             assert.isNull(err);
-            assert.deepEqual(res, {
+            assert.deepEqual(JSON.stringify(res), JSON.stringify({
                 remainingEth: new BigNumber('0'),
                 remainingShares: new BigNumber('0'),
                 filledShares: new BigNumber('0'),
                 filledEth: new BigNumber('50'),
                 tradingFees: new BigNumber('1'),
                 gasFees: new BigNumber('.18'),
-            });
+            }));
             assert.deepEqual(callCounts, {
                 getParticipantSharesPurchased: 4,
                 getCashBalance: 4,
@@ -693,14 +692,14 @@ describe("executeTrade.executeTrade", function() {
         },
         assertions: function(err, res) {
             assert.isNull(err);
-            assert.deepEqual(res, {
+            assert.deepEqual(JSON.stringify(res), JSON.stringify({
                 remainingEth: constants.ZERO,
                 remainingShares: new BigNumber('100'),
                 filledShares: constants.ZERO,
                 filledEth: constants.ZERO,
                 tradingFees: constants.ZERO,
                 gasFees: constants.ZERO,
-            });
+            }));
             assert.deepEqual(callCounts, {
                 getParticipantSharesPurchased: 0,
                 getCashBalance: 0,
@@ -743,14 +742,14 @@ describe("executeTrade.executeTrade", function() {
         },
         assertions: function(err, res) {
             assert.isNull(err);
-            assert.deepEqual(res, {
+            assert.deepEqual(JSON.stringify(res), JSON.stringify({
                 remainingEth: constants.ZERO,
                 remainingShares: new BigNumber('100'),
                 filledShares: constants.ZERO,
                 filledEth: constants.ZERO,
                 tradingFees: constants.ZERO,
                 gasFees: constants.ZERO,
-            });
+            }));
             assert.deepEqual(callCounts, {
                 getParticipantSharesPurchased: 0,
                 getCashBalance: 0,
@@ -793,14 +792,14 @@ describe("executeTrade.executeTrade", function() {
         },
         assertions: function(err, res) {
             assert.isNull(err);
-            assert.deepEqual(res, {
+            assert.deepEqual(JSON.stringify(res), JSON.stringify({
                 remainingEth: constants.ZERO,
                 remainingShares: constants.ZERO,
                 filledShares: constants.ZERO,
                 filledEth: constants.ZERO,
                 tradingFees: constants.ZERO,
                 gasFees: constants.ZERO,
-            });
+            }));
             assert.deepEqual(callCounts, {
                 getParticipantSharesPurchased: 0,
                 getCashBalance: 0,
@@ -843,14 +842,14 @@ describe("executeTrade.executeTrade", function() {
         },
         assertions: function(err, res) {
             assert.isNull(err);
-            assert.deepEqual(res, {
+            assert.deepEqual(JSON.stringify(res), JSON.stringify({
                 remainingEth: constants.ZERO,
                 remainingShares: constants.ZERO,
                 filledShares: constants.ZERO,
                 filledEth: constants.ZERO,
                 tradingFees: constants.ZERO,
                 gasFees: constants.ZERO,
-            });
+            }));
             assert.deepEqual(callCounts, {
                 getParticipantSharesPurchased: 0,
                 getCashBalance: 0,
@@ -905,13 +904,13 @@ describe("executeTrade.executeShortSell", function() {
         },
         assertions: function(err, res) {
             assert.isNull(err);
-            assert.deepEqual(res, {
+            assert.deepEqual(JSON.stringify(res), JSON.stringify({
                 remainingShares: new BigNumber('100'),
                 filledShares: constants.ZERO,
                 filledEth: constants.ZERO,
                 tradingFees: constants.ZERO,
                 gasFees: constants.ZERO,
-            });
+            }));
             assert.deepEqual(callCounts, {
                 getTradeIDs: 1,
                 tradeCommitmentCallback: 0,
@@ -940,13 +939,13 @@ describe("executeTrade.executeShortSell", function() {
         },
         assertions: function(err, res) {
             assert.isNull(err);
-            assert.deepEqual(res, {
+            assert.deepEqual(JSON.stringify(res), JSON.stringify({
                 remainingShares: new BigNumber('100'),
                 filledShares: constants.ZERO,
                 filledEth: constants.ZERO,
                 tradingFees: constants.ZERO,
                 gasFees: constants.ZERO,
-            });
+            }));
             assert.deepEqual(callCounts, {
                 getTradeIDs: 1,
                 tradeCommitmentCallback: 0,
@@ -975,13 +974,13 @@ describe("executeTrade.executeShortSell", function() {
         },
         assertions: function(err, res) {
             assert.isNull(err);
-            assert.deepEqual(res, {
+            assert.deepEqual(JSON.stringify(res), JSON.stringify({
                 remainingShares: constants.ZERO,
                 filledShares: constants.ZERO,
                 filledEth: constants.ZERO,
                 tradingFees: constants.ZERO,
                 gasFees: constants.ZERO,
-            });
+            }));
             assert.deepEqual(callCounts, {
                 getTradeIDs: 1,
                 tradeCommitmentCallback: 0,
@@ -1062,13 +1061,13 @@ describe("executeTrade.executeShortSell", function() {
         },
         assertions: function(err, res) {
             assert.isNull(err);
-            assert.deepEqual(res, {
-                filledEth: new BigNumber('50'),
-                filledShares: new BigNumber('100'),
-                gasFees: new BigNumber('0.09'),
+            assert.deepEqual(JSON.stringify(res), JSON.stringify({
                 remainingShares: new BigNumber('0'),
+                filledShares: new BigNumber('100'),
+                filledEth: new BigNumber('50'),
                 tradingFees: new BigNumber('0.01'),
-            });
+                gasFees: new BigNumber('0.09'),
+            }));
             assert.deepEqual(callCounts, {
                 getTradeIDs: 1,
                 tradeCommitmentCallback: 3,
@@ -1208,13 +1207,13 @@ describe("executeTrade.executeShortSell", function() {
         },
         assertions: function(err, res) {
             assert.isNull(err);
-            assert.deepEqual(res, {
-                filledEth: new BigNumber('50'),
-                filledShares: new BigNumber('100'),
-                gasFees: new BigNumber('0.18'),
+            assert.deepEqual(JSON.stringify(res), JSON.stringify({
                 remainingShares: new BigNumber('0'),
+                filledShares: new BigNumber('100'),
+                filledEth: new BigNumber('50'),
                 tradingFees: new BigNumber('0.02'),
-            });
+                gasFees: new BigNumber('0.18'),
+            }));
             assert.deepEqual(callCounts, {
                 getTradeIDs: 1,
                 tradeCommitmentCallback: 6,
