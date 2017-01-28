@@ -17,8 +17,12 @@ export function closePosition(marketID, outcomeID) {
     const bestFillParameters = getBestFillParameters(orderBooks, outcomeShares.toNumber() > 0 ? BUY : SELL, outcomeShares.absoluteValue(), marketID, outcomeID);
 
     dispatch(updateTradesInProgress(marketID, outcomeID, outcomeShares.toNumber() > 0 ? SELL : BUY, bestFillParameters.amountOfShares.toNumber(), bestFillParameters.bestPrice.toNumber(), null, () => {
-      dispatch(placeTrade(marketID, outcomeID, true, (tradeGroupID) => {
-        dispatch(addClosePositionTradeGroup(marketID, outcomeID, tradeGroupID));
+      dispatch(placeTrade(marketID, outcomeID, true, (err, tradeGroupID) => {
+        if (err) {
+          console.error('placeTrade err -- ', err);
+        } else {
+          dispatch(addClosePositionTradeGroup(marketID, outcomeID, tradeGroupID));
+        }
       }));
     }));
   };

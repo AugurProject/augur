@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import classNames from 'classnames';
 
 import EmDash from 'modules/common/components/em-dash';
 
@@ -96,7 +97,17 @@ export default class MarketTradeCloseDialog extends Component {
     const orderID = p.closeType === POSITION ? p.outcomeID : p.orderID;
 
     return (
-      <article className="close-dialog">
+      <article
+        className={
+          classNames(
+            'close-dialog', {
+              'action-running': p.status === CLOSE_DIALOG_CLOSING,
+              'action-failed': p.status === CLOSE_DIALOG_FAILED || p.status === CLOSE_DIALOG_PARTIALLY_FAILED,
+              'action-succeeded': p.status === CLOSE_DIALOG_SUCCESS
+            }
+          )
+        }
+      >
         {
           this.renderCloseDialogContent(
             p.marketID,

@@ -81,5 +81,5 @@ function delayClearTradeGroupIDs(marketID, outcomeID) {
 
   setTimeout(() => {
     store.dispatch(clearClosePositionTradeGroup(marketID, outcomeID));
-  }, 5000);
+  }, 3000);
 }
