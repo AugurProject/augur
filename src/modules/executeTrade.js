@@ -144,6 +144,7 @@ module.exports = {
         onTradeHash: function (tradeHash) {
           tradeCommitmentCallback({
             tradeHash: abi.format_int256(tradeHash),
+            isShortSell: true,
             orders: [selectOrder.selectOrder(matchingID, orderBooks)],
             maxValue: "0",
             maxAmount: maxAmount,
