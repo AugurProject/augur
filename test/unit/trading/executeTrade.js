@@ -1085,8 +1085,8 @@ describe("executeTrade.executeShortSell", function() {
     tradeGroupID: '0x000abc123',
     address: '0x1',
     orderBooks: {
-    '0xa1': {
-      buy: {
+      '0xa1': {
+        buy: {
           '0xb1': {
             amount: '50',
             price: '0.5'
@@ -1097,8 +1097,8 @@ describe("executeTrade.executeShortSell", function() {
           },
         },
         sell: {}
-        }
-      },
+      }
+    },
     getTradeIDs: function() {
       callCounts.getTradeIDs++;
       return ['0xb1', '0xb2'];
