@@ -17953,8 +17953,7 @@ module.exports={
     "BuyAndSellShares": {
       "buy": {
         "events": [
-          "log_add_tx", 
-          "sentCash"
+          "log_add_tx"
         ], 
         "gas": 725202, 
         "inputs": [
@@ -17998,8 +17997,7 @@ module.exports={
       }, 
       "sell": {
         "events": [
-          "log_add_tx", 
-          "sentCash"
+          "log_add_tx"
         ], 
         "gas": 696759, 
         "inputs": [
@@ -18029,7 +18027,6 @@ module.exports={
       "shortAsk": {
         "events": [
           "completeSets_logReturn", 
-          "sentCash", 
           "log_add_tx"
         ], 
         "gas": 1500000, 
@@ -18127,24 +18124,19 @@ module.exports={
         ]
       }, 
       "sendFrom": {
-        "events": [
-          "sentCash"
-        ], 
         "fixed": [
           1
         ], 
         "inputs": [
           "recver", 
           "value", 
-          "from", 
-          "doNotLog"
+          "from"
         ], 
         "label": "Send Tokens", 
         "method": "sendFrom", 
         "returns": "unfix", 
         "send": true, 
         "signature": [
-          "int256", 
           "int256", 
           "int256", 
           "int256"
@@ -18263,8 +18255,7 @@ module.exports={
     "CompleteSets": {
       "buyCompleteSets": {
         "events": [
-          "completeSets_logReturn", 
-          "sentCash"
+          "completeSets_logReturn"
         ], 
         "fixed": [
           1
@@ -18820,9 +18811,6 @@ module.exports={
     }, 
     "CreateBranch": {
       "createSubbranch": {
-        "events": [
-          "sentCash"
-        ], 
         "inputs": [
           "description", 
           "periodLength", 
@@ -18870,7 +18858,6 @@ module.exports={
       }, 
       "createMarket": {
         "events": [
-          "sentCash", 
           "marketCreated"
         ], 
         "inputs": [
@@ -18902,7 +18889,6 @@ module.exports={
       }, 
       "createSingleEventMarket": {
         "events": [
-          "sentCash", 
           "marketCreated"
         ], 
         "inputs": [
@@ -18941,9 +18927,6 @@ module.exports={
         ]
       }, 
       "pushMarketForward": {
-        "events": [
-          "sentCash"
-        ], 
         "inputs": [
           "branch", 
           "market"
@@ -18959,8 +18942,7 @@ module.exports={
       }, 
       "updateTradingFee": {
         "events": [
-          "tradingFeeUpdated", 
-          "sentCash"
+          "tradingFeeUpdated"
         ], 
         "inputs": [
           "branch", 
@@ -20532,7 +20514,6 @@ module.exports={
       "fork": {
         "events": [
           "Transfer", 
-          "sentCash", 
           "penalizationCaughtUp", 
           "collectedFees"
         ], 
@@ -22218,8 +22199,7 @@ module.exports={
       "short_sell": {
         "events": [
           "log_short_fill_tx", 
-          "trade_logArrayReturn", 
-          "sentCash"
+          "trade_logArrayReturn"
         ], 
         "gas": 1059796, 
         "inputs": [
@@ -24349,7 +24329,7 @@ BigNumber.config({
 var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register")];
 
 function Augur() {
-  this.version = "3.9.6";
+  this.version = "3.9.7";
 
   this.options = {
     debug: {
@@ -25938,6 +25918,17 @@ module.exports = {
     var matchingTradeIDs;
     var bnSharesPurchased = bnNumShares;
     var bnCashBalance = bnTotalEth;
+    var commitMaxAmount;
+    var commitMaxValue;
+    if (bnNumShares.gt(constants.ZERO)) {
+      commitMaxAmount = numShares;
+      commitMaxValue = '0';
+      // tradeCommitmentCallback({ maxAmount: numShares, maxValue: '0' });
+    } else {
+      commitMaxAmount = '0';
+      commitMaxValue = totalEthWithFee;
+      // tradeCommitmentCallback({ maxAmount: '0', maxValue: totalEthWithFee });
+    }
     async.until(function () {
       matchingTradeIDs = getTradeIDs();
       console.log("matchingTradeIDs:", matchingTradeIDs);
@@ -25975,8 +25966,8 @@ module.exports = {
                 orders: tradeIDs.map(function (tradeID) {
                   return selectOrder.selectOrder(tradeID, orderBooks);
                 }),
-                maxValue: maxValue.toFixed(),
-                maxAmount: maxAmount.toFixed(),
+                maxValue: commitMaxValue,
+                maxAmount: commitMaxAmount,
                 remainingEth: res.remainingEth.toFixed(),
                 remainingShares: res.remainingShares.toFixed(),
                 filledEth: res.filledEth.toFixed(),
@@ -26061,9 +26052,9 @@ module.exports = {
           tradeCommitmentCallback({
             tradeHash: abi.format_int256(tradeHash),
             isShortSell: true,
+            maxAmount: numShares,
+            maxValue: '0',
             orders: [selectOrder.selectOrder(matchingID, orderBooks)],
-            maxValue: "0",
-            maxAmount: maxAmount,
             remainingEth: "0",
             remainingShares: res.remainingShares.toFixed(),
             filledEth: res.filledEth.toFixed(),
@@ -28659,7 +28650,7 @@ module.exports = {
       gasEth: bidGasEth.toFixed(),
       feeEth: abi.unfix(feeEth, "string"),
       feePercent: abi.unfix(makerFee).times(100).toFixed(),
-      costEth: abi.unfix(etherToBid.plus(feeEth), "string"),
+      costEth: abi.unfix(etherToBid.plus(feeEth)).neg().toFixed(),
       avgPrice: abi.unfix(etherToBid.plus(feeEth).dividedBy(shares).times(constants.ONE).floor(), "string"),
       noFeePrice: abi.unfix(limitPrice, "string")
     };
@@ -28684,7 +28675,7 @@ module.exports = {
       gasEth: tradeGasEth.toFixed(),
       feeEth: takerFeeEth.toFixed(),
       feePercent: abi.unfix(fxpTakerFeeEth.dividedBy(fxpBuyEth).times(constants.ONE).floor().times(100), "string"),
-      costEth: buyEth.toFixed(),
+      costEth: buyEth.neg().toFixed(),
       avgPrice: abi.unfix(fxpBuyEth.dividedBy(fxpSharesFilled).times(constants.ONE).floor(), "string"),
       noFeePrice: abi.unfix(fxpBuyEth.minus(fxpTakerFeeEth).dividedBy(fxpSharesFilled).times(constants.ONE).floor(), "string")
     };
@@ -28758,7 +28749,7 @@ module.exports = {
       gasEth: shortSellGasEth.toFixed(),
       feeEth: takerFeeEth.toFixed(),
       feePercent: abi.unfix(fxpTakerFeeEth.dividedBy(fxpShortSellEth).times(constants.ONE).floor().times(100), "string"),
-      costEth: shortSellEth.toFixed(),
+      costEth: shortSellEth.neg().toFixed(),
       avgPrice: abi.unfix(fxpShortSellEth.dividedBy(fxpShares).times(constants.ONE).floor(), "string"),
       noFeePrice: abi.unfix(fxpShortSellEth.plus(fxpTakerFeeEth).dividedBy(fxpShares).times(constants.ONE).floor(), "string")
     };

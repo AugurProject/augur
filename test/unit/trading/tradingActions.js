@@ -318,7 +318,7 @@ describe("getTradingActions", function () {
           shares: "5",
           gasEth: "0.01450404",
           feeEth: "0.0288",
-          costEth: "3.0288",
+          costEth: "-3.0288",
           avgPrice: "0.60576",
           feePercent: "0.96",
           noFeePrice: "0.6"
@@ -397,7 +397,7 @@ describe("getTradingActions", function () {
           shares: "5",
           gasEth: "0.01450404",
           feeEth: "0.0288",
-          costEth: "3.0288",
+          costEth: "-3.0288",
           avgPrice: "0.60576",
           feePercent: "0.96",
           noFeePrice: "0.6"
@@ -438,7 +438,7 @@ describe("getTradingActions", function () {
           shares: "5",
           gasEth: "0.01574842",
           feeEth: "0.0576",
-          costEth: "3.0576",
+          costEth: "-3.0576",
           avgPrice: "0.61152",
           feePercent: "1.8838304552590266",
           noFeePrice: "0.6"
@@ -478,7 +478,7 @@ describe("getTradingActions", function () {
           shares: "0.0001",
           gasEth: "0.01574842",
           feeEth: "0.000001024",
-          costEth: "0.000081024",
+          costEth: "-0.000081024",
           avgPrice: "0.81024",
           feePercent: "1.263823064770932",
           noFeePrice: "0.8"
@@ -520,7 +520,7 @@ describe("getTradingActions", function () {
           shares: "2",
           gasEth: "0.01574842",
           feeEth: "0.02304",
-          costEth: "1.22304",
+          costEth: "-1.22304",
           avgPrice: "0.61152",
           feePercent: "1.8838304552590266",
           noFeePrice: "0.6"
@@ -529,7 +529,7 @@ describe("getTradingActions", function () {
           shares: "3",
           gasEth: "0.01450404",
           feeEth: "0.01728",
-          costEth: "1.81728",
+          costEth: "-1.81728",
           avgPrice: "0.60576",
           feePercent: "0.96",
           noFeePrice: "0.6"
@@ -570,7 +570,7 @@ describe("getTradingActions", function () {
           shares: "5",
           gasEth: "0.01574842",
           feeEth: "0.0384",
-          costEth: "2.0384",
+          costEth: "-2.0384",
           avgPrice: "0.40768",
           feePercent: "1.8838304552590266",
           noFeePrice: "0.4"
@@ -611,7 +611,7 @@ describe("getTradingActions", function () {
           shares: "2",
           gasEth: "0.01574842",
           feeEth: "0.01536",
-          costEth: "0.81536",
+          costEth: "-0.81536",
           avgPrice: "0.40768",
           feePercent: "1.8838304552590266",
           noFeePrice: "0.4"
@@ -620,7 +620,7 @@ describe("getTradingActions", function () {
           shares: "3",
           gasEth: "0.01450404",
           feeEth: "0.01728",
-          costEth: "1.81728",
+          costEth: "-1.81728",
           avgPrice: "0.60576",
           feePercent: "0.96",
           noFeePrice: "0.6"
@@ -677,7 +677,7 @@ describe("getTradingActions", function () {
           shares: "5",
           gasEth: "0.01574842",
           feeEth: "0.02288",
-          costEth: "1.42288",
+          costEth: "-1.42288",
           avgPrice: "0.284576",
           feePercent: "1.6080062970875969",
           noFeePrice: "0.28"
@@ -726,7 +726,7 @@ describe("getTradingActions", function () {
           shares: "3",
           gasEth: "0.01574842",
           feeEth: "0.01776",
-          costEth: "1.01776",
+          costEth: "-1.01776",
           avgPrice: "0.339253333333333333",
           feePercent: "1.7450086464392391",
           noFeePrice: "0.333333333333333333"
@@ -735,7 +735,7 @@ describe("getTradingActions", function () {
           shares: "2",
           gasEth: "0.01450404",
           feeEth: "0.01152",
-          costEth: "1.21152",
+          costEth: "-1.21152",
           avgPrice: "0.60576",
           feePercent: "0.96",
           noFeePrice: "0.6"
@@ -784,7 +784,7 @@ describe("getTradingActions", function () {
           shares: "3",
           gasEth: "0.01574842",
           feeEth: "0.01776",
-          costEth: "1.01776",
+          costEth: "-1.01776",
           noFeePrice: "0.333333333333333333",
           feePercent: "1.7450086464392391",
           avgPrice: "0.339253333333333333"
@@ -859,7 +859,7 @@ describe("getTradingActions", function () {
           shares: "5",
           gasEth: "0.02119592",
           feeEth: "0.0576",
-          costEth: "2.0576",
+          costEth: "-2.0576",
           avgPrice: "0.41152",
           feePercent: "2.7993779160186625",
           noFeePrice: "0.42304"
@@ -1009,7 +1009,7 @@ describe("getTradingActions", function () {
           shares: "2",
           gasEth: "0.02119592",
           feeEth: "0.02304",
-          costEth: "0.82304",
+          costEth: "-0.82304",
           avgPrice: "0.41152",
           feePercent: "2.7993779160186625",
           noFeePrice: "0.42304"
@@ -1059,7 +1059,7 @@ describe("getTradingActions", function () {
           shares: "5",
           gasEth: "0.02119592",
           feeEth: "0.0588",
-          costEth: "1.5588",
+          costEth: "-1.5588",
           avgPrice: "0.31176",
           feePercent: "3.7721324095458044",
           noFeePrice: "0.32352"
@@ -1100,7 +1100,7 @@ describe("getTradingActions", function () {
           shares: "2",
           gasEth: "0.02119592",
           feeEth: "0.02352",
-          costEth: "0.62352",
+          costEth: "-0.62352",
           avgPrice: "0.31176",
           feePercent: "3.7721324095458044",
           noFeePrice: "0.32352"
@@ -1158,7 +1158,7 @@ describe("getTradingActions", function () {
           shares: "3",
           gasEth: "0.02119592",
           feeEth: "0.03224",
-          costEth: "0.73224",
+          costEth: "-0.73224",
           avgPrice: "0.24408",
           feePercent: "4.4029280017480607",
           noFeePrice: "0.254826666666666666"
@@ -1224,7 +1224,7 @@ describe("getTradingActions", function () {
           shares: "5",
           gasEth: "0.02119592",
           feeEth: "0.0452",
-          costEth: "0.9452",
+          costEth: "-0.9452",
           avgPrice: "0.18904",
           feePercent: "4.7820567075751163",
           noFeePrice: "0.19808"
@@ -1361,7 +1361,7 @@ describe("getTradingActions", function () {
           shares: "3",
           gasEth: "0.02119592",
           feeEth: "0.03456",
-          costEth: "1.23456",
+          costEth: "-1.23456",
           avgPrice: "0.41152",
           feePercent: "2.7993779160186625",
           noFeePrice: "0.42304"
@@ -1461,7 +1461,7 @@ describe("getTradingActions", function () {
           shares: "3",
           gasEth: "0.02119592",
           feeEth: "0.03528",
-          costEth: "0.93528",
+          costEth: "-0.93528",
           avgPrice: "0.31176",
           feePercent: "3.7721324095458044",
           noFeePrice: "0.32352"
@@ -1569,7 +1569,7 @@ describe("getTradingActions", function () {
           shares: "1",
           gasEth: "0.02119592",
           feeEth: "0.01176",
-          costEth: "0.31176",
+          costEth: "-0.31176",
           avgPrice: "0.31176",
           feePercent: "3.7721324095458044",
           noFeePrice: "0.32352"
@@ -1644,7 +1644,7 @@ describe("getTradingActions", function () {
           shares: "3",
           gasEth: "0.02119592",
           feeEth: "0.03224",
-          costEth: "0.73224",
+          costEth: "-0.73224",
           avgPrice: "0.24408",
           feePercent: "4.4029280017480607",
           noFeePrice: "0.254826666666666666"
@@ -2129,7 +2129,7 @@ describe("getTradingActions", function () {
           gasEth: "0.02119592",
           feeEth: "0.288",
           feePercent: "0.337679392177094",
-          costEth: "85.288",
+          costEth: "-85.288",
           avgPrice: "17.0576",
           noFeePrice: "17.1152"
         }];
@@ -2222,7 +2222,7 @@ describe("getTradingActions", function () {
           gasEth: "0.02119592",
           feeEth: "0.1152",
           feePercent: "0.337679392177094",
-          costEth: "34.1152",
+          costEth: "-34.1152",
           avgPrice: "17.0576",
           noFeePrice: "17.1152"
         }];
@@ -2273,7 +2273,7 @@ describe("getTradingActions", function () {
           gasEth: "0.02119592",
           feeEth: "0.1152",
           feePercent: "0.337679392177094",
-          costEth: "34.1152",
+          costEth: "-34.1152",
           avgPrice: "17.0576",
           noFeePrice: "17.1152"
         }];
