@@ -89,7 +89,7 @@ module.exports = {
       gasEth: bidGasEth.toFixed(),
       feeEth: abi.unfix(feeEth, "string"),
       feePercent: abi.unfix(makerFee).times(100).toFixed(),
-      costEth: abi.unfix(etherToBid.plus(feeEth), "string"),
+      costEth: abi.unfix(etherToBid.plus(feeEth)).neg().toFixed(),
       avgPrice: abi.unfix(etherToBid.plus(feeEth).dividedBy(shares).times(constants.ONE).floor(), "string"),
       noFeePrice: abi.unfix(limitPrice, "string")
     };
@@ -114,7 +114,7 @@ module.exports = {
       gasEth: tradeGasEth.toFixed(),
       feeEth: takerFeeEth.toFixed(),
       feePercent: abi.unfix(fxpTakerFeeEth.dividedBy(fxpBuyEth).times(constants.ONE).floor().times(100), "string"),
-      costEth: buyEth.toFixed(),
+      costEth: buyEth.neg().toFixed(),
       avgPrice: abi.unfix(fxpBuyEth.dividedBy(fxpSharesFilled).times(constants.ONE).floor(), "string"),
       noFeePrice: abi.unfix(fxpBuyEth.minus(fxpTakerFeeEth).dividedBy(fxpSharesFilled).times(constants.ONE).floor(), "string")
     };
@@ -188,7 +188,7 @@ module.exports = {
       gasEth: shortSellGasEth.toFixed(),
       feeEth: takerFeeEth.toFixed(),
       feePercent: abi.unfix(fxpTakerFeeEth.dividedBy(fxpShortSellEth).times(constants.ONE).floor().times(100), "string"),
-      costEth: shortSellEth.toFixed(),
+      costEth: shortSellEth.neg().toFixed(),
       avgPrice: abi.unfix(fxpShortSellEth.dividedBy(fxpShares).times(constants.ONE).floor(), "string"),
       noFeePrice: abi.unfix(fxpShortSellEth.plus(fxpTakerFeeEth).dividedBy(fxpShares).times(constants.ONE).floor(), "string")
     };
