@@ -93,7 +93,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
       return transactions;
     }
     case 'short_sell': {
-      const { transactionHash, orders, tradeHash, maxAmount, tradingFees, gasFees, numShares } = getState().tradeCommitment;
+      const { transactionHash, orders, tradeHash, maxAmount, tradingFees, gasFees } = getState().tradeCommitment;
       const order = orders[0];
       dispatch(deleteTransaction(`${transactionHash}-${p.buyer_trade_id}`));
       return [dispatch(constructTradingTransaction('log_short_fill_tx', {
