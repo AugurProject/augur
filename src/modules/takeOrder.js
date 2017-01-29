@@ -18,7 +18,7 @@ module.exports = {
     tradeCommitLockCallback(true);
     var self = this;
     var marketID = market.id;
-    var getTradeIDs = function () {
+    var getTradeIDs = function (orderBooks) {
       return self.calculateBuyTradeIDs(marketID, outcomeID, limitPrice, orderBooks, address);
     };
     this.executeTrade(marketID, outcomeID, 0, totalCost, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, function (err, res) {
@@ -38,7 +38,7 @@ module.exports = {
     var self = this;
     tradeCommitLockCallback(true);
     var marketID = market.id;
-    var getTradeIDs = function () {
+    var getTradeIDs = function (orderBooks) {
       return self.calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBooks, address);
     };
     this.executeTrade(marketID, outcomeID, numShares, 0, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, function (err, res) {
@@ -82,7 +82,7 @@ module.exports = {
     var self = this;
     tradeCommitLockCallback(true);
     var marketID = market.id;
-    var getTradeIDs = function () {
+    var getTradeIDs = function (orderBooks) {
       return self.calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBooks, address);
     };
     this.executeShortSell(marketID, outcomeID, numShares, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, function (err, res) {

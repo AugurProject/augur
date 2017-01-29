@@ -30,14 +30,12 @@ module.exports = {
     if (bnNumShares.gt(constants.ZERO)) {
       commitMaxAmount = numShares;
       commitMaxValue = '0';
-      // tradeCommitmentCallback({ maxAmount: numShares, maxValue: '0' });
     } else {
       commitMaxAmount = '0';
       commitMaxValue = totalEthWithFee;
-      // tradeCommitmentCallback({ maxAmount: '0', maxValue: totalEthWithFee });
     }
     async.until(function () {
-      matchingTradeIDs = getTradeIDs();
+      matchingTradeIDs = getTradeIDs(orderBooks);
       console.log("matchingTradeIDs:", matchingTradeIDs);
       console.log("remainingEth:", res.remainingEth.toFixed());
       console.log("remainingShares:", res.remainingShares.toFixed());
@@ -142,7 +140,7 @@ module.exports = {
       tradingFees: constants.ZERO,
       gasFees: constants.ZERO
     };
-    var matchingIDs = getTradeIDs();
+    var matchingIDs = getTradeIDs(orderBooks);
     console.log("matching trade IDs:", matchingIDs);
     if (!matchingIDs || !matchingIDs.length || res.remainingShares.lte(constants.ZERO)) return cb(null, res);
     async.eachSeries(matchingIDs, function (matchingID, nextMatchingID) {

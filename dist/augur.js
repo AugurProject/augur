@@ -24329,7 +24329,7 @@ BigNumber.config({
 var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register")];
 
 function Augur() {
-  this.version = "3.9.7";
+  this.version = "3.9.8";
 
   this.options = {
     debug: {
@@ -25923,14 +25923,12 @@ module.exports = {
     if (bnNumShares.gt(constants.ZERO)) {
       commitMaxAmount = numShares;
       commitMaxValue = '0';
-      // tradeCommitmentCallback({ maxAmount: numShares, maxValue: '0' });
     } else {
       commitMaxAmount = '0';
       commitMaxValue = totalEthWithFee;
-      // tradeCommitmentCallback({ maxAmount: '0', maxValue: totalEthWithFee });
     }
     async.until(function () {
-      matchingTradeIDs = getTradeIDs();
+      matchingTradeIDs = getTradeIDs(orderBooks);
       console.log("matchingTradeIDs:", matchingTradeIDs);
       console.log("remainingEth:", res.remainingEth.toFixed());
       console.log("remainingShares:", res.remainingShares.toFixed());
@@ -26038,7 +26036,7 @@ module.exports = {
       tradingFees: constants.ZERO,
       gasFees: constants.ZERO
     };
-    var matchingIDs = getTradeIDs();
+    var matchingIDs = getTradeIDs(orderBooks);
     console.log("matching trade IDs:", matchingIDs);
     if (!matchingIDs || !matchingIDs.length || res.remainingShares.lte(constants.ZERO)) return cb(null, res);
     async.eachSeries(matchingIDs, function (matchingID, nextMatchingID) {
@@ -28171,7 +28169,7 @@ module.exports = {
     tradeCommitLockCallback(true);
     var self = this;
     var marketID = market.id;
-    var getTradeIDs = function getTradeIDs() {
+    var getTradeIDs = function getTradeIDs(orderBooks) {
       return self.calculateBuyTradeIDs(marketID, outcomeID, limitPrice, orderBooks, address);
     };
     this.executeTrade(marketID, outcomeID, 0, totalCost, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, function (err, res) {
@@ -28191,7 +28189,7 @@ module.exports = {
     var self = this;
     tradeCommitLockCallback(true);
     var marketID = market.id;
-    var getTradeIDs = function getTradeIDs() {
+    var getTradeIDs = function getTradeIDs(orderBooks) {
       return self.calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBooks, address);
     };
     this.executeTrade(marketID, outcomeID, numShares, 0, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, function (err, res) {
@@ -28235,7 +28233,7 @@ module.exports = {
     var self = this;
     tradeCommitLockCallback(true);
     var marketID = market.id;
-    var getTradeIDs = function getTradeIDs() {
+    var getTradeIDs = function getTradeIDs(orderBooks) {
       return self.calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBooks, address);
     };
     this.executeShortSell(marketID, outcomeID, numShares, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, function (err, res) {
@@ -28649,7 +28647,7 @@ module.exports = {
       shares: abi.unfix(shares, "string"),
       gasEth: bidGasEth.toFixed(),
       feeEth: abi.unfix(feeEth, "string"),
-      feePercent: abi.unfix(makerFee).times(100).toFixed(),
+      feePercent: abi.unfix(makerFee).times(100).abs().toFixed(),
       costEth: abi.unfix(etherToBid.plus(feeEth)).neg().toFixed(),
       avgPrice: abi.unfix(etherToBid.plus(feeEth).dividedBy(shares).times(constants.ONE).floor(), "string"),
       noFeePrice: abi.unfix(limitPrice, "string")
@@ -28674,7 +28672,7 @@ module.exports = {
       shares: sharesFilled.toFixed(),
       gasEth: tradeGasEth.toFixed(),
       feeEth: takerFeeEth.toFixed(),
-      feePercent: abi.unfix(fxpTakerFeeEth.dividedBy(fxpBuyEth).times(constants.ONE).floor().times(100), "string"),
+      feePercent: abi.unfix(fxpTakerFeeEth.dividedBy(fxpBuyEth).times(constants.ONE).floor().times(100).abs(), "string"),
       costEth: buyEth.neg().toFixed(),
       avgPrice: abi.unfix(fxpBuyEth.dividedBy(fxpSharesFilled).times(constants.ONE).floor(), "string"),
       noFeePrice: abi.unfix(fxpBuyEth.minus(fxpTakerFeeEth).dividedBy(fxpSharesFilled).times(constants.ONE).floor(), "string")
@@ -28700,7 +28698,7 @@ module.exports = {
       feeEth: abi.unfix(feeEth, "string"),
       feePercent: abi.unfix(makerFee).times(100).toFixed(),
       costEth: abi.unfix(costEth.minus(feeEth), "string"),
-      avgPrice: abi.unfix(costEth.minus(feeEth).dividedBy(shares).times(constants.ONE).floor(), "string"),
+      avgPrice: abi.unfix(costEth.minus(feeEth).dividedBy(shares).times(constants.ONE).floor().abs(), "string"),
       noFeePrice: abi.unfix(limitPrice, "string")
     };
   },
@@ -28723,7 +28721,7 @@ module.exports = {
       shares: sharesFilled.toFixed(),
       gasEth: tradeGasEth.toFixed(),
       feeEth: takerFeeEth.toFixed(),
-      feePercent: abi.unfix(fxpTakerFeeEth.dividedBy(fxpSellEth).times(constants.ONE).floor().times(100), "string"),
+      feePercent: abi.unfix(fxpTakerFeeEth.dividedBy(fxpSellEth).times(constants.ONE).floor().times(100).abs(), "string"),
       costEth: sellEth.toFixed(),
       avgPrice: abi.unfix(fxpSellEth.dividedBy(fxpSharesFilled).times(constants.ONE).floor(), "string"),
       noFeePrice: abi.unfix(fxpSellEth.plus(fxpTakerFeeEth).dividedBy(fxpSharesFilled).times(constants.ONE).floor(), "string")
@@ -28748,7 +28746,7 @@ module.exports = {
       shares: shares.toFixed(),
       gasEth: shortSellGasEth.toFixed(),
       feeEth: takerFeeEth.toFixed(),
-      feePercent: abi.unfix(fxpTakerFeeEth.dividedBy(fxpShortSellEth).times(constants.ONE).floor().times(100), "string"),
+      feePercent: abi.unfix(fxpTakerFeeEth.dividedBy(fxpShortSellEth).times(constants.ONE).floor().times(100).abs(), "string"),
       costEth: shortSellEth.neg().toFixed(),
       avgPrice: abi.unfix(fxpShortSellEth.dividedBy(fxpShares).times(constants.ONE).floor(), "string"),
       noFeePrice: abi.unfix(fxpShortSellEth.plus(fxpTakerFeeEth).dividedBy(fxpShares).times(constants.ONE).floor(), "string")
@@ -28773,7 +28771,7 @@ module.exports = {
       shares: abi.unfix(shares, "string"),
       gasEth: buyCompleteSetsGasEth.plus(askGasEth).toFixed(),
       feeEth: abi.unfix(feeEth, "string"),
-      feePercent: abi.unfix(makerFee).times(100).toFixed(),
+      feePercent: abi.unfix(makerFee).times(100).abs().toFixed(),
       costEth: abi.unfix(costEth, "string"),
       avgPrice: abi.unfix(costEth.neg().dividedBy(shares).times(constants.ONE).floor(), "string"),
       noFeePrice: abi.unfix(limitPrice, "string") // "limit price" (not really no fee price)
@@ -28806,7 +28804,7 @@ module.exports = {
       if (type === "sell") {
         tradeActionsTotals.feePercent = tradingFeesEth.dividedBy(totalCost.minus(tradingFeesEth)).times(100).abs().toFixed();
       } else {
-        tradeActionsTotals.feePercent = tradingFeesEth.dividedBy(totalCost.plus(tradingFeesEth)).times(100).toFixed();
+        tradeActionsTotals.feePercent = tradingFeesEth.dividedBy(totalCost.plus(tradingFeesEth)).times(100).abs().toFixed();
       }
     }
     return tradeActionsTotals;
