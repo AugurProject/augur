@@ -13,7 +13,7 @@ There are several ways to run it:
 
 ## Requirements
 [Git](https://git-scm.com/)  
-[Node](https://nodejs.org/)
+[Node](https://nodejs.org/) or [Docker](https://www.docker.com/)
 
 *A Note to Windows 10 Users:*  
 Turn on `Developer Mode` and also enable `Windows Subsystem For Linux` so that you have access to bash.  
@@ -27,31 +27,41 @@ git clone https://github.com/AugurProject/augur.git
 cd augur
 ```
 
-For those using NPM:
+### NPM
 ```
 npm install
 npm run build
 ```
 
-For those using [Yarn](https://yarnpkg.com/):
+### [Yarn](https://yarnpkg.com/)
 ```
 yarn
 yarn build
 ```
 
-This will create a `build` folder inside of the `augur` directory with all the files necessary to run the client.  
+### [Docker](https://www.docker.com/)
+```
+docker build -t augur .
+```
+
+This will create a `build` folder inside of the `augur` directory with all the files necessary to run the client.
 Simply copy these files to your web server of choice.
 
 ## Develop
 
-For those using npm:
+### NPM
 ```
 npm run dev
 ```
 
-For those using [Yarn](https://yarnpkg.com/):
+### [Yarn](https://yarnpkg.com/)
 ```
 yarn dev
+```
+
+### [Docker](https://www.docker.com/)
+```
+docker run -p 8080:8080 augur
 ```
 
 Visit [http://localhost:8080](http://localhost:8080)
