@@ -95,9 +95,9 @@ module.exports = {
     var minFee = constants.COST_PER_REPORTER.times(bnBaseReporters).times(bnGasPrice);
     if (creationFee.lt(minFee)) creationFee = minFee;
     return creationFee.plus(bnPast24.dividedBy(bnPeriodLength).plus(1))
-            .dividedBy(bnNumberEvents.plus(1))
-            .dividedBy(2)
-            .toFixed();
+      .dividedBy(bnNumberEvents.plus(1))
+      .dividedBy(2)
+      .toFixed();
   },
 
   // type: "buy" or "sell"
