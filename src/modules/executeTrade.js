@@ -25,6 +25,17 @@ module.exports = {
     var matchingTradeIDs;
     var bnSharesPurchased = bnNumShares;
     var bnCashBalance = bnTotalEth;
+    var commitMaxAmount;
+    var commitMaxValue;
+    if (bnNumShares.gt(constants.ZERO)) {
+      commitMaxAmount = numShares;
+      commitMaxValue = '0';
+      // tradeCommitmentCallback({ maxAmount: numShares, maxValue: '0' });
+    } else {
+      commitMaxAmount = '0';
+      commitMaxValue = totalEthWithFee;
+      // tradeCommitmentCallback({ maxAmount: '0', maxValue: totalEthWithFee });
+    }
     async.until(function () {
       matchingTradeIDs = getTradeIDs();
       console.log("matchingTradeIDs:", matchingTradeIDs);
@@ -65,8 +76,8 @@ module.exports = {
                 orders: tradeIDs.map(function (tradeID) {
                   return selectOrder.selectOrder(tradeID, orderBooks);
                 }),
-                maxValue: maxValue.toFixed(),
-                maxAmount: maxAmount.toFixed(),
+                maxValue: commitMaxValue,
+                maxAmount: commitMaxAmount,
                 remainingEth: res.remainingEth.toFixed(),
                 remainingShares: res.remainingShares.toFixed(),
                 filledEth: res.filledEth.toFixed(),
@@ -145,9 +156,9 @@ module.exports = {
           tradeCommitmentCallback({
             tradeHash: abi.format_int256(tradeHash),
             isShortSell: true,
+            maxAmount: numShares,
+            maxValue: '0',
             orders: [selectOrder.selectOrder(matchingID, orderBooks)],
-            maxValue: "0",
-            maxAmount: maxAmount,
             remainingEth: "0",
             remainingShares: res.remainingShares.toFixed(),
             filledEth: res.filledEth.toFixed(),
