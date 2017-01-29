@@ -53,15 +53,20 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
     }
     case 'commitTrade': {
       dispatch(updateTradeCommitment({ transactionHash: hash }));
-      const { isShortSell, tradeHash, orders, tradingFees, maxValue, maxAmount, gasFees } = getState().tradeCommitment;
+      const { isShortSell, tradeHash, orders, tradingFees, maxValue, remainingShares, gasFees } = getState().tradeCommitment;
       const { marketsData } = getState();
       const numTradeIDs = orders.length;
       const transactions = new Array(numTradeIDs);
+      let remainingEth = abi.bignum(maxValue);
       for (let i = 0; i < numTradeIDs; ++i) {
         const order = orders[i];
         let amount;
-        if (abi.bignum(maxAmount).gt(ZERO)) {
-          amount = maxAmount;
+        if (abi.bignum(remainingShares).gt(ZERO)) {
+          if (abi.bignum(remainingShares).gt(abi.bignum(order.amount))) {
+            amount = order.amount;
+          } else {
+            amount = remainingShares;
+          }
         } else {
           const market = marketsData[abi.format_int256(order.market)];
           let price;
@@ -70,8 +75,20 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           } else {
             price = abi.bignum(order.price);
           }
-          amount = abi.bignum(maxValue).minus(abi.bignum(tradingFees)).dividedBy(price).toFixed();
+          console.log('price:', price.toFixed());
+          amount = remainingEth.minus(abi.bignum(tradingFees)).dividedBy(price);
+          console.log('amount:', amount.toFixed());
+          if (amount.gt(abi.bignum(order.amount))) {
+            amount = order.amount;
+          } else {
+            amount = amount.toFixed();
+          }
+          remainingEth = remainingEth.minus(abi.bignum(amount).times(price));
+          console.log('adjusted amount:', amount);
+          console.log('remaining eth:', remainingEth.toFixed());
         }
+        console.log('remainingShares:', remainingShares);
+        console.log('calculated amount:', amount);
         const label = isShortSell ? 'log_short_fill_tx' : 'log_fill_tx';
         console.log('commit order:', order);
         transactions[i] = dispatch(constructTradingTransaction(label, {
@@ -93,14 +110,18 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
       return transactions;
     }
     case 'short_sell': {
-      const { transactionHash, orders, tradeHash, maxAmount, tradingFees, gasFees } = getState().tradeCommitment;
+      const { transactionHash, orders, tradeHash, remainingShares, tradingFees, gasFees } = getState().tradeCommitment;
       const order = orders[0];
+      let amount = remainingShares;
+      if (abi.bignum(remainingShares).gt(abi.bignum(order.amount))) {
+        amount = order.amount;
+      }
       dispatch(deleteTransaction(`${transactionHash}-${p.buyer_trade_id}`));
       return [dispatch(constructTradingTransaction('log_short_fill_tx', {
         ...p,
         price: order.price,
         outcome: parseInt(order.outcome, 10),
-        amount: maxAmount,
+        amount,
         sender: tx.data.from,
         owner: order.owner,
         tradeid: p.buyer_trade_id,
@@ -111,15 +132,20 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
       }, abi.format_int256(order.market), order.outcome, status))];
     }
     case 'trade': {
-      const { transactionHash, orders, tradeHash, tradingFees, maxValue, maxAmount, gasFees } = getState().tradeCommitment;
+      const { transactionHash, orders, tradeHash, tradingFees, maxValue, remainingShares, gasFees } = getState().tradeCommitment;
       const { marketsData } = getState();
       const numTradeIDs = p.trade_ids.length;
       const transactions = new Array(numTradeIDs);
+      let remainingEth = abi.bignum(maxValue);
       for (let i = 0; i < numTradeIDs; ++i) {
         const order = orders[i];
         let amount;
-        if (abi.bignum(maxAmount).gt(ZERO)) {
-          amount = maxAmount;
+        if (abi.bignum(remainingShares).gt(ZERO)) {
+          if (abi.bignum(remainingShares).gt(abi.bignum(order.amount))) {
+            amount = order.amount;
+          } else {
+            amount = remainingShares;
+          }
         } else {
           const market = marketsData[abi.format_int256(order.market)];
           let price;
@@ -128,8 +154,20 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           } else {
             price = abi.bignum(order.price);
           }
-          amount = abi.bignum(maxValue).minus(abi.bignum(tradingFees)).dividedBy(price).toFixed();
+          console.log('price:', price.toFixed());
+          amount = remainingEth.minus(abi.bignum(tradingFees)).dividedBy(price);
+          console.log('amount:', amount.toFixed());
+          if (amount.gt(abi.bignum(order.amount))) {
+            amount = order.amount;
+          } else {
+            amount = amount.toFixed();
+          }
+          remainingEth = remainingEth.minus(abi.bignum(amount).times(price));
+          console.log('adjusted amount:', amount);
+          console.log('remaining eth:', remainingEth.toFixed());
         }
+        console.log('remainingShares:', remainingShares);
+        console.log('calculated amount:', amount);
         dispatch(deleteTransaction(`${transactionHash}-${order.id}`));
         transactions[i] = dispatch(constructTradingTransaction('log_fill_tx', {
           ...p,
