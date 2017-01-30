@@ -4,7 +4,6 @@ import store from 'src/store';
 
 import { abi } from 'services/augurjs';
 
-import { CANCELLED } from 'modules/bids-asks/constants/order-status';
 import { ZERO } from 'modules/trade/constants/numbers';
 import { isOrderOfUser } from 'modules/bids-asks/helpers/is-order-of-user';
 
@@ -80,7 +79,7 @@ const selectAggregatePricePoints = memoizerific(100)((outcomeID, orders, orderCa
 
   const shareCountPerPrice = Object.keys(orders)
     .map(orderId => orders[orderId])
-    .filter(order => order.outcome === outcomeID && orderCancellation[order.id] !== CANCELLED)
+    .filter(order => order.outcome === outcomeID)
     .map(order => ({
       ...order,
       isOfCurrentUser: isOrderOfUser(order, currentUserAddress)

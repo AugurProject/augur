@@ -2,8 +2,7 @@ import { augur } from 'services/augurjs';
 import { updateOrderStatus } from 'modules/bids-asks/actions/update-order-status';
 import getOrder from 'modules/bids-asks/helpers/get-order';
 
-import { CANCELLING, CANCELLATION_FAILED } from '../../bids-asks/constants/order-status';
-import { CLOSE_DIALOG_CLOSING, CLOSE_DIALOG_FAILED } from 'modules/market/constants/trade-close-status';
+import { CLOSE_DIALOG_CLOSING, CLOSE_DIALOG_FAILED } from 'modules/market/constants/close-dialog-status';
 
 const TIME_TO_WAIT_BEFORE_FINAL_ACTION_MILLIS = 3000;
 
@@ -32,22 +31,4 @@ export function cancelOrder(orderID, marketID, type) {
       }
     }
   };
-}
-
-/**
- *
- * @param {String} orderID
- * @return {{type: string, orderID: *}}
- */
-export function showCancelOrderConfirmation(orderID) {
-  return { type: SHOW_CANCEL_ORDER_CONFIRMATION, orderID };
-}
-
-/**
- *
- * @param {String} orderID
- * @return {{type: string, orderID: *}}
- */
-export function abortCancelOrderConfirmation(orderID) {
-  return { type: ABORT_CANCEL_ORDER_CONFIRMATION, orderID };
 }

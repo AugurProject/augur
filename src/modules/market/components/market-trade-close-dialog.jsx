@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import EmDash from 'modules/common/components/em-dash';
 
 import { POSITION, ORDER } from 'modules/market/constants/trade-close-type';
-import { CLOSE_DIALOG_CLOSING, CLOSE_DIALOG_FAILED, CLOSE_DIALOG_PARTIALLY_FAILED, CLOSE_DIALOG_SUCCESS } from 'modules/market/constants/trade-close-status';
+import { CLOSE_DIALOG_CLOSING, CLOSE_DIALOG_FAILED, CLOSE_DIALOG_PARTIALLY_FAILED, CLOSE_DIALOG_SUCCESS } from 'modules/market/constants/close-dialog-status';
 
 export default class MarketTradeCloseDialog extends Component {
   static propTypes = {
@@ -45,8 +45,6 @@ export default class MarketTradeCloseDialog extends Component {
               if (closeType === POSITION) {
                 closePosition(marketID, orderID);
               } else if (closeType === ORDER) {
-                console.log('should cancel order here...');
-
                 cancelOrder(orderID, marketID, orderType);
               }
               this.setState({ isConfirming: false });

@@ -38,46 +38,4 @@ const MarketOpenOrdersRow = (p) => {
   );
 };
 
-// <span>{renderCancelNode(p.id, p.marketID, p.type, p.status, p.cancellationStatuses, p.cancelOrder, p.abortCancelOrderConfirmation, p.showCancelOrderConfirmation)}</span>
-function renderCancelNode(orderID, marketID, type, status, cancellationStatuses, cancelOrder, abortCancelOrderConfirmation, showCancelOrderConfirmation) {
-  switch (status) {
-    case cancellationStatuses.CANCELLATION_CONFIRMATION:
-      return (
-        <span>
-          <button
-            className="unstyled no confirm"
-            onClick={(event) => { abortCancelOrderConfirmation(orderID, marketID, type); }}
-          >
-            No
-          </button>
-          <button
-            className="unstyled yes confirm"
-            onClick={(event) => {
-              cancelOrder(orderID, marketID, type);
-            }}
-          >
-            Yes
-          </button>
-        </span>
-      );
-    case cancellationStatuses.CANCELLING:
-      return 'Cancelling';
-    case cancellationStatuses.CANCELLATION_FAILED:
-      return 'Failure';
-    case cancellationStatuses.CANCELLED:
-      return null;
-    default:
-      return (
-        <button
-          className="unstyled cancel"
-          onClick={(event) => {
-            showCancelOrderConfirmation(orderID, marketID, type);
-          }}
-        >
-          <i></i> cancel
-        </button>
-      );
-  }
-}
-
 export default MarketOpenOrdersRow;

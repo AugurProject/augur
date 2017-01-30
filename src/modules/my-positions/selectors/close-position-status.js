@@ -4,7 +4,7 @@ import store from 'src/store';
 
 import { clearClosePositionTradeGroup } from 'modules/my-positions/actions/clear-close-position-trade-group';
 
-import { CLOSE_DIALOG_CLOSING, CLOSE_DIALOG_FAILED, CLOSE_DIALOG_PARTIALLY_FAILED, CLOSE_DIALOG_SUCCESS } from 'modules/market/constants/trade-close-status';
+import { CLOSE_DIALOG_CLOSING, CLOSE_DIALOG_FAILED, CLOSE_DIALOG_PARTIALLY_FAILED, CLOSE_DIALOG_SUCCESS } from 'modules/market/constants/close-dialog-status';
 import { SUCCESS, FAILED } from 'modules/transactions/constants/statuses';
 
 export default () => {
