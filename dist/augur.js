@@ -22501,42 +22501,42 @@ module.exports={
         "Trades": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3"
     }, 
     "3": {
-        "Backstops": "0x03dc5df9674ac395d67e3f549aa55dd68155e2e9", 
-        "Branches": "0x0c17cdf2a69decf98979d5823e4d0628d1f4e58e", 
-        "BuyAndSellShares": "0x121e8a92e4c329288e0d1cd9a6eb7c65e85f44b1", 
-        "Cash": "0x6f62584fea50feb85f16758abeb492a04bc289fc", 
-        "CloseMarket": "0x8455972c1390bdc239ea9fb9aa79846cf8b313d4", 
-        "CollectFees": "0xd4afb625931249d5e7f0a96d694b14595a8ef113", 
-        "CompleteSets": "0xee63d3bb0be8c7ecb9d5309d1e80c6b628f69875", 
-        "CompositeGetters": "0x30a5f8d356fd030c9e5fa19a9f7d18f69e941623", 
-        "Consensus": "0xff4ac91f2e6ef81eabbbe27bf78f6c5130313d8b", 
-        "ConsensusData": "0xf42b8507c38dd295d45e1fabd5c15ac845ae99dc", 
-        "CreateBranch": "0x837c03ef27c2479aaffb86f282460539e6668529", 
-        "CreateMarket": "0xd07b00855ddbf4690b57d9670d166721e16713be", 
-        "EventResolution": "0x025e41569b696c2196e6bffaeacdb96c75dba1b0", 
-        "Events": "0x349e109b9bfab009f0e793330cd5cc93c395d49d", 
-        "ExpiringEvents": "0x5e34740fd9c8f45c01062606946dc0177398d12f", 
-        "Faucets": "0x4c4311d0a897415545a31c6e14aca7b63a56f905", 
-        "ForkPenalize": "0x421f1d1048af0b5d6813bcabac97be3fa5c6fa3b", 
-        "Forking": "0xe62f9f9cdf9c8b55728b47c6c8c20cd77a419631", 
-        "FxpFunctions": "0xd7349235c6da0a6226ddd620dd5d4794f8cdbcbd", 
-        "Info": "0x01f5f4b7c176515de47a5bd2b7ec41dd0ee70a23", 
-        "MakeReports": "0x43d9d286493e65e580ecf5ca18fc4f69abc164ea", 
-        "Markets": "0xe51d2166b1e50cca62cc213c45d23a8b1771575e", 
-        "Payout": "0x05b58ce93f669f32f6a33d07abebcaa743c1f9e3", 
-        "PenalizationCatchup": "0xc4cefbcbd7a5e8a3d089832ba25b8ed7e5ff55ac", 
-        "PenalizeNotEnoughReports": "0xa7c73240d16d2af5f55c4827614ef1638bdc5814", 
-        "ProportionCorrect": "0xca4a2b7785a77dd317bd6b6af43aac80df33ea0a", 
-        "Register": "0x82fe5d2f9f61af14f404347062a5133a09cb5b35", 
-        "Reporting": "0xbfbeea6f4b7631742ef601273b32794235d363bf", 
-        "ReportingThreshold": "0xcb1669ef2c089e4a21bfa5099037e25a94a71854", 
-        "RoundTwo": "0x49f0801fba86ce74050cae4f9b3db94c02a9d401", 
-        "RoundTwoPenalize": "0xdda16760583df5ddd13c49fc2ce75769551184ef", 
-        "SendReputation": "0x36c7cf06e27eaaf50c1db717828a0be293b1aeb1", 
-        "SlashRep": "0xd4c7b2e60753cd2e520a8855d944e79110e56958", 
-        "Tags": "0x6abe1d300048db5c93ff8dc8c2d1bcfd8735328a", 
-        "Trade": "0x5fa51ddcd2e6e99159344b0bfd85f93622fee783", 
-        "Trades": "0x85f620d43ded01ba743e5110523deefe101bde8e"
+        "Backstops": "0xf8463a722f24a20e1a69cfc6537be97c61e4c0f4", 
+        "Branches": "0xb3ce090d8578524693067b33eccb466202d90785", 
+        "BuyAndSellShares": "0x3401ffa9843a350c34fc0a924f1c19d639a41f3a", 
+        "Cash": "0xb9e6f3b9555220d9f9ec37226c7d98d8a0ec171e", 
+        "CloseMarket": "0xfe7ae739a9843327e006d28d714421a4298b20ca", 
+        "CollectFees": "0xd02f6103c50eeda11bb5720a25dbe9840a407686", 
+        "CompleteSets": "0x703ef48c251fb4718fff84627503604c9efd1896", 
+        "CompositeGetters": "0x64320a4db470547cd9058162149281c6005499e8", 
+        "Consensus": "0xbd06708c1b99d153c431fdd8793a366da595ac2b", 
+        "ConsensusData": "0x5e442bc4609f0eeaa2cf92088d8f2dfae9690452", 
+        "CreateBranch": "0x79631220a417a0b7d5f7461fc496ccab7e5270e5", 
+        "CreateMarket": "0xc73d8ea0b62f63213c63971234e79cf408b0649d", 
+        "EventResolution": "0xccf1a0d235a4ae53a0bdac65f0562dfeee44e3f3", 
+        "Events": "0x9a07f94c33b27fba6e5b6ddcddd9bada08fd6aa3", 
+        "ExpiringEvents": "0xa3bbc7e20f0cd3bdd31fbe297eb803e072af917b", 
+        "Faucets": "0x38cb1ef4618e0f582190f773e5a6725befd4a635", 
+        "ForkPenalize": "0xe8818ede34f471e0c5ed771991374a9d2c6a4142", 
+        "Forking": "0xf11e0333edb89dd92afd1c0df0e66b242e4b187f", 
+        "FxpFunctions": "0x21749aa2967f59ef8178fcbe0b497576b916b13e", 
+        "Info": "0x385742b52a31d070ebb810686bfbf8031b3abe78", 
+        "MakeReports": "0xe7d22c5dfbf9d9b671cd6f138b3dde91ce3a72ed", 
+        "Markets": "0x91d3a906dd1081bb8242f6719ae4861ff308074b", 
+        "Payout": "0xe73c9b0496248a093813a623e6541635fabcb424", 
+        "PenalizationCatchup": "0x2c44de207cc2e96a288529cc571cabfbe2d357c5", 
+        "PenalizeNotEnoughReports": "0x48d190b7ef9eeaab69238d8f344065810bd0e262", 
+        "ProportionCorrect": "0x9dba643212d394c4af51f43d829993ec82c9be4b", 
+        "Register": "0xb2996337c3cf1ae228e7f02f472ad400071fd856", 
+        "Reporting": "0x7301c03b54e313a640fbb3450f3a5138098ce0ea", 
+        "ReportingThreshold": "0xf9a71873f074f91caa0ba5ae4f72e383637e521e", 
+        "RoundTwo": "0x726637de2c5e35bd57b955b8a4522b0802a22fed", 
+        "RoundTwoPenalize": "0x99788f3438c030c31e06f7948ded3f66a9f98dd7", 
+        "SendReputation": "0xe6c488b05745972706f6e4631c3f1e52e7c1a736", 
+        "SlashRep": "0x030ad35a2ac46de359a6bb92829f077f7fb57ae9", 
+        "Tags": "0xb946fd05eeb01c9f64485a27f1da3fabf99904d0", 
+        "Trade": "0xd772617209edc515657223218ef1cbff060d1606", 
+        "Trades": "0x99d6c89ec35d368e5ce1e0f1051b7ef8d522aa4b"
     }, 
     "9000": {
         "Backstops": "0x708fdfe18bf28afe861a69e95419d183ace003eb", 
@@ -24329,7 +24329,7 @@ BigNumber.config({
 var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register")];
 
 function Augur() {
-  this.version = "3.9.8";
+  this.version = "3.9.9";
 
   this.options = {
     debug: {
@@ -48148,6 +48148,11 @@ module.exports = {
   configure: function (options) {
     this.state.allContracts = options.contracts || {};
     if (options.api) this.state.api = clone(options.api);
+    if (options.noFallback) {
+      this.rpc.disableHostedNodeFallback();
+    } else {
+      this.rpc.enableHostedNodeFallback();
+    }
 
     // if this is the first attempt to connect, connect using the
     // parameters provided by the user exactly
@@ -48582,6 +48587,8 @@ module.exports = {
   ipcpath: null,
   socket: null,
 
+  useHostedNodeFallback: true,
+
   // geth websocket endpoint
   wsUrl: process.env.GETH_WEBSOCKET_URL || HOSTED_WEBSOCKET,
 
@@ -48644,6 +48651,20 @@ module.exports = {
 
   gasPrice: 20000000000,
 
+  enableHostedNodeFallback: function (url) {
+    this.useHostedNodeFallback = true;
+    this.nodes.hosted = (url) ? [url] : this.DEFAULT_HOSTED_NODES.slice();
+    this.wsUrl = process.env.GETH_WEBSOCKET_URL || this.DEFAULT_HOSTED_WEBSOCKET;
+  },
+
+  disableHostedNodeFallback: function () {
+    this.useHostedNodeFallback = false;
+    this.nodes.hosted = [];
+    if (this.wsUrl === HOSTED_WEBSOCKET) {
+      this.wsUrl = null;
+    }
+  },
+
   registerTxRelay: function (txRelay) {
     this.txRelay = txRelay;
   },
@@ -48699,14 +48720,11 @@ module.exports = {
       array = new Array(elements);
       position = init || 2;
       for (var i = 0; i < elements; ++i) {
-        array[i] = abi.prefix_hex(
-                    string.slice(position, position + stride)
-                );
+        array[i] = abi.prefix_hex(string.slice(position, position + stride));
         position += stride;
       }
       if (array.length) {
-        if (parseInt(array[1], 16) === array.length - 2 ||
-                    parseInt(array[1], 16) / 32 === array.length - 2) {
+        if (parseInt(array[1], 16) === array.length - 2 || parseInt(array[1], 16) / 32 === array.length - 2) {
           array.splice(0, 2);
         }
       }
@@ -49359,8 +49377,10 @@ module.exports = {
 
   // reset to default Ethereum nodes
   reset: function (deleteData) {
-    this.nodes.hosted = this.DEFAULT_HOSTED_NODES.slice();
-    this.wsUrl = process.env.GETH_WEBSOCKET_URL || this.DEFAULT_HOSTED_WEBSOCKET;
+    if (this.useHostedNodeFallback) {
+      this.nodes.hosted = this.DEFAULT_HOSTED_NODES.slice();
+      this.wsUrl = process.env.GETH_WEBSOCKET_URL || this.DEFAULT_HOSTED_WEBSOCKET;
+    }
     this.ipcpath = null;
     this.rpcStatus = {ipc: 0, ws: 0};
     if (deleteData) this.clear();
