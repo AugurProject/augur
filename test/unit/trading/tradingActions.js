@@ -9,6 +9,7 @@ var abi = require("augur-abi");
 var augur = require("../../../src");
 var constants = require("../../../src/constants");
 var utils = require("../../../src/utilities");
+var BigNumber = require('bignumber.js');
 
 describe("tradeActions.calculateBuyTradeIDs", function() {
     // 3 tests total
@@ -230,8 +231,229 @@ describe("tradeActions.calculateSellTradeIDs", function() {
     });
 });
 
-describe("tradeActions.getTxGasEth", function() {});
-describe("tradeActions.filterByPriceAndOutcomeAndUserSortByPrice", function() {});
+describe("tradeActions.getTxGasEth", function() {
+    // 2 tests total
+    var test = function(t) {
+        it(t.description, function() {
+            t.assertions(augur.getTxGasEth(t.tx, t.gasPrice));
+        });
+    };
+    test({
+        description: 'Should handle getting the gas cost for a transaction with no gas value passed in the transaction.',
+        tx: { value: '10' },
+        gasPrice: '0.01',
+        assertions: function(data) {
+            assert.equal(data.toFixed(), '0.002534125086747592');
+        }
+    });
+    test({
+        description: 'Should handle getting the gas cost for a transaction with a gas value passed in the transaction.',
+        tx: { value: '25', gas: 4500200 },
+        gasPrice: '0.003',
+        assertions: function(data) {
+            assert.equal(data.toFixed(), '0.931241417617555053');
+        }
+    });
+});
+describe("tradeActions.filterByPriceAndOutcomeAndUserSortByPrice", function() {
+    // 5 tests total
+    var test = function(t) {
+        it(t.description, function() {
+            t.assertions(augur.filterByPriceAndOutcomeAndUserSortByPrice(t.orders, t.traderOrderType, t.limitPrice, t.outcomeId, t.userAddress));
+        });
+    };
+    test({
+        description: 'Should handle an undefined orders object',
+        orders: undefined,
+        traderOrderType: 'buy',
+        limitPrice: '0.5',
+        outcomeId: '1',
+        userAddress: '0x1',
+        assertions: function(output) {
+            assert.deepEqual(output, []);
+        }
+    });
+    test({
+        description: 'Should handle an undefined limitPrice and return all orders that are possible to purchase on a buy',
+        orders: {
+            '0xb1': { price: '0.5', amount: '100', outcome: '1', owner: '0x2', id: '0xb1' },
+            '0xb2': { price: '0.6', amount: '75', outcome: '1', owner: '0x3', id: '0xb2' },
+            '0xb3': { price: '0.45', amount: '25', outcome: '1', owner: '0x4', id: '0xb3' },
+            '0xb4': { price: '0.5', amount: '125', outcome: '2', owner: '0x5', id: '0xb4' },
+            '0xb5': { price: '0.65', amount: '225', outcome: '1', owner: '0x5', id: '0xb5' },
+            '0xb6': {},
+            '0xb7': { price: '0.7', amount: '150', outcome: '1', owner: '0x6', id: '0xb7'},
+            '0xb8': undefined
+        },
+        traderOrderType: 'buy',
+        limitPrice: undefined,
+        outcomeId: '1',
+        userAddress: '0x1',
+        assertions: function(output) {
+            assert.deepEqual(output, [{
+            	price: '0.45',
+            	amount: '25',
+            	outcome: '1',
+            	owner: '0x4',
+            	id: '0xb3'
+            }, {
+            	price: '0.5',
+            	amount: '100',
+            	outcome: '1',
+            	owner: '0x2',
+            	id: '0xb1'
+            }, {
+            	price: '0.6',
+            	amount: '75',
+            	outcome: '1',
+            	owner: '0x3',
+            	id: '0xb2'
+            }, {
+            	price: '0.65',
+            	amount: '225',
+            	outcome: '1',
+            	owner: '0x5',
+            	id: '0xb5'
+            }, {
+                price: '0.7',
+                amount: '150',
+                outcome: '1',
+                owner: '0x6',
+                id: '0xb7'
+            }]);
+        }
+    });
+    test({
+        description: 'Should handle an null limitPrice and return all orders that are possible to purchase on a buy',
+        orders: {
+            '0xb1': { price: '0.5', amount: '100', outcome: '1', owner: '0x2', id: '0xb1' },
+            '0xb2': { price: '0.6', amount: '75', outcome: '1', owner: '0x3', id: '0xb2' },
+            '0xb3': { price: '0.45', amount: '25', outcome: '1', owner: '0x4', id: '0xb3' },
+            '0xb4': { price: '0.5', amount: '125', outcome: '2', owner: '0x5', id: '0xb4' },
+            '0xb5': { price: '0.65', amount: '225', outcome: '1', owner: '0x5', id: '0xb5' },
+            '0xb6': {},
+            '0xb7': { price: '0.7', amount: '150', outcome: '1', owner: '0x6', id: '0xb7'},
+            '0xb8': undefined
+        },
+        traderOrderType: 'buy',
+        limitPrice: null,
+        outcomeId: '1',
+        userAddress: '0x1',
+        assertions: function(output) {
+            assert.deepEqual(output, [{
+            	price: '0.45',
+            	amount: '25',
+            	outcome: '1',
+            	owner: '0x4',
+            	id: '0xb3'
+            }, {
+            	price: '0.5',
+            	amount: '100',
+            	outcome: '1',
+            	owner: '0x2',
+            	id: '0xb1'
+            }, {
+            	price: '0.6',
+            	amount: '75',
+            	outcome: '1',
+            	owner: '0x3',
+            	id: '0xb2'
+            }, {
+            	price: '0.65',
+            	amount: '225',
+            	outcome: '1',
+            	owner: '0x5',
+            	id: '0xb5'
+            }, {
+                price: '0.7',
+                amount: '150',
+                outcome: '1',
+                owner: '0x6',
+                id: '0xb7'
+            }]);
+        }
+    });
+    test({
+        description: 'Should handle a limitPrice and return all orders that are possible to purchase at or below that price on a buy',
+        orders: {
+            '0xb1': { price: '0.5', amount: '100', outcome: '1', owner: '0x2', id: '0xb1' },
+            '0xb2': { price: '0.6', amount: '75', outcome: '1', owner: '0x3', id: '0xb2' },
+            '0xb3': { price: '0.45', amount: '25', outcome: '1', owner: '0x4', id: '0xb3' },
+            '0xb4': { price: '0.5', amount: '125', outcome: '2', owner: '0x5', id: '0xb4' },
+            '0xb5': { price: '0.65', amount: '225', outcome: '1', owner: '0x5', id: '0xb5' },
+            '0xb6': {},
+            '0xb7': { price: '0.7', amount: '150', outcome: '1', owner: '0x6', id: '0xb7'},
+            '0xb8': undefined
+        },
+        traderOrderType: 'buy',
+        limitPrice: '0.5',
+        outcomeId: '1',
+        userAddress: '0x1',
+        assertions: function(output) {
+            assert.deepEqual(output, [{
+            	price: '0.45',
+            	amount: '25',
+            	outcome: '1',
+            	owner: '0x4',
+            	id: '0xb3'
+            }, {
+            	price: '0.5',
+            	amount: '100',
+            	outcome: '1',
+            	owner: '0x2',
+            	id: '0xb1'
+            }]);
+        }
+    });
+    test({
+        description: 'Should handle a limitPrice and return all orders that are possible to purchase at or below that price on a sell',
+        orders: {
+        	'0xb1': { price: '0.5', amount: '100', outcome: '1', owner: '0x2', id: '0xb1' },
+            '0xb2': { price: '0.6', amount: '75', outcome: '1', owner: '0x3', id: '0xb2' },
+            '0xb3': { price: '0.45', amount: '25', outcome: '1', owner: '0x4', id: '0xb3' },
+            '0xb4': { price: '0.5', amount: '125', outcome: '2', owner: '0x5', id: '0xb4' },
+            '0xb5': { price: '0.65', amount: '225', outcome: '1', owner: '0x5', id: '0xb5' },
+            '0xb6': {},
+            '0xb7': { price: '0.7', amount: '150', outcome: '1', owner: '0x6', id: '0xb7'},
+            '0xb8': undefined
+        },
+        traderOrderType: 'sell',
+        limitPrice: '0.5',
+        outcomeId: '1',
+        userAddress: '0x1',
+        assertions: function(output) {
+            assert.deepEqual(output, [{
+                    price: '0.7',
+                    amount: '150',
+                    outcome: '1',
+                    owner: '0x6',
+                    id: '0xb7'
+                },
+                {
+    				price: '0.65',
+    				amount: '225',
+    				outcome: '1',
+    				owner: '0x5',
+    				id: '0xb5'
+    			},
+    			{
+    				price: '0.6',
+    				amount: '75',
+    				outcome: '1',
+    				owner: '0x3',
+    				id: '0xb2'
+    			},
+    			{
+    				price: '0.5',
+    				amount: '100',
+    				outcome: '1',
+    				owner: '0x2',
+    				id: '0xb1'
+    			}
+    		]);
+        }
+    });
+});
 describe("tradeActions.getBidAction", function() {});
 describe("tradeActions.getBuyAction", function() {});
 describe("tradeActions.getAskAction", function() {});
