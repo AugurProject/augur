@@ -1,7 +1,7 @@
 {
   "gethHttpURL": "https://eth9000.augur.net",
   "gethWebsocketsURL": "wss://ws9000.augur.net",
-  "hostedNodeFallback": true,
+  "hostedNodeFallback": false,
   "augurNodeURL": null,
   "autoLogin": false,
   "branchID": null,
