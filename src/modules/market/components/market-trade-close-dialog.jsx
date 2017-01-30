@@ -22,9 +22,9 @@ export default class MarketTradeCloseDialog extends Component {
     this.renderCloseDialogContent = this.renderCloseDialogContent.bind(this);
   }
 
-  renderCloseDialogContent(marketID, orderID, closeType, isClosable, isFullyClosable, quantityOfShares, isConfirming, closePosition, status) {
+  renderCloseDialogContent(marketID, orderID, closeType, isClosable, isFullyClosable, quantityOfShares, isConfirming, closePosition, status, orderType, cancelOrder) {
     // Position -- No Available Actions
-    if ((closeType === POSITION && !parseFloat(quantityOfShares, 10)) || !isClosable) {
+    if (closeType === POSITION && (!parseFloat(quantityOfShares, 10) || !isClosable)) {
       return <EmDash />;
     }
 
@@ -45,7 +45,9 @@ export default class MarketTradeCloseDialog extends Component {
               if (closeType === POSITION) {
                 closePosition(marketID, orderID);
               } else if (closeType === ORDER) {
-                // TODO -- merge cancel order functionality in
+                console.log('should cancel order here...');
+
+                cancelOrder(orderID, marketID, orderType);
               }
               this.setState({ isConfirming: false });
             }}
@@ -118,7 +120,9 @@ export default class MarketTradeCloseDialog extends Component {
             p.quantityOfShares,
             s.isConfirming,
             p.closePosition,
-            p.status
+            p.status,
+            p.orderType,
+            p.cancelOrder
           )
         }
       </article>
