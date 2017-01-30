@@ -127,7 +127,6 @@ describe("tradeActions.calculateBuyTradeIDs", function() {
         }
     });
 });
-
 describe("tradeActions.calculateSellTradeIDs", function() {
     // 3 tests total
     var filterByPriceAndOutcomeAndUserSortByPrice = augur.filterByPriceAndOutcomeAndUserSortByPrice;
@@ -230,7 +229,6 @@ describe("tradeActions.calculateSellTradeIDs", function() {
         }
     });
 });
-
 describe("tradeActions.getTxGasEth", function() {
     // 2 tests total
     var test = function(t) {
@@ -454,14 +452,116 @@ describe("tradeActions.filterByPriceAndOutcomeAndUserSortByPrice", function() {
         }
     });
 });
-describe("tradeActions.getBidAction", function() {});
-describe("tradeActions.getBuyAction", function() {});
-describe("tradeActions.getAskAction", function() {});
-describe("tradeActions.getSellAction", function() {});
+describe("tradeActions.getBidAction", function() {
+    // 1 test total
+    var test = function(t) {
+        it(t.description, function() {
+            t.assertions(augur.getBidAction(t.shares, t.limitPrice, t.makerFee, t.gasPrice));
+        });
+    };
+    test({
+        description: 'Should correctly create and return a bid action object',
+        shares: new BigNumber('10000000000000000000'),
+        limitPrice: new BigNumber('500000000000000000'),
+        makerFee: new BigNumber('10000000000000000'),
+        gasPrice: 1000,
+        assertions: function(output) {
+            assert.deepEqual(output, { action: 'BID',
+              shares: '10',
+              gasEth: '0.000000000725202',
+              feeEth: '0.05',
+              feePercent: '1',
+              costEth: '-5.05',
+              avgPrice: '0.505',
+              noFeePrice: '0.5'
+            });
+        }
+    });
+});
+describe("tradeActions.getBuyAction", function() {
+    // 1 test total
+    var test = function(t) {
+        it(t.description, function() {
+            t.assertions(augur.getBuyAction(t.buyEth, t.sharesFilled, t.takerFeeEth, t.gasPrice));
+        });
+    };
+    test({
+        description: 'Should correctly create and return a buy action object',
+        buyEth: new BigNumber('5'),
+        sharesFilled: new BigNumber('10'),
+        takerFeeEth: new BigNumber('0.05'),
+        gasPrice: 93045,
+        assertions: function(output) {
+            assert.deepEqual(output, {
+                action: 'BUY',
+                shares: '10',
+                gasEth: '0.000000073265586945',
+                feeEth: '0.05',
+                feePercent: '1',
+                costEth: '-5',
+                avgPrice: '0.5',
+                noFeePrice: '0.495'
+            });
+        }
+    });
+});
+describe("tradeActions.getAskAction", function() {
+    // 1 test total
+    var test = function(t) {
+        it(t.description, function() {
+            t.assertions(augur.getAskAction(t.shares, t.limitPrice, t.makerFee, t.gasPrice));
+        });
+    };
+    test({
+        description: 'Should correctly create and return a ask action object',
+        shares: new BigNumber('100000000000000000000'),
+        limitPrice: new BigNumber('500000000000000000'),
+        makerFee: new BigNumber('2000000000000000'),
+        gasPrice: 93045,
+        assertions: function(output) {
+            assert.deepEqual(output, {
+                action: 'ASK',
+                avgPrice: '0.499',
+                costEth: '49.9',
+                feeEth: '0.1',
+                feePercent: '0.2',
+                gasEth: '0.000000064829941155',
+                noFeePrice: '0.5',
+                shares: '100'
+            });
+        }
+    });
+});
+describe("tradeActions.getSellAction", function() {
+    // 1 test total
+    var test = function(t) {
+        it(t.description, function() {
+            t.assertions(augur.getSellAction(t.sellEth, t.sharesFilled, t.takerFeeEth, t.gasPrice));
+        });
+    };
+    test({
+        description: 'Should correctly create and return a sell action object',
+        sellEth: new BigNumber('50'),
+        sharesFilled: new BigNumber('100'),
+        takerFeeEth: new BigNumber('0.01'),
+        gasPrice: 93045,
+        assertions: function(output) {
+            assert.deepEqual(output, {
+                action: 'SELL',
+                shares: '100',
+                gasEth: '0.000000073265586945',
+                feeEth: '0.01',
+                feePercent: '0.02',
+                costEth: '50',
+                avgPrice: '0.5',
+                noFeePrice: '0.5001'
+            });
+        }
+    });
+});
 describe("tradeActions.getShortSellAction", function() {});
 describe("tradeActions.getShortAskAction", function() {});
 describe("tradeActions.calculateTradeTotals", function() {});
-
 describe("getTradingActions", function () {
 
   var testFields = [
