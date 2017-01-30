@@ -5,7 +5,6 @@ import store from 'src/store';
 import { clearClosePositionTradeGroup } from 'modules/my-positions/actions/clear-close-position-trade-group';
 
 import { CLOSE_DIALOG_CLOSING, CLOSE_DIALOG_FAILED, CLOSE_DIALOG_PARTIALLY_FAILED, CLOSE_DIALOG_SUCCESS } from 'modules/market/constants/trade-close-status';
-
 import { SUCCESS, FAILED } from 'modules/transactions/constants/statuses';
 
 export default () => {
@@ -28,6 +27,13 @@ const selectClosePositionStatus = memorizerific(5)((closePositionTradeGroups, tr
 
         return p;
       }, []);
+
+      // closing failed further up in the call chain to close position
+      if (closePositionTradeGroups[marketID][outcomeID][0] === CLOSE_DIALOG_FAILED) {
+        delayClearTradeGroupIDs(marketID, outcomeID);
+
+        return { ...p, [outcomeID]: CLOSE_DIALOG_FAILED };
+      }
 
       // Short Circuit until transactionsData is updated with the tradeGroupID
       if (closePositionTransactionIDs.length === 0 && closePositionTradeGroups[marketID][outcomeID]) {

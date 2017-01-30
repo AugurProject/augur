@@ -5,6 +5,7 @@ import { placeTrade } from 'modules/trade/actions/place-trade';
 import { addClosePositionTradeGroup } from 'modules/my-positions/actions/add-close-position-trade-group';
 
 import { BUY, SELL } from 'modules/trade/constants/types';
+import { CLOSE_DIALOG_FAILED } from 'modules/market/constants/trade-close-status';
 import { ZERO } from 'modules/trade/constants/numbers';
 
 import getValue from 'utils/get-value';
@@ -20,6 +21,8 @@ export function closePosition(marketID, outcomeID) {
       dispatch(placeTrade(marketID, outcomeID, true, (err, tradeGroupID) => {
         if (err) {
           console.error('placeTrade err -- ', err);
+
+          dispatch(addClosePositionTradeGroup(marketID, outcomeID, CLOSE_DIALOG_FAILED));
         } else {
           dispatch(addClosePositionTradeGroup(marketID, outcomeID, tradeGroupID));
         }
