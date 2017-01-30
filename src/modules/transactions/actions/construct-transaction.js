@@ -303,15 +303,16 @@ export function constructSubmittedReportTransaction(log, marketID, market, outco
   return transaction;
 }
 
-export function constructLogFillTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status, dispatch) {
+export function constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, outcomeName, status, dispatch) {
+  console.log('constructLogFillTransaction:', trade);
   if (!trade.amount || !trade.price || (!trade.makerFee && !trade.takerFee)) return null;
   const transactionID = `${trade.transactionHash}-${trade.tradeid}`;
   const tradeGroupID = trade.tradeGroupID;
   const price = formatEther(trade.price);
   const shares = formatShares(trade.amount);
-  const bnPrice = abi.bignum(trade.price);
   const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
   const bnShares = abi.bignum(trade.amount);
+  const bnPrice = marketType === SCALAR ? abi.bignum(augur.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
   const totalCost = bnPrice.times(bnShares).plus(tradingFees);
   const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
   const totalCostPerShare = totalCost.dividedBy(bnShares);
@@ -514,7 +515,7 @@ export function constructTradingTransaction(label, trade, marketID, outcomeID, s
     }
     switch (label) {
       case 'log_fill_tx': {
-        return constructLogFillTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status, dispatch);
+        return constructLogFillTxTransaction(trade, marketID, marketType, market.minValue, description, outcomeID, outcomeName, status, dispatch);
       }
       case 'log_short_fill_tx': {
         return constructLogShortFillTxTransaction(trade, marketID, marketType, market.maxValue, description, outcomeID, outcomeName, status, dispatch);
