@@ -7,7 +7,8 @@ ex.connect = function connect(env, cb) {
     http: env.gethHttpURL,
     ws: env.gethWebsocketsURL,
     contracts: env.contracts,
-    augurNodes: env.augurNodes
+    augurNodes: env.augurNodes,
+    noFallback: !env.hostedNodeFallback
   };
   const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
   if (isHttps) {
@@ -16,11 +17,10 @@ ex.connect = function connect(env, cb) {
     if (!isEnvHttps) options.http = null;
     if (!isEnvWss) options.ws = null;
   }
-  if (options.http) augur.rpc.nodes.hosted = [options.http];
-  augur.options.debug.trading = true;
-  augur.options.debug.reporting = true;
+  augur.options.debug.trading = env.debug.trading;
+  augur.options.debug.reporting = env.debug.reporting;
   augur.options.debug.nonce = false;
-  augur.rpc.debug.broadcast = false;
+  augur.rpc.debug.broadcast = env.debug.broadcast;
   augur.rpc.debug.tx = false;
   augur.connect(options, (connection) => {
     if (!connection) return cb('could not connect to ethereum');
