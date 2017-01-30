@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "3.9.9",
+  "version": "3.9.10",
   "description": "Augur JavaScript API",
   "main": "src/index.js",
   "scripts": {
@@ -14,7 +14,7 @@
   "dependencies": {
     "async": "1.5.2",
     "augur-abi": "1.1.1",
-    "augur-contracts": "2.8.6",
+    "augur-contracts": "2.8.7",
     "bignumber.js": "2.3.0",
     "browser-request": "0.3.3",
     "bs58": "3.0.0",
@@ -68,6 +68,7 @@
     "moment": "^2.13.0",
     "posix-getopt": "^1.1.0",
     "rimraf": "^2.4.0",
+    "source-map": "^0.5.6",
     "spammer": "^0.1.1",
     "uglify-js": "^2.6.1",
     "vinyl-buffer": "^1.0.0",
