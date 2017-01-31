@@ -2,7 +2,7 @@ import memorizerific from 'memoizerific';
 
 import store from 'src/store';
 
-import { clearClosePositionTradeGroup } from 'modules/my-positions/actions/clear-close-position-trade-group';
+import { clearClosePositionOutcome } from 'modules/my-positions/actions/clear-close-position-outcome';
 
 import { CLOSE_DIALOG_CLOSING, CLOSE_DIALOG_FAILED, CLOSE_DIALOG_PARTIALLY_FAILED, CLOSE_DIALOG_SUCCESS } from 'modules/market/constants/close-dialog-status';
 import { SUCCESS, FAILED } from 'modules/transactions/constants/statuses';
@@ -86,6 +86,6 @@ function delayClearTradeGroupIDs(marketID, outcomeID) {
   // This will ultimately clear the outcome status and allow for the user to try again if an action is available
 
   setTimeout(() => {
-    store.dispatch(clearClosePositionTradeGroup(marketID, outcomeID));
+    store.dispatch(clearClosePositionOutcome(marketID, outcomeID));
   }, 3000);
 }

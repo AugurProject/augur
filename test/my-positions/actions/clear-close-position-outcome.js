@@ -1,9 +1,9 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 
-import { CLEAR_CLOSE_POSITION_TRADE_GROUP, clearClosePositionTradeGroup } from 'modules/my-positions/actions/clear-close-position-trade-group';
+import { CLEAR_CLOSE_POSITION_OUTCOME, clearClosePositionTradeGroup } from 'modules/my-positions/actions/clear-close-position-outcome';
 
-describe('modules/my-positions/actions/clear-close-position-trade-group.js', () => {
+describe('modules/my-positions/actions/clear-close-position-outcome.js', () => {
   describe('clearClosePositionTradeGroup', () => {
     const test = (t) => {
       it(t.description, () => {
@@ -19,7 +19,7 @@ describe('modules/my-positions/actions/clear-close-position-trade-group.js', () 
       },
       assertions: (res) => {
         assert.deepEqual(res, {
-          type: CLEAR_CLOSE_POSITION_TRADE_GROUP,
+          type: CLEAR_CLOSE_POSITION_OUTCOME,
           marketID: '0xMarketID',
           outcomeID: '1'
         });
