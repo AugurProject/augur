@@ -15,9 +15,9 @@ export function closePosition(marketID, outcomeID) {
     const { accountPositions, orderBooks } = getState();
 
     const outcomeShares = new BigNumber(getValue(accountPositions, `${marketID}.${outcomeID}`) || 0);
-    const bestFillParameters = getBestFillParameters(orderBooks, outcomeShares.toNumber() > 0 ? BUY : SELL, outcomeShares.absoluteValue(), marketID, outcomeID);
+    const bestFill = getBestFill(orderBooks, outcomeShares.toNumber() > 0 ? BUY : SELL, outcomeShares.absoluteValue(), marketID, outcomeID);
 
-    dispatch(updateTradesInProgress(marketID, outcomeID, outcomeShares.toNumber() > 0 ? SELL : BUY, bestFillParameters.amountOfShares.toNumber(), bestFillParameters.bestPrice.toNumber(), null, () => {
+    dispatch(updateTradesInProgress(marketID, outcomeID, outcomeShares.toNumber() > 0 ? SELL : BUY, bestFill.amountOfShares.toNumber(), bestFill.price.toNumber(), null, () => {
       dispatch(placeTrade(marketID, outcomeID, true, (err, tradeGroupID) => {
         if (err) {
           console.error('placeTrade err -- ', err);
@@ -31,8 +31,8 @@ export function closePosition(marketID, outcomeID) {
   };
 }
 
-function getBestFillParameters(orderBooks, side, shares, marketID, outcomeID) {
-  let bestPrice = ZERO;
+export function getBestFill(orderBooks, side, shares, marketID, outcomeID) {
+  let price = ZERO;
   let amountOfShares = ZERO;
 
   Object.keys((getValue(orderBooks, `${marketID}.${side}`) || {})).reduce((p, orderID) => {
@@ -53,7 +53,7 @@ function getBestFillParameters(orderBooks, side, shares, marketID, outcomeID) {
     return aBN-bBN;
   }).find((order) => {
     amountOfShares = amountOfShares.plus(new BigNumber(order.amount));
-    bestPrice = new BigNumber(order.fullPrecisionPrice);
+    price = new BigNumber(order.fullPrecisionPrice);
 
     if (amountOfShares.toNumber() >= shares.toNumber()) {
       amountOfShares = shares;
@@ -63,5 +63,5 @@ function getBestFillParameters(orderBooks, side, shares, marketID, outcomeID) {
     return false;
   });
 
-  return { amountOfShares, bestPrice };
+  return { amountOfShares, price };
 }
