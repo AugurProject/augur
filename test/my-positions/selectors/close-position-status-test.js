@@ -3,7 +3,6 @@ import { assert } from 'chai';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import proxyquire from 'proxyquire';
-import sinon from 'sinon';
 
 import { CLOSE_DIALOG_CLOSING, CLOSE_DIALOG_FAILED, CLOSE_DIALOG_PARTIALLY_FAILED, CLOSE_DIALOG_SUCCESS } from 'modules/market/constants/close-dialog-status';
 import { SUCCESS, FAILED } from 'modules/transactions/constants/statuses';
