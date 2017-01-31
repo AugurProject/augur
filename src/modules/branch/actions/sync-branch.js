@@ -55,6 +55,7 @@ export const syncBranch = cb => (dispatch, getState) => {
         dispatch(updateBranch({ numEventsInReportPeriod: parseInt(numberEvents, 10) }));
         if (!loginAccount.address) return callback(null);
         dispatch(updateAssets((err, balances) => {
+          if (err) console.error(err);
           dispatch(claimProceeds());
           if (!balances.rep || isZero(balances.rep)) return callback(null);
           dispatch(syncReporterData(callback));
