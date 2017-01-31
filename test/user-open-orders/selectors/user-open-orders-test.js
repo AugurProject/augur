@@ -16,7 +16,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
       address: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c'
     },
     orderCancellation: {
-        order8: CLOSE_DIALOG_CLOSING
+      order8: CLOSE_DIALOG_CLOSING
     }
   };
   const store = mockStore(state);
