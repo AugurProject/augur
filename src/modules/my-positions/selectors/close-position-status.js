@@ -19,7 +19,7 @@ const selectClosePositionStatus = memorizerific(5)((closePositionTradeGroups, tr
   const statuses = Object.keys(closePositionTradeGroups).reduce((p, marketID) => {
     const outcomeStatuses = Object.keys(closePositionTradeGroups[marketID]).reduce((p, outcomeID) => {
       const closePositionTransactionIDs = closePositionTradeGroups[marketID][outcomeID].reduce((p, tradeGroupID) => {
-        const transactionIDs = Object.keys(transactionsData).filter(transactionHash => transactionsData[transactionHash].tradeGroupID === tradeGroupID);
+        const transactionIDs = Object.keys(transactionsData).filter(transactionID => transactionsData[transactionID].tradeGroupID === tradeGroupID);
 
         if (transactionIDs.length !== 0) {
           return [...p, ...transactionIDs];
