@@ -310,6 +310,8 @@ module.exports = {
                 });
               }
             });
+          } else {
+            nextMarket(null);
           }
         });
       }, callback);
