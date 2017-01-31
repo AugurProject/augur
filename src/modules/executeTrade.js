@@ -10,7 +10,7 @@ module.exports = {
 
   // if buying numShares must be 0, if selling totalEthWithFee must be 0
   executeTrade: function (marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, cb) {
-    console.log("executeTrade:", marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, address, orderBooks);
+    if (this.options.debug.trading) console.log("executeTrade:", marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, address, orderBooks);
     var self = this;
     var bnTotalEth = abi.bignum(totalEthWithFee) || constants.ZERO;
     var bnNumShares = abi.bignum(numShares) || constants.ZERO;
@@ -36,11 +36,13 @@ module.exports = {
     }
     async.until(function () {
       matchingTradeIDs = getTradeIDs(orderBooks);
-      console.log("matchingTradeIDs:", matchingTradeIDs);
-      console.log("remainingEth:", res.remainingEth.toFixed());
-      console.log("remainingShares:", res.remainingShares.toFixed());
-      console.log("sharesPurchased:", bnSharesPurchased.toFixed());
-      console.log("balance:", bnCashBalance.toFixed());
+      if (self.options.debug.trading) {
+        console.log("matchingTradeIDs:", matchingTradeIDs);
+        console.log("remainingEth:", res.remainingEth.toFixed());
+        console.log("remainingShares:", res.remainingShares.toFixed());
+        console.log("sharesPurchased:", bnSharesPurchased.toFixed());
+        console.log("balance:", bnCashBalance.toFixed());
+      }
       return !matchingTradeIDs || !matchingTradeIDs.length ||
         (res.remainingEth.lte(constants.PRECISION.zero) && res.remainingShares.lte(constants.PRECISION.zero)) ||
         (bnNumShares.gt(constants.ZERO) && bnSharesPurchased.lte(constants.PRECISION.zero)) ||
@@ -84,16 +86,16 @@ module.exports = {
                 gasFees: res.gasFees.toFixed()
               });
             },
-            onCommitSent: function (data) { console.log("commit sent:", data); },
+            onCommitSent: function (data) { if (self.options.debug.trading) console.log("commit sent:", data); },
             onCommitSuccess: function (data) {
               res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
               tradeCommitmentCallback({ gasFees: res.gasFees.toFixed() });
             },
             onCommitFailed: nextTrade,
-            onNextBlock: function (data) { console.log("trade-onNextBlock", data); },
-            onTradeSent: function (data) { console.log("trade sent:", data); },
+            onNextBlock: function (data) { if (self.options.debug.trading) console.log("trade-onNextBlock", data); },
+            onTradeSent: function (data) { if (self.options.debug.trading) console.log("trade sent:", data); },
             onTradeSuccess: function (data) {
-              console.log("trade success:", data);
+              if (self.options.debug.trading) console.log("trade success:", data);
               res.filledShares = res.filledShares.plus(abi.bignum(data.sharesBought));
               res.filledEth = res.filledEth.plus(abi.bignum(data.cashFromTrade));
               if (isRemainder) {
@@ -126,7 +128,7 @@ module.exports = {
       });
     }, function (err) {
       if (err) return cb(err);
-      console.log("trade complete:", JSON.stringify(res, null, 2));
+      if (self.options.debug.trading) console.log("trade complete:", JSON.stringify(res, null, 2));
       cb(null, res);
     });
   },
@@ -141,7 +143,7 @@ module.exports = {
       gasFees: constants.ZERO
     };
     var matchingIDs = getTradeIDs(orderBooks);
-    console.log("matching trade IDs:", matchingIDs);
+    if (self.options.debug.trading) console.log("matching trade IDs:", matchingIDs);
     if (!matchingIDs || !matchingIDs.length || res.remainingShares.lte(constants.ZERO)) return cb(null, res);
     async.eachSeries(matchingIDs, function (matchingID, nextMatchingID) {
       var maxAmount = res.remainingShares.toFixed();
@@ -165,14 +167,14 @@ module.exports = {
             gasFees: res.gasFees.toFixed()
           });
         },
-        onCommitSent: function (data) { console.log("short sell commit sent:", data); },
+        onCommitSent: function (data) { if (self.options.debug.trading)  console.log("short sell commit sent:", data); },
         onCommitSuccess: function (data) {
           res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
           tradeCommitmentCallback({ gasFees: res.gasFees.toFixed() });
         },
         onCommitFailed: nextMatchingID,
-        onNextBlock: function (data) { console.log("short_sell onNextBlock", data); },
-        onTradeSent: function (data) { console.debug("short sell sent", data); },
+        onNextBlock: function (data) { if (self.options.debug.trading)  console.log("short_sell onNextBlock", data); },
+        onTradeSent: function (data) { if (self.options.debug.trading)  console.debug("short sell sent", data); },
         onTradeSuccess: function (data) {
           if (data.unmatchedShares) {
             res.remainingShares = abi.bignum(data.unmatchedShares);
@@ -201,7 +203,7 @@ module.exports = {
       });
     }, function (err) {
       if (err && !err.isComplete) return cb(err);
-      console.log("short_sell success:", JSON.stringify(res, null, 2));
+      if (self.options.debug.trading) console.log("short_sell success:", JSON.stringify(res, null, 2));
       cb(null, res);
     });
   }

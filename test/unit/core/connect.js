@@ -4,6 +4,7 @@ var assert = require('chai').assert;
 var augur = require('../../../src');
 var connector = require("ethereumjs-connect");
 var contracts = require('augur-contracts');
+var ClearCallCounts = require('../../tools').ClearCallCounts;
 
 describe('connect.bindContractMethod', function() {});
 
@@ -15,7 +16,12 @@ describe('connect.useAccount', function() {
     // 1 test total
     var sync = augur.sync;
     var setFrom = connector.setFrom;
+    var callCounts = {
+        setFrom: 0,
+        sync: 0
+    };
     afterEach(function() {
+        ClearCallCounts(callCounts);
         augur.sync = sync;
         connector.setFrom = setFrom;
     });
@@ -31,10 +37,16 @@ describe('connect.useAccount', function() {
         description: 'Should set connector.from to the account passed, should call setFrom and sync.',
         account: '0xabc123',
         setFrom: function(account) {
+            callCounts.setFrom++;
             assert.equal(account, '0xabc123');
         },
         assertions: function() {
+            callCounts.sync++;
             assert.equal(connector.from, '0xabc123');
+            assert.deepEqual(callCounts, {
+                setFrom: 1,
+                sync: 1
+            });
         }
     });
 });

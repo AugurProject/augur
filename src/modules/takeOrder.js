@@ -26,7 +26,7 @@ module.exports = {
       if (err) return console.error("trade failed:", err);
       var sharesRemaining = abi.bignum(numShares).minus(res.filledShares);
       if (sharesRemaining.gte(constants.PRECISION.limit) && res.remainingEth.gte(constants.PRECISION.limit)) {
-        console.log("buy remainder:", sharesRemaining.toFixed(), "shares remaining,", res.remainingEth.toFixed(), "cash remaining", constants.PRECISION.limit.toFixed(), "precision limit");
+        if (self.options.debug.trading) console.log("buy remainder:", sharesRemaining.toFixed(), "shares remaining,", res.remainingEth.toFixed(), "cash remaining", constants.PRECISION.limit.toFixed(), "precision limit");
         if (!doNotMakeOrders) {
           self.placeBid(market, outcomeID, sharesRemaining.toFixed(), limitPrice, tradeGroupID);
         }

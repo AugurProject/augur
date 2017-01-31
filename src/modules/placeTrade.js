@@ -27,7 +27,7 @@ module.exports = {
       if (!tradeInProgress.limitPrice || !tradeInProgress.numShares || !tradeInProgress.totalCost) {
         return nextTradeInProgress();
       }
-      console.log('placing trade:', tradeInProgress);
+      if (self.options.debug.trading) console.log('placing trade:', tradeInProgress);
       self.placeTrade(
         market,
         outcomeID,
