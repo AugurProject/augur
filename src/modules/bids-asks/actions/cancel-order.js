@@ -6,9 +6,6 @@ import { CLOSE_DIALOG_CLOSING, CLOSE_DIALOG_FAILED } from 'modules/market/consta
 
 const TIME_TO_WAIT_BEFORE_FINAL_ACTION_MILLIS = 3000;
 
-export const SHOW_CANCEL_ORDER_CONFIRMATION = 'SHOW_CANCEL_ORDER_CONFIRMATION';
-export const ABORT_CANCEL_ORDER_CONFIRMATION = 'ABORT_CANCEL_ORDER_CONFIRMATION';
-
 export function cancelOrder(orderID, marketID, type) {
   return (dispatch, getState) => {
     const { orderBooks, outcomesData, marketsData } = getState();

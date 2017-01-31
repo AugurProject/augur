@@ -1,5 +1,5 @@
 import { describe, it, afterEach } from 'mocha';
-// import { assert } from 'chai';
+import { assert } from 'chai';
 import BigNumber from 'bignumber.js';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
@@ -55,7 +55,7 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
       store.dispatch(cancelOrderModule.cancelOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'nonExistingMarketID', BID));
       store.dispatch(cancelOrderModule.cancelOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'testMarketID', ASK));
 
-      // TODO -- setup assertions
+      assert.deepEqual(store.getActions(), []);
     });
   });
 });
