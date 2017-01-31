@@ -59,7 +59,7 @@ const selectClosePositionStatus = memorizerific(5)((closePositionTradeGroups, tr
       }
 
       // Close Position Partially Failed
-      if (numberOfFailedTransactions) {
+      if (numberOfFailedTransactions && numberOfFailedTransactions !== closePositionTransactionIDs.length && numberOfSuccessfulTransactions === 0) {
         return { ...p, [outcomeID]: CLOSE_DIALOG_PARTIALLY_FAILED };
       } else if (numberOfFailedTransactions && numberOfFailedTransactions + numberOfSuccessfulTransactions === closePositionTransactionIDs.length) {
         delayClearTradeGroupIDs(marketID, outcomeID);
