@@ -1,7 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 
-
 import { ADD_CLOSE_POSITION_TRADE_GROUP, addClosePositionTradeGroup } from 'modules/my-positions/actions/add-close-position-trade-group';
 
 describe('modules/my-positions/actions/add-close-position-trade-group.js', () => {
