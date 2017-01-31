@@ -48,7 +48,7 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
             id: '0xc1',
             userOpenOrders: [{
               id: '0xd1',
-              type: 'buy'
+              trade: { side: 'buy' }
             }]
           }]
         }]
@@ -69,7 +69,7 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
             id: '0xc1',
             userOpenOrders: [{
               id: '0xd1',
-              type: 'buy'
+              trade: { side: 'buy' }
             }]
           }]
         }]
@@ -97,10 +97,10 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
             id: '0xc1',
             userOpenOrders: [{
               id: '0xd1',
-              type: 'buy'
+              trade: { side: 'buy' }
             }, {
               id: '0xd2',
-              type: 'sell'
+              trade: { side: 'sell' }
             }]
           }]
         }]
@@ -135,10 +135,10 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
             id: '0xc1',
             userOpenOrders: [{
               id: '0xd1',
-              type: 'buy'
+              trade: { side: 'buy' }
             }, {
               id: '0xd2',
-              type: 'sell'
+              trade: { side: 'sell' }
             }]
           }]
         }, {
@@ -148,10 +148,10 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
             id: '0xc1',
             userOpenOrders: [{
               id: '0xd3',
-              type: 'buy'
+              trade: { side: 'buy' }
             }, {
               id: '0xd4',
-              type: 'buy'
+              trade: { side: 'buy' }
             }]
           }]
         }]
@@ -200,10 +200,10 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
             id: '0xc1',
             userOpenOrders: [{
               id: '0xd1',
-              type: 'buy'
+              trade: { side: 'buy' }
             }, {
               id: '0xd2',
-              type: 'sell'
+              trade: { side: 'sell' }
             }]
           }]
         }, {
@@ -213,10 +213,10 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
             id: '0xc1',
             userOpenOrders: [{
               id: '0xd3',
-              type: 'buy'
+              trade: { side: 'buy' }
             }, {
               id: '0xd4',
-              type: 'buy'
+              trade: { side: 'buy' }
             }]
           }]
         }]

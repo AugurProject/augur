@@ -16,7 +16,7 @@ export const cancelOpenOrdersInClosedMarkets = () => (dispatch) => {
             for (let k = 0; k < numOrders; ++k) {
               const openOrder = outcome.userOpenOrders[k];
               console.log('cancelling order:', openOrder);
-              dispatch(cancelOrder(openOrder.id, market.id, openOrder.type));
+              dispatch(cancelOrder(openOrder.id, market.id, openOrder.trade.side));
             }
           }
         }
