@@ -2,6 +2,7 @@ import async from 'async';
 import { augur } from '../../../services/augurjs';
 import { updateAssets } from '../../auth/actions/update-assets';
 import { loadAccountTrades } from '../../my-positions/actions/load-account-trades';
+import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
 import { cancelOpenOrdersInClosedMarkets } from '../../user-open-orders/actions/cancel-open-orders-in-closed-markets';
 import selectWinningPositions from '../../my-positions/selectors/winning-positions';
 
@@ -12,9 +13,13 @@ export const claimProceeds = () => (dispatch, getState) => {
     console.log('closed markets with winning shares:', winningPositions);
     if (winningPositions.length) {
       augur.claimMarketsProceeds(branch.id, winningPositions, (err, claimedMarkets) => {
-        if (err) return console.error('claimMarketsProceeds failed:', err);
+        if (err) console.error('claimMarketsProceeds failed:', err);
         dispatch(updateAssets());
-        async.each(claimedMarkets, (market, nextMarket) => dispatch(loadAccountTrades(market.id, () => nextMarket())));
+        async.each(claimedMarkets, (market, nextMarket) => (
+          dispatch(loadMarketsInfo([market.id], () => (
+            dispatch(loadAccountTrades(market.id, () => nextMarket()))
+          )))
+        ));
       });
     }
     dispatch(cancelOpenOrdersInClosedMarkets());

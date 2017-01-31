@@ -18,11 +18,13 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
         abi: { bignum: () => {} }
       };
       const LoadAccountTrades = { loadAccountTrades: () => {} };
+      const LoadMarketsInfo = { loadMarketsInfo: () => {} };
       const UpdateAssets = {};
       const WinningPositions = sinon.stub().returns(t.selectors.winningPositions);
       const action = proxyquire('../../../src/modules/my-positions/actions/claim-proceeds.js', {
         '../../../services/augurjs': AugurJS,
         '../../my-positions/actions/load-account-trades': LoadAccountTrades,
+        '../../markets/actions/load-markets-info': LoadMarketsInfo,
         '../../auth/actions/update-assets': UpdateAssets,
         '../../my-positions/selectors/winning-positions': WinningPositions
       });
@@ -33,6 +35,10 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
       });
       sinon.stub(LoadAccountTrades, 'loadAccountTrades', (marketID, cb) => (dispatch, getState) => {
         dispatch({ type: 'LOAD_ACCOUNT_TRADES', marketID });
+        cb(null);
+      });
+      sinon.stub(LoadMarketsInfo, 'loadMarketsInfo', (marketIDs, cb) => (dispatch, getState) => {
+        dispatch({ type: 'LOAD_MARKETS_INFO', marketIDs });
         cb(null);
       });
       UpdateAssets.updateAssets = sinon.stub().returns({ type: 'UPDATE_ASSETS' });
@@ -95,6 +101,9 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
         }]
       }, {
         type: 'UPDATE_ASSETS'
+      }, {
+        type: 'LOAD_MARKETS_INFO',
+        marketIDs: ['0xa1'],
       }, {
         type: 'LOAD_ACCOUNT_TRADES',
         marketID: '0xa1',
@@ -167,6 +176,9 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
       }, {
         type: 'UPDATE_ASSETS'
       }, {
+        type: 'LOAD_MARKETS_INFO',
+        marketIDs: ['0xa2'],
+      }, {
         type: 'LOAD_ACCOUNT_TRADES',
         marketID: '0xa2',
       }]);
@@ -226,8 +238,14 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
       }, {
         type: 'UPDATE_ASSETS'
       }, {
+        type: 'LOAD_MARKETS_INFO',
+        marketIDs: ['0xa2'],
+      }, {
         type: 'LOAD_ACCOUNT_TRADES',
         marketID: '0xa2',
+      }, {
+        type: 'LOAD_MARKETS_INFO',
+        marketIDs: ['0xa3'],
       }, {
         type: 'LOAD_ACCOUNT_TRADES',
         marketID: '0xa3',
@@ -279,6 +297,9 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
         }]
       }, {
         type: 'UPDATE_ASSETS'
+      }, {
+        type: 'LOAD_MARKETS_INFO',
+        marketIDs: ['0xa3'],
       }, {
         type: 'LOAD_ACCOUNT_TRADES',
         marketID: '0xa3',
