@@ -4,6 +4,7 @@ export default function (closePositionStatus = {}, action) {
   switch (action.type) {
     case UPDATE_CLOSE_POSITION_STATUS:
       return {
+        ...closePositionStatus,
         [action.marketID]: {
           ...closePositionStatus[action.marketID],
           [action.outcomeID]: action.status
