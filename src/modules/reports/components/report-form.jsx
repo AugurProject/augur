@@ -101,7 +101,7 @@ export default class ReportForm extends Component {
         <div className="outcome-options">
           <h4>{!s.isReported ? 'Report the outcome' : 'Outcome Reported'}</h4>
           {p.type === SCALAR &&
-            <span>Enter the outcome of this event, if it was at least {p.minValue} and at most {p.maxValue}.  If the outcome was outside this range, please report this event as Indeterminate.</span>
+            <span>Enter the outcome of this event, if it was at least {p.minValue} and at most {p.maxValue}.  If the outcome was above {p.maxValue}, you should report the outcome as {p.maxValue}; if the outcome was below {p.minValue}, you should report the outcome as {p.minValue}.</span>
           }
           {outcomeOptions}
         </div>
