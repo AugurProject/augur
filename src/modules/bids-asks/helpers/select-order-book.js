@@ -8,6 +8,7 @@ import { ZERO } from 'modules/trade/constants/numbers';
 import { isOrderOfUser } from 'modules/bids-asks/helpers/is-order-of-user';
 
 import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types';
+import { CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-status';
 
 import { formatShares, formatEther } from 'utils/format-number';
 
@@ -79,7 +80,7 @@ const selectAggregatePricePoints = memoizerific(100)((outcomeID, orders, orderCa
 
   const shareCountPerPrice = Object.keys(orders)
     .map(orderId => orders[orderId])
-    .filter(order => order.outcome === outcomeID)
+    .filter(order => order.outcome === outcomeID && orderCancellation[order.id] !== CLOSE_DIALOG_CLOSING)
     .map(order => ({
       ...order,
       isOfCurrentUser: isOrderOfUser(order, currentUserAddress)

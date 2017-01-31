@@ -6,6 +6,7 @@ import store from 'src/store';
 import { isOrderOfUser } from 'modules/bids-asks/helpers/is-order-of-user';
 
 import { BID, ASK } from 'modules/bids-asks/constants/bids-asks-types';
+import { CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-status';
 
 import { formatNone, formatEther, formatShares } from 'utils/format-number';
 
@@ -59,7 +60,7 @@ const selectUserOpenOrders = memoizerific(10)((outcomeID, loginAccount, marketOr
 function getUserOpenOrders(orders, orderType, outcomeID, userID, orderCancellation) {
   return Object.keys(orders)
     .map(orderId => orders[orderId])
-    .filter(order => order.outcome === outcomeID && isOrderOfUser(order, userID))
+    .filter(order => order.outcome === outcomeID && isOrderOfUser(order, userID) && orderCancellation[order.id] !== CLOSE_DIALOG_CLOSING)
     .sort((order1, order2) => new BigNumber(order2.price, 10).comparedTo(new BigNumber(order1.price, 10)))
     .map(order => (
       {
