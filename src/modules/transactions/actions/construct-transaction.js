@@ -251,10 +251,20 @@ export function constructPenalizeTransaction(log, marketID, market, outcomes, di
   const formattedReport = formatReportedOutcome(log.reportValue, market.minValue, market.maxValue, market.type, outcomes);
   transaction.description = market.description;
   transaction.data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
-  if (log.repchange && log.newafterrep) {
+  if (log.repchange) {
+    const repChange = abi.bignum(log.repchange);
+    let repPenalty;
+    let repBalance;
+    if (repChange.lt(constants.ZERO)) {
+      repPenalty = repChange;
+      repBalance = abi.bignum(log.oldrep).plus(abi.bignum(log.repchange)).toFixed();
+    } else {
+      repPenalty = constants.ZERO;
+      repBalance = log.oldrep;
+    }
     transaction.data.balances = [{
-      change: formatRep(log.repchange, { positiveSign: true }),
-      balance: formatRep(log.newafterrep)
+      change: formatRep(repPenalty, { positiveSign: true }),
+      balance: formatRep(repBalance)
     }];
   }
   if (log.inProgress) {
