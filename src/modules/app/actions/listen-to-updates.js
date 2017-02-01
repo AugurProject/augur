@@ -90,6 +90,15 @@ export function listenToUpdates() {
         }
       },
 
+      slashedRep: (msg) => {
+        console.debug('slashedRep:', msg);
+        const { address } = getState().loginAccount;
+        if (msg && (msg.sender === address || msg.reporter === address)) {
+          dispatch(updateAssets());
+          dispatch(convertLogsToTransactions('slashedRep', [msg]));
+        }
+      },
+
       // trade filled: { market, outcome (id), price }
       log_fill_tx: (msg) => {
         console.debug('log_fill_tx:', msg);

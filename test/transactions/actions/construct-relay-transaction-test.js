@@ -16,6 +16,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
       const AugurJS = {
         abi: {
           bignum: (n, type) => augur.abi.bignum(n, type),
+          format_int256: n => augur.abi.format_int256(n),
           unfix: (n, type) => augur.abi.unfix(n, type),
           unfix_signed: (n, type) => augur.abi.unfix_signed(n, type)
         },

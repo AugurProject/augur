@@ -3,7 +3,7 @@ import { assert } from 'chai';
 
 import marketDataNavItemsAssertions from 'assertions/market-data-nav-items';
 
-import { MARKET_DATA_NAV_OUTCOMES, MARKET_DATA_ORDERS, MARKET_DATA_NAV_CHARTS, MARKET_DATA_NAV_DETAILS, MARKET_DATA_NAV_REPORT } from 'modules/app/constants/views';
+import { MARKET_DATA_NAV_OUTCOMES, MARKET_DATA_ORDERS, MARKET_DATA_NAV_CHARTS, MARKET_DATA_NAV_DETAILS, MARKET_DATA_NAV_REPORT, MARKET_DATA_NAV_SNITCH } from 'modules/app/constants/views';
 
 import selector from 'modules/market/selectors/market-data-nav-items';
 
@@ -27,6 +27,9 @@ describe('modules/market/selectors/market-data-nav-items.js', () => {
     [MARKET_DATA_NAV_REPORT]: {
       label: 'Report',
       isPendingReport: true
+    },
+    [MARKET_DATA_NAV_SNITCH]: {
+      label: 'Snitch'
     }
   };
 

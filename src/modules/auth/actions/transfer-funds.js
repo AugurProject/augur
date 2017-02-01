@@ -14,7 +14,7 @@ export function transferFunds(amount, currency, toAddress) {
     const onFailed = e => console.error('transfer', currency, 'failed:', e);
     switch (currency) {
       case 'ETH':
-        return augur.sendCashFrom(to, amount, fromAddress, onSent, onSuccess, onFailed);
+        return augur.Cash.send(to, amount, onSent, onSuccess, onFailed);
       case 'real ETH':
         return augur.sendEther(to, amount, fromAddress, onSent, onSuccess, onFailed);
       case 'REP':

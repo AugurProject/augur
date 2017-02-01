@@ -34,6 +34,7 @@ import { toggleFavorite } from '../../markets/actions/update-favorites';
 import { placeTrade } from '../../trade/actions/place-trade';
 import { sellNumberCompleteSetsMarket } from '../../my-positions/actions/sell-complete-sets';
 import { commitReport } from '../../reports/actions/commit-report';
+import { slashRep } from '../../reports/actions/slash-rep';
 import { toggleTag } from '../../markets/actions/toggle-tag';
 
 import store from '../../../store';
@@ -309,6 +310,7 @@ export function assembleMarket(
         BINARY_INDETERMINATE_OUTCOME_ID :
         CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID;
       market.reportableOutcomes.push({ id: indeterminateOutcomeID, name: INDETERMINATE_OUTCOME_NAME });
+      market.onSubmitSlashRep = (salt, report, address, isIndeterminate, isUnethical) => dispatch(slashRep(market, salt, report, address, isIndeterminate, isUnethical));
 
       market.userOpenOrdersSummary = selectUserOpenOrdersSummary(market.outcomes);
 

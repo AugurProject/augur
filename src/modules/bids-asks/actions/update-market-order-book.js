@@ -20,8 +20,9 @@ export const addOrder = log => (dispatch, getState) => {
         dispatch(updateMarketOrderBook(log.market, orderBook));
       } else {
         const matchedType = log.type === 'buy' ? 'sell' : 'buy';
+        const order = convertAddTxLogToOrder(log, market);
         dispatch(updateMarketOrderBook(log.market, {
-          [log.type]: convertAddTxLogToOrder(log, market),
+          [log.type]: { [order.id]: order },
           [matchedType]: {}
         }));
       }
