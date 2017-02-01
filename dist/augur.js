@@ -17009,11 +17009,6 @@ module.exports={
         }, 
         {
           "indexed": false, 
-          "name": "newafterrep", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
           "name": "p", 
           "type": "int256"
         }, 
@@ -17033,8 +17028,8 @@ module.exports={
           "type": "int256"
         }
       ], 
-      "name": "penalize(int256,int256,int256,int256,int256,int256,int256,int256,int256,int256,int256)", 
-      "signature": "0xc06628844b88265d7d67648aa987a952cb724513c59dcf14014706b266041de7"
+      "name": "penalize(int256,int256,int256,int256,int256,int256,int256,int256,int256,int256)", 
+      "signature": "0xa865e521626cec7891279a54f112b20abe52888a42df585b51ca9ff03c4249b7"
     }, 
     "registration": {
       "contract": "Register", 
@@ -17079,6 +17074,43 @@ module.exports={
       ], 
       "name": "sentCash(int256,int256,int256,int256)", 
       "signature": "0x27fc4539f0a547270e2eb3d44c9889a9dd0d9fe116324eb14204ad6d54d6e047"
+    }, 
+    "slashedRep": {
+      "contract": "SlashRep", 
+      "inputs": [
+        {
+          "indexed": true, 
+          "name": "branch", 
+          "type": "int256"
+        }, 
+        {
+          "indexed": true, 
+          "name": "sender", 
+          "type": "int256"
+        }, 
+        {
+          "indexed": true, 
+          "name": "reporter", 
+          "type": "int256"
+        }, 
+        {
+          "indexed": false, 
+          "name": "event", 
+          "type": "int256"
+        }, 
+        {
+          "indexed": false, 
+          "name": "repSlashed", 
+          "type": "int256"
+        }, 
+        {
+          "indexed": false, 
+          "name": "slasherBalance", 
+          "type": "int256"
+        }
+      ], 
+      "name": "slashedRep(int256,int256,int256,int256,int256,int256)", 
+      "signature": "0xcc9436d20fc96bc634d12281b916903ab7c9d6bbdc5d1a73f1c60d7479c006ae"
     }, 
     "submittedReport": {
       "contract": "MakeReports", 
@@ -22101,6 +22133,9 @@ module.exports={
     "SlashRep": {
       "slashRep": {
         "description": "Punish Reporter for insufficient Reports submitted", 
+        "events": [
+          "slashedRep"
+        ], 
         "inputs": [
           "branch", 
           "salt", 
@@ -23668,6 +23703,12 @@ module.exports = function () {
           fmt._to = abi.format_address(msg._to);
           fmt._value = abi.unfix(msg._value);
           return fmt;
+        case "slashedRep":
+          fmt = this.format_common_fields(msg);
+          fmt.reporter = abi.format_address(msg.reporter);
+          fmt.repSlashed = abi.unfix(msg.repSlashed, "string");
+          fmt.slasherBalance = abi.unfix(msg.slasherBalance, "string");
+          return fmt;
         case "submittedReport":
         case "submittedReportHash":
           fmt = this.format_common_fields(msg);
@@ -24332,7 +24373,7 @@ function Augur() {
 
   this.options = {
     debug: {
-      tools: false, // if true, testing tools (test/tools.js) included
+      tools: true, // if true, testing tools (test/tools.js) included
       abi: false, // debug logging in augur-abi
       broadcast: false, // broadcast debug logging in ethrpc
       connect: false, // connection debug logging in ethereumjs-connect
