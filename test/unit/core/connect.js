@@ -8,10 +8,10 @@ var constants = require("../../../src/constants");
 var ClearCallCounts = require('../../tools').ClearCallCounts;
 var noop = require('../../../src/utilities.js').noop;
 var BigNumber = require("bignumber.js");
-// 22 tests total
+// 24 tests total
 
 describe('connect.bindContractMethod', function() {
-  // 9 tests total
+  // 11 tests total
   var fire = augur.fire;
   var transact = augur.transact;
   afterEach(function() {
@@ -30,7 +30,7 @@ describe('connect.bindContractMethod', function() {
     contract: 'Cash',
     method: 'balance',
     callMethod: function(method) {
-      // ('account', callback)
+      // (address, callback)
       method('0xa1', undefined);
     },
     fire: function(tx, onSent, onSuccess, onFailed) {
@@ -57,7 +57,7 @@ describe('connect.bindContractMethod', function() {
     contract: 'Cash',
     method: 'balance',
     callMethod: function(method) {
-      // ('account', callback)
+      // (address, callback)
       method('0xa1', noop);
     },
     fire: function(tx, onSent, onSuccess, onFailed) {
@@ -274,6 +274,60 @@ describe('connect.bindContractMethod', function() {
       assert.isUndefined(onSent);
       assert.isUndefined(onSuccess);
       assert.isUndefined(onFailed);
+    }
+  });
+  test({
+    description: 'Should handle binding a method and then handling the method correctly when the method passed no args and is a method where send is true',
+    contract: 'Cash',
+    method: 'addCash',
+    callMethod: function(method) {
+      // (ID, amount, callback)
+      method();
+    },
+    fire: function(tx, onSent, onSuccess, onFailed) {
+      // Shouldn't get hit in this case
+      assert.isFalse(true);
+    },
+    transact: function(tx, onSent, onSuccess, onFailed) {
+      assert.deepEqual(tx, {
+        fixed: [ 1 ],
+        inputs: [ 'ID', 'amount' ],
+        label: 'Add Cash',
+        method: 'addCash',
+        returns: 'number',
+        send: true,
+        signature: [ 'int256', 'int256' ],
+        to: augur.tx.Cash.addCash.to
+      });
+      assert.isUndefined(onSent);
+      assert.isUndefined(onSuccess);
+      assert.isUndefined(onFailed);
+    }
+  });
+  test({
+    description: 'Should handle binding a method and then handling the method correctly when the method passed no args and is a method where send is false',
+    contract: 'Cash',
+    method: 'balance',
+    callMethod: function(method) {
+      // (account, callback)
+      method();
+    },
+    fire: function(tx, onSent, onSuccess, onFailed) {
+      assert.deepEqual(tx, {
+        inputs: [ 'address' ],
+        label: 'Balance',
+        method: 'balance',
+        returns: 'unfix',
+        signature: [ 'int256' ],
+        to: augur.tx.Cash.balance.to
+      });
+      assert.isUndefined(onSent);
+      assert.isUndefined(onSuccess);
+      assert.isUndefined(onFailed);
+    },
+    transact: function(tx, onSent, onSuccess, onFailed) {
+      // Shouldn't get hit in this case
+      assert.isFalse(true);
     }
   });
 });

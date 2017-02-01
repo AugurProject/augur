@@ -28,7 +28,7 @@ module.exports = {
     return function (args) {
       var tx, params, numInputs, numFixed, cb, i, onSent, onSuccess, onFailed;
       tx = clone(self.api.functions[contract][method]);
-      if (!arguments) {
+      if (!arguments || !arguments.length) {
         if (!tx.send) return self.fire(tx);
         return self.transact(tx);
       }

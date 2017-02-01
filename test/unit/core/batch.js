@@ -12,11 +12,10 @@ describe("batch", function() {
 	}
 	var test = function(t) {
 		it(t.description, function() {
-			var testThis = t.testThis;
 			// create a new instance of batch applied to testThis
 			// run test actions on the initiated batch object
 			// run assertions after test actions are complete.
-			t.assertions(t.testActions(batch.apply(testThis)));
+			t.assertions(t.testActions(batch.apply(t.testThis)));
 		});
 	};
 
