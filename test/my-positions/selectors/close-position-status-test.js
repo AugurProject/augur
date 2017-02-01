@@ -3,21 +3,28 @@ import { assert } from 'chai';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import proxyquire from 'proxyquire';
+import sinon from 'sinon';
 
 import { CLOSE_DIALOG_CLOSING, CLOSE_DIALOG_FAILED, CLOSE_DIALOG_PARTIALLY_FAILED, CLOSE_DIALOG_SUCCESS } from 'modules/market/constants/close-dialog-status';
 import { SUCCESS, FAILED } from 'modules/transactions/constants/statuses';
 import { CLEAR_CLOSE_POSITION_OUTCOME } from 'modules/my-positions/actions/clear-close-position-outcome';
 
 describe('modules/my-positions/selectors/close-position-status', function () {
-  this.timeout(5000);
-
   proxyquire.noPreserveCache().noCallThru();
 
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
 
+  before(() => {
+    this.clock = sinon.useFakeTimers();
+  });
+
+  after(() => {
+    this.clock.restore();
+  });
+
   const test = (t) => {
-    it(t.description, (done) => {
+    it(t.description, () => {
       const store = mockStore(t.state);
 
       const mockClearClosePositionOutcome = () => {};
@@ -27,7 +34,7 @@ describe('modules/my-positions/selectors/close-position-status', function () {
         '../../my-positions/actions/clear-close-position-outcome': mockClearClosePositionOutcome
       });
 
-      t.assertions(selector.default(), done, store);
+      t.assertions(selector.default(), store, this.clock);
     });
   };
 
@@ -45,13 +52,12 @@ describe('modules/my-positions/selectors/close-position-status', function () {
         }
       }
     },
-    assertions: (res, done) => {
+    assertions: (res) => {
       assert.deepEqual(res, {
         '0xMarketID1': {
           0: CLOSE_DIALOG_CLOSING
         }
       });
-      done();
     }
   });
 
@@ -72,13 +78,12 @@ describe('modules/my-positions/selectors/close-position-status', function () {
         }
       }
     },
-    assertions: (res, done) => {
+    assertions: (res) => {
       assert.deepEqual(res, {
         '0xMarketID1': {
           0: CLOSE_DIALOG_CLOSING
         }
       });
-      done();
     }
   });
 
@@ -96,21 +101,20 @@ describe('modules/my-positions/selectors/close-position-status', function () {
         }
       }
     },
-    assertions: (res, done, store) => {
+    assertions: (res, store, clock) => {
       assert.deepEqual(res, {
         '0xMarketID1': {
           0: CLOSE_DIALOG_FAILED
         }
       });
 
-      setTimeout(() => {
-        assert.deepEqual(store.getActions(), [{
-          type: CLEAR_CLOSE_POSITION_OUTCOME,
-          marketID: '0xMarketID1',
-          outcomeID: '0'
-        }]);
-        done();
-      }, 3500);
+      clock.tick(3000);
+
+      assert.deepEqual(store.getActions(), [{
+        type: CLEAR_CLOSE_POSITION_OUTCOME,
+        marketID: '0xMarketID1',
+        outcomeID: '0'
+      }]);
     }
   });
 
@@ -136,21 +140,20 @@ describe('modules/my-positions/selectors/close-position-status', function () {
         }
       }
     },
-    assertions: (res, done, store) => {
+    assertions: (res, store, clock) => {
       assert.deepEqual(res, {
         '0xMarketID1': {
           0: CLOSE_DIALOG_FAILED
         }
       });
 
-      setTimeout(() => {
-        assert.deepEqual(store.getActions(), [{
-          type: CLEAR_CLOSE_POSITION_OUTCOME,
-          marketID: '0xMarketID1',
-          outcomeID: '0'
-        }]);
-        done();
-      }, 3500);
+      clock.tick(3000);
+
+      assert.deepEqual(store.getActions(), [{
+        type: CLEAR_CLOSE_POSITION_OUTCOME,
+        marketID: '0xMarketID1',
+        outcomeID: '0'
+      }]);
     }
   });
 
@@ -176,21 +179,20 @@ describe('modules/my-positions/selectors/close-position-status', function () {
         }
       }
     },
-    assertions: (res, done, store) => {
+    assertions: (res, store, clock) => {
       assert.deepEqual(res, {
         '0xMarketID1': {
           0: CLOSE_DIALOG_PARTIALLY_FAILED
         }
       });
 
-      setTimeout(() => {
-        assert.deepEqual(store.getActions(), [{
-          type: CLEAR_CLOSE_POSITION_OUTCOME,
-          marketID: '0xMarketID1',
-          outcomeID: '0'
-        }]);
-        done();
-      }, 3500);
+      clock.tick(3000);
+
+      assert.deepEqual(store.getActions(), [{
+        type: CLEAR_CLOSE_POSITION_OUTCOME,
+        marketID: '0xMarketID1',
+        outcomeID: '0'
+      }]);
     }
   });
 
@@ -215,13 +217,12 @@ describe('modules/my-positions/selectors/close-position-status', function () {
         }
       }
     },
-    assertions: (res, done) => {
+    assertions: (res) => {
       assert.deepEqual(res, {
         '0xMarketID1': {
           0: CLOSE_DIALOG_PARTIALLY_FAILED
         }
       });
-      done();
     }
   });
 
@@ -247,21 +248,20 @@ describe('modules/my-positions/selectors/close-position-status', function () {
         }
       }
     },
-    assertions: (res, done, store) => {
+    assertions: (res, store, clock) => {
       assert.deepEqual(res, {
         '0xMarketID1': {
           0: CLOSE_DIALOG_SUCCESS
         }
       });
 
-      setTimeout(() => {
-        assert.deepEqual(store.getActions(), [{
-          type: CLEAR_CLOSE_POSITION_OUTCOME,
-          marketID: '0xMarketID1',
-          outcomeID: '0'
-        }]);
-        done();
-      }, 3500);
+      clock.tick(3000);
+
+      assert.deepEqual(store.getActions(), [{
+        type: CLEAR_CLOSE_POSITION_OUTCOME,
+        marketID: '0xMarketID1',
+        outcomeID: '0'
+      }]);
     }
   });
 });
