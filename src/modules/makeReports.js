@@ -224,11 +224,7 @@ module.exports = {
       event = event.event;
     }
     if (this.options.debug.reporting) {
-      console.log('MakeReports.submitReport params:',
-        event,
-        abi.hex(salt),
-        this.fixReport(report, minValue, maxValue, type, isIndeterminate),
-        ethics);
+      console.log('MakeReports.submitReport params:', event, abi.hex(salt), this.fixReport(report, minValue, maxValue, type, isIndeterminate), ethics);
     }
     return this.MakeReports.submitReport(
       event,
