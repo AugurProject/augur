@@ -15,13 +15,21 @@ export function loadReportingHistory(cb) {
       'penalizationCaughtUp',
       'penalize',
       'submittedReport',
-      'submittedReportHash'
+      'submittedReportHash',
+      'slashedRep'
     ], constants.PARALLEL_LIMIT, (label, nextLabel) => {
       augur.getLogs(label, params, null, (err, logs) => {
         if (err) return nextLabel(err);
         if (logs && logs.length) dispatch(convertLogsToTransactions(label, logs));
         nextLabel();
       });
-    }, callback);
+    }, (err) => {
+      if (err) return callback(err);
+      augur.getLogs('slashedRep', { ...params, sender: null, reporter: loginAccount.address }, null, (err, logs) => {
+        if (err) return callback(err);
+        if (logs && logs.length) dispatch(convertLogsToTransactions(label, logs));
+        callback();
+      });
+    });
   };
 }
