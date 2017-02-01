@@ -6,8 +6,277 @@ var connector = require("ethereumjs-connect");
 var Contracts = require('augur-contracts');
 var constants = require("../../../src/constants");
 var ClearCallCounts = require('../../tools').ClearCallCounts;
+var noop = require('../../../src/utilities.js').noop;
+var BigNumber = require("bignumber.js");
+// 22 tests total
 
-describe('connect.bindContractMethod', function() {});
+describe('connect.bindContractMethod', function() {
+  // 9 tests total
+  var fire = augur.fire;
+  var transact = augur.transact;
+  afterEach(function() {
+    augur.fire = fire;
+    augur.transact = transact;
+  });
+  var test = function(t) {
+    it(t.description, function() {
+        augur.fire = t.fire;
+        augur.transact = t.transact;
+        t.callMethod(augur.bindContractMethod(t.contract, t.method));
+    });
+  };
+  test({
+    description: 'Should handle binding a method and then handling the method correctly when the method required inputs and has no callback. no parser, not fixed, send false',
+    contract: 'Cash',
+    method: 'balance',
+    callMethod: function(method) {
+      // ('account', callback)
+      method('0xa1', undefined);
+    },
+    fire: function(tx, onSent, onSuccess, onFailed) {
+      assert.deepEqual(tx, {
+      	inputs: ['address'],
+      	label: 'Balance',
+      	method: 'balance',
+      	returns: 'unfix',
+      	signature: ['int256'],
+      	to: augur.tx.Cash.balance.to,
+      	params: ['0xa1']
+      });
+      assert.isUndefined(onSent);
+      assert.isUndefined(onSuccess);
+      assert.isUndefined(onFailed);
+    },
+    transact: function(tx, onSent, onSuccess, onFailed) {
+      // Shouldn't get hit in this case
+      assert.isFalse(true);
+    }
+  });
+  test({
+    description: 'Should handle binding a method and then handling the method correctly when the method required inputs and has callback. no parser, not fixed, send false',
+    contract: 'Cash',
+    method: 'balance',
+    callMethod: function(method) {
+      // ('account', callback)
+      method('0xa1', noop);
+    },
+    fire: function(tx, onSent, onSuccess, onFailed) {
+      assert.deepEqual(tx, {
+      	inputs: ['address'],
+      	label: 'Balance',
+      	method: 'balance',
+      	returns: 'unfix',
+      	signature: ['int256'],
+      	to: augur.tx.Cash.balance.to,
+      	params: ['0xa1']
+      });
+      assert.isFunction(onSent);
+      assert.isUndefined(onSuccess);
+      assert.isUndefined(onFailed);
+    },
+    transact: function(tx, onSent, onSuccess, onFailed) {
+      // Shouldn't get hit in this case
+      assert.isFalse(true);
+    }
+  });
+  test({
+    description: 'Should handle binding a method and then handling the method correctly when the method has inputs, without callback. method transaction has a parser, not fixed, send false',
+    contract: 'Branches',
+    method: 'getEventForkedOver',
+    callMethod: function(method) {
+      // (branch, cb)
+      method('1010101', undefined);
+    },
+    fire: function(tx, onSent, onSuccess, onFailed) {
+      assert.deepEqual(tx, { inputs: [ 'branch' ],
+        label: 'Get Event Forked Over',
+        method: 'getEventForkedOver',
+        parser: 'parseMarket',
+        returns: 'int256',
+        signature: [ 'int256' ],
+        to: augur.tx.Branches.getEventForkedOver.to,
+        params: [ '1010101' ]
+      });
+      assert.isUndefined(onSent);
+      assert.isUndefined(onSuccess);
+      assert.isUndefined(onFailed);
+    },
+    transact: function(tx, onSent, onSuccess, onFailed) {
+      // Shouldn't get hit in this case
+      assert.isFalse(true);
+    }
+  });
+  test({
+    description: 'Should handle binding a method and then handling the method correctly when the method has inputs, without callback. method transaction has a parser, not fixed, send false',
+    contract: 'Branches',
+    method: 'getEventForkedOver',
+    callMethod: function(method) {
+      // (branch, cb)
+      method('1010101', noop);
+    },
+    fire: function(tx, onSent, onSuccess, onFailed) {
+      assert.deepEqual(tx, { inputs: [ 'branch' ],
+        label: 'Get Event Forked Over',
+        method: 'getEventForkedOver',
+        parser: 'parseMarket',
+        returns: 'int256',
+        signature: [ 'int256' ],
+        to: augur.tx.Branches.getEventForkedOver.to,
+        params: [ '1010101' ]
+      });
+      assert.isFunction(onSent);
+      assert.deepEqual(onSuccess, augur[tx.parser]);
+      assert.isUndefined(onFailed);
+    },
+    transact: function(tx, onSent, onSuccess, onFailed) {
+      // Shouldn't get hit in this case
+      assert.isFalse(true);
+    }
+  });
+  test({
+    description: 'Should handle binding a method and then handling the method correctly when the method has inputs, without callback. method transaction has a parser, fixed, send false',
+    contract: 'Tags',
+    method: 'increaseTagPopularity',
+    callMethod: function(method) {
+      // (branch, tag, fxpAmount, cb)
+      method('1010101', 'politics', '10000000000000000', undefined);
+    },
+    fire: function(tx, onSent, onSuccess, onFailed) {
+      assert.deepEqual(tx,{
+        fixed: [ 2 ],
+        inputs: [ 'branch', 'tag', 'fxpAmount' ],
+        label: 'Increase Tag Popularity',
+        method: 'increaseTagPopularity',
+        returns: 'int256',
+        signature: [ 'int256', 'int256', 'int256' ],
+        to: augur.tx.Tags.increaseTagPopularity.to,
+        params: [ '1010101', 'politics', '0x1ed09bead87c0378d8e6400000000' ]
+      });
+      assert.isUndefined(onSent);
+      assert.isUndefined(onSuccess);
+      assert.isUndefined(onFailed);
+    },
+    transact: function(tx, onSent, onSuccess, onFailed) {
+      // Shouldn't get hit in this case
+      assert.isFalse(true);
+    }
+  });
+  test({
+    description: 'Should handle binding a method and then handling the method correctly when the method has inputs, with callback. method transaction has a parser, fixed, send false. arg as one object',
+    contract: 'Tags',
+    method: 'increaseTagPopularity',
+    callMethod: function(method) {
+      // (branch, tag, fxpAmount, cb)
+      method({branch: '1010101', tag: 'politics', fxpAmount: '10000000000000000', callback: noop});
+    },
+    fire: function(tx, onSent, onSuccess, onFailed) {
+      assert.deepEqual(tx,{
+        fixed: [ 2 ],
+        inputs: [ 'branch', 'tag', 'fxpAmount' ],
+        label: 'Increase Tag Popularity',
+        method: 'increaseTagPopularity',
+        returns: 'int256',
+        signature: [ 'int256', 'int256', 'int256' ],
+        to: augur.tx.Tags.increaseTagPopularity.to,
+        params: [ '1010101', 'politics', '0x1ed09bead87c0378d8e6400000000' ]
+      });
+      assert.deepEqual(onSent, noop);
+      assert.isUndefined(onSuccess);
+      assert.isUndefined(onFailed);
+    },
+    transact: function(tx, onSent, onSuccess, onFailed) {
+      // Shouldn't get hit in this case
+      assert.isFalse(true);
+    }
+  });
+  test({
+    description: 'Should handle binding a method and then handling the method correctly when the method required inputs and has no callback. no parser, fixed tx, send true',
+    contract: 'Cash',
+    method: 'addCash',
+    callMethod: function(method) {
+      // (ID, amount, callback)
+      method('0xa1', '10000000000000000', undefined);
+    },
+    fire: function(tx, onSent, onSuccess, onFailed) {
+      // Shouldn't get hit in this case
+      assert.isTrue(false);
+    },
+    transact: function(tx, onSent, onSuccess, onFailed) {
+      assert.deepEqual(tx, {
+        fixed: [ 1 ],
+        inputs: [ 'ID', 'amount' ],
+        label: 'Add Cash',
+        method: 'addCash',
+        returns: 'number',
+        send: true,
+        signature: [ 'int256', 'int256' ],
+        to: augur.tx.Cash.addCash.to,
+        params: [ '0xa1', '0x1ed09bead87c0378d8e6400000000' ]
+      });
+      assert.isUndefined(onSent);
+      assert.isUndefined(onSuccess);
+      assert.isUndefined(onFailed);
+    }
+  });
+  test({
+    description: 'Should handle binding a method and then handling the method correctly when the method required inputs and has all callbacks. no parser, fixed tx, send true',
+    contract: 'Cash',
+    method: 'addCash',
+    callMethod: function(method) {
+      // (ID, amount, onSent, onSuccess, onFailed)
+      method('0xa1', '10000000000000000', noop, noop, noop);
+    },
+    fire: function(tx, onSent, onSuccess, onFailed) {
+      // Shouldn't get hit in this case
+      assert.isTrue(false);
+    },
+    transact: function(tx, onSent, onSuccess, onFailed) {
+      assert.deepEqual(tx, {
+        fixed: [ 1 ],
+        inputs: [ 'ID', 'amount' ],
+        label: 'Add Cash',
+        method: 'addCash',
+        returns: 'number',
+        send: true,
+        signature: [ 'int256', 'int256' ],
+        to: augur.tx.Cash.addCash.to,
+        params: [ '0xa1', '0x1ed09bead87c0378d8e6400000000' ]
+      });
+      assert.deepEqual(onSent, noop);
+      assert.deepEqual(onSuccess, noop);
+      assert.deepEqual(onFailed, noop);
+    }
+  });
+  test({
+    description: 'Should handle binding a method and then handling the method correctly when the method required inputs and has callback. no parser, fixed tx, send true, single object arg',
+    contract: 'Cash',
+    method: 'addCash',
+    callMethod: function(method) {
+      // (ID, amount, callback)
+      method({ ID: '0xa1', amount: '10000000000000000', callback: noop});
+    },
+    fire: function(tx, onSent, onSuccess, onFailed) {
+      // Shouldn't get hit in this case
+      assert.isTrue(false);
+    },
+    transact: function(tx, onSent, onSuccess, onFailed) {
+      assert.deepEqual(tx, {
+        fixed: [ 1 ],
+        inputs: [ 'ID', 'amount' ],
+        label: 'Add Cash',
+        method: 'addCash',
+        returns: 'number',
+        send: true,
+        signature: [ 'int256', 'int256' ],
+        to: augur.tx.Cash.addCash.to,
+        params: [ '0xa1', '0x1ed09bead87c0378d8e6400000000' ]
+      });
+      assert.isUndefined(onSent);
+      assert.isUndefined(onSuccess);
+      assert.isUndefined(onFailed);
+    }
+  });
+});
 
 describe('connect.bindContractAPI', function() {
   // 2 tests total
