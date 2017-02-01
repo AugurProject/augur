@@ -170,7 +170,7 @@ export default class ReportForm extends Component {
 
         <div className="outcome-options">
           <span>
-            It is important for Augur&#39;s security that Reporters keep their reports <b>secret</b> until the first half of the reporting cycle is complete (in ${p.branch.phaseTimeRemaining}).  If another Reporter has disclosed their Report (and its accompanying random salt) to you, you can enter the other Reporter&#39;s reported values here and you will receive half of their Reputation balance.  (Note: the other Reporter will not be notified, and there is no penalty to you if this fails.)
+            It is important for Augur&#39;s security that Reporters keep their reports <b>secret</b> until the first half of the reporting cycle is complete (in ${p.branch.phaseTimeRemaining}).  If another Reporter has disclosed their Report (and its accompanying random salt) to you, you can enter the other Reporter&#39;s reported values here and you will receive half of their Reputation balance.  (Note: there is no penalty to you if this fails.  The other Reporter will only be notified if the information you enter matches their report.)
           </span>
           <label htmlFor="slash-rep-reporter">
             Ethereum address of cheater
