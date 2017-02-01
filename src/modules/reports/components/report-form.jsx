@@ -222,7 +222,7 @@ export default class ReportForm extends Component {
             disabled={(!s.slashRep.reporter && !s.slashRep.report && !s.slashRep.salt)}
             onClick={() => this.handleSubmitSlashRep(s.slashRep.salt, s.slashRep.report, s.slashRep.reporter, s.slashRep.isIndeterminate, s.slashRep.isUnethical)}
           >
-            Penalize Cheater
+            Fine Reporter
           </button>
         </div>
       </article>
