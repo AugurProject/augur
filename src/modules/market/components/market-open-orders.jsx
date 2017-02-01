@@ -27,11 +27,7 @@ export default class MarketOpenOrders extends Component {
   }
 
   updateHasOrders(props) {
-    (props.outcomes || []).forEach((outcome) => {
-      if (outcome.userOpenOrders && outcome.userOpenOrders.length && !this.state.hasOrders) {
-        this.setState({ hasOrders: true });
-      }
-    });
+    this.setState({ hasOrders: !!(props.outcomes || []).find(outcome => outcome.userOpenOrders && outcome.userOpenOrders.length) });
   }
 
   render() {

@@ -352,6 +352,7 @@ export function constructLogFillTxTransaction(trade, marketID, marketType, minVa
   console.log('constructLogFillTransaction:', trade);
   if (!trade.amount || !trade.price || (!trade.makerFee && !trade.takerFee)) return null;
   const transactionID = `${trade.transactionHash}-${trade.tradeid}`;
+  const tradeGroupID = trade.tradeGroupID;
   const price = formatEther(trade.price);
   const shares = formatShares(trade.amount);
   const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
@@ -381,6 +382,7 @@ export function constructLogFillTxTransaction(trade, marketID, marketType, minVa
     [transactionID]: {
       type,
       hash: trade.transactionHash,
+      tradeGroupID,
       status,
       description,
       data: {
@@ -542,6 +544,8 @@ export function constructLogCancelTransaction(trade, marketID, marketType, descr
 }
 
 export function constructTradingTransaction(label, trade, marketID, outcomeID, status) {
+  console.log('constructTradingTransaction -- ', label, trade);
+
   return (dispatch, getState) => {
     const { marketsData, outcomesData } = getState();
     const market = marketsData[marketID];

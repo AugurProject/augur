@@ -3,8 +3,8 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { CANCELLED } from 'modules/bids-asks/constants/order-status';
 import { formatEther, formatShares, formatNone } from 'utils/format-number';
+import { CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-status';
 
 describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
   proxyquire.noPreserveCache().noCallThru();
@@ -16,7 +16,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
       address: '0x7c0d52faab596c08f484e3478aebc6205f3f5d8c'
     },
     orderCancellation: {
-      order8: CANCELLED
+      order8: CLOSE_DIALOG_CLOSING
     }
   };
   const store = mockStore(state);

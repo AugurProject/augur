@@ -13,7 +13,7 @@ const MarketPositions = (p) => {
 
   return (
     <article className="market-positions">
-      {!outcomePositions ?
+      {!outcomePositions || !outcomePositions.length ?
         <NullStateMessage message={nullMessage} /> :
         <div>
           <div className="market-positions-header">
@@ -24,6 +24,7 @@ const MarketPositions = (p) => {
             <span>Realized P/L</span>
             <span>Unrealized P/L</span>
             <span>Total P/L</span>
+            <span>Action</span>
           </div>
           <div className="market-content-scrollable" >
             {(outcomePositions || []).map(outcome =>
@@ -32,6 +33,8 @@ const MarketPositions = (p) => {
                 marketType={p.marketType}
                 outcome={outcome}
                 selectedShareDenomination={p.selectedShareDenomination}
+                closePositionStatus={p.closePositionStatus}
+                isTradeCommitLocked={p.isTradeCommitLocked}
               />
             )}
           </div>

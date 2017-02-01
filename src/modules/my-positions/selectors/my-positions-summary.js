@@ -1,21 +1,40 @@
 import memoizerific from 'memoizerific';
-import { augur, abi } from '../../../services/augurjs';
-import { ZERO } from '../../trade/constants/numbers';
-import { formatEther, formatShares, formatNumber } from '../../../utils/format-number';
-import selectMyPositions from '../../../modules/my-positions/selectors/my-positions';
+import BigNumber from 'bignumber.js';
+
+import store from 'src/store';
+
+import selectMyPositions from 'modules/my-positions/selectors/my-positions';
+import { closePosition } from 'modules/my-positions/actions/close-position';
+
+import { ZERO } from 'modules/trade/constants/numbers';
+import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types';
+
+import { augur, abi } from 'services/augurjs';
+import { formatEther, formatShares, formatNumber } from 'utils/format-number';
 
 export default function () {
   const myPositions = selectMyPositions();
   return generateMarketsPositionsSummary(myPositions);
 }
 
-export const generateOutcomePositionSummary = memoizerific(50)((adjustedPosition, outcomeAccountTrades, lastPrice) => {
+export const generateOutcomePositionSummary = memoizerific(50)((adjustedPosition, outcomeAccountTrades, lastPrice, orderBook) => {
   if ((!outcomeAccountTrades || !outcomeAccountTrades.length) && !adjustedPosition) {
     return null;
   }
+
   const trades = outcomeAccountTrades ? outcomeAccountTrades.slice() : [];
   const { position, realized, unrealized, meanOpenPrice } = augur.calculateProfitLoss(trades, lastPrice, adjustedPosition);
-  return generatePositionsSummary(1, position, meanOpenPrice, realized, unrealized);
+  const relevantOrders = orderBook[position > 0 ? BIDS : ASKS];
+  const positionShares = new BigNumber(position);
+
+  return {
+    ...generatePositionsSummary(1, position, meanOpenPrice, realized, unrealized),
+    isClosable: !!positionShares.toNumber() && !!relevantOrders.length, // Based on available orders, can this position be at least partially closed
+    isFullyClosable: positionShares.toNumber() && relevantOrders.length ? isPositionFullyClosable(positionShares.absoluteValue(), relevantOrders) : false, // Based on available orders, can this position be fully closed
+    closePosition: (marketID, outcomeID) => {
+      store.dispatch(closePosition(marketID, outcomeID));
+    }
+  };
 });
 
 export const generateMarketsPositionsSummary = memoizerific(50)((markets) => {
@@ -60,4 +79,18 @@ export const generatePositionsSummary = memoizerific(20)((numPositions, qtyShare
     unrealizedNet: formatEther(unrealizedNet),
     totalNet: formatEther(totalNet)
   };
+});
+
+const isPositionFullyClosable = memoizerific(20)((position, orders) => {
+  let sharesFilled = new BigNumber(0);
+
+  return !!orders.find((order) => {
+    sharesFilled = sharesFilled.plus(new BigNumber(order.shares.value));
+
+    if (sharesFilled.toNumber() >= position) {
+      return true;
+    }
+
+    return false;
+  });
 });
