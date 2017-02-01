@@ -130,6 +130,12 @@ module.exports = function () {
           fmt._to = abi.format_address(msg._to);
           fmt._value = abi.unfix(msg._value);
           return fmt;
+        case "slashedRep":
+          fmt = this.format_common_fields(msg);
+          fmt.reporter = abi.format_address(msg.reporter);
+          fmt.repSlashed = abi.unfix(msg.repSlashed, "string");
+          fmt.slasherBalance = abi.unfix(msg.slasherBalance, "string");
+          return fmt;
         case "submittedReport":
         case "submittedReportHash":
           fmt = this.format_common_fields(msg);
