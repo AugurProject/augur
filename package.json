@@ -1,7 +1,7 @@
 {
   "name": "augur.js",
-  "version": "3.9.11",
-  "description": "Augur JavaScript API",
+  "version": "3.9.12",
+  "description": "Augur JavaScript SDK",
   "main": "src/index.js",
   "scripts": {
     "test": "scripts/runtests.sh --core --create --trading --reporting --markets",
@@ -14,7 +14,7 @@
   "dependencies": {
     "async": "1.5.2",
     "augur-abi": "1.1.1",
-    "augur-contracts": "2.8.7",
+    "augur-contracts": "2.8.8",
     "bignumber.js": "2.3.0",
     "browser-request": "0.3.3",
     "bs58": "3.0.0",

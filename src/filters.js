@@ -120,7 +120,6 @@ module.exports = function () {
           fmt = this.format_common_fields(msg);
           fmt.oldrep = abi.unfix(msg.oldrep, "string");
           fmt.repchange = abi.unfix_signed(msg.repchange, "string");
-          fmt.newafterrep = abi.unfix(msg.newafterrep, "string");
           fmt.p = abi.unfix(msg.p, "string");
           fmt.penalizedUpTo = parseInt(msg.penalizedUpTo, 16);
           return fmt;
@@ -130,6 +129,12 @@ module.exports = function () {
           fmt._from = abi.format_address(msg._from);
           fmt._to = abi.format_address(msg._to);
           fmt._value = abi.unfix(msg._value);
+          return fmt;
+        case "slashedRep":
+          fmt = this.format_common_fields(msg);
+          fmt.reporter = abi.format_address(msg.reporter);
+          fmt.repSlashed = abi.unfix(msg.repSlashed, "string");
+          fmt.slasherBalance = abi.unfix(msg.slasherBalance, "string");
           return fmt;
         case "submittedReport":
         case "submittedReportHash":

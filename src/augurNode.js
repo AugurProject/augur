@@ -1,5 +1,5 @@
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Kevin Day (@k_day)
  */
 

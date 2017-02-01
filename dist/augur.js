@@ -17009,11 +17009,6 @@ module.exports={
         }, 
         {
           "indexed": false, 
-          "name": "newafterrep", 
-          "type": "int256"
-        }, 
-        {
-          "indexed": false, 
           "name": "p", 
           "type": "int256"
         }, 
@@ -17033,8 +17028,8 @@ module.exports={
           "type": "int256"
         }
       ], 
-      "name": "penalize(int256,int256,int256,int256,int256,int256,int256,int256,int256,int256,int256)", 
-      "signature": "0xc06628844b88265d7d67648aa987a952cb724513c59dcf14014706b266041de7"
+      "name": "penalize(int256,int256,int256,int256,int256,int256,int256,int256,int256,int256)", 
+      "signature": "0xa865e521626cec7891279a54f112b20abe52888a42df585b51ca9ff03c4249b7"
     }, 
     "registration": {
       "contract": "Register", 
@@ -17079,6 +17074,43 @@ module.exports={
       ], 
       "name": "sentCash(int256,int256,int256,int256)", 
       "signature": "0x27fc4539f0a547270e2eb3d44c9889a9dd0d9fe116324eb14204ad6d54d6e047"
+    }, 
+    "slashedRep": {
+      "contract": "SlashRep", 
+      "inputs": [
+        {
+          "indexed": true, 
+          "name": "branch", 
+          "type": "int256"
+        }, 
+        {
+          "indexed": true, 
+          "name": "sender", 
+          "type": "int256"
+        }, 
+        {
+          "indexed": true, 
+          "name": "reporter", 
+          "type": "int256"
+        }, 
+        {
+          "indexed": false, 
+          "name": "event", 
+          "type": "int256"
+        }, 
+        {
+          "indexed": false, 
+          "name": "repSlashed", 
+          "type": "int256"
+        }, 
+        {
+          "indexed": false, 
+          "name": "slasherBalance", 
+          "type": "int256"
+        }
+      ], 
+      "name": "slashedRep(int256,int256,int256,int256,int256,int256)", 
+      "signature": "0xcc9436d20fc96bc634d12281b916903ab7c9d6bbdc5d1a73f1c60d7479c006ae"
     }, 
     "submittedReport": {
       "contract": "MakeReports", 
@@ -22101,6 +22133,9 @@ module.exports={
     "SlashRep": {
       "slashRep": {
         "description": "Punish Reporter for insufficient Reports submitted", 
+        "events": [
+          "slashedRep"
+        ], 
         "inputs": [
           "branch", 
           "salt", 
@@ -23223,7 +23258,7 @@ module.exports = function () {
 },{"./constants":65,"./utilities":96,"_process":228,"async":115,"augur-abi":1,"bignumber.js":118,"browser-request":122,"buffer":153,"clone":156,"ethereumjs-tx":194,"ethrpc":285,"keythereum":291,"locks":212,"request":123,"uuid":274}],62:[function(require,module,exports){
 (function (process){
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Kevin Day (@k_day)
  */
 
@@ -23658,7 +23693,6 @@ module.exports = function () {
           fmt = this.format_common_fields(msg);
           fmt.oldrep = abi.unfix(msg.oldrep, "string");
           fmt.repchange = abi.unfix_signed(msg.repchange, "string");
-          fmt.newafterrep = abi.unfix(msg.newafterrep, "string");
           fmt.p = abi.unfix(msg.p, "string");
           fmt.penalizedUpTo = parseInt(msg.penalizedUpTo, 16);
           return fmt;
@@ -23668,6 +23702,12 @@ module.exports = function () {
           fmt._from = abi.format_address(msg._from);
           fmt._to = abi.format_address(msg._to);
           fmt._value = abi.unfix(msg._value);
+          return fmt;
+        case "slashedRep":
+          fmt = this.format_common_fields(msg);
+          fmt.reporter = abi.format_address(msg.reporter);
+          fmt.repSlashed = abi.unfix(msg.repSlashed, "string");
+          fmt.slasherBalance = abi.unfix(msg.slasherBalance, "string");
           return fmt;
         case "submittedReport":
         case "submittedReportHash":
@@ -24311,7 +24351,7 @@ module.exports = function (p, cb) {
 },{"./constants":65,"async":115,"augur-abi":1,"bignumber.js":118}],68:[function(require,module,exports){
 (function (process){
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -24329,11 +24369,11 @@ BigNumber.config({
 var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register")];
 
 function Augur() {
-  this.version = "3.9.11";
+  this.version = "3.9.12";
 
   this.options = {
     debug: {
-      tools: false, // if true, testing tools (test/tools.js) included
+      tools: true, // if true, testing tools (test/tools.js) included
       abi: false, // debug logging in augur-abi
       broadcast: false, // broadcast debug logging in ethrpc
       connect: false, // connection debug logging in ethereumjs-connect
@@ -24637,6 +24677,7 @@ module.exports = {
       info.reportedOutcome = outcome;
       info.proportionCorrect = proportionCorrect;
       info.events = [event];
+      info.eventID = event.id;
       index += EVENTS_FIELDS;
 
       // organize outcome info
@@ -24793,7 +24834,7 @@ module.exports = {
 }).call(this,require("buffer").Buffer)
 },{"../constants":65,"../utilities":96,"./makeReports":81,"async":115,"augur-abi":1,"bignumber.js":118,"bs58":150,"buffer":153,"clone":156}],70:[function(require,module,exports){
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -24941,7 +24982,7 @@ module.exports = {
 };
 },{"../constants":65,"../utilities":96,"augur-abi":1,"clone":156}],71:[function(require,module,exports){
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -24993,7 +25034,7 @@ module.exports = {
 };
 },{"../constants":65,"../utilities":96,"augur-abi":1,"clone":156}],72:[function(require,module,exports){
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -25061,7 +25102,7 @@ module.exports = {
 };
 },{"../utilities":96,"augur-abi":1,"bignumber.js":118,"clone":156}],73:[function(require,module,exports){
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -25645,7 +25686,7 @@ module.exports = {
 };
 },{"../constants":65,"../utilities":96,"augur-abi":1,"augur-contracts":58,"clone":156,"ethereumjs-connect":281}],75:[function(require,module,exports){
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -25720,7 +25761,7 @@ module.exports = {
 };
 },{"../utilities":96,"augur-abi":1,"clone":156}],76:[function(require,module,exports){
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -25846,7 +25887,7 @@ module.exports = {
 };
 },{"../utilities":96,"augur-abi":1,"bignumber.js":118,"clone":156}],77:[function(require,module,exports){
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -26111,7 +26152,7 @@ module.exports = {
 };
 },{"../constants":65,"./selectOrder":89,"async":115,"augur-abi":1,"bignumber.js":118}],79:[function(require,module,exports){
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -26552,7 +26593,7 @@ module.exports = {
 },{"./parametrizeOrder":83}],81:[function(require,module,exports){
 (function (Buffer){
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -26768,7 +26809,7 @@ module.exports = {
 }).call(this,require("buffer").Buffer)
 },{"../constants":65,"../utilities":96,"augur-abi":1,"augur-contracts":58,"buffer":153,"clone":156,"keythereum":291}],82:[function(require,module,exports){
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -27581,7 +27622,7 @@ module.exports = {
 };
 },{"../constants":65,"../utilities":96,"async":115,"augur-abi":1,"bignumber.js":118}],87:[function(require,module,exports){
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -28079,7 +28120,7 @@ module.exports = {
 };
 },{}],90:[function(require,module,exports){
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
  */
 

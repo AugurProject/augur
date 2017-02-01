@@ -1,5 +1,5 @@
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -43,11 +43,11 @@ var modules = [
 ];
 
 function Augur() {
-  this.version = "3.9.11";
+  this.version = "3.9.12";
 
   this.options = {
     debug: {
-      tools: false,       // if true, testing tools (test/tools.js) included
+      tools: true,       // if true, testing tools (test/tools.js) included
       abi: false,         // debug logging in augur-abi
       broadcast: false,   // broadcast debug logging in ethrpc
       connect: false,     // connection debug logging in ethereumjs-connect

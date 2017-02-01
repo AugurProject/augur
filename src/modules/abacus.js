@@ -264,6 +264,7 @@ module.exports = {
       info.reportedOutcome = outcome;
       info.proportionCorrect = proportionCorrect;
       info.events = [event];
+      info.eventID = event.id;
       index += EVENTS_FIELDS;
 
       // organize outcome info
