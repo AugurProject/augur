@@ -191,6 +191,12 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         case 'fundNewAccount':
           transaction = dispatch(constructTransaction('fundedAccount', p));
           break;
+        case 'slashRep':
+          transaction = dispatch(constructTransaction('slashRep', {
+            ...p,
+            sender: tx.data.from
+          }));
+          break;
         case 'submitReport':
           transaction = dispatch(constructTransaction('submittedReport', {
             ...p, // { event, report, salt }
