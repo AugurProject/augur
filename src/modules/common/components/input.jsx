@@ -40,6 +40,12 @@ export default class Input extends Component {
     }
   }
 
+  componentWillUpdate(nextProps, nextState) {
+    if (nextProps.canToggleVisibility && !nextState.value && nextState.isHiddenContentVisible) {
+      this.setState({ isHiddenContentVisible: false });
+    }
+  }
+
   handleOnChange = (e) => {
     const newValue = e.target.value;
     if (this.finalDebounceMS) {

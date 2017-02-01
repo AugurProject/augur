@@ -55,6 +55,7 @@ export default class AuthSignup extends Component {
 
     // passwordConfirm
     if (this.state.passwordConfirm && !nextState.isStrongPass) {
+      console.log('clear passwordConfirm');
       this.setState({ passwordConfirm: '' });
     }
   }
@@ -97,17 +98,18 @@ export default class AuthSignup extends Component {
           name="password"
           type="password"
           placeholder="Password"
+          value={s.password}
           onChange={(password) => {
             this.setState({ password });
             this.scorePassword(password);
           }}
         />
         <Input
-          canToggleVisibility
           className={classNames('password-confirm', { isVisible: s.isStrongPass, isHidden: !s.isStrongPass })}
           name="password-confirm"
           type="password"
           placeholder="Confirm Password"
+          value={s.passwordConfirm}
           onChange={(passwordConfirm) => {
             this.setState({ passwordConfirm });
           }}
