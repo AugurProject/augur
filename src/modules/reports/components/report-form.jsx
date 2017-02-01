@@ -27,7 +27,14 @@ export default class ReportForm extends Component {
       reportedOutcomeID: props.reportedOutcomeID,
       isIndeterminate: props.isIndeterminate,
       isUnethical: props.isUnethical,
-      isReported: props.isReported
+      isReported: props.isReported,
+      slashRep: {
+        reporter: undefined,
+        report: undefined,
+        salt: undefined,
+        isIndeterminate: false,
+        isUnethical: false
+      }
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleOutcomeChange = this.handleOutcomeChange.bind(this);
@@ -37,6 +44,10 @@ export default class ReportForm extends Component {
     if (nextProps.isReported !== this.state.isReported) {
       this.setState({ isReported: nextProps.isReported });
     }
+  }
+
+  handleSlashRepChange(slashRepInfo) {
+    this.setState({ ...this.state.slashRep, ...slashRepInfo });
   }
 
   handleOutcomeChange = e => this.setState({ reportedOutcomeID: e.target.value });
@@ -155,6 +166,64 @@ export default class ReportForm extends Component {
               Report Again
             </button>
           }
+        </div>
+
+        <div className="outcome-options">
+          <span>
+            It is important for Augur&#39;s security that Reporters keep their reports <b>secret</b> until the first half of the reporting cycle is complete (in ${p.branch.phaseTimeRemaining}).  If another Reporter has disclosed their Report (and its accompanying random salt) to you, you can enter the other Reporter&#39;s reported values here and you will receive half of their Reputation balance.  (Note: the other Reporter will not be notified, and there is no penalty to you if this fails.)
+          </span>
+          <label htmlFor="slash-rep-reporter">
+            Ethereum address of cheater
+            <input
+              type="text"
+              className="slash-rep-input"
+              name="slash-rep-reporter"
+              value={s.slashRep.reporter}
+              onChange={reporter => this.handleSlashRepChange({ reporter })}
+            />
+          </label>
+          <label htmlFor="slash-rep-report">
+            Outcome reported by cheater
+            <input
+              type="text"
+              className="slash-rep-input"
+              name="slash-rep-report"
+              disabled={!!s.slashRep.isIndeterminate}
+              value={s.slashRep.report}
+              onChange={report => this.handleSlashRepChange({ report })}
+            />
+            <Checkbox
+              className="indeterminate-checkbox"
+              text="Indeterminate"
+              isChecked={s.slashRep.isIndeterminate}
+              onClick={isIndeterminate => this.handleSlashRepChange({ isIndeterminate })}
+            />
+            <Checkbox
+              className="unethical-checkbox"
+              text="Unethical"
+              isChecked={s.slashRep.isUnethical}
+              onClick={isUnethical => this.handleSlashRepChange({ isUnethical })}
+            />
+          </label>
+          <label htmlFor="slash-rep-salt">
+            Random salt used by cheater
+            <input
+              type="text"
+              className="slash-rep-input"
+              name="slash-rep-salt"
+              value={s.slashRep.salt}
+              onChange={salt => this.handleSlashRepChange({ salt })}
+            />
+          </label>
+        </div>
+        <div className="submit-slash-rep">
+          <button
+            className="button"
+            disabled={(!s.slashRep.reporter && !s.slashRep.report && !s.slashRep.salt)}
+            onClick={() => this.handleSubmitSlashRep(s.slashRep.salt, s.slashRep.report, s.slashRep.reporter, s.slashRep.isIndeterminate, s.slashRep.isUnethical)}
+          >
+            Penalize Cheater
+          </button>
         </div>
       </article>
     );
