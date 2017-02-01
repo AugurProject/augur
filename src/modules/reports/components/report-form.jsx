@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import Checkbox from 'modules/common/components/checkbox';
+import OutcomeOptions from 'modules/reports/components/outcome-options';
 import { BINARY, SCALAR } from 'modules/markets/constants/market-types';
 
 export default class ReportForm extends Component {
@@ -50,51 +51,6 @@ export default class ReportForm extends Component {
     const s = this.state;
     const indeterminateValue = p.type === BINARY ? '1.5' : '0.5';
 
-    let outcomeOptions;
-    if (p.type === SCALAR) {
-      outcomeOptions = (
-        <div className="reportable-outcomes">
-          <label
-            key="scalar-outcome"
-            className="outcome-option"
-            htmlFor="outcome-scalar-input"
-          >
-            <input
-              type="text"
-              className="outcome-option-input"
-              name="outcome-scalar-input"
-              value={s.reportedOutcomeID}
-              disabled={s.isReported || s.isIndeterminate}
-              onChange={this.handleOutcomeChange}
-            />
-          </label>
-        </div>
-      );
-    } else {
-      outcomeOptions = (
-        <div className="reportable-outcomes">
-          {(p.reportableOutcomes || []).map(outcome => (
-            <label
-              key={outcome.id}
-              className={classnames('outcome-option', { disabled: s.isReported || s.isIndeterminate })}
-              htmlFor="outcome-option-radio"
-            >
-              <input
-                type="radio"
-                className="outcome-option-radio"
-                name="outcome-option-radio"
-                value={outcome.id}
-                checked={s.reportedOutcomeID === outcome.id}
-                disabled={s.isReported || s.isIndeterminate}
-                onChange={this.handleOutcomeChange}
-              />
-              {outcome.name}
-            </label>
-          ))}
-        </div>
-      );
-    }
-
     return (
       <article className={classnames('report-form', { reported: s.isReported })}>
         <div className="outcome-options">
@@ -102,7 +58,14 @@ export default class ReportForm extends Component {
           {p.type === SCALAR &&
             <span>Enter the outcome of this event, if it was at least {p.minValue} and at most {p.maxValue}.  If the outcome was above {p.maxValue}, you should report the outcome as {p.maxValue}; if the outcome was below {p.minValue}, you should report the outcome as {p.minValue}.</span>
           }
-          {outcomeOptions}
+          <OutcomeOptions
+            type={p.type}
+            reportableOutcomes={p.reportableOutcomes}
+            reportedOutcomeID={s.reportedOutcomeID}
+            isReported={s.isReported}
+            isIndeterminate={s.isIndeterminate}
+            onOutcomeChange={this.handleOutcomeChange}
+          />
         </div>
 
         <div className="indeterminate">
