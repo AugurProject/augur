@@ -32,7 +32,7 @@ export default class AuthLogin extends Component {
         <input
           name="augur-id"
           type="text"
-          placeholder="Augur ID"
+          placeholder="Login ID"
           autoFocus
           value={s.augurID}
           onClick={(e) => {

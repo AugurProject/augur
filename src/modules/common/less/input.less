@@ -1,8 +1,19 @@
 .input {
   .border(true);
 
+  display: flex;
+
   input {
     .border(false);
+
+    display: flex;
+    flex: 1;
+  }
+
+  &.can-toggle-visibility {
+    .box {
+      padding: 1em;
+    }
   }
 
   &.clearable {

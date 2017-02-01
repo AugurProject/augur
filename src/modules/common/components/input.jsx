@@ -15,7 +15,8 @@ export default class Input extends Component {
     onBlur: PropTypes.func,
     isIncrementable: PropTypes.bool,
     incrementAmount: PropTypes.number,
-    updateValue: PropTypes.func
+    updateValue: PropTypes.func,
+    canToggleVisibility: PropTypes.bool
   };
 
   constructor(props) {
@@ -24,11 +25,13 @@ export default class Input extends Component {
     this.finalDebounceMS = this.props.debounceMS > 0 || this.props.debounceMS === 0 ? this.props.debounceMS : 500;
     this.state = {
       value: this.props.value || '',
-      timeoutID: ''
+      timeoutID: '',
+      isHiddenContentVisible: false
     };
     this.handleOnChange = this.handleOnChange.bind(this);
     this.handleOnBlur = this.handleOnBlur.bind(this);
     this.handleClear = this.handleClear.bind(this);
+    this.handleToggleVisibility = this.handleToggleVisibility.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -65,16 +68,21 @@ export default class Input extends Component {
     this.props.onChange('');
   };
 
+  handleToggleVisibility = () => {
+    this.setState({ isHiddenContentVisible: !this.state.isHiddenContentVisible });
+  };
+
   render() {
-    const { isClearable, isIncrementable, incrementAmount, updateValue, ...p } = this.props;
+    const { isClearable, isIncrementable, incrementAmount, updateValue, canToggleVisibility, ...p } = this.props;
     const s = this.state;
 
     return (
-      <div className={classNames('input', p.className, { 'is-incrementable': isIncrementable })} >
+      <div className={classNames('input', p.className, { 'is-incrementable': isIncrementable, 'can-toggle-visibility': canToggleVisibility })} >
         {!p.isMultiline &&
           <input
             {...p}
             className="box"
+            type={p.type === 'password' && s.isHiddenContentVisible ? 'text' : 'password'}
             value={s.value}
             onChange={this.handleOnChange}
             onBlur={this.handleOnBlur}
@@ -92,8 +100,25 @@ export default class Input extends Component {
         }
 
         {isClearable && !p.isMultiline && !!s.value &&
-          <button type="button" className="button-text-only" onClick={this.handleClear}>
+          <button
+            type="button"
+            className="button-text-only"
+            onClick={this.handleClear}
+          >
             <i></i>
+          </button>
+        }
+
+        {canToggleVisibility && s.value &&
+          <button
+            type="button"
+            className="button-text-only"
+            onClick={this.handleToggleVisibility}
+          >
+            {s.isHiddenContentVisible ?
+              <i></i> :
+              <i></i>
+            }
           </button>
         }
 

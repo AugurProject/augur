@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 import zxcvbn from 'zxcvbn';
+import Input from 'modules/common/components/input';
 
 import { REQUIRED_PASSWORD_STRENGTH } from 'modules/auth/constants/password-strength';
 
@@ -89,26 +90,26 @@ export default class AuthSignup extends Component {
         }}
       >
         <span>Sign up with a Login ID</span>
-        <input
+        <Input
+          autoFocus
+          canToggleVisibility
           className="auth-signup-password"
           name="password"
           type="password"
-          autoFocus
           placeholder="Password"
-          value={s.password}
-          onChange={(e) => {
-            this.setState({ password: e.target.value });
-            this.scorePassword(e.target.value);
+          onChange={(password) => {
+            this.setState({ password });
+            this.scorePassword(password);
           }}
         />
-        <input
+        <Input
+          canToggleVisibility
           className={classNames('password-confirm', { isVisible: s.isStrongPass, isHidden: !s.isStrongPass })}
           name="password-confirm"
           type="password"
           placeholder="Confirm Password"
-          value={s.passwordConfirm}
-          onChange={(e) => {
-            this.setState({ passwordConfirm: e.target.value });
+          onChange={(passwordConfirm) => {
+            this.setState({ passwordConfirm });
           }}
         />
         {
@@ -118,17 +119,16 @@ export default class AuthSignup extends Component {
             ))}
           </ul>
         }
-        <input
-          className="username"
-          name="username"
-          type="text"
-          value={loginID}
-          disabled
-        />
+
+        <div className={classNames('login-id-messaging', { isVisible: s.loginAccount, isHidden: !s.loginAccount })}>
+          <span>Below is your Login ID</span>
+          <span className="important">SAVE THIS IN A SAFE PLACE</span>
+          <span className="important">The Login ID CANNOT be recovered if lost or stolen!</span>
+        </div>
         <textarea
           className={classNames('login-id', { isVisible: s.loginAccount, isHidden: !s.loginAccount })}
-          readOnly
           value={loginID}
+          readOnly
         />
         <label // eslint-disable-line jsx-a11y/no-static-element-interactions
           className={classNames('remember-me', { isVisible: s.loginAccount, isHidden: !s.loginAccount })}

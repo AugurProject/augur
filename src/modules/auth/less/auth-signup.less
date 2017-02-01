@@ -1,14 +1,4 @@
 .auth-signup-form {
-  span:first-of-type {
-    align-self: center;
-    color: @color-text-light-extra-light;
-    margin: 1em 0;
-  }
-
-  .auth-signup-password {
-    z-index: 10;
-  }
-
   .isHidden {
     .transition(transform @animation-speed-fast @animation-default-type, opacity @animation-speed-very-fast @animation-default-type;);
 
@@ -27,17 +17,37 @@
     transform: translateY(0);
   }
 
+  span:first-of-type {
+    align-self: center;
+    color: @color-text-light-extra-light;
+    margin: 1em 0;
+  }
+
+  .auth-signup-password {
+    z-index: 10;
+  }
+
   .password-confirm {
     border-top: 0;
   }
 
-  .username {
-    .isHidden();
+  .login-id-messaging {
+    display: flex;
+    flex-direction: column;
+
+    span {
+      align-self: center;
+
+      &.important {
+        .font-weight-normal();
+
+        color: @color-orange-light;
+      }
+    }
   }
 
-  .remember-me {
-    align-self: flex-end;
-    margin: 1em 0;
+  .login-id {
+    resize: none;
   }
 
   .password-suggestions {
