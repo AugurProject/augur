@@ -113,6 +113,7 @@ export default class MarketData extends Component {
         {s.selectedNav === MARKET_DATA_NAV_REPORT &&
           <ReportForm
             {...p.market}
+            branch={p.branch}
             isReported={p.market.isReported || p.market.isReportSubmitted}
             onClickSubmit={p.market.report.onSubmitReport}
           />
