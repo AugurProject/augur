@@ -4,6 +4,7 @@ var assert = require('chai').assert;
 var augur = require('../../../src');
 var connector = require("ethereumjs-connect");
 var Contracts = require('augur-contracts');
+var constants = require("../../../src/constants");
 var ClearCallCounts = require('../../tools').ClearCallCounts;
 
 describe('connect.bindContractMethod', function() {});
@@ -199,7 +200,79 @@ describe('connect.bindContractAPI', function() {
   });
 });
 
-describe('connect.sync', function() {});
+describe('connect.sync', function() {
+  // 2 tests total
+  var setupFunctionsAPI = connector.setupFunctionsAPI;
+  var callCounts = {
+    bindContractAPI: 0,
+  };
+  afterEach(function() {
+    ClearCallCounts(callCounts);
+    connector.setupFunctionsAPI = setupFunctionsAPI;
+    connector.connect({contracts: Contracts, api: Contracts.api, http: null});
+  });
+  var test = function(t) {
+    it(t.description, function() {
+      var isolatedSync = require('../../../src/modules/connect.js').sync.bind(t.testThis);
+
+      t.setupConnectorState();
+
+      t.assertions(isolatedSync(), t.testThis);
+    });
+  };
+  test({
+    description: 'Should be able to sync when connector state is missing contracts, and networkID prior to call to sync.',
+    testThis: {
+      bindContractAPI: function() {
+        callCounts.bindContractAPI++;
+      },
+    },
+    setupConnectorState: function() {
+      connector.state.contracts = undefined;
+      connector.state.networkID = undefined;
+    },
+    assertions: function(out, testThis) {
+      assert.isTrue(out);
+      assert.isUndefined(testThis.network_id);
+      assert.deepEqual(testThis.from, connector.state.from);
+      assert.deepEqual(testThis.coinbase, connector.state.coinbase);
+      assert.deepEqual(testThis.rpc, connector.rpc);
+      assert.deepEqual(testThis.contracts, connector.state.contracts);
+      assert.deepEqual(testThis.api, connector.state.api);
+      assert.deepEqual(testThis.tx, testThis.api.functions);
+      assert.deepEqual(callCounts, {
+        bindContractAPI: 1,
+      });
+    }
+  });
+  test({
+    description: 'Should be able to sync if connector.state.api.functions is undefined forcing this.api to use Contracts.api',
+    testThis: {
+      bindContractAPI: function() {
+        callCounts.bindContractAPI++;
+      },
+    },
+    setupConnectorState: function() {
+      // in this case we want to trigger the else statement near the bottom of sync so we set this.api to Contracts.api
+      connector.setupFunctionsAPI = function() {
+        connector.state.api.functions = undefined;
+      };
+    },
+    assertions: function(out, testThis) {
+      assert.isTrue(out);
+      assert.deepEqual(testThis.network_id, connector.state.networkID);
+      assert.deepEqual(testThis.from, connector.state.from);
+      assert.deepEqual(testThis.coinbase, connector.state.coinbase);
+      assert.deepEqual(testThis.rpc, connector.rpc);
+      assert.deepEqual(testThis.contracts, connector.state.contracts);
+      assert.deepEqual(testThis.api, Contracts.api);
+      assert.deepEqual(testThis.tx, testThis.api.functions);
+      assert.deepEqual(callCounts, {
+        bindContractAPI: 1,
+      });
+    }
+  });
+});
 
 describe('connect.useAccount', function() {
   // 1 test total
