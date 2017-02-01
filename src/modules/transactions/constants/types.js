@@ -23,5 +23,3 @@ export const FUND_ACCOUNT = 'fund_account';
 export const TRANSFER_FUNDS = 'transfer_funds';
 
 export const CANCEL_ORDER = 'cancel_order';
-
-export const SLASH_REP = 'slash_rep';
