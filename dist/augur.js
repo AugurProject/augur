@@ -23223,7 +23223,7 @@ module.exports = function () {
 },{"./constants":65,"./utilities":96,"_process":228,"async":115,"augur-abi":1,"bignumber.js":118,"browser-request":122,"buffer":153,"clone":156,"ethereumjs-tx":194,"ethrpc":285,"keythereum":291,"locks":212,"request":123,"uuid":274}],62:[function(require,module,exports){
 (function (process){
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Kevin Day (@k_day)
  */
 
@@ -24310,7 +24310,7 @@ module.exports = function (p, cb) {
 },{"./constants":65,"async":115,"augur-abi":1,"bignumber.js":118}],68:[function(require,module,exports){
 (function (process){
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -24793,7 +24793,7 @@ module.exports = {
 }).call(this,require("buffer").Buffer)
 },{"../constants":65,"../utilities":96,"./makeReports":81,"async":115,"augur-abi":1,"bignumber.js":118,"bs58":150,"buffer":153,"clone":156}],70:[function(require,module,exports){
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -24941,7 +24941,7 @@ module.exports = {
 };
 },{"../constants":65,"../utilities":96,"augur-abi":1,"clone":156}],71:[function(require,module,exports){
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -24993,7 +24993,7 @@ module.exports = {
 };
 },{"../constants":65,"../utilities":96,"augur-abi":1,"clone":156}],72:[function(require,module,exports){
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -25061,7 +25061,7 @@ module.exports = {
 };
 },{"../utilities":96,"augur-abi":1,"bignumber.js":118,"clone":156}],73:[function(require,module,exports){
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -25645,7 +25645,7 @@ module.exports = {
 };
 },{"../constants":65,"../utilities":96,"augur-abi":1,"augur-contracts":58,"clone":156,"ethereumjs-connect":281}],75:[function(require,module,exports){
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -25720,7 +25720,7 @@ module.exports = {
 };
 },{"../utilities":96,"augur-abi":1,"clone":156}],76:[function(require,module,exports){
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -25846,7 +25846,7 @@ module.exports = {
 };
 },{"../utilities":96,"augur-abi":1,"bignumber.js":118,"clone":156}],77:[function(require,module,exports){
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -26111,7 +26111,7 @@ module.exports = {
 };
 },{"../constants":65,"./selectOrder":89,"async":115,"augur-abi":1,"bignumber.js":118}],79:[function(require,module,exports){
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -26552,7 +26552,7 @@ module.exports = {
 },{"./parametrizeOrder":83}],81:[function(require,module,exports){
 (function (Buffer){
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -26768,7 +26768,7 @@ module.exports = {
 }).call(this,require("buffer").Buffer)
 },{"../constants":65,"../utilities":96,"augur-abi":1,"augur-contracts":58,"buffer":153,"clone":156,"keythereum":291}],82:[function(require,module,exports){
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -27581,7 +27581,7 @@ module.exports = {
 };
 },{"../constants":65,"../utilities":96,"async":115,"augur-abi":1,"bignumber.js":118}],87:[function(require,module,exports){
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
  */
 
@@ -28079,7 +28079,7 @@ module.exports = {
 };
 },{}],90:[function(require,module,exports){
 /**
- * Augur JavaScript API
+ * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
  */
 

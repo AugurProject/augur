@@ -1,7 +1,7 @@
 {
   "name": "augur.js",
   "version": "3.9.12",
-  "description": "Augur JavaScript API",
+  "description": "Augur JavaScript SDK",
   "main": "src/index.js",
   "scripts": {
     "test": "scripts/runtests.sh --core --create --trading --reporting --markets",
