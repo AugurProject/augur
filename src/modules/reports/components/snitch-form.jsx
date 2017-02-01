@@ -45,11 +45,13 @@ export default class SnitchForm extends Component {
             onChange={report => this.setState({ report })}
           />
           <Checkbox
+            className="indeterminate-checkbox"
             text="Indeterminate"
             isChecked={s.isIndeterminate}
             onClick={isIndeterminate => this.setState({ isIndeterminate })}
           />
           <Checkbox
+            className="unethical-checkbox"
             text="Unethical"
             isChecked={s.isUnethical}
             onClick={isUnethical => this.setState({ isUnethical })}
