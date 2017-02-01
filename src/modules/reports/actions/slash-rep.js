@@ -1,5 +1,4 @@
 import { augur } from '../../../services/augurjs';
-import { selectMarketFromEventID } from '../../market/selectors/market';
 
 export const slashRep = (market, salt, report, reporter, isIndeterminate, isUnethical) => (
   dispatch => augur.slashRep({
