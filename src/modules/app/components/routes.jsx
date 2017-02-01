@@ -6,8 +6,8 @@ import { REGISTER, LOGIN, LOGOUT, IMPORT } from 'modules/auth/constants/auth-typ
 import getValue from 'utils/get-value';
 import { shouldComponentUpdateOnStateChangeOnly } from 'utils/should-component-update-pure';
 
-// NOTE -- 	the respective routes are imported within the switch statement so that
-//					webpack can properly code split the views
+// NOTE --  the respective routes are imported within the switch statement so that
+//          webpack can properly code split the views
 export default class Routes extends Component {
   constructor(props) {
     super(props);
@@ -128,7 +128,8 @@ export default class Routes extends Component {
           scalarShareDenomination: p.scalarShareDenomination,
           marketReportingNavItems: p.marketReportingNavItems,
           outcomeTradeNavItems: p.outcomeTradeNavItems,
-          closePositionStatus: p.closePositionStatus
+          closePositionStatus: p.closePositionStatus,
+          branch: p.branch
         };
         System.import('modules/market/components/market-view').then((module) => {
           const MarketView = module.default;

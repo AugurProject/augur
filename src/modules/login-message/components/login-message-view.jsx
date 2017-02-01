@@ -53,53 +53,157 @@ const LoginMessagePage = p => (
         </li>
       </ol>
       <h2>Technical updates:</h2>
-      <h3>January 25, 2017</h3>
+      <h3>January 31, 2017</h3>
       <ol>
-        <li>Completed a simplification refactor to authentication views (Sign Up, Login, Import).  Styling is in-process.</li>
+        <li>
+          Added &quot;snitch&quot; tab to market detail page, where if you know the report and salt of another user during the commit phase of the current reporting cycle, you can snitch on the other reporter and they will lose all their active Reputation.  (The reason for this is to make it as hard as possible for Reporters to collude with each other.)
+        </li>
+        <li>
+          Added fixReport and extra parameters to slashRep wrapper.
+        </li>
+        <li>
+          Attach eventID field to marketInfo object for getMarketInfo.
+        </li>
+        <li>
+          Removed newafterrep field from penalize filter.
+        </li>
+        <li>
+          Always call callback after checking close extra markets, even if market(s) already closed.
+        </li>
+        <li>
+          Only show rep penalization in penalize logs.
+        </li>
+        <li>
+          Added slash rep info to report-form component.
+        </li>
+        <li>
+          Attached onSubmitSlashRep to market selector.
+        </li>
+        <li>
+          Added branch parameter to market view.
+        </li>
+        <li>
+          Added slash-rep action to reports module.
+        </li>
+        <li>
+          Fixed scalar report entry instructions.
+        </li>
+        <li>
+          Added loadMarketsInfo to claimProceeds callback.
+        </li>
+        <li>
+          Fixed order type references.
+        </li>
+        <li>
+          Fixed portfolio.openOrders type (side) references.
+        </li>
+        <li>
+          Added cancel-open-orders-in-closed-markets action to user-open-orders module.
+        </li>
+        <li>
+          Added cancelOpenOrdersInClosedMarkets action to claimProceeds.
+        </li>
+        <li>
+          Attached openOrders property to portfolio selector.
+        </li>
+        <li>
+          Added open-orders selector to user-open-orders module.
+        </li>
       </ol>
-      <h3>January 24, 2017</h3>
+      <h3>January 29, 2017</h3>
       <ol>
         <li>
-          Moved updateTradesInProgress trading actions post-processing to a new augur.js function, calculateTradeTotals.
+          Added useHostedNodeFallback prop, disable/enableHostedNodeFallback functions to ethrpc, and integrated these functions into the initial augur.js/ethereumjs-connect connection sequence.  Hosted node fallback can now be disabled simply by setting &quot;hostedNodeFallback&quot; to false in the front-end env.json configuration file.
         </li>
         <li>
-          Moved placeTrade loop-thru-trading actions to new executeTradingActions function in augur.js.
+          Trade simulations feePercent is now always positive.
         </li>
         <li>
-          Added optional doNotMakeOrders parameter to executeTradingActions, placeTrade, placeBuy, placeSell, and placeShortSell functions.
+          Fixed addOrder when orderbook is empty.
         </li>
         <li>
-          Fixed selectOrder references.
+          Adds Dockerfile and instructions.
         </li>
         <li>
-          Fixed isShortAsk parameter formatting in sell function.
-        </li>
-        <li>
-          {"Fix to a 'double header' bug in OS X Safari when scrolling."}
+          Added within-order remaining-cash/-shares decrease in relayed transaction messages.
         </li>
       </ol>
-      <h3>January 23, 2017</h3>
+      <h3>January 28, 2017</h3>
       <ol>
         <li>
-          Increased augur.js unit test coverage by about 10%.
+          Added negative signs to bid/buy/shortSell simulated actions.
+        </li>
+        <li>
+          Use static max value/amount for trade commit messaging.
+        </li>
+        <li>
+          Fixed scalar price calculation in trade log transaction constructors.
+        </li>
+        <li>
+          Fixed calculated trade amount for relayed buy trades in scalar markets.
+        </li>
+        <li>
+          Reporting test setup time 900 for multi-user tests.
+        </li>
+        <li>
+          Use send instead of sendFrom for cash (eth) transfers initiated by user.
+        </li>
+        <li>
+          Fixed short-sell total cost calculated from logs.
+        </li>
+        <li>
+          Return transaction array for short-sell relayed transactions.
+        </li>
+        <li>
+          Separate trade (array) relay transaction handler from others.
         </li>
       </ol>
-      <h3>January 21, 2017</h3>
+      <h3>January 27, 2017</h3>
       <ol>
         <li>
-          augur.js minified build now works correctly.
+          Fixed simulated short sell cost calculation.
+        </li>
+        <li>
+          Added isShortSell=true to tradeCommitmentCallback in executeTrade.
+        </li>
+        <li>
+          Added getOrderBookChunked method to modules/compositeGetters.
+        </li>
+        <li>
+          Put default orderbook chunk size (100) into constants.js.
+        </li>
+        <li>
+          Fixed short-sell total cost calculated from logs.
+        </li>
+        <li>
+          Return transaction array for short-sell relayed transactions.
+        </li>
+        <li>
+          Separate trade (array) relay transaction handler from others.
+        </li>
+        <li>
+          Trade commitment isShortSell field distinguishes between sell and short-sell for relayed commitTrade transactions.
+        </li>
+        <li>
+          Order existence check in select-order-book (fixes no-order error for 3rd party logs).
+        </li>
+        <li>
+          Moved chunked getOrderBook logic from load-bids-asks to augur.js.
+        </li>
+        <li>
+          Fixed trade log reprocessing error.
         </li>
       </ol>
-      <h3>January 19, 2017</h3>
+      <h3>January 26, 2017</h3>
       <ol>
         <li>
-          Moved (almost) all trading logic from UI to augur.js.
+          Added chunking parameters to get_trade_ids; call increaseTagPopularity in modifyParticipantShares.
         </li>
         <li>
-          Added link to license (AAL) in footer.
+          Added tags contract to data_api with basic setters/getters for tag popularity.
         </li>
         <li>
-          Added popover text for long outcome names in market preview panels.
+          Fixed array concatenation in getTradingActions.
         </li>
       </ol>
       {p.marketsLink &&

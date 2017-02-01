@@ -7,8 +7,9 @@ import OrderBook from 'modules/order-book/components/order-book';
 import MarketChart from 'modules/market/components/market-chart';
 import MarketDetails from 'modules/market/components/market-details';
 import ReportForm from 'modules/reports/components/report-form';
+import SnitchForm from 'modules/reports/components/snitch-form';
 
-import { MARKET_DATA_NAV_OUTCOMES, MARKET_DATA_ORDERS, MARKET_DATA_NAV_CHARTS, MARKET_DATA_NAV_DETAILS, MARKET_DATA_NAV_REPORT } from 'modules/app/constants/views';
+import { MARKET_DATA_NAV_OUTCOMES, MARKET_DATA_ORDERS, MARKET_DATA_NAV_CHARTS, MARKET_DATA_NAV_DETAILS, MARKET_DATA_NAV_REPORT, MARKET_DATA_NAV_SNITCH } from 'modules/app/constants/views';
 
 export default class MarketData extends Component {
   static propTypes = {
@@ -113,8 +114,16 @@ export default class MarketData extends Component {
         {s.selectedNav === MARKET_DATA_NAV_REPORT &&
           <ReportForm
             {...p.market}
+            branch={p.branch}
             isReported={p.market.isReported || p.market.isReportSubmitted}
             onClickSubmit={p.market.report.onSubmitReport}
+          />
+        }
+        {s.selectedNav === MARKET_DATA_NAV_SNITCH &&
+          <SnitchForm
+            reportableOutcomes={p.market.reportableOutcomes}
+            branch={p.branch}
+            onSubmitSlashRep={p.market.onSubmitSlashRep}
           />
         }
       </article>
