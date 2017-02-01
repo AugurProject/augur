@@ -65,13 +65,13 @@ export default class SnitchForm extends Component {
               className="indeterminate-checkbox"
               text="Indeterminate"
               isChecked={s.isIndeterminate}
-              onClick={isIndeterminate => this.setState({ isIndeterminate: isIndeterminate.target.value })}
+              onClick={isIndeterminate => this.setState({ isIndeterminate: !s.isIndeterminate })}
             />
             <Checkbox
               className="unethical-checkbox"
               text="Unethical"
               isChecked={s.isUnethical}
-              onClick={isUnethical => this.setState({ isUnethical: isUnethical.target.value })}
+              onClick={isUnethical => this.setState({ isUnethical: !s.isUnethical })}
             />
           </label>
         </div>
