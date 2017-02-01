@@ -1,4 +1,4 @@
-import { MARKET_DATA_NAV_OUTCOMES, MARKET_DATA_ORDERS, MARKET_DATA_NAV_CHARTS, MARKET_DATA_NAV_DETAILS, MARKET_DATA_NAV_REPORT } from '../../app/constants/views';
+import { MARKET_DATA_NAV_OUTCOMES, MARKET_DATA_ORDERS, MARKET_DATA_NAV_CHARTS, MARKET_DATA_NAV_DETAILS, MARKET_DATA_NAV_REPORT, MARKET_DATA_NAV_SNITCH } from '../../app/constants/views';
 
 export default function () {
   return {
@@ -18,6 +18,9 @@ export default function () {
     [MARKET_DATA_NAV_REPORT]: {
       label: 'Report',
       isPendingReport: true
+    },
+    [MARKET_DATA_NAV_SNITCH]: {
+      label: 'Snitch'
     }
   };
 }

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import classnames from 'classnames';
 import Checkbox from 'modules/common/components/checkbox';
 import { BINARY, SCALAR } from 'modules/markets/constants/market-types';
-import SlashRepForm from 'modules/reports/components/slash-rep-form';
 
 export default class ReportForm extends Component {
   // TODO -- Prop Validations
@@ -156,11 +155,6 @@ export default class ReportForm extends Component {
             </button>
           }
         </div>
-
-        <SlashRepForm
-          branch={p.branch}
-          onSubmitSlashRep={p.onSubmitSlashRep}
-        />
       </article>
     );
   }
