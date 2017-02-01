@@ -24,7 +24,7 @@ export default class MarketTradeCloseDialog extends Component {
 
   renderCloseDialogContent(marketID, orderID, closeType, isClosable, isFullyClosable, quantityOfShares, isConfirming, closePosition, status, orderType, cancelOrder) {
     // Position -- No Available Actions
-    if (closeType === POSITION && (!parseFloat(quantityOfShares, 10) || !isClosable)) {
+    if (closeType === POSITION && !status && (!parseFloat(quantityOfShares, 10) || !isClosable)) {
       return <EmDash />;
     }
 
