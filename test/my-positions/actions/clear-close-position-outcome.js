@@ -1,13 +1,13 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 
-import { CLEAR_CLOSE_POSITION_OUTCOME, clearClosePositionTradeGroup } from 'modules/my-positions/actions/clear-close-position-outcome';
+import { CLEAR_CLOSE_POSITION_OUTCOME, clearClosePositionOutcome } from 'modules/my-positions/actions/clear-close-position-outcome';
 
 describe('modules/my-positions/actions/clear-close-position-outcome.js', () => {
   describe('clearClosePositionTradeGroup', () => {
     const test = (t) => {
       it(t.description, () => {
-        t.assertions(clearClosePositionTradeGroup(t.arguments.marketID, t.arguments.outcomeID));
+        t.assertions(clearClosePositionOutcome(t.arguments.marketID, t.arguments.outcomeID));
       });
     };
 
