@@ -1,7 +1,7 @@
 import { abi, augur, constants } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
 import { BINARY, SCALAR } from '../../markets/constants/market-types';
-import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, MATCH_BID, MATCH_ASK, COMMIT_REPORT, REVEAL_REPORT, CANCEL_ORDER } from 'modules/transactions/constants/types';
+import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, MATCH_BID, MATCH_ASK, COMMIT_REPORT, REVEAL_REPORT, CANCEL_ORDER } from '../../transactions/constants/types';
 import { formatEther, formatPercent, formatRealEther, formatRep, formatShares } from '../../../utils/format-number';
 import { formatDate } from '../../../utils/format-date';
 import { selectMarketLink } from '../../link/selectors/links';
