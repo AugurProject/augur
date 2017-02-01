@@ -170,10 +170,10 @@ export default class ReportForm extends Component {
 
         <div className="outcome-options">
           <span>
-            It is important for Augur&#39;s security that Reporters keep their reports <b>secret</b> until the first half of the reporting cycle is complete (in ${p.branch.phaseTimeRemaining}).  If another Reporter has disclosed their Report (and its accompanying random salt) to you, you can enter the other Reporter&#39;s reported values here and you will receive half of their Reputation balance.  (Note: there is no penalty to you if this fails.  The other Reporter will only be notified if the information you enter matches their report.)
+            It is important for Augur&#39;s security that Reporters keep their reports <b>secret</b> until the first half of the reporting cycle is complete (in ${p.branch.phaseTimeRemaining}).  If another Reporter has disclosed their Report (and its accompanying randomly-generated unique identifier) to you, you can enter the other Reporter&#39;s reported values here and you will receive half of their Reputation balance.  (Note: there is no penalty to you if this fails.  The other Reporter will only be notified if the information you enter matches their report.)
           </span>
           <label htmlFor="slash-rep-reporter">
-            Ethereum address of cheater
+            <h4>Ethereum address of cheater</h4>
             <input
               type="text"
               className="slash-rep-input"
@@ -183,7 +183,7 @@ export default class ReportForm extends Component {
             />
           </label>
           <label htmlFor="slash-rep-report">
-            Outcome reported by cheater
+            <h4>Outcome reported by cheater</h4>
             <input
               type="text"
               className="slash-rep-input"
@@ -206,7 +206,7 @@ export default class ReportForm extends Component {
             />
           </label>
           <label htmlFor="slash-rep-salt">
-            Random salt used by cheater
+            <h4>Repor&#39;s unique identifier</h4>
             <input
               type="text"
               className="slash-rep-input"

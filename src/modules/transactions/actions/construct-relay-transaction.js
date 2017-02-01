@@ -45,6 +45,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
       }, abi.format_int256(p.market), p.outcome, status));
     case 'cancel': {
       const order = augur.selectOrder(p.trade_id, getState().orderBooks);
+      if (!order) return null;
       return dispatch(constructTradingTransaction('log_cancel', {
         ...p,
         ...order,
