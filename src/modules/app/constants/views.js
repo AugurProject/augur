@@ -20,5 +20,6 @@ export const MARKET_DATA_ORDERS = 'orders';
 export const MARKET_DATA_NAV_CHARTS = 'charts';
 export const MARKET_DATA_NAV_DETAILS = 'details';
 export const MARKET_DATA_NAV_REPORT = 'report';
+export const MARKET_DATA_NAV_SNITCH = 'snitch';
 export const MARKET_USER_DATA_NAV_POSITIONS = 'positions';
 export const MARKET_USER_DATA_NAV_OPEN_ORDERS = 'open-orders';
