@@ -1,6 +1,6 @@
 .auth-signup-form {
   .isHidden {
-    .transition(transform @animation-speed-fast @animation-default-type, opacity @animation-speed-very-fast @animation-default-type;);
+    .transition(transform @animation-speed-very-fast @animation-default-type, opacity @animation-speed-very-fast @animation-default-type;);
 
     border: 0;
     font-size: 0;
@@ -8,6 +8,10 @@
     opacity: 0;
     padding: 0;
     transform: translateY(-100%);
+  }
+
+  .auth-signup-actions.isHidden {
+    transform: translateY(-20%);
   }
 
   .isVisible {
@@ -24,30 +28,12 @@
   }
 
   .auth-signup-password {
-    z-index: 10;
+    z-index: 30;
   }
 
-  .password-confirm {
+  .auth-signup-password-confirm {
     border-top: 0;
-  }
-
-  .login-id-messaging {
-    display: flex;
-    flex-direction: column;
-
-    span {
-      align-self: center;
-
-      &.important {
-        .font-weight-normal();
-
-        color: @color-orange-light;
-      }
-    }
-  }
-
-  .login-id {
-    resize: none;
+    z-index: 20;
   }
 
   .password-suggestions {
@@ -63,6 +49,33 @@
 
     li {
       margin: 0.2em 0 0.2em 2em;
+    }
+  }
+
+  .auth-signup-actions {
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+
+    .login-id-messaging {
+      display: flex;
+      flex-direction: column;
+      margin: 1em 0;
+
+      span {
+        align-self: center;
+        margin: 0;
+
+        &.important {
+          .font-weight-normal();
+
+          color: @color-orange-light;
+        }
+      }
+    }
+
+    .login-id {
+      resize: none;
     }
   }
 }

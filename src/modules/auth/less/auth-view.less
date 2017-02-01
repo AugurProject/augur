@@ -105,7 +105,7 @@
     & > form {
       display: flex;
       flex-direction: column;
-      margin: 0 2em 2em;
+      margin: 0 2em 1em;
 
       input {
         background-color: @color-white;
@@ -115,9 +115,13 @@
         align-self: flex-end;
       }
 
-      .remember-me {
+      .auth-signup-remember-me {
         align-self: flex-end;
         margin: 1em 0;
+
+        input {
+          margin-left: 0.3em;
+        }
       }
     }
   }

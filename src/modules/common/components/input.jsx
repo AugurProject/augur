@@ -120,6 +120,7 @@ export default class Input extends Component {
             type="button"
             className="button-text-only"
             onClick={this.handleToggleVisibility}
+            tabIndex="-1"
           >
             {s.isHiddenContentVisible ?
               <i></i> :
