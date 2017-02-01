@@ -150,7 +150,7 @@ export default class Routes extends Component {
           filterSort: p.filterSort,
           keywords: p.keywords,
           branch: p.branch,
-          scalarShareDenomination: p.scalarShareDenomination,
+          scalarShareDenomination: p.scalarShareDenomination
         };
         System.import('modules/markets/components/markets-view').then((module) => {
           const MarketsView = module.default;

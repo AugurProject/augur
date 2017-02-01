@@ -22,7 +22,7 @@ export default class MarketTradeCloseDialog extends Component {
     this.renderCloseDialogContent = this.renderCloseDialogContent.bind(this);
   }
 
-  renderCloseDialogContent(marketID, orderID, closeType, isClosable, isFullyClosable, quantityOfShares, isConfirming, closePosition, status, orderType, cancelOrder) {
+  renderCloseDialogContent(marketID, orderID, closeType, isClosable, isFullyClosable, quantityOfShares, isConfirming, closePosition, status, orderType, cancelOrder, isTradeCommitLocked) {
     // Position -- No Available Actions
     if (closeType === POSITION && !status && (!parseFloat(quantityOfShares, 10) || !isClosable)) {
       return <EmDash />;
@@ -58,27 +58,21 @@ export default class MarketTradeCloseDialog extends Component {
 
     switch (status) {
       case CLOSE_DIALOG_CLOSING:
-        return (
-          <span>closing</span>
-        );
+        return <span>closing</span>;
       case CLOSE_DIALOG_FAILED:
-        return (
-          <span>failed</span>
-        );
+        return <span>failed</span>;
       case CLOSE_DIALOG_PARTIALLY_FAILED:
-        return (
-          <span>partially failed</span>
-        );
+        return <span>partially failed</span>;
       case CLOSE_DIALOG_SUCCESS:
-        return (
-          <span>success</span>
-        );
+        return <span>success</span>;
       default:
         return (
           <button
             className="unstyled close-order-button"
             onClick={() => {
-              this.setState({ isConfirming: true });
+              if (!isTradeCommitLocked) {
+                this.setState({ isConfirming: true });
+              }
             }}
           >
             {closeType === POSITION ?
@@ -101,6 +95,7 @@ export default class MarketTradeCloseDialog extends Component {
         className={
           classNames(
             'close-dialog', {
+              'action-disabled': p.isTradeCommitLocked && p.closeType === POSITION,
               'action-running': p.status === CLOSE_DIALOG_CLOSING,
               'action-failed': p.status === CLOSE_DIALOG_FAILED || p.status === CLOSE_DIALOG_PARTIALLY_FAILED,
               'action-succeeded': p.status === CLOSE_DIALOG_SUCCESS
@@ -120,7 +115,8 @@ export default class MarketTradeCloseDialog extends Component {
             p.closePosition,
             p.status,
             p.orderType,
-            p.cancelOrder
+            p.cancelOrder,
+            p.isTradeCommitLocked
           )
         }
       </article>

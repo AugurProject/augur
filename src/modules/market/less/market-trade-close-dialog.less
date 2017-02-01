@@ -17,8 +17,16 @@
     background-color: @color-green-light;
   }
 
+  &.action-disabled .close-order-button {
+    color: @color-text-dark-extra-light;
+  }
+
   .close-order-button {
+    align-self: stretch;
     color: @color-red;
+    display: flex;
+    flex: 1;
+    justify-content: center;
   }
 
   .confirming-dialog {
@@ -28,7 +36,7 @@
     justify-content: center;
 
     & > * {
-      align-self: center;
+      align-self: stretch;
       flex: 1;
 
       &.confirming-yes {
