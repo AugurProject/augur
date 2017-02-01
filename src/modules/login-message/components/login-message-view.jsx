@@ -56,6 +56,9 @@ const LoginMessagePage = p => (
       <h3>January 31, 2017</h3>
       <ol>
         <li>
+          Added &quot;snitch&quot; tab to market detail page, where if you know the report and salt of another user during the commit phase of the current reporting cycle, you can snitch on the other reporter and they will lose all their active Reputation.  (The reason for this is to make it as hard as possible for Reporters to collude with each other.)
+        </li>
+        <li>
           Added fixReport and extra parameters to slashRep wrapper.
         </li>
         <li>
