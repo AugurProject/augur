@@ -15,6 +15,9 @@ var constants = require("../constants");
 module.exports = {
 
   placeBuy: function (market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+    if (this.options.debug.trading) {
+      console.log('placeBuy:', market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback);
+    }
     tradeCommitLockCallback(true);
     var self = this;
     var marketID = market.id;
@@ -35,6 +38,9 @@ module.exports = {
   },
 
   placeSell: function (market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+    if (this.options.debug.trading) {
+      console.log('placeSell:', market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback);
+    }
     var self = this;
     tradeCommitLockCallback(true);
     var marketID = market.id;
@@ -67,7 +73,7 @@ module.exports = {
               orderBook[marketID] = updatedOrderBook;
               var tradeIDs = self.calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBook, address);
               if (tradeIDs && tradeIDs.length) {
-                self.placeShortSell(market, outcomeID, res.remainingShares, limitPrice, address, totalCost, tradingFees, orderBook, tradeGroupID, tradeCommitmentCallback);
+                self.placeShortSell(market, outcomeID, res.remainingShares, limitPrice, address, totalCost, tradingFees, orderBook, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback);
               } else if (!doNotMakeOrders) {
                 self.placeShortAsk(market, outcomeID, res.remainingShares, limitPrice, tradeGroupID);
               }
@@ -79,6 +85,9 @@ module.exports = {
   },
 
   placeShortSell: function (market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+    if (this.options.debug.trading) {
+      console.log('placeShortSell:', market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback);
+    }
     var self = this;
     tradeCommitLockCallback(true);
     var marketID = market.id;

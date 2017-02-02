@@ -22536,42 +22536,42 @@ module.exports={
         "Trades": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3"
     }, 
     "3": {
-        "Backstops": "0xf8463a722f24a20e1a69cfc6537be97c61e4c0f4", 
-        "Branches": "0xb3ce090d8578524693067b33eccb466202d90785", 
-        "BuyAndSellShares": "0x3401ffa9843a350c34fc0a924f1c19d639a41f3a", 
-        "Cash": "0xb9e6f3b9555220d9f9ec37226c7d98d8a0ec171e", 
-        "CloseMarket": "0xfe7ae739a9843327e006d28d714421a4298b20ca", 
-        "CollectFees": "0xd02f6103c50eeda11bb5720a25dbe9840a407686", 
-        "CompleteSets": "0x703ef48c251fb4718fff84627503604c9efd1896", 
-        "CompositeGetters": "0x64320a4db470547cd9058162149281c6005499e8", 
-        "Consensus": "0xbd06708c1b99d153c431fdd8793a366da595ac2b", 
-        "ConsensusData": "0x5e442bc4609f0eeaa2cf92088d8f2dfae9690452", 
-        "CreateBranch": "0x79631220a417a0b7d5f7461fc496ccab7e5270e5", 
-        "CreateMarket": "0xc73d8ea0b62f63213c63971234e79cf408b0649d", 
-        "EventResolution": "0xccf1a0d235a4ae53a0bdac65f0562dfeee44e3f3", 
-        "Events": "0x9a07f94c33b27fba6e5b6ddcddd9bada08fd6aa3", 
-        "ExpiringEvents": "0xa3bbc7e20f0cd3bdd31fbe297eb803e072af917b", 
-        "Faucets": "0x38cb1ef4618e0f582190f773e5a6725befd4a635", 
-        "ForkPenalize": "0xe8818ede34f471e0c5ed771991374a9d2c6a4142", 
-        "Forking": "0xf11e0333edb89dd92afd1c0df0e66b242e4b187f", 
-        "FxpFunctions": "0x21749aa2967f59ef8178fcbe0b497576b916b13e", 
-        "Info": "0x385742b52a31d070ebb810686bfbf8031b3abe78", 
-        "MakeReports": "0xe7d22c5dfbf9d9b671cd6f138b3dde91ce3a72ed", 
-        "Markets": "0x91d3a906dd1081bb8242f6719ae4861ff308074b", 
-        "Payout": "0xe73c9b0496248a093813a623e6541635fabcb424", 
-        "PenalizationCatchup": "0x2c44de207cc2e96a288529cc571cabfbe2d357c5", 
-        "PenalizeNotEnoughReports": "0x48d190b7ef9eeaab69238d8f344065810bd0e262", 
-        "ProportionCorrect": "0x9dba643212d394c4af51f43d829993ec82c9be4b", 
-        "Register": "0xb2996337c3cf1ae228e7f02f472ad400071fd856", 
-        "Reporting": "0x7301c03b54e313a640fbb3450f3a5138098ce0ea", 
-        "ReportingThreshold": "0xf9a71873f074f91caa0ba5ae4f72e383637e521e", 
-        "RoundTwo": "0x726637de2c5e35bd57b955b8a4522b0802a22fed", 
-        "RoundTwoPenalize": "0x99788f3438c030c31e06f7948ded3f66a9f98dd7", 
-        "SendReputation": "0xe6c488b05745972706f6e4631c3f1e52e7c1a736", 
-        "SlashRep": "0x030ad35a2ac46de359a6bb92829f077f7fb57ae9", 
-        "Tags": "0xb946fd05eeb01c9f64485a27f1da3fabf99904d0", 
-        "Trade": "0xd772617209edc515657223218ef1cbff060d1606", 
-        "Trades": "0x99d6c89ec35d368e5ce1e0f1051b7ef8d522aa4b"
+        "Backstops": "0xce02356f4c41439a448cb34e460fb0c00a847e3b", 
+        "Branches": "0xcaf43af5f9095f8f18c5c5d05313adad38d8d234", 
+        "BuyAndSellShares": "0x3312a656146284e7fd1ac5306031e80a382952e5", 
+        "Cash": "0x421f6dba7122169a813fb65228f4c519d195c841", 
+        "CloseMarket": "0x1d2285810826e56e3e0f05c30fb9a4d071cfe13e", 
+        "CollectFees": "0xefbc4f465daff59a16f7eb4beccaae3718c81c78", 
+        "CompleteSets": "0x6f9e4f1d56e72af20dfe222bb769ab8ed50c008f", 
+        "CompositeGetters": "0x70453d427e0e782306b09ea353fa8cef458130eb", 
+        "Consensus": "0xd1d17de5efa3519b402c0c27211c10e7c8baf4c7", 
+        "ConsensusData": "0xac88d90ddf8bb96e41fa2e7f641dd5678ad9f094", 
+        "CreateBranch": "0x185bfb59dd95fc786dc47221b6806f4c2b073677", 
+        "CreateMarket": "0x36b5666bc03bed24e31ce1257633c1899685306d", 
+        "EventResolution": "0x3981417012541bce53282f8f8441523543c03a0c", 
+        "Events": "0xfaad7519f805dab9b7008d5c6901d771eef921d6", 
+        "ExpiringEvents": "0xad28b66a3bdf3446daebe15146fc1b53c071163c", 
+        "Faucets": "0x41c6d2632c95d3fa962288840ae16fd33fadde59", 
+        "ForkPenalize": "0xc1053b77ba4b3e11349ac59e2d542d480178fafb", 
+        "Forking": "0x5cb12803d81bfb8debca6a0b68728fef8e949e64", 
+        "FxpFunctions": "0xa35af7ef3b3862d1e75a31285786e60c119c7f3b", 
+        "Info": "0x9a4c03a6f04dfe0d47bdd518ef0c87c2c37bcd89", 
+        "MakeReports": "0x312520d66aa326be2e530d5d866e5f417831a3e9", 
+        "Markets": "0xcf6135e8abbe8b8c33465df81a8c54b6fdc74de0", 
+        "Payout": "0xef245470bc8219e73007a0a49397ad320234c2c6", 
+        "PenalizationCatchup": "0xb7c94d1ba4216760b2f683c3deb6ba4c325c52af", 
+        "PenalizeNotEnoughReports": "0x0430c78716936b64cf74c7532a19f55ec5e33b9a", 
+        "ProportionCorrect": "0xb18a3428fa19c08de3d982dc0955f9acd0f7823c", 
+        "Register": "0xb344149a52a72c30953c2c549345cd3539acfac5", 
+        "Reporting": "0xde78821255cdddcf31189dae964ebd518dbe1f3e", 
+        "ReportingThreshold": "0x4b6b32d8a8288bf139406701388bb8bf3dceee56", 
+        "RoundTwo": "0x509fb127be1e254fa9bb4ab87f1324f9a76697be", 
+        "RoundTwoPenalize": "0x67667afc95fc39a8cb07a9fa5750501872bcf144", 
+        "SendReputation": "0x1eee4208540a898275420a513cf0211743fdfc17", 
+        "SlashRep": "0x892ef1307410aa92a03e16f67bda042950c91d03", 
+        "Tags": "0xfd8d8217a24f193ead9d46428dbe07be7a8efe73", 
+        "Trade": "0xbc56deabfbd3bc471f6e8f86410356a593b5db11", 
+        "Trades": "0x09b43597955ff55583eef5b2cc9b37983fcb6c65"
     }, 
     "9000": {
         "Backstops": "0x708fdfe18bf28afe861a69e95419d183ace003eb", 
@@ -24369,11 +24369,11 @@ BigNumber.config({
 var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register")];
 
 function Augur() {
-  this.version = "3.9.12";
+  this.version = "3.9.15";
 
   this.options = {
     debug: {
-      tools: true, // if true, testing tools (test/tools.js) included
+      tools: false, // if true, testing tools (test/tools.js) included
       abi: false, // debug logging in augur-abi
       broadcast: false, // broadcast debug logging in ethrpc
       connect: false, // connection debug logging in ethereumjs-connect
@@ -28209,6 +28209,9 @@ var constants = require("../constants");
 module.exports = {
 
   placeBuy: function placeBuy(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+    if (this.options.debug.trading) {
+      console.log('placeBuy:', market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback);
+    }
     tradeCommitLockCallback(true);
     var self = this;
     var marketID = market.id;
@@ -28229,6 +28232,9 @@ module.exports = {
   },
 
   placeSell: function placeSell(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+    if (this.options.debug.trading) {
+      console.log('placeSell:', market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback);
+    }
     var self = this;
     tradeCommitLockCallback(true);
     var marketID = market.id;
@@ -28261,7 +28267,7 @@ module.exports = {
               orderBook[marketID] = updatedOrderBook;
               var tradeIDs = self.calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBook, address);
               if (tradeIDs && tradeIDs.length) {
-                self.placeShortSell(market, outcomeID, res.remainingShares, limitPrice, address, totalCost, tradingFees, orderBook, tradeGroupID, tradeCommitmentCallback);
+                self.placeShortSell(market, outcomeID, res.remainingShares, limitPrice, address, totalCost, tradingFees, orderBook, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback);
               } else if (!doNotMakeOrders) {
                 self.placeShortAsk(market, outcomeID, res.remainingShares, limitPrice, tradeGroupID);
               }
@@ -28273,6 +28279,9 @@ module.exports = {
   },
 
   placeShortSell: function placeShortSell(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+    if (this.options.debug.trading) {
+      console.log('placeShortSell:', market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback);
+    }
     var self = this;
     tradeCommitLockCallback(true);
     var marketID = market.id;
