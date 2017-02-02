@@ -53,6 +53,13 @@ const LoginMessagePage = p => (
         </li>
       </ol>
       <h2>Technical updates:</h2>
+      <h3>February 1, 2017</h3>
+      <ol>
+        <li>
+          {`Added the ability to 'close' an existing market position.
+            This action will determine if a position can be either fully or partially closed based on the current order book state and will attempt to do so at the best available price.`}
+        </li>
+      </ol>
       <h3>January 31, 2017</h3>
       <ol>
         <li>
