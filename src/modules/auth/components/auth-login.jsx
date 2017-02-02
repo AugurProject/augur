@@ -11,7 +11,8 @@ export default class AuthLogin extends Component {
       loginID: '',
       password: '',
       rememberMe: true,
-      authError: null,
+      loginError: false,
+      errorMessage: null,
       // These prevent a flash on component mount
       isPasswordDisplayable: false,
       isAuthErrorDisplayable: false,
@@ -35,7 +36,8 @@ export default class AuthLogin extends Component {
             p.submitLogin(s.loginID, s.password, s.rememberMe, (err) => {
               if (err) {
                 this.setState({
-                  authError: err.message,
+                  loginError: true,
+                  errorMessage: err.message,
                   isAuthErrorDisplayable: true
                 });
               }
@@ -43,9 +45,9 @@ export default class AuthLogin extends Component {
           }
         }}
       >
-        <span>Login with a Login ID</span>
+        <span className="soft-header">Login with a Login ID</span>
         <Input
-          className={classNames('auth-login-login-id', { 'input-error': s.authError })}
+          className={classNames('auth-login-login-id', { 'input-error': s.loginError })}
           name="login-id"
           type="text"
           placeholder="Login ID"
@@ -53,18 +55,22 @@ export default class AuthLogin extends Component {
           onChange={(loginID) => {
             this.setState({ loginID });
 
+            if (!loginID) {
+              this.setState({ password: '' });
+            }
+
             if (!this.state.isPasswordDisplayable) {
               this.setState({ isPasswordDisplayable: true });
             }
 
-            if (this.state.authError) {
-              this.setState({ authError: null });
+            if (this.state.loginError) {
+              this.setState({ loginError: false });
             }
           }}
         />
         <Input
           className={classNames('auth-login-password', {
-            'input-error': s.authError,
+            'input-error': s.loginError,
             animateIn: s.loginID,
             animateOut: !s.loginID && s.isPasswordDisplayable
           })}
@@ -72,6 +78,7 @@ export default class AuthLogin extends Component {
           type="password"
           placeholder="Password"
           canToggleVisibility
+          value={s.password}
           onChange={(password) => {
             this.setState({ password });
 
@@ -79,19 +86,21 @@ export default class AuthLogin extends Component {
               this.setState({ isLoginActionsDisplayable: true });
             }
 
-            if (this.state.authError) {
-              this.setState({ authError: null });
+            if (this.state.loginError) {
+              this.setState({ loginError: false });
             }
           }}
         />
-        <span
+        <div
           className={classNames('auth-login-error', {
-            animateInPartial: s.authError,
-            animateOutPartial: !s.authError && s.isAuthErrorDisplayable
+            animateIn: s.loginError,
+            animateOut: !s.loginError && s.isAuthErrorDisplayable
           })}
         >
-          {s.authError}
-        </span>
+          <span className="login-error-message">
+            {s.errorMessage}
+          </span>
+        </div>
         <div
           className={classNames('auth-login-actions', {
             animateInPartial: s.loginID && s.password,

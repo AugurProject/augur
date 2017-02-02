@@ -106,7 +106,7 @@ export default class AuthSignup extends Component {
           }
         }}
       >
-        <span>Sign up with a Login ID</span>
+        <span className="soft-header">Sign up with a Login ID</span>
         <Input
           autoFocus
           canToggleVisibility
@@ -156,7 +156,7 @@ export default class AuthSignup extends Component {
           ref={(authSignupActions) => { this.authSignupActions = authSignupActions; }}
         >
           <div className="login-id-messaging">
-            <span>Below is your Login ID</span>
+            <span className="soft-header">Below is your Login ID</span>
             <span className="important">SAVE THE LOGIN ID IN A SAFE PLACE</span>
             <span className="important">This CANNOT be recovered if lost or stolen!</span>
           </div>

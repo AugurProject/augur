@@ -19,11 +19,15 @@
   }
 
   .auth-login-error {
-    color: @color-red;
-    font-weight: @font-weight-normal;
+    display: flex;
     height: 0;
-    margin: 1em 0 1em 1em;
     opacity: 0;
     z-index: 10;
+
+    span.login-error-message {
+      color: @color-red;
+      font-weight: @font-weight-normal;
+      margin: 0.5em 0 0 1em;
+    }
   }
 }

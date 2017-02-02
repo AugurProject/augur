@@ -34,7 +34,7 @@ export default class AuthImport extends Component {
           }
         }}
       >
-        <span>Import account from file</span>
+        <span className="soft-header">Import account from file</span>
         <input
           className="auth-import-file"
           name="file"
