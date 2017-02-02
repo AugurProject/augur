@@ -24,10 +24,11 @@ export function loadDataForMarketTransaction(label, log, isRetry, callback) {
 export function loadDataForReportingTransaction(label, log, isRetry, callback) {
   return (dispatch, getState) => {
     const { marketsData, outcomesData } = getState();
-    const marketID = selectMarketIDFromEventID(log.event);
+    const eventID = log.event || log.eventID;
+    const marketID = selectMarketIDFromEventID(eventID);
     if (!marketID) {
       if (isRetry) return callback(log);
-      return dispatch(lookupEventMarketsThenRetryConversion(log.event, label, log, callback));
+      return dispatch(lookupEventMarketsThenRetryConversion(eventID, label, log, callback));
     }
     const market = marketsData[marketID];
     if (!market) {
@@ -321,7 +322,7 @@ export function constructSlashedRepTransaction(log, market, outcomes, address, d
   transaction.data.marketLink = selectMarketLink({ id: market.id, description: market.description }, dispatch);
   transaction.data.market = market;
   if (log.sender === address) {
-    transaction.type = 'Anti-Collusion Reward';
+    transaction.type = 'Snitch Reward';
     if (log.repSlashed) {
       const slasherRepGained = abi.bignum(log.repSlashed).dividedBy(2).toFixed();
       transaction.data.balances = [{
