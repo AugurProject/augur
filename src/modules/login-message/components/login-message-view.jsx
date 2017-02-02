@@ -59,6 +59,15 @@ const LoginMessagePage = p => (
           {`Added the ability to 'close' an existing market position.
             This action will determine if a position can be either fully or partially closed based on the current order book state and will attempt to do so at the best available price.`}
         </li>
+        <li>
+          Snitch (slashRep) messaging now displays correctly.
+        </li>
+        <li>
+          Fixed reporterIndex reference in slashRep function.
+        </li>
+        <li>
+          Fixed eventID reference in slashedRep log and added a timestamp.
+        </li>
       </ol>
       {p.marketsLink &&
       <Link className="lets-do-this-button" {...p.marketsLink} >{`Let's do this!`}</Link>
