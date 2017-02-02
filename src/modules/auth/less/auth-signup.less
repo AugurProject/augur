@@ -1,14 +1,5 @@
 .auth-signup-form {
   .isHidden {
-    // .transition(transform @animation-speed-very-fast @animation-default-type, opacity @animation-speed-very-fast @animation-default-type;);
-    //
-    // border: 0;
-    // font-size: 0;
-    // margin: 0;
-    // opacity: 0;
-    // padding: 0;
-    // transform: translateY(-100%);
-
     animation-delay: 0s, @animation-speed-very-fast;
     animation-duration: @animation-speed-very-fast, 0s;
     animation-fill-mode: forwards;
@@ -17,34 +8,29 @@
   }
 
   .isVisible {
-    // .transition(transform @animation-speed-fast @animation-default-type, opacity @animation-speed-very-fast @animation-default-type;);
-    //
-    // opacity: 1;
-    // transform: translateY(0);
-
     animation-delay: 0s, @animation-speed-fast;
     animation-duration: 0s, @animation-speed-fast;
     animation-fill-mode: forwards;
     animation-name: expandElementHeight, fadeInDownFull;
     animation-timing-function: @animation-default-type;
-
     opacity: 0;
-
-    // animation-delay: @animation-speed-fast;
-    // animation-duration: @animation-speed-fast;
-    // animation-fill-mode: forwards;
-    // animation-name: fadeInDownFull;
-    // animation-timing-function: @animation-default-type;
   }
 
   .auth-signup-actions.isHidden {
-    // .fadeInUp();
-    //
-    // transform: translateY(-20%);
+    animation-delay: 0s, @animation-speed-very-fast;
+    animation-duration: @animation-speed-very-fast, 0s;
+    animation-fill-mode: forwards;
+    animation-name: fadeOutUpPartial, collapseElementHeight;
+    animation-timing-function: @animation-default-type;
   }
-  //
+
   .auth-signup-actions.isVisible {
-    // .fadeInDown();
+    animation-delay: 0s, @animation-speed-fast;
+    animation-duration: 0s, @animation-speed-fast;
+    animation-fill-mode: forwards;
+    animation-name: expandElementHeight, fadeInDownPartial;
+    animation-timing-function: @animation-default-type;
+    opacity: 0;
   }
 
   span:first-of-type {

@@ -31,6 +31,7 @@ export default class AuthSignup extends Component {
 
     // loginAccount
     if (
+      nextState.password &&
       nextState.isStrongPass &&
       this.state.password !== this.state.passwordConfirm &&
       nextState.password === nextState.passwordConfirm
@@ -119,8 +120,8 @@ export default class AuthSignup extends Component {
         />
         {
           <ul className={classNames('auth-signup-password-suggestions', { isVisible: !s.isStrongPass && s.passwordSuggestions.length, isHidden: !s.passwordSuggestions.length })}>
-            {s.passwordSuggestions.map(suggestion => (
-              <li>{suggestion}</li>
+            {s.passwordSuggestions.map((suggestion, i) => (
+              <li key={`password-suggestion-${i}`}>{suggestion}</li>
             ))}
           </ul>
         }
