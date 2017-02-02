@@ -24,10 +24,10 @@ export default class AuthSignup extends Component {
       isGeneratingLoginID: false,
       rememberMe: true,
       loginAccount: null,
-      // These prevent a flash on initial mount (little messy)
+      // These prevent a flash on component mount
       isPasswordConfirmDisplayable: false,
       isPasswordsSuggestionDisplayable: false,
-      isAuthActionsDisplayable: false
+      isSignUpActionsDisplayable: false
     };
   }
 
@@ -150,8 +150,8 @@ export default class AuthSignup extends Component {
         </ul>
         <div
           className={classNames('auth-signup-actions', {
-            animateIn: s.loginAccount,
-            animateOut: !s.loginAccount && s.isAuthActionsDisplayable
+            animateInPartial: s.loginAccount,
+            animateOutPartial: !s.loginAccount && s.isSignUpActionsDisplayable
           })}
           ref={(authSignupActions) => { this.authSignupActions = authSignupActions; }}
         >
@@ -181,7 +181,6 @@ export default class AuthSignup extends Component {
           </label>
           <button
             className="submit"
-            value="Sign Up"
             type="submit"
           >
             Sign Up

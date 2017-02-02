@@ -1,4 +1,23 @@
-.auth-form-login {
+.auth-login-form {
   display: flex;
   flex-direction: column;
+
+  .auth-login-login-id {
+    z-index: 30;
+  }
+
+  .auth-login-password {
+    border-top: 0;
+    height: 0;
+    opacity: 0;
+    z-index: 20;
+  }
+
+  .auth-login-actions {
+    display: flex;
+    flex-direction: column;
+    height: 0;
+    opacity: 0;
+    z-index: 10;
+  }
 }

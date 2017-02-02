@@ -107,6 +107,12 @@
       flex-direction: column;
       margin: 0 2em 1em;
 
+      span:first-of-type {
+        align-self: center;
+        color: @color-text-light-extra-light;
+        margin: 1em 0;
+      }
+
       input {
         background-color: @color-white;
       }
@@ -125,4 +131,95 @@
       }
     }
   }
+
+  // Animations
+  .animateIn {
+    animation-delay: 0s, @animation-speed-fast;
+    animation-duration: 0s, @animation-speed-fast;
+    animation-fill-mode: forwards;
+    animation-name: expandElementHeight, fadeInDownFull;
+    animation-timing-function: @animation-default-type;
+    opacity: 0;
+  }
+
+  .animateOut {
+    animation-delay: 0s, @animation-speed-very-fast;
+    animation-duration: @animation-speed-very-fast, 0s;
+    animation-fill-mode: forwards;
+    animation-name: fadeOutUpFull, collapseElementHeight;
+    animation-timing-function: @animation-default-type;
+  }
+
+  .animateInPartial {
+    animation-delay: 0s, @animation-speed-fast;
+    animation-duration: 0s, @animation-speed-fast;
+    animation-fill-mode: forwards;
+    animation-name: expandElementHeight, fadeInDownPartial;
+    animation-timing-function: @animation-default-type;
+    opacity: 0;
+  }
+
+  .animateOutPartial {
+    animation-delay: 0s, @animation-speed-very-fast;
+    animation-duration: @animation-speed-very-fast, 0s;
+    animation-fill-mode: forwards;
+    animation-name: fadeOutUpPartial, collapseElementHeight;
+    animation-timing-function: @animation-default-type;
+  }
+
+  .keyframes(expandElementHeight, {
+  to { height: auto; }
+  });
+
+  .keyframes(collapseElementHeight, {
+  to { height: 0; }
+  });
+
+  .keyframes(fadeInDownFull, {
+  from {
+  transform: translateY(-100%);
+  opacity: 0;
+  }
+  to {
+  transform: translateY(0%);
+  opacity: 1;
+  }
+  });
+
+  .keyframes(fadeOutUpFull, {
+  from {
+  transform: translateY(0);
+  height: auto;
+  opacity: 1;
+  }
+  to {
+  transform: translateY(-100%);
+  height: auto;
+  opacity: 0;
+  }
+  });
+
+  .keyframes(fadeInDownPartial, {
+  from {
+  transform: translateY(-20%);
+  opacity: 0;
+  }
+  to {
+  transform: translateY(0%);
+  opacity: 1;
+  }
+  });
+
+  .keyframes(fadeOutUpPartial, {
+  from {
+  transform: translateY(0);
+  height: auto;
+  opacity: 1;
+  }
+  to {
+  transform: translateY(-20%);
+  height: auto;
+  opacity: 0;
+  }
+  });
 }

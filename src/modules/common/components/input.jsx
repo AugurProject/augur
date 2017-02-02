@@ -90,7 +90,7 @@ export default class Input extends Component {
           <input
             {...p}
             className="box"
-            type={p.type === 'password' && s.isHiddenContentVisible ? 'text' : 'password'}
+            type={p.type === 'password' && s.isHiddenContentVisible ? 'text' : p.type}
             value={s.value}
             onChange={this.handleOnChange}
             onBlur={this.handleOnBlur}
