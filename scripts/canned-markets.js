@@ -204,17 +204,6 @@ var cannedMarkets = [{
   extraInfo: "The Daily Dow market lives again! https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average",
   resolution: "https://www.google.com/finance?q=INDEXDJX:.DJI"
 }, {
-  description: "Will Augur's live release happen by the end of 2016?",
-  expDate: parseInt(new Date("1/1/2017").getTime() / 1000, 10),
-  minValue: 1,
-  maxValue: 2,
-  numOutcomes: 2,
-  takerFee: "0.03",
-  makerFee: "0.01",
-  tags: ["Augur", "release date", "Ethereum"],
-  extraInfo: "https://www.augur.net",
-  resolution: "https://www.augur.net"
-}, {
   description: "Will Augur's live release happen by the end of February, 2017?",
   expDate: parseInt(new Date("3/1/2017").getTime() / 1000, 10),
   minValue: 1,
@@ -248,8 +237,8 @@ var cannedMarkets = [{
   extraInfo: "",
   resolution: ""
 }, {
-  description: "Will REP tokens be worth more than 100 USD each any time on or before 1.1.2017 on CoinMarketCap?",
-  expDate: parseInt(new Date("1/1/2017").getTime() / 1000, 10),
+  description: "Will REP tokens be worth more than 100 USD each any time on or before 1.1.2018 on CoinMarketCap?",
+  expDate: parseInt(new Date("1/1/2018").getTime() / 1000, 10),
   minValue: 1,
   maxValue: 2,
   numOutcomes: 2,
@@ -259,8 +248,8 @@ var cannedMarkets = [{
   extraInfo: "https://www.reddit.com/r/reptrader",
   resolution: "http://coinmarketcap.com"
 }, {
-  description: "Will Ethereum trade at $15 or higher by midnight EST on November 30, 2016?",
-  expDate: parseInt(new Date("12/1/2016").getTime() / 1000, 10),
+  description: "Will Ethereum trade at $15 or higher by midnight EST on November 30, 2017?",
+  expDate: parseInt(new Date("12/1/2017").getTime() / 1000, 10),
   minValue: 1,
   maxValue: 2,
   numOutcomes: 2,
@@ -363,81 +352,6 @@ var cannedMarkets = [{
   extraInfo: "Will antibiotic pan-resistance lead to a massive resurgence of infectious diseases?",
   resolution: "CDC"
 }, {
-  description: "Who will win the NFC Championship?~|>Dallas Cowboys|Atlanta Falcons|Green Bay Packers|Seattle Seahawks|New York Giants|Detriot Lions",
-  expDate: parseInt(new Date("1-22-2017").getTime() / 1000, 10),
-  minValue: 1,
-  maxValue: 6,
-  numOutcomes: 6,
-  takerFee: "0.02",
-  makerFee: "0.01",
-  tags: ["football", "NFL", "sports"],
-  extraInfo: "",
-  resolution: "espn.com",
-  orderBook: {
-    buy: {
-      "1": [
-        {shares: "200", price: "0.38"},
-        {shares: "150", price: "0.37"},
-        {shares: "200", price: "0.34"}
-      ],
-      "2": [
-        {shares: "50", price: "0.21"},
-        {shares: "100", price: "0.19"},
-        {shares: "150", price: "0.16"}
-      ],
-      "3": [
-        {shares: "100", price: "0.2"},
-        {shares: "150", price: "0.18"},
-        {shares: "100", price: "0.15"}
-      ],
-      "4": [
-        {shares: "100", price: "0.15"},
-        {shares: "200", price: "0.12"},
-        {shares: "300", price: "0.1"}
-      ],
-      "5": [
-        {shares: "100", price: "0.06"},
-        {shares: "500", price: "0.04"},
-        {shares: "1000", price: "0.02"}
-      ],
-      "6": [
-        {shares: "200", price: "0.02"},
-        {shares: "500", price: "0.01"}
-      ]
-    },
-    sell: {
-      "1": [
-        {shares: "100", price: "0.42"},
-        {shares: "150", price: "0.44"},
-        {shares: "200", price: "0.48"}
-      ],
-      "2": [
-        {shares: "100", price: "0.25"},
-        {shares: "200", price: "0.29"},
-        {shares: "250", price: "0.33"}
-      ],
-      "3": [
-        {shares: "150", price: "0.23"},
-        {shares: "250", price: "0.27"},
-        {shares: "200", price: "0.3"}
-      ],
-      "4": [
-        {shares: "50", price: "0.2"},
-        {shares: "150", price: "0.24"},
-        {shares: "100", price: "0.28"}
-      ],
-      "5": [
-        {shares: "350", price: "0.1"},
-        {shares: "500", price: "0.15"},
-        {shares: "400", price: "0.18"}
-      ],
-      "6": [
-        {shares: "300", price: "0.07"},
-        {shares: "1000", price: "0.1"}
-      ]
-    }
-  }
-}, {
   description: "Will Tiger Woods win the Genesis Open?",
   expDate: parseInt(new Date("2-19-2017").getTime() / 1000, 10),
   minValue: 1,
@@ -521,35 +435,6 @@ var cannedMarkets = [{
         {shares: "100", price: "0.26"},
         {shares: "300", price: "0.29"}
       ]
-    }
-  }
-}, {
-  description: "How many total points will be scored in the NFL Pro Bowl Game?",
-  expDate: parseInt(new Date("1-29-2017").getTime() / 1000, 10),
-  minValue: 0,
-  maxValue: 100,
-  numOutcomes: 2,
-  takerFee: "0.02",
-  makerFee: "0.01",
-  tags: ["football", "NFL", "sports"],
-  extraInfo: "",
-  resolution: "espn.com",
-  orderBook: {
-    buy: {
-      "2": [
-        {shares: "100", price: "44"},
-        {shares: "250", price: "41"},
-        {shares: "300", price: "37"}
-      ],
-      "1": []
-    },
-    sell: {
-      "2": [
-        {shares: "50", price: "50"},
-        {shares: "200", price: "54"},
-        {shares: "250", price: "58"}
-      ],
-      "1": []
     }
   }
 }, {
