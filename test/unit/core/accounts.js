@@ -29,23 +29,6 @@ describe("accounts.register", function() {
   var create = keys.create;
   var deriveKey = keys.deriveKey;
   var KDF = constants.KDF;
-  accounts = [{
-      loginID: undefined,
-      name: 'account1',
-      address: undefined,
-      password: 'helloWorld',
-      keystore: undefined,
-      privateKey: undefined,
-      derivedKey: undefined
-    }, {
-      loginID: undefined,
-      name: 'account2',
-      address: undefined,
-      password: 'password',
-      keystore: undefined,
-      privateKey: undefined,
-      derivedKey: undefined
-  }];
   afterEach(function() {
     augur.accounts.account = {};
     keys.create = create;
@@ -182,9 +165,107 @@ describe("accounts.register", function() {
 });
 describe("accounts.fundNewAccountFromFaucet", function() {});
 describe("accounts.fundNewAccountFromAddress", function() {});
-describe("accounts.changeAccountName", function() {});
+describe("accounts.changeAccountName", function() {
+  // 2 tests total
+  augur.accounts.account = {};
+  afterEach(function() {
+    augur.accounts.account = {};
+  });
+  var test = function(t) {
+    it(t.description, function() {
+      augur.accounts.account = t.account;
+      var out = augur.accounts.changeAccountName(t.newName, t.cb);
+      t.assertions(out);
+    });
+  };
+  test({
+    description: 'Should change the name value of the logged in account',
+    account: { name: 'hello' },
+    newName: 'world',
+    cb: function(name) {
+      assert.deepEqual(name, { name: 'world' });
+    },
+    assertions: function(out) {
+      // out is undefined in this test since we gave a callback.
+      assert.isUndefined(out);
+      assert.deepEqual(augur.accounts.account, { name: 'world' });
+    }
+  });
+  test({
+    description: 'Should change the name value of the logged in account',
+    account: { name: 'world' },
+    newName: 'hello',
+    cb: undefined,
+    assertions: function(out) {
+      // since we pass cb as undefined it should use utils.pass which simply passes the value passed to callback out as a return value, so out should be populated with our new augur.accounts.account object.
+      assert.deepEqual(out, { name: 'hello' });
+      assert.deepEqual(augur.accounts.account, out);
+    }
+  });
+});
 describe("accounts.importAccount", function() {});
-describe("accounts.loadLocalLoginAccount", function() {});
+describe("accounts.loadLocalLoginAccount", function() {
+  // ? tests total
+  augur.accounts.account = {};
+  afterEach(function() {
+    augur.accounts.account = {};
+  });
+  var test = function(t) {
+    it(t.description, function() {
+      var loginAccount = t.prepareLoginAccount(accounts);
+      var out = augur.accounts.loadLocalLoginAccount(loginAccount, t.cb);
+      t.assertions(out, loginAccount);
+    });
+  };
+  test({
+    description: 'Should login an account when given a loginAccount object where all values are as expected',
+    prepareLoginAccount: function(accounts) {
+      // we have to do it this way to get accounts at run time, if we try and just pass loginAccount as an object then we will be using accounts above with most values = undefined.
+      return {
+        name: accounts[0].name,
+        address: accounts[0].address,
+        privateKey: accounts[0].privateKey,
+        derivedKey: accounts[0].derivedKey,
+        loginID: accounts[0].loginID,
+        keystore: accounts[0].keystore
+      };
+    },
+    cb: function(account) {
+      assert.deepEqual(account.name, accounts[0].name);
+      assert.deepEqual(account.loginID, accounts[0].loginID);
+      assert.deepEqual(account.address, accounts[0].address);
+      assert.deepEqual(account.derivedKey, accounts[0].derivedKey);
+      assert.deepEqual(account.privateKey, accounts[0].privateKey);
+      assert.deepEqual(account.keystore, accounts[0].keystore);
+    },
+    assertions: function(out, loginAccount) {
+      // because we pass a cb in this example, out shouldn't be defined
+      assert.isUndefined(out);
+      assert.deepEqual(loginAccount, augur.accounts.account);
+    }
+  });
+  test({
+    description: 'Should login an account when given a loginAccount object where there is no cb provided and privateKey and DerivedKey are both hex strings.',
+    prepareLoginAccount: function(accounts) {
+      // see first test for explaination of this func
+      return {
+        name: accounts[0].name,
+        address: accounts[0].address,
+        privateKey: accounts[0].privateKey.toString('hex'),
+        derivedKey: accounts[0].derivedKey.toString('hex'),
+        loginID: accounts[0].loginID,
+        keystore: accounts[0].keystore
+      };
+    },
+    cb: undefined,
+    assertions: function(out, loginAccount) {
+      // because we didn't pass a cb then out should be defined as the account and out should = the currently logged in account
+      assert.deepEqual(out, loginAccount);
+      assert.deepEqual(out, augur.accounts.account);
+      assert.deepEqual(loginAccount, augur.accounts.account);
+    }
+  });
+});
 describe("accounts.login", function() {});
 describe("accounts.loginWithMasterKey", function() {});
 describe("accounts.logout", function() {});
