@@ -2,7 +2,6 @@ import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import mocks from 'test/mockStore';
-import { CANCELLATION_CONFIRMATION, CANCELLATION_FAILED, CANCELLED, CANCELLING } from 'modules/bids-asks/constants/order-status';
 
 describe('modules/bids-asks/selectors/order-cancellation.js', () => {
   proxyquire.noPreserveCache().noCallThru();
@@ -14,13 +13,8 @@ describe('modules/bids-asks/selectors/order-cancellation.js', () => {
 
   it('should select correct values', () => {
     const orderCancellation = orderCancellationSelector();
-    assert.isFunction(orderCancellation.abortCancelOrderConfirmation);
-    assert.isFunction(orderCancellation.showCancelOrderConfirmation);
-    assert.isFunction(orderCancellation.abortCancelOrderConfirmation);
-    assert.deepEqual(orderCancellation.cancellationStatuses, {
-      CANCELLATION_CONFIRMATION, CANCELLATION_FAILED, CANCELLED, CANCELLING
-    });
+    assert.isFunction(orderCancellation.cancelOrder);
     assert.propertyVal(orderCancellation, 'an orderID', 'a status');
-    assert.lengthOf(Object.keys(orderCancellation), 5);
+    assert.lengthOf(Object.keys(orderCancellation), 2);
   });
 });

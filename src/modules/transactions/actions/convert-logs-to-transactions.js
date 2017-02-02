@@ -7,6 +7,8 @@ import { constructTransaction, constructTradingTransaction, constructBasicTransa
 
 export function convertTradeLogToTransaction(label, data, marketID) {
   return (dispatch, getState) => {
+    console.log('convertTradeLogToTransaction', label);
+    console.log(data);
     const outcomeIDs = Object.keys(data[marketID]);
     const numOutcomes = outcomeIDs.length;
     const { address } = getState().loginAccount;
@@ -31,6 +33,7 @@ export function convertTradeLogsToTransactions(label, data, marketID) {
     async.forEachOfSeries(data, (marketTrades, marketID, next) => {
       if (marketsData[marketID]) {
         dispatch(convertTradeLogToTransaction(label, data, marketID));
+        return next();
       }
       console.log('getting market info for', marketID);
       augur.getMarketInfo(marketID, (marketInfo) => {

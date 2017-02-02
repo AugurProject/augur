@@ -1,12 +1,12 @@
 import { abi, augur, rpc } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
+import { SCALAR } from '../../markets/constants/market-types';
 import { updateTradeCommitment } from '../../trade/actions/update-trade-commitment';
 import { deleteTransaction } from '../../transactions/actions/delete-transaction';
 import { constructBasicTransaction, constructTradingTransaction, constructTransaction } from '../../transactions/actions/construct-transaction';
 import unpackTransactionParameters from '../../transactions/actions/unpack-transaction-parameters';
 import { selectMarketFromEventID } from '../../market/selectors/market';
 import selectWinningPositions from '../../my-positions/selectors/winning-positions';
-import selectOrder from '../../bids-asks/selectors/select-order';
 
 export const constructRelayTransaction = (tx, status) => (dispatch, getState) => {
   const hash = tx.response.hash;
@@ -32,7 +32,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         price: abi.unfix_signed(p.price, 'string'),
         amount: abi.unfix(p.amount, 'string'),
         gasFees
-      }, p.market, p.outcome, status));
+      }, abi.format_int256(p.market), p.outcome, status));
     case 'shortAsk':
       p.isShortAsk = true; // eslint-disable-line no-fallthrough
     case 'sell':
@@ -42,26 +42,57 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         price: abi.unfix_signed(p.price, 'string'),
         amount: abi.unfix(p.amount, 'string'),
         gasFees
-      }, p.market, p.outcome, status));
+      }, abi.format_int256(p.market), p.outcome, status));
     case 'cancel': {
-      const order = selectOrder(p.trade_id);
+      const order = augur.selectOrder(p.trade_id, getState().orderBooks);
+      if (!order) return null;
       return dispatch(constructTradingTransaction('log_cancel', {
         ...p,
         ...order,
         gasFees
-      }, order.market, order.outcome, status));
+      }, abi.format_int256(order.market), order.outcome, status));
     }
     case 'commitTrade': {
       dispatch(updateTradeCommitment({ transactionHash: hash }));
-      const { tradeHash, orders, tradingFees, maxValue, maxAmount, gasFees } = getState().tradeCommitment;
+      const { isShortSell, tradeHash, orders, tradingFees, maxValue, remainingShares, gasFees } = getState().tradeCommitment;
+      const { marketsData } = getState();
       const numTradeIDs = orders.length;
       const transactions = new Array(numTradeIDs);
+      let remainingEth = abi.bignum(maxValue);
       for (let i = 0; i < numTradeIDs; ++i) {
         const order = orders[i];
-        const amount = abi.bignum(maxAmount).gt(ZERO) ?
-          maxAmount :
-          abi.bignum(maxValue).minus(abi.bignum(tradingFees)).dividedBy(abi.bignum(order.price)).toFixed();
-        transactions[i] = dispatch(constructTradingTransaction('log_fill_tx', {
+        let amount;
+        if (abi.bignum(remainingShares).gt(ZERO)) {
+          if (abi.bignum(remainingShares).gt(abi.bignum(order.amount))) {
+            amount = order.amount;
+          } else {
+            amount = remainingShares;
+          }
+        } else {
+          const market = marketsData[abi.format_int256(order.market)];
+          let price;
+          if (market.type === SCALAR) {
+            price = abi.bignum(augur.shrinkScalarPrice(market.minValue, order.price));
+          } else {
+            price = abi.bignum(order.price);
+          }
+          console.log('price:', price.toFixed());
+          amount = remainingEth.minus(abi.bignum(tradingFees)).dividedBy(price);
+          console.log('amount:', amount.toFixed());
+          if (amount.gt(abi.bignum(order.amount))) {
+            amount = order.amount;
+          } else {
+            amount = amount.toFixed();
+          }
+          remainingEth = remainingEth.minus(abi.bignum(amount).times(price));
+          console.log('adjusted amount:', amount);
+          console.log('remaining eth:', remainingEth.toFixed());
+        }
+        console.log('remainingShares:', remainingShares);
+        console.log('calculated amount:', amount);
+        const label = isShortSell ? 'log_short_fill_tx' : 'log_fill_tx';
+        console.log('commit order:', order);
+        transactions[i] = dispatch(constructTradingTransaction(label, {
           ...p,
           inProgress: true,
           price: order.price,
@@ -73,20 +104,25 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           tradeid: order.id,
           tradeHash,
           takerFee: tradingFees,
-          gasFees
-        }, order.market, order.outcome, 'committing'));
+          gasFees,
+          isShortSell
+        }, abi.format_int256(order.market), order.outcome, 'committing'));
       }
       return transactions;
     }
     case 'short_sell': {
-      const { transactionHash, orders, tradeHash, maxAmount, tradingFees, gasFees } = getState().tradeCommitment;
+      const { transactionHash, orders, tradeHash, remainingShares, tradingFees, gasFees } = getState().tradeCommitment;
       const order = orders[0];
+      let amount = remainingShares;
+      if (abi.bignum(remainingShares).gt(abi.bignum(order.amount))) {
+        amount = order.amount;
+      }
       dispatch(deleteTransaction(`${transactionHash}-${p.buyer_trade_id}`));
-      return dispatch(constructTradingTransaction('log_short_fill_tx', {
+      return [dispatch(constructTradingTransaction('log_short_fill_tx', {
         ...p,
         price: order.price,
         outcome: parseInt(order.outcome, 10),
-        amount: maxAmount,
+        amount,
         sender: tx.data.from,
         owner: order.owner,
         tradeid: p.buyer_trade_id,
@@ -94,17 +130,45 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         takerFee: tradingFees,
         gasFees,
         isShortSell: true
-      }, order.market, order.outcome, status));
+      }, abi.format_int256(order.market), order.outcome, status))];
     }
     case 'trade': {
-      const { transactionHash, orders, tradeHash, tradingFees, maxValue, maxAmount, gasFees } = getState().tradeCommitment;
+      const { transactionHash, orders, tradeHash, tradingFees, maxValue, remainingShares, gasFees } = getState().tradeCommitment;
+      const { marketsData } = getState();
       const numTradeIDs = p.trade_ids.length;
       const transactions = new Array(numTradeIDs);
+      let remainingEth = abi.bignum(maxValue);
       for (let i = 0; i < numTradeIDs; ++i) {
         const order = orders[i];
-        const amount = abi.bignum(maxAmount).gt(ZERO) ?
-          maxAmount :
-          abi.bignum(maxValue).minus(abi.bignum(tradingFees)).dividedBy(abi.bignum(order.price)).toFixed();
+        let amount;
+        if (abi.bignum(remainingShares).gt(ZERO)) {
+          if (abi.bignum(remainingShares).gt(abi.bignum(order.amount))) {
+            amount = order.amount;
+          } else {
+            amount = remainingShares;
+          }
+        } else {
+          const market = marketsData[abi.format_int256(order.market)];
+          let price;
+          if (market.type === SCALAR) {
+            price = abi.bignum(augur.shrinkScalarPrice(market.minValue, order.price));
+          } else {
+            price = abi.bignum(order.price);
+          }
+          console.log('price:', price.toFixed());
+          amount = remainingEth.minus(abi.bignum(tradingFees)).dividedBy(price);
+          console.log('amount:', amount.toFixed());
+          if (amount.gt(abi.bignum(order.amount))) {
+            amount = order.amount;
+          } else {
+            amount = amount.toFixed();
+          }
+          remainingEth = remainingEth.minus(abi.bignum(amount).times(price));
+          console.log('adjusted amount:', amount);
+          console.log('remaining eth:', remainingEth.toFixed());
+        }
+        console.log('remainingShares:', remainingShares);
+        console.log('calculated amount:', amount);
         dispatch(deleteTransaction(`${transactionHash}-${order.id}`));
         transactions[i] = dispatch(constructTradingTransaction('log_fill_tx', {
           ...p,
@@ -118,7 +182,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           tradeHash,
           takerFee: tradingFees,
           gasFees
-        }, order.market, order.outcome, status));
+        }, abi.format_int256(order.market), order.outcome, status));
       }
       return transactions;
     }
@@ -127,6 +191,12 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
       switch (method) {
         case 'fundNewAccount':
           transaction = dispatch(constructTransaction('fundedAccount', p));
+          break;
+        case 'slashRep':
+          transaction = dispatch(constructTransaction('slashedRep', {
+            ...p,
+            sender: tx.data.from
+          }));
           break;
         case 'submitReport':
           transaction = dispatch(constructTransaction('submittedReport', {
@@ -180,13 +250,12 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             shares = transactionsData[hash].data.shares;
           } else {
             const winningPositions = selectWinningPositions(outcomesData);
-            shares = (winningPositions.find(position => position.id === p.market) || {}).shares;
+            shares = (winningPositions.find(position => position.id === abi.format_int256(p.market)) || {}).shares;
           }
           transaction = dispatch(constructTransaction('payout', { ...p, shares }));
           break;
         }
         case 'send':
-        case 'sendFrom':
           transaction = dispatch(constructTransaction('sentCash', {
             ...p,
             _from: abi.format_address(p.from),

@@ -16,6 +16,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
       const AugurJS = {
         abi: {
           bignum: (n, type) => augur.abi.bignum(n, type),
+          format_int256: n => augur.abi.format_int256(n),
           unfix: (n, type) => augur.abi.unfix(n, type),
           unfix_signed: (n, type) => augur.abi.unfix_signed(n, type)
         },
@@ -76,7 +77,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
       const Market = {
         selectMarketFromEventID: () => {}
       };
-      const SelectOrder = sinon.stub().returns(t.selectors.order);
+      AugurJS.augur.selectOrder = sinon.stub().returns(t.selectors.order);
       const UpdateTradeCommitment = {
         updateTradeCommitment: () => {}
       };
@@ -87,7 +88,6 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
         '../../transactions/actions/delete-transaction': DeleteTransaction,
         '../../transactions/actions/construct-transaction': ConstructTransaction,
         '../../market/selectors/market': Market,
-        '../../bids-asks/selectors/select-order': SelectOrder,
         '../../my-positions/selectors/winning-positions': WinningPositions
       });
       sinon.stub(Market, 'selectMarketFromEventID', eventID => t.selectors.marketFromEventID[eventID]);

@@ -2,7 +2,7 @@ import { describe, it, afterEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import mocks from 'test/mockStore';
-import { CANCELLING } from 'modules/bids-asks/constants/order-status';
+import { CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-status';
 import { BID } from 'modules/bids-asks/constants/bids-asks-types';
 
 describe('modules/bids-asks/actions/update-order-status.js', () => {
@@ -18,20 +18,20 @@ describe('modules/bids-asks/actions/update-order-status.js', () => {
 
   describe('updateOrderStatus', () => {
     it(`shouldn't dispatch if order cannot be found`, () => {
-      store.dispatch(updateOrderModule.updateOrderStatus('nonExistingOrderID', CANCELLING, 'marketID', BID));
+      store.dispatch(updateOrderModule.updateOrderStatus('nonExistingOrderID', CLOSE_DIALOG_CLOSING, 'marketID', BID));
       assert.lengthOf(store.getActions(), 0);
 
-      store.dispatch(updateOrderModule.updateOrderStatus('orderID', CANCELLING, 'nonExistingMarketID', BID));
+      store.dispatch(updateOrderModule.updateOrderStatus('orderID', CLOSE_DIALOG_CLOSING, 'nonExistingMarketID', BID));
       assert.lengthOf(store.getActions(), 0);
     });
 
     it(`should dispatch action`, () => {
-      store.dispatch(updateOrderModule.updateOrderStatus('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', CANCELLING, 'testMarketID', BID));
+      store.dispatch(updateOrderModule.updateOrderStatus('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', CLOSE_DIALOG_CLOSING, 'testMarketID', BID));
 
       assert.deepEqual(store.getActions(), [{
         type: updateOrderModule.UPDATE_ORDER_STATUS,
         orderID: '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3',
-        status: CANCELLING,
+        status: CLOSE_DIALOG_CLOSING,
         marketID: 'testMarketID',
         orderType: BID
       }]);

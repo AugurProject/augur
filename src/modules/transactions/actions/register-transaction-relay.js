@@ -9,26 +9,47 @@ export const handleRelayTransaction = tx => (dispatch, getState) => {
   if (tx && tx.response && tx.data) {
     console.log('txRelay:', tx);
     const hash = tx.response.hash;
-    const { loginAccount, transactionsData } = getState();
+    const { loginAccount, tradeCommitment, transactionsData } = getState();
     if (hash && tx.data.from === loginAccount.address) {
-      if (!transactionsData[hash] || transactionsData[hash].status !== SUCCESS) {
-        const status = tx.response.blockHash ? SUCCESS : SUBMITTED;
-        const relayTransaction = dispatch(constructRelayTransaction(tx, status));
-        if (relayTransaction) {
-          if (relayTransaction.constructor === Object) {
-            return dispatch(updateTransactionsData(relayTransaction));
-          } else if (relayTransaction.constructor === Array) {
-            const numTransactions = relayTransaction.length;
-            for (let i = 0; i < numTransactions; ++i) {
-              dispatch(updateTransactionsData(relayTransaction[i]));
+      const gasFees = tx.response.gasFees || augur.getTxGasEth({ ...tx.data }, rpc.gasPrice).toFixed();
+      if (tradeCommitment && tradeCommitment.orders && tradeCommitment.orders.length) {
+        switch (tx.data.method) {
+          case 'commitTrade':
+          case 'short_sell':
+          case 'trade': {
+            const status = tx.response.blockHash ? SUCCESS : SUBMITTED;
+            const relayTransaction = dispatch(constructRelayTransaction(tx, status));
+            if (relayTransaction) {
+              const numTransactions = relayTransaction.length;
+              for (let i = 0; i < numTransactions; ++i) {
+                const id = Object.keys(relayTransaction[i])[0];
+                if (transactionsData[id]) {
+                  dispatch(updateTransactionsData({
+                    [id]: { ...transactionsData[id], gasFees: formatRealEther(gasFees) }
+                  }));
+                }
+                if (!transactionsData[id] || transactionsData[id].status !== SUCCESS) {
+                  dispatch(updateTransactionsData(relayTransaction[i]));
+                }
+              }
+            }
+            break;
+          }
+          default: {
+            if (transactionsData[hash]) {
+              dispatch(updateTransactionsData({
+                [hash]: { ...transactionsData[hash], gasFees: formatRealEther(gasFees) }
+              }));
+            }
+            if (!transactionsData[hash] || transactionsData[hash].status !== SUCCESS) {
+              const status = tx.response.blockHash ? SUCCESS : SUBMITTED;
+              const relayTransaction = dispatch(constructRelayTransaction(tx, status));
+              if (relayTransaction) {
+                dispatch(updateTransactionsData(relayTransaction));
+              }
             }
           }
         }
-      } else if (transactionsData[hash]) {
-        const gasFees = tx.response.gasFees || augur.getTxGasEth({ ...tx.data }, rpc.gasPrice).toFixed();
-        dispatch(updateTransactionsData({
-          [hash]: { ...transactionsData[hash], gasFees: formatRealEther(gasFees) }
-        }));
       }
     }
   }

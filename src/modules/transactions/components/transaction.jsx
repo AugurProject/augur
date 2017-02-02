@@ -84,7 +84,7 @@ const Transaction = (p) => {
           <TransactionDescription description={p.description} marketLink={p.data.marketLink} />
           <br />
           {p.timestamp &&
-          <ValueTimestamp className="property-value" {...p.timestamp} />
+            <ValueTimestamp className="property-value" {...p.timestamp} />
           }
         </span>
       );
@@ -99,7 +99,7 @@ const Transaction = (p) => {
           <span className="market-description">Request testnet Ether and Reputation</span>
           <br />
           {p.timestamp &&
-          <ValueTimestamp className="property-value" {...p.timestamp} />
+            <ValueTimestamp className="property-value" {...p.timestamp} />
           }
         </span>
       );
@@ -114,7 +114,7 @@ const Transaction = (p) => {
           <TransactionDescription description={p.description} marketLink={p.data.marketLink} />
           <br />
           {p.timestamp &&
-          <ValueTimestamp className="property-value" {...p.timestamp} />
+            <ValueTimestamp className="property-value" {...p.timestamp} />
           }
         </span>
       );
@@ -135,7 +135,7 @@ const Transaction = (p) => {
           <TransactionDescription description={p.description} marketLink={p.data.marketLink} />
           <br />
           {p.timestamp &&
-          <ValueTimestamp className="property-value" {...p.timestamp} />
+            <ValueTimestamp className="property-value" {...p.timestamp} />
           }
         </span>
       );
@@ -150,7 +150,7 @@ const Transaction = (p) => {
           <TransactionDescription description={p.description} marketLink={p.data.marketLink} />
           <br />
           {p.timestamp &&
-          <ValueTimestamp className="property-value" {...p.timestamp} />
+            <ValueTimestamp className="property-value" {...p.timestamp} />
           }
         </span>
       );
@@ -168,7 +168,7 @@ const Transaction = (p) => {
           <TransactionDescription description={p.description} marketLink={p.data.marketLink} />
           <br />
           {p.timestamp &&
-          <ValueTimestamp className="property-value" {...p.timestamp} />
+            <ValueTimestamp className="property-value" {...p.timestamp} />
           }
         </span>
 
@@ -183,7 +183,7 @@ const Transaction = (p) => {
           <TransactionDescription description={p.description} marketLink={p.data.marketLink} />
           <br />
           {p.timestamp &&
-          <ValueTimestamp className="property-value" {...p.timestamp} />
+            <ValueTimestamp className="property-value" {...p.timestamp} />
           }
         </span>
       );
