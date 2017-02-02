@@ -53,16 +53,15 @@
   .auth-signup-password-suggestions {
     .font-size-small();
 
+    color: @color-orange-light;
     height: 0;
+    list-style-type: disc;
+    margin-top: 0.6em;
     opacity: 0;
 
     &.animateOut {
       margin-top: 0;
     }
-
-    color: @color-orange-light;
-    list-style-type: disc;
-    margin-top: 0.6em;
 
     li {
       margin: 0.2em 0 0.2em 2em;
@@ -89,6 +88,10 @@
       span {
         align-self: center;
         margin: 0;
+
+        &:first-of-type {
+          margin-bottom: 1em;
+        }
 
         &.important {
           .font-weight-normal();

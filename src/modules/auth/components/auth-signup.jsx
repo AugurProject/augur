@@ -157,23 +157,14 @@ export default class AuthSignup extends Component {
         >
           <div className="login-id-messaging">
             <span>Below is your Login ID</span>
+            <span className="important">SAVE THE LOGIN ID IN A SAFE PLACE</span>
+            <span className="important">This CANNOT be recovered if lost or stolen!</span>
           </div>
           <textarea
             className="login-id"
             value={loginID}
             readOnly
           />
-          <div className="login-id-messaging">
-            <span className="important">SAVE THE LOGIN ID IN A SAFE PLACE</span>
-            <span className="important">This CANNOT be recovered if lost or stolen!</span>
-          </div>
-          <button
-            className="submit"
-            value="Sign Up"
-            type="submit"
-          >
-            Sign Up
-          </button>
           <label // eslint-disable-line jsx-a11y/no-static-element-interactions
             className="auth-signup-remember-me"
             htmlFor="remember_me_input"
@@ -188,6 +179,13 @@ export default class AuthSignup extends Component {
               }}
             />
           </label>
+          <button
+            className="submit"
+            value="Sign Up"
+            type="submit"
+          >
+            Sign Up
+          </button>
         </div>
       </form>
     );
