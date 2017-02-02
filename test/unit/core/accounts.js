@@ -5,6 +5,7 @@ var augur = require('../../../src');
 var errors = require("ethrpc").errors;
 var keys = require("keythereum");
 var constants = require("../../../src/constants");
+var utils = require("../../../src/utilities");
 
 var accounts = [{
     loginID: undefined,
@@ -164,7 +165,102 @@ describe("accounts.register", function() {
   });
 });
 describe("accounts.fundNewAccountFromFaucet", function() {});
-describe("accounts.fundNewAccountFromAddress", function() {});
+describe("accounts.fundNewAccountFromAddress", function() {
+  // 3 tests total
+  var sendEther = augur.rpc.sendEther;
+  var fundNewAccount = augur.fundNewAccount;
+  afterEach(function() {
+    augur.rpc.sendEther = sendEther;
+    augur.fundNewAccount = fundNewAccount;
+  });
+  var test = function(t) {
+    it(t.description, function() {
+      augur.rpc.sendEther = t.sendEther;
+      augur.fundNewAccount = t.fundNewAccount;
+
+      augur.accounts.fundNewAccountFromAddress(t.fromAddress, t.amount, t.registeredAddress, t.branch, t.onSent, t.onSuccess, t.onFailed);
+    });
+  };
+  test({
+    description: 'Should handle an error from rpc.sendEther',
+    fromAddress: '0x1',
+    amount: '10',
+    registeredAddress: '0x2',
+    branch: '101010',
+    onSent: function() {},
+    onSuccess: function() {},
+    onFailed: function(err) {
+      assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
+    },
+    sendEther: function(tx) {
+      assert.equal(tx.to, '0x2');
+      assert.equal(tx.value, '10');
+      assert.equal(tx.from, '0x1');
+      assert.deepEqual(tx.onSent, utils.noop);
+      assert.isFunction(tx.onSuccess);
+      assert.isFunction(tx.onFailed);
+      tx.onFailed({ error: 999, message: 'Uh-Oh!' });
+    },
+    fundNewAccount: function(tx) {
+      // shouldn't be called.
+      assert.isFalse(true);
+    }
+  });
+  test({
+    description: 'Should pass args to sendEther and then call fundNewAccount on success',
+    fromAddress: '0x1',
+    amount: '10',
+    registeredAddress: '0x2',
+    branch: '101010',
+    onSent: undefined,
+    onSuccess: undefined,
+    onFailed: undefined,
+    sendEther: function(tx) {
+      assert.equal(tx.to, '0x2');
+      assert.equal(tx.value, '10');
+      assert.equal(tx.from, '0x1');
+      assert.deepEqual(tx.onSent, utils.noop);
+      assert.isFunction(tx.onSuccess);
+      assert.isFunction(tx.onFailed);
+      tx.onSuccess({ callReturn: '1', txHash: '0x3'});
+    },
+    fundNewAccount: function(tx) {
+      assert.deepEqual(tx, {
+        branch: '101010',
+        onSent: utils.noop,
+        onSuccess: utils.noop,
+        onFailed: utils.noop
+      });
+    }
+  });
+  test({
+    description: 'Should pass args to sendEther and then call fundNewAccount on success, if no branch passed, should default to default banch',
+    fromAddress: '0x1',
+    amount: '10',
+    registeredAddress: '0x2',
+    branch: undefined,
+    onSent: undefined,
+    onSuccess: undefined,
+    onFailed: undefined,
+    sendEther: function(tx) {
+      assert.equal(tx.to, '0x2');
+      assert.equal(tx.value, '10');
+      assert.equal(tx.from, '0x1');
+      assert.deepEqual(tx.onSent, utils.noop);
+      assert.isFunction(tx.onSuccess);
+      assert.isFunction(tx.onFailed);
+      tx.onSuccess({ callReturn: '1', txHash: '0x3'});
+    },
+    fundNewAccount: function(tx) {
+      assert.deepEqual(tx, {
+        branch: constants.DEFAULT_BRANCH_ID,
+        onSent: utils.noop,
+        onSuccess: utils.noop,
+        onFailed: utils.noop
+      });
+    }
+  });
+});
 describe("accounts.changeAccountName", function() {
   // 2 tests total
   augur.accounts.account = {};
@@ -398,7 +494,34 @@ describe("accounts.loadLocalLoginAccount", function() {
 });
 describe("accounts.login", function() {});
 describe("accounts.loginWithMasterKey", function() {});
-describe("accounts.logout", function() {});
+describe("accounts.logout", function() {
+  // 1 test total
+  var clear = augur.rpc.clear;
+  var clearCC = 0;
+  afterEach(function() {
+    augur.rpc.clear = clear;
+  });
+  var test = function(t) {
+    it(t.description, function() {
+      clearCC = 0;
+      augur.rpc.clear = t.clear;
+      augur.accounts.account = t.account;
+      augur.accounts.logout();
+      t.assertions();
+    });
+  };
+  test({
+    description: 'Should clear out augur.accounts.account and should call rpc.clear to clear the current account out of rpc.',
+    account: { name: 'accountName', address: '0x1' },
+    clear: function() {
+      clearCC++;
+    },
+    assertions: function() {
+      assert.deepEqual(augur.accounts.account, {});
+      assert.deepEqual(clearCC, 1);
+    }
+  });
+});
 describe("accounts.submitTx", function() {});
 describe("accounts.getTxNonce", function() {});
 describe("accounts.invoke", function() {});
