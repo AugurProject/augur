@@ -1,19 +1,28 @@
 .auth-login-form {
   .auth-login-login-id {
-    z-index: 30;
+    z-index: 40;
   }
 
   .auth-login-password {
     border-top: 0;
     height: 0;
     opacity: 0;
-    z-index: 20;
+    z-index: 30;
   }
 
   .auth-login-actions {
     display: flex;
     flex-direction: column;
     height: 0;
+    opacity: 0;
+    z-index: 20;
+  }
+
+  .auth-login-error {
+    color: @color-red;
+    font-weight: @font-weight-normal;
+    height: 0;
+    margin: 1em 0 1em 1em;
     opacity: 0;
     z-index: 10;
   }

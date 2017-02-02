@@ -11,8 +11,10 @@ export default class AuthLogin extends Component {
       loginID: '',
       password: '',
       rememberMe: true,
+      authError: null,
       // These prevent a flash on component mount
       isPasswordDisplayable: false,
+      isAuthErrorDisplayable: false,
       isLoginActionsDisplayable: false
     };
   }
@@ -30,13 +32,20 @@ export default class AuthLogin extends Component {
           e.preventDefault();
 
           if (s.loginID && s.password) {
-            p.submitLogin(s.loginID, s.password, s.rememberMe);
+            p.submitLogin(s.loginID, s.password, s.rememberMe, (err) => {
+              if (err) {
+                this.setState({
+                  authError: err.message,
+                  isAuthErrorDisplayable: true
+                });
+              }
+            });
           }
         }}
       >
         <span>Login with a Login ID</span>
         <Input
-          className="auth-login-login-id"
+          className={classNames('auth-login-login-id', { 'input-error': s.authError })}
           name="login-id"
           type="text"
           placeholder="Login ID"
@@ -44,13 +53,18 @@ export default class AuthLogin extends Component {
           onChange={(loginID) => {
             this.setState({ loginID });
 
-            if (loginID && !this.state.isPasswordDisplayable) {
+            if (!this.state.isPasswordDisplayable) {
               this.setState({ isPasswordDisplayable: true });
+            }
+
+            if (this.state.authError) {
+              this.setState({ authError: null });
             }
           }}
         />
         <Input
           className={classNames('auth-login-password', {
+            'input-error': s.authError,
             animateIn: s.loginID,
             animateOut: !s.loginID && s.isPasswordDisplayable
           })}
@@ -64,8 +78,20 @@ export default class AuthLogin extends Component {
             if (this.state.loginID && this.state.password && !this.state.isLoginActionsDisplayable) {
               this.setState({ isLoginActionsDisplayable: true });
             }
+
+            if (this.state.authError) {
+              this.setState({ authError: null });
+            }
           }}
         />
+        <span
+          className={classNames('auth-login-error', {
+            animateInPartial: s.authError,
+            animateOutPartial: !s.authError && s.isAuthErrorDisplayable
+          })}
+        >
+          {s.authError}
+        </span>
         <div
           className={classNames('auth-login-actions', {
             animateInPartial: s.loginID && s.password,

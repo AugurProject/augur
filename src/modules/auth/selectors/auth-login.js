@@ -9,6 +9,6 @@ export default function () {
   };
 }
 
-function submitLogin(id, password, remember) {
-  store.dispatch(login(id, password, remember));
+function submitLogin(id, password, remember, cb) {
+  store.dispatch(login(id, password, remember, cb));
 }

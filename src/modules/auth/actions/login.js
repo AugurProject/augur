@@ -1,21 +1,24 @@
 import { accounts } from '../../../services/augurjs';
 import { loadLoginAccountDependents, loadLoginAccountLocalStorage } from '../../auth/actions/load-login-account';
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
-import { authError } from '../../auth/actions/auth-error';
 import { updateAccountSettings } from '../../auth/actions/update-account-settings';
 import { fundNewAccount } from '../../auth/actions/fund-new-account';
 import isCurrentLoginMessageRead from '../../login-message/helpers/is-current-login-message-read';
 import { anyAccountBalancesZero } from '../../auth/selectors/balances';
 
-export function login(loginID, password, rememberMe) {
-  console.log('login action -- ', loginID, password, rememberMe);
-
+export function login(loginID, password, rememberMe, cb) {
   return (dispatch, getState) => {
     accounts.login(loginID, password, (account) => {
       if (!account) {
-        return dispatch(authError({ code: 0, message: 'failed to login' }));
+        cb({
+          code: 0,
+          message: 'failed to login'
+        });
       } else if (account.error) {
-        return dispatch(authError({ code: account.error, message: account.message }));
+        cb({
+          code: account.error,
+          message: account.message
+        });
       }
       const loginAccount = {
         ...account,
