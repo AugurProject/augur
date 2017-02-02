@@ -38,6 +38,6 @@ module.exports = {
       console.log(' - isIndeterminate:', isIndeterminate);
       console.log(' - isUnethical:', isUnethical);
     }
-    return this.SlashRep.slashRep(branch, abi.hex(salt), fixedReport, reporter, eventID);
+    return this.SlashRep.slashRep(branch, abi.hex(salt), fixedReport, reporter, eventID, onSent, onSuccess, onFailed);
   }
 };
