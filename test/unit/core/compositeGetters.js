@@ -168,7 +168,6 @@ describe("CompositeGetters.getOrderBookChunked", function () {
     }
   });
 });
-
 describe('CompositeGetters.loadNextMarketsBatch', function() {
   // 5 tests total
   var assertionsCC = 0;
@@ -1549,154 +1548,159 @@ describe('CompositeGetters.getMarketsInfo', function() {
   });
   var test = function(t) {
     it(t.description + ' sync', function() {
-      augur.augurNode.nodes = t.nodes;
-      augur.fire = t.fire;
-      augur.augurNode.getMarketsInfo = t.augurNodeGetMarketsInfo;
-
-            augur.getMarketsInfo(t.branch, t.offset, t.numMarketsToLoad, t.volumeMin, t.volumeMax, t.callback);
-        });
+        augur.augurNode.nodes = t.nodes;
+        augur.fire = t.fire;
+        augur.augurNode.getMarketsInfo = t.augurNodeGetMarketsInfo;
+        augur.getMarketsInfo(t.branch, t.offset, t.numMarketsToLoad, t.volumeMin, t.volumeMax, t.callback);
+      });
     };
-    test({
-        description: 'Should return a markets object array, augurNodes available, all args passed in expected positions',
-        branch: '101010',
-        offset: 1,
-        numMarketsToLoad: 1,
-        volumeMin: 0,
-        volumeMax: -1,
-        callback: function(data) {
-            assert.deepEqual(data, [{id:'0x0a1', volumne: '10000', branch: '101010', type: 'binary'}]);
-        },
-        nodes: ["https://augurnode1.net", "https://augurnode2.net"],
-        fire: function(tx, callback, parseMarketsInfo, branch) {
-            // in this case, this function shouldn't be hit.
-        },
-        augurNodeGetMarketsInfo: function(branch, cb) {
-            cb(null, JSON.stringify([{id:'0x0a1', volumne: '10000', branch: '101010', type: 'binary'}]));
-        }
-    });
-    test({
-        description: 'Should return a markets object array, augurNodes available, all args passed in expected positions. augurNode.getMarketsInfo will return an error object which should cause the nodes to be cleared and getMarketsInfo to be called again with the same args.',
-        branch: '101010',
-        offset: 1,
-        numMarketsToLoad: 1,
-        volumeMin: 0,
-        volumeMax: -1,
-        callback: function(data) {
-            assert.deepEqual(data.params, ['101010', 1, 1, 0, -1]);
-            assert.deepEqual(data.to, augur.tx.CompositeGetters.getMarketsInfo.to);
-            // confirm we errored before clearing augurNode.nodes then recalled getMArketsInfo and didn't call augurNodeGetMarketsInfo again.
-            assert.deepEqual(augurNodeGetMarketsInfoCC, 1);
-        },
-        nodes: ["https://augurnode1.net", "https://augurnode2.net"],
-        fire: function(tx, callback, parseMarketsInfo, branch) {
-            // in this case, this function shouldn't be hit.
-            callback(tx);
-        },
-        augurNodeGetMarketsInfo: function(branch, cb) {
-            // increment call count
-            augurNodeGetMarketsInfoCC++;
-            // error
-            cb({ error: 'Uh-Oh!'});
-        }
-    });
-    test({
-        description: 'Should return a markets object array, augurNodes available, Single arg pass in',
-        branch: {
-            branch: '101010',
-            offset: 1,
-            numMarketsToLoad: 1,
-            volumeMin: 0,
-            volumeMax: -1,
-            callback: function(data) { assert.deepEqual(data, [{id:'0x0a1', volumne: '10000', branch: '101010', type: 'binary'}]); }
-        },
-        offset: undefined,
-        numMarketsToLoad: undefined,
-        volumeMin: undefined,
-        volumeMax: undefined,
-        callback: undefined,
-        nodes: ["https://augurnode1.net", "https://augurnode2.net"],
-        fire: function(tx, callback, parseMarketsInfo, branch) {
-            // in this case, this function shouldn't be hit.
-        },
-        augurNodeGetMarketsInfo: function(branch, cb) {
-            cb(null, JSON.stringify([{id:'0x0a1', volumne: '10000', branch: '101010', type: 'binary'}]));
-        }
-    });
-    test({
-        description: 'Should return a markets object array, augurNodes available, Single arg + offset as callback',
-        branch: {
-            branch: '101010',
-            offset: 1,
-            numMarketsToLoad: 1,
-            volumeMin: 0,
-            volumeMax: -1,
-            callback: undefined
-        },
-        offset: function(data) { assert.deepEqual(data, [{id:'0x0a1', volumne: '10000', branch: '101010', type: 'binary'}]); },
-        numMarketsToLoad: undefined,
-        volumeMin: undefined,
-        volumeMax: undefined,
-        callback: undefined,
-        nodes: ["https://augurnode1.net", "https://augurnode2.net"],
-        fire: function(tx, callback, parseMarketsInfo, branch) {
-            // in this case, this function shouldn't be hit.
-        },
-        augurNodeGetMarketsInfo: function(branch, cb) {
-            cb(null, JSON.stringify([{id:'0x0a1', volumne: '10000', branch: '101010', type: 'binary'}]));
-        }
-    });
-    test({
-        description: 'Should return a markets object array, augurNodes available, only callback passed',
-        branch: undefined,
-        offset: undefined,
-        numMarketsToLoad: undefined,
-        volumeMin: undefined,
-        volumeMax: undefined,
-        callback: function(data) { assert.deepEqual(data, [{id:'0x0a1', volumne: '10000', branch: augur.constants.DEFAULT_BRANCH_ID, type: 'binary'}]); },
-        nodes: ["https://augurnode1.net", "https://augurnode2.net"],
-        fire: function(tx, callback, parseMarketsInfo, branch) {
-            // in this case, this function shouldn't be hit.
-        },
-        augurNodeGetMarketsInfo: function(branch, cb) {
-            cb(null, JSON.stringify([{id:'0x0a1', volumne: '10000', branch: augur.constants.DEFAULT_BRANCH_ID, type: 'binary'}]));
-        }
-    });
-    test({
-        description: 'Should send default params to fire, augurNodes unavailable, only callback passed',
-        branch: undefined,
-        offset: undefined,
-        numMarketsToLoad: undefined,
-        volumeMin: undefined,
-        volumeMax: undefined,
-        callback: function(data) {
-            assert.deepEqual(data.params, [augur.constants.DEFAULT_BRANCH_ID, 0, 0, 0, 0]);
-            assert.deepEqual(data.to, augur.tx.CompositeGetters.getMarketsInfo.to);
-        },
-        nodes: [],
-        fire: function(tx, callback, parseMarketsInfo, branch) {
-            callback(tx);
-        },
-        augurNodeGetMarketsInfo: function(branch, cb) {
-            // in this case, this function shouldn't be hit.
-        }
-    });
-    test({
-        description: 'Should send params passed to fire, augurNodes unavailable, all args passed as expected',
-        branch: '101010',
-        offset: 5,
-        numMarketsToLoad: 10,
-        volumeMin: -1,
-        volumeMax: 0,
-        callback: function(data) {
-            assert.deepEqual(data.params, ['101010', 5, 10, -1, 0]);
-            assert.deepEqual(data.to, augur.tx.CompositeGetters.getMarketsInfo.to);
-        },
-        nodes: [],
-        fire: function(tx, callback, parseMarketsInfo, branch) {
-            callback(tx);
-        },
-        augurNodeGetMarketsInfo: function(branch, cb) {
-            // in this case, this function shouldn't be hit.
-        }
-    });
+  test({
+    description: 'Should return a markets object array, augurNodes available, all args passed in expected positions',
+    branch: '101010',
+    offset: 1,
+    numMarketsToLoad: 1,
+    volumeMin: 0,
+    volumeMax: -1,
+    callback: function(data) {
+      assert.deepEqual(data, [{id:'0x0a1', volumne: '10000', branch: '101010', type: 'binary'}]);
+    },
+    nodes: ["https://augurnode1.net", "https://augurnode2.net"],
+    fire: function(tx, callback, parseMarketsInfo, branch) {
+      // in this case, this function shouldn't be hit.
+    },
+    augurNodeGetMarketsInfo: function(branch, cb) {
+      cb(null, JSON.stringify([{id:'0x0a1', volumne: '10000', branch: '101010', type: 'binary'}]));
+    }
+  });
+  test({
+    description: 'Should return a markets object array, augurNodes available, all args passed in expected positions. augurNode.getMarketsInfo will return an error object which should cause the nodes to be cleared and getMarketsInfo to be called again with the same args.',
+    branch: '101010',
+    offset: 1,
+    numMarketsToLoad: 1,
+    volumeMin: 0,
+    volumeMax: -1,
+    callback: function(data) {
+      assert.deepEqual(data.params, ['101010', 1, 1, 0, -1]);
+      assert.deepEqual(data.to, augur.tx.CompositeGetters.getMarketsInfo.to);
+      // confirm we errored before clearing augurNode.nodes then recalled getMArketsInfo and didn't call augurNodeGetMarketsInfo again.
+      assert.deepEqual(augurNodeGetMarketsInfoCC, 1);
+    },
+    nodes: ["https://augurnode1.net", "https://augurnode2.net"],
+    fire: function(tx, callback, parseMarketsInfo, branch) {
+      // in this case, this function shouldn't be hit.
+      callback(tx);
+    },
+    augurNodeGetMarketsInfo: function(branch, cb) {
+      // increment call count
+      augurNodeGetMarketsInfoCC++;
+      // error
+      cb({ error: 'Uh-Oh!'});
+    }
+  });
+  test({
+    description: 'Should return a markets object array, augurNodes available, Single arg pass in',
+    branch: {
+      branch: '101010',
+      offset: 1,
+      numMarketsToLoad: 1,
+      volumeMin: 0,
+      volumeMax: -1,
+      callback: function(data) {
+        assert.deepEqual(data, [{id:'0x0a1', volumne: '10000', branch: '101010', type: 'binary'}]);
+      }
+    },
+    offset: undefined,
+    numMarketsToLoad: undefined,
+    volumeMin: undefined,
+    volumeMax: undefined,
+    callback: undefined,
+    nodes: ["https://augurnode1.net", "https://augurnode2.net"],
+    fire: function(tx, callback, parseMarketsInfo, branch) {
+      // in this case, this function shouldn't be hit.
+    },
+    augurNodeGetMarketsInfo: function(branch, cb) {
+      cb(null, JSON.stringify([{id:'0x0a1', volumne: '10000', branch: '101010', type: 'binary'}]));
+    }
+  });
+  test({
+    description: 'Should return a markets object array, augurNodes available, Single arg + offset as callback',
+    branch: {
+      branch: '101010',
+      offset: 1,
+      numMarketsToLoad: 1,
+      volumeMin: 0,
+      volumeMax: -1,
+      callback: undefined
+    },
+    offset: function(data) {
+      assert.deepEqual(data, [{id:'0x0a1', volumne: '10000', branch: '101010', type: 'binary'}]);
+    },
+    numMarketsToLoad: undefined,
+    volumeMin: undefined,
+    volumeMax: undefined,
+    callback: undefined,
+    nodes: ["https://augurnode1.net", "https://augurnode2.net"],
+    fire: function(tx, callback, parseMarketsInfo, branch) {
+      // in this case, this function shouldn't be hit.
+    },
+    augurNodeGetMarketsInfo: function(branch, cb) {
+      cb(null, JSON.stringify([{id:'0x0a1', volumne: '10000', branch: '101010', type: 'binary'}]));
+    }
+  });
+  test({
+    description: 'Should return a markets object array, augurNodes available, only callback passed',
+    branch: undefined,
+    offset: undefined,
+    numMarketsToLoad: undefined,
+    volumeMin: undefined,
+    volumeMax: undefined,
+    callback: function(data) {
+      assert.deepEqual(data, [{id:'0x0a1', volumne: '10000', branch: augur.constants.DEFAULT_BRANCH_ID, type: 'binary'}]);
+    },
+    nodes: ["https://augurnode1.net", "https://augurnode2.net"],
+    fire: function(tx, callback, parseMarketsInfo, branch) {
+      // in this case, this function shouldn't be hit.
+    },
+    augurNodeGetMarketsInfo: function(branch, cb) {
+      cb(null, JSON.stringify([{id:'0x0a1', volumne: '10000', branch: augur.constants.DEFAULT_BRANCH_ID, type: 'binary'}]));
+    }
+  });
+  test({
+    description: 'Should send default params to fire, augurNodes unavailable, only callback passed',
+    branch: undefined,
+    offset: undefined,
+    numMarketsToLoad: undefined,
+    volumeMin: undefined,
+    volumeMax: undefined,
+    callback: function(data) {
+      assert.deepEqual(data.params, [augur.constants.DEFAULT_BRANCH_ID, 0, 0, 0, 0]);
+      assert.deepEqual(data.to, augur.tx.CompositeGetters.getMarketsInfo.to);
+    },
+    nodes: [],
+    fire: function(tx, callback, parseMarketsInfo, branch) {
+      callback(tx);
+    },
+    augurNodeGetMarketsInfo: function(branch, cb) {
+      // in this case, this function shouldn't be hit.
+    }
+  });
+  test({
+    description: 'Should send params passed to fire, augurNodes unavailable, all args passed as expected',
+    branch: '101010',
+    offset: 5,
+    numMarketsToLoad: 10,
+    volumeMin: -1,
+    volumeMax: 0,
+    callback: function(data) {
+      assert.deepEqual(data.params, ['101010', 5, 10, -1, 0]);
+      assert.deepEqual(data.to, augur.tx.CompositeGetters.getMarketsInfo.to);
+    },
+    nodes: [],
+    fire: function(tx, callback, parseMarketsInfo, branch) {
+      callback(tx);
+    },
+    augurNodeGetMarketsInfo: function(branch, cb) {
+      // in this case, this function shouldn't be hit.
+    }
+  });
 });

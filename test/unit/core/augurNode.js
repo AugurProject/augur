@@ -2,21 +2,26 @@ var assert = require("chai").assert;
 var augurNode = require('../../../src/augurNode.js')();
 var utils = require("../../../src/utilities");
 
-// 12 tests total
+// 13 tests total
 describe("augurNode", function() {
+  var fetchHelper = augurNode.fetchHelper;
+  afterEach(function() {
+    augurNode.fetchHelper = fetchHelper;
+  });
   var test = function(t) {
     it(t.description, function() {
-      var fetchHelper = augurNode.fetchHelper;
       augurNode.fetchHelper = t.fetchHelper;
 			// clear the cache_nodes or set them to t.startState
       augurNode.nodes = t.startState || [];
+
       t.assertions(augurNode[t.method](t.arg1, t.arg2, t.arg3));
-      augurNode.fetchHelper = fetchHelper;
     });
   };
-
+  /*            *
+  *   bootstrap *
+  *             */
   test({
-    description: "bootsrap sets the nodes array correctly",
+    description: "bootstrap sets the nodes array correctly",
     assertions: function(out) { assert.deepEqual(out, ['hello', 'world']); },
     method: 'bootstrap',
     arg1: ['hello', 'world'],
@@ -25,9 +30,8 @@ describe("augurNode", function() {
       return augurNode.nodes;
  		}
   });
-
   test({
-    description: "bootsrap handles an empty array",
+    description: "bootstrap handles an empty array",
     assertions: function(out) { assert.deepEqual(out, []); },
     method: 'bootstrap',
     arg1: [],
@@ -36,9 +40,8 @@ describe("augurNode", function() {
       return augurNode.nodes;
  		}
   });
-
   test({
-    description: "bootsrap handles an null input",
+    description: "bootstrap handles an null input",
     assertions: function(out) { assert.deepEqual(out, []); },
     method: 'bootstrap',
     arg1: null,
@@ -47,9 +50,8 @@ describe("augurNode", function() {
       return augurNode.nodes;
  		}
   });
-
   test({
-    description: "bootsrap handles an undefined input",
+    description: "bootstrap handles an undefined input",
     assertions: function(out) { assert.deepEqual(out, []); },
     method: 'bootstrap',
     arg1: undefined,
@@ -58,9 +60,21 @@ describe("augurNode", function() {
       return augurNode.nodes;
  		}
   });
-
   test({
-    description: "buildRequest should create a valid URL given 1 cache_node.",
+    description: "bootstrap handles an undefined callback, this should make the callback noop which means our assertion should get called with no argument.",
+    assertions: function(out) {
+      // confirm that cb was noop so there is no output from the cb function being called...
+      assert.isUndefined(out);
+    },
+    method: 'bootstrap',
+    arg1: ['hello', 'world'],
+    arg2: undefined
+  });
+  /*                *
+  *   buildRequest  *
+  *                 */
+  test({
+    description: "buildRequest should create a valid URL given 1 cache_node, 1 param.",
     assertions: function(out) {
       assert.deepEqual(out, 'https://OnlyOne.node/getSomeData?marketID=myMarketID1');
     },
@@ -73,9 +87,8 @@ describe("augurNode", function() {
     arg1: 'getSomeData',
     arg2: { marketID: 'myMarketID1'}
   });
-
   test({
-    description: "buildRequest should create a valid URL given multiple cache_nodes.",
+    description: "buildRequest should create a valid URL given multiple cache_nodes, and multiple params",
     assertions: function(out) {
 			// make sure the domain matches one of the possible "cache_nodes" ... in this case "hello" or "world". This is done because the cache_nodes are chosen randomly every call so we need to test for either "hello" or "world" in this case.
       assert.match(out.substring(0, 5), /hello|world/);
@@ -91,7 +104,6 @@ describe("augurNode", function() {
     arg1: 'getSomeData',
     arg2: { test: [0, 1, 2, 3], augur: 'numberOne', branch: '010101'}
   });
-
   test({
     description: "buildRequest should return null if there are no cache_nodes",
     assertions: function(out) {
@@ -105,7 +117,9 @@ describe("augurNode", function() {
     arg1: 'getSomeData',
     arg2: { test: [0, 1, 2, 3], augur: 'numberOne'}
   });
-
+  /*                *
+  *   getMarketInfo *
+  *                 */
   test({
     description: "getMarketInfo url created correctly",
     assertions: function(out) {
@@ -121,7 +135,9 @@ describe("augurNode", function() {
     arg1: 'myMarketID123',
     arg2: utils.noop
   });
-
+  /*                  *
+  *   getMarketInfos  *
+  *                   */
   test({
     description: "getMarketsInfo url created correctly",
     assertions: function(out) {
@@ -137,7 +153,9 @@ describe("augurNode", function() {
     arg1: '010101',
     arg2: utils.noop
   });
-
+  /*                      *
+  *   batchGetMarketInfo  *
+  *                       */
   test({
     description: "batchGetMarketInfo url created correctly",
     assertions: function(out) {
@@ -153,7 +171,9 @@ describe("augurNode", function() {
     arg1: ['myMarketID1', 'myMarketID2', 'myMarketID3'],
     arg2: utils.noop
   });
-
+  /*                        *
+  *   getMarketPriceHistory *
+  *                         */
   test({
     description: "getMarketPriceHistory url created correctly",
     assertions: function(out) {
@@ -169,7 +189,9 @@ describe("augurNode", function() {
     arg1: { someOption: 'test', branch: '010101', id: 'someMarketID' },
     arg2: utils.noop
   });
-
+  /*                    *
+  *   getAccountTrades  *
+  *                     */
   test({
     description: "getAccountTrades url created correctly",
     assertions: function(out) {

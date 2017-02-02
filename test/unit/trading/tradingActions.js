@@ -9,6 +9,7 @@ var abi = require("augur-abi");
 var augur = require("../../../src");
 var constants = require("../../../src/constants");
 var utils = require("../../../src/utilities");
+var BigNumber = require('bignumber.js');
 
 describe("tradeActions.calculateBuyTradeIDs", function() {
     // 3 tests total
@@ -126,7 +127,6 @@ describe("tradeActions.calculateBuyTradeIDs", function() {
         }
     });
 });
-
 describe("tradeActions.calculateSellTradeIDs", function() {
     // 3 tests total
     var filterByPriceAndOutcomeAndUserSortByPrice = augur.filterByPriceAndOutcomeAndUserSortByPrice;
@@ -229,17 +229,630 @@ describe("tradeActions.calculateSellTradeIDs", function() {
         }
     });
 });
-
-describe("tradeActions.getTxGasEth", function() {});
-describe("tradeActions.filterByPriceAndOutcomeAndUserSortByPrice", function() {});
-describe("tradeActions.getBidAction", function() {});
-describe("tradeActions.getBuyAction", function() {});
-describe("tradeActions.getAskAction", function() {});
-describe("tradeActions.getSellAction", function() {});
-describe("tradeActions.getShortSellAction", function() {});
-describe("tradeActions.getShortAskAction", function() {});
-describe("tradeActions.calculateTradeTotals", function() {});
-
+describe("tradeActions.getTxGasEth", function() {
+    // 2 tests total
+    var test = function(t) {
+        it(t.description, function() {
+            t.assertions(augur.getTxGasEth(t.tx, t.gasPrice));
+        });
+    };
+    test({
+        description: 'Should handle getting the gas cost for a transaction with no gas value passed in the transaction.',
+        tx: { value: '10' },
+        gasPrice: '0.01',
+        assertions: function(data) {
+            assert.equal(data.toFixed(), '0.002534125086747592');
+        }
+    });
+    test({
+        description: 'Should handle getting the gas cost for a transaction with a gas value passed in the transaction.',
+        tx: { value: '25', gas: 4500200 },
+        gasPrice: '0.003',
+        assertions: function(data) {
+            assert.equal(data.toFixed(), '0.931241417617555053');
+        }
+    });
+});
+describe("tradeActions.filterByPriceAndOutcomeAndUserSortByPrice", function() {
+    // 5 tests total
+    var test = function(t) {
+        it(t.description, function() {
+            t.assertions(augur.filterByPriceAndOutcomeAndUserSortByPrice(t.orders, t.traderOrderType, t.limitPrice, t.outcomeId, t.userAddress));
+        });
+    };
+    test({
+        description: 'Should handle an undefined orders object',
+        orders: undefined,
+        traderOrderType: 'buy',
+        limitPrice: '0.5',
+        outcomeId: '1',
+        userAddress: '0x1',
+        assertions: function(output) {
+            assert.deepEqual(output, []);
+        }
+    });
+    test({
+        description: 'Should handle an undefined limitPrice and return all orders that are possible to purchase on a buy',
+        orders: {
+            '0xb1': { price: '0.5', amount: '100', outcome: '1', owner: '0x2', id: '0xb1' },
+            '0xb2': { price: '0.6', amount: '75', outcome: '1', owner: '0x3', id: '0xb2' },
+            '0xb3': { price: '0.45', amount: '25', outcome: '1', owner: '0x4', id: '0xb3' },
+            '0xb4': { price: '0.5', amount: '125', outcome: '2', owner: '0x5', id: '0xb4' },
+            '0xb5': { price: '0.65', amount: '225', outcome: '1', owner: '0x5', id: '0xb5' },
+            '0xb6': {},
+            '0xb7': { price: '0.7', amount: '150', outcome: '1', owner: '0x6', id: '0xb7'},
+            '0xb8': undefined
+        },
+        traderOrderType: 'buy',
+        limitPrice: undefined,
+        outcomeId: '1',
+        userAddress: '0x1',
+        assertions: function(output) {
+            assert.deepEqual(output, [{
+            	price: '0.45',
+            	amount: '25',
+            	outcome: '1',
+            	owner: '0x4',
+            	id: '0xb3'
+            }, {
+            	price: '0.5',
+            	amount: '100',
+            	outcome: '1',
+            	owner: '0x2',
+            	id: '0xb1'
+            }, {
+            	price: '0.6',
+            	amount: '75',
+            	outcome: '1',
+            	owner: '0x3',
+            	id: '0xb2'
+            }, {
+            	price: '0.65',
+            	amount: '225',
+            	outcome: '1',
+            	owner: '0x5',
+            	id: '0xb5'
+            }, {
+                price: '0.7',
+                amount: '150',
+                outcome: '1',
+                owner: '0x6',
+                id: '0xb7'
+            }]);
+        }
+    });
+    test({
+        description: 'Should handle an null limitPrice and return all orders that are possible to purchase on a buy',
+        orders: {
+            '0xb1': { price: '0.5', amount: '100', outcome: '1', owner: '0x2', id: '0xb1' },
+            '0xb2': { price: '0.6', amount: '75', outcome: '1', owner: '0x3', id: '0xb2' },
+            '0xb3': { price: '0.45', amount: '25', outcome: '1', owner: '0x4', id: '0xb3' },
+            '0xb4': { price: '0.5', amount: '125', outcome: '2', owner: '0x5', id: '0xb4' },
+            '0xb5': { price: '0.65', amount: '225', outcome: '1', owner: '0x5', id: '0xb5' },
+            '0xb6': {},
+            '0xb7': { price: '0.7', amount: '150', outcome: '1', owner: '0x6', id: '0xb7'},
+            '0xb8': undefined
+        },
+        traderOrderType: 'buy',
+        limitPrice: null,
+        outcomeId: '1',
+        userAddress: '0x1',
+        assertions: function(output) {
+            assert.deepEqual(output, [{
+            	price: '0.45',
+            	amount: '25',
+            	outcome: '1',
+            	owner: '0x4',
+            	id: '0xb3'
+            }, {
+            	price: '0.5',
+            	amount: '100',
+            	outcome: '1',
+            	owner: '0x2',
+            	id: '0xb1'
+            }, {
+            	price: '0.6',
+            	amount: '75',
+            	outcome: '1',
+            	owner: '0x3',
+            	id: '0xb2'
+            }, {
+            	price: '0.65',
+            	amount: '225',
+            	outcome: '1',
+            	owner: '0x5',
+            	id: '0xb5'
+            }, {
+                price: '0.7',
+                amount: '150',
+                outcome: '1',
+                owner: '0x6',
+                id: '0xb7'
+            }]);
+        }
+    });
+    test({
+        description: 'Should handle a limitPrice and return all orders that are possible to purchase at or below that price on a buy',
+        orders: {
+            '0xb1': { price: '0.5', amount: '100', outcome: '1', owner: '0x2', id: '0xb1' },
+            '0xb2': { price: '0.6', amount: '75', outcome: '1', owner: '0x3', id: '0xb2' },
+            '0xb3': { price: '0.45', amount: '25', outcome: '1', owner: '0x4', id: '0xb3' },
+            '0xb4': { price: '0.5', amount: '125', outcome: '2', owner: '0x5', id: '0xb4' },
+            '0xb5': { price: '0.65', amount: '225', outcome: '1', owner: '0x5', id: '0xb5' },
+            '0xb6': {},
+            '0xb7': { price: '0.7', amount: '150', outcome: '1', owner: '0x6', id: '0xb7'},
+            '0xb8': undefined
+        },
+        traderOrderType: 'buy',
+        limitPrice: '0.5',
+        outcomeId: '1',
+        userAddress: '0x1',
+        assertions: function(output) {
+            assert.deepEqual(output, [{
+            	price: '0.45',
+            	amount: '25',
+            	outcome: '1',
+            	owner: '0x4',
+            	id: '0xb3'
+            }, {
+            	price: '0.5',
+            	amount: '100',
+            	outcome: '1',
+            	owner: '0x2',
+            	id: '0xb1'
+            }]);
+        }
+    });
+    test({
+        description: 'Should handle a limitPrice and return all orders that are possible to purchase at or below that price on a sell',
+        orders: {
+        	'0xb1': { price: '0.5', amount: '100', outcome: '1', owner: '0x2', id: '0xb1' },
+            '0xb2': { price: '0.6', amount: '75', outcome: '1', owner: '0x3', id: '0xb2' },
+            '0xb3': { price: '0.45', amount: '25', outcome: '1', owner: '0x4', id: '0xb3' },
+            '0xb4': { price: '0.5', amount: '125', outcome: '2', owner: '0x5', id: '0xb4' },
+            '0xb5': { price: '0.65', amount: '225', outcome: '1', owner: '0x5', id: '0xb5' },
+            '0xb6': {},
+            '0xb7': { price: '0.7', amount: '150', outcome: '1', owner: '0x6', id: '0xb7'},
+            '0xb8': undefined
+        },
+        traderOrderType: 'sell',
+        limitPrice: '0.5',
+        outcomeId: '1',
+        userAddress: '0x1',
+        assertions: function(output) {
+            assert.deepEqual(output, [{
+                    price: '0.7',
+                    amount: '150',
+                    outcome: '1',
+                    owner: '0x6',
+                    id: '0xb7'
+                },
+                {
+    				price: '0.65',
+    				amount: '225',
+    				outcome: '1',
+    				owner: '0x5',
+    				id: '0xb5'
+    			},
+    			{
+    				price: '0.6',
+    				amount: '75',
+    				outcome: '1',
+    				owner: '0x3',
+    				id: '0xb2'
+    			},
+    			{
+    				price: '0.5',
+    				amount: '100',
+    				outcome: '1',
+    				owner: '0x2',
+    				id: '0xb1'
+    			}
+    		]);
+        }
+    });
+});
+describe("tradeActions.getBidAction", function() {
+    // 1 test total
+    var test = function(t) {
+        it(t.description, function() {
+            t.assertions(augur.getBidAction(t.shares, t.limitPrice, t.makerFee, t.gasPrice));
+        });
+    };
+    test({
+        description: 'Should correctly create and return a bid action object',
+        shares: new BigNumber('10000000000000000000'),
+        limitPrice: new BigNumber('500000000000000000'),
+        makerFee: new BigNumber('10000000000000000'),
+        gasPrice: 1000,
+        assertions: function(output) {
+            assert.deepEqual(output, { action: 'BID',
+              shares: '10',
+              gasEth: '0.000000000725202',
+              feeEth: '0.05',
+              feePercent: '1',
+              costEth: '-5.05',
+              avgPrice: '0.505',
+              noFeePrice: '0.5'
+            });
+        }
+    });
+});
+describe("tradeActions.getBuyAction", function() {
+    // 1 test total
+    var test = function(t) {
+        it(t.description, function() {
+            t.assertions(augur.getBuyAction(t.buyEth, t.sharesFilled, t.takerFeeEth, t.gasPrice));
+        });
+    };
+    test({
+        description: 'Should correctly create and return a buy action object',
+        buyEth: new BigNumber('5'),
+        sharesFilled: new BigNumber('10'),
+        takerFeeEth: new BigNumber('0.05'),
+        gasPrice: 93045,
+        assertions: function(output) {
+            assert.deepEqual(output, {
+                action: 'BUY',
+                shares: '10',
+                gasEth: '0.000000073265586945',
+                feeEth: '0.05',
+                feePercent: '1',
+                costEth: '-5',
+                avgPrice: '0.5',
+                noFeePrice: '0.495'
+            });
+        }
+    });
+});
+describe("tradeActions.getAskAction", function() {
+    // 1 test total
+    var test = function(t) {
+        it(t.description, function() {
+            t.assertions(augur.getAskAction(t.shares, t.limitPrice, t.makerFee, t.gasPrice));
+        });
+    };
+    test({
+        description: 'Should correctly create and return a ask action object',
+        shares: new BigNumber('100000000000000000000'),
+        limitPrice: new BigNumber('500000000000000000'),
+        makerFee: new BigNumber('2000000000000000'),
+        gasPrice: 93045,
+        assertions: function(output) {
+            assert.deepEqual(output, {
+                action: 'ASK',
+                avgPrice: '0.499',
+                costEth: '49.9',
+                feeEth: '0.1',
+                feePercent: '0.2',
+                gasEth: '0.000000064829941155',
+                noFeePrice: '0.5',
+                shares: '100'
+            });
+        }
+    });
+});
+describe("tradeActions.getSellAction", function() {
+    // 1 test total
+    var test = function(t) {
+        it(t.description, function() {
+            t.assertions(augur.getSellAction(t.sellEth, t.sharesFilled, t.takerFeeEth, t.gasPrice));
+        });
+    };
+    test({
+        description: 'Should correctly create and return a sell action object',
+        sellEth: new BigNumber('50'),
+        sharesFilled: new BigNumber('100'),
+        takerFeeEth: new BigNumber('0.01'),
+        gasPrice: 93045,
+        assertions: function(output) {
+            assert.deepEqual(output, {
+                action: 'SELL',
+                shares: '100',
+                gasEth: '0.000000073265586945',
+                feeEth: '0.01',
+                feePercent: '0.02',
+                costEth: '50',
+                avgPrice: '0.5',
+                noFeePrice: '0.5001'
+            });
+        }
+    });
+});
+describe("tradeActions.getShortSellAction", function() {
+    // 1 test total
+    var test = function(t) {
+        it(t.description, function() {
+            t.assertions(augur.getShortSellAction(t.shortSellEth, t.shares, t.takerFeeEth, t.gasPrice));
+        });
+    };
+    test({
+        description: 'Should correctly create and return a short sell action object',
+        shortSellEth: new BigNumber('50'),
+        shares: new BigNumber('100'),
+        takerFeeEth: new BigNumber('0.01'),
+        gasPrice: 93045,
+        assertions: function(output) {
+            assert.deepEqual(output, {
+                action: 'SHORT_SELL',
+                shares: '100',
+                gasEth: '0.00000009860871882',
+                feeEth: '0.01',
+                feePercent: '0.02',
+                costEth: '-50',
+                avgPrice: '0.5',
+                noFeePrice: '0.5001'
+            });
+        }
+    });
+});
+describe("tradeActions.getShortAskAction", function() {
+    // 1 test total
+    var test = function(t) {
+        it(t.description, function() {
+            t.assertions(augur.getShortAskAction(t.shares, t.limitPrice, t.makerFee, t.gasPrice));
+        });
+    };
+    test({
+        description: 'Should correctly create and return a short ask action object',
+        shares: new BigNumber('100000000000000000000'),
+        limitPrice: new BigNumber('500000000000000000'),
+        makerFee: new BigNumber('10000000000000000'),
+        gasPrice: 93045,
+        assertions: function(output) {
+            assert.deepEqual(output, {
+                action: 'SHORT_ASK',
+                shares: '100',
+                gasEth: '0.00000012985676553',
+                feeEth: '0.5',
+                feePercent: '1',
+                costEth: '-100.5',
+                avgPrice: '1.005',
+                noFeePrice: '0.5'
+            });
+        }
+    });
+});
+describe("tradeActions.calculateTradeTotals", function() {
+    // 5 tests total
+    var test = function(t) {
+        it(t.description, function() {
+            t.assertions(augur.calculateTradeTotals(t.type, t.numShares, t.limitPrice, t.tradeActions));
+        });
+    };
+    test({
+        description: 'Should calculateTradeTotals given no trade actions',
+        type: 'buy',
+        numShares: '10',
+        limitPrice: '0.5',
+        tradeActions: [],
+        assertions: function(output) {
+            assert.deepEqual(output, {
+                numShares: '10',
+                limitPrice: '0.5',
+                side: 'buy',
+                totalFee: 0,
+                totalCost: 0,
+            });
+        }
+    });
+    test({
+        description: 'Should calculateTradeTotals given one bid trade action',
+        type: 'buy',
+        numShares: '10',
+        limitPrice: '0.5',
+        tradeActions: [{
+        	action: 'BID',
+        	shares: '10',
+        	gasEth: '0.000000000725202',
+        	feeEth: '0.05',
+        	feePercent: '1',
+        	costEth: '-5.05',
+        	avgPrice: '0.505',
+        	noFeePrice: '0.5'
+        }],
+        assertions: function(output) {
+            assert.deepEqual(output, {
+                numShares: '10',
+                limitPrice: '0.5',
+                side: 'buy',
+                totalFee: '0.05',
+                totalCost: '-5.05',
+                tradeActions:
+                [ { action: 'BID',
+                   shares: '10',
+                   gasEth: '0.000000000725202',
+                   feeEth: '0.05',
+                   feePercent: '1',
+                   costEth: '-5.05',
+                   avgPrice: '0.505',
+                   noFeePrice: '0.5' } ],
+                tradingFeesEth: '0.05',
+                gasFeesRealEth: '0.000000000725202',
+                feePercent: '1'
+            });
+        }
+    });
+    test({
+        description: 'Should calculateTradeTotals given one ask trade action',
+        type: 'sell',
+        numShares: '100',
+        limitPrice: '0.5',
+        tradeActions: [{
+            action: 'ASK',
+            avgPrice: '0.499',
+            costEth: '49.9',
+            feeEth: '0.1',
+            feePercent: '0.2',
+            gasEth: '0.000000064829941155',
+            noFeePrice: '0.5',
+            shares: '100'
+        }],
+        assertions: function(output) {
+            assert.deepEqual(output, {
+                numShares: '100',
+                limitPrice: '0.5',
+                side: 'sell',
+                totalFee: '0.1',
+                totalCost: '49.9',
+                tradeActions:
+                [ { action: 'ASK',
+                   avgPrice: '0.499',
+                   costEth: '49.9',
+                   feeEth: '0.1',
+                   feePercent: '0.2',
+                   gasEth: '0.000000064829941155',
+                   noFeePrice: '0.5',
+                   shares: '100' } ],
+                tradingFeesEth: '0.1',
+                gasFeesRealEth: '0.000000064829941155',
+                feePercent: '0.200803212851405622'
+            });
+        }
+    });
+    test({
+        description: 'Should calculateTradeTotals given multiple bid/buy actions',
+        type: 'buy',
+        numShares: '20',
+        limitPrice: '0.5',
+        tradeActions: [{
+        	action: 'BID',
+        	shares: '10',
+        	gasEth: '0.000000000725202',
+        	feeEth: '0.05',
+        	feePercent: '1',
+        	costEth: '-5.05',
+        	avgPrice: '0.505',
+        	noFeePrice: '0.5'
+        }, {
+            action: 'BUY',
+            shares: '10',
+            gasEth: '0.000000073265586945',
+            feeEth: '0.05',
+            feePercent: '1',
+            costEth: '-5',
+            avgPrice: '0.5',
+            noFeePrice: '0.495'
+        }],
+        assertions: function(output) {
+            assert.deepEqual(output, {
+                numShares: '20',
+                limitPrice: '0.5',
+                side: 'buy',
+                totalFee: '0.1',
+                totalCost: '-10.05',
+                tradeActions:
+                [ { action: 'BID',
+                   shares: '10',
+                   gasEth: '0.000000000725202',
+                   feeEth: '0.05',
+                   feePercent: '1',
+                   costEth: '-5.05',
+                   avgPrice: '0.505',
+                   noFeePrice: '0.5' },
+                 { action: 'BUY',
+                   shares: '10',
+                   gasEth: '0.000000073265586945',
+                   feeEth: '0.05',
+                   feePercent: '1',
+                   costEth: '-5',
+                   avgPrice: '0.5',
+                   noFeePrice: '0.495' } ],
+                tradingFeesEth: '0.1',
+                gasFeesRealEth: '0.000000073990788945',
+                feePercent: '1.005025125628140704'
+            });
+        }
+    });
+    test({
+        description: 'Should calculateTradeTotals given multiple sell/shortSell/ask/shortAsk testTradeActions',
+        type: 'sell',
+        numShares: '400',
+        limitPrice: '0.5',
+        tradeActions: [{
+            action: 'ASK',
+            avgPrice: '0.499',
+            costEth: '49.9',
+            feeEth: '0.1',
+            feePercent: '0.2',
+            gasEth: '0.000000064829941155',
+            noFeePrice: '0.5',
+            shares: '100'
+        }, {
+            action: 'SELL',
+            shares: '100',
+            gasEth: '0.000000073265586945',
+            feeEth: '0.01',
+            feePercent: '0.02',
+            costEth: '50',
+            avgPrice: '0.5',
+            noFeePrice: '0.5001'
+        }, {
+            action: 'SHORT_SELL',
+            shares: '100',
+            gasEth: '0.00000009860871882',
+            feeEth: '0.01',
+            feePercent: '0.02',
+            costEth: '-50',
+            avgPrice: '0.5',
+            noFeePrice: '0.5001'
+        }, {
+            action: 'SHORT_ASK',
+            shares: '100',
+            gasEth: '0.00000012985676553',
+            feeEth: '0.5',
+            feePercent: '1',
+            costEth: '-100.5',
+            avgPrice: '1.005',
+            noFeePrice: '0.5'
+        }],
+        assertions: function(output) {
+            assert.deepEqual(output, {
+                numShares: '400',
+                limitPrice: '0.5',
+                side: 'sell',
+                totalFee: '0.62',
+                totalCost: '-50.6',
+                tradeActions:
+                [ { action: 'ASK',
+                   avgPrice: '0.499',
+                   costEth: '49.9',
+                   feeEth: '0.1',
+                   feePercent: '0.2',
+                   gasEth: '0.000000064829941155',
+                   noFeePrice: '0.5',
+                   shares: '100' },
+                 { action: 'SELL',
+                   shares: '100',
+                   gasEth: '0.000000073265586945',
+                   feeEth: '0.01',
+                   feePercent: '0.02',
+                   costEth: '50',
+                   avgPrice: '0.5',
+                   noFeePrice: '0.5001' },
+                 { action: 'SHORT_SELL',
+                   shares: '100',
+                   gasEth: '0.00000009860871882',
+                   feeEth: '0.01',
+                   feePercent: '0.02',
+                   costEth: '-50',
+                   avgPrice: '0.5',
+                   noFeePrice: '0.5001' },
+                 { action: 'SHORT_ASK',
+                   shares: '100',
+                   gasEth: '0.00000012985676553',
+                   feeEth: '0.5',
+                   feePercent: '1',
+                   costEth: '-100.5',
+                   avgPrice: '1.005',
+                   noFeePrice: '0.5' } ],
+                tradingFeesEth: '0.62',
+                gasFeesRealEth: '0.00000036656101245',
+                feePercent: '1.210464662241311988'
+            });
+        }
+    });
+});
 describe("getTradingActions", function () {
 
   var testFields = [
@@ -2325,155 +2938,3 @@ describe("getTradingActions", function () {
     });
   });
 });
-// import { describe, it, afterEach } from 'mocha';
-// import { assert } from 'chai';
-// import sinon from 'sinon';
-// import proxyquire from 'proxyquire';
-// import { abi } from 'services/augurjs';
-
-// describe('modules/trade/actions/helpers/calculate-trade-ids.js', () => {
-//   proxyquire.noPreserveCache();
-//   const mockAugur = { augur: { filterByPriceAndOutcomeAndUserSortByPrice: () => {} } };
-
-//   sinon.stub(mockAugur.augur, 'filterByPriceAndOutcomeAndUserSortByPrice', (orders, traderOrderType, limitPrice, outcomeId, userAddress) => {
-//     // assert types of all args
-//     assert.isObject(orders, `orders passed to filterByPriceAndOutcomeAndUserSortByPrice is not a Object as expected`);
-//     assert.isString(traderOrderType, `traderOrderType passed to filterByPriceAndOutcomeAndUserSortByPrice is not a String as expected`);
-//     assert.isString(limitPrice, `limitPrice passed to filterByPriceAndOutcomeAndUserSortByPrice is not a String as expected`);
-//     assert.isString(outcomeId, `outcomeId passed to filterByPriceAndOutcomeAndUserSortByPrice is not a String as expected`);
-//     assert.isString(userAddress, `userAddress passed to filterByPriceAndOutcomeAndUserSortByPrice is not a String as expected`);
-//     // mock functionality...
-//     let returnValue = [];
-
-//     switch (traderOrderType) {
-//       case 'buy':
-//         if (abi.bignum(limitPrice).gte('0.4')) {
-//           returnValue = [{ id: 3 }, { id: 4 }];
-//         }
-//         break;
-//       default:
-//         if (abi.bignum(limitPrice).lte('0.45')) {
-//           returnValue = [{ id: 1 }, { id: 2 }];
-//         }
-//         break;
-//     }
-
-//     return returnValue;
-//   });
-
-//   afterEach(() => {
-//     mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.reset();
-//   });
-
-//   const helper = proxyquire('../../../../src/modules/trade/actions/helpers/calculate-trade-ids', {
-//     '../../../../services/augurjs': mockAugur
-//   });
-//   const orderBook = {
-//     market1: {
-//       buy: {
-//         order1: {
-//           id: 1,
-//           price: '0.45',
-//           outcome: '1',
-//           owner: 'owner1'
-//         },
-//         order2: {
-//           id: 2,
-//           price: '0.45',
-//           outcome: '1',
-//           owner: 'owner1'
-//         }
-//       },
-//       sell: {
-//         order3: {
-//           id: 3,
-//           price: '0.4',
-//           outcome: '1',
-//           owner: 'owner1'
-//         },
-//         order4: {
-//           id: 4,
-//           price: '0.4',
-//           outcome: '1',
-//           owner: 'owner1'
-//         }
-//       }
-//     }
-//   };
-
-//   it('should calculate trade ids for a Buy', () => {
-//     assert.deepEqual(helper.calculateBuyTradeIDs('market1', '1', '0.5', orderBook, 'taker1'), [3, 4], `Didn't return the expected tradeIDs`);
-//     assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledOnce, `Didn't call augur.filterByPriceAndOutcomeAndUserSortByPrice exactly 1 time as expected`);
-//     assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledWithExactly({
-//       order3: {
-//         id: 3,
-//         price: '0.4',
-//         outcome: '1',
-//         owner: 'owner1'
-//       },
-//       order4: {
-//         id: 4,
-//         price: '0.4',
-//         outcome: '1',
-//         owner: 'owner1'
-//       }
-//     }, 'buy', '0.5', '1', 'taker1'), `Didn't called augur.filterByPriceAndOutcomeAndUserSortByPrice with the expected args`);
-//   });
-
-//   it('should return an empty array if the trade ids for a buy at that rate are not found', () => {
-//     assert.deepEqual(helper.calculateBuyTradeIDs('market1', '1', '0.3', orderBook, 'taker1'), [], `Didn't return an empty array of tradeIDs as expected`);
-//     assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledOnce, `Didn't call augur.filterByPriceAndOutcomeAndUserSortByPrice exactly 1 time as expected`);
-//     assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledWithExactly({
-//       order3: {
-//         id: 3,
-//         price: '0.4',
-//         outcome: '1',
-//         owner: 'owner1'
-//       },
-//       order4: {
-//         id: 4,
-//         price: '0.4',
-//         outcome: '1',
-//         owner: 'owner1'
-//       }
-//     }, 'buy', '0.3', '1', 'taker1'), `Didn't called augur.filterByPriceAndOutcomeAndUserSortByPrice with the expected args`);
-//   });
-
-//   it('should calculate trade ids for a Sell', () => {
-//     assert.deepEqual(helper.calculateSellTradeIDs('market1', '1', '0.3', orderBook, 'taker1'), [1, 2], `Didn't return the expected tradeIDs`);
-//     assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledOnce, `Didn't call augur.filterByPriceAndOutcomeAndUserSortByPrice exactly 1 time as expected`);
-//     assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledWithExactly({
-//       order1: {
-//         id: 1,
-//         price: '0.45',
-//         outcome: '1',
-//         owner: 'owner1'
-//       },
-//       order2: {
-//         id: 2,
-//         price: '0.45',
-//         outcome: '1',
-//         owner: 'owner1'
-//       }
-//     }, 'sell', '0.3', '1', 'taker1'), `Didn't called augur.filterByPriceAndOutcomeAndUserSortByPrice with the expected args`);
-//   });
-
-//   it('should return an empty array if the trade IDs for a sell at the rate passed in are not found', () => {
-//     assert.deepEqual(helper.calculateSellTradeIDs('market1', '1', '0.7', orderBook, 'taker1'), [], `Didn't return an empty array of tradeIDs as expected`);
-//     assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledOnce, `Didn't call augur.filterByPriceAndOutcomeAndUserSortByPrice exactly 1 time as expected`);
-//     assert(mockAugur.augur.filterByPriceAndOutcomeAndUserSortByPrice.calledWithExactly({
-//       order1: {
-//         id: 1,
-//         price: '0.45',
-//         outcome: '1',
-//         owner: 'owner1'
-//       },
-//       order2: {
-//         id: 2,
-//         price: '0.45',
-//         outcome: '1',
-//         owner: 'owner1'
-//       }
-//     }, 'sell', '0.7', '1', 'taker1'), `Didn't called augur.filterByPriceAndOutcomeAndUserSortByPrice with the expected args`);
-//   });
-// });
