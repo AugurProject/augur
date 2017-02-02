@@ -1,5 +1,5 @@
 .auth-signup-form {
-  .isHidden {
+  .animateOut {
     animation-delay: 0s, @animation-speed-very-fast;
     animation-duration: @animation-speed-very-fast, 0s;
     animation-fill-mode: forwards;
@@ -7,7 +7,7 @@
     animation-timing-function: @animation-default-type;
   }
 
-  .isVisible {
+  .animateIn {
     animation-delay: 0s, @animation-speed-fast;
     animation-duration: 0s, @animation-speed-fast;
     animation-fill-mode: forwards;
@@ -16,7 +16,7 @@
     opacity: 0;
   }
 
-  .auth-signup-actions.isHidden {
+  .auth-signup-actions.animateOut {
     animation-delay: 0s, @animation-speed-very-fast;
     animation-duration: @animation-speed-very-fast, 0s;
     animation-fill-mode: forwards;
@@ -24,7 +24,7 @@
     animation-timing-function: @animation-default-type;
   }
 
-  .auth-signup-actions.isVisible {
+  .auth-signup-actions.animateIn {
     animation-delay: 0s, @animation-speed-fast;
     animation-duration: 0s, @animation-speed-fast;
     animation-fill-mode: forwards;
@@ -45,13 +45,18 @@
 
   .auth-signup-password-confirm {
     border-top: 0;
+    height: 0;
+    opacity: 0;
     z-index: 20;
   }
 
   .auth-signup-password-suggestions {
     .font-size-small();
 
-    &.isHidden {
+    height: 0;
+    opacity: 0;
+
+    &.animateOut {
       margin-top: 0;
     }
 
@@ -67,6 +72,8 @@
   .auth-signup-actions {
     display: flex;
     flex-direction: column;
+    height: 0;
+    opacity: 0;
     z-index: 10;
 
     .login-id {
@@ -139,10 +146,12 @@ opacity: 1;
 .keyframes(fadeOutUpPartial, {
 from {
 transform: translateY(0);
+height: auto;
 opacity: 1;
 }
 to {
 transform: translateY(-20%);
+height: auto;
 opacity: 0;
 }
 });

@@ -23,7 +23,11 @@ export default class AuthSignup extends Component {
       isStrongPass: false,
       isGeneratingLoginID: false,
       rememberMe: true,
-      loginAccount: null
+      loginAccount: null,
+      // These prevent a flash on initial mount (little messy)
+      isPasswordConfirmDisplayable: false,
+      isPasswordsSuggestionDisplayable: false,
+      isAuthActionsDisplayable: false
     };
   }
 
@@ -41,7 +45,8 @@ export default class AuthSignup extends Component {
       this.props.getLoginID(this.state.password, null, this.state.rememberMe, (loginAccount) => {
         this.setState({
           loginAccount,
-          isGeneratingLoginID: false
+          isGeneratingLoginID: false,
+          isAuthActionsDisplayable: true
         });
       });
     } else if (
@@ -70,8 +75,15 @@ export default class AuthSignup extends Component {
       passwordSuggestions
     });
 
+    if (passwordSuggestions.lenght && !this.state.isPasswordsSuggestionDisplayable) {
+      this.setState({ isPasswordsSuggestionDisplayable: true });
+    }
+
     if (currentScore >= REQUIRED_PASSWORD_STRENGTH) {
-      this.setState({ isStrongPass: true });
+      this.setState({
+        isStrongPass: true,
+        isPasswordConfirmDisplayable: true
+      });
     } else if (this.state.isStrongPass === true) {
       this.setState({ isStrongPass: false });
     }
@@ -104,12 +116,18 @@ export default class AuthSignup extends Component {
           placeholder="Password"
           value={s.password}
           onChange={(password) => {
-            this.setState({ password });
+            this.setState({
+              password,
+              hasInteracted: true
+            });
             this.scorePassword(password);
           }}
         />
         <Input
-          className={classNames('auth-signup-password-confirm', { isVisible: s.isStrongPass, isHidden: !s.isStrongPass })}
+          className={classNames('auth-signup-password-confirm', {
+            animateIn: s.isStrongPass,
+            animateOut: !s.isStrongPass && s.isPasswordConfirmDisplayable
+          })}
           shouldMatchValue
           comparisonValue={s.password}
           name="password-confirm"
@@ -120,14 +138,23 @@ export default class AuthSignup extends Component {
             this.setState({ passwordConfirm });
           }}
         />
-        {
-          <ul className={classNames('auth-signup-password-suggestions', { isVisible: !s.isStrongPass && s.passwordSuggestions.length, isHidden: !s.passwordSuggestions.length })}>
-            {s.passwordSuggestions.map((suggestion, i) => (
-              <li key={`password-suggestion-${i}`}>{suggestion}</li>
-            ))}
-          </ul>
-        }
-        <div className={classNames('auth-signup-actions', { isVisible: s.loginAccount, isHidden: !s.loginAccount })}>
+        <ul
+          className={classNames('auth-signup-password-suggestions', {
+            animateIn: !s.isStrongPass && s.passwordSuggestions.length,
+            animateOut: !s.passwordSuggestions.length && s.hasInteracted
+          })}
+        >
+          {s.passwordSuggestions.map((suggestion, i) => (
+            <li key={`password-suggestion-${i}`}>{suggestion}</li>
+          ))}
+        </ul>
+        <div
+          className={classNames('auth-signup-actions', {
+            animateIn: s.loginAccount,
+            animateOut: !s.loginAccount && s.isAuthActionsDisplayable
+          })}
+          ref={(authSignupActions) => { this.authSignupActions = authSignupActions; }}
+        >
           <div className="login-id-messaging">
             <span>Below is your Login ID</span>
           </div>

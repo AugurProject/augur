@@ -17,7 +17,8 @@ export default class Input extends Component {
     incrementAmount: PropTypes.number,
     updateValue: PropTypes.func,
     canToggleVisibility: PropTypes.bool,
-    shouldMatchValue: PropTypes.bool
+    shouldMatchValue: PropTypes.bool,
+    comparisonValue: PropTypes.string
   };
 
   constructor(props) {
