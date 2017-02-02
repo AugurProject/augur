@@ -260,6 +260,8 @@ describe("accounts.loadLocalLoginAccount", function() {
     cb: undefined,
     assertions: function(out, loginAccount) {
       // because we didn't pass a cb then out should be defined as the account and out should = the currently logged in account
+      loginAccount.privateKey = new Buffer(loginAccount.privateKey, "hex");
+      loginAccount.derivedKey = new Buffer(loginAccount.derivedKey, "hex");
       assert.deepEqual(out, loginAccount);
       assert.deepEqual(out, augur.accounts.account);
       assert.deepEqual(loginAccount, augur.accounts.account);
