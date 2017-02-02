@@ -24,10 +24,13 @@ export default class AuthSignup extends Component {
       isGeneratingLoginID: false,
       rememberMe: true,
       loginAccount: null,
+      authError: false,
+      errorMessage: null,
       // These prevent a flash on component mount
       isPasswordConfirmDisplayable: false,
       isPasswordsSuggestionDisplayable: false,
-      isSignUpActionsDisplayable: false
+      isSignUpActionsDisplayable: false,
+      isAuthErrorDisplayable: false
     };
   }
 
@@ -42,12 +45,20 @@ export default class AuthSignup extends Component {
     ) {
       this.setState({ isGeneratingLoginID: true });
 
-      this.props.getLoginID(this.state.password, null, this.state.rememberMe, (loginAccount) => {
-        this.setState({
-          loginAccount,
-          isGeneratingLoginID: false,
-          isAuthActionsDisplayable: true
-        });
+      this.props.getLoginID(this.state.password, null, this.state.rememberMe, (err, loginAccount) => {
+        if (err) {
+          this.setState({
+            authError: true,
+            errorMessage: err.message,
+            isAuthErrorDisplayable: true
+          });
+        } else {
+          this.setState({
+            loginAccount,
+            isGeneratingLoginID: false,
+            isSignUpActionsDisplayable: true
+          });
+        }
       });
     } else if (
       nextState.password !== nextState.passwordConfirm &&
@@ -75,7 +86,7 @@ export default class AuthSignup extends Component {
       passwordSuggestions
     });
 
-    if (passwordSuggestions.lenght && !this.state.isPasswordsSuggestionDisplayable) {
+    if (passwordSuggestions.length && !this.state.isPasswordsSuggestionDisplayable) {
       this.setState({ isPasswordsSuggestionDisplayable: true });
     }
 
@@ -102,7 +113,15 @@ export default class AuthSignup extends Component {
           e.preventDefault();
 
           if (s.password && s.loginAccount && loginID) {
-            p.registerAccount(s.password, loginID, s.rememberMe, s.loginAccount);
+            p.registerAccount(s.password, loginID, s.rememberMe, s.loginAccount, (err) => {
+              if (err) {
+                this.setState({
+                  authError: true,
+                  errorMessage: err.message,
+                  isAuthErrorDisplayable: true
+                });
+              }
+            });
           }
         }}
       >
@@ -110,21 +129,24 @@ export default class AuthSignup extends Component {
         <Input
           autoFocus
           canToggleVisibility
-          className="auth-signup-password"
+          className={classNames('auth-signup-password', { 'input-error': s.authError })}
           name="password"
           type="password"
           placeholder="Password"
           value={s.password}
           onChange={(password) => {
-            this.setState({
-              password,
-              hasInteracted: true
-            });
+            this.setState({ password });
+
+            if (this.state.authError) {
+              this.setState({ authError: false });
+            }
+
             this.scorePassword(password);
           }}
         />
         <Input
           className={classNames('auth-signup-password-confirm', {
+            'input-error': s.authError,
             animateIn: s.isStrongPass,
             animateOut: !s.isStrongPass && s.isPasswordConfirmDisplayable
           })}
@@ -136,24 +158,39 @@ export default class AuthSignup extends Component {
           value={s.passwordConfirm}
           onChange={(passwordConfirm) => {
             this.setState({ passwordConfirm });
+
+            if (this.state.authError) {
+              this.setState({ authError: false });
+            }
           }}
         />
-        <ul
-          className={classNames('auth-signup-password-suggestions', {
-            animateIn: !s.isStrongPass && s.passwordSuggestions.length,
-            animateOut: !s.passwordSuggestions.length && s.hasInteracted
+        <div
+          className={classNames('auth-error', {
+            animateIn: s.authError,
+            animateOut: !s.authError && s.isAuthErrorDisplayable
           })}
         >
-          {s.passwordSuggestions.map((suggestion, i) => (
-            <li key={`password-suggestion-${i}`}>{suggestion}</li>
-          ))}
-        </ul>
+          <span>
+            {s.errorMessage}
+          </span>
+        </div>
+        <div
+          className={classNames('auth-signup-password-suggestions', {
+            animateIn: !s.isStrongPass && s.passwordSuggestions.length,
+            animateOut: !s.passwordSuggestions.length && s.isPasswordsSuggestionDisplayable
+          })}
+        >
+          <ul>
+            {s.passwordSuggestions.map((suggestion, i) => (
+              <li key={`password-suggestion-${i}`}>{suggestion}</li>
+            ))}
+          </ul>
+        </div>
         <div
           className={classNames('auth-signup-actions', {
             animateInPartial: s.loginAccount,
             animateOutPartial: !s.loginAccount && s.isSignUpActionsDisplayable
           })}
-          ref={(authSignupActions) => { this.authSignupActions = authSignupActions; }}
         >
           <div className="login-id-messaging">
             <span className="soft-header">Below is your Login ID</span>

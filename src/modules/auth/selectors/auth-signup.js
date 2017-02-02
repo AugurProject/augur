@@ -12,6 +12,6 @@ function getLoginID(password, loginID, remember, cb) {
   store.dispatch(register(null, password, password, null, null, null, cb));
 }
 
-function registerAccount(password, loginID, remember, loginAccount) {
-  store.dispatch(register(null, password, password, loginID, remember, loginAccount));
+function registerAccount(password, loginID, remember, loginAccount, cb) {
+  store.dispatch(register(null, password, password, loginID, remember, loginAccount, cb));
 }
