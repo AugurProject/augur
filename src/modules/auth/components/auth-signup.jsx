@@ -86,7 +86,11 @@ export default class AuthSignup extends Component {
       <form
         className="auth-signup-form"
         onSubmit={(e) => {
-          p.registerAccount(s.password, loginID, s.rememberMe, s.loginAccount);
+          e.preventDefault();
+
+          if (s.password && s.loginAccount && loginID) {
+            p.registerAccount(s.password, loginID, s.rememberMe, s.loginAccount);
+          }
         }}
       >
         <span>Sign up with a Login ID</span>

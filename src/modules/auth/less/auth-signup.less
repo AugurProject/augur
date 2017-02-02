@@ -1,24 +1,50 @@
 .auth-signup-form {
   .isHidden {
-    .transition(transform @animation-speed-very-fast @animation-default-type, opacity @animation-speed-very-fast @animation-default-type;);
+    // .transition(transform @animation-speed-very-fast @animation-default-type, opacity @animation-speed-very-fast @animation-default-type;);
+    //
+    // border: 0;
+    // font-size: 0;
+    // margin: 0;
+    // opacity: 0;
+    // padding: 0;
+    // transform: translateY(-100%);
 
-    border: 0;
-    font-size: 0;
-    margin: 0;
-    opacity: 0;
-    padding: 0;
-    transform: translateY(-100%);
-  }
-
-  .auth-signup-actions.isHidden {
-    transform: translateY(-20%);
+    animation-delay: 0s, @animation-speed-very-fast;
+    animation-duration: @animation-speed-very-fast, 0s;
+    animation-fill-mode: forwards;
+    animation-name: fadeOutUpFull, collapseElementHeight;
+    animation-timing-function: @animation-default-type;
   }
 
   .isVisible {
-    .transition(transform @animation-speed-fast @animation-default-type, opacity @animation-speed-very-fast @animation-default-type;);
+    // .transition(transform @animation-speed-fast @animation-default-type, opacity @animation-speed-very-fast @animation-default-type;);
+    //
+    // opacity: 1;
+    // transform: translateY(0);
 
-    opacity: 1;
-    transform: translateY(0);
+    animation-delay: 0s, @animation-speed-fast;
+    animation-duration: 0s, @animation-speed-fast;
+    animation-fill-mode: forwards;
+    animation-name: expandElementHeight, fadeInDownFull;
+    animation-timing-function: @animation-default-type;
+
+    opacity: 0;
+
+    // animation-delay: @animation-speed-fast;
+    // animation-duration: @animation-speed-fast;
+    // animation-fill-mode: forwards;
+    // animation-name: fadeInDownFull;
+    // animation-timing-function: @animation-default-type;
+  }
+
+  .auth-signup-actions.isHidden {
+    // .fadeInUp();
+    //
+    // transform: translateY(-20%);
+  }
+  //
+  .auth-signup-actions.isVisible {
+    // .fadeInDown();
   }
 
   span:first-of-type {
@@ -36,7 +62,7 @@
     z-index: 20;
   }
 
-  .password-suggestions {
+  .auth-signup-password-suggestions {
     .font-size-small();
 
     &.isHidden {
@@ -57,6 +83,11 @@
     flex-direction: column;
     z-index: 10;
 
+    .login-id {
+      height: @font-size-normal * 5;
+      resize: none;
+    }
+
     .login-id-messaging {
       display: flex;
       flex-direction: column;
@@ -73,9 +104,59 @@
         }
       }
     }
-
-    .login-id {
-      resize: none;
-    }
   }
 }
+
+// Animations
+
+.keyframes(expandElementHeight, {
+to { height: auto; }
+});
+
+.keyframes(collapseElementHeight, {
+to { height: 0; }
+});
+
+.keyframes(fadeInDownFull, {
+from {
+transform: translateY(-100%);
+opacity: 0;
+}
+to {
+transform: translateY(0%);
+opacity: 1;
+}
+});
+
+.keyframes(fadeOutUpFull, {
+from {
+transform: translateY(0);
+opacity: 1;
+}
+to {
+transform: translateY(-100%);
+opacity: 0;
+}
+});
+
+.keyframes(fadeInDownPartial, {
+from {
+transform: translateY(-20%);
+opacity: 0;
+}
+to {
+transform: translateY(0%);
+opacity: 1;
+}
+});
+
+.keyframes(fadeOutUpPartial, {
+from {
+transform: translateY(0);
+opacity: 1;
+}
+to {
+transform: translateY(-20%);
+opacity: 0;
+}
+});
