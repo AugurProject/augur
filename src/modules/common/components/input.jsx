@@ -16,7 +16,8 @@ export default class Input extends Component {
     isIncrementable: PropTypes.bool,
     incrementAmount: PropTypes.number,
     updateValue: PropTypes.func,
-    canToggleVisibility: PropTypes.bool
+    canToggleVisibility: PropTypes.bool,
+    shouldMatchValue: PropTypes.bool
   };
 
   constructor(props) {
@@ -79,7 +80,7 @@ export default class Input extends Component {
   };
 
   render() {
-    const { isClearable, isIncrementable, incrementAmount, updateValue, canToggleVisibility, ...p } = this.props;
+    const { isClearable, isIncrementable, incrementAmount, updateValue, canToggleVisibility, shouldMatchValue, comparisonValue, ...p } = this.props;
     const s = this.state;
 
     return (
@@ -127,6 +128,15 @@ export default class Input extends Component {
               <i></i>
             }
           </button>
+        }
+
+        {shouldMatchValue && s.value &&
+          <div className="input-value-comparison">
+            {s.value === comparisonValue ?
+              <i className="input-does-match"></i> :
+              <i className="input-does-not-match"></i>
+            }
+          </div>
         }
 
         {isIncrementable &&

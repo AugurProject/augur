@@ -110,6 +110,8 @@ export default class AuthSignup extends Component {
         />
         <Input
           className={classNames('auth-signup-password-confirm', { isVisible: s.isStrongPass, isHidden: !s.isStrongPass })}
+          shouldMatchValue
+          comparisonValue={s.password}
           name="password-confirm"
           type="password"
           placeholder="Confirm Password"
