@@ -24369,7 +24369,7 @@ BigNumber.config({
 var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register")];
 
 function Augur() {
-  this.version = "3.9.15";
+  this.version = "3.9.16";
 
   this.options = {
     debug: {
@@ -25509,7 +25509,7 @@ module.exports = {
     return function (args) {
       var tx, params, numInputs, numFixed, cb, i, onSent, onSuccess, onFailed;
       tx = clone(self.api.functions[contract][method]);
-      if (!arguments) {
+      if (!arguments || !arguments.length) {
         if (!tx.send) return self.fire(tx);
         return self.transact(tx);
       }
@@ -25944,7 +25944,7 @@ module.exports = {
 
   // if buying numShares must be 0, if selling totalEthWithFee must be 0
   executeTrade: function executeTrade(marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, cb) {
-    console.log("executeTrade:", marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, address, orderBooks);
+    if (this.options.debug.trading) console.log("executeTrade:", marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, address, orderBooks);
     var self = this;
     var bnTotalEth = abi.bignum(totalEthWithFee) || constants.ZERO;
     var bnNumShares = abi.bignum(numShares) || constants.ZERO;
@@ -25970,11 +25970,13 @@ module.exports = {
     }
     async.until(function () {
       matchingTradeIDs = getTradeIDs(orderBooks);
-      console.log("matchingTradeIDs:", matchingTradeIDs);
-      console.log("remainingEth:", res.remainingEth.toFixed());
-      console.log("remainingShares:", res.remainingShares.toFixed());
-      console.log("sharesPurchased:", bnSharesPurchased.toFixed());
-      console.log("balance:", bnCashBalance.toFixed());
+      if (self.options.debug.trading) {
+        console.log("matchingTradeIDs:", matchingTradeIDs);
+        console.log("remainingEth:", res.remainingEth.toFixed());
+        console.log("remainingShares:", res.remainingShares.toFixed());
+        console.log("sharesPurchased:", bnSharesPurchased.toFixed());
+        console.log("balance:", bnCashBalance.toFixed());
+      }
       return !matchingTradeIDs || !matchingTradeIDs.length || res.remainingEth.lte(constants.PRECISION.zero) && res.remainingShares.lte(constants.PRECISION.zero) || bnNumShares.gt(constants.ZERO) && bnSharesPurchased.lte(constants.PRECISION.zero) || bnTotalEth.gt(constants.ZERO) && bnCashBalance.lte(constants.PRECISION.zero);
     }, function (nextTrade) {
       var tradeIDs = matchingTradeIDs;
@@ -26016,7 +26018,7 @@ module.exports = {
               });
             },
             onCommitSent: function onCommitSent(data) {
-              console.log("commit sent:", data);
+              if (self.options.debug.trading) console.log("commit sent:", data);
             },
             onCommitSuccess: function onCommitSuccess(data) {
               res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
@@ -26024,13 +26026,13 @@ module.exports = {
             },
             onCommitFailed: nextTrade,
             onNextBlock: function onNextBlock(data) {
-              console.log("trade-onNextBlock", data);
+              if (self.options.debug.trading) console.log("trade-onNextBlock", data);
             },
             onTradeSent: function onTradeSent(data) {
-              console.log("trade sent:", data);
+              if (self.options.debug.trading) console.log("trade sent:", data);
             },
             onTradeSuccess: function onTradeSuccess(data) {
-              console.log("trade success:", data);
+              if (self.options.debug.trading) console.log("trade success:", data);
               res.filledShares = res.filledShares.plus(abi.bignum(data.sharesBought));
               res.filledEth = res.filledEth.plus(abi.bignum(data.cashFromTrade));
               if (isRemainder) {
@@ -26063,7 +26065,7 @@ module.exports = {
       });
     }, function (err) {
       if (err) return cb(err);
-      console.log("trade complete:", JSON.stringify(res, null, 2));
+      if (self.options.debug.trading) console.log("trade complete:", JSON.stringify(res, null, 2));
       cb(null, res);
     });
   },
@@ -26078,7 +26080,7 @@ module.exports = {
       gasFees: constants.ZERO
     };
     var matchingIDs = getTradeIDs(orderBooks);
-    console.log("matching trade IDs:", matchingIDs);
+    if (self.options.debug.trading) console.log("matching trade IDs:", matchingIDs);
     if (!matchingIDs || !matchingIDs.length || res.remainingShares.lte(constants.ZERO)) return cb(null, res);
     async.eachSeries(matchingIDs, function (matchingID, nextMatchingID) {
       var maxAmount = res.remainingShares.toFixed();
@@ -26103,7 +26105,7 @@ module.exports = {
           });
         },
         onCommitSent: function onCommitSent(data) {
-          console.log("short sell commit sent:", data);
+          if (self.options.debug.trading) console.log("short sell commit sent:", data);
         },
         onCommitSuccess: function onCommitSuccess(data) {
           res.gasFees = res.gasFees.plus(abi.bignum(data.gasFees));
@@ -26111,10 +26113,10 @@ module.exports = {
         },
         onCommitFailed: nextMatchingID,
         onNextBlock: function onNextBlock(data) {
-          console.log("short_sell onNextBlock", data);
+          if (self.options.debug.trading) console.log("short_sell onNextBlock", data);
         },
         onTradeSent: function onTradeSent(data) {
-          console.debug("short sell sent", data);
+          if (self.options.debug.trading) console.debug("short sell sent", data);
         },
         onTradeSuccess: function onTradeSuccess(data) {
           if (data.unmatchedShares) {
@@ -26144,7 +26146,7 @@ module.exports = {
       });
     }, function (err) {
       if (err && !err.isComplete) return cb(err);
-      console.log("short_sell success:", JSON.stringify(res, null, 2));
+      if (self.options.debug.trading) console.log("short_sell success:", JSON.stringify(res, null, 2));
       cb(null, res);
     });
   }
@@ -27012,7 +27014,7 @@ module.exports = {
       if (!tradeInProgress.limitPrice || !tradeInProgress.numShares || !tradeInProgress.totalCost) {
         return nextTradeInProgress();
       }
-      console.log('placing trade:', tradeInProgress);
+      if (self.options.debug.trading) console.log('placing trade:', tradeInProgress);
       self.placeTrade(market, outcomeID, tradeInProgress.side, tradeInProgress.numShares, tradeInProgress.limitPrice, tradeInProgress.tradingFeesEth, address, abi.bignum(tradeInProgress.totalCost).abs().toFixed(), orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, nextTradeInProgress);
     }, function (err) {
       if (err) return callback(err);
@@ -28223,7 +28225,7 @@ module.exports = {
       if (err) return console.error("trade failed:", err);
       var sharesRemaining = abi.bignum(numShares).minus(res.filledShares);
       if (sharesRemaining.gte(constants.PRECISION.limit) && res.remainingEth.gte(constants.PRECISION.limit)) {
-        console.log("buy remainder:", sharesRemaining.toFixed(), "shares remaining,", res.remainingEth.toFixed(), "cash remaining", constants.PRECISION.limit.toFixed(), "precision limit");
+        if (self.options.debug.trading) console.log("buy remainder:", sharesRemaining.toFixed(), "shares remaining,", res.remainingEth.toFixed(), "cash remaining", constants.PRECISION.limit.toFixed(), "precision limit");
         if (!doNotMakeOrders) {
           self.placeBid(market, outcomeID, sharesRemaining.toFixed(), limitPrice, tradeGroupID);
         }
