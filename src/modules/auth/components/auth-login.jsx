@@ -24,8 +24,6 @@ export default class AuthLogin extends Component {
     const p = this.props;
     const s = this.state;
 
-    // console.log('p -- ', p);
-
     return (
       <form
         className="auth-login-form"
@@ -97,7 +95,7 @@ export default class AuthLogin extends Component {
             animateOut: !s.loginError && s.isAuthErrorDisplayable
           })}
         >
-          <span className="login-error-message">
+          <span>
             {s.errorMessage}
           </span>
         </div>
