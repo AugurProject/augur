@@ -9,7 +9,7 @@ describe("Transact", function() {
   var rpcTransact = augur.rpc.transact;
   var coinbase = augur.coinbase;
   var from = augur.from;
-  var web = augur.web;
+  var web = augur.accounts;
   function noop() {};
 
   describe("fire", function() {
@@ -38,7 +38,7 @@ describe("Transact", function() {
 
 
     test({
-      description: "fire with no defined this.web.account, this.from, this.coinbase, tx.from",
+      description: "fire with no defined this.accounts.account, this.from, this.coinbase, tx.from",
       tx: {
         inputs: ['branch', 'recver', 'value'],
         method: 'sendReputation',
@@ -58,7 +58,7 @@ describe("Transact", function() {
       }
     });
     test({
-      description: "fire with no defined this.web.account, this.from, this.coinbase, but a tx.from passed in",
+      description: "fire with no defined this.accounts.account, this.from, this.coinbase, but a tx.from passed in",
       tx: {
         inputs: ['branch', 'recver', 'value'],
         method: 'sendReputation',
@@ -79,7 +79,7 @@ describe("Transact", function() {
       }
     });
     test({
-      description: "fire with no defined this.web.account, this.from, tx.from but this.coinbase is defined",
+      description: "fire with no defined this.accounts.account, this.from, tx.from but this.coinbase is defined",
       tx: {
         inputs: ['branch', 'recver', 'value'],
         method: 'sendReputation',
@@ -103,7 +103,7 @@ describe("Transact", function() {
       }
     });
     test({
-      description: "fire with no defined this.web.account, tx.from, this.coinbase but this.from is defined",
+      description: "fire with no defined this.accounts.account, tx.from, this.coinbase but this.from is defined",
       tx: {
         inputs: ['branch', 'recver', 'value'],
         method: 'sendReputation',
@@ -127,7 +127,7 @@ describe("Transact", function() {
       }
     });
     test({
-      description: "fire with no defined this.from, tx.from, this.coinbase but this.web.account is defined",
+      description: "fire with no defined this.from, tx.from, this.coinbase but this.accounts.account is defined",
       tx: {
         inputs: ['branch', 'recver', 'value'],
         method: 'sendReputation',
@@ -141,17 +141,17 @@ describe("Transact", function() {
       wrapper: noop,
       aux: noop,
       setup: function() {
-        augur.web = { account: { address: 'webAccountAddress' } };
+        augur.accounts = { account: { address: 'browserAccountAddress' } };
       },
       tearDown: function() {
-        augur.web = web;
+        augur.accounts = web;
       },
       assertions: function(out) {
-        assert.deepEqual(out.from, 'webAccountAddress');
+        assert.deepEqual(out.from, 'browserAccountAddress');
       }
     });
     test({
-      description: "fire with defined this.from, tx.from, this.coinbase, and this.web.account is defined",
+      description: "fire with defined this.from, tx.from, this.coinbase, and this.accounts.account is defined",
       tx: {
         inputs: ['branch', 'recver', 'value'],
         method: 'sendReputation',
@@ -166,21 +166,21 @@ describe("Transact", function() {
       wrapper: noop,
       aux: noop,
       setup: function() {
-        augur.web = { account: { address: 'webAccountAddress' } };
+        augur.accounts = { account: { address: 'browserAccountAddress' } };
         augur.from = 'augurFromAddress';
         augur.coinbase = 'coinbase';
       },
       tearDown: function() {
-        augur.web = web;
+        augur.accounts = web;
         augur.from = from;
         augur.coinbase = coinbase;
       },
       assertions: function(out) {
-        assert.deepEqual(out.from, 'webAccountAddress');
+        assert.deepEqual(out.from, 'browserAccountAddress');
       }
     });
     test({
-      description: "fire with defined this.from, tx.from, this.coinbase, but  this.web.account is undefined",
+      description: "fire with defined this.from, tx.from, this.coinbase, but  this.accounts.account is undefined",
       tx: {
         inputs: ['branch', 'recver', 'value'],
         method: 'sendReputation',
@@ -207,7 +207,7 @@ describe("Transact", function() {
       }
     });
     test({
-      description: "fire with defined this.from and this.coinbase but  this.web.account and tx.from is undefined",
+      description: "fire with defined this.from and this.coinbase but  this.accounts.account and tx.from is undefined",
       tx: {
         inputs: ['branch', 'recver', 'value'],
         method: 'sendReputation',
@@ -259,7 +259,7 @@ describe("Transact", function() {
 
 
     test({
-      description: "transact with no defined this.web.account, this.from, this.coinbase, tx.from",
+      description: "transact with no defined this.accounts.account, this.from, this.coinbase, tx.from",
       tx: {
         inputs: ['branch', 'recver', 'value'],
         method: 'sendReputation',
@@ -279,7 +279,7 @@ describe("Transact", function() {
       }
     });
     test({
-      description: "transact with no defined this.web.account, this.from, this.coinbase, but a tx.from passed in",
+      description: "transact with no defined this.accounts.account, this.from, this.coinbase, but a tx.from passed in",
       tx: {
         inputs: ['branch', 'recver', 'value'],
         method: 'sendReputation',
@@ -300,7 +300,7 @@ describe("Transact", function() {
       }
     });
     test({
-      description: "transact with no defined this.web.account, this.from, tx.from but this.coinbase is defined",
+      description: "transact with no defined this.accounts.account, this.from, tx.from but this.coinbase is defined",
       tx: {
         inputs: ['branch', 'recver', 'value'],
         method: 'sendReputation',
@@ -324,7 +324,7 @@ describe("Transact", function() {
       }
     });
     test({
-      description: "transact with no defined this.web.account, tx.from, this.coinbase but this.from is defined",
+      description: "transact with no defined this.accounts.account, tx.from, this.coinbase but this.from is defined",
       tx: {
         inputs: ['branch', 'recver', 'value'],
         method: 'sendReputation',
@@ -348,7 +348,7 @@ describe("Transact", function() {
       }
     });
     test({
-      description: "transact with no defined this.from, tx.from, this.coinbase but this.web.account is defined",
+      description: "transact with no defined this.from, tx.from, this.coinbase but this.accounts.account is defined",
       tx: {
         inputs: ['branch', 'recver', 'value'],
         method: 'sendReputation',
@@ -362,17 +362,17 @@ describe("Transact", function() {
       onSuccess: noop,
       onFailed: noop,
       setup: function() {
-        augur.web = { account: { address: 'webAccountAddress' } };
+        augur.accounts = { account: { address: 'browserAccountAddress' } };
       },
       tearDown: function() {
-        augur.web = web;
+        augur.accounts = web;
       },
       assertions: function(out) {
-        assert.deepEqual(out.from, 'webAccountAddress');
+        assert.deepEqual(out.from, 'browserAccountAddress');
       }
     });
     test({
-      description: "transact with defined this.from, tx.from, this.coinbase, and this.web.account is defined",
+      description: "transact with defined this.from, tx.from, this.coinbase, and this.accounts.account is defined",
       tx: {
         inputs: ['branch', 'recver', 'value'],
         method: 'sendReputation',
@@ -387,21 +387,21 @@ describe("Transact", function() {
       onSuccess: noop,
       onFailed: noop,
       setup: function() {
-        augur.web = { account: { address: 'webAccountAddress' } };
+        augur.accounts = { account: { address: 'browserAccountAddress' } };
         augur.from = 'augurFromAddress';
         augur.coinbase = 'coinbase';
       },
       tearDown: function() {
-        augur.web = web;
+        augur.accounts = web;
         augur.from = from;
         augur.coinbase = coinbase;
       },
       assertions: function(out) {
-        assert.deepEqual(out.from, 'webAccountAddress');
+        assert.deepEqual(out.from, 'browserAccountAddress');
       }
     });
     test({
-      description: "transact with defined this.from, tx.from, this.coinbase, but  this.web.account is undefined",
+      description: "transact with defined this.from, tx.from, this.coinbase, but  this.accounts.account is undefined",
       tx: {
         inputs: ['branch', 'recver', 'value'],
         method: 'sendReputation',
@@ -428,7 +428,7 @@ describe("Transact", function() {
       }
     });
     test({
-      description: "transact with defined this.from and this.coinbase but  this.web.account and tx.from is undefined",
+      description: "transact with defined this.from and this.coinbase but  this.accounts.account and tx.from is undefined",
       tx: {
         inputs: ['branch', 'recver', 'value'],
         method: 'sendReputation',

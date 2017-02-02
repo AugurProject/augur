@@ -8,8 +8,8 @@
 module.exports = {
 
   fire: function (tx, callback, wrapper, aux) {
-    if (this.web && this.web.account && this.web.account.address) {
-      tx.from = this.web.account.address;
+    if (this.accounts && this.accounts.account && this.accounts.account.address) {
+      tx.from = this.accounts.account.address;
     } else {
       tx.from = tx.from || this.from || this.coinbase;
     }
@@ -17,9 +17,9 @@ module.exports = {
   },
 
   transact: function (tx, onSent, onSuccess, onFailed) {
-    if (this.web && this.web.account && this.web.account.address) {
-      tx.from = this.web.account.address;
-      tx.invocation = {invoke: this.web.invoke, context: this.web};
+    if (this.accounts && this.accounts.account && this.accounts.account.address) {
+      tx.from = this.accounts.account.address;
+      tx.invocation = {invoke: this.accounts.invoke, context: this.accounts};
     } else {
       tx.from = tx.from || this.from || this.coinbase;
     }
