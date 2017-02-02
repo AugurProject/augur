@@ -213,6 +213,9 @@ module.exports = function () {
 
     loadLocalLoginAccount: function (localAccount, cb) {
       var self = this;
+      if (!localAccount || !localAccount.privateKey || !localAccount.derivedKey || !localAccount.loginID || !localAccount.keystore) {
+          return cb(errors['0x']);
+      }
       cb = (utils.is_function(cb)) ? cb : utils.pass;
       var privateKey = localAccount.privateKey;
       var derivedKey = localAccount.derivedKey;

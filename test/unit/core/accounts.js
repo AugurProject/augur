@@ -205,7 +205,7 @@ describe("accounts.changeAccountName", function() {
 });
 describe("accounts.importAccount", function() {});
 describe("accounts.loadLocalLoginAccount", function() {
-  // ? tests total
+  // 7 tests total
   augur.accounts.account = {};
   afterEach(function() {
     augur.accounts.account = {};
@@ -265,6 +265,129 @@ describe("accounts.loadLocalLoginAccount", function() {
       assert.deepEqual(out, loginAccount);
       assert.deepEqual(out, augur.accounts.account);
       assert.deepEqual(loginAccount, augur.accounts.account);
+    }
+  });
+  test({
+    description: 'Should error if loginAccount is undefined',
+    prepareLoginAccount: function(accounts) {
+      //  see first test for explaination of this func
+      return undefined;
+    },
+    cb: function(account) {
+      assert.deepEqual(account, 'no response or bad input');
+    },
+    assertions: function(out, loginAccount) {
+      // because we pass a cb in this example, out shouldn't be defined
+      assert.isUndefined(out);
+      assert.isUndefined(loginAccount);
+    }
+  });
+  test({
+    description: 'Should error if loginAccount is missing a loginID',
+    prepareLoginAccount: function(accounts) {
+      //  see first test for explaination of this func
+      return {
+        name: accounts[0].name,
+        address: accounts[0].address,
+        privateKey: accounts[0].privateKey,
+        derivedKey: accounts[0].derivedKey,
+        keystore: accounts[0].keystore
+      };
+    },
+    cb: function(account) {
+      assert.deepEqual(account, 'no response or bad input');
+    },
+    assertions: function(out, loginAccount) {
+      // because we pass a cb in this example, out shouldn't be defined
+      assert.isUndefined(out);
+      assert.deepEqual(loginAccount, {
+        name: accounts[0].name,
+        address: accounts[0].address,
+        privateKey: accounts[0].privateKey,
+        derivedKey: accounts[0].derivedKey,
+        keystore: accounts[0].keystore
+      });
+    }
+  });
+  test({
+    description: 'Should error if loginAccount is missing a privateKey',
+    prepareLoginAccount: function(accounts) {
+      //  see first test for explaination of this func
+      return {
+        name: accounts[0].name,
+        loginID: accounts[0].loginID,
+        address: accounts[0].address,
+        derivedKey: accounts[0].derivedKey,
+        keystore: accounts[0].keystore
+      };
+    },
+    cb: function(account) {
+      assert.deepEqual(account, 'no response or bad input');
+    },
+    assertions: function(out, loginAccount) {
+      // because we pass a cb in this example, out shouldn't be defined
+      assert.isUndefined(out);
+      assert.deepEqual(loginAccount, {
+        name: accounts[0].name,
+        loginID: accounts[0].loginID,
+        address: accounts[0].address,
+        derivedKey: accounts[0].derivedKey,
+        keystore: accounts[0].keystore
+      });
+    }
+  });
+  test({
+    description: 'Should error if loginAccount is missing a derivedKey',
+    prepareLoginAccount: function(accounts) {
+      //  see first test for explaination of this func
+      return {
+        name: accounts[0].name,
+        loginID: accounts[0].loginID,
+        address: accounts[0].address,
+        privateKey: accounts[0].privateKey,
+        keystore: accounts[0].keystore
+      };
+    },
+    cb: function(account) {
+      assert.deepEqual(account, 'no response or bad input');
+    },
+    assertions: function(out, loginAccount) {
+      // because we pass a cb in this example, out shouldn't be defined
+      assert.isUndefined(out);
+      assert.deepEqual(loginAccount, {
+        name: accounts[0].name,
+        loginID: accounts[0].loginID,
+        address: accounts[0].address,
+        privateKey: accounts[0].privateKey,
+        keystore: accounts[0].keystore
+      });
+    }
+  });
+  test({
+    description: 'Should error if loginAccount is missing a keystore',
+    prepareLoginAccount: function(accounts) {
+      //  see first test for explaination of this func
+      return {
+        name: accounts[0].name,
+        loginID: accounts[0].loginID,
+        address: accounts[0].address,
+        privateKey: accounts[0].privateKey,
+        derivedKey: accounts[0].derivedKey
+      };
+    },
+    cb: function(account) {
+      assert.deepEqual(account, 'no response or bad input');
+    },
+    assertions: function(out, loginAccount) {
+      // because we pass a cb in this example, out shouldn't be defined
+      assert.isUndefined(out);
+      assert.deepEqual(loginAccount, {
+        name: accounts[0].name,
+        loginID: accounts[0].loginID,
+        address: accounts[0].address,
+        privateKey: accounts[0].privateKey,
+        derivedKey: accounts[0].derivedKey
+      });
     }
   });
 });
