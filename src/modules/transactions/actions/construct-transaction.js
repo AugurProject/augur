@@ -330,7 +330,7 @@ export function constructSlashedRepTransaction(log, market, outcomes, address, d
       }];
     }
     if (log.inProgress) {
-      transaction.message = `fining ${abi.strip_0x(log.reporter)} for collusion`;
+      transaction.message = `fining ${abi.strip_0x(log.reporter)}`;
     } else {
       transaction.message = `fined ${abi.strip_0x(log.reporter)} ${formatRep(log.repSlashed).full}`;
     }
@@ -342,7 +342,7 @@ export function constructSlashedRepTransaction(log, market, outcomes, address, d
         balance: formatRep(0)
       }];
     }
-    transaction.message = `fined by ${abi.strip_0x(log.sender)} for collusion`;
+    transaction.message = `fined by ${abi.strip_0x(log.sender)}`;
   }
   console.debug('slashed rep transaction:', transaction);
   return transaction;
@@ -647,6 +647,7 @@ export function constructTransaction(label, log, isRetry, callback) {
         return dispatch(constructMarketTransaction(label, log, market));
       }
       case 'penalize':
+      case 'slashedRep':
       case 'submittedReport':
       case 'submittedReportHash': {
         const aux = dispatch(loadDataForReportingTransaction(label, log, isRetry, callback));
