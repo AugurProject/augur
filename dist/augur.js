@@ -24369,7 +24369,7 @@ BigNumber.config({
 var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register")];
 
 function Augur() {
-  this.version = "3.9.14";
+  this.version = "3.9.15";
 
   this.options = {
     debug: {
@@ -28209,7 +28209,9 @@ var constants = require("../constants");
 module.exports = {
 
   placeBuy: function placeBuy(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
-    console.log('placeBuy:', market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback);
+    if (this.options.debug.trading) {
+      console.log('placeBuy:', market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback);
+    }
     tradeCommitLockCallback(true);
     var self = this;
     var marketID = market.id;
@@ -28230,7 +28232,9 @@ module.exports = {
   },
 
   placeSell: function placeSell(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
-    console.log('placeSell:', market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback);
+    if (this.options.debug.trading) {
+      console.log('placeSell:', market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback);
+    }
     var self = this;
     tradeCommitLockCallback(true);
     var marketID = market.id;
@@ -28275,7 +28279,9 @@ module.exports = {
   },
 
   placeShortSell: function placeShortSell(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
-    console.log('placeShortSell:', market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback);
+    if (this.options.debug.trading) {
+      console.log('placeShortSell:', market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, orderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback);
+    }
     var self = this;
     tradeCommitLockCallback(true);
     var marketID = market.id;

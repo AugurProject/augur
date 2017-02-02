@@ -602,7 +602,7 @@ describe("takeOrder.placeSell", function() {
             assert.equal(address, '0x1');
             return ['0xb1'];
         },
-        placeShortSell: function(market, outcomeID, remainingShares, limitPrice, address, totalCost, tradingFees, orderBook, tradeGroupID, tradeCommitmentCallback) {
+        placeShortSell: function(market, outcomeID, remainingShares, limitPrice, address, totalCost, tradingFees, orderBook, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback) {
             callCounts.placeShortSell++;
             assert.deepEqual(market, { id: '0xa1' });
             assert.equal(outcomeID, '1');
