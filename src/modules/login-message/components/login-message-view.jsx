@@ -53,157 +53,20 @@ const LoginMessagePage = p => (
         </li>
       </ol>
       <h2>Technical updates:</h2>
-      <h3>January 31, 2017</h3>
+      <h3>February 1, 2017</h3>
       <ol>
         <li>
-          Added &quot;snitch&quot; tab to market detail page, where if you know the report and salt of another user during the commit phase of the current reporting cycle, you can snitch on the other reporter and they will lose all their active Reputation.  (The reason for this is to make it as hard as possible for Reporters to collude with each other.)
+          {`Added the ability to 'close' an existing market position.
+            This action will determine if a position can be either fully or partially closed based on the current order book state and will attempt to do so at the best available price.`}
         </li>
         <li>
-          Added fixReport and extra parameters to slashRep wrapper.
+          Snitch (slashRep) messaging now displays correctly.
         </li>
         <li>
-          Attach eventID field to marketInfo object for getMarketInfo.
+          Fixed reporterIndex reference in slashRep function.
         </li>
         <li>
-          Removed newafterrep field from penalize filter.
-        </li>
-        <li>
-          Always call callback after checking close extra markets, even if market(s) already closed.
-        </li>
-        <li>
-          Only show rep penalization in penalize logs.
-        </li>
-        <li>
-          Added slash rep info to report-form component.
-        </li>
-        <li>
-          Attached onSubmitSlashRep to market selector.
-        </li>
-        <li>
-          Added branch parameter to market view.
-        </li>
-        <li>
-          Added slash-rep action to reports module.
-        </li>
-        <li>
-          Fixed scalar report entry instructions.
-        </li>
-        <li>
-          Added loadMarketsInfo to claimProceeds callback.
-        </li>
-        <li>
-          Fixed order type references.
-        </li>
-        <li>
-          Fixed portfolio.openOrders type (side) references.
-        </li>
-        <li>
-          Added cancel-open-orders-in-closed-markets action to user-open-orders module.
-        </li>
-        <li>
-          Added cancelOpenOrdersInClosedMarkets action to claimProceeds.
-        </li>
-        <li>
-          Attached openOrders property to portfolio selector.
-        </li>
-        <li>
-          Added open-orders selector to user-open-orders module.
-        </li>
-      </ol>
-      <h3>January 29, 2017</h3>
-      <ol>
-        <li>
-          Added useHostedNodeFallback prop, disable/enableHostedNodeFallback functions to ethrpc, and integrated these functions into the initial augur.js/ethereumjs-connect connection sequence.  Hosted node fallback can now be disabled simply by setting &quot;hostedNodeFallback&quot; to false in the front-end env.json configuration file.
-        </li>
-        <li>
-          Trade simulations feePercent is now always positive.
-        </li>
-        <li>
-          Fixed addOrder when orderbook is empty.
-        </li>
-        <li>
-          Adds Dockerfile and instructions.
-        </li>
-        <li>
-          Added within-order remaining-cash/-shares decrease in relayed transaction messages.
-        </li>
-      </ol>
-      <h3>January 28, 2017</h3>
-      <ol>
-        <li>
-          Added negative signs to bid/buy/shortSell simulated actions.
-        </li>
-        <li>
-          Use static max value/amount for trade commit messaging.
-        </li>
-        <li>
-          Fixed scalar price calculation in trade log transaction constructors.
-        </li>
-        <li>
-          Fixed calculated trade amount for relayed buy trades in scalar markets.
-        </li>
-        <li>
-          Reporting test setup time 900 for multi-user tests.
-        </li>
-        <li>
-          Use send instead of sendFrom for cash (eth) transfers initiated by user.
-        </li>
-        <li>
-          Fixed short-sell total cost calculated from logs.
-        </li>
-        <li>
-          Return transaction array for short-sell relayed transactions.
-        </li>
-        <li>
-          Separate trade (array) relay transaction handler from others.
-        </li>
-      </ol>
-      <h3>January 27, 2017</h3>
-      <ol>
-        <li>
-          Fixed simulated short sell cost calculation.
-        </li>
-        <li>
-          Added isShortSell=true to tradeCommitmentCallback in executeTrade.
-        </li>
-        <li>
-          Added getOrderBookChunked method to modules/compositeGetters.
-        </li>
-        <li>
-          Put default orderbook chunk size (100) into constants.js.
-        </li>
-        <li>
-          Fixed short-sell total cost calculated from logs.
-        </li>
-        <li>
-          Return transaction array for short-sell relayed transactions.
-        </li>
-        <li>
-          Separate trade (array) relay transaction handler from others.
-        </li>
-        <li>
-          Trade commitment isShortSell field distinguishes between sell and short-sell for relayed commitTrade transactions.
-        </li>
-        <li>
-          Order existence check in select-order-book (fixes no-order error for 3rd party logs).
-        </li>
-        <li>
-          Moved chunked getOrderBook logic from load-bids-asks to augur.js.
-        </li>
-        <li>
-          Fixed trade log reprocessing error.
-        </li>
-      </ol>
-      <h3>January 26, 2017</h3>
-      <ol>
-        <li>
-          Added chunking parameters to get_trade_ids; call increaseTagPopularity in modifyParticipantShares.
-        </li>
-        <li>
-          Added tags contract to data_api with basic setters/getters for tag popularity.
-        </li>
-        <li>
-          Fixed array concatenation in getTradingActions.
+          Fixed eventID reference in slashedRep log and added a timestamp.
         </li>
       </ol>
       {p.marketsLink &&

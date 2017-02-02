@@ -20,10 +20,10 @@ export const placeTrade = (marketID, outcomeID, doNotMakeOrders, callback) => (d
     data => dispatch(updateTradeCommitment(data)),
     isLocked => dispatch(updateTradeCommitLock(isLocked)),
     (err, tradeGroupID) => {
-      dispatch(clearTradeInProgress(marketID));
       if (err) console.error('place trade:', err, marketID, tradeGroupID);
       if (callback) callback(err, tradeGroupID);
     }
   );
+  dispatch(clearTradeInProgress(marketID));
   console.log('tradeGroupID:', tradeGroupID);
 };

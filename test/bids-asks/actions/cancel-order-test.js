@@ -6,7 +6,6 @@ import sinon from 'sinon';
 import mocks from 'test/mockStore';
 import { CANCEL_ORDER } from 'modules/transactions/constants/types';
 import { BID, ASK } from 'modules/bids-asks/constants/bids-asks-types';
-import { SHOW_CANCEL_ORDER_CONFIRMATION, ABORT_CANCEL_ORDER_CONFIRMATION } from 'modules/bids-asks/actions/cancel-order';
 
 describe('modules/bids-asks/actions/cancel-order.js', () => {
   proxyquire.noPreserveCache().noCallThru();
@@ -51,26 +50,12 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
   });
 
   describe('cancelOrder', () => {
-    it(`shouldn't dispatch it order doesn't exist`, () => {
+    it(`shouldn't dispatch if order doesn't exist`, () => {
       store.dispatch(cancelOrderModule.cancelOrder('nonExistingOrderID', 'testMarketID', BID));
       store.dispatch(cancelOrderModule.cancelOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'nonExistingMarketID', BID));
       store.dispatch(cancelOrderModule.cancelOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'testMarketID', ASK));
-    });
-  });
 
-  describe('abortCancelOrderConfirmation', () => {
-    it('should produce action', () => {
-      store.dispatch(cancelOrderModule.abortCancelOrderConfirmation('orderID'));
-      assert.lengthOf(store.getActions(), 1);
-      assert.deepEqual(store.getActions(), [{ type: ABORT_CANCEL_ORDER_CONFIRMATION, orderID: 'orderID' }]);
-    });
-  });
-
-  describe('showCancelOrderConfirmation', () => {
-    it('should produce action', () => {
-      store.dispatch(cancelOrderModule.showCancelOrderConfirmation('orderID'));
-      assert.lengthOf(store.getActions(), 1);
-      assert.deepEqual(store.getActions(), [{ type: SHOW_CANCEL_ORDER_CONFIRMATION, orderID: 'orderID' }]);
+      assert.deepEqual(store.getActions(), []);
     });
   });
 });

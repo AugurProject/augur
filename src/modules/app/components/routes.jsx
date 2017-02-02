@@ -132,6 +132,7 @@ export default class Routes extends Component {
           scalarShareDenomination: p.scalarShareDenomination,
           marketReportingNavItems: p.marketReportingNavItems,
           outcomeTradeNavItems: p.outcomeTradeNavItems,
+          closePositionStatus: p.closePositionStatus,
           branch: p.branch
         };
         System.import('modules/market/components/market-view').then((module) => {
@@ -153,7 +154,7 @@ export default class Routes extends Component {
           filterSort: p.filterSort,
           keywords: p.keywords,
           branch: p.branch,
-          scalarShareDenomination: p.scalarShareDenomination,
+          scalarShareDenomination: p.scalarShareDenomination
         };
         System.import('modules/markets/components/markets-view').then((module) => {
           const MarketsView = module.default;

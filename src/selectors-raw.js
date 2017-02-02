@@ -40,6 +40,7 @@ import authLogin from 'modules/auth/selectors/auth-login';
 import authAirbitz from 'modules/auth/selectors/auth-airbitz';
 import authSignup from 'modules/auth/selectors/auth-signup';
 import authImport from 'modules/auth/selectors/auth-import';
+import closePositionStatus from 'modules/my-positions/selectors/close-position-status';
 
 const selectors = {
   activeView,
@@ -83,7 +84,8 @@ const selectors = {
   authLogin,
   authAirbitz,
   authSignup,
-  authImport
+  authImport,
+  closePositionStatus
 };
 
 export default selectors;

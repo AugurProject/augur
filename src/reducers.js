@@ -30,6 +30,7 @@ import completeSetsBought from './modules/my-positions/reducers/complete-sets-bo
 import netEffectiveTrades from './modules/my-positions/reducers/net-effective-trades';
 import transactionsData from './modules/transactions/reducers/transactions-data';
 import scalarMarketsShareDenomination from './modules/market/reducers/scalar-markets-share-denomination';
+import closePositionTradeGroups from './modules/my-positions/reducers/close-position-trade-groups';
 
 import selectedMarketsHeader from './modules/markets/reducers/selected-markets-header';
 import selectedMarketID from './modules/markets/reducers/selected-market-id';
@@ -100,6 +101,7 @@ export function createReducer() {
     netEffectiveTrades,
     transactionsData,
     scalarMarketsShareDenomination,
+    closePositionTradeGroups,
 
     settings,
     chatMessages,

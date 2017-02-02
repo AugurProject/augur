@@ -24,10 +24,11 @@ export function loadDataForMarketTransaction(label, log, isRetry, callback) {
 export function loadDataForReportingTransaction(label, log, isRetry, callback) {
   return (dispatch, getState) => {
     const { marketsData, outcomesData } = getState();
-    const marketID = selectMarketIDFromEventID(log.event);
+    const eventID = log.event || log.eventID;
+    const marketID = selectMarketIDFromEventID(eventID);
     if (!marketID) {
       if (isRetry) return callback(log);
-      return dispatch(lookupEventMarketsThenRetryConversion(log.event, label, log, callback));
+      return dispatch(lookupEventMarketsThenRetryConversion(eventID, label, log, callback));
     }
     const market = marketsData[marketID];
     if (!market) {
@@ -321,7 +322,7 @@ export function constructSlashedRepTransaction(log, market, outcomes, address, d
   transaction.data.marketLink = selectMarketLink({ id: market.id, description: market.description }, dispatch);
   transaction.data.market = market;
   if (log.sender === address) {
-    transaction.type = 'Anti-Collusion Reward';
+    transaction.type = 'Snitch Reward';
     if (log.repSlashed) {
       const slasherRepGained = abi.bignum(log.repSlashed).dividedBy(2).toFixed();
       transaction.data.balances = [{
@@ -330,7 +331,7 @@ export function constructSlashedRepTransaction(log, market, outcomes, address, d
       }];
     }
     if (log.inProgress) {
-      transaction.message = `fining ${abi.strip_0x(log.reporter)} for collusion`;
+      transaction.message = `fining ${abi.strip_0x(log.reporter)}`;
     } else {
       transaction.message = `fined ${abi.strip_0x(log.reporter)} ${formatRep(log.repSlashed).full}`;
     }
@@ -342,7 +343,7 @@ export function constructSlashedRepTransaction(log, market, outcomes, address, d
         balance: formatRep(0)
       }];
     }
-    transaction.message = `fined by ${abi.strip_0x(log.sender)} for collusion`;
+    transaction.message = `fined by ${abi.strip_0x(log.sender)}`;
   }
   console.debug('slashed rep transaction:', transaction);
   return transaction;
@@ -352,6 +353,7 @@ export function constructLogFillTxTransaction(trade, marketID, marketType, minVa
   console.log('constructLogFillTransaction:', trade);
   if (!trade.amount || !trade.price || (!trade.makerFee && !trade.takerFee)) return null;
   const transactionID = `${trade.transactionHash}-${trade.tradeid}`;
+  const tradeGroupID = trade.tradeGroupID;
   const price = formatEther(trade.price);
   const shares = formatShares(trade.amount);
   const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
@@ -381,6 +383,7 @@ export function constructLogFillTxTransaction(trade, marketID, marketType, minVa
     [transactionID]: {
       type,
       hash: trade.transactionHash,
+      tradeGroupID,
       status,
       description,
       data: {
@@ -542,6 +545,8 @@ export function constructLogCancelTransaction(trade, marketID, marketType, descr
 }
 
 export function constructTradingTransaction(label, trade, marketID, outcomeID, status) {
+  console.log('constructTradingTransaction -- ', label, trade);
+
   return (dispatch, getState) => {
     const { marketsData, outcomesData } = getState();
     const market = marketsData[marketID];
@@ -643,6 +648,7 @@ export function constructTransaction(label, log, isRetry, callback) {
         return dispatch(constructMarketTransaction(label, log, market));
       }
       case 'penalize':
+      case 'slashedRep':
       case 'submittedReport':
       case 'submittedReportHash': {
         const aux = dispatch(loadDataForReportingTransaction(label, log, isRetry, callback));
