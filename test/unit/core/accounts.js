@@ -274,12 +274,13 @@ describe("accounts.loadLocalLoginAccount", function() {
       return undefined;
     },
     cb: function(account) {
-      assert.deepEqual(account, 'no response or bad input');
+      assert.deepEqual(account, { error: 'no response or bad input'});
     },
     assertions: function(out, loginAccount) {
       // because we pass a cb in this example, out shouldn't be defined
       assert.isUndefined(out);
       assert.isUndefined(loginAccount);
+      assert.deepEqual(augur.accounts.account, {});
     }
   });
   test({
@@ -295,7 +296,7 @@ describe("accounts.loadLocalLoginAccount", function() {
       };
     },
     cb: function(account) {
-      assert.deepEqual(account, 'no response or bad input');
+      assert.deepEqual(account, { error: 'no response or bad input'});
     },
     assertions: function(out, loginAccount) {
       // because we pass a cb in this example, out shouldn't be defined
@@ -307,6 +308,7 @@ describe("accounts.loadLocalLoginAccount", function() {
         derivedKey: accounts[0].derivedKey,
         keystore: accounts[0].keystore
       });
+      assert.deepEqual(augur.accounts.account, {});
     }
   });
   test({
@@ -322,7 +324,7 @@ describe("accounts.loadLocalLoginAccount", function() {
       };
     },
     cb: function(account) {
-      assert.deepEqual(account, 'no response or bad input');
+      assert.deepEqual(account, { error: 'no response or bad input'});
     },
     assertions: function(out, loginAccount) {
       // because we pass a cb in this example, out shouldn't be defined
@@ -334,6 +336,7 @@ describe("accounts.loadLocalLoginAccount", function() {
         derivedKey: accounts[0].derivedKey,
         keystore: accounts[0].keystore
       });
+      assert.deepEqual(augur.accounts.account, {});
     }
   });
   test({
@@ -349,7 +352,7 @@ describe("accounts.loadLocalLoginAccount", function() {
       };
     },
     cb: function(account) {
-      assert.deepEqual(account, 'no response or bad input');
+      assert.deepEqual(account, { error: 'no response or bad input'});
     },
     assertions: function(out, loginAccount) {
       // because we pass a cb in this example, out shouldn't be defined
@@ -361,6 +364,7 @@ describe("accounts.loadLocalLoginAccount", function() {
         privateKey: accounts[0].privateKey,
         keystore: accounts[0].keystore
       });
+      assert.deepEqual(augur.accounts.account, {});
     }
   });
   test({
@@ -376,7 +380,7 @@ describe("accounts.loadLocalLoginAccount", function() {
       };
     },
     cb: function(account) {
-      assert.deepEqual(account, 'no response or bad input');
+      assert.deepEqual(account, { error: 'no response or bad input'});
     },
     assertions: function(out, loginAccount) {
       // because we pass a cb in this example, out shouldn't be defined
@@ -388,6 +392,7 @@ describe("accounts.loadLocalLoginAccount", function() {
         privateKey: accounts[0].privateKey,
         derivedKey: accounts[0].derivedKey
       });
+      assert.deepEqual(augur.accounts.account, {});
     }
   });
 });
