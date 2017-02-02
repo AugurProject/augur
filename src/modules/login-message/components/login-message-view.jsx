@@ -53,6 +53,12 @@ const LoginMessagePage = p => (
         </li>
       </ol>
       <h2>Technical updates:</h2>
+      <h3>February 2, 2017</h3>
+      <ol>
+        <li>
+          Re-uploaded all Augur contracts to the Ropsten testnet (network 3) and our private test chain (network 9000).
+        </li>
+      </ol>
       <h3>February 1, 2017</h3>
       <ol>
         <li>
@@ -67,6 +73,15 @@ const LoginMessagePage = p => (
         </li>
         <li>
           Fixed eventID reference in slashedRep log and added a timestamp.
+        </li>
+        <li>
+          Added missing doNotMakeOrders and tradeCommitLockCallback arguments to placeShortSell from placeSell.
+        </li>
+        <li>
+          Added arguments lengthcheck to the first if statement in augur.js bindContractMethod.
+        </li>
+        <li>
+          Updated/removed expired events from &quot;canned markets&quot; list.
         </li>
       </ol>
       {p.marketsLink &&
