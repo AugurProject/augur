@@ -25,28 +25,27 @@ const MarketOutcomes = p => (
         >
           {outcome.name}
         </span>
-        {(outcome.name.length > 35) &&
-          <ReactTooltip
-            id={`outcome-name-tooltip-${outcome.marketID}-${outcome.id}`}
-            type="dark"
-            effect="float"
-            place="top"
-            globalEventOff="click"
+        <ReactTooltip
+          id={`outcome-name-tooltip-${outcome.marketID}-${outcome.id}`}
+          type="dark"
+          effect="float"
+          place="top"
+          globalEventOff="click"
+        >
+          <span
+            data-tip
+            data-for={`outcome-name-tooltip-${outcome.marketID}-${outcome.id}`}
+            data-event="click focus"
+            className="tooltip-text"
           >
-            <span
-              data-tip
-              data-for={`outcome-name-tooltip-${outcome.marketID}-${outcome.id}`}
-              data-event="click focus"
-              className="tooltip-text"
-            >
-              {outcome.name}
-            </span>
-          </ReactTooltip>
-        }
+            {outcome.name}
+          </span>
+        </ReactTooltip>
       </div>
     ))}
   </div>
 );
+
 // TODO -- Prop Validations
 // MarketOutcomes.propTypes = {
 //  outcomes: React.PropTypes.array
