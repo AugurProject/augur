@@ -6,6 +6,7 @@ var errors = require("ethrpc").errors;
 var keys = require("keythereum");
 var constants = require("../../../src/constants");
 var utils = require("../../../src/utilities");
+var abi = require('augur-abi');
 
 var accounts = [{
     loginID: undefined,
@@ -623,7 +624,36 @@ describe("accounts.login", function() {
     }
   });
 });
-describe("accounts.loginWithMasterKey", function() {});
+describe("accounts.loginWithMasterKey", function() {
+  // 1 test total
+  var privateKey = '';
+  afterEach(function() {
+    augur.accounts.account = {};
+  });
+  var test = function(t) {
+    it(t.description, function() {
+      privateKey = t.preparePrivateKey(accounts);
+      augur.accounts.loginWithMasterKey(t.name, privateKey, t.assertions);
+    });
+  };
+  test({
+    description: 'Should handle logging into an account using a name and privateKey string',
+    name: 'MyAwesomeAccount',
+    preparePrivateKey: function(accounts) {
+      return accounts[0].privateKey.toString('hex');
+    },
+    assertions: function(account) {
+      assert.deepEqual(account, {
+        name: 'MyAwesomeAccount',
+        loginID: augur.base58Encode({name: 'MyAwesomeAccount'}),
+        address: abi.format_address(keys.privateKeyToAddress(privateKey)),
+        privateKey: new Buffer(privateKey, "hex"),
+        derivedKey: new Buffer(abi.unfork(utils.sha256(new Buffer(privateKey, "hex"))), "hex")
+      });
+      assert.deepEqual(account, augur.accounts.account);
+    }
+  });
+});
 describe("accounts.logout", function() {
   // 1 test total
   var clear = augur.rpc.clear;
