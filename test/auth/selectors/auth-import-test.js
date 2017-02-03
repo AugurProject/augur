@@ -3,8 +3,11 @@ import { assert } from 'chai';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import proxyquire from 'proxyquire';
+import sinon from 'sinon';
 
 describe('modules/auth/selectors/auth-import.js', () => {
+  proxyquire.noPreserveCache().noCallThru();
+
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
 
@@ -12,25 +15,32 @@ describe('modules/auth/selectors/auth-import.js', () => {
     it(t.description, () => {
       const store = mockStore();
 
-      const mockImportAccount = () => {};
+      const mockImportAccount = { importAccount: () => {} };
+      sinon.stub(mockImportAccount, 'importAccount', () => (dispatch) => {});
 
       const selector = proxyquire('../../../src/modules/auth/selectors/auth-import', {
         '../../../store': store,
         '../actions/import-account': mockImportAccount
-      });
+      }).default();
 
-      t.assertions(selector.default(), store);
+      t.assertions(selector, store, mockImportAccount);
     });
   };
 
   test({
-    description: `'importAccountFromFile' should return the correct actions`,
+    description: `should return the correct object`,
     assertions: (selector, store) => {
-      console.log('res -- ', selector);
+      assert.property(selector, 'importAccountFromFile');
+      assert.isFunction(selector.importAccountFromFile);
+    }
+  });
 
-      selector.importAccountFromFile('password', true, { keystore: 'file' });
+  test({
+    description: `'importAccountFromFile' should dispatch the correct action`,
+    assertions: (selector, store, mockImportAccount) => {
+      selector.importAccountFromFile();
 
-      console.log('store actions -- ', store.getActions());
+      assert.isTrue(mockImportAccount.importAccount.calledOnce);
     }
   });
 });
