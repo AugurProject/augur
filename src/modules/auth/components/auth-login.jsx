@@ -57,7 +57,7 @@ export default class AuthLogin extends Component {
               this.setState({ password: '' });
             }
 
-            if (!this.state.isPasswordDisplayable) {
+            if (loginID && !this.state.isPasswordDisplayable) {
               this.setState({ isPasswordDisplayable: true });
             }
 
