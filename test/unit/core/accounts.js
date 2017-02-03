@@ -301,11 +301,11 @@ describe("accounts.changeAccountName", function() {
   });
 });
 describe("accounts.importAccount", function() {
-  // ? tests total
+  // 4 tests total
   var recover = keys.recover;
   var deriveKey = keys.deriveKey;
   var keystore = {};
-  var finished = '';
+  var finished;
   afterEach(function() {
     augur.accounts.account = {};
     keys.recover = recover;
@@ -574,7 +574,7 @@ describe("accounts.login", function() {
   var deriveKey = keys.deriveKey;
   var getMAC = keys.getMAC;
   var decrypt = keys.decrypt;
-  var finished = '';
+  var finished;
   afterEach(function() {
     augur.accounts.account = {};
     keys.deriveKey = deriveKey;
@@ -774,5 +774,91 @@ describe("accounts.logout", function() {
   });
 });
 describe("accounts.submitTx", function() {});
-describe("accounts.getTxNonce", function() {});
+describe("accounts.getTxNonce", function() {
+  // 5 tests total
+  var pendingTxCount = augur.rpc.pendingTxCount;
+  var submitTx = augur.accounts.submitTx;
+  var finished;
+  afterEach(function() {
+    augur.accounts.account = {};
+    augur.rpc.pendingTxCount = pendingTxCount;
+    augur.accounts.submitTx = submitTx;
+  });
+  var test = function(t) {
+    it(t.description, function(done) {
+      augur.rpc.pendingTxCount = t.pendingTxCount || pendingTxCount;
+      augur.accounts.submitTx = t.assertions;
+      augur.accounts.account = t.account;
+      finished = done;
+      augur.accounts.getTxNonce(t.packaged, t.cb);
+    });
+  };
+  test({
+    description: 'Should call submitTx with packaged and cb if pacakge.nonce is defined.',
+    account: {},
+    packaged: { nonce: abi.hex('54') },
+    cb: utils.noop,
+    assertions: function(packaged, cb) {
+      assert.deepEqual(packaged, { nonce: '0x36' });
+      assert.deepEqual(cb, utils.noop);
+      finished();
+    }
+  });
+  test({
+    description: 'Should call submitTx if !packaged.nonce and pendingTxCount returns undefined',
+    account: { address: '0x1' },
+    packaged: {},
+    cb: utils.noop,
+    pendingTxCount: function(address, cb) {
+      cb(undefined);
+    },
+    assertions: function(packaged, cb) {
+      assert.deepEqual(packaged, {});
+      assert.deepEqual(cb, utils.noop);
+      finished();
+    }
+  });
+  test({
+    description: 'Should call submitTx if !packaged.nonce and pendingTxCount returns an object with an error key',
+    account: { address: '0x1' },
+    packaged: {},
+    cb: utils.noop,
+    pendingTxCount: function(address, cb) {
+      cb({error: 'Uh-Oh!'});
+    },
+    assertions: function(packaged, cb) {
+      assert.deepEqual(packaged, {});
+      assert.deepEqual(cb, utils.noop);
+      finished();
+    }
+  });
+  test({
+    description: 'Should call submitTx if !packaged.nonce and pendingTxCount returns error object',
+    account: { address: '0x1' },
+    packaged: {},
+    cb: utils.noop,
+    pendingTxCount: function(address, cb) {
+      cb(new Error('Uh-Oh!'));
+    },
+    assertions: function(packaged, cb) {
+      assert.deepEqual(packaged, {});
+      assert.deepEqual(cb, utils.noop);
+      finished();
+    }
+  });
+  test({
+    description: 'Should call submitTx if !packaged.nonce and pendingTxCount returns a txCount',
+    account: { address: '0x1' },
+    packaged: {},
+    cb: utils.noop,
+    pendingTxCount: function(address, cb) {
+      cb('15');
+    },
+    assertions: function(packaged, cb) {
+      assert.deepEqual(packaged, { nonce: '0xf' });
+      assert.deepEqual(cb, utils.noop);
+      finished();
+    }
+  });
+});
 describe("accounts.invoke", function() {});
