@@ -88,35 +88,4 @@ describe(`modules/auth/actions/register.js`, () => {
     assert(fakeCallback.calledOnce, `the callback wasn't triggered 1 time as expected`);
     assert.deepEqual(store.getActions(), expectedOutput, `Didn't create a new account as expected`);
   });
-
-  it(`should fail with mismatched passwords`, () => {
-    const expectedOutput = [{
-      type: 'AUTH_ERROR',
-      err: {
-        code: 'PASSWORDS_DO_NOT_MATCH'
-      }
-    }, {
-      type: 'AUTH_ERROR',
-      err: {
-        code: 'PASSWORDS_DO_NOT_MATCH'
-      }
-    }, {
-      type: 'AUTH_ERROR',
-      err: {
-        code: 'PASSWORDS_DO_NOT_MATCH'
-      }
-    }, {
-      type: 'AUTH_ERROR',
-      err: {
-        code: 'PASSWORDS_DO_NOT_MATCH'
-      }
-    }];
-
-    store.dispatch(action.register('test', 'test', 'test1'));
-    store.dispatch(action.register('test', '', 'test'));
-    store.dispatch(action.register('test', 'test2', 'test'));
-    store.dispatch(action.register('test', 'test1', 'test2'));
-
-    assert.deepEqual(store.getActions(), expectedOutput, `didn't fail when user doesn't pass a username`);
-  });
 });
