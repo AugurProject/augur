@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactTooltip from 'react-tooltip';
 import ValueDenomination from 'modules/common/components/value-denomination';
 
 const MarketOutcomes = p => (
@@ -16,7 +17,30 @@ const MarketOutcomes = p => (
             formattedValue={outcome.lastPricePercent.roundedValue}
           />
         }
-        <span className="outcome-name">{outcome.name}</span>
+        <span
+          data-tip
+          data-for={`outcome-name-tooltip-${outcome.marketID}-${outcome.id}`}
+          data-event="click focus"
+          className="outcome-name"
+        >
+          {outcome.name}
+        </span>
+        <ReactTooltip
+          id={`outcome-name-tooltip-${outcome.marketID}-${outcome.id}`}
+          type="dark"
+          effect="float"
+          place="top"
+          globalEventOff="click"
+        >
+          <span
+            data-tip
+            data-for={`outcome-name-tooltip-${outcome.marketID}-${outcome.id}`}
+            data-event="click focus"
+            className="tooltip-text"
+          >
+            {outcome.name}
+          </span>
+        </ReactTooltip>
       </div>
     ))}
   </div>
@@ -24,7 +48,7 @@ const MarketOutcomes = p => (
 
 // TODO -- Prop Validations
 // MarketOutcomes.propTypes = {
-// 	outcomes: React.PropTypes.array
+//  outcomes: React.PropTypes.array
 // };
 
 export default MarketOutcomes;
