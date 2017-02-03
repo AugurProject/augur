@@ -300,7 +300,108 @@ describe("accounts.changeAccountName", function() {
     }
   });
 });
-describe("accounts.importAccount", function() {});
+describe("accounts.importAccount", function() {
+  // ? tests total
+  var recover = keys.recover;
+  var deriveKey = keys.deriveKey;
+  var keystore = {};
+  var finished = '';
+  afterEach(function() {
+    augur.accounts.account = {};
+    keys.recover = recover;
+    keys.deriveKey = deriveKey;
+  });
+  var test = function(t) {
+    it(t.description, function(done) {
+      keys.recover = t.recover || recover;
+      keys.deriveKey = t.deriveKey || deriveKey;
+      keystore = t.prepareKeystore(accounts);
+      finished = done;
+      var out = augur.accounts.importAccount(t.name, t.password, keystore, t.cb);
+
+      t.assertions(out);
+    });
+  };
+  test({
+    description: 'Should handle importing an account',
+    name: 'AwesomeTestAccount',
+    password: accounts[0].password,
+    prepareKeystore: function(accounts) {
+      return accounts[0].keystore;
+    },
+    cb: function(account) {
+      assert.deepEqual(account, {
+        name: 'AwesomeTestAccount',
+        loginID: accounts[0].loginID,
+        privateKey: accounts[0].privateKey,
+        address: abi.format_address(accounts[0].address),
+        keystore: accounts[0].keystore,
+        derivedKey: accounts[0].derivedKey
+      });
+      assert.deepEqual(augur.accounts.account, account);
+      finished();
+    },
+    assertions: function(out) {
+      assert.isUndefined(out);
+    }
+  });
+  test({
+    description: 'Should handle no cb and blank password by returning an error',
+    name: 'AwesomeTestAccount',
+    password: '',
+    prepareKeystore: function(accounts) {
+      return accounts[0].keystore;
+    },
+    cb: undefined,
+    assertions: function(out) {
+      assert.deepEqual(out, augur.errors.BAD_CREDENTIALS);
+      assert.deepEqual(augur.accounts.account, {});
+      finished();
+    }
+  });
+  test({
+    description: 'Should handle an issue recovering the privateKey by returning an error',
+    name: 'AwesomeTestAccount',
+    password: accounts[0].password,
+    prepareKeystore: function(accounts) {
+      return accounts[0].keystore;
+    },
+    recover: function(password, keystore, cb) {
+      cb({ error: 'Uh-Oh!' });
+    },
+    cb: function(account) {
+      assert.deepEqual(account, augur.errors.BAD_CREDENTIALS);
+      assert.deepEqual(augur.accounts.account, {});
+      finished();
+    },
+    assertions: function(out) {
+      assert.isUndefined(out);
+    }
+  });
+  test({
+    description: 'Should handle an issue deriving the derivedKey by returning an error',
+    name: 'AwesomeTestAccount',
+    password: accounts[0].password,
+    prepareKeystore: function(accounts) {
+      return accounts[0].keystore;
+    },
+    recover: function(password, keystore, cb) {
+      // because recover calls deriveKey we need to mock it for this test as well and just return the privateKey it would return anyway...
+      cb(accounts[0].privateKey);
+    },
+    deriveKey: function(password, salt, iv, cb) {
+      cb({ error: 'Uh-Oh!' });
+    },
+    cb: function(account) {
+      assert.deepEqual(account, augur.errors.BAD_CREDENTIALS);
+      assert.deepEqual(augur.accounts.account, {});
+      finished();
+    },
+    assertions: function(out) {
+      assert.isUndefined(out);
+    }
+  });
+});
 describe("accounts.loadLocalLoginAccount", function() {
   // 7 tests total
   augur.accounts.account = {};
@@ -311,7 +412,7 @@ describe("accounts.loadLocalLoginAccount", function() {
     it(t.description, function() {
       var loginAccount = t.prepareLoginAccount(accounts);
       var out = augur.accounts.loadLocalLoginAccount(loginAccount, t.cb);
-      t.assertions(out, loginAccount);
+      t.assertions(out);
     });
   };
   test({
@@ -334,11 +435,11 @@ describe("accounts.loadLocalLoginAccount", function() {
       assert.deepEqual(account.derivedKey, accounts[0].derivedKey);
       assert.deepEqual(account.privateKey, accounts[0].privateKey);
       assert.deepEqual(account.keystore, accounts[0].keystore);
+      assert.deepEqual(account, augur.accounts.account);
     },
-    assertions: function(out, loginAccount) {
+    assertions: function(out) {
       // because we pass a cb in this example, out shouldn't be defined
       assert.isUndefined(out);
-      assert.deepEqual(loginAccount, augur.accounts.account);
     }
   });
   test({
@@ -355,13 +456,17 @@ describe("accounts.loadLocalLoginAccount", function() {
       };
     },
     cb: undefined,
-    assertions: function(out, loginAccount) {
+    assertions: function(out) {
       // because we didn't pass a cb then out should be defined as the account and out should = the currently logged in account
-      loginAccount.privateKey = new Buffer(loginAccount.privateKey, "hex");
-      loginAccount.derivedKey = new Buffer(loginAccount.derivedKey, "hex");
-      assert.deepEqual(out, loginAccount);
+      assert.deepEqual(out, {
+        name: accounts[0].name,
+        address: accounts[0].address,
+        privateKey: accounts[0].privateKey,
+        derivedKey: accounts[0].derivedKey,
+        loginID: accounts[0].loginID,
+        keystore: accounts[0].keystore
+      });
       assert.deepEqual(out, augur.accounts.account);
-      assert.deepEqual(loginAccount, augur.accounts.account);
     }
   });
   test({
@@ -372,12 +477,11 @@ describe("accounts.loadLocalLoginAccount", function() {
     },
     cb: function(account) {
       assert.deepEqual(account, { error: 'no response or bad input'});
+      assert.deepEqual(augur.accounts.account, {});
     },
-    assertions: function(out, loginAccount) {
+    assertions: function(out) {
       // because we pass a cb in this example, out shouldn't be defined
       assert.isUndefined(out);
-      assert.isUndefined(loginAccount);
-      assert.deepEqual(augur.accounts.account, {});
     }
   });
   test({
@@ -394,18 +498,11 @@ describe("accounts.loadLocalLoginAccount", function() {
     },
     cb: function(account) {
       assert.deepEqual(account, { error: 'no response or bad input'});
+      assert.deepEqual(augur.accounts.account, {});
     },
-    assertions: function(out, loginAccount) {
+    assertions: function(out) {
       // because we pass a cb in this example, out shouldn't be defined
       assert.isUndefined(out);
-      assert.deepEqual(loginAccount, {
-        name: accounts[0].name,
-        address: accounts[0].address,
-        privateKey: accounts[0].privateKey,
-        derivedKey: accounts[0].derivedKey,
-        keystore: accounts[0].keystore
-      });
-      assert.deepEqual(augur.accounts.account, {});
     }
   });
   test({
@@ -422,18 +519,11 @@ describe("accounts.loadLocalLoginAccount", function() {
     },
     cb: function(account) {
       assert.deepEqual(account, { error: 'no response or bad input'});
+      assert.deepEqual(augur.accounts.account, {});
     },
-    assertions: function(out, loginAccount) {
+    assertions: function(out) {
       // because we pass a cb in this example, out shouldn't be defined
       assert.isUndefined(out);
-      assert.deepEqual(loginAccount, {
-        name: accounts[0].name,
-        loginID: accounts[0].loginID,
-        address: accounts[0].address,
-        derivedKey: accounts[0].derivedKey,
-        keystore: accounts[0].keystore
-      });
-      assert.deepEqual(augur.accounts.account, {});
     }
   });
   test({
@@ -450,18 +540,11 @@ describe("accounts.loadLocalLoginAccount", function() {
     },
     cb: function(account) {
       assert.deepEqual(account, { error: 'no response or bad input'});
+      assert.deepEqual(augur.accounts.account, {});
     },
-    assertions: function(out, loginAccount) {
+    assertions: function(out) {
       // because we pass a cb in this example, out shouldn't be defined
       assert.isUndefined(out);
-      assert.deepEqual(loginAccount, {
-        name: accounts[0].name,
-        loginID: accounts[0].loginID,
-        address: accounts[0].address,
-        privateKey: accounts[0].privateKey,
-        keystore: accounts[0].keystore
-      });
-      assert.deepEqual(augur.accounts.account, {});
     }
   });
   test({
@@ -478,26 +561,20 @@ describe("accounts.loadLocalLoginAccount", function() {
     },
     cb: function(account) {
       assert.deepEqual(account, { error: 'no response or bad input'});
+      assert.deepEqual(augur.accounts.account, {});
     },
-    assertions: function(out, loginAccount) {
+    assertions: function(out) {
       // because we pass a cb in this example, out shouldn't be defined
       assert.isUndefined(out);
-      assert.deepEqual(loginAccount, {
-        name: accounts[0].name,
-        loginID: accounts[0].loginID,
-        address: accounts[0].address,
-        privateKey: accounts[0].privateKey,
-        derivedKey: accounts[0].derivedKey
-      });
-      assert.deepEqual(augur.accounts.account, {});
     }
   });
 });
 describe("accounts.login", function() {
-  // 6 tests total
+  // 7 tests total
   var deriveKey = keys.deriveKey;
   var getMAC = keys.getMAC;
   var decrypt = keys.decrypt;
+  var finished = '';
   afterEach(function() {
     augur.accounts.account = {};
     keys.deriveKey = deriveKey;
@@ -510,9 +587,10 @@ describe("accounts.login", function() {
       keys.getMAC = t.getMAC || getMAC;
       keys.decrypt = t.decrypt || decrypt;
       var loginID = t.prepareLoginID(accounts);
+      finished = done;
 
       var out = augur.accounts.login(loginID, t.password, t.cb);
-      t.assertions(out, done);
+      t.assertions(out);
     });
   };
   test({
@@ -523,11 +601,24 @@ describe("accounts.login", function() {
     password: '',
     cb: function(account) {
       assert.deepEqual(account, augur.errors.BAD_CREDENTIALS);
-    },
-    assertions: function(out, done) {
-      assert.isUndefined(out);
       assert.deepEqual(augur.accounts.account, {});
-      done();
+      finished();
+    },
+    assertions: function(out) {
+      assert.isUndefined(out);
+    }
+  });
+  test({
+    description: 'Should return an error on undefined password, no callback',
+    prepareLoginID: function(accounts) {
+      return accounts[0].loginID;
+    },
+    password: undefined,
+    cb: undefined,
+    assertions: function(out) {
+      assert.deepEqual(out, augur.errors.BAD_CREDENTIALS);
+      assert.deepEqual(augur.accounts.account, {});
+      finished();
     }
   });
   test({
@@ -538,11 +629,11 @@ describe("accounts.login", function() {
     password: accounts[0].password,
     cb: function(account) {
       assert.deepEqual(account, augur.errors.BAD_CREDENTIALS);
-    },
-    assertions: function(out, done) {
-      assert.isUndefined(out);
       assert.deepEqual(augur.accounts.account, {});
-      done();
+      finished();
+    },
+    assertions: function(out) {
+      assert.isUndefined(out);
     }
   });
   test({
@@ -553,14 +644,14 @@ describe("accounts.login", function() {
     password: accounts[0].password,
     cb: function(account) {
       assert.deepEqual(account, augur.errors.BAD_CREDENTIALS);
+      assert.deepEqual(augur.accounts.account, {});
+      finished();
     },
     deriveKey: function(password, salt, options, cb) {
       cb({ error: 'DeriveKey failed!' });
     },
-    assertions: function(out, done) {
+    assertions: function(out) {
       assert.isUndefined(out);
-      assert.deepEqual(augur.accounts.account, {});
-      done();
     }
   });
   test({
@@ -571,14 +662,14 @@ describe("accounts.login", function() {
     password: accounts[0].password,
     cb: function(account) {
       assert.deepEqual(account, augur.errors.BAD_CREDENTIALS);
+      assert.deepEqual(augur.accounts.account, {});
+      finished();
     },
     getMAC: function(derivedKey, storedKey) {
       return '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef';
     },
-    assertions: function(out, done) {
+    assertions: function(out) {
       assert.isUndefined(out);
-      assert.deepEqual(augur.accounts.account, {});
-      done();
     }
   });
   test({
@@ -591,6 +682,8 @@ describe("accounts.login", function() {
       var expected = augur.errors.BAD_CREDENTIALS;
       expected.bubble = new Error('Uh-Oh!');
       assert.deepEqual(account, expected);
+      assert.deepEqual(augur.accounts.account, {});
+      finished();
     },
     deriveKey: function(password, salt, options, cb) {
       cb(accounts[0].derivedKey.toString('hex'));
@@ -598,10 +691,8 @@ describe("accounts.login", function() {
     decrypt: function(ciphertext, key, iv, algo) {
       throw new Error('Uh-Oh!');
     },
-    assertions: function(out, done) {
+    assertions: function(out) {
       assert.isUndefined(out);
-      assert.deepEqual(augur.accounts.account, {});
-      done();
     }
   });
   test({
@@ -617,10 +708,10 @@ describe("accounts.login", function() {
       assert.deepEqual(account.privateKey, accounts[0].privateKey);
       assert.deepEqual(account.derivedKey, accounts[0].derivedKey);
       assert.deepEqual(account.keystore, accounts[0].keystore);
+      finished();
     },
-    assertions: function(out, done) {
+    assertions: function(out) {
       assert.isUndefined(out);
-      done();
     }
   });
 });

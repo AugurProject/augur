@@ -187,14 +187,18 @@ module.exports = function () {
     importAccount: function (name, password, keystore, cb) {
       var self = this;
       cb = (utils.is_function(cb)) ? cb : utils.pass;
-
       // blank password
       if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
 
-      // preparing to redo the secureLoginID to use the new name
+      // preparing to redo the loginID to use the new name
       keys.recover(password, keystore, function (privateKey) {
+        if (!privateKey || privateKey.error) return cb(errors.BAD_CREDENTIALS);
+
         var keystoreCrypto = keystore.crypto || keystore.Crypto;
+
         keys.deriveKey(password, keystoreCrypto.kdfparams.salt, {kdf: constants.KDF}, function (derivedKey) {
+          if (!derivedKey || derivedKey.error) return cb(errors.BAD_CREDENTIALS);
+
           var loginID = augur.base58Encode({ keystore: keystore });
 
           // while logged in, web.account object is set
@@ -206,6 +210,7 @@ module.exports = function () {
             keystore: keystore,
             derivedKey: derivedKey
           };
+
           return cb(clone(self.account));
         });
       });
