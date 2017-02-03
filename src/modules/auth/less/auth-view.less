@@ -17,6 +17,10 @@
     padding-top: 1em;
     width: 400px;
 
+    @media @breakpoint-mobile {
+      width: 100%;
+    }
+
     h3 {
       align-self: flex-start;
       margin-left: 1em;
@@ -153,6 +157,7 @@
     animation-fill-mode: forwards;
     animation-name: expandElementHeight, fadeInDownFull;
     animation-timing-function: @animation-default-type;
+    height: auto;
     opacity: 0;
   }
 
@@ -170,6 +175,7 @@
     animation-fill-mode: forwards;
     animation-name: expandElementHeight, fadeInDownPartial;
     animation-timing-function: @animation-default-type;
+    height: auto;
     opacity: 0;
   }
 
