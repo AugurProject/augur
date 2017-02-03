@@ -492,7 +492,137 @@ describe("accounts.loadLocalLoginAccount", function() {
     }
   });
 });
-describe("accounts.login", function() {});
+describe("accounts.login", function() {
+  // 6 tests total
+  var deriveKey = keys.deriveKey;
+  var getMAC = keys.getMAC;
+  var decrypt = keys.decrypt;
+  afterEach(function() {
+    augur.accounts.account = {};
+    keys.deriveKey = deriveKey;
+    keys.getMAC = getMAC;
+    keys.decrypt = decrypt;
+  });
+  var test = function(t) {
+    it(t.description, function(done) {
+      keys.deriveKey = t.deriveKey || deriveKey;
+      keys.getMAC = t.getMAC || getMAC;
+      keys.decrypt = t.decrypt || decrypt;
+      var loginID = t.prepareLoginID(accounts);
+
+      var out = augur.accounts.login(loginID, t.password, t.cb);
+      t.assertions(out, done);
+    });
+  };
+  test({
+    description: 'Should return an error on blank password',
+    prepareLoginID: function(accounts) {
+      return accounts[0].loginID;
+    },
+    password: '',
+    cb: function(account) {
+      assert.deepEqual(account, augur.errors.BAD_CREDENTIALS);
+    },
+    assertions: function(out, done) {
+      assert.isUndefined(out);
+      assert.deepEqual(augur.accounts.account, {});
+      done();
+    }
+  });
+  test({
+    description: 'Should return an error on undefined loginID',
+    prepareLoginID: function(accounts) {
+      return undefined;
+    },
+    password: accounts[0].password,
+    cb: function(account) {
+      assert.deepEqual(account, augur.errors.BAD_CREDENTIALS);
+    },
+    assertions: function(out, done) {
+      assert.isUndefined(out);
+      assert.deepEqual(augur.accounts.account, {});
+      done();
+    }
+  });
+  test({
+    description: 'Should return an error if keys.deriveKey returns an error object',
+    prepareLoginID: function(accounts) {
+      return accounts[0].loginID;
+    },
+    password: accounts[0].password,
+    cb: function(account) {
+      assert.deepEqual(account, augur.errors.BAD_CREDENTIALS);
+    },
+    deriveKey: function(password, salt, options, cb) {
+      cb({ error: 'DeriveKey failed!' });
+    },
+    assertions: function(out, done) {
+      assert.isUndefined(out);
+      assert.deepEqual(augur.accounts.account, {});
+      done();
+    }
+  });
+  test({
+    description: 'Should return an error if keys.getMAC does not match the ketstore.crypto.mac value',
+    prepareLoginID: function(accounts) {
+      return accounts[0].loginID;
+    },
+    password: accounts[0].password,
+    cb: function(account) {
+      assert.deepEqual(account, augur.errors.BAD_CREDENTIALS);
+    },
+    getMAC: function(derivedKey, storedKey) {
+      return '0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef';
+    },
+    assertions: function(out, done) {
+      assert.isUndefined(out);
+      assert.deepEqual(augur.accounts.account, {});
+      done();
+    }
+  });
+  test({
+    description: 'Should return an error if we fail to generate the privateKey and derivedKey will return a hex string instead of buffer',
+    prepareLoginID: function(accounts) {
+      return accounts[0].loginID;
+    },
+    password: accounts[0].password,
+    cb: function(account) {
+      var expected = augur.errors.BAD_CREDENTIALS;
+      expected.bubble = new Error('Uh-Oh!');
+      assert.deepEqual(account, expected);
+    },
+    deriveKey: function(password, salt, options, cb) {
+      cb(accounts[0].derivedKey.toString('hex'));
+    },
+    decrypt: function(ciphertext, key, iv, algo) {
+      throw new Error('Uh-Oh!');
+    },
+    assertions: function(out, done) {
+      assert.isUndefined(out);
+      assert.deepEqual(augur.accounts.account, {});
+      done();
+    }
+  });
+  test({
+    description: 'Should successfully login if given a valid loginID and password',
+    prepareLoginID: function(accounts) {
+      return accounts[0].loginID;
+    },
+    password: accounts[0].password,
+    cb: function(account) {
+      assert.deepEqual(augur.accounts.account, account);
+      assert.deepEqual(account.loginID, accounts[0].loginID);
+      assert.deepEqual(account.address, accounts[0].address);
+      assert.deepEqual(account.privateKey, accounts[0].privateKey);
+      assert.deepEqual(account.derivedKey, accounts[0].derivedKey);
+      assert.deepEqual(account.keystore, accounts[0].keystore);
+    },
+    assertions: function(out, done) {
+      assert.isUndefined(out);
+      done();
+    }
+  });
+});
 describe("accounts.loginWithMasterKey", function() {});
 describe("accounts.logout", function() {
   // 1 test total
