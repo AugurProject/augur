@@ -11,10 +11,29 @@ export default class AuthImport extends Component {
       password: '',
       loginAccount: null,
       rememberMe: true,
+      authError: false,
+      errorMessage: null,
       // These prevent a flash on component mount
       isPasswordDisplayable: false,
+      isAuthErrorDisplayable: false,
       isImportActionsDisplayable: false
     };
+
+    this.handleRecoverError = this.handleRecoverError.bind(this);
+  }
+
+  componentDidMount() {
+    // NOTE --  keythereum (as of implementation) simply throws when a file is
+    //          unable to be recovered, so err is handled thusly
+    window.addEventListener('error', this.handleRecoverError);
+  }
+
+  handleRecoverError(err) {
+    this.setState({
+      authError: true,
+      errorMessage: 'Unable to recover account from file',
+      isAuthErrorDisplayable: true
+    });
   }
 
   render() {
@@ -27,32 +46,55 @@ export default class AuthImport extends Component {
         onSubmit={(e) => {
           e.preventDefault();
 
-          console.log('submit! -- ', s.loginAccount);
-
-          if (p.loginAccount && p.password) {
+          if (s.loginAccount && s.password) {
             p.importAccountFromFile(s.password, s.rememberMe, s.loginAccount);
           }
         }}
       >
         <span className="soft-header">Import account from file</span>
         <input
-          className="auth-import-file"
+          className={classNames('auth-import-file', {
+            'input-error': s.authError
+          })}
           name="file"
           type="file"
           onChange={(e) => {
-            console.log('e -- ', e.target.files);
             if (e.target.files.length) {
+              if (e.target.files[0].type !== '') {
+                this.setState({
+                  authError: true,
+                  errorMessage: 'Incorrect file type',
+                  isAuthErrorDisplayable: true,
+                  password: '',
+                  loginAccount: null
+                });
+              }
               const fileReader = new FileReader();
 
               fileReader.readAsText(e.target.files[0]);
 
               fileReader.onload = (e) => {
-                this.setState({ loginAccount: JSON.parse(e.target.result) });
-              };
+                try {
+                  const loginAccount = JSON.parse(e.target.result);
+                  this.setState({
+                    loginAccount,
+                    password: '',
+                    authError: false
+                  });
 
-              if (!this.state.isPasswordDisplayable) {
-                this.setState({ isPasswordDisplayable: true });
-              }
+                  if (!this.state.isPasswordDisplayable) {
+                    this.setState({ isPasswordDisplayable: true });
+                  }
+                } catch (err) {
+                  this.setState({
+                    authError: true,
+                    errorMessage: 'Malformed account file',
+                    isAuthErrorDisplayable: true,
+                    password: '',
+                    loginAccount: null
+                  });
+                }
+              };
             } else if (this.state.loginAccount) {
               this.setState({ loginAccount: null });
             }
@@ -60,21 +102,36 @@ export default class AuthImport extends Component {
         />
         <Input
           className={classNames('auth-import-password', {
+            'input-error': s.authError,
             animateIn: s.loginAccount,
             animateOut: !s.loginAccount && s.isPasswordDisplayable
           })}
           name="password"
           type="password"
           placeholder="Password"
+          value={s.password}
           canToggleVisibility
           onChange={(password) => {
-            this.setState({ password });
+            this.setState({
+              password,
+              authError: false
+            });
 
             if (!this.state.isImportActionsDisplayable) {
               this.setState({ isImportActionsDisplayable: true });
             }
           }}
         />
+        <div
+          className={classNames('auth-error', {
+            animateIn: s.authError,
+            animateOut: !s.authError && s.isAuthErrorDisplayable
+          })}
+        >
+          <span>
+            {s.errorMessage}
+          </span>
+        </div>
         <div
           className={classNames('auth-import-actions', {
             animateInPartial: s.loginAccount && s.password,
