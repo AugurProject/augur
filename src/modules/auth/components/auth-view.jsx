@@ -73,7 +73,12 @@ export default class AuthView extends Component {
                 className="auth-airbitz unstyled"
                 onClick={p.authAirbitz.airbitzLoginLink.onClick}
               >
-                <AirbitzLogoIcon /> <span>{s.selectedNav === AUTH_SIGNUP ? 'Signup' : 'Login'} with Airbitz</span>
+                <div>
+                  <AirbitzLogoIcon />
+                  <span>
+                    {s.selectedNav === AUTH_SIGNUP ? 'Signup' : 'Login'} with Airbitz
+                  </span>
+                </div>
               </button>
               <h4>or</h4>
             </div>
