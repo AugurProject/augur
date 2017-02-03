@@ -23,8 +23,8 @@ export default class AuthImport extends Component {
   }
 
   componentDidMount() {
-    // NOTE --  keythereum (as of implementation) simply throws when a file is
-    //          unable to be recovered, so err is handled thusly
+    // NOTE --  keythereum (as of implementation) simply throws when a private key
+    //          is unable to be recovered, so this error is handled thusly
     window.addEventListener('error', this.handleRecoverError);
   }
 
@@ -95,8 +95,12 @@ export default class AuthImport extends Component {
                   });
                 }
               };
-            } else if (this.state.loginAccount) {
-              this.setState({ loginAccount: null });
+            } else {
+              this.setState({
+                loginAccount: null,
+                password: '',
+                authError: false
+              });
             }
           }}
         />
