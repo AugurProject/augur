@@ -11,7 +11,6 @@ import { AUTH_SIGNUP, AUTH_LOGIN, AUTH_IMPORT } from 'modules/app/constants/view
 
 export default class AuthView extends Component {
   static propTypes = {
-    authForm: PropTypes.object,
     authAirbitz: PropTypes.object
   }
 
@@ -93,52 +92,3 @@ export default class AuthView extends Component {
     );
   }
 }
-
-
-// <button
-//   className={classNames('auth-login-id unstyled', { selected: s.selectedAuthMethod === AUTH_TYPE_LOGIN_ID })}
-//   onClick={() => {
-//     this.updateSelectedAuthMethod(AUTH_TYPE_LOGIN_ID);
-//   }}
-// >
-//   <span className="auth-button-title">Login ID</span>
-//   {s.selectedAuthMethod === AUTH_TYPE_LOGIN_ID &&
-//     <div className="auth-login-id-method-selection">
-//       <button
-//         className={classNames('unstyled', { selected: s.selectedLoginIDMethod === AUTH_TYPE_SIGN_UP_WITH_LOGIN_ID })}
-//         onClick={(e) => {
-//           e.stopPropagation();
-//           this.updateSelectedLoginIDMethod(AUTH_TYPE_SIGN_UP_WITH_LOGIN_ID);
-//         }}
-//       >
-//         Sign Up
-//       </button>
-//       <button
-//         className={classNames('unstyled', { selected: s.selectedLoginIDMethod === AUTH_TYPE_LOGIN_WITH_LOGIN_ID })}
-//         onClick={(e) => {
-//           e.stopPropagation();
-//           this.updateSelectedLoginIDMethod(AUTH_TYPE_LOGIN_WITH_LOGIN_ID);
-//         }}
-//       >
-//         Login
-//       </button>
-//     </div>
-//   }
-//   {s.selectedAuthMethod === AUTH_TYPE_LOGIN_ID && s.selectedLoginIDMethod === AUTH_TYPE_LOGIN_WITH_LOGIN_ID &&
-//     <AuthLogin {...p.authLogin} />
-//   }
-//   {s.selectedAuthMethod === AUTH_TYPE_LOGIN_ID && s.selectedLoginIDMethod === AUTH_TYPE_SIGN_UP_WITH_LOGIN_ID &&
-//     <AuthSignup {...p.authSignup} />
-//   }
-// </button>
-// <button
-//   className={classNames('auth-import unstyled', { selected: s.selectedAuthMethod === AUTH_TYPE_IMPORT })}
-//   onClick={() => {
-//     this.updateSelectedAuthMethod(AUTH_TYPE_IMPORT);
-//   }}
-// >
-//   <span className="auth-button-title">Account File</span>
-//   {s.selectedAuthMethod === AUTH_TYPE_IMPORT &&
-//     <AuthImport {...p.authImport} />
-//   }
-// </button>
