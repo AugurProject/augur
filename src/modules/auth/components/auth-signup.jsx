@@ -150,6 +150,7 @@ export default class AuthSignup extends Component {
             animateIn: s.isStrongPass,
             animateOut: !s.isStrongPass && s.isPasswordConfirmDisplayable
           })}
+          disabled={!s.isStrongPass}
           shouldMatchValue
           comparisonValue={s.password}
           name="password-confirm"
@@ -199,6 +200,7 @@ export default class AuthSignup extends Component {
           </div>
           <textarea
             className="login-id"
+            disabled={!s.loginAccount}
             value={loginID}
             readOnly
           />
@@ -218,6 +220,7 @@ export default class AuthSignup extends Component {
           </label>
           <button
             className="submit"
+            disabled={!s.loginAccount}
             type="submit"
           >
             Sign Up

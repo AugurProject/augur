@@ -110,6 +110,7 @@ export default class AuthImport extends Component {
             animateIn: s.loginAccount,
             animateOut: !s.loginAccount && s.isPasswordDisplayable
           })}
+          disabled={!s.loginAccount}
           name="password"
           type="password"
           placeholder="Password"
@@ -158,6 +159,7 @@ export default class AuthImport extends Component {
           </label>
           <button
             className="submit"
+            disabled={!s.loginAccount || !s.password}
             type="submit"
           >
             Import

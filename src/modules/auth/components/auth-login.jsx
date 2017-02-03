@@ -72,6 +72,7 @@ export default class AuthLogin extends Component {
             animateIn: s.loginID,
             animateOut: !s.loginID && s.isPasswordDisplayable
           })}
+          disabled={!s.loginID}
           name="password"
           type="password"
           placeholder="Password"
@@ -121,6 +122,7 @@ export default class AuthLogin extends Component {
           </label>
           <button
             className="submit"
+            disabled={!s.loginID || !s.password}
             type="submit"
           >
             Login
