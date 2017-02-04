@@ -61,6 +61,9 @@ const LoginMessagePage = p => (
         <li>
           Reporting markets listing filter now works correctly.
         </li>
+        <li>
+          Scalar market outcome input box now displays correctly in the Snitch tab.
+        </li>
       </ol>
       <h3>February 2, 2017</h3>
       <ol>

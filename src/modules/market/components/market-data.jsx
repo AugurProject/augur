@@ -121,6 +121,7 @@ export default class MarketData extends Component {
         }
         {s.selectedNav === MARKET_DATA_NAV_SNITCH &&
           <SnitchForm
+            type={p.market.type}
             reportableOutcomes={p.market.reportableOutcomes}
             branch={p.branch}
             onSubmitSlashRep={p.market.onSubmitSlashRep}
