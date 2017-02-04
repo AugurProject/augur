@@ -35,12 +35,12 @@ export const isMarketFiltersMatch = (market, keywords, selectedFilterSort, selec
   function isOfType(market, type) {
     switch (type) {
       case (FILTER_TYPE_CLOSED):
-        return !isMarketDataOpen(market, currentTime);
+        return !isMarketDataOpen(market);
       case (FILTER_TYPE_REPORTING):
-        return isMarketDataExpired(market, currentTime) && isMarketDataOpen(market);
+        return isMarketDataExpired({ endDate: market.endDate.timestamp }, currentTime) && isMarketDataOpen(market);
       case (FILTER_TYPE_OPEN):
       default:
-        return isMarketDataOpen(market, currentTime);
+        return isMarketDataOpen(market);
     }
   }
 
