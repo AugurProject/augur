@@ -53,6 +53,15 @@ const LoginMessagePage = p => (
         </li>
       </ol>
       <h2>Technical updates:</h2>
+      <h3>February 3, 2017</h3>
+      <ol>
+        <li>
+          Report and Snitch tabs on market detail page now use isReportTabVisible market selector property to determine visibility.
+        </li>
+        <li>
+          Reporting markets listing filter now works correctly.
+        </li>
+      </ol>
       <h3>February 2, 2017</h3>
       <ol>
         <li>
