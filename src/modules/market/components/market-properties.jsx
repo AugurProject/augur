@@ -99,7 +99,7 @@ const MarketProperties = (p) => {
           >
             <span className="tooltip-text">
               {shareVolumeFormatted} total {p.volume.denomination} traded
-              </span>
+            </span>
           </ReactTooltip>
         </li>
       }
@@ -122,7 +122,7 @@ const MarketProperties = (p) => {
           >
             <span className="tooltip-text">
               {p.numPendingReports} reports submitted on this market thus far
-              </span>
+            </span>
           </ReactTooltip>
         </li>
       }
