@@ -43,7 +43,7 @@ export default class MarketData extends Component {
   setMarketDataNavItems() {
     if (!this.props.isReportTabVisible) {
       const marketDataNavItems = Object.keys(this.props.marketDataNavItems).reduce((prev, nav) => {
-        if (this.props.marketDataNavItems[nav].isPendingReport !== true) {
+        if (this.props.marketDataNavItems[nav].isReportTabVisible !== true) {
           prev[nav] = this.props.marketDataNavItems[nav];
         }
         return prev;
