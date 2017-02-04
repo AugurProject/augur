@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "3.9.19",
+  "version": "3.10.0",
   "description": "Augur JavaScript SDK",
   "main": "src/index.js",
   "scripts": {
@@ -14,7 +14,7 @@
   "dependencies": {
     "async": "1.5.2",
     "augur-abi": "1.1.1",
-    "augur-contracts": "2.8.12",
+    "augur-contracts": "2.8.13",
     "bignumber.js": "2.3.0",
     "browser-request": "0.3.3",
     "bs58": "3.0.0",
