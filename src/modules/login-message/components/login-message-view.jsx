@@ -97,7 +97,7 @@ const LoginMessagePage = p => (
         </li>
       </ol>
       {p.marketsLink &&
-      <Link className="lets-do-this-button" {...p.marketsLink} >{`Let's do this!`}</Link>
+        <Link className="lets-do-this-button" {...p.marketsLink} >{`Let's do this!`}</Link>
       }
     </div>
   </section>
