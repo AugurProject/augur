@@ -182,8 +182,8 @@ module.exports = {
   },
 
   adjustScalarOrder: function (order, minValue) {
-    order.price = this.expandScalarPrice(minValue, order.price);
     order.fullPrecisionPrice = this.expandScalarPrice(minValue, order.fullPrecisionPrice || order.price);
+    order.price = this.expandScalarPrice(minValue, order.price);
     return order;
   },
 
