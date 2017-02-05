@@ -156,12 +156,12 @@ module.exports = {
                         if (logdata && logdata.constructor === Array && logdata.length > 6) {
                           tradingFees = tradingFees.plus(abi.unfix(logdata[6]));
 
-                              // buy (matched sell order)
+                          // buy (matched sell order)
                           if (parseInt(logdata[0], 16) === 1) {
                             sharesBought = sharesBought.plus(abi.unfix(logdata[2]));
 
-                                  // sell (matched buy order)
-                                  // cash received = price per share * shares sold
+                          // sell (matched buy order)
+                          // cash received = price per share * shares sold
                           } else {
                             cashFromTrade = cashFromTrade.plus(abi.unfix(abi.hex(logdata[8], true)).times(abi.unfix(logdata[2])));
                           }
