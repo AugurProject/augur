@@ -18,10 +18,11 @@ module.exports = {
 
   removeOrder: function (orderID, orderType, orderBook) {
     if (!orderBook || !orderID || !orderType) return orderBook;
-    if (orderBook[orderType] && orderBook[orderType][orderID]) {
-      delete orderBook[orderType][orderID];
+    var newOrderBook = clone(orderBook);
+    if (newOrderBook[orderType] && newOrderBook[orderType][orderID]) {
+      delete newOrderBook[orderType][orderID];
     }
-    return orderBook;
+    return newOrderBook;
   },
 
   fillOrder: function (orderID, amount, filledOrderType, orderBook) {
@@ -29,13 +30,25 @@ module.exports = {
     var newOrderBook = clone(orderBook);
     if (newOrderBook[filledOrderType]) {
       var order = newOrderBook[filledOrderType][orderID];
+      if (this.options.debug.trading) {
+        console.debug('found order:', order);
+      }
       if (order) {
         var updatedAmount = new BigNumber(order.fullPrecisionAmount, 10).minus(new BigNumber(amount, 10));
+        if (this.options.debug.trading) {
+          console.debug('updated amount:', updatedAmount.toFixed());
+        }
         if (updatedAmount.lte(constants.PRECISION.zero)) {
+          if (this.options.debug.trading) {
+            console.debug('removing order');
+          }
           delete newOrderBook[filledOrderType][orderID];
         } else {
           order.fullPrecisionAmount = updatedAmount.toFixed();
           order.amount = this.roundToPrecision(updatedAmount, constants.MINIMUM_TRADE_SIZE);
+          if (this.options.debug.trading) {
+            console.debug('updated order:', order);
+          }
         }
       }
     }
@@ -43,9 +56,10 @@ module.exports = {
   },
 
   adjustScalarOrder: function (order, minValue) {
-    order.fullPrecisionPrice = this.expandScalarPrice(minValue, order.fullPrecisionPrice || order.price);
-    order.price = this.expandScalarPrice(minValue, order.price);
-    return order;
+    var adjustedOrder = clone(order);
+    adjustedOrder.fullPrecisionPrice = this.expandScalarPrice(minValue, order.fullPrecisionPrice || order.price);
+    adjustedOrder.price = this.expandScalarPrice(minValue, order.price);
+    return adjustedOrder;
   },
 
   // note: minValue required only for scalar markets

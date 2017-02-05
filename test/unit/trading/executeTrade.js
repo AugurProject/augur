@@ -32,7 +32,7 @@ describe("executeTrade.executeTrade", function() {
       augur.getCashBalance = t.getCashBalance;
       augur.trade = t.trade;
 
-      augur.executeTrade(t.marketID, t.outcomeID, t.numShares, t.totalEthWithFee, t.tradingFees, t.tradeGroupID, t.address, t.orderBooks, t.getTradeIDs, t.tradeCommitmentCallback, function(err, res) {
+      augur.executeTrade(t.marketID, t.outcomeID, t.numShares, t.totalEthWithFee, t.tradingFees, t.tradeGroupID, t.address, t.getOrderBooks, t.getTradeIDs, t.tradeCommitmentCallback, function(err, res) {
         t.assertions(err, res);
         done();
       });
@@ -47,15 +47,17 @@ describe("executeTrade.executeTrade", function() {
     tradingFees: '0.01',
     tradeGroupID: '0x000abc123',
     address: '0x1',
-    orderBooks: {
-      '0xa1': {
-        buy: {},
-        sell: {
-          '0xb1': { amount: '50', limitPrice: '0.5' },
-          '0xb2': { amount: '30', limitPrice: '0.5' },
-          '0xb3': { amount: '20', limitPrice: '0.5' },
+    getOrderBooks: function () {
+      return {
+        '0xa1': {
+          buy: {},
+          sell: {
+            '0xb1': { amount: '50', limitPrice: '0.5' },
+            '0xb2': { amount: '30', limitPrice: '0.5' },
+            '0xb3': { amount: '20', limitPrice: '0.5' },
+          }
         }
-      }
+      };
     },
     getTradeIDs: function() {
       callCounts.getTradeIDs++;
@@ -132,15 +134,17 @@ describe("executeTrade.executeTrade", function() {
     tradingFees: '0.01',
     tradeGroupID: '0x000abc123',
     address: '0x1',
-    orderBooks: {
-      '0xa1': {
-        buy: {},
-        sell: {
-          '0xb1': { amount: '50', limitPrice: '0.5' },
-          '0xb2': { amount: '30', limitPrice: '0.5' },
-          '0xb3': { amount: '20', limitPrice: '0.5' },
+    getOrderBooks: function () {
+      return {
+        '0xa1': {
+          buy: {},
+          sell: {
+            '0xb1': { amount: '50', limitPrice: '0.5' },
+            '0xb2': { amount: '30', limitPrice: '0.5' },
+            '0xb3': { amount: '20', limitPrice: '0.5' },
+          }
         }
-      }
+      };
     },
     getTradeIDs: function() {
       callCounts.getTradeIDs++;
@@ -228,15 +232,17 @@ describe("executeTrade.executeTrade", function() {
     tradingFees: '0.01',
     tradeGroupID: '0x000abc123',
     address: '0x1',
-    orderBooks: {
-      '0xa1': {
-        buy: {},
-        sell: {
-          '0xb1': { amount: '50', limitPrice: '0.5' },
-          '0xb2': { amount: '30', limitPrice: '0.5' },
-          '0xb3': { amount: '20', limitPrice: '0.5' },
+    getOrderBooks: function () {
+      return {
+        '0xa1': {
+          buy: {},
+          sell: {
+            '0xb1': { amount: '50', limitPrice: '0.5' },
+            '0xb2': { amount: '30', limitPrice: '0.5' },
+            '0xb3': { amount: '20', limitPrice: '0.5' },
+          }
         }
-      }
+      };
     },
     getTradeIDs: function() {
       callCounts.getTradeIDs++;
@@ -471,14 +477,16 @@ describe("executeTrade.executeTrade", function() {
     tradingFees: '0.01',
     tradeGroupID: '0x000abc123',
     address: '0x1',
-    orderBooks: {
-      '0xa1': {
-        buy: {
-          '0xb1': { amount: '50', limitPrice: '0.5' },
-          '0xb2': { amount: '50', limitPrice: '0.5' },
-        },
-        sell: {}
-      }
+    getOrderBooks: function () {
+      return {
+        '0xa1': {
+          buy: {
+            '0xb1': { amount: '50', limitPrice: '0.5' },
+            '0xb2': { amount: '50', limitPrice: '0.5' },
+          },
+          sell: {}
+        }
+      };
     },
     getTradeIDs: function() {
       callCounts.getTradeIDs++;
@@ -668,11 +676,13 @@ describe("executeTrade.executeTrade", function() {
     tradingFees: '0.01',
     tradeGroupID: '0x000abc123',
     address: '0x1',
-    orderBooks: {
-      '0xa1': {
-        buy: {},
-        sell: {}
-      }
+    getOrderBooks: function () {
+      return {
+        '0xa1': {
+          buy: {},
+          sell: {}
+        }
+      };
     },
     getTradeIDs: function() {
       callCounts.getTradeIDs++;
@@ -718,11 +728,13 @@ describe("executeTrade.executeTrade", function() {
     tradingFees: '0.01',
     tradeGroupID: '0x000abc123',
     address: '0x1',
-    orderBooks: {
-      '0xa1': {
-        buy: {},
-        sell: {}
-      }
+    getOrderBooks: function () {
+      return {
+        '0xa1': {
+          buy: {},
+          sell: {}
+        }
+      };
     },
     getTradeIDs: function() {
       callCounts.getTradeIDs++;
@@ -768,11 +780,13 @@ describe("executeTrade.executeTrade", function() {
     tradingFees: '0.01',
     tradeGroupID: '0x000abc123',
     address: '0x1',
-    orderBooks: {
-      '0xa1': {
-        buy: {},
-        sell: {'0xb1': { amount: '100', limitPrice: '0.5' },}
-      }
+    getOrderBooks: function () {
+      return {
+        '0xa1': {
+          buy: {},
+          sell: {'0xb1': { amount: '100', limitPrice: '0.5' },}
+        }
+      };
     },
     getTradeIDs: function() {
       callCounts.getTradeIDs++;
@@ -818,11 +832,13 @@ describe("executeTrade.executeTrade", function() {
     tradingFees: '0.01',
     tradeGroupID: '0x000abc123',
     address: '0x1',
-    orderBooks: {
-      '0xa1': {
-        buy: {},
-        sell: {'0xb1': { amount: '100', limitPrice: '0.5' },}
-      }
+    getOrderBooks: function () {
+      return {
+        '0xa1': {
+          buy: {},
+          sell: {'0xb1': { amount: '100', limitPrice: '0.5' },}
+        }
+      };
     },
     getTradeIDs: function() {
       callCounts.getTradeIDs++;
@@ -877,7 +893,7 @@ describe("executeTrade.executeShortSell", function() {
     it(t.description, function(done) {
       augur.short_sell = t.short_sell;
 
-      augur.executeShortSell(t.marketID, t.outcomeID, t.numShares, t.tradingFees, t.tradeGroupID, t.address, t.orderBooks, t.getTradeIDs, t.tradeCommitmentCallback, function(err, res) {
+      augur.executeShortSell(t.marketID, t.outcomeID, t.numShares, t.tradingFees, t.tradeGroupID, t.address, t.getOrderBooks, t.getTradeIDs, t.tradeCommitmentCallback, function(err, res) {
         t.assertions(err, res);
         done();
       });
@@ -891,7 +907,9 @@ describe("executeTrade.executeShortSell", function() {
     tradingFees: '0.01',
     tradeGroupID: '0x000abc123',
     address: '0x1',
-    orderBooks: { '0xa1': { buy: {}, sell: {} } },
+    getOrderBooks: function () {
+      return { '0xa1': { buy: {}, sell: {} } };
+    },
     getTradeIDs: function() {
       callCounts.getTradeIDs++;
       return undefined;
@@ -926,7 +944,7 @@ describe("executeTrade.executeShortSell", function() {
     tradingFees: '0.01',
     tradeGroupID: '0x000abc123',
     address: '0x1',
-    orderBooks: { '0xa1': { buy: {}, sell: {} } },
+    getOrderBooks: function () { return { '0xa1': { buy: {}, sell: {} } }; },
     getTradeIDs: function() {
       callCounts.getTradeIDs++;
       return [];
@@ -961,7 +979,9 @@ describe("executeTrade.executeShortSell", function() {
     tradingFees: '0.01',
     tradeGroupID: '0x000abc123',
     address: '0x1',
-    orderBooks: { '0xa1': { buy: { '0xb1': { amount: '100', price: '0.45' }, '0xb2': { amount: '50', price: '0.35' }}, sell: {} } },
+    getOrderBooks: function () {
+      return { '0xa1': { buy: { '0xb1': { amount: '100', price: '0.45' }, '0xb2': { amount: '50', price: '0.35' }}, sell: {} } };
+    },
     getTradeIDs: function() {
       callCounts.getTradeIDs++;
       return ['0xb1', '0xb2'];
@@ -996,7 +1016,9 @@ describe("executeTrade.executeShortSell", function() {
     tradingFees: '0.01',
     tradeGroupID: '0x000abc123',
     address: '0x1',
-    orderBooks: { '0xa1': { buy: { '0xb1': { amount: '100', price: '0.4' } }, sell: {} } },
+    getOrderBooks: function () {
+      return { '0xa1': { buy: { '0xb1': { amount: '100', price: '0.4' } }, sell: {} } };
+    },
     getTradeIDs: function() {
       callCounts.getTradeIDs++;
       return ['0xb1'];
@@ -1084,20 +1106,22 @@ describe("executeTrade.executeShortSell", function() {
     tradingFees: '0.01',
     tradeGroupID: '0x000abc123',
     address: '0x1',
-    orderBooks: {
-      '0xa1': {
-        buy: {
-          '0xb1': {
-            amount: '50',
-            price: '0.5'
+    getOrderBooks: function () {
+      return {
+        '0xa1': {
+          buy: {
+            '0xb1': {
+              amount: '50',
+              price: '0.5'
+            },
+            '0xb2': {
+              amount: '50',
+              price: '0.5'
+            },
           },
-          '0xb2': {
-            amount: '50',
-            price: '0.5'
-          },
-        },
-        sell: {}
-      }
+          sell: {}
+        }
+      };
     },
     getTradeIDs: function() {
       callCounts.getTradeIDs++;
@@ -1232,17 +1256,19 @@ describe("executeTrade.executeShortSell", function() {
     tradingFees: '0.01',
     tradeGroupID: '0x000abc123',
     address: '0x1',
-    orderBooks: {
-    '0xa1': {
-      buy: {
-          '0xb1': {
-            amount: '100',
-            price: '0.4'
-          }
-        },
-        sell: {}
+    getOrderBooks: function () {
+      return {
+        '0xa1': {
+          buy: {
+            '0xb1': {
+              amount: '100',
+              price: '0.4'
+            }
+          },
+          sell: {}
         }
-      },
+      };
+    },
     getTradeIDs: function() {
       callCounts.getTradeIDs++;
       return ['0xb1'];
@@ -1300,17 +1326,19 @@ describe("executeTrade.executeShortSell", function() {
     tradingFees: '0.01',
     tradeGroupID: '0x000abc123',
     address: '0x1',
-    orderBooks: {
-    '0xa1': {
-      buy: {
-          '0xb1': {
-            amount: '100',
-            price: '0.4'
-          }
-        },
-        sell: {}
+    getOrderBooks: function () {
+      return {
+        '0xa1': {
+          buy: {
+            '0xb1': {
+              amount: '100',
+              price: '0.4'
+            }
+          },
+          sell: {}
         }
-      },
+      };
+    },
     getTradeIDs: function() {
       callCounts.getTradeIDs++;
       return ['0xb1'];

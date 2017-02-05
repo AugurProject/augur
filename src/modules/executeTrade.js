@@ -9,8 +9,8 @@ var constants = require("../constants");
 module.exports = {
 
   // if buying numShares must be 0, if selling totalEthWithFee must be 0
-  executeTrade: function (marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, cb) {
-    if (this.options.debug.trading) console.log("executeTrade:", marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, address, orderBooks);
+  executeTrade: function (marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, address, getOrderBooks, getTradeIDs, tradeCommitmentCallback, cb) {
+    if (this.options.debug.trading) console.log("executeTrade:", marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, address, getOrderBooks);
     var self = this;
     var bnTotalEth = abi.bignum(totalEthWithFee) || constants.ZERO;
     var bnNumShares = abi.bignum(numShares) || constants.ZERO;
@@ -35,7 +35,7 @@ module.exports = {
       commitMaxValue = totalEthWithFee;
     }
     async.until(function () {
-      matchingTradeIDs = getTradeIDs(orderBooks);
+      matchingTradeIDs = getTradeIDs(getOrderBooks());
       if (self.options.debug.trading) {
         console.log("matchingTradeIDs:", matchingTradeIDs);
         console.log("remainingEth:", res.remainingEth.toFixed());
@@ -74,7 +74,7 @@ module.exports = {
               tradeCommitmentCallback({
                 tradeHash: abi.format_int256(tradeHash),
                 orders: tradeIDs.map(function (tradeID) {
-                  return selectOrder.selectOrder(tradeID, orderBooks);
+                  return selectOrder.selectOrder(tradeID, getOrderBooks());
                 }),
                 maxValue: commitMaxValue,
                 maxAmount: commitMaxAmount,
@@ -133,7 +133,7 @@ module.exports = {
     });
   },
 
-  executeShortSell: function (marketID, outcomeID, numShares, tradingFees, tradeGroupID, address, orderBooks, getTradeIDs, tradeCommitmentCallback, cb) {
+  executeShortSell: function (marketID, outcomeID, numShares, tradingFees, tradeGroupID, address, getOrderBooks, getTradeIDs, tradeCommitmentCallback, cb) {
     var self = this;
     var res = {
       remainingShares: abi.bignum(numShares) || constants.ZERO,
@@ -142,7 +142,7 @@ module.exports = {
       tradingFees: constants.ZERO,
       gasFees: constants.ZERO
     };
-    var matchingIDs = getTradeIDs(orderBooks);
+    var matchingIDs = getTradeIDs(getOrderBooks());
     if (self.options.debug.trading) console.log("matching trade IDs:", matchingIDs);
     if (!matchingIDs || !matchingIDs.length || res.remainingShares.lte(constants.ZERO)) return cb(null, res);
     async.eachSeries(matchingIDs, function (matchingID, nextMatchingID) {
@@ -158,7 +158,7 @@ module.exports = {
             isShortSell: true,
             maxAmount: numShares,
             maxValue: '0',
-            orders: [selectOrder.selectOrder(matchingID, orderBooks)],
+            orders: [selectOrder.selectOrder(matchingID, getOrderBooks())],
             remainingEth: "0",
             remainingShares: res.remainingShares.toFixed(),
             filledEth: res.filledEth.toFixed(),
