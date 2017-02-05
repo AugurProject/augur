@@ -33,7 +33,7 @@ export const fillOrder = log => (dispatch, getState) => {
   if (market) {
     const matchedType = log.type === 'buy' ? 'sell' : 'buy';
     const updatedOrderBook = augur.fillOrder(log.tradeid, log.amount, matchedType, orderBook);
-    if (this.options.debug.trading) {
+    if (augur.options.debug.trading) {
       console.debug('updatedOrderBook:', updatedOrderBook);
     }
     dispatch(replaceMarketOrderBook(log.market, updatedOrderBook));

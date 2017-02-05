@@ -10,46 +10,50 @@ export const handleRelayTransaction = tx => (dispatch, getState) => {
     console.log('txRelay:', tx);
     const hash = tx.response.hash;
     const { loginAccount, tradeCommitment, transactionsData } = getState();
-    if (hash && tx.data.from === loginAccount.address) {
-      const gasFees = tx.response.gasFees || augur.getTxGasEth({ ...tx.data }, rpc.gasPrice).toFixed();
-      if (tradeCommitment && tradeCommitment.orders && tradeCommitment.orders.length) {
-        switch (tx.data.method) {
-          case 'commitTrade':
-          case 'short_sell':
-          case 'trade': {
-            const status = tx.response.blockHash ? SUCCESS : SUBMITTED;
-            const relayTransaction = dispatch(constructRelayTransaction(tx, status));
-            if (relayTransaction) {
-              const numTransactions = relayTransaction.length;
-              for (let i = 0; i < numTransactions; ++i) {
-                const id = Object.keys(relayTransaction[i])[0];
-                if (transactionsData[id]) {
-                  dispatch(updateTransactionsData({
-                    [id]: { ...transactionsData[id], gasFees: formatRealEther(gasFees) }
-                  }));
-                }
-                if (!transactionsData[id] || transactionsData[id].status !== SUCCESS) {
-                  dispatch(updateTransactionsData(relayTransaction[i]));
-                }
-              }
-            }
-            break;
-          }
-          default: {
-            if (transactionsData[hash]) {
-              dispatch(updateTransactionsData({
-                [hash]: { ...transactionsData[hash], gasFees: formatRealEther(gasFees) }
-              }));
-            }
-            if (!transactionsData[hash] || transactionsData[hash].status !== SUCCESS) {
+    if (tx.data.from === loginAccount.address) {
+      if (hash) {
+        const gasFees = tx.response.gasFees || augur.getTxGasEth({ ...tx.data }, rpc.gasPrice).toFixed();
+        if (tradeCommitment && tradeCommitment.orders && tradeCommitment.orders.length) {
+          switch (tx.data.method) {
+            case 'commitTrade':
+            case 'short_sell':
+            case 'trade': {
               const status = tx.response.blockHash ? SUCCESS : SUBMITTED;
               const relayTransaction = dispatch(constructRelayTransaction(tx, status));
               if (relayTransaction) {
-                dispatch(updateTransactionsData(relayTransaction));
+                const numTransactions = relayTransaction.length;
+                for (let i = 0; i < numTransactions; ++i) {
+                  const id = Object.keys(relayTransaction[i])[0];
+                  if (transactionsData[id]) {
+                    dispatch(updateTransactionsData({
+                      [id]: { ...transactionsData[id], gasFees: formatRealEther(gasFees) }
+                    }));
+                  }
+                  if (!transactionsData[id] || transactionsData[id].status !== SUCCESS) {
+                    dispatch(updateTransactionsData(relayTransaction[i]));
+                  }
+                }
+              }
+              break;
+            }
+            default: {
+              if (transactionsData[hash]) {
+                dispatch(updateTransactionsData({
+                  [hash]: { ...transactionsData[hash], gasFees: formatRealEther(gasFees) }
+                }));
+              }
+              if (!transactionsData[hash] || transactionsData[hash].status !== SUCCESS) {
+                const status = tx.response.blockHash ? SUCCESS : SUBMITTED;
+                const relayTransaction = dispatch(constructRelayTransaction(tx, status));
+                if (relayTransaction) {
+                  dispatch(updateTransactionsData(relayTransaction));
+                }
               }
             }
           }
         }
+      } else {
+        console.debug('other tx:', tx);
       }
     }
   }

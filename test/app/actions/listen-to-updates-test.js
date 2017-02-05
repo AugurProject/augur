@@ -105,7 +105,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     }, {
       type: 'UPDATE_OUTCOME_PRICE'
     }, {
-      type: 'UPDATE_MARKET_ORDER_BOOK',
+      type: 'REPLACE_MARKET_ORDER_BOOK',
       marketId: 'testMarketID',
       marketOrderBook: {
         buy: {

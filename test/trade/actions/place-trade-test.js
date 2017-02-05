@@ -49,10 +49,10 @@ describe(`modules/trade/actions/place-trade.js`, () => {
   sinon.stub(SelectMarket, 'selectMarket', marketID => store.getState().marketsData[marketID]);
   sinon.stub(AugurJS.abi, 'bignum', n => augur.abi.bignum(n));
   sinon.stub(AugurJS.abi, 'format_int256', n => augur.abi.format_int256(n));
-  sinon.stub(AugurJS.augur, 'executeTradingActions', (market, outcomeID, address, orderBooks, doNotMakeOrders, tradesInProgress, tradeCommitmentCallback, tradeCommitLockCallback, callback) => {
+  sinon.stub(AugurJS.augur, 'executeTradingActions', (market, outcomeID, address, getOrderBooks, doNotMakeOrders, tradesInProgress, tradeCommitmentCallback, tradeCommitLockCallback, callback) => {
     store.dispatch({
       type: 'AUGURJS_EXECUTE_TRADING_ACTIONS',
-      params: [market, outcomeID, address, orderBooks, doNotMakeOrders, tradesInProgress]
+      params: [market, outcomeID, address, doNotMakeOrders, tradesInProgress]
     });
     callback(null);
   });
@@ -109,7 +109,6 @@ describe(`modules/trade/actions/place-trade.js`, () => {
         },
         '2',
         'testUser1',
-        tradeConstOrderBooks,
         undefined,
         {
           2: {
