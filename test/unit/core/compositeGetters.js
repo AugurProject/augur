@@ -5,7 +5,7 @@ var augur = require('../../../src');
 var utils = require("../../../src/utilities");
 var abi = require("augur-abi");
 var constants = require("../../../src/constants");
-// 68 tests total
+// 66 tests total
 
 describe("CompositeGetters.getOrderBookChunked", function () {
   var getOrderBook = augur.getOrderBook;
@@ -1018,30 +1018,6 @@ describe('CompositeGetters.getPositionInMarket', function() {
       assert.deepEqual(market, '0x0a1');
       assert.deepEqual(account, '0x0');
       assert.deepEqual(callback, utils.noop);
-    }
-  });
-});
-describe('CompositeGetters.adjustScalarOrder', function() {
-  // 2 tests total
-  var test = function(t) {
-    it(t.description, function() {
-      t.assertions(augur.adjustScalarOrder(t.order, t.minValue));
-    });
-  };
-  test({
-    description: 'Should handle adjusting an order passed with just a price',
-    order: { price: '25' },
-    minValue: '10',
-    assertions: function(o) {
-      assert.deepEqual(o, { price: '35', fullPrecisionPrice: '45' });
-    }
-  });
-  test({
-    description: 'Should handle adjusting an order passed with a price and fullPrecisionPrice',
-    order: { price: '15', fullPrecisionPrice: '30' },
-    minValue: '-5',
-    assertions: function(o) {
-      assert.deepEqual(o, { price: '10', fullPrecisionPrice: '25' });
     }
   });
 });
