@@ -56,11 +56,12 @@ module.exports = {
     if (tradeType === "buy") {
       var tradeIDs = this.calculateBuyTradeIDs(marketID, outcomeID, limitPrice, getOrderBooks(), address);
       if (tradeIDs && tradeIDs.length) {
-        this.placeBuy(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback);
+        this.placeBuy(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback);
       } else if (!doNotMakeOrders) {
-        this.placeBid(market, outcomeID, numShares, limitPrice, tradeGroupID);
+        this.placeBid(market, outcomeID, numShares, limitPrice, tradeGroupID, callback);
+      } else {
+        callback(null);
       }
-      callback(null);
     } else if (tradeType === "sell") {
 
       // check if user has position
@@ -72,24 +73,26 @@ module.exports = {
         var tradeIDs = self.calculateSellTradeIDs(marketID, outcomeID, limitPrice, getOrderBooks(), address);
         if (position && position.gt(constants.PRECISION.zero)) {
           if (tradeIDs && tradeIDs.length) {
-            self.placeSell(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback);
+            self.placeSell(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback);
           } else if (!doNotMakeOrders) {
             var shares = splitOrder(abi.bignum(numShares), position);
             var askShares = shares.askShares;
             var shortAskShares = shares.shortAskShares;
-            if (abi.bignum(askShares).gt(constants.PRECISION.zero)) {
-              self.placeAsk(market, outcomeID, askShares, limitPrice, tradeGroupID);
-            }
-            if (abi.bignum(shortAskShares).gt(constants.PRECISION.zero)) {
-              self.placeShortAsk(market, outcomeID, shortAskShares, limitPrice, tradeGroupID);
-            }
+            var hasAskShares = abi.bignum(askShares).gt(constants.PRECISION.zero);
+            var hasShortAskShares = abi.bignum(shortAskShares).gt(constants.PRECISION.zero);
+            if (hasAskShares) self.placeAsk(market, outcomeID, askShares, limitPrice, tradeGroupID, callback);
+            if (hasShortAskShares) self.placeShortAsk(market, outcomeID, shortAskShares, limitPrice, tradeGroupID, callback);
+            if (!hasAskShares && !hasShortAskShares) callback(null);
+          } else {
+            callback(null);
           }
         } else if (tradeIDs && tradeIDs.length) {
-          self.placeShortSell(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback);
+          self.placeShortSell(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback);
         } else if (!doNotMakeOrders) {
-          self.placeShortAsk(market, outcomeID, numShares, limitPrice, tradeGroupID);
+          self.placeShortAsk(market, outcomeID, numShares, limitPrice, tradeGroupID, callback);
+        } else {
+          callback(null)
         }
-        callback(null);
       });
     }
   }
