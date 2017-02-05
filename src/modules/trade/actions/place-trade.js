@@ -4,7 +4,7 @@ import { clearTradeInProgress } from '../../trade/actions/update-trades-in-progr
 
 export const placeTrade = (marketID, outcomeID, doNotMakeOrders, callback) => (dispatch, getState) => {
   if (!marketID) return null;
-  const { loginAccount, marketsData, orderBooks, tradesInProgress } = getState();
+  const { loginAccount, marketsData, tradesInProgress } = getState();
   const market = marketsData[marketID];
   if (!tradesInProgress[marketID] || !market || outcomeID == null) {
     console.error(`trade-in-progress not found for ${marketID} ${outcomeID}`);
@@ -14,7 +14,7 @@ export const placeTrade = (marketID, outcomeID, doNotMakeOrders, callback) => (d
     market,
     outcomeID,
     loginAccount.address,
-    orderBooks,
+    () => getState().orderBooks,
     doNotMakeOrders,
     tradesInProgress[marketID],
     data => dispatch(updateTradeCommitment(data)),
