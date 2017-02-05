@@ -1,4 +1,4 @@
-import { UPDATE_MARKET_ORDER_BOOK, CLEAR_MARKET_ORDER_BOOK } from '../../bids-asks/actions/update-market-order-book';
+import { UPDATE_MARKET_ORDER_BOOK, REPLACE_MARKET_ORDER_BOOK, CLEAR_MARKET_ORDER_BOOK } from '../../bids-asks/actions/update-market-order-book';
 
 /**
  * @param {Object} orderBooks
@@ -21,6 +21,11 @@ export default function (orderBooks = {}, action) {
         }
       };
     }
+    case REPLACE_MARKET_ORDER_BOOK:
+      return {
+        ...orderBooks,
+        [action.marketId]: action.marketOrderBook
+      };
     case CLEAR_MARKET_ORDER_BOOK:
       return {
         ...orderBooks,
