@@ -4,6 +4,7 @@ import { SCALAR } from '../../markets/constants/market-types';
 import { updateTradeCommitment } from '../../trade/actions/update-trade-commitment';
 import { deleteTransaction } from '../../transactions/actions/delete-transaction';
 import { constructBasicTransaction, constructTradingTransaction, constructTransaction } from '../../transactions/actions/construct-transaction';
+import { fillOrder } from '../../bids-asks/actions/update-market-order-book';
 import unpackTransactionParameters from '../../transactions/actions/unpack-transaction-parameters';
 import { selectMarketFromEventID } from '../../market/selectors/market';
 import selectWinningPositions from '../../my-positions/selectors/winning-positions';
@@ -117,7 +118,19 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
       if (abi.bignum(remainingShares).gt(abi.bignum(order.amount))) {
         amount = order.amount;
       }
-      dispatch(deleteTransaction(`${transactionHash}-${p.buyer_trade_id}`));
+      if (status === 'submitted') {
+        dispatch(deleteTransaction(`${transactionHash}-${p.buyer_trade_id}`));
+        dispatch(fillOrder({
+          type: 'buy',
+          market: order.market,
+          tradeid: p.buyer_trade_id,
+          sender: tx.data.from,
+          owner: order.owner,
+          amount,
+          price: order.price,
+          outcome: parseInt(order.outcome, 10)
+        }));
+      }
       return [dispatch(constructTradingTransaction('log_short_fill_tx', {
         ...p,
         price: order.price,
@@ -169,7 +182,19 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         }
         console.log('remainingShares:', remainingShares);
         console.log('calculated amount:', amount);
-        dispatch(deleteTransaction(`${transactionHash}-${order.id}`));
+        if (status === 'submitted') {
+          dispatch(deleteTransaction(`${transactionHash}-${order.id}`));
+          dispatch(fillOrder({
+            type: order.type === 'buy' ? 'sell' : 'buy',
+            tradeid: order.id,
+            sender: tx.data.from,
+            owner: order.owner,
+            market: order.market,
+            amount,
+            price: order.price,
+            outcome: parseInt(order.outcome, 10)
+          }));
+        }
         transactions[i] = dispatch(constructTradingTransaction('log_fill_tx', {
           ...p,
           price: order.price,
