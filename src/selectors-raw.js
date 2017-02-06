@@ -3,6 +3,7 @@ import abc from 'modules/auth/selectors/abc';
 import loginAccount from 'modules/auth/selectors/login-account';
 import links from 'modules/link/selectors/links';
 import url from 'modules/link/selectors/url';
+import topics from 'modules/topics/selectors/topics';
 import marketsHeader from 'modules/markets/selectors/markets-header';
 import marketsTotals from 'modules/markets/selectors/markets-totals';
 import pagination from 'modules/markets/selectors/pagination';
@@ -59,6 +60,7 @@ const selectors = {
   orderCancellation,
   market,
   selectedOutcome,
+  topics,
   tags,
   filterSort,
   keywords,

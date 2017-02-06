@@ -32,6 +32,8 @@ import transactionsData from './modules/transactions/reducers/transactions-data'
 import scalarMarketsShareDenomination from './modules/market/reducers/scalar-markets-share-denomination';
 import closePositionTradeGroups from './modules/my-positions/reducers/close-position-trade-groups';
 
+import topics from './modules/topics/reducers/topics-data';
+
 import selectedMarketsHeader from './modules/markets/reducers/selected-markets-header';
 import selectedMarketID from './modules/markets/reducers/selected-market-id';
 import tradesInProgress from './modules/trade/reducers/trades-in-progress';
@@ -79,6 +81,7 @@ export function createReducer() {
     selectedMarketID,
     selectedMarketsHeader,
     keywords,
+    topics,
     selectedTags,
     selectedFilterSort,
     priceHistory,

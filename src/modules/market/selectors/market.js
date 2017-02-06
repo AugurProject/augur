@@ -223,6 +223,7 @@ export function assembleMarket(
       market.isReported = market.isReportSubmitted && !!marketReport.reportHash.length; // the user fully reported on this market (reportHash === [string])
       market.isMissedReport = market.isRequiredToReportByAccount && !market.isReported && !market.isReportSubmitted && isReportRevealPhase; // the user submitted a report that is not yet confirmed
       market.isMissedOrReported = market.isMissedReport || market.isReported;
+      market.isReportTabVisible = market.isPendingReport || market.isMissedOrReported;
 
       market.marketLink = selectMarketLink(market, dispatch);
       market.onClickToggleFavorite = () => dispatch(toggleFavorite(marketID));

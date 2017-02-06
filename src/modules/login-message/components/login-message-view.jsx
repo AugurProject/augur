@@ -53,6 +53,18 @@ const LoginMessagePage = p => (
         </li>
       </ol>
       <h2>Technical updates:</h2>
+      <h3>February 3, 2017</h3>
+      <ol>
+        <li>
+          Report and Snitch tabs on market detail page now use isReportTabVisible market selector property to determine visibility.
+        </li>
+        <li>
+          Reporting markets listing filter now works correctly.
+        </li>
+        <li>
+          Scalar market outcome input box now displays correctly in the Snitch tab.
+        </li>
+      </ol>
       <h3>February 2, 2017</h3>
       <ol>
         <li>
@@ -85,7 +97,7 @@ const LoginMessagePage = p => (
         </li>
       </ol>
       {p.marketsLink &&
-      <Link className="lets-do-this-button" {...p.marketsLink} >{`Let's do this!`}</Link>
+        <Link className="lets-do-this-button" {...p.marketsLink} >{`Let's do this!`}</Link>
       }
     </div>
   </section>

@@ -9,7 +9,7 @@ import { updateAssets } from '../../auth/actions/update-assets';
 export const REPORTING_TEST_SETUP = 'REPORTING_TEST_SETUP';
 
 export const reportingTestSetup = branchID => (dispatch, getState) => {
-  const periodLength = 400;
+  const periodLength = 600;
   console.warn('Found reportingTest=true in env.json');
   console.info('*** STARTING REPORTING SETUP SEQUENCE ***');
   dispatch({ type: REPORTING_TEST_SETUP, data: { periodLength } });

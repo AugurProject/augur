@@ -105,6 +105,75 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     }, {
       type: 'UPDATE_OUTCOME_PRICE'
     }, {
+      type: 'REPLACE_MARKET_ORDER_BOOK',
+      marketId: 'testMarketID',
+      marketOrderBook: {
+        buy: {
+          '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3': {
+            amount: '10',
+            block: 1234,
+            id: '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3',
+            market: 'testMarketID',
+            outcome: '2',
+            owner: '0x7c0d52faab596c08f423e3478aebc6205f3f5d8c',
+            price: '0.42',
+            type: 'buy'
+          },
+          buyOrder2ID: {
+            amount: '10',
+            block: 1234,
+            id: 'buyOrder2ID',
+            market: 'testMarketID',
+            outcome: '2',
+            owner: '0x0000000000000000000000000000000000000001',
+            price: '0.42',
+            type: 'buy'
+          },
+          buyOrder3ID: {
+            amount: '10',
+            block: 1234,
+            id: 'buyOrder3ID',
+            market: 'testMarketID',
+            outcome: '1',
+            owner: '0x0000000000000000000000000000000000000001',
+            price: '0.42',
+            type: 'buy'
+          },
+          buyOrder4ID: {
+            amount: '10',
+            block: 1234,
+            id: 'buyOrder4ID',
+            market: 'testMarketID',
+            outcome: '1',
+            owner: '0x0000000000000000000000000000000000000001',
+            price: '0.44',
+            type: 'buy'
+          }
+        },
+        sell: {
+          '0x8ef100c8aad3c4f7b65a055643d54db7b9a506a542b1270047a314da931e37fb': {
+            amount: '20',
+            block: 1235,
+            id: '0x8ef100c8aad3c4f7b65a055643d54db7b9a506a542b1270047a314da931e37fb',
+            market: 'testMarketID',
+            outcome: '1',
+            owner: '0x457435fbcd49475847f64898f933ffefc33388fc',
+            price: '0.58',
+            type: 'sell'
+          },
+          sellOrder2ID: {
+            amount: '20',
+            block: 1235,
+            id: 'sellOrder2ID',
+            market: 'testMarketID',
+            outcome: '1',
+            owner: '0x457435fbcd49475847f64898f933ffefc33388fc',
+            price: '0.59',
+            type: 'sell'
+          }
+        }
+      }
+    }, {
       type: 'UPDATE_MARKET_TRADES_DATA',
       data: {
         testMarketID: {

@@ -17,10 +17,11 @@ export default function () {
     },
     [MARKET_DATA_NAV_REPORT]: {
       label: 'Report',
-      isPendingReport: true
+      isReportTabVisible: true
     },
     [MARKET_DATA_NAV_SNITCH]: {
-      label: 'Snitch'
+      label: 'Snitch',
+      isReportTabVisible: true
     }
   };
 }

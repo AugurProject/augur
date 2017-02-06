@@ -104,8 +104,8 @@ export function listenToUpdates() {
         console.debug('log_fill_tx:', msg);
         if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
           dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
-          dispatch(fillOrder(msg));
           const { address } = getState().loginAccount;
+          if (msg.sender !== address) dispatch(fillOrder(msg));
           if (msg.sender === address || msg.owner === address) {
             dispatch(convertTradeLogToTransaction('log_fill_tx', {
               [msg.market]: { [msg.outcome]: [{
