@@ -91,7 +91,7 @@ module.exports = {
         } else if (!doNotMakeOrders) {
           self.placeShortAsk(market, outcomeID, numShares, limitPrice, tradeGroupID, callback);
         } else {
-          callback(null)
+          callback(null);
         }
       });
     }
