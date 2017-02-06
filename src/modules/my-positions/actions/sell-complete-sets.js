@@ -34,6 +34,7 @@ export function sellCompleteSetsMarket(marketID, callback) {
         } else {
           dispatch(updateSmallestPositions(marketID, smallestPosition.toFixed()));
           if (smallestPosition.gt(ZERO) && getState().settings.autoSellCompleteSets&& !getState().sellCompleteSetsLock[marketID]) {
+            console.error('***COMPLETE SET OF', smallestPosition.toFixed(), 'SHARES FOUND IN MARKET', marketID, 'THIS SHOULD NEVER HAPPEN ON THE UPDATED CONTRACTS AND SOMETHING HAS GONE TERRIBLY WRONG***');
             dispatch(updateSellCompleteSetsLock(marketID, true));
             dispatch(sellNumberCompleteSetsMarket(marketID, smallestPosition.toFixed()));
           }
