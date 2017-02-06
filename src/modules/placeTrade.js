@@ -80,9 +80,15 @@ module.exports = {
             var shortAskShares = shares.shortAskShares;
             var hasAskShares = abi.bignum(askShares).gt(constants.PRECISION.zero);
             var hasShortAskShares = abi.bignum(shortAskShares).gt(constants.PRECISION.zero);
-            if (hasAskShares) self.placeAsk(market, outcomeID, askShares, limitPrice, tradeGroupID, callback);
-            if (hasShortAskShares) self.placeShortAsk(market, outcomeID, shortAskShares, limitPrice, tradeGroupID, callback);
-            if (!hasAskShares && !hasShortAskShares) callback(null);
+            if (hasAskShares && hasShortAskShares) {
+              self.placeAskAndShortAsk(market, outcomeID, askShares, shortAskShares, limitPrice, tradeGroupID, callback);
+            } else if (hasAskShares) {
+              self.placeAsk(market, outcomeID, askShares, limitPrice, tradeGroupID, callback);
+            } else if (hasShortAskShares) {
+              self.placeShortAsk(market, outcomeID, shortAskShares, limitPrice, tradeGroupID, callback);
+            } else {
+              callback(null);
+            }
           } else {
             callback(null);
           }

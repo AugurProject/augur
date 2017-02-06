@@ -24374,7 +24374,7 @@ BigNumber.config({
 var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/slashRep"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register"), require("./modules/tags"), require("./modules/modifyOrderBook")];
 
 function Augur() {
-  this.version = "3.10.2";
+  this.version = "3.10.3";
 
   this.options = {
     debug: {
@@ -26546,53 +26546,71 @@ module.exports = {
 "use strict";
 
 var parametrizeOrder = require('./parametrizeOrder');
+var utils = require("../utilities");
 
 module.exports = {
 
-  placeBid: function placeBid(market, outcomeID, numShares, limitPrice, tradeGroupID) {
+  placeBid: function placeBid(market, outcomeID, numShares, limitPrice, tradeGroupID, callback) {
+    if (!callback) callback = utils.noop;
     var params = parametrizeOrder.parametrizeOrder(market, outcomeID, numShares, limitPrice, tradeGroupID);
-    params.onSent = function (res) {
-      console.log("bid sent:", res);
-    };
+    params.onSent = utils.noop;
     params.onSuccess = function (res) {
       console.log("bid success:", res);
+      callback(null);
     };
-    params.onFailed = function (err) {
-      console.error("bid failed:", err);
-    };
+    params.onFailed = callback;
     return this.buy(params);
   },
 
-  placeAsk: function placeAsk(market, outcomeID, numShares, limitPrice, tradeGroupID) {
+  placeAsk: function placeAsk(market, outcomeID, numShares, limitPrice, tradeGroupID, callback) {
+    if (!callback) callback = utils.noop;
     var params = parametrizeOrder.parametrizeOrder(market, outcomeID, numShares, limitPrice, tradeGroupID);
-    params.onSent = function (res) {
-      console.log("ask sent:", res);
-    };
+    params.onSent = utils.noop;
     params.onSuccess = function (res) {
       console.log("ask success:", res);
+      callback(null);
     };
-    params.onFailed = function (err) {
-      console.error("ask failed:", err);
-    };
+    params.onFailed = callback;
     return this.sell(params);
   },
 
-  placeShortAsk: function placeShortAsk(market, outcomeID, numShares, limitPrice, tradeGroupID) {
+  placeShortAsk: function placeShortAsk(market, outcomeID, numShares, limitPrice, tradeGroupID, callback) {
+    if (!callback) callback = utils.noop;
     var params = parametrizeOrder.parametrizeOrder(market, outcomeID, numShares, limitPrice, tradeGroupID);
-    params.onSent = function (res) {
-      console.log("short ask sent:", res);
-    };
+    params.onSent = utils.noop;
     params.onSuccess = function (res) {
       console.log("short ask success:", res);
+      callback(null);
     };
-    params.onFailed = function (err) {
-      console.error("short ask failed:", err);
-    };
+    params.onFailed = callback;
     return this.shortAsk(params);
+  },
+
+  placeAskAndShortAsk: function placeAskAndShortAsk(market, outcomeID, askShares, shortAskShares, limitPrice, tradeGroupID, callback) {
+    if (!callback) callback = utils.noop;
+    var success = { ask: false, shortAsk: false };
+    var askParams = parametrizeOrder.parametrizeOrder(market, outcomeID, askShares, limitPrice, tradeGroupID);
+    var shortAskParams = parametrizeOrder.parametrizeOrder(market, outcomeID, shortAskShares, limitPrice, tradeGroupID);
+    askParams.onSent = utils.noop;
+    shortAskParams.onSent = utils.noop;
+    askParams.onSuccess = function (res) {
+      console.log("ask success:", res);
+      success.ask = true;
+      if (success.ask && success.shortAsk) callback(null);
+    };
+    shortAskParams.onSuccess = function (res) {
+      console.log("short ask success:", res);
+      success.shortAsk = true;
+      if (success.ask && success.shortAsk) callback(null);
+    };
+    askParams.onFailed = callback;
+    shortAskParams.onFailed = callback;
+    this.sell(askParams);
+    this.shortAsk(shortAskParams);
   }
 
 };
-},{"./parametrizeOrder":84}],81:[function(require,module,exports){
+},{"../utilities":99,"./parametrizeOrder":84}],81:[function(require,module,exports){
 (function (Buffer){
 /**
  * Augur JavaScript SDK
@@ -27119,11 +27137,12 @@ module.exports = {
     if (tradeType === "buy") {
       var tradeIDs = this.calculateBuyTradeIDs(marketID, outcomeID, limitPrice, getOrderBooks(), address);
       if (tradeIDs && tradeIDs.length) {
-        this.placeBuy(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback);
+        this.placeBuy(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback);
       } else if (!doNotMakeOrders) {
-        this.placeBid(market, outcomeID, numShares, limitPrice, tradeGroupID);
+        this.placeBid(market, outcomeID, numShares, limitPrice, tradeGroupID, callback);
+      } else {
+        callback(null);
       }
-      callback(null);
     } else if (tradeType === "sell") {
 
       // check if user has position
@@ -27135,24 +27154,32 @@ module.exports = {
         var tradeIDs = self.calculateSellTradeIDs(marketID, outcomeID, limitPrice, getOrderBooks(), address);
         if (position && position.gt(constants.PRECISION.zero)) {
           if (tradeIDs && tradeIDs.length) {
-            self.placeSell(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback);
+            self.placeSell(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback);
           } else if (!doNotMakeOrders) {
             var shares = splitOrder(abi.bignum(numShares), position);
             var askShares = shares.askShares;
             var shortAskShares = shares.shortAskShares;
-            if (abi.bignum(askShares).gt(constants.PRECISION.zero)) {
-              self.placeAsk(market, outcomeID, askShares, limitPrice, tradeGroupID);
+            var hasAskShares = abi.bignum(askShares).gt(constants.PRECISION.zero);
+            var hasShortAskShares = abi.bignum(shortAskShares).gt(constants.PRECISION.zero);
+            if (hasAskShares && hasShortAskShares) {
+              self.placeAskAndShortAsk(market, outcomeID, askShares, shortAskShares, limitPrice, tradeGroupID, callback);
+            } else if (hasAskShares) {
+              self.placeAsk(market, outcomeID, askShares, limitPrice, tradeGroupID, callback);
+            } else if (hasShortAskShares) {
+              self.placeShortAsk(market, outcomeID, shortAskShares, limitPrice, tradeGroupID, callback);
+            } else {
+              callback(null);
             }
-            if (abi.bignum(shortAskShares).gt(constants.PRECISION.zero)) {
-              self.placeShortAsk(market, outcomeID, shortAskShares, limitPrice, tradeGroupID);
-            }
+          } else {
+            callback(null);
           }
         } else if (tradeIDs && tradeIDs.length) {
-          self.placeShortSell(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback);
+          self.placeShortSell(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback);
         } else if (!doNotMakeOrders) {
-          self.placeShortAsk(market, outcomeID, numShares, limitPrice, tradeGroupID);
+          self.placeShortAsk(market, outcomeID, numShares, limitPrice, tradeGroupID, callback);
+        } else {
+          callback(null);
         }
-        callback(null);
       });
     }
   }
@@ -28420,7 +28447,8 @@ var constants = require("../constants");
 
 module.exports = {
 
-  placeBuy: function placeBuy(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+  placeBuy: function placeBuy(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback) {
+    if (!callback) callback = utils.noop;
     if (this.options.debug.trading) {
       console.log('placeBuy:', market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks.toString(), doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback);
     }
@@ -28432,18 +28460,23 @@ module.exports = {
     };
     this.executeTrade(marketID, outcomeID, 0, totalCost, tradingFees, tradeGroupID, address, getOrderBooks, getTradeIDs, tradeCommitmentCallback, function (err, res) {
       tradeCommitLockCallback(false);
-      if (err) return console.error("trade failed:", err);
+      if (err) return callback(err);
       var sharesRemaining = abi.bignum(numShares).minus(res.filledShares);
       if (sharesRemaining.gte(constants.PRECISION.limit) && res.remainingEth.gte(constants.PRECISION.limit)) {
-        if (self.options.debug.trading) console.log("buy remainder:", sharesRemaining.toFixed(), "shares remaining,", res.remainingEth.toFixed(), "cash remaining", constants.PRECISION.limit.toFixed(), "precision limit");
+        if (self.options.debug.trading) {
+          console.log("buy remainder:", sharesRemaining.toFixed(), "shares remaining,", res.remainingEth.toFixed(), "cash remaining", constants.PRECISION.limit.toFixed(), "precision limit");
+        }
         if (!doNotMakeOrders) {
-          self.placeBid(market, outcomeID, sharesRemaining.toFixed(), limitPrice, tradeGroupID);
+          self.placeBid(market, outcomeID, sharesRemaining.toFixed(), limitPrice, tradeGroupID, callback);
+        } else {
+          callback(null);
         }
       }
     });
   },
 
-  placeSell: function placeSell(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+  placeSell: function placeSell(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback) {
+    if (!callback) callback = utils.noop;
     if (this.options.debug.trading) {
       console.log('placeSell:', market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks.toString(), doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback);
     }
@@ -28455,7 +28488,7 @@ module.exports = {
     };
     this.executeTrade(marketID, outcomeID, numShares, 0, tradingFees, tradeGroupID, address, getOrderBooks, getTradeIDs, tradeCommitmentCallback, function (err, res) {
       tradeCommitLockCallback(false);
-      if (err) return console.error("trade failed:", err);
+      if (err) return callback(err);
       if (res.remainingShares.gt(constants.PRECISION.zero)) {
         self.getParticipantSharesPurchased(marketID, address, outcomeID, function (sharesPurchased) {
           var position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
@@ -28465,27 +28498,39 @@ module.exports = {
               var shares = splitOrder(remainingShares, position);
               var askShares = shares.askShares;
               var shortAskShares = shares.shortAskShares;
-              if (abi.bignum(askShares).gt(constants.PRECISION.zero)) {
-                self.placeAsk(market, outcomeID, askShares, limitPrice, tradeGroupID);
+              var hasAskShares = abi.bignum(askShares).gt(constants.PRECISION.zero);
+              var hasShortAskShares = abi.bignum(shortAskShares).gt(constants.PRECISION.zero);
+              if (hasAskShares && hasShortAskShares) {
+                self.placeAskAndShortAsk(market, outcomeID, askShares, shortAskShares, limitPrice, tradeGroupID, callback);
+              } else if (hasAskShares) {
+                self.placeAsk(market, outcomeID, askShares, limitPrice, tradeGroupID, callback);
+              } else if (hasShortAskShares) {
+                self.placeShortAsk(market, outcomeID, shortAskShares, limitPrice, tradeGroupID, callback);
+              } else {
+                callback(null);
               }
-              if (abi.bignum(shortAskShares).gt(constants.PRECISION.zero)) {
-                self.placeShortAsk(market, outcomeID, shortAskShares, limitPrice, tradeGroupID);
-              }
+            } else {
+              callback(null);
             }
           } else {
             var tradeIDs = self.calculateSellTradeIDs(marketID, outcomeID, limitPrice, getOrderBooks(), address);
             if (tradeIDs && tradeIDs.length) {
-              self.placeShortSell(market, outcomeID, res.remainingShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback);
+              self.placeShortSell(market, outcomeID, res.remainingShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback);
             } else if (!doNotMakeOrders) {
-              self.placeShortAsk(market, outcomeID, res.remainingShares, limitPrice, tradeGroupID);
+              self.placeShortAsk(market, outcomeID, res.remainingShares, limitPrice, tradeGroupID, callback);
+            } else {
+              callback(null);
             }
           }
         });
+      } else {
+        callback(null);
       }
     });
   },
 
-  placeShortSell: function placeShortSell(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback) {
+  placeShortSell: function placeShortSell(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback) {
+    if (!callback) callback = utils.noop;
     if (this.options.debug.trading) {
       console.log('placeShortSell:', market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks.toString(), doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback);
     }
@@ -28497,9 +28542,11 @@ module.exports = {
     };
     this.executeShortSell(marketID, outcomeID, numShares, tradingFees, tradeGroupID, address, getOrderBooks, getTradeIDs, tradeCommitmentCallback, function (err, res) {
       tradeCommitLockCallback(false);
-      if (err) return console.error("short sell failed:", err);
+      if (err) return callback(err);
       if (res.remainingShares.gt(constants.PRECISION.zero) && !doNotMakeOrders) {
-        self.placeShortAsk(market, outcomeID, res.remainingShares.toFixed(), limitPrice, tradeGroupID);
+        self.placeShortAsk(market, outcomeID, res.remainingShares.toFixed(), limitPrice, tradeGroupID, callback);
+      } else {
+        callback(null);
       }
     });
   }
@@ -28579,6 +28626,61 @@ module.exports = {
     });
   },
 
+  parseTradeReceipt: function parseTradeReceipt(receipt) {
+    var sharesBought, cashFromTrade, tradingFees, logs, sig, logdata;
+    sharesBought = constants.ZERO;
+    cashFromTrade = constants.ZERO;
+    tradingFees = constants.ZERO;
+    if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
+      logs = receipt.logs;
+      sig = this.api.events.log_fill_tx.signature;
+      for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+        if (logs[i].topics[0] === sig) {
+          logdata = this.rpc.unmarshal(logs[i].data);
+          if (logdata && logdata.constructor === Array && logdata.length > 6) {
+            tradingFees = tradingFees.plus(abi.unfix(logdata[6]));
+            // buy (matched sell order)
+            if (parseInt(logdata[0], 16) === 1) {
+              sharesBought = sharesBought.plus(abi.unfix(logdata[2]));
+              // sell (matched buy order)
+              // cash received = price per share * shares sold
+            } else {
+              cashFromTrade = cashFromTrade.plus(abi.unfix_signed(logdata[8]).times(abi.unfix(logdata[2])));
+            }
+          }
+        }
+      }
+    }
+    return {
+      sharesBought: sharesBought.toFixed(),
+      cashFromTrade: cashFromTrade.toFixed(),
+      tradingFees: tradingFees.toFixed()
+    };
+  },
+
+  parseShortSellReceipt: function parseShortSellReceipt(receipt) {
+    var cashFromTrade, tradingFees, logs, sig, logdata;
+    cashFromTrade = constants.ZERO;
+    tradingFees = constants.ZERO;
+    if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
+      logs = receipt.logs;
+      sig = this.api.events.log_short_fill_tx.signature;
+      for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+        if (logs[i].topics[0] === sig) {
+          logdata = this.rpc.unmarshal(logs[i].data);
+          if (logdata && logdata.constructor === Array && logdata.length > 8) {
+            cashFromTrade = cashFromTrade.plus(abi.unfix_signed(logdata[8]).times(abi.unfix(logdata[1])));
+            tradingFees = tradingFees.plus(abi.unfix(logdata[5]));
+          }
+        }
+      }
+    }
+    return {
+      cashFromTrade: cashFromTrade.toFixed(),
+      tradingFees: tradingFees.toFixed()
+    };
+  },
+
   trade: function trade(max_value, max_amount, trade_ids, tradeGroupID, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
     var self = this;
     if (this.options.debug.trading) {
@@ -28643,47 +28745,23 @@ module.exports = {
                   err = self.rpc.errorCodes("trade", "number", result.callReturn[0]);
                   if (!err) {
                     err = clone(self.errors.TRADE_FAILED);
+                    err.hash = txHash;
                     err.message += result.callReturn[0].toString();
                     return onTradeFailed(err);
                   }
-                  return onTradeFailed({ error: err, message: self.errors.trade[err], tx: tx });
+                  return onTradeFailed({ error: err, message: self.errors.trade[err], tx: tx, hash: txHash });
                 }
                 self.rpc.receipt(txHash, function (receipt) {
                   if (!receipt) return onTradeFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
                   if (receipt.error) return onTradeFailed(receipt);
-                  var sharesBought, cashFromTrade, tradingFees, logs, sig, logdata;
-                  if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
-                    logs = receipt.logs;
-                    sig = self.api.events.log_fill_tx.signature;
-                    sharesBought = constants.ZERO;
-                    cashFromTrade = constants.ZERO;
-                    tradingFees = constants.ZERO;
-                    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
-                      if (logs[i].topics[0] === sig) {
-                        logdata = self.rpc.unmarshal(logs[i].data);
-                        if (logdata && logdata.constructor === Array && logdata.length > 6) {
-                          tradingFees = tradingFees.plus(abi.unfix(logdata[6]));
-
-                          // buy (matched sell order)
-                          if (parseInt(logdata[0], 16) === 1) {
-                            sharesBought = sharesBought.plus(abi.unfix(logdata[2]));
-
-                            // sell (matched buy order)
-                            // cash received = price per share * shares sold
-                          } else {
-                            cashFromTrade = cashFromTrade.plus(abi.unfix(abi.hex(logdata[8], true)).times(abi.unfix(logdata[2])));
-                          }
-                        }
-                      }
-                    }
-                  }
+                  var parsedReceipt = self.parseTradeReceipt(receipt);
                   cb({
                     hash: txHash,
-                    unmatchedCash: abi.unfix(abi.hex(result.callReturn[1], true), "string"),
+                    unmatchedCash: abi.unfix_signed(result.callReturn[1], "string"),
                     unmatchedShares: abi.unfix(result.callReturn[2], "string"),
-                    sharesBought: abi.string(sharesBought),
-                    cashFromTrade: abi.string(cashFromTrade),
-                    tradingFees: abi.string(tradingFees),
+                    sharesBought: parsedReceipt.sharesBought,
+                    cashFromTrade: parsedReceipt.cashFromTrade,
+                    tradingFees: parsedReceipt.tradingFees,
                     gasFees: result.gasFees,
                     timestamp: result.timestamp
                   });
@@ -28692,10 +28770,11 @@ module.exports = {
                 err = self.rpc.errorCodes("trade", "number", result.callReturn);
                 if (!err) {
                   err = clone(self.errors.TRADE_FAILED);
+                  err.hash = txHash;
                   err.message += result.callReturn.toString();
-                  return onTradeFailed(result);
+                  return onTradeFailed(err);
                 }
-                onTradeFailed({ error: err, message: self.errors[err], tx: tx });
+                onTradeFailed({ error: err, message: self.errors[err], tx: tx, hash: txHash });
               }
             };
             self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed);
@@ -28761,37 +28840,23 @@ module.exports = {
                   err = self.rpc.errorCodes("short_sell", "number", result.callReturn[0]);
                   if (!err) {
                     err = clone(self.errors.TRADE_FAILED);
+                    err.hash = txHash;
                     err.message += result.callReturn[0].toString();
                     return onTradeFailed(err);
                   }
-                  return onTradeFailed({ error: err, message: self.errors.short_sell[err], tx: tx });
+                  return onTradeFailed({ error: err, message: self.errors.short_sell[err], tx: tx, hash: txHash });
                 }
                 self.rpc.receipt(txHash, function (receipt) {
                   if (!receipt) return onTradeFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
                   if (receipt.error) return onTradeFailed(receipt);
-                  var cashFromTrade, tradingFees, logs, sig, logdata;
-                  if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
-                    logs = receipt.logs;
-                    sig = self.api.events.log_short_fill_tx.signature;
-                    cashFromTrade = constants.ZERO;
-                    tradingFees = constants.ZERO;
-                    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
-                      if (logs[i].topics[0] === sig) {
-                        logdata = self.rpc.unmarshal(logs[i].data);
-                        if (logdata && logdata.constructor === Array && logdata.length > 8) {
-                          cashFromTrade = cashFromTrade.plus(abi.unfix(abi.hex(logdata[8], true)).times(abi.unfix(logdata[1])));
-                          tradingFees = tradingFees.plus(abi.unfix(logdata[5]));
-                        }
-                      }
-                    }
-                  }
+                  var parsedReceipt = self.parseShortSellReceipt(receipt);
                   cb({
                     hash: txHash,
                     unmatchedShares: abi.unfix(result.callReturn[1], "string"),
-                    matchedShares: abi.unfix(abi.hex(result.callReturn[2], true), "string"),
-                    cashFromTrade: abi.string(cashFromTrade),
-                    price: abi.unfix(abi.hex(result.callReturn[3], true), "string"),
-                    tradingFees: abi.string(tradingFees),
+                    matchedShares: abi.unfix_signed(result.callReturn[2], "string"),
+                    cashFromTrade: parsedReceipt.cashFromTrade,
+                    price: abi.unfix_signed(result.callReturn[3], "string"),
+                    tradingFees: parsedReceipt.tradingFees,
                     gasFees: result.gasFees,
                     timestamp: result.timestamp
                   });
@@ -28800,10 +28865,11 @@ module.exports = {
                 err = self.rpc.errorCodes("short_sell", "number", result.callReturn);
                 if (!err) {
                   err = clone(self.errors.TRADE_FAILED);
+                  err.hash = txHash;
                   err.message += result.callReturn.toString();
-                  return onTradeFailed(result);
+                  return onTradeFailed(err);
                 }
-                onTradeFailed({ error: err, message: self.errors.short_sell[err], tx: tx });
+                onTradeFailed({ error: err, message: self.errors.short_sell[err], tx: tx, hash: txHash });
               }
             };
             self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed);
@@ -50254,7 +50320,9 @@ module.exports = {
           tx.status = "failed";
           tx.locked = false;
           if (isFunction(tx.onFailed)) {
-            tx.onFailed(errors.TRANSACTION_RETRY_MAX_EXCEEDED);
+            var e = clone(errors.TRANSACTION_RETRY_MAX_EXCEEDED);
+            e.hash = tx.hash;
+            tx.onFailed(e);
           }
         } else {
           --self.rawTxMaxNonce;
@@ -50298,9 +50366,9 @@ module.exports = {
               if (self.debug.tx) console.debug("got receipt:", receipt);
               if (receipt && receipt.gasUsed) {
                 onChainTx.gasFees = new BigNumber(receipt.gasUsed, 16)
-                                    .times(new BigNumber(onChainTx.gasPrice, 16))
-                                    .dividedBy(self.ETHER)
-                                    .toFixed();
+                  .times(new BigNumber(onChainTx.gasPrice, 16))
+                  .dividedBy(self.ETHER)
+                  .toFixed();
               }
               tx.locked = false;
               tx.onSuccess(onChainTx);
@@ -50314,9 +50382,12 @@ module.exports = {
                   tx.locked = false;
                   if (isFunction(tx.onFailed)) {
                     if (err.error !== errors.NULL_CALL_RETURN.error) {
+                      err.hash = tx.hash;
                       tx.onFailed(err);
                     } else {
-                      tx.onFailed(self.errorCodes(tx.payload.method, tx.payload.returns, callReturn));
+                      var e = self.errorCodes(tx.payload.method, tx.payload.returns, callReturn);
+                      e.hash = tx.hash;
+                      tx.onFailed(e);
                     }
                   }
                 });
@@ -50327,6 +50398,7 @@ module.exports = {
                   e.gasFees = log.gasUsed.times(new BigNumber(onChainTx.gasPrice, 16)).dividedBy(self.ETHER).toFixed();
                   tx.locked = false;
                   if (isFunction(tx.onFailed)) {
+                    e.hash = tx.hash;
                     tx.onFailed(e);
                   }
                 } else {
@@ -50473,7 +50545,10 @@ module.exports = {
       onSent({hash: txHash, txHash: txHash, callReturn: callReturn});
 
       self.verifyTxSubmitted(payload, txHash, callReturn, onSent, onSuccess, onFailed, function (err) {
-        if (err) return onFailed(err);
+        if (err) {
+          err.hash = txHash;
+          return onFailed(err);
+        }
         if (self.blockFilter.id === null && !self.wsUrl && !self.ipcpath) {
           self.newBlockFilter(function (filterID) {
             if (filterID && !filterID.error) {
@@ -50714,9 +50789,9 @@ module.exports = {
       if (this.debug.tx) console.debug("got receipt:", receipt);
       if (receipt && receipt.gasUsed) {
         tx.gasFees = new BigNumber(receipt.gasUsed, 16)
-                    .times(new BigNumber(tx.gasPrice, 16))
-                    .dividedBy(this.ETHER)
-                    .toFixed();
+          .times(new BigNumber(tx.gasPrice, 16))
+          .dividedBy(this.ETHER)
+          .toFixed();
       }
       return tx;
     }
