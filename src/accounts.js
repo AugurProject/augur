@@ -409,7 +409,10 @@ module.exports = function () {
 
     invoke: function (payload, cb) {
       var self = this;
-
+      if (!payload || payload.constructor !== Object) {
+        if (cb && cb.constructor === Function) return cb(errors.TRANSACTION_FAILED);
+        return errors.TRANSACTION_FAILED;
+      }
       // if this is just a call, use ethrpc's regular invoke method
       if (!payload.send) {
         if (augur.rpc.debug.broadcast) {
@@ -417,15 +420,11 @@ module.exports = function () {
         }
         return augur.rpc.fire(payload, cb);
       }
-
       cb = cb || utils.pass;
+
       if (!this.account.address || !this.account.privateKey) {
         return cb(errors.NOT_LOGGED_IN);
       }
-      if (!payload || payload.constructor !== Object) {
-        return cb(errors.TRANSACTION_FAILED);
-      }
-
       // parse and serialize transaction parameters
       var packaged = augur.rpc.packageRequest(payload);
       packaged.from = this.account.address;

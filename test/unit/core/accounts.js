@@ -7,6 +7,7 @@ var keys = require("keythereum");
 var constants = require("../../../src/constants");
 var utils = require("../../../src/utilities");
 var abi = require('augur-abi');
+var ClearCallCounts = require('../../tools').ClearCallCounts;
 
 var accounts = [{
     loginID: undefined,
@@ -861,4 +862,304 @@ describe("accounts.getTxNonce", function() {
     }
   });
 });
-describe("accounts.invoke", function() {});
+describe("accounts.invoke", function() {
+  // 7 tests total
+  var packageRequest = augur.rpc.packageRequest;
+  var getTxNonce = augur.accounts.getTxNonce;
+  var getGasPrice = augur.rpc.getGasPrice;
+  var fire = augur.rpc.fire;
+  var block = augur.rpc.block;
+  var callCounts = {
+    packageRequest: 0,
+    getTxNonce: 0,
+    getGasPrice: 0,
+    fire: 0
+  };
+  afterEach(function() {
+    ClearCallCounts(callCounts);
+    augur.rpc.packageRequest = packageRequest;
+    augur.accounts.getTxNonce = getTxNonce;
+    augur.rpc.getGasPrice = getGasPrice;
+    augur.rpc.fire = fire;
+    augur.rpc.block = block;
+  });
+  var test = function(t) {
+    it(t.description, function() {
+      augur.rpc.packageRequest = t.packageRequest || packageRequest;
+      augur.accounts.getTxNonce = t.getTxNonce || getTxNonce;
+      augur.rpc.getGasPrice = t.getGasPrice || getGasPrice;
+      augur.rpc.fire = t.fire || fire;
+      augur.rpc.block = t.block || block;
+      augur.accounts.account = t.account || {};
+
+      var out = augur.accounts.invoke(t.payload, t.cb);
+      t.assertions(out);
+    });
+  };
+  test({
+    description: 'Should handle a simple call using ethrpcs regular invoke method',
+    payload: {
+      label: 'Get Branches',
+      method: 'getBranches',
+      returns: 'hash[]',
+      to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68'
+    },
+    fire: function(payload, cb) {
+      callCounts.fire++;
+      cb(payload);
+    },
+    cb: function(res) {
+      assert.deepEqual(res, augur.tx.Branches.getBranches);
+    },
+    assertions: function(out) {
+      assert.deepEqual(callCounts, {
+        packageRequest: 0,
+        getTxNonce: 0,
+        getGasPrice: 0,
+        fire: 1
+      });
+    }
+  });
+  test({
+    description: 'Should return a not logged in error on a non simple call if there is no currnetly logged in account',
+    payload: {
+      label: 'Add Market To Branch',
+      method: 'addMarketToBranch',
+      returns: 'int256',
+      send: true,
+      signature: ['int256', 'int256'],
+      params: ['101010', '0xa1'],
+      to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68'
+    },
+    cb: undefined,
+    assertions: function(out) {
+      assert.deepEqual(callCounts, {
+        packageRequest: 0,
+        getTxNonce: 0,
+        getGasPrice: 0,
+        fire: 0
+      });
+      assert.deepEqual(out, augur.errors.NOT_LOGGED_IN);
+    }
+  });
+  test({
+    description: 'Should return a transaction failed error on a non simple call when the payload is not an object',
+    payload: 'my not good payload',
+    account: { privateKey: "shh it's a secret!", address: '0x1' },
+    cb: undefined,
+    assertions: function(out) {
+      assert.deepEqual(callCounts, {
+        packageRequest: 0,
+        getTxNonce: 0,
+        getGasPrice: 0,
+        fire: 0
+      });
+      assert.deepEqual(out, augur.errors.TRANSACTION_FAILED);
+    }
+  });
+  test({
+    description: 'Should package a request where payload.gaslimit isnt defined, augur.rpc.block is null and package.gasPrice isnt defined. no nonce or value in the package.',
+    payload: {
+      label: 'Add Market To Branch',
+      method: 'addMarketToBranch',
+      returns: 'int256',
+      send: true,
+      signature: ['int256', 'int256'],
+      params: ['101010', '0xa1'],
+      to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68'
+    },
+    account: { privateKey: "shh it's a secret!", address: '0x1' },
+    cb: function(res) {
+      assert.deepEqual(res, {
+        from: '0x1',
+        to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68',
+        data: '0x772a646f0000000000000000000000000000000000000000000000000000000000018a9200000000000000000000000000000000000000000000000000000000000000a1',
+        gas: augur.rpc.DEFAULT_GAS,
+        returns: 'int256',
+        nonce: '0x0',
+        value: '0x0',
+        gasLimit: abi.hex(augur.constants.DEFAULT_GAS),
+        gasPrice: '0.045'
+      });
+      assert.deepEqual(callCounts, {
+        packageRequest: 1,
+        getTxNonce: 1,
+        getGasPrice: 1,
+        fire: 0
+      });
+    },
+    packageRequest: function(payload) {
+      callCounts.packageRequest++;
+      return {
+        from: payload.from,
+        to: payload.to,
+        data: abi.encode(payload),
+        gas: augur.rpc.DEFAULT_GAS,
+        returns: payload.returns
+      };
+    },
+    getGasPrice: function(cb) {
+      callCounts.getGasPrice++;
+      cb('0.045');
+    },
+    getTxNonce: function(packaged, cb) {
+      callCounts.getTxNonce++;
+      cb(packaged);
+    },
+    assertions: function(out) {
+      assert.isUndefined(out);
+    }
+  });
+  test({
+    description: 'Should handle a getGasPrice error and return a transaction failed error',
+    payload: {
+      label: 'Add Market To Branch',
+      method: 'addMarketToBranch',
+      returns: 'int256',
+      send: true,
+      signature: ['int256', 'int256'],
+      params: ['101010', '0xa1'],
+      to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68'
+    },
+    account: { privateKey: "shh it's a secret!", address: '0x1' },
+    cb: function(res) {
+      assert.deepEqual(res, augur.errors.TRANSACTION_FAILED);
+      assert.deepEqual(callCounts, {
+        packageRequest: 1,
+        getTxNonce: 0,
+        getGasPrice: 1,
+        fire: 0
+      });
+    },
+    packageRequest: function(payload) {
+      callCounts.packageRequest++;
+      return {
+        from: payload.from,
+        to: payload.to,
+        data: abi.encode(payload),
+        gas: augur.rpc.DEFAULT_GAS,
+        returns: payload.returns
+      };
+    },
+    getGasPrice: function(cb) {
+      callCounts.getGasPrice++;
+      cb({error: 999, message: 'Uh-Oh!'});
+    },
+    getTxNonce: function(packaged, cb) {
+      callCounts.getTxNonce++;
+      cb(packaged);
+    },
+    assertions: function(out) {
+      assert.isUndefined(out);
+    }
+  });
+  test({
+    description: 'Should handle packaging a request that has nonce & value, payload.gaslimit is undefined & augur.rpc.block is defined, payload.gasPrice is set',
+    payload: {
+      label: 'This is a Test Method',
+      method: 'testMethod',
+      returns: 'int256',
+      send: true,
+      signature: ['int256', 'int256'],
+      params: ['10', '0xa1'],
+      nonce: '0x3',
+      value: '0xa',
+      gasPrice: '0xfa01',
+      to: '0x0000000000000000000000000000000000000abc'
+    },
+    account: { privateKey: "shh it's a secret!", address: '0x1' },
+    cb: function(res) {
+      assert.deepEqual(res, {
+        from: '0x1',
+        to: '0x0000000000000000000000000000000000000abc',
+        data: '0x51966af5000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000a1',
+        gas: '0x2fd618',
+        returns: 'int256',
+        nonce: '0x3',
+        value: '0xa',
+        gasLimit: '0xf452',
+        gasPrice: '0xfa01'
+      });
+      assert.deepEqual(callCounts, {
+        packageRequest: 1,
+        getTxNonce: 1,
+        getGasPrice: 0,
+        fire: 0
+      });
+    },
+    packageRequest: function(payload) {
+      callCounts.packageRequest++;
+      return {
+        from: payload.from,
+        to: payload.to,
+        data: abi.encode(payload),
+        gas: augur.rpc.DEFAULT_GAS,
+        returns: payload.returns
+      };
+    },
+    block: { gasLimit: '0xf452' },
+    getTxNonce: function(packaged, cb) {
+      callCounts.getTxNonce++;
+      cb(packaged);
+    },
+    assertions: function(out) {
+      assert.isUndefined(out);
+    }
+  });
+  test({
+    description: 'Should handle packaging a request that has nonce & value, payload.gaslimit is defined, payload.gasPrice is undefined',
+    payload: {
+      label: 'This is a Test Method',
+      method: 'testMethod',
+      returns: 'int256',
+      send: true,
+      signature: ['int256', 'int256'],
+      params: ['10', '0xa1'],
+      nonce: '0x3',
+      value: '0xa',
+      gasLimit: '0xfb12',
+      to: '0x0000000000000000000000000000000000000abc'
+    },
+    account: { privateKey: "shh it's a secret!", address: '0x1' },
+    cb: function(res) {
+      assert.deepEqual(res, {
+        from: '0x1',
+        to: '0x0000000000000000000000000000000000000abc',
+        data: '0x51966af5000000000000000000000000000000000000000000000000000000000000000a00000000000000000000000000000000000000000000000000000000000000a1',
+        gas: '0x2fd618',
+        returns: 'int256',
+        nonce: '0x3',
+        value: '0xa',
+        gasLimit: '0xfb12',
+        gasPrice: '0xfa01'
+      });
+      assert.deepEqual(callCounts, {
+        packageRequest: 1,
+        getTxNonce: 1,
+        getGasPrice: 1,
+        fire: 0
+      });
+    },
+    packageRequest: function(payload) {
+      callCounts.packageRequest++;
+      return {
+        from: payload.from,
+        to: payload.to,
+        data: abi.encode(payload),
+        gas: augur.rpc.DEFAULT_GAS,
+        returns: payload.returns
+      };
+    },
+    getGasPrice: function(cb) {
+      callCounts.getGasPrice++;
+      cb('0xfa01');
+    },
+    getTxNonce: function(packaged, cb) {
+      callCounts.getTxNonce++;
+      cb(packaged);
+    },
+    assertions: function(out) {
+      assert.isUndefined(out);
+    }
+  });
+});
