@@ -53,6 +53,8 @@ export default class AuthSignup extends Component {
             isAuthErrorDisplayable: true
           });
         } else {
+          this.username.value = loginAccount.loginID;
+
           this.setState({
             loginAccount,
             isGeneratingLoginID: false,
@@ -64,6 +66,8 @@ export default class AuthSignup extends Component {
       nextState.password !== nextState.passwordConfirm &&
       this.state.loginAccount
     ) { // if a login account exists, clear it
+      this.username.value = '';
+
       this.setState({
         loginAccount: null,
         isGeneratingLoginID: false
@@ -111,21 +115,30 @@ export default class AuthSignup extends Component {
         className="auth-signup-form"
         onSubmit={(e) => {
           e.preventDefault();
+          e.persist();
 
-          if (s.password && s.loginAccount && loginID) {
-            p.registerAccount(s.password, loginID, s.rememberMe, s.loginAccount, (err) => {
-              if (err) {
-                this.setState({
-                  authError: true,
-                  errorMessage: err.message,
-                  isAuthErrorDisplayable: true
-                });
-              }
-            });
-          }
+          p.registerAccount(s.password, loginID, s.rememberMe, s.loginAccount, (err) => {
+            if (err) {
+              this.setState({
+                authError: true,
+                errorMessage: err.message,
+                isAuthErrorDisplayable: true
+              });
+            } else {
+              e.target.style.display = 'none';
+
+              history.replaceState(null, null, 'Force Chrome to Prompt For Password Storage');
+            }
+          });
         }}
       >
         <span className="soft-header">Sign up with a Login ID</span>
+        <input
+          name="username"
+          ref={(username) => { this.username = username; }}
+          readOnly
+          tabIndex="-1"
+        />
         <Input
           autoFocus
           canToggleVisibility
