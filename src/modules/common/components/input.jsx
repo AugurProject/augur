@@ -2,6 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 
+import debounce from 'utils/debounce';
+
 export default class Input extends Component {
   // TODO -- Prop Validations
   static propTypes = {
@@ -34,6 +36,7 @@ export default class Input extends Component {
     this.handleOnBlur = this.handleOnBlur.bind(this);
     this.handleClear = this.handleClear.bind(this);
     this.handleToggleVisibility = this.handleToggleVisibility.bind(this);
+    this.timeoutVisibleHiddenContent = debounce(this.timeoutVisibleHiddenContent.bind(this), 1200);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -45,6 +48,10 @@ export default class Input extends Component {
   componentWillUpdate(nextProps, nextState) {
     if (nextProps.canToggleVisibility && !nextState.value && nextState.isHiddenContentVisible) {
       this.setState({ isHiddenContentVisible: false });
+    }
+
+    if (this.state.isHiddenContentVisible !== nextState.isHiddenContentVisible && nextState.isHiddenContentVisible) {
+      this.timeoutVisibleHiddenContent();
     }
   }
 
@@ -79,6 +86,10 @@ export default class Input extends Component {
   handleToggleVisibility = () => {
     this.setState({ isHiddenContentVisible: !this.state.isHiddenContentVisible });
   };
+
+  timeoutVisibleHiddenContent = () => {
+    this.setState({ isHiddenContentVisible: false });
+  }
 
   render() {
     const { isClearable, isIncrementable, incrementAmount, updateValue, canToggleVisibility, shouldMatchValue, comparisonValue, ...p } = this.props;
