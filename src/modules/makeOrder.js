@@ -1,6 +1,7 @@
 "use strict";
 
 var parametrizeOrder = require('./parametrizeOrder');
+var utils = require("../utilities");
 
 module.exports = {
 
