@@ -24374,7 +24374,7 @@ BigNumber.config({
 var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/slashRep"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register"), require("./modules/tags"), require("./modules/modifyOrderBook")];
 
 function Augur() {
-  this.version = "3.10.4";
+  this.version = "3.10.5";
 
   this.options = {
     debug: {
@@ -48283,7 +48283,7 @@ function isFunction(f) {
 
 module.exports = {
 
-  version: "2.0.1",
+  version: "2.1.1",
 
   debug: false,
   rpc: rpc,
@@ -48893,8 +48893,8 @@ function wait(delay) {
   return;
 }
 
-var HOSTED_NODES = ["https://eth3.augur.net"];
-var HOSTED_WEBSOCKET = "wss://ws.augur.net";
+var HOSTED_NODES = ["https://eth9000.augur.net"];
+var HOSTED_WEBSOCKET = "wss://ws9000.augur.net";
 
 var noop = function () {};
 
