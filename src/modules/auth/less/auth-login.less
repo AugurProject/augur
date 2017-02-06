@@ -5,9 +5,11 @@
 
   .auth-login-password {
     border-top: 0;
-    height: 0;
-    opacity: 0;
     z-index: 30;
+
+    input[disabled] {
+      background-color: @color-gray-light;
+    }
   }
 
   .auth-login-actions {

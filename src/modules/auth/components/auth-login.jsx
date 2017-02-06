@@ -14,7 +14,6 @@ export default class AuthLogin extends Component {
       authError: false,
       errorMessage: null,
       // These prevent a flash on component mount
-      isPasswordDisplayable: false,
       isAuthErrorDisplayable: false,
       isLoginActionsDisplayable: false
     };
@@ -29,6 +28,7 @@ export default class AuthLogin extends Component {
         className="auth-login-form"
         onSubmit={(e) => {
           e.preventDefault();
+          e.persist();
 
           if (s.loginID && s.password) {
             p.submitLogin(s.loginID, s.password, s.rememberMe, (err) => {
@@ -38,6 +38,10 @@ export default class AuthLogin extends Component {
                   errorMessage: err.message,
                   isAuthErrorDisplayable: true
                 });
+              } else {
+                e.target.style.display = 'none';
+
+                history.replaceState(null, null, 'Force Chrome to Prompt For Password Storage');
               }
             });
           }
@@ -46,7 +50,7 @@ export default class AuthLogin extends Component {
         <span className="soft-header">Login with a Login ID</span>
         <Input
           className={classNames('auth-login-login-id', { 'input-error': s.authError })}
-          name="login-id"
+          name="username"
           type="text"
           placeholder="Login ID"
           autoFocus
@@ -57,22 +61,13 @@ export default class AuthLogin extends Component {
               this.setState({ password: '' });
             }
 
-            if (loginID && !this.state.isPasswordDisplayable) {
-              this.setState({ isPasswordDisplayable: true });
-            }
-
             if (this.state.authError) {
               this.setState({ authError: false });
             }
           }}
         />
         <Input
-          className={classNames('auth-login-password', {
-            'input-error': s.authError,
-            animateIn: s.loginID,
-            animateOut: !s.loginID && s.isPasswordDisplayable
-          })}
-          disabled={!s.loginID}
+          className={classNames('auth-login-password', { 'input-error': s.authError })}
           name="password"
           type="password"
           placeholder="Password"

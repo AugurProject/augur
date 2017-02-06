@@ -36,6 +36,8 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
         }));
       }));
 
+      cb();
+
       // decide if we need to display the loginMessage
       const { loginMessage } = getState();
       if (isUserLoggedIn(loginAccount) && !isCurrentLoginMessageRead(loginMessage)) {

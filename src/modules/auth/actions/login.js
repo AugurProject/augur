@@ -44,6 +44,8 @@ export function login(loginID, password, rememberMe, cb) {
           if (anyAccountBalancesZero(balances)) dispatch(fundNewAccount());
         }));
 
+        cb();
+
         // need to load selectors here as they get updated above
         const { links } = require('../../../selectors');
         if (isCurrentLoginMessageRead(getState().loginMessage)) {
