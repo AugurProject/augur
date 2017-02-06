@@ -71,6 +71,61 @@ module.exports = {
     });
   },
 
+  parseTradeReceipt: function (receipt) {
+    var sharesBought, cashFromTrade, tradingFees, logs, sig, logdata;
+    sharesBought = constants.ZERO;
+    cashFromTrade = constants.ZERO;
+    tradingFees = constants.ZERO;
+    if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
+      logs = receipt.logs;
+      sig = this.api.events.log_fill_tx.signature;
+      for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+        if (logs[i].topics[0] === sig) {
+          logdata = this.rpc.unmarshal(logs[i].data);
+          if (logdata && logdata.constructor === Array && logdata.length > 6) {
+            tradingFees = tradingFees.plus(abi.unfix(logdata[6]));
+            // buy (matched sell order)
+            if (parseInt(logdata[0], 16) === 1) {
+              sharesBought = sharesBought.plus(abi.unfix(logdata[2]));
+            // sell (matched buy order)
+            // cash received = price per share * shares sold
+            } else {
+              cashFromTrade = cashFromTrade.plus(abi.unfix_signed(logdata[8]).times(abi.unfix(logdata[2])));
+            }
+          }
+        }
+      }
+    }
+    return {
+      sharesBought: sharesBought.toFixed(),
+      cashFromTrade: cashFromTrade.toFixed(),
+      tradingFees: tradingFees.toFixed()
+    };
+  },
+
+  parseShortSellReceipt: function (receipt) {
+    var cashFromTrade, tradingFees, logs, sig, logdata;
+    cashFromTrade = constants.ZERO;
+    tradingFees = constants.ZERO;
+    if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
+      logs = receipt.logs;
+      sig = this.api.events.log_short_fill_tx.signature;
+      for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+        if (logs[i].topics[0] === sig) {
+          logdata = this.rpc.unmarshal(logs[i].data);
+          if (logdata && logdata.constructor === Array && logdata.length > 8) {
+            cashFromTrade = cashFromTrade.plus(abi.unfix_signed(logdata[8]).times(abi.unfix(logdata[1])));
+            tradingFees = tradingFees.plus(abi.unfix(logdata[5]));
+          }
+        }
+      }
+    }
+    return {
+      cashFromTrade: cashFromTrade.toFixed(),
+      tradingFees: tradingFees.toFixed()
+    };
+  },
+
   trade: function (max_value, max_amount, trade_ids, tradeGroupID, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
     var self = this;
     if (this.options.debug.trading) {
@@ -135,47 +190,23 @@ module.exports = {
                   err = self.rpc.errorCodes("trade", "number", result.callReturn[0]);
                   if (!err) {
                     err = clone(self.errors.TRADE_FAILED);
+                    err.hash = txHash;
                     err.message += result.callReturn[0].toString();
                     return onTradeFailed(err);
                   }
-                  return onTradeFailed({error: err, message: self.errors.trade[err], tx: tx});
+                  return onTradeFailed({error: err, message: self.errors.trade[err], tx: tx, hash: txHash});
                 }
                 self.rpc.receipt(txHash, function (receipt) {
                   if (!receipt) return onTradeFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
                   if (receipt.error) return onTradeFailed(receipt);
-                  var sharesBought, cashFromTrade, tradingFees, logs, sig, logdata;
-                  if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
-                    logs = receipt.logs;
-                    sig = self.api.events.log_fill_tx.signature;
-                    sharesBought = constants.ZERO;
-                    cashFromTrade = constants.ZERO;
-                    tradingFees = constants.ZERO;
-                    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
-                      if (logs[i].topics[0] === sig) {
-                        logdata = self.rpc.unmarshal(logs[i].data);
-                        if (logdata && logdata.constructor === Array && logdata.length > 6) {
-                          tradingFees = tradingFees.plus(abi.unfix(logdata[6]));
-
-                          // buy (matched sell order)
-                          if (parseInt(logdata[0], 16) === 1) {
-                            sharesBought = sharesBought.plus(abi.unfix(logdata[2]));
-
-                          // sell (matched buy order)
-                          // cash received = price per share * shares sold
-                          } else {
-                            cashFromTrade = cashFromTrade.plus(abi.unfix(abi.hex(logdata[8], true)).times(abi.unfix(logdata[2])));
-                          }
-                        }
-                      }
-                    }
-                  }
+                  var parsedReceipt = self.parseTradeReceipt(receipt);
                   cb({
                     hash: txHash,
-                    unmatchedCash: abi.unfix(abi.hex(result.callReturn[1], true), "string"),
+                    unmatchedCash: abi.unfix_signed(result.callReturn[1], "string"),
                     unmatchedShares: abi.unfix(result.callReturn[2], "string"),
-                    sharesBought: abi.string(sharesBought),
-                    cashFromTrade: abi.string(cashFromTrade),
-                    tradingFees: abi.string(tradingFees),
+                    sharesBought: parsedReceipt.sharesBought,
+                    cashFromTrade: parsedReceipt.cashFromTrade,
+                    tradingFees: parsedReceipt.tradingFees,
                     gasFees: result.gasFees,
                     timestamp: result.timestamp
                   });
@@ -184,10 +215,11 @@ module.exports = {
                 err = self.rpc.errorCodes("trade", "number", result.callReturn);
                 if (!err) {
                   err = clone(self.errors.TRADE_FAILED);
+                  err.hash = txHash;
                   err.message += result.callReturn.toString();
-                  return onTradeFailed(result);
+                  return onTradeFailed(err);
                 }
-                onTradeFailed({error: err, message: self.errors[err], tx: tx});
+                onTradeFailed({error: err, message: self.errors[err], tx: tx, hash: txHash});
               }
             };
             self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed);
@@ -253,37 +285,23 @@ module.exports = {
                   err = self.rpc.errorCodes("short_sell", "number", result.callReturn[0]);
                   if (!err) {
                     err = clone(self.errors.TRADE_FAILED);
+                    err.hash = txHash;
                     err.message += result.callReturn[0].toString();
                     return onTradeFailed(err);
                   }
-                  return onTradeFailed({error: err, message: self.errors.short_sell[err], tx: tx});
+                  return onTradeFailed({error: err, message: self.errors.short_sell[err], tx: tx, hash: txHash});
                 }
                 self.rpc.receipt(txHash, function (receipt) {
                   if (!receipt) return onTradeFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
                   if (receipt.error) return onTradeFailed(receipt);
-                  var cashFromTrade, tradingFees, logs, sig, logdata;
-                  if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
-                    logs = receipt.logs;
-                    sig = self.api.events.log_short_fill_tx.signature;
-                    cashFromTrade = constants.ZERO;
-                    tradingFees = constants.ZERO;
-                    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
-                      if (logs[i].topics[0] === sig) {
-                        logdata = self.rpc.unmarshal(logs[i].data);
-                        if (logdata && logdata.constructor === Array && logdata.length > 8) {
-                          cashFromTrade = cashFromTrade.plus(abi.unfix(abi.hex(logdata[8], true)).times(abi.unfix(logdata[1])));
-                          tradingFees = tradingFees.plus(abi.unfix(logdata[5]));
-                        }
-                      }
-                    }
-                  }
+                  var parsedReceipt = self.parseShortSellReceipt(receipt);
                   cb({
                     hash: txHash,
                     unmatchedShares: abi.unfix(result.callReturn[1], "string"),
-                    matchedShares: abi.unfix(abi.hex(result.callReturn[2], true), "string"),
-                    cashFromTrade: abi.string(cashFromTrade),
-                    price: abi.unfix(abi.hex(result.callReturn[3], true), "string"),
-                    tradingFees: abi.string(tradingFees),
+                    matchedShares: abi.unfix_signed(result.callReturn[2], "string"),
+                    cashFromTrade: parsedReceipt.cashFromTrade,
+                    price: abi.unfix_signed(result.callReturn[3], "string"),
+                    tradingFees: parsedReceipt.tradingFees,
                     gasFees: result.gasFees,
                     timestamp: result.timestamp
                   });
@@ -292,10 +310,11 @@ module.exports = {
                 err = self.rpc.errorCodes("short_sell", "number", result.callReturn);
                 if (!err) {
                   err = clone(self.errors.TRADE_FAILED);
+                  err.hash = txHash;
                   err.message += result.callReturn.toString();
-                  return onTradeFailed(result);
+                  return onTradeFailed(err);
                 }
-                onTradeFailed({error: err, message: self.errors.short_sell[err], tx: tx});
+                onTradeFailed({error: err, message: self.errors.short_sell[err], tx: tx, hash: txHash});
               }
             };
             self.transact(tx, onTradeSent, utils.compose(prepare, onTradeSuccess), onTradeFailed);
