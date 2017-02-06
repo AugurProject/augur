@@ -350,8 +350,9 @@ module.exports = {
   },
 
   roundToPrecision: function (value, minimum, round, roundingMode) {
-    if (value.lt(minimum || constants.PRECISION.zero)) return null;
-    if (value.lt(constants.PRECISION.limit)) {
+    var absValue = value.abs();
+    if (absValue.lt(minimum || constants.PRECISION.zero)) return null;
+    if (absValue.lt(constants.PRECISION.limit)) {
       value = value.toPrecision(constants.PRECISION.decimals, roundingMode || BigNumber.ROUND_DOWN);
     } else {
       value = value.times(constants.PRECISION.multiple)[round || 'floor']().dividedBy(constants.PRECISION.multiple).toFixed();

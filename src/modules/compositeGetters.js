@@ -181,12 +181,6 @@ module.exports = {
       callback);
   },
 
-  adjustScalarOrder: function (order, minValue) {
-    order.price = this.expandScalarPrice(minValue, order.price);
-    order.fullPrecisionPrice = this.expandScalarPrice(minValue, order.fullPrecisionPrice || order.price);
-    return order;
-  },
-
   parseOrderBook: function (orderArray, scalarMinMax) {
     if (!orderArray || orderArray.error) return orderArray;
     var minValue, order;

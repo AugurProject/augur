@@ -40,11 +40,13 @@ var modules = [
   require("./modules/selectOrder"),
   require("./modules/executeTrade"),
   require("./modules/positions"),
-  require("./modules/register")
+  require("./modules/register"),
+  require("./modules/tags"),
+  require("./modules/modifyOrderBook")
 ];
 
 function Augur() {
-  this.version = "3.9.19";
+  this.version = "3.10.5";
 
   this.options = {
     debug: {
