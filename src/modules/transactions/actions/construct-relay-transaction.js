@@ -118,6 +118,14 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
       if (abi.bignum(remainingShares).gt(abi.bignum(order.amount))) {
         amount = order.amount;
       }
+      let isEmptyTrade;
+      if (status === 'success') {
+        const unmatchedShares = abi.unfix(tx.response.callReturn[1]);
+        isEmptyTrade = unmatchedShares.eq(abi.bignum(p.max_amount));
+      }
+      if (isEmptyTrade) {
+        return dispatch(deleteTransaction(`${tx.response.hash}-${p.buyer_trade_id}`));
+      }
       if (status === 'submitted') {
         dispatch(deleteTransaction(`${transactionHash}-${p.buyer_trade_id}`));
         dispatch(fillOrder({
@@ -151,63 +159,67 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
       const numTradeIDs = p.trade_ids.length;
       const transactions = new Array(numTradeIDs);
       let remainingEth = abi.bignum(maxValue);
+      let isEmptyTrade;
+      if (status === 'success') {
+        const unmatchedCash = abi.unfix_signed(tx.response.callReturn[1]);
+        const unmatchedShares = abi.unfix(tx.response.callReturn[2]);
+        isEmptyTrade = unmatchedCash.eq(abi.unfix_signed(p.max_value)) && unmatchedShares.eq(abi.unfix(p.max_amount));
+      }
       for (let i = 0; i < numTradeIDs; ++i) {
         const order = orders[i];
-        let amount;
-        if (abi.bignum(remainingShares).gt(ZERO)) {
-          if (abi.bignum(remainingShares).gt(abi.bignum(order.amount))) {
-            amount = order.amount;
-          } else {
-            amount = remainingShares;
-          }
+        if (isEmptyTrade) {
+          dispatch(deleteTransaction(`${tx.response.hash}-${order.id}`));
         } else {
-          const market = marketsData[abi.format_int256(order.market)];
-          let price;
-          if (market.type === SCALAR) {
-            price = abi.bignum(augur.shrinkScalarPrice(market.minValue, order.price));
+          let amount;
+          if (abi.bignum(remainingShares).gt(ZERO)) {
+            if (abi.bignum(remainingShares).gt(abi.bignum(order.amount))) {
+              amount = order.amount;
+            } else {
+              amount = remainingShares;
+            }
           } else {
-            price = abi.bignum(order.price);
+            const market = marketsData[abi.format_int256(order.market)];
+            let price;
+            if (market.type === SCALAR) {
+              price = abi.bignum(augur.shrinkScalarPrice(market.minValue, order.price));
+            } else {
+              price = abi.bignum(order.price);
+            }
+            amount = remainingEth.minus(abi.bignum(tradingFees)).dividedBy(price);
+            if (amount.gt(abi.bignum(order.amount))) {
+              amount = order.amount;
+            } else {
+              amount = amount.toFixed();
+            }
+            remainingEth = remainingEth.minus(abi.bignum(amount).times(price));
           }
-          console.log('price:', price.toFixed());
-          amount = remainingEth.minus(abi.bignum(tradingFees)).dividedBy(price);
-          console.log('amount:', amount.toFixed());
-          if (amount.gt(abi.bignum(order.amount))) {
-            amount = order.amount;
-          } else {
-            amount = amount.toFixed();
+          if (status === 'submitted') {
+            dispatch(deleteTransaction(`${transactionHash}-${order.id}`));
+            dispatch(fillOrder({
+              type: order.type === 'buy' ? 'sell' : 'buy',
+              tradeid: order.id,
+              sender: tx.data.from,
+              owner: order.owner,
+              market: order.market,
+              amount,
+              price: order.price,
+              outcome: parseInt(order.outcome, 10)
+            }));
           }
-          remainingEth = remainingEth.minus(abi.bignum(amount).times(price));
-          console.log('adjusted amount:', amount);
-          console.log('remaining eth:', remainingEth.toFixed());
-        }
-        console.log('remainingShares:', remainingShares);
-        console.log('calculated amount:', amount);
-        if (status === 'submitted') {
-          dispatch(deleteTransaction(`${transactionHash}-${order.id}`));
-          dispatch(fillOrder({
-            type: order.type === 'buy' ? 'sell' : 'buy',
-            tradeid: order.id,
+          transactions[i] = dispatch(constructTradingTransaction('log_fill_tx', {
+            ...p,
+            price: order.price,
+            outcome: parseInt(order.outcome, 10),
+            amount,
             sender: tx.data.from,
             owner: order.owner,
-            market: order.market,
-            amount,
-            price: order.price,
-            outcome: parseInt(order.outcome, 10)
-          }));
+            type: order.type === 'buy' ? 'sell' : 'buy',
+            tradeid: order.id,
+            tradeHash,
+            takerFee: tradingFees,
+            gasFees
+          }, abi.format_int256(order.market), order.outcome, status));
         }
-        transactions[i] = dispatch(constructTradingTransaction('log_fill_tx', {
-          ...p,
-          price: order.price,
-          outcome: parseInt(order.outcome, 10),
-          amount,
-          sender: tx.data.from,
-          owner: order.owner,
-          type: order.type === 'buy' ? 'sell' : 'buy',
-          tradeid: order.id,
-          tradeHash,
-          takerFee: tradingFees,
-          gasFees
-        }, abi.format_int256(order.market), order.outcome, status));
       }
       return transactions;
     }
