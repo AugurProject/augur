@@ -1,4 +1,4 @@
-import { augur, rpc } from '../../../services/augurjs';
+import { abi, augur, rpc } from '../../../services/augurjs';
 import { SUBMITTED, SUCCESS } from '../../transactions/constants/statuses';
 import { NO_RELAY } from '../../transactions/constants/no-relay';
 import { formatRealEther } from '../../../utils/format-number';
@@ -11,8 +11,8 @@ export const handleRelayTransaction = tx => (dispatch, getState) => {
     const hash = tx.response.hash;
     const { loginAccount, tradeCommitment, transactionsData } = getState();
     if (tx.data.from === loginAccount.address) {
+      const gasFees = tx.response.gasFees || augur.getTxGasEth({ ...tx.data }, rpc.gasPrice).toFixed();
       if (hash) {
-        const gasFees = tx.response.gasFees || augur.getTxGasEth({ ...tx.data }, rpc.gasPrice).toFixed();
         if (tradeCommitment && tradeCommitment.orders && tradeCommitment.orders.length) {
           switch (tx.data.method) {
             case 'commitTrade':
@@ -23,14 +23,16 @@ export const handleRelayTransaction = tx => (dispatch, getState) => {
               if (relayTransaction) {
                 const numTransactions = relayTransaction.length;
                 for (let i = 0; i < numTransactions; ++i) {
-                  const id = Object.keys(relayTransaction[i])[0];
-                  if (transactionsData[id]) {
-                    dispatch(updateTransactionsData({
-                      [id]: { ...transactionsData[id], gasFees: formatRealEther(gasFees) }
-                    }));
-                  }
-                  if (!transactionsData[id] || transactionsData[id].status !== SUCCESS) {
-                    dispatch(updateTransactionsData(relayTransaction[i]));
+                  if (relayTransaction[i]) {
+                    const id = Object.keys(relayTransaction[i])[0];
+                    if (transactionsData[id]) {
+                      dispatch(updateTransactionsData({
+                        [id]: { ...transactionsData[id], gasFees: formatRealEther(gasFees) }
+                      }));
+                    }
+                    if (!transactionsData[id] || transactionsData[id].status !== SUCCESS) {
+                      dispatch(updateTransactionsData(relayTransaction[i]));
+                    }
                   }
                 }
               }
@@ -53,7 +55,26 @@ export const handleRelayTransaction = tx => (dispatch, getState) => {
           }
         }
       } else {
-        console.debug('other tx:', tx);
+        console.debug('***UNCAUGHT RELAYED TRANSACTION:', tx);
+        tx.hash = Date.now().toString() + '-' + abi.unfork(augur.utils.sha256(JSON.stringify(tx)));
+        console.debug('assigned txid:', tx.hash);
+        const relayTransaction = dispatch(constructRelayTransaction(tx, status));
+        if (relayTransaction) {
+          const numTransactions = relayTransaction.length;
+          for (let i = 0; i < numTransactions; ++i) {
+            if (relayTransaction[i]) {
+              const id = Object.keys(relayTransaction[i])[0];
+              if (transactionsData[id]) {
+                dispatch(updateTransactionsData({
+                  [id]: { ...transactionsData[id], gasFees: formatRealEther(gasFees) }
+                }));
+              }
+              if (!transactionsData[id] || transactionsData[id].status !== SUCCESS) {
+                dispatch(updateTransactionsData(relayTransaction[i]));
+              }
+            }
+          }
+        }
       }
     }
   }
