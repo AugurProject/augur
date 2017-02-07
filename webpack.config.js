@@ -54,7 +54,7 @@ let config = {
         }
       },
       {
-        test: /\.woff/,
+        test: /\.(woff|woff2|ttf|svg|eot|otf)/,
         loader: 'file-loader'
       },
       {
