@@ -7,7 +7,7 @@ import AugurLogoFull from 'modules/common/components/augur-logo-full';
 import AugurLogoIcon from 'modules/common/components/augur-logo-icon';
 import SideBarFilterIcon from 'modules/common/components/side-bar-filter-icon';
 
-import { ACCOUNT, MARKETS, TRANSACTIONS, MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views';
+import { ACCOUNT, MARKETS, TRANSACTIONS, MY_POSITIONS, MY_MARKETS, MY_REPORTS, AUTHENTICATION } from 'modules/app/constants/views';
 import { FAVORITES, PENDING_REPORTS } from 'modules/markets/constants/markets-headers';
 import { AUTH_TYPES } from 'modules/auth/constants/auth-types';
 
@@ -131,7 +131,7 @@ const Nav = (p) => {
             p.authLink.onClick();
             collapseFooter();
           }}
-          className={classnames('app-nav-link', AUTH_TYPES[p.activeView], { active: !!AUTH_TYPES[p.activeView] })}
+          className={classnames('app-nav-link', AUTHENTICATION, { active: p.activeView === AUTHENTICATION })}
         >
           <i className="nav-icon">
             <AugurLogoIcon />
