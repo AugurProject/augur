@@ -24374,7 +24374,7 @@ BigNumber.config({
 var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/slashRep"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register"), require("./modules/topics"), require("./modules/modifyOrderBook")];
 
 function Augur() {
-  this.version = "3.10.7";
+  this.version = "3.10.8";
 
   this.options = {
     debug: {
@@ -28522,24 +28522,17 @@ module.exports = {
     if (!utils.is_function(chunkCB)) chunkCB = utils.noop;
     if (!totalTopics) {
       return this.getNumTopicsInBranch(branch, function (totalTopics) {
-        console.log('totalTopics:', totalTopics);
         if (!totalTopics || totalTopics.error || !parseInt(totalTopics, 10)) {
           return callback(totalTopics);
         }
         self.getTopicsInfoChunked(branch, offset, Math.min(parseInt(totalTopics, 10), constants.ORDERBOOK_MAX_CHUNK_SIZE), totalTopics, chunkCB, callback);
       });
     }
-    console.log({
-      branch: branch,
-      offset: offset,
-      numTopicsToLoad: numTopicsToLoad || totalTopics
-    });
     this.getTopicsInfo({
       branch: branch,
       offset: offset,
       numTopicsToLoad: numTopicsToLoad || totalTopics
     }, function (topicsInfoChunk) {
-      console.log('got chunk:', topicsInfoChunk);
       if (!topicsInfoChunk || topicsInfoChunk.error) {
         console.error("getTopicsInfo failed:", branch, topicsInfoChunk);
         return callback(topicsInfoChunk);

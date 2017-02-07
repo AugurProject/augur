@@ -44,24 +44,17 @@ module.exports = {
     if (!utils.is_function(chunkCB)) chunkCB = utils.noop;
     if (!totalTopics) {
       return this.getNumTopicsInBranch(branch, function (totalTopics) {
-        console.log('totalTopics:', totalTopics);
         if (!totalTopics || totalTopics.error || !parseInt(totalTopics, 10)) {
           return callback(totalTopics);
         }
         self.getTopicsInfoChunked(branch, offset, Math.min(parseInt(totalTopics, 10), constants.ORDERBOOK_MAX_CHUNK_SIZE), totalTopics, chunkCB, callback);
       });
     }
-    console.log({
-      branch: branch,
-      offset: offset,
-      numTopicsToLoad: numTopicsToLoad || totalTopics
-    });
     this.getTopicsInfo({
       branch: branch,
       offset: offset,
       numTopicsToLoad: numTopicsToLoad || totalTopics
     }, function (topicsInfoChunk) {
-      console.log('got chunk:', topicsInfoChunk);
       if (!topicsInfoChunk || topicsInfoChunk.error) {
         console.error("getTopicsInfo failed:", branch, topicsInfoChunk);
         return callback(topicsInfoChunk);

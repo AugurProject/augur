@@ -147,7 +147,7 @@ describe('connect.bindContractMethod', function() {
         inputs: [ 'branch', 'topic', 'fxpAmount' ],
         label: 'Increase Topic Popularity',
         method: 'increaseTopicPopularity',
-        returns: 'int256',
+        returns: 'number',
         signature: [ 'int256', 'int256', 'int256' ],
         to: augur.tx.Topics.increaseTopicPopularity.to,
         params: [ '1010101', 'politics', '0x1ed09bead87c0378d8e6400000000' ]
@@ -175,7 +175,7 @@ describe('connect.bindContractMethod', function() {
         inputs: [ 'branch', 'topic', 'fxpAmount' ],
         label: 'Increase Topic Popularity',
         method: 'increaseTopicPopularity',
-        returns: 'int256',
+        returns: 'number',
         signature: [ 'int256', 'int256', 'int256' ],
         to: augur.tx.Topics.increaseTopicPopularity.to,
         params: [ '1010101', 'politics', '0x1ed09bead87c0378d8e6400000000' ]
