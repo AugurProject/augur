@@ -22,9 +22,7 @@ const MarketsFilterSort = p => (
           className="unstyled"
           onClick={() => { p.onChange(null, null, !p.selectedFilterSort.isDesc); }}
         >
-          <i>
-            {p.selectedFilterSort.isDesc ? '' : ''}
-          </i>
+          {p.selectedFilterSort.isDesc ? <i className="fa fa-sort-amount-desc" /> : <i className="fa fa-sort-amount-asc" />}
         </button>
       </div>
     </div>
