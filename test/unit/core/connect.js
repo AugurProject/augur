@@ -135,21 +135,21 @@ describe('connect.bindContractMethod', function() {
   });
   test({
     description: 'Should handle binding a method and then handling the method correctly when the method has inputs, without callback. method transaction has a parser, fixed, send false',
-    contract: 'Tags',
-    method: 'increaseTagPopularity',
+    contract: 'Topics',
+    method: 'increaseTopicPopularity',
     callMethod: function(method) {
-      // (branch, tag, fxpAmount, cb)
+      // (branch, topic, fxpAmount, cb)
       method('1010101', 'politics', '10000000000000000', undefined);
     },
     fire: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx,{
         fixed: [ 2 ],
-        inputs: [ 'branch', 'tag', 'fxpAmount' ],
-        label: 'Increase Tag Popularity',
-        method: 'increaseTagPopularity',
+        inputs: [ 'branch', 'topic', 'fxpAmount' ],
+        label: 'Increase Topic Popularity',
+        method: 'increaseTopicPopularity',
         returns: 'int256',
         signature: [ 'int256', 'int256', 'int256' ],
-        to: augur.tx.Tags.increaseTagPopularity.to,
+        to: augur.tx.Topics.increaseTopicPopularity.to,
         params: [ '1010101', 'politics', '0x1ed09bead87c0378d8e6400000000' ]
       });
       assert.isUndefined(onSent);
@@ -163,21 +163,21 @@ describe('connect.bindContractMethod', function() {
   });
   test({
     description: 'Should handle binding a method and then handling the method correctly when the method has inputs, with callback. method transaction has a parser, fixed, send false. arg as one object',
-    contract: 'Tags',
-    method: 'increaseTagPopularity',
+    contract: 'Topics',
+    method: 'increaseTopicPopularity',
     callMethod: function(method) {
-      // (branch, tag, fxpAmount, cb)
-      method({branch: '1010101', tag: 'politics', fxpAmount: '10000000000000000', callback: noop});
+      // (branch, topic, fxpAmount, cb)
+      method({branch: '1010101', topic: 'politics', fxpAmount: '10000000000000000', callback: noop});
     },
     fire: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx,{
         fixed: [ 2 ],
-        inputs: [ 'branch', 'tag', 'fxpAmount' ],
-        label: 'Increase Tag Popularity',
-        method: 'increaseTagPopularity',
+        inputs: [ 'branch', 'topic', 'fxpAmount' ],
+        label: 'Increase Topic Popularity',
+        method: 'increaseTopicPopularity',
         returns: 'int256',
         signature: [ 'int256', 'int256', 'int256' ],
-        to: augur.tx.Tags.increaseTagPopularity.to,
+        to: augur.tx.Topics.increaseTopicPopularity.to,
         params: [ '1010101', 'politics', '0x1ed09bead87c0378d8e6400000000' ]
       });
       assert.deepEqual(onSent, noop);

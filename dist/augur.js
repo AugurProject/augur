@@ -22160,39 +22160,39 @@ module.exports={
         ]
       }
     }, 
-    "Tags": {
-      "getNumTagsInBranch": {
+    "Topics": {
+      "getNumTopicsInBranch": {
         "inputs": [
           "branch"
         ], 
-        "label": "Get Num Tags In Branch", 
-        "method": "getNumTagsInBranch", 
-        "returns": "number", 
+        "label": "Get Num Topics In Branch", 
+        "method": "getNumTopicsInBranch", 
+        "returns": "int256", 
         "signature": [
           "int256"
         ]
       }, 
-      "getTagPopularity": {
+      "getTopicPopularity": {
         "inputs": [
           "branch", 
-          "tag"
+          "topic"
         ], 
-        "label": "Get Tag Popularity", 
-        "method": "getTagPopularity", 
+        "label": "Get Topic Popularity", 
+        "method": "getTopicPopularity", 
         "returns": "unfix", 
         "signature": [
           "int256", 
           "int256"
         ]
       }, 
-      "getTagsInBranch": {
+      "getTopicsInBranch": {
         "inputs": [
           "branch", 
           "offset", 
-          "numTagsToLoad"
+          "numTopicsToLoad"
         ], 
-        "label": "Get Tags In Branch", 
-        "method": "getTagsInBranch", 
+        "label": "Get Topics In Branch", 
+        "method": "getTopicsInBranch", 
         "returns": "int256[]", 
         "signature": [
           "int256", 
@@ -22200,15 +22200,14 @@ module.exports={
           "int256"
         ]
       }, 
-      "getTagsInfo": {
+      "getTopicsInfo": {
         "inputs": [
           "branch", 
           "offset", 
-          "numTagsToLoad"
+          "numTopicsToLoad"
         ], 
-        "label": "Get Tags Info", 
-        "method": "getTagsInfo", 
-        "parser": "parseTagsInfo", 
+        "label": "Get Topics Info", 
+        "method": "getTopicsInfo", 
         "returns": "int256[]", 
         "signature": [
           "int256", 
@@ -22216,17 +22215,17 @@ module.exports={
           "int256"
         ]
       }, 
-      "increaseTagPopularity": {
+      "increaseTopicPopularity": {
         "fixed": [
           2
         ], 
         "inputs": [
           "branch", 
-          "tag", 
+          "topic", 
           "fxpAmount"
         ], 
-        "label": "Increase Tag Popularity", 
-        "method": "increaseTagPopularity", 
+        "label": "Increase Topic Popularity", 
+        "method": "increaseTopicPopularity", 
         "returns": "int256", 
         "signature": [
           "int256", 
@@ -22504,39 +22503,39 @@ module.exports={
 module.exports={
     "10101": {
         "Backstops": "0x708fdfe18bf28afe861a69e95419d183ace003eb", 
-        "Branches": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
+        "Branches": "0x482c57abdce592b39434e3f619ffc3db62ab6d01", 
         "BuyAndSellShares": "0x031d9d02520cc708ea3c865278508c9cdb92bd51", 
-        "Cash": "0xe4714fcbdcdba49629bc408183ef40d120700b8d", 
+        "Cash": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55", 
         "CloseMarket": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79", 
-        "CollectFees": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d", 
-        "CompleteSets": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
+        "CollectFees": "0x81a7621e9a286d061b3dea040888a51c96693b1c", 
+        "CompleteSets": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7", 
         "CompositeGetters": "0xcece47d6c0a6a1c90521f38ec5bf7550df983804", 
         "Consensus": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68", 
-        "ConsensusData": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd", 
-        "CreateBranch": "0x35152caa07026203a1add680771afb690d872d7d", 
-        "CreateMarket": "0x81a7621e9a286d061b3dea040888a51c96693b1c", 
-        "EventResolution": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e", 
+        "ConsensusData": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
+        "CreateBranch": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
+        "CreateMarket": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7", 
+        "EventResolution": "0x3f3276849a878a176b2f02dd48a483e8182a49e4", 
         "Events": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7", 
-        "ExpiringEvents": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6", 
-        "Faucets": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3", 
-        "ForkPenalize": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7", 
-        "Forking": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7", 
-        "FxpFunctions": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
+        "ExpiringEvents": "0xe4714fcbdcdba49629bc408183ef40d120700b8d", 
+        "Faucets": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e", 
+        "ForkPenalize": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7", 
+        "Forking": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f", 
+        "FxpFunctions": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3", 
         "Info": "0x8a4e2993a9972ee035453bb5674816fc3a698718", 
-        "MakeReports": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
-        "Markets": "0x482c57abdce592b39434e3f619ffc3db62ab6d01", 
-        "Payout": "0x3f3276849a878a176b2f02dd48a483e8182a49e4", 
-        "PenalizationCatchup": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea", 
-        "PenalizeNotEnoughReports": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2", 
+        "MakeReports": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2", 
+        "Markets": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea", 
+        "Payout": "0x35152caa07026203a1add680771afb690d872d7d", 
+        "PenalizationCatchup": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd", 
+        "PenalizeNotEnoughReports": "0x8c19616de17acdfbc933b99d9f529a689d22098f", 
         "ProportionCorrect": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2", 
         "Register": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c", 
-        "Reporting": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7", 
-        "ReportingThreshold": "0x8c19616de17acdfbc933b99d9f529a689d22098f", 
-        "RoundTwo": "0xcd6c7bc634257f82903b182142aae7156d72a200", 
-        "RoundTwoPenalize": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f", 
-        "SendReputation": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
-        "SlashRep": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
-        "Tags": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55", 
+        "Reporting": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6", 
+        "ReportingThreshold": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
+        "RoundTwo": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
+        "RoundTwoPenalize": "0xcd6c7bc634257f82903b182142aae7156d72a200", 
+        "SendReputation": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
+        "SlashRep": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
+        "Topics": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d", 
         "Trade": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945", 
         "Trades": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3"
     }, 
@@ -22574,45 +22573,45 @@ module.exports={
         "RoundTwoPenalize": "0x7793ac2576434e7a144c2f6e7811570f8573257f", 
         "SendReputation": "0x48a39030c67805efb4a5885e9045aa2dd64b9149", 
         "SlashRep": "0xa065f7de83da8f2fd118a7ea3b937f2d291df1d5", 
-        "Tags": "0x064b8c2d90379ecd33bcd443ff705b4fe1898fe9", 
+        "Topics": "0x064b8c2d90379ecd33bcd443ff705b4fe1898fe9", 
         "Trade": "0xb9353a53d6aa6a8b38ada5406a550bfba529b0c5", 
         "Trades": "0x3c441d5ee644ce87a89aa06d7baba4613024c777"
     }, 
     "9000": {
         "Backstops": "0x708fdfe18bf28afe861a69e95419d183ace003eb", 
-        "Branches": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
+        "Branches": "0x482c57abdce592b39434e3f619ffc3db62ab6d01", 
         "BuyAndSellShares": "0x031d9d02520cc708ea3c865278508c9cdb92bd51", 
-        "Cash": "0xe4714fcbdcdba49629bc408183ef40d120700b8d", 
+        "Cash": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55", 
         "CloseMarket": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79", 
-        "CollectFees": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d", 
-        "CompleteSets": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
+        "CollectFees": "0x81a7621e9a286d061b3dea040888a51c96693b1c", 
+        "CompleteSets": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7", 
         "CompositeGetters": "0xcece47d6c0a6a1c90521f38ec5bf7550df983804", 
         "Consensus": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68", 
-        "ConsensusData": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd", 
-        "CreateBranch": "0x35152caa07026203a1add680771afb690d872d7d", 
-        "CreateMarket": "0x81a7621e9a286d061b3dea040888a51c96693b1c", 
-        "EventResolution": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e", 
+        "ConsensusData": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
+        "CreateBranch": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
+        "CreateMarket": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7", 
+        "EventResolution": "0x3f3276849a878a176b2f02dd48a483e8182a49e4", 
         "Events": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7", 
-        "ExpiringEvents": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6", 
-        "Faucets": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3", 
-        "ForkPenalize": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7", 
-        "Forking": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7", 
-        "FxpFunctions": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
+        "ExpiringEvents": "0xe4714fcbdcdba49629bc408183ef40d120700b8d", 
+        "Faucets": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e", 
+        "ForkPenalize": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7", 
+        "Forking": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f", 
+        "FxpFunctions": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3", 
         "Info": "0x8a4e2993a9972ee035453bb5674816fc3a698718", 
-        "MakeReports": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
-        "Markets": "0x482c57abdce592b39434e3f619ffc3db62ab6d01", 
-        "Payout": "0x3f3276849a878a176b2f02dd48a483e8182a49e4", 
-        "PenalizationCatchup": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea", 
-        "PenalizeNotEnoughReports": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2", 
+        "MakeReports": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2", 
+        "Markets": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea", 
+        "Payout": "0x35152caa07026203a1add680771afb690d872d7d", 
+        "PenalizationCatchup": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd", 
+        "PenalizeNotEnoughReports": "0x8c19616de17acdfbc933b99d9f529a689d22098f", 
         "ProportionCorrect": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2", 
         "Register": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c", 
-        "Reporting": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7", 
-        "ReportingThreshold": "0x8c19616de17acdfbc933b99d9f529a689d22098f", 
-        "RoundTwo": "0xcd6c7bc634257f82903b182142aae7156d72a200", 
-        "RoundTwoPenalize": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f", 
-        "SendReputation": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
-        "SlashRep": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
-        "Tags": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55", 
+        "Reporting": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6", 
+        "ReportingThreshold": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
+        "RoundTwo": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
+        "RoundTwoPenalize": "0xcd6c7bc634257f82903b182142aae7156d72a200", 
+        "SendReputation": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
+        "SlashRep": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
+        "Topics": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d", 
         "Trade": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945", 
         "Trades": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3"
     }
@@ -24371,10 +24370,10 @@ BigNumber.config({
   ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
 });
 
-var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/slashRep"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register"), require("./modules/tags"), require("./modules/modifyOrderBook")];
+var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/slashRep"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register"), require("./modules/topics"), require("./modules/modifyOrderBook")];
 
 function Augur() {
-  this.version = "3.10.5";
+  this.version = "3.10.6";
 
   this.options = {
     debug: {
@@ -24429,7 +24428,7 @@ Augur.prototype.AugurNode = require("./augurNode");
 
 module.exports = new Augur();
 }).call(this,require('_process'))
-},{"../test/tools":283,"./accounts":61,"./augurNode":62,"./batch":63,"./chat":64,"./constants":65,"./filters":66,"./generateOrderBook":67,"./modules/abacus":69,"./modules/buyAndSellShares":70,"./modules/cash":71,"./modules/collectFees":72,"./modules/compositeGetters":73,"./modules/connect":74,"./modules/createBranch":75,"./modules/createMarket":76,"./modules/events":77,"./modules/executeTrade":78,"./modules/logs":79,"./modules/makeOrder":80,"./modules/makeReports":81,"./modules/markets":82,"./modules/modifyOrderBook":83,"./modules/payout":85,"./modules/placeTrade":86,"./modules/positions":87,"./modules/register":88,"./modules/reporting":89,"./modules/selectOrder":90,"./modules/sendReputation":91,"./modules/slashRep":92,"./modules/tags":94,"./modules/takeOrder":95,"./modules/trade":96,"./modules/tradingActions":97,"./modules/transact":98,"./utilities":99,"_process":231,"augur-abi":1,"bignumber.js":121,"ethrpc":288}],69:[function(require,module,exports){
+},{"../test/tools":283,"./accounts":61,"./augurNode":62,"./batch":63,"./chat":64,"./constants":65,"./filters":66,"./generateOrderBook":67,"./modules/abacus":69,"./modules/buyAndSellShares":70,"./modules/cash":71,"./modules/collectFees":72,"./modules/compositeGetters":73,"./modules/connect":74,"./modules/createBranch":75,"./modules/createMarket":76,"./modules/events":77,"./modules/executeTrade":78,"./modules/logs":79,"./modules/makeOrder":80,"./modules/makeReports":81,"./modules/markets":82,"./modules/modifyOrderBook":83,"./modules/payout":85,"./modules/placeTrade":86,"./modules/positions":87,"./modules/register":88,"./modules/reporting":89,"./modules/selectOrder":90,"./modules/sendReputation":91,"./modules/slashRep":92,"./modules/takeOrder":94,"./modules/topics":95,"./modules/trade":96,"./modules/tradingActions":97,"./modules/transact":98,"./utilities":99,"_process":231,"augur-abi":1,"bignumber.js":121,"ethrpc":288}],69:[function(require,module,exports){
 (function (Buffer){
 /**
  * Utility functions that do a local calculation (i.e., these functions do not
@@ -28354,83 +28353,6 @@ module.exports = function (numShares, position) {
   return { askShares: askShares, shortAskShares: shortAskShares };
 };
 },{"../constants":65,"bignumber.js":121}],94:[function(require,module,exports){
-/**
- * Augur JavaScript SDK
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var abi = require("augur-abi");
-var utils = require("../utilities");
-var constants = require("../constants");
-
-module.exports = {
-
-  sortTagsInfo: function sortTagsInfo(tag1, tag2) {
-    return tag2.popularity - tag1.popularity;
-  },
-
-  parseTagsInfo: function parseTagsInfo(tagsInfo) {
-    var parsedTagsInfo = [];
-    for (var i = 0, len = tagsInfo.length; i < len; i += 2) {
-      parsedTagsInfo.push({
-        tag: this.decodeTag(tagsInfo[i]),
-        popularity: abi.unfix(tagsInfo[i + 1], "number")
-      });
-    }
-    return parsedTagsInfo.sort(this.sortTagsInfo);
-  },
-
-  getTagsInfo: function getTagsInfo(branch, offset, numTagsToLoad, callback) {
-    if (!callback) {
-      if (utils.is_function(offset)) {
-        callback = offset;
-        offset = null;
-        numTagsToLoad = null;
-      } else if (utils.is_function(numTagsToLoad)) {
-        callback = numTagsToLoad;
-        numTagsToLoad = null;
-      }
-    }
-    if (branch && branch.branch) {
-      offset = branch.offset;
-      numTagsToLoad = branch.numTagsToLoad;
-      callback = callback || branch.callback;
-      branch = branch.branch;
-    }
-    return this.Tags.getTagsInfo(branch, offset || 0, numTagsToLoad || 0, callback);
-  },
-
-  getTagsInfoChunked: function getTagsInfoChunked(branch, offset, numTagsToLoad, totalTags, chunkCB, callback) {
-    var self = this;
-    if (!utils.is_function(chunkCB)) chunkCB = utils.noop;
-    if (!totalTags) {
-      return this.getNumTagsInBranch(branch, function (totalTags) {
-        if (!totalTags || totalTags.error || !parseInt(totalTags, 10)) {
-          return callback(totalTags);
-        }
-        self.getTagsInfoChunked(branch, offset, Math.min(parseInt(totalTags, 10), constants.ORDERBOOK_MAX_CHUNK_SIZE), totalTags, chunkCB, callback);
-      });
-    }
-    this.getTagsInfo({
-      branch: branch,
-      offset: offset,
-      numTagsToLoad: numTagsToLoad || totalTags
-    }, function (tagsInfoChunk) {
-      if (!tagsInfoChunk || tagsInfoChunk.error) {
-        console.error("getTagsInfo failed:", branch, tagsInfoChunk);
-        return callback(tagsInfoChunk);
-      }
-      chunkCB(tagsInfoChunk);
-      if (offset + numTagsToLoad < totalTags) {
-        return self.getTagsInfoChunked(branch, offset + numTagsToLoad, numTagsToLoad, totalTags, chunkCB, callback);
-      }
-      callback(null);
-    });
-  }
-};
-},{"../constants":65,"../utilities":99,"augur-abi":1}],95:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -28552,7 +28474,77 @@ module.exports = {
   }
 
 };
-},{"../constants":65,"../utilities":99,"./abacus":69,"./splitOrder":93,"async":118,"augur-abi":1,"bignumber.js":121,"clone":159,"ethrpc":288,"uuid":277,"uuid-parse":275}],96:[function(require,module,exports){
+},{"../constants":65,"../utilities":99,"./abacus":69,"./splitOrder":93,"async":118,"augur-abi":1,"bignumber.js":121,"clone":159,"ethrpc":288,"uuid":277,"uuid-parse":275}],95:[function(require,module,exports){
+/**
+ * Augur JavaScript SDK
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var abi = require("augur-abi");
+var utils = require("../utilities");
+var constants = require("../constants");
+
+module.exports = {
+
+  parseTopicsInfo: function parseTopicsInfo(topicsInfo) {
+    var parsedTopicsInfo = {};
+    for (var i = 0, len = topicsInfo.length; i < len; i += 2) {
+      parsedTopicsInfo[this.decodeTag(topicsInfo[i])] = abi.unfix(topicsInfo[i + 1], "number");
+    }
+    return parsedTopicsInfo;
+  },
+
+  getTopicsInfo: function getTopicsInfo(branch, offset, numTopicsToLoad, callback) {
+    if (!callback) {
+      if (utils.is_function(offset)) {
+        callback = offset;
+        offset = null;
+        numTopicsToLoad = null;
+      } else if (utils.is_function(numTopicsToLoad)) {
+        callback = numTopicsToLoad;
+        numTopicsToLoad = null;
+      }
+    }
+    if (branch && branch.branch) {
+      offset = branch.offset;
+      numTopicsToLoad = branch.numTopicsToLoad;
+      callback = callback || branch.callback;
+      branch = branch.branch;
+    }
+    return this.Topics.getTopicsInfo(branch, offset || 0, numTopicsToLoad || 0, callback);
+  },
+
+  getTopicsInfoChunked: function getTopicsInfoChunked(branch, offset, numTopicsToLoad, totalTopics, chunkCB, callback) {
+    var self = this;
+    if (!utils.is_function(chunkCB)) chunkCB = utils.noop;
+    if (!totalTopics) {
+      return this.getNumTopicsInBranch(branch, function (totalTopics) {
+        if (!totalTopics || totalTopics.error || !parseInt(totalTopics, 10)) {
+          return callback(totalTopics);
+        }
+        self.getTopicsInfoChunked(branch, offset, Math.min(parseInt(totalTopics, 10), constants.ORDERBOOK_MAX_CHUNK_SIZE), totalTopics, chunkCB, callback);
+      });
+    }
+    this.getTopicsInfo({
+      branch: branch,
+      offset: offset,
+      numTopicsToLoad: numTopicsToLoad || totalTopics
+    }, function (topicsInfoChunk) {
+      if (!topicsInfoChunk || topicsInfoChunk.error) {
+        console.error("getTopicsInfo failed:", branch, topicsInfoChunk);
+        return callback(topicsInfoChunk);
+      }
+      chunkCB(topicsInfoChunk);
+      if (offset + numTopicsToLoad < totalTopics) {
+        return self.getTopicsInfoChunked(branch, offset + numTopicsToLoad, numTopicsToLoad, totalTopics, chunkCB, callback);
+      }
+      callback(null);
+    });
+  }
+};
+},{"../constants":65,"../utilities":99,"augur-abi":1}],96:[function(require,module,exports){
 "use strict";
 
 var clone = require("clone");
