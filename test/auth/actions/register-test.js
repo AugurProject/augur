@@ -79,13 +79,15 @@ describe(`modules/auth/actions/register.js`, () => {
       type: 'updateLoginAccount(loginAccount) called.'
     }, {
       type: 'loadLoginAccountDependents() called.'
+    }, {
+      type: 'updateLoginAccount(loginAccount) called.'
     }];
 
     store.dispatch(action.register('newUser', 'Passw0rd', 'Passw0rd', undefined, false, undefined, fakeCallback));
     // Call again to simulate someone pasting loginID and then hitting signUp
-    store.dispatch(action.register('newUser', 'Passw0rd', 'Passw0rd', testState.loginAccount.loginID, false, testState.loginAccount, undefined));
+    store.dispatch(action.register('newUser', 'Passw0rd', 'Passw0rd', testState.loginAccount.loginID, false, testState.loginAccount, fakeCallback));
 
-    assert(fakeCallback.calledOnce, `the callback wasn't triggered 1 time as expected`);
+    assert(fakeCallback.calledThrice, `the callback wasn't triggered 3 times as expected`);
     assert.deepEqual(store.getActions(), expectedOutput, `Didn't create a new account as expected`);
   });
 });

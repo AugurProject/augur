@@ -10,12 +10,12 @@ export function login(loginID, password, rememberMe, cb) {
   return (dispatch, getState) => {
     accounts.login(loginID, password, (account) => {
       if (!account) {
-        cb({
+        cb && cb({
           code: 0,
           message: 'failed to login'
         });
       } else if (account.error) {
-        cb({
+        cb && cb({
           code: account.error,
           message: account.message
         });
@@ -44,7 +44,7 @@ export function login(loginID, password, rememberMe, cb) {
           if (anyAccountBalancesZero(balances)) dispatch(fundNewAccount());
         }));
 
-        cb();
+        cb && cb();
 
         // need to load selectors here as they get updated above
         const { links } = require('../../../selectors');

@@ -36,7 +36,7 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
         }));
       }));
 
-      cb();
+      cb && cb();
 
       // decide if we need to display the loginMessage
       const { loginMessage } = getState();
@@ -49,12 +49,12 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
 
     augur.accounts.register(name, password, (account) => {
       if (!account) {
-        cb({
+        cb && cb({
           code: 0,
           message: 'failed to register'
         });
       } else if (account.error) {
-        cb({
+        cb && cb({
           code: account.error,
           message: account.message
         });
@@ -68,9 +68,7 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
       }
       dispatch(updateLoginAccount({ loginID: localLoginAccount.loginID }));
       // dispatch(addFundNewAccount(localLoginAccount.address));
-      if (typeof cb === 'function') {
-        cb(null, localLoginAccount);
-      }
+      cb && cb(null, localLoginAccount);
     });
   };
 }
