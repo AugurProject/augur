@@ -19,14 +19,8 @@ export default function (title, params) {
         }
         break;
       }
-      case views.REGISTER:
-        setDocumentTitle(titles.REGISTER);
-        break;
-      case views.LOGIN:
-        setDocumentTitle(titles.LOGIN);
-        break;
-      case views.IMPORT:
-        setDocumentTitle(titles.IMPORT);
+      case views.AUTHENTICATION:
+        setDocumentTitle(titles.AUTHENTICATION);
         break;
       case views.MAKE:
         setDocumentTitle(titles.CREATE);

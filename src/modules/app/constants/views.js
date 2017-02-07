@@ -5,9 +5,7 @@ export const MAKE = 'make';
 export const TRANSACTIONS = 'transactions';
 export const ACCOUNT = 'account';
 export const LOGIN_MESSAGE = 'login-message';
-export const REGISTER = 'register';
-export const LOGIN = 'login';
-export const IMPORT = 'import';
+export const AUTHENTICATION = 'authentication';
 
 export const DEFAULT_VIEW = MARKETS;
 

@@ -3,7 +3,7 @@ import { listWordsUnderLength } from '../../../utils/list-words-under-length';
 import { makeLocation } from '../../../utils/parse-url';
 import { loginWithAirbitz } from '../../auth/actions/login-with-airbitz';
 
-import { ACCOUNT, M, MARKETS, MAKE, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS, LOGIN_MESSAGE, REGISTER, LOGIN, IMPORT } from '../../app/constants/views';
+import { ACCOUNT, M, MARKETS, MAKE, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS, LOGIN_MESSAGE, AUTHENTICATION } from '../../app/constants/views';
 import { FAVORITES, PENDING_REPORTS } from '../../markets/constants/markets-headers';
 
 import { SEARCH_PARAM_NAME, FILTER_SORT_TYPE_PARAM_NAME, FILTER_SORT_SORT_PARAM_NAME, FILTER_SORT_ISDESC_PARAM_NAME, PAGE_PARAM_NAME, TAGS_PARAM_NAME } from '../../link/constants/param-names';
@@ -57,21 +57,7 @@ export const selectPreviousLink = memoizerific(1)((dispatch) => {
 });
 
 export const selectAuthLink = memoizerific(1)((authType, alsoLogout, dispatch) => {
-  const determineLocation = () => {
-    if (alsoLogout) {
-      return makeLocation({ page: LOGIN }).url;
-    }
-
-    switch (authType) {
-      case IMPORT:
-        return makeLocation({ page: IMPORT }).url;
-      case LOGIN:
-        return makeLocation({ page: LOGIN }).url;
-      case REGISTER:
-      default:
-        return makeLocation({ page: REGISTER }).url;
-    }
-  };
+  const determineLocation = () => makeLocation({ page: AUTHENTICATION }).url;
 
   const href = determineLocation();
 
