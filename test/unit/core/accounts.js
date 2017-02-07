@@ -166,7 +166,172 @@ describe("accounts.register", function() {
     }
   });
 });
-describe("accounts.fundNewAccountFromFaucet", function() {});
+describe("accounts.fundNewAccountFromFaucet", function() {
+  // ? tests total
+  var balance = augur.rpc.balance;
+  var fundNewAccount = augur.fundNewAccount;
+  var fastforward = augur.rpc.fastforward;
+  var FAUCET = constants.FAUCET;
+  var finished;
+  var callCounts = {
+    balance: 0,
+    fastforward: 0
+  };
+  afterEach(function() {
+    ClearCallCounts(callCounts);
+    augur.rpc.balance = balance;
+    augur.fundNewAccount = fundNewAccount;
+    augur.rpc.fastforward = fastforward;
+    constants.FAUCET = FAUCET;
+  });
+  var test = function(t) {
+    it(t.description, function(done) {
+      augur.rpc.balance = t.balance || balance;
+      augur.fundNewAccount = t.fundNewAccount || fundNewAccount;
+      augur.rpc.fastforward = t.fastforward || fastforward;
+      constants.FAUCET = t.faucet || FAUCET;
+
+      finished = done;
+
+      augur.accounts.fundNewAccountFromFaucet(t.registeredAddress, t.branch, t.onSent, t.onSuccess, t.onFailed);
+    });
+  };
+  test({
+    description: 'Should return the registeredAddress to onFailed if registeredAddress is null',
+    registeredAddress: null,
+    branch: '101010',
+    onFailed: function(err) {
+      assert.isNull(err);
+      assert.deepEqual(callCounts, {
+        balance: 0,
+        fastforward: 0
+      });
+      finished();
+    }
+  });
+  test({
+    description: 'Should return the registeredAddress to onFailed if registeredAddress is undefined',
+    registeredAddress: undefined,
+    branch: '101010',
+    onFailed: function(err) {
+      assert.isUndefined(err);
+      assert.deepEqual(callCounts, {
+        balance: 0,
+        fastforward: 0
+      });
+      finished();
+    }
+  });
+  test({
+    description: 'Should return the registeredAddress to onFailed if registeredAddress is not a string',
+    registeredAddress: {},
+    branch: '101010',
+    onFailed: function(err) {
+      assert.deepEqual(err, {});
+      assert.deepEqual(callCounts, {
+        balance: 0,
+        fastforward: 0
+      });
+      finished();
+    }
+  });
+  test({
+    description: 'If the request to the URL returns an error, pass the error to onFailed',
+    registeredAddress: '0x1',
+    branch: '101010',
+    onFailed: function(err) {
+      assert.deepEqual(err, new Error('Invalid URI "NotavalidURL0x0000000000000000000000000000000000000001"'));
+      assert.deepEqual(callCounts, {
+        balance: 0,
+        fastforward: 0
+      });
+      finished();
+    },
+    faucet: 'NotavalidURL'
+  });
+  test({
+    description: 'If the request to the URL returns a status not equal to 200',
+    registeredAddress: '0x1',
+    branch: '101010',
+    onFailed: function(err) {
+      assert.deepEqual(err, 404);
+      assert.deepEqual(callCounts, {
+        balance: 0,
+        fastforward: 0
+      });
+      finished();
+    },
+    faucet: 'http://www.google.com/'
+  });
+  test({
+    description: 'If the request to the URL returns a status of 200, and augur.rpc.balance returns a number greater than 0 we call fundNewAccount',
+    registeredAddress: '0x1',
+    balance: function(address, cb) {
+      callCounts.balance++;
+      assert.deepEqual(address, '0x1');
+      cb('1000');
+    },
+    fundNewAccount: function(arg) {
+      assert.deepEqual(arg, {
+        branch: constants.DEFAULT_BRANCH_ID,
+        onSent: utils.noop,
+        onSuccess: utils.noop,
+        onFailed: utils.noop
+      });
+      assert.deepEqual(callCounts, {
+        balance: 1,
+        fastforward: 0
+      });
+      finished();
+    },
+    faucet: 'http://www.google.com/search?q='
+  });
+  test({
+    description: 'Should retry to fund account by fastforwarding through the blocks until we hit the most recent block and balance returns a value greater than 0',
+    registeredAddress: '0x1',
+    branch: '101010',
+    onSent: utils.pass,
+    onSuccess: utils.pass,
+    onFailed: utils.pass,
+    balance: function(address, cb) {
+      callCounts.balance++;
+      assert.deepEqual(address, '0x1');
+      switch(callCounts.balance) {
+      case 5:
+        cb('1000');
+        break;
+      default:
+        cb('0');
+        break;
+      }
+    },
+    fastforward: function(blocks, cb) {
+      callCounts.fastforward++;
+      switch(callCounts.fastforward) {
+      case 4:
+        cb('101010');
+        break;
+      default:
+        cb('101009');
+        break;
+      }
+    },
+    fundNewAccount: function(arg) {
+      assert.deepEqual(arg, {
+        branch: '101010',
+        onSent: utils.pass,
+        onSuccess: utils.pass,
+        onFailed: utils.pass
+      });
+      assert.deepEqual(callCounts, {
+        balance: 5,
+        fastforward: 4
+      });
+      finished();
+    },
+    faucet: 'http://www.google.com/search?q='
+  });
+});
 describe("accounts.fundNewAccountFromAddress", function() {
   // 3 tests total
   var sendEther = augur.rpc.sendEther;

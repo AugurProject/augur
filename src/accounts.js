@@ -41,18 +41,20 @@ module.exports = function () {
         return onFailed(registeredAddress);
       }
       var url = constants.FAUCET + abi.format_address(registeredAddress);
-      console.debug("fundNewAccountFromFaucet:", url);
+      if (augur.options.debug.accounts) console.debug("fundNewAccountFromFaucet:", url);
       request(url, function (err, response, body) {
-        console.log("faucet err:", err);
-        console.log("faucet response:", response);
-        console.log("faucet body:", body);
+        if (augur.options.debug.accounts) {
+          console.log("faucet err:", err);
+          console.log("faucet response:", response);
+          console.log("faucet body:", body);
+        }
         if (err) return onFailed(err);
         if (response.statusCode !== 200) {
           return onFailed(response.statusCode);
         }
-        console.debug("Sent ether to:", registeredAddress);
+        if (augur.options.debug.accounts) console.debug("Sent ether to:", registeredAddress);
         augur.rpc.balance(registeredAddress, function (ethBalance) {
-          console.debug("Balance:", ethBalance);
+          if (augur.options.debug.accounts) console.debug("Balance:", ethBalance);
           var balance = parseInt(ethBalance, 16);
           if (balance > 0) {
             augur.fundNewAccount({
@@ -66,9 +68,9 @@ module.exports = function () {
               return balance > 0;
             }, function (callback) {
               augur.rpc.fastforward(1, function (nextBlock) {
-                console.log("Block:", nextBlock);
+                if (augur.options.debug.accounts) console.log("Block:", nextBlock);
                 augur.rpc.balance(registeredAddress, function (ethBalance) {
-                  console.debug("Balance:", ethBalance);
+                  if (augur.options.debug.accounts) console.debug("Balance:", ethBalance);
                   balance = parseInt(ethBalance, 16);
                   callback(null, balance);
                 });
