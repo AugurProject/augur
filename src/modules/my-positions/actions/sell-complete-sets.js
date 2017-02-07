@@ -75,23 +75,7 @@ export function completeSetsCheck(marketID, callback) {
 }
 
 export const sellNumberCompleteSetsMarket = (marketID, numberOfCompleteSets, callback) => dispatch => (
-  augur.sellCompleteSets({
-    market: marketID,
-    amount: numberOfCompleteSets,
-    onSent: r => console.log('sellCompleteSets sent:', r),
-    onSuccess: (r) => {
-      console.log('sellCompleteSets success:', r);
-      dispatch(updateAssets());
-      dispatch(loadAccountTrades(marketID));
-      dispatch(updateSellCompleteSetsLock(marketID, false));
-      if (callback) callback(null);
-    },
-    onFailed: (e) => {
-      console.error('sellCompleteSets failed:', e);
-      dispatch(updateSellCompleteSetsLock(marketID, false));
-      if (callback) callback(e);
-    }
-  })
+  console.info('here lies the ghost of sellCompleteSets', marketID, numberOfCompleteSets)
 );
 
 export function getSmallestPositionInMarket(position) {
