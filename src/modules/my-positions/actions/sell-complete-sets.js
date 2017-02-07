@@ -2,8 +2,6 @@ import async from 'async';
 import BigNumber from 'bignumber.js';
 import { augur } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
-import { updateAssets } from '../../auth/actions/update-assets';
-import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
 import { updateSmallestPositions, updateSellCompleteSetsLock } from '../../my-positions/actions/update-account-trades-data';
 import selectLoginAccountPositions from '../../../modules/my-positions/selectors/login-account-positions';
 
