@@ -4,13 +4,13 @@ import { clearTopics, updateTopics } from '../../topics/actions/update-topics';
 export const loadTopics = (branchID, cb) => (dispatch) => {
   const callback = cb || (e => console.log('loadTopics:', e));
   let firstChunkLoaded;
-  augur.getTagsInfoChunked(branchID, 0, null, null, (tagsInfoChunk) => {
-    console.log('tags info chunk:', tagsInfoChunk);
+  augur.getTopicsInfoChunked(branchID, 0, null, null, (topicsInfoChunk) => {
+    console.log('topics info chunk:', topicsInfoChunk);
     if (!firstChunkLoaded) {
       firstChunkLoaded = true;
-      console.log('first chunk, clearing tags...');
+      console.log('first chunk, clearing topics...');
       dispatch(clearTopics());
     }
-    dispatch(updateTopics(tagsInfoChunk));
+    dispatch(updateTopics(topicsInfoChunk));
   }, callback);
 };
