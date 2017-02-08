@@ -167,7 +167,7 @@ describe("accounts.register", function() {
   });
 });
 describe("accounts.fundNewAccountFromFaucet", function() {
-  // ? tests total
+  // 7 tests total
   var balance = augur.rpc.balance;
   var fundNewAccount = augur.fundNewAccount;
   var fastforward = augur.rpc.fastforward;
@@ -939,7 +939,282 @@ describe("accounts.logout", function() {
     }
   });
 });
-describe("accounts.submitTx", function() {});
+describe("accounts.submitTx", function() {
+  // 6 tests total
+  var sendRawTx = augur.rpc.sendRawTx;
+  var getTxNonce = augur.accounts.getTxNonce;
+  var callCounts = {
+    sendRawTx: 0,
+    getTxNonce: 0
+  };
+  afterEach(function() {
+    ClearCallCounts(callCounts);
+    augur.rpc.rawTxMaxNonce = -1;
+    augur.accounts.account = {};
+    augur.rpc.rawTxs = {};
+    augur.rpc.sendRawTx = sendRawTx;
+    augur.accounts.getTxNonce = getTxNonce;
+  });
+  var test = function(t) {
+    it(t.description, function(done) {
+      augur.rpc.sendRawTx = t.sendRawTx;
+      augur.accounts.getTxNonce = t.getTxNonce;
+      var privateKey = t.preparePrivateKey(accounts);
+      augur.accounts.account = { privateKey: privateKey };
+
+      augur.accounts.submitTx(t.packaged, function(res) {
+        t.assertions(res);
+        done();
+      });
+    });
+  };
+  test({
+    description: 'Should return an error if there is an issue validating the package',
+    packaged: {
+      from: '0x1',
+      to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68',
+      data: '0x772a646f0000000000000000000000000000000000000000000000000000000000018a9200000000000000000000000000000000000000000000000000000000000000a1',
+      gas: augur.rpc.DEFAULT_GAS,
+      returns: 'int256',
+      nonce: '0x0',
+      value: '0x0'
+    },
+    preparePrivateKey: function(accounts) {
+      return accounts[0].privateKey;
+    },
+    sendRawTx: function(rawTx, cb) {
+      // shouldn't get to this point
+      callCounts.sendRawTx++;
+    },
+    getTxNonce: function(packaged, cb) {
+      // shouldn't be called in this case
+      callCounts.getTxNonce++;
+    },
+    assertions: function(res) {
+      assert.deepEqual(augur.rpc.rawTxMaxNonce, 0);
+      assert.deepEqual(res, errors.TRANSACTION_INVALID);
+      assert.deepEqual(callCounts, {
+        sendRawTx: 0,
+        getTxNonce: 0
+      });
+    }
+  });
+  test({
+    description: 'Should return an error if there is an issue sending the raw transaction',
+    packaged: {
+      from: '0x1',
+      to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68',
+      data: '0x772a646f0000000000000000000000000000000000000000000000000000000000018a9200000000000000000000000000000000000000000000000000000000000000a1',
+      gas: augur.rpc.DEFAULT_GAS,
+      returns: 'int256',
+      nonce: '0x0',
+      value: '0x0',
+      gasLimit: abi.hex(augur.constants.DEFAULT_GAS),
+      gasPrice: '0.045'
+    },
+    preparePrivateKey: function(accounts) {
+      return accounts[0].privateKey;
+    },
+    sendRawTx: function(rawTx, cb) {
+      callCounts.sendRawTx++;
+      assert.isString(rawTx);
+      cb();
+    },
+    getTxNonce: function(packaged, cb) {
+      // shouldn't be called in this case
+      callCounts.getTxNonce++;
+    },
+    assertions: function(res) {
+      assert.deepEqual(augur.rpc.rawTxMaxNonce, 0);
+      assert.deepEqual(res, errors.RAW_TRANSACTION_ERROR);
+      assert.deepEqual(callCounts, {
+        sendRawTx: 1,
+        getTxNonce: 0
+      });
+    }
+  });
+  test({
+    description: 'Should handle a sendRawTx error that does not contain "Nonce too low" or "rlp" in the error message and return the error to the callback.',
+    packaged: {
+      from: '0x1',
+      to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68',
+      data: '0x772a646f0000000000000000000000000000000000000000000000000000000000018a9200000000000000000000000000000000000000000000000000000000000000a1',
+      gas: augur.rpc.DEFAULT_GAS,
+      returns: 'int256',
+      nonce: '0x0',
+      value: '0x0',
+      gasLimit: abi.hex(augur.constants.DEFAULT_GAS),
+      gasPrice: '0.045'
+    },
+    preparePrivateKey: function(accounts) {
+      return accounts[0].privateKey;
+    },
+    sendRawTx: function(rawTx, cb) {
+      callCounts.sendRawTx++;
+      assert.isString(rawTx);
+      cb({ error: 999, message: 'Uh-Oh!' });
+    },
+    getTxNonce: function(packaged, cb) {
+      callCounts.getTxNonce++;
+      // this would normally end up recalling submitTx with an updated nonce, in this case lets just return the package to callback to assert that nonce was removed from the package.
+      cb(packaged);
+    },
+    assertions: function(res) {
+      assert.deepEqual(res, { error: 999, message: 'Uh-Oh!' });
+      assert.deepEqual(augur.rpc.rawTxMaxNonce, 0);
+      assert.deepEqual(augur.rpc.rawTxs, {});
+      assert.deepEqual(callCounts, {
+        sendRawTx: 1,
+        getTxNonce: 0
+      });
+    }
+  });
+  test({
+    description: 'Should handle a sendRawTx error that contains "rlp" in the error message (encoding error) and return the error to the callback.',
+    packaged: {
+      from: '0x1',
+      to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68',
+      data: '0x772a646f0000000000000000000000000000000000000000000000000000000000018a9200000000000000000000000000000000000000000000000000000000000000a1',
+      gas: augur.rpc.DEFAULT_GAS,
+      returns: 'int256',
+      nonce: '0x0',
+      value: '0x0',
+      gasLimit: abi.hex(augur.constants.DEFAULT_GAS),
+      gasPrice: '0.045'
+    },
+    preparePrivateKey: function(accounts) {
+      return accounts[0].privateKey;
+    },
+    sendRawTx: function(rawTx, cb) {
+      callCounts.sendRawTx++;
+      assert.isString(rawTx);
+      cb({ error: 1, message: 'rlp encoding error' });
+    },
+    getTxNonce: function(packaged, cb) {
+      callCounts.getTxNonce++;
+      // this would normally end up recalling submitTx with an updated nonce, in this case lets just return the package to callback to assert that nonce was removed from the package.
+      cb(packaged);
+    },
+    assertions: function(res) {
+      assert.deepEqual(res, {
+        error: 504,
+        message: 'RLP encoding error',
+        bubble: { error: 1, message: 'rlp encoding error' },
+        packaged: {
+          from: '0x1',
+          to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68',
+          data: '0x772a646f0000000000000000000000000000000000000000000000000000000000018a9200000000000000000000000000000000000000000000000000000000000000a1',
+          gas: augur.rpc.DEFAULT_GAS,
+          returns: 'int256',
+          nonce: '0x0',
+          value: '0x0',
+          gasLimit: abi.hex(augur.constants.DEFAULT_GAS),
+          gasPrice: '0.045'
+        }
+      });
+      assert.deepEqual(augur.rpc.rawTxMaxNonce, 0);
+      assert.deepEqual(augur.rpc.rawTxs, {});
+      assert.deepEqual(callCounts, {
+        sendRawTx: 1,
+        getTxNonce: 0
+      });
+    }
+  });
+  test({
+    description: 'Should handle an sendRawTx error that has a message containing "Nonce too low" by incrementing augur.rpc.rawTxMaxNonce, removing nonce from packaged then calling getTxNonce so that nonce is re-calucalted before being sent back to submitTx again.',
+    packaged: {
+      from: '0x1',
+      to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68',
+      data: '0x772a646f0000000000000000000000000000000000000000000000000000000000018a9200000000000000000000000000000000000000000000000000000000000000a1',
+      gas: augur.rpc.DEFAULT_GAS,
+      returns: 'int256',
+      nonce: '0x0',
+      value: '0x0',
+      gasLimit: abi.hex(augur.constants.DEFAULT_GAS),
+      gasPrice: '0.045'
+    },
+    preparePrivateKey: function(accounts) {
+      return accounts[0].privateKey;
+    },
+    sendRawTx: function(rawTx, cb) {
+      callCounts.sendRawTx++;
+      assert.isString(rawTx);
+      cb({ error: 2, message: 'Nonce too low' });
+    },
+    getTxNonce: function(packaged, cb) {
+      callCounts.getTxNonce++;
+      // this would normally end up recalling submitTx with an updated nonce, in this case lets just return the package to callback to assert that nonce was removed from the package.
+      cb(packaged);
+    },
+    assertions: function(res) {
+      assert.deepEqual(res, {
+        from: '0x1',
+        to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68',
+        data: '0x772a646f0000000000000000000000000000000000000000000000000000000000018a9200000000000000000000000000000000000000000000000000000000000000a1',
+        gas: '0x2fd618',
+        returns: 'int256',
+        value: '0x0',
+        gasLimit: '0x2fd618',
+        gasPrice: '0.045'
+      });
+      assert.deepEqual(augur.rpc.rawTxMaxNonce, 1);
+      assert.deepEqual(augur.rpc.rawTxs, {});
+      assert.deepEqual(callCounts, {
+        sendRawTx: 1,
+        getTxNonce: 1
+      });
+    }
+  });
+  test({
+    description: 'Should handle successfully sending a rawTransaction',
+    packaged: {
+      from: '0x1',
+      to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68',
+      data: '0x772a646f0000000000000000000000000000000000000000000000000000000000018a9200000000000000000000000000000000000000000000000000000000000000a1',
+      gas: augur.rpc.DEFAULT_GAS,
+      returns: 'int256',
+      nonce: '0x0',
+      value: '0x0',
+      gasLimit: abi.hex(augur.constants.DEFAULT_GAS),
+      gasPrice: '0.045'
+    },
+    preparePrivateKey: function(accounts) {
+      return accounts[0].privateKey;
+    },
+    sendRawTx: function(rawTx, cb) {
+      callCounts.sendRawTx++;
+      assert.isString(rawTx);
+      // return transaction hash
+      cb('0xabc123456789');
+    },
+    getTxNonce: function(packaged, cb) {
+      // shouldn't be called in this case
+      callCounts.getTxNonce++;
+    },
+    assertions: function(res) {
+      assert.deepEqual(augur.rpc.rawTxMaxNonce, 0);
+      assert.deepEqual(res, '0xabc123456789');
+      assert.deepEqual(augur.rpc.rawTxs[res], {
+        tx: {
+          from: '0x1',
+          to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68',
+          data: '0x772a646f0000000000000000000000000000000000000000000000000000000000018a9200000000000000000000000000000000000000000000000000000000000000a1',
+          gas: '0x2fd618',
+          returns: 'int256',
+          nonce: '0x0',
+          value: '0x0',
+          gasLimit: '0x2fd618',
+          gasPrice: '0.045'
+        },
+        cost: '0.648736024777995'
+      });
+      assert.deepEqual(callCounts, {
+        sendRawTx: 1,
+        getTxNonce: 0
+      });
+    }
+  });
+});
 describe("accounts.getTxNonce", function() {
   // 5 tests total
   var pendingTxCount = augur.rpc.pendingTxCount;
