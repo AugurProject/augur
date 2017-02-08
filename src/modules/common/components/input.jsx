@@ -124,7 +124,7 @@ export default class Input extends Component {
             className="button-text-only"
             onClick={this.handleClear}
           >
-            <i></i>
+            <i className="fa fa-close" />
           </button>
         }
 
@@ -136,8 +136,8 @@ export default class Input extends Component {
             tabIndex="-1"
           >
             {s.isHiddenContentVisible ?
-              <i></i> :
-              <i></i>
+              <i className="fa fa-eye-slash" /> :
+              <i className="fa fa-eye" />
             }
           </button>
         }
@@ -145,8 +145,8 @@ export default class Input extends Component {
         {shouldMatchValue && s.value &&
           <div className="input-value-comparison">
             {s.value === comparisonValue ?
-              <i className="input-does-match"></i> :
-              <i className="input-does-not-match"></i>
+              <i className="fa fa-check-circle input-does-match" /> :
+              <i className="fa fa-times-circle input-does-not-match" />
             }
           </div>
         }
@@ -174,7 +174,7 @@ export default class Input extends Component {
                 }
               }}
             >
-              <i></i>
+              <i className="fa fa-angle-up" />
             </button>
             <button
               className="decrement-value unstyled"
@@ -197,7 +197,7 @@ export default class Input extends Component {
                 }
               }}
             >
-              <i></i>
+              <i className="fa fa-angle-down" />
             </button>
           </div>
         }

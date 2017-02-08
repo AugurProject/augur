@@ -12,20 +12,16 @@ const PortfolioReports = p => (
           <span className="description">
             {market.description}
             {market.isChallenged &&
-              <span
-                className="fa outcome-challenged"
+              <i
+                className="fa fa-gavel outcome-challenged"
                 data-tip="This outcome is currently being challenged"
-              >
-                &#xf0e3;
-              </span>
+              />
             }
             {!market.isChallenged && market.isChallengeable &&
-              <span
-                className="fa outcome-challengeable"
+              <i
+                className="fa fa-exclamation-cirlce outcome-challengeable"
                 data-tip="This outcome is eligible to be challenged"
-              >
-                &#xf06a;
-              </span>
+              />
             }
           </span>
           {!!market &&

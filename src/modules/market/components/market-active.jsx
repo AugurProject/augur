@@ -169,6 +169,7 @@ export default class MarketActive extends Component {
             outcomeTradeNavItems={p.outcomeTradeNavItems}
             minLimitPrice={minValue}
             maxLimitPrice={maxValue}
+            isTradeCommitLocked={p.isTradeCommitLocked}
           />
         </div>
         }

@@ -38,6 +38,7 @@ const Outcomes = p => (
           updateTradeFromSelectedOrder={p.updateTradeFromSelectedOrder}
           minLimitPrice={p.minLimitPrice}
           maxLimitPrice={p.maxLimitPrice}
+          isTradeCommitLocked={p.isTradeCommitLocked}
         />
       ))}
     </div>

@@ -43,20 +43,16 @@ const Report = p => (
             <span>{p.reported || <EmDash />}</span>
           }
           {!!p.outcome && p.isReportEqual &&
-            <span
-              className="fa report-equal"
-              data-tip="Your report matches the consensus outcome"
-            >
-              &#xf058;
-            </span>
+            <i
+              className="fa fa-check-circle report-equal"
+              data-tip="Your report matches teh consensus outcome"
+            />
           }
           {!!p.outcome && !p.isReportEqual &&
-            <span
-              className="fa report-unequal"
+            <i
+              className="fa fa-times-circle report-unequal"
               data-tip="Your report does not match the consensus outcome"
-            >
-              &#xf057;
-            </span>
+            />
           }
           <ReportEthics isUnethical={p.isUnethical} />
         </span>
