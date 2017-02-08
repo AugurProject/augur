@@ -18,6 +18,7 @@ export default class OutcomeTradeAction extends Component {
         {!s.isConfirming &&
           <button
             className="trade-action"
+            disabled={p.disabled}
             onClick={() => {
               this.setState({ isConfirming: true });
             }}

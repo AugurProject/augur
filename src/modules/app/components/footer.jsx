@@ -111,7 +111,7 @@ export default class Footer extends Component {
           onClick={this.toggleFooter}
         >
           <span className="nav-toggler-button">
-            <i>{p.isFooterCollapsed ? '' : ''}</i>
+            {p.isFooterCollapsed ? <i className="fa fa-angle-up" /> : <i className="fa fa-angle-down" />}
           </span>
         </button>
         <Nav

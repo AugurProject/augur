@@ -3,7 +3,7 @@ import Input from 'modules/common/components/input';
 
 const MarketsSearch = p => (
   <article className={`search-input ${p.className}`} >
-    <i></i>
+    <i className="fa fa-search" />
     <Input
       placeholder="Search Markets"
       isClearable
