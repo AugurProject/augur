@@ -124,7 +124,7 @@ export function listenToUpdates() {
         console.debug('log_short_fill_tx:', msg);
         if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
           dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
-          dispatch(fillOrder({ ...msg, type: 'sell' }));
+          if (msg.sender !== address) dispatch(fillOrder({ ...msg, type: 'sell' }));
           const { address } = getState().loginAccount;
 
           // if the user is either the maker or taker, add it to the transaction display
