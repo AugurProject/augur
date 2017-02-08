@@ -117,11 +117,11 @@ const LoginMessagePage = p => (
         </li>
         <li>
           The first tag defined during market creation is now the &quot;primary tag&quot; or &quot;topic&quot; for the market.  A new contract, data_api/tags.se, now tracks the &quot;popularity&quot; of each tag, defined (for simplicity) as the sum of the volume of all markets that share a particular primary tag.  (This crude metric will be fine-tuned through user testing.)  The initial landing page will be a display of the most popular tags, rather than a list of all markets. <a
-              className="link"
-              href="http://augur.link/topics-page-sketch.jpg"
-              target="_blank"
-              rel="noopener noreferrer"
-            >Here is a sketch of what this will look like.</a>  There are a few advantages of this approach:
+            className="link"
+            href="http://augur.link/topics-page-sketch.jpg"
+            target="_blank"
+            rel="noopener noreferrer"
+          >Here is a sketch of what this will look like.</a>  There are a few advantages of this approach:
           <ol>
             <li>
               The initial page load will be faster, since all markets will not be downloaded immediately.
