@@ -61,6 +61,12 @@ const LoginMessagePage = p => (
         <li>
           The getTopicsInfo(Chunked) wrapper functions in augur.js now return objects (where the keys are topic names and values are popularities) instead of arrays.  The topics selector in the front-end converts the stored topics object to a sorted array.
         </li>
+        <li>
+          Added sender address check to log_short_fill_tx listener.
+        </li>
+        <li>
+          Added increase(Market)TopicPopularity actions and reducer; call increaseMarketTopicPopularity in fillOrder.
+        </li>
       </ol>
       <h3>February 5, 2017</h3>
       <ol>
