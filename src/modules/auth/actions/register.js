@@ -42,9 +42,11 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
       const { loginMessage } = getState();
       if (isUserLoggedIn(loginAccount) && !isCurrentLoginMessageRead(loginMessage)) {
         links.loginMessageLink.onClick();
-      } else {
-        links.marketsLink.onClick();
+        return;
       }
+
+      links.marketsLink.onClick();
+      return;
     }
 
     augur.accounts.register(name, password, (account) => {
@@ -53,11 +55,13 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
           code: 0,
           message: 'failed to register'
         });
+        return;
       } else if (account.error) {
         cb && cb({
           code: account.error,
           message: account.message
         });
+        return;
       }
       const localLoginAccount = {
         ...account,

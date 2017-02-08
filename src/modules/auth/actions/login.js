@@ -14,11 +14,13 @@ export function login(loginID, password, rememberMe, cb) {
           code: 0,
           message: 'failed to login'
         });
+        return;
       } else if (account.error) {
         cb && cb({
           code: account.error,
           message: account.message
         });
+        return;
       }
       const loginAccount = {
         ...account,
