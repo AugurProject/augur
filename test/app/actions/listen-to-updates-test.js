@@ -63,7 +63,8 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     cb.log_fill_tx({
       market: 'testMarketID',
       outcome: 'testOutcome',
-      price: 123.44250502560001
+      price: 123.44250502560001,
+      amount: '2'
     });
     cb.log_add_tx({ market: 'testMarketID' });
     cb.log_cancel({ market: 'testMarketID' });
@@ -174,6 +175,10 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
         }
       }
     }, {
+      type: 'INCREASE_TOPIC_POPULARITY',
+      topic: 'tag1',
+      amount: 2
+    }, {
       type: 'UPDATE_MARKET_TRADES_DATA',
       data: {
         testMarketID: {
@@ -181,7 +186,8 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
             {
               market: 'testMarketID',
               outcome: 'testOutcome',
-              price: 123.44250502560001
+              price: 123.44250502560001,
+              amount: '2'
             }
           ]
         }
@@ -194,7 +200,8 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
           {
             market: 'testMarketID',
             outcome: 'testOutcome',
-            price: 123.44250502560001
+            price: 123.44250502560001,
+            amount: '2'
           }
         ]
       }
