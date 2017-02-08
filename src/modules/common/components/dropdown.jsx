@@ -15,7 +15,7 @@ const Dropdown = p => (
         </option>
       ))}
     </select>
-    <i className="fa"></i>
+    <i className="fa fa-angle-down" />
   </div>
 );
 

@@ -28,7 +28,7 @@ const Nav = (p) => {
           className="app-nav-link unstyled"
           onClick={p.toggleSideBar}
         >
-          {p.isSideBarCollapsed ? <SideBarFilterIcon /> : <i></i>}
+          {p.isSideBarCollapsed ? <SideBarFilterIcon /> : <i className="fa fa-remove" />}
         </button>
       }
       <Link
@@ -39,7 +39,7 @@ const Nav = (p) => {
         }}
         className={classnames('app-nav-link', { active: ((p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader == null) })}
       >
-        <i className="nav-icon"></i>
+        <i className="nav-icon fa fa-line-chart" />
         Markets
       </Link>
       {p.logged && !!p.numFavorites &&
@@ -51,7 +51,7 @@ const Nav = (p) => {
           }}
           className={classnames('app-nav-link', { active: (p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader === FAVORITES })}
         >
-          <i className="nav-icon"></i>
+          <i className="nav-icon fa fa-star" />
           <span className="nav-count">{p.numFavorites} </span>
           Favorites
         </Link>
@@ -65,7 +65,7 @@ const Nav = (p) => {
           }}
           className={classnames('app-nav-link', { active: (p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader === PENDING_REPORTS })}
         >
-          <i className="nav-icon"></i>
+          <i className="nav-icon fa fa-copy" />
           <span className="nav-count">{p.numPendingReports} </span>
           Pending Reports
         </Link>
@@ -85,9 +85,7 @@ const Nav = (p) => {
           }}
           className={classnames('app-nav-link', MY_POSITIONS, { active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activeView) > -1 })}
         >
-          <i className="nav-icon">
-            
-          </i>
+          <i className="nav-icon fa fa-money" />
           Portfolio
         </Link>
       }
@@ -100,9 +98,7 @@ const Nav = (p) => {
           }}
           className={classnames('app-nav-link', TRANSACTIONS, { active: p.activeView === TRANSACTIONS }, { working: p.isTransactionsWorking })}
         >
-          <i className="nav-icon">
-            
-          </i>
+          <i className="nav-icon fa fa-tasks" />
           {!!p.numTransactionsWorking &&
             <span className="nav-count">{p.numTransactionsWorking} </span>
           }
@@ -118,9 +114,7 @@ const Nav = (p) => {
           }}
           className={classnames('app-nav-link', ACCOUNT, { active: p.activeView === ACCOUNT })}
         >
-          <i className="nav-icon">
-            
-          </i>
+          <i className="nav-icon fa fa-cog" />
           Account
         </Link>
       }

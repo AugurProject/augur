@@ -9,7 +9,7 @@ const MarketsPagination = p => (
           {...p.pagination.previousPageLink}
           className="button"
         >
-          <i></i>
+          <i className="fa fa-angle-left" />
         </Link>
       }
     </div>
@@ -24,7 +24,7 @@ const MarketsPagination = p => (
           {...p.pagination.nextPageLink}
           className="button"
         >
-          <i></i>
+          <i className="fa fa-angle-right" />
         </Link>
       }
     </div>

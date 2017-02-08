@@ -76,7 +76,7 @@ export default class ChatView extends Component {
           data-tip data-for="close-chat-tooltip"
           onClick={p.toggleChat}
         >
-          <i>&#x25BC;</i>
+          <i className="fa fa-angle-down" />
         </button>
         <div id="chatbox" ref="chatbox">
           <div id="babble">
