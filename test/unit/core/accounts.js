@@ -8,6 +8,7 @@ var constants = require("../../../src/constants");
 var utils = require("../../../src/utilities");
 var abi = require('augur-abi');
 var ClearCallCounts = require('../../tools').ClearCallCounts;
+var proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 
 var accounts = [{
     loginID: undefined,
@@ -171,7 +172,6 @@ describe("accounts.fundNewAccountFromFaucet", function() {
   var balance = augur.rpc.balance;
   var fundNewAccount = augur.fundNewAccount;
   var fastforward = augur.rpc.fastforward;
-  var FAUCET = constants.FAUCET;
   var finished;
   var callCounts = {
     balance: 0,
@@ -182,18 +182,19 @@ describe("accounts.fundNewAccountFromFaucet", function() {
     augur.rpc.balance = balance;
     augur.fundNewAccount = fundNewAccount;
     augur.rpc.fastforward = fastforward;
-    constants.FAUCET = FAUCET;
   });
   var test = function(t) {
     it(t.description, function(done) {
       augur.rpc.balance = t.balance || balance;
       augur.fundNewAccount = t.fundNewAccount || fundNewAccount;
       augur.rpc.fastforward = t.fastforward || fastforward;
-      constants.FAUCET = t.faucet || FAUCET;
 
       finished = done;
-
-      augur.accounts.fundNewAccountFromFaucet(t.registeredAddress, t.branch, t.onSent, t.onSuccess, t.onFailed);
+      // before each test, call accounts module but replace request with our mock, then run the function exported from accounts with augur set as our this. finally call fundNewAccountFromFaucet to test.
+      proxyquire('../../../src/accounts', {
+        'request': t.mockRequest
+      }).call(augur).fundNewAccountFromFaucet(t.registeredAddress, t.branch, t.onSent, t.onSuccess, t.onFailed);
+      // augur.accounts.fundNewAccountFromFaucet(t.registeredAddress, t.branch, t.onSent, t.onSuccess, t.onFailed);
     });
   };
   test({
@@ -207,6 +208,16 @@ describe("accounts.fundNewAccountFromFaucet", function() {
         fastforward: 0
       });
       finished();
+    },
+    mockRequest: {
+    	defaults: function() {
+    		// defaults is called when accounts is called. it prepares and returns the http request function, so mock this behavior.
+    		return function(url, cb) {
+    			// acts as our request() call in accounts
+          // cb(err, response, body);
+    			cb(new Error('this should never be hit in this example!'), null, null);
+    		};
+    	}
     }
   });
   test({
@@ -220,6 +231,16 @@ describe("accounts.fundNewAccountFromFaucet", function() {
         fastforward: 0
       });
       finished();
+    },
+    mockRequest: {
+    	defaults: function() {
+    		// defaults is called when accounts is called. it prepares and returns the http request function, so mock this behavior.
+    		return function(url, cb) {
+    			// acts as our request() call in accounts
+          // cb(err, response, body);
+    			cb(new Error('this should never be hit in this example!'), null, null);
+    		};
+    	}
     }
   });
   test({
@@ -233,6 +254,16 @@ describe("accounts.fundNewAccountFromFaucet", function() {
         fastforward: 0
       });
       finished();
+    },
+    mockRequest: {
+    	defaults: function() {
+    		// defaults is called when accounts is called. it prepares and returns the http request function, so mock this behavior.
+    		return function(url, cb) {
+    			// acts as our request() call in accounts
+          // cb(err, response, body);
+    			cb(new Error('this should never be hit in this example!'), null, null);
+    		};
+    	}
     }
   });
   test({
@@ -240,14 +271,23 @@ describe("accounts.fundNewAccountFromFaucet", function() {
     registeredAddress: '0x1',
     branch: '101010',
     onFailed: function(err) {
-      assert.deepEqual(err, new Error('Invalid URI "NotavalidURL0x0000000000000000000000000000000000000001"'));
+      assert.deepEqual(err, new Error('Invalid URI "' + constants.FAUCET + '0x0000000000000000000000000000000000000001'));
       assert.deepEqual(callCounts, {
         balance: 0,
         fastforward: 0
       });
       finished();
     },
-    faucet: 'NotavalidURL'
+    mockRequest: {
+    	defaults: function() {
+    		// defaults is called when accounts is called. it prepares and returns the http request function, so mock this behavior.
+    		return function(url, cb) {
+    			// acts as our request() call in accounts
+          // cb(err, response, body);
+    			cb(new Error('Invalid URI "' + constants.FAUCET + '0x0000000000000000000000000000000000000001'), null, 'some responseBody, this doesnt matter for our test.');
+    		};
+    	}
+    }
   });
   test({
     description: 'If the request to the URL returns a status not equal to 200',
@@ -261,7 +301,16 @@ describe("accounts.fundNewAccountFromFaucet", function() {
       });
       finished();
     },
-    faucet: 'http://www.google.com/'
+    mockRequest: {
+    	defaults: function() {
+    		// defaults is called when accounts is called. it prepares and returns the http request function, so mock this behavior.
+    		return function(url, cb) {
+    			// acts as our request() call in accounts
+          // cb(err, response, body);
+    			cb(null, { statusCode: 404 }, 'some responseBody, this doesnt matter for our test.');
+    		};
+    	}
+    }
   });
   test({
     description: 'If the request to the URL returns a status of 200, and augur.rpc.balance returns a number greater than 0 we call fundNewAccount',
@@ -284,7 +333,16 @@ describe("accounts.fundNewAccountFromFaucet", function() {
       });
       finished();
     },
-    faucet: 'http://www.google.com/search?q='
+    mockRequest: {
+    	defaults: function() {
+    		// defaults is called when accounts is called. it prepares and returns the http request function, so mock this behavior.
+    		return function(url, cb) {
+    			// acts as our request() call in accounts
+          // cb(err, response, body);
+    			cb(null, { statusCode: 200 }, 'some responseBody, this doesnt matter for our test.');
+    		};
+    	}
+    }
   });
   test({
     description: 'Should retry to fund account by fastforwarding through the blocks until we hit the most recent block and balance returns a value greater than 0',
@@ -329,7 +387,16 @@ describe("accounts.fundNewAccountFromFaucet", function() {
       });
       finished();
     },
-    faucet: 'http://www.google.com/search?q='
+    mockRequest: {
+    	defaults: function() {
+    		// defaults is called when accounts is called. it prepares and returns the http request function, so mock this behavior.
+    		return function(url, cb) {
+    			// acts as our request() call in accounts
+          // cb(err, response, body);
+    			cb(null, { statusCode: 200 }, 'some responseBody, this doesnt matter for our test.');
+    		};
+    	}
+    }
   });
 });
 describe("accounts.fundNewAccountFromAddress", function() {
