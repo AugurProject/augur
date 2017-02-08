@@ -93,7 +93,7 @@ export default class Input extends Component {
 
         {isClearable && !p.isMultiline && !!s.value &&
           <button type="button" className="button-text-only" onClick={this.handleClear}>
-            <i></i>
+            <i className="fa fa-close" />
           </button>
         }
 
@@ -120,7 +120,7 @@ export default class Input extends Component {
                 }
               }}
             >
-              <i></i>
+              <i className="fa fa-angle-up" />
             </button>
             <button
               className="decrement-value unstyled"
@@ -143,7 +143,7 @@ export default class Input extends Component {
                 }
               }}
             >
-              <i></i>
+              <i className="fa fa-angle-down" />
             </button>
           </div>
         }

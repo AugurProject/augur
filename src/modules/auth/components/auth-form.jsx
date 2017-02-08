@@ -231,7 +231,7 @@ export default class AuthForm extends Component {
           href={p.closeLink.href}
           onClick={p.closeLink.onClick}
         >
-          <i></i>
+          <i className="fa fa-times-circle" />
         </Link>
         <ReactTooltip id="remember-me-tooltip" type="light" effect="solid" place="top">
           <span className="tooltip-text">Click here to save your account information in your browser&#39;s local storage.</span>

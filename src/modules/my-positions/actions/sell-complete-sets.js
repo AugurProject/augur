@@ -2,8 +2,6 @@ import async from 'async';
 import BigNumber from 'bignumber.js';
 import { augur } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
-import { updateAssets } from '../../auth/actions/update-assets';
-import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
 import { updateSmallestPositions, updateSellCompleteSetsLock } from '../../my-positions/actions/update-account-trades-data';
 import selectLoginAccountPositions from '../../../modules/my-positions/selectors/login-account-positions';
 
@@ -75,23 +73,7 @@ export function completeSetsCheck(marketID, callback) {
 }
 
 export const sellNumberCompleteSetsMarket = (marketID, numberOfCompleteSets, callback) => dispatch => (
-  augur.sellCompleteSets({
-    market: marketID,
-    amount: numberOfCompleteSets,
-    onSent: r => console.log('sellCompleteSets sent:', r),
-    onSuccess: (r) => {
-      console.log('sellCompleteSets success:', r);
-      dispatch(updateAssets());
-      dispatch(loadAccountTrades(marketID));
-      dispatch(updateSellCompleteSetsLock(marketID, false));
-      if (callback) callback(null);
-    },
-    onFailed: (e) => {
-      console.error('sellCompleteSets failed:', e);
-      dispatch(updateSellCompleteSetsLock(marketID, false));
-      if (callback) callback(e);
-    }
-  })
+  console.info('here lies the ghost of sellCompleteSets', marketID, numberOfCompleteSets)
 );
 
 export function getSmallestPositionInMarket(position) {
