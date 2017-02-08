@@ -41,12 +41,12 @@ var modules = [
   require("./modules/executeTrade"),
   require("./modules/positions"),
   require("./modules/register"),
-  require("./modules/tags"),
+  require("./modules/topics"),
   require("./modules/modifyOrderBook")
 ];
 
 function Augur() {
-  this.version = "3.10.5";
+  this.version = "3.10.8";
 
   this.options = {
     debug: {

@@ -43,18 +43,20 @@ module.exports = function () {
         return onFailed(registeredAddress);
       }
       var url = constants.FAUCET + abi.format_address(registeredAddress);
-      console.debug("fundNewAccountFromFaucet:", url);
+      if (augur.options.debug.accounts) console.debug("fundNewAccountFromFaucet:", url);
       request(url, function (err, response, body) {
-        console.log("faucet err:", err);
-        console.log("faucet response:", response);
-        console.log("faucet body:", body);
+        if (augur.options.debug.accounts) {
+          console.log("faucet err:", err);
+          console.log("faucet response:", response);
+          console.log("faucet body:", body);
+        }
         if (err) return onFailed(err);
         if (response.statusCode !== 200) {
           return onFailed(response.statusCode);
         }
-        console.debug("Sent ether to:", registeredAddress);
+        if (augur.options.debug.accounts) console.debug("Sent ether to:", registeredAddress);
         augur.rpc.balance(registeredAddress, function (ethBalance) {
-          console.debug("Balance:", ethBalance);
+          if (augur.options.debug.accounts) console.debug("Balance:", ethBalance);
           var balance = parseInt(ethBalance, 16);
           if (balance > 0) {
             augur.fundNewAccount({
@@ -68,9 +70,9 @@ module.exports = function () {
               return balance > 0;
             }, function (callback) {
               augur.rpc.fastforward(1, function (nextBlock) {
-                console.log("Block:", nextBlock);
+                if (augur.options.debug.accounts) console.log("Block:", nextBlock);
                 augur.rpc.balance(registeredAddress, function (ethBalance) {
-                  console.debug("Balance:", ethBalance);
+                  if (augur.options.debug.accounts) console.debug("Balance:", ethBalance);
                   balance = parseInt(ethBalance, 16);
                   callback(null, balance);
                 });
@@ -1559,10 +1561,10 @@ BigNumber.config({
   ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
 });
 
-var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/slashRep"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register"), require("./modules/tags"), require("./modules/modifyOrderBook")];
+var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/slashRep"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register"), require("./modules/topics"), require("./modules/modifyOrderBook")];
 
 function Augur() {
-  this.version = "3.10.5";
+  this.version = "3.10.8";
 
   this.options = {
     debug: {
@@ -1573,8 +1575,8 @@ function Augur() {
       trading: false, // trading-related debug logging
       reporting: false, // reporting-related debug logging
       filters: false, // filters-related debug logging
-      sync: false // show warning on synchronous RPC request
-    },
+      sync: false, // show warning on synchronous RPC request
+      accounts: false },
     loadZeroVolumeMarkets: true
   };
   this.protocol = NODE_JS || document.location.protocol;
@@ -1617,7 +1619,7 @@ Augur.prototype.AugurNode = require("./augurNode");
 
 module.exports = new Augur();
 }).call(this,require('_process'))
-},{"../test/tools":295,"./accounts":1,"./augurNode":2,"./batch":3,"./chat":4,"./constants":5,"./filters":6,"./generateOrderBook":7,"./modules/abacus":9,"./modules/buyAndSellShares":10,"./modules/cash":11,"./modules/collectFees":12,"./modules/compositeGetters":13,"./modules/connect":14,"./modules/createBranch":15,"./modules/createMarket":16,"./modules/events":17,"./modules/executeTrade":18,"./modules/logs":19,"./modules/makeOrder":20,"./modules/makeReports":21,"./modules/markets":22,"./modules/modifyOrderBook":23,"./modules/payout":25,"./modules/placeTrade":26,"./modules/positions":27,"./modules/register":28,"./modules/reporting":29,"./modules/selectOrder":30,"./modules/sendReputation":31,"./modules/slashRep":32,"./modules/tags":34,"./modules/takeOrder":35,"./modules/trade":36,"./modules/tradingActions":37,"./modules/transact":38,"./utilities":39,"_process":224,"augur-abi":59,"bignumber.js":66,"ethrpc":185}],9:[function(require,module,exports){
+},{"../test/tools":295,"./accounts":1,"./augurNode":2,"./batch":3,"./chat":4,"./constants":5,"./filters":6,"./generateOrderBook":7,"./modules/abacus":9,"./modules/buyAndSellShares":10,"./modules/cash":11,"./modules/collectFees":12,"./modules/compositeGetters":13,"./modules/connect":14,"./modules/createBranch":15,"./modules/createMarket":16,"./modules/events":17,"./modules/executeTrade":18,"./modules/logs":19,"./modules/makeOrder":20,"./modules/makeReports":21,"./modules/markets":22,"./modules/modifyOrderBook":23,"./modules/payout":25,"./modules/placeTrade":26,"./modules/positions":27,"./modules/register":28,"./modules/reporting":29,"./modules/selectOrder":30,"./modules/sendReputation":31,"./modules/slashRep":32,"./modules/takeOrder":34,"./modules/topics":35,"./modules/trade":36,"./modules/tradingActions":37,"./modules/transact":38,"./utilities":39,"_process":224,"augur-abi":59,"bignumber.js":66,"ethrpc":185}],9:[function(require,module,exports){
 (function (Buffer){
 /**
  * Utility functions that do a local calculation (i.e., these functions do not
@@ -5542,83 +5544,6 @@ module.exports = function (numShares, position) {
   return { askShares: askShares, shortAskShares: shortAskShares };
 };
 },{"../constants":5,"bignumber.js":66}],34:[function(require,module,exports){
-/**
- * Augur JavaScript SDK
- * @author Jack Peterson (jack@tinybike.net)
- */
-
-"use strict";
-
-var abi = require("augur-abi");
-var utils = require("../utilities");
-var constants = require("../constants");
-
-module.exports = {
-
-  sortTagsInfo: function sortTagsInfo(tag1, tag2) {
-    return tag2.popularity - tag1.popularity;
-  },
-
-  parseTagsInfo: function parseTagsInfo(tagsInfo) {
-    var parsedTagsInfo = [];
-    for (var i = 0, len = tagsInfo.length; i < len; i += 2) {
-      parsedTagsInfo.push({
-        tag: this.decodeTag(tagsInfo[i]),
-        popularity: abi.unfix(tagsInfo[i + 1], "number")
-      });
-    }
-    return parsedTagsInfo.sort(this.sortTagsInfo);
-  },
-
-  getTagsInfo: function getTagsInfo(branch, offset, numTagsToLoad, callback) {
-    if (!callback) {
-      if (utils.is_function(offset)) {
-        callback = offset;
-        offset = null;
-        numTagsToLoad = null;
-      } else if (utils.is_function(numTagsToLoad)) {
-        callback = numTagsToLoad;
-        numTagsToLoad = null;
-      }
-    }
-    if (branch && branch.branch) {
-      offset = branch.offset;
-      numTagsToLoad = branch.numTagsToLoad;
-      callback = callback || branch.callback;
-      branch = branch.branch;
-    }
-    return this.Tags.getTagsInfo(branch, offset || 0, numTagsToLoad || 0, callback);
-  },
-
-  getTagsInfoChunked: function getTagsInfoChunked(branch, offset, numTagsToLoad, totalTags, chunkCB, callback) {
-    var self = this;
-    if (!utils.is_function(chunkCB)) chunkCB = utils.noop;
-    if (!totalTags) {
-      return this.getNumTagsInBranch(branch, function (totalTags) {
-        if (!totalTags || totalTags.error || !parseInt(totalTags, 10)) {
-          return callback(totalTags);
-        }
-        self.getTagsInfoChunked(branch, offset, Math.min(parseInt(totalTags, 10), constants.ORDERBOOK_MAX_CHUNK_SIZE), totalTags, chunkCB, callback);
-      });
-    }
-    this.getTagsInfo({
-      branch: branch,
-      offset: offset,
-      numTagsToLoad: numTagsToLoad || totalTags
-    }, function (tagsInfoChunk) {
-      if (!tagsInfoChunk || tagsInfoChunk.error) {
-        console.error("getTagsInfo failed:", branch, tagsInfoChunk);
-        return callback(tagsInfoChunk);
-      }
-      chunkCB(tagsInfoChunk);
-      if (offset + numTagsToLoad < totalTags) {
-        return self.getTagsInfoChunked(branch, offset + numTagsToLoad, numTagsToLoad, totalTags, chunkCB, callback);
-      }
-      callback(null);
-    });
-  }
-};
-},{"../constants":5,"../utilities":39,"augur-abi":59}],35:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -5740,7 +5665,77 @@ module.exports = {
   }
 
 };
-},{"../constants":5,"../utilities":39,"./abacus":9,"./splitOrder":33,"async":58,"augur-abi":59,"bignumber.js":66,"clone":124,"ethrpc":185,"uuid":288,"uuid-parse":286}],36:[function(require,module,exports){
+},{"../constants":5,"../utilities":39,"./abacus":9,"./splitOrder":33,"async":58,"augur-abi":59,"bignumber.js":66,"clone":124,"ethrpc":185,"uuid":288,"uuid-parse":286}],35:[function(require,module,exports){
+/**
+ * Augur JavaScript SDK
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var abi = require("augur-abi");
+var utils = require("../utilities");
+var constants = require("../constants");
+
+module.exports = {
+
+  parseTopicsInfo: function parseTopicsInfo(topicsInfo) {
+    var parsedTopicsInfo = {};
+    for (var i = 0, len = topicsInfo.length; i < len; i += 2) {
+      parsedTopicsInfo[this.decodeTag(topicsInfo[i])] = abi.unfix(topicsInfo[i + 1], "number");
+    }
+    return parsedTopicsInfo;
+  },
+
+  getTopicsInfo: function getTopicsInfo(branch, offset, numTopicsToLoad, callback) {
+    if (!callback) {
+      if (utils.is_function(offset)) {
+        callback = offset;
+        offset = null;
+        numTopicsToLoad = null;
+      } else if (utils.is_function(numTopicsToLoad)) {
+        callback = numTopicsToLoad;
+        numTopicsToLoad = null;
+      }
+    }
+    if (branch && branch.branch) {
+      offset = branch.offset;
+      numTopicsToLoad = branch.numTopicsToLoad;
+      callback = callback || branch.callback;
+      branch = branch.branch;
+    }
+    return this.Topics.getTopicsInfo(branch, offset || 0, numTopicsToLoad || 0, callback);
+  },
+
+  getTopicsInfoChunked: function getTopicsInfoChunked(branch, offset, numTopicsToLoad, totalTopics, chunkCB, callback) {
+    var self = this;
+    if (!utils.is_function(chunkCB)) chunkCB = utils.noop;
+    if (!totalTopics) {
+      return this.getNumTopicsInBranch(branch, function (totalTopics) {
+        if (!totalTopics || totalTopics.error || !parseInt(totalTopics, 10)) {
+          return callback(totalTopics);
+        }
+        self.getTopicsInfoChunked(branch, offset, Math.min(parseInt(totalTopics, 10), constants.ORDERBOOK_MAX_CHUNK_SIZE), totalTopics, chunkCB, callback);
+      });
+    }
+    this.getTopicsInfo({
+      branch: branch,
+      offset: offset,
+      numTopicsToLoad: numTopicsToLoad || totalTopics
+    }, function (topicsInfoChunk) {
+      if (!topicsInfoChunk || topicsInfoChunk.error) {
+        console.error("getTopicsInfo failed:", branch, topicsInfoChunk);
+        return callback(topicsInfoChunk);
+      }
+      chunkCB(topicsInfoChunk);
+      if (offset + numTopicsToLoad < totalTopics) {
+        return self.getTopicsInfoChunked(branch, offset + numTopicsToLoad, numTopicsToLoad, totalTopics, chunkCB, callback);
+      }
+      callback(null);
+    });
+  }
+};
+},{"../constants":5,"../utilities":39,"augur-abi":59}],36:[function(require,module,exports){
 "use strict";
 
 var clone = require("clone");
