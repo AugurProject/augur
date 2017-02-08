@@ -53,10 +53,16 @@ const LoginMessagePage = p => (
         </li>
       </ol>
       <h2>Technical updates:</h2>
+      <h3>February 8, 2017</h3>
+      <ol>
+        <li>
+          Fix to account registration action that was causing initial funding to fail.
+        </li>
+      </ol>
       <h3>February 7, 2017</h3>
       <ol>
         <li>
-          Renamed data_api/tags.se contract to data_api/topics.se and updated function names for &quot;primary tag&quot; to &quot;topic&quot;.
+          {`Renamed data_api/tags.se contract to data_api/topics.se and updated function names for &quot;primary tag&quot; to &quot;topic&quot;.`}
         </li>
         <li>
           The getTopicsInfo(Chunked) wrapper functions in augur.js now return objects (where the keys are topic names and values are popularities) instead of arrays.  The topics selector in the front-end converts the stored topics object to a sorted array.
@@ -66,6 +72,15 @@ const LoginMessagePage = p => (
         </li>
         <li>
           Added increase(Market)TopicPopularity actions and reducer; call increaseMarketTopicPopularity in fillOrder.
+        </li>
+        <li>
+          Refactored the utilization of our icon set to a simpler implementation.
+        </li>
+      </ol>
+      <h3>February 6, 2017</h3>
+      <ol>
+        <li>
+          Added lock to trade submission for all markets if an existing trade commit lock is present.
         </li>
       </ol>
       <h3>February 5, 2017</h3>
