@@ -82,18 +82,8 @@ function testPageTitle(page, description, long) {
       }
       break;
     }
-    case pages.REGISTER:
-      expected = titles.REGISTER;
-
-      assert.strictEqual(title, expected + appended, `title for ${page} page not set to expected value`);
-      break;
-    case pages.LOGIN:
-      expected = titles.LOGIN;
-
-      assert.strictEqual(title, expected + appended, `title for ${page} page not set to expected value`);
-      break;
-    case pages.IMPORT:
-      expected = titles.IMPORT;
+    case pages.AUTHENTICATION:
+      expected = titles.AUTHENTICATION;
 
       assert.strictEqual(title, expected + appended, `title for ${page} page not set to expected value`);
       break;
