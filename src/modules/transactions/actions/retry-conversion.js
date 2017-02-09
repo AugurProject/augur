@@ -5,6 +5,7 @@ import { convertLogsToTransactions } from '../../transactions/actions/convert-lo
 export function loadMarketThenRetryConversion(marketID, label, log, callback) {
   return (dispatch, getState) => {
     // if (callback) callback();
+    console.debug('loadMarketThenRetryConversion', marketID, label, log);
     augur.getMarketInfo(marketID, (marketInfo) => {
       if (!marketInfo || marketInfo.error) {
         if (marketInfo && marketInfo.error) console.error('augur.getMarketInfo:', marketInfo);
@@ -20,6 +21,7 @@ export function loadMarketThenRetryConversion(marketID, label, log, callback) {
 export function lookupEventMarketsThenRetryConversion(eventID, label, log, callback) {
   return (dispatch, getState) => {
     // if (callback) callback();
+    console.debug('lookupEventMarketsThenRetryConversion', eventID, label, log);
     augur.getMarkets(eventID, (markets) => {
       if (!markets || markets.error) {
         if (markets && markets.error) console.error('augur.getMarkets:', markets);

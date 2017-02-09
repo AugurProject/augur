@@ -11,6 +11,7 @@ import { selectMarketIDFromEventID } from '../../market/selectors/market';
 
 export function loadDataForMarketTransaction(label, log, isRetry, callback) {
   return (dispatch, getState) => {
+    console.debug('loadDataForMarketTransaction', label, log, isRetry);
     const marketID = log.marketID || log.market;
     const market = getState().marketsData[marketID];
     if (!market) {
@@ -23,6 +24,7 @@ export function loadDataForMarketTransaction(label, log, isRetry, callback) {
 
 export function loadDataForReportingTransaction(label, log, isRetry, callback) {
   return (dispatch, getState) => {
+    console.debug('loadDataForReportingTransaction', label, log, isRetry);
     const { marketsData, outcomesData } = getState();
     const eventID = log.event || log.eventID;
     const marketID = selectMarketIDFromEventID(eventID);
