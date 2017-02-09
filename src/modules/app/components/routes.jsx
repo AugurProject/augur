@@ -31,8 +31,13 @@ export default class Routes extends Component {
   handleRouting(p) {
     let viewProps;
     let viewComponent;
+    let currentView = p.activeView;
 
-    switch (p.activeView) {
+    if (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10))) {
+      currentView = MARKETS;
+    }
+
+    switch (currentView) {
       case AUTHENTICATION:
         viewProps = {
           authLogin: p.authLogin,
