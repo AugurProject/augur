@@ -362,19 +362,19 @@ augur-abi@1.1.1:
     ethereumjs-abi "0.6.2"
     js-sha3 "0.3.1"
 
-augur-contracts@2.9.1:
-  version "2.9.1"
-  resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-2.9.1.tgz#56311855305391852782fac806a590e630c60ba5"
+augur-contracts@2.9.2:
+  version "2.9.2"
+  resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-2.9.2.tgz#13daa42f4dd36d1a4068e22724836c9200023d9e"
   dependencies:
     clone "1.0.2"
 
-augur.js@3.10.8:
-  version "3.10.8"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.10.8.tgz#77149c05a3e6575bacd4fa42ce46eddf79b90d2a"
+augur.js@3.11.0:
+  version "3.11.0"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.11.0.tgz#cb74fdd3f684f0450eb34568e8ee94508f33abd3"
   dependencies:
     async "1.5.2"
     augur-abi "1.1.1"
-    augur-contracts "2.9.1"
+    augur-contracts "2.9.2"
     bignumber.js "2.3.0"
     browser-request "0.3.3"
     bs58 "3.0.0"
@@ -6348,9 +6348,13 @@ q@^1.1.2:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/q/-/q-1.4.1.tgz#55705bcd93c5f3673530c2c2cbc0c2b3addc286e"
 
-qs@6.2.0, qs@^6.1.0, qs@~6.2.0:
+qs@6.2.0, qs@~6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.2.0.tgz#3b7848c03c2dece69a9522b0fae8c4126d745f3b"
+
+qs@^6.1.0, qs@~6.3.0:
+  version "6.3.0"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.3.0.tgz#f403b264f23bc01228c74131b407f18d5ea5d442"
 
 qs@~1.1.0:
   version "1.1.0"
@@ -6359,10 +6363,6 @@ qs@~1.1.0:
 qs@~5.2.0:
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/qs/-/qs-5.2.1.tgz#801fee030e0b9450d6385adc48a4cc55b44aedfc"
-
-qs@~6.3.0:
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/qs/-/qs-6.3.0.tgz#f403b264f23bc01228c74131b407f18d5ea5d442"
 
 query-string@^4.1.0:
   version "4.2.3"
