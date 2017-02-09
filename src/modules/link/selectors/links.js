@@ -249,7 +249,7 @@ export const selectLoginMessageLink = memoizerific(1)((userID, currentLoginMessa
 });
 
 export const selectTopicsLink = memoizerific(1)((dispatch) => {
-  const href = makeLocation({ page: TOPICS }).url;
+  const href = makeLocation({}).url;
   return {
     href,
     onClick: () => {
