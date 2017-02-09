@@ -369,7 +369,7 @@ describe("logs.getMarketCreationBlock", function() {
       }
       var logs = [];
       if (!cb) return logs;
-      cb(logs);
+      cb(null, logs);
 		},
 		assertions: function(err, o) {
 			assert.isNull(err);
