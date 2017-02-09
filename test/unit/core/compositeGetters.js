@@ -64,7 +64,7 @@ describe("CompositeGetters.getOrderBookChunked", function () {
             amount: "5",
             fullPrecisionAmount: "5",
             price: "0.0625",
-            fullPrecisionPrice: "0.0625",
+            fullPrecisionPrice: "0.062545",
             owner: "0xb0b",
             block: 1,
             outcome: "2"
@@ -76,7 +76,7 @@ describe("CompositeGetters.getOrderBookChunked", function () {
             amount: "5",
             fullPrecisionAmount: "5",
             price: "0.1187",
-            fullPrecisionPrice: "0.11875",
+            fullPrecisionPrice: "0.11875123",
             owner: "0xb0b",
             block: 2,
             outcome: "2"
@@ -90,7 +90,7 @@ describe("CompositeGetters.getOrderBookChunked", function () {
             amount: "5",
             fullPrecisionAmount: "5",
             price: "0.9375",
-            fullPrecisionPrice: "0.9375",
+            fullPrecisionPrice: "0.937532",
             owner: "0xb0b",
             block: 3,
             outcome: "2"
@@ -101,8 +101,8 @@ describe("CompositeGetters.getOrderBookChunked", function () {
             market: "0xa1",
             amount: "5",
             fullPrecisionAmount: "5",
-            price: "0.8813",
-            fullPrecisionPrice: "0.88125",
+            price: "0.8812",
+            fullPrecisionPrice: "0.8812534",
             owner: "0xb0b",
             block: 4,
             outcome: "2"
@@ -120,7 +120,7 @@ describe("CompositeGetters.getOrderBookChunked", function () {
             amount: "5",
             fullPrecisionAmount: "5",
             price: "0.0625",
-            fullPrecisionPrice: "0.0625",
+            fullPrecisionPrice: "0.062545",
             owner: "0xb0b",
             block: 1,
             outcome: "2"
@@ -132,7 +132,7 @@ describe("CompositeGetters.getOrderBookChunked", function () {
             amount: "5",
             fullPrecisionAmount: "5",
             price: "0.1187",
-            fullPrecisionPrice: "0.11875",
+            fullPrecisionPrice: "0.11875123",
             owner: "0xb0b",
             block: 2,
             outcome: "2"
@@ -146,7 +146,7 @@ describe("CompositeGetters.getOrderBookChunked", function () {
             amount: "5",
             fullPrecisionAmount: "5",
             price: "0.9375",
-            fullPrecisionPrice: "0.9375",
+            fullPrecisionPrice: "0.937532",
             owner: "0xb0b",
             block: 3,
             outcome: "2"
@@ -157,8 +157,8 @@ describe("CompositeGetters.getOrderBookChunked", function () {
             market: "0xa1",
             amount: "5",
             fullPrecisionAmount: "5",
-            price: "0.8813",
-            fullPrecisionPrice: "0.88125",
+            price: "0.8812",
+            fullPrecisionPrice: "0.8812534",
             owner: "0xb0b",
             block: 4,
             outcome: "2"
