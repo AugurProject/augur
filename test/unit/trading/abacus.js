@@ -650,3 +650,95 @@ describe("abacus.sumTradeGas", function () {
     expected: constants.TRADE_GAS[0].sell + constants.TRADE_GAS[1].sell + constants.TRADE_GAS[1].buy
   });
 });
+
+describe("abacus.sumTrades", function() {
+  var test = function (t) {
+    it(JSON.stringify(t), function () {
+      t.assertions(abacus.sumTrades(t.trade_ids));
+    });
+  };
+  test({
+    trade_ids: ['1', '2'],
+    assertions: function(trades) {
+      assert.deepEqual(trades, '0x3');
+    }
+  });
+  test({
+    trade_ids: [],
+    assertions: function(trades) {
+      assert.deepEqual(trades, '0x0');
+    }
+  });
+  test({
+    trade_ids: ['25', '233023', '100', '12', '6', '34'],
+    assertions: function(trades) {
+      assert.deepEqual(trades, '0x38ef0');
+    }
+  });
+});
+
+describe("abacus.makeTradeHash", function() {
+  var test = function (t) {
+    it(JSON.stringify(t), function () {
+      t.assertions(abacus.makeTradeHash(t.max_value, t.max_amount, t.trade_ids));
+    });
+  };
+  test({
+    max_value: '100',
+    max_amount: '200',
+    trade_ids: ['15', '12', '200'],
+    assertions: function(sha3) {
+      assert.deepEqual(sha3, '0x9dbb8636c9cdd0d31d02b19bf88ca090e8df5138ba666c167be06a4860aead39');
+    }
+  });
+  test({
+    max_value: '0',
+    max_amount: '10',
+    trade_ids: ['150', '12333', '12320', '1', '23', '12'],
+    assertions: function(sha3) {
+      assert.deepEqual(sha3, '0x9731ed6e55710832de4e483a8edf597029d636e58b701458b8cdd2bfd2829be6');
+    }
+  });
+  test({
+    max_value: '120',
+    max_amount: '0',
+    trade_ids: ['10', '120', '20', '321'],
+    assertions: function(sha3) {
+      assert.deepEqual(sha3, '0xb7740eac4fa741a5f8db90da5c9d261598bc7dfe031e361c4010d2f436d71717');
+    }
+  });
+  test({
+    max_value: '120',
+    max_amount: '300',
+    trade_ids: [],
+    assertions: function(sha3) {
+      assert.deepEqual(sha3, '0x604350686ce84371b506c8497ef58fea535df1b2dab9fc00ef31bc8898271428');
+    }
+  });
+});
+
+describe("abacus.calculateRequiredMarketValue", function() {
+  var test = function (t) {
+    it(JSON.stringify(t), function () {
+      t.assertions(abacus.calculateRequiredMarketValue(t.gasPrice));
+    });
+  };
+  test({
+    gasPrice: '0.00354',
+    assertions: function(marketValue) {
+      assert.deepEqual(marketValue, '0x1782');
+    }
+  });
+  test({
+    gasPrice: '0.07502',
+    assertions: function(marketValue) {
+      assert.deepEqual(marketValue, '0x1f22e');
+    }
+  });
+  test({
+    gasPrice: '0.53',
+    assertions: function(marketValue) {
+      assert.deepEqual(marketValue, '0xdbf88');
+    }
+  });
+});
