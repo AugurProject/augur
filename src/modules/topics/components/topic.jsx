@@ -1,5 +1,7 @@
 import React, { PropTypes, Component } from 'react';
 
+import AugurLogoIcon from 'modules/common/components/augur-logo-icon';
+
 import topicIcons from 'modules/topics/constants/topic-icons';
 
 export default class Topic extends Component {
@@ -48,7 +50,7 @@ export default class Topic extends Component {
   }
 
   render() {
-    // const p = this.props;
+    const p = this.props;
     const s = this.state;
 
     return (
@@ -58,8 +60,10 @@ export default class Topic extends Component {
             ref={(topicIcon) => { this.topicIcon = topicIcon; }}
             className={s.className}
           /> :
-          <span>no icon</span>
+          <AugurLogoIcon />
         }
+        <span>{p.popularity}</span>
+        <span>{p.topic}</span>
       </button>
     );
   }
