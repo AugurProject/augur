@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE, AUTHENTICATION } from 'modules/app/constants/views';
+import { ACCOUNT, MAKE, TRANSACTIONS, M, MARKETS, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE, AUTHENTICATION } from 'modules/app/constants/views';
 
 import getValue from 'utils/get-value';
 import { shouldComponentUpdateOnStateChangeOnly } from 'utils/should-component-update-pure';
@@ -138,7 +138,7 @@ export default class Routes extends Component {
         });
         break;
       }
-      default: {
+      case MARKETS: {
         viewProps = {
           isSideBarAllowed: true,
           loginAccount: p.loginAccount,
@@ -155,6 +155,17 @@ export default class Routes extends Component {
         System.import('modules/markets/components/markets-view').then((module) => {
           const MarketsView = module.default;
           viewComponent = <MarketsView {...viewProps} />;
+          this.setState({ viewProps, viewComponent });
+        });
+        break;
+      }
+      default: {
+        viewProps = {
+          topics: p.topics
+        };
+        System.import('modules/topics/components/topics-view').then((module) => {
+          const TopicsView = module.default;
+          viewComponent = <TopicsView {...viewProps} />;
           this.setState({ viewProps, viewComponent });
         });
       }

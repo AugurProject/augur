@@ -139,7 +139,8 @@ export default class App extends Component {
       transactionsLink: getValue(p, 'links.transactionsLink'),
       authLink: getValue(p, 'links.authLink'),
       accountLink: getValue(p, 'links.accountLink'),
-      myPositionsLink: getValue(p, 'links.myPositionsLink')
+      myPositionsLink: getValue(p, 'links.myPositionsLink'),
+      topicsLink: getValue(p, 'links.topicsLink')
     };
 
     const sideBarProps = {

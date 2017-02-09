@@ -71,7 +71,7 @@ const Nav = (p) => {
       }
       <Link
         className="augur-brand"
-        {...p.marketsLink}
+        {...p.topicsLink}
       >
         <AugurLogoFull />
       </Link>

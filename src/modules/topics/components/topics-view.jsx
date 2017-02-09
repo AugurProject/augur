@@ -1,15 +1,33 @@
-import React from 'react';
+import React, { Component } from 'react';
 
-const TopicsView = (p) => {
-  // const nullMessage = 'No Topics Available';
+import NullStateMessage from 'modules/common/components/null-state-message';
+import Topic from 'modules/topics/components/topic';
 
-  console.log('p -- ', p);
+export default class TopicsView extends Component {
+  constructor(props) {
+    super(props);
 
-  return (
-    <section id="topics_view">
-      <span>Topics View</span>
-    </section>
-  );
-};
+    this.state = {
+      nullMessage: 'No Topics Available',
+      page: 1
+    };
+  }
 
-export default TopicsView;
+  render() {
+    const p = this.props;
+    const s = this.state;
+
+    return (
+      <section id="topics_view">
+        {p.topics && p.topics.length ?
+          <article>
+            {p.topics.map((topic, i) => {
+              return <Topic />;
+            })}
+          </article> :
+          <NullStateMessage message={s.nullMessage} />
+        }
+      </section>
+    );
+  }
+}

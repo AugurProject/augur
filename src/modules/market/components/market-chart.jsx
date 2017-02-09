@@ -8,6 +8,14 @@ export default class MarketChart extends Component {
     series: PropTypes.array
   };
 
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      nullMessage: 'No Completed Trades'
+    };
+  }
+
   shouldComponentUpdate(nextProps) {
     if (nextProps.series.length === this.props.series.length) return false;
 
@@ -16,6 +24,7 @@ export default class MarketChart extends Component {
 
   render() {
     const p = this.props;
+    const s = this.state;
 
     const config = {
       title: {
@@ -42,12 +51,10 @@ export default class MarketChart extends Component {
       series: p.series
     };
 
-    const nullMessage = 'No Completed Trades';
-
     return (
       <article className="price-history-chart market-content-scrollable">
         {!p.series || !p.series.length ?
-          <NullStateMessage message={nullMessage} /> :
+          <NullStateMessage message={s.nullMessage} /> :
           <ReactHighcharts config={config} />
         }
       </article>

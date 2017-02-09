@@ -6,8 +6,9 @@ export const TRANSACTIONS = 'transactions';
 export const ACCOUNT = 'account';
 export const LOGIN_MESSAGE = 'login-message';
 export const AUTHENTICATION = 'authentication';
+export const TOPICS = 'topics';
 
-export const DEFAULT_VIEW = MARKETS;
+export const DEFAULT_VIEW = TOPICS;
 
 // Internal Navigation
 export const AUTH_LOGIN = 'AUTH_LOGIN';

@@ -12,6 +12,7 @@ export default class MarketOpenOrders extends Component {
     super(props);
 
     this.state = {
+      nullMessage: 'No Current Open Orders',
       hasOrders: false
     };
 
@@ -34,12 +35,10 @@ export default class MarketOpenOrders extends Component {
     const p = this.props;
     const s = this.state;
 
-    const nullMessage = 'No Current Open Orders';
-
     return (
       <article className="market-open-orders">
         {!s.hasOrders ?
-          <NullStateMessage message={nullMessage} /> :
+          <NullStateMessage message={s.nullMessage} /> :
           <div>
             <div className="market-open-orders-header">
               <span>{!p.marketType === SCALAR ? 'Outcomes' : 'Outcome'}</span>

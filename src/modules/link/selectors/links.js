@@ -3,7 +3,7 @@ import { listWordsUnderLength } from '../../../utils/list-words-under-length';
 import { makeLocation } from '../../../utils/parse-url';
 import { loginWithAirbitz } from '../../auth/actions/login-with-airbitz';
 
-import { ACCOUNT, M, MARKETS, MAKE, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS, LOGIN_MESSAGE, AUTHENTICATION } from '../../app/constants/views';
+import { ACCOUNT, M, MARKETS, MAKE, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS, LOGIN_MESSAGE, AUTHENTICATION, TOPICS } from '../../app/constants/views';
 import { FAVORITES, PENDING_REPORTS } from '../../markets/constants/markets-headers';
 
 import { SEARCH_PARAM_NAME, FILTER_SORT_TYPE_PARAM_NAME, FILTER_SORT_SORT_PARAM_NAME, FILTER_SORT_ISDESC_PARAM_NAME, PAGE_PARAM_NAME, TAGS_PARAM_NAME } from '../../link/constants/param-names';
@@ -34,7 +34,8 @@ export default function () {
     myPositionsLink: selectMyPositionsLink(store.dispatch),
     myMarketsLink: selectMyMarketsLink(store.dispatch),
     myReportsLink: selectMyReportsLink(store.dispatch),
-    loginMessageLink: selectLoginMessageLink(loginAccount.address, loginMessage.version, store.dispatch)
+    loginMessageLink: selectLoginMessageLink(loginAccount.address, loginMessage.version, store.dispatch),
+    topicsLink: selectTopicsLink(store.dispatch)
   };
 
   // NOTE -- pagination links are a special case.  Reference the pagination selector for how those work.
@@ -103,6 +104,9 @@ export const selectAirbitzOnLoad = memoizerific(1)(dispatch => ({
 
 export const selectMarketsLink = memoizerific(1)((keywords, selectedFilterSort, selectedTags, selectedPageNum, subSet, dispatch) => {
   const params = {};
+
+  // page
+  params.page = MARKETS;
 
   // search
   if (keywords != null && keywords.length > 0) {
@@ -240,6 +244,16 @@ export const selectLoginMessageLink = memoizerific(1)((userID, currentLoginMessa
       if (userID != null) {
         dispatch(updateUserLoginMessageVersionRead(currentLoginMessageVersion));
       }
+    }
+  };
+});
+
+export const selectTopicsLink = memoizerific(1)((dispatch) => {
+  const href = makeLocation({ page: TOPICS }).url;
+  return {
+    href,
+    onClick: () => {
+      dispatch(updateURL(href));
     }
   };
 });
