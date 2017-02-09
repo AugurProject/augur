@@ -25,11 +25,15 @@ export function importAccount(name, password, rememberMe, keystore) {
         dispatch(updateLoginAccount(importedAccount));
         dispatch(loadLoginAccountDependents((err, balances) => {
           if (err || !balances) return console.error(err);
-          if (!getState().loginAccount.registerBlockNumber) {
-            dispatch(registerTimestamp());
-          }
           if (anyAccountBalancesZero(balances)) {
-            dispatch(fundNewAccount(e => e && console.error(e)));
+            dispatch(fundNewAccount((e) => {
+              if (e) return console.error(e);
+              if (!getState().loginAccount.registerBlockNumber) {
+                dispatch(registerTimestamp());
+              }
+            }));
+          } else if (!getState().loginAccount.registerBlockNumber) {
+            dispatch(registerTimestamp());
           }
         }));
         if (links && links.marketsLink) {
