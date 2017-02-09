@@ -64,8 +64,7 @@ module.exports = {
       return this.getFirstLogBlockNumber(this.getLogs("marketCreated", {marketID: marketID}));
     }
     this.getLogs("marketCreated", {marketID: marketID}, function (err, logs) {
-      // TODO change on next contract reupload to callback(err)
-      // if (err) console.warn("marketCreated log lookup for", marketID, "failed:", err);
+      if (err) return callback(err);
       callback(null, self.getFirstLogBlockNumber(logs));
     });
   },
