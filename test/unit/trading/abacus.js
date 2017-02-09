@@ -742,3 +742,90 @@ describe("abacus.calculateRequiredMarketValue", function() {
     }
   });
 });
+
+describe("abacus.shrinkScalarPrice", function() {
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(abacus.shrinkScalarPrice(t.minValue, t.price));
+    });
+  };
+  test({
+    minValue: new BigNumber('10'),
+    price: new BigNumber('.5'),
+    assertions: function(shrunkenScalarPrice) {
+      assert.deepEqual(shrunkenScalarPrice, '-9.5');
+    }
+  });
+  test({
+    minValue: '100',
+    price: '20',
+    assertions: function(shrunkenScalarPrice) {
+      assert.deepEqual(shrunkenScalarPrice, '-80');
+    }
+  });
+  test({
+    minValue: '-20',
+    price: '20',
+    assertions: function(shrunkenScalarPrice) {
+      assert.deepEqual(shrunkenScalarPrice, '40');
+    }
+  });
+});
+
+describe("abacus.expandScalarPrice", function() {
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(abacus.expandScalarPrice(t.minValue, t.price));
+    });
+  };
+  test({
+    minValue: new BigNumber('10'),
+    price: new BigNumber('.5'),
+    assertions: function(expandedScalarPrice) {
+      assert.deepEqual(expandedScalarPrice, '10.5');
+    }
+  });
+  test({
+    minValue: '100',
+    price: '5',
+    assertions: function(expandedScalarPrice) {
+      assert.deepEqual(expandedScalarPrice, '105');
+    }
+  });
+  test({
+    minValue: '-10',
+    price: '50',
+    assertions: function(expandedScalarPrice) {
+      assert.deepEqual(expandedScalarPrice, '40');
+    }
+  });
+});
+
+describe("abacus.adjustScalarSellPrice", function() {
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(abacus.adjustScalarSellPrice(t.maxValue, t.price));
+    });
+  };
+  test({
+    maxValue: new BigNumber('100'),
+    price: new BigNumber('.5'),
+    assertions: function(adjustedScalarPrice) {
+      assert.deepEqual(adjustedScalarPrice, '99.5');
+    }
+  });
+  test({
+    maxValue: '50',
+    price: '.7',
+    assertions: function(adjustedScalarPrice) {
+      assert.deepEqual(adjustedScalarPrice, '49.3');
+    }
+  });
+  test({
+    maxValue: '500',
+    price: '320',
+    assertions: function(adjustedScalarPrice) {
+      assert.deepEqual(adjustedScalarPrice, '180');
+    }
+  });
+});
