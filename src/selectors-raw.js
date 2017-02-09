@@ -3,7 +3,6 @@ import abc from 'modules/auth/selectors/abc';
 import loginAccount from 'modules/auth/selectors/login-account';
 import links from 'modules/link/selectors/links';
 import url from 'modules/link/selectors/url';
-import authForm from 'modules/auth/selectors/auth-form';
 import topics from 'modules/topics/selectors/topics';
 import marketsHeader from 'modules/markets/selectors/markets-header';
 import marketsTotals from 'modules/markets/selectors/markets-totals';
@@ -36,6 +35,11 @@ import marketDataNavItems from 'modules/market/selectors/market-data-nav-items';
 import marketUserDataNavItems from 'modules/market/selectors/market-user-data-nav-items';
 import scalarShareDenomination from 'modules/market/selectors/scalar-share-denomination';
 import outcomeTradeNavItems from 'modules/outcomes/selectors/outcome-trade-nav-items';
+import authAirbitz from 'modules/auth/selectors/auth-airbitz';
+import authNavItems from 'modules/auth/selectors/auth-nav-items';
+import authLogin from 'modules/auth/selectors/auth-login';
+import authSignup from 'modules/auth/selectors/auth-signup';
+import authImport from 'modules/auth/selectors/auth-import';
 import closePositionStatus from 'modules/my-positions/selectors/close-position-status';
 
 const selectors = {
@@ -44,7 +48,6 @@ const selectors = {
   loginAccount,
   links,
   url,
-  authForm,
   createMarketForm,
   marketsHeader,
   marketsTotals,
@@ -77,6 +80,11 @@ const selectors = {
   marketUserDataNavItems,
   scalarShareDenomination,
   outcomeTradeNavItems,
+  authAirbitz,
+  authNavItems,
+  authLogin,
+  authSignup,
+  authImport,
   closePositionStatus
 };
 

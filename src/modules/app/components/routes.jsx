@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
-import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE } from 'modules/app/constants/views';
-import { REGISTER, LOGIN, LOGOUT, IMPORT } from 'modules/auth/constants/auth-types';
+import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE, AUTHENTICATION } from 'modules/app/constants/views';
 
 import getValue from 'utils/get-value';
 import { shouldComponentUpdateOnStateChangeOnly } from 'utils/should-component-update-pure';
@@ -34,12 +33,13 @@ export default class Routes extends Component {
     let viewComponent;
 
     switch (p.activeView) {
-      case REGISTER:
-      case LOGIN:
-      case IMPORT:
-      case LOGOUT:
+      case AUTHENTICATION:
         viewProps = {
-          authForm: p.authForm
+          authLogin: p.authLogin,
+          authAirbitz: p.authAirbitz,
+          authSignup: p.authSignup,
+          authImport: p.authImport,
+          authNavItems: p.authNavItems
         };
         System.import('modules/auth/components/auth-view').then((module) => {
           const AuthView = module.default;

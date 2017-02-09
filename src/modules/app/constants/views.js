@@ -5,13 +5,14 @@ export const MAKE = 'make';
 export const TRANSACTIONS = 'transactions';
 export const ACCOUNT = 'account';
 export const LOGIN_MESSAGE = 'login-message';
-export const REGISTER = 'register';
-export const LOGIN = 'login';
-export const IMPORT = 'import';
+export const AUTHENTICATION = 'authentication';
 
 export const DEFAULT_VIEW = MARKETS;
 
 // Internal Navigation
+export const AUTH_LOGIN = 'AUTH_LOGIN';
+export const AUTH_SIGNUP = 'AUTH_SIGNUP';
+export const AUTH_IMPORT = 'AUTH_IMPORT';
 export const MY_POSITIONS = 'my-positions';
 export const MY_MARKETS = 'my-markets';
 export const MY_REPORTS = 'my-reports';

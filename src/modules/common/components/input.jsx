@@ -2,6 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 
+import debounce from 'utils/debounce';
+
 export default class Input extends Component {
   // TODO -- Prop Validations
   static propTypes = {
@@ -15,7 +17,10 @@ export default class Input extends Component {
     onBlur: PropTypes.func,
     isIncrementable: PropTypes.bool,
     incrementAmount: PropTypes.number,
-    updateValue: PropTypes.func
+    updateValue: PropTypes.func,
+    canToggleVisibility: PropTypes.bool,
+    shouldMatchValue: PropTypes.bool,
+    comparisonValue: PropTypes.string
   };
 
   constructor(props) {
@@ -24,16 +29,29 @@ export default class Input extends Component {
     this.finalDebounceMS = this.props.debounceMS > 0 || this.props.debounceMS === 0 ? this.props.debounceMS : 500;
     this.state = {
       value: this.props.value || '',
-      timeoutID: ''
+      timeoutID: '',
+      isHiddenContentVisible: false
     };
     this.handleOnChange = this.handleOnChange.bind(this);
     this.handleOnBlur = this.handleOnBlur.bind(this);
     this.handleClear = this.handleClear.bind(this);
+    this.handleToggleVisibility = this.handleToggleVisibility.bind(this);
+    this.timeoutVisibleHiddenContent = debounce(this.timeoutVisibleHiddenContent.bind(this), 1200);
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.value !== nextProps.value) {
       this.setState({ value: nextProps.value });
+    }
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (nextProps.canToggleVisibility && !nextState.value && nextState.isHiddenContentVisible) {
+      this.setState({ isHiddenContentVisible: false });
+    }
+
+    if (this.state.isHiddenContentVisible !== nextState.isHiddenContentVisible && nextState.isHiddenContentVisible) {
+      this.timeoutVisibleHiddenContent();
     }
   }
 
@@ -65,16 +83,25 @@ export default class Input extends Component {
     this.props.onChange('');
   };
 
+  handleToggleVisibility = () => {
+    this.setState({ isHiddenContentVisible: !this.state.isHiddenContentVisible });
+  };
+
+  timeoutVisibleHiddenContent = () => {
+    this.setState({ isHiddenContentVisible: false });
+  }
+
   render() {
-    const { isClearable, isIncrementable, incrementAmount, updateValue, ...p } = this.props;
+    const { isClearable, isIncrementable, incrementAmount, updateValue, canToggleVisibility, shouldMatchValue, comparisonValue, ...p } = this.props;
     const s = this.state;
 
     return (
-      <div className={classNames('input', p.className, { 'is-incrementable': isIncrementable })} >
+      <div className={classNames('input', p.className, { 'is-incrementable': isIncrementable, 'can-toggle-visibility': canToggleVisibility })} >
         {!p.isMultiline &&
           <input
             {...p}
             className="box"
+            type={p.type === 'password' && s.isHiddenContentVisible ? 'text' : p.type}
             value={s.value}
             onChange={this.handleOnChange}
             onBlur={this.handleOnBlur}
@@ -92,9 +119,36 @@ export default class Input extends Component {
         }
 
         {isClearable && !p.isMultiline && !!s.value &&
-          <button type="button" className="button-text-only" onClick={this.handleClear}>
+          <button
+            type="button"
+            className="button-text-only"
+            onClick={this.handleClear}
+          >
             <i className="fa fa-close" />
           </button>
+        }
+
+        {canToggleVisibility && s.value &&
+          <button
+            type="button"
+            className="button-text-only"
+            onClick={this.handleToggleVisibility}
+            tabIndex="-1"
+          >
+            {s.isHiddenContentVisible ?
+              <i className="fa fa-eye-slash" /> :
+              <i className="fa fa-eye" />
+            }
+          </button>
+        }
+
+        {shouldMatchValue && s.value &&
+          <div className="input-value-comparison">
+            {s.value === comparisonValue ?
+              <i className="fa fa-check-circle input-does-match" /> :
+              <i className="fa fa-times-circle input-does-not-match" />
+            }
+          </div>
         }
 
         {isIncrementable &&

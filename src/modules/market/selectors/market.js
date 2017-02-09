@@ -175,6 +175,8 @@ export function assembleMarket(
       loginAccount,
       dispatch) => { // console.log('>>assembleMarket<<');
 
+      // console.log('### Assemble Market ### -- ', marketID);
+
       const market = {
         ...marketData,
         description: marketData.description || '',

@@ -45,7 +45,8 @@
     "redux": "3.5.2",
     "redux-thunk": "2.1.0",
     "secure-random": "1.1.1",
-    "shelljs": "0.7.5"
+    "shelljs": "0.7.5",
+    "zxcvbn": "4.4.1"
   },
   "devDependencies": {
     "autoprefixer": "6.5.3",

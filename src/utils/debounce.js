@@ -10,12 +10,7 @@ export default function debounce(func, wait) {
       func.apply(context, args);
     };
 
-    const callNow = !timeout;
-
     clearTimeout(timeout);
     timeout = setTimeout(later, realWait);
-    if (callNow) {
-      func.apply(context, args);
-    }
   };
 }
