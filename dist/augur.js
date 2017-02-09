@@ -16868,12 +16868,17 @@ module.exports={
         }, 
         {
           "indexed": true, 
-          "name": "branch", 
+          "name": "marketID", 
           "type": "int256"
         }, 
         {
           "indexed": true, 
-          "name": "marketID", 
+          "name": "topic", 
+          "type": "int256"
+        }, 
+        {
+          "indexed": false, 
+          "name": "branch", 
           "type": "int256"
         }, 
         {
@@ -16892,8 +16897,8 @@ module.exports={
           "type": "int256"
         }
       ], 
-      "name": "marketCreated(int256,int256,int256,int256,int256,int256)", 
-      "signature": "0x80dc2c0162323f3305cee66776c5a51c1475ee8c4d8c6798df60e80d8c8c907b"
+      "name": "marketCreated(int256,int256,int256,int256,int256,int256,int256)", 
+      "signature": "0x94f1481ac3fc8e968bca7279f7811a02ae1212aa3a25e0f643684f5da1ef3ad6"
     }, 
     "payout": {
       "contract": "Payout", 
@@ -24374,7 +24379,7 @@ BigNumber.config({
 var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/slashRep"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register"), require("./modules/topics"), require("./modules/modifyOrderBook")];
 
 function Augur() {
-  this.version = "3.10.8";
+  this.version = "3.11.0";
 
   this.options = {
     debug: {
@@ -24721,16 +24726,17 @@ module.exports = {
     return info;
   },
 
+  formatTag: function formatTag(tag) {
+    if (tag === null || tag === undefined || tag === "") return "0x0";
+    return abi.short_string_to_int256(tag);
+  },
+
   formatTags: function formatTags(tags) {
     var formattedTags = clone(tags);
     if (!formattedTags || formattedTags.constructor !== Array) formattedTags = [];
     if (formattedTags.length) {
       for (var i = 0; i < formattedTags.length; ++i) {
-        if (formattedTags[i] === null || formattedTags[i] === undefined || formattedTags[i] === "") {
-          formattedTags[i] = "0x0";
-        } else {
-          formattedTags[i] = abi.short_string_to_int256(formattedTags[i]);
-        }
+        formattedTags[i] = this.formatTag(formattedTags[i]);
       }
     }
     while (formattedTags.length < 3) {
@@ -26218,8 +26224,7 @@ module.exports = {
       return this.getFirstLogBlockNumber(this.getLogs("marketCreated", { marketID: marketID }));
     }
     this.getLogs("marketCreated", { marketID: marketID }, function (err, logs) {
-      // TODO change on next contract reupload to callback(err)
-      // if (err) console.warn("marketCreated log lookup for", marketID, "failed:", err);
+      if (err) return callback(err);
       callback(null, self.getFirstLogBlockNumber(logs));
     });
   },
@@ -28488,6 +28493,28 @@ var utils = require("../utilities");
 var constants = require("../constants");
 
 module.exports = {
+
+  filterByBranchID: function filterByBranchID(branchID, logs) {
+    if (branchID) logs = logs.filter(function (log) {
+      return log.branch === abi.format_int256(branchID);
+    });
+    return logs.map(function (log) {
+      return log.marketID;
+    });
+  },
+
+  findMarketsWithTopic: function findMarketsWithTopic(topic, branchID, callback) {
+    var self = this;
+    var formattedTopic = this.formatTag(topic);
+    if (!utils.is_function(callback)) {
+      return this.filterByBranchID(branchID, this.getLogs("marketCreated", { topic: formattedTopic }));
+    }
+    // TODO filter by endDate? (get active markets only)
+    this.getLogs("marketCreated", { topic: formattedTopic }, null, function (err, logs) {
+      if (err) return callback(err);
+      return callback(null, self.filterByBranchID(branchID, logs));
+    });
+  },
 
   parseTopicsInfo: function parseTopicsInfo(topicsInfo) {
     var parsedTopicsInfo = {};
