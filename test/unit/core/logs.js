@@ -347,12 +347,12 @@ describe("logs.getMarketCreationBlock", function() {
 		marketID: '0x0a1',
 		getLogs: function(label, filterParams, aux, cb) {
 			if (!cb && utils.is_function(aux)) {
-              cb = aux;
-              aux = null;
-            }
-            var logs = [{blockNumber: '101010', filterParams: filterParams }];
-            if (!cb) return logs;
-            cb(null, logs);
+        cb = aux;
+        aux = null;
+      }
+      var logs = [{blockNumber: '101010', filterParams: filterParams }];
+      if (!cb) return logs;
+      cb(null, logs);
 		},
 		assertions: function(err, o) {
 			assert.isNull(err);
@@ -364,12 +364,12 @@ describe("logs.getMarketCreationBlock", function() {
 		marketID: '0x0a1',
 		getLogs: function(label, filterParams, aux, cb) {
 			if (!cb && utils.is_function(aux)) {
-              cb = aux;
-              aux = null;
-            }
-            var logs = [];
-            if (!cb) return logs;
-            cb(logs);
+        cb = aux;
+        aux = null;
+      }
+      var logs = [];
+      if (!cb) return logs;
+      cb(logs);
 		},
 		assertions: function(err, o) {
 			assert.isNull(err);
