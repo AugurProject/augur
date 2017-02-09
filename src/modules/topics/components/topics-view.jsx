@@ -9,8 +9,24 @@ export default class TopicsView extends Component {
 
     this.state = {
       nullMessage: 'No Topics Available',
-      page: 1
+      page: 1,
+      lowerIndex: 0,
+      upperIndex: 4
     };
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (this.state.page !== nextState.page) {
+      const range = nextState.page === 1 ? 4 : 5;
+      const lowerBump = nextState.page < 3 ? 0 : 1;
+      const lowerIndex = ((nextState.page - 1) * range) + lowerBump;
+      const upperIndex = lowerIndex + range;
+
+      this.setState({
+        lowerIndex,
+        upperIndex
+      });
+    }
   }
 
   render() {
@@ -20,11 +36,21 @@ export default class TopicsView extends Component {
     return (
       <section id="topics_view">
         {p.topics && p.topics.length ?
-          <article>
+          <div>
             {p.topics.map((topic, i) => {
-              return <Topic />;
+              if (i >= s.lowerIndex && i <= s.upperIndex) {
+                return (
+                  <Topic
+                    key={`topic-${i}`}
+                    topic={topic.topic}
+                    popularity={topic.popularity}
+                  />
+                );
+              }
+
+              return false;
             })}
-          </article> :
+          </div> :
           <NullStateMessage message={s.nullMessage} />
         }
       </section>
