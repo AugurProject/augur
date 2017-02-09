@@ -1,0 +1,24 @@
+.auth-import-form {
+  .auth-import-file {
+    z-index: 30;
+
+    &.input-error {
+      border-color: @color-red;
+    }
+  }
+
+  .auth-import-password {
+    border-top: 0;
+    height: 0;
+    opacity: 0;
+    z-index: 20;
+  }
+
+  .auth-import-actions {
+    display: flex;
+    flex-direction: column;
+    height: 0;
+    opacity: 0;
+    z-index: 10;
+  }
+}

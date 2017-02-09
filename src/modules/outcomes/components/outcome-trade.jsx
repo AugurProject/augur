@@ -158,6 +158,7 @@ export default class OutcomeTrade extends Component {
           >
             <div className="outcome-trade-inputs-sides">
               <ComponentNav
+                fullWidth
                 navItems={p.outcomeTradeNavItems}
                 selectedNav={selectedTradeSide}
                 updateSelectedNav={(side) => { this.updateSelectedNav(side, selectedID); }}

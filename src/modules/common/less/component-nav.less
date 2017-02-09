@@ -4,6 +4,36 @@
 
   display: flex;
 
+  &.full-width-nav > * {
+    flex: 1;
+
+    &.selected {
+
+      .border(true, @border-bottom, @color-purple, @border-width-3);
+    }
+
+    &:hover:not(.selected) {
+
+      .border(true, @border-bottom, @color-purple, @border-width-2);
+    }
+
+    li {
+      display: flex;
+      justify-content: center;
+      margin: 0;
+
+      &.selected {
+
+        .border(false);
+      }
+
+      &:hover:not(.selected) {
+
+        .border(false);
+      }
+    }
+  }
+
   .link {
     cursor: default;
 

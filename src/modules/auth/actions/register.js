@@ -1,7 +1,5 @@
 import { augur } from '../../../services/augurjs';
-import { PASSWORDS_DO_NOT_MATCH } from '../../auth/constants/form-errors';
 import { loadLoginAccountDependents, loadLoginAccountLocalStorage } from '../../auth/actions/load-login-account';
-import { authError } from '../../auth/actions/auth-error';
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { registerTimestamp } from '../../auth/actions/register-timestamp';
 import { fundNewAccount } from '../../auth/actions/fund-new-account';
@@ -14,7 +12,7 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
     const { links } = require('../../../selectors');
     const localStorageRef = typeof window !== 'undefined' && window.localStorage;
 
-    if (loginID && links && links.marketsLink && !cb && loginAccount.keystore) {
+    if (loginID && links && links.marketsLink && loginAccount.keystore) {
       if (rememberMe && localStorageRef && localStorageRef.setItem) {
         const persistentAccount = Object.assign({}, loginAccount);
         if (Buffer.isBuffer(persistentAccount.privateKey)) {
@@ -32,28 +30,38 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
       dispatch(loadLoginAccountDependents((err) => {
         if (err) return console.error(err);
         dispatch(fundNewAccount((err) => {
+          console.log('fundNewAccount');
           if (err) return console.error(err);
           dispatch(registerTimestamp());
         }));
       }));
 
+      cb && cb();
+
       // decide if we need to display the loginMessage
       const { loginMessage } = getState();
       if (isUserLoggedIn(loginAccount) && !isCurrentLoginMessageRead(loginMessage)) {
-        return links.loginMessageLink.onClick();
+        links.loginMessageLink.onClick();
+        return;
       }
 
-      return links.marketsLink.onClick(links.marketsLink.href);
-    }
-    if (password !== password2) {
-      return dispatch(authError({ code: PASSWORDS_DO_NOT_MATCH }));
+      links.marketsLink.onClick();
+      return;
     }
 
     augur.accounts.register(name, password, (account) => {
       if (!account) {
-        return dispatch(authError({ code: 0, message: 'failed to register' }));
+        cb && cb({
+          code: 0,
+          message: 'failed to register'
+        });
+        return;
       } else if (account.error) {
-        return dispatch(authError({ code: account.error, message: account.message }));
+        cb && cb({
+          code: account.error,
+          message: account.message
+        });
+        return;
       }
       const localLoginAccount = {
         ...account,
@@ -64,9 +72,7 @@ export function register(name, password, password2, loginID, rememberMe, loginAc
       }
       dispatch(updateLoginAccount({ loginID: localLoginAccount.loginID }));
       // dispatch(addFundNewAccount(localLoginAccount.address));
-      if (typeof cb === 'function') {
-        cb(localLoginAccount);
-      }
+      cb && cb(null, localLoginAccount);
     });
   };
 }
