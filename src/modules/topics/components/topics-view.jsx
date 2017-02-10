@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 
 import NullStateMessage from 'modules/common/components/null-state-message';
-import Topic from 'modules/topics/components/topic';
+import TopicRows from 'modules/topics/components/topic-rows';
 import Paginator from 'modules/common/components/paginator';
 
 export default class TopicsView extends Component {
@@ -17,23 +17,25 @@ export default class TopicsView extends Component {
       currentPage: 1,
       lowerIndex: 0,
       upperIndex: 4,
-      pagination: {}
+      pagination: {},
+      topicsPerHeroRow: 2,
+      topicsPerRow: 3
     };
 
-    this.updatePaginationObject = this.updatePaginationObject.bind(this);
+    this.updatePagination = this.updatePagination.bind(this);
   }
 
   componentWillMount() {
-    this.updatePaginationObject(this.props, this.state);
+    this.updatePagination(this.props, this.state);
   }
 
   componentWillUpdate(nextProps, nextState) {
     if (this.state.currentPage !== nextState.currentPage || this.props.topics !== nextProps.topics) {
-      this.updatePaginationObject(nextProps, nextState);
+      this.updatePagination(nextProps, nextState);
     }
   }
 
-  updatePaginationObject(p, s) {
+  updatePagination(p, s) {
     const range = s.currentPage === 1 ? 4 : 5;
     const lowerBump = s.currentPage < 3 ? 0 : (s.currentPage - 2);
     const lowerIndex = ((s.currentPage - 1) * range) + lowerBump;
@@ -73,28 +75,23 @@ export default class TopicsView extends Component {
     const p = this.props;
     const s = this.state;
 
+    const specificTopics = p.topics.slice(s.lowerIndex, s.upperIndex === p.topics.length - 1 ? undefined : s.upperIndex + 1);
+
     return (
       <section id="topics_view">
         {p.topics && p.topics.length ?
-          <div>
-            {p.topics.map((topic, i) => {
-              if (i >= s.lowerIndex && i <= s.upperIndex) {
-                return (
-                  <Topic
-                    key={`topic-${i}`}
-                    topic={topic.topic}
-                    popularity={topic.popularity}
-                  />
-                );
-              }
-
-              return false;
-            })}
-            {p.topics.length > 5 &&
-              <Paginator pagination={s.pagination} />
-            }
+          <div className="topics">
+            <TopicRows
+              topics={specificTopics}
+              topicsPerRow={s.topicsPerRow}
+              hasHeroRow={s.currentPage === 1}
+              topicsPerHeroRow={s.topicsPerHeroRow}
+            />
           </div> :
           <NullStateMessage message={s.nullMessage} />
+        }
+        {p.topics.length > 5 &&
+          <Paginator pagination={s.pagination} />
         }
       </section>
     );
