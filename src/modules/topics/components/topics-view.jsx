@@ -41,8 +41,6 @@ export default class TopicsView extends Component {
       lowerIndex + range :
       p.topics.length - 1;
 
-    console.log('index bounds -- ', s.currentPage, range, lowerBump, lowerIndex, upperIndex, p.topics.length);
-
     this.setState({
       lowerIndex,
       upperIndex,
