@@ -53,138 +53,19 @@ const LoginMessagePage = p => (
         </li>
       </ol>
       <h2>Technical updates:</h2>
+      <h3>February 9, 2017</h3>
+      <ol>
+        <li>
+          Added on-chain topic search to augur.js.
+        </li>
+        <li>
+          Added topic (first tag) as an indexed parameter to the marketCreated event on the createMarket contract.
+        </li>
+      </ol>
       <h3>February 8, 2017</h3>
       <ol>
         <li>
           Fix to account registration action that was causing initial funding to fail.
-        </li>
-      </ol>
-      <h3>February 7, 2017</h3>
-      <ol>
-        <li>
-          {`Renamed data_api/tags.se contract to data_api/topics.se and updated function names for &quot;primary tag&quot; to &quot;topic&quot;.`}
-        </li>
-        <li>
-          The getTopicsInfo(Chunked) wrapper functions in augur.js now return objects (where the keys are topic names and values are popularities) instead of arrays.  The topics selector in the front-end converts the stored topics object to a sorted array.
-        </li>
-        <li>
-          Added sender address check to log_short_fill_tx listener.
-        </li>
-        <li>
-          Added increase(Market)TopicPopularity actions and reducer; call increaseMarketTopicPopularity in fillOrder.
-        </li>
-        <li>
-          Refactored the utilization of our icon set to a simpler implementation.
-        </li>
-      </ol>
-      <h3>February 6, 2017</h3>
-      <ol>
-        <li>
-          Added lock to trade submission for all markets if an existing trade commit lock is present.
-        </li>
-      </ol>
-      <h3>February 5, 2017</h3>
-      <ol>
-        <li>
-          The transaction relay in ethrpc now automatically adds the transaction hash the onFailed callback argument when it is available (usually only for transactions with mutable returns).
-        </li>
-        <li>
-          Default hosted nodes in ethrpc are now (temporarily) using network 9000, due to severe congestion on Ropsten.
-        </li>
-        <li>
-          Added placeAskAndShortAsk to placeSell sequence, to makeOrder, and to placeTrade sequence and tests.
-        </li>
-        <li>
-          Trade and short-sell receipt parsing are now handled by dedicated methods in augur.js.
-        </li>
-        <li>
-          The final trading callback for multi-action sequences now always fires at the correct time.
-        </li>
-        <li>
-          Added logic to delete trade/short_sell transaction on empty trade to constructRelayTransaction.  This fixes an error where sometimes simultaneous trades would both appear as &quot;successful&quot;, but only one trader would actually get the shares from the trade.
-        </li>
-        <li>
-          Sell complete sets has been disabled in the front-end, since this will be handled automatically by the contracts in the (upcoming) updated contract version.
-        </li>
-      </ol>
-      <h3>February 4, 2017</h3>
-      <ol>
-        <li>
-          Replaced orderBooks object with getOrderBooks function in placeTrade and subroutines.
-        </li>
-        <li>
-          Added new modifyOrderBook module: makes local changes to order book.
-        </li>
-        <li>
-          Fixed fullPrecisionPrice/price order in adjustScalarOrder.
-        </li>
-        <li>
-          For orders filled by the user, call fillOrder in constructRelayTransaction instead of log_fill_tx callback.
-        </li>
-        <li>
-          Refactored market order book updating functions: these functions now call to modifyOrderBook functions in augur.js, and replace the existing order book, instead of updating it.
-        </li>
-      </ol>
-      <h3>February 3, 2017</h3>
-      <ol>
-        <li>
-          Report and Snitch tabs on market detail page now use isReportTabVisible market selector property to determine visibility.
-        </li>
-        <li>
-          Reporting markets listing filter now works correctly.
-        </li>
-        <li>
-          Scalar market outcome input box now displays correctly in the Snitch tab.
-        </li>
-        <li>
-          The first tag defined during market creation is now the &quot;primary tag&quot; or &quot;topic&quot; for the market.  A new contract, data_api/tags.se, now tracks the &quot;popularity&quot; of each tag, defined (for simplicity) as the sum of the volume of all markets that share a particular primary tag.  (This crude metric will be fine-tuned through user testing.)  The initial landing page will be a display of the most popular tags, rather than a list of all markets. <a
-            className="link"
-            href="http://augur.link/topics-page-sketch.jpg"
-            target="_blank"
-            rel="noopener noreferrer"
-          >Here is a sketch of what this will look like.</a>  There are a few advantages of this approach:
-          <ol>
-            <li>
-              The initial page load will be faster, since all markets will not be downloaded immediately.
-            </li>
-            <li>
-              Tags are stored as &quot;short strings&quot; (i.e., normal 256-bit integers) on contract, so it is possible to search for them on-chain; that is, without first downloading all the tags either to the browser or to a persistent datastore.  (Market/event descriptions, by contrast, are bytearrays that are not limited to 256 bits, so on-chain search is too slow to be practical.)
-            </li>
-            <li>
-              In my opinion, it is more intuitive than the landing page we have now.  Users may not have a particular market they want to trade in when they come to Augur, but I think the vast majority will have a topic in mind: users that are interested trading politics are probably different overall than users that want to trade financials, or sports, etc.  I further think that average volumes will probably be quite different between topics (e.g., financials might be an order of magnitude more popular than politics), and I think that a user interested in political markets might be turned off if the initial display was composed entirely of financial markets.  &quot;Oh, looks like just stocks and stuff,&quot; they would think, and then leave.  Similarly if the most popular markets happen to all be horse races, or sports, or celebrity gossip, etc.  In short, I think a landing page structured around topics instead will be an overall improved UX for users that want to browse, or are not exactly sure of the market they want to use.  (For reference, although the focus is of course somewhat different, bet365 is a good example of a site that first displays &quot;topics&quot; to users.)
-            </li>
-          </ol>
-        </li>
-      </ol>
-      <h3>February 2, 2017</h3>
-      <ol>
-        <li>
-          Re-uploaded all Augur contracts to the Ropsten testnet (network 3) and our private test chain (network 9000).
-        </li>
-      </ol>
-      <h3>February 1, 2017</h3>
-      <ol>
-        <li>
-          {`Added the ability to 'close' an existing market position.
-            This action will determine if a position can be either fully or partially closed based on the current order book state and will attempt to do so at the best available price.`}
-        </li>
-        <li>
-          Snitch (slashRep) messaging now displays correctly.
-        </li>
-        <li>
-          Fixed reporterIndex reference in slashRep function.
-        </li>
-        <li>
-          Fixed eventID reference in slashedRep log and added a timestamp.
-        </li>
-        <li>
-          Added missing doNotMakeOrders and tradeCommitLockCallback arguments to placeShortSell from placeSell.
-        </li>
-        <li>
-          Added arguments lengthcheck to the first if statement in augur.js bindContractMethod.
-        </li>
-        <li>
-          Updated/removed expired events from &quot;canned markets&quot; list.
         </li>
       </ol>
       {p.marketsLink &&
