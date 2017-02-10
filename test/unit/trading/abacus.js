@@ -829,3 +829,119 @@ describe("abacus.adjustScalarSellPrice", function() {
     }
   });
 });
+
+describe("abacus.roundToPrecision", function() {
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(abacus.roundToPrecision(t.value, t.minimum, t.round, t.roundingMode));
+    });
+  };
+  test({
+    value: new BigNumber('10.042383874392382392'),
+    minimum: new BigNumber('15'),
+    round: 'ceil',
+    roundingMode: '1',
+    assertions: function(roundedValue) {
+      assert.isNull(roundedValue);
+    }
+  });
+  test({
+    value: new BigNumber('0.00058472239302029387432'),
+    minimum: new BigNumber('-15'),
+    round: 'ceil',
+    roundingMode: BigNumber.ROUND_UP,
+    assertions: function(roundedValue) {
+      assert.deepEqual(roundedValue, '0.0005847');
+    }
+  });
+  test({
+    value: new BigNumber('0.0007889577234892349872349823403'),
+    minimum: new BigNumber('0'),
+    round: 'floor',
+    roundingMode: BigNumber.ROUND_DOWN,
+    assertions: function(roundedValue) {
+      assert.deepEqual(roundedValue, '0.0007889');
+    }
+  });
+  test({
+    value: new BigNumber('932.9238374636282823839223'),
+    minimum: new BigNumber('0'),
+    round: 'ceil',
+    roundingMode: BigNumber.ROUND_UP,
+    assertions: function(roundedValue) {
+      assert.deepEqual(roundedValue, '932.9239');
+    }
+  });
+  test({
+    value: new BigNumber('42.119238375652328232332124568'),
+    minimum: new BigNumber('5'),
+    round: 'floor',
+    roundingMode: BigNumber.ROUND_DOWN,
+    assertions: function(roundedValue) {
+      assert.deepEqual(roundedValue, '42.1192');
+    }
+  });
+});
+
+describe("abacus.decodeTag", function() {
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(abacus.decodeTag(t.tag));
+    });
+  };
+  test({
+    tag: undefined,
+    assertions: function(tag) {
+      assert.isNull(tag);
+    }
+  });
+  test({
+    tag: '0x',
+    assertions: function(tag) {
+      assert.isNull(tag);
+    }
+  });
+  test({
+    tag: '0x0',
+    assertions: function(tag) {
+      assert.isNull(tag);
+    }
+  });
+  test({
+    tag: abi.short_string_to_int256('This is my tag!'),
+    assertions: function(tag) {
+      assert.deepEqual(tag, 'This is my tag!');
+    }
+  });
+});
+
+describe("abacus.base58Decode", function() {
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(abacus.base58Decode(t.encoded));
+    });
+  };
+  test({
+    encoded: 'kpXKnbi9Czht5bSPbpf7QoYiDWDF8UWZzmWiCrM7xoE4rbkZ7WmpM4dq9WLki1F8Qhg4bcBYtE8',
+    assertions: function(decoded) {
+      assert.deepEqual(decoded, {
+      	hello: 'world',
+      	description: 'this is a test object'
+      });
+    }
+  });
+});
+
+describe("abacus.base58Encode", function() {
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(abacus.base58Encode(t.object));
+    });
+  };
+  test({
+    object: { hello: 'world', description: 'this is a test object' },
+    assertions: function(encoded) {
+      assert.deepEqual(encoded, 'kpXKnbi9Czht5bSPbpf7QoYiDWDF8UWZzmWiCrM7xoE4rbkZ7WmpM4dq9WLki1F8Qhg4bcBYtE8');
+    }
+  });
+});
