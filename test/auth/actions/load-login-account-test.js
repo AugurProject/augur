@@ -13,7 +13,7 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
   proxyquire.noPreserveCache().noCallThru();
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
-  const fakeAugurJS = { augur: {} };
+  const fakeAugurJS = { augur: { accounts: { account: { address: 123456789 } } } };
   const fakeUpdateAssets = {};
   const fakeLoadAcctTrades = {};
   const fakeLoadReports = {};

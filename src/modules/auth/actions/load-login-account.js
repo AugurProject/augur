@@ -14,33 +14,26 @@ import updateUserLoginMessageVersionRead from '../../../modules/login-message/ac
 import { updateAccountSettings } from '../../../modules/auth/actions/update-account-settings';
 import { updateScalarMarketShareDenomination } from '../../../modules/market/actions/update-scalar-market-share-denomination';
 
-export function loadLoginAccountDependents(cb) {
-  return (dispatch, getState) => {
-    const { loginAccount } = getState();
-    AugurJS.augur.getRegisterBlockNumber(loginAccount.address, (err, blockNumber) => {
-      if (!err && blockNumber) {
-        loginAccount.registerBlockNumber = blockNumber;
-        dispatch(updateLoginAccount(loginAccount));
-      }
-      dispatch(updateAssets(cb));
+export const loadLoginAccountDependents = cb => (dispatch) => {
+  AugurJS.augur.getRegisterBlockNumber(AugurJS.augur.accounts.account.address, (err, blockNumber) => {
+    if (!err && blockNumber) {
+      dispatch(updateLoginAccount({ registerBlockNumber: blockNumber }));
+    }
+    dispatch(updateAssets(cb));
+    dispatch(loadAccountTrades());
+    dispatch(loadBidsAsksHistory());
+    dispatch(loadFundingHistory());
+    dispatch(loadTransferHistory());
+    dispatch(loadCreateMarketHistory());
 
-      dispatch(loadAccountTrades());
-      dispatch(loadBidsAsksHistory());
-      dispatch(loadFundingHistory());
-      dispatch(loadTransferHistory());
-      dispatch(loadCreateMarketHistory());
-
-      // clear and load reports for any markets that have been loaded
-      // (partly to handle signing out of one account and into another)
-      dispatch(clearReports());
-      dispatch(loadReportingHistory());
-      dispatch(loadEventsWithSubmittedReport());
-      dispatch(syncBranch((err) => {
-        if (err) console.error('syncBranch:', err);
-      }));
-    });
-  };
-}
+    // clear and load reports for any markets that have been loaded
+    // (partly to handle signing out of one account and into another)
+    dispatch(clearReports());
+    dispatch(loadReportingHistory());
+    dispatch(loadEventsWithSubmittedReport());
+    dispatch(syncBranch());
+  });
+};
 
 export function loadLoginAccountLocalStorage(accountID) {
   return (dispatch) => {
