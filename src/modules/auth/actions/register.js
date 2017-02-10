@@ -16,7 +16,7 @@ export const register = (password, cb) => (dispatch) => {
       return callback({ code: account.error, message: account.message });
     }
     const loginID = augur.base58Encode({ keystore: account.keystore });
-    dispatch(updateLoginAccount({ loginID }))
+    dispatch(updateLoginAccount({ loginID }));
     callback(null, loginID);
   });
 };
@@ -36,7 +36,7 @@ export const savePersistentAccountToLocalStorage = (account) => {
 };
 
 // decide if we need to display the login message
-export const displayLoginMessageOrMarkets = (account) => (dispatch, getState) => {
+export const displayLoginMessageOrMarkets = account => (dispatch, getState) => {
   const { links } = require('../../../selectors');
   if (links && links.marketsLink) {
     const { loginMessage } = getState();

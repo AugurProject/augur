@@ -5,8 +5,6 @@ import Input from 'modules/common/components/input';
 
 import { REQUIRED_PASSWORD_STRENGTH } from 'modules/auth/constants/password-strength';
 
-import getValue from 'utils/get-value';
-
 export default class AuthSignup extends Component {
   static propTypes = {
     register: PropTypes.func
