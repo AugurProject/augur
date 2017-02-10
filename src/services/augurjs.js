@@ -49,7 +49,7 @@ ex.loadLoginAccount = function loadLoginAccount(env, cb) {
       augur.accounts.loadLocalLoginAccount(account, loginAccount =>
         cb(null, { ...augur.accounts.account })
       );
-      //	break out of ex.loadLoginAccount as we don't want to login the local geth node.
+      // break out of ex.loadLoginAccount as we don't want to login the local geth node.
       return;
     }
   }
