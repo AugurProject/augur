@@ -3,6 +3,290 @@
 var assert = require("chai").assert;
 var augur = require("../../../src");
 
+describe("Topics.filterByBranchID", function () {
+  var test = function (t) {
+    it(t.description, function () {
+      t.assertions(augur.filterByBranchID(t.params.branchID, t.params.logs));
+    });
+  };
+  test({
+    description: "no logs",
+    params: {
+      branchID: "0xb1",
+      logs: []
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, []);
+    }
+  });
+  test({
+    description: "no logs, no branch ID",
+    params: {
+      branchID: null,
+      logs: []
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, []);
+    }
+  });
+  test({
+    description: "1 log, no branch ID",
+    params: {
+      branchID: "0xb1",
+      logs: [{
+        sender: "0x0000000000000000000000000000000000000b0b",
+        marketID: "0x00000000000000000000000000000000000000000000000000000000000000a1",
+        topic: "0x7765617468657200000000000000000000000000000000000000000000000000",
+        branch: "0x00000000000000000000000000000000000000000000000000000000000000b1",
+        marketCreationFee: "0.01",
+        eventBond: "4.5",
+        timestamp: 1486665600,
+        blockNumber: 335,
+        transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadbeef",
+        removed: false
+      }]
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, [
+        "0x00000000000000000000000000000000000000000000000000000000000000a1"
+      ]);
+    }
+  });
+  test({
+    description: "1 log with matching branch ID",
+    params: {
+      branchID: "0xb1",
+      logs: [{
+        sender: "0x0000000000000000000000000000000000000b0b",
+        marketID: "0x00000000000000000000000000000000000000000000000000000000000000a1",
+        topic: "0x7765617468657200000000000000000000000000000000000000000000000000",
+        branch: "0x00000000000000000000000000000000000000000000000000000000000000b1",
+        marketCreationFee: "0.01",
+        eventBond: "4.5",
+        timestamp: 1486665600,
+        blockNumber: 335,
+        transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadbeef",
+        removed: false
+      }]
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, [
+        "0x00000000000000000000000000000000000000000000000000000000000000a1"
+      ]);
+    }
+  });
+  test({
+    description: "1 log with non-matching branch ID",
+    params: {
+      branchID: "0xb1",
+      logs: [{
+        sender: "0x0000000000000000000000000000000000000b0b",
+        marketID: "0x00000000000000000000000000000000000000000000000000000000000000a1",
+        topic: "0x7765617468657200000000000000000000000000000000000000000000000000",
+        branch: "0x00000000000000000000000000000000000000000000000000000000000000b2",
+        marketCreationFee: "0.01",
+        eventBond: "4.5",
+        timestamp: 1486665600,
+        blockNumber: 335,
+        transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadbeef",
+        removed: false
+      }]
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, []);
+    }
+  });
+  test({
+    description: "2 logs with matching branch ID",
+    params: {
+      branchID: "0xb1",
+      logs: [{
+        sender: "0x0000000000000000000000000000000000000b0b",
+        marketID: "0x00000000000000000000000000000000000000000000000000000000000000a1",
+        topic: "0x7765617468657200000000000000000000000000000000000000000000000000",
+        branch: "0x00000000000000000000000000000000000000000000000000000000000000b1",
+        marketCreationFee: "0.01",
+        eventBond: "4.5",
+        timestamp: 1486665600,
+        blockNumber: 335,
+        transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadbeef",
+        removed: false
+      }, {
+        sender: "0x0000000000000000000000000000000000000b0b",
+        marketID: "0x00000000000000000000000000000000000000000000000000000000000000a2",
+        topic: "0x7765617468657200000000000000000000000000000000000000000000000000",
+        branch: "0x00000000000000000000000000000000000000000000000000000000000000b1",
+        marketCreationFee: "0.01",
+        eventBond: "4.5",
+        timestamp: 1486665600,
+        blockNumber: 335,
+        transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadbeef",
+        removed: false
+      }]
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, [
+        "0x00000000000000000000000000000000000000000000000000000000000000a1",
+        "0x00000000000000000000000000000000000000000000000000000000000000a2"
+      ]);
+    }
+  });
+  test({
+    description: "1 log with matching branch ID, 1 log with non-matching branchID",
+    params: {
+      branchID: "0xb1",
+      logs: [{
+        sender: "0x0000000000000000000000000000000000000b0b",
+        marketID: "0x00000000000000000000000000000000000000000000000000000000000000a1",
+        topic: "0x7765617468657200000000000000000000000000000000000000000000000000",
+        branch: "0x00000000000000000000000000000000000000000000000000000000000000b1",
+        marketCreationFee: "0.01",
+        eventBond: "4.5",
+        timestamp: 1486665600,
+        blockNumber: 335,
+        transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadbeef",
+        removed: false
+      }, {
+        sender: "0x0000000000000000000000000000000000000b0b",
+        marketID: "0x00000000000000000000000000000000000000000000000000000000000000a2",
+        topic: "0x7765617468657200000000000000000000000000000000000000000000000000",
+        branch: "0x00000000000000000000000000000000000000000000000000000000000000b2",
+        marketCreationFee: "0.01",
+        eventBond: "4.5",
+        timestamp: 1486665600,
+        blockNumber: 335,
+        transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadbeef",
+        removed: false
+      }]
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, [
+        "0x00000000000000000000000000000000000000000000000000000000000000a1"
+      ]);
+    }
+  });
+});
+
+describe("Topics.findMarketsWithTopic", function () {
+  var test = function (t) {
+    var getLogs = augur.getLogs;
+    after(function () {
+      augur.getLogs = getLogs;
+    });
+    describe(t.description, function () {
+      it("sync", function () {
+        augur.getLogs = t.stub.getLogs;
+        t.assertions(null, augur.findMarketsWithTopic(t.params.topic, t.params.branchID));
+      });
+      it("async", function (done) {
+        augur.getLogs = t.stub.getLogs;
+        augur.findMarketsWithTopic(t.params.topic, t.params.branchID, function (err, markets) {
+          t.assertions(err, markets);
+          done();
+        });
+      });
+    });
+  };
+  test({
+    description: "no logs",
+    params: {
+      topic: "weather",
+      branchID: "0xb1"
+    },
+    stub: {
+      getLogs: function (label, filterParams, aux, callback) {
+        assert.strictEqual(label, "marketCreated");
+        assert.strictEqual(filterParams.topic, augur.formatTag("weather"));
+        var logs = [];
+        if (!callback) return logs;
+        callback(null, logs);
+      }
+    },
+    assertions: function (err, markets) {
+      assert.isNull(err);
+      assert.deepEqual(markets, []);
+    }
+  });
+  test({
+    description: "1 log",
+    params: {
+      topic: "reporting",
+      branchID: "0xb1"
+    },
+    stub: {
+      getLogs: function (label, filterParams, aux, callback) {
+        assert.strictEqual(label, "marketCreated");
+        assert.strictEqual(filterParams.topic, augur.formatTag("reporting"));
+        var logs = [{
+          sender: "0x0000000000000000000000000000000000000b0b",
+          marketID: "0x00000000000000000000000000000000000000000000000000000000000000a1",
+          topic: "0x7765617468657200000000000000000000000000000000000000000000000000",
+          branch: "0x00000000000000000000000000000000000000000000000000000000000000b1",
+          marketCreationFee: "0.01",
+          eventBond: "4.5",
+          timestamp: 1486665600,
+          blockNumber: 335,
+          transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadbeef",
+          removed: false
+        }];
+        if (!callback) return logs;
+        callback(null, logs);
+      }
+    },
+    assertions: function (err, markets) {
+      assert.isNull(err);
+      assert.deepEqual(markets, [
+        "0x00000000000000000000000000000000000000000000000000000000000000a1"
+      ]);
+    }
+  });
+  test({
+    description: "2 logs",
+    params: {
+      topic: "reporting",
+      branchID: "0xb1"
+    },
+    stub: {
+      getLogs: function (label, filterParams, aux, callback) {
+        assert.strictEqual(label, "marketCreated");
+        assert.strictEqual(filterParams.topic, augur.formatTag("reporting"));
+        var logs = [{
+          sender: "0x0000000000000000000000000000000000000b0b",
+          marketID: "0x00000000000000000000000000000000000000000000000000000000000000a1",
+          topic: "0x7765617468657200000000000000000000000000000000000000000000000000",
+          branch: "0x00000000000000000000000000000000000000000000000000000000000000b1",
+          marketCreationFee: "0.01",
+          eventBond: "4.5",
+          timestamp: 1486665600,
+          blockNumber: 335,
+          transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadbeef",
+          removed: false
+        }, {
+          sender: "0x0000000000000000000000000000000000000b0b",
+          marketID: "0x00000000000000000000000000000000000000000000000000000000000000a2",
+          topic: "0x7765617468657200000000000000000000000000000000000000000000000000",
+          branch: "0x00000000000000000000000000000000000000000000000000000000000000b1",
+          marketCreationFee: "0.01",
+          eventBond: "4.5",
+          timestamp: 1486665600,
+          blockNumber: 335,
+          transactionHash: "0x00000000000000000000000000000000000000000000000000000000deadbeef",
+          removed: false
+        }];
+        if (!callback) return logs;
+        callback(null, logs);
+      }
+    },
+    assertions: function (err, markets) {
+      assert.isNull(err);
+      assert.deepEqual(markets, [
+        "0x00000000000000000000000000000000000000000000000000000000000000a1",
+        "0x00000000000000000000000000000000000000000000000000000000000000a2"
+      ]);
+    }
+  });
+});
+
 describe("Topics.parseTopicsInfo", function () {
   var test = function (t) {
     it(t.description, function () {

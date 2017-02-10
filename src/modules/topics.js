@@ -11,6 +11,26 @@ var constants = require("../constants");
 
 module.exports = {
 
+  filterByBranchID: function (branchID, logs) {
+    if (branchID) logs = logs.filter(function (log) {
+      return log.branch === abi.format_int256(branchID);
+    });
+    return logs.map(function (log) { return log.marketID; });
+  },
+
+  findMarketsWithTopic: function (topic, branchID, callback) {
+    var self = this;
+    var formattedTopic = this.formatTag(topic);
+    if (!utils.is_function(callback)) {
+      return this.filterByBranchID(branchID, this.getLogs("marketCreated", {topic: formattedTopic}));
+    }
+    // TODO filter by endDate? (get active markets only)
+    this.getLogs("marketCreated", {topic: formattedTopic}, null, function (err, logs) {
+      if (err) return callback(err);
+      return callback(null, self.filterByBranchID(branchID, logs));
+    });
+  },
+
   parseTopicsInfo: function (topicsInfo) {
     var parsedTopicsInfo = {};
     for (var i = 0, len = topicsInfo.length; i < len; i += 2) {

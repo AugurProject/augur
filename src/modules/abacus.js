@@ -303,16 +303,17 @@ module.exports = {
     return info;
   },
 
+  formatTag: function (tag) {
+    if (tag === null || tag === undefined || tag === "") return "0x0";
+    return abi.short_string_to_int256(tag);
+  },
+
   formatTags: function (tags) {
     var formattedTags = clone(tags);
     if (!formattedTags || formattedTags.constructor !== Array) formattedTags = [];
     if (formattedTags.length) {
       for (var i = 0; i < formattedTags.length; ++i) {
-        if (formattedTags[i] === null || formattedTags[i] === undefined || formattedTags[i] === "") {
-          formattedTags[i] = "0x0";
-        } else {
-          formattedTags[i] = abi.short_string_to_int256(formattedTags[i]);
-        }
+        formattedTags[i] = this.formatTag(formattedTags[i]);
       }
     }
     while (formattedTags.length < 3) {

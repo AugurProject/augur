@@ -1564,7 +1564,7 @@ BigNumber.config({
 var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/slashRep"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register"), require("./modules/topics"), require("./modules/modifyOrderBook")];
 
 function Augur() {
-  this.version = "3.10.8";
+  this.version = "3.11.0";
 
   this.options = {
     debug: {
@@ -1911,16 +1911,17 @@ module.exports = {
     return info;
   },
 
+  formatTag: function formatTag(tag) {
+    if (tag === null || tag === undefined || tag === "") return "0x0";
+    return abi.short_string_to_int256(tag);
+  },
+
   formatTags: function formatTags(tags) {
     var formattedTags = clone(tags);
     if (!formattedTags || formattedTags.constructor !== Array) formattedTags = [];
     if (formattedTags.length) {
       for (var i = 0; i < formattedTags.length; ++i) {
-        if (formattedTags[i] === null || formattedTags[i] === undefined || formattedTags[i] === "") {
-          formattedTags[i] = "0x0";
-        } else {
-          formattedTags[i] = abi.short_string_to_int256(formattedTags[i]);
-        }
+        formattedTags[i] = this.formatTag(formattedTags[i]);
       }
     }
     while (formattedTags.length < 3) {
@@ -3408,8 +3409,7 @@ module.exports = {
       return this.getFirstLogBlockNumber(this.getLogs("marketCreated", { marketID: marketID }));
     }
     this.getLogs("marketCreated", { marketID: marketID }, function (err, logs) {
-      // TODO change on next contract reupload to callback(err)
-      // if (err) console.warn("marketCreated log lookup for", marketID, "failed:", err);
+      if (err) return callback(err);
       callback(null, self.getFirstLogBlockNumber(logs));
     });
   },
@@ -5678,6 +5678,28 @@ var utils = require("../utilities");
 var constants = require("../constants");
 
 module.exports = {
+
+  filterByBranchID: function filterByBranchID(branchID, logs) {
+    if (branchID) logs = logs.filter(function (log) {
+      return log.branch === abi.format_int256(branchID);
+    });
+    return logs.map(function (log) {
+      return log.marketID;
+    });
+  },
+
+  findMarketsWithTopic: function findMarketsWithTopic(topic, branchID, callback) {
+    var self = this;
+    var formattedTopic = this.formatTag(topic);
+    if (!utils.is_function(callback)) {
+      return this.filterByBranchID(branchID, this.getLogs("marketCreated", { topic: formattedTopic }));
+    }
+    // TODO filter by endDate? (get active markets only)
+    this.getLogs("marketCreated", { topic: formattedTopic }, null, function (err, logs) {
+      if (err) return callback(err);
+      return callback(null, self.filterByBranchID(branchID, logs));
+    });
+  },
 
   parseTopicsInfo: function parseTopicsInfo(topicsInfo) {
     var parsedTopicsInfo = {};
@@ -11271,12 +11293,17 @@ module.exports={
         }, 
         {
           "indexed": true, 
-          "name": "branch", 
+          "name": "marketID", 
           "type": "int256"
         }, 
         {
           "indexed": true, 
-          "name": "marketID", 
+          "name": "topic", 
+          "type": "int256"
+        }, 
+        {
+          "indexed": false, 
+          "name": "branch", 
           "type": "int256"
         }, 
         {
@@ -11295,8 +11322,8 @@ module.exports={
           "type": "int256"
         }
       ], 
-      "name": "marketCreated(int256,int256,int256,int256,int256,int256)", 
-      "signature": "0x80dc2c0162323f3305cee66776c5a51c1475ee8c4d8c6798df60e80d8c8c907b"
+      "name": "marketCreated(int256,int256,int256,int256,int256,int256,int256)", 
+      "signature": "0x94f1481ac3fc8e968bca7279f7811a02ae1212aa3a25e0f643684f5da1ef3ad6"
     }, 
     "payout": {
       "contract": "Payout", 
@@ -16563,39 +16590,39 @@ module.exports={
         ]
       }
     }, 
-    "Tags": {
-      "getNumTagsInBranch": {
+    "Topics": {
+      "getNumTopicsInBranch": {
         "inputs": [
           "branch"
         ], 
-        "label": "Get Num Tags In Branch", 
-        "method": "getNumTagsInBranch", 
+        "label": "Get Num Topics In Branch", 
+        "method": "getNumTopicsInBranch", 
         "returns": "number", 
         "signature": [
           "int256"
         ]
       }, 
-      "getTagPopularity": {
+      "getTopicPopularity": {
         "inputs": [
           "branch", 
-          "tag"
+          "topic"
         ], 
-        "label": "Get Tag Popularity", 
-        "method": "getTagPopularity", 
+        "label": "Get Topic Popularity", 
+        "method": "getTopicPopularity", 
         "returns": "unfix", 
         "signature": [
           "int256", 
           "int256"
         ]
       }, 
-      "getTagsInBranch": {
+      "getTopicsInBranch": {
         "inputs": [
           "branch", 
           "offset", 
-          "numTagsToLoad"
+          "numTopicsToLoad"
         ], 
-        "label": "Get Tags In Branch", 
-        "method": "getTagsInBranch", 
+        "label": "Get Topics In Branch", 
+        "method": "getTopicsInBranch", 
         "returns": "int256[]", 
         "signature": [
           "int256", 
@@ -16603,15 +16630,15 @@ module.exports={
           "int256"
         ]
       }, 
-      "getTagsInfo": {
+      "getTopicsInfo": {
         "inputs": [
           "branch", 
           "offset", 
-          "numTagsToLoad"
+          "numTopicsToLoad"
         ], 
-        "label": "Get Tags Info", 
-        "method": "getTagsInfo", 
-        "parser": "parseTagsInfo", 
+        "label": "Get Topics Info", 
+        "method": "getTopicsInfo", 
+        "parser": "parseTopicsInfo", 
         "returns": "int256[]", 
         "signature": [
           "int256", 
@@ -16619,18 +16646,18 @@ module.exports={
           "int256"
         ]
       }, 
-      "increaseTagPopularity": {
+      "increaseTopicPopularity": {
         "fixed": [
           2
         ], 
         "inputs": [
           "branch", 
-          "tag", 
+          "topic", 
           "fxpAmount"
         ], 
-        "label": "Increase Tag Popularity", 
-        "method": "increaseTagPopularity", 
-        "returns": "int256", 
+        "label": "Increase Topic Popularity", 
+        "method": "increaseTopicPopularity", 
+        "returns": "number", 
         "signature": [
           "int256", 
           "int256", 
@@ -16907,39 +16934,39 @@ module.exports={
 module.exports={
     "10101": {
         "Backstops": "0x708fdfe18bf28afe861a69e95419d183ace003eb", 
-        "Branches": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
+        "Branches": "0x482c57abdce592b39434e3f619ffc3db62ab6d01", 
         "BuyAndSellShares": "0x031d9d02520cc708ea3c865278508c9cdb92bd51", 
-        "Cash": "0xe4714fcbdcdba49629bc408183ef40d120700b8d", 
+        "Cash": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55", 
         "CloseMarket": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79", 
-        "CollectFees": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d", 
-        "CompleteSets": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
+        "CollectFees": "0x81a7621e9a286d061b3dea040888a51c96693b1c", 
+        "CompleteSets": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7", 
         "CompositeGetters": "0xcece47d6c0a6a1c90521f38ec5bf7550df983804", 
         "Consensus": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68", 
-        "ConsensusData": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd", 
-        "CreateBranch": "0x35152caa07026203a1add680771afb690d872d7d", 
-        "CreateMarket": "0x81a7621e9a286d061b3dea040888a51c96693b1c", 
-        "EventResolution": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e", 
+        "ConsensusData": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
+        "CreateBranch": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
+        "CreateMarket": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7", 
+        "EventResolution": "0x3f3276849a878a176b2f02dd48a483e8182a49e4", 
         "Events": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7", 
-        "ExpiringEvents": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6", 
-        "Faucets": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3", 
-        "ForkPenalize": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7", 
-        "Forking": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7", 
-        "FxpFunctions": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
+        "ExpiringEvents": "0xe4714fcbdcdba49629bc408183ef40d120700b8d", 
+        "Faucets": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e", 
+        "ForkPenalize": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7", 
+        "Forking": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f", 
+        "FxpFunctions": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3", 
         "Info": "0x8a4e2993a9972ee035453bb5674816fc3a698718", 
-        "MakeReports": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
-        "Markets": "0x482c57abdce592b39434e3f619ffc3db62ab6d01", 
-        "Payout": "0x3f3276849a878a176b2f02dd48a483e8182a49e4", 
-        "PenalizationCatchup": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea", 
-        "PenalizeNotEnoughReports": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2", 
+        "MakeReports": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2", 
+        "Markets": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea", 
+        "Payout": "0x35152caa07026203a1add680771afb690d872d7d", 
+        "PenalizationCatchup": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd", 
+        "PenalizeNotEnoughReports": "0x8c19616de17acdfbc933b99d9f529a689d22098f", 
         "ProportionCorrect": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2", 
         "Register": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c", 
-        "Reporting": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7", 
-        "ReportingThreshold": "0x8c19616de17acdfbc933b99d9f529a689d22098f", 
-        "RoundTwo": "0xcd6c7bc634257f82903b182142aae7156d72a200", 
-        "RoundTwoPenalize": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f", 
-        "SendReputation": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
-        "SlashRep": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
-        "Tags": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55", 
+        "Reporting": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6", 
+        "ReportingThreshold": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
+        "RoundTwo": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
+        "RoundTwoPenalize": "0xcd6c7bc634257f82903b182142aae7156d72a200", 
+        "SendReputation": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
+        "SlashRep": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
+        "Topics": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d", 
         "Trade": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945", 
         "Trades": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3"
     }, 
@@ -16977,45 +17004,45 @@ module.exports={
         "RoundTwoPenalize": "0x7793ac2576434e7a144c2f6e7811570f8573257f", 
         "SendReputation": "0x48a39030c67805efb4a5885e9045aa2dd64b9149", 
         "SlashRep": "0xa065f7de83da8f2fd118a7ea3b937f2d291df1d5", 
-        "Tags": "0x064b8c2d90379ecd33bcd443ff705b4fe1898fe9", 
+        "Topics": "0x064b8c2d90379ecd33bcd443ff705b4fe1898fe9", 
         "Trade": "0xb9353a53d6aa6a8b38ada5406a550bfba529b0c5", 
         "Trades": "0x3c441d5ee644ce87a89aa06d7baba4613024c777"
     }, 
     "9000": {
         "Backstops": "0x708fdfe18bf28afe861a69e95419d183ace003eb", 
-        "Branches": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
+        "Branches": "0x482c57abdce592b39434e3f619ffc3db62ab6d01", 
         "BuyAndSellShares": "0x031d9d02520cc708ea3c865278508c9cdb92bd51", 
-        "Cash": "0xe4714fcbdcdba49629bc408183ef40d120700b8d", 
+        "Cash": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55", 
         "CloseMarket": "0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79", 
-        "CollectFees": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d", 
-        "CompleteSets": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
+        "CollectFees": "0x81a7621e9a286d061b3dea040888a51c96693b1c", 
+        "CompleteSets": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7", 
         "CompositeGetters": "0xcece47d6c0a6a1c90521f38ec5bf7550df983804", 
         "Consensus": "0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68", 
-        "ConsensusData": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd", 
-        "CreateBranch": "0x35152caa07026203a1add680771afb690d872d7d", 
-        "CreateMarket": "0x81a7621e9a286d061b3dea040888a51c96693b1c", 
-        "EventResolution": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e", 
+        "ConsensusData": "0x4a61f3db785f1e2a23ffefeafaceeef2df551667", 
+        "CreateBranch": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
+        "CreateMarket": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7", 
+        "EventResolution": "0x3f3276849a878a176b2f02dd48a483e8182a49e4", 
         "Events": "0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7", 
-        "ExpiringEvents": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6", 
-        "Faucets": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3", 
-        "ForkPenalize": "0x52ccb0490bc81a2ae363fccbb2b367bca546cec7", 
-        "Forking": "0x448c01a2e1fd6c2ef133402c403d2f48c99993e7", 
-        "FxpFunctions": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
+        "ExpiringEvents": "0xe4714fcbdcdba49629bc408183ef40d120700b8d", 
+        "Faucets": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e", 
+        "ForkPenalize": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7", 
+        "Forking": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f", 
+        "FxpFunctions": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3", 
         "Info": "0x8a4e2993a9972ee035453bb5674816fc3a698718", 
-        "MakeReports": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
-        "Markets": "0x482c57abdce592b39434e3f619ffc3db62ab6d01", 
-        "Payout": "0x3f3276849a878a176b2f02dd48a483e8182a49e4", 
-        "PenalizationCatchup": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea", 
-        "PenalizeNotEnoughReports": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2", 
+        "MakeReports": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2", 
+        "Markets": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea", 
+        "Payout": "0x35152caa07026203a1add680771afb690d872d7d", 
+        "PenalizationCatchup": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd", 
+        "PenalizeNotEnoughReports": "0x8c19616de17acdfbc933b99d9f529a689d22098f", 
         "ProportionCorrect": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2", 
         "Register": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c", 
-        "Reporting": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7", 
-        "ReportingThreshold": "0x8c19616de17acdfbc933b99d9f529a689d22098f", 
-        "RoundTwo": "0xcd6c7bc634257f82903b182142aae7156d72a200", 
-        "RoundTwoPenalize": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f", 
-        "SendReputation": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
-        "SlashRep": "0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645", 
-        "Tags": "0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55", 
+        "Reporting": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6", 
+        "ReportingThreshold": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
+        "RoundTwo": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
+        "RoundTwoPenalize": "0xcd6c7bc634257f82903b182142aae7156d72a200", 
+        "SendReputation": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
+        "SlashRep": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
+        "Topics": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d", 
         "Trade": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945", 
         "Trades": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3"
     }
