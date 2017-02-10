@@ -97,13 +97,6 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
     }];
     const actual = store.getActions();
     const numActions = actual.length;
-    for (let i = 0; i < numActions; ++i) {
-      if (actual[i].type === 'UPDATE_LOGIN_ACCOUNT') {
-        if (actual[i].data && actual[i].data.onUpdateAccountSettings) {
-          delete actual[i].data.onUpdateAccountSettings;
-        }
-      }
-    }
     assert.deepEqual(actual, expectedOutput, `didn't properly update the logged in account`);
   });
 });

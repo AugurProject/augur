@@ -13,7 +13,7 @@ const PortfolioView = (p) => {
   switch (p.activeView) {
     default:
     case MY_POSITIONS:
-      node = <Positions {...p.positions} settings={p.settings} />;
+      node = <Positions {...p.positions} />;
       break;
     case MY_MARKETS:
       node = <Markets {...p.markets} />;
@@ -47,8 +47,7 @@ PortfolioView.propTypes = {
   totals: PropTypes.object.isRequired,
   positions: PropTypes.object.isRequired,
   markets: PropTypes.object.isRequired,
-  reports: PropTypes.object.isRequired,
-  settings: PropTypes.object.isRequired
+  reports: PropTypes.object.isRequired
 };
 
 export default PortfolioView;

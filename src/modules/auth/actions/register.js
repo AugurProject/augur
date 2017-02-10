@@ -5,7 +5,6 @@ import { registerTimestamp } from '../../auth/actions/register-timestamp';
 import { fundNewAccount } from '../../auth/actions/fund-new-account';
 import isCurrentLoginMessageRead from '../../login-message/helpers/is-current-login-message-read';
 import isUserLoggedIn from '../../auth/helpers/is-user-logged-in';
-import { updateAccountSettings } from '../../auth/actions/update-account-settings';
 
 export const register = (password, cb) => (dispatch) => {
   const callback = cb || (e => console.log('register:', e));
@@ -54,10 +53,6 @@ export const setupAndFundNewAccount = (password, loginID, rememberMe, cb) => (di
   const { account } = augur.accounts;
   if (rememberMe) savePersistentAccountToLocalStorage(account);
   dispatch(loadLoginAccountLocalStorage(account.address));
-  dispatch(updateLoginAccount({
-    settings: {},
-    onUpdateAccountSettings: settings => dispatch(updateAccountSettings(settings))
-  }));
   dispatch(loadLoginAccountDependents((err) => {
     if (err) return console.error(err);
     dispatch(fundNewAccount((err) => {

@@ -1,7 +1,6 @@
 import { accounts } from '../../../services/augurjs';
 import { loadLoginAccountDependents, loadLoginAccountLocalStorage } from '../../auth/actions/load-login-account';
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
-import { updateAccountSettings } from '../../auth/actions/update-account-settings';
 import { fundNewAccount } from '../../auth/actions/fund-new-account';
 import isCurrentLoginMessageRead from '../../login-message/helpers/is-current-login-message-read';
 import { anyAccountBalancesZero } from '../../auth/selectors/balances';
@@ -22,11 +21,7 @@ export function login(loginID, password, rememberMe, cb) {
         });
         return;
       }
-      const loginAccount = {
-        ...account,
-        settings: {},
-        onUpdateAccountSettings: settings => dispatch(updateAccountSettings(settings))
-      };
+      const loginAccount = { ...account };
       if (loginAccount && loginAccount.address) {
         const localStorageRef = typeof window !== 'undefined' && window.localStorage;
         if (rememberMe && localStorageRef && localStorageRef.setItem) {

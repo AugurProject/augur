@@ -11,7 +11,6 @@ import { updateLoginAccount } from '../../../modules/auth/actions/update-login-a
 import { updateAssets } from '../../../modules/auth/actions/update-assets';
 import { updateFavorites } from '../../../modules/markets/actions/update-favorites';
 import updateUserLoginMessageVersionRead from '../../../modules/login-message/actions/update-user-login-message-version-read';
-import { updateAccountSettings } from '../../../modules/auth/actions/update-account-settings';
 import { updateScalarMarketShareDenomination } from '../../../modules/market/actions/update-scalar-market-share-denomination';
 
 export const loadLoginAccountDependents = cb => (dispatch) => {
@@ -60,9 +59,6 @@ export function loadLoginAccountLocalStorage(accountID) {
     if (localState.reports && Object.keys(localState.reports).length) {
       dispatch(updateReports(localState.reports));
     }
-    if (localState.settings) {
-      dispatch(updateAccountSettings(localState.settings));
-    }
 
     if (localState.loginMessageVersionRead && !isNaN(parseInt(localState.loginMessageVersionRead, 10))) {
       dispatch(updateUserLoginMessageVersionRead(parseInt(localState.loginMessageVersionRead, 10)));
@@ -92,7 +88,6 @@ export function loadLoginAccount() {
       if (!localLoginAccount || !localLoginAccount.address) {
         return;
       }
-      localLoginAccount.onUpdateAccountSettings = settings => dispatch(updateAccountSettings(settings));
 
       dispatch(loadLoginAccountLocalStorage(localLoginAccount.address));
       dispatch(updateLoginAccount(localLoginAccount));

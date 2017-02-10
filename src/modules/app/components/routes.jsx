@@ -51,8 +51,6 @@ export default class Routes extends Component {
         viewProps = {
           loginMessageLink: p.links.loginMessageLink,
           account: p.loginAccount,
-          settings: p.settings,
-          onUpdateSettings: p.loginAccount.onUpdateAccountSettings,
           onChangePass: p.loginAccount.onChangePass,
           authLink: (p.links && p.links.authLink) || null,
           onAirbitzManageAccount: p.loginAccount.onAirbitzManageAccount
@@ -80,7 +78,6 @@ export default class Routes extends Component {
       case MY_REPORTS: {
         viewProps = {
           activeView: p.activeView,
-          settings: p.settings,
           branch: p.branch,
           ...p.portfolio
         };
@@ -118,7 +115,6 @@ export default class Routes extends Component {
         viewProps = {
           logged: getValue(p, 'loginAccount.address'),
           market: p.market,
-          settings: p.settings,
           marketDataNavItems: p.marketDataNavItems,
           marketUserDataNavItems: p.marketUserDataNavItems,
           selectedOutcome: p.selectedOutcome,

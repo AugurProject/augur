@@ -11,7 +11,6 @@ export default class AccountPage extends Component {
   static propTypes = {
     // loginMessageLink: PropTypes.object.isRequired,
     account: PropTypes.object,
-    settings: PropTypes.object,
     // siteHeader: PropTypes.object
     // authLink: PropTypes.object
   }
@@ -26,8 +25,7 @@ export default class AccountPage extends Component {
       msg: '',
       sendAmount: '',
       currency: 'ETH',
-      recipientAddress: '',
-      settings: this.props.settings
+      recipientAddress: ''
     };
 
     this.handleTransfer = this.handleTransfer.bind(this);
@@ -179,18 +177,6 @@ export default class AccountPage extends Component {
 
               </tbody>
             </table>
-          </div>
-          <div className="account-section">
-            <h2 className="heading">Settings</h2>
-            <Checkbox
-              text="If I own shares of every outcome in a market, automatically close out my position (1 ETH for 1 share of every outcome)"
-              isChecked={s.settings.autoSellCompleteSets || p.settings.autoSellCompleteSets}
-              onClick={() => {
-                s.settings.autoSellCompleteSets = !s.settings.autoSellCompleteSets;
-                this.setState(s);
-                p.onUpdateSettings(s.settings);
-              }}
-            />
           </div>
           <div className={classnames('account-section')}>
             <div className="account-info-item">

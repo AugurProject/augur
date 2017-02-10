@@ -31,10 +31,9 @@ export function sellCompleteSetsMarket(marketID, callback) {
           if (callback) callback(null, marketID);
         } else {
           dispatch(updateSmallestPositions(marketID, smallestPosition.toFixed()));
-          if (smallestPosition.gt(ZERO) && getState().settings.autoSellCompleteSets&& !getState().sellCompleteSetsLock[marketID]) {
-            console.error('***COMPLETE SET OF', smallestPosition.toFixed(), 'SHARES FOUND IN MARKET', marketID, 'THIS SHOULD NEVER HAPPEN ON THE UPDATED CONTRACTS AND SOMETHING HAS GONE TERRIBLY WRONG***');
+          console.error('***COMPLETE SET OF', smallestPosition.toFixed(), 'SHARES FOUND IN MARKET', marketID, 'THIS SHOULD NEVER HAPPEN ON THE UPDATED CONTRACTS AND SOMETHING HAS GONE TERRIBLY WRONG***');
+          if (smallestPosition.gt(ZERO) && !getState().sellCompleteSetsLock[marketID]) {
             dispatch(updateSellCompleteSetsLock(marketID, true));
-            dispatch(sellNumberCompleteSetsMarket(marketID, smallestPosition.toFixed()));
           }
           if (callback) callback(null);
         }
@@ -71,10 +70,6 @@ export function completeSetsCheck(marketID, callback) {
     });
   };
 }
-
-export const sellNumberCompleteSetsMarket = (marketID, numberOfCompleteSets, callback) => dispatch => (
-  console.info('here lies the ghost of sellCompleteSets', marketID, numberOfCompleteSets)
-);
 
 export function getSmallestPositionInMarket(position) {
   const numOutcomes = Object.keys(position).length;
