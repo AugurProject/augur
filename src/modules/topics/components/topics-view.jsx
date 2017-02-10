@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import NullStateMessage from 'modules/common/components/null-state-message';
 import Topic from 'modules/topics/components/topic';
+import Paginator from 'modules/common/components/paginator';
 
 export default class TopicsView extends Component {
   constructor(props) {
@@ -50,6 +51,9 @@ export default class TopicsView extends Component {
 
               return false;
             })}
+            {p.topics.length > 5 &&
+              <span>More than 5</span>
+            }
           </div> :
           <NullStateMessage message={s.nullMessage} />
         }

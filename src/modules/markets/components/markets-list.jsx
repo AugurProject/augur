@@ -1,6 +1,6 @@
 import React from 'react';
 import MarketPreview from 'modules/market/components/market-preview';
-import MarketsPagination from 'modules/markets/components/markets-pagination';
+import Paginator from 'modules/common/components/paginator';
 import NullStateMessage from 'modules/common/components/null-state-message';
 
 import getValue from 'utils/get-value';
@@ -25,7 +25,7 @@ const MarketsList = (p) => {
         );
       }) : <NullStateMessage message={nullMessage} /> }
       {!!p.pagination && !!p.pagination.numUnpaginated &&
-        <MarketsPagination pagination={p.pagination} />
+        <Paginator {...p.pagination} />
       }
     </article>
   );
