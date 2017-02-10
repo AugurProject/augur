@@ -7,72 +7,64 @@ import isCurrentLoginMessageRead from '../../login-message/helpers/is-current-lo
 import isUserLoggedIn from '../../auth/helpers/is-user-logged-in';
 import { updateAccountSettings } from '../../auth/actions/update-account-settings';
 
-export function register(name, password, password2, loginID, rememberMe, loginAccount, cb) {
-  return (dispatch, getState) => {
-    const { links } = require('../../../selectors');
-    const localStorageRef = typeof window !== 'undefined' && window.localStorage;
-
-    if (loginID && links && links.marketsLink && loginAccount.keystore) {
-      if (rememberMe && localStorageRef && localStorageRef.setItem) {
-        const persistentAccount = Object.assign({}, loginAccount);
-        if (Buffer.isBuffer(persistentAccount.privateKey)) {
-          persistentAccount.privateKey = persistentAccount.privateKey.toString('hex');
-        }
-        if (Buffer.isBuffer(persistentAccount.derivedKey)) {
-          persistentAccount.derivedKey = persistentAccount.derivedKey.toString('hex');
-        }
-        localStorageRef.setItem('account', JSON.stringify(persistentAccount));
-      }
-      loginAccount.onUpdateAccountSettings = settings => dispatch(updateAccountSettings(settings));
-      loginAccount.settings = loginAccount.settings || {};
-      dispatch(loadLoginAccountLocalStorage(loginAccount.address));
-      dispatch(updateLoginAccount(loginAccount));
-      dispatch(loadLoginAccountDependents((err) => {
-        if (err) return console.error(err);
-        dispatch(fundNewAccount((err) => {
-          console.log('fundNewAccount');
-          if (err) return console.error(err);
-          dispatch(registerTimestamp());
-        }));
-      }));
-
-      cb && cb();
-
-      // decide if we need to display the loginMessage
-      const { loginMessage } = getState();
-      if (isUserLoggedIn(loginAccount) && !isCurrentLoginMessageRead(loginMessage)) {
-        links.loginMessageLink.onClick();
-        return;
-      }
-
-      links.marketsLink.onClick();
-      return;
+export const register = (password, cb) => (dispatch) => {
+  const callback = cb || (e => console.log('register:', e));
+  augur.accounts.register(null, password, (account) => {
+    if (!account || !account.address) {
+      return callback({ code: 0, message: 'failed to register' });
+    } else if (account.error) {
+      return callback({ code: account.error, message: account.message });
     }
+    const loginID = augur.base58Encode({ keystore: account.keystore });
+    dispatch(updateLoginAccount({ loginID }))
+    callback(null, loginID);
+  });
+};
 
-    augur.accounts.register(name, password, (account) => {
-      if (!account) {
-        cb && cb({
-          code: 0,
-          message: 'failed to register'
-        });
-        return;
-      } else if (account.error) {
-        cb && cb({
-          code: account.error,
-          message: account.message
-        });
-        return;
-      }
-      const localLoginAccount = {
-        ...account,
-        loginID: account.loginID || account.secureLoginID
-      };
-      if (!localLoginAccount || !localLoginAccount.address) {
-        return;
-      }
-      dispatch(updateLoginAccount({ loginID: localLoginAccount.loginID }));
-      // dispatch(addFundNewAccount(localLoginAccount.address));
-      cb && cb(null, localLoginAccount);
-    });
-  };
-}
+export const savePersistentAccountToLocalStorage = (account) => {
+  const localStorageRef = typeof window !== 'undefined' && window.localStorage;
+  if (localStorageRef && localStorageRef.setItem) {
+    const persistentAccount = { ...account };
+    if (Buffer.isBuffer(persistentAccount.privateKey)) {
+      persistentAccount.privateKey = persistentAccount.privateKey.toString('hex');
+    }
+    if (Buffer.isBuffer(persistentAccount.derivedKey)) {
+      persistentAccount.derivedKey = persistentAccount.derivedKey.toString('hex');
+    }
+    localStorageRef.setItem('account', JSON.stringify(persistentAccount));
+  }
+};
+
+// decide if we need to display the login message
+export const displayLoginMessageOrMarkets = (account) => (dispatch, getState) => {
+  const { links } = require('../../../selectors');
+  if (links && links.marketsLink) {
+    const { loginMessage } = getState();
+    if (isUserLoggedIn(account) && !isCurrentLoginMessageRead(loginMessage)) {
+      links.loginMessageLink.onClick();
+    } else {
+      links.marketsLink.onClick();
+    }
+  }
+};
+
+export const setupAndFundNewAccount = (password, loginID, rememberMe, cb) => (dispatch) => {
+  const callback = cb || (e => console.log('setupAndFundNewAccount:', e));
+  if (!loginID) return callback({ message: 'loginID is required' });
+  const { account } = augur.accounts;
+  if (rememberMe) savePersistentAccountToLocalStorage(account);
+  dispatch(loadLoginAccountLocalStorage(account.address));
+  dispatch(updateLoginAccount({
+    settings: {},
+    onUpdateAccountSettings: settings => dispatch(updateAccountSettings(settings))
+  }));
+  dispatch(loadLoginAccountDependents((err) => {
+    if (err) return console.error(err);
+    dispatch(fundNewAccount((err) => {
+      if (err) return console.error(err);
+      dispatch(registerTimestamp());
+    }));
+  }));
+  dispatch(displayLoginMessageOrMarkets(account));
+  callback(null);
+};

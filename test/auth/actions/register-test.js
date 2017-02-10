@@ -3,6 +3,7 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
+import augur from 'augur.js';
 import thunk from 'redux-thunk';
 import testState from 'test/testState';
 
@@ -10,7 +11,14 @@ describe(`modules/auth/actions/register.js`, () => {
   proxyquire.noPreserveCache();
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
-  const fakeAugurJS = { augur: { accounts: {} } };
+  const fakeAugurJS = {
+    augur: {
+      accounts: {
+        account: { address: 'test' }
+      },
+      base58Encode: augur.base58Encode
+    }
+  };
   const fakeAuthLink = {};
   const fakeSelectors = {};
   const updtLoginAccStub = {};
@@ -26,7 +34,7 @@ describe(`modules/auth/actions/register.js`, () => {
   fakeAugurJS.augur.accounts.register = (name, psswrd, cb) => {
     cb({
       address: 'test',
-      secureLoginID: 'testid',
+      loginID: 'testid',
       name,
       ether: 0,
       realEther: 0,
@@ -81,9 +89,8 @@ describe(`modules/auth/actions/register.js`, () => {
       type: 'loadLoginAccountDependents() called.'
     }];
 
-    store.dispatch(action.register('newUser', 'Passw0rd', 'Passw0rd', undefined, false, undefined, fakeCallback));
-    // Call again to simulate someone pasting loginID and then hitting signUp
-    store.dispatch(action.register('newUser', 'Passw0rd', 'Passw0rd', testState.loginAccount.loginID, false, testState.loginAccount, fakeCallback));
+    store.dispatch(action.register('Passw0rd', fakeCallback));
+    store.dispatch(action.setupAndFundNewAccount('Passw0rd', testState.loginAccount.loginID, false, fakeCallback));
 
     console.log('fack -- ', fakeCallback.callCount);
 
