@@ -717,6 +717,88 @@ describe("abacus.makeTradeHash", function() {
   });
 });
 
+describe("abacus.formatTag", function() {
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(abacus.formatTag(t.tag));
+    });
+  };
+  test({
+    tag: undefined,
+    assertions: function(tag) {
+      assert.deepEqual(tag, '0x0');
+    }
+  });
+  test({
+    tag: null,
+    assertions: function(tag) {
+      assert.deepEqual(tag, '0x0');
+    }
+  });
+  test({
+    tag: '',
+    assertions: function(tag) {
+      assert.deepEqual(tag, '0x0');
+    }
+  });
+  test({
+    tag: 'Hello World',
+    assertions: function(tag) {
+      assert.deepEqual(tag, '0x48656c6c6f20576f726c64000000000000000000000000000000000000000000');
+    }
+  });
+});
+
+describe("abacus.formatTags", function() {
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(abacus.formatTags(t.tags));
+    });
+  };
+  test({
+    tags: undefined,
+    assertions: function(tags) {
+      assert.deepEqual(tags, [ '0x0', '0x0', '0x0' ]);
+    }
+  });
+  test({
+    tags: '',
+    assertions: function(tags) {
+      assert.deepEqual(tags, [ '0x0', '0x0', '0x0' ]);
+    }
+  });
+  test({
+    tags: ['Hello World'],
+    assertions: function(tags) {
+      assert.deepEqual(tags, [
+        '0x48656c6c6f20576f726c64000000000000000000000000000000000000000000',
+        '0x0',
+        '0x0'
+      ]);
+    }
+  });
+  test({
+    tags: ['Hello', 'World'],
+    assertions: function(tags) {
+      assert.deepEqual(tags, [
+        '0x48656c6c6f000000000000000000000000000000000000000000000000000000',
+        '0x576f726c64000000000000000000000000000000000000000000000000000000',
+        '0x0'
+      ]);
+    }
+  });
+  test({
+    tags: ['Hello', 'World', 'testing'],
+    assertions: function(tags) {
+      assert.deepEqual(tags, [
+        '0x48656c6c6f000000000000000000000000000000000000000000000000000000',
+        '0x576f726c64000000000000000000000000000000000000000000000000000000',
+        '0x74657374696e6700000000000000000000000000000000000000000000000000'
+      ]);
+    }
+  });
+});
+
 describe("abacus.calculateRequiredMarketValue", function() {
   var test = function (t) {
     it(JSON.stringify(t), function () {
@@ -879,6 +961,85 @@ describe("abacus.roundToPrecision", function() {
     roundingMode: BigNumber.ROUND_DOWN,
     assertions: function(roundedValue) {
       assert.deepEqual(roundedValue, '42.1192');
+    }
+  });
+});
+
+describe("abacus.parseTradeInfo", function() {
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(abacus.parseTradeInfo(t.trade));
+    });
+  };
+  // trade: [ tradeID, tradeType, marketID, FullPercisionAmount, fullPrecisionPrice, owner, blockID, outcomeID ]
+  test({
+    trade: undefined,
+    assertions: function(parsed) {
+      assert.isNull(parsed);
+    }
+  });
+  test({
+    trade: [],
+    assertions: function(parsed) {
+      assert.isNull(parsed);
+    }
+  });
+  test({
+    trade: ['fail'],
+    assertions: function(parsed) {
+      assert.isNull(parsed);
+    }
+  });
+  test({
+    trade: ['0xa1', '0x1', '0xb1', '0000004500234500120000', '5002342211221110328', '0xc1', '101010', '1'],
+    assertions: function(parsed) {
+      assert.isNull(parsed);
+    }
+  });
+  test({
+    trade: ['0xa1', '0x1', '0xb1', '10004500234500120000', '00000000000000000000000', '0xc1', '101010', '1'],
+    assertions: function(parsed) {
+      assert.isNull(parsed);
+    }
+  });
+  test({
+    trade: ['0xa1', '0x1', '0xb1', '10004500234500120000', '5002342211221110328', '0xc1', '101010', '1'],
+    assertions: function(parsed) {
+      assert.deepEqual(parsed, {
+        id: '0x00000000000000000000000000000000000000000000000000000000000000a1',
+        type: 'buy',
+        market: '0xb1',
+        amount: '10.0045',
+        fullPrecisionAmount: '10.00450023450012',
+        price: '5.0023',
+        fullPrecisionPrice: '5.002342211221110328',
+        owner: '0x00000000000000000000000000000000000000c1',
+        block: 1052688,
+        outcome: '1'
+      });
+    }
+  });
+  test({
+    trade: ['0xabc1', '0x2', '0xa1', '802393203427423923123', '42375829238539345978345', '0xc1', '101010', '1'],
+    assertions: function(parsed) {
+      assert.deepEqual(parsed, {
+        id: '0x000000000000000000000000000000000000000000000000000000000000abc1',
+        type: 'sell',
+        market: '0xa1',
+        amount: '802.3932',
+        fullPrecisionAmount: '802.393203427423923123',
+        price: '42375.8293',
+        fullPrecisionPrice: '42375.829238539345978345',
+        owner: '0x00000000000000000000000000000000000000c1',
+        block: 1052688,
+        outcome: '1'
+      });
+    }
+  });
+  test({
+    trade: ['0xabc1', '0x2', '0xa1', '802393203427423923123', '0', '0xc1', '101010', '1'],
+    assertions: function(parsed) {
+      assert.isNull(parsed);
     }
   });
 });
