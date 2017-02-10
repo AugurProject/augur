@@ -25,7 +25,7 @@ const MarketsList = (p) => {
         );
       }) : <NullStateMessage message={nullMessage} /> }
       {!!p.pagination && !!p.pagination.numUnpaginated &&
-        <Paginator {...p.pagination} />
+        <Paginator pagination={p.pagination} />
       }
     </article>
   );
