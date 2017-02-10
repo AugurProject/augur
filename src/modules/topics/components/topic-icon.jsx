@@ -4,6 +4,10 @@ import AugurLogoIcon from 'modules/common/components/augur-logo-icon';
 
 import topicIcons from 'modules/topics/constants/topic-icons';
 
+// NOTE --  The icon selection is as follows:
+//          > If a topic matches an existing font awesome classname, use that; otherwise,
+//          > If a topic matches a pre-defined mapping, use that; otherwise,
+//          > use Augur logo
 export default class TopicIcon extends Component {
   static propTypes = {
     topic: PropTypes.string
@@ -36,11 +40,6 @@ export default class TopicIcon extends Component {
   }
 
   updateIconClass(matchedTopic) {
-    // NOTE --  The icon selection is as follows:
-    //          > If a topic matches an existing font awesome classname, use that; otherwise,
-    //          > If a topic matches a pre-defined mapping, use that; otherwise,
-    //          > use Augur logo
-
     if (matchedTopic) {
       this.setState({
         className: `fa ${topicIcons[matchedTopic]}`

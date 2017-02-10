@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 
 import NullStateMessage from 'modules/common/components/null-state-message';
 import Topic from 'modules/topics/components/topic';
-// import Paginator from 'modules/common/components/paginator';
+import Paginator from 'modules/common/components/paginator';
 
 export default class TopicsView extends Component {
   static propTypes = {
@@ -37,7 +37,9 @@ export default class TopicsView extends Component {
     const range = s.currentPage === 1 ? 4 : 5;
     const lowerBump = s.currentPage < 3 ? 0 : 1;
     const lowerIndex = ((s.currentPage - 1) * range) + lowerBump;
-    const upperIndex = lowerIndex + range;
+    const upperIndex = p.topics.length - 1 >= lowerIndex + range ?
+      lowerIndex + range :
+      p.topics.length - 1;
 
     this.setState({
       lowerIndex,
@@ -47,7 +49,22 @@ export default class TopicsView extends Component {
         startItemNum: lowerIndex + 1,
         endItemNum: upperIndex + 1,
         numUnpaginated: p.topics.length,
-
+        previousPageNum: s.currentPage > 1 ? s.currentPage - 1 : null,
+        previousPageLink: {
+          onClick: () => {
+            if (s.currentPage > 1) {
+              this.setState({ currentPage: s.currentPage - 1 });
+            }
+          }
+        },
+        nextPageNum: upperIndex < p.topics.length - 1 ? s.currentPage + 1 : null,
+        nextPageLink: {
+          onClick: () => {
+            if (upperIndex < p.topics.length - 1) {
+              this.setState({ currentPage: s.currentPage + 1 });
+            }
+          }
+        }
       }
     });
   }
@@ -74,7 +91,7 @@ export default class TopicsView extends Component {
               return false;
             })}
             {p.topics.length > 5 &&
-              <span>...</span>
+              <Paginator pagination={s.pagination} />
             }
           </div> :
           <NullStateMessage message={s.nullMessage} />

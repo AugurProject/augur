@@ -15,7 +15,9 @@ const Paginator = p => (
     </div>
 
     <div className="pagination-group-2">
-      <span className="pagination-count">{`${p.pagination.startItemNum} - ${p.pagination.endItemNum}`} <strong>of</strong> {p.pagination.numUnpaginated}</span>
+      <span className="pagination-count">
+        {`${p.pagination.startItemNum} - ${p.pagination.endItemNum}`} <strong>of</strong> {p.pagination.numUnpaginated}
+      </span>
     </div>
 
     <div className="pagination-group-3">
