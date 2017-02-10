@@ -717,6 +717,73 @@ describe("abacus.makeTradeHash", function() {
   });
 });
 
+describe("abacus.parseMarketInfo", function() {
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(abacus.parseMarketInfo(t.rawInfo));
+    });
+  };
+  test({
+    rawInfo: [],
+    assertions: function(info) {
+      assert.deepEqual(info, {});
+    }
+  });
+  test({
+    rawInfo: ['0xa1', new BigNumber('1000000000000000'), '2', 1500000, '26666666666666666', '1010101', '1000000000000000000', 1000000, '10000000000000000000000', '25000000000000000000', '0xabc123', abi.short_string_to_int256('tag1'), abi.short_string_to_int256('tag2'), abi.short_string_to_int256('tag3'), '0xf1', 1600000, '1', '1', '2', '2', '100000000000000000000', '10000000000000000000', '20000000000000000000', '5000000', 5000000000000000000, '50000000000000000000', '5000000', 4500000000000000000, '40000000000000000000'],
+    assertions: function(info) {
+      assert.deepEqual(info, {
+      	id: '0x00000000000000000000000000000000000000000000000000000000000000a1',
+      	network: undefined,
+      	makerFee: '0.000026666666666666666',
+      	takerFee: '0.039973333333333332334',
+      	tradingFee: '0.026666666666666666',
+      	numOutcomes: 2,
+      	tradingPeriod: 22020096,
+      	branchId: '1010101',
+      	numEvents: 1,
+      	cumulativeScale: '0.1',
+      	creationTime: 16777216,
+      	volume: '10000',
+      	creationFee: '25',
+      	author: '0x0000000000000000000000000000000000abc123',
+      	tags: ['tag1', 'tag2', 'tag3'],
+      	outcomes: [{
+      			id: 1,
+      			outstandingShares: '0.000000000005',
+      			price: '5',
+      			sharesPurchased: '50'
+      		},
+      		{
+      			id: 2,
+      			outstandingShares: '0.000000000005',
+      			price: '4.5',
+      			sharesPurchased: '40'
+      		}
+      	],
+      	type: 'scalar',
+      	endDate: 23068672,
+      	minValue: '0.000000000000000001',
+      	maxValue: '0.000000000000000002',
+      	isIndeterminate: false,
+      	reportedOutcome: '0.000000000000000001',
+      	proportionCorrect: '20',
+      	events: [{
+      		id: '0x00000000000000000000000000000000000000000000000000000000000000f1',
+      		endDate: 23068672,
+      		minValue: '0.000000000000000001',
+      		maxValue: '0.000000000000000002',
+      		numOutcomes: 2,
+      		bond: '100',
+      		type: 'scalar',
+      		isEthical: true
+      	}],
+      	eventID: '0x00000000000000000000000000000000000000000000000000000000000000f1'
+      });
+    }
+  });
+});
+
 describe("abacus.formatTag", function() {
   var test = function(t) {
     it(JSON.stringify(t), function() {
