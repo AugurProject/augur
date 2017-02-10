@@ -1,0 +1,27 @@
+.topic-button.unstyled {
+  .border(true);
+
+  background-color: @color-white;
+  display: flex;
+  flex: 1;
+  margin: 0 0.5rem;
+
+  .topic-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    position: relative;
+
+    & > span {
+      flex: 1;
+    }
+
+    .topic-popularity {
+      align-self: flex-end;
+    }
+  }
+
+  &.isHero {
+    font-size: 10em;
+  }
+}

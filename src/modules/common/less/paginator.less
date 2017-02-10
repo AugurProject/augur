@@ -1,14 +1,18 @@
 .paginator {
-
   .font-size-large();
 
-  align-items: center;
   display: flex;
-  flex: 1;
-  justify-content: space-around;
 
-  & > div {
+  .pagination-control-container {
+    align-items: center;
+    display: flex;
     flex: 1;
+    justify-content: space-around;
+
+    & > div {
+      display: flex;
+      flex: 1;
+    }
   }
 
   .pagination-group-1 {
@@ -16,12 +20,10 @@
   }
 
   .pagination-group-2 {
-    display: flex;
     justify-content: center;
   }
 
   .pagination-group-3 {
-    display: flex;
     justify-content: flex-end;
     margin-right: -1.5em; // Derived from the default padding applied to buttons
   }
