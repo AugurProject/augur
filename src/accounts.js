@@ -134,10 +134,10 @@ module.exports = function () {
             derivedKey = new Buffer(derivedKey, "hex");
           }
           var encryptedPrivateKey = new Buffer(keys.encrypt(
-                        plain.privateKey,
-                        derivedKey.slice(0, 16),
-                        plain.iv
-                    ), "base64").toString("hex");
+            plain.privateKey,
+            derivedKey.slice(0, 16),
+            plain.iv
+          ), "base64").toString("hex");
 
           // encrypt private key using derived key and IV, then
           // store encrypted key & IV, indexed by handle
