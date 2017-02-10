@@ -186,6 +186,6 @@ export default class Routes extends Component {
   render() {
     const s = this.state;
 
-    return <div>{s.viewComponent}</div>;
+    return s.viewComponent;
   }
 }
