@@ -35,11 +35,13 @@ export default class TopicsView extends Component {
 
   updatePaginationObject(p, s) {
     const range = s.currentPage === 1 ? 4 : 5;
-    const lowerBump = s.currentPage < 3 ? 0 : 1;
+    const lowerBump = s.currentPage < 3 ? 0 : (s.currentPage - 2);
     const lowerIndex = ((s.currentPage - 1) * range) + lowerBump;
     const upperIndex = p.topics.length - 1 >= lowerIndex + range ?
       lowerIndex + range :
       p.topics.length - 1;
+
+    console.log('index bounds -- ', s.currentPage, range, lowerBump, lowerIndex, upperIndex, p.topics.length);
 
     this.setState({
       lowerIndex,
