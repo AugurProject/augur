@@ -12,7 +12,7 @@ export const login = (loginID, password, rememberMe, cb) => (dispatch, getState)
     } else if (account.error) {
       callback({ code: account.error, message: account.message });
     } else if (account.address) {
-      dispatch(updateLoginAccount({ loginID }));
+      dispatch(updateLoginAccount({ loginID, address: account.address }));
       if (rememberMe) savePersistentAccountToLocalStorage(account);
       dispatch(loadFullAccountData(account, (err, balances) => {
         if (err || !balances) return console.error(err);

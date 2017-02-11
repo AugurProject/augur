@@ -15,8 +15,8 @@ import { updateScalarMarketShareDenomination } from '../../../modules/market/act
 import isCurrentLoginMessageRead from '../../login-message/helpers/is-current-login-message-read';
 import isUserLoggedIn from '../../auth/helpers/is-user-logged-in';
 
-export const loadLoginAccountDependents = cb => (dispatch) => {
-  augur.getRegisterBlockNumber(augur.accounts.account.address, (err, blockNumber) => {
+export const loadLoginAccountDependents = cb => (dispatch, getState) => {
+  augur.getRegisterBlockNumber(getState().loginAccount.address, (err, blockNumber) => {
     if (!err && blockNumber) {
       dispatch(updateLoginAccount({ registerBlockNumber: blockNumber }));
     }

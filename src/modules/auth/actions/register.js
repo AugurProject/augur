@@ -13,23 +13,23 @@ export const register = (password, cb) => (dispatch) => {
       return callback({ code: account.error, message: account.message });
     }
     const loginID = augur.base58Encode(account);
-    dispatch(updateLoginAccount({ loginID }));
+    dispatch(updateLoginAccount({ loginID, address: account.address }));
     callback(null, loginID);
   });
 };
 
-export const setupAndFundNewAccount = (password, loginID, rememberMe, cb) => (dispatch) => {
+export const setupAndFundNewAccount = (password, loginID, rememberMe, cb) => (dispatch, getState) => {
   const callback = cb || (e => console.log('setupAndFundNewAccount:', e));
   if (!loginID) return callback({ message: 'loginID is required' });
-  const { account } = augur.accounts;
-  if (rememberMe) savePersistentAccountToLocalStorage(account);
-  dispatch(loadFullAccountData(account, (err) => {
+  const { loginAccount } = getState();
+  if (rememberMe) savePersistentAccountToLocalStorage(loginAccount);
+  dispatch(loadFullAccountData(loginAccount, (err) => {
     if (err) return console.error(err);
     dispatch(fundNewAccount((err) => {
       if (err) return console.error(err);
       dispatch(registerTimestamp());
     }));
   }));
-  dispatch(displayLoginMessageOrMarkets(account));
+  dispatch(displayLoginMessageOrMarkets(loginAccount));
   callback(null);
 };
