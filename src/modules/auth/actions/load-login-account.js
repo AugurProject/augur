@@ -12,6 +12,8 @@ import { updateAssets } from '../../../modules/auth/actions/update-assets';
 import { updateFavorites } from '../../../modules/markets/actions/update-favorites';
 import updateUserLoginMessageVersionRead from '../../../modules/login-message/actions/update-user-login-message-version-read';
 import { updateScalarMarketShareDenomination } from '../../../modules/market/actions/update-scalar-market-share-denomination';
+import isCurrentLoginMessageRead from '../../login-message/helpers/is-current-login-message-read';
+import isUserLoggedIn from '../../auth/helpers/is-user-logged-in';
 
 export const loadLoginAccountDependents = cb => (dispatch) => {
   augur.getRegisterBlockNumber(augur.accounts.account.address, (err, blockNumber) => {
@@ -69,12 +71,39 @@ export const useUnlockedAccount = unlockedAddress => dispatch => (
   })
 );
 
+export const savePersistentAccountToLocalStorage = (account) => {
+  const localStorageRef = typeof window !== 'undefined' && window.localStorage;
+  if (localStorageRef && localStorageRef.setItem) {
+    const persistentAccount = { ...account };
+    if (Buffer.isBuffer(persistentAccount.privateKey)) {
+      persistentAccount.privateKey = persistentAccount.privateKey.toString('hex');
+    }
+    if (Buffer.isBuffer(persistentAccount.derivedKey)) {
+      persistentAccount.derivedKey = persistentAccount.derivedKey.toString('hex');
+    }
+    localStorageRef.setItem('account', JSON.stringify(persistentAccount));
+  }
+};
+
+// decide if we need to display the login message
+export const displayLoginMessageOrMarkets = account => (dispatch, getState) => {
+  const { links } = require('../../../selectors');
+  if (links && links.marketsLink) {
+    const { loginMessage } = getState();
+    if (isUserLoggedIn(account) && !isCurrentLoginMessageRead(loginMessage)) {
+      links.loginMessageLink.onClick();
+    } else {
+      links.marketsLink.onClick();
+    }
+  }
+};
+
 export const loadFullAccountData = (account, cb) => (dispatch) => {
   if (account && account.address) {
     dispatch(loadAccountDataFromLocalStorage(account.address));
     dispatch(loadLoginAccountDependents(cb));
-  } else {
-    if (cb) cb('account address required');
+  } else if (cb) {
+    cb('account address required');
   }
 };
 
