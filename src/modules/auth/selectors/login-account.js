@@ -2,7 +2,7 @@ import memoizerific from 'memoizerific';
 import { augur } from '../../../services/augurjs';
 import { formatRep, formatEther } from '../../../utils/format-number';
 import store from '../../../store';
-import { updateLoginAccount } from '../../auth/actions/update-login-account';
+import { changeAccountName } from '../../auth/actions/update-login-account';
 import { transferFunds } from '../../auth/actions/transfer-funds';
 
 export default function () {
@@ -49,7 +49,7 @@ export const setupLoginAccount = memoizerific(1)((loginAccount, dispatch) => {
     downloadAccountFileName,
     downloadAccountDataString,
     transferFunds: (amount, currency, toAddress) => dispatch(transferFunds(amount, currency, toAddress)),
-    editName: name => dispatch(updateLoginAccount({ name })),
+    editName: name => dispatch(changeAccountName(name)),
     rep: formatRep(loginAccount.rep, { zeroStyled: false, decimalsRounded: 1 }),
     ether: formatEther(loginAccount.ether, { zeroStyled: false, decimalsRounded: 2 }),
     realEther: formatEther(loginAccount.realEther, { zeroStyled: false, decimalsRounded: 2 })

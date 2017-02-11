@@ -8,16 +8,17 @@ export const importAccount = (password, rememberMe, keystore) => (dispatch, getS
   const { links } = require('../../../selectors');
   const localStorageRef = typeof window !== 'undefined' && window.localStorage;
   augur.accounts.importAccount(password, keystore, (importedAccount) => {
-    console.log('importAccount:', importAccount);
     if (importedAccount && importedAccount.keystore) {
+      const loginID = augur.base58Encode(importedAccount);
       if (rememberMe && localStorageRef && localStorageRef.setItem) {
         const persistentAccount = { ...importedAccount };
         if (Buffer.isBuffer(persistentAccount.privateKey)) {
           persistentAccount.privateKey = persistentAccount.privateKey.toString('hex');
         }
+        persistentAccount.loginID = loginID;
         localStorageRef.setItem('account', JSON.stringify(persistentAccount));
       }
-      dispatch(loadFullAccountData(importedAccount, (err, balances) => {
+      dispatch(loadFullAccountData({ ...importedAccount, loginID }, (err, balances) => {
         if (err || !balances) return console.error(err);
         if (anyAccountBalancesZero(balances)) {
           dispatch(fundNewAccount((e) => {
@@ -31,7 +32,7 @@ export const importAccount = (password, rememberMe, keystore) => (dispatch, getS
         }
       }));
       if (links && links.marketsLink) {
-        return links.marketsLink.onClick(links.marketsLink.href);
+        links.marketsLink.onClick(links.marketsLink.href);
       }
     }
   });
