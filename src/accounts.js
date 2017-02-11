@@ -167,12 +167,12 @@ module.exports = function () {
             version: 3,
             id: uuid.v4()
           };
-          var loginID = augur.base58Encode({ keystore: keystore });
+          // var loginID = augur.base58Encode({ keystore: keystore });
 
           // while logged in, web.account object is set
           self.account = {
             name: name,
-            loginID: loginID,
+            // loginID: loginID,
             privateKey: plain.privateKey,
             address: address,
             keystore: keystore,
@@ -195,12 +195,11 @@ module.exports = function () {
       keys.recover(password, keystore, function (privateKey) {
         var keystoreCrypto = keystore.crypto || keystore.Crypto;
         keys.deriveKey(password, keystoreCrypto.kdfparams.salt, {kdf: constants.KDF}, function (derivedKey) {
-          var loginID = augur.base58Encode({ keystore: keystore });
+          // var loginID = augur.base58Encode({ keystore: keystore });
 
           // while logged in, web.account object is set
           self.account = {
             name: name,
-            loginID: loginID,
             privateKey: privateKey,
             address: abi.format_address(keystore.address),
             keystore: keystore,
@@ -211,26 +210,23 @@ module.exports = function () {
       });
     },
 
-    loadLocalLoginAccount: function (localAccount, cb) {
-      var self = this;
-      cb = (utils.is_function(cb)) ? cb : utils.pass;
-      var privateKey = localAccount.privateKey;
-      var derivedKey = localAccount.derivedKey;
+    setAccountObject: function (account, cb) {
+      var privateKey = account.privateKey;
+      var derivedKey = account.derivedKey;
       if (privateKey && !Buffer.isBuffer(privateKey)) {
         privateKey = new Buffer(privateKey, "hex");
       }
       if (derivedKey && !Buffer.isBuffer(derivedKey)) {
         derivedKey = new Buffer(derivedKey, "hex");
       }
-      self.account = {
-        name: localAccount.name,
-        loginID: localAccount.loginID,
+      this.account = {
+        name: account.name,
         privateKey: privateKey,
-        address: abi.format_address(localAccount.keystore.address),
-        keystore: localAccount.keystore,
+        address: abi.format_address(account.keystore.address),
+        keystore: account.keystore,
         derivedKey: derivedKey
       };
-      return cb(clone(this.account));
+      return this.account;
     },
 
     login: function (loginID, password, cb) {

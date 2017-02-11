@@ -119,7 +119,7 @@ describe("accounts.fundNewAccountFromFaucet", function() {});
 describe("accounts.fundNewAccountFromAddress", function() {});
 describe("accounts.changeAccountName", function() {});
 describe("accounts.importAccount", function() {});
-describe("accounts.loadLocalLoginAccount", function() {});
+describe("accounts.setAccountObject", function() {});
 describe("accounts.login", function() {});
 describe("accounts.loginWithMasterKey", function() {});
 describe("accounts.logout", function() {});
