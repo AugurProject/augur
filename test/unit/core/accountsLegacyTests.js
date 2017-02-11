@@ -24,14 +24,9 @@ var privateKey = crypto.randomBytes(32);
 var address = keys.privateKeyToAddress(privateKey);
 
 // generate random names and passwords
-var name = utils.sha256(new Date().toString());
 var password = utils.sha256(Math.random().toString(36).substring(4));
-
 var loginID;
 var generatedKeystore;
-
-var name2 = utils.sha256(new Date().toString()).slice(10) + "@" +
-    utils.sha256(new Date().toString()).slice(10) + ".com";
 var password2 = utils.sha256(Math.random().toString(36).substring(4)).slice(10);
 var loginID2;
 
@@ -60,9 +55,9 @@ function checkAccount(augur, account, noWebAccountCheck) {
 
 describe("Register", function () {
   afterEach(function () { augur.accounts.logout(); });
-  it("register account 1: " + name + " / " + password, function (done) {
+  it("register account 1: " + password, function (done) {
     this.timeout(tools.TIMEOUT);
-    augur.accounts.register(name, password, function (result) {
+    augur.accounts.register(password, function (result) {
       checkAccount(augur, result, true);
       loginID = augur.base58Encode(result);
       var rec = result.keystore;
@@ -86,9 +81,9 @@ describe("Register", function () {
       done();
     });
   });
-  it("register account 2: " + name2 + " / " + password2, function (done) {
+  it("register account 2: " + password2, function (done) {
     this.timeout(tools.TIMEOUT);
-    augur.accounts.register(name2, password2, function (result) {
+    augur.accounts.register(password2, function (result) {
       checkAccount(augur, result, true);
       loginID2 = augur.base58Encode(result);
       var rec = result.keystore;
@@ -114,13 +109,12 @@ describe("Register", function () {
 
 describe("Import Account", function () {
   afterEach(function () { augur.accounts.logout(); });
-  it("Import Account should login the account given name, password, and keystore", function (done) {
+  it("Import Account should login the account given password and keystore", function (done) {
     this.timeout(tools.TIMEOUT);
-    augur.accounts.importAccount(name, password, generatedKeystore, function (user) {
+    augur.accounts.importAccount(password, generatedKeystore, function (user) {
       assert.notProperty(user, "error");
       assert.isTrue(Buffer.isBuffer(augur.accounts.account.privateKey));
       assert.isString(user.address);
-      assert.isString(user.name);
       assert.isObject(user.keystore);
       assert.strictEqual(augur.accounts.account.privateKey.toString("hex").length, constants.KEYSIZE*2);
       assert.strictEqual(user.address.length, 42);
@@ -133,7 +127,7 @@ describe("Login", function () {
   afterEach(function () { augur.accounts.logout(); });
   it("login and decrypt the stored private key", function (done) {
     this.timeout(tools.TIMEOUT);
-    augur.accounts.login(loginID, password, function (user) {
+    augur.accounts.login(augur.base58Decode(loginID).keystore, password, function (user) {
       assert.notProperty(user, "error");
       assert.isTrue(Buffer.isBuffer(augur.accounts.account.privateKey));
       assert.isString(user.address);
@@ -145,14 +139,14 @@ describe("Login", function () {
   });
   it("login twice as the same user", function (done) {
     this.timeout(tools.TIMEOUT);
-    augur.accounts.login(loginID, password, function (user) {
+    augur.accounts.login(augur.base58Decode(loginID).keystore, password, function (user) {
       assert.notProperty(user, "error");
       assert.isTrue(Buffer.isBuffer(augur.accounts.account.privateKey));
       assert.isString(user.address);
       assert.isObject(user.keystore);
       assert.strictEqual(augur.accounts.account.privateKey.toString("hex").length, constants.KEYSIZE*2);
       assert.strictEqual(user.address.length, 42);
-      augur.accounts.login(loginID, password, function (same_user) {
+      augur.accounts.login(augur.base58Decode(loginID).keystore, password, function (same_user) {
         assert(!same_user.error);
         assert.strictEqual(user.address, same_user.address);
         done();
@@ -161,13 +155,12 @@ describe("Login", function () {
   });
   it("login with a private key", function (done) {
     this.timeout(tools.TIMEOUT);
-    augur.accounts.loginWithMasterKey('jack', "5169fdd07cb61657ad0d1c60f1132eed52c91949d6d85654110b11ede80a6d2e", function (user) {
+    augur.accounts.loginWithMasterKey("5169fdd07cb61657ad0d1c60f1132eed52c91949d6d85654110b11ede80a6d2e", function (user) {
       assert.notProperty(user, "error");
       assert.isTrue(Buffer.isBuffer(augur.accounts.account.privateKey));
       assert.isTrue(Buffer.isBuffer(augur.accounts.account.derivedKey));
       assert.isString(user.address);
       assert.isUndefined(user.keystore);
-      assert.strictEqual(user.name, 'jack');
       assert.strictEqual(augur.accounts.account.privateKey.toString("hex").length, constants.KEYSIZE*2);
       assert.strictEqual(augur.accounts.account.privateKey.toString("hex"), "5169fdd07cb61657ad0d1c60f1132eed52c91949d6d85654110b11ede80a6d2e");
       assert.strictEqual(augur.accounts.account.derivedKey.toString("hex"), abi.unfork(utils.sha256(new Buffer("5169fdd07cb61657ad0d1c60f1132eed52c91949d6d85654110b11ede80a6d2e", "hex"))));
@@ -177,15 +170,7 @@ describe("Login", function () {
       done();
     });
   });
-  it("fail with error 403 when given an incorrect loginID", function (done) {
-    this.timeout(tools.TIMEOUT);
-    var badLoginID = utils.sha256(new Date().toString());
-    augur.accounts.login(badLoginID, password, function (user) {
-      assert.strictEqual(user.error, 403);
-      done();
-    });
-  });
-  it("fail with error 403 when given a blank loginID", function (done) {
+  it("fail with error 403 when given a blank keystore", function (done) {
     this.timeout(tools.TIMEOUT);
     augur.accounts.login("", password, function (user) {
       assert.strictEqual(user.error, 403);
@@ -194,12 +179,12 @@ describe("Login", function () {
   });
   it("fail with error 403 when given a blank password", function (done) {
     this.timeout(tools.TIMEOUT);
-    augur.accounts.login(loginID, "", function (user) {
+    augur.accounts.login(augur.base58Decode(loginID).keystore, "", function (user) {
       assert.strictEqual(user.error, 403);
       done();
     });
   });
-  it("fail with error 403 when given a blank loginID and a blank password", function (done) {
+  it("fail with error 403 when given a blank keystore and a blank password", function (done) {
     this.timeout(tools.TIMEOUT);
     augur.accounts.login("", "", function (user) {
       assert.strictEqual(user.error, 403);
@@ -209,16 +194,7 @@ describe("Login", function () {
   it("fail with error 403 when given an incorrect password", function (done) {
     this.timeout(tools.TIMEOUT);
     var bad_password = utils.sha256(Math.random().toString(36).substring(4));
-    augur.accounts.login(loginID, bad_password, function (user) {
-      assert.strictEqual(user.error, 403);
-      done();
-    });
-  });
-  it("fail with error 403 when given an incorrect loginID and an incorrect password", function (done) {
-    this.timeout(tools.TIMEOUT);
-    var bad_loginID = utils.sha256(new Date().toString());
-    var bad_password = utils.sha256(Math.random().toString(36).substring(4));
-    augur.accounts.login(bad_loginID, bad_password, function (user) {
+    augur.accounts.login(augur.base58Decode(loginID).keystore, bad_password, function (user) {
       assert.strictEqual(user.error, 403);
       done();
     });
@@ -229,7 +205,7 @@ describe("Logout", function () {
   afterEach(function () { augur.accounts.logout(); });
   it("logout and unset the account object", function (done) {
     this.timeout(tools.TIMEOUT);
-    augur.accounts.login(loginID, password, function (user) {
+    augur.accounts.login(augur.base58Decode(loginID).keystore, password, function (user) {
       assert.notProperty(user, "error");
       for (var i = 0; i < 2; ++i) {
         augur.accounts.logout();
@@ -237,23 +213,6 @@ describe("Logout", function () {
         assert.notProperty(augur.accounts.account, "privateKey");
       }
       done();
-    });
-  });
-});
-
-describe("Change Account Name", function () {
-  afterEach(function () { augur.accounts.logout(); });
-  it("Should be able to update the account object", function (done) {
-    this.timeout(tools.TIMEOUT);
-    augur.accounts.login(loginID, password, function (user) {
-      var privateKey = augur.accounts.account.privateKey;
-      augur.accounts.changeAccountName("testingName", function (updatedUser) {
-        assert.deepEqual(user.keystore, updatedUser.keystore);
-        assert.strictEqual(updatedUser.name, "testingName");
-        assert.strictEqual(user.address, updatedUser.address);
-        assert.strictEqual(privateKey.toString("hex"), augur.accounts.account.privateKey.toString("hex"));
-        done();
-      });
     });
   });
 });

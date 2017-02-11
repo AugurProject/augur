@@ -5,14 +5,12 @@ var augur = require('../../../src');
 var errors = require("ethrpc").errors;
 
 var accounts = [{
-    name: 'account1',
     address: undefined,
     password: 'helloWorld',
     keystore: undefined,
     privateKey: undefined,
     derivedKey: undefined
   }, {
-    name: 'account2',
     address: undefined,
     password: 'password',
     keystore: undefined,
@@ -26,14 +24,12 @@ describe("accounts.register", function() {
     // run this one time before running any register tests.
     // make sure accounts is reset to default state.
     accounts = [{
-        name: 'account1',
         address: undefined,
         password: 'helloWorld',
         keystore: undefined,
         privateKey: undefined,
         derivedKey: undefined
       }, {
-        name: 'account2',
         address: undefined,
         password: 'password',
         keystore: undefined,
@@ -46,7 +42,7 @@ describe("accounts.register", function() {
   });
   var test = function(t) {
     it(t.description, function(done) {
-      augur.accounts.register(t.name, t.password, function(result) {
+      augur.accounts.register(t.password, function(result) {
         t.assertions(result);
         done();
       });
@@ -54,7 +50,6 @@ describe("accounts.register", function() {
   };
   test({
     description: 'should return an error if the password is < 6 characters long',
-    name: 'testName1',
     password: 'pass',
     assertions: function(result) {
       assert.deepEqual(result, errors.PASSWORD_TOO_SHORT);
@@ -62,18 +57,15 @@ describe("accounts.register", function() {
   });
   test({
     description: 'should return an error if the password is undefined',
-    name: 'testName1',
     password: undefined,
     assertions: function(result) {
       assert.deepEqual(result, errors.PASSWORD_TOO_SHORT);
     }
   });
   test({
-    description: 'should register an account given a valid name and password - account 1',
-    name: accounts[0].name,
+    description: 'should register an account given a valid password - account 1',
     password: accounts[0].password,
     assertions: function(result) {
-      assert.equal(result.name, 'account1');
       assert.isString(result.address);
       assert.isObject(result.keystore);
       assert(Buffer.isBuffer(result.privateKey));
@@ -88,11 +80,9 @@ describe("accounts.register", function() {
     }
   });
   test({
-    description: 'should register an account given a valid name and password - account 2',
-    name: accounts[1].name,
+    description: 'should register an account given a valid password - account 2',
     password: accounts[1].password,
     assertions: function(result) {
-      assert.equal(result.name, 'account2');
       assert.isString(result.address);
       assert.isObject(result.keystore);
       assert(Buffer.isBuffer(result.privateKey));
