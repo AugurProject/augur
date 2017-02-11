@@ -10,7 +10,7 @@ import {
 } from '../../../src/modules/auth/actions/update-login-account';
 
 describe(`modules/auth/actions/load-login-account.js`, () => {
-  proxyquire.noPreserveCache().noCallThru();
+  proxyquire.noPreserveCache();
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
   const fakeAugurJS = { augur: { accounts: { account: { address: 123456789 } } } };
@@ -21,9 +21,6 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
   const fakeLoadMarketsInfo = {};
   const thisTestState = Object.assign({}, testState, { loginAccount: {} });
   const store = mockStore(thisTestState);
-  fakeAugurJS.loadLoginAccount = (env, cb) => {
-    cb(null, { address: 123456789 });
-  };
   fakeAugurJS.augur.batchGetMarketInfo = (marketIDs, account, cb) => {
     cb(null);
   };
@@ -65,7 +62,6 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
 
   it(`should update the login account`, () => {
     store.dispatch(action.loadLoginAccount());
-
     const expectedOutput = [{
       type: 'UPDATE_LOGIN_ACCOUNT',
       data: {
