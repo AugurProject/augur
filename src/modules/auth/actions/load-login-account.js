@@ -103,7 +103,7 @@ export const loadFullAccountData = (account, cb) => (dispatch) => {
     dispatch(loadAccountDataFromLocalStorage(account.address));
     dispatch(loadLoginAccountDependents(cb));
   } else if (cb) {
-    cb('account address required');
+    cb({ message: 'account address required' });
   }
 };
 
