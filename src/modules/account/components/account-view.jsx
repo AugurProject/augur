@@ -4,7 +4,6 @@ import classnames from 'classnames';
 
 import Link from 'modules/link/components/link';
 import Input from 'modules/common/components/input';
-import Checkbox from 'modules/common/components/checkbox';
 
 export default class AccountPage extends Component {
   // TODO -- Prop Validations
