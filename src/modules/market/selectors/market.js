@@ -28,7 +28,7 @@ import { isMarketDataOpen, isMarketDataExpired } from '../../../utils/is-market-
 import { BRANCH_ID } from '../../app/constants/network';
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import { BINARY_INDETERMINATE_OUTCOME_ID, CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
-import { abi, constants } from '../../../services/augurjs';
+import { abi } from '../../../services/augurjs';
 
 import { toggleFavorite } from '../../markets/actions/update-favorites';
 import { placeTrade } from '../../trade/actions/place-trade';

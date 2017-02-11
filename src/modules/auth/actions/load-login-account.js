@@ -100,6 +100,9 @@ export const displayLoginMessageOrMarkets = account => (dispatch, getState) => {
 
 export const loadFullAccountData = (account, cb) => (dispatch) => {
   if (account && account.address) {
+    dispatch(updateLoginAccount({ address: account.address }));
+    if (account.loginID) dispatch(updateLoginAccount({ loginID: account.loginID }));
+    if (account.name) dispatch(updateLoginAccount({ name: account.name }));
     dispatch(loadAccountDataFromLocalStorage(account.address));
     dispatch(loadLoginAccountDependents(cb));
   } else if (cb) {
@@ -115,13 +118,13 @@ export const loadLoginAccount = autoLogin => (dispatch, getState) => {
   const { account } = augur.accounts;
   if (account.address && account.privateKey) {
     console.log('using client-side account:', account.address);
-    dispatch(loadFullAccountData(account));
+    dispatch(loadFullAccountData({ address: account.address }));
 
   // 2. Persistent (localStorage) account
   } else if (localStorageRef && localStorageRef.getItem && localStorageRef.getItem('account')) {
     const persistentAccount = JSON.parse(localStorageRef.getItem('account'));
-    const accountObject = augur.accounts.setAccountObject(persistentAccount);
-    dispatch(loadFullAccountData(accountObject));
+    augur.accounts.setAccountObject(persistentAccount);
+    dispatch(loadFullAccountData(persistentAccount));
 
   // 3. If autoLogin=true, use an unlocked local Ethereum node (if present)
   } else if (autoLogin) {

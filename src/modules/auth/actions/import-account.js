@@ -4,11 +4,11 @@ import { fundNewAccount } from '../../auth/actions/fund-new-account';
 import { registerTimestamp } from '../../auth/actions/register-timestamp';
 import { anyAccountBalancesZero } from '../../auth/selectors/balances';
 
-export const importAccount = (name, password, rememberMe, keystore) => (dispatch, getState) => {
+export const importAccount = (password, rememberMe, keystore) => (dispatch, getState) => {
   const { links } = require('../../../selectors');
   const localStorageRef = typeof window !== 'undefined' && window.localStorage;
-  augur.accounts.importAccount(name, password, keystore, (importedAccount) => {
-    console.log('importAccount -- ', importAccount);
+  augur.accounts.importAccount(password, keystore, (importedAccount) => {
+    console.log('importAccount:', importAccount);
     if (importedAccount && importedAccount.keystore) {
       if (rememberMe && localStorageRef && localStorageRef.setItem) {
         const persistentAccount = { ...importedAccount };
