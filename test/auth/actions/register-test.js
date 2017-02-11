@@ -21,9 +21,9 @@ describe(`modules/auth/actions/register.js`, () => {
   };
   const fakeAuthLink = {};
   const fakeSelectors = {};
-  const updtLoginAccStub = {};
-  const ldLoginAccStub = {
-    loadLoginAccountDependents: () => {}
+  const updateLoginAccountStub = {};
+  const loadLoginAccountStub = {
+    loadFullAccountData: () => {}
   };
 
   const thisTestState = Object.assign({}, testState, {
@@ -34,7 +34,6 @@ describe(`modules/auth/actions/register.js`, () => {
   fakeAugurJS.augur.accounts.register = (name, psswrd, cb) => {
     cb({
       address: 'test',
-      loginID: 'testid',
       name,
       ether: 0,
       realEther: 0,
@@ -51,23 +50,22 @@ describe(`modules/auth/actions/register.js`, () => {
   };
   fakeAuthLink.selectAuthLink = (page, bool, dispatch) => ({ onClick: () => {} });
   const updateTestString = 'updateLoginAccount(loginAccount) called.';
-  const ldLoginAccDepTestString = 'loadLoginAccountDependents() called.';
-  const ldLoginAccLSTestString = 'loadAccountDataFromLocalStorage(id) called.';
+  const loadFullAccountDataTestString = 'loadFullAccountData() called.';
+  const displayLoginMessageOrMarketsTestString = 'displayLoginMessageOrMarkets called';
 
-  updtLoginAccStub.updateLoginAccount = sinon.stub().returns({ type: updateTestString });
-  // ldLoginAccStub.loadLoginAccountDependents = sinon.stub().returns({type: ldLoginAccDepTestString });
-  sinon.stub(ldLoginAccStub, 'loadLoginAccountDependents', (cb) => {
+  updateLoginAccountStub.updateLoginAccount = sinon.stub().returns({ type: updateTestString });
+  sinon.stub(loadLoginAccountStub, 'loadFullAccountData', (account, cb) => {
     if (cb) cb(null, 2.5);
-    return { type: ldLoginAccDepTestString };
+    return { type: loadFullAccountDataTestString };
   });
-  ldLoginAccStub.loadAccountDataFromLocalStorage = sinon.stub().returns({ type: ldLoginAccLSTestString });
+  loadLoginAccountStub.displayLoginMessageOrMarkets = sinon.stub().returns({ type: displayLoginMessageOrMarketsTestString });
 
   const action = proxyquire('../../../src/modules/auth/actions/register', {
     '../../../services/augurjs': fakeAugurJS,
     '../../../selectors': fakeSelectors,
     '../../link/selectors/links': fakeAuthLink,
-    '../../auth/actions/update-login-account': updtLoginAccStub,
-    '../../auth/actions/load-login-account': ldLoginAccStub
+    '../../auth/actions/update-login-account': updateLoginAccountStub,
+    '../../auth/actions/load-login-account': loadLoginAccountStub
   });
 
   beforeEach(() => {
@@ -79,19 +77,13 @@ describe(`modules/auth/actions/register.js`, () => {
   });
 
   it(`should register a new account`, () => {
-    const expectedOutput = [{
-      type: 'updateLoginAccount(loginAccount) called.'
-    }, {
-      type: 'loadAccountDataFromLocalStorage(id) called.'
-    }, {
-      type: 'loadLoginAccountDependents() called.'
-    }];
-
+    const expectedOutput = [
+      { type: updateTestString },
+      { type: loadFullAccountDataTestString },
+      { type: displayLoginMessageOrMarketsTestString }
+    ];
     store.dispatch(action.register('Passw0rd', fakeCallback));
     store.dispatch(action.setupAndFundNewAccount('Passw0rd', testState.loginAccount.loginID, false, fakeCallback));
-
-    console.log('fack -- ', fakeCallback.callCount);
-
     assert(fakeCallback.calledTwice, `the callback wasn't triggered 2 times as expected`);
     assert.deepEqual(store.getActions(), expectedOutput, `Didn't create a new account as expected`);
   });

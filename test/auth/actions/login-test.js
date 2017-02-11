@@ -1,5 +1,6 @@
 import { describe, it, beforeEach } from 'mocha';
 import { assert } from 'chai';
+import augur from 'augur.js';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
@@ -11,8 +12,9 @@ describe(`modules/auth/actions/login.js`, () => {
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
   const fakeAugurJS = {
-    accounts: {},
     augur: {
+      accounts: {},
+      base58Encode: augur.base58Encode,
       getRegisterBlockNumber: () => {},
       Register: {
         register: () => {}
@@ -25,14 +27,14 @@ describe(`modules/auth/actions/login.js`, () => {
       loginMessageLink: {}
     }
   };
-  const updtLoginAccStub = {};
-  const ldLoginAccStub = {};
+  const updateLoginAccountStub = {};
+  const loadLoginAccountStub = {};
   const thisTestState = Object.assign({}, testState, {
     loginAccount: {}
   });
   const store = mockStore(thisTestState);
 
-  fakeAugurJS.accounts.login = sinon.stub().yields({
+  fakeAugurJS.augur.accounts.login = sinon.stub().yields({
     address: 'test',
     handle: 'test',
     ether: 0,
@@ -51,18 +53,18 @@ describe(`modules/auth/actions/login.js`, () => {
   fakeSelectors.links.loginMessageLink.onClick = sinon.stub();
 
   const updateTestString = 'updateLoginAccount(loginAccount) called.';
-  const ldLoginAccDepTestString = 'loadLoginAccountDependents() called.';
-  const ldLoginAccLSTestString = 'loadAccountDataFromLocalStorage(id) called.';
+  const loadFullAccountDataTestString = 'loadFullAccountData() called.';
+  const displayLoginMessageOrMarketsTestString = 'displayLoginMessageOrMarkets called';
 
-  updtLoginAccStub.updateLoginAccount = sinon.stub().returns({ type: updateTestString });
-  ldLoginAccStub.loadLoginAccountDependents = sinon.stub().returns({ type: ldLoginAccDepTestString });
-  ldLoginAccStub.loadAccountDataFromLocalStorage = sinon.stub().returns({ type: ldLoginAccLSTestString });
+  updateLoginAccountStub.updateLoginAccount = sinon.stub().returns({ type: updateTestString });
+  loadLoginAccountStub.loadFullAccountData = sinon.stub().returns({ type: loadFullAccountDataTestString });
+  loadLoginAccountStub.displayLoginMessageOrMarkets = sinon.stub().returns({ type: displayLoginMessageOrMarketsTestString });
 
   const action = proxyquire('../../../src/modules/auth/actions/login', {
     '../../../services/augurjs': fakeAugurJS,
     '../../../selectors': fakeSelectors,
-    '../../auth/actions/update-login-account': updtLoginAccStub,
-    '../../auth/actions/load-login-account': ldLoginAccStub
+    '../../auth/actions/update-login-account': updateLoginAccountStub,
+    '../../auth/actions/load-login-account': loadLoginAccountStub
   });
 
   beforeEach(() => {
@@ -71,7 +73,11 @@ describe(`modules/auth/actions/login.js`, () => {
 
   it(`should attempt to login an account given user/pass`, () => {
     store.dispatch(action.login('test', 'test'));
-    const expectedOutput = [{ type: ldLoginAccLSTestString }, { type: updateTestString }, { type: ldLoginAccDepTestString }];
+    const expectedOutput = [
+      { type: updateTestString },
+      { type: loadFullAccountDataTestString },
+      { type: displayLoginMessageOrMarketsTestString }
+    ];
     assert.deepEqual(store.getActions(), expectedOutput, `didn't login to the account correcty`);
   });
 
