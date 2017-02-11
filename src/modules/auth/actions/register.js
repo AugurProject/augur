@@ -12,7 +12,7 @@ export const register = (password, cb) => (dispatch) => {
     } else if (account.error) {
       return callback({ code: account.error, message: account.message });
     }
-    const loginID = augur.base58Encode({ keystore: account.keystore });
+    const loginID = augur.base58Encode(account);
     dispatch(updateLoginAccount({ loginID }));
     callback(null, loginID);
   });

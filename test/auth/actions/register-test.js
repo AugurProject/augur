@@ -46,7 +46,7 @@ describe(`modules/auth/actions/register.js`, () => {
     },
     loginMessageLink: {
       onClick: () => {}
-    },
+    }
   };
   fakeAuthLink.selectAuthLink = (page, bool, dispatch) => ({ onClick: () => {} });
   const updateTestString = 'updateLoginAccount(loginAccount) called.';
