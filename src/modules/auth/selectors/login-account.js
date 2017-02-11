@@ -1,5 +1,5 @@
 import memoizerific from 'memoizerific';
-
+import { augur } from '../../../services/augurjs';
 import { formatRep, formatEther } from '../../../utils/format-number';
 import store from '../../../store';
 import { changeAccountName } from '../../auth/actions/change-account-name';
@@ -28,7 +28,7 @@ export const setupLoginAccount = memoizerific(1)((loginAccount, dispatch) => {
     .join('-');
   const downloadAccountFileName = `UTC--${date}--${loginAccount.address}`;
   const accountData = encodeURIComponent(JSON.stringify({
-    ...loginAccount.keystore
+    ...augur.accounts.account.keystore
   }));
   const downloadAccountDataString = `data:,${accountData}`;
 
