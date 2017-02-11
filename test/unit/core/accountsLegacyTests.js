@@ -64,7 +64,7 @@ describe("Register", function () {
     this.timeout(tools.TIMEOUT);
     augur.accounts.register(name, password, function (result) {
       checkAccount(augur, result, true);
-      loginID = result.loginID;
+      loginID = augur.base58Encode(result);
       var rec = result.keystore;
       generatedKeystore = result.keystore;
       assert.notProperty(rec, "error");
@@ -90,7 +90,7 @@ describe("Register", function () {
     this.timeout(tools.TIMEOUT);
     augur.accounts.register(name2, password2, function (result) {
       checkAccount(augur, result, true);
-      loginID2 = result.loginID;
+      loginID2 = augur.base58Encode(result);
       var rec = result.keystore;
       assert(rec.crypto.ciphertext);
       assert(rec.crypto.cipherparams.iv);
@@ -120,7 +120,6 @@ describe("Import Account", function () {
       assert.notProperty(user, "error");
       assert.isTrue(Buffer.isBuffer(augur.accounts.account.privateKey));
       assert.isString(user.address);
-      assert.isString(user.loginID);
       assert.isString(user.name);
       assert.isObject(user.keystore);
       assert.strictEqual(augur.accounts.account.privateKey.toString("hex").length, constants.KEYSIZE*2);
@@ -232,10 +231,8 @@ describe("Logout", function () {
     this.timeout(tools.TIMEOUT);
     augur.accounts.login(loginID, password, function (user) {
       assert.notProperty(user, "error");
-      assert.strictEqual(user.loginID, loginID);
       for (var i = 0; i < 2; ++i) {
         augur.accounts.logout();
-        assert.notProperty(augur.accounts.account, "loginID");
         assert.notProperty(augur.accounts.account, "address");
         assert.notProperty(augur.accounts.account, "privateKey");
       }

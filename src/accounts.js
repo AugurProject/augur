@@ -241,6 +241,7 @@ module.exports = function () {
       } catch (err) {
         return cb(errors.BAD_CREDENTIALS);
       }
+
       var keystore = decodedLoginID.keystore;
       var keystoreCrypto = keystore.crypto || keystore.Crypto;
       var options = {

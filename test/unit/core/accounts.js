@@ -5,7 +5,6 @@ var augur = require('../../../src');
 var errors = require("ethrpc").errors;
 
 var accounts = [{
-    loginID: undefined,
     name: 'account1',
     address: undefined,
     password: 'helloWorld',
@@ -13,7 +12,6 @@ var accounts = [{
     privateKey: undefined,
     derivedKey: undefined
   }, {
-    loginID: undefined,
     name: 'account2',
     address: undefined,
     password: 'password',
@@ -28,7 +26,6 @@ describe("accounts.register", function() {
     // run this one time before running any register tests.
     // make sure accounts is reset to default state.
     accounts = [{
-        loginID: undefined,
         name: 'account1',
         address: undefined,
         password: 'helloWorld',
@@ -36,7 +33,6 @@ describe("accounts.register", function() {
         privateKey: undefined,
         derivedKey: undefined
       }, {
-        loginID: undefined,
         name: 'account2',
         address: undefined,
         password: 'password',
@@ -78,7 +74,6 @@ describe("accounts.register", function() {
     password: accounts[0].password,
     assertions: function(result) {
       assert.equal(result.name, 'account1');
-      assert.isString(result.loginID);
       assert.isString(result.address);
       assert.isObject(result.keystore);
       assert(Buffer.isBuffer(result.privateKey));
@@ -87,7 +82,6 @@ describe("accounts.register", function() {
       assert.deepEqual(result, augur.accounts.account);
 
       accounts[0].address = result.address;
-      accounts[0].loginID = result.loginID;
       accounts[0].privateKey = result.privateKey;
       accounts[0].keystore = result.keystore;
       accounts[0].derivedKey = result.derivedKey;
@@ -99,7 +93,6 @@ describe("accounts.register", function() {
     password: accounts[1].password,
     assertions: function(result) {
       assert.equal(result.name, 'account2');
-      assert.isString(result.loginID);
       assert.isString(result.address);
       assert.isObject(result.keystore);
       assert(Buffer.isBuffer(result.privateKey));
@@ -108,7 +101,6 @@ describe("accounts.register", function() {
       assert.deepEqual(result, augur.accounts.account);
 
       accounts[1].address = result.address;
-      accounts[1].loginID = result.loginID;
       accounts[1].privateKey = result.privateKey;
       accounts[1].keystore = result.keystore;
       accounts[1].derivedKey = result.derivedKey;
