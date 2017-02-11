@@ -4,20 +4,36 @@
   background-color: @color-white;
   display: flex;
   flex: 1;
+  font-size: 5em;
   margin: 0 0.5rem;
+  overflow: hidden;
 
   .topic-content {
     display: flex;
-    flex: 1;
+    flex: 1 0 auto;
     flex-direction: column;
     position: relative;
 
     & > span {
       flex: 1;
+      z-index: 20;
     }
 
     .topic-popularity {
       align-self: flex-end;
+      font-size: 0.7em;
+      margin-right: 0.2em;
+    }
+
+    .topic-name {
+      background-color: fadeout(@color-base, @amount-extra-light);
+      color: @color-text-light;
+      margin-top: 0.5em;
+      z-index: 20;
+
+      span {
+        align-items: flex-end;
+      }
     }
   }
 

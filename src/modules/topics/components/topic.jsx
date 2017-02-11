@@ -8,11 +8,13 @@ const Topic = p => (
     <div className="topic-content">
       <TopicIcon {...p} />
       <span className="topic-popularity">
-        {p.popularity}
+        {p.popularity.toLocaleString()}
       </span>
-      <span className="topic-name">
-        {p.topic.toUpperCase()}
-      </span>
+      <div className="topic-name">
+        <span>
+          {p.topic.toUpperCase()}
+        </span>
+      </div>
     </div>
   </button>
 );
