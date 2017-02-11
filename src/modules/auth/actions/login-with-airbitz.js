@@ -1,8 +1,7 @@
 import secureRandom from 'secure-random';
 import { augur } from '../../../services/augurjs';
 import { AIRBITZ_WALLET_TYPE } from '../../auth/constants/auth-types';
-import { loadLoginAccountDependents, loadLoginAccountLocalStorage } from '../../auth/actions/load-login-account';
-import { updateLoginAccount } from '../../auth/actions/update-login-account';
+import { loadFullAccountData } from '../../auth/actions/load-login-account';
 import { registerTimestamp } from '../../auth/actions/register-timestamp';
 import { fundNewAccount } from '../../auth/actions/fund-new-account';
 import { authError } from '../../auth/actions/auth-error';
@@ -23,9 +22,7 @@ export function loginWithEthereumWallet(airbitzAccount, ethereumWallet, isNewAcc
       if (!loginAccount || !loginAccount.address) {
         return;
       }
-      dispatch(loadLoginAccountLocalStorage(loginAccount.address));
-      dispatch(updateLoginAccount(loginAccount));
-      dispatch(loadLoginAccountDependents((err, balances) => {
+      dispatch(loadFullAccountData(loginAccount, (err, balances) => {
         if (err || !balances) return console.error(err);
         if (anyAccountBalancesZero(balances)) {
           dispatch(fundNewAccount((err) => {

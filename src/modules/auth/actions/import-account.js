@@ -1,6 +1,5 @@
 import { accounts } from '../../../services/augurjs';
-import { loadLoginAccountDependents, loadLoginAccountLocalStorage } from '../../auth/actions/load-login-account';
-import { updateLoginAccount } from '../../auth/actions/update-login-account';
+import { loadFullAccountData } from '../../auth/actions/load-login-account';
 import { fundNewAccount } from '../../auth/actions/fund-new-account';
 import { registerTimestamp } from '../../auth/actions/register-timestamp';
 import { anyAccountBalancesZero } from '../../auth/selectors/balances';
@@ -11,19 +10,16 @@ export function importAccount(name, password, rememberMe, keystore) {
     const localStorageRef = typeof window !== 'undefined' && window.localStorage;
     accounts.importAccount(name, password, keystore, (loginAccount) => {
       console.log('importAccount -- ', importAccount);
-
       const importedAccount = { ...loginAccount };
       if (importedAccount && importedAccount.keystore) {
         if (rememberMe && localStorageRef && localStorageRef.setItem) {
-          const persistentAccount = Object.assign({}, importedAccount);
+          const persistentAccount = { ...importedAccount };
           if (Buffer.isBuffer(persistentAccount.privateKey)) {
             persistentAccount.privateKey = persistentAccount.privateKey.toString('hex');
           }
           localStorageRef.setItem('account', JSON.stringify(persistentAccount));
         }
-        dispatch(loadLoginAccountLocalStorage(importedAccount.address));
-        dispatch(updateLoginAccount(importedAccount));
-        dispatch(loadLoginAccountDependents((err, balances) => {
+        dispatch(loadFullAccountData(importedAccount, (err, balances) => {
           if (err || !balances) return console.error(err);
           if (anyAccountBalancesZero(balances)) {
             dispatch(fundNewAccount((e) => {

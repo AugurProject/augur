@@ -95,8 +95,6 @@ describe(`modules/auth/actions/load-login-account.js`, () => {
         phaseTimeRemaining: 'in 29 minutes'
       }
     }];
-    const actual = store.getActions();
-    const numActions = actual.length;
-    assert.deepEqual(actual, expectedOutput, `didn't properly update the logged in account`);
+    assert.deepEqual(store.getActions(), expectedOutput, `didn't properly update the logged in account`);
   });
 });

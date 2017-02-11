@@ -29,7 +29,7 @@ export function initAugur() {
           dispatch(updateConnectionStatus(connected));
           dispatch(registerTransactionRelay());
           dispatch(loadChatMessages('augur'));
-          dispatch(loadLoginAccount());
+          dispatch(loadLoginAccount(env.autoLogin));
           if (env.reportingTest) {
 
             // 127.0.0.1 only: configure for follow-on (multi-user) reporting testing

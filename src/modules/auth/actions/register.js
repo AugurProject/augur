@@ -1,5 +1,5 @@
 import { augur } from '../../../services/augurjs';
-import { loadLoginAccountDependents, loadLoginAccountLocalStorage } from '../../auth/actions/load-login-account';
+import { loadFullAccountData } from '../../auth/actions/load-login-account';
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { registerTimestamp } from '../../auth/actions/register-timestamp';
 import { fundNewAccount } from '../../auth/actions/fund-new-account';
@@ -52,8 +52,7 @@ export const setupAndFundNewAccount = (password, loginID, rememberMe, cb) => (di
   if (!loginID) return callback({ message: 'loginID is required' });
   const { account } = augur.accounts;
   if (rememberMe) savePersistentAccountToLocalStorage(account);
-  dispatch(loadLoginAccountLocalStorage(account.address));
-  dispatch(loadLoginAccountDependents((err) => {
+  dispatch(loadFullAccountData(account, (err) => {
     if (err) return console.error(err);
     dispatch(fundNewAccount((err) => {
       if (err) return console.error(err);

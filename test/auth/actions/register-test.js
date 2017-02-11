@@ -52,7 +52,7 @@ describe(`modules/auth/actions/register.js`, () => {
   fakeAuthLink.selectAuthLink = (page, bool, dispatch) => ({ onClick: () => {} });
   const updateTestString = 'updateLoginAccount(loginAccount) called.';
   const ldLoginAccDepTestString = 'loadLoginAccountDependents() called.';
-  const ldLoginAccLSTestString = 'loadLoginAccountLocalStorage(id) called.';
+  const ldLoginAccLSTestString = 'loadAccountDataFromLocalStorage(id) called.';
 
   updtLoginAccStub.updateLoginAccount = sinon.stub().returns({ type: updateTestString });
   // ldLoginAccStub.loadLoginAccountDependents = sinon.stub().returns({type: ldLoginAccDepTestString });
@@ -60,7 +60,7 @@ describe(`modules/auth/actions/register.js`, () => {
     if (cb) cb(null, 2.5);
     return { type: ldLoginAccDepTestString };
   });
-  ldLoginAccStub.loadLoginAccountLocalStorage = sinon.stub().returns({ type: ldLoginAccLSTestString });
+  ldLoginAccStub.loadAccountDataFromLocalStorage = sinon.stub().returns({ type: ldLoginAccLSTestString });
 
   const action = proxyquire('../../../src/modules/auth/actions/register', {
     '../../../services/augurjs': fakeAugurJS,
@@ -82,9 +82,7 @@ describe(`modules/auth/actions/register.js`, () => {
     const expectedOutput = [{
       type: 'updateLoginAccount(loginAccount) called.'
     }, {
-      type: 'loadLoginAccountLocalStorage(id) called.'
-    }, {
-      type: 'updateLoginAccount(loginAccount) called.'
+      type: 'loadAccountDataFromLocalStorage(id) called.'
     }, {
       type: 'loadLoginAccountDependents() called.'
     }];

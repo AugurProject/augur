@@ -52,11 +52,11 @@ describe(`modules/auth/actions/login.js`, () => {
 
   const updateTestString = 'updateLoginAccount(loginAccount) called.';
   const ldLoginAccDepTestString = 'loadLoginAccountDependents() called.';
-  const ldLoginAccLSTestString = 'loadLoginAccountLocalStorage(id) called.';
+  const ldLoginAccLSTestString = 'loadAccountDataFromLocalStorage(id) called.';
 
   updtLoginAccStub.updateLoginAccount = sinon.stub().returns({ type: updateTestString });
   ldLoginAccStub.loadLoginAccountDependents = sinon.stub().returns({ type: ldLoginAccDepTestString });
-  ldLoginAccStub.loadLoginAccountLocalStorage = sinon.stub().returns({ type: ldLoginAccLSTestString });
+  ldLoginAccStub.loadAccountDataFromLocalStorage = sinon.stub().returns({ type: ldLoginAccLSTestString });
 
   const action = proxyquire('../../../src/modules/auth/actions/login', {
     '../../../services/augurjs': fakeAugurJS,

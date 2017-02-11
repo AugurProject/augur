@@ -1,5 +1,6 @@
-import { accounts } from '../../../services/augurjs';
-import { loadLoginAccountDependents, loadLoginAccountLocalStorage } from '../../auth/actions/load-login-account';
+import { augur } from '../../../services/augurjs';
+import { loadFullAccountData } from '../../auth/actions/load-login-account';
+import { savePersistentAccountToLocalStorage } from '../../auth/actions/register';
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { fundNewAccount } from '../../auth/actions/fund-new-account';
 import isCurrentLoginMessageRead from '../../login-message/helpers/is-current-login-message-read';
@@ -7,7 +8,7 @@ import { anyAccountBalancesZero } from '../../auth/selectors/balances';
 
 export function login(loginID, password, rememberMe, cb) {
   return (dispatch, getState) => {
-    accounts.login(loginID, password, (account) => {
+    augur.accounts.login(loginID, password, (account) => {
       if (!account) {
         cb && cb({
           code: 0,
@@ -21,26 +22,14 @@ export function login(loginID, password, rememberMe, cb) {
         });
         return;
       }
-      const loginAccount = { ...account };
-      if (loginAccount && loginAccount.address) {
-        const localStorageRef = typeof window !== 'undefined' && window.localStorage;
-        if (rememberMe && localStorageRef && localStorageRef.setItem) {
-          const persistentAccount = Object.assign({}, loginAccount);
-          if (Buffer.isBuffer(persistentAccount.privateKey)) {
-            persistentAccount.privateKey = persistentAccount.privateKey.toString('hex');
-          }
-          if (Buffer.isBuffer(persistentAccount.derivedKey)) {
-            persistentAccount.derivedKey = persistentAccount.derivedKey.toString('hex');
-          }
-          localStorageRef.setItem('account', JSON.stringify(persistentAccount));
-        }
-        dispatch(loadLoginAccountLocalStorage(loginAccount.address));
-        dispatch(updateLoginAccount(loginAccount));
-        dispatch(loadLoginAccountDependents((err, balances) => {
+      if (account.address) {
+        const loginID = augur.base58Encode({ keystore: account.keystore });
+        dispatch(updateLoginAccount({ loginID }));
+        if (rememberMe) savePersistentAccountToLocalStorage(account);
+        dispatch(loadFullAccountData(account, (err, balances) => {
           if (err || !balances) return console.error(err);
           if (anyAccountBalancesZero(balances)) dispatch(fundNewAccount());
         }));
-
         cb && cb();
 
         // need to load selectors here as they get updated above
