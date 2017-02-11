@@ -12,7 +12,6 @@ export const login = (loginID, password, rememberMe, cb) => (dispatch, getState)
     } else if (account.error) {
       callback({ code: account.error, message: account.message });
     } else if (account.address) {
-      const loginID = augur.base58Encode(account);
       dispatch(updateLoginAccount({ loginID }));
       if (rememberMe) savePersistentAccountToLocalStorage(account);
       dispatch(loadFullAccountData(account, (err, balances) => {
