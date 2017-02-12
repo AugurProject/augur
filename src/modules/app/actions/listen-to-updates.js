@@ -213,9 +213,9 @@ export function listenToUpdates() {
       },
 
       // Cash (ether) transfer
-      cashSent: (msg) => {
+      sentCash: (msg) => {
         if (msg) {
-          console.debug('cashSent:', msg);
+          console.debug('sentCash:', msg);
           const { address } = getState().loginAccount;
           if (msg._from === address || msg._to === address) {
             dispatch(updateAssets());
