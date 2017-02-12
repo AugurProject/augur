@@ -70,7 +70,7 @@ export default class AccountPage extends Component {
             <h2 className="heading">Credentials</h2>
             <table className="account-info">
               <tbody>
-                <tr className={classnames('account-info-item', { displayNone: p.account.localNode })}>
+                <tr className={classnames('account-info-item', { displayNone: p.account.isUnlocked })}>
                   <th className="title">Account Name:</th>
                   <td className="item">
                     {s.editName &&
@@ -126,7 +126,7 @@ export default class AccountPage extends Component {
                   </td>
                 </tr>
 
-                <tr className={classnames('account-info-item', { displayNone: p.account.localNode })}>
+                <tr className={classnames('account-info-item', { displayNone: !p.account.loginID })}>
                   <th className="title">Login ID:</th>
                   <td className="item">
                     {!s.showFullID &&
@@ -164,7 +164,7 @@ export default class AccountPage extends Component {
                 {
                   p.onAirbitzManageAccount ?
                   (
-                    <tr className={classnames('account-info-item', { displayNone: p.account.localNode })}>
+                    <tr className="account-info-item">
                       <td colSpan="2">
                         <button className="button" onClick={p.onAirbitzManageAccount}>
                           Manage Airbitz Account
@@ -173,7 +173,6 @@ export default class AccountPage extends Component {
                     </tr>
                   ) : null
                 }
-
               </tbody>
             </table>
           </div>
@@ -224,7 +223,7 @@ export default class AccountPage extends Component {
               </div>
             </div>
           </div>
-          <div className={classnames('account-section', { displayNone: p.account.localNode })}>
+          <div className={classnames('account-section', { displayNone: p.account.isUnlocked || p.account.airbitzAccount })}>
             <div className="account-info-item">
               <h2 className="heading">Download Account Key File</h2>
               <p>
