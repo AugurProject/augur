@@ -13,27 +13,6 @@ import { updateFavorites } from '../../../modules/markets/actions/update-favorit
 import updateUserLoginMessageVersionRead from '../../../modules/login-message/actions/update-user-login-message-version-read';
 import { updateScalarMarketShareDenomination } from '../../../modules/market/actions/update-scalar-market-share-denomination';
 
-export const loadLoginAccountDependents = cb => (dispatch, getState) => {
-  augur.getRegisterBlockNumber(getState().loginAccount.address, (err, blockNumber) => {
-    if (!err && blockNumber) {
-      dispatch(updateLoginAccount({ registerBlockNumber: blockNumber }));
-    }
-    dispatch(updateAssets(cb));
-    dispatch(loadAccountTrades());
-    dispatch(loadBidsAsksHistory());
-    dispatch(loadFundingHistory());
-    dispatch(loadTransferHistory());
-    dispatch(loadCreateMarketHistory());
-
-    // clear and load reports for any markets that have been loaded
-    // (partly to handle signing out of one account and into another)
-    dispatch(clearReports());
-    dispatch(loadReportingHistory());
-    dispatch(loadEventsWithSubmittedReport());
-    dispatch(syncBranch());
-  });
-};
-
 export const loadAccountDataFromLocalStorage = address => (dispatch) => {
   const localStorageRef = typeof window !== 'undefined' && window.localStorage;
   if (localStorageRef && localStorageRef.getItem && address) {
@@ -58,17 +37,33 @@ export const loadAccountDataFromLocalStorage = address => (dispatch) => {
 };
 
 export const loadFullAccountData = (account, cb) => (dispatch) => {
-  if (account && account.address) {
-    dispatch(updateLoginAccount({
-      address: account.address,
-      isUnlocked: !!account.isUnlocked,
-      registerBlockNumber: account.registerBlockNumber
-    }));
+  if (account) {
+    if (account.isUnlocked) dispatch(updateLoginAccount({ isUnlocked: !!account.isUnlocked }));
     if (account.loginID) dispatch(updateLoginAccount({ loginID: account.loginID }));
     if (account.name) dispatch(updateLoginAccount({ name: account.name }));
     if (account.airbitzAccount) dispatch(updateLoginAccount({ airbitzAccount: account.airbitzAccount }));
-    dispatch(loadAccountDataFromLocalStorage(account.address));
-    dispatch(loadLoginAccountDependents(cb));
+    if (account.address) {
+      dispatch(updateLoginAccount({ address: account.address }));
+      dispatch(loadAccountDataFromLocalStorage(account.address));
+      augur.getRegisterBlockNumber(account.address, (err, blockNumber) => {
+        if (!err && blockNumber) {
+          dispatch(updateLoginAccount({ registerBlockNumber: blockNumber }));
+        }
+        dispatch(updateAssets(cb));
+        dispatch(loadAccountTrades());
+        dispatch(loadBidsAsksHistory());
+        dispatch(loadFundingHistory());
+        dispatch(loadTransferHistory());
+        dispatch(loadCreateMarketHistory());
+
+        // clear and load reports for any markets that have been loaded
+        // (partly to handle signing out of one account and into another)
+        dispatch(clearReports());
+        dispatch(loadReportingHistory());
+        dispatch(loadEventsWithSubmittedReport());
+        dispatch(syncBranch());
+      });
+    }
   } else if (cb) {
     cb({ message: 'account address required' });
   }
