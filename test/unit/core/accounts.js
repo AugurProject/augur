@@ -932,7 +932,7 @@ describe("accounts.login", function() {
     }
   });
 });
-describe.skip("accounts.loginWithMasterKey", function() {
+describe("accounts.loginWithMasterKey", function() {
   // 1 test total
   var privateKey = '';
   afterEach(function() {
@@ -941,19 +941,16 @@ describe.skip("accounts.loginWithMasterKey", function() {
   var test = function(t) {
     it(t.description, function() {
       privateKey = t.preparePrivateKey(accounts);
-      augur.accounts.loginWithMasterKey(t.name, privateKey, t.assertions);
+      augur.accounts.loginWithMasterKey(privateKey, t.assertions);
     });
   };
   test({
-    description: 'Should handle logging into an account using a name and privateKey string',
-    name: 'MyAwesomeAccount',
+    description: 'Should handle logging into an account using a privateKey hex string',
     preparePrivateKey: function(accounts) {
       return accounts[0].privateKey.toString('hex');
     },
     assertions: function(account) {
       assert.deepEqual(account, {
-        name: 'MyAwesomeAccount',
-        loginID: augur.base58Encode({name: 'MyAwesomeAccount'}),
         address: abi.format_address(keys.privateKeyToAddress(privateKey)),
         privateKey: new Buffer(privateKey, "hex"),
         derivedKey: new Buffer(abi.unfork(utils.sha256(new Buffer(privateKey, "hex"))), "hex")
