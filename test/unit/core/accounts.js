@@ -473,7 +473,7 @@ describe("accounts.fundNewAccountFromAddress", function() {
     }
   });
 });
-describe.skip("accounts.changeAccountName", function() {
+describe("accounts.setAccountObject", function() {
   // 2 tests total
   augur.accounts.account = {};
   afterEach(function() {
@@ -481,33 +481,44 @@ describe.skip("accounts.changeAccountName", function() {
   });
   var test = function(t) {
     it(t.description, function() {
-      augur.accounts.account = t.account;
-      var out = augur.accounts.changeAccountName(t.newName, t.cb);
-      t.assertions(out);
+      var account = t.prepareAccount(accounts);
+      augur.accounts.setAccountObject(account, t.cb);
+      t.assertions();
     });
   };
   test({
-    description: 'Should change the name value of the logged in account',
-    account: { name: 'hello' },
-    newName: 'world',
-    cb: function(name) {
-      assert.deepEqual(name, { name: 'world' });
+    description: 'Should set the account object to the passed in account',
+    prepareAccount: function(accounts) {
+      return accounts[0];
     },
+    cb: utils.noop,
     assertions: function(out) {
-      // out is undefined in this test since we gave a callback.
-      assert.isUndefined(out);
-      assert.deepEqual(augur.accounts.account, { name: 'world' });
+      assert.deepEqual(augur.accounts.account, {
+        address: accounts[0].address,
+        keystore: accounts[0].keystore,
+        privateKey: accounts[0].privateKey,
+        derivedKey: accounts[0].derivedKey
+      });
     }
   });
   test({
-    description: 'Should change the name value of the logged in account',
-    account: { name: 'world' },
-    newName: 'hello',
-    cb: undefined,
+    description: 'Should set the account object to the passed in account and handle a privateKey and derivedKey passed as hex strings',
+    prepareAccount: function(accounts) {
+      return {
+        address: accounts[1].address,
+        keystore: accounts[1].keystore,
+        privateKey: accounts[1].privateKey.toString('hex'),
+        derivedKey: accounts[1].derivedKey.toString('hex')
+      };
+    },
+    cb: utils.noop,
     assertions: function(out) {
-      // since we pass cb as undefined it should use utils.pass which simply passes the value passed to callback out as a return value, so out should be populated with our new augur.accounts.account object.
-      assert.deepEqual(out, { name: 'hello' });
-      assert.deepEqual(augur.accounts.account, out);
+      assert.deepEqual(augur.accounts.account, {
+        address: accounts[1].address,
+        keystore: accounts[1].keystore,
+        privateKey: accounts[1].privateKey,
+        derivedKey: accounts[1].derivedKey
+      });
     }
   });
 });
