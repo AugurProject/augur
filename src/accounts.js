@@ -110,17 +110,7 @@ module.exports = function () {
       });
     },
 
-    changeAccountName: function (newName, cb) {
-      cb = cb || utils.pass;
-
-      // web.account object is set to use new name
-      this.account.name = newName;
-
-      // send back the new updated loginAccount object.
-      return cb(clone(this.account));
-    },
-
-    register: function (name, password, cb) {
+    register: function (password, cb) {
       var self = this;
       cb = (utils.is_function(cb)) ? cb : utils.pass;
       if (!password || password.length < 6) return cb(errors.PASSWORD_TOO_SHORT);
@@ -136,10 +126,10 @@ module.exports = function () {
             derivedKey = new Buffer(derivedKey, "hex");
           }
           var encryptedPrivateKey = new Buffer(keys.encrypt(
-                        plain.privateKey,
-                        derivedKey.slice(0, 16),
-                        plain.iv
-                    ), "base64").toString("hex");
+            plain.privateKey,
+            derivedKey.slice(0, 16),
+            plain.iv
+          ), "base64").toString("hex");
 
           // encrypt private key using derived key and IV, then
           // store encrypted key & IV, indexed by handle
@@ -169,12 +159,9 @@ module.exports = function () {
             version: 3,
             id: uuid.v4()
           };
-          var loginID = augur.base58Encode({ keystore: keystore });
 
-          // while logged in, web.account object is set
+          // while logged in, account object is set
           self.account = {
-            name: name,
-            loginID: loginID,
             privateKey: plain.privateKey,
             address: address,
             keystore: keystore,
@@ -186,27 +173,17 @@ module.exports = function () {
       }); // create
     },
 
-    importAccount: function (name, password, keystore, cb) {
+    importAccount: function (password, keystore, cb) {
       var self = this;
       cb = (utils.is_function(cb)) ? cb : utils.pass;
-      // blank password
       if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
-
-      // preparing to redo the loginID to use the new name
       keys.recover(password, keystore, function (privateKey) {
         if (!privateKey || privateKey.error) return cb(errors.BAD_CREDENTIALS);
 
         var keystoreCrypto = keystore.crypto || keystore.Crypto;
 
         keys.deriveKey(password, keystoreCrypto.kdfparams.salt, {kdf: constants.KDF}, function (derivedKey) {
-          if (!derivedKey || derivedKey.error) return cb(errors.BAD_CREDENTIALS);
-
-          var loginID = augur.base58Encode({ keystore: keystore });
-
-          // while logged in, web.account object is set
           self.account = {
-            name: name,
-            loginID: loginID,
             privateKey: privateKey,
             address: abi.format_address(keystore.address),
             keystore: keystore,
@@ -218,53 +195,35 @@ module.exports = function () {
       });
     },
 
-    loadLocalLoginAccount: function (localAccount, cb) {
-      var self = this;
-      if (!localAccount || !localAccount.privateKey || !localAccount.derivedKey || !localAccount.loginID || !localAccount.keystore) {
-          return cb({ error: errors['0x']});
-      }
-      cb = (utils.is_function(cb)) ? cb : utils.pass;
-      var privateKey = localAccount.privateKey;
-      var derivedKey = localAccount.derivedKey;
+    setAccountObject: function (account, cb) {
+      var privateKey = account.privateKey;
+      var derivedKey = account.derivedKey;
       if (privateKey && !Buffer.isBuffer(privateKey)) {
         privateKey = new Buffer(privateKey, "hex");
       }
       if (derivedKey && !Buffer.isBuffer(derivedKey)) {
         derivedKey = new Buffer(derivedKey, "hex");
       }
-      self.account = {
-        name: localAccount.name,
-        loginID: localAccount.loginID,
+      this.account = {
         privateKey: privateKey,
-        address: abi.format_address(localAccount.keystore.address),
-        keystore: localAccount.keystore,
+        address: abi.format_address(account.keystore.address),
+        keystore: account.keystore,
         derivedKey: derivedKey
       };
-      return cb(clone(this.account));
     },
 
-    login: function (loginID, password, cb) {
+    login: function (keystore, password, cb) {
       var self = this;
       cb = (utils.is_function(cb)) ? cb : utils.pass;
-
-      // blank password
-      if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
-      var decodedLoginID;
-      try {
-        decodedLoginID = augur.base58Decode(loginID);
-      } catch (err) {
-        return cb(errors.BAD_CREDENTIALS);
-      }
-      var keystore = decodedLoginID.keystore;
+      if (!keystore || !password || password === "") return cb(errors.BAD_CREDENTIALS);
       var keystoreCrypto = keystore.crypto || keystore.Crypto;
-      var options = {
+
+      // derive secret key from password
+      keys.deriveKey(password, keystoreCrypto.kdfparams.salt, {
         kdf: keystoreCrypto.kdf,
         kdfparams: keystoreCrypto.kdfparams,
         cipher: keystoreCrypto.kdf
-      };
-
-      // derive secret key from password
-      keys.deriveKey(password, keystoreCrypto.kdfparams.salt, options, function (derivedKey) {
+      }, function (derivedKey) {
         if (!derivedKey || derivedKey.error) return cb(errors.BAD_CREDENTIALS);
 
         // verify that message authentication codes match
@@ -285,10 +244,8 @@ module.exports = function () {
             keystoreCrypto.cipherparams.iv
           ), "hex");
 
-          // while logged in, web.account object is set
+          // while logged in, account object is set
           self.account = {
-            name: "",
-            loginID: loginID,
             privateKey: privateKey,
             address: abi.format_address(keystore.address),
             keystore: keystore,
@@ -306,11 +263,9 @@ module.exports = function () {
     },
 
     // user-supplied plaintext private key
-    loginWithMasterKey: function (name, privateKey, cb) {
+    loginWithMasterKey: function (privateKey, cb) {
       if (!Buffer.isBuffer(privateKey)) privateKey = new Buffer(privateKey, "hex");
       this.account = {
-        name: name,
-        loginID: augur.base58Encode({name: name}),
         address: abi.format_address(keys.privateKeyToAddress(privateKey)),
         privateKey: privateKey,
         derivedKey: new Buffer(abi.unfork(utils.sha256(privateKey)), "hex")

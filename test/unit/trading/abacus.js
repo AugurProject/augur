@@ -742,7 +742,7 @@ describe("abacus.parseMarketInfo", function() {
       	tradingPeriod: 22020096,
       	branchId: '1010101',
       	numEvents: 1,
-      	cumulativeScale: '0.1',
+      	cumulativeScale: '1',
       	creationTime: 16777216,
       	volume: '10000',
       	creationFee: '25',

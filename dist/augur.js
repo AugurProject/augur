@@ -112,17 +112,7 @@ module.exports = function () {
       });
     },
 
-    changeAccountName: function changeAccountName(newName, cb) {
-      cb = cb || utils.pass;
-
-      // web.account object is set to use new name
-      this.account.name = newName;
-
-      // send back the new updated loginAccount object.
-      return cb(clone(this.account));
-    },
-
-    register: function register(name, password, cb) {
+    register: function register(password, cb) {
       var self = this;
       cb = utils.is_function(cb) ? cb : utils.pass;
       if (!password || password.length < 6) return cb(errors.PASSWORD_TOO_SHORT);
@@ -167,12 +157,9 @@ module.exports = function () {
             version: 3,
             id: uuid.v4()
           };
-          var loginID = augur.base58Encode({ keystore: keystore });
 
-          // while logged in, web.account object is set
+          // while logged in, account object is set
           self.account = {
-            name: name,
-            loginID: loginID,
             privateKey: plain.privateKey,
             address: address,
             keystore: keystore,
@@ -184,27 +171,17 @@ module.exports = function () {
       }); // create
     },
 
-    importAccount: function importAccount(name, password, keystore, cb) {
+    importAccount: function importAccount(password, keystore, cb) {
       var self = this;
       cb = utils.is_function(cb) ? cb : utils.pass;
-      // blank password
       if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
-
-      // preparing to redo the loginID to use the new name
       keys.recover(password, keystore, function (privateKey) {
         if (!privateKey || privateKey.error) return cb(errors.BAD_CREDENTIALS);
 
         var keystoreCrypto = keystore.crypto || keystore.Crypto;
 
         keys.deriveKey(password, keystoreCrypto.kdfparams.salt, { kdf: constants.KDF }, function (derivedKey) {
-          if (!derivedKey || derivedKey.error) return cb(errors.BAD_CREDENTIALS);
-
-          var loginID = augur.base58Encode({ keystore: keystore });
-
-          // while logged in, web.account object is set
           self.account = {
-            name: name,
-            loginID: loginID,
             privateKey: privateKey,
             address: abi.format_address(keystore.address),
             keystore: keystore,
@@ -216,53 +193,35 @@ module.exports = function () {
       });
     },
 
-    loadLocalLoginAccount: function loadLocalLoginAccount(localAccount, cb) {
-      var self = this;
-      if (!localAccount || !localAccount.privateKey || !localAccount.derivedKey || !localAccount.loginID || !localAccount.keystore) {
-        return cb({ error: errors['0x'] });
-      }
-      cb = utils.is_function(cb) ? cb : utils.pass;
-      var privateKey = localAccount.privateKey;
-      var derivedKey = localAccount.derivedKey;
+    setAccountObject: function setAccountObject(account, cb) {
+      var privateKey = account.privateKey;
+      var derivedKey = account.derivedKey;
       if (privateKey && !Buffer.isBuffer(privateKey)) {
         privateKey = new Buffer(privateKey, "hex");
       }
       if (derivedKey && !Buffer.isBuffer(derivedKey)) {
         derivedKey = new Buffer(derivedKey, "hex");
       }
-      self.account = {
-        name: localAccount.name,
-        loginID: localAccount.loginID,
+      this.account = {
         privateKey: privateKey,
-        address: abi.format_address(localAccount.keystore.address),
-        keystore: localAccount.keystore,
+        address: abi.format_address(account.keystore.address),
+        keystore: account.keystore,
         derivedKey: derivedKey
       };
-      return cb(clone(this.account));
     },
 
-    login: function login(loginID, password, cb) {
+    login: function login(keystore, password, cb) {
       var self = this;
       cb = utils.is_function(cb) ? cb : utils.pass;
-
-      // blank password
-      if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
-      var decodedLoginID;
-      try {
-        decodedLoginID = augur.base58Decode(loginID);
-      } catch (err) {
-        return cb(errors.BAD_CREDENTIALS);
-      }
-      var keystore = decodedLoginID.keystore;
+      if (!keystore || !password || password === "") return cb(errors.BAD_CREDENTIALS);
       var keystoreCrypto = keystore.crypto || keystore.Crypto;
-      var options = {
+
+      // derive secret key from password
+      keys.deriveKey(password, keystoreCrypto.kdfparams.salt, {
         kdf: keystoreCrypto.kdf,
         kdfparams: keystoreCrypto.kdfparams,
         cipher: keystoreCrypto.kdf
-      };
-
-      // derive secret key from password
-      keys.deriveKey(password, keystoreCrypto.kdfparams.salt, options, function (derivedKey) {
+      }, function (derivedKey) {
         if (!derivedKey || derivedKey.error) return cb(errors.BAD_CREDENTIALS);
 
         // verify that message authentication codes match
@@ -279,10 +238,8 @@ module.exports = function () {
         try {
           var privateKey = new Buffer(keys.decrypt(storedKey, derivedKey.slice(0, 16), keystoreCrypto.cipherparams.iv), "hex");
 
-          // while logged in, web.account object is set
+          // while logged in, account object is set
           self.account = {
-            name: "",
-            loginID: loginID,
             privateKey: privateKey,
             address: abi.format_address(keystore.address),
             keystore: keystore,
@@ -300,11 +257,9 @@ module.exports = function () {
     },
 
     // user-supplied plaintext private key
-    loginWithMasterKey: function loginWithMasterKey(name, privateKey, cb) {
+    loginWithMasterKey: function loginWithMasterKey(privateKey, cb) {
       if (!Buffer.isBuffer(privateKey)) privateKey = new Buffer(privateKey, "hex");
       this.account = {
-        name: name,
-        loginID: augur.base58Encode({ name: name }),
         address: abi.format_address(keys.privateKeyToAddress(privateKey)),
         privateKey: privateKey,
         derivedKey: new Buffer(abi.unfork(utils.sha256(privateKey)), "hex")
@@ -1564,7 +1519,7 @@ BigNumber.config({
 var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/slashRep"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register"), require("./modules/topics"), require("./modules/modifyOrderBook")];
 
 function Augur() {
-  this.version = "3.11.0";
+  this.version = "3.11.2";
 
   this.options = {
     debug: {
@@ -16971,42 +16926,42 @@ module.exports={
         "Trades": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3"
     }, 
     "3": {
-        "Backstops": "0xbc4c90d82b8d32d3cc9b3a46d0e04290fbf5e66c", 
-        "Branches": "0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68", 
-        "BuyAndSellShares": "0x93a9a890696e2324c0107494ea746de28a36a5fb", 
-        "Cash": "0x77a8aa90b1eb4a538afcc21e42d29b631984e625", 
-        "CloseMarket": "0x54fe86fe5e35871a28b894d795d0bfd864bdd4e5", 
-        "CollectFees": "0xb615d7cd3eeb18cfed4a99de85814293f4229929", 
-        "CompleteSets": "0xadae8617b5a39c43b0379edce220db28911109ea", 
-        "CompositeGetters": "0x1539dfcb0f42d819e40177efa1cb52d02182baf5", 
-        "Consensus": "0xd758a8974d5b32563c9c4527ca1ad931d4dddff4", 
-        "ConsensusData": "0x8d0f5ec4feec12f952794beb4ed317325fa3e509", 
-        "CreateBranch": "0x899fe5a7fd50ddfa9f31e27ddc224a7ac4047e0e", 
-        "CreateMarket": "0xfbb6e48d4a9e43c243513622ae445a29597301d2", 
-        "EventResolution": "0x7ccecc861e5080bad1b68e299bd0c197a829f512", 
-        "Events": "0x3f250c331c1e27dc129a92bcd5640a393fe8f4bf", 
-        "ExpiringEvents": "0x46059c77c5fd7927444217e0675b04df02e63e10", 
-        "Faucets": "0xfc941307255a18ff6c8689ce59d8338688445099", 
-        "ForkPenalize": "0xe485de25f41c4def3fe7f72c23d8b982754f9d1b", 
-        "Forking": "0x147a3713fb3e5d406b307772cda9671229a30318", 
-        "FxpFunctions": "0x98cc1819084a6efc187ec3ff92b7349d4d051155", 
-        "Info": "0x6b9a1d7e0c1a39338d59db43be7b266f9f7cb97c", 
-        "MakeReports": "0x744328104524856127965241519100511388d193", 
-        "Markets": "0xdb5e43aff5fb2f40a1a08d664ebd6c6e1293da6c", 
-        "Payout": "0xbef2f060b958ab3f7ff2e144292e428dff8ab8be", 
-        "PenalizationCatchup": "0xdcc06287e46a81048aa8c22bd47c91a2cd832bd2", 
-        "PenalizeNotEnoughReports": "0x2bb449e5cc10ff5f13634493872aba645d81f17c", 
-        "ProportionCorrect": "0x5ae7a11d347ef6cf02f93f136834004653e3d418", 
-        "Register": "0x5c075aa921a6e2f9814946e8af81194824070c39", 
-        "Reporting": "0x3bab899cf01f0d7706da1a555f10688b3bb77649", 
-        "ReportingThreshold": "0x2a2eb3db11cafc9087dd739c90e873bf4fde9d84", 
-        "RoundTwo": "0x2b813680ce3c1361cc625648ad841e6521eb1e51", 
-        "RoundTwoPenalize": "0x7793ac2576434e7a144c2f6e7811570f8573257f", 
-        "SendReputation": "0x48a39030c67805efb4a5885e9045aa2dd64b9149", 
-        "SlashRep": "0xa065f7de83da8f2fd118a7ea3b937f2d291df1d5", 
-        "Topics": "0x064b8c2d90379ecd33bcd443ff705b4fe1898fe9", 
-        "Trade": "0xb9353a53d6aa6a8b38ada5406a550bfba529b0c5", 
-        "Trades": "0x3c441d5ee644ce87a89aa06d7baba4613024c777"
+        "Backstops": "0x7982b951d4da29981a2fec08d4b659e64ecf1ca2", 
+        "Branches": "0xe2cd11a739009f4ee336a747dc58222d8f125de2", 
+        "BuyAndSellShares": "0x3854ae028c91939a5d9b2a4614e4f8471259aa43", 
+        "Cash": "0x1aaae11d6aab155657faa880dcc1892c4f49f245", 
+        "CloseMarket": "0x6916ddcbd9ffab4bc6e90714ae3d766af1f39417", 
+        "CollectFees": "0xe8ad62de0445ca2ac41db36e2ff6d847bde2627c", 
+        "CompleteSets": "0x8e25763fad1c6e70a54c67eb7f04d6d23a3fedb8", 
+        "CompositeGetters": "0x0703885d3e24ecb1b938265a6d5bb5b890544e17", 
+        "Consensus": "0xa75fa35f88af97a8075dbc62a2baedd289175d42", 
+        "ConsensusData": "0x052f5334501262bfea76195583fde429b2545c14", 
+        "CreateBranch": "0x8dad48b80f60e94b33f55be1c1bbd80249078866", 
+        "CreateMarket": "0x31e93a5def0dd4d7d5f5f36e26d9699bbff472b6", 
+        "EventResolution": "0x0e33f9c888069bc1b8bf1ea6ac74c8329e841295", 
+        "Events": "0x06fc034855d56802a7bd3375d1314f339d6f4e80", 
+        "ExpiringEvents": "0x44378bf337940c59e4f92a4dfc403135745fa625", 
+        "Faucets": "0xc7032a249d74c639a26b3703103a2d2b8eef2ecd", 
+        "ForkPenalize": "0xc72ceef1b3c5db7e1e806431d53c54ae97d30a01", 
+        "Forking": "0xf613b6fdbc0b6c4337e9979489fd4c3b7d458951", 
+        "FxpFunctions": "0x17e7d7e34d1c3bf7090737f1fb18f24bddc099a2", 
+        "Info": "0xe73f478af165627c7452fd45c4da9ddd7b074bbb", 
+        "MakeReports": "0x476067ae0ab37b342f296dd748c562af115ce078", 
+        "Markets": "0xb2bdd2070d38b404b6ef3b9e143fe19ea6d3ad09", 
+        "Payout": "0xf15dcbca3e0254d9b65a2d9aefccb82b9113753e", 
+        "PenalizationCatchup": "0x55ce1b7c27b7c9593a7228bf2480ad11e50aac5a", 
+        "PenalizeNotEnoughReports": "0x7297f4703ff3960f8d65aeee31410f931a4bc289", 
+        "ProportionCorrect": "0x317c9c8fb3fdb03e01d7544501a6f1cf2c685488", 
+        "Register": "0xfa7d81d83174ed0b6cf1c035de019a00edb08a3a", 
+        "Reporting": "0x1d41cb81cefaaad83bf3f60fd31da83ddb9e4ec6", 
+        "ReportingThreshold": "0x3ebfdee12dba584579d39d487771de2e51ad6d13", 
+        "RoundTwo": "0x88cfb85303f682eb3757b8a1d0f1abc8b89e7bef", 
+        "RoundTwoPenalize": "0x343b41a287259ecba0e1c55f101a4a71e4cd8fcd", 
+        "SendReputation": "0xbd92d6b821a01dc3549a8a2032da16762f7c2129", 
+        "SlashRep": "0x46e3abbe308218c027cdeb7e66fa03ce9dd44544", 
+        "Topics": "0xffea80468b2be28d01d29198329d104085118887", 
+        "Trade": "0xfe1d7b3932796b0101c11386d7b9228da0c370f5", 
+        "Trades": "0x270e7f18a2c34e7d8af76a5c5c05c9d900d521bf"
     }, 
     "9000": {
         "Backstops": "0x708fdfe18bf28afe861a69e95419d183ace003eb", 

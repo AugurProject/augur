@@ -11,16 +11,12 @@ var ClearCallCounts = require('../../tools').ClearCallCounts;
 var proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 
 var accounts = [{
-    loginID: undefined,
-    name: 'account1',
     address: undefined,
     password: 'helloWorld',
     keystore: undefined,
     privateKey: undefined,
     derivedKey: undefined
   }, {
-    loginID: undefined,
-    name: 'account2',
     address: undefined,
     password: 'password',
     keystore: undefined,
@@ -45,7 +41,7 @@ describe("accounts.register", function() {
       keys.deriveKey = t.deriveKey || deriveKey;
       constants.KDF = t.KDF || KDF;
 
-      augur.accounts.register(t.name, t.password, function(result) {
+      augur.accounts.register(t.password, function(result) {
         t.assertions(result);
         done();
       });
@@ -53,7 +49,6 @@ describe("accounts.register", function() {
   };
   test({
     description: 'should return an error if the password is < 6 characters long',
-    name: 'testName1',
     password: 'pass',
     assertions: function(result) {
       assert.deepEqual(result, errors.PASSWORD_TOO_SHORT);
@@ -61,7 +56,6 @@ describe("accounts.register", function() {
   });
   test({
     description: 'should return an error if the password is undefined',
-    name: 'testName1',
     password: undefined,
     assertions: function(result) {
       assert.deepEqual(result, errors.PASSWORD_TOO_SHORT);
@@ -69,7 +63,6 @@ describe("accounts.register", function() {
   });
   test({
     description: 'should return an error if there is an issue creating the private key',
-    name: 'testname1',
     password: 'somevalidpassword',
     create: function(params, cb) {
       cb({error: 999, message: 'Uh-Oh!'});
@@ -80,7 +73,6 @@ describe("accounts.register", function() {
   });
   test({
     description: 'should return an error if there is an issue deriving the secret key',
-    name: 'testname1',
     password: 'somevalidpassword',
     deriveKey: function(password, salt, options, cb) {
       cb({ error: 999, message: 'Uh-Oh!' });
@@ -91,11 +83,8 @@ describe("accounts.register", function() {
   });
   test({
     description: 'should register an account given a valid name and password - account 1',
-    name: accounts[0].name,
     password: accounts[0].password,
     assertions: function(result) {
-      assert.equal(result.name, 'account1');
-      assert.isString(result.loginID);
       assert.isString(result.address);
       assert.isObject(result.keystore);
       assert(Buffer.isBuffer(result.privateKey));
@@ -104,19 +93,15 @@ describe("accounts.register", function() {
       assert.deepEqual(result, augur.accounts.account);
 
       accounts[0].address = result.address;
-      accounts[0].loginID = result.loginID;
       accounts[0].privateKey = result.privateKey;
       accounts[0].keystore = result.keystore;
       accounts[0].derivedKey = result.derivedKey;
     }
   });
   test({
-    description: 'should register an account given a valid name and password - account 2',
-    name: accounts[1].name,
+    description: 'should register an account given a valid password - account 2',
     password: accounts[1].password,
     assertions: function(result) {
-      assert.equal(result.name, 'account2');
-      assert.isString(result.loginID);
       assert.isString(result.address);
       assert.isObject(result.keystore);
       assert(Buffer.isBuffer(result.privateKey));
@@ -125,7 +110,6 @@ describe("accounts.register", function() {
       assert.deepEqual(result, augur.accounts.account);
 
       accounts[1].address = result.address;
-      accounts[1].loginID = result.loginID;
       accounts[1].privateKey = result.privateKey;
       accounts[1].keystore = result.keystore;
       accounts[1].derivedKey = result.derivedKey;
@@ -133,12 +117,9 @@ describe("accounts.register", function() {
   });
   test({
     description: 'should register an account given a valid name and password, should handle pbkdf2',
-    name: 'testAccountName1',
     password: 'thisisavalidpassword',
     KDF: 'pbkdf2',
     assertions: function(result) {
-      assert.equal(result.name, 'testAccountName1');
-      assert.isString(result.loginID);
       assert.isString(result.address);
       assert.isObject(result.keystore);
       assert(Buffer.isBuffer(result.privateKey));
@@ -148,7 +129,6 @@ describe("accounts.register", function() {
   });
   test({
     description: 'should register an account given a valid name and password but derived key returns a hex string',
-    name: 'testAccountName1',
     password: 'thisisavalidpassword',
     deriveKey: function(password, salt, options, cb) {
       // we are going to use our mock function to call the original function. However we need to apply keys as the this inside of the original function as it's not attached the the original keys object anymore. We do this to be able to pass a hex string version of derivedKey. This is to check the if statement that converts the derivedKey to a buffer if it isn't already.
@@ -157,8 +137,6 @@ describe("accounts.register", function() {
       }]);
     },
     assertions: function(result) {
-      assert.equal(result.name, 'testAccountName1');
-      assert.isString(result.loginID);
       assert.isString(result.address);
       assert.isObject(result.keystore);
       assert(Buffer.isBuffer(result.privateKey));
@@ -495,7 +473,7 @@ describe("accounts.fundNewAccountFromAddress", function() {
     }
   });
 });
-describe("accounts.changeAccountName", function() {
+describe.skip("accounts.changeAccountName", function() {
   // 2 tests total
   augur.accounts.account = {};
   afterEach(function() {
@@ -550,22 +528,19 @@ describe("accounts.importAccount", function() {
       keys.deriveKey = t.deriveKey || deriveKey;
       keystore = t.prepareKeystore(accounts);
       finished = done;
-      var out = augur.accounts.importAccount(t.name, t.password, keystore, t.cb);
+      var out = augur.accounts.importAccount(t.password, keystore, t.cb);
 
       t.assertions(out);
     });
   };
   test({
     description: 'Should handle importing an account',
-    name: 'AwesomeTestAccount',
     password: accounts[0].password,
     prepareKeystore: function(accounts) {
       return accounts[0].keystore;
     },
     cb: function(account) {
       assert.deepEqual(account, {
-        name: 'AwesomeTestAccount',
-        loginID: accounts[0].loginID,
         privateKey: accounts[0].privateKey,
         address: abi.format_address(accounts[0].address),
         keystore: accounts[0].keystore,
@@ -580,7 +555,6 @@ describe("accounts.importAccount", function() {
   });
   test({
     description: 'Should handle no cb and blank password by returning an error',
-    name: 'AwesomeTestAccount',
     password: '',
     prepareKeystore: function(accounts) {
       return accounts[0].keystore;
@@ -594,7 +568,6 @@ describe("accounts.importAccount", function() {
   });
   test({
     description: 'Should handle an issue recovering the privateKey by returning an error',
-    name: 'AwesomeTestAccount',
     password: accounts[0].password,
     prepareKeystore: function(accounts) {
       return accounts[0].keystore;
@@ -611,31 +584,31 @@ describe("accounts.importAccount", function() {
       assert.isUndefined(out);
     }
   });
-  test({
-    description: 'Should handle an issue deriving the derivedKey by returning an error',
-    name: 'AwesomeTestAccount',
-    password: accounts[0].password,
-    prepareKeystore: function(accounts) {
-      return accounts[0].keystore;
-    },
-    recover: function(password, keystore, cb) {
-      // because recover calls deriveKey we need to mock it for this test as well and just return the privateKey it would return anyway...
-      cb(accounts[0].privateKey);
-    },
-    deriveKey: function(password, salt, iv, cb) {
-      cb({ error: 'Uh-Oh!' });
-    },
-    cb: function(account) {
-      assert.deepEqual(account, augur.errors.BAD_CREDENTIALS);
-      assert.deepEqual(augur.accounts.account, {});
-      finished();
-    },
-    assertions: function(out) {
-      assert.isUndefined(out);
-    }
-  });
+  // this test doesn't apply anymore, but we should consider adding an error check on deriveKey just incase...
+  // test({
+  //   description: 'Should handle an issue deriving the derivedKey by returning an error',
+  //   password: accounts[0].password,
+  //   prepareKeystore: function(accounts) {
+  //     return accounts[0].keystore;
+  //   },
+  //   recover: function(password, keystore, cb) {
+  //     // because recover calls deriveKey we need to mock it for this test as well and just return the privateKey it would return anyway...
+  //     cb(accounts[0].privateKey);
+  //   },
+  //   deriveKey: function(password, salt, iv, cb) {
+  //     cb({ error: 'Uh-Oh!' });
+  //   },
+  //   cb: function(account) {
+  //     assert.deepEqual(account, augur.errors.BAD_CREDENTIALS);
+  //     assert.deepEqual(augur.accounts.account, {});
+  //     finished();
+  //   },
+  //   assertions: function(out) {
+  //     assert.isUndefined(out);
+  //   }
+  // });
 });
-describe("accounts.loadLocalLoginAccount", function() {
+describe.skip("accounts.loadLocalLoginAccount", function() {
   // 7 tests total
   augur.accounts.account = {};
   afterEach(function() {
@@ -819,17 +792,17 @@ describe("accounts.login", function() {
       keys.deriveKey = t.deriveKey || deriveKey;
       keys.getMAC = t.getMAC || getMAC;
       keys.decrypt = t.decrypt || decrypt;
-      var loginID = t.prepareLoginID(accounts);
+      var keystore = t.prepareKeystore(accounts);
       finished = done;
 
-      var out = augur.accounts.login(loginID, t.password, t.cb);
+      var out = augur.accounts.login(keystore, t.password, t.cb);
       t.assertions(out);
     });
   };
   test({
     description: 'Should return an error on blank password',
-    prepareLoginID: function(accounts) {
-      return accounts[0].loginID;
+    prepareKeystore: function(accounts) {
+      return accounts[0].keystore;
     },
     password: '',
     cb: function(account) {
@@ -843,8 +816,8 @@ describe("accounts.login", function() {
   });
   test({
     description: 'Should return an error on undefined password, no callback',
-    prepareLoginID: function(accounts) {
-      return accounts[0].loginID;
+    prepareKeystore: function(accounts) {
+      return accounts[0].keystore;
     },
     password: undefined,
     cb: undefined,
@@ -856,7 +829,7 @@ describe("accounts.login", function() {
   });
   test({
     description: 'Should return an error on undefined loginID',
-    prepareLoginID: function(accounts) {
+    prepareKeystore: function(accounts) {
       return undefined;
     },
     password: accounts[0].password,
@@ -871,8 +844,8 @@ describe("accounts.login", function() {
   });
   test({
     description: 'Should return an error if keys.deriveKey returns an error object',
-    prepareLoginID: function(accounts) {
-      return accounts[0].loginID;
+    prepareKeystore: function(accounts) {
+      return accounts[0].keystore;
     },
     password: accounts[0].password,
     cb: function(account) {
@@ -889,8 +862,8 @@ describe("accounts.login", function() {
   });
   test({
     description: 'Should return an error if keys.getMAC does not match the ketstore.crypto.mac value',
-    prepareLoginID: function(accounts) {
-      return accounts[0].loginID;
+    prepareKeystore: function(accounts) {
+      return accounts[0].keystore;
     },
     password: accounts[0].password,
     cb: function(account) {
@@ -907,8 +880,8 @@ describe("accounts.login", function() {
   });
   test({
     description: 'Should return an error if we fail to generate the privateKey and derivedKey will return a hex string instead of buffer',
-    prepareLoginID: function(accounts) {
-      return accounts[0].loginID;
+    prepareKeystore: function(accounts) {
+      return accounts[0].keystore;
     },
     password: accounts[0].password,
     cb: function(account) {
@@ -930,8 +903,8 @@ describe("accounts.login", function() {
   });
   test({
     description: 'Should successfully login if given a valid loginID and password',
-    prepareLoginID: function(accounts) {
-      return accounts[0].loginID;
+    prepareKeystore: function(accounts) {
+      return accounts[0].keystore;
     },
     password: accounts[0].password,
     cb: function(account) {
@@ -948,7 +921,7 @@ describe("accounts.login", function() {
     }
   });
 });
-describe("accounts.loginWithMasterKey", function() {
+describe.skip("accounts.loginWithMasterKey", function() {
   // 1 test total
   var privateKey = '';
   afterEach(function() {
@@ -1421,7 +1394,7 @@ describe("accounts.invoke", function() {
       label: 'Get Branches',
       method: 'getBranches',
       returns: 'hash[]',
-      to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68'
+      to: augur.tx.Branches.getBranches.to
     },
     fire: function(payload, cb) {
       callCounts.fire++;
