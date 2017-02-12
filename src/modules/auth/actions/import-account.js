@@ -1,5 +1,5 @@
 import { augur } from '../../../services/augurjs';
-import { loadFullAccountData } from '../../auth/actions/load-login-account';
+import { loadFullAccountData } from '../../auth/actions/load-account-data';
 import { fundNewAccount } from '../../auth/actions/fund-new-account';
 import { registerTimestamp } from '../../auth/actions/register-timestamp';
 import { anyAccountBalancesZero } from '../../auth/selectors/balances';

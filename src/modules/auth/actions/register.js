@@ -1,5 +1,7 @@
 import { augur } from '../../../services/augurjs';
-import { displayLoginMessageOrMarkets, loadFullAccountData, savePersistentAccountToLocalStorage } from '../../auth/actions/load-login-account';
+import { loadFullAccountData } from '../../auth/actions/load-account-data';
+import { savePersistentAccountToLocalStorage } from '../../auth/actions/set-login-account';
+import { displayLoginMessageOrMarkets } from '../../login-message/actions/display-login-message';
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
 import { registerTimestamp } from '../../auth/actions/register-timestamp';
 import { fundNewAccount } from '../../auth/actions/fund-new-account';

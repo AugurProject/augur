@@ -59,75 +59,19 @@ export const loadAccountDataFromLocalStorage = address => (dispatch) => {
   }
 };
 
-// Use unlockedAddress address (if actually unlocked)
-export const useUnlockedAccount = unlockedAddress => dispatch => (
-  augur.rpc.unlocked(unlockedAddress, (isUnlocked) => {
-    if (!isUnlocked || isUnlocked.error) {
-      return console.warn('account is locked:', unlockedAddress, isUnlocked);
-    }
-    augur.accounts.logout(); // clear the client-side account
-    console.info('using unlocked account:', unlockedAddress);
-    dispatch(loadFullAccountData({ address: unlockedAddress }));
-  })
-);
-
-export const savePersistentAccountToLocalStorage = (account) => {
-  const localStorageRef = typeof window !== 'undefined' && window.localStorage;
-  if (localStorageRef && localStorageRef.setItem) {
-    const persistentAccount = { ...account };
-    if (Buffer.isBuffer(persistentAccount.privateKey)) {
-      persistentAccount.privateKey = persistentAccount.privateKey.toString('hex');
-    }
-    if (Buffer.isBuffer(persistentAccount.derivedKey)) {
-      persistentAccount.derivedKey = persistentAccount.derivedKey.toString('hex');
-    }
-    localStorageRef.setItem('account', JSON.stringify(persistentAccount));
-  }
-};
-
-// decide if we need to display the login message
-export const displayLoginMessageOrMarkets = account => (dispatch, getState) => {
-  const { links } = require('../../../selectors');
-  if (links && links.marketsLink) {
-    const { loginMessage } = getState();
-    if (isUserLoggedIn(account) && !isCurrentLoginMessageRead(loginMessage)) {
-      links.loginMessageLink.onClick();
-    } else {
-      links.marketsLink.onClick();
-    }
-  }
-};
-
 export const loadFullAccountData = (account, cb) => (dispatch) => {
   if (account && account.address) {
-    dispatch(updateLoginAccount({ address: account.address }));
+    dispatch(updateLoginAccount({
+      address: account.address,
+      isUnlocked: !!account.isUnlocked,
+      registerBlockNumber: account.registerBlockNumber
+    }));
     if (account.loginID) dispatch(updateLoginAccount({ loginID: account.loginID }));
     if (account.name) dispatch(updateLoginAccount({ name: account.name }));
+    if (account.airbitzAccount) dispatch(updateLoginAccount({ airbitzAccount: account.airbitzAccount }));
     dispatch(loadAccountDataFromLocalStorage(account.address));
     dispatch(loadLoginAccountDependents(cb));
   } else if (cb) {
     cb({ message: 'account address required' });
-  }
-};
-
-// If there is an available logged-in/unlocked account, set as the user's sending address.
-export const loadLoginAccount = autoLogin => (dispatch, getState) => {
-  const localStorageRef = typeof window !== 'undefined' && window.localStorage;
-
-  // 1. Client-side account
-  const { account } = augur.accounts;
-  if (account.address && account.privateKey) {
-    console.log('using client-side account:', account.address);
-    dispatch(loadFullAccountData({ address: account.address }));
-
-  // 2. Persistent (localStorage) account
-  } else if (localStorageRef && localStorageRef.getItem && localStorageRef.getItem('account')) {
-    const persistentAccount = JSON.parse(localStorageRef.getItem('account'));
-    augur.accounts.setAccountObject(persistentAccount);
-    dispatch(loadFullAccountData(persistentAccount));
-
-  // 3. If autoLogin=true, use an unlocked local Ethereum node (if present)
-  } else if (autoLogin) {
-    dispatch(useUnlockedAccount(augur.from));
   }
 };

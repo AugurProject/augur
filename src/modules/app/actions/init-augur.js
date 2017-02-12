@@ -4,7 +4,7 @@ import { updateEnv } from '../../app/actions/update-env';
 import { updateConnectionStatus } from '../../app/actions/update-connection';
 import { updateAssets } from '../../auth/actions/update-assets';
 import { loadChatMessages } from '../../chat/actions/load-chat-messages';
-import { loadLoginAccount } from '../../auth/actions/load-login-account';
+import { setLoginAccount } from '../../auth/actions/set-login-account';
 import { loadBranch } from '../../app/actions/load-branch';
 import { registerTransactionRelay } from '../../transactions/actions/register-transaction-relay';
 import isCurrentLoginMessageRead from '../../login-message/helpers/is-current-login-message-read';
@@ -29,7 +29,7 @@ export function initAugur() {
           dispatch(updateConnectionStatus(connected));
           dispatch(registerTransactionRelay());
           dispatch(loadChatMessages('augur'));
-          dispatch(loadLoginAccount(env.autoLogin));
+          dispatch(setLoginAccount(env.autoLogin));
           if (env.reportingTest) {
 
             // 127.0.0.1 only: configure for follow-on (multi-user) reporting testing
