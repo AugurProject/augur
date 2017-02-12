@@ -34,8 +34,8 @@ module.exports = {
    */
   calculateFxpAdjustedTradingFee: function (tradingFee, price, range) {
     return tradingFee.times(4).times(price).times(
-            constants.ONE.minus(price.times(constants.ONE).dividedBy(range).floor())
-        ).dividedBy(range.times(constants.ONE)).floor();
+      constants.ONE.minus(price.times(constants.ONE).dividedBy(range).floor())
+    ).dividedBy(range.times(constants.ONE)).floor();
   },
 
   /**
