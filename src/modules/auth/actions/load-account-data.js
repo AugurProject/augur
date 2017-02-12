@@ -12,8 +12,6 @@ import { updateAssets } from '../../../modules/auth/actions/update-assets';
 import { updateFavorites } from '../../../modules/markets/actions/update-favorites';
 import updateUserLoginMessageVersionRead from '../../../modules/login-message/actions/update-user-login-message-version-read';
 import { updateScalarMarketShareDenomination } from '../../../modules/market/actions/update-scalar-market-share-denomination';
-import isCurrentLoginMessageRead from '../../login-message/helpers/is-current-login-message-read';
-import isUserLoggedIn from '../../auth/helpers/is-user-logged-in';
 
 export const loadLoginAccountDependents = cb => (dispatch, getState) => {
   augur.getRegisterBlockNumber(getState().loginAccount.address, (err, blockNumber) => {

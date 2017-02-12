@@ -1,5 +1,4 @@
 import { augur } from '../../../services/augurjs';
-import { updateLoginAccount } from '../../../modules/auth/actions/update-login-account';
 import { loadFullAccountData } from '../../auth/actions/load-account-data';
 import { useUnlockedAccount } from '../../auth/actions/use-unlocked-account';
 

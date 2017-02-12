@@ -8,7 +8,6 @@ import { anyAccountBalancesZero } from '../../auth/selectors/balances';
 import { displayLoginMessageOrMarkets } from '../../login-message/actions/display-login-message';
 
 export const loginWithEthereumWallet = (airbitzAccount, ethereumWallet, isNewAccount) => (dispatch) => {
-  const { links } = require('../../../selectors');
   const masterPrivateKey = ethereumWallet.keys.ethereumKey;
   augur.accounts.loginWithMasterKey(masterPrivateKey, (account) => {
     if (!account || !account.address || account.error) {
