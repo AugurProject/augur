@@ -4,8 +4,8 @@ import { loadBidsAsksHistory } from '../../../modules/bids-asks/actions/load-bid
 import { loadCreateMarketHistory } from '../../../modules/create-market/actions/load-create-market-history';
 import { loadFundingHistory, loadTransferHistory } from '../../../modules/account/actions/load-funding-history';
 import { loadReportingHistory } from '../../../modules/my-reports/actions/load-reporting-history';
-import { syncBranch } from '../../../modules/branch/actions/sync-branch';
 import { loadEventsWithSubmittedReport } from '../../../modules/my-reports/actions/load-events-with-submitted-report';
+import { syncBranch } from '../../../modules/branch/actions/sync-branch';
 import { updateReports, clearReports } from '../../../modules/reports/actions/update-reports';
 import { updateLoginAccount } from '../../../modules/auth/actions/update-login-account';
 import { updateAssets } from '../../../modules/auth/actions/update-assets';
@@ -36,20 +36,24 @@ export const loadAccountDataFromLocalStorage = address => (dispatch) => {
   }
 };
 
-export const loadFullAccountData = (account, cb) => (dispatch) => {
-  if (account) {
+export const loadFullAccountData = (account, callback) => (dispatch) => {
+  if (!account) {
+    if (callback) callback({ message: 'account required' });
+  } else {
     if (account.isUnlocked) dispatch(updateLoginAccount({ isUnlocked: !!account.isUnlocked }));
     if (account.loginID) dispatch(updateLoginAccount({ loginID: account.loginID }));
     if (account.name) dispatch(updateLoginAccount({ name: account.name }));
     if (account.airbitzAccount) dispatch(updateLoginAccount({ airbitzAccount: account.airbitzAccount }));
-    if (account.address) {
+    if (!account.address) {
+      if (callback) callback(null);
+    } else {
       dispatch(updateLoginAccount({ address: account.address }));
       dispatch(loadAccountDataFromLocalStorage(account.address));
       augur.getRegisterBlockNumber(account.address, (err, blockNumber) => {
         if (!err && blockNumber) {
           dispatch(updateLoginAccount({ registerBlockNumber: blockNumber }));
         }
-        dispatch(updateAssets(cb));
+        dispatch(updateAssets(callback));
         dispatch(loadAccountTrades());
         dispatch(loadBidsAsksHistory());
         dispatch(loadFundingHistory());
@@ -64,7 +68,5 @@ export const loadFullAccountData = (account, cb) => (dispatch) => {
         dispatch(syncBranch());
       });
     }
-  } else if (cb) {
-    cb({ message: 'account address required' });
   }
 };
