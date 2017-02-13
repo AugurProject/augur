@@ -35,7 +35,7 @@ export default class Topic extends Component {
         <div className="topic-content">
           <TopicIcon {...p} />
           <span className="topic-popularity">
-            {p.popularity.toLocaleString()}
+            {Math.floor(p.popularity).toLocaleString()}
           </span>
           <div className="topic-name" >
             <span ref={(topicName) => { this.topicName = topicName; }}>
