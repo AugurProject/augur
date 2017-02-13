@@ -5,11 +5,9 @@ import Input from 'modules/common/components/input';
 
 import { REQUIRED_PASSWORD_STRENGTH } from 'modules/auth/constants/password-strength';
 
-import getValue from 'utils/get-value';
-
 export default class AuthSignup extends Component {
   static propTypes = {
-    getLoginID: PropTypes.func
+    register: PropTypes.func
   };
 
   constructor(props) {
@@ -23,7 +21,7 @@ export default class AuthSignup extends Component {
       isStrongPass: false,
       isGeneratingLoginID: false,
       rememberMe: true,
-      loginAccount: null,
+      loginID: null,
       authError: false,
       errorMessage: null,
       // These prevent a flash on component mount
@@ -36,7 +34,7 @@ export default class AuthSignup extends Component {
 
   componentWillUpdate(nextProps, nextState) {
 
-    // loginAccount
+    // loginID
     if (
       nextState.password &&
       nextState.isStrongPass &&
@@ -45,7 +43,7 @@ export default class AuthSignup extends Component {
     ) {
       this.setState({ isGeneratingLoginID: true });
 
-      this.props.getLoginID(this.state.password, null, this.state.rememberMe, (err, loginAccount) => {
+      this.props.register(this.state.password, (err, loginID) => {
         if (err) {
           this.setState({
             authError: true,
@@ -53,10 +51,10 @@ export default class AuthSignup extends Component {
             isAuthErrorDisplayable: true
           });
         } else {
-          this.username.value = loginAccount.loginID;
+          this.username.value = loginID;
 
           this.setState({
-            loginAccount,
+            loginID,
             isGeneratingLoginID: false,
             isSignUpActionsDisplayable: true
           });
@@ -64,12 +62,12 @@ export default class AuthSignup extends Component {
       });
     } else if (
       nextState.password !== nextState.passwordConfirm &&
-      this.state.loginAccount
+      this.state.loginID
     ) { // if a login account exists, clear it
       this.username.value = '';
 
       this.setState({
-        loginAccount: null,
+        loginID: null,
         isGeneratingLoginID: false
       });
     }
@@ -108,7 +106,7 @@ export default class AuthSignup extends Component {
     const p = this.props;
     const s = this.state;
 
-    const loginID = getValue(s, 'loginAccount.loginID') || '';
+    const loginID = s.loginID || '';
 
     return (
       <form
@@ -117,7 +115,7 @@ export default class AuthSignup extends Component {
           e.preventDefault();
           e.persist();
 
-          p.registerAccount(s.password, loginID, s.rememberMe, s.loginAccount, (err) => {
+          p.setupAndFundNewAccount(s.password, loginID, s.rememberMe, (err) => {
             if (err) {
               this.setState({
                 authError: true,
@@ -202,8 +200,8 @@ export default class AuthSignup extends Component {
         </div>
         <div
           className={classNames('auth-signup-actions', {
-            animateInPartial: s.loginAccount,
-            animateOutPartial: !s.loginAccount && s.isSignUpActionsDisplayable
+            animateInPartial: s.loginID,
+            animateOutPartial: !s.loginID && s.isSignUpActionsDisplayable
           })}
         >
           <div className="login-id-messaging">
@@ -213,7 +211,7 @@ export default class AuthSignup extends Component {
           </div>
           <textarea
             className="login-id"
-            disabled={!s.loginAccount}
+            disabled={!s.loginID}
             value={loginID}
             readOnly
           />
@@ -233,7 +231,7 @@ export default class AuthSignup extends Component {
           </label>
           <button
             className="submit"
-            disabled={!s.loginAccount}
+            disabled={!s.loginID}
             type="submit"
           >
             Sign Up

@@ -28,22 +28,6 @@ const Positions = p => (
         />
       )
     }
-    {!p.settings.autoSellCompleteSets && p.market.hasCompleteSet &&
-    <div className="complete-sets">
-      <div className="close-position-button">
-        <button
-          data-tip={p.market.smallestPosition.full}
-          className="button"
-          onClick={(event) => {
-            event.stopPropagation();
-            p.market.onSubmitClosePosition();
-          }}
-        >
-            Redeem {p.market.smallestPosition.formatted} Complete Sets
-          </button>
-      </div>
-    </div>
-    }
     <ReactTooltip type="light" effect="solid" place="top" globalEventOff="click" />
   </article>
 );

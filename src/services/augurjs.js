@@ -33,49 +33,6 @@ ex.connect = function connect(env, cb) {
   });
 };
 
-ex.loadLoginAccount = function loadLoginAccount(env, cb) {
-  const localStorageRef = typeof window !== 'undefined' && window.localStorage;
-
-  // if available, use the client-side account
-  if (augur.accounts.account.address && augur.accounts.account.privateKey) {
-    console.log('using client-side account:', augur.accounts.account.address);
-    return cb(null, { ...augur.accounts.account });
-  }
-  // if the user has a persistent login, use it
-  if (localStorageRef && localStorageRef.getItem && localStorageRef.getItem('account')) {
-    const account = JSON.parse(localStorageRef.getItem('account'));
-    if (account && account.privateKey) {
-      // local storage account exists, load it spawn the callback using augur.accounts.account
-      augur.accounts.loadLocalLoginAccount(account, loginAccount =>
-        cb(null, { ...augur.accounts.account })
-      );
-      //	break out of ex.loadLoginAccount as we don't want to login the local geth node.
-      return;
-    }
-  }
-
-  // Short circuit if autologin disabled in env.json
-  if (!env.autoLogin) {
-    return cb(null);
-  }
-
-  // local node: if it's unlocked, use the coinbase account
-  // check to make sure the account is unlocked
-  augur.rpc.unlocked(augur.from, (unlocked) => {
-
-    // use augur.from address if unlocked
-    if (unlocked && !unlocked.error) {
-      augur.accounts.logout();
-      console.log('using unlocked account:', augur.from);
-      return cb(null, { address: augur.from });
-    }
-
-    // otherwise, no account available
-    console.log('account is locked: ', augur.from);
-    return cb(null);
-  });
-};
-
 ex.reportingMarketsSetup = function reportingMarketsSetup(periodLength, branchID, cb) {
   const tools = augur.tools;
   tools.DEBUG = true;

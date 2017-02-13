@@ -4,7 +4,7 @@ import { convertLogsToTransactions } from '../../../modules/transactions/actions
 
 export function loadFundingHistory(cb) {
   return (dispatch, getState) => {
-    const callback = cb || (e => console.log('loadFundingHistory:', e));
+    const callback = cb || (e => e && console.error('loadFundingHistory:', e));
     const { branch, loginAccount } = getState();
     const params = { sender: loginAccount.address, branch: branch.id };
     if (loginAccount.registerBlockNumber) {
@@ -30,7 +30,7 @@ export function loadFundingHistory(cb) {
 
 export function loadTransferHistory(cb) {
   return (dispatch, getState) => {
-    const callback = cb || (e => console.log('loadTransferHistory:', e));
+    const callback = cb || (e => e && console.error('loadTransferHistory:', e));
     const { loginAccount } = getState();
     const params = {};
     if (loginAccount.registerBlockNumber) {

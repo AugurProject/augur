@@ -8,7 +8,7 @@ const revealReportLock = {};
 
 export function revealReports(cb) {
   return (dispatch, getState) => {
-    const callback = cb || (e => console.log('revealReports:', e));
+    const callback = cb || (e => e && console.error('revealReports:', e));
     const { branch, loginAccount, reports } = getState();
     // Make sure that:
     //  - branch is in the second half of its reporting period
