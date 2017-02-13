@@ -12,7 +12,6 @@ export const register = (password, cb) => (dispatch) => {
       return callback({ code: account.error, message: account.message });
     }
     const loginID = augur.base58Encode(account);
-    dispatch(updateLoginAccount({ loginID, address: account.address }));
     callback(null, loginID);
   });
 };
@@ -21,6 +20,7 @@ export const setupAndFundNewAccount = (password, loginID, rememberMe, cb) => (di
   const callback = cb || (e => e && console.error('setupAndFundNewAccount:', e));
   if (!loginID) return callback({ message: 'loginID is required' });
   if (rememberMe) savePersistentAccountToLocalStorage({ ...augur.accounts.account, loginID });
+  dispatch(updateLoginAccount({ loginID, address: augur.accounts.account.address }));
   dispatch(loadAccountData(getState().loginAccount));
   callback(null);
 };
