@@ -1,72 +1,30 @@
-import { augur } from '../../../services/augurjs';
-import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
-import { loadBidsAsksHistory } from '../../../modules/bids-asks/actions/load-bids-asks-history';
-import { loadCreateMarketHistory } from '../../../modules/create-market/actions/load-create-market-history';
-import { loadFundingHistory, loadTransferHistory } from '../../../modules/account/actions/load-funding-history';
-import { loadReportingHistory } from '../../../modules/my-reports/actions/load-reporting-history';
-import { loadEventsWithSubmittedReport } from '../../../modules/my-reports/actions/load-events-with-submitted-report';
-import { syncBranch } from '../../../modules/branch/actions/sync-branch';
-import { updateReports, clearReports } from '../../../modules/reports/actions/update-reports';
-import { updateLoginAccount } from '../../../modules/auth/actions/update-login-account';
+import { anyAccountBalancesZero } from '../../../modules/auth/selectors/balances';
+import { displayLoginMessageOrMarkets } from '../../../modules/login-message/actions/display-login-message';
+import { fundNewAccount } from '../../../modules/auth/actions/fund-new-account';
+import { loadAccountDataFromLocalStorage } from '../../../modules/auth/actions/load-account-data-from-local-storage';
+import { loadRegisterBlockNumber } from '../../../modules/auth/actions/load-register-block-number';
 import { updateAssets } from '../../../modules/auth/actions/update-assets';
-import { updateFavorites } from '../../../modules/markets/actions/update-favorites';
-import updateUserLoginMessageVersionRead from '../../../modules/login-message/actions/update-user-login-message-version-read';
-import { updateScalarMarketShareDenomination } from '../../../modules/market/actions/update-scalar-market-share-denomination';
+import { updateLoginAccount } from '../../../modules/auth/actions/update-login-account';
 
-export const loadAccountDataFromLocalStorage = address => (dispatch) => {
-  const localStorageRef = typeof window !== 'undefined' && window.localStorage;
-  if (localStorageRef && localStorageRef.getItem && address) {
-    const storedAccountData = JSON.parse(localStorageRef.getItem(address));
-    if (storedAccountData) {
-      if (storedAccountData.favorites) {
-        dispatch(updateFavorites(storedAccountData.favorites));
-      }
-      if (storedAccountData.scalarMarketsShareDenomination) {
-        Object.keys(storedAccountData.scalarMarketsShareDenomination).forEach((marketID) => {
-          dispatch(updateScalarMarketShareDenomination(marketID, storedAccountData.scalarMarketsShareDenomination[marketID]));
-        });
-      }
-      if (storedAccountData.reports && Object.keys(storedAccountData.reports).length) {
-        dispatch(updateReports(storedAccountData.reports));
-      }
-      if (storedAccountData.loginMessageVersionRead && !isNaN(parseInt(storedAccountData.loginMessageVersionRead, 10))) {
-        dispatch(updateUserLoginMessageVersionRead(parseInt(storedAccountData.loginMessageVersionRead, 10)));
-      }
-    }
-  }
-};
-
-export const loadFullAccountData = (account, callback) => (dispatch) => {
-  if (!account) {
-    if (callback) callback({ message: 'account required' });
-  } else {
-    if (account.isUnlocked) dispatch(updateLoginAccount({ isUnlocked: !!account.isUnlocked }));
-    if (account.loginID) dispatch(updateLoginAccount({ loginID: account.loginID }));
-    if (account.name) dispatch(updateLoginAccount({ name: account.name }));
-    if (account.airbitzAccount) dispatch(updateLoginAccount({ airbitzAccount: account.airbitzAccount }));
-    if (!account.address) {
-      if (callback) callback(null);
+export const loadAccountData = account => (dispatch, getState) => {
+  if (!account || !account.address) return console.error({ message: 'account address required' });
+  dispatch(updateLoginAccount({ address: account.address }));
+  if (account.isUnlocked) dispatch(updateLoginAccount({ isUnlocked: !!account.isUnlocked }));
+  if (account.loginID) dispatch(updateLoginAccount({ loginID: account.loginID }));
+  if (account.name) dispatch(updateLoginAccount({ name: account.name }));
+  if (account.airbitzAccount) dispatch(updateLoginAccount({ airbitzAccount: account.airbitzAccount }));
+  if (account.registerBlockNumber) dispatch(updateLoginAccount({ registerBlockNumber: account.registerBlockNumber }));
+  dispatch(loadAccountDataFromLocalStorage());
+  dispatch(displayLoginMessageOrMarkets());
+  dispatch(updateAssets((err, balances) => {
+    if (err) return console.error(err);
+    if (anyAccountBalancesZero(balances)) {
+      dispatch(fundNewAccount((err) => {
+        if (err) return console.error(err);
+        dispatch(loadRegisterBlockNumber());
+      }));
     } else {
-      dispatch(updateLoginAccount({ address: account.address }));
-      dispatch(loadAccountDataFromLocalStorage(account.address));
-      augur.getRegisterBlockNumber(account.address, (err, blockNumber) => {
-        if (!err && blockNumber) {
-          dispatch(updateLoginAccount({ registerBlockNumber: blockNumber }));
-        }
-        dispatch(updateAssets(callback));
-        dispatch(loadAccountTrades());
-        dispatch(loadBidsAsksHistory());
-        dispatch(loadFundingHistory());
-        dispatch(loadTransferHistory());
-        dispatch(loadCreateMarketHistory());
-
-        // clear and load reports for any markets that have been loaded
-        // (partly to handle signing out of one account and into another)
-        dispatch(clearReports());
-        dispatch(loadReportingHistory());
-        dispatch(loadEventsWithSubmittedReport());
-        dispatch(syncBranch());
-      });
+      dispatch(loadRegisterBlockNumber());
     }
-  }
+  }));
 };
