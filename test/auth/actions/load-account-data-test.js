@@ -94,10 +94,10 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
+        type: 'LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE'
+      }, {
         type: 'UPDATE_LOGIN_ACCOUNT',
         data: { address: '0xb0b' }
-      }, {
-        type: 'LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE'
       }, {
         type: 'DISPLAY_LOGIN_MESSAGE_OR_MARKETS'
       }, {
@@ -119,10 +119,10 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
+        type: 'LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE'
+      }, {
         type: 'UPDATE_LOGIN_ACCOUNT',
         data: { address: '0xb0b' }
-      }, {
-        type: 'LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE'
       }, {
         type: 'DISPLAY_LOGIN_MESSAGE_OR_MARKETS'
       }, {
@@ -146,10 +146,10 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
+        type: 'LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE'
+      }, {
         type: 'UPDATE_LOGIN_ACCOUNT',
         data: { address: '0xb0b' }
-      }, {
-        type: 'LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE'
       }, {
         type: 'DISPLAY_LOGIN_MESSAGE_OR_MARKETS'
       }, {
@@ -177,6 +177,8 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
+        type: 'LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE'
+      }, {
         type: 'UPDATE_LOGIN_ACCOUNT',
         data: { address: '0xb0b' }
       }, {
@@ -191,8 +193,6 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       }, {
         type: 'UPDATE_LOGIN_ACCOUNT',
         data: { airbitzAccount: { username: 'jack' } }
-      }, {
-        type: 'LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE'
       }, {
         type: 'DISPLAY_LOGIN_MESSAGE_OR_MARKETS'
       }, {
@@ -215,13 +215,13 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
+        type: 'LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE'
+      }, {
         type: 'UPDATE_LOGIN_ACCOUNT',
         data: { address: '0xb0b' }
       }, {
         type: 'UPDATE_LOGIN_ACCOUNT',
         data: { loginID: 'loginID' }
-      }, {
-        type: 'LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE'
       }, {
         type: 'DISPLAY_LOGIN_MESSAGE_OR_MARKETS'
       }, {

@@ -8,13 +8,13 @@ import { updateLoginAccount } from '../../../modules/auth/actions/update-login-a
 
 export const loadAccountData = account => (dispatch, getState) => {
   if (!account || !account.address) return console.error({ message: 'account address required' });
+  dispatch(loadAccountDataFromLocalStorage(account.address));
   dispatch(updateLoginAccount({ address: account.address }));
   if (account.isUnlocked) dispatch(updateLoginAccount({ isUnlocked: !!account.isUnlocked }));
   if (account.loginID) dispatch(updateLoginAccount({ loginID: account.loginID }));
   if (account.name) dispatch(updateLoginAccount({ name: account.name }));
   if (account.airbitzAccount) dispatch(updateLoginAccount({ airbitzAccount: account.airbitzAccount }));
   if (account.registerBlockNumber) dispatch(updateLoginAccount({ registerBlockNumber: account.registerBlockNumber }));
-  dispatch(loadAccountDataFromLocalStorage());
   dispatch(displayLoginMessageOrMarkets());
   dispatch(updateAssets((err, balances) => {
     if (err) return console.error(err);
