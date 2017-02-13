@@ -222,3 +222,162 @@ describe("trade.checkGasLimit", function () {
     }
   });
 });
+
+describe("trade.parseTradeReceipt", function() {
+  // 6 tests total
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(augur.parseTradeReceipt(t.receipt));
+    });
+  };
+  test({
+    receipt: {},
+    assertions: function(parsed) {
+      assert.deepEqual(parsed, {
+        sharesBought: '0',
+        cashFromTrade: '0',
+        tradingFees: '0'
+      });
+    }
+  });
+  test({
+    receipt: {
+      logs: [{
+        topics: [],
+        data: ''
+      }],
+    },
+    assertions: function(parsed) {
+      assert.deepEqual(parsed, {
+        sharesBought: '0',
+        cashFromTrade: '0',
+        tradingFees: '0'
+      });
+    }
+  });
+  test({
+    receipt: {
+      logs: [{
+        topics: [augur.api.events.log_fill_tx.signature],
+        data: ['1', 'notUsed', abi.fix('10').toString(), 'notUsed', 'notUsed', 'notUsed', abi.fix('0.03').toString(), 'notUsed', abi.fix('-5')]
+      }],
+    },
+    assertions: function(parsed) {
+      assert.deepEqual(parsed, {
+        sharesBought: '10',
+        cashFromTrade: '0',
+        tradingFees: '0.03'
+      });
+    }
+  });
+  test({
+    receipt: {
+      logs: [{
+        topics: [augur.api.events.log_fill_tx.signature],
+        data: ['1', 'notUsed', abi.fix('10').toString(), 'notUsed', 'notUsed', 'notUsed', abi.fix('0.03').toString(), 'notUsed', abi.fix('-5')]
+      }, {
+        topics: [augur.api.events.log_fill_tx.signature],
+        data: ['1', 'notUsed', abi.fix('20').toString(), 'notUsed', 'notUsed', 'notUsed', abi.fix('0.03').toString(), 'notUsed', abi.fix('-10')]
+      }],
+    },
+    assertions: function(parsed) {
+      assert.deepEqual(parsed, {
+        sharesBought: '30',
+        cashFromTrade: '0',
+        tradingFees: '0.06'
+      });
+    }
+  });
+  test({
+    receipt: {
+      logs: [{
+        topics: [augur.api.events.log_fill_tx.signature],
+        data: ['2', 'notUsed', abi.fix('100').toString(), 'notUsed', 'notUsed', 'notUsed', abi.fix('0.02').toString(), 'notUsed', abi.fix('0.5')]
+      }],
+    },
+    assertions: function(parsed) {
+      assert.deepEqual(parsed, {
+        sharesBought: '0',
+        cashFromTrade: '50',
+        tradingFees: '0.02'
+      });
+    }
+  });
+  test({
+    receipt: {
+      logs: [{
+        topics: [augur.api.events.log_fill_tx.signature],
+        data: ['2', 'notUsed', abi.fix('100').toString(), 'notUsed', 'notUsed', 'notUsed', abi.fix('0.02').toString(), 'notUsed', abi.fix('0.5')]
+      },
+      {
+        topics: [augur.api.events.log_fill_tx.signature],
+        data: ['2', 'notUsed', abi.fix('400').toString(), 'notUsed', 'notUsed', 'notUsed', abi.fix('0.02').toString(), 'notUsed', abi.fix('0.25')]
+      },
+      {
+        topics: [augur.api.events.log_fill_tx.signature],
+        data: ['2', 'notUsed', abi.fix('250').toString(), 'notUsed', 'notUsed', 'notUsed', abi.fix('0.02').toString(), 'notUsed', abi.fix('0.2')]
+      }],
+    },
+    assertions: function(parsed) {
+      assert.deepEqual(parsed, {
+        sharesBought: '0',
+        cashFromTrade: '200',
+        tradingFees: '0.06'
+      });
+    }
+  });
+});
+
+describe("trade.parseShortSellReceipt", function() {
+  // 6 tests total
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(augur.parseShortSellReceipt(t.receipt));
+    });
+  };
+  test({
+    receipt: {},
+    assertions: function(parsed) {
+      assert.deepEqual(parsed, {
+        cashFromTrade: '0',
+        tradingFees: '0'
+      });
+    }
+  });
+  test({
+    receipt: {
+      logs: [{
+        topics: [],
+        data: ''
+      }],
+    },
+    assertions: function(parsed) {
+      assert.deepEqual(parsed, {
+        cashFromTrade: '0',
+        tradingFees: '0'
+      });
+    }
+  });
+  test({
+    receipt: {
+      logs: [{
+        topics: [augur.api.events.log_short_fill_tx.signature],
+        data: ['notUsed', abi.fix('100').toString(), 'notUsed', 'notUsed', 'notUsed', abi.fix('0.02').toString(), 'notUsed', 'notUsed', abi.fix('0.5')]
+      },
+      {
+        topics: [augur.api.events.log_short_fill_tx.signature],
+        data: ['notUsed', abi.fix('400').toString(), 'notUsed', 'notUsed', 'notUsed', abi.fix('0.02').toString(), 'notUsed', 'notUsed', abi.fix('0.25')]
+      },
+      {
+        topics: [augur.api.events.log_short_fill_tx.signature],
+        data: ['notUsed', abi.fix('250').toString(), 'notUsed', 'notUsed', 'notUsed', abi.fix('0.02').toString(), 'notUsed', 'notUsed', abi.fix('0.2')]
+      }],
+    },
+    assertions: function(parsed) {
+      assert.deepEqual(parsed, {
+        cashFromTrade: '200',
+        tradingFees: '0.06'
+      });
+    }
+  });
+});
