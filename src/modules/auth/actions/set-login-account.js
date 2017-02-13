@@ -2,20 +2,6 @@ import { augur } from '../../../services/augurjs';
 import { loadFullAccountData } from '../../auth/actions/load-account-data';
 import { useUnlockedAccount } from '../../auth/actions/use-unlocked-account';
 
-export const savePersistentAccountToLocalStorage = (account) => {
-  const localStorageRef = typeof window !== 'undefined' && window.localStorage;
-  if (localStorageRef && localStorageRef.setItem) {
-    const persistentAccount = { ...account };
-    if (Buffer.isBuffer(persistentAccount.privateKey)) {
-      persistentAccount.privateKey = persistentAccount.privateKey.toString('hex');
-    }
-    if (Buffer.isBuffer(persistentAccount.derivedKey)) {
-      persistentAccount.derivedKey = persistentAccount.derivedKey.toString('hex');
-    }
-    localStorageRef.setItem('account', JSON.stringify(persistentAccount));
-  }
-};
-
 // If there is an available logged-in/unlocked account, set as the user's sending address.
 export const setLoginAccount = autoLogin => (dispatch, getState) => {
   const localStorageRef = typeof window !== 'undefined' && window.localStorage;
@@ -29,6 +15,7 @@ export const setLoginAccount = autoLogin => (dispatch, getState) => {
   // 2. Persistent (localStorage) account
   } else if (localStorageRef && localStorageRef.getItem && localStorageRef.getItem('account')) {
     const persistentAccount = JSON.parse(localStorageRef.getItem('account'));
+    console.log('using persistent account:', persistentAccount);
     augur.accounts.setAccountObject(persistentAccount);
     dispatch(loadFullAccountData(persistentAccount));
 
