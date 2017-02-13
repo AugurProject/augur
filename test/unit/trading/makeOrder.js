@@ -3,7 +3,7 @@
 var assert = require('chai').assert;
 var augur = require('../../../src');
 
-describe("augur.placeBid", function() {
+describe("makeOrder.placeBid", function() {
   // 2 tests total
   var buy = augur.buy;
   afterEach(function() {
@@ -54,7 +54,7 @@ describe("augur.placeBid", function() {
     }
   });
 });
-describe("augur.placeAsk", function() {
+describe("makeOrder.placeAsk", function() {
   // 2 tests total
   var sell = augur.sell;
   afterEach(function() {
@@ -105,7 +105,7 @@ describe("augur.placeAsk", function() {
     }
   });
 });
-describe("augur.placeShortAsk", function() {
+describe("makeOrder.placeShortAsk", function() {
   // 2 tests total
   var shortAsk = augur.shortAsk;
   afterEach(function() {
@@ -153,6 +153,129 @@ describe("augur.placeShortAsk", function() {
       assert.isFunction(order.onSent);
       assert.isFunction(order.onSuccess);
       assert.isFunction(order.onFailed);
+    }
+  });
+});
+describe("makeOrder.placeAskAndShortAsk", function() {
+  // 3 tests total
+  var shortAsk = augur.shortAsk;
+  var sell = augur.sell;
+  afterEach(function() {
+    augur.shortAsk = shortAsk;
+    augur.sell = sell;
+  });
+  var test = function(t) {
+    it(t.description, function() {
+      augur.shortAsk = t.shortAsk;
+      augur.sell = t.sell;
+
+      augur.placeAskAndShortAsk(t.market, t.outcomeID, t.askShares, t.shortAskShares, t.limitPrice, t.tradeGroupID, t.callback);
+    });
+  };
+  test({
+    description: 'Should handle a cb and calling both sell and shortAsk. if both are successful, should call cb.',
+    market: { id:'0xa1', type: 'binary' },
+    outcomeID: '1',
+    askShares: '20',
+    shortAskShares: '10',
+    limitPrice: '0.45',
+    tradeGroupID: '0xabc12345',
+    callback: function(arg) {
+      assert.isNull(arg);
+    },
+    shortAsk: function(arg) {
+      assert.deepEqual(arg.amount, '10');
+      assert.deepEqual(arg.price, '0.45');
+      assert.deepEqual(arg.market, '0xa1');
+      assert.deepEqual(arg.outcome, '1');
+      assert.deepEqual(arg.tradeGroupID, '0xabc12345');
+      assert.deepEqual(arg.scalarMinMax, {});
+      assert.isFunction(arg.onSent);
+      assert.isFunction(arg.onSuccess);
+      assert.isFunction(arg.onFailed);
+      arg.onSuccess();
+    },
+    sell: function(arg) {
+      assert.deepEqual(arg.amount, '20');
+      assert.deepEqual(arg.price, '0.45');
+      assert.deepEqual(arg.market, '0xa1');
+      assert.deepEqual(arg.outcome, '1');
+      assert.deepEqual(arg.tradeGroupID, '0xabc12345');
+      assert.deepEqual(arg.scalarMinMax, {});
+      assert.isFunction(arg.onSent);
+      assert.isFunction(arg.onSuccess);
+      assert.isFunction(arg.onFailed);
+      arg.onSuccess();
+    }
+  });
+  test({
+    description: 'Should handle no cb passed, still successful',
+    market: { id:'0xa1', type: 'binary' },
+    outcomeID: '2',
+    askShares: '10',
+    shortAskShares: '5',
+    limitPrice: '0.39',
+    tradeGroupID: '0xabc54321',
+    callback: undefined,
+    shortAsk: function(arg) {
+      assert.deepEqual(arg.amount, '5');
+      assert.deepEqual(arg.price, '0.39');
+      assert.deepEqual(arg.market, '0xa1');
+      assert.deepEqual(arg.outcome, '2');
+      assert.deepEqual(arg.tradeGroupID, '0xabc54321');
+      assert.deepEqual(arg.scalarMinMax, {});
+      assert.isFunction(arg.onSent);
+      assert.isFunction(arg.onSuccess);
+      assert.isFunction(arg.onFailed);
+      arg.onSuccess();
+    },
+    sell: function(arg) {
+      assert.deepEqual(arg.amount, '10');
+      assert.deepEqual(arg.price, '0.39');
+      assert.deepEqual(arg.market, '0xa1');
+      assert.deepEqual(arg.outcome, '2');
+      assert.deepEqual(arg.tradeGroupID, '0xabc54321');
+      assert.deepEqual(arg.scalarMinMax, {});
+      assert.isFunction(arg.onSent);
+      assert.isFunction(arg.onSuccess);
+      assert.isFunction(arg.onFailed);
+      arg.onSuccess();
+    }
+  });
+  test({
+    description: 'Should handle cb passed, sell and shortAsk both fail',
+    market: { id:'0xa3', type: 'scalar', minValue: '-230' },
+    outcomeID: '1',
+    askShares: '120',
+    shortAskShares: '34',
+    limitPrice: '-20.05',
+    tradeGroupID: '0x12345abc',
+    callback: function(arg) {
+      assert.deepEqual(arg, { error: 999, message: 'Uh-Oh!' });
+    },
+    shortAsk: function(arg) {
+      assert.deepEqual(arg.amount, '34');
+      assert.deepEqual(arg.price, '-20.05');
+      assert.deepEqual(arg.market, '0xa3');
+      assert.deepEqual(arg.outcome, '1');
+      assert.deepEqual(arg.tradeGroupID, '0x12345abc');
+      assert.deepEqual(arg.scalarMinMax, { minValue: '-230' });
+      assert.isFunction(arg.onSent);
+      assert.isFunction(arg.onSuccess);
+      assert.isFunction(arg.onFailed);
+      arg.onFailed({ error: 999, message: 'Uh-Oh!' });
+    },
+    sell: function(arg) {
+      assert.deepEqual(arg.amount, '120');
+      assert.deepEqual(arg.price, '-20.05');
+      assert.deepEqual(arg.market, '0xa3');
+      assert.deepEqual(arg.outcome, '1');
+      assert.deepEqual(arg.tradeGroupID, '0x12345abc');
+      assert.deepEqual(arg.scalarMinMax, { minValue: '-230' });
+      assert.isFunction(arg.onSent);
+      assert.isFunction(arg.onSuccess);
+      assert.isFunction(arg.onFailed);
+      arg.onFailed({ error: 999, message: 'Uh-Oh!' });
     }
   });
 });
