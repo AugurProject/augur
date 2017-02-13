@@ -108,14 +108,12 @@ export default class TopicsView extends Component {
 
     return (
       <section id="topics_view">
-        <article className={`search-input ${p.className}`} >
-          <i className="fa fa-search" />
-          <Input
-            placeholder="Search Topics"
-            isClearable
-            onChange={keywords => this.setState({ keywords })}
-          />
-        </article>
+        <Input
+          isSearch
+          isClearable
+          placeholder="Search Topics"
+          onChange={keywords => this.setState({ keywords })}
+        />
         {s.filteredTopics && s.filteredTopics.length ?
           <div className="topics">
             <TopicRows
