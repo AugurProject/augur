@@ -4,7 +4,7 @@ import { updateAccountBidsAsksData, updateAccountCancelsData } from '../../../mo
 
 export function loadBidsAsksHistory(marketID, cb) {
   return (dispatch, getState) => {
-    const callback = cb || (e => console.log('loadBidsAsksHistory:', e));
+    const callback = cb || (e => e && console.error('loadBidsAsksHistory:', e));
     const { loginAccount } = getState();
     const params = { market: marketID, sender: loginAccount.address };
     if (loginAccount.registerBlockNumber) {

@@ -3,7 +3,7 @@ import { SCALAR } from '../../markets/constants/market-types';
 import { clearMarketOrderBook, updateMarketOrderBook } from '../../bids-asks/actions/update-market-order-book';
 
 export const loadBidsAsks = (marketID, cb) => (dispatch, getState) => {
-  const callback = cb || (e => console.log('loadBidsAsks:', e));
+  const callback = cb || (e => e && console.error('loadBidsAsks:', e));
   const market = getState().marketsData[marketID];
   const scalarMinMax = {};
   if (market.type === SCALAR) {

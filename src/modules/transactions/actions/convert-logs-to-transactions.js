@@ -53,7 +53,7 @@ export function convertLogToTransaction(label, log, status, isRetry, cb) {
   return (dispatch, getState) => {
     console.log('convertLogToTransaction', label);
     console.log(log);
-    const callback = cb || (e => console.log('convertLogToTransaction:', e));
+    const callback = cb || (e => e && console.error('convertLogToTransaction:', e));
     const hash = log.transactionHash;
     const transactionData = getState().transactionsData[hash];
     const gasFees = (transactionData && transactionData.gasFees) ? transactionData.gasFees.value : null;

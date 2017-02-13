@@ -3,7 +3,7 @@ import { updateAssets } from '../../auth/actions/update-assets';
 
 export function fundNewAccount(cb) {
   return (dispatch, getState) => {
-    const callback = cb || (e => console.log('fundNewAccount:', e));
+    const callback = cb || (e => e && console.error('fundNewAccount:', e));
     const { env, branch, loginAccount } = getState();
     if (env.fundNewAccountFromAddress && env.fundNewAccountFromAddress.amount) {
       const fromAddress = env.fundNewAccountFromAddress.address || augur.from;
