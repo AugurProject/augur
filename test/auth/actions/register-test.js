@@ -20,8 +20,7 @@ describe(`modules/auth/actions/register.js`, () => {
   const fakeAuthLink = {};
   const fakeSelectors = {};
   const updateLoginAccountStub = {};
-  const loadAccountDataStub = { loadFullAccountData: () => {} };
-  const displayLoginMessageStub = {};
+  const loadAccountDataStub = { loadAccountData: () => {} };
   const thisTestState = Object.assign({}, testState, { loginAccount: {} });
   const store = mockStore(thisTestState);
   const fakeCallback = sinon.stub();
@@ -33,24 +32,20 @@ describe(`modules/auth/actions/register.js`, () => {
   };
   fakeAuthLink.selectAuthLink = (page, bool, dispatch) => ({ onClick: () => {} });
   const updateTestString = 'updateLoginAccount(loginAccount) called.';
-  const loadFullAccountDataTestString = 'loadFullAccountData() called.';
-  const displayLoginMessageOrMarketsTestString = 'displayLoginMessageOrMarkets called';
+  const loadAccountDataTestString = 'loadAccountData() called.';
 
   updateLoginAccountStub.updateLoginAccount = sinon.stub().returns({ type: updateTestString });
-  sinon.stub(loadAccountDataStub, 'loadFullAccountData', (account, cb) => {
+  sinon.stub(loadAccountDataStub, 'loadAccountData', (account, cb) => {
     if (cb) cb(null, 2.5);
-    return { type: loadFullAccountDataTestString };
+    return { type: loadAccountDataTestString };
   });
-  displayLoginMessageStub.displayLoginMessageOrMarkets = sinon.stub().returns({ type: displayLoginMessageOrMarketsTestString });
 
   const action = proxyquire('../../../src/modules/auth/actions/register', {
     '../../../services/augurjs': fakeAugurJS,
     '../../../selectors': fakeSelectors,
     '../../link/selectors/links': fakeAuthLink,
     '../../auth/actions/update-login-account': updateLoginAccountStub,
-    '../../auth/actions/load-account-data': loadAccountDataStub,
-    '../../login-message/actions/display-login-message': displayLoginMessageStub
-
+    '../../auth/actions/load-account-data': loadAccountDataStub
   });
 
   beforeEach(() => {
@@ -64,8 +59,7 @@ describe(`modules/auth/actions/register.js`, () => {
   it(`should register a new account`, () => {
     const expectedOutput = [
       { type: updateTestString },
-      { type: loadFullAccountDataTestString },
-      { type: displayLoginMessageOrMarketsTestString }
+      { type: loadAccountDataTestString }
     ];
     store.dispatch(action.register('password', fakeCallback));
     store.dispatch(action.setupAndFundNewAccount('password', testState.loginAccount.loginID, false, fakeCallback));
