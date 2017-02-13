@@ -7,13 +7,10 @@ export default function fitText(container, target) {
   const containerWidth = container.clientWidth;
   const targetWidth = target.clientWidth;
 
-  console.log('fitText -- ', container, target, containerWidth, targetWidth);
-
   if (targetWidth > containerWidth) {
     const newWidth = (containerWidth * targetWidth) / targetWidth;
     const newScale = newWidth / targetWidth;
-    const leftPull = (newWidth - targetWidth) / 2;
 
-    target.style.transform = `translateX(${leftPull}px) scale(${newScale}, ${newScale})`;
+    target.style.transform = `scale(${newScale}, ${newScale})`;
   }
 }

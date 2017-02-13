@@ -1,16 +1,18 @@
 .topic-button.unstyled {
   .border(true);
 
+  align-items: stretch;
   background-color: @color-white;
   display: flex;
   flex: 1;
+  flex-direction: column;
   font-size: 3em;
   margin: 0 0.5rem;
   overflow: hidden;
 
   .topic-content {
     display: flex;
-    flex: 1 1 auto;
+    flex: 1;
     flex-direction: column;
     position: relative;
 
@@ -20,12 +22,14 @@
 
     .topic-popularity {
       align-self: flex-end;
+      flex: 1;
       font-size: 0.7em;
       margin-right: 0.2em;
     }
 
     .topic-name {
       align-content: center;
+      align-items: flex-end;
       background-color: fadeout(@color-black, @amount-extra-light);
       color: @color-text-light;
       display: flex;
