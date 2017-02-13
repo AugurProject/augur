@@ -9,5 +9,5 @@ export default function () {
 }
 
 function importAccountFromFile(password, remember, keystore) {
-  store.dispatch(importAccount(null, password, remember, keystore));
+  store.dispatch(importAccount(password, remember, keystore));
 }

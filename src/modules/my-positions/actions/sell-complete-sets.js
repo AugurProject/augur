@@ -2,7 +2,7 @@ import async from 'async';
 import BigNumber from 'bignumber.js';
 import { augur } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
-import { updateSmallestPositions, updateSellCompleteSetsLock } from '../../my-positions/actions/update-account-trades-data';
+import { updateSmallestPositions } from '../../my-positions/actions/update-account-trades-data';
 import selectLoginAccountPositions from '../../../modules/my-positions/selectors/login-account-positions';
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID, ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN });
@@ -31,10 +31,8 @@ export function sellCompleteSetsMarket(marketID, callback) {
           if (callback) callback(null, marketID);
         } else {
           dispatch(updateSmallestPositions(marketID, smallestPosition.toFixed()));
-          if (smallestPosition.gt(ZERO) && getState().settings.autoSellCompleteSets&& !getState().sellCompleteSetsLock[marketID]) {
+          if (smallestPosition.gt(ZERO)) {
             console.error('***COMPLETE SET OF', smallestPosition.toFixed(), 'SHARES FOUND IN MARKET', marketID, 'THIS SHOULD NEVER HAPPEN ON THE UPDATED CONTRACTS AND SOMETHING HAS GONE TERRIBLY WRONG***');
-            dispatch(updateSellCompleteSetsLock(marketID, true));
-            dispatch(sellNumberCompleteSetsMarket(marketID, smallestPosition.toFixed()));
           }
           if (callback) callback(null);
         }
@@ -71,10 +69,6 @@ export function completeSetsCheck(marketID, callback) {
     });
   };
 }
-
-export const sellNumberCompleteSetsMarket = (marketID, numberOfCompleteSets, callback) => dispatch => (
-  console.info('here lies the ghost of sellCompleteSets', marketID, numberOfCompleteSets)
-);
 
 export function getSmallestPositionInMarket(position) {
   const numOutcomes = Object.keys(position).length;

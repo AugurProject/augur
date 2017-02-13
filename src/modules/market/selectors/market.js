@@ -28,11 +28,10 @@ import { isMarketDataOpen, isMarketDataExpired } from '../../../utils/is-market-
 import { BRANCH_ID } from '../../app/constants/network';
 import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
 import { BINARY_INDETERMINATE_OUTCOME_ID, CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
-import { abi, constants } from '../../../services/augurjs';
+import { abi } from '../../../services/augurjs';
 
 import { toggleFavorite } from '../../markets/actions/update-favorites';
 import { placeTrade } from '../../trade/actions/place-trade';
-import { sellNumberCompleteSetsMarket } from '../../my-positions/actions/sell-complete-sets';
 import { commitReport } from '../../reports/actions/commit-report';
 import { slashRep } from '../../reports/actions/slash-rep';
 import { toggleTag } from '../../markets/actions/toggle-tag';
@@ -228,10 +227,6 @@ export function assembleMarket(
       market.marketLink = selectMarketLink(market, dispatch);
       market.onClickToggleFavorite = () => dispatch(toggleFavorite(marketID));
       market.onSubmitPlaceTrade = outcomeID => dispatch(placeTrade(marketID, outcomeID));
-
-      market.smallestPosition = smallestPosition ? formatShares(smallestPosition) : formatShares('0');
-      market.hasCompleteSet = abi.bignum(market.smallestPosition.value).round(4).gt(constants.PRECISION.zero);
-      market.onSubmitClosePosition = () => dispatch(sellNumberCompleteSetsMarket(marketID, market.smallestPosition.value));
 
       market.report = {
         ...marketReport,

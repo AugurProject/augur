@@ -1,61 +1,23 @@
-import { accounts } from '../../../services/augurjs';
-import { loadLoginAccountDependents, loadLoginAccountLocalStorage } from '../../auth/actions/load-login-account';
-import { updateLoginAccount } from '../../auth/actions/update-login-account';
-import { updateAccountSettings } from '../../auth/actions/update-account-settings';
-import { fundNewAccount } from '../../auth/actions/fund-new-account';
-import isCurrentLoginMessageRead from '../../login-message/helpers/is-current-login-message-read';
-import { anyAccountBalancesZero } from '../../auth/selectors/balances';
+import { augur } from '../../../services/augurjs';
+import { loadAccountData } from '../../auth/actions/load-account-data';
+import { savePersistentAccountToLocalStorage } from '../../auth/actions/save-persistent-account';
 
-export function login(loginID, password, rememberMe, cb) {
-  return (dispatch, getState) => {
-    accounts.login(loginID, password, (account) => {
-      if (!account) {
-        cb && cb({
-          code: 0,
-          message: 'failed to login'
-        });
-        return;
-      } else if (account.error) {
-        cb && cb({
-          code: account.error,
-          message: account.message
-        });
-        return;
-      }
-      const loginAccount = {
-        ...account,
-        settings: {},
-        onUpdateAccountSettings: settings => dispatch(updateAccountSettings(settings))
-      };
-      if (loginAccount && loginAccount.address) {
-        const localStorageRef = typeof window !== 'undefined' && window.localStorage;
-        if (rememberMe && localStorageRef && localStorageRef.setItem) {
-          const persistentAccount = Object.assign({}, loginAccount);
-          if (Buffer.isBuffer(persistentAccount.privateKey)) {
-            persistentAccount.privateKey = persistentAccount.privateKey.toString('hex');
-          }
-          if (Buffer.isBuffer(persistentAccount.derivedKey)) {
-            persistentAccount.derivedKey = persistentAccount.derivedKey.toString('hex');
-          }
-          localStorageRef.setItem('account', JSON.stringify(persistentAccount));
-        }
-        dispatch(loadLoginAccountLocalStorage(loginAccount.address));
-        dispatch(updateLoginAccount(loginAccount));
-        dispatch(loadLoginAccountDependents((err, balances) => {
-          if (err || !balances) return console.error(err);
-          if (anyAccountBalancesZero(balances)) dispatch(fundNewAccount());
-        }));
-
-        cb && cb();
-
-        // need to load selectors here as they get updated above
-        const { links } = require('../../../selectors');
-        if (isCurrentLoginMessageRead(getState().loginMessage)) {
-          links.marketsLink.onClick(links.marketsLink.href);
-        } else {
-          links.loginMessageLink.onClick();
-        }
-      }
-    });
-  };
-}
+export const login = (loginID, password, rememberMe, cb) => (dispatch, getState) => {
+  const callback = cb || (e => e && console.error('login:', e));
+  const accountObject = augur.base58Decode(loginID);
+  if (!accountObject || !accountObject.keystore) {
+    return callback({ code: 0, message: 'could not decode login ID' });
+  }
+  augur.accounts.login(accountObject.keystore, password, (account) => {
+    if (!account) {
+      return callback({ code: 0, message: 'failed to login' });
+    } else if (account.error) {
+      return callback({ code: account.error, message: account.message });
+    } else if (!account.address) {
+      return callback(account);
+    }
+    if (rememberMe) savePersistentAccountToLocalStorage({ ...account, loginID });
+    dispatch(loadAccountData({ loginID, address: account.address, name: accountObject.name }));
+    callback(null);
+  });
+};

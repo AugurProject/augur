@@ -4,14 +4,12 @@ import classnames from 'classnames';
 
 import Link from 'modules/link/components/link';
 import Input from 'modules/common/components/input';
-import Checkbox from 'modules/common/components/checkbox';
 
 export default class AccountPage extends Component {
   // TODO -- Prop Validations
   static propTypes = {
     // loginMessageLink: PropTypes.object.isRequired,
     account: PropTypes.object,
-    settings: PropTypes.object,
     // siteHeader: PropTypes.object
     // authLink: PropTypes.object
   }
@@ -26,8 +24,7 @@ export default class AccountPage extends Component {
       msg: '',
       sendAmount: '',
       currency: 'ETH',
-      recipientAddress: '',
-      settings: this.props.settings
+      recipientAddress: ''
     };
 
     this.handleTransfer = this.handleTransfer.bind(this);
@@ -73,7 +70,7 @@ export default class AccountPage extends Component {
             <h2 className="heading">Credentials</h2>
             <table className="account-info">
               <tbody>
-                <tr className={classnames('account-info-item', { displayNone: p.account.localNode })}>
+                <tr className={classnames('account-info-item', { displayNone: p.account.isUnlocked })}>
                   <th className="title">Account Name:</th>
                   <td className="item">
                     {s.editName &&
@@ -129,7 +126,7 @@ export default class AccountPage extends Component {
                   </td>
                 </tr>
 
-                <tr className={classnames('account-info-item', { displayNone: p.account.localNode })}>
+                <tr className={classnames('account-info-item', { displayNone: !p.account.loginID })}>
                   <th className="title">Login ID:</th>
                   <td className="item">
                     {!s.showFullID &&
@@ -167,7 +164,7 @@ export default class AccountPage extends Component {
                 {
                   p.onAirbitzManageAccount ?
                   (
-                    <tr className={classnames('account-info-item', { displayNone: p.account.localNode })}>
+                    <tr className="account-info-item">
                       <td colSpan="2">
                         <button className="button" onClick={p.onAirbitzManageAccount}>
                           Manage Airbitz Account
@@ -176,21 +173,8 @@ export default class AccountPage extends Component {
                     </tr>
                   ) : null
                 }
-
               </tbody>
             </table>
-          </div>
-          <div className="account-section">
-            <h2 className="heading">Settings</h2>
-            <Checkbox
-              text="If I own shares of every outcome in a market, automatically close out my position (1 ETH for 1 share of every outcome)"
-              isChecked={s.settings.autoSellCompleteSets || p.settings.autoSellCompleteSets}
-              onClick={() => {
-                s.settings.autoSellCompleteSets = !s.settings.autoSellCompleteSets;
-                this.setState(s);
-                p.onUpdateSettings(s.settings);
-              }}
-            />
           </div>
           <div className={classnames('account-section')}>
             <div className="account-info-item">
@@ -239,7 +223,7 @@ export default class AccountPage extends Component {
               </div>
             </div>
           </div>
-          <div className={classnames('account-section', { displayNone: p.account.localNode })}>
+          <div className={classnames('account-section', { displayNone: p.account.isUnlocked || p.account.airbitzAccount })}>
             <div className="account-info-item">
               <h2 className="heading">Download Account Key File</h2>
               <p>

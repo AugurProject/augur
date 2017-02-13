@@ -15,8 +15,12 @@ describe('modules/auth/selectors/auth-signup.js', () => {
     it(t.description, () => {
       const store = mockStore();
 
-      const mockRegister = { register: () => {} };
+      const mockRegister = {
+        register: () => {},
+        setupAndFundNewAccount: () => {}
+      };
       sinon.stub(mockRegister, 'register', () => (dispatch) => {});
+      sinon.stub(mockRegister, 'setupAndFundNewAccount', () => (dispatch) => {});
 
       const selector = proxyquire('../../../src/modules/auth/selectors/auth-signup', {
         '../../../store': store,
@@ -30,17 +34,17 @@ describe('modules/auth/selectors/auth-signup.js', () => {
   test({
     description: `should return the correct object`,
     assertions: (selector, store) => {
-      assert.property(selector, 'getLoginID');
-      assert.isFunction(selector.getLoginID);
-      assert.property(selector, 'registerAccount');
-      assert.isFunction(selector.registerAccount);
+      assert.property(selector, 'register');
+      assert.isFunction(selector.register);
+      assert.property(selector, 'setupAndFundNewAccount');
+      assert.isFunction(selector.setupAndFundNewAccount);
     }
   });
 
   test({
-    description: `'getLoginID' should dispatch the correct action`,
+    description: `'register' should dispatch the correct action`,
     assertions: (selector, store, mockRegister) => {
-      selector.getLoginID();
+      selector.register();
 
       assert.isTrue(mockRegister.register.calledOnce);
       mockRegister.register.reset();
@@ -48,12 +52,12 @@ describe('modules/auth/selectors/auth-signup.js', () => {
   });
 
   test({
-    description: `'registerAccount' should dispatch the correct action`,
+    description: `'setupAndFundNewAccount' should dispatch the correct action`,
     assertions: (selector, store, mockRegister) => {
-      selector.registerAccount();
+      selector.setupAndFundNewAccount();
 
-      assert.isTrue(mockRegister.register.calledOnce);
-      mockRegister.register.reset();
+      assert.isTrue(mockRegister.setupAndFundNewAccount.calledOnce);
+      mockRegister.setupAndFundNewAccount.reset();
     }
   });
 });

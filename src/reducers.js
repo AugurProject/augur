@@ -47,7 +47,6 @@ import selectedTags from './modules/markets/reducers/selected-tags';
 import selectedFilterSort from './modules/markets/reducers/selected-filter-sort';
 import priceHistory from './modules/markets/reducers/price-history';
 
-import settings from './modules/auth/reducers/account-settings';
 import chatMessages from './modules/chat/reducers/chat-messages';
 
 import selectedOutcomeID from './modules/outcomes/reducers/selected-outcome-id';
@@ -106,7 +105,6 @@ export function createReducer() {
     scalarMarketsShareDenomination,
     closePositionTradeGroups,
 
-    settings,
     chatMessages,
 
     marketCreatorFees
