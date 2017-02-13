@@ -45,7 +45,7 @@ export const syncBranch = cb => (dispatch, getState) => {
     console.debug('early exit');
     return callback(null);
   }
-  console.warn('syncing this shit, strap in');
+  console.log('syncing branch...');
   augur.getVotePeriod(branch.id, (period) => {
     console.log('getVotePeriod:', period);
     if (!period || period.error) {

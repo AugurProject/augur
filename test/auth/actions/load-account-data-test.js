@@ -40,7 +40,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         callback(null, t.blockchain.registerBlockNumber);
       });
       DisplayLoginMessage.displayLoginMessageOrMarkets = sinon.stub().returns({ type: 'DISPLAY_LOGIN_MESSAGE_OR_MARKETS' });
-      sinon.stub(FundNewAccount, 'fundNewAccount', (callback) => (dispatch, getState) => {
+      sinon.stub(FundNewAccount, 'fundNewAccount', callback => (dispatch, getState) => {
         dispatch({ type: 'FUND_NEW_ACCOUNT' });
         callback(null);
       });
@@ -64,7 +64,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       account: null
     },
     blockchain: {
-      balances: {rep: 0, ether: 0, realEther: 0}
+      balances: { rep: 0, ether: 0, realEther: 0 }
     },
     assertions: (actions) => {
       assert.deepEqual(actions, []);
@@ -76,7 +76,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       account: { name: 'jack' }
     },
     blockchain: {
-      balances: {rep: 0, ether: 0, realEther: 0}
+      balances: { rep: 0, ether: 0, realEther: 0 }
     },
     assertions: (actions) => {
       assert.deepEqual(actions, []);
@@ -90,7 +90,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       }
     },
     blockchain: {
-      balances: {rep: '1', ether: '2', realEther: '3'}
+      balances: { rep: '1', ether: '2', realEther: '3' }
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
@@ -115,7 +115,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       }
     },
     blockchain: {
-      balances: {rep: 0, ether: 0, realEther: 0}
+      balances: { rep: 0, ether: 0, realEther: 0 }
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
@@ -142,7 +142,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       }
     },
     blockchain: {
-      balances: {rep: '2', ether: '1', realEther: 0}
+      balances: { rep: '2', ether: '1', realEther: 0 }
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
@@ -173,7 +173,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       }
     },
     blockchain: {
-      balances: {rep: '1', ether: '2', realEther: '3'}
+      balances: { rep: '1', ether: '2', realEther: '3' }
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
@@ -211,7 +211,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       }
     },
     blockchain: {
-      balances: {rep: '1', ether: '2', realEther: '3'}
+      balances: { rep: '1', ether: '2', realEther: '3' }
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
