@@ -1,4 +1,15 @@
+.topic-rows {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
 .topic-row {
   display: flex;
+  flex: 0 1 33%;
   margin-bottom: 1rem;
+
+  &.hero-row {
+    flex: 1 1 60%;
+  }
 }

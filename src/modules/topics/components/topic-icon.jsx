@@ -53,13 +53,11 @@ export default class TopicIcon extends Component {
   }
 
   render() {
+    // const p = this.props;
     const s = this.state;
 
     return (
-      <article
-        key={s.key}
-        className="topic-icon"
-      >
+      <article className="topic-icon" >
         {s.hasIcon ?
           <i
             ref={(topicIcon) => { this.topicIcon = topicIcon; }}

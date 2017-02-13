@@ -1,4 +1,5 @@
 import React from 'react';
+import classNames from 'classnames';
 
 import Topic from 'modules/topics/components/topic';
 
@@ -26,7 +27,7 @@ const TopicRows = (p) => {
       {Object.keys(rowItems).map((row, rowIndex) => (
         <div
           key={`topic-row-${rowIndex}`}
-          className="topic-row"
+          className={classNames('topic-row', { 'hero-row': p.hasHeroRow && rowIndex === 0 })}
         >
           {rowItems[row].map((topic, topicIndex) => (
             <Topic

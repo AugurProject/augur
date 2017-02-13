@@ -4,18 +4,17 @@
   background-color: @color-white;
   display: flex;
   flex: 1;
-  font-size: 5em;
+  font-size: 3em;
   margin: 0 0.5rem;
   overflow: hidden;
 
   .topic-content {
     display: flex;
-    flex: 1 0 auto;
+    flex: 1 1 auto;
     flex-direction: column;
     position: relative;
 
     & > span {
-      flex: 1;
       z-index: 20;
     }
 
@@ -26,18 +25,23 @@
     }
 
     .topic-name {
-      background-color: fadeout(@color-base, @amount-extra-light);
+      align-content: center;
+      background-color: fadeout(@color-black, @amount-extra-light);
       color: @color-text-light;
+      display: flex;
+      justify-content: center;
       margin-top: 0.5em;
+      white-space: nowrap;
       z-index: 20;
 
       span {
-        align-items: flex-end;
+        align-items: center;
+        padding: 0 0.5em;
       }
     }
   }
 
   &.isHero {
-    font-size: 10em;
+    font-size: 8em;
   }
 }
