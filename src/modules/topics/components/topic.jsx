@@ -7,12 +7,6 @@ import TopicIcon from 'modules/topics/components/topic-icon';
 import fitText from 'utils/fit-text';
 
 export default class Topic extends Component {
-  constructor(props) {
-    super(props);
-
-    // console.log('initial props -- ', props);
-  }
-
   componentDidMount() {
     fitText(this.topicNameContainer, this.topicName);
 

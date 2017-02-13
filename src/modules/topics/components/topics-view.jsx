@@ -3,6 +3,7 @@ import React, { Component, PropTypes } from 'react';
 import NullStateMessage from 'modules/common/components/null-state-message';
 import TopicRows from 'modules/topics/components/topic-rows';
 import Paginator from 'modules/common/components/paginator';
+import Input from 'modules/common/components/input';
 
 export default class TopicsView extends Component {
   static propTypes = {
@@ -18,21 +19,47 @@ export default class TopicsView extends Component {
       lowerIndex: 0,
       upperIndex: 4,
       pagination: {},
+      filteredTopics: [],
       topicsPerHeroRow: 2,
-      topicsPerRow: 3
+      topicsPerRow: 3,
+      keywords: ''
     };
 
     this.updatePagination = this.updatePagination.bind(this);
+    this.updateFilteredTopics = this.updateFilteredTopics.bind(this);
   }
 
   componentWillMount() {
     this.updatePagination(this.props, this.state);
+    this.updateFilteredTopics(this.props.topics, this.state);
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (this.state.currentPage !== nextState.currentPage || this.props.topics !== nextProps.topics) {
+    if (this.state.currentPage !== nextState.currentPage ||
+        this.props.topics !== nextProps.topics
+    ) {
       this.updatePagination(nextProps, nextState);
     }
+
+    if (this.state.pagination !== nextState.pagination ||
+      this.state.keywords !== nextState.keywords
+    ) {
+      this.updateFilteredTopics(nextProps.topics, nextState);
+    }
+  }
+
+  updateFilteredTopics(topics, s) {
+    let filteredTopics = topics;
+
+    // Filter Based on Keywords
+    if (s.keywords) {
+      filteredTopics = (topics || []).filter(topic => topic.topic.indexOf(s.keywords) >= 0);
+    }
+
+    // Filter Based on Pagination
+    filteredTopics = filteredTopics.slice(s.lowerIndex, s.upperIndex === filteredTopics.length - 1 ? undefined : s.upperIndex + 1);
+
+    this.setState({ filteredTopics });
   }
 
   updatePagination(p, s) {
@@ -75,14 +102,24 @@ export default class TopicsView extends Component {
     const p = this.props;
     const s = this.state;
 
-    const specificTopics = p.topics.slice(s.lowerIndex, s.upperIndex === p.topics.length - 1 ? undefined : s.upperIndex + 1);
+    console.log('filteredTopics -- ', s.filteredTopics);
+
+    // const specificTopics = p.topics.slice(s.lowerIndex, s.upperIndex === p.topics.length - 1 ? undefined : s.upperIndex + 1);
 
     return (
       <section id="topics_view">
-        {p.topics && p.topics.length ?
+        <article className={`search-input ${p.className}`} >
+          <i className="fa fa-search" />
+          <Input
+            placeholder="Search Topics"
+            isClearable
+            onChange={keywords => this.setState({ keywords })}
+          />
+        </article>
+        {s.filteredTopics && s.filteredTopics.length ?
           <div className="topics">
             <TopicRows
-              topics={specificTopics}
+              topics={s.filteredTopics}
               topicsPerRow={s.topicsPerRow}
               hasHeroRow={s.currentPage === 1}
               topicsPerHeroRow={s.topicsPerHeroRow}
