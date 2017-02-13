@@ -30,19 +30,21 @@ export default class Topic extends Component {
       <button
         key={`${p.topic}-${p.popularity}`}
         ref={(topicNameContainer) => { this.topicNameContainer = topicNameContainer; }}
-        className={classNames('unstyled topic-button', { isHero: p.isHero })}
+        className={classNames('unstyled topic-button', { isHero: p.isHero, 'is-spacer-topic': p.isSpacer })}
       >
-        <div className="topic-content">
-          <TopicIcon {...p} />
-          <span className="topic-popularity">
-            {Math.floor(p.popularity).toLocaleString()}
-          </span>
-          <div className="topic-name" >
-            <span ref={(topicName) => { this.topicName = topicName; }}>
-              {p.topic.toUpperCase()}
+        {!p.isSpacer &&
+          <div className="topic-content">
+            <TopicIcon {...p} />
+            <span className="topic-popularity">
+              {Math.floor(p.popularity).toLocaleString()}
             </span>
+            <div className="topic-name" >
+              <span ref={(topicName) => { this.topicName = topicName; }}>
+                {p.topic.toUpperCase()}
+              </span>
+            </div>
           </div>
-        </div>
+        }
       </button>
     );
   }
