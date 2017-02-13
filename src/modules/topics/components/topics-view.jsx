@@ -102,18 +102,16 @@ export default class TopicsView extends Component {
     const p = this.props;
     const s = this.state;
 
-    console.log('filteredTopics -- ', s.filteredTopics);
-
-    // const specificTopics = p.topics.slice(s.lowerIndex, s.upperIndex === p.topics.length - 1 ? undefined : s.upperIndex + 1);
-
     return (
       <section id="topics_view">
-        <Input
-          isSearch
-          isClearable
-          placeholder="Search Topics"
-          onChange={keywords => this.setState({ keywords })}
-        />
+        <div className="topics-search" >
+          <Input
+            isSearch
+            isClearable
+            placeholder="Search Topics"
+            onChange={keywords => this.setState({ keywords })}
+          />
+        </div>
         {s.filteredTopics && s.filteredTopics.length ?
           <div className="topics">
             <TopicRows
