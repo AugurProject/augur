@@ -3,7 +3,6 @@ import React from 'react';
 import classnames from 'classnames';
 
 import Link from 'modules/link/components/link';
-import AugurLogoFull from 'modules/common/components/augur-logo-full';
 import AugurLogoIcon from 'modules/common/components/augur-logo-icon';
 import SideBarFilterIcon from 'modules/common/components/side-bar-filter-icon';
 
@@ -30,6 +29,11 @@ const Nav = (p) => {
           {p.isSideBarCollapsed ? <SideBarFilterIcon /> : <i className="fa fa-remove" />}
         </button>
       }
+      <div className="augur-brand">
+        <Link {...p.topicsLink} >
+          <AugurLogoIcon />
+        </Link>
+      </div>
       <Link
         {...p.marketsLink}
         onClick={() => {
@@ -69,12 +73,6 @@ const Nav = (p) => {
           Pending Reports
         </Link>
       }
-      <Link
-        className="augur-brand"
-        {...p.topicsLink}
-      >
-        <AugurLogoFull />
-      </Link>
       {p.logged && !!p.portfolioTotals &&
         <Link
           {...p.myPositionsLink}
