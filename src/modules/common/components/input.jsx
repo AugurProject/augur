@@ -93,12 +93,12 @@ export default class Input extends Component {
   }
 
   render() {
-    const { isClearable, isIncrementable, incrementAmount, updateValue, canToggleVisibility, shouldMatchValue, comparisonValue, ...p } = this.props;
+    const { isClearable, isIncrementable, incrementAmount, updateValue, canToggleVisibility, shouldMatchValue, comparisonValue, isSearch, ...p } = this.props;
     const s = this.state;
 
     return (
       <div className={classNames('input', p.className, { 'is-incrementable': isIncrementable, 'can-toggle-visibility': canToggleVisibility })} >
-        {p.isSearch &&
+        {isSearch &&
           <i className="fa fa-search" />
         }
         {!p.isMultiline &&

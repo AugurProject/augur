@@ -12,6 +12,7 @@ import loginAccount from 'modules/auth/reducers/login-account';
 import activeView from 'modules/app/reducers/active-view';
 
 import marketsData from 'modules/markets/reducers/markets-data';
+import hasLoadedMarkets from 'modules/markets/reducers/has-loaded-markets';
 import outcomesData from 'modules/markets/reducers/outcomes-data';
 import eventMarketsMap from 'modules/markets/reducers/event-markets-map';
 import favorites from 'modules/markets/reducers/favorites';
@@ -33,6 +34,7 @@ import scalarMarketsShareDenomination from 'modules/market/reducers/scalar-marke
 import closePositionTradeGroups from 'modules/my-positions/reducers/close-position-trade-groups';
 
 import topics from 'modules/topics/reducers/topics-data';
+import hasLoadedTopic from 'modules/topics/reducers/has-loaded-topic';
 import selectedTopic from 'modules/topics/reducers/selected-topic';
 
 import selectedMarketsHeader from 'modules/markets/reducers/selected-markets-header';
@@ -69,6 +71,7 @@ export function createReducer() {
     activeView,
 
     marketsData,
+    hasLoadedMarkets,
     outcomesData,
     eventMarketsMap,
     favorites,
@@ -82,6 +85,7 @@ export function createReducer() {
     selectedMarketsHeader,
     keywords,
     topics,
+    hasLoadedTopic,
     selectedTopic,
     selectedTags,
     selectedFilterSort,

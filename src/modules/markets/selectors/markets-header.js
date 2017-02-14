@@ -22,7 +22,8 @@ export const selectMarketsHeader = memoizerific(1)((selectedMarketsHeader, numFi
     numPendingReports,
     onClickAllMarkets: () => dispatch(updateSelectedMarketsHeader(null)),
     onClickFavorites: () => dispatch(updateSelectedMarketsHeader(FAVORITES)),
-    onClickPendingReports: () => dispatch(updateSelectedMarketsHeader(PENDING_REPORTS))
+    onClickPendingReports: () => dispatch(updateSelectedMarketsHeader(PENDING_REPORTS)),
+    onSelectedTopic: topic => dispatch(updateSelectedMarketsHeader(topic))
   };
   return obj;
 });
