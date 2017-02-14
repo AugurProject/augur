@@ -1,4 +1,3 @@
-import { UPDATE_SELECTED_TOPIC } from 'modules/topics/actions/update-topics';
 import { UPDATE_URL } from 'modules/link/actions/update-url';
 
 import getValue from 'utils/get-value';
