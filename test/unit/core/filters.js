@@ -1141,6 +1141,10 @@ describe("clear_filter", function() {
 });
 describe("setup_event_filter", function() {
   // 1 test total
+  var subscribeLogs = augur.filters.subscribeLogs;
+  afterEach(function() {
+    augur.filters.subscribeLogs = subscribeLogs;
+  });
   var test = function(t) {
     it(JSON.stringify(t), function() {
       augur.filters.subscribeLogs = t.subscribeLogs;
@@ -1151,18 +1155,68 @@ describe("setup_event_filter", function() {
     contract: 'Cash',
     label: 'deposit',
     f: utils.noop,
-    subscribeLogs: function(args, cb) {
-      assert.deepEqual(args, {
+    subscribeLogs: function(params, cb) {
+      assert.deepEqual(params, {
         address: augur.contracts.Cash,
         topics: [augur.api.events.deposit.signature]
       });
       assert.deepEqual(cb, utils.noop);
-      return args;
+      // return a filter_id
+      return '0x1';
     },
-    assertions: function(out) {
-      assert.deepEqual(out, {
-        address: augur.contracts.Cash,
-        topics: [augur.api.events.deposit.signature]
+    assertions: function(filter_id) {
+      assert.deepEqual(filter_id, '0x1');
+    }
+  });
+});
+describe("setup_contracts_filter", function() {
+  // 2 tests total
+  var subscribeLogs = augur.filters.subscribeLogs;
+  var contracts = augur.contracts;
+  afterEach(function() {
+    augur.filters.subscribeLogs = subscribeLogs;
+    augur.filters.filter.contracts = { id: null, heartbeat: null };
+    augur.contracts = contracts;
+  });
+  var test = function(t) {
+    it(JSON.stringify(t) + 'sync', function() {
+      augur.filters.subscribeLogs = t.subscribeLogs;
+      augur.contracts = t.contracts;
+
+      t.assertions(augur.filters.setup_contracts_filter(undefined));
+    });
+    it(JSON.stringify(t) + 'async', function(done) {
+      augur.filters.subscribeLogs = t.subscribeLogs;
+      augur.contracts = t.contracts;
+
+      augur.filters.setup_contracts_filter(function(contracts) {
+        t.assertions(contracts);
+        done();
+      });
+    });
+  };
+  test({
+    contracts: {
+      test: '0x7982b951d4da29981a2fec08d4b659e64ecf1ca2',
+      example: '0xe2cd11a739009f4ee336a747dc58222d8f125de2',
+      hello: '0x3854ae028c91939a5d9b2a4614e4f8471259aa43',
+      world: '0x1aaae11d6aab155657faa880dcc1892c4f49f245'
+    },
+    subscribeLogs: function(params, cb) {
+      assert.deepEqual(params, {
+        address: [
+          '0x7982b951d4da29981a2fec08d4b659e64ecf1ca2', '0xe2cd11a739009f4ee336a747dc58222d8f125de2', '0x3854ae028c91939a5d9b2a4614e4f8471259aa43', '0x1aaae11d6aab155657faa880dcc1892c4f49f245'
+        ],
+        fromBlock: "0x01",
+        toBlock: "latest"
+      });
+      if(utils.is_function(cb)) return cb('0x1');
+      return '0x1';
+    },
+    assertions: function(contracts) {
+      assert.deepEqual(contracts, {
+        id: '0x1',
+        heartbeat: null
       });
     }
   });
