@@ -85,8 +85,6 @@ export default class App extends Component {
   }
 
   handleWindowResize() {
-    console.log('handleWindowResize');
-
     this.checkIfMobile();
   }
 
@@ -94,19 +92,12 @@ export default class App extends Component {
     // This method sets up the side bar's state + calls the method to attach the touch event handler for when a user is mobile
     // CSS breakpoint sets the value when a user is mobile
     if (window.getComputedStyle(this.main).getPropertyValue('will-change') === 'contents') {
-      // this.main.style.willChange = 'auto'; // reset CSS value
-
-      console.log('is mobile');
-
       this.setState({
         isSideBarCollapsed: true,
         isSideBarPersistent: false
       });
-      // this.toggleSideBar();
       this.attachTouchHandler();
     } else {
-      console.log('is not mobile');
-
       this.setState({
         isSideBarCollapsed: false,
         isSideBarPersistent: true

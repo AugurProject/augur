@@ -143,7 +143,6 @@ export default class Routes extends Component {
       }
       case MARKETS: {
         viewProps = {
-          // isSideBarAllowed: true,
           loginAccount: p.loginAccount,
           createMarketLink: (p.links || {}).createMarketLink,
           markets: p.markets,
