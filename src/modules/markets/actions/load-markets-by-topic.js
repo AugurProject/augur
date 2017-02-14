@@ -4,8 +4,6 @@ import { updateHasLoadedTopic } from 'modules/topics/actions/update-has-loaded-t
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 
 export function loadMarketsByTopic(topic) {
-  console.log('loadMarketsByTopic -- ', topic);
-
   const { branch } = require('src/selectors');
 
   return (dispatch) => {
