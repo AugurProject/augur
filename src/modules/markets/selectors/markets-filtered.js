@@ -57,8 +57,6 @@ export const isMarketFiltersMatch = (market, keywords, selectedFilterSort, selec
   }
 
   function isMatchTopic(market, selectedTopic) {
-    // console.log('isMatchTopic -- ', selectedTopic, market.tags[0], market.tags[0].name === selectedTopic);
-
     if (!selectedTopic) {
       return true;
     }
