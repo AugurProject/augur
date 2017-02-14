@@ -70,15 +70,22 @@
       }
 
       a {
+        @media @breakpoint-mobile {
+          display: flex;
+          justify-content: center;
+          left: 50%;
+          position: absolute;
+          transform: translateX(-50%);
+        }
+
         .augur-logo-icon {
           height: 2.5em;
           left: 0;
           padding: 1em;
-          pointer-events: none;
 
           @media @breakpoint-mobile {
             height: 1.5em;
-            padding: 0.8em 0;
+            padding: 0.8em 1em;
           }
         }
       }

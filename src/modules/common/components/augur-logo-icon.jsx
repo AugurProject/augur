@@ -35,14 +35,3 @@ const AugurLogoIcon = () => (
 );
 
 export default AugurLogoIcon;
-
-
-// <g className="icon-cls-4">
-//   <rect
-//     className="icon-cls-5"
-//     x="34.37"
-//     y="20"
-//     width="171.27"
-//     height="200"
-//   />
-// </g>
