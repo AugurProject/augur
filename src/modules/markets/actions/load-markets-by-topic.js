@@ -1,4 +1,4 @@
-import { augur } from 'services/augurjs';
+// import { augur } from 'services/augurjs';
 
 export function loadMarketsByTopic(topic) {
   return (dispatch) => {
