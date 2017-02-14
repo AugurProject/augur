@@ -1100,3 +1100,70 @@ describe("poll_filter", function() {
     }
   });
 });
+describe("clear_filter", function() {
+  // 2 tests total
+  var unsubscribe = augur.filters.unsubscribe;
+  afterEach(function() {
+    augur.filters.unsubscribe = unsubscribe;
+  });
+  var test = function(t) {
+    it(JSON.stringify(t) + 'sync', function() {
+      if (augur.filters.filter[t.label]) augur.filters.filter[t.label].id = t.id;
+
+      augur.filters.unsubscribe = t.unsubscribe;
+
+      t.assertions(augur.filters.clear_filter(t.label, undefined));
+    });
+    it(JSON.stringify(t) + 'async', function(done) {
+      if (augur.filters.filter[t.label]) augur.filters.filter[t.label].id = t.id;
+
+      augur.filters.unsubscribe = t.unsubscribe;
+
+      augur.filters.clear_filter(t.label, function(out) {
+        t.assertions(out);
+        done();
+      });
+    });
+  };
+  test({
+    label: 'withdraw',
+    id: '0x1',
+    unsubscribe: function(id, cb) {
+      assert.deepEqual(id, '0x1');
+      if(utils.is_function(cb)) return cb('1');
+      return '1';
+    },
+    assertions: function(out) {
+      assert.deepEqual(out, '1');
+      assert.isNull(augur.filters.filter['withdraw'].id);
+    }
+  });
+});
+describe("setup_event_filter", function() {
+  // 1 test total
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      augur.filters.subscribeLogs = t.subscribeLogs;
+      t.assertions(augur.filters.setup_event_filter(t.contract, t.label, t.f));
+    });
+  };
+  test({
+    contract: 'Cash',
+    label: 'deposit',
+    f: utils.noop,
+    subscribeLogs: function(args, cb) {
+      assert.deepEqual(args, {
+        address: augur.contracts.Cash,
+        topics: [augur.api.events.deposit.signature]
+      });
+      assert.deepEqual(cb, utils.noop);
+      return args;
+    },
+    assertions: function(out) {
+      assert.deepEqual(out, {
+        address: augur.contracts.Cash,
+        topics: [augur.api.events.deposit.signature]
+      });
+    }
+  });
+});
