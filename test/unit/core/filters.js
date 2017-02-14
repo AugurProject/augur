@@ -12,6 +12,7 @@ var tools = require("../../tools");
 var constants = require("../../../src/constants");
 var augurpath = "../../../src/index";
 var augur = require(augurpath);
+var utils = require("../../../src/utilities");
 
 var DEBUG = false;
 var DELAY = 2500;
@@ -1036,5 +1037,66 @@ describe("parse_event_message", function () {
       "logIndex": "0x0",
       "removed": false
     }]
+  });
+});
+describe("poll_filter", function() {
+  // 4 tests total
+  var getFilterChanges = augur.rpc.getFilterChanges;
+  afterEach(function() {
+    augur.rpc.getFilterChanges = getFilterChanges;
+  });
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      augur.rpc.getFilterChanges = t.assertions;
+      // set the id, we do this because otherwise they would all be null as that's the default state.
+      if (augur.filters.filter[t.label]) augur.filters.filter[t.label].id = t.id;
+
+      augur.filters.poll_filter(t.label, t.onMessage);
+
+      // reset the id to the default null state.
+      if (augur.filters.filter[t.label]) augur.filters.filter[t.label].id = null;
+    });
+  };
+  test({
+    label: 'unrecognized label',
+    onMessage: function(msg) {
+    },
+    assertions: function(filterID, cb) {
+      // in this case we should just exit the function if it's not recognized label and never hit this assertion.
+      assert.isTrue(false, 'Should not call augur.rpc.getFilterChanges if the label passed is not recognized');
+    }
+  });
+  test({
+    label: 'withdraw',
+    id: '0x1',
+    onMessage: utils.noop,
+    assertions: function(filterID, cb) {
+        assert.deepEqual(filterID, '0x1');
+        assert.isFunction(cb);
+        // convert CB to string to confirm we created the correct callback and it contains the expected call within it.
+        assert.include(cb.toString(), 'self.parse_event_message');
+    }
+  });
+  test({
+    label: 'contracts',
+    id: '0x2',
+    onMessage: utils.noop,
+    assertions: function(filterID, cb) {
+        assert.deepEqual(filterID, '0x2');
+        assert.isFunction(cb);
+        // convert CB to string to confirm we created the correct callback and it contains the expected call within it.
+        assert.include(cb.toString(), 'self.parse_contracts_message');
+    }
+  });
+  test({
+    label: 'block',
+    id: '0x3',
+    onMessage: utils.noop,
+    assertions: function(filterID, cb) {
+        assert.deepEqual(filterID, '0x3');
+        assert.isFunction(cb);
+        // convert CB to string to confirm we created the correct callback and it contains the expected call within it.
+        assert.include(cb.toString(), 'self.parse_block_message');
+    }
   });
 });
