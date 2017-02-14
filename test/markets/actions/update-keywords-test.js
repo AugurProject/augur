@@ -3,6 +3,9 @@ import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mockStore from 'test/mockStore';
 
+import { PAGE_PARAM_NAME, SEARCH_PARAM_NAME, TAGS_PARAM_NAME } from 'modules/link/constants/param-names';
+import { MARKETS } from 'modules/app/constants/views';
+
 describe(`modules/markets/actions/update-keywords.js`, () => {
   proxyquire.noPreserveCache().noCallThru();
 
@@ -51,7 +54,7 @@ describe(`modules/markets/actions/update-keywords.js`, () => {
       keywords: ['key', 'words']
     }, {
       type: 'UPDATE_URL',
-      href: '/?search=test%20testtag&tags=testtag%2Ctag'
+      href: `/?${PAGE_PARAM_NAME}=${MARKETS}&${SEARCH_PARAM_NAME}=test%20testtag&${TAGS_PARAM_NAME}=testtag%2Ctag`
     }];
 
     store.dispatch(action.updateKeywords(keywords));

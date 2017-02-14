@@ -6,6 +6,9 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from 'test/testState';
 
+import { UPDATE_MARKETS_DATA } from 'modules/markets/actions/update-markets-data';
+import { UPDATE_HAS_LOADED_MARKETS } from 'modules/markets/actions/update-has-loaded-markets';
+
 describe(`modules/markets/actions/load-markets.js`, () => {
   proxyquire.noPreserveCache().noCallThru();
   const middlewares = [thunk];
@@ -30,16 +33,22 @@ describe(`modules/markets/actions/load-markets.js`, () => {
   });
 
   it(`should load markets properly`, () => {
-    const out = [{
-      type: 'UPDATE_MARKETS_DATA',
-      marketsData: {
+    const out = [
+      {
+        hasLoadedMarkets: true,
+        type: UPDATE_HAS_LOADED_MARKETS
+      },
+      {
+        type: UPDATE_MARKETS_DATA,
         marketsData: {
-          _id: 'test',
-          test: 'info',
-          example: 'test info'
+          marketsData: {
+            _id: 'test',
+            test: 'info',
+            example: 'test info'
+          }
         }
       }
-    }];
+    ];
 
     store.dispatch(action.loadMarkets('0xf69b5'));
 
