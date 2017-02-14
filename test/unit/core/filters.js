@@ -1221,3 +1221,38 @@ describe("setup_contracts_filter", function() {
     }
   });
 });
+describe("setup_block_filter", function() {
+  // 2 tests total
+  var subscribeNewBlocks = augur.filters.subscribeNewBlocks;
+  afterEach(function() {
+    augur.filters.subscribeNewBlocks = subscribeNewBlocks;
+    augur.filters.filter.block = { id: null, heartbeat: null };
+  });
+  var test = function(t) {
+    it(JSON.stringify(t) + 'sync', function() {
+      augur.filters.subscribeNewBlocks = t.subscribeNewBlocks;
+
+      t.assertions(augur.filters.setup_block_filter(undefined));
+    });
+    it(JSON.stringify(t) + 'async', function(done) {
+      augur.filters.subscribeNewBlocks = t.subscribeNewBlocks;
+
+      augur.filters.setup_block_filter(function(block) {
+        t.assertions(block);
+        done();
+      });
+    });
+  };
+  test({
+    subscribeNewBlocks: function(cb) {
+      if(cb && utils.is_function(cb)) return cb('0x1');
+      return '0x1';
+    },
+    assertions: function(contracts) {
+      assert.deepEqual(contracts, {
+        id: '0x1',
+        heartbeat: null
+      });
+    }
+  });
+});
