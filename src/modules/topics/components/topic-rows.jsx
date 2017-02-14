@@ -51,6 +51,7 @@ const TopicRows = (p) => {
               isHero={p.hasHeroRow && rowIndex === 0}
               topic={topic.topic}
               popularity={topic.popularity}
+              selectTopic={p.selectTopic}
             />
           ))}
         </div>

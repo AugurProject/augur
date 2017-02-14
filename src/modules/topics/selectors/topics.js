@@ -1,9 +1,18 @@
 import memoizerific from 'memoizerific';
-import store from '../../../store';
+
+import store from 'src/store';
+
+import { selectTopicLink } from 'modules/link/selectors/links';
 
 export default function () {
   const { topics } = store.getState();
-  return selectTopics(topics);
+  return {
+    topics: selectTopics(topics),
+    selectTopic: (topic) => {
+      console.log('selectTopic -- ', topic);
+      selectTopicLink(topic, store.dispatch).onClick();
+    }
+  };
 }
 
 export const selectTopics = memoizerific(1)(topics => (

@@ -18,11 +18,15 @@ export function loadBranch(branchID) {
         ...branch,
         ...reportingCycle(branch.periodLength)
       }));
-      const { selectedMarketID } = getState();
+      const { selectedMarketID, url } = getState();
       if (selectedMarketID !== null) {
         dispatch(loadFullMarket(selectedMarketID));
       }
       dispatch(loadTopics(branchID));
+      // Handle respective loading of markets here:
+
+      console.log('url -- ', url);
+
       dispatch(syncBlockchain());
       dispatch(syncBranch((err) => {
         if (err) return console.error('syncBranch:', err);

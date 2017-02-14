@@ -1,58 +1,59 @@
 import { combineReducers } from 'redux';
 
-import env from './modules/app/reducers/env';
-import requests from './modules/app/reducers/requests';
-import blockchain from './modules/app/reducers/blockchain';
-import branch from './modules/branch/reducers/branch';
-import connection from './modules/app/reducers/connection';
-import url from './modules/link/reducers/url';
+import env from 'modules/app/reducers/env';
+import requests from 'modules/app/reducers/requests';
+import blockchain from 'modules/app/reducers/blockchain';
+import branch from 'modules/branch/reducers/branch';
+import connection from 'modules/app/reducers/connection';
+import url from 'modules/link/reducers/url';
 
-import auth from './modules/auth/reducers/auth';
-import loginAccount from './modules/auth/reducers/login-account';
-import activeView from './modules/app/reducers/active-view';
+import auth from 'modules/auth/reducers/auth';
+import loginAccount from 'modules/auth/reducers/login-account';
+import activeView from 'modules/app/reducers/active-view';
 
-import marketsData from './modules/markets/reducers/markets-data';
-import outcomesData from './modules/markets/reducers/outcomes-data';
-import eventMarketsMap from './modules/markets/reducers/event-markets-map';
-import favorites from './modules/markets/reducers/favorites';
-import pagination from './modules/markets/reducers/pagination';
+import marketsData from 'modules/markets/reducers/markets-data';
+import outcomesData from 'modules/markets/reducers/outcomes-data';
+import eventMarketsMap from 'modules/markets/reducers/event-markets-map';
+import favorites from 'modules/markets/reducers/favorites';
+import pagination from 'modules/markets/reducers/pagination';
 
-import reports from './modules/reports/reducers/reports';
-import oldestLoadedEventPeriod from './modules/my-reports/reducers/oldest-loaded-event-period';
-import eventsWithAccountReport from './modules/my-reports/reducers/events-with-account-report';
+import reports from 'modules/reports/reducers/reports';
+import oldestLoadedEventPeriod from 'modules/my-reports/reducers/oldest-loaded-event-period';
+import eventsWithAccountReport from 'modules/my-reports/reducers/events-with-account-report';
 
-import orderBooks from './modules/bids-asks/reducers/order-books';
-import orderCancellation from './modules/bids-asks/reducers/order-cancellation';
-import marketTrades from './modules/portfolio/reducers/market-trades';
-import accountTrades from './modules/my-positions/reducers/account-trades';
-import accountPositions from './modules/my-positions/reducers/account-positions';
-import completeSetsBought from './modules/my-positions/reducers/complete-sets-bought';
-import netEffectiveTrades from './modules/my-positions/reducers/net-effective-trades';
-import transactionsData from './modules/transactions/reducers/transactions-data';
-import scalarMarketsShareDenomination from './modules/market/reducers/scalar-markets-share-denomination';
-import closePositionTradeGroups from './modules/my-positions/reducers/close-position-trade-groups';
+import orderBooks from 'modules/bids-asks/reducers/order-books';
+import orderCancellation from 'modules/bids-asks/reducers/order-cancellation';
+import marketTrades from 'modules/portfolio/reducers/market-trades';
+import accountTrades from 'modules/my-positions/reducers/account-trades';
+import accountPositions from 'modules/my-positions/reducers/account-positions';
+import completeSetsBought from 'modules/my-positions/reducers/complete-sets-bought';
+import netEffectiveTrades from 'modules/my-positions/reducers/net-effective-trades';
+import transactionsData from 'modules/transactions/reducers/transactions-data';
+import scalarMarketsShareDenomination from 'modules/market/reducers/scalar-markets-share-denomination';
+import closePositionTradeGroups from 'modules/my-positions/reducers/close-position-trade-groups';
 
-import topics from './modules/topics/reducers/topics-data';
+import topics from 'modules/topics/reducers/topics-data';
+import selectedTopic from 'modules/topics/reducers/selected-topic';
 
-import selectedMarketsHeader from './modules/markets/reducers/selected-markets-header';
-import selectedMarketID from './modules/markets/reducers/selected-market-id';
-import tradesInProgress from './modules/trade/reducers/trades-in-progress';
-import tradeCommitLock from './modules/trade/reducers/trade-commit-lock';
-import tradeCommitment from './modules/trade/reducers/trade-commitment';
-import sellCompleteSetsLock from './modules/my-positions/reducers/sell-complete-sets-lock';
-import smallestPositions from './modules/my-positions/reducers/smallest-positions';
-import createMarketInProgress from './modules/create-market/reducers/create-market-in-progress';
-import keywords from './modules/markets/reducers/keywords';
-import selectedTags from './modules/markets/reducers/selected-tags';
-import selectedFilterSort from './modules/markets/reducers/selected-filter-sort';
-import priceHistory from './modules/markets/reducers/price-history';
+import selectedMarketsHeader from 'modules/markets/reducers/selected-markets-header';
+import selectedMarketID from 'modules/markets/reducers/selected-market-id';
+import tradesInProgress from 'modules/trade/reducers/trades-in-progress';
+import tradeCommitLock from 'modules/trade/reducers/trade-commit-lock';
+import tradeCommitment from 'modules/trade/reducers/trade-commitment';
+import sellCompleteSetsLock from 'modules/my-positions/reducers/sell-complete-sets-lock';
+import smallestPositions from 'modules/my-positions/reducers/smallest-positions';
+import createMarketInProgress from 'modules/create-market/reducers/create-market-in-progress';
+import keywords from 'modules/markets/reducers/keywords';
+import selectedTags from 'modules/markets/reducers/selected-tags';
+import selectedFilterSort from 'modules/markets/reducers/selected-filter-sort';
+import priceHistory from 'modules/markets/reducers/price-history';
 
-import chatMessages from './modules/chat/reducers/chat-messages';
+import chatMessages from 'modules/chat/reducers/chat-messages';
 
-import selectedOutcomeID from './modules/outcomes/reducers/selected-outcome-id';
-import loginMessage from './modules/login-message/reducers/login-message';
+import selectedOutcomeID from 'modules/outcomes/reducers/selected-outcome-id';
+import loginMessage from 'modules/login-message/reducers/login-message';
 
-import marketCreatorFees from './modules/my-markets/reducers/market-creator-fees';
+import marketCreatorFees from 'modules/my-markets/reducers/market-creator-fees';
 
 export function createReducer() {
   return combineReducers({
@@ -81,6 +82,7 @@ export function createReducer() {
     selectedMarketsHeader,
     keywords,
     topics,
+    selectedTopic,
     selectedTags,
     selectedFilterSort,
     priceHistory,

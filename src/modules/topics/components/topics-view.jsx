@@ -119,6 +119,7 @@ export default class TopicsView extends Component {
               topicsPerRow={s.topicsPerRow}
               hasHeroRow={s.currentPage === 1}
               topicsPerHeroRow={s.topicsPerHeroRow}
+              selectTopic={p.selectTopic}
             />
           </div> :
           <NullStateMessage message={s.nullMessage} />

@@ -162,7 +162,8 @@ export default class Routes extends Component {
       }
       default: {
         viewProps = {
-          topics: p.topics
+          topics: getValue(p, 'topics.topics'),
+          selectTopic: getValue(p, 'topics.selectTopic')
         };
         System.import('modules/topics/components/topics-view').then((module) => {
           const TopicsView = module.default;
