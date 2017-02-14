@@ -21,7 +21,7 @@ const Nav = (p) => {
   return (
     <nav className={`app-nav ${p.className ? p.className : ''}`}>
       <div ref={p.navRef && p.navRef} />
-      {p.isSideBarAllowed &&
+      {p.isSideBarAllowed && !p.isSideBarPersistent &&
         <button
           className="app-nav-link unstyled"
           onClick={p.toggleSideBar}

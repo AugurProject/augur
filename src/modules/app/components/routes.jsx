@@ -37,6 +37,8 @@ export default class Routes extends Component {
       currentView = MARKETS;
     }
 
+    p.setSidebarAllowed(false);
+
     switch (currentView) {
       case AUTHENTICATION:
         viewProps = {
@@ -141,7 +143,7 @@ export default class Routes extends Component {
       }
       case MARKETS: {
         viewProps = {
-          isSideBarAllowed: true,
+          // isSideBarAllowed: true,
           loginAccount: p.loginAccount,
           createMarketLink: (p.links || {}).createMarketLink,
           markets: p.markets,
@@ -158,6 +160,9 @@ export default class Routes extends Component {
           viewComponent = <MarketsView {...viewProps} />;
           this.setState({ viewProps, viewComponent });
         });
+
+        p.setSidebarAllowed(true);
+
         break;
       }
       default: {
@@ -171,12 +176,6 @@ export default class Routes extends Component {
           this.setState({ viewProps, viewComponent });
         });
       }
-    }
-
-    if (viewProps.isSideBarAllowed) {
-      p.setSidebarAllowed(true);
-    } else {
-      p.setSidebarAllowed(false);
     }
   }
 
