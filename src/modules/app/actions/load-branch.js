@@ -5,7 +5,6 @@ import { reportingCycle } from '../../branch/selectors/reporting-cycle';
 import { syncBlockchain } from '../../app/actions/sync-blockchain';
 import { listenToUpdates } from '../../app/actions/listen-to-updates';
 import { loadTopics } from '../../topics/actions/load-topics';
-// import { loadMarkets } from '../../markets/actions/load-markets';
 import { loadFullMarket } from '../../market/actions/load-full-market';
 import { clearMarketsData } from '../../markets/actions/update-markets-data';
 
@@ -18,15 +17,11 @@ export function loadBranch(branchID) {
         ...branch,
         ...reportingCycle(branch.periodLength)
       }));
-      const { selectedMarketID, url } = getState();
+      const { selectedMarketID } = getState();
       if (selectedMarketID !== null) {
         dispatch(loadFullMarket(selectedMarketID));
       }
       dispatch(loadTopics(branchID));
-      // Handle respective loading of markets here:
-
-      console.log('url -- ', url);
-
       dispatch(syncBlockchain());
       dispatch(syncBranch((err) => {
         if (err) return console.error('syncBranch:', err);
