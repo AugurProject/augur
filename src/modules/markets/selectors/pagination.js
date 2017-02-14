@@ -1,21 +1,30 @@
-import { updateSelectedPageNum } from '../../markets/actions/update-selected-page-num';
-import store from '../../../store';
-import { makeLocation } from '../../../utils/parse-url';
+import store from 'src/store';
+
+import { updateSelectedPageNum } from 'modules/markets/actions/update-selected-page-num';
+
+import { makeLocation } from 'utils/parse-url';
+
+import { PAGE_PARAM_NAME, TOPIC_PARAM_NAME } from 'modules/link/constants/param-names';
 
 export default function () {
-  const { pagination } = store.getState();
+  const { pagination, selectedTopic } = store.getState();
   const { marketsTotals } = require('../../../selectors');
 
   if (!pagination || !marketsTotals.numUnpaginated) {
     return {};
   }
 
-  function makeLink(page, o) {
-    const href = makeLocation({ page }).url;
+  function makeLink(page, topic, o) {
+    const params = {};
+
+    if (page) params[PAGE_PARAM_NAME] = page;
+    if (topic) params[TOPIC_PARAM_NAME] = topic;
+
+    const href = makeLocation(params).url;
 
     return {
       href,
-      onClick: () => { o.onUpdateSelectedPageNum(page); }
+      onClick: () => { o.onUpdateSelectedPageNum(page, href); }
     };
   }
 
@@ -27,7 +36,7 @@ export default function () {
     startItemNum: ((pagination.selectedPageNum - 1) * pagination.numPerPage) + 1,
     endItemNum: Math.min(pagination.selectedPageNum * pagination.numPerPage,
       marketsTotals.numUnpaginated),
-    onUpdateSelectedPageNum: pageNum => store.dispatch(updateSelectedPageNum(pageNum))
+    onUpdateSelectedPageNum: (pageNum, href) => store.dispatch(updateSelectedPageNum(pageNum, href))
   };
 
   if (marketsTotals.numUnpaginated > o.numPerPage) {
@@ -37,8 +46,8 @@ export default function () {
     o.nextItemNum = o.selectedPageNum < o.numPages ? o.endItemNum + 1 : undefined;
     o.previousItemNum = o.selectedPageNum >= 2 ? o.startItemNum - o.numPerPage : undefined;
 
-    o.nextPageLink = o.nextPageNum ? makeLink(o.nextPageNum, o) : null;
-    o.previousPageLink = o.previousPageNum ? makeLink(o.previousPageNum, o) : null;
+    o.nextPageLink = o.nextPageNum ? makeLink(o.nextPageNum, selectedTopic, o) : null;
+    o.previousPageLink = o.previousPageNum ? makeLink(o.previousPageNum, selectedTopic, o) : null;
   }
 
   return o;

@@ -5,20 +5,25 @@ import { FILTER_TYPE_OPEN, FILTER_TYPE_CLOSED, FILTER_TYPE_REPORTING } from '../
 import { isMarketDataExpired, isMarketDataOpen } from '../../../utils/is-market-data-open';
 
 export default function () {
-  const { keywords, selectedFilterSort, selectedTags } = store.getState();
-  const { allMarkets } = require('../../../selectors');
-  return selectFilteredMarkets(allMarkets, keywords, selectedFilterSort, selectedTags);
+  const { keywords, selectedFilterSort, selectedTags, selectedTopic } = store.getState();
+  const { allMarkets } = require('src/selectors');
+
+  return selectFilteredMarkets(allMarkets, keywords, selectedFilterSort, selectedTags, selectedTopic);
 }
 
-export const selectFilteredMarkets = memoizerific(3)((markets, keywords, selectedFilterSort, selectedTags) => {
+export const selectFilteredMarkets = memoizerific(3)((markets, keywords, selectedFilterSort, selectedTags, selectedTopic) => {
   const currentTime = new Date().getTime();
-  return markets.filter(market => isMarketFiltersMatch(market, keywords, selectedFilterSort, selectedTags, currentTime));
+  return markets.filter(market => isMarketFiltersMatch(market, keywords, selectedFilterSort, selectedTags, selectedTopic, currentTime));
 });
 
-export const isMarketFiltersMatch = (market, keywords, selectedFilterSort, selectedTags, currentTime) => {
+export const isMarketFiltersMatch = (market, keywords, selectedFilterSort, selectedTags, selectedTopic, currentTime) => {
 
   const selectedTagsList = Object.keys(selectedTags);
-  return isMatchKeywords(market, keywords) && isMatchTags(market, selectedTagsList) && isOfType(market, selectedFilterSort.type) && isDisplayable(market);
+  return isMatchKeywords(market, keywords) &&
+    isMatchTags(market, selectedTagsList) &&
+    isOfType(market, selectedFilterSort.type) &&
+    isMatchTopic(market, selectedTopic) &&
+    isDisplayable(market);
 
   function isMatchKeywords(market, keys) {
     const keywordsArray = cleanKeywordsArray(keys);
@@ -49,6 +54,16 @@ export const isMarketFiltersMatch = (market, keywords, selectedFilterSort, selec
       return true;
     }
     return selectedTagsList.every(tag => market.tags.some(marketTag => marketTag.name === tag));
+  }
+
+  function isMatchTopic(market, selectedTopic) {
+    // console.log('isMatchTopic -- ', selectedTopic, market.tags[0], market.tags[0].name === selectedTopic);
+
+    if (!selectedTopic) {
+      return true;
+    }
+
+    return market.tags[0].name === selectedTopic;
   }
 
   function isDisplayable(market) {

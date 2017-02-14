@@ -10,7 +10,6 @@ import { MARKETS } from 'modules/app/constants/views';
 
 export default function () {
   const { activeView, branch, url, hasLoadedMarkets, hasLoadedTopic, connection } = store.getState();
-  // const { marketsHeader } = require('src/selectors');
 
   const parsedURL = parseURL(url);
   const topic = getValue(parsedURL, 'searchParams.topic');
@@ -20,7 +19,6 @@ export default function () {
     store.dispatch(loadMarkets(branch.id));
   } else if (activeView === MARKETS && topic && !hasLoadedTopic[topic] && Object.keys(connection.isConnected).length) {
     store.dispatch(loadMarketsByTopic(topic));
-    // store.dispatch(marketsHeader.onSelectedTopic(topic));
   }
 
   return activeView;
