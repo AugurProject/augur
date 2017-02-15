@@ -595,7 +595,7 @@ export function constructMarketTransaction(label, log, market) {
 
 export function constructReportingTransaction(label, log, marketID, market, outcomes) {
   return (dispatch, getState) => {
-    const { address, derivedKey } = getState().loginAccount;
+    const { address, derivedKey } = augur.accounts.account;
     switch (label) {
       case 'penalize':
         return constructPenalizeTransaction(log, marketID, market, outcomes, dispatch);
