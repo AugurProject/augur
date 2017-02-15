@@ -368,9 +368,9 @@ augur-contracts@2.9.3:
   dependencies:
     clone "1.0.2"
 
-augur.js@3.11.2:
-  version "3.11.2"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.11.2.tgz#75fdd5626c463c909e6ceef13f1a7474b27a3910"
+augur.js@3.11.3:
+  version "3.11.3"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.11.3.tgz#77d86ce22f9beb1bca3789d51915da95151ec398"
   dependencies:
     async "1.5.2"
     augur-abi "1.1.1"
@@ -380,7 +380,7 @@ augur.js@3.11.2:
     bs58 "3.0.0"
     chalk "1.1.1"
     clone "1.0.2"
-    ethereumjs-connect "2.1.1"
+    ethereumjs-connect "2.1.2"
     ethereumjs-tx "1.1.1"
     ethereumjs-util "4.4.1"
     ethrpc "2.5.1"
@@ -2862,9 +2862,9 @@ ethereumjs-abi@0.6.2:
     bn.js "^4.10.0"
     ethereumjs-util "^4.3.0"
 
-ethereumjs-connect@2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/ethereumjs-connect/-/ethereumjs-connect-2.1.1.tgz#c2f10c63c29c55d1821ac01934f704a86b762c6c"
+ethereumjs-connect@2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/ethereumjs-connect/-/ethereumjs-connect-2.1.2.tgz#b84a7d55a7360878203b4a259e64cdeef9f27ca0"
   dependencies:
     async "1.5.2"
     clone "1.0.2"
