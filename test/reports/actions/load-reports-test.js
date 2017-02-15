@@ -9,12 +9,12 @@ describe('modules/reports/actions/load-reports.js', () => {
   proxyquire.noPreserveCache().noCallThru();
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
-
   const test = (t) => {
     it(t.description, (done) => {
       const store = mockStore(t.state);
       const AugurJS = {
         augur: {
+          accounts: t.state.augur.accounts,
           getEventsToReportOn: () => {},
           getMarkets: () => {}
         }
@@ -79,9 +79,16 @@ describe('modules/reports/actions/load-reports.js', () => {
         currentPeriodProgress: 10,
         isReportRevealPhase: false
       },
+      augur: {
+        accounts: {
+          account: {
+            address: '0x0000000000000000000000000000000000000b0b',
+            derivedKey: new Buffer('42', 'hex')
+          }
+        }
+      },
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b',
-        derivedKey: new Buffer('42', 'hex'),
         ether: '10000',
         realEther: '2.5',
         rep: '47'
@@ -117,9 +124,16 @@ describe('modules/reports/actions/load-reports.js', () => {
         currentPeriodProgress: 10,
         isReportRevealPhase: false
       },
+      augur: {
+        accounts: {
+          account: {
+            address: '0x0000000000000000000000000000000000000b0b',
+            derivedKey: new Buffer('42', 'hex')
+          }
+        }
+      },
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b',
-        derivedKey: new Buffer('42', 'hex'),
         ether: '10000',
         realEther: '2.5',
         rep: '47'
@@ -165,9 +179,16 @@ describe('modules/reports/actions/load-reports.js', () => {
         currentPeriodProgress: 10,
         isReportRevealPhase: false
       },
+      augur: {
+        accounts: {
+          account: {
+            address: '0x0000000000000000000000000000000000000b0b',
+            derivedKey: new Buffer('42', 'hex')
+          }
+        }
+      },
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b',
-        derivedKey: new Buffer('42', 'hex'),
         ether: '10000',
         realEther: '2.5',
         rep: '47'
@@ -222,9 +243,16 @@ describe('modules/reports/actions/load-reports.js', () => {
         currentPeriodProgress: 10,
         isReportRevealPhase: false
       },
+      augur: {
+        accounts: {
+          account: {
+            address: '0x0000000000000000000000000000000000000b0b',
+            derivedKey: new Buffer('42', 'hex')
+          }
+        }
+      },
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b',
-        derivedKey: new Buffer('42', 'hex'),
         ether: '10000',
         realEther: '2.5',
         rep: '47'
@@ -289,9 +317,16 @@ describe('modules/reports/actions/load-reports.js', () => {
         currentPeriodProgress: 10,
         isReportRevealPhase: false
       },
+      augur: {
+        accounts: {
+          account: {
+            address: '0x0000000000000000000000000000000000000b0b',
+            derivedKey: new Buffer('42', 'hex')
+          }
+        }
+      },
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b',
-        derivedKey: new Buffer('42', 'hex'),
         ether: '10000',
         realEther: '2.5',
         rep: '47'
