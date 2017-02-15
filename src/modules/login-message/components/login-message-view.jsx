@@ -53,6 +53,15 @@ const LoginMessagePage = p => (
         </li>
       </ol>
       <h2>Technical updates:</h2>
+      <h3>February 15, 2017</h3>
+      <ol>
+        <li>
+          Fixed derived key references in the front-end.
+        </li>
+        <li>
+          Refactored report-encryption module and added unit tests.
+        </li>
+      </ol>
       <h3>February 14, 2017</h3>
       <ol>
         <li>
