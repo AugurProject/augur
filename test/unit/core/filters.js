@@ -1427,3 +1427,71 @@ describe("start_event_listener", function() {
     }
   });
 });
+describe("start_contracts_listener", function() {
+  // 2 tests total
+  var setup_contracts_filter = augur.filters.setup_contracts_filter;
+  afterEach(function() {
+    augur.filters.filter.contracts = { id: null, heartbeat: null };
+    augur.filters.setup_contracts_filter = setup_contracts_filter;
+  });
+  var test = function(t) {
+    it(JSON.stringify(t) + ' sync', function() {
+      augur.filters.setup_contracts_filter = t.setup_contracts_filter;
+
+      t.assertions(augur.filters.start_contracts_listener(undefined));
+    });
+    it(JSON.stringify(t) + ' async', function(done) {
+      augur.filters.setup_contracts_filter = t.setup_contracts_filter;
+
+      augur.filters.start_contracts_listener(function(contracts) {
+        t.assertions(contracts);
+        done();
+      });
+    });
+  };
+  test({
+    setup_contracts_filter: function(cb) {
+      augur.filters.filter.contracts = { id: '0x123', heartbeat: null };
+      if (!utils.is_function(cb)) return { id: '0x123', heartbeat: null };
+      return cb({ id: '0x123', heartbeat: null });
+    },
+    assertions: function(contracts) {
+      assert.deepEqual(contracts, { id: '0x123', heartbeat: null });
+      assert.deepEqual(augur.filters.filter.contracts, contracts);
+    }
+  });
+});
+describe("start_block_listener", function() {
+  // 2 tests total
+  var setup_block_filter = augur.filters.setup_block_filter;
+  afterEach(function() {
+    augur.filters.filter.block = { id: null, heartbeat: null };
+    augur.filters.setup_block_filter = setup_block_filter;
+  });
+  var test = function(t) {
+    it(JSON.stringify(t) + ' sync', function() {
+      augur.filters.setup_block_filter = t.setup_block_filter;
+
+      t.assertions(augur.filters.start_block_listener(undefined));
+    });
+    it(JSON.stringify(t) + ' async', function(done) {
+      augur.filters.setup_block_filter = t.setup_block_filter;
+
+      augur.filters.start_block_listener(function(block) {
+        t.assertions(block);
+        done();
+      });
+    });
+  };
+  test({
+    setup_block_filter: function(cb) {
+      augur.filters.filter.block = { id: '0xabc', heartbeat: null };
+      if (!utils.is_function(cb)) return { id: '0xabc', heartbeat: null };
+      return cb({ id: '0xabc', heartbeat: null });
+    },
+    assertions: function(block) {
+      assert.deepEqual(block, { id: '0xabc', heartbeat: null });
+      assert.deepEqual(augur.filters.filter.block, block);
+    }
+  });
+});
