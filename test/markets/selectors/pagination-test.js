@@ -5,32 +5,47 @@ import sinon from 'sinon';
 import * as mockStore from 'test/mockStore';
 import paginationAssertions from 'assertions/pagination';
 
+import { links } from 'src/selectors';
+
+import { PAGE_PARAM_NAME, SEARCH_PARAM_NAME, TAGS_PARAM_NAME } from 'modules/link/constants/param-names';
+
 describe(`modules/markets/selectors/pagination.js`, () => {
   proxyquire.noPreserveCache().noCallThru();
-  let actual;
+  let actual, expected;
   const { state, store } = mockStore.default;
 
   const mockPage = {
     updateSelectedPageNum: () => {}
   };
   const mockSelectors = {
+    links,
     marketsTotals: {
       numUnpaginated: 100
     }
   };
 
-  sinon.stub(mockPage, 'updateSelectedPageNum', pageNum => ({
+  sinon.stub(mockPage, 'updateSelectedPageNum', (pageNum, href) => ({
     type: 'UPDATE_SELECTED_PAGE_NUM',
     pageNum
   }));
 
   const selector = proxyquire('../../../src/modules/markets/selectors/pagination.js', {
     '../../../store': store,
-    '../../markets/actions/update-selected-page-num': mockPage,
-    '../../../selectors': mockSelectors
+    '../../../selectors': mockSelectors,
+    '../actions/update-selected-page-num': mockPage,
   });
 
-  before(() => {
+  const { makePaginationLink } = proxyquire('../../../src/modules/markets/selectors/pagination', {
+    '../../../selectors': proxyquire('../../../src/selectors', {
+      './selectors-raw': proxyquire('../../../src/selectors-raw', {
+        './modules/link/selectors/links': proxyquire('../../../src/modules/link/selectors/links', {
+          '../../../store': store
+        })
+      })
+    })
+  });
+
+  beforeEach(() => {
     store.clearActions();
   });
 
@@ -41,12 +56,14 @@ describe(`modules/markets/selectors/pagination.js`, () => {
   it(`should change the selected page number`, () => {
     actual = selector.default();
 
-    const expected = [{
+    expected = [{
       type: 'UPDATE_SELECTED_PAGE_NUM',
       pageNum: 4
     }];
 
-    actual.onUpdateSelectedPageNum(4);
+    const href = selector.makePaginationLink(4, actual).href;
+
+    actual.onUpdateSelectedPageNum(4, href);
 
     assert.deepEqual(store.getActions(), expected, `Didn't dispatch the expected action objects when onUpdateSelectedPageNum was called.`);
   });
@@ -57,5 +74,24 @@ describe(`modules/markets/selectors/pagination.js`, () => {
     actual = selector.default();
 
     paginationAssertions(actual);
+  });
+
+  it('should return the expected pagination href from `makePaginationLink`', () => {
+    actual = makePaginationLink(2, selector.default()).href;
+
+    expected = `/?${PAGE_PARAM_NAME}=2&${SEARCH_PARAM_NAME}=test%20testtag&${TAGS_PARAM_NAME}=testtag%2Ctag`;
+
+    assert.equal(actual, expected, 'generated href was not the expected string');
+  });
+
+  it('should return the expected actions when `onClick` is called from `makePaginationLink`', () => {
+    actual = makePaginationLink(3, selector.default()).onClick();
+
+    expected = [{
+      type: 'UPDATE_SELECTED_PAGE_NUM',
+      pageNum: 3
+    }];
+
+    assert.deepEqual(store.getActions(), expected, `Didn't dispatch the expected actions`);
   });
 });

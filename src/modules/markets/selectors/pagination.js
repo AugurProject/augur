@@ -1,8 +1,8 @@
 import store from 'src/store';
 
-import { updateSelectedPageNum } from 'modules/markets/actions/update-selected-page-num';
-
 import { makeLocation, parseURL } from 'utils/parse-url';
+
+import { updateSelectedPageNum } from 'modules/markets/actions/update-selected-page-num';
 
 export default function () {
   const { pagination } = store.getState();
