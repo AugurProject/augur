@@ -5,6 +5,8 @@ import sinon from 'sinon';
 import * as mockStore from 'test/mockStore';
 import marketsHeaderAssertions from 'assertions/markets-header';
 
+import { UPDATE_SELECTED_MARKETS_HEADER } from 'modules/markets/actions/update-selected-markets-header';
+
 describe(`modules/markets/selectors/markets-header.js`, () => {
   proxyquire.noPreserveCache().noCallThru();
   const { store } = mockStore.default;
@@ -41,22 +43,31 @@ describe(`modules/markets/selectors/markets-header.js`, () => {
 
   it(`should select the correct Markets Header`, () => {
     const actual = selector.default();
-    const expected = [{
-      type: 'UPDATE_SELECTED_MARKETS_HEADER',
-      header: null
-    }, {
-      type: 'UPDATE_SELECTED_MARKETS_HEADER',
-      header: 'favorites'
-    }, {
-      type: 'UPDATE_SELECTED_MARKETS_HEADER',
-      header: 'pending reports'
-    }];
+    const expected = [
+      {
+        type: UPDATE_SELECTED_MARKETS_HEADER,
+        header: null
+      },
+      {
+        type: UPDATE_SELECTED_MARKETS_HEADER,
+        header: 'favorites'
+      },
+      {
+        type: UPDATE_SELECTED_MARKETS_HEADER,
+        header: 'pending reports'
+      },
+      {
+        type: UPDATE_SELECTED_MARKETS_HEADER,
+        header: 'topic'
+      }
+    ];
 
     marketsHeaderAssertions(actual);
 
     actual.onClickAllMarkets();
     actual.onClickFavorites();
     actual.onClickPendingReports();
+    actual.onSelectedTopic('topic');
 
     assert.deepEqual(store.getActions(), expected, `Didn't dispatch the expected action objects from onclick events`);
   });
