@@ -1,13 +1,13 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import { UPDATED_SELECTED_MARKETS_HEADER } from 'modules/markets/actions/update-selected-markets-header';
+import { UPDATE_SELECTED_MARKETS_HEADER } from 'modules/markets/actions/update-selected-markets-header';
 import reducer from 'modules/markets/reducers/selected-markets-header';
 
 describe(`modules/markets/reducers/selected-markets-header.js`, () => {
   it(`should update the selected header`, () => {
     const selectedMarketsHeader = 'testmarket';
     const action = {
-      type: UPDATED_SELECTED_MARKETS_HEADER,
+      type: UPDATE_SELECTED_MARKETS_HEADER,
       selectedMarketsHeader
     };
     assert.equal(reducer(undefined, action), selectedMarketsHeader, `it didn't properly return the new Selected Market Header`);
