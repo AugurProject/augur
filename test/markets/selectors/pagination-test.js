@@ -1,4 +1,4 @@
-import { describe, it, before, after } from 'mocha';
+import { describe, it, beforeEach, after } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
@@ -11,7 +11,8 @@ import { PAGE_PARAM_NAME, SEARCH_PARAM_NAME, TAGS_PARAM_NAME } from 'modules/lin
 
 describe(`modules/markets/selectors/pagination.js`, () => {
   proxyquire.noPreserveCache().noCallThru();
-  let actual, expected;
+  let actual;
+  let expected;
   const { state, store } = mockStore.default;
 
   const mockPage = {
