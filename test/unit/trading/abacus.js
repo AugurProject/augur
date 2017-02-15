@@ -353,6 +353,37 @@ describe("abacus.calculateTradingCost", function () {
   });
 });
 
+describe("abacus.calculateValidityBond", function() {
+  // 2 tests total
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(abacus.calculateValidityBond.call(t.testThis, t.tradingFee, t.periodLength, t.baseReporters, t.numEventsCreatedInPast24Hours, t.numEventsInReportPeriod));
+    });
+  };
+  test({
+    testThis: { rpc: { gasPrice: 20000000000 } },
+    tradingFee: '0.03',
+    periodLength: 1440,
+    baseReporters: 50,
+    numEventsCreatedInPast24Hours: 20,
+    numEventsInReportPeriod: 25,
+    assertions: function(result) {
+      assert.deepEqual(result, '0.98103632478632478632');
+    }
+  });
+  test({
+    testThis: { rpc: { gasPrice: 20000000000 } },
+    tradingFee: '0.45',
+    periodLength: 1440,
+    baseReporters: 100,
+    numEventsCreatedInPast24Hours: 20,
+    numEventsInReportPeriod: 25,
+    assertions: function(result) {
+      assert.deepEqual(result, '0.15411324786324786325');
+    }
+  });
+});
+
 describe("abacus.calculateFxpTradingCost", function () {
   var test = function (t) {
     it(JSON.stringify(t), function () {

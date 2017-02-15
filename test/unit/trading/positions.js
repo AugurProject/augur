@@ -134,6 +134,13 @@ describe("positions", function () {
       });
     };
     test({
+      description: 'logs completely missing',
+      logs: undefined,
+      assertions: function(output) {
+        assert.deepEqual(output, {});
+      }
+    });
+    test({
       description: "no logs",
       logs: [],
       assertions: function (output) {
