@@ -45,7 +45,7 @@ export function loadReport(branchID, period, eventID, marketID, callback) {
           }));
           return callback(null);
         }
-        decryptReport(loginAccount, branchID, period, eventID, (err, decryptedReport) => {
+        decryptReport(branchID, period, eventID, (err, decryptedReport) => {
           if (err) return callback(err);
           console.log('decryptedReport:', decryptedReport);
           if (decryptedReport.reportedOutcomeID) {

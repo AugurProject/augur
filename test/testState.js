@@ -53,10 +53,7 @@ const testState = {
     prettyLoginID: 'test...reID',
     ether: 0,
     realEther: 0,
-    rep: 0,
-    keystore: {
-      id: '0x0000000000000000000000000000000000000001'
-    }
+    rep: 0
   },
   keywords: 'test testtag',
   marketsData: {

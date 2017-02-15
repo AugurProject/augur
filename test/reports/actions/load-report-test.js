@@ -9,12 +9,12 @@ describe('modules/reports/actions/load-report.js', () => {
   proxyquire.noPreserveCache().noCallThru();
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
-
   const test = (t) => {
     it(t.description, (done) => {
       const store = mockStore(t.state);
       const AugurJS = {
         augur: {
+          accounts: t.state.augur.accounts,
           getReport: () => {},
           getReportHash: () => {},
           unfixReport: () => {}
@@ -40,8 +40,8 @@ describe('modules/reports/actions/load-report.js', () => {
         report: t.blockchain.encryptedReports[t.state.branch.id][t.eventID].reportedOutcomeID,
         isIndeterminate: false
       }));
-      sinon.stub(ReportEncryption, 'decryptReport', (loginAccount, branchID, period, eventID, cb) => {
-        console.log('decryptReport:', loginAccount, branchID, period, eventID);
+      sinon.stub(ReportEncryption, 'decryptReport', (branchID, period, eventID, cb) => {
+        console.log('decryptReport:', branchID, period, eventID);
         cb(null, {
           reportedOutcomeID: t.blockchain.encryptedReports[branchID][eventID].reportedOutcomeID,
           salt: t.blockchain.encryptedReports[branchID][eventID].salt,
@@ -98,16 +98,23 @@ describe('modules/reports/actions/load-report.js', () => {
         currentPeriodProgress: 10,
         isReportRevealPhase: false
       },
-      loginAccount: {
-        address: '0x0000000000000000000000000000000000000b0b',
-        derivedKey: new Buffer('42', 'hex'),
-        keystore: {
-          crypto: {
-            kdfparams: {
-              salt: '0x1337'
+      augur: {
+        accounts: {
+          account: {
+            address: '0x0000000000000000000000000000000000000b0b',
+            derivedKey: new Buffer('42', 'hex'),
+            keystore: {
+              crypto: {
+                kdfparams: {
+                  salt: '0x1337'
+                }
+              }
             }
           }
-        },
+        }
+      },
+      loginAccount: {
+        address: '0x0000000000000000000000000000000000000b0b',
         ether: '10000',
         realEther: '2.5',
         rep: '47'
@@ -177,16 +184,23 @@ describe('modules/reports/actions/load-report.js', () => {
         currentPeriodProgress: 10,
         isReportRevealPhase: false
       },
-      loginAccount: {
-        address: '0x0000000000000000000000000000000000000b0b',
-        derivedKey: new Buffer('42', 'hex'),
-        keystore: {
-          crypto: {
-            kdfparams: {
-              salt: '0x1337'
+      augur: {
+        accounts: {
+          account: {
+            address: '0x0000000000000000000000000000000000000b0b',
+            derivedKey: new Buffer('42', 'hex'),
+            keystore: {
+              crypto: {
+                kdfparams: {
+                  salt: '0x1337'
+                }
+              }
             }
           }
-        },
+        }
+      },
+      loginAccount: {
+        address: '0x0000000000000000000000000000000000000b0b',
         ether: '10000',
         realEther: '2.5',
         rep: '47'
@@ -270,16 +284,23 @@ describe('modules/reports/actions/load-report.js', () => {
         currentPeriodProgress: 10,
         isReportRevealPhase: false
       },
-      loginAccount: {
-        address: '0x0000000000000000000000000000000000000b0b',
-        derivedKey: new Buffer('42', 'hex'),
-        keystore: {
-          crypto: {
-            kdfparams: {
-              salt: '0x1337'
+      augur: {
+        accounts: {
+          account: {
+            address: '0x0000000000000000000000000000000000000b0b',
+            derivedKey: new Buffer('42', 'hex'),
+            keystore: {
+              crypto: {
+                kdfparams: {
+                  salt: '0x1337'
+                }
+              }
             }
           }
-        },
+        }
+      },
+      loginAccount: {
+        address: '0x0000000000000000000000000000000000000b0b',
         ether: '10000',
         realEther: '2.5',
         rep: '47'
@@ -349,16 +370,23 @@ describe('modules/reports/actions/load-report.js', () => {
         currentPeriodProgress: 10,
         isReportRevealPhase: false
       },
-      loginAccount: {
-        address: '0x0000000000000000000000000000000000000b0b',
-        derivedKey: new Buffer('42', 'hex'),
-        keystore: {
-          crypto: {
-            kdfparams: {
-              salt: '0x1337'
+      augur: {
+        accounts: {
+          account: {
+            address: '0x0000000000000000000000000000000000000b0b',
+            derivedKey: new Buffer('42', 'hex'),
+            keystore: {
+              crypto: {
+                kdfparams: {
+                  salt: '0x1337'
+                }
+              }
             }
           }
-        },
+        }
+      },
+      loginAccount: {
+        address: '0x0000000000000000000000000000000000000b0b',
         ether: '10000',
         realEther: '2.5',
         rep: '47'
@@ -442,16 +470,23 @@ describe('modules/reports/actions/load-report.js', () => {
         currentPeriodProgress: 10,
         isReportRevealPhase: false
       },
-      loginAccount: {
-        address: '0x0000000000000000000000000000000000000b0b',
-        derivedKey: new Buffer('42', 'hex'),
-        keystore: {
-          crypto: {
-            kdfparams: {
-              salt: '0x1337'
+      augur: {
+        accounts: {
+          account: {
+            address: '0x0000000000000000000000000000000000000b0b',
+            derivedKey: new Buffer('42', 'hex'),
+            keystore: {
+              crypto: {
+                kdfparams: {
+                  salt: '0x1337'
+                }
+              }
             }
           }
-        },
+        }
+      },
+      loginAccount: {
+        address: '0x0000000000000000000000000000000000000b0b',
         ether: '10000',
         realEther: '2.5',
         rep: '47'
@@ -522,16 +557,23 @@ describe('modules/reports/actions/load-report.js', () => {
         currentPeriodProgress: 10,
         isReportRevealPhase: false
       },
-      loginAccount: {
-        address: '0x0000000000000000000000000000000000000b0b',
-        derivedKey: new Buffer('42', 'hex'),
-        keystore: {
-          crypto: {
-            kdfparams: {
-              salt: '0x1337'
+      augur: {
+        accounts: {
+          account: {
+            address: '0x0000000000000000000000000000000000000b0b',
+            derivedKey: new Buffer('42', 'hex'),
+            keystore: {
+              crypto: {
+                kdfparams: {
+                  salt: '0x1337'
+                }
+              }
             }
           }
-        },
+        }
+      },
+      loginAccount: {
+        address: '0x0000000000000000000000000000000000000b0b',
         ether: '10000',
         realEther: '2.5',
         rep: '47'
@@ -602,16 +644,23 @@ describe('modules/reports/actions/load-report.js', () => {
         currentPeriodProgress: 10,
         isReportRevealPhase: false
       },
-      loginAccount: {
-        address: '0x0000000000000000000000000000000000000b0b',
-        derivedKey: new Buffer('42', 'hex'),
-        keystore: {
-          crypto: {
-            kdfparams: {
-              salt: '0x1337'
+      augur: {
+        accounts: {
+          account: {
+            address: '0x0000000000000000000000000000000000000b0b',
+            derivedKey: new Buffer('42', 'hex'),
+            keystore: {
+              crypto: {
+                kdfparams: {
+                  salt: '0x1337'
+                }
+              }
             }
           }
-        },
+        }
+      },
+      loginAccount: {
+        address: '0x0000000000000000000000000000000000000b0b',
         ether: '10000',
         realEther: '2.5',
         rep: '47'
@@ -682,16 +731,23 @@ describe('modules/reports/actions/load-report.js', () => {
         currentPeriodProgress: 10,
         isReportRevealPhase: false
       },
-      loginAccount: {
-        address: '0x0000000000000000000000000000000000000b0b',
-        derivedKey: new Buffer('42', 'hex'),
-        keystore: {
-          crypto: {
-            kdfparams: {
-              salt: '0x1337'
+      augur: {
+        accounts: {
+          account: {
+            address: '0x0000000000000000000000000000000000000b0b',
+            derivedKey: new Buffer('42', 'hex'),
+            keystore: {
+              crypto: {
+                kdfparams: {
+                  salt: '0x1337'
+                }
+              }
             }
           }
-        },
+        }
+      },
+      loginAccount: {
+        address: '0x0000000000000000000000000000000000000b0b',
         ether: '10000',
         realEther: '2.5',
         rep: '47'
