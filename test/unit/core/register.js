@@ -30,10 +30,10 @@ describe("register", function () {
     augur.rpc.getLogs = getLogs;
   });
 
-  describe("parseLastTime: parse last time from session logs", function () {
+  describe("parseLastBlockNumber: parse last block from session logs", function () {
     var test = function (t) {
       it(t.description, function () {
-        t.assertions(augur.parseLastTime(t.logs));
+        t.assertions(augur.parseLastBlockNumber(t.logs));
       });
     };
     test({
@@ -44,10 +44,11 @@ describe("register", function () {
           "0x19a49d2acfeb2c56bc742081b752ef527725fe0253f511d34d5364668b4475fe",
           "0x0000000000000000000000000000000000000000000000000000000000000b0b",
           "0x0000000000000000000000000000000000000000000000000000000000000002"
-        ]
+        ],
+        blockNumber: "0x1"
       }],
       assertions: function (output) {
-        assert.strictEqual(output.getTime(), 1473976053000);
+        assert.strictEqual(output, 1);
       }
     });
     test({
@@ -58,33 +59,35 @@ describe("register", function () {
           "0x19a49d2acfeb2c56bc742081b752ef527725fe0253f511d34d5364668b4475fe",
           "0x0000000000000000000000000000000000000000000000000000000000000b0b",
           "0x0000000000000000000000000000000000000000000000000000000000000002"
-        ]
+        ],
+        blockNumber: "0x1"
       }, {
         data: "0x0000000000000000000000000000000000000000000000000000000057db1716",
         topics: [
           "0x19a49d2acfeb2c56bc742081b752ef527725fe0253f511d34d5364668b4475fe",
           "0x0000000000000000000000000000000000000000000000000000000000000b0b",
           "0x0000000000000000000000000000000000000000000000000000000000000002"
-        ]
+        ],
+        blockNumber: "0x2"
       }],
       assertions: function (output) {
-        assert.strictEqual(output.getTime(), 1473976086000);
+        assert.strictEqual(output, 2);
       }
     });
   });
 
-  describe("getRegisterTime: look up user's most recent register timestamp", function () {
+  describe("getRegisterBlockNumber: look up user's most recent register block number", function () {
     var test = function (t) {
       it(t.description, function (done) {
         augur.rpc.getLogs = function (filter, callback) {
           if (!callback) return t.logs;
           callback(t.logs);
         };
-        augur.getRegisterTime(t.account, t.options, function (err, timestamp) {
+        augur.getRegisterBlockNumber(t.account, t.options, function (err, blockNumber) {
           assert.isNull(err);
           t.assertions({
-            async: timestamp,
-            sync: augur.getRegisterTime(t.account, t.options)
+            async: blockNumber,
+            sync: augur.getRegisterBlockNumber(t.account, t.options)
           });
           done();
         });
@@ -109,14 +112,15 @@ describe("register", function () {
           "0x19a49d2acfeb2c56bc742081b752ef527725fe0253f511d34d5364668b4475fe",
           "0x0000000000000000000000000000000000000000000000000000000000000b0b",
           "0x0000000000000000000000000000000000000000000000000000000000000001"
-        ]
+        ],
+        blockNumber: "0x2"
       }],
       assertions: function (output) {
         assert.isObject(output);
-        assert.strictEqual(output.sync.constructor, Date);
-        assert.strictEqual(output.async.constructor, Date);
-        assert.strictEqual(output.sync.getTime(), output.async.getTime());
-        assert.strictEqual(output.async.getTime(), 1473976053000);
+        assert.strictEqual(output.sync.constructor, Number);
+        assert.strictEqual(output.async.constructor, Number);
+        assert.strictEqual(output.sync, output.async);
+        assert.strictEqual(output.async, 2);
       }
     });
     test({
@@ -128,112 +132,23 @@ describe("register", function () {
           "0x19a49d2acfeb2c56bc742081b752ef527725fe0253f511d34d5364668b4475fe",
           "0x0000000000000000000000000000000000000000000000000000000000000b0b",
           "0x0000000000000000000000000000000000000000000000000000000000000001"
-        ]
+        ],
+        blockNumber: "0x1"
       }, {
         data: "0x0000000000000000000000000000000000000000000000000000000057db1716",
         topics: [
           "0x19a49d2acfeb2c56bc742081b752ef527725fe0253f511d34d5364668b4475fe",
           "0x0000000000000000000000000000000000000000000000000000000000000b0b",
           "0x0000000000000000000000000000000000000000000000000000000000000001"
-        ]
+        ],
+        blockNumber: "0x2"
       }],
       assertions: function (output) {
         assert.isObject(output);
-        assert.strictEqual(output.sync.constructor, Date);
-        assert.strictEqual(output.async.constructor, Date);
-        assert.strictEqual(output.sync.getTime(), output.async.getTime());
-        assert.strictEqual(output.async.getTime(), 1473976086000);
-      }
-    });
-  });
-
-  describe("getRegisterLogs", function () {
-    var test = function (t) {
-      it(t.description, function (done) {
-        augur.rpc.getLogs = function (filter, callback) {
-          if (!callback) return t.logs;
-          callback(t.logs);
-        };
-        augur.getRegisterLogs(t.account, t.options, function (err, timestamp) {
-          assert.isNull(err);
-          t.assertions({
-            async: timestamp,
-            sync: augur.getRegisterLogs(t.account, t.options)
-          });
-          done();
-        });
-      });
-    };
-    test({
-      description: "1 session log",
-      account: "0xbob",
-      logs: [{
-        data: "0x0000000000000000000000000000000000000000000000000000000057db16f5",
-        topics: [
-          "0x19a49d2acfeb2c56bc742081b752ef527725fe0253f511d34d5364668b4475fe",
-          "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-          "0x0000000000000000000000000000000000000000000000000000000000000001"
-        ]
-      }],
-      assertions: function (output) {
-        assert.isObject(output);
-        assert.isArray(output.sync);
-        assert.isArray(output.async);
-        assert.deepEqual(output.sync, output.async);
-        var expected = [{
-          data: "0x0000000000000000000000000000000000000000000000000000000057db16f5",
-          topics: [
-            "0x19a49d2acfeb2c56bc742081b752ef527725fe0253f511d34d5364668b4475fe",
-            "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-            "0x0000000000000000000000000000000000000000000000000000000000000001"
-          ]
-        }];
-        assert.strictEqual(output.sync.length, expected.length);
-        assert.strictEqual(output.async.length, expected.length);
-        assert.deepEqual(output.async, expected);
-      }
-    });
-    test({
-      description: "2 session logs",
-      account: "0xbob",
-      logs: [{
-        data: "0x0000000000000000000000000000000000000000000000000000000057db16f5",
-        topics: [
-          "0x19a49d2acfeb2c56bc742081b752ef527725fe0253f511d34d5364668b4475fe",
-          "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-          "0x0000000000000000000000000000000000000000000000000000000000000001"
-        ]
-      }, {
-        data: "0x0000000000000000000000000000000000000000000000000000000057db1716",
-        topics: [
-          "0x19a49d2acfeb2c56bc742081b752ef527725fe0253f511d34d5364668b4475fe",
-          "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-          "0x0000000000000000000000000000000000000000000000000000000000000001"
-        ]
-      }],
-      assertions: function (output) {
-        assert.isObject(output);
-        assert.isArray(output.sync);
-        assert.isArray(output.async);
-        assert.deepEqual(output.sync, output.async);
-        var expected = [{
-          data: "0x0000000000000000000000000000000000000000000000000000000057db16f5",
-          topics: [
-            "0x19a49d2acfeb2c56bc742081b752ef527725fe0253f511d34d5364668b4475fe",
-            "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-            "0x0000000000000000000000000000000000000000000000000000000000000001"
-          ]
-        }, {
-          data: "0x0000000000000000000000000000000000000000000000000000000057db1716",
-          topics: [
-            "0x19a49d2acfeb2c56bc742081b752ef527725fe0253f511d34d5364668b4475fe",
-            "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-            "0x0000000000000000000000000000000000000000000000000000000000000001"
-          ]
-        }];
-        assert.strictEqual(output.sync.length, expected.length);
-        assert.strictEqual(output.async.length, expected.length);
-        assert.deepEqual(output.async, expected);
+        assert.strictEqual(output.sync.constructor, Number);
+        assert.strictEqual(output.async.constructor, Number);
+        assert.strictEqual(output.sync, output.async);
+        assert.strictEqual(output.async, 2);
       }
     });
   });
