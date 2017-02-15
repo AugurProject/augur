@@ -278,12 +278,10 @@ module.exports = function () {
       mutex.lock(function () {
         for (var rawTxHash in augur.rpc.rawTxs) {
           if (!augur.rpc.rawTxs.hasOwnProperty(rawTxHash)) continue;
-          if (augur.rpc.rawTxs[rawTxHash].tx.nonce === packaged.nonce &&
-                        (!augur.rpc.txs[rawTxHash] || augur.rpc.txs[rawTxHash].status !== "failed")) {
+          if (augur.rpc.rawTxs[rawTxHash].tx.nonce === packaged.nonce && (!augur.rpc.txs[rawTxHash] || augur.rpc.txs[rawTxHash].status !== "failed")) {
             packaged.nonce = abi.hex(augur.rpc.rawTxMaxNonce + 1);
             if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
-              console.debug("[augur.js] duplicate nonce, incremented:",
-                                parseInt(packaged.nonce, 16), augur.rpc.rawTxMaxNonce);
+              console.debug("[augur.js] duplicate nonce, incremented:", parseInt(packaged.nonce, 16), augur.rpc.rawTxMaxNonce);
             }
             break;
           }
