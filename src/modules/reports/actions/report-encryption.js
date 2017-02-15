@@ -10,10 +10,10 @@ export function encryptReport(report, encryptionKey, salt) {
   return encrypted;
 }
 
-export function decryptReport(loginAccount, branchID, period, eventID, callback) {
-  if (!loginAccount.derivedKey) return callback(null);
-  augur.getAndDecryptReport(branchID, period, loginAccount.address, eventID, {
-    derivedKey: loginAccount.derivedKey
+export function decryptReport(branchID, period, eventID, callback) {
+  if (!augur.accounts.account.derivedKey) return callback(null);
+  augur.getAndDecryptReport(branchID, period, augur.accounts.account.address, eventID, {
+    derivedKey: augur.accounts.account.derivedKey
   }, (plaintext) => {
     if (!plaintext) return callback('getAndDecryptReport failed');
     if (!plaintext.report || plaintext.error) {
