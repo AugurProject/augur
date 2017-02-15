@@ -18,38 +18,29 @@ describe('modules/markets/actions/load-markets-by-topic.js', () => {
           findMarketsWithTopic: () => {}
         }
       };
-      const mockSelectors = {
-        branch: {
-          id: '0xbranch1'
-        }
-      };
+      // const mockSelectors = {
+      //   branch: {
+      //     id: '0xbranch1'
+      //   }
+      // };
 
       const mockLoadMarketsInfo = {};
 
       mockLoadMarketsInfo.loadMarketsInfo = sinon.stub().returns(() => {});
 
       AugurJS.augur.findMarketsWithTopic = sinon.stub();
-
-      if (t.topic === 'fail-err') {
-        AugurJS.augur.findMarketsWithTopic.yields('failed with err', null);
-      }
-      if (t.topic === 'fail-empty-markets') {
-        AugurJS.augur.findMarketsWithTopic.yields(null, null);
-      }
-      if (t.topic === 'test') {
-        AugurJS.augur.findMarketsWithTopic.yields(null, ['0x1, 0x2']);
-      }
-      if (t.topic === 'test-no-markets') {
-        AugurJS.augur.findMarketsWithTopic.yields(null, []);
-      }
+      if (t.toTest === 'err') AugurJS.augur.findMarketsWithTopic.yields('failed with err', null);
+      if (t.toTest === 'null-markets') AugurJS.augur.findMarketsWithTopic.yields(null, null);
+      if (t.toTest === 'array') AugurJS.augur.findMarketsWithTopic.yields(null, ['0x1, 0x2']);
+      if (t.toTest === 'empty-array') AugurJS.augur.findMarketsWithTopic.yields(null, []);
 
       const action = proxyquire('../../../src/modules/markets/actions/load-markets-by-topic', {
         '../../../services/augurjs': AugurJS,
-        '../../selectors': mockSelectors,
+        // '../../selectors': mockSelectors,
         './load-markets-info': mockLoadMarketsInfo
       });
 
-      store.dispatch(action.loadMarketsByTopic(t.topic));
+      store.dispatch(action.loadMarketsByTopic());
 
       t.assertions(store.getActions(), mockLoadMarketsInfo.loadMarketsInfo);
     });
@@ -57,7 +48,7 @@ describe('modules/markets/actions/load-markets-by-topic.js', () => {
 
   test({
     description: 'should dispatch the expected actions on err',
-    topic: 'fail-err',
+    toTest: 'err',
     assertions: (actions) => {
       const expected = [
         {
@@ -71,13 +62,13 @@ describe('modules/markets/actions/load-markets-by-topic.js', () => {
       ];
 
 
-      assert(actions, expected, 'error message was not handled as expected');
+      assert(actions, expected, 'error was not handled as expected');
     }
   });
 
   test({
     description: 'should dispatch the expected actions with no error + no marketIDs returned',
-    topic: 'fail-empty-markets',
+    toTest: 'null-markets',
     assertions: (actions) => {
       const expected = [
         {
@@ -90,13 +81,13 @@ describe('modules/markets/actions/load-markets-by-topic.js', () => {
         }
       ];
 
-      assert(actions, expected, 'error message was not handled as expected');
+      assert(actions, expected, 'error was not handled as expected');
     }
   });
 
   test({
-    description: 'should dispatch the expected actions with no error + array or returned marketIDs',
-    topic: 'test',
+    description: 'should dispatch the expected actions with no error + array of returned marketIDs',
+    toTest: 'array',
     assertions: (actions, loadMarketsInfo) => {
       const expected = [
         {
@@ -105,14 +96,14 @@ describe('modules/markets/actions/load-markets-by-topic.js', () => {
         }
       ];
 
-      assert(actions, expected, 'error message was not handled as expected');
+      assert(actions, expected, 'returned array was not handled as expected');
       assert.isTrue(loadMarketsInfo.calledOnce);
     }
   });
 
   test({
     description: 'should dispatch the expected actions with no error + an empty array of marketIDs',
-    topic: 'test-no-markets',
+    toTest: 'empty-array',
     assertions: (actions, loadMarketsInfo) => {
       const expected = [
         {
@@ -121,7 +112,7 @@ describe('modules/markets/actions/load-markets-by-topic.js', () => {
         }
       ];
 
-      assert(actions, expected, 'error message was not handled as expected');
+      assert(actions, expected, 'empty array was not handled as expected');
       assert.isFalse(loadMarketsInfo.called);
     }
   });

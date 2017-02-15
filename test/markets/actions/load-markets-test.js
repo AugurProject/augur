@@ -14,46 +14,151 @@ describe(`modules/markets/actions/load-markets.js`, () => {
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
   const state = Object.assign({}, testState);
-  const store = mockStore(state);
-  const mockAugurJS = { augur: {} };
 
-  mockAugurJS.augur.loadNumMarkets = sinon.stub();
-  mockAugurJS.augur.loadMarkets = sinon.stub();
-  mockAugurJS.augur.loadNumMarkets.yields(null, 1);
-  mockAugurJS.augur.loadMarkets.yields(null, {
-    marketsData: {
-      _id: 'test',
-      test: 'info',
-      example: 'test info'
+  const test = (t) => {
+    it(t.description, () => {
+      const store = mockStore(state);
+      const AugurJS = {
+        augur: {}
+      };
+
+      AugurJS.augur.loadMarkets = sinon.stub();
+
+      if (t.toTest === 'err') AugurJS.augur.loadMarkets.yields('fails', null);
+      if (t.toTest === 'null-markets-data') AugurJS.augur.loadMarkets.yields(null, null);
+      if (t.toTest === 'object') AugurJS.augur.loadMarkets.yields(null, { test: 'test' });
+      if (t.toTest === 'empty-object') AugurJS.augur.loadMarkets.yields(null, {});
+
+      const action = proxyquire('../../../src/modules/markets/actions/load-markets', {
+        '../../../services/augurjs': AugurJS
+      });
+
+      store.dispatch(action.loadMarkets());
+
+      t.assertions(store.getActions());
+    });
+  };
+
+  test({
+    description: 'should dispatch the expected actions of err',
+    toTest: 'err',
+    assertions: (actions) => {
+      const expected = [
+        {
+          type: UPDATE_HAS_LOADED_MARKETS,
+          hasLoadedMarkets: true
+        },
+        {
+          type: UPDATE_HAS_LOADED_MARKETS,
+          hasLoadedMarkets: false
+        }
+      ];
+
+      assert.deepEqual(actions, expected, 'error was not handled as expected');
     }
   });
 
-  const action = proxyquire('../../../src/modules/markets/actions/load-markets', {
-    '../../../services/augurjs': mockAugurJS
+  test({
+    description: 'should dispatch the expected actions with no error + no marketsData returned',
+    toTest: 'null-markets-data',
+    assertions: (actions) => {
+      const expected = [
+        {
+          type: UPDATE_HAS_LOADED_MARKETS,
+          hasLoadedMarkets: true
+        },
+        {
+          type: UPDATE_HAS_LOADED_MARKETS,
+          hasLoadedMarkets: false
+        }
+      ];
+
+      // console.log('actions -- ', actions);
+      assert.deepEqual(actions, expected, 'error was not handled as expected');
+    }
   });
 
-  it(`should load markets properly`, () => {
-    const out = [
-      {
-        hasLoadedMarkets: true,
-        type: UPDATE_HAS_LOADED_MARKETS
-      },
-      {
-        type: UPDATE_MARKETS_DATA,
-        marketsData: {
+  test({
+    description: 'should dispatch the expected actions with no error + object of returned marketsData',
+    toTest: 'object',
+    assertions: (actions) => {
+      const expected = [
+        {
+          type: UPDATE_HAS_LOADED_MARKETS,
+          hasLoadedMarkets: true
+        },
+        {
+          type: UPDATE_MARKETS_DATA,
           marketsData: {
-            _id: 'test',
-            test: 'info',
-            example: 'test info'
+            test: 'test'
           }
         }
-      }
-    ];
+      ];
 
-    store.dispatch(action.loadMarkets('0xf69b5'));
-
-    assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct actions`);
-    assert(mockAugurJS.augur.loadMarkets.calledOnce, `AugurJS.loadMarkets() wasn't called once`);
+      assert.deepEqual(actions, expected, 'returned object was not handled as expected');
+    }
   });
 
+  test({
+    description: 'should dispatch the expected actions with no error + an empty object of marketsData',
+    toTest: 'empty-object',
+    assertions: (actions) => {
+      const expected = [
+        {
+          type: UPDATE_HAS_LOADED_MARKETS,
+          hasLoadedMarkets: true
+        }
+      ];
+
+      assert.deepEqual(actions, expected, 'returned object was not handled as expected');
+    }
+  });
 });
+
+// proxyquire.noPreserveCache().noCallThru();
+// const middlewares = [thunk];
+// const mockStore = configureMockStore(middlewares);
+// const state = Object.assign({}, testState);
+// const store = mockStore(state);
+// const mockAugurJS = { augur: {} };
+//
+// mockAugurJS.augur.loadNumMarkets = sinon.stub();
+// mockAugurJS.augur.loadMarkets = sinon.stub();
+// mockAugurJS.augur.loadNumMarkets.yields(null, 1);
+// mockAugurJS.augur.loadMarkets.yields(null, {
+//   marketsData: {
+//     _id: 'test',
+//     test: 'info',
+//     example: 'test info'
+//   }
+// });
+//
+// const action = proxyquire('../../../src/modules/markets/actions/load-markets', {
+//   '../../../services/augurjs': mockAugurJS
+// });
+//
+// it(`should load markets properly`, () => {
+//   const out = [
+//     {
+//       hasLoadedMarkets: true,
+//       type: UPDATE_HAS_LOADED_MARKETS
+//     },
+//     {
+//       type: UPDATE_MARKETS_DATA,
+//       marketsData: {
+//         marketsData: {
+//           _id: 'test',
+//           test: 'info',
+//           example: 'test info'
+//         }
+//       }
+//     }
+//   ];
+//
+//   store.dispatch(action.loadMarkets('0xf69b5'));
+//
+//   console.log('store.getActions() -- ', store.getActions());
+//
+//   // assert.deepEqual(store.getActions(), out, `Didn't dispatch the correct actions`);
+//   // assert(mockAugurJS.augur.loadMarkets.calledOnce, `AugurJS.loadMarkets() wasn't called once`);
+// });
