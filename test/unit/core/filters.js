@@ -1495,3 +1495,31 @@ describe("start_block_listener", function() {
     }
   });
 });
+describe.skip("pacemaker", function() {});
+describe.skip("listen", function() {});
+describe("all_filters_removed", function() {
+  // 2 tests total
+  var filter = augur.filters.filter;
+  afterEach(function() {
+    augur.filters.filter = filter;
+  });
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      augur.filters.filter = t.filter || filter;
+
+      t.assertions(augur.filters.all_filters_removed());
+    });
+  };
+  test({
+    assertions: function(isRemoved) {
+      assert.isTrue(isRemoved);
+    }
+  });
+  test({
+    filter: { test: { id: '0x1', heartbeat: null} },
+    assertions: function(isRemoved) {
+      assert.isFalse(isRemoved);
+    }
+  });
+});
+describe.skip("ignore", function() {});
