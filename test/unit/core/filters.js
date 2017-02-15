@@ -1321,3 +1321,109 @@ describe("setup_block_filter", function() {
     }
   });
 });
+describe("start_event_listener", function() {
+  // 10 tests total
+  var setup_event_filter = augur.filters.setup_event_filter;
+  var filter = augur.filters.filter;
+  afterEach(function() {
+    augur.filters.setup_event_filter = setup_event_filter;
+    // make sure filter is completely nulled out before we start a new test.
+    for (var label in filter) {
+      if (!filter.hasOwnProperty(label)) continue;
+      filter[label] = { id: null, heartbeat: null };
+    }
+    augur.filters.filter = filter;
+  });
+  var test = function(t) {
+    it(JSON.stringify(t) + 'async', function(done) {
+      augur.filters.setup_event_filter = t.setup_event_filter;
+      augur.filters.filter = t.filter || filter;
+
+      augur.filters.start_event_listener(t.label, function(filterID) {
+        t.assertions(filterID);
+        done()
+      });
+    });
+    it(JSON.stringify(t) + 'sync', function() {
+      augur.filters.setup_event_filter = t.setup_event_filter;
+      augur.filters.filter = t.filter || filter;
+
+      t.assertions(augur.filters.start_event_listener(t.label, undefined));
+    })
+  };
+  test({
+    label: 'withdraw',
+    filter: { 'withdraw': { id: '0x1', heartbeat: null } },
+    setup_event_filter: function(contract, label, cb) {
+      // shouldnt get hit
+      assert.isTrue(false, 'setup_event_filter called when it should not have been!');
+    },
+    assertions: function(filterID) {
+      assert.deepEqual(filterID, '0x1');
+    }
+  });
+  test({
+    label: 'withdraw',
+    setup_event_filter: function(contract, label, cb) {
+      assert.deepEqual(contract, 'Cash');
+      assert.deepEqual(label, 'withdraw');
+      if (utils.is_function(cb)) return cb('0x1');
+      return '0x1';
+    },
+    assertions: function(filterID) {
+      assert.deepEqual(filterID, '0x1');
+      assert.deepEqual(augur.filters.filter.withdraw, {
+      	id: '0x1',
+      	heartbeat: null
+      });
+    }
+  });
+  test({
+    label: 'tradingFeeUpdated',
+    setup_event_filter: function(contract, label, cb) {
+      assert.deepEqual(contract, 'CreateMarket');
+      assert.deepEqual(label, 'tradingFeeUpdated');
+      if (utils.is_function(cb)) return cb(undefined);
+      return undefined;
+    },
+    assertions: function(filterID) {
+      assert.deepEqual(filterID, augur.errors.FILTER_NOT_CREATED);
+      assert.deepEqual(augur.filters.filter.tradingFeeUpdated, {
+      	id: null,
+      	heartbeat: null
+      });
+    }
+  });
+  test({
+    label: 'trade_logReturn',
+    setup_event_filter: function(contract, label, cb) {
+      assert.deepEqual(contract, 'Trade');
+      assert.deepEqual(label, 'trade_logReturn');
+      if (utils.is_function(cb)) return cb('0x');
+      return '0x';
+    },
+    assertions: function(filterID) {
+      assert.deepEqual(filterID, augur.errors.FILTER_NOT_CREATED);
+      assert.deepEqual(augur.filters.filter.trade_logReturn, {
+      	id: null,
+      	heartbeat: null
+      });
+    }
+  });
+  test({
+    label: 'payout',
+    setup_event_filter: function(contract, label, cb) {
+      assert.deepEqual(contract, 'Payout');
+      assert.deepEqual(label, 'payout');
+      if (cb && utils.is_function(cb)) return cb({ error: -1, message: "sender doesn't exist / match up with the participant given participant number" });
+      return { error: -1, message: "sender doesn't exist / match up with the participant given participant number" };
+    },
+    assertions: function(filterID) {
+      assert.deepEqual(filterID, { error: -1, message: "sender doesn't exist / match up with the participant given participant number" });
+      assert.deepEqual(augur.filters.filter.payout, {
+      	id: null,
+      	heartbeat: null
+      });
+    }
+  });
+});
