@@ -497,6 +497,46 @@ describe("parse_block_message", function () {
     transactionsRoot: '0x7c416eb59638d9a58ec5f526dd1b4326f37e50fa3968700e28d5f65f704e85fc',
     uncles: []
   });
+  test([{
+    difficulty: '0x456f3e0b',
+    extraData: '0xd783010500844765746887676f312e352e31856c696e7578',
+    gasLimit: '0x47e7c4',
+    gasUsed: '0x493e0',
+    hash: '0x6eb2ccd03087179bf53e32ef89db8ae1a7d4c407c691f31c467825e631a53c02',
+    logsBloom: '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+    miner: '0xdf712c685be75739eb44cb6665f92129e45864e4',
+    nonce: '0xd3764129399cdce6',
+    number: '0x119633',
+    parentHash: '0x9b3dda703bc0de8a2162adb1666880f1dca6f421190616733c7b5a3e127ec7eb',
+    receiptRoot: '0x197e4c93706b5c8d685a47909374a99b096948295abba0578aae46708a1e4435',
+    sha3Uncles: '0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347',
+    size: '0x2b6',
+    stateRoot: '0x385a5bdca25f1214fd9e244ac7146cf9dfc21f6a4dfe29819cdd069b2bfc63b8',
+    timestamp: '0x57648910',
+    totalDifficulty: '0xf19cf28ef992',
+    transactionsRoot: '0x7c416eb59638d9a58ec5f526dd1b4326f37e50fa3968700e28d5f65f704e85fc',
+    uncles: []
+  }]);
+  test([{
+    difficulty: '0x456f3e0b',
+    extraData: '0xd783010500844765746887676f312e352e31856c696e7578',
+    gasLimit: '0x47e7c4',
+    gasUsed: '0x493e0',
+    hash: '0x6eb2ccd03087179bf53e32ef89db8ae1a7d4c407c691f31c467825e631a53c02',
+    logsBloom: '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+    miner: '0xdf712c685be75739eb44cb6665f92129e45864e4',
+    nonce: '0xd3764129399cdce6',
+    number: undefined,
+    parentHash: '0x9b3dda703bc0de8a2162adb1666880f1dca6f421190616733c7b5a3e127ec7eb',
+    receiptRoot: '0x197e4c93706b5c8d685a47909374a99b096948295abba0578aae46708a1e4435',
+    sha3Uncles: '0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347',
+    size: '0x2b6',
+    stateRoot: '0x385a5bdca25f1214fd9e244ac7146cf9dfc21f6a4dfe29819cdd069b2bfc63b8',
+    timestamp: '0x57648910',
+    totalDifficulty: '0xf19cf28ef992',
+    transactionsRoot: '0x7c416eb59638d9a58ec5f526dd1b4326f37e50fa3968700e28d5f65f704e85fc',
+    uncles: []
+  }]);
 });
 describe("parse_contracts_message", function () {
   var test = function (msg) {
@@ -1042,12 +1082,21 @@ describe("parse_event_message", function () {
 describe("poll_filter", function() {
   // 4 tests total
   var getFilterChanges = augur.rpc.getFilterChanges;
+  var parse_event_message = augur.filters.parse_event_message;
+  var parse_block_message = augur.filters.parse_block_message;
+  var parse_contracts_message = augur.filters.parse_contracts_message;
   afterEach(function() {
     augur.rpc.getFilterChanges = getFilterChanges;
+    augur.filters.parse_event_message = parse_event_message;
+    augur.filters.parse_block_message = parse_block_message;
+    augur.filters.parse_contracts_message = parse_contracts_message;
   });
   var test = function(t) {
     it(JSON.stringify(t), function() {
-      augur.rpc.getFilterChanges = t.assertions;
+      augur.rpc.getFilterChanges = t.getFilterChanges;
+      augur.filters.parse_event_message = t.assertions;
+      augur.filters.parse_block_message = t.assertions;
+      augur.filters.parse_contracts_message = t.assertions;
       // set the id, we do this because otherwise they would all be null as that's the default state.
       if (augur.filters.filter[t.label]) augur.filters.filter[t.label].id = t.id;
 
@@ -1061,7 +1110,7 @@ describe("poll_filter", function() {
     label: 'unrecognized label',
     onMessage: function(msg) {
     },
-    assertions: function(filterID, cb) {
+    getFilterChanges: function(filterID, cb) {
       // in this case we should just exit the function if it's not recognized label and never hit this assertion.
       assert.isTrue(false, 'Should not call augur.rpc.getFilterChanges if the label passed is not recognized');
     }
@@ -1070,33 +1119,49 @@ describe("poll_filter", function() {
     label: 'withdraw',
     id: '0x1',
     onMessage: utils.noop,
-    assertions: function(filterID, cb) {
+    assertions: function(label, msg, cb) {
+      assert.deepEqual(label, 'withdraw');
+      assert.deepEqual(msg, { value: '10', to: '0x0000000000000000000000000000000000000001'});
+      assert.deepEqual(cb, utils.noop);
+    },
+    getFilterChanges: function(filterID, cb) {
         assert.deepEqual(filterID, '0x1');
         assert.isFunction(cb);
         // convert CB to string to confirm we created the correct callback and it contains the expected call within it.
         assert.include(cb.toString(), 'self.parse_event_message');
+        cb({ value: '10', to: '0x0000000000000000000000000000000000000001'}, cb);
     }
   });
   test({
     label: 'contracts',
     id: '0x2',
     onMessage: utils.noop,
-    assertions: function(filterID, cb) {
+    assertions: function(msg, onMessage) {
+      assert.deepEqual(msg, { data: ['0x1', '0x2']});
+      assert.deepEqual(onMessage, utils.noop);
+    },
+    getFilterChanges: function(filterID, cb) {
         assert.deepEqual(filterID, '0x2');
         assert.isFunction(cb);
         // convert CB to string to confirm we created the correct callback and it contains the expected call within it.
         assert.include(cb.toString(), 'self.parse_contracts_message');
+        cb({ data: ['0x1', '0x2']}, cb);
     }
   });
   test({
     label: 'block',
     id: '0x3',
     onMessage: utils.noop,
-    assertions: function(filterID, cb) {
+    assertions: function(msg, onMessage) {
+      assert.deepEqual(msg, '0x11941a');
+      assert.deepEqual(onMessage, utils.noop);
+    },
+    getFilterChanges: function(filterID, cb) {
         assert.deepEqual(filterID, '0x3');
         assert.isFunction(cb);
         // convert CB to string to confirm we created the correct callback and it contains the expected call within it.
         assert.include(cb.toString(), 'self.parse_block_message');
+        cb('0x11941a', cb);
     }
   });
 });
