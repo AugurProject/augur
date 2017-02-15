@@ -9,7 +9,6 @@ export default function () {
   return {
     topics: selectTopics(topics),
     selectTopic: (topic) => {
-      console.log('selectTopic -- ', topic);
       selectTopicLink(topic, store.dispatch).onClick();
     }
   };
