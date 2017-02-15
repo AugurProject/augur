@@ -2,25 +2,22 @@ import store from 'src/store';
 
 import { updateSelectedPageNum } from 'modules/markets/actions/update-selected-page-num';
 
-import { makeLocation } from 'utils/parse-url';
-
-import { PAGE_PARAM_NAME, TOPIC_PARAM_NAME } from 'modules/link/constants/param-names';
+import { makeLocation, parseURL } from 'utils/parse-url';
 
 export default function () {
-  const { pagination, selectedTopic } = store.getState();
-  const { marketsTotals } = require('../../../selectors');
+  const { pagination } = store.getState();
+  const { marketsTotals, links } = require('src/selectors');
 
   if (!pagination || !marketsTotals.numUnpaginated) {
     return {};
   }
 
-  function makeLink(page, topic, o) {
-    const params = {};
+  function makeLink(page, o) {
+    const parsedMarketsURL = parseURL(links.marketsLink.href);
 
-    if (page) params[PAGE_PARAM_NAME] = page;
-    if (topic) params[TOPIC_PARAM_NAME] = topic;
+    parsedMarketsURL.searchParams.page = page;
 
-    const href = makeLocation(params).url;
+    const href = makeLocation(parsedMarketsURL.searchParams).url;
 
     return {
       href,
@@ -46,8 +43,8 @@ export default function () {
     o.nextItemNum = o.selectedPageNum < o.numPages ? o.endItemNum + 1 : undefined;
     o.previousItemNum = o.selectedPageNum >= 2 ? o.startItemNum - o.numPerPage : undefined;
 
-    o.nextPageLink = o.nextPageNum ? makeLink(o.nextPageNum, selectedTopic, o) : null;
-    o.previousPageLink = o.previousPageNum ? makeLink(o.previousPageNum, selectedTopic, o) : null;
+    o.nextPageLink = o.nextPageNum ? makeLink(o.nextPageNum, o) : null;
+    o.previousPageLink = o.previousPageNum ? makeLink(o.previousPageNum, o) : null;
   }
 
   return o;

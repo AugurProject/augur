@@ -22,12 +22,12 @@ import { listWordsUnderLength } from 'utils/list-words-under-length';
 import { makeLocation } from 'utils/parse-url';
 
 export default function () {
-  const { keywords, selectedFilterSort, selectedTags, pagination, loginAccount, auth, loginMessage } = store.getState();
+  const { keywords, selectedFilterSort, selectedTags, selectedTopic, pagination, loginAccount, auth, loginMessage } = store.getState();
   const { market } = require('../../../selectors');
   return {
     authLink: selectAuthLink(auth.selectedAuthType, !!loginAccount.address, store.dispatch),
     createMarketLink: selectCreateMarketLink(store.dispatch),
-    marketsLink: selectMarketsLink(keywords, selectedFilterSort, selectedTags, pagination.selectedPageNum, null, null, store.dispatch),
+    marketsLink: selectMarketsLink(keywords, selectedFilterSort, selectedTags, pagination.selectedPageNum, null, selectedTopic, store.dispatch),
     favoritesLink: selectMarketsLink(keywords, selectedFilterSort, selectedTags, pagination.selectedPageNum, FAVORITES, null, store.dispatch),
     pendingReportsLink: selectMarketsLink(keywords, selectedFilterSort, selectedTags, pagination.selectedPageNum, PENDING_REPORTS, null, store.dispatch),
     transactionsLink: selectTransactionsLink(store.dispatch),
