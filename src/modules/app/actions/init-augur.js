@@ -7,8 +7,7 @@ import { loadChatMessages } from '../../chat/actions/load-chat-messages';
 import { setLoginAccount } from '../../auth/actions/set-login-account';
 import { loadBranch } from '../../app/actions/load-branch';
 import { registerTransactionRelay } from '../../transactions/actions/register-transaction-relay';
-import isCurrentLoginMessageRead from '../../login-message/helpers/is-current-login-message-read';
-import isUserLoggedIn from '../../auth/helpers/is-user-logged-in';
+import { displayLoginMessageOrMarkets } from '../../../modules/login-message/actions/display-login-message';
 
 // for testing only
 import { reportingTestSetup } from '../../reports/actions/reporting-test-setup';
@@ -39,14 +38,10 @@ export function initAugur() {
                 env.branchID = branches[branches.length - 1];
                 env.reportingTest = false;
                 if (getState().loginAccount.address) {
-                  augur.fundNewAccount(env.branchID, augur.utils.noop, () => {
+                  augur.fundNewAccount(env.branchID || BRANCH_ID, augur.utils.noop, () => {
                     dispatch(updateAssets());
                     dispatch(loadBranch(env.branchID || BRANCH_ID));
-                    const { loginAccount, loginMessage } = getState();
-                    if (isUserLoggedIn(loginAccount) && !isCurrentLoginMessageRead(loginMessage)) {
-                      const { links } = require('../../../selectors');
-                      links.loginMessageLink.onClick();
-                    }
+                    dispatch(displayLoginMessageOrMarkets());
                   }, e => console.error(e));
                 } else {
                   dispatch(loadBranch(env.branchID || BRANCH_ID));
@@ -58,11 +53,7 @@ export function initAugur() {
             }
           } else {
             dispatch(loadBranch(env.branchID || BRANCH_ID));
-            const { loginAccount, loginMessage } = getState();
-            if (isUserLoggedIn(loginAccount) && !isCurrentLoginMessageRead(loginMessage)) {
-              const { links } = require('../../../selectors');
-              links.loginMessageLink.onClick();
-            }
+            dispatch(displayLoginMessageOrMarkets());
           }
         });
       }

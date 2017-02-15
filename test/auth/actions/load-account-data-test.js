@@ -40,9 +40,8 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         callback(null, t.blockchain.registerBlockNumber);
       });
       DisplayLoginMessage.displayLoginMessageOrMarkets = sinon.stub().returns({ type: 'DISPLAY_LOGIN_MESSAGE_OR_MARKETS' });
-      sinon.stub(FundNewAccount, 'fundNewAccount', callback => (dispatch, getState) => {
+      sinon.stub(FundNewAccount, 'fundNewAccount', () => (dispatch, getState) => {
         dispatch({ type: 'FUND_NEW_ACCOUNT' });
-        callback(null);
       });
       LoadAccountDataFromLocalStorage.loadAccountDataFromLocalStorage = sinon.stub().returns({ type: 'LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE' });
       LoadRegisterBlockNumber.loadRegisterBlockNumber = sinon.stub().returns({ type: 'LOAD_REGISTER_BLOCK_NUMBER' });
@@ -129,8 +128,6 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         type: 'UPDATE_ASSETS'
       }, {
         type: 'FUND_NEW_ACCOUNT'
-      }, {
-        type: 'LOAD_REGISTER_BLOCK_NUMBER'
       }]);
     }
   });
@@ -156,8 +153,6 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         type: 'UPDATE_ASSETS'
       }, {
         type: 'FUND_NEW_ACCOUNT'
-      }, {
-        type: 'LOAD_REGISTER_BLOCK_NUMBER'
       }]);
     }
   });

@@ -19,10 +19,7 @@ export const loadAccountData = account => (dispatch, getState) => {
   dispatch(updateAssets((err, balances) => {
     if (err) return console.error(err);
     if (anyAccountBalancesZero(balances)) {
-      dispatch(fundNewAccount((err) => {
-        if (err) return console.error(err);
-        dispatch(loadRegisterBlockNumber());
-      }));
+      dispatch(fundNewAccount());
     } else {
       dispatch(loadRegisterBlockNumber());
     }

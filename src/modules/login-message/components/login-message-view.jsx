@@ -53,6 +53,129 @@ const LoginMessagePage = p => (
         </li>
       </ol>
       <h2>Technical updates:</h2>
+      <h3>February 14, 2017</h3>
+      <ol>
+        <li>
+          Refactored the register module in augur.js and removed its unused methods.
+        </li>
+        <li>
+          Moved checkPeriodLock to syncReporterData.
+        </li>
+        <li>
+          Fixed in-progress relay display.
+        </li>
+        <li>
+          Removed unused fundNewAccount callback from loadAccountData.
+        </li>
+        <li>
+          Added loadRegisterBlockNumber action to fundNewAccount callbacks.
+        </li>
+        <li>
+          Used displayLoginMessageOrMarkets in init-augur.
+        </li>
+      </ol>
+      <h3>February 13, 2017</h3>
+      <ol>
+        <li>
+          Added enum like construct for current RPC status. This should improve readability by removing the magic numbers, without breaking backwards compatibility.
+        </li>
+        <li>
+          Added docker support. This makes it so the tests can be run inside docker, to minimize local environment and compatibility issues and allow for turn-key development.  The readme has been updated with instructions on how to run the tests from inside Docker.
+        </li>
+        <li>
+          Update loginAccount during setupAndFundNewAccount to avoid UI side effects.
+        </li>
+        <li>
+          Fixed loadAccountDataFromLocalStorage position in loadAccountData sequence.
+        </li>
+        <li>
+          Use loginAccount state instead of account parameter in display-login-message.
+        </li>
+        <li>
+          Consolidated fundNewAccount calls in loadAccountData; split functions in load-account-data into separate files.
+        </li>
+        <li>
+          Removed conditional fundNewAccount/registerTimestamp callbacks from login, register, login-with-airbitz, and import-account actions.
+        </li>
+        <li>
+          fundNewAccount action no longer accepts a callback.
+        </li>
+        <li>
+          Expanded augur.Register.register wrapper and renamed to loadRegisterBlockNumber.
+        </li>
+        <li>
+          Moved savePersistentAccountToLocalStorage to new save-persistent-account auth action.
+        </li>
+      </ol>
+      <h3>February 12, 2017</h3>
+      <ol>
+        <li>
+          Updated check-filters script.
+        </li>
+        <li>
+          Combined loadFullAccountData and loadLoginAccountDependents functions.
+        </li>
+        <li>
+          Fixed sentCash event label in the front-end listeners.
+        </li>
+      </ol>
+      <h3>February 11, 2017</h3>
+      <ol>
+        <li>
+          Fixed manage Airbitz account button display.
+        </li>
+        <li>
+          Refactored loadLoginAccount in auth module.
+        </li>
+        <li>
+          Cleanup of auth cruft in components.
+        </li>
+      </ol>
+      <h3>February 10, 2017</h3>
+      <ol>
+        <li>
+          Removed &quot;name&quot; from importAccount, login, and register actions / augur.js calls.
+        </li>
+        <li>
+          Fixed importAccount loginID.
+        </li>
+        <li>
+          Replaced loginID argument of login with keystore. Removed loginID and name properties from account object.
+        </li>
+        <li>
+          Renamed loadLocalLoginAccount to setAccountObject in augur.js.
+        </li>
+        <li>
+          Removed unused onSubmitClosePosition prop from market selector.
+        </li>
+        <li>
+          Refactored import-account.
+        </li>
+        <li>
+          Fixed keystore reference in account export.
+        </li>
+        <li>
+          Removed extra base58Encode.
+        </li>
+        <li>
+          Fixed loginID calculation argument.
+        </li>
+        <li>
+          Fixed loadFullAccountData error message.
+        </li>
+        <li>
+          Refactored login action; moved displayLoginMessageOrMarkets and loadFullAccountData to load-login-account.
+        </li>
+        <li>
+          Refactored load-login-account actions for augur.js/loginAccount data split.
+        </li>
+        <li>
+          Set height for mobile logo.
+        </li>
+        <li>
+          Removed account-settings (no longer contains relevant properties).
+        </li>
+      </ol>
       <h3>February 9, 2017</h3>
       <ol>
         <li>
@@ -60,6 +183,15 @@ const LoginMessagePage = p => (
         </li>
         <li>
           Added topic (first tag) as an indexed parameter to the marketCreated event on the createMarket contract.
+        </li>
+        <li>
+          Updated account references in loadLoginAccountDependents.
+        </li>
+        <li>
+          Refactored register actions in auth module.
+        </li>
+        <li>
+          Removed duplicate data in state.loginAccount and augur.accounts.account in augur.js.
         </li>
       </ol>
       <h3>February 8, 2017</h3>
