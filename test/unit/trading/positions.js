@@ -368,6 +368,42 @@ describe("positions", function () {
     });
   });
 
+  describe("calculateCompleteSetsEffectivePrice", function() {
+    var test = function(t) {
+      it(JSON.stringify(t), function() {
+        t.assertions(augur.calculateCompleteSetsEffectivePrice(t.logs));
+      });
+    };
+    test({
+      logs: undefined,
+      assertions: function(out) {
+        assert.deepEqual(out, {});
+      }
+    });
+    test({
+      logs: [],
+      assertions: function(out) {
+        assert.deepEqual(out, {});
+      }
+    });
+    test({
+      logs: [{
+        topics: ['0x0', '0x0', '0xa1'],
+        data: '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005'
+      },
+      {
+        topics: ['0x0', '0x0', '0xa2'],
+        data: '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003'
+      }],
+      assertions: function(out) {
+        assert.deepEqual(JSON.stringify(out), JSON.stringify({
+        	'0xa1': '0.2',
+        	'0xa2': '0.33333333333333333333'
+        }));
+      }
+    });
+  });
+
   describe("calculateShortSellShareTotals", function () {
     var test = function (t) {
       it(t.description, function () {
