@@ -15,6 +15,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
       const store = mockStore(t.state);
       const AugurJS = {
         augur: {
+          accounts: t.state.augur.accounts,
           getEthicReport: () => {}
         }
       };
@@ -53,9 +54,16 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
         currentPeriodProgress: 10,
         isReportRevealPhase: false
       },
+      augur: {
+        accounts: {
+          account: {
+            address: '0x0000000000000000000000000000000000000b0b',
+            derivedKey: new Buffer('42', 'hex')
+          }
+        }
+      },
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b',
-        derivedKey: new Buffer('42', 'hex'),
         ether: '10000',
         realEther: '2.5',
         rep: '47'
@@ -131,9 +139,16 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
         currentPeriodProgress: 10,
         isReportRevealPhase: false
       },
+      augur: {
+        accounts: {
+          account: {
+            address: '0x0000000000000000000000000000000000000b0b',
+            derivedKey: new Buffer('42', 'hex')
+          }
+        }
+      },
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b',
-        derivedKey: new Buffer('42', 'hex'),
         ether: '10000',
         realEther: '2.5',
         rep: '47'
@@ -209,9 +224,16 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
         currentPeriodProgress: 10,
         isReportRevealPhase: false
       },
+      augur: {
+        accounts: {
+          account: {
+            address: '0x0000000000000000000000000000000000000b0b',
+            derivedKey: new Buffer('42', 'hex')
+          }
+        }
+      },
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b',
-        derivedKey: new Buffer('42', 'hex'),
         ether: '10000',
         realEther: '2.5',
         rep: '47'
@@ -286,9 +308,16 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
         currentPeriodProgress: 10,
         isReportRevealPhase: false
       },
+      augur: {
+        accounts: {
+          account: {
+            address: '0x0000000000000000000000000000000000000b0b',
+            derivedKey: new Buffer('42', 'hex')
+          }
+        }
+      },
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b',
-        derivedKey: new Buffer('42', 'hex'),
         ether: '10000',
         realEther: '2.5',
         rep: '47'
@@ -363,9 +392,16 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
         currentPeriodProgress: 10,
         isReportRevealPhase: false
       },
+      augur: {
+        accounts: {
+          account: {
+            address: '0x0000000000000000000000000000000000000b0b',
+            derivedKey: new Buffer('42', 'hex')
+          }
+        }
+      },
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b',
-        derivedKey: new Buffer('42', 'hex'),
         ether: '10000',
         realEther: '2.5',
         rep: '47'
@@ -442,9 +478,16 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
         currentPeriodProgress: 10,
         isReportRevealPhase: false
       },
+      augur: {
+        accounts: {
+          account: {
+            address: '0x0000000000000000000000000000000000000b0b',
+            derivedKey: new Buffer('42', 'hex')
+          }
+        }
+      },
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b',
-        derivedKey: new Buffer('42', 'hex'),
         ether: '10000',
         realEther: '2.5',
         rep: '47'
@@ -521,9 +564,16 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
         currentPeriodProgress: 10,
         isReportRevealPhase: false
       },
+      augur: {
+        accounts: {
+          account: {
+            address: '0x0000000000000000000000000000000000000b0b',
+            derivedKey: new Buffer('42', 'hex')
+          }
+        }
+      },
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b',
-        derivedKey: new Buffer('42', 'hex'),
         ether: '10000',
         realEther: '2.5',
         rep: '47'
