@@ -85,7 +85,7 @@ export function loadAdditionalEventData(events) {
                 augur.getOutcome(eventID, (marketOutcome) => {
                   if (marketOutcome) {
                     updateEvent(eventID, {
-                      marketOutcome: augur.unfixReport(marketOutcome, marketData.minValue, marketData.maxValue, marketData.type).report
+                      marketOutcome: augur.unfixRawReport(marketOutcome, marketData.minValue, marketData.maxValue, marketData.type).report
                     });
                     augur.proportionCorrect(eventID, proportionCorrect => !!proportionCorrect && proportionCorrect !== '0' && updateEvent(eventID, { proportionCorrect }));
                   }
@@ -94,7 +94,7 @@ export function loadAdditionalEventData(events) {
                 augur.getUncaughtOutcome(eventID, (marketOutcome) => {
                   if (marketOutcome) {
                     updateEvent(eventID, {
-                      marketOutcome: augur.unfixReport(marketOutcome, marketData.minValue, marketData.maxValue, marketData.type).report
+                      marketOutcome: augur.unfixRawReport(marketOutcome, marketData.minValue, marketData.maxValue, marketData.type).report
                     });
                     augur.proportionCorrect(eventID, proportionCorrect => !!proportionCorrect && proportionCorrect !== '0' && updateEvent(eventID, { proportionCorrect }));
                   }
@@ -125,7 +125,7 @@ export function loadAdditionalEventData(events) {
                   augur.getOutcome(eventID, (marketOutcome) => {
                     if (marketOutcome) {
                       updateEvent(eventID, {
-                        marketOutcome: augur.unfixReport(marketOutcome, marketData.minValue, marketData.maxValue, marketData.type).report
+                        marketOutcome: augur.unfixRawReport(marketOutcome, marketData.minValue, marketData.maxValue, marketData.type).report
                       });
                       augur.proportionCorrect(eventID, proportionCorrect => !!proportionCorrect && proportionCorrect !== '0' && updateEvent(eventID, { proportionCorrect }));
                     }
@@ -134,7 +134,7 @@ export function loadAdditionalEventData(events) {
                   augur.getUncaughtOutcome(eventID, (marketOutcome) => {
                     if (marketOutcome) {
                       updateEvent(eventID, {
-                        marketOutcome: augur.unfixReport(marketOutcome, marketData.minValue, marketData.maxValue, marketData.type).report
+                        marketOutcome: augur.unfixRawReport(marketOutcome, marketData.minValue, marketData.maxValue, marketData.type).report
                       });
                       augur.proportionCorrect(eventID, proportionCorrect => !!proportionCorrect && proportionCorrect !== '0' && updateEvent(eventID, { proportionCorrect }));
                     }

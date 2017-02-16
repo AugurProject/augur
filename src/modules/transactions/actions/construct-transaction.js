@@ -547,8 +547,7 @@ export function constructLogCancelTransaction(trade, marketID, marketType, descr
 }
 
 export function constructTradingTransaction(label, trade, marketID, outcomeID, status) {
-  console.log('constructTradingTransaction -- ', label, trade);
-
+  console.log('constructTradingTransaction:', label, trade);
   return (dispatch, getState) => {
     const { marketsData, outcomesData } = getState();
     const market = marketsData[marketID];
