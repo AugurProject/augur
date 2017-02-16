@@ -13,9 +13,9 @@ import updateUserLoginMessageVersionRead from 'modules/login-message/actions/upd
 import { updateSelectedMarketsHeader } from 'modules/markets/actions/update-selected-markets-header';
 
 import { ACCOUNT, M, MARKETS, MAKE, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS, LOGIN_MESSAGE, AUTHENTICATION } from 'modules/app/constants/views';
-import { FAVORITES, PENDING_REPORTS } from 'modules/markets/constants/markets-headers';
+import { FAVORITES, PENDING_REPORTS } from 'modules/markets/constants/markets-subset';
 
-import { SEARCH_PARAM_NAME, FILTER_SORT_TYPE_PARAM_NAME, FILTER_SORT_SORT_PARAM_NAME, FILTER_SORT_ISDESC_PARAM_NAME, PAGE_PARAM_NAME, TAGS_PARAM_NAME, TOPIC_PARAM_NAME } from 'modules/link/constants/param-names';
+import { SEARCH_PARAM_NAME, FILTER_SORT_TYPE_PARAM_NAME, FILTER_SORT_SORT_PARAM_NAME, FILTER_SORT_ISDESC_PARAM_NAME, PAGE_PARAM_NAME, TAGS_PARAM_NAME, TOPIC_PARAM_NAME, SUBSET_PARAM_NAME } from 'modules/link/constants/param-names';
 import { FILTER_SORT_TYPE, FILTER_SORT_SORT, FILTER_SORT_ISDESC } from 'modules/markets/constants/filter-sort';
 
 import { listWordsUnderLength } from 'utils/list-words-under-length';
@@ -28,6 +28,7 @@ export default function () {
     authLink: selectAuthLink(auth.selectedAuthType, !!loginAccount.address, store.dispatch),
     createMarketLink: selectCreateMarketLink(store.dispatch),
     marketsLink: selectMarketsLink(keywords, selectedFilterSort, selectedTags, pagination.selectedPageNum, null, selectedTopic, store.dispatch),
+    allMarketsLink: selectMarketsLink(keywords, selectedFilterSort, selectedTags, pagination.selectedPageNum, null, null, store.dispatch),
     favoritesLink: selectMarketsLink(keywords, selectedFilterSort, selectedTags, pagination.selectedPageNum, FAVORITES, null, store.dispatch),
     pendingReportsLink: selectMarketsLink(keywords, selectedFilterSort, selectedTags, pagination.selectedPageNum, PENDING_REPORTS, null, store.dispatch),
     transactionsLink: selectTransactionsLink(store.dispatch),
@@ -143,28 +144,23 @@ export const selectMarketsLink = memoizerific(1)((keywords, selectedFilterSort, 
     params[TOPIC_PARAM_NAME] = selectedTopic;
   }
 
+  // Subset
+  switch (subSet) {
+    case (FAVORITES):
+      params[SUBSET_PARAM_NAME] = FAVORITES;
+      break;
+    case (PENDING_REPORTS):
+      params[SUBSET_PARAM_NAME] = PENDING_REPORTS;
+      break;
+    default:
+      break;
+  }
+
   const href = makeLocation(params).url;
 
   return {
     href,
-    onClick: () => {
-      const { marketsHeader } = require('../../../selectors');
-
-      switch (subSet) {
-        case (FAVORITES):
-          dispatch(marketsHeader.onClickFavorites);
-          break;
-        case (PENDING_REPORTS):
-          dispatch(marketsHeader.onClickPendingReports);
-          break;
-        default:
-          dispatch(marketsHeader.onClickAllMarkets);
-      }
-
-      if (selectedTopic) {
-        dispatch(marketsHeader.onSelectedTopic(selectedTopic));
-      }
-
+    onClick: (allMarkets) => {
       dispatch(updateURL(href));
     }
   };

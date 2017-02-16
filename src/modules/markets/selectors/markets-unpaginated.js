@@ -1,7 +1,7 @@
 import memoizerific from 'memoizerific';
 
 import { MY_POSITIONS } from '../../app/constants/views';
-import { FAVORITES, PENDING_REPORTS } from '../../markets/constants/markets-headers';
+import { FAVORITES, PENDING_REPORTS } from '../../markets/constants/markets-subset';
 
 import store from '../../../store';
 

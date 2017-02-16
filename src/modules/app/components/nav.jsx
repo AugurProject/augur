@@ -7,7 +7,7 @@ import AugurLogoIcon from 'modules/common/components/augur-logo-icon';
 import SideBarFilterIcon from 'modules/common/components/side-bar-filter-icon';
 
 import { ACCOUNT, MARKETS, TRANSACTIONS, MY_POSITIONS, MY_MARKETS, MY_REPORTS, AUTHENTICATION } from 'modules/app/constants/views';
-import { FAVORITES, PENDING_REPORTS } from 'modules/markets/constants/markets-headers';
+import { FAVORITES, PENDING_REPORTS } from 'modules/markets/constants/markets-subset';
 
 // NOTE --  first child div is there to pass up a ref so that other methods can
 //          acquire the row height of the navs in the footer
@@ -35,9 +35,9 @@ const Nav = (p) => {
         </Link>
       </div>
       <Link
-        {...p.marketsLink}
+        {...p.allMarketsLink}
         onClick={() => {
-          p.marketsLink.onClick();
+          p.allMarketsLink.onClick();
           collapseFooter();
         }}
         className={classnames('app-nav-link', { active: ((p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader == null) })}

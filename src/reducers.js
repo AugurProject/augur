@@ -37,8 +37,9 @@ import topics from 'modules/topics/reducers/topics-data';
 import hasLoadedTopic from 'modules/topics/reducers/has-loaded-topic';
 import selectedTopic from 'modules/topics/reducers/selected-topic';
 
-import selectedMarketsHeader from 'modules/markets/reducers/selected-markets-header';
 import selectedMarketID from 'modules/markets/reducers/selected-market-id';
+import selectedMarketsHeader from 'modules/markets/reducers/selected-markets-header';
+import selectedMarketsSubset from 'modules/markets/reducers/selectedMarketsSubset';
 import tradesInProgress from 'modules/trade/reducers/trades-in-progress';
 import tradeCommitLock from 'modules/trade/reducers/trade-commit-lock';
 import tradeCommitment from 'modules/trade/reducers/trade-commitment';
@@ -81,6 +82,7 @@ export function createReducer() {
     eventsWithAccountReport,
 
     selectedMarketID,
+    selectedMarketsSubset,
     selectedMarketsHeader,
     keywords,
     topics,

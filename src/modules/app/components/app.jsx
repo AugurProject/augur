@@ -155,6 +155,7 @@ export default class App extends Component {
       numPendingReports: getValue(p, 'marketsHeader.numPendingReports'),
       numTransactionsWorking: getValue(p, 'transactionsTotals.numWorking'),
       marketsLink: getValue(p, 'links.marketsLink'),
+      allMarketsLink: getValue(p, 'links.allMarketsLink'),
       favoritesLink: getValue(p, 'links.favoritesLink'),
       pendingReportsLink: getValue(p, 'links.pendingReportsLink'),
       transactionsLink: getValue(p, 'links.transactionsLink'),
