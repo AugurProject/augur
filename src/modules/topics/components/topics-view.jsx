@@ -33,10 +33,12 @@ export default class TopicsView extends Component {
 
   componentWillMount() {
     this.updatePagination(this.props, this.state);
-    this.paginateFilteredTopics(this.state);
   }
 
   componentWillUpdate(nextProps, nextState) {
+    if (this.props.topics !== nextProps.topics) {
+      this.setState({ filteredTopics: nextProps.topics });
+    }
     if (this.state.keywords !== nextState.keywords) {
       this.filterByKeywords(nextProps.topics, nextState);
     }
