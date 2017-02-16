@@ -33,6 +33,7 @@ export default class TopicsView extends Component {
 
   componentWillMount() {
     this.updatePagination(this.props, this.state);
+    this.paginateFilteredTopics(this.state);
   }
 
   componentWillUpdate(nextProps, nextState) {
