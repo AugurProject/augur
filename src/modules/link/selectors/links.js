@@ -148,7 +148,6 @@ export const selectMarketsLink = memoizerific(1)((keywords, selectedFilterSort, 
   return {
     href,
     onClick: () => {
-      console.log('called');
       const { marketsHeader } = require('../../../selectors');
 
       switch (subSet) {
