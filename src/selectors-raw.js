@@ -14,7 +14,6 @@ import filteredMarkets from 'modules/markets/selectors/markets-filtered';
 import unpaginatedMarkets from 'modules/markets/selectors/markets-unpaginated';
 import orderCancellation from 'modules/bids-asks/selectors/order-cancellation';
 import market from 'modules/market/selectors/market';
-import selectedOutcome from 'modules/outcomes/selectors/selected-outcome';
 import tags from 'modules/markets/selectors/tags';
 import filterSort from 'modules/markets/selectors/filter-sort';
 import keywords from 'modules/markets/selectors/keywords';
@@ -58,7 +57,6 @@ const selectors = {
   unpaginatedMarkets,
   orderCancellation,
   market,
-  selectedOutcome,
   topics,
   tags,
   filterSort,
