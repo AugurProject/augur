@@ -8,7 +8,7 @@ import { selectMarketIDFromEventID } from '../../market/selectors/market';
 
 export function loadReports(cb) {
   return (dispatch, getState) => {
-    const callback = cb || (e => e && console.error('loadDepositWithdrawHistory:', e));
+    const callback = cb || (e => e && console.error('loadReports:', e));
     const { loginAccount, branch, reports } = getState();
     if (!loginAccount || !loginAccount.address || !branch.id || !branch.reportPeriod) {
       return;
