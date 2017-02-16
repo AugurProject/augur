@@ -20,7 +20,6 @@ export function loadMarketsByTopic(topic) {
         dispatch(updateHasLoadedTopic({ [topic]: false }));
         return;
       }
-      console.log('findMarketsWithTopic -- ', err, marketIDs);
       if (marketIDs.length) {
         dispatch(loadMarketsInfo(marketIDs));
       }
