@@ -9,7 +9,7 @@ describe(`modules/markets/selectors/markets-favorite.js`, () => {
   proxyquire.noPreserveCache().noCallThru();
 
   const mockSelectors = {
-    filteredMarkets: [{
+    allMarkets: [{
       id: 'test1',
       isFavorite: true,
       isPendingReport: false,
@@ -81,7 +81,7 @@ describe(`modules/markets/selectors/markets-favorite.js`, () => {
 
   it(`should return only favorite markets`, () => {
     const test = selector.default();
-    const out = mockSelectors.filteredMarkets.filter(market => market.isFavorite);
+    const out = mockSelectors.allMarkets.filter(market => market.isFavorite);
     assert.deepEqual(test, out, `Didn't return the expected markets`);
   });
 });
