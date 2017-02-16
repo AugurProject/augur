@@ -106,9 +106,6 @@ module.exports = {
       onFailed = branchId.onFailed;       // function
       branchId = branchId.branchId;       // sha256 hash
     }
-    onSent = onSent || utils.noop;
-    onSuccess = onSuccess || utils.noop;
-    onFailed = onFailed || utils.noop;
     var formattedTags = this.formatTags(tags);
     var fees = this.calculateTradingFees(makerFee, takerFee);
     var tx = clone(this.tx.CreateMarket.createMarket);
