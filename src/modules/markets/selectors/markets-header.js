@@ -17,7 +17,8 @@ export default function () {
     marketsTotals.numFiltered,
     marketsTotals.numFavorites,
     marketsTotals.numPendingReports,
-    store.dispatch);
+    store.dispatch
+  );
 }
 
 export const selectMarketsHeader = memoizerific(1)((selectedMarketsHeader, numFiltered, numFavorites, numPendingReports, dispatch) => {
@@ -30,7 +31,7 @@ export const selectMarketsHeader = memoizerific(1)((selectedMarketsHeader, numFi
   return obj;
 });
 
-function updateMarketsHeader(selectedMarketsHeader, selectedMarketsSubset, selectedTopic, dispatch) {
+export function updateMarketsHeader(selectedMarketsHeader, selectedMarketsSubset, selectedTopic, dispatch) {
   if (selectedMarketsSubset && selectedMarketsHeader !== selectedMarketsSubset) {
     switch (selectedMarketsSubset) {
       case FAVORITES:
