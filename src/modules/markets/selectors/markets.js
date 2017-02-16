@@ -18,7 +18,7 @@ export default function () {
     markets = unpaginatedMarkets;
   }
 
-  const marketIDsMissingInfo = markets.filter(market => !market.isLoadedMarketInfo).map(market => market.id);
+  const marketIDsMissingInfo = markets.filter(market => !market.isLoadedMarketInfo && !market.isLoading).map(market => market.id);
 
   if (marketIDsMissingInfo.length) {
     store.dispatch(loadMarketsInfo(marketIDsMissingInfo));

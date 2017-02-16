@@ -62,6 +62,10 @@ describe(`modules/markets/actions/load-markets-info.js`, () => {
 
   it(`should load markets info`, () => {
     const out = [{
+      type: 'UPDATE_MARKETS_LOADING_STATUS',
+      marketIDs: ['test123'],
+      isLoading: true
+    }, {
       type: 'UPDATE_MARKETS_DATA',
       marketsData: {
         test123: {
@@ -91,6 +95,10 @@ describe(`modules/markets/actions/load-markets-info.js`, () => {
       ]
     }, {
       type: 'MOCK_LOAD_CREATED_MARKET_INFO'
+    }, {
+      type: 'UPDATE_MARKETS_LOADING_STATUS',
+      marketIDs: ['test123'],
+      isLoading: false
     }];
     store.dispatch(action.loadMarketsInfo(['test123']));
     assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects`);

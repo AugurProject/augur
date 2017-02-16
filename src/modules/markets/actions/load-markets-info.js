@@ -1,5 +1,5 @@
 import { augur } from '../../../services/augurjs';
-import { updateMarketsData, updateEventMarketsMap } from '../../markets/actions/update-markets-data';
+import { updateMarketsData, updateEventMarketsMap, updateMarketsLoadingStatus } from '../../markets/actions/update-markets-data';
 import { loadCreatedMarketInfo } from '../../my-markets/actions/load-created-market-info';
 
 const MARKETS_PER_BATCH = 10;
@@ -21,6 +21,7 @@ export function loadMarketsInfo(marketIDs, cb) {
     (function loader(stepStart) {
       const stepEnd = stepStart + MARKETS_PER_BATCH;
       const marketsToLoad = marketIDs.slice(stepStart, Math.min(numMarketsToLoad, stepEnd));
+      dispatch(updateMarketsLoadingStatus(marketsToLoad, true));
       augur.batchGetMarketInfo(marketsToLoad, getState().loginAccount.address, (marketsData) => {
         if (!marketsData || marketsData.error) {
           console.error('ERROR loadMarketsInfo()', marketsData);
@@ -33,6 +34,7 @@ export function loadMarketsInfo(marketIDs, cb) {
               dispatch(updateEventMarketsMap(branchMarketsData[marketID].events[0].id, [marketID]));
               dispatch(loadCreatedMarketInfo(marketID));
             });
+            dispatch(updateMarketsLoadingStatus(marketInfoIDs, false));
           }
         }
         if (stepEnd < numMarketsToLoad) return loader(stepEnd);
