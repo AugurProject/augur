@@ -668,6 +668,152 @@ describe("executeTrade.executeTrade", function() {
     }
   });
   test({
+    description: 'Should handle a sell trade that only has 1 buy trade orders to fill and will have a remainder',
+    marketID: '0xa1',
+    outcomeID: '2',
+    numShares: '100',
+    totalEthWithFee: '0',
+    tradingFees: '0.01',
+    tradeGroupID: '0x000abc123',
+    address: '0x1',
+    getOrderBooks: function () {
+      return {
+        '0xa1': {
+          buy: {
+            '0xb1': { amount: '40', limitPrice: '0.5' },
+          },
+          sell: {}
+        }
+      };
+    },
+    getTradeIDs: function() {
+      callCounts.getTradeIDs++;
+      switch(callCounts.getTradeIDs) {
+      case 1:
+        return ['0xb1'];
+        break;
+      default:
+        return [];
+        break;
+      }
+    },
+    tradeCommitmentCallback: function(commit) {
+      callCounts.tradeCommitmentCallback++;
+      switch(callCounts.tradeCommitmentCallback) {
+      case 1:
+        assert.deepEqual(commit, {
+          tradeHash: '0x0000000000000000000000000000000000000000000000000000000abc543012',
+          orders: [
+            { amount: '40', limitPrice: '0.5' },
+          ],
+          maxValue: '0',
+          maxAmount: '100',
+          remainingEth: '0',
+          remainingShares: '100',
+          filledEth: '0',
+          filledShares: '0',
+          tradingFees: '0.01',
+          gasFees: '0'
+        });
+        break;
+      case 2:
+        assert.deepEqual(commit, { gasFees: '0.045' });
+        break;
+      case 3:
+        assert.deepEqual(commit, {
+          filledShares: '0',
+          filledEth: '20',
+          remainingShares: '60',
+          remainingEth: '0',
+          tradingFees: '0.5',
+          gasFees: '0.09',
+        });
+        break;
+      default:
+        assert.isTrue(false, 'should not call tradeCommitmentCallback more than 5 times');
+        break;
+      }
+    },
+    getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
+      callCounts.getParticipantSharesPurchased++;
+      assert.equal(marketID, '0xa1');
+      assert.equal(address, '0x1');
+      assert.equal(outcomeID, '2');
+      switch(callCounts.getParticipantSharesPurchased) {
+      case 1:
+        cb('80');
+        break;
+      default:
+        cb('40');
+        break;
+      }
+    },
+    getCashBalance: function(address, cb) {
+      callCounts.getCashBalance++;
+      assert.equal(address, '0x1');
+      switch(callCounts.getCashBalance) {
+      case 1:
+        cb('1000');
+        break;
+      default:
+        cb('1020');
+        break;
+      }
+    },
+    trade: function(trade) {
+      callCounts.trade++;
+      assert.deepEqual(trade.trade_ids, ['0xb1']);
+      assert.equal(trade.tradeGroupID, '0x000abc123');
+      assert.equal(trade.sender, '0x1');
+      assert.isFunction(trade.onTradeHash);
+      assert.isFunction(trade.onCommitSent);
+      assert.isFunction(trade.onCommitSuccess);
+      assert.isFunction(trade.onCommitFailed);
+      assert.isFunction(trade.onNextBlock);
+      assert.isFunction(trade.onTradeSent);
+      assert.isFunction(trade.onTradeSuccess);
+      assert.isFunction(trade.onTradeFailed);
+      trade.onTradeHash('0xabc543012');
+      trade.onCommitSent('1');
+      trade.onCommitSuccess({ gasFees: new BigNumber('0.045') });
+      trade.onNextBlock('1');
+      trade.onTradeSent('1');
+      switch(callCounts.trade) {
+      default:
+        assert.equal(trade.max_value, '0');
+        assert.equal(trade.max_amount, '80');
+        trade.onTradeSuccess({
+          sharesBought: '0',
+          cashFromTrade: '20',
+          unmatchedShares: '40',
+          unmatchedCash: '0',
+          tradingFees: '0.5',
+          gasFees: '0.045'
+        });
+        break;
+      }
+
+    },
+    assertions: function(err, res) {
+      assert.isNull(err);
+      assert.strictEqual(JSON.stringify(res), JSON.stringify({
+        remainingEth: new BigNumber('0'),
+        remainingShares: new BigNumber('60'),
+        filledShares: new BigNumber('0'),
+        filledEth: new BigNumber('20'),
+        tradingFees: new BigNumber('0.5'),
+        gasFees: new BigNumber('0.09'),
+      }));
+      assert.deepEqual(callCounts, {
+        getParticipantSharesPurchased: 2,
+        getCashBalance: 2,
+        trade: 1,
+        getTradeIDs: 2,
+        tradeCommitmentCallback: 3
+      });
+    }
+  });
+  test({
     description: 'Should handle undefined tradeIDs',
     marketID: '0xa1',
     outcomeID: '2',

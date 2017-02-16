@@ -11,6 +11,15 @@ describe("modifyOrderBook.addOrder", function () {
     });
   };
   test({
+    description: "should return the orderBook if no order is defined",
+    params: {
+      orderBook: {}
+    },
+    assertions: function (orderBook) {
+      assert.deepEqual(orderBook, {});
+    }
+  });
+  test({
     description: "add buy order to empty order book",
     params: {
       order: {
@@ -223,6 +232,103 @@ describe("modifyOrderBook.removeOrder", function () {
     });
   };
   test({
+    description: "do nothing if orderBook isn't defined",
+    params: {
+      orderID: "0x02",
+      orderType: "buy",
+      orderBook: undefined
+    },
+    assertions: function (orderBook) {
+      assert.isUndefined(orderBook);
+    }
+  });
+  test({
+    description: "do nothing if orderType is undefined",
+    params: {
+      orderID: "0x02",
+      orderType: undefined,
+      orderBook: {
+        buy: {
+          "0x01": {
+            id: "0x01",
+            type: "buy",
+            market: "0xa1",
+            amount: "3",
+            fullPrecisionAmount: "3",
+            price: "0.5",
+            fullPrecisionPrice: "0.5",
+            owner: "0xb0b",
+            block: 10,
+            outcome: "2"
+          }
+        },
+        sell: {}
+      }
+    },
+    assertions: function (orderBook) {
+      assert.deepEqual(orderBook, {
+        buy: {
+          "0x01": {
+            id: "0x01",
+            type: "buy",
+            market: "0xa1",
+            amount: "3",
+            fullPrecisionAmount: "3",
+            price: "0.5",
+            fullPrecisionPrice: "0.5",
+            owner: "0xb0b",
+            block: 10,
+            outcome: "2"
+          }
+        },
+        sell: {}
+      });
+    }
+  });
+  test({
+    description: "do nothing if orderID is undefined",
+    params: {
+      orderID: undefined,
+      orderType: "buy",
+      orderBook: {
+        buy: {
+          "0x01": {
+            id: "0x01",
+            type: "buy",
+            market: "0xa1",
+            amount: "3",
+            fullPrecisionAmount: "3",
+            price: "0.5",
+            fullPrecisionPrice: "0.5",
+            owner: "0xb0b",
+            block: 10,
+            outcome: "2"
+          }
+        },
+        sell: {}
+      }
+    },
+    assertions: function (orderBook) {
+      assert.deepEqual(orderBook, {
+        buy: {
+          "0x01": {
+            id: "0x01",
+            type: "buy",
+            market: "0xa1",
+            amount: "3",
+            fullPrecisionAmount: "3",
+            price: "0.5",
+            fullPrecisionPrice: "0.5",
+            owner: "0xb0b",
+            block: 10,
+            outcome: "2"
+          }
+        },
+        sell: {}
+      });
+    }
+  });
+  test({
     description: "do nothing if order ID not in order book",
     params: {
       orderID: "0x02",
@@ -414,6 +520,150 @@ describe("modifyOrderBook.fillOrder", function () {
       t.assertions(orderBook);
     });
   };
+  test({
+    description: "do nothing if filledOrderType is undefined",
+    params: {
+      orderID: "0x02",
+      amount: "1",
+      filledOrderType: undefined,
+      orderBook: {
+        buy: {
+          "0x01": {
+            id: "0x01",
+            type: "buy",
+            market: "0xa1",
+            amount: "3",
+            fullPrecisionAmount: "3",
+            price: "0.5",
+            fullPrecisionPrice: "0.5",
+            owner: "0xb0b",
+            block: 10,
+            outcome: "2"
+          }
+        },
+        sell: {}
+      }
+    },
+    assertions: function (orderBook) {
+      assert.deepEqual(orderBook, {
+        buy: {
+          "0x01": {
+            id: "0x01",
+            type: "buy",
+            market: "0xa1",
+            amount: "3",
+            fullPrecisionAmount: "3",
+            price: "0.5",
+            fullPrecisionPrice: "0.5",
+            owner: "0xb0b",
+            block: 10,
+            outcome: "2"
+          }
+        },
+        sell: {}
+      });
+    }
+  });
+  test({
+    description: "do nothing if amount is undefined",
+    params: {
+      orderID: "0x02",
+      amount: undefined,
+      filledOrderType: "buy",
+      orderBook: {
+        buy: {
+          "0x01": {
+            id: "0x01",
+            type: "buy",
+            market: "0xa1",
+            amount: "3",
+            fullPrecisionAmount: "3",
+            price: "0.5",
+            fullPrecisionPrice: "0.5",
+            owner: "0xb0b",
+            block: 10,
+            outcome: "2"
+          }
+        },
+        sell: {}
+      }
+    },
+    assertions: function (orderBook) {
+      assert.deepEqual(orderBook, {
+        buy: {
+          "0x01": {
+            id: "0x01",
+            type: "buy",
+            market: "0xa1",
+            amount: "3",
+            fullPrecisionAmount: "3",
+            price: "0.5",
+            fullPrecisionPrice: "0.5",
+            owner: "0xb0b",
+            block: 10,
+            outcome: "2"
+          }
+        },
+        sell: {}
+      });
+    }
+  });
+  test({
+    description: "do nothing if orderBook is undefined",
+    params: {
+      orderID: "0x02",
+      amount: "1",
+      filledOrderType: "buy",
+      orderBook: undefined
+    },
+    assertions: function (orderBook) {
+      assert.isUndefined(orderBook);
+    }
+  });
+  test({
+    description: "do nothing if orderID is undefined",
+    params: {
+      orderID: undefined,
+      amount: "1",
+      filledOrderType: "buy",
+      orderBook: {
+        buy: {
+          "0x01": {
+            id: "0x01",
+            type: "buy",
+            market: "0xa1",
+            amount: "3",
+            fullPrecisionAmount: "3",
+            price: "0.5",
+            fullPrecisionPrice: "0.5",
+            owner: "0xb0b",
+            block: 10,
+            outcome: "2"
+          }
+        },
+        sell: {}
+      }
+    },
+    assertions: function (orderBook) {
+      assert.deepEqual(orderBook, {
+        buy: {
+          "0x01": {
+            id: "0x01",
+            type: "buy",
+            market: "0xa1",
+            amount: "3",
+            fullPrecisionAmount: "3",
+            price: "0.5",
+            fullPrecisionPrice: "0.5",
+            owner: "0xb0b",
+            block: 10,
+            outcome: "2"
+          }
+        },
+        sell: {}
+      });
+    }
+  });
   test({
     description: "do nothing if order ID not in order book",
     params: {
