@@ -353,6 +353,37 @@ describe("abacus.calculateTradingCost", function () {
   });
 });
 
+describe("abacus.calculateValidityBond", function() {
+  // 2 tests total
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(abacus.calculateValidityBond.call(t.testThis, t.tradingFee, t.periodLength, t.baseReporters, t.numEventsCreatedInPast24Hours, t.numEventsInReportPeriod));
+    });
+  };
+  test({
+    testThis: { rpc: { gasPrice: 20000000000 } },
+    tradingFee: '0.03',
+    periodLength: 1440,
+    baseReporters: 50,
+    numEventsCreatedInPast24Hours: 20,
+    numEventsInReportPeriod: 25,
+    assertions: function(result) {
+      assert.deepEqual(result, '0.98103632478632478632');
+    }
+  });
+  test({
+    testThis: { rpc: { gasPrice: 20000000000 } },
+    tradingFee: '0.45',
+    periodLength: 1440,
+    baseReporters: 100,
+    numEventsCreatedInPast24Hours: 20,
+    numEventsInReportPeriod: 25,
+    assertions: function(result) {
+      assert.deepEqual(result, '0.15411324786324786325');
+    }
+  });
+});
+
 describe("abacus.calculateFxpTradingCost", function () {
   var test = function (t) {
     it(JSON.stringify(t), function () {
@@ -648,5 +679,528 @@ describe("abacus.sumTradeGas", function () {
   test({
     tradeTypes: ["sell", "sell", "buy"],
     expected: constants.TRADE_GAS[0].sell + constants.TRADE_GAS[1].sell + constants.TRADE_GAS[1].buy
+  });
+});
+
+describe("abacus.sumTrades", function() {
+  var test = function (t) {
+    it(JSON.stringify(t), function () {
+      t.assertions(abacus.sumTrades(t.trade_ids));
+    });
+  };
+  test({
+    trade_ids: ['1', '2'],
+    assertions: function(trades) {
+      assert.deepEqual(trades, '0x3');
+    }
+  });
+  test({
+    trade_ids: [],
+    assertions: function(trades) {
+      assert.deepEqual(trades, '0x0');
+    }
+  });
+  test({
+    trade_ids: ['25', '233023', '100', '12', '6', '34'],
+    assertions: function(trades) {
+      assert.deepEqual(trades, '0x38ef0');
+    }
+  });
+});
+
+describe("abacus.makeTradeHash", function() {
+  var test = function (t) {
+    it(JSON.stringify(t), function () {
+      t.assertions(abacus.makeTradeHash(t.max_value, t.max_amount, t.trade_ids));
+    });
+  };
+  test({
+    max_value: '100',
+    max_amount: '200',
+    trade_ids: ['15', '12', '200'],
+    assertions: function(sha3) {
+      assert.deepEqual(sha3, '0x9dbb8636c9cdd0d31d02b19bf88ca090e8df5138ba666c167be06a4860aead39');
+    }
+  });
+  test({
+    max_value: '0',
+    max_amount: '10',
+    trade_ids: ['150', '12333', '12320', '1', '23', '12'],
+    assertions: function(sha3) {
+      assert.deepEqual(sha3, '0x9731ed6e55710832de4e483a8edf597029d636e58b701458b8cdd2bfd2829be6');
+    }
+  });
+  test({
+    max_value: '120',
+    max_amount: '0',
+    trade_ids: ['10', '120', '20', '321'],
+    assertions: function(sha3) {
+      assert.deepEqual(sha3, '0xb7740eac4fa741a5f8db90da5c9d261598bc7dfe031e361c4010d2f436d71717');
+    }
+  });
+  test({
+    max_value: '120',
+    max_amount: '300',
+    trade_ids: [],
+    assertions: function(sha3) {
+      assert.deepEqual(sha3, '0x604350686ce84371b506c8497ef58fea535df1b2dab9fc00ef31bc8898271428');
+    }
+  });
+});
+
+describe("abacus.parseMarketInfo", function() {
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(abacus.parseMarketInfo(t.rawInfo));
+    });
+  };
+  test({
+    rawInfo: [],
+    assertions: function(info) {
+      assert.deepEqual(info, {});
+    }
+  });
+  test({
+    rawInfo: ['0xa1', new BigNumber('1000000000000000'), '2', 1500000, '26666666666666666', '1010101', '1000000000000000000', 1000000, '10000000000000000000000', '25000000000000000000', '0xabc123', abi.short_string_to_int256('tag1'), abi.short_string_to_int256('tag2'), abi.short_string_to_int256('tag3'), '0xf1', 1600000, '1', '1', '2', '2', '100000000000000000000', '10000000000000000000', '20000000000000000000', '5000000', 5000000000000000000, '50000000000000000000', '5000000', 4500000000000000000, '40000000000000000000'],
+    assertions: function(info) {
+      assert.deepEqual(info, {
+      	id: '0x00000000000000000000000000000000000000000000000000000000000000a1',
+      	network: undefined,
+      	makerFee: '0.000026666666666666666',
+      	takerFee: '0.039973333333333332334',
+      	tradingFee: '0.026666666666666666',
+      	numOutcomes: 2,
+      	tradingPeriod: 22020096,
+      	branchId: '1010101',
+      	numEvents: 1,
+      	cumulativeScale: '1',
+      	creationTime: 16777216,
+      	volume: '10000',
+      	creationFee: '25',
+      	author: '0x0000000000000000000000000000000000abc123',
+      	tags: ['tag1', 'tag2', 'tag3'],
+      	outcomes: [{
+      			id: 1,
+      			outstandingShares: '0.000000000005',
+      			price: '5',
+      			sharesPurchased: '50'
+      		},
+      		{
+      			id: 2,
+      			outstandingShares: '0.000000000005',
+      			price: '4.5',
+      			sharesPurchased: '40'
+      		}
+      	],
+      	type: 'scalar',
+      	endDate: 23068672,
+      	minValue: '0.000000000000000001',
+      	maxValue: '0.000000000000000002',
+      	isIndeterminate: false,
+      	reportedOutcome: '0.000000000000000001',
+      	proportionCorrect: '20',
+      	events: [{
+      		id: '0x00000000000000000000000000000000000000000000000000000000000000f1',
+      		endDate: 23068672,
+      		minValue: '0.000000000000000001',
+      		maxValue: '0.000000000000000002',
+      		numOutcomes: 2,
+      		bond: '100',
+      		type: 'scalar',
+      		isEthical: true
+      	}],
+      	eventID: '0x00000000000000000000000000000000000000000000000000000000000000f1'
+      });
+    }
+  });
+});
+
+describe("abacus.formatTag", function() {
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(abacus.formatTag(t.tag));
+    });
+  };
+  test({
+    tag: undefined,
+    assertions: function(tag) {
+      assert.deepEqual(tag, '0x0');
+    }
+  });
+  test({
+    tag: null,
+    assertions: function(tag) {
+      assert.deepEqual(tag, '0x0');
+    }
+  });
+  test({
+    tag: '',
+    assertions: function(tag) {
+      assert.deepEqual(tag, '0x0');
+    }
+  });
+  test({
+    tag: 'Hello World',
+    assertions: function(tag) {
+      assert.deepEqual(tag, '0x48656c6c6f20576f726c64000000000000000000000000000000000000000000');
+    }
+  });
+});
+
+describe("abacus.formatTags", function() {
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(abacus.formatTags(t.tags));
+    });
+  };
+  test({
+    tags: undefined,
+    assertions: function(tags) {
+      assert.deepEqual(tags, [ '0x0', '0x0', '0x0' ]);
+    }
+  });
+  test({
+    tags: '',
+    assertions: function(tags) {
+      assert.deepEqual(tags, [ '0x0', '0x0', '0x0' ]);
+    }
+  });
+  test({
+    tags: ['Hello World'],
+    assertions: function(tags) {
+      assert.deepEqual(tags, [
+        '0x48656c6c6f20576f726c64000000000000000000000000000000000000000000',
+        '0x0',
+        '0x0'
+      ]);
+    }
+  });
+  test({
+    tags: ['Hello', 'World'],
+    assertions: function(tags) {
+      assert.deepEqual(tags, [
+        '0x48656c6c6f000000000000000000000000000000000000000000000000000000',
+        '0x576f726c64000000000000000000000000000000000000000000000000000000',
+        '0x0'
+      ]);
+    }
+  });
+  test({
+    tags: ['Hello', 'World', 'testing'],
+    assertions: function(tags) {
+      assert.deepEqual(tags, [
+        '0x48656c6c6f000000000000000000000000000000000000000000000000000000',
+        '0x576f726c64000000000000000000000000000000000000000000000000000000',
+        '0x74657374696e6700000000000000000000000000000000000000000000000000'
+      ]);
+    }
+  });
+});
+
+describe("abacus.calculateRequiredMarketValue", function() {
+  var test = function (t) {
+    it(JSON.stringify(t), function () {
+      t.assertions(abacus.calculateRequiredMarketValue(t.gasPrice));
+    });
+  };
+  test({
+    gasPrice: '0.00354',
+    assertions: function(marketValue) {
+      assert.deepEqual(marketValue, '0x1782');
+    }
+  });
+  test({
+    gasPrice: '0.07502',
+    assertions: function(marketValue) {
+      assert.deepEqual(marketValue, '0x1f22e');
+    }
+  });
+  test({
+    gasPrice: '0.53',
+    assertions: function(marketValue) {
+      assert.deepEqual(marketValue, '0xdbf88');
+    }
+  });
+});
+
+describe("abacus.shrinkScalarPrice", function() {
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(abacus.shrinkScalarPrice(t.minValue, t.price));
+    });
+  };
+  test({
+    minValue: new BigNumber('10'),
+    price: new BigNumber('.5'),
+    assertions: function(shrunkenScalarPrice) {
+      assert.deepEqual(shrunkenScalarPrice, '-9.5');
+    }
+  });
+  test({
+    minValue: '100',
+    price: '20',
+    assertions: function(shrunkenScalarPrice) {
+      assert.deepEqual(shrunkenScalarPrice, '-80');
+    }
+  });
+  test({
+    minValue: '-20',
+    price: '20',
+    assertions: function(shrunkenScalarPrice) {
+      assert.deepEqual(shrunkenScalarPrice, '40');
+    }
+  });
+});
+
+describe("abacus.expandScalarPrice", function() {
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(abacus.expandScalarPrice(t.minValue, t.price));
+    });
+  };
+  test({
+    minValue: new BigNumber('10'),
+    price: new BigNumber('.5'),
+    assertions: function(expandedScalarPrice) {
+      assert.deepEqual(expandedScalarPrice, '10.5');
+    }
+  });
+  test({
+    minValue: '100',
+    price: '5',
+    assertions: function(expandedScalarPrice) {
+      assert.deepEqual(expandedScalarPrice, '105');
+    }
+  });
+  test({
+    minValue: '-10',
+    price: '50',
+    assertions: function(expandedScalarPrice) {
+      assert.deepEqual(expandedScalarPrice, '40');
+    }
+  });
+});
+
+describe("abacus.adjustScalarSellPrice", function() {
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(abacus.adjustScalarSellPrice(t.maxValue, t.price));
+    });
+  };
+  test({
+    maxValue: new BigNumber('100'),
+    price: new BigNumber('.5'),
+    assertions: function(adjustedScalarPrice) {
+      assert.deepEqual(adjustedScalarPrice, '99.5');
+    }
+  });
+  test({
+    maxValue: '50',
+    price: '.7',
+    assertions: function(adjustedScalarPrice) {
+      assert.deepEqual(adjustedScalarPrice, '49.3');
+    }
+  });
+  test({
+    maxValue: '500',
+    price: '320',
+    assertions: function(adjustedScalarPrice) {
+      assert.deepEqual(adjustedScalarPrice, '180');
+    }
+  });
+});
+
+describe("abacus.roundToPrecision", function() {
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(abacus.roundToPrecision(t.value, t.minimum, t.round, t.roundingMode));
+    });
+  };
+  test({
+    value: new BigNumber('10.042383874392382392'),
+    minimum: new BigNumber('15'),
+    round: 'ceil',
+    roundingMode: '1',
+    assertions: function(roundedValue) {
+      assert.isNull(roundedValue);
+    }
+  });
+  test({
+    value: new BigNumber('0.00058472239302029387432'),
+    minimum: new BigNumber('-15'),
+    round: 'ceil',
+    roundingMode: BigNumber.ROUND_UP,
+    assertions: function(roundedValue) {
+      assert.deepEqual(roundedValue, '0.0005847');
+    }
+  });
+  test({
+    value: new BigNumber('0.0007889577234892349872349823403'),
+    minimum: new BigNumber('0'),
+    round: 'floor',
+    roundingMode: BigNumber.ROUND_DOWN,
+    assertions: function(roundedValue) {
+      assert.deepEqual(roundedValue, '0.0007889');
+    }
+  });
+  test({
+    value: new BigNumber('932.9238374636282823839223'),
+    minimum: new BigNumber('0'),
+    round: 'ceil',
+    roundingMode: BigNumber.ROUND_UP,
+    assertions: function(roundedValue) {
+      assert.deepEqual(roundedValue, '932.9239');
+    }
+  });
+  test({
+    value: new BigNumber('42.119238375652328232332124568'),
+    minimum: new BigNumber('5'),
+    round: 'floor',
+    roundingMode: BigNumber.ROUND_DOWN,
+    assertions: function(roundedValue) {
+      assert.deepEqual(roundedValue, '42.1192');
+    }
+  });
+});
+
+describe("abacus.parseTradeInfo", function() {
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(abacus.parseTradeInfo(t.trade));
+    });
+  };
+  // trade: [ tradeID, tradeType, marketID, FullPercisionAmount, fullPrecisionPrice, owner, blockID, outcomeID ]
+  test({
+    trade: undefined,
+    assertions: function(parsed) {
+      assert.isNull(parsed);
+    }
+  });
+  test({
+    trade: [],
+    assertions: function(parsed) {
+      assert.isNull(parsed);
+    }
+  });
+  test({
+    trade: ['fail'],
+    assertions: function(parsed) {
+      assert.isNull(parsed);
+    }
+  });
+  test({
+    trade: ['0xa1', '0x1', '0xb1', '0000004500234500120000', '5002342211221110328', '0xc1', '101010', '1'],
+    assertions: function(parsed) {
+      assert.isNull(parsed);
+    }
+  });
+  test({
+    trade: ['0xa1', '0x1', '0xb1', '10004500234500120000', '00000000000000000000000', '0xc1', '101010', '1'],
+    assertions: function(parsed) {
+      assert.isNull(parsed);
+    }
+  });
+  test({
+    trade: ['0xa1', '0x1', '0xb1', '10004500234500120000', '5002342211221110328', '0xc1', '101010', '1'],
+    assertions: function(parsed) {
+      assert.deepEqual(parsed, {
+        id: '0x00000000000000000000000000000000000000000000000000000000000000a1',
+        type: 'buy',
+        market: '0xb1',
+        amount: '10.0045',
+        fullPrecisionAmount: '10.00450023450012',
+        price: '5.0023',
+        fullPrecisionPrice: '5.002342211221110328',
+        owner: '0x00000000000000000000000000000000000000c1',
+        block: 1052688,
+        outcome: '1'
+      });
+    }
+  });
+  test({
+    trade: ['0xabc1', '0x2', '0xa1', '802393203427423923123', '42375829238539345978345', '0xc1', '101010', '1'],
+    assertions: function(parsed) {
+      assert.deepEqual(parsed, {
+        id: '0x000000000000000000000000000000000000000000000000000000000000abc1',
+        type: 'sell',
+        market: '0xa1',
+        amount: '802.3932',
+        fullPrecisionAmount: '802.393203427423923123',
+        price: '42375.8293',
+        fullPrecisionPrice: '42375.829238539345978345',
+        owner: '0x00000000000000000000000000000000000000c1',
+        block: 1052688,
+        outcome: '1'
+      });
+    }
+  });
+  test({
+    trade: ['0xabc1', '0x2', '0xa1', '802393203427423923123', '0', '0xc1', '101010', '1'],
+    assertions: function(parsed) {
+      assert.isNull(parsed);
+    }
+  });
+});
+
+describe("abacus.decodeTag", function() {
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(abacus.decodeTag(t.tag));
+    });
+  };
+  test({
+    tag: undefined,
+    assertions: function(tag) {
+      assert.isNull(tag);
+    }
+  });
+  test({
+    tag: '0x',
+    assertions: function(tag) {
+      assert.isNull(tag);
+    }
+  });
+  test({
+    tag: '0x0',
+    assertions: function(tag) {
+      assert.isNull(tag);
+    }
+  });
+  test({
+    tag: abi.short_string_to_int256('This is my tag!'),
+    assertions: function(tag) {
+      assert.deepEqual(tag, 'This is my tag!');
+    }
+  });
+});
+
+describe("abacus.base58Decode", function() {
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(abacus.base58Decode(t.encoded));
+    });
+  };
+  test({
+    encoded: 'kpXKnbi9Czht5bSPbpf7QoYiDWDF8UWZzmWiCrM7xoE4rbkZ7WmpM4dq9WLki1F8Qhg4bcBYtE8',
+    assertions: function(decoded) {
+      assert.deepEqual(decoded, {
+      	hello: 'world',
+      	description: 'this is a test object'
+      });
+    }
+  });
+});
+
+describe("abacus.base58Encode", function() {
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(abacus.base58Encode(t.object));
+    });
+  };
+  test({
+    object: { hello: 'world', description: 'this is a test object' },
+    assertions: function(encoded) {
+      assert.deepEqual(encoded, 'kpXKnbi9Czht5bSPbpf7QoYiDWDF8UWZzmWiCrM7xoE4rbkZ7WmpM4dq9WLki1F8Qhg4bcBYtE8');
+    }
   });
 });

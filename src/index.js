@@ -57,7 +57,8 @@ function Augur() {
       trading: false,     // trading-related debug logging
       reporting: false,   // reporting-related debug logging
       filters: false,     // filters-related debug logging
-      sync: false         // show warning on synchronous RPC request
+      sync: false,        // show warning on synchronous RPC request
+      accounts: false,    // show info about funding from faucet
     },
     loadZeroVolumeMarkets: true
   };

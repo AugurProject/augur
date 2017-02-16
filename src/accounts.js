@@ -41,18 +41,20 @@ module.exports = function () {
         return onFailed(registeredAddress);
       }
       var url = constants.FAUCET + abi.format_address(registeredAddress);
-      console.debug("fundNewAccountFromFaucet:", url);
+      if (augur.options.debug.accounts) console.debug("fundNewAccountFromFaucet:", url);
       request(url, function (err, response, body) {
-        console.log("faucet err:", err);
-        console.log("faucet response:", response);
-        console.log("faucet body:", body);
+        if (augur.options.debug.accounts) {
+          console.log("faucet err:", err);
+          console.log("faucet response:", response);
+          console.log("faucet body:", body);
+        }
         if (err) return onFailed(err);
         if (response.statusCode !== 200) {
           return onFailed(response.statusCode);
         }
-        console.debug("Sent ether to:", registeredAddress);
+        if (augur.options.debug.accounts) console.debug("Sent ether to:", registeredAddress);
         augur.rpc.balance(registeredAddress, function (ethBalance) {
-          console.debug("Balance:", ethBalance);
+          if (augur.options.debug.accounts) console.debug("Balance:", ethBalance);
           var balance = parseInt(ethBalance, 16);
           if (balance > 0) {
             augur.fundNewAccount({
@@ -66,9 +68,9 @@ module.exports = function () {
               return balance > 0;
             }, function (callback) {
               augur.rpc.fastforward(1, function (nextBlock) {
-                console.log("Block:", nextBlock);
+                if (augur.options.debug.accounts) console.log("Block:", nextBlock);
                 augur.rpc.balance(registeredAddress, function (ethBalance) {
-                  console.debug("Balance:", ethBalance);
+                  if (augur.options.debug.accounts) console.debug("Balance:", ethBalance);
                   balance = parseInt(ethBalance, 16);
                   callback(null, balance);
                 });
@@ -176,7 +178,10 @@ module.exports = function () {
       cb = (utils.is_function(cb)) ? cb : utils.pass;
       if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
       keys.recover(password, keystore, function (privateKey) {
+        if (!privateKey || privateKey.error) return cb(errors.BAD_CREDENTIALS);
+
         var keystoreCrypto = keystore.crypto || keystore.Crypto;
+
         keys.deriveKey(password, keystoreCrypto.kdfparams.salt, {kdf: constants.KDF}, function (derivedKey) {
           self.account = {
             privateKey: privateKey,
@@ -184,6 +189,7 @@ module.exports = function () {
             keystore: keystore,
             derivedKey: derivedKey
           };
+
           return cb(clone(self.account));
         });
       });
@@ -358,7 +364,10 @@ module.exports = function () {
 
     invoke: function (payload, cb) {
       var self = this;
-
+      if (!payload || payload.constructor !== Object) {
+        if (cb && cb.constructor === Function) return cb(errors.TRANSACTION_FAILED);
+        return errors.TRANSACTION_FAILED;
+      }
       // if this is just a call, use ethrpc's regular invoke method
       if (!payload.send) {
         if (augur.rpc.debug.broadcast) {
@@ -366,15 +375,11 @@ module.exports = function () {
         }
         return augur.rpc.fire(payload, cb);
       }
-
       cb = cb || utils.pass;
+
       if (!this.account.address || !this.account.privateKey) {
         return cb(errors.NOT_LOGGED_IN);
       }
-      if (!payload || payload.constructor !== Object) {
-        return cb(errors.TRANSACTION_FAILED);
-      }
-
       // parse and serialize transaction parameters
       var packaged = augur.rpc.packageRequest(payload);
       packaged.from = this.account.address;

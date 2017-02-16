@@ -134,7 +134,7 @@ describe('connect.bindContractMethod', function() {
     }
   });
   test({
-    description: 'Should handle binding a method and then handling the method correctly when the method has inputs, without callback. method transaction has a parser, fixed, send false',
+    description: 'Should handle binding a method and then handling the method correctly when the method has inputs, without callback. method transaction without a parser, fixed, send false',
     contract: 'Topics',
     method: 'increaseTopicPopularity',
     callMethod: function(method) {
@@ -162,7 +162,7 @@ describe('connect.bindContractMethod', function() {
     }
   });
   test({
-    description: 'Should handle binding a method and then handling the method correctly when the method has inputs, with callback. method transaction has a parser, fixed, send false. arg as one object',
+    description: 'Should handle binding a method and then handling the method correctly when the method has inputs, with callback. method transaction without a parser, fixed, send false. arg as one object',
     contract: 'Topics',
     method: 'increaseTopicPopularity',
     callMethod: function(method) {
@@ -341,10 +341,10 @@ describe('connect.bindContractAPI', function() {
     ClearCallCounts(callCounts);
   });
   var test = function(t) {
-    it(t.description, function() {
+    it(t.description, function(done) {
       // These tests will be slightly different then the usual format. This is designed to isolate only the bindContractAPI method so we don't start messing with augur.js object as a whole and then have to clean it up.
       var isolatedBindContractAPI = require('../../../src/modules/connect.js').bindContractAPI.bind(t.testThis);
-      t.assertions(isolatedBindContractAPI(t.methods));
+      t.assertions(isolatedBindContractAPI(t.methods), done);
     });
   };
   test({
@@ -415,7 +415,7 @@ describe('connect.bindContractAPI', function() {
         },
     	}
     },
-    assertions: function(methods) {
+    assertions: function(methods, done) {
       assert.deepEqual(methods, {
       	testFunctionGroup1: {
       		testFunction1: {
@@ -453,6 +453,7 @@ describe('connect.bindContractAPI', function() {
       assert.deepEqual(callCounts, {
         bindContractMethod: 4
       });
+      done();
     }
   });
   test({
@@ -497,7 +498,7 @@ describe('connect.bindContractAPI', function() {
       }
     },
     methods: undefined,
-    assertions: function(methods) {
+    assertions: function(methods, done) {
       assert.deepEqual(methods, {
       	testFunctionGroup1: {
       		testFunction1: {
@@ -519,6 +520,7 @@ describe('connect.bindContractAPI', function() {
       assert.deepEqual(callCounts, {
         bindContractMethod: 2
       });
+      done();
     }
   });
 });
@@ -535,12 +537,12 @@ describe('connect.sync', function() {
     connector.connect({contracts: Contracts, api: Contracts.api, http: null});
   });
   var test = function(t) {
-    it(t.description, function() {
+    it(t.description, function(done) {
       var isolatedSync = require('../../../src/modules/connect.js').sync.bind(t.testThis);
 
       t.setupConnectorState();
 
-      t.assertions(isolatedSync(), t.testThis);
+      t.assertions(isolatedSync(), t.testThis, done);
     });
   };
   test({
@@ -551,12 +553,12 @@ describe('connect.sync', function() {
       },
     },
     setupConnectorState: function() {
-      connector.state.contracts = undefined;
-      connector.state.networkID = undefined;
+      connector.state.contracts = null;
+      connector.state.networkID = null;
     },
-    assertions: function(out, testThis) {
+    assertions: function(out, testThis, done) {
       assert.isTrue(out);
-      assert.isUndefined(testThis.network_id);
+      assert.isNull(testThis.network_id);
       assert.deepEqual(testThis.from, connector.state.from);
       assert.deepEqual(testThis.coinbase, connector.state.coinbase);
       assert.deepEqual(testThis.rpc, connector.rpc);
@@ -566,6 +568,7 @@ describe('connect.sync', function() {
       assert.deepEqual(callCounts, {
         bindContractAPI: 1,
       });
+      done();
     }
   });
   test({
@@ -580,8 +583,10 @@ describe('connect.sync', function() {
       connector.setupFunctionsAPI = function() {
         connector.state.api.functions = undefined;
       };
+      connector.setupEventsAPI = function() {
+      };
     },
-    assertions: function(out, testThis) {
+    assertions: function(out, testThis, done) {
       assert.isTrue(out);
       assert.deepEqual(testThis.network_id, connector.state.networkID);
       assert.deepEqual(testThis.from, connector.state.from);
@@ -593,6 +598,7 @@ describe('connect.sync', function() {
       assert.deepEqual(callCounts, {
         bindContractAPI: 1,
       });
+      done();
     }
   });
 });

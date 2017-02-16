@@ -134,6 +134,13 @@ describe("positions", function () {
       });
     };
     test({
+      description: 'logs completely missing',
+      logs: undefined,
+      assertions: function(output) {
+        assert.deepEqual(output, {});
+      }
+    });
+    test({
       description: "no logs",
       logs: [],
       assertions: function (output) {
@@ -357,6 +364,42 @@ describe("positions", function () {
           "0x00000000000000000000000000000000000000000000000000000000deadbeef": new BigNumber("0.42", 10),
           "0x1111111111111111111111111111111111111111111111111111111111111111": new BigNumber("1", 10)
         });
+      }
+    });
+  });
+
+  describe("calculateCompleteSetsEffectivePrice", function() {
+    var test = function(t) {
+      it(JSON.stringify(t), function() {
+        t.assertions(augur.calculateCompleteSetsEffectivePrice(t.logs));
+      });
+    };
+    test({
+      logs: undefined,
+      assertions: function(out) {
+        assert.deepEqual(out, {});
+      }
+    });
+    test({
+      logs: [],
+      assertions: function(out) {
+        assert.deepEqual(out, {});
+      }
+    });
+    test({
+      logs: [{
+        topics: ['0x0', '0x0', '0xa1'],
+        data: '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005'
+      },
+      {
+        topics: ['0x0', '0x0', '0xa2'],
+        data: '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003'
+      }],
+      assertions: function(out) {
+        assert.deepEqual(JSON.stringify(out), JSON.stringify({
+        	'0xa1': '0.2',
+        	'0xa2': '0.33333333333333333333'
+        }));
       }
     });
   });

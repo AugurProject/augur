@@ -8,6 +8,7 @@
     "integration-test": "mocha test/integration/core test/integration/create test/integration/markets test/integration/trading test/integration/reporting",
     "reporting-sequence": "mocha test/integration/reporting/sequence.js -R spec",
     "lint": "jshint gulpfile.js src/*.js src/modules/*.js scripts/*.js test/*.js",
+    "coverage-save": "istanbul cover ./node_modules/mocha/bin/_mocha test/unit/core test/unit/create test/unit/trading test/unit/reporting test/unit/markets",
     "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha test/unit/core test/unit/create test/unit/trading test/unit/reporting test/unit/markets --report lcovonly -- -R min && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "link": "npm link augur-contracts && npm link ethrpc && npm link ethereumjs-connect && npm link keythereum && npm link augur-abi"
   },
@@ -67,6 +68,7 @@
     "mocha-lcov-reporter": "0.0.2",
     "moment": "^2.13.0",
     "posix-getopt": "^1.1.0",
+    "proxyquire": "^1.7.11",
     "rimraf": "^2.4.0",
     "source-map": "^0.5.6",
     "spammer": "^0.1.1",

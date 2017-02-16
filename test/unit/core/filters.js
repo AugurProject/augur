@@ -12,10 +12,422 @@ var tools = require("../../tools");
 var constants = require("../../../src/constants");
 var augurpath = "../../../src/index";
 var augur = require(augurpath);
+var utils = require("../../../src/utilities");
 
 var DEBUG = false;
 var DELAY = 2500;
 
+describe("format_trade_type", function() {
+  // 6 tests total
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(augur.filters.format_trade_type(t.type));
+    });
+  };
+  test({
+    type: '0x1',
+    assertions: function(type) {
+      assert.deepEqual(type, 'buy');
+    }
+  });
+  test({
+    type: '1',
+    assertions: function(type) {
+      assert.deepEqual(type, 'buy');
+    }
+  });
+  test({
+    type: 1,
+    assertions: function(type) {
+      assert.deepEqual(type, 'buy');
+    }
+  });
+  test({
+    type: '0x2',
+    assertions: function(type) {
+      assert.deepEqual(type, 'sell');
+    }
+  });
+  test({
+    type: '2',
+    assertions: function(type) {
+      assert.deepEqual(type, 'sell');
+    }
+  });
+  test({
+    type: 2,
+    assertions: function(type) {
+      assert.deepEqual(type, 'sell');
+    }
+  });
+});
+describe("format_common_fields", function() {
+  // 2 tests total
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(augur.filters.format_common_fields(t.msg));
+    });
+  };
+  test({
+    msg: {
+      sender: '0x1',
+      timestamp: 15000000,
+      type: 1,
+      price: '500000000000000000',
+      amount: '10000000000000000000'
+    },
+    assertions: function(msg) {
+      assert.deepEqual(msg, {
+        sender: '0x0000000000000000000000000000000000000001',
+        timestamp: 352321536,
+        type: 'buy',
+        price: '0.5',
+        amount: '10'
+      });
+    }
+  });
+  test({
+    msg: {
+      sender: '0x2',
+      timestamp: 15000000,
+      type: 2,
+      price: '750000000000000000',
+      amount: '25000000000000000000'
+    },
+    assertions: function(msg) {
+      assert.deepEqual(msg, {
+        sender: '0x0000000000000000000000000000000000000002',
+        timestamp: 352321536,
+        type: 'sell',
+        price: '0.75',
+        amount: '25'
+      });
+    }
+  });
+});
+describe("format_event_message", function() {
+  // 21 tests total
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(augur.filters.format_event_message(t.label, t.msg));
+    });
+  };
+  test({
+    label: 'Approval',
+    msg: {
+      _owner: '0x1',
+      _spender: '0x2',
+      value: abi.fix('10')
+    },
+    assertions: function(msg) {
+      assert.deepEqual(JSON.stringify(msg), JSON.stringify({
+        _owner: '0x0000000000000000000000000000000000000001',
+        _spender: '0x0000000000000000000000000000000000000002',
+        value: '10'
+      }));
+    }
+  });
+  test({
+    label: 'collectedFees',
+    msg: {
+      cashFeesCollected: abi.fix('13.575'),
+      newCashBalance: abi.fix('10000'),
+      lastPeriodRepBalance: abi.fix('99'),
+      repGain: abi.fix('10'),
+      newRepBalance: abi.fix('109'),
+      notReportingBond: abi.fix('100'),
+      totalReportingRep: abi.fix('90'),
+      period: abi.hex('15'),
+    },
+    assertions: function(msg) {
+      assert.deepEqual(JSON.stringify(msg), JSON.stringify({
+        cashFeesCollected: '13.575',
+        newCashBalance: '10000',
+        lastPeriodRepBalance: '99',
+        repGain: '10',
+        newRepBalance: '109',
+        notReportingBond: '100',
+        totalReportingRep: '90',
+        period: 15,
+      }));
+    }
+  });
+  test({
+    label: 'deposit',
+    msg: {
+      value: abi.fix('100')
+    },
+    assertions: function(msg) {
+      assert.deepEqual(JSON.stringify(msg), JSON.stringify({
+        value: '100'
+      }));
+    }
+  });
+  test({
+    label: 'fundedAccount',
+    msg: {
+      cashBalance: abi.fix('10000'),
+      repBalance: abi.fix('47')
+    },
+    assertions: function(msg) {
+      assert.deepEqual(JSON.stringify(msg), JSON.stringify({
+        cashBalance: '10000',
+        repBalance: '47'
+      }));
+    }
+  });
+  test({
+    label: 'log_add_tx',
+    msg: {
+      outcome: abi.hex('1'),
+      isShortAsk: '1'
+    },
+    assertions: function(msg) {
+      assert.deepEqual(JSON.stringify(msg), JSON.stringify({
+        outcome: 1,
+        isShortAsk: true
+      }));
+    }
+  });
+  test({
+    label: 'log_add_tx',
+    msg: {
+      outcome: abi.hex('2'),
+      isShortAsk: '0'
+    },
+    assertions: function(msg) {
+      assert.deepEqual(JSON.stringify(msg), JSON.stringify({
+        outcome: 2,
+        isShortAsk: false
+      }));
+    }
+  });
+  test({
+    label: 'log_cancel',
+    msg: {
+      outcome: abi.hex('2'),
+      cashRefund: abi.fix('100.5034')
+    },
+    assertions: function(msg) {
+      assert.deepEqual(JSON.stringify(msg), JSON.stringify({
+        outcome: 2,
+        cashRefund: '100.5034'
+      }));
+    }
+  });
+  test({
+    label: 'log_fill_tx',
+    msg: {
+      owner: '0x1',
+      takerFee: abi.fix('0.03'),
+      makerFee: abi.fix('0.01'),
+      onChainPrice: abi.fix('0.5'),
+      outcome: '1',
+    },
+    assertions: function(msg) {
+      assert.deepEqual(JSON.stringify(msg), JSON.stringify({
+        owner: '0x0000000000000000000000000000000000000001',
+        takerFee: '0.03',
+        makerFee: '0.01',
+        onChainPrice: '0.5',
+        outcome: 1,
+        type: 'sell',
+        isShortSell: true
+      }));
+    }
+  });
+  test({
+    label: 'log_short_fill_tx',
+    msg: {
+      owner: '0x2',
+      type: '0x1',
+      takerFee: abi.fix('0.02'),
+      makerFee: abi.fix('0.01'),
+      onChainPrice: abi.fix('0.6'),
+      outcome: '2',
+    },
+    assertions: function(msg) {
+      assert.deepEqual(JSON.stringify(msg), JSON.stringify({
+        owner: '0x0000000000000000000000000000000000000002',
+        type: 'buy',
+        takerFee: '0.02',
+        makerFee: '0.01',
+        onChainPrice: '0.6',
+        outcome: 2,
+      }));
+    }
+  });
+  test({
+    label: 'marketCreated',
+    msg: {
+      marketCreationFee: abi.fix('1500'),
+      eventBond: abi.fix('1000'),
+    },
+    assertions: function(msg) {
+      assert.deepEqual(JSON.stringify(msg), JSON.stringify({
+        marketCreationFee: '1500',
+        eventBond: '1000',
+      }));
+    }
+  });
+  test({
+    label: 'payout',
+    msg: {
+      cashPayout: abi.fix('2500'),
+      cashBalance: abi.fix('12500'),
+      shares: abi.fix('200'),
+    },
+    assertions: function(msg) {
+      assert.deepEqual(JSON.stringify(msg), JSON.stringify({
+        cashPayout: '2500',
+        cashBalance: '12500',
+        shares: '200',
+      }));
+    }
+  });
+  test({
+    label: 'penalizationCaughtUp',
+    msg: {
+      penalizedFrom: abi.hex('10'),
+      penalizedUpTo: abi.hex('100'),
+      repLost: abi.fix('78.39'),
+      newRepBalance: abi.fix('221.71'),
+    },
+    assertions: function(msg) {
+      assert.deepEqual(JSON.stringify(msg), JSON.stringify({
+        penalizedFrom: 10,
+        penalizedUpTo: 100,
+        repLost: '-78.39',
+        newRepBalance: '221.71',
+      }));
+    }
+  });
+  test({
+    label: 'penalize',
+    msg: {
+      oldrep: abi.fix('400'),
+      repchange: abi.fix('20'),
+      p: abi.fix('10'),
+      penalizedUpTo: abi.hex('200'),
+    },
+    assertions: function(msg) {
+      assert.deepEqual(JSON.stringify(msg), JSON.stringify({
+        oldrep: '400',
+        repchange: '20',
+        p: '10',
+        penalizedUpTo: 200,
+      }));
+    }
+  });
+  test({
+    label: 'sentCash',
+    msg: {
+      _from: '1',
+      _to: '2',
+      _value: abi.fix('125'),
+    },
+    assertions: function(msg) {
+      assert.deepEqual(JSON.stringify(msg), JSON.stringify({
+        _from: '0x0000000000000000000000000000000000000001',
+        _to: '0x0000000000000000000000000000000000000002',
+        _value: '125',
+      }));
+    }
+  });
+  test({
+    label: 'Transfer',
+    msg: {
+      _from: '3',
+      _to: '4',
+      _value: abi.fix('312'),
+    },
+    assertions: function(msg) {
+      assert.deepEqual(JSON.stringify(msg), JSON.stringify({
+        _from: '0x0000000000000000000000000000000000000003',
+        _to: '0x0000000000000000000000000000000000000004',
+        _value: '312',
+      }));
+    }
+  });
+  test({
+    label: 'slashedRep',
+    msg: {
+      reporter: '0x1',
+      repSlashed: abi.fix('5'),
+      slasherBalance: abi.fix('95'),
+    },
+    assertions: function(msg) {
+      assert.deepEqual(JSON.stringify(msg), JSON.stringify({
+        reporter: '0x0000000000000000000000000000000000000001',
+        repSlashed: '5',
+        slasherBalance: '95',
+      }));
+    }
+  });
+  test({
+    label: 'submittedReport',
+    msg: {
+      ethics: abi.fix('20')
+    },
+    assertions: function(msg) {
+      assert.deepEqual(JSON.stringify(msg), JSON.stringify({
+        ethics: '20'
+      }));
+    }
+  });
+  test({
+    label: 'submittedReportHash',
+    msg: {
+      ethics: abi.fix('34')
+    },
+    assertions: function(msg) {
+      assert.deepEqual(JSON.stringify(msg), JSON.stringify({
+        ethics: '34'
+      }));
+    }
+  });
+  test({
+    label: 'tradingFeeUpdated',
+    msg: {
+      tradingFee: abi.fix('0.03')
+    },
+    assertions: function(msg) {
+      assert.deepEqual(JSON.stringify(msg), JSON.stringify({
+        tradingFee: '0.03'
+      }));
+    }
+  });
+  test({
+    label: 'withdraw',
+    msg: {
+      to: '0x1',
+      value: abi.fix('153.25')
+    },
+    assertions: function(msg) {
+      assert.deepEqual(JSON.stringify(msg), JSON.stringify({
+        to: '0x0000000000000000000000000000000000000001',
+        value: '153.25'
+      }));
+    }
+  });
+  test({
+    label: 'a label we dont recognize in this function',
+    msg: {
+      sender: '0x1',
+      amount: abi.fix('10'),
+      price: abi.fix('5'),
+      type: '1'
+    },
+    assertions: function(msg) {
+      assert.deepEqual(JSON.stringify(msg), JSON.stringify({
+        sender: '0x0000000000000000000000000000000000000001',
+        amount: '10',
+        price: '5',
+        type: 'buy'
+      }));
+    }
+  });
+});
 describe("parse_block_message", function () {
   var test = function (msg) {
     it(JSON.stringify(msg), function (done) {
@@ -85,6 +497,46 @@ describe("parse_block_message", function () {
     transactionsRoot: '0x7c416eb59638d9a58ec5f526dd1b4326f37e50fa3968700e28d5f65f704e85fc',
     uncles: []
   });
+  test([{
+    difficulty: '0x456f3e0b',
+    extraData: '0xd783010500844765746887676f312e352e31856c696e7578',
+    gasLimit: '0x47e7c4',
+    gasUsed: '0x493e0',
+    hash: '0x6eb2ccd03087179bf53e32ef89db8ae1a7d4c407c691f31c467825e631a53c02',
+    logsBloom: '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+    miner: '0xdf712c685be75739eb44cb6665f92129e45864e4',
+    nonce: '0xd3764129399cdce6',
+    number: '0x119633',
+    parentHash: '0x9b3dda703bc0de8a2162adb1666880f1dca6f421190616733c7b5a3e127ec7eb',
+    receiptRoot: '0x197e4c93706b5c8d685a47909374a99b096948295abba0578aae46708a1e4435',
+    sha3Uncles: '0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347',
+    size: '0x2b6',
+    stateRoot: '0x385a5bdca25f1214fd9e244ac7146cf9dfc21f6a4dfe29819cdd069b2bfc63b8',
+    timestamp: '0x57648910',
+    totalDifficulty: '0xf19cf28ef992',
+    transactionsRoot: '0x7c416eb59638d9a58ec5f526dd1b4326f37e50fa3968700e28d5f65f704e85fc',
+    uncles: []
+  }]);
+  test([{
+    difficulty: '0x456f3e0b',
+    extraData: '0xd783010500844765746887676f312e352e31856c696e7578',
+    gasLimit: '0x47e7c4',
+    gasUsed: '0x493e0',
+    hash: '0x6eb2ccd03087179bf53e32ef89db8ae1a7d4c407c691f31c467825e631a53c02',
+    logsBloom: '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
+    miner: '0xdf712c685be75739eb44cb6665f92129e45864e4',
+    nonce: '0xd3764129399cdce6',
+    number: undefined,
+    parentHash: '0x9b3dda703bc0de8a2162adb1666880f1dca6f421190616733c7b5a3e127ec7eb',
+    receiptRoot: '0x197e4c93706b5c8d685a47909374a99b096948295abba0578aae46708a1e4435',
+    sha3Uncles: '0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347',
+    size: '0x2b6',
+    stateRoot: '0x385a5bdca25f1214fd9e244ac7146cf9dfc21f6a4dfe29819cdd069b2bfc63b8',
+    timestamp: '0x57648910',
+    totalDifficulty: '0xf19cf28ef992',
+    transactionsRoot: '0x7c416eb59638d9a58ec5f526dd1b4326f37e50fa3968700e28d5f65f704e85fc',
+    uncles: []
+  }]);
 });
 describe("parse_contracts_message", function () {
   var test = function (msg) {
@@ -627,3 +1079,447 @@ describe("parse_event_message", function () {
     }]
   });
 });
+describe("poll_filter", function() {
+  // 4 tests total
+  var getFilterChanges = augur.rpc.getFilterChanges;
+  var parse_event_message = augur.filters.parse_event_message;
+  var parse_block_message = augur.filters.parse_block_message;
+  var parse_contracts_message = augur.filters.parse_contracts_message;
+  afterEach(function() {
+    augur.rpc.getFilterChanges = getFilterChanges;
+    augur.filters.parse_event_message = parse_event_message;
+    augur.filters.parse_block_message = parse_block_message;
+    augur.filters.parse_contracts_message = parse_contracts_message;
+  });
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      augur.rpc.getFilterChanges = t.getFilterChanges;
+      augur.filters.parse_event_message = t.assertions;
+      augur.filters.parse_block_message = t.assertions;
+      augur.filters.parse_contracts_message = t.assertions;
+      // set the id, we do this because otherwise they would all be null as that's the default state.
+      if (augur.filters.filter[t.label]) augur.filters.filter[t.label].id = t.id;
+
+      augur.filters.poll_filter(t.label, t.onMessage);
+
+      // reset the id to the default null state.
+      if (augur.filters.filter[t.label]) augur.filters.filter[t.label].id = null;
+    });
+  };
+  test({
+    label: 'unrecognized label',
+    onMessage: function(msg) {
+    },
+    getFilterChanges: function(filterID, cb) {
+      // in this case we should just exit the function if it's not recognized label and never hit this assertion.
+      assert.isTrue(false, 'Should not call augur.rpc.getFilterChanges if the label passed is not recognized');
+    }
+  });
+  test({
+    label: 'withdraw',
+    id: '0x1',
+    onMessage: utils.noop,
+    assertions: function(label, msg, cb) {
+      assert.deepEqual(label, 'withdraw');
+      assert.deepEqual(msg, { value: '10', to: '0x0000000000000000000000000000000000000001'});
+      assert.deepEqual(cb, utils.noop);
+    },
+    getFilterChanges: function(filterID, cb) {
+        assert.deepEqual(filterID, '0x1');
+        assert.isFunction(cb);
+        // convert CB to string to confirm we created the correct callback and it contains the expected call within it.
+        assert.include(cb.toString(), 'self.parse_event_message');
+        cb({ value: '10', to: '0x0000000000000000000000000000000000000001'}, cb);
+    }
+  });
+  test({
+    label: 'contracts',
+    id: '0x2',
+    onMessage: utils.noop,
+    assertions: function(msg, onMessage) {
+      assert.deepEqual(msg, { data: ['0x1', '0x2']});
+      assert.deepEqual(onMessage, utils.noop);
+    },
+    getFilterChanges: function(filterID, cb) {
+        assert.deepEqual(filterID, '0x2');
+        assert.isFunction(cb);
+        // convert CB to string to confirm we created the correct callback and it contains the expected call within it.
+        assert.include(cb.toString(), 'self.parse_contracts_message');
+        cb({ data: ['0x1', '0x2']}, cb);
+    }
+  });
+  test({
+    label: 'block',
+    id: '0x3',
+    onMessage: utils.noop,
+    assertions: function(msg, onMessage) {
+      assert.deepEqual(msg, '0x11941a');
+      assert.deepEqual(onMessage, utils.noop);
+    },
+    getFilterChanges: function(filterID, cb) {
+        assert.deepEqual(filterID, '0x3');
+        assert.isFunction(cb);
+        // convert CB to string to confirm we created the correct callback and it contains the expected call within it.
+        assert.include(cb.toString(), 'self.parse_block_message');
+        cb('0x11941a', cb);
+    }
+  });
+});
+describe("clear_filter", function() {
+  // 2 tests total
+  var unsubscribe = augur.filters.unsubscribe;
+  afterEach(function() {
+    augur.filters.unsubscribe = unsubscribe;
+  });
+  var test = function(t) {
+    it(JSON.stringify(t) + 'sync', function() {
+      if (augur.filters.filter[t.label]) augur.filters.filter[t.label].id = t.id;
+
+      augur.filters.unsubscribe = t.unsubscribe;
+
+      t.assertions(augur.filters.clear_filter(t.label, undefined));
+    });
+    it(JSON.stringify(t) + 'async', function(done) {
+      if (augur.filters.filter[t.label]) augur.filters.filter[t.label].id = t.id;
+
+      augur.filters.unsubscribe = t.unsubscribe;
+
+      augur.filters.clear_filter(t.label, function(out) {
+        t.assertions(out);
+        done();
+      });
+    });
+  };
+  test({
+    label: 'withdraw',
+    id: '0x1',
+    unsubscribe: function(id, cb) {
+      assert.deepEqual(id, '0x1');
+      if(utils.is_function(cb)) return cb('1');
+      return '1';
+    },
+    assertions: function(out) {
+      assert.deepEqual(out, '1');
+      assert.isNull(augur.filters.filter['withdraw'].id);
+    }
+  });
+});
+describe("setup_event_filter", function() {
+  // 1 test total
+  var subscribeLogs = augur.filters.subscribeLogs;
+  afterEach(function() {
+    augur.filters.subscribeLogs = subscribeLogs;
+  });
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      augur.filters.subscribeLogs = t.subscribeLogs;
+      t.assertions(augur.filters.setup_event_filter(t.contract, t.label, t.f));
+    });
+  };
+  test({
+    contract: 'Cash',
+    label: 'deposit',
+    f: utils.noop,
+    subscribeLogs: function(params, cb) {
+      assert.deepEqual(params, {
+        address: augur.contracts.Cash,
+        topics: [augur.api.events.deposit.signature]
+      });
+      assert.deepEqual(cb, utils.noop);
+      // return a filter_id
+      return '0x1';
+    },
+    assertions: function(filter_id) {
+      assert.deepEqual(filter_id, '0x1');
+    }
+  });
+});
+describe("setup_contracts_filter", function() {
+  // 2 tests total
+  var subscribeLogs = augur.filters.subscribeLogs;
+  var contracts = augur.contracts;
+  afterEach(function() {
+    augur.filters.subscribeLogs = subscribeLogs;
+    augur.filters.filter.contracts = { id: null, heartbeat: null };
+    augur.contracts = contracts;
+  });
+  var test = function(t) {
+    it(JSON.stringify(t) + 'sync', function() {
+      augur.filters.subscribeLogs = t.subscribeLogs;
+      augur.contracts = t.contracts;
+
+      t.assertions(augur.filters.setup_contracts_filter(undefined));
+    });
+    it(JSON.stringify(t) + 'async', function(done) {
+      augur.filters.subscribeLogs = t.subscribeLogs;
+      augur.contracts = t.contracts;
+
+      augur.filters.setup_contracts_filter(function(contracts) {
+        t.assertions(contracts);
+        done();
+      });
+    });
+  };
+  test({
+    contracts: {
+      test: '0x7982b951d4da29981a2fec08d4b659e64ecf1ca2',
+      example: '0xe2cd11a739009f4ee336a747dc58222d8f125de2',
+      hello: '0x3854ae028c91939a5d9b2a4614e4f8471259aa43',
+      world: '0x1aaae11d6aab155657faa880dcc1892c4f49f245'
+    },
+    subscribeLogs: function(params, cb) {
+      assert.deepEqual(params, {
+        address: [
+          '0x7982b951d4da29981a2fec08d4b659e64ecf1ca2', '0xe2cd11a739009f4ee336a747dc58222d8f125de2', '0x3854ae028c91939a5d9b2a4614e4f8471259aa43', '0x1aaae11d6aab155657faa880dcc1892c4f49f245'
+        ],
+        fromBlock: "0x01",
+        toBlock: "latest"
+      });
+      if(utils.is_function(cb)) return cb('0x1');
+      return '0x1';
+    },
+    assertions: function(contracts) {
+      assert.deepEqual(contracts, {
+        id: '0x1',
+        heartbeat: null
+      });
+    }
+  });
+});
+describe("setup_block_filter", function() {
+  // 2 tests total
+  var subscribeNewBlocks = augur.filters.subscribeNewBlocks;
+  afterEach(function() {
+    augur.filters.subscribeNewBlocks = subscribeNewBlocks;
+    augur.filters.filter.block = { id: null, heartbeat: null };
+  });
+  var test = function(t) {
+    it(JSON.stringify(t) + 'sync', function() {
+      augur.filters.subscribeNewBlocks = t.subscribeNewBlocks;
+
+      t.assertions(augur.filters.setup_block_filter(undefined));
+    });
+    it(JSON.stringify(t) + 'async', function(done) {
+      augur.filters.subscribeNewBlocks = t.subscribeNewBlocks;
+
+      augur.filters.setup_block_filter(function(block) {
+        t.assertions(block);
+        done();
+      });
+    });
+  };
+  test({
+    subscribeNewBlocks: function(cb) {
+      if(cb && utils.is_function(cb)) return cb('0x1');
+      return '0x1';
+    },
+    assertions: function(contracts) {
+      assert.deepEqual(contracts, {
+        id: '0x1',
+        heartbeat: null
+      });
+    }
+  });
+});
+describe("start_event_listener", function() {
+  // 10 tests total
+  var setup_event_filter = augur.filters.setup_event_filter;
+  var filter = augur.filters.filter;
+  afterEach(function() {
+    augur.filters.setup_event_filter = setup_event_filter;
+    // make sure filter is completely nulled out before we start a new test.
+    for (var label in filter) {
+      if (!filter.hasOwnProperty(label)) continue;
+      filter[label] = { id: null, heartbeat: null };
+    }
+    augur.filters.filter = filter;
+  });
+  var test = function(t) {
+    it(JSON.stringify(t) + 'async', function(done) {
+      augur.filters.setup_event_filter = t.setup_event_filter;
+      augur.filters.filter = t.filter || filter;
+
+      augur.filters.start_event_listener(t.label, function(filterID) {
+        t.assertions(filterID);
+        done()
+      });
+    });
+    it(JSON.stringify(t) + 'sync', function() {
+      augur.filters.setup_event_filter = t.setup_event_filter;
+      augur.filters.filter = t.filter || filter;
+
+      t.assertions(augur.filters.start_event_listener(t.label, undefined));
+    })
+  };
+  test({
+    label: 'withdraw',
+    filter: { 'withdraw': { id: '0x1', heartbeat: null } },
+    setup_event_filter: function(contract, label, cb) {
+      // shouldnt get hit
+      assert.isTrue(false, 'setup_event_filter called when it should not have been!');
+    },
+    assertions: function(filterID) {
+      assert.deepEqual(filterID, '0x1');
+    }
+  });
+  test({
+    label: 'withdraw',
+    setup_event_filter: function(contract, label, cb) {
+      assert.deepEqual(contract, 'Cash');
+      assert.deepEqual(label, 'withdraw');
+      if (utils.is_function(cb)) return cb('0x1');
+      return '0x1';
+    },
+    assertions: function(filterID) {
+      assert.deepEqual(filterID, '0x1');
+      assert.deepEqual(augur.filters.filter.withdraw, {
+      	id: '0x1',
+      	heartbeat: null
+      });
+    }
+  });
+  test({
+    label: 'tradingFeeUpdated',
+    setup_event_filter: function(contract, label, cb) {
+      assert.deepEqual(contract, 'CreateMarket');
+      assert.deepEqual(label, 'tradingFeeUpdated');
+      if (utils.is_function(cb)) return cb(undefined);
+      return undefined;
+    },
+    assertions: function(filterID) {
+      assert.deepEqual(filterID, augur.errors.FILTER_NOT_CREATED);
+      assert.deepEqual(augur.filters.filter.tradingFeeUpdated, {
+      	id: null,
+      	heartbeat: null
+      });
+    }
+  });
+  test({
+    label: 'trade_logReturn',
+    setup_event_filter: function(contract, label, cb) {
+      assert.deepEqual(contract, 'Trade');
+      assert.deepEqual(label, 'trade_logReturn');
+      if (utils.is_function(cb)) return cb('0x');
+      return '0x';
+    },
+    assertions: function(filterID) {
+      assert.deepEqual(filterID, augur.errors.FILTER_NOT_CREATED);
+      assert.deepEqual(augur.filters.filter.trade_logReturn, {
+      	id: null,
+      	heartbeat: null
+      });
+    }
+  });
+  test({
+    label: 'payout',
+    setup_event_filter: function(contract, label, cb) {
+      assert.deepEqual(contract, 'Payout');
+      assert.deepEqual(label, 'payout');
+      if (cb && utils.is_function(cb)) return cb({ error: -1, message: "sender doesn't exist / match up with the participant given participant number" });
+      return { error: -1, message: "sender doesn't exist / match up with the participant given participant number" };
+    },
+    assertions: function(filterID) {
+      assert.deepEqual(filterID, { error: -1, message: "sender doesn't exist / match up with the participant given participant number" });
+      assert.deepEqual(augur.filters.filter.payout, {
+      	id: null,
+      	heartbeat: null
+      });
+    }
+  });
+});
+describe("start_contracts_listener", function() {
+  // 2 tests total
+  var setup_contracts_filter = augur.filters.setup_contracts_filter;
+  afterEach(function() {
+    augur.filters.filter.contracts = { id: null, heartbeat: null };
+    augur.filters.setup_contracts_filter = setup_contracts_filter;
+  });
+  var test = function(t) {
+    it(JSON.stringify(t) + ' sync', function() {
+      augur.filters.setup_contracts_filter = t.setup_contracts_filter;
+
+      t.assertions(augur.filters.start_contracts_listener(undefined));
+    });
+    it(JSON.stringify(t) + ' async', function(done) {
+      augur.filters.setup_contracts_filter = t.setup_contracts_filter;
+
+      augur.filters.start_contracts_listener(function(contracts) {
+        t.assertions(contracts);
+        done();
+      });
+    });
+  };
+  test({
+    setup_contracts_filter: function(cb) {
+      augur.filters.filter.contracts = { id: '0x123', heartbeat: null };
+      if (!utils.is_function(cb)) return { id: '0x123', heartbeat: null };
+      return cb({ id: '0x123', heartbeat: null });
+    },
+    assertions: function(contracts) {
+      assert.deepEqual(contracts, { id: '0x123', heartbeat: null });
+      assert.deepEqual(augur.filters.filter.contracts, contracts);
+    }
+  });
+});
+describe("start_block_listener", function() {
+  // 2 tests total
+  var setup_block_filter = augur.filters.setup_block_filter;
+  afterEach(function() {
+    augur.filters.filter.block = { id: null, heartbeat: null };
+    augur.filters.setup_block_filter = setup_block_filter;
+  });
+  var test = function(t) {
+    it(JSON.stringify(t) + ' sync', function() {
+      augur.filters.setup_block_filter = t.setup_block_filter;
+
+      t.assertions(augur.filters.start_block_listener(undefined));
+    });
+    it(JSON.stringify(t) + ' async', function(done) {
+      augur.filters.setup_block_filter = t.setup_block_filter;
+
+      augur.filters.start_block_listener(function(block) {
+        t.assertions(block);
+        done();
+      });
+    });
+  };
+  test({
+    setup_block_filter: function(cb) {
+      augur.filters.filter.block = { id: '0xabc', heartbeat: null };
+      if (!utils.is_function(cb)) return { id: '0xabc', heartbeat: null };
+      return cb({ id: '0xabc', heartbeat: null });
+    },
+    assertions: function(block) {
+      assert.deepEqual(block, { id: '0xabc', heartbeat: null });
+      assert.deepEqual(augur.filters.filter.block, block);
+    }
+  });
+});
+describe.skip("pacemaker", function() {});
+describe.skip("listen", function() {});
+describe("all_filters_removed", function() {
+  // 2 tests total
+  var filter = augur.filters.filter;
+  afterEach(function() {
+    augur.filters.filter = filter;
+  });
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      augur.filters.filter = t.filter || filter;
+
+      t.assertions(augur.filters.all_filters_removed());
+    });
+  };
+  test({
+    assertions: function(isRemoved) {
+      assert.isTrue(isRemoved);
+    }
+  });
+  test({
+    filter: { test: { id: '0x1', heartbeat: null} },
+    assertions: function(isRemoved) {
+      assert.isFalse(isRemoved);
+    }
+  });
+});
+describe.skip("ignore", function() {});
