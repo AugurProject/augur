@@ -56,6 +56,12 @@ const LoginMessagePage = p => (
       <h3>February 15, 2017</h3>
       <ol>
         <li>
+          Markets that are in the process of being loaded now are flagged with an &quot;isLoading&quot; property, to avoid duplicate get-market-info requests to augur.js.
+        </li>
+        <li>
+          Removed unused selectedOutcome selector, action, and reducer.
+        </li>
+        <li>
           Fixed derived key references in the front-end.
         </li>
         <li>

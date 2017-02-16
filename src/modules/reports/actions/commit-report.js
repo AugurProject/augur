@@ -32,7 +32,7 @@ export function commitReport(market, reportedOutcomeID, isUnethical, isIndetermi
       isCommitted: false,
       isRevealed: false
     };
-    const encrypted = encryptReport(fixedReport, loginAccount.derivedKey, salt);
+    const encrypted = encryptReport(fixedReport, salt);
     dispatch(updateReport(branchID, eventID, { ...report }));
     augur.submitReportHash({
       event: eventID,
