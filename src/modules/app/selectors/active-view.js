@@ -15,10 +15,13 @@ export default function () {
   const topic = getValue(parsedURL, 'searchParams.topic');
 
   // Load relevant markets
-  if (activeView === MARKETS && !topic && !hasLoadedMarkets && Object.keys(connection.isConnected).length) {
-    store.dispatch(loadMarkets(branch.id));
-  } else if (activeView === MARKETS && topic && !hasLoadedTopic[topic] && Object.keys(connection.isConnected).length) {
-    store.dispatch(loadMarketsByTopic(topic));
+  if (activeView === MARKETS && connection.isConnected && branch.id) {
+    if (!topic && !hasLoadedMarkets) {
+      store.dispatch(loadMarkets(branch.id));
+    }
+    if (topic && !hasLoadedTopic[topic]) {
+      store.dispatch(loadMarketsByTopic(topic));
+    }
   }
 
   return activeView;
