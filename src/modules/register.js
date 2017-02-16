@@ -13,7 +13,7 @@ var utils = require("../utilities");
 module.exports = {
 
   parseLastBlockNumber: function (logs) {
-    return parseInt(logs[logs.length - 1].blockNumber, 16);
+    return logs[logs.length - 1].blockNumber;
   },
 
   getRegisterBlockNumber: function (account, options, callback) {
