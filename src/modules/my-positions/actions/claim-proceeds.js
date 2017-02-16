@@ -15,11 +15,11 @@ export const claimProceeds = () => (dispatch, getState) => {
       augur.claimMarketsProceeds(branch.id, winningPositions, (err, claimedMarkets) => {
         if (err) console.error('claimMarketsProceeds failed:', err);
         dispatch(updateAssets());
-        async.each(claimedMarkets, (market, nextMarket) => (
-          dispatch(loadMarketsInfo([market.id], () => (
-            dispatch(loadAccountTrades(market.id, () => nextMarket()))
+        async.each(claimedMarkets, (marketID, nextMarket) => (
+          dispatch(loadMarketsInfo([marketID], () => (
+            dispatch(loadAccountTrades(marketID, () => nextMarket()))
           )))
-        ));
+        ), err => err && console.error(err));
       });
     }
     dispatch(cancelOpenOrdersInClosedMarkets());

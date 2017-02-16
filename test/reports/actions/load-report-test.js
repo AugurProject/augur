@@ -17,7 +17,7 @@ describe('modules/reports/actions/load-report.js', () => {
           accounts: t.state.augur.accounts,
           getReport: () => {},
           getReportHash: () => {},
-          unfixReport: () => {}
+          unfixRawReport: () => {}
         }
       };
       const ReportEncryption = {
@@ -36,7 +36,7 @@ describe('modules/reports/actions/load-report.js', () => {
       sinon.stub(AugurJS.augur, 'getReportHash', (branchID, period, account, eventID, cb) => {
         cb(t.blockchain.reportHashes[branchID][eventID]);
       });
-      sinon.stub(AugurJS.augur, 'unfixReport', (fixedReport, minValue, maxValue, type) => ({
+      sinon.stub(AugurJS.augur, 'unfixRawReport', (fixedReport, minValue, maxValue, type) => ({
         report: t.blockchain.encryptedReports[t.state.branch.id][t.eventID].reportedOutcomeID,
         isIndeterminate: false
       }));
