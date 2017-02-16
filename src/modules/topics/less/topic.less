@@ -4,11 +4,16 @@
   align-items: stretch;
   background-color: @color-white;
   display: flex;
-  flex: 1;
+  flex: 1 1 0;
   flex-direction: column;
   font-size: 3em;
   margin: 0 0.5rem;
   overflow: hidden;
+
+  @media @breakpoint-1 {
+    flex: 1 1 0;
+    font-size: 2em;
+  }
 
   &.is-spacer-topic {
     visibility: hidden;
@@ -21,7 +26,7 @@
     position: relative;
 
     & > span {
-      z-index: 20;
+      z-index: 2;
     }
 
     .topic-popularity {
@@ -40,7 +45,7 @@
       justify-content: center;
       margin-top: 0.5em;
       white-space: nowrap;
-      z-index: 20;
+      z-index: 2;
 
       span {
         align-items: center;
@@ -50,6 +55,26 @@
   }
 
   &.isHero {
-    font-size: 8em;
+    font-size: 7em;
+
+    @media @breakpoint-2 {
+      font-size: 6em;
+    }
+
+    @media @breakpoint-2-1 {
+      font-size: 5em;
+    }
+
+    @media @breakpoint-2-2 {
+      font-size: 4.5em;
+    }
+
+    @media @breakpoint-2-3 {
+      font-size: 4em;
+    }
+
+    @media @breakpoint-1 {
+      font-size: 3em;
+    }
   }
 }

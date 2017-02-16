@@ -9,7 +9,16 @@
   flex: 0 1 33%;
   margin-bottom: 1rem;
 
+  @media @breakpoint-1 {
+    flex: 0 1 auto;
+    flex-wrap: wrap;
+  }
+
   &.hero-row {
     flex: 1 1 60%;
+
+    @media @breakpoint-1 {
+      flex: 0 1 auto;
+    }
   }
 }
