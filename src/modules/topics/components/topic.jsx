@@ -13,7 +13,7 @@ export default class Topic extends Component {
     this.handleFitText = debounce(this.handleFitText.bind(this));
   }
   componentDidMount() {
-    this.handleFitText();
+    fitText(this.topicNameContainer, this.topicName);
 
     window.addEventListener('resize', this.handleFitText);
   }
