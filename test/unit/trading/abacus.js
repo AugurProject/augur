@@ -797,7 +797,7 @@ describe("abacus.parseMarketInfo", function() {
       	minValue: '0.000000000000000001',
       	maxValue: '0.000000000000000002',
       	isIndeterminate: false,
-      	reportedOutcome: '0.000000000000000001',
+      	reportedOutcome: '0',
       	proportionCorrect: '20',
       	events: [{
       		id: '0x00000000000000000000000000000000000000000000000000000000000000f1',

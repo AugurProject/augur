@@ -179,6 +179,32 @@ describe("unfixReport", function () {
       });
     }
   });
+  test({
+    description: "scalar event: report -3.1415",
+    params: {
+      fxpReport: "-0x2b98d99b09e3c000",
+      type: "scalar"
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, {
+        report: "-3.1415",
+        isIndeterminate: false
+      });
+    }
+  });
+  test({
+    description: "scalar event: report -3.1415",
+    params: {
+      fxpReport: "0xffffffffffffffffffffffffffffffffffffffffffffffffd4672664f61c4000",
+      type: "scalar"
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, {
+        report: "-3.1415",
+        isIndeterminate: false
+      });
+    }
+  });
 });
 
 describe("fixReport / unfixRawReport", function () {

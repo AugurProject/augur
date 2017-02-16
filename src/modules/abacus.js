@@ -253,7 +253,7 @@ module.exports = {
       info.maxValue = event.maxValue;
       var outcome, proportionCorrect;
       if (parseInt(rawInfo[index + 2], 16) !== 0) {
-        var unfixed = makeReports.unfixReport(abi.hex(rawInfo[index + 2], true), event.minValue, event.maxValue, event.type);
+        var unfixed = makeReports.unfixReport(rawInfo[index + 2], event.type);
         outcome = unfixed.report;
         info.isIndeterminate = unfixed.isIndeterminate;
       }

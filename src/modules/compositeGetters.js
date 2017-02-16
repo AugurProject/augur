@@ -301,7 +301,7 @@ module.exports = {
         reportedOutcome = undefined;
         isIndeterminate = undefined;
       } else {
-        unfixed = this.unfixReport(reportedOutcome, minValue, maxValue, type);
+        unfixed = this.unfixReport(reportedOutcome, type);
         reportedOutcome = unfixed.report;
         isIndeterminate = unfixed.isIndeterminate;
       }

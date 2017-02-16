@@ -24343,7 +24343,7 @@ BigNumber.config({
 var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/slashRep"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register"), require("./modules/topics"), require("./modules/modifyOrderBook")];
 
 function Augur() {
-  this.version = "3.11.5";
+  this.version = "3.11.6";
 
   this.options = {
     debug: {
@@ -24640,7 +24640,7 @@ module.exports = {
       info.maxValue = event.maxValue;
       var outcome, proportionCorrect;
       if (parseInt(rawInfo[index + 2], 16) !== 0) {
-        var unfixed = makeReports.unfixReport(abi.hex(rawInfo[index + 2], true), event.minValue, event.maxValue, event.type);
+        var unfixed = makeReports.unfixReport(rawInfo[index + 2], event.type);
         outcome = unfixed.report;
         info.isIndeterminate = unfixed.isIndeterminate;
       }
@@ -25377,7 +25377,7 @@ module.exports = {
         reportedOutcome = undefined;
         isIndeterminate = undefined;
       } else {
-        unfixed = this.unfixReport(reportedOutcome, minValue, maxValue, type);
+        unfixed = this.unfixReport(reportedOutcome, type);
         reportedOutcome = unfixed.report;
         isIndeterminate = unfixed.isIndeterminate;
       }
@@ -26524,7 +26524,6 @@ module.exports = {
     var params = parametrizeOrder.parametrizeOrder(market, outcomeID, numShares, limitPrice, tradeGroupID);
     params.onSent = utils.noop;
     params.onSuccess = function (res) {
-      console.log("bid success:", res);
       callback(null);
     };
     params.onFailed = callback;
@@ -26536,7 +26535,6 @@ module.exports = {
     var params = parametrizeOrder.parametrizeOrder(market, outcomeID, numShares, limitPrice, tradeGroupID);
     params.onSent = utils.noop;
     params.onSuccess = function (res) {
-      console.log("ask success:", res);
       callback(null);
     };
     params.onFailed = callback;
@@ -26548,7 +26546,6 @@ module.exports = {
     var params = parametrizeOrder.parametrizeOrder(market, outcomeID, numShares, limitPrice, tradeGroupID);
     params.onSent = utils.noop;
     params.onSuccess = function (res) {
-      console.log("short ask success:", res);
       callback(null);
     };
     params.onFailed = callback;
@@ -26563,12 +26560,10 @@ module.exports = {
     askParams.onSent = utils.noop;
     shortAskParams.onSent = utils.noop;
     askParams.onSuccess = function (res) {
-      console.log("ask success:", res);
       success.ask = true;
       if (success.ask && success.shortAsk) callback(null);
     };
     shortAskParams.onSuccess = function (res) {
-      console.log("short ask success:", res);
       success.shortAsk = true;
       if (success.ask && success.shortAsk) callback(null);
     };
@@ -26629,35 +26624,66 @@ module.exports = {
     return fixedReport;
   },
 
-  unfixReport: function unfixReport(fixedReport, minValue, maxValue, type) {
-    var report, bnMinValue, bnFixedReport;
-    bnFixedReport = abi.bignum(fixedReport);
-    if (bnFixedReport.eq(constants.BINARY_INDETERMINATE)) {
-      return { report: "1.5", isIndeterminate: true };
-    } else if (bnFixedReport.eq(constants.CATEGORICAL_SCALAR_INDETERMINATE)) {
-      return { report: "0.5", isIndeterminate: true };
-    } else if (bnFixedReport.eq(constants.INDETERMINATE_PLUS_ONE)) {
-      return { report: "0.5", isIndeterminate: false };
+  isIndeterminateReport: function isIndeterminateReport(fxpReport, type) {
+    var bnFxpReport = abi.bignum(fxpReport);
+    if (type === "binary" && bnFxpReport.eq(constants.BINARY_INDETERMINATE)) {
+      return "1.5";
+    } else if (bnFxpReport.eq(constants.CATEGORICAL_SCALAR_INDETERMINATE)) {
+      return "0.5";
+    }
+    return false;
+  },
+
+  isScalarSpecialValueReport: function isScalarSpecialValueReport(fxpReport) {
+    var bnFxpReport = abi.bignum(fxpReport);
+    if (bnFxpReport.eq(abi.bignum(1))) {
+      return "0";
+    }
+    if (bnFxpReport.eq(constants.INDETERMINATE_PLUS_ONE)) {
+      return "0.5";
+    }
+    return false;
+  },
+
+  unfixRawReport: function unfixRawReport(rawReport, minValue, maxValue, type) {
+    var report;
+    var indeterminateReport = this.isIndeterminateReport(rawReport, type);
+    if (indeterminateReport) {
+      return { report: indeterminateReport, isIndeterminate: true };
     }
     if (type === "binary") {
-      report = abi.unfix(fixedReport);
-    } else {
-      if (bnFixedReport.eq(abi.bignum(1))) {
-        fixedReport = "0";
+      return { report: abi.unfix(rawReport, "string"), isIndeterminate: false };
+    }
+    if (type === "scalar") {
+      var scalarSpecialValueReport = this.isScalarSpecialValueReport(rawReport);
+      if (scalarSpecialValueReport) {
+        return { report: scalarSpecialValueReport, isIndeterminate: false };
       }
-      // x = (max - min)*y + min
-      bnMinValue = abi.bignum(minValue);
-      report = abi.unfix(fixedReport).times(abi.bignum(maxValue).minus(bnMinValue)).plus(bnMinValue);
     }
-    if (type !== "scalar") {
-      report = report.round();
-    }
+    // x = (max - min)*y + min
+    var bnMinValue = abi.bignum(minValue);
+    report = abi.unfix(rawReport).times(abi.bignum(maxValue).minus(bnMinValue)).plus(bnMinValue);
+    if (type === "categorical") report = report.round();
     return { report: report.toFixed(), isIndeterminate: false };
+  },
+
+  unfixReport: function unfixReport(fxpReport, type) {
+    var indeterminateReport = this.isIndeterminateReport(fxpReport, type);
+    if (indeterminateReport) {
+      return { report: indeterminateReport, isIndeterminate: true };
+    }
+    if (type === "scalar") {
+      var scalarSpecialValueReport = this.isScalarSpecialValueReport(fxpReport);
+      if (scalarSpecialValueReport) {
+        return { report: scalarSpecialValueReport, isIndeterminate: false };
+      }
+    }
+    return { report: abi.unfix_signed(fxpReport, "string"), isIndeterminate: false };
   },
 
   // report in fixed-point
   makeHash: function makeHash(salt, report, event, from) {
-    return utils.sha3([from || this.from, abi.hex(salt), report, event]);
+    return utils.sha3([from, abi.hex(salt), report, event]);
   },
 
   // report in fixed-point
@@ -27723,7 +27749,7 @@ var utils = require("../utilities");
 module.exports = {
 
   parseLastBlockNumber: function parseLastBlockNumber(logs) {
-    return parseInt(logs[logs.length - 1].blockNumber, 16);
+    return logs[logs.length - 1].blockNumber;
   },
 
   getRegisterBlockNumber: function getRegisterBlockNumber(account, options, callback) {
