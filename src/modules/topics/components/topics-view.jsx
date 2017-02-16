@@ -19,36 +19,39 @@ export default class TopicsView extends Component {
       lowerIndex: 0,
       upperIndex: 4,
       pagination: {},
-      filteredTopics: [],
+      filteredTopics: props.topics,
+      paginatedTopics: [],
       topicsPerHeroRow: 2,
       topicsPerRow: 3,
       keywords: ''
     };
 
     this.updatePagination = this.updatePagination.bind(this);
-    this.updateFilteredTopics = this.updateFilteredTopics.bind(this);
+    this.filterByKeywords = this.filterByKeywords.bind(this);
+    this.paginateFilteredTopics = this.paginateFilteredTopics.bind(this);
   }
 
   componentWillMount() {
     this.updatePagination(this.props, this.state);
-    this.updateFilteredTopics(this.props.topics, this.state);
+    this.paginateFilteredTopics(this.state);
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (this.state.currentPage !== nextState.currentPage ||
-        this.props.topics !== nextProps.topics
+    if (this.state.keywords !== nextState.keywords) {
+      this.filterByKeywords(nextProps.topics, nextState);
+    }
+    if (
+      this.state.filteredTopics !== nextState.filteredTopics ||
+      this.state.currentPage !== nextState.currentPage
     ) {
       this.updatePagination(nextProps, nextState);
     }
-
-    if (this.state.pagination !== nextState.pagination ||
-      this.state.keywords !== nextState.keywords
-    ) {
-      this.updateFilteredTopics(nextProps.topics, nextState);
+    if (this.state.pagination !== nextState.pagination) {
+      this.paginateFilteredTopics(nextState);
     }
   }
 
-  updateFilteredTopics(topics, s) {
+  filterByKeywords(topics, s) {
     let filteredTopics = topics;
 
     // Filter Based on Keywords
@@ -56,19 +59,31 @@ export default class TopicsView extends Component {
       filteredTopics = (topics || []).filter(topic => topic.topic.toLowerCase().indexOf(s.keywords.toLowerCase()) >= 0);
     }
 
-    // Filter Based on Pagination
-    filteredTopics = filteredTopics.slice(s.lowerIndex, s.upperIndex === filteredTopics.length - 1 ? undefined : s.upperIndex + 1);
+    if (filteredTopics !== s.filteredTopics) {
+      this.setState({
+        currentPage: 1, // Reset pagination
+        filteredTopics
+      });
+    }
+  }
 
-    this.setState({ filteredTopics });
+  paginateFilteredTopics(s) {
+    // Filter Based on Pagination
+    const paginatedTopics = s.filteredTopics.slice(s.lowerIndex, s.upperIndex === s.filteredTopics.length - 1 ? undefined : s.upperIndex + 1);
+
+    if (paginatedTopics !== s.paginatedTopics) {
+      this.setState({ paginatedTopics });
+    }
   }
 
   updatePagination(p, s) {
-    const range = s.currentPage === 1 ? 4 : 5;
-    const lowerBump = s.currentPage < 3 ? 0 : (s.currentPage - 2);
+    const range = s.currentPage === 1 && !s.keywords ? 4 : 5;
+    const keywordsLowerBump = (s.keywords && s.currentPage === 2) ? 1 : 0;
+    const lowerBump = s.currentPage < 3 ? keywordsLowerBump : (s.currentPage - 2);
     const lowerIndex = ((s.currentPage - 1) * range) + lowerBump;
-    const upperIndex = p.topics.length - 1 >= lowerIndex + range ?
+    const upperIndex = s.filteredTopics.length - 1 >= lowerIndex + range ?
       lowerIndex + range :
-      p.topics.length - 1;
+      s.filteredTopics.length - 1;
 
     this.setState({
       lowerIndex,
@@ -77,7 +92,7 @@ export default class TopicsView extends Component {
         ...s.pagination,
         startItemNum: lowerIndex + 1,
         endItemNum: upperIndex + 1,
-        numUnpaginated: p.topics.length,
+        numUnpaginated: s.filteredTopics.length,
         previousPageNum: s.currentPage > 1 ? s.currentPage - 1 : null,
         previousPageLink: {
           onClick: () => {
@@ -86,10 +101,10 @@ export default class TopicsView extends Component {
             }
           }
         },
-        nextPageNum: upperIndex < p.topics.length - 1 ? s.currentPage + 1 : null,
+        nextPageNum: upperIndex < s.filteredTopics.length - 1 ? s.currentPage + 1 : null,
         nextPageLink: {
           onClick: () => {
-            if (upperIndex < p.topics.length - 1) {
+            if (upperIndex < s.filteredTopics.length - 1) {
               this.setState({ currentPage: s.currentPage + 1 });
             }
           }
@@ -112,10 +127,10 @@ export default class TopicsView extends Component {
             onChange={keywords => this.setState({ keywords })}
           />
         </div>
-        {s.filteredTopics && s.filteredTopics.length ?
+        {s.filteredTopics.length ?
           <div className="topics">
             <TopicRows
-              topics={s.filteredTopics}
+              topics={s.paginatedTopics}
               topicsPerRow={s.topicsPerRow}
               hasHeroRow={s.currentPage === 1}
               topicsPerHeroRow={s.topicsPerHeroRow}
@@ -125,7 +140,7 @@ export default class TopicsView extends Component {
           </div> :
           <NullStateMessage message={s.nullMessage} />
         }
-        {p.topics.length > 5 &&
+        {!!s.filteredTopics.length &&
           <Paginator pagination={s.pagination} />
         }
       </section>
