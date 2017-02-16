@@ -9,8 +9,149 @@ function prepMessage(message) {
   return abi.encode_hex(JSON.stringify(message));
 }
 // get/post messages
-describe("getNewMessages", function() {});
-describe("postMessage", function() {});
+describe("getNewMessages", function() {
+  var testChat;
+  var test = function(t) {
+    it(t.description, function(done) {
+      testChat = chat.call(t.testThis);
+      // prep whisper for testing
+      testChat.whisper = t.whisper;
+
+      testChat.getNewMessages(t.roomName, function(err, messages) {
+        t.assertions(err, messages);
+        done();
+      });
+    });
+  };
+  test({
+    description: 'Should handle getting new messages successfully',
+    testThis: {
+    	rpc: {
+    		shh: function(method, options, cb) {
+          switch(method) {
+          case 'getFilterChanges':
+            assert.deepEqual(options, '0xf1');
+            return cb([{
+            	payload: prepMessage({ message: 'hello world' }) }, {
+            	payload: prepMessage({ message: 'goodbye world' })
+            }]);
+            break;
+          default:
+            console.error('Unrecognized method!');
+            assert.isTrue(false, 'sent an unrecognized method request to rpc.shh, test fails.')
+            break;
+          }
+    		}
+    	}
+    },
+    roomName: 'testRoom',
+    whisper: {
+    	id: '0x1',
+    	filters: {
+    		testRoom: {
+    			id: '0xf1',
+    			heartbeat: null
+    		}
+    	}
+    },
+    assertions: function(err, msgs) {
+      assert.isNull(err);
+      assert.deepEqual(msgs, [{ message: 'hello world' }, { message: 'goodbye world' }]);
+    }
+  });
+});
+describe("postMessage", function() {
+  var testChat;
+  var test = function(t) {
+    it(t.description, function(done) {
+      testChat = chat.call(t.testThis);
+      // prep whisper for testing
+      testChat.whisper = t.whisper;
+
+      testChat.postMessage(t.roomName, t.message, t.senderAddress, t.senderName, function(posted) {
+        t.assertions(posted);
+        done();
+      });
+    });
+  };
+  test({
+    description: 'Should handle posting a message to the room',
+    testThis: {
+    	rpc: {
+    		shh: function(method, options, cb) {
+    			switch (method) {
+    				case 'post':
+              assert.deepEqual(options.from, '0x1');
+              assert.deepEqual(options.topics, [abi.prefix_hex(abi.encode_hex('testRoom'))]);
+              assert.deepEqual(options.priority, '0x64');
+              assert.deepEqual(options.ttl, '0x93a80');
+              var payload = JSON.parse(abi.decode_hex(options.payload));
+              assert.deepEqual(payload.name, 'bob');
+              assert.deepEqual(payload.address, '0xb0b');
+              assert.deepEqual(payload.message, 'hello world');
+              assert.isNumber(payload.timestamp);
+              cb(true);
+    					break;
+    				default:
+    					console.error('Unrecognized method!');
+    					assert.isTrue(false, 'sent an unrecognized method request to rpc.shh, test fails.')
+    					break;
+    			}
+    		}
+    	}
+    },
+    whisper: {
+      id: '0x1',
+      filters: { testRoom: { id: '0xf1', heartbeat: null } }
+    },
+    roomName: 'testRoom',
+    message: 'hello world',
+    senderAddress: '0xb0b',
+    senderName: 'bob',
+    assertions: function(posted) {
+      assert.isNull(posted);
+    }
+  });
+  test({
+    description: 'Should handle posting a message to the room',
+    testThis: {
+    	rpc: {
+    		shh: function(method, options, cb) {
+    			switch (method) {
+    				case 'post':
+              assert.deepEqual(options.from, '0x2');
+              assert.deepEqual(options.topics, [abi.prefix_hex(abi.encode_hex('testRoom'))]);
+              assert.deepEqual(options.priority, '0x64');
+              assert.deepEqual(options.ttl, '0x93a80');
+              var payload = JSON.parse(abi.decode_hex(options.payload));
+              assert.deepEqual(payload.name, 'alice');
+              assert.deepEqual(payload.address, '0xa11ce');
+              assert.deepEqual(payload.message, 'goodbye world');
+              assert.isNumber(payload.timestamp);
+              // problem with posting! send false.
+              cb(false);
+    					break;
+    				default:
+    					console.error('Unrecognized method!');
+    					assert.isTrue(false, 'sent an unrecognized method request to rpc.shh, test fails.')
+    					break;
+    			}
+    		}
+    	}
+    },
+    whisper: {
+      id: '0x2',
+      filters: { testRoom: { id: '0xf1', heartbeat: null } }
+    },
+    roomName: 'testRoom',
+    message: 'goodbye world',
+    senderAddress: '0xa11ce',
+    senderName: 'alice',
+    assertions: function(posted) {
+      assert.deepEqual(posted, "couldn't post message: goodbye world");
+    }
+  });
+});
 
 // parse message(s)
 describe("parseMessage", function() {
