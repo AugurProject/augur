@@ -53,7 +53,7 @@ export default class TopicsView extends Component {
 
     // Filter Based on Keywords
     if (s.keywords) {
-      filteredTopics = (topics || []).filter(topic => topic.topic.indexOf(s.keywords) >= 0);
+      filteredTopics = (topics || []).filter(topic => topic.topic.toLowerCase().indexOf(s.keywords.toLowerCase()) >= 0);
     }
 
     // Filter Based on Pagination
