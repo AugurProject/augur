@@ -120,6 +120,7 @@ export default class TopicsView extends Component {
               hasHeroRow={s.currentPage === 1}
               topicsPerHeroRow={s.topicsPerHeroRow}
               selectTopic={p.selectTopic}
+              isSearchResult={!!s.keywords}
             />
           </div> :
           <NullStateMessage message={s.nullMessage} />

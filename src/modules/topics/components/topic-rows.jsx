@@ -16,7 +16,7 @@ const TopicRows = (p) => {
 
     itemCount += 1;
 
-    if (i === p.topics.length - 1 && accum[row].length < p.topicsPerRow && row !== 0) {
+    if (i === p.topics.length - 1 && accum[row].length < p.topicsPerRow && (row !== 0 || p.isSearchResult)) {
       const pushEmptyTopic = () => {
         accum[row].push({});
         if (accum[row].length < p.topicsPerRow) {
@@ -29,7 +29,7 @@ const TopicRows = (p) => {
       return accum;
     }
 
-    if ((p.hasHeroRow && itemCount === p.topicsPerHeroRow && row === 0) || itemCount === p.topicsPerRow) {
+    if ((p.hasHeroRow && itemCount === p.topicsPerHeroRow && row === 0 && !p.isSearchResult) || itemCount === p.topicsPerRow) {
       row += 1;
       itemCount = 0;
     }
@@ -42,7 +42,7 @@ const TopicRows = (p) => {
       {Object.keys(rowItems).map((row, rowIndex) => (
         <div
           key={`topic-row-${rowIndex}`}
-          className={classNames('topic-row', { 'hero-row': p.hasHeroRow && rowIndex === 0 })}
+          className={classNames('topic-row', { 'hero-row': p.hasHeroRow && rowIndex === 0, 'search-result': p.isSearchResult })}
         >
           {rowItems[row].map((topic, topicIndex) => (
             <Topic
@@ -52,6 +52,7 @@ const TopicRows = (p) => {
               topic={topic.topic}
               popularity={topic.popularity}
               selectTopic={p.selectTopic}
+              isSearchResult={p.isSearchResult}
             />
           ))}
         </div>

@@ -24,7 +24,7 @@ export default class Topic extends Component {
       <button
         key={`${p.topic}-${p.popularity}`}
         ref={(topicNameContainer) => { this.topicNameContainer = topicNameContainer; }}
-        className={classNames('unstyled topic-button', { isHero: p.isHero, 'is-spacer-topic': p.isSpacer })}
+        className={classNames('unstyled topic-button', { isHero: p.isHero, 'is-spacer-topic': p.isSpacer, 'search-result': p.isSearchResult })}
         onClick={() => p.selectTopic(p.topic)}
       >
         {!p.isSpacer &&
