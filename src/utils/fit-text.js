@@ -4,13 +4,17 @@
  * @param target - The target element to fit to width constraint
  */
 export default function fitText(container, target) {
-  const containerWidth = container.clientWidth;
-  const targetWidth = target.clientWidth;
+  if (container && target) {
+    const containerWidth = container.clientWidth;
+    const targetWidth = target.clientWidth;
 
-  if (targetWidth > containerWidth) {
-    const newWidth = (containerWidth * targetWidth) / targetWidth;
-    const newScale = newWidth / targetWidth;
+    target.style.transform = null; // Reset
 
-    target.style.transform = `scale(${newScale}, ${newScale})`;
+    if (targetWidth > containerWidth) {
+      const newWidth = (containerWidth * targetWidth) / targetWidth;
+      const newScale = newWidth / targetWidth;
+
+      target.style.transform = `scale(${newScale}, ${newScale})`;
+    }
   }
 }

@@ -3,18 +3,27 @@ import classNames from 'classnames';
 
 import TopicIcon from 'modules/topics/components/topic-icon';
 
-// import debounce from 'utils/debounce';
+import debounce from 'utils/debounce';
 import fitText from 'utils/fit-text';
 
 export default class Topic extends Component {
-  componentDidMount() {
-    fitText(this.topicNameContainer, this.topicName);
+  constructor(props) {
+    super(props);
 
-    window.addEventListener('resize', () => { fitText(this.topicNameContainer, this.topicName); });
+    this.handleFitText = debounce(this.handleFitText.bind(this));
+  }
+  componentDidMount() {
+    this.handleFitText();
+
+    window.addEventListener('resize', this.handleFitText);
   }
 
-  componentWilUnmount() {
-    window.removeEventListener('resize', () => { fitText(this.topicNameContainer, this.topicName); });
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.handleFitText);
+  }
+
+  handleFitText() {
+    fitText(this.topicNameContainer, this.topicName);
   }
 
   render() {
