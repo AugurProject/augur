@@ -61,6 +61,9 @@ const LoginMessagePage = p => (
         <li>
           Report commit locks are now indexed by event ID.
         </li>
+        <li>
+          Market volume is now subtracted from topic popularity when the market closes.
+        </li>
       </ol>
       <h3>February 16, 2017</h3>
       <ol>
