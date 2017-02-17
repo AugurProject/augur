@@ -1,17 +1,26 @@
 var assert = require("chai").assert;
-var augurNode = require('../../../src/augurNode.js')();
+var proxyquire = require('proxyquire').noCallThru().noPreserveCache();
+var mockRequest = {
+  defaults: function() {
+  // when request is required into a file it calls it's default function
+  return function(url, cb) {
+    // this function is returned as 'request' this is a generic mock and we do nothing as this will be used for tests that don't need fetchHelper.
+  };
+}};
 var utils = require("../../../src/utilities");
 
 // 13 tests total
 describe("augurNode", function() {
-  var fetchHelper = augurNode.fetchHelper;
-  afterEach(function() {
-    augurNode.fetchHelper = fetchHelper;
-  });
+  var augurNode;
   var test = function(t) {
     it(t.description, function() {
-      augurNode.fetchHelper = t.fetchHelper;
-			// clear the cache_nodes or set them to t.startState
+      var request = t.mockRequest || mockRequest;
+      augurNode = proxyquire('../../../src/augurNode.js', {
+        'request': request
+      })();
+      var fetchHelper = augurNode.fetchHelper;
+      augurNode.fetchHelper = t.fetchHelper || fetchHelper;
+      // clear the cache_nodes or set them to t.startState
       augurNode.nodes = t.startState || [];
 
       t.assertions(augurNode[t.method](t.arg1, t.arg2, t.arg3));
@@ -116,6 +125,67 @@ describe("augurNode", function() {
     },
     arg1: 'getSomeData',
     arg2: { test: [0, 1, 2, 3], augur: 'numberOne'}
+  });
+  /*                *
+  *   fetchHelper   *
+  *                 */
+  test({
+    description: 'fetchHelper should return an error if url passed is undefined',
+    method: 'fetchHelper',
+    arg1: undefined,
+    arg2: function(err, body) {
+      return { err: err, body: body };
+    },
+    assertions: function(out) {
+      assert.deepEqual(out.err, 'no nodes to fetch from');
+      assert.isUndefined(out.body);
+    }
+  });
+  test({
+    description: 'fetchHelper should handle a successful request and return the body to cb',
+    method: 'fetchHelper',
+    arg1: 'www.augur.net',
+    arg2: function(err, body) {
+      assert.isNull(err);
+      assert.deepEqual(body, 'testBody');
+    },
+    mockRequest: {
+    	defaults: function() {
+    		return function(url, cb) {
+    			assert.deepEqual(url, 'www.augur.net');
+    			cb(null, {
+    				statusCode: 200
+    			}, 'testBody');
+    		}
+    	}
+    },
+    assertions: function(out) {
+      // these assertions are handled in the arg2 function
+      assert.isUndefined(out);
+    }
+  });
+  test({
+    description: 'fetchHelper should handle a error from request',
+    method: 'fetchHelper',
+    arg1: 'www.augur.net',
+    arg2: function(err, body) {
+      assert.deepEqual(err, 'www.augur.net could not be found.');
+      assert.isUndefined(body);
+    },
+    mockRequest: {
+    	defaults: function() {
+    		return function(url, cb) {
+    			assert.deepEqual(url, 'www.augur.net');
+    			cb('could not be found.', {
+    				statusCode: 404
+    			});
+    		}
+    	}
+    },
+    assertions: function(out) {
+      // these assertions are handled in the arg2 function
+      assert.isUndefined(out);
+    }
   });
   /*                *
   *   getMarketInfo *
