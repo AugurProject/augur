@@ -61,6 +61,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
+        type: 'UPDATE_REPORT_COMMIT_LOCK',
+        isLocked: true
+      }, {
         type: 'UPDATE_REPORTS',
         reports: {
           '0xb1': {
@@ -91,6 +94,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
           branch: '0xb1',
           period: 7
         }
+      }, {
+        type: 'UPDATE_REPORT_COMMIT_LOCK',
+        isLocked: false
       }, {
         type: 'UPDATE_REPORTS',
         reports: {
@@ -131,6 +137,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
+        type: 'UPDATE_REPORT_COMMIT_LOCK',
+        isLocked: true
+      }, {
         type: 'UPDATE_REPORTS',
         reports: {
           '0xb1': {
@@ -161,6 +170,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
           branch: '0xb1',
           period: 7
         }
+      }, {
+        type: 'UPDATE_REPORT_COMMIT_LOCK',
+        isLocked: false
       }, {
         type: 'UPDATE_REPORTS',
         reports: {
@@ -201,6 +213,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
+        type: 'UPDATE_REPORT_COMMIT_LOCK',
+        isLocked: true
+      }, {
         type: 'UPDATE_REPORTS',
         reports: {
           '0xb1': {
@@ -231,6 +246,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
           branch: '0xb1',
           period: 7
         }
+      }, {
+        type: 'UPDATE_REPORT_COMMIT_LOCK',
+        isLocked: false
       }, {
         type: 'UPDATE_REPORTS',
         reports: {
@@ -271,6 +289,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
+        type: 'UPDATE_REPORT_COMMIT_LOCK',
+        isLocked: true
+      }, {
         type: 'UPDATE_REPORTS',
         reports: {
           '0xb1': {
@@ -301,6 +322,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
           branch: '0xb1',
           period: 7
         }
+      }, {
+        type: 'UPDATE_REPORT_COMMIT_LOCK',
+        isLocked: false
       }, {
         type: 'UPDATE_REPORTS',
         reports: {
@@ -341,6 +365,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
+        type: 'UPDATE_REPORT_COMMIT_LOCK',
+        isLocked: true
+      }, {
         type: 'UPDATE_REPORTS',
         reports: {
           '0xb1': {
@@ -371,6 +398,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
           branch: '0xb1',
           period: 7
         }
+      }, {
+        type: 'UPDATE_REPORT_COMMIT_LOCK',
+        isLocked: false
       }, {
         type: 'UPDATE_REPORTS',
         reports: {
@@ -411,6 +441,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
+        type: 'UPDATE_REPORT_COMMIT_LOCK',
+        isLocked: true
+      }, {
         type: 'UPDATE_REPORTS',
         reports: {
           '0xb1': {
@@ -441,6 +474,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
           branch: '0xb1',
           period: 7
         }
+      }, {
+        type: 'UPDATE_REPORT_COMMIT_LOCK',
+        isLocked: false
       }, {
         type: 'UPDATE_REPORTS',
         reports: {
@@ -481,6 +517,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
+        type: 'UPDATE_REPORT_COMMIT_LOCK',
+        isLocked: true
+      }, {
         type: 'UPDATE_REPORTS',
         reports: {
           '0xb1': {
@@ -511,6 +550,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
           branch: '0xb1',
           period: 7
         }
+      }, {
+        type: 'UPDATE_REPORT_COMMIT_LOCK',
+        isLocked: false
       }, {
         type: 'UPDATE_REPORTS',
         reports: {
@@ -551,6 +593,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
+        type: 'UPDATE_REPORT_COMMIT_LOCK',
+        isLocked: true
+      }, {
         type: 'UPDATE_REPORTS',
         reports: {
           '0xb1': {
@@ -581,6 +626,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
           branch: '0xb1',
           period: 7
         }
+      }, {
+        type: 'UPDATE_REPORT_COMMIT_LOCK',
+        isLocked: false
       }, {
         type: 'UPDATE_REPORTS',
         reports: {
@@ -621,6 +669,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
+        type: 'UPDATE_REPORT_COMMIT_LOCK',
+        isLocked: true
+      }, {
         type: 'UPDATE_REPORTS',
         reports: {
           '0xb1': {
@@ -651,6 +702,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
           branch: '0xb1',
           period: 7
         }
+      }, {
+        type: 'UPDATE_REPORT_COMMIT_LOCK',
+        isLocked: false
       }, {
         type: 'UPDATE_REPORTS',
         reports: {
@@ -691,6 +745,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
+        type: 'UPDATE_REPORT_COMMIT_LOCK',
+        isLocked: true
+      }, {
         type: 'UPDATE_REPORTS',
         reports: {
           '0xb1': {
@@ -721,6 +778,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
           branch: '0xb1',
           period: 7
         }
+      }, {
+        type: 'UPDATE_REPORT_COMMIT_LOCK',
+        isLocked: false
       }, {
         type: 'UPDATE_REPORTS',
         reports: {
@@ -761,6 +821,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
+        type: 'UPDATE_REPORT_COMMIT_LOCK',
+        isLocked: true
+      }, {
         type: 'UPDATE_REPORTS',
         reports: {
           '0xb1': {
@@ -791,6 +854,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
           branch: '0xb1',
           period: 7
         }
+      }, {
+        type: 'UPDATE_REPORT_COMMIT_LOCK',
+        isLocked: false
       }, {
         type: 'UPDATE_REPORTS',
         reports: {
