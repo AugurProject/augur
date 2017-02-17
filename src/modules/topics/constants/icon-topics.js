@@ -7,15 +7,15 @@ const iconTopics = {
   'fa-snowflake-o': 'snow',
   'fa-bolt': 'lightning',
   'fa-cloud': ['weather', 'rain', 'precipitation'],
-  'fa-sun-o': ['climate', 'sunspot', 'sunspots', 'climate change', 'global warming'],
+  'fa-sun-o': ['climate', 'sunspot', 'sunspots'],
   'fa-thermometer': ['temperature', 'heat'],
   'fa-rocket': ['space', 'space program', 'rocket', 'nasa', 'spacex'],
   'fa-line-chart': ['finance', 'financial', 'financials', 'dow jones', 'to the moon', 'stock', 'stocks', 'derivative', 'derivatives', 'option', 'options', 'future', 'futures'],
   'fa-bug': ['antibiotic', 'antibiotics', 'bacteria', 'infection', 'infections', 'epidemic', 'epidemics'],
   'fa-ambulance': ['mortality', 'hospital', 'hospitals'],
   'fa-home': ['housing', 'home', 'realty'],
-  'fa-industry': 'climate change',
-  'fa-newspaper-o': ['news', 'events'],
+  'fa-industry': ['climate change', 'pollution', 'global warming', 'eraserhead'],
+  'fa-newspaper-o': ['news', 'events', 'newspaper', 'newspapers', 'fake news', 'media'],
   'fa-users': 'elections',
   'fa-ship': ['international trade', 'shipping'],
   'fa-music': ['music', 'songs', 'pop', 'rock', 'rap', 'dancing', 'dance', 'techno'],
@@ -37,7 +37,6 @@ const iconTopics = {
   'fa-pie-chart': ['data', 'big data', 'analytics', 'statistics'],
   'fa-phone': ['phones', 'telephone', 'telephones'],
   'fa-mobile': ['smartphone', 'smartphones', 'smart phone', 'smart phones', 'android', 'iphone'],
-  'fa-newspaper-o': ['news', 'newspaper', 'newspapers', 'fake news', 'media'],
   'fa-plug': ['electricity', 'electrical', 'power', 'power grid', 'electric'],
   'fa-plane': ['planes', 'airplane', 'airplanes', 'flying', 'flight', 'airport', 'airports', 'airline', 'airliner', 'jet'],
   'fa-flask': ['science', 'scientists', 'physics', 'chemistry', 'biology', 'genetics', 'chemical', 'chemicals'],
@@ -47,7 +46,7 @@ const iconTopics = {
   'fa-beer': ['alcohol', 'alcoholics', 'drinking', 'beers'],
   'fa-briefcase': ['law', 'legal', 'laws', 'lawyers', 'legalese'],
   'fa-shopping-cart': ['e-commerce', 'commerce', 'shopping', 'consumers', 'customers'],
-  'fa-university': ['banks', 'schools', 'universities', 'institutions', 'government', 'state', 'federal', 'bureaucracy'],
+  'fa-university': ['banks', 'schools', 'universities', 'institutions', 'government', 'state', 'federal', 'bureaucracy', 'college', 'colleges', 'uni', 'college football'],
   'fa-truck': ['cargo', 'transport', 'transportation', 'trucks'],
   'fa-wrench': ['reliability', 'durability'],
   'fa-gavel': ['justice', 'courts', 'court system', 'judicial', 'supreme court', 'appeals court', 'superior court', 'trial', 'trials'],
@@ -59,7 +58,8 @@ const iconTopics = {
   'fa-at': ['email', 'emails', 'e-mail', 'e-mails', 'identity', 'names'],
   'fa-code': ['coding', 'programming', 'programmers', 'software', 'development', 'developers'],
   'fa-eye': ['surveillance', 'big brother', 'nsa', 'national security agency', 'snowden'],
-  'fa-font-awesome': 'golf'
+  'fa-font-awesome': ['golf', 'frisbee golf'],
+  'fa-compress': ['debates', 'arguments', 'conflicts', 'fights', 'war', 'wars', 'fighting', 'calexit']
 };
 
 export default iconTopics;
