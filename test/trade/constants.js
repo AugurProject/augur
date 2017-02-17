@@ -54,7 +54,7 @@ export const tradeTestState = {
     },
     testCategoricalMarketID: {
       author: 'testAuthor2',
-      branchId: '0x010101',
+      branchID: '0x010101',
       creationFee: '12.857142857142857142',
       creationTime: 1476694751,
       cumulativeScale: '1',

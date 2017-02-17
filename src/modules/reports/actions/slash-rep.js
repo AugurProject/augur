@@ -3,7 +3,7 @@ import { updateAssets } from '../../auth/actions/update-assets';
 
 export const slashRep = (market, salt, report, reporter, isIndeterminate, isUnethical) => (
   dispatch => augur.slashRep({
-    branch: market.branchId,
+    branch: market.branchID,
     salt,
     report,
     reporter,

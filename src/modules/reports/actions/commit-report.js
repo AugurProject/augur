@@ -6,13 +6,16 @@ import { updateReport } from '../../reports/actions/update-reports';
 import { nextReportPage } from '../../reports/actions/next-report-page';
 import { encryptReport } from '../../reports/actions/report-encryption';
 
-export function commitReport(market, reportedOutcomeID, isUnethical, isIndeterminate) {
-  return (dispatch, getState) => {
-    const { branch, loginAccount } = getState();
-    if (!loginAccount.address || !market || !reportedOutcomeID) {
-      console.error('commitReport failed:', loginAccount.address, market, reportedOutcomeID);
-      return dispatch(nextReportPage());
-    }
+export const UPDATE_REPORT_COMMIT_LOCK = 'UPDATE_REPORT_COMMIT_LOCK';
+
+export const updateReportCommitLock = isLocked => ({ type: UPDATE_REPORT_COMMIT_LOCK, isLocked });
+
+export const commitReport = (market, reportedOutcomeID, isUnethical, isIndeterminate) => (dispatch, getState) => {
+  const { branch, loginAccount } = getState();
+  if (!loginAccount.address || !market || !reportedOutcomeID) {
+    console.error('commitReport failed:', loginAccount.address, market, reportedOutcomeID);
+  } else {
+    dispatch(updateReportCommitLock(true));
     const eventID = market.eventID;
     const branchID = branch.id;
     console.log(`committing to report ${reportedOutcomeID} on market ${market.id} event ${eventID} period ${branch.reportPeriod}...`);
@@ -43,19 +46,23 @@ export function commitReport(market, reportedOutcomeID, isUnethical, isIndetermi
       branch: branchID,
       period: branch.reportPeriod,
       periodLength: branch.periodLength,
-      onSent: r => console.log('submitReportHash sent:', r),
-      onSuccess: r => dispatch(updateReport(branchID, eventID, {
-        ...(getState().reports[branchID] || {})[eventID],
-        isCommitted: true
-      })),
+      onSent: () => {},
+      onSuccess: (r) => {
+        dispatch(updateReportCommitLock(false));
+        dispatch(updateReport(branchID, eventID, {
+          ...(getState().reports[branchID] || {})[eventID],
+          isCommitted: true
+        }));
+      },
       onFailed: (e) => {
         console.error('submitReportHash failed:', e);
+        dispatch(updateReportCommitLock(false));
         dispatch(updateReport(branchID, eventID, {
           ...(getState().reports[branchID] || {})[eventID],
           isCommitted: false
         }));
       }
     });
-    dispatch(nextReportPage());
-  };
-}
+  }
+  dispatch(nextReportPage());
+};

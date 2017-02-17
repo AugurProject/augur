@@ -14,10 +14,11 @@ export function loadDataForMarketTransaction(label, log, isRetry, callback) {
     console.debug('loadDataForMarketTransaction', label, log, isRetry);
     const marketID = log.marketID || log.market;
     const market = getState().marketsData[marketID];
-    if (!market) {
+    if (!market || !market.description) {
       if (isRetry) return callback(log);
       return dispatch(loadMarketThenRetryConversion(marketID, label, log, callback));
     }
+    console.log('loaded data:', market);
     return market;
   };
 }
@@ -33,7 +34,7 @@ export function loadDataForReportingTransaction(label, log, isRetry, callback) {
       return dispatch(lookupEventMarketsThenRetryConversion(eventID, label, log, callback));
     }
     const market = marketsData[marketID];
-    if (!market) {
+    if (!market || !market.description) {
       if (isRetry) return callback(log);
       return dispatch(loadMarketThenRetryConversion(marketID, label, log, callback));
     }
@@ -212,6 +213,7 @@ export function constructFundedAccountTransaction(log) {
 }
 
 export function constructMarketCreatedTransaction(log, description, dispatch) {
+  console.log('constructMarketCreatedTransaction:', log, description);
   const transaction = { data: {} };
   transaction.type = CREATE_MARKET;
   transaction.description = description.split('~|>')[0];
@@ -639,13 +641,13 @@ export function constructTransaction(label, log, isRetry, callback) {
       case 'marketCreated': {
         if (log.description) return constructMarketCreatedTransaction(log, log.description, dispatch);
         const market = dispatch(loadDataForMarketTransaction(label, log, isRetry, callback));
-        if (!market) break;
+        if (!market || !market.description) break;
         return constructMarketCreatedTransaction(log, market.description, dispatch);
       }
       case 'payout':
       case 'tradingFeeUpdated': {
         const market = dispatch(loadDataForMarketTransaction(label, log, isRetry, callback));
-        if (!market) break;
+        if (!market || !market.description) break;
         return dispatch(constructMarketTransaction(label, log, market));
       }
       case 'penalize':

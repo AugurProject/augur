@@ -29,7 +29,7 @@ export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, o
       !!favorites[marketID],
       outcomesData[marketID],
 
-      selectMarketReport(marketID, reports[marketsData[marketID].branchId]),
+      selectMarketReport(marketID, reports[marketsData[marketID].branchID]),
       (accountPositions || {})[marketID],
       (netEffectiveTrades || {})[marketID],
       (accountTrades || {})[marketID],

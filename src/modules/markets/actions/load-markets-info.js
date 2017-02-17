@@ -8,7 +8,7 @@ export function filterMarketsInfoByBranch(marketsData, branchID) {
   const marketInfoIDs = Object.keys(marketsData);
   const numMarkets = marketInfoIDs.length;
   for (let i = 0; i < numMarkets; ++i) {
-    if (marketsData[marketInfoIDs[i]].branchId !== branchID) {
+    if (marketsData[marketInfoIDs[i]].branchID !== branchID) {
       delete marketsData[marketInfoIDs[i]];
     }
   }

@@ -56,6 +56,18 @@ const LoginMessagePage = p => (
       <h3>February 16, 2017</h3>
       <ol>
         <li>
+          Added report-commit-lock to avoid double report submission.
+        </li>
+        <li>
+          Fixed market-without-description error during new market creation.
+        </li>
+        <li>
+          Updated createEvent, createMarket, createSingleEventMarket labels to match augur-core, and relabeled branchId to branchID in getMarket(s)Info object.
+        </li>
+        <li>
+          Markets no longer have a description separate from their underlying event description.
+        </li>
+        <li>
           Updated &quot;unfixReport&quot; to &quot;unfixRawReport&quot; in several places in the UI to match augur.js.
         </li>
         <li>
