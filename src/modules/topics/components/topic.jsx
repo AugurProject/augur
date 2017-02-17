@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ReactTooltip from 'react-tooltip';
 import classNames from 'classnames';
 
 import TopicIcon from 'modules/topics/components/topic-icon';
@@ -39,7 +40,10 @@ export default class Topic extends Component {
         {!p.isSpacer &&
           <div className="topic-content">
             <TopicIcon {...p} />
-            <span className="topic-popularity">
+            <span
+              className="topic-popularity"
+              data-tip data-for="topic-volume-tooltip"
+            >
               {Math.floor(p.popularity).toLocaleString()}
             </span>
             <div className="topic-name" >
@@ -49,6 +53,9 @@ export default class Topic extends Component {
             </div>
           </div>
         }
+        <ReactTooltip id="topic-volume-tooltip" type="light" effect="solid" place="top">
+          <span className="tooltip-text">Total Market Volume</span>
+        </ReactTooltip>
       </button>
     );
   }
