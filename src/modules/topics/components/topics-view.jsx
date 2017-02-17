@@ -36,7 +36,6 @@ export default class TopicsView extends Component {
 
   componentWillMount() {
     this.updatePagination(this.props, this.state);
-    this.paginateFilteredTopics(this.state);
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -51,9 +50,6 @@ export default class TopicsView extends Component {
       this.state.currentPage !== nextState.currentPage
     ) {
       this.updatePagination(nextProps, nextState);
-    }
-    if (this.state.pagination !== nextState.pagination) {
-      this.paginateFilteredTopics(nextState);
     }
   }
 
@@ -116,6 +112,8 @@ export default class TopicsView extends Component {
           }
         }
       }
+    }, () => {
+      this.paginateFilteredTopics(this.state);
     });
   }
 
