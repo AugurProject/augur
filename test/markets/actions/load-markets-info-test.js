@@ -34,7 +34,7 @@ describe(`modules/markets/actions/load-markets-info.js`, () => {
     cb({
       test123: {
         author: '0x0000000000000000000000000000000000000001',
-        branchId: testState.branch.id,
+        branchID: testState.branch.id,
         events: [{
           id: 'event1',
           minValue: 1,
@@ -70,7 +70,7 @@ describe(`modules/markets/actions/load-markets-info.js`, () => {
       marketsData: {
         test123: {
           author: '0x0000000000000000000000000000000000000001',
-          branchId: '0xf69b5',
+          branchID: '0xf69b5',
           events: [{
             id: 'event1',
             minValue: 1,

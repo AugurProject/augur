@@ -29,7 +29,7 @@ export function submitNewMarket(newMarket) {
     }
     console.log('creating market:', newMarket);
     augur.createSingleEventMarket({
-      branchId: branch.id,
+      branch: branch.id,
       description: newMarket.formattedDescription,
       expDate: newMarket.endDate.value.getTime() / 1000,
       minValue: newMarket.minValue,
