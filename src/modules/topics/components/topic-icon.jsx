@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 
 import AugurLogoIcon from 'modules/common/components/augur-logo-icon';
 
-import topicIcons from 'modules/topics/constants/topic-icons';
+import iconTopics from 'modules/topics/constants/icon-topics';
 
 // NOTE --  The icon selection is as follows:
 //          > If a topic matches an existing font awesome classname, use that; otherwise,
@@ -28,10 +28,20 @@ export default class TopicIcon extends Component {
 
   componentDidMount() {
     if (!window.getComputedStyle(this.topicIcon, '::before').content) {
-      const matchedTopic = Object.keys(topicIcons).find((topic) => {
-        if (topic === this.props.topic) {
-          return true;
+      const matchedTopic = Object.keys(iconTopics).find((icon) => {
+        if (typeof iconTopics[icon] === 'string') {
+          if (iconTopics[icon] === this.props.topic.toLowerCase()) {
+            return true;
+          }
+          return false;
         }
+
+        const arrayIconCheck = iconTopics[icon].indexOf(this.props.topic.toLowerCase());
+
+        if (arrayIconCheck > -1) {
+          return icon;
+        }
+
         return false;
       });
 
@@ -42,7 +52,7 @@ export default class TopicIcon extends Component {
   updateIconClass(matchedTopic) {
     if (matchedTopic) {
       this.setState({
-        className: `fa ${topicIcons[matchedTopic]}`
+        className: `fa ${matchedTopic}`
       });
     } else {
       this.setState({
