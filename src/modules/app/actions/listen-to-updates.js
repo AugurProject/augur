@@ -9,6 +9,7 @@ import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 import { loadAccountTrades } from '../../my-positions/actions/load-account-trades';
 import { claimProceeds } from '../../my-positions/actions/claim-proceeds';
 import { convertLogsToTransactions, convertTradeLogToTransaction } from '../../transactions/actions/convert-logs-to-transactions';
+import { updateMarketTopicPopularity } from '../../topics/actions/update-topics';
 
 export function refreshMarket(marketID) {
   return (dispatch, getState) => {
@@ -253,6 +254,8 @@ export function listenToUpdates() {
           const { branch, loginAccount } = getState();
           if (branch.id === msg.branch) {
             dispatch(loadMarketsInfo([msg.market], () => {
+              const { volume } = getState().marketsData[msg.market];
+              dispatch(updateMarketTopicPopularity(msg.market, abi.bignum(volume).neg().toNumber()));
               if (loginAccount.address) dispatch(claimProceeds());
             }));
           }
