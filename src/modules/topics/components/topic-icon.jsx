@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import classNames from 'classnames';
 
 import AugurLogoIcon from 'modules/common/components/augur-logo-icon';
 
@@ -67,7 +68,7 @@ export default class TopicIcon extends Component {
     const s = this.state;
 
     return (
-      <article className="topic-icon" >
+      <article className={classNames('topic-icon', { 'augur-logo': !s.hasIcon })} >
         {s.hasIcon ?
           <i
             ref={(topicIcon) => { this.topicIcon = topicIcon; }}
