@@ -136,58 +136,56 @@ describe('connect.bindContractMethod', function() {
   test({
     description: 'Should handle binding a method and then handling the method correctly when the method has inputs, without callback. method transaction without a parser, fixed, send false',
     contract: 'Topics',
-    method: 'increaseTopicPopularity',
+    method: 'updateTopicPopularity',
     callMethod: function(method) {
       // (branch, topic, fxpAmount, cb)
       method('1010101', 'politics', '10000000000000000', undefined);
     },
-    fire: function(tx, onSent, onSuccess, onFailed) {
+    transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx,{
         fixed: [ 2 ],
         inputs: [ 'branch', 'topic', 'fxpAmount' ],
-        label: 'Increase Topic Popularity',
-        method: 'increaseTopicPopularity',
+        label: 'Update Topic Popularity',
+        method: 'updateTopicPopularity',
         returns: 'number',
+        send: true,
         signature: [ 'int256', 'int256', 'int256' ],
-        to: augur.tx.Topics.increaseTopicPopularity.to,
+        to: augur.tx.Topics.updateTopicPopularity.to,
         params: [ '1010101', 'politics', '0x1ed09bead87c0378d8e6400000000' ]
       });
       assert.isUndefined(onSent);
       assert.isUndefined(onSuccess);
       assert.isUndefined(onFailed);
     },
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    fire: function(tx, callback) {
       // Shouldn't get hit in this case
-      assert.isFalse(true);
+      assert.isTrue(false);
     }
   });
   test({
     description: 'Should handle binding a method and then handling the method correctly when the method has inputs, with callback. method transaction without a parser, fixed, send false. arg as one object',
     contract: 'Topics',
-    method: 'increaseTopicPopularity',
+    method: 'updateTopicPopularity',
     callMethod: function(method) {
       // (branch, topic, fxpAmount, cb)
       method({branch: '1010101', topic: 'politics', fxpAmount: '10000000000000000', callback: noop});
     },
-    fire: function(tx, onSent, onSuccess, onFailed) {
+    fire: function(tx, callback) {
+      assert.isFalse(true);
+    },
+    transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx,{
         fixed: [ 2 ],
         inputs: [ 'branch', 'topic', 'fxpAmount' ],
-        label: 'Increase Topic Popularity',
-        method: 'increaseTopicPopularity',
+        label: 'Update Topic Popularity',
+        method: 'updateTopicPopularity',
         returns: 'number',
+        send: true,
         signature: [ 'int256', 'int256', 'int256' ],
-        to: augur.tx.Topics.increaseTopicPopularity.to,
+        to: augur.tx.Topics.updateTopicPopularity.to,
         params: [ '1010101', 'politics', '0x1ed09bead87c0378d8e6400000000' ]
       });
-      assert.deepEqual(onSent, noop);
-      assert.isUndefined(onSuccess);
-      assert.isUndefined(onFailed);
     },
-    transact: function(tx, onSent, onSuccess, onFailed) {
-      // Shouldn't get hit in this case
-      assert.isFalse(true);
-    }
   });
   test({
     description: 'Should handle binding a method and then handling the method correctly when the method required inputs and has no callback. no parser, fixed tx, send true',
