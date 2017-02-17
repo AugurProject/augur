@@ -253,6 +253,8 @@ export function listenToUpdates() {
           const { branch, loginAccount } = getState();
           if (branch.id === msg.branch) {
             dispatch(loadMarketsInfo([msg.market], () => {
+              const { volume } = getState().marketsData[msg.market];
+              dispatch(updateMarketTopicPopularity(msg.market, abi.bignum(volume).neg().toNumber()));
               if (loginAccount.address) dispatch(claimProceeds());
             }));
           }
