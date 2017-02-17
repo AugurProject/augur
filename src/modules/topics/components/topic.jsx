@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import ReactTooltip from 'react-tooltip';
 import classNames from 'classnames';
 
@@ -10,6 +10,10 @@ import fitText from 'utils/fit-text';
 import { TOPIC_VOLUME_INCREASED, TOPIC_VOLUME_DECREASED } from 'modules/topics/constants/topic-popularity-change';
 
 export default class Topic extends Component {
+  static propTypes = {
+    popularity: PropTypes.number
+  }
+
   constructor(props) {
     super(props);
 
