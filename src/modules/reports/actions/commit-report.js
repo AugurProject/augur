@@ -8,61 +8,63 @@ import { encryptReport } from '../../reports/actions/report-encryption';
 
 export const UPDATE_REPORT_COMMIT_LOCK = 'UPDATE_REPORT_COMMIT_LOCK';
 
-export const updateReportCommitLock = isLocked => ({ type: UPDATE_REPORT_COMMIT_LOCK, isLocked });
+export const updateReportCommitLock = (eventID, isLocked) => ({ type: UPDATE_REPORT_COMMIT_LOCK, eventID, isLocked });
 
 export const commitReport = (market, reportedOutcomeID, isUnethical, isIndeterminate) => (dispatch, getState) => {
-  const { branch, loginAccount } = getState();
+  const { branch, loginAccount, reportCommitLock } = getState();
   if (!loginAccount.address || !market || !reportedOutcomeID) {
-    console.error('commitReport failed:', loginAccount.address, market, reportedOutcomeID);
-  } else {
-    dispatch(updateReportCommitLock(true));
-    const eventID = market.eventID;
-    const branchID = branch.id;
-    console.log(`committing to report ${reportedOutcomeID} on market ${market.id} event ${eventID} period ${branch.reportPeriod}...`);
-    const salt = bytesToHex(secureRandom(32));
-    const fixedReport = augur.fixReport(reportedOutcomeID, market.minValue, market.maxValue, market.type, isIndeterminate);
-    const report = {
-      eventID,
-      marketID: market.id,
-      period: branch.reportPeriod,
-      reportedOutcomeID,
-      isCategorical: market.type === CATEGORICAL,
-      isScalar: market.type === SCALAR,
-      isUnethical,
-      isIndeterminate,
-      salt,
-      reportHash: augur.makeHash(salt, fixedReport, eventID, loginAccount.address),
-      isCommitted: false,
-      isRevealed: false
-    };
-    const encrypted = encryptReport(fixedReport, salt);
-    dispatch(updateReport(branchID, eventID, { ...report }));
-    augur.submitReportHash({
-      event: eventID,
-      reportHash: report.reportHash,
-      encryptedReport: encrypted.report,
-      encryptedSalt: encrypted.salt,
-      ethics: Number(!isUnethical),
-      branch: branchID,
-      period: branch.reportPeriod,
-      periodLength: branch.periodLength,
-      onSent: () => {},
-      onSuccess: (r) => {
-        dispatch(updateReportCommitLock(false));
-        dispatch(updateReport(branchID, eventID, {
-          ...(getState().reports[branchID] || {})[eventID],
-          isCommitted: true
-        }));
-      },
-      onFailed: (e) => {
-        console.error('submitReportHash failed:', e);
-        dispatch(updateReportCommitLock(false));
-        dispatch(updateReport(branchID, eventID, {
-          ...(getState().reports[branchID] || {})[eventID],
-          isCommitted: false
-        }));
-      }
-    });
+    return console.error('commitReport failed:', loginAccount.address, market, reportedOutcomeID);
   }
+  const eventID = market.eventID;
+  if (reportCommitLock[eventID]) {
+    return console.warn('reportCommitLock set:', eventID, reportCommitLock);
+  }
+  dispatch(updateReportCommitLock(eventID, true));
+  const branchID = branch.id;
+  console.log(`committing to report ${reportedOutcomeID} on market ${market.id} event ${eventID} period ${branch.reportPeriod}...`);
+  const salt = bytesToHex(secureRandom(32));
+  const fixedReport = augur.fixReport(reportedOutcomeID, market.minValue, market.maxValue, market.type, isIndeterminate);
+  const report = {
+    eventID,
+    marketID: market.id,
+    period: branch.reportPeriod,
+    reportedOutcomeID,
+    isCategorical: market.type === CATEGORICAL,
+    isScalar: market.type === SCALAR,
+    isUnethical,
+    isIndeterminate,
+    salt,
+    reportHash: augur.makeHash(salt, fixedReport, eventID, loginAccount.address),
+    isCommitted: false,
+    isRevealed: false
+  };
+  const encrypted = encryptReport(fixedReport, salt);
+  dispatch(updateReport(branchID, eventID, { ...report }));
+  augur.submitReportHash({
+    event: eventID,
+    reportHash: report.reportHash,
+    encryptedReport: encrypted.report,
+    encryptedSalt: encrypted.salt,
+    ethics: Number(!isUnethical),
+    branch: branchID,
+    period: branch.reportPeriod,
+    periodLength: branch.periodLength,
+    onSent: () => {},
+    onSuccess: (r) => {
+      dispatch(updateReportCommitLock(eventID, false));
+      dispatch(updateReport(branchID, eventID, {
+        ...(getState().reports[branchID] || {})[eventID],
+        isCommitted: true
+      }));
+    },
+    onFailed: (e) => {
+      console.error('submitReportHash failed:', e);
+      dispatch(updateReportCommitLock(eventID, false));
+      dispatch(updateReport(branchID, eventID, {
+        ...(getState().reports[branchID] || {})[eventID],
+        isCommitted: false
+      }));
+    }
+  });
   dispatch(nextReportPage());
 };

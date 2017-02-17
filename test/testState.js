@@ -235,6 +235,8 @@ const testState = {
       totalCost: 50
     }
   },
+  tradeCommitLock: {},
+  reportCommitLock: {},
   transactionsData: {
     testtransaction12345: {
       id: 'testtransaction12345',

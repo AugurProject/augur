@@ -57,11 +57,13 @@ describe(`modules/reports/actions/commit-report.js`, () => {
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b'
       },
+      reportCommitLock: {},
       reports: {}
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
         type: 'UPDATE_REPORT_COMMIT_LOCK',
+        eventID: '0xe1',
         isLocked: true
       }, {
         type: 'UPDATE_REPORTS',
@@ -96,6 +98,7 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         }
       }, {
         type: 'UPDATE_REPORT_COMMIT_LOCK',
+        eventID: '0xe1',
         isLocked: false
       }, {
         type: 'UPDATE_REPORTS',
@@ -133,11 +136,13 @@ describe(`modules/reports/actions/commit-report.js`, () => {
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b'
       },
+      reportCommitLock: {},
       reports: {}
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
         type: 'UPDATE_REPORT_COMMIT_LOCK',
+        eventID: '0xe1',
         isLocked: true
       }, {
         type: 'UPDATE_REPORTS',
@@ -172,6 +177,7 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         }
       }, {
         type: 'UPDATE_REPORT_COMMIT_LOCK',
+        eventID: '0xe1',
         isLocked: false
       }, {
         type: 'UPDATE_REPORTS',
@@ -209,11 +215,13 @@ describe(`modules/reports/actions/commit-report.js`, () => {
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b'
       },
+      reportCommitLock: {},
       reports: {}
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
         type: 'UPDATE_REPORT_COMMIT_LOCK',
+        eventID: '0xe1',
         isLocked: true
       }, {
         type: 'UPDATE_REPORTS',
@@ -248,6 +256,7 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         }
       }, {
         type: 'UPDATE_REPORT_COMMIT_LOCK',
+        eventID: '0xe1',
         isLocked: false
       }, {
         type: 'UPDATE_REPORTS',
@@ -285,11 +294,13 @@ describe(`modules/reports/actions/commit-report.js`, () => {
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b'
       },
+      reportCommitLock: {},
       reports: {}
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
         type: 'UPDATE_REPORT_COMMIT_LOCK',
+        eventID: '0xe1',
         isLocked: true
       }, {
         type: 'UPDATE_REPORTS',
@@ -324,6 +335,7 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         }
       }, {
         type: 'UPDATE_REPORT_COMMIT_LOCK',
+        eventID: '0xe1',
         isLocked: false
       }, {
         type: 'UPDATE_REPORTS',
@@ -361,11 +373,13 @@ describe(`modules/reports/actions/commit-report.js`, () => {
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b'
       },
+      reportCommitLock: {},
       reports: {}
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
         type: 'UPDATE_REPORT_COMMIT_LOCK',
+        eventID: '0xe1',
         isLocked: true
       }, {
         type: 'UPDATE_REPORTS',
@@ -400,6 +414,7 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         }
       }, {
         type: 'UPDATE_REPORT_COMMIT_LOCK',
+        eventID: '0xe1',
         isLocked: false
       }, {
         type: 'UPDATE_REPORTS',
@@ -437,11 +452,13 @@ describe(`modules/reports/actions/commit-report.js`, () => {
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b'
       },
+      reportCommitLock: {},
       reports: {}
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
         type: 'UPDATE_REPORT_COMMIT_LOCK',
+        eventID: '0xe1',
         isLocked: true
       }, {
         type: 'UPDATE_REPORTS',
@@ -476,6 +493,7 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         }
       }, {
         type: 'UPDATE_REPORT_COMMIT_LOCK',
+        eventID: '0xe1',
         isLocked: false
       }, {
         type: 'UPDATE_REPORTS',
@@ -513,11 +531,13 @@ describe(`modules/reports/actions/commit-report.js`, () => {
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b'
       },
+      reportCommitLock: {},
       reports: {}
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
         type: 'UPDATE_REPORT_COMMIT_LOCK',
+        eventID: '0xe1',
         isLocked: true
       }, {
         type: 'UPDATE_REPORTS',
@@ -552,6 +572,7 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         }
       }, {
         type: 'UPDATE_REPORT_COMMIT_LOCK',
+        eventID: '0xe1',
         isLocked: false
       }, {
         type: 'UPDATE_REPORTS',
@@ -589,11 +610,13 @@ describe(`modules/reports/actions/commit-report.js`, () => {
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b'
       },
+      reportCommitLock: {},
       reports: {}
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
         type: 'UPDATE_REPORT_COMMIT_LOCK',
+        eventID: '0xe1',
         isLocked: true
       }, {
         type: 'UPDATE_REPORTS',
@@ -628,6 +651,7 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         }
       }, {
         type: 'UPDATE_REPORT_COMMIT_LOCK',
+        eventID: '0xe1',
         isLocked: false
       }, {
         type: 'UPDATE_REPORTS',
@@ -665,11 +689,13 @@ describe(`modules/reports/actions/commit-report.js`, () => {
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b'
       },
+      reportCommitLock: {},
       reports: {}
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
         type: 'UPDATE_REPORT_COMMIT_LOCK',
+        eventID: '0xe1',
         isLocked: true
       }, {
         type: 'UPDATE_REPORTS',
@@ -704,6 +730,7 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         }
       }, {
         type: 'UPDATE_REPORT_COMMIT_LOCK',
+        eventID: '0xe1',
         isLocked: false
       }, {
         type: 'UPDATE_REPORTS',
@@ -741,11 +768,13 @@ describe(`modules/reports/actions/commit-report.js`, () => {
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b'
       },
+      reportCommitLock: {},
       reports: {}
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
         type: 'UPDATE_REPORT_COMMIT_LOCK',
+        eventID: '0xe1',
         isLocked: true
       }, {
         type: 'UPDATE_REPORTS',
@@ -780,6 +809,7 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         }
       }, {
         type: 'UPDATE_REPORT_COMMIT_LOCK',
+        eventID: '0xe1',
         isLocked: false
       }, {
         type: 'UPDATE_REPORTS',
@@ -817,11 +847,13 @@ describe(`modules/reports/actions/commit-report.js`, () => {
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b'
       },
+      reportCommitLock: {},
       reports: {}
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
         type: 'UPDATE_REPORT_COMMIT_LOCK',
+        eventID: '0xe1',
         isLocked: true
       }, {
         type: 'UPDATE_REPORTS',
@@ -856,6 +888,7 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         }
       }, {
         type: 'UPDATE_REPORT_COMMIT_LOCK',
+        eventID: '0xe1',
         isLocked: false
       }, {
         type: 'UPDATE_REPORTS',
