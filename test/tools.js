@@ -262,7 +262,7 @@ module.exports = {
       augur.accounts.account = {};
     }
     augur.createSingleEventMarket({
-      branchId: branchID,
+      branch: branchID,
       description: binaryDescription + " [" + Math.random().toString(36).substring(4) + "]",
       expDate: expDate,
       minValue: 1,
@@ -277,7 +277,7 @@ module.exports = {
 
         // create a categorical market
         augur.createSingleEventMarket({
-          branchId: branchID,
+          branch: branchID,
           description: categoricalDescription + " [" + Math.random().toString(36).substring(4) + "]~|>" + categories.join('|'),
           expDate: expDate,
           minValue: 1,
@@ -292,7 +292,7 @@ module.exports = {
 
             // create a scalar market
             augur.createSingleEventMarket({
-              branchId: branchID,
+              branch: branchID,
               description: scalarDescription + " [" + Math.random().toString(36).substring(4) + "]",
               expDate: expDate,
               minValue: -5,

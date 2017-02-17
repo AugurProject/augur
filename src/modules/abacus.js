@@ -213,7 +213,7 @@ module.exports = {
         tradingFee: fees.trading,
         numOutcomes: parseInt(rawInfo[2], 16),
         tradingPeriod: parseInt(rawInfo[3], 16),
-        branchId: rawInfo[5],
+        branchID: rawInfo[5],
         numEvents: 1,
         cumulativeScale: abi.unfix(rawInfo[6], "string"),
         creationTime: parseInt(rawInfo[7], 16),
@@ -253,7 +253,7 @@ module.exports = {
       info.maxValue = event.maxValue;
       var outcome, proportionCorrect;
       if (parseInt(rawInfo[index + 2], 16) !== 0) {
-        var unfixed = makeReports.unfixReport(abi.hex(rawInfo[index + 2], true), event.minValue, event.maxValue, event.type);
+        var unfixed = makeReports.unfixReport(rawInfo[index + 2], event.type);
         outcome = unfixed.report;
         info.isIndeterminate = unfixed.isIndeterminate;
       }

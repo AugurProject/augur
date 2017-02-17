@@ -10,7 +10,6 @@ module.exports = {
     var params = parametrizeOrder.parametrizeOrder(market, outcomeID, numShares, limitPrice, tradeGroupID);
     params.onSent = utils.noop;
     params.onSuccess = function (res) {
-      console.log("bid success:", res);
       callback(null);
     };
     params.onFailed = callback;
@@ -22,7 +21,6 @@ module.exports = {
     var params = parametrizeOrder.parametrizeOrder(market, outcomeID, numShares, limitPrice, tradeGroupID);
     params.onSent = utils.noop;
     params.onSuccess = function (res) {
-      console.log("ask success:", res);
       callback(null);
     };
     params.onFailed = callback;
@@ -34,7 +32,6 @@ module.exports = {
     var params = parametrizeOrder.parametrizeOrder(market, outcomeID, numShares, limitPrice, tradeGroupID);
     params.onSent = utils.noop;
     params.onSuccess = function (res) {
-      console.log("short ask success:", res);
       callback(null);
     };
     params.onFailed = callback;
@@ -49,12 +46,10 @@ module.exports = {
     askParams.onSent = utils.noop;
     shortAskParams.onSent = utils.noop;
     askParams.onSuccess = function (res) {
-      console.log("ask success:", res);
       success.ask = true;
       if (success.ask && success.shortAsk) callback(null);
     };
     shortAskParams.onSuccess = function (res) {
-      console.log("short ask success:", res);
       success.shortAsk = true;
       if (success.ask && success.shortAsk) callback(null);
     };

@@ -378,11 +378,11 @@ describe('CompositeGetters.loadMarketsHelper', function() {
       if (volumeMax < 0) {
         // send back 5 markets with volume
         chunkCB(null, {
-          '0x0a1': {id: '0x0a1', branchId: '101010', volume: '3000'},
-          '0x0a2': {id: '0x0a2', branchId: '101010', volume: '4000'},
-          '0x0a3': {id: '0x0a3', branchId: '101010', volume: '5000'},
-          '0x0a4': {id: '0x0a4', branchId: '101010', volume: '1500'},
-          '0x0a5': {id: '0x0a5', branchId: '101010', volume: '2000'},
+          '0x0a1': {id: '0x0a1', branchID: '101010', volume: '3000'},
+          '0x0a2': {id: '0x0a2', branchID: '101010', volume: '4000'},
+          '0x0a3': {id: '0x0a3', branchID: '101010', volume: '5000'},
+          '0x0a4': {id: '0x0a4', branchID: '101010', volume: '1500'},
+          '0x0a5': {id: '0x0a5', branchID: '101010', volume: '2000'},
         });
         setTimeout(function () {
           nextPass();
@@ -390,11 +390,11 @@ describe('CompositeGetters.loadMarketsHelper', function() {
       } else {
         // send back 5 markets with no volume
         chunkCB(null, {
-          '0x0a6': {id: '0x0a6', branchId: '101010', volume: '0'},
-          '0x0a7': {id: '0x0a7', branchId: '101010', volume: '0'},
-          '0x0a8': {id: '0x0a8', branchId: '101010', volume: '0'},
-          '0x0a9': {id: '0x0a9', branchId: '101010', volume: '0'},
-          '0x0aa': {id: '0x0aa', branchId: '101010', volume: '0'},
+          '0x0a6': {id: '0x0a6', branchID: '101010', volume: '0'},
+          '0x0a7': {id: '0x0a7', branchID: '101010', volume: '0'},
+          '0x0a8': {id: '0x0a8', branchID: '101010', volume: '0'},
+          '0x0a9': {id: '0x0a9', branchID: '101010', volume: '0'},
+          '0x0aa': {id: '0x0aa', branchID: '101010', volume: '0'},
         });
       }
     },
@@ -403,20 +403,20 @@ describe('CompositeGetters.loadMarketsHelper', function() {
       switch(callCount) {
       case 1:
         assert.deepEqual(marketsData, {
-          '0x0a1': {id: '0x0a1', branchId: '101010', volume: '3000'},
-          '0x0a2': {id: '0x0a2', branchId: '101010', volume: '4000'},
-          '0x0a3': {id: '0x0a3', branchId: '101010', volume: '5000'},
-          '0x0a4': {id: '0x0a4', branchId: '101010', volume: '1500'},
-          '0x0a5': {id: '0x0a5', branchId: '101010', volume: '2000'},
+          '0x0a1': {id: '0x0a1', branchID: '101010', volume: '3000'},
+          '0x0a2': {id: '0x0a2', branchID: '101010', volume: '4000'},
+          '0x0a3': {id: '0x0a3', branchID: '101010', volume: '5000'},
+          '0x0a4': {id: '0x0a4', branchID: '101010', volume: '1500'},
+          '0x0a5': {id: '0x0a5', branchID: '101010', volume: '2000'},
         });
         break;
       default:
         assert.deepEqual(marketsData, {
-          '0x0a6': {id: '0x0a6', branchId: '101010', volume: '0'},
-          '0x0a7': {id: '0x0a7', branchId: '101010', volume: '0'},
-          '0x0a8': {id: '0x0a8', branchId: '101010', volume: '0'},
-          '0x0a9': {id: '0x0a9', branchId: '101010', volume: '0'},
-          '0x0aa': {id: '0x0aa', branchId: '101010', volume: '0'},
+          '0x0a6': {id: '0x0a6', branchID: '101010', volume: '0'},
+          '0x0a7': {id: '0x0a7', branchID: '101010', volume: '0'},
+          '0x0a8': {id: '0x0a8', branchID: '101010', volume: '0'},
+          '0x0a9': {id: '0x0a9', branchID: '101010', volume: '0'},
+          '0x0aa': {id: '0x0aa', branchID: '101010', volume: '0'},
         });
         break;
       }
@@ -437,11 +437,11 @@ describe('CompositeGetters.loadMarketsHelper', function() {
       if (volumeMax < 0) {
         // send back 5 markets with volume
         chunkCB(null, {
-          '0x0a5': {id: '0x0a5', branchId: '101010', volume: '2000'},
-          '0x0a4': {id: '0x0a4', branchId: '101010', volume: '1500'},
-          '0x0a3': {id: '0x0a3', branchId: '101010', volume: '5000'},
-          '0x0a2': {id: '0x0a2', branchId: '101010', volume: '4000'},
-          '0x0a1': {id: '0x0a1', branchId: '101010', volume: '3000'},
+          '0x0a5': {id: '0x0a5', branchID: '101010', volume: '2000'},
+          '0x0a4': {id: '0x0a4', branchID: '101010', volume: '1500'},
+          '0x0a3': {id: '0x0a3', branchID: '101010', volume: '5000'},
+          '0x0a2': {id: '0x0a2', branchID: '101010', volume: '4000'},
+          '0x0a1': {id: '0x0a1', branchID: '101010', volume: '3000'},
         });
         setTimeout(function () {
           nextPass();
@@ -449,11 +449,11 @@ describe('CompositeGetters.loadMarketsHelper', function() {
       } else {
         // send back 5 markets with no volume
         chunkCB(null, {
-          '0x0aa': {id: '0x0aa', branchId: '101010', volume: '0'},
-          '0x0a9': {id: '0x0a9', branchId: '101010', volume: '0'},
-          '0x0a8': {id: '0x0a8', branchId: '101010', volume: '0'},
-          '0x0a7': {id: '0x0a7', branchId: '101010', volume: '0'},
-          '0x0a6': {id: '0x0a6', branchId: '101010', volume: '0'},
+          '0x0aa': {id: '0x0aa', branchID: '101010', volume: '0'},
+          '0x0a9': {id: '0x0a9', branchID: '101010', volume: '0'},
+          '0x0a8': {id: '0x0a8', branchID: '101010', volume: '0'},
+          '0x0a7': {id: '0x0a7', branchID: '101010', volume: '0'},
+          '0x0a6': {id: '0x0a6', branchID: '101010', volume: '0'},
         });
       }
     },
@@ -462,20 +462,20 @@ describe('CompositeGetters.loadMarketsHelper', function() {
       switch(callCount) {
       case 1:
         assert.deepEqual(marketsData, {
-          '0x0a5': {id: '0x0a5', branchId: '101010', volume: '2000'},
-          '0x0a4': {id: '0x0a4', branchId: '101010', volume: '1500'},
-          '0x0a3': {id: '0x0a3', branchId: '101010', volume: '5000'},
-          '0x0a2': {id: '0x0a2', branchId: '101010', volume: '4000'},
-          '0x0a1': {id: '0x0a1', branchId: '101010', volume: '3000'},
+          '0x0a5': {id: '0x0a5', branchID: '101010', volume: '2000'},
+          '0x0a4': {id: '0x0a4', branchID: '101010', volume: '1500'},
+          '0x0a3': {id: '0x0a3', branchID: '101010', volume: '5000'},
+          '0x0a2': {id: '0x0a2', branchID: '101010', volume: '4000'},
+          '0x0a1': {id: '0x0a1', branchID: '101010', volume: '3000'},
         });
         break;
       default:
         assert.deepEqual(marketsData, {
-          '0x0aa': {id: '0x0aa', branchId: '101010', volume: '0'},
-          '0x0a9': {id: '0x0a9', branchId: '101010', volume: '0'},
-          '0x0a8': {id: '0x0a8', branchId: '101010', volume: '0'},
-          '0x0a7': {id: '0x0a7', branchId: '101010', volume: '0'},
-          '0x0a6': {id: '0x0a6', branchId: '101010', volume: '0'},
+          '0x0aa': {id: '0x0aa', branchID: '101010', volume: '0'},
+          '0x0a9': {id: '0x0a9', branchID: '101010', volume: '0'},
+          '0x0a8': {id: '0x0a8', branchID: '101010', volume: '0'},
+          '0x0a7': {id: '0x0a7', branchID: '101010', volume: '0'},
+          '0x0a6': {id: '0x0a6', branchID: '101010', volume: '0'},
         });
         break;
       }
@@ -496,11 +496,11 @@ describe('CompositeGetters.loadMarketsHelper', function() {
         assert.deepEqual(startIndex, 0, 'startIndex was not the expected value when passed to loadNextMarketsBatch in CompositeGetters.loadMarketsHelper, 3rd test, 1st pass.');
         // send back 5 markets with volume
         chunkCB(null, {
-          '0x0a1': {id: '0x0a1', branchId: '101010', volume: '3000'},
-          '0x0a2': {id: '0x0a2', branchId: '101010', volume: '4000'},
-          '0x0a3': {id: '0x0a3', branchId: '101010', volume: '5000'},
-          '0x0a4': {id: '0x0a4', branchId: '101010', volume: '1500'},
-          '0x0a5': {id: '0x0a5', branchId: '101010', volume: '2000'},
+          '0x0a1': {id: '0x0a1', branchID: '101010', volume: '3000'},
+          '0x0a2': {id: '0x0a2', branchID: '101010', volume: '4000'},
+          '0x0a3': {id: '0x0a3', branchID: '101010', volume: '5000'},
+          '0x0a4': {id: '0x0a4', branchID: '101010', volume: '1500'},
+          '0x0a5': {id: '0x0a5', branchID: '101010', volume: '2000'},
         });
         // numMarkets is 10, we have produced 5, call loadNextMarketsBatch again for the next chunk(5)
         setTimeout(function () {
@@ -510,11 +510,11 @@ describe('CompositeGetters.loadMarketsHelper', function() {
         assert.deepEqual(5, startIndex, 'startIndex was not the expected value when passed to loadNextMarketsBatch in CompositeGetters.loadMarketsHelper, 3rd test, 2nd pass');
         // send back 5 more markets with volume
         chunkCB(null, {
-          '0x0a6': {id: '0x0a6', branchId: '101010', volume: '50'},
-          '0x0a7': {id: '0x0a7', branchId: '101010', volume: '990'},
-          '0x0a8': {id: '0x0a8', branchId: '101010', volume: '8800'},
-          '0x0a9': {id: '0x0a9', branchId: '101010', volume: '1337'},
-          '0x0aa': {id: '0x0aa', branchId: '101010', volume: '10000'},
+          '0x0a6': {id: '0x0a6', branchID: '101010', volume: '50'},
+          '0x0a7': {id: '0x0a7', branchID: '101010', volume: '990'},
+          '0x0a8': {id: '0x0a8', branchID: '101010', volume: '8800'},
+          '0x0a9': {id: '0x0a9', branchID: '101010', volume: '1337'},
+          '0x0aa': {id: '0x0aa', branchID: '101010', volume: '10000'},
         });
       }
     },
@@ -523,20 +523,20 @@ describe('CompositeGetters.loadMarketsHelper', function() {
       switch(callCount) {
       case 1:
         assert.deepEqual(marketsData, {
-          '0x0a1': {id: '0x0a1', branchId: '101010', volume: '3000'},
-          '0x0a2': {id: '0x0a2', branchId: '101010', volume: '4000'},
-          '0x0a3': {id: '0x0a3', branchId: '101010', volume: '5000'},
-          '0x0a4': {id: '0x0a4', branchId: '101010', volume: '1500'},
-          '0x0a5': {id: '0x0a5', branchId: '101010', volume: '2000'},
+          '0x0a1': {id: '0x0a1', branchID: '101010', volume: '3000'},
+          '0x0a2': {id: '0x0a2', branchID: '101010', volume: '4000'},
+          '0x0a3': {id: '0x0a3', branchID: '101010', volume: '5000'},
+          '0x0a4': {id: '0x0a4', branchID: '101010', volume: '1500'},
+          '0x0a5': {id: '0x0a5', branchID: '101010', volume: '2000'},
         });
         break;
       default:
         assert.deepEqual(marketsData, {
-          '0x0a6': {id: '0x0a6', branchId: '101010', volume: '50'},
-          '0x0a7': {id: '0x0a7', branchId: '101010', volume: '990'},
-          '0x0a8': {id: '0x0a8', branchId: '101010', volume: '8800'},
-          '0x0a9': {id: '0x0a9', branchId: '101010', volume: '1337'},
-          '0x0aa': {id: '0x0aa', branchId: '101010', volume: '10000'},
+          '0x0a6': {id: '0x0a6', branchID: '101010', volume: '50'},
+          '0x0a7': {id: '0x0a7', branchID: '101010', volume: '990'},
+          '0x0a8': {id: '0x0a8', branchID: '101010', volume: '8800'},
+          '0x0a9': {id: '0x0a9', branchID: '101010', volume: '1337'},
+          '0x0aa': {id: '0x0aa', branchID: '101010', volume: '10000'},
         });
         break;
       }
@@ -1422,7 +1422,7 @@ describe('CompositeGetters.parseMarketsInfo', function() {
         '0x00000000000000000000000000000000000000000000000000000000000000a1': {
           sortOrder: 0,
           id: '0x00000000000000000000000000000000000000000000000000000000000000a1',
-          branchId: '0xf69b5',
+          branchID: '0xf69b5',
           tradingPeriod: 1280,
           tradingFee: '0.4',
           makerFee: '0.008',
@@ -1443,7 +1443,7 @@ describe('CompositeGetters.parseMarketsInfo', function() {
         '0x00000000000000000000000000000000000000000000000000000000000000a2': {
           sortOrder: 1,
           id: '0x00000000000000000000000000000000000000000000000000000000000000a2',
-          branchId: '0xf69b5',
+          branchID: '0xf69b5',
           tradingPeriod: 1280,
           tradingFee: '0.6',
           makerFee: '0.018',
@@ -1464,7 +1464,7 @@ describe('CompositeGetters.parseMarketsInfo', function() {
         '0x00000000000000000000000000000000000000000000000000000000000000a3': {
           sortOrder: 2,
           id: '0x00000000000000000000000000000000000000000000000000000000000000a3',
-          branchId: '0xf69b5',
+          branchID: '0xf69b5',
           tradingPeriod: 1280,
           tradingFee: '0.2',
           makerFee: '0.002',

@@ -18904,7 +18904,6 @@ module.exports={
         ], 
         "inputs": [
           "branch", 
-          "description", 
           "tradingFee", 
           "event", 
           "tag1", 
@@ -18919,7 +18918,6 @@ module.exports={
         "send": true, 
         "signature": [
           "int256", 
-          "bytes", 
           "int256", 
           "int256", 
           "int256", 
@@ -24343,7 +24341,7 @@ BigNumber.config({
 var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/slashRep"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register"), require("./modules/topics"), require("./modules/modifyOrderBook")];
 
 function Augur() {
-  this.version = "3.11.5";
+  this.version = "3.12.0";
 
   this.options = {
     debug: {
@@ -24604,7 +24602,7 @@ module.exports = {
         tradingFee: fees.trading,
         numOutcomes: parseInt(rawInfo[2], 16),
         tradingPeriod: parseInt(rawInfo[3], 16),
-        branchId: rawInfo[5],
+        branchID: rawInfo[5],
         numEvents: 1,
         cumulativeScale: abi.unfix(rawInfo[6], "string"),
         creationTime: parseInt(rawInfo[7], 16),
@@ -24640,7 +24638,7 @@ module.exports = {
       info.maxValue = event.maxValue;
       var outcome, proportionCorrect;
       if (parseInt(rawInfo[index + 2], 16) !== 0) {
-        var unfixed = makeReports.unfixReport(abi.hex(rawInfo[index + 2], true), event.minValue, event.maxValue, event.type);
+        var unfixed = makeReports.unfixReport(rawInfo[index + 2], event.type);
         outcome = unfixed.report;
         info.isIndeterminate = unfixed.isIndeterminate;
       }
@@ -25377,14 +25375,14 @@ module.exports = {
         reportedOutcome = undefined;
         isIndeterminate = undefined;
       } else {
-        unfixed = this.unfixReport(reportedOutcome, minValue, maxValue, type);
+        unfixed = this.unfixReport(reportedOutcome, type);
         reportedOutcome = unfixed.report;
         isIndeterminate = unfixed.isIndeterminate;
       }
       marketsInfo[marketID] = {
         sortOrder: i,
         id: marketID,
-        branchId: branch,
+        branchID: branch,
         tradingPeriod: parseInt(marketsArray[shift + 1], 16),
         tradingFee: fees.trading,
         makerFee: fees.maker,
@@ -25744,23 +25742,23 @@ var utils = require("../utilities");
 
 module.exports = {
 
-  createSingleEventMarket: function createSingleEventMarket(branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, takerFee, tags, makerFee, extraInfo, onSent, onSuccess, onFailed) {
+  createSingleEventMarket: function createSingleEventMarket(branch, description, expDate, minValue, maxValue, numOutcomes, resolution, takerFee, tags, makerFee, extraInfo, onSent, onSuccess, onFailed) {
     var self = this;
-    if (branchId.constructor === Object && branchId.branchId) {
-      description = branchId.description; // string
-      expDate = branchId.expDate;
-      minValue = branchId.minValue; // integer (1 for binary)
-      maxValue = branchId.maxValue; // integer (2 for binary)
-      numOutcomes = branchId.numOutcomes; // integer (2 for binary)
-      resolution = branchId.resolution;
-      takerFee = branchId.takerFee;
-      tags = branchId.tags;
-      makerFee = branchId.makerFee;
-      extraInfo = branchId.extraInfo;
-      onSent = branchId.onSent; // function
-      onSuccess = branchId.onSuccess; // function
-      onFailed = branchId.onFailed; // function
-      branchId = branchId.branchId; // sha256 hash
+    if (branch.constructor === Object) {
+      description = branch.description; // string
+      expDate = branch.expDate;
+      minValue = branch.minValue; // integer (1 for binary)
+      maxValue = branch.maxValue; // integer (2 for binary)
+      numOutcomes = branch.numOutcomes; // integer (2 for binary)
+      resolution = branch.resolution;
+      takerFee = branch.takerFee;
+      tags = branch.tags;
+      makerFee = branch.makerFee;
+      extraInfo = branch.extraInfo;
+      onSent = branch.onSent; // function
+      onSuccess = branch.onSuccess; // function
+      onFailed = branch.onFailed; // function
+      branch = branch.branch; // sha256 hash
     }
     var formattedTags = this.formatTags(tags);
     var fees = this.calculateTradingFees(makerFee, takerFee);
@@ -25768,7 +25766,7 @@ module.exports = {
     if (description) description = description.trim();
     if (resolution) resolution = resolution.trim();
     var tx = clone(this.tx.CreateMarket.createSingleEventMarket);
-    tx.params = [branchId, description, expDate, abi.fix(minValue, "hex"), abi.fix(maxValue, "hex"), numOutcomes, resolution || "", abi.fix(fees.tradingFee, "hex"), formattedTags[0], formattedTags[1], formattedTags[2], abi.fix(fees.makerProportionOfFee, "hex"), extraInfo || ""];
+    tx.params = [branch, description, expDate, abi.fix(minValue, "hex"), abi.fix(maxValue, "hex"), numOutcomes, resolution || "", abi.fix(fees.tradingFee, "hex"), formattedTags[0], formattedTags[1], formattedTags[2], abi.fix(fees.makerProportionOfFee, "hex"), extraInfo || ""];
     if (!utils.is_function(onSent)) {
       var gasPrice = this.rpc.getGasPrice();
       tx.gasPrice = gasPrice;
@@ -25782,48 +25780,43 @@ module.exports = {
     });
   },
 
-  createEvent: function createEvent(branchId, description, expDate, minValue, maxValue, numOutcomes, resolution, onSent, onSuccess, onFailed) {
-    if (branchId.constructor === Object && branchId.branchId) {
-      description = branchId.description; // string
-      minValue = branchId.minValue; // integer (1 for binary)
-      maxValue = branchId.maxValue; // integer (2 for binary)
-      numOutcomes = branchId.numOutcomes; // integer (2 for binary)
-      expDate = branchId.expDate;
-      resolution = branchId.resolution;
-      onSent = branchId.onSent; // function
-      onSuccess = branchId.onSuccess; // function
-      onFailed = branchId.onFailed; // function
-      branchId = branchId.branchId; // sha256 hash
+  createEvent: function createEvent(branch, description, expDate, minValue, maxValue, numOutcomes, resolution, onSent, onSuccess, onFailed) {
+    if (branch.constructor === Object) {
+      description = branch.description; // string
+      minValue = branch.minValue; // integer (1 for binary)
+      maxValue = branch.maxValue; // integer (2 for binary)
+      numOutcomes = branch.numOutcomes; // integer (2 for binary)
+      expDate = branch.expDate;
+      resolution = branch.resolution;
+      onSent = branch.onSent; // function
+      onSuccess = branch.onSuccess; // function
+      onFailed = branch.onFailed; // function
+      branch = branch.branch; // sha256 hash
     }
     var tx = clone(this.tx.CreateMarket.createEvent);
     if (description) description = description.trim();
     if (resolution) resolution = resolution.trim();
-    tx.params = [branchId, description, parseInt(expDate), abi.fix(minValue, "hex"), abi.fix(maxValue, "hex"), numOutcomes, resolution || ""];
+    tx.params = [branch, description, parseInt(expDate), abi.fix(minValue, "hex"), abi.fix(maxValue, "hex"), numOutcomes, resolution || ""];
     return this.transact(tx, onSent, onSuccess, onFailed);
   },
 
-  createMarket: function createMarket(branchId, description, takerFee, events, tags, makerFee, extraInfo, onSent, onSuccess, onFailed) {
+  createMarket: function createMarket(branch, takerFee, event, tags, makerFee, extraInfo, onSent, onSuccess, onFailed) {
     var self = this;
-    if (branchId.constructor === Object && branchId.branchId) {
-      description = branchId.description; // string
-      takerFee = branchId.takerFee;
-      events = branchId.events; // array [sha256, ...]
-      tags = branchId.tags;
-      makerFee = branchId.makerFee;
-      extraInfo = branchId.extraInfo;
-      onSent = branchId.onSent; // function
-      onSuccess = branchId.onSuccess; // function
-      onFailed = branchId.onFailed; // function
-      branchId = branchId.branchId; // sha256 hash
+    if (branch.constructor === Object) {
+      takerFee = branch.takerFee;
+      event = branch.event;
+      tags = branch.tags;
+      makerFee = branch.makerFee;
+      extraInfo = branch.extraInfo;
+      onSent = branch.onSent;
+      onSuccess = branch.onSuccess;
+      onFailed = branch.onFailed;
+      branch = branch.branch;
     }
-    onSent = onSent || utils.noop;
-    onSuccess = onSuccess || utils.noop;
-    onFailed = onFailed || utils.noop;
     var formattedTags = this.formatTags(tags);
     var fees = this.calculateTradingFees(makerFee, takerFee);
     var tx = clone(this.tx.CreateMarket.createMarket);
-    if (description) description = description.trim();
-    tx.params = [branchId, description, abi.fix(fees.tradingFee, "hex"), events, formattedTags[0], formattedTags[1], formattedTags[2], abi.fix(fees.makerProportionOfFee, "hex"), extraInfo || ""];
+    tx.params = [branch, abi.fix(fees.tradingFee, "hex"), event, formattedTags[0], formattedTags[1], formattedTags[2], abi.fix(fees.makerProportionOfFee, "hex"), extraInfo || ""];
     if (!utils.is_function(onSent)) {
       var gasPrice = this.rpc.getGasPrice();
       tx.gasPrice = gasPrice;
@@ -25837,20 +25830,20 @@ module.exports = {
     });
   },
 
-  updateTradingFee: function updateTradingFee(branchId, market, takerFee, makerFee, onSent, onSuccess, onFailed) {
+  updateTradingFee: function updateTradingFee(branch, market, takerFee, makerFee, onSent, onSuccess, onFailed) {
     var self = this;
-    if (branchId.constructor === Object && branchId.branchId) {
-      market = branchId.market; // string
-      takerFee = branchId.takerFee;
-      makerFee = branchId.makerFee;
-      onSent = branchId.onSent; // function
-      onSuccess = branchId.onSuccess; // function
-      onFailed = branchId.onFailed; // function
-      branchId = branchId.branchId; // sha256 hash
+    if (branch.constructor === Object) {
+      market = branch.market; // string
+      takerFee = branch.takerFee;
+      makerFee = branch.makerFee;
+      onSent = branch.onSent; // function
+      onSuccess = branch.onSuccess; // function
+      onFailed = branch.onFailed; // function
+      branch = branch.branch; // sha256 hash
     }
     var tx = clone(this.tx.CreateMarket.updateTradingFee);
     var fees = this.calculateTradingFees(makerFee, takerFee);
-    tx.params = [branchId, market, abi.fix(fees.tradingFee, "hex"), abi.fix(fees.makerProportionOfFee, "hex")];
+    tx.params = [branch, market, abi.fix(fees.tradingFee, "hex"), abi.fix(fees.makerProportionOfFee, "hex")];
     if (!utils.is_function(onSent)) return this.transact(tx);
     self.transact(tx, onSent, onSuccess, onFailed);
   }
@@ -26524,7 +26517,6 @@ module.exports = {
     var params = parametrizeOrder.parametrizeOrder(market, outcomeID, numShares, limitPrice, tradeGroupID);
     params.onSent = utils.noop;
     params.onSuccess = function (res) {
-      console.log("bid success:", res);
       callback(null);
     };
     params.onFailed = callback;
@@ -26536,7 +26528,6 @@ module.exports = {
     var params = parametrizeOrder.parametrizeOrder(market, outcomeID, numShares, limitPrice, tradeGroupID);
     params.onSent = utils.noop;
     params.onSuccess = function (res) {
-      console.log("ask success:", res);
       callback(null);
     };
     params.onFailed = callback;
@@ -26548,7 +26539,6 @@ module.exports = {
     var params = parametrizeOrder.parametrizeOrder(market, outcomeID, numShares, limitPrice, tradeGroupID);
     params.onSent = utils.noop;
     params.onSuccess = function (res) {
-      console.log("short ask success:", res);
       callback(null);
     };
     params.onFailed = callback;
@@ -26563,12 +26553,10 @@ module.exports = {
     askParams.onSent = utils.noop;
     shortAskParams.onSent = utils.noop;
     askParams.onSuccess = function (res) {
-      console.log("ask success:", res);
       success.ask = true;
       if (success.ask && success.shortAsk) callback(null);
     };
     shortAskParams.onSuccess = function (res) {
-      console.log("short ask success:", res);
       success.shortAsk = true;
       if (success.ask && success.shortAsk) callback(null);
     };
@@ -26629,35 +26617,66 @@ module.exports = {
     return fixedReport;
   },
 
-  unfixReport: function unfixReport(fixedReport, minValue, maxValue, type) {
-    var report, bnMinValue, bnFixedReport;
-    bnFixedReport = abi.bignum(fixedReport);
-    if (bnFixedReport.eq(constants.BINARY_INDETERMINATE)) {
-      return { report: "1.5", isIndeterminate: true };
-    } else if (bnFixedReport.eq(constants.CATEGORICAL_SCALAR_INDETERMINATE)) {
-      return { report: "0.5", isIndeterminate: true };
-    } else if (bnFixedReport.eq(constants.INDETERMINATE_PLUS_ONE)) {
-      return { report: "0.5", isIndeterminate: false };
+  isIndeterminateReport: function isIndeterminateReport(fxpReport, type) {
+    var bnFxpReport = abi.bignum(fxpReport);
+    if (type === "binary" && bnFxpReport.eq(constants.BINARY_INDETERMINATE)) {
+      return "1.5";
+    } else if (bnFxpReport.eq(constants.CATEGORICAL_SCALAR_INDETERMINATE)) {
+      return "0.5";
+    }
+    return false;
+  },
+
+  isScalarSpecialValueReport: function isScalarSpecialValueReport(fxpReport) {
+    var bnFxpReport = abi.bignum(fxpReport);
+    if (bnFxpReport.eq(abi.bignum(1))) {
+      return "0";
+    }
+    if (bnFxpReport.eq(constants.INDETERMINATE_PLUS_ONE)) {
+      return "0.5";
+    }
+    return false;
+  },
+
+  unfixRawReport: function unfixRawReport(rawReport, minValue, maxValue, type) {
+    var report;
+    var indeterminateReport = this.isIndeterminateReport(rawReport, type);
+    if (indeterminateReport) {
+      return { report: indeterminateReport, isIndeterminate: true };
     }
     if (type === "binary") {
-      report = abi.unfix(fixedReport);
-    } else {
-      if (bnFixedReport.eq(abi.bignum(1))) {
-        fixedReport = "0";
+      return { report: abi.unfix(rawReport, "string"), isIndeterminate: false };
+    }
+    if (type === "scalar") {
+      var scalarSpecialValueReport = this.isScalarSpecialValueReport(rawReport);
+      if (scalarSpecialValueReport) {
+        return { report: scalarSpecialValueReport, isIndeterminate: false };
       }
-      // x = (max - min)*y + min
-      bnMinValue = abi.bignum(minValue);
-      report = abi.unfix(fixedReport).times(abi.bignum(maxValue).minus(bnMinValue)).plus(bnMinValue);
     }
-    if (type !== "scalar") {
-      report = report.round();
-    }
+    // x = (max - min)*y + min
+    var bnMinValue = abi.bignum(minValue);
+    report = abi.unfix(rawReport).times(abi.bignum(maxValue).minus(bnMinValue)).plus(bnMinValue);
+    if (type === "categorical") report = report.round();
     return { report: report.toFixed(), isIndeterminate: false };
+  },
+
+  unfixReport: function unfixReport(fxpReport, type) {
+    var indeterminateReport = this.isIndeterminateReport(fxpReport, type);
+    if (indeterminateReport) {
+      return { report: indeterminateReport, isIndeterminate: true };
+    }
+    if (type === "scalar") {
+      var scalarSpecialValueReport = this.isScalarSpecialValueReport(fxpReport);
+      if (scalarSpecialValueReport) {
+        return { report: scalarSpecialValueReport, isIndeterminate: false };
+      }
+    }
+    return { report: abi.unfix_signed(fxpReport, "string"), isIndeterminate: false };
   },
 
   // report in fixed-point
   makeHash: function makeHash(salt, report, event, from) {
-    return utils.sha3([from || this.from, abi.hex(salt), report, event]);
+    return utils.sha3([from, abi.hex(salt), report, event]);
   },
 
   // report in fixed-point
@@ -27723,7 +27742,7 @@ var utils = require("../utilities");
 module.exports = {
 
   parseLastBlockNumber: function parseLastBlockNumber(logs) {
-    return parseInt(logs[logs.length - 1].blockNumber, 16);
+    return logs[logs.length - 1].blockNumber;
   },
 
   getRegisterBlockNumber: function getRegisterBlockNumber(account, options, callback) {
@@ -47712,7 +47731,7 @@ module.exports = {
       augur.accounts.account = {};
     }
     augur.createSingleEventMarket({
-      branchId: branchID,
+      branch: branchID,
       description: binaryDescription + " [" + Math.random().toString(36).substring(4) + "]",
       expDate: expDate,
       minValue: 1,
@@ -47727,7 +47746,7 @@ module.exports = {
 
         // create a categorical market
         augur.createSingleEventMarket({
-          branchId: branchID,
+          branch: branchID,
           description: categoricalDescription + " [" + Math.random().toString(36).substring(4) + "]~|>" + categories.join('|'),
           expDate: expDate,
           minValue: 1,
@@ -47742,7 +47761,7 @@ module.exports = {
 
             // create a scalar market
             augur.createSingleEventMarket({
-              branchId: branchID,
+              branch: branchID,
               description: scalarDescription + " [" + Math.random().toString(36).substring(4) + "]",
               expDate: expDate,
               minValue: -5,

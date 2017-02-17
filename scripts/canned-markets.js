@@ -515,7 +515,7 @@ augur.connect({
     console.debug("setCash success:", r.callReturn);
     async.eachSeries(cannedMarkets, function (market, nextMarket) {
       // if (!market.orderBook && parseInt(augur.network_id) === 9000) return nextMarket();
-      market.branchId = augur.constants.DEFAULT_BRANCH_ID;
+      market.branch = augur.constants.DEFAULT_BRANCH_ID;
       market.onSent = function (r) {
         if (DEBUG) console.debug("createSingleEventMarket sent:", r);
       };

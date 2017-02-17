@@ -11,7 +11,203 @@ var constants = require("../../../src/constants");
 var reporting = require("../../../src/modules/reporting");
 var makeReports = require("../../../src/modules/makeReports");
 
-describe("fixReport / unfixReport", function () {
+describe("unfixReport", function () {
+  before(function () {
+    makeReports.options = {debug: {reporting: false}};
+  });
+  after(function () {
+    delete makeReports.options;
+  });
+  var test = function (t) {
+    it(t.description, function () {
+      t.assertions(makeReports.unfixReport(t.params.fxpReport, t.params.type));
+    });
+  };
+  test({
+    description: "binary event: report 1",
+    params: {
+      fxpReport: "0xde0b6b3a7640000",
+      type: "binary"
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, {
+        report: "1",
+        isIndeterminate: false
+      });
+    }
+  });
+  test({
+    description: "binary event: report 2",
+    params: {
+      fxpReport: "0x1bc16d674ec80000",
+      type: "binary"
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, {
+        report: "2",
+        isIndeterminate: false
+      });
+    }
+  });
+  test({
+    description: "binary event: report 1.5 (indeterminate)",
+    params: {
+      fxpReport: "0x14d1120d7b160000",
+      type: "binary"
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, {
+        report: "1.5",
+        isIndeterminate: true
+      });
+    }
+  });
+  test({
+    description: "categorical event: report 1",
+    params: {
+      fxpReport: "0xde0b6b3a7640000",
+      type: "categorical"
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, {
+        report: "1",
+        isIndeterminate: false
+      });
+    }
+  });
+  test({
+    description: "categorical event: report 5",
+    params: {
+      fxpReport: "0x4563918244f40000",
+      type: "categorical"
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, {
+        report: "5",
+        isIndeterminate: false
+      });
+    }
+  });
+  test({
+    description: "categorical event: report 0.5 (indeterminate)",
+    params: {
+      fxpReport: "0x6f05b59d3b20000",
+      type: "categorical"
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, {
+        report: "0.5",
+        isIndeterminate: true
+      });
+    }
+  });
+  test({
+    description: "categorical event: report 1.5",
+    params: {
+      fxpReport: "0x14d1120d7b160000",
+      type: "categorical"
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, {
+        report: "1.5",
+        isIndeterminate: false
+      });
+    }
+  });
+  test({
+    description: "scalar event: report 1",
+    params: {
+      fxpReport: "0xde0b6b3a7640000",
+      type: "scalar"
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, {
+        report: "1",
+        isIndeterminate: false
+      });
+    }
+  });
+  test({
+    description: "scalar event: report 2",
+    params: {
+      fxpReport: "0x1bc16d674ec80000",
+      type: "scalar"
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, {
+        report: "2",
+        isIndeterminate: false
+      });
+    }
+  });
+  test({
+    description: "scalar event: report 0.5 (indeterminate)",
+    params: {
+      fxpReport: "0x6f05b59d3b20000",
+      type: "scalar"
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, {
+        report: "0.5",
+        isIndeterminate: true
+      });
+    }
+  });
+  test({
+    description: "scalar event: report 0.500000000000000001",
+    params: {
+      fxpReport: "0x6f05b59d3b20001",
+      type: "scalar"
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, {
+        report: "0.5",
+        isIndeterminate: false
+      });
+    }
+  });
+  test({
+    description: "scalar event: report 0.000000000000000001",
+    params: {
+      fxpReport: "0x1",
+      type: "scalar"
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, {
+        report: "0",
+        isIndeterminate: false
+      });
+    }
+  });
+  test({
+    description: "scalar event: report -3.1415",
+    params: {
+      fxpReport: "-0x2b98d99b09e3c000",
+      type: "scalar"
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, {
+        report: "-3.1415",
+        isIndeterminate: false
+      });
+    }
+  });
+  test({
+    description: "scalar event: report -3.1415",
+    params: {
+      fxpReport: "0xffffffffffffffffffffffffffffffffffffffffffffffffd4672664f61c4000",
+      type: "scalar"
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, {
+        report: "-3.1415",
+        isIndeterminate: false
+      });
+    }
+  });
+});
+
+describe("fixReport / unfixRawReport", function () {
   before(function () {
     makeReports.options = {debug: {reporting: false}};
   });
@@ -28,7 +224,7 @@ describe("fixReport / unfixReport", function () {
         t.isIndeterminate
       );
       assert.strictEqual(fixedReport, t.expected);
-      var unfixed = makeReports.unfixReport(fixedReport, t.minValue, t.maxValue, t.type);
+      var unfixed = makeReports.unfixRawReport(fixedReport, t.minValue, t.maxValue, t.type);
       assert.strictEqual(unfixed.report, t.report);
       assert.strictEqual(unfixed.isIndeterminate, !!t.isIndeterminate);
     });

@@ -30,45 +30,27 @@ describe("register", function () {
     augur.rpc.getLogs = getLogs;
   });
 
-  describe("parseLastBlockNumber: parse last block from session logs", function () {
+  describe("parseLastBlockNumber: parse last block from register logs", function () {
     var test = function (t) {
       it(t.description, function () {
         t.assertions(augur.parseLastBlockNumber(t.logs));
       });
     };
     test({
-      description: "1 session log",
+      description: "1 register log",
       logs: [{
-        data: "0x0000000000000000000000000000000000000000000000000000000057db16f5",
-        topics: [
-          "0x19a49d2acfeb2c56bc742081b752ef527725fe0253f511d34d5364668b4475fe",
-          "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-          "0x0000000000000000000000000000000000000000000000000000000000000002"
-        ],
-        blockNumber: "0x1"
+        blockNumber: 1
       }],
       assertions: function (output) {
         assert.strictEqual(output, 1);
       }
     });
     test({
-      description: "2 session logs",
+      description: "2 register logs",
       logs: [{
-        data: "0x0000000000000000000000000000000000000000000000000000000057db16f5",
-        topics: [
-          "0x19a49d2acfeb2c56bc742081b752ef527725fe0253f511d34d5364668b4475fe",
-          "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-          "0x0000000000000000000000000000000000000000000000000000000000000002"
-        ],
-        blockNumber: "0x1"
+        blockNumber: 1
       }, {
-        data: "0x0000000000000000000000000000000000000000000000000000000057db1716",
-        topics: [
-          "0x19a49d2acfeb2c56bc742081b752ef527725fe0253f511d34d5364668b4475fe",
-          "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-          "0x0000000000000000000000000000000000000000000000000000000000000002"
-        ],
-        blockNumber: "0x2"
+        blockNumber: 2
       }],
       assertions: function (output) {
         assert.strictEqual(output, 2);
@@ -79,9 +61,9 @@ describe("register", function () {
   describe("getRegisterBlockNumber: look up user's most recent register block number", function () {
     var test = function (t) {
       it(t.description, function (done) {
-        augur.rpc.getLogs = function (filter, callback) {
+        augur.getLogs = function (label, params, callback) {
           if (!callback) return t.logs;
-          callback(t.logs);
+          callback(null, t.logs);
         };
         augur.getRegisterBlockNumber(t.account, t.options, function (err, blockNumber) {
           assert.isNull(err);
@@ -107,13 +89,7 @@ describe("register", function () {
       description: "1 register",
       account: "0xb0b",
       logs: [{
-        data: "0x0000000000000000000000000000000000000000000000000000000057db16f5",
-        topics: [
-          "0x19a49d2acfeb2c56bc742081b752ef527725fe0253f511d34d5364668b4475fe",
-          "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-          "0x0000000000000000000000000000000000000000000000000000000000000001"
-        ],
-        blockNumber: "0x2"
+        blockNumber: 2
       }],
       assertions: function (output) {
         assert.isObject(output);
@@ -127,21 +103,9 @@ describe("register", function () {
       description: "2 registers",
       account: "0xb0b",
       logs: [{
-        data: "0x0000000000000000000000000000000000000000000000000000000057db16f5",
-        topics: [
-          "0x19a49d2acfeb2c56bc742081b752ef527725fe0253f511d34d5364668b4475fe",
-          "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-          "0x0000000000000000000000000000000000000000000000000000000000000001"
-        ],
-        blockNumber: "0x1"
+        blockNumber: 1
       }, {
-        data: "0x0000000000000000000000000000000000000000000000000000000057db1716",
-        topics: [
-          "0x19a49d2acfeb2c56bc742081b752ef527725fe0253f511d34d5364668b4475fe",
-          "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-          "0x0000000000000000000000000000000000000000000000000000000000000001"
-        ],
-        blockNumber: "0x2"
+        blockNumber: 2
       }],
       assertions: function (output) {
         assert.isObject(output);
