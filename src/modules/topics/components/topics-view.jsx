@@ -15,15 +15,18 @@ export default class TopicsView extends Component {
 
     this.state = {
       nullMessage: 'No Topics Available',
+      keywords: '',
       currentPage: 1,
       lowerIndex: 0,
       upperIndex: 4,
-      pagination: {},
+      // Adjust these to change topic layout
+      numberOfRows: 3,
+      topicsPerHeroRow: 2,
+      topicsPerRow: 4,
+      // ---
       filteredTopics: props.topics,
       paginatedTopics: [],
-      topicsPerHeroRow: 2,
-      topicsPerRow: 3,
-      keywords: ''
+      pagination: {}
     };
 
     this.updatePagination = this.updatePagination.bind(this);
@@ -80,7 +83,7 @@ export default class TopicsView extends Component {
   }
 
   updatePagination(p, s) {
-    const range = s.currentPage === 1 && !s.keywords ? 4 : 5;
+    const range = s.currentPage === 1 && !s.keywords ? (((s.numberOfRows - 1) * s.topicsPerRow) + s.topicsPerHeroRow) - 1 : (s.numberOfRows * s.topicsPerRow) - 1;
     const keywordsLowerBump = (s.keywords && s.currentPage === 2) ? 1 : 0;
     const lowerBump = s.currentPage < 3 ? keywordsLowerBump : (s.currentPage - 2);
     const lowerIndex = ((s.currentPage - 1) * range) + lowerBump;

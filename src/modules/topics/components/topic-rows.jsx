@@ -16,7 +16,7 @@ const TopicRows = (p) => {
 
     itemCount += 1;
 
-    if (i === p.topics.length - 1 && accum[row].length < p.topicsPerRow && (row !== 0 || p.isSearchResult)) {
+    if (i === p.topics.length - 1 && accum[row].length < p.topicsPerRow && (row !== 0 || p.isSearchResult || !p.hasHeroRow)) {
       const pushEmptyTopic = () => {
         accum[row].push({});
         if (accum[row].length < p.topicsPerRow) {
