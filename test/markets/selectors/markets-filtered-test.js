@@ -10,34 +10,52 @@ describe(`modules/markets/selectors/markets-filtered.js`, () => {
   proxyquire.noPreserveCache().noCallThru();
   const { store } = mockStore.default;
 
+  store.selectedTopic = 'testtag';
+
   const mockSelectors = {
-    allMarkets: [{
-      isOpen: true,
-      description: 'test 1',
-      outcomes: [{
-        name: 'outcome1'
+    allMarkets: [
+      {
+        isOpen: true,
+        description: 'test 1',
+        outcomes: [{
+          name: 'outcome1'
+        }, {
+          name: 'outcome2'
+        }],
+        tags: [{
+          name: 'testtag'
+        }, {
+          name: 'tag'
+        }]
       }, {
-        name: 'outcome2'
-      }],
-      tags: [{
-        name: 'testtag'
-      }, {
-        name: 'tag'
-      }]
-    }, {
-      isOpen: true,
-      description: 'test 2',
-      outcomes: [{
-        name: 'outcome3'
-      }, {
-        name: 'outcome4'
-      }],
-      tags: [{
-        name: 'testtag'
-      }, {
-        name: 'tag'
-      }]
-    }]
+        isOpen: true,
+        description: 'test 2',
+        outcomes: [{
+          name: 'outcome3'
+        }, {
+          name: 'outcome4'
+        }],
+        tags: [{
+          name: 'testtag'
+        }, {
+          name: 'tag'
+        }]
+      },
+      {
+        isOpen: true,
+        description: 'test 3',
+        outcomes: [{
+          name: 'outcome3'
+        }, {
+          name: 'outcome4'
+        }],
+        tags: [{
+          name: 'testtag2'
+        }, {
+          name: 'tag'
+        }]
+      }
+    ]
   };
 
   const selector = proxyquire('../../../src/modules/markets/selectors/markets-filtered.js', {

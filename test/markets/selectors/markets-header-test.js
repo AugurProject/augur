@@ -1,63 +1,61 @@
-import { describe, it, beforeEach, afterEach } from 'mocha';
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
-import sinon from 'sinon';
-import * as mockStore from 'test/mockStore';
-import marketsHeaderAssertions from 'assertions/markets-header';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 
-describe(`modules/markets/selectors/markets-header.js`, () => {
+describe('modules/markets/selectors/markets-header.js', () => {
   proxyquire.noPreserveCache().noCallThru();
-  const { store } = mockStore.default;
+  const middlewares = [thunk];
+  const mockStore = configureMockStore(middlewares);
 
-  const mockSelect = {};
-  mockSelect.marketsTotals = {
-    numFiltered: 10,
-    numFavorites: 100,
-    numPendingReports: 25
+  const test = (t) => {
+    it(t.description, () => {
+      const store = mockStore(t.state);
+      const mockSelectors = t.selectors || {
+        marketsTotals: {
+          numFiltered: null,
+          numFavorites: null,
+          numPendingReports: null
+        }
+      };
+
+      const selector = proxyquire('../../../src/modules/markets/selectors/markets-header', {
+        '../../../store': store,
+        '../../../selectors': mockSelectors
+      });
+
+      t.assertions(selector, store);
+    });
   };
-  const mockHeader = {
-    updateSelectedMarketsHeader: () => {}
-  };
-  sinon.stub(mockHeader, 'updateSelectedMarketsHeader', arg => ({
-    type: 'UPDATE_SELECTED_MARKETS_HEADER',
-    header: arg
-  }));
 
-  const selector = proxyquire('../../../src/modules/markets/selectors/markets-header.js', {
-    '../../../selectors': mockSelect,
-    '../../../store': store,
-    '../../markets/actions/update-selected-markets-header': mockHeader
+  test({
+    description: 'should return the expected market totals',
+    selectors: {
+      marketsTotals: {
+        numFiltered: 10,
+        numFavorites: 100,
+        numPendingReports: 25
+      }
+    },
+    assertions: (selector, store) => {
+      const actual = selector.default();
+
+      assert.equal(actual.numMarkets, 10, `'numMarkets' was not the expected value`);
+      assert.equal(actual.numFavorites, 100, `'numFavorites' was not the expected value`);
+      assert.equal(actual.numPendingReports, 25, `'numPendingReports' was not the expected value`);
+    }
   });
 
-  beforeEach(() => {
-    store.clearActions();
-  });
+  test({
+    description: 'should return the expected header value',
+    state: {
+      selectedMarketsHeader: 'test'
+    },
+    assertions: (selector, store) => {
+      const actual = selector.default();
 
-  afterEach(() => {
-    store.clearActions();
-  });
-
-  // marketsHeader = selector.default;
-
-  it(`should select the correct Markets Header`, () => {
-    const actual = selector.default();
-    const expected = [{
-      type: 'UPDATE_SELECTED_MARKETS_HEADER',
-      header: null
-    }, {
-      type: 'UPDATE_SELECTED_MARKETS_HEADER',
-      header: 'favorites'
-    }, {
-      type: 'UPDATE_SELECTED_MARKETS_HEADER',
-      header: 'pending reports'
-    }];
-
-    marketsHeaderAssertions(actual);
-
-    actual.onClickAllMarkets();
-    actual.onClickFavorites();
-    actual.onClickPendingReports();
-
-    assert.deepEqual(store.getActions(), expected, `Didn't dispatch the expected action objects from onclick events`);
+      assert.equal(actual.selectedMarketsHeader, 'test', `'selectedMarketsHeader' was not the expected value`);
+    }
   });
 });

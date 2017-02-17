@@ -20,7 +20,8 @@ export default class Input extends Component {
     updateValue: PropTypes.func,
     canToggleVisibility: PropTypes.bool,
     shouldMatchValue: PropTypes.bool,
-    comparisonValue: PropTypes.string
+    comparisonValue: PropTypes.string,
+    isSearch: PropTypes.bool
   };
 
   constructor(props) {
@@ -92,15 +93,18 @@ export default class Input extends Component {
   }
 
   render() {
-    const { isClearable, isIncrementable, incrementAmount, updateValue, canToggleVisibility, shouldMatchValue, comparisonValue, ...p } = this.props;
+    const { isClearable, isIncrementable, incrementAmount, updateValue, canToggleVisibility, shouldMatchValue, comparisonValue, isSearch, ...p } = this.props;
     const s = this.state;
 
     return (
       <div className={classNames('input', p.className, { 'is-incrementable': isIncrementable, 'can-toggle-visibility': canToggleVisibility })} >
+        {isSearch &&
+          <i className="fa fa-search" />
+        }
         {!p.isMultiline &&
           <input
             {...p}
-            className="box"
+            className={classNames('box', { 'search-input': p.isSearch })}
             type={p.type === 'password' && s.isHiddenContentVisible ? 'text' : p.type}
             value={s.value}
             onChange={this.handleOnChange}

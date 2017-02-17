@@ -1,6 +1,7 @@
 .input {
   .border(true);
 
+  background-color: @color-input-background;
   display: flex;
 
   button,
@@ -13,6 +14,13 @@
 
     display: flex;
     flex: 1;
+  }
+
+  .fa-search {
+    align-items: center;
+    background-color: transparent;
+    display: flex;
+    padding: 0 1em;
   }
 
   &.clearable {
@@ -81,5 +89,9 @@
     font-size: inherit;
     padding: 1em;
     width: 100%;
+
+    &.search-input {
+      padding-left: 0;
+    }
   }
 }

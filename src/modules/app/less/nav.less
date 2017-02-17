@@ -2,6 +2,7 @@
   display: flex;
   flex: 1;
   justify-content: center;
+  z-index: @above-all-content;
 
   .app-nav-link:not(button) {
 
@@ -69,17 +70,24 @@
         height: 3.1em;
       }
 
-      .augur-logo-full {
-        height: 2.5em;
-        left: 0;
-        padding: 1em 0;
-        pointer-events: none;
-        position: absolute;
-        width: 100vw;
-
+      a {
         @media @breakpoint-mobile {
-          height: 1.5em;
-          padding: 0.8em 0;
+          display: flex;
+          justify-content: center;
+          left: 50%;
+          position: absolute;
+          transform: translateX(-50%);
+        }
+
+        .augur-logo-icon {
+          height: 2.5em;
+          left: 0;
+          padding: 1em;
+
+          @media @breakpoint-mobile {
+            height: 1.5em;
+            padding: 0.8em 1em;
+          }
         }
       }
     }

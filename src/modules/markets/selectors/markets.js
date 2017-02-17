@@ -1,6 +1,6 @@
 import memoizerific from 'memoizerific';
 import { MY_POSITIONS } from '../../app/constants/views';
-import { PENDING_REPORTS } from '../../markets/constants/markets-headers';
+import { PENDING_REPORTS } from '../../markets/constants/markets-subset';
 
 import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
 

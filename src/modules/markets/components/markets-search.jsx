@@ -3,10 +3,10 @@ import Input from 'modules/common/components/input';
 
 const MarketsSearch = p => (
   <article className={`search-input ${p.className}`} >
-    <i className="fa fa-search" />
     <Input
-      placeholder="Search Markets"
+      isSearch
       isClearable
+      placeholder="Search Markets"
       value={p.keywords && p.keywords.value}
       onChange={p.keywords && p.keywords.onChangeKeywords}
     />

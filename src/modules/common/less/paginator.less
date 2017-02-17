@@ -1,27 +1,30 @@
-.markets-pagination {
-
+.paginator {
   .font-size-large();
 
-  align-items: center;
   display: flex;
-  flex: 1;
-  justify-content: space-around;
 
-  & > div {
+  .pagination-control-container {
+    align-items: center;
+    display: flex;
     flex: 1;
+    justify-content: space-around;
+
+    & > div {
+      display: flex;
+      flex: 1;
+    }
   }
 
-  .markets-pagination-group-1 {
+  .pagination-group-1 {
     margin-left: -1.5em; // Derived from the default padding applied to buttons
   }
 
-  .markets-pagination-group-2 {
-    display: flex;
+  .pagination-group-2 {
     justify-content: center;
+    padding: 1em 0;
   }
 
-  .markets-pagination-group-3 {
-    display: flex;
+  .pagination-group-3 {
     justify-content: flex-end;
     margin-right: -1.5em; // Derived from the default padding applied to buttons
   }

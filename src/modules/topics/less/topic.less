@@ -1,0 +1,96 @@
+.topic-button.unstyled {
+  .border(true);
+  .transition(box-shadow @animation-speed-very-fast;);
+
+  align-items: stretch;
+  background-color: @color-white;
+  cursor: pointer;
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  font-size: 3em;
+  margin: 0 0.5rem;
+  overflow: hidden;
+
+  @media @breakpoint-1 {
+    flex: 1 1 100%;
+    font-size: 2em;
+    margin: 0.25em 0;
+  }
+
+  &.is-spacer-topic {
+    visibility: hidden;
+  }
+
+  &:hover {
+    box-shadow: 0 2px 15px fadeout(@color-black-extra-light, @amount-extra-light);
+  }
+
+  .topic-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    height: 100%; // FF Fix
+    position: relative;
+
+    & > span {
+      z-index: 20;
+    }
+
+    .topic-popularity {
+      align-self: flex-end;
+      flex: 10;
+      font-size: 0.7em;
+      margin: 0.2em 0.4em 0 0;
+    }
+
+    .topic-name {
+      align-content: center;
+      align-items: flex-end;
+      background-color: fadeout(@color-black, @amount-extra-light);
+      color: @color-text-light;
+      display: flex;
+      justify-content: center;
+      margin-top: 0.5em;
+      white-space: nowrap;
+      z-index: 20;
+
+      span {
+        align-items: center;
+        padding: 0 0.5em;
+      }
+    }
+  }
+
+  &.isHero {
+    font-size: 7em;
+
+    &.search-result {
+      font-size: 3em;
+
+      @media @breakpoint-1 {
+        font-size: 2em;
+      }
+    }
+
+    @media @breakpoint-2 {
+      font-size: 6em;
+    }
+
+    @media @breakpoint-2-1 {
+      font-size: 5em;
+    }
+
+    @media @breakpoint-2-2 {
+      font-size: 4.5em;
+    }
+
+    @media @breakpoint-2-3 {
+      font-size: 4em;
+    }
+
+    @media @breakpoint-1 {
+      font-size: 2em; // Itendital font sizing to others due to full width
+    }
+  }
+}

@@ -1,32 +1,36 @@
 import memoizerific from 'memoizerific';
-import { listWordsUnderLength } from '../../../utils/list-words-under-length';
-import { makeLocation } from '../../../utils/parse-url';
-import { loginWithAirbitz } from '../../auth/actions/login-with-airbitz';
 
-import { ACCOUNT, M, MARKETS, MAKE, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS, LOGIN_MESSAGE, AUTHENTICATION } from '../../app/constants/views';
-import { FAVORITES, PENDING_REPORTS } from '../../markets/constants/markets-headers';
+import store from 'src/store';
 
-import { SEARCH_PARAM_NAME, FILTER_SORT_TYPE_PARAM_NAME, FILTER_SORT_SORT_PARAM_NAME, FILTER_SORT_ISDESC_PARAM_NAME, PAGE_PARAM_NAME, TAGS_PARAM_NAME } from '../../link/constants/param-names';
-import { FILTER_SORT_TYPE, FILTER_SORT_SORT, FILTER_SORT_ISDESC } from '../../markets/constants/filter-sort';
+import { loginWithAirbitz } from 'modules/auth/actions/login-with-airbitz';
 
-import { updateURL } from '../../link/actions/update-url';
-import { logout } from '../../auth/actions/logout';
+import { updateURL } from 'modules/link/actions/update-url';
+import { logout } from 'modules/auth/actions/logout';
 
-import { loadFullLoginAccountMarkets } from '../../portfolio/actions/load-full-login-account-markets';
-import { loadEventsWithSubmittedReport } from '../../my-reports/actions/load-events-with-submitted-report';
-import updateUserLoginMessageVersionRead from '../../login-message/actions/update-user-login-message-version-read';
+import { loadFullLoginAccountMarkets } from 'modules/portfolio/actions/load-full-login-account-markets';
+import { loadEventsWithSubmittedReport } from 'modules/my-reports/actions/load-events-with-submitted-report';
+import updateUserLoginMessageVersionRead from 'modules/login-message/actions/update-user-login-message-version-read';
+import { updateSelectedMarketsHeader } from 'modules/markets/actions/update-selected-markets-header';
 
-import store from '../../../store';
+import { ACCOUNT, M, MARKETS, MAKE, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS, LOGIN_MESSAGE, AUTHENTICATION } from 'modules/app/constants/views';
+import { FAVORITES, PENDING_REPORTS } from 'modules/markets/constants/markets-subset';
+
+import { SEARCH_PARAM_NAME, FILTER_SORT_TYPE_PARAM_NAME, FILTER_SORT_SORT_PARAM_NAME, FILTER_SORT_ISDESC_PARAM_NAME, PAGE_PARAM_NAME, TAGS_PARAM_NAME, TOPIC_PARAM_NAME, SUBSET_PARAM_NAME } from 'modules/link/constants/param-names';
+import { FILTER_SORT_TYPE, FILTER_SORT_SORT, FILTER_SORT_ISDESC } from 'modules/markets/constants/filter-sort';
+
+import { listWordsUnderLength } from 'utils/list-words-under-length';
+import { makeLocation } from 'utils/parse-url';
 
 export default function () {
-  const { keywords, selectedFilterSort, selectedTags, pagination, loginAccount, auth, loginMessage } = store.getState();
+  const { keywords, selectedFilterSort, selectedTags, selectedTopic, pagination, loginAccount, auth, loginMessage } = store.getState();
   const { market } = require('../../../selectors');
   return {
     authLink: selectAuthLink(auth.selectedAuthType, !!loginAccount.address, store.dispatch),
     createMarketLink: selectCreateMarketLink(store.dispatch),
-    marketsLink: selectMarketsLink(keywords, selectedFilterSort, selectedTags, pagination.selectedPageNum, null, store.dispatch),
-    favoritesLink: selectMarketsLink(keywords, selectedFilterSort, selectedTags, pagination.selectedPageNum, FAVORITES, store.dispatch),
-    pendingReportsLink: selectMarketsLink(keywords, selectedFilterSort, selectedTags, pagination.selectedPageNum, PENDING_REPORTS, store.dispatch),
+    marketsLink: selectMarketsLink(keywords, selectedFilterSort, selectedTags, pagination.selectedPageNum, null, selectedTopic, store.dispatch),
+    allMarketsLink: selectMarketsLink(keywords, selectedFilterSort, selectedTags, pagination.selectedPageNum, null, null, store.dispatch),
+    favoritesLink: selectMarketsLink(keywords, selectedFilterSort, selectedTags, pagination.selectedPageNum, FAVORITES, null, store.dispatch),
+    pendingReportsLink: selectMarketsLink(keywords, selectedFilterSort, selectedTags, pagination.selectedPageNum, PENDING_REPORTS, null, store.dispatch),
     transactionsLink: selectTransactionsLink(store.dispatch),
     marketLink: selectMarketLink(market, store.dispatch),
     previousLink: selectPreviousLink(store.dispatch),
@@ -34,7 +38,8 @@ export default function () {
     myPositionsLink: selectMyPositionsLink(store.dispatch),
     myMarketsLink: selectMyMarketsLink(store.dispatch),
     myReportsLink: selectMyReportsLink(store.dispatch),
-    loginMessageLink: selectLoginMessageLink(loginAccount.address, loginMessage.version, store.dispatch)
+    loginMessageLink: selectLoginMessageLink(loginAccount.address, loginMessage.version, store.dispatch),
+    topicsLink: selectTopicsLink(store.dispatch)
   };
 
   // NOTE -- pagination links are a special case.  Reference the pagination selector for how those work.
@@ -101,8 +106,11 @@ export const selectAirbitzOnLoad = memoizerific(1)(dispatch => ({
   }
 }));
 
-export const selectMarketsLink = memoizerific(1)((keywords, selectedFilterSort, selectedTags, selectedPageNum, subSet, dispatch) => {
+export const selectMarketsLink = memoizerific(1)((keywords, selectedFilterSort, selectedTags, selectedPageNum, subSet, selectedTopic, dispatch) => {
   const params = {};
+
+  // page
+  params.page = MARKETS;
 
   // search
   if (keywords != null && keywords.length > 0) {
@@ -131,24 +139,28 @@ export const selectMarketsLink = memoizerific(1)((keywords, selectedFilterSort, 
     params[TAGS_PARAM_NAME] = tagsParams;
   }
 
+  // Topic
+  if (selectedTopic) {
+    params[TOPIC_PARAM_NAME] = selectedTopic;
+  }
+
+  // Subset
+  switch (subSet) {
+    case (FAVORITES):
+      params[SUBSET_PARAM_NAME] = FAVORITES;
+      break;
+    case (PENDING_REPORTS):
+      params[SUBSET_PARAM_NAME] = PENDING_REPORTS;
+      break;
+    default:
+      break;
+  }
+
   const href = makeLocation(params).url;
 
   return {
     href,
-    onClick: () => {
-      const { marketsHeader } = require('../../../selectors');
-
-      switch (subSet) {
-        case (FAVORITES):
-          dispatch(marketsHeader.onClickFavorites);
-          break;
-        case (PENDING_REPORTS):
-          dispatch(marketsHeader.onClickPendingReports);
-          break;
-        default:
-          dispatch(marketsHeader.onClickAllMarkets);
-      }
-
+    onClick: (allMarkets) => {
       dispatch(updateURL(href));
     }
   };
@@ -240,6 +252,31 @@ export const selectLoginMessageLink = memoizerific(1)((userID, currentLoginMessa
       if (userID != null) {
         dispatch(updateUserLoginMessageVersionRead(currentLoginMessageVersion));
       }
+    }
+  };
+});
+
+export const selectTopicsLink = memoizerific(1)((dispatch) => {
+  const href = makeLocation({}).url;
+  return {
+    href,
+    onClick: () => {
+      dispatch(updateURL(href));
+    }
+  };
+});
+
+export const selectTopicLink = memoizerific(1)((topic, dispatch) => {
+  const href = makeLocation({
+    page: MARKETS,
+    [TOPIC_PARAM_NAME]: topic
+  }).url;
+
+  return {
+    href,
+    onClick: () => {
+      dispatch(updateSelectedMarketsHeader(topic));
+      dispatch(updateURL(href));
     }
   };
 });

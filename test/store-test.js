@@ -11,7 +11,7 @@ import store from 'src/store';
   branch: {},
   auth: { selectedAuthType: 'register', err: null },
   loginAccount: {},
-  activePage: 'markets',
+  activePage: 'topics',
   marketsData: {},
   favorites: {},
   pendingReports: {},
@@ -54,7 +54,7 @@ describe(`store.js`, () => {
 
     assert.isOk(state.activeView, 'activeView is not defined');
     assert.isString(state.activeView, 'activeView is not a string');
-    assert.deepEqual(state.activeView, 'markets', 'activeView is not "markets"');
+    assert.deepEqual(state.activeView, 'topics', 'activeView is not "markets"');
 
     assert.isOk(state.marketsData, 'marketsData is not defined');
     assert.isObject(state.marketsData, 'marketsData is not an object');

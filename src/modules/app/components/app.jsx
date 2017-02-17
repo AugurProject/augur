@@ -22,6 +22,7 @@ export default class App extends Component {
     this.state = {
       isSideBarAllowed: false,
       isSideBarCollapsed: false,
+      isSideBarPersistent: true,
       isChatCollapsed: true,
       doScrollTop: false,
       currentRoute: null,
@@ -37,23 +38,21 @@ export default class App extends Component {
     this.attachTouchHandler = this.attachTouchHandler.bind(this);
     this.handleSwipeEvent = this.handleSwipeEvent.bind(this);
     this.handleWindowScroll = debounce(this.handleWindowScroll.bind(this));
+    this.handleWindowResize = debounce(this.handleWindowResize.bind(this));
     this.updateHeaderHeight = this.updateHeaderHeight.bind(this);
     this.updateFooterHeight = this.updateFooterHeight.bind(this);
     this.updateIsFooterCollapsed = this.updateIsFooterCollapsed.bind(this);
+    this.checkIfMobile = this.checkIfMobile.bind(this);
   }
 
   componentDidMount() {
-    if (window.getComputedStyle(this.main).getPropertyValue('will-change') === 'contents') {
-      this.main.style.willChange = 'auto'; // reset
-      this.toggleSideBar();
-    }
-
     window.addEventListener('scroll', this.handleWindowScroll);
+    window.addEventListener('resize', this.handleWindowResize);
 
-    this.attachTouchHandler();
+    this.checkIfMobile();
   }
 
-  componentDidUpdate(pP, pS) {
+  componentDidUpdate() {
     handleScrollTop(this.props.url);
   }
 
@@ -85,6 +84,27 @@ export default class App extends Component {
     }
   }
 
+  handleWindowResize() {
+    this.checkIfMobile();
+  }
+
+  checkIfMobile() {
+    // This method sets up the side bar's state + calls the method to attach the touch event handler for when a user is mobile
+    // CSS breakpoint sets the value when a user is mobile
+    if (window.getComputedStyle(this.main).getPropertyValue('will-change') === 'contents') {
+      this.setState({
+        isSideBarCollapsed: true,
+        isSideBarPersistent: false
+      });
+      this.attachTouchHandler();
+    } else {
+      this.setState({
+        isSideBarCollapsed: false,
+        isSideBarPersistent: true
+      });
+    }
+  }
+
   // Chat
   toggleChat() {
     this.setState({ isChatCollapsed: !this.state.isChatCollapsed });
@@ -106,7 +126,7 @@ export default class App extends Component {
   }
 
   handleSwipeEvent(swipe) {
-    if (this.state.isSideBarAllowed) {
+    if (this.state.isSideBarAllowed && !this.state.isSideBarPersistent) {
       if (swipe.deltaX > 0) {
         this.setState({ isSideBarCollapsed: false });
       } else {
@@ -123,6 +143,7 @@ export default class App extends Component {
       logged: getValue(p, 'loginAccount.address'),
       isSideBarAllowed: s.isSideBarAllowed,
       isSideBarCollapsed: s.isSideBarCollapsed,
+      isSideBarPersistent: s.isSideBarPersistent,
       toggleSideBar: () => { this.toggleSideBar(); },
       activeView: p.activeView,
       positionsSummary: p.positionsSummary,
@@ -134,12 +155,14 @@ export default class App extends Component {
       numPendingReports: getValue(p, 'marketsHeader.numPendingReports'),
       numTransactionsWorking: getValue(p, 'transactionsTotals.numWorking'),
       marketsLink: getValue(p, 'links.marketsLink'),
+      allMarketsLink: getValue(p, 'links.allMarketsLink'),
       favoritesLink: getValue(p, 'links.favoritesLink'),
       pendingReportsLink: getValue(p, 'links.pendingReportsLink'),
       transactionsLink: getValue(p, 'links.transactionsLink'),
       authLink: getValue(p, 'links.authLink'),
       accountLink: getValue(p, 'links.accountLink'),
-      myPositionsLink: getValue(p, 'links.myPositionsLink')
+      myPositionsLink: getValue(p, 'links.myPositionsLink'),
+      topicsLink: getValue(p, 'links.topicsLink')
     };
 
     const sideBarProps = {

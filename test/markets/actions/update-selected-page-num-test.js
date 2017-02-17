@@ -4,10 +4,10 @@ import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 
 import * as mockStore from 'test/mockStore';
-// import configureMockStore from 'redux-mock-store';
-// import thunk from 'redux-thunk';
-// import testState from '../../testState';
-// import * as action from '../../../src/modules/markets/actions/update-selected-page-num';
+
+import pagination from 'modules/markets/selectors/pagination';
+
+import { PAGE_PARAM_NAME, SEARCH_PARAM_NAME, TAGS_PARAM_NAME } from 'modules/link/constants/param-names';
 
 describe(`modules/markets/actions/update-selected-page-num.js`, () => {
   proxyquire.noPreserveCache().noCallThru();
@@ -19,6 +19,16 @@ describe(`modules/markets/actions/update-selected-page-num.js`, () => {
 
   const action = proxyquire('../../../src/modules/markets/actions/update-selected-page-num', {
     '../../link/actions/update-url': mockUpdateURL,
+    '../../../selectors': proxyquire('../../../src/selectors', {
+      './selectors-raw': proxyquire('../../../src/selectors-raw', {
+        './modules/link/selectors/links': proxyquire('../../../src/modules/link/selectors/links', {
+          '../../../store': store
+        })
+      })
+    })
+  });
+
+  const { makePaginationLink } = proxyquire('../../../src/modules/markets/selectors/pagination', {
     '../../../selectors': proxyquire('../../../src/selectors', {
       './selectors-raw': proxyquire('../../../src/selectors-raw', {
         './modules/link/selectors/links': proxyquire('../../../src/modules/link/selectors/links', {
@@ -53,16 +63,16 @@ describe(`modules/markets/actions/update-selected-page-num.js`, () => {
       selectedPageNum: 2
     }, {
       type: 'UPDATE_URL',
-      href: '/?search=test%20testtag&tags=testtag%2Ctag'
+      href: `/?${PAGE_PARAM_NAME}=2&${SEARCH_PARAM_NAME}=test%20testtag&${TAGS_PARAM_NAME}=testtag%2Ctag`
     }, {
       type: 'UPDATE_SELECTED_PAGE_NUM',
       selectedPageNum: 5
     }, {
       type: 'UPDATE_URL',
-      href: '/?search=test%20testtag&tags=testtag%2Ctag'
+      href: `/?${PAGE_PARAM_NAME}=5&${SEARCH_PARAM_NAME}=test%20testtag&${TAGS_PARAM_NAME}=testtag%2Ctag`
     }];
-    store.dispatch(action.updateSelectedPageNum(2));
-    store.dispatch(action.updateSelectedPageNum(5));
+    store.dispatch(action.updateSelectedPageNum(2, makePaginationLink(2, pagination).href));
+    store.dispatch(action.updateSelectedPageNum(5, makePaginationLink(5, pagination).href));
 
     assert.deepEqual(store.getActions(), out, `Didn't dispatch an update selected page number action or a update url action as expected`);
   });

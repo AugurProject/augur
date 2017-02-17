@@ -17,6 +17,7 @@ export const addOrder = log => (dispatch, getState) => {
   if (market && orderBook) {
     const order = augur.convertAddTxLogToOrder(log, market.type, market.minValue);
     dispatch(replaceMarketOrderBook(log.market, augur.addOrder(order, orderBook)));
+    dispatch(increaseMarketTopicPopularity(log.market, log.amount));
   }
 };
 

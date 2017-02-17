@@ -3,15 +3,14 @@ import React from 'react';
 import classnames from 'classnames';
 
 import Link from 'modules/link/components/link';
-import AugurLogoFull from 'modules/common/components/augur-logo-full';
 import AugurLogoIcon from 'modules/common/components/augur-logo-icon';
 import SideBarFilterIcon from 'modules/common/components/side-bar-filter-icon';
 
 import { ACCOUNT, MARKETS, TRANSACTIONS, MY_POSITIONS, MY_MARKETS, MY_REPORTS, AUTHENTICATION } from 'modules/app/constants/views';
-import { FAVORITES, PENDING_REPORTS } from 'modules/markets/constants/markets-headers';
+import { FAVORITES, PENDING_REPORTS } from 'modules/markets/constants/markets-subset';
 
-// NOTE -- 	first child div is there to pass up a ref so that other methods can
-//					acquire the row height of the navs in the footer
+// NOTE --  first child div is there to pass up a ref so that other methods can
+//          acquire the row height of the navs in the footer
 const Nav = (p) => {
   function collapseFooter() {
     if (p.updateIsFooterCollapsed) {
@@ -22,7 +21,7 @@ const Nav = (p) => {
   return (
     <nav className={`app-nav ${p.className ? p.className : ''}`}>
       <div ref={p.navRef && p.navRef} />
-      {p.isSideBarAllowed &&
+      {p.isSideBarAllowed && !p.isSideBarPersistent &&
         <button
           className="app-nav-link unstyled"
           onClick={p.toggleSideBar}
@@ -30,10 +29,15 @@ const Nav = (p) => {
           {p.isSideBarCollapsed ? <SideBarFilterIcon /> : <i className="fa fa-remove" />}
         </button>
       }
+      <div className="augur-brand">
+        <Link {...p.topicsLink} >
+          <AugurLogoIcon />
+        </Link>
+      </div>
       <Link
-        {...p.marketsLink}
+        {...p.allMarketsLink}
         onClick={() => {
-          p.marketsLink.onClick();
+          p.allMarketsLink.onClick();
           collapseFooter();
         }}
         className={classnames('app-nav-link', { active: ((p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader == null) })}
@@ -69,12 +73,6 @@ const Nav = (p) => {
           Pending Reports
         </Link>
       }
-      <Link
-        className="augur-brand"
-        {...p.marketsLink}
-      >
-        <AugurLogoFull />
-      </Link>
       {p.logged && !!p.portfolioTotals &&
         <Link
           {...p.myPositionsLink}

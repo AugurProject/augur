@@ -1,22 +1,15 @@
-import { updateSelectedPageNum } from '../../markets/actions/update-selected-page-num';
-import store from '../../../store';
-import { makeLocation } from '../../../utils/parse-url';
+import store from 'src/store';
+
+import { makeLocation, parseURL } from 'utils/parse-url';
+
+import { updateSelectedPageNum } from 'modules/markets/actions/update-selected-page-num';
 
 export default function () {
   const { pagination } = store.getState();
-  const { marketsTotals } = require('../../../selectors');
+  const { marketsTotals } = require('src/selectors');
 
   if (!pagination || !marketsTotals.numUnpaginated) {
     return {};
-  }
-
-  function makeLink(page, o) {
-    const href = makeLocation({ page }).url;
-
-    return {
-      href,
-      onClick: () => { o.onUpdateSelectedPageNum(page); }
-    };
   }
 
   const o = {
@@ -27,7 +20,7 @@ export default function () {
     startItemNum: ((pagination.selectedPageNum - 1) * pagination.numPerPage) + 1,
     endItemNum: Math.min(pagination.selectedPageNum * pagination.numPerPage,
       marketsTotals.numUnpaginated),
-    onUpdateSelectedPageNum: pageNum => store.dispatch(updateSelectedPageNum(pageNum))
+    onUpdateSelectedPageNum: (pageNum, href) => store.dispatch(updateSelectedPageNum(pageNum, href))
   };
 
   if (marketsTotals.numUnpaginated > o.numPerPage) {
@@ -37,9 +30,24 @@ export default function () {
     o.nextItemNum = o.selectedPageNum < o.numPages ? o.endItemNum + 1 : undefined;
     o.previousItemNum = o.selectedPageNum >= 2 ? o.startItemNum - o.numPerPage : undefined;
 
-    o.nextPageLink = o.nextPageNum ? makeLink(o.nextPageNum, o) : null;
-    o.previousPageLink = o.previousPageNum ? makeLink(o.previousPageNum, o) : null;
+    o.nextPageLink = o.nextPageNum ? makePaginationLink(o.nextPageNum, o) : null;
+    o.previousPageLink = o.previousPageNum ? makePaginationLink(o.previousPageNum, o) : null;
   }
 
   return o;
+}
+
+export function makePaginationLink(page, o) {
+  const { links } = require('src/selectors');
+
+  const parsedMarketsURL = parseURL(links.marketsLink.href);
+
+  parsedMarketsURL.searchParams.page = page;
+
+  const href = makeLocation(parsedMarketsURL.searchParams).url;
+
+  return {
+    href,
+    onClick: () => { o.onUpdateSelectedPageNum(page, href); }
+  };
 }

@@ -35,5 +35,9 @@ export default function (links) {
     it('loginMessageLink', () => {
       assertLink(links.loginMessageLink, 'loginMessageLink');
     });
+
+    it('topicsLink', () => {
+      assertLink(links.topicsLink, 'topicsLink');
+    });
   });
 }

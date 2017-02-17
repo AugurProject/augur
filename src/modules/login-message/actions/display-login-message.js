@@ -9,7 +9,7 @@ export const displayLoginMessageOrMarkets = () => (dispatch, getState) => {
     if (isUserLoggedIn(loginAccount) && !isCurrentLoginMessageRead(loginMessage)) {
       links.loginMessageLink.onClick();
     } else {
-      links.marketsLink.onClick();
+      links.topicsLink.onClick();
     }
   }
 };

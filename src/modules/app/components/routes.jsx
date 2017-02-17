@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { ACCOUNT, MAKE, TRANSACTIONS, M, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE, AUTHENTICATION } from 'modules/app/constants/views';
+import { ACCOUNT, MAKE, TRANSACTIONS, M, MARKETS, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE, AUTHENTICATION } from 'modules/app/constants/views';
 
 import getValue from 'utils/get-value';
 import { shouldComponentUpdateOnStateChangeOnly } from 'utils/should-component-update-pure';
@@ -31,8 +31,15 @@ export default class Routes extends Component {
   handleRouting(p) {
     let viewProps;
     let viewComponent;
+    let currentView = p.activeView;
 
-    switch (p.activeView) {
+    if (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10))) {
+      currentView = MARKETS;
+    }
+
+    p.setSidebarAllowed(false);
+
+    switch (currentView) {
       case AUTHENTICATION:
         viewProps = {
           authLogin: p.authLogin,
@@ -134,9 +141,8 @@ export default class Routes extends Component {
         });
         break;
       }
-      default: {
+      case MARKETS: {
         viewProps = {
-          isSideBarAllowed: true,
           loginAccount: p.loginAccount,
           createMarketLink: (p.links || {}).createMarketLink,
           markets: p.markets,
@@ -153,19 +159,28 @@ export default class Routes extends Component {
           viewComponent = <MarketsView {...viewProps} />;
           this.setState({ viewProps, viewComponent });
         });
-      }
-    }
 
-    if (viewProps.isSideBarAllowed) {
-      p.setSidebarAllowed(true);
-    } else {
-      p.setSidebarAllowed(false);
+        p.setSidebarAllowed(true);
+
+        break;
+      }
+      default: {
+        viewProps = {
+          topics: getValue(p, 'topics.topics'),
+          selectTopic: getValue(p, 'topics.selectTopic')
+        };
+        System.import('modules/topics/components/topics-view').then((module) => {
+          const TopicsView = module.default;
+          viewComponent = <TopicsView {...viewProps} />;
+          this.setState({ viewProps, viewComponent });
+        });
+      }
     }
   }
 
   render() {
     const s = this.state;
 
-    return <div>{s.viewComponent}</div>;
+    return s.viewComponent;
   }
 }

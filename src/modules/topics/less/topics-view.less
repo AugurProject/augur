@@ -1,0 +1,22 @@
+#topics_view {
+  .topics-search {
+    align-self: stretch;
+    display: flex;
+    justify-content: center;
+    margin: 0 0.5rem 1rem;
+
+    .input {
+      flex: 0 1 50%;
+    }
+  }
+
+  .topics {
+    display: flex;
+    flex-direction: column;
+    height: 600px;
+
+    @media @breakpoint-mobile {
+      height: auto;
+    }
+  }
+}
