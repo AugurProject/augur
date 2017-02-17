@@ -53,6 +53,12 @@ const LoginMessagePage = p => (
         </li>
       </ol>
       <h2>Technical updates:</h2>
+      <h3>February 17, 2017</h3>
+      <ol>
+        <li>
+          The default &quot;landing page&quot; for the Augur app is now the Topics page!  Instead of displaying all markets, the user is now greeted with a list of topics (such as Politics, Science, Sports, etc.) which are sorted by popularity.  Clicking on a topic brings up all markets with that topic.  (The user can still browse all markets simply by clicking on &quot;Markets&quot; in the navbar.)
+        </li>
+      </ol>
       <h3>February 16, 2017</h3>
       <ol>
         <li>
