@@ -7,9 +7,15 @@ import TopicIcon from 'modules/topics/components/topic-icon';
 import debounce from 'utils/debounce';
 import fitText from 'utils/fit-text';
 
+import { TOPIC_VOLUME_INCREASED, TOPIC_VOLUME_DECREASED } from 'modules/topics/constants/topic-popularity-change';
+
 export default class Topic extends Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      popularityChange: null
+    };
 
     this.handleFitText = debounce(this.handleFitText.bind(this));
   }
@@ -17,6 +23,14 @@ export default class Topic extends Component {
     fitText(this.topicNameContainer, this.topicName);
 
     window.addEventListener('resize', this.handleFitText);
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (this.props.popularity !== nextProps.popularity) {
+      const popularityChange = nextProps.popularity > this.props.popularity ? TOPIC_VOLUME_INCREASED : TOPIC_VOLUME_DECREASED;
+
+      this.setState({ popularityChange });
+    }
   }
 
   componentWillUnmount() {
@@ -29,6 +43,7 @@ export default class Topic extends Component {
 
   render() {
     const p = this.props;
+    const s = this.state;
 
     return (
       <button
@@ -40,12 +55,17 @@ export default class Topic extends Component {
         {!p.isSpacer &&
           <div className="topic-content">
             <TopicIcon {...p} />
-            <span
-              className="topic-popularity"
-              data-tip data-for="topic-volume-tooltip"
-            >
-              {Math.floor(p.popularity).toLocaleString()}
-            </span>
+            <div className="topic-popularity">
+              <span
+                className={classNames({
+                  'bounce-up-and-flash': s.popularityChange === TOPIC_VOLUME_INCREASED,
+                  'bounce-down-and-flash': s.popularityChange === TOPIC_VOLUME_DECREASED
+                })}
+                data-tip data-for="topic-volume-tooltip"
+              >
+                {Math.floor(p.popularity).toLocaleString()}
+              </span>
+            </div>
             <div className="topic-name" >
               <span ref={(topicName) => { this.topicName = topicName; }}>
                 {p.topic.toUpperCase()}
