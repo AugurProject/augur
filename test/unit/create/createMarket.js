@@ -27,7 +27,7 @@ describe("createMarket.createSingleEventMarket", function() {
     assertions: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.CreateMarket.createSingleEventMarket.to);
       assert.deepEqual(tx.label, 'Create Market');
-      assert.deepEqual(tx.method, `createSingleEventMarket`);
+      assert.deepEqual(tx.method, 'createSingleEventMarket');
       assert.deepEqual(tx.value, '0x1036640');
       assert.deepEqual(tx.params, [
        '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
@@ -70,7 +70,7 @@ describe("createMarket.createSingleEventMarket", function() {
     assertions: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.CreateMarket.createSingleEventMarket.to);
       assert.deepEqual(tx.label, 'Create Market');
-      assert.deepEqual(tx.method, `createSingleEventMarket`);
+      assert.deepEqual(tx.method, 'createSingleEventMarket');
       assert.deepEqual(tx.value, '0x1036640');
       assert.deepEqual(tx.params, [
        '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
@@ -110,7 +110,7 @@ describe("createMarket.createSingleEventMarket", function() {
     assertions: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.CreateMarket.createSingleEventMarket.to);
       assert.deepEqual(tx.label, 'Create Market');
-      assert.deepEqual(tx.method, `createSingleEventMarket`);
+      assert.deepEqual(tx.method, 'createSingleEventMarket');
       assert.deepEqual(tx.value, '0x1036640');
       assert.deepEqual(tx.params, [
        '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
@@ -231,7 +231,7 @@ describe("createMarket.createMarket", function() {
       augur.transact = t.assertions;
       augur.rpc.getGasPrice = t.getGasPrice;
 
-      augur.createMarket(t.branch, t.description, t.takerFee, t.events, t.tags, t.makerFee, t.extraInfo, t.onSent, t.onSuccess, t.onFailed);
+      augur.createMarket(t.branch, t.takerFee, t.event, t.tags, t.makerFee, t.extraInfo, t.onSent, t.onSuccess, t.onFailed);
 
       augur.transact = transact;
       augur.rpc.getGasPrice = getGasPrice;
@@ -247,9 +247,8 @@ describe("createMarket.createMarket", function() {
       assert.deepEqual(tx.value, '0x1036640');
       assert.deepEqual(tx.params, [
         '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
-        'this is a description',
         '0x470de4df820000',
-        ['d262e2b552568085340c349b975ad02518a58cf0ca81666f02d96f828d43f5ef', '52057b64aa5c3bc32b6dd5815958b7b544c84bd8e93205d890da72f99fd87eff'],
+        'd262e2b552568085340c349b975ad02518a58cf0ca81666f02d96f828d43f5ef',
         '0x636f646500000000000000000000000000000000000000000000000000000000',
         '0x636f6d7075746572730000000000000000000000000000000000000000000000',
         '0x696e7465726e6574000000000000000000000000000000000000000000000000',
@@ -263,9 +262,8 @@ describe("createMarket.createMarket", function() {
       return '10';
     },
     branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
-    description: 'this is a description',
     takerFee: 0.02,
-    events: ['d262e2b552568085340c349b975ad02518a58cf0ca81666f02d96f828d43f5ef', '52057b64aa5c3bc32b6dd5815958b7b544c84bd8e93205d890da72f99fd87eff'],
+    event: 'd262e2b552568085340c349b975ad02518a58cf0ca81666f02d96f828d43f5ef',
     tags: ['code', 'computers', 'internet'],
     makerFee: 0.01,
     extraInfo: 'more info',
@@ -279,9 +277,8 @@ describe("createMarket.createMarket", function() {
       assert.deepEqual(tx.value, '0x1036640');
       assert.deepEqual(tx.params, [
         '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
-        'This is a super cool market!',
         '0x8e1bc9bf040000',
-        ['d262e2b552568085340c349b975ad02518a58cf0ca81666f02d96f828d43f5ef', '52057b64aa5c3bc32b6dd5815958b7b544c84bd8e93205d890da72f99fd87eff'],
+        'd262e2b552568085340c349b975ad02518a58cf0ca81666f02d96f828d43f5ef',
         '0x666f6f7462616c6c000000000000000000000000000000000000000000000000',
         '0x736f636365720000000000000000000000000000000000000000000000000000',
         '0x6261736562616c6c000000000000000000000000000000000000000000000000',
@@ -295,9 +292,8 @@ describe("createMarket.createMarket", function() {
       return '10';
     },
     branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
-    description: 'This is a super cool market!',
     takerFee: 0.04,
-    events: ['d262e2b552568085340c349b975ad02518a58cf0ca81666f02d96f828d43f5ef',  '52057b64aa5c3bc32b6dd5815958b7b544c84bd8e93205d890da72f99fd87eff'],
+    event: 'd262e2b552568085340c349b975ad02518a58cf0ca81666f02d96f828d43f5ef',
     tags: ['football', 'soccer', 'baseball'],
     makerFee: 0.02,
     extraInfo: 'even more information',
@@ -314,9 +310,8 @@ describe("createMarket.createMarket", function() {
       assert.deepEqual(tx.value, '0x1036640');
       assert.deepEqual(tx.params, [
         '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
-        'This is a super cool market with a padded description!',
         '0x8e1bc9bf040000',
-        ['d262e2b552568085340c349b975ad02518a58cf0ca81666f02d96f828d43f5ef', '52057b64aa5c3bc32b6dd5815958b7b544c84bd8e93205d890da72f99fd87eff'],
+        'd262e2b552568085340c349b975ad02518a58cf0ca81666f02d96f828d43f5ef',
         '0x666f6f7462616c6c000000000000000000000000000000000000000000000000',
         '0x736f636365720000000000000000000000000000000000000000000000000000',
         '0x6261736562616c6c000000000000000000000000000000000000000000000000',
@@ -331,9 +326,8 @@ describe("createMarket.createMarket", function() {
     },
     branch: {
       branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
-      description: '      This is a super cool market with a padded description!     ',
       takerFee: 0.04,
-      events: ['d262e2b552568085340c349b975ad02518a58cf0ca81666f02d96f828d43f5ef', '52057b64aa5c3bc32b6dd5815958b7b544c84bd8e93205d890da72f99fd87eff'],
+      event: 'd262e2b552568085340c349b975ad02518a58cf0ca81666f02d96f828d43f5ef',
       tags: ['football', 'soccer', 'baseball'],
       makerFee: 0.02,
       extraInfo: 'even more information',

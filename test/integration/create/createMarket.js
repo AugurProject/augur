@@ -22,7 +22,7 @@ describe("CreateMarket.createMarket", function () {
       it(t.numOutcomes + " outcomes on [" + t.minValue + ", " + t.maxValue + "]", function (done) {
         this.timeout(tools.TIMEOUT*2);
         augur.createEvent({
-          branchId: t.branch,
+          branch: t.branch,
           description: t.description,
           expDate: t.expDate,
           minValue: t.minValue,
@@ -38,18 +38,16 @@ describe("CreateMarket.createMarket", function () {
             assert.strictEqual(augur.getCreator(eventID), augur.from);
             assert.strictEqual(augur.getDescription(eventID), t.description);
             augur.createMarket({
-              branchId: t.branch,
-              description: t.description,
+              branch: t.branch,
               takerFee: t.takerFee,
               tags: t.tags,
               makerFee: t.makerFee,
               extraInfo: t.extraInfo,
-              events: eventID,
+              event: eventID,
               onSent: function (res) {},
               onSuccess: function (res) {
                 var marketID = res.callReturn;
                 assert.strictEqual(augur.getCreator(marketID), augur.from);
-                assert.strictEqual(augur.getDescription(marketID), t.description);
                 assert.strictEqual(augur.getMarketEvent(marketID, 0), eventID);
                 augur.getMarketInfo(marketID, function (info) {
                   if (info.error) return done(info);
@@ -160,7 +158,7 @@ describe("CreateMarket.createMarket", function () {
       it("[" + t.minValue + ", " + t.maxValue + "]", function (done) {
         this.timeout(tools.TIMEOUT*2);
         augur.createEvent({
-          branchId: t.branch,
+          branch: t.branch,
           description: t.description,
           expDate: t.expDate,
           minValue: t.minValue,
@@ -173,10 +171,9 @@ describe("CreateMarket.createMarket", function () {
             assert.strictEqual(augur.getCreator(eventID), augur.coinbase);
             assert.strictEqual(augur.getDescription(eventID), t.description);
             augur.createMarket({
-              branchId: t.branch,
-              description: t.description,
+              branch: t.branch,
               takerFee: t.takerFee,
-              events: eventID,
+              event: eventID,
               makerFee: t.makerFee,
               tags: t.tags,
               extraInfo: t.extraInfo || "",
@@ -185,7 +182,6 @@ describe("CreateMarket.createMarket", function () {
                 var marketID = res.callReturn;
                 augur.getMarketInfo(marketID);
                 assert.strictEqual(augur.getCreator(marketID), augur.coinbase);
-                assert.strictEqual(augur.getDescription(marketID), t.description);
                 assert.strictEqual(augur.getMarketEvent(marketID, 0), eventID);
                 augur.getMarketInfo(marketID, null, function (info) {
                   if (info.error) return done(info);
@@ -209,7 +205,7 @@ describe("CreateMarket.createMarket", function () {
       });
     };
 
-        // scalar markets have numOutcomes==2 and maxValue!=2
+    // scalar markets have numOutcomes==2 and maxValue!=2
     test({
       branch: augur.constants.DEFAULT_BRANCH_ID,
       description: "What will the high temperature (in degrees Fahrenheit) be in San Francisco, California, on July 1, 2017?",
@@ -276,7 +272,7 @@ describe("CreateMarket.createMarket", function () {
         tags = element[3].tags;
       }
       augur.createEvent({
-        branchId: branch,
+        branch: branch,
         description: description,
         expDate: expDate,
         minValue: minValue,
@@ -296,10 +292,9 @@ describe("CreateMarket.createMarket", function () {
           // incorporate the new event into a market
           var takerFee = "0.02";
           augur.createMarket({
-            branchId: branch,
-            description: description,
+            branch: branch,
             takerFee: takerFee,
-            events: eventID,
+            event: eventID,
             makerFee: "0.0075",
             tags: tags,
             extraInfo: extraInfo,
@@ -310,10 +305,9 @@ describe("CreateMarket.createMarket", function () {
               if (creator !== augur.coinbase) {
                 console.log("\n  createMarket:", tools.pp(res));
                 console.log("  getMarketInfo:", tools.pp(augur.getMarketInfo(marketID)));
-                console.log("  description:", tools.pp(augur.getDescription(marketID)));
+                console.log("  description:", tools.pp(augur.getDescription(eventID)));
               }
               assert.strictEqual(creator, augur.coinbase);
-              assert.strictEqual(augur.getDescription(marketID), description);
               assert.strictEqual(augur.getMarketEvent(marketID, 0), eventID);
               augur.getMarketInfo(marketID, null, function (info) {
                 if (info.error) return next(info);

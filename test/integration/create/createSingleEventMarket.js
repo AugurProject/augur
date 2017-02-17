@@ -27,7 +27,7 @@ describe("CreateMarket.createSingleEventMarket", function () {
     it(t.numOutcomes + " outcomes on [" + t.minValue + ", " + t.maxValue + "]", function (done) {
       this.timeout(tools.TIMEOUT);
       augur.createSingleEventMarket({
-        branchId: t.branch,
+        branch: t.branch,
         description: t.description,
         expDate: t.expDate,
         minValue: t.minValue,
@@ -60,10 +60,9 @@ describe("CreateMarket.createSingleEventMarket", function () {
             t.description
           ]), r.callReturn);
           assert.strictEqual(augur.getCreator(marketID), augur.coinbase);
-          assert.strictEqual(augur.getDescription(marketID), t.description);
           assert.strictEqual(augur.getExtraInfo(marketID), t.extraInfo);
 
-                    // get market's event and check its properties are correct
+          // get market's event and check its properties are correct
           var eventID = augur.getMarketEvent(marketID, 0);
           if (DEBUG) console.log("eventID:", eventID);
           assert.strictEqual(augur.getDescription(eventID), t.description);

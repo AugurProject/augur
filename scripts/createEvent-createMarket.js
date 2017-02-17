@@ -11,7 +11,7 @@ augur.connect({
 }, function (connection) {
   console.log("connected:", connection);
   augur.createEvent({
-    branchId: 1010101,
+    branch: 1010101,
     description: "oh hi world",
     expDate: parseInt(new Date().getTime() / 995, 10),
     minValue: 1,
@@ -25,13 +25,12 @@ augur.connect({
       console.log("createEvent success:", res);
       var eventID = res.callReturn;
       augur.createMarket({
-        branchId: 1010101,
-        description: "oh hi world",
+        branch: 1010101,
         takerFee: "0.02",
         tags: ["oh", "hi", "world"],
         makerFee: "0.01",
         extraInfo: "don't mind me, just screaming 'oh hi world' into the void",
-        events: eventID,
+        event: eventID,
         onSent: function (res) {
           console.log("createMarket sent:", res);
         },
