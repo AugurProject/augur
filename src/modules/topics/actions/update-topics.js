@@ -9,6 +9,7 @@ export const clearTopics = () => ({ type: CLEAR_TOPICS });
 export const updateTopicPopularity = (topic, amount) => ({ type: UPDATE_TOPIC_POPULARITY, topic, amount });
 
 export const updateMarketTopicPopularity = (marketID, amount, isRetry) => (dispatch, getState) => {
+  console.debug('updateMarketTopicPopularity:', marketID, amount, isRetry);
   const market = getState().marketsData[marketID];
   if (market && market.tags && market.tags.length) {
     if (market.tags[0] !== null) dispatch(updateTopicPopularity(market.tags[0], Number(amount)));
