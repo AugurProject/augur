@@ -1,5 +1,6 @@
 .topic-button.unstyled {
   .border(true);
+  .transition(box-shadow @animation-speed-very-fast;);
 
   align-items: stretch;
   background-color: @color-white;
@@ -19,6 +20,10 @@
 
   &.is-spacer-topic {
     visibility: hidden;
+  }
+
+  &:hover {
+    box-shadow: 0 2px 15px fadeout(@color-black-extra-light, @amount-extra-light);
   }
 
   .topic-content {
