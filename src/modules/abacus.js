@@ -213,7 +213,7 @@ module.exports = {
         tradingFee: fees.trading,
         numOutcomes: parseInt(rawInfo[2], 16),
         tradingPeriod: parseInt(rawInfo[3], 16),
-        branchId: rawInfo[5],
+        branchID: rawInfo[5],
         numEvents: 1,
         cumulativeScale: abi.unfix(rawInfo[6], "string"),
         creationTime: parseInt(rawInfo[7], 16),

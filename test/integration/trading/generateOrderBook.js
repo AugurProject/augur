@@ -29,7 +29,7 @@ describe("generateOrderBook", function () {
       var description = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
       var expDate = Math.round(new Date().getTime() / 990);
       augur.createSingleEventMarket({
-        branchId: augur.constants.DEFAULT_BRANCH_ID,
+        branch: augur.constants.DEFAULT_BRANCH_ID,
         description: description,
         expDate: expDate,
         minValue: 1,
@@ -81,7 +81,7 @@ describe("generateOrderBook", function () {
       var description = madlibs.adjective() + "-" + madlibs.noun() + "-" + suffix;
       var expDate = Math.round(new Date().getTime() / 990);
       augur.createSingleEventMarket({
-        branchId: augur.constants.DEFAULT_BRANCH_ID,
+        branch: augur.constants.DEFAULT_BRANCH_ID,
         description: description,
         expDate: expDate,
         minValue: 10,
@@ -139,7 +139,7 @@ describe("generateOrderBook", function () {
       description += "~|>" + choices.join('|');
       var expDate = Math.round(new Date().getTime() / 990);
       augur.createSingleEventMarket({
-        branchId: augur.constants.DEFAULT_BRANCH_ID,
+        branch: augur.constants.DEFAULT_BRANCH_ID,
         description: description,
         expDate: expDate,
         minValue: 1,

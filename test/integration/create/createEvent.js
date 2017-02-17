@@ -24,7 +24,7 @@ describe("CreateMarket.createEvent", function () {
     this.timeout(tools.TIMEOUT);
     var description = "€" + Math.random().toString(36).substring(4);
     augur.createEvent({
-      branchId: branch,
+      branch: branch,
       description: description,
       expDate: expDate,
       minValue: minValue,

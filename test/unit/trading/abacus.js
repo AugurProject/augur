@@ -771,7 +771,7 @@ describe("abacus.parseMarketInfo", function() {
       	tradingFee: '0.026666666666666666',
       	numOutcomes: 2,
       	tradingPeriod: 22020096,
-      	branchId: '1010101',
+      	branchID: '1010101',
       	numEvents: 1,
       	cumulativeScale: '1',
       	creationTime: 16777216,
