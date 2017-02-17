@@ -9,6 +9,7 @@ import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 import { loadAccountTrades } from '../../my-positions/actions/load-account-trades';
 import { claimProceeds } from '../../my-positions/actions/claim-proceeds';
 import { convertLogsToTransactions, convertTradeLogToTransaction } from '../../transactions/actions/convert-logs-to-transactions';
+import { updateMarketTopicPopularity } from '../../topics/actions/update-topics';
 
 export function refreshMarket(marketID) {
   return (dispatch, getState) => {
