@@ -28,7 +28,9 @@ export default class TopicIcon extends Component {
   }
 
   componentDidMount() {
-    if (!window.getComputedStyle(this.topicIcon, '::before').content) {
+    const content = window.getComputedStyle(this.topicIcon, '::before').content;
+
+    if (!content || content === 'none') { // 'none' is FF specific fix
       const matchedTopic = Object.keys(iconTopics).find((icon) => {
         if (typeof iconTopics[icon] === 'string') {
           if (iconTopics[icon] === this.props.topic.toLowerCase()) {
