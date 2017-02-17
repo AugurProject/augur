@@ -175,10 +175,6 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
         }
       }
     }, {
-      type: 'INCREASE_TOPIC_POPULARITY',
-      topic: 'tag1',
-      amount: 2
-    }, {
       type: 'UPDATE_MARKET_TRADES_DATA',
       data: {
         testMarketID: {
@@ -205,6 +201,10 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
           }
         ]
       }
+    }, {
+      type: 'UPDATE_TOPIC_POPULARITY',
+      amount: 2,
+      topic: 'tag1'
     }, {
       type: 'LOAD_BASIC_MARKET',
       marketID: [
