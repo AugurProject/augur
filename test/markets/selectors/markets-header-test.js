@@ -1,12 +1,8 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
-import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-
-import { FAVORITES, PENDING_REPORTS } from 'modules/markets/constants/markets-subset';
-import { UPDATE_SELECTED_MARKETS_HEADER } from 'modules/markets/actions/update-selected-markets-header';
 
 describe('modules/markets/selectors/markets-header.js', () => {
   proxyquire.noPreserveCache().noCallThru();
@@ -43,8 +39,6 @@ describe('modules/markets/selectors/markets-header.js', () => {
       }
     },
     assertions: (selector, store) => {
-      sinon.stub(selector, 'updateMarketsHeader', () => {});
-
       const actual = selector.default();
 
       assert.equal(actual.numMarkets, 10, `'numMarkets' was not the expected value`);
@@ -59,90 +53,9 @@ describe('modules/markets/selectors/markets-header.js', () => {
       selectedMarketsHeader: 'test'
     },
     assertions: (selector, store) => {
-      sinon.stub(selector, 'updateMarketsHeader', () => {});
-
       const actual = selector.default();
 
       assert.equal(actual.selectedMarketsHeader, 'test', `'selectedMarketsHeader' was not the expected value`);
-    }
-  });
-
-  test({
-    description: `should update the markets header to '${FAVORITES}'`,
-    state: {
-      selectedMarketsHeader: null,
-      selectedMarketsSubset: FAVORITES
-    },
-    assertions: (selector, store) => {
-      selector.default();
-
-      const expected = [
-        {
-          type: UPDATE_SELECTED_MARKETS_HEADER,
-          selectedMarketsHeader: FAVORITES
-        }
-      ];
-
-      assert.deepEqual(store.getActions(), expected, `'updateMarketsHeader' didn't dispatch the expected actions`);
-    }
-  });
-
-  test({
-    description: `should update the markets header to '${PENDING_REPORTS}'`,
-    state: {
-      selectedMarketsHeader: null,
-      selectedMarketsSubset: PENDING_REPORTS
-    },
-    assertions: (selector, store) => {
-      selector.default();
-
-      const expected = [
-        {
-          type: UPDATE_SELECTED_MARKETS_HEADER,
-          selectedMarketsHeader: PENDING_REPORTS
-        }
-      ];
-
-      assert.deepEqual(store.getActions(), expected, `'updateMarketsHeader' didn't dispatch the expected actions`);
-    }
-  });
-
-  test({
-    description: `should update the markets header to the selectedTopic`,
-    state: {
-      selectedMarketsHeader: null,
-      selectedTopic: 'test'
-    },
-    assertions: (selector, store) => {
-      selector.default();
-
-      const expected = [
-        {
-          type: UPDATE_SELECTED_MARKETS_HEADER,
-          selectedMarketsHeader: 'test'
-        }
-      ];
-
-      assert.deepEqual(store.getActions(), expected, `'updateMarketsHeader' didn't dispatch the expected actions`);
-    }
-  });
-
-  test({
-    description: `should update the markets header to 'null'`,
-    state: {
-      selectedMarketsHeader: 'test'
-    },
-    assertions: (selector, store) => {
-      selector.default();
-
-      const expected = [
-        {
-          type: UPDATE_SELECTED_MARKETS_HEADER,
-          selectedMarketsHeader: null
-        }
-      ];
-
-      assert.deepEqual(store.getActions(), expected, `'updateMarketsHeader' didn't dispatch the expected actions`);
     }
   });
 });
