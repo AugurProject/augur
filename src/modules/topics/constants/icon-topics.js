@@ -21,7 +21,7 @@ const iconTopics = {
   'fa-music': ['music', 'songs', 'pop', 'rock', 'rap', 'dancing', 'dance', 'techno'],
   'fa-laptop': ['computers', 'computing', 'laptops'],
   'fa-lock': ['crypto', 'cryptography', 'encryption', 'security'],
-  'fa-money': ['cryptocurrency', 'currency', 'currencies', 'money', 'value', 'fiat', 'debt', 'forex'],
+  'fa-money': ['cryptocurrency', 'currency', 'currencies', 'money', 'value', 'fiat', 'debt', 'forex', 'lottery', 'daily lottery'],
   'fa-chain': ['blockchain', 'blockchains', 'block chain', 'block chains'],
   'fa-btc': ['bitcoin', 'btc', 'bitcoins'],
   'fa-usd': ['dollar', 'dollars', 'usd'],
