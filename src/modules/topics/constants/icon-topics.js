@@ -3,7 +3,7 @@
 //          All values should be lowercase
 
 const iconTopics = {
-  'fa-copy': 'reporting',
+  'fa-copy': ['reporting', 'testing', 'beta'],
   'fa-snowflake-o': 'snow',
   'fa-bolt': 'lightning',
   'fa-cloud': ['weather', 'rain', 'precipitation'],
