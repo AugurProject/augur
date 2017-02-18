@@ -262,11 +262,13 @@ describe("format_event_message", function() {
     msg: {
       marketCreationFee: abi.fix('1500'),
       eventBond: abi.fix('1000'),
+      topic: augur.formatTag('testing')
     },
     assertions: function(msg) {
       assert.deepEqual(JSON.stringify(msg), JSON.stringify({
         marketCreationFee: '1500',
         eventBond: '1000',
+        topic: 'testing'
       }));
     }
   });
@@ -762,7 +764,9 @@ describe("parse_event_message", function () {
       address: "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f",
       topics: [
         "0x8f9d87fc01c4c1a9057249423e7e9c38c4f8899a494502d7aaa64c0b7c40cf9e",
-        "0x0000000000000000000000000e52ec96687f8281dae987934f4619d1990ecbde"
+        "0x0000000000000000000000000e52ec96687f8281dae987934f4619d1990ecbde",
+        "0xbcec0378dfeeb59908c886aff93b0e820bb579f63acaeb4b3d4004ec01153115",
+        "0x726f666c636f7074657200000000000000000000000000000000000000000000"
       ],
       data: "0xebf353dd9fc2f5fb49913414dd192d3c2835291917be735bb22a8c473badeeab000000000000000000000000000000000000000000000000002386f26fc100000000000000000000000000000000000000000000000000003e733628714200000000000000000000000000000000000000000000000000000000000058588fee",
       blockNumber: "0x1ad",

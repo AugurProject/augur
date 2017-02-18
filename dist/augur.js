@@ -23648,6 +23648,7 @@ module.exports = function () {
           fmt = this.format_common_fields(msg);
           fmt.marketCreationFee = abi.unfix(msg.marketCreationFee, "string");
           fmt.eventBond = abi.unfix(msg.eventBond, "string");
+          fmt.topic = augur.decodeTag(msg.topic);
           return fmt;
         case "payout":
           fmt = this.format_common_fields(msg);
@@ -24342,7 +24343,7 @@ BigNumber.config({
 var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/slashRep"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register"), require("./modules/topics"), require("./modules/modifyOrderBook")];
 
 function Augur() {
-  this.version = "3.12.2";
+  this.version = "3.12.3";
 
   this.options = {
     debug: {
@@ -47443,7 +47444,7 @@ module.exports = {
 
 module.exports = {
   streetName: function () {
-    return "streetName";
+    return "testing";
   },
   action: function () {
     return "action";

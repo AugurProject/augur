@@ -102,6 +102,7 @@ module.exports = function () {
           fmt = this.format_common_fields(msg);
           fmt.marketCreationFee = abi.unfix(msg.marketCreationFee, "string");
           fmt.eventBond = abi.unfix(msg.eventBond, "string");
+          fmt.topic = augur.decodeTag(msg.topic);
           return fmt;
         case "payout":
           fmt = this.format_common_fields(msg);
