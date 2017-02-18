@@ -4,7 +4,7 @@ import Branch from 'modules/branch/components/branch';
 
 const TransactionsPage = p => (
   <section id="transactions_view">
-    {!!p.loginAccount.rep && !!p.loginAccount.rep.value &&
+    {!!p.loginAccount.rep && !!p.loginAccount.rep.value && !!p.branch.id &&
       <Branch {...p.branch} />
     }
 

@@ -6,7 +6,7 @@ import Branch from 'modules/branch/components/branch';
 
 const MarketsView = p => (
   <section id="markets_view">
-    {!!p.loginAccount.rep && !!p.loginAccount.rep.value &&
+    {!!p.loginAccount.rep && !!p.loginAccount.rep.value && !!p.branch.id &&
       <Branch {...p.branch} />
     }
     <MarketsHeaders
@@ -32,7 +32,8 @@ MarketsView.propTypes = {
   markets: PropTypes.array,
   pagination: PropTypes.object,
   keywords: PropTypes.object,
-  branch: PropTypes.object
+  branch: PropTypes.object,
+  loginAccount: PropTypes.object
 };
 
 export default MarketsView;

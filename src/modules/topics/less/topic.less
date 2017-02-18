@@ -40,7 +40,12 @@
       align-self: flex-end;
       flex: 10;
       font-size: 0.7em;
-      margin: 0.2em 0.4em 0 0;
+      margin-right: 0.2em;
+
+      span {
+        display: flex; // Allows for it to be animated
+        padding: 0.2em;
+      }
     }
 
     .topic-name {
@@ -93,3 +98,70 @@
     }
   }
 }
+
+// Animations
+.bounce-up-and-flash {
+  animation-duration: @animation-speed-slow, @animation-speed-very-slow;
+  animation-name: bounceUp, flashGreen;
+  transform-origin: center bottom;
+}
+
+.bounce-down-and-flash {
+  animation-duration: @animation-speed-slow, @animation-speed-very-slow;
+  animation-name: bounceDown, flashRed;
+  transform-origin: center bottom;
+}
+
+.keyframes(bounceUp, {
+from, 20%, 53%, 80%, to {
+animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+transform: translate3d(0,0,0);
+}
+40%, 43% {
+animation-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+transform: translate3d(0, -0.4em, 0);
+}
+70% {
+animation-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+transform: translate3d(0, -0.2em, 0);
+}
+90% {
+transform: translate3d(0, -0.08em, 0);
+}
+});
+
+.keyframes(flashGreen, {
+from {
+color: @color-green-muted;
+}
+to {
+color: inherit;
+}
+});
+
+.keyframes(flashRed, {
+from {
+color: @color-red-muted;
+}
+to {
+color: inherit;
+}
+});
+
+.keyframes(bounceDown, {
+from, 20%, 53%, 80%, to {
+animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+transform: translate3d(0, 0, 0);
+}
+40%, 43% {
+animation-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+transform: translate3d(0, 0.4em, 0);
+}
+70% {
+animation-timing-function: cubic-bezier(0.755, 0.050, 0.855, 0.060);
+transform: translate3d(0, 0.2em, 0);
+}
+90% {
+transform: translate3d(0, 0.08em, 0);
+}
+});

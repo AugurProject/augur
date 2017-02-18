@@ -97,7 +97,7 @@ export default class Routes extends Component {
       }
       case LOGIN_MESSAGE: {
         viewProps = {
-          marketsLink: (p.links && p.links.marketsLink) || null
+          topicsLink: (p.links && p.links.topicsLink) || null
         };
         System.import('modules/login-message/components/login-message-view').then((module) => {
           const LoginMessageView = module.default;
@@ -167,7 +167,9 @@ export default class Routes extends Component {
       default: {
         viewProps = {
           topics: getValue(p, 'topics.topics'),
-          selectTopic: getValue(p, 'topics.selectTopic')
+          selectTopic: getValue(p, 'topics.selectTopic'),
+          loginAccount: p.loginAccount,
+          branch: p.branch
         };
         System.import('modules/topics/components/topics-view').then((module) => {
           const TopicsView = module.default;

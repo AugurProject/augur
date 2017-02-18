@@ -39,7 +39,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         if (!callback) return t.blockchain.registerBlockNumber;
         callback(null, t.blockchain.registerBlockNumber);
       });
-      DisplayLoginMessage.displayLoginMessageOrMarkets = sinon.stub().returns({ type: 'DISPLAY_LOGIN_MESSAGE_OR_MARKETS' });
+      DisplayLoginMessage.displayLoginMessageOrTopics = sinon.stub().returns({ type: 'DISPLAY_LOGIN_MESSAGE_OR_MARKETS' });
       sinon.stub(FundNewAccount, 'fundNewAccount', () => (dispatch, getState) => {
         dispatch({ type: 'FUND_NEW_ACCOUNT' });
       });
