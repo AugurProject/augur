@@ -35,7 +35,7 @@ var cannedMarkets = [{
   numOutcomes: 2,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["reporting", "testing", "binary"],
+  tags: ["testing", "reporting", "binary"],
   extraInfo: "",
   resolution: ""
 }, {
@@ -46,7 +46,7 @@ var cannedMarkets = [{
   numOutcomes: 7,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["reporting", "testing", "categorical"],
+  tags: ["testing", "reporting", "categorical"],
   extraInfo: "",
   resolution: ""
 }, {
@@ -57,7 +57,7 @@ var cannedMarkets = [{
   numOutcomes: 2,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["reporting", "testing", "scalar"],
+  tags: ["testing", "reporting", "scalar"],
   extraInfo: "",
   resolution: ""
 }, {
@@ -68,7 +68,7 @@ var cannedMarkets = [{
   numOutcomes: 2,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["reporting", "testing", "binary"],
+  tags: ["testing", "reporting", "binary"],
   extraInfo: "",
   resolution: ""
 }, {
@@ -79,7 +79,7 @@ var cannedMarkets = [{
   numOutcomes: 7,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["reporting", "testing", "categorical"],
+  tags: ["testing", "reporting", "categorical"],
   extraInfo: "",
   resolution: ""
 }, {
@@ -90,7 +90,7 @@ var cannedMarkets = [{
   numOutcomes: 2,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["reporting", "testing", "scalar"],
+  tags: ["testing", "reporting", "scalar"],
   extraInfo: "",
   resolution: ""
 }, {
@@ -101,7 +101,7 @@ var cannedMarkets = [{
   numOutcomes: 2,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["reporting", "testing", "binary"],
+  tags: ["testing", "reporting", "binary"],
   extraInfo: "",
   resolution: ""
 }, {
@@ -112,7 +112,7 @@ var cannedMarkets = [{
   numOutcomes: 7,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["reporting", "testing", "categorical"],
+  tags: ["testing", "reporting", "categorical"],
   extraInfo: "",
   resolution: ""
 }, {
@@ -123,7 +123,7 @@ var cannedMarkets = [{
   numOutcomes: 2,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["reporting", "testing", "scalar"],
+  tags: ["testing", "reporting", "scalar"],
   extraInfo: "",
   resolution: ""
 }, {
@@ -134,7 +134,7 @@ var cannedMarkets = [{
   numOutcomes: 2,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["reporting", "testing", "binary"],
+  tags: ["testing", "reporting", "binary"],
   extraInfo: "",
   resolution: ""
 }, {
@@ -145,7 +145,7 @@ var cannedMarkets = [{
   numOutcomes: 7,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["reporting", "testing", "categorical"],
+  tags: ["testing", "reporting", "categorical"],
   extraInfo: "",
   resolution: ""
 }, {
@@ -156,7 +156,7 @@ var cannedMarkets = [{
   numOutcomes: 2,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["reporting", "testing", "scalar"],
+  tags: ["testing", "reporting", "scalar"],
   extraInfo: "",
   resolution: ""
 }, {
