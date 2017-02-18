@@ -95,15 +95,15 @@ const LoginMessagePage = p => (
           Fixed register block number lookup in augur.js.
         </li>
       </ol>
-      {p.marketsLink &&
-        <Link className="lets-do-this-button" {...p.marketsLink} >{`Let's do this!`}</Link>
+      {p.topicsLink &&
+        <Link className="lets-do-this-button" {...p.topicsLink} >{`Let's do this!`}</Link>
       }
     </div>
   </section>
 );
 
 LoginMessagePage.propTypes = {
-  marketsLink: PropTypes.object // TODO
+  topicsLink: PropTypes.object // TODO
 };
 
 export default LoginMessagePage;

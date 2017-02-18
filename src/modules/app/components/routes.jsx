@@ -97,7 +97,7 @@ export default class Routes extends Component {
       }
       case LOGIN_MESSAGE: {
         viewProps = {
-          marketsLink: (p.links && p.links.marketsLink) || null
+          topicsLink: (p.links && p.links.topicsLink) || null
         };
         System.import('modules/login-message/components/login-message-view').then((module) => {
           const LoginMessageView = module.default;

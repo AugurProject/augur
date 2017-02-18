@@ -7,7 +7,7 @@ import { loadChatMessages } from '../../chat/actions/load-chat-messages';
 import { setLoginAccount } from '../../auth/actions/set-login-account';
 import { loadBranch } from '../../app/actions/load-branch';
 import { registerTransactionRelay } from '../../transactions/actions/register-transaction-relay';
-import { displayLoginMessageOrMarkets } from '../../../modules/login-message/actions/display-login-message';
+import { displayLoginMessageOrTopics } from '../../../modules/login-message/actions/display-login-message';
 
 // for testing only
 import { reportingTestSetup } from '../../reports/actions/reporting-test-setup';
@@ -41,7 +41,7 @@ export function initAugur() {
                   augur.fundNewAccount(env.branchID || BRANCH_ID, augur.utils.noop, () => {
                     dispatch(updateAssets());
                     dispatch(loadBranch(env.branchID || BRANCH_ID));
-                    dispatch(displayLoginMessageOrMarkets());
+                    dispatch(displayLoginMessageOrTopics());
                   }, e => console.error(e));
                 } else {
                   dispatch(loadBranch(env.branchID || BRANCH_ID));
@@ -53,7 +53,7 @@ export function initAugur() {
             }
           } else {
             dispatch(loadBranch(env.branchID || BRANCH_ID));
-            dispatch(displayLoginMessageOrMarkets());
+            dispatch(displayLoginMessageOrTopics());
           }
         });
       }
