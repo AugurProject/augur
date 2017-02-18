@@ -4,10 +4,13 @@ import NullStateMessage from 'modules/common/components/null-state-message';
 import TopicRows from 'modules/topics/components/topic-rows';
 import Paginator from 'modules/common/components/paginator';
 import Input from 'modules/common/components/input';
+import Branch from 'modules/branch/components/branch';
 
 export default class TopicsView extends Component {
   static propTypes = {
-    topics: PropTypes.array
+    topics: PropTypes.array,
+    branch: PropTypes.object,
+    loginAccount: PropTypes.object
   }
 
   constructor(props) {
@@ -123,6 +126,10 @@ export default class TopicsView extends Component {
 
     return (
       <section id="topics_view">
+        {!!p.loginAccount.rep && !!p.loginAccount.rep.value && !!p.branch.id &&
+          <Branch {...p.branch} />
+        }
+        <br />
         <div className="topics-search" >
           <Input
             isSearch
