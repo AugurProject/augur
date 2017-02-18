@@ -102,13 +102,13 @@
 
 // Animations
 .bounce-up-and-flash {
-  animation-duration: @animation-speed-slow;
+  animation-duration: @animation-speed-slow, @animation-speed-very-slow;
   animation-name: bounceUp, flashGreen;
   transform-origin: center bottom;
 }
 
 .bounce-down-and-flash {
-  animation-duration: @animation-speed-slow;
+  animation-duration: @animation-speed-slow, @animation-speed-very-slow;
   animation-name: bounceDown, flashRed;
   transform-origin: center bottom;
 }
@@ -136,7 +136,7 @@ from {
 color: @color-green-muted;
 }
 to {
-color: transparent;
+color: inherit;
 }
 });
 
@@ -145,7 +145,7 @@ from {
 color: @color-red-muted;
 }
 to {
-color: transparent;
+color: inherit;
 }
 });
 
