@@ -126,34 +126,35 @@ export default class TopicsView extends Component {
 
     return (
       <section id="topics_view">
-        {!!p.loginAccount.rep && !!p.loginAccount.rep.value && !!p.branch.id &&
-          <Branch {...p.branch} />
-        }
-        <br />
-        <div className="topics-search" >
-          <Input
-            isSearch
-            isClearable
-            placeholder="Search Topics"
-            onChange={keywords => this.setState({ keywords })}
-          />
-        </div>
-        {s.filteredTopics.length ?
-          <div className="topics">
-            <TopicRows
-              topics={s.paginatedTopics}
-              topicsPerRow={s.topicsPerRow}
-              hasHeroRow={s.currentPage === 1}
-              topicsPerHeroRow={s.topicsPerHeroRow}
-              selectTopic={p.selectTopic}
-              isSearchResult={!!s.keywords}
+        <div id="topics_container">
+          {!!p.loginAccount.rep && !!p.loginAccount.rep.value && !!p.branch.id &&
+            <Branch {...p.branch} />
+          }
+          <div className="topics-search" >
+            <Input
+              isSearch
+              isClearable
+              placeholder="Search Topics"
+              onChange={keywords => this.setState({ keywords })}
             />
-          </div> :
-          <NullStateMessage message={s.nullMessage} />
-        }
-        {!!s.filteredTopics.length &&
-          <Paginator pagination={s.pagination} />
-        }
+          </div>
+          {s.filteredTopics.length ?
+            <div className="topics">
+              <TopicRows
+                topics={s.paginatedTopics}
+                topicsPerRow={s.topicsPerRow}
+                hasHeroRow={s.currentPage === 1}
+                topicsPerHeroRow={s.topicsPerHeroRow}
+                selectTopic={p.selectTopic}
+                isSearchResult={!!s.keywords}
+              />
+            </div> :
+            <NullStateMessage message={s.nullMessage} />
+          }
+          {!!s.filteredTopics.length &&
+            <Paginator pagination={s.pagination} />
+          }
+        </div>
       </section>
     );
   }

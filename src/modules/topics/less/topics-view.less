@@ -1,22 +1,33 @@
 #topics_view {
-  .topics-search {
-    align-self: stretch;
-    display: flex;
-    justify-content: center;
-    margin: 0.5rem 0.5rem 1rem;
+  flex-direction: row;
+  justify-content: center;
 
-    .input {
-      flex: 0 1 50%;
-    }
-  }
-
-  .topics {
+  #topics_container {
     display: flex;
+    flex: 1 1 auto;
     flex-direction: column;
-    height: 600px;
+    max-width: 960px;
+    width: 100%;
 
-    @media @breakpoint-mobile {
-      height: auto;
+    .topics-search {
+      align-self: stretch;
+      display: flex;
+      justify-content: center;
+      margin: 0.75rem 0.5rem 1rem;
+
+      .input {
+        flex: 0 1 50%;
+      }
+    }
+
+    .topics {
+      display: flex;
+      flex-direction: column;
+      height: 600px;
+
+      @media @breakpoint-mobile {
+        height: auto;
+      }
     }
   }
 }
