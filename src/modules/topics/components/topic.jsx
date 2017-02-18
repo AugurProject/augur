@@ -37,6 +37,10 @@ export default class Topic extends Component {
     }
   }
 
+  componentDidUpdate() {
+    fitText(this.topicNameContainer, this.topicName);
+  }
+
   componentWillUnmount() {
     window.removeEventListener('resize', this.handleFitText);
   }
