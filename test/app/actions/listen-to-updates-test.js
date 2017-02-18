@@ -68,7 +68,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     });
     cb.log_add_tx({ market: 'testMarketID' });
     cb.log_cancel({ market: 'testMarketID' });
-    cb.marketCreated({ marketID: 'testID1' });
+    cb.marketCreated({ marketID: 'testID1', topic: 'topical' });
     cb.tradingFeeUpdated({ marketID: 'testID1' });
   });
   sinon.stub(AugurJS.augur.CompositeGetters, 'getPositionInMarket', (market, trader, cb) => {
@@ -205,6 +205,10 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
       type: 'UPDATE_TOPIC_POPULARITY',
       amount: 2,
       topic: 'tag1'
+    }, {
+      type: 'UPDATE_TOPIC_POPULARITY',
+      amount: 0,
+      topic: 'topical'
     }, {
       type: 'LOAD_BASIC_MARKET',
       marketID: [
