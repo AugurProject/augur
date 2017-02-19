@@ -605,11 +605,12 @@ augur.connect({
         if (!market.orderBook) {
           var orderBookParams = {
             market: marketID,
-            liquidity: 1000,
+            liquidity: 200,
             initialFairPrices: initialFairPrices,
-            startingQuantity: 5,
-            bestStartingQuantity: 10,
-            priceWidth: "0.2"
+            startingQuantity: 10,
+            bestStartingQuantity: 20,
+            priceWidth: "0.2",
+            marketInfo: augur.getMarketInfo(r.callReturn)
           };
           console.log(chalk.blue.bold("Generating order book:"), chalk.cyan.dim(JSON.stringify(orderBookParams, null, 2)));
           augur.generateOrderBook(orderBookParams, {
