@@ -3,7 +3,7 @@
 //          All values should be lowercase
 
 const iconTopics = {
-  'fa-copy': ['reporting', 'testing', 'beta'],
+  'fa-copy': ['reporting', 'testing', 'beta', 'policy'],
   'fa-snowflake-o': 'snow',
   'fa-bolt': 'lightning',
   'fa-cloud': ['weather', 'rain', 'precipitation'],
@@ -12,16 +12,16 @@ const iconTopics = {
   'fa-rocket': ['space', 'space program', 'rocket', 'nasa', 'spacex'],
   'fa-line-chart': ['finance', 'financial', 'financials', 'dow jones', 'to the moon', 'stock', 'stocks', 'derivative', 'derivatives', 'option', 'options', 'future', 'futures'],
   'fa-bug': ['antibiotic', 'antibiotics', 'bacteria', 'infection', 'infections', 'epidemic', 'epidemics'],
-  'fa-ambulance': ['mortality', 'hospital', 'hospitals'],
+  'fa-ambulance': ['mortality', 'hospital', 'hospitals', 'medicine'],
   'fa-home': ['housing', 'home', 'realty'],
   'fa-industry': ['climate change', 'pollution', 'global warming', 'eraserhead'],
   'fa-newspaper-o': ['news', 'events', 'newspaper', 'newspapers', 'fake news', 'media'],
-  'fa-users': 'elections',
+  'fa-users': ['elections', 'politics'],
   'fa-ship': ['international trade', 'shipping'],
   'fa-music': ['music', 'songs', 'pop', 'rock', 'rap', 'dancing', 'dance', 'techno'],
   'fa-laptop': ['computers', 'computing', 'laptops'],
   'fa-lock': ['crypto', 'cryptography', 'encryption', 'security'],
-  'fa-money': ['cryptocurrency', 'currency', 'currencies', 'money', 'value', 'fiat', 'debt', 'forex', 'lottery', 'daily lottery'],
+  'fa-money': ['trading', 'cryptocurrency', 'currency', 'currencies', 'money', 'value', 'fiat', 'debt', 'forex', 'lottery', 'daily lottery'],
   'fa-chain': ['blockchain', 'blockchains', 'block chain', 'block chains'],
   'fa-btc': ['bitcoin', 'btc', 'bitcoins'],
   'fa-usd': ['dollar', 'dollars', 'usd'],
@@ -58,7 +58,7 @@ const iconTopics = {
   'fa-at': ['email', 'emails', 'e-mail', 'e-mails', 'identity', 'names'],
   'fa-code': ['coding', 'programming', 'programmers', 'software', 'development', 'developers'],
   'fa-eye': ['surveillance', 'big brother', 'nsa', 'national security agency', 'snowden'],
-  'fa-font-awesome': ['golf', 'frisbee golf'],
+  'fa-font-awesome': ['capture the flag', 'ctf', 'flag football', 'golf', 'frisbee golf'],
   'fa-compress': ['debates', 'arguments', 'conflicts', 'fights', 'war', 'wars', 'fighting', 'calexit']
 };
 
