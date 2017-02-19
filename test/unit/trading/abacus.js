@@ -8,57 +8,6 @@ var tools = require("../../tools");
 var constants = require("../../../src/constants");
 var abacus = require("../../../src/modules/abacus");
 
-describe("calculatePriceDepth", function () {
-  var test = function (t) {
-    it(JSON.stringify(t), function () {
-      var liquidity = new BigNumber(t.liquidity);
-      var startingQuantity = new BigNumber(t.startingQuantity);
-      var bestStartingQuantity = new BigNumber(t.bestStartingQuantity);
-      var halfPriceWidth = new BigNumber(t.halfPriceWidth);
-      var minValue = new BigNumber(t.minValue);
-      var maxValue = new BigNumber(t.maxValue);
-      var priceDepth = abacus.calculatePriceDepth(liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue);
-      assert.strictEqual(priceDepth.toFixed(), t.expected);
-    });
-  };
-  test({
-    liquidity: 100,
-    startingQuantity: 5,
-    bestStartingQuantity: 10,
-    halfPriceWidth: "0.4",
-    minValue: 0,
-    maxValue: 1,
-    expected: "0.0375"
-  });
-  test({
-    liquidity: 500,
-    startingQuantity: 5,
-    bestStartingQuantity: 10,
-    halfPriceWidth: "0.4",
-    minValue: 0,
-    maxValue: 1,
-    expected: "0.00625"
-  });
-  test({
-    liquidity: 50,
-    startingQuantity: 5,
-    bestStartingQuantity: 10,
-    halfPriceWidth: "0.4",
-    minValue: 0,
-    maxValue: 1,
-    expected: "0.1"
-  });
-  test({
-    liquidity: 20,
-    startingQuantity: 5,
-    bestStartingQuantity: 10,
-    halfPriceWidth: "0.4",
-    minValue: 0,
-    maxValue: 1,
-    expected: "Infinity"
-  });
-});
-
 describe("abacus.calculateAdjustedTradingFee", function () {
   var test = function (t) {
     it(JSON.stringify(t), function () {

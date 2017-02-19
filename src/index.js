@@ -42,11 +42,12 @@ var modules = [
   require("./modules/positions"),
   require("./modules/register"),
   require("./modules/topics"),
-  require("./modules/modifyOrderBook")
+  require("./modules/modifyOrderBook"),
+  require("./modules/generateOrderBook")
 ];
 
 function Augur() {
-  this.version = "3.12.3";
+  this.version = "3.12.4";
 
   this.options = {
     debug: {
@@ -84,7 +85,6 @@ function Augur() {
       this[fn].toString = Function.prototype.toString.bind(modules[i][fn]);
     }
   }
-  this.generateOrderBook = require("./generateOrderBook").bind(this);
   this.createBatch = require("./batch").bind(this);
   this.accounts = this.Accounts();
   this.web = this.accounts; // deprecated

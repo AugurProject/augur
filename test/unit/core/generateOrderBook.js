@@ -5,34 +5,119 @@ var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
 var augur = require('../../../src');
 var utils = require('../../../src/utilities.js');
-// 14 tests total
+
+describe("calculatePriceDepth", function () {
+  var test = function (t) {
+    it(JSON.stringify(t), function () {
+      var liquidity = new BigNumber(t.params.liquidity, 10);
+      var startingQuantity = new BigNumber(t.params.startingQuantity, 10);
+      var bestStartingQuantity = new BigNumber(t.params.bestStartingQuantity, 10);
+      var halfPriceWidth = new BigNumber(t.params.halfPriceWidth, 10);
+      var minValue = new BigNumber(t.params.minValue, 10);
+      var maxValue = new BigNumber(t.params.maxValue, 10);
+      t.assertions(augur.calculatePriceDepth(liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue));
+    });
+  };
+  test({
+    params: {
+      liquidity: 100,
+      startingQuantity: 5,
+      bestStartingQuantity: 10,
+      halfPriceWidth: "0.4",
+      minValue: 0,
+      maxValue: 1
+    },
+    assertions: function (priceDepth) {
+      assert.strictEqual(priceDepth.constructor, BigNumber);
+      assert.strictEqual(priceDepth.toFixed(), "0.0375");
+    }
+  });
+  test({
+    params: {
+      liquidity: 500,
+      startingQuantity: 5,
+      bestStartingQuantity: 10,
+      halfPriceWidth: "0.4",
+      minValue: 0,
+      maxValue: 1
+    },
+    assertions: function (priceDepth) {
+      assert.strictEqual(priceDepth.constructor, BigNumber);
+      assert.strictEqual(priceDepth.toFixed(), "0.00625");
+    }
+  });
+  test({
+    params: {
+      liquidity: 50,
+      startingQuantity: 5,
+      bestStartingQuantity: 10,
+      halfPriceWidth: "0.4",
+      minValue: 0,
+      maxValue: 1
+    },
+    assertions: function (priceDepth) {
+      assert.strictEqual(priceDepth.constructor, BigNumber);
+      assert.strictEqual(priceDepth.toFixed(), "0.1");
+    }
+  });
+  test({
+    params: {
+      liquidity: 20,
+      startingQuantity: 5,
+      bestStartingQuantity: 10,
+      halfPriceWidth: "0.4",
+      minValue: 0,
+      maxValue: 1
+    },
+    assertions: function (priceDepth) {
+      assert.strictEqual(priceDepth.constructor, BigNumber);
+      assert.strictEqual(priceDepth.toFixed(), "Infinity");
+    }
+  });
+});
+
+describe("calculateOrderPrices", function () {
+  var test = function (t) {
+    it(t.description, function () {
+      t.assertions(augur.calculateOrderPrices(t.params.liquidity, t.params.startingQuantity, t.params.bestStartingQuantity, t.params.initialFairPrices, t.params.minValue, t.params.maxValue, t.params.halfPriceWidth));
+    });
+  };
+  test({
+    description: '3 outcomes',
+    params: {
+      liquidity: abi.bignum(100),
+      startingQuantity: abi.bignum(10),
+      bestStartingQuantity: abi.bignum(10),
+      initialFairPrices: abi.bignum(['0.3', '0.3', '0.3']),
+      minValue: abi.bignum(0),
+      maxValue: abi.bignum(1),
+      halfPriceWidth: abi.bignum('0.1')
+    },
+    assertions: function (orders) {
+      assert.strictEqual(orders.shares.toFixed(), '70');
+      assert.deepEqual(orders.numBuyOrders, [2, 2, 2]);
+      assert.deepEqual(orders.numSellOrders, [6, 6, 6]);
+      assert.deepEqual(abi.string(orders.buyPrices), [
+        ['0.2', '0.0875'],
+        ['0.2', '0.0875'],
+        ['0.2', '0.0875']]
+      );
+      assert.deepEqual(abi.string(orders.sellPrices), [
+        ['0.4', '0.5125', '0.625', '0.7375', '0.85', '0.9625'],
+        ['0.4', '0.5125', '0.625', '0.7375', '0.85', '0.9625'],
+        ['0.4', '0.5125', '0.625', '0.7375', '0.85', '0.9625']
+      ]);
+    }
+  });
+});
 
 describe("generateOrderBook", function() {
   // 14 tests total
-  /**
-   * generateOrderBook: convenience method for generating an initial order book
-   * for a newly created market. generateOrderBook calculates the number of
-   * orders to create, as well as the spacing between orders.
-   *
-   * @param {Object} p
-   *     market: market ID
-   *     liquidity: initial cash to be placed on the order book
-   *     initialFairPrices: array of midpoints used for bid/offer prices when the market opens
-   *     startingQuantity: number of shares in each order
-   *     bestStartingQuantity: number of shares in best bid/offer orders (optional)
-   *     priceWidth: spread between best bid/offer
-   *     isSimulation: if falsy generate order book; otherwise pass basic info to onSimulate callback
-   * @param {Object} cb
-   *     onSimulate, onBuyCompleteSets, onSetupOutcome, onSetupOrder, onSuccess, onFailed
-   *     (note: callbacks can also be properties of the p object)
-   */
-  var getMarketInfo = augur.getMarketInfo;
   var buyCompleteSets = augur.buyCompleteSets;
   var buy = augur.buy;
   var sell = augur.sell;
   var getOrderBook = augur.getOrderBook;
   afterEach(function() {
-    augur.getMarketInfo = getMarketInfo;
     augur.buyCompleteSets = buyCompleteSets;
     augur.buy = buy;
     augur.sell = sell;
@@ -41,34 +126,35 @@ describe("generateOrderBook", function() {
   var test = function(t) {
     // This function is async by default so lets do async tests only.
     it(t.description + ' async', function(done) {
-      augur.getMarketInfo = t.getMarketInfo;
       augur.buyCompleteSets = t.buyCompleteSets;
       augur.buy = t.buy,
       augur.sell = t.sell,
       augur.getOrderBook = t.getOrderBook;
       // bcecause we are using the same object to drive async and sync tests we will use the following code to wrap our final assertion function so that we can call done when the async functions are finished.
-      var functionToReplace = t.cb[t.assertionFunction];
+      var functionToReplace = t.callbacks[t.assertionFunction];
       var assertion = function(input) {
         functionToReplace(input);
         done();
       };
-      t.cb[t.assertionFunction] = assertion;
+      t.callbacks[t.assertionFunction] = assertion;
       // now that we have wrapped our assertion function we will start the test...
-      augur.generateOrderBook(t.p, t.cb);
+      augur.generateOrderBook(t.params, t.callbacks);
     });
   };
   test({
     description: 'Should handle missing marketInfo and call onFailed with an error.',
-    p: {
+    params: {
   		market: '0xa1',
   		liquidity: 10000,
   		initialFairPrices: ['0.506573092', '0.49422020'],
   		startingQuantity: 501,
   		bestStartingQuantity: 500,
   		priceWidth: '0.0812',
-  		isSimulation: false
+      // marketInfo that is undefined
+      marketInfo: undefined,
+  		isSimulationOnly: false
   	},
-  	cb: {
+  	callbacks: {
     	onSimulate: function(simulation) {},
     	onBuyCompleteSets: function(res) {},
     	onSetupOutcome: function(outcome) {},
@@ -80,10 +166,6 @@ describe("generateOrderBook", function() {
       }
     },
     assertionFunction: 'onFailed',
-    getMarketInfo: function(market, account, callback) {
-      // return marketInfo that is undefined
-      callback(undefined);
-    },
     buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {},
     buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
     sell: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
@@ -91,16 +173,18 @@ describe("generateOrderBook", function() {
   });
   test({
     description: 'Should handle marketInfo that has a different number of outcomes then expected, should call onFailed.',
-    p: {
+    params: {
   		market: '0xa1',
   		liquidity: 10000,
   		initialFairPrices: ['0.506573092', '0.49422020'],
   		startingQuantity: 501,
   		bestStartingQuantity: 500,
   		priceWidth: '0.0812',
-  		isSimulation: false
+      // market with numOutcomes != initialFairPrices.length (this array should have an entry for each # of outcomes);
+      marketInfo: { numOutcomes: 5 },
+  		isSimulationOnly: false
     },
-    cb: {
+    callbacks: {
       onSimulate: function(simulation) {},
       onBuyCompleteSets: function(res) {},
       onSetupOutcome: function(outcome) {},
@@ -112,10 +196,6 @@ describe("generateOrderBook", function() {
       }
     },
     assertionFunction: 'onFailed',
-    getMarketInfo: function(market, account, callback) {
-      // return a market with numOutcomes != initialFairPrices.length (this array should have an entry for each # of outcomes);
-      callback({ numOutcomes: 5 });
-    },
     buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {},
     buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
     sell: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
@@ -123,16 +203,18 @@ describe("generateOrderBook", function() {
   });
   test({
     description: 'Should handle a binary market where priceDepth is less than or equal to 0, triggering an onFailed called.',
-    p: {
+    params: {
       market: '0xa1',
       liquidity: 100,
       initialFairPrices: ['0.506573092', '0.49422020'],
       startingQuantity: 501,
       bestStartingQuantity: 500,
       priceWidth: '0.0812',
-      isSimulation: false
+      // marketInfo with the expected numOutcomes and a type of binary.
+      marketInfo: { numOutcomes: 2, type: 'binary' },
+      isSimulationOnly: false
     },
-    cb: {
+    callbacks: {
       onSimulate: function(simulation) {},
       onBuyCompleteSets: function(res) {},
       onSetupOutcome: function(outcome) {},
@@ -144,10 +226,6 @@ describe("generateOrderBook", function() {
       }
     },
     assertionFunction: 'onFailed',
-    getMarketInfo: function(market, account, callback) {
-      // return marketInfo with the expected numOutcomes and a type of binary.
-      callback({ numOutcomes: 2, type: 'binary' });
-    },
     buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {},
     buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
     sell: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
@@ -155,16 +233,18 @@ describe("generateOrderBook", function() {
   });
   test({
     description: 'Should handle a binary market where priceDepth is Infinity, triggering an onFailed called.',
-    p: {
+    params: {
       market: '0xa1',
       liquidity: 100,
       initialFairPrices: ['0.506573092', '0.49422020'],
       startingQuantity: 51,
       bestStartingQuantity: 50,
       priceWidth: '0.0812',
-      isSimulation: false
+      // marketInfo with the expected numOutcomes and a type of binary.
+      marketInfo: { numOutcomes: 2, type: 'binary' },
+      isSimulationOnly: false
     },
-    cb: {
+    callbacks: {
       onSimulate: function(simulation) {},
       onBuyCompleteSets: function(res) {},
       onSetupOutcome: function(outcome) {},
@@ -176,10 +256,6 @@ describe("generateOrderBook", function() {
       }
     },
     assertionFunction: 'onFailed',
-    getMarketInfo: function(market, account, callback) {
-      // return marketInfo with the expected numOutcomes and a type of binary.
-      callback({ numOutcomes: 2, type: 'binary' });
-    },
     buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {},
     buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
     sell: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
@@ -187,16 +263,18 @@ describe("generateOrderBook", function() {
   });
   test({
     description: 'Should handle a binary market where initial price is out of bounds, too low, should trigger onFailed',
-    p: {
+    params: {
       market: '0xa1',
       liquidity: 10000,
       initialFairPrices: ['0.006573092', '0.49422020'],
       startingQuantity: 501,
       bestStartingQuantity: 500,
       priceWidth: '0.0812',
-      isSimulation: false
+      // marketInfo with the expected numOutcomes and a type of binary.
+      marketInfo: { numOutcomes: 2, type: 'binary' },
+      isSimulationOnly: false
     },
-    cb: {
+    callbacks: {
       onSimulate: function(simulation) {},
       onBuyCompleteSets: function(res) {},
       onSetupOutcome: function(outcome) {},
@@ -208,10 +286,6 @@ describe("generateOrderBook", function() {
       }
     },
     assertionFunction: 'onFailed',
-    getMarketInfo: function(market, account, callback) {
-      // return marketInfo with the expected numOutcomes and a type of binary.
-      callback({ numOutcomes: 2, type: 'binary' });
-    },
     buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {},
     buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
     sell: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
@@ -219,16 +293,18 @@ describe("generateOrderBook", function() {
   });
   test({
     description: 'Should handle a binary market where initial price is out of bounds, too high, should trigger onFailed',
-    p: {
+    params: {
       market: '0xa1',
       liquidity: 10000,
       initialFairPrices: ['0.996573092', '0.49422020'],
       startingQuantity: 501,
       bestStartingQuantity: 500,
       priceWidth: '0.0812',
-      isSimulation: false
+      // return marketInfo with the expected numOutcomes and a type of binary.
+      marketInfo: { numOutcomes: 2, type: 'binary' },
+      isSimulationOnly: false
     },
-    cb: {
+    callbacks: {
       onSimulate: function(simulation) {},
       onBuyCompleteSets: function(res) {},
       onSetupOutcome: function(outcome) {},
@@ -240,10 +316,6 @@ describe("generateOrderBook", function() {
       }
     },
     assertionFunction: 'onFailed',
-    getMarketInfo: function(market, account, callback) {
-      // return marketInfo with the expected numOutcomes and a type of binary.
-      callback({ numOutcomes: 2, type: 'binary' });
-    },
     buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {},
     buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
     sell: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
@@ -251,16 +323,18 @@ describe("generateOrderBook", function() {
   });
   test({
     description: 'Should handle a binary market where price width is out of bounds, too high, should trigger onFailed',
-    p: {
+    params: {
       market: '0xa1',
       liquidity: 10000,
       initialFairPrices: ['0.6', '0.49422020'],
       startingQuantity: 501,
       bestStartingQuantity: 500,
       priceWidth: '0.8',
-      isSimulation: false
+      // marketInfo with the expected numOutcomes and a type of binary.
+      marketInfo: { numOutcomes: 2, type: 'binary' },
+      isSimulationOnly: false
     },
-    cb: {
+    callbacks: {
       onSimulate: function(simulation) {},
       onBuyCompleteSets: function(res) {},
       onSetupOutcome: function(outcome) {},
@@ -272,10 +346,6 @@ describe("generateOrderBook", function() {
       }
     },
     assertionFunction: 'onFailed',
-    getMarketInfo: function(market, account, callback) {
-      // return marketInfo with the expected numOutcomes and a type of binary.
-      callback({ numOutcomes: 2, type: 'binary' });
-    },
     buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {},
     buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
     sell: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
@@ -283,16 +353,18 @@ describe("generateOrderBook", function() {
   });
   test({
     description: 'Should handle a binary market where price width is out of bounds, too low, should trigger onFailed',
-    p: {
+    params: {
       market: '0xa1',
       liquidity: 10000,
       initialFairPrices: ['0.4', '0.49422020'],
       startingQuantity: 501,
       bestStartingQuantity: 500,
       priceWidth: '0.8',
-      isSimulation: false
+      // marketInfo with the expected numOutcomes and a type of binary.
+      marketInfo: { numOutcomes: 2, type: 'binary' },
+      isSimulationOnly: false
     },
-    cb: {
+    callbacks: {
       onSimulate: function(simulation) {},
       onBuyCompleteSets: function(res) {},
       onSetupOutcome: function(outcome) {},
@@ -304,10 +376,6 @@ describe("generateOrderBook", function() {
       }
     },
     assertionFunction: 'onFailed',
-    getMarketInfo: function(market, account, callback) {
-      // return marketInfo with the expected numOutcomes and a type of binary.
-      callback({ numOutcomes: 2, type: 'binary' });
-    },
     buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {},
     buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
     sell: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
@@ -315,24 +383,26 @@ describe("generateOrderBook", function() {
   });
   test({
     description: 'Should handle a binary market and produce a simulation of generating the order book',
-    p: {
+    params: {
       market: '0xa1',
       liquidity: 10000,
       initialFairPrices: ['0.39003', '0.39422020'],
       startingQuantity: 501,
       bestStartingQuantity: 500,
       priceWidth: '0.6',
-      isSimulation: true
+      // marketInfo with the expected numOutcomes and a type of binary.
+      marketInfo: { numOutcomes: 2, type: 'binary' },
+      isSimulationOnly: true
     },
-    cb: {
+    callbacks: {
       onSimulate: function(simulation) {
         assert.deepEqual(simulation, {
-          shares: '4007',
-          numBuyOrders: [ 2, 2 ],
-          numSellOrders: [ 7, 7 ],
+          shares: '4508',
+          numBuyOrders: [ 3, 3 ],
+          numSellOrders: [ 8, 8 ],
           buyPrices:
-            [ [ '0.09003', '0.05106333333333333333' ],
-            [ '0.0942202', '0.05525353333333333333' ] ],
+            [ [ '0.09003', '0.05106333333333333333', '0.01209666666666666666' ],
+            [ '0.0942202', '0.05525353333333333333', '0.01628686666666666666' ] ],
           sellPrices:
             [ [ '0.69003',
             '0.72899666666666666667',
@@ -340,16 +410,17 @@ describe("generateOrderBook", function() {
             '0.80693000000000000001',
             '0.84589666666666666668',
             '0.88486333333333333335',
-            '0.92383000000000000002' ],
+            '0.92383000000000000002',
+            '0.96279666666666666669' ],
             [ '0.6942202',
             '0.73318686666666666667',
             '0.77215353333333333334',
             '0.81112020000000000001',
             '0.85008686666666666668',
             '0.88905353333333333335',
-            '0.92802020000000000002' ] ],
-          numTransactions: 24,
-          priceDepth: '0.03896666666666666667'
+            '0.92802020000000000002',
+            '0.96698686666666666669' ] ],
+          numTransactions: 28
         });
       },
       onBuyCompleteSets: function(res) {},
@@ -359,10 +430,6 @@ describe("generateOrderBook", function() {
       onFailed: function(err) {}
     },
     assertionFunction: 'onSimulate',
-    getMarketInfo: function(market, account, callback) {
-      // return marketInfo with the expected numOutcomes and a type of binary.
-      callback({ numOutcomes: 2, type: 'binary' });
-    },
     buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {},
     buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
     sell: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
@@ -370,16 +437,18 @@ describe("generateOrderBook", function() {
   });
   test({
     description: 'Should handle a binary market, non simulation, when buyCompleteSets returns an error to onFailed',
-    p: {
+    params: {
       market: '0xa1',
       liquidity: 10000,
       initialFairPrices: ['0.39003', '0.39422020'],
       startingQuantity: 501,
       bestStartingQuantity: 500,
       priceWidth: '0.6',
-      isSimulation: false
+      // marketInfo with the expected numOutcomes and a type of binary.
+      marketInfo: { numOutcomes: 2, type: 'binary' },
+      isSimulationOnly: false
     },
-    cb: {
+    callbacks: {
       onSimulate: undefined,
       onBuyCompleteSets: function(res) {},
       onSetupOutcome: function(outcome) {},
@@ -391,10 +460,6 @@ describe("generateOrderBook", function() {
       }
     },
     assertionFunction: 'onFailed',
-    getMarketInfo: function(market, account, callback) {
-      // return marketInfo with the expected numOutcomes and a type of binary.
-      callback({ numOutcomes: 2, type: 'binary' });
-    },
     buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {
       // generateOrderBook always passes a single argument object to buyCompleteSets...
       market.onSent();
@@ -407,44 +472,45 @@ describe("generateOrderBook", function() {
   });
   test({
     description: 'Should handle a binary market, with simulation, when buyCompleteSets completes and all buy and sell orders complete as expected',
-    p: {
+    params: {
       market: '0xa1',
       liquidity: 100,
       initialFairPrices: ['0.5', '0.5'],
       startingQuantity: 11,
       bestStartingQuantity: 10,
       priceWidth: '0.5',
-      isSimulation: false
+      // marketInfo with the expected numOutcomes and a type of binary.
+      marketInfo: { numOutcomes: 2, type: 'binary' },
+      isSimulationOnly: false
     },
-    cb: {
+    callbacks: {
       onSimulate: function(simulation) {
         assert.deepEqual(simulation, {
-          shares: '32',
-          numBuyOrders: [ 2, 2 ],
-          numSellOrders: [ 2, 2 ],
-          buyPrices: [ [ '0.25', '0.146875' ], [ '0.25', '0.146875' ] ],
-          sellPrices: [ [ '0.75', '0.853125' ], [ '0.75', '0.853125' ] ],
-          numTransactions: 14,
-          priceDepth: '0.103125'
+          shares: '43',
+          numBuyOrders: [ 3, 3 ],
+          numSellOrders: [ 3, 3 ],
+          buyPrices: [ [ '0.25', '0.146875', '0.04375' ], [ '0.25', '0.146875', '0.04375' ] ],
+          sellPrices: [ [ '0.75', '0.853125', '0.95625' ], [ '0.75', '0.853125', '0.95625' ] ],
+          numTransactions: 18
         });
       },
       onBuyCompleteSets: function(res) {
-        assert.deepEqual(res, {callReturn: ['0x20']});
+        assert.deepEqual(res, {callReturn: ['43']});
       },
       onSetupOutcome: function(outcome) {
         assert.oneOf(outcome.outcome, [1, 2]);
         assert.equal(outcome.market, '0xa1');
       },
       onSetupOrder: function(order) {
-        if (order.buyPrice) {
-          assert.oneOf(order.buyPrice, ['0.25', '0.146875']);
+        if (order.type === 'buy') {
+          assert.oneOf(order.price, ['0.25', '0.146875', '0.04375']);
         }
-        if (order.sellPrice) {
-          assert.oneOf(order.sellPrice, ['0.75', '0.853125']);
+        if (order.type === 'sell') {
+          assert.oneOf(order.price, ['0.75', '0.853125', '0.95625']);
         }
         assert.oneOf(order.amount, ['10', '11']);
         assert.equal(order.market, '0xa1');
-        assert.equal(order.tradeId, '0xc1');
+        assert.equal(order.id, '0xc1');
         assert.equal(order.hash, '0xf1');
         assert.equal(order.gasUsed, '0.005');
       },
@@ -456,10 +522,6 @@ describe("generateOrderBook", function() {
       }
     },
     assertionFunction: 'onSuccess',
-    getMarketInfo: function(market, account, callback) {
-      // return marketInfo with the expected numOutcomes and a type of binary.
-      callback({ numOutcomes: 2, type: 'binary' });
-    },
     buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {
       market.onSent();
       market.onSuccess({ callReturn: [market.amount.toString()]});
@@ -478,29 +540,30 @@ describe("generateOrderBook", function() {
   });
   test({
     description: 'Should handle a binary market, with simulation, when buyCompleteSets completes successfully but a buy order fails.',
-    p: {
+    params: {
       market: '0xa1',
       liquidity: 100,
       initialFairPrices: ['0.5', '0.5'],
       startingQuantity: 11,
       bestStartingQuantity: 10,
       priceWidth: '0.5',
-      isSimulation: false
+      // marketInfo with the expected numOutcomes and a type of binary.
+      marketInfo: { numOutcomes: 2, type: 'binary' },
+      isSimulationOnly: false
     },
-    cb: {
+    callbacks: {
       onSimulate: function(simulation) {
         assert.deepEqual(simulation, {
-          shares: '32',
-          numBuyOrders: [ 2, 2 ],
-          numSellOrders: [ 2, 2 ],
-          buyPrices: [ [ '0.25', '0.146875' ], [ '0.25', '0.146875' ] ],
-          sellPrices: [ [ '0.75', '0.853125' ], [ '0.75', '0.853125' ] ],
-          numTransactions: 14,
-          priceDepth: '0.103125'
+          shares: '43',
+          numBuyOrders: [ 3, 3 ],
+          numSellOrders: [ 3, 3 ],
+          buyPrices: [ [ '0.25', '0.146875', '0.04375' ], [ '0.25', '0.146875', '0.04375' ] ],
+          sellPrices: [ [ '0.75', '0.853125', '0.95625' ], [ '0.75', '0.853125', '0.95625' ] ],
+          numTransactions: 18
         });
       },
       onBuyCompleteSets: function(res) {
-        assert.deepEqual(res, {callReturn: ['0x20']});
+        assert.deepEqual(res, {callReturn: ['43']});
       },
       onSetupOutcome: function(outcome) {
         assert.deepEqual(outcome.outcome, 1);
@@ -517,10 +580,6 @@ describe("generateOrderBook", function() {
       }
     },
     assertionFunction: 'onFailed',
-    getMarketInfo: function(market, account, callback) {
-      // return marketInfo with the expected numOutcomes and a type of binary.
-      callback({ numOutcomes: 2, type: 'binary' });
-    },
     buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {
       market.onSent();
       market.onSuccess({ callReturn: [market.amount.toString()]});
@@ -541,29 +600,30 @@ describe("generateOrderBook", function() {
   });
   test({
     description: 'Should handle a binary market, with simulation, when buyCompleteSets completes successfully as well as the buy orders but sell order fails.',
-    p: {
+    params: {
       market: '0xa1',
       liquidity: 100,
       initialFairPrices: ['0.5', '0.5'],
       startingQuantity: 11,
       bestStartingQuantity: 10,
       priceWidth: '0.5',
-      isSimulation: false
+      // marketInfo with the expected numOutcomes and a type of binary.
+      marketInfo: { numOutcomes: 2, type: 'binary' },
+      isSimulationOnly: false
     },
-    cb: {
+    callbacks: {
       onSimulate: function(simulation) {
         assert.deepEqual(simulation, {
-          shares: '32',
-          numBuyOrders: [ 2, 2 ],
-          numSellOrders: [ 2, 2 ],
-          buyPrices: [ [ '0.25', '0.146875' ], [ '0.25', '0.146875' ] ],
-          sellPrices: [ [ '0.75', '0.853125' ], [ '0.75', '0.853125' ] ],
-          numTransactions: 14,
-          priceDepth: '0.103125'
+          shares: '43',
+          numBuyOrders: [ 3, 3 ],
+          numSellOrders: [ 3, 3 ],
+          buyPrices: [ [ '0.25', '0.146875', '0.04375' ], [ '0.25', '0.146875', '0.04375' ] ],
+          sellPrices: [ [ '0.75', '0.853125', '0.95625' ], [ '0.75', '0.853125', '0.95625' ] ],
+          numTransactions: 18
         });
       },
       onBuyCompleteSets: function(res) {
-        assert.deepEqual(res, {callReturn: ['0x20']});
+        assert.deepEqual(res, {callReturn: ['43']});
       },
       onSetupOutcome: function(outcome) {
         assert.deepEqual(outcome.outcome, 1);
@@ -571,10 +631,11 @@ describe("generateOrderBook", function() {
       },
       onSetupOrder: function(order) {
         // in this test only the buy orders should call onSetupOrder
-        assert.oneOf(order.buyPrice, ['0.25', '0.146875']);
+        assert.strictEqual(order.type, 'buy');
+        assert.oneOf(order.price, ['0.25', '0.146875', '0.04375']);
         assert.oneOf(order.amount, ['10', '11']);
         assert.equal(order.market, '0xa1');
-        assert.equal(order.tradeId, '0xc1');
+        assert.equal(order.id, '0xc1');
         assert.equal(order.hash, '0xf1');
         assert.equal(order.gasUsed, '0.005');
       },
@@ -586,10 +647,6 @@ describe("generateOrderBook", function() {
       }
     },
     assertionFunction: 'onFailed',
-    getMarketInfo: function(market, account, callback) {
-      // return marketInfo with the expected numOutcomes and a type of binary.
-      callback({ numOutcomes: 2, type: 'binary' });
-    },
     buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {
       market.onSent();
       market.onSuccess({ callReturn: [market.amount.toString()]});
@@ -610,21 +667,23 @@ describe("generateOrderBook", function() {
   });
   test({
     description: 'Should handle a scalar market, with simulation, when buyCompleteSets completes and all buy and sell orders complete as expected',
-    p: {
+    params: {
       market: '0xa1',
       liquidity: 100,
       initialFairPrices: ['0.5', '0.5'],
       startingQuantity: 11,
       bestStartingQuantity: 10,
       priceWidth: '0.5',
-      isSimulation: false
+      // marketInfo with the expected numOutcomes and a type of binary.
+      marketInfo: { numOutcomes: 2, type: 'scalar', minValue: '0', maxValue: '120'},
+      isSimulationOnly: false
     },
-    cb: {
+    callbacks: {
       onSimulate: function(simulation) {
         assert.deepEqual(simulation, {
-          shares: '87',
+          shares: '98',
           numBuyOrders: [ 1, 1 ],
-          numSellOrders: [ 7, 7 ],
+          numSellOrders: [ 8, 8 ],
           buyPrices: [ [ '0.25' ], [ '0.25' ] ],
           sellPrices:
             [ [ '0.75',
@@ -633,48 +692,56 @@ describe("generateOrderBook", function() {
             '50.146875',
             '66.6125',
             '83.078125',
-            '99.54375' ],
+            '99.54375',
+            '116.009375' ],
             [ '0.75',
             '17.215625',
             '33.68125',
             '50.146875',
             '66.6125',
             '83.078125',
-            '99.54375' ] ],
-          numTransactions: 22,
-          priceDepth: '16.465625'
+            '99.54375',
+            '116.009375' ] ],
+          numTransactions: 24
         });
       },
       onBuyCompleteSets: function(res) {
-        assert.deepEqual(res, {callReturn: ['0x57']});
+        assert.deepEqual(res, {callReturn: ['98']});
       },
       onSetupOutcome: function(outcome) {
         assert.oneOf(outcome.outcome, [1, 2]);
         assert.equal(outcome.market, '0xa1');
       },
       onSetupOrder: function(order) {
-        if (order.buyPrice) {
-          assert.deepEqual(order.buyPrice, '0.25');
+        if (order.type === 'buy') {
+          assert.deepEqual(order.price, '0.25');
         }
-        if (order.sellPrice) {
-          assert.oneOf(order.sellPrice, [
+        if (order.type === 'sell') {
+          assert.oneOf(order.price, [
             '0.75',
             '17.215625',
             '33.68125',
             '50.146875',
             '66.6125',
             '83.078125',
-            '99.54375'
+            '99.54375',
+            '116.009375'
           ]);
         }
         assert.oneOf(order.amount, ['10', '11']);
         assert.equal(order.market, '0xa1');
-        assert.equal(order.tradeId, '0xc1');
+        assert.equal(order.id, '0xc1');
         assert.equal(order.hash, '0xf1');
         assert.equal(order.gasUsed, '0.005');
       },
       onSuccess: function(orderBook) {
-        assert.deepEqual(orderBook, { market: '0xa1', scalarMinMax: { minValue: abi.bignum('0'), maxValue: abi.bignum('120')} });
+        assert.strictEqual(JSON.stringify(orderBook), JSON.stringify({
+          market: '0xa1',
+          scalarMinMax: {
+            minValue: abi.bignum('0'),
+            maxValue: abi.bignum('120')
+          }
+        }));
       },
       onFailed: function(err) {
         // Shouldn't be called in this test.
@@ -682,10 +749,6 @@ describe("generateOrderBook", function() {
       }
     },
     assertionFunction: 'onSuccess',
-    getMarketInfo: function(market, account, callback) {
-      // return marketInfo with the expected numOutcomes and a type of binary.
-      callback({ numOutcomes: 2, type: 'scalar', events: [{minValue: '0', maxValue: '120'}]});
-    },
     buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {
       market.onSent();
       market.onSuccess({ callReturn: [market.amount.toString()]});
@@ -699,7 +762,7 @@ describe("generateOrderBook", function() {
       amount.onSuccess({ callReturn: '0xc1', gasUsed: '0.005', timestamp: 150000000, hash: '0xf1'});
     },
     getOrderBook: function(market, scalarMinMax, onSuccess) {
-    onSuccess({market: market, scalarMinMax: scalarMinMax });
+      onSuccess({market: market, scalarMinMax: scalarMinMax });
     },
   });
 });

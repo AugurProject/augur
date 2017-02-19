@@ -327,11 +327,6 @@ module.exports = {
     return abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
   },
 
-  // expects BigNumber inputs
-  calculatePriceDepth: function (liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue) {
-    return startingQuantity.times(minValue.plus(maxValue).minus(halfPriceWidth)).dividedBy(liquidity.minus(new BigNumber(2).times(bestStartingQuantity)));
-  },
-
   shrinkScalarPrice: function (minValue, price) {
     if (minValue.constructor !== BigNumber) minValue = abi.bignum(minValue);
     if (price.constructor !== BigNumber) price = abi.bignum(price);

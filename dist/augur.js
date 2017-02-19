@@ -24090,239 +24090,6 @@ module.exports = function () {
   };
 };
 },{"./constants":65,"./utilities":99,"async":118,"augur-abi":1,"augur-contracts":58,"clone":159,"ethrpc":288}],67:[function(require,module,exports){
-/**
- * generateOrderBook: convenience method for generating an initial order book
- * for a newly created market. generateOrderBook calculates the number of
- * orders to create, as well as the spacing between orders.
- *
- * @param {Object} p
- *     market: market ID
- *     liquidity: initial cash to be placed on the order book
- *     initialFairPrices: array of midpoints used for bid/offer prices when the market opens
- *     startingQuantity: number of shares in each order
- *     bestStartingQuantity: number of shares in best bid/offer orders (optional)
- *     priceWidth: spread between best bid/offer
- *     isSimulation: if falsy generate order book; otherwise pass basic info to onSimulate callback
- * @param {Object} cb
- *     onSimulate, onBuyCompleteSets, onSetupOutcome, onSetupOrder, onSuccess, onFailed
- *     (note: callbacks can also be properties of the p object)
- */
-
-"use strict";
-
-var async = require("async");
-var BigNumber = require("bignumber.js");
-var abi = require("augur-abi");
-var constants = require("./constants");
-
-module.exports = function (p, cb) {
-  var self = this;
-  var liquidity = abi.bignum(p.liquidity);
-  var numOutcomes = p.initialFairPrices.length;
-  var initialFairPrices = new Array(numOutcomes);
-  for (var i = 0; i < numOutcomes; ++i) {
-    initialFairPrices[i] = abi.bignum(p.initialFairPrices[i]);
-  }
-  var startingQuantity = abi.bignum(p.startingQuantity);
-  var bestStartingQuantity = abi.bignum(p.bestStartingQuantity || p.startingQuantity);
-  var halfPriceWidth = abi.bignum(p.priceWidth).dividedBy(new BigNumber(2));
-  cb = cb || {};
-  var onBuyCompleteSets = cb.onBuyCompleteSets || p.onBuyCompleteSets || this.utils.noop;
-  var onSetupOutcome = cb.onSetupOutcome || p.onSetupOutcome || this.utils.noop;
-  var onSetupOrder = cb.onSetupOrder || p.onSetupOrder || this.utils.noop;
-  var _onSuccess = cb.onSuccess || p.onSuccess || this.utils.noop;
-  var _onFailed = cb.onFailed || p.onFailed || this.utils.noop;
-  this.getMarketInfo(p.market, null, function (marketInfo) {
-    var minValue, maxValue;
-    if (!marketInfo) return _onFailed(self.errors.NO_MARKET_INFO);
-    if (marketInfo.numOutcomes !== numOutcomes) {
-      return _onFailed(self.errors.WRONG_NUMBER_OF_OUTCOMES);
-    }
-    var scalarMinMax;
-    if (marketInfo.type === "scalar") {
-      minValue = abi.bignum(marketInfo.events[0].minValue);
-      maxValue = abi.bignum(marketInfo.events[0].maxValue);
-      scalarMinMax = { minValue: minValue, maxValue: maxValue };
-    } else {
-      minValue = new BigNumber(0);
-      maxValue = new BigNumber(1);
-    }
-
-    var priceDepth = self.calculatePriceDepth(liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue);
-    if (priceDepth.lte(constants.ZERO) || priceDepth.toNumber() === Infinity) {
-      return _onFailed(self.errors.INSUFFICIENT_LIQUIDITY);
-    }
-    var buyPrices = new Array(numOutcomes);
-    var sellPrices = new Array(numOutcomes);
-    var numSellOrders = new Array(numOutcomes);
-    var numBuyOrders = new Array(numOutcomes);
-    var shares = new BigNumber(0);
-    var i, j, buyPrice, sellPrice, outcomeShares;
-    for (i = 0; i < numOutcomes; ++i) {
-      if (initialFairPrices[i].lt(minValue.plus(halfPriceWidth)) || initialFairPrices[i].gt(maxValue.minus(halfPriceWidth))) {
-        // console.log("priceDepth:", priceDepth.toFixed());
-        // console.log("initialFairPrice[" + i + "]:", initialFairPrices[i].toFixed());
-        // console.log("minValue:", minValue.toFixed());
-        // console.log("maxValue:", maxValue.toFixed());
-        // console.log("halfPriceWidth:", halfPriceWidth.toFixed());
-        // console.log("minValue + halfPriceWidth:", minValue.plus(halfPriceWidth).toFixed());
-        // console.log("maxValue - halfPriceWidth:", maxValue.minus(halfPriceWidth).toFixed());
-        // console.log(initialFairPrices[i].lt(minValue.plus(halfPriceWidth)), initialFairPrices[i].gt(maxValue.minus(halfPriceWidth)));
-        return _onFailed(self.errors.INITIAL_PRICE_OUT_OF_BOUNDS);
-      }
-      if (initialFairPrices[i].plus(halfPriceWidth).gte(maxValue) || initialFairPrices[i].minus(halfPriceWidth).lte(minValue)) {
-        return _onFailed(self.errors.PRICE_WIDTH_OUT_OF_BOUNDS);
-      }
-      buyPrice = initialFairPrices[i].minus(halfPriceWidth);
-      sellPrice = initialFairPrices[i].plus(halfPriceWidth);
-      numBuyOrders[i] = buyPrice.minus(minValue).dividedBy(priceDepth).floor().toNumber();
-      if (numBuyOrders[i] === 0) numBuyOrders[i] = 1;
-      numSellOrders[i] = maxValue.minus(sellPrice).dividedBy(priceDepth).floor();
-      if (numSellOrders[i].eq(new BigNumber(0))) numSellOrders[i] = new BigNumber(1);
-      outcomeShares = bestStartingQuantity.plus(startingQuantity.times(numSellOrders[i]));
-      if (outcomeShares.gt(shares)) shares = outcomeShares;
-      numSellOrders[i] = numSellOrders[i].toNumber();
-      buyPrices[i] = new Array(numBuyOrders[i]);
-      buyPrices[i][0] = buyPrice;
-      for (j = 1; j < numBuyOrders[i]; ++j) {
-        buyPrices[i][j] = buyPrices[i][j - 1].minus(priceDepth);
-        if (buyPrices[i][j].lte(minValue)) {
-          buyPrices[i][j] = minValue.plus(priceDepth.dividedBy(new BigNumber(10)));
-        }
-      }
-      sellPrices[i] = new Array(numSellOrders[i]);
-      sellPrices[i][0] = sellPrice;
-      for (j = 1; j < numSellOrders[i]; ++j) {
-        sellPrices[i][j] = sellPrices[i][j - 1].plus(priceDepth);
-        if (sellPrices[i][j].gte(maxValue)) {
-          sellPrices[i][j] = maxValue.minus(priceDepth.dividedBy(new BigNumber(10)));
-        }
-      }
-    }
-    var numTransactions = 0;
-    for (i = 0; i < numOutcomes; ++i) {
-      numTransactions += numBuyOrders[i] + numSellOrders[i] + 3;
-    }
-    var onSimulate = cb.onSimulate || p.onSimulate;
-    if (self.utils.is_function(onSimulate)) {
-      onSimulate({
-        shares: shares.toFixed(),
-        numBuyOrders: numBuyOrders,
-        numSellOrders: numSellOrders,
-        buyPrices: abi.string(buyPrices),
-        sellPrices: abi.string(sellPrices),
-        numTransactions: numTransactions,
-        priceDepth: priceDepth.toFixed()
-      });
-      if (p.isSimulation) return;
-    }
-    self.buyCompleteSets({
-      market: p.market,
-      amount: abi.hex(shares),
-      onSent: function onSent(res) {
-        // console.log("generateOrderBook.buyCompleteSets sent:", res);
-      },
-      onSuccess: function onSuccess(res) {
-        // console.log("generateOrderBook.buyCompleteSets success:", res);
-        onBuyCompleteSets(res);
-        var outcomes = new Array(numOutcomes);
-        for (var i = 0; i < numOutcomes; ++i) {
-          outcomes[i] = i + 1;
-        }
-        async.forEachOfLimit(outcomes, constants.PARALLEL_LIMIT, function (outcome, index, nextOutcome) {
-          async.parallelLimit([function (callback) {
-            async.forEachOfLimit(buyPrices[index], constants.PARALLEL_LIMIT, function (buyPrice, i, nextBuyPrice) {
-              var amount = !i ? bestStartingQuantity : startingQuantity;
-              self.buy({
-                amount: amount.toFixed(),
-                price: buyPrice.toFixed(),
-                market: p.market,
-                outcome: outcome,
-                scalarMinMax: scalarMinMax,
-                onSent: function onSent(res) {
-                  // console.log("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "sent:", res);
-                },
-                onSuccess: function onSuccess(res) {
-                  // console.log("generateOrderBook.buy", amount.toFixed(), buyPrice, outcome, "success:", res);
-                  onSetupOrder({
-                    tradeId: res.callReturn,
-                    market: p.market,
-                    outcome: outcome,
-                    amount: amount.toFixed(),
-                    buyPrice: buyPrice.toFixed(),
-                    timestamp: res.timestamp,
-                    hash: res.hash,
-                    gasUsed: res.gasUsed
-                  });
-                  nextBuyPrice();
-                },
-                onFailed: function onFailed(err) {
-                  // console.error("generateOrderBook.buy", amount.toFixed(), buyPrice.toFixed(), outcome, "failed:", err);
-                  nextBuyPrice(err);
-                }
-              });
-            }, function (err) {
-              // if (err) console.error("async.each buy:", err);
-              callback(err);
-            });
-          }, function (callback) {
-            async.forEachOfLimit(sellPrices[index], constants.PARALLEL_LIMIT, function (sellPrice, i, nextSellPrice) {
-              var amount = !i ? bestStartingQuantity : startingQuantity;
-              self.sell({
-                amount: amount.toFixed(),
-                price: sellPrice.toFixed(),
-                market: p.market,
-                outcome: outcome,
-                scalarMinMax: scalarMinMax,
-                onSent: function onSent(res) {
-                  // console.log("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "sent:", res);
-                },
-                onSuccess: function onSuccess(res) {
-                  // console.log("generateOrderBook.sell", amount.toFixed(), sellPrice, outcome, "success:", res);
-                  onSetupOrder({
-                    tradeId: res.callReturn,
-                    market: p.market,
-                    outcome: outcome,
-                    amount: amount.toFixed(),
-                    sellPrice: sellPrice.toFixed(),
-                    timestamp: res.timestamp,
-                    hash: res.hash,
-                    gasUsed: res.gasUsed
-                  });
-                  nextSellPrice();
-                },
-                onFailed: function onFailed(err) {
-                  // console.error("generateOrderBook.sell", amount.toFixed(), sellPrice.toFixed(), outcome, "failed:", err);
-                  nextSellPrice(err);
-                }
-              });
-            }, function (err) {
-              // if (err) console.error("async.each sell:", err);
-              callback(err);
-            });
-          }], constants.PARALLEL_LIMIT, function (err) {
-            // if (err) console.error("buy/sell:", err);
-            onSetupOutcome({ market: p.market, outcome: outcome });
-            nextOutcome(err);
-          });
-        }, function (err) {
-          if (err) return _onFailed(err);
-          var scalarMinMax = {};
-          if (marketInfo.type === "scalar") {
-            scalarMinMax.minValue = minValue;
-            scalarMinMax.maxValue = maxValue;
-          }
-          self.getOrderBook(p.market, scalarMinMax, _onSuccess);
-        });
-      },
-      onFailed: function onFailed(err) {
-        // console.error("generateOrderBook.buyCompleteSets failed:", err);
-        _onFailed(err);
-      }
-    });
-  });
-};
-},{"./constants":65,"async":118,"augur-abi":1,"bignumber.js":121}],68:[function(require,module,exports){
 (function (process){
 /**
  * Augur JavaScript SDK
@@ -24340,10 +24107,10 @@ BigNumber.config({
   ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
 });
 
-var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/slashRep"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register"), require("./modules/topics"), require("./modules/modifyOrderBook")];
+var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/slashRep"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register"), require("./modules/topics"), require("./modules/modifyOrderBook"), require("./modules/generateOrderBook")];
 
 function Augur() {
-  this.version = "3.12.3";
+  this.version = "3.12.4";
 
   this.options = {
     debug: {
@@ -24380,7 +24147,6 @@ function Augur() {
       this[fn].toString = Function.prototype.toString.bind(modules[i][fn]);
     }
   }
-  this.generateOrderBook = require("./generateOrderBook").bind(this);
   this.createBatch = require("./batch").bind(this);
   this.accounts = this.Accounts();
   this.web = this.accounts; // deprecated
@@ -24398,7 +24164,7 @@ Augur.prototype.AugurNode = require("./augurNode");
 
 module.exports = new Augur();
 }).call(this,require('_process'))
-},{"../test/tools":283,"./accounts":61,"./augurNode":62,"./batch":63,"./chat":64,"./constants":65,"./filters":66,"./generateOrderBook":67,"./modules/abacus":69,"./modules/buyAndSellShares":70,"./modules/cash":71,"./modules/collectFees":72,"./modules/compositeGetters":73,"./modules/connect":74,"./modules/createBranch":75,"./modules/createMarket":76,"./modules/events":77,"./modules/executeTrade":78,"./modules/logs":79,"./modules/makeOrder":80,"./modules/makeReports":81,"./modules/markets":82,"./modules/modifyOrderBook":83,"./modules/payout":85,"./modules/placeTrade":86,"./modules/positions":87,"./modules/register":88,"./modules/reporting":89,"./modules/selectOrder":90,"./modules/sendReputation":91,"./modules/slashRep":92,"./modules/takeOrder":94,"./modules/topics":95,"./modules/trade":96,"./modules/tradingActions":97,"./modules/transact":98,"./utilities":99,"_process":231,"augur-abi":1,"bignumber.js":121,"ethrpc":288}],69:[function(require,module,exports){
+},{"../test/tools":283,"./accounts":61,"./augurNode":62,"./batch":63,"./chat":64,"./constants":65,"./filters":66,"./modules/abacus":68,"./modules/buyAndSellShares":69,"./modules/cash":70,"./modules/collectFees":71,"./modules/compositeGetters":72,"./modules/connect":73,"./modules/createBranch":74,"./modules/createMarket":75,"./modules/events":76,"./modules/executeTrade":77,"./modules/generateOrderBook":78,"./modules/logs":79,"./modules/makeOrder":80,"./modules/makeReports":81,"./modules/markets":82,"./modules/modifyOrderBook":83,"./modules/payout":85,"./modules/placeTrade":86,"./modules/positions":87,"./modules/register":88,"./modules/reporting":89,"./modules/selectOrder":90,"./modules/sendReputation":91,"./modules/slashRep":92,"./modules/takeOrder":94,"./modules/topics":95,"./modules/trade":96,"./modules/tradingActions":97,"./modules/transact":98,"./utilities":99,"_process":231,"augur-abi":1,"bignumber.js":121,"ethrpc":288}],68:[function(require,module,exports){
 (function (Buffer){
 /**
  * Utility functions that do a local calculation (i.e., these functions do not
@@ -24714,11 +24480,6 @@ module.exports = {
     return abi.prefix_hex(new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice)).toString(16));
   },
 
-  // expects BigNumber inputs
-  calculatePriceDepth: function calculatePriceDepth(liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue) {
-    return startingQuantity.times(minValue.plus(maxValue).minus(halfPriceWidth)).dividedBy(liquidity.minus(new BigNumber(2).times(bestStartingQuantity)));
-  },
-
   shrinkScalarPrice: function shrinkScalarPrice(minValue, price) {
     if (minValue.constructor !== BigNumber) minValue = abi.bignum(minValue);
     if (price.constructor !== BigNumber) price = abi.bignum(price);
@@ -24808,7 +24569,7 @@ module.exports = {
   }
 };
 }).call(this,require("buffer").Buffer)
-},{"../constants":65,"../utilities":99,"./makeReports":81,"async":118,"augur-abi":1,"bignumber.js":121,"bs58":153,"buffer":156,"clone":159}],70:[function(require,module,exports){
+},{"../constants":65,"../utilities":99,"./makeReports":81,"async":118,"augur-abi":1,"bignumber.js":121,"bs58":153,"buffer":156,"clone":159}],69:[function(require,module,exports){
 /**
  * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
@@ -24956,7 +24717,7 @@ module.exports = {
     return this.transact(tx, onSent, onSuccess, onFailed);
   }
 };
-},{"../constants":65,"../utilities":99,"augur-abi":1,"clone":159}],71:[function(require,module,exports){
+},{"../constants":65,"../utilities":99,"augur-abi":1,"clone":159}],70:[function(require,module,exports){
 /**
  * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
@@ -25008,7 +24769,7 @@ module.exports = {
     return this.Cash.sendFrom(recver, value, from, onSent, onSuccess, onFailed);
   }
 };
-},{"../constants":65,"../utilities":99,"augur-abi":1,"clone":159}],72:[function(require,module,exports){
+},{"../constants":65,"../utilities":99,"augur-abi":1,"clone":159}],71:[function(require,module,exports){
 /**
  * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
@@ -25076,7 +24837,7 @@ module.exports = {
     });
   }
 };
-},{"../utilities":99,"augur-abi":1,"bignumber.js":121,"clone":159}],73:[function(require,module,exports){
+},{"../utilities":99,"augur-abi":1,"bignumber.js":121,"clone":159}],72:[function(require,module,exports){
 /**
  * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
@@ -25448,7 +25209,7 @@ module.exports = {
     });
   }
 };
-},{"../constants":65,"../utilities":99,"augur-abi":1,"bignumber.js":121,"clone":159}],74:[function(require,module,exports){
+},{"../constants":65,"../utilities":99,"augur-abi":1,"bignumber.js":121,"clone":159}],73:[function(require,module,exports){
 /**
  * Ethereum network connection / contract lookup
  * @author Jack Peterson (jack@tinybike.net)
@@ -25654,7 +25415,7 @@ module.exports = {
     });
   }
 };
-},{"../constants":65,"../utilities":99,"augur-abi":1,"augur-contracts":58,"clone":159,"ethereumjs-connect":284}],75:[function(require,module,exports){
+},{"../constants":65,"../utilities":99,"augur-abi":1,"augur-contracts":58,"clone":159,"ethereumjs-connect":284}],74:[function(require,module,exports){
 /**
  * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
@@ -25729,7 +25490,7 @@ module.exports = {
     return this.transact(tx, onSent, onSuccess, onFailed);
   }
 };
-},{"../utilities":99,"augur-abi":1,"clone":159}],76:[function(require,module,exports){
+},{"../utilities":99,"augur-abi":1,"clone":159}],75:[function(require,module,exports){
 /**
  * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
@@ -25850,7 +25611,7 @@ module.exports = {
     self.transact(tx, onSent, onSuccess, onFailed);
   }
 };
-},{"../utilities":99,"augur-abi":1,"bignumber.js":121,"clone":159}],77:[function(require,module,exports){
+},{"../utilities":99,"augur-abi":1,"bignumber.js":121,"clone":159}],76:[function(require,module,exports){
 /**
  * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
@@ -25896,7 +25657,7 @@ module.exports = {
     return info;
   }
 };
-},{"augur-abi":1}],78:[function(require,module,exports){
+},{"augur-abi":1}],77:[function(require,module,exports){
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -26117,7 +25878,270 @@ module.exports = {
   }
 
 };
-},{"../constants":65,"./selectOrder":90,"async":118,"augur-abi":1,"bignumber.js":121}],79:[function(require,module,exports){
+},{"../constants":65,"./selectOrder":90,"async":118,"augur-abi":1,"bignumber.js":121}],78:[function(require,module,exports){
+"use strict";
+
+var async = require("async");
+var BigNumber = require("bignumber.js");
+var abi = require("augur-abi");
+var constants = require("../constants");
+var utils = require("../utilities");
+
+module.exports = {
+
+  // expects BigNumber inputs
+  calculatePriceDepth: function calculatePriceDepth(liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue) {
+    return startingQuantity.times(minValue.plus(maxValue).minus(halfPriceWidth)).dividedBy(liquidity.minus(new BigNumber(2, 10).times(bestStartingQuantity)));
+  },
+
+  getMinMax: function getMinMax(marketInfo) {
+    if (marketInfo.type === "scalar") {
+      return {
+        minValue: new BigNumber(marketInfo.minValue, 10),
+        maxValue: new BigNumber(marketInfo.maxValue, 10)
+      };
+    }
+    return {
+      minValue: new BigNumber(0),
+      maxValue: new BigNumber(1, 10)
+    };
+  },
+
+  calculateOrderPrices: function calculateOrderPrices(liquidity, startingQuantity, bestStartingQuantity, initialFairPrices, minValue, maxValue, halfPriceWidth) {
+    var priceDepth = this.calculatePriceDepth(liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue);
+    if (priceDepth.lte(constants.ZERO) || priceDepth.toNumber() === Infinity) {
+      return this.errors.INSUFFICIENT_LIQUIDITY;
+    }
+    var numOutcomes = initialFairPrices.length;
+    var buyPrices = new Array(numOutcomes);
+    var sellPrices = new Array(numOutcomes);
+    var numSellOrders = new Array(numOutcomes);
+    var numBuyOrders = new Array(numOutcomes);
+    var shares = new BigNumber(0);
+    var i, j, buyPrice, sellPrice, outcomeShares;
+    for (i = 0; i < numOutcomes; ++i) {
+      if (initialFairPrices[i].lt(minValue.plus(halfPriceWidth)) || initialFairPrices[i].gt(maxValue.minus(halfPriceWidth))) {
+        if (this.options.debug.trading) {
+          console.log("priceDepth:", priceDepth.toFixed());
+          console.log("initialFairPrice[" + i + "]:", initialFairPrices[i].toFixed());
+          console.log("minValue:", minValue.toFixed());
+          console.log("maxValue:", maxValue.toFixed());
+          console.log("halfPriceWidth:", halfPriceWidth.toFixed());
+          console.log("minValue + halfPriceWidth:", minValue.plus(halfPriceWidth).toFixed());
+          console.log("maxValue - halfPriceWidth:", maxValue.minus(halfPriceWidth).toFixed());
+          console.log(initialFairPrices[i].lt(minValue.plus(halfPriceWidth)), initialFairPrices[i].gt(maxValue.minus(halfPriceWidth)));
+        }
+        return this.errors.INITIAL_PRICE_OUT_OF_BOUNDS;
+      }
+      if (initialFairPrices[i].plus(halfPriceWidth).gte(maxValue) || initialFairPrices[i].minus(halfPriceWidth).lte(minValue)) {
+        return this.errors.PRICE_WIDTH_OUT_OF_BOUNDS;
+      }
+      buyPrice = initialFairPrices[i].minus(halfPriceWidth);
+      sellPrice = initialFairPrices[i].plus(halfPriceWidth);
+      numBuyOrders[i] = buyPrice.minus(minValue).dividedBy(priceDepth).floor().plus(1).toNumber();
+      if (numBuyOrders[i] === 0) numBuyOrders[i] = 1;
+      numSellOrders[i] = maxValue.minus(sellPrice).dividedBy(priceDepth).floor().plus(1);
+      if (numSellOrders[i].eq(new BigNumber(0))) numSellOrders[i] = new BigNumber(1, 10);
+      outcomeShares = bestStartingQuantity.plus(startingQuantity.times(numSellOrders[i]));
+      if (outcomeShares.gt(shares)) shares = outcomeShares;
+      numSellOrders[i] = numSellOrders[i].toNumber();
+      buyPrices[i] = new Array(numBuyOrders[i]);
+      buyPrices[i][0] = buyPrice;
+      for (j = 1; j < numBuyOrders[i]; ++j) {
+        buyPrices[i][j] = buyPrices[i][j - 1].minus(priceDepth);
+        if (buyPrices[i][j].lte(minValue)) {
+          buyPrices[i][j] = minValue.plus(priceDepth.dividedBy(new BigNumber(10, 10)));
+        }
+      }
+      sellPrices[i] = new Array(numSellOrders[i]);
+      sellPrices[i][0] = sellPrice;
+      for (j = 1; j < numSellOrders[i]; ++j) {
+        sellPrices[i][j] = sellPrices[i][j - 1].plus(priceDepth);
+        if (sellPrices[i][j].gte(maxValue)) {
+          sellPrices[i][j] = maxValue.minus(priceDepth.dividedBy(new BigNumber(10, 10)));
+        }
+      }
+    }
+    return {
+      buyPrices: buyPrices,
+      sellPrices: sellPrices,
+      numSellOrders: numSellOrders,
+      numBuyOrders: numBuyOrders,
+      shares: shares
+    };
+  },
+
+  calculateNumTransactions: function calculateNumTransactions(numOutcomes, orders) {
+    var numTransactions = 0;
+    for (var i = 0; i < numOutcomes; ++i) {
+      numTransactions += orders.numBuyOrders[i] + orders.numSellOrders[i] + 3;
+    }
+    return numTransactions;
+  },
+
+  assignOutcomeIDs: function assignOutcomeIDs(numOutcomes) {
+    var outcomes = new Array(numOutcomes);
+    for (var i = 0; i < numOutcomes; ++i) {
+      outcomes[i] = i + 1;
+    }
+    return outcomes;
+  },
+
+  generateOrder: function generateOrder(type, market, outcome, amount, price, scalarMinMax, callback) {
+    var self = this;
+    var makeOrder = type === "buy" ? this.buy : this.sell;
+    makeOrder({
+      amount: amount,
+      price: price,
+      market: market,
+      outcome: outcome,
+      scalarMinMax: scalarMinMax,
+      onSent: function onSent(res) {
+        // console.log("generateOrder", type, amount, price, outcome, "sent:", res);
+      },
+      onSuccess: function onSuccess(res) {
+        // console.log("generateOrder", type, amount, price, outcome, "success:", res);
+        callback(null, {
+          id: res.callReturn,
+          type: type,
+          market: market,
+          outcome: outcome,
+          amount: amount,
+          price: price,
+          timestamp: res.timestamp,
+          hash: res.hash,
+          gasUsed: res.gasUsed
+        });
+      },
+      onFailed: function onFailed(err) {
+        if (self.options.debug.trading) {
+          console.error("generateOrder", type, amount, price, outcome, "failed:", err);
+        }
+        callback(err);
+      }
+    });
+  },
+
+  generateOrdersForOutcomeOfType: function generateOrdersForOutcomeOfType(type, market, outcome, prices, bestStartingQuantity, startingQuantity, scalarMinMax, onSetupOrder, callback) {
+    var self = this;
+    async.forEachOfLimit(prices, constants.PARALLEL_LIMIT, function (price, i, nextPrice) {
+      var amount = !i ? bestStartingQuantity : startingQuantity;
+      self.generateOrder(type, market, outcome, amount.toFixed(), price.toFixed(), scalarMinMax, function (err, order) {
+        if (err) return nextPrice(err);
+        onSetupOrder(order);
+        nextPrice();
+      });
+    }, callback);
+  },
+
+  generateOrdersForOutcome: function generateOrdersForOutcome(index, market, outcome, orders, bestStartingQuantity, startingQuantity, scalarMinMax, onSetupOutcome, onSetupOrder, callback) {
+    var self = this;
+    async.parallelLimit([function (next) {
+      self.generateOrdersForOutcomeOfType("buy", market, outcome, orders.buyPrices[index], bestStartingQuantity, startingQuantity, scalarMinMax, onSetupOrder, next);
+    }, function (next) {
+      self.generateOrdersForOutcomeOfType("sell", market, outcome, orders.sellPrices[index], bestStartingQuantity, startingQuantity, scalarMinMax, onSetupOrder, next);
+    }], constants.PARALLEL_LIMIT, function (err) {
+      if (err && self.options.debug.trading) console.error("buy/sell:", err);
+      onSetupOutcome({ market: market, outcome: outcome });
+      callback(err);
+    });
+  },
+
+  generateOrders: function generateOrders(market, outcomes, orders, bestStartingQuantity, startingQuantity, scalarMinMax, onSetupOutcome, onSetupOrder, onSuccess, onFailed) {
+    var self = this;
+    async.forEachOfLimit(outcomes, constants.PARALLEL_LIMIT, function (outcome, index, nextOutcome) {
+      self.generateOrdersForOutcome(index, market, outcome, orders, bestStartingQuantity, startingQuantity, scalarMinMax, onSetupOutcome, onSetupOrder, nextOutcome);
+    }, function (err) {
+      if (err) return onFailed(err);
+      self.getOrderBook(market, scalarMinMax, onSuccess);
+    });
+  },
+
+  /**
+   * generateOrderBook: convenience method for generating an initial order book
+   * for a newly created market. generateOrderBook calculates the number of
+   * orders to create, as well as the spacing between orders.
+   *   - market: market ID
+   *   - liquidity: initial cash to be placed on the order book
+   *   - initialFairPrices: array of midpoints used for bid/offer prices when the market opens
+   *   - startingQuantity: number of shares in each order
+   *   - bestStartingQuantity: number of shares in best bid/offer orders (optional)
+   *   - priceWidth: spread between best bid/offer
+   *   - isSimulationOnly: if falsy generate order book; otherwise pass basic info to onSimulate callback
+   * callbacks:
+   *   onSimulate, onBuyCompleteSets, onSetupOutcome, onSetupOrder, onSuccess, onFailed
+   */
+  generateOrderBook: function generateOrderBook(market, liquidity, initialFairPrices, startingQuantity, bestStartingQuantity, priceWidth, marketInfo, isSimulationOnly, onSimulate, onBuyCompleteSets, onSetupOutcome, onSetupOrder, _onSuccess, onFailed) {
+    var self = this;
+    if (market.constructor === Object) {
+      initialFairPrices = market.initialFairPrices;
+      startingQuantity = market.startingQuantity;
+      bestStartingQuantity = market.bestStartingQuantity;
+      priceWidth = market.priceWidth;
+      marketInfo = market.marketInfo;
+      isSimulationOnly = market.isSimulationOnly;
+      if (liquidity.constructor === Object) {
+        onSimulate = liquidity.onSimulate;
+        onBuyCompleteSets = liquidity.onBuyCompleteSets;
+        onSetupOutcome = liquidity.onSetupOutcome;
+        onSetupOrder = liquidity.onSetupOrder;
+        _onSuccess = liquidity.onSuccess;
+        onFailed = liquidity.onFailed;
+      } else {
+        onSimulate = market.onSimulate;
+        onBuyCompleteSets = market.onBuyCompleteSets;
+        onSetupOutcome = market.onSetupOutcome;
+        onSetupOrder = market.onSetupOrder;
+        _onSuccess = market.onSuccess;
+        onFailed = market.onFailed;
+      }
+      liquidity = market.liquidity;
+      market = market.market;
+    }
+    if (!marketInfo) return onFailed(this.errors.NO_MARKET_INFO);
+    onSimulate = onSimulate || utils.noop;
+    onBuyCompleteSets = onBuyCompleteSets || utils.noop;
+    onSetupOutcome = onSetupOutcome || utils.noop;
+    onSetupOrder = onSetupOrder || utils.noop;
+    _onSuccess = _onSuccess || utils.noop;
+    onFailed = onFailed || utils.noop;
+    liquidity = abi.bignum(liquidity);
+    initialFairPrices = abi.bignum(initialFairPrices);
+    startingQuantity = abi.bignum(startingQuantity);
+    bestStartingQuantity = abi.bignum(bestStartingQuantity || startingQuantity);
+    var halfPriceWidth = abi.bignum(priceWidth).dividedBy(2);
+    var numOutcomes = initialFairPrices.length;
+    if (marketInfo.numOutcomes !== numOutcomes) {
+      return onFailed(this.errors.WRONG_NUMBER_OF_OUTCOMES);
+    }
+    var minMax = this.getMinMax(marketInfo);
+    var scalarMinMax = marketInfo.type === "scalar" ? minMax : {};
+    var orders = this.calculateOrderPrices(liquidity, startingQuantity, bestStartingQuantity, initialFairPrices, minMax.minValue, minMax.maxValue, halfPriceWidth);
+    if (orders.error) return onFailed(orders);
+    if (utils.is_function(onSimulate)) {
+      onSimulate({
+        shares: orders.shares.toFixed(),
+        numBuyOrders: orders.numBuyOrders,
+        numSellOrders: orders.numSellOrders,
+        buyPrices: abi.string(orders.buyPrices),
+        sellPrices: abi.string(orders.sellPrices),
+        numTransactions: this.calculateNumTransactions(numOutcomes, orders)
+      });
+      if (isSimulationOnly) return;
+    }
+    this.buyCompleteSets({
+      market: market,
+      amount: orders.shares.toFixed(),
+      onSent: utils.noop,
+      onSuccess: function onSuccess(res) {
+        onBuyCompleteSets(res);
+        self.generateOrders(market, self.assignOutcomeIDs(numOutcomes), orders, bestStartingQuantity, startingQuantity, scalarMinMax, onSetupOutcome, onSetupOrder, _onSuccess, onFailed);
+      },
+      onFailed: onFailed
+    });
+  }
+};
+},{"../constants":65,"../utilities":99,"async":118,"augur-abi":1,"bignumber.js":121}],79:[function(require,module,exports){
 /**
  * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
@@ -28403,7 +28427,7 @@ module.exports = {
   }
 
 };
-},{"../constants":65,"../utilities":99,"./abacus":69,"./splitOrder":93,"async":118,"augur-abi":1,"bignumber.js":121,"clone":159,"ethrpc":288,"uuid":277,"uuid-parse":275}],95:[function(require,module,exports){
+},{"../constants":65,"../utilities":99,"./abacus":68,"./splitOrder":93,"async":118,"augur-abi":1,"bignumber.js":121,"clone":159,"ethrpc":288,"uuid":277,"uuid-parse":275}],95:[function(require,module,exports){
 /**
  * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
@@ -28823,7 +28847,7 @@ module.exports = {
     });
   }
 };
-},{"../constants":65,"../utilities":99,"./abacus":69,"async":118,"augur-abi":1,"clone":159,"ethrpc":288}],97:[function(require,module,exports){
+},{"../constants":65,"../utilities":99,"./abacus":68,"async":118,"augur-abi":1,"clone":159,"ethrpc":288}],97:[function(require,module,exports){
 /*
  * Author: priecint
  */
@@ -29253,7 +29277,7 @@ module.exports = {
     }
   }
 };
-},{"../constants":65,"./abacus":69,"augur-abi":1,"bignumber.js":121,"clone":159,"ethereumjs-tx":197}],98:[function(require,module,exports){
+},{"../constants":65,"./abacus":68,"augur-abi":1,"bignumber.js":121,"clone":159,"ethereumjs-tx":197}],98:[function(require,module,exports){
 /**
  * ethrpc fire/transact wrappers
  * @author Jack Peterson (jack@tinybike.net)
@@ -29422,7 +29446,7 @@ var augur = global.augur || require("./build/index");
 global.augur = augur;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./build/index":68}],101:[function(require,module,exports){
+},{"./build/index":67}],101:[function(require,module,exports){
 'use strict';
 module.exports = function () {
 	return /[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-PRZcf-nqry=><]/g;
