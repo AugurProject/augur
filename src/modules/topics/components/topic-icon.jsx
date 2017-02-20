@@ -54,7 +54,7 @@ export default class TopicIcon extends Component {
       return;
     }
 
-    // Pre-defined match
+    // Predefined match
     const matchedTopic = Object.keys(iconTopics).find((icon) => {
       if (typeof iconTopics[icon] === 'string') {
         if (iconTopics[icon] === this.props.topic.toLowerCase()) {
