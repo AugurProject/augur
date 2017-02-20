@@ -10,6 +10,7 @@ var abi = require("augur-abi");
 var constants = require("../../../src/constants");
 var reporting = require("../../../src/modules/reporting");
 var makeReports = require("../../../src/modules/makeReports");
+var utils = require("../../../src/utilities");
 
 describe("unfixReport", function () {
   before(function () {
@@ -662,5 +663,75 @@ describe("makeHash", function () {
     from: "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b",
     event: "0xf54b80c48e42094889a38c2ff8c374679dea639d75aa0f396b617b5675403e7e",
     expected: "0xd8566eb441e5a90f035b72cb3fbd44d783f627b9d1503f5a2bfce7fab5853685"
+  });
+});
+
+describe("submitReport", function() {
+  var finished;
+  var test = function(t) {
+    it(JSON.stringify(t), function(done) {
+      finished = done;
+      makeReports.submitReport.call(t.testThis, t.event, t.salt, t.report, t.ethics, t.minValue, t.maxValue, t.type, t.isIndeterminate, t.onSent, t.onSuccess, t.onFailed);
+    });
+  };
+  test({
+    testThis: {
+    	options: { debug: { reporting: false } },
+    	fixReport: makeReports.fixReport,
+    	MakeReports: {
+    		submitReport: function(event, salt, report, ethics, onSent, onSuccess, onFailed) {
+    			assert.deepEqual(event, '0xe1');
+    			assert.deepEqual(salt, '0x4e61436c');
+    			assert.deepEqual(report, '0xde0b6b3a7640000');
+    			assert.deepEqual(ethics, '6565656565650000000000000000000000000000000000000000000000000000');
+    			assert.isFunction(onSent);
+    			assert.isFunction(onSuccess);
+    			assert.isFunction(onFailed);
+    			finished();
+    		}
+    	}
+    },
+    event: '0xe1',
+    salt: 'NaCl',
+    report: '1',
+    ethics: '6565656565650000000000000000000000000000000000000000000000000000',
+    minValue: 1,
+    maxValue: 2,
+    type: 'binary',
+    isIndeterminate: false,
+    onSent: utils.noop,
+    onSuccess: utils.noop,
+    onFailed: utils.noop
+  });
+  test({
+    testThis: {
+    	options: { debug: { reporting: false } },
+    	fixReport: makeReports.fixReport,
+    	MakeReports: {
+    		submitReport: function(event, salt, report, ethics, onSent, onSuccess, onFailed) {
+    			assert.deepEqual(event, '0xe1');
+    			assert.deepEqual(salt, '0x4e61436c');
+    			assert.deepEqual(report, '0xde0b6b3a7640000');
+    			assert.deepEqual(ethics, '6565656565650000000000000000000000000000000000000000000000000000');
+    			assert.isFunction(onSent);
+    			assert.isFunction(onSuccess);
+    			assert.isFunction(onFailed);
+    			finished();
+    		}
+    	}
+    },
+    event: {
+      event: '0xe1',
+      salt: 'NaCl',
+      report: '1',
+      ethics: '6565656565650000000000000000000000000000000000000000000000000000',
+      minValue: 1,
+      maxValue: 2,
+      type: 'binary',
+      isIndeterminate: false,
+      onSent: utils.noop,
+      onSuccess: utils.noop,
+      onFailed: utils.noop
+    }
   });
 });
