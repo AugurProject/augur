@@ -61,7 +61,7 @@ export const isMarketFiltersMatch = (market, keywords, selectedFilterSort, selec
       return true;
     }
 
-    return market.tags.length && market.tags[0].topicName === selectedTopic;
+    return market.tags.length && market.tags[0].name === selectedTopic.trim();
   }
 
   function isDisplayable(market) {

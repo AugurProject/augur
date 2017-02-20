@@ -291,8 +291,7 @@ export function assembleMarket(
 
       market.tags = (market.tags || []).map((tag, i) => {
         const obj = {
-          topicName: i === 0 ? tag : null,
-          name: tag && tag.toString().toLowerCase().trim(),
+          name: tag && tag.toString().trim(),
           onClick: () => dispatch(toggleTag(tag))
         };
         return obj;
