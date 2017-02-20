@@ -2028,4 +2028,206 @@ describe("all_filters_removed", function() {
     }
   });
 });
-describe.skip("ignore", function() {});
+describe("ignore", function() {
+  // 3 tests total
+  var filter = augur.filters.filter;
+  var rpc = augur.rpc;
+  var unsubscribe = augur.filters.unsubscribe;
+  var finished;
+  afterEach(function() {
+    augur.filters.filter = filter;
+    augur.filters.unsubscribe = unsubscribe;
+    augur.rpc = rpc;
+  });
+  var test = function(t) {
+    it(t.description, function(done) {
+      finished = done;
+      augur.filters.filter = t.filter;
+      augur.filters.unsubscribe = t.unsubscribe;
+      augur.rpc = t.rpc;
+
+      augur.filters.ignore(t.uninstall, t.cb, t.complete);
+    });
+  };
+  test({
+  	description: 'Should handle unsubscribing from 3 filters when uninstall is true',
+  	rpc: {
+  		wsURL: 'ws.augur.net',
+  		ipcpath: 'ipc.augur.net',
+  		unregisterSubscriptionCallback: function(id) {
+        // doesn't need to do anything, simply don't want to call the real version.
+  		}
+  	},
+  	filter: {
+  		block: {
+  			id: '0xb1',
+  			heartbeat: setInterval(utils.noop, 10000000000000000)
+  		},
+  		contracts: {
+  			id: '0xc1',
+  			heartbeat: setInterval(utils.noop, 10000000000000000)
+  		},
+  		testEvent: {
+  			id: '0xe1',
+  			heartbeat: setInterval(utils.noop, 10000000000000000)
+  		}
+  	},
+  	uninstall: true,
+  	cb: {},
+  	complete: function() {
+  		// here we are only completing the test when everything is nulled out.
+  		var areWeDone = true;
+  		for (var label in augur.filters.filter) {
+  			if (!augur.filters.filter.hasOwnProperty(label)) continue;
+        var f = augur.filters.filter[label];
+        if (f.id !== null || f.heartbeat !== null) {
+          areWeDone = false;
+          break;
+        }
+  		}
+  		if (areWeDone) {
+  			assert.deepEqual(augur.filters.filter, {
+  				block: {
+  					id: null,
+  					heartbeat: null
+  				},
+  				contracts: {
+  					id: null,
+  					heartbeat: null
+  				},
+  				testEvent: {
+  					id: null,
+  					heartbeat: null
+  				}
+  			});
+  			finished();
+  		}
+  	},
+  	unsubscribe: function(id, cb) {
+  		if (!utils.is_function(cb)) return '1';
+  		return cb('1');
+  	}
+  });
+  test({
+  	description: 'Should handle unsubscribing from 3 filters when uninstall is an object',
+  	rpc: {
+  		wsURL: 'ws.augur.net',
+  		ipcpath: null,
+      unregisterSubscriptionCallback: function(id) {
+        // doesn't need to do anything, simply don't want to call the real version.
+  		}
+  	},
+  	filter: {
+  		block: {
+  			id: '0xb1',
+  			heartbeat: setInterval(utils.noop, 10000000000000000)
+  		},
+  		contracts: {
+  			id: '0xc1',
+  			heartbeat: setInterval(utils.noop, 10000000000000000)
+  		},
+  		testEvent: {
+  			id: '0xe1',
+  			heartbeat: setInterval(utils.noop, 10000000000000000)
+  		}
+  	},
+  	uninstall: {
+      block: function() { augur.filters.filter.block.id = null; },
+      contracts: function() { augur.filters.filter.contracts.id = null; },
+      testEvent: function() { augur.filters.filter.testEvent.id = null; },
+    },
+  	cb: {},
+  	complete: function() {
+  		// here we are only completing the test when everything is nulled out.
+  		var areWeDone = true;
+  		for (var label in augur.filters.filter) {
+  			if (!augur.filters.filter.hasOwnProperty(label)) continue;
+        var f = augur.filters.filter[label];
+        if (f.id !== null || f.heartbeat !== null) {
+          areWeDone = false;
+          break;
+        }
+  		}
+  		if (areWeDone) {
+  			assert.deepEqual(augur.filters.filter, {
+  				block: {
+  					id: null,
+  					heartbeat: null
+  				},
+  				contracts: {
+  					id: null,
+  					heartbeat: null
+  				},
+  				testEvent: {
+  					id: null,
+  					heartbeat: null
+  				}
+  			});
+  			finished();
+  		}
+  	},
+  	unsubscribe: function(id, cb) {
+  		if (!utils.is_function(cb)) return '1';
+  		return cb('1');
+  	}
+  });
+  test({
+  	description: 'Should handle unsubscribing from 3 filters when uninstall is true, complete passed as cb, complete undefined.',
+  	rpc: {
+  		wsURL: 'ws.augur.net',
+  		ipcpath: 'ipc.augur.net',
+  		unregisterSubscriptionCallback: function(id) {
+        // doesn't need to do anything, simply don't want to call the real version.
+  		}
+  	},
+  	filter: {
+  		block: {
+  			id: '0xb1',
+  			heartbeat: setInterval(utils.noop, 10000000000000000)
+  		},
+  		contracts: {
+  			id: '0xc1',
+  			heartbeat: setInterval(utils.noop, 10000000000000000)
+  		},
+  		testEvent: {
+  			id: '0xe1',
+  			heartbeat: setInterval(utils.noop, 10000000000000000)
+  		}
+  	},
+  	uninstall: true,
+  	cb: function() {
+  		// here we are only completing the test when everything is nulled out.
+  		var areWeDone = true;
+  		for (var label in augur.filters.filter) {
+  			if (!augur.filters.filter.hasOwnProperty(label)) continue;
+        var f = augur.filters.filter[label];
+        if (f.id !== null || f.heartbeat !== null) {
+          areWeDone = false;
+          break;
+        }
+  		}
+  		if (areWeDone) {
+  			assert.deepEqual(augur.filters.filter, {
+  				block: {
+  					id: null,
+  					heartbeat: null
+  				},
+  				contracts: {
+  					id: null,
+  					heartbeat: null
+  				},
+  				testEvent: {
+  					id: null,
+  					heartbeat: null
+  				}
+  			});
+  			finished();
+  		}
+  	},
+  	complete: undefined,
+  	unsubscribe: function(id, cb) {
+  		if (!utils.is_function(cb)) return { returnValue: '1' };
+  		return cb({ returnValue: '1' });
+  	}
+  });
+});
