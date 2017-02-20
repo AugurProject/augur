@@ -62,7 +62,11 @@ export default class Topic extends Component {
       >
         {!p.isSpacer &&
           <div className="topic-content">
-            <TopicIcon {...p} />
+            <TopicIcon
+              topic={p.topic}
+              fontAwesomeClasses={p.fontAwesomeClasses}
+              icoFontClasses={p.icoFontClasses}
+            />
             <div className="topic-popularity">
               <span
                 className={classNames({
