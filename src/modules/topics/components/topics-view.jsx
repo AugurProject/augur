@@ -134,7 +134,6 @@ export default class TopicsView extends Component {
 
     const styleSheets = window.document.styleSheets;
     for (let sI = 0; sI < styleSheets.length; sI++) {
-      // console.log('current styleSheet -- ', styleSheets[sI]);
       const sheet = styleSheets[sI];
       for (let rI = 0; rI < sheet.cssRules.length; rI++) {
         const rule = sheet.cssRules[rI];
