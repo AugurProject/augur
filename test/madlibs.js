@@ -2,7 +2,7 @@
 
 module.exports = {
   streetName: function () {
-    return "streetName";
+    return "testing";
   },
   action: function () {
     return "action";

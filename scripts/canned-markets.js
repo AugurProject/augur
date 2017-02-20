@@ -35,7 +35,7 @@ var cannedMarkets = [{
   numOutcomes: 2,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["reporting", "testing", "binary"],
+  tags: ["testing", "reporting", "binary"],
   extraInfo: "",
   resolution: ""
 }, {
@@ -46,7 +46,7 @@ var cannedMarkets = [{
   numOutcomes: 7,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["reporting", "testing", "categorical"],
+  tags: ["testing", "reporting", "categorical"],
   extraInfo: "",
   resolution: ""
 }, {
@@ -57,7 +57,7 @@ var cannedMarkets = [{
   numOutcomes: 2,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["reporting", "testing", "scalar"],
+  tags: ["testing", "reporting", "scalar"],
   extraInfo: "",
   resolution: ""
 }, {
@@ -68,7 +68,7 @@ var cannedMarkets = [{
   numOutcomes: 2,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["reporting", "testing", "binary"],
+  tags: ["testing", "reporting", "binary"],
   extraInfo: "",
   resolution: ""
 }, {
@@ -79,7 +79,7 @@ var cannedMarkets = [{
   numOutcomes: 7,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["reporting", "testing", "categorical"],
+  tags: ["testing", "reporting", "categorical"],
   extraInfo: "",
   resolution: ""
 }, {
@@ -90,7 +90,7 @@ var cannedMarkets = [{
   numOutcomes: 2,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["reporting", "testing", "scalar"],
+  tags: ["testing", "reporting", "scalar"],
   extraInfo: "",
   resolution: ""
 }, {
@@ -101,7 +101,7 @@ var cannedMarkets = [{
   numOutcomes: 2,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["reporting", "testing", "binary"],
+  tags: ["testing", "reporting", "binary"],
   extraInfo: "",
   resolution: ""
 }, {
@@ -112,7 +112,7 @@ var cannedMarkets = [{
   numOutcomes: 7,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["reporting", "testing", "categorical"],
+  tags: ["testing", "reporting", "categorical"],
   extraInfo: "",
   resolution: ""
 }, {
@@ -123,7 +123,7 @@ var cannedMarkets = [{
   numOutcomes: 2,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["reporting", "testing", "scalar"],
+  tags: ["testing", "reporting", "scalar"],
   extraInfo: "",
   resolution: ""
 }, {
@@ -134,7 +134,7 @@ var cannedMarkets = [{
   numOutcomes: 2,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["reporting", "testing", "binary"],
+  tags: ["testing", "reporting", "binary"],
   extraInfo: "",
   resolution: ""
 }, {
@@ -145,7 +145,7 @@ var cannedMarkets = [{
   numOutcomes: 7,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["reporting", "testing", "categorical"],
+  tags: ["testing", "reporting", "categorical"],
   extraInfo: "",
   resolution: ""
 }, {
@@ -156,7 +156,7 @@ var cannedMarkets = [{
   numOutcomes: 2,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["reporting", "testing", "scalar"],
+  tags: ["testing", "reporting", "scalar"],
   extraInfo: "",
   resolution: ""
 }, {
@@ -167,7 +167,7 @@ var cannedMarkets = [{
   numOutcomes: 3,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["elections", "US politics", "popular vote"],
+  tags: ["politics", "elections", "US politics"],
   extraInfo: "The National Popular Vote bill would guarantee the Presidency to the candidate who receives the most popular votes nationwide (i.e., all 50 states and the District of Columbia).  It has been enacted into law in 11 states with 165 electoral votes, and will take effect when enacted by states with 105 more electoral votes. The bill has passed one chamber in 12 additional states with 96 electoral votes.   Most recently, the bill was passed by a bipartisan 40–16 vote in the Republican-controlled Arizona House, 28–18 in Republican-controlled Oklahoma Senate, 57–4 in Republican-controlled New York Senate, and 37–21 in Democratic-controlled Oregon House. http://www.nationalpopularvote.com",
   resolution: ""
 }, {
@@ -178,7 +178,7 @@ var cannedMarkets = [{
   numOutcomes: 2,
   takerFee: "0.03",
   makerFee: "0.01",
-  tags: ["Calexit", "California", "secession"],
+  tags: ["politics", "California", "Calexit"],
   extraInfo: "In the Spring of 2019, Californians will go to the polls in a historic vote to decide by referendum if California should exit the Union, a #Calexit vote. http://www.yescalifornia.org",
   resolution: ""
 }, {
@@ -189,7 +189,7 @@ var cannedMarkets = [{
   numOutcomes: 2,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["weather", "temperature", "SFO"],
+  tags: ["temperature", "weather", "SFO"],
   extraInfo: "https://www.penny-arcade.com/comic/2001/12/12",
   resolution: "https://www.wunderground.com/history/airport/KSFO/" + [today.getUTCFullYear(), today.getUTCMonth() + 1, today.getUTCDate()].join('/') + "/DailyHistory.html"
 }, {
@@ -200,12 +200,12 @@ var cannedMarkets = [{
   numOutcomes: 2,
   takerFee: "0.05",
   makerFee: "0.015",
-  tags: ["Dow Jones", "stock market", "DJIA"],
+  tags: ["finance", "stocks", "Dow Jones"],
   extraInfo: "The Daily Dow market lives again! https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average",
   resolution: "https://www.google.com/finance?q=INDEXDJX:.DJI"
 }, {
-  description: "Will Augur's live release happen by the end of February, 2017?",
-  expDate: parseInt(new Date("3/1/2017").getTime() / 1000, 10),
+  description: "Will Augur's live release happen by the end of March, 2017?",
+  expDate: parseInt(new Date("4/1/2017").getTime() / 1000, 10),
   minValue: 1,
   maxValue: 2,
   numOutcomes: 2,
@@ -233,18 +233,73 @@ var cannedMarkets = [{
   numOutcomes: 3,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["college football", "football", "Jacksonville"],
+  tags: ["sports", "college football", "football"],
   extraInfo: "",
   resolution: ""
 }, {
-  description: "Will REP tokens be worth more than 100 USD each any time on or before 1.1.2018 on CoinMarketCap?",
-  expDate: parseInt(new Date("1/1/2018").getTime() / 1000, 10),
+  description: "Will CR7 move to FC Barcelona by 20th February 2017?",
+  expDate: parseInt(new Date("3/1/2017").getTime() / 1000, 10),
+  minValue: 1,
+  maxValue: 2,
+  numOutcomes: 2,
+  takerFee: "0.02",
+  makerFee: "0.01",
+  tags: ["sports", "Ronaldo", "Barcelona"],
+  extraInfo: "",
+  resolution: ""
+}, {
+  description: "Will Donald Trump be impeached and removed from the Presidency within two years of his inauguration?",
+  expDate: parseInt(new Date("2/1/2019").getTime() / 1000, 10),
+  minValue: 1,
+  maxValue: 2,
+  numOutcomes: 2,
+  takerFee: "0.02",
+  makerFee: "0.01",
+  tags: ["politics", "Trump", "impeachment"],
+  extraInfo: "",
+  resolution: ""
+}, {
+  description: "Will it rain in Palo Alto on Sunday, February 19, 2017?",
+  expDate: parseInt(new Date("2/20/2017").getTime() / 1000, 10),
+  minValue: 1,
+  maxValue: 2,
+  numOutcomes: 2,
+  takerFee: "0.02",
+  makerFee: "0.01",
+  tags: ["weather"],
+  extraInfo: "",
+  resolution: ""
+}, {
+  description: "Will Jair Messias Bolsonaro be elected the president of Brazil in 2018?",
+  expDate: parseInt(new Date("12/31/2018").getTime() / 1000, 10),
+  minValue: 1,
+  maxValue: 2,
+  numOutcomes: 2,
+  takerFee: "0.02",
+  makerFee: "0.01",
+  tags: ["elections", "politics", "Brazil"],
+  extraInfo: "",
+  resolution: ""
+}, {
+  description: "Will the Conor MacGregor vs. Floyd Mayweather boxing match happen by the end of 2017?",
+  expDate: parseInt(new Date("12/31/2017").getTime() / 1000, 10),
+  minValue: 1,
+  maxValue: 2,
+  numOutcomes: 2,
+  takerFee: "0.02",
+  makerFee: "0.01",
+  tags: ["sports", "boxing"],
+  extraInfo: "Will the boxing match happen?",
+  resolution: ""
+}, {
+  description: "Will REP tokens be worth more than 100 USD each any time on or before January 1, 2018 on CoinMarketCap?",
+  expDate: parseInt(new Date("1/2/2018").getTime() / 1000, 10),
   minValue: 1,
   maxValue: 2,
   numOutcomes: 2,
   takerFee: "0.09",
   makerFee: "0.04",
-  tags: ["Augur", "Reputation", "REP"],
+  tags: ["trading", "Augur", "Reputation"],
   extraInfo: "https://www.reddit.com/r/reptrader",
   resolution: "http://coinmarketcap.com"
 }, {
@@ -256,7 +311,7 @@ var cannedMarkets = [{
   takerFee: "0.02",
   makerFee: "0.01",
   extraInfo: "http://coinmarketcap.com/currencies/ethereum",
-  tags: ["ethereum", "trading", "currencies"],
+  tags: ["trading", "Ethereum", "currencies"],
   resolution: "http://coinmarketcap.com"
 }, {
   description: "Will SpaceX successfully complete a manned flight to the International Space Station by the end of 2018?",
@@ -267,7 +322,7 @@ var cannedMarkets = [{
   takerFee: "0.02",
   makerFee: "0.01",
   extraInfo: "SpaceX hit a big milestone on Friday with NASA confirming on Friday that the Elon Musk-led space cargo business will launch astronauts to the International Space Station by 2017.\n\nLast year, the space agency tentatively awarded a $2.6 billion contract to SpaceX to carry crew to space. NASA’s announcement on Friday formalizes the deal, which involves SpaceX loading its Crew Dragon spacecraft with astronauts and sending them beyond the stratosphere.",
-  tags: ["space", "Dragon", "ISS"],
+  tags: ["space", "SpaceX", "spaceflight"],
   resolution: "http://www.spacex.com"
 }, {
   description: "Which city will have the highest median single-family home price for September 2017?~|>London|New York|Los Angeles|San Francisco|Tokyo|Palo Alto|Hong Kong|other",
@@ -297,7 +352,7 @@ var cannedMarkets = [{
   takerFee: "0.02",
   makerFee: "0.01",
   resolution: "",
-  tags: ["climate change", "Antartica", "warming"]
+  tags: ["climate", "Antartica", "warming"]
 }, {
   description: "How many marine species will go extinct between January 1, 2016 and January 1, 2018?",
   expDate: parseInt(new Date("1-2-2018").getTime() / 1000, 10),
@@ -307,7 +362,7 @@ var cannedMarkets = [{
   takerFee: "0.02",
   makerFee: "0.01",
   resolution: "science!",
-  tags: ["climate", "extinction", "marine biology"]
+  tags: ["science", "extinction", "marine biology"]
 }, {
   description: "What will the average tropospheric methane concentration (in parts-per-billion) be between January 1, 2017 and January 1, 2018?",
   expDate: parseInt(new Date("1-2-2018").getTime() / 1000, 10),
@@ -315,10 +370,21 @@ var cannedMarkets = [{
   maxValue: 5000,
   numOutcomes: 2,
   extraInfo: "Vast quantities of methane are normally locked into the Earth's crust on the continental plateaus in one of the many deposits consisting of compounds of methane hydrate, a solid precipitated combination of methane and water much like ice. Because the methane hydrates are unstable, except at cool temperatures and high (deep) pressures, scientists have observed smaller \"burps\" due to tectonic events. Studies suggest the huge release of natural gas could be a major climatological trigger, methane itself being a greenhouse gas many times more powerful than carbon dioxide. References: https://en.wikipedia.org/wiki/Anoxic_event, https://en.wikipedia.org/wiki/Atmospheric_methane, https://en.wikipedia.org/wiki/Clathrate_gun_hypothesis",
-  tags: ["climate", "methane", "atmosphere"],
+  tags: ["science", "climate", "atmosphere"],
   takerFee: "0.02",
   makerFee: "0.01",
   resolution: "EPA"
+}, {
+  description: "Will the Golden State Warriors win the 2017 NBA Championship?",
+  expDate: parseInt(new Date("6-20-2017").getTime() / 1000, 10),
+  minValue: 1,
+  maxValue: 2,
+  numOutcomes: 2,
+  resolution: "ESPN",
+  takerFee: "0.02",
+  makerFee: "0.01",
+  tags: ["sports", "basketball", "Warriors"],
+  extraInfo: ""
 }, {
   description: "How many new antibiotics will be approved by the FDA between March 1, 2016 and the end of 2020?",
   expDate: parseInt(new Date("1-1-2021").getTime() / 1000, 10),
@@ -328,7 +394,7 @@ var cannedMarkets = [{
   resolution: "FDA",
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["antibiotics", "medicine", "science"],
+  tags: ["medicine", "science", "antibiotics"],
   extraInfo: "Will antibiotic pan-resistance lead to a massive resurgence of infectious diseases?"
 }, {
   description: "Will antibiotics be outlawed for agricultural use in China by the end of 2020?",
@@ -338,7 +404,7 @@ var cannedMarkets = [{
   numOutcomes: 2,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["antibiotics", "China", "science policy"],
+  tags: ["agriculture", "antibiotics", "China"],
   extraInfo: "Will antibiotic pan-resistance lead to a massive resurgence of infectious diseases?"
 }, {
   description: "What will be the number one killer in the United States by January 1, 2025?~|>cancer|heart attacks|infectious diseases|starvation|lava|other",
@@ -348,7 +414,7 @@ var cannedMarkets = [{
   numOutcomes: 6,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["mortality", "United States", "science"],
+  tags: ["science", "mortality", "United States"],
   extraInfo: "Will antibiotic pan-resistance lead to a massive resurgence of infectious diseases?",
   resolution: "CDC"
 }, {
@@ -359,7 +425,7 @@ var cannedMarkets = [{
   numOutcomes: 2,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["golf", "PGA", "sports"],
+  tags: ["sports", "golf", "PGA"],
   extraInfo: "",
   resolution: "espn.com",
   orderBook: {
@@ -388,7 +454,7 @@ var cannedMarkets = [{
   numOutcomes: 4,
   takerFee: "0.02",
   makerFee: "0.01",
-  tags: ["football", "NFL", "sports"],
+  tags: ["sports", "football", "NFL"],
   extraInfo: "",
   resolution: "espn.com",
   orderBook: {
@@ -539,11 +605,12 @@ augur.connect({
         if (!market.orderBook) {
           var orderBookParams = {
             market: marketID,
-            liquidity: 100,
+            liquidity: 200,
             initialFairPrices: initialFairPrices,
-            startingQuantity: 5,
-            bestStartingQuantity: 10,
-            priceWidth: "0.2"
+            startingQuantity: 10,
+            bestStartingQuantity: 20,
+            priceWidth: "0.2",
+            marketInfo: augur.getMarketInfo(r.callReturn)
           };
           console.log(chalk.blue.bold("Generating order book:"), chalk.cyan.dim(JSON.stringify(orderBookParams, null, 2)));
           augur.generateOrderBook(orderBookParams, {
@@ -559,8 +626,8 @@ augur.connect({
             },
             onSuccess: function (res) {
               console.log(chalk.blue.bold("Order book generated:"));
-              console.log("  " + chalk.cyan(Object.keys(res.sell).length.toString() + " asks"));
-              console.log("  " + chalk.green(Object.keys(res.buy).length.toString() + " bids"));
+              if (res.sell) console.log("  " + chalk.cyan(Object.keys(res.sell).length.toString() + " asks"));
+              if (res.buy) console.log("  " + chalk.green(Object.keys(res.buy).length.toString() + " bids"));
               nextMarket();
             },
             onFailed: function (err) {

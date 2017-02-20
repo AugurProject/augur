@@ -14,10 +14,12 @@ module.exports = {
   },
 
   selectOrderInOrderBookSide: function (orderID, orderBookSide) {
-    var orderIDs = Object.keys(orderBookSide);
-    var numOrderIDs = orderIDs.length;
-    for (var j = 0; j < numOrderIDs; ++j) {
-      if (orderBookSide[orderID]) return orderBookSide[orderID];
+    if (orderBookSide) {
+      var orderIDs = Object.keys(orderBookSide);
+      var numOrderIDs = orderIDs.length;
+      for (var j = 0; j < numOrderIDs; ++j) {
+        if (orderBookSide[orderID]) return orderBookSide[orderID];
+      }
     }
   }
 
