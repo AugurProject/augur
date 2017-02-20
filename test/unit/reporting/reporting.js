@@ -126,7 +126,86 @@ describe("hashSenderPlusEvent", function () {
     }
   });
 });
-describe.skip("getReport", function() {});
+describe("getReport", function() {
+  var getReport = augur.ExpiringEvents.getReport;
+  afterEach(function() {
+    augur.ExpiringEvents.getReport = getReport;
+  });
+  var test = function(t) {
+    it(JSON.stringify(t), function(done) {
+      augur.ExpiringEvents.getReport = t.getReport;
+
+      augur.getReport(t.branch, t.period, t.event, t.sender, t.minValue, t.maxValue, t.type, function(report) {
+        t.assertions(report);
+        done();
+      });
+    });
+  };
+  test({
+    branch: '0xb1',
+    period: '0xabc123',
+    event: '0xe1',
+    sender: '0x1',
+    minValue: 1,
+    maxValue: 2,
+    type: 'binary',
+    getReport: function(branch, period, event, sender, cb) {
+      cb(abi.fix(1).toString());
+    },
+    assertions: function(report) {
+      assert.deepEqual(report, { report: '1', isIndeterminate: false });
+    }
+  });
+  test({
+    branch: {
+      branch: '0xb1',
+      period: '0xabc123',
+      event: '0xe1',
+      sender: '0x1',
+      minValue: 1,
+      maxValue: 2,
+      type: 'binary'
+    },
+    getReport: function(branch, period, event, sender, cb) {
+      cb(undefined);
+    },
+    assertions: function(report) {
+      assert.deepEqual(report, augur.errors.REPORT_NOT_FOUND);
+    }
+  });
+  test({
+    branch: {
+      branch: '0xb1',
+      period: '0xabc123',
+      event: '0xe1',
+      sender: '0x1',
+      minValue: 1,
+      maxValue: 2,
+      type: 'binary'
+    },
+    getReport: function(branch, period, event, sender, cb) {
+      cb({ error: 999, message: 'Uh-Oh!' });
+    },
+    assertions: function(report) {
+      assert.deepEqual(report, { error: 999, message: 'Uh-Oh!' });
+    }
+  });
+  test({
+    branch: '0xb1',
+    period: '0xabc123',
+    event: '0xe1',
+    sender: '0x1',
+    minValue: 1,
+    maxValue: 2,
+    type: 'binary',
+    getReport: function(branch, period, event, sender, cb) {
+      cb('something that parseInt will not like');
+    },
+    assertions: function(report) {
+      assert.deepEqual(report, {report: "0", isIndeterminate: false});
+    }
+  });
+});
 describe("penalizeWrong", function() {
   var transact = augur.transact;
   afterEach(function() {
