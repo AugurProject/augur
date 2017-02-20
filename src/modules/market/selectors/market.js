@@ -289,8 +289,9 @@ export function assembleMarket(
         return outcome;
       }).sort((a, b) => (b.lastPrice.value - a.lastPrice.value) || (a.name < b.name ? -1 : 1));
 
-      market.tags = (market.tags || []).map((tag) => {
+      market.tags = (market.tags || []).map((tag, i) => {
         const obj = {
+          topicName: i === 0 ? tag : null,
           name: tag && tag.toString().toLowerCase().trim(),
           onClick: () => dispatch(toggleTag(tag))
         };
