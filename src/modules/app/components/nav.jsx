@@ -124,12 +124,12 @@ const Nav = (p) => {
           }}
           className={classnames('app-nav-link', AUTHENTICATION, { active: p.activeView === AUTHENTICATION })}
         >
-          <div className="nav-icon">
-            <i>
+          <div className="nav-icon-google-translate-fix">
+            <i className="nav-icon">
               <AugurLogoIcon />
             </i>
           </div>
-          {`Sign Up / Login`}
+          Sign Up / Login
         </Link>
       }
     </nav>
