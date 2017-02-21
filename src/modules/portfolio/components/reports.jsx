@@ -19,7 +19,7 @@ const PortfolioReports = p => (
             }
             {!market.isChallenged && market.isChallengeable &&
               <i
-                className="fa fa-exclamation-cirlce outcome-challengeable"
+                className="fa fa-exclamation-circle outcome-challengeable"
                 data-tip="This outcome is eligible to be challenged"
               />
             }
