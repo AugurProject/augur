@@ -4,7 +4,6 @@ import { loadBidsAsksHistory } from '../../../modules/bids-asks/actions/load-bid
 import { loadCreateMarketHistory } from '../../../modules/create-market/actions/load-create-market-history';
 import { loadFundingHistory, loadTransferHistory } from '../../../modules/account/actions/load-funding-history';
 import { loadReportingHistory } from '../../../modules/my-reports/actions/load-reporting-history';
-import { loadEventsWithSubmittedReport } from '../../../modules/my-reports/actions/load-events-with-submitted-report';
 import { syncBranch } from '../../../modules/branch/actions/sync-branch';
 
 export const loadAccountHistory = () => (dispatch, getState) => {
@@ -15,6 +14,5 @@ export const loadAccountHistory = () => (dispatch, getState) => {
   dispatch(loadCreateMarketHistory());
   dispatch(clearReports());
   dispatch(loadReportingHistory());
-  dispatch(loadEventsWithSubmittedReport());
   dispatch(syncBranch());
 };

@@ -35,10 +35,7 @@ describe(`modules/auth/actions/register.js`, () => {
   const loadAccountDataTestString = 'loadAccountData() called.';
 
   updateLoginAccountStub.updateLoginAccount = sinon.stub().returns({ type: updateTestString });
-  sinon.stub(loadAccountDataStub, 'loadAccountData', (account, cb) => {
-    if (cb) cb(null, 2.5);
-    return { type: loadAccountDataTestString };
-  });
+  sinon.stub(loadAccountDataStub, 'loadAccountData', account => ({ type: loadAccountDataTestString }));
 
   const action = proxyquire('../../../src/modules/auth/actions/register', {
     '../../../services/augurjs': fakeAugurJS,

@@ -9,6 +9,6 @@ export const importAccount = (password, rememberMe, keystore) => (dispatch, getS
     }
     const loginID = augur.base58Encode(account);
     if (rememberMe) savePersistentAccountToLocalStorage({ ...account, loginID });
-    dispatch(loadAccountData({ loginID, address: account.address }));
+    dispatch(loadAccountData({ loginID, address: account.address }, true));
   })
 );

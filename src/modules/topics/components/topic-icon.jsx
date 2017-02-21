@@ -5,68 +5,90 @@ import AugurLogoIcon from 'modules/common/components/augur-logo-icon';
 
 import iconTopics from 'modules/topics/constants/icon-topics';
 
-// NOTE --  The icon selection is as follows:
-//          > If a topic matches an existing font awesome classname, use that; otherwise,
-//          > If a topic matches a pre-defined mapping, use that; otherwise,
-//          > use Augur logo
 export default class TopicIcon extends Component {
   static propTypes = {
-    topic: PropTypes.string
+    topic: PropTypes.string,
+    fontAwesomeClasses: PropTypes.array,
+    icoFontClasses: PropTypes.array
   }
 
   constructor(props) {
     super(props);
 
-    const faFormattedTopic = `fa-${props.topic.split(' ').join('-')}`;
-
     this.state = {
-      hasIcon: true,
-      className: `fa ${faFormattedTopic}`
+      hasIcon: false,
+      className: null
     };
 
-    this.updateIconClass = this.updateIconClass.bind(this);
+    this.determineAppropriateIcon = this.determineAppropriateIcon.bind(this);
   }
 
   componentDidMount() {
-    const content = window.getComputedStyle(this.topicIcon, '::before').content;
-
-    if (!content || content === 'none') { // 'none' is FF specific fix
-      const matchedTopic = Object.keys(iconTopics).find((icon) => {
-        if (typeof iconTopics[icon] === 'string') {
-          if (iconTopics[icon] === this.props.topic.toLowerCase()) {
-            return true;
-          }
-          return false;
-        }
-
-        const arrayIconCheck = iconTopics[icon].indexOf(this.props.topic.toLowerCase());
-
-        if (arrayIconCheck > -1) {
-          return icon;
-        }
-
-        return false;
-      });
-
-      this.updateIconClass(matchedTopic);
-    }
+    this.determineAppropriateIcon();
   }
 
-  updateIconClass(matchedTopic) {
+  determineAppropriateIcon() {
+    // NOTE --  The icon selection is as follows:
+    //  > If a topic matches an existing Font Awesome classname, use that; otherwise,
+    //  > If a topic matches an existing Icofont classname, use that; otherwise,
+    //  > If a topic matches a pre-defined mapping, use that; otherwise,
+    //  > use Augur logo
+
+    // Font Awesome match
+    const faClass = this.props.fontAwesomeClasses.find(faClass => faClass === `fa-${this.props.topic.toLowerCase()}`);
+    if (faClass) {
+      this.setState({
+        hasIcon: true,
+        className: `fa ${faClass}`
+      });
+      return;
+    }
+
+    // Icofont match
+    const icoClass = this.props.icoFontClasses.find(icoClass => icoClass === `icofont-${this.props.topic.toLowerCase()}`);
+    if (icoClass) {
+      this.setState({
+        hasIcon: true,
+        className: `icofont ${icoClass}`
+      });
+      return;
+    }
+
+    // Predefined match
+    const matchedTopic = Object.keys(iconTopics).find((icon) => {
+      if (typeof iconTopics[icon] === 'string') {
+        if (iconTopics[icon] === this.props.topic.toLowerCase()) {
+          return true;
+        }
+        return false;
+      }
+
+      const arrayIconCheck = iconTopics[icon].indexOf(this.props.topic.toLowerCase());
+
+      if (arrayIconCheck > -1) {
+        return icon;
+      }
+
+      return false;
+    });
+
     if (matchedTopic) {
-      this.setState({
-        className: `fa ${matchedTopic}`
-      });
-    } else {
-      this.setState({
-        hasIcon: false,
-        className: null
-      });
+      if (matchedTopic.indexOf('fa-') !== -1) {
+        this.setState({
+          hasIcon: true,
+          className: `fa ${matchedTopic}`
+        });
+      }
+      if (matchedTopic.indexOf('icofont-') !== -1) {
+        this.setState({
+          hasIcon: true,
+          className: `icofont ${matchedTopic}`
+        });
+      }
     }
   }
 
   render() {
-    // const p = this.props;
     const s = this.state;
 
     return (
