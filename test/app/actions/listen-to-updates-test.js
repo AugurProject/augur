@@ -206,10 +206,6 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
       amount: 2,
       topic: 'tag1'
     }, {
-      type: 'UPDATE_TOPIC_POPULARITY',
-      amount: 0,
-      topic: 'topical'
-    }, {
       type: 'LOAD_BASIC_MARKET',
       marketID: [
         'testID1'
