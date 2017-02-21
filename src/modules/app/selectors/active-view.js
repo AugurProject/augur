@@ -11,11 +11,11 @@ import { MARKETS } from 'modules/app/constants/views';
 export default function () {
   const { activeView, branch, url, hasLoadedMarkets, hasLoadedTopic, connection } = store.getState();
 
-  const parsedURL = parseURL(url);
-  const topic = getValue(parsedURL, 'searchParams.topic');
-
   // Load relevant markets
   if (activeView === MARKETS && connection.isConnected && branch.id) {
+    const parsedURL = parseURL(url);
+    const topic = getValue(parsedURL, 'searchParams.topic');
+
     if (!topic && !hasLoadedMarkets) {
       store.dispatch(loadMarkets(branch.id));
     }
