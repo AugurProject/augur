@@ -7,8 +7,8 @@ import Link from 'modules/link/components/link';
 const PortfolioReports = p => (
   <div>
     {!!p.reports && !!p.reports.length && p.reports.map(market => (
-      <Link key={`${market.marketId}`} {...market.marketLink} >
-        <div key={market.marketId}>
+      <Link key={`${market.marketID}`} {...market.marketLink} >
+        <div key={market.marketID}>
           <span className="description">
             {market.description}
             {market.isChallenged &&
@@ -19,7 +19,7 @@ const PortfolioReports = p => (
             }
             {!market.isChallenged && market.isChallengeable &&
               <i
-                className="fa fa-exclamation-cirlce outcome-challengeable"
+                className="fa fa-exclamation-circle outcome-challengeable"
                 data-tip="This outcome is eligible to be challenged"
               />
             }
