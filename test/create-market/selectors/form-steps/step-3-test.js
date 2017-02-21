@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import {
-  TAGS_MAX_NUM,
+  KEYWORDS_MAX_NUM,
   TAGS_MAX_LENGTH,
   RESOURCES_MAX_NUM,
   RESOURCES_MAX_LENGTH,
@@ -16,14 +16,15 @@ describe(`modules/create-market/selectors/form-steps/step-3.js`, () => {
 
   it('should handle returning correct data shape', () => {
     out = {
-      tagsMaxNum: TAGS_MAX_NUM,
+      keywordsMaxNum: KEYWORDS_MAX_NUM,
       tagMaxLength: TAGS_MAX_LENGTH,
       resourcesMaxNum: RESOURCES_MAX_NUM,
       resourceMaxLength: RESOURCES_MAX_LENGTH,
       expirySourceTypes: {
         generic: EXPIRY_SOURCE_GENERIC,
         specific: EXPIRY_SOURCE_SPECIFIC
-      }
+      },
+      topic: ''
     };
     assert.deepEqual(selector.select('test'), out, `Didn't return the expected output for select()`);
   });
@@ -34,6 +35,8 @@ describe(`modules/create-market/selectors/form-steps/step-3.js`, () => {
     formState.expirySource = EXPIRY_SOURCE_SPECIFIC;
     assert(!selector.isValid(formState), `Didn't invalidate a missing expirySourceUrl when you have a EXPIRY_SOURCE_SPECIFIC expirySource`);
     formState.expirySourceUrl = '/test';
+    assert(!selector.isValid(formState), `Didn't invalidate a missing topic`);
+    formState.topic = 'testing';
     assert(selector.isValid(formState), `Didn't validate a valid formState`);
   });
 

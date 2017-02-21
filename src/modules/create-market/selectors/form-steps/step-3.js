@@ -12,7 +12,8 @@ export const select = (formState) => {
     expirySourceTypes: {
       generic: EXPIRY_SOURCE_GENERIC,
       specific: EXPIRY_SOURCE_SPECIFIC
-    }
+    },
+    topic: ''
   };
   return obj;
 };

@@ -9,6 +9,7 @@ import { submitNewMarket } from '../../../create-market/actions/submit-new-marke
 export const select = (formState, currentBlockNumber, currentBlockMillisSinceEpoch, periodLength, baseReporters, numEventsCreatedInPast24Hours, numEventsInReportPeriod, dispatch) => {
   const tradingFee = augur.calculateTradingFees(formState.makerFee, formState.takerFee).tradingFee;
   const validityBond = augur.calculateValidityBond(tradingFee, periodLength, baseReporters, numEventsCreatedInPast24Hours, numEventsInReportPeriod);
+  const trimmedTopic = formState.topic.trim();
   const o = { ...formState };
   o.type = formState.type;
   o.endDate = formatDate(formState.endDate);
@@ -26,7 +27,7 @@ export const select = (formState, currentBlockNumber, currentBlockMillisSinceEpo
   o.eventBond = formatEtherEstimate(validityBond);
   o.gasFees = formatRealEtherEstimate(augur.getTxGasEth({ ...augur.api.functions.CreateMarket.createMarket }, augur.rpc.gasPrice));
   o.marketCreationFee = formatRealEtherEstimate(abi.unfix(augur.calculateRequiredMarketValue(augur.rpc.gasPrice)));
-  o.tags = [formState.topic.trim(), ...(formState.keywords || [])];
+  o.tags = [trimmedTopic, ...(formState.keywords || [])];
 
   if (o.isCreatingOrderBook) {
     const formattedFairPrices = [];

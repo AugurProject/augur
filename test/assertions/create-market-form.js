@@ -167,13 +167,13 @@ export default function (createMarketForm) {
             });
           });
 
-          describe('tagsMaxNum', () => {
+          describe('keywordsMaxNum', () => {
             it('should be defined', () => {
-              assert.isDefined(createMarketForm.tagsMaxNum, `'tagsMaxNum' is not defined`);
+              assert.isDefined(createMarketForm.keywordsMaxNum, `'keywordsMaxNum' is not defined`);
             });
 
             it('should be a number', () => {
-              assert.isNumber(createMarketForm.tagsMaxNum, `'tagsMaxNum' is not a number`);
+              assert.isNumber(createMarketForm.keywordsMaxNum, `'keywordsMaxNum' is not a number`);
             });
           });
 
