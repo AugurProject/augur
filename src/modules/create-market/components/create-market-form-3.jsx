@@ -39,19 +39,43 @@ const CreateMarketForm4 = p => (
       <span className="error-message">{p.errors.expirySource || p.errors.expirySourceUrl}</span>
       }
     </div>
-    <div className="tags">
-      <h4>Add some tags to your market (optional)</h4>
+    <div className="topics">
+      <h4>Add a topic to your market</h4>
       <p>
-        Up to three tags can be added to categorize your market. For example: politics, sports,
-        entertainment or technology.
+        What is the general topic of this event?
+      </p>
+      <p>
+        A few commonly-used topics are politics, science, celebrities, and sports, but you can enter anything you want!
+        Remember that this topic will be the main way that users browse to your market, so choose carefully.
+      </p>
+      <Input
+        className="topic"
+        type="text"
+        placeholder="Event Topic"
+        maxLength={p.tagsMaxLength}
+        value={p.topic}
+        onChange={topic => p.onValuesUpdated({ topic })}
+      />
+      {p.errors.topic &&
+        <span className="error-message">{p.errors.topic}</span>
+      }
+    </div>
+
+    <div className="keywords">
+      <h4>Add some keywords to your market (optional)</h4>
+      <p>
+        Up to two keywords can be added to categorize your market.
+      </p>
+      <p>
+        For example: politics, sports, entertainment or technology.
       </p>
       <InputList
-        className="tags-list"
+        className="keywords-list"
         list={p.tags}
         errors={p.errors && p.errors.tags}
-        listMaxElements={p.tagsMaxNum}
-        itemMaxLength={p.tagMaxLength}
-        onChange={newTags => p.onValuesUpdated({ tags: newTags })}
+        listMaxElements={p.keywordsMaxNum}
+        itemMaxLength={p.tagsMaxLength}
+        onChange={keywords => p.onValuesUpdated({ keywords })}
       />
     </div>
 
