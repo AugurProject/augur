@@ -41,7 +41,8 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
         takerFee: TAKER_FEE_DEFAULT,
         makerFee: MAKER_FEE_DEFAULT,
         expirySource: 'testing',
-        type: BINARY
+        type: BINARY,
+        topic: 'testing'
       };
     });
 
@@ -265,7 +266,9 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
           roundedValue: 0.034,
           value: 0.034
         },
-        isCreatingOrderBook: true
+        isCreatingOrderBook: true,
+        tags: ['testing'],
+        topic: 'testing'
       };
 
       delete select.onSubmit; // Exclude onSubmit function from object comparison assertion
@@ -372,7 +375,9 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
           roundedValue: 0.034,
           value: 0.034
         },
-        isFavorite: false
+        isFavorite: false,
+        tags: ['testing'],
+        topic: 'testing'
       };
 
       delete select.onSubmit; // Exclude onSubmit function from object comparison assertion
@@ -616,7 +621,9 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
           roundedValue: 0.034,
           value: 0.034
         },
-        isCreatingOrderBook: true
+        isCreatingOrderBook: true,
+        tags: ['testing'],
+        topic: 'testing'
       };
 
       delete select.onSubmit; // Exclude onSubmit function from object comparison assertion
@@ -742,7 +749,9 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
           roundedValue: 0.034,
           value: 0.034
         },
-        isFavorite: false
+        isFavorite: false,
+        tags: ['testing'],
+        topic: 'testing'
       };
 
       delete select.onSubmit; // Exclude onSubmit function from object comparison assertion
@@ -957,7 +966,9 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
           roundedValue: 0.034,
           value: 0.034
         },
-        isCreatingOrderBook: true
+        isCreatingOrderBook: true,
+        tags: ['testing'],
+        topic: 'testing'
       };
 
       delete select.onSubmit; // Exclude onSubmit function from object comparison assertion
@@ -1069,7 +1080,9 @@ describe(`modules/create-market/selectors/form-steps/step-5.js`, () => {
         },
         isFavorite: false,
         scalarSmallNum: 10,
-        scalarBigNum: 100
+        scalarBigNum: 100,
+        tags: ['testing'],
+        topic: 'testing'
       };
 
       delete select.onSubmit; // Exclude onSubmit function from object comparison assertion

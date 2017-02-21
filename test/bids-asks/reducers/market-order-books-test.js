@@ -14,7 +14,7 @@ describe(`modules/bids-asks/reducers/order-books.js`, () => {
   it(`Should set market order book`, () => {
     const action = {
       type: UPDATE_MARKET_ORDER_BOOK,
-      marketId: 'partyRockMarket',
+      marketID: 'partyRockMarket',
       marketOrderBook: {
         buy: {
           '0xdbd821cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3': {

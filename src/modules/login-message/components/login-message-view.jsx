@@ -53,6 +53,18 @@ const LoginMessagePage = p => (
         </li>
       </ol>
       <h2>Technical updates:</h2>
+      <h3>February 18, 2017</h3>
+      <ol>
+        <li>
+          The automatic order book generation function &quot;generateOrderBook&quot; in augur.js now works correctly.
+        </li>
+        <li>
+          Edited the topics and keywords for &quot;canned markets&quot; so they are reasonably good examples.
+        </li>
+        <li>
+          Added more icon-topic associations to the front-end.
+        </li>
+      </ol>
       <h3>February 17, 2017</h3>
       <ol>
         <li>
@@ -95,15 +107,15 @@ const LoginMessagePage = p => (
           Fixed register block number lookup in augur.js.
         </li>
       </ol>
-      {p.marketsLink &&
-        <Link className="lets-do-this-button" {...p.marketsLink} >{`Let's do this!`}</Link>
+      {p.topicsLink &&
+        <Link className="lets-do-this-button" {...p.topicsLink} >{`Let's do this!`}</Link>
       }
     </div>
   </section>
 );
 
 LoginMessagePage.propTypes = {
-  marketsLink: PropTypes.object // TODO
+  topicsLink: PropTypes.object // TODO
 };
 
 export default LoginMessagePage;

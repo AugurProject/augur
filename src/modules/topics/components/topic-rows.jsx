@@ -53,6 +53,8 @@ const TopicRows = (p) => {
               popularity={topic.popularity}
               selectTopic={p.selectTopic}
               isSearchResult={p.isSearchResult}
+              fontAwesomeClasses={p.fontAwesomeClasses}
+              icoFontClasses={p.icoFontClasses}
             />
           ))}
         </div>

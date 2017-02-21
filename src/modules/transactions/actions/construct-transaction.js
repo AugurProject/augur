@@ -8,6 +8,7 @@ import { selectMarketLink } from '../../link/selectors/links';
 import { formatReportedOutcome } from '../../reports/selectors/reportable-outcomes';
 import { loadMarketThenRetryConversion, lookupEventMarketsThenRetryConversion } from '../../transactions/actions/retry-conversion';
 import { selectMarketIDFromEventID } from '../../market/selectors/market';
+import { updateEventsWithAccountReportData } from '../../my-reports/actions/update-events-with-account-report-data';
 
 export function loadDataForMarketTransaction(label, log, isRetry, callback) {
   return (dispatch, getState) => {
@@ -63,34 +64,6 @@ export function constructApprovalTransaction(log) {
   transaction.type = 'Approved to Send Reputation';
   transaction.description = `Approve ${log._spender} to send Reputation`;
   transaction.message = log.inProgress ? 'approving' : 'approved';
-  return transaction;
-}
-
-export function constructCollectedFeesTransaction(log) {
-  const transaction = { data: {} };
-  const repGain = abi.bignum(log.repGain);
-  const initialRepBalance = log.initialRepBalance !== undefined ? log.initialRepBalance : abi.bignum(log.newRepBalance).minus(repGain).toFixed();
-  transaction.type = `Reporting Payment`;
-  if (log.totalReportingRep) {
-    const totalReportingRep = abi.bignum(log.totalReportingRep);
-    if (!totalReportingRep.eq(constants.ZERO)) {
-      const percentRep = formatPercent(abi.bignum(initialRepBalance).dividedBy(totalReportingRep).times(100), { decimals: 0 });
-      transaction.message = `${transaction.message} (${percentRep.full})`;
-    }
-  }
-  transaction.description = `Reporting cycle #${log.period}`;
-  if (log.cashFeesCollected !== undefined && log.repGain !== undefined) {
-    transaction.data.balances = [{
-      change: formatEther(log.cashFeesCollected, { positiveSign: true }),
-      balance: formatEther(log.newCashBalance)
-    }, {
-      change: formatRep(log.repGain, { positiveSign: true }),
-      balance: formatRep(log.newRepBalance)
-    }];
-  }
-  transaction.bond = { label: 'reporting', value: formatRealEther(log.notReportingBond) };
-  const action = log.inProgress ? 'reporting' : 'reported';
-  transaction.message = `${action} with ${formatRep(initialRepBalance).full}`;
   return transaction;
 }
 
@@ -219,6 +192,7 @@ export function constructMarketCreatedTransaction(log, description, dispatch) {
   transaction.description = description.split('~|>')[0];
   transaction.marketCreationFee = formatEther(log.marketCreationFee);
   transaction.data.marketLink = selectMarketLink({ id: log.marketID, description: transaction.description }, dispatch);
+  transaction.data.marketID = log.marketID ? log.marketID : null;
   transaction.bond = { label: 'event validity', value: formatEther(log.eventBond) };
   const action = log.inProgress ? 'creating' : 'created';
   transaction.message = `${action} market`;
@@ -251,16 +225,56 @@ export function constructTradingFeeUpdatedTransaction(log, market, dispatch) {
   return transaction;
 }
 
+export function constructCollectedFeesTransaction(log, marketID, market, dispatch) {
+  const transaction = { data: {} };
+  const repGain = abi.bignum(log.repGain);
+  const initialRepBalance = log.initialRepBalance !== undefined ? log.initialRepBalance : abi.bignum(log.newRepBalance).minus(repGain).toFixed();
+  transaction.type = `Reporting Payment`;
+  if (log.totalReportingRep) {
+    const totalReportingRep = abi.bignum(log.totalReportingRep);
+    if (!totalReportingRep.eq(constants.ZERO)) {
+      const percentRep = formatPercent(abi.bignum(initialRepBalance).dividedBy(totalReportingRep).times(100), { decimals: 0 });
+      transaction.message = `${transaction.message} (${percentRep.full})`;
+    }
+  }
+  transaction.description = `Reporting cycle #${log.period}`;
+  if (log.cashFeesCollected !== undefined && log.repGain !== undefined) {
+    transaction.data.balances = [{
+      change: formatEther(log.cashFeesCollected, { positiveSign: true }),
+      balance: formatEther(log.newCashBalance)
+    }, {
+      change: formatRep(log.repGain, { positiveSign: true }),
+      balance: formatRep(log.newRepBalance)
+    }];
+    if (!log.inProgress) {
+      dispatch(updateEventsWithAccountReportData({
+        [market.eventID]: {
+          marketFees: log.cashFeesCollected,
+          repEarned: log.repGain,
+          repBalance: log.newRepBalance
+        }
+      }));
+    }
+  }
+  transaction.bond = { label: 'reporting', value: formatRealEther(log.notReportingBond) };
+  const action = log.inProgress ? 'reporting' : 'reported';
+  transaction.message = `${action} with ${formatRep(initialRepBalance).full}`;
+  return transaction;
+}
+
 export function constructPenalizeTransaction(log, marketID, market, outcomes, dispatch) {
   const transaction = { data: {} };
   transaction.type = 'Compare Report To Consensus';
   const formattedReport = formatReportedOutcome(log.reportValue, market.minValue, market.maxValue, market.type, outcomes);
+  const formattedOutcome = formatReportedOutcome(log.outcome, market.minValue, market.maxValue, market.type, outcomes);
+  console.log('formattedReport:', formattedReport);
+  console.log('formattedOutcome:', formattedOutcome);
   transaction.description = market.description;
   transaction.data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
   if (log.repchange) {
-    const repChange = abi.bignum(log.repchange);
     let repPenalty;
     let repBalance;
+    const repChange = abi.bignum(log.repchange);
     if (repChange.lt(constants.ZERO)) {
       repPenalty = repChange;
       repBalance = abi.bignum(log.oldrep).plus(abi.bignum(log.repchange)).toFixed();
@@ -272,13 +286,32 @@ export function constructPenalizeTransaction(log, marketID, market, outcomes, di
       change: formatRep(repPenalty, { positiveSign: true }),
       balance: formatRep(repBalance)
     }];
+    if (!log.inProgress) {
+      dispatch(updateEventsWithAccountReportData({
+        [market.eventID]: {
+          repEarned: repPenalty,
+          repBalance
+        }
+      }));
+    }
   }
   if (log.inProgress) {
     transaction.message = 'comparing report to consensus';
   } else if (log.reportValue === log.outcome) {
     transaction.message = `✔ report ${formattedReport} matches consensus`;
   } else {
-    transaction.message = `✘ report ${formattedReport} does not match consensus ${formatReportedOutcome(log.outcome, market.minValue, market.maxValue, market.type, outcomes)}`;
+    transaction.message = `✘ report ${formattedReport} does not match consensus ${formattedOutcome}`;
+  }
+  if (!log.inProgress) {
+    dispatch(updateEventsWithAccountReportData({
+      [market.eventID]: {
+        marketOutcome: formattedOutcome,
+        proportionCorrect: market.proportionCorrect,
+        isIndeterminate: market.isIndeterminate,
+        isChallenged: false,
+        isChallengeable: false
+      }
+    }));
   }
   return transaction;
 }
@@ -289,7 +322,8 @@ export function constructSubmittedReportHashTransaction(log, marketID, market, o
   transaction.description = market.description;
   transaction.data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
   transaction.data.market = market;
-  transaction.data.isUnethical = !log.ethics || abi.bignum(log.ethics).eq(constants.ZERO);
+  const isUnethical = !log.ethics || abi.bignum(log.ethics).eq(constants.ZERO);
+  transaction.data.isUnethical = isUnethical;
   const action = log.inProgress ? 'committing' : 'committed';
   transaction.message = `${action} to report`;
   if (decryptionKey) {
@@ -301,6 +335,19 @@ export function constructSubmittedReportHashTransaction(log, marketID, market, o
     transaction.data.outcome = { name: formattedReport };
     transaction.message = `${transaction.message}: ${formattedReport}`;
   }
+  if (!log.inProgress) {
+    dispatch(updateEventsWithAccountReportData({
+      [market.eventID]: {
+        marketID,
+        branch: market.branchID,
+        period: market.tradingPeriod,
+        description: market.description,
+        expirationDate: new Date(market.endDate * 1000),
+        isUnethical,
+        isCommitted: true
+      }
+    }));
+  }
   return transaction;
 }
 
@@ -310,12 +357,22 @@ export function constructSubmittedReportTransaction(log, marketID, market, outco
   transaction.description = market.description;
   transaction.data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
   transaction.data.market = market;
-  transaction.data.isUnethical = !log.ethics || abi.bignum(log.ethics).eq(constants.ZERO);
+  const isUnethical = !log.ethics || abi.bignum(log.ethics).eq(constants.ZERO);
+  transaction.data.isUnethical = isUnethical;
   const formattedReport = formatReportedOutcome(log.report, market.minValue, market.maxValue, market.type, outcomes);
   transaction.data.reportedOutcomeID = formattedReport;
   transaction.data.outcome = { name: formattedReport };
   const action = log.inProgress ? 'revealing' : 'revealed';
   transaction.message = `${action} report: ${formatReportedOutcome(log.report, market.minValue, market.maxValue, market.type, outcomes)}`;
+  console.debug('constructSubmittedReportTransaction:', formattedReport);
+  if (!log.inProgress) {
+    dispatch(updateEventsWithAccountReportData({
+      [market.eventID]: {
+        accountReport: formattedReport,
+        isRevealed: true
+      }
+    }));
+  }
   return transaction;
 }
 
@@ -598,6 +655,8 @@ export function constructReportingTransaction(label, log, marketID, market, outc
   return (dispatch, getState) => {
     const { address, derivedKey } = augur.accounts.account;
     switch (label) {
+      case 'collectedFees':
+        return constructCollectedFeesTransaction(log, marketID, market, dispatch);
       case 'penalize':
         return constructPenalizeTransaction(log, marketID, market, outcomes, dispatch);
       case 'submittedReport':
@@ -617,8 +676,6 @@ export function constructTransaction(label, log, isRetry, callback) {
     switch (label) {
       case 'Approval':
         return constructApprovalTransaction(log);
-      case 'collectedFees':
-        return constructCollectedFeesTransaction(log);
       case 'deposit':
         return constructDepositTransaction(log);
       case 'fundedAccount':
@@ -650,6 +707,7 @@ export function constructTransaction(label, log, isRetry, callback) {
         if (!market || !market.description) break;
         return dispatch(constructMarketTransaction(label, log, market));
       }
+      case 'collectedFees':
       case 'penalize':
       case 'slashedRep':
       case 'submittedReport':

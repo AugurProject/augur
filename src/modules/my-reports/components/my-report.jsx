@@ -27,12 +27,12 @@ const Report = p => (
         <span className="report-main-group-title">reported: </span>
         <span className="report-main-group-title-outcome">
           {!!p.isCommitted && !p.isRevealed &&
-          <span
-            className="report-committed"
-            data-tip="You have successfully committed to this report. Remember to login to reveal the report!"
-          >
-            {p.reported || <EmDash />}
-          </span>
+            <span
+              className="report-committed"
+              data-tip="You have successfully committed to this report. Remember to login to reveal the report!"
+            >
+              {p.reported || <EmDash />}
+            </span>
           }
           {!!p.isRevealed &&
             <span className="report-revealed">

@@ -4,10 +4,13 @@ import NullStateMessage from 'modules/common/components/null-state-message';
 import TopicRows from 'modules/topics/components/topic-rows';
 import Paginator from 'modules/common/components/paginator';
 import Input from 'modules/common/components/input';
+import Branch from 'modules/branch/components/branch';
 
 export default class TopicsView extends Component {
   static propTypes = {
-    topics: PropTypes.array
+    topics: PropTypes.array,
+    branch: PropTypes.object,
+    loginAccount: PropTypes.object
   }
 
   constructor(props) {
@@ -26,16 +29,23 @@ export default class TopicsView extends Component {
       // ---
       filteredTopics: props.topics,
       paginatedTopics: [],
-      pagination: {}
+      pagination: {},
+      fontAwesomeClasses: [],
+      icoFontClasses: []
     };
 
     this.updatePagination = this.updatePagination.bind(this);
     this.filterByKeywords = this.filterByKeywords.bind(this);
     this.paginateFilteredTopics = this.paginateFilteredTopics.bind(this);
+    this.filterOutIconClassesFromStylesheets = this.filterOutIconClassesFromStylesheets.bind(this);
   }
 
   componentWillMount() {
     this.updatePagination(this.props, this.state);
+  }
+
+  componentDidMount() {
+    this.filterOutIconClassesFromStylesheets();
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -117,36 +127,78 @@ export default class TopicsView extends Component {
     });
   }
 
+  filterOutIconClassesFromStylesheets() {
+    // Get all classes from stylesheets for Font Awesome + Icofont
+    const fontAwesomeClasses = [];
+    const icoFontClasses = [];
+
+    const styleSheets = window.document.styleSheets;
+    for (let sI = 0; sI < styleSheets.length; sI++) {
+      const sheet = styleSheets[sI];
+      for (let rI = 0; rI < sheet.cssRules.length; rI++) {
+        const rule = sheet.cssRules[rI];
+        // Filter out Font Awesome icon classes
+        if (rule.selectorText && rule.selectorText.indexOf('fa-') !== -1) {
+          const selectors = rule.selectorText.split(/([: ,.])/);
+          selectors.forEach((selector) => {
+            if (selector.indexOf('fa-') !== -1) {
+              fontAwesomeClasses.push(selector);
+            }
+          });
+        }
+
+        // Filter out Icofont icon classes
+        if (rule.selectorText && rule.selectorText.indexOf('icofont-') !== -1) {
+          const selectors = rule.selectorText.split(/([: ,.])/);
+          selectors.forEach((selector) => {
+            if (selector.indexOf('icofont-') !== -1) {
+              icoFontClasses.push(selector);
+            }
+          });
+        }
+      }
+    }
+
+    this.setState({ fontAwesomeClasses, icoFontClasses });
+  }
+
   render() {
     const p = this.props;
     const s = this.state;
 
     return (
       <section id="topics_view">
-        <div className="topics-search" >
-          <Input
-            isSearch
-            isClearable
-            placeholder="Search Topics"
-            onChange={keywords => this.setState({ keywords })}
-          />
-        </div>
-        {s.filteredTopics.length ?
-          <div className="topics">
-            <TopicRows
-              topics={s.paginatedTopics}
-              topicsPerRow={s.topicsPerRow}
-              hasHeroRow={s.currentPage === 1}
-              topicsPerHeroRow={s.topicsPerHeroRow}
-              selectTopic={p.selectTopic}
-              isSearchResult={!!s.keywords}
+        <div id="topics_container">
+          {!!p.loginAccount.rep && !!p.loginAccount.rep.value && !!p.branch.id &&
+            <Branch {...p.branch} />
+          }
+          <div className="topics-search" >
+            <Input
+              isSearch
+              isClearable
+              placeholder="Search Topics"
+              onChange={keywords => this.setState({ keywords })}
             />
-          </div> :
-          <NullStateMessage message={s.nullMessage} />
-        }
-        {!!s.filteredTopics.length &&
-          <Paginator pagination={s.pagination} />
-        }
+          </div>
+          {s.filteredTopics.length ?
+            <div className="topics">
+              <TopicRows
+                topics={s.paginatedTopics}
+                topicsPerRow={s.topicsPerRow}
+                hasHeroRow={s.currentPage === 1}
+                topicsPerHeroRow={s.topicsPerHeroRow}
+                selectTopic={p.selectTopic}
+                isSearchResult={!!s.keywords}
+                fontAwesomeClasses={s.fontAwesomeClasses}
+                icoFontClasses={s.icoFontClasses}
+              />
+            </div> :
+            <NullStateMessage message={s.nullMessage} />
+          }
+          {!!s.filteredTopics.length &&
+            <Paginator pagination={s.pagination} />
+          }
+        </div>
       </section>
     );
   }

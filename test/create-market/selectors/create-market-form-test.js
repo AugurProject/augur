@@ -245,6 +245,7 @@ describe(`modules/create-market/selectors/create-market-form.js`, () => {
 
       state.createMarketInProgress = {
         endDate: new Date(3000, 0, 1, 0, 0, 0, 0), // User would have entered this during step-2
+        topic: 'testing',
         ...state.createMarketInProgress,
         ...test
       };

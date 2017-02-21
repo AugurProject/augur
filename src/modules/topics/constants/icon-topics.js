@@ -1,27 +1,27 @@
 // NOTE --  Each topic must be uniquely mapped to an icon
 //          Each icon can have multiple topics via an array of strings
-//          All values should be lowercase
+//          Two icon font sets are availble:
+//            All Font Awesome icons (v4.7.0) are available -- http://fontawesome.io/cheatsheet/
+//            Icons from the following Icofont (v1.0.0b) groups are available: Business, Currency, Payment, Sport, Transport, Travel, and Weather -- http://icofont.com/
 
-const iconTopics = {
-  'fa-copy': 'reporting',
+const fontAwesomeIcons = {
+  'fa-copy': ['reporting', 'testing', 'beta', 'policy'],
   'fa-snowflake-o': 'snow',
   'fa-bolt': 'lightning',
   'fa-cloud': ['weather', 'rain', 'precipitation'],
   'fa-sun-o': ['climate', 'sunspot', 'sunspots'],
   'fa-thermometer': ['temperature', 'heat'],
-  'fa-rocket': ['space', 'space program', 'rocket', 'nasa', 'spacex'],
   'fa-line-chart': ['finance', 'financial', 'financials', 'dow jones', 'to the moon', 'stock', 'stocks', 'derivative', 'derivatives', 'option', 'options', 'future', 'futures'],
   'fa-bug': ['antibiotic', 'antibiotics', 'bacteria', 'infection', 'infections', 'epidemic', 'epidemics'],
-  'fa-ambulance': ['mortality', 'hospital', 'hospitals'],
+  'fa-ambulance': ['mortality', 'hospital', 'hospitals', 'medicine'],
   'fa-home': ['housing', 'home', 'realty'],
   'fa-industry': ['climate change', 'pollution', 'global warming', 'eraserhead'],
   'fa-newspaper-o': ['news', 'events', 'newspaper', 'newspapers', 'fake news', 'media'],
-  'fa-users': 'elections',
   'fa-ship': ['international trade', 'shipping'],
   'fa-music': ['music', 'songs', 'pop', 'rock', 'rap', 'dancing', 'dance', 'techno'],
   'fa-laptop': ['computers', 'computing', 'laptops'],
   'fa-lock': ['crypto', 'cryptography', 'encryption', 'security'],
-  'fa-money': ['cryptocurrency', 'currency', 'currencies', 'money', 'value', 'fiat', 'debt', 'forex', 'lottery', 'daily lottery'],
+  'fa-money': ['trading', 'cryptocurrency', 'currency', 'currencies', 'money', 'value', 'fiat', 'debt', 'forex', 'lottery', 'daily lottery'],
   'fa-chain': ['blockchain', 'blockchains', 'block chain', 'block chains'],
   'fa-btc': ['bitcoin', 'btc', 'bitcoins'],
   'fa-usd': ['dollar', 'dollars', 'usd'],
@@ -58,8 +58,19 @@ const iconTopics = {
   'fa-at': ['email', 'emails', 'e-mail', 'e-mails', 'identity', 'names'],
   'fa-code': ['coding', 'programming', 'programmers', 'software', 'development', 'developers'],
   'fa-eye': ['surveillance', 'big brother', 'nsa', 'national security agency', 'snowden'],
-  'fa-font-awesome': ['golf', 'frisbee golf'],
-  'fa-compress': ['debates', 'arguments', 'conflicts', 'fights', 'war', 'wars', 'fighting', 'calexit']
+  'fa-font-awesome': ['capture the flag', 'ctf', 'flag football', 'golf', 'frisbee golf'],
+  'fa-compress': ['debates', 'arguments', 'conflicts', 'fights', 'war', 'wars', 'fighting', 'calexit'],
+};
+
+const icofontIcons = {
+  'icofont-people': ['elections', 'politics'],
+  'icofont-rocket-alt-2': ['space', 'space program', 'rocket', 'nasa', 'spacex'],
+  'icofont-tractor': ['agriculture', 'farming', 'GMO']
+};
+
+const iconTopics = {
+  ...fontAwesomeIcons,
+  ...icofontIcons
 };
 
 export default iconTopics;
