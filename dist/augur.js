@@ -24110,7 +24110,7 @@ BigNumber.config({
 var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/slashRep"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register"), require("./modules/topics"), require("./modules/modifyOrderBook"), require("./modules/generateOrderBook")];
 
 function Augur() {
-  this.version = "3.12.5";
+  this.version = "3.12.6";
 
   this.options = {
     debug: {
@@ -24458,7 +24458,7 @@ module.exports = {
 
   formatTag: function formatTag(tag) {
     if (tag === null || tag === undefined || tag === "") return "0x0";
-    return abi.short_string_to_int256(tag);
+    return abi.short_string_to_int256(tag.trim());
   },
 
   formatTags: function formatTags(tags) {
