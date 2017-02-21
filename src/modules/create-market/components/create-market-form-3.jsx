@@ -71,7 +71,7 @@ const CreateMarketForm4 = p => (
       </p>
       <InputList
         className="keywords-list"
-        list={p.tags}
+        list={p.keywords}
         errors={p.errors && p.errors.tags}
         listMaxElements={p.keywordsMaxNum}
         itemMaxLength={p.tagsMaxLength}
