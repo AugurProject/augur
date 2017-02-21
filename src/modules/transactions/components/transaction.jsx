@@ -111,7 +111,7 @@ const Transaction = (p) => {
         <span className="description">
           <span className="action">{nodes.action}</span>
           <br />
-          <TransactionDescription description={p.description} marketLink={p.data.marketLink} marketID={p.data.marketID}/>
+          <TransactionDescription description={p.description} marketLink={p.data.marketLink} marketID={p.data.marketID} />
           <br />
           {p.timestamp &&
             <ValueTimestamp className="property-value" {...p.timestamp} />
