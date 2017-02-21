@@ -3,7 +3,6 @@ import { updateBranch } from '../../branch/actions/update-branch';
 import { loadReports } from '../../reports/actions/load-reports';
 import { clearOldReports } from '../../reports/actions/clear-old-reports';
 import { revealReports } from '../../reports/actions/reveal-reports';
-import { loadEventsWithSubmittedReport } from '../../my-reports/actions/load-events-with-submitted-report';
 
 const tracker = { reportsRevealed: false, notSoCurrentPeriod: 0 };
 
@@ -25,7 +24,6 @@ export function checkPeriod(unlock, cb) {
       console.log('checkPeriod complete:', err, reportPeriod);
       if (err) return callback(err);
       dispatch(updateBranch({ reportPeriod }));
-      dispatch(loadEventsWithSubmittedReport());
       dispatch(clearOldReports());
       dispatch(loadReports((err) => {
         if (err) return callback(err);
