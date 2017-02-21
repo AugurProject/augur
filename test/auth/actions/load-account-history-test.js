@@ -14,7 +14,6 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
       const LoadAccountTrades = {};
       const LoadBidsAsksHistory = {};
       const LoadCreateMarketHistory = {};
-      const LoadEventsWithSubmittedReport = {};
       const LoadFundingHistory = {};
       const LoadReportingHistory = {};
       const SyncBranch = {};
@@ -23,7 +22,6 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
         '../../../modules/my-positions/actions/load-account-trades': LoadAccountTrades,
         '../../../modules/bids-asks/actions/load-bids-asks-history': LoadBidsAsksHistory,
         '../../../modules/create-market/actions/load-create-market-history': LoadCreateMarketHistory,
-        '../../../modules/my-reports/actions/load-events-with-submitted-report': LoadEventsWithSubmittedReport,
         '../../../modules/account/actions/load-funding-history': LoadFundingHistory,
         '../../../modules/my-reports/actions/load-reporting-history': LoadReportingHistory,
         '../../../modules/branch/actions/sync-branch': SyncBranch,
@@ -32,7 +30,6 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
       LoadAccountTrades.loadAccountTrades = sinon.stub().returns({ type: 'LOAD_ACCOUNT_TRADES' });
       LoadBidsAsksHistory.loadBidsAsksHistory = sinon.stub().returns({ type: 'LOAD_BIDS_ASKS_HISTORY' });
       LoadCreateMarketHistory.loadCreateMarketHistory = sinon.stub().returns({ type: 'LOAD_CREATE_MARKET_HISTORY' });
-      LoadEventsWithSubmittedReport.loadEventsWithSubmittedReport = sinon.stub().returns({ type: 'LOAD_EVENTS_WITH_SUBMITTED_REPORT' });
       LoadFundingHistory.loadFundingHistory = sinon.stub().returns({ type: 'LOAD_FUNDING_HISTORY' });
       LoadFundingHistory.loadTransferHistory = sinon.stub().returns({ type: 'LOAD_TRANSFER_HISTORY' });
       LoadReportingHistory.loadReportingHistory = sinon.stub().returns({ type: 'LOAD_REPORTING_HISTORY' });
@@ -60,8 +57,6 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
         type: 'CLEAR_REPORTS'
       }, {
         type: 'LOAD_REPORTING_HISTORY'
-      }, {
-        type: 'LOAD_EVENTS_WITH_SUBMITTED_REPORT'
       }, {
         type: 'SYNC_BRANCH'
       }]);

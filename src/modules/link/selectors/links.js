@@ -8,7 +8,6 @@ import { updateURL } from 'modules/link/actions/update-url';
 import { logout } from 'modules/auth/actions/logout';
 
 import { loadFullLoginAccountMarkets } from 'modules/portfolio/actions/load-full-login-account-markets';
-import { loadEventsWithSubmittedReport } from 'modules/my-reports/actions/load-events-with-submitted-report';
 import updateUserLoginMessageVersionRead from 'modules/login-message/actions/update-user-login-message-version-read';
 import { updateSelectedMarketsHeader } from 'modules/markets/actions/update-selected-markets-header';
 
@@ -236,7 +235,6 @@ export const selectMyReportsLink = memoizerific(1)((dispatch) => {
   return {
     href,
     onClick: () => {
-      dispatch(loadEventsWithSubmittedReport());
       dispatch(updateURL(href));
     }
   };
