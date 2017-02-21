@@ -135,8 +135,10 @@ export default class TopicsView extends Component {
     const styleSheets = window.document.styleSheets;
     for (let sI = 0; sI < styleSheets.length; sI++) {
       const sheet = styleSheets[sI];
-      for (let rI = 0; rI < sheet.cssRules.length; rI++) {
+      const ruleLength = sheet.cssRules ? sheet.cssRules.length : 0;
+      for (let rI = 0; rI < ruleLength; rI++) {
         const rule = sheet.cssRules[rI];
+
         // Filter out Font Awesome icon classes
         if (rule.selectorText && rule.selectorText.indexOf('fa-') !== -1) {
           const selectors = rule.selectorText.split(/([: ,.])/);
