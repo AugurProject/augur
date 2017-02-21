@@ -18,8 +18,6 @@ export const select = (formState) => {
 };
 
 export const isValid = (formState) => {
-  console.log('isValid -- ', formState);
-
   if (validateExpirySource(formState.expirySource)) return false;
   if (validateExpirySourceUrl(formState.expirySourceUrl, formState.expirySource)) return false;
   if (validateTopic(formState.topic)) return false;
@@ -28,8 +26,6 @@ export const isValid = (formState) => {
 };
 
 export const errors = (formState) => {
-  console.log('errors -- ', formState);
-
   const errs = {};
 
   if (formState.expirySource !== undefined) {
