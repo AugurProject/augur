@@ -625,6 +625,49 @@ describe("Report encryption/decryption", function () {
   });
 });
 
+describe("makeHash", function () {
+  before(function () {
+    makeReports.options = {debug: {reporting: false}};
+  });
+  after(function () {
+    delete makeReports.options;
+  });
+  var test = function (t) {
+    it(JSON.stringify(t), function () {
+      var localHash = makeReports.makeHash(t.salt, t.report, t.event, t.from, t.isScalar, t.isIndeterminate);
+      assert.strictEqual(localHash, t.expected);
+    });
+  };
+  test({
+    salt: "1337",
+    report: "0xde0b6b3a7640000",
+    from: "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b",
+    event: "0xf54b80c48e42094889a38c2ff8c374679dea639d75aa0f396b617b5675403e7e",
+    expected: "0x213e934956a160e03cba5ec2f7837c633e0bb6b23976e986ed9a72ddb7ff0502"
+  });
+  test({
+    salt: "1337",
+    report: abi.hex(constants.BINARY_INDETERMINATE),
+    from: "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b",
+    event: "0xf54b80c48e42094889a38c2ff8c374679dea639d75aa0f396b617b5675403e7e",
+    expected: "0xb4d39f3969a897a0d3872361ecadf9d87e7d43ee3eb63ccff7f94ed548b95d2c"
+  });
+  test({
+    salt: "1337",
+    report: abi.hex(constants.CATEGORICAL_SCALAR_INDETERMINATE),
+    from: "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b",
+    event: "0xf54b80c48e42094889a38c2ff8c374679dea639d75aa0f396b617b5675403e7e",
+    expected: "0x43c678db38cdc86f109f0c8cccebf300b9fec908dd59ac905191b9c755e26c0a"
+  });
+  test({
+    salt: "1337",
+    report: abi.hex(constants.INDETERMINATE_PLUS_ONE),
+    from: "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b",
+    event: "0xf54b80c48e42094889a38c2ff8c374679dea639d75aa0f396b617b5675403e7e",
+    expected: "0xd8566eb441e5a90f035b72cb3fbd44d783f627b9d1503f5a2bfce7fab5853685"
+  });
+});
+
 describe("parseAndDecryptReport", function() {
   var test = function(t) {
     it(JSON.stringify(t), function() {
@@ -676,116 +719,78 @@ describe("parseAndDecryptReport", function() {
   });
 });
 
-describe("makeHash", function () {
-  before(function () {
-    makeReports.options = {debug: {reporting: false}};
-  });
-  after(function () {
-    delete makeReports.options;
-  });
-  var test = function (t) {
-    it(JSON.stringify(t), function () {
-      var localHash = makeReports.makeHash(t.salt, t.report, t.event, t.from, t.isScalar, t.isIndeterminate);
-      assert.strictEqual(localHash, t.expected);
-    });
-  };
-  test({
-    salt: "1337",
-    report: "0xde0b6b3a7640000",
-    from: "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b",
-    event: "0xf54b80c48e42094889a38c2ff8c374679dea639d75aa0f396b617b5675403e7e",
-    expected: "0x213e934956a160e03cba5ec2f7837c633e0bb6b23976e986ed9a72ddb7ff0502"
-  });
-  test({
-    salt: "1337",
-    report: abi.hex(constants.BINARY_INDETERMINATE),
-    from: "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b",
-    event: "0xf54b80c48e42094889a38c2ff8c374679dea639d75aa0f396b617b5675403e7e",
-    expected: "0xb4d39f3969a897a0d3872361ecadf9d87e7d43ee3eb63ccff7f94ed548b95d2c"
-  });
-  test({
-    salt: "1337",
-    report: abi.hex(constants.CATEGORICAL_SCALAR_INDETERMINATE),
-    from: "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b",
-    event: "0xf54b80c48e42094889a38c2ff8c374679dea639d75aa0f396b617b5675403e7e",
-    expected: "0x43c678db38cdc86f109f0c8cccebf300b9fec908dd59ac905191b9c755e26c0a"
-  });
-  test({
-    salt: "1337",
-    report: abi.hex(constants.INDETERMINATE_PLUS_ONE),
-    from: "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b",
-    event: "0xf54b80c48e42094889a38c2ff8c374679dea639d75aa0f396b617b5675403e7e",
-    expected: "0xd8566eb441e5a90f035b72cb3fbd44d783f627b9d1503f5a2bfce7fab5853685"
-  });
-});
-
-describe("submitReport", function() {
+describe("getAndDecryptReport", function() {
   var finished;
   var test = function(t) {
     it(JSON.stringify(t), function(done) {
       finished = done;
-      makeReports.submitReport.call(t.testThis, t.event, t.salt, t.report, t.ethics, t.minValue, t.maxValue, t.type, t.isIndeterminate, t.onSent, t.onSuccess, t.onFailed);
+
+      makeReports.getAndDecryptReport.call(t.testThis, t.branch, t.expDateIndex, t.reporter, t.event, t.secret, t.callback);
     });
   };
   test({
     testThis: {
-    	options: { debug: { reporting: false } },
-    	fixReport: makeReports.fixReport,
-    	MakeReports: {
-    		submitReport: function(event, salt, report, ethics, onSent, onSuccess, onFailed) {
-    			assert.deepEqual(event, '0xe1');
-    			assert.deepEqual(salt, '0x4e61436c');
-    			assert.deepEqual(report, '0xde0b6b3a7640000');
-    			assert.deepEqual(ethics, '6565656565650000000000000000000000000000000000000000000000000000');
-    			assert.isFunction(onSent);
-    			assert.isFunction(onSuccess);
-    			assert.isFunction(onFailed);
-    			finished();
-    		}
-    	}
+      fire: function(tx, cb, options, aux) {
+        assert.deepEqual(tx.params, ['0xb1', 150000000, '0x1', '0xe1']);
+        assert.deepEqual(tx.to, augur.tx.ExpiringEvents.getEncryptedReport.to);
+        assert.deepEqual(cb, utils.noop);
+        assert.deepEqual(options, makeReports.parseAndDecryptReport);
+        assert.deepEqual(aux, { derivedKey: '0xabc123', salt: '0x123abc456' });
+        finished();
+      },
+      tx: augur.tx,
+      parseAndDecryptReport: makeReports.parseAndDecryptReport
     },
+    branch: '0xb1',
+    expDateIndex: 150000000,
+    reporter: '0x1',
     event: '0xe1',
-    salt: 'NaCl',
-    report: '1',
-    ethics: '6565656565650000000000000000000000000000000000000000000000000000',
-    minValue: 1,
-    maxValue: 2,
-    type: 'binary',
-    isIndeterminate: false,
-    onSent: utils.noop,
-    onSuccess: utils.noop,
-    onFailed: utils.noop
+    secret: { derivedKey: '0xabc123', salt: '0x123abc456' },
+    callback: utils.noop,
   });
   test({
     testThis: {
-    	options: { debug: { reporting: false } },
-    	fixReport: makeReports.fixReport,
-    	MakeReports: {
-    		submitReport: function(event, salt, report, ethics, onSent, onSuccess, onFailed) {
-    			assert.deepEqual(event, '0xe1');
-    			assert.deepEqual(salt, '0x4e61436c');
-    			assert.deepEqual(report, '0xde0b6b3a7640000');
-    			assert.deepEqual(ethics, '6565656565650000000000000000000000000000000000000000000000000000');
-    			assert.isFunction(onSent);
-    			assert.isFunction(onSuccess);
-    			assert.isFunction(onFailed);
-    			finished();
-    		}
-    	}
+      fire: function(tx, cb, options, aux) {
+        assert.deepEqual(tx.params, ['0xb1', 150000000, '0x1', '0xe1']);
+        assert.deepEqual(tx.to, augur.tx.ExpiringEvents.getEncryptedReport.to);
+        assert.deepEqual(cb, utils.noop);
+        assert.deepEqual(options, makeReports.parseAndDecryptReport);
+        assert.deepEqual(aux, { derivedKey: '0xabc123', salt: '0x123abc456' });
+        finished();
+      },
+      tx: augur.tx,
+      parseAndDecryptReport: makeReports.parseAndDecryptReport
     },
-    event: {
+    branch: {
+      branch: '0xb1',
+      expDateIndex: 150000000,
+      reporter: '0x1',
       event: '0xe1',
-      salt: 'NaCl',
-      report: '1',
-      ethics: '6565656565650000000000000000000000000000000000000000000000000000',
-      minValue: 1,
-      maxValue: 2,
-      type: 'binary',
-      isIndeterminate: false,
-      onSent: utils.noop,
-      onSuccess: utils.noop,
-      onFailed: utils.noop
+      secret: { derivedKey: '0xabc123', salt: '0x123abc456' },
+      callback: utils.noop,
     }
+  });
+  test({
+    testThis: {
+      fire: function(tx, cb, options, aux) {
+        assert.deepEqual(tx.params, ['0xb1', 150000000, '0x1', '0xe1']);
+        assert.deepEqual(tx.to, augur.tx.ExpiringEvents.getEncryptedReport.to);
+        assert.deepEqual(cb, utils.noop);
+        assert.deepEqual(options, makeReports.parseAndDecryptReport);
+        assert.deepEqual(aux, { derivedKey: '0xabc123', salt: '0x123abc456' });
+        finished();
+      },
+      tx: augur.tx,
+      parseAndDecryptReport: makeReports.parseAndDecryptReport
+    },
+    branch: {
+      branch: '0xb1',
+      expDateIndex: 150000000,
+      reporter: '0x1',
+      event: '0xe1',
+      secret: { derivedKey: '0xabc123', salt: '0x123abc456' },
+    },
+    callback: utils.noop
   });
 });
 
@@ -1100,5 +1105,75 @@ describe("submitReportHash", function() {
       finished();
     },
     onFailed: utils.noop
+  });
+});
+
+describe("submitReport", function() {
+  var finished;
+  var test = function(t) {
+    it(JSON.stringify(t), function(done) {
+      finished = done;
+      makeReports.submitReport.call(t.testThis, t.event, t.salt, t.report, t.ethics, t.minValue, t.maxValue, t.type, t.isIndeterminate, t.onSent, t.onSuccess, t.onFailed);
+    });
+  };
+  test({
+    testThis: {
+    	options: { debug: { reporting: false } },
+    	fixReport: makeReports.fixReport,
+    	MakeReports: {
+    		submitReport: function(event, salt, report, ethics, onSent, onSuccess, onFailed) {
+    			assert.deepEqual(event, '0xe1');
+    			assert.deepEqual(salt, '0x4e61436c');
+    			assert.deepEqual(report, '0xde0b6b3a7640000');
+    			assert.deepEqual(ethics, '6565656565650000000000000000000000000000000000000000000000000000');
+    			assert.isFunction(onSent);
+    			assert.isFunction(onSuccess);
+    			assert.isFunction(onFailed);
+    			finished();
+    		}
+    	}
+    },
+    event: '0xe1',
+    salt: 'NaCl',
+    report: '1',
+    ethics: '6565656565650000000000000000000000000000000000000000000000000000',
+    minValue: 1,
+    maxValue: 2,
+    type: 'binary',
+    isIndeterminate: false,
+    onSent: utils.noop,
+    onSuccess: utils.noop,
+    onFailed: utils.noop
+  });
+  test({
+    testThis: {
+    	options: { debug: { reporting: false } },
+    	fixReport: makeReports.fixReport,
+    	MakeReports: {
+    		submitReport: function(event, salt, report, ethics, onSent, onSuccess, onFailed) {
+    			assert.deepEqual(event, '0xe1');
+    			assert.deepEqual(salt, '0x4e61436c');
+    			assert.deepEqual(report, '0xde0b6b3a7640000');
+    			assert.deepEqual(ethics, '6565656565650000000000000000000000000000000000000000000000000000');
+    			assert.isFunction(onSent);
+    			assert.isFunction(onSuccess);
+    			assert.isFunction(onFailed);
+    			finished();
+    		}
+    	}
+    },
+    event: {
+      event: '0xe1',
+      salt: 'NaCl',
+      report: '1',
+      ethics: '6565656565650000000000000000000000000000000000000000000000000000',
+      minValue: 1,
+      maxValue: 2,
+      type: 'binary',
+      isIndeterminate: false,
+      onSent: utils.noop,
+      onSuccess: utils.noop,
+      onFailed: utils.noop
+    }
   });
 });
