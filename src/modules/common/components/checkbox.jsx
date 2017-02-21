@@ -10,7 +10,11 @@ const Checkbox = p => (
       data-tip={p.title}
       onClick={p.onClick}
     >
-      <span className="checkbox-box" />
+      <span className="checkbox-box">
+        {p.isChecked &&
+          <i className="fa fa-check" />
+        }
+      </span>
       <span className="checkbox-label" tabIndex={p.tabIndex} >
         {p.text}
       </span>
