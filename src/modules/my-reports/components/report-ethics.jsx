@@ -1,7 +1,7 @@
 import React from 'react';
 
 const ReportEthics = p => (
-  <span className={p.className}>
+  <span>
     {!!p.isUnethical &&
       <i
         className="fa fa-thumbs-down report-unethical"
@@ -12,7 +12,6 @@ const ReportEthics = p => (
 );
 
 ReportEthics.propTypes = {
-  className: React.PropTypes.string,
   isUnethical: React.PropTypes.bool
 };
 
