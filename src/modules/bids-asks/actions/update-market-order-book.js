@@ -7,9 +7,9 @@ export const UPDATE_MARKET_ORDER_BOOK = 'UPDATE_MARKET_ORDER_BOOK';
 export const REPLACE_MARKET_ORDER_BOOK = 'REPLACE_MARKET_ORDER_BOOK';
 export const CLEAR_MARKET_ORDER_BOOK = 'CLEAR_MARKET_ORDER_BOOK';
 
-export const updateMarketOrderBook = (marketId, marketOrderBook) => ({ type: UPDATE_MARKET_ORDER_BOOK, marketId, marketOrderBook });
-export const replaceMarketOrderBook = (marketId, marketOrderBook) => ({ type: REPLACE_MARKET_ORDER_BOOK, marketId, marketOrderBook });
-export const clearMarketOrderBook = marketId => ({ type: CLEAR_MARKET_ORDER_BOOK, marketId });
+export const updateMarketOrderBook = (marketID, marketOrderBook) => ({ type: UPDATE_MARKET_ORDER_BOOK, marketID, marketOrderBook });
+export const replaceMarketOrderBook = (marketID, marketOrderBook) => ({ type: REPLACE_MARKET_ORDER_BOOK, marketID, marketOrderBook });
+export const clearMarketOrderBook = marketID => ({ type: CLEAR_MARKET_ORDER_BOOK, marketID });
 
 export const addOrder = log => (dispatch, getState) => {
   const orderBook = { ...getState().orderBooks[log.market] };

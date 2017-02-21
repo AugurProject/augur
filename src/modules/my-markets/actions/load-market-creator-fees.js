@@ -2,12 +2,12 @@ import { augur, abi } from '../../../services/augurjs';
 
 import { updateMarketCreatorFees } from '../../my-markets/actions/update-market-creator-fees';
 
-export function loadMarketCreatorFees(marketId) {
+export function loadMarketCreatorFees(marketID) {
   return (dispatch) => {
-    augur.getMarketCreatorFeesCollected(marketId, (fees) => {
+    augur.getMarketCreatorFeesCollected(marketID, (fees) => {
       if (fees) {
         const marketFees = {};
-        marketFees[marketId] = abi.bignum(fees);
+        marketFees[marketID] = abi.bignum(fees);
         dispatch(updateMarketCreatorFees(marketFees));
       }
     });
