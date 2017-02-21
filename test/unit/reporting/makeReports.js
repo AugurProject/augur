@@ -623,6 +623,57 @@ describe("Report encryption/decryption", function () {
   });
 });
 
+describe("parseAndDecryptReport", function() {
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(makeReports.parseAndDecryptReport(t.arr, t.secret));
+    });
+  };
+  test({
+    arr: ['0x6b6cfe160a6263631b292f879eeff926c9d2b5db15fd8902ab0b42cb64d38014', '0x6b6cfe160a6263631b292f879eeff926c9d2b5db15fd8902ab0b42cb64d38014'],
+    secret: { derivedKey: '0x1', salt: '0x1'},
+    assertions: function(report) {
+      assert.deepEqual(report, {
+        salt: '0x0000000000000000000000000000000000000000000000000de0b6b3a7640000',
+        report: '0x0000000000000000000000000000000000000000000000000de0b6b3a7640000',
+      	ethics: false
+      });
+    }
+  });
+  test({
+    arr: ['0x6b6cfe160a6263631b292f879eeff926c9d2b5db15fd8902ab0b42cb64d38014', '0x6b6cfe160a6263631b292f879eeff926c9d2b5db15fd8902ab0b42cb64d38014', true],
+    secret: { derivedKey: '0x1', salt: '0x1'},
+    assertions: function(report) {
+      assert.deepEqual(report, {
+        salt: '0x0000000000000000000000000000000000000000000000000de0b6b3a7640000',
+        report: '0x0000000000000000000000000000000000000000000000000de0b6b3a7640000',
+      	ethics: true
+      });
+    }
+  });
+  test({
+    arr: ['0x6b6cfe160a6263631b292f879eeff926c9d2b5db15fd8902ab0b42cb64d38014'],
+    secret: { derivedKey: '0x1', salt: '0x1'},
+    assertions: function(report) {
+      assert.isNull(report);
+    }
+  });
+  test({
+    arr: '',
+    secret: { derivedKey: '0x1', salt: '0x1'},
+    assertions: function(report) {
+      assert.isNull(report);
+    }
+  });
+  test({
+    arr: undefined,
+    secret: { derivedKey: '0x1', salt: '0x1'},
+    assertions: function(report) {
+      assert.isNull(report);
+    }
+  });
+});
+
 describe("makeHash", function () {
   before(function () {
     makeReports.options = {debug: {reporting: false}};
