@@ -23,8 +23,7 @@ describe(`modules/create-market/selectors/form-steps/step-3.js`, () => {
       expirySourceTypes: {
         generic: EXPIRY_SOURCE_GENERIC,
         specific: EXPIRY_SOURCE_SPECIFIC
-      },
-      topic: ''
+      }
     };
     assert.deepEqual(selector.select('test'), out, `Didn't return the expected output for select()`);
   });
