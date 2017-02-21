@@ -11,6 +11,7 @@ var constants = require("../../../src/constants");
 var reporting = require("../../../src/modules/reporting");
 var makeReports = require("../../../src/modules/makeReports");
 var utils = require("../../../src/utilities");
+var keys = require("keythereum");
 
 describe("unfixReport", function () {
   before(function () {
@@ -630,24 +631,24 @@ describe("parseAndDecryptReport", function() {
     });
   };
   test({
-    arr: ['0x6b6cfe160a6263631b292f879eeff926c9d2b5db15fd8902ab0b42cb64d38014', '0x6b6cfe160a6263631b292f879eeff926c9d2b5db15fd8902ab0b42cb64d38014'],
-    secret: { derivedKey: '0x1', salt: '0x1'},
+    arr: ['0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e', '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27'],
+    secret: { derivedKey: '0xabc123', salt: '0x123abc456'},
     assertions: function(report) {
       assert.deepEqual(report, {
-        salt: '0x0000000000000000000000000000000000000000000000000de0b6b3a7640000',
-        report: '0x0000000000000000000000000000000000000000000000000de0b6b3a7640000',
+        salt: abi.prefix_hex(abi.pad_left(abi.hex('1337'))),
+        report: abi.prefix_hex(abi.pad_left(makeReports.fixReport('1', 1, 2, 'binary'))),
       	ethics: false
       });
     }
   });
   test({
-    arr: ['0x6b6cfe160a6263631b292f879eeff926c9d2b5db15fd8902ab0b42cb64d38014', '0x6b6cfe160a6263631b292f879eeff926c9d2b5db15fd8902ab0b42cb64d38014', true],
-    secret: { derivedKey: '0x1', salt: '0x1'},
+    arr: ['0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e', '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27', '1'],
+    secret: { derivedKey: '0xabc123', salt: '0x123abc456'},
     assertions: function(report) {
       assert.deepEqual(report, {
-        salt: '0x0000000000000000000000000000000000000000000000000de0b6b3a7640000',
-        report: '0x0000000000000000000000000000000000000000000000000de0b6b3a7640000',
-      	ethics: true
+        salt: abi.prefix_hex(abi.pad_left(abi.hex('1337'))),
+        report: abi.prefix_hex(abi.pad_left(makeReports.fixReport('1', 1, 2, 'binary'))),
+      	ethics: '1'
       });
     }
   });
@@ -783,6 +784,42 @@ describe("submitReport", function() {
       onSent: utils.noop,
       onSuccess: utils.noop,
       onFailed: utils.noop
+    }
+  });
+});
+
+describe("submitReportHash", function() {
+  var finished;
+  var test = function(t) {
+    it(JSON.stringify(t), function(done) {
+      finished = done;
+      makeReports.submitReportHash.call(t.testThis, t.event, t.reportHash, t.encryptedReport, t.encryptedSalt, t.ethics, t.branch, t.period, t.periodLength, t.onSent, t.onSuccess, t.onFailed);
+    });
+  };
+  test({
+    testThis: {
+    	options: { debug: { reporting: false } },
+      transact: function() {},
+      getCurrentPeriodProgress: function(periodLength) { return 85; },
+      checkPeriod: function() {},
+      getRepRedistributionDone: function() {},
+    	ExpiringEvents: {getReportHash: function(branch) {} }
+    },
+    event: {
+      event: '0xe1',
+      reportHash: '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
+      encryptedReport: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
+      encryptedSalt: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27',
+      ethics: false,
+      branch: '0xb1',
+      period: 1500,
+      periodLength: 1000,
+      onSent: utils.noop,
+      onSuccess: utils.noop,
+      onFailed: function(err) {
+        assert.deepEqual(err, {"-2": "not in first half of period (commit phase)"});
+        finished();
+      }
     }
   });
 });
