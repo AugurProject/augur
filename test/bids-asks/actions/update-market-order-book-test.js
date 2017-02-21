@@ -7,7 +7,7 @@ import {
 
 describe(`modules/bids-asks/actions/update-market-order-book.js`, () => {
   it(`should fire the UPDATE_MARKET_ORDER_BOOK action with data`, () => {
-    const marketId = 'test_id';
+    const marketID = 'test_id';
     const marketOrderBook = {
       buy: {
         0x1dca8b5121a6e63228895359bebb3b7e863dcce38506e80e2c72f7aa45e6bf9a: {
@@ -67,9 +67,9 @@ describe(`modules/bids-asks/actions/update-market-order-book.js`, () => {
 
     const expectedOutput = {
       type: UPDATE_MARKET_ORDER_BOOK,
-      marketId,
+      marketID,
       marketOrderBook
     };
-    assert.deepEqual(updateMarketOrderBook(marketId, marketOrderBook), expectedOutput, `Updating market order book didn't return the correct action!`);
+    assert.deepEqual(updateMarketOrderBook(marketID, marketOrderBook), expectedOutput, `Updating market order book didn't return the correct action!`);
   });
 });
