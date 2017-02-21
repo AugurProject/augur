@@ -29,16 +29,23 @@ export default class TopicsView extends Component {
       // ---
       filteredTopics: props.topics,
       paginatedTopics: [],
-      pagination: {}
+      pagination: {},
+      fontAwesomeClasses: [],
+      icoFontClasses: []
     };
 
     this.updatePagination = this.updatePagination.bind(this);
     this.filterByKeywords = this.filterByKeywords.bind(this);
     this.paginateFilteredTopics = this.paginateFilteredTopics.bind(this);
+    this.filterOutIconClassesFromStylesheets = this.filterOutIconClassesFromStylesheets.bind(this);
   }
 
   componentWillMount() {
     this.updatePagination(this.props, this.state);
+  }
+
+  componentDidMount() {
+    this.filterOutIconClassesFromStylesheets();
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -120,6 +127,41 @@ export default class TopicsView extends Component {
     });
   }
 
+  filterOutIconClassesFromStylesheets() {
+    // Get all classes from stylesheets for Font Awesome + Icofont
+    const fontAwesomeClasses = [];
+    const icoFontClasses = [];
+
+    const styleSheets = window.document.styleSheets;
+    for (let sI = 0; sI < styleSheets.length; sI++) {
+      const sheet = styleSheets[sI];
+      for (let rI = 0; rI < sheet.cssRules.length; rI++) {
+        const rule = sheet.cssRules[rI];
+        // Filter out Font Awesome icon classes
+        if (rule.selectorText && rule.selectorText.indexOf('fa-') !== -1) {
+          const selectors = rule.selectorText.split(/([: ,.])/);
+          selectors.forEach((selector) => {
+            if (selector.indexOf('fa-') !== -1) {
+              fontAwesomeClasses.push(selector);
+            }
+          });
+        }
+
+        // Filter out Icofont icon classes
+        if (rule.selectorText && rule.selectorText.indexOf('icofont-') !== -1) {
+          const selectors = rule.selectorText.split(/([: ,.])/);
+          selectors.forEach((selector) => {
+            if (selector.indexOf('icofont-') !== -1) {
+              icoFontClasses.push(selector);
+            }
+          });
+        }
+      }
+    }
+
+    this.setState({ fontAwesomeClasses, icoFontClasses });
+  }
+
   render() {
     const p = this.props;
     const s = this.state;
@@ -147,6 +189,8 @@ export default class TopicsView extends Component {
                 topicsPerHeroRow={s.topicsPerHeroRow}
                 selectTopic={p.selectTopic}
                 isSearchResult={!!s.keywords}
+                fontAwesomeClasses={s.fontAwesomeClasses}
+                icoFontClasses={s.icoFontClasses}
               />
             </div> :
             <NullStateMessage message={s.nullMessage} />
