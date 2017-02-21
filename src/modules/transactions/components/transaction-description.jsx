@@ -25,7 +25,7 @@ const TransactionDescription = (p) => {
     );
   };
   const isShortened = shortDescription !== p.description;
-  if (shortDescription && p.marketLink) {
+  if (shortDescription && p.marketID && p.marketLink) {
     return (
       <Link href={p.marketLink.href} onClick={p.marketLink.onClick}>
         {description(isShortened)}

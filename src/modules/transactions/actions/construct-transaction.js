@@ -192,6 +192,7 @@ export function constructMarketCreatedTransaction(log, description, dispatch) {
   transaction.description = description.split('~|>')[0];
   transaction.marketCreationFee = formatEther(log.marketCreationFee);
   transaction.data.marketLink = selectMarketLink({ id: log.marketID, description: transaction.description }, dispatch);
+  transaction.data.marketID = log.marketID ? log.marketID : null;
   transaction.bond = { label: 'event validity', value: formatEther(log.eventBond) };
   const action = log.inProgress ? 'creating' : 'created';
   transaction.message = `${action} market`;
