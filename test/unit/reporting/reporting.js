@@ -128,17 +128,15 @@ describe("hashSenderPlusEvent", function () {
 });
 describe("getReport", function() {
   var getReport = augur.ExpiringEvents.getReport;
+  var finished;
   afterEach(function() {
     augur.ExpiringEvents.getReport = getReport;
   });
   var test = function(t) {
     it(JSON.stringify(t), function(done) {
       augur.ExpiringEvents.getReport = t.getReport;
-
-      augur.getReport(t.branch, t.period, t.event, t.sender, t.minValue, t.maxValue, t.type, function(report) {
-        t.assertions(report);
-        done();
-      });
+      finished = done;
+      augur.getReport(t.branch, t.period, t.event, t.sender, t.minValue, t.maxValue, t.type, t.callback);
     });
   };
   test({
@@ -152,8 +150,9 @@ describe("getReport", function() {
     getReport: function(branch, period, event, sender, cb) {
       cb(abi.fix(1).toString());
     },
-    assertions: function(report) {
+    callback: function(report) {
       assert.deepEqual(report, { report: '1', isIndeterminate: false });
+      finished();
     }
   });
   test({
@@ -169,8 +168,9 @@ describe("getReport", function() {
     getReport: function(branch, period, event, sender, cb) {
       cb(undefined);
     },
-    assertions: function(report) {
+    callback: function(report) {
       assert.deepEqual(report, augur.errors.REPORT_NOT_FOUND);
+      finished();
     }
   });
   test({
@@ -181,13 +181,14 @@ describe("getReport", function() {
       sender: '0x1',
       minValue: 1,
       maxValue: 2,
-      type: 'binary'
+      type: 'binary',
+      callback: function(report) {
+        assert.deepEqual(report, { error: 999, message: 'Uh-Oh!' });
+        finished();
+      }
     },
     getReport: function(branch, period, event, sender, cb) {
       cb({ error: 999, message: 'Uh-Oh!' });
-    },
-    assertions: function(report) {
-      assert.deepEqual(report, { error: 999, message: 'Uh-Oh!' });
     }
   });
   test({
@@ -201,8 +202,9 @@ describe("getReport", function() {
     getReport: function(branch, period, event, sender, cb) {
       cb('something that parseInt will not like');
     },
-    assertions: function(report) {
+    callback: function(report) {
       assert.deepEqual(report, {report: "0", isIndeterminate: false});
+      finished();
     }
   });
 });
@@ -271,7 +273,79 @@ describe("penalizeWrong", function() {
     }
   });
 });
-describe.skip("checkPeriod", function() {});
+describe("checkPeriod", function() {
+  var periodCatchUp = augur.periodCatchUp;
+  var feePenaltyCatchUp = augur.feePenaltyCatchUp;
+  var finished;
+  afterEach(function() {
+    augur.periodCatchUp = periodCatchUp;
+    augur.feePenaltyCatchUp = feePenaltyCatchUp;
+  });
+  var test = function(t) {
+    it(JSON.stringify(t), function(done) {
+      augur.periodCatchUp = t.periodCatchUp;
+      augur.feePenaltyCatchUp = t.feePenaltyCatchUp;
+      finished = done;
+      augur.checkPeriod(t.branch, t.periodLength, t.sender, t.callback)
+    });
+  };
+  test({
+    branch: '0xb1',
+    periodLength: 1000,
+    sender: '0x1',
+    callback: function(err, votePeriod) {
+      assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
+      assert.isUndefined(votePeriod);
+      finished();
+    },
+    periodCatchUp: function(branch, periodLength, cb) {
+      // cb (err, votePeriod)
+      cb({ error: 999, message: 'Uh-Oh!' });
+    },
+    feePenaltyCatchUp: function(branch, periodLength, votePeriod, sender, cb) {
+      // cb (err)
+      // in this case won't be hit
+    }
+  });
+  test({
+    branch: '0xb1',
+    periodLength: 1000,
+    sender: '0x1',
+    callback: function(err, votePeriod) {
+      assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
+      assert.isUndefined(votePeriod);
+      finished();
+    },
+    periodCatchUp: function(branch, periodLength, cb) {
+      // cb (err, votePeriod)
+      cb(null, 100);
+    },
+    feePenaltyCatchUp: function(branch, periodLength, votePeriod, sender, cb) {
+      // cb (err)
+      assert.deepEqual(votePeriod, 99);
+      cb({ error: 999, message: 'Uh-Oh!' });
+    }
+  });
+  test({
+    branch: '0xb1',
+    periodLength: 1000,
+    sender: '0x1',
+    callback: function(err, votePeriod) {
+      assert.isNull(err);
+      assert.deepEqual(votePeriod, 100);
+      finished();
+    },
+    periodCatchUp: function(branch, periodLength, cb) {
+      // cb (err, votePeriod)
+      cb(null, 100);
+    },
+    feePenaltyCatchUp: function(branch, periodLength, votePeriod, sender, cb) {
+      // cb (err)
+      assert.deepEqual(votePeriod, 99);
+      cb(null);
+    }
+  });
+});
 describe("periodCatchUp", function () {
   var test = function (t) {
     var getEvents = augur.getEvents;
