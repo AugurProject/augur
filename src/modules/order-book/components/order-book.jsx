@@ -20,7 +20,9 @@ const OrderBook = (p) => {
   return (
     <article className="order-book">
       {p.marketType !== SCALAR ?
-        <h3>Order Book <EmDash /> {name && name}</h3> :
+        <h3>Order Book {name &&
+          <span><EmDash /> {name}</span>
+        }</h3> :
         <h3>Order Book</h3>
       }
       <OrderBookHeader />
