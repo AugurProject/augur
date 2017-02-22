@@ -40,7 +40,7 @@ import authSignup from 'modules/auth/selectors/auth-signup';
 import authImport from 'modules/auth/selectors/auth-import';
 import closePositionStatus from 'modules/my-positions/selectors/close-position-status';
 
-const selectors = {
+export default {
   activeView,
   abc,
   loginAccount,
@@ -83,5 +83,3 @@ const selectors = {
   authImport,
   closePositionStatus
 };
-
-export default selectors;

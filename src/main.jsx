@@ -7,9 +7,10 @@ import { initAugur } from 'modules/app/actions/init-augur';
 import { updateURL } from 'modules/link/actions/update-url';
 
 import selectors from 'src/selectors';
+
 import store from 'src/store';
 
-import AugurJS from 'services/augurjs';
+import { augur as AugurJS } from 'services/augurjs';
 
 require('core-js/fn/array/find');
 require('core-js/fn/string/starts-with');
@@ -21,7 +22,7 @@ if (process.env.NODE_ENV === 'development') {
   window.augurjs = AugurJS;
   console.log(`
 *******************************************
-        AUGUR DEVELOPMENT MODE
+           DEVELOPMENT MODE
   window.state      -- all state data
   window.selectors  -- component data
   window.augurjs    -- Augur API methods

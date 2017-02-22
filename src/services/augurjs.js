@@ -1,8 +1,6 @@
-import augur from 'augur.js';
+import augurJS from 'augur.js';
 
-const ex = {};
-
-ex.connect = function connect(env, cb) {
+export const connect = function connect(env, cb) {
   const options = {
     http: env.gethHttpURL,
     ws: env.gethWebsocketsURL,
@@ -33,7 +31,7 @@ ex.connect = function connect(env, cb) {
   });
 };
 
-ex.reportingMarketsSetup = function reportingMarketsSetup(periodLength, branchID, cb) {
+export const reportingMarketsSetup = function reportingMarketsSetup(periodLength, branchID, cb) {
   const tools = augur.tools;
   tools.DEBUG = true;
   const accounts = augur.rpc.accounts();
@@ -103,7 +101,7 @@ ex.reportingMarketsSetup = function reportingMarketsSetup(periodLength, branchID
 // Setup a new branch and prep it for reporting tests:
 // Add markets + events to it, trade in the markets, hit the Rep faucet
 // (Note: requires augur.options.debug.tools = true and access to the rpc.personal API)
-ex.reportingTestSetup = function reportingTestSetup(periodLen, branchID, cb) {
+export const reportingTestSetup = function reportingTestSetup(periodLen, branchID, cb) {
   const self = this;
   if (!augur.tools) return cb('augur.js needs augur.options.debug.tools=true to run reportingTestSetup');
   const tools = augur.tools;
@@ -128,11 +126,9 @@ ex.reportingTestSetup = function reportingTestSetup(periodLen, branchID, cb) {
   });
 };
 
-ex.augur = augur;
-ex.rpc = augur.rpc;
-ex.abi = augur.abi;
-ex.accounts = augur.accounts;
-ex.constants = augur.constants;
-ex.utils = augur.utils;
-
-module.exports = ex;
+export const augur = augurJS;
+export const rpc = augur.rpc;
+export const abi = augur.abi;
+export const accounts = augur.accounts;
+export const constants = augur.constants;
+export const utils = augur.utils;

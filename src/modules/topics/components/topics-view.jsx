@@ -27,7 +27,7 @@ export default class TopicsView extends Component {
       topicsPerHeroRow: 2,
       topicsPerRow: 4,
       // ---
-      filteredTopics: props.topics,
+      filteredTopics: props.topics || [],
       paginatedTopics: [],
       pagination: {},
       fontAwesomeClasses: [],
@@ -45,8 +45,6 @@ export default class TopicsView extends Component {
   }
 
   componentDidMount() {
-    console.log('### component DID mount');
-
     this.filterOutIconClassesFromStylesheets();
   }
 
@@ -180,7 +178,7 @@ export default class TopicsView extends Component {
     return (
       <section id="topics_view">
         <div id="topics_container">
-          {!!p.loginAccount.rep && !!p.loginAccount.rep.value && !!p.branch.id &&
+          {p.loginAccount && p.loginAccount.rep && p.loginAccount.rep.value && p.branch.id &&
             <Branch {...p.branch} />
           }
           <div className="topics-search" >
