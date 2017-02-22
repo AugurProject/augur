@@ -53,6 +53,12 @@ const LoginMessagePage = p => (
         </li>
       </ol>
       <h2>Technical updates:</h2>
+      <h3>February 22, 2017</h3>
+      <ol>
+        <li>
+          Refined the build process for augur + reduced the overall build weight via removal of unneeded fonts.
+        </li>
+      </ol>
       <h3>February 21, 2017</h3>
       <ol>
         <li>
@@ -79,6 +85,9 @@ const LoginMessagePage = p => (
         <li>
           Market creation now separates &quot;topic&quot; (first tag; required) and &quot;keywords&quot; (other tags).
         </li>
+        <li>
+          Resolved issue related to the display of icons on the topics view.
+        </li>
       </ol>
       <h3>February 20, 2017</h3>
       <ol>
@@ -99,6 +108,9 @@ const LoginMessagePage = p => (
         </li>
         <li>
           &quot;Hero&quot; topics now have the same font size as other topics on mobile.
+        </li>
+        <li>
+          {`Updated market creation to require a 'Topic'.  Keywords are still optional.`}
         </li>
       </ol>
       <h3>February 19, 2017</h3>
@@ -129,6 +141,12 @@ const LoginMessagePage = p => (
       <ol>
         <li>
           The default &quot;landing page&quot; for the Augur app is now the Topics page!  Instead of displaying all markets, the user is now greeted with a list of topics (such as Politics, Science, Sports, etc.) which are sorted by popularity.  Clicking on a topic brings up all markets with that topic.  (The user can still browse all markets simply by clicking on &quot;Markets&quot; in the navbar.)
+        </li>
+        <li>
+          {`Added motion design for when a topic's volume has either increased or decrease.`}
+        </li>
+        <li>
+          Constrained width of topics view.
         </li>
         <li>
           Report commit locks are now indexed by event ID.
