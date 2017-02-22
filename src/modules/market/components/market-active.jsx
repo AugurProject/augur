@@ -18,8 +18,10 @@ export default class MarketActive extends Component {
   constructor(props) {
     super(props);
 
+    const defaultSelectedOutcome = getValue(this.props, 'market.outcomes');
+
     this.state = {
-      selectedOutcome: this.props.market.outcomes[0],
+      selectedOutcome: defaultSelectedOutcome && defaultSelectedOutcome[0],
       selectedTradeSide: {}
     };
 
@@ -38,11 +40,18 @@ export default class MarketActive extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const selectedOutcomeID = this.state.selectedOutcome.id;
+    const selectedOutcomeID = getValue(this.state, 'selectedOutcome.id');
     const nextPropsOutcome = nextProps.market.outcomes.find(outcome => outcome.id === selectedOutcomeID);
 
     if (JSON.stringify(nextPropsOutcome) !== JSON.stringify(this.state.selectedOutcome)) {
       this.setState({ selectedOutcome: nextPropsOutcome });
+    }
+
+    if (!selectedOutcomeID) {
+      const availableDefaultOutcome = getValue(nextProps, 'market.outcomes');
+      if (availableDefaultOutcome && availableDefaultOutcome[0]) {
+        this.setState({ selectedOutcome: availableDefaultOutcome[0] });
+      }
     }
   }
 
