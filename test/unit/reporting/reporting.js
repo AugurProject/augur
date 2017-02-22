@@ -1156,7 +1156,263 @@ describe("feePenaltyCatchUp", function () {
   });
 });
 describe.skip("penaltyCatchUp", function() {});
-describe.skip("closeExtraMarkets", function() {});
+describe("closeExtraMarkets", function() {
+  var getMarkets = augur.getMarkets;
+  var getWinningOutcomes = augur.getWinningOutcomes;
+  var closeMarket = augur.closeMarket;
+  var finished;
+  var testState;
+  afterEach(function() {
+    augur.getMarkets = getMarkets;
+    augur.getWinningOutcomes = getWinningOutcomes;
+    augur.closeMarket = closeMarket;
+  });
+  var test = function(t) {
+    it(JSON.stringify(t), function(done) {
+      augur.getMarkets = t.getMarkets;
+      augur.getWinningOutcomes = t.getWinningOutcomes;
+      augur.closeMarket = t.closeMarket;
+      finished = done;
+      testState = t.state;
+      augur.closeExtraMarkets(t.branch, t.event, t.sender, t.callback);
+    });
+  };
+  test({
+    state: {
+      markets: ['0xa1', '0xa2', '0xa3'],
+      winningOutcomes: {
+        '0xa1': ['1'],
+        '0xa2': ['0'],
+        '0xa3': ['0']
+      }
+    },
+    branch: '0xb1',
+    event: '0xe1',
+    sender: '0x1',
+    callback: function(err) {
+      assert.isNull(err);
+      assert.deepEqual(testState.markets, ['0xa1', null, null]);
+      finished();
+    },
+    getMarkets: function(event, cb) {
+      cb(testState.markets);
+    },
+    getWinningOutcomes: function(market, cb) {
+      cb(testState.winningOutcomes[market]);
+    },
+    closeMarket: function(branch) {
+      branch.onSent();
+      var index = testState.markets.indexOf(branch.market);
+      if (index > -1) {
+        testState.markets[index] = null;
+      }
+      return branch.onSuccess({ callReturn: '1' });
+    }
+  });
+  test({
+    state: {
+      markets: [],
+      winningOutcomes: {}
+    },
+    branch: '0xb1',
+    event: '0xe1',
+    sender: '0x1',
+    callback: function(err) {
+      assert.deepEqual(err, "no markets found for 0xe1");
+      finished();
+    },
+    getMarkets: function(event, cb) {
+      cb(testState.markets);
+    },
+    getWinningOutcomes: function(market, cb) {
+      // Shouldn't get called in this test.
+    },
+    closeMarket: function(branch) {
+      // Shouldn't get called in this test.
+    }
+  });
+  test({
+    state: {
+      markets: undefined,
+      winningOutcomes: {}
+    },
+    branch: '0xb1',
+    event: '0xe1',
+    sender: '0x1',
+    callback: function(err) {
+      assert.deepEqual(err, "no markets found for 0xe1");
+      finished();
+    },
+    getMarkets: function(event, cb) {
+      cb(testState.markets);
+    },
+    getWinningOutcomes: function(market, cb) {
+      // Shouldn't get called in this test.
+    },
+    closeMarket: function(branch) {
+      // Shouldn't get called in this test.
+    }
+  });
+  test({
+    state: {
+      markets: { error: 999, message: 'Uh-Oh!' },
+      winningOutcomes: {}
+    },
+    branch: '0xb1',
+    event: '0xe1',
+    sender: '0x1',
+    callback: function(err) {
+      assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
+      finished();
+    },
+    getMarkets: function(event, cb) {
+      cb(testState.markets);
+    },
+    getWinningOutcomes: function(market, cb) {
+      // Shouldn't get called in this test.
+    },
+    closeMarket: function(branch) {
+      // Shouldn't get called in this test.
+    }
+  });
+  test({
+    state: {
+      markets: ['0xa1', '0xa2', '0xa3'],
+      winningOutcomes: {
+        '0xa1': undefined,
+        '0xa2': { error: 999, message: 'Uh-Oh!' },
+        '0xa3': ['0']
+      }
+    },
+    branch: '0xb1',
+    event: '0xe1',
+    sender: '0x1',
+    callback: function(err) {
+      assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
+      assert.deepEqual(testState.markets, ['0xa1', '0xa2', '0xa3']);
+      finished();
+    },
+    getMarkets: function(event, cb) {
+      cb(testState.markets);
+    },
+    getWinningOutcomes: function(market, cb) {
+      cb(testState.winningOutcomes[market]);
+    },
+    closeMarket: function(branch) {
+      // doesn't get called in this example.
+    }
+  });
+  test({
+    state: {
+      markets: ['0xa1'],
+      winningOutcomes: {
+        '0xa1': ['0']
+      }
+    },
+    branch: '0xb1',
+    event: '0xe1',
+    sender: '0x1',
+    callback: function(err) {
+      assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
+      assert.deepEqual(testState.markets, ['0xa1']);
+      finished();
+    },
+    getMarkets: function(event, cb) {
+      cb(testState.markets);
+    },
+    getWinningOutcomes: function(market, cb) {
+      cb(testState.winningOutcomes[market]);
+    },
+    closeMarket: function(branch) {
+      branch.onSent();
+      // set winningOutcomes for this market to undefined so when we call getWinningOutcomes again in the onFailed called we get undefined back this time to trigger to error being passed to callback.
+      testState.winningOutcomes[branch.market] = undefined;
+      return branch.onFailed({ error: 999, message: 'Uh-Oh!' });
+    }
+  });
+  test({
+    state: {
+      markets: ['0xa1'],
+      winningOutcomes: {
+        '0xa1': ['0']
+      }
+    },
+    branch: '0xb1',
+    event: '0xe1',
+    sender: '0x1',
+    callback: function(err) {
+      assert.deepEqual(err, { error: 998, message: 'Uh-Oh! Winning Outcomes Error!' });
+      assert.deepEqual(testState.markets, ['0xa1']);
+      finished();
+    },
+    getMarkets: function(event, cb) {
+      cb(testState.markets);
+    },
+    getWinningOutcomes: function(market, cb) {
+      cb(testState.winningOutcomes[market]);
+    },
+    closeMarket: function(branch) {
+      branch.onSent();
+      // set winningOutcomes for this market to undefined so when we call getWinningOutcomes again in the onFailed called we get undefined back this time to trigger to error being passed to callback.
+      testState.winningOutcomes[branch.market] = { error: 998, message: 'Uh-Oh! Winning Outcomes Error!' };
+      return branch.onFailed({ error: 999, message: 'Uh-Oh!' });
+    }
+  });
+  test({
+    state: {
+      markets: ['0xa1'],
+      winningOutcomes: {
+        '0xa1': ['0']
+      }
+    },
+    branch: '0xb1',
+    event: '0xe1',
+    sender: '0x1',
+    callback: function(err) {
+      assert.deepEqual(err, ['0']);
+      assert.deepEqual(testState.markets, ['0xa1']);
+      finished();
+    },
+    getMarkets: function(event, cb) {
+      cb(testState.markets);
+    },
+    getWinningOutcomes: function(market, cb) {
+      cb(testState.winningOutcomes[market]);
+    },
+    closeMarket: function(branch) {
+      branch.onSent();
+      return branch.onFailed({ error: 999, message: 'Uh-Oh!' });
+    }
+  });
+  test({
+    state: {
+      markets: ['0xa1'],
+      winningOutcomes: {
+        '0xa1': ['0']
+      }
+    },
+    branch: '0xb1',
+    event: '0xe1',
+    sender: '0x1',
+    callback: function(err) {
+      assert.isNull(err);
+      assert.deepEqual(testState.markets, ['0xa1']);
+      finished();
+    },
+    getMarkets: function(event, cb) {
+      cb(testState.markets);
+    },
+    getWinningOutcomes: function(market, cb) {
+      cb(testState.winningOutcomes[market]);
+    },
+    closeMarket: function(branch) {
+      branch.onSent();
+      // change the winning outcome to 1 so that we skip this market.
+      testState.winningOutcomes[branch.market] = ['1'];
+      return branch.onFailed({ error: 999, message: 'Uh-Oh!' });
+    }
+  });
+});
 describe("checkTime", function() {
   var incrementPeriodAfterReporting = augur.Consensus.incrementPeriodAfterReporting;
   var getVotePeriod = augur.getVotePeriod;
