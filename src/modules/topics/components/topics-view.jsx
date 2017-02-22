@@ -45,6 +45,8 @@ export default class TopicsView extends Component {
   }
 
   componentDidMount() {
+    console.log('### component DID mount');
+
     this.filterOutIconClassesFromStylesheets();
   }
 
@@ -133,31 +135,38 @@ export default class TopicsView extends Component {
     const icoFontClasses = [];
 
     const styleSheets = window.document.styleSheets;
+
     for (let sI = 0; sI < styleSheets.length; sI++) {
-      const sheet = styleSheets[sI];
-      const ruleLength = sheet.cssRules ? sheet.cssRules.length : 0;
-      for (let rI = 0; rI < ruleLength; rI++) {
-        const rule = sheet.cssRules[rI];
+      try {
+        const sheet = styleSheets[sI];
+        const ruleLength = sheet.cssRules ? sheet.cssRules.length : 0;
+        for (let rI = 0; rI < ruleLength; rI++) {
+          const rule = sheet.cssRules[rI];
 
-        // Filter out Font Awesome icon classes
-        if (rule.selectorText && rule.selectorText.indexOf('fa-') !== -1) {
-          const selectors = rule.selectorText.split(/([: ,.])/);
-          selectors.forEach((selector) => {
-            if (selector.indexOf('fa-') !== -1) {
-              fontAwesomeClasses.push(selector);
-            }
-          });
-        }
+          // Filter out Font Awesome icon classes
+          if (rule.selectorText && rule.selectorText.indexOf('fa-') !== -1) {
+            const selectors = rule.selectorText.split(/([: ,.])/);
+            selectors.forEach((selector) => {
+              if (selector.indexOf('fa-') !== -1) {
+                fontAwesomeClasses.push(selector);
+              }
+            });
+          }
 
-        // Filter out Icofont icon classes
-        if (rule.selectorText && rule.selectorText.indexOf('icofont-') !== -1) {
-          const selectors = rule.selectorText.split(/([: ,.])/);
-          selectors.forEach((selector) => {
-            if (selector.indexOf('icofont-') !== -1) {
-              icoFontClasses.push(selector);
-            }
-          });
+          // Filter out Icofont icon classes
+          if (rule.selectorText && rule.selectorText.indexOf('icofont-') !== -1) {
+            const selectors = rule.selectorText.split(/([: ,.])/);
+            selectors.forEach((selector) => {
+              if (selector.indexOf('icofont-') !== -1) {
+                icoFontClasses.push(selector);
+              }
+            });
+          }
         }
+      } catch (e) {
+        // Silently Fail --
+        //  Mixed protocols can cause 'cssRules' to be inaccesible
+        //  Stylesheets pulled remotely are not needed for our purposes here, so silently failing
       }
     }
 
