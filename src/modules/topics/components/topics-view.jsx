@@ -45,8 +45,6 @@ export default class TopicsView extends Component {
   }
 
   componentDidMount() {
-    console.log('### component DID mount');
-
     this.filterOutIconClassesFromStylesheets();
   }
 
