@@ -53,6 +53,66 @@ const LoginMessagePage = p => (
         </li>
       </ol>
       <h2>Technical updates:</h2>
+      <h3>February 21, 2017</h3>
+      <ol>
+        <li>
+          The formatTag function in augur.js now trims whitespace from tags before converting to int256.
+        </li>
+        <li>
+          Fixed checkbox component check icon.
+        </li>
+        <li>
+          Fixed thumbs-down icon on transactions page.
+        </li>
+        <li>
+          Removed updateTopicPopularity action from marketCreated listener callback.
+        </li>
+        <li>
+          Fixed market link in create market transaction display.
+        </li>
+        <li>
+          Google Translate is now integrated with the front-end.
+        </li>
+        <li>
+          Topics and tags are now displayed as-is in the front-end (no trimming or forced case changes).
+        </li>
+        <li>
+          Market creation now separates &quot;topic&quot; (first tag; required) and &quot;keywords&quot; (other tags).
+        </li>
+      </ol>
+      <h3>February 20, 2017</h3>
+      <ol>
+        <li>
+          The formatTag function in augur.js now trims whitespace from tags before converting to int256.
+        </li>
+        <li>
+          The loadEventsWithSubmittedReport action has been entirely removed, as the data loaded was duplicated by loadReportingHistory.  The transaction constructors invoked by loadReportingHistory now populate the eventsWithSubmittedReport data store.
+        </li>
+        <li>
+          Icofonts are now available for use in the front-end, in addition to the font-awesome icons.
+        </li>
+        <li>
+          Fixed topics page redirect.
+        </li>
+        <li>
+          Multi-case topic strings are now handled correctly.
+        </li>
+        <li>
+          &quot;Hero&quot; topics now have the same font size as other topics on mobile.
+        </li>
+      </ol>
+      <h3>February 19, 2017</h3>
+      <ol>
+        <li>
+          Fixed order book generation in canned-markets script.
+        </li>
+        <li>
+          Initial refactoring of ethrpc to add proper unit tests (with TestRPC) and robust websocket / IPC socket reconnection.
+        </li>
+        <li>
+          Added websocket support to TestRPC.
+        </li>
+      </ol>
       <h3>February 18, 2017</h3>
       <ol>
         <li>
