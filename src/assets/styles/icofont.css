@@ -8,11 +8,7 @@
 
 @font-face {
     font-family: 'icofont';
-    src: url('../fonts/icofont.eot?v=1.0.0-beta');
-    src: url('../fonts/icofont.eot?v=1.0.0-beta#iefix') format('embedded-opentype'),
-    url('../fonts/icofont.ttf?v=1.0.0-beta') format('truetype'),
-    url('../fonts/icofont.woff?v=1.0.0-beta') format('woff'),
-    url('../fonts/icofont.svg?v=1.0.0-beta#icofont') format('svg');
+    src: url('/assets/fonts/icofont.woff?v=1.0.0-beta') format('woff');
     font-weight: normal;
     font-style: normal;
 }

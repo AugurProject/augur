@@ -1,5 +1,3 @@
-
-
 // Workaround for Windows Based Development/Build
 try {
   require('os').networkInterfaces();
@@ -66,10 +64,6 @@ let config = {
       {
         test: /\.json/,
         loader: 'json-loader'
-      },
-      {
-        test: /\.(ttf|eot|svg|woff|woff2)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: "file-loader"
       }
     ]
   },
