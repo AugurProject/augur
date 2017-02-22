@@ -1157,4 +1157,126 @@ describe("feePenaltyCatchUp", function () {
 });
 describe.skip("penaltyCatchUp", function() {});
 describe.skip("closeExtraMarkets", function() {});
-describe.skip("checkTime", function() {});
+describe("checkTime", function() {
+  var incrementPeriodAfterReporting = augur.Consensus.incrementPeriodAfterReporting;
+  var getVotePeriod = augur.getVotePeriod;
+  var getExpiration = augur.getExpiration;
+  var getCurrentPeriod = augur.getCurrentPeriod;
+  var finished;
+  var testState;
+  afterEach(function() {
+    augur.Consensus.incrementPeriodAfterReporting = incrementPeriodAfterReporting;
+    augur.getVotePeriod = getVotePeriod;
+    augur.getExpiration = getExpiration;
+    augur.getCurrentPeriod = getCurrentPeriod;
+  });
+  var test = function(t) {
+    it(JSON.stringify(t), function(done) {
+      augur.Consensus.incrementPeriodAfterReporting = t.incrementPeriodAfterReporting;
+      augur.getVotePeriod = t.getVotePeriod;
+      augur.getExpiration = t.getExpiration;
+      augur.getCurrentPeriod = t.getCurrentPeriod;
+      finished = done;
+      testState = t.state;
+      augur.checkTime(t.branch, t.event, t.periodLength, t.periodGap, t.callback);
+    });
+  };
+  test({
+    state: {
+      currentPeriod: 200,
+      expirationTime: 100,
+      votePeriod: 99,
+    },
+    branch: '0xb1',
+    event: '0xe1',
+    periodLength: 1,
+    periodGap: function(err) {
+      assert.isNull(err);
+      assert.deepEqual(testState, {
+        currentPeriod: 200,
+        expirationTime: 100,
+        votePeriod: 99,
+      });
+      finished();
+    },
+    getExpiration: function(event, cb) {
+      cb(testState.expirationTime);
+    },
+    getVotePeriod: function(branch, cb) {
+      // This function is not called during this test.
+    },
+    getCurrentPeriod: function(periodLength) {
+      return testState.currentPeriod;
+    },
+    incrementPeriodAfterReporting: function(branch) {
+      // This function is not called during this test.
+    }
+  });
+  test({
+    state: {
+      currentPeriod: 100,
+      expirationTime: 100,
+      votePeriod: 99,
+    },
+    branch: '0xb1',
+    event: '0xe1',
+    periodLength: 1,
+    periodGap: function(err) {
+      assert.isNull(err);
+      assert.deepEqual(testState, {
+        currentPeriod: 101,
+        expirationTime: 100,
+        votePeriod: 100,
+      });
+      finished();
+    },
+    getExpiration: function(event, cb) {
+      cb(testState.expirationTime);
+    },
+    getVotePeriod: function(branch, cb) {
+      testState.votePeriod++;
+      cb(testState.votePeriod);
+    },
+    getCurrentPeriod: function(periodLength) {
+      return testState.currentPeriod;
+    },
+    incrementPeriodAfterReporting: function(branch) {
+      testState.currentPeriod++;
+      branch.onSent({ callReturn: '1' });
+      branch.onSuccess({ callReturn: '1' });
+    }
+  });
+  test({
+    state: {
+      currentPeriod: 100,
+      expirationTime: 100,
+      votePeriod: 99,
+    },
+    branch: '0xb1',
+    event: '0xe1',
+    periodLength: 1,
+    periodGap: function(err) {
+      assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
+      assert.deepEqual(testState, {
+        currentPeriod: 101,
+        expirationTime: 100,
+        votePeriod: 99,
+      });
+      finished();
+    },
+    getExpiration: function(event, cb) {
+      cb(testState.expirationTime);
+    },
+    getVotePeriod: function(branch, cb) {
+      // This function doesn't get called in this example
+    },
+    getCurrentPeriod: function(periodLength) {
+      return testState.currentPeriod;
+    },
+    incrementPeriodAfterReporting: function(branch) {
+      testState.currentPeriod++;
+      branch.onSent({ callReturn: '1' });
+      branch.onFailed({ error: 999, message: 'Uh-Oh!' });
+    }
+  });
+});
