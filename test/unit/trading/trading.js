@@ -146,7 +146,8 @@ describe("trade.checkGasLimit", function () {
     "0x13": {id: "0x13", type: "sell", owner: "0xdeadbeef"},
     "0x14": {id: "0x14", type: "sell", owner: "0xdeadbeef"},
     "0x15": {id: "0x15", type: "sell", owner: "0xdeadbeef"},
-    "0x16": {id: "0x16", type: "sell", owner: "0xdeadbeef"}
+    "0x16": {id: "0x16", type: "sell", owner: "0xdeadbeef"},
+    "0x17": {id: "0x16", type: "sell", owner: "0x42"}
   }
   var checkGasLimit = augur.checkGasLimit;
   before(function () {
@@ -218,6 +219,24 @@ describe("trade.checkGasLimit", function () {
     trade_ids: ["0x1", "0x2", "0x3", "0x4", "0x5", "0x6", "0x7", "0x9"],
     expected: {
       error: errors.GAS_LIMIT_EXCEEDED,
+      trade_ids: undefined
+    }
+  });
+  test({
+    gasLimit: "0x47e7c4",
+    sender: "0x42",
+    trade_ids: ["0x88"],
+    expected: {
+      error: errors.TRADE_NOT_FOUND,
+      trade_ids: undefined
+    }
+  });
+  test({
+    gasLimit: "0x47e7c4",
+    sender: "0x42",
+    trade_ids: ["0x17"],
+    expected: {
+      error: {error: "-5", message: errors.trade["-5"]},
       trade_ids: undefined
     }
   });
