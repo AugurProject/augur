@@ -9,7 +9,7 @@ export const loginWithAirbitzEthereumWallet = (airbitzAccount, ethereumWallet, i
     if (!account || !account.address || account.error) {
       return console.error(account);
     }
-    dispatch(loadAccountData({ address: account.address, name: airbitzAccount.username, airbitzAccount }));
+    dispatch(loadAccountData({ address: account.address, name: airbitzAccount.username, airbitzAccount }, true));
   });
 };
 
