@@ -1,20 +1,18 @@
-import rawSelectors from 'src/selectors-raw';
+const rawSelectors = require('src/selectors-raw').default;
 
-const accum = {};
+module.exports = {};
 
 Object.keys(rawSelectors).forEach(selectorKey =>
- Object.defineProperty(accum,
+ Object.defineProperty(module.exports,
     selectorKey,
     { get: rawSelectors[selectorKey], enumerable: true }
 ));
-
-export default accum;
 
 if (module.hot) {
   module.hot.accept();
 
   module.hot.accept('./selectors-raw', () => {
-    const hotSelectors = require('src/selectors-raw');
+    const hotSelectors = require('src/selectors-raw').default;
 
     module.exports = {};
 
