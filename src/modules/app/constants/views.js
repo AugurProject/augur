@@ -1,7 +1,7 @@
 // Main Views
 export const M = 'm';
 export const MARKETS = 'markets';
-export const MAKE = 'make';
+export const CREATE_MARKET = 'create-market';
 export const TRANSACTIONS = 'transactions';
 export const ACCOUNT = 'account';
 export const LOGIN_MESSAGE = 'login-message';

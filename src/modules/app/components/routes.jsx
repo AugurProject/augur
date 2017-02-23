@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { ACCOUNT, MAKE, TRANSACTIONS, M, MARKETS, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE, AUTHENTICATION } from 'modules/app/constants/views';
+import { ACCOUNT, CREATE_MARKET, TRANSACTIONS, M, MARKETS, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE, AUTHENTICATION } from 'modules/app/constants/views';
 
 import getValue from 'utils/get-value';
 import { shouldComponentUpdateOnStateChangeOnly } from 'utils/should-component-update-pure';
@@ -106,7 +106,7 @@ export default class Routes extends Component {
         });
         break;
       }
-      case MAKE: {
+      case CREATE_MARKET: {
         viewProps = {
           createMarketForm: p.createMarketForm,
           scalarShareDenomination: p.scalarShareDenomination
