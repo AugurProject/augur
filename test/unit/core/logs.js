@@ -12,7 +12,6 @@ describe("logs.parseCompleteSetsLogs", function() {
       t.assertions(augur.parseCompleteSetsLogs(t.logs, t.mergeInto));
     });
   };
-
   test({
     description: 'Should handle one log in the logs argument array without passing a mergeInto argument.',
     logs: [{
@@ -32,7 +31,6 @@ describe("logs.parseCompleteSetsLogs", function() {
       });
     }
   });
-
   test({
     description: 'Should handle multiple logs in the logs argument array without passing a mergeInto argument.',
     logs: [{
@@ -72,7 +70,6 @@ describe("logs.parseCompleteSetsLogs", function() {
       });
     }
   });
-
   test({
     description: 'Should handle multiple logs in the logs argument array without passing a mergeInto argument and given multiple markets.',
     logs: [{
@@ -153,7 +150,6 @@ describe("logs.parseCompleteSetsLogs", function() {
       });
     }
   });
-
   test({
     description: 'Should handle one log in the logs argument array while also passing a mergeInto argument.',
     logs: [{
@@ -196,7 +192,6 @@ describe("logs.parseCompleteSetsLogs", function() {
       });
     }
   });
-
   test({
     description: 'Should handle multiple logs in the logs argument array while also passing a mergeInto argument.',
     logs: [{
@@ -286,6 +281,35 @@ describe("logs.parseCompleteSetsLogs", function() {
       });
     }
   });
+  test({
+    description: 'Should handle one log in the logs argument array and passing a mergeInto argument.',
+    logs: [{
+      data: [ abi.fix('100'), '2' ],
+      topics: ['0x00a1', '0x00b1', '0x00c1', '1'],
+      blockNumber: '010101'
+    }],
+    mergeInto: {},
+    assertions: function(o) {
+      assert.deepEqual(o, {
+        '0x00c1': {
+          "1": [{
+            amount: '100',
+            blockNumber: 65793,
+            isCompleteSet: true,
+            price: '0.5',
+            type: 'buy'
+          }],
+          "2": [{
+            amount: '100',
+            blockNumber: 65793,
+            isCompleteSet: true,
+            price: '0.5',
+            type: 'buy'
+          }]
+        }
+      });
+    }
+  });
 });
 
 /***********
@@ -328,7 +352,7 @@ describe("logs.getMarketCreationBlock", function() {
 	var test = function(t) {
 		describe(t.description, function() {
 			var getLogs = augur.getLogs;
-			after(function() { augur.getLogs = getLogs; });
+			afterEach(function() { augur.getLogs = getLogs; });
 			it("sync", function() {
 				augur.getLogs = t.getLogs;
 				t.assertions(null, augur.getMarketCreationBlock(t.marketID, undefined));
@@ -374,6 +398,30 @@ describe("logs.getMarketCreationBlock", function() {
 		assertions: function(err, o) {
 			assert.isNull(err);
 			assert.deepEqual(o, 1);
+		}
+	});
+  test({
+		description: 'should handle getting an error from getLogs',
+		marketID: '0x0a1',
+		getLogs: function(label, filterParams, aux, cb) {
+			if (!cb && utils.is_function(aux)) {
+        cb = aux;
+        aux = null;
+      }
+      var logs = [];
+      if (!cb) return { error: 999, message: 'Uh-Oh!' };
+      cb({ error: 999, message: 'Uh-Oh!' });
+		},
+		assertions: function(err, o) {
+      if (o === 1) {
+        // sync we don't get the error.
+        assert.isNull(err);
+        assert.deepEqual(o, 1);
+      } else {
+        // async
+        assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
+        assert.isUndefined(o);
+      }
 		}
 	});
 });
@@ -1854,6 +1902,163 @@ describe("logs.getParsedCompleteSetsLogs", function() {
           numOutcomes: logs[0].data[1],
           type: 'buy'
         }]
+      }];
+    }
+  });
+});
+describe("logs.getCompleteSetsLogs", function() {
+  var getLogs = augur.rpc.getLogs;
+  var finished;
+  afterEach(function() {
+    augur.rpc.getLogs = getLogs;
+    finished = null;
+  });
+  var test = function(t) {
+    it(JSON.stringify(t) + ' sync', function(done) {
+      finished = done;
+      augur.rpc.getLogs = t.getLogs;
+      // assume callback is the assertions function
+      var assertions = t.callback;
+      var options = t.options;
+      if (utils.is_function(t.options)) {
+        // if option is a function, then it's the callback, use that for assertions. options becomes undefined so we can test synchronously.
+        assertions = t.options;
+        options = undefined;
+      }
+      assertions(augur.getCompleteSetsLogs(t.account, options));
+    });
+    it(JSON.stringify(t) + ' async', function(done) {
+      finished = done;
+      augur.rpc.getLogs = t.getLogs;
+
+      augur.getCompleteSetsLogs(t.account, t.options, t.callback);
+    });
+  };
+  test({
+    account: '0xdeadbeef123',
+    options: function(err, logs) {
+      assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
+      finished();
+    },
+    callback: undefined,
+    getLogs: function(filter, cb) {
+      assert.deepEqual(filter, {
+      	fromBlock: '0x1',
+      	toBlock: 'latest',
+      	address: augur.contracts.CompleteSets,
+      	topics: [
+          augur.api.events.completeSets_logReturn.signature,
+      		'0x00000000000000000000000000000000000000000000000000000deadbeef123',
+      		null,
+      		null
+      	],
+      	timeout: 480000
+      });
+      if(utils.is_function(cb)) {
+        return cb({ error: 999, message: 'Uh-Oh!' });
+      }
+      return {error: 999, message: 'Uh-Oh!' };
+    }
+  });
+  test({
+    account: '0xdeadbeef123',
+    options: { shortAsk: true, toBlock: '0xb2', fromBlock: '0xb1', market: '0xa1' },
+    callback: function(err, logs) {
+      // if logs is not undefined then this must be from async, otherwise sync.
+      if (logs) {
+        // async
+        assert.deepEqual(logs, []);
+        assert.isNull(err);
+      } else {
+        // sync
+        assert.deepEqual(err, []);
+        assert.isUndefined(logs);
+      }
+      finished();
+    },
+    getLogs: function(filter, cb) {
+      assert.deepEqual(filter, {
+      	fromBlock: '0xb1',
+      	toBlock: '0xb2',
+      	address: augur.contracts.BuyAndSellShares,
+      	topics: [
+          augur.api.events.completeSets_logReturn.signature,
+      		'0x00000000000000000000000000000000000000000000000000000deadbeef123',
+      		'0x00000000000000000000000000000000000000000000000000000000000000a1',
+      		null
+      	],
+      	timeout: 480000
+      });
+      if(utils.is_function(cb)) {
+        return cb([]);
+      }
+      return [];
+    }
+  });
+  test({
+    account: '0xdeadbeef123',
+    options: { shortAsk: false, toBlock: '0xb2', fromBlock: '0xb1', market: '0xa1', type: 'buy' },
+    callback: function(err, logs) {
+      // if logs is not undefined then this must be from async, otherwise sync.
+      if (logs) {
+        // async
+        assert.deepEqual(logs, [{
+          data: [],
+          topics: [],
+          blockNumber: '0xb2'
+        }, {
+          data: [],
+          topics: [],
+          blockNumber: '0xb2'
+        }]);
+        assert.isNull(err);
+      } else {
+        // sync
+        assert.deepEqual(err, [{
+          data: [],
+          topics: [],
+          blockNumber: '0xb2'
+        }, {
+          data: [],
+          topics: [],
+          blockNumber: '0xb2'
+        }]);
+        assert.isUndefined(logs);
+      }
+      finished();
+    },
+    getLogs: function(filter, cb) {
+      assert.deepEqual(filter, {
+      	fromBlock: '0xb1',
+      	toBlock: '0xb2',
+      	address: augur.contracts.CompleteSets,
+      	topics: [
+          augur.api.events.completeSets_logReturn.signature,
+      		'0x00000000000000000000000000000000000000000000000000000deadbeef123',
+      		'0x00000000000000000000000000000000000000000000000000000000000000a1',
+      		'0x0000000000000000000000000000000000000000000000000000000000000001'
+      	],
+      	timeout: 480000
+      });
+      if(utils.is_function(cb)) {
+        return cb([{
+          data: [],
+          topics: [],
+          blockNumber: '0xb2'
+        }, {
+          data: [],
+          topics: [],
+          blockNumber: '0xb2'
+        }]);
+      }
+      return [{
+        data: [],
+        topics: [],
+        blockNumber: '0xb2'
+      }, {
+        data: [],
+        topics: [],
+        blockNumber: '0xb2'
       }];
     }
   });
