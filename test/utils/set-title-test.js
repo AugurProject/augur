@@ -87,8 +87,8 @@ function testPageTitle(page, description, long) {
 
       assert.strictEqual(title, expected + appended, `title for ${page} page not set to expected value`);
       break;
-    case pages.MAKE:
-      expected = titles.CREATE;
+    case pages.CREATE_MARKET:
+      expected = titles.CREATE_MARKET;
 
       assert.strictEqual(title, expected + appended, `title for ${page} page not set to expected value`);
       break;
