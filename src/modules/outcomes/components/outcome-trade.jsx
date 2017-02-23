@@ -148,7 +148,9 @@ export default class OutcomeTrade extends Component {
     return (
       <article className="outcome-trade market-content-scrollable">
         {p.marketType !== SCALAR ?
-          <h3>Create Order <EmDash /> {name && name}</h3> :
+          <h3>Create Order {name &&
+            <span><EmDash /> {name}</span>
+          }</h3> :
           <h3>Create Order</h3>
         }
         {trade &&
