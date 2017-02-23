@@ -48,7 +48,7 @@ export default class Routes extends Component {
           authImport: p.authImport,
           authNavItems: p.authNavItems
         };
-        System.import('modules/auth/components/auth-view').then((module) => {
+        import('modules/auth/components/auth-view').then((module) => {
           const AuthView = module.default;
           viewComponent = <AuthView {...viewProps} />;
           this.setState({ viewProps, viewComponent });
@@ -62,7 +62,7 @@ export default class Routes extends Component {
           authLink: (p.links && p.links.authLink) || null,
           onAirbitzManageAccount: p.loginAccount.onAirbitzManageAccount
         };
-        System.import('modules/account/components/account-view').then((module) => {
+        import('modules/account/components/account-view').then((module) => {
           const AccountView = module.default;
           viewComponent = <AccountView {...viewProps} />;
           this.setState({ viewProps, viewComponent });
@@ -88,7 +88,7 @@ export default class Routes extends Component {
           branch: p.branch,
           ...p.portfolio
         };
-        System.import('modules/portfolio/components/portfolio-view').then((module) => {
+        import('modules/portfolio/components/portfolio-view').then((module) => {
           const PortfolioView = module.default;
           viewComponent = <PortfolioView {...viewProps} />;
           this.setState({ viewProps, viewComponent });
@@ -99,7 +99,7 @@ export default class Routes extends Component {
         viewProps = {
           topicsLink: (p.links && p.links.topicsLink) || null
         };
-        System.import('modules/login-message/components/login-message-view').then((module) => {
+        import('modules/login-message/components/login-message-view').then((module) => {
           const LoginMessageView = module.default;
           viewComponent = <LoginMessageView {...viewProps} />;
           this.setState({ viewProps, viewComponent });
@@ -111,7 +111,7 @@ export default class Routes extends Component {
           createMarketForm: p.createMarketForm,
           scalarShareDenomination: p.scalarShareDenomination
         };
-        System.import('modules/create-market/components/create-market-view').then((module) => {
+        import('modules/create-market/components/create-market-view').then((module) => {
           const CreateMarketView = module.default;
           viewComponent = <CreateMarketView {...viewProps} />;
           this.setState({ viewProps, viewComponent });
@@ -134,7 +134,7 @@ export default class Routes extends Component {
           closePositionStatus: p.closePositionStatus,
           branch: p.branch
         };
-        System.import('modules/market/components/market-view').then((module) => {
+        import('modules/market/components/market-view').then((module) => {
           const MarketView = module.default;
           viewComponent = <MarketView {...viewProps} />;
           this.setState({ viewProps, viewComponent });
@@ -154,7 +154,7 @@ export default class Routes extends Component {
           branch: p.branch,
           scalarShareDenomination: p.scalarShareDenomination
         };
-        System.import('modules/markets/components/markets-view').then((module) => {
+        import('modules/markets/components/markets-view').then((module) => {
           const MarketsView = module.default;
           viewComponent = <MarketsView {...viewProps} />;
           this.setState({ viewProps, viewComponent });
@@ -171,7 +171,7 @@ export default class Routes extends Component {
           loginAccount: p.loginAccount,
           branch: p.branch
         };
-        System.import('modules/topics/components/topics-view').then((module) => {
+        import('modules/topics/components/topics-view').then((module) => {
           const TopicsView = module.default;
           viewComponent = <TopicsView {...viewProps} />;
           this.setState({ viewProps, viewComponent });
