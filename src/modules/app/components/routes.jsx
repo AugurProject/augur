@@ -117,14 +117,11 @@ export default class Routes extends Component {
         break;
       }
       case CREATE_MARKET: {
-        viewProps = {
-          createMarketForm: p.createMarketForm,
-          scalarShareDenomination: p.scalarShareDenomination
-        };
-        import('modules/create-market/components/create-market-view').then((module) => {
-          const CreateMarketView = module.default;
-          viewComponent = <CreateMarketView {...viewProps} />;
-          this.setState({ viewProps, viewComponent });
+        import('modules/create-market/containers/create-market').then((module) => {
+          this.setState({
+            viewProps: null, // Handled via react-redux in the create-market container
+            viewComponent: <module.default />
+          });
         }).catch((err) => {
           console.error(`ERROR: Failed to load 'create-market' module -- `, err);
         });;

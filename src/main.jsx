@@ -1,4 +1,5 @@
 import React from 'react';
+import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader'; // eslint-disable-line import/no-extraneous-dependencies
 
@@ -37,9 +38,11 @@ const appElement = document.getElementById('app');
 
 function render(appElement, selectors) {
   ReactDOM.render(
-    <AppContainer>
-      <App {...selectors} />
-    </AppContainer>,
+    <Provider store={store}>
+      <AppContainer>
+        <App {...selectors} />
+      </AppContainer>
+    </Provider>,
     appElement
   );
 }
