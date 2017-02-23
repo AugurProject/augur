@@ -52,7 +52,9 @@ export default class Routes extends Component {
           const AuthView = module.default;
           viewComponent = <AuthView {...viewProps} />;
           this.setState({ viewProps, viewComponent });
-        });
+        }).catch((err) => {
+          console.error(`ERROR: Failed to load 'auth' module -- `, err);
+        });;
         break;
       case ACCOUNT:
         viewProps = {
@@ -66,7 +68,9 @@ export default class Routes extends Component {
           const AccountView = module.default;
           viewComponent = <AccountView {...viewProps} />;
           this.setState({ viewProps, viewComponent });
-        });
+        }).catch((err) => {
+          console.error(`ERROR: Failed to load 'account' module -- `, err);
+        });;
         break;
       case TRANSACTIONS:
         viewProps = {
@@ -78,7 +82,9 @@ export default class Routes extends Component {
           const TransactionsView = module.default;
           viewComponent =	<TransactionsView {...viewProps} />;
           this.setState({ viewProps, viewComponent });
-        });
+        }).catch((err) => {
+          console.error(`ERROR: Failed to load 'transactions' module -- `, err);
+        });;
         break;
       case MY_POSITIONS:
       case MY_MARKETS:
@@ -92,7 +98,9 @@ export default class Routes extends Component {
           const PortfolioView = module.default;
           viewComponent = <PortfolioView {...viewProps} />;
           this.setState({ viewProps, viewComponent });
-        });
+        }).catch((err) => {
+          console.error(`ERROR: Failed to load 'portfolio' module -- `, err);
+        });;
         break;
       }
       case LOGIN_MESSAGE: {
@@ -103,7 +111,9 @@ export default class Routes extends Component {
           const LoginMessageView = module.default;
           viewComponent = <LoginMessageView {...viewProps} />;
           this.setState({ viewProps, viewComponent });
-        });
+        }).catch((err) => {
+          console.error(`ERROR: Failed to load 'login-message' module -- `, err);
+        });;
         break;
       }
       case CREATE_MARKET: {
@@ -115,7 +125,9 @@ export default class Routes extends Component {
           const CreateMarketView = module.default;
           viewComponent = <CreateMarketView {...viewProps} />;
           this.setState({ viewProps, viewComponent });
-        });
+        }).catch((err) => {
+          console.error(`ERROR: Failed to load 'create-market' module -- `, err);
+        });;
         break;
       }
       case M: {
@@ -138,7 +150,9 @@ export default class Routes extends Component {
           const MarketView = module.default;
           viewComponent = <MarketView {...viewProps} />;
           this.setState({ viewProps, viewComponent });
-        });
+        }).catch((err) => {
+          console.error(`ERROR: Failed to load 'market' module -- `, err);
+        });;
         break;
       }
       case MARKETS: {
@@ -158,6 +172,8 @@ export default class Routes extends Component {
           const MarketsView = module.default;
           viewComponent = <MarketsView {...viewProps} />;
           this.setState({ viewProps, viewComponent });
+        }).catch((err) => {
+          console.error(`ERROR: Failed to load 'markets' module -- `, err);
         });
 
         p.setSidebarAllowed(true);
@@ -175,6 +191,8 @@ export default class Routes extends Component {
           const TopicsView = module.default;
           viewComponent = <TopicsView {...viewProps} />;
           this.setState({ viewProps, viewComponent });
+        }).catch((err) => {
+          console.error(`ERROR: Failed to load 'topics' module -- `, err);
         });
       }
     }
