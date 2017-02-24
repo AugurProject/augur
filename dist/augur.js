@@ -23489,7 +23489,8 @@ module.exports = {
   BID: 1,
   ASK: 2,
 
-  ORDERBOOK_MAX_CHUNK_SIZE: 100,
+  GETTER_CHUNK_SIZE: 100,
+  BLOCKS_PER_CHUNK: 500,
 
   // milliseconds to wait between getMarketsInfo batches
   PAUSE_BETWEEN_MARKET_BATCHES: 50,
@@ -24861,7 +24862,7 @@ module.exports = {
         if (!totalTrades || totalTrades.error || !parseInt(totalTrades, 10)) {
           return callback(totalTrades);
         }
-        self.getOrderBookChunked(marketID, offset, Math.min(parseInt(totalTrades, 10), constants.ORDERBOOK_MAX_CHUNK_SIZE), scalarMinMax, totalTrades, chunkCB, callback);
+        self.getOrderBookChunked(marketID, offset, Math.min(parseInt(totalTrades, 10), constants.GETTER_CHUNK_SIZE), scalarMinMax, totalTrades, chunkCB, callback);
       });
     }
     this.getOrderBook({
@@ -26149,6 +26150,7 @@ module.exports = {
 
 "use strict";
 
+var async = require("async");
 var clone = require("clone");
 var abi = require("augur-abi");
 var constants = require("../constants");
@@ -26349,6 +26351,51 @@ module.exports = {
     });
   },
 
+  chunkBlocks: function chunkBlocks(fromBlockFinal, toBlockFinal) {
+    var toBlockChunk = toBlockFinal;
+    var fromBlockChunk = toBlockChunk - constants.BLOCKS_PER_CHUNK;
+    var chunks = [];
+    while (fromBlockChunk > fromBlockFinal) {
+      chunks.push({ fromBlock: fromBlockChunk, toBlock: toBlockChunk });
+      fromBlockChunk -= constants.BLOCKS_PER_CHUNK;
+      toBlockChunk -= constants.BLOCKS_PER_CHUNK;
+    }
+    return chunks;
+  },
+
+  getLogsChunked: function getLogsChunked(label, filterParams, aux, callback) {
+    var self = this;
+    if (!utils.is_function(callback) && utils.is_function(aux)) {
+      callback = aux;
+      aux = null;
+    }
+    aux = aux || {};
+    if (aux.index) {
+      aux.mergedLogs = aux.mergedLogs || {};
+    } else {
+      aux.mergedLogs = aux.mergedLogs || [];
+    }
+    if (!filterParams.fromBlock) {
+      filterParams.fromBlock = parseInt(constants.GET_LOGS_DEFAULT_FROM_BLOCK, 16);
+    }
+    if (!filterParams.toBlock) {
+      filterParams.toBlock = this.rpc.block.number;
+    }
+    var chunks = this.chunkBlocks(abi.number(filterParams.fromBlock), abi.number(filterParams.toBlock));
+    async.eachSeries(chunks, function (chunk, nextChunk) {
+      var filterParamsChunk = clone(filterParams) || {};
+      filterParamsChunk.fromBlock = chunk.fromBlock;
+      filterParamsChunk.toBlock = chunk.toBlock;
+      self.getLogs(label, filterParamsChunk, aux, function (err, logs) {
+        if (err) return nextChunk(err);
+        nextChunk(null);
+      });
+    }, function (err) {
+      if (err) return callback(err);
+      callback(null, aux.mergedLogs);
+    });
+  },
+
   getAccountTrades: function getAccountTrades(account, filterParams, callback) {
     var self = this;
     if (!callback && utils.is_function(filterParams)) {
@@ -26530,7 +26577,7 @@ module.exports = {
     return this.getCompleteSetsLogs(account, opt, callback);
   }
 };
-},{"../constants":65,"../utilities":99,"augur-abi":1,"clone":159}],80:[function(require,module,exports){
+},{"../constants":65,"../utilities":99,"async":118,"augur-abi":1,"clone":159}],80:[function(require,module,exports){
 "use strict";
 
 var parametrizeOrder = require('./parametrizeOrder');
@@ -28499,7 +28546,7 @@ module.exports = {
         if (!totalTopics || totalTopics.error || !parseInt(totalTopics, 10)) {
           return callback(totalTopics);
         }
-        self.getTopicsInfoChunked(branch, offset, Math.min(parseInt(totalTopics, 10), constants.ORDERBOOK_MAX_CHUNK_SIZE), totalTopics, chunkCB, callback);
+        self.getTopicsInfoChunked(branch, offset, Math.min(parseInt(totalTopics, 10), constants.GETTER_CHUNK_SIZE), totalTopics, chunkCB, callback);
       });
     }
     this.getTopicsInfo({
@@ -28532,64 +28579,40 @@ var abacus = require("./abacus");
 
 module.exports = {
 
-  // tradeTypes: array of "buy" and/or "sell"
-  // gasLimit (optional): block gas limit as integer
-  isUnderGasLimit: function isUnderGasLimit(tradeTypes, gasLimit, callback) {
-    if (utils.is_function(gasLimit) && !callback) {
-      callback = gasLimit;
-      gasLimit = null;
-    }
-    var gas = abacus.sumTradeGas(tradeTypes);
-    if (!utils.is_function(callback)) {
-      if (gasLimit) return gas <= gasLimit;
-      return gas <= parseInt(this.rpc.getBlock(this.rpc.blockNumber()).gasLimit, 16);
-    }
-    if (gasLimit) return callback(gas <= gasLimit);
-    var self = this;
-    this.rpc.blockNumber(function (blockNumber) {
-      self.rpc.getBlock(blockNumber, false, function (block) {
-        callback(gas <= parseInt(block.gasLimit, 16));
-      });
-    });
-  },
-
   checkGasLimit: function checkGasLimit(trade_ids, sender, callback) {
     var self = this;
     var gas = 0;
     var count = { buy: 0, sell: 0 };
-    self.rpc.blockNumber(function (blockNumber) {
-      self.rpc.getBlock(blockNumber, false, function (block) {
-        var checked_trade_ids = trade_ids.slice();
-        async.forEachOfSeries(trade_ids, function (trade_id, i, next) {
-          self.get_trade(trade_id, function (trade) {
-            if (!trade || !trade.id) {
-              checked_trade_ids.splice(checked_trade_ids.indexOf(trade_id), 1);
-              if (!checked_trade_ids.length) {
-                return callback(self.errors.TRADE_NOT_FOUND);
-              }
-              console.warn("[augur.js] checkGasLimit:", self.errors.TRADE_NOT_FOUND);
-            } else if (trade.owner === sender) {
-              checked_trade_ids.splice(checked_trade_ids.indexOf(trade_id), 1);
-              if (!checked_trade_ids.length) {
-                return callback({ error: "-5", message: self.errors.trade["-5"] });
-              }
-              console.warn("[augur.js] checkGasLimit:", self.errors.trade["-5"]);
-            }
-            ++count[trade.type];
-            gas += constants.TRADE_GAS[Number(!!i)][trade.type];
-            next();
-          });
-        }, function (e) {
-          if (e) return callback(e);
-          if (gas <= parseInt(block.gasLimit, 16)) {
-            return callback(null, checked_trade_ids);
-          } else if (!count.buy || !count.sell) {
-            var type = count.buy ? "buy" : "sell";
-            return callback(null, checked_trade_ids.slice(0, abacus.maxOrdersPerTrade(type, block.gasLimit)));
+    var block = this.rpc.block;
+    var checked_trade_ids = trade_ids.slice();
+    async.forEachOfSeries(trade_ids, function (trade_id, i, next) {
+      self.get_trade(trade_id, function (trade) {
+        if (!trade || !trade.id) {
+          checked_trade_ids.splice(checked_trade_ids.indexOf(trade_id), 1);
+          if (!checked_trade_ids.length) {
+            return callback(self.errors.TRADE_NOT_FOUND);
           }
-          callback(self.errors.GAS_LIMIT_EXCEEDED);
-        });
+          console.warn("[augur.js] checkGasLimit:", self.errors.TRADE_NOT_FOUND);
+        } else if (trade.owner === sender) {
+          checked_trade_ids.splice(checked_trade_ids.indexOf(trade_id), 1);
+          if (!checked_trade_ids.length) {
+            return callback({ error: "-5", message: self.errors.trade["-5"] });
+          }
+          console.warn("[augur.js] checkGasLimit:", self.errors.trade["-5"]);
+        }
+        ++count[trade.type];
+        gas += constants.TRADE_GAS[Number(!!i)][trade.type];
+        next();
       });
+    }, function (e) {
+      if (e) return callback(e);
+      if (gas <= parseInt(block.gasLimit, 16)) {
+        return callback(null, checked_trade_ids);
+      } else if (!count.buy || !count.sell) {
+        var type = count.buy ? "buy" : "sell";
+        return callback(null, checked_trade_ids.slice(0, abacus.maxOrdersPerTrade(type, block.gasLimit)));
+      }
+      callback(self.errors.GAS_LIMIT_EXCEEDED);
     });
   },
 
@@ -46901,7 +46924,8 @@ module.exports = {
   BID: 1,
   ASK: 2,
 
-  ORDERBOOK_MAX_CHUNK_SIZE: 100,
+  GETTER_CHUNK_SIZE: 100,
+  BLOCKS_PER_CHUNK: 500,
 
   // milliseconds to wait between getMarketsInfo batches
   PAUSE_BETWEEN_MARKET_BATCHES: 50,
@@ -48250,7 +48274,7 @@ function isFunction(f) {
 
 module.exports = {
 
-  version: "2.1.2",
+  version: "2.3.1",
 
   debug: false,
   rpc: rpc,
@@ -48306,10 +48330,14 @@ module.exports = {
   setGasPrice: function (callback) {
     var self = this;
     if (!isFunction(callback)) {
-      this.rpc.gasPrice = parseInt(this.rpc.getGasPrice(), 16);
+      var gasPrice = this.rpc.getGasPrice();
+      if (!gasPrice) throw new Error("setGasPrice failed");
+      if (gasPrice.error) throw new Error(gasPrice.error);
+      this.rpc.gasPrice = parseInt(gasPrice, 16);
     } else {
       this.rpc.getGasPrice(function (gasPrice) {
-        if (!gasPrice || gasPrice.error) return callback(gasPrice);
+        if (!gasPrice) return callback(new Error("setGasPrice failed"));
+        if (gasPrice.error) return callback(new Error(gasPrice.error));
         self.rpc.gasPrice = parseInt(gasPrice, 16);
         callback(null);
       });
@@ -48319,15 +48347,45 @@ module.exports = {
   setNetworkID: function (callback) {
     var self = this;
     if (!isFunction(callback)) {
-      this.state.networkID = this.rpc.version();
+      var version = this.rpc.version();
+      if (version === null || version === undefined) throw new Error("setNetworkID failed");
+      if (version.error) throw new Error(version.error);
+      this.state.networkID = version;
     } else {
       this.rpc.version(function (version) {
-        if (version === null || version === undefined || version.error) {
-          return callback(version);
-        }
+        if (version === null || version === undefined) return callback(new Error("setNetworkID failed"));
+        if (version.error) return callback(new Error(version.error));
         self.state.networkID = version;
         callback(null);
       });
+    }
+  },
+
+  setLatestBlock: function (callback) {
+    var self = this;
+    if (this.rpc.block !== null && this.rpc.block.number && this.rpc.block.timestamp) {
+      if (isFunction(callback)) callback(null);
+    } else {
+      if (!isFunction(callback)) {
+        var blockNumber = this.rpc.blockNumber();
+        if (!blockNumber) throw new Error("setLatestBlock failed");
+        if (blockNumber.error) throw new Error(blockNumber.error);
+        var block = this.rpc.getBlock(blockNumber, false);
+        if (!block) throw new Error("setLatestBlock failed");
+        if (block.error) throw new Error(block.error);
+        this.rpc.onNewBlock(block);
+      } else {
+        this.rpc.blockNumber(function (blockNumber) {
+          if (!blockNumber) return callback(new Error("setLatestBlock failed"));
+          if (blockNumber.error) return callback(new Error(blockNumber.error));
+          self.rpc.getBlock(blockNumber, false, function (block) {
+            if (!block) return callback(new Error("setLatestBlock failed"));
+            if (block.error) return callback(new Error(block.error));
+            self.rpc.onNewBlock(block);
+            callback(null);
+          });
+        });
+      }
     }
   },
 
@@ -48348,16 +48406,14 @@ module.exports = {
     var self = this;
     if (!isFunction(callback)) {
       var coinbase = this.rpc.coinbase();
-      if (!coinbase || coinbase.error || coinbase === "0x") {
-        throw new Error("[ethereumjs-connect] setCoinbase: coinbase not found");
-      }
+      if (!coinbase) throw new Error("setCoinbase failed");
+      if (coinbase.error || coinbase === "0x") throw new Error(coinbase);
       this.state.coinbase = coinbase;
       this.state.from = this.state.from || coinbase;
     } else {
       this.rpc.coinbase(function (coinbase) {
-        if (!coinbase || coinbase.error || coinbase === "0x") {
-          return callback(new Error("[ethereumjs-connect] setCoinbase: coinbase not found"));
-        }
+        if (!coinbase) return callback(new Error("setCoinbase failed"));
+        if (coinbase.error || coinbase === "0x") return callback(new Error(coinbase));
         self.state.coinbase = coinbase;
         self.state.from = self.state.from || coinbase;
         callback(null);
@@ -48394,6 +48450,7 @@ module.exports = {
         });
       },
       this.setNetworkID.bind(this),
+      this.setLatestBlock.bind(this),
       function (next) {
         self.setContracts();
         next();
@@ -48422,6 +48479,7 @@ module.exports = {
     try {
       this.rpc.blockNumber(noop);
       this.setNetworkID();
+      this.setLatestBlock();
       this.setContracts();
       this.setCoinbase();
       this.setFrom();

@@ -5,6 +5,7 @@
 
 "use strict";
 
+var async = require("async");
 var clone = require("clone");
 var abi = require("augur-abi");
 var constants = require("../constants");
@@ -208,13 +209,52 @@ module.exports = {
     }
     this.getFilteredLogs(label, filterParams || {}, function (err, logs) {
       if (err) return callback(err);
-      callback(null, self.processLogs(
-        label,
-        aux.index,
-        logs,
-        aux.extraField,
-        aux.mergedLogs
-      ));
+      callback(null, self.processLogs(label, aux.index, logs, aux.extraField, aux.mergedLogs));
+    });
+  },
+
+  chunkBlocks: function (fromBlockFinal, toBlockFinal) {
+    var toBlockChunk = toBlockFinal;
+    var fromBlockChunk = toBlockChunk - constants.BLOCKS_PER_CHUNK;
+    var chunks = [];
+    while (fromBlockChunk > fromBlockFinal) {
+      chunks.push({fromBlock: fromBlockChunk, toBlock: toBlockChunk});
+      fromBlockChunk -= constants.BLOCKS_PER_CHUNK;
+      toBlockChunk -= constants.BLOCKS_PER_CHUNK;
+    }
+    return chunks;
+  },
+
+  getLogsChunked: function (label, filterParams, aux, callback) {
+    var self = this;
+    if (!utils.is_function(callback) && utils.is_function(aux)) {
+      callback = aux;
+      aux = null;
+    }
+    aux = aux || {};
+    if (aux.index) {
+      aux.mergedLogs = aux.mergedLogs || {};
+    } else {
+      aux.mergedLogs = aux.mergedLogs || [];
+    }
+    if (!filterParams.fromBlock) {
+      filterParams.fromBlock = parseInt(constants.GET_LOGS_DEFAULT_FROM_BLOCK, 16);
+    }
+    if (!filterParams.toBlock) {
+      filterParams.toBlock = this.rpc.block.number;
+    }
+    var chunks = this.chunkBlocks(abi.number(filterParams.fromBlock), abi.number(filterParams.toBlock));
+    async.eachSeries(chunks, function (chunk, nextChunk) {
+      var filterParamsChunk = clone(filterParams) || {};
+      filterParamsChunk.fromBlock = chunk.fromBlock;
+      filterParamsChunk.toBlock = chunk.toBlock;
+      self.getLogs(label, filterParamsChunk, aux, function (err, logs) {
+        if (err) return nextChunk(err);
+        nextChunk(null);
+      });
+    }, function (err) {
+      if (err) return callback(err);
+      callback(null, aux.mergedLogs);
     });
   },
 
