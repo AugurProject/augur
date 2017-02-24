@@ -666,7 +666,8 @@ module.exports = {
   BID: 1,
   ASK: 2,
 
-  ORDERBOOK_MAX_CHUNK_SIZE: 100,
+  GETTER_CHUNK_SIZE: 100,
+  BLOCKS_PER_CHUNK: 500,
 
   // milliseconds to wait between getMarketsInfo batches
   PAUSE_BETWEEN_MARKET_BATCHES: 50,
@@ -2038,7 +2039,7 @@ module.exports = {
         if (!totalTrades || totalTrades.error || !parseInt(totalTrades, 10)) {
           return callback(totalTrades);
         }
-        self.getOrderBookChunked(marketID, offset, Math.min(parseInt(totalTrades, 10), constants.ORDERBOOK_MAX_CHUNK_SIZE), scalarMinMax, totalTrades, chunkCB, callback);
+        self.getOrderBookChunked(marketID, offset, Math.min(parseInt(totalTrades, 10), constants.GETTER_CHUNK_SIZE), scalarMinMax, totalTrades, chunkCB, callback);
       });
     }
     this.getOrderBook({
@@ -3326,6 +3327,7 @@ module.exports = {
 
 "use strict";
 
+var async = require("async");
 var clone = require("clone");
 var abi = require("augur-abi");
 var constants = require("../constants");
@@ -3526,6 +3528,51 @@ module.exports = {
     });
   },
 
+  chunkBlocks: function chunkBlocks(fromBlockFinal, toBlockFinal) {
+    var toBlockChunk = toBlockFinal;
+    var fromBlockChunk = toBlockChunk - constants.BLOCKS_PER_CHUNK;
+    var chunks = [];
+    while (fromBlockChunk > fromBlockFinal) {
+      chunks.push({ fromBlock: fromBlockChunk, toBlock: toBlockChunk });
+      fromBlockChunk -= constants.BLOCKS_PER_CHUNK;
+      toBlockChunk -= constants.BLOCKS_PER_CHUNK;
+    }
+    return chunks;
+  },
+
+  getLogsChunked: function getLogsChunked(label, filterParams, aux, callback) {
+    var self = this;
+    if (!utils.is_function(callback) && utils.is_function(aux)) {
+      callback = aux;
+      aux = null;
+    }
+    aux = aux || {};
+    if (aux.index) {
+      aux.mergedLogs = aux.mergedLogs || {};
+    } else {
+      aux.mergedLogs = aux.mergedLogs || [];
+    }
+    if (!filterParams.fromBlock) {
+      filterParams.fromBlock = parseInt(constants.GET_LOGS_DEFAULT_FROM_BLOCK, 16);
+    }
+    if (!filterParams.toBlock) {
+      filterParams.toBlock = this.rpc.block.number;
+    }
+    var chunks = this.chunkBlocks(abi.number(filterParams.fromBlock), abi.number(filterParams.toBlock));
+    async.eachSeries(chunks, function (chunk, nextChunk) {
+      var filterParamsChunk = clone(filterParams) || {};
+      filterParamsChunk.fromBlock = chunk.fromBlock;
+      filterParamsChunk.toBlock = chunk.toBlock;
+      self.getLogs(label, filterParamsChunk, aux, function (err, logs) {
+        if (err) return nextChunk(err);
+        nextChunk(null);
+      });
+    }, function (err) {
+      if (err) return callback(err);
+      callback(null, aux.mergedLogs);
+    });
+  },
+
   getAccountTrades: function getAccountTrades(account, filterParams, callback) {
     var self = this;
     if (!callback && utils.is_function(filterParams)) {
@@ -3707,7 +3754,7 @@ module.exports = {
     return this.getCompleteSetsLogs(account, opt, callback);
   }
 };
-},{"../constants":5,"../utilities":39,"augur-abi":59,"clone":124}],20:[function(require,module,exports){
+},{"../constants":5,"../utilities":39,"async":58,"augur-abi":59,"clone":124}],20:[function(require,module,exports){
 "use strict";
 
 var parametrizeOrder = require('./parametrizeOrder');
@@ -5242,7 +5289,7 @@ module.exports = {
       console.log("[closeExtraMarkets] Closing extra markets for event", event);
     }
     self.getMarkets(event, function (markets) {
-      if (!markets || !markets.length) {
+      if (!markets || markets.constructor === Array && !markets.length) {
         return callback("no markets found for " + event);
       }
       if (markets && markets.error) return callback(markets);
@@ -5298,13 +5345,17 @@ module.exports = {
     }
     periodGap = periodGap || 1;
     function wait(branch, secondsToWait, next) {
-      console.log("Waiting", secondsToWait / 60, "minutes...");
+      if (self.options.debug.reporting) {
+        console.log("Waiting", secondsToWait / 60, "minutes...");
+      }
       setTimeout(function () {
         self.Consensus.incrementPeriodAfterReporting({
           branch: branch,
           onSent: function onSent(r) {},
           onSuccess: function onSuccess(r) {
-            console.log("Incremented period:", r.callReturn);
+            if (self.options.debug.reporting) {
+              console.log("Incremented period:", r.callReturn);
+            }
             self.getVotePeriod(branch, function (votePeriod) {
               next(null, votePeriod);
             });
@@ -5316,21 +5367,29 @@ module.exports = {
     this.getExpiration(event, function (expTime) {
       var expPeriod = Math.floor(expTime / periodLength);
       var currentPeriod = self.getCurrentPeriod(periodLength);
-      console.log("\nreporting.checkTime:");
-      console.log(" - Expiration period:", expPeriod);
-      console.log(" - Current period:   ", currentPeriod);
-      console.log(" - Target period:    ", expPeriod + periodGap);
+      if (self.options.debug.reporting) {
+        console.log("\nreporting.checkTime:");
+        console.log(" - Expiration period:", expPeriod);
+        console.log(" - Current period:   ", currentPeriod);
+        console.log(" - Target period:    ", expPeriod + periodGap);
+      }
       if (currentPeriod < expPeriod + periodGap) {
         var fullPeriodsToWait = expPeriod - self.getCurrentPeriod(periodLength) + periodGap - 1;
-        console.log("Full periods to wait:", fullPeriodsToWait);
+        if (self.options.debug.reporting) {
+          console.log("Full periods to wait:", fullPeriodsToWait);
+        }
         var secondsToWait = periodLength;
         if (fullPeriodsToWait === 0) {
           secondsToWait -= parseInt(new Date().getTime() / 1000) % periodLength;
         }
-        console.log("Seconds to wait:", secondsToWait);
+        if (self.options.debug.reporting) {
+          console.log("Seconds to wait:", secondsToWait);
+        }
         wait(branch, secondsToWait, function (err, votePeriod) {
           if (err) return callback(err);
-          console.log("New vote period:", votePeriod);
+          if (self.options.debug.reporting) {
+            console.log("New vote period:", votePeriod);
+          }
           self.checkTime(branch, event, periodLength, callback);
         });
       } else {
@@ -5676,7 +5735,7 @@ module.exports = {
         if (!totalTopics || totalTopics.error || !parseInt(totalTopics, 10)) {
           return callback(totalTopics);
         }
-        self.getTopicsInfoChunked(branch, offset, Math.min(parseInt(totalTopics, 10), constants.ORDERBOOK_MAX_CHUNK_SIZE), totalTopics, chunkCB, callback);
+        self.getTopicsInfoChunked(branch, offset, Math.min(parseInt(totalTopics, 10), constants.GETTER_CHUNK_SIZE), totalTopics, chunkCB, callback);
       });
     }
     this.getTopicsInfo({
@@ -5709,64 +5768,40 @@ var abacus = require("./abacus");
 
 module.exports = {
 
-  // tradeTypes: array of "buy" and/or "sell"
-  // gasLimit (optional): block gas limit as integer
-  isUnderGasLimit: function isUnderGasLimit(tradeTypes, gasLimit, callback) {
-    if (utils.is_function(gasLimit) && !callback) {
-      callback = gasLimit;
-      gasLimit = null;
-    }
-    var gas = abacus.sumTradeGas(tradeTypes);
-    if (!utils.is_function(callback)) {
-      if (gasLimit) return gas <= gasLimit;
-      return gas <= parseInt(this.rpc.getBlock(this.rpc.blockNumber()).gasLimit, 16);
-    }
-    if (gasLimit) return callback(gas <= gasLimit);
-    var self = this;
-    this.rpc.blockNumber(function (blockNumber) {
-      self.rpc.getBlock(blockNumber, false, function (block) {
-        callback(gas <= parseInt(block.gasLimit, 16));
-      });
-    });
-  },
-
   checkGasLimit: function checkGasLimit(trade_ids, sender, callback) {
     var self = this;
     var gas = 0;
     var count = { buy: 0, sell: 0 };
-    self.rpc.blockNumber(function (blockNumber) {
-      self.rpc.getBlock(blockNumber, false, function (block) {
-        var checked_trade_ids = trade_ids.slice();
-        async.forEachOfSeries(trade_ids, function (trade_id, i, next) {
-          self.get_trade(trade_id, function (trade) {
-            if (!trade || !trade.id) {
-              checked_trade_ids.splice(checked_trade_ids.indexOf(trade_id), 1);
-              if (!checked_trade_ids.length) {
-                return callback(self.errors.TRADE_NOT_FOUND);
-              }
-              console.warn("[augur.js] checkGasLimit:", self.errors.TRADE_NOT_FOUND);
-            } else if (trade.owner === sender) {
-              checked_trade_ids.splice(checked_trade_ids.indexOf(trade_id), 1);
-              if (!checked_trade_ids.length) {
-                return callback({ error: "-5", message: self.errors.trade["-5"] });
-              }
-              console.warn("[augur.js] checkGasLimit:", self.errors.trade["-5"]);
-            }
-            ++count[trade.type];
-            gas += constants.TRADE_GAS[Number(!!i)][trade.type];
-            next();
-          });
-        }, function (e) {
-          if (e) return callback(e);
-          if (gas <= parseInt(block.gasLimit, 16)) {
-            return callback(null, checked_trade_ids);
-          } else if (!count.buy || !count.sell) {
-            var type = count.buy ? "buy" : "sell";
-            return callback(null, checked_trade_ids.slice(0, abacus.maxOrdersPerTrade(type, block.gasLimit)));
+    var block = this.rpc.block;
+    var checked_trade_ids = trade_ids.slice();
+    async.forEachOfSeries(trade_ids, function (trade_id, i, next) {
+      self.get_trade(trade_id, function (trade) {
+        if (!trade || !trade.id) {
+          checked_trade_ids.splice(checked_trade_ids.indexOf(trade_id), 1);
+          if (!checked_trade_ids.length) {
+            return callback(self.errors.TRADE_NOT_FOUND);
           }
-          callback(self.errors.GAS_LIMIT_EXCEEDED);
-        });
+          console.warn("[augur.js] checkGasLimit:", self.errors.TRADE_NOT_FOUND);
+        } else if (trade.owner === sender) {
+          checked_trade_ids.splice(checked_trade_ids.indexOf(trade_id), 1);
+          if (!checked_trade_ids.length) {
+            return callback({ error: "-5", message: self.errors.trade["-5"] });
+          }
+          console.warn("[augur.js] checkGasLimit:", self.errors.trade["-5"]);
+        }
+        ++count[trade.type];
+        gas += constants.TRADE_GAS[Number(!!i)][trade.type];
+        next();
       });
+    }, function (e) {
+      if (e) return callback(e);
+      if (gas <= parseInt(block.gasLimit, 16)) {
+        return callback(null, checked_trade_ids);
+      } else if (!count.buy || !count.sell) {
+        var type = count.buy ? "buy" : "sell";
+        return callback(null, checked_trade_ids.slice(0, abacus.maxOrdersPerTrade(type, block.gasLimit)));
+      }
+      callback(self.errors.GAS_LIMIT_EXCEEDED);
     });
   },
 
@@ -12058,7 +12093,6 @@ module.exports={
           "int256"
         ]
       }
-<<<<<<< HEAD
     }, 
     "Branches": {
       "addMarketToBranch": {
@@ -12355,289 +12389,6 @@ module.exports={
           "int256", 
           "int256"
         ]
-=======
-    },
-
-    postMessage: function postMessage(roomName, message, senderAddress, senderName, callback) {
-      var payload = {
-        name: senderName,
-        address: senderAddress,
-        message: message,
-        timestamp: new Date().getTime()
-      };
-      rpc.shh("post", {
-        from: this.whisper.id,
-        topics: [abi.prefix_hex(abi.encode_hex(roomName))],
-        payload: abi.prefix_hex(abi.encode_hex(JSON.stringify(payload))),
-        priority: "0x64",
-        ttl: "0x93a80"
-      }, function (posted) {
-        if (!posted) return callback("couldn't post message: " + message);
-        callback(null);
-      });
-    },
-
-    leaveRoom: function leaveRoom(roomName, callback) {
-      var self = this;
-      rpc.shh("uninstallFilter", this.whisper.filters[roomName].id, function (uninstalled) {
-        if (!uninstalled) return callback("couldn't leave room: " + roomName);
-        clearInterval(self.whisper.filters[roomName].heartbeat);
-        self.whisper.filters[roomName] = null;
-        callback(null, uninstalled);
-      });
-    }
-
-  };
-};
-},{"augur-abi":1}],65:[function(require,module,exports){
-/**
- * augur.js constants
- */
-
-"use strict";
-
-var BigNumber = require("bignumber.js");
-
-var ten = new BigNumber(10, 10);
-var decimals = new BigNumber(4, 10);
-var multiple = ten.toPower(decimals);
-var ONE = ten.toPower(18);
-
-module.exports = {
-  ZERO: new BigNumber(0),
-  ONE: ONE,
-  ETHER: ONE,
-
-  PRECISION: {
-    decimals: decimals.toNumber(),
-    limit: ten.dividedBy(multiple),
-    zero: new BigNumber(1, 10).dividedBy(multiple),
-    multiple: multiple
-  },
-  // MINIMUM_TRADE_SIZE: new BigNumber("0.00000001", 10),
-  MINIMUM_TRADE_SIZE: new BigNumber("0.01", 10),
-
-  DEFAULT_NETWORK_ID: "3",
-
-  // default branch info: "root branch", 1010101
-  DEFAULT_BRANCH_ID: "0xf69b5",
-  DEFAULT_BRANCH_PERIOD_LENGTH: 172800, // seconds
-
-  BID: 1,
-  ASK: 2,
-
-  GETTER_CHUNK_SIZE: 100,
-  BLOCKS_PER_CHUNK: 500,
-
-  // milliseconds to wait between getMarketsInfo batches
-  PAUSE_BETWEEN_MARKET_BATCHES: 50,
-
-  // milliseconds to wait before the rpc.getLogs method times out
-  GET_LOGS_TIMEOUT: 480000,
-
-  GET_LOGS_DEFAULT_FROM_BLOCK: "0x1",
-  GET_LOGS_DEFAULT_TO_BLOCK: "latest",
-
-  COST_PER_REPORTER: new BigNumber("0.0000000000035", 10),
-
-  // int256 type codes for log filters
-  LOG_TYPE_CODES: {
-    buy: "0x0000000000000000000000000000000000000000000000000000000000000001",
-    sell: "0x0000000000000000000000000000000000000000000000000000000000000002"
-  },
-
-  // maximum number of transactions to auto-submit in parallel
-  PARALLEL_LIMIT: 5,
-
-  // fixed-point indeterminate: 1.5 * 10^18
-  BINARY_INDETERMINATE: new BigNumber("0x14d1120d7b160000", 16),
-  CATEGORICAL_SCALAR_INDETERMINATE: new BigNumber("0x6f05b59d3b20000", 16),
-  INDETERMINATE_PLUS_ONE: new BigNumber("0x6f05b59d3b20001", 16),
-
-  // default gas: 3.135M
-  DEFAULT_GAS: 3135000,
-
-  // gas needed for trade transactions (values from pyethereum tester)
-  MAKE_ORDER_GAS: { sell: 725202, buy: 725202 },
-  TRADE_GAS: [{ sell: 756374, buy: 787421 }, // first trade_id only
-  { sell: 615817, buy: 661894 } // each additional trade_id
-  ],
-  CANCEL_GAS: { sell: 288060, buy: 230059 },
-
-  // expected block interval
-  SECONDS_PER_BLOCK: 12,
-
-  // keythereum crypto parameters
-  // KDF: "pbkdf2",
-  KDF: "scrypt",
-  ROUNDS: 4096,
-  // ROUNDS: 65536,
-  KEYSIZE: 32,
-  IVSIZE: 16,
-
-  // cipher used to encrypt/decrypt reports
-  REPORT_CIPHER: "aes-256-ctr",
-
-  // Morden testnet faucet endpoint
-  FAUCET: "https://faucet.augur.net/faucet/"
-};
-},{"bignumber.js":121}],66:[function(require,module,exports){
-/**
- * Filters / logging
- */
-
-"use strict";
-
-var async = require("async");
-var clone = require("clone");
-var abi = require("augur-abi");
-var errors = require("ethrpc").errors;
-var events_api = require("augur-contracts").api.events;
-var utils = require("./utilities");
-var constants = require("./constants");
-
-// non-event filters
-var filters = {
-  block: { id: null, heartbeat: null },
-  contracts: { id: null, heartbeat: null }
-};
-
-// event filters
-for (var label in events_api) {
-  if (!events_api.hasOwnProperty(label)) continue;
-  filters[label] = { id: null, heartbeat: null };
-}
-
-module.exports = function () {
-
-  var augur = this;
-
-  return {
-
-    PULSE: constants.SECONDS_PER_BLOCK * 500,
-
-    filter: filters,
-
-    format_trade_type: function format_trade_type(type) {
-      return parseInt(type, 16) === 1 ? "buy" : "sell";
-    },
-    format_common_fields: function format_common_fields(msg) {
-      var fmt = clone(msg);
-      if (msg.sender) fmt.sender = abi.format_address(msg.sender);
-      if (msg.timestamp) fmt.timestamp = parseInt(msg.timestamp, 16);
-      if (msg.type) fmt.type = this.format_trade_type(msg.type);
-      if (msg.price) fmt.price = abi.unfix_signed(msg.price, "string");
-      if (msg.amount) fmt.amount = abi.unfix(msg.amount, "string");
-      return fmt;
-    },
-    format_event_message: function format_event_message(label, msg) {
-      var fmt;
-      switch (label) {
-        case "Approval":
-          fmt = clone(msg);
-          fmt._owner = abi.format_address(msg._owner);
-          fmt._spender = abi.format_address(msg._spender);
-          fmt.value = abi.unfix(msg.value);
-          return fmt;
-        case "collectedFees":
-          fmt = this.format_common_fields(msg);
-          fmt.cashFeesCollected = abi.unfix(msg.cashFeesCollected, "string");
-          fmt.newCashBalance = abi.unfix(msg.newCashBalance, "string");
-          fmt.lastPeriodRepBalance = abi.unfix(msg.lastPeriodRepBalance, "string");
-          fmt.repGain = abi.unfix_signed(msg.repGain, "string");
-          fmt.newRepBalance = abi.unfix(msg.newRepBalance, "string");
-          fmt.notReportingBond = abi.unfix(msg.notReportingBond, "string");
-          fmt.totalReportingRep = abi.unfix(msg.totalReportingRep, "string");
-          fmt.period = parseInt(msg.period, 16);
-          return fmt;
-        case "deposit":
-          fmt = this.format_common_fields(msg);
-          fmt.value = abi.unfix(msg.value, "string");
-          return fmt;
-        case "fundedAccount":
-          fmt = this.format_common_fields(msg);
-          fmt.cashBalance = abi.unfix(msg.cashBalance, "string");
-          fmt.repBalance = abi.unfix(msg.repBalance, "string");
-          return fmt;
-        case "log_add_tx":
-          fmt = this.format_common_fields(msg);
-          fmt.outcome = parseInt(msg.outcome, 16);
-          fmt.isShortAsk = !!parseInt(msg.isShortAsk, 16);
-          return fmt;
-        case "log_cancel":
-          fmt = this.format_common_fields(msg);
-          fmt.outcome = parseInt(msg.outcome, 16);
-          fmt.cashRefund = abi.unfix(msg.cashRefund, "string");
-          return fmt;
-        case "log_fill_tx":
-        case "log_short_fill_tx":
-          fmt = this.format_common_fields(msg);
-          if (!fmt.type) {
-            fmt.type = "sell";
-            fmt.isShortSell = true;
-          }
-          fmt.owner = abi.format_address(msg.owner); // maker
-          fmt.takerFee = abi.unfix(msg.takerFee, "string");
-          fmt.makerFee = abi.unfix(msg.makerFee, "string");
-          fmt.onChainPrice = abi.unfix_signed(msg.onChainPrice, "string");
-          fmt.outcome = parseInt(msg.outcome, 16);
-          return fmt;
-        case "marketCreated":
-          fmt = this.format_common_fields(msg);
-          fmt.marketCreationFee = abi.unfix(msg.marketCreationFee, "string");
-          fmt.eventBond = abi.unfix(msg.eventBond, "string");
-          fmt.topic = augur.decodeTag(msg.topic);
-          return fmt;
-        case "payout":
-          fmt = this.format_common_fields(msg);
-          fmt.cashPayout = abi.unfix(msg.cashPayout, "string");
-          fmt.cashBalance = abi.unfix(msg.cashBalance, "string");
-          fmt.shares = abi.unfix(msg.shares, "string");
-          return fmt;
-        case "penalizationCaughtUp":
-          fmt = this.format_common_fields(msg);
-          fmt.penalizedFrom = parseInt(msg.penalizedFrom, 16);
-          fmt.penalizedUpTo = parseInt(msg.penalizedUpTo, 16);
-          fmt.repLost = abi.unfix_signed(msg.repLost).neg().toFixed();
-          fmt.newRepBalance = abi.unfix(msg.newRepBalance, "string");
-          return fmt;
-        case "penalize":
-          fmt = this.format_common_fields(msg);
-          fmt.oldrep = abi.unfix(msg.oldrep, "string");
-          fmt.repchange = abi.unfix_signed(msg.repchange, "string");
-          fmt.p = abi.unfix(msg.p, "string");
-          fmt.penalizedUpTo = parseInt(msg.penalizedUpTo, 16);
-          return fmt;
-        case "sentCash":
-        case "Transfer":
-          fmt = clone(msg);
-          fmt._from = abi.format_address(msg._from);
-          fmt._to = abi.format_address(msg._to);
-          fmt._value = abi.unfix(msg._value);
-          return fmt;
-        case "slashedRep":
-          fmt = this.format_common_fields(msg);
-          fmt.reporter = abi.format_address(msg.reporter);
-          fmt.repSlashed = abi.unfix(msg.repSlashed, "string");
-          fmt.slasherBalance = abi.unfix(msg.slasherBalance, "string");
-          return fmt;
-        case "submittedReport":
-        case "submittedReportHash":
-          fmt = this.format_common_fields(msg);
-          fmt.ethics = abi.unfix(msg.ethics, "string");
-          return fmt;
-        case "tradingFeeUpdated":
-          fmt = this.format_common_fields(msg);
-          fmt.tradingFee = abi.unfix(msg.tradingFee, "string");
-          return fmt;
-        case "withdraw":
-          fmt = this.format_common_fields(msg);
-          fmt.to = abi.format_address(msg.to);
-          fmt.value = abi.unfix(msg.value, "string");
-          return fmt;
-        default:
-          return this.format_common_fields(msg);
->>>>>>> master
       }
     }, 
     "BuyAndSellShares": {
@@ -17284,261 +17035,6 @@ module.exports = contracts;
 "use strict";
 
 var clone = require("clone");
-<<<<<<< HEAD
-=======
-var abi = require("augur-abi");
-var utils = require("../utilities");
-var constants = require("../constants");
-
-module.exports = {
-
-  getOrderBookChunked: function getOrderBookChunked(marketID, offset, numTradesToLoad, scalarMinMax, totalTrades, chunkCB, callback) {
-    var self = this;
-    if (!utils.is_function(chunkCB)) chunkCB = utils.noop;
-    if (!totalTrades) {
-      return this.get_total_trades(marketID, function (totalTrades) {
-        if (!totalTrades || totalTrades.error || !parseInt(totalTrades, 10)) {
-          return callback(totalTrades);
-        }
-        self.getOrderBookChunked(marketID, offset, Math.min(parseInt(totalTrades, 10), constants.GETTER_CHUNK_SIZE), scalarMinMax, totalTrades, chunkCB, callback);
-      });
-    }
-    this.getOrderBook({
-      market: marketID,
-      offset: offset,
-      numTradesToLoad: numTradesToLoad || totalTrades,
-      scalarMinMax: scalarMinMax
-    }, function (orderBookChunk) {
-      if (!orderBookChunk || orderBookChunk.error) {
-        console.error("getOrderBook failed:", marketID, orderBookChunk);
-        return callback(orderBookChunk);
-      }
-      chunkCB(orderBookChunk);
-      if (offset + numTradesToLoad < totalTrades) {
-        return self.getOrderBookChunked(marketID, offset + numTradesToLoad, numTradesToLoad, scalarMinMax, totalTrades, chunkCB, callback);
-      }
-      callback(null);
-    });
-  },
-
-  // load each batch of marketdata sequentially and recursively until complete
-  loadNextMarketsBatch: function loadNextMarketsBatch(branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass) {
-    var self = this;
-    var numMarketsToLoad = isDesc ? Math.min(chunkSize, startIndex) : Math.min(chunkSize, numMarkets - startIndex);
-    this.getMarketsInfo({
-      branch: branchID,
-      offset: startIndex,
-      numMarketsToLoad: numMarketsToLoad,
-      volumeMin: volumeMin,
-      volumeMax: volumeMax
-    }, function (marketsData) {
-      if (!marketsData || marketsData.error) {
-        chunkCB(marketsData);
-      } else {
-        chunkCB(null, marketsData);
-      }
-      var pause = Object.keys(marketsData).length ? constants.PAUSE_BETWEEN_MARKET_BATCHES : 5;
-      if (isDesc && startIndex > 0) {
-        setTimeout(function () {
-          self.loadNextMarketsBatch(branchID, Math.max(startIndex - chunkSize, 0), chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass);
-        }, pause);
-      } else if (!isDesc && startIndex + chunkSize < numMarkets) {
-        setTimeout(function () {
-          self.loadNextMarketsBatch(branchID, startIndex + chunkSize, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass);
-        }, pause);
-      } else if (utils.is_function(nextPass)) {
-        setTimeout(function () {
-          nextPass();
-        }, pause);
-      }
-    });
-  },
-
-  loadMarketsHelper: function loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB) {
-    var self = this;
-
-    // load the total number of markets
-    this.getNumMarketsBranch(branchID, function (numMarketsRaw) {
-      var numMarkets = parseInt(numMarketsRaw, 10);
-      var firstStartIndex = isDesc ? Math.max(numMarkets - chunkSize + 1, 0) : 0;
-
-      // load markets in batches
-      // first pass: only markets with nonzero volume
-      self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, 0, -1, chunkCB, function () {
-
-        // second pass: zero-volume markets
-        if (self.options.loadZeroVolumeMarkets) {
-          self.loadNextMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, -1, 0, chunkCB);
-        }
-      });
-    });
-  },
-
-  loadMarkets: function loadMarkets(branchID, chunkSize, isDesc, chunkCB) {
-    var self = this;
-
-    // Try hitting a cache node, if available
-    if (!this.augurNode.nodes.length) {
-      return this.loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB);
-    }
-    this.augurNode.getMarketsInfo(branchID, function (err, result) {
-      if (err) {
-        console.warn("cache node getMarketsInfo failed:", err);
-
-        // Abandon the use of cache nodes since there was a connection issue.
-        self.augurNode.nodes = [];
-
-        // fallback to loading in batches from chain
-        return self.loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB);
-      }
-      chunkCB(null, JSON.parse(result));
-    });
-  },
-
-  loadAssets: function loadAssets(branchID, accountID, cbEther, cbRep, cbRealEther) {
-    this.getCashBalance(accountID, function (result) {
-      if (!result || result.error) return cbEther(result);
-      return cbEther(null, abi.string(result));
-    });
-    this.getRepBalance(branchID, accountID, function (result) {
-      if (!result || result.error) return cbRep(result);
-      return cbRep(null, abi.string(result));
-    });
-    this.rpc.balance(accountID, function (wei) {
-      if (!wei || wei.error) return cbRealEther(wei);
-      return cbRealEther(null, abi.unfix(wei, "string"));
-    });
-  },
-
-  finishLoadBranch: function finishLoadBranch(branch, callback) {
-    if (branch.periodLength && branch.description && branch.baseReporters) {
-      callback(null, branch);
-    }
-  },
-
-  loadBranch: function loadBranch(branchID, callback) {
-    var self = this;
-    var branch = { id: abi.hex(branchID) };
-    this.getPeriodLength(branchID, function (periodLength) {
-      if (!periodLength || periodLength.error) return callback(periodLength);
-      branch.periodLength = periodLength;
-      self.finishLoadBranch(branch, callback);
-    });
-    this.getDescription(branchID, function (description) {
-      if (!description || description.error) return callback(description);
-      branch.description = description;
-      self.finishLoadBranch(branch, callback);
-    });
-    this.getBaseReporters(branchID, function (baseReporters) {
-      if (!baseReporters || baseReporters.error) return callback(baseReporters);
-      branch.baseReporters = parseInt(baseReporters, 10);
-      self.finishLoadBranch(branch, callback);
-    });
-  },
-
-  parsePositionInMarket: function parsePositionInMarket(positionInMarket) {
-    if (!positionInMarket || positionInMarket.error) return positionInMarket;
-    var numOutcomes = positionInMarket.length;
-    var position = {};
-    for (var i = 0; i < numOutcomes; ++i) {
-      position[i + 1] = abi.unfix(abi.hex(positionInMarket[i], true), "string");
-    }
-    return position;
-  },
-
-  getPositionInMarket: function getPositionInMarket(market, account, callback) {
-    if (!callback && utils.is_function(account)) {
-      callback = account;
-      account = null;
-    }
-    if (market && market.market) {
-      account = market.account;
-      callback = callback || market.callback;
-      market = market.market;
-    }
-    return this.CompositeGetters.getPositionInMarket(market, account || this.from, callback);
-  },
-
-  parseOrderBook: function parseOrderBook(orderArray, scalarMinMax) {
-    if (!orderArray || orderArray.error) return orderArray;
-    var minValue, order;
-    var isScalar = scalarMinMax && scalarMinMax.minValue !== undefined && scalarMinMax.maxValue !== undefined;
-    if (isScalar) minValue = new BigNumber(scalarMinMax.minValue, 10);
-    var numOrders = orderArray.length / 8;
-    var orderBook = { buy: {}, sell: {} };
-    for (var i = 0; i < numOrders; ++i) {
-      order = this.parseTradeInfo(orderArray.slice(8 * i, 8 * (i + 1)));
-      if (order) {
-        if (isScalar) order = this.adjustScalarOrder(order, minValue);
-        orderBook[order.type][order.id] = order;
-      }
-    }
-    return orderBook;
-  },
-
-  // scalarMinMax: null if not scalar; {minValue, maxValue} if scalar
-  getOrderBook: function getOrderBook(market, scalarMinMax, callback) {
-    var self = this;
-    if (!callback && utils.is_function(scalarMinMax)) {
-      callback = scalarMinMax;
-      scalarMinMax = null;
-    }
-    var offset, numTradesToLoad;
-    if (market && market.market) {
-      offset = market.offset;
-      numTradesToLoad = market.numTradesToLoad;
-      scalarMinMax = scalarMinMax || market.scalarMinMax;
-      callback = callback || market.callback;
-      market = market.market;
-    }
-    var tx = clone(this.tx.CompositeGetters.getOrderBook);
-    tx.params = [market, offset || 0, numTradesToLoad || 0];
-    return this.fire(tx, callback, this.parseOrderBook, scalarMinMax);
-  },
-
-  validateMarketInfo: function validateMarketInfo(marketInfo) {
-    if (!marketInfo) return null;
-    var parsedMarketInfo = this.parseMarketInfo(marketInfo);
-    if (!parsedMarketInfo.numOutcomes) return null;
-    return parsedMarketInfo;
-  },
-
-  // account is optional, if provided will return sharesPurchased
-  getMarketInfo: function getMarketInfo(market, account, callback) {
-    if (market && market.market) {
-      callback = callback || market.callback;
-      account = market.account;
-      market = market.market;
-    }
-    if (!callback && utils.is_function(account)) {
-      callback = account;
-      account = null;
-    }
-    return this.CompositeGetters.getMarketInfo(market, account || 0, callback);
-  },
-
-  parseBatchMarketInfo: function parseBatchMarketInfo(marketsArray, numMarkets) {
-    var len, shift, rawInfo, info, marketID;
-    if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
-      return marketsArray;
-    }
-    var marketsInfo = {};
-    var totalLen = 0;
-    for (var i = 0; i < numMarkets; ++i) {
-      len = parseInt(marketsArray[totalLen]);
-      shift = totalLen + 1;
-      rawInfo = marketsArray.slice(shift, shift + len - 1);
-      marketID = abi.format_int256(marketsArray[shift]);
-      info = this.parseMarketInfo(rawInfo);
-      if (info && info.numOutcomes) {
-        marketsInfo[marketID] = info;
-        marketsInfo[marketID].sortOrder = i;
-      }
-      totalLen += len;
-    }
-    return marketsInfo;
-  },
->>>>>>> master
 
 module.exports = function (network, contracts) {
 
@@ -20890,20 +20386,12 @@ module.exports = {
     this.words = [ 0 ];
     this.length = 1;
 
-<<<<<<< HEAD
     // Find length of limb in base
     for (var limbLen = 0, limbPow = 1; limbPow <= 0x3ffffff; limbPow *= base) {
       limbLen++;
     }
     limbLen--;
     limbPow = (limbPow / base) | 0;
-=======
-var async = require("async");
-var clone = require("clone");
-var abi = require("augur-abi");
-var constants = require("../constants");
-var utils = require("../utilities");
->>>>>>> master
 
     var total = number.length - start;
     var mod = total % limbLen;
@@ -21140,107 +20628,9 @@ var utils = require("../utilities");
     return (this.negative !== 0) ? -ret : ret;
   };
 
-<<<<<<< HEAD
   BN.prototype.toJSON = function toJSON () {
     return this.toString(16);
   };
-=======
-  chunkBlocks: function chunkBlocks(fromBlockFinal, toBlockFinal) {
-    var toBlockChunk = toBlockFinal;
-    var fromBlockChunk = toBlockChunk - constants.BLOCKS_PER_CHUNK;
-    var chunks = [];
-    while (fromBlockChunk > fromBlockFinal) {
-      chunks.push({ fromBlock: fromBlockChunk, toBlock: toBlockChunk });
-      fromBlockChunk -= constants.BLOCKS_PER_CHUNK;
-      toBlockChunk -= constants.BLOCKS_PER_CHUNK;
-    }
-    return chunks;
-  },
-
-  getLogsChunked: function getLogsChunked(label, filterParams, aux, callback) {
-    var self = this;
-    if (!utils.is_function(callback) && utils.is_function(aux)) {
-      callback = aux;
-      aux = null;
-    }
-    aux = aux || {};
-    if (aux.index) {
-      aux.mergedLogs = aux.mergedLogs || {};
-    } else {
-      aux.mergedLogs = aux.mergedLogs || [];
-    }
-    if (!filterParams.fromBlock) {
-      filterParams.fromBlock = parseInt(constants.GET_LOGS_DEFAULT_FROM_BLOCK, 16);
-    }
-    if (!filterParams.toBlock) {
-      filterParams.toBlock = this.rpc.block.number;
-    }
-    var chunks = this.chunkBlocks(abi.number(filterParams.fromBlock), abi.number(filterParams.toBlock));
-    async.eachSeries(chunks, function (chunk, nextChunk) {
-      var filterParamsChunk = clone(filterParams) || {};
-      filterParamsChunk.fromBlock = chunk.fromBlock;
-      filterParamsChunk.toBlock = chunk.toBlock;
-      self.getLogs(label, filterParamsChunk, aux, function (err, logs) {
-        if (err) return nextChunk(err);
-        nextChunk(null);
-      });
-    }, function (err) {
-      if (err) return callback(err);
-      callback(null, aux.mergedLogs);
-    });
-  },
-
-  getAccountTrades: function getAccountTrades(account, filterParams, callback) {
-    var self = this;
-    if (!callback && utils.is_function(filterParams)) {
-      callback = filterParams;
-      filterParams = null;
-    }
-    filterParams = filterParams || {};
-    var takerTradesFilterParams = clone(filterParams);
-    takerTradesFilterParams.sender = account;
-    var aux = {
-      index: ["market", "outcome"],
-      mergedLogs: {},
-      extraField: { name: "maker", value: false }
-    };
-    this.getLogs("log_fill_tx", takerTradesFilterParams, aux, function (err) {
-      if (err) return callback(err);
-      var makerTradesFilterParams = clone(filterParams);
-      makerTradesFilterParams.owner = account;
-      aux.extraField.value = true;
-      self.getLogs("log_fill_tx", makerTradesFilterParams, aux, function (err) {
-        if (err) return callback(err);
-        var takerShortSellsFilterParams = clone(filterParams);
-        takerShortSellsFilterParams.sender = account;
-        aux.extraField.value = false;
-        self.getLogs("log_short_fill_tx", takerShortSellsFilterParams, aux, function (err) {
-          if (err) return callback(err);
-          var makerShortSellsFilterParams = clone(filterParams);
-          makerShortSellsFilterParams.owner = account;
-          aux.extraField.value = true;
-          self.getLogs("log_short_fill_tx", makerShortSellsFilterParams, aux, function (err) {
-            if (err) return callback(err);
-            if (filterParams.noCompleteSets) {
-              callback(null, self.sortTradesByBlockNumber(aux.mergedLogs));
-            } else {
-              var completeSetsFilterParams = clone(filterParams);
-              completeSetsFilterParams.shortAsk = false;
-              completeSetsFilterParams.mergeInto = aux.mergedLogs;
-              self.getParsedCompleteSetsLogs(account, completeSetsFilterParams, function (err, merged) {
-                if (err) {
-                  console.error("getAccountTrades:", err);
-                  return callback(null, self.sortTradesByBlockNumber(aux.mergedLogs));
-                }
-                callback(null, self.sortTradesByBlockNumber(merged));
-              });
-            }
-          });
-        });
-      });
-    });
-  },
->>>>>>> master
 
   BN.prototype.toBuffer = function toBuffer (endian, length) {
     assert(typeof Buffer !== 'undefined');
@@ -21424,17 +20814,6 @@ var utils = require("../utilities");
     for (var i = 0; i < num.length; i++) {
       this.words[i] = this.words[i] | num.words[i];
     }
-<<<<<<< HEAD
-=======
-    var opt = options ? clone(options) : {};
-    opt.shortAsk = false;
-    opt.type = "sell";
-    return this.getCompleteSetsLogs(account, opt, callback);
-  }
-};
-},{"../constants":65,"../utilities":99,"async":118,"augur-abi":1,"clone":159}],80:[function(require,module,exports){
-"use strict";
->>>>>>> master
 
     return this.strip();
   };
@@ -23041,20 +22420,6 @@ var utils = require("../utilities");
         if (!a.isZero()) {
           a.negative ^= 1;
         }
-<<<<<<< HEAD
-=======
-        self.getTopicsInfoChunked(branch, offset, Math.min(parseInt(totalTopics, 10), constants.GETTER_CHUNK_SIZE), totalTopics, chunkCB, callback);
-      });
-    }
-    this.getTopicsInfo({
-      branch: branch,
-      offset: offset,
-      numTopicsToLoad: numTopicsToLoad || totalTopics
-    }, function (topicsInfoChunk) {
-      if (!topicsInfoChunk || topicsInfoChunk.error) {
-        console.error("getTopicsInfo failed:", branch, topicsInfoChunk);
-        return callback(topicsInfoChunk);
->>>>>>> master
       }
       if (q) {
         q.words[j] = qj;
@@ -23076,7 +22441,6 @@ var utils = require("../utilities");
     };
   };
 
-<<<<<<< HEAD
   // NOTE: 1) `mode` can be set to `mod` to request mod only,
   //       to `div` to request div only, or be absent to
   //       request both div & mod
@@ -23094,44 +22458,6 @@ var utils = require("../utilities");
     var div, mod, res;
     if (this.negative !== 0 && num.negative === 0) {
       res = this.neg().divmod(num, mode);
-=======
-  checkGasLimit: function checkGasLimit(trade_ids, sender, callback) {
-    var self = this;
-    var gas = 0;
-    var count = { buy: 0, sell: 0 };
-    var block = this.rpc.block;
-    var checked_trade_ids = trade_ids.slice();
-    async.forEachOfSeries(trade_ids, function (trade_id, i, next) {
-      self.get_trade(trade_id, function (trade) {
-        if (!trade || !trade.id) {
-          checked_trade_ids.splice(checked_trade_ids.indexOf(trade_id), 1);
-          if (!checked_trade_ids.length) {
-            return callback(self.errors.TRADE_NOT_FOUND);
-          }
-          console.warn("[augur.js] checkGasLimit:", self.errors.TRADE_NOT_FOUND);
-        } else if (trade.owner === sender) {
-          checked_trade_ids.splice(checked_trade_ids.indexOf(trade_id), 1);
-          if (!checked_trade_ids.length) {
-            return callback({ error: "-5", message: self.errors.trade["-5"] });
-          }
-          console.warn("[augur.js] checkGasLimit:", self.errors.trade["-5"]);
-        }
-        ++count[trade.type];
-        gas += constants.TRADE_GAS[Number(!!i)][trade.type];
-        next();
-      });
-    }, function (e) {
-      if (e) return callback(e);
-      if (gas <= parseInt(block.gasLimit, 16)) {
-        return callback(null, checked_trade_ids);
-      } else if (!count.buy || !count.sell) {
-        var type = count.buy ? "buy" : "sell";
-        return callback(null, checked_trade_ids.slice(0, abacus.maxOrdersPerTrade(type, block.gasLimit)));
-      }
-      callback(self.errors.GAS_LIMIT_EXCEEDED);
-    });
-  },
->>>>>>> master
 
       if (mode !== 'mod') {
         div = res.div.neg();
@@ -40456,7 +39782,7 @@ function isFunction(f) {
 
 module.exports = {
 
-  version: "2.1.2",
+  version: "2.3.1",
 
   debug: false,
   rpc: rpc,
@@ -40512,10 +39838,14 @@ module.exports = {
   setGasPrice: function (callback) {
     var self = this;
     if (!isFunction(callback)) {
-      this.rpc.gasPrice = parseInt(this.rpc.getGasPrice(), 16);
+      var gasPrice = this.rpc.getGasPrice();
+      if (!gasPrice) throw new Error("setGasPrice failed");
+      if (gasPrice.error) throw new Error(gasPrice.error);
+      this.rpc.gasPrice = parseInt(gasPrice, 16);
     } else {
       this.rpc.getGasPrice(function (gasPrice) {
-        if (!gasPrice || gasPrice.error) return callback(gasPrice);
+        if (!gasPrice) return callback(new Error("setGasPrice failed"));
+        if (gasPrice.error) return callback(new Error(gasPrice.error));
         self.rpc.gasPrice = parseInt(gasPrice, 16);
         callback(null);
       });
@@ -40525,15 +39855,45 @@ module.exports = {
   setNetworkID: function (callback) {
     var self = this;
     if (!isFunction(callback)) {
-      this.state.networkID = this.rpc.version();
+      var version = this.rpc.version();
+      if (version === null || version === undefined) throw new Error("setNetworkID failed");
+      if (version.error) throw new Error(version.error);
+      this.state.networkID = version;
     } else {
       this.rpc.version(function (version) {
-        if (version === null || version === undefined || version.error) {
-          return callback(version);
-        }
+        if (version === null || version === undefined) return callback(new Error("setNetworkID failed"));
+        if (version.error) return callback(new Error(version.error));
         self.state.networkID = version;
         callback(null);
       });
+    }
+  },
+
+  setLatestBlock: function (callback) {
+    var self = this;
+    if (this.rpc.block !== null && this.rpc.block.number && this.rpc.block.timestamp) {
+      if (isFunction(callback)) callback(null);
+    } else {
+      if (!isFunction(callback)) {
+        var blockNumber = this.rpc.blockNumber();
+        if (!blockNumber) throw new Error("setLatestBlock failed");
+        if (blockNumber.error) throw new Error(blockNumber.error);
+        var block = this.rpc.getBlock(blockNumber, false);
+        if (!block) throw new Error("setLatestBlock failed");
+        if (block.error) throw new Error(block.error);
+        this.rpc.onNewBlock(block);
+      } else {
+        this.rpc.blockNumber(function (blockNumber) {
+          if (!blockNumber) return callback(new Error("setLatestBlock failed"));
+          if (blockNumber.error) return callback(new Error(blockNumber.error));
+          self.rpc.getBlock(blockNumber, false, function (block) {
+            if (!block) return callback(new Error("setLatestBlock failed"));
+            if (block.error) return callback(new Error(block.error));
+            self.rpc.onNewBlock(block);
+            callback(null);
+          });
+        });
+      }
     }
   },
 
@@ -40554,16 +39914,14 @@ module.exports = {
     var self = this;
     if (!isFunction(callback)) {
       var coinbase = this.rpc.coinbase();
-      if (!coinbase || coinbase.error || coinbase === "0x") {
-        throw new Error("[ethereumjs-connect] setCoinbase: coinbase not found");
-      }
+      if (!coinbase) throw new Error("setCoinbase failed");
+      if (coinbase.error || coinbase === "0x") throw new Error(coinbase);
       this.state.coinbase = coinbase;
       this.state.from = this.state.from || coinbase;
     } else {
       this.rpc.coinbase(function (coinbase) {
-        if (!coinbase || coinbase.error || coinbase === "0x") {
-          return callback(new Error("[ethereumjs-connect] setCoinbase: coinbase not found"));
-        }
+        if (!coinbase) return callback(new Error("setCoinbase failed"));
+        if (coinbase.error || coinbase === "0x") return callback(new Error(coinbase));
         self.state.coinbase = coinbase;
         self.state.from = self.state.from || coinbase;
         callback(null);
@@ -40600,6 +39958,7 @@ module.exports = {
         });
       },
       this.setNetworkID.bind(this),
+      this.setLatestBlock.bind(this),
       function (next) {
         self.setContracts();
         next();
@@ -40628,6 +39987,7 @@ module.exports = {
     try {
       this.rpc.blockNumber(noop);
       this.setNetworkID();
+      this.setLatestBlock();
       this.setContracts();
       this.setCoinbase();
       this.setFrom();
@@ -42066,12 +41426,7 @@ module.exports = {
   // Do not call txRelay for these methods
   excludedFromTxRelay: {},
 
-<<<<<<< HEAD
   txs: {},
-=======
-  GETTER_CHUNK_SIZE: 100,
-  BLOCKS_PER_CHUNK: 500,
->>>>>>> master
 
   rawTxs: {},
 
@@ -43978,40 +43333,8 @@ function EventEmitter() {
 }
 module.exports = EventEmitter;
 
-<<<<<<< HEAD
 // Backwards-compat with node 0.10.x
 EventEmitter.EventEmitter = EventEmitter;
-=======
-module.exports = {
-
-  version: "2.3.1",
-
-  debug: false,
-  rpc: rpc,
-
-  state: {
-    from: null,
-    coinbase: null,
-    networkID: null,
-    contracts: null,
-    allContracts: null,
-    api: {events: null, functions: null},
-    connection: null
-  },
-
-  resetState: function () {
-    this.rpc.reset(true);
-    this.state = {
-      from: null,
-      coinbase: null,
-      networkID: null,
-      contracts: null,
-      allContracts: null,
-      api: {events: null, functions: null},
-      connection: null
-    };
-  },
->>>>>>> master
 
 EventEmitter.prototype._events = undefined;
 EventEmitter.prototype._maxListeners = undefined;
@@ -44029,7 +43352,6 @@ EventEmitter.prototype.setMaxListeners = function(n) {
   return this;
 };
 
-<<<<<<< HEAD
 EventEmitter.prototype.emit = function(type) {
   var er, handler, len, args, i, listeners;
 
@@ -44048,105 +43370,11 @@ EventEmitter.prototype.emit = function(type) {
         var err = new Error('Uncaught, unspecified "error" event. (' + er + ')');
         err.context = er;
         throw err;
-=======
-  setGasPrice: function (callback) {
-    var self = this;
-    if (!isFunction(callback)) {
-      var gasPrice = this.rpc.getGasPrice();
-      if (!gasPrice) throw new Error("setGasPrice failed");
-      if (gasPrice.error) throw new Error(gasPrice.error);
-      this.rpc.gasPrice = parseInt(gasPrice, 16);
-    } else {
-      this.rpc.getGasPrice(function (gasPrice) {
-        if (!gasPrice) return callback(new Error("setGasPrice failed"));
-        if (gasPrice.error) return callback(new Error(gasPrice.error));
-        self.rpc.gasPrice = parseInt(gasPrice, 16);
-        callback(null);
-      });
-    }
-  },
-
-  setNetworkID: function (callback) {
-    var self = this;
-    if (!isFunction(callback)) {
-      var version = this.rpc.version();
-      if (version === null || version === undefined) throw new Error("setNetworkID failed");
-      if (version.error) throw new Error(version.error);
-      this.state.networkID = version;
-    } else {
-      this.rpc.version(function (version) {
-        if (version === null || version === undefined) return callback(new Error("setNetworkID failed"));
-        if (version.error) return callback(new Error(version.error));
-        self.state.networkID = version;
-        callback(null);
-      });
-    }
-  },
-
-  setLatestBlock: function (callback) {
-    var self = this;
-    if (this.rpc.block !== null && this.rpc.block.number && this.rpc.block.timestamp) {
-      if (isFunction(callback)) callback(null);
-    } else {
-      if (!isFunction(callback)) {
-        var blockNumber = this.rpc.blockNumber();
-        if (!blockNumber) throw new Error("setLatestBlock failed");
-        if (blockNumber.error) throw new Error(blockNumber.error);
-        var block = this.rpc.getBlock(blockNumber, false);
-        if (!block) throw new Error("setLatestBlock failed");
-        if (block.error) throw new Error(block.error);
-        this.rpc.onNewBlock(block);
-      } else {
-        this.rpc.blockNumber(function (blockNumber) {
-          if (!blockNumber) return callback(new Error("setLatestBlock failed"));
-          if (blockNumber.error) return callback(new Error(blockNumber.error));
-          self.rpc.getBlock(blockNumber, false, function (block) {
-            if (!block) return callback(new Error("setLatestBlock failed"));
-            if (block.error) return callback(new Error(block.error));
-            self.rpc.onNewBlock(block);
-            callback(null);
-          });
-        });
-      }
-    }
-  },
-
-  setFrom: function (account) {
-    this.state.from = this.state.from || account;
-    if (this.state.api.functions) {
-      for (var contract in this.state.api.functions) {
-        if (!this.state.api.functions.hasOwnProperty(contract)) continue;
-        for (var method in this.state.api.functions[contract]) {
-          if (!this.state.api.functions[contract].hasOwnProperty(method)) continue;
-          this.state.api.functions[contract][method].from = account || this.state.from;
-        }
->>>>>>> master
       }
     }
   }
 
-<<<<<<< HEAD
   handler = this._events[type];
-=======
-  setCoinbase: function (callback) {
-    var self = this;
-    if (!isFunction(callback)) {
-      var coinbase = this.rpc.coinbase();
-      if (!coinbase) throw new Error("setCoinbase failed");
-      if (coinbase.error || coinbase === "0x") throw new Error(coinbase);
-      this.state.coinbase = coinbase;
-      this.state.from = this.state.from || coinbase;
-    } else {
-      this.rpc.coinbase(function (coinbase) {
-        if (!coinbase) return callback(new Error("setCoinbase failed"));
-        if (coinbase.error || coinbase === "0x") return callback(new Error(coinbase));
-        self.state.coinbase = coinbase;
-        self.state.from = self.state.from || coinbase;
-        callback(null);
-      });
-    }
-  },
->>>>>>> master
 
   if (isUndefined(handler))
     return false;
@@ -44176,77 +43404,11 @@ EventEmitter.prototype.emit = function(type) {
       listeners[i].apply(this, args);
   }
 
-<<<<<<< HEAD
   return true;
 };
 
 EventEmitter.prototype.addListener = function(type, listener) {
   var m;
-=======
-  // asynchronous connection sequence
-  asyncConnect: function (options, callback) {
-    var self = this;
-    async.series([
-      function (next) {
-        if (!options.http || !options.ws) return next();
-        var wsUrl = self.rpc.wsUrl;
-        var wsStatus = self.rpc.rpcStatus.ws;
-        self.rpc.wsUrl = null;
-        self.rpc.rpcStatus.ws = 0;
-        self.setNetworkID(function (err) {
-          self.rpc.wsUrl = wsUrl;
-          self.rpc.rpcStatus.ws = wsStatus;
-          next(err);
-        });
-      },
-      this.setNetworkID.bind(this),
-      this.setLatestBlock.bind(this),
-      function (next) {
-        self.setContracts();
-        next();
-      },
-      this.setCoinbase.bind(this),
-      function (next) {
-        self.setFrom();
-        self.setupFunctionsAPI();
-        self.setupEventsAPI();
-        next();
-      },
-      this.setGasPrice.bind(this)
-    ], function (err) {
-      if (err) return self.retryConnect(err, options, callback);
-      self.state.connection = {
-        http: self.rpc.nodes.local || self.rpc.nodes.hosted,
-        ws: self.rpc.wsUrl,
-        ipc: self.rpc.ipcpath
-      };
-      callback(self.state.connection);
-    });
-  },
-
-  // synchronous connection sequence
-  syncConnect: function (options) {
-    try {
-      this.rpc.blockNumber(noop);
-      this.setNetworkID();
-      this.setLatestBlock();
-      this.setContracts();
-      this.setCoinbase();
-      this.setFrom();
-      this.setupFunctionsAPI();
-      this.setupEventsAPI();
-      this.setGasPrice();
-      this.state.connection = {
-        http: this.rpc.nodes.local || this.rpc.nodes.hosted,
-        ws: this.rpc.wsUrl,
-        ipc: this.rpc.ipcpath
-      };
-    } catch (exc) {
-      this.retryConnect(exc, options);
-    }
-    return this.state.connection;
-  },
->>>>>>> master
 
   if (!isFunction(listener))
     throw TypeError('listener must be a function');
@@ -68642,7 +67804,8 @@ module.exports = {
   BID: 1,
   ASK: 2,
 
-  ORDERBOOK_MAX_CHUNK_SIZE: 100,
+  GETTER_CHUNK_SIZE: 100,
+  BLOCKS_PER_CHUNK: 500,
 
   // milliseconds to wait between getMarketsInfo batches
   PAUSE_BETWEEN_MARKET_BATCHES: 50,
@@ -68975,7 +68138,7 @@ module.exports = {
       console.log("[closeExtraMarkets] Closing extra markets for event", event);
     }
     self.getMarkets(event, function (markets) {
-      if (!markets || !markets.length) {
+      if (!markets || (markets.constructor === Array && !markets.length)) {
         return callback("no markets found for " + event);
       }
       if (markets && markets.error) return callback(markets);
@@ -69031,13 +68194,17 @@ module.exports = {
     }
     periodGap = periodGap || 1;
     function wait(branch, secondsToWait, next) {
-      console.log("Waiting", secondsToWait / 60, "minutes...");
+      if (self.options.debug.reporting) {
+        console.log("Waiting", secondsToWait / 60, "minutes...");
+      }
       setTimeout(function () {
         self.Consensus.incrementPeriodAfterReporting({
           branch: branch,
           onSent: function (r) {},
           onSuccess: function (r) {
-            console.log("Incremented period:", r.callReturn);
+            if (self.options.debug.reporting) {
+              console.log("Incremented period:", r.callReturn);
+            }
             self.getVotePeriod(branch, function (votePeriod) {
               next(null, votePeriod);
             });
@@ -69049,21 +68216,29 @@ module.exports = {
     this.getExpiration(event, function (expTime) {
       var expPeriod = Math.floor(expTime / periodLength);
       var currentPeriod = self.getCurrentPeriod(periodLength);
-      console.log("\nreporting.checkTime:");
-      console.log(" - Expiration period:", expPeriod);
-      console.log(" - Current period:   ", currentPeriod);
-      console.log(" - Target period:    ", expPeriod + periodGap);
+      if (self.options.debug.reporting) {
+        console.log("\nreporting.checkTime:");
+        console.log(" - Expiration period:", expPeriod);
+        console.log(" - Current period:   ", currentPeriod);
+        console.log(" - Target period:    ", expPeriod + periodGap);
+      }
       if (currentPeriod < expPeriod + periodGap) {
         var fullPeriodsToWait = expPeriod - self.getCurrentPeriod(periodLength) + periodGap - 1;
-        console.log("Full periods to wait:", fullPeriodsToWait);
+        if (self.options.debug.reporting) {
+          console.log("Full periods to wait:", fullPeriodsToWait);
+        }
         var secondsToWait = periodLength;
         if (fullPeriodsToWait === 0) {
           secondsToWait -= (parseInt(new Date().getTime() / 1000) % periodLength);
         }
-        console.log("Seconds to wait:", secondsToWait);
+        if (self.options.debug.reporting) {
+          console.log("Seconds to wait:", secondsToWait);
+        }
         wait(branch, secondsToWait, function (err, votePeriod) {
           if (err) return callback(err);
-          console.log("New vote period:", votePeriod);
+          if (self.options.debug.reporting) {
+            console.log("New vote period:", votePeriod);
+          }
           self.checkTime(branch, event, periodLength, callback);
         });
       } else {
