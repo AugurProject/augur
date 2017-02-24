@@ -12,7 +12,7 @@ describe("makeOrder.placeBid", function() {
   var test = function(t) {
     it(t.description, function() {
       augur.buy = t.assertions;
-      augur.placeBid(t.market, t.outcomeID, t.numShares, t.limitPrice, t.tradeGroupID);
+      augur.placeBid(t.market, t.outcomeID, t.numShares, t.limitPrice, t.tradeGroupID, t.callback);
     });
   };
   test({
@@ -22,6 +22,9 @@ describe("makeOrder.placeBid", function() {
     numShares: '100',
     limitPrice: '0.5',
     tradeGroupID: '0xab12',
+    callback: function(out) {
+      assert.isNull(out);
+    },
     assertions: function(order) {
       assert.deepEqual(order.amount, '100');
       assert.deepEqual(order.price, '0.5');
@@ -31,6 +34,7 @@ describe("makeOrder.placeBid", function() {
       assert.deepEqual(order.scalarMinMax, {});
       assert.isFunction(order.onSent);
       assert.isFunction(order.onSuccess);
+      order.onSuccess();
       assert.isFunction(order.onFailed);
     }
   });
@@ -63,7 +67,7 @@ describe("makeOrder.placeAsk", function() {
   var test = function(t) {
     it(t.description, function() {
       augur.sell = t.assertions;
-      augur.placeAsk(t.market, t.outcomeID, t.numShares, t.limitPrice, t.tradeGroupID);
+      augur.placeAsk(t.market, t.outcomeID, t.numShares, t.limitPrice, t.tradeGroupID, t.callback);
     });
   };
   test({
@@ -73,6 +77,9 @@ describe("makeOrder.placeAsk", function() {
     numShares: '100',
     limitPrice: '0.5',
     tradeGroupID: '0xab12',
+    callback: function(out) {
+      assert.isNull(out);
+    },
     assertions: function(order) {
       assert.deepEqual(order.amount, '100');
       assert.deepEqual(order.price, '0.5');
@@ -82,6 +89,7 @@ describe("makeOrder.placeAsk", function() {
       assert.deepEqual(order.scalarMinMax, {});
       assert.isFunction(order.onSent);
       assert.isFunction(order.onSuccess);
+      order.onSuccess();
       assert.isFunction(order.onFailed);
     }
   });
@@ -114,7 +122,7 @@ describe("makeOrder.placeShortAsk", function() {
   var test = function(t) {
     it(t.description, function() {
       augur.shortAsk = t.assertions;
-      augur.placeShortAsk(t.market, t.outcomeID, t.numShares, t.limitPrice, t.tradeGroupID);
+      augur.placeShortAsk(t.market, t.outcomeID, t.numShares, t.limitPrice, t.tradeGroupID, t.callback);
     });
   };
   test({
@@ -124,6 +132,9 @@ describe("makeOrder.placeShortAsk", function() {
     numShares: '100',
     limitPrice: '0.5',
     tradeGroupID: '0xab12',
+    callback: function(out) {
+      assert.isNull(out);
+    },
     assertions: function(order) {
       assert.deepEqual(order.amount, '100');
       assert.deepEqual(order.price, '0.5');
@@ -133,6 +144,7 @@ describe("makeOrder.placeShortAsk", function() {
       assert.deepEqual(order.scalarMinMax, {});
       assert.isFunction(order.onSent);
       assert.isFunction(order.onSuccess);
+      order.onSuccess();
       assert.isFunction(order.onFailed);
     }
   });
@@ -160,15 +172,18 @@ describe("makeOrder.placeAskAndShortAsk", function() {
   // 3 tests total
   var shortAsk = augur.shortAsk;
   var sell = augur.sell;
+  var finished;
+  var shortAskOnSuccess;
+  var askOnSuccess;
   afterEach(function() {
     augur.shortAsk = shortAsk;
     augur.sell = sell;
   });
   var test = function(t) {
-    it(t.description, function() {
+    it(t.description, function(done) {
       augur.shortAsk = t.shortAsk;
       augur.sell = t.sell;
-
+      finished = done;
       augur.placeAskAndShortAsk(t.market, t.outcomeID, t.askShares, t.shortAskShares, t.limitPrice, t.tradeGroupID, t.callback);
     });
   };
@@ -182,6 +197,7 @@ describe("makeOrder.placeAskAndShortAsk", function() {
     tradeGroupID: '0xabc12345',
     callback: function(arg) {
       assert.isNull(arg);
+      finished();
     },
     shortAsk: function(arg) {
       assert.deepEqual(arg.amount, '10');
@@ -193,7 +209,10 @@ describe("makeOrder.placeAskAndShortAsk", function() {
       assert.isFunction(arg.onSent);
       assert.isFunction(arg.onSuccess);
       assert.isFunction(arg.onFailed);
-      arg.onSuccess();
+      shortAskOnSuccess = arg.onSuccess;
+      // call success from shortAsk before sell so we test the onSuccess case for sell.
+      shortAskOnSuccess();
+      askOnSuccess();
     },
     sell: function(arg) {
       assert.deepEqual(arg.amount, '20');
@@ -204,8 +223,8 @@ describe("makeOrder.placeAskAndShortAsk", function() {
       assert.deepEqual(arg.scalarMinMax, {});
       assert.isFunction(arg.onSent);
       assert.isFunction(arg.onSuccess);
+      askOnSuccess = arg.onSuccess;
       assert.isFunction(arg.onFailed);
-      arg.onSuccess();
     }
   });
   test({
@@ -228,6 +247,8 @@ describe("makeOrder.placeAskAndShortAsk", function() {
       assert.isFunction(arg.onSuccess);
       assert.isFunction(arg.onFailed);
       arg.onSuccess();
+      // in this case we are just going to call the sell.onSuccess then shortAsk.onSuccess, no need for vars from previous test.
+      finished();
     },
     sell: function(arg) {
       assert.deepEqual(arg.amount, '10');
@@ -264,6 +285,8 @@ describe("makeOrder.placeAskAndShortAsk", function() {
       assert.isFunction(arg.onSuccess);
       assert.isFunction(arg.onFailed);
       arg.onFailed({ error: 999, message: 'Uh-Oh!' });
+      // in this case we are just going to call the sell.onFailed then shortAsk.onFailed, no need for vars from the first test.
+      finished();
     },
     sell: function(arg) {
       assert.deepEqual(arg.amount, '120');
