@@ -18,6 +18,10 @@ describe("positions", function () {
     return abi.format_int256(abi.fix(n, "hex"));
   }
 
+  function stripFix(n) {
+    return abi.strip_0x(abi.format_int256(abi.fix(n, "hex")));
+  }
+
   var txOriginal;
 
   before(function () {
@@ -399,6 +403,38 @@ describe("positions", function () {
         assert.deepEqual(JSON.stringify(out), JSON.stringify({
         	'0xa1': '0.2',
         	'0xa2': '0.33333333333333333333'
+        }));
+      }
+    });
+  });
+
+  describe("calculateShortSellBuyCompleteSetsEffectivePrice", function() {
+    // 3 tests total
+    var test = function(t) {
+      it(JSON.stringify(t), function() {
+        t.assertions(augur.calculateShortSellBuyCompleteSetsEffectivePrice(t.logs));
+      });
+    };
+    test({
+      logs: undefined,
+      assertions: function(effectivePrice) {
+        assert.deepEqual(effectivePrice, {});
+      }
+    });
+    test({
+      logs: [],
+      assertions: function(effectivePrice) {
+        assert.deepEqual(effectivePrice, {});
+      }
+    });
+    test({
+      logs: [{
+        data: fix('1') + stripFix('2') + stripFix('3') + stripFix('4') + stripFix('5') + stripFix('6') + stripFix('7')+ stripFix('0.000000000000000002'),
+        topics: ['0x0', '0xa1'],
+      }],
+      assertions: function(effectivePrice) {
+        assert.deepEqual(JSON.stringify(effectivePrice), JSON.stringify({
+          '0xa1': new BigNumber('.5')
         }));
       }
     });
@@ -1653,6 +1689,7 @@ describe("positions", function () {
       }
     });
   });
+
   describe("getAdjustedPositions", function () {
     var getPositionInMarket;
     var getShortAskBuyCompleteSetsLogs;
