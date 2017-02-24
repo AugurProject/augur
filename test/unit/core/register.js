@@ -12,108 +12,160 @@ var augur = require("../../../src");
 var constants = require("../../../src/constants");
 var utils = require("../../../src/utilities");
 
-describe("register", function () {
-
-  var tx, api, getLogs;
-
-  before(function () {
-    api = augur.api;
-    tx = augur.tx;
-    getLogs = augur.rpc.getLogs;
-    augur.api = new require("augur-contracts").Tx(constants.DEFAULT_NETWORK_ID);
-    augur.tx = augur.api.functions;
-  });
-
-  after(function () {
-    augur.api = api;
-    augur.tx = tx;
-    augur.rpc.getLogs = getLogs;
-  });
-
-  describe("parseLastBlockNumber: parse last block from register logs", function () {
-    var test = function (t) {
-      it(t.description, function () {
-        t.assertions(augur.parseLastBlockNumber(t.logs));
-      });
-    };
-    test({
-      description: "1 register log",
-      logs: [{
-        blockNumber: 1
-      }],
-      assertions: function (output) {
-        assert.strictEqual(output, 1);
-      }
+describe("register.parseLastBlockNumber", function() {
+  var test = function (t) {
+    it(t.description, function () {
+      t.assertions(augur.parseLastBlockNumber(t.logs));
     });
-    test({
-      description: "2 register logs",
-      logs: [{
+  };
+  test({
+    description: "1 register log",
+    logs: [{
+      blockNumber: 1
+    }],
+    assertions: function (output) {
+      assert.strictEqual(output, 1);
+    }
+  });
+  test({
+    description: "2 register logs",
+    logs: [{
+      blockNumber: 1
+    }, {
+      blockNumber: 2
+    }],
+    assertions: function (output) {
+      assert.strictEqual(output, 2);
+    }
+  });
+});
+describe("register.getRegisterBlockNumber", function() {
+  var getLogs = augur.getLogs;
+  var finished;
+  afterEach(function() {
+    augur.getLogs = getLogs;
+  });
+  var test = function (t) {
+    it(t.description + ' async', function (done) {
+      augur.getLogs = t.getLogs;
+      finished = done;
+      augur.getRegisterBlockNumber(t.account, t.options, t.callback);
+    });
+    it(t.description + 'sync', function(done) {
+      augur.getLogs = t.getLogs;
+      finished = done;
+      var assertions = t.callback;
+      var options = t.options;
+      if (t.options && t.options.constructor === Function) {
+        assertions = t.options;
+        options = null;
+      }
+      assertions(augur.getRegisterBlockNumber(t.account, options));
+    });
+  };
+  test({
+    description: "no registers",
+    account: "0xbob",
+    logs: [],
+    getLogs: function(label, params, callback) {
+      if (!callback) return [];
+      callback(null, []);
+    },
+    callback: function (err, blockNumber) {
+      // in this case callback for both sync and async we need to test different values. if blockNumber is undefined then we are assuming this is from the sync test, if it is not undefined then it's coming from the async test.
+      if (blockNumber === undefined) {
+        // sync
+        assert.isNull(err);
+        assert.isUndefined(blockNumber);
+      } else {
+        // async
+        assert.isNull(err);
+        assert.isNull(blockNumber);
+      }
+      finished();
+    }
+  });
+  test({
+    description: "1 register",
+    account: "0xb0b",
+    logs: [{
+      blockNumber: 2
+    }],
+    getLogs: function(label, params, callback) {
+      if (!callback) return [{
+        blockNumber: 2
+      }];
+      callback(null, [{
+        blockNumber: 2
+      }]);
+    },
+    options: function (err, blockNumber) {
+      if (blockNumber === undefined) {
+        // sync
+        assert.deepEqual(err, 2);
+        assert.isUndefined(blockNumber);
+      } else {
+        // async
+        assert.isNull(err);
+        assert.deepEqual(blockNumber, 2);
+      }
+      finished();
+    }
+  });
+  test({
+    description: "2 registers",
+    account: "0xb0b",
+    logs: [{
+      blockNumber: 1
+    }, {
+      blockNumber: 2
+    }],
+    options: {},
+    getLogs: function(label, params, callback) {
+      if (!callback) return [{
         blockNumber: 1
       }, {
         blockNumber: 2
-      }],
-      assertions: function (output) {
-        assert.strictEqual(output, 2);
-      }
-    });
-  });
-
-  describe("getRegisterBlockNumber: look up user's most recent register block number", function () {
-    var test = function (t) {
-      it(t.description, function (done) {
-        augur.getLogs = function (label, params, callback) {
-          if (!callback) return t.logs;
-          callback(null, t.logs);
-        };
-        augur.getRegisterBlockNumber(t.account, t.options, function (err, blockNumber) {
-          assert.isNull(err);
-          t.assertions({
-            async: blockNumber,
-            sync: augur.getRegisterBlockNumber(t.account, t.options)
-          });
-          done();
-        });
-      });
-    };
-    test({
-      description: "no registers",
-      account: "0xbob",
-      logs: [],
-      assertions: function (output) {
-        assert.isObject(output);
-        assert.isNull(output.sync);
-        assert.isNull(output.async);
-      }
-    });
-    test({
-      description: "1 register",
-      account: "0xb0b",
-      logs: [{
-        blockNumber: 2
-      }],
-      assertions: function (output) {
-        assert.isObject(output);
-        assert.strictEqual(output.sync.constructor, Number);
-        assert.strictEqual(output.async.constructor, Number);
-        assert.strictEqual(output.sync, output.async);
-        assert.strictEqual(output.async, 2);
-      }
-    });
-    test({
-      description: "2 registers",
-      account: "0xb0b",
-      logs: [{
+      }];
+      callback(null, [{
         blockNumber: 1
       }, {
         blockNumber: 2
-      }],
-      assertions: function (output) {
-        assert.isObject(output);
-        assert.strictEqual(output.sync.constructor, Number);
-        assert.strictEqual(output.async.constructor, Number);
-        assert.strictEqual(output.sync, output.async);
-        assert.strictEqual(output.async, 2);
+      }]);
+    },
+    callback: function (err, blockNumber) {
+      if (blockNumber === undefined) {
+        // sync
+        assert.deepEqual(err, 2);
+        assert.isUndefined(blockNumber);
+      } else {
+        // async
+        assert.isNull(err);
+        assert.deepEqual(blockNumber, 2);
       }
-    });
+      finished();
+    }
   });
+  test({
+    description: "error from getLogs",
+    account: "0xb0b",
+    logs: 'in this case, there will be an error',
+    options: {},
+    getLogs: function(label, params, callback) {
+      if (!callback) return { error: 999, message: 'Uh-Oh!' };
+      callback({ error: 999, message: 'Uh-Oh!' });
+    },
+    callback: function (err, blockNumber) {
+      if (err === null) {
+        // sync
+        assert.isNull(err);
+      } else {
+        // async
+        assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
+      }
+      assert.isUndefined(blockNumber);
+      finished();
+    }
+  });
+
 });
