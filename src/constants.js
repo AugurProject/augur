@@ -22,7 +22,6 @@ module.exports = {
     zero: new BigNumber(1, 10).dividedBy(multiple),
     multiple: multiple
   },
-  // MINIMUM_TRADE_SIZE: new BigNumber("0.00000001", 10),
   MINIMUM_TRADE_SIZE: new BigNumber("0.01", 10),
 
   DEFAULT_NETWORK_ID: "3",
@@ -68,8 +67,8 @@ module.exports = {
   // gas needed for trade transactions (values from pyethereum tester)
   MAKE_ORDER_GAS: {sell: 725202, buy: 725202},
   TRADE_GAS: [
-        {sell: 756374, buy: 787421}, // first trade_id only
-        {sell: 615817, buy: 661894} // each additional trade_id
+    {sell: 756374, buy: 787421}, // first trade_id only
+    {sell: 615817, buy: 661894} // each additional trade_id
   ],
   CANCEL_GAS: {sell: 288060, buy: 230059},
 

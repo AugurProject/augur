@@ -9396,6 +9396,7 @@ var objectKeys = Object.keys || function (obj) {
                     safeResults[k] = args;
                     hasError = true;
 
+<<<<<<< HEAD
                     callback(err, safeResults);
                 }
                 else {
@@ -9436,6 +9437,15 @@ var objectKeys = Object.keys || function (obj) {
             }
         });
     };
+=======
+  PRECISION: {
+    decimals: decimals.toNumber(),
+    limit: ten.dividedBy(multiple),
+    zero: new BigNumber(1, 10).dividedBy(multiple),
+    multiple: multiple
+  },
+  MINIMUM_TRADE_SIZE: new BigNumber("0.01", 10),
+>>>>>>> master
 
 
 
@@ -9989,6 +9999,11 @@ var objectKeys = Object.keys || function (obj) {
         return async.seq.apply(null, Array.prototype.reverse.call(arguments));
     };
 
+<<<<<<< HEAD
+=======
+function Augur() {
+  this.version = "3.13.0";
+>>>>>>> master
 
     function _applyEach(eachfn) {
         return _restParam(function(fns, args) {
@@ -20156,6 +20171,7 @@ module.exports = {
         base = 10;
       }
 
+<<<<<<< HEAD
       this._init(number || 0, base || 10, endian || 'be');
     }
   }
@@ -20173,6 +20189,73 @@ module.exports = {
     Buffer = require('buf' + 'fer').Buffer;
   } catch (e) {
   }
+=======
+  // aux: {index: str/arr, mergedLogs: {}, extraField: {name, value}}
+  getLogs: function getLogs(label, filterParams, aux, callback) {
+    var self = this;
+    if (!utils.is_function(callback) && utils.is_function(aux)) {
+      callback = aux;
+      aux = null;
+    }
+    aux = aux || {};
+    if (!utils.is_function(callback)) {
+      var logs = this.getFilteredLogs(label, filterParams || {});
+      if (logs && logs.length) logs.reverse();
+      return this.processLogs(label, aux.index, logs, aux.extraField, aux.mergedLogs);
+    }
+    this.getFilteredLogs(label, filterParams || {}, function (err, logs) {
+      if (err) return callback(err);
+      if (logs && logs.length) logs = logs.reverse();
+      callback(null, self.processLogs(label, aux.index, logs, aux.extraField, aux.mergedLogs));
+    });
+  },
+
+  chunkBlocks: function chunkBlocks(fromBlock, toBlock) {
+    if (fromBlock < 1) fromBlock = 1;
+    if (toBlock < fromBlock) return [];
+    var toBlockChunk = toBlock;
+    var fromBlockChunk = toBlock - constants.BLOCKS_PER_CHUNK;
+    var chunks = [];
+    while (toBlockChunk >= fromBlock) {
+      if (fromBlockChunk < fromBlock) {
+        fromBlockChunk = fromBlock;
+      }
+      chunks.push({ fromBlock: fromBlockChunk, toBlock: toBlockChunk });
+      fromBlockChunk -= constants.BLOCKS_PER_CHUNK;
+      toBlockChunk -= constants.BLOCKS_PER_CHUNK;
+      if (toBlockChunk === toBlock - constants.BLOCKS_PER_CHUNK) {
+        toBlockChunk--;
+      }
+    }
+    return chunks;
+  },
+
+  getLogsChunked: function getLogsChunked(label, filterParams, aux, onChunkReceived, callback) {
+    var self = this;
+    aux = aux || {};
+    filterParams = filterParams || {};
+    if (!filterParams.fromBlock) {
+      filterParams.fromBlock = parseInt(constants.GET_LOGS_DEFAULT_FROM_BLOCK, 16);
+    }
+    if (!filterParams.toBlock) {
+      filterParams.toBlock = this.rpc.block.number;
+    }
+    var chunks = this.chunkBlocks(abi.number(filterParams.fromBlock), abi.number(filterParams.toBlock));
+    async.eachSeries(chunks, function (chunk, nextChunk) {
+      var filterParamsChunk = clone(filterParams);
+      filterParamsChunk.fromBlock = chunk.fromBlock;
+      filterParamsChunk.toBlock = chunk.toBlock;
+      self.getLogs(label, filterParamsChunk, aux, function (err, logs) {
+        if (err) return nextChunk(err);
+        onChunkReceived(logs);
+        nextChunk(null);
+      });
+    }, function (err) {
+      if (err) return callback(err);
+      callback(null);
+    });
+  },
+>>>>>>> master
 
   BN.isBN = function isBN (num) {
     if (num instanceof BN) {
@@ -41417,6 +41500,10 @@ module.exports = {
     hosted: HOSTED_NODES.slice(),
     local: null
   },
+<<<<<<< HEAD
+=======
+  MINIMUM_TRADE_SIZE: new BigNumber("0.01", 10),
+>>>>>>> master
 
   requests: 1,
 
@@ -41458,6 +41545,7 @@ module.exports = {
     this.txRelay = null;
   },
 
+<<<<<<< HEAD
   wrapTxRelayCallback: function (status, payload, callback) {
     var self = this;
     return function (response) {
@@ -41472,6 +41560,15 @@ module.exports = {
       }
     };
   },
+=======
+  // gas needed for trade transactions (values from pyethereum tester)
+  MAKE_ORDER_GAS: {sell: 725202, buy: 725202},
+  TRADE_GAS: [
+    {sell: 756374, buy: 787421}, // first trade_id only
+    {sell: 615817, buy: 661894} // each additional trade_id
+  ],
+  CANCEL_GAS: {sell: 288060, buy: 230059},
+>>>>>>> master
 
   excludeFromTxRelay: function (method) {
     if (method) {
