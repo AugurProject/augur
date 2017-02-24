@@ -653,6 +653,24 @@ describe("parse_event_message", function () {
         "0xf3efc5085628de2b511a0243bdc9dc7b50ee2440398e626d93280601e3a15634",
         "0x000000000000000000000000d21aa876fe86b0a87f5b6df773d782e1f9bd04df"
       ],
+      data: "0000000000000000000000000000000000000000000000000000000000000001",
+      blockNumber: "0xc0",
+      transactionIndex: "0x0",
+      transactionHash: "0x3be9cc70b44bdb25829849f2d2150b5f932b744307ba5b2257e745db6af684de",
+      blockHash: "0xf0d3b933c550a39ced64969f856575a3e7876e89288f427d0d876168c9645d3c",
+      logIndex: "0x0",
+      removed: false
+    }]
+  });
+  test({
+    label: "log_add_tx",
+    msg: [{
+      address: "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3",
+      topics: [
+        "0x331abc0b32c392f5cdc23a50af9497ab6b82f29ec2274cc33a409e7ab3aedc6c",
+        "0xf3efc5085628de2b511a0243bdc9dc7b50ee2440398e626d93280601e3a15634",
+        "0x000000000000000000000000d21aa876fe86b0a87f5b6df773d782e1f9bd04df"
+      ],
       data: "0x000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000006f05b59d3b200000000000000000000000000000000000000000000000000001bc16d674ec800000000000000000000000000000000000000000000000000000000000000000002018696fb83c9b609f9b34afc4df42249f2530953fcd019098c70044c9fa1d95400000000000000000000000000000000000000000000000000000000585e00fa",
       blockNumber: "0xc0",
       transactionIndex: "0x0",
@@ -1499,8 +1517,499 @@ describe("start_block_listener", function() {
     }
   });
 });
-describe.skip("pacemaker", function() {});
-describe.skip("listen", function() {});
+describe("pacemaker", function() {
+  // 6 tests total
+  var filter = augur.filters.filter;
+  var rpc = augur.rpc;
+  var poll_filter = augur.filters.poll_filter;
+  var parse_contracts_message = augur.filters.parse_contracts_message;
+  var parse_block_message = augur.filters.parse_block_message;
+  var parse_event_message = augur.filters.parse_event_message;
+  var finished;
+  afterEach(function() {
+    augur.filters.filter = filter;
+    augur.rpc = rpc;
+    augur.filters.poll_filter = poll_filter;
+    augur.filters.parse_contracts_message = parse_contracts_message;
+    augur.filters.parse_block_message = parse_block_message;
+    augur.filters.parse_event_message = parse_event_message;
+  });
+  var test = function(t) {
+    it(JSON.stringify(t), function(done) {
+      finished = done;
+      augur.filters.filter = t.filter;
+      augur.filters.poll_filter = t.poll_filter || poll_filter;
+      augur.rpc = t.rpc;
+      augur.filters.parse_contracts_message = t.parse_contracts_message;
+      augur.filters.parse_block_message = t.parse_block_message;
+      augur.filters.parse_event_message = t.parse_event_message;
+
+      augur.filters.pacemaker(t.cb);
+      t.assertions();
+    });
+  };
+  test({
+    cb: undefined,
+    rpc: { wsURL: undefined, ipcpath: undefined },
+    filter: {
+    	block: {
+    		id: null,
+    		heartbeat: null
+    	},
+    	contracts: {
+    		id: null,
+    		heartbeat: null
+    	},
+    	testEvent: {
+    		id: null,
+    		heartbeat: null
+    	}
+    },
+    assertions: function() {
+      assert.deepEqual(augur.filters.filter, {
+      	block: {
+      		id: null,
+      		heartbeat: null
+      	},
+      	contracts: {
+      		id: null,
+      		heartbeat: null
+      	},
+      	testEvent: {
+      		id: null,
+      		heartbeat: null
+      	}
+      });
+      finished();
+    }
+  });
+  test({
+    cb: '',
+    rpc: { wsURL: undefined, ipcpath: undefined },
+    filter: {
+    	block: {
+    		id: null,
+    		heartbeat: null
+    	},
+    	contracts: {
+    		id: null,
+    		heartbeat: null
+    	},
+    	testEvent: {
+    		id: null,
+    		heartbeat: null
+    	}
+    },
+    assertions: function() {
+      assert.deepEqual(augur.filters.filter, {
+      	block: {
+      		id: null,
+      		heartbeat: null
+      	},
+      	contracts: {
+      		id: null,
+      		heartbeat: null
+      	},
+      	testEvent: {
+      		id: null,
+      		heartbeat: null
+      	}
+      });
+      finished();
+    }
+  });
+  test({
+    cb: { testEvent: utils.noop },
+    rpc: { wsURL: undefined, ipcpath: undefined },
+    filter: {
+    	block: {
+    		id: null,
+    		heartbeat: null
+    	},
+    	contracts: {
+    		id: null,
+    		heartbeat: null
+    	},
+    	testEvent: {
+    		id: null,
+    		heartbeat: null
+    	}
+    },
+    poll_filter: function(label, cb) {
+      assert.deepEqual(label, 'testEvent');
+      assert.deepEqual(cb, utils.noop);
+    },
+    assertions: function() {
+      assert.deepEqual(augur.filters.filter.block, {
+      	id: null,
+      	heartbeat: null
+      });
+      assert.deepEqual(augur.filters.filter.contracts, {
+      	id: null,
+      	heartbeat: null
+      });
+      assert.isNull(augur.filters.filter.testEvent.id);
+      // because intervals seem to be setup differently between node 5 and node 6, anything node 6+ will set `_repeat` to a number instead of the funciton that is going to repeat. in node 5+, the function that will repeat is in _onTimeout() not _repeat. this if statement adjusts based on if _repeat is set as a function, if it is, we know this is the function that gets called in the interval where as if it's a number then we know to check _onTimeout() instead.
+      if (utils.is_function(augur.filters.filter.testEvent.heartbeat._repeat)) {
+        assert.include(augur.filters.filter.testEvent.heartbeat._repeat.toString(), 'self.poll_filter');
+        // call the interval function to confirm that it was set properly.
+        augur.filters.filter.testEvent.heartbeat._repeat();
+      } else {
+        assert.include(augur.filters.filter.testEvent.heartbeat._onTimeout.toString(), 'self.poll_filter');
+        // call the interval function to confirm that it was set properly.
+        augur.filters.filter.testEvent.heartbeat._onTimeout();
+      }
+      // clean up the inerval and clear out the heartbeat competely.
+      clearInterval(augur.filters.filter.testEvent.heartbeat);
+      augur.filters.filter.testEvent.heartbeat = null;
+      // make sure we cleaned up
+      assert.deepEqual(augur.filters.filter.testEvent, { id: null, heartbeat: null });
+      // complete test.
+      finished();
+    }
+  });
+  test({
+    cb: { testEvent: utils.noop },
+    rpc: {
+    	wsURL: 'somewsURL',
+    	ipcpath: 'someipcpath',
+      subscriptions: {},
+    	registerSubscriptionCallback: function(filterID, cb) {
+        assert.deepEqual(filterID, '0xe1');
+        // in this case 'this' refers to our test rpc obj.
+        this.subscriptions[filterID] = cb;
+    	}
+    },
+    filter: {
+      block: {
+        id: '0xb1',
+        heartbeat: null
+      },
+      contracts: {
+        id: '0xc1',
+        heartbeat: null
+      },
+      testEvent: {
+        id: '0xe1',
+        heartbeat: null
+      }
+    },
+    parse_event_message(label, msg, callback) {
+      assert.deepEqual(label, 'testEvent');
+      assert.deepEqual(msg, 'short string to be the msg for this simple test');
+      assert.deepEqual(callback, utils.noop);
+    },
+    assertions: function() {
+      assert.deepEqual(augur.filters.filter.block, {
+        id: '0xb1',
+        heartbeat: null
+      });
+      assert.deepEqual(augur.filters.filter.contracts, {
+        id: '0xc1',
+        heartbeat: null
+      });
+      assert.deepEqual(augur.filters.filter.testEvent, {
+      	id: '0xe1',
+      	heartbeat: null
+      });
+      // confirm that augur.rpc.subscriptions.0xe1 was set to the correct function.
+      assert.include(augur.rpc.subscriptions['0xe1'].toString(), 'self.parse_event_message');
+      // call the function attached to our rpc subscriptions object with a msg, in this case a simple string since it isn't in the scope of this unit test.
+      augur.rpc.subscriptions['0xe1']('short string to be the msg for this simple test');
+
+      finished();
+    }
+  });
+  test({
+    cb: { contracts: utils.noop },
+    rpc: {
+    	wsURL: 'somewsURL',
+    	ipcpath: 'someipcpath',
+      subscriptions: {},
+    	registerSubscriptionCallback: function(filterID, cb) {
+        assert.deepEqual(filterID, '0xc1');
+        // in this case 'this' refers to our test rpc obj.
+        this.subscriptions[filterID] = cb;
+    	}
+    },
+    filter: {
+      block: {
+        id: '0xb1',
+        heartbeat: null
+      },
+      contracts: {
+        id: '0xc1',
+        heartbeat: null
+      },
+      testEvent: {
+        id: '0xe1',
+        heartbeat: null
+      }
+    },
+    parse_contracts_message(msg, callback) {
+      assert.deepEqual(msg, 'short string to be the msg for this simple test');
+      assert.deepEqual(callback, utils.noop);
+    },
+    assertions: function() {
+      assert.deepEqual(augur.filters.filter.block, {
+        id: '0xb1',
+        heartbeat: null
+      });
+      assert.deepEqual(augur.filters.filter.contracts, {
+        id: '0xc1',
+        heartbeat: null
+      });
+      assert.deepEqual(augur.filters.filter.testEvent, {
+      	id: '0xe1',
+      	heartbeat: null
+      });
+      // confirm that augur.rpc.subscriptions.0xc1 was set to the correct function.
+      assert.include(augur.rpc.subscriptions['0xc1'].toString(), 'self.parse_contracts_message');
+      // call the function attached to our rpc subscriptions object with a msg, in this case a simple string since it isn't in the scope of this unit test.
+      augur.rpc.subscriptions['0xc1']('short string to be the msg for this simple test');
+
+      finished();
+    }
+  });
+  test({
+    cb: { block: utils.noop },
+    rpc: {
+    	wsURL: 'somewsURL',
+    	ipcpath: 'someipcpath',
+      subscriptions: {},
+    	registerSubscriptionCallback: function(filterID, cb) {
+        assert.deepEqual(filterID, '0xb1');
+        // in this case 'this' refers to our test rpc obj.
+        this.subscriptions[filterID] = cb;
+    	}
+    },
+    filter: {
+      block: {
+        id: '0xb1',
+        heartbeat: null
+      },
+      contracts: {
+        id: '0xc1',
+        heartbeat: null
+      },
+      testEvent: {
+        id: '0xe1',
+        heartbeat: null
+      }
+    },
+    parse_block_message(msg, callback) {
+      assert.deepEqual(msg, 'short string to be the msg for this simple test');
+      assert.deepEqual(callback, utils.noop);
+    },
+    assertions: function() {
+      assert.deepEqual(augur.filters.filter.block, {
+        id: '0xb1',
+        heartbeat: null
+      });
+      assert.deepEqual(augur.filters.filter.contracts, {
+        id: '0xc1',
+        heartbeat: null
+      });
+      assert.deepEqual(augur.filters.filter.testEvent, {
+      	id: '0xe1',
+      	heartbeat: null
+      });
+      // confirm that augur.rpc.subscriptions.0xb1 was set to the correct function.
+      assert.include(augur.rpc.subscriptions['0xb1'].toString(), 'self.parse_block_message');
+      // call the function attached to our rpc subscriptions object with a msg, in this case a simple string since it isn't in the scope of this unit test.
+      augur.rpc.subscriptions['0xb1']('short string to be the msg for this simple test');
+
+      finished();
+    }
+  });
+});
+describe("listen", function() {
+  // 3 tests total
+  var filter = augur.filters.filter;
+  var clear_filter = augur.filters.clear_filter;
+  var rpc = augur.rpc;
+  var start_contracts_listener = augur.filters.start_contracts_listener;
+  var start_block_listener = augur.filters.start_block_listener;
+  var start_event_listener = augur.filters.start_event_listener;
+  var pacemaker = augur.filters.pacemaker;
+  var finished;
+  afterEach(function() {
+    augur.filters.filter = filter;
+    augur.filters.clear_filter = clear_filter;
+    augur.filters.start_contracts_listener = start_contracts_listener;
+    augur.filters.start_block_listener = start_block_listener;
+    augur.filters.start_event_listener = start_event_listener;
+    augur.filters.pacemaker = pacemaker;
+    augur.rpc = rpc;
+    augur.filters.subscribeLogs = undefined;
+    augur.filters.subscribeNewBlocks = undefined;
+    augur.filters.unsubscribe = undefined;
+  });
+  var test = function(t) {
+    it(JSON.stringify(t), function(done) {
+      finished = done;
+      augur.filters.filter = t.filter;
+      augur.filters.clear_filter = t.clear_filter;
+      augur.filters.start_contracts_listener = t.start_contracts_listener;
+      augur.filters.start_block_listener = t.start_block_listener;
+      augur.filters.start_event_listener = t.start_event_listener;
+      augur.filters.pacemaker = t.pacemaker;
+      augur.rpc = t.rpc;
+
+      augur.filters.listen(t.cb, t.setup_complete);
+    });
+  };
+  test({
+    cb: { aNotRealLabel: utils.noop, block: utils.noop, contracts: utils.noop, testEvent: utils.noop },
+    setup_complete: function(filters) {
+      assert.deepEqual(filters, {
+        block: { id: '0xb1', heartbeat: null },
+        contracts: { id: '0xc1', heartbeat: null },
+        testEvent: { id: '0xe1', heartbeat: null }
+      });
+      assert.isFunction(augur.filters.unsubscribe);
+      assert.isFunction(augur.filters.subscribeLogs);
+      assert.isFunction(augur.filters.subscribeNewBlocks);
+      assert.isFunction(augur.rpc.resetCustomSubscription);
+      finished();
+    },
+    filter: {
+      block: { id: '0xb1', heartbeat: null },
+      contracts: { id: '0xc1', heartbeat: null },
+      testEvent: { id: '0xe1', heartbeat: null }
+    },
+    clear_filter: function(label, cb) {
+      assert.oneOf(label, ['block', 'contracts', 'testEvent']);
+      assert.include(cb.toString(), 'listenHelper');
+      cb();
+    },
+    start_contracts_listener: function(cb) {
+      assert.include(cb.toString(), 'self.pacemaker');
+      cb();
+    },
+    start_block_listener: function(cb) {
+      assert.include(cb.toString(), 'self.pacemaker');
+      cb();
+    },
+    start_event_listener: function(label, cb) {
+      assert.deepEqual(label, 'testEvent');
+      assert.include(cb.toString(), 'self.pacemaker(p);');
+      cb();
+    },
+    pacemaker: function() {},
+    rpc: {
+      wsUrl: null,
+      ipcpath: null,
+      newFilter: utils.noop,
+      newBlockFilter: utils.noop,
+      uninstallFilter: utils.noop,
+      unregisterSubscriptionCallback: utils.noop,
+      subscribeLogs: utils.noop,
+      subscribeNewHeads: utils.noop,
+      unsubscribe: utils.noop
+    }
+  });
+  test({
+    cb: { aNotRealLabel: utils.noop, block: utils.noop, contracts: utils.noop, testEvent: utils.noop },
+    setup_complete: function(filters) {
+      assert.deepEqual(filters, {
+        block: { id: '0xb1', heartbeat: null },
+        contracts: { id: '0xc1', heartbeat: null },
+        testEvent: { id: '0xe1', heartbeat: null }
+      });
+      assert.isFunction(augur.filters.unsubscribe);
+      assert.isFunction(augur.filters.subscribeLogs);
+      assert.isFunction(augur.filters.subscribeNewBlocks);
+      assert.isFunction(augur.rpc.resetCustomSubscription);
+      finished();
+    },
+    filter: {
+      block: { id: '0xb1', heartbeat: null },
+      contracts: { id: '0xc1', heartbeat: null },
+      testEvent: { id: '0xe1', heartbeat: null }
+    },
+    clear_filter: function(label, cb) {
+      assert.oneOf(label, ['block', 'contracts', 'testEvent']);
+      assert.include(cb.toString(), 'listenHelper');
+      cb();
+    },
+    start_contracts_listener: function(cb) {
+      assert.include(cb.toString(), 'self.pacemaker');
+      cb();
+    },
+    start_block_listener: function(cb) {
+      assert.include(cb.toString(), 'self.pacemaker');
+      cb();
+    },
+    start_event_listener: function(label, cb) {
+      assert.deepEqual(label, 'testEvent');
+      assert.include(cb.toString(), 'self.pacemaker(p);');
+      cb();
+    },
+    pacemaker: function() {},
+    rpc: {
+      wsUrl: 'somewsURL',
+      ipcpath: 'someipcpath',
+      newFilter: utils.noop,
+      newBlockFilter: utils.noop,
+      uninstallFilter: utils.noop,
+      unregisterSubscriptionCallback: utils.noop,
+      subscribeLogs: utils.noop,
+      subscribeNewHeads: utils.noop,
+      unsubscribe: utils.noop
+    }
+  });
+  test({
+    cb: { aNotRealLabel: utils.noop, block: utils.noop, contracts: utils.noop, testEvent: utils.noop },
+    setup_complete: function(filters) {
+      assert.deepEqual(filters, {
+        block: { id: '0xb1', heartbeat: null },
+        contracts: { id: '0xc1', heartbeat: null },
+        testEvent: { id: null, heartbeat: null }
+      });
+      assert.isFunction(augur.filters.unsubscribe);
+      assert.isFunction(augur.filters.subscribeLogs);
+      assert.isFunction(augur.filters.subscribeNewBlocks);
+      assert.isFunction(augur.rpc.resetCustomSubscription);
+      finished();
+    },
+    filter: {
+      block: { id: '0xb1', heartbeat: null },
+      contracts: { id: '0xc1', heartbeat: null },
+      testEvent: { id: null, heartbeat: null }
+    },
+    clear_filter: function(label, cb) {
+      assert.oneOf(label, ['block', 'contracts', 'testEvent']);
+      assert.include(cb.toString(), 'listenHelper');
+      cb();
+    },
+    start_contracts_listener: function(cb) {
+      assert.include(cb.toString(), 'self.pacemaker');
+      cb();
+    },
+    start_block_listener: function(cb) {
+      assert.include(cb.toString(), 'self.pacemaker');
+      cb();
+    },
+    start_event_listener: function(label, cb) {
+      assert.deepEqual(label, 'testEvent');
+      assert.include(cb.toString(), 'self.pacemaker(p);');
+      cb();
+    },
+    pacemaker: function() {},
+    rpc: {
+      wsUrl: 'somewsURL',
+      ipcpath: 'someipcpath',
+      newFilter: utils.noop,
+      newBlockFilter: utils.noop,
+      uninstallFilter: utils.noop,
+      unregisterSubscriptionCallback: utils.noop,
+      subscribeLogs: utils.noop,
+      subscribeNewHeads: utils.noop,
+      unsubscribe: utils.noop
+    }
+  });
+});
 describe("all_filters_removed", function() {
   // 2 tests total
   var filter = augur.filters.filter;
@@ -1526,4 +2035,206 @@ describe("all_filters_removed", function() {
     }
   });
 });
-describe.skip("ignore", function() {});
+describe("ignore", function() {
+  // 3 tests total
+  var filter = augur.filters.filter;
+  var rpc = augur.rpc;
+  var unsubscribe = augur.filters.unsubscribe;
+  var finished;
+  afterEach(function() {
+    augur.filters.filter = filter;
+    augur.filters.unsubscribe = unsubscribe;
+    augur.rpc = rpc;
+  });
+  var test = function(t) {
+    it(t.description, function(done) {
+      finished = done;
+      augur.filters.filter = t.filter;
+      augur.filters.unsubscribe = t.unsubscribe;
+      augur.rpc = t.rpc;
+
+      augur.filters.ignore(t.uninstall, t.cb, t.complete);
+    });
+  };
+  test({
+  	description: 'Should handle unsubscribing from 3 filters when uninstall is true',
+  	rpc: {
+  		wsURL: 'ws.augur.net',
+  		ipcpath: 'ipc.augur.net',
+  		unregisterSubscriptionCallback: function(id) {
+        // doesn't need to do anything, simply don't want to call the real version.
+  		}
+  	},
+  	filter: {
+  		block: {
+  			id: '0xb1',
+  			heartbeat: setInterval(utils.noop, 10000000000000000)
+  		},
+  		contracts: {
+  			id: '0xc1',
+  			heartbeat: setInterval(utils.noop, 10000000000000000)
+  		},
+  		testEvent: {
+  			id: '0xe1',
+  			heartbeat: setInterval(utils.noop, 10000000000000000)
+  		}
+  	},
+  	uninstall: true,
+  	cb: {},
+  	complete: function() {
+  		// here we are only completing the test when everything is nulled out.
+  		var areWeDone = true;
+  		for (var label in augur.filters.filter) {
+  			if (!augur.filters.filter.hasOwnProperty(label)) continue;
+        var f = augur.filters.filter[label];
+        if (f.id !== null || f.heartbeat !== null) {
+          areWeDone = false;
+          break;
+        }
+  		}
+  		if (areWeDone) {
+  			assert.deepEqual(augur.filters.filter, {
+  				block: {
+  					id: null,
+  					heartbeat: null
+  				},
+  				contracts: {
+  					id: null,
+  					heartbeat: null
+  				},
+  				testEvent: {
+  					id: null,
+  					heartbeat: null
+  				}
+  			});
+  			finished();
+  		}
+  	},
+  	unsubscribe: function(id, cb) {
+  		if (!utils.is_function(cb)) return '1';
+  		return cb('1');
+  	}
+  });
+  test({
+  	description: 'Should handle unsubscribing from 3 filters when uninstall is an object',
+  	rpc: {
+  		wsURL: 'ws.augur.net',
+  		ipcpath: null,
+      unregisterSubscriptionCallback: function(id) {
+        // doesn't need to do anything, simply don't want to call the real version.
+  		}
+  	},
+  	filter: {
+  		block: {
+  			id: '0xb1',
+  			heartbeat: setInterval(utils.noop, 10000000000000000)
+  		},
+  		contracts: {
+  			id: '0xc1',
+  			heartbeat: setInterval(utils.noop, 10000000000000000)
+  		},
+  		testEvent: {
+  			id: '0xe1',
+  			heartbeat: setInterval(utils.noop, 10000000000000000)
+  		}
+  	},
+  	uninstall: {
+      block: function() { augur.filters.filter.block.id = null; },
+      contracts: function() { augur.filters.filter.contracts.id = null; },
+      testEvent: function() { augur.filters.filter.testEvent.id = null; },
+    },
+  	cb: {},
+  	complete: function() {
+  		// here we are only completing the test when everything is nulled out.
+  		var areWeDone = true;
+  		for (var label in augur.filters.filter) {
+  			if (!augur.filters.filter.hasOwnProperty(label)) continue;
+        var f = augur.filters.filter[label];
+        if (f.id !== null || f.heartbeat !== null) {
+          areWeDone = false;
+          break;
+        }
+  		}
+  		if (areWeDone) {
+  			assert.deepEqual(augur.filters.filter, {
+  				block: {
+  					id: null,
+  					heartbeat: null
+  				},
+  				contracts: {
+  					id: null,
+  					heartbeat: null
+  				},
+  				testEvent: {
+  					id: null,
+  					heartbeat: null
+  				}
+  			});
+  			finished();
+  		}
+  	},
+  	unsubscribe: function(id, cb) {
+  		if (!utils.is_function(cb)) return '1';
+  		return cb('1');
+  	}
+  });
+  test({
+  	description: 'Should handle unsubscribing from 3 filters when uninstall is true, complete passed as cb, complete undefined.',
+  	rpc: {
+  		wsURL: 'ws.augur.net',
+  		ipcpath: 'ipc.augur.net',
+  		unregisterSubscriptionCallback: function(id) {
+        // doesn't need to do anything, simply don't want to call the real version.
+  		}
+  	},
+  	filter: {
+  		block: {
+  			id: '0xb1',
+  			heartbeat: setInterval(utils.noop, 10000000000000000)
+  		},
+  		contracts: {
+  			id: '0xc1',
+  			heartbeat: setInterval(utils.noop, 10000000000000000)
+  		},
+  		testEvent: {
+  			id: '0xe1',
+  			heartbeat: setInterval(utils.noop, 10000000000000000)
+  		}
+  	},
+  	uninstall: true,
+  	cb: function() {
+  		// here we are only completing the test when everything is nulled out.
+  		var areWeDone = true;
+  		for (var label in augur.filters.filter) {
+  			if (!augur.filters.filter.hasOwnProperty(label)) continue;
+        var f = augur.filters.filter[label];
+        if (f.id !== null || f.heartbeat !== null) {
+          areWeDone = false;
+          break;
+        }
+  		}
+  		if (areWeDone) {
+  			assert.deepEqual(augur.filters.filter, {
+  				block: {
+  					id: null,
+  					heartbeat: null
+  				},
+  				contracts: {
+  					id: null,
+  					heartbeat: null
+  				},
+  				testEvent: {
+  					id: null,
+  					heartbeat: null
+  				}
+  			});
+  			finished();
+  		}
+  	},
+  	complete: undefined,
+  	unsubscribe: function(id, cb) {
+  		if (!utils.is_function(cb)) return { returnValue: '1' };
+  		return cb({ returnValue: '1' });
+  	}
+  });
+});

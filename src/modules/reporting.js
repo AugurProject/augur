@@ -274,7 +274,7 @@ module.exports = {
       console.log("[closeExtraMarkets] Closing extra markets for event", event);
     }
     self.getMarkets(event, function (markets) {
-      if (!markets || !markets.length) {
+      if (!markets || (markets.constructor === Array && !markets.length)) {
         return callback("no markets found for " + event);
       }
       if (markets && markets.error) return callback(markets);
@@ -330,13 +330,17 @@ module.exports = {
     }
     periodGap = periodGap || 1;
     function wait(branch, secondsToWait, next) {
-      console.log("Waiting", secondsToWait / 60, "minutes...");
+      if (self.options.debug.reporting) {
+        console.log("Waiting", secondsToWait / 60, "minutes...");
+      }
       setTimeout(function () {
         self.Consensus.incrementPeriodAfterReporting({
           branch: branch,
           onSent: function (r) {},
           onSuccess: function (r) {
-            console.log("Incremented period:", r.callReturn);
+            if (self.options.debug.reporting) {
+              console.log("Incremented period:", r.callReturn);
+            }
             self.getVotePeriod(branch, function (votePeriod) {
               next(null, votePeriod);
             });
@@ -348,21 +352,29 @@ module.exports = {
     this.getExpiration(event, function (expTime) {
       var expPeriod = Math.floor(expTime / periodLength);
       var currentPeriod = self.getCurrentPeriod(periodLength);
-      console.log("\nreporting.checkTime:");
-      console.log(" - Expiration period:", expPeriod);
-      console.log(" - Current period:   ", currentPeriod);
-      console.log(" - Target period:    ", expPeriod + periodGap);
+      if (self.options.debug.reporting) {
+        console.log("\nreporting.checkTime:");
+        console.log(" - Expiration period:", expPeriod);
+        console.log(" - Current period:   ", currentPeriod);
+        console.log(" - Target period:    ", expPeriod + periodGap);
+      }
       if (currentPeriod < expPeriod + periodGap) {
         var fullPeriodsToWait = expPeriod - self.getCurrentPeriod(periodLength) + periodGap - 1;
-        console.log("Full periods to wait:", fullPeriodsToWait);
+        if (self.options.debug.reporting) {
+          console.log("Full periods to wait:", fullPeriodsToWait);
+        }
         var secondsToWait = periodLength;
         if (fullPeriodsToWait === 0) {
           secondsToWait -= (parseInt(new Date().getTime() / 1000) % periodLength);
         }
-        console.log("Seconds to wait:", secondsToWait);
+        if (self.options.debug.reporting) {
+          console.log("Seconds to wait:", secondsToWait);
+        }
         wait(branch, secondsToWait, function (err, votePeriod) {
           if (err) return callback(err);
-          console.log("New vote period:", votePeriod);
+          if (self.options.debug.reporting) {
+            console.log("New vote period:", votePeriod);
+          }
           self.checkTime(branch, event, periodLength, callback);
         });
       } else {

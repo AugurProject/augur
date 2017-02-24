@@ -10,6 +10,9 @@ var abi = require("augur-abi");
 var constants = require("../../../src/constants");
 var reporting = require("../../../src/modules/reporting");
 var makeReports = require("../../../src/modules/makeReports");
+var utils = require("../../../src/utilities");
+var keys = require("keythereum");
+var augur = require("../../../src");
 
 describe("unfixReport", function () {
   before(function () {
@@ -662,5 +665,515 @@ describe("makeHash", function () {
     from: "0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b",
     event: "0xf54b80c48e42094889a38c2ff8c374679dea639d75aa0f396b617b5675403e7e",
     expected: "0xd8566eb441e5a90f035b72cb3fbd44d783f627b9d1503f5a2bfce7fab5853685"
+  });
+});
+
+describe("parseAndDecryptReport", function() {
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(makeReports.parseAndDecryptReport(t.arr, t.secret));
+    });
+  };
+  test({
+    arr: ['0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e', '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27'],
+    secret: { derivedKey: '0xabc123', salt: '0x123abc456'},
+    assertions: function(report) {
+      assert.deepEqual(report, {
+        salt: abi.prefix_hex(abi.pad_left(abi.hex('1337'))),
+        report: abi.prefix_hex(abi.pad_left(makeReports.fixReport('1', 1, 2, 'binary'))),
+      	ethics: false
+      });
+    }
+  });
+  test({
+    arr: ['0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e', '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27', '1'],
+    secret: { derivedKey: '0xabc123', salt: '0x123abc456'},
+    assertions: function(report) {
+      assert.deepEqual(report, {
+        salt: abi.prefix_hex(abi.pad_left(abi.hex('1337'))),
+        report: abi.prefix_hex(abi.pad_left(makeReports.fixReport('1', 1, 2, 'binary'))),
+      	ethics: '1'
+      });
+    }
+  });
+  test({
+    arr: ['0x6b6cfe160a6263631b292f879eeff926c9d2b5db15fd8902ab0b42cb64d38014'],
+    secret: { derivedKey: '0x1', salt: '0x1'},
+    assertions: function(report) {
+      assert.isNull(report);
+    }
+  });
+  test({
+    arr: '',
+    secret: { derivedKey: '0x1', salt: '0x1'},
+    assertions: function(report) {
+      assert.isNull(report);
+    }
+  });
+  test({
+    arr: undefined,
+    secret: { derivedKey: '0x1', salt: '0x1'},
+    assertions: function(report) {
+      assert.isNull(report);
+    }
+  });
+});
+
+describe("getAndDecryptReport", function() {
+  var finished;
+  var test = function(t) {
+    it(JSON.stringify(t), function(done) {
+      finished = done;
+
+      makeReports.getAndDecryptReport.call(t.testThis, t.branch, t.expDateIndex, t.reporter, t.event, t.secret, t.callback);
+    });
+  };
+  test({
+    testThis: {
+      fire: function(tx, cb, options, aux) {
+        assert.deepEqual(tx.params, ['0xb1', 150000000, '0x1', '0xe1']);
+        assert.deepEqual(tx.to, augur.tx.ExpiringEvents.getEncryptedReport.to);
+        assert.deepEqual(cb, utils.noop);
+        assert.deepEqual(options, makeReports.parseAndDecryptReport);
+        assert.deepEqual(aux, { derivedKey: '0xabc123', salt: '0x123abc456' });
+        finished();
+      },
+      tx: augur.tx,
+      parseAndDecryptReport: makeReports.parseAndDecryptReport
+    },
+    branch: '0xb1',
+    expDateIndex: 150000000,
+    reporter: '0x1',
+    event: '0xe1',
+    secret: { derivedKey: '0xabc123', salt: '0x123abc456' },
+    callback: utils.noop,
+  });
+  test({
+    testThis: {
+      fire: function(tx, cb, options, aux) {
+        assert.deepEqual(tx.params, ['0xb1', 150000000, '0x1', '0xe1']);
+        assert.deepEqual(tx.to, augur.tx.ExpiringEvents.getEncryptedReport.to);
+        assert.deepEqual(cb, utils.noop);
+        assert.deepEqual(options, makeReports.parseAndDecryptReport);
+        assert.deepEqual(aux, { derivedKey: '0xabc123', salt: '0x123abc456' });
+        finished();
+      },
+      tx: augur.tx,
+      parseAndDecryptReport: makeReports.parseAndDecryptReport
+    },
+    branch: {
+      branch: '0xb1',
+      expDateIndex: 150000000,
+      reporter: '0x1',
+      event: '0xe1',
+      secret: { derivedKey: '0xabc123', salt: '0x123abc456' },
+      callback: utils.noop,
+    }
+  });
+  test({
+    testThis: {
+      fire: function(tx, cb, options, aux) {
+        assert.deepEqual(tx.params, ['0xb1', 150000000, '0x1', '0xe1']);
+        assert.deepEqual(tx.to, augur.tx.ExpiringEvents.getEncryptedReport.to);
+        assert.deepEqual(cb, utils.noop);
+        assert.deepEqual(options, makeReports.parseAndDecryptReport);
+        assert.deepEqual(aux, { derivedKey: '0xabc123', salt: '0x123abc456' });
+        finished();
+      },
+      tx: augur.tx,
+      parseAndDecryptReport: makeReports.parseAndDecryptReport
+    },
+    branch: {
+      branch: '0xb1',
+      expDateIndex: 150000000,
+      reporter: '0x1',
+      event: '0xe1',
+      secret: { derivedKey: '0xabc123', salt: '0x123abc456' },
+    },
+    callback: utils.noop
+  });
+});
+
+describe("submitReportHash", function() {
+  var finished;
+  var test = function(t) {
+    it(JSON.stringify(t), function(done) {
+      finished = done;
+      makeReports.submitReportHash.call(t.testThis, t.event, t.reportHash, t.encryptedReport, t.encryptedSalt, t.ethics, t.branch, t.period, t.periodLength, t.onSent, t.onSuccess, t.onFailed);
+    });
+  };
+  test({
+    testThis: {
+    	options: { debug: { reporting: false } },
+      tx: augur.tx,
+      transact: function() {},
+      getCurrentPeriodProgress: function(periodLength) { return 85; },
+      checkPeriod: function() {},
+      getRepRedistributionDone: function() {},
+    	ExpiringEvents: {getReportHash: function(branch) {} }
+    },
+    event: {
+      event: '0xe1',
+      reportHash: '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
+      encryptedReport: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
+      encryptedSalt: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27',
+      ethics: false,
+      branch: '0xb1',
+      period: 1500,
+      periodLength: 1000,
+      onSent: utils.noop,
+      onSuccess: utils.noop,
+      onFailed: function(err) {
+        assert.deepEqual(err, {"-2": "not in first half of period (commit phase)"});
+        finished();
+      }
+    }
+  });
+  test({
+    testThis: {
+    	options: { debug: { reporting: false } },
+      tx: augur.tx,
+      transact: function(tx, onSent, onSuccess, onFailed) {
+        assert.deepEqual(tx.params, [
+          '0xe1',
+          '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
+          0,
+          0,
+          false
+        ]);
+        assert.deepEqual(tx.to, augur.tx.MakeReports.submitReportHash.to);
+        onFailed({ error: -3, message: 'not eligible to report on this event' });
+      },
+      getCurrentPeriodProgress: function(periodLength) { return 23; },
+      checkPeriod: function() {},
+      getRepRedistributionDone: function() {},
+    	ExpiringEvents: {getReportHash: function(branch) {} }
+    },
+    event: {
+      event: '0xe1',
+      reportHash: '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
+      encryptedReport: undefined,
+      encryptedSalt: undefined,
+      ethics: false,
+      branch: '0xb1',
+      period: 1500,
+      periodLength: 1000,
+      onSent: utils.noop,
+      onSuccess: utils.noop,
+      onFailed: function(err) {
+        assert.deepEqual(err, { error: -3, message: 'not eligible to report on this event' });
+        finished();
+      }
+    }
+  });
+  test({
+    testThis: {
+    	options: { debug: { reporting: false } },
+      tx: augur.tx,
+      transact: function(tx, onSent, onSuccess, onFailed) {
+        assert.deepEqual(tx.params, [
+          '0xe1',
+          '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
+          '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
+          '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27',
+          '0xde0b6b3a7640000'
+        ]);
+        assert.deepEqual(tx.to, augur.tx.MakeReports.submitReportHash.to);
+        onSuccess({ callReturn: '1' });
+      },
+      getCurrentPeriodProgress: function(periodLength) { return 23; },
+      checkPeriod: function() {},
+      getRepRedistributionDone: function() {},
+    	ExpiringEvents: {getReportHash: function(branch) {} }
+    },
+    event: '0xe1',
+    reportHash: '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
+    encryptedReport: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
+    encryptedSalt: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27',
+    ethics: '1',
+    branch: '0xb1',
+    period: 1500,
+    periodLength: 1000,
+    onSent: utils.noop,
+    onSuccess: function(res) {
+      assert.deepEqual(res, { callReturn: '1' });
+      finished();
+    },
+    onFailed: utils.noop
+  });
+  test({
+    testThis: {
+    	options: { debug: { reporting: false } },
+      tx: augur.tx,
+      transact: function(tx, onSent, onSuccess, onFailed) {
+        assert.deepEqual(tx.params, [
+          '0xe1',
+          '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
+          '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
+          '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27',
+          '0xde0b6b3a7640000'
+        ]);
+        assert.deepEqual(tx.to, augur.tx.MakeReports.submitReportHash.to);
+        onSuccess({ callReturn: '0' });
+      },
+      getCurrentPeriodProgress: function(periodLength) { return 23; },
+      checkPeriod: function(branch, periodLength, from, cb) {
+        cb({ error: 999, message: 'Uh-Oh!' });
+      },
+      getRepRedistributionDone: function() {},
+    	ExpiringEvents: {getReportHash: function(branch) {} }
+    },
+    event: '0xe1',
+    reportHash: '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
+    encryptedReport: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
+    encryptedSalt: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27',
+    ethics: '1',
+    branch: '0xb1',
+    period: 1500,
+    periodLength: 1000,
+    onSent: utils.noop,
+    onSuccess: utils.noop,
+    onFailed: function(err) {
+      assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
+      finished();
+    }
+  });
+  test({
+    testThis: {
+    	options: { debug: { reporting: false } },
+      tx: augur.tx,
+      transact: function(tx, onSent, onSuccess, onFailed) {
+        assert.deepEqual(tx.params, [
+          '0xe1',
+          '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
+          '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
+          '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27',
+          '0xde0b6b3a7640000'
+        ]);
+        assert.deepEqual(tx.to, augur.tx.MakeReports.submitReportHash.to);
+        onSuccess({ callReturn: '0' });
+      },
+      getCurrentPeriodProgress: function(periodLength) { return 23; },
+      checkPeriod: function(branch, periodLength, from, cb) {
+        cb(null, 1501);
+      },
+      getRepRedistributionDone: function(branch, from, cb) {
+        cb('0');
+      },
+    	ExpiringEvents: {getReportHash: function(branch) {} }
+    },
+    event: '0xe1',
+    reportHash: '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
+    encryptedReport: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
+    encryptedSalt: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27',
+    ethics: '1',
+    branch: '0xb1',
+    period: 1500,
+    periodLength: 1000,
+    onSent: utils.noop,
+    onSuccess: utils.noop,
+    onFailed: function(err) {
+      assert.deepEqual(err, "rep redistribution not done");
+      finished();
+    }
+  });
+  test({
+    testThis: {
+    	options: { debug: { reporting: false } },
+      submitReportHash: function(event) {
+        // since this test will be calling self.submitReportHash that will point to this function. normally we recursively would be calling submitReportHash but we want to assume that the 2nd time through it works as expected.
+        event.onSuccess({ callReturn: '1' });
+      },
+      tx: augur.tx,
+      transact: function(tx, onSent, onSuccess, onFailed) {
+        assert.deepEqual(tx.params, [
+          '0xe1',
+          '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
+          '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
+          '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27',
+          '0xde0b6b3a7640000'
+        ]);
+        assert.deepEqual(tx.to, augur.tx.MakeReports.submitReportHash.to);
+        onSuccess({ callReturn: '0' });
+      },
+      getCurrentPeriodProgress: function(periodLength) { return 23; },
+      checkPeriod: function(branch, periodLength, from, cb) {
+        cb(null, 1501);
+      },
+      getRepRedistributionDone: function(branch, from, cb) {
+        cb('1');
+      },
+    	ExpiringEvents: {getReportHash: function(branch) {} }
+    },
+    event: '0xe1',
+    reportHash: '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
+    encryptedReport: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
+    encryptedSalt: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27',
+    ethics: '1',
+    branch: '0xb1',
+    period: 1500,
+    periodLength: 1000,
+    onSent: utils.noop,
+    onSuccess: function(res) {
+      assert.deepEqual(res, { callReturn: '1' });
+      finished();
+    },
+    onFailed: utils.noop
+  });
+  test({
+    testThis: {
+      options: { debug: { reporting: false } },
+      tx: augur.tx,
+      transact: function(tx, onSent, onSuccess, onFailed) {
+        assert.deepEqual(tx.params, [
+          '0xe1',
+          '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
+          '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
+          '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27',
+          '0xde0b6b3a7640000'
+        ]);
+        assert.deepEqual(tx.to, augur.tx.MakeReports.submitReportHash.to);
+        onSuccess({ callReturn: '-2' });
+      },
+      getCurrentPeriodProgress: function(periodLength) { return 23; },
+      checkPeriod: function(branch, periodLength, from, cb) {
+        // shouldn't be called.
+      },
+      getRepRedistributionDone: function(branch, from, cb) {
+        // shouldn't be called.
+      },
+      ExpiringEvents: {
+        getReportHash: function(branch) {
+          branch.callback('something that parseInt wont like very much and it will fail causing onFailed to be called.');
+        }
+      }
+    },
+    event: '0xe1',
+    reportHash: '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
+    encryptedReport: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
+    encryptedSalt: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27',
+    ethics: '1',
+    branch: '0xb1',
+    period: 1500,
+    periodLength: 1000,
+    onSent: utils.noop,
+    onSuccess: utils.noop,
+    onFailed: function(err) {
+      assert.deepEqual(err, {"-2": "not in first half of period (commit phase)"});
+      finished();
+    }
+  });
+  test({
+    testThis: {
+      options: { debug: { reporting: false } },
+      tx: augur.tx,
+      transact: function(tx, onSent, onSuccess, onFailed) {
+        assert.deepEqual(tx.params, [
+          '0xe1',
+          '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
+          '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
+          '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27',
+          '0xde0b6b3a7640000'
+        ]);
+        assert.deepEqual(tx.to, augur.tx.MakeReports.submitReportHash.to);
+        onSuccess({ callReturn: '-2' });
+      },
+      getCurrentPeriodProgress: function(periodLength) { return 23; },
+      checkPeriod: function(branch, periodLength, from, cb) {
+        // shouldn't be called.
+      },
+      getRepRedistributionDone: function(branch, from, cb) {
+        // shouldn't be called.
+      },
+      ExpiringEvents: {
+        getReportHash: function(branch) {
+          branch.callback('0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f');
+        }
+      }
+    },
+    event: '0xe1',
+    reportHash: '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
+    encryptedReport: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
+    encryptedSalt: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27',
+    ethics: '1',
+    branch: '0xb1',
+    period: 1500,
+    periodLength: 1000,
+    onSent: utils.noop,
+    onSuccess: function(res) {
+      assert.deepEqual(res, { callReturn: '1' });
+      finished();
+    },
+    onFailed: utils.noop
+  });
+});
+
+describe("submitReport", function() {
+  var finished;
+  var test = function(t) {
+    it(JSON.stringify(t), function(done) {
+      finished = done;
+      makeReports.submitReport.call(t.testThis, t.event, t.salt, t.report, t.ethics, t.minValue, t.maxValue, t.type, t.isIndeterminate, t.onSent, t.onSuccess, t.onFailed);
+    });
+  };
+  test({
+    testThis: {
+    	options: { debug: { reporting: false } },
+    	fixReport: makeReports.fixReport,
+    	MakeReports: {
+    		submitReport: function(event, salt, report, ethics, onSent, onSuccess, onFailed) {
+    			assert.deepEqual(event, '0xe1');
+    			assert.deepEqual(salt, '0x4e61436c');
+    			assert.deepEqual(report, '0xde0b6b3a7640000');
+    			assert.deepEqual(ethics, '6565656565650000000000000000000000000000000000000000000000000000');
+    			assert.isFunction(onSent);
+    			assert.isFunction(onSuccess);
+    			assert.isFunction(onFailed);
+    			finished();
+    		}
+    	}
+    },
+    event: '0xe1',
+    salt: 'NaCl',
+    report: '1',
+    ethics: '6565656565650000000000000000000000000000000000000000000000000000',
+    minValue: 1,
+    maxValue: 2,
+    type: 'binary',
+    isIndeterminate: false,
+    onSent: utils.noop,
+    onSuccess: utils.noop,
+    onFailed: utils.noop
+  });
+  test({
+    testThis: {
+    	options: { debug: { reporting: false } },
+    	fixReport: makeReports.fixReport,
+    	MakeReports: {
+    		submitReport: function(event, salt, report, ethics, onSent, onSuccess, onFailed) {
+    			assert.deepEqual(event, '0xe1');
+    			assert.deepEqual(salt, '0x4e61436c');
+    			assert.deepEqual(report, '0xde0b6b3a7640000');
+    			assert.deepEqual(ethics, '6565656565650000000000000000000000000000000000000000000000000000');
+    			assert.isFunction(onSent);
+    			assert.isFunction(onSuccess);
+    			assert.isFunction(onFailed);
+    			finished();
+    		}
+    	}
+    },
+    event: {
+      event: '0xe1',
+      salt: 'NaCl',
+      report: '1',
+      ethics: '6565656565650000000000000000000000000000000000000000000000000000',
+      minValue: 1,
+      maxValue: 2,
+      type: 'binary',
+      isIndeterminate: false,
+      onSent: utils.noop,
+      onSuccess: utils.noop,
+      onFailed: utils.noop
+    }
   });
 });

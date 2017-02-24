@@ -2,12 +2,12 @@
 
 var assert = require('chai').assert;
 var augur = require('../../../src');
-var connector = require("ethereumjs-connect");
 var Contracts = require('augur-contracts');
 var constants = require("../../../src/constants");
 var ClearCallCounts = require('../../tools').ClearCallCounts;
 var noop = require('../../../src/utilities.js').noop;
 var BigNumber = require("bignumber.js");
+var proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 // 24 tests total
 
 describe('connect.bindContractMethod', function() {
@@ -341,7 +341,7 @@ describe('connect.bindContractAPI', function() {
   var test = function(t) {
     it(t.description, function(done) {
       // These tests will be slightly different then the usual format. This is designed to isolate only the bindContractAPI method so we don't start messing with augur.js object as a whole and then have to clean it up.
-      var isolatedBindContractAPI = require('../../../src/modules/connect.js').bindContractAPI.bind(t.testThis);
+      var isolatedBindContractAPI = proxyquire('../../../src/modules/connect.js', {}).bindContractAPI.bind(t.testThis);
       t.assertions(isolatedBindContractAPI(t.methods), done);
     });
   };
@@ -525,22 +525,20 @@ describe('connect.bindContractAPI', function() {
 
 describe('connect.sync', function() {
   // 2 tests total
-  var setupFunctionsAPI = connector.setupFunctionsAPI;
   var callCounts = {
     bindContractAPI: 0,
   };
   afterEach(function() {
     ClearCallCounts(callCounts);
-    connector.setupFunctionsAPI = setupFunctionsAPI;
-    connector.connect({contracts: Contracts, api: Contracts.api, http: null});
   });
   var test = function(t) {
     it(t.description, function(done) {
-      var isolatedSync = require('../../../src/modules/connect.js').sync.bind(t.testThis);
+      // bind connect to t.testThis instead of augur, replace ethereumjs-connect with a test mock.
+      var isolatedSync = proxyquire('../../../src/modules/connect.js', {
+        'ethereumjs-connect': t.connector,
+      }).sync.bind(t.testThis);
 
-      t.setupConnectorState();
-
-      t.assertions(isolatedSync(), t.testThis, done);
+      t.assertions(isolatedSync(), t.testThis, t.connector, done);
     });
   };
   test({
@@ -550,11 +548,22 @@ describe('connect.sync', function() {
         callCounts.bindContractAPI++;
       },
     },
-    setupConnectorState: function() {
-      connector.state.contracts = null;
-      connector.state.networkID = null;
+    connector: {
+      isTest: true,
+      state: {
+      	contracts: {},
+      	networkID: null,
+      	api: { functions: {} },
+      	coinbase: '0x444',
+      	from: '0x1'
+      },
+      configure: noop,
+      setContracts: noop,
+      setupFunctionsAPI: noop,
+      setupEventsAPI: noop,
+      rpc: { desc: 'this is the ethrpc object' }
     },
-    assertions: function(out, testThis, done) {
+    assertions: function(out, testThis, connector, done) {
       assert.isTrue(out);
       assert.isNull(testThis.network_id);
       assert.deepEqual(testThis.from, connector.state.from);
@@ -576,22 +585,29 @@ describe('connect.sync', function() {
         callCounts.bindContractAPI++;
       },
     },
-    setupConnectorState: function() {
-      // in this case we want to trigger the else statement near the bottom of sync so we set this.api to Contracts.api
-      connector.setupFunctionsAPI = function() {
-        connector.state.api.functions = undefined;
-      };
-      connector.setupEventsAPI = function() {
-      };
+    connector: {
+      isTest: true,
+      state: {
+      	contracts: {},
+      	networkID: constants.DEFAULT_NETWORK_ID,
+      	api: { functions: {} },
+      	coinbase: '0x444',
+      	from: '0x1'
+      },
+      configure: noop,
+      setContracts: noop,
+      rpc: { desc: 'this is the ethrpc object' },
+      setupFunctionsAPI: noop,
+      setupEventsAPI: noop
     },
-    assertions: function(out, testThis, done) {
+    assertions: function(out, testThis, connector, done) {
       assert.isTrue(out);
       assert.deepEqual(testThis.network_id, connector.state.networkID);
       assert.deepEqual(testThis.from, connector.state.from);
       assert.deepEqual(testThis.coinbase, connector.state.coinbase);
       assert.deepEqual(testThis.rpc, connector.rpc);
       assert.deepEqual(testThis.contracts, connector.state.contracts);
-      assert.deepEqual(testThis.api, Contracts.api);
+      assert.deepEqual(testThis.api, connector.state.api);
       assert.deepEqual(testThis.tx, testThis.api.functions);
       assert.deepEqual(callCounts, {
         bindContractAPI: 1,
@@ -599,81 +615,81 @@ describe('connect.sync', function() {
       done();
     }
   });
+  // setupConnectorState: function() {
+  //   // in this case we want to trigger the else statement near the bottom of sync so we set this.api to Contracts.api
+  //   connector.setupFunctionsAPI = function() {
+  //     connector.state.api.functions = undefined;
+  //   };
+  //   connector.setupEventsAPI = function() {};
+  // },
 });
 
 describe('connect.useAccount', function() {
   // 1 test total
-  var sync = augur.sync;
-  var setFrom = connector.setFrom;
+  var connector;
   var callCounts = {
   	setFrom: 0,
   	sync: 0
   };
-  afterEach(function() {
-  	ClearCallCounts(callCounts);
-  	augur.sync = sync;
-  	connector.setFrom = setFrom;
-  });
   var test = function(t) {
   	it(t.description, function() {
-  		augur.sync = t.assertions;
-  		connector.setFrom = t.setFrom;
-
-  		augur.useAccount(t.account);
+      var connect = proxyquire('../../../src/modules/connect.js', {
+        'ethereumjs-connect': t.connector
+      });
+      connector = t.connector;
+  		connect.useAccount.call(t.testThis, t.account);
   	});
   };
   test({
   	description: 'Should set connector.from to the account passed, should call setFrom and sync.',
   	account: '0xabc123',
-  	setFrom: function(account) {
-  		callCounts.setFrom++;
-  		assert.equal(account, '0xabc123');
-  	},
-  	assertions: function() {
-  		callCounts.sync++;
-  		assert.equal(connector.from, '0xabc123');
-  		assert.deepEqual(callCounts, {
-  			setFrom: 1,
-  			sync: 1
-  		});
-  	}
+    testThis: {
+      sync: function() {
+    		callCounts.sync++;
+    		assert.equal(connector.from, '0xabc123');
+    		assert.deepEqual(callCounts, {
+    			setFrom: 1,
+    			sync: 1
+    		});
+    	}
+    },
+    connector: {
+      from: '0x0',
+      setFrom: function(account) {
+    		callCounts.setFrom++;
+    		assert.equal(account, '0xabc123');
+        connector.from = account;
+    	}
+    }
   });
 });
 
 describe('connect.connect', function() {
   // 7 tests total (4 async, 3 sync)
-  var sync = augur.sync;
-  var bootstrap = augur.augurNode.bootstrap;
-  var connect = connector.connect;
-  afterEach(function() {
-     augur.sync = sync;
-     augur.augurNode.bootstrap = bootstrap;
-     connector.connect = connect;
-  });
   var test = function(t) {
     // for the one test where rpcinfo is passed as a function the sync test is not required...
     if (t.rpcinfo.constructor !== Function) {
       it(t.description + ' sync', function() {
-        augur.sync = t.sync;
-        augur.augurNode.bootstrap = t.bootstrap;
-        connector.connect = t.connect;
+        var connect = proxyquire('../../../src/modules/connect', {
+          'ethereumjs-connect': t.connector
+        });
 
-        t.assertions(augur.connect(t.rpcinfo, undefined));
+        t.assertions(connect.connect.call(t.testThis, t.rpcinfo, undefined));
       });
     }
     it(t.description + ' async', function(done) {
-      augur.sync = t.sync;
-      augur.augurNode.bootstrap = t.bootstrap;
-      connector.connect = t.connect;
+      var connect = proxyquire('../../../src/modules/connect', {
+        'ethereumjs-connect': t.connector
+      });
       // this is in place to call this function different for one test
       if (t.rpcinfo.constructor === Function) {
-        augur.connect(function(connection) {
+        connect.connect.call(t.testThis, function(connection) {
           t.assertions(connection);
           done();
         }, undefined);
       } else {
         // all tests except for the test passing rpcinfo as a function will use this call
-        augur.connect(t.rpcinfo, function(connection) {
+        connect.connect.call(t.testThis, t.rpcinfo, function(connection) {
           t.assertions(connection);
           done();
         });
@@ -684,31 +700,30 @@ describe('connect.connect', function() {
   test({
     description: 'Should handle a rpcinfo string',
     rpcinfo: 'https://eth3.augur.net',
-    sync: function() {
-      // don't do anything, just here to be called without using the real sync
+    testThis: {
+      sync: noop
     },
-    bootstrap: function(options, cb) {
-      // because options.augurNodes will never be set with the current way the function is setup this is never called.
-    },
-    connect: function(options, cb) {
-      assert.deepEqual(options, {
-        http: 'https://eth3.augur.net',
-        contracts: Contracts,
-        api: Contracts.api
-      });
-
-      if (cb && cb.constructor === Function) {
-        cb({
-          http: options.http,
-          ws: options.ws,
-          ipc: options.ipc
+    connector: {
+      connect: function(options, cb) {
+        assert.deepEqual(options, {
+          http: 'https://eth3.augur.net',
+          contracts: Contracts,
+          api: Contracts.api
         });
-      } else {
-        return {
-          http: options.http,
-          ws: options.ws,
-          ipc: options.ipc
-        };
+
+        if (cb && cb.constructor === Function) {
+          cb({
+            http: options.http,
+            ws: options.ws,
+            ipc: options.ipc
+          });
+        } else {
+          return {
+            http: options.http,
+            ws: options.ws,
+            ipc: options.ipc
+          };
+        }
       }
     },
     assertions: function(connection) {
@@ -726,33 +741,32 @@ describe('connect.connect', function() {
       ipc: '/path/to/geth.ipc',
       ws: 'wss://ws.augur.net'
     },
-    sync: function() {
-      // don't do anything, just here to be called without using the real sync
+    testThis: {
+      sync: noop,
     },
-    bootstrap: function(options, cb) {
-      // because options.augurNodes will never be set with the current way the function is setup this is never called.
-    },
-    connect: function(options, cb) {
-      assert.deepEqual(options, {
-        http: 'https://eth3.augur.net',
-        ipc: '/path/to/geth.ipc',
-        ws: 'wss://ws.augur.net',
-        contracts: Contracts,
-        api: Contracts.api
-      });
-
-      if (cb && cb.constructor === Function) {
-        cb({
-          http: options.http,
-          ws: options.ws,
-          ipc: options.ipc
+    connector: {
+      connect: function(options, cb) {
+        assert.deepEqual(options, {
+          http: 'https://eth3.augur.net',
+          ipc: '/path/to/geth.ipc',
+          ws: 'wss://ws.augur.net',
+          contracts: Contracts,
+          api: Contracts.api
         });
-      } else {
-        return {
-          http: options.http,
-          ws: options.ws,
-          ipc: options.ipc
-        };
+
+        if (cb && cb.constructor === Function) {
+          cb({
+            http: options.http,
+            ws: options.ws,
+            ipc: options.ipc
+          });
+        } else {
+          return {
+            http: options.http,
+            ws: options.ws,
+            ipc: options.ipc
+          };
+        }
       }
     },
     assertions: function(connection) {
@@ -771,37 +785,41 @@ describe('connect.connect', function() {
       ws: 'wss://ws.augur.net',
       augurNodes: ['https://1.augurNode.com', 'https://2.augurNode.com']
     },
-    sync: function() {
-      // don't do anything, just here to be called without using the real sync
-    },
-    bootstrap: function(options, cb) {
-      assert.deepEqual(options, ['https://1.augurNode.com', 'https://2.augurNode.com']);
-      if (cb && cb.constructor === Function) {
-        cb();
+    testThis: {
+      sync: noop,
+      augurNode: {
+        bootstrap: function(options, cb) {
+          assert.deepEqual(options, ['https://1.augurNode.com', 'https://2.augurNode.com']);
+          if (cb && cb.constructor === Function) {
+            cb();
+          }
+        }
       }
     },
-    connect: function(options, cb) {
-      assert.deepEqual(options, {
-        http: 'https://eth3.augur.net',
-        ipc: '/path/to/geth.ipc',
-        ws: 'wss://ws.augur.net',
-        augurNodes: ['https://1.augurNode.com', 'https://2.augurNode.com'],
-        contracts: Contracts,
-        api: Contracts.api
-      });
-
-      if (cb && cb.constructor === Function) {
-        cb({
-          http: options.http,
-          ws: options.ws,
-          ipc: options.ipc
+    connector: {
+      connect: function(options, cb) {
+        assert.deepEqual(options, {
+          http: 'https://eth3.augur.net',
+          ipc: '/path/to/geth.ipc',
+          ws: 'wss://ws.augur.net',
+          augurNodes: ['https://1.augurNode.com', 'https://2.augurNode.com'],
+          contracts: Contracts,
+          api: Contracts.api
         });
-      } else {
-        return {
-          http: options.http,
-          ws: options.ws,
-          ipc: options.ipc
-        };
+
+        if (cb && cb.constructor === Function) {
+          cb({
+            http: options.http,
+            ws: options.ws,
+            ipc: options.ipc
+          });
+        } else {
+          return {
+            http: options.http,
+            ws: options.ws,
+            ipc: options.ipc
+          };
+        }
       }
     },
     assertions: function(connection) {
@@ -818,31 +836,33 @@ describe('connect.connect', function() {
     rpcinfo: function() {
       // simple set this to a function, we are going to pass through to assertions anyway and skip the sync tests in this case.
     },
-    sync: function() {
-      // don't do anything, just here to be called without using the real sync
+    testThis: {
+      sync: noop,
+      augurNode: {
+        bootstrap: noop
+      }
     },
-    bootstrap: function(options, cb) {
-      // because options.augurNodes will never be set with the current way the function is setup this is never called.
-    },
-    connect: function(options, cb) {
-      assert.deepEqual(options, {
-        http: null,
-        contracts: Contracts,
-        api: Contracts.api
-      });
-
-      if (cb && cb.constructor === Function) {
-        cb({
-          http: options.http,
-          ws: options.ws,
-          ipc: options.ipc
+    connector: {
+      connect: function(options, cb) {
+        assert.deepEqual(options, {
+          http: null,
+          contracts: Contracts,
+          api: Contracts.api
         });
-      } else {
-        return {
-          http: options.http,
-          ws: options.ws,
-          ipc: options.ipc
-        };
+
+        if (cb && cb.constructor === Function) {
+          cb({
+            http: options.http,
+            ws: options.ws,
+            ipc: options.ipc
+          });
+        } else {
+          return {
+            http: options.http,
+            ws: options.ws,
+            ipc: options.ipc
+          };
+        }
       }
     },
     assertions: function(connection) {

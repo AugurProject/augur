@@ -92,18 +92,20 @@ describe("collectFees", function() {
       assert.deepEqual(period, 97, 'period passed to getFeesCollected is expected to be 1 less than the period returned from getVotePeriod');
       cb("1");
     },
-    branch: '0xb1',
-    sender: '0xa1',
-    periodLength: '100',
-    onSent: function(t) {
-      console.log('sent', t);
-    },
-    onSuccess: function(t) {
-      assert.deepEqual(t, { callReturn: '2' });
-    },
- 		onFailed: function(t) {
-   assert.deepEqual(t, { '-2': 'needs to be second half of reporting period to claim rep' });
- }
+    branch: {
+      branch: '0xb1',
+      sender: '0xa1',
+      periodLength: '100',
+      onSent: function(t) {
+        console.log('sent', t);
+      },
+      onSuccess: function(t) {
+        assert.deepEqual(t, { callReturn: '2' });
+      },
+   		onFailed: function(t) {
+        assert.deepEqual(t, { '-2': 'needs to be second half of reporting period to claim rep' });
+      }
+    }
   });
 
   test({

@@ -2,6 +2,8 @@
 
 var assert = require("chai").assert;
 var augur = require("../../../src");
+var abi = require('augur-abi');
+var utils = require("../../../src/utilities");
 
 describe("Topics.filterByBranchID", function () {
   var test = function (t) {
@@ -364,6 +366,99 @@ describe("Topics.parseTopicsInfo", function () {
         weather: 170,
         temperature: 170,
       });
+    }
+  });
+});
+
+describe("Topics.getTopicsInfo", function() {
+  // 12 tests total
+  var getTopicsInfo = augur.Topics.getTopicsInfo;
+  afterEach(function() {
+    augur.Topics.getTopicsInfo = getTopicsInfo;
+  });
+  var test = function(t) {
+    it(JSON.stringify(t) + ' sync', function() {
+      augur.Topics.getTopicsInfo = t.getTopicsInfo;
+
+      t.assertions(augur.getTopicsInfo(t.branch, t.offset, t.numTopicsToLoad, undefined));
+    });
+    it(JSON.stringify(t) + ' async', function(done) {
+      augur.Topics.getTopicsInfo = t.getTopicsInfo;
+
+      augur.getTopicsInfo(t.branch, t.offset, t.numTopicsToLoad, function(out) {
+        t.assertions(out);
+        done();
+      });
+    });
+    it(JSON.stringify(t) + ' sync', function() {
+      augur.Topics.getTopicsInfo = t.getTopicsInfo;
+
+      t.assertions(augur.getTopicsInfo(t.branch, t.offset, undefined, undefined));
+    });
+    it(JSON.stringify(t) + ' async', function(done) {
+      augur.Topics.getTopicsInfo = t.getTopicsInfo;
+
+      augur.getTopicsInfo(t.branch, t.offset, function(out) {
+        t.assertions(out);
+        done();
+      });
+    });
+    it(JSON.stringify(t) + ' sync', function() {
+      augur.Topics.getTopicsInfo = t.getTopicsInfo;
+
+      t.assertions(augur.getTopicsInfo(t.branch, undefined, undefined, undefined));
+    });
+    it(JSON.stringify(t) + ' async', function(done) {
+      augur.Topics.getTopicsInfo = t.getTopicsInfo;
+
+      augur.getTopicsInfo(t.branch, function(out) {
+        t.assertions(out);
+        done();
+      });
+    });
+  };
+  test({
+    branch: '0xdad12f',
+    offset: 1,
+    numTopicsToLoad: 3,
+    getTopicsInfo: function(branch, offset, numTopicsToLoad, callback) {
+      assert.deepEqual(branch, '0xdad12f');
+      assert.oneOf(offset, [1, 0]);
+      assert.oneOf(numTopicsToLoad, [3, 0]);
+      if (utils.is_function(callback)) return callback([
+        abi.short_string_to_int256('Politics'), abi.short_string_to_int256('Sports'), abi.short_string_to_int256('Food')
+      ]);
+      return [
+        abi.short_string_to_int256('Politics'), abi.short_string_to_int256('Sports'), abi.short_string_to_int256('Food')
+      ];
+    },
+    assertions: function(out) {
+      assert.deepEqual(out, [
+        '0x506f6c6974696373000000000000000000000000000000000000000000000000', '0x53706f7274730000000000000000000000000000000000000000000000000000', '0x466f6f6400000000000000000000000000000000000000000000000000000000'
+  		]);
+    }
+  });
+  test({
+    branch: {
+      branch: '0xdad12f',
+      offset: 1,
+      numTopicsToLoad: 3,
+    },
+    getTopicsInfo: function(branch, offset, numTopicsToLoad, callback) {
+      assert.deepEqual(branch, '0xdad12f');
+      assert.oneOf(offset, [1, 0]);
+      assert.oneOf(numTopicsToLoad, [3, 0]);
+      if (utils.is_function(callback)) return callback([
+        abi.short_string_to_int256('Politics'), abi.short_string_to_int256('Sports'), abi.short_string_to_int256('Food')
+      ]);
+      return [
+        abi.short_string_to_int256('Politics'), abi.short_string_to_int256('Sports'), abi.short_string_to_int256('Food')
+      ];
+    },
+    assertions: function(out) {
+      assert.deepEqual(out, [
+        '0x506f6c6974696373000000000000000000000000000000000000000000000000', '0x53706f7274730000000000000000000000000000000000000000000000000000', '0x466f6f6400000000000000000000000000000000000000000000000000000000'
+  		]);
     }
   });
 });
