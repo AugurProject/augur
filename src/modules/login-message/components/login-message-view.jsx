@@ -71,13 +71,13 @@ const LoginMessagePage = p => (
       <h3>February 22, 2017</h3>
       <ol>
         <li>
-          Chat and Feedback buttons now properly display over the footer.
+          Fixed redirect issue related to Airbitz login.
         </li>
         <li>
-          Refreshing on the trade page no longer throws an error.
+          Fixed layout issue related to feedback + chat buttons.
         </li>
         <li>
-          Logging in via Airbitz now correctly redirects the user to either the login-message (this page) or the topics page.
+          Fixed issue that would cause an error when refreshing app on a market view.
         </li>
       </ol>
       {p.topicsLink &&
