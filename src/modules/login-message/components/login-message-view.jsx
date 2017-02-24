@@ -58,6 +58,15 @@ const LoginMessagePage = p => (
         <li>
           Refined the build process for augur + reduced the overall build weight via removal of unneeded fonts.
         </li>
+        <li>
+          Fixed redirect issue related to Airbitz login.
+        </li>
+        <li>
+          Fixed layout issue related to feedback + chat buttons.
+        </li>
+        <li>
+          Fixed issue that would cause an error when refreshing app on a market view.
+        </li>
       </ol>
       <h3>February 21, 2017</h3>
       <ol>
