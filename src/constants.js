@@ -34,7 +34,8 @@ module.exports = {
   BID: 1,
   ASK: 2,
 
-  ORDERBOOK_MAX_CHUNK_SIZE: 100,
+  GETTER_CHUNK_SIZE: 100,
+  BLOCKS_PER_CHUNK: 500,
 
   // milliseconds to wait between getMarketsInfo batches
   PAUSE_BETWEEN_MARKET_BATCHES: 50,

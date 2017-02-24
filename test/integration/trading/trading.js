@@ -97,53 +97,6 @@ describe("Trade", function () {
     });
   });
 
-  describe("trade.isUnderGasLimit", function () {
-    var test = function (t) {
-      it(JSON.stringify(t), function (done) {
-        assert.strictEqual(augur.isUnderGasLimit(t.tradeTypes), t.expected);
-        augur.isUnderGasLimit(t.tradeTypes, function (isUnderGasLimit) {
-          assert.strictEqual(isUnderGasLimit, t.expected);
-          augur.isUnderGasLimit(t.tradeTypes, null, function (isUnderGasLimit) {
-            assert.strictEqual(isUnderGasLimit, t.expected);
-            done();
-          });
-        });
-      });
-    };
-    test({
-      tradeTypes: ["buy"],
-      expected: true
-    });
-    test({
-      tradeTypes: ["sell", "buy"],
-      expected: true
-    });
-    test({
-      tradeTypes: ["buy", "buy", "sell"],
-      expected: true
-    });
-    test({
-      tradeTypes: ["sell", "buy", "sell", "buy"],
-      expected: true
-    });
-    test({
-      tradeTypes: ["buy", "sell", "sell", "buy", "buy"],
-      expected: true
-    });
-    test({
-      tradeTypes: ["sell", "sell", "sell", "sell", "sell", "sell"],
-      expected: true
-    });
-    test({
-      tradeTypes: ["sell", "sell", "sell", "sell", "sell", "sell", "sell"],
-      expected: true
-    });
-    test({
-      tradeTypes: ["buy", "buy", "buy", "buy", "buy", "buy", "buy"],
-      expected: false
-    });
-  });
-
   describe("BuyAndSellShares.buy", function () {
     var test = function (t) {
       it(JSON.stringify(t), function (done) {
