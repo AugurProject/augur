@@ -1096,9 +1096,227 @@ describe("logs.getFilteredLogs", function() {
     assertions: function(o) {}
   });
 });
+describe("logs.chunkBlocks", function () {
+  var test = function (t) {
+    it(t.description, function () {
+      t.assertions(augur.chunkBlocks(t.params.fromBlock, t.params.toBlock));
+    });
+  };
+  test({
+    description: "[500, 1000]",
+    params: {
+      fromBlock: 500,
+      toBlock: 1000
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, [
+        {fromBlock: 500, toBlock: 1000}
+      ]);
+    }
+  });
+  test({
+    description: "[400, 1000]",
+    params: {
+      fromBlock: 400,
+      toBlock: 1000
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, [
+        {fromBlock: 500, toBlock: 1000},
+        {fromBlock: 400, toBlock: 499}
+      ]);
+    }
+  });
+  test({
+    description: "[400, 1500]",
+    params: {
+      fromBlock: 400,
+      toBlock: 1500
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, [
+        {fromBlock: 1000, toBlock: 1500},
+        {fromBlock: 500, toBlock: 999},
+        {fromBlock: 400, toBlock: 499}
+      ]);
+    }
+  });
+  test({
+    description: "[400, 1400]",
+    params: {
+      fromBlock: 400,
+      toBlock: 1400
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, [
+        {fromBlock: 900, toBlock: 1400},
+        {fromBlock: 400, toBlock: 899}
+      ]);
+    }
+  });
+  test({
+    description: "[399, 1400]",
+    params: {
+      fromBlock: 399,
+      toBlock: 1400
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, [
+        {fromBlock: 900, toBlock: 1400},
+        {fromBlock: 400, toBlock: 899},
+        {fromBlock: 399, toBlock: 399}
+      ]);
+    }
+  });
+  test({
+    description: "[0, 1400]",
+    params: {
+      fromBlock: 0,
+      toBlock: 1400
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, [
+        {fromBlock: 900, toBlock: 1400},
+        {fromBlock: 400, toBlock: 899},
+        {fromBlock: 1, toBlock: 399}
+      ]);
+    }
+  });
+  test({
+    description: "[-5, 1400]",
+    params: {
+      fromBlock: -5,
+      toBlock: 1400
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, [
+        {fromBlock: 900, toBlock: 1400},
+        {fromBlock: 400, toBlock: 899},
+        {fromBlock: 1, toBlock: 399}
+      ]);
+    }
+  });
+  test({
+    description: "[100, 99]",
+    params: {
+      fromBlock: 100,
+      toBlock: 99
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, []);
+    }
+  });
+  test({
+    description: "[100, 100]",
+    params: {
+      fromBlock: 100,
+      toBlock: 100
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, [
+        {fromBlock: 100, toBlock: 100}
+      ]);
+    }
+  });
+  test({
+    description: "[100, 100]",
+    params: {
+      fromBlock: 100,
+      toBlock: 100
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, [
+        {fromBlock: 100, toBlock: 100}
+      ]);
+    }
+  });
+});
+describe("logs.getLogsChunked", function () {
+  var test = function (t) {
+    var getLogs = augur.getLogs;
+    afterEach(function () {
+      augur.getLogs = getLogs;
+    });
+    it(t.description, function (done) {
+      augur.getLogs = function (label, filterParams, aux, callback) {
+        var params = {label: label, filterParams: filterParams, aux: aux};
+        if (!callback) return params;
+        callback(null, params);
+      };
+      augur.getLogsChunked(t.params.label, t.params.filterParams, t.params.aux, function (logsChunk) {
+        t.assertions(logsChunk);
+      }, done);
+    });
+  };
+  test({
+    description: "marketCreated on [500, 1000]",
+    params: {
+      label: "marketCreated",
+      filterParams: {
+        fromBlock: 500,
+        toBlock: 1000
+      },
+      aux: null
+    },
+    assertions: function (logsChunk) {
+      assert.strictEqual(logsChunk.label, "marketCreated");
+      assert.strictEqual(logsChunk.filterParams.fromBlock, 500);
+      assert.strictEqual(logsChunk.filterParams.toBlock, 1000);
+      assert.deepEqual(logsChunk.aux, {});
+    }
+  });
+  test({
+    description: "marketCreated on [400, 1000]",
+    params: {
+      label: "marketCreated",
+      filterParams: {
+        fromBlock: 400,
+        toBlock: 1000
+      },
+      aux: null
+    },
+    assertions: function (logsChunk) {
+      assert.strictEqual(logsChunk.label, "marketCreated");
+      assert.include([500, 400], logsChunk.filterParams.fromBlock);
+      assert.include([1000, 499], logsChunk.filterParams.toBlock);
+      assert.deepEqual(logsChunk.aux, {});
+    }
+  });
+  test({
+    description: "marketCreated on [100, 100]",
+    params: {
+      label: "marketCreated",
+      filterParams: {
+        fromBlock: 100,
+        toBlock: 100
+      },
+      aux: null
+    },
+    assertions: function (logsChunk) {
+      assert.strictEqual(logsChunk.label, "marketCreated");
+      assert.strictEqual(logsChunk.filterParams.fromBlock, 100);
+      assert.strictEqual(logsChunk.filterParams.toBlock, 100);
+      assert.deepEqual(logsChunk.aux, {});
+    }
+  });
+  test({
+    description: "marketCreated on [100, 99]",
+    params: {
+      label: "marketCreated",
+      filterParams: {
+        fromBlock: 100,
+        toBlock: 99
+      },
+      aux: null
+    },
+    assertions: function (logsChunk) {
+      assert.isFalse(true);
+    }
+  });
+});
 describe("logs.getLogs", function() {
   // 5 total tests
-  var test = function(t) {
+  var test = function (t) {
     it(t.description, function() {
       var processLogs = augur.processLogs;
       var getFilteredLogs = augur.getFilteredLogs;

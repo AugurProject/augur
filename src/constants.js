@@ -22,7 +22,6 @@ module.exports = {
     zero: new BigNumber(1, 10).dividedBy(multiple),
     multiple: multiple
   },
-  // MINIMUM_TRADE_SIZE: new BigNumber("0.00000001", 10),
   MINIMUM_TRADE_SIZE: new BigNumber("0.01", 10),
 
   DEFAULT_NETWORK_ID: "3",

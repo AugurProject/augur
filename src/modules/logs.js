@@ -199,44 +199,41 @@ module.exports = {
     }
     aux = aux || {};
     if (!utils.is_function(callback)) {
-      return this.processLogs(
-        label,
-        aux.index,
-        this.getFilteredLogs(label, filterParams || {}),
-        aux.extraField,
-        aux.mergedLogs
-      );
+      var logs = this.getFilteredLogs(label, filterParams || {});
+      if (logs && logs.length) logs.reverse();
+      return this.processLogs(label, aux.index, logs, aux.extraField, aux.mergedLogs);
     }
     this.getFilteredLogs(label, filterParams || {}, function (err, logs) {
       if (err) return callback(err);
+      if (logs && logs.length) logs = logs.reverse();
       callback(null, self.processLogs(label, aux.index, logs, aux.extraField, aux.mergedLogs));
     });
   },
 
-  chunkBlocks: function (fromBlockFinal, toBlockFinal) {
-    var toBlockChunk = toBlockFinal;
-    var fromBlockChunk = toBlockChunk - constants.BLOCKS_PER_CHUNK;
+  chunkBlocks: function (fromBlock, toBlock) {
+    if (fromBlock < 1) fromBlock = 1;
+    if (toBlock < fromBlock) return [];
+    var toBlockChunk = toBlock;
+    var fromBlockChunk = toBlock - constants.BLOCKS_PER_CHUNK;
     var chunks = [];
-    while (fromBlockChunk > fromBlockFinal) {
+    while (toBlockChunk >= fromBlock) {
+      if (fromBlockChunk < fromBlock) {
+        fromBlockChunk = fromBlock;
+      }
       chunks.push({fromBlock: fromBlockChunk, toBlock: toBlockChunk});
       fromBlockChunk -= constants.BLOCKS_PER_CHUNK;
       toBlockChunk -= constants.BLOCKS_PER_CHUNK;
+      if (toBlockChunk === toBlock - constants.BLOCKS_PER_CHUNK) {
+        toBlockChunk--;
+      }
     }
     return chunks;
   },
 
-  getLogsChunked: function (label, filterParams, aux, callback) {
+  getLogsChunked: function (label, filterParams, aux, onChunkReceived, callback) {
     var self = this;
-    if (!utils.is_function(callback) && utils.is_function(aux)) {
-      callback = aux;
-      aux = null;
-    }
     aux = aux || {};
-    if (aux.index) {
-      aux.mergedLogs = aux.mergedLogs || {};
-    } else {
-      aux.mergedLogs = aux.mergedLogs || [];
-    }
+    filterParams = filterParams || {};
     if (!filterParams.fromBlock) {
       filterParams.fromBlock = parseInt(constants.GET_LOGS_DEFAULT_FROM_BLOCK, 16);
     }
@@ -245,16 +242,17 @@ module.exports = {
     }
     var chunks = this.chunkBlocks(abi.number(filterParams.fromBlock), abi.number(filterParams.toBlock));
     async.eachSeries(chunks, function (chunk, nextChunk) {
-      var filterParamsChunk = clone(filterParams) || {};
+      var filterParamsChunk = clone(filterParams);
       filterParamsChunk.fromBlock = chunk.fromBlock;
       filterParamsChunk.toBlock = chunk.toBlock;
       self.getLogs(label, filterParamsChunk, aux, function (err, logs) {
         if (err) return nextChunk(err);
+        onChunkReceived(logs);
         nextChunk(null);
       });
     }, function (err) {
       if (err) return callback(err);
-      callback(null, aux.mergedLogs);
+      callback(null);
     });
   },
 

@@ -23477,7 +23477,6 @@ module.exports = {
     zero: new BigNumber(1, 10).dividedBy(multiple),
     multiple: multiple
   },
-  // MINIMUM_TRADE_SIZE: new BigNumber("0.00000001", 10),
   MINIMUM_TRADE_SIZE: new BigNumber("0.01", 10),
 
   DEFAULT_NETWORK_ID: "3",
@@ -24111,7 +24110,7 @@ BigNumber.config({
 var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/slashRep"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register"), require("./modules/topics"), require("./modules/modifyOrderBook"), require("./modules/generateOrderBook")];
 
 function Augur() {
-  this.version = "3.12.6";
+  this.version = "3.13.0";
 
   this.options = {
     debug: {
@@ -26343,38 +26342,41 @@ module.exports = {
     }
     aux = aux || {};
     if (!utils.is_function(callback)) {
-      return this.processLogs(label, aux.index, this.getFilteredLogs(label, filterParams || {}), aux.extraField, aux.mergedLogs);
+      var logs = this.getFilteredLogs(label, filterParams || {});
+      if (logs && logs.length) logs.reverse();
+      return this.processLogs(label, aux.index, logs, aux.extraField, aux.mergedLogs);
     }
     this.getFilteredLogs(label, filterParams || {}, function (err, logs) {
       if (err) return callback(err);
+      if (logs && logs.length) logs = logs.reverse();
       callback(null, self.processLogs(label, aux.index, logs, aux.extraField, aux.mergedLogs));
     });
   },
 
-  chunkBlocks: function chunkBlocks(fromBlockFinal, toBlockFinal) {
-    var toBlockChunk = toBlockFinal;
-    var fromBlockChunk = toBlockChunk - constants.BLOCKS_PER_CHUNK;
+  chunkBlocks: function chunkBlocks(fromBlock, toBlock) {
+    if (fromBlock < 1) fromBlock = 1;
+    if (toBlock < fromBlock) return [];
+    var toBlockChunk = toBlock;
+    var fromBlockChunk = toBlock - constants.BLOCKS_PER_CHUNK;
     var chunks = [];
-    while (fromBlockChunk > fromBlockFinal) {
+    while (toBlockChunk >= fromBlock) {
+      if (fromBlockChunk < fromBlock) {
+        fromBlockChunk = fromBlock;
+      }
       chunks.push({ fromBlock: fromBlockChunk, toBlock: toBlockChunk });
       fromBlockChunk -= constants.BLOCKS_PER_CHUNK;
       toBlockChunk -= constants.BLOCKS_PER_CHUNK;
+      if (toBlockChunk === toBlock - constants.BLOCKS_PER_CHUNK) {
+        toBlockChunk--;
+      }
     }
     return chunks;
   },
 
-  getLogsChunked: function getLogsChunked(label, filterParams, aux, callback) {
+  getLogsChunked: function getLogsChunked(label, filterParams, aux, onChunkReceived, callback) {
     var self = this;
-    if (!utils.is_function(callback) && utils.is_function(aux)) {
-      callback = aux;
-      aux = null;
-    }
     aux = aux || {};
-    if (aux.index) {
-      aux.mergedLogs = aux.mergedLogs || {};
-    } else {
-      aux.mergedLogs = aux.mergedLogs || [];
-    }
+    filterParams = filterParams || {};
     if (!filterParams.fromBlock) {
       filterParams.fromBlock = parseInt(constants.GET_LOGS_DEFAULT_FROM_BLOCK, 16);
     }
@@ -26383,16 +26385,17 @@ module.exports = {
     }
     var chunks = this.chunkBlocks(abi.number(filterParams.fromBlock), abi.number(filterParams.toBlock));
     async.eachSeries(chunks, function (chunk, nextChunk) {
-      var filterParamsChunk = clone(filterParams) || {};
+      var filterParamsChunk = clone(filterParams);
       filterParamsChunk.fromBlock = chunk.fromBlock;
       filterParamsChunk.toBlock = chunk.toBlock;
       self.getLogs(label, filterParamsChunk, aux, function (err, logs) {
         if (err) return nextChunk(err);
+        onChunkReceived(logs);
         nextChunk(null);
       });
     }, function (err) {
       if (err) return callback(err);
-      callback(null, aux.mergedLogs);
+      callback(null);
     });
   },
 
@@ -46912,7 +46915,6 @@ module.exports = {
     zero: new BigNumber(1, 10).dividedBy(multiple),
     multiple: multiple
   },
-  // MINIMUM_TRADE_SIZE: new BigNumber("0.00000001", 10),
   MINIMUM_TRADE_SIZE: new BigNumber("0.01", 10),
 
   DEFAULT_NETWORK_ID: "3",
@@ -46958,8 +46960,8 @@ module.exports = {
   // gas needed for trade transactions (values from pyethereum tester)
   MAKE_ORDER_GAS: {sell: 725202, buy: 725202},
   TRADE_GAS: [
-        {sell: 756374, buy: 787421}, // first trade_id only
-        {sell: 615817, buy: 661894} // each additional trade_id
+    {sell: 756374, buy: 787421}, // first trade_id only
+    {sell: 615817, buy: 661894} // each additional trade_id
   ],
   CANCEL_GAS: {sell: 288060, buy: 230059},
 
