@@ -277,6 +277,7 @@ describe("payout.claimMarketsProceeds", function() {
     claimProceeds: function(arg) {
       // branch, market, onSent, onSuccess, onFailed, all in arg obj in this case
       callCounts.claimProceeds++;
+      arg.onSent();
       // normally this returns a event message object
       arg.onSuccess('1');
     },
@@ -288,6 +289,40 @@ describe("payout.claimMarketsProceeds", function() {
       assert.deepEqual(callCounts, {
         getWinningOutcomes: 3,
         claimProceeds: 3
+      });
+      finished();
+    }
+  });
+  test({
+    testDescription: 'Should handle an error from claimProceeds',
+    branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
+    markets: [{
+      id: '9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd',
+      description: 'Will John Doe actually stick with his New Years Resolution?'
+    }, {
+      id: 'c2a4cee415eb5962401fff2a89fd587e677b1fbcd4652f4edb2ea1f6148c639b',
+      description: 'Who framed Roger Rabbit?'
+    }, {
+      id: '4e747621d2a25a5337c8e22971f3f488b808c5a54ca88b557a18ae438b2e37a0',
+      description: 'Will Augur predict everything in the world by 2093 AD?'
+    }],
+    getWinningOutcomes: function(marketID, cb) {
+      callCounts.getWinningOutcomes++;
+      cb(['1']);
+    },
+    claimProceeds: function(arg) {
+      // branch, market, onSent, onSuccess, onFailed, all in arg obj in this case
+      callCounts.claimProceeds++;
+      arg.onSent();
+      // in this case return an error to onfailed.
+      arg.onFailed({error: 999, message: 'Uh-Oh!'});
+    },
+    callback: function(err, markets) {
+      assert.deepEqual(err, {error: 999, message: 'Uh-Oh!'});
+      assert.isUndefined(markets);
+      assert.deepEqual(callCounts, {
+        getWinningOutcomes: 1,
+        claimProceeds: 1
       });
       finished();
     }
@@ -317,6 +352,7 @@ describe("payout.claimMarketsProceeds", function() {
     claimProceeds: function(arg) {
       // branch, market, onSent, onSuccess, onFailed, all in arg obj in this case
       callCounts.claimProceeds++;
+      arg.onSent();
       // normally this returns a event message object
       arg.onSuccess('1');
     },
