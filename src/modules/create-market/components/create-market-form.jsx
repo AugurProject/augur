@@ -39,36 +39,48 @@ export default class CreateMarketView extends Component {
       <article className="create-market-form">
         <CreateMarketFormType
           className={classNames({
-            'hide-form-to-left': s.canAnimate && s.stepIncreasing && s.currentStep > 1,
-            'display-form-from-left': s.canAnimate && s.stepDecreasing && s.currentStep === 1
+            'hide-form': s.currentStep !== 1,
+            'to-left': s.canAnimate && s.stepIncreasing && s.currentStep !== 1,
+            'display-form': s.currentStep === 1,
+            'from-left': s.canAnimate && s.stepDecreasing && s.currentStep === 1
           })}
+          newMarket={p.newMarket}
           updateNewMarket={p.updateNewMarket}
         />
         <CreateMarketFormDescription
           className={classNames({
-            'hide-form-to-left': s.canAnimate && s.stepIncreasing && s.currentStep > 2,
-            'hide-form-to-right': s.canAnimate && s.stepDecreasing && s.currentStep < 2,
-            'display-form-from-left': s.canAnimate && s.stepDecreasing && s.currentStep === 2,
-            'display-form-from-right': s.canAnimate && s.stepIncreasing && s.currentStep === 2
+            'hide-form': s.currentStep !== 2,
+            'to-left': s.canAnimate && s.stepIncreasing && s.currentStep !== 2,
+            'to-right': s.canAnimate && s.stepDecreasing && s.currentStep !== 2,
+            'display-form': s.currentStep === 2,
+            'from-right': s.canAnimate && s.stepIncreasing && s.currentStep === 2,
+            'from-left': s.canAnimate && s.stepDecreasing && s.currentStep === 2,
           })}
+          newMarket={p.newMarket}
           updateNewMarket={p.updateNewMarket}
         />
         <CreateMarketFormResolution
           className={classNames({
-            'hide-form-to-left': s.canAnimate && s.stepIncreasing && s.currentStep > 3,
-            'hide-form-to-right': s.canAnimate && s.stepDecreasing && s.currentStep < 3,
-            'display-form-from-left': s.canAnimate && s.stepDecreasing && s.currentStep === 3,
-            'display-form-from-right': s.canAnimate && s.stepIncreasing && s.currentStep === 3
+            'hide-form': s.currentStep !== 3,
+            'to-left': s.canAnimate && s.stepIncreasing && s.currentStep !== 3,
+            'to-right': s.canAnimate && s.stepDecreasing && s.currentStep !== 3,
+            'display-form': s.currentStep === 3,
+            'from-right': s.canAnimate && s.stepIncreasing && s.currentStep === 3,
+            'from-left': s.canAnimate && s.stepDecreasing && s.currentStep === 3,
           })}
+          newMarket={p.newMarket}
           updateNewMarket={p.updateNewMarket}
         />
         <CreateMarketFormFeesDepth
           className={classNames({
-            'hide-form-to-left': s.canAnimate && s.stepIncreasing && s.currentStep > 4,
-            'hide-form-to-right': s.canAnimate && s.stepDecreasing && s.currentStep < 4,
-            'display-form-from-left': s.canAnimate && s.stepDecreasing && s.currentStep === 4,
-            'display-form-from-right': s.canAnimate && s.stepIncreasing && s.currentStep === 4
+            'hide-form': s.currentStep !== 4,
+            'to-left': s.canAnimate && s.stepIncreasing && s.currentStep !== 4,
+            'to-right': s.canAnimate && s.stepDecreasing && s.currentStep !== 4,
+            'display-form': s.currentStep === 4,
+            'from-right': s.canAnimate && s.stepIncreasing && s.currentStep === 4,
+            'from-left': s.canAnimate && s.stepDecreasing && s.currentStep === 4,
           })}
+          newMarket={p.newMarket}
           updateNewMarket={p.updateNewMarket}
         />
       </article>

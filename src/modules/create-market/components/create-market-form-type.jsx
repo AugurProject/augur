@@ -4,7 +4,7 @@ import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-ty
 
 const CreateMarketFormType = p => (
   <article className={`create-market-form-part ${p.className || ''}`}>
-    <h2>Select the Type of Market</h2>
+    <h2>Type</h2>
     <button
       className="unstyled market-type"
       onClick={() => p.updateNewMarket({

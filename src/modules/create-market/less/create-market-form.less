@@ -1,8 +1,24 @@
 .create-market-form {
+  position: relative;
+
   .create-market-form-part {
-    display: flex;
+    display: none;
     flex: 1;
+    flex-direction: column;
     flex-wrap: wrap;
+
+    &:first-of-type {
+      display: flex;
+      flex-direction: row;
+    }
+
+    &.hide-form {
+      display: none;
+    }
+
+    &.display-form {
+      display: flex;
+    }
 
     h2 {
       flex: 1 0 100%;
