@@ -10,64 +10,40 @@ var abacus = require("./abacus");
 
 module.exports = {
 
-  // tradeTypes: array of "buy" and/or "sell"
-  // gasLimit (optional): block gas limit as integer
-  isUnderGasLimit: function (tradeTypes, gasLimit, callback) {
-    if (utils.is_function(gasLimit) && !callback) {
-      callback = gasLimit;
-      gasLimit = null;
-    }
-    var gas = abacus.sumTradeGas(tradeTypes);
-    if (!utils.is_function(callback)) {
-      if (gasLimit) return gas <= gasLimit;
-      return gas <= parseInt(this.rpc.getBlock(this.rpc.blockNumber()).gasLimit, 16);
-    }
-    if (gasLimit) return callback(gas <= gasLimit);
-    var self = this;
-    this.rpc.blockNumber(function (blockNumber) {
-      self.rpc.getBlock(blockNumber, false, function (block) {
-        callback(gas <= parseInt(block.gasLimit, 16));
-      });
-    });
-  },
-
   checkGasLimit: function (trade_ids, sender, callback) {
     var self = this;
     var gas = 0;
     var count = {buy: 0, sell: 0};
-    self.rpc.blockNumber(function (blockNumber) {
-      self.rpc.getBlock(blockNumber, false, function (block) {
-        var checked_trade_ids = trade_ids.slice();
-        async.forEachOfSeries(trade_ids, function (trade_id, i, next) {
-          self.get_trade(trade_id, function (trade) {
-            if (!trade || !trade.id) {
-              checked_trade_ids.splice(checked_trade_ids.indexOf(trade_id), 1);
-              if (!checked_trade_ids.length) {
-                return callback(self.errors.TRADE_NOT_FOUND);
-              }
-              console.warn("[augur.js] checkGasLimit:", self.errors.TRADE_NOT_FOUND);
-            } else if (trade.owner === sender) {
-              checked_trade_ids.splice(checked_trade_ids.indexOf(trade_id), 1);
-              if (!checked_trade_ids.length) {
-                return callback({error: "-5", message: self.errors.trade["-5"]});
-              }
-              console.warn("[augur.js] checkGasLimit:", self.errors.trade["-5"]);
-            }
-            ++count[trade.type];
-            gas += constants.TRADE_GAS[Number(!!i)][trade.type];
-            next();
-          });
-        }, function (e) {
-          if (e) return callback(e);
-          if (gas <= parseInt(block.gasLimit, 16)) {
-            return callback(null, checked_trade_ids);
-          } else if (!count.buy || !count.sell) {
-            var type = (count.buy) ? "buy" : "sell";
-            return callback(null, checked_trade_ids.slice(0, abacus.maxOrdersPerTrade(type, block.gasLimit)));
+    var block = this.rpc.block;
+    var checked_trade_ids = trade_ids.slice();
+    async.forEachOfSeries(trade_ids, function (trade_id, i, next) {
+      self.get_trade(trade_id, function (trade) {
+        if (!trade || !trade.id) {
+          checked_trade_ids.splice(checked_trade_ids.indexOf(trade_id), 1);
+          if (!checked_trade_ids.length) {
+            return callback(self.errors.TRADE_NOT_FOUND);
           }
-          callback(self.errors.GAS_LIMIT_EXCEEDED);
-        });
+          console.warn("[augur.js] checkGasLimit:", self.errors.TRADE_NOT_FOUND);
+        } else if (trade.owner === sender) {
+          checked_trade_ids.splice(checked_trade_ids.indexOf(trade_id), 1);
+          if (!checked_trade_ids.length) {
+            return callback({error: "-5", message: self.errors.trade["-5"]});
+          }
+          console.warn("[augur.js] checkGasLimit:", self.errors.trade["-5"]);
+        }
+        ++count[trade.type];
+        gas += constants.TRADE_GAS[Number(!!i)][trade.type];
+        next();
       });
+    }, function (e) {
+      if (e) return callback(e);
+      if (gas <= parseInt(block.gasLimit, 16)) {
+        return callback(null, checked_trade_ids);
+      } else if (!count.buy || !count.sell) {
+        var type = (count.buy) ? "buy" : "sell";
+        return callback(null, checked_trade_ids.slice(0, abacus.maxOrdersPerTrade(type, block.gasLimit)));
+      }
+      callback(self.errors.GAS_LIMIT_EXCEEDED);
     });
   },
 

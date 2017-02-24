@@ -16,118 +16,6 @@ var errors = require("ethrpc").errors;
 var trade = require("../../../src/modules/trade");
 var DEBUG = false;
 
-describe("trade.isUnderGasLimit", function () {
-  before(function () {
-    trade.rpc = {
-      blockNumber: function (callback) {
-        if (!utils.is_function(callback)) return "0x1";
-        callback("0x1");
-      },
-    };
-  });
-  after(function () { delete trade.rpc; });
-  var test = function (t) {
-    it(JSON.stringify(t), function (done) {
-      trade.rpc.getBlock = function (blockNumber, pending, callback) {
-        if (!utils.is_function(callback)) return {gasLimit: abi.hex(t.gasLimit)};
-        callback({gasLimit: abi.hex(t.gasLimit)});
-      };
-      assert.strictEqual(trade.isUnderGasLimit(t.tradeTypes, t.gasLimit), t.expected);
-      assert.strictEqual(trade.isUnderGasLimit(t.tradeTypes), t.expected);
-      trade.isUnderGasLimit(t.tradeTypes, t.gasLimit, function (isUnderGasLimit) {
-        assert.strictEqual(isUnderGasLimit, t.expected);
-        trade.isUnderGasLimit(t.tradeTypes, function (isUnderGasLimit) {
-          assert.strictEqual(isUnderGasLimit, t.expected);
-          trade.isUnderGasLimit(t.tradeTypes, null, function (isUnderGasLimit) {
-            assert.strictEqual(isUnderGasLimit, t.expected);
-            done();
-          });
-        });
-      });
-    });
-  };
-  test({
-    tradeTypes: ["buy"],
-    gasLimit: 3135000,
-    expected: true
-  });
-  test({
-    tradeTypes: ["sell", "buy"],
-    gasLimit: 3135000,
-    expected: true
-  });
-  test({
-    tradeTypes: ["buy", "buy", "sell"],
-    gasLimit: 3135000,
-    expected: true
-  });
-  test({
-    tradeTypes: ["sell", "buy", "sell", "buy"],
-    gasLimit: 3135000,
-    expected: true
-  });
-  test({
-    tradeTypes: ["buy", "sell", "sell", "buy", "buy"],
-    gasLimit: 3135000,
-    expected: false
-  });
-  test({
-    tradeTypes: ["sell", "sell", "sell", "sell", "sell", "sell"],
-    gasLimit: 3135000,
-    expected: false
-  });
-  test({
-    tradeTypes: ["sell", "sell", "sell", "sell", "sell", "sell", "sell"],
-    gasLimit: 3135000,
-    expected: false
-  });
-  test({
-    tradeTypes: ["buy", "buy", "buy", "buy", "buy", "buy", "buy"],
-    gasLimit: 3135000,
-    expected: false
-  });
-  test({
-    tradeTypes: ["buy"],
-    gasLimit: 4712388,
-    expected: true
-  });
-  test({
-    tradeTypes: ["sell", "buy"],
-    gasLimit: 4712388,
-    expected: true
-  });
-  test({
-    tradeTypes: ["buy", "buy", "sell"],
-    gasLimit: 4712388,
-    expected: true
-  });
-  test({
-    tradeTypes: ["sell", "buy", "sell", "buy"],
-    gasLimit: 4712388,
-    expected: true
-  });
-  test({
-    tradeTypes: ["buy", "sell", "sell", "buy", "buy"],
-    gasLimit: 4712388,
-    expected: true
-  });
-  test({
-    tradeTypes: ["sell", "sell", "sell", "sell", "sell", "sell"],
-    gasLimit: 4712388,
-    expected: true
-  });
-  test({
-    tradeTypes: ["sell", "sell", "sell", "sell", "sell", "sell", "sell"],
-    gasLimit: 4712388,
-    expected: true
-  });
-  test({
-    tradeTypes: ["buy", "buy", "buy", "buy", "buy", "buy", "buy"],
-    gasLimit: 4712388,
-    expected: false
-  });
-});
-
 describe("trade.checkGasLimit", function () {
   this.timeout(tools.TIMEOUT);
   var mockTrades = {
@@ -150,11 +38,6 @@ describe("trade.checkGasLimit", function () {
   }
   var checkGasLimit = augur.checkGasLimit;
   before(function () {
-    trade.rpc = {
-      blockNumber: function (callback) {
-        callback("0x1");
-      }
-    };
     trade.get_trade = function (trade_id, callback) {
       callback(mockTrades[trade_id]);
     };
@@ -166,6 +49,9 @@ describe("trade.checkGasLimit", function () {
   });
   var test = function (t) {
     it(JSON.stringify(t), function (done) {
+      trade.rpc = {
+        block: {number: 1, gasLimit: t.gasLimit}
+      };
       trade.rpc.getBlock = function (blockNumber, pending, callback) {
         callback({gasLimit: t.gasLimit});
       };
