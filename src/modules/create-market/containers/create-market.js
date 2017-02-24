@@ -3,8 +3,7 @@ import { updateNewMarket } from 'modules/create-market/actions/update-new-market
 import CreateMarketView from 'modules/create-market/components/create-market-view';
 
 const mapStateToProps = state => ({
-  newMarket: state.newMarket,
-  scalarMarketsShareDenomination: state.scalarMarketsShareDenomination
+  newMarket: state.newMarket
 });
 
 const mapDispatchToProps = dispatch => ({

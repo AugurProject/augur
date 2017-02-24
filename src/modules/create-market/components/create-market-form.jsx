@@ -1,52 +1,46 @@
-import React, { PropTypes } from 'react';
-import Form1 from 'modules/create-market/components/create-market-form-1';
-import Form2 from 'modules/create-market/components/create-market-form-2';
-import Form3 from 'modules/create-market/components/create-market-form-3';
-import Form4 from 'modules/create-market/components/create-market-form-4';
-import Form5 from 'modules/create-market/components/create-market-form-5';
+import React, { Component, PropTypes } from 'react';
 
-import { SHARE } from 'modules/market/constants/share-denominations';
+import CreateMarketFormType from 'modules/create-market/components/create-market-form-type';
+import CreateMarketFormDescription from 'modules/create-market/components/create-market-form-description';
+import CreateMarketFormResolution from 'modules/create-market/components/create-market-form-resolution';
+import CreateMarketFormFeesDepth from 'modules/create-market/components/create-market-form-fees-depth';
 
-import getValue from 'utils/get-value';
-
-const CreateMarketForm = (p) => {
-  let form;
-
-  const shareDenominations = getValue(p, 'scalarShareDenomination.denominations');
-
-  switch (p.step) {
-    case 1:
-    default:
-      form = <Form1 {...p} />;
-      break;
-    case 2:
-      form = <Form2 {...p} />;
-      break;
-    case 3:
-      form = <Form3 {...p} />;
-      break;
-    case 4:
-      form = <Form4 {...p} />;
-      break;
-    case 5:
-      form = (<Form5
-        {...p}
-        selectedShareDenomination={SHARE}
-        shareDenominations={shareDenominations}
-      />);
-      break;
+export default class CreateMarketView extends Component {
+  static propTypes = {
+    newMarket: PropTypes.object.isRequired
   }
 
-  return (
-    <article className={p.className}>
-      {form}
-    </article>
-  );
-};
+  constructor(props) {
+    super(props);
 
-CreateMarketForm.propTypes = {
-  className: PropTypes.string,
-  step: PropTypes.number
-};
+    this.state = {
+      currentStep: props.newMarket.step,
+      previousStep: null,
+      stepIncreasing: null
+    };
+  }
 
-export default CreateMarketForm;
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.newMarket.step !== this.props.newMarket.step) {
+      this.setState({
+        previousStep: this.props.newMarket.step,
+        currentStep: nextProps.newMarket.step,
+        stepIncreasing: nextProps.newMarket.step > this.props.newMarket.step
+      });
+    }
+  }
+
+  render() {
+    // const p = this.props;
+    // const s = this.state;
+
+    return (
+      <article className="create-market-form">
+        <CreateMarketFormType />
+        <CreateMarketFormDescription />
+        <CreateMarketFormResolution />
+        <CreateMarketFormFeesDepth />
+      </article>
+    );
+  }
+}

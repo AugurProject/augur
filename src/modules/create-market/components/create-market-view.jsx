@@ -1,25 +1,24 @@
 import React, { PropTypes } from 'react';
-// import CreateMarketForm from 'modules/create-market/components/create-market-form';
 
-const CreateMarketPage = p => (
+import CreateMarketProgress from 'modules/create-market/components/create-market-progress';
+
+import CreateMarketForm from 'modules/create-market/components/create-market-form';
+
+const CreateMarketView = p => (
   <section id="create_market_view">
-    <div className="create-market-form">
-      <span>Create Market</span>
-    </div>
+    <article className="create-market-container">
+      <CreateMarketProgress
+        currentStep={p.newMarket.step}
+      />
+      <CreateMarketForm
+        newMarket={p.newMarket}
+      />
+    </article>
   </section>
 );
 
+export default CreateMarketView;
 
-CreateMarketPage.propTypes = {
-  newMarket: PropTypes.object.isRequired,
-  scalarMarketsShareDenomination: PropTypes.object.isRequired
+CreateMarketView.propTypes = {
+  newMarket: PropTypes.object.isRequired
 };
-
-export default CreateMarketPage;
-
-
-// <CreateMarketForm
-//   className="create-market-content"
-//   {...p.createMarketForm}
-//   scalarShareDenomination={p.scalarShareDenomination}
-// />

@@ -25,7 +25,6 @@ import transactionsTotals from 'modules/transactions/selectors/transactions-tota
 import isTransactionsWorking from 'modules/transactions/selectors/is-transactions-working';
 import tradesInProgress from 'modules/trade/selectors/trade-in-progress';
 import tradeCommitLock from 'modules/trade/selectors/trade-commit-lock';
-import createMarketForm from 'modules/create-market/selectors/create-market-form';
 import coreStats from 'modules/auth/selectors/core-stats';
 import chat from 'modules/chat/selectors/chat-messages';
 import branch from 'modules/app/selectors/branch';
@@ -46,7 +45,6 @@ const selectors = {
   loginAccount,
   links,
   url,
-  createMarketForm,
   marketsHeader,
   marketsTotals,
   pagination,
