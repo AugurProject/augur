@@ -67,7 +67,7 @@ module.exports = {
         if (!totalTopics || totalTopics.error || !parseInt(totalTopics, 10)) {
           return callback(totalTopics);
         }
-        self.getTopicsInfoChunked(branch, offset, Math.min(parseInt(totalTopics, 10), constants.ORDERBOOK_MAX_CHUNK_SIZE), totalTopics, chunkCB, callback);
+        self.getTopicsInfoChunked(branch, offset, Math.min(parseInt(totalTopics, 10), constants.GETTER_CHUNK_SIZE), totalTopics, chunkCB, callback);
       });
     }
     this.getTopicsInfo({

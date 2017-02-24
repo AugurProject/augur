@@ -21,7 +21,7 @@ module.exports = {
         if (!totalTrades || totalTrades.error || !parseInt(totalTrades, 10)) {
           return callback(totalTrades);
         }
-        self.getOrderBookChunked(marketID, offset, Math.min(parseInt(totalTrades, 10), constants.ORDERBOOK_MAX_CHUNK_SIZE), scalarMinMax, totalTrades, chunkCB, callback);
+        self.getOrderBookChunked(marketID, offset, Math.min(parseInt(totalTrades, 10), constants.GETTER_CHUNK_SIZE), scalarMinMax, totalTrades, chunkCB, callback);
       });
     }
     this.getOrderBook({
