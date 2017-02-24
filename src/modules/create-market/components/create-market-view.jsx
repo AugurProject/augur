@@ -12,6 +12,7 @@ const CreateMarketView = p => (
       />
       <CreateMarketForm
         newMarket={p.newMarket}
+        updateNewMarket={p.updateNewMarket}
       />
     </article>
   </section>

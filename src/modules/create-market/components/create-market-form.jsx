@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import classNames from 'classnames';
 
 import CreateMarketFormType from 'modules/create-market/components/create-market-form-type';
 import CreateMarketFormDescription from 'modules/create-market/components/create-market-form-description';
@@ -15,31 +16,61 @@ export default class CreateMarketView extends Component {
 
     this.state = {
       currentStep: props.newMarket.step,
-      previousStep: null,
-      stepIncreasing: null
+      stepIncreasing: null,
+      canAnimate: false
     };
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.newMarket.step !== this.props.newMarket.step) {
       this.setState({
-        previousStep: this.props.newMarket.step,
         currentStep: nextProps.newMarket.step,
-        stepIncreasing: nextProps.newMarket.step > this.props.newMarket.step
+        stepIncreasing: nextProps.newMarket.step > this.props.newMarket.step,
+        canAnimate: nextProps.newMarket.step > 1
       });
     }
   }
 
   render() {
-    // const p = this.props;
-    // const s = this.state;
+    const p = this.props;
+    const s = this.state;
 
     return (
       <article className="create-market-form">
-        <CreateMarketFormType />
-        <CreateMarketFormDescription />
-        <CreateMarketFormResolution />
-        <CreateMarketFormFeesDepth />
+        <CreateMarketFormType
+          className={classNames({
+            'hide-form-to-left': s.canAnimate && s.stepIncreasing && s.currentStep > 1,
+            'display-form-from-left': s.canAnimate && s.stepDecreasing && s.currentStep === 1
+          })}
+          updateNewMarket={p.updateNewMarket}
+        />
+        <CreateMarketFormDescription
+          className={classNames({
+            'hide-form-to-left': s.canAnimate && s.stepIncreasing && s.currentStep > 2,
+            'hide-form-to-right': s.canAnimate && s.stepDecreasing && s.currentStep < 2,
+            'display-form-from-left': s.canAnimate && s.stepDecreasing && s.currentStep === 2,
+            'display-form-from-right': s.canAnimate && s.stepIncreasing && s.currentStep === 2
+          })}
+          updateNewMarket={p.updateNewMarket}
+        />
+        <CreateMarketFormResolution
+          className={classNames({
+            'hide-form-to-left': s.canAnimate && s.stepIncreasing && s.currentStep > 3,
+            'hide-form-to-right': s.canAnimate && s.stepDecreasing && s.currentStep < 3,
+            'display-form-from-left': s.canAnimate && s.stepDecreasing && s.currentStep === 3,
+            'display-form-from-right': s.canAnimate && s.stepIncreasing && s.currentStep === 3
+          })}
+          updateNewMarket={p.updateNewMarket}
+        />
+        <CreateMarketFormFeesDepth
+          className={classNames({
+            'hide-form-to-left': s.canAnimate && s.stepIncreasing && s.currentStep > 4,
+            'hide-form-to-right': s.canAnimate && s.stepDecreasing && s.currentStep < 4,
+            'display-form-from-left': s.canAnimate && s.stepDecreasing && s.currentStep === 4,
+            'display-form-from-right': s.canAnimate && s.stepIncreasing && s.currentStep === 4
+          })}
+          updateNewMarket={p.updateNewMarket}
+        />
       </article>
     );
   }
