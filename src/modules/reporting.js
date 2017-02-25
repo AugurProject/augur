@@ -235,32 +235,62 @@ module.exports = {
             console.log("[penaltyCatchUp] Events in period " + periodToCheck + ":", events);
           }
           async.eachSeries(events, function (event, nextEvent) {
-            self.getEventCanReportOn(branch, periodToCheck, sender, event, function (canReportOn) {
+            self.getNumReportsEvent(branch, periodToCheck, event, function (numReportsEvent) {
               if (self.options.debug.reporting) {
-                console.log("[penaltyCatchUp] getEventCanReportOn:", canReportOn);
+                console.log("[penaltyCatchUp] getNumReportsEvent:", numReportsEvent);
               }
-              if (parseInt(canReportOn) === 0) return nextEvent(null);
-              if (self.options.debug.reporting) {
-                console.log("[penaltyCatchUp] penalizeWrong:", event);
-              }
-              self.penalizeWrong({
-                branch: branch,
-                event: event,
-                onSent: utils.noop,
-                onSuccess: function (r) {
-                  if (self.options.debug.reporting) {
-                    console.log("[penaltyCatchUp] penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
-                  }
-                  self.closeExtraMarkets(branch, event, sender, function (err, markets) {
-                    if (err) return nextEvent(err);
+              if (parseInt(numReportsEvent, 10) === 0) {
+                self.moveEvent({
+                  branch: branch,
+                  event: event,
+                  onSent: function (r) {
+                    if (self.options.debug.reporting) {
+                      console.log("[penaltyCatchUp] moveEvent sent:", r);
+                    }
+                  },
+                  onSuccess: function (r) {
+                    if (self.options.debug.reporting) {
+                      console.log("[penaltyCatchUp] moveEvent success:", r);
+                    }
                     nextEvent(null);
+                  },
+                  onFailed: function (e) {
+                    if (self.options.debug.reporting) {
+                      console.error("[penaltyCatchUp] moveEvent failed:", branch, event, e);
+                    }
+                    nextEvent(null);
+                  }
+                });
+              } else {
+                self.getEventCanReportOn(branch, periodToCheck, sender, event, function (canReportOn) {
+                  if (self.options.debug.reporting) {
+                    console.log("[penaltyCatchUp] getEventCanReportOn:", canReportOn);
+                  }
+                  if (parseInt(canReportOn) === 0) {
+                    return self.closeEventMarkets(branch, event, sender, nextEvent);
+                  }
+                  if (self.options.debug.reporting) {
+                    console.log("[penaltyCatchUp] penalizeWrong:", event);
+                  }
+                  self.penalizeWrong({
+                    branch: branch,
+                    event: event,
+                    onSent: utils.noop,
+                    onSuccess: function (r) {
+                      if (self.options.debug.reporting) {
+                        console.log("[penaltyCatchUp] penalizeWrong success:", abi.bignum(r.callReturn, "string", true));
+                      }
+                      self.closeEventMarkets(branch, event, sender, nextEvent);
+                    },
+                    onFailed: function (e) {
+                      if (self.options.debug.reporting) {
+                        console.error("[penaltyCatchUp] penalizeWrong failed:", branch, event, sender, e);
+                      }
+                      nextEvent(null);
+                    }
                   });
-                },
-                onFailed: function (e) {
-                  console.error("[penaltyCatchUp] penalizeWrong error:", e);
-                  nextEvent(null);
-                }
-              });
+                });
+              }
             });
           }, callback);
         }
@@ -268,10 +298,10 @@ module.exports = {
     });
   },
 
-  closeExtraMarkets: function (branch, event, sender, callback) {
+  closeEventMarkets: function (branch, event, sender, callback) {
     var self = this;
     if (self.options.debug.reporting) {
-      console.log("[closeExtraMarkets] Closing extra markets for event", event);
+      console.log("[closeEventMarkets] Closing extra markets for event", event);
     }
     self.getMarkets(event, function (markets) {
       if (!markets || (markets.constructor === Array && !markets.length)) {
@@ -289,25 +319,18 @@ module.exports = {
               sender: sender,
               onSent: function (r) {
                 if (self.options.debug.reporting) {
-                  console.log("[closeExtraMarkets] closeMarket sent:", market, r);
+                  console.log("[closeEventMarkets] closeMarket sent:", market, r);
                 }
               },
               onSuccess: function (r) {
                 if (self.options.debug.reporting) {
-                  console.log("[closeExtraMarkets] closeMarket success", market, r.callReturn);
+                  console.log("[closeEventMarkets] closeMarket success", market, r.callReturn);
                 }
                 nextMarket(null);
               },
               onFailed: function (e) {
-                console.error("[closeExtraMarkets] closeMarket failed:", market, e);
-                self.getWinningOutcomes(market, function (winningOutcomes) {
-                  if (!winningOutcomes) return nextMarket(e);
-                  if (winningOutcomes.error) return nextMarket(winningOutcomes);
-                  if (winningOutcomes.constructor === Array && winningOutcomes.length && !parseInt(winningOutcomes[0], 10)) {
-                    return nextMarket(winningOutcomes);
-                  }
-                  nextMarket(null);
-                });
+                console.error("[closeEventMarkets] closeMarket failed:", market, e);
+                nextMarket(null);
               }
             });
           } else {

@@ -612,7 +612,7 @@ describe("feePenaltyCatchUp", function () {
     var getVotePeriod = augur.getVotePeriod;
     var getCurrentPeriod = augur.getCurrentPeriod;
     var incrementPeriodAfterReporting = augur.incrementPeriodAfterReporting;
-    var closeExtraMarkets = augur.closeExtraMarkets;
+    var closeEventMarkets = augur.closeEventMarkets;
     after(function () {
       augur.collectFees = collectFees;
       augur.getEvents = getEvents;
@@ -628,7 +628,7 @@ describe("feePenaltyCatchUp", function () {
       augur.getVotePeriod = getVotePeriod;
       augur.getCurrentPeriod = getCurrentPeriod;
       augur.incrementPeriodAfterReporting = incrementPeriodAfterReporting;
-      augur.closeExtraMarkets = closeExtraMarkets;
+      augur.closeEventMarkets = closeEventMarkets;
     });
     it(t.description, function (done) {
       var sequence = [];
@@ -732,9 +732,9 @@ describe("feePenaltyCatchUp", function () {
         }
         o.onSuccess({callReturn: "1"});
       };
-      augur.closeExtraMarkets = function (branch, event, sender, callback) {
+      augur.closeEventMarkets = function (branch, event, sender, callback) {
         sequence.push({
-          method: "closeExtraMarkets",
+          method: "closeEventMarkets",
           params: [branch, event, sender]
         });
         callback(null, state.markets[event]);
@@ -914,7 +914,7 @@ describe("feePenaltyCatchUp", function () {
           event: "0x7e1"
         }
       }, {
-        "method": "closeExtraMarkets",
+        "method": "closeEventMarkets",
         "params": ["0xb1", "0x7e1", "0xb0b"]
       }, {
         method: "getEventCanReportOn",
@@ -926,7 +926,7 @@ describe("feePenaltyCatchUp", function () {
           event: "0x7e2"
         }
       }, {
-        "method": "closeExtraMarkets",
+        "method": "closeEventMarkets",
         "params": ["0xb1", "0x7e2", "0xb0b"]
       }, {
         method: "getEventCanReportOn",
@@ -938,7 +938,7 @@ describe("feePenaltyCatchUp", function () {
           event: "0x7e3"
         }
       }, {
-        "method": "closeExtraMarkets",
+        "method": "closeEventMarkets",
         "params": ["0xb1", "0x7e3", "0xb0b"]
       }]);
       assert.deepEqual(startState.periodLength, endState.periodLength);
@@ -1156,7 +1156,7 @@ describe("feePenaltyCatchUp", function () {
   });
 });
 describe.skip("penaltyCatchUp", function() {});
-describe("closeExtraMarkets", function() {
+describe("closeEventMarkets", function() {
   var getMarkets = augur.getMarkets;
   var getWinningOutcomes = augur.getWinningOutcomes;
   var closeMarket = augur.closeMarket;
@@ -1174,7 +1174,7 @@ describe("closeExtraMarkets", function() {
       augur.closeMarket = t.closeMarket;
       finished = done;
       testState = t.state;
-      augur.closeExtraMarkets(t.branch, t.event, t.sender, t.callback);
+      augur.closeEventMarkets(t.branch, t.event, t.sender, t.callback);
     });
   };
   test({
