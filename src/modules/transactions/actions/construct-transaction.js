@@ -67,6 +67,34 @@ export function constructApprovalTransaction(log) {
   return transaction;
 }
 
+export function constructCollectedFeesTransaction(log) {
+  const transaction = { data: {} };
+  const repGain = abi.bignum(log.repGain);
+  const initialRepBalance = log.initialRepBalance !== undefined ? log.initialRepBalance : abi.bignum(log.newRepBalance).minus(repGain).toFixed();
+  transaction.type = `Reporting Payment`;
+  if (log.totalReportingRep) {
+    const totalReportingRep = abi.bignum(log.totalReportingRep);
+    if (!totalReportingRep.eq(constants.ZERO)) {
+      const percentRep = formatPercent(abi.bignum(initialRepBalance).dividedBy(totalReportingRep).times(100), { decimals: 0 });
+      transaction.message = `${transaction.message} (${percentRep.full})`;
+    }
+  }
+  transaction.description = `Reporting cycle #${log.period}`;
+  if (log.cashFeesCollected !== undefined && log.repGain !== undefined) {
+    transaction.data.balances = [{
+      change: formatEther(log.cashFeesCollected, { positiveSign: true }),
+      balance: formatEther(log.newCashBalance)
+    }, {
+      change: formatRep(log.repGain, { positiveSign: true }),
+      balance: formatRep(log.newRepBalance)
+    }];
+  }
+  transaction.bond = { label: 'reporting', value: formatRealEther(log.notReportingBond) };
+  const action = log.inProgress ? 'reporting' : 'reported';
+  transaction.message = `${action} with ${formatRep(initialRepBalance).full}`;
+  return transaction;
+}
+
 export function constructDepositTransaction(log) {
   const transaction = { data: {} };
   transaction.type = 'Deposit Ether';
@@ -222,43 +250,6 @@ export function constructTradingFeeUpdatedTransaction(log, market, dispatch) {
   transaction.description = market.description;
   transaction.data.marketLink = selectMarketLink({ id: log.marketID, description: market.description }, dispatch);
   transaction.message = `updated trading fee: ${formatPercent(abi.bignum(log.tradingFee).times(100)).full}`;
-  return transaction;
-}
-
-export function constructCollectedFeesTransaction(log, marketID, market, dispatch) {
-  const transaction = { data: {} };
-  const repGain = abi.bignum(log.repGain);
-  const initialRepBalance = log.initialRepBalance !== undefined ? log.initialRepBalance : abi.bignum(log.newRepBalance).minus(repGain).toFixed();
-  transaction.type = `Reporting Payment`;
-  if (log.totalReportingRep) {
-    const totalReportingRep = abi.bignum(log.totalReportingRep);
-    if (!totalReportingRep.eq(constants.ZERO)) {
-      const percentRep = formatPercent(abi.bignum(initialRepBalance).dividedBy(totalReportingRep).times(100), { decimals: 0 });
-      transaction.message = `${transaction.message} (${percentRep.full})`;
-    }
-  }
-  transaction.description = `Reporting cycle #${log.period}`;
-  if (log.cashFeesCollected !== undefined && log.repGain !== undefined) {
-    transaction.data.balances = [{
-      change: formatEther(log.cashFeesCollected, { positiveSign: true }),
-      balance: formatEther(log.newCashBalance)
-    }, {
-      change: formatRep(log.repGain, { positiveSign: true }),
-      balance: formatRep(log.newRepBalance)
-    }];
-    if (!log.inProgress) {
-      dispatch(updateEventsWithAccountReportData({
-        [market.eventID]: {
-          marketFees: log.cashFeesCollected,
-          repEarned: log.repGain,
-          repBalance: log.newRepBalance
-        }
-      }));
-    }
-  }
-  transaction.bond = { label: 'reporting', value: formatRealEther(log.notReportingBond) };
-  const action = log.inProgress ? 'reporting' : 'reported';
-  transaction.message = `${action} with ${formatRep(initialRepBalance).full}`;
   return transaction;
 }
 
@@ -655,8 +646,6 @@ export function constructReportingTransaction(label, log, marketID, market, outc
   return (dispatch, getState) => {
     const { address, derivedKey } = augur.accounts.account;
     switch (label) {
-      case 'collectedFees':
-        return constructCollectedFeesTransaction(log, marketID, market, dispatch);
       case 'penalize':
         return constructPenalizeTransaction(log, marketID, market, outcomes, dispatch);
       case 'submittedReport':
@@ -676,6 +665,8 @@ export function constructTransaction(label, log, isRetry, callback) {
     switch (label) {
       case 'Approval':
         return constructApprovalTransaction(log);
+      case 'collectedFees':
+        return constructCollectedFeesTransaction(log);
       case 'deposit':
         return constructDepositTransaction(log);
       case 'fundedAccount':
@@ -701,13 +692,13 @@ export function constructTransaction(label, log, isRetry, callback) {
         if (!market || !market.description) break;
         return constructMarketCreatedTransaction(log, market.description, dispatch);
       }
+      case 'collectedFees':
       case 'payout':
       case 'tradingFeeUpdated': {
         const market = dispatch(loadDataForMarketTransaction(label, log, isRetry, callback));
         if (!market || !market.description) break;
         return dispatch(constructMarketTransaction(label, log, market));
       }
-      case 'collectedFees':
       case 'penalize':
       case 'slashedRep':
       case 'submittedReport':
