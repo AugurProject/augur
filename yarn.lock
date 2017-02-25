@@ -374,9 +374,9 @@ augur-contracts@2.10.5:
   dependencies:
     clone "1.0.2"
 
-augur.js@3.13.1:
-  version "3.13.1"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.13.1.tgz#44d00d65c4b738fbef4302cb56407e82b661936e"
+augur.js@3.13.2:
+  version "3.13.2"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.13.2.tgz#f2b4b4fb022ad91ca0c45c80a868b19f46364085"
   dependencies:
     async "1.5.2"
     augur-abi "1.1.1"
