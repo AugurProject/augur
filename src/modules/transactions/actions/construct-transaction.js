@@ -692,7 +692,6 @@ export function constructTransaction(label, log, isRetry, callback) {
         if (!market || !market.description) break;
         return constructMarketCreatedTransaction(log, market.description, dispatch);
       }
-      case 'collectedFees':
       case 'payout':
       case 'tradingFeeUpdated': {
         const market = dispatch(loadDataForMarketTransaction(label, log, isRetry, callback));
