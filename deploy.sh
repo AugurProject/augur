@@ -3,7 +3,7 @@
 # (c) Jack Peterson (jack@tinybike.net)
 
 yarn
-yarn build dev
+yarn build
 git add build/*
 git commit -S -am "${1}"
 yarn lint
