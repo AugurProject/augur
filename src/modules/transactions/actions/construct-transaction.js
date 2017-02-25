@@ -355,7 +355,6 @@ export function constructSubmittedReportTransaction(log, marketID, market, outco
   transaction.data.outcome = { name: formattedReport };
   const action = log.inProgress ? 'revealing' : 'revealed';
   transaction.message = `${action} report: ${formatReportedOutcome(log.report, market.minValue, market.maxValue, market.type, outcomes)}`;
-  console.debug('constructSubmittedReportTransaction:', formattedReport);
   if (!log.inProgress) {
     dispatch(updateEventsWithAccountReportData({
       [market.eventID]: {
