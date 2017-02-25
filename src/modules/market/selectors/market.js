@@ -209,7 +209,7 @@ export function assembleMarket(
       market.creationTime = formatDate(new Date(marketData.creationTime * 1000));
 
       market.isOpen = isOpen;
-      market.isExpired = isExpired;
+      // market.isExpired = isExpired;
       market.isFavorite = isFavorite;
 
       market.takerFeePercent = formatPercent(marketData.takerFee * 100, { positiveSign: false });
@@ -324,8 +324,8 @@ export function assembleMarket(
       // Update the consensus object:
       //   - formatted reported outcome
       //   - the percentage of correct reports (for binaries only)
-      market.consensus = { ...marketData.consensus };
-      if (market.consensus.outcomeID) {
+      if (marketData.consensus) {
+        market.consensus = { ...marketData.consensus };
         if (market.type !== SCALAR && market.reportableOutcomes.length) {
           const marketOutcome = market.reportableOutcomes.find(outcome => outcome.id === market.consensus.outcomeID);
           if (marketOutcome) market.consensus.outcomeName = marketOutcome.name;
@@ -333,6 +333,8 @@ export function assembleMarket(
         if (market.consensus.proportionCorrect) {
           market.consensus.percentCorrect = formatPercent(abi.bignum(market.consensus.proportionCorrect).times(100));
         }
+      } else {
+        market.consensus = null;
       }
 
       return market;
