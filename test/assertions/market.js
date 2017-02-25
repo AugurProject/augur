@@ -38,9 +38,9 @@ export default function (market) {
       assert.isString(market.description);
     });
 
-    it('market.resolution', () => {
-      assert.isDefined(market.resolution);
-      assert.isString(market.resolution);
+    it('market.resolutionSource', () => {
+      assert.isDefined(market.resolutionSource);
+      assert.isString(market.resolutionSource);
     });
 
     it('market.extraInfo', () => {
@@ -366,8 +366,6 @@ export default function (market) {
         assertFormattedNumber(trade.data.avgPrice, 'trade.data.avgPrice');
       });
     });
-
-    it('[TODO] flesh out the full shape');
 
     it('market.priceTimeSeries', () => {
       assert.isDefined(market.priceTimeSeries);
