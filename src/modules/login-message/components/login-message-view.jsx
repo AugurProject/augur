@@ -56,6 +56,15 @@ const LoginMessagePage = p => (
       <h3>February 24, 2017</h3>
       <ol>
         <li>
+          Fixed collectedFees transaction constructor.
+        </li>
+        <li>
+          Replaced setTimeout silliness in updateMarketTopicPopularity with an on-chain tags lookup.
+        </li>
+        <li>
+          Added getNumReportsEvent/moveEvent and check for null/zero event IDs to penaltyCatchUp sequence.
+        </li>
+        <li>
           augur.js now includes a chunked version of its getLogs method.
         </li>
         <li>
