@@ -227,7 +227,7 @@ module.exports = {
             },
             onFailed: function (e) {
               console.error("[penaltyCatchUp] penalizeWrong(0) error:", e);
-              callback(null);
+              callback(e);
             }
           });
         } else {
@@ -235,6 +235,7 @@ module.exports = {
             console.log("[penaltyCatchUp] Events in period " + periodToCheck + ":", events);
           }
           async.eachSeries(events, function (event, nextEvent) {
+            if (!event || !parseInt(event, 16)) return nextEvent(null);
             self.getNumReportsEvent(branch, periodToCheck, event, function (numReportsEvent) {
               if (self.options.debug.reporting) {
                 console.log("[penaltyCatchUp] getNumReportsEvent:", numReportsEvent);
@@ -286,7 +287,7 @@ module.exports = {
                       if (self.options.debug.reporting) {
                         console.error("[penaltyCatchUp] penalizeWrong failed:", branch, event, sender, e);
                       }
-                      nextEvent(null);
+                      nextEvent(e);
                     }
                   });
                 });
