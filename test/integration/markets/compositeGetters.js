@@ -109,7 +109,6 @@ var testMarketInfo = function (market, info) {
   assert.strictEqual(parseInt(augur.getTradingPeriod(market)), r.tradingPeriod);
   assert.property(r, "branchID");
   assert.strictEqual(parseInt(augur.getBranchID(market)), parseInt(r.branchID));
-  assert.property(r, "numEvents");
   assert.strictEqual(parseInt(augur.getNumEvents(market)), r.numEvents);
   assert.property(r, "cumulativeScale");
   assert.property(r, "creationFee");
@@ -126,26 +125,8 @@ var testMarketInfo = function (market, info) {
     assert.property(r.outcomes[i], "outstandingShares");
     assert(abi.number(r.outcomes[i].outstandingShares) >= 0);
   }
-  assert.property(r, "events");
-  assert.isArray(r.events);
-  assert.isAbove(r.events.length, 0);
-  var marketEvents = augur.getMarketEvents(market);
-  assert.strictEqual(marketEvents.length, r.events.length);
-  for (var i = 0, len = r.events.length; i < len; ++i) {
-    assert.isObject(r.events[i]);
-    assert.property(r.events[i], "id");
-    assert.strictEqual(marketEvents[i], r.events[i].id);
-    assert.property(r.events[i], "endDate");
-    assert.isAbove(r.events[i].endDate, 0);
-    assert.property(r.events[i], "outcome");
-    assert.isNotNull(r.events[i].outcome);
-    assert.property(r.events[i], "minValue");
-    assert.isNotNull(r.events[i].minValue);
-    assert.property(r.events[i], "maxValue");
-    assert.isNotNull(r.events[i].maxValue);
-    assert.property(r.events[i], "numOutcomes");
-    assert.isAbove(parseInt(r.events[i].numOutcomes), 1);
-  }
+  assert.property(r, "eventID");
+  assert.isString(r.eventID);
 };
 
 before(function () {

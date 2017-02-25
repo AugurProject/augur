@@ -24110,7 +24110,7 @@ BigNumber.config({
 var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/slashRep"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register"), require("./modules/topics"), require("./modules/modifyOrderBook"), require("./modules/generateOrderBook")];
 
 function Augur() {
-  this.version = "3.13.1";
+  this.version = "3.13.2";
 
   this.options = {
     debug: {
@@ -24362,6 +24362,7 @@ module.exports = {
       // marketInfo[13] = tags[2]
       var index = 14;
       var fees = this.calculateMakerTakerFees(rawInfo[4], rawInfo[1]);
+      var topic = this.decodeTag(rawInfo[11]);
       info = {
         id: abi.format_int256(rawInfo[0]),
         network: this.network_id,
@@ -24371,56 +24372,45 @@ module.exports = {
         numOutcomes: parseInt(rawInfo[2], 16),
         tradingPeriod: parseInt(rawInfo[3], 16),
         branchID: rawInfo[5],
-        numEvents: 1,
         cumulativeScale: abi.unfix(rawInfo[6], "string"),
         creationTime: parseInt(rawInfo[7], 16),
         volume: abi.unfix(rawInfo[8], "string"),
         creationFee: abi.unfix(rawInfo[9], "string"),
         author: abi.format_address(rawInfo[10]),
-        tags: [this.decodeTag(rawInfo[11]), this.decodeTag(rawInfo[12]), this.decodeTag(rawInfo[13])]
-      };
-      info.outcomes = new Array(info.numOutcomes);
-
-      // organize event info
-      // [eventID, expirationDate, outcome, minValue, maxValue, numOutcomes]
-      var event = {
-        id: abi.format_int256(rawInfo[index]),
-        endDate: parseInt(rawInfo[index + 1], 16),
+        topic: topic,
+        tags: [topic, this.decodeTag(rawInfo[12]), this.decodeTag(rawInfo[13])],
         minValue: abi.unfix_signed(rawInfo[index + 3], "string"),
         maxValue: abi.unfix_signed(rawInfo[index + 4], "string"),
-        numOutcomes: parseInt(rawInfo[index + 5], 16),
-        bond: abi.unfix_signed(rawInfo[index + 6], "string")
+        endDate: parseInt(rawInfo[index + 1], 16),
+        eventID: abi.format_int256(rawInfo[index]),
+        eventBond: abi.unfix_signed(rawInfo[index + 6], "string")
       };
 
-      // event type: binary, categorical, or scalar
-      if (event.numOutcomes > 2) {
-        event.type = "categorical";
-      } else if (event.minValue === "1" && event.maxValue === "2") {
-        event.type = "binary";
+      // type: binary, categorical, or scalar
+      if (info.numOutcomes > 2) {
+        info.type = "categorical";
+      } else if (info.minValue === "1" && info.maxValue === "2") {
+        info.type = "binary";
       } else {
-        event.type = "scalar";
+        info.type = "scalar";
       }
-      info.type = event.type;
-      info.endDate = event.endDate;
-      info.minValue = event.minValue;
-      info.maxValue = event.maxValue;
-      var outcome, proportionCorrect;
       if (parseInt(rawInfo[index + 2], 16) !== 0) {
-        var unfixed = makeReports.unfixReport(rawInfo[index + 2], event.type);
-        outcome = unfixed.report;
-        info.isIndeterminate = unfixed.isIndeterminate;
+        var unfixed = makeReports.unfixReport(rawInfo[index + 2], info.type);
+        info.consensus = {
+          outcomeID: unfixed.report,
+          isIndeterminate: unfixed.isIndeterminate,
+          isUnethical: !abi.unfix_signed(rawInfo[index + 7], "number")
+        };
+        if (parseInt(rawInfo[index + 8], 16) !== 0) {
+          info.consensus.proportionCorrect = abi.unfix(rawInfo[index + 8], "string");
+        }
+      } else {
+        info.consensus = null;
       }
-      if (parseInt(rawInfo[index + 8], 16) !== 0) {
-        proportionCorrect = abi.unfix(rawInfo[index + 8], "string");
-      }
-      if (outcome) event.isEthical = !!abi.unfix_signed(rawInfo[index + 7], "number");
-      info.reportedOutcome = outcome;
-      info.proportionCorrect = proportionCorrect;
-      info.events = [event];
-      info.eventID = event.id;
       index += EVENTS_FIELDS;
 
       // organize outcome info
+      info.outcomes = new Array(info.numOutcomes);
       for (var i = 0; i < info.numOutcomes; ++i) {
         info.outcomes[i] = {
           id: i + 1,
@@ -24443,7 +24433,7 @@ module.exports = {
       var resolutionLength = parseInt(rawInfo[index], 16);
       ++index;
       if (resolutionLength) {
-        info.resolution = abi.bytes_to_utf16(rawInfo.slice(index, index + resolutionLength));
+        info.resolutionSource = abi.bytes_to_utf16(rawInfo.slice(index, index + resolutionLength));
         index += resolutionLength;
       }
 
@@ -25091,10 +25081,7 @@ module.exports = {
       rawInfo = marketsArray.slice(shift, shift + len - 1);
       marketID = abi.format_int256(marketsArray[shift]);
       info = this.parseMarketInfo(rawInfo);
-      if (info && info.numOutcomes) {
-        marketsInfo[marketID] = info;
-        marketsInfo[marketID].sortOrder = i;
-      }
+      if (info && info.numOutcomes) marketsInfo[marketID] = info;
       totalLen += len;
     }
     return marketsInfo;
@@ -25111,7 +25098,7 @@ module.exports = {
   },
 
   parseMarketsInfo: function parseMarketsInfo(marketsArray, branch) {
-    var len, shift, marketID, fees, minValue, maxValue, numOutcomes, type, unfixed, reportedOutcome, isIndeterminate;
+    var len, shift, marketID, fees, minValue, maxValue, numOutcomes, type, unfixed, consensusOutcomeID, consensus;
     if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
       return null;
     }
@@ -25133,17 +25120,18 @@ module.exports = {
       } else {
         type = "scalar";
       }
-      reportedOutcome = abi.hex(marketsArray[shift + 14], true);
-      if (!abi.unfix(reportedOutcome, "number")) {
-        reportedOutcome = undefined;
-        isIndeterminate = undefined;
+      consensusOutcomeID = abi.hex(marketsArray[shift + 14], true);
+      if (!abi.unfix(consensusOutcomeID, "number")) {
+        consensus = null;
       } else {
-        unfixed = this.unfixReport(reportedOutcome, type);
-        reportedOutcome = unfixed.report;
-        isIndeterminate = unfixed.isIndeterminate;
+        unfixed = this.unfixReport(consensusOutcomeID, type);
+        consensus = {
+          outcomeID: unfixed.report,
+          isIndeterminate: unfixed.isIndeterminate
+        };
       }
+      var topic = this.decodeTag(marketsArray[shift + 5]);
       marketsInfo[marketID] = {
-        sortOrder: i,
         id: marketID,
         branchID: branch,
         tradingPeriod: parseInt(marketsArray[shift + 1], 16),
@@ -25152,15 +25140,15 @@ module.exports = {
         takerFee: fees.taker,
         creationTime: parseInt(marketsArray[shift + 3], 16),
         volume: abi.unfix(marketsArray[shift + 4], "string"),
-        tags: [this.decodeTag(marketsArray[shift + 5]), this.decodeTag(marketsArray[shift + 6]), this.decodeTag(marketsArray[shift + 7])],
+        topic: topic,
+        tags: [topic, this.decodeTag(marketsArray[shift + 6]), this.decodeTag(marketsArray[shift + 7])],
         endDate: parseInt(marketsArray[shift + 8], 16),
         eventID: abi.format_int256(marketsArray[shift + 10]),
         minValue: minValue,
         maxValue: maxValue,
         numOutcomes: numOutcomes,
         type: type,
-        reportedOutcome: reportedOutcome,
-        isIndeterminate: isIndeterminate,
+        consensus: consensus,
         description: abi.bytes_to_utf16(marketsArray.slice(shift + 15, shift + len - 1))
       };
       totalLen += len;
@@ -28152,7 +28140,9 @@ module.exports = {
       if (markets && markets.error) return callback(markets);
       async.eachSeries(markets, function (market, nextMarket) {
         self.getWinningOutcomes(market, function (winningOutcomes) {
-          console.log("winning outcomes for", market, winningOutcomes);
+          if (self.options.debug.reporting) {
+            console.log("winning outcomes for", market, winningOutcomes);
+          }
           if (!winningOutcomes || winningOutcomes.error) return nextMarket(winningOutcomes);
           if (winningOutcomes.constructor === Array && winningOutcomes.length && !parseInt(winningOutcomes[0], 10)) {
             self.closeMarket({
@@ -47342,7 +47332,9 @@ module.exports = {
       if (markets && markets.error) return callback(markets);
       async.eachSeries(markets, function (market, nextMarket) {
         self.getWinningOutcomes(market, function (winningOutcomes) {
-          console.log("winning outcomes for", market, winningOutcomes);
+          if (self.options.debug.reporting) {
+            console.log("winning outcomes for", market, winningOutcomes);
+          }
           if (!winningOutcomes || winningOutcomes.error) return nextMarket(winningOutcomes);
           if (winningOutcomes.constructor === Array && winningOutcomes.length && !parseInt(winningOutcomes[0], 10)) {
             self.closeMarket({

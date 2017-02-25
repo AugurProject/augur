@@ -254,10 +254,7 @@ module.exports = {
       rawInfo = marketsArray.slice(shift, shift + len - 1);
       marketID = abi.format_int256(marketsArray[shift]);
       info = this.parseMarketInfo(rawInfo);
-      if (info && info.numOutcomes) {
-        marketsInfo[marketID] = info;
-        marketsInfo[marketID].sortOrder = i;
-      }
+      if (info && info.numOutcomes) marketsInfo[marketID] = info;
       totalLen += len;
     }
     return marketsInfo;
@@ -274,7 +271,7 @@ module.exports = {
   },
 
   parseMarketsInfo: function (marketsArray, branch) {
-    var len, shift, marketID, fees, minValue, maxValue, numOutcomes, type, unfixed, reportedOutcome, isIndeterminate;
+    var len, shift, marketID, fees, minValue, maxValue, numOutcomes, type, unfixed, consensusOutcomeID, consensus;
     if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
       return null;
     }
@@ -296,17 +293,18 @@ module.exports = {
       } else {
         type = "scalar";
       }
-      reportedOutcome = abi.hex(marketsArray[shift + 14], true);
-      if (!abi.unfix(reportedOutcome, "number")) {
-        reportedOutcome = undefined;
-        isIndeterminate = undefined;
+      consensusOutcomeID = abi.hex(marketsArray[shift + 14], true);
+      if (!abi.unfix(consensusOutcomeID, "number")) {
+        consensus = null;
       } else {
-        unfixed = this.unfixReport(reportedOutcome, type);
-        reportedOutcome = unfixed.report;
-        isIndeterminate = unfixed.isIndeterminate;
+        unfixed = this.unfixReport(consensusOutcomeID, type);
+        consensus = {
+          outcomeID: unfixed.report,
+          isIndeterminate: unfixed.isIndeterminate
+        };
       }
+      var topic = this.decodeTag(marketsArray[shift + 5]);
       marketsInfo[marketID] = {
-        sortOrder: i,
         id: marketID,
         branchID: branch,
         tradingPeriod: parseInt(marketsArray[shift + 1], 16),
@@ -315,19 +313,15 @@ module.exports = {
         takerFee: fees.taker,
         creationTime: parseInt(marketsArray[shift + 3], 16),
         volume: abi.unfix(marketsArray[shift + 4], "string"),
-        tags: [
-          this.decodeTag(marketsArray[shift + 5]),
-          this.decodeTag(marketsArray[shift + 6]),
-          this.decodeTag(marketsArray[shift + 7])
-        ],
+        topic: topic,
+        tags: [topic, this.decodeTag(marketsArray[shift + 6]), this.decodeTag(marketsArray[shift + 7])],
         endDate: parseInt(marketsArray[shift + 8], 16),
         eventID: abi.format_int256(marketsArray[shift + 10]),
         minValue: minValue,
         maxValue: maxValue,
         numOutcomes: numOutcomes,
         type: type,
-        reportedOutcome: reportedOutcome,
-        isIndeterminate: isIndeterminate,
+        consensus: consensus,
         description: abi.bytes_to_utf16(marketsArray.slice(shift + 15, shift + len - 1))
       };
       totalLen += len;

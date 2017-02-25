@@ -311,7 +311,9 @@ module.exports = {
       if (markets && markets.error) return callback(markets);
       async.eachSeries(markets, function (market, nextMarket) {
         self.getWinningOutcomes(market, function (winningOutcomes) {
-          console.log("winning outcomes for", market, winningOutcomes);
+          if (self.options.debug.reporting) {
+            console.log("winning outcomes for", market, winningOutcomes);
+          }
           if (!winningOutcomes || winningOutcomes.error) return nextMarket(winningOutcomes);
           if (winningOutcomes.constructor === Array && winningOutcomes.length && !parseInt(winningOutcomes[0], 10)) {
             self.closeMarket({

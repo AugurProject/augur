@@ -721,13 +721,13 @@ describe("abacus.parseMarketInfo", function() {
       	numOutcomes: 2,
       	tradingPeriod: 22020096,
       	branchID: '1010101',
-      	numEvents: 1,
       	cumulativeScale: '1',
       	creationTime: 16777216,
       	volume: '10000',
       	creationFee: '25',
       	author: '0x0000000000000000000000000000000000abc123',
       	tags: ['tag1', 'tag2', 'tag3'],
+        topic: 'tag1',
       	outcomes: [{
       			id: 1,
       			outstandingShares: '0.000000000005',
@@ -745,20 +745,14 @@ describe("abacus.parseMarketInfo", function() {
       	endDate: 23068672,
       	minValue: '0.000000000000000001',
       	maxValue: '0.000000000000000002',
-      	isIndeterminate: false,
-      	reportedOutcome: '0',
-      	proportionCorrect: '20',
-      	events: [{
-      		id: '0x00000000000000000000000000000000000000000000000000000000000000f1',
-      		endDate: 23068672,
-      		minValue: '0.000000000000000001',
-      		maxValue: '0.000000000000000002',
-      		numOutcomes: 2,
-      		bond: '100',
-      		type: 'scalar',
-      		isEthical: true
-      	}],
-      	eventID: '0x00000000000000000000000000000000000000000000000000000000000000f1'
+      	eventID: '0x00000000000000000000000000000000000000000000000000000000000000f1',
+      	eventBond: '100',
+        consensus: {
+          outcomeID: '0',
+          proportionCorrect: '20',
+          isIndeterminate: false,
+          isUnethical: false
+        }
       });
     }
   });

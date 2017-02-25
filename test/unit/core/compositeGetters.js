@@ -1348,8 +1348,8 @@ describe('CompositeGetters.parseBatchMarketInfo', function() {
     },
     assertions: function(o) {
       assert.deepEqual(o, {
-        '0x00000000000000000000000000000000000000000000000000000000000000a1': { marketID: '0x0a1', numOutcomes: '2', type: 'binary', sortOrder: 0 },
-        '0x00000000000000000000000000000000000000000000000000000000000000a2': { marketID: '0x0a2', numOutcomes: '2', type: 'binary', sortOrder: 1 },
+        '0x00000000000000000000000000000000000000000000000000000000000000a1': { marketID: '0x0a1', numOutcomes: '2', type: 'binary' },
+        '0x00000000000000000000000000000000000000000000000000000000000000a2': { marketID: '0x0a2', numOutcomes: '2', type: 'binary' },
       });
     }
   });
@@ -1420,7 +1420,6 @@ describe('CompositeGetters.parseMarketsInfo', function() {
     assertions: function(parsedMarketsInfo) {
       assert.deepEqual(parsedMarketsInfo, {
         '0x00000000000000000000000000000000000000000000000000000000000000a1': {
-          sortOrder: 0,
           id: '0x00000000000000000000000000000000000000000000000000000000000000a1',
           branchID: '0xf69b5',
           tradingPeriod: 1280,
@@ -1429,6 +1428,7 @@ describe('CompositeGetters.parseMarketsInfo', function() {
           takerFee: '0.592',
           creationTime: 5368709120,
           volume: '1000',
+          topic: 'sports',
           tags: ['sports', 'football', 'nfl'],
           endDate: 352321536,
           eventID: '0x00000000000000000000000000000000000000000000000000000000000000e1',
@@ -1436,12 +1436,13 @@ describe('CompositeGetters.parseMarketsInfo', function() {
           maxValue: '2',
           numOutcomes: 2,
           type: 'binary',
-          reportedOutcome: '1',
-          isIndeterminate: false,
+          consensus: {
+            outcomeID: '1',
+            isIndeterminate: false
+          },
           description: 'Will the Cleveland Browns win Superbowl LI?'
         },
         '0x00000000000000000000000000000000000000000000000000000000000000a2': {
-          sortOrder: 1,
           id: '0x00000000000000000000000000000000000000000000000000000000000000a2',
           branchID: '0xf69b5',
           tradingPeriod: 1280,
@@ -1450,6 +1451,7 @@ describe('CompositeGetters.parseMarketsInfo', function() {
           takerFee: '0.882',
           creationTime: 5368709120,
           volume: '2500',
+          topic: 'sports',
           tags: ['sports', 'basketball', 'nba'],
           endDate: 352321536,
           eventID: '0x00000000000000000000000000000000000000000000000000000000000000e2',
@@ -1457,12 +1459,10 @@ describe('CompositeGetters.parseMarketsInfo', function() {
           maxValue: '250',
           numOutcomes: 2,
           type: 'scalar',
-          reportedOutcome: undefined,
-          isIndeterminate: undefined,
+          consensus: null,
           description: 'How many points will be scored in game 1 of the 2017 NBA finals?'
         },
         '0x00000000000000000000000000000000000000000000000000000000000000a3': {
-          sortOrder: 2,
           id: '0x00000000000000000000000000000000000000000000000000000000000000a3',
           branchID: '0xf69b5',
           tradingPeriod: 1280,
@@ -1471,6 +1471,7 @@ describe('CompositeGetters.parseMarketsInfo', function() {
           takerFee: '0.298',
           creationTime: 5368709120,
           volume: '125',
+          topic: 'sports',
           tags: ['sports', 'baseball', 'mlb'],
           endDate: 352321536,
           eventID: '0x00000000000000000000000000000000000000000000000000000000000000e3',
@@ -1478,8 +1479,7 @@ describe('CompositeGetters.parseMarketsInfo', function() {
           maxValue: '50',
           numOutcomes: 5,
           type: 'categorical',
-          reportedOutcome: undefined,
-          isIndeterminate: undefined,
+          consensus: null,
           description: 'Which team will win the AL East in the 2017 season of MLB?'
         }
       });

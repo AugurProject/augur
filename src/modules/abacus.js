@@ -205,6 +205,7 @@ module.exports = {
     // marketInfo[13] = tags[2]
       var index = 14;
       var fees = this.calculateMakerTakerFees(rawInfo[4], rawInfo[1]);
+      var topic = this.decodeTag(rawInfo[11]);
       info = {
         id: abi.format_int256(rawInfo[0]),
         network: this.network_id,
@@ -214,60 +215,45 @@ module.exports = {
         numOutcomes: parseInt(rawInfo[2], 16),
         tradingPeriod: parseInt(rawInfo[3], 16),
         branchID: rawInfo[5],
-        numEvents: 1,
         cumulativeScale: abi.unfix(rawInfo[6], "string"),
         creationTime: parseInt(rawInfo[7], 16),
         volume: abi.unfix(rawInfo[8], "string"),
         creationFee: abi.unfix(rawInfo[9], "string"),
         author: abi.format_address(rawInfo[10]),
-        tags: [
-          this.decodeTag(rawInfo[11]),
-          this.decodeTag(rawInfo[12]),
-          this.decodeTag(rawInfo[13])
-        ]
-      };
-      info.outcomes = new Array(info.numOutcomes);
-
-      // organize event info
-      // [eventID, expirationDate, outcome, minValue, maxValue, numOutcomes]
-      var event = {
-        id: abi.format_int256(rawInfo[index]),
-        endDate: parseInt(rawInfo[index + 1], 16),
+        topic: topic,
+        tags: [topic, this.decodeTag(rawInfo[12]), this.decodeTag(rawInfo[13])],
         minValue: abi.unfix_signed(rawInfo[index + 3], "string"),
         maxValue: abi.unfix_signed(rawInfo[index + 4], "string"),
-        numOutcomes: parseInt(rawInfo[index + 5], 16),
-        bond: abi.unfix_signed(rawInfo[index + 6], "string")
+        endDate: parseInt(rawInfo[index + 1], 16),
+        eventID: abi.format_int256(rawInfo[index]),
+        eventBond: abi.unfix_signed(rawInfo[index + 6], "string")
       };
 
-      // event type: binary, categorical, or scalar
-      if (event.numOutcomes > 2) {
-        event.type = "categorical";
-      } else if (event.minValue === "1" && event.maxValue === "2") {
-        event.type = "binary";
+      // type: binary, categorical, or scalar
+      if (info.numOutcomes > 2) {
+        info.type = "categorical";
+      } else if (info.minValue === "1" && info.maxValue === "2") {
+        info.type = "binary";
       } else {
-        event.type = "scalar";
+        info.type = "scalar";
       }
-      info.type = event.type;
-      info.endDate = event.endDate;
-      info.minValue = event.minValue;
-      info.maxValue = event.maxValue;
-      var outcome, proportionCorrect;
       if (parseInt(rawInfo[index + 2], 16) !== 0) {
-        var unfixed = makeReports.unfixReport(rawInfo[index + 2], event.type);
-        outcome = unfixed.report;
-        info.isIndeterminate = unfixed.isIndeterminate;
+        var unfixed = makeReports.unfixReport(rawInfo[index + 2], info.type);
+        info.consensus = {
+          outcomeID: unfixed.report,
+          isIndeterminate: unfixed.isIndeterminate,
+          isUnethical: !abi.unfix_signed(rawInfo[index + 7], "number")
+        };
+        if (parseInt(rawInfo[index + 8], 16) !== 0) {
+          info.consensus.proportionCorrect = abi.unfix(rawInfo[index + 8], "string");
+        }
+      } else {
+        info.consensus = null;
       }
-      if (parseInt(rawInfo[index + 8], 16) !== 0) {
-        proportionCorrect = abi.unfix(rawInfo[index + 8], "string");
-      }
-      if (outcome) event.isEthical = !!abi.unfix_signed(rawInfo[index + 7], "number");
-      info.reportedOutcome = outcome;
-      info.proportionCorrect = proportionCorrect;
-      info.events = [event];
-      info.eventID = event.id;
       index += EVENTS_FIELDS;
 
       // organize outcome info
+      info.outcomes = new Array(info.numOutcomes);
       for (var i = 0; i < info.numOutcomes; ++i) {
         info.outcomes[i] = {
           id: i + 1,
@@ -290,7 +276,7 @@ module.exports = {
       var resolutionLength = parseInt(rawInfo[index], 16);
       ++index;
       if (resolutionLength) {
-        info.resolution = abi.bytes_to_utf16(rawInfo.slice(index, index + resolutionLength));
+        info.resolutionSource = abi.bytes_to_utf16(rawInfo.slice(index, index + resolutionLength));
         index += resolutionLength;
       }
 
