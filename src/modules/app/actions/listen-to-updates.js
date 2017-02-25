@@ -11,19 +11,6 @@ import { claimProceeds } from '../../my-positions/actions/claim-proceeds';
 import { convertLogsToTransactions, convertTradeLogToTransaction } from '../../transactions/actions/convert-logs-to-transactions';
 import { updateMarketTopicPopularity } from '../../topics/actions/update-topics';
 
-export function refreshMarket(marketID) {
-  return (dispatch, getState) => {
-    if (getState().marketsData[marketID]) {
-      dispatch(loadMarketsInfo([marketID], () => {
-        dispatch(loadBidsAsks(marketID));
-        if (getState().loginAccount.address) {
-          dispatch(loadAccountTrades(marketID));
-        }
-      }));
-    }
-  };
-}
-
 export function listenToUpdates() {
   return (dispatch, getState) => {
     augur.filters.listen({
