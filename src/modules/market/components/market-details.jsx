@@ -1,13 +1,13 @@
 import React, { PropTypes } from 'react';
 import ValueDenomination from 'modules/common/components/value-denomination';
 import ValueDate from 'modules/common/components/value-date';
-
+import ReportEthics from 'modules/my-reports/components/report-ethics';
 import getValue from 'utils/get-value';
 import setShareDenomination from 'utils/set-share-denomination';
 import shareDenominationLabel from 'utils/share-denomination-label';
 
 const MarketDetails = (p) => {
-  const outcomeName = getValue(p, 'result.outcomeName');
+  const outcomeName = getValue(p, 'consensus.outcomeName');
 
   const outstandingShares = setShareDenomination(getValue(p, 'outstandingShares.formatted'), p.selectedShareDenomination);
   const shareDenomination = shareDenominationLabel(p.selectedShareDenomination, p.shareDenominations);
@@ -17,20 +17,25 @@ const MarketDetails = (p) => {
       <ul className="properties">
         {p.type === 'binary' && outcomeName &&
           <li className="property outcome">
-            <span className="property-label">result</span>
-            <span className="property-value">{outcomeName} (<ValueDenomination {...p.result.proportionCorrect} />)</span>
+            <span className="property-label">consensus</span>
+            <span className="property-value">{outcomeName} (<ValueDenomination {...p.consensus.percentCorrect} />)</span>
+            <ReportEthics isUnethical={p.consensus.isUnethical} />
           </li>
         }
         {p.type === 'categorical' && outcomeName &&
           <li className="property outcome">
-            <span className="property-label">result</span>
-            <span className="property-value">{outcomeName}</span>
+            <span className="property-label">consensus</span>
+            <span className="property-value">
+              {outcomeName}
+              <ReportEthics isUnethical={p.consensus.isUnethical} />
+            </span>
           </li>
         }
-        {p.type === 'scalar' && p.reportedOutcome &&
+        {p.type === 'scalar' && p.consensus.outcomeID &&
           <li className="property outcome">
-            <span className="property-label">result</span>
-            <span className="property-value">{p.reportedOutcome}</span>
+            <span className="property-label">consensus</span>
+            <span className="property-value">{p.consensus.outcomeID}</span>
+            <ReportEthics isUnethical={p.consensus.isUnethical} />
           </li>
         }
         {p.author != null &&
@@ -51,10 +56,10 @@ const MarketDetails = (p) => {
             <span className="property-value">{p.extraInfo}</span>
           </li>
         }
-        {p.resolution &&
+        {p.resolutionSource &&
           <li className="property resolution">
-            <span className="property-label">resolution</span>
-            {getResolutionNode(p.resolution)}
+            <span className="property-label">resolution source</span>
+            {getResolutionNode(p.resolutionSource)}
           </li>
         }
         {p.type === 'scalar' && p.minValue != null &&
@@ -75,11 +80,11 @@ const MarketDetails = (p) => {
         </li>
       </ul>
       {!!p.reportedOutcome &&
-      <div className="reported-outcome">
-        <hr />
-        <center><h4>This market is closed.</h4></center>
-        <hr />
-      </div>
+        <div className="reported-outcome">
+          <hr />
+          <center><h4>This market is closed.</h4></center>
+          <hr />
+        </div>
       }
     </div>
   );
@@ -88,23 +93,24 @@ const MarketDetails = (p) => {
 MarketDetails.propTypes = {
   author: PropTypes.string,
   extraInfo: PropTypes.string,
-  resolution: PropTypes.string,
+  resolutionSource: PropTypes.string,
   outstandingShares: PropTypes.object,
   creationTime: PropTypes.object,
   type: PropTypes.string,
   minValue: PropTypes.string,
   maxValue: PropTypes.string,
-  reportedOutcome: PropTypes.string
+  reportedOutcome: PropTypes.string,
+  consensus: PropTypes.object
 };
 
 export default MarketDetails;
 
-function getResolutionNode(resolution) {
+function getResolutionNode(resolutionSource) {
   let resolutionText;
-  if (resolution === 'generic') {
+  if (resolutionSource === 'generic') {
     resolutionText = 'Covered by local, national or international news media';
   } else {
-    resolutionText = (<a href={resolution}>{resolution}</a>);
+    resolutionText = (<a href={resolutionSource}>{resolutionSource}</a>);
   }
 
   return (<span className="property-value">{resolutionText}</span>);
