@@ -330,8 +330,17 @@ module.exports = {
                 nextMarket(null);
               },
               onFailed: function (e) {
-                console.error("[closeEventMarkets] closeMarket failed:", market, e);
-                nextMarket(null);
+                if (self.options.debug.reporting) {
+                  console.error("[closeEventMarkets] closeMarket failed:", market, e);
+                }
+                self.getWinningOutcomes(market, function (winningOutcomes) {
+                  if (!winningOutcomes) return nextMarket(e);
+                  if (winningOutcomes.error) return nextMarket(winningOutcomes);
+                  if (winningOutcomes.constructor === Array && winningOutcomes.length && !parseInt(winningOutcomes[0], 10)) {
+                    return nextMarket(winningOutcomes);
+                  }
+                  nextMarket(null);
+                });
               }
             });
           } else {
