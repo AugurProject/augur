@@ -1,5 +1,6 @@
 import { assert } from 'chai';
 import { abi } from 'services/augurjs';
+
 export { BINARY, SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types';
 export { BUY, SELL } from 'modules/trade/constants/types';
 export { BID, ASK } from 'modules/bids-asks/constants/bids-asks-types';
