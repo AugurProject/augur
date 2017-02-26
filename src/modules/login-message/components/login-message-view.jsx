@@ -56,6 +56,9 @@ const LoginMessagePage = p => (
       <h3>February 26, 2017</h3>
       <ol>
         <li>
+          Fixed closed market notification on detail page.
+        </li>
+        <li>
           Removed indeterminate radio button from binary and categorical reports, so that only one Indeterminate option is shown for these events.
         </li>
         <li>
