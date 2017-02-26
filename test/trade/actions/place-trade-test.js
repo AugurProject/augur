@@ -86,7 +86,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
           endDate: 1495317600,
           eventID: 'testEventID1',
           isLoadedMarketInfo: true,
-          isEthical: undefined,
+          isUnethical: undefined,
           reportedOutcome: undefined,
           makerFee: '0.002',
           maxValue: '2',

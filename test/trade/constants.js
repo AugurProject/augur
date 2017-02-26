@@ -1,6 +1,5 @@
 import { assert } from 'chai';
 import { abi } from 'services/augurjs';
-
 export { BINARY, SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types';
 export { BUY, SELL } from 'modules/trade/constants/types';
 export { BID, ASK } from 'modules/bids-asks/constants/bids-asks-types';
@@ -8,7 +7,6 @@ export { BID, ASK } from 'modules/bids-asks/constants/bids-asks-types';
 export const tradeTestState = {
   loginAccount: {
     address: 'testUser1',
-    id: 'testUser1',
     name: 'test',
     loginID: 'longLoginID',
     localNode: false,
@@ -16,8 +14,7 @@ export const tradeTestState = {
     prettyLoginID: 'long...inID',
     ether: '10000.00',
     realEther: '5.0',
-    rep: '50.0',
-    keystore: { id: 'testUser1' }
+    rep: '50.0'
   },
   selectedMarketID: 'testBinaryMarketID',
   marketsData: {
@@ -30,27 +27,20 @@ export const tradeTestState = {
       description: 'test binary market?',
       endDate: 1495317600,
       eventID: 'testEventID1',
-      isEthical: undefined,
+      consensus: null,
       isLoadedMarketInfo: true,
       makerFee: '0.002',
       maxValue: '2',
       minValue: '1',
       network: '2',
-      numEvents: 1,
       numOutcomes: 2,
-      reportedOutcome: undefined,
-      sortOrder: 0,
-      tags: [
-        'binary',
-        'markets',
-        null
-      ],
+      topic: 'binary',
+      tags: ['binary', 'markets', null],
       takerFee: '0.01',
       tradingFee: '0.008',
       tradingPeriod: 8653,
       type: 'binary',
-      volume: '3030',
-      winningOutcomes: []
+      volume: '3030'
     },
     testCategoricalMarketID: {
       author: 'testAuthor2',
@@ -62,24 +52,21 @@ export const tradeTestState = {
       endDate: 2066554498,
       eventID: 'testEventID2',
       extraInfo: 'extra info',
-      isEthical: undefined,
+      consensus: null,
       isLoadedMarketInfo: true,
       makerFee: '0.001000000000000000006',
       maxValue: '2',
       minValue: '1',
       network: '2',
-      numEvents: 1,
       numOutcomes: 4,
-      reportedOutcome: undefined,
       resolution: 'http://lmgtfy.com',
-      sortOrder: 7,
+      topic: 'categorical',
       tags: ['categorical', 'markets', 'test'],
       takerFee: '0.019999999999999999994',
       tradingFee: '0.014',
       tradingPeriod: 11959,
       type: 'categorical',
-      volume: '0',
-      winningOutcomes: []
+      volume: '0'
     },
     testScalarMarketID: {
       author: 'testAuthor3',
@@ -90,28 +77,21 @@ export const tradeTestState = {
       description: 'test scalar market?',
       endDate: 1496514800,
       eventID: 'testEventID3',
-      isEthical: undefined,
+      consensus: null,
       isLoadedMarketInfo: true,
       makerFee: '0.01',
       maxValue: '120',
       minValue: '-10',
       network: '2',
-      numEvents: 1,
       numOutcomes: 2,
-      reportedOutcome: undefined,
       resolution: 'https://www.resolution-of-market.com',
-      sortOrder: 3,
-      tags: [
-        'scalar',
-        'markets',
-        'test'
-      ],
+      topic: 'scalar',
+      tags: ['scalar', 'markets', 'test'],
       takerFee: '0.02',
       tradingFee: '0.02',
       tradingPeriod: 8544,
       type: 'scalar',
-      volume: '0',
-      winningOutcomes: []
+      volume: '0'
     },
   },
   outcomesData: {
