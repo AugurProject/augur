@@ -53,6 +53,27 @@ const LoginMessagePage = p => (
         </li>
       </ol>
       <h2>Technical updates:</h2>
+      <h3>February 26, 2017</h3>
+      <ol>
+        <li>
+          Removed indeterminate radio button from binary and categorical reports, so that only one Indeterminate option is shown for these events.
+        </li>
+        <li>
+          Binary and scalar unethical icon now displays correctly in the market details page for closed markets.
+        </li>
+      </ol>
+      <h3>February 25, 2017</h3>
+      <ol>
+        <li>
+          Simplified the organization of the market(s)Info object from augur.js, and updated the UI to support these changes.
+        </li>
+        <li>
+          Used production instead of development build for public endpoints.
+        </li>
+        <li>
+          Fixed event-already-moved-forward check in augur.js penaltyCatchUp.
+        </li>
+      </ol>
       <h3>February 24, 2017</h3>
       <ol>
         <li>
