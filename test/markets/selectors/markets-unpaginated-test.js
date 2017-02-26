@@ -34,6 +34,7 @@ describe('modules/markets/selectors/markets-unpaginated', () => {
 
     const expected = [{
       isOpen: true,
+      consensus: null,
       description: 'test 1',
       outcomes: [
         { name: 'outcome1' },
@@ -45,6 +46,7 @@ describe('modules/markets/selectors/markets-unpaginated', () => {
       ]
     }, {
       isOpen: true,
+      consensus: null,
       description: 'test 2',
       outcomes: [
         { name: 'outcome3' },
