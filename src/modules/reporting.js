@@ -7,6 +7,7 @@
 
 var clone = require("clone");
 var abi = require("augur-abi");
+var BigNumber = require("bignumber.js");
 var async = require("async");
 var utils = require("../utilities");
 var constants = require("../constants");
@@ -241,26 +242,32 @@ module.exports = {
                 console.log("[penaltyCatchUp] getNumReportsEvent:", numReportsEvent);
               }
               if (parseInt(numReportsEvent, 10) === 0) {
-                self.moveEvent({
-                  branch: branch,
-                  event: event,
-                  onSent: function (r) {
-                    if (self.options.debug.reporting) {
-                      console.log("[penaltyCatchUp] moveEvent sent:", r);
-                    }
-                  },
-                  onSuccess: function (r) {
-                    if (self.options.debug.reporting) {
-                      console.log("[penaltyCatchUp] moveEvent success:", r);
-                    }
-                    nextEvent(null);
-                  },
-                  onFailed: function (e) {
-                    if (self.options.debug.reporting) {
-                      console.error("[penaltyCatchUp] moveEvent failed:", branch, event, e);
-                    }
-                    nextEvent(null);
+                // check to make sure event hasn't been moved forward already
+                self.getExpiration(event, function (expiration) {
+                  if (!new BigNumber(expiration, 10).dividedBy(periodLength).floor().eq(periodToCheck)) {
+                    return nextEvent(null);
                   }
+                  self.moveEvent({
+                    branch: branch,
+                    event: event,
+                    onSent: function (r) {
+                      if (self.options.debug.reporting) {
+                        console.log("[penaltyCatchUp] moveEvent sent:", r);
+                      }
+                    },
+                    onSuccess: function (r) {
+                      if (self.options.debug.reporting) {
+                        console.log("[penaltyCatchUp] moveEvent success:", r);
+                      }
+                      nextEvent(null);
+                    },
+                    onFailed: function (e) {
+                      if (self.options.debug.reporting) {
+                        console.error("[penaltyCatchUp] moveEvent failed:", branch, event, e);
+                      }
+                      nextEvent(null);
+                    }
+                  });
                 });
               } else {
                 self.getEventCanReportOn(branch, periodToCheck, sender, event, function (canReportOn) {

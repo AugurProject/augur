@@ -23603,7 +23603,7 @@ module.exports = function () {
           return fmt;
         case "collectedFees":
           fmt = this.format_common_fields(msg);
-          fmt.cashFeesCollected = abi.unfix(msg.cashFeesCollected, "string");
+          fmt.cashFeesCollected = abi.unfix_signed(msg.cashFeesCollected, "string");
           fmt.newCashBalance = abi.unfix(msg.newCashBalance, "string");
           fmt.lastPeriodRepBalance = abi.unfix(msg.lastPeriodRepBalance, "string");
           fmt.repGain = abi.unfix_signed(msg.repGain, "string");
@@ -24110,7 +24110,7 @@ BigNumber.config({
 var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/slashRep"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register"), require("./modules/topics"), require("./modules/modifyOrderBook"), require("./modules/generateOrderBook")];
 
 function Augur() {
-  this.version = "3.13.2";
+  this.version = "3.13.3";
 
   this.options = {
     debug: {
@@ -27838,6 +27838,7 @@ module.exports = {
 
 var clone = require("clone");
 var abi = require("augur-abi");
+var BigNumber = require("bignumber.js");
 var async = require("async");
 var utils = require("../utilities");
 var constants = require("../constants");
@@ -28070,26 +28071,32 @@ module.exports = {
                 console.log("[penaltyCatchUp] getNumReportsEvent:", numReportsEvent);
               }
               if (parseInt(numReportsEvent, 10) === 0) {
-                self.moveEvent({
-                  branch: branch,
-                  event: event,
-                  onSent: function onSent(r) {
-                    if (self.options.debug.reporting) {
-                      console.log("[penaltyCatchUp] moveEvent sent:", r);
-                    }
-                  },
-                  onSuccess: function onSuccess(r) {
-                    if (self.options.debug.reporting) {
-                      console.log("[penaltyCatchUp] moveEvent success:", r);
-                    }
-                    nextEvent(null);
-                  },
-                  onFailed: function onFailed(e) {
-                    if (self.options.debug.reporting) {
-                      console.error("[penaltyCatchUp] moveEvent failed:", branch, event, e);
-                    }
-                    nextEvent(null);
+                // check to make sure event hasn't been moved forward already
+                self.getExpiration(event, function (expiration) {
+                  if (!new BigNumber(expiration, 10).dividedBy(periodLength).floor().eq(periodToCheck)) {
+                    return nextEvent(null);
                   }
+                  self.moveEvent({
+                    branch: branch,
+                    event: event,
+                    onSent: function onSent(r) {
+                      if (self.options.debug.reporting) {
+                        console.log("[penaltyCatchUp] moveEvent sent:", r);
+                      }
+                    },
+                    onSuccess: function onSuccess(r) {
+                      if (self.options.debug.reporting) {
+                        console.log("[penaltyCatchUp] moveEvent success:", r);
+                      }
+                      nextEvent(null);
+                    },
+                    onFailed: function onFailed(e) {
+                      if (self.options.debug.reporting) {
+                        console.error("[penaltyCatchUp] moveEvent failed:", branch, event, e);
+                      }
+                      nextEvent(null);
+                    }
+                  });
                 });
               } else {
                 self.getEventCanReportOn(branch, periodToCheck, sender, event, function (canReportOn) {
@@ -28247,7 +28254,7 @@ module.exports = {
     });
   }
 };
-},{"../constants":65,"../utilities":99,"async":118,"augur-abi":1,"clone":159}],90:[function(require,module,exports){
+},{"../constants":65,"../utilities":99,"async":118,"augur-abi":1,"bignumber.js":121,"clone":159}],90:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -47028,6 +47035,7 @@ module.exports = {
 
 var clone = require("clone");
 var abi = require("augur-abi");
+var BigNumber = require("bignumber.js");
 var async = require("async");
 var utils = require("../utilities");
 var constants = require("../constants");
@@ -47262,26 +47270,32 @@ module.exports = {
                 console.log("[penaltyCatchUp] getNumReportsEvent:", numReportsEvent);
               }
               if (parseInt(numReportsEvent, 10) === 0) {
-                self.moveEvent({
-                  branch: branch,
-                  event: event,
-                  onSent: function (r) {
-                    if (self.options.debug.reporting) {
-                      console.log("[penaltyCatchUp] moveEvent sent:", r);
-                    }
-                  },
-                  onSuccess: function (r) {
-                    if (self.options.debug.reporting) {
-                      console.log("[penaltyCatchUp] moveEvent success:", r);
-                    }
-                    nextEvent(null);
-                  },
-                  onFailed: function (e) {
-                    if (self.options.debug.reporting) {
-                      console.error("[penaltyCatchUp] moveEvent failed:", branch, event, e);
-                    }
-                    nextEvent(null);
+                // check to make sure event hasn't been moved forward already
+                self.getExpiration(event, function (expiration) {
+                  if (!new BigNumber(expiration, 10).dividedBy(periodLength).floor().eq(periodToCheck)) {
+                    return nextEvent(null);
                   }
+                  self.moveEvent({
+                    branch: branch,
+                    event: event,
+                    onSent: function (r) {
+                      if (self.options.debug.reporting) {
+                        console.log("[penaltyCatchUp] moveEvent sent:", r);
+                      }
+                    },
+                    onSuccess: function (r) {
+                      if (self.options.debug.reporting) {
+                        console.log("[penaltyCatchUp] moveEvent success:", r);
+                      }
+                      nextEvent(null);
+                    },
+                    onFailed: function (e) {
+                      if (self.options.debug.reporting) {
+                        console.error("[penaltyCatchUp] moveEvent failed:", branch, event, e);
+                      }
+                      nextEvent(null);
+                    }
+                  });
                 });
               } else {
                 self.getEventCanReportOn(branch, periodToCheck, sender, event, function (canReportOn) {
@@ -47440,7 +47454,7 @@ module.exports = {
   }
 };
 
-},{"../constants":279,"../utilities":281,"async":118,"augur-abi":1,"clone":159}],281:[function(require,module,exports){
+},{"../constants":279,"../utilities":281,"async":118,"augur-abi":1,"bignumber.js":121,"clone":159}],281:[function(require,module,exports){
 (function (process,Buffer){
 "use strict";
 
