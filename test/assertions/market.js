@@ -38,11 +38,6 @@ export default function (market) {
       assert.isString(market.description);
     });
 
-    it('market.resolutionSource', () => {
-      assert.isDefined(market.resolutionSource);
-      assert.isString(market.resolutionSource);
-    });
-
     it('market.extraInfo', () => {
       assert.isDefined(market.extraInfo);
       assert.isString(market.extraInfo);

@@ -8,6 +8,9 @@ import shareDenominationLabel from 'utils/share-denomination-label';
 
 const MarketDetails = (p) => {
   const outcomeName = getValue(p, 'consensus.outcomeName');
+  const outcomeID = getValue(p, 'consensus.outcomeID');
+  const isUnethical = getValue(p, 'consensus.isUnethical');
+  const percentCorrect = getValue(p, 'consensus.percentCorrect');
 
   const outstandingShares = setShareDenomination(getValue(p, 'outstandingShares.formatted'), p.selectedShareDenomination);
   const shareDenomination = shareDenominationLabel(p.selectedShareDenomination, p.shareDenominations);
@@ -18,8 +21,8 @@ const MarketDetails = (p) => {
         {p.type === 'binary' && outcomeName &&
           <li className="property outcome">
             <span className="property-label">consensus</span>
-            <span className="property-value">{outcomeName} (<ValueDenomination {...p.consensus.percentCorrect} />)</span>
-            <ReportEthics isUnethical={p.consensus.isUnethical} />
+            <span className="property-value">{outcomeName} (<ValueDenomination {...percentCorrect} />)</span>
+            <ReportEthics isUnethical={isUnethical} />
           </li>
         }
         {p.type === 'categorical' && outcomeName &&
@@ -27,15 +30,15 @@ const MarketDetails = (p) => {
             <span className="property-label">consensus</span>
             <span className="property-value">
               {outcomeName}
-              <ReportEthics isUnethical={p.consensus.isUnethical} />
+              <ReportEthics isUnethical={isUnethical} />
             </span>
           </li>
         }
-        {p.type === 'scalar' && p.consensus.outcomeID &&
+        {p.type === 'scalar' && outcomeID &&
           <li className="property outcome">
             <span className="property-label">consensus</span>
-            <span className="property-value">{p.consensus.outcomeID}</span>
-            <ReportEthics isUnethical={p.consensus.isUnethical} />
+            <span className="property-value">{outcomeID}</span>
+            <ReportEthics isUnethical={isUnethical} />
           </li>
         }
         {p.author != null &&
