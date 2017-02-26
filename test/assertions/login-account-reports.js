@@ -2,7 +2,7 @@ import { describe, it } from 'mocha';
 import { assert } from 'chai';
 
 export default function (loginAccountReports) {
-  describe(`augur-ui-react-components loginAccountReports' shape`, () => {
+  describe(`loginAccountReports' shape`, () => {
     assert.isDefined(loginAccountReports);
     assert.isObject(loginAccountReports);
 

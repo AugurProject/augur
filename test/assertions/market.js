@@ -12,7 +12,7 @@ export default function (market) {
     return;
   }
 
-  describe('augur-ui-react-components market state', () => {
+  describe('market state', () => {
     it('market', () => {
       assert.isDefined(market);
       assert.isObject(market);

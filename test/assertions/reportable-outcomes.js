@@ -2,7 +2,7 @@ import { describe, it } from 'mocha';
 import { assert } from 'chai';
 
 export default function (reportableOutcomes) {
-  describe(`augur-ui-react-components reportableOutcomes' shape`, () => {
+  describe(`reportableOutcomes' shape`, () => {
     assert.isDefined(reportableOutcomes, `'reportableOutcomes' is not defined`);
     assert.isArray(reportableOutcomes, `'reportableOutcomes' is not an array`);
 

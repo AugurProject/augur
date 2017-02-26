@@ -2,7 +2,7 @@ import { describe, it } from 'mocha';
 import { assert } from 'chai';
 
 export default function (orderCancellation) {
-  describe('augur-ui-react-components orderCancellation', () => {
+  describe('orderCancellation', () => {
     it('orderCancellation', () => {
       assert.isObject(orderCancellation);
     });

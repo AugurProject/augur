@@ -5,7 +5,7 @@ import assertFormattedDate from 'assertions/common/formatted-date';
 import assertMarketLink from 'assertions/common/market-link';
 
 export default function (myMarkets) {
-  describe(`augur-ui-react-components myMarkets' shape`, () => {
+  describe(`myMarkets' shape`, () => {
     assert.isDefined(myMarkets);
     assert.isArray(myMarkets);
 
