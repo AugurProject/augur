@@ -73,7 +73,6 @@ export default class ReportForm extends Component {
           <span className="indeterminate-message">
             If this question is subjective, vague, or did not have a clear answer on the end date above, you should report indeterminate.
           </span>
-
           <Checkbox
             className={classnames('indeterminate-checkbox', { disabled: s.isReported })}
             text="Yes, this question is indeterminate"
