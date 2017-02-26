@@ -86,7 +86,7 @@ const MarketDetails = (p) => {
           <ValueDate className="property-value" {...p.creationTime} />
         </li>
       </ul>
-      {!!p.reportedOutcome &&
+      {!!p.consensus &&
         <div className="reported-outcome">
           <hr />
           <center><h4>This market is closed.</h4></center>
