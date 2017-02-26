@@ -21,8 +21,10 @@ const MarketDetails = (p) => {
         {p.type === 'binary' && outcomeName &&
           <li className="property outcome">
             <span className="property-label">consensus</span>
-            <span className="property-value">{outcomeName} (<ValueDenomination {...percentCorrect} />)</span>
-            <ReportEthics isUnethical={isUnethical} />
+            <span className="property-value">
+              {outcomeName} (<ValueDenomination {...percentCorrect} />)
+              <ReportEthics isUnethical={isUnethical} />
+            </span>
           </li>
         }
         {p.type === 'categorical' && outcomeName &&
@@ -37,8 +39,10 @@ const MarketDetails = (p) => {
         {p.type === 'scalar' && outcomeID &&
           <li className="property outcome">
             <span className="property-label">consensus</span>
-            <span className="property-value">{outcomeID}</span>
-            <ReportEthics isUnethical={isUnethical} />
+            <span className="property-value">
+              {outcomeID}
+              <ReportEthics isUnethical={isUnethical} />
+            </span>
           </li>
         }
         {p.author != null &&
