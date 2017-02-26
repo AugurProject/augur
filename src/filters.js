@@ -57,7 +57,7 @@ module.exports = function () {
           return fmt;
         case "collectedFees":
           fmt = this.format_common_fields(msg);
-          fmt.cashFeesCollected = abi.unfix(msg.cashFeesCollected, "string");
+          fmt.cashFeesCollected = abi.unfix_signed(msg.cashFeesCollected, "string");
           fmt.newCashBalance = abi.unfix(msg.newCashBalance, "string");
           fmt.lastPeriodRepBalance = abi.unfix(msg.lastPeriodRepBalance, "string");
           fmt.repGain = abi.unfix_signed(msg.repGain, "string");
