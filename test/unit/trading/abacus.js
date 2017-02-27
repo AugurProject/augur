@@ -700,9 +700,62 @@ describe("abacus.makeTradeHash", function() {
 describe("abacus.parseMarketInfo", function() {
   var test = function(t) {
     it(JSON.stringify(t), function() {
+      // the following if statements setup the rawInfo's shape correctly with description/resolution/extraInfo
+      if (t.description) t.rawInfo.splice.apply(t.rawInfo, [t.rawInfo.length - 2, 0].concat(t.description));
+      if (t.resolution) t.rawInfo.splice.apply(t.rawInfo, [t.rawInfo.length - 1, 0].concat(t.resolution));
+      if (t.extraInfo) t.rawInfo.push.apply(t.rawInfo, t.extraInfo);
+
       t.assertions(abacus.parseMarketInfo(t.rawInfo));
     });
   };
+  // marketInfo[0] = marketID
+  // marketInfo[1] = MARKETS.getMakerFees(marketID)
+  // marketInfo[2] = numOutcomes
+  // marketInfo[3] = MARKETS.getTradingPeriod(marketID)
+  // marketInfo[4] = MARKETS.getTradingFee(marketID)
+  // marketInfo[5] = MARKETS.getBranchID(marketID)
+  // marketInfo[6] = MARKETS.getCumScale(marketID)
+  // marketInfo[7] = MARKETS.getCreationTime(marketID)
+  // marketInfo[8] = MARKETS.getVolume(marketID)
+  // marketInfo[9] = INFO.getCreationFee(marketID)
+  // marketInfo[10] = INFO.getCreator(marketID)
+  // tags = MARKETS.returnTags(marketID, outitems=3)
+  // marketInfo[11] = tags[0]
+  // marketInfo[12] = tags[1]
+  // marketInfo[13] = tags[2]
+  // marketInfo[14] = eventID
+  // marketInfo[15] = endDate
+  // marketInfo[16] = rawReport fixed.
+  // marketInfo[17] = minValue
+  // marketInfo[18] = maxValue
+  // marketInfo[19] = unused in this function.
+  // marketInfo[20] = fixed EventBond
+  // marketInfo[21] = isUnethical
+  // makretInfo[22] = proportionCorrect
+
+  // here's where things are out of place depending on the market. the next groups of 3 positions are outcomes. so a binary market containing just 2 outcomes would look like so:
+
+  // marketInfo[23] = outcome1.outstandingShares
+  // marketInfo[24] = outcome1.price
+  // marketInfo[25] = outcome1.sharesPurchased
+  // marketInfo[26] = outcome2.outstandingShares
+  // marketInfo[27] = outcome2.price
+  // marketInfo[28] = outcome2.sharesPurchased
+
+  // after outcomes are complete the next entry will be the description length in hex, then the description byte array as individual entries in the rawInfo array.
+
+  // marketInfo[29] = description length in hex
+  // marketInfo[30] = Description byte array start
+
+  // next two entries are vairiable depending on the length of the previous entry, so description for resolution...
+
+  // marketInfo[?? - 1] = resolution length in hex
+  // marketInfo[??] = resolution
+
+  // and resolution for extraInfo...
+
+  // marketInfo[??? - 1] = extraInfo length in hex
+  // marketInfo[???] = extraInfo
   test({
     rawInfo: [],
     assertions: function(info) {
@@ -710,52 +763,171 @@ describe("abacus.parseMarketInfo", function() {
     }
   });
   test({
-    rawInfo: ['0xa1', new BigNumber('1000000000000000'), '2', 1500000, '26666666666666666', '1010101', '1000000000000000000', 1000000, '10000000000000000000000', '25000000000000000000', '0xabc123', abi.short_string_to_int256('tag1'), abi.short_string_to_int256('tag2'), abi.short_string_to_int256('tag3'), '0xf1', 1600000, '1', '1', '2', '2', '100000000000000000000', '10000000000000000000', '20000000000000000000', '5000000', 5000000000000000000, '50000000000000000000', '5000000', 4500000000000000000, '40000000000000000000'],
+    rawInfo: ['0xa1', abi.fix('0.23'), '2', 1500000, abi.fix('0.026'), '0xb1', abi.fix('1'), 1000000, abi.fix('10000'), abi.fix('0.0375'), '0xabc123', abi.short_string_to_int256('tag1'), abi.short_string_to_int256('tag2'), abi.short_string_to_int256('tag3'), '0xf1', 1600000, abi.fix('0'), abi.fix('1'), abi.fix('200'), undefined, abi.fix('3.5'), abi.fix('1'), abi.fix('0'), abi.fix('0'), abi.fix('100'), abi.fix('9500.00'), abi.fix('0'), abi.fix('101'), abi.fix('500.0'), '29', '1b', '35'],
+    description: abi.hex_to_bytes(abi.hex('This is a scalar market that has a report')),
+    resolution: abi.hex_to_bytes(abi.hex('https://www.resolutions.com')),
+    extraInfo: abi.hex_to_bytes(abi.hex('This is extra information used to help with reporting')),
     assertions: function(info) {
       assert.deepEqual(info, {
       	id: '0x00000000000000000000000000000000000000000000000000000000000000a1',
       	network: undefined,
-      	makerFee: '0.000026666666666666666',
-      	takerFee: '0.039973333333333332334',
-      	tradingFee: '0.026666666666666666',
+      	makerFee: '0.00598',
+      	takerFee: '0.03302',
+      	tradingFee: '0.026',
       	numOutcomes: 2,
       	tradingPeriod: 22020096,
-      	branchID: '1010101',
+      	branchID: '0xb1',
       	cumulativeScale: '1',
       	creationTime: 16777216,
       	volume: '10000',
-      	creationFee: '25',
+      	creationFee: '0.0375',
       	author: '0x0000000000000000000000000000000000abc123',
+      	topic: 'tag1',
       	tags: ['tag1', 'tag2', 'tag3'],
-        topic: 'tag1',
+      	minValue: '1',
+      	maxValue: '200',
+      	endDate: 23068672,
+      	eventID: '0x00000000000000000000000000000000000000000000000000000000000000f1',
+      	eventBond: '3.5',
+      	type: 'scalar',
+      	consensus: null,
       	outcomes: [{
       			id: 1,
-      			outstandingShares: '0.000000000005',
-      			price: '5',
-      			sharesPurchased: '50'
+      			outstandingShares: '0',
+      			price: '100',
+      			sharesPurchased: '9500'
       		},
       		{
       			id: 2,
-      			outstandingShares: '0.000000000005',
-      			price: '4.5',
-      			sharesPurchased: '40'
+      			outstandingShares: '0',
+      			price: '101',
+      			sharesPurchased: '500'
       		}
       	],
-      	type: 'scalar',
-      	endDate: 23068672,
-      	minValue: '0.000000000000000001',
-      	maxValue: '0.000000000000000002',
-      	eventID: '0x00000000000000000000000000000000000000000000000000000000000000f1',
-      	eventBond: '100',
-        consensus: {
-          outcomeID: '0',
-          proportionCorrect: '20',
-          isIndeterminate: false,
-          isUnethical: false
-        }
+      	description: 'This is a scalar market that has a report',
+      	resolutionSource: 'https://www.resolutions.com',
+      	extraInfo: 'This is extra information used to help with reporting'
       });
     }
   });
+  test({
+    rawInfo: [
+    	'0xa2', abi.fix('0.37'), '2', 1500000, abi.fix('0.03'), '0xb1', abi.fix('1'), 1000000, abi.fix('2500.00'), abi.fix('0.035'), '0xabc123', abi.short_string_to_int256('tag1'), abi.short_string_to_int256('tag2'), abi.short_string_to_int256('tag3'), '0xf1', 1600000, abi.fix('0'), abi.fix('1'), abi.fix('2'), undefined, abi.fix('3.53'), abi.fix('1'), abi.fix('0'), abi.fix('1000'), abi.fix('0.45'), abi.fix('1000'), abi.fix('500'), abi.fix('0.55'), abi.fix('1500'), '18', '1b', '1e'
+    ],
+    description: abi.hex_to_bytes(abi.hex('This describes my market')),
+    resolution: abi.hex_to_bytes(abi.hex('https://www.resolutions.com')),
+    extraInfo: abi.hex_to_bytes(abi.hex('This is some extra information')),
+    assertions: function(info) {
+      assert.deepEqual(info, {
+      	id: '0x00000000000000000000000000000000000000000000000000000000000000a2',
+      	network: undefined,
+      	makerFee: '0.0111',
+      	takerFee: '0.0339',
+      	tradingFee: '0.03',
+      	numOutcomes: 2,
+      	tradingPeriod: 22020096,
+      	branchID: '0xb1',
+      	cumulativeScale: '1',
+      	creationTime: 16777216,
+      	volume: '2500',
+      	creationFee: '0.035',
+      	author: '0x0000000000000000000000000000000000abc123',
+      	topic: 'tag1',
+      	tags: ['tag1', 'tag2', 'tag3'],
+      	minValue: '1',
+      	maxValue: '2',
+      	endDate: 23068672,
+      	eventID: '0x00000000000000000000000000000000000000000000000000000000000000f1',
+      	eventBond: '3.53',
+      	type: 'binary',
+      	consensus: null,
+      	outcomes: [{
+      			id: 1,
+      			outstandingShares: '1000',
+      			price: '0.45',
+      			sharesPurchased: '1000'
+      		},
+      		{
+      			id: 2,
+      			outstandingShares: '500',
+      			price: '0.55',
+      			sharesPurchased: '1500'
+      		}
+      	],
+      	description: 'This describes my market',
+      	resolutionSource: 'https://www.resolutions.com',
+      	extraInfo: 'This is some extra information'
+      });
+    }
+  });
+  test({
+    rawInfo: [
+      '0xa3', abi.fix('0.37'), '4', 1500000, abi.fix('0.03'), '0xb1', abi.fix('1'), 1000000, abi.fix('5000.00'), abi.fix('0.029'), '0xabc123', abi.short_string_to_int256('tag1'), abi.short_string_to_int256('tag2'), abi.short_string_to_int256('tag3'), '0xf1', 1600000, abi.fix('4'), abi.fix('1'), abi.fix('4'), undefined, abi.fix('3.53'), abi.fix('1'), abi.fix('0.99'), abi.fix('0'), abi.fix('0.05'), abi.fix('500'), abi.fix('0'), abi.fix('0.05'), abi.fix('800'), abi.fix('0'), abi.fix('0.05'), abi.fix('200'), abi.fix('0'), abi.fix('0.85'), abi.fix('3500'), abi.strip_0x(abi.hex('33')), '1b', abi.strip_0x(abi.hex('59'))
+    ],
+    description: abi.hex_to_bytes(abi.hex('Generally, What color is the sky?')),
+    resolution: abi.hex_to_bytes(abi.hex('https://www.resolutions.com')),
+    extraInfo: abi.hex_to_bytes(abi.hex('This is some extra information about my categorical market.')),
+    assertions: function(info) {
+      assert.deepEqual(info, {
+      	id: '0x00000000000000000000000000000000000000000000000000000000000000a3',
+      	network: undefined,
+      	makerFee: '0.0111',
+      	takerFee: '0.0339',
+      	tradingFee: '0.03',
+      	numOutcomes: 4,
+      	tradingPeriod: 22020096,
+      	branchID: '0xb1',
+      	cumulativeScale: '1',
+      	creationTime: 16777216,
+      	volume: '5000',
+      	creationFee: '0.029',
+      	author: '0x0000000000000000000000000000000000abc123',
+      	topic: 'tag1',
+      	tags: ['tag1', 'tag2', 'tag3'],
+      	minValue: '1',
+      	maxValue: '4',
+      	endDate: 23068672,
+      	eventID: '0x00000000000000000000000000000000000000000000000000000000000000f1',
+      	eventBond: '3.53',
+      	type: 'categorical',
+      	consensus: {
+      		outcomeID: '4',
+      		isIndeterminate: false,
+      		isUnethical: false,
+      		proportionCorrect: '0.99'
+      	},
+      	outcomes: [{
+      			id: 1,
+      			outstandingShares: '0',
+      			price: '0.05',
+      			sharesPurchased: '500'
+      		},
+      		{
+      			id: 2,
+      			outstandingShares: '0',
+      			price: '0.05',
+      			sharesPurchased: '800'
+      		},
+      		{
+      			id: 3,
+      			outstandingShares: '0',
+      			price: '0.05',
+      			sharesPurchased: '200'
+      		},
+      		{
+      			id: 4,
+      			outstandingShares: '0',
+      			price: '0.85',
+      			sharesPurchased: '3500'
+      		}
+      	],
+      	description: 'Generally, What color is the sky?',
+      	resolutionSource: 'https://www.resolutions.com',
+      	extraInfo: 'This is some extra information about my categorical market.'
+      });
+    }
+  });
+
 });
 
 describe("abacus.formatTag", function() {
@@ -862,6 +1034,40 @@ describe("abacus.calculateRequiredMarketValue", function() {
     gasPrice: '0.53',
     assertions: function(marketValue) {
       assert.deepEqual(marketValue, '0xdbf88');
+    }
+  });
+});
+
+describe("abacus.calculateMakerTakerFees", function() {
+  var test = function(t) {
+    it(JSON.stringify(t), function() {
+      t.assertions(abacus.calculateMakerTakerFees(t.tradingFee, t.makerProportionOfFee, t.isUnfixed, t.returnBigNumber));
+    });
+  };
+  test({
+    tradingFee: abi.fix('0.03'),
+    makerProportionOfFee: abi.fix('0.67'),
+    isUnfixed: false,
+    returnBigNumber: true,
+    assertions: function(makerTaker) {
+      assert.deepEqual(JSON.stringify(makerTaker), JSON.stringify({
+        trading: abi.bignum('0.03'),
+        maker: abi.bignum('0.0201'),
+        taker: abi.bignum('0.0249')
+      }));
+    }
+  });
+  test({
+    tradingFee: '0.026',
+    makerProportionOfFee: '0.392',
+    isUnfixed: true,
+    returnBigNumber: false,
+    assertions: function(makerTaker) {
+      assert.deepEqual(JSON.stringify(makerTaker), JSON.stringify({
+        trading: '0.026',
+        maker: '0.010192',
+        taker: '0.028808'
+      }));
     }
   });
 });
