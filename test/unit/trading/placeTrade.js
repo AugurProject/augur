@@ -4,7 +4,8 @@ var assert = require('chai').assert;
 var augur = require('../../../src');
 var abi = require("augur-abi");
 var noop = require("../../../src/utilities").noop;
-// 4 tests total
+var ClearCallCounts = require('../../tools.js').ClearCallCounts;
+// 15 tests total
 
 describe("placeTrade.generateTradeGroupID", function() {
   // 1 test total
@@ -261,16 +262,9 @@ describe("placeTrade.placeTrade", function() {
     calculateSellTradeIDs: 0,
     getParticipantSharesPurchased: 0
   };
-  // a function to quickly reset the callCounts object.
-  function ClearCallCounts() {
-    var keys = Object.keys(callCounts);
-    for (keys in callCounts) {
-      callCounts[keys] = 0;
-    }
-  };
   afterEach(function() {
     // Clear the counts object after each test.
-    ClearCallCounts();
+    ClearCallCounts(callCounts);
     augur.placeBuy = placeBuy;
     augur.placeBid = placeBid;
     augur.placeSell = placeSell;
@@ -827,6 +821,79 @@ describe("placeTrade.placeTrade", function() {
         placeBid: 0,
         placeSell: 0,
         placeAsk: 0,
+        placeShortAsk: 0,
+        placeAskAndShortAsk: 0,
+        placeShortSell: 0,
+        calculateBuyTradeIDs: 0,
+        calculateSellTradeIDs: 1,
+        getParticipantSharesPurchased: 1
+      });
+    }
+  });
+  test({
+    description: 'Should not place a trade if we have a position to sell but no buy orders on the book, we also have doNotMakeOrders set to false.',
+    market: { id: '0xa1', type: 'binary' },
+    outcomeID: '1',
+    tradeType: 'sell',
+    numShares: '100',
+    limitPrice: '0.5',
+    tradingFees: '0.01',
+    address: '0x1',
+    totalCost: '50',
+    getOrderBooks: function () {
+      return { '0xa1': { buy: {}, sell: {} } };
+    },
+    doNotMakeOrders: false,
+    tradeGroupID: '0x000abc123',
+    tradeCommitmentCallback: noop,
+    tradeCommitLockCallback: noop,
+    placeBuy: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback) {
+      callCounts.placeBuy++;
+      callback(null);
+    },
+    placeBid: function(market, outcomeID, numShares, limitPrice, tradeGroupID, callback) {
+      callCounts.placeBid++;
+      callback(null);
+    },
+    placeSell: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback) {
+      callCounts.placeSell++;
+      callback(null);
+    },
+    placeAsk: function(market, outcomeID, askShares, limitPrice, tradeGroupID, callback) {
+      callCounts.placeAsk++;
+      callback(null);
+    },
+    placeShortAsk: function(market, outcomeID, shortAskShares, limitPrice, tradeGroupID, callback) {
+      callCounts.placeShortAsk++;
+      callback(null);
+    },
+    placeShortSell: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback) {
+      callCounts.placeShortSell++;
+      callback(null);
+    },
+    placeAskAndShortAsk: function (market, outcomeID, askShares, shortAskShares, limitPrice, tradeGroupID, callback) {
+      callCounts.placeAskAndShortAsk++;
+      callback(null);
+    },
+    calculateBuyTradeIDs: function(marketID, outcomeID, limitPrice, orderBooks, address) {
+      callCounts.calculateBuyTradeIDs++;
+    },
+    calculateSellTradeIDs: function(marketID, outcomeID, limitPrice, orderBooks, address) {
+      callCounts.calculateSellTradeIDs++;
+      return [];
+    },
+    getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
+      callCounts.getParticipantSharesPurchased++;
+      cb('100');
+    },
+    assertions: function(err) {
+      assert.isNull(err);
+      // check the entire callCounts object so that we know we didn't accidently call anything...
+      assert.deepEqual(callCounts, {
+        placeBuy: 0,
+        placeBid: 0,
+        placeSell: 0,
+        placeAsk: 1,
         placeShortAsk: 0,
         placeAskAndShortAsk: 0,
         placeShortSell: 0,
