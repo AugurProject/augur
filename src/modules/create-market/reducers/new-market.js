@@ -8,8 +8,7 @@ const DEFAULT_STATE = {
 export default function (newMarket = DEFAULT_STATE, action) {
   switch (action.type) {
     case ADD_VALIDATION_TO_NEW_MARKET: {
-      console.log('add validation -- ', action.data);
-      if (newMarket.validations.indexOf(action.data) !== -1) {
+      if (newMarket.validations.indexOf(action.data) === -1) {
         return {
           ...newMarket,
           validations: [
@@ -21,7 +20,6 @@ export default function (newMarket = DEFAULT_STATE, action) {
       return newMarket;
     }
     case REMOVE_VALIDATION_FROM_NEW_MARKET: {
-      console.log('remove validation -- ', action.data);
       if (newMarket.validations.indexOf(action.data) !== -1) {
         return {
           ...newMarket,

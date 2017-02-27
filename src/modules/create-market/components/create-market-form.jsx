@@ -40,6 +40,7 @@ export default class CreateMarketForm extends Component {
   }
 
   componentWillUpdate(nextProps) {
+    console.log('nextProps -- ', nextProps);
     if (this.state.newMarket !== nextProps.newMarket) this.setState({ newMarket: nextProps.newMarket });
   }
 
@@ -61,6 +62,7 @@ export default class CreateMarketForm extends Component {
             'from-left': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_TYPE,
           })}
           type={s.newMarket.type}
+          addValidationToNewMarket={p.addValidationToNewMarket}
           updateNewMarket={p.updateNewMarket}
         />
         <CreateMarketFormDescription

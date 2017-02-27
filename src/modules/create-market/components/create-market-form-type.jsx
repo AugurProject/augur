@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
+import { NEW_MARKET_TYPE, NEW_MARKET_OUTCOMES } from 'modules/create-market/constants/new-market-creation-steps';
 
 const CreateMarketFormType = p => (
   <article className={`create-market-form-part ${p.className || ''}`}>
@@ -8,6 +9,8 @@ const CreateMarketFormType = p => (
     <button
       className="unstyled market-type"
       onClick={() => {
+        p.addValidationToNewMarket(NEW_MARKET_TYPE);
+        p.addValidationToNewMarket(NEW_MARKET_OUTCOMES);
         p.updateNewMarket({
           currentStep: 1,
           type: BINARY
@@ -22,6 +25,7 @@ const CreateMarketFormType = p => (
     <button
       className="unstyled market-type"
       onClick={() => {
+        p.addValidationToNewMarket(NEW_MARKET_TYPE);
         p.updateNewMarket({
           currentStep: 1,
           type: CATEGORICAL
@@ -36,6 +40,7 @@ const CreateMarketFormType = p => (
     <button
       className="unstyled market-type"
       onClick={() => {
+        p.addValidationToNewMarket(NEW_MARKET_TYPE);
         p.updateNewMarket({
           currentStep: 1,
           type: SCALAR
