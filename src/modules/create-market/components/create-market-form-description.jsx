@@ -17,15 +17,11 @@ export default class CreateMarketFormDescription extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.description !== nextProps.description) {
-      this.validateForm(nextProps.description);
-    }
+    if (this.props.description !== nextProps.description) this.validateForm(nextProps.description);
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (this.state.errors !== nextState.errors) {
-      this.updateValidity(nextState.errors.length);
-    }
+    if (this.state.errors !== nextState.errors) nextProps.updateValidity(!nextState.errors.length);
   }
 
   validateForm(description) {

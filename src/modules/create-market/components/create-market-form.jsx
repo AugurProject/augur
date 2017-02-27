@@ -5,11 +5,11 @@ import CreateMarketFormButtons from 'modules/create-market/components/create-mar
 import CreateMarketFormType from 'modules/create-market/components/create-market-form-type';
 import CreateMarketFormDescription from 'modules/create-market/components/create-market-form-description';
 
+import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
 import {
-  newMarketCreationOrder,
   NEW_MARKET_TYPE,
   NEW_MARKET_DESCRIPTION
-} from 'modules/create-market/constants/new-market-creation-order';
+} from 'modules/create-market/constants/new-market-creation-steps';
 
 export default class CreateMarketForm extends Component {
   static propTypes = {
@@ -25,7 +25,7 @@ export default class CreateMarketForm extends Component {
       currentStep: props.newMarket.currentStep,
       stepIncreasing: null,
       canAnimate: false,
-      isValid: null
+      isValid: false
     };
   }
 
@@ -77,9 +77,12 @@ export default class CreateMarketForm extends Component {
           updateNewMarket={p.updateNewMarket}
         />
         <CreateMarketFormButtons
+          currentStep={s.newMarket.currentStep}
           isValid={s.isValid}
-          validations={p.validations}
+          validations={s.newMarket.validations}
           resetValidity={() => this.resetValidity()}
+          addValidationToNewMarket={p.addValidationToNewMarket}
+          removeValidationFromNewMarket={p.removeValidationFromNewMarket}
           updateNewMarket={p.updateNewMarket}
         />
       </article>

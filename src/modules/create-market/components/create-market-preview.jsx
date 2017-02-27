@@ -1,12 +1,11 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
-
+import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
 import {
-  newMarketCreationOrder,
   NEW_MARKET_DESCRIPTION
-} from 'modules/create-market/constants/new-market-creation-order';
+} from 'modules/create-market/constants/new-market-creation-steps';
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
 
 
 // NOTE --  Discrete component due to vastly different functionality as compared to `market-preview.jsx`
