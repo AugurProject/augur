@@ -49,7 +49,7 @@ export function loadReport(branchID, period, eventID, marketID, callback) {
           if (err) return callback(err);
           console.log('decryptedReport:', decryptedReport);
           if (decryptedReport.reportedOutcomeID) {
-            const { report, isIndeterminate } = augur.unfixRawReport(
+            const { report, isIndeterminate } = augur.unfixReport(
               decryptedReport.reportedOutcomeID,
               market.minValue,
               market.maxValue,
