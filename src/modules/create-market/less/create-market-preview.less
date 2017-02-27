@@ -3,10 +3,22 @@
 
   margin: 0 0 2em;
 
-  .isNull {
+  &.preview-is-hidden {
+    display: none;
+  }
+
+  &.preview-is-visible {
+    display: flex;
+  }
+
+  .is-null {
     background-color: @color-gray-muted;
     border-radius: 1em;
     padding: 0.6em;
+  }
+
+  .has-value {
+    // TODO
   }
 
   .create-market-details {
@@ -22,7 +34,7 @@
       li {
         align-self: flex-start;
 
-        &.isNull {
+        &.is-null {
           flex-basis: 5%;
           margin-right: 0.4em;
         }
@@ -35,10 +47,11 @@
 
     .create-market-properties {
       display: flex;
+
       li {
         align-self: flex-start;
 
-        &.isNull {
+        &.is-null {
           flex-basis: 10%;
           margin-right: 0.4em;
         }

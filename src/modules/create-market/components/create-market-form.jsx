@@ -1,38 +1,60 @@
 import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 
+import CreateMarketFormType from 'modules/create-market/components/create-market-form-type';
+
+import { newMarketCreationOrder, NEW_MARKET_TYPE } from 'modules/create-market/constants/new-market-creation-order';
+
 export default class CreateMarketForm extends Component {
   static propTypes = {
-    newMarket: PropTypes.object.isRequired
+    newMarket: PropTypes.object.isRequired,
+    updateNewMarket: PropTypes.func.isRequired
   }
 
   constructor(props) {
     super(props);
 
     this.state = {
-      currentStep: props.newMarket.step,
+      newMarket: props.newMarket,
+      currentStep: props.newMarket.currentStep,
       stepIncreasing: null,
       canAnimate: false
     };
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.newMarket.step !== this.props.newMarket.step) {
+    if (nextProps.newMarket.currentStep !== this.props.newMarket.currentStep) {
       this.setState({
-        currentStep: nextProps.newMarket.step,
-        stepIncreasing: nextProps.newMarket.step > this.props.newMarket.step,
-        canAnimate: nextProps.newMarket.step > 1
+        currentStep: nextProps.newMarket.currentStep,
+        stepIncreasing: nextProps.newMarket.currentStep > this.props.newMarket.currentStep,
+        canAnimate: nextProps.newMarket.currentStep > 1
       });
     }
+  }
+
+  componentWillUpdate(nextProps) {
+    if (this.state.newMarket !== nextProps.newMarket) this.setState({ newMarket: nextProps.newMarket });
   }
 
   render() {
     const p = this.props;
     const s = this.state;
 
+    console.log('current step -- ', newMarketCreationOrder[s.currentStep]);
+
     return (
-      <article className="create-market-form">
-        <span>Create Market Form</span>
+      <article className={classNames('create-market-form', { 'no-preview': s.currentStep === 0 })}>
+        <CreateMarketFormType
+          className={classNames({
+            'hide-form': newMarketCreationOrder[s.currentStep] !== NEW_MARKET_TYPE,
+            'to-left': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_TYPE,
+            'display-form': newMarketCreationOrder[s.currentStep] === NEW_MARKET_TYPE,
+            'from-left': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_TYPE,
+          })}
+          type={s.newMarket.type}
+          updateNewMarket={p.updateNewMarket}
+          progressToNextStep={p.progressToNextStep}
+        />
       </article>
     );
   }

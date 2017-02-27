@@ -1,75 +1,91 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
+
 // NOTE --  Discrete component due to vastly different functionality as compared to `market-preview.jsx`
-const CreateMarketPreview = p => (
-  <article className="create-market-preview">
-    <div className="create-market-details">
-      <ul className="create-market-tags">
-        <li
-          className={classNames('create-market-tag', {
-            isNull: !p.topic,
-            hasValue: !!p.topic
+const CreateMarketPreview = (p) => {
+  const newMarket = p.newMarket;
+
+  return (
+    <article
+      className={classNames('create-market-preview', {
+        'preview-is-visible': newMarket.currentStep > 0,
+        'preview-is-hidden': newMarket.currentStep === 0
+      })}
+    >
+      <div className="create-market-details">
+        <ul className="create-market-tags">
+          <li
+            className={classNames('create-market-tag', {
+              'is-null': !newMarket.topic,
+              'has-value': !!newMarket.topic
+            })}
+          >
+            {newMarket.topic}
+          </li>
+          <li
+            className={classNames('create-market-tag', {
+              'is-null': !(newMarket.keywords && newMarket.keywords[0]),
+              'has-value': newMarket.keywords && !!newMarket.keywords[0]
+            })}
+          >
+            {newMarket.keywords && newMarket.keywords[0]}
+          </li>
+          <li
+            className={classNames('create-market-tag', {
+              'is-null': !(newMarket.keywords && newMarket.keywords[1]),
+              'has-value': newMarket.keywords && !!newMarket.keywords[1]
+            })}
+          >
+            {newMarket.keywords && newMarket.keywords[1]}
+          </li>
+        </ul>
+        <span
+          className={classNames('create-market-description', {
+            'is-null': !newMarket.description,
+            'has-value': !!newMarket.description
           })}
         >
-          {p.topic}
-        </li>
-        <li
-          className={classNames('creat-market-tag', {
-            isNull: !(p.keywords && p.keywords[0]),
-            hasValue: p.keywords && !!p.keywords[0]
-          })}
-        >
-          {p.keywords && p.keywords[0]}
-        </li>
-        <li
-          className={classNames('create-market-tag', {
-            isNull: !(p.keywords && p.keywords[1]),
-            hasValue: p.keywords && !!p.keywords[1]
-          })}
-        >
-          {p.keywords && p.keywords[1]}
-        </li>
+          {newMarket.description}
+        </span>
+        <ul className="create-market-properties">
+          <li
+            className={classNames('create-market-property', {
+              'is-null': !newMarket.endDate,
+              'has-value': !!newMarket.endDate
+            })}
+          >
+            {newMarket.endDate}
+          </li>
+          <li
+            className={classNames('create-market-property', {
+              'is-null': !newMarket.makerFee,
+              'has-value': !!newMarket.makerFee
+            })}
+          >
+            {newMarket.makerFee}
+          </li>
+          <li
+            className={classNames('create-market-property', {
+              'is-null': !newMarket.takerFee,
+              'has-value': !!newMarket.takerFee
+            })}
+          >
+            {newMarket.takerFee}
+          </li>
+        </ul>
+      </div>
+      <ul className="create-market-outcomes">
+        {newMarket.type === BINARY &&
+          <li className="outcome">
+            Yes
+          </li>
+        }
       </ul>
-      <span
-        className={classNames('create-market-description', {
-          isNull: !p.description,
-          hasValue: !!p.description
-        })}
-      >
-        {p.description}
-      </span>
-      <ul className="create-market-properties">
-        <li
-          className={classNames('create-market-property', {
-            isNull: !p.endDate,
-            hasValue: !!p.endDate
-          })}
-        >
-          {p.endDate}
-        </li>
-        <li
-          className={classNames('create-market-property', {
-            isNull: !p.makerFee,
-            hasValue: !!p.makerFee
-          })}
-        >
-          {p.makerFee}
-        </li>
-        <li
-          className={classNames('create-market-property', {
-            isNull: !p.takerFee,
-            hasValue: !!p.takerFee
-          })}
-        >
-          {p.takerFee}
-        </li>
-      </ul>
-    </div>
-    <ul className="create-market-outcomes">
-    </ul>
-  </article>
-);
+    </article>
+  );
+};
 
 export default CreateMarketPreview;
 

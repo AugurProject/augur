@@ -7,8 +7,15 @@ import CreateMarketForm from 'modules/create-market/components/create-market-for
 const CreateMarketView = p => (
   <section id="create_market_view">
     <div className="create-market-container">
-      <CreateMarketPreview {...p} />
-      <CreateMarketForm {...p} />
+      <CreateMarketPreview
+        newMarket={p.newMarket}
+        updateNewMarket={p.updateNewMarket}
+      />
+      <CreateMarketForm
+        newMarket={p.newMarket}
+        updateNewMarket={p.updateNewMarket}
+        progressToNextStep={p.progressToNextStep}
+      />
     </div>
   </section>
 );

@@ -8,9 +8,10 @@ export const NEW_MARKET_TOPIC = 'NEW_MARKET_TOPIC';
 export const NEW_MARKET_KEYWORDS = 'NEW_MARKET_KEYWORDS';
 export const NEW_MARKET_FEES = 'NEW_MARKET_FEES';
 export const NEW_MARKET_ORDER_BOOK = 'NEW_MARKET_ORDER_BOOK';
+export const NEW_MARKET_REVIEW = 'NEW_MARKET_REVIEW';
 
 // Rearrange the array to change market creation progression
-export default [
+export const newMarketCreationOrder = [
   NEW_MARKET_TYPE,
   NEW_MARKET_DESCRIPTION,
   NEW_MARKET_OUTCOMES,
@@ -20,5 +21,6 @@ export default [
   NEW_MARKET_TOPIC,
   NEW_MARKET_KEYWORDS,
   NEW_MARKET_FEES,
-  NEW_MARKET_ORDER_BOOK
+  NEW_MARKET_ORDER_BOOK,
+  NEW_MARKET_REVIEW
 ];
