@@ -240,6 +240,7 @@ export function constructPayoutTransaction(log, market, dispatch) {
   }
   transaction.data.shares = log.shares;
   transaction.data.marketLink = selectMarketLink({ id: log.market, description: market.description }, dispatch);
+  transaction.data.marketID = log.market ? log.market : null;
   const action = log.inProgress ? 'closing out' : 'closed out';
   transaction.message = `${action} ${formatShares(log.shares).full}`;
   return transaction;
@@ -249,6 +250,7 @@ export function constructTradingFeeUpdatedTransaction(log, market, dispatch) {
   const transaction = { data: {} };
   transaction.description = market.description;
   transaction.data.marketLink = selectMarketLink({ id: log.marketID, description: market.description }, dispatch);
+  transaction.data.marketID = log.marketID ? log.marketID : null;
   transaction.message = `updated trading fee: ${formatPercent(abi.bignum(log.tradingFee).times(100)).full}`;
   return transaction;
 }
@@ -262,6 +264,7 @@ export function constructPenalizeTransaction(log, marketID, market, outcomes, di
   console.log('formattedOutcome:', formattedOutcome);
   transaction.description = market.description;
   transaction.data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
+  transaction.data.marketID = marketID || null;
   if (log.repchange) {
     let repPenalty;
     let repBalance;
@@ -312,6 +315,7 @@ export function constructSubmittedReportHashTransaction(log, marketID, market, o
   transaction.type = COMMIT_REPORT;
   transaction.description = market.description;
   transaction.data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
+  transaction.data.marketID = marketID || null;
   transaction.data.market = market;
   const isUnethical = !log.ethics || abi.bignum(log.ethics).eq(constants.ZERO);
   transaction.data.isUnethical = isUnethical;
@@ -347,6 +351,7 @@ export function constructSubmittedReportTransaction(log, marketID, market, outco
   transaction.type = REVEAL_REPORT;
   transaction.description = market.description;
   transaction.data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
+  transaction.data.marketID = marketID || null;
   transaction.data.market = market;
   const isUnethical = !log.ethics || abi.bignum(log.ethics).eq(constants.ZERO);
   transaction.data.isUnethical = isUnethical;
@@ -371,6 +376,7 @@ export function constructSlashedRepTransaction(log, market, outcomes, address, d
   console.debug('constructSlashedRepTransaction:', log, market, outcomes, address);
   transaction.description = market.description;
   transaction.data.marketLink = selectMarketLink({ id: market.id, description: market.description }, dispatch);
+  transaction.data.marketID = market.id ? market.id : null;
   transaction.data.market = market;
   if (log.sender === address) {
     transaction.type = 'Snitch Reward';
@@ -441,7 +447,8 @@ export function constructLogFillTxTransaction(trade, marketID, marketType, minVa
         marketType,
         outcomeName: outcomeName || outcomeID,
         outcomeID,
-        marketLink: selectMarketLink({ id: marketID, description }, dispatch)
+        marketID,
+        marketLink: selectMarketLink({ id: marketID, description }, dispatch),
       },
       message: `${action} ${shares.full} for ${formatEther(trade.type === BUY ? totalCostPerShare : totalReturnPerShare).full} / share`,
       numShares: shares,
@@ -480,6 +487,7 @@ export function constructLogShortFillTxTransaction(trade, marketID, marketType, 
         marketType,
         outcomeName: outcomeName || outcomeID,
         outcomeID,
+        marketID,
         marketLink: selectMarketLink({ id: marketID, description }, dispatch)
       },
       message: `${action} ${shares.full} for ${formatEther(totalCostPerShare).full} / share`,
@@ -546,6 +554,7 @@ export function constructLogAddTxTransaction(trade, marketID, marketType, descri
         marketType,
         outcomeName: outcomeName || outcomeID,
         outcomeID,
+        marketID,
         marketLink: selectMarketLink({ id: marketID, description }, dispatch)
       },
       message: `${action} ${shares.full} for ${formatEther(abi.unfix(trade.type === BUY ? totalCostPerShare : totalReturnPerShare)).full} / share`,
@@ -581,6 +590,7 @@ export function constructLogCancelTransaction(trade, marketID, marketType, descr
         marketType,
         outcome: { name: outcomeName || outcomeID },
         outcomeID,
+        marketID,
         marketLink: selectMarketLink({ id: marketID, description }, dispatch)
       },
       message: `${action} order to ${trade.type} ${shares.full} for ${price.full} each`,

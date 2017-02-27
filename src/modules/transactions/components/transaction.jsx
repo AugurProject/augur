@@ -65,7 +65,7 @@ const Transaction = (p) => {
           <br className="hide-in-tx-display" />
           <ValueDenomination className="avgPrice" {...p.avgPrice} prefix="estimated total (including trading fees):" postfix="/ share" />
           <br />
-          <TransactionDescription description={p.description} marketLink={p.data.marketLink} />
+          <TransactionDescription description={p.description} marketLink={p.data.marketLink} marketID={p.data.marketID} />
           <br className="hide-in-trade-summary-display" />
           {p.timestamp &&
             <ValueTimestamp className="property-value" {...p.timestamp} />
@@ -81,7 +81,7 @@ const Transaction = (p) => {
         <span className="description">
           <span className="action">{nodes.action}</span>
           <br />
-          <TransactionDescription description={p.description} marketLink={p.data.marketLink} />
+          <TransactionDescription description={p.description} marketLink={p.data.marketLink} marketID={p.data.marketID} />
           <br />
           {p.timestamp &&
             <ValueTimestamp className="property-value" {...p.timestamp} />
@@ -132,7 +132,7 @@ const Transaction = (p) => {
           <strong>{reportedOutcome}</strong>
           <ReportEthics isUnethical={p.data.isUnethical} />
           <br />
-          <TransactionDescription description={p.description} marketLink={p.data.marketLink} />
+          <TransactionDescription description={p.description} marketLink={p.data.marketLink} marketID={p.data.marketID} />
           <br />
           {p.timestamp &&
             <ValueTimestamp className="property-value" {...p.timestamp} />
@@ -147,7 +147,7 @@ const Transaction = (p) => {
         <span className="description">
           <span className="action">{nodes.action}</span>
           <br />
-          <TransactionDescription description={p.description} marketLink={p.data.marketLink} />
+          <TransactionDescription description={p.description} marketLink={p.data.marketLink} marketID={p.data.marketID} />
           <br />
           {p.timestamp &&
             <ValueTimestamp className="property-value" {...p.timestamp} />
@@ -165,7 +165,7 @@ const Transaction = (p) => {
           <span className="of">of</span>
           <span className="outcome-name">{p.data.outcome.name && p.data.outcome.name.substring(0, 35) + ((p.data.outcome.name.length > 35 && '...') || '')}</span>
           <br />
-          <TransactionDescription description={p.description} marketLink={p.data.marketLink} />
+          <TransactionDescription description={p.description} marketLink={p.data.marketLink} marketID={p.data.marketID} />
           <br />
           {p.timestamp &&
             <ValueTimestamp className="property-value" {...p.timestamp} />
@@ -180,7 +180,7 @@ const Transaction = (p) => {
         <span className="description">
           <span className="action">{p.type}</span>
           <br />
-          <TransactionDescription description={p.description} marketLink={p.data.marketLink} />
+          <TransactionDescription description={p.description} marketLink={p.data.marketLink} marketID={p.data.marketID} />
           <br />
           {p.timestamp &&
             <ValueTimestamp className="property-value" {...p.timestamp} />
