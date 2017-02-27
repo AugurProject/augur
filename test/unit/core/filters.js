@@ -1832,6 +1832,7 @@ describe("listen", function() {
   var start_block_listener = augur.filters.start_block_listener;
   var start_event_listener = augur.filters.start_event_listener;
   var pacemaker = augur.filters.pacemaker;
+  var listen;
   var finished;
   afterEach(function() {
     augur.filters.filter = filter;
@@ -1971,6 +1972,15 @@ describe("listen", function() {
       assert.isFunction(augur.filters.subscribeLogs);
       assert.isFunction(augur.filters.subscribeNewBlocks);
       assert.isFunction(augur.rpc.resetCustomSubscription);
+      // because we want full code coverage, we are going to replace listen real quick with a mock function, then run resetCustomSubscription which calls listen. Confirm that it would have been called and then finish the test.
+      augur.filters.listen = listen;
+      var listenCalled = false;
+      augur.filters.listen = function() {
+        listenCalled = true;
+      };
+      augur.rpc.resetCustomSubscription();
+      augur.filters.listen = listen;
+      assert.isTrue(listenCalled);
       finished();
     },
     filter: {
