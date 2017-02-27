@@ -90,7 +90,7 @@ ex.reportingMarketsSetup = function reportingMarketsSetup(periodLength, branchID
           if (err) console.error('checkVotePeriod failed:', err);
           callback(null, 6);
           tools.print_reporting_status(augur, eventID, 'After checkVotePeriod');
-          augur.checkTime(branchID, eventID, periodLength, (err) => {
+          tools.checkTime(augur, branchID, eventID, periodLength, (err) => {
             if (err) console.error('checkTime failed:', err);
             callback(null, 7);
           });
