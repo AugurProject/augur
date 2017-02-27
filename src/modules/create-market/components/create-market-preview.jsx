@@ -33,7 +33,14 @@ const CreateMarketPreview = p => (
           </li>
         </ul>
       </div>
-      <span className="create-market-description"></span>
+      <span
+        className={classNames('create-market-description', {
+          isNull: !p.description,
+          hasValue: !!p.description
+        })}
+      >
+        {p.description}
+      </span>
       <div className="create-market-properties"></div>
     </div>
     <ul className="create-market-outcomes">
