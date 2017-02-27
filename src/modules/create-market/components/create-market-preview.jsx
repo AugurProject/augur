@@ -15,6 +15,22 @@ const CreateMarketPreview = p => (
           >
             {p.topic}
           </li>
+          <li
+            className={classNames('tag', {
+              isNull: !(p.keywords && p.keywords[0]),
+              hasValue: p.keywords && !!p.keywords[0]
+            })}
+          >
+            {p.keywords && p.keywords[0]}
+          </li>
+          <li
+            className={classNames('tag', {
+              isNull: !(p.keywords && p.keywords[1]),
+              hasValue: p.keywords && !!p.keywords[1]
+            })}
+          >
+            {p.keywords && p.keywords[1]}
+          </li>
         </ul>
       </div>
       <span className="create-market-description"></span>
@@ -31,20 +47,3 @@ CreateMarketPreview.propTypes = {
   newMarket: PropTypes.object.isRequired,
   updateNewMarket: PropTypes.func.isRequired
 };
-
-// <li
-//   className={classNames('tag', {
-//     isNull: !p.keywords && !p.keywords[0],
-//     hasValue: !!p.keywords && !!p.keywords[0]
-//   })}
-// >
-//   {p.keywords && p.keywords[0]}
-// </li>
-// <li
-//   className={classNames('tag', {
-//     isNull: !p.keywords && !p.keywords[1],
-//     hasValue: !!p.keywords && !!p.keywords[1]
-//   })}
-// >
-//   {p.keywords && p.keywords[1]}
-// </li>
