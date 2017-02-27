@@ -687,47 +687,74 @@ module.exports = {
     }
   },
 
-  linspace: function (a, b, n) {
-    if (typeof n === "undefined") n = Math.max(Math.round(b - a) + 1, 1);
-    if (n < 2) return (n === 1) ? [a] : [];
-    var i, ret = new Array(n);
-    n--;
-    for (i = n; i >= 0; i--) {
-      ret[i] = (i*b + (n - i)*a) / n;
-    }
-    return ret;
-  },
-
   select_random: function (arr) {
     return arr[Math.floor(Math.random() * arr.length)];
   },
 
-  fold: function (arr, num_cols) {
-    var i, j, folded, num_rows, row;
-    folded = [];
-    num_cols = parseInt(num_cols);
-    num_rows = arr.length / num_cols;
-    num_rows = parseInt(num_rows);
-    for (i = 0; i < parseInt(num_rows); ++i) {
-      row = [];
-      for (j = 0; j < num_cols; ++j) {
-        row.push(arr[i*num_cols + j]);
-      }
-      folded.push(row);
-    }
-    return folded;
-  },
-
   gteq0: function (n) { return (new BigNumber(n)).toNumber() >= 0; },
 
-  print_matrix: function (m) {
-    for (var i = 0, rows = m.length; i < rows; ++i) {
-      process.stdout.write("\t");
-      for (var j = 0, cols = m[0].length; j < cols; ++j) {
-        process.stdout.write(chalk.cyan(m[i][j] + "\t"));
-      }
-      process.stdout.write("\n");
+  // Make sure current period = expiration period + periodGap
+  // If not, wait until it is:
+  // expPeriod - currentPeriod periods
+  // t % periodLength seconds
+  checkTime: function (augur, branch, event, periodLength, periodGap, callback) {
+    var self = this;
+    if (!callback && utils.is_function(periodGap)) {
+      callback = periodGap;
+      periodGap = null;
     }
+    periodGap = periodGap || 1;
+    function wait(branch, secondsToWait, next) {
+      if (augur.options.debug.reporting) {
+        console.log("Waiting", secondsToWait / 60, "minutes...");
+      }
+      setTimeout(function () {
+        augur.Consensus.incrementPeriodAfterReporting({
+          branch: branch,
+          onSent: function (r) {},
+          onSuccess: function (r) {
+            if (augur.options.debug.reporting) {
+              console.log("Incremented period:", r.callReturn);
+            }
+            augur.getVotePeriod(branch, function (votePeriod) {
+              next(null, votePeriod);
+            });
+          },
+          onFailed: next
+        });
+      }, secondsToWait*1000);
+    }
+    augur.getExpiration(event, function (expTime) {
+      var expPeriod = Math.floor(expTime / periodLength);
+      var currentPeriod = augur.getCurrentPeriod(periodLength);
+      if (augur.options.debug.reporting) {
+        console.log("\nreporting.checkTime:");
+        console.log(" - Expiration period:", expPeriod);
+        console.log(" - Current period:   ", currentPeriod);
+        console.log(" - Target period:    ", expPeriod + periodGap);
+      }
+      if (currentPeriod < expPeriod + periodGap) {
+        var fullPeriodsToWait = expPeriod - augur.getCurrentPeriod(periodLength) + periodGap - 1;
+        if (augur.options.debug.reporting) {
+          console.log("Full periods to wait:", fullPeriodsToWait);
+        }
+        var secondsToWait = periodLength;
+        if (fullPeriodsToWait === 0) {
+          secondsToWait -= (parseInt(new Date().getTime() / 1000) % periodLength);
+        }
+        if (augur.options.debug.reporting) {
+          console.log("Seconds to wait:", secondsToWait);
+        }
+        wait(branch, secondsToWait, function (err, votePeriod) {
+          if (err) return callback(err);
+          if (augur.options.debug.reporting) {
+            console.log("New vote period:", votePeriod);
+          }
+          self.checkTime(augur, branch, event, periodLength, callback);
+        });
+      } else {
+        callback(null);
+      }
+    });
   }
-
 };

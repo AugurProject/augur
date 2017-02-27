@@ -165,12 +165,12 @@ describe("Reporting sequence", function () {
             assert.isAbove(unlocked.length, 0);
             console.log('unlockable:', unlockable);
             console.log('unlocked:', unlocked);
-                        // assert.sameMembers(unlockable, unlocked);
+            // assert.sameMembers(unlockable, unlocked);
             augur.checkPeriod(newBranchID, periodLength, sender, function (err, votePeriod) {
               if (err) console.log("checkPeriod failed:", err);
               assert.isNull(err, JSON.stringify(err));
               if (DEBUG) printReportingStatus(eventID, "After checkPeriod");
-              augur.checkTime(newBranchID, eventID, periodLength, function (err) {
+              tools.checkTime(augur, newBranchID, eventID, periodLength, function (err) {
                 if (err) console.log("checkTime failed:", err);
                 assert.isNull(err, JSON.stringify(err));
                 done();
@@ -400,11 +400,11 @@ describe("Reporting sequence", function () {
             assert.isNull(err, JSON.stringify(err));
             assert.isArray(unlocked);
             assert.isAbove(unlocked.length, 0);
-                        // assert.sameMembers(unlockable, unlocked);
+            // assert.sameMembers(unlockable, unlocked);
             augur.checkPeriod(newBranchID, periodLength, sender, function (err, votePeriod) {
               assert.isNull(err, JSON.stringify(err));
               if (DEBUG) printReportingStatus(eventID, "After checkPeriod");
-              augur.checkTime(newBranchID, eventID, periodLength, 2, function (err) {
+              tools.checkTime(augur, newBranchID, eventID, periodLength, 2, function (err) {
                 assert.isNull(err, JSON.stringify(err));
                 done();
               });
