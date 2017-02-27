@@ -56,6 +56,9 @@ const LoginMessagePage = p => (
       <h3>February 26, 2017</h3>
       <ol>
         <li>
+          Fixed &quot;Reporting&quot; markets listing filter so that only markets actually up for reporting are displayed.
+        </li>
+        <li>
           Shares of all outcomes are now automatically cashed out for markets that have been resolved indeterminate and/or unethical.
         </li>
         <li>
