@@ -107,7 +107,7 @@ describe('connect.bindContractMethod', function() {
     }
   });
   test({
-    description: 'Should handle binding a method and then handling the method correctly when the method has inputs, without callback. method transaction has a parser, not fixed, send false',
+    description: 'Should handle binding a method and then handling the method correctly when the method has inputs, with callback. method transaction has a parser, not fixed, send false',
     contract: 'Branches',
     method: 'getEventForkedOver',
     callMethod: function(method) {
@@ -326,6 +326,103 @@ describe('connect.bindContractMethod', function() {
     transact: function(tx, onSent, onSuccess, onFailed) {
       // Shouldn't get hit in this case
       assert.isFalse(true);
+    }
+  });
+  test({
+    description: 'Should handle binding a method and then handling the method correctly send is false, args are present, not fixed, no parser',
+    contract: 'MakeReports',
+    method: 'makeHash',
+    callMethod: function(method) {
+      // (account, callback)
+      method({ salt: '1337', report: '1', eventID: '0xe1', sender: '0xf1', callback: noop });
+    },
+    fire: function(tx, onSent, onSuccess, onFailed) {
+      assert.deepEqual(tx, {
+        inputs: [ 'salt', 'report', 'eventID', 'sender' ],
+        label: 'Make Hash',
+        method: 'makeHash',
+        params: [ '1337', '1', '0xe1', '0xf1' ],
+        returns: 'hash',
+        signature: [ 'int256', 'int256', 'int256', 'int256' ],
+        to: augur.tx.MakeReports.makeHash.to
+      });
+      assert.isFunction(onSent);
+      assert.isUndefined(onSuccess);
+      assert.isUndefined(onFailed);
+    },
+    transact: function(tx, onSent, onSuccess, onFailed) {
+      // Shouldn't get hit in this case
+      assert.isFalse(true);
+    }
+  });
+  test({
+    description: 'Should handle binding a method and then handling the method correctly send is false, args are present, fixed, no parser',
+    contract: 'MakeReports',
+    method: 'validateReport',
+    callMethod: function(method) {
+      // (account, callback)
+      method({ eventID: '0xe1', branch: '0xb1', votePeriod: '1000', report: '1', forkedOverEthicality: '0', forkedOverThisEvent: '0', roundTwo: '1001', balance: '1000', callback: noop });
+    },
+    fire: function(tx, onSent, onSuccess, onFailed) {
+      assert.deepEqual(tx, {
+        fixed: [ 3, 7 ],
+        inputs: [ 'eventID', 'branch', 'votePeriod', 'report', 'forkedOverEthicality', 'forkedOverThisEvent', 'roundTwo', 'balance' ],
+        label: 'Validate Report',
+        method: 'validateReport',
+        params: [ '0xe1', '0xb1', '1000', '0xde0b6b3a7640000', '0', '0', '1001', '0x3635c9adc5dea00000' ],
+        returns: 'number',
+        signature: [ 'int256', 'int256', 'int256', 'int256', 'int256', 'int256', 'int256', 'int256' ],
+        to: augur.tx.MakeReports.validateReport.to
+      });
+      assert.isFunction(onSent);
+      assert.isUndefined(onSuccess);
+      assert.isUndefined(onFailed);
+    },
+    transact: function(tx, onSent, onSuccess, onFailed) {
+      // Shouldn't get hit in this case
+      assert.isFalse(true);
+    }
+  });
+  test({
+    description: 'Should handle binding a method and then handling the method correctly send is true, parser',
+    contract: 'FakeContract',
+    method: 'fakeMethod',
+    callMethod: function(method) {
+      // because no functions currently exist where send is true and we require a parser, we are going to make a fake function to do this so we can unit test.
+      augur.api.functions.FakeContract = {
+        fakeMethod: {
+          inputs: [ 'branch' ],
+          label: 'Fake Method',
+          method: 'fakeMethod',
+          parser: 'parseFakeStuff',
+          returns: 'number',
+          send: true,
+          signature: [ 'int256' ],
+          to: '0xdeadbeef'
+        }
+      };
+      method({ branch: '0xb1', callback: noop });
+      augur.api.functions.fakeContract = undefined;
+    },
+    fire: function(tx, onSent, onSuccess, onFailed) {
+      // Shouldn't get hit in this case
+      assert.isFalse(true);
+    },
+    transact: function(tx, onSent, onSuccess, onFailed) {
+      assert.deepEqual(tx, {
+        inputs: [ 'branch' ],
+        label: 'Fake Method',
+        method: 'fakeMethod',
+        params: [ '0xb1' ],
+        parser: 'parseFakeStuff',
+        returns: 'number',
+        send: true,
+        signature: [ 'int256' ],
+        to: '0xdeadbeef'
+      });
+      assert.isUndefined(onSent);
+      assert.isNull(onSuccess);
+      assert.isUndefined(onFailed);
     }
   });
 });
