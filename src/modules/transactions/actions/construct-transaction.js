@@ -264,7 +264,7 @@ export function constructPenalizeTransaction(log, marketID, market, outcomes, di
   console.log('formattedOutcome:', formattedOutcome);
   transaction.description = market.description;
   transaction.data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
-  transaction.data.marketID = marketID ? marketID : null;
+  transaction.data.marketID = marketID || null;
   if (log.repchange) {
     let repPenalty;
     let repBalance;
@@ -315,7 +315,7 @@ export function constructSubmittedReportHashTransaction(log, marketID, market, o
   transaction.type = COMMIT_REPORT;
   transaction.description = market.description;
   transaction.data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
-  transaction.data.marketID = marketID ? marketID : null;
+  transaction.data.marketID = marketID || null;
   transaction.data.market = market;
   const isUnethical = !log.ethics || abi.bignum(log.ethics).eq(constants.ZERO);
   transaction.data.isUnethical = isUnethical;
@@ -351,7 +351,7 @@ export function constructSubmittedReportTransaction(log, marketID, market, outco
   transaction.type = REVEAL_REPORT;
   transaction.description = market.description;
   transaction.data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
-  transaction.data.marketID = marketID ? marketID : null;
+  transaction.data.marketID = marketID || null;
   transaction.data.market = market;
   const isUnethical = !log.ethics || abi.bignum(log.ethics).eq(constants.ZERO);
   transaction.data.isUnethical = isUnethical;
