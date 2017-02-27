@@ -3,6 +3,12 @@ import classNames from 'classnames';
 
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
 
+import {
+  newMarketCreationOrder,
+  NEW_MARKET_DESCRIPTION
+} from 'modules/create-market/constants/new-market-creation-order';
+
+
 // NOTE --  Discrete component due to vastly different functionality as compared to `market-preview.jsx`
 const CreateMarketPreview = (p) => {
   const newMarket = p.newMarket;
@@ -43,6 +49,7 @@ const CreateMarketPreview = (p) => {
         </ul>
         <span
           className={classNames('create-market-description', {
+            'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_DESCRIPTION,
             'is-null': !newMarket.description,
             'has-value': !!newMarket.description
           })}

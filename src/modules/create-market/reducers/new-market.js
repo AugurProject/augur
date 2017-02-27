@@ -2,7 +2,7 @@ import { UPDATE_NEW_MARKET, CLEAR_NEW_MARKET } from 'modules/create-market/actio
 
 const DEFAULT_STATE = {
   currentStep: 0,
-  nextStep: 1
+  validations: []
 };
 
 export default function (newMarket = DEFAULT_STATE, action) {

@@ -1,9 +1,15 @@
 import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 
+import CreateMarketFormButtons from 'modules/create-market/components/create-market-form-buttons';
 import CreateMarketFormType from 'modules/create-market/components/create-market-form-type';
+import CreateMarketFormDescription from 'modules/create-market/components/create-market-form-description';
 
-import { newMarketCreationOrder, NEW_MARKET_TYPE } from 'modules/create-market/constants/new-market-creation-order';
+import {
+  newMarketCreationOrder,
+  NEW_MARKET_TYPE,
+  NEW_MARKET_DESCRIPTION
+} from 'modules/create-market/constants/new-market-creation-order';
 
 export default class CreateMarketForm extends Component {
   static propTypes = {
@@ -18,7 +24,8 @@ export default class CreateMarketForm extends Component {
       newMarket: props.newMarket,
       currentStep: props.newMarket.currentStep,
       stepIncreasing: null,
-      canAnimate: false
+      canAnimate: false,
+      isValid: null
     };
   }
 
@@ -36,11 +43,13 @@ export default class CreateMarketForm extends Component {
     if (this.state.newMarket !== nextProps.newMarket) this.setState({ newMarket: nextProps.newMarket });
   }
 
+  resetValidity() {
+    this.setState({ isValid: null });
+  }
+
   render() {
     const p = this.props;
     const s = this.state;
-
-    console.log('current step -- ', newMarketCreationOrder[s.currentStep]);
 
     return (
       <article className={classNames('create-market-form', { 'no-preview': s.currentStep === 0 })}>
@@ -53,56 +62,27 @@ export default class CreateMarketForm extends Component {
           })}
           type={s.newMarket.type}
           updateNewMarket={p.updateNewMarket}
-          progressToNextStep={p.progressToNextStep}
+        />
+        <CreateMarketFormDescription
+          className={classNames({
+            'hide-form': newMarketCreationOrder[s.currentStep] !== NEW_MARKET_DESCRIPTION,
+            'to-left': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_DESCRIPTION,
+            'to-right': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_DESCRIPTION,
+            'display-form': newMarketCreationOrder[s.currentStep] === NEW_MARKET_DESCRIPTION,
+            'from-right': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_DESCRIPTION,
+            'from-left': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_DESCRIPTION,
+          })}
+          description={s.newMarket.description}
+          updateValidity={isValid => this.setState({ isValid })}
+          updateNewMarket={p.updateNewMarket}
+        />
+        <CreateMarketFormButtons
+          isValid={s.isValid}
+          validations={p.validations}
+          resetValidity={() => this.resetValidity()}
+          updateNewMarket={p.updateNewMarket}
         />
       </article>
     );
   }
 }
-
-// <CreateMarketFormType
-//   className={classNames({
-//     'hide-form': s.currentStep !== 1,
-//     'to-left': s.canAnimate && s.stepIncreasing && s.currentStep !== 1,
-//     'display-form': s.currentStep === 1,
-//     'from-left': s.canAnimate && s.stepDecreasing && s.currentStep === 1
-//   })}
-//   newMarket={p.newMarket}
-//   updateNewMarket={p.updateNewMarket}
-// />
-// <CreateMarketFormDescription
-//   className={classNames({
-//     'hide-form': s.currentStep !== 2,
-//     'to-left': s.canAnimate && s.stepIncreasing && s.currentStep !== 2,
-//     'to-right': s.canAnimate && s.stepDecreasing && s.currentStep !== 2,
-//     'display-form': s.currentStep === 2,
-//     'from-right': s.canAnimate && s.stepIncreasing && s.currentStep === 2,
-//     'from-left': s.canAnimate && s.stepDecreasing && s.currentStep === 2,
-//   })}
-//   newMarket={p.newMarket}
-//   updateNewMarket={p.updateNewMarket}
-// />
-// <CreateMarketFormResolution
-//   className={classNames({
-//     'hide-form': s.currentStep !== 3,
-//     'to-left': s.canAnimate && s.stepIncreasing && s.currentStep !== 3,
-//     'to-right': s.canAnimate && s.stepDecreasing && s.currentStep !== 3,
-//     'display-form': s.currentStep === 3,
-//     'from-right': s.canAnimate && s.stepIncreasing && s.currentStep === 3,
-//     'from-left': s.canAnimate && s.stepDecreasing && s.currentStep === 3,
-//   })}
-//   newMarket={p.newMarket}
-//   updateNewMarket={p.updateNewMarket}
-// />
-// <CreateMarketFormFeesDepth
-//   className={classNames({
-//     'hide-form': s.currentStep !== 4,
-//     'to-left': s.canAnimate && s.stepIncreasing && s.currentStep !== 4,
-//     'to-right': s.canAnimate && s.stepDecreasing && s.currentStep !== 4,
-//     'display-form': s.currentStep === 4,
-//     'from-right': s.canAnimate && s.stepIncreasing && s.currentStep === 4,
-//     'from-left': s.canAnimate && s.stepDecreasing && s.currentStep === 4,
-//   })}
-//   newMarket={p.newMarket}
-//   updateNewMarket={p.updateNewMarket}
-// /></span>

@@ -14,7 +14,6 @@ const CreateMarketView = p => (
       <CreateMarketForm
         newMarket={p.newMarket}
         updateNewMarket={p.updateNewMarket}
-        progressToNextStep={p.progressToNextStep}
       />
     </div>
   </section>

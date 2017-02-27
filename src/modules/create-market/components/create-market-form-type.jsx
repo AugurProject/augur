@@ -1,16 +1,17 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
 
 const CreateMarketFormType = p => (
   <article className={`create-market-form-part ${p.className || ''}`}>
-    <h2>Market Type</h2>
+    <h2>Type</h2>
     <button
       className="unstyled market-type"
       onClick={() => {
-        console.log('p -- ', p);
-        p.updateNewMarket({ type: BINARY });
-        p.progressToNextStep();
+        p.updateNewMarket({
+          currentStep: 1,
+          type: BINARY
+        });
       }}
     >
       <h3>Yes/No</h3>
@@ -20,10 +21,12 @@ const CreateMarketFormType = p => (
     </button>
     <button
       className="unstyled market-type"
-      onClick={() => p.updateNewMarket({
-        step: 2,
-        type: CATEGORICAL
-      })}
+      onClick={() => {
+        p.updateNewMarket({
+          currentStep: 1,
+          type: CATEGORICAL
+        });
+      }}
     >
       <h3>Multiple Choice</h3>
       <span className="market-type-description">
@@ -32,10 +35,12 @@ const CreateMarketFormType = p => (
     </button>
     <button
       className="unstyled market-type"
-      onClick={() => p.updateNewMarket({
-        step: 2,
-        type: SCALAR
-      })}
+      onClick={() => {
+        p.updateNewMarket({
+          currentStep: 1,
+          type: SCALAR
+        });
+      }}
     >
       <h3>Numerical</h3>
       <span className="market-type-description">
@@ -44,5 +49,14 @@ const CreateMarketFormType = p => (
     </button>
   </article>
 );
+
+CreateMarketFormType.propTypes = {
+  type: PropTypes.string,
+  updateNewMarket: PropTypes.func.isRequired
+};
+
+CreateMarketFormType.defaultProps = {
+  type: null
+};
 
 export default CreateMarketFormType;
