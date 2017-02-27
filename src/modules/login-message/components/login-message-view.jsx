@@ -58,6 +58,9 @@ const LoginMessagePage = p => (
         <li>
           Fixed scalar/categorical indeterminate outcome calculations in augur.js.
         </li>
+        <li>
+          Simplified ReportEthics popup wording so it works for both consensus outcome and user reports.
+        </li>
       </ol>
       <h3>February 26, 2017</h3>
       <ol>

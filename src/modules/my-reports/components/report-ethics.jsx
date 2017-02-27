@@ -5,7 +5,7 @@ const ReportEthics = p => (
     {!!p.isUnethical &&
       <i
         className="fa fa-thumbs-down report-unethical"
-        data-tip="You reported that this market is unethical"
+        data-tip="Unethical"
       />
     }
   </span>
