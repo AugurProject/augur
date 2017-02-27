@@ -1,13 +1,15 @@
 import React, { PropTypes } from 'react';
 
-import MarketPreview from 'modules/market/components/market-preview';
-
+// NOTE --  Discrete component due to vastly different functionality as compared to `market-preview.jsx`
 const CreateMarketPreview = p => (
   <article className="create-market-preview">
-    <MarketPreview
-      {...p}
-      isCreatingMarket
-    />
+    <div className="create-market-details">
+      <div className="create-market-tags"></div>
+      <span className="create-market-description"></span>
+      <div className="create-market-properties"></div>
+    </div>
+    <ul className="create-market-outcomes">
+    </ul>
   </article>
 );
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import classNames from 'classnames';
 
 import MarketProperties from 'modules/market/components/market-properties';
 import Link from 'modules/link/components/link';
@@ -7,11 +7,12 @@ import Link from 'modules/link/components/link';
 const MarketBasics = p => (
   <article className="market-basics">
     <div className="market-basics-header">
-      <div className="market-basics-header-group-1">
-        {!!p.tags && !!p.tags.length &&
+      <div className="market-basics-header-tags">
         <ul className="tags">
-          {p.tags.map((tag, i) => (
-            <li key={i} className={classnames('tag', 'pointer', { link: !!tag.name })} >
+          {(p.tags || []).map((tag, i) => (
+            <li
+              className={classNames('tag pointer', { link: !!tag.name })}
+            >
               <button
                 className="unstyled"
                 onClick={tag.onClick && tag.onClick}
@@ -21,15 +22,19 @@ const MarketBasics = p => (
             </li>
           ))}
         </ul>
-        }
       </div>
-      <div className="market-basics-header-group-2">
+      <div className="market-basics-header-actions">
         {p.loginAccount && p.loginAccount.address && p.onClickToggleFavorite &&
           <button
-            className={classnames('button unstyled favorite-button', { on: p.isFavorite })}
+            className={classNames('button unstyled favorite-button', { on: p.isFavorite })}
             onClick={p.onClickToggleFavorite}
           >
-            {p.isFavorite ? <i className="fa fa-star" /> : <i className="fa fa-star-o" />}
+            <i
+              className={classNames('fa', {
+                'fa-star': p.isFavorite,
+                'fa-star-o': !p.isFavorite
+              })}
+            />
           </button>
         }
       </div>
@@ -49,17 +54,5 @@ const MarketBasics = p => (
     <MarketProperties {...p} />
   </article>
 );
-
-// TODO -- Prop Validations
-// MarketBasics.propTypes = {
-// 	description: PropTypes.string,
-// 	endDate: PropTypes.object,
-// 	makerFeePercent: PropTypes.object,
-// 	takerFeePercent: PropTypes.object,
-// 	volume: PropTypes.object,
-// 	tags: PropTypes.array,
-// 	updateData: PropTypes.func,
-// 	isMarketDataLoading: PropTypes.bool
-// };
 
 export default MarketBasics;

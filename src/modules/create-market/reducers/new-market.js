@@ -1,8 +1,10 @@
 import { UPDATE_NEW_MARKET, CLEAR_NEW_MARKET } from 'modules/create-market/actions/update-new-market';
 
 const DEFAULT_STATE = {
-  step: 1
-}
+  previousStep: null,
+  currentStep: 0,
+  nextStep: 1
+};
 
 export default function (newMarket = DEFAULT_STATE, action) {
   switch (action.type) {
