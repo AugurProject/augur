@@ -6,10 +6,10 @@ import CreateMarketForm from 'modules/create-market/components/create-market-for
 
 const CreateMarketView = p => (
   <section id="create_market_view">
-    <article className="create-market-container">
+    <div className="create-market-container">
       <CreateMarketPreview {...p} />
       <CreateMarketForm {...p} />
-    </article>
+    </div>
   </section>
 );
 

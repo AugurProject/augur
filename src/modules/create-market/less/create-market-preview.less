@@ -1,8 +1,30 @@
 .create-market-preview {
   .market-preview();
 
+  margin: 0 0 2em;
+
+  .isNull {
+    background-color: @color-gray-muted;
+    border-radius: 1em;
+    padding: 0.6em;
+  }
+
   .create-market-details {
     .market-preview-details();
+
+    .create-market-tags {
+      ul {
+        display: flex;
+
+        li {
+          align-self: flex-start;
+
+          &.isNull {
+            flex-basis: 5%;
+          }
+        }
+      }
+    }
   }
 
   .create-market-outcomes {

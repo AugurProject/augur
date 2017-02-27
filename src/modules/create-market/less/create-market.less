@@ -10,7 +10,15 @@
     .constrained-view();
 
     background-color: @color-white;
-    padding: 1em;
     width: 100%;
+
+    & > article {
+      margin: 1em;
+
+      &:last-of-type {
+        margin: 0;
+        padding: 1em;
+      }
+    }
   }
 }
