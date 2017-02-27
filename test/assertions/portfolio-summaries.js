@@ -2,7 +2,7 @@ import { describe, it } from 'mocha';
 import { assert } from 'chai';
 
 export default function (portfolioSummaries) {
-  describe(`augur-ui-react-components portfolio's summaries shape`, () => {
+  describe(`portfolio's summaries shape`, () => {
     assert.isDefined(portfolioSummaries);
     assert.isArray(portfolioSummaries);
 

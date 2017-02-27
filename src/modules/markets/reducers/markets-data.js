@@ -1,5 +1,5 @@
 import { abi } from '../../../services/augurjs';
-import { UPDATE_MARKETS_DATA, CLEAR_MARKETS_DATA, UPDATE_MARKETS_LOADING_STATUS } from '../../markets/actions/update-markets-data';
+import { UPDATE_MARKETS_DATA, CLEAR_MARKETS_DATA, UPDATE_MARKETS_LOADING_STATUS, UPDATE_MARKET_TOPIC } from '../../markets/actions/update-markets-data';
 import { CATEGORICAL, BINARY } from '../../markets/constants/market-types';
 import { CATEGORICAL_OUTCOMES_SEPARATOR } from '../../markets/constants/market-outcomes';
 
@@ -20,6 +20,15 @@ export default function (marketsData = {}, action) {
           };
           return p;
         }, {})
+      };
+    case UPDATE_MARKET_TOPIC:
+      if (!action.marketID) return marketsData;
+      return {
+        ...marketsData,
+        [action.marketID]: {
+          ...marketsData[action.marketID],
+          topic: action.topic
+        }
       };
     case CLEAR_MARKETS_DATA:
       return {};
@@ -50,9 +59,6 @@ function processMarketsData(newMarketsData, existingMarketsData) {
       }
     }
 
-    // parse out event, currently we only support single event markets, no combinatorial
-    parseEvent(marketData);
-
     // mark whether details have been loaded
     marketData.isLoadedMarketInfo = !!marketData.cumulativeScale;
 
@@ -61,19 +67,4 @@ function processMarketsData(newMarketsData, existingMarketsData) {
 
     return p;
   }, {});
-
-  function parseEvent(marketData) {
-    if (!marketData.events || marketData.events.length !== 1) {
-      delete marketData.events;
-      return;
-    }
-
-    const event = marketData.events[0];
-    marketData.eventID = event.id;
-    marketData.minValue = event.minValue;
-    marketData.maxValue = event.maxValue;
-    marketData.numOutcomes = event.numOutcomes;
-    marketData.isEthical = event.isEthical;
-    delete marketData.events;
-  }
 }

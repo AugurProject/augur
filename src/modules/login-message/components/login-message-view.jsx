@@ -53,136 +53,70 @@ const LoginMessagePage = p => (
         </li>
       </ol>
       <h2>Technical updates:</h2>
+      <h3>February 26, 2017</h3>
+      <ol>
+        <li>
+          Fixed &quot;Reporting&quot; markets listing filter so that only markets actually up for reporting are displayed.
+        </li>
+        <li>
+          Shares of all outcomes are now automatically cashed out for markets that have been resolved indeterminate and/or unethical.
+        </li>
+        <li>
+          Fixed closed market notification on detail page.
+        </li>
+        <li>
+          Removed indeterminate radio button from binary and categorical reports, so that only one Indeterminate option is shown for these events.
+        </li>
+        <li>
+          Binary and scalar unethical icon now displays correctly in the market details page for closed markets.
+        </li>
+      </ol>
+      <h3>February 25, 2017</h3>
+      <ol>
+        <li>
+          Simplified the organization of the market(s)Info object from augur.js, and updated the UI to support these changes.
+        </li>
+        <li>
+          Used production instead of development build for public endpoints.
+        </li>
+        <li>
+          Fixed event-already-moved-forward check in augur.js penaltyCatchUp.
+        </li>
+      </ol>
+      <h3>February 24, 2017</h3>
+      <ol>
+        <li>
+          Fixed collectedFees transaction constructor.
+        </li>
+        <li>
+          Replaced setTimeout silliness in updateMarketTopicPopularity with an on-chain tags lookup.
+        </li>
+        <li>
+          Added getNumReportsEvent/moveEvent and check for null/zero event IDs to penaltyCatchUp sequence.
+        </li>
+        <li>
+          augur.js now includes a chunked version of its getLogs method.
+        </li>
+        <li>
+          Added tradeFirstAvailableOrder wrapper for the new on-contract trade function.
+        </li>
+      </ol>
+      <h3>February 23, 2017</h3>
+      <ol>
+        <li>
+          Simplified the sync-blockchain action.
+        </li>
+      </ol>
       <h3>February 22, 2017</h3>
       <ol>
         <li>
-          Refined the build process for augur + reduced the overall build weight via removal of unneeded fonts.
-        </li>
-      </ol>
-      <h3>February 21, 2017</h3>
-      <ol>
-        <li>
-          The formatTag function in augur.js now trims whitespace from tags before converting to int256.
+          Fixed redirect issue related to Airbitz login.
         </li>
         <li>
-          Fixed checkbox component check icon.
+          Fixed layout issue related to feedback + chat buttons.
         </li>
         <li>
-          Fixed thumbs-down icon on transactions page.
-        </li>
-        <li>
-          Removed updateTopicPopularity action from marketCreated listener callback.
-        </li>
-        <li>
-          Fixed market link in create market transaction display.
-        </li>
-        <li>
-          Google Translate is now integrated with the front-end.
-        </li>
-        <li>
-          Topics and tags are now displayed as-is in the front-end (no trimming or forced case changes).
-        </li>
-        <li>
-          Market creation now separates &quot;topic&quot; (first tag; required) and &quot;keywords&quot; (other tags).
-        </li>
-        <li>
-          Resolved issue related to the display of icons on the topics view.
-        </li>
-      </ol>
-      <h3>February 20, 2017</h3>
-      <ol>
-        <li>
-          The formatTag function in augur.js now trims whitespace from tags before converting to int256.
-        </li>
-        <li>
-          The loadEventsWithSubmittedReport action has been entirely removed, as the data loaded was duplicated by loadReportingHistory.  The transaction constructors invoked by loadReportingHistory now populate the eventsWithSubmittedReport data store.
-        </li>
-        <li>
-          Icofonts are now available for use in the front-end, in addition to the font-awesome icons.
-        </li>
-        <li>
-          Fixed topics page redirect.
-        </li>
-        <li>
-          Multi-case topic strings are now handled correctly.
-        </li>
-        <li>
-          &quot;Hero&quot; topics now have the same font size as other topics on mobile.
-        </li>
-        <li>
-          {`Updated market creation to require a 'Topic'.  Keywords are still optional.`}
-        </li>
-      </ol>
-      <h3>February 19, 2017</h3>
-      <ol>
-        <li>
-          Fixed order book generation in canned-markets script.
-        </li>
-        <li>
-          Initial refactoring of ethrpc to add proper unit tests (with TestRPC) and robust websocket / IPC socket reconnection.
-        </li>
-        <li>
-          Added websocket support to TestRPC.
-        </li>
-      </ol>
-      <h3>February 18, 2017</h3>
-      <ol>
-        <li>
-          The automatic order book generation function &quot;generateOrderBook&quot; in augur.js now works correctly.
-        </li>
-        <li>
-          Edited the topics and keywords for &quot;canned markets&quot; so they are reasonably good examples.
-        </li>
-        <li>
-          Added more icon-topic associations to the front-end.
-        </li>
-      </ol>
-      <h3>February 17, 2017</h3>
-      <ol>
-        <li>
-          The default &quot;landing page&quot; for the Augur app is now the Topics page!  Instead of displaying all markets, the user is now greeted with a list of topics (such as Politics, Science, Sports, etc.) which are sorted by popularity.  Clicking on a topic brings up all markets with that topic.  (The user can still browse all markets simply by clicking on &quot;Markets&quot; in the navbar.)
-        </li>
-        <li>
-          {`Added motion design for when a topic's volume has either increased or decrease.`}
-        </li>
-        <li>
-          Constrained width of topics view.
-        </li>
-        <li>
-          Report commit locks are now indexed by event ID.
-        </li>
-        <li>
-          Market volume is now subtracted from topic popularity when the market closes.
-        </li>
-      </ol>
-      <h3>February 16, 2017</h3>
-      <ol>
-        <li>
-          Added report-commit-lock to avoid double report submission.
-        </li>
-        <li>
-          Fixed market-without-description error during new market creation.
-        </li>
-        <li>
-          Updated createEvent, createMarket, createSingleEventMarket labels to match augur-core, and relabeled branchId to branchID in getMarket(s)Info object.
-        </li>
-        <li>
-          Markets no longer have a description separate from their underlying event description.
-        </li>
-        <li>
-          Updated &quot;unfixReport&quot; to &quot;unfixRawReport&quot; in several places in the UI to match augur.js.
-        </li>
-        <li>
-          The loadMarketsInfo/loadAccountTrades loop post-claimMarketsProceeds now works correctly.
-        </li>
-        <li>
-          Reported outcome is now calculated correctly for scalar/categorical events for both log-lookups and &quot;big getter&quot; lookups.
-        </li>
-        <li>
-          Split unfixReports into unfixRawReports, unfixReports, isIndeterminateReport, and isScalarSpecialValueReport.
-        </li>
-        <li>
-          Fixed register block number lookup in augur.js.
+          Fixed issue that would cause an error when refreshing app on a market view.
         </li>
       </ol>
       {p.topicsLink &&

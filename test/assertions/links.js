@@ -4,7 +4,7 @@ import assertLink from '../../test/assertions/common/link';
 
 
 export default function (links) {
-  describe('augur-ui-react-components links state', () => {
+  describe('links state', () => {
     assert.isDefined(links, `links isn't defined`);
     assert.isObject(links, `links isn't an object`);
 

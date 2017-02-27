@@ -209,7 +209,7 @@ export function assembleMarket(
       market.creationTime = formatDate(new Date(marketData.creationTime * 1000));
 
       market.isOpen = isOpen;
-      market.isExpired = isExpired;
+      // market.isExpired = isExpired;
       market.isFavorite = isFavorite;
 
       market.takerFeePercent = formatPercent(marketData.takerFee * 100, { positiveSign: false });
@@ -302,9 +302,7 @@ export function assembleMarket(
       market.priceTimeSeries = selectPriceTimeSeries(market.outcomes, marketPriceHistory);
 
       market.reportableOutcomes = selectReportableOutcomes(market.type, market.outcomes);
-      const indeterminateOutcomeID = market.type === BINARY ?
-        BINARY_INDETERMINATE_OUTCOME_ID :
-        CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID;
+      const indeterminateOutcomeID = market.type === BINARY ? BINARY_INDETERMINATE_OUTCOME_ID : CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID;
       market.reportableOutcomes.push({ id: indeterminateOutcomeID, name: INDETERMINATE_OUTCOME_NAME });
       market.onSubmitSlashRep = (salt, report, address, isIndeterminate, isUnethical) => dispatch(slashRep(market, salt, report, address, isIndeterminate, isUnethical));
 
@@ -323,17 +321,20 @@ export function assembleMarket(
 
       market.myMarketSummary = selectMyMarket(market)[0];
 
-      // Update the `result` object
-      // This houses the reported outcome + the proportion correct of that outcome
-      if (market.reportedOutcome) {
-        market.result = { outcomeID: market.reportedOutcome };
+      // Update the consensus object:
+      //   - formatted reported outcome
+      //   - the percentage of correct reports (for binaries only)
+      if (marketData.consensus) {
+        market.consensus = { ...marketData.consensus };
         if (market.type !== SCALAR && market.reportableOutcomes.length) {
-          const marketOutcome = market.reportableOutcomes.find(outcome => outcome.id === market.reportedOutcome);
-          if (marketOutcome) market.result.outcomeName = marketOutcome.name;
+          const marketOutcome = market.reportableOutcomes.find(outcome => outcome.id === market.consensus.outcomeID);
+          if (marketOutcome) market.consensus.outcomeName = marketOutcome.name;
         }
-        if (market.proportionCorrect) {
-          market.result.proportionCorrect = formatPercent(abi.bignum(market.proportionCorrect).times(100));
+        if (market.consensus.proportionCorrect) {
+          market.consensus.percentCorrect = formatPercent(abi.bignum(market.consensus.proportionCorrect).times(100));
         }
+      } else {
+        market.consensus = null;
       }
 
       return market;

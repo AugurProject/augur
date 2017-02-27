@@ -56,7 +56,7 @@ export const generateTrade = memoizerific(5)((market, outcome, outcomeTradeInPro
 
     totalFee: formatEther(totalFee, { blankZero: true }),
     gasFeesRealEth: formatEther(gasFeesRealEth, { blankZero: true }),
-    totalCost: formatEther(totalCost, { blankZero: true }),
+    totalCost: formatEther(totalCost, { blankZero: false }),
 
     tradeTypeOptions: [
       { label: BUY, value: BUY },

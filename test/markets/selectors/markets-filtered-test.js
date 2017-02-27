@@ -16,6 +16,7 @@ describe(`modules/markets/selectors/markets-filtered.js`, () => {
     allMarkets: [
       {
         isOpen: true,
+        consensus: null,
         description: 'test 1',
         outcomes: [{
           name: 'outcome1'
@@ -29,6 +30,7 @@ describe(`modules/markets/selectors/markets-filtered.js`, () => {
         }]
       }, {
         isOpen: true,
+        consensus: null,
         description: 'test 2',
         outcomes: [{
           name: 'outcome3'
@@ -43,6 +45,7 @@ describe(`modules/markets/selectors/markets-filtered.js`, () => {
       },
       {
         isOpen: true,
+        consensus: null,
         description: 'test 3',
         outcomes: [{
           name: 'outcome3'
@@ -78,6 +81,7 @@ describe(`modules/markets/selectors/markets-filtered.js`, () => {
 
     const out = [{
       isOpen: true,
+      consensus: null,
       description: 'test 1',
       outcomes: [{
         name: 'outcome1'
@@ -91,6 +95,7 @@ describe(`modules/markets/selectors/markets-filtered.js`, () => {
       }]
     }, {
       isOpen: true,
+      consensus: null,
       description: 'test 2',
       outcomes: [{
         name: 'outcome3'

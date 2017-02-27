@@ -34,14 +34,13 @@ describe(`modules/markets/actions/load-markets-info.js`, () => {
     cb({
       test123: {
         author: '0x0000000000000000000000000000000000000001',
-        branchID: testState.branch.id,
-        events: [{
-          id: 'event1',
-          minValue: 1,
-          maxValue: 3,
-          numOutcomes: 3,
-          outcome: 2
-        }],
+        branchID: '0xf69b5',
+        eventID: 'event1',
+        minValue: 1,
+        maxValue: 3,
+        numOutcomes: 3,
+        consensus: null,
+        topic: 'test',
         tags: ['test', 'testtag'],
         outcomes: [{
           id: 1
@@ -71,13 +70,12 @@ describe(`modules/markets/actions/load-markets-info.js`, () => {
         test123: {
           author: '0x0000000000000000000000000000000000000001',
           branchID: '0xf69b5',
-          events: [{
-            id: 'event1',
-            minValue: 1,
-            maxValue: 3,
-            numOutcomes: 3,
-            outcome: 2
-          }],
+          eventID: 'event1',
+          minValue: 1,
+          maxValue: 3,
+          numOutcomes: 3,
+          consensus: null,
+          topic: 'test',
           tags: ['test', 'testtag'],
           outcomes: [{
             id: 1

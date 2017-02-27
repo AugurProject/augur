@@ -2,21 +2,20 @@ import memoizerific from 'memoizerific';
 import { cleanKeywordsArray } from '../../../utils/clean-keywords';
 import store from '../../../store';
 import { FILTER_TYPE_OPEN, FILTER_TYPE_CLOSED, FILTER_TYPE_REPORTING } from '../../markets/constants/filter-sort';
-import { isMarketDataExpired, isMarketDataOpen } from '../../../utils/is-market-data-open';
+import { isMarketDataOpen } from '../../../utils/is-market-data-open';
 
 export default function () {
-  const { keywords, selectedFilterSort, selectedTags, selectedTopic } = store.getState();
+  const { branch, keywords, selectedFilterSort, selectedTags, selectedTopic } = store.getState();
   const { allMarkets } = require('src/selectors');
 
-  return selectFilteredMarkets(allMarkets, keywords, selectedFilterSort, selectedTags, selectedTopic);
+  return selectFilteredMarkets(allMarkets, keywords, selectedFilterSort, selectedTags, selectedTopic, branch.reportPeriod);
 }
 
-export const selectFilteredMarkets = memoizerific(3)((markets, keywords, selectedFilterSort, selectedTags, selectedTopic) => {
-  const currentTime = new Date().getTime();
-  return markets.filter(market => isMarketFiltersMatch(market, keywords, selectedFilterSort, selectedTags, selectedTopic, currentTime));
-});
+export const selectFilteredMarkets = memoizerific(3)((markets, keywords, selectedFilterSort, selectedTags, selectedTopic, reportPeriod) => (
+  markets.filter(market => isMarketFiltersMatch(market, keywords, selectedFilterSort, selectedTags, selectedTopic, reportPeriod))
+));
 
-export const isMarketFiltersMatch = (market, keywords, selectedFilterSort, selectedTags, selectedTopic, currentTime) => {
+export const isMarketFiltersMatch = (market, keywords, selectedFilterSort, selectedTags, selectedTopic, reportPeriod) => {
 
   const selectedTagsList = Object.keys(selectedTags);
   return isMatchKeywords(market, keywords) &&
@@ -42,7 +41,7 @@ export const isMarketFiltersMatch = (market, keywords, selectedFilterSort, selec
       case (FILTER_TYPE_CLOSED):
         return !isMarketDataOpen(market);
       case (FILTER_TYPE_REPORTING):
-        return isMarketDataExpired({ endDate: market.endDate.timestamp / 1000 }, currentTime) && isMarketDataOpen(market);
+        return market.tradingPeriod === reportPeriod;
       case (FILTER_TYPE_OPEN):
       default:
         return isMarketDataOpen(market);

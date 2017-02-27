@@ -52,7 +52,11 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
             id: '0xa1',
             isOpen: false,
             description: 'test market 1',
-            reportedOutcome: '2'
+            consensus: {
+              outcomeID: '2',
+              isIndeterminate: false,
+              isUnethical: false
+            }
           }]
         }
       }
@@ -66,6 +70,237 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
     }
   });
   test({
+    description: '1 position in closed indeterminate market',
+    state: {
+      outcomesData: {
+        '0xa1': {
+          1: {
+            sharesPurchased: '2'
+          },
+          2: {
+            sharesPurchased: '1'
+          }
+        }
+      }
+    },
+    selectors: {
+      portfolio: {
+        positions: {
+          markets: [{
+            id: '0xa1',
+            isOpen: false,
+            description: 'test market 1',
+            consensus: {
+              outcomeID: '2',
+              isIndeterminate: true,
+              isUnethical: false
+            }
+          }]
+        }
+      }
+    },
+    assertions: (selection) => {
+      assert.deepEqual(selection, [{
+        id: '0xa1',
+        description: 'test market 1',
+        shares: '3'
+      }]);
+    }
+  });
+  test({
+    description: '1 position in closed unethical market',
+    state: {
+      outcomesData: {
+        '0xa1': {
+          1: {
+            sharesPurchased: '2'
+          },
+          2: {
+            sharesPurchased: '1'
+          }
+        }
+      }
+    },
+    selectors: {
+      portfolio: {
+        positions: {
+          markets: [{
+            id: '0xa1',
+            isOpen: false,
+            description: 'test market 1',
+            consensus: {
+              outcomeID: '0.5',
+              isIndeterminate: false,
+              isUnethical: true
+            }
+          }]
+        }
+      }
+    },
+    assertions: (selection) => {
+      assert.deepEqual(selection, [{
+        id: '0xa1',
+        description: 'test market 1',
+        shares: '3'
+      }]);
+    }
+  });
+  test({
+    description: '1 position in closed indeterminate and unethical market',
+    state: {
+      outcomesData: {
+        '0xa1': {
+          1: {
+            sharesPurchased: '2'
+          },
+          2: {
+            sharesPurchased: '1'
+          }
+        }
+      }
+    },
+    selectors: {
+      portfolio: {
+        positions: {
+          markets: [{
+            id: '0xa1',
+            isOpen: false,
+            description: 'test market 1',
+            consensus: {
+              outcomeID: '0.5',
+              isIndeterminate: true,
+              isUnethical: true
+            }
+          }]
+        }
+      }
+    },
+    assertions: (selection) => {
+      assert.deepEqual(selection, [{
+        id: '0xa1',
+        description: 'test market 1',
+        shares: '3'
+      }]);
+    }
+  });
+  test({
+    description: '1 position in closed scalar market',
+    state: {
+      outcomesData: {
+        '0xa1': {
+          1: {
+            sharesPurchased: '2'
+          },
+          2: {
+            sharesPurchased: '1'
+          }
+        }
+      }
+    },
+    selectors: {
+      portfolio: {
+        positions: {
+          markets: [{
+            id: '0xa1',
+            type: 'scalar',
+            isOpen: false,
+            description: 'test market 1',
+            consensus: {
+              outcomeID: '1.23456',
+              isIndeterminate: false,
+              isUnethical: false
+            }
+          }]
+        }
+      }
+    },
+    assertions: (selection) => {
+      assert.deepEqual(selection, [{
+        id: '0xa1',
+        description: 'test market 1',
+        shares: '3'
+      }]);
+    }
+  });
+  test({
+    description: '1 position in closed scalar indeterminate market',
+    state: {
+      outcomesData: {
+        '0xa1': {
+          1: {
+            sharesPurchased: '2'
+          },
+          2: {
+            sharesPurchased: '1'
+          }
+        }
+      }
+    },
+    selectors: {
+      portfolio: {
+        positions: {
+          markets: [{
+            id: '0xa1',
+            type: 'scalar',
+            isOpen: false,
+            description: 'test market 1',
+            consensus: {
+              outcomeID: '1.23456',
+              isIndeterminate: true,
+              isUnethical: false
+            }
+          }]
+        }
+      }
+    },
+    assertions: (selection) => {
+      assert.deepEqual(selection, [{
+        id: '0xa1',
+        description: 'test market 1',
+        shares: '3'
+      }]);
+    }
+  });
+  test({
+    description: '1 position in closed scalar unethical market',
+    state: {
+      outcomesData: {
+        '0xa1': {
+          1: {
+            sharesPurchased: '2'
+          },
+          2: {
+            sharesPurchased: '1'
+          }
+        }
+      }
+    },
+    selectors: {
+      portfolio: {
+        positions: {
+          markets: [{
+            id: '0xa1',
+            type: 'scalar',
+            isOpen: false,
+            description: 'test market 1',
+            consensus: {
+              outcomeID: '1.23456',
+              isIndeterminate: false,
+              isUnethical: true
+            }
+          }]
+        }
+      }
+    },
+    assertions: (selection) => {
+      assert.deepEqual(selection, [{
+        id: '0xa1',
+        description: 'test market 1',
+        shares: '3'
+      }]);
+    }
+  });
+  test({
     description: '1 position in open market',
     state: {
       outcomesData: {}
@@ -75,7 +310,8 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
         positions: {
           markets: [{
             id: '0xa1',
-            isOpen: true
+            isOpen: true,
+            consensus: null
           }]
         }
       }
@@ -105,12 +341,17 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
         positions: {
           markets: [{
             id: '0xa1',
-            isOpen: true
+            isOpen: true,
+            consensus: null
           }, {
             id: '0xa2',
             isOpen: false,
             description: 'test market 2',
-            reportedOutcome: '2'
+            consensus: {
+              outcomeID: '2',
+              isIndeterminate: false,
+              isUnethical: false
+            }
           }]
         }
       }
@@ -149,17 +390,26 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
         positions: {
           markets: [{
             id: '0xa1',
-            isOpen: true
+            isOpen: true,
+            consensus: null
           }, {
             id: '0xa2',
             isOpen: false,
             description: 'test market 2',
-            reportedOutcome: '2'
+            consensus: {
+              outcomeID: '2',
+              isIndeterminate: false,
+              isUnethical: false
+            }
           }, {
             id: '0xa3',
             isOpen: false,
             description: 'test market 3',
-            reportedOutcome: '2'
+            consensus: {
+              outcomeID: '2',
+              isIndeterminate: false,
+              isUnethical: false
+            }
           }]
         }
       }
@@ -202,15 +452,21 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
         positions: {
           markets: [{
             id: '0xa1',
-            isOpen: true
+            isOpen: true,
+            consensus: null
           }, {
             id: '0xa2',
-            isOpen: true
+            isOpen: true,
+            consensus: null
           }, {
             id: '0xa3',
             isOpen: false,
             description: 'test market 3',
-            reportedOutcome: '2'
+            consensus: {
+              outcomeID: '2',
+              isIndeterminate: false,
+              isUnethical: false
+            }
           }]
         }
       }

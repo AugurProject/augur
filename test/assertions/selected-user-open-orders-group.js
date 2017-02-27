@@ -2,7 +2,7 @@ import { describe, it } from 'mocha';
 import { assert } from 'chai';
 
 export default function (selectedUserOpenOrdersGroup) {
-  describe('augur-ui-react-components selectedUserOpenOrdersGroup', () => {
+  describe('selectedUserOpenOrdersGroup', () => {
     it('should exist', () => {
       assert.isDefined(selectedUserOpenOrdersGroup, `selectedUserOpenOrdersGroup is empty.`);
     });

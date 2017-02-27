@@ -45,7 +45,7 @@ const Report = p => (
           {!!p.outcome && p.isReportEqual &&
             <i
               className="fa fa-check-circle report-equal"
-              data-tip="Your report matches teh consensus outcome"
+              data-tip="Your report matches the consensus outcome"
             />
           }
           {!!p.outcome && !p.isReportEqual &&

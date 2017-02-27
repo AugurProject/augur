@@ -31,7 +31,7 @@ export function loadMarketsInfo(marketIDs, cb) {
           if (marketInfoIDs.length) {
             dispatch(updateMarketsData(branchMarketsData));
             marketInfoIDs.forEach((marketID) => {
-              dispatch(updateEventMarketsMap(branchMarketsData[marketID].events[0].id, [marketID]));
+              dispatch(updateEventMarketsMap(branchMarketsData[marketID].eventID, [marketID]));
               dispatch(loadCreatedMarketInfo(marketID));
             });
             dispatch(updateMarketsLoadingStatus(marketInfoIDs, false));

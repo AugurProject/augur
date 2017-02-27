@@ -14,7 +14,9 @@ export const selectClosedMarketsWithWinningShares = (markets, outcomesData) => {
     const market = markets[i];
     if (!market.isOpen) {
       const marketID = market.id;
-      const winningShares = market.type === SCALAR ?
+      const isSelectTotalShares = market.type === SCALAR ||
+        (market.consensus && (market.consensus.isIndeterminate || market.consensus.isUnethical));
+      const winningShares = isSelectTotalShares ?
         selectTotalSharesInMarket(market, outcomesData[marketID]) :
         selectWinningSharesInMarket(market, outcomesData[marketID]);
       if (winningShares && winningShares.gt(ZERO)) {
@@ -29,7 +31,7 @@ export const selectClosedMarketsWithWinningShares = (markets, outcomesData) => {
   return closedMarketsWithWinningShares;
 };
 
-export function selectTotalSharesInMarket(market, marketOutcomesData) {
+export const selectTotalSharesInMarket = (market, marketOutcomesData) => {
   const outcomeIDs = Object.keys(marketOutcomesData);
   const numOutcomes = outcomeIDs.length;
   let totalShares = ZERO;
@@ -40,12 +42,15 @@ export function selectTotalSharesInMarket(market, marketOutcomesData) {
     }
   }
   return totalShares;
-}
+};
 
-export function selectWinningSharesInMarket(market, marketOutcomesData) {
-  const outcomeData = marketOutcomesData[market.reportedOutcome];
-  if (outcomeData && outcomeData.sharesPurchased) {
-    const sharesPurchased = abi.bignum(outcomeData.sharesPurchased);
-    return sharesPurchased.gt(ZERO) ? sharesPurchased : null;
+export const selectWinningSharesInMarket = (market, marketOutcomesData) => {
+  if (market.consensus && market.consensus.outcomeID) {
+    const outcomeData = marketOutcomesData[market.consensus.outcomeID];
+    if (outcomeData && outcomeData.sharesPurchased) {
+      const sharesPurchased = abi.bignum(outcomeData.sharesPurchased);
+      return sharesPurchased.gt(ZERO) ? sharesPurchased : null;
+    }
   }
-}
+  return null;
+};

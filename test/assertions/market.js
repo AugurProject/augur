@@ -12,7 +12,7 @@ export default function (market) {
     return;
   }
 
-  describe('augur-ui-react-components market state', () => {
+  describe('market state', () => {
     it('market', () => {
       assert.isDefined(market);
       assert.isObject(market);
@@ -36,11 +36,6 @@ export default function (market) {
     it('market.description', () => {
       assert.isDefined(market.description);
       assert.isString(market.description);
-    });
-
-    it('market.resolution', () => {
-      assert.isDefined(market.resolution);
-      assert.isString(market.resolution);
     });
 
     it('market.extraInfo', () => {
@@ -366,8 +361,6 @@ export default function (market) {
         assertFormattedNumber(trade.data.avgPrice, 'trade.data.avgPrice');
       });
     });
-
-    it('[TODO] flesh out the full shape');
 
     it('market.priceTimeSeries', () => {
       assert.isDefined(market.priceTimeSeries);

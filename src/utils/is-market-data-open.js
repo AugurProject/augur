@@ -1,5 +1,5 @@
 export function isMarketDataOpen(marketData) {
-  return marketData.reportedOutcome === undefined;
+  return marketData.consensus === null;
 }
 
 export function isMarketDataExpired(marketData, currentTime) {
