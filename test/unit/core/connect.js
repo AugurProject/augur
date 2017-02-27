@@ -8,7 +8,7 @@ var ClearCallCounts = require('../../tools').ClearCallCounts;
 var noop = require('../../../src/utilities.js').noop;
 var BigNumber = require("bignumber.js");
 var proxyquire = require('proxyquire').noCallThru().noPreserveCache();
-// 24 tests total
+// 27 tests total
 
 describe('connect.bindContractMethod', function() {
   // 11 tests total
@@ -524,7 +524,7 @@ describe('connect.bindContractAPI', function() {
 });
 
 describe('connect.sync', function() {
-  // 2 tests total
+  // 3 tests total
   var callCounts = {
     bindContractAPI: 0,
   };
@@ -590,7 +590,7 @@ describe('connect.sync', function() {
       state: {
       	contracts: {},
       	networkID: constants.DEFAULT_NETWORK_ID,
-      	api: { functions: {} },
+      	api: {},
       	coinbase: '0x444',
       	from: '0x1'
       },
@@ -607,7 +607,7 @@ describe('connect.sync', function() {
       assert.deepEqual(testThis.coinbase, connector.state.coinbase);
       assert.deepEqual(testThis.rpc, connector.rpc);
       assert.deepEqual(testThis.contracts, connector.state.contracts);
-      assert.deepEqual(testThis.api, connector.state.api);
+      assert.deepEqual(testThis.api, Contracts.api);
       assert.deepEqual(testThis.tx, testThis.api.functions);
       assert.deepEqual(callCounts, {
         bindContractAPI: 1,
@@ -615,13 +615,22 @@ describe('connect.sync', function() {
       done();
     }
   });
-  // setupConnectorState: function() {
-  //   // in this case we want to trigger the else statement near the bottom of sync so we set this.api to Contracts.api
-  //   connector.setupFunctionsAPI = function() {
-  //     connector.state.api.functions = undefined;
-  //   };
-  //   connector.setupEventsAPI = function() {};
-  // },
+  test({
+    description: 'Should return false if connector isnt an Object',
+    testThis: {
+      bindContractAPI: function() {
+        callCounts.bindContractAPI++;
+      },
+    },
+    connector: [],
+    assertions: function(out, testThis, connector, done) {
+      assert.isFalse(out);
+      assert.deepEqual(callCounts, {
+        bindContractAPI: 0,
+      });
+      done();
+    }
+  });
 });
 
 describe('connect.useAccount', function() {
@@ -665,7 +674,7 @@ describe('connect.useAccount', function() {
 });
 
 describe('connect.connect', function() {
-  // 7 tests total (4 async, 3 sync)
+  // 9 tests total (5 async, 4 sync)
   var test = function(t) {
     // for the one test where rpcinfo is passed as a function the sync test is not required...
     if (t.rpcinfo.constructor !== Function) {
@@ -697,6 +706,43 @@ describe('connect.connect', function() {
 
     });
   };
+  test({
+    description: 'Should handle a missing rpcinfo',
+    rpcinfo: [],
+    testThis: {
+      sync: noop
+    },
+    connector: {
+      connect: function(options, cb) {
+        assert.deepEqual(options, {
+          http: null,
+          contracts: Contracts,
+          api: Contracts.api
+        });
+
+        if (cb && cb.constructor === Function) {
+          cb({
+            http: options.http,
+            ws: options.ws,
+            ipc: options.ipc
+          });
+        } else {
+          return {
+            http: options.http,
+            ws: options.ws,
+            ipc: options.ipc
+          };
+        }
+      }
+    },
+    assertions: function(connection) {
+      assert.deepEqual(connection, {
+        http: null,
+        ws: undefined,
+        ipc: undefined
+      });
+    }
+  });
   test({
     description: 'Should handle a rpcinfo string',
     rpcinfo: 'https://eth3.augur.net',
