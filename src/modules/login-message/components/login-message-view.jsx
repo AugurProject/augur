@@ -56,6 +56,9 @@ const LoginMessagePage = p => (
       <h3>February 26, 2017</h3>
       <ol>
         <li>
+          Shares of all outcomes are now automatically cashed out for markets that have been resolved indeterminate and/or unethical.
+        </li>
+        <li>
           Fixed closed market notification on detail page.
         </li>
         <li>
