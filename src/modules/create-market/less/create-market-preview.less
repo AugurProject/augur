@@ -17,22 +17,32 @@
     }
 
     .create-market-tags {
-      ul {
-        display: flex;
+      display: flex;
 
-        li {
-          align-self: flex-start;
+      li {
+        align-self: flex-start;
 
-          &.isNull {
-            flex-basis: 5%;
-            margin-right: 0.4em;
-          }
+        &.isNull {
+          flex-basis: 5%;
+          margin-right: 0.4em;
         }
       }
     }
 
     .create-market-description {
       flex: 1;
+    }
+
+    .create-market-properties {
+      display: flex;
+      li {
+        align-self: flex-start;
+
+        &.isNull {
+          flex-basis: 10%;
+          margin-right: 0.4em;
+        }
+      }
     }
   }
 
