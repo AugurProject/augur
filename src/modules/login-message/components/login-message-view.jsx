@@ -53,6 +53,12 @@ const LoginMessagePage = p => (
         </li>
       </ol>
       <h2>Technical updates:</h2>
+      <h3>February 27, 2017</h3>
+      <ol>
+        <li>
+          Fixed scalar/categorical indeterminate outcome calculations in augur.js.
+        </li>
+      </ol>
       <h3>February 26, 2017</h3>
       <ol>
         <li>
