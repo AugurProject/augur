@@ -297,9 +297,9 @@ module.exports = {
       if (!abi.unfix(consensusOutcomeID, "number")) {
         consensus = null;
       } else {
-        unfixed = this.unfixReport(consensusOutcomeID, type);
+        unfixed = this.unfixConsensusOutcome(consensusOutcomeID, minValue, maxValue, type);
         consensus = {
-          outcomeID: unfixed.report,
+          outcomeID: unfixed.outcomeID,
           isIndeterminate: unfixed.isIndeterminate
         };
       }

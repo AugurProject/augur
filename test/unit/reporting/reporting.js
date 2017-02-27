@@ -431,6 +431,44 @@ describe("periodCatchUp", function () {
         "0xb1": 7
       },
       events: {
+        "0x7e1": {
+          numReports: 1,
+          expirationDate: 700
+        },
+        "0x7e2": {
+          numReports: 1,
+          expirationDate: 700
+        },
+        "0x7e3": {
+          numReports: 1,
+          expirationDate: 700
+        },
+        "0x8e1": {
+          numReports: 1,
+          expirationDate: 800
+        },
+        "0x8e2": {
+          numReports: 1,
+          expirationDate: 800
+        },
+        "0x8e3": {
+          numReports: 1,
+          expirationDate: 800
+        },
+        "0x9e1": {
+          numReports: 1,
+          expirationDate: 900
+        },
+        "0x9e2": {
+          numReports: 1,
+          expirationDate: 900
+        },
+        "0x9e3": {
+          numReports: 1,
+          expirationDate: 900
+        }
+      },
+      expiringEvents: {
         "0xb1": {
           "7": ["0x7e1", "0x7e2", "0x7e3"],
           "8": ["0x8e1", "0x8e2", "0x8e3"],
@@ -477,6 +515,44 @@ describe("periodCatchUp", function () {
         "0xb1": 6
       },
       events: {
+        "0x7e1": {
+          numReports: 1,
+          expirationDate: 700
+        },
+        "0x7e2": {
+          numReports: 1,
+          expirationDate: 700
+        },
+        "0x7e3": {
+          numReports: 1,
+          expirationDate: 700
+        },
+        "0x8e1": {
+          numReports: 1,
+          expirationDate: 800
+        },
+        "0x8e2": {
+          numReports: 1,
+          expirationDate: 800
+        },
+        "0x8e3": {
+          numReports: 1,
+          expirationDate: 800
+        },
+        "0x9e1": {
+          numReports: 1,
+          expirationDate: 900
+        },
+        "0x9e2": {
+          numReports: 1,
+          expirationDate: 900
+        },
+        "0x9e3": {
+          numReports: 1,
+          expirationDate: 900
+        }
+      },
+      expiringEvents: {
         "0xb1": {
           "7": ["0x7e1", "0x7e2", "0x7e3"],
           "8": ["0x8e1", "0x8e2", "0x8e3"],
@@ -539,6 +615,44 @@ describe("periodCatchUp", function () {
         "0xb1": 5
       },
       events: {
+        "0x7e1": {
+          numReports: 1,
+          expirationDate: 700
+        },
+        "0x7e2": {
+          numReports: 1,
+          expirationDate: 700
+        },
+        "0x7e3": {
+          numReports: 1,
+          expirationDate: 700
+        },
+        "0x8e1": {
+          numReports: 1,
+          expirationDate: 800
+        },
+        "0x8e2": {
+          numReports: 1,
+          expirationDate: 800
+        },
+        "0x8e3": {
+          numReports: 1,
+          expirationDate: 800
+        },
+        "0x9e1": {
+          numReports: 1,
+          expirationDate: 900
+        },
+        "0x9e2": {
+          numReports: 1,
+          expirationDate: 900
+        },
+        "0x9e3": {
+          numReports: 1,
+          expirationDate: 900
+        }
+      },
+      expiringEvents: {
         "0xb1": {
           "7": ["0x7e1", "0x7e2", "0x7e3"],
           "8": ["0x8e1", "0x8e2", "0x8e3"],
@@ -655,7 +769,7 @@ describe("feePenaltyCatchUp", function () {
       };
       augur.getEvents = function (branchID, period, callback) {
         sequence.push({method: "getEvents", params: [branchID, period]});
-        callback(state.events[branchID][period]);
+        callback(state.expiringEvents[branchID][period]);
       };
       augur.getNumMarkets = function (eventID, callback) {
         sequence.push({method: "getNumMarkets", params: [eventID]});
@@ -679,6 +793,20 @@ describe("feePenaltyCatchUp", function () {
         });
         callback(state.numReportsActual[branch].toString());
       };
+      augur.getNumReportsEvent = function (branch, period, event, callback) {
+        sequence.push({
+          method: "getNumReportsEvent",
+          params: [branch, period, event]
+        });
+        callback(state.events[event].numReports);
+      };
+      augur.getExpiration = function (event, callback) {
+        sequence.push({
+          method: "getExpiration",
+          params: [event]
+        });
+        callback(state.events[event].expirationDate);
+      };
       augur.getFeesCollected = function (branch, sender, period, callback) {
         sequence.push({
           method: "getFeesCollected",
@@ -695,6 +823,16 @@ describe("feePenaltyCatchUp", function () {
       };
       augur.getCurrentPeriodProgress = function (periodLength) {
         return 49;
+      };
+      augur.moveEvent = function (o) {
+        sequence.push({
+          method: "moveEvent",
+          params: {
+            branch: o.branch,
+            event: o.event
+          }
+        });
+        o.onSuccess({callReturn: "1"});
       };
       augur.penalizationCatchup = function (o) {
         sequence.push({
@@ -727,7 +865,7 @@ describe("feePenaltyCatchUp", function () {
         });
         var period = state.lastPeriodPenalized[o.branch] + 1;
         if (o.event) state.penalized[o.branch][period].push(o.event);
-        if (!state.events[o.branch][period].length || state.penalized[o.branch][period].length === state.events[o.branch][period].length) {
+        if (!state.expiringEvents[o.branch][period].length || state.penalized[o.branch][period].length === state.expiringEvents[o.branch][period].length) {
           state.lastPeriodPenalized[o.branch] += 1;
         }
         o.onSuccess({callReturn: "1"});
@@ -790,6 +928,44 @@ describe("feePenaltyCatchUp", function () {
         }
       },
       events: {
+        "0x7e1": {
+          numReports: 1,
+          expirationDate: 700
+        },
+        "0x7e2": {
+          numReports: 1,
+          expirationDate: 700
+        },
+        "0x7e3": {
+          numReports: 1,
+          expirationDate: 700
+        },
+        "0x8e1": {
+          numReports: 1,
+          expirationDate: 800
+        },
+        "0x8e2": {
+          numReports: 1,
+          expirationDate: 800
+        },
+        "0x8e3": {
+          numReports: 1,
+          expirationDate: 800
+        },
+        "0x9e1": {
+          numReports: 1,
+          expirationDate: 900
+        },
+        "0x9e2": {
+          numReports: 1,
+          expirationDate: 900
+        },
+        "0x9e3": {
+          numReports: 1,
+          expirationDate: 900
+        }
+      },
+      expiringEvents: {
         "0xb1": {
           "7": ["0x7e1", "0x7e2", "0x7e3"],
           "8": ["0x8e1", "0x8e2", "0x8e3"],
@@ -869,6 +1045,56 @@ describe("feePenaltyCatchUp", function () {
         }
       },
       events: {
+        "0x6e1": {
+          numReports: 1,
+          expirationDate: 600
+        },
+        "0x6e2": {
+          numReports: 1,
+          expirationDate: 600
+        },
+        "0x6e3": {
+          numReports: 1,
+          expirationDate: 600
+        },
+        "0x7e1": {
+          numReports: 1,
+          expirationDate: 700
+        },
+        "0x7e2": {
+          numReports: 0,
+          expirationDate: 700
+        },
+        "0x7e3": {
+          numReports: 1,
+          expirationDate: 700
+        },
+        "0x8e1": {
+          numReports: 1,
+          expirationDate: 800
+        },
+        "0x8e2": {
+          numReports: 1,
+          expirationDate: 800
+        },
+        "0x8e3": {
+          numReports: 1,
+          expirationDate: 800
+        },
+        "0x9e1": {
+          numReports: 1,
+          expirationDate: 900
+        },
+        "0x9e2": {
+          numReports: 1,
+          expirationDate: 900
+        },
+        "0x9e3": {
+          numReports: 1,
+          expirationDate: 900
+        }
+      },
+      expiringEvents: {
         "0xb1": {
           "6": ["0x6e1", "0x6e2", "0x6e3"],
           "7": ["0x7e1", "0x7e2", "0x7e3"],
@@ -905,6 +1131,9 @@ describe("feePenaltyCatchUp", function () {
         method: "getEvents",
         params: ["0xb1", 7]
       }, {
+        method: "getNumReportsEvent",
+        params: ["0xb1", 7, "0x7e1"]
+      }, {
         method: "getEventCanReportOn",
         params: ["0xb1", 7, "0xb0b", "0x7e1"]
       }, {
@@ -917,17 +1146,20 @@ describe("feePenaltyCatchUp", function () {
         "method": "closeEventMarkets",
         "params": ["0xb1", "0x7e1", "0xb0b"]
       }, {
-        method: "getEventCanReportOn",
-        params: ["0xb1", 7, "0xb0b", "0x7e2"]
+        method: "getNumReportsEvent",
+        params: ["0xb1", 7, "0x7e2"]
       }, {
-        method: "penalizeWrong",
+        method: "getExpiration",
+        params: ["0x7e2"]
+      }, {
+        method: "moveEvent",
         params: {
           branch: "0xb1",
           event: "0x7e2"
         }
       }, {
-        "method": "closeEventMarkets",
-        "params": ["0xb1", "0x7e2", "0xb0b"]
+        method: "getNumReportsEvent",
+        params: ["0xb1", 7, "0x7e3"]
       }, {
         method: "getEventCanReportOn",
         params: ["0xb1", 7, "0xb0b", "0x7e3"]
@@ -944,13 +1176,10 @@ describe("feePenaltyCatchUp", function () {
       assert.deepEqual(startState.periodLength, endState.periodLength);
       assert.deepEqual(startState.currentPeriod, endState.currentPeriod);
       assert.deepEqual(startState.reportPeriod, endState.reportPeriod);
-      assert.strictEqual(startState.lastPeriodPenalized["0xb1"] + 1, endState.lastPeriodPenalized["0xb1"]);
-      assert.strictEqual(endState.lastPeriodPenalized["0xb1"], endState.reportPeriod["0xb1"] - 1);
-      assert.deepEqual(endState.penalized["0xb1"]["7"], [
-        "0x7e1",
-        "0x7e2",
-        "0x7e3"
-      ]);
+      // lastPeriodPenalized not incremented b/c called moveEvent instead of penalizeWrong for 0x7e2
+      assert.strictEqual(startState.lastPeriodPenalized["0xb1"], endState.lastPeriodPenalized["0xb1"]);
+      assert.strictEqual(endState.lastPeriodPenalized["0xb1"], endState.reportPeriod["0xb1"] - 2);
+      assert.deepEqual(endState.penalized["0xb1"]["7"], ["0x7e1", "0x7e3"]);
       assert.deepEqual(startState.events, endState.events);
       assert.deepEqual(startState.markets, endState.markets);
     }
@@ -1002,6 +1231,44 @@ describe("feePenaltyCatchUp", function () {
         }
       },
       events: {
+        "0x6e1": {
+          numReports: 1,
+          expirationDate: 600
+        },
+        "0x6e2": {
+          numReports: 1,
+          expirationDate: 600
+        },
+        "0x6e3": {
+          numReports: 1,
+          expirationDate: 600
+        },
+        "0x8e1": {
+          numReports: 1,
+          expirationDate: 800
+        },
+        "0x8e2": {
+          numReports: 1,
+          expirationDate: 800
+        },
+        "0x8e3": {
+          numReports: 1,
+          expirationDate: 800
+        },
+        "0x9e1": {
+          numReports: 1,
+          expirationDate: 900
+        },
+        "0x9e2": {
+          numReports: 1,
+          expirationDate: 900
+        },
+        "0x9e3": {
+          numReports: 1,
+          expirationDate: 900
+        }
+      },
+      expiringEvents: {
         "0xb1": {
           "6": ["0x6e1", "0x6e2", "0x6e3"],
           "7": [],
@@ -1101,6 +1368,68 @@ describe("feePenaltyCatchUp", function () {
         }
       },
       events: {
+        "0x5e1": {
+          numReports: 1,
+          expirationDate: 500
+        },
+        "0x5e2": {
+          numReports: 1,
+          expirationDate: 500
+        },
+        "0x5e3": {
+          numReports: 1,
+          expirationDate: 500
+        },
+        "0x6e1": {
+          numReports: 1,
+          expirationDate: 600
+        },
+        "0x6e2": {
+          numReports: 1,
+          expirationDate: 600
+        },
+        "0x6e3": {
+          numReports: 1,
+          expirationDate: 600
+        },
+        "0x7e1": {
+          numReports: 1,
+          expirationDate: 700
+        },
+        "0x7e2": {
+          numReports: 1,
+          expirationDate: 700
+        },
+        "0x7e3": {
+          numReports: 1,
+          expirationDate: 700
+        },
+        "0x8e1": {
+          numReports: 1,
+          expirationDate: 800
+        },
+        "0x8e2": {
+          numReports: 1,
+          expirationDate: 800
+        },
+        "0x8e3": {
+          numReports: 1,
+          expirationDate: 800
+        },
+        "0x9e1": {
+          numReports: 1,
+          expirationDate: 900
+        },
+        "0x9e2": {
+          numReports: 1,
+          expirationDate: 900
+        },
+        "0x9e3": {
+          numReports: 1,
+          expirationDate: 900
+        }
+      },
+      expiringEvents: {
         "0xb1": {
           "5": ["0x5e1", "0x5e2", "0x5e3"],
           "6": ["0x6e1", "0x6e2", "0x6e3"],

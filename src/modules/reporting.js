@@ -250,11 +250,7 @@ module.exports = {
                   self.moveEvent({
                     branch: branch,
                     event: event,
-                    onSent: function (r) {
-                      if (self.options.debug.reporting) {
-                        console.log("[penaltyCatchUp] moveEvent sent:", r);
-                      }
-                    },
+                    onSent: utils.noop,
                     onSuccess: function (r) {
                       if (self.options.debug.reporting) {
                         console.log("[penaltyCatchUp] moveEvent success:", r);

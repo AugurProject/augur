@@ -5,6 +5,7 @@
 
 "use strict";
 
+var BigNumber = require("bignumber.js");
 var clone = require("clone");
 var abi = require("augur-abi");
 var keys = require("keythereum");
@@ -48,6 +49,18 @@ module.exports = {
     return fixedReport;
   },
 
+  // So in the scenario where it's indeterminate getUncaughtOutcome will be 0.5*10^18 and getOutcome will be middle of the range, so if range is 0-200 it'll be 100*10^18
+  // When it's not indeterminate and it lands halfway getUncaughtOutcome should be 0.5*10^18 + 1 and getOutcome will be like 100*10^18 + some fraction of a quadrillionth or so
+  // Like how 0 outcomes should report 1 (which is some super tiny fraction)
+  // When it's determinate to differentiate for scalars and categoricals it should be .5*fxp + 1
+  // And for differentiating for indeterminate, indeterminate ones should be .5*fxp
+  isIndeterminateConsensusOutcome: function (consensusOutcome, minValue, maxValue) {
+    if (consensusOutcome.eq(maxValue.plus(minValue).dividedBy(2))) {
+      return consensusOutcome.toFixed();
+    }
+    return false;
+  },
+
   isIndeterminateReport: function (fxpReport, type) {
     var bnFxpReport = abi.bignum(fxpReport);
     if (type === "binary" && bnFxpReport.eq(constants.BINARY_INDETERMINATE)) {
@@ -58,9 +71,21 @@ module.exports = {
     return false;
   },
 
-  isScalarSpecialValueReport: function (fxpReport) {
+  isSpecialValueConsensusOutcome: function (fxpConsensusOutcome, minValue, maxValue) {
+    var bnFxpConsensusOutcome = abi.bignum(fxpConsensusOutcome);
+    if (bnFxpConsensusOutcome.eq(1)) {
+      return "0";
+    }
+    var meanValue = abi.fix(maxValue).plus(abi.fix(minValue)).dividedBy(2);
+    if (bnFxpConsensusOutcome.eq(meanValue.plus(1))) {
+      return abi.unfix(meanValue, "string");
+    }
+    return false;
+  },
+
+  isSpecialValueReport: function (fxpReport, minValue, maxValue) {
     var bnFxpReport = abi.bignum(fxpReport);
-    if (bnFxpReport.eq(abi.bignum(1))) {
+    if (bnFxpReport.eq(1)) {
       return "0";
     }
     if (bnFxpReport.eq(constants.INDETERMINATE_PLUS_ONE)) {
@@ -69,7 +94,7 @@ module.exports = {
     return false;
   },
 
-  unfixRawReport: function (rawReport, minValue, maxValue, type) {
+  unfixReport: function (rawReport, minValue, maxValue, type) {
     var report;
     var indeterminateReport = this.isIndeterminateReport(rawReport, type);
     if (indeterminateReport) {
@@ -79,9 +104,9 @@ module.exports = {
       return {report: abi.unfix(rawReport, "string"), isIndeterminate: false};
     }
     if (type === "scalar") {
-      var scalarSpecialValueReport = this.isScalarSpecialValueReport(rawReport);
-      if (scalarSpecialValueReport) {
-        return {report: scalarSpecialValueReport, isIndeterminate: false};
+      var specialValueReport = this.isSpecialValueReport(rawReport);
+      if (specialValueReport) {
+        return {report: specialValueReport, isIndeterminate: false};
       }
     }
     // x = (max - min)*y + min
@@ -91,18 +116,21 @@ module.exports = {
     return {report: report.toFixed(), isIndeterminate: false};
   },
 
-  unfixReport: function (fxpReport, type) {
-    var indeterminateReport = this.isIndeterminateReport(fxpReport, type);
-    if (indeterminateReport) {
-      return {report: indeterminateReport, isIndeterminate: true};
+  unfixConsensusOutcome: function (fxpConsensusOutcome, minValue, maxValue, type) {
+    var bnMinValue = new BigNumber(minValue, 10);
+    var bnMaxValue = new BigNumber(maxValue, 10);
+    var consensusOutcome = abi.unfix_signed(fxpConsensusOutcome);
+    var indeterminateConsensusOutcome = this.isIndeterminateConsensusOutcome(consensusOutcome, bnMinValue, bnMaxValue);
+    if (indeterminateConsensusOutcome) {
+      return {outcomeID: indeterminateConsensusOutcome, isIndeterminate: true};
     }
-    if (type === "scalar") {
-      var scalarSpecialValueReport = this.isScalarSpecialValueReport(fxpReport);
-      if (scalarSpecialValueReport) {
-        return {report: scalarSpecialValueReport, isIndeterminate: false};
+    if (type !== "binary") {
+      var specialValueConsensusOutcome = this.isSpecialValueConsensusOutcome(fxpConsensusOutcome, bnMinValue, bnMaxValue);
+      if (specialValueConsensusOutcome) {
+        return {outcomeID: specialValueConsensusOutcome, isIndeterminate: false};
       }
     }
-    return {report: abi.unfix_signed(fxpReport, "string"), isIndeterminate: false};
+    return {outcomeID: consensusOutcome.toFixed(), isIndeterminate: false};
   },
 
   // report in fixed-point

@@ -14,7 +14,7 @@ var utils = require("../../../src/utilities");
 var keys = require("keythereum");
 var augur = require("../../../src");
 
-describe("unfixReport", function () {
+describe("unfixConsensusOutcome", function () {
   before(function () {
     makeReports.options = {debug: {reporting: false}};
   });
@@ -23,194 +23,222 @@ describe("unfixReport", function () {
   });
   var test = function (t) {
     it(t.description, function () {
-      t.assertions(makeReports.unfixReport(t.params.fxpReport, t.params.type));
+      t.assertions(makeReports.unfixConsensusOutcome(t.params.fxpReport, t.params.minValue, t.params.maxValue, t.params.type));
     });
   };
   test({
-    description: "binary event: report 1",
+    description: "binary event: consensus outcome 1",
     params: {
       fxpReport: "0xde0b6b3a7640000",
+      minValue: "1",
+      maxValue: "2",
       type: "binary"
     },
     assertions: function (output) {
       assert.deepEqual(output, {
-        report: "1",
+        outcomeID: "1",
         isIndeterminate: false
       });
     }
   });
   test({
-    description: "binary event: report 2",
+    description: "binary event: consensus outcome 2",
     params: {
       fxpReport: "0x1bc16d674ec80000",
+      minValue: "1",
+      maxValue: "2",
       type: "binary"
     },
     assertions: function (output) {
       assert.deepEqual(output, {
-        report: "2",
+        outcomeID: "2",
         isIndeterminate: false
       });
     }
   });
   test({
-    description: "binary event: report 1.5 (indeterminate)",
+    description: "binary event: consensus outcome 1.5 (indeterminate)",
     params: {
       fxpReport: "0x14d1120d7b160000",
+      minValue: "1",
+      maxValue: "2",
       type: "binary"
     },
     assertions: function (output) {
       assert.deepEqual(output, {
-        report: "1.5",
+        outcomeID: "1.5",
         isIndeterminate: true
       });
     }
   });
   test({
-    description: "categorical event: report 1",
+    description: "categorical event: consensus outcome 1",
     params: {
       fxpReport: "0xde0b6b3a7640000",
+      minValue: "1",
+      maxValue: "6",
       type: "categorical"
     },
     assertions: function (output) {
       assert.deepEqual(output, {
-        report: "1",
+        outcomeID: "1",
         isIndeterminate: false
       });
     }
   });
   test({
-    description: "categorical event: report 5",
+    description: "categorical event: consensus outcome 5",
     params: {
       fxpReport: "0x4563918244f40000",
+      minValue: "1",
+      maxValue: "6",
       type: "categorical"
     },
     assertions: function (output) {
       assert.deepEqual(output, {
-        report: "5",
+        outcomeID: "5",
         isIndeterminate: false
       });
     }
   });
   test({
-    description: "categorical event: report 0.5 (indeterminate)",
+    description: "categorical event: consensus outcome 3.5 (indeterminate)",
     params: {
-      fxpReport: "0x6f05b59d3b20000",
+      fxpReport: "0x30927f74c9de0000",
+      minValue: "1",
+      maxValue: "6",
       type: "categorical"
     },
     assertions: function (output) {
       assert.deepEqual(output, {
-        report: "0.5",
+        outcomeID: "3.5",
         isIndeterminate: true
       });
     }
   });
   test({
-    description: "categorical event: report 1.5",
+    description: "categorical event: consensus outcome 3.5 (determinate)",
     params: {
-      fxpReport: "0x14d1120d7b160000",
+      fxpReport: "0x30927f74c9de0001",
+      minValue: "1",
+      maxValue: "6",
       type: "categorical"
     },
     assertions: function (output) {
       assert.deepEqual(output, {
-        report: "1.5",
+        outcomeID: "3.5",
         isIndeterminate: false
       });
     }
   });
   test({
-    description: "scalar event: report 1",
+    description: "scalar event: consensus outcome 1",
     params: {
       fxpReport: "0xde0b6b3a7640000",
+      minValue: "-10",
+      maxValue: "5",
       type: "scalar"
     },
     assertions: function (output) {
       assert.deepEqual(output, {
-        report: "1",
+        outcomeID: "1",
         isIndeterminate: false
       });
     }
   });
   test({
-    description: "scalar event: report 2",
+    description: "scalar event: consensus outcome 2",
     params: {
       fxpReport: "0x1bc16d674ec80000",
+      minValue: "-10",
+      maxValue: "5",
       type: "scalar"
     },
     assertions: function (output) {
       assert.deepEqual(output, {
-        report: "2",
+        outcomeID: "2",
         isIndeterminate: false
       });
     }
   });
   test({
-    description: "scalar event: report 0.5 (indeterminate)",
+    description: "scalar event: consensus outcome -2.5 (indeterminate)",
     params: {
-      fxpReport: "0x6f05b59d3b20000",
+      fxpReport: "-0x22b1c8c1227a0000",
+      minValue: "-10",
+      maxValue: "5",
       type: "scalar"
     },
     assertions: function (output) {
       assert.deepEqual(output, {
-        report: "0.5",
+        outcomeID: "-2.5",
         isIndeterminate: true
       });
     }
   });
   test({
-    description: "scalar event: report 0.500000000000000001",
+    description: "scalar event: consensus outcome -2.5 (determinate)",
     params: {
-      fxpReport: "0x6f05b59d3b20001",
+      fxpReport: "-0x22b1c8c12279ffff",
+      minValue: "-10",
+      maxValue: "5",
       type: "scalar"
     },
     assertions: function (output) {
       assert.deepEqual(output, {
-        report: "0.5",
+        outcomeID: "-2.5",
         isIndeterminate: false
       });
     }
   });
   test({
-    description: "scalar event: report 0.000000000000000001",
+    description: "scalar event: consensus outcome 0.000000000000000001",
     params: {
       fxpReport: "0x1",
+      minValue: "-10",
+      maxValue: "5",
       type: "scalar"
     },
     assertions: function (output) {
       assert.deepEqual(output, {
-        report: "0",
+        outcomeID: "0",
         isIndeterminate: false
       });
     }
   });
   test({
-    description: "scalar event: report -3.1415",
+    description: "scalar event: consensus outcome -3.1415",
     params: {
       fxpReport: "-0x2b98d99b09e3c000",
+      minValue: "-10",
+      maxValue: "5",
       type: "scalar"
     },
     assertions: function (output) {
       assert.deepEqual(output, {
-        report: "-3.1415",
+        outcomeID: "-3.1415",
         isIndeterminate: false
       });
     }
   });
   test({
-    description: "scalar event: report -3.1415",
+    description: "scalar event: consensus outcome -3.1415",
     params: {
       fxpReport: "0xffffffffffffffffffffffffffffffffffffffffffffffffd4672664f61c4000",
+      minValue: "-10",
+      maxValue: "5",
       type: "scalar"
     },
     assertions: function (output) {
       assert.deepEqual(output, {
-        report: "-3.1415",
+        outcomeID: "-3.1415",
         isIndeterminate: false
       });
     }
   });
 });
 
-describe("fixReport / unfixRawReport", function () {
+describe("fixReport / unfixReport", function () {
   before(function () {
     makeReports.options = {debug: {reporting: false}};
   });
@@ -227,7 +255,7 @@ describe("fixReport / unfixRawReport", function () {
         t.isIndeterminate
       );
       assert.strictEqual(fixedReport, t.expected);
-      var unfixed = makeReports.unfixRawReport(fixedReport, t.minValue, t.maxValue, t.type);
+      var unfixed = makeReports.unfixReport(fixedReport, t.minValue, t.maxValue, t.type);
       assert.strictEqual(unfixed.report, t.report);
       assert.strictEqual(unfixed.isIndeterminate, !!t.isIndeterminate);
     });
@@ -797,7 +825,7 @@ describe("getAndDecryptReport", function() {
 describe("submitReportHash", function() {
   var finished;
   var test = function(t) {
-    it(JSON.stringify(t), function(done) {
+    it(JSON.stringify(t.event), function(done) {
       finished = done;
       makeReports.submitReportHash.call(t.testThis, t.event, t.reportHash, t.encryptedReport, t.encryptedSalt, t.ethics, t.branch, t.period, t.periodLength, t.onSent, t.onSuccess, t.onFailed);
     });

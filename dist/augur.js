@@ -24110,7 +24110,7 @@ BigNumber.config({
 var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/slashRep"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register"), require("./modules/topics"), require("./modules/modifyOrderBook"), require("./modules/generateOrderBook")];
 
 function Augur() {
-  this.version = "3.13.4";
+  this.version = "3.13.5";
 
   this.options = {
     debug: {
@@ -24395,9 +24395,10 @@ module.exports = {
         info.type = "scalar";
       }
       if (parseInt(rawInfo[index + 2], 16) !== 0) {
-        var unfixed = makeReports.unfixReport(rawInfo[index + 2], info.type);
+        var fxpConsensusOutcome = rawInfo[index + 2];
+        var unfixed = makeReports.unfixConsensusOutcome(fxpConsensusOutcome, info.minValue, info.maxValue, info.type);
         info.consensus = {
-          outcomeID: unfixed.report,
+          outcomeID: unfixed.outcomeID,
           isIndeterminate: unfixed.isIndeterminate,
           isUnethical: !abi.unfix_signed(rawInfo[index + 7], "number")
         };
@@ -25124,9 +25125,9 @@ module.exports = {
       if (!abi.unfix(consensusOutcomeID, "number")) {
         consensus = null;
       } else {
-        unfixed = this.unfixReport(consensusOutcomeID, type);
+        unfixed = this.unfixConsensusOutcome(consensusOutcomeID, minValue, maxValue, type);
         consensus = {
-          outcomeID: unfixed.report,
+          outcomeID: unfixed.outcomeID,
           isIndeterminate: unfixed.isIndeterminate
         };
       }
@@ -26640,6 +26641,7 @@ module.exports = {
 
 "use strict";
 
+var BigNumber = require("bignumber.js");
 var clone = require("clone");
 var abi = require("augur-abi");
 var keys = require("keythereum");
@@ -26681,6 +26683,18 @@ module.exports = {
     return fixedReport;
   },
 
+  // So in the scenario where it's indeterminate getUncaughtOutcome will be 0.5*10^18 and getOutcome will be middle of the range, so if range is 0-200 it'll be 100*10^18
+  // When it's not indeterminate and it lands halfway getUncaughtOutcome should be 0.5*10^18 + 1 and getOutcome will be like 100*10^18 + some fraction of a quadrillionth or so
+  // Like how 0 outcomes should report 1 (which is some super tiny fraction)
+  // When it's determinate to differentiate for scalars and categoricals it should be .5*fxp + 1
+  // And for differentiating for indeterminate, indeterminate ones should be .5*fxp
+  isIndeterminateConsensusOutcome: function isIndeterminateConsensusOutcome(consensusOutcome, minValue, maxValue) {
+    if (consensusOutcome.eq(maxValue.plus(minValue).dividedBy(2))) {
+      return consensusOutcome.toFixed();
+    }
+    return false;
+  },
+
   isIndeterminateReport: function isIndeterminateReport(fxpReport, type) {
     var bnFxpReport = abi.bignum(fxpReport);
     if (type === "binary" && bnFxpReport.eq(constants.BINARY_INDETERMINATE)) {
@@ -26691,9 +26705,21 @@ module.exports = {
     return false;
   },
 
-  isScalarSpecialValueReport: function isScalarSpecialValueReport(fxpReport) {
+  isSpecialValueConsensusOutcome: function isSpecialValueConsensusOutcome(fxpConsensusOutcome, minValue, maxValue) {
+    var bnFxpConsensusOutcome = abi.bignum(fxpConsensusOutcome);
+    if (bnFxpConsensusOutcome.eq(1)) {
+      return "0";
+    }
+    var meanValue = abi.fix(maxValue).plus(abi.fix(minValue)).dividedBy(2);
+    if (bnFxpConsensusOutcome.eq(meanValue.plus(1))) {
+      return abi.unfix(meanValue, "string");
+    }
+    return false;
+  },
+
+  isSpecialValueReport: function isSpecialValueReport(fxpReport, minValue, maxValue) {
     var bnFxpReport = abi.bignum(fxpReport);
-    if (bnFxpReport.eq(abi.bignum(1))) {
+    if (bnFxpReport.eq(1)) {
       return "0";
     }
     if (bnFxpReport.eq(constants.INDETERMINATE_PLUS_ONE)) {
@@ -26702,7 +26728,7 @@ module.exports = {
     return false;
   },
 
-  unfixRawReport: function unfixRawReport(rawReport, minValue, maxValue, type) {
+  unfixReport: function unfixReport(rawReport, minValue, maxValue, type) {
     var report;
     var indeterminateReport = this.isIndeterminateReport(rawReport, type);
     if (indeterminateReport) {
@@ -26712,9 +26738,9 @@ module.exports = {
       return { report: abi.unfix(rawReport, "string"), isIndeterminate: false };
     }
     if (type === "scalar") {
-      var scalarSpecialValueReport = this.isScalarSpecialValueReport(rawReport);
-      if (scalarSpecialValueReport) {
-        return { report: scalarSpecialValueReport, isIndeterminate: false };
+      var specialValueReport = this.isSpecialValueReport(rawReport);
+      if (specialValueReport) {
+        return { report: specialValueReport, isIndeterminate: false };
       }
     }
     // x = (max - min)*y + min
@@ -26724,18 +26750,21 @@ module.exports = {
     return { report: report.toFixed(), isIndeterminate: false };
   },
 
-  unfixReport: function unfixReport(fxpReport, type) {
-    var indeterminateReport = this.isIndeterminateReport(fxpReport, type);
-    if (indeterminateReport) {
-      return { report: indeterminateReport, isIndeterminate: true };
+  unfixConsensusOutcome: function unfixConsensusOutcome(fxpConsensusOutcome, minValue, maxValue, type) {
+    var bnMinValue = new BigNumber(minValue, 10);
+    var bnMaxValue = new BigNumber(maxValue, 10);
+    var consensusOutcome = abi.unfix_signed(fxpConsensusOutcome);
+    var indeterminateConsensusOutcome = this.isIndeterminateConsensusOutcome(consensusOutcome, bnMinValue, bnMaxValue);
+    if (indeterminateConsensusOutcome) {
+      return { outcomeID: indeterminateConsensusOutcome, isIndeterminate: true };
     }
-    if (type === "scalar") {
-      var scalarSpecialValueReport = this.isScalarSpecialValueReport(fxpReport);
-      if (scalarSpecialValueReport) {
-        return { report: scalarSpecialValueReport, isIndeterminate: false };
+    if (type !== "binary") {
+      var specialValueConsensusOutcome = this.isSpecialValueConsensusOutcome(fxpConsensusOutcome, bnMinValue, bnMaxValue);
+      if (specialValueConsensusOutcome) {
+        return { outcomeID: specialValueConsensusOutcome, isIndeterminate: false };
       }
     }
-    return { report: abi.unfix_signed(fxpReport, "string"), isIndeterminate: false };
+    return { outcomeID: consensusOutcome.toFixed(), isIndeterminate: false };
   },
 
   // report in fixed-point
@@ -26879,7 +26908,7 @@ module.exports = {
   }
 };
 }).call(this,require("buffer").Buffer)
-},{"../constants":65,"../utilities":99,"augur-abi":1,"augur-contracts":58,"buffer":156,"clone":159,"keythereum":294}],82:[function(require,module,exports){
+},{"../constants":65,"../utilities":99,"augur-abi":1,"augur-contracts":58,"bignumber.js":121,"buffer":156,"clone":159,"keythereum":294}],82:[function(require,module,exports){
 /**
  * Augur JavaScript SDK
  * @author Jack Peterson (jack@tinybike.net)
@@ -28079,11 +28108,7 @@ module.exports = {
                   self.moveEvent({
                     branch: branch,
                     event: event,
-                    onSent: function onSent(r) {
-                      if (self.options.debug.reporting) {
-                        console.log("[penaltyCatchUp] moveEvent sent:", r);
-                      }
-                    },
+                    onSent: utils.noop,
                     onSuccess: function onSuccess(r) {
                       if (self.options.debug.reporting) {
                         console.log("[penaltyCatchUp] moveEvent success:", r);
@@ -47213,11 +47238,7 @@ module.exports = {
                   self.moveEvent({
                     branch: branch,
                     event: event,
-                    onSent: function (r) {
-                      if (self.options.debug.reporting) {
-                        console.log("[penaltyCatchUp] moveEvent sent:", r);
-                      }
-                    },
+                    onSent: utils.noop,
                     onSuccess: function (r) {
                       if (self.options.debug.reporting) {
                         console.log("[penaltyCatchUp] moveEvent success:", r);
