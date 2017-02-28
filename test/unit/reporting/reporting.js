@@ -715,9 +715,10 @@ describe("feePenaltyCatchUp", function () {
     var collectFees = augur.collectFees;
     var getEvents = augur.getEvents;
     var getPenalizedUpTo = augur.getPenalizedUpTo;
-    var getEventCanReportOn = augur.getEventCanReportOn;
+    var getReport = augur.ExpiringEvents.getReport;
     var getFeesCollected = augur.getFeesCollected;
     var getNumReportsActual = augur.getNumReportsActual;
+    var getNumReportsEvent = augur.getNumReportsEvent;
     var getCurrentPeriodProgress = augur.getCurrentPeriodProgress;
     var penalizationCatchup = augur.penalizationCatchup;
     var penalizeWrong = augur.penalizeWrong;
@@ -731,9 +732,10 @@ describe("feePenaltyCatchUp", function () {
       augur.collectFees = collectFees;
       augur.getEvents = getEvents;
       augur.getPenalizedUpTo = getPenalizedUpTo;
-      augur.getEventCanReportOn = getEventCanReportOn;
+      augur.ExpiringEvents.getReport = getReport;
       augur.getFeesCollected = getFeesCollected;
       augur.getNumReportsActual = getNumReportsActual;
+      augur.getNumReportsEvent = getNumReportsEvent;
       augur.getCurrentPeriodProgress = getCurrentPeriodProgress;
       augur.penalizationCatchup = penalizationCatchup;
       augur.penalizeWrong = penalizeWrong;
@@ -814,10 +816,10 @@ describe("feePenaltyCatchUp", function () {
         });
         callback(state.feesCollected[branch][period]);
       };
-      augur.getEventCanReportOn = function (branch, period, sender, event, callback) {
+      augur.ExpiringEvents.getReport = function (branch, period, event, sender, callback) {
         sequence.push({
-          method: "getEventCanReportOn",
-          params: [branch, period, sender, event]
+          method: "getReport",
+          params: [branch, period, event, sender]
         });
         callback("1");
       };
@@ -1134,8 +1136,8 @@ describe("feePenaltyCatchUp", function () {
         method: "getNumReportsEvent",
         params: ["0xb1", 7, "0x7e1"]
       }, {
-        method: "getEventCanReportOn",
-        params: ["0xb1", 7, "0xb0b", "0x7e1"]
+        method: "getReport",
+        params: ["0xb1", 7, "0x7e1", "0xb0b"]
       }, {
         method: "penalizeWrong",
         params: {
@@ -1161,8 +1163,8 @@ describe("feePenaltyCatchUp", function () {
         method: "getNumReportsEvent",
         params: ["0xb1", 7, "0x7e3"]
       }, {
-        method: "getEventCanReportOn",
-        params: ["0xb1", 7, "0xb0b", "0x7e3"]
+        method: "getReport",
+        params: ["0xb1", 7, "0x7e3", "0xb0b"]
       }, {
         method: "penalizeWrong",
         params: {

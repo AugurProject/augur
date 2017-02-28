@@ -266,11 +266,11 @@ module.exports = {
                   });
                 });
               } else {
-                self.getEventCanReportOn(branch, periodToCheck, sender, event, function (canReportOn) {
+                self.ExpiringEvents.getReport(branch, periodToCheck, event, sender, function (report) {
                   if (self.options.debug.reporting) {
-                    console.log("[penaltyCatchUp] getEventCanReportOn:", canReportOn);
+                    console.log("[penaltyCatchUp] ExpiringEvents.getReport:", report);
                   }
-                  if (parseInt(canReportOn) === 0) {
+                  if (parseInt(report) === 0) {
                     return self.closeEventMarkets(branch, event, sender, nextEvent);
                   }
                   if (self.options.debug.reporting) {

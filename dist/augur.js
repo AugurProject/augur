@@ -24110,7 +24110,7 @@ BigNumber.config({
 var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/slashRep"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register"), require("./modules/topics"), require("./modules/modifyOrderBook"), require("./modules/generateOrderBook")];
 
 function Augur() {
-  this.version = "3.13.5";
+  this.version = "3.13.6";
 
   this.options = {
     debug: {
@@ -28124,11 +28124,11 @@ module.exports = {
                   });
                 });
               } else {
-                self.getEventCanReportOn(branch, periodToCheck, sender, event, function (canReportOn) {
+                self.ExpiringEvents.getReport(branch, periodToCheck, event, sender, function (report) {
                   if (self.options.debug.reporting) {
-                    console.log("[penaltyCatchUp] getEventCanReportOn:", canReportOn);
+                    console.log("[penaltyCatchUp] ExpiringEvents.getReport:", report);
                   }
-                  if (parseInt(canReportOn) === 0) {
+                  if (parseInt(report) === 0) {
                     return self.closeEventMarkets(branch, event, sender, nextEvent);
                   }
                   if (self.options.debug.reporting) {
@@ -47254,11 +47254,11 @@ module.exports = {
                   });
                 });
               } else {
-                self.getEventCanReportOn(branch, periodToCheck, sender, event, function (canReportOn) {
+                self.ExpiringEvents.getReport(branch, periodToCheck, event, sender, function (report) {
                   if (self.options.debug.reporting) {
-                    console.log("[penaltyCatchUp] getEventCanReportOn:", canReportOn);
+                    console.log("[penaltyCatchUp] ExpiringEvents.getReport:", report);
                   }
-                  if (parseInt(canReportOn) === 0) {
+                  if (parseInt(report) === 0) {
                     return self.closeEventMarkets(branch, event, sender, nextEvent);
                   }
                   if (self.options.debug.reporting) {
