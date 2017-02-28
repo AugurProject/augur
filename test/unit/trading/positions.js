@@ -22,17 +22,6 @@ describe("positions", function () {
     return abi.strip_0x(abi.format_int256(abi.fix(n, "hex")));
   }
 
-  var txOriginal;
-
-  before(function () {
-    txOriginal = augur.tx;
-    augur.tx = new require("augur-contracts").Tx("3").functions;
-  });
-
-  after(function () {
-    augur.tx = txOriginal;
-  });
-
   describe("modifyPosition", function () {
     var test = function (t) {
       it(t.description, function () {
@@ -446,6 +435,13 @@ describe("positions", function () {
         t.assertions(augur.calculateShortSellShareTotals(t.logs));
       });
     };
+    test({
+      description: "logs undefined",
+      logs: undefined,
+      assertions: function (output) {
+        assert.deepEqual(output, {});
+      }
+    });
     test({
       description: "no logs",
       logs: [],
@@ -2285,6 +2281,79 @@ describe("positions", function () {
             "8": "2.2"
           }
         });
+      }
+    });
+  });
+
+  describe("calculateNetEffectiveTrades", function() {
+    var test = function(t) {
+      t.assertions(augur.calculateNetEffectiveTrades(t.logs));
+    };
+    test({
+      logs: {
+        shortAskBuyCompleteSets: [{
+          topics: ['0x0', '0x0', '0xa1', '0x1'],
+          data: fix('10') + abi.strip_0x(abi.hex('30'))
+        },
+        {
+          topics: ['0x0', '0x0', '0xa2', '0x1'],
+          data: fix('10') + abi.strip_0x(abi.hex('15'))
+        }],
+        shortSellBuyCompleteSets: [{
+          data: fix('1') + stripFix('2') + stripFix('3') + stripFix('4') + stripFix('5') + stripFix('6') + stripFix('7')+ stripFix('0.000000000000000002'),
+          topics: ['0x0', '0xa1'],
+        },
+        {
+          data: fix('1') + stripFix('2') + stripFix('3') + stripFix('4') + stripFix('5') + stripFix('6') + stripFix('7')+ stripFix('0.000000000000000008'),
+          topics: ['0x0', '0xa2'],
+        }],
+        sellCompleteSets: [{
+          topics: ['0x0', '0x0', '0xa1', '0x2'],
+          data: fix('5') + abi.strip_0x(abi.hex('10'))
+        },
+        {
+          topics: ['0x0', '0x0', '0xa2', '0x2'],
+          data: fix('5') + abi.strip_0x(abi.hex('25'))
+        }],
+      },
+      assertions: function(out) {
+        assert.deepEqual(JSON.stringify(out), JSON.stringify({
+        	'0xa1': {
+        		shortAskBuyCompleteSets: {
+        			type: 'buy',
+        			price: '0.03333333333333333333',
+        			shares: '10'
+        		},
+        		shortSellBuyCompleteSets: {
+        			type: 'buy',
+        			price: '0.5',
+        			shares: '2'
+        		},
+        		sellCompleteSets: {
+        			type: 'sell',
+        			price: '0.1',
+        			shares: '5'
+        		},
+        	},
+        	'0xa2': {
+        		shortAskBuyCompleteSets: {
+        			type: 'buy',
+        			price: '0.06666666666666666667',
+        			shares: '10'
+        		},
+        		shortSellBuyCompleteSets: {
+        			type: 'buy',
+        			price: '0.125',
+        			shares: '2'
+        		},
+        		sellCompleteSets: {
+        			type: 'sell',
+        			price: '0.04',
+        			shares: '5'
+        		},
+        	},
+        }));
+
       }
     });
   });
