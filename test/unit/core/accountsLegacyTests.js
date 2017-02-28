@@ -11,7 +11,6 @@ var chalk = require("chalk");
 var clone = require("clone");
 var keys = require("keythereum");
 var EthTx = require("ethereumjs-tx");
-var EthUtil = require("ethereumjs-util");
 var abi = require("augur-abi");
 var utils = require("../../../src/utilities");
 var constants = require("../../../src/constants");
