@@ -2,19 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
-import {
-  NEW_MARKET_TYPE,
-  NEW_MARKET_DESCRIPTION,
-  NEW_MARKET_OUTCOMES,
-  NEW_MARKET_RESOLUTION_SOURCE,
-  NEW_MARKET_END_DATE,
-  NEW_MARKET_ADDITIONAL_INFORMATION,
-  NEW_MARKET_TOPIC,
-  NEW_MARKET_KEYWORDS,
-  NEW_MARKET_FEES,
-  NEW_MARKET_ORDER_BOOK,
-  NEW_MARKET_REVIEW
-} from 'modules/create-market/constants/new-market-creation-steps';
 
 export default class CreateMarketFormButtons extends Component {
   static propTypes = {
@@ -89,15 +76,3 @@ export default class CreateMarketFormButtons extends Component {
     );
   }
 }
-
-// let nextButtonCopy = '';
-//
-// const nextStep =
-//
-// switch (newMarketCreationOrder[p.currentStep]) {
-//   case NEW_MARKET_DESCRIPTION:
-//     nextButtonCopy = 'Description';
-//     break;
-//   default:
-//     nextButtonCopy = 'test';
-// }

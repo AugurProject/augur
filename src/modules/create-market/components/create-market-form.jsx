@@ -40,7 +40,6 @@ export default class CreateMarketForm extends Component {
   }
 
   componentWillUpdate(nextProps) {
-    console.log('nextProps -- ', nextProps);
     if (this.state.newMarket !== nextProps.newMarket) this.setState({ newMarket: nextProps.newMarket });
   }
 

@@ -23,7 +23,10 @@ export default function (newMarket = DEFAULT_STATE, action) {
       if (newMarket.validations.indexOf(action.data) !== -1) {
         return {
           ...newMarket,
-          validations: newMarket.validations.splice(newMarket.validations.indexOf(action.data), 1)
+          validations: [
+            ...newMarket.validations.slice(0, newMarket.validations.indexOf(action.data)),
+            ...newMarket.validations.slice(newMarket.validations.indexOf(action.data) + 1)
+          ]
         };
       }
       return newMarket;
