@@ -11,35 +11,49 @@ export default class CreateMarketFormExpirySource extends Component {
     super(props);
 
     this.state = {
-      errors: []
+      errors: [],
+      canCheckURL: false
     };
 
     this.validateForm = this.validateForm.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('nextProps -- ', nextProps);
-    // if (this.props.description !== nextProps.description) this.validateForm(nextProps.description);
+    if (this.props.expirySourceType !== nextProps.expirySourceType ||
+        (nextProps.expirySourceType === EXPIRY_SOURCE_SPECIFIC && this.props.expirySource !== nextProps.expirySource)
+    ) {
+      this.validateForm(nextProps.expirySourceType, nextProps.expirySource);
+    }
+
+    if (!this.state.canCheckURL &&
+      (this.props.expirySource.length || nextProps.expirySource.length)
+    ) {
+      this.setState({ canCheckURL: true });
+    }
   }
 
   componentWillUpdate(nextProps, nextState) {
     if (this.state.errors !== nextState.errors) nextProps.updateValidity(!nextState.errors.length);
   }
 
-  validateForm(description) {
+  validateForm(type, source) {
+    console.log('validateForm -- ', type, source)
     const errors = [];
 
-    // if (!description || !description.length) {
-    //   errors.push('Please enter your question');
-    // }
-    //
-    // if (description.length < DESCRIPTION_MIN_LENGTH) {
-    //   errors.push(`Text must be a minimum length of ${DESCRIPTION_MIN_LENGTH}`);
-    // }
-    //
-    // if (description.length > DESCRIPTION_MAX_LENGTH) {
-    //   errors.push(`Text exceeds the maximum length of ${DESCRIPTION_MAX_LENGTH}`);
-    // }
+    if (type == null || !type.length) {
+      errors.push('Please choose an expiry source.');
+    }
+
+    if (!source.length) {
+      errors.push(''); // Simply invalidates form, but doesn't require an error message
+    }
+
+    if (this.state.canCheckURL &&
+        type === EXPIRY_SOURCE_SPECIFIC &&
+        (source == null || !source.length)
+    ) {
+      errors.push('Please enter the full URL of the website.');
+    }
 
     this.setState({ errors });
   }
@@ -57,10 +71,13 @@ export default class CreateMarketFormExpirySource extends Component {
             value={EXPIRY_SOURCE_GENERIC}
             type="radio"
             checked={p.expirySourceType === EXPIRY_SOURCE_GENERIC}
-            onChange={() => p.updateNewMarket({
-              expirySourceType: EXPIRY_SOURCE_GENERIC,
-              expirySource: ''
-            })}
+            onChange={() => {
+              p.updateNewMarket({
+                expirySourceType: EXPIRY_SOURCE_GENERIC,
+                expirySource: ''
+              });
+              this.setState({ canCheckURL: false });
+            }}
           />
           Outcome will be covered by local, national or international news media.
         </label>
@@ -70,10 +87,13 @@ export default class CreateMarketFormExpirySource extends Component {
             value={EXPIRY_SOURCE_SPECIFIC}
             type="radio"
             checked={p.expirySourceType === EXPIRY_SOURCE_SPECIFIC}
-            onChange={() => p.updateNewMarket({
-              expirySourceType: EXPIRY_SOURCE_SPECIFIC,
-              expirySource: ''
-            })}
+            onChange={() => {
+              p.updateNewMarket({
+                expirySourceType: EXPIRY_SOURCE_SPECIFIC,
+                expirySource: ''
+              });
+              this.setState({ canCheckURL: false });
+            }}
           />
           Outcome will be detailed on a specific publicly available website:
         </label>
