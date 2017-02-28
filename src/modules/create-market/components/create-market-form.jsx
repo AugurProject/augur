@@ -54,7 +54,7 @@ export default class CreateMarketForm extends Component {
   }
 
   resetValidity() {
-    this.setState({ isValid: null });
+    this.setState({ isValid: false });
   }
 
   render() {

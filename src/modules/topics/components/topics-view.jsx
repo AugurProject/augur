@@ -178,7 +178,7 @@ export default class TopicsView extends Component {
     return (
       <section id="topics_view">
         <div id="topics_container">
-          {p.loginAccount && p.loginAccount.rep && p.loginAccount.rep.value && p.branch.id &&
+          {!!p.loginAccount && !!p.loginAccount.rep && !!p.loginAccount.rep.value && !!p.branch.id &&
             <Branch {...p.branch} />
           }
           <div className="topics-search" >
