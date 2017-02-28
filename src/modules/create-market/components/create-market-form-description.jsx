@@ -64,11 +64,7 @@ export default class CreateMarketFormDescription extends Component {
 }
 
 CreateMarketFormDescription.propTypes = {
-  description: PropTypes.string,
+  description: PropTypes.string.isRequired,
   updateValidity: PropTypes.func.isRequired,
   updateNewMarket: PropTypes.func.isRequired
-};
-
-CreateMarketFormDescription.defaultProps = {
-  description: ''
 };

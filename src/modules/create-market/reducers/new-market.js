@@ -1,8 +1,12 @@
 import { ADD_VALIDATION_TO_NEW_MARKET, REMOVE_VALIDATION_FROM_NEW_MARKET, UPDATE_NEW_MARKET, CLEAR_NEW_MARKET } from 'modules/create-market/actions/update-new-market';
 
 const DEFAULT_STATE = {
+  validations: [],
   currentStep: 0,
-  validations: []
+  type: null,
+  description: '',
+  expirySourceType: '',
+  expirySource: ''
 };
 
 export default function (newMarket = DEFAULT_STATE, action) {

@@ -12,8 +12,8 @@ export const KEYWORDS_MAX_NUM = 2;
 export const RESOURCES_MAX_NUM = 5;
 export const RESOURCES_MAX_LENGTH = 1250;
 
-export const EXPIRY_SOURCE_GENERIC = '';
-export const EXPIRY_SOURCE_SPECIFIC = 'specific';
+export const EXPIRY_SOURCE_GENERIC = 'EXPIRY_SOURCE_GENERIC';
+export const EXPIRY_SOURCE_SPECIFIC = 'EXPIRY_SOURCE_SPECIFIC';
 
 export const INITIAL_LIQUIDITY_DEFAULT = 500;
 export const INITIAL_LIQUIDITY_MIN = 250;

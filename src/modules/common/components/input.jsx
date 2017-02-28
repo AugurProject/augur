@@ -104,7 +104,7 @@ export default class Input extends Component {
         {!p.isMultiline &&
           <input
             {...p}
-            className={classNames('box', { 'search-input': p.isSearch })}
+            className={classNames('box', p.className, { 'search-input': p.isSearch })}
             type={p.type === 'password' && s.isHiddenContentVisible ? 'text' : p.type}
             value={s.value}
             onChange={this.handleOnChange}

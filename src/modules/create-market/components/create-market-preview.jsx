@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 
+import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC } from 'modules/create-market/constants/new-market-constraints';
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
 import {
   NEW_MARKET_DESCRIPTION,
@@ -67,11 +68,12 @@ const CreateMarketPreview = (p) => {
         <span
           className={classNames('create-market-resolution-source', {
             'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_RESOLUTION_SOURCE,
-            'is-null': !newMarket.resolutionSource,
-            'has-value': !!newMarket.resolutionSource
+            'is-null': !newMarket.expirySource && (newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC || !newMarket.expirySourceType),
+            'has-value': !!newMarket.expirySource && !!newMarket.expirySourceType
           })}
         >
-          {newMarket.resolutionSource}
+          {newMarket.expirySourceType === EXPIRY_SOURCE_GENERIC && 'Source: News Media'}
+          {newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC && !!newMarket.expirySource && `Source: ${newMarket.expirySource}`}
         </span>
         <ul className="create-market-properties">
           <li

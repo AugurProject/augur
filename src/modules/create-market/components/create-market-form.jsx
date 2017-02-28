@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import CreateMarketFormButtons from 'modules/create-market/components/create-market-form-buttons';
 import CreateMarketFormType from 'modules/create-market/components/create-market-form-type';
 import CreateMarketFormDescription from 'modules/create-market/components/create-market-form-description';
-import CreateMarketFormResolutionSource from 'modules/create-market/components/create-market-form-resolution-source';
+import CreateMarketFormExpirySource from 'modules/create-market/components/create-market-form-expiry-source';
 
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
 import {
@@ -31,7 +31,6 @@ export default class CreateMarketForm extends Component {
     super(props);
 
     this.state = {
-      newMarket: props.newMarket,
       currentStep: props.newMarket.currentStep,
       stepIncreasing: null,
       canAnimate: false,
@@ -47,10 +46,6 @@ export default class CreateMarketForm extends Component {
         canAnimate: nextProps.newMarket.currentStep > 1
       });
     }
-  }
-
-  componentWillUpdate(nextProps) {
-    if (this.state.newMarket !== nextProps.newMarket) this.setState({ newMarket: nextProps.newMarket });
   }
 
   resetValidity() {
@@ -70,7 +65,7 @@ export default class CreateMarketForm extends Component {
             'display-form': newMarketCreationOrder[s.currentStep] === NEW_MARKET_TYPE,
             'from-left': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_TYPE,
           })}
-          type={s.newMarket.type}
+          type={p.newMarket.type}
           addValidationToNewMarket={p.addValidationToNewMarket}
           updateNewMarket={p.updateNewMarket}
         />
@@ -83,11 +78,11 @@ export default class CreateMarketForm extends Component {
             'from-right': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_DESCRIPTION,
             'from-left': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_DESCRIPTION,
           })}
-          description={s.newMarket.description}
+          description={p.newMarket.description}
           updateValidity={isValid => this.setState({ isValid })}
           updateNewMarket={p.updateNewMarket}
         />
-        <CreateMarketFormResolutionSource
+        <CreateMarketFormExpirySource
           className={classNames({
             'hide-form': newMarketCreationOrder[s.currentStep] !== NEW_MARKET_RESOLUTION_SOURCE,
             'to-left': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_RESOLUTION_SOURCE,
@@ -96,15 +91,15 @@ export default class CreateMarketForm extends Component {
             'from-right': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_RESOLUTION_SOURCE,
             'from-left': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_RESOLUTION_SOURCE,
           })}
-          resolutionSource={s.newMarket.resolutionSource}
-          resolutionSourceURL={s.newMarket.resolutionSourceURL}
+          expirySourceType={p.newMarket.expirySourceType}
+          expirySource={p.newMarket.expirySource}
           updateValidity={isValid => this.setState({ isValid })}
           updateNewMarket={p.updateNewMarket}
         />
         <CreateMarketFormButtons
-          currentStep={s.newMarket.currentStep}
+          currentStep={p.newMarket.currentStep}
           isValid={s.isValid}
-          validations={s.newMarket.validations}
+          validations={p.newMarket.validations}
           resetValidity={() => this.resetValidity()}
           addValidationToNewMarket={p.addValidationToNewMarket}
           removeValidationFromNewMarket={p.removeValidationFromNewMarket}
