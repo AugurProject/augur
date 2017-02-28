@@ -123,6 +123,15 @@ const CreateMarketPreview = (p) => {
               {newMarket.takerFee}
             </li>
           </div>
+          <li
+            className={classNames('create-market-property', {
+              'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_ORDER_BOOK,
+              'is-null': !Object.keys(newMarket.orderBook).length,
+              'has-value': !!Object.keys(newMarket.orderBook).length
+            })}
+          >
+            {!!Object.keys(newMarket.orderBook).length && `Initial Liquidity: TODO`}
+          </li>
         </ul>
       </div>
       <ul className="create-market-outcomes">

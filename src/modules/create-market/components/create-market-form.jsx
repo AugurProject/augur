@@ -10,6 +10,7 @@ import CreateMarketFormDetails from 'modules/create-market/components/create-mar
 import CreateMarketFormTopic from 'modules/create-market/components/create-market-form-topic';
 import CreateMarketFormKeywords from 'modules/create-market/components/create-market-form-keywords';
 import CreateMarketFormFees from 'modules/create-market/components/create-market-form-fees';
+import CreateMarketFormOrderBook from 'modules/create-market/components/create-market-form-order-book';
 
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
 import {
@@ -167,6 +168,20 @@ export default class CreateMarketForm extends Component {
           currentStep={p.newMarket.currentStep}
           takerFee={p.newMarket.takerFee}
           makerFee={p.newMarket.makerFee}
+          updateValidity={isValid => this.setState({ isValid })}
+          updateNewMarket={p.updateNewMarket}
+        />
+        <CreateMarketFormOrderBook
+          className={classNames({
+            'hide-form': newMarketCreationOrder[s.currentStep] !== NEW_MARKET_ORDER_BOOK,
+            'to-left': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_ORDER_BOOK,
+            'to-right': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_ORDER_BOOK,
+            'display-form': newMarketCreationOrder[s.currentStep] === NEW_MARKET_ORDER_BOOK,
+            'from-right': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_ORDER_BOOK,
+            'from-left': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_ORDER_BOOK,
+          })}
+          currentStep={p.newMarket.currentStep}
+          orderBook={p.newMarket.orderBook}
           updateValidity={isValid => this.setState({ isValid })}
           updateNewMarket={p.updateNewMarket}
         />

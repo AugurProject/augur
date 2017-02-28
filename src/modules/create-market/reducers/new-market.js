@@ -14,7 +14,8 @@ const DEFAULT_STATE = {
   topic: '',
   keywords: [],
   takerFee: TAKER_FEE_DEFAULT,
-  makerFee: MAKER_FEE_DEFAULT
+  makerFee: MAKER_FEE_DEFAULT,
+  orderBook: {}
 };
 
 export default function (newMarket = DEFAULT_STATE, action) {
