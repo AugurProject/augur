@@ -8,6 +8,8 @@ import { formatPercent } from 'utils/format-number';
 
 import { TWO } from 'modules/trade/constants/numbers';
 import { TAKER_FEE_MIN, TAKER_FEE_MAX, MAKER_FEE_MIN } from 'modules/create-market/constants/new-market-constraints';
+import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
+import { NEW_MARKET_FEES } from 'modules/create-market/constants/new-market-creation-steps';
 
 export default class CreateMarketFormDescription extends Component {
   constructor(props) {
@@ -21,6 +23,12 @@ export default class CreateMarketFormDescription extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if (this.props.currentStep !== nextProps.currentStep &&
+        newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_FEES
+    ) {
+      this.validateForm(nextProps.takerFee, nextProps.makerFee);
+    }
+
     if (this.props.takerFee !== nextProps.takerFee ||
         this.props.makerFee !== nextProps.makerFee
     ) {
@@ -29,14 +37,19 @@ export default class CreateMarketFormDescription extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (this.state.errors !== nextState.errors) nextProps.updateValidity(!nextState.errors.length);
+    if (this.state.errors !== nextState.errors) {
+      nextProps.updateValidity(!nextState.errors.length);
+    }
   }
 
   validateForm(takerFee, makerFee) {
-    const errors = [
-      validateTakerFee(takerFee),
-      !validateTakerFee(takerFee) && validateMakerFee(makerFee, takerFee)
-    ];
+    const errors = [];
+
+    const takerFeeErrors = validateTakerFee(takerFee);
+    if (takerFeeErrors) errors.push(takerFeeErrors);
+
+    const makerFeeErrors = validateMakerFee(makerFee, takerFee);
+    if (!takerFeeErrors && makerFeeErrors) errors.push(makerFeeErrors);
 
     this.setState({ errors });
   }
@@ -111,6 +124,7 @@ export default class CreateMarketFormDescription extends Component {
 }
 
 CreateMarketFormDescription.propTypes = {
+  currentStep: PropTypes.number.isRequired,
   takerFee: PropTypes.number.isRequired,
   makerFee: PropTypes.number.isRequired,
   updateValidity: PropTypes.func.isRequired,
