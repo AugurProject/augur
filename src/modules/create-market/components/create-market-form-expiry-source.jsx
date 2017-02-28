@@ -37,7 +37,6 @@ export default class CreateMarketFormExpirySource extends Component {
   }
 
   validateForm(type, source) {
-    console.log('validateForm -- ', type, source)
     const errors = [];
 
     if (type == null || !type.length) {
