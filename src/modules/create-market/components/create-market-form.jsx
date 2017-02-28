@@ -4,11 +4,21 @@ import classNames from 'classnames';
 import CreateMarketFormButtons from 'modules/create-market/components/create-market-form-buttons';
 import CreateMarketFormType from 'modules/create-market/components/create-market-form-type';
 import CreateMarketFormDescription from 'modules/create-market/components/create-market-form-description';
+import CreateMarketFormResolutionSource from 'modules/create-market/components/create-market-form-resolution-source';
 
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
 import {
   NEW_MARKET_TYPE,
-  NEW_MARKET_DESCRIPTION
+  NEW_MARKET_DESCRIPTION,
+  NEW_MARKET_OUTCOMES,
+  NEW_MARKET_RESOLUTION_SOURCE,
+  NEW_MARKET_END_DATE,
+  NEW_MARKET_ADDITIONAL_INFORMATION,
+  NEW_MARKET_TOPIC,
+  NEW_MARKET_KEYWORDS,
+  NEW_MARKET_FEES,
+  NEW_MARKET_ORDER_BOOK,
+  NEW_MARKET_REVIEW
 } from 'modules/create-market/constants/new-market-creation-steps';
 
 export default class CreateMarketForm extends Component {
@@ -74,6 +84,20 @@ export default class CreateMarketForm extends Component {
             'from-left': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_DESCRIPTION,
           })}
           description={s.newMarket.description}
+          updateValidity={isValid => this.setState({ isValid })}
+          updateNewMarket={p.updateNewMarket}
+        />
+        <CreateMarketFormResolutionSource
+          className={classNames({
+            'hide-form': newMarketCreationOrder[s.currentStep] !== NEW_MARKET_RESOLUTION_SOURCE,
+            'to-left': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_RESOLUTION_SOURCE,
+            'to-right': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_RESOLUTION_SOURCE,
+            'display-form': newMarketCreationOrder[s.currentStep] === NEW_MARKET_RESOLUTION_SOURCE,
+            'from-right': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_RESOLUTION_SOURCE,
+            'from-left': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_RESOLUTION_SOURCE,
+          })}
+          resolutionSource={s.newMarket.resolutionSource}
+          resolutionSourceURL={s.newMarket.resolutionSourceURL}
           updateValidity={isValid => this.setState({ isValid })}
           updateNewMarket={p.updateNewMarket}
         />

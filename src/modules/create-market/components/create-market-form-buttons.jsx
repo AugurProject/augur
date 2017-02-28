@@ -77,7 +77,10 @@ export default class CreateMarketFormButtons extends Component {
           className={classNames({
             'hide-button': !p.isValid || p.currentStep < 1
           })}
-          onClick={() => p.updateNewMarket({ currentStep: s.nextStep })}
+          onClick={() => {
+            p.updateNewMarket({ currentStep: s.nextStep });
+            p.resetValidity();
+          }}
         >
           {s.nextButtonCopy}
         </button>
