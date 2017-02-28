@@ -53,6 +53,21 @@ const LoginMessagePage = p => (
         </li>
       </ol>
       <h2>Technical updates:</h2>
+      <h3>February 28, 2017</h3>
+      <ol>
+        <li>
+          Our Ethereum key management library, <a className="link" href="https://github.com/ethereumjs/keythereum" target="_blank" rel="noopener noreferrer">keythereum</a>, now only allocates memory for scrypt if you actually use scrypt for something.
+        </li>
+        <li>
+          Updated versions for keythereum&#39;s dependencies (elliptic@6.4.0, ethereumjs-util@5.1.1, sjcl@1.0.6).
+        </li>
+        <li>
+          Removed outer try/catch from keythereum&#39;s asynchronous key derivation using scrypt.
+        </li>
+        <li>
+          Keystore filenames are now automatically converted &quot;:&quot; to &quot;-&quot; when exporting files on Windows.
+        </li>
+      </ol>
       <h3>February 27, 2017</h3>
       <ol>
         <li>
