@@ -16,7 +16,8 @@ export default class CreateMarketFormButtons extends Component {
     super(props);
 
     this.state = {
-      nextButtonCopy: ''
+      nextButtonCopy: '',
+      nextStep: null
     };
 
     this.updateNextButtonCopy = this.updateNextButtonCopy.bind(this);
@@ -60,7 +61,10 @@ export default class CreateMarketFormButtons extends Component {
       });
     }
 
-    this.setState({ nextButtonCopy: firstInvalidStep });
+    this.setState({
+      nextButtonCopy: firstInvalidStep,
+      nextStep: newMarketCreationOrder.indexOf(firstInvalidStep)
+    });
   }
 
   render() {
@@ -69,7 +73,12 @@ export default class CreateMarketFormButtons extends Component {
 
     return (
       <article className="create-market-form-buttons">
-        <button className={classNames({ 'hide-button': !p.isValid && p.currentStep < 1 })}>
+        <button
+          className={classNames({
+            'hide-button': !p.isValid || p.currentStep < 1
+          })}
+          onClick={() => p.updateNewMarket({ currentStep: s.nextStep })}
+        >
           {s.nextButtonCopy}
         </button>
       </article>
