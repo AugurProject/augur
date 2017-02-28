@@ -238,9 +238,10 @@ module.exports = {
         info.type = "scalar";
       }
       if (parseInt(rawInfo[index + 2], 16) !== 0) {
-        var unfixed = makeReports.unfixReport(rawInfo[index + 2], info.type);
+        var fxpConsensusOutcome = rawInfo[index + 2];
+        var unfixed = makeReports.unfixConsensusOutcome(fxpConsensusOutcome, info.minValue, info.maxValue, info.type);
         info.consensus = {
-          outcomeID: unfixed.report,
+          outcomeID: unfixed.outcomeID,
           isIndeterminate: unfixed.isIndeterminate,
           isUnethical: !abi.unfix_signed(rawInfo[index + 7], "number")
         };
