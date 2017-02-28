@@ -6,7 +6,8 @@ const DEFAULT_STATE = {
   type: null,
   description: '',
   expirySourceType: '',
-  expirySource: ''
+  expirySource: '',
+  endDate: {}
 };
 
 export default function (newMarket = DEFAULT_STATE, action) {

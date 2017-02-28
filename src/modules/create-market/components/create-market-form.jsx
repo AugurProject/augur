@@ -5,6 +5,7 @@ import CreateMarketFormButtons from 'modules/create-market/components/create-mar
 import CreateMarketFormType from 'modules/create-market/components/create-market-form-type';
 import CreateMarketFormDescription from 'modules/create-market/components/create-market-form-description';
 import CreateMarketFormExpirySource from 'modules/create-market/components/create-market-form-expiry-source';
+import CreateMarketFormEndDate from 'modules/create-market/components/create-market-form-end-date';
 
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
 import {
@@ -93,6 +94,19 @@ export default class CreateMarketForm extends Component {
           })}
           expirySourceType={p.newMarket.expirySourceType}
           expirySource={p.newMarket.expirySource}
+          updateValidity={isValid => this.setState({ isValid })}
+          updateNewMarket={p.updateNewMarket}
+        />
+        <CreateMarketFormEndDate
+          className={classNames({
+            'hide-form': newMarketCreationOrder[s.currentStep] !== NEW_MARKET_END_DATE,
+            'to-left': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_END_DATE,
+            'to-right': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_END_DATE,
+            'display-form': newMarketCreationOrder[s.currentStep] === NEW_MARKET_END_DATE,
+            'from-right': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_END_DATE,
+            'from-left': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_END_DATE,
+          })}
+          endDate={p.newMarket.endDate}
           updateValidity={isValid => this.setState({ isValid })}
           updateNewMarket={p.updateNewMarket}
         />

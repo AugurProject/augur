@@ -78,11 +78,12 @@ const CreateMarketPreview = (p) => {
         <ul className="create-market-properties">
           <li
             className={classNames('create-market-property', {
-              'is-null': !newMarket.endDate,
-              'has-value': !!newMarket.endDate
+              'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_END_DATE,
+              'is-null': !Object.keys(newMarket.endDate).length,
+              'has-value': !!Object.keys(newMarket.endDate).length
             })}
           >
-            {newMarket.endDate}
+            {!!Object.keys(newMarket.endDate).length && `TODO`}
           </li>
           <li
             className={classNames('create-market-property', {
