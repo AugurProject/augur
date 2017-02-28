@@ -944,8 +944,7 @@ describe("positions", function () {
           callback(t.onChainPosition[marketID]);
         };
         augur.adjustPositions(t.account, t.marketIDs, t.shareTotals, function (err, adjusted) {
-          assert.isNull(err);
-          t.assertions({
+          t.assertions(err, {
             async: adjusted,
             sync: augur.adjustPositions(t.account, t.marketIDs, t.shareTotals)
           });
@@ -968,7 +967,8 @@ describe("positions", function () {
           "2": "0"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -996,7 +996,8 @@ describe("positions", function () {
           "2": "0"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1026,7 +1027,8 @@ describe("positions", function () {
           "2": "1"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1056,7 +1058,8 @@ describe("positions", function () {
           "2": "1"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1088,7 +1091,8 @@ describe("positions", function () {
           "2": "2"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1118,7 +1122,8 @@ describe("positions", function () {
           "2": "0"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1148,7 +1153,8 @@ describe("positions", function () {
           "2": "1"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1180,7 +1186,8 @@ describe("positions", function () {
           "2": "4"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1212,7 +1219,8 @@ describe("positions", function () {
           "2": "3"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1244,7 +1252,8 @@ describe("positions", function () {
           "2": "2"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1276,7 +1285,8 @@ describe("positions", function () {
           "2": "7"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1308,7 +1318,8 @@ describe("positions", function () {
           "2": "6.3"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1350,7 +1361,8 @@ describe("positions", function () {
           "7": "2"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1402,7 +1414,8 @@ describe("positions", function () {
           "7": "2.1"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1452,7 +1465,8 @@ describe("positions", function () {
                     //           0   0  -1  +1
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1493,7 +1507,8 @@ describe("positions", function () {
                      //           0.0   0.0  -1.0  +1.0
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1539,7 +1554,8 @@ describe("positions", function () {
           "7": "2"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1582,7 +1598,8 @@ describe("positions", function () {
           "2": "2"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1616,7 +1633,8 @@ describe("positions", function () {
           "2": "10.301"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1662,7 +1680,8 @@ describe("positions", function () {
           "7": "2"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -2354,6 +2373,22 @@ describe("positions", function () {
         	},
         }));
 
+      }
+    });
+  });
+
+  describe("calculateUnrealizedPL", function() {
+    var test = function(t) {
+      it(JSON.stringify(t), function() {
+        t.assertions(augur.calculateUnrealizedPL(t.position, t.meanOpenPrice, t.lastTradePrice));
+      });
+    };
+    test({
+      position: null,
+      meanOpenPrice: null,
+      lastTradePrice: constants.ZERO,
+      assertions: function(out) {
+        assert.deepEqual(out, constants.ZERO);
       }
     });
   });
