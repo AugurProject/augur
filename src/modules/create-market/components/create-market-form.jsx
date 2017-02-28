@@ -6,6 +6,7 @@ import CreateMarketFormType from 'modules/create-market/components/create-market
 import CreateMarketFormDescription from 'modules/create-market/components/create-market-form-description';
 import CreateMarketFormExpirySource from 'modules/create-market/components/create-market-form-expiry-source';
 import CreateMarketFormEndDate from 'modules/create-market/components/create-market-form-end-date';
+import CreateMarketFormDetails from 'modules/create-market/components/create-market-form-details';
 
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
 import {
@@ -14,7 +15,7 @@ import {
   NEW_MARKET_OUTCOMES,
   NEW_MARKET_RESOLUTION_SOURCE,
   NEW_MARKET_END_DATE,
-  NEW_MARKET_ADDITIONAL_INFORMATION,
+  NEW_MARKET_DETAILS,
   NEW_MARKET_TOPIC,
   NEW_MARKET_KEYWORDS,
   NEW_MARKET_FEES,
@@ -107,6 +108,20 @@ export default class CreateMarketForm extends Component {
             'from-left': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_END_DATE,
           })}
           endDate={p.newMarket.endDate}
+          updateValidity={isValid => this.setState({ isValid })}
+          updateNewMarket={p.updateNewMarket}
+        />
+        <CreateMarketFormDetails
+          className={classNames({
+            'hide-form': newMarketCreationOrder[s.currentStep] !== NEW_MARKET_DETAILS,
+            'to-left': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_DETAILS,
+            'to-right': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_DETAILS,
+            'display-form': newMarketCreationOrder[s.currentStep] === NEW_MARKET_DETAILS,
+            'from-right': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_DETAILS,
+            'from-left': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_DETAILS,
+          })}
+          currentStep={p.newMarket.currentStep}
+          detailsText={p.newMarket.detailsText}
           updateValidity={isValid => this.setState({ isValid })}
           updateNewMarket={p.updateNewMarket}
         />

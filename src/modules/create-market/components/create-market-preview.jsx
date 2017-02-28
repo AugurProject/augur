@@ -1,8 +1,6 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 
-import { formatDate } from 'utils/format-date';
-
 import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC } from 'modules/create-market/constants/new-market-constraints';
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
 import {
@@ -10,7 +8,7 @@ import {
   NEW_MARKET_OUTCOMES,
   NEW_MARKET_RESOLUTION_SOURCE,
   NEW_MARKET_END_DATE,
-  NEW_MARKET_ADDITIONAL_INFORMATION,
+  NEW_MARKET_DETAILS,
   NEW_MARKET_TOPIC,
   NEW_MARKET_KEYWORDS,
   NEW_MARKET_FEES,
@@ -76,6 +74,15 @@ const CreateMarketPreview = (p) => {
         >
           {newMarket.expirySourceType === EXPIRY_SOURCE_GENERIC && 'Source: News Media'}
           {newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC && !!newMarket.expirySource && `Source: ${newMarket.expirySource}`}
+        </span>
+        <span
+          className={classNames('create-market-details', {
+            'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_DETAILS,
+            'is-null': !newMarket.detailsText,
+            'has-value': !!newMarket.detailsText
+          })}
+        >
+          {!!newMarket.detailsText && `Additional Details: ${newMarket.detailsText}`}
         </span>
         <ul className="create-market-properties">
           <li
