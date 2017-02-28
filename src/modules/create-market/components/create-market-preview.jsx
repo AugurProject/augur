@@ -101,22 +101,28 @@ const CreateMarketPreview = (p) => {
           >
             {!!Object.keys(newMarket.endDate).length && `Ends: ${newMarket.endDate.formatted}`}
           </li>
-          <li
-            className={classNames('create-market-property', {
-              'is-null': !newMarket.makerFee,
-              'has-value': !!newMarket.makerFee
+          <div
+            className={classNames('create-market-fees', {
+              'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES,
             })}
           >
-            {newMarket.makerFee}
-          </li>
-          <li
-            className={classNames('create-market-property', {
-              'is-null': !newMarket.takerFee,
-              'has-value': !!newMarket.takerFee
-            })}
-          >
-            {newMarket.takerFee}
-          </li>
+            <li
+              className={classNames('create-market-property', {
+                'is-null': !newMarket.makerFee,
+                'has-value': !!newMarket.makerFee
+              })}
+            >
+              {newMarket.makerFee}
+            </li>
+            <li
+              className={classNames('create-market-property', {
+                'is-null': !newMarket.takerFee,
+                'has-value': !!newMarket.takerFee
+              })}
+            >
+              {newMarket.takerFee}
+            </li>
+          </div>
         </ul>
       </div>
       <ul className="create-market-outcomes">

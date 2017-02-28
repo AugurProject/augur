@@ -1,5 +1,7 @@
 import { ADD_VALIDATION_TO_NEW_MARKET, REMOVE_VALIDATION_FROM_NEW_MARKET, UPDATE_NEW_MARKET, CLEAR_NEW_MARKET } from 'modules/create-market/actions/update-new-market';
 
+import { TAKER_FEE_DEFAULT, MAKER_FEE_DEFAULT } from 'modules/create-market/constants/new-market-constraints';
+
 const DEFAULT_STATE = {
   validations: [],
   currentStep: 0,
@@ -10,7 +12,9 @@ const DEFAULT_STATE = {
   endDate: {},
   detailsText: '',
   topic: '',
-  keywords: []
+  keywords: [],
+  takerFee: TAKER_FEE_DEFAULT,
+  makerFee: MAKER_FEE_DEFAULT
 };
 
 export default function (newMarket = DEFAULT_STATE, action) {
