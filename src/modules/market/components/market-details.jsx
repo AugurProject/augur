@@ -1,50 +1,37 @@
 import React, { PropTypes } from 'react';
 import ValueDenomination from 'modules/common/components/value-denomination';
 import ValueDate from 'modules/common/components/value-date';
-import ReportEthics from 'modules/my-reports/components/report-ethics';
 import getValue from 'utils/get-value';
 import setShareDenomination from 'utils/set-share-denomination';
 import shareDenominationLabel from 'utils/share-denomination-label';
+import ConsensusOutcome from 'modules/market/components/consensus-outcome';
+import EmDash from 'modules/common/components/em-dash';
 
 const MarketDetails = (p) => {
-  const outcomeName = getValue(p, 'consensus.outcomeName');
-  const outcomeID = getValue(p, 'consensus.outcomeID');
-  const isUnethical = getValue(p, 'consensus.isUnethical');
-  const percentCorrect = getValue(p, 'consensus.percentCorrect');
-
   const outstandingShares = setShareDenomination(getValue(p, 'outstandingShares.formatted'), p.selectedShareDenomination);
   const shareDenomination = shareDenominationLabel(p.selectedShareDenomination, p.shareDenominations);
 
   return (
     <div className="market-details market-content-scrollable">
       <ul className="properties">
-        {p.type === 'binary' && outcomeName &&
-          <li className="property outcome">
-            <span className="property-label">consensus</span>
-            <span className="property-value">
-              {outcomeName} (<ValueDenomination {...percentCorrect} />)
-              <ReportEthics isUnethical={isUnethical} />
-            </span>
-          </li>
-        }
-        {p.type === 'categorical' && outcomeName &&
-          <li className="property outcome">
-            <span className="property-label">consensus</span>
-            <span className="property-value">
-              {outcomeName}
-              <ReportEthics isUnethical={isUnethical} />
-            </span>
-          </li>
-        }
-        {p.type === 'scalar' && outcomeID &&
-          <li className="property outcome">
-            <span className="property-label">consensus</span>
-            <span className="property-value">
-              {outcomeID}
-              <ReportEthics isUnethical={isUnethical} />
-            </span>
-          </li>
-        }
+        <li className="property outcome">
+          <span className="property-label">consensus</span>
+          <span className="property-value">
+            {!p.consensus &&
+              <EmDash />
+            }
+            {!!p.consensus &&
+              <ConsensusOutcome
+                type={p.type}
+                isIndeterminate={getValue(p, 'consensus.isIndeterminate')}
+                isUnethical={getValue(p, 'consensus.isUnethical')}
+                outcomeName={getValue(p, 'consensus.outcomeName')}
+                outcomeID={getValue(p, 'consensus.outcomeID')}
+                percentCorrect={getValue(p, 'consensus.percentCorrect')}
+              />
+            }
+          </span>
+        </li>
         {p.author != null &&
           <li className="property author">
             <span className="property-label">author</span>
