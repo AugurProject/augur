@@ -33,6 +33,7 @@ const CreateMarketPreview = (p) => {
         <ul className="create-market-tags">
           <li
             className={classNames('create-market-tag', {
+              'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_TOPIC,
               'is-null': !newMarket.topic,
               'has-value': !!newMarket.topic
             })}

@@ -8,7 +8,8 @@ const DEFAULT_STATE = {
   expirySourceType: '',
   expirySource: '',
   endDate: {},
-  detailsText: ''
+  detailsText: '',
+  topic: ''
 };
 
 export default function (newMarket = DEFAULT_STATE, action) {
