@@ -61,6 +61,9 @@ const LoginMessagePage = p => (
         <li>
           Simplified ReportEthics popup wording so it works for both consensus outcome and user reports.
         </li>
+        <li>
+          augur.js now uses getReport instead of getEventCanReportOn to determine if penalizeWrong is needed.
+        </li>
       </ol>
       <h3>February 26, 2017</h3>
       <ol>
