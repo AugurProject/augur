@@ -138,7 +138,7 @@ module.exports = {
    */
   decreasePosition: function (position, adjustment) {
     var newPosition = {};
-    var outcomeIDs = Object.keys(position);
+    var outcomeIDs = Object.keys(position || {});
     for (var i = 0, numOutcomeIDs = outcomeIDs.length; i < numOutcomeIDs; ++i) {
       newPosition[outcomeIDs[i]] = new BigNumber(position[outcomeIDs[i]], 10).minus(adjustment).toFixed();
     }

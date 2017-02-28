@@ -982,6 +982,28 @@ describe("positions", function () {
       }
     });
     test({
+      description: "handle an undefined onChainPosition from getPositionInMarket",
+      account: "0xb0b",
+      marketIDs: ["0x1"],
+      shareTotals: {
+        shortAskBuyCompleteSets: {},
+        shortSellBuyCompleteSets: {},
+        sellCompleteSets: {}
+      },
+      onChainPosition: {
+        "0x1": undefined
+      },
+      assertions: function (err, output) {
+        assert.deepEqual(err, "couldn't load position in 0x1")
+        assert.isObject(output);
+        assert.isUndefined(output.async);
+        assert.isObject(output.sync);
+        assert.deepEqual(output.sync, {
+          "0x1": {}
+        });
+      }
+    });
+    test({
       description: "1 market, 2 outcomes, 1 position, short ask 0, short sell 0",
       account: "0xb0b",
       marketIDs: ["0x1"],
