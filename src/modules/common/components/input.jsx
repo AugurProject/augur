@@ -166,9 +166,9 @@ export default class Input extends Component {
                   if (newValue > p.max) {
                     newValue = new BigNumber(p.max);
                   } else if (newValue < p.min) {
-                    newValue = new BigNumber(p.min).plus(new BigNumber(incrementAmount)).toString();
+                    newValue = new BigNumber(p.min).plus(new BigNumber(incrementAmount));
                   } else {
-                    newValue = newValue.plus(new BigNumber(incrementAmount)).toString();
+                    newValue = newValue.plus(new BigNumber(incrementAmount));
                     if (newValue > p.max) {
                       newValue = new BigNumber(p.max);
                     }
