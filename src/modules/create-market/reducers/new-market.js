@@ -6,6 +6,7 @@ const DEFAULT_STATE = {
   validations: [],
   currentStep: 0,
   type: null,
+  outcomes: [],
   description: '',
   expirySourceType: '',
   expirySource: '',

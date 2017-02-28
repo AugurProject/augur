@@ -135,10 +135,13 @@ const CreateMarketPreview = (p) => {
         </ul>
       </div>
       <ul className="create-market-outcomes">
-        {newMarket.type === BINARY &&
-          <li className="outcome">
-            Yes
-          </li>
+        {newMarket.outcomes.length ?
+          newMarket.outcomes.map(outcome => <li>{outcome}</li>) :
+          <div className="create-market-outcome-placeholders">
+            <li className="is-null"></li>
+            <li className="is-null"></li>
+            <li className="is-null"></li>
+          </div>
         }
       </ul>
     </article>

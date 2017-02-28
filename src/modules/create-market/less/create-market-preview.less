@@ -15,6 +15,7 @@
     background-color: @color-gray-muted;
     border-radius: 1em;
     padding: 0.6em;
+    margin-bottom: 0.4em;
   }
 
   .has-value {
@@ -29,10 +30,6 @@
 
   .create-market-details {
     .market-preview-details();
-
-    & > * {
-      margin-bottom: 0.4em;
-    }
 
     .create-market-tags {
       display: flex;
@@ -68,5 +65,11 @@
 
   .create-market-outcomes {
     .market-preview-outcomes();
+
+    .create-market-outcome-placeholders {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+    }
   }
 }

@@ -13,7 +13,8 @@ const CreateMarketFormType = p => (
         p.addValidationToNewMarket(NEW_MARKET_OUTCOMES);
         p.updateNewMarket({
           currentStep: 1,
-          type: BINARY
+          type: BINARY,
+          outcomes: ['Yes']
         });
       }}
     >

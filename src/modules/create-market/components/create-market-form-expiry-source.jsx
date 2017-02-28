@@ -43,10 +43,6 @@ export default class CreateMarketFormExpirySource extends Component {
       errors.push('Please choose an expiry source.');
     }
 
-    if (!source.length) {
-      errors.push(''); // Simply invalidates form, but doesn't require an error message
-    }
-
     if (this.state.canCheckURL &&
         type === EXPIRY_SOURCE_SPECIFIC &&
         (source == null || !source.length)

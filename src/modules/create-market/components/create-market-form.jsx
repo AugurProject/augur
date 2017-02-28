@@ -181,6 +181,7 @@ export default class CreateMarketForm extends Component {
             'from-left': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_ORDER_BOOK,
           })}
           currentStep={p.newMarket.currentStep}
+          outcomes={p.newMarket.outcomes}
           orderBook={p.newMarket.orderBook}
           updateValidity={isValid => this.setState({ isValid })}
           updateNewMarket={p.updateNewMarket}
