@@ -1,6 +1,8 @@
 import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 
+import { formatDate } from 'utils/format-date';
+
 import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC } from 'modules/create-market/constants/new-market-constraints';
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
 import {
@@ -83,7 +85,7 @@ const CreateMarketPreview = (p) => {
               'has-value': !!Object.keys(newMarket.endDate).length
             })}
           >
-            {!!Object.keys(newMarket.endDate).length && `TODO`}
+            {!!Object.keys(newMarket.endDate).length && `Ends: ${newMarket.endDate.formatted}`}
           </li>
           <li
             className={classNames('create-market-property', {

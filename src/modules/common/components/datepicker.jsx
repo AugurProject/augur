@@ -1,6 +1,8 @@
 import React from 'react';
 import Datetime from 'react-datetime';
 
+import { formatDate } from 'utils/format-date';
+
 const DatePicker = (p) => {
   const yesterday = Datetime.moment().subtract(1, 'day');
   const valid = current => current.isAfter(yesterday);
@@ -14,7 +16,7 @@ const DatePicker = (p) => {
       timeFormat="hh:mm:ss a"
       defaultValue={defaultValue}
       inputProps={{ placeholder: 'YYYY/MM/DD hh:mm:ss a' }}
-      onChange={date => p.onValuesUpdated({ endDate: new Date(date) })}
+      onChange={date => p.onValuesUpdated(formatDate(new Date(date)))}
     />
   );
 };
