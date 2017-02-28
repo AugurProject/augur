@@ -31,10 +31,6 @@ export default class CreateMarketFormTopic extends Component {
       errors.push('Please enter a topic.');
     }
 
-    if (topic.length > TAGS_MAX_LENGTH) {
-      errors.push(`Topic exceeds the maximum length of ${TAGS_MAX_LENGTH}`);
-    }
-
     this.setState({ errors });
   }
 

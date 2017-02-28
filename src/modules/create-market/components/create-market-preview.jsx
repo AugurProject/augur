@@ -40,22 +40,28 @@ const CreateMarketPreview = (p) => {
           >
             {newMarket.topic}
           </li>
-          <li
-            className={classNames('create-market-tag', {
-              'is-null': !(newMarket.keywords && newMarket.keywords[0]),
-              'has-value': newMarket.keywords && !!newMarket.keywords[0]
+          <div
+            className={classNames('create-market-keywords', {
+              'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_KEYWORDS,
             })}
           >
-            {newMarket.keywords && newMarket.keywords[0]}
-          </li>
-          <li
-            className={classNames('create-market-tag', {
-              'is-null': !(newMarket.keywords && newMarket.keywords[1]),
-              'has-value': newMarket.keywords && !!newMarket.keywords[1]
-            })}
-          >
-            {newMarket.keywords && newMarket.keywords[1]}
-          </li>
+            <li
+              className={classNames('create-market-tag', {
+                'is-null': !(newMarket.keywords && newMarket.keywords[0]),
+                'has-value': newMarket.keywords && !!newMarket.keywords[0]
+              })}
+            >
+              {newMarket.keywords && newMarket.keywords[0]}
+            </li>
+            <li
+              className={classNames('create-market-tag', {
+                'is-null': !(newMarket.keywords && newMarket.keywords[1]),
+                'has-value': newMarket.keywords && !!newMarket.keywords[1]
+              })}
+            >
+              {newMarket.keywords && newMarket.keywords[1]}
+            </li>
+          </div>
         </ul>
         <span
           className={classNames('create-market-description', {

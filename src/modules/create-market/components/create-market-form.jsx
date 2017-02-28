@@ -8,6 +8,7 @@ import CreateMarketFormExpirySource from 'modules/create-market/components/creat
 import CreateMarketFormEndDate from 'modules/create-market/components/create-market-form-end-date';
 import CreateMarketFormDetails from 'modules/create-market/components/create-market-form-details';
 import CreateMarketFormTopic from 'modules/create-market/components/create-market-form-topic';
+import CreateMarketFormKeywords from 'modules/create-market/components/create-market-form-keywords';
 
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
 import {
@@ -136,6 +137,20 @@ export default class CreateMarketForm extends Component {
             'from-left': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_TOPIC,
           })}
           topic={p.newMarket.topic}
+          updateValidity={isValid => this.setState({ isValid })}
+          updateNewMarket={p.updateNewMarket}
+        />
+        <CreateMarketFormKeywords
+          className={classNames({
+            'hide-form': newMarketCreationOrder[s.currentStep] !== NEW_MARKET_KEYWORDS,
+            'to-left': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_KEYWORDS,
+            'to-right': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_KEYWORDS,
+            'display-form': newMarketCreationOrder[s.currentStep] === NEW_MARKET_KEYWORDS,
+            'from-right': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_KEYWORDS,
+            'from-left': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_KEYWORDS,
+          })}
+          currentStep={p.newMarket.currentStep}
+          keywords={p.newMarket.keywords}
           updateValidity={isValid => this.setState({ isValid })}
           updateNewMarket={p.updateNewMarket}
         />
