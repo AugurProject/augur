@@ -374,9 +374,9 @@ augur-contracts@2.10.5:
   dependencies:
     clone "1.0.2"
 
-augur.js@3.13.6:
-  version "3.13.6"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.13.6.tgz#810cbbb21f07b6aa8c1c7093def4bcf9d8026632"
+augur.js@3.13.8:
+  version "3.13.8"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.13.8.tgz#21c9be2975cfb75f332e263d7e3b21b5c18d2aad"
   dependencies:
     async "1.5.2"
     augur-abi "1.1.1"
@@ -388,9 +388,8 @@ augur.js@3.13.6:
     clone "1.0.2"
     ethereumjs-connect "2.3.1"
     ethereumjs-tx "1.1.1"
-    ethereumjs-util "4.4.1"
     ethrpc "2.5.1"
-    keythereum "0.3.2"
+    keythereum "0.4.1"
     locks "0.2.2"
     request "2.74.0"
     uuid "3.0.0"
@@ -1207,10 +1206,6 @@ bluebird@^3.0.5, bluebird@^3.4.6:
   version "3.4.7"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.4.7.tgz#f72d760be09b7f76d08ed8fae98b289a8d05fab3"
 
-bn.js@^3.0.1, bn.js@^3.1.1:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-3.3.0.tgz#1138e577889fdc97bbdab51844f2190dfc0ae3d7"
-
 bn.js@^4.0.0, bn.js@^4.1.0, bn.js@^4.1.1, bn.js@^4.10.0, bn.js@^4.11.3, bn.js@^4.4.0, bn.js@^4.8.0:
   version "4.11.6"
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-4.11.6.tgz#53344adb14617a13f6e8dd2ce28905d1c0ba3215"
@@ -1325,12 +1320,6 @@ browserify-rsa@^4.0.0:
   dependencies:
     bn.js "^4.1.0"
     randombytes "^2.0.1"
-
-browserify-sha3@0.0.0:
-  version "0.0.0"
-  resolved "https://registry.yarnpkg.com/browserify-sha3/-/browserify-sha3-0.0.0.tgz#482bb7543ac7cf55dce3121cb621237159700151"
-  dependencies:
-    js-sha3 "^0.3.1"
 
 browserify-sha3@^0.0.1:
   version "0.0.1"
@@ -2547,14 +2536,17 @@ elegant-spinner@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/elegant-spinner/-/elegant-spinner-1.0.1.tgz#db043521c95d7e303fd8f345bedc3349cfb0729e"
 
-elliptic@5.1.0, elliptic@^5.0.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-5.1.0.tgz#5658dfa7625a6a8fc687a5b8f249376bb271e6e9"
+elliptic@6.4.0:
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.4.0.tgz#cac9af8762c85836187003c8dfe193e5e2eae5df"
   dependencies:
-    bn.js "^3.1.1"
+    bn.js "^4.4.0"
     brorand "^1.0.1"
     hash.js "^1.0.0"
+    hmac-drbg "^1.0.0"
     inherits "^2.0.1"
+    minimalistic-assert "^1.0.0"
+    minimalistic-crypto-utils "^1.0.0"
 
 elliptic@^6.0.0, elliptic@^6.2.3, elliptic@^6.3.1:
   version "6.3.3"
@@ -2911,17 +2903,18 @@ ethereumjs-tx@1.1.1:
     ethereum-common "^0.0.17"
     ethereumjs-util "^4.0.1"
 
-ethereumjs-util@1.3.6:
-  version "1.3.6"
-  resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-1.3.6.tgz#0a8aa36843a97e8e79d88df4d8656593bcf9e2c3"
+ethereumjs-util@5.1.1:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-5.1.1.tgz#122fb38dea747dc62b3aebfc365d1bd48be4b73e"
   dependencies:
-    bn.js "^3.0.1"
-    browserify-sha3 "0.0.0"
-    elliptic "^5.0.0"
-    rlp "^1.0.1"
-    sha3 "^1.1.0"
+    bn.js "^4.8.0"
+    create-hash "^1.1.2"
+    ethjs-util "^0.1.3"
+    keccak "^1.0.2"
+    rlp "^2.0.0"
+    secp256k1 "^3.0.1"
 
-ethereumjs-util@4.4.1, ethereumjs-util@^4.0.1, ethereumjs-util@^4.3.0:
+ethereumjs-util@^4.0.1, ethereumjs-util@^4.3.0:
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-4.4.1.tgz#6316bfbc8a01c8767a78620928ed79ef424c3f92"
   dependencies:
@@ -2930,6 +2923,13 @@ ethereumjs-util@4.4.1, ethereumjs-util@^4.0.1, ethereumjs-util@^4.3.0:
     keccakjs "^0.2.0"
     rlp "^2.0.0"
     secp256k1 "^3.0.1"
+
+ethjs-util@^0.1.3:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/ethjs-util/-/ethjs-util-0.1.4.tgz#1c8b6879257444ef4d3f3fbbac2ded12cd997d93"
+  dependencies:
+    is-hex-prefixed "1.0.0"
+    strip-hex-prefix "1.0.0"
 
 ethrpc@2.5.1:
   version "2.5.1"
@@ -3754,6 +3754,14 @@ highcharts@^5.0.0:
   version v5.0.7
   resolved "https://registry.yarnpkg.com/highcharts/-/highcharts-5.0.7.tgz#63ebeeee05acd56e3b2554b5b31a1224e1e05bf6"
 
+hmac-drbg@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/hmac-drbg/-/hmac-drbg-1.0.0.tgz#3db471f45aae4a994a0688322171f51b8b91bee5"
+  dependencies:
+    hash.js "^1.0.3"
+    minimalistic-assert "^1.0.0"
+    minimalistic-crypto-utils "^1.0.1"
+
 hmac@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/hmac/-/hmac-1.0.1.tgz#16bda6b8ad5ae70848a1b9ec7c6f3577dfb19b24"
@@ -4147,6 +4155,10 @@ is-glob@^3.1.0:
   resolved "https://registry.yarnpkg.com/is-glob/-/is-glob-3.1.0.tgz#7ba5ae24217804ac70707b96922567486cc3e84a"
   dependencies:
     is-extglob "^2.1.0"
+
+is-hex-prefixed@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/is-hex-prefixed/-/is-hex-prefixed-1.0.0.tgz#7d8d37e6ad77e5d127148913c573e082d777f554"
 
 is-my-json-valid@^2.10.0, is-my-json-valid@^2.12.4:
   version "2.15.0"
@@ -4566,6 +4578,15 @@ jws@~3.0.0:
     base64url "~1.0.4"
     jwa "~1.0.0"
 
+keccak@^1.0.2:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/keccak/-/keccak-1.2.0.tgz#b53618fc7961b642f6e73f1546eec3329f7effe0"
+  dependencies:
+    bindings "^1.2.1"
+    inherits "^2.0.3"
+    nan "^2.2.1"
+    prebuild-install "^2.0.0"
+
 keccakjs@^0.2.0:
   version "0.2.1"
   resolved "https://registry.yarnpkg.com/keccakjs/-/keccakjs-0.2.1.tgz#1d633af907ef305bbf9f2fa616d56c44561dfa4d"
@@ -4573,12 +4594,12 @@ keccakjs@^0.2.0:
     browserify-sha3 "^0.0.1"
     sha3 "^1.1.0"
 
-keythereum@0.3.2:
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/keythereum/-/keythereum-0.3.2.tgz#62035894b37062717830b8e8809741ec094e074c"
+keythereum@0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/keythereum/-/keythereum-0.4.1.tgz#37201b3302704d1c7500cae919153fe397d6feef"
   dependencies:
-    elliptic "5.1.0"
-    ethereumjs-util "1.3.6"
+    elliptic "6.4.0"
+    ethereumjs-util "5.1.1"
     sjcl "1.0.6"
     uuid "3.0.0"
     validator "4.0.2"
@@ -5125,6 +5146,10 @@ min-document@^2.19.0:
 minimalistic-assert@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/minimalistic-assert/-/minimalistic-assert-1.0.0.tgz#702be2dda6b37f4836bcb3f5db56641b64a1d3d3"
+
+minimalistic-crypto-utils@^1.0.0, minimalistic-crypto-utils@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/minimalistic-crypto-utils/-/minimalistic-crypto-utils-1.0.1.tgz#f6c00c1c0b082246e5c4d99dfb8c7c083b2b582a"
 
 "minimatch@2 || 3", minimatch@^3.0.0, minimatch@^3.0.2, minimatch@^3.0.3:
   version "3.0.3"
@@ -7010,10 +7035,6 @@ ripemd160@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/ripemd160/-/ripemd160-1.0.1.tgz#93a4bbd4942bc574b69a8fa57c71de10ecca7d6e"
 
-rlp@^1.0.1:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/rlp/-/rlp-1.1.2.tgz#723573de721db85745f6abf77631802b91ddf91c"
-
 rlp@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/rlp/-/rlp-2.0.0.tgz#9db384ff4b89a8f61563d92395d8625b18f3afb0"
@@ -7452,6 +7473,12 @@ strip-bom@^2.0.0:
 strip-bom@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/strip-bom/-/strip-bom-3.0.0.tgz#2334c18e9c759f7bdd56fdef7e9ae3d588e68ed3"
+
+strip-hex-prefix@1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/strip-hex-prefix/-/strip-hex-prefix-1.0.0.tgz#0c5f155fef1151373377de9dbb588da05500e36f"
+  dependencies:
+    is-hex-prefixed "1.0.0"
 
 strip-indent@^1.0.1:
   version "1.0.1"
