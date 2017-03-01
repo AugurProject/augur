@@ -850,7 +850,7 @@ describe("accounts.submitTx", function() {
     });
   };
   test({
-    description: 'Should return an error if there is an issue validating the package',
+    description: 'Should return an error if there is an issue validating the package, not enough gas',
     packaged: {
       from: '0x1',
       to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68',
