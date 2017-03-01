@@ -34,6 +34,7 @@ function shellExec(command, callback) {
 gulp.task("build", function (callback) {
   async.eachSeries([
     "./node_modules/.bin/babel ./node_modules/uuid-parse --source-root ./node_modules/uuid-parse  -d ./node_modules/uuid-parse",
+    "./node_modules/.bin/babel ./node_modules/ethereumjs-tx --source-root ./node_modules/ethereumjs-tx  -d ./node_modules/ethereumjs-tx",
     "./node_modules/.bin/babel ./src --source-root ./src -d ./build"
   ], shellExec, function (err) {
     if (err) return callback(err);

@@ -855,8 +855,7 @@ describe("accounts.submitTx", function() {
       from: '0x1',
       to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68',
       data: '0x772a646f0000000000000000000000000000000000000000000000000000000000018a9200000000000000000000000000000000000000000000000000000000000000a1',
-      gas: augur.rpc.DEFAULT_GAS,
-      returns: 'int256',
+      gas: '0x1',
       nonce: '0x0',
       value: '0x0'
     },
@@ -886,12 +885,11 @@ describe("accounts.submitTx", function() {
       from: '0x1',
       to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68',
       data: '0x772a646f0000000000000000000000000000000000000000000000000000000000018a9200000000000000000000000000000000000000000000000000000000000000a1',
-      gas: augur.rpc.DEFAULT_GAS,
-      returns: 'int256',
+      gas: '0x2fd618',
       nonce: '0x0',
       value: '0x0',
-      gasLimit: abi.hex(augur.constants.DEFAULT_GAS),
-      gasPrice: '0.045'
+      gasLimit: '0x2fd618',
+      gasPrice: '0x4a817c800'
     },
     preparePrivateKey: function(accounts) {
       return accounts[0].privateKey;
@@ -920,12 +918,11 @@ describe("accounts.submitTx", function() {
       from: '0x1',
       to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68',
       data: '0x772a646f0000000000000000000000000000000000000000000000000000000000018a9200000000000000000000000000000000000000000000000000000000000000a1',
-      gas: augur.rpc.DEFAULT_GAS,
-      returns: 'int256',
+      gas: '0x2fd618',
       nonce: '0x0',
       value: '0x0',
-      gasLimit: abi.hex(augur.constants.DEFAULT_GAS),
-      gasPrice: '0.045'
+      gasLimit: '0x2fd618',
+      gasPrice: '0x4a817c800'
     },
     preparePrivateKey: function(accounts) {
       return accounts[0].privateKey;
@@ -956,12 +953,11 @@ describe("accounts.submitTx", function() {
       from: '0x1',
       to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68',
       data: '0x772a646f0000000000000000000000000000000000000000000000000000000000018a9200000000000000000000000000000000000000000000000000000000000000a1',
-      gas: augur.rpc.DEFAULT_GAS,
-      returns: 'int256',
+      gas: '0x2fd618',
       nonce: '0x0',
       value: '0x0',
-      gasLimit: abi.hex(augur.constants.DEFAULT_GAS),
-      gasPrice: '0.045'
+      gasLimit: '0x2fd618',
+      gasPrice: '0x4a817c800'
     },
     preparePrivateKey: function(accounts) {
       return accounts[0].privateKey;
@@ -985,12 +981,11 @@ describe("accounts.submitTx", function() {
           from: '0x1',
           to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68',
           data: '0x772a646f0000000000000000000000000000000000000000000000000000000000018a9200000000000000000000000000000000000000000000000000000000000000a1',
-          gas: augur.rpc.DEFAULT_GAS,
-          returns: 'int256',
+          gas: '0x2fd618',
           nonce: '0x0',
           value: '0x0',
-          gasLimit: abi.hex(augur.constants.DEFAULT_GAS),
-          gasPrice: '0.045'
+          gasLimit: '0x2fd618',
+          gasPrice: '0x4a817c800'
         }
       });
       assert.deepEqual(augur.rpc.rawTxMaxNonce, 0);
@@ -1007,12 +1002,11 @@ describe("accounts.submitTx", function() {
       from: '0x1',
       to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68',
       data: '0x772a646f0000000000000000000000000000000000000000000000000000000000018a9200000000000000000000000000000000000000000000000000000000000000a1',
-      gas: augur.rpc.DEFAULT_GAS,
-      returns: 'int256',
+      gas: '0x2fd618',
       nonce: '0x0',
       value: '0x0',
-      gasLimit: abi.hex(augur.constants.DEFAULT_GAS),
-      gasPrice: '0.045'
+      gasLimit: '0x2fd618',
+      gasPrice: '0x4a817c800'
     },
     preparePrivateKey: function(accounts) {
       return accounts[0].privateKey;
@@ -1033,10 +1027,9 @@ describe("accounts.submitTx", function() {
         to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68',
         data: '0x772a646f0000000000000000000000000000000000000000000000000000000000018a9200000000000000000000000000000000000000000000000000000000000000a1',
         gas: '0x2fd618',
-        returns: 'int256',
         value: '0x0',
         gasLimit: '0x2fd618',
-        gasPrice: '0.045'
+        gasPrice: '0x4a817c800'
       });
       assert.deepEqual(augur.rpc.rawTxMaxNonce, 1);
       assert.deepEqual(augur.rpc.rawTxs, {});
@@ -1052,12 +1045,11 @@ describe("accounts.submitTx", function() {
       from: '0x1',
       to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68',
       data: '0x772a646f0000000000000000000000000000000000000000000000000000000000018a9200000000000000000000000000000000000000000000000000000000000000a1',
-      gas: augur.rpc.DEFAULT_GAS,
-      returns: 'int256',
+      gas: '0x2fd618',
       nonce: '0x0',
       value: '0x0',
-      gasLimit: abi.hex(augur.constants.DEFAULT_GAS),
-      gasPrice: '0.045'
+      gasLimit: '0x2fd618',
+      gasPrice: '0x4a817c800'
     },
     preparePrivateKey: function(accounts) {
       return accounts[0].privateKey;
@@ -1081,13 +1073,12 @@ describe("accounts.submitTx", function() {
           to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68',
           data: '0x772a646f0000000000000000000000000000000000000000000000000000000000018a9200000000000000000000000000000000000000000000000000000000000000a1',
           gas: '0x2fd618',
-          returns: 'int256',
           nonce: '0x0',
           value: '0x0',
           gasLimit: '0x2fd618',
-          gasPrice: '0.045'
+          gasPrice: '0x4a817c800'
         },
-        cost: '0.648736024777995'
+        cost: '0.0627'
       });
       assert.deepEqual(callCounts, {
         sendRawTx: 1,
@@ -1305,13 +1296,13 @@ describe("accounts.invoke", function() {
         from: payload.from,
         to: payload.to,
         data: abi.encode(payload),
-        gas: augur.rpc.DEFAULT_GAS,
+        gas: '0x2fd618',
         returns: payload.returns
       };
     },
     getGasPrice: function(cb) {
       callCounts.getGasPrice++;
-      cb('0.045');
+      cb('0x4a817c800');
     },
     getTxNonce: function(packaged, cb) {
       callCounts.getTxNonce++;
@@ -1319,12 +1310,12 @@ describe("accounts.invoke", function() {
         from: '0x1',
         to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68',
         data: '0x772a646f0000000000000000000000000000000000000000000000000000000000018a9200000000000000000000000000000000000000000000000000000000000000a1',
-        gas: augur.rpc.DEFAULT_GAS,
+        gas: '0x2fd618',
         returns: 'int256',
         nonce: '0x0',
         value: '0x0',
-        gasLimit: abi.hex(augur.constants.DEFAULT_GAS),
-        gasPrice: '0.045'
+        gasLimit: '0x2fd618',
+        gasPrice: '0x4a817c800'
       });
       return cb(packaged);
     },
@@ -1334,12 +1325,12 @@ describe("accounts.invoke", function() {
           from: '0x1',
           to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68',
           data: '0x772a646f0000000000000000000000000000000000000000000000000000000000018a9200000000000000000000000000000000000000000000000000000000000000a1',
-          gas: augur.rpc.DEFAULT_GAS,
+          gas: '0x2fd618',
           returns: 'int256',
           nonce: '0x0',
           value: '0x0',
-          gasLimit: abi.hex(augur.constants.DEFAULT_GAS),
-          gasPrice: '0.045'
+          gasLimit: '0x2fd618',
+          gasPrice: '0x4a817c800'
         });
       } else {
         assert.isUndefined(res);
@@ -1370,7 +1361,7 @@ describe("accounts.invoke", function() {
         from: payload.from,
         to: payload.to,
         data: abi.encode(payload),
-        gas: augur.rpc.DEFAULT_GAS,
+        gas: '0x2fd618',
         returns: payload.returns
       };
     },
@@ -1417,7 +1408,7 @@ describe("accounts.invoke", function() {
         from: payload.from,
         to: payload.to,
         data: abi.encode(payload),
-        gas: augur.rpc.DEFAULT_GAS,
+        gas: '0x2fd618',
         returns: payload.returns
       };
     },
@@ -1467,7 +1458,7 @@ describe("accounts.invoke", function() {
         from: payload.from,
         to: payload.to,
         data: abi.encode(payload),
-        gas: augur.rpc.DEFAULT_GAS,
+        gas: '0x2fd618',
         returns: payload.returns
       };
     },

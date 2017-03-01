@@ -76,10 +76,10 @@ module.exports = {
   SECONDS_PER_BLOCK: 12,
 
   // keythereum crypto parameters
-  // KDF: "pbkdf2",
-  KDF: "scrypt",
-  ROUNDS: 4096,
-    // ROUNDS: 65536,
+  KDF: "pbkdf2",
+  ROUNDS: 65536,
+  // KDF: "scrypt",
+  // ROUNDS: 4096,
   KEYSIZE: 32,
   IVSIZE: 16,
 
