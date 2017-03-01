@@ -183,6 +183,8 @@ export default class CreateMarketForm extends Component {
           currentStep={p.newMarket.currentStep}
           outcomes={p.newMarket.outcomes}
           orderBook={p.newMarket.orderBook}
+          addOrderToNewMarket={p.addOrderToNewMarket}
+          removeOrderFromNewMarket={p.removeOrderFromNewMarket}
           updateValidity={isValid => this.setState({ isValid })}
           updateNewMarket={p.updateNewMarket}
         />

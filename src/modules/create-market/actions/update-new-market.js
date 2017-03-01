@@ -22,7 +22,6 @@ export function removeOrderFromNewMarket(data) {
 }
 
 export function updateNewMarket(data) {
-  console.log('updateNewMarket -- ', data);
   return { type: UPDATE_NEW_MARKET, data };
 }
 

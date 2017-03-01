@@ -15,6 +15,8 @@ const CreateMarketView = p => (
         newMarket={p.newMarket}
         addValidationToNewMarket={p.addValidationToNewMarket}
         removeValidationFromNewMarket={p.removeValidationFromNewMarket}
+        addOrderToNewMarket={p.addOrderToNewMarket}
+        removeOrderFromNewMarket={p.removeOrderFromNewMarket}
         updateNewMarket={p.updateNewMarket}
       />
     </div>
