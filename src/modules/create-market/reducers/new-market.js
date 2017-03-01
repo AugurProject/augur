@@ -54,8 +54,8 @@ export default function (newMarket = DEFAULT_STATE, action) {
     }
     case ADD_ORDER_TO_NEW_MARKET: {
       const updatedOutcome = newMarket.orderBook[action.data.outcome] ?
-        newMarket.orderBook[action.data.outcome].push({ price: action.data.price, quantity: action.data.quantity }) :
-        newMarket.orderBook[action.data.outcome] = [{ price: action.data.price, quantity: action.data.quantity }];
+        newMarket.orderBook[action.data.outcome].push({ type: action.data.type, price: action.data.price, quantity: action.data.quantity }) :
+        newMarket.orderBook[action.data.outcome] = [{ type: action.data.type, price: action.data.price, quantity: action.data.quantity }];
 
       return {
         ...newMarket,
