@@ -16,6 +16,7 @@ export default class CreateMarketFormOrderBook extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    if (this.props.outcomes !== nextProps.outcomes) this.setState({ selectedOutcome: nextProps.outcomes[0] });
     // if (this.props.description !== nextProps.description) this.validateForm(nextProps.description);
   }
 
@@ -38,23 +39,37 @@ export default class CreateMarketFormOrderBook extends Component {
     const s = this.state;
 
     return (
-      <article className={`create-market-form-part ${p.className || ''}`}>
+      <article className={`create-market-form-part create-market-form-order-book ${p.className || ''}`}>
         <h2>Order Book</h2>
         <div className="order-book-actions">
-          <ul>
-            {p.outcomes.map((outcome) => {
-              <li></li>
-            })}
-          </ul>
-          <div className="order-book-entry">
-
+          <div className="order-book-outcomes-table">
+            <div className="order-book-outcomes-header">
+              <span>Outcomes</span>
+            </div>
+            <div className="order-book-outcomes">
+              {p.outcomes.map((outcome) => {
+                return (
+                  <div
+                    key={outcome}
+                    className={`order-book-outcome-row ${s.selectedOutcome === outcome ? 'selected' : ''}`}
+                  >
+                    <button className="unstyled">
+                      <span>{outcome}</span>
+                    </button>
+                  </div>
+                )
+              })}
+            </div>
           </div>
-          <div className="order-book-entry-preview-table">
+          <div className="order-book-entry">
 
           </div>
         </div>
         <div className="order-book-preview">
           <div className="order-book-entry-preview-chart">
+
+          </div>
+          <div className="order-book-entry-preview-table">
 
           </div>
         </div>

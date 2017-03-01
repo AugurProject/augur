@@ -141,6 +141,8 @@ const CreateMarketPreview = (p) => {
             <li className="is-null"></li>
             <li className="is-null"></li>
             <li className="is-null"></li>
+            <li className="is-null"></li>
+            <li className="is-null"></li>
           </div>
         }
       </ul>
