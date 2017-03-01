@@ -401,6 +401,7 @@ describe("periodCatchUp", function () {
           }
         });
         state.reportPeriod[o.branch] += 1;
+        o.onSent();
         o.onSuccess({callReturn: "1"});
       };
       augur.penalizeWrong = function (o) {
@@ -1909,6 +1910,213 @@ describe("penaltyCatchUp", function() {
     getExpiration: function(event, cb) {},
     moveEvent: function(branch) {},
     getReport: function(branch, periodToCheck, event, sender, cb) {},
+    closeEventMarkets: function(branch, event, sender, cb) {},
+  });
+  test({
+    description: 'Should call nextEvent with null if an event is not defined or not parsable by base 16.',
+    branch: '0xb1',
+    periodLength: 1000,
+    periodToCheck: 500,
+    sender: '0x1',
+    callback: function(out) {
+      assert.isNull(out);
+      finished();
+    },
+    getPenalizedUpTo: function(branch, sender, cb) {
+      assert.deepEqual(branch, '0xb1');
+      assert.deepEqual(sender, '0x1');
+      cb('499');
+    },
+    getCurrentPeriodProgress: function(periodLength) {},
+    penalizationCatchup: function(branch) {},
+    getEvents: function(branch, periodToCheck, cb) {
+      assert.deepEqual(branch, '0xb1');
+      assert.deepEqual(periodToCheck, 500);
+      cb(['NaN']);
+    },
+    penalizeWrong: function(branch) {},
+    getNumReportsEvent: function(branch, periodToCheck, event, cb) {},
+    getExpiration: function(event, cb) {},
+    moveEvent: function(branch) {},
+    getReport: function(branch, periodToCheck, event, sender, cb) {},
+    closeEventMarkets: function(branch, event, sender, cb) {},
+  });
+  test({
+    description: 'Should handle an event that has no reports and has been moved forward by calling nextEvent with null as an arg.',
+    branch: '0xb1',
+    periodLength: 1000,
+    periodToCheck: 500,
+    sender: '0x1',
+    callback: function(out) {
+      assert.isNull(out);
+      finished();
+    },
+    getPenalizedUpTo: function(branch, sender, cb) {
+      assert.deepEqual(branch, '0xb1');
+      assert.deepEqual(sender, '0x1');
+      cb('499');
+    },
+    getCurrentPeriodProgress: function(periodLength) {},
+    penalizationCatchup: function(branch) {},
+    getEvents: function(branch, periodToCheck, cb) {
+      assert.deepEqual(branch, '0xb1');
+      assert.deepEqual(periodToCheck, 500);
+      cb(['0xe1']);
+    },
+    penalizeWrong: function(branch) {},
+    getNumReportsEvent: function(branch, periodToCheck, event, cb) {
+      assert.deepEqual(branch, '0xb1');
+      assert.deepEqual(periodToCheck, 500);
+      assert.deepEqual(event, '0xe1');
+      cb(0);
+    },
+    getExpiration: function(event, cb) {
+      assert.deepEqual(event, '0xe1');
+      cb(501000);
+    },
+    moveEvent: function(branch) {},
+    getReport: function(branch, periodToCheck, event, sender, cb) {},
+    closeEventMarkets: function(branch, event, sender, cb) {},
+  });
+  test({
+    description: 'Should handle an event that has no reports and has not been moved forward, but fails in an attempt to move the event forward. Should call nextEvent with null',
+    branch: '0xb1',
+    periodLength: 1000,
+    periodToCheck: 500,
+    sender: '0x1',
+    callback: function(out) {
+      assert.isNull(out);
+      finished();
+    },
+    getPenalizedUpTo: function(branch, sender, cb) {
+      assert.deepEqual(branch, '0xb1');
+      assert.deepEqual(sender, '0x1');
+      cb('499');
+    },
+    getCurrentPeriodProgress: function(periodLength) {},
+    penalizationCatchup: function(branch) {},
+    getEvents: function(branch, periodToCheck, cb) {
+      assert.deepEqual(branch, '0xb1');
+      assert.deepEqual(periodToCheck, 500);
+      cb(['0xe1']);
+    },
+    penalizeWrong: function(branch) {},
+    getNumReportsEvent: function(branch, periodToCheck, event, cb) {
+      assert.deepEqual(branch, '0xb1');
+      assert.deepEqual(periodToCheck, 500);
+      assert.deepEqual(event, '0xe1');
+      cb(0);
+    },
+    getExpiration: function(event, cb) {
+      assert.deepEqual(event, '0xe1');
+      cb(500000);
+    },
+    moveEvent: function(branch) {
+      assert.deepEqual(branch.branch, '0xb1');
+      assert.deepEqual(branch.event, '0xe1');
+      assert.isFunction(branch.onSent);
+      assert.isFunction(branch.onSuccess);
+      assert.isFunction(branch.onFailed);
+      branch.onSent();
+      branch.onFailed({ error: 999, message: 'Uh-Oh!' });
+    },
+    getReport: function(branch, periodToCheck, event, sender, cb) {},
+    closeEventMarkets: function(branch, event, sender, cb) {},
+  });
+  test({
+    description: 'Should handle an event that has reports but the report for the event returns 0, should call closeEventMarkets then call nextEvent as closeEventMarkets callback.',
+    branch: '0xb1',
+    periodLength: 1000,
+    periodToCheck: 500,
+    sender: '0x1',
+    callback: function(out) {
+      assert.isNull(out);
+      finished();
+    },
+    getPenalizedUpTo: function(branch, sender, cb) {
+      assert.deepEqual(branch, '0xb1');
+      assert.deepEqual(sender, '0x1');
+      cb('499');
+    },
+    getCurrentPeriodProgress: function(periodLength) {},
+    penalizationCatchup: function(branch) {},
+    getEvents: function(branch, periodToCheck, cb) {
+      assert.deepEqual(branch, '0xb1');
+      assert.deepEqual(periodToCheck, 500);
+      cb(['0xe1']);
+    },
+    penalizeWrong: function(branch) {},
+    getNumReportsEvent: function(branch, periodToCheck, event, cb) {
+      assert.deepEqual(branch, '0xb1');
+      assert.deepEqual(periodToCheck, 500);
+      assert.deepEqual(event, '0xe1');
+      cb(10);
+    },
+    getExpiration: function(event, cb) {},
+    moveEvent: function(branch) {},
+    getReport: function(branch, periodToCheck, event, sender, cb) {
+      assert.deepEqual(branch, '0xb1');
+      assert.deepEqual(periodToCheck, 500);
+      assert.deepEqual(event, '0xe1');
+      assert.deepEqual(sender, '0x1');
+      assert.isFunction(cb);
+      cb(0);
+    },
+    closeEventMarkets: function(branch, event, sender, cb) {
+      assert.deepEqual(branch, '0xb1');
+      assert.deepEqual(event, '0xe1');
+      assert.deepEqual(sender, '0x1');
+      assert.isFunction(cb);
+      cb(null);
+    },
+  });
+  test({
+    description: 'Should handle an event that has reports but when trying to penalizeWrong we get a failure. Should pass the error to nextEvent.',
+    branch: '0xb1',
+    periodLength: 1000,
+    periodToCheck: 500,
+    sender: '0x1',
+    callback: function(out) {
+      assert.deepEqual(out, { error: 999, message: 'Uh-Oh!' });
+      finished();
+    },
+    getPenalizedUpTo: function(branch, sender, cb) {
+      assert.deepEqual(branch, '0xb1');
+      assert.deepEqual(sender, '0x1');
+      cb('499');
+    },
+    getCurrentPeriodProgress: function(periodLength) {},
+    penalizationCatchup: function(branch) {},
+    getEvents: function(branch, periodToCheck, cb) {
+      assert.deepEqual(branch, '0xb1');
+      assert.deepEqual(periodToCheck, 500);
+      cb(['0xe1']);
+    },
+    penalizeWrong: function(branch) {
+      assert.deepEqual(branch.branch, '0xb1');
+      assert.deepEqual(branch.branch, '0xb1');
+      assert.isFunction(branch.onSent);
+      branch.onSent();
+      assert.isFunction(branch.onSuccess);
+      assert.isFunction(branch.onFailed);
+      branch.onFailed({ error: 999, message: 'Uh-Oh!' });
+    },
+    getNumReportsEvent: function(branch, periodToCheck, event, cb) {
+      assert.deepEqual(branch, '0xb1');
+      assert.deepEqual(periodToCheck, 500);
+      assert.deepEqual(event, '0xe1');
+      cb(10);
+    },
+    getExpiration: function(event, cb) {},
+    moveEvent: function(branch) {},
+    getReport: function(branch, periodToCheck, event, sender, cb) {
+      assert.deepEqual(branch, '0xb1');
+      assert.deepEqual(periodToCheck, 500);
+      assert.deepEqual(event, '0xe1');
+      assert.deepEqual(sender, '0x1');
+      assert.isFunction(cb);
+      cb(1);
+    },
     closeEventMarkets: function(branch, event, sender, cb) {},
   });
 });
