@@ -22,8 +22,17 @@
       }
     }
 
-    .order-book-entry {
+    .order-book-entry-container {
+      display: flex;
       flex: 2;
+      justify-content: center;
+
+      .order-book-entry {
+        .border(true);
+
+        display: flex;
+        flex-direction: column;
+      }
     }
   }
 }
