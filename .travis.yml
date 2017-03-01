@@ -11,9 +11,7 @@ env:
 
 node_js:
   - "7"
-  - "6"
-  - "5"
-  - "4"
+  - "6.5"
 
 addons:
   apt:
@@ -22,6 +20,7 @@ addons:
     packages:
     - gcc-4.8
     - g++-4.8
+    - build-essential
 
 before_script:
   - npm install
