@@ -5,7 +5,7 @@
   "author": "Forecast Foundation OU",
   "license": "AAL",
   "engines": {
-    "node": ">= 4.2.x"
+    "node": ">= 6.5.x"
   },
   "repository": {
     "type": "git",
