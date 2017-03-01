@@ -308,6 +308,17 @@ module.exports = function () {
 
         // sign, validate, and send the transaction
         etx.sign(self.account.privateKey);
+        if (augur.rpc.debug.tx) {
+          console.log("rawTx nonce:    0x" + etx.nonce.toString("hex"));
+          console.log("rawTx gasPrice: 0x" + etx.gasPrice.toString("hex"));
+          console.log("rawTx gasLimit: 0x" + etx.gasLimit.toString("hex"));
+          console.log("rawTx to:       0x" + etx.to.toString("hex"));
+          console.log("rawTx value:    0x" + etx.value.toString("hex"));
+          console.log("rawTx v:        0x" + etx.v.toString("hex"));
+          console.log("rawTx r:        0x" + etx.r.toString("hex"));
+          console.log("rawTx s:        0x" + etx.s.toString("hex"));
+          console.log("rawTx data:     0x" + etx.data.toString("hex"));
+        }
 
         // calculate the cost (in ether) of this transaction
         // (note: this is just an upper bound on the cost, set by the gasLimit!)
@@ -391,6 +402,9 @@ module.exports = function () {
         packaged.gasLimit = abi.hex(augur.rpc.block.gasLimit);
       } else {
         packaged.gasLimit = abi.hex(constants.DEFAULT_GAS);
+      }
+      if (augur.network_id && !isNaN(parseInt(augur.network_id, 10)) && parseInt(augur.network_id, 10) < 109) {
+        packaged.chainId = parseInt(augur.network_id, 10);
       }
       if (augur.rpc.debug.broadcast) {
         console.log("[augur.js] payload:", payload);

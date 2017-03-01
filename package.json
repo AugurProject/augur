@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "3.13.8",
+  "version": "3.13.9",
   "description": "Augur JavaScript SDK",
   "main": "src/index.js",
   "scripts": {
@@ -22,9 +22,9 @@
     "chalk": "1.1.1",
     "clone": "1.0.2",
     "ethereumjs-connect": "2.3.1",
-    "ethereumjs-tx": "1.1.1",
+    "ethereumjs-tx": "1.2.5",
     "ethrpc": "2.5.1",
-    "keythereum": "0.4.1",
+    "keythereum": "0.4.2",
     "locks": "0.2.2",
     "request": "2.74.0",
     "uuid": "3.0.0",
@@ -46,6 +46,8 @@
   "devDependencies": {
     "babel-cli": "^6.22.2",
     "babel-plugin-uglify": "^1.0.2",
+    "babel-plugin-transform-es3-member-expression-literals": "^6.22.0",
+    "babel-plugin-transform-es3-property-literals": "^6.22.0",
     "babel-preset-es2015": "^6.1.18",
     "babel-preset-es2015-loose": "^6.1.3",
     "babel-preset-react": "^6.1.18",
