@@ -901,6 +901,18 @@ babel-plugin-transform-es2015-unicode-regex@^6.3.13:
     babel-runtime "^6.22.0"
     regexpu-core "^2.0.0"
 
+babel-plugin-transform-es3-member-expression-literals@^6.22.0:
+  version "6.22.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-transform-es3-member-expression-literals/-/babel-plugin-transform-es3-member-expression-literals-6.22.0.tgz#733d3444f3ecc41bef8ed1a6a4e09657b8969ebb"
+  dependencies:
+    babel-runtime "^6.22.0"
+
+babel-plugin-transform-es3-property-literals@^6.22.0:
+  version "6.22.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-transform-es3-property-literals/-/babel-plugin-transform-es3-property-literals-6.22.0.tgz#b2078d5842e22abf40f73e8cde9cd3711abd5758"
+  dependencies:
+    babel-runtime "^6.22.0"
+
 babel-plugin-transform-exponentiation-operator@^6.22.0:
   version "6.22.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-transform-exponentiation-operator/-/babel-plugin-transform-exponentiation-operator-6.22.0.tgz#d57c8335281918e54ef053118ce6eb108468084d"
@@ -2536,7 +2548,7 @@ elegant-spinner@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/elegant-spinner/-/elegant-spinner-1.0.1.tgz#db043521c95d7e303fd8f345bedc3349cfb0729e"
 
-elliptic@6.4.0:
+elliptic@6.4.0, elliptic@^6.0.0, elliptic@^6.2.3:
   version "6.4.0"
   resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.4.0.tgz#cac9af8762c85836187003c8dfe193e5e2eae5df"
   dependencies:
@@ -2548,7 +2560,7 @@ elliptic@6.4.0:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.0"
 
-elliptic@^6.0.0, elliptic@^6.2.3, elliptic@^6.3.1:
+elliptic@^6.3.1:
   version "6.3.3"
   resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.3.3.tgz#5482d9646d54bcb89fd7d994fc9e2e9568876e3f"
   dependencies:
@@ -6398,13 +6410,9 @@ q@^1.1.2:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/q/-/q-1.4.1.tgz#55705bcd93c5f3673530c2c2cbc0c2b3addc286e"
 
-qs@6.2.0, qs@~6.2.0:
+qs@6.2.0, qs@^6.1.0, qs@~6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.2.0.tgz#3b7848c03c2dece69a9522b0fae8c4126d745f3b"
-
-qs@^6.1.0, qs@~6.3.0:
-  version "6.3.1"
-  resolved "https://registry.yarnpkg.com/qs/-/qs-6.3.1.tgz#918c0b3bcd36679772baf135b1acb4c1651ed79d"
 
 qs@~1.1.0:
   version "1.1.0"
@@ -6413,6 +6421,10 @@ qs@~1.1.0:
 qs@~5.2.0:
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/qs/-/qs-5.2.1.tgz#801fee030e0b9450d6385adc48a4cc55b44aedfc"
+
+qs@~6.3.0:
+  version "6.3.1"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.3.1.tgz#918c0b3bcd36679772baf135b1acb4c1651ed79d"
 
 query-string@^4.1.0:
   version "4.3.2"
