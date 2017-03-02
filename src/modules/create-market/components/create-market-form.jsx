@@ -30,7 +30,8 @@ import {
 export default class CreateMarketForm extends Component {
   static propTypes = {
     newMarket: PropTypes.object.isRequired,
-    updateNewMarket: PropTypes.func.isRequired
+    updateNewMarket: PropTypes.func.isRequired,
+    submitNewMarket: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -192,10 +193,13 @@ export default class CreateMarketForm extends Component {
           currentStep={p.newMarket.currentStep}
           isValid={s.isValid}
           validations={p.newMarket.validations}
+          newMarket={p.newMarket}
           resetValidity={() => this.resetValidity()}
+          updateValidity={isValid => this.setState({ isValid })}
           addValidationToNewMarket={p.addValidationToNewMarket}
           removeValidationFromNewMarket={p.removeValidationFromNewMarket}
           updateNewMarket={p.updateNewMarket}
+          submitNewMarket={p.submitNewMarket}
         />
       </article>
     );

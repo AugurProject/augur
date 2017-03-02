@@ -7,9 +7,14 @@ export default class CreateMarketFormButtons extends Component {
   static propTypes = {
     currentStep: PropTypes.number.isRequired,
     isValid: PropTypes.bool.isRequired,
+    updateValidity: PropTypes.func.isRequired,
     validations: PropTypes.array.isRequired,
     addValidationToNewMarket: PropTypes.func.isRequired,
-    removeValidationFromNewMarket: PropTypes.func.isRequired
+    removeValidationFromNewMarket: PropTypes.func.isRequired,
+    resetValidity: PropTypes.func.isRequired,
+    updateNewMarket: PropTypes.func.isRequired,
+    newMarket: PropTypes.object.isRequired,
+    submitNewMarket: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -21,6 +26,7 @@ export default class CreateMarketFormButtons extends Component {
     };
 
     this.updateNextButtonCopy = this.updateNextButtonCopy.bind(this);
+    this.handleNextButton = this.handleNextButton.bind(this);
   }
 
   componentWillMount() {
@@ -44,16 +50,15 @@ export default class CreateMarketFormButtons extends Component {
   }
 
   updateNextButtonCopy(currentStep, validations) {
-    let firstInvalidStep = newMarketCreationOrder.find(step => !validations.find(validStep => step === validStep));
+    let nextButtonCopy = newMarketCreationOrder.find(step => !validations.find(validStep => step === validStep));
 
-    if (firstInvalidStep === newMarketCreationOrder[currentStep] &&
-        currentStep === newMarketCreationOrder.length - 1
-    ) {
-      this.setState({ nextButtonCopy: 'Create Market' });
-    } else if (firstInvalidStep === newMarketCreationOrder[currentStep] &&
+    if (currentStep === newMarketCreationOrder.length - 1) {
+      nextButtonCopy = 'Create Market';
+      this.props.updateValidity(true);
+    } else if (nextButtonCopy === newMarketCreationOrder[currentStep] &&
       currentStep !== newMarketCreationOrder.length - 1
     ) {
-      firstInvalidStep = newMarketCreationOrder.find((step) => {
+      nextButtonCopy = newMarketCreationOrder.find((step) => {
         if (step === newMarketCreationOrder[currentStep]) {
           return false;
         }
@@ -62,9 +67,19 @@ export default class CreateMarketFormButtons extends Component {
     }
 
     this.setState({
-      nextButtonCopy: firstInvalidStep,
-      nextStep: newMarketCreationOrder.indexOf(firstInvalidStep)
+      nextButtonCopy,
+      nextStep: newMarketCreationOrder.indexOf(nextButtonCopy)
     });
+  }
+
+  handleNextButton() {
+    if (this.props.currentStep === newMarketCreationOrder.length - 1) {
+      console.log('last step -- ', this.props.newMarket);
+      this.props.submitNewMarket(this.props.newMarket);
+    } else {
+      this.props.updateNewMarket({ currentStep: this.state.nextStep });
+      this.props.resetValidity();
+    }
   }
 
   render() {
@@ -77,10 +92,7 @@ export default class CreateMarketFormButtons extends Component {
           className={classNames({
             'hide-button': !p.isValid || p.currentStep < 1
           })}
-          onClick={() => {
-            p.updateNewMarket({ currentStep: s.nextStep });
-            p.resetValidity();
-          }}
+          onClick={this.handleNextButton}
         >
           {s.nextButtonCopy}
         </button>

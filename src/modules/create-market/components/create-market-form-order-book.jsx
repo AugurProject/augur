@@ -6,6 +6,8 @@ import ComponentNav from 'modules/common/components/component-nav';
 import Input from 'modules/common/components/input';
 import CreateMarketFormErrors from 'modules/create-market/components/create-market-form-errors';
 
+import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
+import { NEW_MARKET_ORDER_BOOK } from 'modules/create-market/constants/new-market-creation-steps';
 import { BID, ASK } from 'modules/transactions/constants/types';
 
 import getValue from 'utils/get-value';
@@ -45,11 +47,23 @@ export default class CreateMarketFormOrderBook extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.outcomes !== nextProps.outcomes) this.setState({ selectedOutcome: nextProps.outcomes[0] });
     if (this.props.orderBook !== nextProps.orderBook) this.sortOrderBook(nextProps.orderBook);
+
+    if (!Object.keys(nextProps.orderBook).length &&
+        this.props.currentStep !== nextProps.currentStep &&
+        newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_ORDER_BOOK
+    ) {
+      nextProps.updateValidity(true);
+    }
   }
 
   componentWillUpdate(nextProps, nextState) {
     if (this.state.orderBookSorted !== nextState.orderBookSorted) this.updateSeries(nextState.orderBookSorted);
-    // if (this.state.errors !== nextState.errors) nextProps.updateValidity(!nextState.errors.length);
+    if (this.state.orderPrice !== nextState.orderPrice ||
+        this.state.orderQuantity !== nextState.orderQuantity
+    ) {
+      this.validateForm(nextState.orderPrice, nextState.orderQuantity);
+    }
+    if (this.state.errors !== nextState.errors) nextProps.updateValidity(!nextState.errors.length);
   }
 
   handleOrderPriceUpdate(orderPriceRaw) {
@@ -67,6 +81,9 @@ export default class CreateMarketFormOrderBook extends Component {
   }
 
   handleAddOrder() {
+    this.setState({ orderPrice: '', orderQuantity: '' }); // Clear Inputs
+    // TODO -- refocus first input
+
     this.props.addOrderToNewMarket({
       outcome: this.state.selectedOutcome,
       type: this.state.selectedNav,
@@ -123,6 +140,8 @@ export default class CreateMarketFormOrderBook extends Component {
   }
 
   validateForm(orderBook) {
+    console.log('order book, validateForm');
+
     const errors = [];
 
     if (Object.keys(orderBook).length) {
@@ -259,6 +278,7 @@ export default class CreateMarketFormOrderBook extends Component {
 }
 
 CreateMarketFormOrderBook.propTypes = {
+  currentStep: PropTypes.number.isRequired,
   outcomes: PropTypes.array.isRequired,
   orderBook: PropTypes.object.isRequired,
   updateValidity: PropTypes.func.isRequired,

@@ -86,7 +86,7 @@ export default function (newMarket = DEFAULT_STATE, action) {
         ...action.data
       };
     case CLEAR_NEW_MARKET:
-      return {};
+      return DEFAULT_STATE;
     default:
       return newMarket;
   }

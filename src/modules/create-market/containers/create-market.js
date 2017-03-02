@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { submitNewMarket } from 'modules/create-market/actions/submit-new-market';
 import {
   addValidationToNewMarket,
   removeValidationFromNewMarket,
@@ -18,7 +19,7 @@ const mapDispatchToProps = dispatch => ({
   addOrderToNewMarket: data => dispatch(addOrderToNewMarket(data)),
   removeOrderFromNewMarket: data => dispatch(removeOrderFromNewMarket(data)),
   updateNewMarket: data => dispatch(updateNewMarket(data)),
-
+  submitNewMarket: data => dispatch(submitNewMarket(data))
 });
 
 const CreateMarket = connect(mapStateToProps, mapDispatchToProps)(CreateMarketView);
