@@ -831,8 +831,10 @@ describe("accounts.submitTx", function() {
   afterEach(function() {
     ClearCallCounts(callCounts);
     augur.rpc.rawTxMaxNonce = -1;
+    augur.rpc.rawTxs = {};
     augur.accounts.account = {};
     augur.rpc.rawTxs = {};
+    augur.rpc.txs = {};
     augur.rpc.sendRawTx = sendRawTx;
     augur.accounts.getTxNonce = getTxNonce;
   });
@@ -840,6 +842,8 @@ describe("accounts.submitTx", function() {
     it(t.description, function(done) {
       augur.rpc.sendRawTx = t.sendRawTx;
       augur.accounts.getTxNonce = t.getTxNonce;
+      augur.rpc.rawTxs = t.rawTxs || {};
+      augur.rpc.txs = t.txs || {};
       var privateKey = t.preparePrivateKey(accounts);
       augur.accounts.account = { privateKey: privateKey };
 
@@ -858,6 +862,13 @@ describe("accounts.submitTx", function() {
       gas: '0x1',
       nonce: '0x0',
       value: '0x0'
+    },
+    rawTxs: {
+      '0x1': { tx: { nonce: '0x0' } },
+      '0x2': { tx: { nonce: '0x0' } }
+    },
+    txs: {
+      '0x1': { status: 'success' }
     },
     preparePrivateKey: function(accounts) {
       return accounts[0].privateKey;
@@ -886,7 +897,7 @@ describe("accounts.submitTx", function() {
       to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68',
       data: '0x772a646f0000000000000000000000000000000000000000000000000000000000018a9200000000000000000000000000000000000000000000000000000000000000a1',
       gas: '0x2fd618',
-      nonce: '0x0',
+      nonce: '-0x2',
       value: '0x0',
       gasLimit: '0x2fd618',
       gasPrice: '0x4a817c800'
@@ -1181,6 +1192,7 @@ describe("accounts.invoke", function() {
   var getGasPrice = augur.rpc.getGasPrice;
   var fire = augur.rpc.fire;
   var block = augur.rpc.block;
+  var network_id = augur.network_id;
   var callCounts = {
     packageRequest: 0,
     getTxNonce: 0,
@@ -1194,6 +1206,7 @@ describe("accounts.invoke", function() {
     augur.rpc.getGasPrice = getGasPrice;
     augur.rpc.fire = fire;
     augur.rpc.block = block;
+    augur.network_id = network_id;
   });
   var test = function(t) {
     it(t.description + ' sync', function() {
@@ -1203,6 +1216,7 @@ describe("accounts.invoke", function() {
       augur.rpc.fire = t.fire || fire;
       augur.rpc.block = t.block || block;
       augur.accounts.account = t.account || {};
+      augur.network_id = t.network_id || network_id;
 
       t.assertions(augur.accounts.invoke(t.payload), false);
     });
@@ -1213,6 +1227,7 @@ describe("accounts.invoke", function() {
       augur.rpc.fire = t.fire || fire;
       augur.rpc.block = t.block || block;
       augur.accounts.account = t.account || {};
+      augur.network_id = t.network_id || network_id;
 
       augur.accounts.invoke(t.payload, function(res) {
         t.assertions(res, true);
@@ -1289,6 +1304,7 @@ describe("accounts.invoke", function() {
       params: ['101010', '0xa1'],
       to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68'
     },
+    network_id: '3',
     account: { privateKey: "shh it's a secret!", address: '0x1' },
     packageRequest: function(payload) {
       callCounts.packageRequest++;
@@ -1315,7 +1331,8 @@ describe("accounts.invoke", function() {
         nonce: '0x0',
         value: '0x0',
         gasLimit: '0x2fd618',
-        gasPrice: '0x4a817c800'
+        gasPrice: '0x4a817c800',
+        chainId: 3
       });
       return cb(packaged);
     },
@@ -1330,7 +1347,8 @@ describe("accounts.invoke", function() {
           nonce: '0x0',
           value: '0x0',
           gasLimit: '0x2fd618',
-          gasPrice: '0x4a817c800'
+          gasPrice: '0x4a817c800',
+          chainId: 3
         });
       } else {
         assert.isUndefined(res);
