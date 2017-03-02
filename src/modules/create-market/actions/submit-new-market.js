@@ -28,7 +28,7 @@ export function submitNewMarket(newMarket) {
       ]
     };
 
-    // Market Type Specific Properties
+    // Type Specific Properties
     switch (newMarket.type) {
       case CATEGORICAL:
         formattedNewMarket.minValue = 1;
@@ -60,32 +60,5 @@ export function submitNewMarket(newMarket) {
       },
       onFailed: err => console.error('ERROR createSingleEventMarket failed:', err)
     });
-    // console.log('creating market:', newMarket);``
-    // augur.createSingleEventMarket({
-    //   branch: branch.id,
-    //   description: newMarket.formattedDescription,
-    //   expDate: newMarket.endDate.value.getTime() / 1000,
-    //   minValue: newMarket.minValue,
-    //   maxValue: newMarket.maxValue,
-    //   numOutcomes: newMarket.numOutcomes,
-    //   resolution: newMarket.expirySource,
-    //   takerFee: newMarket.takerFee / 100,
-    //   tags: newMarket.tags,
-    //   makerFee: newMarket.makerFee / 100,
-    //   extraInfo: newMarket.detailsText,
-    //   onSent: res => console.log('createSingleEventMarket sent:', res),
-    //   onSuccess: (res) => {
-    //     console.log('createSingleEventMarket success:', res);
-    //     dispatch(clearMakeInProgress());
-    //     if (newMarket.isCreatingOrderBook) {
-    //       dispatch(submitGenerateOrderBook({
-    //         ...newMarket,
-    //         id: res.callReturn,
-    //         tx: res
-    //       }));
-    //     }
-    //   },
-    //   onFailed: err => console.error('createSingleEventMarket failed:', err)
-    // });
   };
 }
