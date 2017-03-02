@@ -1280,22 +1280,67 @@ describe("logs.chunkBlocks", function () {
   });
 });
 describe("logs.getLogsChunked", function () {
+  var getLogs = augur.getLogs;
+  var block = augur.rpc.block;
+  var finished;
+  afterEach(function () {
+    augur.getLogs = getLogs;
+    augur.rpc.block = block;
+    finished = undefined;
+  });
   var test = function (t) {
-    var getLogs = augur.getLogs;
-    afterEach(function () {
-      augur.getLogs = getLogs;
-    });
     it(t.description, function (done) {
-      augur.getLogs = function (label, filterParams, aux, callback) {
-        var params = {label: label, filterParams: filterParams, aux: aux};
-        if (!callback) return params;
-        callback(null, params);
-      };
+      augur.getLogs = t.getLogs;
+      augur.rpc.block = t.block || block;
+      finished = done;
+
       augur.getLogsChunked(t.params.label, t.params.filterParams, t.params.aux, function (logsChunk) {
         t.assertions(logsChunk);
-      }, done);
+      }, t.callback || done);
     });
   };
+  test({
+    description: "Error from getLogs",
+    params: {
+      label: "marketCreated",
+      filterParams: {
+        fromBlock: 500,
+        toBlock: 1000
+      },
+      aux: null
+    },
+    getLogs: function (label, filterParams, aux, callback) {
+      callback({ error: 999, message: 'Uh-Oh!' });
+    },
+    assertions: function (logsChunk) {
+      // doesn't get called in this case
+      assert.isTrue(false);
+    },
+    callback: function(err) {
+      assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
+      finished();
+    }
+  });
+  test({
+    description: "marketCreated on without passing filterParams",
+    params: {
+      label: "marketCreated",
+      filterParams: undefined,
+      aux: null
+    },
+    block: { number: 500 },
+    getLogs: function (label, filterParams, aux, callback) {
+      var params = {label: label, filterParams: filterParams, aux: aux};
+      if (!callback) return params;
+      callback(null, params);
+    },
+    assertions: function (logsChunk) {
+      assert.strictEqual(logsChunk.label, "marketCreated");
+      assert.strictEqual(logsChunk.filterParams.fromBlock, 1);
+      assert.strictEqual(logsChunk.filterParams.toBlock, 500);
+      assert.deepEqual(logsChunk.aux, {});
+    }
+  });
   test({
     description: "marketCreated on [500, 1000]",
     params: {
@@ -1305,6 +1350,11 @@ describe("logs.getLogsChunked", function () {
         toBlock: 1000
       },
       aux: null
+    },
+    getLogs: function (label, filterParams, aux, callback) {
+      var params = {label: label, filterParams: filterParams, aux: aux};
+      if (!callback) return params;
+      callback(null, params);
     },
     assertions: function (logsChunk) {
       assert.strictEqual(logsChunk.label, "marketCreated");
@@ -1323,6 +1373,11 @@ describe("logs.getLogsChunked", function () {
       },
       aux: null
     },
+    getLogs: function (label, filterParams, aux, callback) {
+      var params = {label: label, filterParams: filterParams, aux: aux};
+      if (!callback) return params;
+      callback(null, params);
+    },
     assertions: function (logsChunk) {
       assert.strictEqual(logsChunk.label, "marketCreated");
       assert.include([500, 400], logsChunk.filterParams.fromBlock);
@@ -1340,6 +1395,11 @@ describe("logs.getLogsChunked", function () {
       },
       aux: null
     },
+    getLogs: function (label, filterParams, aux, callback) {
+      var params = {label: label, filterParams: filterParams, aux: aux};
+      if (!callback) return params;
+      callback(null, params);
+    },
     assertions: function (logsChunk) {
       assert.strictEqual(logsChunk.label, "marketCreated");
       assert.strictEqual(logsChunk.filterParams.fromBlock, 100);
@@ -1356,6 +1416,11 @@ describe("logs.getLogsChunked", function () {
         toBlock: 99
       },
       aux: null
+    },
+    getLogs: function (label, filterParams, aux, callback) {
+      var params = {label: label, filterParams: filterParams, aux: aux};
+      if (!callback) return params;
+      callback(null, params);
     },
     assertions: function (logsChunk) {
       assert.isFalse(true);
