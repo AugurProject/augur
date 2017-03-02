@@ -1,12 +1,18 @@
+import { eachOfSeries, eachLimit } from 'async';
+import { augur, constants } from 'services/augurjs';
+
+import { clearNewMarket } from 'modules/create-market/actions/update-new-market';
+import { updateTradesInProgress } from 'modules/trade/actions/update-trades-in-progress';
+import { placeTrade } from 'modules/trade/actions/place-trade';
+
+import { selectTransactionsLink } from 'modules/link/selectors/links';
+
+import { BID } from 'modules/transactions/constants/types';
+import { BUY, SELL } from 'modules/trade/constants/types';
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
 import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR } from 'modules/markets/constants/market-outcomes';
-import { augur } from 'services/augurjs';
-import { selectTransactionsLink } from 'modules/link/selectors/links';
-import { clearNewMarket } from 'modules/create-market/actions/update-new-market';
 
 export function submitNewMarket(newMarket) {
-  console.log('submitNewMarket -- ', newMarket);
-
   return (dispatch, getState) => {
     const { branch } = getState();
 
@@ -48,14 +54,36 @@ export function submitNewMarket(newMarket) {
         formattedNewMarket.numOutcomes = 2;
     }
 
-    console.log('creating market -- ', formattedNewMarket);
     augur.createSingleEventMarket({
       ...formattedNewMarket,
       onSent: res => console.log('createSingleEventMarket sent:', res),
       onSuccess: (res) => {
-        console.log('createSingleEventMarket success:', res);
         if (Object.keys(newMarket.orderBook).length) {
-          console.log('Need to also submit orders');
+          eachOfSeries(Object.keys(newMarket.orderBook), (outcome, index, seriesCB) => {
+            eachLimit(newMarket.orderBook[outcome], constants.PARALLEL_LIMIT, (order, orderCB) => {
+              const outcomeID = newMarket.type === CATEGORICAL ? index + 1 : 2;
+
+              dispatch(updateTradesInProgress(res.callReturn, outcomeID, order.type === BID ? BUY : SELL, order.quantity, order.price, null, (tradingActions) => {
+                const tradeToExecute = {
+                  [outcomeID]: tradingActions
+                };
+
+                if (tradeToExecute) {
+                  dispatch(placeTrade(res.callReturn, outcomeID, tradeToExecute, null, (err) => {
+                    if (err) return console.error('ERROR: ', err);
+
+                    orderCB();
+                  }));
+                }
+              }));
+            }, (err) => {
+              if (err !== null) return console.error('ERROR: ', err);
+
+              seriesCB();
+            });
+          }, (err) => {
+            if (err !== null) console.error('ERROR: ', err);
+          });
         }
       },
       onFailed: err => console.error('ERROR createSingleEventMarket failed:', err)

@@ -18,7 +18,8 @@ export function closePosition(marketID, outcomeID) {
     const bestFill = getBestFill(orderBooks, outcomeShares.toNumber() > 0 ? BUY : SELL, outcomeShares.absoluteValue(), marketID, outcomeID);
 
     dispatch(updateTradesInProgress(marketID, outcomeID, outcomeShares.toNumber() > 0 ? SELL : BUY, bestFill.amountOfShares.toNumber(), bestFill.price.toNumber(), null, () => {
-      dispatch(placeTrade(marketID, outcomeID, true, (err, tradeGroupID) => {
+      const { tradesInProgress } = getState();
+      dispatch(placeTrade(marketID, outcomeID, tradesInProgress[marketID], true, (err, tradeGroupID) => {
         if (err) {
           console.error('placeTrade err -- ', err);
 
