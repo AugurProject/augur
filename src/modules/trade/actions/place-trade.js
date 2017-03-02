@@ -7,8 +7,6 @@ export const placeTrade = (marketID, outcomeID, trades, doNotMakeOrders, callbac
   const { loginAccount, marketsData } = getState();
   const market = marketsData[marketID];
 
-  console.log('market -- ', market);
-
   if (!trades || !market || outcomeID == null) {
     console.error(`trade-in-progress not found for ${marketID} ${outcomeID}`);
     return dispatch(clearTradeInProgress(marketID));
