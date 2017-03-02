@@ -1524,24 +1524,33 @@ describe("logs.getLogs", function() {
 describe("logs.getAccountTrades", function() {
   // 4 (so far - not talled at top) tests total
   var getLogsCC = 0;
+  var getParsedCompleteSetsLogsCC = 0;
+  var getParsedCompleteSetsLogs = augur.getParsedCompleteSetsLogs;
+  var getLogs = augur.getLogs;
+  var finished;
+  afterEach(function() {
+    augur.getParsedCompleteSetsLogs = getParsedCompleteSetsLogs;
+    augur.getLogs = getLogs
+    getLogsCC = 0;
+    getParsedCompleteSetsLogsCC = 0;
+    finished = undefined;
+  })
   var test = function(t) {
-    it(t.description, function() {
-      var getLogs = augur.getLogs;
+    it(t.description, function(done) {
       augur.getLogs = t.getLogs;
-      getLogsCC = 0;
+      finished = done;
+      augur.getParsedCompleteSetsLogs = t.getParsedCompleteSetsLogs;
 
       augur.getAccountTrades(t.account, t.filterParams, t.callback);
-
-      augur.getLogs = getLogs;
     });
   };
-
   test({
     description: 'Should handle no filter params passed as well as an error from getLogs on the first call.',
     account: '0x0',
     filterParams: undefined,
     getLogs: function(label, filterParams, aux, callback) {
       // just confirming we get the expected Aux object:
+      getLogsCC++;
       assert.deepEqual(aux, {
           index: ["market", "outcome"],
           mergedLogs: {},
@@ -1554,7 +1563,34 @@ describe("logs.getAccountTrades", function() {
       // this functions as our assertion function
       assert.isUndefined(trades);
       assert.deepEqual(err, { error: 'Uh-Oh!' });
+      assert.deepEqual(getLogsCC, 1);
+      assert.deepEqual(getParsedCompleteSetsLogsCC, 0);
+      finished();
     }
+  });
+  test({
+    description: 'Should handle no filter params passed as well as an error from getLogs on the first call - filterParams passed as callback.',
+    account: '0x0',
+    filterParams: function(err, trades) {
+      // this functions as our assertion function
+      assert.isUndefined(trades);
+      assert.deepEqual(err, { error: 'Uh-Oh!' });
+      assert.deepEqual(getLogsCC, 1);
+      assert.deepEqual(getParsedCompleteSetsLogsCC, 0);
+      finished();
+    },
+    getLogs: function(label, filterParams, aux, callback) {
+      // just confirming we get the expected Aux object:
+      getLogsCC++;
+      assert.deepEqual(aux, {
+          index: ["market", "outcome"],
+          mergedLogs: {},
+          extraField: {name: "maker", value: false}
+      });
+      assert.deepEqual(filterParams, { sender: '0x0' });
+      callback({ error: 'Uh-Oh!' });
+    },
+    callback: undefined
   });
   test({
     description: 'Should handle no filter params passed as well as an error from getLogs on the second call.',
@@ -1585,12 +1621,14 @@ describe("logs.getAccountTrades", function() {
         callback(null, []);
         break;
       }
-
     },
     callback: function(err, trades) {
       // this functions as our assertion function
       assert.isUndefined(trades);
       assert.deepEqual(err, { error: 'Uh-Oh!' });
+      assert.deepEqual(getLogsCC, 2);
+      assert.deepEqual(getParsedCompleteSetsLogsCC, 0);
+      finished();
     }
   });
   test({
@@ -1638,6 +1676,9 @@ describe("logs.getAccountTrades", function() {
       // this functions as our assertion function
       assert.isUndefined(trades);
       assert.deepEqual(err, { error: 'Uh-Oh!' });
+      assert.deepEqual(getLogsCC, 3);
+      assert.deepEqual(getParsedCompleteSetsLogsCC, 0);
+      finished();
     }
   });
   test({
@@ -1695,6 +1736,121 @@ describe("logs.getAccountTrades", function() {
       // this functions as our assertion function
       assert.isUndefined(trades);
       assert.deepEqual(err, { error: 'Uh-Oh!' });
+      assert.deepEqual(getLogsCC, 4);
+      assert.deepEqual(getParsedCompleteSetsLogsCC, 0);
+      finished();
+    }
+  });
+  test({
+    description: 'Should handle filter params with noCompleteSets passed.',
+    account: '0x0',
+    filterParams: { noCompleteSets: true },
+    getLogs: function(label, filterParams, aux, callback) {
+      // just confirming we get the expected Aux object:
+      getLogsCC++;
+      assert.isTrue(filterParams.noCompleteSets);
+      if (filterParams.owner) {
+        assert.deepEqual(filterParams.owner, '0x0');
+        assert.deepEqual(aux, {
+            index: ["market", "outcome"],
+            mergedLogs: {},
+            extraField: {name: "maker", value: true }
+        });
+      } else {
+        assert.deepEqual(filterParams.sender, '0x0');
+        assert.deepEqual(aux, {
+            index: ["market", "outcome"],
+            mergedLogs: {},
+            extraField: {name: "maker", value: false }
+        });
+      }
+      callback(null);
+    },
+    callback: function(err, trades) {
+      // this functions as our assertion function
+      assert.deepEqual(trades, {});
+      assert.isNull(err);
+      assert.deepEqual(getLogsCC, 4);
+      assert.deepEqual(getParsedCompleteSetsLogsCC, 0);
+      finished();
+    }
+  });
+  test({
+    description: 'Should handle logs including complete sets, error returned from getParsedCompleteSetsLogs.',
+    account: '0x0',
+    filterParams: {},
+    getLogs: function(label, filterParams, aux, callback) {
+      // just confirming we get the expected Aux object:
+      getLogsCC++;
+      if (filterParams.owner) {
+        assert.deepEqual(filterParams.owner, '0x0');
+        assert.deepEqual(aux, {
+            index: ["market", "outcome"],
+            mergedLogs: {},
+            extraField: {name: "maker", value: true }
+        });
+      } else {
+        assert.deepEqual(filterParams.sender, '0x0');
+        assert.deepEqual(aux, {
+            index: ["market", "outcome"],
+            mergedLogs: {},
+            extraField: {name: "maker", value: false }
+        });
+      }
+      callback(null);
+    },
+    getParsedCompleteSetsLogs: function(account, filterParams, cb) {
+      getParsedCompleteSetsLogsCC++;
+      assert.deepEqual(account, '0x0');
+      assert.deepEqual(filterParams, { shortAsk: false, mergeInto: {} });
+      cb({ error: 999, message: 'Uh-Oh!' });
+    },
+    callback: function(err, trades) {
+      // this functions as our assertion function
+      assert.deepEqual(trades, {});
+      assert.isNull(err);
+      assert.deepEqual(getLogsCC, 4);
+      assert.deepEqual(getParsedCompleteSetsLogsCC, 1);
+      finished();
+    }
+  });
+  test({
+    description: 'Should handle logs including complete sets.',
+    account: '0x0',
+    filterParams: {},
+    getLogs: function(label, filterParams, aux, callback) {
+      // just confirming we get the expected Aux object:
+      getLogsCC++;
+      if (filterParams.owner) {
+        assert.deepEqual(filterParams.owner, '0x0');
+        assert.deepEqual(aux, {
+            index: ["market", "outcome"],
+            mergedLogs: {},
+            extraField: {name: "maker", value: true }
+        });
+      } else {
+        assert.deepEqual(filterParams.sender, '0x0');
+        assert.deepEqual(aux, {
+            index: ["market", "outcome"],
+            mergedLogs: {},
+            extraField: {name: "maker", value: false }
+        });
+      }
+      callback(null);
+    },
+    getParsedCompleteSetsLogs: function(account, filterParams, cb) {
+      getParsedCompleteSetsLogsCC++;
+      assert.deepEqual(account, '0x0');
+      assert.deepEqual(filterParams, { shortAsk: false, mergeInto: {} });
+      cb(null, {});
+    },
+    callback: function(err, trades) {
+      // this functions as our assertion function
+      assert.deepEqual(trades, {});
+      assert.isNull(err);
+      assert.deepEqual(getLogsCC, 4);
+      assert.deepEqual(getParsedCompleteSetsLogsCC, 1);
+      finished();
     }
   });
 });
