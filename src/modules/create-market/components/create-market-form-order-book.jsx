@@ -138,10 +138,12 @@ export default class CreateMarketFormOrderBook extends Component {
 
     const bidSeries = getValue(s, `orderBookSeries.${s.selectedOutcome}.${BID}`);
     const askSeries = getValue(s, `orderBookSeries.${s.selectedOutcome}.${ASK}`);
+    const bids = getValue(s, `orderBookSorted.${s.selectedOutcome}.${BID}`);
+    const asks = getValue(s, `orderBookSorted.${s.selectedOutcome}.${ASK}`);
 
     return (
       <article className={`create-market-form-part create-market-form-order-book ${p.className || ''}`}>
-        <h2>Order Book</h2>
+        <h2>Initial Liquidity</h2>
         <div className="order-book-actions">
           <div className="order-book-outcomes-table">
             <div className="order-book-outcomes-header">
@@ -193,32 +195,62 @@ export default class CreateMarketFormOrderBook extends Component {
           </div>
         </div>
         <div className="order-book-preview">
-          <div className="order-book-entry-preview-chart">
-            <ReactHighcharts
-              config={{
-                title: {
-                  text: `${s.selectedOutcome}: Depth Chart`
+          <ReactHighcharts
+            className="order-book-preview-chart"
+            config={{
+              title: {
+                text: `${s.selectedOutcome}: Depth Chart`
+              },
+              series: [
+                {
+                  type: 'line',
+                  name: 'Bids',
+                  step: 'right',
+                  data: bidSeries
                 },
-                series: [
-                  {
-                    type: 'line',
-                    step: 'right',
-                    data: bidSeries
-                  },
-                  {
-                    type: 'line',
-                    step: 'right',
-                    data: askSeries
-                  }
-                ],
-                credits: {
-                  enabled: false
+                {
+                  type: 'line',
+                  name: 'Asks',
+                  step: 'right',
+                  data: askSeries
                 }
-              }}
-            />
-          </div>
-          <div className="order-book-entry-preview-table">
-
+              ],
+              yAxis: {
+                title: {
+                  text: 'Shares'
+                }
+              },
+              xAxis: {
+                title: {
+                  text: 'Price'
+                }
+              },
+              credits: {
+                enabled: false
+              }
+            }}
+          />
+          <div className="order-book-preview-table">
+            <div className="order-book-preview-table-header">
+              <span>Bid Q.</span>
+              <span>Bid</span>
+              <span>Ask</span>
+              <span>Ask Q.</span>
+            </div>
+            <div className="order-book-preview-table-content">
+              <ul className="order-book-preview-table-bids">
+                {bids ?
+                  bids.map(bid => <li><span>{`${bid.quantity}`}</span><span>{`${bid.price}`}</span></li>) :
+                  <span>No Bids</span>
+                }
+              </ul>
+              <ul className="order-book-preview-table-asks">
+                {asks ?
+                  asks.map(ask => <li><span>{`${ask.price}`}</span><span>{`${ask.quantity}`}</span></li>) :
+                  <span>No Asks</span>
+                }
+              </ul>
+            </div>
           </div>
         </div>
       </article>
