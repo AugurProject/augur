@@ -10,21 +10,22 @@ var constants = require("../../../src/constants");
 describe("CompositeGetters.getOrderBookChunked", function () {
   var getOrderBook = augur.getOrderBook;
   var get_total_trades = augur.get_total_trades;
-  after(function () {
+  var testState;
+  var finished;
+  afterEach(function () {
     augur.getOrderBook = getOrderBook;
     augur.get_total_trades = get_total_trades;
+    testState = undefined;
+    finished = undefined;
   });
   var test = function (t) {
     it(t.description, function (done) {
-      augur.getOrderBook = function (params, callback) {
-        if (!callback) return t.state.orderBook;
-        callback(t.state.orderBook);
-      };
-      augur.get_total_trades = function (marketID, callback) {
-        if (!callback) return t.state.totalNumOrders;
-        callback(t.state.totalNumOrders);
-      };
-      augur.getOrderBookChunked(t.params.marketID, t.params.offset, t.params.numTradesToLoad, t.params.scalarMinMax, t.params.totalNumOrders, t.assertions, done);
+      testState = t.state;
+      finished = done;
+      augur.getOrderBook = t.getOrderBook;
+      augur.get_total_trades = t.get_total_trades;
+
+      augur.getOrderBookChunked(t.params.marketID, t.params.offset, t.params.numTradesToLoad, t.params.scalarMinMax, t.params.totalTrades, t.assertions, t.callback);
     });
   };
   test({
@@ -40,8 +41,44 @@ describe("CompositeGetters.getOrderBookChunked", function () {
       totalNumOrders: 0,
       orderBook: {buy: {}, sell: {}}
     },
+    getOrderBook: function (params, callback) {
+      if (!callback) return testState.orderBook;
+      callback(testState.orderBook);
+    },
+    get_total_trades: function (marketID, callback) {
+      if (!callback) return testState.totalNumOrders;
+      callback(testState.totalNumOrders);
+    },
     assertions: function (orderBookChunk) {
       throw new Error(JSON.stringify(orderBookChunked));
+    },
+    callback: function(res) {
+      assert.deepEqual(res, 0);
+      finished();
+    }
+  });
+  test({
+    description: "error from getOrderBook",
+    params: {
+      marketID: "0xa1",
+      offset: 0,
+      numTradesToLoad: null,
+      scalarMinMax: {},
+      totalTrades: 10
+    },
+    state: {
+      totalNumOrders: 10,
+      orderBook: {buy: {}, sell: {}}
+    },
+    getOrderBook: function (params, callback) {
+      if (!callback) return { error: 999, message: 'Uh-Oh!' };
+      callback({ error: 999, message: 'Uh-Oh!' });
+    },
+    get_total_trades: undefined,
+    assertions: undefined,
+    callback: function(res) {
+      assert.deepEqual(res, { error: 999, message: 'Uh-Oh!' });
+      finished();
     }
   });
   test({
@@ -110,6 +147,14 @@ describe("CompositeGetters.getOrderBookChunked", function () {
         }
       }
     },
+    getOrderBook: function (params, callback) {
+      if (!callback) return testState.orderBook;
+      callback(testState.orderBook);
+    },
+    get_total_trades: function (marketID, callback) {
+      if (!callback) return testState.totalNumOrders;
+      callback(testState.totalNumOrders);
+    },
     assertions: function (orderBookChunk) {
       assert.deepEqual(orderBookChunk, {
         buy: {
@@ -165,6 +210,160 @@ describe("CompositeGetters.getOrderBookChunked", function () {
           }
         }
       });
+    },
+    callback: function(res) {
+      assert.isNull(res);
+      finished();
+    }
+  });
+  test({
+    description: "load full order book - need more than 1 chunk",
+    params: {
+      marketID: "0xa1",
+      offset: 0,
+      numTradesToLoad: 2,
+      scalarMinMax: {},
+      totalTrades: 4
+    },
+    state: {
+      totalNumOrders: 4,
+      orderBook: {
+        buy: {
+          "0xb1": {
+            id: "0xb1",
+            type: "buy",
+            market: "0xa1",
+            amount: "5",
+            fullPrecisionAmount: "5",
+            price: "0.0625",
+            fullPrecisionPrice: "0.062545",
+            owner: "0xb0b",
+            block: 1,
+            outcome: "2"
+          },
+          "0xb2": {
+            id: "0xb2",
+            type: "buy",
+            market: "0xa1",
+            amount: "5",
+            fullPrecisionAmount: "5",
+            price: "0.1187",
+            fullPrecisionPrice: "0.11875123",
+            owner: "0xb0b",
+            block: 2,
+            outcome: "2"
+          }
+        },
+        sell: {
+          "0xc1": {
+            id: "0xc1",
+            type: "sell",
+            market: "0xa1",
+            amount: "5",
+            fullPrecisionAmount: "5",
+            price: "0.9375",
+            fullPrecisionPrice: "0.937532",
+            owner: "0xb0b",
+            block: 3,
+            outcome: "2"
+          },
+          "0xc2": {
+            id: "0xc2",
+            type: "sell",
+            market: "0xa1",
+            amount: "5",
+            fullPrecisionAmount: "5",
+            price: "0.8812",
+            fullPrecisionPrice: "0.8812534",
+            owner: "0xb0b",
+            block: 4,
+            outcome: "2"
+          }
+        }
+      }
+    },
+    getOrderBook: function (params, callback) {
+      var result = { buy: {}, sell: {} };
+      if (params.offset === 0) {
+        // first call to getOrderBook, only return 2 trades.
+        result.buy = testState.orderBook.buy;
+      } else {
+        result.sell = testState.orderBook.sell;
+      }
+      if (!callback) return result;
+      callback(result);
+    },
+    get_total_trades: undefined,
+    assertions: function (orderBookChunk) {
+      var expectedChunk;
+      if (orderBookChunk.buy['0xb1']) {
+        // first chunk
+        expectedChunk = {
+          buy: {
+            "0xb1": {
+              id: "0xb1",
+              type: "buy",
+              market: "0xa1",
+              amount: "5",
+              fullPrecisionAmount: "5",
+              price: "0.0625",
+              fullPrecisionPrice: "0.062545",
+              owner: "0xb0b",
+              block: 1,
+              outcome: "2"
+            },
+            "0xb2": {
+              id: "0xb2",
+              type: "buy",
+              market: "0xa1",
+              amount: "5",
+              fullPrecisionAmount: "5",
+              price: "0.1187",
+              fullPrecisionPrice: "0.11875123",
+              owner: "0xb0b",
+              block: 2,
+              outcome: "2"
+            }
+          },
+          sell: {}
+        };
+      } else {
+        // second chunk.
+        expectedChunk = {
+          buy: {},
+          sell: {
+            "0xc1": {
+              id: "0xc1",
+              type: "sell",
+              market: "0xa1",
+              amount: "5",
+              fullPrecisionAmount: "5",
+              price: "0.9375",
+              fullPrecisionPrice: "0.937532",
+              owner: "0xb0b",
+              block: 3,
+              outcome: "2"
+            },
+            "0xc2": {
+              id: "0xc2",
+              type: "sell",
+              market: "0xa1",
+              amount: "5",
+              fullPrecisionAmount: "5",
+              price: "0.8812",
+              fullPrecisionPrice: "0.8812534",
+              owner: "0xb0b",
+              block: 4,
+              outcome: "2"
+            }
+          }
+        };
+      }
+      assert.deepEqual(orderBookChunk, expectedChunk);
+    },
+    callback: function(res) {
+      assert.isNull(res);
+      finished();
     }
   });
 });
@@ -545,18 +744,23 @@ describe('CompositeGetters.loadMarketsHelper', function() {
 });
 describe('CompositeGetters.loadMarkets', function() {
   // 3 tests total
+  var loadMarketsHelper = augur.loadMarketsHelper;
+  var getMarketsInfo = augur.augurNode.getMarketsInfo;
+  var finished;
+  afterEach(function() {
+    augur.loadMarketsHelper = loadMarketsHelper;
+    augur.augurNode.getMarketsInfo = getMarketsInfo;
+    augur.augurNode.nodes = [];
+    finished = undefined;
+  });
   var test = function(t) {
-    it(t.description, function() {
-      var loadMarketsHelper = augur.loadMarketsHelper;
-      var getMarketsInfo = augur.augurNode.getMarketsInfo;
+    it(t.description, function(done) {
       augur.loadMarketsHelper = t.loadMarketsHelper;
       augur.augurNode.getMarketsInfo = t.getMarketsInfo;
       augur.augurNode.nodes = t.nodes;
+      finished = done;
 
       augur.loadMarkets(t.branchID, t.chunkSize, t.isDesc, t.chunkCB);
-
-      loadMarketsHelper = augur.loadMarketsHelper;
-      getMarketsInfo = augur.augurNode.getMarketsInfo;
     });
   };
   test({
@@ -574,6 +778,7 @@ describe('CompositeGetters.loadMarkets', function() {
       assert.deepEqual(chunkSize, '10');
       assert.deepEqual(isDesc, false);
       assert.isFunction(chunkCB);
+      finished();
     },
     getMarketsInfo: function(branchID, cb) {
       // this isn't hit during this test - added an assertion that will fail if it gets hit.
@@ -589,7 +794,7 @@ describe('CompositeGetters.loadMarkets', function() {
       // this isn't hit during this test - added an assertion that will fail if it gets hit.
       assert.isNull('chunkCB called');
     },
-    nodes: [],
+    nodes: ['http://www.somenode.com'],
     loadMarketsHelper: function(branchID, chunkSize, isDesc, chunkCB) {
       // we want to confirm that the augurNode.nodes was cleared after getting an error from getMarketsInfo
       assert.deepEqual(augur.augurNode.nodes, []);
@@ -597,6 +802,7 @@ describe('CompositeGetters.loadMarkets', function() {
       assert.deepEqual(chunkSize, '10');
       assert.deepEqual(isDesc, false);
       assert.isFunction(chunkCB);
+      finished();
     },
     getMarketsInfo: function(branchID, cb) {
       assert.deepEqual(branchID, '101010');
@@ -618,6 +824,7 @@ describe('CompositeGetters.loadMarkets', function() {
          blockNumber: '101010' } });
       // confirm that augurNode.nodes wasn't wiped out
       assert.deepEqual(augur.augurNode.nodes, ['https://test.augur.net/thisisfake', 'https://test2.augur.net/alsofake']);
+      finished();
     },
     nodes: ['https://test.augur.net/thisisfake', 'https://test2.augur.net/alsofake'],
     loadMarketsHelper: function(branchID, chunkSize, isDesc, chunkCB) {
