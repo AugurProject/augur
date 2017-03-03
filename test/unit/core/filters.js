@@ -1649,9 +1649,18 @@ describe("pacemaker", function() {
       	heartbeat: null
       });
       assert.isNull(augur.filters.filter.testEvent.id);
-      assert.include(augur.filters.filter.testEvent.heartbeat._onTimeout.toString(), 'self.poll_filter');
-      // call the interval function to confirm that it was set properly.
-      augur.filters.filter.testEvent.heartbeat._onTimeout();
+      // if repeat is an integer then we are probably in node 7+ and we need to check _onTimeout.
+      if (parseInt(augur.filters.filter.testEvent.heartbeat._repeat)) {
+        assert.include(augur.filters.filter.testEvent.heartbeat._onTimeout.toString(), 'self.poll_filter');
+        // call the interval function to confirm that it was set properly.
+        augur.filters.filter.testEvent.heartbeat._onTimeout();
+      } else {
+        // _repeat isn't a number so it must be node < 7 so _repeat is the function that is called instead of _onTimeout().
+        assert.include(augur.filters.filter.testEvent.heartbeat._repeat.toString(), 'self.poll_filter');
+        // call the interval function to confirm that it was set properly.
+        augur.filters.filter.testEvent.heartbeat._repeat();
+      }
+
 
       // clean up the inerval and clear out the heartbeat competely.
       clearInterval(augur.filters.filter.testEvent.heartbeat);
