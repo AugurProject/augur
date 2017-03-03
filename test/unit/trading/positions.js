@@ -390,8 +390,8 @@ describe("positions", function () {
       }],
       assertions: function(out) {
         assert.deepEqual(JSON.stringify(out), JSON.stringify({
-        	'0xa1': '0.2',
-        	'0xa2': '0.33333333333333333333'
+          '0xa1': '0.2',
+          '0xa2': '0.33333333333333333333'
         }));
       }
     });
@@ -2359,40 +2359,40 @@ describe("positions", function () {
       },
       assertions: function(out) {
         assert.deepEqual(JSON.stringify(out), JSON.stringify({
-        	'0xa1': {
-        		shortAskBuyCompleteSets: {
-        			type: 'buy',
-        			price: '0.03333333333333333333',
-        			shares: '10'
-        		},
-        		shortSellBuyCompleteSets: {
-        			type: 'buy',
-        			price: '0.5',
-        			shares: '2'
-        		},
-        		sellCompleteSets: {
-        			type: 'sell',
-        			price: '0.1',
-        			shares: '5'
-        		},
-        	},
-        	'0xa2': {
-        		shortAskBuyCompleteSets: {
-        			type: 'buy',
-        			price: '0.06666666666666666667',
-        			shares: '10'
-        		},
-        		shortSellBuyCompleteSets: {
-        			type: 'buy',
-        			price: '0.125',
-        			shares: '2'
-        		},
-        		sellCompleteSets: {
-        			type: 'sell',
-        			price: '0.04',
-        			shares: '5'
-        		},
-        	},
+          '0xa1': {
+            shortAskBuyCompleteSets: {
+              type: 'buy',
+              price: '0.03333333333333333333',
+              shares: '10'
+            },
+            shortSellBuyCompleteSets: {
+              type: 'buy',
+              price: '0.5',
+              shares: '2'
+            },
+            sellCompleteSets: {
+              type: 'sell',
+              price: '0.1',
+              shares: '5'
+            },
+          },
+          '0xa2': {
+            shortAskBuyCompleteSets: {
+              type: 'buy',
+              price: '0.06666666666666666667',
+              shares: '10'
+            },
+            shortSellBuyCompleteSets: {
+              type: 'buy',
+              price: '0.125',
+              shares: '2'
+            },
+            sellCompleteSets: {
+              type: 'sell',
+              price: '0.04',
+              shares: '5'
+            },
+          },
         }));
 
       }
