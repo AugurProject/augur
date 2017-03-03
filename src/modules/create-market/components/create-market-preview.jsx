@@ -137,12 +137,16 @@ const CreateMarketPreview = (p) => {
       <ul className="create-market-outcomes">
         {newMarket.outcomes.length ?
           newMarket.outcomes.map(outcome => <li>{outcome}</li>) :
-          <div className="create-market-outcome-placeholders">
-            <li className="is-null"></li>
-            <li className="is-null"></li>
-            <li className="is-null"></li>
-            <li className="is-null"></li>
-            <li className="is-null"></li>
+          <div
+            className={classNames('create-market-outcome-placeholders', {
+              'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_OUTCOMES,
+            })}
+          >
+            <li className="is-null" />
+            <li className="is-null" />
+            <li className="is-null" />
+            <li className="is-null" />
+            <li className="is-null" />
           </div>
         }
       </ul>

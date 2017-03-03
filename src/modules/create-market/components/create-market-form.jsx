@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import CreateMarketFormButtons from 'modules/create-market/components/create-market-form-buttons';
 import CreateMarketFormType from 'modules/create-market/components/create-market-form-type';
 import CreateMarketFormDescription from 'modules/create-market/components/create-market-form-description';
+import CreateMarketFormOutcomes from 'modules/create-market/components/create-market-form-outcomes';
 import CreateMarketFormExpirySource from 'modules/create-market/components/create-market-form-expiry-source';
 import CreateMarketFormEndDate from 'modules/create-market/components/create-market-form-end-date';
 import CreateMarketFormDetails from 'modules/create-market/components/create-market-form-details';
@@ -86,6 +87,20 @@ export default class CreateMarketForm extends Component {
             'from-left': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_DESCRIPTION,
           })}
           description={p.newMarket.description}
+          updateValidity={isValid => this.setState({ isValid })}
+          updateNewMarket={p.updateNewMarket}
+        />
+        <CreateMarketFormOutcomes
+          className={classNames({
+            'hide-form': newMarketCreationOrder[s.currentStep] !== NEW_MARKET_OUTCOMES,
+            'to-left': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_OUTCOMES,
+            'to-right': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_OUTCOMES,
+            'display-form': newMarketCreationOrder[s.currentStep] === NEW_MARKET_OUTCOMES,
+            'from-right': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_OUTCOMES,
+            'from-left': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_OUTCOMES,
+          })}
+          type={p.newMarket.type}
+          outcomes={p.newMarket.outcomes}
           updateValidity={isValid => this.setState({ isValid })}
           updateNewMarket={p.updateNewMarket}
         />
