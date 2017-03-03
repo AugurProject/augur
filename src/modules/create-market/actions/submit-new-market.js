@@ -61,7 +61,7 @@ export function submitNewMarket(newMarket) {
         if (Object.keys(newMarket.orderBook).length) {
           eachOfSeries(Object.keys(newMarket.orderBook), (outcome, index, seriesCB) => {
             eachLimit(newMarket.orderBook[outcome], constants.PARALLEL_LIMIT, (order, orderCB) => {
-              const outcomeID = newMarket.type === CATEGORICAL ? index + 1 : 2;
+              const outcomeID = newMarket.type === CATEGORICAL ? index + 1 : 2; // NOTE -- Both Scalar + Binary only trade against one outcome, that of outcomeID 2
 
               dispatch(updateTradesInProgress(res.callReturn, outcomeID, order.type === BID ? BUY : SELL, order.quantity, order.price, null, (tradingActions) => {
                 const tradeToExecute = {

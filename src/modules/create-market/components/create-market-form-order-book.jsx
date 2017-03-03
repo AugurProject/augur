@@ -174,7 +174,12 @@ export default class CreateMarketFormOrderBook extends Component {
                   key={outcome}
                   className={`order-book-outcome-row ${s.selectedOutcome === outcome ? 'selected' : ''}`}
                 >
-                  <button className="unstyled">
+                  <button
+                    className="unstyled"
+                    onClick={() => {
+                      this.setState({ selectedOutcome: outcome });
+                    }}
+                  >
                     <span>{outcome}</span>
                   </button>
                 </div>
