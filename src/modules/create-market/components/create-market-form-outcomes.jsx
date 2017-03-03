@@ -71,7 +71,7 @@ export default class CreateMarketFormOutcomes extends Component {
               value={p.scalarSmallNum}
               placeholder="Minimum answer"
               maxLength={6}
-              onChange={value => p.onValuesUpdated({ scalarSmallNum: value })}
+              onChange={scalarSmallNum => p.updateNewMarket({ scalarSmallNum })}
             />
             <Input
               type="text"
@@ -79,7 +79,7 @@ export default class CreateMarketFormOutcomes extends Component {
               value={p.scalarBigNum}
               placeholder="Maximum answer"
               maxLength={6}
-              onChange={value => p.onValuesUpdated({ scalarBigNum: value })}
+              onChange={scalarBigNum => p.updateNewMarket({ scalarBigNum })}
             />
           </div>
         }

@@ -14,6 +14,8 @@ const DEFAULT_STATE = {
   currentStep: 0,
   type: null,
   outcomes: [],
+  scalarSmallNum: '',
+  scalarBigNum: '',
   description: '',
   expirySourceType: '',
   expirySource: '',
