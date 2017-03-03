@@ -4,7 +4,8 @@ import Input from 'modules/common/components/input';
 import InputList from 'modules/common/components/input-list';
 import CreateMarketFormErrors from 'modules/create-market/components/create-market-form-errors';
 
-import { CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
+import { CATEGORICAL } from 'modules/markets/constants/market-types';
+import { CATEGORICAL_OUTCOMES_MIN_NUM, CATEGORICAL_OUTCOMES_MAX_NUM, CATEGORICAL_OUTCOME_MAX_LENGTH } from 'modules/create-market/constants/new-market-constraints';
 
 export default class CreateMarketFormOutcomes extends Component {
   constructor(props) {
@@ -50,10 +51,14 @@ export default class CreateMarketFormOutcomes extends Component {
     return (
       <article className={`create-market-form-part ${p.className || ''}`}>
         <h2>Outcomes</h2>
-        {p.type === CATEGORICAL &&
-          <span>Categorical</span>
-        }
-        {p.type === SCALAR &&
+        {p.type === CATEGORICAL ?
+          <InputList
+            list={p.outcomes}
+            listMinElements={CATEGORICAL_OUTCOMES_MIN_NUM}
+            listMaxElements={CATEGORICAL_OUTCOMES_MAX_NUM}
+            itemMaxLength={CATEGORICAL_OUTCOME_MAX_LENGTH}
+            onChange={outcomes => p.updateNewMarket({ outcomes })}
+          /> :
           <span>Scalar</span>
         }
       </article>
