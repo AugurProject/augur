@@ -112,7 +112,7 @@ describe("calculateOrderPrices", function () {
 });
 
 describe("generateOrderBook", function() {
-  // 14 tests total
+  // 15 tests total
   var buyCompleteSets = augur.buyCompleteSets;
   var buy = augur.buy;
   var sell = augur.sell;
@@ -130,13 +130,23 @@ describe("generateOrderBook", function() {
       augur.buy = t.buy,
       augur.sell = t.sell,
       augur.getOrderBook = t.getOrderBook;
-      // bcecause we are using the same object to drive async and sync tests we will use the following code to wrap our final assertion function so that we can call done when the async functions are finished.
-      var functionToReplace = t.callbacks[t.assertionFunction];
-      var assertion = function(input) {
-        functionToReplace(input);
-        done();
-      };
-      t.callbacks[t.assertionFunction] = assertion;
+      // because we are using the same object to drive async and sync tests we will use the following code to wrap our final assertion function so that we can call done when the async functions are finished.
+      if (t.callbacks) {
+        // there is one case where callbacks won't be defined to completely unit test this function.
+        var functionToReplace = t.callbacks[t.assertionFunction];
+        var assertion = function(input) {
+          functionToReplace(input);
+          done();
+        };
+        t.callbacks[t.assertionFunction] = assertion;
+      } else {
+        var functionToReplace = t.params[t.assertionFunction];
+        var assertion = function(input) {
+          functionToReplace(input);
+          done();
+        };
+        t.params[t.assertionFunction] = assertion;
+      }
       // now that we have wrapped our assertion function we will start the test...
       augur.generateOrderBook(t.params, t.callbacks);
     });
@@ -165,6 +175,35 @@ describe("generateOrderBook", function() {
         assert.deepEqual(err, augur.errors.NO_MARKET_INFO);
       }
     },
+    assertionFunction: 'onFailed',
+    buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {},
+    buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+    sell: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+    getOrderBook: function(market, scalarMinMax, onSuccess) {},
+  });
+  test({
+    description: 'Should handle missing marketInfo and call onFailed with an error when everything is passed in one object.',
+    params: {
+      market: '0xa1',
+      liquidity: 10000,
+      initialFairPrices: ['0.506573092', '0.49422020'],
+      startingQuantity: 501,
+      bestStartingQuantity: 500,
+      priceWidth: '0.0812',
+      // marketInfo that is undefined
+      marketInfo: undefined,
+      isSimulationOnly: false,
+      onSimulate: function(simulation) {},
+      onBuyCompleteSets: function(res) {},
+      onSetupOutcome: function(outcome) {},
+      onSetupOrder: function(order) {},
+      onSuccess: function(orderBook) {},
+      onFailed: function(err) {
+        // this callback should be called, lets assert we get the expected error back.
+        assert.deepEqual(err, augur.errors.NO_MARKET_INFO);
+      }
+    },
+    callbacks: undefined,
     assertionFunction: 'onFailed',
     buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {},
     buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
@@ -388,7 +427,6 @@ describe("generateOrderBook", function() {
       liquidity: 10000,
       initialFairPrices: ['0.39003', '0.39422020'],
       startingQuantity: 501,
-      bestStartingQuantity: 500,
       priceWidth: '0.6',
       // marketInfo with the expected numOutcomes and a type of binary.
       marketInfo: { numOutcomes: 2, type: 'binary' },
@@ -397,37 +435,37 @@ describe("generateOrderBook", function() {
     callbacks: {
       onSimulate: function(simulation) {
         assert.deepEqual(simulation, {
-          shares: '4508',
+          shares: '4509',
           numBuyOrders: [ 3, 3 ],
           numSellOrders: [ 8, 8 ],
           buyPrices:
-            [ [ '0.09003', '0.05106333333333333333', '0.01209666666666666666' ],
-            [ '0.0942202', '0.05525353333333333333', '0.01628686666666666666' ] ],
+            [ [ '0.09003', '0.05105467214936652589', '0.01207934429873305178' ],
+            [ '0.0942202', '0.05524487214936652589', '0.01626954429873305178' ] ],
           sellPrices:
             [ [ '0.69003',
-            '0.72899666666666666667',
-            '0.76796333333333333334',
-            '0.80693000000000000001',
-            '0.84589666666666666668',
-            '0.88486333333333333335',
-            '0.92383000000000000002',
-            '0.96279666666666666669' ],
+            '0.72900532785063347411',
+            '0.76798065570126694822',
+            '0.80695598355190042233',
+            '0.84593131140253389644',
+            '0.88490663925316737055',
+            '0.92388196710380084466',
+            '0.96285729495443431877' ],
             [ '0.6942202',
-            '0.73318686666666666667',
-            '0.77215353333333333334',
-            '0.81112020000000000001',
-            '0.85008686666666666668',
-            '0.88905353333333333335',
-            '0.92802020000000000002',
-            '0.96698686666666666669' ] ],
+            '0.73319552785063347411',
+            '0.77217085570126694822',
+            '0.81114618355190042233',
+            '0.85012151140253389644',
+            '0.88909683925316737055',
+            '0.92807216710380084466',
+            '0.96704749495443431877' ] ],
           numTransactions: 28
         });
       },
-      onBuyCompleteSets: function(res) {},
-      onSetupOutcome: function(outcome) {},
-      onSetupOrder: function(order) {},
-      onSuccess: function(orderBook) {},
-      onFailed: function(err) {}
+      onBuyCompleteSets: undefined,
+      onSetupOutcome: undefined,
+      onSetupOrder: undefined,
+      onSuccess: undefined,
+      onFailed: undefined
     },
     assertionFunction: 'onSimulate',
     buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {},

@@ -199,14 +199,14 @@ module.exports = {
    */
   generateOrderBook: function (market, liquidity, initialFairPrices, startingQuantity, bestStartingQuantity, priceWidth, marketInfo, isSimulationOnly, onSimulate, onBuyCompleteSets, onSetupOutcome, onSetupOrder, onSuccess, onFailed) {
     var self = this;
-    if (market.constructor === Object) {
+    if (market && market.constructor === Object) {
       initialFairPrices = market.initialFairPrices;
       startingQuantity = market.startingQuantity;
       bestStartingQuantity = market.bestStartingQuantity;
       priceWidth = market.priceWidth;
       marketInfo = market.marketInfo;
       isSimulationOnly = market.isSimulationOnly;
-      if (liquidity.constructor === Object) {
+      if (liquidity && liquidity.constructor === Object) {
         onSimulate = liquidity.onSimulate;
         onBuyCompleteSets = liquidity.onBuyCompleteSets;
         onSetupOutcome = liquidity.onSetupOutcome;

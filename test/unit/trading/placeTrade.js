@@ -4,7 +4,8 @@ var assert = require('chai').assert;
 var augur = require('../../../src');
 var abi = require("augur-abi");
 var noop = require("../../../src/utilities").noop;
-// 4 tests total
+var ClearCallCounts = require('../../tools.js').ClearCallCounts;
+// 17 tests total
 
 describe("placeTrade.generateTradeGroupID", function() {
   // 1 test total
@@ -24,20 +25,20 @@ describe("placeTrade.generateTradeGroupID", function() {
 });
 
 describe("placeTrade.executeTradingActions", function() {
-  // 3 tests total
+  // 4 tests total
   var placeTrade = augur.placeTrade;
   var tradeGroupIDtoAssert;
+  var finished;
   afterEach(function() {
     augur.placeTrade = placeTrade;
+    tradeGroupIDtoAssert = undefined;
   });
   var test = function(t) {
     it(t.description, function(done) {
       augur.placeTrade = t.placeTrade;
+      finished = done;
 
-      augur.executeTradingActions(t.market, t.outcomeID, t.address, t.getOrderBooks, t.doNotMakeOrders, t.tradesInProgress, t.tradeCommitmentCallback, t.tradeCommitLockCallback, function(err, tradeGroupID) {
-        t.assertions(err, tradeGroupID);
-        done();
-      });
+      augur.executeTradingActions(t.market, t.outcomeID, t.address, t.getOrderBooks, t.doNotMakeOrders, t.tradesInProgress, t.tradeCommitmentCallback, t.tradeCommitLockCallback, t.callback);
     });
   };
   test({
@@ -92,10 +93,67 @@ describe("placeTrade.executeTradingActions", function() {
       // now call the callback with no error as placeTrade would.
       callback(null);
     },
-    assertions: function(err, tradeGroupID) {
+    callback: function(err, tradeGroupID) {
       assert.isNull(err);
       assert.deepEqual(tradeGroupID, tradeGroupIDtoAssert);
+      finished();
     }
+  });
+  test({
+    description: 'Should handle an array of tradesInProgress for a given market, callback is undefined.',
+    market: { id: '0xa1', type: 'binary' },
+    outcomeID: '1',
+    address: '0x1',
+    getOrderBooks: function () {
+      return { '0xa1': {buy: {}, sell: {}}};
+    },
+    doNotMakeOrders: false,
+    tradesInProgress: [
+      {
+        marketID: '0xa1',
+        side: 'buy',
+        numShares: '100',
+        limitPrice: '0.5',
+        tradingFeesEth: '0.01',
+        totalCost: '51'
+      },
+      {
+        marketID: '0xa1',
+        side: 'buy',
+        numShares: '50',
+        limitPrice: '0.35',
+        tradingFeesEth: '0.01',
+        totalCost: '18'
+      },
+      {
+        marketID: '0xa1',
+        side: 'sell',
+        numShares: '150',
+        limitPrice: '0.75',
+        tradingFeesEth: '0.01',
+        totalCost: '114'
+      }
+    ],
+    tradeCommitmentCallback: undefined,
+    tradeCommitLockCallback: undefined,
+    placeTrade: function(market, outcomeID, tradeType, numShares, limitPrice, tradingFees, address, totalCost, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback) {
+      assert.deepEqual(market, { id: '0xa1', type: 'binary' });
+      assert.deepEqual(outcomeID, '1');
+      assert.deepEqual(address, '0x1');
+      assert.isBoolean(doNotMakeOrders);
+      assert.oneOf(tradeType, ['buy', 'sell']);
+      assert.oneOf(numShares, ['100', '50', '150']);
+      assert.oneOf(limitPrice, ['0.35', '0.5', '0.75']);
+      assert.deepEqual(tradingFees, '0.01');
+      assert.oneOf(totalCost, ['114', '18', '51']);
+      // just assert that the tradeGroupID is generated
+      assert.isString(tradeGroupID);
+      assert.include(tradeGroupID, '0x');
+      assert.deepEqual(tradeGroupID.length, 66);
+      // complete the test since callback should just be a noop function.
+      finished();
+    },
+    callback: undefined
   });
   test({
     description: 'Should handle an array of tradesInProgress for a given market but some of the tradesInProgress arent sent to placeTrade.',
@@ -173,9 +231,10 @@ describe("placeTrade.executeTradingActions", function() {
       // now call the callback with no error as placeTrade would.
       callback(null);
     },
-    assertions: function(err, tradeGroupID) {
+    callback: function(err, tradeGroupID) {
       assert.isNull(err);
       assert.deepEqual(tradeGroupID, tradeGroupIDtoAssert);
+      finished();
     }
   });
   test({
@@ -230,15 +289,16 @@ describe("placeTrade.executeTradingActions", function() {
       // now call the callback with an error as placeTrade might.
       callback({ error: 999, message: 'Uh-Oh!' });
     },
-    assertions: function(err, tradeGroupID) {
+    callback: function(err, tradeGroupID) {
       assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
       assert.isUndefined(tradeGroupID);
+      finished();
     }
   });
 });
 
 describe("placeTrade.placeTrade", function() {
-  // 11 tests total
+  // 12 tests total
   var placeBuy = augur.placeBuy;
   var placeBid = augur.placeBid;
   var placeSell = augur.placeSell;
@@ -261,16 +321,9 @@ describe("placeTrade.placeTrade", function() {
     calculateSellTradeIDs: 0,
     getParticipantSharesPurchased: 0
   };
-  // a function to quickly reset the callCounts object.
-  function ClearCallCounts() {
-    var keys = Object.keys(callCounts);
-    for (keys in callCounts) {
-      callCounts[keys] = 0;
-    }
-  };
   afterEach(function() {
     // Clear the counts object after each test.
-    ClearCallCounts();
+    ClearCallCounts(callCounts);
     augur.placeBuy = placeBuy;
     augur.placeBid = placeBid;
     augur.placeSell = placeSell;
@@ -827,6 +880,79 @@ describe("placeTrade.placeTrade", function() {
         placeBid: 0,
         placeSell: 0,
         placeAsk: 0,
+        placeShortAsk: 0,
+        placeAskAndShortAsk: 0,
+        placeShortSell: 0,
+        calculateBuyTradeIDs: 0,
+        calculateSellTradeIDs: 1,
+        getParticipantSharesPurchased: 1
+      });
+    }
+  });
+  test({
+    description: 'Should not place a trade if we have a position to sell but no buy orders on the book, we also have doNotMakeOrders set to false.',
+    market: { id: '0xa1', type: 'binary' },
+    outcomeID: '1',
+    tradeType: 'sell',
+    numShares: '100',
+    limitPrice: '0.5',
+    tradingFees: '0.01',
+    address: '0x1',
+    totalCost: '50',
+    getOrderBooks: function () {
+      return { '0xa1': { buy: {}, sell: {} } };
+    },
+    doNotMakeOrders: false,
+    tradeGroupID: '0x000abc123',
+    tradeCommitmentCallback: noop,
+    tradeCommitLockCallback: noop,
+    placeBuy: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback) {
+      callCounts.placeBuy++;
+      callback(null);
+    },
+    placeBid: function(market, outcomeID, numShares, limitPrice, tradeGroupID, callback) {
+      callCounts.placeBid++;
+      callback(null);
+    },
+    placeSell: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback) {
+      callCounts.placeSell++;
+      callback(null);
+    },
+    placeAsk: function(market, outcomeID, askShares, limitPrice, tradeGroupID, callback) {
+      callCounts.placeAsk++;
+      callback(null);
+    },
+    placeShortAsk: function(market, outcomeID, shortAskShares, limitPrice, tradeGroupID, callback) {
+      callCounts.placeShortAsk++;
+      callback(null);
+    },
+    placeShortSell: function(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback) {
+      callCounts.placeShortSell++;
+      callback(null);
+    },
+    placeAskAndShortAsk: function (market, outcomeID, askShares, shortAskShares, limitPrice, tradeGroupID, callback) {
+      callCounts.placeAskAndShortAsk++;
+      callback(null);
+    },
+    calculateBuyTradeIDs: function(marketID, outcomeID, limitPrice, orderBooks, address) {
+      callCounts.calculateBuyTradeIDs++;
+    },
+    calculateSellTradeIDs: function(marketID, outcomeID, limitPrice, orderBooks, address) {
+      callCounts.calculateSellTradeIDs++;
+      return [];
+    },
+    getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
+      callCounts.getParticipantSharesPurchased++;
+      cb('100');
+    },
+    assertions: function(err) {
+      assert.isNull(err);
+      // check the entire callCounts object so that we know we didn't accidently call anything...
+      assert.deepEqual(callCounts, {
+        placeBuy: 0,
+        placeBid: 0,
+        placeSell: 0,
+        placeAsk: 1,
         placeShortAsk: 0,
         placeAskAndShortAsk: 0,
         placeShortSell: 0,

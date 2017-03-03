@@ -25,7 +25,7 @@ var accounts = [{
   }];
 
 describe("accounts.register", function() {
-  // 8 tests total
+  // 9 tests total
   var create = keys.create;
   var deriveKey = keys.deriveKey;
   var KDF = constants.KDF;
@@ -82,7 +82,7 @@ describe("accounts.register", function() {
     }
   });
   test({
-    description: 'should register an account given a valid name and password - account 1',
+    description: 'should register an account given a valid password - account 1',
     password: accounts[0].password,
     assertions: function(result) {
       assert.isString(result.address);
@@ -116,7 +116,7 @@ describe("accounts.register", function() {
     }
   });
   test({
-    description: 'should register an account given a valid name and password, should handle pbkdf2',
+    description: 'should register an account given a valid password, should handle pbkdf2 KDF',
     password: 'thisisavalidpassword',
     KDF: 'pbkdf2',
     assertions: function(result) {
@@ -128,7 +128,19 @@ describe("accounts.register", function() {
     }
   });
   test({
-    description: 'should register an account given a valid name and password but derived key returns a hex string',
+    description: 'should register an account given a valid password, should handle scrypt KDF',
+    password: 'thisisavalidpassword',
+    KDF: 'scrypt',
+    assertions: function(result) {
+      assert.isString(result.address);
+      assert.isObject(result.keystore);
+      assert(Buffer.isBuffer(result.privateKey));
+      assert(Buffer.isBuffer(result.derivedKey));
+      assert.deepEqual(result, augur.accounts.account);
+    }
+  });
+  test({
+    description: 'should register an account given a valid password but derived key returns a hex string',
     password: 'thisisavalidpassword',
     deriveKey: function(password, salt, options, cb) {
       // we are going to use our mock function to call the original function. However we need to apply keys as the this inside of the original function as it's not attached the the original keys object anymore. We do this to be able to pass a hex string version of derivedKey. This is to check the if statement that converts the derivedKey to a buffer if it isn't already.
@@ -831,8 +843,10 @@ describe("accounts.submitTx", function() {
   afterEach(function() {
     ClearCallCounts(callCounts);
     augur.rpc.rawTxMaxNonce = -1;
+    augur.rpc.rawTxs = {};
     augur.accounts.account = {};
     augur.rpc.rawTxs = {};
+    augur.rpc.txs = {};
     augur.rpc.sendRawTx = sendRawTx;
     augur.accounts.getTxNonce = getTxNonce;
   });
@@ -840,6 +854,8 @@ describe("accounts.submitTx", function() {
     it(t.description, function(done) {
       augur.rpc.sendRawTx = t.sendRawTx;
       augur.accounts.getTxNonce = t.getTxNonce;
+      augur.rpc.rawTxs = t.rawTxs || {};
+      augur.rpc.txs = t.txs || {};
       var privateKey = t.preparePrivateKey(accounts);
       augur.accounts.account = { privateKey: privateKey };
 
@@ -850,7 +866,7 @@ describe("accounts.submitTx", function() {
     });
   };
   test({
-    description: 'Should return an error if there is an issue validating the package',
+    description: 'Should return an error if there is an issue validating the package, not enough gas',
     packaged: {
       from: '0x1',
       to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68',
@@ -858,6 +874,13 @@ describe("accounts.submitTx", function() {
       gas: '0x1',
       nonce: '0x0',
       value: '0x0'
+    },
+    rawTxs: {
+      '0x1': { tx: { nonce: '0x0' } },
+      '0x2': { tx: { nonce: '0x0' } }
+    },
+    txs: {
+      '0x1': { status: 'success' }
     },
     preparePrivateKey: function(accounts) {
       return accounts[0].privateKey;
@@ -886,7 +909,7 @@ describe("accounts.submitTx", function() {
       to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68',
       data: '0x772a646f0000000000000000000000000000000000000000000000000000000000018a9200000000000000000000000000000000000000000000000000000000000000a1',
       gas: '0x2fd618',
-      nonce: '0x0',
+      nonce: '-0x2',
       value: '0x0',
       gasLimit: '0x2fd618',
       gasPrice: '0x4a817c800'
@@ -1181,6 +1204,7 @@ describe("accounts.invoke", function() {
   var getGasPrice = augur.rpc.getGasPrice;
   var fire = augur.rpc.fire;
   var block = augur.rpc.block;
+  var network_id = augur.network_id;
   var callCounts = {
     packageRequest: 0,
     getTxNonce: 0,
@@ -1194,6 +1218,7 @@ describe("accounts.invoke", function() {
     augur.rpc.getGasPrice = getGasPrice;
     augur.rpc.fire = fire;
     augur.rpc.block = block;
+    augur.network_id = network_id;
   });
   var test = function(t) {
     it(t.description + ' sync', function() {
@@ -1203,6 +1228,7 @@ describe("accounts.invoke", function() {
       augur.rpc.fire = t.fire || fire;
       augur.rpc.block = t.block || block;
       augur.accounts.account = t.account || {};
+      augur.network_id = t.network_id || network_id;
 
       t.assertions(augur.accounts.invoke(t.payload), false);
     });
@@ -1213,6 +1239,7 @@ describe("accounts.invoke", function() {
       augur.rpc.fire = t.fire || fire;
       augur.rpc.block = t.block || block;
       augur.accounts.account = t.account || {};
+      augur.network_id = t.network_id || network_id;
 
       augur.accounts.invoke(t.payload, function(res) {
         t.assertions(res, true);
@@ -1289,6 +1316,7 @@ describe("accounts.invoke", function() {
       params: ['101010', '0xa1'],
       to: '0x71dc0e5f381e3592065ebfef0b7b448c1bdfdd68'
     },
+    network_id: '3',
     account: { privateKey: "shh it's a secret!", address: '0x1' },
     packageRequest: function(payload) {
       callCounts.packageRequest++;
@@ -1315,7 +1343,8 @@ describe("accounts.invoke", function() {
         nonce: '0x0',
         value: '0x0',
         gasLimit: '0x2fd618',
-        gasPrice: '0x4a817c800'
+        gasPrice: '0x4a817c800',
+        chainId: 3
       });
       return cb(packaged);
     },
@@ -1330,7 +1359,8 @@ describe("accounts.invoke", function() {
           nonce: '0x0',
           value: '0x0',
           gasLimit: '0x2fd618',
-          gasPrice: '0x4a817c800'
+          gasPrice: '0x4a817c800',
+          chainId: 3
         });
       } else {
         assert.isUndefined(res);

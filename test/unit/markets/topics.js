@@ -170,18 +170,22 @@ describe("Topics.filterByBranchID", function () {
 });
 
 describe("Topics.findMarketsWithTopic", function () {
+  var getLogs = augur.getLogs;
+  var filterByBranchID = augur.filterByBranchID;
   var test = function (t) {
-    var getLogs = augur.getLogs;
-    after(function () {
+    afterEach(function () {
       augur.getLogs = getLogs;
+      augur.filterByBranchID = filterByBranchID;
     });
     describe(t.description, function () {
       it("sync", function () {
-        augur.getLogs = t.stub.getLogs;
+        augur.getLogs = t.mocks.getLogs;
+        augur.filterByBranchID = t.mocks.filterByBranchID;
         t.assertions(null, augur.findMarketsWithTopic(t.params.topic, t.params.branchID));
       });
       it("async", function (done) {
-        augur.getLogs = t.stub.getLogs;
+        augur.getLogs = t.mocks.getLogs;
+        augur.filterByBranchID = t.mocks.filterByBranchID
         augur.findMarketsWithTopic(t.params.topic, t.params.branchID, function (err, markets) {
           t.assertions(err, markets);
           done();
@@ -195,13 +199,23 @@ describe("Topics.findMarketsWithTopic", function () {
       topic: "weather",
       branchID: "0xb1"
     },
-    stub: {
+    mocks: {
       getLogs: function (label, filterParams, aux, callback) {
         assert.strictEqual(label, "marketCreated");
         assert.strictEqual(filterParams.topic, augur.formatTag("weather"));
         var logs = [];
         if (!callback) return logs;
         callback(null, logs);
+      },
+      filterByBranchID: function(branch, logs) {
+        assert.strictEqual(branch, '0xb1');
+        var output = [];
+        for (var i = 0; i < logs.length; i++) {
+          if (logs[i].branch === abi.format_int256('0xb1')) {
+            output.push(logs[i].marketID);
+          }
+        }
+        return output;
       }
     },
     assertions: function (err, markets) {
@@ -215,7 +229,7 @@ describe("Topics.findMarketsWithTopic", function () {
       topic: "reporting",
       branchID: "0xb1"
     },
-    stub: {
+    mocks: {
       getLogs: function (label, filterParams, aux, callback) {
         assert.strictEqual(label, "marketCreated");
         assert.strictEqual(filterParams.topic, augur.formatTag("reporting"));
@@ -233,6 +247,16 @@ describe("Topics.findMarketsWithTopic", function () {
         }];
         if (!callback) return logs;
         callback(null, logs);
+      },
+      filterByBranchID: function(branch, logs) {
+        assert.strictEqual(branch, '0xb1');
+        var output = [];
+        for (var i = 0; i < logs.length; i++) {
+          if (logs[i].branch === abi.format_int256('0xb1')) {
+            output.push(logs[i].marketID);
+          }
+        }
+        return output;
       }
     },
     assertions: function (err, markets) {
@@ -248,7 +272,7 @@ describe("Topics.findMarketsWithTopic", function () {
       topic: "reporting",
       branchID: "0xb1"
     },
-    stub: {
+    mocks: {
       getLogs: function (label, filterParams, aux, callback) {
         assert.strictEqual(label, "marketCreated");
         assert.strictEqual(filterParams.topic, augur.formatTag("reporting"));
@@ -277,6 +301,16 @@ describe("Topics.findMarketsWithTopic", function () {
         }];
         if (!callback) return logs;
         callback(null, logs);
+      },
+      filterByBranchID: function(branch, logs) {
+        assert.strictEqual(branch, '0xb1');
+        var output = [];
+        for (var i = 0; i < logs.length; i++) {
+          if (logs[i].branch === abi.format_int256('0xb1')) {
+            output.push(logs[i].marketID);
+          }
+        }
+        return output;
       }
     },
     assertions: function (err, markets) {
@@ -285,6 +319,45 @@ describe("Topics.findMarketsWithTopic", function () {
         "0x00000000000000000000000000000000000000000000000000000000000000a1",
         "0x00000000000000000000000000000000000000000000000000000000000000a2"
       ]);
+    }
+  });
+  test({
+    description: "Error from getLogs",
+    params: {
+      topic: "reporting",
+      branchID: "0xb1"
+    },
+    mocks: {
+      getLogs: function (label, filterParams, aux, callback) {
+        assert.strictEqual(label, "marketCreated");
+        assert.strictEqual(filterParams.topic, augur.formatTag("reporting"));
+        var logs = { error: 999, message: 'Uh-Oh' };
+        if (!callback) return logs;
+        callback(logs);
+      },
+      filterByBranchID: function(branch, logs) {
+        assert.strictEqual(branch, '0xb1');
+        var output = [];
+        if (logs && logs.error) return logs;
+
+        for (var i = 0; i < logs.length; i++) {
+          if (logs[i].branch === abi.format_int256('0xb1')) {
+            output.push(logs[i].marketID);
+          }
+        }
+        return output;
+      }
+    },
+    assertions: function (err, markets) {
+      if (markets) {
+        // sync since err is always passed as null
+        assert.isNull(err);
+        assert.deepEqual(markets, { error: 999, message: 'Uh-Oh' });
+      } else {
+        // async
+        assert.deepEqual(err, { error: 999, message: 'Uh-Oh' });
+        assert.isUndefined(markets);
+      }
     }
   });
 });
@@ -464,25 +537,21 @@ describe("Topics.getTopicsInfo", function() {
 });
 
 describe("Topics.getTopicsInfoChunked", function () {
+  var getNumTopicsInBranch = augur.getNumTopicsInBranch;
+  var getTopicsInfo = augur.getTopicsInfo;
+  var state;
+  var finished;
   var test = function (t) {
-    var getNumTopicsInBranch = augur.getNumTopicsInBranch;
-    var getTopicsInfo = augur.getTopicsInfo;
-    after(function () {
+    afterEach(function () {
       augur.getNumTopicsInBranch = getNumTopicsInBranch;
-      augur.getTopicsInfo = augur.getTopicsInfo;
+      augur.getTopicsInfo = getTopicsInfo;
     });
     it(t.description, function (done) {
-      augur.getNumTopicsInBranch = function (branch, callback) {
-        if (!callback) return t.state.numTopicsInBranch;
-        callback(t.state.numTopicsInBranch);
-      };
-      augur.getTopicsInfo = function (params, callback) {
-        if (!callback) return t.state.topicsInfo;
-        callback(t.state.topicsInfo);
-      };
-      augur.getTopicsInfoChunked(t.params.branch, t.params.offset, t.params.numTopicsToLoad, t.params.totalTopics, function (topicsInfoChunk) {
-        t.assertions(topicsInfoChunk);
-      }, done);
+      state = t.state;
+      finished = done;
+      augur.getNumTopicsInBranch = t.mocks.getNumTopicsInBranch;
+      augur.getTopicsInfo = t.mocks.getTopicsInfo;
+      augur.getTopicsInfoChunked(t.params.branch, t.params.offset, t.params.numTopicsToLoad, t.params.totalTopics, t.assertions, t.params.callback);
     });
   };
   test({
@@ -491,7 +560,20 @@ describe("Topics.getTopicsInfoChunked", function () {
       branch: "0xb1",
       offset: null,
       numTopicsToLoad: null,
-      totalTopics: null
+      totalTopics: null,
+      callback: function(topicsInfo) {
+        finished();
+      }
+    },
+    mocks: {
+      getNumTopicsInBranch: function (branch, callback) {
+        if (!callback) return state.numTopicsInBranch;
+        callback(state.numTopicsInBranch);
+      },
+      getTopicsInfo: function (params, callback) {
+        if (!callback) return state.topicsInfo;
+        callback(state.topicsInfo);
+      }
     },
     state: {
       numTopicsInBranch: "18",
@@ -517,7 +599,34 @@ describe("Topics.getTopicsInfoChunked", function () {
       }
     },
     assertions: function (output) {
-      assert.deepEqual(output, {
+      assert.deepEqual(output, state.topicsInfo);
+    }
+  });
+  test({
+    description: "error with getTopics Info when given TotalTopics",
+    params: {
+      branch: "0xb1",
+      offset: null,
+      numTopicsToLoad: null,
+      totalTopics: '18',
+      callback: function(topicsInfo) {
+        assert.deepEqual(topicsInfo, { error: 999, message: 'Uh-Oh!' });
+        finished();
+      }
+    },
+    mocks: {
+      getNumTopicsInBranch: function (branch, callback) {
+        if (!callback) return state.numTopicsInBranch;
+        callback(state.numTopicsInBranch);
+      },
+      getTopicsInfo: function (params, callback) {
+        if (!callback) return { error: 999, message: 'Uh-Oh!' };
+        callback({ error: 999, message: 'Uh-Oh!' });
+      }
+    },
+    state: {
+      numTopicsInBranch: "18",
+      topicsInfo: {
         music: 5700,
         reporting: 5420,
         football: 4500,
@@ -536,7 +645,107 @@ describe("Topics.getTopicsInfoChunked", function () {
         Calexit: 170,
         weather: 170,
         temperature: 170,
-      });
+      }
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, state.topicsInfo);
     }
+  });
+  test({
+    description: "get logs in chunks and recursively call until we load all logs",
+    params: {
+      branch: "0xb1",
+      offset: 0,
+      numTopicsToLoad: 10,
+      totalTopics: 18,
+      callback: function(topicsInfo) {
+        finished();
+      }
+    },
+    mocks: {
+      getNumTopicsInBranch: function (branch, callback) {
+        if (!callback) return state.numTopicsInBranch;
+        callback(state.numTopicsInBranch);
+      },
+      getTopicsInfo: function (params, callback) {
+        if (!callback) return state.topicsInfo;
+        callback(state.topicsInfo);
+      }
+    },
+    state: {
+      numTopicsInBranch: "18",
+      topicsInfo: {
+        music: 5700,
+        reporting: 5420,
+        football: 4500,
+        golf: 3000,
+        housing: 1160,
+        mortality: 870,
+        Augur: 510,
+        "college football": 345,
+        elections: 345,
+        climate: 340,
+        antibiotics: 340,
+        "climate change": 170,
+        "Dow Jones": 170,
+        ethereum: 170,
+        space: 170,
+        Calexit: 170,
+        weather: 170,
+        temperature: 170,
+      }
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, state.topicsInfo);
+    }
+  });
+  test({
+    description: "Error getting Topics",
+    params: {
+      branch: "0xb1",
+      offset: null,
+      numTopicsToLoad: null,
+      totalTopics: null,
+      callback: function(topicsInfo) {
+        assert.deepEqual(topicsInfo, { error: 999, message: 'Uh-Oh!' });
+        finished();
+      }
+    },
+    mocks: {
+      getNumTopicsInBranch: function (branch, callback) {
+        // Error for this test!
+        if (!callback) return { error: 999, message: 'Uh-Oh!' };
+        callback({ error: 999, message: 'Uh-Oh!' });
+      },
+      getTopicsInfo: function (params, callback) {
+        // shouldn't get hit.
+        if (!callback) return state.topicsInfo;
+        callback(state.topicsInfo);
+      }
+    },
+    state: {
+      numTopicsInBranch: "18",
+      topicsInfo: {
+        music: 5700,
+        reporting: 5420,
+        football: 4500,
+        golf: 3000,
+        housing: 1160,
+        mortality: 870,
+        Augur: 510,
+        "college football": 345,
+        elections: 345,
+        climate: 340,
+        antibiotics: 340,
+        "climate change": 170,
+        "Dow Jones": 170,
+        ethereum: 170,
+        space: 170,
+        Calexit: 170,
+        weather: 170,
+        temperature: 170,
+      }
+    },
+    assertions: undefined
   });
 });

@@ -8,7 +8,7 @@ var ClearCallCounts = require('../../tools').ClearCallCounts;
 var noop = require('../../../src/utilities.js').noop;
 var BigNumber = require("bignumber.js");
 var proxyquire = require('proxyquire').noCallThru().noPreserveCache();
-// 24 tests total
+// 27 tests total
 
 describe('connect.bindContractMethod', function() {
   // 11 tests total
@@ -107,7 +107,7 @@ describe('connect.bindContractMethod', function() {
     }
   });
   test({
-    description: 'Should handle binding a method and then handling the method correctly when the method has inputs, without callback. method transaction has a parser, not fixed, send false',
+    description: 'Should handle binding a method and then handling the method correctly when the method has inputs, with callback. method transaction has a parser, not fixed, send false',
     contract: 'Branches',
     method: 'getEventForkedOver',
     callMethod: function(method) {
@@ -328,6 +328,103 @@ describe('connect.bindContractMethod', function() {
       assert.isFalse(true);
     }
   });
+  test({
+    description: 'Should handle binding a method and then handling the method correctly send is false, args are present, not fixed, no parser',
+    contract: 'MakeReports',
+    method: 'makeHash',
+    callMethod: function(method) {
+      // (account, callback)
+      method({ salt: '1337', report: '1', eventID: '0xe1', sender: '0xf1', callback: noop });
+    },
+    fire: function(tx, onSent, onSuccess, onFailed) {
+      assert.deepEqual(tx, {
+        inputs: [ 'salt', 'report', 'eventID', 'sender' ],
+        label: 'Make Hash',
+        method: 'makeHash',
+        params: [ '1337', '1', '0xe1', '0xf1' ],
+        returns: 'hash',
+        signature: [ 'int256', 'int256', 'int256', 'int256' ],
+        to: augur.tx.MakeReports.makeHash.to
+      });
+      assert.isFunction(onSent);
+      assert.isUndefined(onSuccess);
+      assert.isUndefined(onFailed);
+    },
+    transact: function(tx, onSent, onSuccess, onFailed) {
+      // Shouldn't get hit in this case
+      assert.isFalse(true);
+    }
+  });
+  test({
+    description: 'Should handle binding a method and then handling the method correctly send is false, args are present, fixed, no parser',
+    contract: 'MakeReports',
+    method: 'validateReport',
+    callMethod: function(method) {
+      // (account, callback)
+      method({ eventID: '0xe1', branch: '0xb1', votePeriod: '1000', report: '1', forkedOverEthicality: '0', forkedOverThisEvent: '0', roundTwo: '1001', balance: '1000', callback: noop });
+    },
+    fire: function(tx, onSent, onSuccess, onFailed) {
+      assert.deepEqual(tx, {
+        fixed: [ 3, 7 ],
+        inputs: [ 'eventID', 'branch', 'votePeriod', 'report', 'forkedOverEthicality', 'forkedOverThisEvent', 'roundTwo', 'balance' ],
+        label: 'Validate Report',
+        method: 'validateReport',
+        params: [ '0xe1', '0xb1', '1000', '0xde0b6b3a7640000', '0', '0', '1001', '0x3635c9adc5dea00000' ],
+        returns: 'number',
+        signature: [ 'int256', 'int256', 'int256', 'int256', 'int256', 'int256', 'int256', 'int256' ],
+        to: augur.tx.MakeReports.validateReport.to
+      });
+      assert.isFunction(onSent);
+      assert.isUndefined(onSuccess);
+      assert.isUndefined(onFailed);
+    },
+    transact: function(tx, onSent, onSuccess, onFailed) {
+      // Shouldn't get hit in this case
+      assert.isFalse(true);
+    }
+  });
+  test({
+    description: 'Should handle binding a method and then handling the method correctly send is true, parser',
+    contract: 'FakeContract',
+    method: 'fakeMethod',
+    callMethod: function(method) {
+      // because no functions currently exist where send is true and we require a parser, we are going to make a fake function to do this so we can unit test.
+      augur.api.functions.FakeContract = {
+        fakeMethod: {
+          inputs: [ 'branch' ],
+          label: 'Fake Method',
+          method: 'fakeMethod',
+          parser: 'parseFakeStuff',
+          returns: 'number',
+          send: true,
+          signature: [ 'int256' ],
+          to: '0xdeadbeef'
+        }
+      };
+      method({ branch: '0xb1', callback: noop });
+      augur.api.functions.fakeContract = undefined;
+    },
+    fire: function(tx, onSent, onSuccess, onFailed) {
+      // Shouldn't get hit in this case
+      assert.isFalse(true);
+    },
+    transact: function(tx, onSent, onSuccess, onFailed) {
+      assert.deepEqual(tx, {
+        inputs: [ 'branch' ],
+        label: 'Fake Method',
+        method: 'fakeMethod',
+        params: [ '0xb1' ],
+        parser: 'parseFakeStuff',
+        returns: 'number',
+        send: true,
+        signature: [ 'int256' ],
+        to: '0xdeadbeef'
+      });
+      assert.isUndefined(onSent);
+      assert.isNull(onSuccess);
+      assert.isUndefined(onFailed);
+    }
+  });
 });
 
 describe('connect.bindContractAPI', function() {
@@ -524,7 +621,7 @@ describe('connect.bindContractAPI', function() {
 });
 
 describe('connect.sync', function() {
-  // 2 tests total
+  // 3 tests total
   var callCounts = {
     bindContractAPI: 0,
   };
@@ -590,7 +687,7 @@ describe('connect.sync', function() {
       state: {
       	contracts: {},
       	networkID: constants.DEFAULT_NETWORK_ID,
-      	api: { functions: {} },
+      	api: {},
       	coinbase: '0x444',
       	from: '0x1'
       },
@@ -607,7 +704,7 @@ describe('connect.sync', function() {
       assert.deepEqual(testThis.coinbase, connector.state.coinbase);
       assert.deepEqual(testThis.rpc, connector.rpc);
       assert.deepEqual(testThis.contracts, connector.state.contracts);
-      assert.deepEqual(testThis.api, connector.state.api);
+      assert.deepEqual(testThis.api, Contracts.api);
       assert.deepEqual(testThis.tx, testThis.api.functions);
       assert.deepEqual(callCounts, {
         bindContractAPI: 1,
@@ -615,13 +712,22 @@ describe('connect.sync', function() {
       done();
     }
   });
-  // setupConnectorState: function() {
-  //   // in this case we want to trigger the else statement near the bottom of sync so we set this.api to Contracts.api
-  //   connector.setupFunctionsAPI = function() {
-  //     connector.state.api.functions = undefined;
-  //   };
-  //   connector.setupEventsAPI = function() {};
-  // },
+  test({
+    description: 'Should return false if connector isnt an Object',
+    testThis: {
+      bindContractAPI: function() {
+        callCounts.bindContractAPI++;
+      },
+    },
+    connector: [],
+    assertions: function(out, testThis, connector, done) {
+      assert.isFalse(out);
+      assert.deepEqual(callCounts, {
+        bindContractAPI: 0,
+      });
+      done();
+    }
+  });
 });
 
 describe('connect.useAccount', function() {
@@ -665,7 +771,7 @@ describe('connect.useAccount', function() {
 });
 
 describe('connect.connect', function() {
-  // 7 tests total (4 async, 3 sync)
+  // 9 tests total (5 async, 4 sync)
   var test = function(t) {
     // for the one test where rpcinfo is passed as a function the sync test is not required...
     if (t.rpcinfo.constructor !== Function) {
@@ -697,6 +803,43 @@ describe('connect.connect', function() {
 
     });
   };
+  test({
+    description: 'Should handle a missing rpcinfo',
+    rpcinfo: [],
+    testThis: {
+      sync: noop
+    },
+    connector: {
+      connect: function(options, cb) {
+        assert.deepEqual(options, {
+          http: null,
+          contracts: Contracts,
+          api: Contracts.api
+        });
+
+        if (cb && cb.constructor === Function) {
+          cb({
+            http: options.http,
+            ws: options.ws,
+            ipc: options.ipc
+          });
+        } else {
+          return {
+            http: options.http,
+            ws: options.ws,
+            ipc: options.ipc
+          };
+        }
+      }
+    },
+    assertions: function(connection) {
+      assert.deepEqual(connection, {
+        http: null,
+        ws: undefined,
+        ipc: undefined
+      });
+    }
+  });
   test({
     description: 'Should handle a rpcinfo string',
     rpcinfo: 'https://eth3.augur.net',

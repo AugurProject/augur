@@ -4,10 +4,10 @@ var assert = require('chai').assert;
 var utils = require('../../../src/utilities.js');
 var abi = require("augur-abi");
 var augur = require('../../../src/');
-// 12 tests total
+// 15 tests total
 
 describe("createMarket.createSingleEventMarket", function() {
-  // 3 tests total
+  // 4 tests total
   var test = function(t) {
     it(t.testDescription, function() {
       var transact = augur.transact;
@@ -61,6 +61,49 @@ describe("createMarket.createSingleEventMarket", function() {
     tags: ['movies', 'tvshows', 'podcasts'],
     makerFee: 0.02,
     extraInfo: 'This is some extra information about this fascinating market.',
+    onSent: utils.noop,
+    onSuccess: utils.noop,
+    onFailed: utils.noop
+  });
+  test({
+    testDescription: "Should create a single event market, no extra info or resolution passed.",
+    assertions: function(tx, onSent, onSuccess, onFailed) {
+      assert.deepEqual(tx.to, augur.tx.CreateMarket.createSingleEventMarket.to);
+      assert.deepEqual(tx.label, 'Create Market');
+      assert.deepEqual(tx.method, 'createSingleEventMarket');
+      assert.deepEqual(tx.value, '0x1036640');
+      assert.deepEqual(tx.params, [
+       '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
+       'Some question for an Event and Market',
+       15000000000,
+       '0xde0b6b3a7640000',
+       '0x1bc16d674ec80000',
+       2,
+       '',
+       '0x8e1bc9bf040000',
+       '0x6d6f766965730000000000000000000000000000000000000000000000000000',
+       '0x747673686f777300000000000000000000000000000000000000000000000000',
+       '0x706f646361737473000000000000000000000000000000000000000000000000',
+       '0x6f05b59d3b20000',
+       ''
+      ]);
+    },
+    getGasPrice: function(cb) {
+      // for simplicity's sake, just return 10.
+      if (cb) return cb('10');
+      return '10';
+    },
+    branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
+    description: "Some question for an Event and Market",
+    expDate: 15000000000,
+    minValue: 1,
+    maxValue: 2,
+    numOutcomes: 2,
+    resolution: undefined,
+    takerFee: 0.04,
+    tags: ['movies', 'tvshows', 'podcasts'],
+    makerFee: 0.02,
+    extraInfo: undefined,
     onSent: utils.noop,
     onSuccess: utils.noop,
     onFailed: utils.noop
@@ -150,7 +193,7 @@ describe("createMarket.createSingleEventMarket", function() {
 });
 
 describe("createMarket.createEvent", function() {
-  // 3 tests total
+  // 4 tests total
   var test = function(t) {
     it(t.testDescription, function() {
       var transact = augur.transact;
@@ -176,6 +219,25 @@ describe("createMarket.createEvent", function() {
     assertions: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.CreateMarket.createEvent.to);
       assert.deepEqual(tx.params, ['010101', 'This is a test event description', 1500000000, '0xde0b6b3a7640000', '0x1bc16d674ec80000', '2', 'https://iknoweverything.com']);
+      assert.deepEqual(tx.label, 'Create Event');
+      assert.deepEqual(tx.method, 'createEvent');
+    }
+  });
+  test({
+    testDescription: "Should handle a createEvent call, no resoultion provided",
+    branch: '010101',
+    description: 'This is a test event description',
+    expDate: 1500000000,
+    minValue: '1',
+    maxValue: '2',
+    numOutcomes: '2',
+    resolution: undefined,
+    onSent: utils.noop,
+    onSuccess: utils.noop,
+    onFailed: utils.noop,
+    assertions: function(tx, onSent, onSuccess, onFailed) {
+      assert.deepEqual(tx.to, augur.tx.CreateMarket.createEvent.to);
+      assert.deepEqual(tx.params, ['010101', 'This is a test event description', 1500000000, '0xde0b6b3a7640000', '0x1bc16d674ec80000', '2', '']);
       assert.deepEqual(tx.label, 'Create Event');
       assert.deepEqual(tx.method, 'createEvent');
     }
@@ -223,7 +285,7 @@ describe("createMarket.createEvent", function() {
 });
 
 describe("createMarket.createMarket", function() {
-  // 3 tests total
+  // 4 tests total
   var test = function(t) {
     it(t.testDescription, function() {
       var transact = augur.transact;
@@ -267,6 +329,36 @@ describe("createMarket.createMarket", function() {
     tags: ['code', 'computers', 'internet'],
     makerFee: 0.01,
     extraInfo: 'more info',
+  });
+  test({
+    testDescription: "Should handle creation of a market without callbacks - no extraInfo provided",
+    assertions: function(tx, onSent, onSuccess, onFailed) {
+      assert.deepEqual(tx.to, augur.tx.CreateMarket.createMarket.to);
+      assert.deepEqual(tx.label, 'Create Market');
+      assert.deepEqual(tx.method, 'createMarket');
+      assert.deepEqual(tx.value, '0x1036640');
+      assert.deepEqual(tx.params, [
+        '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
+        '0x470de4df820000',
+        'd262e2b552568085340c349b975ad02518a58cf0ca81666f02d96f828d43f5ef',
+        '0x636f646500000000000000000000000000000000000000000000000000000000',
+        '0x636f6d7075746572730000000000000000000000000000000000000000000000',
+        '0x696e7465726e6574000000000000000000000000000000000000000000000000',
+        '0x6f05b59d3b20000',
+        ''
+      ]);
+    },
+    getGasPrice: function(cb) {
+      // for simplicity's sake, just return 10.
+      if (cb) return cb('10');
+      return '10';
+    },
+    branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
+    takerFee: 0.02,
+    event: 'd262e2b552568085340c349b975ad02518a58cf0ca81666f02d96f828d43f5ef',
+    tags: ['code', 'computers', 'internet'],
+    makerFee: 0.01,
+    extraInfo: undefined,
   });
   test({
     testDescription: "Should handle creation of a market with callbacks",

@@ -22,17 +22,6 @@ describe("positions", function () {
     return abi.strip_0x(abi.format_int256(abi.fix(n, "hex")));
   }
 
-  var txOriginal;
-
-  before(function () {
-    txOriginal = augur.tx;
-    augur.tx = new require("augur-contracts").Tx("3").functions;
-  });
-
-  after(function () {
-    augur.tx = txOriginal;
-  });
-
   describe("modifyPosition", function () {
     var test = function (t) {
       it(t.description, function () {
@@ -401,8 +390,8 @@ describe("positions", function () {
       }],
       assertions: function(out) {
         assert.deepEqual(JSON.stringify(out), JSON.stringify({
-        	'0xa1': '0.2',
-        	'0xa2': '0.33333333333333333333'
+          '0xa1': '0.2',
+          '0xa2': '0.33333333333333333333'
         }));
       }
     });
@@ -446,6 +435,13 @@ describe("positions", function () {
         t.assertions(augur.calculateShortSellShareTotals(t.logs));
       });
     };
+    test({
+      description: "logs undefined",
+      logs: undefined,
+      assertions: function (output) {
+        assert.deepEqual(output, {});
+      }
+    });
     test({
       description: "no logs",
       logs: [],
@@ -948,8 +944,7 @@ describe("positions", function () {
           callback(t.onChainPosition[marketID]);
         };
         augur.adjustPositions(t.account, t.marketIDs, t.shareTotals, function (err, adjusted) {
-          assert.isNull(err);
-          t.assertions({
+          t.assertions(err, {
             async: adjusted,
             sync: augur.adjustPositions(t.account, t.marketIDs, t.shareTotals)
           });
@@ -972,7 +967,8 @@ describe("positions", function () {
           "2": "0"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -982,6 +978,28 @@ describe("positions", function () {
             "1": "0",
             "2": "0"
           }
+        });
+      }
+    });
+    test({
+      description: "handle an undefined onChainPosition from getPositionInMarket",
+      account: "0xb0b",
+      marketIDs: ["0x1"],
+      shareTotals: {
+        shortAskBuyCompleteSets: {},
+        shortSellBuyCompleteSets: {},
+        sellCompleteSets: {}
+      },
+      onChainPosition: {
+        "0x1": undefined
+      },
+      assertions: function (err, output) {
+        assert.deepEqual(err, "couldn't load position in 0x1")
+        assert.isObject(output);
+        assert.isUndefined(output.async);
+        assert.isObject(output.sync);
+        assert.deepEqual(output.sync, {
+          "0x1": {}
         });
       }
     });
@@ -1000,7 +1018,8 @@ describe("positions", function () {
           "2": "0"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1030,7 +1049,8 @@ describe("positions", function () {
           "2": "1"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1060,7 +1080,8 @@ describe("positions", function () {
           "2": "1"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1092,7 +1113,8 @@ describe("positions", function () {
           "2": "2"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1122,7 +1144,8 @@ describe("positions", function () {
           "2": "0"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1152,7 +1175,8 @@ describe("positions", function () {
           "2": "1"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1184,7 +1208,8 @@ describe("positions", function () {
           "2": "4"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1216,7 +1241,8 @@ describe("positions", function () {
           "2": "3"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1248,7 +1274,8 @@ describe("positions", function () {
           "2": "2"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1280,7 +1307,8 @@ describe("positions", function () {
           "2": "7"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1312,7 +1340,8 @@ describe("positions", function () {
           "2": "6.3"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1354,7 +1383,8 @@ describe("positions", function () {
           "7": "2"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1406,7 +1436,8 @@ describe("positions", function () {
           "7": "2.1"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1456,7 +1487,8 @@ describe("positions", function () {
                     //           0   0  -1  +1
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1497,7 +1529,8 @@ describe("positions", function () {
                      //           0.0   0.0  -1.0  +1.0
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1543,7 +1576,8 @@ describe("positions", function () {
           "7": "2"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1586,7 +1620,8 @@ describe("positions", function () {
           "2": "2"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1620,7 +1655,8 @@ describe("positions", function () {
           "2": "10.301"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -1666,7 +1702,8 @@ describe("positions", function () {
           "7": "2"
         }
       },
-      assertions: function (output) {
+      assertions: function (err, output) {
+        assert.isNull(err);
         assert.isObject(output);
         assert.isObject(output.async);
         assert.isObject(output.sync);
@@ -2285,6 +2322,95 @@ describe("positions", function () {
             "8": "2.2"
           }
         });
+      }
+    });
+  });
+
+  describe("calculateNetEffectiveTrades", function() {
+    var test = function(t) {
+      t.assertions(augur.calculateNetEffectiveTrades(t.logs));
+    };
+    test({
+      logs: {
+        shortAskBuyCompleteSets: [{
+          topics: ['0x0', '0x0', '0xa1', '0x1'],
+          data: fix('10') + abi.strip_0x(abi.hex('30'))
+        },
+        {
+          topics: ['0x0', '0x0', '0xa2', '0x1'],
+          data: fix('10') + abi.strip_0x(abi.hex('15'))
+        }],
+        shortSellBuyCompleteSets: [{
+          data: fix('1') + stripFix('2') + stripFix('3') + stripFix('4') + stripFix('5') + stripFix('6') + stripFix('7')+ stripFix('0.000000000000000002'),
+          topics: ['0x0', '0xa1'],
+        },
+        {
+          data: fix('1') + stripFix('2') + stripFix('3') + stripFix('4') + stripFix('5') + stripFix('6') + stripFix('7')+ stripFix('0.000000000000000008'),
+          topics: ['0x0', '0xa2'],
+        }],
+        sellCompleteSets: [{
+          topics: ['0x0', '0x0', '0xa1', '0x2'],
+          data: fix('5') + abi.strip_0x(abi.hex('10'))
+        },
+        {
+          topics: ['0x0', '0x0', '0xa2', '0x2'],
+          data: fix('5') + abi.strip_0x(abi.hex('25'))
+        }],
+      },
+      assertions: function(out) {
+        assert.deepEqual(JSON.stringify(out), JSON.stringify({
+          '0xa1': {
+            shortAskBuyCompleteSets: {
+              type: 'buy',
+              price: '0.03333333333333333333',
+              shares: '10'
+            },
+            shortSellBuyCompleteSets: {
+              type: 'buy',
+              price: '0.5',
+              shares: '2'
+            },
+            sellCompleteSets: {
+              type: 'sell',
+              price: '0.1',
+              shares: '5'
+            },
+          },
+          '0xa2': {
+            shortAskBuyCompleteSets: {
+              type: 'buy',
+              price: '0.06666666666666666667',
+              shares: '10'
+            },
+            shortSellBuyCompleteSets: {
+              type: 'buy',
+              price: '0.125',
+              shares: '2'
+            },
+            sellCompleteSets: {
+              type: 'sell',
+              price: '0.04',
+              shares: '5'
+            },
+          },
+        }));
+
+      }
+    });
+  });
+
+  describe("calculateUnrealizedPL", function() {
+    var test = function(t) {
+      it(JSON.stringify(t), function() {
+        t.assertions(augur.calculateUnrealizedPL(t.position, t.meanOpenPrice, t.lastTradePrice));
+      });
+    };
+    test({
+      position: null,
+      meanOpenPrice: null,
+      lastTradePrice: constants.ZERO,
+      assertions: function(out) {
+        assert.deepEqual(out, constants.ZERO);
       }
     });
   });

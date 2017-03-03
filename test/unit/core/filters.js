@@ -1649,16 +1649,10 @@ describe("pacemaker", function() {
       	heartbeat: null
       });
       assert.isNull(augur.filters.filter.testEvent.id);
-      // because intervals seem to be setup differently between node 5 and node 6, anything node 6+ will set `_repeat` to a number instead of the funciton that is going to repeat. in node 5+, the function that will repeat is in _onTimeout() not _repeat. this if statement adjusts based on if _repeat is set as a function, if it is, we know this is the function that gets called in the interval where as if it's a number then we know to check _onTimeout() instead.
-      if (utils.is_function(augur.filters.filter.testEvent.heartbeat._repeat)) {
-        assert.include(augur.filters.filter.testEvent.heartbeat._repeat.toString(), 'self.poll_filter');
-        // call the interval function to confirm that it was set properly.
-        augur.filters.filter.testEvent.heartbeat._repeat();
-      } else {
-        assert.include(augur.filters.filter.testEvent.heartbeat._onTimeout.toString(), 'self.poll_filter');
-        // call the interval function to confirm that it was set properly.
-        augur.filters.filter.testEvent.heartbeat._onTimeout();
-      }
+      assert.include(augur.filters.filter.testEvent.heartbeat._onTimeout.toString(), 'self.poll_filter');
+      // call the interval function to confirm that it was set properly.
+      augur.filters.filter.testEvent.heartbeat._onTimeout();
+
       // clean up the inerval and clear out the heartbeat competely.
       clearInterval(augur.filters.filter.testEvent.heartbeat);
       augur.filters.filter.testEvent.heartbeat = null;
@@ -1832,6 +1826,7 @@ describe("listen", function() {
   var start_block_listener = augur.filters.start_block_listener;
   var start_event_listener = augur.filters.start_event_listener;
   var pacemaker = augur.filters.pacemaker;
+  var listen;
   var finished;
   afterEach(function() {
     augur.filters.filter = filter;
@@ -1971,6 +1966,15 @@ describe("listen", function() {
       assert.isFunction(augur.filters.subscribeLogs);
       assert.isFunction(augur.filters.subscribeNewBlocks);
       assert.isFunction(augur.rpc.resetCustomSubscription);
+      // because we want full code coverage, we are going to replace listen real quick with a mock function, then run resetCustomSubscription which calls listen. Confirm that it would have been called and then finish the test.
+      augur.filters.listen = listen;
+      var listenCalled = false;
+      augur.filters.listen = function() {
+        listenCalled = true;
+      };
+      augur.rpc.resetCustomSubscription();
+      augur.filters.listen = listen;
+      assert.isTrue(listenCalled);
       finished();
     },
     filter: {
