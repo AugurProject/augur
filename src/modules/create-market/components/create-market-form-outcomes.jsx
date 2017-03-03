@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import BigNumber from 'bignumber.js';
 
 import Input from 'modules/common/components/input';
 import InputList from 'modules/common/components/input-list';
@@ -17,6 +18,8 @@ export default class CreateMarketFormOutcomes extends Component {
       errors: []
     };
 
+    this.handleScalarSmallInput = this.handleScalarSmallInput.bind(this);
+    this.handleScalarBigInput = this.handleScalarBigInput.bind(this);
     this.validateForm = this.validateForm.bind(this);
   }
 
@@ -25,10 +28,31 @@ export default class CreateMarketFormOutcomes extends Component {
     if (this.props.currentStep !== nextProps.currentStep &&
       newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_OUTCOMES
     ) { nextProps.updateValidity(true); }
+
+    // Update Outcome w/ average of scalar bounds
+    if (nextProps.scalarSmallNum && nextProps.scalarBigNum &&
+      (this.props.scalarSmallNum !== nextProps.scalarSmallNum ||
+      this.props.scalarBigNum !== nextProps.scalarBigNum)
+    ) {
+      console.log('rest -- ', parseFloat(nextProps.scalarSmallNum), nextProps.scalarBigNum, (nextProps.scalarSmallNum + nextProps.scalarBigNum) / 2);
+      nextProps.updateNewMarket({ outcomes: [`${(nextProps.scalarSmallNum + nextProps.scalarBigNum) / 2}`] });
+    }
   }
 
   componentWillUpdate(nextProps, nextState) {
     // if (this.state.errors !== nextState.errors) nextProps.updateValidity(!nextState.errors.length);
+  }
+
+  handleScalarSmallInput(scalarSmallRaw) {
+    const scalarSmallNum = scalarSmallRaw instanceof BigNumber ? scalarSmallRaw.toNumber() : parseFloat(scalarSmallRaw);
+
+    this.props.updateNewMarket({ scalarSmallNum });
+  }
+
+  handleScalarBigInput(scalarBigRaw) {
+    const scalarBigNum = scalarBigRaw instanceof BigNumber ? scalarBigRaw.toNumber() : parseFloat(scalarBigRaw);
+
+    this.props.updateNewMarket({ scalarBigNum });
   }
 
   validateForm(description) {
@@ -66,20 +90,20 @@ export default class CreateMarketFormOutcomes extends Component {
           /> :
           <div>
             <Input
-              type="text"
+              type="number"
               name="minimum-answer"
               value={p.scalarSmallNum}
               placeholder="Minimum answer"
               maxLength={6}
-              onChange={scalarSmallNum => p.updateNewMarket({ scalarSmallNum })}
+              onChange={this.handleScalarSmallInput}
             />
             <Input
-              type="text"
+              type="number"
               name="maximum-answer"
               value={p.scalarBigNum}
               placeholder="Maximum answer"
               maxLength={6}
-              onChange={scalarBigNum => p.updateNewMarket({ scalarBigNum })}
+              onChange={this.handleScalarBigInput}
             />
           </div>
         }
@@ -91,6 +115,8 @@ export default class CreateMarketFormOutcomes extends Component {
 CreateMarketFormOutcomes.propTypes = {
   type: PropTypes.string.isRequired,
   outcomes: PropTypes.array.isRequired,
+  scalarSmallNum: PropTypes.number.isRequired,
+  scalarBigNum: PropTypes.number.isRequired,
   currentStep: PropTypes.number.isRequired,
   updateValidity: PropTypes.func.isRequired,
   updateNewMarket: PropTypes.func.isRequired

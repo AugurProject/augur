@@ -15,7 +15,7 @@ import {
   NEW_MARKET_ORDER_BOOK,
   NEW_MARKET_REVIEW
 } from 'modules/create-market/constants/new-market-creation-steps';
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
+import { CATEGORICAL } from 'modules/markets/constants/market-types';
 
 
 // NOTE --  Discrete component due to vastly different functionality as compared to `market-preview.jsx`
@@ -143,10 +143,14 @@ const CreateMarketPreview = (p) => {
             })}
           >
             <li className="is-null" />
-            <li className="is-null" />
-            <li className="is-null" />
-            <li className="is-null" />
-            <li className="is-null" />
+            {newMarket.type === CATEGORICAL &&
+              <div>
+                <li className="is-null" />
+                <li className="is-null" />
+                <li className="is-null" />
+                <li className="is-null" />
+              </div>
+            }
           </div>
         }
       </ul>

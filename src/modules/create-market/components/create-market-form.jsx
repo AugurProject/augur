@@ -101,6 +101,8 @@ export default class CreateMarketForm extends Component {
           })}
           type={p.newMarket.type}
           outcomes={p.newMarket.outcomes}
+          scalarSmallNum={p.newMarket.scalarSmallNum}
+          scalarBigNum={p.newMarket.scalarBigNum}
           currentStep={p.newMarket.currentStep}
           updateValidity={isValid => this.setState({ isValid })}
           updateNewMarket={p.updateNewMarket}
