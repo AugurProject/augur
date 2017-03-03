@@ -199,6 +199,7 @@ export default class CreateMarketForm extends Component {
             'from-right': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_ORDER_BOOK,
             'from-left': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_ORDER_BOOK,
           })}
+          type={p.newMarket.type}
           currentStep={p.newMarket.currentStep}
           outcomes={p.newMarket.outcomes}
           orderBook={p.newMarket.orderBook}

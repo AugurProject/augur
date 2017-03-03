@@ -34,7 +34,6 @@ export default class CreateMarketFormOutcomes extends Component {
       (this.props.scalarSmallNum !== nextProps.scalarSmallNum ||
       this.props.scalarBigNum !== nextProps.scalarBigNum)
     ) {
-      console.log('rest -- ', parseFloat(nextProps.scalarSmallNum), nextProps.scalarBigNum, (nextProps.scalarSmallNum + nextProps.scalarBigNum) / 2);
       nextProps.updateNewMarket({ outcomes: [`${(nextProps.scalarSmallNum + nextProps.scalarBigNum) / 2}`] });
     }
   }
@@ -44,15 +43,17 @@ export default class CreateMarketFormOutcomes extends Component {
   }
 
   handleScalarSmallInput(scalarSmallRaw) {
-    const scalarSmallNum = scalarSmallRaw instanceof BigNumber ? scalarSmallRaw.toNumber() : parseFloat(scalarSmallRaw);
+    // const scalarSmallNum = scalarSmallRaw instanceof BigNumber ? scalarSmallRaw.toNumber() : parseFloat(scalarSmallRaw);
 
-    this.props.updateNewMarket({ scalarSmallNum });
+    // this.props.updateNewMarket({ scalarSmallNum });
+    this.props.updateNewMarket({ scalarSmallNum: scalarSmallRaw });
   }
 
   handleScalarBigInput(scalarBigRaw) {
-    const scalarBigNum = scalarBigRaw instanceof BigNumber ? scalarBigRaw.toNumber() : parseFloat(scalarBigRaw);
+    // const scalarBigNum = scalarBigRaw instanceof BigNumber ? scalarBigRaw.toNumber() : parseFloat(scalarBigRaw);
 
-    this.props.updateNewMarket({ scalarBigNum });
+    // this.props.updateNewMarket({ scalarBigNum });
+    this.props.updateNewMarket({ scalarBigNum: scalarBigRaw });
   }
 
   validateForm(description) {
@@ -90,7 +91,7 @@ export default class CreateMarketFormOutcomes extends Component {
           /> :
           <div>
             <Input
-              type="number"
+              type="text"
               name="minimum-answer"
               value={p.scalarSmallNum}
               placeholder="Minimum answer"
@@ -98,7 +99,7 @@ export default class CreateMarketFormOutcomes extends Component {
               onChange={this.handleScalarSmallInput}
             />
             <Input
-              type="number"
+              type="text"
               name="maximum-answer"
               value={p.scalarBigNum}
               placeholder="Maximum answer"

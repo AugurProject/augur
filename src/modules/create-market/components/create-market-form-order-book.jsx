@@ -155,10 +155,10 @@ export default class CreateMarketFormOrderBook extends Component {
     const p = this.props;
     const s = this.state;
 
-    const bidSeries = getValue(s, `orderBookSeries.${s.selectedOutcome}.${BID}`);
-    const askSeries = getValue(s, `orderBookSeries.${s.selectedOutcome}.${ASK}`);
-    const bids = getValue(s, `orderBookSorted.${s.selectedOutcome}.${BID}`);
-    const asks = getValue(s, `orderBookSorted.${s.selectedOutcome}.${ASK}`);
+    const bidSeries = getValue(s.orderBookSeries[s.selectedOutcome], `${BID}`);
+    const askSeries = getValue(s.orderBookSeries[s.selectedOutcome], `${ASK}`);
+    const bids = getValue(s.orderBookSorted[s.selectedOutcome], `${BID}`);
+    const asks = getValue(s.orderBookSorted[s.selectedOutcome], `${ASK}`);
 
     return (
       <article className={`create-market-form-part create-market-form-order-book ${p.className || ''}`}>
