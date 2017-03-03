@@ -178,6 +178,31 @@ export default class AccountPage extends Component {
           </div>
           <div className={classnames('account-section')}>
             <div className="account-info-item">
+              <h2 className="heading">Deposit & Purchase Funds</h2>
+              <p>
+                You can deposit funds with ShapeShift using any alternative cryptocurrency, or purchase ETH directly with Coinbase. <b>(Disabled during beta)</b>
+              </p>
+              <div className="deposit-funds-section">
+                <button
+                  className="button intigrations"
+                >
+                  Deposit ETH with ShapeShift
+                </button>
+                <button
+                  className="button intigrations"
+                >
+                  Deposit REP with ShapeShift
+                </button>
+                <button
+                  className="button intigrations"
+                >
+                  Purchase ETH with Coinbase
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className={classnames('account-section')}>
+            <div className="account-info-item">
               <h2 className="heading">Transfer Funds</h2>
               <p>
                 You can transfer funds to another address by selecting the type of currency you would like to send and entering the address you would like to send it to. (Note: Always double check the address you intend to send funds to!)
@@ -219,6 +244,14 @@ export default class AccountPage extends Component {
                   onClick={this.handleTransfer}
                 >
                   Send Currency
+                </button>
+                <p>
+                  You can withdraw to any cryptocurrency with ShapeShift. Open ShapeShift with the button below, select your input (ETH or REP) and output currency. Enter your destination address within the ShapeShift modal. Start the transaction, and enter the deposit address ShapeShift gives you into the withdraw feild above. <b>(Disabled during beta)</b>
+                </p>
+                <button
+                  className="button intigrations"
+                >
+                  Transfer funds with ShapeShift
                 </button>
               </div>
             </div>
