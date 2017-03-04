@@ -19,38 +19,32 @@
       display: flex;
     }
 
-    &.hide-form {
-      display: none;
-      height: 0;
-      opacity: 0;
-
-      // &.to-left {
-      //   animation-delay: 0s, @animation-speed-very-fast;
-      //   animation-duration: @animation-speed-very-fast, 0s;
-      //   animation-fill-mode: forwards;
-      //   animation-name: easeOutToLeft, collapseElement, hideElement;
-      // }
-      //
-      // &.to-right {
-      //
-      // }
+    &.display-from-right {
+      animation-delay: 0s;
+      animation-duration: @animation-speed-fast;
+      animation-fill-mode: forwards;
+      animation-name: easeInLeft;
     }
 
-    &.display-form {
-      display: flex;
-      height: auto;
-      opacity: 1;
+    &.display-from-left {
+      animation-delay: 0s;
+      animation-duration: @animation-speed-fast;
+      animation-fill-mode: forwards;
+      animation-name: easeInRight;
+    }
 
-      // &.from-right {
-      //   animation-delay: 0s, 0s, @animation-speed-very-fast;
-      //   animation-duration: 0s, 0s, @animation-speed-very-fast;
-      //   animation-fill-mode: forwards;
-      //   animation-name: displayElement, expandElementHeight, easeInFromRight;
-      // }
-      //
-      // &.to-left {
-      //
-      // }
+    &.hide-to-left {
+      animation-delay: 0s;
+      animation-duration: @animation-speed-fast;
+      animation-fill-mode: forwards;
+      animation-name: easeOutLeft;
+    }
+
+    &.hide-to-right {
+      animation-delay: 0s;
+      animation-duration: @animation-speed-fast;
+      animation-fill-mode: forwards;
+      animation-name: easeOutRight;
     }
 
     h2 {
@@ -66,24 +60,46 @@
 }
 
 // Animations
-.keyframes(easeOutToLeft, {
+.keyframes(easeInLeft, {
+from {
+transform: translateX(10%) scale(1.08);
+opacity: 0;
+}
+to {
+transform: translateX(0) scale(1);
+opacity: 1;
+}
+});
+
+.keyframes(easeInRight, {
+from {
+transform: translateX(-10%) scale(1.08);
+opacity: 0;
+}
+to {
+transform: translateX(0) scale(1);
+opacity: 1;
+}
+});
+
+.keyframes(easeOutLeft, {
 from {
 transform: translateX(0) scale(1);
 opacity: 1;
 }
 to {
-transform: translateX(-10%) scale(0.95);
+transform: translateX(-10%) scale(0.92);
 opacity: 0;
 }
 });
 
-.keyframes(easeInFromRight, {
+.keyframes(easeOutRight, {
 from {
-transform: translateX(10%) scale(1.05);
-opacity: 0;
-}
-to {
 transform: translateX(0) scale(1);
 opacity: 1;
+}
+to {
+transform: translateX(10%) scale(0.92);
+opacity: 0;
 }
 });
