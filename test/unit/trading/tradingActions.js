@@ -954,6 +954,122 @@ describe("getTradingActions", function () {
       }
     });
     runTestCase({
+      description: "no asks, scalar event, limit price < 0",
+      type: "buy",
+      orderShares: "5",
+      orderLimitPrice: "-0.5",
+      takerFee: "0.02",
+      makerFee: "0.01",
+      userPositionShares: "0",
+      outcomeId: "outcomeasdf123",
+      range: "20",
+      marketOrderBook: {
+        buy: {},
+        sell: {}
+      },
+      scalarMinMax: {minValue: -10, maxValue: 10},
+      userAddress: "abcd1234",
+      assertions: function (actions) {
+        assert.isArray(actions);
+        assert.lengthOf(actions, 1);
+        var expected = [{
+          "action": "BID",
+          "shares": "5",
+          "gasEth": "0.01450404",
+          "feeEth": "0.4738125",
+          "feePercent": "0.9975",
+          "costEth": "-47.9738125",
+          "avgPrice": "9.5947625",
+          "noFeePrice": "9.5"
+        }];
+        testTradeActions(actions, expected);
+      }
+    });
+    runTestCase({
+      description: "no asks, scalar event, limit price 0",
+      type: "buy",
+      orderShares: "5",
+      orderLimitPrice: "0",
+      takerFee: "0.02",
+      makerFee: "0.01",
+      userPositionShares: "0",
+      outcomeId: "outcomeasdf123",
+      range: "20",
+      marketOrderBook: {
+        buy: {},
+        sell: {}
+      },
+      scalarMinMax: {minValue: -10, maxValue: 10},
+      userAddress: "abcd1234",
+      assertions: function (actions) {
+        assert.isArray(actions);
+        assert.lengthOf(actions, 1);
+        var expected = [{
+          action: "BID",
+          shares: "5",
+          gasEth: "0.01450404",
+          feeEth: "0.5",
+          feePercent: "1",
+          costEth: "-50.5",
+          avgPrice: "10.1",
+          noFeePrice: "10"
+        }];
+        testTradeActions(actions, expected);
+      }
+    });
+    runTestCase({
+      description: "no asks, scalar event, limit price > 0",
+      type: "buy",
+      orderShares: "5",
+      orderLimitPrice: "0.5",
+      takerFee: "0.02",
+      makerFee: "0.01",
+      userPositionShares: "0",
+      outcomeId: "outcomeasdf123",
+      range: "20",
+      marketOrderBook: {
+        buy: {},
+        sell: {}
+      },
+      scalarMinMax: {minValue: -10, maxValue: 10},
+      userAddress: "abcd1234",
+      assertions: function (actions) {
+        assert.isArray(actions);
+        assert.lengthOf(actions, 1);
+        var expected = [{
+          action: "BID",
+          shares: "5",
+          gasEth: "0.01450404",
+          feeEth: "0.5236875",
+          feePercent: "0.9975",
+          costEth: "-53.0236875",
+          avgPrice: "10.6047375",
+          noFeePrice: "10.5"
+        }];
+        testTradeActions(actions, expected);
+      }
+    });
+    runTestCase({
+      description: "no limit price and no asks",
+      type: "buy",
+      orderShares: "5",
+      orderLimitPrice: null,
+      takerFee: "0.02",
+      makerFee: "0.01",
+      userPositionShares: "0",
+      outcomeId: "outcomeasdf123",
+      range: "1",
+      marketOrderBook: {
+        buy: {},
+        sell: {}
+      },
+      userAddress: "abcd1234",
+      assertions: function (actions) {
+        assert.isArray(actions);
+        assert.lengthOf(actions, 0);
+      }
+    });
+    runTestCase({
       description: "no suitable asks",
       type: "buy",
       orderShares: "5",
@@ -1418,6 +1534,103 @@ describe("getTradingActions", function () {
           avgPrice: "1.00576",
           feePercent: "0.96",
           noFeePrice: "0.6"
+        }];
+        testTradeActions(actions, expected);
+      }
+    });
+
+    runTestCase({
+      description: "no bids, scalar event, limit price < 0, position exceeds order size",
+      type: "sell",
+      orderShares: "5",
+      orderLimitPrice: "-0.5",
+      takerFee: "0.02",
+      makerFee: "0.01",
+      userPositionShares: "6",
+      outcomeId: "outcomeasdf123",
+      range: "20",
+      marketOrderBook: {
+        buy: {},
+        sell: {}
+      },
+      scalarMinMax: {minValue: -10, maxValue: 10},
+      userAddress: "abcd1234",
+      assertions: function (actions) {
+        assert.isArray(actions);
+        assert.lengthOf(actions, 1);
+        var expected = [{
+          action: "ASK",
+          shares: "5",
+          gasEth: "0.01393518",
+          feeEth: "0.4738125",
+          feePercent: "0.9975",
+          costEth: "47.0261875",
+          avgPrice: "9.4052375",
+          noFeePrice: "9.5"
+        }];
+        testTradeActions(actions, expected);
+      }
+    });
+    runTestCase({
+      description: "no bids, scalar event, limit price 0, position exceeds order size",
+      type: "sell",
+      orderShares: "5",
+      orderLimitPrice: "0",
+      takerFee: "0.02",
+      makerFee: "0.01",
+      userPositionShares: "6",
+      outcomeId: "outcomeasdf123",
+      range: "20",
+      marketOrderBook: {
+        buy: {},
+        sell: {}
+      },
+      scalarMinMax: {minValue: -10, maxValue: 10},
+      userAddress: "abcd1234",
+      assertions: function (actions) {
+        assert.isArray(actions);
+        assert.lengthOf(actions, 1);
+        var expected = [{
+          action: "ASK",
+          shares: "5",
+          gasEth: "0.01393518",
+          feeEth: "0.5",
+          feePercent: "1",
+          costEth: "49.5",
+          avgPrice: "9.9",
+          noFeePrice: "10"
+        }];
+        testTradeActions(actions, expected);
+      }
+    });
+    runTestCase({
+      description: "no bids, scalar event, limit price > 0, position exceeds order size",
+      type: "sell",
+      orderShares: "5",
+      orderLimitPrice: "0.5",
+      takerFee: "0.02",
+      makerFee: "0.01",
+      userPositionShares: "6",
+      outcomeId: "outcomeasdf123",
+      range: "20",
+      marketOrderBook: {
+        buy: {},
+        sell: {}
+      },
+      scalarMinMax: {minValue: -10, maxValue: 10},
+      userAddress: "abcd1234",
+      assertions: function (actions) {
+        assert.isArray(actions);
+        assert.lengthOf(actions, 1);
+        var expected = [{
+          action: "ASK",
+          shares: "5",
+          gasEth: "0.01393518",
+          feeEth: "0.5236875",
+          feePercent: "0.9975",
+          costEth: "51.9763125",
+          avgPrice: "10.3952625",
+          noFeePrice: "10.5"
         }];
         testTradeActions(actions, expected);
       }

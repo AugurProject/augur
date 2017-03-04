@@ -47,7 +47,7 @@ var modules = [
 ];
 
 function Augur() {
-  this.version = "3.13.10";
+  this.version = "3.13.11";
 
   this.options = {
     debug: {

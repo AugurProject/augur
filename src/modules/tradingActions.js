@@ -35,8 +35,7 @@ module.exports = {
   getTxGasEth: function (tx, gasPrice) {
     tx.gasLimit = tx.gas || constants.DEFAULT_GAS;
     tx.gasPrice = gasPrice;
-    var etx = new EthTx(tx);
-    return new BigNumber(etx.getUpfrontCost().toString(), 10).dividedBy(constants.ETHER);
+    return abi.unfix((new EthTx(tx)).getUpfrontCost().toString());
   },
 
   /**
@@ -89,7 +88,7 @@ module.exports = {
       gasEth: bidGasEth.toFixed(),
       feeEth: abi.unfix(feeEth, "string"),
       feePercent: abi.unfix(makerFee).times(100).abs().toFixed(),
-      costEth: abi.unfix(etherToBid.plus(feeEth)).neg().toFixed(),
+      costEth: abi.unfix(etherToBid.abs().plus(feeEth)).neg().toFixed(),
       avgPrice: abi.unfix(etherToBid.plus(feeEth).dividedBy(shares).times(constants.ONE).floor(), "string"),
       noFeePrice: abi.unfix(limitPrice, "string")
     };
@@ -272,7 +271,7 @@ module.exports = {
    * @return {Array}
    */
   getTradingActions: function (type, orderShares, orderLimitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeId, range, marketOrderBook, scalarMinMax) {
-    var remainingOrderShares, i, length, orderSharesFilled, bid, ask, bidAmount, isMarketOrder, fees, adjustedFees, totalTakerFeeEth;
+    var remainingOrderShares, i, length, orderSharesFilled, bid, ask, bidAmount, isMarketOrder, fees, adjustedFees, totalTakerFeeEth, adjustedLimitPrice;
     if (type.constructor === Object) {
       orderShares = type.orderShares;
       orderLimitPrice = type.orderLimitPrice;
@@ -299,10 +298,13 @@ module.exports = {
     isMarketOrder = orderLimitPrice === null || orderLimitPrice === undefined;
     fees = abacus.calculateFxpTradingFees(bnMakerFee, bnTakerFee);
     if (!isMarketOrder) {
+      adjustedLimitPrice = (scalarMinMax && scalarMinMax.minValue) ?
+        new BigNumber(abacus.shrinkScalarPrice(scalarMinMax.minValue, orderLimitPrice), 10) :
+        orderLimitPrice;
       adjustedFees = abacus.calculateFxpMakerTakerFees(
         abacus.calculateFxpAdjustedTradingFee(
           fees.tradingFee,
-          abi.fix(orderLimitPrice),
+          abi.fix(adjustedLimitPrice),
           abi.fix(bnRange)
         ),
         fees.makerProportionOfFee,
@@ -327,7 +329,7 @@ module.exports = {
           orderLimitPrice && orderLimitPrice.toFixed(),
           [augur.getBidAction(
             abi.fix(orderShares),
-            abi.fix(orderLimitPrice),
+            abi.fix(adjustedLimitPrice),
             adjustedFees.maker,
             gasPrice)]
         );
@@ -405,7 +407,7 @@ module.exports = {
             var askShares = BigNumber.min(remainingOrderShares, remainingPositionShares);
             remainingOrderShares = remainingOrderShares.minus(askShares);
             remainingPositionShares = remainingPositionShares.minus(askShares);
-            sellActions.push(augur.getAskAction(abi.fix(askShares), abi.fix(orderLimitPrice), adjustedFees.maker, gasPrice));
+            sellActions.push(augur.getAskAction(abi.fix(askShares), abi.fix(adjustedLimitPrice), adjustedFees.maker, gasPrice));
           }
         }
 
@@ -448,7 +450,7 @@ module.exports = {
           sellActions.push(augur.getShortSellAction(etherToShortSell, orderShares.minus(remainingOrderShares), totalTakerFeeEth, gasPrice));
         }
         if (remainingOrderShares.gt(constants.PRECISION.zero)) {
-          sellActions.push(augur.getShortAskAction(abi.fix(remainingOrderShares), abi.fix(orderLimitPrice), adjustedFees.maker, gasPrice));
+          sellActions.push(augur.getShortAskAction(abi.fix(remainingOrderShares), abi.fix(adjustedLimitPrice), adjustedFees.maker, gasPrice));
         }
       }
 
