@@ -1,32 +1,61 @@
 .create-market-form {
   .border(true, @border-top);
 
+  padding: 1em;
   position: relative;
 
   &.no-preview {
     .border(false);
+
+    padding: 0;
   }
 
   .create-market-form-part {
-    display: none;
     flex: 1;
     flex-direction: column;
     flex-wrap: wrap;
 
     &:first-of-type {
       display: flex;
-      flex-direction: row;
     }
 
     &.hide-form {
       display: none;
+      height: 0;
+      opacity: 0;
+
+      // &.to-left {
+      //   animation-delay: 0s, @animation-speed-very-fast;
+      //   animation-duration: @animation-speed-very-fast, 0s;
+      //   animation-fill-mode: forwards;
+      //   animation-name: easeOutToLeft, collapseElement, hideElement;
+      // }
+      //
+      // &.to-right {
+      //
+      // }
     }
 
     &.display-form {
       display: flex;
+      height: auto;
+      opacity: 1;
+
+      // &.from-right {
+      //   animation-delay: 0s, 0s, @animation-speed-very-fast;
+      //   animation-duration: 0s, 0s, @animation-speed-very-fast;
+      //   animation-fill-mode: forwards;
+      //   animation-name: displayElement, expandElementHeight, easeInFromRight;
+      // }
+      //
+      // &.to-left {
+      //
+      // }
     }
 
     h2 {
+      .font-size-extra-large();
+
       flex: 1 0 100%;
     }
 
@@ -35,3 +64,26 @@
     }
   }
 }
+
+// Animations
+.keyframes(easeOutToLeft, {
+from {
+transform: translateX(0) scale(1);
+opacity: 1;
+}
+to {
+transform: translateX(-10%) scale(0.95);
+opacity: 0;
+}
+});
+
+.keyframes(easeInFromRight, {
+from {
+transform: translateX(10%) scale(1.05);
+opacity: 0;
+}
+to {
+transform: translateX(0) scale(1);
+opacity: 1;
+}
+});

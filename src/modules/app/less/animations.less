@@ -43,3 +43,22 @@
 .keyframes(@name; @args) {
   @keyframes @name { @args(); }
 }
+
+
+// Shared Animations
+
+.keyframes(displayElement, {
+to { display: inherit; }
+});
+
+.keyframes(hideElement, {
+to { display: none; }
+});
+
+.keyframes(expandElementHeight, {
+to { height: auto; }
+});
+
+.keyframes(collapseElementHeight, {
+to { height: 0; }
+});

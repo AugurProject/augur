@@ -1,0 +1,30 @@
+.create-market-form-type {
+  flex-direction: column;
+  padding: 0;
+
+  h2 {
+    align-self: center;
+  }
+
+  .create-market-type-buttons {
+    .border(true, @border-top, @border-light);
+
+    display: flex;
+    flex: 1;
+    justify-content: center;
+    padding: 1em;
+
+    .market-type {
+      flex: 1 0 0;
+      padding: 1em;
+
+      &:hover {
+        background-color: @color-gray-light;
+      }
+
+      h3 {
+        .font-size-large();
+      }
+    }
+  }
+}

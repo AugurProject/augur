@@ -18,7 +18,7 @@ import {
   NEW_MARKET_TYPE,
   NEW_MARKET_DESCRIPTION,
   NEW_MARKET_OUTCOMES,
-  NEW_MARKET_RESOLUTION_SOURCE,
+  NEW_MARKET_EXPIRY_SOURCE,
   NEW_MARKET_END_DATE,
   NEW_MARKET_DETAILS,
   NEW_MARKET_TOPIC,
@@ -39,6 +39,7 @@ export default class CreateMarketForm extends Component {
     super(props);
 
     this.state = {
+      lastStep: props.newMarket.currentStep,
       currentStep: props.newMarket.currentStep,
       stepIncreasing: null,
       canAnimate: false,
@@ -47,11 +48,12 @@ export default class CreateMarketForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.newMarket.currentStep !== this.props.newMarket.currentStep) {
+    if (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep) {
       this.setState({
+        lastStep: this.props.newMarket.currentStep,
         currentStep: nextProps.newMarket.currentStep,
         stepIncreasing: nextProps.newMarket.currentStep > this.props.newMarket.currentStep,
-        canAnimate: nextProps.newMarket.currentStep > 1
+        canAnimate: nextProps.newMarket.currentStep > 0
       });
     }
   }
@@ -68,10 +70,8 @@ export default class CreateMarketForm extends Component {
       <article className={classNames('create-market-form', { 'no-preview': s.currentStep === 0 })}>
         <CreateMarketFormType
           className={classNames({
-            'hide-form': newMarketCreationOrder[s.currentStep] !== NEW_MARKET_TYPE,
-            'to-left': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_TYPE,
-            'display-form': newMarketCreationOrder[s.currentStep] === NEW_MARKET_TYPE,
-            'from-left': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_TYPE,
+            'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_TYPE) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_TYPE),
+            'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_TYPE) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_TYPE),
           })}
           type={p.newMarket.type}
           addValidationToNewMarket={p.addValidationToNewMarket}
@@ -79,12 +79,10 @@ export default class CreateMarketForm extends Component {
         />
         <CreateMarketFormDescription
           className={classNames({
-            'hide-form': newMarketCreationOrder[s.currentStep] !== NEW_MARKET_DESCRIPTION,
-            'to-left': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_DESCRIPTION,
-            'to-right': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_DESCRIPTION,
-            'display-form': newMarketCreationOrder[s.currentStep] === NEW_MARKET_DESCRIPTION,
-            'from-right': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_DESCRIPTION,
-            'from-left': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_DESCRIPTION,
+            'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION),
+            'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION),
+            'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION),
+            'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION)
           })}
           description={p.newMarket.description}
           updateValidity={isValid => this.setState({ isValid })}
@@ -92,12 +90,10 @@ export default class CreateMarketForm extends Component {
         />
         <CreateMarketFormOutcomes
           className={classNames({
-            'hide-form': newMarketCreationOrder[s.currentStep] !== NEW_MARKET_OUTCOMES,
-            'to-left': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_OUTCOMES,
-            'to-right': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_OUTCOMES,
-            'display-form': newMarketCreationOrder[s.currentStep] === NEW_MARKET_OUTCOMES,
-            'from-right': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_OUTCOMES,
-            'from-left': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_OUTCOMES,
+            'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES),
+            'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES),
+            'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES),
+            'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES)
           })}
           type={p.newMarket.type}
           outcomes={p.newMarket.outcomes}
@@ -109,12 +105,10 @@ export default class CreateMarketForm extends Component {
         />
         <CreateMarketFormExpirySource
           className={classNames({
-            'hide-form': newMarketCreationOrder[s.currentStep] !== NEW_MARKET_RESOLUTION_SOURCE,
-            'to-left': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_RESOLUTION_SOURCE,
-            'to-right': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_RESOLUTION_SOURCE,
-            'display-form': newMarketCreationOrder[s.currentStep] === NEW_MARKET_RESOLUTION_SOURCE,
-            'from-right': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_RESOLUTION_SOURCE,
-            'from-left': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_RESOLUTION_SOURCE,
+            'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE),
+            'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE),
+            'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE),
+            'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE)
           })}
           expirySourceType={p.newMarket.expirySourceType}
           expirySource={p.newMarket.expirySource}
@@ -123,12 +117,10 @@ export default class CreateMarketForm extends Component {
         />
         <CreateMarketFormEndDate
           className={classNames({
-            'hide-form': newMarketCreationOrder[s.currentStep] !== NEW_MARKET_END_DATE,
-            'to-left': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_END_DATE,
-            'to-right': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_END_DATE,
-            'display-form': newMarketCreationOrder[s.currentStep] === NEW_MARKET_END_DATE,
-            'from-right': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_END_DATE,
-            'from-left': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_END_DATE,
+            'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE),
+            'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE),
+            'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE),
+            'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE)
           })}
           endDate={p.newMarket.endDate}
           updateValidity={isValid => this.setState({ isValid })}
@@ -136,12 +128,10 @@ export default class CreateMarketForm extends Component {
         />
         <CreateMarketFormDetails
           className={classNames({
-            'hide-form': newMarketCreationOrder[s.currentStep] !== NEW_MARKET_DETAILS,
-            'to-left': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_DETAILS,
-            'to-right': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_DETAILS,
-            'display-form': newMarketCreationOrder[s.currentStep] === NEW_MARKET_DETAILS,
-            'from-right': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_DETAILS,
-            'from-left': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_DETAILS,
+            'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS),
+            'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS),
+            'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS),
+            'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS)
           })}
           currentStep={p.newMarket.currentStep}
           detailsText={p.newMarket.detailsText}
@@ -150,12 +140,10 @@ export default class CreateMarketForm extends Component {
         />
         <CreateMarketFormTopic
           className={classNames({
-            'hide-form': newMarketCreationOrder[s.currentStep] !== NEW_MARKET_TOPIC,
-            'to-left': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_TOPIC,
-            'to-right': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_TOPIC,
-            'display-form': newMarketCreationOrder[s.currentStep] === NEW_MARKET_TOPIC,
-            'from-right': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_TOPIC,
-            'from-left': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_TOPIC,
+            'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC),
+            'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC),
+            'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC),
+            'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC)
           })}
           topic={p.newMarket.topic}
           updateValidity={isValid => this.setState({ isValid })}
@@ -163,12 +151,10 @@ export default class CreateMarketForm extends Component {
         />
         <CreateMarketFormKeywords
           className={classNames({
-            'hide-form': newMarketCreationOrder[s.currentStep] !== NEW_MARKET_KEYWORDS,
-            'to-left': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_KEYWORDS,
-            'to-right': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_KEYWORDS,
-            'display-form': newMarketCreationOrder[s.currentStep] === NEW_MARKET_KEYWORDS,
-            'from-right': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_KEYWORDS,
-            'from-left': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_KEYWORDS,
+            'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS),
+            'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS),
+            'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS),
+            'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS)
           })}
           currentStep={p.newMarket.currentStep}
           keywords={p.newMarket.keywords}
@@ -177,12 +163,10 @@ export default class CreateMarketForm extends Component {
         />
         <CreateMarketFormFees
           className={classNames({
-            'hide-form': newMarketCreationOrder[s.currentStep] !== NEW_MARKET_FEES,
-            'to-left': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_FEES,
-            'to-right': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_FEES,
-            'display-form': newMarketCreationOrder[s.currentStep] === NEW_MARKET_FEES,
-            'from-right': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_FEES,
-            'from-left': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_FEES,
+            'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_FEES) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_FEES),
+            'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_FEES) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_FEES),
+            'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_FEES) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_FEES),
+            'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_FEES) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_FEES)
           })}
           currentStep={p.newMarket.currentStep}
           takerFee={p.newMarket.takerFee}
@@ -192,12 +176,10 @@ export default class CreateMarketForm extends Component {
         />
         <CreateMarketFormOrderBook
           className={classNames({
-            'hide-form': newMarketCreationOrder[s.currentStep] !== NEW_MARKET_ORDER_BOOK,
-            'to-left': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_ORDER_BOOK,
-            'to-right': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] !== NEW_MARKET_ORDER_BOOK,
-            'display-form': newMarketCreationOrder[s.currentStep] === NEW_MARKET_ORDER_BOOK,
-            'from-right': s.canAnimate && s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_ORDER_BOOK,
-            'from-left': s.canAnimate && !s.stepIncreasing && newMarketCreationOrder[s.currentStep] === NEW_MARKET_ORDER_BOOK,
+            'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK),
+            'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK),
+            'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK),
+            'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK)
           })}
           type={p.newMarket.type}
           currentStep={p.newMarket.currentStep}
