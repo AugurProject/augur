@@ -214,7 +214,6 @@ export function constructFundedAccountTransaction(log) {
 }
 
 export function constructMarketCreatedTransaction(log, description, dispatch) {
-  console.log('constructMarketCreatedTransaction:', log, description);
   const transaction = { data: {} };
   transaction.type = CREATE_MARKET;
   transaction.description = description.split('~|>')[0];
@@ -524,6 +523,7 @@ export function constructLogAddTxTransaction(trade, marketID, marketType, descri
   const maxValue = abi.bignum(market.maxValue);
   const minValue = abi.bignum(market.minValue);
   const fees = augur.calculateFxpTradingFees(makerFee, takerFee);
+  const rawPrice = marketType === SCALAR ? augur.expandScalarPrice(minValue, trade.price) : trade.price;
   const range = marketType === SCALAR ? abi.fix(maxValue.minus(minValue)) : constants.ONE;
   const adjustedFees = augur.calculateFxpMakerTakerFees(augur.calculateFxpAdjustedTradingFee(fees.tradingFee, abi.fix(trade.price), range), fees.makerProportionOfFee, false, true);
   const fxpShares = abi.fix(trade.amount);
@@ -559,7 +559,7 @@ export function constructLogAddTxTransaction(trade, marketID, marketType, descri
       },
       message: `${action} ${shares.full} for ${formatEther(abi.unfix(trade.type === BUY ? totalCostPerShare : totalReturnPerShare)).full} / share`,
       numShares: shares,
-      noFeePrice: price,
+      noFeePrice: formatEther(rawPrice),
       freeze: {
         verb: trade.inProgress ? 'freezing' : 'froze',
         noFeeCost: type === ASK ? undefined : formatEther(abi.unfix(noFeeCost)),
