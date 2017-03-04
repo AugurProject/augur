@@ -24124,7 +24124,7 @@ BigNumber.config({
 var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/slashRep"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register"), require("./modules/topics"), require("./modules/modifyOrderBook"), require("./modules/generateOrderBook")];
 
 function Augur() {
-  this.version = "3.13.9";
+  this.version = "3.13.10";
 
   this.options = {
     debug: {
@@ -53070,16 +53070,13 @@ module.exports = {
 
     if (iv && iv.constructor === String) iv = str2buf(iv);
     if (salt && salt.constructor === String) salt = str2buf(salt);
-    if (ciphertext && ciphertext.constructor === String)
-      ciphertext = str2buf(ciphertext);
+    if (ciphertext && ciphertext.constructor === String) ciphertext = str2buf(ciphertext);
 
     if (keyObjectCrypto.kdf === "scrypt") {
-      this.constants.scrypt = {
-        n: keyObjectCrypto.kdfparams.n,
-        r: keyObjectCrypto.kdfparams.r,
-        p: keyObjectCrypto.kdfparams.p,
-        dklen: keyObjectCrypto.kdfparams.dklen
-      };
+      this.constants.scrypt.n = keyObjectCrypto.kdfparams.n;
+      this.constants.scrypt.r = keyObjectCrypto.kdfparams.r;
+      this.constants.scrypt.p = keyObjectCrypto.kdfparams.p;
+      this.constants.scrypt.dklen = keyObjectCrypto.kdfparams.dklen;
     } else {
       if (keyObjectCrypto.kdfparams.prf !== "hmac-sha256") {
         throw new Error("PBKDF2 only supported with HMAC-SHA256");
