@@ -1,0 +1,24 @@
+.create-market-main-title {
+  .initial-title.hide-title,
+  .preview-title.hide-title {
+    display: none;
+  }
+
+  .initial-title.display-title,
+  .preview-title.display-title {
+    display: block;
+  }
+
+  .title-animation-helper {
+    transition-duration: @animation-speed-slow;
+    transition-property: margin;
+
+    &.hide-title {
+      margin: 2em 0;
+    }
+
+    &.display-title {
+      margin: 1em 0;
+    }
+  }
+}

@@ -70,6 +70,7 @@ export default class CreateMarketForm extends Component {
       <article className={classNames('create-market-form', { 'no-preview': s.currentStep === 0 })}>
         <CreateMarketFormType
           className={classNames({
+            'can-hide': s.currentStep >= newMarketCreationOrder.indexOf(NEW_MARKET_TYPE) + 1,
             'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_TYPE) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_TYPE),
             'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_TYPE) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_TYPE),
           })}
@@ -77,132 +78,121 @@ export default class CreateMarketForm extends Component {
           addValidationToNewMarket={p.addValidationToNewMarket}
           updateNewMarket={p.updateNewMarket}
         />
-        <CreateMarketFormDescription
-          className={classNames({
-            'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION),
-            'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION),
-            'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION),
-            'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION)
-          })}
-          description={p.newMarket.description}
-          updateValidity={isValid => this.setState({ isValid })}
-          updateNewMarket={p.updateNewMarket}
-        />
-        <CreateMarketFormOutcomes
-          className={classNames({
-            'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES),
-            'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES),
-            'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES),
-            'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES)
-          })}
-          type={p.newMarket.type}
-          outcomes={p.newMarket.outcomes}
-          scalarSmallNum={p.newMarket.scalarSmallNum}
-          scalarBigNum={p.newMarket.scalarBigNum}
-          currentStep={p.newMarket.currentStep}
-          updateValidity={isValid => this.setState({ isValid })}
-          updateNewMarket={p.updateNewMarket}
-        />
-        <CreateMarketFormExpirySource
-          className={classNames({
-            'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE),
-            'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE),
-            'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE),
-            'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE)
-          })}
-          expirySourceType={p.newMarket.expirySourceType}
-          expirySource={p.newMarket.expirySource}
-          updateValidity={isValid => this.setState({ isValid })}
-          updateNewMarket={p.updateNewMarket}
-        />
-        <CreateMarketFormEndDate
-          className={classNames({
-            'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE),
-            'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE),
-            'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE),
-            'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE)
-          })}
-          endDate={p.newMarket.endDate}
-          updateValidity={isValid => this.setState({ isValid })}
-          updateNewMarket={p.updateNewMarket}
-        />
-        <CreateMarketFormDetails
-          className={classNames({
-            'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS),
-            'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS),
-            'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS),
-            'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS)
-          })}
-          currentStep={p.newMarket.currentStep}
-          detailsText={p.newMarket.detailsText}
-          updateValidity={isValid => this.setState({ isValid })}
-          updateNewMarket={p.updateNewMarket}
-        />
-        <CreateMarketFormTopic
-          className={classNames({
-            'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC),
-            'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC),
-            'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC),
-            'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC)
-          })}
-          topic={p.newMarket.topic}
-          updateValidity={isValid => this.setState({ isValid })}
-          updateNewMarket={p.updateNewMarket}
-        />
-        <CreateMarketFormKeywords
-          className={classNames({
-            'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS),
-            'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS),
-            'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS),
-            'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS)
-          })}
-          currentStep={p.newMarket.currentStep}
-          keywords={p.newMarket.keywords}
-          updateValidity={isValid => this.setState({ isValid })}
-          updateNewMarket={p.updateNewMarket}
-        />
-        <CreateMarketFormFees
-          className={classNames({
-            'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_FEES) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_FEES),
-            'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_FEES) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_FEES),
-            'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_FEES) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_FEES),
-            'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_FEES) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_FEES)
-          })}
-          currentStep={p.newMarket.currentStep}
-          takerFee={p.newMarket.takerFee}
-          makerFee={p.newMarket.makerFee}
-          updateValidity={isValid => this.setState({ isValid })}
-          updateNewMarket={p.updateNewMarket}
-        />
-        <CreateMarketFormOrderBook
-          className={classNames({
-            'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK),
-            'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK),
-            'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK),
-            'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK)
-          })}
-          type={p.newMarket.type}
-          currentStep={p.newMarket.currentStep}
-          outcomes={p.newMarket.outcomes}
-          orderBook={p.newMarket.orderBook}
-          addOrderToNewMarket={p.addOrderToNewMarket}
-          removeOrderFromNewMarket={p.removeOrderFromNewMarket}
-          updateValidity={isValid => this.setState({ isValid })}
-          updateNewMarket={p.updateNewMarket}
-        />
-        <CreateMarketFormButtons
-          currentStep={p.newMarket.currentStep}
-          isValid={s.isValid}
-          validations={p.newMarket.validations}
-          newMarket={p.newMarket}
-          resetValidity={() => this.resetValidity()}
-          updateValidity={isValid => this.setState({ isValid })}
-          addValidationToNewMarket={p.addValidationToNewMarket}
-          removeValidationFromNewMarket={p.removeValidationFromNewMarket}
-          updateNewMarket={p.updateNewMarket}
-          submitNewMarket={p.submitNewMarket}
-        />
       </article>
     );
   }
 }
+
+// <CreateMarketFormDescription
+//   className={classNames({
+//     'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION),
+//     'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION),
+//     'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION),
+//     'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION)
+//   })}
+//   description={p.newMarket.description}
+//   updateValidity={isValid => this.setState({ isValid })}
+//   updateNewMarket={p.updateNewMarket}
+// />
+// <CreateMarketFormOutcomes
+//   className={classNames({
+//     'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES),
+//     'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES),
+//     'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES),
+//     'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES)
+//   })}
+//   type={p.newMarket.type}
+//   outcomes={p.newMarket.outcomes}
+//   scalarSmallNum={p.newMarket.scalarSmallNum}
+//   scalarBigNum={p.newMarket.scalarBigNum}
+//   currentStep={p.newMarket.currentStep}
+//   updateValidity={isValid => this.setState({ isValid })}
+//   updateNewMarket={p.updateNewMarket}
+// />
+// <CreateMarketFormExpirySource
+//   className={classNames({
+//     'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE),
+//     'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE),
+//     'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE),
+//     'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE)
+//   })}
+//   expirySourceType={p.newMarket.expirySourceType}
+//   expirySource={p.newMarket.expirySource}
+//   updateValidity={isValid => this.setState({ isValid })}
+//   updateNewMarket={p.updateNewMarket}
+// />
+// <CreateMarketFormEndDate
+//   className={classNames({
+//     'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE),
+//     'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE),
+//     'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE),
+//     'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE)
+//   })}
+//   endDate={p.newMarket.endDate}
+//   updateValidity={isValid => this.setState({ isValid })}
+//   updateNewMarket={p.updateNewMarket}
+// />
+// <CreateMarketFormDetails
+//   className={classNames({
+//     'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS),
+//     'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS),
+//     'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS),
+//     'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS)
+//   })}
+//   currentStep={p.newMarket.currentStep}
+//   detailsText={p.newMarket.detailsText}
+//   updateValidity={isValid => this.setState({ isValid })}
+//   updateNewMarket={p.updateNewMarket}
+// />
+// <CreateMarketFormTopic
+//   className={classNames({
+//     'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC),
+//     'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC),
+//     'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC),
+//     'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC)
+//   })}
+//   topic={p.newMarket.topic}
+//   updateValidity={isValid => this.setState({ isValid })}
+//   updateNewMarket={p.updateNewMarket}
+// />
+// <CreateMarketFormKeywords
+//   className={classNames({
+//     'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS),
+//     'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS),
+//     'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS),
+//     'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS)
+//   })}
+//   currentStep={p.newMarket.currentStep}
+//   keywords={p.newMarket.keywords}
+//   updateValidity={isValid => this.setState({ isValid })}
+//   updateNewMarket={p.updateNewMarket}
+// />
+// <CreateMarketFormFees
+//   className={classNames({
+//     'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_FEES) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_FEES),
+//     'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_FEES) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_FEES),
+//     'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_FEES) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_FEES),
+//     'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_FEES) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_FEES)
+//   })}
+//   currentStep={p.newMarket.currentStep}
+//   takerFee={p.newMarket.takerFee}
+//   makerFee={p.newMarket.makerFee}
+//   updateValidity={isValid => this.setState({ isValid })}
+//   updateNewMarket={p.updateNewMarket}
+// />
+// <CreateMarketFormOrderBook
+//   className={classNames({
+//     'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK),
+//     'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK),
+//     'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK),
+//     'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK)
+//   })}
+//   type={p.newMarket.type}
+//   currentStep={p.newMarket.currentStep}
+//   outcomes={p.newMarket.outcomes}
+//   orderBook={p.newMarket.orderBook}
+//   addOrderToNewMarket={p.addOrderToNewMarket}
+//   removeOrderFromNewMarket={p.removeOrderFromNewMarket}
+//   updateValidity={isValid => this.setState({ isValid })}
+//   updateNewMarket={p.updateNewMarket}
+// />

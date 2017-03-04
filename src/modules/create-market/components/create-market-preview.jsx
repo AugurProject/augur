@@ -6,7 +6,7 @@ import newMarketCreationOrder from 'modules/create-market/constants/new-market-c
 import {
   NEW_MARKET_DESCRIPTION,
   NEW_MARKET_OUTCOMES,
-  NEW_MARKET_RESOLUTION_SOURCE,
+  NEW_MARKET_EXPIRY_SOURCE,
   NEW_MARKET_END_DATE,
   NEW_MARKET_DETAILS,
   NEW_MARKET_TOPIC,
@@ -73,8 +73,8 @@ const CreateMarketPreview = (p) => {
           {newMarket.description}
         </span>
         <span
-          className={classNames('create-market-resolution-source', {
-            'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_RESOLUTION_SOURCE,
+          className={classNames('create-market-expiry-source', {
+            'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_EXPIRY_SOURCE,
             'is-null': !newMarket.expirySource && (newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC || !newMarket.expirySourceType),
             'has-value': !!newMarket.expirySource && !!newMarket.expirySourceType
           })}

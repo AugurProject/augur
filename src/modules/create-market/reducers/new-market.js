@@ -10,9 +10,10 @@ import {
 import { TAKER_FEE_DEFAULT, MAKER_FEE_DEFAULT } from 'modules/create-market/constants/new-market-constraints';
 
 const DEFAULT_STATE = {
+  isValid: false,
   validations: [],
   currentStep: 0,
-  type: null,
+  type: '',
   outcomes: [],
   scalarSmallNum: '',
   scalarBigNum: '',

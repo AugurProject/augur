@@ -5,7 +5,6 @@ import { NEW_MARKET_TYPE, NEW_MARKET_OUTCOMES } from 'modules/create-market/cons
 
 const CreateMarketFormType = p => (
   <article className={`create-market-form-part create-market-form-type ${p.className || ''}`}>
-    <h2>Create A Market</h2>
     <div className="create-market-type-buttons">
       <button
         className="unstyled market-type"
