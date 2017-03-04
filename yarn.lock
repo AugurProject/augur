@@ -374,9 +374,9 @@ augur-contracts@2.10.5:
   dependencies:
     clone "1.0.2"
 
-augur.js@3.13.9:
-  version "3.13.9"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.13.9.tgz#2f514aaf62809b3875889d223b8d8af201c421ca"
+augur.js@3.13.11:
+  version "3.13.11"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.13.11.tgz#536c2c4d6563ba628a2f70cda844f51ca23b2569"
   dependencies:
     async "1.5.2"
     augur-abi "1.1.1"
@@ -389,7 +389,7 @@ augur.js@3.13.9:
     ethereumjs-connect "2.3.1"
     ethereumjs-tx "1.2.5"
     ethrpc "2.5.1"
-    keythereum "0.4.2"
+    keythereum "0.4.3"
     locks "0.2.2"
     request "2.74.0"
     uuid "3.0.0"
@@ -2548,7 +2548,7 @@ elegant-spinner@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/elegant-spinner/-/elegant-spinner-1.0.1.tgz#db043521c95d7e303fd8f345bedc3349cfb0729e"
 
-elliptic@6.4.0, elliptic@^6.0.0, elliptic@^6.2.3:
+elliptic@6.4.0:
   version "6.4.0"
   resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.4.0.tgz#cac9af8762c85836187003c8dfe193e5e2eae5df"
   dependencies:
@@ -2560,7 +2560,7 @@ elliptic@6.4.0, elliptic@^6.0.0, elliptic@^6.2.3:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.0"
 
-elliptic@^6.3.1:
+elliptic@^6.0.0, elliptic@^6.2.3, elliptic@^6.3.1:
   version "6.3.3"
   resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.3.3.tgz#5482d9646d54bcb89fd7d994fc9e2e9568876e3f"
   dependencies:
@@ -4606,9 +4606,9 @@ keccakjs@^0.2.0:
     browserify-sha3 "^0.0.1"
     sha3 "^1.1.0"
 
-keythereum@0.4.2:
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/keythereum/-/keythereum-0.4.2.tgz#cf64d127d771675d862f785e77a9ee6242efa9d4"
+keythereum@0.4.3:
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/keythereum/-/keythereum-0.4.3.tgz#514acfec3cc4d04b33a21f5d081600719457d2c0"
   dependencies:
     elliptic "6.4.0"
     ethereumjs-util "5.1.1"
@@ -6410,9 +6410,13 @@ q@^1.1.2:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/q/-/q-1.4.1.tgz#55705bcd93c5f3673530c2c2cbc0c2b3addc286e"
 
-qs@6.2.0, qs@^6.1.0, qs@~6.2.0:
+qs@6.2.0, qs@~6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.2.0.tgz#3b7848c03c2dece69a9522b0fae8c4126d745f3b"
+
+qs@^6.1.0, qs@~6.3.0:
+  version "6.3.1"
+  resolved "https://registry.yarnpkg.com/qs/-/qs-6.3.1.tgz#918c0b3bcd36679772baf135b1acb4c1651ed79d"
 
 qs@~1.1.0:
   version "1.1.0"
@@ -6421,10 +6425,6 @@ qs@~1.1.0:
 qs@~5.2.0:
   version "5.2.1"
   resolved "https://registry.yarnpkg.com/qs/-/qs-5.2.1.tgz#801fee030e0b9450d6385adc48a4cc55b44aedfc"
-
-qs@~6.3.0:
-  version "6.3.1"
-  resolved "https://registry.yarnpkg.com/qs/-/qs-6.3.1.tgz#918c0b3bcd36679772baf135b1acb4c1651ed79d"
 
 query-string@^4.1.0:
   version "4.3.2"
