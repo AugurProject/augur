@@ -53,8 +53,26 @@ const LoginMessagePage = p => (
         </li>
       </ol>
       <h2>Technical updates:</h2>
+      <h3>March 4, 2017</h3>
+      <ol>
+        <li>
+          Fixed a bug in keythereum where the &quot;recover&quot; function could overwrite the scrypt memory constant.
+        </li>
+        <li>
+          Scalar limit price now displays correctly for bids and asks in the trade preview.
+        </li>
+        <li>
+          De-adjusted scalar prices for display in transactions which create new orders.
+        </li>
+        <li>
+          Renamed Bid Q and Ask Q to Bid Qty and Ask Qty in order-book-header component.
+        </li>
+      </ol>
       <h3>March 3, 2017</h3>
       <ol>
+        <li>
+          ethereumjs-connect is now compatible with the new refactored version of ethrpc.
+        </li>
         <li>
           ShapeShift and Coinbase buttons are now integrated into the accounts page in the UI.  Note that these are disabled while beta testing.
         </li>
