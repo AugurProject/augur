@@ -368,19 +368,19 @@ augur-abi@1.1.1:
     ethereumjs-abi "0.6.2"
     js-sha3 "0.3.1"
 
-augur-contracts@2.10.5:
-  version "2.10.5"
-  resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-2.10.5.tgz#4654f0452874ccc04186955846ceb3eb519cd55f"
+augur-contracts@2.10.6:
+  version "2.10.6"
+  resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-2.10.6.tgz#cd9dcfb4f92075dc9b827d0d00f9e705b0e609ff"
   dependencies:
     clone "1.0.2"
 
-augur.js@3.13.11:
-  version "3.13.11"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.13.11.tgz#536c2c4d6563ba628a2f70cda844f51ca23b2569"
+augur.js@3.13.12:
+  version "3.13.12"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.13.12.tgz#4d02680539dbce23983de281b64cf8f4bf683823"
   dependencies:
     async "1.5.2"
     augur-abi "1.1.1"
-    augur-contracts "2.10.5"
+    augur-contracts "2.10.6"
     bignumber.js "2.3.0"
     browser-request "0.3.3"
     bs58 "3.0.0"
@@ -2548,7 +2548,7 @@ elegant-spinner@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/elegant-spinner/-/elegant-spinner-1.0.1.tgz#db043521c95d7e303fd8f345bedc3349cfb0729e"
 
-elliptic@6.4.0:
+elliptic@6.4.0, elliptic@^6.2.3:
   version "6.4.0"
   resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.4.0.tgz#cac9af8762c85836187003c8dfe193e5e2eae5df"
   dependencies:
@@ -2560,7 +2560,7 @@ elliptic@6.4.0:
     minimalistic-assert "^1.0.0"
     minimalistic-crypto-utils "^1.0.0"
 
-elliptic@^6.0.0, elliptic@^6.2.3, elliptic@^6.3.1:
+elliptic@^6.0.0, elliptic@^6.3.1:
   version "6.3.3"
   resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.3.3.tgz#5482d9646d54bcb89fd7d994fc9e2e9568876e3f"
   dependencies:
