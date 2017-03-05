@@ -22600,21 +22600,21 @@ module.exports={
         "ExpiringEvents": "0xe4714fcbdcdba49629bc408183ef40d120700b8d", 
         "Faucets": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e", 
         "ForkPenalize": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7", 
-        "Forking": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f", 
+        "Forking": "0xdc2ee03ac61c4aa4302a766a300ea8130aeca7e5", 
         "FxpFunctions": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3", 
         "Info": "0x8a4e2993a9972ee035453bb5674816fc3a698718", 
-        "MakeReports": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2", 
+        "MakeReports": "0x758d0c47d4bd19cef7c2a389c3992351cc777ac1", 
         "Markets": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea", 
         "Payout": "0x35152caa07026203a1add680771afb690d872d7d", 
         "PenalizationCatchup": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd", 
-        "PenalizeNotEnoughReports": "0x8c19616de17acdfbc933b99d9f529a689d22098f", 
+        "PenalizeNotEnoughReports": "0xa30e071836c627fd92455c00c0ea907d21bb4ada", 
         "ProportionCorrect": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2", 
         "Register": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c", 
         "Reporting": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6", 
-        "ReportingThreshold": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
-        "RoundTwo": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
-        "RoundTwoPenalize": "0xcd6c7bc634257f82903b182142aae7156d72a200", 
-        "SendReputation": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
+        "ReportingThreshold": "0x37fef72e3020d791b350f3a1d30657b63dce3bff", 
+        "RoundTwo": "0xbb1e0f685bd3f2c8a03eeae2da5f61808de4886a", 
+        "RoundTwoPenalize": "0x2ec40803caf9b49cc5de237ce341d486245145fd", 
+        "SendReputation": "0xfa52a66a44aa0b4470d08a0e357a99e93fb5d4b8", 
         "SlashRep": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
         "Topics": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d", 
         "Trade": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945", 
@@ -24124,7 +24124,7 @@ BigNumber.config({
 var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/slashRep"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register"), require("./modules/topics"), require("./modules/modifyOrderBook"), require("./modules/generateOrderBook")];
 
 function Augur() {
-  this.version = "3.13.11";
+  this.version = "3.13.12";
 
   this.options = {
     debug: {
