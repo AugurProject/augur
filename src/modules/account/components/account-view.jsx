@@ -28,15 +28,36 @@ export default class AccountPage extends Component {
       sendAmount: '',
       currency: 'ETH',
       recipientAddress: '',
-      isShowingModal: false,
-      size: 300
+      isShowingModal: false
     };
 
     this.handleTransfer = this.handleTransfer.bind(this);
     this.loginIDCopy = this.loginIDCopy.bind(this);
-    this.handleClick = () => this.setState({ isShowingModal: true });
-    this.handleClose = () => this.setState({ isShowingModal: false });
   }
+
+  handleModalClose = () => {
+    this.setState({
+      isShowingModal: false
+    });
+  };
+
+  handleModalOpenDeposit = () => {
+    this.setState({
+      isShowingModal: true,
+      size: 300,
+      message: 'Ether / REP Deposit Address',
+      value: this.props.account.address && this.props.account.address.indexOf('0x') === 0 && this.props.account.address.replace('0x', '')
+    });
+  };
+
+  handleModalOpenTransfer = () => {
+    this.setState({
+      isShowingModal: true,
+      size: 300,
+      message: 'Transfer your Ether Address',
+      value: this.props.account.downloadAccountDataString
+    });
+  };
 
   handleTransfer = (e) => {
     e.preventDefault();
@@ -132,24 +153,24 @@ export default class AccountPage extends Component {
                     </span>
                     <button
                       className="link"
-                      onClick={this.handleClick}
+                      onClick={this.handleModalOpenDeposit}
                     >
                       (QR code to despoit)
                     {
                       this.state.isShowingModal &&
                       <ModalContainer
-                        onClose={this.handleClose}
+                        onClose={this.handleModalClose}
                       >
                         <ModalDialog
-                          onClose={this.handleClose}
+                          onClose={this.handleModalClose}
                         >
                           <h1>
-                            Ether / REP Deposit Address
+                            {this.state.message}
                           </h1>
                           <p>
                             <QRCode
                               size={this.state.size}
-                              value={p.account.address && p.account.address.indexOf('0x') === 0 && p.account.address.replace('0x', '')}
+                              value={this.state.value}
                             />
                           </p>
                         </ModalDialog>
@@ -304,24 +325,24 @@ export default class AccountPage extends Component {
               <div className="transferWallet">
                 <button
                   className="link"
-                  onClick={this.handleClick}
+                  onClick={this.handleModalOpenTransfer}
                 >
                   (QR code to transfer wallet)
                 {
                   this.state.isShowingModal &&
                   <ModalContainer
-                    onClose={this.handleClose}
+                    onClose={this.handleModalClose}
                   >
                     <ModalDialog
-                      onClose={this.handleClose}
+                      onClose={this.handleModalClose}
                     >
                       <h1>
-                        Transfer your Ether Address
+                        {this.state.message}
                       </h1>
                       <p>
                         <QRCode
                           size={this.state.size}
-                          value={p.account.downloadAccountDataString}
+                          value={this.state.value}
                         />
                       </p>
                     </ModalDialog>
