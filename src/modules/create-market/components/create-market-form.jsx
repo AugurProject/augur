@@ -103,38 +103,33 @@ export default class CreateMarketForm extends Component {
           updateValidity={isValid => p.updateNewMarket({ isValid })}
           updateNewMarket={p.updateNewMarket}
         />
+        <CreateMarketFormOutcomes
+          className={classNames({
+            'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES),
+            'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES)
+          })}
+          type={p.newMarket.type}
+          outcomes={p.newMarket.outcomes}
+          scalarSmallNum={p.newMarket.scalarSmallNum}
+          scalarBigNum={p.newMarket.scalarBigNum}
+          currentStep={p.newMarket.currentStep}
+          updateValidity={isValid => this.setState({ isValid })}
+          updateNewMarket={p.updateNewMarket}
+        />
+        <CreateMarketFormExpirySource
+          className={classNames({
+            'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE),
+            'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE)
+          })}
+          expirySourceType={p.newMarket.expirySourceType}
+          expirySource={p.newMarket.expirySource}
+          updateValidity={isValid => this.setState({ isValid })}
+          updateNewMarket={p.updateNewMarket}
+        />
       </article>
     );
   }
 }
-
-// <CreateMarketFormOutcomes
-//   className={classNames({
-//     'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES),
-//     'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES),
-//     'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES),
-//     'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES)
-//   })}
-//   type={p.newMarket.type}
-//   outcomes={p.newMarket.outcomes}
-//   scalarSmallNum={p.newMarket.scalarSmallNum}
-//   scalarBigNum={p.newMarket.scalarBigNum}
-//   currentStep={p.newMarket.currentStep}
-//   updateValidity={isValid => this.setState({ isValid })}
-//   updateNewMarket={p.updateNewMarket}
-// />
-// <CreateMarketFormExpirySource
-//   className={classNames({
-//     'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE),
-//     'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE),
-//     'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE),
-//     'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE)
-//   })}
-//   expirySourceType={p.newMarket.expirySourceType}
-//   expirySource={p.newMarket.expirySource}
-//   updateValidity={isValid => this.setState({ isValid })}
-//   updateNewMarket={p.updateNewMarket}
-// />
 // <CreateMarketFormEndDate
 //   className={classNames({
 //     'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE),

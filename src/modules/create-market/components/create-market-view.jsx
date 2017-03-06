@@ -29,8 +29,6 @@ const CreateMarketView = p => (
         isValid={p.newMarket.isValid}
         validations={p.newMarket.validations}
         newMarket={p.newMarket}
-        resetValidity={() => this.resetValidity()}
-        updateValidity={isValid => this.setState({ isValid })}
         addValidationToNewMarket={p.addValidationToNewMarket}
         removeValidationFromNewMarket={p.removeValidationFromNewMarket}
         updateNewMarket={p.updateNewMarket}

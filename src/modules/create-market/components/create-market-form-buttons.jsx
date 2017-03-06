@@ -7,7 +7,6 @@ export default class CreateMarketFormButtons extends Component {
   static propTypes = {
     currentStep: PropTypes.number.isRequired,
     isValid: PropTypes.bool.isRequired,
-    updateValidity: PropTypes.func.isRequired,
     validations: PropTypes.array.isRequired,
     addValidationToNewMarket: PropTypes.func.isRequired,
     removeValidationFromNewMarket: PropTypes.func.isRequired,
@@ -26,6 +25,7 @@ export default class CreateMarketFormButtons extends Component {
     };
 
     this.updateNextButtonCopy = this.updateNextButtonCopy.bind(this);
+    this.handleBackButton = this.handleBackButton.bind(this);
     this.handleNextButton = this.handleNextButton.bind(this);
     this.updateFormButtonHeight = this.updateFormButtonHeight.bind(this);
   }
@@ -61,7 +61,7 @@ export default class CreateMarketFormButtons extends Component {
 
     if (currentStep === newMarketCreationOrder.length - 1) {
       nextButtonCopy = 'Create Market';
-      this.props.updateValidity(true);
+      this.props.updateNewMarket({ isValid: true });
     } else if (nextButtonCopy === newMarketCreationOrder[currentStep] &&
       currentStep !== newMarketCreationOrder.length - 1
     ) {
@@ -80,15 +80,17 @@ export default class CreateMarketFormButtons extends Component {
   }
 
   handleBackButton() {
-    console.log('go back!');
+    // TODO
   }
 
   handleNextButton() {
     if (this.props.currentStep === newMarketCreationOrder.length - 1) {
       this.props.submitNewMarket(this.props.newMarket);
     } else {
-      this.props.updateNewMarket({ currentStep: this.state.nextStep });
-      this.props.resetValidity();
+      this.props.updateNewMarket({
+        isValid: false,
+        currentStep: this.state.nextStep
+      });
     }
   }
 
@@ -119,7 +121,7 @@ export default class CreateMarketFormButtons extends Component {
               className={classNames('unstyled', {
                 'disable-button': !p.isValid
               })}
-              onClick={() => p.isValid && this.handleNextButton}
+              onClick={p.isValid && this.handleNextButton}
             >
               Next: {s.nextButtonCopy}
             </button>

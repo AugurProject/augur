@@ -40,6 +40,25 @@
       display: flex;
     }
 
+    &.hide-form-part {
+      animation-duration: @animation-speed-normal;
+      animation-fill-mode: forwards;
+      animation-name: hideFormPart;
+      display: flex;
+
+      aside {
+        animation-duration: @animation-speed-normal;
+        animation-fill-mode: forwards;
+        animation-name: slideOutAside;
+      }
+
+      form {
+        animation-duration: @animation-speed-normal;
+        animation-fill-mode: forwards;
+        animation-name: slideOutForm;
+      }
+    }
+
     &.display-form-part {
       animation-duration: @animation-speed-normal;
       animation-fill-mode: forwards;
@@ -107,6 +126,23 @@
   }
 }
 
+@keyframes hideFormPart {
+  0% {
+    display: flex;
+    opacity: 1;
+  }
+
+  99% {
+    display: flex;
+    opacity: 0;
+  }
+
+  100% {
+    display: none;
+    opacity: 0;
+  }
+}
+
 @keyframes slideInAside {
   from {
     transform: translateX(-10%) scale(1.08);
@@ -117,6 +153,16 @@
   }
 }
 
+@keyframes slideOutAside {
+  from {
+    transform: translateX(0%) scale(1);
+  }
+
+  to {
+    transform: translateX(-10%) scale(0.92);
+  }
+}
+
 @keyframes slideInForm {
   from {
     transform: translateX(10%) scale(1.08);
@@ -124,5 +170,15 @@
 
   to {
     transform: translateX(0%) scale(1);
+  }
+}
+
+@keyframes slideOutForm {
+  from {
+    transform: translateX(0%) scale(1);
+  }
+
+  to {
+    transform: translateX(10%) scale(0.92);
   }
 }

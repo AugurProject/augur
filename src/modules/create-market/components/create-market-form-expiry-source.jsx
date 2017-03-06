@@ -59,48 +59,56 @@ export default class CreateMarketFormExpirySource extends Component {
 
     return (
       <article className={`create-market-form-part ${p.className || ''}`}>
-        <h2>Resolution Source</h2>
-        <label htmlFor="expiry_generic">
-          <input
-            id="expiry_generic"
-            value={EXPIRY_SOURCE_GENERIC}
-            type="radio"
-            checked={p.expirySourceType === EXPIRY_SOURCE_GENERIC}
-            onChange={() => {
-              p.updateNewMarket({
-                expirySourceType: EXPIRY_SOURCE_GENERIC,
-                expirySource: ''
-              });
-              this.setState({ canCheckURL: false });
-            }}
-          />
-          Outcome will be covered by local, national or international news media.
-        </label>
-        <label htmlFor="expiry_specific">
-          <input
-            id="expiry_specific"
-            value={EXPIRY_SOURCE_SPECIFIC}
-            type="radio"
-            checked={p.expirySourceType === EXPIRY_SOURCE_SPECIFIC}
-            onChange={() => {
-              p.updateNewMarket({
-                expirySourceType: EXPIRY_SOURCE_SPECIFIC,
-                expirySource: ''
-              });
-              this.setState({ canCheckURL: false });
-            }}
-          />
-          Outcome will be detailed on a specific publicly available website:
-        </label>
-        <Input
-          className={classNames({ 'hide-field': p.expirySourceType !== EXPIRY_SOURCE_SPECIFIC })}
-          type="text"
-          value={p.expirySource}
-          onChange={expirySource => p.updateNewMarket({ expirySource })}
-        />
-        <CreateMarketFormErrors
-          errors={s.errors}
-        />
+        <div className="create-market-form-part-content">
+          <aside>
+            <h3>Expiration Source</h3>
+            <span>Where will reporters and traders be able to learn about the resolution of this market?</span>
+          </aside>
+          <div className="vertical-form-divider" />
+          <form>
+            <label htmlFor="expiry_generic">
+              <input
+                id="expiry_generic"
+                value={EXPIRY_SOURCE_GENERIC}
+                type="radio"
+                checked={p.expirySourceType === EXPIRY_SOURCE_GENERIC}
+                onChange={() => {
+                  p.updateNewMarket({
+                    expirySourceType: EXPIRY_SOURCE_GENERIC,
+                    expirySource: ''
+                  });
+                  this.setState({ canCheckURL: false });
+                }}
+              />
+              Outcome will be covered by local, national or international news media.
+            </label>
+            <label htmlFor="expiry_specific">
+              <input
+                id="expiry_specific"
+                value={EXPIRY_SOURCE_SPECIFIC}
+                type="radio"
+                checked={p.expirySourceType === EXPIRY_SOURCE_SPECIFIC}
+                onChange={() => {
+                  p.updateNewMarket({
+                    expirySourceType: EXPIRY_SOURCE_SPECIFIC,
+                    expirySource: ''
+                  });
+                  this.setState({ canCheckURL: false });
+                }}
+              />
+              Outcome will be detailed on a specific publicly available website:
+            </label>
+            <Input
+              className={classNames({ 'hide-field': p.expirySourceType !== EXPIRY_SOURCE_SPECIFIC })}
+              type="text"
+              value={p.expirySource}
+              onChange={expirySource => p.updateNewMarket({ expirySource })}
+            />
+            <CreateMarketFormErrors
+              errors={s.errors}
+            />
+          </form>
+        </div>
       </article>
     );
   }
