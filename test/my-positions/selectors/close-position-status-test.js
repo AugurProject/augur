@@ -9,7 +9,7 @@ import { CLOSE_DIALOG_CLOSING, CLOSE_DIALOG_FAILED, CLOSE_DIALOG_PARTIALLY_FAILE
 import { SUCCESS, FAILED } from 'modules/transactions/constants/statuses';
 import { CLEAR_CLOSE_POSITION_OUTCOME } from 'modules/my-positions/actions/clear-close-position-outcome';
 
-describe('modules/my-positions/selectors/close-position-status', function () {
+describe('modules/my-positions/selectors/close-position-status', () => {
   proxyquire.noPreserveCache().noCallThru();
 
   const middlewares = [thunk];
