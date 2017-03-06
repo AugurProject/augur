@@ -42,11 +42,12 @@ module.exports = {
   EPSILON: 1e-6,
 
   // a function to quickly reset the callCounts object.
-  ClearCallCounts: function(callCounts) {
-      var keys = Object.keys(callCounts);
-      for (keys in callCounts) {
-          callCounts[keys] = 0;
-      }
+  ClearCallCounts: function (callCounts) {
+    var keys = Object.keys(callCounts);
+    var numKeys = keys.length;
+    for (var i = 0, numKeys = keys.length; i < numKeys; ++i) {
+      callCounts[keys[i]] = 0;
+    }
   },
 
   print_residual: function (periodLength, label) {
