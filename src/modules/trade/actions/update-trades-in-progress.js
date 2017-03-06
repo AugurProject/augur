@@ -104,7 +104,6 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
       totalFee: 0,
       totalCost: 0
     };
-    console.log(newTradeDetails);
 
     // trade actions
     if (newTradeDetails.side && newTradeDetails.numShares && loginAccount.address) {

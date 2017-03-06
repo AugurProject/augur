@@ -53,8 +53,41 @@ const LoginMessagePage = p => (
         </li>
       </ol>
       <h2>Technical updates:</h2>
+      <h3>March 5, 2017</h3>
+      <ol>
+        <li>
+          The &quot;Snitch&quot; tab on the market detail page now displays any time an event is available for reporting, even if the user is not selected to report on it.
+        </li>
+        <li>
+          Fixed the conditions for whether the Report tab appears on the market detail page.
+        </li>
+        <li>
+          The browser console now always has debugging objects available (state/selectors/augurjs).  This will remain true for the rest of the beta.
+        </li>
+      </ol>
+      <h3>March 4, 2017</h3>
+      <ol>
+        <li>
+          The getEventsToReportOn method on the reportingThreshold contract is now indexed correctly.
+        </li>
+        <li>
+          Fixed a bug in keythereum where the &quot;recover&quot; function could overwrite the scrypt memory constant.
+        </li>
+        <li>
+          Scalar limit price now displays correctly for bids and asks in the trade preview.
+        </li>
+        <li>
+          De-adjusted scalar prices for display in transactions which create new orders.
+        </li>
+        <li>
+          Renamed Bid Q and Ask Q to Bid Qty and Ask Qty in order-book-header component.
+        </li>
+      </ol>
       <h3>March 3, 2017</h3>
       <ol>
+        <li>
+          ethereumjs-connect is now compatible with the new refactored version of ethrpc.
+        </li>
         <li>
           ShapeShift and Coinbase buttons are now integrated into the accounts page in the UI.  Note that these are disabled while beta testing.
         </li>

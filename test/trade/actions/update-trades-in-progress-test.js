@@ -201,7 +201,6 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
     it('should handle clearing out a trade in progress if limitPrice is set to 0 on a trade ready to be placed', () => {
 			// marketID, outcomeID, side, numShares, limitPrice, maxCost
       store.dispatch(action.updateTradesInProgress('testBinaryMarketID', '2', BUY, undefined, '0', undefined));
-      console.log(store.getActions()[0].data.details);
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
@@ -321,7 +320,6 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
 
     it('should pass shape tests for buying 10 shares of Outcome 1 at the default limitPrice', () => {
       store.dispatch(action.updateTradesInProgress('testCategoricalMarketID', '1', BUY, '10.0', undefined, undefined));
-      console.log(store.getActions()[0]);
       updateTradesInProgressActionShapeAssertion(store.getActions()[0]);
     });
 
@@ -621,23 +619,23 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             side: BUY,
             numShares: '10',
             limitPrice: '55',
-            totalFee: '5.36982248520710025',
-            totalCost: '-555.36982248520710025',
+            totalFee: '6.5',
+            totalCost: '-656.5',
             tradeActions: [
               {
                 action: 'BID',
                 shares: '10',
                 gasEth: '0.01450404',
-                feeEth: '5.36982248520710025',
-                feePercent: '0.9763313609467455',
-                costEth: '-555.36982248520710025',
-                avgPrice: '55.536982248520710025',
-                noFeePrice: '55'
+                feeEth: '6.5',
+                feePercent: '1',
+                costEth: '-656.5',
+                avgPrice: '65.65',
+                noFeePrice: '65'
               }
             ],
-            tradingFeesEth: '5.36982248520710025',
+            tradingFeesEth: '6.5',
             gasFeesRealEth: '0.01450404',
-            feePercent: '0.9763313609467455'
+            feePercent: '1'
           }
         }
       }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`);
@@ -659,23 +657,23 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             side: SELL,
             numShares: '10',
             limitPrice: '55',
-            totalFee: '5.36982248520710025',
-            totalCost: '-15.36982248520710025',
+            totalFee: '6.5',
+            totalCost: '-16.5',
             tradeActions: [
               {
                 action: 'SHORT_ASK',
                 shares: '10',
                 gasEth: '0.02791268',
-                feeEth: '5.36982248520710025',
-                feePercent: '0.9763313609467455',
-                costEth: '-15.36982248520710025',
-                avgPrice: '1.536982248520710025',
-                noFeePrice: '55'
+                feeEth: '6.5',
+                feePercent: '1',
+                costEth: '-16.5',
+                avgPrice: '1.65',
+                noFeePrice: '65'
               }
             ],
-            tradingFeesEth: '5.36982248520710025',
+            tradingFeesEth: '6.5',
             gasFeesRealEth: '0.02791268',
-            feePercent: '25.891583452211126167'
+            feePercent: '28.260869565217391304'
           }
         }
       }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`);
@@ -755,21 +753,21 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             side: BUY,
             numShares: '10',
             limitPrice: '70',
-            totalFee: '6.9585798816568041',
-            totalCost: '-706.9585798816568041',
+            totalFee: '7.57396449704142',
+            totalCost: '-807.57396449704142',
             tradeActions: [{
               action: 'BID',
               shares: '10',
               gasEth: '0.01450404',
-              feeEth: '6.9585798816568041',
-              feePercent: '0.9940828402366863',
-              costEth: '-706.9585798816568041',
-              avgPrice: '70.69585798816568041',
-              noFeePrice: '70'
+              feeEth: '7.57396449704142',
+              feePercent: '0.9467455621301775',
+              costEth: '-807.57396449704142',
+              avgPrice: '80.757396449704142',
+              noFeePrice: '80'
             }],
-            tradingFeesEth: '6.9585798816568041',
+            tradingFeesEth: '7.57396449704142',
             gasFeesRealEth: '0.01450404',
-            feePercent: '0.9940828402366863'
+            feePercent: '0.9467455621301775'
           }
         }
       }, `Didn't update the tradeDetails object to the new calcs given new limit`);
@@ -786,23 +784,23 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             side: BUY,
             numShares: '10',
             limitPrice: '0',
-            totalFee: '0',
-            totalCost: '0',
+            totalFee: '0.2840236686390532',
+            totalCost: '-100.2840236686390532',
             tradeActions: [
               {
                 action: 'BID',
                 shares: '10',
                 gasEth: '0.01450404',
-                feeEth: '0',
-                feePercent: '0',
-                costEth: '0',
-                avgPrice: '0',
-                noFeePrice: '0'
+                feeEth: '0.2840236686390532',
+                feePercent: '0.2840236686390532',
+                costEth: '-100.2840236686390532',
+                avgPrice: '10.02840236686390532',
+                noFeePrice: '10'
               }
             ],
-            tradingFeesEth: '0',
+            tradingFeesEth: '0.2840236686390532',
             gasFeesRealEth: '0.01450404',
-            feePercent: 'NaN'
+            feePercent: '0.2840236686390532'
           }
         }
       }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`);
@@ -819,21 +817,21 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             side: BUY,
             numShares: '25',
             limitPrice: '55',
-            totalFee: '13.424556213017750625',
-            totalCost: '-1388.424556213017750625',
+            totalFee: '16.25',
+            totalCost: '-1641.25',
             tradeActions: [{
               action: 'BID',
               shares: '25',
               gasEth: '0.01450404',
-              feeEth: '13.424556213017750625',
-              feePercent: '0.9763313609467455',
-              costEth: '-1388.424556213017750625',
-              avgPrice: '55.536982248520710025',
-              noFeePrice: '55'
+              feeEth: '16.25',
+              feePercent: '1',
+              costEth: '-1641.25',
+              avgPrice: '65.65',
+              noFeePrice: '65'
             }],
-            tradingFeesEth: '13.424556213017750625',
+            tradingFeesEth: '16.25',
             gasFeesRealEth: '0.01450404',
-            feePercent: '0.9763313609467455'
+            feePercent: '1'
           }
         }
       }, `Didn't update the tradeDetails object to the new calcs given new limit`);
@@ -850,21 +848,21 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             side: BUY,
             numShares: '25',
             limitPrice: '55',
-            totalFee: '13.424556213017750625',
-            totalCost: '-1388.424556213017750625',
+            totalFee: '16.25',
+            totalCost: '-1641.25',
             tradeActions: [{
               action: 'BID',
               shares: '25',
               gasEth: '0.01450404',
-              feeEth: '13.424556213017750625',
-              feePercent: '0.9763313609467455',
-              costEth: '-1388.424556213017750625',
-              avgPrice: '55.536982248520710025',
-              noFeePrice: '55'
+              feeEth: '16.25',
+              feePercent: '1',
+              costEth: '-1641.25',
+              avgPrice: '65.65',
+              noFeePrice: '65'
             }],
-            tradingFeesEth: '13.424556213017750625',
+            tradingFeesEth: '16.25',
             gasFeesRealEth: '0.01450404',
-            feePercent: '0.9763313609467455'
+            feePercent: '1'
           }
         }
       }, `Didn't update the tradeDetails object to the new calcs given new limit`);
@@ -881,21 +879,21 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             side: BUY,
             numShares: '10',
             limitPrice: '-5',
-            totalFee: '0.07988165680473375',
-            totalCost: '49.92011834319526625',
+            totalFee: '0.0739644970414201',
+            totalCost: '-50.0739644970414201',
             tradeActions: [{
               action: 'BID',
               shares: '10',
               gasEth: '0.01450404',
-              feeEth: '0.07988165680473375',
-              feePercent: '0.1597633136094675',
-              costEth: '49.92011834319526625',
-              avgPrice: '-4.992011834319526625',
-              noFeePrice: '-5'
+              feeEth: '0.0739644970414201',
+              feePercent: '0.1479289940828402',
+              costEth: '-50.0739644970414201',
+              avgPrice: '5.00739644970414201',
+              noFeePrice: '5'
             }],
-            tradingFeesEth: '0.07988165680473375',
+            tradingFeesEth: '0.0739644970414201',
             gasFeesRealEth: '0.01450404',
-            feePercent: '0.1597633136094675'
+            feePercent: '0.1479289940828402'
           }
         }
       }, `Didn't update the tradeDetails object to the new calcs given new limit`);
