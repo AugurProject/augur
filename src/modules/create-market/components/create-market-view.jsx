@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 
 import CreateMarketMainTitle from 'modules/create-market/components/create-market-main-title';
-// import CreateMarketPreview from 'modules/create-market/components/create-market-preview';
+import CreateMarketPreview from 'modules/create-market/components/create-market-preview';
 import CreateMarketForm from 'modules/create-market/components/create-market-form';
 // import CreateMarketFormPartTitles from 'modules/create-market/components/create-market-form-part-titles';
 // import CreateMarketFormButtons from 'modules/create-market/components/create-market-form-buttons';
@@ -12,6 +12,10 @@ const CreateMarketView = p => (
       <CreateMarketMainTitle
         type={p.newMarket.type}
         validations={p.newMarket.validations}
+      />
+      <CreateMarketPreview
+        newMarket={p.newMarket}
+        updateNewMarket={p.updateNewMarket}
       />
       <CreateMarketForm
         newMarket={p.newMarket}
@@ -31,11 +35,6 @@ CreateMarketView.propTypes = {
   newMarket: PropTypes.object.isRequired,
   updateNewMarket: PropTypes.func.isRequired
 };
-
-// <CreateMarketPreview
-//   newMarket={p.newMarket}
-//   updateNewMarket={p.updateNewMarket}
-// />
 
 // <CreateMarketFormPartTitles
 //   currentStep={p.newMarket.currentStep}

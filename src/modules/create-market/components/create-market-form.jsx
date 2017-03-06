@@ -45,6 +45,12 @@ export default class CreateMarketForm extends Component {
       canAnimate: false,
       isValid: false
     };
+
+    this.updateFormHeight = this.updateFormHeight.bind(this);
+  }
+
+  componentDidMount() {
+    this.updateFormHeight()
   }
 
   componentWillReceiveProps(nextProps) {
@@ -54,6 +60,8 @@ export default class CreateMarketForm extends Component {
         currentStep: nextProps.newMarket.currentStep,
         stepIncreasing: nextProps.newMarket.currentStep > this.props.newMarket.currentStep,
         canAnimate: nextProps.newMarket.currentStep > 0
+      }, () => {
+        this.updateFormHeight();
       });
     }
   }
@@ -62,20 +70,50 @@ export default class CreateMarketForm extends Component {
     this.setState({ isValid: false });
   }
 
+  updateFormHeight() {
+    console.log('updateFormHeight');
+
+    if (this.state.currentStep === 0) { // Initial form height
+      const newHeight = this.createMarketForm.children[0].clientHeight;
+
+      this.createMarketForm.style.height = `${newHeight}px`;
+    } else {
+      this.createMarketForm.style.height = '0px';
+    }
+
+    // const hidingForm = this.createMarketForm.getElementsByClassName('hide-to-left').length ? this.createMarketForm.getElementsByClassName('hide-to-left')[0] ; this.createMarketForm.getElementsByClassName('hide-to-')
+  }
+
   render() {
     const p = this.props;
     const s = this.state;
 
     return (
-      <article className={classNames('create-market-form', { 'no-preview': s.currentStep === 0 })}>
+      <article
+        ref={(createMarketForm) => { this.createMarketForm = createMarketForm; }}
+        className={classNames('create-market-form', {
+          'no-preview': s.currentStep === 0
+        })}
+      >
         <CreateMarketFormType
           className={classNames({
             'can-hide': s.currentStep >= newMarketCreationOrder.indexOf(NEW_MARKET_TYPE) + 1,
-            'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_TYPE) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_TYPE),
-            'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_TYPE) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_TYPE),
+            display: s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_TYPE) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_TYPE),
+            hide: s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_TYPE) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_TYPE),
           })}
           type={p.newMarket.type}
           addValidationToNewMarket={p.addValidationToNewMarket}
+          updateNewMarket={p.updateNewMarket}
+        />
+        <CreateMarketFormDescription
+          className={classNames({
+            'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION),
+            'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION),
+            'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION),
+            'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION)
+          })}
+          description={p.newMarket.description}
+          updateValidity={isValid => this.setState({ isValid })}
           updateNewMarket={p.updateNewMarket}
         />
       </article>
@@ -83,17 +121,6 @@ export default class CreateMarketForm extends Component {
   }
 }
 
-// <CreateMarketFormDescription
-//   className={classNames({
-//     'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION),
-//     'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION),
-//     'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION),
-//     'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION)
-//   })}
-//   description={p.newMarket.description}
-//   updateValidity={isValid => this.setState({ isValid })}
-//   updateNewMarket={p.updateNewMarket}
-// />
 // <CreateMarketFormOutcomes
 //   className={classNames({
 //     'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES),

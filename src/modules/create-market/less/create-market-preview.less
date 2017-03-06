@@ -1,75 +1,105 @@
 .create-market-preview {
-  .market-preview();
-
-  margin: 0 0 2em;
+  overflow: hidden;
+  position: relative;
+  transition-delay: 2s;
+  transition-duration: @animation-speed-normal;
+  transition-property: opacity, height;
 
   &.preview-is-hidden {
-    display: none;
+    opacity: 0;
   }
 
   &.preview-is-visible {
-    display: flex;
+    opacity: 1;
   }
 
-  .is-null {
-    background-color: @color-gray-muted;
-    border-radius: 1em;
-    margin-bottom: 0.4em;
-    padding: 0.6em;
-  }
+  .create-market-preview-container {
+    position: absolute;
+    width: 100%;
 
-  .has-value {
-    // TODO
-  }
+    .create-market-preview-content {
+      .market-preview();
 
-  .create-market-keywords,
-  .create-market-fees {
-    display: flex;
-    flex: 1;
-  }
-
-  .create-market-details {
-    .market-preview-details();
-
-    .create-market-tags {
-      display: flex;
-
-      li {
-        align-self: flex-start;
-
-        &.is-null {
-          flex-basis: 5%;
-          margin-right: 0.4em;
-        }
-      }
-    }
-
-    .create-market-description,
-    .create-market-resolution-source {
-      flex: 1;
-    }
-
-    .create-market-properties {
-      display: flex;
-
-      li {
-        align-self: flex-start;
-
-        &.is-null {
-          flex-basis: 10%;
-          margin-right: 0.4em;
-        }
-      }
-    }
-  }
-
-  .create-market-outcomes {
-    .market-preview-outcomes();
-
-    .create-market-outcome-placeholders {
       display: flex;
       flex: 1;
-      flex-direction: column;
+      margin: 0;
+
+      .is-null {
+        background-color: @color-gray-muted;
+        border-radius: 1em;
+        margin-bottom: 0.4em;
+        padding: 0.6em;
+      }
+
+      .has-value {
+        // TODO
+      }
+
+      .create-market-keywords,
+      .create-market-fees {
+        display: flex;
+        flex: 1;
+      }
+
+      .create-market-details {
+        .market-preview-details();
+
+        .create-market-tags {
+          display: flex;
+
+          li {
+            align-self: flex-start;
+
+            &.is-null {
+              flex-basis: 5%;
+              margin-right: 0.4em;
+            }
+          }
+        }
+
+        .create-market-description,
+        .create-market-resolution-source {
+          flex: 1;
+        }
+
+        .create-market-properties {
+          display: flex;
+
+          li {
+            align-self: flex-start;
+
+            &.is-null {
+              flex-basis: 10%;
+              margin-right: 0.4em;
+            }
+          }
+        }
+      }
+
+      .create-market-outcomes {
+        .market-preview-outcomes();
+
+        .create-market-outcome-placeholders {
+          display: flex;
+          flex: 1;
+          flex-direction: column;
+        }
+      }
     }
   }
 }
+
+.keyframes(displayPreview, {
+0% {
+display: none;
+opacity: 0;
+}
+1% {
+display: block;
+opacity: 0;
+}
+100% {
+display: block;
+opacity: 1;
+}
+});
