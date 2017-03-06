@@ -10,14 +10,15 @@ export default class CreateMarketFormDescription extends Component {
     super(props);
 
     this.state = {
-      errors: []
+      errors: [],
+      description: this.props.description
     };
 
     this.validateForm = this.validateForm.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.description !== nextProps.description) this.validateForm(nextProps.description);
+    if (this.props.description !== nextProps.description) this.setState({ description: nextProps.description });
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -29,17 +30,19 @@ export default class CreateMarketFormDescription extends Component {
 
     if (!description || !description.length) {
       errors.push('Please enter your question');
-    }
-
-    if (description.length < DESCRIPTION_MIN_LENGTH) {
+    } else if (description.length < DESCRIPTION_MIN_LENGTH) {
       errors.push(`Text must be a minimum length of ${DESCRIPTION_MIN_LENGTH}`);
-    }
-
-    if (description.length > DESCRIPTION_MAX_LENGTH) {
+    } else if (description.length > DESCRIPTION_MAX_LENGTH) {
       errors.push(`Text exceeds the maximum length of ${DESCRIPTION_MAX_LENGTH}`);
     }
 
     this.setState({ errors });
+
+    if (!errors.length) {
+      this.props.updateNewMarket({ description });
+    } else {
+      this.props.updateNewMarket({ description: '' });
+    }
   }
 
   render() {
@@ -57,9 +60,12 @@ export default class CreateMarketFormDescription extends Component {
           <form>
             <Input
               type="text"
-              value={p.description}
+              value={s.description}
               maxLength={DESCRIPTION_MAX_LENGTH}
-              onChange={description => p.updateNewMarket({ description })}
+              onChange={(description) => {
+                this.validateForm(description);
+                this.setState({ description });
+              }}
             />
             <CreateMarketFormErrors
               errors={s.errors}

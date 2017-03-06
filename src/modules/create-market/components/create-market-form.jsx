@@ -39,10 +39,7 @@ export default class CreateMarketForm extends Component {
 
     this.state = {
       lastStep: props.newMarket.currentStep,
-      currentStep: props.newMarket.currentStep,
-      stepIncreasing: null,
-      canAnimate: false,
-      isValid: false
+      currentStep: props.newMarket.currentStep
     };
 
     this.updateFormHeight = this.updateFormHeight.bind(this);
@@ -56,17 +53,11 @@ export default class CreateMarketForm extends Component {
     if (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep) {
       this.setState({
         lastStep: this.props.newMarket.currentStep,
-        currentStep: nextProps.newMarket.currentStep,
-        stepIncreasing: nextProps.newMarket.currentStep > this.props.newMarket.currentStep,
-        canAnimate: nextProps.newMarket.currentStep > 0
+        currentStep: nextProps.newMarket.currentStep
       }, () => {
         this.updateFormHeight();
       });
     }
-  }
-
-  resetValidity() {
-    this.setState({ isValid: false });
   }
 
   updateFormHeight() {
@@ -109,7 +100,7 @@ export default class CreateMarketForm extends Component {
             'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION)
           })}
           description={p.newMarket.description}
-          updateValidity={isValid => this.setState({ isValid })}
+          updateValidity={isValid => p.updateNewMarket({ isValid })}
           updateNewMarket={p.updateNewMarket}
         />
       </article>

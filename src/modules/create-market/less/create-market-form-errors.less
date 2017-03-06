@@ -1,0 +1,18 @@
+.create-market-form-errors {
+  list-style: disc;
+  margin-top: 1em;
+  opacity: 0;
+  padding-left: 2em;
+  transform: translateY(-10%);
+  transition-duration: @animation-speed-normal;
+  transition-property: transform, opacity;
+
+  &.hasErrors {
+    opacity: 1;
+    transform: translateY(0%);
+  }
+
+  li {
+    color: @color-red-muted;
+  }
+}

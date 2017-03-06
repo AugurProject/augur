@@ -79,9 +79,12 @@ export default class CreateMarketFormButtons extends Component {
     });
   }
 
+  handleBackButton() {
+    console.log('go back!');
+  }
+
   handleNextButton() {
     if (this.props.currentStep === newMarketCreationOrder.length - 1) {
-      console.log('last step -- ', this.props.newMarket);
       this.props.submitNewMarket(this.props.newMarket);
     } else {
       this.props.updateNewMarket({ currentStep: this.state.nextStep });
@@ -92,7 +95,6 @@ export default class CreateMarketFormButtons extends Component {
   updateFormButtonHeight(step) {
     let newHeight = 0;
     if (step !== 0) newHeight = this.formButtons.children[0].clientHeight;
-    console.log('step -- ', step, newHeight);
     this.formButtons.style.height = `${newHeight}px`;
   }
 
@@ -109,7 +111,7 @@ export default class CreateMarketFormButtons extends Component {
           <div className="create-market-form-buttons-content">
             <button
               className="unstyled"
-              onClick={() => p.updateNewMarket({ currentStep: p.currentStep - 1 })}
+              onClick={this.handleBackButton}
             >
               Back
             </button>
