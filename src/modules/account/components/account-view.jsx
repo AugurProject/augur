@@ -262,6 +262,15 @@ export default class AccountPage extends Component {
               <p>
                 Download your account key file. You should always save a backup of your account data somewhere safe! Remember, <b>Augur does not store any user account information and therefore has no ability to restore or recover lost accounts</b>. (Note: running a local Ethereum node? If you download your account data to your keystore folder, you can use your Augur account on your local node.)
               </p>
+              <p>
+                <b>
+                  <a
+                    href="http://blog.augur.net/accidentally-sent-real-rep-eth-augur-beta/"
+                  >
+                    Did you accidentally send real REP or ETH to Augur beta? Learn how to get it back here!
+                  </a>
+                </b>
+              </p>
               <a
                 className="button download-account"
                 href={p.account.downloadAccountDataString}
