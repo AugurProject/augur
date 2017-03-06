@@ -51,7 +51,7 @@ export default class CreateMarketFormDescription extends Component {
         <div className="create-market-form-part-content">
           <aside>
             <h3>Event Question</h3>
-            <span>This is the question that the market will work to answer.</span>
+            <span>This is the question that the market will attempt to answer.</span>
           </aside>
           <div className="vertical-form-divider" />
           <form>

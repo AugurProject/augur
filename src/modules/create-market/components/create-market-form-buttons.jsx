@@ -114,10 +114,10 @@ export default class CreateMarketFormButtons extends Component {
               Back
             </button>
             <button
-              className={classNames({
+              className={classNames('unstyled', {
                 'disable-button': !p.isValid
               })}
-              onClick={this.handleNextButton}
+              onClick={() => p.isValid && this.handleNextButton}
             >
               Next: {s.nextButtonCopy}
             </button>

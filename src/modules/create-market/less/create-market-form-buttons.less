@@ -8,16 +8,23 @@
     width: 100%;
 
     .create-market-form-buttons-content {
+      .border(true, @border-top);
+
       display: flex;
 
       & > * {
         flex: 1;
+        padding: 1em 0;
 
         &:first-of-type {
+          .border(true, @border-right);
+
+          padding-left: 1em;
           text-align: left;
         }
 
         &:last-of-type {
+          padding-right: 1em;
           text-align: right;
         }
       }
