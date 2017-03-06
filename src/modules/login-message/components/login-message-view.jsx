@@ -53,6 +53,12 @@ const LoginMessagePage = p => (
         </li>
       </ol>
       <h2>Technical updates:</h2>
+      <h3>March 6, 2017</h3>
+      <ol>
+        <li>
+          Added QR codes for the deposit address and keystore file for ease of transfer / sending of funds. 
+        </li>
+      </ol>
       <h3>March 5, 2017</h3>
       <ol>
         <li>
