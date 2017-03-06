@@ -140,23 +140,21 @@ export default class CreateMarketForm extends Component {
           updateValidity={this.updateValidity}
           updateNewMarket={p.updateNewMarket}
         />
+        <CreateMarketFormDetails
+          className={classNames({
+            'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS),
+            'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS)
+          })}
+          isValid={p.newMarket.isValid}
+          currentStep={p.newMarket.currentStep}
+          detailsText={p.newMarket.detailsText}
+          updateValidity={this.updateValidity}
+          updateNewMarket={p.updateNewMarket}
+        />
       </article>
     );
   }
 }
-
-// <CreateMarketFormDetails
-//   className={classNames({
-//     'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS),
-//     'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS),
-//     'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS),
-//     'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS)
-//   })}
-//   currentStep={p.newMarket.currentStep}
-//   detailsText={p.newMarket.detailsText}
-//   updateValidity={isValid => this.setState({ isValid })}
-//   updateNewMarket={p.updateNewMarket}
-// />
 // <CreateMarketFormTopic
 //   className={classNames({
 //     'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC),
