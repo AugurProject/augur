@@ -12,6 +12,7 @@ export default class CreateMarketFormExpirySource extends Component {
 
     this.state = {
       errors: [],
+      expirySource: '',
       canCheckURL: false
     };
 
@@ -36,21 +37,27 @@ export default class CreateMarketFormExpirySource extends Component {
     if (this.state.errors !== nextState.errors) nextProps.updateValidity(!nextState.errors.length);
   }
 
-  validateForm(type, source) {
+  validateForm(type, expirySource) {
     const errors = [];
 
-    if (type == null || !type.length) {
+    if (type === EXPIRY_SOURCE_GENERIC && !this.state.errors.length) {
+      this.props.updateValidity(true);
+    } else if (type == null || !type.length) {
       errors.push('Please choose an expiry source.');
-    }
-
-    if (this.state.canCheckURL &&
+    } else if (this.state.canCheckURL &&
         type === EXPIRY_SOURCE_SPECIFIC &&
-        (source == null || !source.length)
+        (expirySource == null || !expirySource.length)
     ) {
       errors.push('Please enter the full URL of the website.');
     }
 
     this.setState({ errors });
+
+    if (!errors.length) {
+      this.props.updateNewMarket({ expirySource });
+    } else {
+      this.props.updateNewMarket({ expirySource: '' });
+    }
   }
 
   render() {
@@ -58,14 +65,14 @@ export default class CreateMarketFormExpirySource extends Component {
     const s = this.state;
 
     return (
-      <article className={`create-market-form-part ${p.className || ''}`}>
+      <article className={`create-market-form-part create-market-form-part-expiry-source ${p.className || ''}`}>
         <div className="create-market-form-part-content">
           <aside>
             <h3>Expiration Source</h3>
-            <span>Where will reporters and traders be able to learn about the resolution of this market?</span>
+            <span>Where will reporters and traders be able to learn more details about the resolution of this market?</span>
           </aside>
           <div className="vertical-form-divider" />
-          <form>
+          <form className="">
             <label htmlFor="expiry_generic">
               <input
                 id="expiry_generic"
@@ -101,8 +108,11 @@ export default class CreateMarketFormExpirySource extends Component {
             <Input
               className={classNames({ 'hide-field': p.expirySourceType !== EXPIRY_SOURCE_SPECIFIC })}
               type="text"
-              value={p.expirySource}
-              onChange={expirySource => p.updateNewMarket({ expirySource })}
+              value={s.expirySource}
+              onChange={(expirySource) => {
+                this.setState({ expirySource });
+                this.validateForm(p.expirySourceType, expirySource);
+              }}
             />
             <CreateMarketFormErrors
               errors={s.errors}

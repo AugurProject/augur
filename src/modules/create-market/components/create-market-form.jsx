@@ -43,6 +43,7 @@ export default class CreateMarketForm extends Component {
     };
 
     this.updateFormHeight = this.updateFormHeight.bind(this);
+    this.updateValidity = this.updateValidity.bind(this);
   }
 
   componentDidMount() {
@@ -73,6 +74,10 @@ export default class CreateMarketForm extends Component {
     this.createMarketForm.style.height = `${newHeight}px`;
   }
 
+  updateValidity(isValid) {
+    this.props.updateNewMarket({ isValid });
+  }
+
   render() {
     const p = this.props;
     const s = this.state;
@@ -100,7 +105,7 @@ export default class CreateMarketForm extends Component {
             'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION)
           })}
           description={p.newMarket.description}
-          updateValidity={isValid => p.updateNewMarket({ isValid })}
+          updateValidity={this.updateValidity}
           updateNewMarket={p.updateNewMarket}
         />
         <CreateMarketFormOutcomes
@@ -113,7 +118,7 @@ export default class CreateMarketForm extends Component {
           scalarSmallNum={p.newMarket.scalarSmallNum}
           scalarBigNum={p.newMarket.scalarBigNum}
           currentStep={p.newMarket.currentStep}
-          updateValidity={isValid => this.setState({ isValid })}
+          updateValidity={this.updateValidity}
           updateNewMarket={p.updateNewMarket}
         />
         <CreateMarketFormExpirySource
@@ -123,7 +128,7 @@ export default class CreateMarketForm extends Component {
           })}
           expirySourceType={p.newMarket.expirySourceType}
           expirySource={p.newMarket.expirySource}
-          updateValidity={isValid => this.setState({ isValid })}
+          updateValidity={this.updateValidity}
           updateNewMarket={p.updateNewMarket}
         />
       </article>

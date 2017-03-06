@@ -63,8 +63,8 @@ export default class CreateMarketFormDescription extends Component {
               value={s.description}
               maxLength={DESCRIPTION_MAX_LENGTH}
               onChange={(description) => {
-                this.validateForm(description);
                 this.setState({ description });
+                this.validateForm(description);
               }}
             />
             <CreateMarketFormErrors
