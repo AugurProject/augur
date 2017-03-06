@@ -1,9 +1,12 @@
 import React, { PropTypes, Component } from 'react';
 import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
+import { ModalContainer, ModalDialog } from 'react-modal-dialog';
 
 import Link from 'modules/link/components/link';
 import Input from 'modules/common/components/input';
+
+const QRCode = require('qrcode.react');
 
 export default class AccountPage extends Component {
   // TODO -- Prop Validations
@@ -24,11 +27,15 @@ export default class AccountPage extends Component {
       msg: '',
       sendAmount: '',
       currency: 'ETH',
-      recipientAddress: ''
+      recipientAddress: '',
+      isShowingModal: false,
+      size: 300
     };
 
     this.handleTransfer = this.handleTransfer.bind(this);
     this.loginIDCopy = this.loginIDCopy.bind(this);
+    this.handleClick = () => this.setState({ isShowingModal: true });
+    this.handleClose = () => this.setState({ isShowingModal: false });
   }
 
   handleTransfer = (e) => {
@@ -123,9 +130,34 @@ export default class AccountPage extends Component {
                     <span>
                       {p.account.address && p.account.address.indexOf('0x') === 0 && p.account.address.replace('0x', '')}
                     </span>
+                    <button
+                      className="link"
+                      onClick={this.handleClick}
+                    >
+                      (QR code to despoit)
+                    {
+                      this.state.isShowingModal &&
+                      <ModalContainer
+                        onClose={this.handleClose}
+                      >
+                        <ModalDialog
+                          onClose={this.handleClose}
+                        >
+                          <h1>
+                            Ether / REP Deposit Address
+                          </h1>
+                          <p>
+                            <QRCode
+                              size={this.state.size}
+                              value={p.account.address && p.account.address.indexOf('0x') === 0 && p.account.address.replace('0x', '')}
+                            />
+                          </p>
+                        </ModalDialog>
+                      </ModalContainer>
+                    }
+                    </button>
                   </td>
                 </tr>
-
                 <tr className={classnames('account-info-item', { displayNone: !p.account.loginID })}>
                   <th className="title">Login ID:</th>
                   <td className="item">
@@ -269,6 +301,34 @@ export default class AccountPage extends Component {
               >
                 Download Account Key File
               </a>
+              <div className="transferWallet">
+                <button
+                  className="link"
+                  onClick={this.handleClick}
+                >
+                  (QR code to transfer wallet)
+                {
+                  this.state.isShowingModal &&
+                  <ModalContainer
+                    onClose={this.handleClose}
+                  >
+                    <ModalDialog
+                      onClose={this.handleClose}
+                    >
+                      <h1>
+                        Transfer your Ether Address
+                      </h1>
+                      <p>
+                        <QRCode
+                          size={this.state.size}
+                          value={p.account.downloadAccountDataString}
+                        />
+                      </p>
+                    </ModalDialog>
+                  </ModalContainer>
+                }
+                </button>
+              </div>
             </div>
           </div>
           <div className={classnames('account-section')}>
