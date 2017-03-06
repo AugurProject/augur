@@ -18,6 +18,7 @@ const MarketView = (p) => {
       {isAvailable && isOpen &&
         <MarketActive
           {...p}
+          isSnitchTabVisible={getValue(p, 'market.isSnitchTabVisible')}
           isReportTabVisible={getValue(p, 'market.isReportTabVisible')}
           isPendingReport={getValue(p, 'market.isPendingReport')}
         />

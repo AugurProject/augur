@@ -21,7 +21,7 @@ export default function () {
     },
     [MARKET_DATA_NAV_SNITCH]: {
       label: 'Snitch',
-      isReportTabVisible: true
+      isSnitchTabVisible: true
     }
   };
 }

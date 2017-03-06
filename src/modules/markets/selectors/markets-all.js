@@ -40,6 +40,7 @@ export const selectMarkets = memoizerific(1)((marketsData, favorites, reports, o
       endDate.getMonth(),
       endDate.getDate(),
       branch && branch.isReportRevealPhase,
+      branch && branch.reportPeriod,
       orderBooks[marketID],
       orderCancellation,
       (smallestPositions || {})[marketID],

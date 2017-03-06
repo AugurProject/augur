@@ -102,7 +102,8 @@ export const selectMarket = (marketID) => {
     endDate.getMonth(),
     endDate.getDate(),
 
-    branch && !!branch.isReportRevealPhase,
+    branch && branch.isReportRevealPhase,
+    branch && branch.reportPeriod,
 
     orderBooks[marketID],
     orderCancellation,
@@ -144,6 +145,7 @@ export function assembleMarket(
     endDateMonth,
     endDateDay,
     isReportRevealPhase,
+    reportPeriod,
     orderBooks,
     orderCancellation,
     smallestPosition,
@@ -168,6 +170,7 @@ export function assembleMarket(
       endDateMonth,
       endDateDay,
       isReportRevealPhase,
+      reportPeriod,
       orderBooks,
       orderCancellation,
       smallestPosition,
@@ -221,8 +224,8 @@ export function assembleMarket(
       market.isReportSubmitted = market.isRequiredToReportByAccount && !!marketReport.reportHash; // the user submitted a report that is not yet confirmed (reportHash === true)
       market.isReported = market.isReportSubmitted && !!marketReport.reportHash.length; // the user fully reported on this market (reportHash === [string])
       market.isMissedReport = market.isRequiredToReportByAccount && !market.isReported && !market.isReportSubmitted && isReportRevealPhase; // the user submitted a report that is not yet confirmed
-      market.isMissedOrReported = market.isMissedReport || market.isReported;
-      market.isReportTabVisible = market.isPendingReport || market.isMissedOrReported;
+      market.isReportTabVisible = market.isRequiredToReportByAccount && !isReportRevealPhase;
+      market.isSnitchTabVisible = market.tradingPeriod === reportPeriod;
 
       market.marketLink = selectMarketLink(market, dispatch);
       market.onClickToggleFavorite = () => dispatch(toggleFavorite(marketID));

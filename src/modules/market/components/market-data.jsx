@@ -15,6 +15,7 @@ export default class MarketData extends Component {
   static propTypes = {
     marketDataNavItems: PropTypes.object,
     isReportTabVisible: PropTypes.bool,
+    isSnitchTabVisible: PropTypes.bool,
     isPendingReport: PropTypes.bool
   };
 
@@ -35,20 +36,27 @@ export default class MarketData extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.isReportTabVisible !== nextProps.isReportTabVisible) {
+    if (this.props.isReportTabVisible !== nextProps.isReportTabVisible || this.props.isSnitchTabVisible !== nextProps.isSnitchTabVisible) {
       this.setMarketDataNavItems();
     }
   }
 
   setMarketDataNavItems() {
     if (!this.props.isReportTabVisible) {
-      const marketDataNavItems = Object.keys(this.props.marketDataNavItems).reduce((prev, nav) => {
+      let marketDataNavItems = Object.keys(this.props.marketDataNavItems).reduce((prev, nav) => {
         if (this.props.marketDataNavItems[nav].isReportTabVisible !== true) {
           prev[nav] = this.props.marketDataNavItems[nav];
         }
         return prev;
       }, {});
-
+      if (!this.props.isSnitchTabVisible) {
+        marketDataNavItems = Object.keys(marketDataNavItems).reduce((prev, nav) => {
+          if (marketDataNavItems[nav].isSnitchTabVisible !== true) {
+            prev[nav] = marketDataNavItems[nav];
+          }
+          return prev;
+        }, {});
+      }
       this.setState({ marketDataNavItems });
     }
   }
