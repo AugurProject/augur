@@ -56,7 +56,7 @@ const LoginMessagePage = p => (
       <h3>March 6, 2017</h3>
       <ol>
         <li>
-          Added QR codes for the deposit address and keystore file for ease of transfer / sending of funds. 
+          Added QR codes for your deposit address and keystore file, increasing the ease of transfering your wallet and depositing of funds.
         </li>
       </ol>
       <h3>March 5, 2017</h3>
