@@ -54,7 +54,7 @@ export default class AccountPage extends Component {
     this.setState({
       isShowingModal: true,
       size: 300,
-      message: 'Transfer your Ether Address',
+      message: 'Your Account Keystore Data',
       value: this.props.account.downloadAccountDataString
     });
   };
