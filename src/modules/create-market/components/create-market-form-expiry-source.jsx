@@ -20,12 +20,6 @@ export default class CreateMarketFormExpirySource extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.expirySourceType !== nextProps.expirySourceType ||
-        (nextProps.expirySourceType === EXPIRY_SOURCE_SPECIFIC && this.props.expirySource !== nextProps.expirySource)
-    ) {
-      this.validateForm(nextProps.expirySourceType, nextProps.expirySource);
-    }
-
     if (!this.state.canCheckURL &&
       (this.props.expirySource.length || nextProps.expirySource.length)
     ) {
@@ -33,22 +27,19 @@ export default class CreateMarketFormExpirySource extends Component {
     }
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    if (this.state.errors !== nextState.errors) nextProps.updateValidity(!nextState.errors.length);
-  }
-
-  validateForm(type, expirySource) {
+  validateForm(type, expirySource, canCheckURL) {
+    console.log('validate form');
     const errors = [];
 
-    if (type === EXPIRY_SOURCE_GENERIC && !this.state.errors.length) {
-      this.props.updateValidity(true);
-    } else if (type == null || !type.length) {
-      errors.push('Please choose an expiry source.');
-    } else if (this.state.canCheckURL &&
+    if (!canCheckURL && type === EXPIRY_SOURCE_SPECIFIC) {
+      this.props.updateValidity(false);
+    } else if (canCheckURL &&
         type === EXPIRY_SOURCE_SPECIFIC &&
         (expirySource == null || !expirySource.length)
     ) {
       errors.push('Please enter the full URL of the website.');
+    } else {
+      this.props.updateValidity(true);
     }
 
     this.setState({ errors });
@@ -57,6 +48,7 @@ export default class CreateMarketFormExpirySource extends Component {
       this.props.updateNewMarket({ expirySource });
     } else {
       this.props.updateNewMarket({ expirySource: '' });
+      this.props.updateValidity(false);
     }
   }
 
@@ -85,6 +77,7 @@ export default class CreateMarketFormExpirySource extends Component {
                     expirySource: ''
                   });
                   this.setState({ canCheckURL: false });
+                  this.validateForm(EXPIRY_SOURCE_GENERIC, s.expirySource);
                 }}
               />
               Outcome will be covered by local, national or international news media.
@@ -100,7 +93,7 @@ export default class CreateMarketFormExpirySource extends Component {
                     expirySourceType: EXPIRY_SOURCE_SPECIFIC,
                     expirySource: ''
                   });
-                  this.setState({ canCheckURL: false });
+                  this.validateForm(EXPIRY_SOURCE_SPECIFIC, s.expirySource);
                 }}
               />
               Outcome will be detailed on a specific publicly available website:
@@ -111,7 +104,7 @@ export default class CreateMarketFormExpirySource extends Component {
               value={s.expirySource}
               onChange={(expirySource) => {
                 this.setState({ expirySource });
-                this.validateForm(p.expirySourceType, expirySource);
+                this.validateForm(p.expirySourceType, expirySource, true);
               }}
             />
             <CreateMarketFormErrors

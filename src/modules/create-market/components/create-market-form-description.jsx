@@ -21,10 +21,6 @@ export default class CreateMarketFormDescription extends Component {
     if (this.props.description !== nextProps.description) this.setState({ description: nextProps.description });
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    if (this.state.errors !== nextState.errors) nextProps.updateValidity(!nextState.errors.length);
-  }
-
   validateForm(description) {
     const errors = [];
 
@@ -34,15 +30,18 @@ export default class CreateMarketFormDescription extends Component {
       errors.push(`Text must be a minimum length of ${DESCRIPTION_MIN_LENGTH}`);
     } else if (description.length > DESCRIPTION_MAX_LENGTH) {
       errors.push(`Text exceeds the maximum length of ${DESCRIPTION_MAX_LENGTH}`);
+    } else {
+      this.props.updateValidity(true);
     }
-
-    this.setState({ errors });
 
     if (!errors.length) {
       this.props.updateNewMarket({ description });
     } else {
       this.props.updateNewMarket({ description: '' });
+      this.props.updateValidity(false);
     }
+
+    this.setState({ errors });
   }
 
   render() {

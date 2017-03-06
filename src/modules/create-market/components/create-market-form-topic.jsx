@@ -10,18 +10,15 @@ export default class CreateMarketFormTopic extends Component {
     super(props);
 
     this.state = {
-      errors: []
+      errors: [],
+      topic: props.topic
     };
 
     this.validateForm = this.validateForm.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.topic !== nextProps.topic) this.validateForm(nextProps.topic);
-  }
-
-  componentWillUpdate(nextProps, nextState) {
-    if (this.state.errors !== nextState.errors) nextProps.updateValidity(!nextState.errors.length);
+    if (this.props.topic !== nextProps.topic) this.setState({ topic: nextProps.topic });
   }
 
   validateForm(topic) {
@@ -29,6 +26,15 @@ export default class CreateMarketFormTopic extends Component {
 
     if (!topic || !topic.length) {
       errors.push('Please enter a topic.');
+    } else {
+      this.props.updateValidity(true);
+    }
+
+    if (!errors.length) {
+      this.props.updateNewMarket({ topic });
+    } else {
+      this.props.updateNewMarket({ topic: '' });
+      this.props.updateValidity(false);
     }
 
     this.setState({ errors });
@@ -40,16 +46,27 @@ export default class CreateMarketFormTopic extends Component {
 
     return (
       <article className={`create-market-form-part ${p.className || ''}`}>
-        <h2>Topic</h2>
-        <Input
-          type="text"
-          value={p.topic}
-          maxLength={TAGS_MAX_LENGTH}
-          onChange={topic => p.updateNewMarket({ topic })}
-        />
-        <CreateMarketFormErrors
-          errors={s.errors}
-        />
+        <div className="create-market-form-part-content">
+          <aside>
+            <h3>Event Topic</h3>
+            <span>Specify the general category of the event the market is for.</span>
+          </aside>
+          <div className="vertical-form-divider" />
+          <form>
+            <Input
+              type="text"
+              value={s.topic}
+              maxLength={TAGS_MAX_LENGTH}
+              onChange={(topic) => {
+                this.setState({ topic });
+                this.validateForm(topic);
+              }}
+            />
+            <CreateMarketFormErrors
+              errors={s.errors}
+            />
+          </form>
+        </div>
       </article>
     );
   }
