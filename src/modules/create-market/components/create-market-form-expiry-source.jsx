@@ -28,7 +28,6 @@ export default class CreateMarketFormExpirySource extends Component {
   }
 
   validateForm(type, expirySource, canCheckURL) {
-    console.log('validate form');
     const errors = [];
 
     if (!canCheckURL && type === EXPIRY_SOURCE_SPECIFIC) {
