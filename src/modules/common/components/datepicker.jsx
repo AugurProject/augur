@@ -6,7 +6,7 @@ import { formatDate } from 'utils/format-date';
 const DatePicker = (p) => {
   const yesterday = Datetime.moment().subtract(1, 'day');
   const valid = current => current.isAfter(yesterday);
-  const defaultValue = p.endDate ? p.endDate : '';
+  const defaultValue = Object.keys(p.endDate).length ? p.endDate : '';
 
   return (
     <Datetime
