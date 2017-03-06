@@ -14,12 +14,11 @@ import AugurJS from 'services/augurjs';
 require('core-js/fn/array/find');
 require('core-js/fn/string/starts-with');
 
-if (process.env.NODE_ENV === 'development') {
-  Object.defineProperty(window, 'state', { get: store.getState, enumerable: true });
-  window.selectors = selectors;
-  window.App = App;
-  window.augurjs = AugurJS;
-  console.log(`
+Object.defineProperty(window, 'state', { get: store.getState, enumerable: true });
+window.selectors = selectors;
+window.App = App;
+window.augurjs = AugurJS;
+console.log(`
 *******************************************
         AUGUR DEVELOPMENT MODE
   window.state      -- all state data
@@ -27,7 +26,6 @@ if (process.env.NODE_ENV === 'development') {
   window.augurjs    -- Augur API methods
 *******************************************
 `);
-}
 
 store.dispatch(updateURL(window.location.pathname + window.location.search));
 store.dispatch(initAugur());
