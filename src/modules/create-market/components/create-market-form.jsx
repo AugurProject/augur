@@ -71,17 +71,18 @@ export default class CreateMarketForm extends Component {
   }
 
   updateFormHeight() {
-    console.log('updateFormHeight');
+    let newHeight = 0;
 
     if (this.state.currentStep === 0) { // Initial form height
-      const newHeight = this.createMarketForm.children[0].clientHeight;
-
+      newHeight = this.createMarketForm.children[0].clientHeight;
       this.createMarketForm.style.height = `${newHeight}px`;
     } else {
-      this.createMarketForm.style.height = '0px';
+      newHeight = this.createMarketForm.getElementsByClassName('display-from-right').length ?
+        this.createMarketForm.getElementsByClassName('display-from-right')[0].clientHeight :
+        this.createMarketForm.getElementsByClassName('display-from-left')[0].clientHeight;
     }
 
-    // const hidingForm = this.createMarketForm.getElementsByClassName('hide-to-left').length ? this.createMarketForm.getElementsByClassName('hide-to-left')[0] ; this.createMarketForm.getElementsByClassName('hide-to-')
+    this.createMarketForm.style.height = `${newHeight}px`;
   }
 
   render() {
