@@ -48,17 +48,23 @@ export default class CreateMarketFormDescription extends Component {
 
     return (
       <article className={`create-market-form-part ${p.className || ''}`}>
-        <div className="form-part-content">
-          <h2>Description</h2>
-          <Input
-            type="text"
-            value={p.description}
-            maxLength={DESCRIPTION_MAX_LENGTH}
-            onChange={description => p.updateNewMarket({ description })}
-          />
-          <CreateMarketFormErrors
-            errors={s.errors}
-          />
+        <div className="create-market-form-part-content">
+          <aside>
+            <h3>Event Question</h3>
+            <span>This is the question that the market will work to answer.</span>
+          </aside>
+          <div className="vertical-form-divider" />
+          <form>
+            <Input
+              type="text"
+              value={p.description}
+              maxLength={DESCRIPTION_MAX_LENGTH}
+              onChange={description => p.updateNewMarket({ description })}
+            />
+            <CreateMarketFormErrors
+              errors={s.errors}
+            />
+          </form>
         </div>
       </article>
     );

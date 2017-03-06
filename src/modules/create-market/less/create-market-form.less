@@ -1,14 +1,9 @@
 .create-market-form {
   .border(true, @border-top);
 
-  overflow: hidden;
   padding: 1em;
   transition-duration: @animation-speed-very-fast;
   transition-property: height;
-
-  .create-market-form-preview {
-    padding: 1em;
-  }
 
   // First Form Part (Type)
   &.hide {
@@ -29,8 +24,13 @@
     padding: 0;
   }
 
+  .create-market-form-preview {
+    padding: 1em;
+  }
+
   .create-market-form-part {
     display: none;
+    flex: 1;
     left: 0;
     position: absolute;
     right: 0;
@@ -39,146 +39,89 @@
       display: flex;
     }
 
-    &.display-from-right {
-      animation-duration: @animation-speed-fast;
+    &.display-form-part {
+      animation-duration: @animation-speed-normal;
       animation-fill-mode: forwards;
-      animation-name: easeInLeft;
+      animation-name: revealFormPart;
       display: flex;
-    }
 
-    &.display-from-left {
-      animation-duration: @animation-speed-fast;
-      animation-fill-mode: forwards;
-      animation-name: easeInRight;
-      display: flex;
-    }
+      aside {
+        animation-duration: @animation-speed-normal;
+        animation-fill-mode: forwards;
+        animation-name: slideInAside;
+      }
 
-    &.hide-to-left {
-      animation-duration: @animation-speed-fast;
-      animation-fill-mode: forwards;
-      animation-name: easeOutLeft;
-      display: flex;
-    }
-
-    &.hide-to-right {
-      animation-duration: @animation-speed-fast;
-      animation-fill-mode: forwards;
-      animation-name: easeOutRight;
-      display: flex;
-    }
-
-    h2 {
-      .font-size-extra-large();
-
-      flex: 1 0 100%;
+      form {
+        animation-duration: @animation-speed-normal;
+        animation-fill-mode: forwards;
+        animation-name: slideInForm;
+      }
     }
 
     .hide-field {
       display: none;
     }
+
+    .create-market-form-part-content {
+      display: flex;
+      flex: 1;
+      padding: 0 1em;
+
+      aside {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        padding-bottom: 5em;
+        text-align: right;
+      }
+
+      .vertical-form-divider {
+        .border(true, @border-right);
+
+        margin: 0 1em;
+      }
+
+      form {
+        flex: 3;
+      }
+    }
   }
 }
 
-// Form Part Type Animations
-.keyframes(hideType, {
-0% {
-display: block;
-opacity: 1;
-}
-99% {
-display: block;
-opacity: 0;
-}
-100% {
-display: none;
-opacity: 0;
-}
-});
-
-.keyframes(displayType, {
-0% {
-display: none;
-opacity: 0;
-}
-1% {
-display: block;
-opacity: 0;
-}
-100% {
-display: block;
-opacity: 1;
-}
-});
-
 // Animations
-.keyframes(easeInLeft, {
-0% {
-display: none;
-opacity: 0;
-}
-1% {
-display: flex;
-transform: translate(10%) scale(1.08);
-opacity: 0;
-}
-100% {
-display: flex;
-transform: translate(0) scale(1);
-opacity: 1;
-}
-});
+@keyframes revealFormPart {
+  0% {
+    display: none;
+    opacity: 0;
+  }
 
-.keyframes(easeInRight, {
-0% {
-display: none;
-opacity: 0;
-}
-1% {
-display: flex;
-transform: translateX(-10%) scale(1.08);
-opacity: 0;
-}
-100% {
-display: flex;
-transform: translateX(0) scale(1);
-opacity: 1;
-}
-});
+  1% {
+    display: flex;
+    opacity: 0;
+  }
 
-.keyframes(easeOutLeft, {
-0% {
-display: flex;
-transform: translateX(0) scale(1);
-height: auto;
-opacity: 1;
+  100% {
+    display: flex;
+    opacity: 1;
+  }
 }
-99% {
-display: flex;
-transform: translateX(-10%) scale(0.92);
-height: auto;
-opacity: 0;
-}
-100% {
-display: none;
-height: 0;
-visibility: none;
-opacity: 0;
-}
-});
 
-.keyframes(easeOutRight, {
-0% {
-display: flex;
-transform: translateX(0) scale(1);
-opacity: 1;
+@keyframes slideInAside {
+  from {
+    transform: translateX(-10%) scale(1.08);
+  }
+
+  to {
+    transform: translateX(0%) scale(1);
+  }
 }
-99% {
-display: flex;
-transform: translateX(10%) scale(1.08);
-opacity: 0;
+
+@keyframes slideInForm {
+  from {
+    transform: translateX(10%) scale(1.08);
+  }
+
+  to {
+    transform: translateX(0%) scale(1);
+  }
 }
-100% {
-display: none;
-opacity: 0;
-}
-});

@@ -1,5 +1,26 @@
 .create-market-form-buttons {
-  .hide-button {
-    display: none;
+  position: relative;
+  transition-duration: @animation-speed-normal;
+  transition-property: height;
+
+  .create-market-form-buttons-container {
+    position: absolute;
+    width: 100%;
+
+    .create-market-form-buttons-content {
+      display: flex;
+
+      & > * {
+        flex: 1;
+
+        &:first-of-type {
+          text-align: left;
+        }
+
+        &:last-of-type {
+          text-align: right;
+        }
+      }
+    }
   }
 }

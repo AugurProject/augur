@@ -27,10 +27,15 @@ export default class CreateMarketFormButtons extends Component {
 
     this.updateNextButtonCopy = this.updateNextButtonCopy.bind(this);
     this.handleNextButton = this.handleNextButton.bind(this);
+    this.updateFormButtonHeight = this.updateFormButtonHeight.bind(this);
   }
 
   componentWillMount() {
     this.updateNextButtonCopy(this.props.currentStep, this.props.validations);
+  }
+
+  componentDidMount() {
+    this.updateFormButtonHeight(this.props.currentStep);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -47,6 +52,8 @@ export default class CreateMarketFormButtons extends Component {
     ) {
       this.updateNextButtonCopy(nextProps.currentStep, nextProps.validations);
     }
+
+    if (this.props.currentStep !== nextProps.currentStep) this.updateFormButtonHeight(nextProps.currentStep);
   }
 
   updateNextButtonCopy(currentStep, validations) {
@@ -82,20 +89,40 @@ export default class CreateMarketFormButtons extends Component {
     }
   }
 
+  updateFormButtonHeight(step) {
+    let newHeight = 0;
+    if (step !== 0) newHeight = this.formButtons.children[0].clientHeight;
+    console.log('step -- ', step, newHeight);
+    this.formButtons.style.height = `${newHeight}px`;
+  }
+
   render() {
     const p = this.props;
     const s = this.state;
 
     return (
-      <article className="create-market-form-buttons">
-        <button
-          className={classNames({
-            'hide-button': !p.isValid || p.currentStep < 1
-          })}
-          onClick={this.handleNextButton}
-        >
-          {s.nextButtonCopy}
-        </button>
+      <article
+        ref={(formButtons) => { this.formButtons = formButtons; }}
+        className="create-market-form-buttons"
+      >
+        <div className="create-market-form-buttons-container">
+          <div className="create-market-form-buttons-content">
+            <button
+              className="unstyled"
+              onClick={() => p.updateNewMarket({ currentStep: p.currentStep - 1 })}
+            >
+              Back
+            </button>
+            <button
+              className={classNames({
+                'disable-button': !p.isValid
+              })}
+              onClick={this.handleNextButton}
+            >
+              Next: {s.nextButtonCopy}
+            </button>
+          </div>
+        </div>
       </article>
     );
   }

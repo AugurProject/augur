@@ -3,8 +3,7 @@ import React, { PropTypes } from 'react';
 import CreateMarketMainTitle from 'modules/create-market/components/create-market-main-title';
 import CreateMarketPreview from 'modules/create-market/components/create-market-preview';
 import CreateMarketForm from 'modules/create-market/components/create-market-form';
-// import CreateMarketFormPartTitles from 'modules/create-market/components/create-market-form-part-titles';
-// import CreateMarketFormButtons from 'modules/create-market/components/create-market-form-buttons';
+import CreateMarketFormButtons from 'modules/create-market/components/create-market-form-buttons';
 
 const CreateMarketView = p => (
   <section id="create_market_view">
@@ -25,6 +24,18 @@ const CreateMarketView = p => (
         removeOrderFromNewMarket={p.removeOrderFromNewMarket}
         updateNewMarket={p.updateNewMarket}
       />
+      <CreateMarketFormButtons
+        currentStep={p.newMarket.currentStep}
+        isValid={p.newMarket.isValid}
+        validations={p.newMarket.validations}
+        newMarket={p.newMarket}
+        resetValidity={() => this.resetValidity()}
+        updateValidity={isValid => this.setState({ isValid })}
+        addValidationToNewMarket={p.addValidationToNewMarket}
+        removeValidationFromNewMarket={p.removeValidationFromNewMarket}
+        updateNewMarket={p.updateNewMarket}
+        submitNewMarket={p.submitNewMarket}
+      />
     </div>
   </section>
 );
@@ -35,20 +46,3 @@ CreateMarketView.propTypes = {
   newMarket: PropTypes.object.isRequired,
   updateNewMarket: PropTypes.func.isRequired
 };
-
-// <CreateMarketFormPartTitles
-//   currentStep={p.newMarket.currentStep}
-// />
-
-// <CreateMarketFormButtons
-//   currentStep={p.newMarket.currentStep}
-//   isValid={p.isValid}
-//   validations={p.newMarket.validations}
-//   newMarket={p.newMarket}
-//   resetValidity={() => this.resetValidity()}
-//   updateValidity={isValid => this.setState({ isValid })}
-//   addValidationToNewMarket={p.addValidationToNewMarket}
-//   removeValidationFromNewMarket={p.removeValidationFromNewMarket}
-//   updateNewMarket={p.updateNewMarket}
-//   submitNewMarket={p.submitNewMarket}
-// />

@@ -31,8 +31,7 @@ import {
 export default class CreateMarketForm extends Component {
   static propTypes = {
     newMarket: PropTypes.object.isRequired,
-    updateNewMarket: PropTypes.func.isRequired,
-    submitNewMarket: PropTypes.func.isRequired
+    updateNewMarket: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -77,9 +76,7 @@ export default class CreateMarketForm extends Component {
       newHeight = this.createMarketForm.children[0].clientHeight;
       this.createMarketForm.style.height = `${newHeight}px`;
     } else {
-      newHeight = this.createMarketForm.getElementsByClassName('display-from-right').length ?
-        this.createMarketForm.getElementsByClassName('display-from-right')[0].clientHeight :
-        this.createMarketForm.getElementsByClassName('display-from-left')[0].clientHeight;
+      newHeight = this.createMarketForm.getElementsByClassName('display-form-part')[0].clientHeight;
     }
 
     this.createMarketForm.style.height = `${newHeight}px`;
@@ -108,10 +105,8 @@ export default class CreateMarketForm extends Component {
         />
         <CreateMarketFormDescription
           className={classNames({
-            'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION),
-            'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION),
-            'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION),
-            'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION)
+            'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION),
+            'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION)
           })}
           description={p.newMarket.description}
           updateValidity={isValid => this.setState({ isValid })}
