@@ -68,14 +68,10 @@ const CreateMarketFormType = p => (
 );
 
 CreateMarketFormType.propTypes = {
-  type: PropTypes.string,
+  type: PropTypes.string.isRequired,
   addValidationToNewMarket: PropTypes.func.isRequired,
   removeValidationFromNewMarket: PropTypes.func.isRequired,
   updateNewMarket: PropTypes.func.isRequired
-};
-
-CreateMarketFormType.defaultProps = {
-  type: null
 };
 
 export default CreateMarketFormType;

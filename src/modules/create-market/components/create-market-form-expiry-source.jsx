@@ -41,7 +41,6 @@ export default class CreateMarketFormExpirySource extends Component {
 
   render() {
     const p = this.props;
-    const s = this.state;
 
     return (
       <article className={`create-market-form-part create-market-form-part-expiry-source ${p.className || ''}`}>
