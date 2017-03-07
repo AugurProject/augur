@@ -17,9 +17,12 @@ module.exports = {
   },
 
   transact: function (tx, onSent, onSuccess, onFailed) {
+    var self = this;
     if (this.accounts && this.accounts.account && this.accounts.account.address) {
       tx.from = this.accounts.account.address;
-      tx.invocation = {invoke: this.accounts.invoke, context: this.accounts};
+      tx.invoke = function (payload, onSent, onSuccess, onFailed) {
+        return self.rpc.packageAndSubmitRawTransaction(payload, self.accounts.account.address, self.accounts.account.privateKey, onSent, onSuccess, onFailed);
+      };
     } else {
       tx.from = tx.from || this.from || this.coinbase;
     }

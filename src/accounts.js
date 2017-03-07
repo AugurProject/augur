@@ -7,12 +7,9 @@
 var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 
 var async = require("async");
-var BigNumber = require("bignumber.js");
-var EthTx = require("ethereumjs-tx");
 var keys = require("keythereum");
 var uuid = require("uuid");
 var clone = require("clone");
-var locks = require("locks");
 var request = (NODE_JS) ? require("request") : require("browser-request");
 var abi = require("augur-abi");
 var errors = require("ethrpc").errors;
@@ -276,151 +273,6 @@ module.exports = function () {
     logout: function () {
       this.account = {};
       augur.rpc.clear();
-    },
-
-    submitTx: function (packaged, cb) {
-      var self = this;
-      var mutex = locks.createMutex();
-      mutex.lock(function () {
-        for (var rawTxHash in augur.rpc.rawTxs) {
-          if (!augur.rpc.rawTxs.hasOwnProperty(rawTxHash)) continue;
-          if (augur.rpc.rawTxs[rawTxHash].tx.nonce === packaged.nonce && (!augur.rpc.txs[rawTxHash] || augur.rpc.txs[rawTxHash].status !== "failed")) {
-            packaged.nonce = abi.hex(augur.rpc.rawTxMaxNonce + 1);
-            if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
-              console.debug("[augur.js] duplicate nonce, incremented:", parseInt(packaged.nonce, 16), augur.rpc.rawTxMaxNonce);
-            }
-            break;
-          }
-        }
-        if (parseInt(packaged.nonce, 16) <= augur.rpc.rawTxMaxNonce) {
-          packaged.nonce = abi.hex(++augur.rpc.rawTxMaxNonce);
-        } else {
-          augur.rpc.rawTxMaxNonce = parseInt(packaged.nonce, 16);
-        }
-        if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
-          console.debug("[augur.js] nonce:", parseInt(packaged.nonce, 16), augur.rpc.rawTxMaxNonce);
-        }
-        mutex.unlock();
-        if (augur.rpc.debug.broadcast) {
-          console.log("[augur.js] packaged:", JSON.stringify(packaged, null, 2));
-        }
-        var etx = new EthTx(packaged);
-
-        // sign, validate, and send the transaction
-        etx.sign(self.account.privateKey);
-        if (augur.rpc.debug.tx) {
-          console.log("rawTx nonce:    0x" + etx.nonce.toString("hex"));
-          console.log("rawTx gasPrice: 0x" + etx.gasPrice.toString("hex"));
-          console.log("rawTx gasLimit: 0x" + etx.gasLimit.toString("hex"));
-          console.log("rawTx to:       0x" + etx.to.toString("hex"));
-          console.log("rawTx value:    0x" + etx.value.toString("hex"));
-          console.log("rawTx v:        0x" + etx.v.toString("hex"));
-          console.log("rawTx r:        0x" + etx.r.toString("hex"));
-          console.log("rawTx s:        0x" + etx.s.toString("hex"));
-          console.log("rawTx data:     0x" + etx.data.toString("hex"));
-        }
-
-        // calculate the cost (in ether) of this transaction
-        // (note: this is just an upper bound on the cost, set by the gasLimit!)
-        var cost = etx.getUpfrontCost().toString();
-
-        // transaction validation
-        if (!etx.validate()) return cb(errors.TRANSACTION_INVALID);
-
-        // send the raw signed transaction to geth
-        augur.rpc.sendRawTx(etx.serialize().toString("hex"), function (res) {
-          if (augur.rpc.debug.broadcast) console.debug("[augur.js] sendRawTx response:", res);
-          if (!res) return cb(errors.RAW_TRANSACTION_ERROR);
-          if (res.error) {
-            if (res.message.indexOf("rlp") > -1) {
-              var err = clone(errors.RLP_ENCODING_ERROR);
-              err.bubble = res;
-              err.packaged = packaged;
-              return cb(err);
-            } else if (res.message.indexOf("Nonce too low") > -1) {
-              if (augur.rpc.debug.broadcast || augur.rpc.debug.nonce) {
-                console.debug("[augur.js] Bad nonce, retrying:", res.message, packaged, augur.rpc.rawTxMaxNonce);
-              }
-              ++augur.rpc.rawTxMaxNonce;
-              delete packaged.nonce;
-              return self.getTxNonce(packaged, cb);
-            }
-            return cb(res);
-          }
-
-          // res is the txhash if nothing failed immediately
-          // (even if the tx is nulled, still index the hash)
-          augur.rpc.rawTxs[res] = {tx: packaged, cost: abi.unfix(cost, "string")};
-
-          // nonce ok, execute callback
-          return cb(res);
-        });
-      });
-    },
-
-    // get nonce: number of transactions
-    getTxNonce: function (packaged, cb) {
-      var self = this;
-      if (packaged.nonce) return this.submitTx(packaged, cb);
-      augur.rpc.pendingTxCount(self.account.address, function (txCount) {
-        if (augur.rpc.debug.nonce) {
-          console.debug('[augur.js] txCount:', parseInt(txCount, 16));
-        }
-        if (txCount && !txCount.error && !(txCount instanceof Error)) {
-          packaged.nonce = abi.hex(txCount);
-        }
-        self.submitTx(packaged, cb);
-      });
-    },
-
-    invoke: function (payload, cb) {
-      var self = this;
-      if (!payload || payload.constructor !== Object) {
-        if (cb && cb.constructor === Function) return cb(errors.TRANSACTION_FAILED);
-        return errors.TRANSACTION_FAILED;
-      }
-      // if this is just a call, use ethrpc's regular invoke method
-      if (!payload.send) {
-        if (augur.rpc.debug.broadcast) {
-          console.log("[augur.js] eth_call payload:", payload);
-        }
-        return augur.rpc.fire(payload, cb);
-      }
-      cb = cb || utils.pass;
-
-      if (!this.account.address || !this.account.privateKey) {
-        return cb(errors.NOT_LOGGED_IN);
-      }
-      // parse and serialize transaction parameters
-      var packaged = augur.rpc.packageRequest(payload);
-      packaged.from = this.account.address;
-      packaged.nonce = payload.nonce || "0x0";
-      packaged.value = payload.value || "0x0";
-      if (payload.gasLimit) {
-        packaged.gasLimit = abi.hex(payload.gasLimit);
-      } else if (augur.rpc.block && augur.rpc.block.gasLimit) {
-        packaged.gasLimit = abi.hex(augur.rpc.block.gasLimit);
-      } else {
-        packaged.gasLimit = abi.hex(constants.DEFAULT_GAS);
-      }
-      if (augur.network_id && !isNaN(parseInt(augur.network_id, 10)) && parseInt(augur.network_id, 10) < 109) {
-        packaged.chainId = parseInt(augur.network_id, 10);
-      }
-      if (augur.rpc.debug.broadcast) {
-        console.log("[augur.js] payload:", payload);
-      }
-      if (payload.gasPrice && abi.number(payload.gasPrice) > 0) {
-        packaged.gasPrice = payload.gasPrice;
-        return this.getTxNonce(packaged, cb);
-      }
-      augur.rpc.getGasPrice(function (gasPrice) {
-        if (!gasPrice || gasPrice.error) {
-          return cb(errors.TRANSACTION_FAILED);
-        }
-        packaged.gasPrice = gasPrice;
-        self.getTxNonce(packaged, cb);
-      });
     }
-
   };
 };

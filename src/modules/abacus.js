@@ -103,7 +103,7 @@ module.exports = {
   // type: "buy" or "sell"
   // gasLimit (optional): block gas limit as an integer
   maxOrdersPerTrade: function (type, gasLimit) {
-    return 1 + ((gasLimit || constants.DEFAULT_GAS) - constants.TRADE_GAS[0][type]) / constants.TRADE_GAS[1][type] >> 0;
+    return 1 + ((gasLimit || 3135000) - constants.TRADE_GAS[0][type]) / constants.TRADE_GAS[1][type] >> 0;
   },
 
   // tradeTypes: array of "buy" and/or "sell"

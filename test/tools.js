@@ -44,7 +44,6 @@ module.exports = {
   // a function to quickly reset the callCounts object.
   ClearCallCounts: function (callCounts) {
     var keys = Object.keys(callCounts);
-    var numKeys = keys.length;
     for (var i = 0, numKeys = keys.length; i < numKeys; ++i) {
       callCounts[keys[i]] = 0;
     }
