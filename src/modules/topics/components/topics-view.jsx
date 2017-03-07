@@ -188,6 +188,13 @@ export default class TopicsView extends Component {
               placeholder="Search Topics"
               onChange={keywords => this.setState({ keywords })}
             />
+            <a
+              className="button imperative navigational"
+              id="createMarketButton"
+              href="./?page=make"
+            >
+              + Create New Market
+            </a>
           </div>
           {s.filteredTopics.length ?
             <div className="topics">
