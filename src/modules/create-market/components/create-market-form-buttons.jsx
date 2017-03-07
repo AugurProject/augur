@@ -52,6 +52,7 @@ export default class CreateMarketFormButtons extends Component {
     if (this.props.currentStep !== nextProps.currentStep ||
         this.props.validations !== nextProps.validations
     ) {
+      console.log('validations changed');
       this.updateNextButtonCopy(nextProps.currentStep, nextProps.validations);
     }
 

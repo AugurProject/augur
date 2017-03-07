@@ -45,7 +45,7 @@ export default class InputList extends Component {
     if (minElements && list.length < minElements) {
       newList = newList.slice();
       len = minElements - newList.length;
-      for (i = 0; i < len; i++) {
+      for (i = 0; i < len - 1; i++) {
         newList.push('');
       }
     }

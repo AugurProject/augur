@@ -14,7 +14,9 @@ const CreateMarketFormType = p => (
           p.updateNewMarket({
             currentStep: 1,
             type: BINARY,
-            outcomes: ['Yes']
+            outcomes: ['Yes'],
+            scalarSmallNum: '',
+            scalarBigNum: ''
           });
         }}
       >
@@ -27,9 +29,13 @@ const CreateMarketFormType = p => (
         className="unstyled market-type"
         onClick={() => {
           p.addValidationToNewMarket(NEW_MARKET_TYPE);
+          p.removeValidationFromNewMarket(NEW_MARKET_OUTCOMES);
           p.updateNewMarket({
             currentStep: 1,
-            type: CATEGORICAL
+            type: CATEGORICAL,
+            outcomes: [],
+            scalarSmallNum: '',
+            scalarBigNum: ''
           });
         }}
       >
@@ -42,9 +48,13 @@ const CreateMarketFormType = p => (
         className="unstyled market-type"
         onClick={() => {
           p.addValidationToNewMarket(NEW_MARKET_TYPE);
+          p.removeValidationFromNewMarket(NEW_MARKET_OUTCOMES);
           p.updateNewMarket({
             currentStep: 1,
-            type: SCALAR
+            type: SCALAR,
+            outcomes: [],
+            scalarSmallNum: '',
+            scalarBigNum: ''
           });
         }}
       >
@@ -59,6 +69,8 @@ const CreateMarketFormType = p => (
 
 CreateMarketFormType.propTypes = {
   type: PropTypes.string,
+  addValidationToNewMarket: PropTypes.func.isRequired,
+  removeValidationFromNewMarket: PropTypes.func.isRequired,
   updateNewMarket: PropTypes.func.isRequired
 };
 

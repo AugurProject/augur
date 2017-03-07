@@ -59,6 +59,10 @@ export default class CreateMarketForm extends Component {
         this.updateFormHeight();
       });
     }
+
+    if (this.props.newMarket !== nextProps.newMarket) {
+      this.updateFormHeight();
+    }
   }
 
   updateFormHeight() {
@@ -97,6 +101,7 @@ export default class CreateMarketForm extends Component {
           })}
           type={p.newMarket.type}
           addValidationToNewMarket={p.addValidationToNewMarket}
+          removeValidationFromNewMarket={p.removeValidationFromNewMarket}
           updateNewMarket={p.updateNewMarket}
         />
         <CreateMarketFormDescription

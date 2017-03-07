@@ -80,32 +80,60 @@ export default class CreateMarketFormOutcomes extends Component {
 
     return (
       <article className={`create-market-form-part ${p.className || ''}`}>
-        <h2>Outcomes</h2>
         {p.type === CATEGORICAL ?
-          <InputList
-            list={p.outcomes}
-            listMinElements={CATEGORICAL_OUTCOMES_MIN_NUM}
-            listMaxElements={CATEGORICAL_OUTCOMES_MAX_NUM}
-            itemMaxLength={CATEGORICAL_OUTCOME_MAX_LENGTH}
-            onChange={outcomes => p.updateNewMarket({ outcomes })}
-          /> :
-          <div>
-            <Input
-              type="text"
-              name="minimum-answer"
-              value={p.scalarSmallNum}
-              placeholder="Minimum answer"
-              maxLength={6}
-              onChange={this.handleScalarSmallInput}
-            />
-            <Input
-              type="text"
-              name="maximum-answer"
-              value={p.scalarBigNum}
-              placeholder="Maximum answer"
-              maxLength={6}
-              onChange={this.handleScalarBigInput}
-            />
+          <div className="create-market-form-part-content">
+            <div className="create-market-form-part-input">
+              <aside>
+                <h3>Potential Outcomes</h3>
+                <span>Input between <strong>two</strong> - <strong>eight</strong> potential outcomes for this event.</span>
+              </aside>
+              <div className="vertical-form-divider" />
+              <form>
+                <InputList
+                  list={p.outcomes}
+                  listMinElements={CATEGORICAL_OUTCOMES_MIN_NUM}
+                  listMaxElements={CATEGORICAL_OUTCOMES_MAX_NUM}
+                  itemMaxLength={CATEGORICAL_OUTCOME_MAX_LENGTH}
+                  onChange={outcomes => p.updateNewMarket({ outcomes })}
+                />
+              </form>
+            </div>
+          </div>:
+          <div className="create-market-form-part-content">
+            <div className="create-market-form-part-input">
+              <aside>
+                <h3>Minimum Value</h3>
+                <span>What is the minimum value possible for this event.</span>
+              </aside>
+              <div className="vertical-form-divider" />
+              <form>
+                <Input
+                  type="text"
+                  name="minimum-answer"
+                  value={p.scalarSmallNum}
+                  placeholder="Minimum answer"
+                  maxLength={6}
+                  onChange={this.handleScalarSmallInput}
+                />
+              </form>
+            </div>
+            <div className="create-market-form-part-input">
+              <aside>
+                <h3>Maximum Value</h3>
+                <span>What is the maximum value possible for this event.</span>
+              </aside>
+              <div className="vertical-form-divider" />
+              <form>
+                <Input
+                  type="text"
+                  name="maximum-answer"
+                  value={p.scalarBigNum}
+                  placeholder="Maximum answer"
+                  maxLength={6}
+                  onChange={this.handleScalarBigInput}
+                />
+              </form>
+            </div>
           </div>
         }
       </article>
