@@ -56,6 +56,9 @@ const LoginMessagePage = p => (
       <h3>March 6, 2017</h3>
       <ol>
         <li>
+          Added QR codes for your deposit address and keystore file, increasing the ease of transfering your wallet and depositing of funds.
+        </li>
+        <li>
           Added a guide and link on how to recover REP / ETH sent to the beta.
         </li>
       </ol>
