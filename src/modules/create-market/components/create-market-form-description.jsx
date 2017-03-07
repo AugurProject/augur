@@ -71,7 +71,6 @@ export default class CreateMarketFormDescription extends Component {
                 onChange={description => this.validateForm(description)}
               />
               <CreateMarketFormInputNotifications
-                errors={s.errors}
                 warnings={s.warnings}
               />
             </form>
