@@ -4,7 +4,7 @@ import ReactHighcharts from 'react-highcharts';
 
 import ComponentNav from 'modules/common/components/component-nav';
 import Input from 'modules/common/components/input';
-import CreateMarketFormErrors from 'modules/create-market/components/create-market-form-errors';
+// import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications';
 
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
 import { NEW_MARKET_ORDER_BOOK } from 'modules/create-market/constants/new-market-creation-steps';

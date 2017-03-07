@@ -10,7 +10,6 @@ export default class CreateMarketFormButtons extends Component {
     validations: PropTypes.array.isRequired,
     addValidationToNewMarket: PropTypes.func.isRequired,
     removeValidationFromNewMarket: PropTypes.func.isRequired,
-    resetValidity: PropTypes.func.isRequired,
     updateNewMarket: PropTypes.func.isRequired,
     newMarket: PropTypes.object.isRequired,
     submitNewMarket: PropTypes.func.isRequired
@@ -96,7 +95,7 @@ export default class CreateMarketFormButtons extends Component {
 
   updateFormButtonHeight(step) {
     let newHeight = 0;
-    if (step !== 0) newHeight = this.formButtons.children[0].clientHeight;
+    if (step !== 0) newHeight = this.formButtons.children[0].clientHeight - 1; // -1 protects against a rendering issue during animation where the height changes to just under measured amount, causing a gap
     this.formButtons.style.height = `${newHeight}px`;
   }
 
@@ -111,15 +110,12 @@ export default class CreateMarketFormButtons extends Component {
       >
         <div className="create-market-form-buttons-container">
           <div className="create-market-form-buttons-content">
-            <button
-              className="unstyled"
-              onClick={this.handleBackButton}
-            >
+            <button onClick={this.handleBackButton} >
               Back
             </button>
             <button
-              className={classNames('unstyled', {
-                'disable-button': !p.isValid
+              className={classNames({
+                disabled: !p.isValid
               })}
               onClick={p.isValid && this.handleNextButton}
             >

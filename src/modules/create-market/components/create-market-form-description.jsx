@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 
 import Input from 'modules/common/components/input';
-import CreateMarketFormErrors from 'modules/create-market/components/create-market-form-errors';
+import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications';
 
-import { DESCRIPTION_MIN_LENGTH, DESCRIPTION_MAX_LENGTH } from 'modules/create-market/constants/new-market-constraints';
+import { DESCRIPTION_MAX_LENGTH } from 'modules/create-market/constants/new-market-constraints';
 
 export default class CreateMarketFormDescription extends Component {
   constructor(props) {
@@ -11,37 +11,36 @@ export default class CreateMarketFormDescription extends Component {
 
     this.state = {
       errors: [],
+      warnings: [],
       description: this.props.description
     };
 
     this.validateForm = this.validateForm.bind(this);
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (this.props.description !== nextProps.description) this.setState({ description: nextProps.description });
-  }
-
   validateForm(description) {
     const errors = [];
+    const warnings = [];
 
+    // Error Check
     if (!description || !description.length) {
-      errors.push('Please enter your question');
-    } else if (description.length < DESCRIPTION_MIN_LENGTH) {
-      errors.push(`Text must be a minimum length of ${DESCRIPTION_MIN_LENGTH}`);
-    } else if (description.length > DESCRIPTION_MAX_LENGTH) {
-      errors.push(`Text exceeds the maximum length of ${DESCRIPTION_MAX_LENGTH}`);
+      this.props.updateValidity(false);
     } else {
       this.props.updateValidity(true);
+    }
+
+    // Warning Check
+    if (description.length === DESCRIPTION_MAX_LENGTH) {
+      warnings.push(`Maximum question length is ${DESCRIPTION_MAX_LENGTH}`);
     }
 
     if (!errors.length) {
       this.props.updateNewMarket({ description });
     } else {
       this.props.updateNewMarket({ description: '' });
-      this.props.updateValidity(false);
     }
 
-    this.setState({ errors });
+    this.setState({ errors, warnings });
   }
 
   render() {
@@ -67,8 +66,9 @@ export default class CreateMarketFormDescription extends Component {
                   this.validateForm(description);
                 }}
               />
-              <CreateMarketFormErrors
+              <CreateMarketFormInputNotifications
                 errors={s.errors}
+                warnings={s.warnings}
               />
             </form>
           </div>
@@ -79,6 +79,7 @@ export default class CreateMarketFormDescription extends Component {
 }
 
 CreateMarketFormDescription.propTypes = {
+  isValid: PropTypes.bool.isRequired,
   description: PropTypes.string.isRequired,
   updateValidity: PropTypes.func.isRequired,
   updateNewMarket: PropTypes.func.isRequired

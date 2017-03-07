@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 
 import Input from 'modules/common/components/input';
-import CreateMarketFormErrors from 'modules/create-market/components/create-market-form-errors';
+import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications';
 
 import { TAGS_MAX_LENGTH } from 'modules/create-market/constants/new-market-constraints';
 
@@ -63,7 +63,7 @@ export default class CreateMarketFormTopic extends Component {
                   this.validateForm(topic);
                 }}
               />
-              <CreateMarketFormErrors
+              <CreateMarketFormInputNotifications
                 errors={s.errors}
               />
             </form>

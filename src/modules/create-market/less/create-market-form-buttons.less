@@ -4,12 +4,12 @@
   transition-property: height;
 
   .create-market-form-buttons-container {
+    .border(true, @border-top);
+
     position: absolute;
     width: 100%;
 
     .create-market-form-buttons-content {
-      .border(true, @border-top);
-
       display: flex;
 
       & > * {
@@ -26,10 +26,6 @@
         &:last-of-type {
           padding-right: 1em;
           text-align: right;
-
-          &:not(.disable-button) {
-            background-color: @color-blue;
-          }
         }
       }
     }

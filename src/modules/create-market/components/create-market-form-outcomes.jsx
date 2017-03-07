@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 
 import Input from 'modules/common/components/input';
 import InputList from 'modules/common/components/input-list';
-import CreateMarketFormErrors from 'modules/create-market/components/create-market-form-errors';
+// import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications';
 
 import { CATEGORICAL } from 'modules/markets/constants/market-types';
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
@@ -116,8 +116,8 @@ export default class CreateMarketFormOutcomes extends Component {
 CreateMarketFormOutcomes.propTypes = {
   type: PropTypes.string.isRequired,
   outcomes: PropTypes.array.isRequired,
-  scalarSmallNum: PropTypes.number.isRequired,
-  scalarBigNum: PropTypes.number.isRequired,
+  scalarSmallNum: PropTypes.string.isRequired,
+  scalarBigNum: PropTypes.string.isRequired,
   currentStep: PropTypes.number.isRequired,
   updateValidity: PropTypes.func.isRequired,
   updateNewMarket: PropTypes.func.isRequired

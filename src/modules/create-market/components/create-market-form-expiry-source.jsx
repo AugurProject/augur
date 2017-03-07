@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 
 import Input from 'modules/common/components/input';
-import CreateMarketFormErrors from 'modules/create-market/components/create-market-form-errors';
+import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications';
 
 import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC } from 'modules/create-market/constants/new-market-constraints';
 
@@ -107,7 +107,7 @@ export default class CreateMarketFormExpirySource extends Component {
                   this.validateForm(p.expirySourceType, expirySource, true);
                 }}
               />
-              <CreateMarketFormErrors
+              <CreateMarketFormInputNotifications
                 errors={s.errors}
               />
             </form>
