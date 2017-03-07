@@ -1,4 +1,4 @@
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 
 import InputList from 'modules/common/components/input-list';
 
@@ -6,40 +6,86 @@ import newMarketCreationOrder from 'modules/create-market/constants/new-market-c
 import { NEW_MARKET_KEYWORDS } from 'modules/create-market/constants/new-market-creation-steps';
 import { KEYWORDS_MAX_NUM, TAGS_MAX_LENGTH } from 'modules/create-market/constants/new-market-constraints';
 
-const CreateMarketFormKeywords = (p) => {
-  // Optional step -- update validity to true by default
-  if (p.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS) && !p.isValid) p.updateValidity(true);
+export default class CreateMarketFormKeywords extends Component {
+  static propTypes = {
+    isValid: PropTypes.bool.isRequired,
+    currentStep: PropTypes.number.isRequired,
+    keywords: PropTypes.array.isRequired,
+    topic: PropTypes.string.isRequired,
+    updateValidity: PropTypes.func.isRequired,
+    updateNewMarket: PropTypes.func.isRequired
+  }
 
-  return (
-    <article className={`create-market-form-part ${p.className || ''}`}>
-      <div className="create-market-form-part-content">
-        <div className="create-market-form-part-input">
-          <aside>
-            <h3>Keywords</h3>
-            <h4>Optional</h4>
-            <span>Add up to <strong>two</strong> keywords to help with the categorization and indexing of your market.</span>
-          </aside>
-          <div className="vertical-form-divider" />
-          <form onSubmit={e => e.preventDefault()} >
-            <InputList
-              list={p.keywords}
-              listMaxElements={KEYWORDS_MAX_NUM}
-              itemMaxLength={TAGS_MAX_LENGTH}
-              onChange={keywords => p.updateNewMarket({ keywords })}
-            />
-          </form>
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      errors: [],
+      warnings: []
+    };
+
+    this.validateForm = this.validateForm.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.currentStep !== nextProps.currentStep && newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_KEYWORDS) this.validateForm(nextProps.keywords);
+  }
+
+  validateForm(keywords) {
+    const errors = Array(keywords.length);
+    errors.fill('');
+
+    const warnings = Array(keywords.length);
+    warnings.fill('');
+
+    keywords.forEach((keyword, i) => {
+      if (keyword === this.props.topic) {
+        errors[i] = 'Keyword cannot be the same as the topic';
+      } else if (keywords.indexOf(keyword) > -1 && keywords.indexOf(keyword) !== i) {
+        errors[i] = 'Keyword must be unique';
+      } else if (keyword.length === TAGS_MAX_LENGTH) {
+        warnings[i] = `Keyword max length is: ${TAGS_MAX_LENGTH}`;
+      }
+    });
+
+    if (errors.find(error => error.length)) {
+      this.props.updateValidity(false);
+    } else {
+      this.props.updateValidity(true);
+    }
+
+    this.setState({ errors, warnings });
+
+    this.props.updateNewMarket({ keywords });
+  }
+
+  render() {
+    const p = this.props;
+    const s = this.state;
+
+    return (
+      <article className={`create-market-form-part ${p.className || ''}`}>
+        <div className="create-market-form-part-content">
+          <div className="create-market-form-part-input">
+            <aside>
+              <h3>Keywords</h3>
+              <h4>Optional</h4>
+              <span>Add up to <strong>two</strong> keywords to help with the categorization and indexing of your market.</span>
+            </aside>
+            <div className="vertical-form-divider" />
+            <form onSubmit={e => e.preventDefault()} >
+              <InputList
+                list={p.keywords}
+                errors={s.errors}
+                warnings={s.warnings}
+                listMaxElements={KEYWORDS_MAX_NUM}
+                itemMaxLength={TAGS_MAX_LENGTH}
+                onChange={keywords => this.validateForm(keywords)}
+              />
+            </form>
+          </div>
         </div>
-      </div>
-    </article>
-  );
-};
-
-CreateMarketFormKeywords.propTypes = {
-  isValid: PropTypes.bool.isRequired,
-  currentStep: PropTypes.number.isRequired,
-  keywords: PropTypes.array.isRequired,
-  updateValidity: PropTypes.func.isRequired,
-  updateNewMarket: PropTypes.func.isRequired
-};
-
-export default CreateMarketFormKeywords;
+      </article>
+    );
+  }
+}

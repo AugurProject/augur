@@ -179,6 +179,7 @@ export default class CreateMarketForm extends Component {
           isValid={p.newMarket.isValid}
           currentStep={p.newMarket.currentStep}
           keywords={p.newMarket.keywords}
+          topic={p.newMarket.topic}
           updateValidity={this.updateValidity}
           updateNewMarket={p.updateNewMarket}
         />
