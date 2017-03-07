@@ -53,6 +53,12 @@ const LoginMessagePage = p => (
         </li>
       </ol>
       <h2>Technical updates:</h2>
+      <h3>March 6, 2017</h3>
+      <ol>
+        <li>
+          Added Create New Market button to the topics homepage.
+        </li>
+      </ol>
       <h3>March 5, 2017</h3>
       <ol>
         <li>
