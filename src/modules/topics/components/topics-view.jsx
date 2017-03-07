@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import classNames from 'classnames';
 
 import NullStateMessage from 'modules/common/components/null-state-message';
 import TopicRows from 'modules/topics/components/topic-rows';
@@ -184,7 +185,7 @@ export default class TopicsView extends Component {
             <Branch {...p.branch} />
           }
           <div className="topics-header">
-            <div className="topics-search">
+            <div className={classNames('topics-search', { 'only-search': !p.loginAccount || !p.loginAccount.address })}>
               <Input
                 isSearch
                 isClearable

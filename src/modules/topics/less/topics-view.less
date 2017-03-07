@@ -21,8 +21,20 @@
         display: flex;
         flex: 1;
 
+        &.only-search {
+          justify-content: center;
+
+          .input {
+            flex-basis: 50%;
+
+            @media @breakpoint-1 {
+              flex-basis: 100%;
+            }
+          }
+        }
+
         .input {
-          flex: 0 1 80%;
+          flex-basis: 80%;
 
           @media @breakpoint-1 {
             flex: auto;
