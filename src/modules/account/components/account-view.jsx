@@ -1,9 +1,12 @@
 import React, { PropTypes, Component } from 'react';
 import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
+import { ModalContainer, ModalDialog } from 'react-modal-dialog';
 
 import Link from 'modules/link/components/link';
 import Input from 'modules/common/components/input';
+
+const QRCode = require('qrcode.react');
 
 export default class AccountPage extends Component {
   // TODO -- Prop Validations
@@ -24,12 +27,37 @@ export default class AccountPage extends Component {
       msg: '',
       sendAmount: '',
       currency: 'ETH',
-      recipientAddress: ''
+      recipientAddress: '',
+      isShowingModal: false
     };
 
     this.handleTransfer = this.handleTransfer.bind(this);
     this.loginIDCopy = this.loginIDCopy.bind(this);
   }
+
+  handleModalClose = () => {
+    this.setState({
+      isShowingModal: false
+    });
+  };
+
+  handleModalOpenDeposit = () => {
+    this.setState({
+      isShowingModal: true,
+      size: 300,
+      message: 'Ether / REP Deposit Address',
+      value: this.props.account.address && this.props.account.address.indexOf('0x') === 0 && this.props.account.address.replace('0x', '')
+    });
+  };
+
+  handleModalOpenTransfer = () => {
+    this.setState({
+      isShowingModal: true,
+      size: 300,
+      message: 'Your Account Keystore Data',
+      value: this.props.account.downloadAccountDataString
+    });
+  };
 
   handleTransfer = (e) => {
     e.preventDefault();
@@ -123,9 +151,34 @@ export default class AccountPage extends Component {
                     <span>
                       {p.account.address && p.account.address.indexOf('0x') === 0 && p.account.address.replace('0x', '')}
                     </span>
+                    <button
+                      className="link"
+                      onClick={this.handleModalOpenDeposit}
+                    >
+                      (QR code to despoit)
+                    {
+                      this.state.isShowingModal &&
+                      <ModalContainer
+                        onClose={this.handleModalClose}
+                      >
+                        <ModalDialog
+                          onClose={this.handleModalClose}
+                        >
+                          <h1>
+                            {this.state.message}
+                          </h1>
+                          <p>
+                            <QRCode
+                              size={this.state.size}
+                              value={this.state.value}
+                            />
+                          </p>
+                        </ModalDialog>
+                      </ModalContainer>
+                    }
+                    </button>
                   </td>
                 </tr>
-
                 <tr className={classnames('account-info-item', { displayNone: !p.account.loginID })}>
                   <th className="title">Login ID:</th>
                   <td className="item">
@@ -246,7 +299,7 @@ export default class AccountPage extends Component {
                   Send Currency
                 </button>
                 <p>
-                  You can withdraw to any cryptocurrency with ShapeShift. Open ShapeShift with the button below, select your input (ETH or REP) and output currency. Enter your destination address within the ShapeShift modal. Start the transaction, and enter the deposit address ShapeShift gives you into the withdraw feild above. <b>(Disabled during beta)</b>
+                  You can withdraw to any cryptocurrency with ShapeShift. Open ShapeShift with the button below, select your input (ETH or REP) and output currency. Enter your destination address within the ShapeShift modal. Start the transaction, and enter the deposit address ShapeShift gives you into the withdraw field above. <b>(Disabled during beta)</b>
                 </p>
                 <button
                   className="button intigrations"
@@ -261,6 +314,11 @@ export default class AccountPage extends Component {
               <h2 className="heading">Download Account Key File</h2>
               <p>
                 Download your account key file. You should always save a backup of your account data somewhere safe! Remember, <b>Augur does not store any user account information and therefore has no ability to restore or recover lost accounts</b>. (Note: running a local Ethereum node? If you download your account data to your keystore folder, you can use your Augur account on your local node.)
+              </p>
+              <p id="warning">
+                <b>
+                  Do NOT share your downloaded account key file or QR code with anyone. Your funds *could* be stolen.
+                </b>
               </p>
               <p>
                 <b>
@@ -278,6 +336,34 @@ export default class AccountPage extends Component {
               >
                 Download Account Key File
               </a>
+              <div className="transferWallet">
+                <button
+                  className="link"
+                  onClick={this.handleModalOpenTransfer}
+                >
+                  (QR code to transfer wallet)
+                {
+                  this.state.isShowingModal &&
+                  <ModalContainer
+                    onClose={this.handleModalClose}
+                  >
+                    <ModalDialog
+                      onClose={this.handleModalClose}
+                    >
+                      <h1>
+                        {this.state.message}
+                      </h1>
+                      <p>
+                        <QRCode
+                          size={this.state.size}
+                          value={this.state.value}
+                        />
+                      </p>
+                    </ModalDialog>
+                  </ModalContainer>
+                }
+                </button>
+              </div>
             </div>
           </div>
           <div className={classnames('account-section')}>
