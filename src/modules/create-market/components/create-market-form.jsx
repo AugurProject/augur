@@ -183,24 +183,21 @@ export default class CreateMarketForm extends Component {
           updateValidity={this.updateValidity}
           updateNewMarket={p.updateNewMarket}
         />
+        <CreateMarketFormOrderBook
+          className={classNames({
+            'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK),
+            'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK)
+          })}
+          type={p.newMarket.type}
+          currentStep={p.newMarket.currentStep}
+          outcomes={p.newMarket.outcomes}
+          orderBook={p.newMarket.orderBook}
+          addOrderToNewMarket={p.addOrderToNewMarket}
+          removeOrderFromNewMarket={p.removeOrderFromNewMarket}
+          updateValidity={this.updateValidity}
+          updateNewMarket={p.updateNewMarket}
+        />
       </article>
     );
   }
 }
-
-// <CreateMarketFormOrderBook
-//   className={classNames({
-//     'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK),
-//     'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK),
-//     'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK),
-//     'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK)
-//   })}
-//   type={p.newMarket.type}
-//   currentStep={p.newMarket.currentStep}
-//   outcomes={p.newMarket.outcomes}
-//   orderBook={p.newMarket.orderBook}
-//   addOrderToNewMarket={p.addOrderToNewMarket}
-//   removeOrderFromNewMarket={p.removeOrderFromNewMarket}
-//   updateValidity={isValid => this.setState({ isValid })}
-//   updateNewMarket={p.updateNewMarket}
-// />

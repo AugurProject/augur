@@ -26,6 +26,7 @@ const CreateMarketView = p => (
       />
       <CreateMarketFormButtons
         currentStep={p.newMarket.currentStep}
+        type={p.newMarket.type}
         isValid={p.newMarket.isValid}
         validations={p.newMarket.validations}
         newMarket={p.newMarket}

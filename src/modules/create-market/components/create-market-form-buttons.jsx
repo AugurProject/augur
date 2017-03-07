@@ -2,9 +2,12 @@ import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
+import { NEW_MARKET_OUTCOMES } from 'modules/create-market/constants/new-market-creation-steps';
+import { BINARY } from 'modules/markets/constants/market-types';
 
 export default class CreateMarketFormButtons extends Component {
   static propTypes = {
+    type: PropTypes.string.isRequired,
     currentStep: PropTypes.number.isRequired,
     isValid: PropTypes.bool.isRequired,
     validations: PropTypes.array.isRequired,
@@ -79,7 +82,11 @@ export default class CreateMarketFormButtons extends Component {
   }
 
   handleBackButton() {
-    // TODO
+    if (this.props.type === BINARY && newMarketCreationOrder[this.props.currentStep - 1] === NEW_MARKET_OUTCOMES) {
+      this.props.updateNewMarket({ currentStep: this.props.currentStep - 2 });
+    } else {
+      this.props.updateNewMarket({ currentStep: this.props.currentStep - 1 });
+    }
   }
 
   handleNextButton() {
