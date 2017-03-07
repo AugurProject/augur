@@ -22,7 +22,7 @@ export function listenToUpdates() {
 
       collectedFees: (msg) => {
         if (msg && msg.sender === getState().loginAccount.address) {
-          console.debug('collectedFees:', msg);
+          console.log('collectedFees:', msg);
           dispatch(updateAssets());
           dispatch(convertLogsToTransactions('collectedFees', [msg]));
         }
@@ -30,7 +30,7 @@ export function listenToUpdates() {
 
       payout: (msg) => {
         if (msg && msg.sender === getState().loginAccount.address) {
-          console.debug('payout:', msg);
+          console.log('payout:', msg);
           dispatch(updateAssets());
           dispatch(convertLogsToTransactions('payout', [msg]));
         }
@@ -38,7 +38,7 @@ export function listenToUpdates() {
 
       penalizationCaughtUp: (msg) => {
         if (msg && msg.sender === getState().loginAccount.address) {
-          console.debug('penalizationCaughtUp:', msg);
+          console.log('penalizationCaughtUp:', msg);
           dispatch(updateAssets());
           dispatch(convertLogsToTransactions('penalizationCaughtUp', [msg]));
         }
@@ -47,7 +47,7 @@ export function listenToUpdates() {
       // Reporter penalization
       penalize: (msg) => {
         if (msg && msg.sender === getState().loginAccount.address) {
-          console.debug('penalize:', msg);
+          console.log('penalize:', msg);
           dispatch(updateAssets());
           dispatch(convertLogsToTransactions('penalize', [msg]));
         }
@@ -55,14 +55,14 @@ export function listenToUpdates() {
 
       registration: (msg) => {
         if (msg && msg.sender === getState().loginAccount.address) {
-          console.debug('registration:', msg);
+          console.log('registration:', msg);
           dispatch(convertLogsToTransactions('registration', [msg]));
         }
       },
 
       submittedReport: (msg) => {
         if (msg && msg.sender === getState().loginAccount.address) {
-          console.debug('submittedReport:', msg);
+          console.log('submittedReport:', msg);
           dispatch(updateAssets());
           dispatch(convertLogsToTransactions('submittedReport', [msg]));
         }
@@ -70,14 +70,14 @@ export function listenToUpdates() {
 
       submittedReportHash: (msg) => {
         if (msg && msg.sender === getState().loginAccount.address) {
-          console.debug('submittedReportHash:', msg);
+          console.log('submittedReportHash:', msg);
           dispatch(updateAssets());
           dispatch(convertLogsToTransactions('submittedReportHash', [msg]));
         }
       },
 
       slashedRep: (msg) => {
-        console.debug('slashedRep:', msg);
+        console.log('slashedRep:', msg);
         const { address } = getState().loginAccount;
         if (msg && (msg.sender === address || msg.reporter === address)) {
           dispatch(updateAssets());
@@ -87,7 +87,7 @@ export function listenToUpdates() {
 
       // trade filled: { market, outcome (id), price }
       log_fill_tx: (msg) => {
-        console.debug('log_fill_tx:', msg);
+        console.log('log_fill_tx:', msg);
         if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
           dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
           const { address } = getState().loginAccount;
@@ -107,7 +107,7 @@ export function listenToUpdates() {
 
       // short sell filled
       log_short_fill_tx: (msg) => {
-        console.debug('log_short_fill_tx:', msg);
+        console.log('log_short_fill_tx:', msg);
         if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
           dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
           if (msg.sender !== address) dispatch(fillOrder({ ...msg, type: 'sell' }));
@@ -130,7 +130,7 @@ export function listenToUpdates() {
 
       // order added to orderbook
       log_add_tx: (msg) => {
-        console.debug('log_add_tx:', msg);
+        console.log('log_add_tx:', msg);
         if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
           dispatch(addOrder(msg));
 
@@ -146,7 +146,7 @@ export function listenToUpdates() {
 
       // order removed from orderbook
       log_cancel: (msg) => {
-        console.debug('log_cancel:', msg);
+        console.log('log_cancel:', msg);
         if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
           dispatch(removeOrder(msg));
 
@@ -163,7 +163,7 @@ export function listenToUpdates() {
       // new market: msg = { marketID }
       marketCreated: (msg) => {
         if (msg && msg.marketID) {
-          console.debug('marketCreated:', msg);
+          console.log('marketCreated:', msg);
           dispatch(loadMarketsInfo([msg.marketID]));
           if (msg.sender === getState().loginAccount.address) {
             dispatch(updateAssets());
@@ -174,7 +174,7 @@ export function listenToUpdates() {
 
       // market trading fee updated (decrease only)
       tradingFeeUpdated: (msg) => {
-        console.debug('tradingFeeUpdated:', msg);
+        console.log('tradingFeeUpdated:', msg);
         if (msg && msg.marketID) {
           dispatch(loadMarketsInfo([msg.marketID]));
           dispatch(updateAssets());
@@ -184,7 +184,7 @@ export function listenToUpdates() {
 
       deposit: (msg) => {
         if (msg && msg.sender === getState().loginAccount.address) {
-          console.debug('deposit:', msg);
+          console.log('deposit:', msg);
           dispatch(updateAssets());
           dispatch(convertLogsToTransactions('deposit', [msg]));
         }
@@ -192,7 +192,7 @@ export function listenToUpdates() {
 
       withdraw: (msg) => {
         if (msg && msg.sender === getState().loginAccount.address) {
-          console.debug('withdraw:', msg);
+          console.log('withdraw:', msg);
           dispatch(updateAssets());
           dispatch(convertLogsToTransactions('withdraw', [msg]));
         }
@@ -201,7 +201,7 @@ export function listenToUpdates() {
       // Cash (ether) transfer
       sentCash: (msg) => {
         if (msg) {
-          console.debug('sentCash:', msg);
+          console.log('sentCash:', msg);
           const { address } = getState().loginAccount;
           if (msg._from === address || msg._to === address) {
             dispatch(updateAssets());
@@ -213,7 +213,7 @@ export function listenToUpdates() {
       // Reputation transfer
       Transfer: (msg) => {
         if (msg) {
-          console.debug('Transfer:', msg);
+          console.log('Transfer:', msg);
           const { address } = getState().loginAccount;
           if (msg._from === address || msg._to === address) {
             dispatch(updateAssets());
@@ -224,7 +224,7 @@ export function listenToUpdates() {
 
       Approval: (msg) => {
         if (msg) {
-          console.debug('Approval:', msg);
+          console.log('Approval:', msg);
           const { address } = getState().loginAccount;
           if (msg._owner === address || msg._spender === address) {
             dispatch(updateAssets());
@@ -235,7 +235,7 @@ export function listenToUpdates() {
 
       closedMarket: (msg) => {
         if (msg && msg.market) {
-          console.debug('closedMarket:', msg);
+          console.log('closedMarket:', msg);
           const { branch, loginAccount } = getState();
           if (branch.id === msg.branch) {
             dispatch(loadMarketsInfo([msg.market], () => {
