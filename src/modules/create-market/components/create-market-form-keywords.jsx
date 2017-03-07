@@ -13,19 +13,21 @@ const CreateMarketFormKeywords = (p) => {
   return (
     <article className={`create-market-form-part ${p.className || ''}`}>
       <div className="create-market-form-part-content">
-        <aside>
-          <h3>Keywords</h3>
-          <span>Add up to <strong>two</strong> keywords to help with the categorization and indexing of your market.</span>
-        </aside>
-        <div className="vertical-form-divider" />
-        <form>
-          <InputList
-            list={p.keywords}
-            listMaxElements={KEYWORDS_MAX_NUM}
-            itemMaxLength={TAGS_MAX_LENGTH}
-            onChange={keywords => p.updateNewMarket({ keywords })}
-          />
-        </form>
+        <div className="create-market-form-part-input">
+          <aside>
+            <h3>Keywords</h3>
+            <span>Add up to <strong>two</strong> keywords to help with the categorization and indexing of your market.</span>
+          </aside>
+          <div className="vertical-form-divider" />
+          <form>
+            <InputList
+              list={p.keywords}
+              listMaxElements={KEYWORDS_MAX_NUM}
+              itemMaxLength={TAGS_MAX_LENGTH}
+              onChange={keywords => p.updateNewMarket({ keywords })}
+            />
+          </form>
+        </div>
       </div>
     </article>
   );

@@ -12,20 +12,21 @@ const CreateMarketFormDetails = (p) => {
   return (
     <article className={`create-market-form-part ${p.className || ''}`}>
       <div className="create-market-form-part-content">
-        <aside>
-          <h3>Additional Details</h3>
-          <span>Provide any additional details required to either understand or report on your market.</span>
-        </aside>
-        <div className="vertical-form-divider" />
-        <form>
-          <Input
-            type="text"
-            value={p.detailsText}
-            onChange={detailsText => p.updateNewMarket({ detailsText })}
-          />
-        </form>
+        <div className="create-market-form-part-input">
+          <aside>
+            <h3>Additional Details</h3>
+            <span>Provide any additional details required to either understand or report on your market.</span>
+          </aside>
+          <div className="vertical-form-divider" />
+          <form>
+            <Input
+              type="text"
+              value={p.detailsText}
+              onChange={detailsText => p.updateNewMarket({ detailsText })}
+            />
+          </form>
+        </div>
       </div>
-
     </article>
   );
 };

@@ -62,62 +62,78 @@ export default class CreateMarketFormDescription extends Component {
 
     return (
       <article className={`create-market-form-part ${p.className || ''}`}>
-        <h2>Fees</h2>
-        <Input
-          type="number"
-          value={p.takerFee}
-          isIncrementable
-          incrementAmount={0.1}
-          min={TAKER_FEE_MIN}
-          max={TAKER_FEE_MAX}
-          updateValue={(takerFee) => {
-            const sanitizedTakerFee = takerFee instanceof BigNumber ? takerFee.toNumber() : parseFloat(takerFee);
-            const feeErrors = validateTakerFee(sanitizedTakerFee);
-            if (!feeErrors) {
-              p.updateNewMarket({ takerFee: sanitizedTakerFee });
-            } else {
-              this.setState({ errors: [feeErrors] });
-            }
-          }}
-          onChange={(takerFee) => {
-            const sanitizedTakerFee = takerFee instanceof BigNumber ? takerFee.toNumber() : parseFloat(takerFee);
-            const feeErrors = validateTakerFee(sanitizedTakerFee);
-            if (!feeErrors) {
-              p.updateNewMarket({ takerFee: sanitizedTakerFee });
-            } else {
-              this.setState({ errors: [feeErrors] });
-            }
-          }}
-        />
-        <Input
-          type="number"
-          value={p.makerFee}
-          isIncrementable
-          incrementAmount={0.1}
-          min={MAKER_FEE_MIN}
-          max={makerFeeMax}
-          updateValue={(makerFee) => {
-            const sanitizedMakerFee = makerFee instanceof BigNumber ? makerFee.toNumber() : parseFloat(makerFee);
-            const feeErrors = validateMakerFee(sanitizedMakerFee, p.takerFee);
-            if (!feeErrors) {
-              p.updateNewMarket({ makerFee: sanitizedMakerFee });
-            } else {
-              this.setState({ errors: [feeErrors] });
-            }
-          }}
-          onChange={(makerFee) => {
-            const sanitizedMakerFee = makerFee instanceof BigNumber ? makerFee.toNumber() : parseFloat(makerFee);
-            const feeErrors = validateMakerFee(sanitizedMakerFee, p.takerFee);
-            if (!feeErrors) {
-              p.updateNewMarket({ makerFee: sanitizedMakerFee });
-            } else {
-              this.setState({ errors: [feeErrors] });
-            }
-          }}
-        />
-        <CreateMarketFormErrors
-          errors={s.errors}
-        />
+        <div className="create-market-form-part-content">
+          <div className="create-market-form-part-input">
+            <aside>
+              <h3>Taker Fee</h3>
+              <span>Specify the fee paid by those taking an existing order from the order book.</span>
+            </aside>
+            <div className="vertical-form-divider" />
+            <form>
+              <Input
+                type="number"
+                value={p.takerFee}
+                isIncrementable
+                incrementAmount={0.1}
+                min={TAKER_FEE_MIN}
+                max={TAKER_FEE_MAX}
+                updateValue={(takerFee) => {
+                  const sanitizedTakerFee = takerFee instanceof BigNumber ? takerFee.toNumber() : parseFloat(takerFee);
+                  const feeErrors = validateTakerFee(sanitizedTakerFee);
+                  if (!feeErrors) {
+                    p.updateNewMarket({ takerFee: sanitizedTakerFee });
+                  } else {
+                    this.setState({ errors: [feeErrors] });
+                  }
+                }}
+                onChange={(takerFee) => {
+                  const sanitizedTakerFee = takerFee instanceof BigNumber ? takerFee.toNumber() : parseFloat(takerFee);
+                  const feeErrors = validateTakerFee(sanitizedTakerFee);
+                  if (!feeErrors) {
+                    p.updateNewMarket({ takerFee: sanitizedTakerFee });
+                  } else {
+                    this.setState({ errors: [feeErrors] });
+                  }
+                }}
+              />
+            </form>
+          </div>
+          <div className="create-market-form-part-input">
+            <aside>
+              <h3>Maker Fee</h3>
+              <span>Specify the fee paid by those adding an order to the order book.</span>
+            </aside>
+            <div className="vertical-form-divider" />
+            <form>
+              <Input
+                type="number"
+                value={p.makerFee}
+                isIncrementable
+                incrementAmount={0.1}
+                min={MAKER_FEE_MIN}
+                max={makerFeeMax}
+                updateValue={(makerFee) => {
+                  const sanitizedMakerFee = makerFee instanceof BigNumber ? makerFee.toNumber() : parseFloat(makerFee);
+                  const feeErrors = validateMakerFee(sanitizedMakerFee, p.takerFee);
+                  if (!feeErrors) {
+                    p.updateNewMarket({ makerFee: sanitizedMakerFee });
+                  } else {
+                    this.setState({ errors: [feeErrors] });
+                  }
+                }}
+                onChange={(makerFee) => {
+                  const sanitizedMakerFee = makerFee instanceof BigNumber ? makerFee.toNumber() : parseFloat(makerFee);
+                  const feeErrors = validateMakerFee(sanitizedMakerFee, p.takerFee);
+                  if (!feeErrors) {
+                    p.updateNewMarket({ makerFee: sanitizedMakerFee });
+                  } else {
+                    this.setState({ errors: [feeErrors] });
+                  }
+                }}
+              />
+            </form>
+          </div>
+        </div>
       </article>
     );
   }

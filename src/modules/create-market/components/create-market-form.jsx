@@ -171,24 +171,22 @@ export default class CreateMarketForm extends Component {
           updateValidity={this.updateValidity}
           updateNewMarket={p.updateNewMarket}
         />
+        <CreateMarketFormFees
+          className={classNames({
+            'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_FEES),
+            'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_FEES) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_FEES)
+          })}
+          currentStep={p.newMarket.currentStep}
+          takerFee={p.newMarket.takerFee}
+          makerFee={p.newMarket.makerFee}
+          updateValidity={this.updateValidity}
+          updateNewMarket={p.updateNewMarket}
+        />
       </article>
     );
   }
 }
 
-// <CreateMarketFormFees
-//   className={classNames({
-//     'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_FEES) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_FEES),
-//     'display-from-left': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_FEES) && s.lastStep > newMarketCreationOrder.indexOf(NEW_MARKET_FEES),
-//     'hide-to-left': s.currentStep > newMarketCreationOrder.indexOf(NEW_MARKET_FEES) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_FEES),
-//     'hide-to-right': s.currentStep < newMarketCreationOrder.indexOf(NEW_MARKET_FEES) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_FEES)
-//   })}
-//   currentStep={p.newMarket.currentStep}
-//   takerFee={p.newMarket.takerFee}
-//   makerFee={p.newMarket.makerFee}
-//   updateValidity={isValid => this.setState({ isValid })}
-//   updateNewMarket={p.updateNewMarket}
-// />
 // <CreateMarketFormOrderBook
 //   className={classNames({
 //     'display-from-right': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK) && s.lastStep < newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK),

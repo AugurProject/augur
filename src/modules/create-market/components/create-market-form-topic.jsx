@@ -47,25 +47,27 @@ export default class CreateMarketFormTopic extends Component {
     return (
       <article className={`create-market-form-part ${p.className || ''}`}>
         <div className="create-market-form-part-content">
-          <aside>
-            <h3>Event Topic</h3>
-            <span>Specify the general category of the event the market is for.</span>
-          </aside>
-          <div className="vertical-form-divider" />
-          <form>
-            <Input
-              type="text"
-              value={s.topic}
-              maxLength={TAGS_MAX_LENGTH}
-              onChange={(topic) => {
-                this.setState({ topic });
-                this.validateForm(topic);
-              }}
-            />
-            <CreateMarketFormErrors
-              errors={s.errors}
-            />
-          </form>
+          <div className="create-market-form-part-input">
+            <aside>
+              <h3>Event Topic</h3>
+              <span>Specify the general category of the event the market is for.</span>
+            </aside>
+            <div className="vertical-form-divider" />
+            <form>
+              <Input
+                type="text"
+                value={s.topic}
+                maxLength={TAGS_MAX_LENGTH}
+                onChange={(topic) => {
+                  this.setState({ topic });
+                  this.validateForm(topic);
+                }}
+              />
+              <CreateMarketFormErrors
+                errors={s.errors}
+              />
+            </form>
+          </div>
         </div>
       </article>
     );
