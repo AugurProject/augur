@@ -50042,11 +50042,11 @@ module.exports = {
     contracts: null,
     allContracts: null,
     api: {events: null, functions: null},
-    connection: false
+    connection: null
   },
 
   resetState: function () {
-    this.rpc.resetState();
+    this.rpc.reset(true);
     this.state = {
       from: null,
       coinbase: null,
@@ -50054,7 +50054,7 @@ module.exports = {
       contracts: null,
       allContracts: null,
       api: {events: null, functions: null},
-      connection: false
+      connection: null
     };
   },
 
@@ -50118,12 +50118,31 @@ module.exports = {
   },
 
   setLatestBlock: function (callback) {
-    var originalCallback = callback;
-    if (callback) callback = function (resultOrError) {
-      if (resultOrError instanceof Error || resultOrError.error) originalCallback(resultOrError, null);
-      else originalCallback(null, resultOrError);
-    };
-    return this.rpc.ensureLatestBlock(callback);
+    var self = this;
+    if (this.rpc.block !== null && this.rpc.block.number && this.rpc.block.timestamp) {
+      if (isFunction(callback)) callback(null);
+    } else {
+      if (!isFunction(callback)) {
+        var blockNumber = this.rpc.blockNumber();
+        if (!blockNumber) throw new Error("setLatestBlock failed");
+        if (blockNumber.error) throw new Error(blockNumber.error);
+        var block = this.rpc.getBlock(blockNumber, false);
+        if (!block) throw new Error("setLatestBlock failed");
+        if (block.error) throw new Error(block.error);
+        this.rpc.onNewBlock(block);
+      } else {
+        this.rpc.blockNumber(function (blockNumber) {
+          if (!blockNumber) return callback(new Error("setLatestBlock failed"));
+          if (blockNumber.error) return callback(new Error(blockNumber.error));
+          self.rpc.getBlock(blockNumber, false, function (block) {
+            if (!block) return callback(new Error("setLatestBlock failed"));
+            if (block.error) return callback(new Error(block.error));
+            self.rpc.onNewBlock(block);
+            callback(null);
+          });
+        });
+      }
+    }
   },
 
   setFrom: function (account) {
@@ -50162,7 +50181,7 @@ module.exports = {
     if (this.debug) {
       console.warn("[ethereumjs-connect] Couldn't connect to Ethereum", err, JSON.stringify(options, null, 2));
     }
-    this.state.connection = false;
+    this.state.connection = null;
     if (!options.attempts) {
       options.attempts = 1;
       return this.connect(options, callback);
@@ -50175,8 +50194,16 @@ module.exports = {
     var self = this;
     async.series([
       function (next) {
-        var configuration = ethereumJsConnectConfigToEthrpcConfig(options);
-        self.rpc.connect(configuration, next);
+        if (!options.http || !options.ws) return next();
+        var wsUrl = self.rpc.wsUrl;
+        var wsStatus = self.rpc.rpcStatus.ws;
+        self.rpc.wsUrl = null;
+        self.rpc.rpcStatus.ws = 0;
+        self.setNetworkID(function (err) {
+          self.rpc.wsUrl = wsUrl;
+          self.rpc.rpcStatus.ws = wsStatus;
+          next(err);
+        });
       },
       this.setNetworkID.bind(this),
       this.setLatestBlock.bind(this),
@@ -50194,7 +50221,11 @@ module.exports = {
       this.setGasPrice.bind(this)
     ], function (err) {
       if (err) return self.retryConnect(err, options, callback);
-      self.state.connection = true;
+      self.state.connection = {
+        http: self.rpc.nodes.local || self.rpc.nodes.hosted,
+        ws: self.rpc.wsUrl,
+        ipc: self.rpc.ipcpath
+      };
       callback(self.state.connection);
     });
   },
@@ -50202,8 +50233,6 @@ module.exports = {
   // synchronous connection sequence
   syncConnect: function (options) {
     try {
-      var configuration = ethereumJsConnectConfigToEthrpcConfig(options);
-      this.rpc.connect(configuration);
       this.rpc.blockNumber(noop);
       this.setNetworkID();
       this.setLatestBlock();
@@ -50213,31 +50242,46 @@ module.exports = {
       this.setupFunctionsAPI();
       this.setupEventsAPI();
       this.setGasPrice();
-      this.state.connection = true;
-      return true;
+      this.state.connection = {
+        http: this.rpc.nodes.local || this.rpc.nodes.hosted,
+        ws: this.rpc.wsUrl,
+        ipc: this.rpc.ipcpath
+      };
     } catch (exc) {
       this.retryConnect(exc, options);
-      return false;
     }
+    return this.state.connection;
   },
 
   configure: function (options) {
     this.state.allContracts = options.contracts || {};
-    options.httpAddresses = [];
-    options.wsAddresses = [];
-    options.ipcAddresses = [];
-
     if (options.api) this.state.api = clone(options.api);
+    if (options.noFallback) {
+      this.rpc.disableHostedNodeFallback();
+    } else {
+      this.rpc.enableHostedNodeFallback();
+    }
 
-    // upgrade from old config (single address per type) to new config (array of addresses per type)
-    if (typeof options.http === "string") options.httpAddresses.push(options.http);
-    if (typeof options.ws === "string") options.wsAddresses.push(options.ws);
-    if (typeof options.ipc === "string") options.ipcAddresses.push(options.ipc);
+    // if this is the first attempt to connect, connect using the
+    // parameters provided by the user exactly
+    if ((options.http || options.ipc || options.ws) && (!options.attempts || options.noFallback)) {
+      this.rpc.ipcpath = options.ipc || null;
+      this.rpc.nodes.local = options.http;
+      this.rpc.nodes.hosted = [];
+      this.rpc.wsUrl = options.ws;
+      this.rpc.rpcStatus.ws = 0;
+      this.rpc.rpcStatus.ipc = 0;
 
-    // add fallback addresses *after* user specified addresses (order matters)
-    if (!options.noFallback) {
-      options.httpAddresses.push("https://eth3.augur.net");
-      options.wsAddresses.push("wss://ws.augur.net");
+    // if this is the second attempt to connect, fall back to the default hosted nodes
+    } else {
+      if (this.debug) {
+        console.debug("Connecting to fallback node...");
+      }
+      this.rpc.ipcpath = null;
+      this.rpc.reset();
+      this.rpc.useHostedNode();
+      this.rpc.rpcStatus.ws = 0;
+      this.rpc.rpcStatus.ipc = 0;
     }
   },
 
@@ -50248,20 +50292,6 @@ module.exports = {
   }
 };
 
-function ethereumJsConnectConfigToEthrpcConfig(ethereumJsConnectConfig) {
-  var configuration = {
-    connectionTimeout: 3000,
-    errorHandler: function (error) {
-      // TODO: what should we do with out-of-band errors?
-      console.log(error);
-    }
-  };
-  configuration.httpAddresses = ethereumJsConnectConfig.httpAddresses;
-  configuration.wsAddresses = ethereumJsConnectConfig.wsAddresses;
-  configuration.ipcAddresses = ethereumJsConnectConfig.ipcAddresses;
-
-  return configuration;
-}
 },{"async":291,"clone":292,"ethrpc":294}],291:[function(require,module,exports){
 arguments[4][118][0].apply(exports,arguments)
 },{"_process":236,"dup":118}],292:[function(require,module,exports){
