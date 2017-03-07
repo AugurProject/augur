@@ -133,7 +133,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
             maxValue: market.maxValue
           } : null
         );
-        console.debug('trading actions:', JSON.stringify(tradingActions, null, 2));
+        console.log('trading actions:', JSON.stringify(tradingActions, null, 2));
         dispatch({
           type: UPDATE_TRADE_IN_PROGRESS,
           data: { marketID, outcomeID, details: tradingActions }
