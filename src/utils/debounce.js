@@ -1,7 +1,6 @@
 export default function debounce(func, wait) {
   let timeout;
   const realWait = wait || 250;
-  console.log('realWait -- ', realWait);
 
   return (...args) => {
     const context = this;
