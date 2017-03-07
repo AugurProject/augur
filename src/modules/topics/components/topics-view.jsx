@@ -11,8 +11,8 @@ export default class TopicsView extends Component {
   static propTypes = {
     topics: PropTypes.array,
     branch: PropTypes.object,
-    loginAccount: PropTypes.object.isRequired,
-    createMarketLink: PropTypes.object.isRequied
+    loginAccount: PropTypes.object,
+    createMarketLink: PropTypes.object
   }
 
   constructor(props) {
