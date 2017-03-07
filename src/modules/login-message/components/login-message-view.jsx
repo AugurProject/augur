@@ -58,6 +58,9 @@ const LoginMessagePage = p => (
         <li>
           Added Create New Market button to the topics homepage.
         </li>
+        <li>
+          Added a guide and link on how to recover REP / ETH sent to the beta.
+        </li>
       </ol>
       <h3>March 5, 2017</h3>
       <ol>
