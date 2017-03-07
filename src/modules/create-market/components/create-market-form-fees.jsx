@@ -61,7 +61,7 @@ export default class CreateMarketFormDescription extends Component {
     const makerFeeMax = new BigNumber(p.takerFee || TAKER_FEE_MAX).dividedBy(TWO).toNumber();
 
     return (
-      <article className={`create-market-form-part ${p.className || ''}`}>
+      <article className={`create-market-form-part create-market-form-fees ${p.className || ''}`}>
         <div className="create-market-form-part-content">
           <div className="create-market-form-part-input">
             <aside>

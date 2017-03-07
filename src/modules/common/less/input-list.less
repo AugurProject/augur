@@ -1,0 +1,17 @@
+.input-list {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+
+  .item {
+    display: flex;
+
+    &:not(:first-of-type) .input {
+      border: none;
+
+      .border(true, @border-right);
+      .border(true, @border-bottom);
+      .border(true, @border-left);
+    }
+  }
+}

@@ -15,7 +15,7 @@ export default class CreateMarketFormOutcomes extends Component {
     super(props);
 
     this.state = {
-      errors: []
+      warnings: []
     };
 
     this.handleScalarSmallInput = this.handleScalarSmallInput.bind(this);
@@ -56,8 +56,10 @@ export default class CreateMarketFormOutcomes extends Component {
     this.props.updateNewMarket({ scalarBigNum: scalarBigRaw });
   }
 
-  validateForm(description) {
-    const errors = [];
+  validateForm(outcomes) {
+    const warnings = [];
+
+    // for (i = 0; )
 
     // if (!description || !description.length) {
     //   errors.push('Please enter your question');
@@ -67,16 +69,13 @@ export default class CreateMarketFormOutcomes extends Component {
     //   errors.push(`Text must be a minimum length of ${DESCRIPTION_MIN_LENGTH}`);
     // }
     //
-    // if (description.length > DESCRIPTION_MAX_LENGTH) {
-    //   errors.push(`Text exceeds the maximum length of ${DESCRIPTION_MAX_LENGTH}`);
-    // }
+    //
 
-    this.setState({ errors });
+    // this.setState({ errors });
   }
 
   render() {
     const p = this.props;
-    const s = this.state;
 
     return (
       <article className={`create-market-form-part ${p.className || ''}`}>

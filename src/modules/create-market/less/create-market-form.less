@@ -107,19 +107,27 @@
           flex: 3;
           flex-direction: column;
 
-          .input-list .item:not(:first-of-type) .input {
-            border: none;
+          .input-list .item {
+            .input {
+              width: 50%;
+            }
+          }
 
-            .border(true, @border-right);
-            .border(true, @border-bottom);
-            .border(true, @border-left);
+          .input.is-incrementable {
+            width: 20%;
+          }
+
+          .input {
+            opacity: 1;
+            transition-duration: @animation-speed-very-fast;
+            transition-property: opacity;
+
+            &.hide-field {
+              opacity: 0;
+            }
           }
         }
       }
-    }
-
-    .hide-field {
-      display: none;
     }
   }
 }

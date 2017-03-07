@@ -2,53 +2,41 @@ import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 
 import Input from 'modules/common/components/input';
-import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications';
 
+import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
+import { NEW_MARKET_EXPIRY_SOURCE } from 'modules/create-market/constants/new-market-creation-steps';
 import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC } from 'modules/create-market/constants/new-market-constraints';
 
 export default class CreateMarketFormExpirySource extends Component {
+  static propTypes = {
+    currentStep: PropTypes.number.isRequired,
+    expirySourceType: PropTypes.string.isRequired,
+    expirySource: PropTypes.string.isRequired,
+    updateValidity: PropTypes.func.isRequired,
+    updateNewMarket: PropTypes.func.isRequired
+  }
+
   constructor(props) {
     super(props);
-
-    this.state = {
-      errors: [],
-      expirySource: '',
-      canCheckURL: false
-    };
 
     this.validateForm = this.validateForm.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (!this.state.canCheckURL &&
-      (this.props.expirySource.length || nextProps.expirySource.length)
-    ) {
-      this.setState({ canCheckURL: true });
-    }
+    if (this.props.currentStep !== nextProps.currentStep && nextProps.currentStep === newMarketCreationOrder.indexOf[NEW_MARKET_EXPIRY_SOURCE]) this.validateForm(nextProps.expirySourceType, nextProps.expirySource);
   }
 
-  validateForm(type, expirySource, canCheckURL) {
-    const errors = [];
-
-    if (!canCheckURL && type === EXPIRY_SOURCE_SPECIFIC) {
+  validateForm(expirySourceType, expirySource = '') {
+    if (expirySourceType === EXPIRY_SOURCE_SPECIFIC && expirySource === '') {
       this.props.updateValidity(false);
-    } else if (canCheckURL &&
-        type === EXPIRY_SOURCE_SPECIFIC &&
-        (expirySource == null || !expirySource.length)
-    ) {
-      errors.push('Please enter the full URL of the website.');
     } else {
       this.props.updateValidity(true);
     }
 
-    this.setState({ errors });
-
-    if (!errors.length) {
-      this.props.updateNewMarket({ expirySource });
-    } else {
-      this.props.updateNewMarket({ expirySource: '' });
-      this.props.updateValidity(false);
-    }
+    this.props.updateNewMarket({
+      expirySourceType,
+      expirySource
+    });
   }
 
   render() {
@@ -72,12 +60,7 @@ export default class CreateMarketFormExpirySource extends Component {
                   type="radio"
                   checked={p.expirySourceType === EXPIRY_SOURCE_GENERIC}
                   onChange={() => {
-                    p.updateNewMarket({
-                      expirySourceType: EXPIRY_SOURCE_GENERIC,
-                      expirySource: ''
-                    });
-                    this.setState({ canCheckURL: false });
-                    this.validateForm(EXPIRY_SOURCE_GENERIC, s.expirySource);
+                    this.validateForm(EXPIRY_SOURCE_GENERIC);
                   }}
                 />
                 Outcome will be covered by local, national or international news media.
@@ -89,11 +72,7 @@ export default class CreateMarketFormExpirySource extends Component {
                   type="radio"
                   checked={p.expirySourceType === EXPIRY_SOURCE_SPECIFIC}
                   onChange={() => {
-                    p.updateNewMarket({
-                      expirySourceType: EXPIRY_SOURCE_SPECIFIC,
-                      expirySource: ''
-                    });
-                    this.validateForm(EXPIRY_SOURCE_SPECIFIC, s.expirySource);
+                    this.validateForm(EXPIRY_SOURCE_SPECIFIC);
                   }}
                 />
                 Outcome will be detailed on a specific publicly available website:
@@ -101,14 +80,10 @@ export default class CreateMarketFormExpirySource extends Component {
               <Input
                 className={classNames({ 'hide-field': p.expirySourceType !== EXPIRY_SOURCE_SPECIFIC })}
                 type="text"
-                value={s.expirySource}
+                value={p.expirySource}
                 onChange={(expirySource) => {
-                  this.setState({ expirySource });
-                  this.validateForm(p.expirySourceType, expirySource, true);
+                  this.validateForm(EXPIRY_SOURCE_SPECIFIC, expirySource);
                 }}
-              />
-              <CreateMarketFormInputNotifications
-                errors={s.errors}
               />
             </form>
           </div>
@@ -117,10 +92,3 @@ export default class CreateMarketFormExpirySource extends Component {
     );
   }
 }
-
-CreateMarketFormExpirySource.propTypes = {
-  expirySourceType: PropTypes.string.isRequired,
-  expirySource: PropTypes.string.isRequired,
-  updateValidity: PropTypes.func.isRequired,
-  updateNewMarket: PropTypes.func.isRequired
-};

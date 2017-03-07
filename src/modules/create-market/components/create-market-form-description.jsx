@@ -31,7 +31,7 @@ export default class CreateMarketFormDescription extends Component {
 
     // Warning Check
     if (description.length === DESCRIPTION_MAX_LENGTH) {
-      warnings.push(`Maximum question length is ${DESCRIPTION_MAX_LENGTH}`);
+      warnings.push(`Maximum length is ${DESCRIPTION_MAX_LENGTH}`);
     }
 
     if (!errors.length) {

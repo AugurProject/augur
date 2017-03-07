@@ -132,6 +132,7 @@ export default class CreateMarketForm extends Component {
             'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE),
             'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE)
           })}
+          currentStep={p.newMarket.currentStep}
           expirySourceType={p.newMarket.expirySourceType}
           expirySource={p.newMarket.expirySource}
           updateValidity={this.updateValidity}

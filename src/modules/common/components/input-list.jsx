@@ -44,8 +44,8 @@ export default class InputList extends Component {
     let newList = list;
     if (minElements && list.length < minElements) {
       newList = newList.slice();
-      len = minElements - newList.length;
-      for (i = 0; i < len - 1; i++) {
+      len = minElements - newList.length - 1;
+      for (i = 0; i < len; i++) {
         newList.push('');
       }
     }
