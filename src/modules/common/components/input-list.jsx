@@ -19,23 +19,22 @@ export default class InputList extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.fillMinElements = this.fillMinElements.bind(this);
     this.state = {
-      list: this.fillMinElements(this.props.list, this.props.listMinElements),
-      timeoutID: ''
+      list: this.fillMinElements(this.props.list, this.props.listMinElements)
     };
   }
 
   handleChange = (i, val) => {
     const newList = (this.state.list || []).slice();
-    if ((!val || !val.length) && (!this.props.listMinElements || (i >= this.props.listMinElements))) {
+
+    if ((!val || !val.length) && (!this.props.listMinElements || (i >= this.props.listMinElements - 1))) {
       newList.splice(i, 1);
     } else {
       newList[i] = val;
     }
 
-    if (this.state.timeoutID) {
-      clearTimeout(this.state.timeoutID);
-    }
-    this.setState({ timeoutID: setTimeout(() => this.props.onChange(newList), 750), list: newList });
+    this.props.onChange(newList);
+
+    this.setState({ list: newList });
   };
 
   fillMinElements = (list = [], minElements) => {

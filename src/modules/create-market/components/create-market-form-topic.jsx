@@ -26,7 +26,7 @@ export default class CreateMarketFormTopic extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.currentStep !== nextProps.currentStep && nextProps.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC)) this.validateForm(nextProps.topic);
+    if (this.props.currentStep !== nextProps.currentStep && newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_TOPIC) this.validateForm(nextProps.topic);
   }
 
   validateForm(topic = '') {

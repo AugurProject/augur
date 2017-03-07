@@ -16,7 +16,7 @@ const CreateMarketForm2Scalar = p => (
         Minimum
       </label>
       <Input
-        type="text"
+        type="number"
         name="minimum-answer"
         value={p.scalarSmallNum}
         placeholder="Minimum answer"
@@ -36,7 +36,7 @@ const CreateMarketForm2Scalar = p => (
         Maximum
       </label>
       <Input
-        type="text"
+        type="number"
         name="maximum-answer"
         value={p.scalarBigNum}
         placeholder="Maximum answer"

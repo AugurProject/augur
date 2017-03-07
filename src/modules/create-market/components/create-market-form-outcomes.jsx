@@ -1,14 +1,15 @@
 import React, { Component, PropTypes } from 'react';
-import BigNumber from 'bignumber.js';
+// import BigNumber from 'bignumber.js';
 
 import Input from 'modules/common/components/input';
-import InputList from 'modules/common/components/input-list';
+
+import CreateMarketFormOutcomesCategorical from 'modules/create-market/components/create-market-form-outcomes-categorical';
 // import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications';
 
 import { CATEGORICAL } from 'modules/markets/constants/market-types';
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
 import { NEW_MARKET_OUTCOMES } from 'modules/create-market/constants/new-market-creation-steps';
-import { CATEGORICAL_OUTCOMES_MIN_NUM, CATEGORICAL_OUTCOMES_MAX_NUM, CATEGORICAL_OUTCOME_MAX_LENGTH } from 'modules/create-market/constants/new-market-constraints';
+
 
 export default class CreateMarketFormOutcomes extends Component {
   constructor(props) {
@@ -80,24 +81,12 @@ export default class CreateMarketFormOutcomes extends Component {
     return (
       <article className={`create-market-form-part ${p.className || ''}`}>
         {p.type === CATEGORICAL ?
-          <div className="create-market-form-part-content">
-            <div className="create-market-form-part-input">
-              <aside>
-                <h3>Potential Outcomes</h3>
-                <span>Input between <strong>two</strong> - <strong>eight</strong> potential outcomes for this event.</span>
-              </aside>
-              <div className="vertical-form-divider" />
-              <form onSubmit={e => e.preventDefault()} >
-                <InputList
-                  list={p.outcomes}
-                  listMinElements={CATEGORICAL_OUTCOMES_MIN_NUM}
-                  listMaxElements={CATEGORICAL_OUTCOMES_MAX_NUM}
-                  itemMaxLength={CATEGORICAL_OUTCOME_MAX_LENGTH}
-                  onChange={outcomes => p.updateNewMarket({ outcomes })}
-                />
-              </form>
-            </div>
-          </div>:
+          <CreateMarketFormOutcomesCategorical
+            currentStep={p.currentStep}
+            outcomes={p.outcomes}
+            updateValidity={p.updateValidity}
+            updateNewMarket={p.updateNewMarket}
+          /> :
           <div className="create-market-form-part-content">
             <div className="create-market-form-part-input">
               <aside>
