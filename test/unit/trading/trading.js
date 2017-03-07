@@ -485,7 +485,7 @@ describe("trade.trade", function() {
              returns: 'hash[]',
              send: true,
              signature: [ 'int256', 'int256', 'int256[]', 'int256' ],
-             to: '0x242a46fdd6b1d4c3451d7c2e26dcb7b6b4bfa8ec',
+             to: augur.tx.Trade.trade.to,
              params: [ '0x56bc75e2d63100000', '0x56bc75e2d63100000', [ '0xa1', '0xa2', '0xa3' ], '0xe1' ] },
           hash: '0x123abc456def7890'
         });
@@ -783,7 +783,7 @@ describe("trade.trade", function() {
         		returns: 'hash[]',
         		send: true,
         		signature: ['int256', 'int256', 'int256[]', 'int256'],
-        		to: '0x242a46fdd6b1d4c3451d7c2e26dcb7b6b4bfa8ec',
+        		to: augur.tx.Trade.trade.to,
         		params: ['0x56bc75e2d63100000', '0x56bc75e2d63100000', ['0xa1', '0xa2', '0xa3'], '0xe1']
         	},
         	hash: '0x123abc456def7890'
@@ -1099,7 +1099,7 @@ describe("trade.short_sell", function() {
         		returns: 'hash[]',
         		send: true,
         		signature: ['int256', 'int256', 'int256'],
-        		to: '0x242a46fdd6b1d4c3451d7c2e26dcb7b6b4bfa8ec',
+        		to: augur.tx.Trade.short_sell.to,
         		params: ['0xa1', '0x56bc75e2d63100000', '0xabc1']
         	},
         	hash: '0x123abc456def7890'
@@ -1215,7 +1215,7 @@ describe("trade.short_sell", function() {
             returns: 'hash[]',
             send: true,
             signature: ['int256', 'int256', 'int256'],
-            to: '0x242a46fdd6b1d4c3451d7c2e26dcb7b6b4bfa8ec',
+            to: augur.tx.Trade.short_sell.to,
             params: ['0xa1', '0x56bc75e2d63100000', '0xabc1']
           },
           hash: '0x123abc456def7890'
@@ -1278,7 +1278,7 @@ describe("trade.short_sell", function() {
             returns: 'hash[]',
             send: true,
             signature: ['int256', 'int256', 'int256'],
-            to: '0x242a46fdd6b1d4c3451d7c2e26dcb7b6b4bfa8ec',
+            to: augur.tx.Trade.short_sell.to,
             params: ['0xa1', '0x56bc75e2d63100000', '0xabc1']
           },
           hash: '0x123abc456def7890'
