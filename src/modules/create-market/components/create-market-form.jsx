@@ -143,6 +143,8 @@ export default class CreateMarketForm extends Component {
             'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE),
             'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE)
           })}
+          currentStep={p.newMarket.currentStep}
+          isValid={p.newMarket.isValid}
           endDate={p.newMarket.endDate}
           updateValidity={this.updateValidity}
           updateNewMarket={p.updateNewMarket}

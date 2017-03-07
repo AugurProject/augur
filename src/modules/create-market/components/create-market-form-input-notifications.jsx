@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 
 const CreateMarketFormInputNotifications = p => (
-  <ul className={classNames('create-market-form-input-notifications', p.classNames, { hasNotifications: (p.errors && p.errors.length) || (p.warning && p.warnings.length) })} >
+  <ul className={classNames('create-market-form-input-notifications', p.classNames, { hasNotifications: (p.errors && p.errors.length) || (p.warnings && p.warnings.length) })} >
     {(p.errors || []).map(error => (
       <li
         key={error}
@@ -21,5 +21,17 @@ const CreateMarketFormInputNotifications = p => (
     ))}
   </ul>
 );
+
+CreateMarketFormInputNotifications.propTypes = {
+  classNames: PropTypes.string,
+  errors: PropTypes.array,
+  warnings: PropTypes.array
+};
+
+CreateMarketFormInputNotifications.defaultProps = {
+  classNames: '',
+  errors: [],
+  warnings: []
+};
 
 export default CreateMarketFormInputNotifications;

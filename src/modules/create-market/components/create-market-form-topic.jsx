@@ -3,41 +3,48 @@ import React, { Component, PropTypes } from 'react';
 import Input from 'modules/common/components/input';
 import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications';
 
+import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
+import { NEW_MARKET_TOPIC } from 'modules/create-market/constants/new-market-creation-steps';
 import { TAGS_MAX_LENGTH } from 'modules/create-market/constants/new-market-constraints';
 
 export default class CreateMarketFormTopic extends Component {
+  static propTypes = {
+    currentStep: PropTypes.number.isRequired,
+    topic: PropTypes.string.isRequired,
+    updateValidity: PropTypes.func.isRequired,
+    updateNewMarket: PropTypes.func.isRequired
+  }
+
   constructor(props) {
     super(props);
 
     this.state = {
-      errors: [],
-      topic: props.topic
+      warnings: []
     };
 
     this.validateForm = this.validateForm.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.topic !== nextProps.topic) this.setState({ topic: nextProps.topic });
+    if (this.props.currentStep !== nextProps.currentStep && nextProps.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC)) this.validateForm(nextProps.topic);
   }
 
-  validateForm(topic) {
-    const errors = [];
+  validateForm(topic = '') {
+    const warnings = [];
 
-    if (!topic || !topic.length) {
-      errors.push('Please enter a topic.');
+    // Error Check
+    if (!topic.length) {
+      this.props.updateValidity(false);
     } else {
       this.props.updateValidity(true);
     }
 
-    if (!errors.length) {
-      this.props.updateNewMarket({ topic });
-    } else {
-      this.props.updateNewMarket({ topic: '' });
-      this.props.updateValidity(false);
-    }
+    // Warnings Check
+    if (topic.length === TAGS_MAX_LENGTH) warnings.push(`Maximum tag length is: ${TAGS_MAX_LENGTH}`);
 
-    this.setState({ errors });
+    this.props.updateNewMarket({ topic });
+
+    this.setState({ warnings });
   }
 
   render() {
@@ -56,15 +63,12 @@ export default class CreateMarketFormTopic extends Component {
             <form>
               <Input
                 type="text"
-                value={s.topic}
+                value={p.topic}
                 maxLength={TAGS_MAX_LENGTH}
-                onChange={(topic) => {
-                  this.setState({ topic });
-                  this.validateForm(topic);
-                }}
+                onChange={topic => this.validateForm(topic)}
               />
               <CreateMarketFormInputNotifications
-                errors={s.errors}
+                warnings={s.warnings}
               />
             </form>
           </div>
@@ -73,9 +77,3 @@ export default class CreateMarketFormTopic extends Component {
     );
   }
 }
-
-CreateMarketFormTopic.propTypes = {
-  topic: PropTypes.string.isRequired,
-  updateValidity: PropTypes.func.isRequired,
-  updateNewMarket: PropTypes.func.isRequired
-};
