@@ -63,7 +63,7 @@ export default class CreateMarketFormDescription extends Component {
               <span>This is the question that the market will attempt to answer.</span>
             </aside>
             <div className="vertical-form-divider" />
-            <form>
+            <form onSubmit={e => e.preventDefault()} >
               <Input
                 type="text"
                 value={s.description}

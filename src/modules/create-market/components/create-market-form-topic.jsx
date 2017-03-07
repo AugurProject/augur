@@ -60,7 +60,7 @@ export default class CreateMarketFormTopic extends Component {
               <span>Specify the general category of the event the market is for.</span>
             </aside>
             <div className="vertical-form-divider" />
-            <form>
+            <form onSubmit={e => e.preventDefault()} >
               <Input
                 type="text"
                 value={p.topic}

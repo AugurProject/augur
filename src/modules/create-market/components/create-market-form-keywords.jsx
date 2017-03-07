@@ -19,7 +19,7 @@ const CreateMarketFormKeywords = (p) => {
             <span>Add up to <strong>two</strong> keywords to help with the categorization and indexing of your market.</span>
           </aside>
           <div className="vertical-form-divider" />
-          <form>
+          <form onSubmit={e => e.preventDefault()} >
             <InputList
               list={p.keywords}
               listMaxElements={KEYWORDS_MAX_NUM}

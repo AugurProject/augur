@@ -17,7 +17,7 @@ const CreateMarketFormEndDate = (p) => {
             <span>Specify the date & time <strong>(Local Timezone)</strong> at which your event will resolve.</span>
           </aside>
           <div className="vertical-form-divider" />
-          <form>
+          <form onSubmit={e => e.preventDefault()} >
             <DatePicker
               endDate={p.endDate}
               onValuesUpdated={(endDate) => {

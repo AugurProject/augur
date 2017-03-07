@@ -18,7 +18,7 @@ const CreateMarketFormDetails = (p) => {
             <span>Provide any additional details required to either understand or report on your market.</span>
           </aside>
           <div className="vertical-form-divider" />
-          <form>
+          <form onSubmit={e => e.preventDefault()} >
             <Input
               type="text"
               value={p.detailsText}

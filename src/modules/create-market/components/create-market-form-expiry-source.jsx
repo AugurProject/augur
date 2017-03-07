@@ -51,7 +51,7 @@ export default class CreateMarketFormExpirySource extends Component {
               <span>Where will reporters and traders be able to learn more details about the resolution of this market?</span>
             </aside>
             <div className="vertical-form-divider" />
-            <form className="">
+            <form onSubmit={e => e.preventDefault()} >
               <label htmlFor="expiry_generic">
                 <input
                   id="expiry_generic"

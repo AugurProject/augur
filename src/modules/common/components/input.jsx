@@ -10,6 +10,8 @@ export default class Input extends Component {
     // type: PropTypes.string,
     // className: PropTypes.string,
     value: PropTypes.any,
+    max: PropTypes.number,
+    min: PropTypes.number,
     // isMultiline: PropTypes.bool,
     isClearable: PropTypes.bool,
     debounceMS: PropTypes.number,
@@ -93,7 +95,7 @@ export default class Input extends Component {
   }
 
   render() {
-    const { isClearable, isIncrementable, incrementAmount, updateValue, canToggleVisibility, shouldMatchValue, comparisonValue, isSearch, ...p } = this.props;
+    const { isClearable, isIncrementable, incrementAmount, updateValue, canToggleVisibility, shouldMatchValue, comparisonValue, isSearch, min, max, ...p } = this.props; // eslint-disable-line no-unused-vars
     const s = this.state;
 
     return (
@@ -163,14 +165,17 @@ export default class Input extends Component {
                 if ((!isNaN(parseFloat(s.value)) && isFinite(s.value)) || !s.value) {
                   let newValue = new BigNumber(s.value || 0);
 
-                  if (newValue > p.max) {
-                    newValue = new BigNumber(p.max);
-                  } else if (newValue < p.min) {
-                    newValue = new BigNumber(p.min).plus(new BigNumber(incrementAmount));
+                  console.log('newValue -- ', s.value, newValue, max, min);
+
+                  if (newValue > max) {
+                    console.log('new value is greater -- ', newValue, max);
+                    newValue = new BigNumber(max);
+                  } else if (newValue < min) {
+                    newValue = new BigNumber(min).plus(new BigNumber(incrementAmount));
                   } else {
                     newValue = newValue.plus(new BigNumber(incrementAmount));
-                    if (newValue > p.max) {
-                      newValue = new BigNumber(p.max);
+                    if (newValue > max) {
+                      newValue = new BigNumber(max);
                     }
                   }
 
@@ -186,14 +191,14 @@ export default class Input extends Component {
                 if ((!isNaN(parseFloat(s.value)) && isFinite(s.value)) || !s.value) {
                   let newValue = new BigNumber(s.value || 0);
 
-                  if (newValue > p.max) {
-                    newValue = new BigNumber(p.max).minus(new BigNumber(incrementAmount));
-                  } else if (newValue < p.min) {
-                    newValue = new BigNumber(p.min);
+                  if (newValue > max) {
+                    newValue = new BigNumber(max).minus(new BigNumber(incrementAmount));
+                  } else if (newValue < min) {
+                    newValue = new BigNumber(min);
                   } else {
                     newValue = newValue.minus(new BigNumber(incrementAmount));
-                    if (newValue < p.min) {
-                      newValue = new BigNumber(p.min);
+                    if (newValue < min) {
+                      newValue = new BigNumber(min);
                     }
                   }
 

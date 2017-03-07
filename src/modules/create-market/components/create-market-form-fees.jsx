@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import BigNumber from 'bignumber.js';
 
 import Input from 'modules/common/components/input';
-// import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications';
+import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications';
 
 import { formatPercent } from 'utils/format-number';
 
@@ -16,7 +16,14 @@ export default class CreateMarketFormDescription extends Component {
     super(props);
 
     this.state = {
-      errors: []
+      errors: {
+        taker: [],
+        maker: []
+      },
+      warnings: {
+        taker: [],
+        maker: []
+      }
     };
 
     this.validateForm = this.validateForm.bind(this);
@@ -28,30 +35,55 @@ export default class CreateMarketFormDescription extends Component {
     ) {
       this.validateForm(nextProps.takerFee, nextProps.makerFee);
     }
-
-    if (this.props.takerFee !== nextProps.takerFee ||
-        this.props.makerFee !== nextProps.makerFee
-    ) {
-      this.validateForm(nextProps.takerFee, nextProps.makerFee);
-    }
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    if (this.state.errors !== nextState.errors) {
-      nextProps.updateValidity(!nextState.errors.length);
+  validateForm(takerFee = this.props.takerFee, makerFee = this.props.makerFee) {
+    const errors = {
+      taker: [],
+      maker: []
+    };
+    const warnings = {
+      taker: [],
+      maker: []
+    };
+
+    const takerFeeError = validateTakerFee(takerFee);
+    if (takerFeeError) {
+      errors.taker.push(takerFeeError);
+    } else {
+      this.props.updateNewMarket({ takerFee });
     }
-  }
 
-  validateForm(takerFee, makerFee) {
-    const errors = [];
+    const makerFeeError = validateMakerFee(makerFee, takerFee);
+    if (!takerFeeError && makerFeeError) {
+      errors.maker.push(makerFeeError);
+    } else {
+      this.props.updateNewMarket({ makerFee });
+    }
 
-    const takerFeeErrors = validateTakerFee(takerFee);
-    if (takerFeeErrors) errors.push(takerFeeErrors);
+    // Error Check
+    if (errors.taker.length || errors.maker.length) {
+      this.props.updateValidity(false);
+    } else {
+      this.props.updateValidity(true);
+    }
 
-    const makerFeeErrors = validateMakerFee(makerFee, takerFee);
-    if (!takerFeeErrors && makerFeeErrors) errors.push(makerFeeErrors);
+    // Warning Check
+    //    Taker
+    if (takerFee === TAKER_FEE_MIN) {
+      warnings.taker.push(`Taker fee minimum is: ${TAKER_FEE_MIN}%`);
+    } else if (takerFee === TAKER_FEE_MAX) {
+      warnings.taker.push(`Taker fee maximum is: ${TAKER_FEE_MAX}%`);
+    }
 
-    this.setState({ errors });
+    const makerFeeMax = new BigNumber(takerFee || TAKER_FEE_MAX).dividedBy(TWO).toNumber();
+    if (makerFee === MAKER_FEE_MIN) {
+      warnings.maker.push(`Maker fee minimum is: ${MAKER_FEE_MIN}%`);
+    } else if (makerFee === makerFeeMax) {
+      warnings.maker.push(`Maker fee maximum is: ${makerFeeMax}%`);
+    }
+
+    this.setState({ errors, warnings });
   }
 
   render() {
@@ -69,7 +101,7 @@ export default class CreateMarketFormDescription extends Component {
               <span>Specify the fee paid by those taking an existing order from the order book.</span>
             </aside>
             <div className="vertical-form-divider" />
-            <form>
+            <form onSubmit={e => e.preventDefault()} >
               <Input
                 type="number"
                 value={p.takerFee}
@@ -79,22 +111,16 @@ export default class CreateMarketFormDescription extends Component {
                 max={TAKER_FEE_MAX}
                 updateValue={(takerFee) => {
                   const sanitizedTakerFee = takerFee instanceof BigNumber ? takerFee.toNumber() : parseFloat(takerFee);
-                  const feeErrors = validateTakerFee(sanitizedTakerFee);
-                  if (!feeErrors) {
-                    p.updateNewMarket({ takerFee: sanitizedTakerFee });
-                  } else {
-                    this.setState({ errors: [feeErrors] });
-                  }
+                  this.validateForm(sanitizedTakerFee);
                 }}
                 onChange={(takerFee) => {
                   const sanitizedTakerFee = takerFee instanceof BigNumber ? takerFee.toNumber() : parseFloat(takerFee);
-                  const feeErrors = validateTakerFee(sanitizedTakerFee);
-                  if (!feeErrors) {
-                    p.updateNewMarket({ takerFee: sanitizedTakerFee });
-                  } else {
-                    this.setState({ errors: [feeErrors] });
-                  }
+                  this.validateForm(sanitizedTakerFee);
                 }}
+              />
+              <CreateMarketFormInputNotifications
+                errors={s.errors.taker}
+                warnings={s.warnings.taker}
               />
             </form>
           </div>
@@ -104,7 +130,7 @@ export default class CreateMarketFormDescription extends Component {
               <span>Specify the fee paid by those adding an order to the order book.</span>
             </aside>
             <div className="vertical-form-divider" />
-            <form>
+            <form onSubmit={e => e.preventDefault()} >
               <Input
                 type="number"
                 value={p.makerFee}
@@ -114,22 +140,16 @@ export default class CreateMarketFormDescription extends Component {
                 max={makerFeeMax}
                 updateValue={(makerFee) => {
                   const sanitizedMakerFee = makerFee instanceof BigNumber ? makerFee.toNumber() : parseFloat(makerFee);
-                  const feeErrors = validateMakerFee(sanitizedMakerFee, p.takerFee);
-                  if (!feeErrors) {
-                    p.updateNewMarket({ makerFee: sanitizedMakerFee });
-                  } else {
-                    this.setState({ errors: [feeErrors] });
-                  }
+                  this.validateForm(undefined, sanitizedMakerFee);
                 }}
                 onChange={(makerFee) => {
                   const sanitizedMakerFee = makerFee instanceof BigNumber ? makerFee.toNumber() : parseFloat(makerFee);
-                  const feeErrors = validateMakerFee(sanitizedMakerFee, p.takerFee);
-                  if (!feeErrors) {
-                    p.updateNewMarket({ makerFee: sanitizedMakerFee });
-                  } else {
-                    this.setState({ errors: [feeErrors] });
-                  }
+                  this.validateForm(undefined, sanitizedMakerFee);
                 }}
+              />
+              <CreateMarketFormInputNotifications
+                errors={s.errors.maker}
+                warnings={s.warnings.maker}
               />
             </form>
           </div>
@@ -148,13 +168,9 @@ CreateMarketFormDescription.propTypes = {
 };
 
 function validateTakerFee(takerFee) {
-  if (!takerFee) {
-    return 'Please specify a taker fee %';
-  }
   if (Number.isNaN(takerFee) && !Number.isFinite(takerFee)) {
     return 'Trading fee must be a number';
-  }
-  if (takerFee < TAKER_FEE_MIN || takerFee > TAKER_FEE_MAX) {
+  } else if (takerFee < TAKER_FEE_MIN || takerFee > TAKER_FEE_MAX) {
     return `Trading fee must be between ${
       formatPercent(TAKER_FEE_MIN, true).full
       } and ${
@@ -171,13 +187,9 @@ function validateMakerFee(makerFee, takerFee) {
     halfTakerFee = new BigNumber(takerFee).dividedBy(TWO).toNumber();
   }
 
-  if (!makerFee && isNaN(makerFee)) {
-    return 'Please specify a maker fee %';
-  }
   if (Number.isNaN(makerFee) && !Number.isFinite(makerFee)) {
     return 'Maker fee must be a number';
-  }
-  if (makerFee < MAKER_FEE_MIN || makerFee > halfTakerFee) {
+  } else if (makerFee < MAKER_FEE_MIN || makerFee > halfTakerFee) {
     return `Maker fee must be between ${
       formatPercent(MAKER_FEE_MIN, true).full
       } and ${

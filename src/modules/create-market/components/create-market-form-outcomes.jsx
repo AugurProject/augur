@@ -87,7 +87,7 @@ export default class CreateMarketFormOutcomes extends Component {
                 <span>Input between <strong>two</strong> - <strong>eight</strong> potential outcomes for this event.</span>
               </aside>
               <div className="vertical-form-divider" />
-              <form>
+              <form onSubmit={e => e.preventDefault()} >
                 <InputList
                   list={p.outcomes}
                   listMinElements={CATEGORICAL_OUTCOMES_MIN_NUM}
@@ -105,7 +105,7 @@ export default class CreateMarketFormOutcomes extends Component {
                 <span>What is the minimum value possible for this event.</span>
               </aside>
               <div className="vertical-form-divider" />
-              <form>
+              <form onSubmit={e => e.preventDefault()} >
                 <Input
                   type="text"
                   name="minimum-answer"
@@ -122,7 +122,7 @@ export default class CreateMarketFormOutcomes extends Component {
                 <span>What is the maximum value possible for this event.</span>
               </aside>
               <div className="vertical-form-divider" />
-              <form>
+              <form onSubmit={e => e.preventDefault()} >
                 <Input
                   type="text"
                   name="maximum-answer"
