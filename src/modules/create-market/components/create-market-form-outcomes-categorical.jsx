@@ -48,10 +48,11 @@ export default class CreateMarketFormOutcomesCategorical extends Component {
       this.props.updateValidity(false);
     } else {
       this.props.updateValidity(true);
-      this.props.updateNewMarket({ outcomes });
     }
 
     this.setState({ errors, warnings });
+
+    this.props.updateNewMarket({ outcomes });
   }
 
   render() {
