@@ -320,6 +320,15 @@ export default class AccountPage extends Component {
                   Do NOT share your downloaded account key file or QR code with anyone. Your funds *could* be stolen.
                 </b>
               </p>
+              <p>
+                <b>
+                  <a
+                    href="http://blog.augur.net/accidentally-sent-real-rep-eth-augur-beta/"
+                  >
+                    Did you accidentally send real REP or ETH to Augur beta? Learn how to get it back here!
+                  </a>
+                </b>
+              </p>
               <a
                 className="button download-account"
                 href={p.account.downloadAccountDataString}
