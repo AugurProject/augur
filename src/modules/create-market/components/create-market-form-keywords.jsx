@@ -16,6 +16,7 @@ const CreateMarketFormKeywords = (p) => {
         <div className="create-market-form-part-input">
           <aside>
             <h3>Keywords</h3>
+            <h4>Optional</h4>
             <span>Add up to <strong>two</strong> keywords to help with the categorization and indexing of your market.</span>
           </aside>
           <div className="vertical-form-divider" />

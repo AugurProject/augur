@@ -108,9 +108,9 @@ export default class CreateMarketFormOutcomes extends Component {
               <form onSubmit={e => e.preventDefault()} >
                 <Input
                   type="text"
+                  className="constrained-width"
                   name="minimum-answer"
                   value={p.scalarSmallNum}
-                  placeholder="Minimum answer"
                   maxLength={6}
                   onChange={this.handleScalarSmallInput}
                 />
@@ -125,9 +125,9 @@ export default class CreateMarketFormOutcomes extends Component {
               <form onSubmit={e => e.preventDefault()} >
                 <Input
                   type="text"
+                  className="constrained-width"
                   name="maximum-answer"
                   value={p.scalarBigNum}
-                  placeholder="Maximum answer"
                   maxLength={6}
                   onChange={this.handleScalarBigInput}
                 />

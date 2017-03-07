@@ -162,119 +162,130 @@ export default class CreateMarketFormOrderBook extends Component {
 
     return (
       <article className={`create-market-form-part create-market-form-order-book ${p.className || ''}`}>
-        <h2>Initial Liquidity</h2>
-        <div className="order-book-actions">
-          <div className="order-book-outcomes-table">
-            <div className="order-book-outcomes-header">
-              <span>Outcomes</span>
-            </div>
-            <div className="order-book-outcomes">
-              {p.outcomes.map(outcome => (
-                <div
-                  key={outcome}
-                  className={`order-book-outcome-row ${s.selectedOutcome === outcome ? 'selected' : ''}`}
-                >
-                  <button
-                    className="unstyled"
-                    onClick={() => {
-                      this.setState({ selectedOutcome: outcome });
-                    }}
-                  >
-                    <span>{outcome}</span>
-                  </button>
+        <div className="create-market-form-part-content">
+          <div className="create-market-form-part-input">
+            <aside>
+              <h3>Initial Liquidity</h3>
+              <h4>Optional</h4>
+              <span>Use this form to add initial liquidty for your market.</span>
+            </aside>
+            <div className="vertical-form-divider" />
+            <form onSubmit={e => e.preventDefault()} >
+              <div className="order-book-actions">
+                <div className="order-book-outcomes-table">
+                  <div className="order-book-outcomes-header">
+                    <span>Outcomes</span>
+                  </div>
+                  <div className="order-book-outcomes">
+                    {p.outcomes.map(outcome => (
+                      <div
+                        key={outcome}
+                        className={`order-book-outcome-row ${s.selectedOutcome === outcome ? 'selected' : ''}`}
+                      >
+                        <button
+                          className="unstyled"
+                          onClick={() => {
+                            this.setState({ selectedOutcome: outcome });
+                          }}
+                        >
+                          <span>{outcome}</span>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              ))}
-            </div>
-          </div>
-          <div className="order-book-entry-container">
-            <div className="order-book-entry">
-              <ComponentNav
-                fullWidth
-                navItems={this.navItems}
-                selectedNav={s.selectedNav}
-                updateSelectedNav={selectedNav => this.setState({ selectedNav })}
-              />
-              <div className="order-book-entry-inputs">
-                <Input
-                  type="number"
-                  placeholder="Price"
-                  value={s.orderPrice}
-                  isIncrementable
-                  incrementAmount={0.1}
-                  updateValue={this.handleOrderPriceUpdate}
-                  onChange={this.handleOrderPriceUpdate}
-                />
-                <Input
-                  type="number"
-                  placeholder="Quantity"
-                  value={s.orderQuantity}
-                  isIncrementable
-                  incrementAmount={0.1}
-                  updateValue={this.handleOrderQuantityUpdate}
-                  onChange={this.handleOrderQuantityUpdate}
-                />
-                <button onClick={this.handleAddOrder}>Add Order</button>
+                <div className="order-book-entry-container">
+                  <div className="order-book-entry">
+                    <ComponentNav
+                      fullWidth
+                      navItems={this.navItems}
+                      selectedNav={s.selectedNav}
+                      updateSelectedNav={selectedNav => this.setState({ selectedNav })}
+                    />
+                    <div className="order-book-entry-inputs">
+                      <Input
+                        type="number"
+                        placeholder="Price"
+                        value={s.orderPrice}
+                        isIncrementable
+                        incrementAmount={0.1}
+                        updateValue={this.handleOrderPriceUpdate}
+                        onChange={this.handleOrderPriceUpdate}
+                      />
+                      <Input
+                        type="number"
+                        placeholder="Quantity"
+                        value={s.orderQuantity}
+                        isIncrementable
+                        incrementAmount={0.1}
+                        updateValue={this.handleOrderQuantityUpdate}
+                        onChange={this.handleOrderQuantityUpdate}
+                      />
+                      <button onClick={this.handleAddOrder}>Add Order</button>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-        <div className="order-book-preview">
-          <ReactHighcharts
-            className="order-book-preview-chart"
-            config={{
-              title: {
-                text: `${s.selectedOutcome}: Depth Chart`
-              },
-              series: [
-                {
-                  type: 'line',
-                  name: 'Bids',
-                  step: 'right',
-                  data: bidSeries
-                },
-                {
-                  type: 'line',
-                  name: 'Asks',
-                  step: 'right',
-                  data: askSeries
-                }
-              ],
-              yAxis: {
-                title: {
-                  text: 'Shares'
-                }
-              },
-              xAxis: {
-                title: {
-                  text: 'Price'
-                }
-              },
-              credits: {
-                enabled: false
-              }
-            }}
-          />
-          <div className="order-book-preview-table">
-            <div className="order-book-preview-table-header">
-              <span>Bid Q.</span>
-              <span>Bid</span>
-              <span>Ask</span>
-              <span>Ask Q.</span>
-            </div>
-            <div className="order-book-preview-table-content">
-              <ul className="order-book-preview-table-bids">
-                {bids ?
-                  bids.map(bid => <li><span>{`${bid.quantity}`}</span><span>{`${bid.price}`}</span></li>) :
-                  <span>No Bids</span>
-                }
-              </ul>
-              <ul className="order-book-preview-table-asks">
-                {asks ?
-                  asks.map(ask => <li><span>{`${ask.price}`}</span><span>{`${ask.quantity}`}</span></li>) :
-                  <span>No Asks</span>
-                }
-              </ul>
-            </div>
+              <div className="order-book-preview">
+                <ReactHighcharts
+                  className="order-book-preview-chart"
+                  config={{
+                    title: {
+                      text: `${s.selectedOutcome}: Depth Chart`
+                    },
+                    series: [
+                      {
+                        type: 'line',
+                        name: 'Bids',
+                        step: 'right',
+                        data: bidSeries
+                      },
+                      {
+                        type: 'line',
+                        name: 'Asks',
+                        step: 'right',
+                        data: askSeries
+                      }
+                    ],
+                    yAxis: {
+                      title: {
+                        text: 'Shares'
+                      }
+                    },
+                    xAxis: {
+                      title: {
+                        text: 'Price'
+                      }
+                    },
+                    credits: {
+                      enabled: false
+                    }
+                  }}
+                />
+                <div className="order-book-preview-table">
+                  <div className="order-book-preview-table-header">
+                    <span>Bid Q.</span>
+                    <span>Bid</span>
+                    <span>Ask</span>
+                    <span>Ask Q.</span>
+                  </div>
+                  <div className="order-book-preview-table-content">
+                    <ul className="order-book-preview-table-bids">
+                      {bids ?
+                        bids.map(bid => <li><span>{`${bid.quantity}`}</span><span>{`${bid.price}`}</span></li>) :
+                        <span>No Bids</span>
+                      }
+                    </ul>
+                    <ul className="order-book-preview-table-asks">
+                      {asks ?
+                        asks.map(ask => <li><span>{`${ask.price}`}</span><span>{`${ask.quantity}`}</span></li>) :
+                        <span>No Asks</span>
+                      }
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
       </article>

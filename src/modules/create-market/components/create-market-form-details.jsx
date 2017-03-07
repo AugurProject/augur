@@ -15,6 +15,7 @@ const CreateMarketFormDetails = (p) => {
         <div className="create-market-form-part-input">
           <aside>
             <h3>Additional Details</h3>
+            <h4>Optional</h4>
             <span>Provide any additional details required to either understand or report on your market.</span>
           </aside>
           <div className="vertical-form-divider" />
