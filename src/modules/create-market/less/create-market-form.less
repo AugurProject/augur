@@ -123,6 +123,27 @@
             .input {
               width: 50%;
             }
+
+            span {
+              align-self: center;
+              margin-left: 1em;
+              opacity: 0;
+              transition-duration: @animation-speed-very-fast;
+              transition-property: opacity;
+
+              &.has-errors,
+              &.has-warnings {
+                opacity: 1;
+              }
+
+              &.has-errors {
+                color: @color-red-muted;
+              }
+
+              &.has-warnings {
+                color: @color-orange-light;
+              }
+            }
           }
 
           .input.is-incrementable,

@@ -18,6 +18,7 @@ export default class CreateMarketFormOutcomesCategorical extends Component {
     super(props);
 
     this.state = {
+      errors: [],
       warnings: []
     };
 
@@ -29,19 +30,33 @@ export default class CreateMarketFormOutcomesCategorical extends Component {
   }
 
   validateForm(outcomes) {
-    console.log('validateForm -- ', outcomes);
+    const errors = Array(outcomes.length);
+    errors.fill('');
 
-    // Error Checking
-    if (outcomes.length < 2) {
+    const warnings = Array(outcomes.length);
+    warnings.fill('');
+
+    outcomes.forEach((outcome, i) => {
+      if (outcomes.indexOf(outcome) > -1 && outcomes.indexOf(outcome) !== i) {
+        errors[i] = 'Category must be unique';
+      } else if (outcome.length === CATEGORICAL_OUTCOME_MAX_LENGTH) {
+        warnings[i] = `Outcome max length is: ${CATEGORICAL_OUTCOME_MAX_LENGTH}`;
+      }
+    });
+
+    if (errors.find(error => error.length) || outcomes.length < 2) {
       this.props.updateValidity(false);
     } else {
       this.props.updateValidity(true);
+      this.props.updateNewMarket({ outcomes });
     }
-    // TODO
+
+    this.setState({ errors, warnings });
   }
 
   render() {
     const p = this.props;
+    const s = this.state;
 
     return (
       <article className="create-market-form-part-content">
@@ -54,6 +69,8 @@ export default class CreateMarketFormOutcomesCategorical extends Component {
           <form onSubmit={e => e.preventDefault()} >
             <InputList
               list={p.outcomes}
+              errors={s.errors}
+              warnings={s.warnings}
               listMinElements={CATEGORICAL_OUTCOMES_MIN_NUM}
               listMaxElements={CATEGORICAL_OUTCOMES_MAX_NUM}
               itemMaxLength={CATEGORICAL_OUTCOME_MAX_LENGTH}
