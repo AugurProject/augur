@@ -163,16 +163,19 @@ export default class Input extends Component {
               className="increment-value unstyled"
               onClick={() => {
                 if ((!isNaN(parseFloat(s.value)) && isFinite(s.value)) || !s.value) {
+                  const bnMax = sanitizeBound(max);
+                  const bnMin = sanitizeBound(min);
+
                   let newValue = new BigNumber(s.value || 0);
 
-                  if (newValue > max) {
-                    newValue = new BigNumber(max);
-                  } else if (newValue < min) {
-                    newValue = new BigNumber(min).plus(new BigNumber(incrementAmount));
+                  if (bnMax !== null && newValue.greaterThan(bnMax)) {
+                    newValue = bnMax;
+                  } else if (bnMin !== null && newValue.lessThan(bnMin)) {
+                    newValue = bnMin.plus(new BigNumber(incrementAmount));
                   } else {
                     newValue = newValue.plus(new BigNumber(incrementAmount));
-                    if (newValue > max) {
-                      newValue = new BigNumber(max);
+                    if (bnMax !== null && newValue.greaterThan(bnMax)) {
+                      newValue = bnMax;
                     }
                   }
 
@@ -186,16 +189,19 @@ export default class Input extends Component {
               className="decrement-value unstyled"
               onClick={() => {
                 if ((!isNaN(parseFloat(s.value)) && isFinite(s.value)) || !s.value) {
+                  const bnMax = sanitizeBound(max);
+                  const bnMin = sanitizeBound(min);
+
                   let newValue = new BigNumber(s.value || 0);
 
-                  if (newValue > max) {
-                    newValue = new BigNumber(max).minus(new BigNumber(incrementAmount));
-                  } else if (newValue < min) {
-                    newValue = new BigNumber(min);
+                  if (bnMax !== null && newValue.greaterThan(bnMax)) {
+                    newValue = bnMax.minus(new BigNumber(incrementAmount));
+                  } else if (bnMin !== null && newValue.lessThan(bnMin)) {
+                    newValue = bnMin;
                   } else {
                     newValue = newValue.minus(new BigNumber(incrementAmount));
-                    if (newValue < min) {
-                      newValue = new BigNumber(min);
+                    if (bnMin !== null && newValue.lessThan(bnMin)) {
+                      newValue = bnMin;
                     }
                   }
 
@@ -210,4 +216,14 @@ export default class Input extends Component {
       </div>
     );
   }
+}
+
+function sanitizeBound(value) {
+  if (value == null) {
+    return null;
+  } else if (!(value instanceof BigNumber)) {
+    return new BigNumber(value);
+  }
+
+  return value;
 }
