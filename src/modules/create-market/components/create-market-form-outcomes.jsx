@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import BigNumber from 'bignumber.js';
 
 import CreateMarketFormOutcomesCategorical from 'modules/create-market/components/create-market-form-outcomes-categorical';
 import CreateMarketFormOutcomesScalar from 'modules/create-market/components/create-market-form-outcomes-scalar';
@@ -33,11 +34,11 @@ CreateMarketFormOutcomes.propTypes = {
   outcomes: PropTypes.array.isRequired,
   scalarSmallNum: PropTypes.oneOfType([
     PropTypes.string,
-    PropTypes.number
+    PropTypes.instanceOf(BigNumber)
   ]).isRequired,
   scalarBigNum: PropTypes.oneOfType([
     PropTypes.string,
-    PropTypes.number
+    PropTypes.instanceOf(BigNumber)
   ]).isRequired,
   currentStep: PropTypes.number.isRequired,
   updateValidity: PropTypes.func.isRequired,

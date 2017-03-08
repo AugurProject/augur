@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import BigNumber from 'bignumber.js';
+import { abi } from 'services/augurjs';
 
 import Input from 'modules/common/components/input';
 import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications';
@@ -12,11 +13,11 @@ export default class CreateMarketFormOutcomesScalar extends Component {
     currentStep: PropTypes.number.isRequired,
     scalarSmallNum: PropTypes.oneOfType([
       PropTypes.string,
-      PropTypes.number
+      PropTypes.instanceOf(BigNumber)
     ]).isRequired,
     scalarBigNum: PropTypes.oneOfType([
       PropTypes.string,
-      PropTypes.number
+      PropTypes.instanceOf(BigNumber)
     ]).isRequired,
     updateValidity: PropTypes.func.isRequired,
     updateNewMarket: PropTypes.func.isRequired
@@ -29,7 +30,9 @@ export default class CreateMarketFormOutcomesScalar extends Component {
       errors: {
         small: [],
         big: []
-      }
+      },
+      scalarMin: abi.unfix(abi.constants.SERPINT_MIN).round(18, BigNumber.ROUND_DOWN),
+      scalarMax: abi.unfix(abi.constants.SERPINT_MAX).round(18, BigNumber.ROUND_DOWN)
     };
 
     this.validateForm = this.validateForm.bind(this);
@@ -51,10 +54,8 @@ export default class CreateMarketFormOutcomesScalar extends Component {
           return this.props.scalarBigNum;
         }
         return this.props.scalarSmallNum;
-      } else if (value instanceof BigNumber) {
-        return value.toNumber();
-      } else if (value !== '') {
-        return parseFloat(value);
+      } else if (!(value instanceof BigNumber) && value !== '') {
+        return new BigNumber(value);
       }
 
       return value;
@@ -63,10 +64,18 @@ export default class CreateMarketFormOutcomesScalar extends Component {
     const scalarSmallNum = sanitizeValue(scalarSmallNumRaw);
     const scalarBigNum = sanitizeValue(scalarBigNumRaw, 'big');
 
-    if (scalarBigNumRaw == null && scalarBigNum !== '' && scalarSmallNum >= scalarBigNum) {
-      errors.small.push(`Must be smaller than maximum value of: ${scalarBigNum}`);
-    } else if (scalarBigNum !== '' && scalarBigNum <= scalarSmallNum) {
-      errors.big.push(`Must be greater than minimum value of: ${scalarSmallNum}`);
+    if (scalarBigNumRaw == null && scalarSmallNum !== '') {
+      if (scalarBigNum !== '' && scalarSmallNum.greaterThanOrEqualTo(scalarBigNum)) {
+        errors.small.push(`Must be smaller than maximum value of: ${scalarBigNum}`);
+      } else if (scalarSmallNum.lessThan(this.state.scalarMin)) {
+        errors.small.push(`Must be greater than: ${this.state.scalarMin.toNumber()}`);
+      }
+    } else if (scalarBigNum !== '') {
+      if (scalarSmallNum !== '' && scalarBigNum.lessThanOrEqualTo(scalarSmallNum)) {
+        errors.big.push(`Must be greater than minimum value of: ${scalarSmallNum}`);
+      } else if (scalarBigNum.greaterThan(this.state.scalarMax)) {
+        errors.big.push(`Must be less than: ${this.state.scalarMax.toNumber()}`);
+      }
     }
 
     if (errors.small.length || errors.big.length || scalarSmallNum === '' || scalarBigNum === '') {
@@ -87,8 +96,6 @@ export default class CreateMarketFormOutcomesScalar extends Component {
     const maxSmall = p.scalarBigNum === '' ? undefined : p.scalarBigNum;
     const minBig = p.scalarSmallNum === '' ? undefined : p.scalarSmallNum;
 
-    // console.log(s.errors.small, s.errors.big);
-
     return (
       <article className="create-market-form-part-content">
         <div className="create-market-form-part-input">
@@ -103,6 +110,7 @@ export default class CreateMarketFormOutcomesScalar extends Component {
               type="number"
               isIncrementable
               incrementAmount={1}
+              min={s.scalarMin}
               max={maxSmall}
               value={p.scalarSmallNum}
               updateValue={scalarSmallNum => this.validateForm(scalarSmallNum, undefined)}
@@ -126,6 +134,7 @@ export default class CreateMarketFormOutcomesScalar extends Component {
               isIncrementable
               incrementAmount={1}
               min={minBig}
+              max={s.scalarMax}
               value={p.scalarBigNum}
               updateValue={scalarBigNum => this.validateForm(undefined, scalarBigNum)}
               onChange={scalarBigNum => this.validateForm(undefined, scalarBigNum)}

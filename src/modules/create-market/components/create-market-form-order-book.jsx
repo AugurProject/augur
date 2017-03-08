@@ -20,8 +20,14 @@ export default class CreateMarketFormOrderBook extends Component {
     currentStep: PropTypes.number.isRequired,
     outcomes: PropTypes.array.isRequired,
     orderBook: PropTypes.object.isRequired,
-    scalarBigNum: PropTypes.string.isRequired,
-    scalarSmallNum: PropTypes.string.isRequired,
+    scalarSmallNum: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.instanceOf(BigNumber)
+    ]).isRequired,
+    scalarBigNum: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.instanceOf(BigNumber)
+    ]).isRequired,
     updateValidity: PropTypes.func.isRequired,
     addOrderToNewMarket: PropTypes.func.isRequired,
     removeOrderFromNewMarket: PropTypes.func.isRequired,
