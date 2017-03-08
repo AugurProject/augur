@@ -64,6 +64,9 @@ const LoginMessagePage = p => (
         <li>
           Added a guide and link on how to recover REP / ETH sent to the beta.
         </li>
+        <li>
+          Moved the middleware raw-transaction handling functions to ethrpc (previously were in augur.js).
+        </li>
       </ol>
       <h3>March 5, 2017</h3>
       <ol>
