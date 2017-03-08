@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 import ReactHighcharts from 'react-highcharts';
 
@@ -9,10 +10,24 @@ import Input from 'modules/common/components/input';
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
 import { NEW_MARKET_ORDER_BOOK } from 'modules/create-market/constants/new-market-creation-steps';
 import { BID, ASK } from 'modules/transactions/constants/types';
+import { CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
 
 import getValue from 'utils/get-value';
 
 export default class CreateMarketFormOrderBook extends Component {
+  static propTypes = {
+    type: PropTypes.string.isRequired,
+    currentStep: PropTypes.number.isRequired,
+    outcomes: PropTypes.array.isRequired,
+    orderBook: PropTypes.object.isRequired,
+    scalarBigNum: PropTypes.string.isRequired,
+    scalarSmallNum: PropTypes.string.isRequired,
+    updateValidity: PropTypes.func.isRequired,
+    addOrderToNewMarket: PropTypes.func.isRequired,
+    removeOrderFromNewMarket: PropTypes.func.isRequired,
+    updateNewMarket: PropTypes.func.isRequired
+  }
+
   constructor(props) {
     super(props);
 
@@ -26,7 +41,11 @@ export default class CreateMarketFormOrderBook extends Component {
     };
 
     this.state = {
-      errors: [],
+      errors: {
+        quantity: [],
+        price: []
+      },
+      isOrderValid: false,
       selectedOutcome: props.outcomes[0],
       selectedNav: Object.keys(this.navItems)[0],
       orderPrice: '',
@@ -35,8 +54,6 @@ export default class CreateMarketFormOrderBook extends Component {
       orderBookSeries: {} // Used in Order Book Chart
     };
 
-    this.handleOrderPriceUpdate = this.handleOrderPriceUpdate.bind(this);
-    this.handleOrderQuantityUpdate = this.handleOrderQuantityUpdate.bind(this);
     this.handleAddOrder = this.handleAddOrder.bind(this);
     // this.handleRemoveOrder = this.handleRemoveOrder.bind(this);
     this.updateSeries = this.updateSeries.bind(this);
@@ -45,39 +62,14 @@ export default class CreateMarketFormOrderBook extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.outcomes !== nextProps.outcomes) this.setState({ selectedOutcome: nextProps.outcomes[0] });
-    if (this.props.orderBook !== nextProps.orderBook) this.sortOrderBook(nextProps.orderBook);
-
-    if (!Object.keys(nextProps.orderBook).length &&
-        this.props.currentStep !== nextProps.currentStep &&
-        newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_ORDER_BOOK
+    if (this.props.currentStep !== nextProps.currentStep &&
+      newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_ORDER_BOOK
     ) {
       nextProps.updateValidity(true);
     }
-  }
 
-  componentWillUpdate(nextProps, nextState) {
-    if (this.state.orderBookSorted !== nextState.orderBookSorted) this.updateSeries(nextState.orderBookSorted);
-    if (this.state.orderPrice !== nextState.orderPrice ||
-        this.state.orderQuantity !== nextState.orderQuantity
-    ) {
-      this.validateForm(nextState.orderPrice, nextState.orderQuantity);
-    }
-    if (this.state.errors !== nextState.errors) nextProps.updateValidity(!nextState.errors.length);
-  }
-
-  handleOrderPriceUpdate(orderPriceRaw) {
-    const orderPrice = orderPriceRaw instanceof BigNumber ? orderPriceRaw.toNumber() : parseFloat(orderPriceRaw);
-
-    // TODO -- handle validation
-    this.setState({ orderPrice });
-  }
-
-  handleOrderQuantityUpdate(orderQuantityRaw) {
-    const orderQuantity = orderQuantityRaw instanceof BigNumber ? orderQuantityRaw.toNumber() : parseFloat(orderQuantityRaw);
-
-    // TODO -- handle validation
-    this.setState({ orderQuantity });
+    if (this.props.outcomes !== nextProps.outcomes) this.setState({ selectedOutcome: nextProps.outcomes[0] });
+    if (this.props.orderBook !== nextProps.orderBook) this.sortOrderBook(nextProps.orderBook);
   }
 
   handleAddOrder() {
@@ -139,16 +131,61 @@ export default class CreateMarketFormOrderBook extends Component {
     this.setState({ orderBookSeries });
   }
 
-  validateForm(orderBook) {
-    console.log('order book, validateForm');
+  validateForm(orderQuantityRaw = this.state.orderQuantity, orderPriceRaw = this.state.orderPrice) {
+    console.log('### validateFrom -- ', orderQuantityRaw, orderPriceRaw);
 
-    const errors = [];
+    let orderQuantity = orderQuantityRaw instanceof BigNumber ? orderQuantityRaw.toNumber() : parseFloat(orderQuantityRaw || 0);
+    let orderPrice = orderPriceRaw instanceof BigNumber ? orderPriceRaw.toNumber() : parseFloat(orderPriceRaw || 0);
 
-    if (Object.keys(orderBook).length) {
-      // TODO -- validate new orders
+    const errors = {
+      quantity: [],
+      price: []
+    };
+    let isOrderValid;
+
+    // Basic Validations
+    if (orderQuantityRaw === '') {
+      orderQuantity = '';
+      isOrderValid = false;
+    }
+    if (orderPriceRaw === '') {
+      orderPrice = '';
+      isOrderValid = false;
     }
 
-    this.setState({ errors });
+    // Validate Quantity
+    if (orderQuantity !== '' && orderQuantity <= 0) {
+      errors.quantity.push('Quantity must be positive');
+    }
+
+    // Validate Price
+    if (orderPrice !== '') {
+      const bids = getValue(this.state.orderBookSorted[this.state.selectedOutcome], `${BID}`);
+      const asks = getValue(this.state.orderBookSorted[this.state.selectedOutcome], `${ASK}`);
+
+      console.log(bids, asks);
+
+      if (this.props.type !== SCALAR) {
+        if (orderPrice > 1) {
+          errors.price.push('Price cannot exceed 1');
+        } else if (orderPrice < 0) {
+          errors.price.push('Price cannot be below 0');
+        } else if (this.state.selectedNav === BID && asks && asks.length && orderPrice > asks[0].price) {
+          errors.price.push(`Price must be less than best ask price of: ${asks[0].price}`);
+        } else if (this.state.selectedNav === ASK && bids && bids.length && orderPrice < bids[0].price) {
+          errors.price.push(`Price must be greater than best bid price of: ${bids[0].price}`);
+        }
+      } else {
+        // TODO
+      }
+    }
+
+    this.setState({
+      errors,
+      isOrderValid,
+      orderQuantity,
+      orderPrice
+    });
   }
 
   render() {
@@ -172,28 +209,30 @@ export default class CreateMarketFormOrderBook extends Component {
             <div className="vertical-form-divider" />
             <form onSubmit={e => e.preventDefault()} >
               <div className="order-book-actions">
-                <div className="order-book-outcomes-table">
-                  <div className="order-book-outcomes-header">
-                    <span>Outcomes</span>
-                  </div>
-                  <div className="order-book-outcomes">
-                    {p.outcomes.map(outcome => (
-                      <div
-                        key={outcome}
-                        className={`order-book-outcome-row ${s.selectedOutcome === outcome ? 'selected' : ''}`}
-                      >
-                        <button
-                          className="unstyled"
-                          onClick={() => {
-                            this.setState({ selectedOutcome: outcome });
-                          }}
+                {p.type === CATEGORICAL &&
+                  <div className="order-book-outcomes-table">
+                    <div className="order-book-outcomes-header">
+                      <span>Outcomes</span>
+                    </div>
+                    <div className="order-book-outcomes">
+                      {p.outcomes.map(outcome => (
+                        <div
+                          key={outcome}
+                          className={`order-book-outcome-row ${s.selectedOutcome === outcome ? 'selected' : ''}`}
                         >
-                          <span>{outcome}</span>
-                        </button>
-                      </div>
-                    ))}
+                          <button
+                            className="unstyled"
+                            onClick={() => {
+                              this.setState({ selectedOutcome: outcome });
+                            }}
+                          >
+                            <span>{outcome}</span>
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                }
                 <div className="order-book-entry-container">
                   <div className="order-book-entry">
                     <ComponentNav
@@ -204,25 +243,33 @@ export default class CreateMarketFormOrderBook extends Component {
                     />
                     <div className="order-book-entry-inputs">
                       <Input
-                        type="number"
-                        placeholder="Price"
-                        value={s.orderPrice}
-                        isIncrementable
-                        incrementAmount={0.1}
-                        updateValue={this.handleOrderPriceUpdate}
-                        onChange={this.handleOrderPriceUpdate}
-                      />
-                      <Input
+                        classNames={classNames({ 'input-error': s.errors.quantity.length })}
                         type="number"
                         placeholder="Quantity"
                         value={s.orderQuantity}
                         isIncrementable
                         incrementAmount={0.1}
-                        updateValue={this.handleOrderQuantityUpdate}
-                        onChange={this.handleOrderQuantityUpdate}
+                        updateValue={quantity => this.validateForm(quantity, undefined)}
+                        onChange={quantity => this.validateForm(quantity, undefined)}
                       />
-                      <button onClick={this.handleAddOrder}>Add Order</button>
+                      <span>@</span>
+                      <Input
+                        classNames={classNames({ 'input-error': s.errors.price.length })}
+                        type="number"
+                        placeholder="Price"
+                        value={s.orderPrice}
+                        isIncrementable
+                        incrementAmount={0.1}
+                        updateValue={price => this.validateForm(undefined, price)}
+                        onChange={price => this.validateForm(undefined, price)}
+                      />
                     </div>
+                    <button
+                      className={classNames({ disabled: !s.isOrderValid })}
+                      onClick={s.isOrderValid && this.handleAddOrder}
+                    >
+                      Add Order
+                    </button>
                   </div>
                 </div>
               </div>
@@ -292,17 +339,3 @@ export default class CreateMarketFormOrderBook extends Component {
     );
   }
 }
-
-CreateMarketFormOrderBook.propTypes = {
-  currentStep: PropTypes.number.isRequired,
-  outcomes: PropTypes.array.isRequired,
-  orderBook: PropTypes.object.isRequired,
-  updateValidity: PropTypes.func.isRequired,
-  addOrderToNewMarket: PropTypes.func.isRequired,
-  removeOrderFromNewMarket: PropTypes.func.isRequired,
-  updateNewMarket: PropTypes.func.isRequired
-};
-
-// <CreateMarketFormErrors
-//   errors={s.errors}
-// />

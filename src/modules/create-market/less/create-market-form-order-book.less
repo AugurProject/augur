@@ -1,6 +1,10 @@
 .create-market-form-order-book {
   .order-book-actions {
+    .border(true, @border-bottom);
+
     display: flex;
+    margin-bottom: 1em;
+    padding-bottom: 1em;
 
     .order-book-outcomes-table {
       .table();
@@ -36,7 +40,23 @@
         .border(true);
 
         display: flex;
+        flex-basis: 40%;
         flex-direction: column;
+
+        .order-book-entry-inputs {
+          display: flex;
+          margin: 1em;
+
+          .input {
+            flex: 1;
+            flex-basis: 20%;
+          }
+
+          span {
+            align-self: center;
+            margin: 0 1em;
+          }
+        }
       }
     }
   }
