@@ -56,6 +56,9 @@ const LoginMessagePage = p => (
       <h3>March 6, 2017</h3>
       <ol>
         <li>
+          Added Create New Market button to the topics homepage.
+        </li>
+        <li>
           Added QR codes for your deposit address and keystore file, increasing the ease of transfering your wallet and depositing of funds.
         </li>
         <li>
