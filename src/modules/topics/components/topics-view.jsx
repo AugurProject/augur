@@ -1,16 +1,19 @@
 import React, { Component, PropTypes } from 'react';
+import classNames from 'classnames';
 
 import NullStateMessage from 'modules/common/components/null-state-message';
 import TopicRows from 'modules/topics/components/topic-rows';
 import Paginator from 'modules/common/components/paginator';
 import Input from 'modules/common/components/input';
+import Link from 'modules/link/components/link';
 import Branch from 'modules/branch/components/branch';
 
 export default class TopicsView extends Component {
   static propTypes = {
     topics: PropTypes.array,
     branch: PropTypes.object,
-    loginAccount: PropTypes.object
+    loginAccount: PropTypes.object,
+    createMarketLink: PropTypes.object
   }
 
   constructor(props) {
@@ -181,13 +184,24 @@ export default class TopicsView extends Component {
           {!!p.loginAccount && !!p.loginAccount.rep && !!p.loginAccount.rep.value && !!p.branch.id &&
             <Branch {...p.branch} />
           }
-          <div className="topics-search" >
-            <Input
-              isSearch
-              isClearable
-              placeholder="Search Topics"
-              onChange={keywords => this.setState({ keywords })}
-            />
+          <div className="topics-header">
+            <div className={classNames('topics-search', { 'only-search': !p.loginAccount || !p.loginAccount.address })}>
+              <Input
+                isSearch
+                isClearable
+                placeholder="Search Topics"
+                onChange={keywords => this.setState({ keywords })}
+              />
+            </div>
+            {p.loginAccount && p.loginAccount.address &&
+              <Link
+                className="button imperative navigational"
+                disabled={!p.loginAccount.address}
+                {...p.createMarketLink}
+              >
+                + Create New Market
+              </Link>
+            }
           </div>
           {s.filteredTopics.length ?
             <div className="topics">

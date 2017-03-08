@@ -182,7 +182,8 @@ export default class Routes extends Component {
           topics: getValue(p, 'topics.topics'),
           selectTopic: getValue(p, 'topics.selectTopic'),
           loginAccount: p.loginAccount,
-          branch: p.branch
+          createMarketLink: (p.links || {}).createMarketLink,
+          branch: p.branch,
         };
         import('modules/topics/components/topics-view').then((module) => {
           const TopicsView = module.default;
