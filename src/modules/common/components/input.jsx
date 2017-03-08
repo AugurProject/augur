@@ -165,10 +165,7 @@ export default class Input extends Component {
                 if ((!isNaN(parseFloat(s.value)) && isFinite(s.value)) || !s.value) {
                   let newValue = new BigNumber(s.value || 0);
 
-                  console.log('newValue -- ', s.value, newValue, max, min);
-
                   if (newValue > max) {
-                    console.log('new value is greater -- ', newValue, max);
                     newValue = new BigNumber(max);
                   } else if (newValue < min) {
                     newValue = new BigNumber(min).plus(new BigNumber(incrementAmount));
