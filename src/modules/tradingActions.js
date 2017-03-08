@@ -33,7 +33,7 @@ module.exports = {
    * @return {BigNumber}
    */
   getTxGasEth: function (tx, gasPrice) {
-    tx.gasLimit = tx.gas || constants.DEFAULT_GAS;
+    tx.gasLimit = tx.gas || this.rpc.DEFAULT_GAS;
     tx.gasPrice = gasPrice;
     return abi.unfix((new EthTx(tx)).getUpfrontCost().toString());
   },

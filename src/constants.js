@@ -61,9 +61,6 @@ module.exports = {
   CATEGORICAL_SCALAR_INDETERMINATE: new BigNumber("0x6f05b59d3b20000", 16),
   INDETERMINATE_PLUS_ONE: new BigNumber("0x6f05b59d3b20001", 16),
 
-  // default gas: 3.135M
-  DEFAULT_GAS: 3135000,
-
   // gas needed for trade transactions (values from pyethereum tester)
   MAKE_ORDER_GAS: {sell: 725202, buy: 725202},
   TRADE_GAS: [

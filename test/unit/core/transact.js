@@ -362,7 +362,10 @@ describe("Transact", function() {
       onSuccess: noop,
       onFailed: noop,
       setup: function() {
-        augur.accounts = { account: { address: 'browserAccountAddress' } };
+        augur.accounts = { account: {
+          address: 'browserAccountAddress',
+          privateKey: 'browserAccountPrivateKey'
+        } };
       },
       tearDown: function() {
         augur.accounts = web;
@@ -387,7 +390,10 @@ describe("Transact", function() {
       onSuccess: noop,
       onFailed: noop,
       setup: function() {
-        augur.accounts = { account: { address: 'browserAccountAddress' } };
+        augur.accounts = { account: {
+          address: 'browserAccountAddress',
+          privateKey: 'browserAccountPrivateKey'
+        } };
         augur.from = 'augurFromAddress';
         augur.coinbase = 'coinbase';
       },

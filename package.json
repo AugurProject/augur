@@ -22,10 +22,8 @@
     "chalk": "1.1.1",
     "clone": "1.0.2",
     "ethereumjs-connect": "2.3.1",
-    "ethereumjs-tx": "1.2.5",
     "ethrpc": "2.5.1",
     "keythereum": "0.4.3",
-    "locks": "0.2.2",
     "request": "2.74.0",
     "uuid": "3.0.0",
     "uuid-parse": "1.0.0"
