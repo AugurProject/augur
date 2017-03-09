@@ -27,40 +27,31 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
   }, rpc.gasPrice).toFixed();
   switch (method) {
     case 'buy':
-      return {
-        ...dispatch(constructTradingTransaction('log_add_tx', {
-          type: 'buy',
-          ...p,
-          price: abi.unfix_signed(p.price, 'string'),
-          amount: abi.unfix(p.amount, 'string'),
-          gasFees
-        }, abi.format_int256(p.market), p.outcome, status)),
-        confirmations: tx.confirmations
-      };
+      return dispatch(constructTradingTransaction('log_add_tx', {
+        type: 'buy',
+        ...p,
+        price: abi.unfix_signed(p.price, 'string'),
+        amount: abi.unfix(p.amount, 'string'),
+        gasFees
+      }, abi.format_int256(p.market), p.outcome, status));
     case 'shortAsk':
       p.isShortAsk = true; // eslint-disable-line no-fallthrough
     case 'sell':
-      return {
-        ...dispatch(constructTradingTransaction('log_add_tx', {
-          type: 'sell',
-          ...p,
-          price: abi.unfix_signed(p.price, 'string'),
-          amount: abi.unfix(p.amount, 'string'),
-          gasFees
-        }, abi.format_int256(p.market), p.outcome, status)),
-        confirmations: tx.confirmations
-      };
+      return dispatch(constructTradingTransaction('log_add_tx', {
+        type: 'sell',
+        ...p,
+        price: abi.unfix_signed(p.price, 'string'),
+        amount: abi.unfix(p.amount, 'string'),
+        gasFees
+      }, abi.format_int256(p.market), p.outcome, status));
     case 'cancel': {
       const order = augur.selectOrder(p.trade_id, getState().orderBooks);
       if (!order) return null;
-      return {
-        ...dispatch(constructTradingTransaction('log_cancel', {
-          ...p,
-          ...order,
-          gasFees
-        }, abi.format_int256(order.market), order.outcome, status)),
-        confirmations: tx.confirmations
-      };
+      return dispatch(constructTradingTransaction('log_cancel', {
+        ...p,
+        ...order,
+        gasFees
+      }, abi.format_int256(order.market), order.outcome, status));
     }
     case 'commitTrade': {
       dispatch(updateTradeCommitment({ transactionHash: hash }));
@@ -117,7 +108,6 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           gasFees,
           isShortSell
         }, abi.format_int256(order.market), order.outcome, 'committing'));
-        transactions[i].confirmations = tx.confirmations;
       }
       return transactions;
     }
@@ -149,22 +139,19 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           outcome: parseInt(order.outcome, 10)
         }));
       }
-      return [{
-        ...dispatch(constructTradingTransaction('log_short_fill_tx', {
-          ...p,
-          price: order.price,
-          outcome: parseInt(order.outcome, 10),
-          amount,
-          sender: tx.data.from,
-          owner: order.owner,
-          tradeid: p.buyer_trade_id,
-          tradeHash,
-          takerFee: tradingFees,
-          gasFees,
-          isShortSell: true
-        }, abi.format_int256(order.market), order.outcome, status)),
-        confirmations: tx.confirmations
-      }];
+      return [dispatch(constructTradingTransaction('log_short_fill_tx', {
+        ...p,
+        price: order.price,
+        outcome: parseInt(order.outcome, 10),
+        amount,
+        sender: tx.data.from,
+        owner: order.owner,
+        tradeid: p.buyer_trade_id,
+        tradeHash,
+        takerFee: tradingFees,
+        gasFees,
+        isShortSell: true
+      }, abi.format_int256(order.market), order.outcome, status))];
     }
     case 'trade': {
       const { transactionHash, orders, tradeHash, tradingFees, maxValue, remainingShares, gasFees } = getState().tradeCommitment;
@@ -232,7 +219,6 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             takerFee: tradingFees,
             gasFees
           }, abi.format_int256(order.market), order.outcome, status));
-          transactions[i].confirmations = tx.confirmations;
         }
       }
       return transactions;
