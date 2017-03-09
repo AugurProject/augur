@@ -1,9 +1,6 @@
-import { UPDATE_REPORTS, CLEAR_REPORTS } from '../../reports/actions/update-reports';
+import { UPDATE_REPORTS, UPDATE_REPORT, CLEAR_REPORTS } from '../../reports/actions/update-reports';
+import { CLEAR_OLD_REPORTS } from '../../reports/actions/clear-old-reports';
 
-/*
-Keys are eventID, values can be:
-   - { reportHash: null }: user is required to report and has not yet reported
-*/
 export default function (reports = {}, action) {
   switch (action.type) {
     case UPDATE_REPORTS: {
@@ -16,6 +13,31 @@ export default function (reports = {}, action) {
         updatedReports[branchID] = Object.assign({}, reports[branchID], action.reports[branchID]);
       }
       return updatedReports;
+    }
+    case UPDATE_REPORT: {
+      const branchReports = reports[action.branchID] || {};
+      return {
+        ...reports,
+        [action.branchID]: {
+          ...branchReports,
+          [action.eventID]: {
+            ...(branchReports[action.eventID] || { eventID: action.eventID }),
+            ...action.report
+          }
+        }
+      };
+    }
+    case CLEAR_OLD_REPORTS: {
+      const branchReports = reports[action.branchID] || {};
+      return {
+        ...reports,
+        [action.branchID]: Object.keys(branchReports).reduce((p, eventID) => {
+          if (branchReports[eventID].period >= action.reportPeriod) {
+            p[eventID] = branchReports[eventID];
+          }
+          return p;
+        }, {})
+      };
     }
     case CLEAR_REPORTS:
       return {};
