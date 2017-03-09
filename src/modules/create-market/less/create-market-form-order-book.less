@@ -68,14 +68,59 @@
   .order-book-preview {
     display: flex;
 
-    .order-book-preview-chart {
+    #order_book_preview_chart {
       display: flex;
-      flex: 4;
     }
 
     .order-book-preview-table {
+      .table();
+
       display: flex;
       flex: 1;
+
+      .order-book-preview-table-header,
+      .order-book-preview-table-bids,
+      .order-book-preview-table-asks {
+        & > * {
+          flex: 1;
+          text-align: center;
+        }
+      }
+
+      .order-book-preview-table-header {
+        .table-header();
+
+        flex: none;
+      }
+
+      .order-book-preview-table-content {
+        display: flex;
+        max-height: 400px;
+        overflow-y: auto;
+
+        .order-book-preview-table-bids,
+        .order-book-preview-table-asks {
+          flex: 1;
+
+          & > * {
+            .table-row();
+
+            display: flex;
+
+            & > * {
+              .table-cell-spacing();
+
+              flex: 1;
+            }
+          }
+
+          & > span {
+            .table-cell-spacing();
+
+            justify-content: center;
+          }
+        }
+      }
     }
   }
 }

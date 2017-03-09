@@ -59,9 +59,11 @@ export default class CreateMarketFormOrderBook extends Component {
       orderBookSorted: {}, // Used in Order Book Table
       orderBookSeries: {}, // Used in Order Book Chart
       minPrice: 0,
-      maxPrice: 1
+      maxPrice: 1,
+      orderBookChartConfig: {}
     };
 
+    this.updateChart = this.updateChart.bind(this);
     this.updatePriceBounds = this.updatePriceBounds.bind(this);
     this.handleAddOrder = this.handleAddOrder.bind(this);
     // this.handleRemoveOrder = this.handleRemoveOrder.bind(this);
@@ -93,6 +95,62 @@ export default class CreateMarketFormOrderBook extends Component {
     ) {
       this.updatePriceBounds(nextProps.type, nextState.selectedOutcome, nextState.selectedNav, nextState.orderBookSorted, nextProps.scalarSmallNum, nextProps.scalarBigNum);
     }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if ((newMarketCreationOrder[this.props.currentStep] === NEW_MARKET_ORDER_BOOK && prevProps.currentStep !== this.props.currentStep) ||
+      prevState.orderBookSorted !== this.state.orderBookSorted
+    ) {
+      this.updateChart();
+    }
+  }
+
+  updateChart() {
+    console.log('order book preview element -- ', this.orderBookPreview.clientWidth);
+
+    const bidSeries = getValue(this.state.orderBookSeries[this.state.selectedOutcome], `${BID}`);
+    const askSeries = getValue(this.state.orderBookSeries[this.state.selectedOutcome], `${ASK}`);
+
+    console.log('series -- ', bidSeries, askSeries);
+
+    const orderBookChartConfig = {
+      title: {
+        text: `${this.state.selectedOutcome}: Depth Chart`
+      },
+      chart: {
+        height: 400,
+        width: this.orderBookPreview.clientWidth * 0.66
+      },
+      series: [
+        {
+          type: 'line',
+          name: 'Bids',
+          step: 'right',
+          data: bidSeries
+        },
+        {
+          type: 'line',
+          name: 'Asks',
+          step: 'right',
+          data: askSeries
+        }
+      ],
+      yAxis: {
+        title: {
+          text: 'Shares'
+        }
+      },
+      xAxis: {
+        title: {
+          text: 'Price'
+        }
+      },
+      credits: {
+        enabled: false
+      }
+    };
+
+    this.setState({ orderBookChartConfig });
   }
 
   updatePriceBounds(type, selectedOutcome, selectedSide, orderBook, scalarSmallNum, scalarBigNum) {
@@ -308,10 +366,45 @@ export default class CreateMarketFormOrderBook extends Component {
     const s = this.state;
 
     const errors = [...s.errors.quantity, ...s.errors.price]; // Joined since only one input can be in an error state at a time
-    const bidSeries = getValue(s.orderBookSeries[s.selectedOutcome], `${BID}`);
-    const askSeries = getValue(s.orderBookSeries[s.selectedOutcome], `${ASK}`);
+    // const bidSeries = getValue(s.orderBookSeries[s.selectedOutcome], `${BID}`);
+    // const askSeries = getValue(s.orderBookSeries[s.selectedOutcome], `${ASK}`);
     const bids = getValue(s.orderBookSorted[s.selectedOutcome], `${BID}`);
     const asks = getValue(s.orderBookSorted[s.selectedOutcome], `${ASK}`);
+    // const depthChartConfiguration = {
+    //   title: {
+    //     text: `${s.selectedOutcome}: Depth Chart`
+    //   },
+    //   chart: {
+    //     height: '100%'
+    //   },
+    //   series: [
+    //     {
+    //       type: 'line',
+    //       name: 'Bids',
+    //       step: 'right',
+    //       data: bidSeries
+    //     },
+    //     {
+    //       type: 'line',
+    //       name: 'Asks',
+    //       step: 'right',
+    //       data: askSeries
+    //     }
+    //   ],
+    //   yAxis: {
+    //     title: {
+    //       text: 'Shares'
+    //     }
+    //   },
+    //   xAxis: {
+    //     title: {
+    //       text: 'Price'
+    //     }
+    //   },
+    //   credits: {
+    //     enabled: false
+    //   }
+    // };
 
     return (
       <article className={`create-market-form-part create-market-form-order-book ${p.className || ''}`}>
@@ -395,41 +488,14 @@ export default class CreateMarketFormOrderBook extends Component {
                   </div>
                 </div>
               </div>
-              <div className="order-book-preview">
+              <div
+                ref={(orderBookPreview) => { this.orderBookPreview = orderBookPreview; }}
+                className="order-book-preview"
+              >
+                <div id="order_book_preview_chart" />
                 <ReactHighcharts
-                  className="order-book-preview-chart"
-                  config={{
-                    title: {
-                      text: `${s.selectedOutcome}: Depth Chart`
-                    },
-                    series: [
-                      {
-                        type: 'line',
-                        name: 'Bids',
-                        step: 'right',
-                        data: bidSeries
-                      },
-                      {
-                        type: 'line',
-                        name: 'Asks',
-                        step: 'right',
-                        data: askSeries
-                      }
-                    ],
-                    yAxis: {
-                      title: {
-                        text: 'Shares'
-                      }
-                    },
-                    xAxis: {
-                      title: {
-                        text: 'Price'
-                      }
-                    },
-                    credits: {
-                      enabled: false
-                    }
-                  }}
+                  config={s.orderBookChartConfig}
+                  isPureConfig
                 />
                 <div className="order-book-preview-table">
                   <div className="order-book-preview-table-header">
