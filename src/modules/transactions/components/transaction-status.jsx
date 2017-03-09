@@ -1,11 +1,14 @@
 import React from 'react';
+import ValueDenomination from 'modules/common/components/value-denomination';
 import { SUCCESS } from 'modules/transactions/constants/statuses';
 
 const TransactionStatus = p => (
   <span className="status">
-    {p.status !== SUCCESS && p.status}
+    {p.status}
     {p.status === SUCCESS &&
-      `${p.status} (${p.confirmations} confirmations)`
+      <span className="confirmations">
+        <ValueDenomination {...p.confirmations} />
+      </span>
     }
   </span>
 );
@@ -13,7 +16,7 @@ const TransactionStatus = p => (
 TransactionStatus.propTypes = {
   className: React.PropTypes.string,
   status: React.PropTypes.string,
-  confirmations: React.PropTypes.number
+  confirmations: React.PropTypes.object
 };
 
 export default TransactionStatus;

@@ -2,7 +2,7 @@ import { abi, augur, constants } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
 import { BINARY, SCALAR } from '../../markets/constants/market-types';
 import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, MATCH_BID, MATCH_ASK, COMMIT_REPORT, REVEAL_REPORT, CANCEL_ORDER } from '../../transactions/constants/types';
-import { formatEther, formatPercent, formatRealEther, formatRep, formatShares } from '../../../utils/format-number';
+import { formatConfirmations, formatEther, formatPercent, formatRealEther, formatRep, formatShares } from '../../../utils/format-number';
 import { formatDate } from '../../../utils/format-date';
 import { selectMarketLink } from '../../link/selectors/links';
 import { formatReportedOutcome } from '../../reports/selectors/reportable-outcomes';
@@ -45,7 +45,7 @@ export function constructBasicTransaction(hash, status, blockNumber, timestamp, 
   if (blockNumber) transaction.blockNumber = formatDate(new Date(blockNumber * 1000));
   if (timestamp) transaction.timestamp = formatDate(new Date(timestamp * 1000));
   if (gasFees) transaction.gasFees = formatRealEther(gasFees);
-  if (confirmations) transaction.confirmations = confirmations;
+  if (confirmations) transaction.confirmations = formatConfirmations(confirmations);
   return transaction;
 }
 
@@ -403,7 +403,7 @@ export function constructSlashedRepTransaction(log, market, outcomes, address, d
   return transaction;
 }
 
-export function constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, outcomeName, status, currentBlockNumber, dispatch) {
+export const constructLogFillTxTransaction = (trade, marketID, marketType, minValue, description, outcomeID, outcomeName, status) => (dispatch, getState) => {
   console.log('constructLogFillTransaction:', trade);
   if (!trade.amount || !trade.price || (!trade.makerFee && !trade.takerFee)) return null;
   const transactionID = `${trade.transactionHash}-${trade.tradeid}`;
@@ -457,13 +457,13 @@ export function constructLogFillTxTransaction(trade, marketID, marketType, minVa
       totalCost: formattedTotalCost,
       totalReturn: formattedTotalReturn,
       gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null,
-      confirmations: currentBlockNumber - trade.blockNumber
+      confirmations: formatConfirmations(getState().blockchain.currentBlockNumber - trade.blockNumber)
     }
   };
   return transaction;
-}
+};
 
-export function constructLogShortFillTxTransaction(trade, marketID, marketType, maxValue, description, outcomeID, outcomeName, status, currentBlockNumber, dispatch) {
+export const constructLogShortFillTxTransaction = (trade, marketID, marketType, maxValue, description, outcomeID, outcomeName, status) => (dispatch, getState) => {
   const transactionID = `${trade.transactionHash}-${trade.tradeid}`;
   const price = formatEther(trade.price);
   const shares = formatShares(trade.amount);
@@ -497,13 +497,13 @@ export function constructLogShortFillTxTransaction(trade, marketID, marketType, 
       feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
       totalCost: formatEther(totalCost),
       gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null,
-      confirmations: currentBlockNumber - trade.blockNumber
+      confirmations: formatConfirmations(getState().blockchain.currentBlockNumber - trade.blockNumber)
     }
   };
   return transaction;
-}
+};
 
-export function constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, market, status, currentBlockNumber, dispatch) {
+export const constructLogAddTxTransaction = (trade, marketID, marketType, description, outcomeID, outcomeName, market, status) => (dispatch, getState) => {
   let type;
   let action;
   if (trade.type === BUY) {
@@ -572,12 +572,12 @@ export function constructLogAddTxTransaction(trade, marketID, marketType, descri
       totalCost: type === BID ? formatEther(abi.unfix(totalCost)) : undefined,
       totalReturn: type === ASK ? formatEther(abi.unfix(totalReturn)) : undefined,
       gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null,
-      confirmations: currentBlockNumber - trade.blockNumber
+      confirmations: formatConfirmations(getState().blockchain.currentBlockNumber - trade.blockNumber)
     }
   };
-}
+};
 
-export function constructLogCancelTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status, currentBlockNumber, dispatch) {
+export const constructLogCancelTransaction = (trade, marketID, marketType, description, outcomeID, outcomeName, status) => (dispatch, getState) => {
   const price = formatEther(trade.price);
   const shares = formatShares(trade.amount);
   const action = trade.inProgress ? 'canceling' : 'canceled';
@@ -602,124 +602,115 @@ export function constructLogCancelTransaction(trade, marketID, marketType, descr
       hash: trade.transactionHash,
       totalReturn: trade.inProgress ? null : formatEther(trade.cashRefund),
       gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null,
-      confirmations: currentBlockNumber - trade.blockNumber
+      confirmations: formatConfirmations(getState().blockchain.currentBlockNumber - trade.blockNumber)
     }
   };
-}
+};
 
-export function constructTradingTransaction(label, trade, marketID, outcomeID, status) {
-  return (dispatch, getState) => {
-    console.log('constructTradingTransaction:', label, trade);
-    const { blockchain, marketsData, outcomesData } = getState();
-    const market = marketsData[marketID];
-    const marketOutcomesData = outcomesData[marketID];
-    const marketType = market.type;
-    const description = market.description;
-    let outcomeName;
-    if (marketType === BINARY || marketType === SCALAR) {
-      outcomeName = null;
-    } else {
-      outcomeName = (marketOutcomesData ? marketOutcomesData[outcomeID] : {}).name;
+export const constructTradingTransaction = (label, trade, marketID, outcomeID, status) => (dispatch, getState) => {
+  console.log('constructTradingTransaction:', label, trade);
+  const { marketsData, outcomesData } = getState();
+  const market = marketsData[marketID];
+  const marketOutcomesData = outcomesData[marketID];
+  const marketType = market.type;
+  const description = market.description;
+  let outcomeName;
+  if (marketType === BINARY || marketType === SCALAR) {
+    outcomeName = null;
+  } else {
+    outcomeName = (marketOutcomesData ? marketOutcomesData[outcomeID] : {}).name;
+  }
+  switch (label) {
+    case 'log_fill_tx': {
+      return dispatch(constructLogFillTxTransaction(trade, marketID, marketType, market.minValue, description, outcomeID, outcomeName, status));
     }
-    const currentBlockNumber = blockchain.currentBlockNumber;
-    switch (label) {
-      case 'log_fill_tx': {
-        return constructLogFillTxTransaction(trade, marketID, marketType, market.minValue, description, outcomeID, outcomeName, status, currentBlockNumber, dispatch);
-      }
-      case 'log_short_fill_tx': {
-        return constructLogShortFillTxTransaction(trade, marketID, marketType, market.maxValue, description, outcomeID, outcomeName, status, currentBlockNumber, dispatch);
-      }
-      case 'log_add_tx': {
-        return constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, market, status, currentBlockNumber, dispatch);
-      }
-      case 'log_cancel': {
-        return constructLogCancelTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status, currentBlockNumber, dispatch);
-      }
-      default:
-        return null;
+    case 'log_short_fill_tx': {
+      return dispatch(constructLogShortFillTxTransaction(trade, marketID, marketType, market.maxValue, description, outcomeID, outcomeName, status));
     }
-  };
-}
+    case 'log_add_tx': {
+      return dispatch(constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, market, status));
+    }
+    case 'log_cancel': {
+      return dispatch(constructLogCancelTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status));
+    }
+    default:
+      return null;
+  }
+};
 
-export function constructMarketTransaction(label, log, market) {
-  return (dispatch, getState) => {
-    switch (label) {
-      case 'payout':
-        return constructPayoutTransaction(log, market, dispatch);
-      case 'tradingFeeUpdated':
-        return constructTradingFeeUpdatedTransaction(log, market, dispatch);
-      default:
-        return null;
-    }
-  };
-}
+export const constructMarketTransaction = (label, log, market) => (dispatch, getState) => {
+  switch (label) {
+    case 'payout':
+      return constructPayoutTransaction(log, market, dispatch);
+    case 'tradingFeeUpdated':
+      return constructTradingFeeUpdatedTransaction(log, market, dispatch);
+    default:
+      return null;
+  }
+};
 
-export function constructReportingTransaction(label, log, marketID, market, outcomes) {
-  return (dispatch, getState) => {
-    const { address, derivedKey } = augur.accounts.account;
-    switch (label) {
-      case 'penalize':
-        return constructPenalizeTransaction(log, marketID, market, outcomes, dispatch);
-      case 'submittedReport':
-        return constructSubmittedReportTransaction(log, marketID, market, outcomes, dispatch);
-      case 'submittedReportHash':
-        return constructSubmittedReportHashTransaction(log, marketID, market, outcomes, derivedKey, dispatch);
-      case 'slashedRep':
-        return constructSlashedRepTransaction(log, market, outcomes, address, dispatch);
-      default:
-        return null;
-    }
-  };
-}
+export const constructReportingTransaction = (label, log, marketID, market, outcomes) => (dispatch, getState) => {
+  const { address, derivedKey } = augur.accounts.account;
+  switch (label) {
+    case 'penalize':
+      return constructPenalizeTransaction(log, marketID, market, outcomes, dispatch);
+    case 'submittedReport':
+      return constructSubmittedReportTransaction(log, marketID, market, outcomes, dispatch);
+    case 'submittedReportHash':
+      return constructSubmittedReportHashTransaction(log, marketID, market, outcomes, derivedKey, dispatch);
+    case 'slashedRep':
+      return constructSlashedRepTransaction(log, market, outcomes, address, dispatch);
+    default:
+      return null;
+  }
+};
 
-export function constructTransaction(label, log, isRetry, callback) {
-  return (dispatch, getState) => {
-    switch (label) {
-      case 'Approval':
-        return constructApprovalTransaction(log);
-      case 'collectedFees':
-        return constructCollectedFeesTransaction(log);
-      case 'deposit':
-        return constructDepositTransaction(log);
-      case 'fundedAccount':
-        return constructFundedAccountTransaction(log);
-      case 'penalizationCaughtUp':
-        return constructPenalizationCaughtUpTransaction(log);
-      case 'registration':
-        return constructRegistrationTransaction(log);
-      case 'withdraw':
-        return constructWithdrawTransaction(log);
-      case 'sentCash':
-        if (getState().transactionsData[log.transactionHash]) return null;
-        return constructSentCashTransaction(log, getState().loginAccount.address);
-      case 'sentEther':
-        if (getState().transactionsData[log.transactionHash]) return null;
-        return constructSentEtherTransaction(log, getState().loginAccount.address);
-      case 'Transfer':
-        if (getState().transactionsData[log.transactionHash]) return null;
-        return constructTransferTransaction(log, getState().loginAccount.address);
-      case 'marketCreated': {
-        if (log.description) return constructMarketCreatedTransaction(log, log.description, dispatch);
-        const market = dispatch(loadDataForMarketTransaction(label, log, isRetry, callback));
-        if (!market || !market.description) break;
-        return constructMarketCreatedTransaction(log, market.description, dispatch);
-      }
-      case 'payout':
-      case 'tradingFeeUpdated': {
-        const market = dispatch(loadDataForMarketTransaction(label, log, isRetry, callback));
-        if (!market || !market.description) break;
-        return dispatch(constructMarketTransaction(label, log, market));
-      }
-      case 'penalize':
-      case 'slashedRep':
-      case 'submittedReport':
-      case 'submittedReportHash': {
-        const aux = dispatch(loadDataForReportingTransaction(label, log, isRetry, callback));
-        if (!aux) break;
-        return dispatch(constructReportingTransaction(label, log, aux.marketID, aux.market, aux.outcomes));
-      }
-      default:
-        return constructDefaultTransaction(label, log);
+export const constructTransaction = (label, log, isRetry, callback) => (dispatch, getState) => {
+  switch (label) {
+    case 'Approval':
+      return constructApprovalTransaction(log);
+    case 'collectedFees':
+      return constructCollectedFeesTransaction(log);
+    case 'deposit':
+      return constructDepositTransaction(log);
+    case 'fundedAccount':
+      return constructFundedAccountTransaction(log);
+    case 'penalizationCaughtUp':
+      return constructPenalizationCaughtUpTransaction(log);
+    case 'registration':
+      return constructRegistrationTransaction(log);
+    case 'withdraw':
+      return constructWithdrawTransaction(log);
+    case 'sentCash':
+      if (getState().transactionsData[log.transactionHash]) return null;
+      return constructSentCashTransaction(log, getState().loginAccount.address);
+    case 'sentEther':
+      if (getState().transactionsData[log.transactionHash]) return null;
+      return constructSentEtherTransaction(log, getState().loginAccount.address);
+    case 'Transfer':
+      if (getState().transactionsData[log.transactionHash]) return null;
+      return constructTransferTransaction(log, getState().loginAccount.address);
+    case 'marketCreated': {
+      if (log.description) return constructMarketCreatedTransaction(log, log.description, dispatch);
+      const market = dispatch(loadDataForMarketTransaction(label, log, isRetry, callback));
+      if (!market || !market.description) break;
+      return constructMarketCreatedTransaction(log, market.description, dispatch);
     }
-  };
-}
+    case 'payout':
+    case 'tradingFeeUpdated': {
+      const market = dispatch(loadDataForMarketTransaction(label, log, isRetry, callback));
+      if (!market || !market.description) break;
+      return dispatch(constructMarketTransaction(label, log, market));
+    }
+    case 'penalize':
+    case 'slashedRep':
+    case 'submittedReport':
+    case 'submittedReportHash': {
+      const aux = dispatch(loadDataForReportingTransaction(label, log, isRetry, callback));
+      if (!aux) break;
+      return dispatch(constructReportingTransaction(label, log, aux.marketID, aux.market, aux.outcomes));
+    }
+    default:
+      return constructDefaultTransaction(label, log);
+  }
+};

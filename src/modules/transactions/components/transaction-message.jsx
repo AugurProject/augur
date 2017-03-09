@@ -118,7 +118,7 @@ TransactionMessage.propTypes = {
   index: React.PropTypes.number,
   type: React.PropTypes.string,
   status: React.PropTypes.string,
-  confirmations: React.PropTypes.number,
+  confirmations: React.PropTypes.object,
   data: React.PropTypes.object,
   description: React.PropTypes.string,
   shares: React.PropTypes.object,
