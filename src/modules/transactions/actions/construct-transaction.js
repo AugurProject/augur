@@ -12,21 +12,18 @@ import { updateEventsWithAccountReportData } from '../../my-reports/actions/upda
 
 export function loadDataForMarketTransaction(label, log, isRetry, callback) {
   return (dispatch, getState) => {
-    console.debug('loadDataForMarketTransaction', label, log, isRetry);
     const marketID = log.marketID || log.market;
     const market = getState().marketsData[marketID];
     if (!market || !market.description) {
       if (isRetry) return callback(log);
       return dispatch(loadMarketThenRetryConversion(marketID, label, log, callback));
     }
-    console.log('loaded data:', market);
     return market;
   };
 }
 
 export function loadDataForReportingTransaction(label, log, isRetry, callback) {
   return (dispatch, getState) => {
-    console.debug('loadDataForReportingTransaction', label, log, isRetry);
     const { marketsData, outcomesData } = getState();
     const eventID = log.event || log.eventID;
     const marketID = selectMarketIDFromEventID(eventID);
@@ -43,11 +40,12 @@ export function loadDataForReportingTransaction(label, log, isRetry, callback) {
   };
 }
 
-export function constructBasicTransaction(hash, status, blockNumber, timestamp, gasFees) {
+export function constructBasicTransaction(hash, status, blockNumber, timestamp, gasFees, confirmations) {
   const transaction = { hash, status };
   if (blockNumber) transaction.blockNumber = formatDate(new Date(blockNumber * 1000));
   if (timestamp) transaction.timestamp = formatDate(new Date(timestamp * 1000));
   if (gasFees) transaction.gasFees = formatRealEther(gasFees);
+  if (confirmations) transaction.confirmations = confirmations;
   return transaction;
 }
 
@@ -405,7 +403,7 @@ export function constructSlashedRepTransaction(log, market, outcomes, address, d
   return transaction;
 }
 
-export function constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, outcomeName, status, dispatch) {
+export function constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, outcomeName, status, currentBlockNumber, dispatch) {
   console.log('constructLogFillTransaction:', trade);
   if (!trade.amount || !trade.price || (!trade.makerFee && !trade.takerFee)) return null;
   const transactionID = `${trade.transactionHash}-${trade.tradeid}`;
@@ -458,13 +456,14 @@ export function constructLogFillTxTransaction(trade, marketID, marketType, minVa
       feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
       totalCost: formattedTotalCost,
       totalReturn: formattedTotalReturn,
-      gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null
+      gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null,
+      confirmations: currentBlockNumber - trade.blockNumber
     }
   };
   return transaction;
 }
 
-export function constructLogShortFillTxTransaction(trade, marketID, marketType, maxValue, description, outcomeID, outcomeName, status, dispatch) {
+export function constructLogShortFillTxTransaction(trade, marketID, marketType, maxValue, description, outcomeID, outcomeName, status, currentBlockNumber, dispatch) {
   const transactionID = `${trade.transactionHash}-${trade.tradeid}`;
   const price = formatEther(trade.price);
   const shares = formatShares(trade.amount);
@@ -497,13 +496,14 @@ export function constructLogShortFillTxTransaction(trade, marketID, marketType, 
       tradingFees: formatEther(tradingFees),
       feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
       totalCost: formatEther(totalCost),
-      gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null
+      gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null,
+      confirmations: currentBlockNumber - trade.blockNumber
     }
   };
   return transaction;
 }
 
-export function constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, market, status, dispatch) {
+export function constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, market, status, currentBlockNumber, dispatch) {
   let type;
   let action;
   if (trade.type === BUY) {
@@ -571,12 +571,13 @@ export function constructLogAddTxTransaction(trade, marketID, marketType, descri
       feePercent: formatPercent(abi.unfix(tradingFees.dividedBy(totalCost).times(constants.ONE).floor()).times(100)),
       totalCost: type === BID ? formatEther(abi.unfix(totalCost)) : undefined,
       totalReturn: type === ASK ? formatEther(abi.unfix(totalReturn)) : undefined,
-      gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null
+      gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null,
+      confirmations: currentBlockNumber - trade.blockNumber
     }
   };
 }
 
-export function constructLogCancelTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status, dispatch) {
+export function constructLogCancelTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status, currentBlockNumber, dispatch) {
   const price = formatEther(trade.price);
   const shares = formatShares(trade.amount);
   const action = trade.inProgress ? 'canceling' : 'canceled';
@@ -600,15 +601,16 @@ export function constructLogCancelTransaction(trade, marketID, marketType, descr
       timestamp: formatDate(new Date(trade.timestamp * 1000)),
       hash: trade.transactionHash,
       totalReturn: trade.inProgress ? null : formatEther(trade.cashRefund),
-      gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null
+      gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null,
+      confirmations: currentBlockNumber - trade.blockNumber
     }
   };
 }
 
 export function constructTradingTransaction(label, trade, marketID, outcomeID, status) {
-  console.log('constructTradingTransaction:', label, trade);
   return (dispatch, getState) => {
-    const { marketsData, outcomesData } = getState();
+    console.log('constructTradingTransaction:', label, trade);
+    const { blockchain, marketsData, outcomesData } = getState();
     const market = marketsData[marketID];
     const marketOutcomesData = outcomesData[marketID];
     const marketType = market.type;
@@ -619,18 +621,19 @@ export function constructTradingTransaction(label, trade, marketID, outcomeID, s
     } else {
       outcomeName = (marketOutcomesData ? marketOutcomesData[outcomeID] : {}).name;
     }
+    const currentBlockNumber = blockchain.currentBlockNumber;
     switch (label) {
       case 'log_fill_tx': {
-        return constructLogFillTxTransaction(trade, marketID, marketType, market.minValue, description, outcomeID, outcomeName, status, dispatch);
+        return constructLogFillTxTransaction(trade, marketID, marketType, market.minValue, description, outcomeID, outcomeName, status, currentBlockNumber, dispatch);
       }
       case 'log_short_fill_tx': {
-        return constructLogShortFillTxTransaction(trade, marketID, marketType, market.maxValue, description, outcomeID, outcomeName, status, dispatch);
+        return constructLogShortFillTxTransaction(trade, marketID, marketType, market.maxValue, description, outcomeID, outcomeName, status, currentBlockNumber, dispatch);
       }
       case 'log_add_tx': {
-        return constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, market, status, dispatch);
+        return constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, market, status, currentBlockNumber, dispatch);
       }
       case 'log_cancel': {
-        return constructLogCancelTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status, dispatch);
+        return constructLogCancelTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status, currentBlockNumber, dispatch);
       }
       default:
         return null;

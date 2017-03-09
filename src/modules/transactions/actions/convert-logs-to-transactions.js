@@ -49,33 +49,36 @@ export function convertTradeLogsToTransactions(label, data, marketID) {
   };
 }
 
-export function convertLogToTransaction(label, log, status, isRetry, cb) {
-  return (dispatch, getState) => {
-    console.log('convertLogToTransaction', label);
-    console.log(log);
-    const callback = cb || (e => e && console.error('convertLogToTransaction:', e));
-    const hash = log.transactionHash;
+export const convertLogToTransaction = (label, log, status, isRetry, cb) => (dispatch, getState) => {
+  console.log('convertLogToTransaction', label);
+  console.log(log);
+  const callback = cb || (e => e && console.error('convertLogToTransaction:', e));
+  const hash = log.transactionHash;
+  if (hash) {
     const transactionData = getState().transactionsData[hash];
     const gasFees = (transactionData && transactionData.gasFees) ? transactionData.gasFees.value : null;
-    if (hash) {
-      const transaction = dispatch(constructTransaction(label, log, isRetry, callback));
-      if (transaction) {
-        dispatch(updateTransactionsData({
-          [hash]: {
-            ...constructBasicTransaction(hash, status, log.blockNumber, log.timestamp, gasFees),
-            ...transaction
-          }
-        }));
-        return callback();
-      }
+    if (log.removed) {
+      // TODO rollback
+      console.debug('!!! log removed:', log);
     }
-  };
-}
+    const transaction = dispatch(constructTransaction(label, log, isRetry, callback));
+    if (transaction) {
+      const { currentBlockNumber } = getState().blockchain;
+      const confirmations = currentBlockNumber - log.blockNumber;
+      console.debug('log confirmations:', confirmations);
+      dispatch(updateTransactionsData({
+        [hash]: {
+          ...constructBasicTransaction(hash, status, log.blockNumber, log.timestamp, gasFees, confirmations),
+          ...transaction
+        }
+      }));
+      return callback();
+    }
+  }
+};
 
-export const convertLogsToTransactions = (label, logs, isRetry) => (
-  (dispatch, getState) => (
-    async.eachSeries(logs, (log, nextLog) => (
-      dispatch(convertLogToTransaction(label, log, SUCCESS, isRetry, nextLog))
-    ), err => (err && console.error(err)))
-  )
+export const convertLogsToTransactions = (label, logs, isRetry) => (dispatch, getState) => (
+  async.eachSeries(logs, (log, nextLog) => (
+    dispatch(convertLogToTransaction(label, log, SUCCESS, isRetry, nextLog))
+  ), err => (err && console.error(err)))
 );
