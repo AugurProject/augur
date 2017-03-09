@@ -1,12 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import testState from 'test/testState';
-import {
-	UPDATE_TRANSACTIONS_DATA
-} from 'modules/transactions/actions/update-transactions-data';
-import {
-	CLEAR_LOGIN_ACCOUNT
-} from 'modules/auth/actions/update-login-account';
 import reducer from 'modules/transactions/reducers/transactions-data';
 
 describe(`modules/transactions/reducers/transactions-data.js`, () => {
@@ -18,7 +12,7 @@ describe(`modules/transactions/reducers/transactions-data.js`, () => {
 
   it(`should update transactions data in state`, () => {
     action = {
-      type: UPDATE_TRANSACTIONS_DATA,
+      type: 'UPDATE_TRANSACTIONS_DATA',
       transactionsData: {
         test: {
           example: 'example'
@@ -28,7 +22,8 @@ describe(`modules/transactions/reducers/transactions-data.js`, () => {
         }
       }
     };
-    out = { ...state.transactionsData,
+    out = {
+      ...state.transactionsData,
       test: {
         example: 'example',
         id: 'test'
@@ -38,20 +33,41 @@ describe(`modules/transactions/reducers/transactions-data.js`, () => {
         id: 'example'
       }
     };
-
     test = reducer(state.transactionsData, action);
-
     assert.deepEqual(test, out, `Didn't update transactionData as expected`);
 
   });
 
+  it(`should delete transaction`, () => {
+    action = {
+      type: 'DELETE_TRANSACTION',
+      transactionID: 'transaction2'
+    };
+    state.transactionsData = {
+      transaction1: {
+        data: 'data1',
+        id: 'transaction1'
+      },
+      transaction2: {
+        data: 'data2',
+        id: 'transaction2'
+      }
+    };
+    test = reducer(state.transactionsData, action);
+    assert.deepEqual(test, {
+      transaction1: {
+        data: 'data1',
+        id: 'transaction1'
+      }
+    }, `Failed to delete transaction as expected`);
+  });
+
   it(`should clear transactions on clear login account`, () => {
     action = {
-      type: CLEAR_LOGIN_ACCOUNT
+      type: 'CLEAR_LOGIN_ACCOUNT'
     };
     out = {};
     test = reducer(state.transactionsData, action);
-
     assert.deepEqual(test, out, `Didn't clear transactionsData when clearing the login account`);
   });
 
