@@ -63,6 +63,7 @@ export default class CreateMarketFormOutcomesScalar extends Component {
 
     const scalarSmallNum = sanitizeValue(scalarSmallNumRaw);
     const scalarBigNum = sanitizeValue(scalarBigNumRaw, 'big');
+    let outcomes = [];
 
     if (scalarBigNumRaw == null && scalarSmallNum !== '') {
       if (scalarBigNum !== '' && scalarSmallNum.greaterThanOrEqualTo(scalarBigNum)) {
@@ -82,11 +83,13 @@ export default class CreateMarketFormOutcomesScalar extends Component {
       this.props.updateValidity(false);
     } else {
       this.props.updateValidity(true);
+      const scalarMidPoint = scalarSmallNum.plus(scalarBigNum).dividedBy(new BigNumber(2));
+      outcomes = [`${scalarMidPoint}`];
     }
 
     this.setState({ errors });
 
-    this.props.updateNewMarket({ scalarSmallNum, scalarBigNum });
+    this.props.updateNewMarket({ scalarSmallNum, scalarBigNum, outcomes });
   }
 
   render() {
