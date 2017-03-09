@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
-import ReactHighcharts from 'react-highcharts';
+import Highcharts from 'highcharts';
+import noData from 'highcharts/modules/no-data-to-display';
 
 import ComponentNav from 'modules/common/components/component-nav';
 import Input from 'modules/common/components/input';
@@ -59,8 +60,7 @@ export default class CreateMarketFormOrderBook extends Component {
       orderBookSorted: {}, // Used in Order Book Table
       orderBookSeries: {}, // Used in Order Book Chart
       minPrice: 0,
-      maxPrice: 1,
-      orderBookChartConfig: {}
+      maxPrice: 1
     };
 
     this.updateChart = this.updateChart.bind(this);
@@ -70,6 +70,43 @@ export default class CreateMarketFormOrderBook extends Component {
     this.updateSeries = this.updateSeries.bind(this);
     this.sortOrderBook = this.sortOrderBook.bind(this);
     this.validateForm = this.validateForm.bind(this);
+  }
+
+  componentDidMount() {
+    noData(Highcharts);
+
+    this.orderBookPreviewChart = new Highcharts.Chart('order_book_preview_chart', {
+      lang: {
+        noData: 'No orders to display'
+      },
+      yAxis: {
+        title: {
+          text: 'Shares'
+        }
+      },
+      xAxis: {
+        title: {
+          text: 'Price'
+        }
+      },
+      series: [
+        {
+          type: 'line',
+          name: 'Bids',
+          step: 'right',
+          data: []
+        },
+        {
+          type: 'line',
+          name: 'Asks',
+          step: 'right',
+          data: []
+        }
+      ],
+      credits: {
+        enabled: false
+      }
+    });
   }
 
   componentWillReceiveProps(nextProps) {
@@ -99,63 +136,33 @@ export default class CreateMarketFormOrderBook extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if ((newMarketCreationOrder[this.props.currentStep] === NEW_MARKET_ORDER_BOOK && prevProps.currentStep !== this.props.currentStep) ||
-      prevState.orderBookSorted !== this.state.orderBookSorted
+      prevState.orderBookSeries !== this.state.orderBookSeries
     ) {
       this.updateChart();
     }
   }
 
   updateChart() {
-    console.log('order book preview element -- ', this.orderBookPreview.clientWidth);
+    const bidSeries = getValue(this.state.orderBookSeries[this.state.selectedOutcome], `${BID}`) || [];
+    const askSeries = getValue(this.state.orderBookSeries[this.state.selectedOutcome], `${ASK}`) || [];
 
-    const bidSeries = getValue(this.state.orderBookSeries[this.state.selectedOutcome], `${BID}`);
-    const askSeries = getValue(this.state.orderBookSeries[this.state.selectedOutcome], `${ASK}`);
-
-    console.log('series -- ', bidSeries, askSeries);
-
-    const orderBookChartConfig = {
+    this.orderBookPreviewChart.update({
       title: {
         text: `${this.state.selectedOutcome}: Depth Chart`
       },
       chart: {
         height: 400,
         width: this.orderBookPreview.clientWidth * 0.66
-      },
-      series: [
-        {
-          type: 'line',
-          name: 'Bids',
-          step: 'right',
-          data: bidSeries
-        },
-        {
-          type: 'line',
-          name: 'Asks',
-          step: 'right',
-          data: askSeries
-        }
-      ],
-      yAxis: {
-        title: {
-          text: 'Shares'
-        }
-      },
-      xAxis: {
-        title: {
-          text: 'Price'
-        }
-      },
-      credits: {
-        enabled: false
       }
-    };
+    }, false);
 
-    this.setState({ orderBookChartConfig });
+    this.orderBookPreviewChart.series[0].setData(bidSeries, false);
+    this.orderBookPreviewChart.series[1].setData(askSeries, false);
+
+    this.orderBookPreviewChart.redraw();
   }
 
   updatePriceBounds(type, selectedOutcome, selectedSide, orderBook, scalarSmallNum, scalarBigNum) {
-    console.log('updatePriceBounds -- ', type, selectedOutcome, selectedSide, orderBook, scalarSmallNum, scalarBigNum);
-
     const oppositeSide = selectedSide === BID ? ASK : BID;
     const ZERO = new BigNumber(0);
     const ONE = new BigNumber(1);
@@ -207,13 +214,6 @@ export default class CreateMarketFormOrderBook extends Component {
         maxPrice = ONE;
       }
     }
-
-    console.log('### Price Bounds -- ',
-      minPrice,
-      minPrice instanceof BigNumber && minPrice.toNumber(),
-      maxPrice,
-      maxPrice instanceof BigNumber && maxPrice.toNumber()
-    );
 
     this.setState({ minPrice, maxPrice });
   }
@@ -267,8 +267,6 @@ export default class CreateMarketFormOrderBook extends Component {
       Object.keys(orderBook[outcome]).forEach((type) => {
         if (p[outcome][type] == null) p[outcome][type] = [];
 
-        console.log('updateSeries -- ', orderBook[outcome][type]);
-
         let totalQuantity = orderBook[outcome][type].reduce((p, order) => p.plus(order.quantity), new BigNumber(0));
 
         orderBook[outcome][type].forEach((order) => {
@@ -284,8 +282,6 @@ export default class CreateMarketFormOrderBook extends Component {
   }
 
   validateForm(orderQuantityRaw, orderPriceRaw) {
-    console.log('### validateFrom -- ', orderQuantityRaw, orderPriceRaw);
-
     const sanitizeValue = (value, type) => {
       if (value == null) {
         if (type === 'quantity') {
@@ -302,15 +298,6 @@ export default class CreateMarketFormOrderBook extends Component {
     const orderQuantity = sanitizeValue(orderQuantityRaw, 'quantity');
     const orderPrice = sanitizeValue(orderPriceRaw);
 
-    console.log('### sanitized values to validate -- ',
-      orderQuantity,
-      orderQuantity instanceof BigNumber && orderQuantity.toNumber(),
-      orderPrice,
-      orderPrice instanceof BigNumber && orderPrice.toNumber(),
-      this.state.minPrice.toNumber(),
-      this.state.maxPrice.toNumber()
-    );
-
     const errors = {
       quantity: [],
       price: []
@@ -323,8 +310,6 @@ export default class CreateMarketFormOrderBook extends Component {
     } else if (orderPrice !== '') {
       const bids = getValue(this.state.orderBookSorted[this.state.selectedOutcome], `${BID}`);
       const asks = getValue(this.state.orderBookSorted[this.state.selectedOutcome], `${ASK}`);
-
-      console.log(bids, asks);
 
       if (this.props.type !== SCALAR) {
         if (this.state.selectedNav === BID && asks && asks.length && orderPrice.greaterThan(asks[0].price)) {
@@ -366,45 +351,8 @@ export default class CreateMarketFormOrderBook extends Component {
     const s = this.state;
 
     const errors = [...s.errors.quantity, ...s.errors.price]; // Joined since only one input can be in an error state at a time
-    // const bidSeries = getValue(s.orderBookSeries[s.selectedOutcome], `${BID}`);
-    // const askSeries = getValue(s.orderBookSeries[s.selectedOutcome], `${ASK}`);
     const bids = getValue(s.orderBookSorted[s.selectedOutcome], `${BID}`);
     const asks = getValue(s.orderBookSorted[s.selectedOutcome], `${ASK}`);
-    // const depthChartConfiguration = {
-    //   title: {
-    //     text: `${s.selectedOutcome}: Depth Chart`
-    //   },
-    //   chart: {
-    //     height: '100%'
-    //   },
-    //   series: [
-    //     {
-    //       type: 'line',
-    //       name: 'Bids',
-    //       step: 'right',
-    //       data: bidSeries
-    //     },
-    //     {
-    //       type: 'line',
-    //       name: 'Asks',
-    //       step: 'right',
-    //       data: askSeries
-    //     }
-    //   ],
-    //   yAxis: {
-    //     title: {
-    //       text: 'Shares'
-    //     }
-    //   },
-    //   xAxis: {
-    //     title: {
-    //       text: 'Price'
-    //     }
-    //   },
-    //   credits: {
-    //     enabled: false
-    //   }
-    // };
 
     return (
       <article className={`create-market-form-part create-market-form-order-book ${p.className || ''}`}>
@@ -492,10 +440,8 @@ export default class CreateMarketFormOrderBook extends Component {
                 ref={(orderBookPreview) => { this.orderBookPreview = orderBookPreview; }}
                 className="order-book-preview"
               >
-                <div id="order_book_preview_chart" />
-                <ReactHighcharts
-                  config={s.orderBookChartConfig}
-                  isPureConfig
+                <div
+                  id="order_book_preview_chart"
                 />
                 <div className="order-book-preview-table">
                   <div className="order-book-preview-table-header">
