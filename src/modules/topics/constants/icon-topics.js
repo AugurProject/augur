@@ -31,7 +31,7 @@ const fontAwesomeIcons = {
   'fa-inr': ['inr', 'rupee', 'rupees'],
   'fa-superscript': ['math', 'mathematics', 'maths'],
   'fa-apple': ['apple', 'mac', 'osx', 'ios', 'ipad', 'steve jobs', 'tim cook'],
-  'fa-futbol-o': ['futbol', 'soccer', 'world cup', 'football', 'sports'],
+  'fa-futbol-o': ['futbol', 'soccer', 'world cup', 'sports'],
   'fa-shield': ['defense', 'national defense', 'military'],
   'fa-motorcycle': ['travel', 'traveling', 'motorcycles'],
   'fa-pie-chart': ['data', 'big data', 'analytics', 'statistics'],
@@ -58,14 +58,23 @@ const fontAwesomeIcons = {
   'fa-at': ['email', 'emails', 'e-mail', 'e-mails', 'identity', 'names'],
   'fa-code': ['coding', 'programming', 'programmers', 'software', 'development', 'developers'],
   'fa-eye': ['surveillance', 'big brother', 'nsa', 'national security agency', 'snowden'],
-  'fa-font-awesome': ['capture the flag', 'ctf', 'flag football', 'golf', 'frisbee golf'],
+  'fa-font-awesome': ['capture the flag', 'ctf', 'flag football', 'frisbee golf'],
   'fa-compress': ['debates', 'arguments', 'conflicts', 'fights', 'war', 'wars', 'fighting', 'calexit'],
+  'fa-flag-o': ['France', 'USA', 'United States', 'UK', 'United Kingdom', 'Spain', 'Portugal', 'China', 'Russia', 'Australia', 'Canada', 'New Zealand', 'Japan'],
+  'fa-smile-o': ['happy', 'pleasure']
 };
 
 const icofontIcons = {
   'icofont-people': ['elections', 'politics'],
   'icofont-rocket-alt-2': ['space', 'space program', 'rocket', 'nasa', 'spacex'],
-  'icofont-tractor': ['agriculture', 'farming', 'GMO']
+  'icofont-tractor': ['agriculture', 'farming', 'GMO'],
+  'icofont-growth': ['market', 'markets', 'exchange'],
+  'icofont-excavator': ['construction'],
+  'icofont-bull-dozer': ['demolition'],
+  'icofont-basketball': ['basketball'],
+  'icofont-rugby': ['rugby', 'football', 'american football'],
+  'icofont-baseball': ['baseball'],
+  'icofont-motor-bike': ['motorcycles', 'motorcycling', 'bikers']
 };
 
 const iconTopics = {
