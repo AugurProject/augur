@@ -57,9 +57,12 @@ export default class CreateMarketFormOrderBook extends Component {
       orderPrice: '',
       orderQuantity: '',
       orderBookSorted: {}, // Used in Order Book Table
-      orderBookSeries: {} // Used in Order Book Chart
+      orderBookSeries: {}, // Used in Order Book Chart
+      minPrice: 0,
+      maxPrice: 1
     };
 
+    this.updatePriceBounds = this.updatePriceBounds.bind(this);
     this.handleAddOrder = this.handleAddOrder.bind(this);
     // this.handleRemoveOrder = this.handleRemoveOrder.bind(this);
     this.updateSeries = this.updateSeries.bind(this);
@@ -78,8 +81,91 @@ export default class CreateMarketFormOrderBook extends Component {
     if (this.props.orderBook !== nextProps.orderBook) this.sortOrderBook(nextProps.orderBook);
   }
 
+  componentWillUpdate(nextProps, nextState) {
+    if (this.state.orderBookSorted !== nextState.orderBookSorted) this.updateSeries(nextState.orderBookSorted);
+
+    if (this.props.type !== nextProps.type ||
+      this.props.scalarSmallNum !== nextProps.scalarSmallNum ||
+      this.props.scalarBigNum !== nextProps.scalarBigNum ||
+      this.state.selectedSide !== nextState.selectedSide ||
+      this.state.selectedNav !== nextState.selectedNav ||
+      this.state.orderBookSorted !== nextState.orderBookSorted
+    ) {
+      this.updatePriceBounds(nextProps.type, nextState.selectedOutcome, nextState.selectedNav, nextState.orderBookSorted, nextProps.scalarSmallNum, nextProps.scalarBigNum);
+    }
+  }
+
+  updatePriceBounds(type, selectedOutcome, selectedSide, orderBook, scalarSmallNum, scalarBigNum) {
+    console.log('updatePriceBounds -- ', type, selectedOutcome, selectedSide, orderBook, scalarSmallNum, scalarBigNum);
+
+    const oppositeSide = selectedSide === BID ? ASK : BID;
+    const ZERO = new BigNumber(0);
+    const ONE = new BigNumber(1);
+    let minPrice;
+    let maxPrice;
+
+    if (selectedOutcome != null) {
+      if (type === SCALAR) {
+        if (selectedSide === BID) {
+          // Minimum Price
+          minPrice = scalarSmallNum;
+
+          // Maximum Price
+          if (orderBook[selectedOutcome] && orderBook[selectedOutcome][oppositeSide] && orderBook[selectedOutcome][oppositeSide].length) {
+            maxPrice = orderBook[selectedOutcome][oppositeSide][0].price;
+          } else {
+            maxPrice = scalarBigNum;
+          }
+        } else {
+          // Minimum Price
+          if (orderBook[selectedOutcome] && orderBook[selectedOutcome][oppositeSide] && orderBook[selectedOutcome][oppositeSide].length) {
+            minPrice = orderBook[selectedOutcome][oppositeSide][0].price;
+          } else {
+            minPrice = scalarSmallNum;
+          }
+
+          // Maximum Price
+          maxPrice = scalarBigNum;
+        }
+      } else if (selectedSide === BID) {
+        // Minimum Price
+        minPrice = ZERO;
+
+        // Maximum Price
+        if (orderBook[selectedOutcome] && orderBook[selectedOutcome][oppositeSide] && orderBook[selectedOutcome][oppositeSide].length) {
+          maxPrice = orderBook[selectedOutcome][oppositeSide][0].price;
+        } else {
+          maxPrice = ONE;
+        }
+      } else {
+        // Minimum Price
+        if (orderBook[selectedOutcome] && orderBook[selectedOutcome][oppositeSide] && orderBook[selectedOutcome][oppositeSide].length) {
+          minPrice = orderBook[selectedOutcome][oppositeSide][0].price;
+        } else {
+          minPrice = ZERO;
+        }
+
+        // Maximum Price
+        maxPrice = ONE;
+      }
+    }
+
+    console.log('### Price Bounds -- ',
+      minPrice,
+      minPrice instanceof BigNumber && minPrice.toNumber(),
+      maxPrice,
+      maxPrice instanceof BigNumber && maxPrice.toNumber()
+    );
+
+    this.setState({ minPrice, maxPrice });
+  }
+
   handleAddOrder() {
-    this.setState({ orderPrice: '', orderQuantity: '' }); // Clear Inputs
+    // Clear Inputs
+    this.setState({ orderPrice: '', orderQuantity: '' }, () => {
+      this.validateForm();
+    });
+
     // TODO -- refocus first input
 
     this.props.addOrderToNewMarket({
@@ -123,11 +209,13 @@ export default class CreateMarketFormOrderBook extends Component {
       Object.keys(orderBook[outcome]).forEach((type) => {
         if (p[outcome][type] == null) p[outcome][type] = [];
 
-        let totalQuantity = orderBook[outcome][type].reduce((p, order) => p + order.quantity, 0);
+        console.log('updateSeries -- ', orderBook[outcome][type]);
+
+        let totalQuantity = orderBook[outcome][type].reduce((p, order) => p.plus(order.quantity), new BigNumber(0));
 
         orderBook[outcome][type].forEach((order) => {
-          p[outcome][type].push([order.price, totalQuantity]);
-          totalQuantity -= order.quantity;
+          p[outcome][type].push([order.price.toNumber(), totalQuantity.toNumber()]);
+          totalQuantity = totalQuantity.minus(order.quantity);
         });
       });
 
@@ -137,11 +225,33 @@ export default class CreateMarketFormOrderBook extends Component {
     this.setState({ orderBookSeries });
   }
 
-  validateForm(orderQuantityRaw = this.state.orderQuantity, orderPriceRaw = this.state.orderPrice) {
+  validateForm(orderQuantityRaw, orderPriceRaw) {
     console.log('### validateFrom -- ', orderQuantityRaw, orderPriceRaw);
 
-    let orderQuantity = orderQuantityRaw instanceof BigNumber ? orderQuantityRaw.toNumber() : parseFloat(orderQuantityRaw || 0);
-    let orderPrice = orderPriceRaw instanceof BigNumber ? orderPriceRaw.toNumber() : parseFloat(orderPriceRaw || 0);
+    const sanitizeValue = (value, type) => {
+      if (value == null) {
+        if (type === 'quantity') {
+          return this.state.orderQuantity;
+        }
+        return this.state.orderPrice;
+      } else if (!(value instanceof BigNumber) && value !== '') {
+        return new BigNumber(value);
+      }
+
+      return value;
+    };
+
+    const orderQuantity = sanitizeValue(orderQuantityRaw, 'quantity');
+    const orderPrice = sanitizeValue(orderPriceRaw);
+
+    console.log('### sanitized values to validate -- ',
+      orderQuantity,
+      orderQuantity instanceof BigNumber && orderQuantity.toNumber(),
+      orderPrice,
+      orderPrice instanceof BigNumber && orderPrice.toNumber(),
+      this.state.minPrice.toNumber(),
+      this.state.maxPrice.toNumber()
+    );
 
     const errors = {
       quantity: [],
@@ -149,18 +259,8 @@ export default class CreateMarketFormOrderBook extends Component {
     };
     let isOrderValid;
 
-    // Basic Validations
-    if (orderQuantityRaw === '') {
-      orderQuantity = '';
-      isOrderValid = false;
-    }
-    if (orderPriceRaw === '') {
-      orderPrice = '';
-      isOrderValid = false;
-    }
-
     // Validate Quantity
-    if (orderQuantity !== '' && orderQuantity <= 0) {
+    if (orderQuantity !== '' && orderQuantity.lessThan(new BigNumber(0))) {
       errors.quantity.push('Quantity must be positive');
     }
 
@@ -172,18 +272,33 @@ export default class CreateMarketFormOrderBook extends Component {
       console.log(bids, asks);
 
       if (this.props.type !== SCALAR) {
-        if (orderPrice > 1) {
+        const ZERO = new BigNumber(0);
+        const ONE = new BigNumber(1);
+
+        if (orderPrice.greaterThan(ONE)) {
           errors.price.push('Price cannot exceed 1');
-        } else if (orderPrice < 0) {
+        } else if (orderPrice.lessThan(ZERO)) {
           errors.price.push('Price cannot be below 0');
-        } else if (this.state.selectedNav === BID && asks && asks.length && orderPrice > asks[0].price) {
-          errors.price.push(`Price must be less than best ask price of: ${asks[0].price}`);
-        } else if (this.state.selectedNav === ASK && bids && bids.length && orderPrice < bids[0].price) {
-          errors.price.push(`Price must be greater than best bid price of: ${bids[0].price}`);
+        } else if (this.state.selectedNav === BID && asks && asks.length && orderPrice.greaterThan(asks[0].price)) {
+          errors.price.push(`Price must be less than best ask price of: ${asks[0].price.toNumber()}`);
+        } else if (this.state.selectedNav === ASK && bids && bids.length && orderPrice.lessThan(bids[0].price)) {
+          errors.price.push(`Price must be greater than best bid price of: ${bids[0].price.toNumber()}`);
         }
-      } else {
-        // TODO
+      } else if (orderPrice.greaterThan(this.state.maxPrice)) {
+        errors.price.push(`Price cannot exceed ${this.state.maxPrice.toNumber()}`);
+      } else if (orderPrice.lessThan(this.state.minPrice)) {
+        errors.price.push(`Price cannot be below ${this.state.minPrice.toNumber()}`);
+      } else if (this.state.selectedNav === BID && asks && asks.length && orderPrice.greaterThan(asks[0].price)) {
+        errors.price.push(`Price must be less than best ask price of: ${asks[0].price.toNumber()}`);
+      } else if (this.state.selectedNav === ASK && bids && bids.length && orderPrice.lessThan(bids[0].price)) {
+        errors.price.push(`Price must be greater than best bid price of: ${bids[0].price.toNumber()}`);
       }
+    }
+
+    if (orderQuantity === '' || orderPrice === '' || errors.quantity.length || errors.price.length) {
+      isOrderValid = false;
+    } else {
+      isOrderValid = true;
     }
 
     this.setState({
@@ -255,6 +370,7 @@ export default class CreateMarketFormOrderBook extends Component {
                         value={s.orderQuantity}
                         isIncrementable
                         incrementAmount={0.1}
+                        min={0}
                         updateValue={quantity => this.validateForm(quantity, undefined)}
                         onChange={quantity => this.validateForm(quantity, undefined)}
                       />
@@ -266,6 +382,8 @@ export default class CreateMarketFormOrderBook extends Component {
                         value={s.orderPrice}
                         isIncrementable
                         incrementAmount={0.1}
+                        min={s.minPrice}
+                        max={s.maxPrice}
                         updateValue={price => this.validateForm(undefined, price)}
                         onChange={price => this.validateForm(undefined, price)}
                       />
