@@ -130,21 +130,18 @@ describe('modules/reports/actions/load-report.js', () => {
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              period: 7,
-              marketID: '0xa1',
-              reportHash: null,
-              reportedOutcomeID: null,
-              salt: null,
-              isUnethical: false,
-              isRevealed: false,
-              isCommitted: false
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          period: 7,
+          marketID: '0xa1',
+          reportHash: null,
+          reportedOutcomeID: null,
+          salt: null,
+          isUnethical: false,
+          isRevealed: false,
+          isCommitted: false
         }
       }]);
     }
@@ -230,21 +227,18 @@ describe('modules/reports/actions/load-report.js', () => {
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              period: 7,
-              marketID: '0xa1',
-              reportHash: null,
-              reportedOutcomeID: null,
-              salt: null,
-              isUnethical: false,
-              isRevealed: false,
-              isCommitted: false
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          period: 7,
+          marketID: '0xa1',
+          reportHash: null,
+          reportedOutcomeID: null,
+          salt: null,
+          isUnethical: false,
+          isRevealed: false,
+          isCommitted: false
         }
       }]);
     }
@@ -316,21 +310,18 @@ describe('modules/reports/actions/load-report.js', () => {
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              period: 7,
-              marketID: '0xa1',
-              reportHash: '0x1e',
-              isUnethical: false,
-              reportedOutcomeID: null,
-              salt: null,
-              isRevealed: false,
-              isCommitted: true
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          period: 7,
+          marketID: '0xa1',
+          reportHash: '0x1e',
+          isUnethical: false,
+          reportedOutcomeID: null,
+          salt: null,
+          isRevealed: false,
+          isCommitted: true
         }
       }]);
     }
@@ -416,21 +407,18 @@ describe('modules/reports/actions/load-report.js', () => {
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              period: 7,
-              marketID: '0xa1',
-              reportHash: '0x1e',
-              isUnethical: false,
-              reportedOutcomeID: null,
-              salt: null,
-              isRevealed: false,
-              isCommitted: true
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          period: 7,
+          marketID: '0xa1',
+          reportHash: '0x1e',
+          isUnethical: false,
+          reportedOutcomeID: null,
+          salt: null,
+          isRevealed: false,
+          isCommitted: true
         }
       }]);
     }
@@ -502,22 +490,19 @@ describe('modules/reports/actions/load-report.js', () => {
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              period: 7,
-              marketID: '0xa1',
-              reportHash: '0x1e',
-              isUnethical: false,
-              reportedOutcomeID: '1',
-              salt: '0x7331',
-              isIndeterminate: false,
-              isRevealed: false,
-              isCommitted: true
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          period: 7,
+          marketID: '0xa1',
+          reportHash: '0x1e',
+          isUnethical: false,
+          reportedOutcomeID: '1',
+          salt: '0x7331',
+          isIndeterminate: false,
+          isRevealed: false,
+          isCommitted: true
         }
       }]);
     }
@@ -589,22 +574,19 @@ describe('modules/reports/actions/load-report.js', () => {
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              period: 7,
-              marketID: '0xa1',
-              isUnethical: false,
-              reportedOutcomeID: '1',
-              reportHash: null,
-              salt: null,
-              isIndeterminate: false,
-              isRevealed: true,
-              isCommitted: true
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          period: 7,
+          marketID: '0xa1',
+          isUnethical: false,
+          reportedOutcomeID: '1',
+          reportHash: null,
+          salt: null,
+          isIndeterminate: false,
+          isRevealed: true,
+          isCommitted: true
         }
       }]);
     }
@@ -676,22 +658,19 @@ describe('modules/reports/actions/load-report.js', () => {
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              period: 7,
-              marketID: '0xa1',
-              isUnethical: false,
-              isIndeterminate: false,
-              reportedOutcomeID: '1',
-              reportHash: null,
-              salt: null,
-              isRevealed: true,
-              isCommitted: true
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          period: 7,
+          marketID: '0xa1',
+          isUnethical: false,
+          isIndeterminate: false,
+          reportedOutcomeID: '1',
+          reportHash: null,
+          salt: null,
+          isRevealed: true,
+          isCommitted: true
         }
       }]);
     }
@@ -763,22 +742,19 @@ describe('modules/reports/actions/load-report.js', () => {
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              period: 7,
-              marketID: '0xa1',
-              isUnethical: false,
-              reportedOutcomeID: '1',
-              reportHash: null,
-              salt: null,
-              isIndeterminate: false,
-              isRevealed: true,
-              isCommitted: true
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          period: 7,
+          marketID: '0xa1',
+          isUnethical: false,
+          reportedOutcomeID: '1',
+          reportHash: null,
+          salt: null,
+          isIndeterminate: false,
+          isRevealed: true,
+          isCommitted: true
         }
       }]);
     }

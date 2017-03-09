@@ -66,24 +66,22 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         eventID: '0xe1',
         isLocked: true
       }, {
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              marketID: '0xa1',
-              period: 7,
-              reportedOutcomeID: '1',
-              isCategorical: false,
-              isScalar: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              salt: '0x1337',
-              reportHash: '0xdeadbeef',
-              isCommitted: false,
-              isRevealed: false
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          eventID: '0xe1',
+          marketID: '0xa1',
+          period: 7,
+          reportedOutcomeID: '1',
+          isCategorical: false,
+          isScalar: false,
+          isIndeterminate: false,
+          isUnethical: false,
+          salt: '0x1337',
+          reportHash: '0xdeadbeef',
+          isCommitted: false,
+          isRevealed: false
         }
       }, {
         type: 'AUGURJS_SUBMIT_REPORT_HASH',
@@ -101,14 +99,11 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         eventID: '0xe1',
         isLocked: false
       }, {
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              isCommitted: true
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          isCommitted: true
         }
       }, {
         type: 'NEXT_REPORT_PAGE'
@@ -145,24 +140,22 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         eventID: '0xe1',
         isLocked: true
       }, {
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              period: 7,
-              marketID: '0xa1',
-              reportHash: '0xdeadbeef',
-              reportedOutcomeID: '2',
-              salt: '0x1337',
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: false,
-              isRevealed: false,
-              isCategorical: false,
-              isScalar: false
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          eventID: '0xe1',
+          period: 7,
+          marketID: '0xa1',
+          reportHash: '0xdeadbeef',
+          reportedOutcomeID: '2',
+          salt: '0x1337',
+          isIndeterminate: false,
+          isUnethical: false,
+          isCommitted: false,
+          isRevealed: false,
+          isCategorical: false,
+          isScalar: false
         }
       }, {
         type: 'AUGURJS_SUBMIT_REPORT_HASH',
@@ -180,14 +173,11 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         eventID: '0xe1',
         isLocked: false
       }, {
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              isCommitted: true
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          isCommitted: true
         }
       }, {
         type: 'NEXT_REPORT_PAGE'
@@ -224,24 +214,22 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         eventID: '0xe1',
         isLocked: true
       }, {
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              period: 7,
-              marketID: '0xa1',
-              reportHash: '0xdeadbeef',
-              reportedOutcomeID: '5',
-              salt: '0x1337',
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: false,
-              isRevealed: false,
-              isCategorical: true,
-              isScalar: false
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          eventID: '0xe1',
+          period: 7,
+          marketID: '0xa1',
+          reportHash: '0xdeadbeef',
+          reportedOutcomeID: '5',
+          salt: '0x1337',
+          isIndeterminate: false,
+          isUnethical: false,
+          isCommitted: false,
+          isRevealed: false,
+          isCategorical: true,
+          isScalar: false
         }
       }, {
         type: 'AUGURJS_SUBMIT_REPORT_HASH',
@@ -259,14 +247,11 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         eventID: '0xe1',
         isLocked: false
       }, {
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              isCommitted: true
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          isCommitted: true
         }
       }, {
         type: 'NEXT_REPORT_PAGE'
@@ -303,24 +288,22 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         eventID: '0xe1',
         isLocked: true
       }, {
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              period: 7,
-              marketID: '0xa1',
-              reportHash: '0xdeadbeef',
-              reportedOutcomeID: '1.2345',
-              salt: '0x1337',
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: false,
-              isRevealed: false,
-              isCategorical: false,
-              isScalar: true
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          eventID: '0xe1',
+          period: 7,
+          marketID: '0xa1',
+          reportHash: '0xdeadbeef',
+          reportedOutcomeID: '1.2345',
+          salt: '0x1337',
+          isIndeterminate: false,
+          isUnethical: false,
+          isCommitted: false,
+          isRevealed: false,
+          isCategorical: false,
+          isScalar: true
         }
       }, {
         type: 'AUGURJS_SUBMIT_REPORT_HASH',
@@ -338,14 +321,11 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         eventID: '0xe1',
         isLocked: false
       }, {
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              isCommitted: true
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          isCommitted: true
         }
       }, {
         type: 'NEXT_REPORT_PAGE'
@@ -382,24 +362,22 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         eventID: '0xe1',
         isLocked: true
       }, {
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              period: 7,
-              marketID: '0xa1',
-              reportHash: '0xdeadbeef',
-              reportedOutcomeID: '1.2345',
-              salt: '0x1337',
-              isIndeterminate: false,
-              isUnethical: true,
-              isCommitted: false,
-              isRevealed: false,
-              isCategorical: false,
-              isScalar: true
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          eventID: '0xe1',
+          period: 7,
+          marketID: '0xa1',
+          reportHash: '0xdeadbeef',
+          reportedOutcomeID: '1.2345',
+          salt: '0x1337',
+          isIndeterminate: false,
+          isUnethical: true,
+          isCommitted: false,
+          isRevealed: false,
+          isCategorical: false,
+          isScalar: true
         }
       }, {
         type: 'AUGURJS_SUBMIT_REPORT_HASH',
@@ -417,14 +395,11 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         eventID: '0xe1',
         isLocked: false
       }, {
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              isCommitted: true
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          isCommitted: true
         }
       }, {
         type: 'NEXT_REPORT_PAGE'
@@ -461,24 +436,22 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         eventID: '0xe1',
         isLocked: true
       }, {
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              period: 7,
-              marketID: '0xa1',
-              reportHash: '0xdeadbeef',
-              reportedOutcomeID: '1.5',
-              salt: '0x1337',
-              isIndeterminate: true,
-              isUnethical: false,
-              isCommitted: false,
-              isRevealed: false,
-              isCategorical: false,
-              isScalar: false
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          eventID: '0xe1',
+          period: 7,
+          marketID: '0xa1',
+          reportHash: '0xdeadbeef',
+          reportedOutcomeID: '1.5',
+          salt: '0x1337',
+          isIndeterminate: true,
+          isUnethical: false,
+          isCommitted: false,
+          isRevealed: false,
+          isCategorical: false,
+          isScalar: false
         }
       }, {
         type: 'AUGURJS_SUBMIT_REPORT_HASH',
@@ -496,14 +469,11 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         eventID: '0xe1',
         isLocked: false
       }, {
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              isCommitted: true
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          isCommitted: true
         }
       }, {
         type: 'NEXT_REPORT_PAGE'
@@ -540,24 +510,22 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         eventID: '0xe1',
         isLocked: true
       }, {
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              period: 7,
-              marketID: '0xa1',
-              reportHash: '0xdeadbeef',
-              reportedOutcomeID: '1.5',
-              salt: '0x1337',
-              isIndeterminate: true,
-              isUnethical: false,
-              isCommitted: false,
-              isRevealed: false,
-              isCategorical: true,
-              isScalar: false
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          eventID: '0xe1',
+          period: 7,
+          marketID: '0xa1',
+          reportHash: '0xdeadbeef',
+          reportedOutcomeID: '1.5',
+          salt: '0x1337',
+          isIndeterminate: true,
+          isUnethical: false,
+          isCommitted: false,
+          isRevealed: false,
+          isCategorical: true,
+          isScalar: false
         }
       }, {
         type: 'AUGURJS_SUBMIT_REPORT_HASH',
@@ -575,14 +543,11 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         eventID: '0xe1',
         isLocked: false
       }, {
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              isCommitted: true
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          isCommitted: true
         }
       }, {
         type: 'NEXT_REPORT_PAGE'
@@ -619,24 +584,22 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         eventID: '0xe1',
         isLocked: true
       }, {
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              period: 7,
-              marketID: '0xa1',
-              reportHash: '0xdeadbeef',
-              reportedOutcomeID: '1.500000000000000001',
-              salt: '0x1337',
-              isIndeterminate: true,
-              isUnethical: false,
-              isCommitted: false,
-              isRevealed: false,
-              isCategorical: false,
-              isScalar: true
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          eventID: '0xe1',
+          period: 7,
+          marketID: '0xa1',
+          reportHash: '0xdeadbeef',
+          reportedOutcomeID: '1.500000000000000001',
+          salt: '0x1337',
+          isIndeterminate: true,
+          isUnethical: false,
+          isCommitted: false,
+          isRevealed: false,
+          isCategorical: false,
+          isScalar: true
         }
       }, {
         type: 'AUGURJS_SUBMIT_REPORT_HASH',
@@ -654,14 +617,11 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         eventID: '0xe1',
         isLocked: false
       }, {
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              isCommitted: true
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          isCommitted: true
         }
       }, {
         type: 'NEXT_REPORT_PAGE'
@@ -698,24 +658,22 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         eventID: '0xe1',
         isLocked: true
       }, {
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              period: 7,
-              marketID: '0xa1',
-              reportHash: '0xdeadbeef',
-              reportedOutcomeID: '1.5',
-              salt: '0x1337',
-              isIndeterminate: true,
-              isUnethical: true,
-              isCommitted: false,
-              isRevealed: false,
-              isCategorical: false,
-              isScalar: false
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          eventID: '0xe1',
+          period: 7,
+          marketID: '0xa1',
+          reportHash: '0xdeadbeef',
+          reportedOutcomeID: '1.5',
+          salt: '0x1337',
+          isIndeterminate: true,
+          isUnethical: true,
+          isCommitted: false,
+          isRevealed: false,
+          isCategorical: false,
+          isScalar: false
         }
       }, {
         type: 'AUGURJS_SUBMIT_REPORT_HASH',
@@ -733,14 +691,11 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         eventID: '0xe1',
         isLocked: false
       }, {
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              isCommitted: true
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          isCommitted: true
         }
       }, {
         type: 'NEXT_REPORT_PAGE'
@@ -777,24 +732,22 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         eventID: '0xe1',
         isLocked: true
       }, {
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              period: 7,
-              marketID: '0xa1',
-              reportHash: '0xdeadbeef',
-              reportedOutcomeID: '1.5',
-              salt: '0x1337',
-              isIndeterminate: true,
-              isUnethical: true,
-              isCommitted: false,
-              isRevealed: false,
-              isCategorical: true,
-              isScalar: false
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          eventID: '0xe1',
+          period: 7,
+          marketID: '0xa1',
+          reportHash: '0xdeadbeef',
+          reportedOutcomeID: '1.5',
+          salt: '0x1337',
+          isIndeterminate: true,
+          isUnethical: true,
+          isCommitted: false,
+          isRevealed: false,
+          isCategorical: true,
+          isScalar: false
         }
       }, {
         type: 'AUGURJS_SUBMIT_REPORT_HASH',
@@ -812,14 +765,11 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         eventID: '0xe1',
         isLocked: false
       }, {
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              isCommitted: true
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          isCommitted: true
         }
       }, {
         type: 'NEXT_REPORT_PAGE'
@@ -856,24 +806,22 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         eventID: '0xe1',
         isLocked: true
       }, {
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              period: 7,
-              marketID: '0xa1',
-              reportHash: '0xdeadbeef',
-              reportedOutcomeID: '1.500000000000000001',
-              salt: '0x1337',
-              isIndeterminate: true,
-              isUnethical: true,
-              isCommitted: false,
-              isRevealed: false,
-              isCategorical: false,
-              isScalar: true
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          eventID: '0xe1',
+          period: 7,
+          marketID: '0xa1',
+          reportHash: '0xdeadbeef',
+          reportedOutcomeID: '1.500000000000000001',
+          salt: '0x1337',
+          isIndeterminate: true,
+          isUnethical: true,
+          isCommitted: false,
+          isRevealed: false,
+          isCategorical: false,
+          isScalar: true
         }
       }, {
         type: 'AUGURJS_SUBMIT_REPORT_HASH',
@@ -891,14 +839,11 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         eventID: '0xe1',
         isLocked: false
       }, {
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              isCommitted: true
-            }
-          }
+        type: 'UPDATE_REPORT',
+        branchID: '0xb1',
+        eventID: '0xe1',
+        report: {
+          isCommitted: true
         }
       }, {
         type: 'NEXT_REPORT_PAGE'
