@@ -168,6 +168,22 @@ export function formatRep(num, opts) {
   );
 }
 
+export function formatConfirmations(num, opts) {
+  return formatNumber(
+    abi.number(num),
+    {
+      decimals: 0,
+      decimalsRounded: 0,
+      denomination: 'confirmations',
+      positiveSign: false,
+      zeroStyled: false,
+      blankZero: false,
+      bigUnitPostfix: false,
+      ...opts
+    }
+  );
+}
+
 export function formatNone() {
   return {
     value: 0,
