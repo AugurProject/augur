@@ -5,7 +5,7 @@ import ReactHighcharts from 'react-highcharts';
 
 import ComponentNav from 'modules/common/components/component-nav';
 import Input from 'modules/common/components/input';
-// import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications';
+import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications';
 
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
 import { NEW_MARKET_ORDER_BOOK } from 'modules/create-market/constants/new-market-creation-steps';
@@ -262,36 +262,30 @@ export default class CreateMarketFormOrderBook extends Component {
     // Validate Quantity
     if (orderQuantity !== '' && orderQuantity.lessThan(new BigNumber(0))) {
       errors.quantity.push('Quantity must be positive');
-    }
-
-    // Validate Price
-    if (orderPrice !== '') {
+    } else if (orderPrice !== '') {
       const bids = getValue(this.state.orderBookSorted[this.state.selectedOutcome], `${BID}`);
       const asks = getValue(this.state.orderBookSorted[this.state.selectedOutcome], `${ASK}`);
 
       console.log(bids, asks);
 
       if (this.props.type !== SCALAR) {
-        const ZERO = new BigNumber(0);
-        const ONE = new BigNumber(1);
-
-        if (orderPrice.greaterThan(ONE)) {
-          errors.price.push('Price cannot exceed 1');
-        } else if (orderPrice.lessThan(ZERO)) {
-          errors.price.push('Price cannot be below 0');
-        } else if (this.state.selectedNav === BID && asks && asks.length && orderPrice.greaterThan(asks[0].price)) {
+        if (this.state.selectedNav === BID && asks && asks.length && orderPrice.greaterThan(asks[0].price)) {
           errors.price.push(`Price must be less than best ask price of: ${asks[0].price.toNumber()}`);
         } else if (this.state.selectedNav === ASK && bids && bids.length && orderPrice.lessThan(bids[0].price)) {
           errors.price.push(`Price must be greater than best bid price of: ${bids[0].price.toNumber()}`);
+        } else if (orderPrice.greaterThan(this.state.maxPrice)) {
+          errors.price.push('Price cannot exceed 1');
+        } else if (orderPrice.lessThan(this.state.minPrice)) {
+          errors.price.push('Price cannot be below 0');
         }
+      } if (this.state.selectedNav === BID && asks && asks.length && orderPrice.greaterThan(asks[0].price)) {
+        errors.price.push(`Price must be less than best ask price of: ${asks[0].price.toNumber()}`);
+      } else if (this.state.selectedNav === ASK && bids && bids.length && orderPrice.lessThan(bids[0].price)) {
+        errors.price.push(`Price must be greater than best bid price of: ${bids[0].price.toNumber()}`);
       } else if (orderPrice.greaterThan(this.state.maxPrice)) {
         errors.price.push(`Price cannot exceed ${this.state.maxPrice.toNumber()}`);
       } else if (orderPrice.lessThan(this.state.minPrice)) {
         errors.price.push(`Price cannot be below ${this.state.minPrice.toNumber()}`);
-      } else if (this.state.selectedNav === BID && asks && asks.length && orderPrice.greaterThan(asks[0].price)) {
-        errors.price.push(`Price must be less than best ask price of: ${asks[0].price.toNumber()}`);
-      } else if (this.state.selectedNav === ASK && bids && bids.length && orderPrice.lessThan(bids[0].price)) {
-        errors.price.push(`Price must be greater than best bid price of: ${bids[0].price.toNumber()}`);
       }
     }
 
@@ -313,6 +307,7 @@ export default class CreateMarketFormOrderBook extends Component {
     const p = this.props;
     const s = this.state;
 
+    const errors = [...s.errors.quantity, ...s.errors.price]; // Joined since only one input can be in an error state at a time
     const bidSeries = getValue(s.orderBookSeries[s.selectedOutcome], `${BID}`);
     const askSeries = getValue(s.orderBookSeries[s.selectedOutcome], `${ASK}`);
     const bids = getValue(s.orderBookSorted[s.selectedOutcome], `${BID}`);
@@ -388,6 +383,9 @@ export default class CreateMarketFormOrderBook extends Component {
                         onChange={price => this.validateForm(undefined, price)}
                       />
                     </div>
+                    <CreateMarketFormInputNotifications
+                      errors={errors}
+                    />
                     <button
                       className={classNames({ disabled: !s.isOrderValid })}
                       onClick={s.isOrderValid && this.handleAddOrder}
