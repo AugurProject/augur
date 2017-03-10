@@ -20876,6 +20876,17 @@ module.exports={
           "int256"
         ]
       }, 
+      "getCreationBlock": {
+        "inputs": [
+          "market"
+        ], 
+        "label": "Get Creation Block", 
+        "method": "getCreationBlock", 
+        "returns": "number", 
+        "signature": [
+          "int256"
+        ]
+      }, 
       "getCreationTime": {
         "inputs": [
           "market"
@@ -21074,11 +21085,6 @@ module.exports={
         "signature": [
           "int256"
         ]
-      }, 
-      "getSender": {
-        "label": "Get Sender", 
-        "method": "getSender", 
-        "returns": "int256"
       }, 
       "getSharesPurchased": {
         "inputs": [
@@ -22368,6 +22374,11 @@ module.exports={
           "int256"
         ]
       }, 
+      "getSender": {
+        "label": "Get Sender", 
+        "method": "getSender", 
+        "returns": "int256"
+      }, 
       "getTradeOwner": {
         "inputs": [
           "id"
@@ -22545,42 +22556,42 @@ module.exports={
         "Trades": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3"
     }, 
     "3": {
-        "Backstops": "0xa7ebff392512ac04d9d570e6fa640863abf1650d", 
-        "Branches": "0x76b906f6aca82ef212c92cd48ad9a7f211fff0a2", 
-        "BuyAndSellShares": "0x7c65f4cdeeaf4f65aa163a3ec9c9b35b8c4dec96", 
-        "Cash": "0x983b3c94ac9506c3f922ea7f5d6bb429a9d804ea", 
-        "CloseMarket": "0x8fbed81c6e03598b7f1db645d83a838166bb1f3b", 
-        "CollectFees": "0xc2dae07f441cfe8e5e9784e2a23e977c978fc106", 
-        "CompleteSets": "0x6318bb65b100350dd23c8644709ee2f488ff7d46", 
-        "CompositeGetters": "0xbb4722e6ff363173b54d92521d01d7f2fae93553", 
-        "Consensus": "0x0407801d58a24ea8f03ab1f91a05067f507f4a70", 
-        "ConsensusData": "0x3d7cecdc8f9ba431419baa09342c49140095c735", 
-        "CreateBranch": "0x6260f6d931ebf53c3660cefb5e69c7b6d8139283", 
-        "CreateMarket": "0x2eb0f2369a11d1eee659c3ad971bfbf07fa176bf", 
-        "EventResolution": "0x563c24fe08f9f28fe7b84cbfce544ee81dfb73ee", 
-        "Events": "0x120cb9294d5a7297d4bddf0e8f03c042867b07f5", 
-        "ExpiringEvents": "0x83c7fa41376aa776ba0a39a2a4f70a6ad49b62c2", 
-        "Faucets": "0x3eadabf72b2fb76076ab8482f12ded1a7009f9a8", 
-        "ForkPenalize": "0x1199f2106623e6a71c8e4404331c1ebe3f496bbd", 
-        "Forking": "0x42a17703a581fc0ebcec4947b72175a5d277ee2e", 
-        "FxpFunctions": "0x51f71768f98560a2dc9869c8e314d3ba5c297199", 
-        "Info": "0x821a9a2531149b2674492276ebca8fc68c262bc1", 
-        "MakeReports": "0x41a17daf05a6baf8c2e3f9d9635dd6be5e689ac9", 
-        "Markets": "0x46ec50e0ed310bfde868b838cbe6af05912aecf0", 
-        "Payout": "0x1ffe0684f3a7deedb582c6f82fab1a67295a593f", 
-        "PenalizationCatchup": "0xb83b00612b794e5ba83e3e78eb53ac319694e143", 
-        "PenalizeNotEnoughReports": "0xc21e1cfab40e912a12ab08f7cf47e5f926ed0314", 
-        "ProportionCorrect": "0xa7decf554e15e65bc7956f40a112f3caf937a741", 
-        "Register": "0x74025be53f5778352df3bf9644ed0abac7e34200", 
-        "Reporting": "0xf07d78853522f65622b391515038549557f61e63", 
-        "ReportingThreshold": "0xd1b18e0769452985937123913d08e43cfcfe863b", 
-        "RoundTwo": "0x8f6487e308db7061cdba550dbecba5bd3ce40999", 
-        "RoundTwoPenalize": "0x447a9786423256d21f07af0a63fc5f0841989065", 
-        "SendReputation": "0x55ae2ba348c6971a55fbf96c49dc49fa0876fc75", 
-        "SlashRep": "0x462509b42c9fe3678a0d72c5b49f38e9f5673407", 
-        "Topics": "0x85940dd5e6ae1625318209bb1e077983bfca8c31", 
-        "Trade": "0x0ce0c065c48962e018bc3e6db38f3f150da1cb22", 
-        "Trades": "0x18033777fc68c761416c94edb43e0690f492e26f"
+        "Backstops": "0x0e6d1c13bc9da726b0df1483e05ef7a5798a0956", 
+        "Branches": "0x759b9c2fc0cafb8a1c97b320db31c5be19835be1", 
+        "BuyAndSellShares": "0x8bd46bcc5a1913a437bc06e6471829c25099c3c6", 
+        "Cash": "0xd2aa04dd95318863e7f451a43c3df25b89f39646", 
+        "CloseMarket": "0x22d1535930bd5d86acb98d0e421ae178f6826c76", 
+        "CollectFees": "0xfaf01c19a1e928127d093b317c99aa5649741b10", 
+        "CompleteSets": "0xce61e908b526a675d8bfb80129498dfb15b19d41", 
+        "CompositeGetters": "0x8caa888685de2e7e5a8b3d917e0343e1bff46b39", 
+        "Consensus": "0xd06134197bd3ede758f940cff9929a0dc5f09341", 
+        "ConsensusData": "0xbea9ea6e3295467d64057fceaf73f569ab75c9ef", 
+        "CreateBranch": "0xe32a545b6c98ba0376eeac152467e770d7f34ad9", 
+        "CreateMarket": "0xf2cda09900065ef781ed48e9a7902d5660d167a5", 
+        "EventResolution": "0x80755ab5a26503524f9f0b4f56de96d8f11fad1e", 
+        "Events": "0x4465e37b7072f4342eab377d0e003fa8c58eda1a", 
+        "ExpiringEvents": "0xeb42f6b49fe21d2c670b3af0006f67bc41a63b3d", 
+        "Faucets": "0x8e13c039ef67b1a1d4e77d2da09041c10fd3c379", 
+        "ForkPenalize": "0x7e97545a86a8e2bad3278281b4014de3528ccec1", 
+        "Forking": "0xe62ece5dc96d358465a283c2c3359e89f490c52e", 
+        "FxpFunctions": "0x9a1fcb03678f4c661b56d426eff616d3a813f58f", 
+        "Info": "0x69cc75ad7efcba3e1440f2a3cec454a61095c4dc", 
+        "MakeReports": "0x98529f027b5e85dde1045b8f31f2ca16f99d9e59", 
+        "Markets": "0xaee871248d63da7a123003c5455f3f7345b4109c", 
+        "Payout": "0xe4ab16167cb8636bde0e825204650d41eb890685", 
+        "PenalizationCatchup": "0xa157214afecb661ca725573b3bbd5e51340555f1", 
+        "PenalizeNotEnoughReports": "0xc85878b6f5bf5c968c92e992aa0dd57afbce7bd8", 
+        "ProportionCorrect": "0xda5559c157b3d10c3920e0eee079da923266b272", 
+        "Register": "0x9d7d3ba08bbabad4a79c23d3b90f4b18b697168e", 
+        "Reporting": "0x71f211e9191db4292bca28291a88e2e53bede68b", 
+        "ReportingThreshold": "0xb922a96ef2e897c0b55f7385e64025f42fcb9e65", 
+        "RoundTwo": "0xb7586738028d522ded21c779355a8f221ccef311", 
+        "RoundTwoPenalize": "0xebfb4260de648460549613549425cecfdc418354", 
+        "SendReputation": "0xd536493bcb18c61d8dfc2e6d4b6ede8ed5a05c07", 
+        "SlashRep": "0xc3fa0c3494bdd81c161ec1adc310ccf0054fb1c6", 
+        "Topics": "0x758f44666e9be3a71268f8e9b899ce7b383f3454", 
+        "Trade": "0x754d73aead2392096108f6d38c482dd78e36abaa", 
+        "Trades": "0x58e437126332cd16f688198bb4069371a042584f"
     }, 
     "9000": {
         "Backstops": "0x708fdfe18bf28afe861a69e95419d183ace003eb", 
@@ -22600,21 +22611,21 @@ module.exports={
         "ExpiringEvents": "0xe4714fcbdcdba49629bc408183ef40d120700b8d", 
         "Faucets": "0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e", 
         "ForkPenalize": "0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7", 
-        "Forking": "0xdc2ee03ac61c4aa4302a766a300ea8130aeca7e5", 
+        "Forking": "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f", 
         "FxpFunctions": "0xe5b327630cfa7f4b2324f9066c897dceecfd88a3", 
         "Info": "0x8a4e2993a9972ee035453bb5674816fc3a698718", 
-        "MakeReports": "0x758d0c47d4bd19cef7c2a389c3992351cc777ac1", 
+        "MakeReports": "0x70a893eb9569041e97a3787f0c76a1eb6378d8b2", 
         "Markets": "0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea", 
         "Payout": "0x35152caa07026203a1add680771afb690d872d7d", 
         "PenalizationCatchup": "0xabe47f122a496a732d6c4b38b3ca376d597d75dd", 
-        "PenalizeNotEnoughReports": "0xa30e071836c627fd92455c00c0ea907d21bb4ada", 
+        "PenalizeNotEnoughReports": "0x8c19616de17acdfbc933b99d9f529a689d22098f", 
         "ProportionCorrect": "0x0fbddb6bfb81c8d0965a894567cf4061446072c2", 
         "Register": "0xa34c9f6fc047cea795f69b34a063d32e6cb6288c", 
         "Reporting": "0x77c424f86a1b80f1e303d1c2651acd6aba653cb6", 
-        "ReportingThreshold": "0x37fef72e3020d791b350f3a1d30657b63dce3bff", 
-        "RoundTwo": "0xbb1e0f685bd3f2c8a03eeae2da5f61808de4886a", 
-        "RoundTwoPenalize": "0x2ec40803caf9b49cc5de237ce341d486245145fd", 
-        "SendReputation": "0xfa52a66a44aa0b4470d08a0e357a99e93fb5d4b8", 
+        "ReportingThreshold": "0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df", 
+        "RoundTwo": "0x7d4b581a0868204b7481c316b430a97fd292a2fb", 
+        "RoundTwoPenalize": "0xcd6c7bc634257f82903b182142aae7156d72a200", 
+        "SendReputation": "0x9308cf21b5a11f182f9707ca284bbb71bb84f893", 
         "SlashRep": "0x5069d883e31429c6dd1325d961f443007747c7a2", 
         "Topics": "0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d", 
         "Trade": "0xd2e9f7c2fd4635199b8cc9e8128fc4d27c693945", 
@@ -23973,7 +23984,7 @@ BigNumber.config({
 var modules = [require("./modules/connect"), require("./modules/transact"), require("./modules/cash"), require("./modules/events"), require("./modules/markets"), require("./modules/buyAndSellShares"), require("./modules/trade"), require("./modules/createBranch"), require("./modules/sendReputation"), require("./modules/makeReports"), require("./modules/collectFees"), require("./modules/createMarket"), require("./modules/compositeGetters"), require("./modules/slashRep"), require("./modules/logs"), require("./modules/abacus"), require("./modules/reporting"), require("./modules/payout"), require("./modules/placeTrade"), require("./modules/tradingActions"), require("./modules/makeOrder"), require("./modules/takeOrder"), require("./modules/selectOrder"), require("./modules/executeTrade"), require("./modules/positions"), require("./modules/register"), require("./modules/topics"), require("./modules/modifyOrderBook"), require("./modules/generateOrderBook")];
 
 function Augur() {
-  this.version = "3.13.14";
+  this.version = "3.13.15";
 
   this.options = {
     debug: {
@@ -24207,7 +24218,7 @@ module.exports = {
     var EVENTS_FIELDS = 9;
     var OUTCOMES_FIELDS = 3;
     var info = {};
-    if (rawInfo && rawInfo.length > 14 && rawInfo[0] && rawInfo[4] && rawInfo[7] && rawInfo[8]) {
+    if (rawInfo && rawInfo.length > 15 && rawInfo[0] && rawInfo[4] && rawInfo[7] && rawInfo[8]) {
       // marketInfo[0] = marketID
       // marketInfo[1] = MARKETS.getMakerFees(marketID)
       // marketInfo[2] = numOutcomes
@@ -24216,16 +24227,17 @@ module.exports = {
       // marketInfo[5] = MARKETS.getBranchID(marketID)
       // marketInfo[6] = MARKETS.getCumScale(marketID)
       // marketInfo[7] = MARKETS.getCreationTime(marketID)
-      // marketInfo[8] = MARKETS.getVolume(marketID)
-      // marketInfo[9] = INFO.getCreationFee(marketID)
-      // marketInfo[10] = INFO.getCreator(marketID)
+      // marketInfo[8] = MARKETS.getCreationBlock(marketID)
+      // marketInfo[9] = MARKETS.getVolume(marketID)
+      // marketInfo[10] = INFO.getCreationFee(marketID)
+      // marketInfo[11] = INFO.getCreator(marketID)
       // tags = MARKETS.returnTags(marketID, outitems=3)
-      // marketInfo[11] = tags[0]
-      // marketInfo[12] = tags[1]
-      // marketInfo[13] = tags[2]
-      var index = 14;
+      // marketInfo[12] = tags[0]
+      // marketInfo[13] = tags[1]
+      // marketInfo[14] = tags[2]
+      var index = 15;
       var fees = this.calculateMakerTakerFees(rawInfo[4], rawInfo[1]);
-      var topic = this.decodeTag(rawInfo[11]);
+      var topic = this.decodeTag(rawInfo[12]);
       info = {
         id: abi.format_int256(rawInfo[0]),
         network: this.network_id,
@@ -24237,11 +24249,12 @@ module.exports = {
         branchID: rawInfo[5],
         cumulativeScale: abi.unfix(rawInfo[6], "string"),
         creationTime: parseInt(rawInfo[7], 16),
-        volume: abi.unfix(rawInfo[8], "string"),
-        creationFee: abi.unfix(rawInfo[9], "string"),
-        author: abi.format_address(rawInfo[10]),
+        creationBlock: parseInt(rawInfo[8], 16),
+        volume: abi.unfix(rawInfo[9], "string"),
+        creationFee: abi.unfix(rawInfo[10], "string"),
+        author: abi.format_address(rawInfo[11]),
         topic: topic,
-        tags: [topic, this.decodeTag(rawInfo[12]), this.decodeTag(rawInfo[13])],
+        tags: [topic, this.decodeTag(rawInfo[13]), this.decodeTag(rawInfo[14])],
         minValue: abi.unfix_signed(rawInfo[index + 3], "string"),
         maxValue: abi.unfix_signed(rawInfo[index + 4], "string"),
         endDate: parseInt(rawInfo[index + 1], 16),
@@ -24457,7 +24470,7 @@ module.exports = {
     if (this.options.debug.trading) {
       console.log("cancel tx:", JSON.stringify(tx, null, 2));
     }
-    var prepare = function prepare(result, cb) {
+    this.transact(tx, onSent, utils.compose(function (result, cb) {
       if (!result || !result.callReturn) return cb(result);
       self.rpc.receipt(result.hash, function (receipt) {
         if (!receipt) return onFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
@@ -24480,8 +24493,7 @@ module.exports = {
         }
         cb(result);
       });
-    };
-    this.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed);
+    }, onSuccess), onFailed);
   },
 
   buy: function buy(amount, price, market, outcome, tradeGroupID, scalarMinMax, onSent, onSuccess, onFailed) {
@@ -26050,21 +26062,6 @@ module.exports = {
    * Getters *
    ***********/
 
-  getFirstLogBlockNumber: function getFirstLogBlockNumber(logs) {
-    return !logs || !logs.length ? 1 : logs[0].blockNumber;
-  },
-
-  getMarketCreationBlock: function getMarketCreationBlock(marketID, callback) {
-    var self = this;
-    if (!utils.is_function(callback)) {
-      return this.getFirstLogBlockNumber(this.getLogs("marketCreated", { marketID: marketID }));
-    }
-    this.getLogs("marketCreated", { marketID: marketID }, function (err, logs) {
-      if (err) return callback(err);
-      callback(null, self.getFirstLogBlockNumber(logs));
-    });
-  },
-
   getMarketPriceHistory: function getMarketPriceHistory(market, options, callback) {
     var self = this;
     if (!callback && utils.is_function(options)) {
@@ -26073,30 +26070,19 @@ module.exports = {
     }
     var params = clone(options || {});
     params.market = market;
-    if (!params.fromBlock) {
-      if (!utils.is_function(callback)) {
-        params.fromBlock = this.getMarketCreationBlock(market);
-        return this.getMarketPriceHistory(market, params);
-      }
-      this.getMarketCreationBlock(market, function (err, fromBlock) {
-        params.fromBlock = fromBlock;
-        self.getMarketPriceHistory(market, params, callback);
-      });
-    } else {
-      var aux = { index: "outcome", mergedLogs: {} };
-      if (!utils.is_function(callback)) {
-        this.getLogs("log_fill_tx", params, aux);
-        this.getLogs("log_short_fill_tx", params, aux);
-        return aux.mergedLogs;
-      }
-      this.getLogs("log_fill_tx", params, aux, function (err) {
-        if (err) return callback(err);
-        self.getLogs("log_short_fill_tx", params, aux, function (err) {
-          if (err) return callback(err);
-          callback(null, aux.mergedLogs);
-        });
-      });
+    var aux = { index: "outcome", mergedLogs: {} };
+    if (!utils.is_function(callback)) {
+      this.getLogs("log_fill_tx", params, aux);
+      this.getLogs("log_short_fill_tx", params, aux);
+      return aux.mergedLogs;
     }
+    this.getLogs("log_fill_tx", params, aux, function (err) {
+      if (err) return callback(err);
+      self.getLogs("log_short_fill_tx", params, aux, function (err) {
+        if (err) return callback(err);
+        callback(null, aux.mergedLogs);
+      });
+    });
   },
 
   sortByBlockNumber: function sortByBlockNumber(a, b) {
@@ -26120,7 +26106,7 @@ module.exports = {
 
   parametrizeFilter: function parametrizeFilter(event, params) {
     return {
-      fromBlock: params.fromBlock || constants.GET_LOGS_DEFAULT_FROM_BLOCK,
+      fromBlock: params.fromBlock || abi.hex(Math.max(1, this.rpc.block.number - 5000)),
       toBlock: params.toBlock || constants.GET_LOGS_DEFAULT_TO_BLOCK,
       address: this.contracts[event.contract],
       topics: this.buildTopicsList(event, params),
