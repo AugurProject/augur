@@ -77,7 +77,7 @@ export default class CreateMarketPreview extends Component {
                   })}
                 >
                   <span className="null-mask" />
-                  <span className="prop-value">{newMarket.topic || `\u00a0`}</span>
+                  <span className="prop-value">{newMarket.topic || '\u00a0'}</span>
                 </li>
                 <div
                   className={classNames('prop-container create-market-keywords', {
@@ -91,7 +91,7 @@ export default class CreateMarketPreview extends Component {
                     })}
                   >
                     <span className="null-mask" />
-                    <span className="prop-value">{(newMarket.keywords && newMarket.keywords[0]) || `\u00a0`}</span>
+                    <span className="prop-value">{(newMarket.keywords && newMarket.keywords[0]) || '\u00a0'}</span>
                   </li>
                   <li
                     className={classNames('create-market-tag', {
@@ -100,7 +100,7 @@ export default class CreateMarketPreview extends Component {
                     })}
                   >
                     <span className="null-mask" />
-                    <span className="prop-value">{(newMarket.keywords && newMarket.keywords[1]) || `\u00a0`}</span>
+                    <span className="prop-value">{(newMarket.keywords && newMarket.keywords[1]) || '\u00a0'}</span>
                   </li>
                 </div>
               </ul>
@@ -112,7 +112,7 @@ export default class CreateMarketPreview extends Component {
                 })}
               >
                 <span className="null-mask" />
-                <span className="prop-value">{newMarket.description || `\u00a0`}</span>
+                <span className="prop-value">{newMarket.description || '\u00a0'}</span>
               </div>
               <span
                 className={classNames('prop-container create-market-expiry-source', {
@@ -123,8 +123,8 @@ export default class CreateMarketPreview extends Component {
               >
                 <span className="null-mask" />
                 <span className="prop-value">
-                  {newMarket.expirySourceType === EXPIRY_SOURCE_GENERIC && 'Source: News Media'}
-                  {newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC && !!newMarket.expirySource && `Source: ${newMarket.expirySource}`}
+                  {newMarket.expirySourceType === EXPIRY_SOURCE_GENERIC && <span>Source: <span className="market-property-value"> News Media</span></span>}
+                  {newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC && !!newMarket.expirySource && <span>Source: <span className="market-property-value">{newMarket.expirySource}</span></span>}
                   { newMarket.expirySourceType !== EXPIRY_SOURCE_GENERIC &&
                     !(newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC &&
                     !!newMarket.expirySource) &&
@@ -140,7 +140,7 @@ export default class CreateMarketPreview extends Component {
                 })}
               >
                 <span className="null-mask" />
-                <span className="prop-value">{(!!newMarket.detailsText && `Additional Details: ${newMarket.detailsText}`) || '\u00a0'}</span>
+                <span className="prop-value">{(!!newMarket.detailsText && <span>Additional Details: <span className="market-property-value">{newMarket.detailsText}</span></span>) || '\u00a0'}</span>
               </span>
               <ul className="create-market-properties">
                 <li
@@ -151,32 +151,28 @@ export default class CreateMarketPreview extends Component {
                   })}
                 >
                   <span className="null-mask" />
-                  <span className="prop-value">{(!!Object.keys(newMarket.endDate).length && `Ends: ${newMarket.endDate.formatted}`) || '\u00a0'}</span>
+                  <span className="prop-value">{(!!Object.keys(newMarket.endDate).length && <span>Ends: <span className="market-property-value">{newMarket.endDate.formatted}</span></span>) || '\u00a0'}</span>
                 </li>
-                <div
-                  className={classNames('prop-container create-market-fees', {
+                <li
+                  className={classNames('prop-container create-market-property', {
                     'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES,
+                    'is-null': !newMarket.makerFee,
+                    'has-value': !!newMarket.makerFee
                   })}
                 >
-                  <li
-                    className={classNames('create-market-property', {
-                      'is-null': !newMarket.makerFee,
-                      'has-value': !!newMarket.makerFee
-                    })}
-                  >
-                    <span className="null-mask" />
-                    <span className="prop-value">{newMarket.makerFee || '\u00a0'}</span>
-                  </li>
-                  <li
-                    className={classNames('create-market-property', {
-                      'is-null': !newMarket.takerFee,
-                      'has-value': !!newMarket.takerFee
-                    })}
-                  >
-                    <span className="null-mask" />
-                    <span className="prop-value">{newMarket.takerFee || '\u00a0'}</span>
-                  </li>
-                </div>
+                  <span className="null-mask" />
+                  <span className="prop-value">{<span>Maker Fee: <span className="market-property-value">{newMarket.makerFee}</span></span> || '\u00a0'}</span>
+                </li>
+                <li
+                  className={classNames('prop-container create-market-property', {
+                    'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES,
+                    'is-null': !newMarket.takerFee,
+                    'has-value': !!newMarket.takerFee
+                  })}
+                >
+                  <span className="null-mask" />
+                  <span className="prop-value">{<span>Taker Fee: <span className="market-property-value">{newMarket.takerFee}</span></span> || '\u00a0'}</span>
+                </li>
                 <li
                   className={classNames('prop-container create-market-property', {
                     'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_ORDER_BOOK,
@@ -193,13 +189,14 @@ export default class CreateMarketPreview extends Component {
               <ul
                 className={classNames('prop-container create-market-outcome-placeholders', {
                   'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_OUTCOMES,
-                  'is-null': !newMarket.outcomes.length,
-                  'has-value': newMarket.outcomes.length
+                  'is-null': !newMarket.outcomes.length || newMarket.outcomes[0] === '',
+                  'has-value': newMarket.outcomes.length && newMarket.outcomes[0] !== ''
                 })}
               >
                 <div className="outcome-null-masks">
                   {newMarket.type === CATEGORICAL ?
                     <div>
+                      <li className="null-mask" />
                       <li className="null-mask" />
                       <li className="null-mask" />
                       <li className="null-mask" />

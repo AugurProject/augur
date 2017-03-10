@@ -79,6 +79,7 @@ export default class CreateMarketFormExpirySource extends Component {
               <Input
                 className={classNames({ 'hide-field': p.expirySourceType !== EXPIRY_SOURCE_SPECIFIC })}
                 type="text"
+                debounceMS={0}
                 value={p.expirySource}
                 onChange={(expirySource) => {
                   this.validateForm(EXPIRY_SOURCE_SPECIFIC, expirySource);
