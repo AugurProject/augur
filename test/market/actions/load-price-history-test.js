@@ -15,13 +15,12 @@ describe(`modules/market/actions/load-price-history.js`, () => {
   const mockAugurJS = { augur: {} };
   mockAugurJS.augur.getMarketPriceHistory = sinon.stub();
 
-
   const action = proxyquire('../../../src/modules/market/actions/load-price-history', {
     '../../../services/augurjs': mockAugurJS
   });
 
   it(`should call AugurJS getMarketPriceHistory`, () => {
-    store.dispatch(action.loadPriceHistory('test'));
+    store.dispatch(action.loadPriceHistory('testMarketID'));
     assert(mockAugurJS.augur.getMarketPriceHistory.calledOnce);
   });
 });

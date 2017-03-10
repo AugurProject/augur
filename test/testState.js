@@ -72,6 +72,7 @@ const testState = {
       tags: ['tag1', 'tag2', 'tag3'],
       resolution: 'http://lmgtfy.com',
       creationTime: 100,
+      creationBlock: 42,
       outstandingShares: formatShares(10),
       extraInfo: 'some extra info'
     }
