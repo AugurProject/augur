@@ -6,6 +6,8 @@
   position: relative;
 
   h1 {
+    .font-size-massive();
+
     &.title-animation-helper {
       width: 0;
     }
@@ -22,7 +24,7 @@
     }
 
     &.display-title {
-      margin: 1em 0;
+      margin: 2em 0 0;
     }
   }
 
@@ -44,6 +46,8 @@
   }
 
   .preview-title {
+    .font-size-large();
+
     visibility: hidden;
 
     &.display-title {
@@ -88,6 +92,6 @@ transform: translate(-50%, -100%);
 }
 to {
 left: 0;
-transform: translate(0, -100%);
+transform: translate(0, -60%);
 }
 });

@@ -33,7 +33,6 @@ export default class InputList extends Component {
   componentWillReceiveProps(nextProps) {
     if (nextProps.warnings && this.props.warnings !== nextProps.warnings) {
       this.setState({ warnings: nextProps.warnings });
-      console.log('next -- ', nextProps.warnings);
       this.clearWarnings();
     }
   }

@@ -64,6 +64,7 @@ export default class CreateMarketFormTopic extends Component {
               <Input
                 type="text"
                 value={p.topic}
+                debounceMS={0}
                 maxLength={TAGS_MAX_LENGTH}
                 onChange={topic => this.validateForm(topic)}
               />
