@@ -152,7 +152,7 @@ export default class CreateMarketFormOrderBook extends Component {
       },
       chart: {
         height: 400,
-        width: this.orderBookPreview.clientWidth * 0.66
+        width: this.orderBookPreview.clientWidth * 0.60
       }
     }, false);
 

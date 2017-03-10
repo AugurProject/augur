@@ -1,4 +1,5 @@
 import React, { PropTypes, Component } from 'react';
+import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
 
 import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC } from 'modules/create-market/constants/new-market-constraints';
@@ -28,6 +29,10 @@ export default class CreateMarketPreview extends Component {
   constructor(props) {
     super(props);
 
+    this.state = {
+      initialLiquidity: null
+    };
+
     this.updatePreviewHeight = this.updatePreviewHeight.bind(this);
   }
 
@@ -39,6 +44,8 @@ export default class CreateMarketPreview extends Component {
     if (this.props.newMarket !== nextProps.newMarket) {
       this.updatePreviewHeight(nextProps.newMarket.currentStep);
     }
+
+    if (this.props.newMarket.orderBook !== nextProps.newMarket.orderBook) this.updateMarketLiquidity(nextProps.newMarket.orderBook);
   }
 
   updatePreviewHeight(step) {
@@ -54,8 +61,15 @@ export default class CreateMarketPreview extends Component {
     }
   }
 
+  updateMarketLiquidity(orderBook) {
+    const initialLiquidity = Object.keys(orderBook).reduce((p, outcome) => p.plus(orderBook[outcome].reduce((p, order) => p.plus(order.quantity), new BigNumber(0))), new BigNumber(0)).toNumber().toLocaleString();
+
+    this.setState({ initialLiquidity });
+  }
+
   render() {
     const p = this.props;
+    const s = this.state;
     const newMarket = this.props.newMarket;
 
     return (
@@ -196,7 +210,7 @@ export default class CreateMarketPreview extends Component {
                     })}
                   >
                     <span className="null-mask" />
-                    <span className="prop-value">{(!Number.isNaN(newMarket.makerFee) && (newMarket.validations.indexOf(NEW_MARKET_FEES) > -1 || newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES) && <span>Maker Fee: <span className="market-property-value">{newMarket.makerFee}</span></span>) || '\u00a0'}</span>
+                    <span className="prop-value">{(!Number.isNaN(newMarket.makerFee) && (newMarket.validations.indexOf(NEW_MARKET_FEES) > -1 || newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES) && <span>Maker Fee: <span className="market-property-value">{newMarket.makerFee}%</span></span>) || '\u00a0'}</span>
                   </li>
                   <li
                     className={classNames('prop-container', {
@@ -205,7 +219,7 @@ export default class CreateMarketPreview extends Component {
                     })}
                   >
                     <span className="null-mask" />
-                    <span className="prop-value">{(newMarket.takerFee && (newMarket.validations.indexOf(NEW_MARKET_FEES) > -1 || newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES) && <span>Taker Fee: <span className="market-property-value">{newMarket.takerFee}</span></span>) || '\u00a0'}</span>
+                    <span className="prop-value">{(newMarket.takerFee && (newMarket.validations.indexOf(NEW_MARKET_FEES) > -1 || newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES) && <span>Taker Fee: <span className="market-property-value">{newMarket.takerFee}%</span></span>) || '\u00a0'}</span>
                   </li>
                 </button>
                 <li
@@ -221,7 +235,7 @@ export default class CreateMarketPreview extends Component {
                     onClick={() => p.updateNewMarket({ currentStep: newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK) })}
                   >
                     <span className="null-mask" />
-                    <span className="prop-value">{(!!Object.keys(newMarket.orderBook).length && `Initial Liquidity: TODO`) || '\u00a0'}</span>
+                    <span className="prop-value">{(Object.keys(newMarket.orderBook).length && s.initialLiquidity != null && <span>Initial Liquidity: <span className="market-property-value">{s.initialLiquidity} Shares</span></span>) || '\u00a0'}</span>
                   </button>
                 </li>
               </ul>
