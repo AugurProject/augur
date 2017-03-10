@@ -55,6 +55,7 @@ export default class CreateMarketPreview extends Component {
   }
 
   render() {
+    const p = this.props;
     const newMarket = this.props.newMarket;
 
     return (
@@ -76,13 +77,19 @@ export default class CreateMarketPreview extends Component {
                     'has-value': !!newMarket.topic
                   })}
                 >
-                  <span className="null-mask" />
-                  <span className="prop-value">{newMarket.topic || '\u00a0'}</span>
+                  <button
+                    className="unstyled"
+                    onClick={() => p.updateNewMarket({ currentStep: newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC) })}
+                  >
+                    <span className="null-mask" />
+                    <span className="prop-value">{newMarket.topic || '\u00a0'}</span>
+                  </button>
                 </li>
-                <div
-                  className={classNames('prop-container create-market-keywords', {
+                <button
+                  className={classNames('unstyled prop-container create-market-keywords', {
                     'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_KEYWORDS,
                   })}
+                  onClick={() => p.updateNewMarket({ currentStep: newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS) })}
                 >
                   <li
                     className={classNames('prop-container create-market-tag', {
@@ -102,7 +109,7 @@ export default class CreateMarketPreview extends Component {
                     <span className="null-mask" />
                     <span className="prop-value">{(newMarket.keywords && newMarket.keywords[1]) || '\u00a0'}</span>
                   </li>
-                </div>
+                </button>
               </ul>
               <div
                 className={classNames('prop-container create-market-description', {
@@ -111,8 +118,13 @@ export default class CreateMarketPreview extends Component {
                   'has-value': !!newMarket.description
                 })}
               >
-                <span className="null-mask" />
-                <span className="prop-value">{newMarket.description || '\u00a0'}</span>
+                <button
+                  className="unstyled"
+                  onClick={() => p.updateNewMarket({ currentStep: newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION) })}
+                >
+                  <span className="null-mask" />
+                  <span className="prop-value">{newMarket.description || '\u00a0'}</span>
+                </button>
               </div>
               <span
                 className={classNames('prop-container create-market-expiry-source', {
@@ -121,16 +133,21 @@ export default class CreateMarketPreview extends Component {
                   'has-value': newMarket.expirySourceType === EXPIRY_SOURCE_GENERIC || (newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC && !!newMarket.expirySource)
                 })}
               >
-                <span className="null-mask" />
-                <span className="prop-value">
-                  {newMarket.expirySourceType === EXPIRY_SOURCE_GENERIC && <span>Source: <span className="market-property-value"> News Media</span></span>}
-                  {newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC && !!newMarket.expirySource && <span>Source: <span className="market-property-value">{newMarket.expirySource}</span></span>}
-                  { newMarket.expirySourceType !== EXPIRY_SOURCE_GENERIC &&
-                    !(newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC &&
-                    !!newMarket.expirySource) &&
-                    '\u00a0'
-                  }
-                </span>
+                <button
+                  className="unstyled"
+                  onClick={() => p.updateNewMarket({ currentStep: newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE) })}
+                >
+                  <span className="null-mask" />
+                  <span className="prop-value">
+                    {newMarket.expirySourceType === EXPIRY_SOURCE_GENERIC && <span>Source: <span className="market-property-value"> News Media</span></span>}
+                    {newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC && !!newMarket.expirySource && <span>Source: <span className="market-property-value">{newMarket.expirySource}</span></span>}
+                    { newMarket.expirySourceType !== EXPIRY_SOURCE_GENERIC &&
+                      !(newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC &&
+                      !!newMarket.expirySource) &&
+                      '\u00a0'
+                    }
+                  </span>
+                </button>
               </span>
               <span
                 className={classNames('prop-container create-market-details', {
@@ -139,8 +156,13 @@ export default class CreateMarketPreview extends Component {
                   'has-value': !!newMarket.detailsText
                 })}
               >
-                <span className="null-mask" />
-                <span className="prop-value">{(!!newMarket.detailsText && <span>Additional Details: <span className="market-property-value">{newMarket.detailsText}</span></span>) || '\u00a0'}</span>
+                <button
+                  className="unstyled"
+                  onClick={() => p.updateNewMarket({ currentStep: newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS) })}
+                >
+                  <span className="null-mask" />
+                  <span className="prop-value">{(!!newMarket.detailsText && <span>Additional Details: <span className="market-property-value">{newMarket.detailsText}</span></span>) || '\u00a0'}</span>
+                </button>
               </span>
               <ul className="create-market-properties">
                 <li
@@ -150,13 +172,19 @@ export default class CreateMarketPreview extends Component {
                     'has-value': !!Object.keys(newMarket.endDate).length
                   })}
                 >
-                  <span className="null-mask" />
-                  <span className="prop-value">{(!!Object.keys(newMarket.endDate).length && <span>Ends: <span className="market-property-value">{newMarket.endDate.formatted}</span></span>) || '\u00a0'}</span>
+                  <button
+                    className="unstyled"
+                    onClick={() => p.updateNewMarket({ currentStep: newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) })}
+                  >
+                    <span className="null-mask" />
+                    <span className="prop-value">{(!!Object.keys(newMarket.endDate).length && <span>Ends: <span className="market-property-value">{newMarket.endDate.formatted}</span></span>) || '\u00a0'}</span>
+                  </button>
                 </li>
-                <div
-                  className={classNames('prop-container create-market-property create-market-property-fees', {
+                <button
+                  className={classNames('unstyled prop-container create-market-property create-market-property-fees', {
                     'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES
                   })}
+                  onClick={() => p.updateNewMarket({ currentStep: newMarketCreationOrder.indexOf(NEW_MARKET_FEES) })}
                 >
                   <li
                     className={classNames('prop-container', {
@@ -176,7 +204,7 @@ export default class CreateMarketPreview extends Component {
                     <span className="null-mask" />
                     <span className="prop-value">{(newMarket.takerFee && (newMarket.validations.indexOf(NEW_MARKET_FEES) > -1 || newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES) && <span>Taker Fee: <span className="market-property-value">{newMarket.takerFee}</span></span>) || '\u00a0'}</span>
                   </li>
-                </div>
+                </button>
                 <li
                   className={classNames('prop-container create-market-property', {
                     'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_ORDER_BOOK,
@@ -184,8 +212,13 @@ export default class CreateMarketPreview extends Component {
                     'has-value': !!Object.keys(newMarket.orderBook).length
                   })}
                 >
-                  <span className="null-mask" />
-                  <span className="prop-value">{(!!Object.keys(newMarket.orderBook).length && `Initial Liquidity: TODO`) || '\u00a0'}</span>
+                  <button
+                    className="unstyled"
+                    onClick={() => p.updateNewMarket({ currentStep: newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK) })}
+                  >
+                    <span className="null-mask" />
+                    <span className="prop-value">{(!!Object.keys(newMarket.orderBook).length && `Initial Liquidity: TODO`) || '\u00a0'}</span>
+                  </button>
                 </li>
               </ul>
             </div>
@@ -197,18 +230,23 @@ export default class CreateMarketPreview extends Component {
                   'has-value': newMarket.outcomes.length && newMarket.outcomes[0] !== ''
                 })}
               >
-                <div className="outcome-null-masks">
-                  {newMarket.type === CATEGORICAL ?
-                    <div>
+                <button
+                  className="unstyled"
+                  onClick={() => p.updateNewMarket({ currentStep: newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES) })}
+                >
+                  <div className="outcome-null-masks">
+                    {newMarket.type === CATEGORICAL ?
+                      <div>
+                        <li className="null-mask" />
+                        <li className="null-mask" />
+                        <li className="null-mask" />
+                        <li className="null-mask" />
+                      </div> :
                       <li className="null-mask" />
-                      <li className="null-mask" />
-                      <li className="null-mask" />
-                      <li className="null-mask" />
-                    </div> :
-                    <li className="null-mask" />
-                  }
-                </div>
-                {newMarket.outcomes.map(outcome => <li>{outcome}</li>)}
+                    }
+                  </div>
+                  {newMarket.outcomes.map(outcome => <li>{outcome}</li>)}
+                </button>
               </ul>
             </div>
           </div>
