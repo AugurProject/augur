@@ -55,21 +55,6 @@ module.exports = {
    * Getters *
    ***********/
 
-  getFirstLogBlockNumber: function (logs) {
-    return (!logs || !logs.length) ? 1 : logs[0].blockNumber;
-  },
-
-  getMarketCreationBlock: function (marketID, callback) {
-    var self = this;
-    if (!utils.is_function(callback)) {
-      return this.getFirstLogBlockNumber(this.getLogs("marketCreated", {marketID: marketID}));
-    }
-    this.getLogs("marketCreated", {marketID: marketID}, function (err, logs) {
-      if (err) return callback(err);
-      callback(null, self.getFirstLogBlockNumber(logs));
-    });
-  },
-
   getMarketPriceHistory: function (market, options, callback) {
     var self = this;
     if (!callback && utils.is_function(options)) {
@@ -78,30 +63,19 @@ module.exports = {
     }
     var params = clone(options || {});
     params.market = market;
-    if (!params.fromBlock) {
-      if (!utils.is_function(callback)) {
-        params.fromBlock = this.getMarketCreationBlock(market);
-        return this.getMarketPriceHistory(market, params);
-      }
-      this.getMarketCreationBlock(market, function (err, fromBlock) {
-        params.fromBlock = fromBlock;
-        self.getMarketPriceHistory(market, params, callback);
-      });
-    } else {
-      var aux = {index: "outcome", mergedLogs: {}};
-      if (!utils.is_function(callback)) {
-        this.getLogs("log_fill_tx", params, aux);
-        this.getLogs("log_short_fill_tx", params, aux);
-        return aux.mergedLogs;
-      }
-      this.getLogs("log_fill_tx", params, aux, function (err) {
-        if (err) return callback(err);
-        self.getLogs("log_short_fill_tx", params, aux, function (err) {
-          if (err) return callback(err);
-          callback(null, aux.mergedLogs);
-        });
-      });
+    var aux = {index: "outcome", mergedLogs: {}};
+    if (!utils.is_function(callback)) {
+      this.getLogs("log_fill_tx", params, aux);
+      this.getLogs("log_short_fill_tx", params, aux);
+      return aux.mergedLogs;
     }
+    this.getLogs("log_fill_tx", params, aux, function (err) {
+      if (err) return callback(err);
+      self.getLogs("log_short_fill_tx", params, aux, function (err) {
+        if (err) return callback(err);
+        callback(null, aux.mergedLogs);
+      });
+    });
   },
 
   sortByBlockNumber: function (a, b) {
@@ -125,7 +99,7 @@ module.exports = {
 
   parametrizeFilter: function (event, params) {
     return {
-      fromBlock: params.fromBlock || constants.GET_LOGS_DEFAULT_FROM_BLOCK,
+      fromBlock: params.fromBlock || abi.hex(Math.max(1, this.rpc.block.number - 5000)),
       toBlock: params.toBlock || constants.GET_LOGS_DEFAULT_TO_BLOCK,
       address: this.contracts[event.contract],
       topics: this.buildTopicsList(event, params),

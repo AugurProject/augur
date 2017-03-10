@@ -31,7 +31,7 @@ module.exports = {
     if (this.options.debug.trading) {
       console.log("cancel tx:", JSON.stringify(tx, null, 2));
     }
-    var prepare = function (result, cb) {
+    this.transact(tx, onSent, utils.compose(function (result, cb) {
       if (!result || !result.callReturn) return cb(result);
       self.rpc.receipt(result.hash, function (receipt) {
         if (!receipt) return onFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
@@ -54,8 +54,7 @@ module.exports = {
         }
         cb(result);
       });
-    };
-    this.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed);
+    }, onSuccess), onFailed);
   },
 
   buy: function (amount, price, market, outcome, tradeGroupID, scalarMinMax, onSent, onSuccess, onFailed) {

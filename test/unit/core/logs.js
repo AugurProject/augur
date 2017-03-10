@@ -315,131 +315,15 @@ describe("logs.parseCompleteSetsLogs", function() {
 /***********
  * Getters *
 ***********/
-describe("logs.getFirstLogBlockNumber", function() {
-	// 3 tests total
-	var test = function(t) {
-		describe(t.description, function() {
-			it("sync", function() {
-				t.assertions(augur.getFirstLogBlockNumber(t.logs));
-			});
-			// not an async function so no async test
-		});
-	};
-	test({
-		description: 'should handle an undefined logs and pass back 1',
-		logs: undefined,
-		assertions: function(o) {
-			assert.deepEqual(o, 1);
-		}
-	});
-	test({
-		description: 'should handle an empty logs array and pass back 1',
-		logs: [],
-		assertions: function(o) {
-			assert.deepEqual(o, 1);
-		}
-	});
-	test({
-		description: 'should handle an logs array and pass back the blockNumber from logs first entry',
-		logs: [{blockNumber: '101010'}, {blockNumber: '202020'}, {blockNumber: '3303030'}],
-		assertions: function(o) {
-			assert.deepEqual(o, '101010');
-		}
-	});
-});
-describe("logs.getMarketCreationBlock", function() {
-	// 2 tests total
-	var test = function(t) {
-		describe(t.description, function() {
-			var getLogs = augur.getLogs;
-			afterEach(function() { augur.getLogs = getLogs; });
-			it("sync", function() {
-				augur.getLogs = t.getLogs;
-				t.assertions(null, augur.getMarketCreationBlock(t.marketID, undefined));
-			});
-			it("async", function(done) {
-				augur.getLogs = t.getLogs;
-				augur.getMarketCreationBlock(t.marketID, function(err, block) {
-					t.assertions(err, block);
-					done();
-				});
-			});
-		});
-	};
-	test({
-		description: 'should handle getting logs and returning the marketCreationBlock',
-		marketID: '0x0a1',
-		getLogs: function(label, filterParams, aux, cb) {
-			if (!cb && utils.is_function(aux)) {
-        cb = aux;
-        aux = null;
-      }
-      var logs = [{blockNumber: '101010', filterParams: filterParams }];
-      if (!cb) return logs;
-      cb(null, logs);
-		},
-		assertions: function(err, o) {
-			assert.isNull(err);
-			assert.deepEqual(o, '101010');
-		}
-	});
-	test({
-		description: 'should handle getting an empty array from getLogs',
-		marketID: '0x0a1',
-		getLogs: function(label, filterParams, aux, cb) {
-			if (!cb && utils.is_function(aux)) {
-        cb = aux;
-        aux = null;
-      }
-      var logs = [];
-      if (!cb) return logs;
-      cb(null, logs);
-		},
-		assertions: function(err, o) {
-			assert.isNull(err);
-			assert.deepEqual(o, 1);
-		}
-	});
-  test({
-		description: 'should handle getting an error from getLogs',
-		marketID: '0x0a1',
-		getLogs: function(label, filterParams, aux, cb) {
-			if (!cb && utils.is_function(aux)) {
-        cb = aux;
-        aux = null;
-      }
-      var logs = [];
-      if (!cb) return { error: 999, message: 'Uh-Oh!' };
-      cb({ error: 999, message: 'Uh-Oh!' });
-		},
-		assertions: function(err, o) {
-      if (o === 1) {
-        // sync we don't get the error.
-        assert.isNull(err);
-        assert.deepEqual(o, 1);
-      } else {
-        // async
-        assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
-        assert.isUndefined(o);
-      }
-		}
-	});
-});
 describe("logs.getMarketPriceHistory", function() {
   // 3 tests total
   var test = function(t) {
     describe(t.description, function () {
-      var getMarketCreationBlock = augur.getMarketCreationBlock;
       var getLogs = augur.getLogs;
       after(function () {
-        augur.getMarketCreationblock = getMarketCreationBlock;
         augur.getLogs = getLogs;
       });
       it("sync", function () {
-        augur.getMarketCreationBlock = function (marketID, callback) {
-          if (!callback) return t.creationBlock;
-          callback(null, t.creationBlock);
-        };
         augur.getLogs = function (label, filterParams, aux, callback) {
           if (!callback && utils.is_function(filterParams)) {
             callback = filterParams;
@@ -457,10 +341,6 @@ describe("logs.getMarketPriceHistory", function() {
         }
       });
       it("async", function (done) {
-        augur.getMarketCreationBlock = function (marketID, callback) {
-          if (!callback) return t.creationBlock;
-          callback(null, t.creationBlock);
-        };
         augur.getLogs = function (label, filterParams, aux, callback) {
           if (!callback && utils.is_function(filterParams)) {
             callback = filterParams;
@@ -496,37 +376,19 @@ describe("logs.getMarketPriceHistory", function() {
   test({
     description: 'Should pass the market as the params if options is undefined',
     market: '0x00a1',
-    creationBlock: 1234,
     options: undefined,
-    // getLogs: function (type, params, index, callback) {
-    //   if (!callback) return params;
-    //   callback(null, params);
-    // },
-    // getMarketCreationBlock: function (marketID, callback) {
-    //   if (!callback) return t.creationBlock;
-    //   callback(null, t.creationBlock);
-    // },
     assertions: function (err, o) {
       assert.isNull(err);
-      assert.deepEqual(o, { market: '0x00a1', fromBlock: 1234 });
+      assert.deepEqual(o, { market: '0x00a1' });
     }
   });
 
   test({
     description: 'Should be able to be passed just market and cb and still handle the request',
     market: '0x00a1',
-    creationBlock: 1234,
-    // getLogs: function (type, params, index, callback) {
-    //   if (!callback) return params;
-    //   callback(null, params);
-    // },
-    // getMarketCreationBlock: function (marketID, callback) {
-    //   if (!callback) return t.creationBlock;
-    //   callback(null, t.creationBlock);
-    // },
     assertions: function (err, o) {
       assert.isNull(err);
-      assert.deepEqual(o, { market: '0x00a1', fromBlock: 1234 });
+      assert.deepEqual(o, { market: '0x00a1' });
     }
   });
 });
@@ -613,8 +475,11 @@ describe("logs.buildTopicsList", function() {
 describe("logs.parametrizeFilter", function() {
   // 2 tests total
   var test = function(t) {
+    var block = augur.rpc.block;
     it(t.description, function() {
+      augur.rpc.block = { number: t.state.blockNumber };
       t.assertions(augur.parametrizeFilter(t.event, t.params));
+      augur.rpc.block = block;
     });
   };
 
@@ -622,6 +487,7 @@ describe("logs.parametrizeFilter", function() {
     description: 'should return a prepared filter object',
     event: { signature: augur.api.events.completeSets_logReturn.signature, inputs: [ { name: 'amount', indexed: true }, { name: 'market', indexed: true }, { name: 'numOutcomes', indexed: true } ], contract: 'CompleteSets'},
     params: { amount: '50', market: '0x0a1', numOutcomes: '2' },
+    state: { blockNumber: 100 },
     assertions: function(o) {
       assert.deepEqual(o, {
         fromBlock: augur.constants.GET_LOGS_DEFAULT_FROM_BLOCK,
@@ -638,6 +504,7 @@ describe("logs.parametrizeFilter", function() {
     description: 'should return a prepared filter object when given to/from blocks',
     event: { signature: augur.api.events.completeSets_logReturn.signature, inputs: [ { name: 'amount', indexed: true }, { name: 'market', indexed: true }, { name: 'numOutcomes', indexed: true } ], contract: 'CompleteSets'},
     params: { amount: '50', market: '0x0a1', numOutcomes: '2', toBlock: '0x0b2', fromBlock: '0x0b1' },
+    state: { blockNumber: 100 },
     assertions: function(o) {
       assert.deepEqual(o, {
         fromBlock: '0x0b1',
@@ -1005,21 +872,22 @@ describe("logs.processLogs", function() {
 describe("logs.getFilteredLogs", function() {
   // 6 total tests
   var test = function(t) {
+    var block = augur.rpc.block;
     it(t.description, function() {
       var getLogs = augur.rpc.getLogs;
       augur.rpc.getLogs = t.getLogs;
-
+      augur.rpc.block = { number: t.state.blockNumber };
       t.assertions(augur.getFilteredLogs(t.label, t.filterParams, t.callback));
-
       augur.rpc.getLogs = getLogs;
+      augur.rpc.block = block;
     });
   };
-
   test({
     description: 'Should handle undefined filterParams and cb',
     label: 'log_add_tx',
     filterParams: undefined,
     callback: undefined,
+    state: { blockNumber: 100 },
     getLogs: function(filters) {
       // simply pass back filters to be tested by assertions
       return filters;
@@ -1037,7 +905,6 @@ describe("logs.getFilteredLogs", function() {
       });
     }
   });
-
   test({
     description: 'Should handle passed filterParams and undefined cb',
     label: 'log_add_tx',
@@ -1045,6 +912,7 @@ describe("logs.getFilteredLogs", function() {
       toBlock: '0x0b2',
       fromBlock: '0x0b1'
     },
+    state: { blockNumber: 100 },
     callback: undefined,
     getLogs: function(filters) {
       // simply pass back filters to be tested by assertions
@@ -1063,7 +931,6 @@ describe("logs.getFilteredLogs", function() {
       });
     }
   });
-
   test({
     description: 'Should handle passed filterParams and cb',
     label: 'log_add_tx',
@@ -1071,6 +938,7 @@ describe("logs.getFilteredLogs", function() {
       toBlock: '0x0b2',
       fromBlock: '0x0b1'
     },
+    state: { blockNumber: 100 },
     callback: function(err, logs) {
       assert.isNull(err);
       assert.deepEqual(logs[0], {
@@ -1090,7 +958,6 @@ describe("logs.getFilteredLogs", function() {
     },
     assertions: function(o) {}
   });
-
   test({
     description: 'Should handle passed filterParams and cb when getLogs returns an error object',
     label: 'log_add_tx',
@@ -1098,6 +965,7 @@ describe("logs.getFilteredLogs", function() {
       toBlock: '0x0b2',
       fromBlock: '0x0b1'
     },
+    state: { blockNumber: 100 },
     callback: function(err, logs) {
       assert.isNull(logs);
       assert.deepEqual(err, {
@@ -1110,7 +978,6 @@ describe("logs.getFilteredLogs", function() {
     },
     assertions: function(o) {}
   });
-
   test({
     description: 'Should handle passed filterParams and cb when getLogs returns an empty array',
     label: 'log_add_tx',
@@ -1118,6 +985,7 @@ describe("logs.getFilteredLogs", function() {
       toBlock: '0x0b2',
       fromBlock: '0x0b1'
     },
+    state: { blockNumber: 100 },
     callback: function(err, logs) {
       assert.isNull(err);
       assert.deepEqual(logs, []);
@@ -1128,7 +996,6 @@ describe("logs.getFilteredLogs", function() {
     },
     assertions: function(o) {}
   });
-
   test({
     description: 'Should handle passed filterParams as a callback',
     label: 'log_add_tx',
@@ -1136,6 +1003,7 @@ describe("logs.getFilteredLogs", function() {
       assert.isNull(err);
       assert.deepEqual(logs, []);
     },
+    state: { blockNumber: 100 },
     callback: undefined,
     getLogs: function(filters, cb) {
       // simply pass back undefined to be tested by cb assertions

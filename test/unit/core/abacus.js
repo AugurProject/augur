@@ -763,7 +763,7 @@ describe("abacus.parseMarketInfo", function() {
     }
   });
   test({
-    rawInfo: ['0xa1', abi.fix('0.23'), '2', 1500000, abi.fix('0.026'), '0xb1', abi.fix('1'), 1000000, abi.fix('10000'), abi.fix('0.0375'), '0xabc123', abi.short_string_to_int256('tag1'), abi.short_string_to_int256('tag2'), abi.short_string_to_int256('tag3'), '0xf1', 1600000, abi.fix('0'), abi.fix('1'), abi.fix('200'), undefined, abi.fix('3.5'), abi.fix('1'), abi.fix('0'), abi.fix('0'), abi.fix('100'), abi.fix('9500.00'), abi.fix('0'), abi.fix('101'), abi.fix('500.0'), '29', '1b', '35'],
+    rawInfo: ['0xa1', abi.fix('0.23'), '2', 1500000, abi.fix('0.026'), '0xb1', abi.fix('1'), 1000000, '0x64', abi.fix('10000'), abi.fix('0.0375'), '0xabc123', abi.short_string_to_int256('tag1'), abi.short_string_to_int256('tag2'), abi.short_string_to_int256('tag3'), '0xf1', 1600000, abi.fix('0'), abi.fix('1'), abi.fix('200'), undefined, abi.fix('3.5'), abi.fix('1'), abi.fix('0'), abi.fix('0'), abi.fix('100'), abi.fix('9500.00'), abi.fix('0'), abi.fix('101'), abi.fix('500.0'), '29', '1b', '35'],
     description: abi.hex_to_bytes(abi.hex('This is a scalar market that has a report')),
     resolution: abi.hex_to_bytes(abi.hex('https://www.resolutions.com')),
     extraInfo: abi.hex_to_bytes(abi.hex('This is extra information used to help with reporting')),
@@ -779,6 +779,7 @@ describe("abacus.parseMarketInfo", function() {
       	branchID: '0xb1',
       	cumulativeScale: '1',
       	creationTime: 16777216,
+        creationBlock: 100,
       	volume: '10000',
       	creationFee: '0.0375',
       	author: '0x0000000000000000000000000000000000abc123',
@@ -812,7 +813,7 @@ describe("abacus.parseMarketInfo", function() {
   });
   test({
     rawInfo: [
-    	'0xa2', abi.fix('0.37'), '2', 1500000, abi.fix('0.03'), '0xb1', abi.fix('1'), 1000000, abi.fix('2500.00'), abi.fix('0.035'), '0xabc123', abi.short_string_to_int256('tag1'), abi.short_string_to_int256('tag2'), abi.short_string_to_int256('tag3'), '0xf1', 1600000, abi.fix('0'), abi.fix('1'), abi.fix('2'), undefined, abi.fix('3.53'), abi.fix('1'), abi.fix('0'), abi.fix('1000'), abi.fix('0.45'), abi.fix('1000'), abi.fix('500'), abi.fix('0.55'), abi.fix('1500'), '18', '1b', '1e'
+    	'0xa2', abi.fix('0.37'), '2', 1500000, abi.fix('0.03'), '0xb1', abi.fix('1'), 1000000, '0x64', abi.fix('2500.00'), abi.fix('0.035'), '0xabc123', abi.short_string_to_int256('tag1'), abi.short_string_to_int256('tag2'), abi.short_string_to_int256('tag3'), '0xf1', 1600000, abi.fix('0'), abi.fix('1'), abi.fix('2'), undefined, abi.fix('3.53'), abi.fix('1'), abi.fix('0'), abi.fix('1000'), abi.fix('0.45'), abi.fix('1000'), abi.fix('500'), abi.fix('0.55'), abi.fix('1500'), '18', '1b', '1e'
     ],
     description: abi.hex_to_bytes(abi.hex('This describes my market')),
     resolution: abi.hex_to_bytes(abi.hex('https://www.resolutions.com')),
@@ -829,6 +830,7 @@ describe("abacus.parseMarketInfo", function() {
       	branchID: '0xb1',
       	cumulativeScale: '1',
       	creationTime: 16777216,
+        creationBlock: 100,
       	volume: '2500',
       	creationFee: '0.035',
       	author: '0x0000000000000000000000000000000000abc123',
@@ -862,7 +864,7 @@ describe("abacus.parseMarketInfo", function() {
   });
   test({
     rawInfo: [
-      '0xa3', abi.fix('0.37'), '4', 1500000, abi.fix('0.03'), '0xb1', abi.fix('1'), 1000000, abi.fix('5000.00'), abi.fix('0.029'), '0xabc123', abi.short_string_to_int256('tag1'), abi.short_string_to_int256('tag2'), abi.short_string_to_int256('tag3'), '0xf1', 1600000, abi.fix('4'), abi.fix('1'), abi.fix('4'), undefined, abi.fix('3.53'), abi.fix('1'), abi.fix('0.99'), abi.fix('0'), abi.fix('0.05'), abi.fix('500'), abi.fix('0'), abi.fix('0.05'), abi.fix('800'), abi.fix('0'), abi.fix('0.05'), abi.fix('200'), abi.fix('0'), abi.fix('0.85'), abi.fix('3500'), abi.strip_0x(abi.hex('33')), '1b', abi.strip_0x(abi.hex('59'))
+      '0xa3', abi.fix('0.37'), '4', 1500000, abi.fix('0.03'), '0xb1', abi.fix('1'), 1000000, '0x64', abi.fix('5000.00'), abi.fix('0.029'), '0xabc123', abi.short_string_to_int256('tag1'), abi.short_string_to_int256('tag2'), abi.short_string_to_int256('tag3'), '0xf1', 1600000, abi.fix('4'), abi.fix('1'), abi.fix('4'), undefined, abi.fix('3.53'), abi.fix('1'), abi.fix('0.99'), abi.fix('0'), abi.fix('0.05'), abi.fix('500'), abi.fix('0'), abi.fix('0.05'), abi.fix('800'), abi.fix('0'), abi.fix('0.05'), abi.fix('200'), abi.fix('0'), abi.fix('0.85'), abi.fix('3500'), abi.strip_0x(abi.hex('33')), '1b', abi.strip_0x(abi.hex('59'))
     ],
     description: abi.hex_to_bytes(abi.hex('Generally, What color is the sky?')),
     resolution: abi.hex_to_bytes(abi.hex('https://www.resolutions.com')),
@@ -879,6 +881,7 @@ describe("abacus.parseMarketInfo", function() {
       	branchID: '0xb1',
       	cumulativeScale: '1',
       	creationTime: 16777216,
+        creationBlock: 100,
       	volume: '5000',
       	creationFee: '0.029',
       	author: '0x0000000000000000000000000000000000abc123',
