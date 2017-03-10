@@ -187,25 +187,26 @@ module.exports = {
     var EVENTS_FIELDS = 9;
     var OUTCOMES_FIELDS = 3;
     var info = {};
-    if (rawInfo && rawInfo.length > 14 && rawInfo[0] && rawInfo[4] && rawInfo[7] && rawInfo[8]) {
-    // marketInfo[0] = marketID
-    // marketInfo[1] = MARKETS.getMakerFees(marketID)
-    // marketInfo[2] = numOutcomes
-    // marketInfo[3] = MARKETS.getTradingPeriod(marketID)
-    // marketInfo[4] = MARKETS.getTradingFee(marketID)
-    // marketInfo[5] = MARKETS.getBranchID(marketID)
-    // marketInfo[6] = MARKETS.getCumScale(marketID)
-    // marketInfo[7] = MARKETS.getCreationTime(marketID)
-    // marketInfo[8] = MARKETS.getVolume(marketID)
-    // marketInfo[9] = INFO.getCreationFee(marketID)
-    // marketInfo[10] = INFO.getCreator(marketID)
-    // tags = MARKETS.returnTags(marketID, outitems=3)
-    // marketInfo[11] = tags[0]
-    // marketInfo[12] = tags[1]
-    // marketInfo[13] = tags[2]
-      var index = 14;
+    if (rawInfo && rawInfo.length > 15 && rawInfo[0] && rawInfo[4] && rawInfo[7] && rawInfo[8]) {
+      // marketInfo[0] = marketID
+      // marketInfo[1] = MARKETS.getMakerFees(marketID)
+      // marketInfo[2] = numOutcomes
+      // marketInfo[3] = MARKETS.getTradingPeriod(marketID)
+      // marketInfo[4] = MARKETS.getTradingFee(marketID)
+      // marketInfo[5] = MARKETS.getBranchID(marketID)
+      // marketInfo[6] = MARKETS.getCumScale(marketID)
+      // marketInfo[7] = MARKETS.getCreationTime(marketID)
+      // marketInfo[8] = MARKETS.getCreationBlock(marketID)
+      // marketInfo[9] = MARKETS.getVolume(marketID)
+      // marketInfo[10] = INFO.getCreationFee(marketID)
+      // marketInfo[11] = INFO.getCreator(marketID)
+      // tags = MARKETS.returnTags(marketID, outitems=3)
+      // marketInfo[12] = tags[0]
+      // marketInfo[13] = tags[1]
+      // marketInfo[14] = tags[2]
+      var index = 15;
       var fees = this.calculateMakerTakerFees(rawInfo[4], rawInfo[1]);
-      var topic = this.decodeTag(rawInfo[11]);
+      var topic = this.decodeTag(rawInfo[12]);
       info = {
         id: abi.format_int256(rawInfo[0]),
         network: this.network_id,
@@ -217,11 +218,12 @@ module.exports = {
         branchID: rawInfo[5],
         cumulativeScale: abi.unfix(rawInfo[6], "string"),
         creationTime: parseInt(rawInfo[7], 16),
-        volume: abi.unfix(rawInfo[8], "string"),
-        creationFee: abi.unfix(rawInfo[9], "string"),
-        author: abi.format_address(rawInfo[10]),
+        creationBlock: parseInt(rawInfo[8], 16),
+        volume: abi.unfix(rawInfo[9], "string"),
+        creationFee: abi.unfix(rawInfo[10], "string"),
+        author: abi.format_address(rawInfo[11]),
         topic: topic,
-        tags: [topic, this.decodeTag(rawInfo[12]), this.decodeTag(rawInfo[13])],
+        tags: [topic, this.decodeTag(rawInfo[13]), this.decodeTag(rawInfo[14])],
         minValue: abi.unfix_signed(rawInfo[index + 3], "string"),
         maxValue: abi.unfix_signed(rawInfo[index + 4], "string"),
         endDate: parseInt(rawInfo[index + 1], 16),
