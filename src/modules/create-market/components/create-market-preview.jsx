@@ -224,7 +224,7 @@ export default class CreateMarketPreview extends Component {
             </div>
             <div className="create-market-outcomes">
               <ul
-                className={classNames('prop-container create-market-outcome-placeholders', {
+                className={classNames('prop-container create-market-outcome-list', {
                   'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_OUTCOMES,
                   'is-null': !newMarket.outcomes.length || newMarket.outcomes[0] === '',
                   'has-value': newMarket.outcomes.length && newMarket.outcomes[0] !== ''

@@ -109,9 +109,9 @@
         }
 
         .outcome-null-masks {
-          height: 100%;
+          height: 90%;
           position: absolute;
-          width: 100%;
+          width: 80%;
 
           .null-mask {
             display: block;
@@ -176,15 +176,17 @@
       .create-market-outcomes {
         .market-preview-outcomes();
 
-        .create-market-outcome-placeholders {
+        .create-market-outcome-list {
           display: flex;
           flex: 1;
           flex-direction: column;
 
+          button {
+            align-self: flex-start;
+          }
+
           li {
             .font-weight-normal();
-
-            margin-bottom: 0.4em;
           }
         }
       }
