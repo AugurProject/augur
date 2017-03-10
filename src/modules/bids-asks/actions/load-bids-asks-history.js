@@ -11,16 +11,14 @@ export function loadBidsAsksHistory(marketID, cb) {
       params.fromBlock = loginAccount.registerBlockNumber;
     }
     async.parallelLimit([
-      next => augur.getLogs('log_add_tx', params, { index: ['market', 'outcome'] }, (err, logs) => {
-        if (err) return next(err);
+      next => augur.getLogsChunked('log_add_tx', params, { index: ['market', 'outcome'] }, (err, logs) => {
+        if (err) return console.error(err);
         dispatch(updateAccountBidsAsksData(logs, marketID));
-        next();
-      }),
-      next => augur.getLogs('log_cancel', params, { index: ['market', 'outcome'] }, (err, logs) => {
-        if (err) return next(err);
+      }, next),
+      next => augur.getLogsChunked('log_cancel', params, { index: ['market', 'outcome'] }, (err, logs) => {
+        if (err) return console.error(err);
         dispatch(updateAccountCancelsData(logs, marketID));
-        next();
-      })
+      }, next)
     ], constants.PARALLEL_LIMIT, callback);
   };
 }

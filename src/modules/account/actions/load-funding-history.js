@@ -18,12 +18,11 @@ export function loadFundingHistory(cb) {
       'Approval'
     ], constants.PARALLEL_LIMIT, (label, nextLabel) => {
       const p = label === 'fundedAccount' ? { ...params, fromBlock: null } : params;
-      augur.getLogs(label, p, null, (err, logs) => {
+      augur.getLogsChunked(label, p, null, (err, logs) => {
         console.log(label, p, err, logs);
-        if (err) return nextLabel(err);
+        if (err) return console.error(err);
         if (logs && logs.length) dispatch(convertLogsToTransactions(label, logs));
-        nextLabel();
-      });
+      }, nextLabel);
     }, callback);
   };
 }
@@ -40,16 +39,15 @@ export function loadTransferHistory(cb) {
       'Transfer',
       'sentCash'
     ], constants.PARALLEL_LIMIT, (label, nextLabel) => {
-      augur.getLogs(label, { ...params, _from: loginAccount.address }, null, (err, logs) => {
+      augur.getLogsChunked(label, { ...params, _from: loginAccount.address }, null, (err, logs) => {
         console.log(label, params, err, logs);
-        if (err) return nextLabel(err);
+        if (err) return console.error(err);
         if (logs && logs.length) dispatch(convertLogsToTransactions(label, logs));
-        augur.getLogs(label, { ...params, _to: loginAccount.address }, null, (err, logs) => {
+        augur.getLogsChunked(label, { ...params, _to: loginAccount.address }, null, (err, logs) => {
           console.log(label, params, err, logs);
-          if (err) return nextLabel(err);
+          if (err) return console.error(err);
           if (logs && logs.length) dispatch(convertLogsToTransactions(label, logs));
-          nextLabel();
-        });
+        }, nextLabel);
       });
     }, callback);
   };

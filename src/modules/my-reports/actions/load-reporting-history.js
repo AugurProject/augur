@@ -18,18 +18,16 @@ export function loadReportingHistory(cb) {
       'submittedReportHash',
       'slashedRep'
     ], constants.PARALLEL_LIMIT, (label, nextLabel) => {
-      augur.getLogs(label, params, null, (err, logs) => {
-        if (err) return nextLabel(err);
+      augur.getLogsChunked(label, params, null, (err, logs) => {
+        if (err) return console.error(err);
         if (logs && logs.length) dispatch(convertLogsToTransactions(label, logs));
-        nextLabel();
-      });
+      }, nextLabel);
     }, (err) => {
       if (err) return callback(err);
-      augur.getLogs('slashedRep', { ...params, sender: null, reporter: loginAccount.address }, null, (err, logs) => {
-        if (err) return callback(err);
+      augur.getLogsChunked('slashedRep', { ...params, sender: null, reporter: loginAccount.address }, null, (err, logs) => {
+        if (err) return console.error(err);
         if (logs && logs.length) dispatch(convertLogsToTransactions('slashedRep', logs));
-        callback();
-      });
+      }, callback);
     });
   };
 }
