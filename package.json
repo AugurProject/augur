@@ -64,7 +64,7 @@
     "istanbul": "^0.3.17",
     "it-each": "^0.3.1",
     "madlibs": "0.0.0",
-    "mocha": "^2.2.4",
+    "mocha": "3.2.0",
     "mocha-lcov-reporter": "0.0.2",
     "moment": "^2.13.0",
     "posix-getopt": "^1.1.0",

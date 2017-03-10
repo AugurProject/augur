@@ -25,6 +25,7 @@ module.exports = {
   MINIMUM_TRADE_SIZE: new BigNumber("0.01", 10),
 
   DEFAULT_NETWORK_ID: "3",
+  DEFAULT_GASPRICE: 20000000000,
 
   // default branch info: "root branch", 1010101
   DEFAULT_BRANCH_ID: "0xf69b5",

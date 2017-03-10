@@ -91,7 +91,7 @@ module.exports = {
     var bnBaseReporters = abi.bignum(baseReporters);
     var bnPast24 = abi.bignum(numEventsCreatedInPast24Hours);
     var bnNumberEvents = abi.bignum(numEventsInReportPeriod);
-    var bnGasPrice = abi.bignum(this.rpc.gasPrice);
+    var bnGasPrice = abi.bignum(this.rpc.gasPrice || constants.DEFAULT_GASPRICE);
     var creationFee = abi.bignum("0.03").times(bnBaseReporters).dividedBy(tradingFee);
     var minFee = constants.COST_PER_REPORTER.times(bnBaseReporters).times(bnGasPrice);
     if (creationFee.lt(minFee)) creationFee = minFee;
@@ -316,8 +316,8 @@ module.exports = {
   },
 
   calculateRequiredMarketValue: function (gasPrice) {
-    gasPrice = abi.bignum(gasPrice);
-    return abi.prefix_hex((new BigNumber("1200000").times(gasPrice).plus(new BigNumber("500000").times(gasPrice))).toString(16));
+    gasPrice = abi.bignum(gasPrice || constants.DEFAULT_GASPRICE);
+    return abi.prefix_hex((new BigNumber("1200000", 10).times(gasPrice).plus(new BigNumber("500000", 10).times(gasPrice))).toString(16));
   },
 
   shrinkScalarPrice: function (minValue, price) {

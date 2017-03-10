@@ -812,32 +812,23 @@ describe('connect.connect', function() {
     connector: {
       connect: function(options, cb) {
         assert.deepEqual(options, {
-          http: null,
+          httpAddresses: [],
+          wsAddresses: [],
+          ipcAddresses: [],
           contracts: Contracts,
           api: Contracts.api
         });
 
         if (cb && cb.constructor === Function) {
-          cb({
-            http: options.http,
-            ws: options.ws,
-            ipc: options.ipc
-          });
+          cb(true);
         } else {
-          return {
-            http: options.http,
-            ws: options.ws,
-            ipc: options.ipc
-          };
+          return true;
         }
-      }
+      },
+      rpc: { unsubscribe: function(_, callback) { setImmediate(function () { callback({ error: -32601, message: "Method not found"}) }); } }
     },
     assertions: function(connection) {
-      assert.deepEqual(connection, {
-        http: null,
-        ws: undefined,
-        ipc: undefined
-      });
+      assert.isTrue(connection);
     }
   });
   test({
@@ -849,32 +840,23 @@ describe('connect.connect', function() {
     connector: {
       connect: function(options, cb) {
         assert.deepEqual(options, {
-          http: 'https://eth3.augur.net',
+          httpAddresses: ['https://eth3.augur.net'],
+          wsAddresses: [],
+          ipcAddresses: [],
           contracts: Contracts,
           api: Contracts.api
         });
 
         if (cb && cb.constructor === Function) {
-          cb({
-            http: options.http,
-            ws: options.ws,
-            ipc: options.ipc
-          });
+          cb(true);
         } else {
-          return {
-            http: options.http,
-            ws: options.ws,
-            ipc: options.ipc
-          };
+          return true;
         }
-      }
+      },
+      rpc: { unsubscribe: function(_, callback) { setImmediate(function () { callback({ error: -32601, message: "Method not found"}) }); } }
     },
     assertions: function(connection) {
-      assert.deepEqual(connection, {
-        http: 'https://eth3.augur.net',
-        ws: undefined,
-        ipc: undefined
-      });
+      assert.isTrue(connection);
     }
   });
   test({
@@ -890,34 +872,23 @@ describe('connect.connect', function() {
     connector: {
       connect: function(options, cb) {
         assert.deepEqual(options, {
-          http: 'https://eth3.augur.net',
-          ipc: '/path/to/geth.ipc',
-          ws: 'wss://ws.augur.net',
+          httpAddresses: ['https://eth3.augur.net'],
+          ipcAddresses: ['/path/to/geth.ipc'],
+          wsAddresses: ['wss://ws.augur.net'],
           contracts: Contracts,
           api: Contracts.api
         });
 
         if (cb && cb.constructor === Function) {
-          cb({
-            http: options.http,
-            ws: options.ws,
-            ipc: options.ipc
-          });
+          cb(true);
         } else {
-          return {
-            http: options.http,
-            ws: options.ws,
-            ipc: options.ipc
-          };
+          return true;
         }
-      }
+      },
+      rpc: { unsubscribe: function(_, callback) { setImmediate(function () { callback({ error: -32601, message: "Method not found"}) }); } }
     },
     assertions: function(connection) {
-      assert.deepEqual(connection, {
-        http: 'https://eth3.augur.net',
-        ipc: '/path/to/geth.ipc',
-        ws: 'wss://ws.augur.net'
-      });
+      assert.isTrue(connection);
     }
   });
   test({
@@ -942,35 +913,24 @@ describe('connect.connect', function() {
     connector: {
       connect: function(options, cb) {
         assert.deepEqual(options, {
-          http: 'https://eth3.augur.net',
-          ipc: '/path/to/geth.ipc',
-          ws: 'wss://ws.augur.net',
+          httpAddresses: ['https://eth3.augur.net'],
+          ipcAddresses: ['/path/to/geth.ipc'],
+          wsAddresses: ['wss://ws.augur.net'],
           augurNodes: ['https://1.augurNode.com', 'https://2.augurNode.com'],
           contracts: Contracts,
           api: Contracts.api
         });
 
         if (cb && cb.constructor === Function) {
-          cb({
-            http: options.http,
-            ws: options.ws,
-            ipc: options.ipc
-          });
+          cb(true);
         } else {
-          return {
-            http: options.http,
-            ws: options.ws,
-            ipc: options.ipc
-          };
+          return true;
         }
-      }
+      },
+      rpc: { unsubscribe: function(_, callback) { setImmediate(function () { callback({ error: -32601, message: "Method not found"}) }); } }
     },
     assertions: function(connection) {
-      assert.deepEqual(connection, {
-        http: 'https://eth3.augur.net',
-        ipc: '/path/to/geth.ipc',
-        ws: 'wss://ws.augur.net'
-      });
+      assert.isTrue(connection);
     }
   });
   // this final test is going to async only. It passes rpcinfo as a function which triggers conditionals in our test function. Please take note of this when reading this test.
@@ -988,32 +948,23 @@ describe('connect.connect', function() {
     connector: {
       connect: function(options, cb) {
         assert.deepEqual(options, {
-          http: null,
+          httpAddresses: [],
+          wsAddresses: [],
+          ipcAddresses: [],
           contracts: Contracts,
           api: Contracts.api
         });
 
         if (cb && cb.constructor === Function) {
-          cb({
-            http: options.http,
-            ws: options.ws,
-            ipc: options.ipc
-          });
+          cb(true);
         } else {
-          return {
-            http: options.http,
-            ws: options.ws,
-            ipc: options.ipc
-          };
+          return true;
         }
-      }
+      },
+      rpc: { unsubscribe: function(_, callback) { setImmediate(function () { callback({ error: -32601, message: "Method not found"}) }); } }
     },
     assertions: function(connection) {
-      assert.deepEqual(connection, {
-        http: null,
-        ipc: undefined,
-        ws: undefined
-      });
+      assert.isTrue(connection);
     }
   });
 });

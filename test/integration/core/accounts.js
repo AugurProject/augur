@@ -252,7 +252,7 @@ describe("Concurrent transactions", function () {
       ws: augur.rpc.wsUrl,
       ipc: null
     };
-        // augur.rpc.debug.tx = true;
+    // augur.rpc.debug.tx = true;
     augur.connect(connectParams, function (connection) {
       assert.deepEqual(connection, connectParams);
       var sender = augur.from;

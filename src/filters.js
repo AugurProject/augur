@@ -373,7 +373,7 @@ module.exports = function () {
     pacemaker: function (cb) {
       var self = this;
       if (!cb || cb.constructor !== Object) return;
-      if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
+      if (!augur.subscriptionsSupported) {
         async.forEachOf(this.filter, function (filter, label, next) {
           if (utils.is_function(cb[label])) {
             self.poll_filter(label, cb[label]);
@@ -438,7 +438,7 @@ module.exports = function () {
         }
       }
 
-      if (!augur.rpc.wsUrl && !augur.rpc.ipcpath) {
+      if (!augur.subscriptionsSupported) {
         this.subscribeLogs = augur.rpc.newFilter.bind(augur.rpc);
         this.subscribeNewBlocks = augur.rpc.newBlockFilter.bind(augur.rpc);
         this.unsubscribe = augur.rpc.uninstallFilter.bind(augur.rpc);
