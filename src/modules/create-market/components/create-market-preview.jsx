@@ -57,6 +57,8 @@ export default class CreateMarketPreview extends Component {
   render() {
     const newMarket = this.props.newMarket;
 
+    console.log('validations -- ', newMarket.validations);
+
     return (
       <article
         ref={(marketPreview) => { this.marketPreview = marketPreview; }}
@@ -153,26 +155,30 @@ export default class CreateMarketPreview extends Component {
                   <span className="null-mask" />
                   <span className="prop-value">{(!!Object.keys(newMarket.endDate).length && <span>Ends: <span className="market-property-value">{newMarket.endDate.formatted}</span></span>) || '\u00a0'}</span>
                 </li>
-                <li
-                  className={classNames('prop-container create-market-property', {
-                    'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES,
-                    'is-null': !newMarket.makerFee,
-                    'has-value': !!newMarket.makerFee
+                <div
+                  className={classNames('prop-container create-market-property create-market-property-fees', {
+                    'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES
                   })}
                 >
-                  <span className="null-mask" />
-                  <span className="prop-value">{<span>Maker Fee: <span className="market-property-value">{newMarket.makerFee}</span></span> || '\u00a0'}</span>
-                </li>
-                <li
-                  className={classNames('prop-container create-market-property', {
-                    'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES,
-                    'is-null': !newMarket.takerFee,
-                    'has-value': !!newMarket.takerFee
-                  })}
-                >
-                  <span className="null-mask" />
-                  <span className="prop-value">{<span>Taker Fee: <span className="market-property-value">{newMarket.takerFee}</span></span> || '\u00a0'}</span>
-                </li>
+                  <li
+                    className={classNames('prop-container', {
+                      'is-null': !newMarket.makerFee && !newMarket.validations.indexOf(NEW_MARKET_FEES) > -1,
+                      'has-value': newMarket.makerFee && (newMarket.validations.indexOf(NEW_MARKET_FEES) > -1 || newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES)
+                    })}
+                  >
+                    <span className="null-mask" />
+                    <span className="prop-value">{(newMarket.makerFee && (newMarket.validations.indexOf(NEW_MARKET_FEES) > -1 || newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES) && <span>Maker Fee: <span className="market-property-value">{newMarket.makerFee}</span></span>) || '\u00a0'}</span>
+                  </li>
+                  <li
+                    className={classNames('prop-container', {
+                      'is-null': !newMarket.takerFee && !newMarket.validations.indexOf(NEW_MARKET_FEES) > -1,
+                      'has-value': newMarket.takerFee && (newMarket.validations.indexOf(NEW_MARKET_FEES) > -1 || newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES)
+                    })}
+                  >
+                    <span className="null-mask" />
+                    <span className="prop-value">{(newMarket.takerFee && (newMarket.validations.indexOf(NEW_MARKET_FEES) > -1 || newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES) && <span>Taker Fee: <span className="market-property-value">{newMarket.takerFee}</span></span>) || '\u00a0'}</span>
+                  </li>
+                </div>
                 <li
                   className={classNames('prop-container create-market-property', {
                     'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_ORDER_BOOK,

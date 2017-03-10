@@ -23,7 +23,9 @@ export default class CreateMarketFormDescription extends Component {
       warnings: {
         taker: [],
         maker: []
-      }
+      },
+      makerFee: this.props.makerFee,
+      takerFee: this.props.takerFee
     };
 
     this.validateForm = this.validateForm.bind(this);
@@ -35,9 +37,12 @@ export default class CreateMarketFormDescription extends Component {
     ) {
       this.validateForm(nextProps.takerFee, nextProps.makerFee);
     }
+
+    if (this.props.makerFee !== nextProps.makerFee) this.setState({ makerFee: nextProps.makerFee });
+    if (this.props.takerFee !== nextProps.takerFee) this.setState({ takerFee: nextProps.takerFee });
   }
 
-  validateForm(takerFee = this.props.takerFee, makerFee = this.props.makerFee) {
+  validateForm(takerFee = this.state.takerFee, makerFee = this.state.makerFee) {
     const errors = {
       taker: [],
       maker: []
@@ -50,6 +55,7 @@ export default class CreateMarketFormDescription extends Component {
     const takerFeeError = validateTakerFee(takerFee);
     if (takerFeeError) {
       errors.taker.push(takerFeeError);
+      this.props.updateNewMarket({ takerFee: '' });
     } else {
       this.props.updateNewMarket({ takerFee });
     }
@@ -57,6 +63,7 @@ export default class CreateMarketFormDescription extends Component {
     const makerFeeError = validateMakerFee(makerFee, takerFee);
     if (!takerFeeError && makerFeeError) {
       errors.maker.push(makerFeeError);
+      this.props.updateNewMarket({ makerFee: '' });
     } else {
       this.props.updateNewMarket({ makerFee });
     }
@@ -83,7 +90,7 @@ export default class CreateMarketFormDescription extends Component {
       warnings.maker.push(`Maker fee maximum is: ${makerFeeMax}%`);
     }
 
-    this.setState({ errors, warnings });
+    this.setState({ errors, warnings, takerFee, makerFee });
   }
 
   render() {
@@ -104,7 +111,7 @@ export default class CreateMarketFormDescription extends Component {
             <form onSubmit={e => e.preventDefault()} >
               <Input
                 type="number"
-                value={p.takerFee}
+                value={s.takerFee}
                 isIncrementable
                 incrementAmount={0.1}
                 min={TAKER_FEE_MIN}
@@ -133,7 +140,7 @@ export default class CreateMarketFormDescription extends Component {
             <form onSubmit={e => e.preventDefault()} >
               <Input
                 type="number"
-                value={p.makerFee}
+                value={s.makerFee}
                 isIncrementable
                 incrementAmount={0.1}
                 min={MAKER_FEE_MIN}

@@ -49,7 +49,15 @@
           .border(true, @border-left, @color-blue, @border-width-3);
 
           background-color: @color-blue-extra-light;
-          padding: 0.2em;
+          padding: 3px;
+
+          &.create-market-tag,
+          &.create-market-property {
+            .null-mask {
+              height: 50%;
+              width: 80%;
+            }
+          }
 
           .null-mask {
             box-shadow: 0 1px 5px fadeout(@color-black-extra-light, @amount-extra-light);
@@ -140,6 +148,11 @@
 
           .create-market-property {
             margin-right: 0.4em;
+          }
+
+          .create-market-property-fees {
+            display: flex;
+            position: relative;
           }
 
           li {
