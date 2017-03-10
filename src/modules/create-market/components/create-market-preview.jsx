@@ -232,7 +232,7 @@ export default class CreateMarketPreview extends Component {
                 >
                   <button
                     className="unstyled"
-                    onClick={() => p.updateNewMarket({ currentStep: newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK) })}
+                    onClick={() => p.newMarket.validations.indexOf(NEW_MARKET_OUTCOMES) !== -1 && p.updateNewMarket({ currentStep: newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK) })}
                   >
                     <span className="null-mask" />
                     <span className="prop-value">{(Object.keys(newMarket.orderBook).length && s.initialLiquidity != null && <span>Initial Liquidity: <span className="market-property-value">{s.initialLiquidity} Shares</span></span>) || '\u00a0'}</span>
