@@ -6,19 +6,6 @@
   transition-duration: @animation-speed-very-fast;
   transition-property: height;
 
-  // First Form Part (Type)
-  &.hide {
-    animation-duration: @animation-speed-very-fast;
-    animation-fill-mode: forwards;
-    animation-name: hideType;
-  }
-
-  &.display {
-    animation-duration: @animation-speed-fast;
-    animation-fill-mode: forwards;
-    animation-name: displayType;
-  }
-
   &.no-preview {
     .border(false);
 
@@ -38,6 +25,22 @@
 
     &:first-of-type:not(.can-hide) {
       display: flex;
+    }
+
+    &.create-market-form-type {
+      opacity: 1;
+      transition-duration: @animation-speed-very-fast;
+      transition-property: opacity;
+
+      &.hide {
+        display: flex;
+        opacity: 0;
+      }
+
+      &.display {
+        display: flex;
+        opacity: 1;
+      }
     }
 
     &.hide-form-part {
@@ -167,6 +170,43 @@
 }
 
 // Animations
+@keyframes hideType {
+  0% {
+    display: flex;
+    opacity: 1;
+  }
+
+  99% {
+    display: flex;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  100% {
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@keyframes revealType {
+  0% {
+    display: none;
+    opacity: 0;
+  }
+
+  1% {
+    display: flex;
+    opacity: 0;
+    visibility: visible;
+  }
+
+  100% {
+    display: flex;
+    opacity: 1;
+  }
+}
+
 @keyframes revealFormPart {
   0% {
     display: none;

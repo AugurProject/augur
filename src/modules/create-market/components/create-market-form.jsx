@@ -79,7 +79,6 @@ export default class CreateMarketForm extends Component {
   }
 
   updateValidity(isValid) {
-    console.log('updateValidity -- ', isValid);
     this.props.updateNewMarket({ isValid });
   }
 
