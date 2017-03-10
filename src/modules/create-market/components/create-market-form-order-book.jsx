@@ -361,7 +361,7 @@ export default class CreateMarketFormOrderBook extends Component {
           <div className="create-market-form-part-input">
             <aside>
               <h3>Initial Liquidity</h3>
-              <h4>Optional</h4>
+              <h4>optional</h4>
               <span>Use this form to add initial liquidty for your market.</span>
             </aside>
             <div className="vertical-form-divider" />
