@@ -1,5 +1,7 @@
 import React, { PropTypes } from 'react';
 
+import BinaryIcon from 'modules/common/components/binary-icon';
+import CategoricalIcon from 'modules/common/components/categorical-icon';
 import ScalarIcon from 'modules/common/components/scalar-icon';
 
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
@@ -22,6 +24,7 @@ const CreateMarketFormType = p => (
           });
         }}
       >
+        <BinaryIcon />
         <h3>Yes/No</h3>
         <span className="market-type-description">
           Ask a question that has a simple <strong>YES</strong> or <strong>NO</strong> outcome.
@@ -41,6 +44,7 @@ const CreateMarketFormType = p => (
           });
         }}
       >
+        <CategoricalIcon />
         <h3>Multiple Choice</h3>
         <span className="market-type-description">
           Ask a question and provide a set of potential outcomes.
@@ -61,7 +65,7 @@ const CreateMarketFormType = p => (
         }}
       >
         <ScalarIcon />
-        <h3>Numerical</h3>
+        <h3>Numerical Range</h3>
         <span className="market-type-description">
           Ask a question that has an outcome within a range of numbers.
         </span>
