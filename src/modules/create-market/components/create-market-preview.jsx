@@ -87,13 +87,14 @@ export default class CreateMarketPreview extends Component {
                 </li>
                 <button
                   className={classNames('unstyled prop-container create-market-keywords', {
-                    'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_KEYWORDS,
+                    'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_KEYWORDS
                   })}
                   onClick={() => p.updateNewMarket({ currentStep: newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS) })}
                 >
                   <li
                     className={classNames('prop-container create-market-tag', {
                       'is-null': !(newMarket.keywords && newMarket.keywords[0]),
+                      'is-unused': !(newMarket.keywords && newMarket.keywords[0]) && newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_REVIEW,
                       'has-value': newMarket.keywords && !!newMarket.keywords[0]
                     })}
                   >
@@ -103,6 +104,7 @@ export default class CreateMarketPreview extends Component {
                   <li
                     className={classNames('prop-container create-market-tag', {
                       'is-null': !(newMarket.keywords && newMarket.keywords[1]),
+                      'is-unused': !(newMarket.keywords && newMarket.keywords[1]) && newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_REVIEW,
                       'has-value': newMarket.keywords && !!newMarket.keywords[1]
                     })}
                   >
@@ -153,6 +155,7 @@ export default class CreateMarketPreview extends Component {
                 className={classNames('prop-container create-market-details', {
                   'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_DETAILS,
                   'is-null': !newMarket.detailsText,
+                  'is-unused': !newMarket.detailsText && newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_REVIEW,
                   'has-value': !!newMarket.detailsText
                 })}
               >
@@ -209,6 +212,7 @@ export default class CreateMarketPreview extends Component {
                   className={classNames('prop-container create-market-property', {
                     'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_ORDER_BOOK,
                     'is-null': !Object.keys(newMarket.orderBook).length,
+                    'is-unused': !Object.keys(newMarket.orderBook).length && newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_REVIEW,
                     'has-value': !!Object.keys(newMarket.orderBook).length
                   })}
                 >

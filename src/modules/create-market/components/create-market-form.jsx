@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 
-import CreateMarketFormButtons from 'modules/create-market/components/create-market-form-buttons';
 import CreateMarketFormType from 'modules/create-market/components/create-market-form-type';
 import CreateMarketFormDescription from 'modules/create-market/components/create-market-form-description';
 import CreateMarketFormOutcomes from 'modules/create-market/components/create-market-form-outcomes';
@@ -12,6 +11,7 @@ import CreateMarketFormTopic from 'modules/create-market/components/create-marke
 import CreateMarketFormKeywords from 'modules/create-market/components/create-market-form-keywords';
 import CreateMarketFormFees from 'modules/create-market/components/create-market-form-fees';
 import CreateMarketFormOrderBook from 'modules/create-market/components/create-market-form-order-book';
+import CreateMarketReview from 'modules/create-market/components/create-market-review';
 
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
 import {
@@ -208,6 +208,12 @@ export default class CreateMarketForm extends Component {
           removeOrderFromNewMarket={p.removeOrderFromNewMarket}
           updateValidity={this.updateValidity}
           updateNewMarket={p.updateNewMarket}
+        />
+        <CreateMarketReview
+          className={classNames({
+            'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_REVIEW),
+            'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_REVIEW) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK)
+          })}
         />
       </article>
     );
