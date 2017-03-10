@@ -44,7 +44,14 @@ export default class CreateMarketPreview extends Component {
   updatePreviewHeight(step) {
     let newHeight = 0;
     if (step && step !== 0) newHeight = this.marketPreview.getElementsByClassName('create-market-preview-content')[0].clientHeight + 3; // 2 for horizontal borders
-    this.marketPreview.style.height = `${newHeight}px`;
+
+    if (step === 0) {
+      this.marketPreview.style.height = `${newHeight}px`;
+    } else {
+      setTimeout(() => {
+        this.marketPreview.style.height = `${newHeight}px`;
+      }, 1500);
+    }
   }
 
   render() {

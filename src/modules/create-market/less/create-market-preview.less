@@ -2,16 +2,18 @@
   margin: 0 1em;
   overflow: hidden;
   position: relative;
-  transition-delay: 2s;
   transition-duration: @animation-speed-normal;
-  transition-property: opacity, height;
+  transition-property: height;
 
   &.preview-is-hidden {
-    opacity: 0;
+    animation-duration: @animation-speed-normal;
+    animation-name: hidePreview;
   }
 
   &.preview-is-visible {
-    opacity: 1;
+    animation-delay: 1.4s;
+    animation-duration: @animation-speed-normal;
+    animation-name: revealPreview;
   }
 
   .create-market-preview-container {
@@ -90,7 +92,22 @@
   }
 }
 
-.keyframes(displayPreview, {
+.keyframes(hidePreview, {
+0% {
+display: block;
+opacity: 1;
+}
+99% {
+display: block;
+opacity: 0;
+}
+100% {
+display: none;
+opacity: 0;
+}
+});
+
+.keyframes(revealPreview, {
 0% {
 display: none;
 opacity: 0;
