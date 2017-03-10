@@ -30,8 +30,6 @@ export default class CreateMarketFormDescription extends Component {
   }
 
   validateForm(description = '') {
-    console.log('validateForm -- ', description);
-
     const warnings = [];
 
     // Error Check

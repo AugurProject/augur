@@ -30,27 +30,37 @@
       .prop-container {
         position: relative;
         transition-duration: @animation-speed-very-fast;
-        transition-property: margin;
+        transition-property: padding, border;
 
         &.is-null {
-          background-color: @color-gray-muted;
-          border-radius: 1em;
+          .null-mask {
+            opacity: 1;
+          }
         }
 
         &.has-value {
-          // TODO
+          .null-mask {
+            opacity: 0;
+          }
         }
 
         &.is-editing {
-          // TODO
+          .border(true);
+
+          padding: 0.2em;
         }
 
         .null-mask {
-          height: 100%;
-          left: 0;
+          background-color: @color-gray-muted;
+          border-radius: 1em;
+          height: 80%;
+          left: 50%;
           position: absolute;
-          top: 0;
-          width: 100%;
+          top: 50%;
+          transform: translate(-50%, -50%);
+          transition-duration: @animation-speed-very-fast;
+          transition-property: opacity;
+          width: 99%;
         }
       }
 
