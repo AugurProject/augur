@@ -30,9 +30,18 @@
       .prop-container {
         position: relative;
         transition-duration: @animation-speed-very-fast;
-        transition-property: padding, border;
+        transition-property: margin;
 
-        &.is-null {
+        &.is-editing {
+          .null-mask {
+            box-shadow: 0 1px 5px fadeout(@color-black-extra-light, @amount-extra-light);
+          }
+        }
+
+        &.is-null,
+        .is-null {
+          position: relative;
+
           .null-mask {
             height: 85%;
             opacity: 1;
@@ -40,15 +49,12 @@
           }
         }
 
-        &.has-value {
+        &.has-value,
+        .has-value {
+          position: relative;
+
           .null-mask {
             opacity: 0;
-          }
-        }
-
-        &.is-editing {
-          .null-mask {
-            box-shadow: 0 1px 5px fadeout(@color-black-extra-light, @amount-extra-light);
           }
         }
 

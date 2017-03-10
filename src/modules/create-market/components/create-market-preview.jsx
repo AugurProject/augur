@@ -70,16 +70,17 @@ export default class CreateMarketPreview extends Component {
             <div className="create-market-details">
               <ul className="create-market-tags">
                 <li
-                  className={classNames('create-market-tag', {
+                  className={classNames('prop-container create-market-tag', {
                     'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_TOPIC,
                     'is-null': !newMarket.topic,
                     'has-value': !!newMarket.topic
                   })}
                 >
-                  {newMarket.topic}
+                  <span className="null-mask" />
+                  <span className="prop-value">{newMarket.topic || `\u00a0`}</span>
                 </li>
                 <div
-                  className={classNames('create-market-keywords', {
+                  className={classNames('prop-container create-market-keywords', {
                     'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_KEYWORDS,
                   })}
                 >
@@ -89,7 +90,8 @@ export default class CreateMarketPreview extends Component {
                       'has-value': newMarket.keywords && !!newMarket.keywords[0]
                     })}
                   >
-                    {newMarket.keywords && newMarket.keywords[0]}
+                    <span className="null-mask" />
+                    <span className="prop-value">{(newMarket.keywords && newMarket.keywords[0]) || `\u00a0`}</span>
                   </li>
                   <li
                     className={classNames('create-market-tag', {
@@ -97,7 +99,8 @@ export default class CreateMarketPreview extends Component {
                       'has-value': newMarket.keywords && !!newMarket.keywords[1]
                     })}
                   >
-                    {newMarket.keywords && newMarket.keywords[1]}
+                    <span className="null-mask" />
+                    <span className="prop-value">{(newMarket.keywords && newMarket.keywords[1]) || `\u00a0`}</span>
                   </li>
                 </div>
               </ul>
@@ -112,14 +115,22 @@ export default class CreateMarketPreview extends Component {
                 <span className="prop-value">{newMarket.description || `\u00a0`}</span>
               </div>
               <span
-                className={classNames('create-market-expiry-source', {
+                className={classNames('prop-container create-market-expiry-source', {
                   'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_EXPIRY_SOURCE,
                   'is-null': !newMarket.expirySource && (newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC || !newMarket.expirySourceType),
-                  'has-value': !!newMarket.expirySource && !!newMarket.expirySourceType
+                  'has-value': newMarket.expirySourceType === EXPIRY_SOURCE_GENERIC || (newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC && !!newMarket.expirySource)
                 })}
               >
-                {newMarket.expirySourceType === EXPIRY_SOURCE_GENERIC && 'Source: News Media'}
-                {newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC && !!newMarket.expirySource && `Source: ${newMarket.expirySource}`}
+                <span className="null-mask" />
+                <span className="prop-value">
+                  {newMarket.expirySourceType === EXPIRY_SOURCE_GENERIC && 'Source: News Media'}
+                  {newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC && !!newMarket.expirySource && `Source: ${newMarket.expirySource}`}
+                  { newMarket.expirySourceType !== EXPIRY_SOURCE_GENERIC &&
+                    !(newMarket.expirySourceType === EXPIRY_SOURCE_SPECIFIC &&
+                    !!newMarket.expirySource) &&
+                    '\u00a0'
+                  }
+                </span>
               </span>
               <span
                 className={classNames('create-market-details', {
