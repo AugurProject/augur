@@ -133,26 +133,28 @@ export default class CreateMarketPreview extends Component {
                 </span>
               </span>
               <span
-                className={classNames('create-market-details', {
+                className={classNames('prop-container create-market-details', {
                   'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_DETAILS,
                   'is-null': !newMarket.detailsText,
                   'has-value': !!newMarket.detailsText
                 })}
               >
-                {!!newMarket.detailsText && `Additional Details: ${newMarket.detailsText}`}
+                <span className="null-mask" />
+                <span className="prop-value">{(!!newMarket.detailsText && `Additional Details: ${newMarket.detailsText}`) || '\u00a0'}</span>
               </span>
               <ul className="create-market-properties">
                 <li
-                  className={classNames('create-market-property', {
+                  className={classNames('prop-container create-market-property', {
                     'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_END_DATE,
                     'is-null': !Object.keys(newMarket.endDate).length,
                     'has-value': !!Object.keys(newMarket.endDate).length
                   })}
                 >
-                  {!!Object.keys(newMarket.endDate).length && `Ends: ${newMarket.endDate.formatted}`}
+                  <span className="null-mask" />
+                  <span className="prop-value">{(!!Object.keys(newMarket.endDate).length && `Ends: ${newMarket.endDate.formatted}`) || '\u00a0'}</span>
                 </li>
                 <div
-                  className={classNames('create-market-fees', {
+                  className={classNames('prop-container create-market-fees', {
                     'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES,
                   })}
                 >
@@ -162,7 +164,8 @@ export default class CreateMarketPreview extends Component {
                       'has-value': !!newMarket.makerFee
                     })}
                   >
-                    {newMarket.makerFee}
+                    <span className="null-mask" />
+                    <span className="prop-value">{newMarket.makerFee || '\u00a0'}</span>
                   </li>
                   <li
                     className={classNames('create-market-property', {
@@ -170,40 +173,43 @@ export default class CreateMarketPreview extends Component {
                       'has-value': !!newMarket.takerFee
                     })}
                   >
-                    {newMarket.takerFee}
+                    <span className="null-mask" />
+                    <span className="prop-value">{newMarket.takerFee || '\u00a0'}</span>
                   </li>
                 </div>
                 <li
-                  className={classNames('create-market-property', {
+                  className={classNames('prop-container create-market-property', {
                     'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_ORDER_BOOK,
                     'is-null': !Object.keys(newMarket.orderBook).length,
                     'has-value': !!Object.keys(newMarket.orderBook).length
                   })}
                 >
-                  {!!Object.keys(newMarket.orderBook).length && `Initial Liquidity: TODO`}
+                  <span className="null-mask" />
+                  <span className="prop-value">{(!!Object.keys(newMarket.orderBook).length && `Initial Liquidity: TODO`) || '\u00a0'}</span>
                 </li>
               </ul>
             </div>
-            <ul className="create-market-outcomes">
-              {newMarket.outcomes.length ?
-                newMarket.outcomes.map(outcome => <li>{outcome}</li>) :
-                <div
-                  className={classNames('create-market-outcome-placeholders', {
-                    'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_OUTCOMES,
-                  })}
-                >
-                  <li className="is-null" />
-                  {newMarket.type === CATEGORICAL &&
+            <div className="create-market-outcomes">
+              <ul
+                className={classNames('prop-container create-market-outcome-placeholders', {
+                  'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_OUTCOMES,
+                  'is-null': !newMarket.outcomes.length,
+                  'has-value': newMarket.outcomes.length
+                })}
+              >
+                <div className="outcome-null-masks">
+                  {newMarket.type === CATEGORICAL ?
                     <div>
-                      <li className="is-null" />
-                      <li className="is-null" />
-                      <li className="is-null" />
-                      <li className="is-null" />
-                    </div>
+                      <li className="null-mask" />
+                      <li className="null-mask" />
+                      <li className="null-mask" />
+                    </div> :
+                    <li className="null-mask" />
                   }
                 </div>
-              }
-            </ul>
+                {newMarket.outcomes.map(outcome => <li>{outcome}</li>)}
+              </ul>
+            </div>
           </div>
         </div>
       </article>

@@ -45,7 +45,7 @@
           .null-mask {
             height: 85%;
             opacity: 1;
-            width: 99%;
+            width: 100%;
           }
         }
 
@@ -68,7 +68,20 @@
           transform: translate(-50%, -50%);
           transition-duration: @animation-speed-very-fast;
           transition-property: opacity, box-shadow;
-          width: 98%;
+          width: 99%;
+        }
+
+        .outcome-null-masks {
+          position: absolute;
+          height: 100%;
+          width: 100%;
+
+          .null-mask {
+            display: block;
+            height: @font-size-normal;
+            margin-bottom: 0.6em;
+            position: relative;
+          }
         }
       }
 
