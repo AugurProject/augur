@@ -80,7 +80,7 @@ export default class CreateMarketPreview extends Component {
                   <span className="prop-value">{newMarket.topic || '\u00a0'}</span>
                 </li>
                 <div
-                  className={classNames('create-market-keywords', {
+                  className={classNames('prop-container create-market-keywords', {
                     'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_KEYWORDS,
                   })}
                 >
@@ -154,7 +154,7 @@ export default class CreateMarketPreview extends Component {
                   <span className="prop-value">{(!!Object.keys(newMarket.endDate).length && <span>Ends: <span className="market-property-value">{newMarket.endDate.formatted}</span></span>) || '\u00a0'}</span>
                 </li>
                 <div
-                  className={classNames('create-market-property create-market-property-fees', {
+                  className={classNames('prop-container create-market-property create-market-property-fees', {
                     'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES
                   })}
                 >
