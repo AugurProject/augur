@@ -1,5 +1,7 @@
 import React, { PropTypes } from 'react';
 
+import ScalarIcon from 'modules/common/components/scalar-icon';
+
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
 import { NEW_MARKET_TYPE, NEW_MARKET_OUTCOMES } from 'modules/create-market/constants/new-market-creation-steps';
 
@@ -58,6 +60,7 @@ const CreateMarketFormType = p => (
           });
         }}
       >
+        <ScalarIcon />
         <h3>Numerical</h3>
         <span className="market-type-description">
           Ask a question that has an outcome within a range of numbers.

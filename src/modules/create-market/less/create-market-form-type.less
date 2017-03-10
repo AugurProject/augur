@@ -16,10 +16,25 @@
 
     .market-type {
       flex: 1 0 0;
-      padding: 1em;
+      padding: 2em;
+
+      & > *:first-child {
+        padding: 2em 0;
+        width: 50%;
+      }
 
       &:hover {
-        background-color: @color-gray-light;
+        background-color: @color-blue;
+        color: @color-white;
+
+        & > *:first-child {
+          line,
+          rect,
+          circle {
+            fill: @color-white;
+            stroke: @color-white;
+          }
+        }
       }
 
       h3 {
