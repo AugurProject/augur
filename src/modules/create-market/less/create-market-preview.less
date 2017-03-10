@@ -31,39 +31,40 @@
         .font-weight-normal();
       }
 
+      .is-editing {
+        .border(true, @border-top, @color-blue-light);
+        .border(true, @border-right, @color-blue-light);
+        .border(true, @border-bottom, @color-blue-light);
+        .border(true, @border-left, @color-blue, @border-width-3);
+
+        background-color: @color-blue-extra-light;
+        padding: 3px;
+
+        &.create-market-tag,
+        &.create-market-property {
+          .null-mask {
+            height: 50%;
+            width: 80%;
+          }
+        }
+
+        .null-mask {
+          box-shadow: 0 1px 5px fadeout(@color-black-extra-light, @amount-extra-light);
+          height: 60%;
+          width: 96%;
+        }
+      }
+
       .prop-container {
         border-color: @color-blue-light;
         margin: 0.2em 0;
+        min-width: 5em;
         position: relative;
         transition-duration: @animation-speed-very-fast;
         transition-property: padding, border-width, border-color, background-color;
 
         .prop-value {
           padding: 0 0.2em;
-        }
-
-        &.is-editing {
-          .border(true, @border-top, @color-blue-light);
-          .border(true, @border-right, @color-blue-light);
-          .border(true, @border-bottom, @color-blue-light);
-          .border(true, @border-left, @color-blue, @border-width-3);
-
-          background-color: @color-blue-extra-light;
-          padding: 3px;
-
-          &.create-market-tag,
-          &.create-market-property {
-            .null-mask {
-              height: 50%;
-              width: 80%;
-            }
-          }
-
-          .null-mask {
-            box-shadow: 0 1px 5px fadeout(@color-black-extra-light, @amount-extra-light);
-            height: 60%;
-            width: 96%;
-          }
         }
 
         &.is-null,

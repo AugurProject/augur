@@ -57,8 +57,6 @@ export default class CreateMarketPreview extends Component {
   render() {
     const newMarket = this.props.newMarket;
 
-    console.log('validations -- ', newMarket.validations);
-
     return (
       <article
         ref={(marketPreview) => { this.marketPreview = marketPreview; }}
@@ -82,12 +80,12 @@ export default class CreateMarketPreview extends Component {
                   <span className="prop-value">{newMarket.topic || '\u00a0'}</span>
                 </li>
                 <div
-                  className={classNames('prop-container create-market-keywords', {
+                  className={classNames('create-market-keywords', {
                     'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_KEYWORDS,
                   })}
                 >
                   <li
-                    className={classNames('create-market-tag', {
+                    className={classNames('prop-container create-market-tag', {
                       'is-null': !(newMarket.keywords && newMarket.keywords[0]),
                       'has-value': newMarket.keywords && !!newMarket.keywords[0]
                     })}
@@ -96,7 +94,7 @@ export default class CreateMarketPreview extends Component {
                     <span className="prop-value">{(newMarket.keywords && newMarket.keywords[0]) || '\u00a0'}</span>
                   </li>
                   <li
-                    className={classNames('create-market-tag', {
+                    className={classNames('prop-container create-market-tag', {
                       'is-null': !(newMarket.keywords && newMarket.keywords[1]),
                       'has-value': newMarket.keywords && !!newMarket.keywords[1]
                     })}
@@ -156,13 +154,13 @@ export default class CreateMarketPreview extends Component {
                   <span className="prop-value">{(!!Object.keys(newMarket.endDate).length && <span>Ends: <span className="market-property-value">{newMarket.endDate.formatted}</span></span>) || '\u00a0'}</span>
                 </li>
                 <div
-                  className={classNames('prop-container create-market-property create-market-property-fees', {
+                  className={classNames('create-market-property create-market-property-fees', {
                     'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES
                   })}
                 >
                   <li
                     className={classNames('prop-container', {
-                      'is-null': !newMarket.makerFee && !newMarket.validations.indexOf(NEW_MARKET_FEES) > -1,
+                      'is-null': !newMarket.makerFee || !newMarket.validations.indexOf(NEW_MARKET_FEES) > -1,
                       'has-value': newMarket.makerFee && (newMarket.validations.indexOf(NEW_MARKET_FEES) > -1 || newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES)
                     })}
                   >
@@ -171,7 +169,7 @@ export default class CreateMarketPreview extends Component {
                   </li>
                   <li
                     className={classNames('prop-container', {
-                      'is-null': !newMarket.takerFee && !newMarket.validations.indexOf(NEW_MARKET_FEES) > -1,
+                      'is-null': !newMarket.takerFee || !newMarket.validations.indexOf(NEW_MARKET_FEES) > -1,
                       'has-value': newMarket.takerFee && (newMarket.validations.indexOf(NEW_MARKET_FEES) > -1 || newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES)
                     })}
                   >
