@@ -35,14 +35,14 @@ export default class CreateMarketFormDescription extends Component {
     if (this.props.currentStep !== nextProps.currentStep &&
         newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_FEES
     ) {
-      this.validateForm(nextProps.takerFee, nextProps.makerFee);
+      this.validateForm(nextProps.takerFee, nextProps.makerFee, true);
     }
 
     if (this.props.makerFee !== nextProps.makerFee) this.setState({ makerFee: nextProps.makerFee });
     if (this.props.takerFee !== nextProps.takerFee) this.setState({ takerFee: nextProps.takerFee });
   }
 
-  validateForm(takerFee = this.state.takerFee, makerFee = this.state.makerFee) {
+  validateForm(takerFee = this.state.takerFee, makerFee = this.state.makerFee, init) {
     const errors = {
       taker: [],
       maker: []
@@ -77,17 +77,19 @@ export default class CreateMarketFormDescription extends Component {
 
     // Warning Check
     //    Taker
-    if (takerFee === TAKER_FEE_MIN) {
-      warnings.taker.push(`Taker fee minimum is: ${TAKER_FEE_MIN}%`);
-    } else if (takerFee === TAKER_FEE_MAX) {
-      warnings.taker.push(`Taker fee maximum is: ${TAKER_FEE_MAX}%`);
-    }
+    if (!init) {
+      if (takerFee === TAKER_FEE_MIN) {
+        warnings.taker.push(`Taker fee minimum is: ${TAKER_FEE_MIN}%`);
+      } else if (takerFee === TAKER_FEE_MAX) {
+        warnings.taker.push(`Taker fee maximum is: ${TAKER_FEE_MAX}%`);
+      }
 
-    const makerFeeMax = new BigNumber(takerFee || TAKER_FEE_MAX).dividedBy(TWO).toNumber();
-    if (makerFee === MAKER_FEE_MIN) {
-      warnings.maker.push(`Maker fee minimum is: ${MAKER_FEE_MIN}%`);
-    } else if (makerFee === makerFeeMax) {
-      warnings.maker.push(`Maker fee maximum is: ${makerFeeMax}%`);
+      const makerFeeMax = new BigNumber(takerFee || TAKER_FEE_MAX).dividedBy(TWO).toNumber();
+      if (makerFee === MAKER_FEE_MIN) {
+        warnings.maker.push(`Maker fee minimum is: ${MAKER_FEE_MIN}%`);
+      } else if (makerFee === makerFeeMax) {
+        warnings.maker.push(`Maker fee maximum is: ${makerFeeMax}%`);
+      }
     }
 
     this.setState({ errors, warnings, takerFee, makerFee });
