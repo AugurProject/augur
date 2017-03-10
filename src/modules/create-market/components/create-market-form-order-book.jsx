@@ -166,6 +166,7 @@ export default class CreateMarketFormOrderBook extends Component {
     const oppositeSide = selectedSide === BID ? ASK : BID;
     const ZERO = new BigNumber(0);
     const ONE = new BigNumber(1);
+    const precision = new BigNumber(10**-8);
     let minPrice;
     let maxPrice;
 
@@ -177,14 +178,14 @@ export default class CreateMarketFormOrderBook extends Component {
 
           // Maximum Price
           if (orderBook[selectedOutcome] && orderBook[selectedOutcome][oppositeSide] && orderBook[selectedOutcome][oppositeSide].length) {
-            maxPrice = orderBook[selectedOutcome][oppositeSide][0].price;
+            maxPrice = orderBook[selectedOutcome][oppositeSide][0].price.minus(precision);
           } else {
             maxPrice = scalarBigNum;
           }
         } else {
           // Minimum Price
           if (orderBook[selectedOutcome] && orderBook[selectedOutcome][oppositeSide] && orderBook[selectedOutcome][oppositeSide].length) {
-            minPrice = orderBook[selectedOutcome][oppositeSide][0].price;
+            minPrice = orderBook[selectedOutcome][oppositeSide][0].price.plus(precision);
           } else {
             minPrice = scalarSmallNum;
           }
@@ -198,14 +199,14 @@ export default class CreateMarketFormOrderBook extends Component {
 
         // Maximum Price
         if (orderBook[selectedOutcome] && orderBook[selectedOutcome][oppositeSide] && orderBook[selectedOutcome][oppositeSide].length) {
-          maxPrice = orderBook[selectedOutcome][oppositeSide][0].price;
+          maxPrice = orderBook[selectedOutcome][oppositeSide][0].price.minus(precision);
         } else {
           maxPrice = ONE;
         }
       } else {
         // Minimum Price
         if (orderBook[selectedOutcome] && orderBook[selectedOutcome][oppositeSide] && orderBook[selectedOutcome][oppositeSide].length) {
-          minPrice = orderBook[selectedOutcome][oppositeSide][0].price;
+          minPrice = orderBook[selectedOutcome][oppositeSide][0].price.plus(precision);
         } else {
           minPrice = ZERO;
         }
