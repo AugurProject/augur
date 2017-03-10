@@ -236,13 +236,15 @@ export default class CreateMarketPreview extends Component {
                 >
                   <div className="outcome-null-masks">
                     {newMarket.type === CATEGORICAL ?
-                      <div>
+                      <div className="null-outcomes">
                         <li className="null-mask" />
                         <li className="null-mask" />
                         <li className="null-mask" />
                         <li className="null-mask" />
                       </div> :
-                      <li className="null-mask" />
+                      <div className="null-outcomes">
+                        <li className="null-mask" />
+                      </div>
                     }
                   </div>
                   {newMarket.outcomes.map(outcome => <li>{outcome}</li>)}
