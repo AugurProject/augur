@@ -101,15 +101,16 @@ export default class CreateMarketPreview extends Component {
                   </li>
                 </div>
               </ul>
-              <span
-                className={classNames('create-market-description', {
+              <div
+                className={classNames('prop-container create-market-description', {
                   'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_DESCRIPTION,
                   'is-null': !newMarket.description,
                   'has-value': !!newMarket.description
                 })}
               >
-                {newMarket.description}
-              </span>
+                <span className="null-mask" />
+                <span className="prop-value">{newMarket.description || `\u00a0`}</span>
+              </div>
               <span
                 className={classNames('create-market-expiry-source', {
                   'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_EXPIRY_SOURCE,

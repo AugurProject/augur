@@ -27,15 +27,31 @@
       flex: 1;
       margin: 0;
 
-      .is-null {
-        background-color: @color-gray-muted;
-        border-radius: 1em;
-        margin-bottom: 0.4em;
-        padding: 0.6em;
-      }
+      .prop-container {
+        position: relative;
+        transition-duration: @animation-speed-very-fast;
+        transition-property: margin;
 
-      .has-value {
-        // TODO
+        &.is-null {
+          background-color: @color-gray-muted;
+          border-radius: 1em;
+        }
+
+        &.has-value {
+          // TODO
+        }
+
+        &.is-editing {
+          // TODO
+        }
+
+        .null-mask {
+          height: 100%;
+          left: 0;
+          position: absolute;
+          top: 0;
+          width: 100%;
+        }
       }
 
       .create-market-keywords,
@@ -58,6 +74,11 @@
               margin-right: 0.4em;
             }
           }
+        }
+
+        .create-market-description {
+          .font-weight-normal();
+          .font-size-large();
         }
 
         .create-market-description,
