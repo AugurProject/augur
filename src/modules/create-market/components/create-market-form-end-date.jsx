@@ -6,7 +6,7 @@ import newMarketCreationOrder from 'modules/create-market/constants/new-market-c
 import { NEW_MARKET_END_DATE } from 'modules/create-market/constants/new-market-creation-steps';
 
 const CreateMarketFormEndDate = (p) => {
-  if (p.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) && Object.keys(p.endDate) && !p.isValid) p.updateValidity(true);
+  if (p.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) && Object.keys(p.endDate).length && !p.isValid) p.updateValidity(true);
 
   return (
     <article className={`create-market-form-part ${p.className || ''}`}>
