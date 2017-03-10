@@ -5,25 +5,49 @@ import EmDash from 'modules/common/components/em-dash';
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
 
 const CreateMarketMainTitle = (p) => {
+  // const initialTitleClass = () => {
+  //   if (p.currentStep === 0 && p.validations.length) {
+  //     if (p.type) {
+  //       return 'hide-title';
+  //     }
+  //     return 'display-title';
+  //   }
+  //   return '';
+  // };
+
   const initialTitleClass = () => {
-    if (p.validations.length) {
-      if (p.type) {
-        return 'hide-title';
+    if (p.currentStep === 0) {
+      if (p.validations.length) {
+        return 'display-title';
       }
-      return 'display-title';
+
+      return '';
     }
-    return '';
+
+    return 'hide-title';
   };
 
   const previewTitleClass = () => {
-    if (p.validations.length) {
-      if (p.type) {
-        return 'display-title';
+    if (p.currentStep === 0) {
+      if (p.validations.length) {
+        return 'hide-title';
       }
-      return 'hide-title';
+
+      return '';
     }
-    return '';
+
+    return 'display-title';
   };
+
+  // const previewTitleClass = () => {
+  //   if (p.validations.length) {
+  //     if (p.type) {
+  //       return 'display-title';
+  //     }
+  //     return 'hide-title';
+  //   }
+  //   return '';
+  // };
 
   const marketType = () => {
     switch (p.type) {
@@ -49,7 +73,7 @@ const CreateMarketMainTitle = (p) => {
 
 CreateMarketMainTitle.propTypes = {
   type: PropTypes.string.isRequired,
-  validations: PropTypes.array.isRequired
+  currentStep: PropTypes.number.isRequired
 };
 
 export default CreateMarketMainTitle;

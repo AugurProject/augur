@@ -11,6 +11,7 @@ const CreateMarketView = p => (
       <CreateMarketMainTitle
         type={p.newMarket.type}
         validations={p.newMarket.validations}
+        currentStep={p.newMarket.currentStep}
       />
       <CreateMarketPreview
         newMarket={p.newMarket}
