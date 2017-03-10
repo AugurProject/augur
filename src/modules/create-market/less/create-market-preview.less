@@ -34,7 +34,9 @@
 
         &.is-null {
           .null-mask {
+            height: 85%;
             opacity: 1;
+            width: 99%;
           }
         }
 
@@ -45,9 +47,9 @@
         }
 
         &.is-editing {
-          .border(true);
-
-          padding: 0.2em;
+          .null-mask {
+            box-shadow: 0 1px 5px fadeout(@color-black-extra-light, @amount-extra-light);
+          }
         }
 
         .null-mask {
@@ -59,8 +61,8 @@
           top: 50%;
           transform: translate(-50%, -50%);
           transition-duration: @animation-speed-very-fast;
-          transition-property: opacity;
-          width: 99%;
+          transition-property: opacity, box-shadow;
+          width: 98%;
         }
       }
 
