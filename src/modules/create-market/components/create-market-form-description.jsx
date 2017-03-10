@@ -19,8 +19,7 @@ export default class CreateMarketFormDescription extends Component {
     super(props);
 
     this.state = {
-      warnings: [],
-      description: this.props.description
+      warnings: []
     };
 
     this.validateForm = this.validateForm.bind(this);
@@ -31,6 +30,8 @@ export default class CreateMarketFormDescription extends Component {
   }
 
   validateForm(description = '') {
+    console.log('validateForm -- ', description);
+
     const warnings = [];
 
     // Error Check
@@ -66,8 +67,9 @@ export default class CreateMarketFormDescription extends Component {
             <form onSubmit={e => e.preventDefault()} >
               <Input
                 type="text"
-                value={s.description}
+                value={p.description}
                 maxLength={DESCRIPTION_MAX_LENGTH}
+                debounceMS={0}
                 onChange={description => this.validateForm(description)}
               />
               <CreateMarketFormInputNotifications
