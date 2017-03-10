@@ -42,7 +42,7 @@ export default class CreateMarketFormDescription extends Component {
     if (this.props.takerFee !== nextProps.takerFee) this.setState({ takerFee: nextProps.takerFee });
   }
 
-  validateForm(takerFee = this.state.takerFee, makerFee = this.state.makerFee, init) {
+  validateForm(takerFeeRaw, makerFeeRaw, init) {
     const errors = {
       taker: [],
       maker: []
@@ -51,6 +51,9 @@ export default class CreateMarketFormDescription extends Component {
       taker: [],
       maker: []
     };
+
+    const takerFee = takerFeeRaw === undefined ? this.state.takerFee : takerFeeRaw;
+    const makerFee = makerFeeRaw === undefined ? this.state.makerFee : makerFeeRaw;
 
     const takerFeeError = validateTakerFee(takerFee);
     if (takerFeeError) {
@@ -61,7 +64,7 @@ export default class CreateMarketFormDescription extends Component {
     }
 
     const makerFeeError = validateMakerFee(makerFee, takerFee);
-    if (!takerFeeError && makerFeeError) {
+    if (makerFeeError) {
       errors.maker.push(makerFeeError);
       this.props.updateNewMarket({ makerFee: '' });
     } else {
@@ -78,17 +81,21 @@ export default class CreateMarketFormDescription extends Component {
     // Warning Check
     //    Taker
     if (!init) {
-      if (takerFee === TAKER_FEE_MIN) {
-        warnings.taker.push(`Taker fee minimum is: ${TAKER_FEE_MIN}%`);
-      } else if (takerFee === TAKER_FEE_MAX) {
-        warnings.taker.push(`Taker fee maximum is: ${TAKER_FEE_MAX}%`);
+      if (takerFeeRaw !== undefined) {
+        if (takerFee === TAKER_FEE_MIN) {
+          warnings.taker.push(`Taker fee minimum is: ${TAKER_FEE_MIN}%`);
+        } else if (takerFee === TAKER_FEE_MAX) {
+          warnings.taker.push(`Taker fee maximum is: ${TAKER_FEE_MAX}%`);
+        }
       }
 
-      const makerFeeMax = new BigNumber(takerFee || TAKER_FEE_MAX).dividedBy(TWO).toNumber();
-      if (makerFee === MAKER_FEE_MIN) {
-        warnings.maker.push(`Maker fee minimum is: ${MAKER_FEE_MIN}%`);
-      } else if (makerFee === makerFeeMax) {
-        warnings.maker.push(`Maker fee maximum is: ${makerFeeMax}%`);
+      if (makerFeeRaw !== undefined) {
+        const makerFeeMax = new BigNumber(takerFee || TAKER_FEE_MAX).dividedBy(TWO).toNumber();
+        if (makerFee === MAKER_FEE_MIN) {
+          warnings.maker.push(`Maker fee minimum is: ${MAKER_FEE_MIN}%`);
+        } else if (makerFee === makerFeeMax) {
+          warnings.maker.push(`Maker fee maximum is: ${makerFeeMax}%`);
+        }
       }
     }
 
