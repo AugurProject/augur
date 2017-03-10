@@ -15,7 +15,7 @@ import {
   NEW_MARKET_ORDER_BOOK,
   NEW_MARKET_REVIEW
 } from 'modules/create-market/constants/new-market-creation-steps';
-import { CATEGORICAL } from 'modules/markets/constants/market-types';
+import { BINARY, CATEGORICAL } from 'modules/markets/constants/market-types';
 
 
 // NOTE --  Discrete component due to vastly different functionality as compared to `market-preview.jsx`
@@ -232,7 +232,7 @@ export default class CreateMarketPreview extends Component {
               >
                 <button
                   className="unstyled"
-                  onClick={() => p.updateNewMarket({ currentStep: newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES) })}
+                  onClick={() => newMarket.type !== BINARY && p.updateNewMarket({ currentStep: newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES) })}
                 >
                   <div className="outcome-null-masks">
                     {newMarket.type === CATEGORICAL ?
