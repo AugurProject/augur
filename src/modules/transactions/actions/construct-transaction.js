@@ -40,14 +40,16 @@ export function loadDataForReportingTransaction(label, log, isRetry, callback) {
   };
 }
 
-export function constructBasicTransaction(hash, status, blockNumber, timestamp, gasFees, confirmations) {
+export const constructBasicTransaction = (hash, status, blockNumber, timestamp, gasFees) => (dispatch, getState) => {
   const transaction = { hash, status };
-  if (blockNumber) transaction.blockNumber = formatDate(new Date(blockNumber * 1000));
+  if (blockNumber) {
+    transaction.blockNumber = formatDate(new Date(blockNumber * 1000));
+    transaction.confirmations = formatConfirmations(getState().blockchain.currentBlockNumber - blockNumber);
+  }
   if (timestamp) transaction.timestamp = formatDate(new Date(timestamp * 1000));
   if (gasFees) transaction.gasFees = formatRealEther(gasFees);
-  if (confirmations) transaction.confirmations = formatConfirmations(confirmations);
   return transaction;
-}
+};
 
 export function constructDefaultTransaction(label, log) {
   const transaction = { data: {} };

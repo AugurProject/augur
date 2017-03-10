@@ -63,12 +63,9 @@ export const convertLogToTransaction = (label, log, status, isRetry, cb) => (dis
     }
     const transaction = dispatch(constructTransaction(label, log, isRetry, callback));
     if (transaction) {
-      const { currentBlockNumber } = getState().blockchain;
-      const confirmations = currentBlockNumber - log.blockNumber;
-      console.debug('log confirmations:', confirmations);
       dispatch(updateTransactionsData({
         [hash]: {
-          ...constructBasicTransaction(hash, status, log.blockNumber, log.timestamp, gasFees, confirmations),
+          ...dispatch(constructBasicTransaction(hash, status, log.blockNumber, log.timestamp, gasFees)),
           ...transaction
         }
       }));
