@@ -375,19 +375,19 @@ augur-abi@1.1.1:
     ethereumjs-abi "0.6.2"
     js-sha3 "0.3.1"
 
-augur-contracts@2.10.7:
-  version "2.10.7"
-  resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-2.10.7.tgz#cc7b0aa19f5b355a4a8e3e7eaf26725cee02a820"
+augur-contracts@2.10.9:
+  version "2.10.9"
+  resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-2.10.9.tgz#80fc87a02de9ea4ce7716976094cb93e236f83c4"
   dependencies:
     clone "1.0.2"
 
-augur.js@3.13.14:
-  version "3.13.14"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.13.14.tgz#322c352299b83a08f905f1037b386fe2409ed2ab"
+augur.js@3.13.15:
+  version "3.13.15"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.13.15.tgz#759f32acfe98c5fd65a0009d6bedaee171238b66"
   dependencies:
     async "1.5.2"
     augur-abi "1.1.1"
-    augur-contracts "2.10.7"
+    augur-contracts "2.10.9"
     bignumber.js "2.3.0"
     browser-request "0.3.3"
     bs58 "3.0.0"
@@ -6817,7 +6817,13 @@ redux-thunk@2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.1.0.tgz#c724bfee75dbe352da2e3ba9bc14302badd89a98"
 
-redux@3.5.2:
+redux-undo@0.6.1:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/redux-undo/-/redux-undo-0.6.1.tgz#ff407749b8f468bead636e413819e92c0982eeca"
+  dependencies:
+    redux "^3.0.2"
+
+redux@3.5.2, redux@^3.0.2:
   version "3.5.2"
   resolved "https://registry.yarnpkg.com/redux/-/redux-3.5.2.tgz#4533745e970b647ec26066a83aa30e9e26faf843"
   dependencies:
