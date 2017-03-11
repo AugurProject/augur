@@ -14,11 +14,9 @@ export function loadCreateMarketHistory(marketID, cb) {
       'marketCreated',
       'tradingFeeUpdated'
     ], constants.PARALLEL_LIMIT, (label, nextLabel) => {
-      augur.getLogs(label, params, null, (err, logs) => {
-        if (err) return nextLabel(err);
+      augur.getLogsChunked(label, params, null, (logs) => {
         if (logs && logs.length) dispatch(convertLogsToTransactions(label, logs));
-        nextLabel();
-      });
+      }, nextLabel);
     }, callback);
   };
 }

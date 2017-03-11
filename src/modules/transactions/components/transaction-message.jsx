@@ -1,5 +1,6 @@
 import React from 'react';
 import ValueDenomination from 'modules/common/components/value-denomination';
+import TransactionStatus from 'modules/transactions/components/transaction-status';
 
 function liveDangerously(thisBetterBeSanitized) { return { __html: thisBetterBeSanitized }; }
 
@@ -108,7 +109,7 @@ const TransactionMessage = p => (
         <br />
       </span>
     }
-    <span className="status">{p.status}</span>
+    <TransactionStatus status={p.status} confirmations={p.confirmations} />
   </div>
 );
 
@@ -117,6 +118,7 @@ TransactionMessage.propTypes = {
   index: React.PropTypes.number,
   type: React.PropTypes.string,
   status: React.PropTypes.string,
+  confirmations: React.PropTypes.object,
   data: React.PropTypes.object,
   description: React.PropTypes.string,
   shares: React.PropTypes.object,

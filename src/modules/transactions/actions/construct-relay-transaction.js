@@ -344,7 +344,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
       }
       return {
         [hash]: {
-          ...constructBasicTransaction(hash, status, p.blockNumber, p.timestamp, gasFees),
+          ...dispatch(constructBasicTransaction(hash, status, p.blockNumber, p.timestamp, gasFees)),
           ...transaction
         }
       };
