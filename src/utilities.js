@@ -1,10 +1,7 @@
 "use strict";
 
-var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
-
 var crypto = require("crypto");
 var BigNumber = require("bignumber.js");
-var clone = require("clone");
 var abi = require("augur-abi");
 var constants = require("./constants");
 
@@ -20,7 +17,7 @@ module.exports = {
   pass: function (o) { return o; },
 
   is_function: function (f) {
-    return Object.prototype.toString.call(f) === "[object Function]";
+    return typeof f === "function";
   },
 
   STRIP_COMMENTS: /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg,
@@ -34,32 +31,33 @@ module.exports = {
   },
 
   labels: function (func) {
-    var fnStr = func.toString().replace(this.STRIP_COMMENTS, '');
-    var result = fnStr.slice(fnStr.indexOf('(')+1, fnStr.indexOf(')')).match(this.ARGUMENT_NAMES);
+    var fnStr = func.toString().replace(this.STRIP_COMMENTS, "");
+    var result = fnStr.slice(fnStr.indexOf("(") + 1, fnStr.indexOf(")")).match(this.ARGUMENT_NAMES);
     if (result === null) result = [];
     return result;
   },
 
   unpack: function (o, labels, args) {
-    var params = [], cb = [];
+    var i, len, j, arglen, params = [], cb = [];
 
     // unpack object argument
     if (o !== undefined && o !== null && o.constructor === Object &&
       labels && labels.constructor === Array && labels.length) {
-      for (var i = 0, len = labels.length; i < len; ++i) {
+      for (i = 0, len = labels.length; i < len; ++i) {
         if (o[labels[i]] !== undefined) {
-          if (o[labels[i]].constructor === Function) {
+          if (this.is_function(o[labels[i]])) {
             cb.push(o[labels[i]]);
           } else {
             params.push(o[labels[i]]);
           }
         }
       }
+
     // unpack positional arguments
     } else {
-      for (var j = 0, arglen = args.length; j < arglen; ++j) {
+      for (j = 0, arglen = args.length; j < arglen; ++j) {
         if (args[j] !== undefined) {
-          if (args[j] && args[j].constructor === Function) {
+          if (this.is_function(args[j])) {
             cb.push(args[j]);
           } else {
             params.push(args[j]);
@@ -76,13 +74,13 @@ module.exports = {
   },
 
   serialize: function (x) {
-    var serialized, bn;
+    var serialized, bn, i, n;
     if (x !== null && x !== undefined) {
 
       // if x is an array, serialize and concatenate its individual elements
       if (x.constructor === Array || Buffer.isBuffer(x)) {
         serialized = "";
-        for (var i = 0, n = x.length; i < n; ++i) {
+        for (i = 0, n = x.length; i < n; ++i) {
           serialized += this.serialize(x[i]);
         }
       } else {
@@ -99,11 +97,11 @@ module.exports = {
         } else if (x.constructor === String) {
 
           // negative hex
-          if (x.slice(0,1) === '-') {
+          if (x.slice(0, 1) === "-") {
             serialized = abi.encode_int(abi.bignum(x).add(abi.constants.MOD).toFixed());
 
           // positive hex
-          } else if (x.slice(0,2) === "0x") {
+          } else if (x.slice(0, 2) === "0x") {
             serialized = abi.pad_left(x.slice(2));
 
           // text string
