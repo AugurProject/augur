@@ -93,13 +93,13 @@ export default class CreateMarketFormOrderBook extends Component {
         {
           type: 'line',
           name: 'Bids',
-          step: 'right',
+          step: 'left',
           data: []
         },
         {
           type: 'line',
           name: 'Asks',
-          step: 'right',
+          step: 'left',
           data: []
         }
       ],
@@ -252,8 +252,8 @@ export default class CreateMarketFormOrderBook extends Component {
 
       // Sort Order By Price
       Object.keys(p[outcome]).forEach((type) => {
-        if (type === BID) p[outcome][type] = p[outcome][type].sort((a, b) => a.price - b.price);
-        if (type === ASK) p[outcome][type] = p[outcome][type].sort((a, b) => b.price - a.price);
+        if (type === BID) p[outcome][type] = p[outcome][type].sort((a, b) => b.price - a.price);
+        if (type === ASK) p[outcome][type] = p[outcome][type].sort((a, b) => a.price - b.price);
       });
 
       return p;
@@ -269,11 +269,14 @@ export default class CreateMarketFormOrderBook extends Component {
       Object.keys(orderBook[outcome]).forEach((type) => {
         if (p[outcome][type] == null) p[outcome][type] = [];
 
-        let totalQuantity = orderBook[outcome][type].reduce((p, order) => p.plus(order.quantity), new BigNumber(0));
+        // let totalQuantity = orderBook[outcome][type].reduce((p, order) => p.plus(order.quantity), new BigNumber(0));
+
+        let totalQuantity = new BigNumber(0);
 
         orderBook[outcome][type].forEach((order) => {
           p[outcome][type].push([order.price.toNumber(), totalQuantity.toNumber()]);
-          totalQuantity = totalQuantity.minus(order.quantity);
+          // totalQuantity = totalQuantity.minus(order.quantity);
+          totalQuantity = totalQuantity.plus(order.quantity);
         });
       });
 
