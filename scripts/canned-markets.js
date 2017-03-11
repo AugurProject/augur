@@ -576,16 +576,16 @@ augur.connect({
 }, function (connected) {
   if (!connected) return console.error("connect failed:", connected);
   augur.setCash(augur.from, "10000000000000", augur.utils.noop, function (r) {
-    console.debug("setCash success:", r.callReturn);
+    console.log("setCash success:", r.callReturn);
     async.eachSeries(cannedMarkets, function (market, nextMarket) {
       // if (!market.orderBook && parseInt(augur.network_id) === 9000) return nextMarket();
       market.branch = augur.constants.DEFAULT_BRANCH_ID;
       market.onSent = function (r) {
-        if (DEBUG) console.debug("createSingleEventMarket sent:", r);
+        if (DEBUG) console.log("createSingleEventMarket sent:", r);
       };
       market.onSuccess = function (r) {
         var i;
-        if (DEBUG) console.debug("createSingleEventMarket success:", r.callReturn);
+        if (DEBUG) console.log("createSingleEventMarket success:", r.callReturn);
         console.log(chalk.green(r.callReturn), chalk.cyan.dim(market.description));
         var initialFairPrices = new Array(market.numOutcomes);
         var isScalar = false;
