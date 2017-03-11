@@ -106,6 +106,14 @@
             .table-row();
 
             display: flex;
+            overflow-x: hidden;
+            position: relative;
+
+            &:hover {
+              .remove-order {
+                transform: translateX(0);
+              }
+            }
 
             & > * {
               .table-cell-spacing();
@@ -118,6 +126,41 @@
             .table-cell-spacing();
 
             justify-content: center;
+          }
+
+          .remove-order {
+            .border(false);
+
+            background-color: @color-red;
+            color: @color-white;
+            height: 100%;
+            padding: 0 1em;
+            position: absolute;
+            transition-duration: @animation-speed-very-fast;
+            transition-property: transform;
+          }
+        }
+
+        .order-book-preview-table-bids {
+          .border(true, @border-right, @border-light);
+
+          & > * {
+            span:first-of-type {
+              .border(false, @border-left);
+            }
+          }
+
+          .remove-order {
+            .border(true, @border-right, @border-light);
+
+            transform: translateX(-100%);
+          }
+        }
+
+        .order-book-preview-table-asks {
+          .remove-order {
+            right: 0;
+            transform: translateX(100%);
           }
         }
       }

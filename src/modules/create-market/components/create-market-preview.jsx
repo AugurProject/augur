@@ -62,7 +62,7 @@ export default class CreateMarketPreview extends Component {
   }
 
   updateMarketLiquidity(orderBook) {
-    const initialLiquidity = Object.keys(orderBook).reduce((p, outcome) => p.plus(orderBook[outcome].reduce((p, order) => p.plus(order.quantity), new BigNumber(0))), new BigNumber(0)).toNumber().toLocaleString();
+    const initialLiquidity = Object.keys(orderBook).reduce((p, outcome) => p.plus(orderBook[outcome].reduce((p, order) => p.plus(order.quantity.times(order.price)), new BigNumber(0))), new BigNumber(0)).toNumber().toLocaleString();
 
     this.setState({ initialLiquidity });
   }
@@ -235,7 +235,7 @@ export default class CreateMarketPreview extends Component {
                     onClick={() => p.newMarket.validations.indexOf(NEW_MARKET_OUTCOMES) !== -1 && p.updateNewMarket({ currentStep: newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK) })}
                   >
                     <span className="null-mask" />
-                    <span className="prop-value">{(Object.keys(newMarket.orderBook).length && s.initialLiquidity != null && <span>Initial Liquidity: <span className="market-property-value">{s.initialLiquidity} Shares</span></span>) || '\u00a0'}</span>
+                    <span className="prop-value">{(Object.keys(newMarket.orderBook).length && s.initialLiquidity != null && <span>Initial Liquidity: <span className="market-property-value">{s.initialLiquidity} Eth</span></span>) || '\u00a0'}</span>
                   </button>
                 </li>
               </ul>

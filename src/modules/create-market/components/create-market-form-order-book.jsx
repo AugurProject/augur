@@ -66,7 +66,7 @@ export default class CreateMarketFormOrderBook extends Component {
     this.updateChart = this.updateChart.bind(this);
     this.updatePriceBounds = this.updatePriceBounds.bind(this);
     this.handleAddOrder = this.handleAddOrder.bind(this);
-    // this.handleRemoveOrder = this.handleRemoveOrder.bind(this);
+    this.handleRemoveOrder = this.handleRemoveOrder.bind(this);
     this.updateSeries = this.updateSeries.bind(this);
     this.sortOrderBook = this.sortOrderBook.bind(this);
     this.validateForm = this.validateForm.bind(this);
@@ -235,9 +235,10 @@ export default class CreateMarketFormOrderBook extends Component {
     });
   }
 
-  // handleRemoveOrder() {
-  //   // TODO
-  // }
+  handleRemoveOrder(type, orderToRemove, i) {
+    const orderToRemoveIndex = this.props.orderBook[this.state.selectedOutcome].findIndex(order => orderToRemove.price === order.price && orderToRemove.quantity === order.quantity);
+    this.props.removeOrderFromNewMarket({ outcome: this.state.selectedOutcome, index: orderToRemoveIndex });
+  }
 
   sortOrderBook(orderBook) {
     const orderBookSorted = Object.keys(orderBook).reduce((p, outcome) => {
@@ -454,13 +455,42 @@ export default class CreateMarketFormOrderBook extends Component {
                   <div className="order-book-preview-table-content">
                     <ul className="order-book-preview-table-bids">
                       {bids ?
-                        bids.map(bid => <li><span>{`${bid.quantity}`}</span><span>{`${bid.price}`}</span></li>) :
+                        bids.map((bid, i) => <li>
+                          <button
+                            className="unstyled remove-order"
+                            onClick={() => this.handleRemoveOrder(BID, bid, i)}
+                          >
+                            <i className="fa fa-trash" />
+                          </button>
+                          <span>
+                            {`${bid.quantity}`}
+                          </span>
+                          <span>
+                            {`${bid.price}`}
+                          </span>
+                        </li>
+                      ) :
                         <span>No Bids</span>
                       }
                     </ul>
                     <ul className="order-book-preview-table-asks">
                       {asks ?
-                        asks.map(ask => <li><span>{`${ask.price}`}</span><span>{`${ask.quantity}`}</span></li>) :
+                        asks.map((ask, i) =>
+                          <li>
+                            <span>
+                              {`${ask.price}`}
+                            </span>
+                            <span>
+                              {`${ask.quantity}`}
+                            </span>
+                            <button
+                              className="unstyled remove-order"
+                              onClick={() => this.handleRemoveOrder(ASK, ask, i)}
+                            >
+                              <i className="fa fa-trash" />
+                            </button>
+                          </li>
+                        ) :
                         <span>No Asks</span>
                       }
                     </ul>
