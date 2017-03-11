@@ -30,8 +30,7 @@ export function loadAccountTrades(marketID, cb) {
         dispatch(updateAccountTradesData(trades, marketID));
         next(null);
       }),
-      next => augur.getLogsChunked('payout', { fromBlock: options.fromBlock, sender: account }, (err, payouts) => {
-        if (err) return console.error(err);
+      next => augur.getLogsChunked('payout', { fromBlock: options.fromBlock, sender: account }, null, (payouts) => {
         if (payouts && payouts.length) dispatch(convertLogsToTransactions('payout', payouts));
       }, next),
       next => augur.getBuyCompleteSetsLogs(account, options, (err, completeSets) => {
