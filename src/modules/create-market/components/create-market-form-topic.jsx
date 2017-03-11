@@ -11,6 +11,7 @@ export default class CreateMarketFormTopic extends Component {
   static propTypes = {
     currentStep: PropTypes.number.isRequired,
     topic: PropTypes.string.isRequired,
+    keywords: PropTypes.array.isRequired,
     updateValidity: PropTypes.func.isRequired,
     updateNewMarket: PropTypes.func.isRequired
   }
@@ -19,7 +20,9 @@ export default class CreateMarketFormTopic extends Component {
     super(props);
 
     this.state = {
-      warnings: []
+      errors: [],
+      warnings: [],
+      topic: ''
     };
 
     this.validateForm = this.validateForm.bind(this);
@@ -29,22 +32,27 @@ export default class CreateMarketFormTopic extends Component {
     if (this.props.currentStep !== nextProps.currentStep && newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_TOPIC) this.validateForm(nextProps.topic);
   }
 
-  validateForm(topic = '') {
+  validateForm(topic) {
+    const errors = [];
     const warnings = [];
 
+    if (this.props.keywords.indexOf(topic) !== -1) {
+      errors.push('Topic cannot be the same as a keyword');
+    }
+
     // Error Check
-    if (!topic.length) {
+    if (!topic.length || errors.length) {
       this.props.updateValidity(false);
+      this.props.updateNewMarket({ topic: '' });
     } else {
       this.props.updateValidity(true);
+      this.props.updateNewMarket({ topic });
     }
 
     // Warnings Check
     if (topic.length === TAGS_MAX_LENGTH) warnings.push(`Maximum tag length is: ${TAGS_MAX_LENGTH}`);
 
-    this.props.updateNewMarket({ topic });
-
-    this.setState({ warnings });
+    this.setState({ errors, warnings, topic });
   }
 
   render() {
@@ -63,12 +71,13 @@ export default class CreateMarketFormTopic extends Component {
             <form onSubmit={e => e.preventDefault()} >
               <Input
                 type="text"
-                value={p.topic}
+                value={s.topic}
                 debounceMS={0}
                 maxLength={TAGS_MAX_LENGTH}
                 onChange={topic => this.validateForm(topic)}
               />
               <CreateMarketFormInputNotifications
+                errors={s.errors}
                 warnings={s.warnings}
               />
             </form>
