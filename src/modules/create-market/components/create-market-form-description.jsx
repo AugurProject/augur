@@ -26,7 +26,19 @@ export default class CreateMarketFormDescription extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.currentStep !== nextProps.currentStep && nextProps.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION)) this.validateForm(nextProps.description);
+    if (this.props.currentStep !== nextProps.currentStep &&
+      nextProps.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION)
+    ) {
+      this.validateForm(nextProps.description);
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.currentStep !== this.props.currentStep &&
+      this.props.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DESCRIPTION)
+    ) {
+      this.defaultFormToFocus.getElementsByTagName('input')[0].focus();
+    }
   }
 
   validateForm(description = '') {
@@ -62,7 +74,10 @@ export default class CreateMarketFormDescription extends Component {
               <span>What is the question the market should attempt to answer?</span>
             </aside>
             <div className="vertical-form-divider" />
-            <form onSubmit={e => e.preventDefault()} >
+            <form
+              ref={(defaultFormToFocus) => { this.defaultFormToFocus = defaultFormToFocus; }}
+              onSubmit={e => e.preventDefault()}
+            >
               <Input
                 type="text"
                 value={p.description}
