@@ -29,6 +29,14 @@ export default class CreateMarketFormOutcomesCategorical extends Component {
     if (this.props.currentStep !== nextProps.currentStep && newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_OUTCOMES) this.validateForm(nextProps.outcomes);
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.currentStep !== this.props.currentStep &&
+      this.props.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES)
+    ) {
+      this.defaultFormToFocus.getElementsByTagName('input')[0].focus();
+    }
+  }
+
   validateForm(outcomes) {
     const errors = Array(outcomes.length);
     errors.fill('');
@@ -67,7 +75,10 @@ export default class CreateMarketFormOutcomesCategorical extends Component {
             <span>Input between <strong>two</strong> - <strong>eight</strong> potential outcomes for this event.</span>
           </aside>
           <div className="vertical-form-divider" />
-          <form onSubmit={e => e.preventDefault()} >
+          <form
+            ref={(defaultFormToFocus) => { this.defaultFormToFocus = defaultFormToFocus; }}
+            onSubmit={e => e.preventDefault()}
+          >
             <InputList
               list={p.outcomes}
               errors={s.errors}
