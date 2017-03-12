@@ -42,6 +42,14 @@ export default class CreateMarketFormOutcomesScalar extends Component {
     if (this.props.currentStep !== nextProps.currentStep && newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_OUTCOMES) this.validateForm(nextProps.scalarSmallNum, nextProps.scalarBigNum);
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.currentStep !== this.props.currentStep &&
+      this.props.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES)
+    ) {
+      this.defaultFormToFocus.getElementsByTagName('input')[0].focus();
+    }
+  }
+
   validateForm(scalarSmallNumRaw, scalarBigNumRaw) {
     const errors = {
       small: [],
@@ -107,7 +115,10 @@ export default class CreateMarketFormOutcomesScalar extends Component {
             <span>What is the <strong>minimum</strong> value possible for this event.</span>
           </aside>
           <div className="vertical-form-divider" />
-          <form onSubmit={e => e.preventDefault()} >
+          <form
+            ref={(defaultFormToFocus) => { this.defaultFormToFocus = defaultFormToFocus; }}
+            onSubmit={e => e.preventDefault()}
+          >
             <Input
               className="constrained-width"
               type="number"
