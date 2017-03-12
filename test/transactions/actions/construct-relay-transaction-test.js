@@ -64,7 +64,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
           getTxGasEth: augur.getTxGasEth
         },
         rpc: {
-          gasPrice: augur.rpc.gasPrice
+          gasPrice: 20000000000
         }
       };
       const ConstructTransaction = {

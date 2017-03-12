@@ -15,7 +15,12 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
     const mockStore = configureMockStore(middlewares);
     const state = Object.assign({}, testState, tradeTestState);
     const store = mockStore(state);
-    const mockAugurJS = { augur: { ...augur } };
+    const mockAugurJS = {
+      augur: {
+        getTradingActions: augur.getTradingActions,
+        rpc: { gasPrice: 20000000000 }
+      }
+    };
     mockAugurJS.augur.getParticipantSharesPurchased = sinon.stub().yields('0');
     const mockSelectMarket = {};
     mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData.testBinaryMarketID);
@@ -299,7 +304,12 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
     const mockStore = configureMockStore(middlewares);
     const state = Object.assign({}, testState, tradeTestState);
     const store = mockStore(state);
-    const mockAugurJS = { augur: { ...augur } };
+    const mockAugurJS = {
+      augur: {
+        getTradingActions: augur.getTradingActions,
+        rpc: { gasPrice: 20000000000 }
+      }
+    };
     mockAugurJS.augur.getParticipantSharesPurchased = sinon.stub().yields('0');
     const mockSelectMarket = {};
     mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData.testCategoricalMarketID);
@@ -584,7 +594,12 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
     const mockStore = configureMockStore(middlewares);
     const state = Object.assign({}, testState, tradeTestState);
     const store = mockStore(state);
-    const mockAugurJS = { augur: { ...augur } };
+    const mockAugurJS = {
+      augur: {
+        getTradingActions: augur.getTradingActions,
+        rpc: { gasPrice: 20000000000 }
+      }
+    };
     mockAugurJS.augur.getParticipantSharesPurchased = sinon.stub().yields('0');
     const mockSelectMarket = {};
     mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData.testScalarMarketID);
