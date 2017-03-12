@@ -32,6 +32,14 @@ export default class CreateMarketFormTopic extends Component {
     if (this.props.currentStep !== nextProps.currentStep && newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_TOPIC) this.validateForm(nextProps.topic);
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.currentStep !== this.props.currentStep &&
+      this.props.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_TOPIC)
+    ) {
+      this.defaultFormToFocus.getElementsByTagName('input')[0].focus();
+    }
+  }
+
   validateForm(topic) {
     const errors = [];
     const warnings = [];
@@ -68,7 +76,10 @@ export default class CreateMarketFormTopic extends Component {
               <span>Specify the general category of the event the market is for.</span>
             </aside>
             <div className="vertical-form-divider" />
-            <form onSubmit={e => e.preventDefault()} >
+            <form
+              ref={(defaultFormToFocus) => { this.defaultFormToFocus = defaultFormToFocus; }}
+              onSubmit={e => e.preventDefault()}
+            >
               <Input
                 type="text"
                 value={s.topic}
