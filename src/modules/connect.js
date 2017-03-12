@@ -195,6 +195,8 @@ module.exports = {
           options.contracts = Contracts;
           options.api = Contracts.api;
           break;
+        default:
+          break;
       }
     }
     if (!utils.is_function(cb)) {

@@ -580,38 +580,20 @@ module.exports = {
     return chalk.green(JSON.stringify(o, null, indent || 4));
   },
 
-  print_nodes: function (nodes) {
-    var node, i, len;
-    if (nodes && nodes.length) {
-      process.stdout.write(chalk.green.bold("hosted:   "));
-      for (i = 0, len = nodes.length; i < len; ++i) {
-        node = nodes[i];
-        node = (i === 0) ? chalk.green(node) : chalk.gray(node);
-        process.stdout.write(node + " ");
-        if (i === len - 1) process.stdout.write("\n");
-      }
-    }
-  },
-
   setup: function (augur, args, rpcinfo) {
-    var defaulthost, ipcpath, wsUrl;
+    var httpUrl;
     if (NODE_JS) {
-      defaulthost = process.env.GETH_HTTP || "http://127.0.0.1:8545";
-      ipcpath = process.env.GETH_IPC;
-      wsUrl = process.env.GETH_WS || "ws://127.0.0.1:8546";
+      httpUrl = process.env.GETH_HTTP || "http://127.0.0.1:8545";
     }
+    httpUrl = rpcinfo || httpUrl;
     if (process.env.CONTINUOUS_INTEGRATION) {
       this.TIMEOUT = 131072;
     }
     augur.rpc.retryDroppedTxs = true;
     augur.rpc.debug.broadcast = process.env.NODE_ENV === "development";
-    if (defaulthost) augur.rpc.setLocalNode(defaulthost);
-    if (augur.connect({http: rpcinfo || defaulthost, ipc: ipcpath, ws: wsUrl})) {
+    if (augur.connect({ http: httpUrl, noFallback: true })) {
       if ((!require.main && !displayed_connection_info) || augur.options.debug.connect) {
-        console.log(chalk.cyan.bold("local:   "), chalk.cyan(augur.rpc.nodes.local));
-        console.log(chalk.blue.bold("ws:      "), chalk.blue(augur.rpc.wsUrl));
-        console.log(chalk.magenta.bold("ipc:     "), chalk.magenta(augur.rpc.ipcpath));
-        this.print_nodes(augur.rpc.nodes.hosted);
+        console.log(chalk.cyan.bold("sync:   "), chalk.cyan(augur.rpc.internalState.transporter.internalState.syncTransport.address));
         console.log(chalk.yellow.bold("network: "), chalk.yellow(augur.network_id));
         console.log(chalk.bold("coinbase:"), chalk.white.dim(augur.coinbase));
         console.log(chalk.bold("from:    "), chalk.white.dim(augur.from));
