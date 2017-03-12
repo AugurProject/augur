@@ -31,6 +31,14 @@ export default class CreateMarketFormKeywords extends Component {
     if (this.props.currentStep !== nextProps.currentStep && newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_KEYWORDS) this.validateForm(nextProps.keywords);
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.currentStep !== this.props.currentStep &&
+      this.props.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS)
+    ) {
+      this.defaultFormToFocus.getElementsByTagName('input')[0].focus();
+    }
+  }
+
   validateForm(keywords) {
     const errors = Array(keywords.length);
     errors.fill('');
@@ -73,7 +81,10 @@ export default class CreateMarketFormKeywords extends Component {
               <span>Add up to <strong>two</strong> keywords to help with the categorization and indexing of your market.</span>
             </aside>
             <div className="vertical-form-divider" />
-            <form onSubmit={e => e.preventDefault()} >
+            <form
+              ref={(defaultFormToFocus) => { this.defaultFormToFocus = defaultFormToFocus; }}
+              onSubmit={e => e.preventDefault()}
+            >
               <InputList
                 list={p.keywords}
                 errors={s.errors}
