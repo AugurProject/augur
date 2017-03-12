@@ -7,7 +7,7 @@ var keys = require("keythereum");
 var constants = require("../../../src/constants");
 var utils = require("../../../src/utilities");
 var abi = require('augur-abi');
-var ClearCallCounts = require('../../tools').ClearCallCounts;
+var clearCallCounts = require('../../tools').clearCallCounts;
 var proxyquire = require('proxyquire').noCallThru().noPreserveCache();
 
 var accounts = [{
@@ -168,7 +168,7 @@ describe("accounts.fundNewAccountFromFaucet", function() {
     fastforward: 0
   };
   afterEach(function() {
-    ClearCallCounts(callCounts);
+    clearCallCounts(callCounts);
     augur.rpc.balance = balance;
     augur.fundNewAccount = fundNewAccount;
     augur.rpc.fastforward = fastforward;
@@ -494,7 +494,7 @@ describe("accounts.setAccountObject", function() {
   var test = function(t) {
     it(t.description, function() {
       var account = t.prepareAccount(accounts);
-      augur.accounts.setAccountObject(account, t.cb);
+      augur.accounts.setAccountObject(account);
       t.assertions();
     });
   };
@@ -503,7 +503,6 @@ describe("accounts.setAccountObject", function() {
     prepareAccount: function(accounts) {
       return accounts[0];
     },
-    cb: utils.noop,
     assertions: function(out) {
       assert.deepEqual(augur.accounts.account, {
         address: accounts[0].address,
@@ -523,7 +522,6 @@ describe("accounts.setAccountObject", function() {
         derivedKey: accounts[1].derivedKey.toString('hex')
       };
     },
-    cb: utils.noop,
     assertions: function(out) {
       assert.deepEqual(augur.accounts.account, {
         address: accounts[1].address,

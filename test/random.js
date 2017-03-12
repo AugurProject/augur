@@ -33,17 +33,19 @@ var random = {
     return new Array(size + 1).join((Math.random().toString(36) + "00000000000000000").slice(2, 18)).slice(0, size);
   },
   array: function (size) {
+    var arr, i;
     size = size || 2;
-    var arr = new Array(size);
-    for (var i = 0; i < size; ++i) {
+    arr = new Array(size);
+    for (i = 0; i < size; ++i) {
       arr[i] = this.int();
     }
     return arr;
   },
   hashArray: function (size) {
+    var arr, i;
     size = size || 2;
-    var arr = new Array(size);
-    for (var i = 0; i < size; ++i) {
+    arr = new Array(size);
+    for (i = 0; i < size; ++i) {
       arr[i] = this.hash();
     }
     return arr;
@@ -62,6 +64,6 @@ var random = {
   }
 };
 random["int256[]"] = function (size) { return this.hashArray(size); };
-random["bytes"] = function (size) { return this.string(size); };
+random.bytes = function (size) { return this.string(size); };
 
 module.exports = random;

@@ -9,11 +9,6 @@ var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 
 var BigNumber = require("bignumber.js");
 
-BigNumber.config({
-  MODULO_MODE: BigNumber.EUCLID,
-  ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
-});
-
 var modules = [
   require("./modules/connect"),
   require("./modules/transact"),
@@ -46,7 +41,14 @@ var modules = [
   require("./modules/generateOrderBook")
 ];
 
+BigNumber.config({
+  MODULO_MODE: BigNumber.EUCLID,
+  ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
+});
+
 function Augur() {
+  var i, len, fn;
+
   this.version = "3.13.15";
 
   this.options = {
@@ -59,7 +61,7 @@ function Augur() {
       reporting: false,   // reporting-related debug logging
       filters: false,     // filters-related debug logging
       sync: false,        // show warning on synchronous RPC request
-      accounts: false,    // show info about funding from faucet
+      accounts: false     // show info about funding from faucet
     },
     loadZeroVolumeMarkets: true
   };
@@ -73,21 +75,22 @@ function Augur() {
   this.constants = require("./constants");
   this.utils = require("./utilities");
   this.rpc = require("ethrpc");
+  this.subscriptionsSupported = false;
   this.errors = this.rpc.errors;
   this.abi.debug = this.options.debug.abi;
   this.rpc.debug = this.options.debug;
 
   // Load submodules
-  for (var i = 0, len = modules.length; i < len; ++i) {
-    for (var fn in modules[i]) {
-      if (!modules[i].hasOwnProperty(fn)) continue;
-      this[fn] = modules[i][fn].bind(this);
-      this[fn].toString = Function.prototype.toString.bind(modules[i][fn]);
+  for (i = 0, len = modules.length; i < len; ++i) {
+    for (fn in modules[i]) {
+      if (modules[i].hasOwnProperty(fn)) {
+        this[fn] = modules[i][fn].bind(this);
+        this[fn].toString = Function.prototype.toString.bind(modules[i][fn]);
+      }
     }
   }
   this.createBatch = require("./batch").bind(this);
   this.accounts = this.Accounts();
-  this.web = this.accounts; // deprecated
   this.filters = this.Filters();
   this.chat = this.Chat();
   this.augurNode = this.AugurNode();

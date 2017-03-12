@@ -1,7 +1,3 @@
-/*
- * Author: priecint
- */
-
 "use strict";
 
 var clone = require("clone");
@@ -10,8 +6,6 @@ var EthTx = require("ethereumjs-tx");
 var abi = require("augur-abi");
 var constants = require("../constants");
 var abacus = require("./abacus");
-
-var ONE = new BigNumber(1, 10);
 
 module.exports = {
 
@@ -49,15 +43,16 @@ module.exports = {
    * @return {Array.<Object>}
    */
   filterByPriceAndOutcomeAndUserSortByPrice: function (orders, traderOrderType, limitPrice, outcomeId, userAddress) {
+    var isMarketOrder;
     if (!orders) return [];
-    var isMarketOrder = limitPrice === null || limitPrice === undefined;
+    isMarketOrder = limitPrice === null || limitPrice === undefined;
     return Object.keys(orders)
       .map(function (orderID) {
         return orders[orderID];
       })
       .filter(function (order) {
-        if (!order || !order.price) return false;
         var isMatchingPrice;
+        if (!order || !order.price) return false;
         if (isMarketOrder) {
           isMatchingPrice = true;
         } else {
@@ -219,19 +214,20 @@ module.exports = {
   },
 
   calculateTradeTotals: function (type, numShares, limitPrice, tradeActions) {
-    var tradeActionsTotals = {
+    var tradeActionsTotals, numTradeActions, totalCost, tradingFeesEth, gasFeesRealEth, i;
+    tradeActionsTotals = {
       numShares: numShares,
       limitPrice: limitPrice,
       side: type,
       totalFee: 0,
       totalCost: 0
     };
-    var numTradeActions = tradeActions.length;
+    numTradeActions = tradeActions.length;
     if (numTradeActions) {
-      var totalCost = constants.ZERO;
-      var tradingFeesEth = constants.ZERO;
-      var gasFeesRealEth = constants.ZERO;
-      for (var i = 0; i < numTradeActions; ++i) {
+      totalCost = constants.ZERO;
+      tradingFeesEth = constants.ZERO;
+      gasFeesRealEth = constants.ZERO;
+      for (i = 0; i < numTradeActions; ++i) {
         totalCost = totalCost.plus(abi.bignum(tradeActions[i].costEth));
         tradingFeesEth = tradingFeesEth.plus(abi.bignum(tradeActions[i].feeEth));
         gasFeesRealEth = gasFeesRealEth.plus(abi.bignum(tradeActions[i].gasEth));
@@ -271,8 +267,8 @@ module.exports = {
    * @return {Array}
    */
   getTradingActions: function (type, orderShares, orderLimitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeId, range, marketOrderBook, scalarMinMax) {
-    var remainingOrderShares, i, length, orderSharesFilled, bid, ask, bidAmount, isMarketOrder, fees, adjustedFees, totalTakerFeeEth, adjustedLimitPrice;
-    if (type.constructor === Object) {
+    var remainingOrderShares, i, length, orderSharesFilled, bid, ask, bidAmount, isMarketOrder, fees, adjustedFees, totalTakerFeeEth, adjustedLimitPrice, bnTakerFee, bnMakerFee, bnRange, gasPrice, tradingCost, fullPrecisionPrice, matchingSortedAsks, areSuitableOrders, buyActions, etherToTrade, matchingSortedBids, areSuitableBids, userHasPosition, sellActions, etherToSell, remainingPositionShares, newBid, askShares, newTradeActions, etherToShortSell, tradingActions, augur = this;
+    if (type && type.constructor === Object) {
       orderShares = type.orderShares;
       orderLimitPrice = type.orderLimitPrice;
       takerFee = type.takerFee;
@@ -285,15 +281,14 @@ module.exports = {
       scalarMinMax = type.scalarMinMax;
       type = type.type;
     }
-
     userAddress = abi.format_address(userAddress);
     orderShares = new BigNumber(orderShares, 10);
     orderLimitPrice = (orderLimitPrice === null || orderLimitPrice === undefined) ?
       null :
       new BigNumber(orderLimitPrice, 10);
-    var bnTakerFee = new BigNumber(takerFee, 10);
-    var bnMakerFee = new BigNumber(makerFee, 10);
-    var bnRange = new BigNumber(range, 10);
+    bnTakerFee = new BigNumber(takerFee, 10);
+    bnMakerFee = new BigNumber(makerFee, 10);
+    bnRange = new BigNumber(range, 10);
     userPositionShares = new BigNumber(userPositionShares, 10);
     isMarketOrder = orderLimitPrice === null || orderLimitPrice === undefined;
     fees = abacus.calculateFxpTradingFees(bnMakerFee, bnTakerFee);
@@ -307,36 +302,24 @@ module.exports = {
           abi.fix(adjustedLimitPrice),
           abi.fix(bnRange)
         ),
-        fees.makerProportionOfFee,
-        false,
-        true
+        fees.makerProportionOfFee
       );
     }
-
-    var augur = this;
-    var gasPrice = augur.rpc.gasPrice;
-    var tradingCost, fullPrecisionPrice;
+    gasPrice = augur.rpc.gasPrice;
     if (type === "buy") {
-      var matchingSortedAsks = augur.filterByPriceAndOutcomeAndUserSortByPrice(marketOrderBook.sell, type, orderLimitPrice, outcomeId, userAddress);
-      var areSuitableOrders = matchingSortedAsks.length > 0;
+      matchingSortedAsks = augur.filterByPriceAndOutcomeAndUserSortByPrice(marketOrderBook.sell, type, orderLimitPrice, outcomeId, userAddress);
+      areSuitableOrders = matchingSortedAsks.length > 0;
       if (!areSuitableOrders) {
         if (isMarketOrder) {
-          return [];
+          tradingActions = this.calculateTradeTotals(type, orderShares.toFixed(), orderLimitPrice && orderLimitPrice.toFixed(), []);
+        } else {
+          tradingActions = this.calculateTradeTotals(type, orderShares.toFixed(), orderLimitPrice && orderLimitPrice.toFixed(), [
+            augur.getBidAction(abi.fix(orderShares), abi.fix(adjustedLimitPrice), adjustedFees.maker, gasPrice)
+          ]);
         }
-        return this.calculateTradeTotals(
-          type,
-          orderShares.toFixed(),
-          orderLimitPrice && orderLimitPrice.toFixed(),
-          [augur.getBidAction(
-            abi.fix(orderShares),
-            abi.fix(adjustedLimitPrice),
-            adjustedFees.maker,
-            gasPrice)]
-        );
       } else {
-        var buyActions = [];
-
-        var etherToTrade = constants.ZERO;
+        buyActions = [];
+        etherToTrade = constants.ZERO;
         totalTakerFeeEth = constants.ZERO;
         remainingOrderShares = orderShares;
         length = matchingSortedAsks.length;
@@ -355,24 +338,20 @@ module.exports = {
           }
         }
         buyActions.push(augur.getBuyAction(etherToTrade, orderShares.minus(remainingOrderShares), totalTakerFeeEth, gasPrice));
-
         if (!remainingOrderShares.lte(constants.PRECISION.zero) && !isMarketOrder) {
           buyActions.push(augur.getBidAction(abi.fix(remainingOrderShares), abi.fix(orderLimitPrice), adjustedFees.maker, gasPrice));
         }
-
-        return this.calculateTradeTotals(type, orderShares.toFixed(), orderLimitPrice && orderLimitPrice.toFixed(), buyActions);
+        tradingActions = this.calculateTradeTotals(type, orderShares.toFixed(), orderLimitPrice && orderLimitPrice.toFixed(), buyActions);
       }
     } else {
-      var matchingSortedBids = augur.filterByPriceAndOutcomeAndUserSortByPrice(marketOrderBook.buy, type, orderLimitPrice, outcomeId, userAddress);
-
-      var areSuitableBids = matchingSortedBids.length > 0;
-      var userHasPosition = userPositionShares.gt(constants.PRECISION.zero);
-      var sellActions = [];
-
+      matchingSortedBids = augur.filterByPriceAndOutcomeAndUserSortByPrice(marketOrderBook.buy, type, orderLimitPrice, outcomeId, userAddress);
+      areSuitableBids = matchingSortedBids.length > 0;
+      userHasPosition = userPositionShares.gt(constants.PRECISION.zero);
+      sellActions = [];
       if (userHasPosition) {
-        var etherToSell = constants.ZERO;
+        etherToSell = constants.ZERO;
         remainingOrderShares = orderShares;
-        var remainingPositionShares = userPositionShares;
+        remainingPositionShares = userPositionShares;
         if (areSuitableBids) {
           totalTakerFeeEth = constants.ZERO;
           for (i = 0, length = matchingSortedBids.length; i < length; i++) {
@@ -393,7 +372,7 @@ module.exports = {
               i--;
               length--;
             } else {
-              var newBid = clone(bid);
+              newBid = clone(bid);
               newBid.amount = bidAmount.minus(orderSharesFilled).toFixed();
               matchingSortedBids[i] = newBid;
             }
@@ -404,17 +383,15 @@ module.exports = {
           sellActions.push(augur.getSellAction(etherToSell, orderShares.minus(remainingOrderShares), totalTakerFeeEth, gasPrice));
         } else {
           if (!isMarketOrder) {
-            var askShares = BigNumber.min(remainingOrderShares, remainingPositionShares);
+            askShares = BigNumber.min(remainingOrderShares, remainingPositionShares);
             remainingOrderShares = remainingOrderShares.minus(askShares);
             remainingPositionShares = remainingPositionShares.minus(askShares);
             sellActions.push(augur.getAskAction(abi.fix(askShares), abi.fix(adjustedLimitPrice), adjustedFees.maker, gasPrice));
           }
         }
-
         if (remainingOrderShares.gt(constants.PRECISION.zero) && !isMarketOrder) {
           // recursion
-          var newTradeActions = augur.getTradingActions(type, remainingOrderShares, orderLimitPrice, takerFee, makerFee, userAddress, remainingPositionShares, outcomeId, range, {buy: matchingSortedBids}, scalarMinMax);
-
+          newTradeActions = augur.getTradingActions(type, remainingOrderShares, orderLimitPrice, takerFee, makerFee, userAddress, remainingPositionShares, outcomeId, range, {buy: matchingSortedBids}, scalarMinMax);
           if (newTradeActions.tradeActions) {
             sellActions = sellActions.concat(newTradeActions.tradeActions);
           } else {
@@ -423,38 +400,38 @@ module.exports = {
         }
       } else {
         if (isMarketOrder) {
-          return this.calculateTradeTotals(type, orderShares.toFixed(), orderLimitPrice && orderLimitPrice.toFixed(), sellActions);
-        }
-
-        var etherToShortSell = constants.ZERO;
-        remainingOrderShares = orderShares;
-        if (areSuitableBids) {
-          totalTakerFeeEth = constants.ZERO;
-          for (i = 0, length = matchingSortedBids.length; i < length; i++) {
-            bid = matchingSortedBids[i];
-            orderSharesFilled = BigNumber.min(new BigNumber(bid.amount, 10), remainingOrderShares);
-            fullPrecisionPrice = (scalarMinMax && scalarMinMax.maxValue !== null && scalarMinMax.maxValue !== undefined) ?
-              abacus.adjustScalarSellPrice(scalarMinMax.maxValue, bid.fullPrecisionPrice) :
-              bid.fullPrecisionPrice;
-            tradingCost = abacus.calculateFxpTradingCost(orderSharesFilled, fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
-            totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
-            remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
-            if (scalarMinMax && scalarMinMax.maxValue) {
-              orderSharesFilled = new BigNumber(scalarMinMax.maxValue, 10).times(orderSharesFilled);
+          tradingActions = this.calculateTradeTotals(type, orderShares.toFixed(), orderLimitPrice && orderLimitPrice.toFixed(), sellActions);
+        } else {
+          etherToShortSell = constants.ZERO;
+          remainingOrderShares = orderShares;
+          if (areSuitableBids) {
+            totalTakerFeeEth = constants.ZERO;
+            for (i = 0, length = matchingSortedBids.length; i < length; i++) {
+              bid = matchingSortedBids[i];
+              orderSharesFilled = BigNumber.min(new BigNumber(bid.amount, 10), remainingOrderShares);
+              fullPrecisionPrice = (scalarMinMax && scalarMinMax.maxValue !== null && scalarMinMax.maxValue !== undefined) ?
+                abacus.adjustScalarSellPrice(scalarMinMax.maxValue, bid.fullPrecisionPrice) :
+                bid.fullPrecisionPrice;
+              tradingCost = abacus.calculateFxpTradingCost(orderSharesFilled, fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
+              totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
+              remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);
+              if (scalarMinMax && scalarMinMax.maxValue) {
+                orderSharesFilled = new BigNumber(scalarMinMax.maxValue, 10).times(orderSharesFilled);
+              }
+              etherToShortSell = etherToShortSell.plus(orderSharesFilled.minus(tradingCost.cash));
+              if (remainingOrderShares.lte(constants.PRECISION.zero)) {
+                break;
+              }
             }
-            etherToShortSell = etherToShortSell.plus(orderSharesFilled.minus(tradingCost.cash));
-            if (remainingOrderShares.lte(constants.PRECISION.zero)) {
-              break;
-            }
+            sellActions.push(augur.getShortSellAction(etherToShortSell, orderShares.minus(remainingOrderShares), totalTakerFeeEth, gasPrice));
           }
-          sellActions.push(augur.getShortSellAction(etherToShortSell, orderShares.minus(remainingOrderShares), totalTakerFeeEth, gasPrice));
-        }
-        if (remainingOrderShares.gt(constants.PRECISION.zero)) {
-          sellActions.push(augur.getShortAskAction(abi.fix(remainingOrderShares), abi.fix(adjustedLimitPrice), adjustedFees.maker, gasPrice));
+          if (remainingOrderShares.gt(constants.PRECISION.zero)) {
+            sellActions.push(augur.getShortAskAction(abi.fix(remainingOrderShares), abi.fix(adjustedLimitPrice), adjustedFees.maker, gasPrice));
+          }
         }
       }
-
-      return this.calculateTradeTotals(type, orderShares.toFixed(), orderLimitPrice && orderLimitPrice.toFixed(), sellActions);
+      tradingActions = this.calculateTradeTotals(type, orderShares.toFixed(), orderLimitPrice && orderLimitPrice.toFixed(), sellActions);
     }
+    return tradingActions;
   }
 };

@@ -14,10 +14,11 @@ module.exports = {
   },
 
   parseMarkets: function (markets) {
+    var numMarkets, parsedMarkets, i;
     if (!markets) return markets;
-    var numMarkets = markets.length;
-    var parsedMarkets = new Array(numMarkets);
-    for (var i = 0; i < numMarkets; ++i) {
+    numMarkets = markets.length;
+    parsedMarkets = new Array(numMarkets);
+    for (i = 0; i < numMarkets; ++i) {
       parsedMarkets[i] = this.parseMarket(markets[i]);
     }
     return parsedMarkets;
@@ -37,7 +38,7 @@ module.exports = {
       info[2] = abi.unfix(info[2], "string");
       info[3] = abi.unfix(abi.hex(info[3], true), "string");
       info[4] = abi.unfix(abi.hex(info[4], true), "string");
-      info[5] = parseInt(info[5]);
+      info[5] = parseInt(info[5], 16);
       info[6] = abi.unfix(info[6], "string");
     }
     return info;

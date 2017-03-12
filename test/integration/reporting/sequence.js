@@ -99,8 +99,9 @@ describe("Reporting sequence", function () {
                 assert.isNull(err, JSON.stringify(err));
                 markets = clone(newMarkets);
                 for (var type in markets) {
-                  if (!markets.hasOwnProperty(type)) continue;
-                  events[type] = augur.getMarketEvent(markets[type], 0);
+                  if (markets.hasOwnProperty(type)) {
+                    events[type] = augur.getMarketEvent(markets[type], 0);
+                  }
                 }
                 eventID = events.binary;
                 if (DEBUG) console.log(chalk.white.dim("Events: "), events);
@@ -136,8 +137,9 @@ describe("Reporting sequence", function () {
               assert.isNull(err, JSON.stringify(err));
               markets = clone(newMarkets);
               for (var type in markets) {
-                if (!markets.hasOwnProperty(type)) continue;
-                events[type] = augur.getMarketEvent(markets[type], 0);
+                if (markets.hasOwnProperty(type)) {
+                  events[type] = augur.getMarketEvent(markets[type], 0);
+                }
               }
               eventID = events.binary;
               if (DEBUG) console.log(chalk.white.dim("Events: "), events);

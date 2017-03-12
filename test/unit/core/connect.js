@@ -4,7 +4,7 @@ var assert = require('chai').assert;
 var augur = require('../../../src');
 var Contracts = require('augur-contracts');
 var constants = require("../../../src/constants");
-var ClearCallCounts = require('../../tools').ClearCallCounts;
+var clearCallCounts = require('../../tools').clearCallCounts;
 var noop = require('../../../src/utilities.js').noop;
 var BigNumber = require("bignumber.js");
 var proxyquire = require('proxyquire').noCallThru().noPreserveCache();
@@ -433,7 +433,7 @@ describe('connect.bindContractAPI', function() {
     bindContractMethod: 0
   };
   afterEach(function() {
-    ClearCallCounts(callCounts);
+    clearCallCounts(callCounts);
   });
   var test = function(t) {
     it(t.description, function(done) {
@@ -626,7 +626,7 @@ describe('connect.sync', function() {
     bindContractAPI: 0,
   };
   afterEach(function() {
-    ClearCallCounts(callCounts);
+    clearCallCounts(callCounts);
   });
   var test = function(t) {
     it(t.description, function(done) {

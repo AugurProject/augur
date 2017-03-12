@@ -1351,8 +1351,9 @@ describe("start_event_listener", function() {
     augur.filters.setup_event_filter = setup_event_filter;
     // make sure filter is completely nulled out before we start a new test.
     for (var label in filter) {
-      if (!filter.hasOwnProperty(label)) continue;
-      filter[label] = { id: null, heartbeat: null };
+      if (filter.hasOwnProperty(label)) {
+        filter[label] = { id: null, heartbeat: null };
+      }
     }
     augur.filters.filter = filter;
   });
@@ -1543,7 +1544,6 @@ describe("pacemaker", function() {
       augur.filters.parse_contracts_message = t.parse_contracts_message;
       augur.filters.parse_block_message = t.parse_block_message;
       augur.filters.parse_event_message = t.parse_event_message;
-
       augur.filters.pacemaker(t.cb);
       t.assertions();
     });
@@ -2098,11 +2098,12 @@ describe("ignore", function() {
   		// here we are only completing the test when everything is nulled out.
   		var areWeDone = true;
   		for (var label in augur.filters.filter) {
-  			if (!augur.filters.filter.hasOwnProperty(label)) continue;
-        var f = augur.filters.filter[label];
-        if (f.id !== null || f.heartbeat !== null) {
-          areWeDone = false;
-          break;
+  			if (augur.filters.filter.hasOwnProperty(label)) {
+          var f = augur.filters.filter[label];
+          if (f.id !== null || f.heartbeat !== null) {
+            areWeDone = false;
+            break;
+          }
         }
   		}
   		if (areWeDone) {
@@ -2161,11 +2162,12 @@ describe("ignore", function() {
   		// here we are only completing the test when everything is nulled out.
   		var areWeDone = true;
   		for (var label in augur.filters.filter) {
-  			if (!augur.filters.filter.hasOwnProperty(label)) continue;
-        var f = augur.filters.filter[label];
-        if (f.id !== null || f.heartbeat !== null) {
-          areWeDone = false;
-          break;
+  			if (augur.filters.filter.hasOwnProperty(label)) {
+          var f = augur.filters.filter[label];
+          if (f.id !== null || f.heartbeat !== null) {
+            areWeDone = false;
+            break;
+          }
         }
   		}
   		if (areWeDone) {
@@ -2219,11 +2221,12 @@ describe("ignore", function() {
   		// here we are only completing the test when everything is nulled out.
   		var areWeDone = true;
   		for (var label in augur.filters.filter) {
-  			if (!augur.filters.filter.hasOwnProperty(label)) continue;
-        var f = augur.filters.filter[label];
-        if (f.id !== null || f.heartbeat !== null) {
-          areWeDone = false;
-          break;
+  			if (augur.filters.filter.hasOwnProperty(label)) {
+          var f = augur.filters.filter[label];
+          if (f.id !== null || f.heartbeat !== null) {
+            areWeDone = false;
+            break;
+          }
         }
   		}
   		if (areWeDone) {

@@ -23,8 +23,9 @@ describe("Read contracts", function () {
 
   var contract_list = [];
   for (var c in contracts[constants.DEFAULT_NETWORK_ID]) {
-    if (!contracts[constants.DEFAULT_NETWORK_ID].hasOwnProperty(c)) continue;
-    contract_list.push(c);
+    if (contracts[constants.DEFAULT_NETWORK_ID].hasOwnProperty(c)) {
+      contract_list.push(c);
+    }
   }
 
   it.each(contract_list, "read %s", ['element'], function (element, next) {

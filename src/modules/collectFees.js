@@ -13,7 +13,7 @@ var utils = require("../utilities");
 module.exports = {
 
   collectFees: function (branch, sender, periodLength, onSent, onSuccess, onFailed) {
-    var self = this;
+    var tx, self = this;
     if (branch && branch.constructor === Object) {
       sender = branch.sender;
       periodLength = branch.periodLength;
@@ -27,7 +27,7 @@ module.exports = {
         "-2": "needs to be second half of reporting period to claim rep"
       });
     }
-    var tx = clone(this.tx.CollectFees.collectFees);
+    tx = clone(this.tx.CollectFees.collectFees);
     tx.params = [branch, sender];
     this.getVotePeriod(branch, function (period) {
       self.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
@@ -38,7 +38,7 @@ module.exports = {
         self.rpc.getGasPrice(function (gasPrice) {
           tx.gasPrice = gasPrice;
           tx.value = abi.prefix_hex(new BigNumber("500000", 10).times(new BigNumber(gasPrice, 16)).toString(16));
-          var prepare = function (res, cb) {
+          return self.transact(tx, onSent, utils.compose(function (res, cb) {
             if (res && (res.callReturn === "1" || res.callReturn === "2")) {
               return cb(res);
             }
@@ -58,8 +58,7 @@ module.exports = {
                 });
               });
             });
-          };
-          return self.transact(tx, onSent, utils.compose(prepare, onSuccess), onFailed);
+          }, onSuccess), onFailed);
         });
       });
     });

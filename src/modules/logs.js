@@ -16,18 +16,17 @@ var ONE = abi.bignum("1");
 module.exports = {
 
   parseCompleteSetsLogs: function (logs, mergeInto) {
-    var marketID, logData, numOutcomes, logType, parsed;
+    var i, j, n, marketID, logData, numOutcomes, logType, parsed;
     parsed = mergeInto || {};
-    for (var i = 0, n = logs.length; i < n; ++i) {
-      if (logs[i] && logs[i].data !== undefined &&
-                logs[i].data !== null && logs[i].data !== "0x") {
+    for (i = 0, n = logs.length; i < n; ++i) {
+      if (logs[i] && logs[i].data !== undefined && logs[i].data !== null && logs[i].data !== "0x") {
         marketID = logs[i].topics[2];
         logType = this.filters.format_trade_type(logs[i].topics[3]);
         logData = this.rpc.unmarshal(logs[i].data);
         numOutcomes = parseInt(logData[1], 16);
         if (mergeInto) {
           if (!parsed[marketID]) parsed[marketID] = {};
-          for (var j = 1; j <= numOutcomes; ++j) {
+          for (j = 1; j <= numOutcomes; ++j) {
             if (!parsed[marketID][j]) parsed[marketID][j] = [];
             parsed[marketID][j].push({
               type: logType,
@@ -56,14 +55,14 @@ module.exports = {
    ***********/
 
   getMarketPriceHistory: function (market, options, callback) {
-    var self = this;
+    var params, aux, self = this;
     if (!callback && utils.is_function(options)) {
       callback = options;
       options = null;
     }
-    var params = clone(options || {});
+    params = clone(options || {});
     params.market = market;
-    var aux = {index: "outcome", mergedLogs: {}};
+    aux = {index: "outcome", mergedLogs: {}};
     if (!utils.is_function(callback)) {
       this.getLogs("log_fill_tx", params, aux);
       this.getLogs("log_short_fill_tx", params, aux);
@@ -83,9 +82,10 @@ module.exports = {
   },
 
   buildTopicsList: function (event, params) {
+    var i, numInputs;
     var topics = [event.signature];
     var inputs = event.inputs;
-    for (var i = 0, numInputs = inputs.length; i < numInputs; ++i) {
+    for (i = 0, numInputs = inputs.length; i < numInputs; ++i) {
       if (inputs[i].indexed) {
         if (params[inputs[i].name]) {
           topics.push(abi.format_int256(params[inputs[i].name]));
@@ -108,7 +108,7 @@ module.exports = {
   },
 
   // warning: mutates processedLogs
-  insertIndexedLog: function (processedLogs, parsed, index, log) {
+  insertIndexedLog: function (processedLogs, parsed, index) {
     if (index.constructor === Array) {
       if (index.length === 1) {
         if (!processedLogs[parsed[index[0]]]) {
@@ -132,16 +132,16 @@ module.exports = {
 
   // warning: mutates processedLogs, if passed
   processLogs: function (label, index, logs, extraField, processedLogs) {
-    var parsed;
+    var parsed, i, numLogs;
     if (!processedLogs) processedLogs = (index) ? {} : [];
-    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+    for (i = 0, numLogs = logs.length; i < numLogs; ++i) {
       if (!logs[i].removed) {
         parsed = this.filters.parse_event_message(label, logs[i]);
         if (extraField && extraField.name) {
           parsed[extraField.name] = extraField.value;
         }
         if (index) {
-          this.insertIndexedLog(processedLogs, parsed, index, logs[i]);
+          this.insertIndexedLog(processedLogs, parsed, index);
         } else {
           processedLogs.push(parsed);
         }
@@ -151,11 +151,12 @@ module.exports = {
   },
 
   getFilteredLogs: function (label, filterParams, callback) {
+    var filter;
     if (!callback && utils.is_function(filterParams)) {
       callback = filterParams;
       filterParams = null;
     }
-    var filter = this.parametrizeFilter(this.api.events[label], filterParams || {});
+    filter = this.parametrizeFilter(this.api.events[label], filterParams || {});
     if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
     this.rpc.getLogs(filter, function (logs) {
       if (logs && logs.error) return callback(logs, null);
@@ -166,14 +167,14 @@ module.exports = {
 
   // aux: {index: str/arr, mergedLogs: {}, extraField: {name, value}}
   getLogs: function (label, filterParams, aux, callback) {
-    var self = this;
+    var logs, self = this;
     if (!utils.is_function(callback) && utils.is_function(aux)) {
       callback = aux;
       aux = null;
     }
     aux = aux || {};
     if (!utils.is_function(callback)) {
-      var logs = this.getFilteredLogs(label, filterParams || {});
+      logs = this.getFilteredLogs(label, filterParams || {});
       if (logs && logs.length) logs.reverse();
       return this.processLogs(label, aux.index, logs, aux.extraField, aux.mergedLogs);
     }
@@ -185,11 +186,12 @@ module.exports = {
   },
 
   chunkBlocks: function (fromBlock, toBlock) {
+    var toBlockChunk, fromBlockChunk, chunks;
     if (fromBlock < 1) fromBlock = 1;
     if (toBlock < fromBlock) return [];
-    var toBlockChunk = toBlock;
-    var fromBlockChunk = toBlock - constants.BLOCKS_PER_CHUNK;
-    var chunks = [];
+    toBlockChunk = toBlock;
+    fromBlockChunk = toBlock - constants.BLOCKS_PER_CHUNK;
+    chunks = [];
     while (toBlockChunk >= fromBlock) {
       if (fromBlockChunk < fromBlock) {
         fromBlockChunk = fromBlock;
@@ -205,7 +207,7 @@ module.exports = {
   },
 
   getLogsChunked: function (label, filterParams, aux, onChunkReceived, callback) {
-    var self = this;
+    var chunks, self = this;
     aux = aux || {};
     filterParams = filterParams || {};
     if (!filterParams.fromBlock) {
@@ -214,7 +216,7 @@ module.exports = {
     if (!filterParams.toBlock) {
       filterParams.toBlock = this.rpc.block.number;
     }
-    var chunks = this.chunkBlocks(abi.number(filterParams.fromBlock), abi.number(filterParams.toBlock));
+    chunks = this.chunkBlocks(abi.number(filterParams.fromBlock), abi.number(filterParams.toBlock));
     async.eachSeries(chunks, function (chunk, nextChunk) {
       var filterParamsChunk = clone(filterParams);
       filterParamsChunk.fromBlock = chunk.fromBlock;
@@ -231,40 +233,44 @@ module.exports = {
   },
 
   getAccountTrades: function (account, filterParams, callback) {
-    var self = this;
+    var takerTradesFilterParams, aux, self = this;
     if (!callback && utils.is_function(filterParams)) {
       callback = filterParams;
       filterParams = null;
     }
     filterParams = filterParams || {};
-    var takerTradesFilterParams = clone(filterParams);
+    takerTradesFilterParams = clone(filterParams);
     takerTradesFilterParams.sender = account;
-    var aux = {
+    aux = {
       index: ["market", "outcome"],
       mergedLogs: {},
       extraField: {name: "maker", value: false}
     };
     this.getLogs("log_fill_tx", takerTradesFilterParams, aux, function (err) {
+      var makerTradesFilterParams;
       if (err) return callback(err);
-      var makerTradesFilterParams = clone(filterParams);
+      makerTradesFilterParams = clone(filterParams);
       makerTradesFilterParams.owner = account;
       aux.extraField.value = true;
       self.getLogs("log_fill_tx", makerTradesFilterParams, aux, function (err) {
+        var takerShortSellsFilterParams;
         if (err) return callback(err);
-        var takerShortSellsFilterParams = clone(filterParams);
+        takerShortSellsFilterParams = clone(filterParams);
         takerShortSellsFilterParams.sender = account;
         aux.extraField.value = false;
         self.getLogs("log_short_fill_tx", takerShortSellsFilterParams, aux, function (err) {
+          var makerShortSellsFilterParams;
           if (err) return callback(err);
-          var makerShortSellsFilterParams = clone(filterParams);
+          makerShortSellsFilterParams = clone(filterParams);
           makerShortSellsFilterParams.owner = account;
           aux.extraField.value = true;
           self.getLogs("log_short_fill_tx", makerShortSellsFilterParams, aux, function (err) {
+            var completeSetsFilterParams;
             if (err) return callback(err);
             if (filterParams.noCompleteSets) {
               callback(null, self.sortTradesByBlockNumber(aux.mergedLogs));
             } else {
-              var completeSetsFilterParams = clone(filterParams);
+              completeSetsFilterParams = clone(filterParams);
               completeSetsFilterParams.shortAsk = false;
               completeSetsFilterParams.mergeInto = aux.mergedLogs;
               self.getParsedCompleteSetsLogs(account, completeSetsFilterParams, function (err, merged) {
@@ -282,14 +288,14 @@ module.exports = {
   },
 
   sortTradesByBlockNumber: function (trades) {
-    var marketTrades, outcomeTrades, outcomeIDs, numOutcomes;
-    var marketIDs = Object.keys(trades);
-    var numMarkets = marketIDs.length;
-    for (var i = 0; i < numMarkets; ++i) {
+    var marketTrades, outcomeTrades, outcomeIDs, numOutcomes, marketIDs, numMarkets, i, j;
+    marketIDs = Object.keys(trades);
+    numMarkets = marketIDs.length;
+    for (i = 0; i < numMarkets; ++i) {
       marketTrades = trades[marketIDs[i]];
       outcomeIDs = Object.keys(marketTrades);
       numOutcomes = outcomeIDs.length;
-      for (var j = 0; j < numOutcomes; ++j) {
+      for (j = 0; j < numOutcomes; ++j) {
         outcomeTrades = marketTrades[outcomeIDs[j]];
         outcomeTrades = outcomeTrades.sort(this.sortByBlockNumber);
       }
@@ -302,20 +308,21 @@ module.exports = {
    ********************************/
 
   getShortSellLogs: function (account, options, callback) {
+    var topics, filter;
     if (!callback && utils.is_function(options)) {
       callback = options;
       options = null;
     }
     options = options || {};
     if (account !== undefined && account !== null) {
-      var topics = [
+      topics = [
         this.api.events.log_short_fill_tx.signature,
         options.market ? abi.format_int256(options.market) : null,
         null,
         null
       ];
       topics[options.maker ? 3 : 2] = abi.format_int256(account);
-      var filter = {
+      filter = {
         fromBlock: options.fromBlock || "0x1",
         toBlock: options.toBlock || "latest",
         address: this.contracts.Trade,
@@ -332,25 +339,23 @@ module.exports = {
   },
 
   getTakerShortSellLogs: function (account, filterParams, callback) {
+    var params;
     if (!callback && utils.is_function(filterParams)) {
       callback = filterParams;
       filterParams = null;
     }
-    var aux = {
-      index: ["market", "outcome"],
-      extraField: {name: "maker", value: false}
-    };
-    var params = clone(filterParams || {});
+    params = clone(filterParams || {});
     params.maker = false;
     return this.getShortSellLogs(account, params, callback);
   },
 
   getShortAskBuyCompleteSetsLogs: function (account, options, callback) {
+    var opt;
     if (!callback && utils.is_function(options)) {
       callback = options;
       options = null;
     }
-    var opt = options ? clone(options) : {};
+    opt = options ? clone(options) : {};
     opt.shortAsk = true;
     opt.type = "buy";
     return this.getCompleteSetsLogs(account, opt, callback);
@@ -370,15 +375,16 @@ module.exports = {
   },
 
   getCompleteSetsLogs: function (account, options, callback) {
+    var typeCode, market, filter;
     if (!callback && utils.is_function(options)) {
       callback = options;
       options = null;
     }
     options = options || {};
     if (account !== undefined && account !== null) {
-      var typeCode = constants.LOG_TYPE_CODES[options.type] || null;
-      var market = options.market ? abi.format_int256(options.market) : null;
-      var filter = {
+      typeCode = constants.LOG_TYPE_CODES[options.type] || null;
+      market = options.market ? abi.format_int256(options.market) : null;
+      filter = {
         fromBlock: options.fromBlock || "0x1",
         toBlock: options.toBlock || "latest",
         address: (options.shortAsk) ? this.contracts.BuyAndSellShares : this.contracts.CompleteSets,
@@ -400,22 +406,24 @@ module.exports = {
   },
 
   getBuyCompleteSetsLogs: function (account, options, callback) {
+    var opt;
     if (!callback && utils.is_function(options)) {
       callback = options;
       options = null;
     }
-    var opt = options ? clone(options) : {};
+    opt = options ? clone(options) : {};
     opt.shortAsk = false;
     opt.type = "buy";
     return this.getCompleteSetsLogs(account, opt, callback);
   },
 
   getSellCompleteSetsLogs: function (account, options, callback) {
+    var opt;
     if (!callback && utils.is_function(options)) {
       callback = options;
       options = null;
     }
-    var opt = options ? clone(options) : {};
+    opt = options ? clone(options) : {};
     opt.shortAsk = false;
     opt.type = "sell";
     return this.getCompleteSetsLogs(account, opt, callback);

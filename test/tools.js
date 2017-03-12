@@ -2,11 +2,16 @@
 
 var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 
+var displayed_connection_info = false;
+
 var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
 var async = require("async");
 var chalk = require("chalk");
 var clone = require("clone");
+var constants = require("../src/constants");
+var utils = require("../src/utilities");
+var reptools = require("../src/modules/reporting");
 var path, madlibs;
 try {
   path = require("path");
@@ -15,16 +20,11 @@ try {
   path = null;
   madlibs = require("./madlibs");
 }
-var constants = require("../src/constants");
-var utils = require("../src/utilities");
-var reptools = require("../src/modules/reporting");
 
 BigNumber.config({
   MODULO_MODE: BigNumber.EUCLID,
   ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
 });
-
-var displayed_connection_info = false;
 
 module.exports = {
 
@@ -42,17 +42,18 @@ module.exports = {
   EPSILON: 1e-6,
 
   // a function to quickly reset the callCounts object.
-  ClearCallCounts: function (callCounts) {
-    var keys = Object.keys(callCounts);
-    for (var i = 0, numKeys = keys.length; i < numKeys; ++i) {
+  clearCallCounts: function (callCounts) {
+    var i, numKeys, keys = Object.keys(callCounts);
+    for (i = 0, numKeys = keys.length; i < numKeys; ++i) {
       callCounts[keys[i]] = 0;
     }
   },
 
   print_residual: function (periodLength, label) {
-    var t = parseInt(new Date().getTime() / 1000);
-    periodLength = parseInt(periodLength);
-    var residual = (t % periodLength) + "/" + periodLength + " (" + reptools.getCurrentPeriodProgress(periodLength) + "%)";
+    var t, residual;
+    t = parseInt(new Date().getTime() / 1000, 10);
+    periodLength = parseInt(periodLength, 10);
+    residual = (t % periodLength) + "/" + periodLength + " (" + reptools.getCurrentPeriodProgress(periodLength) + "%)";
     if (label) console.log("\n" + chalk.blue.bold(label));
     console.log(chalk.white.dim(" - Residual:"), chalk.cyan.dim(residual));
   },
@@ -60,7 +61,7 @@ module.exports = {
   print_reporting_status: function (augur, eventID, label) {
     var sender = augur.accounts.account.address || augur.from;
     var branch = augur.Events.getBranch(eventID);
-    var periodLength = parseInt(augur.Branches.getPeriodLength(branch));
+    var periodLength = parseInt(augur.Branches.getPeriodLength(branch), 10);
     var redistributed = augur.ConsensusData.getRepRedistributionDone(branch, sender);
     var votePeriod = augur.Branches.getVotePeriod(branch);
     var lastPeriodPenalized = augur.ConsensusData.getPenalizedUpTo(branch, sender);
@@ -75,12 +76,11 @@ module.exports = {
   },
 
   top_up: function (augur, branch, accountList, password, callback) {
-    var unlocked = [];
-    var self = this;
-    var active = augur.from;
+    var unlocked, active, clientSideAccount, accounts, self = this;
+    unlocked = [];
+    active = augur.from;
     branch = branch || constants.DEFAULT_BRANCH_ID;
-    var clientSideAccount;
-    var accounts = clone(accountList);
+    accounts = clone(accountList);
     if (augur.accounts.account.address) {
       accounts = [augur.accounts.account.address].concat(accounts);
     }
@@ -151,17 +151,16 @@ module.exports = {
 
   // Create a new branch and get Reputation on it
   setup_new_branch: function (augur, periodLength, parentBranchID, accountList, callback) {
-    var self = this;
-    var branchDescription = "Branchy McBranchface [" + Math.random().toString(36).substring(4) + "]";
-    var tradingFee = "0.01";
-    var accounts = clone(accountList);
+    var branchDescription, tradingFee, accounts, sender, clientSideAccount, parentBranchRepBalance, self = this;
+    branchDescription = "Branchy McBranchface [" + Math.random().toString(36).substring(4) + "]";
+    tradingFee = "0.01";
+    accounts = clone(accountList);
     if (this.DEBUG) {
       console.log(chalk.blue.bold("\nCreating new branch (periodLength=" + periodLength + ")"));
       console.log(chalk.white.dim("Account(s):"), chalk.green(accounts));
     }
-    var sender = augur.from;
-    var clientSideAccount;
-    var parentBranchRepBalance = augur.getRepBalance(parentBranchID, sender);
+    sender = augur.from;
+    parentBranchRepBalance = augur.getRepBalance(parentBranchID, sender);
     console.log("from:", sender);
     console.log("web.account.address:", augur.accounts.account.address);
     console.log("parent branch ID:", parentBranchID);
@@ -176,12 +175,12 @@ module.exports = {
         console.log("createBranch sent:", res);
       },
       onSuccess: function (res) {
+        var newBranchID;
         console.log("createBranch success:", res);
-        var newBranchID = res.branchID;
+        newBranchID = res.branchID;
         if (self.DEBUG) console.log(chalk.white.dim("New branch ID:"), chalk.green(newBranchID));
-        var block = augur.rpc.getBlock(res.blockNumber);
 
-                // get reputation on the new branch
+        // get reputation on the new branch
         if (augur.accounts.account.address) {
           accounts = [augur.accounts.account.address].concat(accounts);
         }
@@ -229,34 +228,32 @@ module.exports = {
   },
 
   create_each_market_type: function (augur, branchID, expDate, callback) {
-    var self = this;
+    var binaryDescription, categoricalDescription, scalarDescription, streetName, action, city, resolution, tags, extraInfo, takerFee, makerFee, numCategories, categories, i, markets, active, clientSideAccount, self = this;
 
     // markets have matching descriptions, tags, fees, etc.
     branchID = branchID || augur.constants.DEFAULT_BRANCH_ID;
-    var binaryDescription = "Binary test market";
-    var categoricalDescription = "Categorical test market";
-    var scalarDescription = "Scalar test market";
-    var streetName = madlibs.streetName();
-    var action = madlibs.action();
-    var city = madlibs.city();
-    var resolution = "http://" + action + "." + madlibs.noun() + "." + madlibs.tld();
-    var tags = [streetName, action, city];
-    var extraInfo = streetName + " is a " + madlibs.adjective() + " " + madlibs.noun() + ".  " + madlibs.transportation() + " " + madlibs.usState() + " " + action + " and " + madlibs.noun() + "!";
+    binaryDescription = "Binary test market";
+    categoricalDescription = "Categorical test market";
+    scalarDescription = "Scalar test market";
+    streetName = madlibs.streetName();
+    action = madlibs.action();
+    city = madlibs.city();
+    resolution = "http://" + action + "." + madlibs.noun() + "." + madlibs.tld();
+    tags = [streetName, action, city];
+    extraInfo = streetName + " is a " + madlibs.adjective() + " " + madlibs.noun() + ".  " + madlibs.transportation() + " " + madlibs.usState() + " " + action + " and " + madlibs.noun() + "!";
     expDate = expDate || parseInt(new Date().getTime() / 995, 10);
-    var takerFee = "0.02";
-    var makerFee = "0.01";
-    var numCategories = 7;
-    var categories = new Array(numCategories);
-    for (var i = 1; i <= numCategories; ++i) {
+    takerFee = "0.02";
+    makerFee = "0.01";
+    numCategories = 7;
+    categories = new Array(numCategories);
+    for (i = 1; i <= numCategories; ++i) {
       categories[i - 1] = "Outcome " + i.toString();
     }
-    console.log('creating categories:', categories);
-    var markets = {};
+    markets = {};
 
     // create a binary market
-    console.debug('New markets expire at:', expDate, parseInt(new Date().getTime() / 1000, 10), expDate - parseInt(new Date().getTime() / 1000, 10));
-    var active = augur.from;
-    var clientSideAccount;
+    console.debug("New markets expire at:", expDate, parseInt(new Date().getTime() / 1000, 10), expDate - parseInt(new Date().getTime() / 1000, 10));
+    active = augur.from;
     if (augur.accounts.account.address) {
       clientSideAccount = clone(augur.accounts.account);
       augur.accounts.account = {};
@@ -273,12 +270,12 @@ module.exports = {
       makerFee: makerFee,
       tags: tags,
       extraInfo: extraInfo,
-      onSent: function (res) {
+      onSent: function () {
 
         // create a categorical market
         augur.createSingleEventMarket({
           branch: branchID,
-          description: categoricalDescription + " [" + Math.random().toString(36).substring(4) + "]~|>" + categories.join('|'),
+          description: categoricalDescription + " [" + Math.random().toString(36).substring(4) + "]~|>" + categories.join("|"),
           expDate: expDate,
           minValue: 1,
           maxValue: numCategories,
@@ -288,7 +285,7 @@ module.exports = {
           makerFee: makerFee,
           tags: tags,
           extraInfo: extraInfo,
-          onSent: function (res) {
+          onSent: function () {
 
             // create a scalar market
             augur.createSingleEventMarket({
@@ -303,7 +300,7 @@ module.exports = {
               makerFee: makerFee,
               tags: tags,
               extraInfo: extraInfo,
-              onSent: function () {},
+              onSent: utils.noop,
               onSuccess: function (res) {
                 if (self.DEBUG) console.debug("Scalar market ID:", res.callReturn);
                 markets.scalar = res.callReturn;
@@ -379,16 +376,15 @@ module.exports = {
         augur.buyCompleteSets({
           market: market,
           amount: amountPerMarket,
-          onSent: function (r) {
-          },
-          onSuccess: function (r) {
+          onSent: utils.noop,
+          onSuccess: function () {
             if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Placing sell order");
             augur.sell({
               amount: amountPerMarket,
               price: "0.7",
               market: market,
               outcome: 2,
-              onSent: function () {},
+              onSent: utils.noop,
               onSuccess: function () {
                 nextMarket(null);
               },
@@ -399,11 +395,14 @@ module.exports = {
         });
       });
     }, function (err) {
+      var trades;
+      if (err) console.error("trade_in_each_market failed:", err);
       augur.useAccount(taker);
-      var trades = {};
+      trades = {};
       async.forEachOf(markets, function (market, type, nextMarket) {
+        var marketTrades;
         if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Searching for trade...");
-        var marketTrades = augur.get_trade_ids(market, 0, 0);
+        marketTrades = augur.get_trade_ids(market, 0, 0);
         if (!marketTrades || !marketTrades.length) {
           return nextMarket("no trades found for " + market);
         }
@@ -419,6 +418,7 @@ module.exports = {
           nextMarket(null);
         });
       }, function (err) {
+        if (err) console.error("trade_in_each_market failed:", err);
         if (self.DEBUG) console.log(chalk.white.dim("Trade IDs:"), trades);
         augur.rpc.personal("unlockAccount", [taker, password], function (unlocked) {
           if (unlocked && unlocked.error) return callback(unlocked);
@@ -433,8 +433,8 @@ module.exports = {
                   self.print_residual(periodLength, "Trade hash: " + tradeHash);
                 }
               },
-              onCommitSent: function () {},
-              onCommitSuccess: function (r) {
+              onCommitSent: utils.noop,
+              onCommitSuccess: function () {
                 if (self.DEBUG) self.print_residual(periodLength, "Trade committed");
               },
               onCommitFailed: function (e) {
@@ -495,16 +495,17 @@ module.exports = {
         augur.buyCompleteSets({
           market: market,
           amount: amountPerMarket,
-          onSent: function () {},
-          onSuccess: function (r) {
+          onSent: utils.noop,
+          onSuccess: function () {
+            var price;
             if (self.DEBUG) self.print_residual(periodLength, "[" + type  + "] Placing sell order");
-            var price = (type === "scalar") ? "12.3" : "0.7";
+            price = (type === "scalar") ? "12.3" : "0.7";
             augur.sell({
               amount: amountPerMarket,
               price: price,
               market: market,
               outcome: 2,
-              onSent: function () {},
+              onSent: utils.noop,
               onSuccess: function () {
                 nextMarket(null);
               },
@@ -525,7 +526,7 @@ module.exports = {
 
   wait_until_expiration: function (augur, eventID, callback) {
     var periodLength = augur.getPeriodLength(augur.getBranch(eventID));
-    var t = parseInt(new Date().getTime() / 1000);
+    var t = parseInt(new Date().getTime() / 1000, 10);
     var currentPeriod = augur.getCurrentPeriod(periodLength);
     var expirationPeriod = Math.floor(augur.getExpiration(eventID) / periodLength);
     var periodsToGo = expirationPeriod - currentPeriod;
@@ -539,7 +540,7 @@ module.exports = {
   },
 
   chunk32: function (string, stride, offset) {
-    var elements, chunked, position;
+    var i, elements, chunked, position;
     if (string.length >= 66) {
       stride = stride || 64;
       if (offset) {
@@ -549,7 +550,7 @@ module.exports = {
       }
       chunked = new Array(elements);
       position = 0;
-      for (var i = 0; i < elements; ++i) {
+      for (i = 0; i < elements; ++i) {
         if (offset && i === 0) {
           chunked[i] = string.slice(position, position + offset);
           position += offset;
@@ -558,20 +559,21 @@ module.exports = {
           position += stride;
         }
       }
-      return chunked;
     } else {
-      return string;
+      chunked = string;
     }
+    return chunked;
   },
 
   pp: function (obj, indent) {
-    var o = clone(obj);
-    for (var k in o) {
-      if (!o.hasOwnProperty(k)) continue;
-      if (o[k] && o[k].constructor === Function) {
-        o[k] = o[k].toString();
-        if (o[k].length > 64) {
-          o[k] = o[k].match(/function (\w*)/).slice(0, 1).join('');
+    var k, o = clone(obj);
+    for (k in o) {
+      if (o.hasOwnProperty(k)) {
+        if (typeof o[k] === "function") {
+          o[k] = o[k].toString();
+          if (o[k].length > 64) {
+            o[k] = o[k].match(/function (\w*)/).slice(0, 1).join("");
+          }
         }
       }
     }
@@ -579,14 +581,14 @@ module.exports = {
   },
 
   print_nodes: function (nodes) {
-    var node;
+    var node, i, len;
     if (nodes && nodes.length) {
       process.stdout.write(chalk.green.bold("hosted:   "));
-      for (var i = 0, len = nodes.length; i < len; ++i) {
+      for (i = 0, len = nodes.length; i < len; ++i) {
         node = nodes[i];
         node = (i === 0) ? chalk.green(node) : chalk.gray(node);
-        process.stdout.write(node + ' ');
-        if (i === len - 1) process.stdout.write('\n');
+        process.stdout.write(node + " ");
+        if (i === len - 1) process.stdout.write("\n");
       }
     }
   },
@@ -627,13 +629,13 @@ module.exports = {
   },
 
   get_test_accounts: function (augur, max_accounts) {
-    var accounts;
+    var accounts, i, len;
     if (augur) {
       if (typeof augur === "object") {
         accounts = augur.rpc.accounts();
       } else if (typeof augur === "string") {
         accounts = require("fs").readdirSync(require("path").join(augur, "keystore"));
-        for (var i = 0, len = accounts.length; i < len; ++i) {
+        for (i = 0, len = accounts.length; i < len; ++i) {
           accounts[i] = abi.prefix_hex(accounts[i]);
         }
       }
@@ -648,7 +650,7 @@ module.exports = {
     var start, delay;
     start = new Date();
     delay = seconds * 1000;
-    while ((new Date()) - start <= delay) {}
+    while ((new Date()) - start <= delay) {} // eslint-disable-line no-empty
     return true;
   },
 
@@ -657,7 +659,7 @@ module.exports = {
       branch = branch || augur.constants.DEFAULT_BRANCH_ID;
       account = account || augur.coinbase;
       return {
-        cash: augur.getCashBalance(account),
+        cash: augur.Cash.balance(account),
         reputation: augur.getRepBalance(branch || augur.constants.DEFAULT_BRANCH_ID, account),
         ether: abi.bignum(augur.rpc.balance(account)).dividedBy(constants.ETHER).toFixed()
       };
@@ -665,9 +667,10 @@ module.exports = {
   },
 
   copy: function (obj) {
+    var attr, copy;
     if (null === obj || "object" !== typeof obj) return obj;
-    var copy = obj.constructor();
-    for (var attr in obj) {
+    copy = obj.constructor();
+    for (attr in obj) {
       if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
     }
     return copy;
@@ -680,7 +683,8 @@ module.exports = {
   },
 
   has_value: function (o, v) {
-    for (var p in o) {
+    var p;
+    for (p in o) {
       if (o.hasOwnProperty(p)) {
         if (o[p] === v) return p;
       }
@@ -711,7 +715,7 @@ module.exports = {
       setTimeout(function () {
         augur.Consensus.incrementPeriodAfterReporting({
           branch: branch,
-          onSent: function (r) {},
+          onSent: utils.noop,
           onSuccess: function (r) {
             if (augur.options.debug.reporting) {
               console.log("Incremented period:", r.callReturn);
@@ -725,8 +729,9 @@ module.exports = {
       }, secondsToWait*1000);
     }
     augur.getExpiration(event, function (expTime) {
-      var expPeriod = Math.floor(expTime / periodLength);
-      var currentPeriod = augur.getCurrentPeriod(periodLength);
+      var expPeriod, currentPeriod, fullPeriodsToWait, secondsToWait;
+      expPeriod = Math.floor(expTime / periodLength);
+      currentPeriod = augur.getCurrentPeriod(periodLength);
       if (augur.options.debug.reporting) {
         console.log("\nreporting.checkTime:");
         console.log(" - Expiration period:", expPeriod);
@@ -734,13 +739,13 @@ module.exports = {
         console.log(" - Target period:    ", expPeriod + periodGap);
       }
       if (currentPeriod < expPeriod + periodGap) {
-        var fullPeriodsToWait = expPeriod - augur.getCurrentPeriod(periodLength) + periodGap - 1;
+        fullPeriodsToWait = expPeriod - augur.getCurrentPeriod(periodLength) + periodGap - 1;
         if (augur.options.debug.reporting) {
           console.log("Full periods to wait:", fullPeriodsToWait);
         }
-        var secondsToWait = periodLength;
+        secondsToWait = periodLength;
         if (fullPeriodsToWait === 0) {
-          secondsToWait -= (parseInt(new Date().getTime() / 1000) % periodLength);
+          secondsToWait -= (parseInt(new Date().getTime() / 1000, 10) % periodLength);
         }
         if (augur.options.debug.reporting) {
           console.log("Seconds to wait:", secondsToWait);

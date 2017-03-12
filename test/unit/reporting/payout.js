@@ -3,7 +3,7 @@
 var assert = require("chai").assert;
 var utils = require("../../../src/utilities.js");
 var augur = require('../../../src/');
-var ClearCallCounts = require('../../tools').ClearCallCounts;
+var clearCallCounts = require('../../tools').clearCallCounts;
 // 11 tests total
 
 describe("payout.closeMarket", function() {
@@ -245,7 +245,7 @@ describe("payout.claimMarketsProceeds", function() {
     claimProceeds: 0
   };
   afterEach(function() {
-    ClearCallCounts(callCounts);
+    clearCallCounts(callCounts);
     augur.claimProceeds = claimProceeds;
     augur.getWinningOutcomes = getWinningOutcomes;
   });

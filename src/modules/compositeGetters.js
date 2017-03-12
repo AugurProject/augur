@@ -53,12 +53,13 @@ module.exports = {
       volumeMin: volumeMin,
       volumeMax: volumeMax
     }, function (marketsData) {
+      var pause;
       if (!marketsData || marketsData.error) {
         chunkCB(marketsData);
       } else {
         chunkCB(null, marketsData);
       }
-      var pause = (Object.keys(marketsData).length) ? constants.PAUSE_BETWEEN_MARKET_BATCHES : 5;
+      pause = (Object.keys(marketsData).length) ? constants.PAUSE_BETWEEN_MARKET_BATCHES : 5;
       if (isDesc && startIndex > 0) {
         setTimeout(function () {
           self.loadNextMarketsBatch(branchID, Math.max(startIndex - chunkSize, 0), chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass);
@@ -78,8 +79,9 @@ module.exports = {
 
     // load the total number of markets
     this.getNumMarketsBranch(branchID, function (numMarketsRaw) {
-      var numMarkets = parseInt(numMarketsRaw, 10);
-      var firstStartIndex = isDesc ? Math.max(numMarkets - chunkSize + 1, 0) : 0;
+      var numMarkets, firstStartIndex;
+      numMarkets = parseInt(numMarketsRaw, 10);
+      firstStartIndex = isDesc ? Math.max(numMarkets - chunkSize + 1, 0) : 0;
 
       // load markets in batches
       // first pass: only markets with nonzero volume
@@ -115,7 +117,7 @@ module.exports = {
   },
 
   loadAssets: function (branchID, accountID, cbEther, cbRep, cbRealEther) {
-    this.getCashBalance(accountID, function (result) {
+    this.Cash.balance(accountID, function (result) {
       if (!result || result.error) return cbEther(result);
       return cbEther(null, abi.string(result));
     });
@@ -156,10 +158,11 @@ module.exports = {
   },
 
   parsePositionInMarket: function (positionInMarket) {
+    var numOutcomes, position, i;
     if (!positionInMarket || positionInMarket.error) return positionInMarket;
-    var numOutcomes = positionInMarket.length;
-    var position = {};
-    for (var i = 0; i < numOutcomes; ++i) {
+    numOutcomes = positionInMarket.length;
+    position = {};
+    for (i = 0; i < numOutcomes; ++i) {
       position[i + 1] = abi.unfix(abi.hex(positionInMarket[i], true), "string");
     }
     return position;
@@ -175,23 +178,20 @@ module.exports = {
       callback = callback || market.callback;
       market = market.market;
     }
-    return this.CompositeGetters.getPositionInMarket(
-      market,
-      account || this.from,
-      callback);
+    return this.CompositeGetters.getPositionInMarket(market, account || this.from, callback);
   },
 
   parseOrderBook: function (orderArray, scalarMinMax) {
+    var minValue, order, isScalar, numOrders, orderBook, i;
     if (!orderArray || orderArray.error) return orderArray;
-    var minValue, order;
-    var isScalar = scalarMinMax &&
+    isScalar = scalarMinMax &&
       scalarMinMax.minValue !== undefined &&
       scalarMinMax.maxValue !== undefined;
     if (isScalar) minValue = new BigNumber(scalarMinMax.minValue, 10);
-    var numOrders = orderArray.length / 8;
-    var orderBook = {buy: {}, sell: {}};
-    for (var i = 0; i < numOrders; ++i) {
-      order = this.parseTradeInfo(orderArray.slice(8*i, 8*(i+1)));
+    numOrders = orderArray.length / 8;
+    orderBook = {buy: {}, sell: {}};
+    for (i = 0; i < numOrders; ++i) {
+      order = this.parseTradeInfo(orderArray.slice(8*i, 8*(i + 1)));
       if (order) {
         if (isScalar) order = this.adjustScalarOrder(order, minValue);
         orderBook[order.type][order.id] = order;
@@ -202,12 +202,11 @@ module.exports = {
 
   // scalarMinMax: null if not scalar; {minValue, maxValue} if scalar
   getOrderBook: function (market, scalarMinMax, callback) {
-    var self = this;
+    var offset, numTradesToLoad, tx;
     if (!callback && utils.is_function(scalarMinMax)) {
       callback = scalarMinMax;
       scalarMinMax = null;
     }
-    var offset, numTradesToLoad;
     if (market && market.market) {
       offset = market.offset;
       numTradesToLoad = market.numTradesToLoad;
@@ -215,14 +214,15 @@ module.exports = {
       callback = callback || market.callback;
       market = market.market;
     }
-    var tx = clone(this.tx.CompositeGetters.getOrderBook);
+    tx = clone(this.tx.CompositeGetters.getOrderBook);
     tx.params = [market, offset || 0, numTradesToLoad || 0];
     return this.fire(tx, callback, this.parseOrderBook, scalarMinMax);
   },
 
   validateMarketInfo: function (marketInfo) {
+    var parsedMarketInfo;
     if (!marketInfo) return null;
-    var parsedMarketInfo = this.parseMarketInfo(marketInfo);
+    parsedMarketInfo = this.parseMarketInfo(marketInfo);
     if (!parsedMarketInfo.numOutcomes) return null;
     return parsedMarketInfo;
   },
@@ -242,14 +242,14 @@ module.exports = {
   },
 
   parseBatchMarketInfo: function (marketsArray, numMarkets) {
-    var len, shift, rawInfo, info, marketID;
+    var len, shift, rawInfo, info, marketID, marketsInfo, totalLen, i;
     if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
       return marketsArray;
     }
-    var marketsInfo = {};
-    var totalLen = 0;
-    for (var i = 0; i < numMarkets; ++i) {
-      len = parseInt(marketsArray[totalLen]);
+    marketsInfo = {};
+    totalLen = 0;
+    for (i = 0; i < numMarkets; ++i) {
+      len = parseInt(marketsArray[totalLen], 16);
       shift = totalLen + 1;
       rawInfo = marketsArray.slice(shift, shift + len - 1);
       marketID = abi.format_int256(marketsArray[shift]);
@@ -261,25 +261,26 @@ module.exports = {
   },
 
   batchGetMarketInfo: function (marketIDs, account, callback) {
+    var tx;
     if (!callback && utils.is_function(account)) {
       callback = account;
       account = null;
     }
-    var tx = clone(this.tx.CompositeGetters.batchGetMarketInfo);
+    tx = clone(this.tx.CompositeGetters.batchGetMarketInfo);
     tx.params = [marketIDs, account || 0];
     return this.fire(tx, callback, this.parseBatchMarketInfo, marketIDs.length);
   },
 
   parseMarketsInfo: function (marketsArray, branch) {
-    var len, shift, marketID, fees, minValue, maxValue, numOutcomes, type, unfixed, consensusOutcomeID, consensus;
+    var len, shift, marketID, fees, minValue, maxValue, numOutcomes, type, unfixed, consensusOutcomeID, consensus, numMarkets, marketsInfo, totalLen, i, topic;
     if (!marketsArray || marketsArray.constructor !== Array || !marketsArray.length) {
       return null;
     }
-    var numMarkets = parseInt(marketsArray.shift(), 16);
-    var marketsInfo = {};
-    var totalLen = 0;
-    for (var i = 0; i < numMarkets; ++i) {
-      len = parseInt(marketsArray[totalLen]);
+    numMarkets = parseInt(marketsArray.shift(), 16);
+    marketsInfo = {};
+    totalLen = 0;
+    for (i = 0; i < numMarkets; ++i) {
+      len = parseInt(marketsArray[totalLen], 16);
       shift = totalLen + 1;
       marketID = abi.format_int256(marketsArray[shift]);
       fees = this.calculateMakerTakerFees(marketsArray[shift + 2], marketsArray[shift + 9]);
@@ -303,7 +304,7 @@ module.exports = {
           isIndeterminate: unfixed.isIndeterminate
         };
       }
-      var topic = this.decodeTag(marketsArray[shift + 5]);
+      topic = this.decodeTag(marketsArray[shift + 5]);
       marketsInfo[marketID] = {
         id: marketID,
         branchID: branch,
@@ -330,7 +331,7 @@ module.exports = {
   },
 
   getMarketsInfo: function (branch, offset, numMarketsToLoad, volumeMin, volumeMax, callback) {
-    var self = this;
+    var tx, self = this;
     if (!callback && utils.is_function(offset)) {
       callback = offset;
       offset = null;
@@ -355,7 +356,7 @@ module.exports = {
     volumeMin = volumeMin || 0;
     volumeMax = volumeMax || 0;
     if (!this.augurNode.nodes.length) {
-      var tx = clone(this.tx.CompositeGetters.getMarketsInfo);
+      tx = clone(this.tx.CompositeGetters.getMarketsInfo);
       tx.params = [branch, offset, numMarketsToLoad, volumeMin, volumeMax];
       tx.timeout = 240000;
       return this.fire(tx, callback, this.parseMarketsInfo, branch);

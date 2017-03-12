@@ -5,22 +5,20 @@
 
 "use strict";
 
-var clone = require("clone");
-var abi = require("augur-abi");
 var BigNumber = require("bignumber.js");
+var abi = require("augur-abi");
 var async = require("async");
 var utils = require("../utilities");
-var constants = require("../constants");
 
 module.exports = {
 
   getCurrentPeriod: function (periodLength, timestamp) {
-    var t = timestamp || parseInt(new Date().getTime() / 1000);
+    var t = timestamp || parseInt(new Date().getTime() / 1000, 10);
     return Math.floor(t / periodLength);
   },
 
   getCurrentPeriodProgress: function (periodLength, timestamp) {
-    var t = timestamp || parseInt(new Date().getTime() / 1000);
+    var t = timestamp || parseInt(new Date().getTime() / 1000, 10);
     return 100 * (t % periodLength) / periodLength;
   },
 
@@ -43,31 +41,19 @@ module.exports = {
       branch = branch.branch;
     }
     this.ExpiringEvents.getReport(branch, period, event, sender, function (rawReport) {
+      var report;
       if (!rawReport || rawReport.error) {
         return callback(rawReport || self.errors.REPORT_NOT_FOUND);
       }
       if (!parseInt(rawReport, 16)) {
         return callback({report: "0", isIndeterminate: false});
       }
-      var report = self.unfixReport(rawReport, minValue, maxValue, type);
+      report = self.unfixReport(rawReport, minValue, maxValue, type);
       if (self.options.debug.reporting) {
-        console.log('getReport:', rawReport, report, period, event, sender, minValue, maxValue, type);
+        console.log("getReport:", rawReport, report, period, event, sender, minValue, maxValue, type);
       }
       callback(report);
     });
-  },
-
-  penalizeWrong: function (branch, event, onSent, onSuccess, onFailed) {
-    if (branch.constructor === Object) {
-      event = branch.event;
-      onSent = branch.onSent;
-      onSuccess = branch.onSuccess;
-      onFailed = branch.onFailed;
-      branch = branch.branch;
-    }
-    var tx = clone(this.tx.Consensus.penalizeWrong);
-    tx.params = [branch, event];
-    this.transact(tx, onSent, onSuccess, onFailed);
   },
 
   // Increment vote period until vote period = current period - 1
@@ -109,7 +95,7 @@ module.exports = {
         }
         self.incrementPeriodAfterReporting({
           branch: branch,
-          onSent: function (r) {},
+          onSent: utils.noop,
           onSuccess: function (r) {
             if (self.options.debug.reporting) {
               console.log("Incremented period:", r.callReturn);
@@ -136,7 +122,7 @@ module.exports = {
     // consensus [i.e. penalizeWrong], if didn't report last period or didn't call collectfees
     // last period then call penalizationCatchup in order to allow submitReportHash to work.
     self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
-      lastPeriodPenalized = parseInt(lastPeriodPenalized);
+      lastPeriodPenalized = parseInt(lastPeriodPenalized, 10);
       if (self.options.debug.reporting) {
         console.log("[feePenaltyCatchUp] Last period penalized:", lastPeriodPenalized);
         console.log("[feePenaltyCatchUp] Checking period:      ", periodToCheck);
@@ -178,7 +164,7 @@ module.exports = {
   penaltyCatchUp: function (branch, periodLength, periodToCheck, sender, callback) {
     var self = this;
     self.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
-      lastPeriodPenalized = parseInt(lastPeriodPenalized);
+      lastPeriodPenalized = parseInt(lastPeriodPenalized, 10);
       if (self.options.debug.reporting) {
         console.log("[penaltyCatchUp] Last period penalized:", lastPeriodPenalized);
         console.log("[penaltyCatchUp] Checking period:      ", periodToCheck);
@@ -270,7 +256,7 @@ module.exports = {
                   if (self.options.debug.reporting) {
                     console.log("[penaltyCatchUp] ExpiringEvents.getReport:", report);
                   }
-                  if (parseInt(report) === 0) {
+                  if (parseInt(report, 10) === 0) {
                     return self.closeEventMarkets(branch, event, sender, nextEvent);
                   }
                   if (self.options.debug.reporting) {

@@ -7,8 +7,9 @@ var constants = require("../constants");
 module.exports = {
 
   addOrder: function (order, orderBook) {
+    var newOrderBook;
     if (!order) return orderBook;
-    var newOrderBook = clone(orderBook);
+    newOrderBook = clone(orderBook);
     if (!newOrderBook) newOrderBook = {buy: {}, sell: {}};
     if (!newOrderBook.buy) newOrderBook.buy = {};
     if (!newOrderBook.sell) newOrderBook.sell = {};
@@ -17,8 +18,9 @@ module.exports = {
   },
 
   removeOrder: function (orderID, orderType, orderBook) {
+    var newOrderBook;
     if (!orderBook || !orderID || !orderType) return orderBook;
-    var newOrderBook = clone(orderBook);
+    newOrderBook = clone(orderBook);
     if (newOrderBook[orderType] && newOrderBook[orderType][orderID]) {
       delete newOrderBook[orderType][orderID];
     }
@@ -26,28 +28,29 @@ module.exports = {
   },
 
   fillOrder: function (orderID, amount, filledOrderType, orderBook) {
+    var newOrderBook, order, updatedAmount;
     if (!orderBook || !orderID || !amount || !filledOrderType) return orderBook;
-    var newOrderBook = clone(orderBook);
+    newOrderBook = clone(orderBook);
     if (newOrderBook[filledOrderType]) {
-      var order = newOrderBook[filledOrderType][orderID];
+      order = newOrderBook[filledOrderType][orderID];
       if (this.options.debug.trading) {
-        console.debug('found order:', order);
+        console.log("found order:", order);
       }
       if (order) {
-        var updatedAmount = new BigNumber(order.fullPrecisionAmount, 10).minus(new BigNumber(amount, 10));
+        updatedAmount = new BigNumber(order.fullPrecisionAmount, 10).minus(new BigNumber(amount, 10));
         if (this.options.debug.trading) {
-          console.debug('updated amount:', updatedAmount.toFixed());
+          console.log("updated amount:", updatedAmount.toFixed());
         }
         if (updatedAmount.lte(constants.PRECISION.zero)) {
           if (this.options.debug.trading) {
-            console.debug('removing order');
+            console.log("removing order");
           }
           delete newOrderBook[filledOrderType][orderID];
         } else {
           order.fullPrecisionAmount = updatedAmount.toFixed();
           order.amount = this.roundToPrecision(updatedAmount, constants.MINIMUM_TRADE_SIZE);
           if (this.options.debug.trading) {
-            console.debug('updated order:', order);
+            console.log("updated order:", order);
           }
         }
       }
@@ -64,8 +67,7 @@ module.exports = {
 
   // note: minValue required only for scalar markets
   convertAddTxLogToOrder: function (log, marketType, minValue) {
-    var round;
-    var roundingMode;
+    var round, roundingMode, adjustedLog;
     if (log.type === "buy") {
       round = "floor";
       roundingMode = BigNumber.ROUND_DOWN;
@@ -73,7 +75,7 @@ module.exports = {
       round = "ceil";
       roundingMode = BigNumber.ROUND_UP;
     }
-    var adjustedLog = marketType === "scalar" ? this.adjustScalarOrder(clone(log), minValue) : clone(log);
+    adjustedLog = marketType === "scalar" ? this.adjustScalarOrder(clone(log), minValue) : clone(log);
     return {
       id: adjustedLog.tradeid,
       type: adjustedLog.type,

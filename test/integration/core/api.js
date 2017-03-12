@@ -23,16 +23,18 @@ describe("Auto-generated API", function () {
       var api, methodLists;
       methodLists = {eth_sendTransaction: [], eth_call: []};
       for (var method in methods) {
-        if (!methods.hasOwnProperty(method)) continue;
-        api = augur.api.functions[this.title][method];
-        methodLists[invoke(api.send)].push({
-          method: method,
-          parameters: api.signature || []
-        });
+        if (methods.hasOwnProperty(method)) {
+          api = augur.api.functions[this.title][method];
+          methodLists[invoke(api.send)].push({
+            method: method,
+            parameters: api.signature || []
+          });
+        }
       }
       for (var send in methodLists) {
-        if (!methodLists.hasOwnProperty(send)) continue;
-        runner(send, this.title, methodLists[send]);
+        if (methodLists.hasOwnProperty(send)) {
+          runner(send, this.title, methodLists[send]);
+        }
       }
       nextContract();
     });

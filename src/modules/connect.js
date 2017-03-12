@@ -25,7 +25,7 @@ module.exports = {
    */
   bindContractMethod: function (contract, method) {
     var self = this;
-    return function (args) {
+    return function () {
       var tx, params, numInputs, numFixed, cb, i, onSent, onSuccess, onFailed;
       tx = clone(self.api.functions[contract][method]);
       if (!arguments || !arguments.length) {
@@ -108,14 +108,17 @@ module.exports = {
   },
 
   bindContractAPI: function (methods) {
+    var contract, method;
     methods = methods || this.api.functions;
-    for (var contract in methods) {
-      if (!methods.hasOwnProperty(contract)) continue;
-      this[contract] = {};
-      for (var method in methods[contract]) {
-        if (!methods[contract].hasOwnProperty(method)) continue;
-        this[contract][method] = this.bindContractMethod(contract, method);
-        if (!this[method]) this[method] = this[contract][method];
+    for (contract in methods) {
+      if (methods.hasOwnProperty(contract)) {
+        this[contract] = {};
+        for (method in methods[contract]) {
+          if (methods[contract].hasOwnProperty(method)) {
+            this[contract][method] = this.bindContractMethod(contract, method);
+            if (!this[method]) this[method] = this[contract][method];
+          }
+        }
       }
     }
     return methods;
@@ -165,7 +168,8 @@ module.exports = {
    * @param cb {function=} Callback function.
    */
   connect: function (rpcinfo, cb) {
-    var options = {contracts: Contracts, api: Contracts.api};
+    var options, connection, self = this;
+    options = {contracts: Contracts, api: Contracts.api};
     if (rpcinfo) {
       switch (rpcinfo.constructor) {
         case String:
@@ -185,19 +189,18 @@ module.exports = {
       }
     }
     if (!utils.is_function(cb)) {
-      var connection = connector.connect(options);
+      connection = connector.connect(options);
       this.sync();
       if (options.augurNodes) this.augurNode.bootstrap(options.augurNodes);
       return connection;
     }
-    var self = this;
     connector.connect(options, function (connection) {
       self.sync();
-      if (options.augurNodes){
+      if (options.augurNodes) {
         self.augurNode.bootstrap(options.augurNodes, function () {
           cb(connection);
         });
-      }else{
+      } else {
         cb(connection);
       }
     });

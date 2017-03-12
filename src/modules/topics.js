@@ -12,9 +12,11 @@ var constants = require("../constants");
 module.exports = {
 
   filterByBranchID: function (branchID, logs) {
-    if (branchID) logs = logs.filter(function (log) {
-      return log.branch === abi.format_int256(branchID);
-    });
+    if (branchID) {
+      logs = logs.filter(function (log) {
+        return log.branch === abi.format_int256(branchID);
+      });
+    }
     return logs.map(function (log) { return log.marketID; });
   },
 
@@ -32,8 +34,8 @@ module.exports = {
   },
 
   parseTopicsInfo: function (topicsInfo) {
-    var parsedTopicsInfo = {};
-    for (var i = 0, len = topicsInfo.length; i < len; i += 2) {
+    var i, len, parsedTopicsInfo = {};
+    for (i = 0, len = topicsInfo.length; i < len; i += 2) {
       parsedTopicsInfo[this.decodeTag(topicsInfo[i])] = abi.unfix(topicsInfo[i + 1], "number");
     }
     return parsedTopicsInfo;

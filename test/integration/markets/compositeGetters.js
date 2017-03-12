@@ -144,8 +144,9 @@ describe("getMarketInfo", function () {
 describe("batchGetMarketInfo", function () {
   var test = function (t, params) {
     for (var market in t.output) {
-      if (!t.output.hasOwnProperty(market)) continue;
-      testMarketInfo(market, t.output[market]);
+      if (t.output.hasOwnProperty(market)) {
+        testMarketInfo(market, t.output[market]);
+      }
     }
     t.done();
   };
@@ -163,17 +164,18 @@ describe("getMarketsInfo", function () {
     var market;
     assert.strictEqual(Object.keys(info).length, numMarkets);
     for (var marketId in info) {
-      if (!info.hasOwnProperty(marketId)) continue;
-      market = info[marketId];
-      assert.isNumber(market.tradingPeriod);
-      assert.isString(market.tradingFee);
-      assert.isString(market.makerFee);
-      assert.isString(market.takerFee);
-      assert.isNumber(market.creationTime);
-      assert.isString(market.volume);
-      assert.isArray(market.tags);
-      assert.isNumber(market.endDate);
-      assert.isString(market.description);
+      if (info.hasOwnProperty(marketId)) {
+        market = info[marketId];
+        assert.isNumber(market.tradingPeriod);
+        assert.isString(market.tradingFee);
+        assert.isString(market.makerFee);
+        assert.isString(market.takerFee);
+        assert.isNumber(market.creationTime);
+        assert.isString(market.volume);
+        assert.isArray(market.tags);
+        assert.isNumber(market.endDate);
+        assert.isString(market.description);
+      }
     }
     if (done) done();
   };
@@ -278,24 +280,26 @@ describe("getOrderBook", function () {
     var marketInfo;
     assert.isObject(t.output);
     for (var type in t.output) {
-      if (!t.output.hasOwnProperty(type)) continue;
-      assert.isObject(t.output[type]);
-      for (var orderId in t.output[type]) {
-        if (!t.output[type].hasOwnProperty(orderId)) continue;
-        var order = t.output[type][orderId];
-        marketInfo = augur.getMarketInfo(order.market);
-        assert.isNotNull(marketInfo);
-        assert.isString(marketInfo.type);
-        assert.strictEqual(type, order.type);
-        assert.isString(order.id);
-        assert.isString(order.market);
-        assert.isString(order.amount);
-        assert.isString(order.price);
-        assert.isString(order.owner);
-        assert.strictEqual(order.owner, abi.format_address(order.owner));
-        assert.isNumber(order.block);
-        assert.isString(order.outcome);
-        assert.deepEqual(augur.get_trade(order.id), order);
+      if (t.output.hasOwnProperty(type)) {
+        assert.isObject(t.output[type]);
+        for (var orderId in t.output[type]) {
+          if (t.output[type].hasOwnProperty(orderId)) {
+            var order = t.output[type][orderId];
+            marketInfo = augur.getMarketInfo(order.market);
+            assert.isNotNull(marketInfo);
+            assert.isString(marketInfo.type);
+            assert.strictEqual(type, order.type);
+            assert.isString(order.id);
+            assert.isString(order.market);
+            assert.isString(order.amount);
+            assert.isString(order.price);
+            assert.isString(order.owner);
+            assert.strictEqual(order.owner, abi.format_address(order.owner));
+            assert.isNumber(order.block);
+            assert.isString(order.outcome);
+            assert.deepEqual(augur.get_trade(order.id), order);
+          }
+        }
       }
     }
     t.done();

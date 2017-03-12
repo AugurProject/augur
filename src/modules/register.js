@@ -5,9 +5,6 @@
 
 "use strict";
 
-var clone = require("clone");
-var abi = require("augur-abi");
-var constants = require("../constants");
 var utils = require("../utilities");
 
 module.exports = {
@@ -17,14 +14,14 @@ module.exports = {
   },
 
   getRegisterBlockNumber: function (account, options, callback) {
-    var self = this;
+    var logs, self = this;
     if (!callback && utils.is_function(options)) {
       callback = options;
       options = null;
     }
     options = options || {};
     if (!utils.is_function(callback)) {
-      var logs = this.getLogs("registration", {sender: account});
+      logs = this.getLogs("registration", {sender: account});
       if (!logs || !logs.length) return null;
       return self.parseLastBlockNumber(logs);
     }

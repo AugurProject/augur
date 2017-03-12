@@ -4,7 +4,7 @@ var assert = require('chai').assert;
 var augur = require('../../../src');
 var noop = require("../../../src/utilities").noop;
 var BigNumber = require("bignumber.js");
-var ClearCallCounts = require('../../tools').ClearCallCounts;
+var clearCallCounts = require('../../tools').clearCallCounts;
 // 12 tests total
 
 describe("takeOrder.placeBuy", function() {
@@ -18,7 +18,7 @@ describe("takeOrder.placeBuy", function() {
     tradeCommitLockCallback: 0
   };
   afterEach(function() {
-    ClearCallCounts(callCounts);
+    clearCallCounts(callCounts);
     augur.executeTrade = executeTrade;
     augur.calculateBuyTradeIDs = calculateBuyTradeIDs;
     augur.placeBid = placeBid;
@@ -282,7 +282,7 @@ describe("takeOrder.placeSell", function() {
     tradeCommitLockCallback: 0
   };
   afterEach(function() {
-    ClearCallCounts(callCounts);
+    clearCallCounts(callCounts);
     augur.executeTrade = executeTrade;
     augur.getParticipantSharesPurchased = getParticipantSharesPurchased;
     augur.placeAsk = placeAsk;
@@ -1029,7 +1029,7 @@ describe("takeOrder.placeShortSell", function() {
     placeShortAsk: 0
   };
   afterEach(function() {
-    ClearCallCounts(callCounts);
+    clearCallCounts(callCounts);
     augur.executeShortSell = executeShortSell;
     augur.placeShortAsk = placeShortAsk;
     augur.calculateSellTradeIDs = calculateSellTradeIDs;

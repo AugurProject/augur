@@ -9,7 +9,6 @@ var BigNumber = require("bignumber.js");
 var clone = require("clone");
 var abi = require("augur-abi");
 var keys = require("keythereum");
-var contracts = require("augur-contracts");
 var utils = require("../utilities");
 var constants = require("../constants");
 
@@ -72,18 +71,19 @@ module.exports = {
   },
 
   isSpecialValueConsensusOutcome: function (fxpConsensusOutcome, minValue, maxValue) {
-    var bnFxpConsensusOutcome = abi.bignum(fxpConsensusOutcome);
+    var bnFxpConsensusOutcome, meanValue;
+    bnFxpConsensusOutcome = abi.bignum(fxpConsensusOutcome);
     if (bnFxpConsensusOutcome.eq(1)) {
       return "0";
     }
-    var meanValue = abi.fix(maxValue).plus(abi.fix(minValue)).dividedBy(2);
+    meanValue = abi.fix(maxValue).plus(abi.fix(minValue)).dividedBy(2);
     if (bnFxpConsensusOutcome.eq(meanValue.plus(1))) {
       return abi.unfix(meanValue, "string");
     }
     return false;
   },
 
-  isSpecialValueReport: function (fxpReport, minValue, maxValue) {
+  isSpecialValueReport: function (fxpReport) {
     var bnFxpReport = abi.bignum(fxpReport);
     if (bnFxpReport.eq(1)) {
       return "0";
@@ -95,8 +95,8 @@ module.exports = {
   },
 
   unfixReport: function (rawReport, minValue, maxValue, type) {
-    var report;
-    var indeterminateReport = this.isIndeterminateReport(rawReport, type);
+    var report, indeterminateReport, specialValueReport, bnMinValue;
+    indeterminateReport = this.isIndeterminateReport(rawReport, type);
     if (indeterminateReport) {
       return {report: indeterminateReport, isIndeterminate: true};
     }
@@ -104,28 +104,29 @@ module.exports = {
       return {report: abi.unfix(rawReport, "string"), isIndeterminate: false};
     }
     if (type === "scalar") {
-      var specialValueReport = this.isSpecialValueReport(rawReport);
+      specialValueReport = this.isSpecialValueReport(rawReport);
       if (specialValueReport) {
         return {report: specialValueReport, isIndeterminate: false};
       }
     }
     // x = (max - min)*y + min
-    var bnMinValue = abi.bignum(minValue);
+    bnMinValue = abi.bignum(minValue);
     report = abi.unfix(rawReport).times(abi.bignum(maxValue).minus(bnMinValue)).plus(bnMinValue);
     if (type === "categorical") report = report.round();
     return {report: report.toFixed(), isIndeterminate: false};
   },
 
   unfixConsensusOutcome: function (fxpConsensusOutcome, minValue, maxValue, type) {
-    var bnMinValue = new BigNumber(minValue, 10);
-    var bnMaxValue = new BigNumber(maxValue, 10);
-    var consensusOutcome = abi.unfix_signed(fxpConsensusOutcome);
-    var indeterminateConsensusOutcome = this.isIndeterminateConsensusOutcome(consensusOutcome, bnMinValue, bnMaxValue);
+    var bnMinValue, bnMaxValue, consensusOutcome, indeterminateConsensusOutcome, specialValueConsensusOutcome;
+    bnMinValue = new BigNumber(minValue, 10);
+    bnMaxValue = new BigNumber(maxValue, 10);
+    consensusOutcome = abi.unfix_signed(fxpConsensusOutcome);
+    indeterminateConsensusOutcome = this.isIndeterminateConsensusOutcome(consensusOutcome, bnMinValue, bnMaxValue);
     if (indeterminateConsensusOutcome) {
       return {outcomeID: indeterminateConsensusOutcome, isIndeterminate: true};
     }
     if (type !== "binary") {
-      var specialValueConsensusOutcome = this.isSpecialValueConsensusOutcome(fxpConsensusOutcome, bnMinValue, bnMaxValue);
+      specialValueConsensusOutcome = this.isSpecialValueConsensusOutcome(fxpConsensusOutcome, bnMinValue, bnMaxValue);
       if (specialValueConsensusOutcome) {
         return {outcomeID: specialValueConsensusOutcome, isIndeterminate: false};
       }
@@ -164,8 +165,9 @@ module.exports = {
   },
 
   parseAndDecryptReport: function (arr, secret) {
+    var salt;
     if (!arr || arr.constructor !== Array || arr.length < 2) return null;
-    var salt = this.decryptReport(arr[1], secret.derivedKey, secret.salt);
+    salt = this.decryptReport(arr[1], secret.derivedKey, secret.salt);
     return {
       salt: salt,
       report: this.decryptReport(arr[0], secret.derivedKey, salt),
@@ -174,8 +176,8 @@ module.exports = {
   },
 
   getAndDecryptReport: function (branch, expDateIndex, reporter, event, secret, callback) {
-    var self = this;
-    if (branch.constructor === Object) {
+    var tx;
+    if (branch && branch.constructor === Object) {
       expDateIndex = branch.expDateIndex;
       reporter = branch.reporter;
       event = branch.event;
@@ -183,14 +185,14 @@ module.exports = {
       callback = callback || branch.callback;
       branch = branch.branch;
     }
-    var tx = clone(this.tx.ExpiringEvents.getEncryptedReport);
+    tx = clone(this.tx.ExpiringEvents.getEncryptedReport);
     tx.params = [branch, expDateIndex, reporter, event];
     return this.fire(tx, callback, this.parseAndDecryptReport, secret);
   },
 
   submitReportHash: function (event, reportHash, encryptedReport, encryptedSalt, ethics, branch, period, periodLength, onSent, onSuccess, onFailed) {
-    var self = this;
-    if (event.constructor === Object) {
+    var tx, self = this;
+    if (event && event.constructor === Object) {
       reportHash = event.reportHash;
       encryptedReport = event.encryptedReport;
       encryptedSalt = event.encryptedSalt;
@@ -206,7 +208,7 @@ module.exports = {
     if (this.getCurrentPeriodProgress(periodLength) >= 50) {
       return onFailed({"-2": "not in first half of period (commit phase)"});
     }
-    var tx = clone(this.tx.MakeReports.submitReportHash);
+    tx = clone(this.tx.MakeReports.submitReportHash);
     tx.params = [
       event,
       reportHash,
@@ -215,19 +217,19 @@ module.exports = {
       abi.fix(ethics, "hex")
     ];
     if (this.options.debug.reporting) {
-      console.log('submitReportHash tx:', JSON.stringify(tx, null, 2));
+      console.log("submitReportHash tx:", JSON.stringify(tx, null, 2));
     }
     return this.transact(tx, onSent, function (res) {
       if (self.options.debug.reporting) {
-        console.log('submitReportHash response:', res.callReturn);
+        console.log("submitReportHash response:", res.callReturn);
       }
       res.callReturn = abi.bignum(res.callReturn, "string", true);
       if (res.callReturn === "0") {
-        return self.checkPeriod(branch, periodLength, res.from, function (err, newPeriod) {
+        return self.checkPeriod(branch, periodLength, res.from, function (err) {
           if (err) return onFailed(err);
           self.getRepRedistributionDone(branch, res.from, function (repRedistributionDone) {
             if (self.options.debug.reporting) {
-              console.log('rep redistribution done:', repRedistributionDone);
+              console.log("rep redistribution done:", repRedistributionDone);
             }
             if (repRedistributionDone === "0") {
               return onFailed("rep redistribution not done");
@@ -281,7 +283,7 @@ module.exports = {
       event = event.event;
     }
     if (this.options.debug.reporting) {
-      console.log('MakeReports.submitReport params:', event, abi.hex(salt), this.fixReport(report, minValue, maxValue, type, isIndeterminate), ethics);
+      console.log("submitReport params:", event, abi.hex(salt), this.fixReport(report, minValue, maxValue, type, isIndeterminate), ethics);
     }
     return this.MakeReports.submitReport(
       event,

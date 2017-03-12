@@ -96,16 +96,6 @@ describe("utilities.is_function", function () {
   }
 
   test({
-    label: "utils.unpack",
-    input: utils.unpack,
-    expected: true
-  });
-  test({
-    label: "utils.labels",
-    input: utils.labels,
-    expected: true
-  });
-  test({
     label: "declared function",
     input: ima_function,
     expected: true
@@ -255,56 +245,6 @@ describe("tools.remove_duplicates", function () {
   test({
     array: [[], []],
     expected: [[], []]
-  });
-
-});
-
-describe("utilities.labels", function () {
-
-  it("should extract parameter names", function () {
-    var fn = function (a, b, c, onSent, onSuccess, onFailed) {
-      var params = utils.labels(fn);
-      var expected = ['a', 'b', 'c', "onSent", "onSuccess", "onFailed"];
-      assert.deepEqual(params, expected);
-    };
-    fn('x', 'y', 'z', console.log, console.log, console.log);
-  });
-
-});
-
-describe("utilities.unpack", function () {
-
-  var test = function (unpacked) {
-    assert(unpacked.params);
-    assert(unpacked.cb);
-    assert.strictEqual(unpacked.params.constructor, Array);
-    assert.strictEqual(unpacked.cb.constructor, Array);
-    assert.strictEqual(unpacked.params.length, 4);
-    assert.strictEqual(unpacked.cb.length, 3);
-    assert.deepEqual(unpacked.params, ['w', 'x', 'y', 'z']);
-    assert.deepEqual(unpacked.cb, [console.log, console.log, console.log]);
-  };
-
-  it("should unpack object argument", function () {
-    var fn = function (a, b, c, d, onSent, onSuccess, onFailed, onConfirmed) {
-      test(utils.unpack(a, utils.labels(fn)));
-    };
-    fn({
-      a: 'w',
-      b: 'x',
-      c: 'y',
-      d: 'z',
-      onSent: console.log,
-      onSuccess: console.log,
-      onFailed: console.log
-    });
-  });
-
-  it("should unpack positional arguments", function () {
-    var fn = function (a, b, c, d, onSent, onSuccess, onFailed) {
-      test(utils.unpack(a, utils.labels(fn), arguments));
-    };
-    fn('w', 'x', 'y', 'z', console.log, console.log, console.log);
   });
 
 });

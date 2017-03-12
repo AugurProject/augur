@@ -20,53 +20,10 @@ module.exports = {
     return typeof f === "function";
   },
 
-  STRIP_COMMENTS: /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg,
-
-  ARGUMENT_NAMES: /([^\s,]+)/g,
-
   compose: function (prepare, callback) {
     if (!this.is_function(callback)) return null;
     if (!this.is_function(prepare)) return callback;
     return function (result) { return prepare(result, callback); };
-  },
-
-  labels: function (func) {
-    var fnStr = func.toString().replace(this.STRIP_COMMENTS, "");
-    var result = fnStr.slice(fnStr.indexOf("(") + 1, fnStr.indexOf(")")).match(this.ARGUMENT_NAMES);
-    if (result === null) result = [];
-    return result;
-  },
-
-  unpack: function (o, labels, args) {
-    var i, len, j, arglen, params = [], cb = [];
-
-    // unpack object argument
-    if (o !== undefined && o !== null && o.constructor === Object &&
-      labels && labels.constructor === Array && labels.length) {
-      for (i = 0, len = labels.length; i < len; ++i) {
-        if (o[labels[i]] !== undefined) {
-          if (this.is_function(o[labels[i]])) {
-            cb.push(o[labels[i]]);
-          } else {
-            params.push(o[labels[i]]);
-          }
-        }
-      }
-
-    // unpack positional arguments
-    } else {
-      for (j = 0, arglen = args.length; j < arglen; ++j) {
-        if (args[j] !== undefined) {
-          if (this.is_function(args[j])) {
-            cb.push(args[j]);
-          } else {
-            params.push(args[j]);
-          }
-        }
-      }
-    }
-
-    return { params: params, cb: cb };
   },
 
   unique: function (value, index, self) {

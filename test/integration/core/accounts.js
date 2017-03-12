@@ -132,7 +132,7 @@ describe("Fund new account", function () {
           augur.getRepBalance(augur.constants.DEFAULT_BRANCH_ID, recipient, function (repBalance) {
             assert.notProperty(repBalance, "error");
             assert.strictEqual(abi.number(repBalance), 47);
-            augur.getCashBalance(recipient, function (cashBalance) {
+            augur.Cash.balance(recipient, function (cashBalance) {
               assert.notProperty(cashBalance, "error");
               assert.strictEqual(parseInt(cashBalance), 10000);
               done();
@@ -170,7 +170,7 @@ describe("Fund new account", function () {
           augur.getRepBalance(augur.constants.DEFAULT_BRANCH_ID, recipient, function (repBalance) {
             assert.notProperty(repBalance, "error");
             assert.strictEqual(abi.number(repBalance), 47);
-            augur.getCashBalance(recipient, function (cashBalance) {
+            augur.Cash.balance(recipient, function (cashBalance) {
               assert.notProperty(cashBalance, "error");
               assert.strictEqual(parseInt(cashBalance), 10000);
               done();

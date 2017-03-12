@@ -10,18 +10,18 @@ var utils = require("../utilities");
 
 module.exports = {
 
+  // market: hash id
   getWinningOutcomes: function (market, callback) {
-    // market: hash id
-    var self = this;
-    var tx = clone(this.tx.Markets.getWinningOutcomes);
+    var tx, winningOutcomes, numOutcomes, self = this;
+    tx = clone(this.tx.Markets.getWinningOutcomes);
     tx.params = market;
     if (!utils.is_function(callback)) {
-      var winningOutcomes = this.fire(tx);
+      winningOutcomes = this.fire(tx);
       if (!winningOutcomes) return null;
       if (winningOutcomes.error || winningOutcomes.constructor !== Array) {
         return winningOutcomes;
       }
-      var numOutcomes = this.getMarketNumOutcomes(market);
+      numOutcomes = this.getMarketNumOutcomes(market);
       return numOutcomes && numOutcomes.error ? numOutcomes : winningOutcomes.slice(0, numOutcomes);
     }
     this.fire(tx, function (winningOutcomes) {

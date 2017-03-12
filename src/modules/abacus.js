@@ -5,7 +5,6 @@
 
 "use strict";
 
-var async = require("async");
 var BigNumber = require("bignumber.js");
 var clone = require("clone");
 var bs58 = require("bs58");
@@ -14,14 +13,16 @@ var utils = require("../utilities");
 var constants = require("../constants");
 var makeReports = require("./makeReports");
 
+var ONE, ONE_POINT_FIVE, FXP_ONE_POINT_FIVE;
+
 BigNumber.config({
   MODULO_MODE: BigNumber.EUCLID,
   ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
 });
 
-var ONE = new BigNumber("1", 10);
-var ONE_POINT_FIVE = new BigNumber("1.5", 10);
-var FXP_ONE_POINT_FIVE = abi.fix(ONE_POINT_FIVE);
+ONE = new BigNumber("1", 10);
+ONE_POINT_FIVE = new BigNumber("1.5", 10);
+FXP_ONE_POINT_FIVE = abi.fix(ONE_POINT_FIVE);
 
 module.exports = {
 
@@ -108,16 +109,16 @@ module.exports = {
 
   // tradeTypes: array of "buy" and/or "sell"
   sumTradeGas: function (tradeTypes) {
-    var gas = 0;
-    for (var i = 0, n = tradeTypes.length; i < n; ++i) {
-      gas += constants.TRADE_GAS[Number(!!i)][tradeTypes[i]];
+    var i, n, gas = 0;
+    for (i = 0, n = tradeTypes.length; i < n; ++i) {
+      gas += constants.TRADE_GAS[Number(Boolean(i))][tradeTypes[i]];
     }
     return gas;
   },
 
   sumTrades: function (trade_ids) {
-    var trades = new BigNumber(0);
-    for (var i = 0, numTrades = trade_ids.length; i < numTrades; ++i) {
+    var i, numTrades, trades = new BigNumber(0);
+    for (i = 0, numTrades = trade_ids.length; i < numTrades; ++i) {
       trades = abi.wrap(trades.plus(abi.bignum(trade_ids[i], null, true)));
     }
     return abi.hex(trades, true);
@@ -132,20 +133,22 @@ module.exports = {
   },
 
   calculateFxpTradingFees: function (makerFee, takerFee) {
-    var fxpMakerFee = abi.fix(makerFee);
-    var tradingFee = abi.fix(takerFee).plus(fxpMakerFee).dividedBy(FXP_ONE_POINT_FIVE).times(constants.ONE).floor();
-    var makerProportionOfFee = fxpMakerFee.dividedBy(tradingFee).times(constants.ONE).floor();
+    var fxpMakerFee, tradingFee, makerProportionOfFee;
+    fxpMakerFee = abi.fix(makerFee);
+    tradingFee = abi.fix(takerFee).plus(fxpMakerFee).dividedBy(FXP_ONE_POINT_FIVE).times(constants.ONE).floor();
+    makerProportionOfFee = fxpMakerFee.dividedBy(tradingFee).times(constants.ONE).floor();
     return {tradingFee: tradingFee, makerProportionOfFee: makerProportionOfFee};
   },
 
   calculateTradingFees: function (makerFee, takerFee) {
-    var bnMakerFee = abi.bignum(makerFee);
-    var tradingFee = abi.bignum(takerFee).plus(bnMakerFee).dividedBy(ONE_POINT_FIVE);
-    var makerProportionOfFee = bnMakerFee.dividedBy(tradingFee);
+    var bnMakerFee, tradingFee, makerProportionOfFee;
+    bnMakerFee = abi.bignum(makerFee);
+    tradingFee = abi.bignum(takerFee).plus(bnMakerFee).dividedBy(ONE_POINT_FIVE);
+    makerProportionOfFee = bnMakerFee.dividedBy(tradingFee);
     return {tradingFee: tradingFee, makerProportionOfFee: makerProportionOfFee};
   },
 
-  calculateFxpMakerTakerFees: function (tradingFee, makerProportionOfFee, isUnfixed, returnBigNumber) {
+  calculateFxpMakerTakerFees: function (tradingFee, makerProportionOfFee) {
     var fxpTradingFee, fxpMakerProportionOfFee, makerFee, takerFee;
     fxpTradingFee = abi.bignum(tradingFee);
     fxpMakerProportionOfFee = abi.bignum(makerProportionOfFee);
@@ -184,9 +187,10 @@ module.exports = {
   },
 
   parseMarketInfo: function (rawInfo) {
-    var EVENTS_FIELDS = 9;
-    var OUTCOMES_FIELDS = 3;
-    var info = {};
+    var EVENTS_FIELDS, OUTCOMES_FIELDS, info, index, fees, topic, fxpConsensusOutcome, unfixed, i, descriptionLength, extraInfoLength, resolutionSourceLength;
+    EVENTS_FIELDS = 9;
+    OUTCOMES_FIELDS = 3;
+    info = {};
     if (rawInfo && rawInfo.length > 15 && rawInfo[0] && rawInfo[4] && rawInfo[7] && rawInfo[8]) {
       // marketInfo[0] = marketID
       // marketInfo[1] = MARKETS.getMakerFees(marketID)
@@ -204,9 +208,9 @@ module.exports = {
       // marketInfo[12] = tags[0]
       // marketInfo[13] = tags[1]
       // marketInfo[14] = tags[2]
-      var index = 15;
-      var fees = this.calculateMakerTakerFees(rawInfo[4], rawInfo[1]);
-      var topic = this.decodeTag(rawInfo[12]);
+      index = 15;
+      fees = this.calculateMakerTakerFees(rawInfo[4], rawInfo[1]);
+      topic = this.decodeTag(rawInfo[12]);
       info = {
         id: abi.format_int256(rawInfo[0]),
         network: this.network_id,
@@ -240,8 +244,8 @@ module.exports = {
         info.type = "scalar";
       }
       if (parseInt(rawInfo[index + 2], 16) !== 0) {
-        var fxpConsensusOutcome = rawInfo[index + 2];
-        var unfixed = makeReports.unfixConsensusOutcome(fxpConsensusOutcome, info.minValue, info.maxValue, info.type);
+        fxpConsensusOutcome = rawInfo[index + 2];
+        unfixed = makeReports.unfixConsensusOutcome(fxpConsensusOutcome, info.minValue, info.maxValue, info.type);
         info.consensus = {
           outcomeID: unfixed.outcomeID,
           isIndeterminate: unfixed.isIndeterminate,
@@ -257,7 +261,7 @@ module.exports = {
 
       // organize outcome info
       info.outcomes = new Array(info.numOutcomes);
-      for (var i = 0; i < info.numOutcomes; ++i) {
+      for (i = 0; i < info.numOutcomes; ++i) {
         info.outcomes[i] = {
           id: i + 1,
           outstandingShares: abi.unfix(rawInfo[i*OUTCOMES_FIELDS + index], "string"),
@@ -268,7 +272,7 @@ module.exports = {
       index += info.numOutcomes*OUTCOMES_FIELDS;
 
       // convert description byte array to unicode
-      var descriptionLength = parseInt(rawInfo[index], 16);
+      descriptionLength = parseInt(rawInfo[index], 16);
       ++index;
       if (descriptionLength) {
         info.description = abi.bytes_to_utf16(rawInfo.slice(index, index + descriptionLength));
@@ -276,15 +280,15 @@ module.exports = {
       }
 
       // convert resolution byte array to unicode
-      var resolutionLength = parseInt(rawInfo[index], 16);
+      resolutionSourceLength = parseInt(rawInfo[index], 16);
       ++index;
-      if (resolutionLength) {
-        info.resolutionSource = abi.bytes_to_utf16(rawInfo.slice(index, index + resolutionLength));
-        index += resolutionLength;
+      if (resolutionSourceLength) {
+        info.resolutionSource = abi.bytes_to_utf16(rawInfo.slice(index, index + resolutionSourceLength));
+        index += resolutionSourceLength;
       }
 
       // convert extraInfo byte array to unicode
-      var extraInfoLength = parseInt(rawInfo[index], 16);
+      extraInfoLength = parseInt(rawInfo[index], 16);
       if (extraInfoLength) {
         info.extraInfo = abi.bytes_to_utf16(rawInfo.slice(rawInfo.length - extraInfoLength));
       }
@@ -298,10 +302,10 @@ module.exports = {
   },
 
   formatTags: function (tags) {
-    var formattedTags = clone(tags);
+    var i, formattedTags = clone(tags);
     if (!formattedTags || formattedTags.constructor !== Array) formattedTags = [];
     if (formattedTags.length) {
-      for (var i = 0; i < formattedTags.length; ++i) {
+      for (i = 0; i < formattedTags.length; ++i) {
         formattedTags[i] = this.formatTag(formattedTags[i]);
       }
     }
@@ -340,13 +344,13 @@ module.exports = {
     if (absValue.lt(constants.PRECISION.limit)) {
       value = value.toPrecision(constants.PRECISION.decimals, roundingMode || BigNumber.ROUND_DOWN);
     } else {
-      value = value.times(constants.PRECISION.multiple)[round || 'floor']().dividedBy(constants.PRECISION.multiple).toFixed();
+      value = value.times(constants.PRECISION.multiple)[round || "floor"]().dividedBy(constants.PRECISION.multiple).toFixed();
     }
     return value;
   },
 
   parseTradeInfo: function (trade) {
-    var type, round, roundingMode;
+    var type, round, roundingMode, fullPrecisionAmount, amount, fullPrecisionPrice, price;
     if (!trade || !trade.length || !parseInt(trade[0], 16)) return null;
 
     // 0x1=buy, 0x2=sell
@@ -365,12 +369,12 @@ module.exports = {
         return null;
     }
 
-    var fullPrecisionAmount = abi.unfix(trade[3]);
-    var amount = this.roundToPrecision(fullPrecisionAmount, constants.MINIMUM_TRADE_SIZE);
+    fullPrecisionAmount = abi.unfix(trade[3]);
+    amount = this.roundToPrecision(fullPrecisionAmount, constants.MINIMUM_TRADE_SIZE);
     if (amount === null) return null;
 
-    var fullPrecisionPrice = abi.unfix(abi.hex(trade[4], true));
-    var price = this.roundToPrecision(fullPrecisionPrice, constants.PRECISION.zero, round, roundingMode);
+    fullPrecisionPrice = abi.unfix(abi.hex(trade[4], true));
+    price = this.roundToPrecision(fullPrecisionPrice, constants.PRECISION.zero, round, roundingMode);
     if (price === null) return null;
 
     return {
@@ -398,7 +402,7 @@ module.exports = {
   },
 
   base58Decode: function (encoded) {
-    return JSON.parse(new Buffer(bs58.decode(encoded)).toString('utf8'));
+    return JSON.parse(new Buffer(bs58.decode(encoded)).toString("utf8"));
   },
 
   base58Encode: function (o) {

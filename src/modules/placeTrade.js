@@ -16,16 +16,16 @@ module.exports = {
   },
 
   executeTradingActions: function (market, outcomeID, address, getOrderBooks, doNotMakeOrders, tradesInProgress, tradeCommitmentCallback, tradeCommitLockCallback, callback) {
+    var tradeGroupID, self = this;
     if (!tradeCommitmentCallback) tradeCommitmentCallback = utils.noop;
     if (!tradeCommitLockCallback) tradeCommitLockCallback = utils.noop;
     if (!callback) callback = utils.noop;
-    var self = this;
-    var tradeGroupID = this.generateTradeGroupID();
+    tradeGroupID = this.generateTradeGroupID();
     async.eachSeries(tradesInProgress, function (tradeInProgress, nextTradeInProgress) {
       if (!tradeInProgress.limitPrice || !tradeInProgress.numShares || !tradeInProgress.totalCost) {
         return nextTradeInProgress();
       }
-      if (self.options.debug.trading) console.log('placing trade:', tradeInProgress);
+      if (self.options.debug.trading) console.log("placing trade:", tradeInProgress);
       self.placeTrade(
         market,
         outcomeID,
@@ -51,10 +51,10 @@ module.exports = {
 
   // market: {id, type, minValue (for scalars)}
   placeTrade: function (market, outcomeID, tradeType, numShares, limitPrice, tradingFees, address, totalCost, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback) {
-    var self = this;
-    var marketID = market.id;
+    var marketID, tradeIDs, self = this;
+    marketID = market.id;
     if (tradeType === "buy") {
-      var tradeIDs = this.calculateBuyTradeIDs(marketID, outcomeID, limitPrice, getOrderBooks(), address);
+      tradeIDs = this.calculateBuyTradeIDs(marketID, outcomeID, limitPrice, getOrderBooks(), address);
       if (tradeIDs && tradeIDs.length) {
         this.placeBuy(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback);
       } else if (!doNotMakeOrders) {
@@ -68,18 +68,19 @@ module.exports = {
       //  - if so, sell/ask
       //  - if not, short sell/short ask
       this.getParticipantSharesPurchased(marketID, address, outcomeID, function (sharesPurchased) {
+        var position, tradeIDs, shares, askShares, shortAskShares, hasAskShares, hasShortAskShares;
         if (!sharesPurchased || sharesPurchased.error) return callback(sharesPurchased);
-        var position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
-        var tradeIDs = self.calculateSellTradeIDs(marketID, outcomeID, limitPrice, getOrderBooks(), address);
+        position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
+        tradeIDs = self.calculateSellTradeIDs(marketID, outcomeID, limitPrice, getOrderBooks(), address);
         if (position && position.gt(constants.PRECISION.zero)) {
           if (tradeIDs && tradeIDs.length) {
             self.placeSell(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback);
           } else if (!doNotMakeOrders) {
-            var shares = splitOrder(abi.bignum(numShares), position);
-            var askShares = shares.askShares;
-            var shortAskShares = shares.shortAskShares;
-            var hasAskShares = abi.bignum(askShares).gt(constants.PRECISION.zero);
-            var hasShortAskShares = abi.bignum(shortAskShares).gt(constants.PRECISION.zero);
+            shares = splitOrder(abi.bignum(numShares), position);
+            askShares = shares.askShares;
+            shortAskShares = shares.shortAskShares;
+            hasAskShares = abi.bignum(askShares).gt(constants.PRECISION.zero);
+            hasShortAskShares = abi.bignum(shortAskShares).gt(constants.PRECISION.zero);
             if (hasAskShares && hasShortAskShares) {
               self.placeAskAndShortAsk(market, outcomeID, askShares, shortAskShares, limitPrice, tradeGroupID, callback);
             } else if (hasAskShares) {

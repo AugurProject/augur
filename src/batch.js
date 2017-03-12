@@ -17,8 +17,9 @@ var Batch = function (tx, rpc) {
 };
 
 Batch.prototype.add = function (contract, method, params, callback) {
+  var tx;
   if (method && contract) {
-    var tx = clone(this.tx[contract][method]);
+    tx = clone(this.tx[contract][method]);
     tx.params = params;
     if (callback) tx.callback = callback;
     this.txlist.push(tx);

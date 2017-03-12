@@ -7,14 +7,11 @@
 
 var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
 var request = (NODE_JS) ? require("request") : require("browser-request");
-var noop = function () {};
 
 //for now, cache nodes only have 1 second to respond before we fall back to chain.
 request = request.defaults({timeout: 1000});
 
 module.exports  = function () {
-
-  var augur = this;
 
   return {
 
@@ -23,20 +20,19 @@ module.exports  = function () {
     //(For now just takes list of nodes as input)
     bootstrap: function (cache_nodes, cb) {
       var self = this;
-      cb = cb || noop;
       if (cache_nodes && cache_nodes.constructor === Array) {
         self.nodes = cache_nodes;
       }
-      return cb();
+      if (cb) return cb();
     },
 
     buildRequest: function (endpoint, params) {
+      var url, first, key;
       if (this.nodes.length <= 0) return null;
-
-      var url = this.nodes[Math.floor(Math.random() * this.nodes.length)];
+      url = this.nodes[Math.floor(Math.random() * this.nodes.length)];
       url = url + "/" + endpoint;
-      var first = true;
-      for (var key in params) {
+      first = true;
+      for (key in params) {
         if (params.hasOwnProperty(key)) {
           if (first) {
             url += "?";
@@ -58,9 +54,9 @@ module.exports  = function () {
       if (!url) return cb("no nodes to fetch from");
       request(url, function (error, response, body) {
         if (!error && response.statusCode === 200) {
-          return cb(null, body);
+          cb(null, body);
         } else {
-          return cb(url + " " + error);
+          cb(url + " " + error);
         }
       });
     },

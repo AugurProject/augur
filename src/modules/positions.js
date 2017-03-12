@@ -42,10 +42,10 @@ module.exports = {
    * @return {Object} Total number of complete sets keyed by market ID.
    */
   calculateCompleteSetsShareTotals: function (logs) {
+    var i, numLogs, marketID, logData, shareTotals;
     if (!logs) return {};
-    var marketID, logData, shareTotals;
     shareTotals = {};
-    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+    for (i = 0, numLogs = logs.length; i < numLogs; ++i) {
       if (logs[i] && logs[i].data && logs[i].data !== "0x") {
         marketID = logs[i].topics[2];
         if (!shareTotals[marketID]) shareTotals[marketID] = constants.ZERO;
@@ -65,10 +65,10 @@ module.exports = {
    * @return {Object} Effective price keyed by market ID.
    */
   calculateCompleteSetsEffectivePrice: function (logs) {
+    var i, numLogs, marketID, logData, effectivePrice;
     if (!logs) return {};
-    var marketID, logData, effectivePrice;
     effectivePrice = {};
-    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+    for (i = 0, numLogs = logs.length; i < numLogs; ++i) {
       if (logs[i] && logs[i].data && logs[i].data !== "0x") {
         marketID = logs[i].topics[2];
         if (!effectivePrice[marketID]) {
@@ -89,10 +89,10 @@ module.exports = {
    * @return {Object} Effective price keyed by market ID.
    */
   calculateShortSellBuyCompleteSetsEffectivePrice: function (logs) {
+    var i, numLogs, marketID, logData, effectivePrice;
     if (!logs) return {};
-    var marketID, logData, effectivePrice, outcomeID;
     effectivePrice = {};
-    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+    for (i = 0, numLogs = logs.length; i < numLogs; ++i) {
       if (logs[i] && logs[i].data && logs[i].data !== "0x") {
         marketID = logs[i].topics[1];
         if (!effectivePrice[marketID]) {
@@ -113,11 +113,11 @@ module.exports = {
    * @return Object Largest total number of shares sold keyed by market ID.
    */
   calculateShortSellShareTotals: function (logs) {
+    var i, numLogs, marketID, logData, shareTotals, sharesOutcomes, outcomeID;
     if (!logs) return {};
-    var marketID, logData, shareTotals, sharesOutcomes, outcomeID;
     shareTotals = {};
     sharesOutcomes = {};
-    for (var i = 0, numLogs = logs.length; i < numLogs; ++i) {
+    for (i = 0, numLogs = logs.length; i < numLogs; ++i) {
       if (logs[i] && logs[i].data && logs[i].data !== "0x") {
         marketID = logs[i].topics[1];
         logData = this.rpc.unmarshal(logs[i].data);
@@ -137,9 +137,10 @@ module.exports = {
    * @return {Object} Decreased market position {outcomeID: String{decimal}}.
    */
   decreasePosition: function (position, adjustment) {
-    var newPosition = {};
-    var outcomeIDs = Object.keys(position || {});
-    for (var i = 0, numOutcomeIDs = outcomeIDs.length; i < numOutcomeIDs; ++i) {
+    var newPosition, outcomeIDs, i, numOutcomeIDs;
+    newPosition = {};
+    outcomeIDs = Object.keys(position || {});
+    for (i = 0, numOutcomeIDs = outcomeIDs.length; i < numOutcomeIDs; ++i) {
       newPosition[outcomeIDs[i]] = new BigNumber(position[outcomeIDs[i]], 10).minus(adjustment).toFixed();
     }
     return newPosition;
@@ -163,11 +164,10 @@ module.exports = {
    * @return {Object} Adjusted positions keyed by marketID.
    */
   adjustPositions: function (account, marketIDs, shareTotals, callback) {
-    var self = this;
-    var adjustedPositions = {};
+    var i, numMarketIDs, adjustedPositions, onChainPosition, marketID, shortAskBuyCompleteSetsShareTotal, shortSellBuyCompleteSetsShareTotal, sellCompleteSetsShareTotal, self = this;
+    adjustedPositions = {};
     if (!utils.is_function(callback)) {
-      var onChainPosition, marketID, shortAskBuyCompleteSetsShareTotal, shortSellBuyCompleteSetsShareTotal, sellCompleteSetsShareTotal;
-      for (var i = 0, numMarketIDs = marketIDs.length; i < numMarketIDs; ++i) {
+      for (i = 0, numMarketIDs = marketIDs.length; i < numMarketIDs; ++i) {
         marketID = marketIDs[i];
         onChainPosition = this.getPositionInMarket(marketID, account);
         shortAskBuyCompleteSetsShareTotal = shareTotals.shortAskBuyCompleteSets[marketID] || constants.ZERO;
@@ -233,19 +233,19 @@ module.exports = {
    * @return {Object} Adjusted positions keyed by marketID.
    */
   getAdjustedPositions: function (account, options, callback) {
-    var self = this;
+    var shareTotals, marketIDs, self = this;
     if (!callback && utils.is_function(options)) {
       callback = options;
       options = null;
     }
     options = options || {};
     if (!utils.is_function(callback)) {
-      var shareTotals = this.calculateShareTotals({
+      shareTotals = this.calculateShareTotals({
         shortAskBuyCompleteSets: this.getShortAskBuyCompleteSetsLogs(account, options),
         shortSellBuyCompleteSets: this.getTakerShortSellLogs(account, options),
         sellCompleteSets: this.getSellCompleteSetsLogs(account, options)
       });
-      var marketIDs = options.market ? [options.market] : this.findUniqueMarketIDs(shareTotals);
+      marketIDs = options.market ? [options.market] : this.findUniqueMarketIDs(shareTotals);
       return this.adjustPositions(account, marketIDs, shareTotals);
     }
     async.parallel({
@@ -259,9 +259,10 @@ module.exports = {
         self.getSellCompleteSetsLogs(account, options, done);
       }
     }, function (err, logs) {
+      var shareTotals, marketIDs;
       if (err) return callback(err);
-      var shareTotals = self.calculateShareTotals(logs);
-      var marketIDs = options.market ? [options.market] : self.findUniqueMarketIDs(shareTotals);
+      shareTotals = self.calculateShareTotals(logs);
+      marketIDs = options.market ? [options.market] : self.findUniqueMarketIDs(shareTotals);
       self.adjustPositions(account, marketIDs, shareTotals, callback);
     });
   },
@@ -273,27 +274,27 @@ module.exports = {
    * @return Object Aggregate trades keyed by market ID.
    */
   calculateNetEffectiveTrades: function (logs) {
-    var marketID, shareTotal, effectivePrice;
-    var shareTotals = this.calculateShareTotals({
+    var shareTotals, effectivePrices, netEffectiveTrades, marketIDs, numMarketIDs, i, marketID, shareTotal, effectivePrice, completeSetsTypes, numCompleteSetsTypes, completeSetsType, j;
+    shareTotals = this.calculateShareTotals({
       shortAskBuyCompleteSets: logs.shortAskBuyCompleteSets,
       shortSellBuyCompleteSets: logs.shortSellBuyCompleteSets,
       sellCompleteSets: logs.sellCompleteSets
     });
-    var effectivePrices = {
+    effectivePrices = {
       shortAskBuyCompleteSets: this.calculateCompleteSetsEffectivePrice(logs.shortAskBuyCompleteSets),
       shortSellBuyCompleteSets: this.calculateShortSellBuyCompleteSetsEffectivePrice(logs.shortSellBuyCompleteSets),
       sellCompleteSets: this.calculateCompleteSetsEffectivePrice(logs.sellCompleteSets)
     };
-    var netEffectiveTrades = {};
-    var marketIDs = this.findUniqueMarketIDs(effectivePrices);
-    var numMarketIDs = marketIDs.length;
-    for (var i = 0; i < numMarketIDs; ++i) {
+    netEffectiveTrades = {};
+    marketIDs = this.findUniqueMarketIDs(effectivePrices);
+    numMarketIDs = marketIDs.length;
+    for (i = 0; i < numMarketIDs; ++i) {
       marketID = marketIDs[i];
       if (!netEffectiveTrades[marketID]) netEffectiveTrades[marketID] = {};
-      var completeSetsTypes = Object.keys(effectivePrices);
-      var numCompleteSetsTypes = completeSetsTypes.length;
-      for (var j = 0; j < numCompleteSetsTypes; ++j) {
-        var completeSetsType = completeSetsTypes[j];
+      completeSetsTypes = Object.keys(effectivePrices);
+      numCompleteSetsTypes = completeSetsTypes.length;
+      for (j = 0; j < numCompleteSetsTypes; ++j) {
+        completeSetsType = completeSetsTypes[j];
         shareTotal = shareTotals[completeSetsType][marketID];
         effectivePrice = effectivePrices[completeSetsType][marketID];
         if (shareTotal && effectivePrice) {
@@ -489,9 +490,9 @@ module.exports = {
   },
 
   calculateTradesPL: function (PL, trades) {
-    var numTrades = trades.length;
+    var i, numTrades = trades.length;
     if (numTrades) {
-      for (var i = 0; i < numTrades; ++i) {
+      for (i = 0; i < numTrades; ++i) {
         PL = this.calculateTradePL(PL, trades[i]);
       }
     }
@@ -514,7 +515,8 @@ module.exports = {
    * @return {Object} Realized and unrealized P/L {position, realized, unrealized}.
    */
   calculateProfitLoss: function (trades, lastTradePrice) {
-    var PL = {
+    var PL, bnLastTradePrice, queuedShares, i, n;
+    PL = {
       position: constants.ZERO,
       meanOpenPrice: constants.ZERO,
       realized: constants.ZERO,
@@ -523,14 +525,14 @@ module.exports = {
       completeSetsBought: constants.ZERO,
       tradeQueue: []
     };
-    var bnLastTradePrice = abi.bignum(lastTradePrice) || constants.ZERO;
+    bnLastTradePrice = abi.bignum(lastTradePrice) || constants.ZERO;
     if (trades) {
       PL = this.calculateTradesPL(PL, trades);
       // console.log('Raw P/L:', JSON.stringify(PL, null, 2));
-      var queuedShares = constants.ZERO;
+      queuedShares = constants.ZERO;
       if (PL.tradeQueue && PL.tradeQueue.length) {
         // console.log('Trade queue:', JSON.stringify(PL.tradeQueue));
-        for (var i = 0, n = PL.tradeQueue.length; i < n; ++i) {
+        for (i = 0, n = PL.tradeQueue.length; i < n; ++i) {
           queuedShares = queuedShares.plus(PL.tradeQueue[i].shares);
           PL.queued = this.updateRealizedPL(PL.tradeQueue[i].meanOpenPrice, PL.queued, PL.tradeQueue[i].shares.neg(), PL.tradeQueue[i].price);
         }

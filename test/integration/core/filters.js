@@ -54,9 +54,10 @@ describe("Price history", function () {
       if (DEBUG) console.log("priceHistory:", priceHistory);
       assert.isObject(priceHistory);
       for (var k in priceHistory) {
-        if (!priceHistory.hasOwnProperty(k)) continue;
-        var logs = priceHistory[k];
-        assert.isArray(logs);
+        if (priceHistory.hasOwnProperty(k)) {
+          var logs = priceHistory[k];
+          assert.isArray(logs);
+        }
       }
       done();
     });
@@ -69,9 +70,10 @@ describe("Price history", function () {
     if (DEBUG) console.log("[sync] getMarketPriceHistory:", ((new Date()).getTime() - start) / 1000, "seconds");
     assert.isObject(priceHistory);
     for (var k in priceHistory) {
-      if (!priceHistory.hasOwnProperty(k)) continue;
-      var logs = priceHistory[k];
-      assert.isArray(logs);
+      if (priceHistory.hasOwnProperty(k)) {
+        var logs = priceHistory[k];
+        assert.isArray(logs);
+      }
     }
   });
 });
@@ -82,17 +84,19 @@ describe("Account trade list", function () {
     this.timeout(tools.TIMEOUT);
     augur.getAccountTrades(account, function (trades) {
       for (var marketId in trades) {
-        if (!trades.hasOwnProperty(marketId)) continue;
-        for (var outcomeId in trades[marketId]) {
-          if (!trades[marketId].hasOwnProperty(outcomeId)) continue;
-          assert.isArray(trades[marketId][outcomeId]);
-          for (var i = 0; i < trades[marketId][outcomeId].length; ++i) {
-            assert.property(trades[marketId][outcomeId][i], "price");
-            assert.property(trades[marketId][outcomeId][i], "type");
-            assert.property(trades[marketId][outcomeId][i], "shares");
-            assert.property(trades[marketId][outcomeId][i], "maker");
-            assert.property(trades[marketId][outcomeId][i], "blockNumber");
-            assert.isAbove(trades[marketId][outcomeId][i].blockNumber, 0);
+        if (trades.hasOwnProperty(marketId)) {
+          for (var outcomeId in trades[marketId]) {
+            if (trades[marketId].hasOwnProperty(outcomeId)) {
+              assert.isArray(trades[marketId][outcomeId]);
+              for (var i = 0; i < trades[marketId][outcomeId].length; ++i) {
+                assert.property(trades[marketId][outcomeId][i], "price");
+                assert.property(trades[marketId][outcomeId][i], "type");
+                assert.property(trades[marketId][outcomeId][i], "shares");
+                assert.property(trades[marketId][outcomeId][i], "maker");
+                assert.property(trades[marketId][outcomeId][i], "blockNumber");
+                assert.isAbove(trades[marketId][outcomeId][i].blockNumber, 0);
+              }
+            }
           }
         }
       }
@@ -104,16 +108,19 @@ describe("Account trade list", function () {
     augur.getAccountTrades(account, function (trades) {
       var meanBuyPrice, meanSellPrice;
       for (var marketId in trades) {
-        if (!trades.hasOwnProperty(marketId)) continue;
-        meanBuyPrice = augur.meanTradePrice(trades[marketId]);
-        meanSellPrice = augur.meanTradePrice(trades[marketId], true);
-        for (var outcomeId in meanBuyPrice) {
-          if (!meanBuyPrice.hasOwnProperty(outcomeId)) continue;
-          assert.isAbove(abi.number(meanBuyPrice[outcomeId]), 0);
-        }
-        for (var outcomeId in meanSellPrice) {
-          if (!meanSellPrice.hasOwnProperty(outcomeId)) continue;
-          assert.isAbove(abi.number(meanSellPrice[outcomeId]), 0);
+        if (trades.hasOwnProperty(marketId)) {
+          meanBuyPrice = augur.meanTradePrice(trades[marketId]);
+          meanSellPrice = augur.meanTradePrice(trades[marketId], true);
+          for (var outcomeId in meanBuyPrice) {
+            if (meanBuyPrice.hasOwnProperty(outcomeId)) {
+              assert.isAbove(abi.number(meanBuyPrice[outcomeId]), 0);
+            }
+          }
+          for (var outcomeId in meanSellPrice) {
+            if (meanSellPrice.hasOwnProperty(outcomeId)) {
+              assert.isAbove(abi.number(meanSellPrice[outcomeId]), 0);
+            }
+          }
         }
       }
       done();
@@ -123,12 +130,15 @@ describe("Account trade list", function () {
     this.timeout(tools.TIMEOUT);
     augur.getAccountMeanTradePrices(account, function (meanPrices) {
       for (var bs in meanPrices) {
-        if (!meanPrices.hasOwnProperty(bs)) continue;
-        for (var marketId in meanPrices[bs]) {
-          if (!meanPrices[bs].hasOwnProperty(marketId)) continue;
-          for (var outcomeId in meanPrices[bs][marketId]) {
-            if (!meanPrices[bs][marketId].hasOwnProperty(outcomeId)) continue;
-            assert.isAbove(abi.number(meanPrices[bs][marketId][outcomeId]), 0);
+        if (meanPrices.hasOwnProperty(bs)) {
+          for (var marketId in meanPrices[bs]) {
+            if (meanPrices[bs].hasOwnProperty(marketId)) {
+              for (var outcomeId in meanPrices[bs][marketId]) {
+                if (meanPrices[bs][marketId].hasOwnProperty(outcomeId)) {
+                  assert.isAbove(abi.number(meanPrices[bs][marketId][outcomeId]), 0);
+                }
+              }
+            }
           }
         }
       }

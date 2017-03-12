@@ -20,9 +20,9 @@ module.exports = function () {
     },
 
     parseMessages: function (messages) {
-      var parsedMessages = [];
+      var i, numMessages, parsedMessages = [];
       if (messages && messages.constructor === Array && messages.length) {
-        for (var i = 0, numMessages = messages.length; i < numMessages; ++i) {
+        for (i = 0, numMessages = messages.length; i < numMessages; ++i) {
           parsedMessages.push(this.parseMessage(messages[i].payload));
         }
       }

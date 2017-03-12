@@ -11,11 +11,11 @@ var utils = require("../utilities");
 
 module.exports = {
 
+  // branch: hash id
+  // recver: ethereum address of recipient
+  // value: number -> fixed-point
   sendReputation: function (branch, recver, value, onSent, onSuccess, onFailed) {
-    // branch: hash id
-    // recver: ethereum address of recipient
-    // value: number -> fixed-point
-    var self = this;
+    var tx, self = this;
     if (branch && branch.branch) {
       recver = branch.recver;
       value = branch.value;
@@ -24,13 +24,13 @@ module.exports = {
       onFailed = branch.onFailed;
       branch = branch.branch;
     }
-    var tx = clone(this.tx.SendReputation.sendReputation);
+    tx = clone(this.tx.SendReputation.sendReputation);
     tx.params = [branch, recver, abi.fix(value, "hex")];
 
     // if callReturn is 0, but account has sufficient Reputation and Rep
     // redistribution is done, then re-invoke sendReputation
     // (penalizationCatchup is being called)
-    var prepare = function (result, cb) {
+    this.transact(tx, onSent, utils.compose(function (result, cb) {
       if (!result || !result.callReturn || parseInt(result.callReturn, 16)) {
         return cb(result);
       }
@@ -48,11 +48,6 @@ module.exports = {
           self.sendReputation(branch, recver, value, onSent, onSuccess, onFailed);
         });
       });
-    };
-
-    this.transact(tx,
-      onSent,
-      utils.compose(prepare, onSuccess),
-      onFailed);
+    }, onSuccess), onFailed);
   }
 };

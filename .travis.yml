@@ -25,4 +25,4 @@ before_script:
 
 script:
   - npm run lint
-  - travis_wait 60 npm run coverage
+  - npm run coverage

@@ -21,13 +21,13 @@ describe('augur.cancel tests', function() {
       augur.rpc.receipt = t.receipt;
       if (t.trade_id.constructor === Object) {
         augur.cancel({
-          trade_id: t.trade_id,
-          onSent: t.onSent,
+          trade_id: t.trade_id.trade_id,
+          onSent: t.trade_id.onSent,
           onSuccess: function(result) {
           	t.trade_id.onSuccess(result);
           	done();
           },
-          onFailed: t.onFailed
+          onFailed: t.trade_id.onFailed
         });
       } else {
         augur.cancel(t.trade_id, t.onSent, function(result) {
@@ -63,7 +63,7 @@ describe('augur.cancel tests', function() {
       	cumulativeGasUsed: '0xfda5'
       });
     },
-    trade_id: ['tradeID'],
+    trade_id: "tradeID",
     onSent: noop,
     onSuccess: function(result) {
       assert.deepEqual(result, {
@@ -99,7 +99,7 @@ describe('augur.cancel tests', function() {
       	cumulativeGasUsed: '0xfda5'
       });
     },
-    trade_id: ['tradeID'],
+    trade_id: "tradeID",
     onSent: noop,
     onSuccess: function(result) {
       assert.deepEqual(result, {
@@ -114,7 +114,7 @@ describe('augur.cancel tests', function() {
     description: "should send a cancel trade transaction with single argument, logs is populated.",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.cancel.to);
-      assert.deepEqual(tx.params.trade_id, ["tradeID"]);
+      assert.deepEqual(tx.params, ["tradeID"]);
       assert.isFunction(onSent);
       assert.isFunction(onSuccess);
       assert.isFunction(onFailed);
@@ -138,7 +138,7 @@ describe('augur.cancel tests', function() {
       });
     },
     trade_id: {
-      trade_id: ['tradeID'],
+      trade_id: "tradeID",
       onSent: noop,
       onSuccess: function(result) {
         assert.deepEqual(result, {
@@ -164,7 +164,7 @@ describe('augur.cancel tests', function() {
       // doesn't get hit in this example.
       assert.isTrue(false, 'Shouldnt call receipt if onSuccess from transact doesnt return a result.')
     },
-    trade_id: ['tradeID'],
+    trade_id: "tradeID",
     onSent: noop,
     onSuccess: function(result) {
       assert.isUndefined(result);
@@ -185,7 +185,7 @@ describe('augur.cancel tests', function() {
       // doesn't get hit in this example.
       assert.isTrue(false, 'Shouldnt call receipt if onSuccess from transact doesnt return a result.')
     },
-    trade_id: ['tradeID'],
+    trade_id: "tradeID",
     onSent: noop,
     onSuccess: function(result) {
       assert.deepEqual(result, { hash: '0x3f7acee08aed19bd7754f28ad8792a94ddce3a3e916fc4c928f268a9ef2477eb' });
@@ -206,7 +206,7 @@ describe('augur.cancel tests', function() {
       assert.deepEqual(hash, '0x3f7acee08aed19bd7754f28ad8792a94ddce3a3e916fc4c928f268a9ef2477eb');
       cb();
     },
-    trade_id: ['tradeID'],
+    trade_id: "tradeID",
     onSent: noop,
     onSuccess: function(result) {
       // doesn't get hit in this example.
@@ -230,7 +230,7 @@ describe('augur.cancel tests', function() {
       assert.deepEqual(hash, '0x3f7acee08aed19bd7754f28ad8792a94ddce3a3e916fc4c928f268a9ef2477eb');
       cb({ error: 999, message: 'Uh-Oh!' });
     },
-    trade_id: ['tradeID'],
+    trade_id: "tradeID",
     onSent: noop,
     onSuccess: function(result) {
       // doesn't get hit in this example.
@@ -252,10 +252,8 @@ describe('augur.buy tests', function() {
   });
   var test = function (t) {
     it(t.description, function() {
-
       augur.transact = t.transact;
       augur.shrinkScalarPrice = t.shrinkScalarPrice;
-
       augur.buy(t.amount, t.price, t.market, t.outcome, t.tradeGroupID, t.scalarMinMax, t.onSent, t.onSuccess, t.onFailed);
     });
   };
@@ -263,7 +261,7 @@ describe('augur.buy tests', function() {
     description: "Should handle a binary market buy using JS Number inputs",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.buy.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0]);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa3', '1', "0x2386f26fc10000", 0]);
       assert.isFunction(onSent);
       assert.isFunction(onSuccess);
       assert.isFunction(onFailed);
@@ -277,7 +275,7 @@ describe('augur.buy tests', function() {
     },
     amount: 10,
     price: 0.5,
-    market: "testBinaryMarketID",
+    market: "0xa3",
     outcome: "1",
     scalarMinMax: null,
     onSent: noop,
@@ -288,7 +286,7 @@ describe('augur.buy tests', function() {
     description: "Should handle a binary market buy using String inputs",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.buy.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0]);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa3', '1', "0x2386f26fc10000", 0]);
       assert.isFunction(onSent);
       assert.isFunction(onSuccess);
       assert.isFunction(onFailed);
@@ -302,7 +300,7 @@ describe('augur.buy tests', function() {
     },
     amount: "10",
     price: "0.5",
-    market: "testBinaryMarketID",
+    market: "0xa3",
     outcome: "1",
     scalarMinMax: null,
     onSent: noop,
@@ -313,7 +311,7 @@ describe('augur.buy tests', function() {
     description: "Should handle a binary market buy using Big Number inputs",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.buy.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0]);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa3', '1', "0x2386f26fc10000", 0]);
       assert.isFunction(onSent);
       assert.isFunction(onSuccess);
       assert.isFunction(onFailed);
@@ -327,7 +325,7 @@ describe('augur.buy tests', function() {
     },
     amount: abi.bignum(10),
     price: abi.bignum(0.5),
-    market: "testBinaryMarketID",
+    market: "0xa3",
     outcome: "1",
     scalarMinMax: null,
     onSent: noop,
@@ -338,10 +336,7 @@ describe('augur.buy tests', function() {
     description: "Should handle a binary market buy using String inputs but missing function hooks",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.buy.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa3', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -352,7 +347,7 @@ describe('augur.buy tests', function() {
     },
     amount: "10",
     price: "0.5",
-    market: "testBinaryMarketID",
+    market: "0xa3",
     outcome: "1",
     scalarMinMax: null
   });
@@ -360,10 +355,7 @@ describe('augur.buy tests', function() {
     description: "Should handle a binary market buy using String inputs in a single object argument",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.buy.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa3', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -372,16 +364,13 @@ describe('augur.buy tests', function() {
       if (price.constructor !== BigNumber) price = abi.bignum(price);
       return price.minus(minValue).toFixed();
     },
-    amount: { amount: '10', price: '0.5', market: 'testBinaryMarketID', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop}
+    amount: { amount: '10', price: '0.5', market: '0xa3', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop}
   });
   test({
     description: "Should handle a binary market buy using String inputs in a single object argument missing the function hooks",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.buy.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa3', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -390,17 +379,13 @@ describe('augur.buy tests', function() {
       if (price.constructor !== BigNumber) price = abi.bignum(price);
       return price.minus(minValue).toFixed();
     },
-    amount: { amount: '10', price: '0.5', market: 'testBinaryMarketID', outcome: '1', scalarMinMax: null }
+    amount: { amount: '10', price: '0.5', market: '0xa3', outcome: '1', scalarMinMax: null }
   });
-
   test({
     description: "Should handle a scalar market buy using JS Number inputs",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.buy.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", '0xa2', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -411,7 +396,7 @@ describe('augur.buy tests', function() {
     },
     amount: 10,
     price: 55,
-    market: "testScalarMarketID",
+    market: "0xa2",
     outcome: "1",
     scalarMinMax: { minValue: -10, maxValue: 140 },
     onSent: noop,
@@ -422,10 +407,7 @@ describe('augur.buy tests', function() {
     description: "Should handle a scalar market buy using String inputs",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.buy.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", '0xa2', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -436,7 +418,7 @@ describe('augur.buy tests', function() {
     },
     amount: "10",
     price: "55",
-    market: "testScalarMarketID",
+    market: "0xa2",
     outcome: "1",
     scalarMinMax: { minValue: '-10', maxValue: '140' },
     onSent: noop,
@@ -447,10 +429,7 @@ describe('augur.buy tests', function() {
     description: "Should handle a scalar market buy using Big Number inputs",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.buy.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", '0xa2', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -461,7 +440,7 @@ describe('augur.buy tests', function() {
     },
     amount: abi.bignum(10),
     price: abi.bignum(55),
-    market: "testScalarMarketID",
+    market: "0xa2",
     outcome: "1",
     scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) },
     onSent: noop,
@@ -472,10 +451,7 @@ describe('augur.buy tests', function() {
     description: "Should handle a scalar market buy using String inputs but missing function hooks",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.buy.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", '0xa2', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -486,7 +462,7 @@ describe('augur.buy tests', function() {
     },
     amount: "10",
     price: "55",
-    market: "testScalarMarketID",
+    market: "0xa2",
     outcome: "1",
     scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) }
   });
@@ -494,10 +470,7 @@ describe('augur.buy tests', function() {
     description: "Should handle a scalar market buy using String inputs in a single object argument",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.buy.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", '0xa2', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -506,16 +479,13 @@ describe('augur.buy tests', function() {
       if (price.constructor !== BigNumber) price = abi.bignum(price);
       return price.minus(minValue).toFixed();
     },
-    amount: { amount: '10', price: '55', market: 'testScalarMarketID', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) }, onSent: noop, onSuccess: noop, onFailed: noop}
+    amount: { amount: '10', price: '55', market: '0xa2', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) }, onSent: noop, onSuccess: noop, onFailed: noop}
   });
   test({
     description: "Should handle a scalar market buy using String inputs in a single object argument missing the function hooks",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.buy.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", '0xa2', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -524,17 +494,14 @@ describe('augur.buy tests', function() {
       if (price.constructor !== BigNumber) price = abi.bignum(price);
       return price.minus(minValue).toFixed();
     },
-    amount: { amount: '10', price: '55', market: 'testScalarMarketID', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) } }
+    amount: { amount: '10', price: '55', market: '0xa2', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) } }
   });
 
   test({
     description: "Should handle a categorical market buy using JS Number inputs",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.buy.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa1', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -545,7 +512,7 @@ describe('augur.buy tests', function() {
     },
     amount: 10,
     price: 0.5,
-    market: "testCategoricalMarketID",
+    market: "0xa1",
     outcome: "1",
     scalarMinMax: null,
     onSent: noop,
@@ -556,10 +523,7 @@ describe('augur.buy tests', function() {
     description: "Should handle a categorical market buy using String inputs",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.buy.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa1', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -570,7 +534,7 @@ describe('augur.buy tests', function() {
     },
     amount: "10",
     price: "0.5",
-    market: "testCategoricalMarketID",
+    market: "0xa1",
     outcome: "1",
     scalarMinMax: null,
     onSent: noop,
@@ -581,10 +545,7 @@ describe('augur.buy tests', function() {
     description: "Should handle a categorical market buy using Big Number inputs",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.buy.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa1', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -595,7 +556,7 @@ describe('augur.buy tests', function() {
     },
     amount: abi.bignum(10),
     price: abi.bignum(0.5),
-    market: "testCategoricalMarketID",
+    market: "0xa1",
     outcome: "1",
     scalarMinMax: null,
     onSent: noop,
@@ -606,10 +567,7 @@ describe('augur.buy tests', function() {
     description: "Should handle a categorical market buy using String inputs but missing function hooks",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.buy.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa1', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -620,7 +578,7 @@ describe('augur.buy tests', function() {
     },
     amount: "10",
     price: "0.5",
-    market: "testCategoricalMarketID",
+    market: "0xa1",
     outcome: "1",
     scalarMinMax: null
   });
@@ -628,10 +586,7 @@ describe('augur.buy tests', function() {
     description: "Should handle a categorical market buy using String inputs in a single object argument",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.buy.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa1', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -640,16 +595,13 @@ describe('augur.buy tests', function() {
       if (price.constructor !== BigNumber) price = abi.bignum(price);
       return price.minus(minValue).toFixed();
     },
-    amount: { amount: '10', price: '0.5', market: 'testCategoricalMarketID', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop}
+    amount: { amount: '10', price: '0.5', market: '0xa1', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop}
   });
   test({
     description: "Should handle a categorical market buy using String inputs in a single object argument missing the function hooks",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.buy.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa1', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -658,7 +610,7 @@ describe('augur.buy tests', function() {
       if (price.constructor !== BigNumber) price = abi.bignum(price);
       return price.minus(minValue).toFixed();
     },
-    amount: { amount: '10', price: '0.5', market: 'testCategoricalMarketID', outcome: '1', scalarMinMax: null }
+    amount: { amount: '10', price: '0.5', market: '0xa1', outcome: '1', scalarMinMax: null }
   });
 });
 describe('augur.sell tests', function() {
@@ -677,15 +629,11 @@ describe('augur.sell tests', function() {
       augur.sell(t.amount, t.price, t.market, t.outcome, t.tradeGroupID, t.scalarMinMax, t.onSent, t.onSuccess, t.onFailed);
     });
   };
-
   test({
     description: "Should handle a binary market sell using JS Number inputs",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0, 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa3', '1', "0x2386f26fc10000", 0, 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -696,7 +644,7 @@ describe('augur.sell tests', function() {
     },
     amount: 10,
     price: 0.5,
-    market: "testBinaryMarketID",
+    market: "0xa3",
     outcome: "1",
     scalarMinMax: null,
     onSent: noop,
@@ -707,10 +655,7 @@ describe('augur.sell tests', function() {
     description: "Should handle a binary market sell using String inputs",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0, 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa3', '1', "0x2386f26fc10000", 0, 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -721,7 +666,7 @@ describe('augur.sell tests', function() {
     },
     amount: "10",
     price: "0.5",
-    market: "testBinaryMarketID",
+    market: "0xa3",
     outcome: "1",
     scalarMinMax: null,
     onSent: noop,
@@ -732,10 +677,7 @@ describe('augur.sell tests', function() {
     description: "Should handle a binary market sell using Big Number inputs",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0, 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa3', '1', "0x2386f26fc10000", 0, 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -746,7 +688,7 @@ describe('augur.sell tests', function() {
     },
     amount: abi.bignum(10),
     price: abi.bignum(0.5),
-    market: "testBinaryMarketID",
+    market: "0xa3",
     outcome: "1",
     scalarMinMax: null,
     onSent: noop,
@@ -757,10 +699,7 @@ describe('augur.sell tests', function() {
     description: "Should handle a binary market sell using String inputs but missing function hooks",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0, 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa3', '1', "0x2386f26fc10000", 0, 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -771,7 +710,7 @@ describe('augur.sell tests', function() {
     },
     amount: "10",
     price: "0.5",
-    market: "testBinaryMarketID",
+    market: "0xa3",
     outcome: "1",
     scalarMinMax: null
   });
@@ -779,10 +718,7 @@ describe('augur.sell tests', function() {
     description: "Should handle a binary market sell using String inputs in a single object argument",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0, 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa3', '1', "0x2386f26fc10000", 0, 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -791,16 +727,13 @@ describe('augur.sell tests', function() {
       if (price.constructor !== BigNumber) price = abi.bignum(price);
       return price.minus(minValue).toFixed();
     },
-    amount: { amount: '10', price: '0.5', market: 'testBinaryMarketID', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop}
+    amount: { amount: '10', price: '0.5', market: '0xa3', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop}
   });
   test({
     description: "Should handle a binary market sell using String inputs in a single object argument missing the function hooks",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0, 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa3', '1', "0x2386f26fc10000", 0, 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -809,18 +742,13 @@ describe('augur.sell tests', function() {
       if (price.constructor !== BigNumber) price = abi.bignum(price);
       return price.minus(minValue).toFixed();
     },
-    amount: { amount: '10', price: '0.5', market: 'testBinaryMarketID', outcome: '1', scalarMinMax: null }
+    amount: { amount: '10', price: '0.5', market: '0xa3', outcome: '1', scalarMinMax: null }
   });
-
-
   test({
     description: "Should handle a scalar market sell using JS Number inputs",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0, 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", '0xa2', '1', "0x2386f26fc10000", 0, 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -831,7 +759,7 @@ describe('augur.sell tests', function() {
     },
     amount: 10,
     price: 55,
-    market: "testScalarMarketID",
+    market: "0xa2",
     outcome: "1",
     scalarMinMax: { minValue: -10, maxValue: 140 },
     onSent: noop,
@@ -842,10 +770,7 @@ describe('augur.sell tests', function() {
     description: "Should handle a scalar market sell using String inputs",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0, 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", '0xa2', '1', "0x2386f26fc10000", 0, 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -856,7 +781,7 @@ describe('augur.sell tests', function() {
     },
     amount: "10",
     price: "55",
-    market: "testScalarMarketID",
+    market: "0xa2",
     outcome: "1",
     scalarMinMax: { minValue: '-10', maxValue: '140' },
     onSent: noop,
@@ -867,10 +792,7 @@ describe('augur.sell tests', function() {
     description: "Should handle a scalar market sell using Big Number inputs",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0, 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", '0xa2', '1', "0x2386f26fc10000", 0, 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -881,7 +803,7 @@ describe('augur.sell tests', function() {
     },
     amount: abi.bignum(10),
     price: abi.bignum(55),
-    market: "testScalarMarketID",
+    market: "0xa2",
     outcome: "1",
     scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) },
     onSent: noop,
@@ -892,10 +814,7 @@ describe('augur.sell tests', function() {
     description: "Should handle a scalar market sell using String inputs but missing function hooks",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0, 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", '0xa2', '1', "0x2386f26fc10000", 0, 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -906,7 +825,7 @@ describe('augur.sell tests', function() {
     },
     amount: "10",
     price: "55",
-    market: "testScalarMarketID",
+    market: "0xa2",
     outcome: "1",
     scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) }
   });
@@ -914,10 +833,7 @@ describe('augur.sell tests', function() {
     description: "Should handle a scalar market sell using String inputs in a single object argument",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0, 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", '0xa2', '1', "0x2386f26fc10000", 0, 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -926,16 +842,13 @@ describe('augur.sell tests', function() {
       if (price.constructor !== BigNumber) price = abi.bignum(price);
       return price.minus(minValue).toFixed();
     },
-    amount: { amount: '10', price: '55', market: 'testScalarMarketID', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) }, onSent: noop, onSuccess: noop, onFailed: noop}
+    amount: { amount: '10', price: '55', market: '0xa2', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) }, onSent: noop, onSuccess: noop, onFailed: noop}
   });
   test({
     description: "Should handle a scalar market sell using String inputs in a single object argument missing the function hooks",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0, 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", '0xa2', '1', "0x2386f26fc10000", 0, 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -944,17 +857,14 @@ describe('augur.sell tests', function() {
       if (price.constructor !== BigNumber) price = abi.bignum(price);
       return price.minus(minValue).toFixed();
     },
-    amount: { amount: '10', price: '55', market: 'testScalarMarketID', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) } }
+    amount: { amount: '10', price: '55', market: '0xa2', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) } }
   });
 
   test({
     description: "Should handle a categorical market sell using JS Number inputs",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0, 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa1', '1', "0x2386f26fc10000", 0, 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -965,7 +875,7 @@ describe('augur.sell tests', function() {
     },
     amount: 10,
     price: 0.5,
-    market: "testCategoricalMarketID",
+    market: "0xa1",
     outcome: "1",
     scalarMinMax: null,
     onSent: noop,
@@ -976,10 +886,7 @@ describe('augur.sell tests', function() {
     description: "Should handle a categorical market sell using String inputs",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0, 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa1', '1', "0x2386f26fc10000", 0, 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -990,7 +897,7 @@ describe('augur.sell tests', function() {
     },
     amount: "10",
     price: "0.5",
-    market: "testCategoricalMarketID",
+    market: "0xa1",
     outcome: "1",
     scalarMinMax: null,
     onSent: noop,
@@ -1001,10 +908,7 @@ describe('augur.sell tests', function() {
     description: "Should handle a categorical market sell using Big Number inputs",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0, 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa1', '1', "0x2386f26fc10000", 0, 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -1015,7 +919,7 @@ describe('augur.sell tests', function() {
     },
     amount: abi.bignum(10),
     price: abi.bignum(0.5),
-    market: "testCategoricalMarketID",
+    market: "0xa1",
     outcome: "1",
     scalarMinMax: null,
     onSent: noop,
@@ -1026,10 +930,7 @@ describe('augur.sell tests', function() {
     description: "Should handle a categorical market sell using String inputs but missing function hooks",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0, 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa1', '1', "0x2386f26fc10000", 0, 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -1040,7 +941,7 @@ describe('augur.sell tests', function() {
     },
     amount: "10",
     price: "0.5",
-    market: "testCategoricalMarketID",
+    market: "0xa1",
     outcome: "1",
     scalarMinMax: null
   });
@@ -1048,10 +949,7 @@ describe('augur.sell tests', function() {
     description: "Should handle a categorical market sell using String inputs in a single object argument",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0, 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa1', '1', "0x2386f26fc10000", 0, 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -1060,16 +958,13 @@ describe('augur.sell tests', function() {
       if (price.constructor !== BigNumber) price = abi.bignum(price);
       return price.minus(minValue).toFixed();
     },
-    amount: { amount: '10', price: '0.5', market: 'testCategoricalMarketID', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop}
+    amount: { amount: '10', price: '0.5', market: '0xa1', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop}
   });
   test({
     description: "Should handle a categorical market sell using String inputs in a single object argument missing the function hooks",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.sell.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0, 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa1', '1', "0x2386f26fc10000", 0, 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -1078,11 +973,12 @@ describe('augur.sell tests', function() {
       if (price.constructor !== BigNumber) price = abi.bignum(price);
       return price.minus(minValue).toFixed();
     },
-    amount: { amount: '10', price: '0.5', market: 'testCategoricalMarketID', outcome: '1', scalarMinMax: null }
+    amount: { amount: '10', price: '0.5', market: '0xa1', outcome: '1', scalarMinMax: null }
   });
 });
 describe('augur.shortAsk tests', function() {
 	// 18 tests total
+  augur.bindContractAPI();
   var transact = augur.transact;
   var shrinkScalarPrice = augur.shrinkScalarPrice;
   afterEach(function() {
@@ -1093,19 +989,14 @@ describe('augur.shortAsk tests', function() {
     it(t.description, function() {
       augur.transact = t.transact;
       augur.shrinkScalarPrice = t.shrinkScalarPrice;
-
       augur.shortAsk(t.amount, t.price, t.market, t.outcome, t.tradeGroupID, t.scalarMinMax, t.onSent, t.onSuccess, t.onFailed);
     });
   };
-
   test({
     description: "Should handle a binary market shortAsk using JS Number inputs",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.shortAsk.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa3', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -1116,7 +1007,7 @@ describe('augur.shortAsk tests', function() {
     },
     amount: 10,
     price: 0.5,
-    market: "testBinaryMarketID",
+    market: "0xa3",
     outcome: "1",
     scalarMinMax: null,
     onSent: noop,
@@ -1127,10 +1018,7 @@ describe('augur.shortAsk tests', function() {
     description: "Should handle a binary market shortAsk using String inputs",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.shortAsk.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa3', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -1141,7 +1029,7 @@ describe('augur.shortAsk tests', function() {
     },
     amount: "10",
     price: "0.5",
-    market: "testBinaryMarketID",
+    market: "0xa3",
     outcome: "1",
     scalarMinMax: null,
     onSent: noop,
@@ -1152,10 +1040,7 @@ describe('augur.shortAsk tests', function() {
     description: "Should handle a binary market shortAsk using Big Number inputs",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.shortAsk.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa3', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -1166,7 +1051,7 @@ describe('augur.shortAsk tests', function() {
     },
     amount: abi.bignum(10),
     price: abi.bignum(0.5),
-    market: "testBinaryMarketID",
+    market: "0xa3",
     outcome: "1",
     scalarMinMax: null,
     onSent: noop,
@@ -1177,10 +1062,7 @@ describe('augur.shortAsk tests', function() {
     description: "Should handle a binary market shortAsk using String inputs but missing function hooks",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.shortAsk.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa3', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -1191,7 +1073,7 @@ describe('augur.shortAsk tests', function() {
     },
     amount: "10",
     price: "0.5",
-    market: "testBinaryMarketID",
+    market: "0xa3",
     outcome: "1",
     scalarMinMax: null
   });
@@ -1199,10 +1081,7 @@ describe('augur.shortAsk tests', function() {
     description: "Should handle a binary market shortAsk using String inputs in a single object argument",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.shortAsk.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa3', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -1211,16 +1090,13 @@ describe('augur.shortAsk tests', function() {
       if (price.constructor !== BigNumber) price = abi.bignum(price);
       return price.minus(minValue).toFixed();
     },
-    amount: { amount: '10', price: '0.5', market: 'testBinaryMarketID', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop}
+    amount: { amount: '10', price: '0.5', market: '0xa3', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop}
   });
   test({
     description: "Should handle a binary market shortAsk using String inputs in a single object argument missing the function hooks",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.shortAsk.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testBinaryMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa3', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -1229,17 +1105,14 @@ describe('augur.shortAsk tests', function() {
       if (price.constructor !== BigNumber) price = abi.bignum(price);
       return price.minus(minValue).toFixed();
     },
-    amount: { amount: '10', price: '0.5', market: 'testBinaryMarketID', outcome: '1', scalarMinMax: null }
+    amount: { amount: '10', price: '0.5', market: '0xa3', outcome: '1', scalarMinMax: null }
   });
 
   test({
     description: "Should handle a scalar market shortAsk using JS Number inputs",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.shortAsk.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", '0xa2', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -1250,7 +1123,7 @@ describe('augur.shortAsk tests', function() {
     },
     amount: 10,
     price: 55,
-    market: "testScalarMarketID",
+    market: "0xa2",
     outcome: "1",
     scalarMinMax: { minValue: -10, maxValue: 140 },
     onSent: noop,
@@ -1261,10 +1134,7 @@ describe('augur.shortAsk tests', function() {
     description: "Should handle a scalar market shortAsk using String inputs",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.shortAsk.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", '0xa2', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -1275,7 +1145,7 @@ describe('augur.shortAsk tests', function() {
     },
     amount: "10",
     price: "55",
-    market: "testScalarMarketID",
+    market: "0xa2",
     outcome: "1",
     scalarMinMax: { minValue: '-10', maxValue: '140' },
     onSent: noop,
@@ -1286,10 +1156,7 @@ describe('augur.shortAsk tests', function() {
     description: "Should handle a scalar market shortAsk using Big Number inputs",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.shortAsk.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", '0xa2', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -1300,7 +1167,7 @@ describe('augur.shortAsk tests', function() {
     },
     amount: abi.bignum(10),
     price: abi.bignum(55),
-    market: "testScalarMarketID",
+    market: "0xa2",
     outcome: "1",
     scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) },
     onSent: noop,
@@ -1311,10 +1178,7 @@ describe('augur.shortAsk tests', function() {
     description: "Should handle a scalar market shortAsk using String inputs but missing function hooks",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.shortAsk.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", '0xa2', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -1325,7 +1189,7 @@ describe('augur.shortAsk tests', function() {
     },
     amount: "10",
     price: "55",
-    market: "testScalarMarketID",
+    market: "0xa2",
     outcome: "1",
     scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) }
   });
@@ -1333,10 +1197,7 @@ describe('augur.shortAsk tests', function() {
     description: "Should handle a scalar market shortAsk using String inputs in a single object argument",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.shortAsk.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", '0xa2', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -1345,16 +1206,13 @@ describe('augur.shortAsk tests', function() {
       if (price.constructor !== BigNumber) price = abi.bignum(price);
       return price.minus(minValue).toFixed();
     },
-    amount: { amount: '10', price: '55', market: 'testScalarMarketID', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) }, onSent: noop, onSuccess: noop, onFailed: noop}
+    amount: { amount: '10', price: '55', market: '0xa2', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) }, onSent: noop, onSuccess: noop, onFailed: noop}
   });
   test({
     description: "Should handle a scalar market shortAsk using String inputs in a single object argument missing the function hooks",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.shortAsk.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", 'testScalarMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x3860e639d80640000", '0xa2', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -1363,17 +1221,14 @@ describe('augur.shortAsk tests', function() {
       if (price.constructor !== BigNumber) price = abi.bignum(price);
       return price.minus(minValue).toFixed();
     },
-    amount: { amount: '10', price: '55', market: 'testScalarMarketID', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) } }
+    amount: { amount: '10', price: '55', market: '0xa2', outcome: '1', scalarMinMax: { minValue: abi.bignum(-10), maxValue: abi.bignum(140) } }
   });
 
   test({
     description: "Should handle a categorical market shortAsk using JS Number inputs",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.shortAsk.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa1', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -1384,7 +1239,7 @@ describe('augur.shortAsk tests', function() {
     },
     amount: 10,
     price: 0.5,
-    market: "testCategoricalMarketID",
+    market: "0xa1",
     outcome: "1",
     scalarMinMax: null,
     onSent: noop,
@@ -1395,10 +1250,7 @@ describe('augur.shortAsk tests', function() {
     description: "Should handle a categorical market shortAsk using String inputs",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.shortAsk.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa1', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -1409,7 +1261,7 @@ describe('augur.shortAsk tests', function() {
     },
     amount: "10",
     price: "0.5",
-    market: "testCategoricalMarketID",
+    market: "0xa1",
     outcome: "1",
     scalarMinMax: null,
     onSent: noop,
@@ -1420,10 +1272,7 @@ describe('augur.shortAsk tests', function() {
     description: "Should handle a categorical market shortAsk using Big Number inputs",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.shortAsk.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa1', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -1434,7 +1283,7 @@ describe('augur.shortAsk tests', function() {
     },
     amount: abi.bignum(10),
     price: abi.bignum(0.5),
-    market: "testCategoricalMarketID",
+    market: "0xa1",
     outcome: "1",
     scalarMinMax: null,
     onSent: noop,
@@ -1445,10 +1294,7 @@ describe('augur.shortAsk tests', function() {
     description: "Should handle a categorical market shortAsk using String inputs but missing function hooks",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.shortAsk.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa1', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -1459,7 +1305,7 @@ describe('augur.shortAsk tests', function() {
     },
     amount: "10",
     price: "0.5",
-    market: "testCategoricalMarketID",
+    market: "0xa1",
     outcome: "1",
     scalarMinMax: null
   });
@@ -1467,10 +1313,7 @@ describe('augur.shortAsk tests', function() {
     description: "Should handle a categorical market shortAsk using String inputs in a single object argument",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.shortAsk.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa1', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -1479,16 +1322,13 @@ describe('augur.shortAsk tests', function() {
       if (price.constructor !== BigNumber) price = abi.bignum(price);
       return price.minus(minValue).toFixed();
     },
-    amount: { amount: '10', price: '0.5', market: 'testCategoricalMarketID', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop}
+    amount: { amount: '10', price: '0.5', market: '0xa1', outcome: '1', scalarMinMax: null, onSent: noop, onSuccess: noop, onFailed: noop}
   });
   test({
     description: "Should handle a categorical market shortAsk using String inputs in a single object argument missing the function hooks",
     transact: function(tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.tx.BuyAndSellShares.shortAsk.to);
-      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", 'testCategoricalMarketID', '1', "0x2386f26fc10000", 0]);
-      assert.isFunction(onSent);
-      assert.isFunction(onSuccess);
-      assert.isFunction(onFailed);
+      assert.deepEqual(tx.params, ["0x8ac7230489e80000", "0x6f05b59d3b20000", '0xa1', '1', "0x2386f26fc10000", 0]);
     },
     shrinkScalarPrice: function(minValue, price) {
       assert.equal(price, 55);
@@ -1497,6 +1337,6 @@ describe('augur.shortAsk tests', function() {
       if (price.constructor !== BigNumber) price = abi.bignum(price);
       return price.minus(minValue).toFixed();
     },
-    amount: { amount: '10', price: '0.5', market: 'testCategoricalMarketID', outcome: '1', scalarMinMax: null }
+    amount: { amount: '10', price: '0.5', market: '0xa1', outcome: '1', scalarMinMax: null }
   });
 });

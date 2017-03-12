@@ -31,31 +31,31 @@ module.exports = {
   },
 
   calculateOrderPrices: function (liquidity, startingQuantity, bestStartingQuantity, initialFairPrices, minValue, maxValue, halfPriceWidth) {
-    var priceDepth = this.calculatePriceDepth(liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue);
+    var priceDepth, numOutcomes, buyPrices, sellPrices, numSellOrders, numBuyOrders, shares, i, j, buyPrice, sellPrice, outcomeShares;
+    priceDepth = this.calculatePriceDepth(liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue);
     if (priceDepth.lte(constants.ZERO) || priceDepth.toNumber() === Infinity) {
       return this.errors.INSUFFICIENT_LIQUIDITY;
     }
-    var numOutcomes = initialFairPrices.length;
-    var buyPrices = new Array(numOutcomes);
-    var sellPrices = new Array(numOutcomes);
-    var numSellOrders = new Array(numOutcomes);
-    var numBuyOrders = new Array(numOutcomes);
-    var shares = new BigNumber(0);
-    var i, j, buyPrice, sellPrice, outcomeShares;
+    numOutcomes = initialFairPrices.length;
+    buyPrices = new Array(numOutcomes);
+    sellPrices = new Array(numOutcomes);
+    numSellOrders = new Array(numOutcomes);
+    numBuyOrders = new Array(numOutcomes);
+    shares = new BigNumber(0);
     for (i = 0; i < numOutcomes; ++i) {
       if (initialFairPrices[i].lt(minValue.plus(halfPriceWidth)) || initialFairPrices[i].gt(maxValue.minus(halfPriceWidth))) {
-          if (this.options.debug.trading) {
-            console.log("priceDepth:", priceDepth.toFixed());
-            console.log("initialFairPrice[" + i + "]:", initialFairPrices[i].toFixed());
-            console.log("minValue:", minValue.toFixed());
-            console.log("maxValue:", maxValue.toFixed());
-            console.log("halfPriceWidth:", halfPriceWidth.toFixed());
-            console.log("minValue + halfPriceWidth:", minValue.plus(halfPriceWidth).toFixed());
-            console.log("maxValue - halfPriceWidth:", maxValue.minus(halfPriceWidth).toFixed());
-            console.log(initialFairPrices[i].lt(minValue.plus(halfPriceWidth)), initialFairPrices[i].gt(maxValue.minus(halfPriceWidth)));
-          }
-          return this.errors.INITIAL_PRICE_OUT_OF_BOUNDS;
+        if (this.options.debug.trading) {
+          console.log("priceDepth:", priceDepth.toFixed());
+          console.log("initialFairPrice[" + i + "]:", initialFairPrices[i].toFixed());
+          console.log("minValue:", minValue.toFixed());
+          console.log("maxValue:", maxValue.toFixed());
+          console.log("halfPriceWidth:", halfPriceWidth.toFixed());
+          console.log("minValue + halfPriceWidth:", minValue.plus(halfPriceWidth).toFixed());
+          console.log("maxValue - halfPriceWidth:", maxValue.minus(halfPriceWidth).toFixed());
+          console.log(initialFairPrices[i].lt(minValue.plus(halfPriceWidth)), initialFairPrices[i].gt(maxValue.minus(halfPriceWidth)));
         }
+        return this.errors.INITIAL_PRICE_OUT_OF_BOUNDS;
+      }
       if (initialFairPrices[i].plus(halfPriceWidth).gte(maxValue) || initialFairPrices[i].minus(halfPriceWidth).lte(minValue)) {
         return this.errors.PRICE_WIDTH_OUT_OF_BOUNDS;
       }
@@ -95,35 +95,32 @@ module.exports = {
   },
 
   calculateNumTransactions: function (numOutcomes, orders) {
-    var numTransactions = 0;
-    for (var i = 0; i < numOutcomes; ++i) {
+    var i, numTransactions = 0;
+    for (i = 0; i < numOutcomes; ++i) {
       numTransactions += orders.numBuyOrders[i] + orders.numSellOrders[i] + 3;
     }
     return numTransactions;
   },
 
   assignOutcomeIDs: function (numOutcomes) {
-    var outcomes = new Array(numOutcomes);
-    for (var i = 0; i < numOutcomes; ++i) {
+    var i, outcomes = new Array(numOutcomes);
+    for (i = 0; i < numOutcomes; ++i) {
       outcomes[i] = i + 1;
     }
     return outcomes;
   },
 
   generateOrder: function (type, market, outcome, amount, price, scalarMinMax, callback) {
-    var self = this;
-    var makeOrder = (type === "buy") ? this.buy : this.sell;
+    var makeOrder, self = this;
+    makeOrder = (type === "buy") ? this.buy : this.sell;
     makeOrder({
       amount: amount,
       price: price,
       market: market,
       outcome: outcome,
       scalarMinMax: scalarMinMax,
-      onSent: function (res) {
-        // console.log("generateOrder", type, amount, price, outcome, "sent:", res);
-      },
+      onSent: utils.noop,
       onSuccess: function (res) {
-        // console.log("generateOrder", type, amount, price, outcome, "success:", res);
         callback(null, {
           id: res.callReturn,
           type: type,
@@ -157,7 +154,7 @@ module.exports = {
     }, callback);
   },
 
-  generateOrdersForOutcome: function (index, market, outcome, orders, bestStartingQuantity, startingQuantity, scalarMinMax,onSetupOutcome, onSetupOrder, callback) {
+  generateOrdersForOutcome: function (index, market, outcome, orders, bestStartingQuantity, startingQuantity, scalarMinMax, onSetupOutcome, onSetupOrder, callback) {
     var self = this;
     async.parallelLimit([
       function (next) {
@@ -176,7 +173,7 @@ module.exports = {
   generateOrders: function (market, outcomes, orders, bestStartingQuantity, startingQuantity, scalarMinMax, onSetupOutcome, onSetupOrder, onSuccess, onFailed) {
     var self = this;
     async.forEachOfLimit(outcomes, constants.PARALLEL_LIMIT, function (outcome, index, nextOutcome) {
-      self.generateOrdersForOutcome(index, market, outcome, orders, bestStartingQuantity, startingQuantity, scalarMinMax,onSetupOutcome, onSetupOrder, nextOutcome);
+      self.generateOrdersForOutcome(index, market, outcome, orders, bestStartingQuantity, startingQuantity, scalarMinMax, onSetupOutcome, onSetupOrder, nextOutcome);
     }, function (err) {
       if (err) return onFailed(err);
       self.getOrderBook(market, scalarMinMax, onSuccess);
@@ -198,7 +195,7 @@ module.exports = {
    *   onSimulate, onBuyCompleteSets, onSetupOutcome, onSetupOrder, onSuccess, onFailed
    */
   generateOrderBook: function (market, liquidity, initialFairPrices, startingQuantity, bestStartingQuantity, priceWidth, marketInfo, isSimulationOnly, onSimulate, onBuyCompleteSets, onSetupOutcome, onSetupOrder, onSuccess, onFailed) {
-    var self = this;
+    var halfPriceWidth, numOutcomes, minMax, scalarMinMax, orders, self = this;
     if (market && market.constructor === Object) {
       initialFairPrices = market.initialFairPrices;
       startingQuantity = market.startingQuantity;
@@ -235,14 +232,14 @@ module.exports = {
     initialFairPrices = abi.bignum(initialFairPrices);
     startingQuantity = abi.bignum(startingQuantity);
     bestStartingQuantity = abi.bignum(bestStartingQuantity || startingQuantity);
-    var halfPriceWidth = abi.bignum(priceWidth).dividedBy(2);
-    var numOutcomes = initialFairPrices.length;
+    halfPriceWidth = abi.bignum(priceWidth).dividedBy(2);
+    numOutcomes = initialFairPrices.length;
     if (marketInfo.numOutcomes !== numOutcomes) {
       return onFailed(this.errors.WRONG_NUMBER_OF_OUTCOMES);
     }
-    var minMax = this.getMinMax(marketInfo);
-    var scalarMinMax = (marketInfo.type === "scalar") ? minMax : {};
-    var orders = this.calculateOrderPrices(liquidity, startingQuantity, bestStartingQuantity, initialFairPrices, minMax.minValue, minMax.maxValue, halfPriceWidth);
+    minMax = this.getMinMax(marketInfo);
+    scalarMinMax = (marketInfo.type === "scalar") ? minMax : {};
+    orders = this.calculateOrderPrices(liquidity, startingQuantity, bestStartingQuantity, initialFairPrices, minMax.minValue, minMax.maxValue, halfPriceWidth);
     if (orders.error) return onFailed(orders);
     if (utils.is_function(onSimulate)) {
       onSimulate({

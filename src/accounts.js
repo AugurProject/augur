@@ -31,13 +31,14 @@ module.exports = function () {
 
     // free (testnet) ether for new accounts on registration
     fundNewAccountFromFaucet: function (registeredAddress, branch, onSent, onSuccess, onFailed) {
-      onSent = onSent || utils.noop;
-      onSuccess = onSuccess || utils.noop;
-      onFailed = onFailed || utils.noop;
+      var onSentCallback, onSuccessCallback, onFailedCallback, url;
+      onSentCallback = onSent || utils.noop;
+      onSuccessCallback = onSuccess || utils.noop;
+      onFailedCallback = onFailed || utils.noop;
       if (registeredAddress === undefined || registeredAddress === null || registeredAddress.constructor !== String) {
         return onFailed(registeredAddress);
       }
-      var url = constants.FAUCET + abi.format_address(registeredAddress);
+      url = constants.FAUCET + abi.format_address(registeredAddress);
       if (augur.options.debug.accounts) console.debug("fundNewAccountFromFaucet:", url);
       request(url, function (err, response, body) {
         if (augur.options.debug.accounts) {
@@ -51,14 +52,15 @@ module.exports = function () {
         }
         if (augur.options.debug.accounts) console.debug("Sent ether to:", registeredAddress);
         augur.rpc.balance(registeredAddress, function (ethBalance) {
+          var balance;
           if (augur.options.debug.accounts) console.debug("Balance:", ethBalance);
-          var balance = parseInt(ethBalance, 16);
+          balance = parseInt(ethBalance, 16);
           if (balance > 0) {
             augur.fundNewAccount({
               branch: branch || constants.DEFAULT_BRANCH_ID,
-              onSent: onSent,
-              onSuccess: onSuccess,
-              onFailed: onFailed
+              onSent: onSentCallback,
+              onSuccess: onSuccessCallback,
+              onFailed: onFailedCallback
             });
           } else {
             async.until(function () {
@@ -72,13 +74,13 @@ module.exports = function () {
                   callback(null, balance);
                 });
               });
-            }, function (e, balance) {
+            }, function (e) {
               if (e) console.error(e);
               augur.fundNewAccount({
                 branch: branch || constants.DEFAULT_BRANCH_ID,
-                onSent: onSent,
-                onSuccess: onSuccess,
-                onFailed: onFailed
+                onSent: onSentCallback,
+                onSuccess: onSuccessCallback,
+                onFailed: onFailedCallback
               });
             });
           }
@@ -87,51 +89,51 @@ module.exports = function () {
     },
 
     fundNewAccountFromAddress: function (fromAddress, amount, registeredAddress, branch, onSent, onSuccess, onFailed) {
-      onSent = onSent || utils.noop;
-      onSuccess = onSuccess || utils.noop;
-      onFailed = onFailed || utils.noop;
+      var onSentCallback, onSuccessCallback, onFailedCallback;
+      onSentCallback = onSent || utils.noop;
+      onSuccessCallback = onSuccess || utils.noop;
+      onFailedCallback = onFailed || utils.noop;
       augur.rpc.sendEther({
         to: registeredAddress,
         value: amount,
         from: fromAddress,
         onSent: utils.noop,
-        onSuccess: function (res) {
+        onSuccess: function () {
           augur.fundNewAccount({
             branch: branch || constants.DEFAULT_BRANCH_ID,
-            onSent: onSent,
-            onSuccess: onSuccess,
-            onFailed: onFailed
+            onSent: onSentCallback,
+            onSuccess: onSuccessCallback,
+            onFailed: onFailedCallback
           });
         },
-        onFailed: onFailed
+        onFailed: onFailedCallback
       });
     },
 
     register: function (password, cb) {
-      var self = this;
-      cb = (utils.is_function(cb)) ? cb : utils.pass;
+      var callback, self = this;
+      callback = (utils.is_function(cb)) ? cb : utils.pass;
       if (!password || password.length < 6) return cb(errors.PASSWORD_TOO_SHORT);
 
       // generate ECDSA private key and initialization vector
       keys.create(null, function (plain) {
-        if (plain.error) return cb(plain);
+        if (plain.error) return callback(plain);
 
         // derive secret key from password
         keys.deriveKey(password, plain.salt, {kdf: constants.KDF}, function (derivedKey) {
-          if (derivedKey.error) return cb(derivedKey);
-          if (!Buffer.isBuffer(derivedKey)) {
-            derivedKey = new Buffer(derivedKey, "hex");
-          }
-          var encryptedPrivateKey = new Buffer(keys.encrypt(
+          var derivedKeyBuf, encryptedPrivateKey, address, kdfparams, keystore;
+          if (derivedKey.error) return callback(derivedKey);
+          derivedKeyBuf = (Buffer.isBuffer(derivedKey)) ? derivedKey : new Buffer(derivedKey, "hex");
+          encryptedPrivateKey = new Buffer(keys.encrypt(
             plain.privateKey,
-            derivedKey.slice(0, 16),
+            derivedKeyBuf.slice(0, 16),
             plain.iv
           ), "base64").toString("hex");
 
           // encrypt private key using derived key and IV, then
           // store encrypted key & IV, indexed by handle
-          var address = abi.format_address(keys.privateKeyToAddress(plain.privateKey));
-          var kdfparams = {
+          address = abi.format_address(keys.privateKeyToAddress(plain.privateKey));
+          kdfparams = {
             dklen: keys.constants[constants.KDF].dklen,
             salt: plain.salt.toString("hex")
           };
@@ -143,7 +145,7 @@ module.exports = function () {
             kdfparams.c = keys.constants.pbkdf2.c;
             kdfparams.prf = keys.constants.pbkdf2.prf;
           }
-          var keystore = {
+          keystore = {
             address: address,
             crypto: {
               cipher: keys.constants.cipher,
@@ -151,7 +153,7 @@ module.exports = function () {
               cipherparams: {iv: plain.iv.toString("hex")},
               kdf: constants.KDF,
               kdfparams: kdfparams,
-              mac: keys.getMAC(derivedKey, encryptedPrivateKey)
+              mac: keys.getMAC(derivedKeyBuf, encryptedPrivateKey)
             },
             version: 3,
             id: uuid.v4()
@@ -162,23 +164,22 @@ module.exports = function () {
             privateKey: plain.privateKey,
             address: address,
             keystore: keystore,
-            derivedKey: derivedKey
+            derivedKey: derivedKeyBuf
           };
 
-          return cb(clone(self.account));
+          return callback(clone(self.account));
         }); // deriveKey
       }); // create
     },
 
     importAccount: function (password, keystore, cb) {
-      var self = this;
-      cb = (utils.is_function(cb)) ? cb : utils.pass;
-      if (!password || password === "") return cb(errors.BAD_CREDENTIALS);
+      var callback, self = this;
+      callback = (utils.is_function(cb)) ? cb : utils.pass;
+      if (!password || password === "") return callback(errors.BAD_CREDENTIALS);
       keys.recover(password, keystore, function (privateKey) {
-        if (!privateKey || privateKey.error) return cb(errors.BAD_CREDENTIALS);
-
-        var keystoreCrypto = keystore.crypto || keystore.Crypto;
-
+        var keystoreCrypto;
+        if (!privateKey || privateKey.error) return callback(errors.BAD_CREDENTIALS);
+        keystoreCrypto = keystore.crypto || keystore.Crypto;
         keys.deriveKey(password, keystoreCrypto.kdfparams.salt, {kdf: constants.KDF}, function (derivedKey) {
           self.account = {
             privateKey: privateKey,
@@ -186,13 +187,12 @@ module.exports = function () {
             keystore: keystore,
             derivedKey: derivedKey
           };
-
-          return cb(clone(self.account));
+          return callback(clone(self.account));
         });
       });
     },
 
-    setAccountObject: function (account, cb) {
+    setAccountObject: function (account) {
       var privateKey = account.privateKey;
       var derivedKey = account.derivedKey;
       if (privateKey && !Buffer.isBuffer(privateKey)) {
@@ -210,10 +210,10 @@ module.exports = function () {
     },
 
     login: function (keystore, password, cb) {
-      var self = this;
-      cb = (utils.is_function(cb)) ? cb : utils.pass;
-      if (!keystore || !password || password === "") return cb(errors.BAD_CREDENTIALS);
-      var keystoreCrypto = keystore.crypto || keystore.Crypto;
+      var keystoreCrypto, callback, self = this;
+      callback = (utils.is_function(cb)) ? cb : utils.pass;
+      if (!keystore || !password || password === "") return callback(errors.BAD_CREDENTIALS);
+      keystoreCrypto = keystore.crypto || keystore.Crypto;
 
       // derive secret key from password
       keys.deriveKey(password, keystoreCrypto.kdfparams.salt, {
@@ -221,23 +221,22 @@ module.exports = function () {
         kdfparams: keystoreCrypto.kdfparams,
         cipher: keystoreCrypto.kdf
       }, function (derivedKey) {
-        if (!derivedKey || derivedKey.error) return cb(errors.BAD_CREDENTIALS);
+        var storedKey, derivedKeyBuf, privateKey, e;
+        if (!derivedKey || derivedKey.error) return callback(errors.BAD_CREDENTIALS);
 
         // verify that message authentication codes match
-        var storedKey = keystoreCrypto.ciphertext;
+        storedKey = keystoreCrypto.ciphertext;
         if (keys.getMAC(derivedKey, storedKey) !== keystoreCrypto.mac.toString("hex")) {
-          return cb(errors.BAD_CREDENTIALS);
+          return callback(errors.BAD_CREDENTIALS);
         }
 
-        if (!Buffer.isBuffer(derivedKey)) {
-          derivedKey = new Buffer(derivedKey, "hex");
-        }
+        derivedKeyBuf = (Buffer.isBuffer(derivedKey)) ? derivedKey : new Buffer(derivedKey, "hex");
 
         // decrypt stored private key using secret key
         try {
-          var privateKey = new Buffer(keys.decrypt(
+          privateKey = new Buffer(keys.decrypt(
             storedKey,
-            derivedKey.slice(0, 16),
+            derivedKeyBuf.slice(0, 16),
             keystoreCrypto.cipherparams.iv
           ), "hex");
 
@@ -246,28 +245,29 @@ module.exports = function () {
             privateKey: privateKey,
             address: abi.format_address(keystore.address),
             keystore: keystore,
-            derivedKey: derivedKey
+            derivedKey: derivedKeyBuf
           };
-          return cb(clone(self.account));
+          return callback(clone(self.account));
 
           // decryption failure: bad password
         } catch (exc) {
-          var e = clone(errors.BAD_CREDENTIALS);
+          e = clone(errors.BAD_CREDENTIALS);
           e.bubble = exc;
-          return cb(e);
+          return callback(e);
         }
       }); // deriveKey
     },
 
     // user-supplied plaintext private key
     loginWithMasterKey: function (privateKey, cb) {
-      if (!Buffer.isBuffer(privateKey)) privateKey = new Buffer(privateKey, "hex");
+      var callback = (utils.is_function(cb)) ? cb : utils.pass;
+      var privateKeyBuf = (Buffer.isBuffer(privateKey)) ? privateKey : new Buffer(privateKey, "hex");
       this.account = {
-        address: abi.format_address(keys.privateKeyToAddress(privateKey)),
-        privateKey: privateKey,
-        derivedKey: new Buffer(abi.unfork(utils.sha256(privateKey)), "hex")
+        address: abi.format_address(keys.privateKeyToAddress(privateKeyBuf)),
+        privateKey: privateKeyBuf,
+        derivedKey: new Buffer(abi.unfork(utils.sha256(privateKeyBuf)), "hex")
       };
-      return cb(clone(this.account));
+      return callback(clone(this.account));
     },
 
     logout: function () {

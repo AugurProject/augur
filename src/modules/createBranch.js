@@ -12,7 +12,7 @@ var utils = require("../utilities");
 module.exports = {
 
   createBranch: function (description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed) {
-    var self = this;
+    var response, block, self = this;
     if (description && description.parent) {
       periodLength = description.periodLength;
       parent = description.parent;
@@ -26,14 +26,14 @@ module.exports = {
     oracleOnly = oracleOnly || 0;
     description = description.trim();
     if (!utils.is_function(onSent)) {
-      var response = this.CreateBranch.createSubbranch({
+      response = this.CreateBranch.createSubbranch({
         description: description,
         periodLength: periodLength,
         parent: parent,
         minTradingFee: abi.fix(minTradingFee, "hex"),
         oracleOnly: oracleOnly
       });
-      var block = this.rpc.getBlock(response.blockNumber);
+      block = this.rpc.getBlock(response.blockNumber);
       response.branchID = utils.sha3([
         response.from,
         "0x28c418afbbb5c0000",
@@ -73,6 +73,7 @@ module.exports = {
   },
 
   createSubbranch: function (description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed) {
+    var tx;
     if (description && description.parent) {
       periodLength = description.periodLength;
       parent = description.parent;
@@ -84,15 +85,16 @@ module.exports = {
       description = description.description;
     }
     oracleOnly = oracleOnly || 0;
-    var tx = clone(this.tx.CreateBranch.createSubbranch);
+    description = description.trim();
+    tx = clone(this.tx.CreateBranch.createSubbranch);
     tx.params = [
-      description.trim(),
+      description,
       periodLength,
       parent,
       abi.fix(minTradingFee, "hex"),
       oracleOnly
     ];
-    tx.description = description.trim();
+    tx.description = description;
     return this.transact(tx, onSent, onSuccess, onFailed);
   }
 };

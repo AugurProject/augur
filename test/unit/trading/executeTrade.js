@@ -5,13 +5,13 @@ var augur = require('../../../src');
 var noop = require("../../../src/utilities").noop;
 var constants = require("../../../src/constants");
 var BigNumber = require("bignumber.js");
-var ClearCallCounts = require('../../tools').ClearCallCounts;
+var clearCallCounts = require('../../tools').clearCallCounts;
 // 15 tests total
 
 describe("executeTrade.executeTrade", function() {
   // 8 tests total
   var getParticipantSharesPurchased = augur.getParticipantSharesPurchased;
-  var getCashBalance = augur.getCashBalance;
+  var getCashBalance = augur.Cash.balance;
   var trade = augur.trade;
   var callCounts = {
     getParticipantSharesPurchased: 0,
@@ -21,15 +21,15 @@ describe("executeTrade.executeTrade", function() {
     tradeCommitmentCallback: 0
   }
   afterEach(function() {
-    ClearCallCounts(callCounts);
+    clearCallCounts(callCounts);
     augur.getParticipantSharesPurchased = getParticipantSharesPurchased;
-    augur.getCashBalance = getCashBalance;
+    augur.Cash.balance = getCashBalance;
     augur.trade = trade;
   });
   var test = function(t) {
     it(t.description, function(done) {
       augur.getParticipantSharesPurchased = t.getParticipantSharesPurchased;
-      augur.getCashBalance = t.getCashBalance;
+      augur.Cash.balance = t.Cash.balance;
       augur.trade = t.trade;
 
       augur.executeTrade(t.marketID, t.outcomeID, t.numShares, t.totalEthWithFee, t.tradingFees, t.tradeGroupID, t.address, t.getOrderBooks, t.getTradeIDs, t.tradeCommitmentCallback, function(err, res) {
@@ -89,10 +89,12 @@ describe("executeTrade.executeTrade", function() {
       assert.equal(outcomeID, '2');
       cb('0');
     },
-    getCashBalance: function(address, cb) {
-      callCounts.getCashBalance++;
-      assert.equal(address, '0x1');
-      cb('1000');
+    Cash: {
+      balance: function(address, cb) {
+        callCounts.getCashBalance++;
+        assert.equal(address, '0x1');
+        cb('1000');
+      }
     },
     trade: function(trade) {
       callCounts.trade++;
@@ -184,10 +186,12 @@ describe("executeTrade.executeTrade", function() {
       assert.equal(outcomeID, '2');
       cb('0');
     },
-    getCashBalance: function(address, cb) {
-      callCounts.getCashBalance++;
-      assert.equal(address, '0x1');
-      cb('1000');
+    Cash: {
+      balance: function(address, cb) {
+        callCounts.getCashBalance++;
+        assert.equal(address, '0x1');
+        cb('1000');
+      }
     },
     trade: function(trade) {
       callCounts.trade++;
@@ -371,24 +375,26 @@ describe("executeTrade.executeTrade", function() {
         break;
       }
     },
-    getCashBalance: function(address, cb) {
-      callCounts.getCashBalance++;
-      assert.equal(address, '0x1');
-      switch(callCounts.getCashBalance) {
-      case 6:
-        cb('949');
-        break;
-      case 4:
-      case 5:
-        cb('959.2');
-        break;
-      case 3:
-      case 2:
-        cb('974.5');
-        break;
-      default:
-        cb('1000');
-        break;
+    Cash: {
+      balance: function(address, cb) {
+        callCounts.getCashBalance++;
+        assert.equal(address, '0x1');
+        switch(callCounts.getCashBalance) {
+        case 6:
+          cb('949');
+          break;
+        case 4:
+        case 5:
+          cb('959.2');
+          break;
+        case 3:
+        case 2:
+          cb('974.5');
+          break;
+        default:
+          cb('1000');
+          break;
+        }
       }
     },
     trade: function(trade) {
@@ -586,20 +592,22 @@ describe("executeTrade.executeTrade", function() {
         break;
       }
     },
-    getCashBalance: function(address, cb) {
-      callCounts.getCashBalance++;
-      assert.equal(address, '0x1');
-      switch(callCounts.getCashBalance) {
-      case 1:
-        cb('1000');
-        break;
-      case 3:
-      case 2:
-        cb('1025');
-        break;
-      default:
-        cb('1050');
-        break;
+    Cash: {
+      balance: function(address, cb) {
+        callCounts.getCashBalance++;
+        assert.equal(address, '0x1');
+        switch(callCounts.getCashBalance) {
+        case 1:
+          cb('1000');
+          break;
+        case 3:
+        case 2:
+          cb('1025');
+          break;
+        default:
+          cb('1050');
+          break;
+        }
       }
     },
     trade: function(trade) {
@@ -748,16 +756,18 @@ describe("executeTrade.executeTrade", function() {
         break;
       }
     },
-    getCashBalance: function(address, cb) {
-      callCounts.getCashBalance++;
-      assert.equal(address, '0x1');
-      switch(callCounts.getCashBalance) {
-      case 1:
-        cb('1000');
-        break;
-      default:
-        cb('1020');
-        break;
+    Cash: {
+      balance: function(address, cb) {
+        callCounts.getCashBalance++;
+        assert.equal(address, '0x1');
+        switch(callCounts.getCashBalance) {
+        case 1:
+          cb('1000');
+          break;
+        default:
+          cb('1020');
+          break;
+        }
       }
     },
     trade: function(trade) {
@@ -840,8 +850,10 @@ describe("executeTrade.executeTrade", function() {
     getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
       callCounts.getParticipantSharesPurchased++;
     },
-    getCashBalance: function(address, cb) {
-      callCounts.getCashBalance++;
+    Cash: {
+      balance: function(address, cb) {
+        callCounts.getCashBalance++;
+      }
     },
     trade: function(trade) {
       callCounts.trade++;
@@ -892,8 +904,10 @@ describe("executeTrade.executeTrade", function() {
     getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
       callCounts.getParticipantSharesPurchased++;
     },
-    getCashBalance: function(address, cb) {
-      callCounts.getCashBalance++;
+    Cash: {
+      balance: function(address, cb) {
+        callCounts.getCashBalance++;
+      }
     },
     trade: function(trade) {
       callCounts.trade++;
@@ -944,8 +958,10 @@ describe("executeTrade.executeTrade", function() {
     getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
       callCounts.getParticipantSharesPurchased++;
     },
-    getCashBalance: function(address, cb) {
-      callCounts.getCashBalance++;
+    Cash: {
+      balance: function(address, cb) {
+        callCounts.getCashBalance++;
+      }
     },
     trade: function(trade) {
       callCounts.trade++;
@@ -996,8 +1012,10 @@ describe("executeTrade.executeTrade", function() {
     getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
       callCounts.getParticipantSharesPurchased++;
     },
-    getCashBalance: function(address, cb) {
-      callCounts.getCashBalance++;
+    Cash: {
+      balance: function(address, cb) {
+        callCounts.getCashBalance++;
+      }
     },
     trade: function(trade) {
       callCounts.trade++;
@@ -1032,7 +1050,7 @@ describe("executeTrade.executeShortSell", function() {
     short_sell: 0
   };
   afterEach(function() {
-    ClearCallCounts(callCounts);
+    clearCallCounts(callCounts);
     augur.short_sell = short_sell;
   });
   var test = function(t) {

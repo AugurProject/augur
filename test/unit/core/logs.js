@@ -523,7 +523,7 @@ describe("logs.insertIndexedLog", function() {
   var test = function(t) {
     it(t.description, function() {
       processedLogs = t.processedLogs;
-      t.assertions(augur.insertIndexedLog(t.processedLogs, t.parsed, t.index, t.log));
+      t.assertions(augur.insertIndexedLog(t.processedLogs, t.parsed, t.index));
     });
   };
 

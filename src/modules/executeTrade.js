@@ -10,11 +10,13 @@ module.exports = {
 
   // if buying numShares must be 0, if selling totalEthWithFee must be 0
   executeTrade: function (marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, address, getOrderBooks, getTradeIDs, tradeCommitmentCallback, cb) {
-    if (this.options.debug.trading) console.log("executeTrade:", marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, address, getOrderBooks);
-    var self = this;
-    var bnTotalEth = abi.bignum(totalEthWithFee) || constants.ZERO;
-    var bnNumShares = abi.bignum(numShares) || constants.ZERO;
-    var res = {
+    var bnTotalEth, bnNumShares, res, matchingTradeIDs, bnSharesPurchased, bnCashBalance, commitMaxAmount, commitMaxValue, self = this;
+    if (this.options.debug.trading) {
+      console.log("executeTrade:", marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, address);
+    }
+    bnTotalEth = abi.bignum(totalEthWithFee) || constants.ZERO;
+    bnNumShares = abi.bignum(numShares) || constants.ZERO;
+    res = {
       remainingEth: bnTotalEth,
       remainingShares: bnNumShares,
       filledShares: constants.ZERO,
@@ -22,16 +24,13 @@ module.exports = {
       tradingFees: constants.ZERO,
       gasFees: constants.ZERO
     };
-    var matchingTradeIDs;
-    var bnSharesPurchased = bnNumShares;
-    var bnCashBalance = bnTotalEth;
-    var commitMaxAmount;
-    var commitMaxValue;
+    bnSharesPurchased = bnNumShares;
+    bnCashBalance = bnTotalEth;
     if (bnNumShares.gt(constants.ZERO)) {
       commitMaxAmount = numShares;
-      commitMaxValue = '0';
+      commitMaxValue = "0";
     } else {
-      commitMaxAmount = '0';
+      commitMaxAmount = "0";
       commitMaxValue = totalEthWithFee;
     }
     async.until(function () {
@@ -52,10 +51,9 @@ module.exports = {
       tradeIDs = tradeIDs.slice(0, 3);
       self.getParticipantSharesPurchased(marketID, address, outcomeID, function (sharesPurchased) {
         bnSharesPurchased = abi.bignum(sharesPurchased);
-        self.getCashBalance(address, function (cashBalance) {
+        self.Cash.balance(address, function (cashBalance) {
+          var isRemainder, maxAmount, maxValue;
           bnCashBalance = abi.bignum(cashBalance);
-          var isRemainder;
-          var maxAmount;
           if (res.remainingShares.gt(bnSharesPurchased)) {
             maxAmount = bnSharesPurchased;
             isRemainder = true;
@@ -63,7 +61,7 @@ module.exports = {
             maxAmount = res.remainingShares;
             isRemainder = false;
           }
-          var maxValue = BigNumber.min(res.remainingEth, bnCashBalance);
+          maxValue = BigNumber.min(res.remainingEth, bnCashBalance);
           self.trade({
             max_value: maxValue.toFixed(),
             max_amount: maxAmount.toFixed(),
@@ -116,7 +114,7 @@ module.exports = {
               });
               self.getParticipantSharesPurchased(marketID, address, outcomeID, function (sharesPurchased) {
                 bnSharesPurchased = abi.bignum(sharesPurchased);
-                self.getCashBalance(address, function (cashBalance) {
+                self.Cash.balance(address, function (cashBalance) {
                   bnCashBalance = abi.bignum(cashBalance);
                   nextTrade();
                 });
@@ -134,15 +132,15 @@ module.exports = {
   },
 
   executeShortSell: function (marketID, outcomeID, numShares, tradingFees, tradeGroupID, address, getOrderBooks, getTradeIDs, tradeCommitmentCallback, cb) {
-    var self = this;
-    var res = {
+    var res, matchingIDs, self = this;
+    res = {
       remainingShares: abi.bignum(numShares) || constants.ZERO,
       filledShares: constants.ZERO,
       filledEth: constants.ZERO,
       tradingFees: constants.ZERO,
       gasFees: constants.ZERO
     };
-    var matchingIDs = getTradeIDs(getOrderBooks());
+    matchingIDs = getTradeIDs(getOrderBooks());
     if (self.options.debug.trading) console.log("matching trade IDs:", matchingIDs);
     if (!matchingIDs || !matchingIDs.length || res.remainingShares.lte(constants.ZERO)) return cb(null, res);
     async.eachSeries(matchingIDs, function (matchingID, nextMatchingID) {
@@ -157,7 +155,7 @@ module.exports = {
             tradeHash: abi.format_int256(tradeHash),
             isShortSell: true,
             maxAmount: numShares,
-            maxValue: '0',
+            maxValue: "0",
             orders: [selectOrder.selectOrder(matchingID, getOrderBooks())],
             remainingEth: "0",
             remainingShares: res.remainingShares.toFixed(),

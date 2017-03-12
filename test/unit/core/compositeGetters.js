@@ -842,16 +842,16 @@ describe('CompositeGetters.loadAssets', function() {
   // 3 tests total
   var test = function(t) {
     it(t.description, function() {
-      var getCashBalance = augur.getCashBalance;
+      var getCashBalance = augur.Cash.balance;
       var getRepBalance = augur.getRepBalance;
       var balance = augur.rpc.balance;
-      augur.getCashBalance = t.getCashBalance;
+      augur.Cash.balance = t.Cash.balance;
       augur.getRepBalance = t.getRepBalance;
       augur.rpc.balance = t.balance;
 
       augur.loadAssets(t.branchID, t.accountID, t.cbEther, t.cbRep, t.cbRealEther);
 
-      augur.getCashBalance = getCashBalance;
+      augur.Cash.balance = getCashBalance;
       augur.getRepBalance = getRepBalance;
       augur.rpc.balance = balance;
     });
@@ -872,9 +872,11 @@ describe('CompositeGetters.loadAssets', function() {
       assert.isNull(err);
       assert.deepEqual(wei, '2.5');
     },
-    getCashBalance: function(branchID, cb) {
-      // return 10,000 like the faucet
-      cb(10000);
+    Cash: {
+      balance: function(branchID, cb) {
+        // return 10,000 like the faucet
+        cb(10000);
+      }
     },
     getRepBalance: function(branchID, accountID, cb) {
       // return 47 like the faucet
@@ -901,9 +903,11 @@ describe('CompositeGetters.loadAssets', function() {
       assert.isUndefined(wei);
       assert.deepEqual(err, { error: 'Uh-Oh!' });
     },
-    getCashBalance: function(branchID, cb) {
-      // return an error object
-      cb({ error: 'Uh-Oh!' });
+    Cash: {
+      balance: function(branchID, cb) {
+        // return an error object
+        cb({ error: 'Uh-Oh!' });
+      }
     },
     getRepBalance: function(branchID, accountID, cb) {
       // return an error object
@@ -930,9 +934,11 @@ describe('CompositeGetters.loadAssets', function() {
       assert.isUndefined(wei);
       assert.isUndefined(err);
     },
-    getCashBalance: function(branchID, cb) {
-      // return undefined
-      cb(undefined);
+    Cash: {
+      balance: function(branchID, cb) {
+        // return undefined
+        cb(undefined);
+      }
     },
     getRepBalance: function(branchID, accountID, cb) {
       // return undefined
@@ -1202,28 +1208,6 @@ describe('CompositeGetters.getPositionInMarket', function() {
       assert.deepEqual(market, '0x0a1');
       // in this case we didn't pass account so we expect it to be augur.from, however this is null by default so that's what we are confirming here.
       assert.isNull(account);
-      assert.deepEqual(callback, utils.noop);
-    }
-  });
-  test({
-    description: 'Should handle only 1 argument object and pass the arguments to the getPositionInMarket Augur Contract CompositeGetters function.',
-    market: { market: '0x0a1', callback: utils.noop, account: '0x0' },
-    account: undefined,
-    callback: undefined,
-    assertions: function(market, account, callback) {
-      assert.deepEqual(market, '0x0a1');
-      assert.deepEqual(account, '0x0');
-      assert.deepEqual(callback, utils.noop);
-    }
-  });
-  test({
-    description: 'Should handle only 1 argument object as market but also a callback still passed and pass the arguments to the getPositionInMarket Augur Contract CompositeGetters function.',
-    market: { market: '0x0a1', account: '0x0' },
-    account: utils.noop,
-    callback: undefined,
-    assertions: function(market, account, callback) {
-      assert.deepEqual(market, '0x0a1');
-      assert.deepEqual(account, '0x0');
       assert.deepEqual(callback, utils.noop);
     }
   });
@@ -1617,11 +1601,11 @@ describe('CompositeGetters.parseMarketsInfo', function() {
   // [numMarketsTotal, MarketLength, marketID, tradingPeriod, tradingFee, creationTime, volume, tag1, tag2, tag3, endDate, makerProportionOfFee, eventID, minVale, maxValue, numOutcomes, reportedOutcome, description]
   test({
     description: 'Should handle a marketsArray with all three market types and process everything correctly.',
-    marketsArray: ['3', '17', '0x0a1', '500', '400000000000000000', 140000000, '1000000000000000000000', abi.short_string_to_int256('sports'), abi.short_string_to_int256('football'), abi.short_string_to_int256('nfl'), 15000000, '20000000000000000', '0x0e1', '1000000000000000000', '2000000000000000000', '2', '1000000000000000000',
+    marketsArray: ['3', '0x11', '0x0a1', '500', '400000000000000000', 140000000, '1000000000000000000000', abi.short_string_to_int256('sports'), abi.short_string_to_int256('football'), abi.short_string_to_int256('nfl'), 15000000, '20000000000000000', '0x0e1', '1000000000000000000', '2000000000000000000', '2', '1000000000000000000',
     '57696c6c2074686520436c6576656c616e642042726f776e732077696e205375706572626f776c204c493f',
-    '17', '0x0a2', '500', '600000000000000000', 140000000, '2500000000000000000000', abi.short_string_to_int256('sports'), abi.short_string_to_int256('basketball'), abi.short_string_to_int256('nba'), 15000000, '30000000000000000', '0x0e2', '1000000000000000000', '250000000000000000000', '2', '',
+    '0x11', '0x0a2', '500', '600000000000000000', 140000000, '2500000000000000000000', abi.short_string_to_int256('sports'), abi.short_string_to_int256('basketball'), abi.short_string_to_int256('nba'), 15000000, '30000000000000000', '0x0e2', '1000000000000000000', '250000000000000000000', '2', '',
     '486f77206d616e7920706f696e74732077696c6c2062652073636f72656420696e2067616d652031206f66207468652032303137204e42412066696e616c733f',
-    '17', '0x0a3', '500', '200000000000000000', 140000000, '125000000000000000000', abi.short_string_to_int256('sports'), abi.short_string_to_int256('baseball'), abi.short_string_to_int256('mlb'), 15000000, '10000000000000000', '0x0e3', '1000000000000000000', '50000000000000000000', '5', '',
+    '0x11', '0x0a3', '500', '200000000000000000', 140000000, '125000000000000000000', abi.short_string_to_int256('sports'), abi.short_string_to_int256('baseball'), abi.short_string_to_int256('mlb'), 15000000, '10000000000000000', '0x0e3', '1000000000000000000', '50000000000000000000', '5', '',
     '5768696368207465616d2077696c6c2077696e2074686520414c204561737420696e20746865203230313720736561736f6e206f66204d4c423f'],
     branch: augur.constants.DEFAULT_BRANCH_ID,
     assertions: function(parsedMarketsInfo) {

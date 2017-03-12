@@ -23,7 +23,6 @@ midnightTomorrow.setHours(0, 0, 0, 0);
 
 var today = new Date();
 
-var currentPeriod = augur.getCurrentPeriod(DEFAULT_PERIOD_LENGTH);
 var secondsUntilNextPeriod = DEFAULT_PERIOD_LENGTH * (1 - augur.getCurrentPeriodProgress(DEFAULT_PERIOD_LENGTH)/100) + 1;
 var expDateCycle1 = parseInt(Date.now() / 1000, 10) + secondsUntilNextPeriod;
 
@@ -191,7 +190,7 @@ var cannedMarkets = [{
   makerFee: "0.01",
   tags: ["temperature", "weather", "SFO"],
   extraInfo: "https://www.penny-arcade.com/comic/2001/12/12",
-  resolution: "https://www.wunderground.com/history/airport/KSFO/" + [today.getUTCFullYear(), today.getUTCMonth() + 1, today.getUTCDate()].join('/') + "/DailyHistory.html"
+  resolution: "https://www.wunderground.com/history/airport/KSFO/" + [today.getUTCFullYear(), today.getUTCMonth() + 1, today.getUTCDate()].join("/") + "/DailyHistory.html"
 }, {
   description: "Will the Dow Jones Industrial Average close at a higher price on " + today.toLocaleDateString() + " than it closed at the previous day?",
   expDate: parseInt(closingBell.getTime() / 1000, 10),
@@ -576,7 +575,6 @@ augur.connect({
   ws: "ws://127.0.0.1:8546"
 }, function (connected) {
   if (!connected) return console.error("connect failed:", connected);
-  console.log('contracts:', augur.contracts);
   augur.setCash(augur.from, "10000000000000", augur.utils.noop, function (r) {
     console.debug("setCash success:", r.callReturn);
     async.eachSeries(cannedMarkets, function (market, nextMarket) {
@@ -642,19 +640,19 @@ augur.connect({
           }
           var largestOutcomeShares = 0;
           for (var outcomeID in market.orderBook.sell) {
-            if (!market.orderBook.sell.hasOwnProperty(outcomeID)) continue;
-            var sellOrders = market.orderBook.sell[outcomeID];
-            if (sellOrders && sellOrders.length) {
-              var outcomeShares = 0;
-              for (i = 0; i < sellOrders.length; ++i) {
-                outcomeShares += parseInt(sellOrders[i].shares, 10);
-              }
-              if (outcomeShares > largestOutcomeShares) {
-                largestOutcomeShares = outcomeShares;
+            if (market.orderBook.sell.hasOwnProperty(outcomeID)) {
+              var sellOrders = market.orderBook.sell[outcomeID];
+              if (sellOrders && sellOrders.length) {
+                var outcomeShares = 0;
+                for (i = 0; i < sellOrders.length; ++i) {
+                  outcomeShares += parseInt(sellOrders[i].shares, 10);
+                }
+                if (outcomeShares > largestOutcomeShares) {
+                  largestOutcomeShares = outcomeShares;
+                }
               }
             }
           }
-          // console.log('largestOutcomeShares:', largestOutcomeShares);
           augur.buyCompleteSets({
             market: marketID,
             amount: "0x" + largestOutcomeShares.toString(16),

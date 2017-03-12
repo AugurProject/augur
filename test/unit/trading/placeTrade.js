@@ -4,7 +4,7 @@ var assert = require('chai').assert;
 var augur = require('../../../src');
 var abi = require("augur-abi");
 var noop = require("../../../src/utilities").noop;
-var ClearCallCounts = require('../../tools.js').ClearCallCounts;
+var clearCallCounts = require('../../tools.js').clearCallCounts;
 // 17 tests total
 
 describe("placeTrade.generateTradeGroupID", function() {
@@ -323,7 +323,7 @@ describe("placeTrade.placeTrade", function() {
   };
   afterEach(function() {
     // Clear the counts object after each test.
-    ClearCallCounts(callCounts);
+    clearCallCounts(callCounts);
     augur.placeBuy = placeBuy;
     augur.placeBid = placeBid;
     augur.placeSell = placeSell;
