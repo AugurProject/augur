@@ -3,6 +3,16 @@
   display: flex;
   margin: 0;
   position: relative;
+  transition-duration: @animation-speed-very-fast;
+  transition-property: margin-bottom;
+
+  @media all and (min-width: @step-2-2) {
+    margin-bottom: 0 !important;
+  }
+
+  @media @breakpoint-mobile {
+    height: 100%;
+  }
 
   .create-market-container {
     .border(true, @border-right);
@@ -15,6 +25,16 @@
     overflow: hidden;
     position: relative;
     width: 100%;
+
+    @media @breakpoint-mobile {
+      .border(false);
+
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+      margin-bottom: 0;
+      min-height: 100%;
+    }
 
     .create-market-form-preview {
       overflow: hidden;

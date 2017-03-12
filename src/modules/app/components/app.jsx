@@ -10,6 +10,8 @@ import Routes from 'modules/app/components/routes';
 import ChatView from 'modules/chat/components/chat-view';
 import SidebarMask from 'modules/common/components/side-bar-mask';
 
+import { CREATE_MARKET } from 'modules/app/constants/views';
+
 import shouldComponentUpdatePure from 'utils/should-component-update-pure';
 import handleScrollTop from 'utils/scroll-top-on-change';
 import getValue from 'utils/get-value';
@@ -28,6 +30,7 @@ export default class App extends Component {
       currentRoute: null,
       headerHeight: 0,
       footerHeight: 0,
+      footerPush: 0,
       isFooterCollapsed: true
     };
 
@@ -221,8 +224,11 @@ export default class App extends Component {
                 <Routes
                   {...p}
                   setSidebarAllowed={this.setSidebarAllowed}
+                  footerHeight={s.footerHeight}
                 />
+              {p.activeView !== CREATE_MARKET &&
                 <Footer {...navProps} />
+              }
               </div>
             </div>
           </div>

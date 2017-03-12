@@ -1,9 +1,13 @@
 .create-market-main-title {
   align-items: center;
   display: flex;
-  flex: 1;
+  flex-grow: 1;
   margin: 0 1em;
   position: relative;
+
+  @media @breakpoint-mobile {
+    flex-grow: 0;
+  }
 
   h1 {
     .font-size-massive();

@@ -3,6 +3,16 @@
   transition-duration: @animation-speed-normal;
   transition-property: height;
 
+  @media all and (min-width: @step-2-2) {
+    bottom: 0 !important;
+  }
+
+  @media @breakpoint-mobile {
+    bottom: 0;
+    position: absolute;
+    width: 100%;
+  }
+
   .create-market-form-buttons-container {
     .border(true, @border-top);
 
@@ -17,6 +27,10 @@
         padding: 1em 0;
         transition-duration: @animation-speed-very-fast;
         transition-property: background-color;
+
+        @media @breakpoint-mobile {
+          padding: 2em 0;
+        }
 
         &:first-of-type {
           .border(true, @border-right);

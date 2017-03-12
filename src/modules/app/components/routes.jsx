@@ -54,7 +54,7 @@ export default class Routes extends Component {
           this.setState({ viewProps, viewComponent });
         }).catch((err) => {
           console.error(`ERROR: Failed to load 'auth' module -- `, err);
-        });;
+        });
         break;
       case ACCOUNT:
         viewProps = {
@@ -70,7 +70,7 @@ export default class Routes extends Component {
           this.setState({ viewProps, viewComponent });
         }).catch((err) => {
           console.error(`ERROR: Failed to load 'account' module -- `, err);
-        });;
+        });
         break;
       case TRANSACTIONS:
         viewProps = {
@@ -84,7 +84,7 @@ export default class Routes extends Component {
           this.setState({ viewProps, viewComponent });
         }).catch((err) => {
           console.error(`ERROR: Failed to load 'transactions' module -- `, err);
-        });;
+        });
         break;
       case MY_POSITIONS:
       case MY_MARKETS:
@@ -100,7 +100,7 @@ export default class Routes extends Component {
           this.setState({ viewProps, viewComponent });
         }).catch((err) => {
           console.error(`ERROR: Failed to load 'portfolio' module -- `, err);
-        });;
+        });
         break;
       }
       case LOGIN_MESSAGE: {
@@ -113,18 +113,20 @@ export default class Routes extends Component {
           this.setState({ viewProps, viewComponent });
         }).catch((err) => {
           console.error(`ERROR: Failed to load 'login-message' module -- `, err);
-        });;
+        });
         break;
       }
       case CREATE_MARKET: {
         import('modules/create-market/containers/create-market').then((module) => {
-          this.setState({
-            viewProps: null, // Handled via react-redux in the create-market container
-            viewComponent: <module.default />
-          });
+          const CreateMarketView = module.default;
+          viewProps = { // Global state props handled via react-redux in the create-market container
+            footerHeight: p.footerHeight
+          }
+          viewComponent = <module.default {...viewProps} />;
+          this.setState({ viewProps, viewComponent });
         }).catch((err) => {
           console.error(`ERROR: Failed to load 'create-market' module -- `, err);
-        });;
+        });
         break;
       }
       case M: {
@@ -149,7 +151,7 @@ export default class Routes extends Component {
           this.setState({ viewProps, viewComponent });
         }).catch((err) => {
           console.error(`ERROR: Failed to load 'market' module -- `, err);
-        });;
+        });
         break;
       }
       case MARKETS: {
