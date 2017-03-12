@@ -63,6 +63,7 @@ export default class CreateMarketFormOrderBook extends Component {
       maxPrice: 1
     };
 
+    this.handleAutoFocus = this.handleAutoFocus.bind(this);
     this.updateChart = this.updateChart.bind(this);
     this.updatePriceBounds = this.updatePriceBounds.bind(this);
     this.handleAddOrder = this.handleAddOrder.bind(this);
@@ -139,6 +140,12 @@ export default class CreateMarketFormOrderBook extends Component {
       prevState.orderBookSeries !== this.state.orderBookSeries
     ) {
       this.updateChart();
+    }
+
+    if (prevProps.currentStep !== this.props.currentStep &&
+      this.props.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK)
+    ) {
+      this.handleAutoFocus();
     }
   }
 
@@ -223,9 +230,8 @@ export default class CreateMarketFormOrderBook extends Component {
     // Clear Inputs
     this.setState({ orderPrice: '', orderQuantity: '' }, () => {
       this.validateForm();
+      this.handleAutoFocus();
     });
-
-    // TODO -- refocus first input
 
     this.props.addOrderToNewMarket({
       outcome: this.state.selectedOutcome,
@@ -233,6 +239,10 @@ export default class CreateMarketFormOrderBook extends Component {
       price: this.state.orderPrice,
       quantity: this.state.orderQuantity
     });
+  }
+
+  handleAutoFocus() {
+    this.defaultFormToFocus.getElementsByTagName('input')[0].focus();
   }
 
   handleRemoveOrder(type, orderToRemove, i) {
@@ -403,7 +413,11 @@ export default class CreateMarketFormOrderBook extends Component {
                       selectedNav={s.selectedNav}
                       updateSelectedNav={selectedNav => this.setState({ selectedNav })}
                     />
-                    <div className="order-book-entry-inputs">
+                    <form
+                      ref={(defaultFormToFocus) => { this.defaultFormToFocus = defaultFormToFocus; }}
+                      className="order-book-entry-inputs"
+                      onSubmit={e => e.preventDefault()}
+                    >
                       <Input
                         className={classNames({ 'input-error': s.errors.quantity.length })}
                         type="number"
@@ -428,7 +442,7 @@ export default class CreateMarketFormOrderBook extends Component {
                         updateValue={price => this.validateForm(undefined, price)}
                         onChange={price => this.validateForm(undefined, price)}
                       />
-                    </div>
+                    </form>
                     <CreateMarketFormInputNotifications
                       errors={errors}
                     />
