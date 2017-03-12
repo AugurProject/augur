@@ -14,9 +14,9 @@ export default class CreateMarketFormDetails extends Component {
     updateNewMarket: PropTypes.func.isRequired
   }
 
-  componentWillMount() {
+  componentWillReceiveProps(nextProps) {
     // Optional step -- update validity to true by default
-    if (this.props.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS) && !this.props.isValid) this.props.updateValidity(true);
+    if (nextProps.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS) && !nextProps.isValid) nextProps.updateValidity(true);
   }
 
   componentDidUpdate(prevProps) {
@@ -53,6 +53,6 @@ export default class CreateMarketFormDetails extends Component {
           </div>
         </div>
       </article>
-    )
+    );
   }
 }

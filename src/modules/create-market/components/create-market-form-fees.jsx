@@ -42,6 +42,14 @@ export default class CreateMarketFormDescription extends Component {
     if (this.props.takerFee !== nextProps.takerFee) this.setState({ takerFee: nextProps.takerFee });
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.currentStep !== this.props.currentStep &&
+      this.props.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_FEES)
+    ) {
+      this.defaultFormToFocus.getElementsByTagName('input')[0].focus();
+    }
+  }
+
   validateForm(takerFeeRaw, makerFeeRaw, init) {
     const errors = {
       taker: [],
@@ -117,7 +125,10 @@ export default class CreateMarketFormDescription extends Component {
               <span>Specify the fee paid by those taking an existing order from the order book.</span>
             </aside>
             <div className="vertical-form-divider" />
-            <form onSubmit={e => e.preventDefault()} >
+            <form
+              ref={(defaultFormToFocus) => { this.defaultFormToFocus = defaultFormToFocus; }}
+              onSubmit={e => e.preventDefault()}
+            >
               <Input
                 type="number"
                 value={s.takerFee}
