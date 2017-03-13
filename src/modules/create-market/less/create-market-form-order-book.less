@@ -75,20 +75,18 @@
       flex: 2;
       flex-direction: column;
       justify-content: center;
-      // @media @breakpoint-2-3 {
-      //
-      // }
-      //
-      // @media @breakpoint-1 {
-      //   display: flex;
-      //   flex: 1;
-      //   flex-direction: column;
-      //   justify-content: center;
-      // }
 
       &.order-entry-only {
         flex: 1;
         flex-direction: row;
+
+        @media @breakpoint-2-3 {
+          flex-direction: column;
+        }
+
+        @media @breakpoint-1 {
+          flex-direction: column;
+        }
       }
 
       .order-book-entry {
