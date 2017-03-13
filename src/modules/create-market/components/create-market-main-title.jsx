@@ -66,7 +66,14 @@ const CreateMarketMainTitle = (p) => {
     <article className="create-market-main-title">
       <h1 className={`title-animation-helper ${previewTitleClass()}`} />
       <h1 className={`initial-title ${initialTitleClass()}`}>Create Market</h1>
-      <h1 className={`preview-title ${previewTitleClass()}`}>Market Preview <EmDash /> {marketType()}</h1>
+      <button
+        className="unstyled"
+        onClick={() => p.updateNewMarket({ currentStep: 0 })}
+      >
+        <h1 className={`preview-title ${previewTitleClass()}`}>
+          Market Preview <EmDash /> {marketType()}
+        </h1>
+      </button>
     </article>
   );
 };

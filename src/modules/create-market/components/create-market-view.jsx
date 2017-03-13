@@ -33,6 +33,7 @@ export default class CreateMarketView extends Component {
             type={p.newMarket.type}
             validations={p.newMarket.validations}
             currentStep={p.newMarket.currentStep}
+            updateNewMarket={p.updateNewMarket}
           />
           <CreateMarketPreview
             newMarket={p.newMarket}
