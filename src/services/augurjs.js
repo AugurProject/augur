@@ -2,19 +2,20 @@ import augurJS from 'augur.js';
 
 export const connect = function connect(env, cb) {
   const options = {
-    http: env.gethHttpURL,
-    ws: env.gethWebsocketsURL,
+    httpAddresses: [],
+    wsAddresses: [],
     contracts: env.contracts,
-    augurNodes: env.augurNodes,
-    noFallback: !env.hostedNodeFallback
+    augurNodes: env.augurNodes
   };
+
   const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
-  if (isHttps) {
-    const isEnvHttps = (env.gethHttpURL && env.gethHttpURL.split('//')[0] === 'https:');
-    const isEnvWss = (env.gethWebsocketsURL && env.gethWebsocketsURL.split('//')[0] === 'wss:');
-    if (!isEnvHttps) options.http = null;
-    if (!isEnvWss) options.ws = null;
-  }
+  const isEnvHttps = (env.gethHttpURL && env.gethHttpURL.split('//')[0] === 'https:');
+  const isEnvWss = (env.gethWebsocketsURL && env.gethWebsocketsURL.split('//')[0] === 'wss:');
+  if (env.gethHttpURL && (!isHttps || isEnvHttps)) options.httpAddresses.push(env.gethHttpURL);
+  if (env.gethWebsocketsURL && (!isHttps || isEnvWss)) options.wsAddresses.push(env.gethWebsocketsURL);
+  if (env.hostedNodeFallback) options.httpAddresses.push('https://eth3.augur.net');
+  if (env.hostedNodeFallback) options.wsAddresses.push('wss://ws.augur.net');
+
   augur.options.debug.trading = env.debug.trading;
   augur.options.debug.reporting = env.debug.reporting;
   augur.options.debug.nonce = false;

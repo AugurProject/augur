@@ -22,9 +22,10 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
   const method = tx.data.method;
   const contracts = augur.contracts;
   const contract = Object.keys(contracts).find(c => contracts[c] === tx.data.to);
+  const gasPrice = rpc.gasPrice || augur.constants.DEFAULT_GASPRICE;
   const gasFees = tx.response.gasFees ? tx.response.gasFees : augur.getTxGasEth({
     ...augur.api.functions[contract][method]
-  }, rpc.gasPrice).toFixed();
+  }, gasPrice).toFixed();
   switch (method) {
     case 'buy':
       return dispatch(constructTradingTransaction('log_add_tx', {
@@ -335,7 +336,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           transaction = dispatch(constructTransaction('marketCreated', {
             ...p,
             eventBond: augur.calculateValidityBond(p.tradingFee, periodLength, baseReporters, numEventsCreatedInPast24Hours, numEventsInReportPeriod),
-            marketCreationFee: abi.unfix(augur.calculateRequiredMarketValue(rpc.gasPrice), 'string')
+            marketCreationFee: abi.unfix(augur.calculateRequiredMarketValue(gasPrice), 'string')
           }));
           break;
         }

@@ -24,8 +24,9 @@ export const select = (formState, currentBlockNumber, currentBlockMillisSinceEpo
     formState.scalarBigNum);
   o.isFavorite = false;
   o.eventBond = formatEtherEstimate(validityBond);
-  o.gasFees = formatRealEtherEstimate(augur.getTxGasEth({ ...augur.api.functions.CreateMarket.createMarket }, augur.rpc.gasPrice));
-  o.marketCreationFee = formatRealEtherEstimate(abi.unfix(augur.calculateRequiredMarketValue(augur.rpc.gasPrice)));
+  const gasPrice = augur.rpc.gasPrice || augur.constants.DEFAULT_GASPRICE;
+  o.gasFees = formatRealEtherEstimate(augur.getTxGasEth({ ...augur.api.functions.CreateMarket.createMarket }, gasPrice));
+  o.marketCreationFee = formatRealEtherEstimate(abi.unfix(augur.calculateRequiredMarketValue(gasPrice)));
   o.tags = [formState.topic, ...(formState.keywords || [])];
 
   if (o.isCreatingOrderBook) {

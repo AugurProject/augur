@@ -34,7 +34,7 @@ const removeBuildDir = new Promise((resolve, reject) => {
 });
 
 const createBuildDir = new Promise((resolve, reject) => {
-  const code = shell.exec(`mkdir -p ${BUILD_DIRECTORY}`).code;
+  const code = shell.exec(`mkdir ${BUILD_DIRECTORY}`).code;
 
   if (code !== 0) {
     reject(new Error());
