@@ -18130,7 +18130,7 @@ module.exports={
         ], 
         "fixed": [
           1
-        ],
+        ], 
         "label": "Deposit Ether", 
         "method": "depositEther", 
         "returns": "number", 
@@ -22559,42 +22559,42 @@ module.exports={
         "Trades": "0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3"
     }, 
     "3": {
-        "Backstops": "0x0e6d1c13bc9da726b0df1483e05ef7a5798a0956", 
-        "Branches": "0x759b9c2fc0cafb8a1c97b320db31c5be19835be1", 
-        "BuyAndSellShares": "0x8bd46bcc5a1913a437bc06e6471829c25099c3c6", 
-        "Cash": "0xd2aa04dd95318863e7f451a43c3df25b89f39646", 
-        "CloseMarket": "0x22d1535930bd5d86acb98d0e421ae178f6826c76", 
-        "CollectFees": "0xfaf01c19a1e928127d093b317c99aa5649741b10", 
-        "CompleteSets": "0xce61e908b526a675d8bfb80129498dfb15b19d41", 
-        "CompositeGetters": "0x8caa888685de2e7e5a8b3d917e0343e1bff46b39", 
-        "Consensus": "0xd06134197bd3ede758f940cff9929a0dc5f09341", 
-        "ConsensusData": "0xbea9ea6e3295467d64057fceaf73f569ab75c9ef", 
-        "CreateBranch": "0xe32a545b6c98ba0376eeac152467e770d7f34ad9", 
-        "CreateMarket": "0xf2cda09900065ef781ed48e9a7902d5660d167a5", 
-        "EventResolution": "0x80755ab5a26503524f9f0b4f56de96d8f11fad1e", 
-        "Events": "0x4465e37b7072f4342eab377d0e003fa8c58eda1a", 
-        "ExpiringEvents": "0xeb42f6b49fe21d2c670b3af0006f67bc41a63b3d", 
-        "Faucets": "0x8e13c039ef67b1a1d4e77d2da09041c10fd3c379", 
-        "ForkPenalize": "0x7e97545a86a8e2bad3278281b4014de3528ccec1", 
-        "Forking": "0xe62ece5dc96d358465a283c2c3359e89f490c52e", 
-        "FxpFunctions": "0x9a1fcb03678f4c661b56d426eff616d3a813f58f", 
-        "Info": "0x69cc75ad7efcba3e1440f2a3cec454a61095c4dc", 
-        "MakeReports": "0x98529f027b5e85dde1045b8f31f2ca16f99d9e59", 
-        "Markets": "0xaee871248d63da7a123003c5455f3f7345b4109c", 
-        "Payout": "0xe4ab16167cb8636bde0e825204650d41eb890685", 
-        "PenalizationCatchup": "0xa157214afecb661ca725573b3bbd5e51340555f1", 
-        "PenalizeNotEnoughReports": "0xc85878b6f5bf5c968c92e992aa0dd57afbce7bd8", 
-        "ProportionCorrect": "0xda5559c157b3d10c3920e0eee079da923266b272", 
-        "Register": "0x9d7d3ba08bbabad4a79c23d3b90f4b18b697168e", 
-        "Reporting": "0x71f211e9191db4292bca28291a88e2e53bede68b", 
-        "ReportingThreshold": "0xb922a96ef2e897c0b55f7385e64025f42fcb9e65", 
-        "RoundTwo": "0xb7586738028d522ded21c779355a8f221ccef311", 
-        "RoundTwoPenalize": "0xebfb4260de648460549613549425cecfdc418354", 
-        "SendReputation": "0xd536493bcb18c61d8dfc2e6d4b6ede8ed5a05c07", 
-        "SlashRep": "0xc3fa0c3494bdd81c161ec1adc310ccf0054fb1c6", 
-        "Topics": "0x758f44666e9be3a71268f8e9b899ce7b383f3454", 
-        "Trade": "0x754d73aead2392096108f6d38c482dd78e36abaa", 
-        "Trades": "0x58e437126332cd16f688198bb4069371a042584f"
+        "Backstops": "0x3ecb020b26153d765df8bb0d8bf6b7939f36e9bf", 
+        "Branches": "0x5ea5a4600c59a1d87101a5bebebed167a65839ce", 
+        "BuyAndSellShares": "0x29d54725212ba899ad90ef159f5e11a014a5d06b", 
+        "Cash": "0x0638b8d71d7238e1bdbe8058c8021d9ff2b1f4d5", 
+        "CloseMarket": "0xd98c47da0c6f05540f151849cf75b227e0fb230d", 
+        "CollectFees": "0x0ba1d88720d733f6f3df9b32cf0eff9ac1fd6467", 
+        "CompleteSets": "0x6cf054ebc4c6c2942729222eb4ea59455c1a813e", 
+        "CompositeGetters": "0x957a7f6b46a97eb75913e3c92861d73b9debf495", 
+        "Consensus": "0x3e0511fe848d4a35d454173646fa8140128b9bd2", 
+        "ConsensusData": "0xcfadc3be8713b1ec3fc0de49fca86bc20ae0acd9", 
+        "CreateBranch": "0xbae8b677c215755f4324a62d1c853871886e9f9c", 
+        "CreateMarket": "0x6df4a4dd8f90cf4e0e09b75f33f1e05e5c3e7bd4", 
+        "EventResolution": "0x1cf8336105c2423f0c90894a793ea25ffa3a7a43", 
+        "Events": "0xe02e6bfb11fa5a917677d854322354db0b33f5fa", 
+        "ExpiringEvents": "0x197578d030f1b51cf612eb7b941530fd09543fab", 
+        "Faucets": "0xb0f008889e75a0220a25dc6ce4e13e0505042a12", 
+        "ForkPenalize": "0xd85bfa977e30cb855d4c0631319ef41f2b216bcd", 
+        "Forking": "0xcd8936fdb198fc4b70cd1d7ded5ee050e9802efb", 
+        "FxpFunctions": "0xc2a2ffbc19a3444c2e590b35ad94d9e72d5c9081", 
+        "Info": "0xd5463e377bfc48b62c85b5ec8bd93a351a1c788f", 
+        "MakeReports": "0x6e26468b0e38c58669f78f3a21e9d6db46892088", 
+        "Markets": "0xab7a5e37c8efc7fa212bfc6519f4ddbb60d79be7", 
+        "Payout": "0x72763d79ca529898c47cb08f5f62c802c69df08b", 
+        "PenalizationCatchup": "0x56bc22a4a35c9f1263ef881195e89ec76c1d5f34", 
+        "PenalizeNotEnoughReports": "0xcf3d9467f89b7854c50b422a16b2ef87c0b9e069", 
+        "ProportionCorrect": "0x666a8d1a80309752e16e949cfd825054da6357c8", 
+        "Register": "0x0346eddb69408cb7b9045a0f45fa408e16b326b0", 
+        "Reporting": "0x529087e542217c6d4ee285dee855c27e6229a7c9", 
+        "ReportingThreshold": "0xffc4c3c632bc932260619b0d702585702e6ce3c6", 
+        "RoundTwo": "0xbf7b2e9e6792df77994d8349bbb0d67a26a336ad", 
+        "RoundTwoPenalize": "0x9da61cf4e432264a0675970ee3200880fec9ab53", 
+        "SendReputation": "0x5f33b5c96b7f279da214855f25f1a11e2613b201", 
+        "SlashRep": "0x6cbbf9d295fb72543435406f2be63dad71b43c2c", 
+        "Topics": "0x1ff806a5c78aff3ff3bd0891a56a1ecafa0b03df", 
+        "Trade": "0xf640fbb3d2d445511ade0b561773bdc295800cae", 
+        "Trades": "0x225e6316d9a2fe9161de8deddbf2cb06fb6a89ef"
     }, 
     "9000": {
         "Backstops": "0x708fdfe18bf28afe861a69e95419d183ace003eb", 
@@ -24018,7 +24018,7 @@ BigNumber.config({
 function Augur() {
   var i, len, fn;
 
-  this.version = "3.14.0";
+  this.version = "3.14.1";
 
   this.options = {
     debug: {
@@ -57147,7 +57147,7 @@ function Transporter(configuration, messageHandler, syncOnly, debugLogging, call
  */
 Transporter.prototype.blockchainRpc = function (jso, requirements, debugLogging) {
   var chosenTransport = chooseTransport.bind(this)(requirements);
-  if (debugLogging) console.log("Blockchain RPC to " + chosenTransport.address + " with payload: " + JSON.stringify(jso));
+  if (debugLogging) console.log("Blockchain RPC to " + chosenTransport.address + " via " + chosenTransport.constructor.name + " with payload: " + JSON.stringify(jso));
   chosenTransport.submitWork(jso);
 }
 
