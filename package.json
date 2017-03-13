@@ -2,7 +2,7 @@
   "name": "augur-ui",
   "version": "2.0.0",
   "description": "Augur UI",
-  "author": "Forecast Foundation OU",
+  "author": "The Augur Developers <team@augur.net>",
   "license": "AAL",
   "engines": {
     "node": "6.5.0"
@@ -42,6 +42,7 @@
     "react-dom": "15.4.1",
     "react-highcharts": "11.0.0",
     "react-modal-dialog": "4.0.7",
+    "react-redux": "5.0.3",
     "react-tooltip": "3.2.2",
     "redux": "3.5.2",
     "redux-thunk": "2.1.0",
