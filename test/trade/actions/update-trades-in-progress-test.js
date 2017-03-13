@@ -33,6 +33,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
 
     beforeEach(() => {
       store.clearActions();
+      augur.rpc.gasPrice = 20000000000;
     });
 
     afterEach(() => {
