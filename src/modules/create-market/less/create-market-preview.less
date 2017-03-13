@@ -33,7 +33,13 @@
       }
 
       button.prop-container {
-        align-self: flex-start;
+        ul {
+          display: flex;
+
+          li:last-of-type {
+            margin-right: 0;
+          }
+        }
       }
 
       .prop-container {
@@ -182,6 +188,10 @@
             &.is-null {
               margin-right: 0.4em;
             }
+          }
+
+          button ul li.is-null:last-of-type {
+            margin-right: 0;
           }
         }
       }
