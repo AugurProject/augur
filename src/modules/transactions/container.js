@@ -3,6 +3,6 @@ import TransactionsView from 'modules/transactions/components/transactions-view'
 
 const mapStateToProps = state => ({ currentBlockNumber: state.blockchain.currentBlockNumber });
 
-const Transactions = connect(mapStateToProps, null)(TransactionsView);
+const Transactions = connect(mapStateToProps)(TransactionsView);
 
 export default Transactions;
