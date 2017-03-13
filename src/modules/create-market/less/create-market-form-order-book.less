@@ -33,6 +33,7 @@
     .border(true, @border-bottom);
 
     display: flex;
+    justify-content: center;
     margin-bottom: 1em;
     padding-bottom: 1em;
 
@@ -62,9 +63,19 @@
     }
 
     .order-book-entry-container {
-      display: flex;
-      flex: 2;
-      justify-content: center;
+      @media @breakpoint-2-3 {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      @media @breakpoint-1 {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        justify-content: center;
+      }
 
       .order-book-entry {
         .border(true);
@@ -72,6 +83,30 @@
         display: flex;
         flex-basis: 40%;
         flex-direction: column;
+
+        @media @breakpoint-2-3 {
+          flex-basis: auto;
+
+          ul.component-nav {
+            height: 100%;
+
+            li {
+              padding: 1em 0;
+            }
+          }
+        }
+
+        @media @breakpoint-1 {
+          flex-basis: auto;
+
+          ul.component-nav {
+            height: 100%;
+
+            li {
+              padding: 1em 0;
+            }
+          }
+        }
 
         .order-book-entry-inputs {
           display: flex;
