@@ -41,12 +41,20 @@
       .table();
 
       flex: 1;
+      margin-right: 1em;
 
       .order-book-outcomes-header {
         .table-header();
+
+        flex: none;
       }
 
       .order-book-outcomes {
+        @media @breakpoint-1 {
+          max-height: 15em;
+          overflow-y: scroll;
+        }
+
         .order-book-outcome-row {
           .table-row();
 
@@ -63,25 +71,30 @@
     }
 
     .order-book-entry-container {
-      @media @breakpoint-2-3 {
-        display: flex;
-        flex: 1;
-        flex-direction: column;
-        justify-content: center;
-      }
+      display: flex;
+      flex: 2;
+      flex-direction: column;
+      justify-content: center;
+      // @media @breakpoint-2-3 {
+      //
+      // }
+      //
+      // @media @breakpoint-1 {
+      //   display: flex;
+      //   flex: 1;
+      //   flex-direction: column;
+      //   justify-content: center;
+      // }
 
-      @media @breakpoint-1 {
-        display: flex;
+      &.order-entry-only {
         flex: 1;
-        flex-direction: column;
-        justify-content: center;
+        flex-direction: row;
       }
 
       .order-book-entry {
         .border(true);
 
         display: flex;
-        flex-basis: 40%;
         flex-direction: column;
 
         @media @breakpoint-2-3 {

@@ -161,7 +161,7 @@ export default class CreateMarketFormOrderBook extends Component {
     if (window.getComputedStyle(this.orderBookChart).getPropertyValue('will-change') === 'contents') {
       width = this.orderBookForm.clientWidth - 40; // 20px horizontal padding
     } else {
-      width = this.orderBookForm.clientWidth * 0.60;
+      width = this.orderBookPreview.clientWidth * 0.60;
     }
 
     this.orderBookPreviewChart.update({
@@ -419,8 +419,12 @@ export default class CreateMarketFormOrderBook extends Component {
                     </div>
                   </div>
                 }
-                <div className="order-book-entry-container">
-                  <div className="order-book-entry">
+                <div
+                  className={classNames('order-book-entry-container', {
+                    'order-entry-only': p.type !== CATEGORICAL
+                  })}
+                >
+                  <div className="order-book-entry" >
                     <ComponentNav
                       fullWidth
                       navItems={this.navItems}
@@ -469,7 +473,10 @@ export default class CreateMarketFormOrderBook extends Component {
                   </div>
                 </div>
               </div>
-              <div className="order-book-preview" >
+              <div
+                ref={(orderBookPreview) => { this.orderBookPreview = orderBookPreview; }}
+                className="order-book-preview"
+              >
                 <div
                   ref={(orderBookChart) => { this.orderBookChart = orderBookChart; }}
                   id="order_book_preview_chart"
