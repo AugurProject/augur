@@ -72,6 +72,8 @@ export default class CreateMarketPreview extends Component {
     const s = this.state;
     const newMarket = this.props.newMarket;
 
+    console.log('newMarket.takerFee -- ', newMarket.takerFee, newMarket.makerFee);
+
     return (
       <article
         ref={(marketPreview) => { this.marketPreview = marketPreview; }}
@@ -205,12 +207,12 @@ export default class CreateMarketPreview extends Component {
                 >
                   <li
                     className={classNames('prop-container', {
-                      'is-null': Number.isNaN(newMarket.makerFee) || newMarket.validations.indexOf(NEW_MARKET_FEES) === -1,
-                      'has-value': !Number.isNaN(newMarket.makerFee) && (newMarket.validations.indexOf(NEW_MARKET_FEES) > -1 || newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES)
+                      'is-null': !newMarket.makerFee || newMarket.validations.indexOf(NEW_MARKET_FEES) === -1,
+                      'has-value': newMarket.makerFee && (newMarket.validations.indexOf(NEW_MARKET_FEES) > -1 || newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES)
                     })}
                   >
                     <span className="null-mask" />
-                    <span className="prop-value">{(!Number.isNaN(newMarket.makerFee) && (newMarket.validations.indexOf(NEW_MARKET_FEES) > -1 || newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES) && <span>Maker Fee: <span className="market-property-value">{newMarket.makerFee}%</span></span>) || '\u00a0'}</span>
+                    <span className="prop-value">{(newMarket.makerFee && (newMarket.validations.indexOf(NEW_MARKET_FEES) > -1 || newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES) && <span>Maker Fee: <span className="market-property-value">{newMarket.makerFee}%</span></span>) || '\u00a0'}</span>
                   </li>
                   <li
                     className={classNames('prop-container', {

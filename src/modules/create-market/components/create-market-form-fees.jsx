@@ -38,8 +38,8 @@ export default class CreateMarketFormDescription extends Component {
       this.validateForm(nextProps.takerFee, nextProps.makerFee, true);
     }
 
-    if (this.props.makerFee !== nextProps.makerFee) this.setState({ makerFee: nextProps.makerFee });
-    if (this.props.takerFee !== nextProps.takerFee) this.setState({ takerFee: nextProps.takerFee });
+    // if (this.props.takerFee !== nextProps.takerFee) this.setState({ takerFee: nextProps.takerFee });
+    // if (this.props.makerFee !== nextProps.makerFee) this.setState({ makerFee: nextProps.makerFee });
   }
 
   componentDidUpdate(prevProps) {
