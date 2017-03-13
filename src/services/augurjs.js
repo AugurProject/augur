@@ -15,8 +15,8 @@ ex.connect = function connect(env, cb) {
   const isEnvWss = (env.gethWebsocketsURL && env.gethWebsocketsURL.split('//')[0] === 'wss:');
   if (env.gethHttpURL && (!isHttps || isEnvHttps)) options.httpAddresses.push(env.gethHttpURL);
   if (env.gethWebsocketsURL && (!isHttps || isEnvWss)) options.wsAddresses.push(env.gethWebsocketsURL);
-  if (env.hostedNodeFallback) options.httpAddresses.push("https://eth3.augur.net");
-  if (env.hostedNodeFallback) options.wsAddresses.push("wss://ws.augur.net");
+  if (env.hostedNodeFallback) options.httpAddresses.push('https://eth3.augur.net');
+  if (env.hostedNodeFallback) options.wsAddresses.push('wss://ws.augur.net');
 
   augur.options.debug.trading = env.debug.trading;
   augur.options.debug.reporting = env.debug.reporting;
