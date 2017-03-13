@@ -91,10 +91,20 @@
         display: flex;
         flex: 1;
 
+        @media @breakpoint-1 {
+          &:not(:last-of-type) {
+            form {
+              .border(true, @border-bottom, @border-light);
+
+              margin-bottom: 1em;
+            }
+          }
+        }
+
         aside {
           display: flex;
-          flex: 1;
           flex-direction: column;
+          flex-grow: 1;
           padding-bottom: 5em;
           text-align: right;
 
@@ -161,6 +171,32 @@
 
             &.hide-field {
               opacity: 0;
+            }
+          }
+        }
+
+        @media @breakpoint-1 {
+          flex-wrap: wrap;
+
+          aside {
+            .border(true, @border-bottom, @border-light);
+
+            flex-basis: 100%;
+            margin-bottom: 1em;
+            padding-bottom: 1em;
+            text-align: left;
+          }
+
+          .vertical-form-divider {
+            display: none;
+          }
+
+          form {
+            flex-basis: 100%;
+            justify-content: center;
+
+            .input.is-incrementable {
+              width: auto;
             }
           }
         }
