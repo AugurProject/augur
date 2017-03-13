@@ -141,10 +141,18 @@
       .order-book-preview-table {
         flex-basis: 100%;
       }
+
+      .order-book-preview-table {
+        .border(true, @border-bottom, @border-light);
+
+        margin-bottom: 1em;
+        padding-bottom: 2em;
+      }
     }
 
     #order_book_preview_chart {
       display: flex;
+      justify-content: center;
 
       @media @breakpoint-1 {
         & {

@@ -77,6 +77,10 @@ export default class CreateMarketFormOrderBook extends Component {
     noData(Highcharts);
 
     this.orderBookPreviewChart = new Highcharts.Chart('order_book_preview_chart', {
+      chart: {
+        width: 0,
+        height: 0
+      },
       lang: {
         noData: 'No orders to display'
       },
@@ -155,9 +159,9 @@ export default class CreateMarketFormOrderBook extends Component {
     let width;
 
     if (window.getComputedStyle(this.orderBookChart).getPropertyValue('will-change') === 'contents') {
-      width = this.orderBookPreview.clientWidth;
+      width = this.orderBookForm.clientWidth - 40; // 20px horizontal padding
     } else {
-      width = this.orderBookPreview.clientWidth * 0.60;
+      width = this.orderBookForm.clientWidth * 0.60;
     }
 
     this.orderBookPreviewChart.update({
@@ -377,9 +381,12 @@ export default class CreateMarketFormOrderBook extends Component {
     const asks = getValue(s.orderBookSorted[s.selectedOutcome], `${ASK}`);
 
     return (
-      <article className={`create-market-form-part create-market-form-order-book ${p.className || ''}`}>
+      <article
+        ref={(orderBookForm) => { this.orderBookForm = orderBookForm; }}
+        className={`create-market-form-part create-market-form-order-book ${p.className || ''}`}
+      >
         <div className="create-market-form-part-content">
-          <div className="create-market-form-part-input">
+          <div className="create-market-form-part-input" >
             <aside>
               <h3>Initial Liquidity</h3>
               <h4>optional</h4>
@@ -462,10 +469,7 @@ export default class CreateMarketFormOrderBook extends Component {
                   </div>
                 </div>
               </div>
-              <div
-                ref={(orderBookPreview) => { this.orderBookPreview = orderBookPreview; }}
-                className="order-book-preview"
-              >
+              <div className="order-book-preview" >
                 <div
                   ref={(orderBookChart) => { this.orderBookChart = orderBookChart; }}
                   id="order_book_preview_chart"
