@@ -28,18 +28,18 @@
     }
 
     &.create-market-form-type {
-      opacity: 1;
-      transition-duration: @animation-speed-very-fast;
-      transition-property: opacity;
-
       &.hide {
+        animation-duration: @animation-speed-normal;
+        animation-fill-mode: forwards;
+        animation-name: hideType;
         display: flex;
-        opacity: 0;
       }
 
       &.display {
+        animation-duration: @animation-speed-normal;
+        animation-fill-mode: forwards;
+        animation-name: revealType;
         display: flex;
-        opacity: 1;
       }
     }
 
