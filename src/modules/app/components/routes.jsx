@@ -71,7 +71,7 @@ export default class Routes extends Component {
       case TRANSACTIONS:
         System.import('modules/transactions/container').then((module) => {
           const TransactionsView = module.default;
-          viewProps = { // Global state props handled via react-redux in the create-market container
+          viewProps = { // Global state props handled via react-redux in the transactions container
             branch: p.branch,
             loginAccount: p.loginAccount,
             transactions: p.transactions
