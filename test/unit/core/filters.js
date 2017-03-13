@@ -1541,6 +1541,7 @@ describe("pacemaker", function() {
       augur.filters.filter = t.filter;
       augur.filters.poll_filter = t.poll_filter || poll_filter;
       augur.rpc = t.rpc;
+      augur.subscriptionsSupported = t.subscriptionsSupported;
       augur.filters.parse_contracts_message = t.parse_contracts_message;
       augur.filters.parse_block_message = t.parse_block_message;
       augur.filters.parse_event_message = t.parse_event_message;
@@ -1550,7 +1551,8 @@ describe("pacemaker", function() {
   };
   test({
     cb: undefined,
-    rpc: { wsURL: undefined, ipcpath: undefined },
+    subscriptionsSupported: false,
+    rpc: { },
     filter: {
     	block: {
     		id: null,
@@ -1585,7 +1587,8 @@ describe("pacemaker", function() {
   });
   test({
     cb: '',
-    rpc: { wsURL: undefined, ipcpath: undefined },
+    subscriptionsSupported: false,
+    rpc: { },
     filter: {
     	block: {
     		id: null,
@@ -1620,7 +1623,8 @@ describe("pacemaker", function() {
   });
   test({
     cb: { testEvent: utils.noop },
-    rpc: { wsURL: undefined, ipcpath: undefined },
+    subscriptionsSupported: false,
+    rpc: { },
     filter: {
     	block: {
     		id: null,
@@ -1673,9 +1677,8 @@ describe("pacemaker", function() {
   });
   test({
     cb: { testEvent: utils.noop },
+    subscriptionsSupported: true,
     rpc: {
-    	wsURL: 'somewsURL',
-    	ipcpath: 'someipcpath',
       subscriptions: {},
     	registerSubscriptionCallback: function(filterID, cb) {
         assert.deepEqual(filterID, '0xe1');
@@ -1725,9 +1728,8 @@ describe("pacemaker", function() {
   });
   test({
     cb: { contracts: utils.noop },
+    subscriptionsSupported: true,
     rpc: {
-    	wsURL: 'somewsURL',
-    	ipcpath: 'someipcpath',
       subscriptions: {},
     	registerSubscriptionCallback: function(filterID, cb) {
         assert.deepEqual(filterID, '0xc1');
@@ -1776,9 +1778,8 @@ describe("pacemaker", function() {
   });
   test({
     cb: { block: utils.noop },
+    subscriptionsSupported: true,
     rpc: {
-    	wsURL: 'somewsURL',
-    	ipcpath: 'someipcpath',
       subscriptions: {},
     	registerSubscriptionCallback: function(filterID, cb) {
         assert.deepEqual(filterID, '0xb1');

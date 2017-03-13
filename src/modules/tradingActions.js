@@ -305,7 +305,7 @@ module.exports = {
         fees.makerProportionOfFee
       );
     }
-    gasPrice = augur.rpc.gasPrice;
+    gasPrice = augur.rpc.gasPrice || constants.DEFAULT_GASPRICE;
     if (type === "buy") {
       matchingSortedAsks = augur.filterByPriceAndOutcomeAndUserSortByPrice(marketOrderBook.sell, type, orderLimitPrice, outcomeId, userAddress);
       areSuitableOrders = matchingSortedAsks.length > 0;

@@ -11,6 +11,16 @@ var constants = require("../../../src/constants");
 var utils = require("../../../src/utilities");
 var BigNumber = require('bignumber.js');
 
+var gasPrice = augur.rpc.gasPrice;
+
+before(function () {
+  augur.rpc.gasPrice = 20000000000;
+});
+
+after(function () {
+  augur.rpc.gasPrice = gasPrice;
+});
+
 describe("tradeActions.calculateBuyTradeIDs", function() {
   // 3 tests total
   var filterByPriceAndOutcomeAndUserSortByPrice = augur.filterByPriceAndOutcomeAndUserSortByPrice;

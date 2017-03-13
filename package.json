@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "3.13.16",
+  "version": "3.14.0",
   "description": "Augur JavaScript SDK",
   "main": "src/index.js",
   "scripts": {
@@ -21,8 +21,8 @@
     "bs58": "3.0.0",
     "chalk": "1.1.1",
     "clone": "1.0.2",
-    "ethereumjs-connect": "2.3.2",
-    "ethrpc": "2.5.2",
+    "ethereumjs-connect": "3.0.0",
+    "ethrpc": "3.0.0",
     "keythereum": "0.4.3",
     "request": "2.74.0",
     "uuid": "3.0.0",
@@ -64,7 +64,7 @@
     "istanbul": "^0.3.17",
     "it-each": "^0.3.1",
     "madlibs": "0.0.0",
-    "mocha": "^2.2.4",
+    "mocha": "3.2.0",
     "mocha-lcov-reporter": "0.0.2",
     "moment": "^2.13.0",
     "posix-getopt": "^1.1.0",

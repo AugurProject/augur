@@ -169,23 +169,34 @@ module.exports = {
    */
   connect: function (rpcinfo, cb) {
     var options, connection, self = this;
-    options = {contracts: Contracts, api: Contracts.api};
+    options = {
+      contracts: Contracts,
+      api: Contracts.api,
+      httpAddresses: [],
+      wsAddresses: [],
+      ipcAddresses: []
+    };
     if (rpcinfo) {
       switch (rpcinfo.constructor) {
         case String:
-          options.http = rpcinfo;
+          options.httpAddresses.push(rpcinfo);
           break;
         case Function:
           cb = rpcinfo;
-          options.http = null;
           break;
         case Object:
-          options = rpcinfo;
+          if (rpcinfo.httpAddresses) options.httpAddresses = rpcinfo.httpAddresses;
+          if (rpcinfo.wsAddresses) options.wsAddresses = rpcinfo.wsAddresses;
+          if (rpcinfo.ipcAddresses) options.ipcAddresses = rpcinfo.ipcAddresses;
+          if (rpcinfo.http) options.httpAddresses.push(rpcinfo.http);
+          if (rpcinfo.ws) options.wsAddresses.push(rpcinfo.ws);
+          if (rpcinfo.ipc) options.ipcAddresses.push(rpcinfo.ipc);
+          if (rpcinfo.augurNodes) options.augurNodes = rpcinfo.augurNodes;
           options.contracts = Contracts;
           options.api = Contracts.api;
           break;
         default:
-          options.http = null;
+          break;
       }
     }
     if (!utils.is_function(cb)) {
@@ -195,14 +206,21 @@ module.exports = {
       return connection;
     }
     connector.connect(options, function (connection) {
-      self.sync();
-      if (options.augurNodes) {
-        self.augurNode.bootstrap(options.augurNodes, function () {
+      // check to see if the connection supports subscriptions, if so make note of that so we can leverage it later
+      connector.rpc.unsubscribe("0x0123456789abcdef0123456789abcdef", function (errorOrResult) {
+        if (errorOrResult.message === "subscription not found") self.subscriptionsSupported = true;
+        else if (errorOrResult instanceof Error) self.subscriptionsSupported = false;
+        else if (errorOrResult.error) self.subscriptionsSupported = false;
+        else self.subscriptionsSupported = true;
+        self.sync();
+        if (options.augurNodes) {
+          self.augurNode.bootstrap(options.augurNodes, function () {
+            cb(connection);
+          });
+        } else {
           cb(connection);
-        });
-      } else {
-        cb(connection);
-      }
+        }
+      });
     });
   }
 };
