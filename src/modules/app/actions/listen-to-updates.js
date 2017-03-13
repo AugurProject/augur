@@ -15,8 +15,8 @@ export function listenToUpdates() {
 
       // block arrivals
       block: (blockHash) => {
-        dispatch(updateAssets());
         dispatch(syncBlockchain());
+        dispatch(updateAssets());
         dispatch(syncBranch());
       },
 
