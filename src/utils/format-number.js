@@ -170,7 +170,7 @@ export function formatRep(num, opts) {
 
 export function formatConfirmations(num, opts) {
   return formatNumber(
-    Math.max(abi.number(num), 0),
+    Math.max(num, 0),
     {
       decimals: 0,
       decimalsRounded: 0,

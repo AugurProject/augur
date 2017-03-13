@@ -16,6 +16,7 @@ const TransactionsPage = p => (
       <Transactions
         className="transactions-content"
         transactions={p.transactions}
+        currentBlockNumber={p.currentBlockNumber}
       />
     </div>
   </section>
@@ -25,7 +26,8 @@ TransactionsPage.propTypes = {
   branch: React.PropTypes.object,
   className: React.PropTypes.string,
   loginAccount: React.PropTypes.object,
-  transactions: React.PropTypes.array
+  transactions: React.PropTypes.array,
+  currentBlockNumber: React.PropTypes.number
 };
 
 export default TransactionsPage;

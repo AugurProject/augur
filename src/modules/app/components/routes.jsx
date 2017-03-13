@@ -73,14 +73,14 @@ export default class Routes extends Component {
         });
         break;
       case TRANSACTIONS:
-        viewProps = {
-          branch: p.branch,
-          loginAccount: p.loginAccount,
-          transactions: p.transactions
-        };
-        System.import('modules/transactions/components/transactions-view').then((module) => {
+        import('modules/transactions/container').then((module) => {
           const TransactionsView = module.default;
-          viewComponent =	<TransactionsView {...viewProps} />;
+          viewProps = { // Global state props handled via react-redux in the transactions container
+            branch: p.branch,
+            loginAccount: p.loginAccount,
+            transactions: p.transactions
+          };
+          viewComponent = <TransactionsView {...viewProps} />;
           this.setState({ viewProps, viewComponent });
         }).catch((err) => {
           console.error(`ERROR: Failed to load 'transactions' module -- `, err);
