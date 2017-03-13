@@ -190,6 +190,8 @@ const Transaction = (p) => {
       break;
   }
 
+  console.log('[transaction.jsx] transactions currentBlockNumber:', p.currentBlockNumber);
+
   return (
     <article className={classnames('transaction-item', p.className, p.status)}>
       {p.index &&
@@ -226,7 +228,7 @@ Transaction.propTypes = {
   className: React.PropTypes.string,
   index: React.PropTypes.number,
   type: React.PropTypes.string,
-  status: React.PropTypes.string,
+  status: React.PropTypes.string.isRequired,
   data: React.PropTypes.object,
   description: React.PropTypes.string,
   shares: React.PropTypes.object,
@@ -239,7 +241,8 @@ Transaction.propTypes = {
   bond: React.PropTypes.object,
   totalCost: React.PropTypes.object,
   totalReturn: React.PropTypes.object,
-  timestamp: React.PropTypes.object
+  timestamp: React.PropTypes.object,
+  currentBlockNumber: React.PropTypes.number
 };
 
 export default Transaction;

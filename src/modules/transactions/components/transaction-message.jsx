@@ -109,7 +109,7 @@ const TransactionMessage = p => (
         <br />
       </span>
     }
-    <TransactionStatus status={p.status} confirmations={p.confirmations} />
+    <TransactionStatus status={p.status} currentBlockNumber={p.currentBlockNumber} blockNumber={p.blockNumber} />
   </div>
 );
 
@@ -117,8 +117,7 @@ TransactionMessage.propTypes = {
   className: React.PropTypes.string,
   index: React.PropTypes.number,
   type: React.PropTypes.string,
-  status: React.PropTypes.string,
-  confirmations: React.PropTypes.object,
+  status: React.PropTypes.string.isRequired,
   data: React.PropTypes.object,
   description: React.PropTypes.string,
   shares: React.PropTypes.object,
@@ -131,7 +130,9 @@ TransactionMessage.propTypes = {
   bond: React.PropTypes.object,
   totalCost: React.PropTypes.object,
   totalReturn: React.PropTypes.object,
-  timestamp: React.PropTypes.object
+  timestamp: React.PropTypes.object,
+  currentBlockNumber: React.PropTypes.number,
+  blockNumber: React.PropTypes.number
 };
 
 export default TransactionMessage;
