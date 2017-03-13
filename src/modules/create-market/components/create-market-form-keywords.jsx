@@ -48,7 +48,7 @@ export default class CreateMarketFormKeywords extends Component {
 
     keywords.forEach((keyword, i) => {
       if (keyword === this.props.topic) {
-        errors[i] = 'Keyword cannot be the same as the topic';
+        errors[i] = 'Keyword identical to topic';
       } else if (keywords.indexOf(keyword) > -1 && keywords.indexOf(keyword) !== i) {
         errors[i] = 'Keyword must be unique';
       } else if (keyword.length === TAGS_MAX_LENGTH) {
