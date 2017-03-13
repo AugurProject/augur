@@ -6,10 +6,8 @@ ex.connect = function connect(env, cb) {
   const options = {
     httpAddresses: [],
     wsAddresses: [],
-    contracts: env.contracts,
-    augurNodes: env.augurNodes
+    contracts: env.contracts
   };
-
   const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
   const isEnvHttps = (env.gethHttpURL && env.gethHttpURL.split('//')[0] === 'https:');
   const isEnvWss = (env.gethWebsocketsURL && env.gethWebsocketsURL.split('//')[0] === 'wss:');
@@ -17,12 +15,8 @@ ex.connect = function connect(env, cb) {
   if (env.gethWebsocketsURL && (!isHttps || isEnvWss)) options.wsAddresses.push(env.gethWebsocketsURL);
   if (env.hostedNodeFallback) options.httpAddresses.push('https://eth3.augur.net');
   if (env.hostedNodeFallback) options.wsAddresses.push('wss://ws.augur.net');
-
-  augur.options.debug.trading = env.debug.trading;
-  augur.options.debug.reporting = env.debug.reporting;
-  augur.options.debug.nonce = false;
-  augur.rpc.debug.broadcast = env.debug.broadcast;
-  augur.rpc.debug.tx = false;
+  Object.keys(env.debug).forEach((opt) => { augur.options.debug[opt] = env.debug[opt]; });
+  if (env.loadZeroVolumeMarkets != null) augur.options.loadZeroVolumeMarkets = env.loadZeroVolumeMarkets;
   augur.connect(options, (connection) => {
     if (!connection) return cb('could not connect to ethereum');
     console.log('connected:', connection);

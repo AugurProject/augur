@@ -1,4 +1,5 @@
 import React from 'react';
+import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader'; // eslint-disable-line import/no-extraneous-dependencies
 
@@ -7,9 +8,10 @@ import { initAugur } from 'modules/app/actions/init-augur';
 import { updateURL } from 'modules/link/actions/update-url';
 
 import selectors from 'src/selectors';
+
 import store from 'src/store';
 
-import AugurJS from 'services/augurjs';
+import { augur } from 'services/augurjs';
 
 require('core-js/fn/array/find');
 require('core-js/fn/string/starts-with');
@@ -17,13 +19,13 @@ require('core-js/fn/string/starts-with');
 Object.defineProperty(window, 'state', { get: store.getState, enumerable: true });
 window.selectors = selectors;
 window.App = App;
-window.augurjs = AugurJS;
+window.augur = augur;
 console.log(`
 *******************************************
-        AUGUR DEVELOPMENT MODE
+           DEVELOPMENT MODE
   window.state      -- all state data
   window.selectors  -- component data
-  window.augurjs    -- Augur API methods
+  window.augur      -- Augur API methods
 *******************************************
 `);
 
@@ -34,9 +36,11 @@ const appElement = document.getElementById('app');
 
 function render(appElement, selectors) {
   ReactDOM.render(
-    <AppContainer>
-      <App {...selectors} />
-    </AppContainer>,
+    <Provider store={store}>
+      <AppContainer>
+        <App {...selectors} />
+      </AppContainer>
+    </Provider>,
     appElement
   );
 }

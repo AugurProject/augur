@@ -2,7 +2,7 @@ import { abi, augur, constants } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
 import { BINARY, SCALAR } from '../../markets/constants/market-types';
 import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, MATCH_BID, MATCH_ASK, COMMIT_REPORT, REVEAL_REPORT, CANCEL_ORDER } from '../../transactions/constants/types';
-import { formatConfirmations, formatEther, formatPercent, formatRealEther, formatRep, formatShares } from '../../../utils/format-number';
+import { formatEther, formatPercent, formatRealEther, formatRep, formatShares } from '../../../utils/format-number';
 import { formatDate } from '../../../utils/format-date';
 import { selectMarketLink } from '../../link/selectors/links';
 import { formatReportedOutcome } from '../../reports/selectors/reportable-outcomes';
@@ -42,10 +42,7 @@ export function loadDataForReportingTransaction(label, log, isRetry, callback) {
 
 export const constructBasicTransaction = (hash, status, blockNumber, timestamp, gasFees) => (dispatch, getState) => {
   const transaction = { hash, status };
-  if (blockNumber) {
-    transaction.blockNumber = formatDate(new Date(blockNumber * 1000));
-    transaction.confirmations = formatConfirmations(getState().blockchain.currentBlockNumber - blockNumber);
-  }
+  if (blockNumber) transaction.blockNumber = blockNumber;
   if (timestamp) transaction.timestamp = formatDate(new Date(timestamp * 1000));
   if (gasFees) transaction.gasFees = formatRealEther(gasFees);
   return transaction;
@@ -459,7 +456,7 @@ export const constructLogFillTxTransaction = (trade, marketID, marketType, minVa
       totalCost: formattedTotalCost,
       totalReturn: formattedTotalReturn,
       gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null,
-      confirmations: formatConfirmations(getState().blockchain.currentBlockNumber - trade.blockNumber)
+      blockNumber: trade.blockNumber
     }
   };
   return transaction;
@@ -499,7 +496,7 @@ export const constructLogShortFillTxTransaction = (trade, marketID, marketType, 
       feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
       totalCost: formatEther(totalCost),
       gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null,
-      confirmations: formatConfirmations(getState().blockchain.currentBlockNumber - trade.blockNumber)
+      blockNumber: trade.blockNumber
     }
   };
   return transaction;
@@ -574,7 +571,7 @@ export const constructLogAddTxTransaction = (trade, marketID, marketType, descri
       totalCost: type === BID ? formatEther(abi.unfix(totalCost)) : undefined,
       totalReturn: type === ASK ? formatEther(abi.unfix(totalReturn)) : undefined,
       gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null,
-      confirmations: formatConfirmations(getState().blockchain.currentBlockNumber - trade.blockNumber)
+      blockNumber: trade.blockNumber
     }
   };
 };
@@ -604,7 +601,7 @@ export const constructLogCancelTransaction = (trade, marketID, marketType, descr
       hash: trade.transactionHash,
       totalReturn: trade.inProgress ? null : formatEther(trade.cashRefund),
       gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null,
-      confirmations: formatConfirmations(getState().blockchain.currentBlockNumber - trade.blockNumber)
+      blockNumber: trade.blockNumber
     }
   };
 };
