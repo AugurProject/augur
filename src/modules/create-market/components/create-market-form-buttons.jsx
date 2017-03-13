@@ -15,7 +15,8 @@ export default class CreateMarketFormButtons extends Component {
     removeValidationFromNewMarket: PropTypes.func.isRequired,
     updateNewMarket: PropTypes.func.isRequired,
     newMarket: PropTypes.object.isRequired,
-    submitNewMarket: PropTypes.func.isRequired
+    submitNewMarket: PropTypes.func.isRequired,
+    updateButtonHeight: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -104,6 +105,7 @@ export default class CreateMarketFormButtons extends Component {
     let newHeight = 0;
     if (step !== 0) newHeight = this.formButtons.children[0].clientHeight - 1; // -1 protects against a rendering issue during animation where the height changes to just under measured amount, causing a gap
     this.formButtons.style.height = `${newHeight}px`;
+    this.props.updateButtonHeight(newHeight);
   }
 
   render() {
@@ -114,6 +116,7 @@ export default class CreateMarketFormButtons extends Component {
       <article
         ref={(formButtons) => { this.formButtons = formButtons; }}
         className="create-market-form-buttons"
+        style={{ bottom: p.footerHeight }}
       >
         <div className="create-market-form-buttons-container">
           <div className="create-market-form-buttons-content">
