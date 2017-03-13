@@ -134,8 +134,23 @@
   .order-book-preview {
     display: flex;
 
+    @media @breakpoint-1 {
+      flex-wrap: wrap-reverse;
+
+      #order_book_preview_chart,
+      .order-book-preview-table {
+        flex-basis: 100%;
+      }
+    }
+
     #order_book_preview_chart {
       display: flex;
+
+      @media @breakpoint-1 {
+        & {
+          will-change: contents; // Read by the chart resizer method
+        }
+      }
     }
 
     .order-book-preview-table {

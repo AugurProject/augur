@@ -152,14 +152,21 @@ export default class CreateMarketFormOrderBook extends Component {
   updateChart() {
     const bidSeries = getValue(this.state.orderBookSeries[this.state.selectedOutcome], `${BID}`) || [];
     const askSeries = getValue(this.state.orderBookSeries[this.state.selectedOutcome], `${ASK}`) || [];
+    let width;
+
+    if (window.getComputedStyle(this.orderBookChart).getPropertyValue('will-change') === 'contents') {
+      width = this.orderBookPreview.clientWidth;
+    } else {
+      width = this.orderBookPreview.clientWidth * 0.60;
+    }
 
     this.orderBookPreviewChart.update({
       title: {
         text: `${this.state.selectedOutcome}: Depth Chart`
       },
       chart: {
-        height: 400,
-        width: this.orderBookPreview.clientWidth * 0.60
+        width,
+        height: 400
       }
     }, false);
 
@@ -460,6 +467,7 @@ export default class CreateMarketFormOrderBook extends Component {
                 className="order-book-preview"
               >
                 <div
+                  ref={(orderBookChart) => { this.orderBookChart = orderBookChart; }}
                   id="order_book_preview_chart"
                 />
                 <div className="order-book-preview-table">

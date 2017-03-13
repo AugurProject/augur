@@ -72,8 +72,6 @@ export default class CreateMarketPreview extends Component {
     const s = this.state;
     const newMarket = this.props.newMarket;
 
-    console.log('newMarket.takerFee -- ', newMarket.takerFee, newMarket.makerFee);
-
     return (
       <article
         ref={(marketPreview) => { this.marketPreview = marketPreview; }}
