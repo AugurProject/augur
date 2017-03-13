@@ -84,9 +84,9 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
   it(`should listen for new updates`, () => {
     store.dispatch(action.listenToUpdates());
     const out = [{
-      type: 'UPDATE_ASSETS'
-    }, {
       type: 'SYNC_BLOCKCHAIN'
+    }, {
+      type: 'UPDATE_ASSETS'
     }, {
       type: 'SYNC_BRANCH'
     }, {
