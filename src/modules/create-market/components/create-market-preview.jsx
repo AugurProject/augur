@@ -37,7 +37,7 @@ export default class CreateMarketPreview extends Component {
   }
 
   componentDidMount() {
-    this.updatePreviewHeight();
+    this.updatePreviewHeight(this.props.newMarket.currentStep);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -50,7 +50,7 @@ export default class CreateMarketPreview extends Component {
 
   updatePreviewHeight(step) {
     let newHeight = 0;
-    if (step && step !== 0) newHeight = this.marketPreview.getElementsByClassName('create-market-preview-content')[0].clientHeight + 13; // 2 for horizontal borders
+    if (step && step !== 0) newHeight = this.marketPreview.getElementsByClassName('create-market-preview-content')[0].clientHeight + 13; // + value to accomodate padding + borders
 
     if (step === 0) {
       this.marketPreview.style.height = `${newHeight}px`;
