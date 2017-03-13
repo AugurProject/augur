@@ -1,4 +1,34 @@
-.create-market-form-order-book {
+.create-market-form .create-market-form-part.create-market-form-order-book { // ugh
+  .create-market-form-part-content {
+    .create-market-form-part-input {
+      @media @breakpoint-2-3 {
+        flex-wrap: wrap;
+
+        aside {
+          .border(true, @border-bottom, @border-light);
+
+          flex-basis: 100%;
+          margin-bottom: 1em;
+          padding-bottom: 1em;
+          text-align: left;
+        }
+
+        .vertical-form-divider {
+          display: none;
+        }
+
+        form {
+          flex-basis: 100%;
+          justify-content: center;
+
+          .input.is-incrementable {
+            width: auto;
+          }
+        }
+      }
+    }
+  }
+
   .order-book-actions {
     .border(true, @border-bottom);
 
