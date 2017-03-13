@@ -14,6 +14,7 @@ import { BID, ASK } from 'modules/transactions/constants/types';
 import { CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
 
 import getValue from 'utils/get-value';
+import debounce from 'utils/debounce';
 
 export default class CreateMarketFormOrderBook extends Component {
   static propTypes = {
@@ -64,7 +65,7 @@ export default class CreateMarketFormOrderBook extends Component {
     };
 
     this.handleAutoFocus = this.handleAutoFocus.bind(this);
-    this.updateChart = this.updateChart.bind(this);
+    this.updateChart = debounce(this.updateChart.bind(this));
     this.updatePriceBounds = this.updatePriceBounds.bind(this);
     this.handleAddOrder = this.handleAddOrder.bind(this);
     this.handleRemoveOrder = this.handleRemoveOrder.bind(this);
@@ -112,6 +113,8 @@ export default class CreateMarketFormOrderBook extends Component {
         enabled: false
       }
     });
+
+    window.addEventListener('resize', this.updateChart);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -151,6 +154,10 @@ export default class CreateMarketFormOrderBook extends Component {
     ) {
       this.handleAutoFocus();
     }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateChart);
   }
 
   updateChart() {
