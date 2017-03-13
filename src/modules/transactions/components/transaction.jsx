@@ -190,8 +190,6 @@ const Transaction = (p) => {
       break;
   }
 
-  console.log('[transaction.jsx] transactions currentBlockNumber:', p.currentBlockNumber);
-
   return (
     <article className={classnames('transaction-item', p.className, p.status)}>
       {p.index &&
