@@ -28,6 +28,8 @@ import {
   NEW_MARKET_REVIEW
 } from 'modules/create-market/constants/new-market-creation-steps';
 
+import debounce from 'utils/debounce';
+
 export default class CreateMarketForm extends Component {
   static propTypes = {
     newMarket: PropTypes.object.isRequired,
@@ -42,12 +44,14 @@ export default class CreateMarketForm extends Component {
       currentStep: props.newMarket.currentStep
     };
 
-    this.updateFormHeight = this.updateFormHeight.bind(this);
+    this.updateFormHeight = debounce(this.updateFormHeight.bind(this));
     this.updateValidity = this.updateValidity.bind(this);
   }
 
   componentDidMount() {
     this.updateFormHeight();
+
+    window.addEventListener('resize', this.updateFormHeight);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -63,6 +67,10 @@ export default class CreateMarketForm extends Component {
     if (this.props.newMarket !== nextProps.newMarket) {
       this.updateFormHeight();
     }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateFormHeight);
   }
 
   updateFormHeight() {

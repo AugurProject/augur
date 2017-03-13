@@ -57,7 +57,6 @@ export default class CreateMarketPreview extends Component {
   }
 
   updatePreviewHeight(step) {
-    console.log('### updateHeight');
     let newHeight = 0;
     if (step && step !== 0) newHeight = this.marketPreview.getElementsByClassName('create-market-preview-content')[0].clientHeight + 13; // + value to accomodate padding + borders
 
