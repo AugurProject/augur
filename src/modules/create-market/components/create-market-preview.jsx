@@ -18,6 +18,8 @@ import {
 } from 'modules/create-market/constants/new-market-creation-steps';
 import { BINARY, CATEGORICAL } from 'modules/markets/constants/market-types';
 
+import debounce from 'utils/debounce';
+
 
 // NOTE --  Discrete component due to vastly different functionality as compared to `market-preview.jsx`
 export default class CreateMarketPreview extends Component {
@@ -33,11 +35,13 @@ export default class CreateMarketPreview extends Component {
       initialLiquidity: null
     };
 
-    this.updatePreviewHeight = this.updatePreviewHeight.bind(this);
+    this.updatePreviewHeight = debounce(this.updatePreviewHeight.bind(this));
   }
 
   componentDidMount() {
     this.updatePreviewHeight(this.props.newMarket.currentStep);
+
+    window.addEventListener('resize', this.updatePreviewHeight);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -48,7 +52,12 @@ export default class CreateMarketPreview extends Component {
     if (this.props.newMarket.orderBook !== nextProps.newMarket.orderBook) this.updateMarketLiquidity(nextProps.newMarket.orderBook);
   }
 
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updatePreviewHeight);
+  }
+
   updatePreviewHeight(step) {
+    console.log('### updateHeight');
     let newHeight = 0;
     if (step && step !== 0) newHeight = this.marketPreview.getElementsByClassName('create-market-preview-content')[0].clientHeight + 13; // + value to accomodate padding + borders
 
