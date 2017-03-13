@@ -24018,14 +24018,14 @@ BigNumber.config({
 function Augur() {
   var i, len, fn;
 
-  this.version = "3.14.1";
+  this.version = "3.14.2";
 
   this.options = {
     debug: {
       tools: false, // if true, testing tools (test/tools.js) included
       abi: false, // debug logging in augur-abi
       broadcast: false, // broadcast debug logging in ethrpc
-      connect: false, // connection debug logging in ethereumjs-connect
+      connect: false, // connection debug logging in ethrpc and ethereumjs-connect
       trading: false, // trading-related debug logging
       reporting: false, // reporting-related debug logging
       filters: false, // filters-related debug logging
@@ -49478,7 +49478,7 @@ function isFunction(f) {
 
 module.exports = {
 
-  version: "3.0.0",
+  version: "3.0.1",
 
   debug: false,
   rpc: rpc,
@@ -49708,6 +49708,7 @@ function ethereumJsConnectConfigToEthrpcConfig(ethereumJsConnectConfig) {
 
   return configuration;
 }
+
 },{"async":286,"clone":287,"ethrpc":290}],286:[function(require,module,exports){
 arguments[4][118][0].apply(exports,arguments)
 },{"_process":231,"dup":118}],287:[function(require,module,exports){
@@ -50118,6 +50119,7 @@ var noop = function () { };
 module.exports = {
 
   debug: {
+    connect: false,
     tx: false,
     broadcast: false,
     nonce: false,
@@ -50217,7 +50219,7 @@ module.exports = {
     if (syncOnly) initialConnectCallback = function (error) { if (error instanceof Error) throw error; else if (error) throw new ErrorWithData(error); };
 
     // initialize the transporter, this will be how we send to and receive from the blockchain
-    new Transporter(this.configuration, this.internalState.shimMessageHandler, syncOnly, this.debug.broadcast, function (error, transporter) { // jshint ignore:line
+    new Transporter(this.configuration, this.internalState.shimMessageHandler, syncOnly, this.debug.connect, function (error, transporter) { // jshint ignore:line
       if (error !== null) return initialConnectCallback(error);
       this.internalState.transporter = transporter;
       // ensure we can do basic JSON-RPC over this connection
@@ -52186,7 +52188,19 @@ arguments[4][193][0].apply(exports,arguments)
 (function (Buffer){
 'use strict';
 
-var _typeof8 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _typeof10 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _typeof9 = typeof Symbol === "function" && _typeof10(Symbol.iterator) === "symbol" ? function (obj) {
+  return typeof obj === "undefined" ? "undefined" : _typeof10(obj);
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof10(obj);
+};
+
+var _typeof8 = typeof Symbol === "function" && _typeof9(Symbol.iterator) === "symbol" ? function (obj) {
+  return typeof obj === "undefined" ? "undefined" : _typeof9(obj);
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof9(obj);
+};
 
 var _typeof7 = typeof Symbol === "function" && _typeof8(Symbol.iterator) === "symbol" ? function (obj) {
   return typeof obj === "undefined" ? "undefined" : _typeof8(obj);

@@ -1,7 +1,9 @@
 {
   "name": "augur.js",
-  "version": "3.14.1",
+  "version": "3.14.2",
   "description": "Augur JavaScript SDK",
+  "author": "The Augur Developers <team@augur.net>",
+  "license": "AAL",
   "main": "src/index.js",
   "scripts": {
     "test": "scripts/runtests.sh --core --create --trading --reporting --markets",
@@ -21,8 +23,8 @@
     "bs58": "3.0.0",
     "chalk": "1.1.1",
     "clone": "1.0.2",
-    "ethereumjs-connect": "3.0.0",
-    "ethrpc": "3.0.0",
+    "ethereumjs-connect": "3.0.1",
+    "ethrpc": "3.0.1",
     "keythereum": "0.4.3",
     "request": "2.74.0",
     "uuid": "3.0.0",
@@ -36,7 +38,6 @@
     "url": "https://github.com/AugurProject/augur.js.git"
   },
   "keywords": [],
-  "license": "AAL",
   "bugs": {
     "url": "https://github.com/AugurProject/augur.js/issues"
   },
@@ -79,7 +80,6 @@
   "optionalDependencies": {
     "madlibs": "0.0.0"
   },
-  "author": "Jack Peterson <jack@tinybike.net>",
   "directories": {
     "dist": "dist",
     "scripts": "scripts",

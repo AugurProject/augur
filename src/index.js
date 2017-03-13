@@ -49,14 +49,14 @@ BigNumber.config({
 function Augur() {
   var i, len, fn;
 
-  this.version = "3.14.1";
+  this.version = "3.14.2";
 
   this.options = {
     debug: {
       tools: false,       // if true, testing tools (test/tools.js) included
       abi: false,         // debug logging in augur-abi
       broadcast: false,   // broadcast debug logging in ethrpc
-      connect: false,     // connection debug logging in ethereumjs-connect
+      connect: false,     // connection debug logging in ethrpc and ethereumjs-connect
       trading: false,     // trading-related debug logging
       reporting: false,   // reporting-related debug logging
       filters: false,     // filters-related debug logging
