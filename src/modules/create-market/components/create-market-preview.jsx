@@ -18,6 +18,7 @@ import {
   NEW_MARKET_REVIEW
 } from 'modules/create-market/constants/new-market-creation-steps';
 import { BINARY, CATEGORICAL } from 'modules/markets/constants/market-types';
+import { BID, ASK } from 'modules/transactions/constants/types';
 
 import getValue from 'utils/get-value';
 import debounce from 'utils/debounce';
@@ -37,9 +38,11 @@ export default class CreateMarketPreview extends Component {
       previousStep: null,
       initialLiquidity: null,
       selectedOutcome: props.newMarket.outcomes[0],
+      shouldUpdateHeight: false
     };
 
-    this.updatePreviewHeight = debounce(this.updatePreviewHeight.bind(this), 0);
+    this.shouldUpdateHeight = debounce(this.shouldUpdateHeight.bind(this));
+    this.updatePreviewHeight = debounce(this.updatePreviewHeight.bind(this));
     this.updateChart = debounce(this.updateChart.bind(this));
   }
 
@@ -84,8 +87,7 @@ export default class CreateMarketPreview extends Component {
     });
 
     window.addEventListener('resize', () => {
-      this.updatePreviewHeight();
-      this.updateChart();
+      this.shouldUpdateHeight(true);
     });
   }
 
@@ -98,6 +100,16 @@ export default class CreateMarketPreview extends Component {
 
     if (this.props.newMarket.orderBook !== nextProps.newMarket.orderBook) this.updateMarketLiquidity(nextProps.newMarket.orderBook);
     if (this.props.newMarket.outcomes !== nextProps.newMarket.outcomes) this.setState({ selectedOutcome: nextProps.newMarket.outcomes[0] });
+    if (this.props.newMarket.orderBookSeries !== nextProps.newMarket.orderBookSeries) this.updateChart();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.shouldUpdateHeight && prevState.shouldUpdateHeight !== this.state.shouldUpdateHeight) {
+      console.log('calling height updaters');
+      this.updatePreviewHeight(this.props.newMarket.currentStep);
+      this.updateChart();
+      this.shouldUpdateHeight(false);
+    }
   }
 
   componentWillUnmount() {
@@ -105,12 +117,11 @@ export default class CreateMarketPreview extends Component {
   }
 
   updatePreviewHeight(step) {
+    console.log("new -- ", this.marketPreview.getElementsByClassName('create-market-preview-content')[0].clientHeight);
+
+    console.log('### updatePreviewHeight');
     let newHeight = 0;
     if (step && step !== 0) newHeight = this.marketPreview.getElementsByClassName('create-market-preview-content')[0].clientHeight + 13; // + value to accomodate padding + borders
-
-    if (this.initialLiquidityPreview.classList.contains('hide-initial-liquidity')) {
-      newHeight -= this.initialLiquidityPreview.clientHeight;
-    }
 
     if (step === 0 || this.state.previousStep !== 0) {
       this.marketPreview.style.height = `${newHeight}px`;
@@ -122,37 +133,42 @@ export default class CreateMarketPreview extends Component {
   }
 
   updateChart() {
+    console.log('### updateChart -- ', this.props.newMarket.orderBookSeries);
     // TODO
-    // const bidSeries = getValue(this.props.orderBookSeries[this.state.selectedOutcome], `${BID}`) || [];
-    // const askSeries = getValue(this.props.orderBookSeries[this.state.selectedOutcome], `${ASK}`) || [];
-    // let width;
-    //
-    // if (window.getComputedStyle(this.orderBookChart).getPropertyValue('will-change') === 'contents') {
-    //   width = this.orderBookForm.clientWidth - 40; // 20px horizontal padding
-    // } else {
-    //   width = this.orderBookPreview.clientWidth * 0.60;
-    // }
-    //
-    // this.orderBookPreviewChart.update({
-    //   title: {
-    //     text: `${this.state.selectedOutcome}: Depth Chart`
-    //   },
-    //   chart: {
-    //     width,
-    //     height: 400
-    //   }
-    // }, false);
-    //
-    // this.orderBookPreviewChart.series[0].setData(bidSeries, false);
-    // this.orderBookPreviewChart.series[1].setData(askSeries, false);
-    //
-    // this.orderBookPreviewChart.redraw();
+    const bidSeries = getValue(this.props.newMarket.orderBookSeries[this.state.selectedOutcome], `${BID}`) || [];
+    const askSeries = getValue(this.props.newMarket.orderBookSeries[this.state.selectedOutcome], `${ASK}`) || [];
+    let width;
+
+    if (window.getComputedStyle(this.orderBookChart).getPropertyValue('will-change') === 'contents') {
+      width = this.orderBookPreview.clientWidth - 40; // 20px horizontal padding
+    } else {
+      width = this.orderBookPreview.clientWidth * 0.60;
+    }
+
+    this.orderBookPreviewChart.update({
+      title: {
+        text: `${this.state.selectedOutcome}: Depth Chart`
+      },
+      chart: {
+        width,
+        height: 300
+      }
+    }, false);
+
+    this.orderBookPreviewChart.series[0].setData(bidSeries, false);
+    this.orderBookPreviewChart.series[1].setData(askSeries, false);
+
+    this.orderBookPreviewChart.redraw();
   }
 
   updateMarketLiquidity(orderBook) {
     const initialLiquidity = Object.keys(orderBook).reduce((p, outcome) => p.plus(orderBook[outcome].reduce((p, order) => p.plus(order.quantity.times(order.price)), new BigNumber(0))), new BigNumber(0)).toNumber().toLocaleString();
 
     this.setState({ initialLiquidity });
+  }
+
+  shouldUpdateHeight(shouldUpdateHeight) {
+    this.setState({ shouldUpdateHeight });
   }
 
   render() {

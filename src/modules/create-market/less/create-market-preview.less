@@ -1,6 +1,4 @@
 .create-market-preview {
-  .border(true);
-
   height: 0;
   margin: 0 1em;
   overflow: hidden;
@@ -25,7 +23,6 @@
 
     .create-market-preview-content {
       .market-preview();
-      .border(false);
 
       display: flex;
       flex: 1;
@@ -240,6 +237,15 @@
           animation-duration: @animation-speed-normal;
           animation-fill-mode: forwards;
           animation-name: hideInitialLiquidity;
+          display: none;
+        }
+
+        #order_book_preview_chart_preview {
+          @media @breakpoint-1 {
+            & {
+              will-change: contents; // Read by the chart resizer method
+            }
+          }
         }
       }
     }
