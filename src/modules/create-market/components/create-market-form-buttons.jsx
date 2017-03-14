@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
-import { NEW_MARKET_OUTCOMES } from 'modules/create-market/constants/new-market-creation-steps';
+import { NEW_MARKET_OUTCOMES, NEW_MARKET_REVIEW } from 'modules/create-market/constants/new-market-creation-steps';
 import { BINARY } from 'modules/markets/constants/market-types';
 
 export default class CreateMarketFormButtons extends Component {
@@ -74,6 +74,8 @@ export default class CreateMarketFormButtons extends Component {
         }
         return !validations.find(validStep => step === validStep);
       });
+    } else if (nextButtonCopy == null) {
+      nextButtonCopy = NEW_MARKET_REVIEW;
     }
 
     this.setState({
