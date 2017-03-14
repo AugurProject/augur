@@ -222,10 +222,26 @@
       .create-market-initial-liquidity {
         .border(true, @border-top);
 
-        display: block;
+        display: flex;
         flex-basis: 100%;
         margin-top: 1em;
         padding-top: 1em;
+
+        @media @breakpoint-1 {
+          flex-wrap: wrap;
+
+          .order-book-outcomes-table,
+          #order_book_preview_chart_preview,
+          .order-book-preview-table {
+            flex-basis: 100%;
+          }
+
+          .order-book-outcomes-table {
+            .border(true, @border-bottom, @border-light);
+
+            margin-bottom: 1em;
+          }
+        }
 
         &.reveal-initial-liquidity {
           animation-duration: @animation-speed-normal;
