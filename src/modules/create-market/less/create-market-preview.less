@@ -1,4 +1,6 @@
 .create-market-preview {
+  .border(true);
+
   height: 0;
   margin: 0 1em;
   overflow: hidden;
@@ -23,6 +25,7 @@
 
     .create-market-preview-content {
       .market-preview();
+      .border(false);
 
       display: flex;
       flex: 1;
@@ -222,21 +225,21 @@
       .create-market-initial-liquidity {
         .border(true, @border-top);
 
+        display: block;
         flex-basis: 100%;
-        height: 0;
-        margin-top: 0;
-        opacity: 0;
-        padding-top: 0;
-        transition-duration: @animation-speed-normal;
-        transition-property: margin-top, opacity, padding-top;
-        visibility: hidden;
+        margin-top: 1em;
+        padding-top: 1em;
 
-        &.display-initial-liquidity {
-          height: auto;
-          margin-top: 1em;
-          opacity: 1;
-          padding-top: 1em;
-          visibility: visible;
+        &.reveal-initial-liquidity {
+          animation-duration: @animation-speed-normal;
+          animation-fill-mode: forwards;
+          animation-name: revealInitialLiquidity;
+        }
+
+        &.hide-initial-liquidity {
+          animation-duration: @animation-speed-normal;
+          animation-fill-mode: forwards;
+          animation-name: hideInitialLiquidity;
         }
       }
     }
@@ -272,3 +275,47 @@ display: block;
 opacity: 1;
 }
 });
+
+@keyframes hideInitialLiquidity {
+  0% {
+    display: block;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  99% {
+    display: block;
+    opacity: 0;
+    visibility: visible;
+  }
+
+  100% {
+    display: none;
+    margin-top: 0;
+    opacity: 0;
+    padding-top: 0;
+    visibility: hidden;
+  }
+}
+
+@keyframes revealInitialLiquidity {
+  0% {
+    display: none;
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  1% {
+    display: block;
+    opacity: 0;
+    visibility: visible;
+  }
+
+  100% {
+    display: block;
+    margin-top: 1em;
+    opacity: 1;
+    padding-top: 1em;
+    visibility: visible;
+  }
+}

@@ -108,6 +108,10 @@ export default class CreateMarketPreview extends Component {
     let newHeight = 0;
     if (step && step !== 0) newHeight = this.marketPreview.getElementsByClassName('create-market-preview-content')[0].clientHeight + 13; // + value to accomodate padding + borders
 
+    if (this.initialLiquidityPreview.classList.contains('hide-initial-liquidity')) {
+      newHeight -= this.initialLiquidityPreview.clientHeight;
+    }
+
     if (step === 0 || this.state.previousStep !== 0) {
       this.marketPreview.style.height = `${newHeight}px`;
     } else {
@@ -365,8 +369,10 @@ export default class CreateMarketPreview extends Component {
               </ul>
             </div>
             <div
+              ref={(initialLiquidityPreview) => { this.initialLiquidityPreview = initialLiquidityPreview; }}
               className={classNames('create-market-initial-liquidity', {
-                'display-initial-liquidity': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_REVIEW && s.initialLiquidity != null
+                'reveal-initial-liquidity': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_REVIEW && s.initialLiquidity != null,
+                'hide-initial-liquidity': newMarketCreationOrder[newMarket.currentStep] !== NEW_MARKET_REVIEW || s.initialLiquidity == null,
               })}
             >
               {newMarket.type === CATEGORICAL &&
