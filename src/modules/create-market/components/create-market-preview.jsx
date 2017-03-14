@@ -109,6 +109,10 @@ export default class CreateMarketPreview extends Component {
       this.updateChart();
       this.shouldUpdateHeight(false);
     }
+
+    if (prevState.selectedOutcome !== this.state.selectedOutcome) {
+      this.updateChart();
+    }
   }
 
   componentWillUnmount() {

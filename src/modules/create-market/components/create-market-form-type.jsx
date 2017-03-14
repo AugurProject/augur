@@ -20,7 +20,10 @@ const CreateMarketFormType = p => (
             type: BINARY,
             outcomes: ['Yes'],
             scalarSmallNum: '',
-            scalarBigNum: ''
+            scalarBigNum: '',
+            orderBook: {},
+            orderBookSorted: {},
+            orderBookSeries: {}
           });
         }}
       >
@@ -40,7 +43,10 @@ const CreateMarketFormType = p => (
             type: CATEGORICAL,
             outcomes: [],
             scalarSmallNum: '',
-            scalarBigNum: ''
+            scalarBigNum: '',
+            orderBook: {},
+            orderBookSorted: {},
+            orderBookSeries: {}
           });
         }}
       >
@@ -60,7 +66,10 @@ const CreateMarketFormType = p => (
             type: SCALAR,
             outcomes: [],
             scalarSmallNum: '',
-            scalarBigNum: ''
+            scalarBigNum: '',
+            orderBook: {},
+            orderBookSorted: {},
+            orderBookSeries: {}
           });
         }}
       >
