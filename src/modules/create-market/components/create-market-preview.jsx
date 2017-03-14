@@ -385,8 +385,8 @@ export default class CreateMarketPreview extends Component {
             <div
               ref={(initialLiquidityPreview) => { this.initialLiquidityPreview = initialLiquidityPreview; }}
               className={classNames('create-market-initial-liquidity', {
-                'reveal-initial-liquidity': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_REVIEW && s.initialLiquidity != null,
-                'hide-initial-liquidity': newMarketCreationOrder[newMarket.currentStep] !== NEW_MARKET_REVIEW || s.initialLiquidity == null,
+                'reveal-initial-liquidity': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_REVIEW && s.initialLiquidity && s.initialLiquidity !== '0',
+                'hide-initial-liquidity': newMarketCreationOrder[newMarket.currentStep] !== NEW_MARKET_REVIEW || !s.initialLiquidity || s.initialLiquidity === '0',
               })}
             >
               {newMarket.type === CATEGORICAL &&

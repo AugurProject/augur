@@ -1,7 +1,7 @@
 import React from 'react';
 
 const CreateMarketReview = p => (
-  <article className={`create-market-form-part ${p.className || ''}`}>
+  <article className={`create-market-form-part create-market-form-review ${p.className || ''}`}>
     <div className="create-market-form-part-content">
       <div className="create-market-form-part-input">
         <aside>
@@ -10,7 +10,7 @@ const CreateMarketReview = p => (
         </aside>
         <div className="vertical-form-divider" />
         <form onSubmit={e => e.preventDefault()} >
-          <span>Heyo</span>
+          <span>TODO</span>
         </form>
       </div>
     </div>
