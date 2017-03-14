@@ -141,127 +141,127 @@
       }
     }
   }
+}
 
-  .order-book-preview {
-    display: flex;
+.order-book-preview { // Split out for reuse
+  display: flex;
 
-    @media @breakpoint-1 {
-      flex-wrap: wrap-reverse;
+  @media @breakpoint-1 {
+    flex-wrap: wrap-reverse;
 
-      #order_book_preview_chart,
-      .order-book-preview-table {
-        flex-basis: 100%;
-      }
-
-      .order-book-preview-table {
-        .border(true, @border-bottom, @border-light);
-
-        margin-bottom: 1em;
-        padding-bottom: 2em;
-      }
-    }
-
-    #order_book_preview_chart {
-      display: flex;
-      justify-content: center;
-
-      @media @breakpoint-1 {
-        & {
-          will-change: contents; // Read by the chart resizer method
-        }
-      }
+    #order_book_preview_chart,
+    .order-book-preview-table {
+      flex-basis: 100%;
     }
 
     .order-book-preview-table {
-      .table();
+      .border(true, @border-bottom, @border-light);
 
+      margin-bottom: 1em;
+      padding-bottom: 2em;
+    }
+  }
+
+  #order_book_preview_chart {
+    display: flex;
+    justify-content: center;
+
+    @media @breakpoint-1 {
+      & {
+        will-change: contents; // Read by the chart resizer method
+      }
+    }
+  }
+
+  .order-book-preview-table {
+    .table();
+
+    display: flex;
+    flex: 1;
+
+    .order-book-preview-table-header,
+    .order-book-preview-table-bids,
+    .order-book-preview-table-asks {
+      & > * {
+        flex: 1;
+        text-align: center;
+      }
+    }
+
+    .order-book-preview-table-header {
+      .table-header();
+
+      flex: none;
+    }
+
+    .order-book-preview-table-content {
       display: flex;
-      flex: 1;
+      max-height: 300px;
+      overflow-y: auto;
 
-      .order-book-preview-table-header,
       .order-book-preview-table-bids,
       .order-book-preview-table-asks {
+        flex: 1;
+
         & > * {
-          flex: 1;
-          text-align: center;
-        }
-      }
+          .table-row();
 
-      .order-book-preview-table-header {
-        .table-header();
+          display: flex;
+          overflow-x: hidden;
+          position: relative;
 
-        flex: none;
-      }
-
-      .order-book-preview-table-content {
-        display: flex;
-        max-height: 300px;
-        overflow-y: auto;
-
-        .order-book-preview-table-bids,
-        .order-book-preview-table-asks {
-          flex: 1;
-
-          & > * {
-            .table-row();
-
-            display: flex;
-            overflow-x: hidden;
-            position: relative;
-
-            &:hover {
-              .remove-order {
-                transform: translateX(0);
-              }
-            }
-
-            & > * {
-              .table-cell-spacing();
-
-              flex: 1;
+          &:hover {
+            .remove-order {
+              transform: translateX(0);
             }
           }
 
-          & > span {
+          & > * {
             .table-cell-spacing();
 
-            justify-content: center;
-          }
-
-          .remove-order {
-            .border(false);
-
-            background-color: @color-red;
-            color: @color-white;
-            height: 100%;
-            padding: 0 1em;
-            position: absolute;
-            transition-duration: @animation-speed-very-fast;
-            transition-property: transform;
+            flex: 1;
           }
         }
 
-        .order-book-preview-table-bids {
+        & > span {
+          .table-cell-spacing();
+
+          justify-content: center;
+        }
+
+        .remove-order {
+          .border(false);
+
+          background-color: @color-red;
+          color: @color-white;
+          height: 100%;
+          padding: 0 1em;
+          position: absolute;
+          transition-duration: @animation-speed-very-fast;
+          transition-property: transform;
+        }
+      }
+
+      .order-book-preview-table-bids {
+        .border(true, @border-right, @border-light);
+
+        & > * {
+          span:first-of-type {
+            .border(false, @border-left);
+          }
+        }
+
+        .remove-order {
           .border(true, @border-right, @border-light);
 
-          & > * {
-            span:first-of-type {
-              .border(false, @border-left);
-            }
-          }
-
-          .remove-order {
-            .border(true, @border-right, @border-light);
-
-            transform: translateX(-100%);
-          }
+          transform: translateX(-100%);
         }
+      }
 
-        .order-book-preview-table-asks {
-          .remove-order {
-            right: 0;
-            transform: translateX(100%);
-          }
+      .order-book-preview-table-asks {
+        .remove-order {
+          right: 0;
+          transform: translateX(100%);
         }
       }
     }

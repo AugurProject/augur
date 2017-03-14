@@ -105,7 +105,6 @@ export default class CreateMarketPreview extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.shouldUpdateHeight && prevState.shouldUpdateHeight !== this.state.shouldUpdateHeight) {
-      console.log('calling height updaters');
       this.updatePreviewHeight(this.props.newMarket.currentStep);
       this.updateChart();
       this.shouldUpdateHeight(false);
@@ -117,9 +116,6 @@ export default class CreateMarketPreview extends Component {
   }
 
   updatePreviewHeight(step) {
-    console.log("new -- ", this.marketPreview.getElementsByClassName('create-market-preview-content')[0].clientHeight);
-
-    console.log('### updatePreviewHeight');
     let newHeight = 0;
     if (step && step !== 0) newHeight = this.marketPreview.getElementsByClassName('create-market-preview-content')[0].clientHeight + 13; // + value to accomodate padding + borders
 
@@ -133,8 +129,6 @@ export default class CreateMarketPreview extends Component {
   }
 
   updateChart() {
-    console.log('### updateChart -- ', this.props.newMarket.orderBookSeries);
-    // TODO
     const bidSeries = getValue(this.props.newMarket.orderBookSeries[this.state.selectedOutcome], `${BID}`) || [];
     const askSeries = getValue(this.props.newMarket.orderBookSeries[this.state.selectedOutcome], `${ASK}`) || [];
     let width;
@@ -176,8 +170,8 @@ export default class CreateMarketPreview extends Component {
     const s = this.state;
     const newMarket = this.props.newMarket;
 
-    // const bids = getValue(p.orderBookSorted[s.selectedOutcome], `${BID}`);
-    // const asks = getValue(p.orderBookSorted[s.selectedOutcome], `${ASK}`);
+    const bids = getValue(newMarket.orderBookSorted[s.selectedOutcome], `${BID}`);
+    const asks = getValue(newMarket.orderBookSorted[s.selectedOutcome], `${ASK}`);
 
     return (
       <article
@@ -417,12 +411,51 @@ export default class CreateMarketPreview extends Component {
               }
               <div
                 ref={(orderBookPreview) => { this.orderBookPreview = orderBookPreview; }}
-                className="create-market-initial-liquidity-preview"
+                className="create-market-initial-liquidity-preview order-book-preview"
               >
                 <div
                   ref={(orderBookChart) => { this.orderBookChart = orderBookChart; }}
                   id="order_book_preview_chart_preview"
                 />
+                <div className="order-book-preview-table">
+                  <div className="order-book-preview-table-header">
+                    <span>Bid Q.</span>
+                    <span>Bid</span>
+                    <span>Ask</span>
+                    <span>Ask Q.</span>
+                  </div>
+                  <div className="order-book-preview-table-content">
+                    <ul className="order-book-preview-table-bids">
+                      {bids ?
+                        bids.map((bid, i) => <li>
+                          <span>
+                            {`${bid.quantity}`}
+                          </span>
+                          <span>
+                            {`${bid.price}`}
+                          </span>
+                        </li>
+                      ) :
+                        <span>No Bids</span>
+                      }
+                    </ul>
+                    <ul className="order-book-preview-table-asks">
+                      {asks ?
+                        asks.map((ask, i) =>
+                          <li>
+                            <span>
+                              {`${ask.price}`}
+                            </span>
+                            <span>
+                              {`${ask.quantity}`}
+                            </span>
+                          </li>
+                        ) :
+                        <span>No Asks</span>
+                      }
+                    </ul>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
