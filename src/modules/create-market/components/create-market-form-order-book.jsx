@@ -77,7 +77,7 @@ export default class CreateMarketFormOrderBook extends Component {
   componentDidMount() {
     noData(Highcharts);
 
-    this.orderBookPreviewChart = new Highcharts.Chart('order_book_preview_chart', {
+    this.orderBookPreviewChart = new Highcharts.Chart('order_book_preview_chart_form', {
       chart: {
         width: 0,
         height: 0
@@ -484,7 +484,7 @@ export default class CreateMarketFormOrderBook extends Component {
               >
                 <div
                   ref={(orderBookChart) => { this.orderBookChart = orderBookChart; }}
-                  id="order_book_preview_chart"
+                  id="order_book_preview_chart_form"
                 />
                 <div className="order-book-preview-table">
                   <div className="order-book-preview-table-header">

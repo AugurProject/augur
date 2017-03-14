@@ -1,5 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import BigNumber from 'bignumber.js';
+import Highcharts from 'highcharts';
 import classNames from 'classnames';
 
 import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC } from 'modules/create-market/constants/new-market-constraints';
@@ -18,6 +19,7 @@ import {
 } from 'modules/create-market/constants/new-market-creation-steps';
 import { BINARY, CATEGORICAL } from 'modules/markets/constants/market-types';
 
+import getValue from 'utils/get-value';
 import debounce from 'utils/debounce';
 
 
@@ -32,24 +34,70 @@ export default class CreateMarketPreview extends Component {
     super(props);
 
     this.state = {
-      initialLiquidity: null
+      previousStep: null,
+      initialLiquidity: null,
+      selectedOutcome: props.newMarket.outcomes[0],
     };
 
-    this.updatePreviewHeight = debounce(this.updatePreviewHeight.bind(this));
+    this.updatePreviewHeight = debounce(this.updatePreviewHeight.bind(this), 0);
+    this.updateChart = debounce(this.updateChart.bind(this));
   }
 
   componentDidMount() {
     this.updatePreviewHeight(this.props.newMarket.currentStep);
 
-    window.addEventListener('resize', this.updatePreviewHeight);
+    this.orderBookPreviewChart = new Highcharts.Chart('order_book_preview_chart_preview', {
+      chart: {
+        width: 0,
+        height: 0
+      },
+      lang: {
+        noData: 'No orders to display'
+      },
+      yAxis: {
+        title: {
+          text: 'Shares'
+        }
+      },
+      xAxis: {
+        title: {
+          text: 'Price'
+        }
+      },
+      series: [
+        {
+          type: 'line',
+          name: 'Bids',
+          step: 'left',
+          data: []
+        },
+        {
+          type: 'line',
+          name: 'Asks',
+          step: 'left',
+          data: []
+        }
+      ],
+      credits: {
+        enabled: false
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      this.updatePreviewHeight();
+      this.updateChart();
+    });
   }
 
   componentWillReceiveProps(nextProps) {
+    if (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep) this.setState({ previousStep: this.props.newMarket.currentStep });
+
     if (this.props.newMarket !== nextProps.newMarket) {
       this.updatePreviewHeight(nextProps.newMarket.currentStep);
     }
 
     if (this.props.newMarket.orderBook !== nextProps.newMarket.orderBook) this.updateMarketLiquidity(nextProps.newMarket.orderBook);
+    if (this.props.newMarket.outcomes !== nextProps.newMarket.outcomes) this.setState({ selectedOutcome: nextProps.newMarket.outcomes[0] });
   }
 
   componentWillUnmount() {
@@ -60,13 +108,41 @@ export default class CreateMarketPreview extends Component {
     let newHeight = 0;
     if (step && step !== 0) newHeight = this.marketPreview.getElementsByClassName('create-market-preview-content')[0].clientHeight + 13; // + value to accomodate padding + borders
 
-    if (step === 0) {
+    if (step === 0 || this.state.previousStep !== 0) {
       this.marketPreview.style.height = `${newHeight}px`;
     } else {
       setTimeout(() => {
         this.marketPreview.style.height = `${newHeight}px`;
       }, 1500);
     }
+  }
+
+  updateChart() {
+    // TODO
+    // const bidSeries = getValue(this.props.orderBookSeries[this.state.selectedOutcome], `${BID}`) || [];
+    // const askSeries = getValue(this.props.orderBookSeries[this.state.selectedOutcome], `${ASK}`) || [];
+    // let width;
+    //
+    // if (window.getComputedStyle(this.orderBookChart).getPropertyValue('will-change') === 'contents') {
+    //   width = this.orderBookForm.clientWidth - 40; // 20px horizontal padding
+    // } else {
+    //   width = this.orderBookPreview.clientWidth * 0.60;
+    // }
+    //
+    // this.orderBookPreviewChart.update({
+    //   title: {
+    //     text: `${this.state.selectedOutcome}: Depth Chart`
+    //   },
+    //   chart: {
+    //     width,
+    //     height: 400
+    //   }
+    // }, false);
+    //
+    // this.orderBookPreviewChart.series[0].setData(bidSeries, false);
+    // this.orderBookPreviewChart.series[1].setData(askSeries, false);
+    //
+    // this.orderBookPreviewChart.redraw();
   }
 
   updateMarketLiquidity(orderBook) {
@@ -79,6 +155,9 @@ export default class CreateMarketPreview extends Component {
     const p = this.props;
     const s = this.state;
     const newMarket = this.props.newMarket;
+
+    // const bids = getValue(p.orderBookSorted[s.selectedOutcome], `${BID}`);
+    // const asks = getValue(p.orderBookSorted[s.selectedOutcome], `${ASK}`);
 
     return (
       <article
@@ -284,6 +363,45 @@ export default class CreateMarketPreview extends Component {
                   {newMarket.outcomes.map(outcome => <li>{outcome}</li>)}
                 </button>
               </ul>
+            </div>
+            <div
+              className={classNames('create-market-initial-liquidity', {
+                'display-initial-liquidity': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_REVIEW && s.initialLiquidity != null
+              })}
+            >
+              {newMarket.type === CATEGORICAL &&
+                <div className="order-book-outcomes-table">
+                  <div className="order-book-outcomes-header">
+                    <span>Outcomes</span>
+                  </div>
+                  <div className="order-book-outcomes">
+                    {newMarket.outcomes.map(outcome => (
+                      <div
+                        key={outcome}
+                        className={`order-book-outcome-row ${s.selectedOutcome === outcome ? 'selected' : ''}`}
+                      >
+                        <button
+                          className="unstyled"
+                          onClick={() => {
+                            this.setState({ selectedOutcome: outcome });
+                          }}
+                        >
+                          <span>{outcome}</span>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              }
+              <div
+                ref={(orderBookPreview) => { this.orderBookPreview = orderBookPreview; }}
+                className="create-market-initial-liquidity-preview"
+              >
+                <div
+                  ref={(orderBookChart) => { this.orderBookChart = orderBookChart; }}
+                  id="order_book_preview_chart_preview"
+                />
+              </div>
             </div>
           </div>
         </div>

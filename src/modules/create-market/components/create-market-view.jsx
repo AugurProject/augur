@@ -16,7 +16,7 @@ export default class CreateMarketView extends Component {
 
     this.state = {
       buttonHeight: 0
-    }
+    };
   }
 
   render() {
@@ -26,7 +26,7 @@ export default class CreateMarketView extends Component {
     return (
       <section
         id="create_market_view"
-        style={{ 'margin-bottom': s.buttonHeight + p.footerHeight }}
+        style={{ marginBottom: s.buttonHeight + p.footerHeight }}
       >
         <div className="create-market-container">
           <CreateMarketMainTitle
