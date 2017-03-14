@@ -10,7 +10,7 @@ const CreateMarketReview = p => (
         </aside>
         <div className="vertical-form-divider" />
         <form onSubmit={e => e.preventDefault()} >
-          <span>TODO</span>
+          <span>TODO -- Creation Costs + Fees</span>
         </form>
       </div>
     </div>
