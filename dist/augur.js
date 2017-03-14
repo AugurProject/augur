@@ -24018,7 +24018,7 @@ BigNumber.config({
 function Augur() {
   var i, len, fn;
 
-  this.version = "3.14.2";
+  this.version = "3.14.3";
 
   this.options = {
     debug: {
@@ -26148,7 +26148,8 @@ module.exports = {
 
   parametrizeFilter: function parametrizeFilter(event, params) {
     return {
-      fromBlock: params.fromBlock || abi.hex(Math.max(1, this.rpc.block.number - 5000)),
+      // fromBlock: params.fromBlock || abi.hex(Math.max(1, this.rpc.block.number - 5000)),
+      fromBlock: params.fromBlock || constants.GET_LOGS_DEFAULT_FROM_BLOCK,
       toBlock: params.toBlock || constants.GET_LOGS_DEFAULT_TO_BLOCK,
       address: this.contracts[event.contract],
       topics: this.buildTopicsList(event, params),
