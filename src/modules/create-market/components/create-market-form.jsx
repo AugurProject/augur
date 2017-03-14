@@ -211,6 +211,8 @@ export default class CreateMarketForm extends Component {
           currentStep={p.newMarket.currentStep}
           outcomes={p.newMarket.outcomes}
           orderBook={p.newMarket.orderBook}
+          orderBookSorted={p.newMarket.orderBookSorted}
+          orderBookSeries={p.newMarket.orderBookSeries}
           scalarBigNum={p.newMarket.scalarBigNum}
           scalarSmallNum={p.newMarket.scalarSmallNum}
           addOrderToNewMarket={p.addOrderToNewMarket}

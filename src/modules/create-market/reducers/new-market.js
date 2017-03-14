@@ -26,7 +26,9 @@ const DEFAULT_STATE = {
   keywords: [],
   takerFee: TAKER_FEE_DEFAULT,
   makerFee: MAKER_FEE_DEFAULT,
-  orderBook: {}
+  orderBook: {}, // for submit orders
+  orderBookSorted: {}, // for order book table
+  orderBookSeries: {} // for order book chart
 };
 
 export default function (newMarket = DEFAULT_STATE, action) {

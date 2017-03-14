@@ -22,6 +22,8 @@ export default class CreateMarketFormOrderBook extends Component {
     currentStep: PropTypes.number.isRequired,
     outcomes: PropTypes.array.isRequired,
     orderBook: PropTypes.object.isRequired,
+    orderBookSorted: PropTypes.object.isRequired,
+    orderBookSeries: PropTypes.object.isRequired,
     scalarSmallNum: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.instanceOf(BigNumber)
@@ -58,8 +60,6 @@ export default class CreateMarketFormOrderBook extends Component {
       selectedNav: Object.keys(this.navItems)[0],
       orderPrice: '',
       orderQuantity: '',
-      orderBookSorted: {}, // Used in Order Book Table
-      orderBookSeries: {}, // Used in Order Book Chart
       minPrice: 0,
       maxPrice: 1
     };
@@ -126,25 +126,24 @@ export default class CreateMarketFormOrderBook extends Component {
 
     if (this.props.outcomes !== nextProps.outcomes) this.setState({ selectedOutcome: nextProps.outcomes[0] });
     if (this.props.orderBook !== nextProps.orderBook) this.sortOrderBook(nextProps.orderBook);
+    if (this.props.orderBookSorted !== nextProps.orderBookSorted) this.updateSeries(nextProps.orderBookSorted);
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (this.state.orderBookSorted !== nextState.orderBookSorted) this.updateSeries(nextState.orderBookSorted);
-
     if (this.props.type !== nextProps.type ||
       this.props.scalarSmallNum !== nextProps.scalarSmallNum ||
       this.props.scalarBigNum !== nextProps.scalarBigNum ||
+      this.props.orderBookSorted !== nextProps.orderBookSorted ||
       this.state.selectedSide !== nextState.selectedSide ||
-      this.state.selectedNav !== nextState.selectedNav ||
-      this.state.orderBookSorted !== nextState.orderBookSorted
+      this.state.selectedNav !== nextState.selectedNav
     ) {
-      this.updatePriceBounds(nextProps.type, nextState.selectedOutcome, nextState.selectedNav, nextState.orderBookSorted, nextProps.scalarSmallNum, nextProps.scalarBigNum);
+      this.updatePriceBounds(nextProps.type, nextState.selectedOutcome, nextState.selectedNav, nextProps.orderBookSorted, nextProps.scalarSmallNum, nextProps.scalarBigNum);
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
     if ((newMarketCreationOrder[this.props.currentStep] === NEW_MARKET_ORDER_BOOK && prevProps.currentStep !== this.props.currentStep) ||
-      prevState.orderBookSeries !== this.state.orderBookSeries
+      prevProps.orderBookSeries !== this.props.orderBookSeries
     ) {
       this.updateChart();
     }
@@ -161,8 +160,8 @@ export default class CreateMarketFormOrderBook extends Component {
   }
 
   updateChart() {
-    const bidSeries = getValue(this.state.orderBookSeries[this.state.selectedOutcome], `${BID}`) || [];
-    const askSeries = getValue(this.state.orderBookSeries[this.state.selectedOutcome], `${ASK}`) || [];
+    const bidSeries = getValue(this.props.orderBookSeries[this.state.selectedOutcome], `${BID}`) || [];
+    const askSeries = getValue(this.props.orderBookSeries[this.state.selectedOutcome], `${ASK}`) || [];
     let width;
 
     if (window.getComputedStyle(this.orderBookChart).getPropertyValue('will-change') === 'contents') {
@@ -287,7 +286,7 @@ export default class CreateMarketFormOrderBook extends Component {
       return p;
     }, {});
 
-    this.setState({ orderBookSorted });
+    this.props.updateNewMarket({ orderBookSorted });
   }
 
   updateSeries(orderBook) {
@@ -311,7 +310,7 @@ export default class CreateMarketFormOrderBook extends Component {
       return p;
     }, {});
 
-    this.setState({ orderBookSeries });
+    this.props.updateNewMarket({ orderBookSeries });
   }
 
   validateForm(orderQuantityRaw, orderPriceRaw) {
@@ -341,8 +340,8 @@ export default class CreateMarketFormOrderBook extends Component {
     if (orderQuantity !== '' && orderQuantity.lessThan(new BigNumber(0))) {
       errors.quantity.push('Quantity must be positive');
     } else if (orderPrice !== '') {
-      const bids = getValue(this.state.orderBookSorted[this.state.selectedOutcome], `${BID}`);
-      const asks = getValue(this.state.orderBookSorted[this.state.selectedOutcome], `${ASK}`);
+      const bids = getValue(this.props.orderBookSorted[this.state.selectedOutcome], `${BID}`);
+      const asks = getValue(this.props.orderBookSorted[this.state.selectedOutcome], `${ASK}`);
 
       if (this.props.type !== SCALAR) {
         if (this.state.selectedNav === BID && asks && asks.length && orderPrice.greaterThan(asks[0].price)) {
@@ -384,8 +383,8 @@ export default class CreateMarketFormOrderBook extends Component {
     const s = this.state;
 
     const errors = [...s.errors.quantity, ...s.errors.price]; // Joined since only one input can be in an error state at a time
-    const bids = getValue(s.orderBookSorted[s.selectedOutcome], `${BID}`);
-    const asks = getValue(s.orderBookSorted[s.selectedOutcome], `${ASK}`);
+    const bids = getValue(p.orderBookSorted[s.selectedOutcome], `${BID}`);
+    const asks = getValue(p.orderBookSorted[s.selectedOutcome], `${ASK}`);
 
     return (
       <article
@@ -438,10 +437,9 @@ export default class CreateMarketFormOrderBook extends Component {
                       selectedNav={s.selectedNav}
                       updateSelectedNav={selectedNav => this.setState({ selectedNav })}
                     />
-                    <form
+                    <div
                       ref={(defaultFormToFocus) => { this.defaultFormToFocus = defaultFormToFocus; }}
                       className="order-book-entry-inputs"
-                      onSubmit={e => e.preventDefault()}
                     >
                       <Input
                         className={classNames({ 'input-error': s.errors.quantity.length })}
@@ -467,7 +465,7 @@ export default class CreateMarketFormOrderBook extends Component {
                         updateValue={price => this.validateForm(undefined, price)}
                         onChange={price => this.validateForm(undefined, price)}
                       />
-                    </form>
+                    </div>
                     <CreateMarketFormInputNotifications
                       errors={errors}
                     />
