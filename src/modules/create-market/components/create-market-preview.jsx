@@ -177,6 +177,8 @@ export default class CreateMarketPreview extends Component {
     const bids = getValue(newMarket.orderBookSorted[s.selectedOutcome], `${BID}`);
     const asks = getValue(newMarket.orderBookSorted[s.selectedOutcome], `${ASK}`);
 
+    console.log('initialLiq -- ', s.initialLiquidity);
+
     return (
       <article
         ref={(marketPreview) => { this.marketPreview = marketPreview; }}
@@ -338,9 +340,9 @@ export default class CreateMarketPreview extends Component {
                 <li
                   className={classNames('prop-container create-market-property', {
                     'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_ORDER_BOOK,
-                    'is-null': !Object.keys(newMarket.orderBook).length,
+                    'is-null': s.initialLiquidity == null || s.initialLiquidity === '0',
                     'is-unused': !Object.keys(newMarket.orderBook).length && newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_REVIEW,
-                    'has-value': !!Object.keys(newMarket.orderBook).length
+                    'has-value': s.initialLiquidity != null && s.initialLiquidity !== '0'
                   })}
                 >
                   <button
@@ -348,7 +350,7 @@ export default class CreateMarketPreview extends Component {
                     onClick={() => p.newMarket.validations.indexOf(NEW_MARKET_OUTCOMES) !== -1 && p.updateNewMarket({ currentStep: newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK) })}
                   >
                     <span className="null-mask" />
-                    <span className="prop-value">{(Object.keys(newMarket.orderBook).length && s.initialLiquidity != null && <span>Initial Liquidity: <span className="market-property-value">{s.initialLiquidity} Eth</span></span>) || '\u00a0'}</span>
+                    <span className="prop-value">{((s.initialLiquidity != null && s.initialLiquidity !== '0') && <span>Initial Liquidity: <span className="market-property-value">{s.initialLiquidity} Eth</span></span>) || '\u00a0'}</span>
                   </button>
                 </li>
               </ul>
