@@ -210,22 +210,31 @@
           overflow-x: hidden;
           position: relative;
 
+          .display-order-removal-button + .remove-order {
+            transform: translateX(0);
+          }
+
           &:hover {
             .remove-order {
               transform: translateX(0);
             }
           }
 
-          & > * {
-            .table-cell-spacing();
+          .table-cells {
+            .table-row();
 
+            .border(false);
+
+            display: flex;
             flex: 1;
+            padding: 0;
           }
         }
 
-        & > span {
+        span {
           .table-cell-spacing();
 
+          flex: 1;
           justify-content: center;
         }
 
@@ -254,6 +263,7 @@
         .remove-order {
           .border(true, @border-right, @border-light);
 
+          left: 0;
           transform: translateX(-100%);
         }
       }

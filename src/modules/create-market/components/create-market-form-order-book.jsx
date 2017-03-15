@@ -546,34 +546,57 @@ export default class CreateMarketFormOrderBook extends Component {
                   <div className="order-book-preview-table-content">
                     <ul className="order-book-preview-table-bids">
                       {bids ?
-                        bids.map((bid, i) => <li>
-                          <button
-                            className="unstyled remove-order"
-                            onClick={() => this.handleRemoveOrder(BID, bid, i)}
-                          >
-                            <i className="fa fa-trash" />
-                          </button>
-                          <span>
-                            {`${bid.quantity}`}
-                          </span>
-                          <span>
-                            {`${bid.price}`}
-                          </span>
-                        </li>
-                      ) :
+                        bids.map((bid, i) => (
+                          <li>
+                            <button
+                              className="unstyled table-cells"
+                              onClick={(e) => {
+                                const target = e.currentTarget;
+                                target.classList.add('display-order-removal-button');
+                                setTimeout(() => {
+                                  target.classList.remove('display-order-removal-button');
+                                }, 2000);
+                              }}
+                            >
+                              <span>
+                                {`${bid.quantity}`}
+                              </span>
+                              <span>
+                                {`${bid.price}`}
+                              </span>
+                            </button>
+                            <button
+                              className="unstyled remove-order"
+                              onClick={() => this.handleRemoveOrder(BID, bid, i)}
+                            >
+                              <i className="fa fa-trash" />
+                            </button>
+                          </li>
+                      )) :
                         <span>No Bids</span>
                       }
                     </ul>
                     <ul className="order-book-preview-table-asks">
                       {asks ?
-                        asks.map((ask, i) =>
+                        asks.map((ask, i) => (
                           <li>
-                            <span>
-                              {`${ask.price}`}
-                            </span>
-                            <span>
-                              {`${ask.quantity}`}
-                            </span>
+                            <button
+                              className="unstyled table-cells"
+                              onClick={(e) => {
+                                const target = e.currentTarget;
+                                target.classList.add('display-order-removal-button');
+                                setTimeout(() => {
+                                  target.classList.remove('display-order-removal-button');
+                                }, 2000);
+                              }}
+                            >
+                              <span>
+                                {`${ask.price}`}
+                              </span>
+                              <span>
+                                {`${ask.quantity}`}
+                              </span>
+                            </button>
                             <button
                               className="unstyled remove-order"
                               onClick={() => this.handleRemoveOrder(ASK, ask, i)}
@@ -581,7 +604,7 @@ export default class CreateMarketFormOrderBook extends Component {
                               <i className="fa fa-trash" />
                             </button>
                           </li>
-                        ) :
+                        )) :
                         <span>No Asks</span>
                       }
                     </ul>
