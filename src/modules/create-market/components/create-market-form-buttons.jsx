@@ -42,14 +42,6 @@ export default class CreateMarketFormButtons extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.isValid !== nextProps.isValid) {
-      if (nextProps.isValid) {
-        nextProps.addValidationToNewMarket(newMarketCreationOrder[nextProps.currentStep]);
-      } else {
-        nextProps.removeValidationFromNewMarket(newMarketCreationOrder[nextProps.currentStep]);
-      }
-    }
-
     if (this.props.currentStep !== nextProps.currentStep ||
         this.props.validations !== nextProps.validations
     ) {

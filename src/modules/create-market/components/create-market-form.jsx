@@ -33,7 +33,9 @@ import debounce from 'utils/debounce';
 export default class CreateMarketForm extends Component {
   static propTypes = {
     newMarket: PropTypes.object.isRequired,
-    updateNewMarket: PropTypes.func.isRequired
+    updateNewMarket: PropTypes.func.isRequired,
+    addValidationToNewMarket: PropTypes.func.isRequired,
+    removeValidationFromNewMarket: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -66,6 +68,16 @@ export default class CreateMarketForm extends Component {
 
     if (this.props.newMarket !== nextProps.newMarket) {
       this.updateFormHeight();
+    }
+
+    if (this.props.newMarket.isValid !== nextProps.newMarket.isValid ||
+      (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep && nextProps.newMarket.isValid)
+    ) {
+      if (nextProps.newMarket.isValid) {
+        nextProps.addValidationToNewMarket(newMarketCreationOrder[nextProps.newMarket.currentStep]);
+      } else {
+        nextProps.removeValidationFromNewMarket(newMarketCreationOrder[nextProps.newMarket.currentStep]);
+      }
     }
   }
 
