@@ -12,8 +12,10 @@ export default class CreateMarketReview extends Component {
   static propTypes = {
     branch: PropTypes.object.isRequired,
     currentStep: PropTypes.number.isRequired,
-    // makerFee: PropTypes.Number.isRequired,
-    // takerFee: PropTypes.Number.isRequired
+    initialLiquidityEth: PropTypes.instanceOf(BigNumber).isRequired,
+    initialLiquidityGas: PropTypes.instanceOf(BigNumber).isRequired,
+    initialLiquidityFees: PropTypes.instanceOf(BigNumber).isRequired,
+
   };
 
   constructor(props) {
@@ -26,7 +28,10 @@ export default class CreateMarketReview extends Component {
       initialLiquidity: {
         gas: null,
         fees: null
-      }
+      },
+      formattedInitialLiquidityEth: formatEtherEstimate(this.props.initialLiquidityEth),
+      formattedInitialLiquidityGas: formatEtherEstimate(this.props.initialLiquidityGas),
+      formattedInitialLiquidityFees: formatEtherEstimate(this.props.initialLiquidityFees)
     };
   }
 
@@ -36,6 +41,10 @@ export default class CreateMarketReview extends Component {
     ) {
       this.calculateMarketCreationCosts();
     }
+
+    if (this.props.initialLiquidityEth !== nextProps.initialLiquidityEth) this.setState({ formattedInitialLiquidityEth: formatEtherEstimate(nextProps.initialLiquidityEth) });
+    if (this.props.initialLiquidityGas !== nextProps.initialLiquidityGas) this.setState({ formattedInitialLiquidityGas: formatEtherEstimate(nextProps.initialLiquidityGas) });
+    if (this.props.initialLiquidityFees !== nextProps.initialLiquidityFees) this.setState({ formattedInitialLiquidityFees: formatEtherEstimate(nextProps.initialLiquidityFees) });
   }
 
   calculateMarketCreationCosts() {
@@ -63,6 +72,9 @@ export default class CreateMarketReview extends Component {
     const creationFee = getValue(s, 'creationFee.formatted');
     const eventBond = getValue(s, 'eventBond.formatted');
     const gasCost = getValue(s, 'gasCost.formatted');
+    const liquidityEth = getValue(s, 'formattedInitialLiquidityEth.formatted');
+    const liquidityGas = getValue(s, 'formattedInitialLiquidityGas.formatted');
+    const liquidityFees = getValue(s, 'formattedInitialLiquidityFees.formatted');
 
     return (
       <article className={`create-market-form-part create-market-form-review ${p.className || ''}`}>
@@ -104,6 +116,40 @@ export default class CreateMarketReview extends Component {
                   </span>
                 </li>
               </ul>
+              {(p.initialLiquidityEth.toNumber() || p.initialLiquidityGas.toNumber() || p.initialLiquidityFees.toNumber()) &&
+                <div>
+                  <h3>Initial Liquidity:</h3>
+                  <ul>
+                    <li>
+                      <span>
+                        Ether:
+                      </span>
+                      <span>
+                        {liquidityEth}
+                        <span className="cost-denomination">{liquidityEth && 'ETH'}</span>
+                      </span>
+                    </li>
+                    <li>
+                      <span>
+                        Gas:
+                      </span>
+                      <span>
+                        {liquidityGas}
+                        <span className="cost-denomination">{liquidityGas && 'ETH'}</span>
+                      </span>
+                    </li>
+                    <li>
+                      <span>
+                        Fees:
+                      </span>
+                      <span>
+                        {liquidityFees}
+                        <span className="cost-denomination">{liquidityFees && 'ETH'}</span>
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+              }
             </form>
           </div>
         </div>

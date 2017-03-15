@@ -9,6 +9,8 @@ import {
 
 import { TAKER_FEE_DEFAULT, MAKER_FEE_DEFAULT } from 'modules/create-market/constants/new-market-constraints';
 
+import BigNumber from 'bignumber.js';
+
 const DEFAULT_STATE = {
   isValid: false,
   validations: [],
@@ -28,7 +30,10 @@ const DEFAULT_STATE = {
   makerFee: MAKER_FEE_DEFAULT,
   orderBook: {}, // for submit orders
   orderBookSorted: {}, // for order book table
-  orderBookSeries: {} // for order book chart
+  orderBookSeries: {}, // for order book chart
+  initialLiquidityEth: new BigNumber(0),
+  initialLiquidityGas: new BigNumber(0),
+  initialLiquidityFees: new BigNumber(0)
 };
 
 export default function (newMarket = DEFAULT_STATE, action) {

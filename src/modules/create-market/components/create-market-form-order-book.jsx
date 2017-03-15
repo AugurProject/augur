@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 import Highcharts from 'highcharts';
 import noData from 'highcharts/modules/no-data-to-display';
+import { augur, rpc, constants } from 'services/augurjs';
 
 import ComponentNav from 'modules/common/components/component-nav';
 import Input from 'modules/common/components/input';
@@ -32,6 +33,13 @@ export default class CreateMarketFormOrderBook extends Component {
       PropTypes.string,
       PropTypes.instanceOf(BigNumber)
     ]).isRequired,
+    makerFee: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ]).isRequired,
+    initialLiquidityEth: PropTypes.instanceOf(BigNumber).isRequired,
+    initialLiquidityGas: PropTypes.instanceOf(BigNumber).isRequired,
+    initialLiquidityFees: PropTypes.instanceOf(BigNumber).isRequired,
     updateValidity: PropTypes.func.isRequired,
     addOrderToNewMarket: PropTypes.func.isRequired,
     removeOrderFromNewMarket: PropTypes.func.isRequired,
@@ -71,6 +79,7 @@ export default class CreateMarketFormOrderBook extends Component {
     this.handleRemoveOrder = this.handleRemoveOrder.bind(this);
     this.updateSeries = this.updateSeries.bind(this);
     this.sortOrderBook = this.sortOrderBook.bind(this);
+    this.updateInitialLiquidityCosts = this.updateInitialLiquidityCosts.bind(this);
     this.validateForm = this.validateForm.bind(this);
   }
 
@@ -257,6 +266,8 @@ export default class CreateMarketFormOrderBook extends Component {
       price: this.state.orderPrice,
       quantity: this.state.orderQuantity
     });
+
+    this.updateInitialLiquidityCosts({ type: this.state.selectedNav, price: this.state.orderPrice, quantity: this.state.orderQuantity });
   }
 
   handleAutoFocus() {
@@ -265,7 +276,10 @@ export default class CreateMarketFormOrderBook extends Component {
 
   handleRemoveOrder(type, orderToRemove, i) {
     const orderToRemoveIndex = this.props.orderBook[this.state.selectedOutcome].findIndex(order => orderToRemove.price === order.price && orderToRemove.quantity === order.quantity);
+
     this.props.removeOrderFromNewMarket({ outcome: this.state.selectedOutcome, index: orderToRemoveIndex });
+
+    this.updateInitialLiquidityCosts(this.props.orderBook[this.state.selectedOutcome][orderToRemoveIndex], true);
   }
 
   sortOrderBook(orderBook) {
@@ -312,6 +326,41 @@ export default class CreateMarketFormOrderBook extends Component {
     }, {});
 
     this.props.updateNewMarket({ orderBookSeries });
+  }
+
+  updateInitialLiquidityCosts(order, shouldReduce) {
+    console.log('### updateInitialLiquidityCosts -- ', order, shouldReduce, this.props.makerFee);
+
+    const gasPrice = rpc.gasPrice || constants.DEFAULT_GASPRICE;
+    const makerFee = this.props.makerFee instanceof BigNumber ? this.props.makerFee : new BigNumber(this.props.makerFee);
+    console.log('makerFee -- ', makerFee);
+
+    let initialLiquidityEth;
+    let initialLiquidityGas;
+    let initialLiquidityFees;
+    let action;
+
+    if (order.type === BID) {
+      action = augur.getBidAction(order.quantity, order.price, makerFee, gasPrice);
+      console.log('bidAction -- ', action);
+    } else {
+      action = augur.getShortAskAction(order.quantity, order.price, makerFee, gasPrice);
+      console.log('action -- ', action);
+    }
+
+    console.log('initialLiquidityEth -- ', this.props.initialLiquidityEth.toNumber());
+
+    if (shouldReduce) {
+      initialLiquidityEth = this.props.initialLiquidityEth.minus(order.price.times(order.quantity));
+      initialLiquidityGas = this.props.initialLiquidityGas.minus(new BigNumber(action.gasEth));
+      initialLiquidityFees = this.props.initialLiquidityFees.minus(new BigNumber(action.feeEth));
+    } else {
+      initialLiquidityEth = this.props.initialLiquidityEth.plus(order.quantity.times(order.price));
+      initialLiquidityGas = this.props.initialLiquidityGas.plus(new BigNumber(action.gasEth));
+      initialLiquidityFees = this.props.initialLiquidityFees.plus(new BigNumber(action.feeEth));
+    }
+
+    this.props.updateNewMarket({ initialLiquidityEth, initialLiquidityGas, initialLiquidityFees });
   }
 
   validateForm(orderQuantityRaw, orderPriceRaw) {

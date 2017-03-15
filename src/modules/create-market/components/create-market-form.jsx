@@ -227,6 +227,10 @@ export default class CreateMarketForm extends Component {
           orderBookSeries={p.newMarket.orderBookSeries}
           scalarBigNum={p.newMarket.scalarBigNum}
           scalarSmallNum={p.newMarket.scalarSmallNum}
+          makerFee={p.newMarket.makerFee}
+          initialLiquidityEth={p.newMarket.initialLiquidityEth}
+          initialLiquidityGas={p.newMarket.initialLiquidityGas}
+          initialLiquidityFees={p.newMarket.initialLiquidityFees}
           addOrderToNewMarket={p.addOrderToNewMarket}
           removeOrderFromNewMarket={p.removeOrderFromNewMarket}
           updateValidity={this.updateValidity}
@@ -241,6 +245,9 @@ export default class CreateMarketForm extends Component {
           currentStep={p.newMarket.currentStep}
           takerFee={p.newMarket.takerFee}
           makerFee={p.newMarket.makerFee}
+          initialLiquidityEth={p.newMarket.initialLiquidityEth}
+          initialLiquidityGas={p.newMarket.initialLiquidityGas}
+          initialLiquidityFees={p.newMarket.initialLiquidityFees}
         />
       </article>
     );
