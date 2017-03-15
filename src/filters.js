@@ -255,7 +255,7 @@ module.exports = function () {
       }
     },
 
-        // clear/uninstall filters
+    // clear/uninstall filters
     clear_filter: function (label, cb) {
       var uninst, self = this;
       if (utils.is_function(cb)) {
@@ -270,7 +270,7 @@ module.exports = function () {
       }
     },
 
-        // set up filters
+    // set up filters
     setup_event_filter: function (contract, label, f) {
       return this.subscribeLogs({
         address: augur.contracts[contract],
