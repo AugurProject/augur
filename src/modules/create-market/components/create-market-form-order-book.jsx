@@ -443,6 +443,7 @@ export default class CreateMarketFormOrderBook extends Component {
                       className="order-book-entry-inputs"
                     >
                       <Input
+                        key="order-entry-quantity"
                         className={classNames({ 'input-error': s.errors.quantity.length })}
                         type="number"
                         placeholder="Quantity"
@@ -455,6 +456,7 @@ export default class CreateMarketFormOrderBook extends Component {
                       />
                       <span>@</span>
                       <Input
+                        key="order-entry-price"
                         className={classNames({ 'input-error': s.errors.price.length })}
                         type="number"
                         placeholder="Price"
