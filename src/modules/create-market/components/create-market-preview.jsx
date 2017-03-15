@@ -303,7 +303,7 @@ export default class CreateMarketPreview extends Component {
                     onClick={() => p.updateNewMarket({ currentStep: newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) })}
                   >
                     <span className="null-mask" />
-                    <span className="prop-value">{(!!Object.keys(newMarket.endDate).length && <span>Ends: <span className="market-property-value">{newMarket.endDate.formatted}</span></span>) || '\u00a0'}</span>
+                    <span className="prop-value">{(!!Object.keys(newMarket.endDate).length && <span>Ends: <span className="market-property-value">{newMarket.endDate.formattedLocal}</span></span>) || '\u00a0'}</span>
                   </button>
                 </li>
                 <li>

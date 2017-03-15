@@ -14,7 +14,7 @@ const CreateMarketFormEndDate = (p) => {
         <div className="create-market-form-part-input">
           <aside>
             <h3>End Date</h3>
-            <span>Specify the date & time <strong>(Local Timezone)</strong> at which your event will resolve.</span>
+            <span>What is the <strong>local</strong> date & time at which your event will resolve?</span>
           </aside>
           <div className="vertical-form-divider" />
           <form onSubmit={e => e.preventDefault()} >
