@@ -177,8 +177,6 @@ export default class CreateMarketPreview extends Component {
     const bids = getValue(newMarket.orderBookSorted[s.selectedOutcome], `${BID}`);
     const asks = getValue(newMarket.orderBookSorted[s.selectedOutcome], `${ASK}`);
 
-    console.log('initialLiq -- ', s.initialLiquidity);
-
     return (
       <article
         ref={(marketPreview) => { this.marketPreview = marketPreview; }}
