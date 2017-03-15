@@ -1,6 +1,7 @@
 .create-market-main-title {
   align-items: center;
   display: flex;
+  flex-direction: column;
   flex-grow: 1;
   margin: 0 1em;
   position: relative;
@@ -61,6 +62,22 @@
       animation-duration: @animation-speed-very-fast, @animation-speed-normal;
       animation-fill-mode: forwards;
       animation-name: displayTitle, moveLeft;
+    }
+  }
+
+  .clear-new-market {
+    align-self: flex-end;
+    color: @color-blue;
+    height: 100%;
+    position: absolute;
+    right: 0.4em;
+    visibility: hidden;
+
+    &.display-title {
+      animation-delay: 1.5s;
+      animation-duration: @animation-speed-very-fast;
+      animation-fill-mode: forwards;
+      animation-name: displayTitle;
     }
   }
 }

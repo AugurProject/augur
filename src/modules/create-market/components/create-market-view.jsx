@@ -34,6 +34,7 @@ export default class CreateMarketView extends Component {
             validations={p.newMarket.validations}
             currentStep={p.newMarket.currentStep}
             updateNewMarket={p.updateNewMarket}
+            clearNewMarket={p.clearNewMarket}
           />
           <CreateMarketPreview
             newMarket={p.newMarket}

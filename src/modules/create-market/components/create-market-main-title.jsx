@@ -54,13 +54,20 @@ const CreateMarketMainTitle = (p) => {
           Market Preview <EmDash /> {marketType()}
         </h1>
       </button>
+      <button
+        className={`unstyled clear-new-market ${previewTitleClass()}`}
+        onClick={() => p.clearNewMarket()}
+      >
+        Clear New Market
+      </button>
     </article>
   );
 };
 
 CreateMarketMainTitle.propTypes = {
   type: PropTypes.string.isRequired,
-  currentStep: PropTypes.number.isRequired
+  currentStep: PropTypes.number.isRequired,
+  clearNewMarket: PropTypes.func.isRequired
 };
 
 export default CreateMarketMainTitle;

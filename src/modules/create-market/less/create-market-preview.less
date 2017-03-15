@@ -9,12 +9,14 @@
   &.preview-is-hidden {
     animation-duration: @animation-speed-normal;
     animation-name: hidePreview;
+    visibility: hidden;
   }
 
   &.preview-is-visible {
     animation-delay: 1.4s;
     animation-duration: @animation-speed-normal;
     animation-name: revealPreview;
+    visibility: visible;
   }
 
   .create-market-preview-container {
@@ -276,35 +278,39 @@
   }
 }
 
-.keyframes(hidePreview, {
-0% {
-display: block;
-opacity: 1;
-}
-99% {
-display: block;
-opacity: 0;
-}
-100% {
-display: none;
-opacity: 0;
-}
-});
+@keyframes hidePreview {
+  0% {
+    opacity: 1;
+    visibility: visible;
+  }
 
-.keyframes(revealPreview, {
-0% {
-display: none;
-opacity: 0;
+  99% {
+    opacity: 0;
+    visibility: none;
+  }
+
+  100% {
+    opacity: 0;
+    visibility: none;
+  }
 }
-1% {
-display: block;
-opacity: 0;
+
+@keyframes revealPreview {
+  0% {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  1% {
+    opacity: 0;
+    visibility: visible;
+  }
+
+  100% {
+    opacity: 1;
+    visibility: visible;
+  }
 }
-100% {
-display: block;
-opacity: 1;
-}
-});
 
 @keyframes hideInitialLiquidity {
   0% {
