@@ -11,6 +11,7 @@ import {
 import CreateMarketView from 'modules/create-market/components/create-market-view';
 
 const mapStateToProps = state => ({
+  branch: state.branch,
   newMarket: state.newMarket
 });
 

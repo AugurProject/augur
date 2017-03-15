@@ -237,6 +237,10 @@ export default class CreateMarketForm extends Component {
             'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_REVIEW),
             'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_REVIEW) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK)
           })}
+          branch={p.branch}
+          currentStep={p.newMarket.currentStep}
+          takerFee={p.newMarket.takerFee}
+          makerFee={p.newMarket.makerFee}
         />
       </article>
     );

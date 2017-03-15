@@ -41,6 +41,7 @@ export default class CreateMarketView extends Component {
             updateNewMarket={p.updateNewMarket}
           />
           <CreateMarketForm
+            branch={p.branch}
             newMarket={p.newMarket}
             buttonHeight={s.buttonHeight}
             addValidationToNewMarket={p.addValidationToNewMarket}
