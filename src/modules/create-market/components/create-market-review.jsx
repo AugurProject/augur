@@ -116,7 +116,7 @@ export default class CreateMarketReview extends Component {
                   </span>
                 </li>
               </ul>
-              {(p.initialLiquidityEth.toNumber() || p.initialLiquidityGas.toNumber() || p.initialLiquidityFees.toNumber()) &&
+              {(!!p.initialLiquidityEth.toNumber() || !!p.initialLiquidityGas.toNumber() || !!p.initialLiquidityFees.toNumber()) &&
                 <div>
                   <h3>Initial Liquidity:</h3>
                   <ul>
