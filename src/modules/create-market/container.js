@@ -10,8 +10,11 @@ import {
 } from 'modules/create-market/actions/update-new-market';
 import CreateMarketView from 'modules/create-market/components/create-market-view';
 
+import getValue from 'utils/get-value';
+
 const mapStateToProps = state => ({
   branch: state.branch,
+  availableEth: getValue(state, 'loginAccount.ether'),
   newMarket: state.newMarket
 });
 

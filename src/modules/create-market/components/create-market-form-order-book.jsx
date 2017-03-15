@@ -40,6 +40,7 @@ export default class CreateMarketFormOrderBook extends Component {
     initialLiquidityEth: PropTypes.instanceOf(BigNumber).isRequired,
     initialLiquidityGas: PropTypes.instanceOf(BigNumber).isRequired,
     initialLiquidityFees: PropTypes.instanceOf(BigNumber).isRequired,
+    availableEth: PropTypes.string.isRequired,
     updateValidity: PropTypes.func.isRequired,
     addOrderToNewMarket: PropTypes.func.isRequired,
     removeOrderFromNewMarket: PropTypes.func.isRequired,
@@ -329,11 +330,8 @@ export default class CreateMarketFormOrderBook extends Component {
   }
 
   updateInitialLiquidityCosts(order, shouldReduce) {
-    console.log('### updateInitialLiquidityCosts -- ', order, shouldReduce, this.props.makerFee);
-
     const gasPrice = rpc.gasPrice || constants.DEFAULT_GASPRICE;
     const makerFee = this.props.makerFee instanceof BigNumber ? this.props.makerFee : new BigNumber(this.props.makerFee);
-    console.log('makerFee -- ', makerFee);
 
     let initialLiquidityEth;
     let initialLiquidityGas;
@@ -342,13 +340,9 @@ export default class CreateMarketFormOrderBook extends Component {
 
     if (order.type === BID) {
       action = augur.getBidAction(order.quantity, order.price, makerFee, gasPrice);
-      console.log('bidAction -- ', action);
     } else {
       action = augur.getShortAskAction(order.quantity, order.price, makerFee, gasPrice);
-      console.log('action -- ', action);
     }
-
-    console.log('initialLiquidityEth -- ', this.props.initialLiquidityEth.toNumber());
 
     if (shouldReduce) {
       initialLiquidityEth = this.props.initialLiquidityEth.minus(order.price.times(order.quantity));
@@ -387,7 +381,10 @@ export default class CreateMarketFormOrderBook extends Component {
     let isOrderValid;
 
     // Validate Quantity
-    if (orderQuantity !== '' && orderQuantity.lessThan(new BigNumber(0))) {
+    if (orderQuantity !== '' && orderPrice !== '' && orderPrice.times(orderQuantity).plus(this.props.initialLiquidityEth).greaterThan(new BigNumber(this.props.availableEth))) {
+      errors.quantity.push('Issufficient funds');
+      errors.price.push('Issufficient funds');
+    } else if (orderQuantity !== '' && orderQuantity.lessThan(new BigNumber(0))) {
       errors.quantity.push('Quantity must be positive');
     } else if (orderPrice !== '') {
       const bids = getValue(this.props.orderBookSorted[this.state.selectedOutcome], `${BID}`);
