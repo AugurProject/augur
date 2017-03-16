@@ -151,9 +151,19 @@
         .create-market-tags {
           display: flex;
 
+          @media @breakpoint-1 {
+            flex-wrap: wrap;
+          }
+
           li {
             align-self: flex-start;
             margin-right: 0.4em;
+
+            @media @breakpoint-1 {
+              &.grouped-tags {
+                flex-basis: 100%;
+              }
+            }
           }
         }
 
@@ -190,6 +200,12 @@
 
             &.is-null {
               margin-right: 0.4em;
+            }
+
+            @media @breakpoint-1 {
+              &.grouped-properties {
+                flex-basis: 100%;
+              }
             }
           }
 

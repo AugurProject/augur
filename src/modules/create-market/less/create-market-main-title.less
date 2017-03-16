@@ -18,7 +18,7 @@
     }
 
     @media @breakpoint-1 {
-      .font-size-medium();
+      .font-size-large();
     }
   }
 
@@ -28,12 +28,16 @@
     transition-duration: @animation-speed-normal;
     transition-property: margin;
 
+    @media @breakpoint-1 {
+      .font-size-medium();
+    }
+
     &.hide-title {
       margin: 2em 0;
     }
 
     &.display-title {
-      margin: 2em 0 0;
+      margin: 1em 0;
     }
   }
 
@@ -48,6 +52,10 @@
       animation-fill-mode: forwards;
       animation-name: hideTitle;
     }
+
+    @media @breakpoint-1 {
+      .font-size-large();
+    }
   }
 
   .initial-title {
@@ -55,11 +63,15 @@
     text-align: center;
   }
 
-  .preview-title {
+  h1.preview-title {
     .font-size-large();
 
     visibility: hidden;
     white-space: nowrap;
+
+    @media @breakpoint-1 {
+      .font-size-medium();
+    }
 
     &.display-title {
       animation-delay: @animation-speed-very-fast, 1s;
@@ -83,6 +95,11 @@
       animation-duration: @animation-speed-very-fast;
       animation-fill-mode: forwards;
       animation-name: displayTitle;
+    }
+
+    @media @breakpoint-1 {
+      height: auto;
+      top: 0.8em;
     }
   }
 }
