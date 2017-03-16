@@ -19,13 +19,13 @@ import BigNumber from 'bignumber.js';
 describe('modules/create-market/reducers/new-market.js', () => {
   const test = (t) => {
     it(t.describe, () => {
-      t.assertion();
+      t.assertions();
     });
   };
 
   test({
     describe: 'should return the default state',
-    assertion: () => {
+    assertions: () => {
       const actual = newMarket(undefined, { type: null });
 
       const expected = {
@@ -59,7 +59,7 @@ describe('modules/create-market/reducers/new-market.js', () => {
 
   test({
     describe: 'should return the existing value',
-    assertion: () => {
+    assertions: () => {
       const actual = newMarket('testing', { type: null });
 
       const expected = 'testing';
@@ -70,7 +70,7 @@ describe('modules/create-market/reducers/new-market.js', () => {
 
   test({
     describe: 'should add validation',
-    assertion: () => {
+    assertions: () => {
       const newMarketState = {
         test: 'test',
         validations: [
@@ -99,7 +99,7 @@ describe('modules/create-market/reducers/new-market.js', () => {
 
   test({
     describe: 'should not add validation if already exists',
-    assertion: () => {
+    assertions: () => {
       const newMarketState = {
         test: 'test',
         validations: [
@@ -127,7 +127,7 @@ describe('modules/create-market/reducers/new-market.js', () => {
 
   test({
     describe: 'should remove validation',
-    assertion: () => {
+    assertions: () => {
       const newMarketState = {
         test: 'test',
         validations: [
@@ -154,7 +154,7 @@ describe('modules/create-market/reducers/new-market.js', () => {
 
   test({
     describe: 'should not modify validations if value is not present',
-    assertion: () => {
+    assertions: () => {
       const newMarketState = {
         test: 'test',
         validations: [
@@ -182,7 +182,7 @@ describe('modules/create-market/reducers/new-market.js', () => {
 
   test({
     describe: 'should add order to outcome with no previous orders',
-    assertion: () => {
+    assertions: () => {
       const newMarketState = {
         test: 'test',
         orderBook: {}
@@ -217,7 +217,7 @@ describe('modules/create-market/reducers/new-market.js', () => {
 
   test({
     describe: 'should add order to an existing outcome',
-    assertion: () => {
+    assertions: () => {
       const newMarketState = {
         test: 'test',
         orderBook: {
@@ -275,7 +275,7 @@ describe('modules/create-market/reducers/new-market.js', () => {
 
   test({
     describe: 'should remove order',
-    assertion: () => {
+    assertions: () => {
       const newMarketState = {
         test: 'test',
         orderBook: {
@@ -321,7 +321,7 @@ describe('modules/create-market/reducers/new-market.js', () => {
 
   test({
     describe: `should update 'newMarket'`,
-    assertion: () => {
+    assertions: () => {
       const newMarketState = {
         test: 'test',
         anotherTest: [
@@ -351,7 +351,7 @@ describe('modules/create-market/reducers/new-market.js', () => {
 
   test({
     describe: `should clear 'newMarket'`,
-    assertion: () => {
+    assertions: () => {
       const newMarketState = {
         test: 'test',
         anotherTest: [

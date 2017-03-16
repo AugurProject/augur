@@ -19,13 +19,13 @@ import {
 describe('modules/create-market/actions/update-new-market.js', () => {
   const test = (t) => {
     it(t.description, () => {
-      t.assertion();
+      t.assertions();
     });
   };
 
   test({
     description: `should return the expected object for 'addValidationToNewMarket'`,
-    assertion: () => {
+    assertions: () => {
       const action = addValidationToNewMarket({ test: 'test' });
 
       const expected = {
@@ -41,7 +41,7 @@ describe('modules/create-market/actions/update-new-market.js', () => {
 
   test({
     description: `should return the expected object for 'removeValidationToNewMarket'`,
-    assertion: () => {
+    assertions: () => {
       const action = removeValidationFromNewMarket({ test: 'test' });
 
       const expected = {
@@ -57,7 +57,7 @@ describe('modules/create-market/actions/update-new-market.js', () => {
 
   test({
     description: `should return the expected object for 'addOrderToNewMarket'`,
-    assertion: () => {
+    assertions: () => {
       const action = addOrderToNewMarket({ test: 'test' });
 
       const expected = {
@@ -73,7 +73,7 @@ describe('modules/create-market/actions/update-new-market.js', () => {
 
   test({
     description: `should return the expected object for 'removeOrderFromNewMarket'`,
-    assertion: () => {
+    assertions: () => {
       const action = removeOrderFromNewMarket({ test: 'test' });
 
       const expected = {
@@ -89,7 +89,7 @@ describe('modules/create-market/actions/update-new-market.js', () => {
 
   test({
     description: `should return the expected object for 'updateNewMarket'`,
-    assertion: () => {
+    assertions: () => {
       const action = updateNewMarket({ test: 'test' });
 
       const expected = {
@@ -105,7 +105,7 @@ describe('modules/create-market/actions/update-new-market.js', () => {
 
   test({
     description: `should return the expected object for 'clearNewMarket'`,
-    assertion: () => {
+    assertions: () => {
       const action = clearNewMarket();
 
       const expected = {
