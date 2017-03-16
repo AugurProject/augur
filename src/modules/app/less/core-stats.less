@@ -18,6 +18,11 @@
     justify-content: center;
     margin: 0 1em;
 
+    @media @breakpoint-mobile {
+      flex-basis: 100%;
+      flex-wrap: wrap;
+    }
+
     &:first-child {
       justify-content: flex-start;
     }
