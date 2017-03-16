@@ -43,8 +43,8 @@ export default function (newMarket = DEFAULT_STATE, action) {
         return {
           ...newMarket,
           validations: [
-            action.data,
-            ...newMarket.validations
+            ...newMarket.validations,
+            action.data
           ]
         };
       }
