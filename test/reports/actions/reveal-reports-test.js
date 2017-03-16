@@ -122,6 +122,56 @@ describe('modules/reports/actions/reveal-reports.js', () => {
           }
         }
       }
+    },
+    {
+      type: 'UPDATE_ASSETS'
+    },
+    {
+      reports: {
+        '0xf69b5': {
+          test2: {
+            eventID: 'test2',
+            isCategorical: false,
+            isIndeterminate: false,
+            isRevealed: true,
+            isScalar: true,
+            isUnethical: false,
+            marketID: 'market2',
+            maxValue: '20',
+            minValue: '5',
+            period: 19,
+            reportHash: '0xtesthash123456789testhash2',
+            reportedOutcomeID: 'testOutcomeID2',
+            salt: 'salt2',
+          }
+        }
+      },
+      type: 'UPDATE_REPORTS'
+    },
+    {
+      type: 'UPDATE_ASSETS'
+    },
+    {
+      reports: {
+        '0xf69b5': {
+          test3: {
+            eventID: 'test3',
+            isCategorical: false,
+            isIndeterminate: false,
+            isRevealed: true,
+            isScalar: false,
+            isUnethical: true,
+            marketID: 'market3',
+            maxValue: '2',
+            minValue: '1',
+            period: 19,
+            reportHash: '0xtesthash123456789testhash3',
+            reportedOutcomeID: 'testOutcomeID3',
+            salt: 'salt3',
+          }
+        }
+      },
+      type: 'UPDATE_REPORTS'
     }];
     store.dispatch(action.revealReports());
     assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects`);
