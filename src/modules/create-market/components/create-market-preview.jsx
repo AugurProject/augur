@@ -378,7 +378,13 @@ export default class CreateMarketPreview extends Component {
                       </div>
                     }
                   </div>
-                  {newMarket.outcomes.map(outcome => <li>{outcome}</li>)}
+                  {newMarket.outcomes.map(outcome => (
+                    <li
+                      key={outcome}
+                    >
+                      {outcome}
+                    </li>
+                  ))}
                 </button>
               </ul>
             </div>

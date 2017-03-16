@@ -11,6 +11,7 @@ const MarketBasics = p => (
         <ul className="tags">
           {(p.tags || []).map((tag, i) => (
             <li
+              key={tag.name}
               className={classNames('tag pointer', { link: !!tag.name })}
             >
               <button

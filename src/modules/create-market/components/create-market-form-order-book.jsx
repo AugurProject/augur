@@ -47,6 +47,10 @@ export default class CreateMarketFormOrderBook extends Component {
     updateNewMarket: PropTypes.func.isRequired
   }
 
+  static defaultProps = {
+    availableEth: '0'
+  };
+
   constructor(props) {
     super(props);
 
