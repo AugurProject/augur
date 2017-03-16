@@ -226,9 +226,9 @@ export default class App extends Component {
                   setSidebarAllowed={this.setSidebarAllowed}
                   footerHeight={s.footerHeight}
                 />
-              {p.activeView !== CREATE_MARKET &&
-                <Footer {...navProps} />
-              }
+                {p.activeView !== CREATE_MARKET &&
+                  <Footer {...navProps} />
+                }
               </div>
             </div>
           </div>

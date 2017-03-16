@@ -44,7 +44,7 @@ const CreateMarketMainTitle = (p) => {
 
   return (
     <article className="create-market-main-title">
-      <h1 className={`title-animation-helper ${previewTitleClass()}`} />
+      <h1 className={`title-animation-helper ${previewTitleClass()}`}>{}</h1>
       <h1 className={`initial-title ${initialTitleClass()}`}>Create Market</h1>
       <button
         className="unstyled"

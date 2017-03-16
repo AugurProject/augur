@@ -82,7 +82,7 @@ export default class InputList extends Component {
     return (
       <div className={classNames('input-list', p.className)}>
         {list.map((item, i) => (
-          <div key={i} className={classNames('item', { 'new-item': i === list.length - 1 && (!item || !item.length) })}>
+          <div key={item} className={classNames('item', { 'new-item': i === list.length - 1 && (!item || !item.length) })}>
             <Input
               type="text"
               maxLength={p.itemMaxLength}

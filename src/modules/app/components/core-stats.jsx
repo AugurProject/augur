@@ -5,7 +5,7 @@ const CoreStats = p => (
   <article className="core-stats" >
     {p.coreStats && p.coreStats.map((statGroup, i) => (
       <div
-        key={i}
+        key={statGroup}
         className="core-stats-group"
       >
         {Object.keys(p.coreStats[i]).map(stat => (

@@ -194,7 +194,11 @@ export default class AuthSignup extends Component {
         >
           <ul>
             {s.passwordSuggestions.map((suggestion, i) => (
-              <li key={`password-suggestion-${i}`}>{suggestion}</li>
+              <li
+                key={suggestion}
+              >
+                {suggestion}
+              </li>
             ))}
           </ul>
         </div>
