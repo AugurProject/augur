@@ -57,7 +57,7 @@ export default class CreateMarketForm extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep) {
+    if (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep && nextProps.newMarket.currentStep !== 0) {
       this.setState({
         lastStep: this.props.newMarket.currentStep,
         currentStep: nextProps.newMarket.currentStep
@@ -66,7 +66,7 @@ export default class CreateMarketForm extends Component {
       });
     }
 
-    if (this.props.newMarket !== nextProps.newMarket) {
+    if (this.props.newMarket !== nextProps.newMarket && nextProps.newMarket.currentStep !== 0) {
       this.updateFormHeight();
     }
 

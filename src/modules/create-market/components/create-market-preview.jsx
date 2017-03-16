@@ -100,17 +100,17 @@ export default class CreateMarketPreview extends Component {
 
     if (this.props.newMarket.orderBook !== nextProps.newMarket.orderBook) this.updateMarketLiquidity(nextProps.newMarket.orderBook);
     if (this.props.newMarket.outcomes !== nextProps.newMarket.outcomes) this.setState({ selectedOutcome: nextProps.newMarket.outcomes[0] });
-    if (this.props.newMarket.orderBookSeries !== nextProps.newMarket.orderBookSeries) this.updateChart();
+    if (this.props.newMarket.orderBookSeries !== nextProps.newMarket.orderBookSeries && nextProps.newMarket.currentStep !== 0) this.updateChart();
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.shouldUpdateHeight && prevState.shouldUpdateHeight !== this.state.shouldUpdateHeight) {
+    if (this.state.shouldUpdateHeight && prevState.shouldUpdateHeight !== this.state.shouldUpdateHeight && this.props.newMarket.currentStep !== 0) {
       this.updatePreviewHeight(this.props.newMarket.currentStep);
       this.updateChart();
       this.shouldUpdateHeight(false);
     }
 
-    if (prevState.selectedOutcome !== this.state.selectedOutcome) {
+    if (prevState.selectedOutcome !== this.state.selectedOutcome && this.props.newMarket.currentStep !== 0) {
       this.updateChart();
     }
   }
