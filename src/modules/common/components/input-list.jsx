@@ -1,4 +1,4 @@
-/* eslint react/no-array-index-key: 0 */  // It's OK in this specific instance
+/* eslint react/no-array-index-key: 0 */  // It's OK in this specific instance as potentially two items have itentical values
 
 import React, { PropTypes, Component } from 'react';
 import classNames from 'classnames';

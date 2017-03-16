@@ -1,3 +1,5 @@
+/* eslint react/no-array-index-key: 0 */  // It's OK in this specific instance as order remains the same
+
 import React from 'react';
 import classNames from 'classnames';
 
@@ -11,7 +13,7 @@ const MarketBasics = p => (
         <ul className="tags">
           {(p.tags || []).map((tag, i) => (
             <li
-              key={tag.name}
+              key={i}
               className={classNames('tag pointer', { link: !!tag.name })}
             >
               <button

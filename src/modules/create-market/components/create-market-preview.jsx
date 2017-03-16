@@ -94,7 +94,7 @@ export default class CreateMarketPreview extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep) this.setState({ previousStep: this.props.newMarket.currentStep });
 
-    if (this.props.newMarket !== nextProps.newMarket) {
+    if (this.props.newMarket !== nextProps.newMarket && nextProps.newMarket.currentStep !== 0) {
       this.updatePreviewHeight(nextProps.newMarket.currentStep);
     }
 
