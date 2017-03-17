@@ -189,7 +189,7 @@ export default class CreateMarketFormOrderBook extends Component {
 
     this.orderBookPreviewChart.update({
       title: {
-        text: `${this.state.selectedOutcome}: Depth Chart`
+        text: `${this.props.type === CATEGORICAL ? ''+this.state.selectedOutcome+': ' : ''}Depth Chart`
       },
       chart: {
         width,
