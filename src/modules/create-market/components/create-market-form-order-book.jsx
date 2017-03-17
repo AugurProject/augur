@@ -115,7 +115,7 @@ export default class CreateMarketFormOrderBook extends Component {
         {
           type: 'area',
           name: 'Bids',
-          step: 'left',
+          step: 'right',
           data: []
         },
         {
@@ -323,10 +323,18 @@ export default class CreateMarketFormOrderBook extends Component {
         let totalQuantity = new BigNumber(0);
 
         orderBook[outcome][type].forEach((order) => {
-          p[outcome][type].push([order.price.toNumber(), totalQuantity.toNumber()]);
-          // totalQuantity = totalQuantity.minus(order.quantity);
+          const matchedPriceIndex = p[outcome][type].findIndex(existing => existing[0] === order.price.toNumber());
+
           totalQuantity = totalQuantity.plus(order.quantity);
+
+          if (matchedPriceIndex > -1) {
+            p[outcome][type][matchedPriceIndex][1] = totalQuantity.toNumber();
+          } else {
+            p[outcome][type].push([order.price.toNumber(), totalQuantity.toNumber()]);
+          }
         });
+
+        p[outcome][type].sort((a, b) => a[0] - b[0]);
       });
 
       return p;
