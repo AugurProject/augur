@@ -10,25 +10,26 @@ export function formatDate(d) {
 
   // UTC Time Formatting
   const utcTime = [d.getUTCHours(), d.getUTCMinutes()];
-  const utcAMPM = ampm(utcTime);
+  const utcAMPM = ampm(utcTime[0]);
   const utcTimeTwelve = getTwelveHour(utcTime);
 
   // Locat Time Formatting
   const localTime = [d.getHours(), d.getMinutes()];
-  const localAMPM = ampm(localTime);
+  const localAMPM = ampm(localTime[0]);
   const localTimeTwelve = getTwelveHour(localTime);
+  const localOffset = (date.getTimezoneOffset() / 60) * -1;
 
   return {
     value: date,
     formatted: `${months[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()} ${utcTimeTwelve.join(':')} ${utcAMPM}`, // UTC time
-    formattedLocal: `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()} ${localTimeTwelve.join(':')} ${localAMPM}`, // local time
+    formattedLocal: `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()} ${localTimeTwelve.join(':')} ${localAMPM} (UTC ${localOffset})`, // local time
     full: d.toUTCString(),
     timestamp: d.getTime()
   };
 }
 
 function ampm(time) {
-  return (time[0] < 12 ? 'AM' : 'PM');
+  return (time < 12 ? 'AM' : 'PM');
 }
 
 function getTwelveHour(time) {
