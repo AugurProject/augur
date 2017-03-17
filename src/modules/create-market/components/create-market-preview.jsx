@@ -147,7 +147,7 @@ export default class CreateMarketPreview extends Component {
 
     this.orderBookPreviewChart.update({
       title: {
-        text: `${this.state.selectedOutcome}: Depth Chart`
+        text: `${this.props.newMarket.type === CATEGORICAL ? ''+this.state.selectedOutcome+': ' : ''}Depth Chart`
       },
       chart: {
         width,
