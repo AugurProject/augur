@@ -32,7 +32,9 @@ export default class CreateMarketFormOutcomesScalar extends Component {
         big: []
       },
       scalarMin: abi.unfix(abi.constants.SERPINT_MIN).round(18, BigNumber.ROUND_DOWN),
-      scalarMax: abi.unfix(abi.constants.SERPINT_MAX).round(18, BigNumber.ROUND_DOWN)
+      scalarMax: abi.unfix(abi.constants.SERPINT_MAX).round(18, BigNumber.ROUND_DOWN),
+      scalarSmallNum: '',
+      scalarBigNum: ''
     };
 
     this.validateForm = this.validateForm.bind(this);
@@ -71,7 +73,7 @@ export default class CreateMarketFormOutcomesScalar extends Component {
 
     const scalarSmallNum = sanitizeValue(scalarSmallNumRaw);
     const scalarBigNum = sanitizeValue(scalarBigNumRaw, 'big');
-    let outcomes = [];
+    const outcomes = new Array(2);
 
     if (scalarBigNumRaw == null && scalarSmallNum !== '') {
       if (scalarBigNum !== '' && scalarSmallNum.greaterThanOrEqualTo(scalarBigNum)) {
@@ -87,12 +89,23 @@ export default class CreateMarketFormOutcomesScalar extends Component {
       }
     }
 
+    // Handle outcomes
+    if (errors.small.length) {
+      outcomes[0] = '';
+    } else {
+      outcomes[0] = `${scalarSmallNum}`;
+    }
+
+    if (errors.big.length) {
+      outcomes[1] = '';
+    } else {
+      outcomes[1] = `${scalarBigNum}`;
+    }
+
     if (errors.small.length || errors.big.length || scalarSmallNum === '' || scalarBigNum === '') {
       this.props.updateValidity(false);
     } else {
       this.props.updateValidity(true);
-      const scalarMidPoint = scalarSmallNum.plus(scalarBigNum).dividedBy(new BigNumber(2));
-      outcomes = [`${scalarMidPoint}`];
     }
 
     this.setState({ errors });

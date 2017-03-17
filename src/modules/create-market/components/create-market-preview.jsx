@@ -19,7 +19,7 @@ import {
   NEW_MARKET_ORDER_BOOK,
   NEW_MARKET_REVIEW
 } from 'modules/create-market/constants/new-market-creation-steps';
-import { BINARY, CATEGORICAL } from 'modules/markets/constants/market-types';
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
 import { BID, ASK } from 'modules/transactions/constants/types';
 
 import getValue from 'utils/get-value';
@@ -355,41 +355,44 @@ export default class CreateMarketPreview extends Component {
                 </li>
               </ul>
             </div>
-            <div className="create-market-outcomes">
-              <ul
-                className={classNames('prop-container create-market-outcome-list', {
-                  'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_OUTCOMES,
-                  'is-null': !newMarket.outcomes.length || newMarket.outcomes[0] === '',
-                  'has-value': newMarket.outcomes.length && newMarket.outcomes[0] !== ''
-                })}
-              >
-                <button
-                  className={classNames('unstyled', { disabled: newMarket.type === BINARY })}
-                  onClick={() => newMarket.type !== BINARY && p.updateNewMarket({ currentStep: newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES) })}
+            {newMarket.type !== BINARY &&
+              <div className="create-market-outcomes">
+                <ul
+                  className={classNames('prop-container create-market-outcome-list', {
+                    'is-editing': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_OUTCOMES,
+                    'is-null': !newMarket.outcomes.length || newMarket.outcomes.every(outcome => outcome === ''),
+                    'has-value': newMarket.outcomes.length && newMarket.outcomes.some(outcome => outcome !== '')
+                  })}
                 >
-                  <div className="outcome-null-masks">
-                    {newMarket.type === CATEGORICAL ?
-                      <div className="null-outcomes">
-                        <li className="null-mask" />
-                        <li className="null-mask" />
-                        <li className="null-mask" />
-                        <li className="null-mask" />
-                      </div> :
-                      <div className="null-outcomes">
-                        <li className="null-mask" />
-                      </div>
-                    }
-                  </div>
-                  {newMarket.outcomes.map(outcome => (
-                    <li
-                      key={outcome}
-                    >
-                      {outcome}
-                    </li>
-                  ))}
-                </button>
-              </ul>
-            </div>
+                  <button
+                    className={classNames('unstyled', { disabled: newMarket.type === BINARY })}
+                    onClick={() => newMarket.type !== BINARY && p.updateNewMarket({ currentStep: newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES) })}
+                  >
+                    <div className="outcome-null-masks">
+                      {newMarket.type === CATEGORICAL ?
+                        <div className="null-outcomes">
+                          <li className="null-mask" />
+                          <li className="null-mask" />
+                          <li className="null-mask" />
+                          <li className="null-mask" />
+                        </div> :
+                        <div className="null-outcomes">
+                          <li className="null-mask" />
+                          <li className="null-mask" />
+                        </div>
+                      }
+                    </div>
+                    {newMarket.outcomes.map((outcome, i) => (
+                      <li
+                        key={outcome === '' ? i : outcome}
+                      >
+                        {(outcome && Math.sign(outcome) === 1) && <span style={{ visibility: 'hidden' }}>-</span>}{outcome || `\u00a0`}
+                      </li>
+                    ))}
+                  </button>
+                </ul>
+              </div>
+            }
             <div
               ref={(initialLiquidityPreview) => { this.initialLiquidityPreview = initialLiquidityPreview; }}
               className={classNames('create-market-initial-liquidity', {
