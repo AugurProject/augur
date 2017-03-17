@@ -1,3 +1,5 @@
+/* eslint react/no-array-index-key: 0 */  // due to potential for dup orders
+
 import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
@@ -111,13 +113,13 @@ export default class CreateMarketFormOrderBook extends Component {
       },
       series: [
         {
-          type: 'line',
+          type: 'area',
           name: 'Bids',
           step: 'left',
           data: []
         },
         {
-          type: 'line',
+          type: 'area',
           name: 'Asks',
           step: 'left',
           data: []
@@ -551,7 +553,9 @@ export default class CreateMarketFormOrderBook extends Component {
                     <ul className="order-book-preview-table-bids">
                       {bids ?
                         bids.map((bid, i) => (
-                          <li>
+                          <li
+                            key={i}
+                          >
                             <button
                               className="unstyled table-cells"
                               onClick={(e) => {
@@ -583,7 +587,9 @@ export default class CreateMarketFormOrderBook extends Component {
                     <ul className="order-book-preview-table-asks">
                       {asks ?
                         asks.map((ask, i) => (
-                          <li>
+                          <li
+                            key={i}
+                          >
                             <button
                               className="unstyled table-cells"
                               onClick={(e) => {

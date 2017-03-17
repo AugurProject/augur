@@ -1,3 +1,5 @@
+/* eslint react/no-array-index-key: 0 */  // due to potential for dup orders
+
 import React, { PropTypes, Component } from 'react';
 import BigNumber from 'bignumber.js';
 import Highcharts from 'highcharts';
@@ -437,22 +439,27 @@ export default class CreateMarketPreview extends Component {
                   <div className="order-book-preview-table-content">
                     <ul className="order-book-preview-table-bids">
                       {bids ?
-                        bids.map((bid, i) => <li>
-                          <span>
-                            {`${bid.quantity}`}
-                          </span>
-                          <span>
-                            {`${bid.price}`}
-                          </span>
-                        </li>
-                      ) :
+                        bids.map((bid, i) => (
+                          <li
+                            key={i}
+                          >
+                            <span>
+                              {`${bid.quantity}`}
+                            </span>
+                            <span>
+                              {`${bid.price}`}
+                            </span>
+                          </li>
+                      )) :
                         <span>No Bids</span>
                       }
                     </ul>
                     <ul className="order-book-preview-table-asks">
                       {asks ?
-                        asks.map((ask, i) =>
-                          <li>
+                        asks.map((ask, i) => (
+                          <li
+                            key={i}
+                          >
                             <span>
                               {`${ask.price}`}
                             </span>
@@ -460,7 +467,7 @@ export default class CreateMarketPreview extends Component {
                               {`${ask.quantity}`}
                             </span>
                           </li>
-                        ) :
+                        )) :
                         <span>No Asks</span>
                       }
                     </ul>
