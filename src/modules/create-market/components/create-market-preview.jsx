@@ -94,23 +94,23 @@ export default class CreateMarketPreview extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep) this.setState({ previousStep: this.props.newMarket.currentStep });
 
-    if (this.props.newMarket !== nextProps.newMarket && nextProps.newMarket.currentStep !== 0) {
+    if (this.props.newMarket !== nextProps.newMarket) {
       this.updatePreviewHeight(nextProps.newMarket.currentStep);
     }
 
     if (this.props.newMarket.orderBook !== nextProps.newMarket.orderBook) this.updateMarketLiquidity(nextProps.newMarket.orderBook);
     if (this.props.newMarket.outcomes !== nextProps.newMarket.outcomes) this.setState({ selectedOutcome: nextProps.newMarket.outcomes[0] });
-    if (this.props.newMarket.orderBookSeries !== nextProps.newMarket.orderBookSeries && nextProps.newMarket.currentStep !== 0) this.updateChart();
+    if (this.props.newMarket.orderBookSeries !== nextProps.newMarket.orderBookSeries) this.updateChart();
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.shouldUpdateHeight && prevState.shouldUpdateHeight !== this.state.shouldUpdateHeight && this.props.newMarket.currentStep !== 0) {
+    if (this.state.shouldUpdateHeight && prevState.shouldUpdateHeight !== this.state.shouldUpdateHeight) {
       this.updatePreviewHeight(this.props.newMarket.currentStep);
       this.updateChart();
       this.shouldUpdateHeight(false);
     }
 
-    if (prevState.selectedOutcome !== this.state.selectedOutcome && this.props.newMarket.currentStep !== 0) {
+    if (prevState.selectedOutcome !== this.state.selectedOutcome) {
       this.updateChart();
     }
   }
@@ -121,9 +121,9 @@ export default class CreateMarketPreview extends Component {
 
   updatePreviewHeight(step) {
     let newHeight = 0;
-    if (step && step !== 0) newHeight = this.marketPreview.getElementsByClassName('create-market-preview-content')[0].clientHeight + 13; // + value to accomodate padding + borders
+    if (step) newHeight = this.marketPreview.getElementsByClassName('create-market-preview-content')[0].clientHeight + 13; // + value to accomodate padding + borders
 
-    if (step === 0 || this.state.previousStep !== 0) {
+    if (step === 0) {
       this.marketPreview.style.height = `${newHeight}px`;
     } else {
       setTimeout(() => {

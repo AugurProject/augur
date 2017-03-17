@@ -14,10 +14,9 @@ import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR } from 'm
 
 export function submitNewMarket(newMarket) {
   return (dispatch, getState) => {
-    const { branch } = getState();
-
-    dispatch(clearNewMarket());
     selectTransactionsLink(dispatch).onClick();
+
+    const { branch } = getState();
 
     // General Properties
     const formattedNewMarket = {
@@ -53,6 +52,8 @@ export function submitNewMarket(newMarket) {
         formattedNewMarket.maxValue = 2;
         formattedNewMarket.numOutcomes = 2;
     }
+
+    dispatch(clearNewMarket()); // Do this after components have unmounted to prevent side effects related to DOM measurements
 
     augur.createSingleEventMarket({
       ...formattedNewMarket,

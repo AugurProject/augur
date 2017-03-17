@@ -156,10 +156,9 @@ export default class CreateMarketFormOrderBook extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (((newMarketCreationOrder[this.props.currentStep] === NEW_MARKET_ORDER_BOOK && prevProps.currentStep !== this.props.currentStep) ||
+    if ((newMarketCreationOrder[this.props.currentStep] === NEW_MARKET_ORDER_BOOK && prevProps.currentStep !== this.props.currentStep) ||
       prevProps.orderBookSeries !== this.props.orderBookSeries ||
-      prevState.selectedOutcome !== this.state.selectedOutcome) &&
-      this.props.currentStep !== 0
+      prevState.selectedOutcome !== this.state.selectedOutcome
     ) {
       this.updateChart();
     }
