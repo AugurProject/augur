@@ -344,7 +344,7 @@ export default class CreateMarketPreview extends Component {
                   })}
                 >
                   <button
-                    className="unstyled"
+                    className={classNames('unstyled', { disabled: p.newMarket.validations.indexOf(NEW_MARKET_OUTCOMES) === -1 })}
                     onClick={() => p.newMarket.validations.indexOf(NEW_MARKET_OUTCOMES) !== -1 && p.updateNewMarket({ currentStep: newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK) })}
                   >
                     <span className="null-mask" />
@@ -362,7 +362,7 @@ export default class CreateMarketPreview extends Component {
                 })}
               >
                 <button
-                  className="unstyled"
+                  className={classNames('unstyled', { disabled: newMarket.type === BINARY })}
                   onClick={() => newMarket.type !== BINARY && p.updateNewMarket({ currentStep: newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES) })}
                 >
                   <div className="outcome-null-masks">

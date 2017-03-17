@@ -19,6 +19,15 @@
     visibility: visible;
   }
 
+  button {
+    cursor: pointer;
+
+    &.disabled {
+      background-color: transparent;
+      cursor: default;
+    }
+  }
+
   .create-market-preview-container {
     position: absolute;
     width: 100%;
