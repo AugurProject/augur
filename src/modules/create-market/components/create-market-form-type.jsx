@@ -18,7 +18,7 @@ const CreateMarketFormType = p => (
           p.updateNewMarket({
             currentStep: 1,
             type: BINARY,
-            outcomes: [],
+            outcomes: ['Yes'], // Not Shown, but required for order book population
             scalarSmallNum: '',
             scalarBigNum: '',
             orderBook: {},

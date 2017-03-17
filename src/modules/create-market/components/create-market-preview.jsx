@@ -19,7 +19,7 @@ import {
   NEW_MARKET_ORDER_BOOK,
   NEW_MARKET_REVIEW
 } from 'modules/create-market/constants/new-market-creation-steps';
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
+import { BINARY, CATEGORICAL } from 'modules/markets/constants/market-types';
 import { BID, ASK } from 'modules/transactions/constants/types';
 
 import getValue from 'utils/get-value';

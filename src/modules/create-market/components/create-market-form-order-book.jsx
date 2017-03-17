@@ -75,8 +75,8 @@ export default class CreateMarketFormOrderBook extends Component {
       selectedNav: Object.keys(this.navItems)[0],
       orderPrice: '',
       orderQuantity: '',
-      minPrice: 0,
-      maxPrice: 1
+      minPrice: new BigNumber(0),
+      maxPrice: new BigNumber(1)
     };
 
     this.handleAutoFocus = this.handleAutoFocus.bind(this);
