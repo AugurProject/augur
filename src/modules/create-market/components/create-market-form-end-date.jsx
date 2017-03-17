@@ -9,7 +9,7 @@ const CreateMarketFormEndDate = (p) => {
   if (p.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) && Object.keys(p.endDate).length && !p.isValid) p.updateValidity(true);
 
   return (
-    <article className={`create-market-form-part ${p.className || ''}`}>
+    <article className={`create-market-form-part create-market-form-part-end-date ${p.className || ''}`}>
       <div className="create-market-form-part-content">
         <div className="create-market-form-part-input">
           <aside>
@@ -18,13 +18,20 @@ const CreateMarketFormEndDate = (p) => {
           </aside>
           <div className="vertical-form-divider" />
           <form onSubmit={e => e.preventDefault()} >
-            <DatePicker
-              endDate={p.endDate}
-              onValuesUpdated={(endDate) => {
-                p.updateNewMarket({ endDate });
-                p.updateValidity(true);
+            <button
+              className="unstyled"
+              onClick={() => {
+                p.updateNewMarket({ endDate: p.endDate }); // utilized to simply prompt a height update
               }}
-            />
+            >
+              <DatePicker
+                endDate={p.endDate}
+                onValuesUpdated={(endDate) => {
+                  p.updateNewMarket({ endDate });
+                  p.updateValidity(true);
+                }}
+              />
+            </button>
           </form>
         </div>
       </div>

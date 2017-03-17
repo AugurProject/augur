@@ -17,6 +17,12 @@ const DatePicker = (p) => {
       defaultValue={defaultValue}
       inputProps={{ placeholder: 'YYYY/MM/DD hh:mm:ss a' }}
       onChange={date => p.onValuesUpdated(formatDate(new Date(date)))}
+      onBlur={() => {
+        console.log('blur');
+      }}
+      onFocus={() => {
+        console.log('focus');
+      }}
     />
   );
 };
