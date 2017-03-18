@@ -21,7 +21,7 @@ const CreateMarketFormEndDate = (p) => {
             <button
               className="unstyled"
               onClick={() => {
-                p.updateNewMarket({ endDate: p.endDate }); // utilized to simply prompt a height update
+                p.updateNewMarket({ currentStep: p.currentStep }); // utilized to simply prompt a height update
               }}
             >
               <DatePicker
