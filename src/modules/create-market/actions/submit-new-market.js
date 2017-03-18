@@ -53,11 +53,13 @@ export function submitNewMarket(newMarket) {
         formattedNewMarket.numOutcomes = 2;
     }
 
-    dispatch(clearNewMarket()); // Do this after components have unmounted to prevent side effects related to DOM measurements
-
     augur.createSingleEventMarket({
       ...formattedNewMarket,
-      onSent: res => console.log('createSingleEventMarket sent:', res),
+      onSent: (res) => {
+        console.log('createSingleEventMarket sent:', res);
+
+        dispatch(clearNewMarket());
+      },
       onSuccess: (res) => {
         if (Object.keys(newMarket.orderBook).length) {
           eachOfSeries(Object.keys(newMarket.orderBook), (outcome, index, seriesCB) => {
