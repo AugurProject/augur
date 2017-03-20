@@ -151,7 +151,8 @@ export default class CreateMarketFormOrderBook extends Component {
       this.props.scalarBigNum !== nextProps.scalarBigNum ||
       this.props.orderBookSorted !== nextProps.orderBookSorted ||
       this.state.selectedSide !== nextState.selectedSide ||
-      this.state.selectedNav !== nextState.selectedNav
+      this.state.selectedNav !== nextState.selectedNav ||
+      this.state.selectedOutcome !== nextState.selectedOutcome
     ) {
       this.updatePriceBounds(nextProps.type, nextState.selectedOutcome, nextState.selectedNav, nextProps.orderBookSorted, nextProps.scalarSmallNum, nextProps.scalarBigNum);
     }
