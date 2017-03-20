@@ -406,19 +406,21 @@ export default class CreateMarketFormOrderBook extends Component {
       const bids = getValue(this.props.orderBookSorted[this.state.selectedOutcome], `${BID}`);
       const asks = getValue(this.props.orderBookSorted[this.state.selectedOutcome], `${ASK}`);
 
+      console.log('check -- ', this.state.selectedNav, orderPrice.lessThan(bids[0].price), bids[0].price.toNumber(), this.state.minPrice.toNumber());
+
       if (this.props.type !== SCALAR) {
-        if (this.state.selectedNav === BID && asks && asks.length && orderPrice.greaterThan(asks[0].price)) {
+        if (this.state.selectedNav === BID && asks && asks.length && orderPrice.greaterThanOrEqualTo(asks[0].price)) {
           errors.price.push(`Price must be less than best ask price of: ${asks[0].price.toNumber()}`);
-        } else if (this.state.selectedNav === ASK && bids && bids.length && orderPrice.lessThan(bids[0].price)) {
+        } else if (this.state.selectedNav === ASK && bids && bids.length && orderPrice.lessThanOrEqualTo(bids[0].price)) {
           errors.price.push(`Price must be greater than best bid price of: ${bids[0].price.toNumber()}`);
         } else if (orderPrice.greaterThan(this.state.maxPrice)) {
           errors.price.push('Price cannot exceed 1');
         } else if (orderPrice.lessThan(this.state.minPrice)) {
           errors.price.push('Price cannot be below 0');
         }
-      } if (this.state.selectedNav === BID && asks && asks.length && orderPrice.greaterThan(asks[0].price)) {
+      } else if (this.state.selectedNav === BID && asks && asks.length && orderPrice.greaterThanOrEqualTo(asks[0].price)) {
         errors.price.push(`Price must be less than best ask price of: ${asks[0].price.toNumber()}`);
-      } else if (this.state.selectedNav === ASK && bids && bids.length && orderPrice.lessThan(bids[0].price)) {
+      } else if (this.state.selectedNav === ASK && bids && bids.length && orderPrice.lessThanOrEqualTo(bids[0].price)) {
         errors.price.push(`Price must be greater than best bid price of: ${bids[0].price.toNumber()}`);
       } else if (orderPrice.greaterThan(this.state.maxPrice)) {
         errors.price.push(`Price cannot exceed ${this.state.maxPrice.toNumber()}`);
