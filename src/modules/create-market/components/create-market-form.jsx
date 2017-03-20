@@ -166,6 +166,7 @@ export default class CreateMarketForm extends Component {
           currentStep={p.newMarket.currentStep}
           isValid={p.newMarket.isValid}
           endDate={p.newMarket.endDate}
+          updateFormHeight={this.updateFormHeight}
           updateValidity={this.updateValidity}
           updateNewMarket={p.updateNewMarket}
         />
