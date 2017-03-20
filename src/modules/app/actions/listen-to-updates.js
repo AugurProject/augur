@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js';
 import { augur, abi } from '../../../services/augurjs';
 import { updateAssets } from '../../auth/actions/update-assets';
 import { syncBlockchain } from '../../app/actions/sync-blockchain';
@@ -8,6 +9,7 @@ import { updateOutcomePrice } from '../../markets/actions/update-outcome-price';
 import { claimProceeds } from '../../my-positions/actions/claim-proceeds';
 import { convertLogsToTransactions, convertTradeLogToTransaction } from '../../transactions/actions/convert-logs-to-transactions';
 import { updateMarketTopicPopularity } from '../../topics/actions/update-topics';
+import { SELL } from '../../outcomes/constants/trade-types';
 
 export function listenToUpdates() {
   return (dispatch, getState) => {
@@ -90,6 +92,7 @@ export function listenToUpdates() {
         console.log('log_fill_tx:', msg);
         if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
           dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
+          dispatch(updateMarketTopicPopularity(msg.market, msg.amount));
           const { address } = getState().loginAccount;
           if (msg.sender !== address) dispatch(fillOrder(msg));
           if (msg.sender === address || msg.owner === address) {
@@ -110,7 +113,8 @@ export function listenToUpdates() {
         console.log('log_short_fill_tx:', msg);
         if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
           dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
-          if (msg.sender !== address) dispatch(fillOrder({ ...msg, type: 'sell' }));
+          dispatch(updateMarketTopicPopularity(msg.market, msg.amount));
+          if (msg.sender !== address) dispatch(fillOrder({ ...msg, type: SELL }));
           const { address } = getState().loginAccount;
 
           // if the user is either the maker or taker, add it to the transaction display
@@ -132,6 +136,19 @@ export function listenToUpdates() {
       log_add_tx: (msg) => {
         console.log('log_add_tx:', msg);
         if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
+          if (msg.isShortAsk) {
+            const market = getState().marketsData[msg.market];
+            if (market && market.numOutcomes) {
+              dispatch(updateMarketTopicPopularity(msg.market, new BigNumber(msg.amount, 10).times(market.numOutcomes)));
+            } else {
+              dispatch(loadMarketsInfo([msg.market], () => {
+                const market = getState().marketsData[msg.market];
+                if (market && market.numOutcomes) {
+                  dispatch(updateMarketTopicPopularity(msg.market, new BigNumber(msg.amount, 10).times(market.numOutcomes)));
+                }
+              }));
+            }
+          }
           dispatch(addOrder(msg));
 
           // if this is the user's order, then add it to the transaction display
@@ -157,6 +174,15 @@ export function listenToUpdates() {
             }, msg.market));
             dispatch(updateAssets());
           }
+        }
+      },
+
+      completeSets_logReturn: (msg) => {
+        if (msg) {
+          console.log('completeSets_logReturn:', msg);
+          let amount = new BigNumber(msg.amount, 10).times(msg.numOutcomes);
+          if (msg.type === SELL) amount = amount.neg();
+          dispatch(updateMarketTopicPopularity(msg.market, amount.toFixed()));
         }
       },
 

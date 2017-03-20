@@ -1,7 +1,6 @@
 import { augur } from '../../../services/augurjs';
 import { updateMarketPriceHistory } from '../../market/actions/update-market-price-history';
 import { updateMarketTradesData } from '../../portfolio/actions/update-market-trades-data';
-import { updateMarketTopicPopularity } from '../../topics/actions/update-topics';
 
 export const UPDATE_MARKET_ORDER_BOOK = 'UPDATE_MARKET_ORDER_BOOK';
 export const REPLACE_MARKET_ORDER_BOOK = 'REPLACE_MARKET_ORDER_BOOK';
@@ -45,5 +44,4 @@ export const fillOrder = log => (dispatch, getState) => {
     dispatch(updateMarketTradesData({ [log.market]: marketPriceHistory }));
     dispatch(updateMarketPriceHistory(log.market, marketPriceHistory));
   }
-  dispatch(updateMarketTopicPopularity(log.market, log.amount));
 };
