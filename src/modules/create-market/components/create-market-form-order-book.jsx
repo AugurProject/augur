@@ -76,6 +76,8 @@ export default class CreateMarketFormOrderBook extends Component {
       selectedNav: Object.keys(this.navItems)[0],
       orderPrice: '',
       orderQuantity: '',
+      quantityFocused: false,
+      priceFocused: false,
       minPrice: new BigNumber(0),
       maxPrice: new BigNumber(1)
     };
@@ -84,6 +86,7 @@ export default class CreateMarketFormOrderBook extends Component {
     this.updateChart = debounce(this.updateChart.bind(this));
     this.updatePriceBounds = this.updatePriceBounds.bind(this);
     this.handleAddOrder = this.handleAddOrder.bind(this);
+    this.handleAddOrderViaEnter = this.handleAddOrderViaEnter.bind(this);
     this.handleRemoveOrder = this.handleRemoveOrder.bind(this);
     this.updateSeries = this.updateSeries.bind(this);
     this.sortOrderBook = this.sortOrderBook.bind(this);
@@ -132,6 +135,7 @@ export default class CreateMarketFormOrderBook extends Component {
     });
 
     window.addEventListener('resize', this.updateChart);
+    window.addEventListener('keypress', this.handleAddOrderViaEnter);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -259,13 +263,6 @@ export default class CreateMarketFormOrderBook extends Component {
   }
 
   handleAddOrder() {
-    // Clear Inputs
-    this.setState({ orderPrice: '', orderQuantity: '' }, () => {
-      this.validateForm();
-      this.handleAutoFocus();
-      this.props.updateValidity(true);
-    });
-
     this.props.addOrderToNewMarket({
       outcome: this.state.selectedOutcome,
       type: this.state.selectedNav,
@@ -274,6 +271,17 @@ export default class CreateMarketFormOrderBook extends Component {
     });
 
     this.updateInitialLiquidityCosts({ type: this.state.selectedNav, price: this.state.orderPrice, quantity: this.state.orderQuantity });
+
+    // Clear Inputs + Reset Form
+    this.setState({ orderPrice: '', orderQuantity: '' }, () => {
+      this.validateForm();
+      this.handleAutoFocus();
+      this.props.updateValidity(true);
+    });
+  }
+
+  handleAddOrderViaEnter(e) {
+    if (this.state.isOrderValid && e.keyCode === 13) this.handleAddOrder();
   }
 
   handleAutoFocus() {
@@ -398,7 +406,7 @@ export default class CreateMarketFormOrderBook extends Component {
       // Done this way so both inputs are in err
       errors.quantity.push('Issufficient funds');
       errors.price.push('Issufficient funds');
-    } else if (orderQuantity !== '' && orderQuantity.lessThan(new BigNumber(0))) {
+    } else if (orderQuantity !== '' && orderQuantity.lessThanOrEqualTo(new BigNumber(0))) {
       errors.quantity.push('Quantity must be positive');
     } else if (orderPrice !== '') {
       const bids = getValue(this.props.orderBookSorted[this.state.selectedOutcome], `${BID}`);
@@ -461,7 +469,9 @@ export default class CreateMarketFormOrderBook extends Component {
               <span>Use this form to add initial liquidty for your market.</span>
             </aside>
             <div className="vertical-form-divider" />
-            <form onSubmit={e => e.preventDefault()} >
+            <form
+              onSubmit={e => e.preventDefault()}
+            >
               <div className="order-book-actions">
                 {p.type === CATEGORICAL &&
                   <div className="order-book-outcomes-table">
@@ -492,7 +502,14 @@ export default class CreateMarketFormOrderBook extends Component {
                     'order-entry-only': p.type !== CATEGORICAL
                   })}
                 >
-                  <div className="order-book-entry" >
+                  <div
+                    className="order-book-entry"
+                    onSubmit={(e) => {
+                      e.preventDefault();
+
+                      this.handleAddOrder();
+                    }}
+                  >
                     <ComponentNav
                       fullWidth
                       navItems={this.navItems}
@@ -512,6 +529,8 @@ export default class CreateMarketFormOrderBook extends Component {
                         isIncrementable
                         incrementAmount={0.1}
                         min={0}
+                        onFocus={() => this.setState({ quantityFocused: true })}
+                        onBlur={() => this.setState({ quantityFocused: false })}
                         updateValue={quantity => this.validateForm(quantity, undefined)}
                         onChange={quantity => this.validateForm(quantity, undefined)}
                       />
@@ -526,6 +545,8 @@ export default class CreateMarketFormOrderBook extends Component {
                         incrementAmount={0.1}
                         min={s.minPrice}
                         max={s.maxPrice}
+                        onFocus={() => this.setState({ priceFocused: true })}
+                        onBlur={() => this.setState({ priceFocused: false })}
                         updateValue={price => this.validateForm(undefined, price)}
                         onChange={price => this.validateForm(undefined, price)}
                       />
@@ -534,6 +555,7 @@ export default class CreateMarketFormOrderBook extends Component {
                       errors={errors}
                     />
                     <button
+                      type="button"
                       className={classNames({ disabled: !s.isOrderValid })}
                       onClick={s.isOrderValid && this.handleAddOrder}
                     >
