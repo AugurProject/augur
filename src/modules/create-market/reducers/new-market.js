@@ -13,6 +13,7 @@ import BigNumber from 'bignumber.js';
 
 const DEFAULT_STATE = {
   isValid: false,
+  holdForUserAction: false,
   validations: [],
   currentStep: 0,
   type: '',

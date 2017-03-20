@@ -5,10 +5,14 @@ import CreateMarketPreview from 'modules/create-market/components/create-market-
 import CreateMarketForm from 'modules/create-market/components/create-market-form';
 import CreateMarketFormButtons from 'modules/create-market/components/create-market-form-buttons';
 
+import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
+
 export default class CreateMarketView extends Component {
   static propTypes = {
     newMarket: PropTypes.object.isRequired,
-    updateNewMarket: PropTypes.func.isRequired
+    updateNewMarket: PropTypes.func.isRequired,
+    addValidationToNewMarket: PropTypes.func.isRequired,
+    removeValidationFromNewMarket: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -17,6 +21,25 @@ export default class CreateMarketView extends Component {
     this.state = {
       buttonHeight: 0
     };
+
+    this.updateValidations = this.updateValidations.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.newMarket.isValid !== nextProps.newMarket.isValid ||
+      (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep && nextProps.newMarket.isValid) ||
+      (this.props.newMarket.holdForUserAction !== nextProps.newMarket.holdForUserAction)
+    ) {
+      this.updateValidations(nextProps.newMarket.isValid, nextProps.newMarket.currentStep, nextProps.newMarket.holdForUserAction);
+    }
+  }
+
+  updateValidations(isValid, currentStep, isHolding = false) {
+    if (isValid && !isHolding) {
+      this.props.addValidationToNewMarket(newMarketCreationOrder[currentStep]);
+    } else {
+      this.props.removeValidationFromNewMarket(newMarketCreationOrder[currentStep]);
+    }
   }
 
   render() {
@@ -45,24 +68,25 @@ export default class CreateMarketView extends Component {
             availableEth={p.availableEth}
             newMarket={p.newMarket}
             buttonHeight={s.buttonHeight}
-            addValidationToNewMarket={p.addValidationToNewMarket}
-            removeValidationFromNewMarket={p.removeValidationFromNewMarket}
             addOrderToNewMarket={p.addOrderToNewMarket}
             removeOrderFromNewMarket={p.removeOrderFromNewMarket}
             updateNewMarket={p.updateNewMarket}
+            updateValidations={this.updateValidations}
+            addValidationToNewMarket={p.addValidationToNewMarket}
+            removeValidationFromNewMarket={p.removeValidationFromNewMarket}
           />
           <CreateMarketFormButtons
             footerHeight={p.footerHeight}
             currentStep={p.newMarket.currentStep}
             type={p.newMarket.type}
             isValid={p.newMarket.isValid}
+            holdForUserAction={p.newMarket.holdForUserAction}
             validations={p.newMarket.validations}
             newMarket={p.newMarket}
-            addValidationToNewMarket={p.addValidationToNewMarket}
-            removeValidationFromNewMarket={p.removeValidationFromNewMarket}
             updateNewMarket={p.updateNewMarket}
             submitNewMarket={p.submitNewMarket}
             updateButtonHeight={buttonHeight => this.setState({ buttonHeight })}
+            updateValidations={this.updateValidations}
           />
         </div>
       </section>

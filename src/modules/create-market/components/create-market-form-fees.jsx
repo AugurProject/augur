@@ -12,6 +12,20 @@ import newMarketCreationOrder from 'modules/create-market/constants/new-market-c
 import { NEW_MARKET_FEES } from 'modules/create-market/constants/new-market-creation-steps';
 
 export default class CreateMarketFormDescription extends Component {
+  static propTypes = {
+    currentStep: PropTypes.number.isRequired,
+    takerFee: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ]).isRequired,
+    makerFee: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ]).isRequired,
+    updateValidity: PropTypes.func.isRequired,
+    updateNewMarket: PropTypes.func.isRequired
+  };
+
   constructor(props) {
     super(props);
 
@@ -32,11 +46,7 @@ export default class CreateMarketFormDescription extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.currentStep !== nextProps.currentStep &&
-        newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_FEES
-    ) {
-      this.validateForm(nextProps.takerFee, nextProps.makerFee, true);
-    }
+    if (this.props.currentStep !== nextProps.currentStep && newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_FEES) nextProps.updateValidity(true, true);
   }
 
   componentDidUpdate(prevProps) {
@@ -134,11 +144,11 @@ export default class CreateMarketFormDescription extends Component {
                 min={TAKER_FEE_MIN}
                 max={TAKER_FEE_MAX}
                 updateValue={(takerFee) => {
-                  const sanitizedTakerFee = takerFee instanceof BigNumber ? takerFee.toNumber() : parseFloat(takerFee);
+                  const sanitizedTakerFee = sanitizeFee(takerFee);
                   this.validateForm(sanitizedTakerFee);
                 }}
                 onChange={(takerFee) => {
-                  const sanitizedTakerFee = takerFee instanceof BigNumber ? takerFee.toNumber() : parseFloat(takerFee);
+                  const sanitizedTakerFee = sanitizeFee(takerFee);
                   this.validateForm(sanitizedTakerFee);
                 }}
               />
@@ -163,11 +173,11 @@ export default class CreateMarketFormDescription extends Component {
                 min={MAKER_FEE_MIN}
                 max={makerFeeMax}
                 updateValue={(makerFee) => {
-                  const sanitizedMakerFee = makerFee instanceof BigNumber ? makerFee.toNumber() : parseFloat(makerFee);
+                  const sanitizedMakerFee = sanitizeFee(makerFee);
                   this.validateForm(undefined, sanitizedMakerFee);
                 }}
                 onChange={(makerFee) => {
-                  const sanitizedMakerFee = makerFee instanceof BigNumber ? makerFee.toNumber() : parseFloat(makerFee);
+                  const sanitizedMakerFee = sanitizeFee(makerFee);
                   this.validateForm(undefined, sanitizedMakerFee);
                 }}
               />
@@ -183,19 +193,11 @@ export default class CreateMarketFormDescription extends Component {
   }
 }
 
-CreateMarketFormDescription.propTypes = {
-  currentStep: PropTypes.number.isRequired,
-  takerFee: PropTypes.number.isRequired,
-  makerFee: PropTypes.number.isRequired,
-  updateValidity: PropTypes.func.isRequired,
-  updateNewMarket: PropTypes.func.isRequired
-};
-
 function validateTakerFee(takerFee) {
-  if (Number.isNaN(takerFee) && !Number.isFinite(takerFee)) {
-    return 'Trading fee must be a number';
+  if (takerFee === '') {
+    return 'Taker fee is required';
   } else if (takerFee < TAKER_FEE_MIN || takerFee > TAKER_FEE_MAX) {
-    return `Trading fee must be between ${
+    return `Taker fee must be between ${
       formatPercent(TAKER_FEE_MIN, true).full
       } and ${
       formatPercent(TAKER_FEE_MAX, true).full
@@ -211,8 +213,8 @@ function validateMakerFee(makerFee, takerFee) {
     halfTakerFee = new BigNumber(takerFee).dividedBy(TWO).toNumber();
   }
 
-  if (Number.isNaN(makerFee) && !Number.isFinite(makerFee)) {
-    return 'Maker fee must be a number';
+  if (makerFee === '') {
+    return 'Maker fee required';
   } else if (makerFee < MAKER_FEE_MIN || makerFee > halfTakerFee) {
     return `Maker fee must be between ${
       formatPercent(MAKER_FEE_MIN, true).full
@@ -220,4 +222,12 @@ function validateMakerFee(makerFee, takerFee) {
       formatPercent(halfTakerFee, true).full
       }`;
   }
+}
+
+function sanitizeFee(fee) {
+  if (fee === '') {
+    return fee;
+  }
+
+  return fee instanceof BigNumber ? fee.toNumber() : parseFloat(fee);
 }

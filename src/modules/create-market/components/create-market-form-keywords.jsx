@@ -12,6 +12,7 @@ export default class CreateMarketFormKeywords extends Component {
     currentStep: PropTypes.number.isRequired,
     keywords: PropTypes.array.isRequired,
     topic: PropTypes.string.isRequired,
+    validations: PropTypes.array.isRequired,
     updateValidity: PropTypes.func.isRequired,
     updateNewMarket: PropTypes.func.isRequired
   }
@@ -28,7 +29,16 @@ export default class CreateMarketFormKeywords extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.currentStep !== nextProps.currentStep && newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_KEYWORDS) this.validateForm(nextProps.keywords);
+    if (
+      this.props.currentStep !== nextProps.currentStep &&
+      newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_KEYWORDS
+    ) {
+      if (nextProps.validations.indexOf(NEW_MARKET_KEYWORDS) === -1) {
+        nextProps.updateValidity(true, true);
+      } else {
+        nextProps.updateValidity(true);
+      }
+    }
   }
 
   componentDidUpdate(prevProps) {

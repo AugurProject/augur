@@ -21,6 +21,7 @@ import debounce from 'utils/debounce';
 
 export default class CreateMarketFormOrderBook extends Component {
   static propTypes = {
+    isValid: PropTypes.bool.isRequired,
     type: PropTypes.string.isRequired,
     currentStep: PropTypes.number.isRequired,
     outcomes: PropTypes.array.isRequired,
@@ -134,11 +135,7 @@ export default class CreateMarketFormOrderBook extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.currentStep !== nextProps.currentStep &&
-      newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_ORDER_BOOK
-    ) {
-      nextProps.updateValidity(true);
-    }
+    if (newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_ORDER_BOOK && !nextProps.isValid) nextProps.updateValidity(true, true);
 
     if (this.props.outcomes !== nextProps.outcomes) this.setState({ selectedOutcome: nextProps.outcomes[0] });
     if (this.props.orderBook !== nextProps.orderBook) this.sortOrderBook(nextProps.orderBook);
@@ -266,6 +263,7 @@ export default class CreateMarketFormOrderBook extends Component {
     this.setState({ orderPrice: '', orderQuantity: '' }, () => {
       this.validateForm();
       this.handleAutoFocus();
+      this.props.updateValidity(true);
     });
 
     this.props.addOrderToNewMarket({

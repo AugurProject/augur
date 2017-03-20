@@ -33,9 +33,7 @@ import debounce from 'utils/debounce';
 export default class CreateMarketForm extends Component {
   static propTypes = {
     newMarket: PropTypes.object.isRequired,
-    updateNewMarket: PropTypes.func.isRequired,
-    addValidationToNewMarket: PropTypes.func.isRequired,
-    removeValidationFromNewMarket: PropTypes.func.isRequired
+    updateNewMarket: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -69,16 +67,6 @@ export default class CreateMarketForm extends Component {
     if (this.props.newMarket !== nextProps.newMarket) {
       this.updateFormHeight();
     }
-
-    if (this.props.newMarket.isValid !== nextProps.newMarket.isValid ||
-      (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep && nextProps.newMarket.isValid)
-    ) {
-      if (nextProps.newMarket.isValid) {
-        nextProps.addValidationToNewMarket(newMarketCreationOrder[nextProps.newMarket.currentStep]);
-      } else {
-        nextProps.removeValidationFromNewMarket(newMarketCreationOrder[nextProps.newMarket.currentStep]);
-      }
-    }
   }
 
   componentWillUnmount() {
@@ -98,8 +86,9 @@ export default class CreateMarketForm extends Component {
     this.createMarketForm.style.height = `${newHeight}px`;
   }
 
-  updateValidity(isValid) {
-    this.props.updateNewMarket({ isValid });
+  updateValidity(isValid, holdForUserAction = false) {
+    // holdForUserAction will prevent the state from adding the form part to the validated forms array until both the form is valid + the user selects 'next'
+    this.props.updateNewMarket({ isValid, holdForUserAction });
   }
 
   render() {
@@ -178,6 +167,7 @@ export default class CreateMarketForm extends Component {
           isValid={p.newMarket.isValid}
           currentStep={p.newMarket.currentStep}
           detailsText={p.newMarket.detailsText}
+          validations={p.newMarket.validations}
           updateValidity={this.updateValidity}
           updateNewMarket={p.updateNewMarket}
         />
@@ -201,6 +191,7 @@ export default class CreateMarketForm extends Component {
           currentStep={p.newMarket.currentStep}
           keywords={p.newMarket.keywords}
           topic={p.newMarket.topic}
+          validations={p.newMarket.validations}
           updateValidity={this.updateValidity}
           updateNewMarket={p.updateNewMarket}
         />
@@ -220,6 +211,7 @@ export default class CreateMarketForm extends Component {
             'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK),
             'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK)
           })}
+          isValid={p.newMarket.isValid}
           availableEth={p.availableEth}
           type={p.newMarket.type}
           currentStep={p.newMarket.currentStep}

@@ -10,13 +10,23 @@ export default class CreateMarketFormDetails extends Component {
     isValid: PropTypes.bool.isRequired,
     currentStep: PropTypes.number.isRequired,
     detailsText: PropTypes.string.isRequired,
+    validations: PropTypes.array.isRequired,
     updateValidity: PropTypes.func.isRequired,
     updateNewMarket: PropTypes.func.isRequired
   }
 
   componentWillReceiveProps(nextProps) {
-    // Optional step -- update validity to true by default
-    if (nextProps.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS) && !nextProps.isValid) nextProps.updateValidity(true);
+    if (this.props.currentStep !== nextProps.currentStep &&
+      newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_DETAILS
+    ) {
+      if (nextProps.validations.indexOf(NEW_MARKET_DETAILS) === -1) {
+        nextProps.updateValidity(true, true);
+      } else {
+        nextProps.updateValidity(true);
+      }
+    }
+
+    if (this.props.detailsText !== nextProps.detailsText) nextProps.updateValidity(true);
   }
 
   componentDidUpdate(prevProps) {

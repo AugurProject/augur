@@ -15,8 +15,14 @@ export default class CreateMarketReview extends Component {
     initialLiquidityEth: PropTypes.instanceOf(BigNumber).isRequired,
     initialLiquidityGas: PropTypes.instanceOf(BigNumber).isRequired,
     initialLiquidityFees: PropTypes.instanceOf(BigNumber).isRequired,
-    takerFee: PropTypes.number.isRequired,
-    makerFee: PropTypes.number.isRequired
+    takerFee: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ]).isRequired,
+    makerFee: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.number
+    ]).isRequired,
   };
 
   constructor(props) {

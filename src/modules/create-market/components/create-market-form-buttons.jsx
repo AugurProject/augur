@@ -10,13 +10,13 @@ export default class CreateMarketFormButtons extends Component {
     type: PropTypes.string.isRequired,
     currentStep: PropTypes.number.isRequired,
     isValid: PropTypes.bool.isRequired,
+    holdForUserAction: PropTypes.bool.isRequired,
     validations: PropTypes.array.isRequired,
-    addValidationToNewMarket: PropTypes.func.isRequired,
-    removeValidationFromNewMarket: PropTypes.func.isRequired,
     updateNewMarket: PropTypes.func.isRequired,
     newMarket: PropTypes.object.isRequired,
     submitNewMarket: PropTypes.func.isRequired,
-    updateButtonHeight: PropTypes.func.isRequired
+    updateButtonHeight: PropTypes.func.isRequired,
+    updateValidations: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -87,6 +87,13 @@ export default class CreateMarketFormButtons extends Component {
   handleNextButton() {
     if (this.props.currentStep === newMarketCreationOrder.length - 1) {
       this.props.submitNewMarket(this.props.newMarket);
+    } else if (this.props.holdForUserAction) {
+      this.props.updateValidations(this.props.isValid, this.props.currentStep);
+      this.props.updateNewMarket({
+        isValid: false,
+        holdForUserAction: false,
+        currentStep: this.state.nextStep
+      });
     } else {
       this.props.updateNewMarket({
         isValid: false,
