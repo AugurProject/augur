@@ -71,13 +71,13 @@ export default class CreateMarketPreview extends Component {
       },
       series: [
         {
-          type: 'line',
+          type: 'area',
           name: 'Bids',
-          step: 'left',
+          step: 'right',
           data: []
         },
         {
-          type: 'line',
+          type: 'area',
           name: 'Asks',
           step: 'left',
           data: []
