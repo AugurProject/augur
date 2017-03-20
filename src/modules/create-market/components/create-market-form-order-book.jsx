@@ -406,8 +406,6 @@ export default class CreateMarketFormOrderBook extends Component {
       const bids = getValue(this.props.orderBookSorted[this.state.selectedOutcome], `${BID}`);
       const asks = getValue(this.props.orderBookSorted[this.state.selectedOutcome], `${ASK}`);
 
-      console.log('check -- ', this.state.selectedNav, orderPrice.lessThan(bids[0].price), bids[0].price.toNumber(), this.state.minPrice.toNumber());
-
       if (this.props.type !== SCALAR) {
         if (this.state.selectedNav === BID && asks && asks.length && orderPrice.greaterThanOrEqualTo(asks[0].price)) {
           errors.price.push(`Price must be less than best ask price of: ${asks[0].price.toNumber()}`);
