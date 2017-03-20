@@ -30,6 +30,7 @@ describe('modules/create-market/reducers/new-market.js', () => {
 
       const expected = {
         isValid: false,
+        holdForUserAction: false,
         validations: [],
         currentStep: 0,
         type: '',
@@ -366,6 +367,7 @@ describe('modules/create-market/reducers/new-market.js', () => {
 
       const expected = {
         isValid: false,
+        holdForUserAction: false,
         validations: [],
         currentStep: 0,
         type: '',
