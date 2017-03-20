@@ -35,6 +35,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     fillOrder: sinon.stub().returns({ type: 'FILL_ORDER' }),
     removeOrder: sinon.stub().returns({ type: 'REMOVE_ORDER' })
   };
+  const UpdateTopics = {};
   UpdateAssets.updateAssets = sinon.stub().returns({ type: 'UPDATE_ASSETS' });
   SyncBlockchain.syncBlockchain = sinon.stub().returns({ type: 'SYNC_BLOCKCHAIN' });
   SyncBranch.syncBranch = sinon.stub().returns({ type: 'SYNC_BRANCH' });
@@ -44,6 +45,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     type: 'LOAD_BASIC_MARKET',
     marketID
   }));
+  UpdateTopics.updateMarketTopicPopularity = sinon.stub().returns({ type: 'UPDATE_MARKET_TOPIC_POPULARITY' });
   AugurJS.abi.number = sinon.stub().returns([0, 1]);
   sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
     cb.block('blockhash');
@@ -70,7 +72,8 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     '../../auth/actions/update-assets': UpdateAssets,
     '../../markets/actions/update-outcome-price': OutcomePrice,
     '../../markets/actions/load-markets-info': LoadMarketsInfo,
-    '../../bids-asks/actions/update-market-order-book': UpdateMarketOrderBook
+    '../../bids-asks/actions/update-market-order-book': UpdateMarketOrderBook,
+    '../../topics/actions/update-topics': UpdateTopics
   });
 
   beforeEach(() => {
@@ -91,6 +94,8 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
       type: 'SYNC_BRANCH'
     }, {
       type: 'UPDATE_OUTCOME_PRICE'
+    }, {
+      type: 'UPDATE_MARKET_TOPIC_POPULARITY'
     }, {
       type: 'FILL_ORDER',
     }, {
