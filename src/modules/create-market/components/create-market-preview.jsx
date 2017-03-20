@@ -19,7 +19,7 @@ import {
   NEW_MARKET_ORDER_BOOK,
   NEW_MARKET_REVIEW
 } from 'modules/create-market/constants/new-market-creation-steps';
-import { BINARY, CATEGORICAL } from 'modules/markets/constants/market-types';
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
 import { BID, ASK } from 'modules/transactions/constants/types';
 
 import getValue from 'utils/get-value';
@@ -386,7 +386,9 @@ export default class CreateMarketPreview extends Component {
                       <li
                         key={outcome === '' ? i : outcome}
                       >
-                        {(outcome && Math.sign(outcome) === 1) && <span style={{ visibility: 'hidden' }}>-</span>}{outcome || `\u00a0`}
+                        {newMarket.type === SCALAR && i === 0 && outcome[0] && <span>Min:</span>}
+                        {newMarket.type === SCALAR && i === 1 && outcome[1] && <span>Max:</span>}
+                        {(outcome && Math.sign(outcome) === 1) ? <span style={{ visibility: 'hidden' }}>-</span> : `\u00a0`}{outcome || `\u00a0`}
                       </li>
                     ))}
                   </button>
