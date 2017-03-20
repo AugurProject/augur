@@ -68,6 +68,11 @@ module.exports = function () {
           fmt.totalReportingRep = abi.unfix(msg.totalReportingRep, "string");
           fmt.period = parseInt(msg.period, 16);
           return fmt;
+        case "completeSets_logReturn":
+          fmt = this.format_common_fields(msg);
+          fmt.numOutcomes = parseInt(msg.numOutcomes, 16);
+          fmt.amount = abi.unfix(msg.returnValue, "string");
+          return fmt;
         case "deposit":
           fmt = this.format_common_fields(msg);
           fmt.value = abi.unfix(msg.value, "string");

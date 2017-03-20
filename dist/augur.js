@@ -21113,6 +21113,17 @@ module.exports={
           "int256"
         ]
       }, 
+      "getTopic": {
+        "inputs": [
+          "market"
+        ], 
+        "label": "Get Topic", 
+        "method": "getTopic", 
+        "returns": "int256", 
+        "signature": [
+          "int256"
+        ]
+      }, 
       "getTotalSharesPurchased": {
         "inputs": [
           "market"
@@ -23495,6 +23506,11 @@ module.exports = function () {
           fmt.totalReportingRep = abi.unfix(msg.totalReportingRep, "string");
           fmt.period = parseInt(msg.period, 16);
           return fmt;
+        case "completeSets_logReturn":
+          fmt = this.format_common_fields(msg);
+          fmt.numOutcomes = parseInt(msg.numOutcomes, 16);
+          fmt.amount = abi.unfix(msg.returnValue, "string");
+          return fmt;
         case "deposit":
           fmt = this.format_common_fields(msg);
           fmt.value = abi.unfix(msg.value, "string");
@@ -24018,7 +24034,7 @@ BigNumber.config({
 function Augur() {
   var i, len, fn;
 
-  this.version = "3.14.4";
+  this.version = "3.14.5";
 
   this.options = {
     debug: {
@@ -54700,23 +54716,27 @@ module.exports={
 },{}],361:[function(require,module,exports){
 "use strict";
 
-function ErrorWithData(message, data) {
-    Error.call(this, message);
-    this.name = "ErrorWithData";
-    this.data = data;
+function BetterError(message) {
+  var underlying = Error.call(this, message);
+  this.name = underlying.name;
+  this.message = underlying.message;
+  Object.defineProperty(this, "stack", { get: function () { return underlying.stack; } });
 }
+BetterError.prototype = Object.create(Error.prototype, { constructor: { value: BetterError }});
 
-ErrorWithData.prototype = Object.create(Error.prototype);
-ErrorWithData.prototype.constructor = ErrorWithData;
+function ErrorWithData(message, data) {
+  BetterError.call(this, message);
+  this.name = "ErrorWithData";
+  this.data = data;
+}
+ErrorWithData.prototype = Object.create(BetterError.prototype, { constructor: { value: ErrorWithData } });
 
 function ErrorWithCode(message, code) {
-  Error.call(this, message);
+  BetterError.call(this, message);
   this.name = "ErrorWithCode";
   this.code = code;
 }
-
-ErrorWithCode.prototype = Object.create(Error.prototype);
-ErrorWithCode.prototype.constructor = ErrorWithCode;
+ErrorWithCode.prototype = Object.create(BetterError.prototype, { constructor: { value: ErrorWithData } });
 
 function ErrorWithCodeAndData(message, code, data) {
   Error.call(this, message);
@@ -54724,11 +54744,12 @@ function ErrorWithCodeAndData(message, code, data) {
   this.code = code;
   this.data = data;
 }
+ErrorWithCodeAndData.prototype = Object.create(BetterError.prototype, { constructor: { value: ErrorWithData } });
 
 module.exports = {
-    ErrorWithCode: ErrorWithCode,
-    ErrorWithData: ErrorWithData,
-    ErrorWithCodeAndData: ErrorWithCodeAndData
+  ErrorWithCode: ErrorWithCode,
+  ErrorWithData: ErrorWithData,
+  ErrorWithCodeAndData: ErrorWithCodeAndData
 };
 
 },{}],362:[function(require,module,exports){
@@ -56843,7 +56864,7 @@ function processWork(abstractTransport, rpcObject) {
  */
 function reconnect(abstractTransport) {
   abstractTransport.connect(function (error) {
-    if (error !== null) return setTimeout(reconnect(abstractTransport), abstractTransport.backoffMilliseconds *= 2);
+    if (error !== null) return setTimeout(reconnect.bind(this, abstractTransport), abstractTransport.backoffMilliseconds *= 2);
     Object.keys(abstractTransport.reconnectListeners).forEach(function (key) {
       if (typeof abstractTransport.reconnectListeners[key] !== "function") return delete abstractTransport.reconnectListeners[key];
       abstractTransport.reconnectListeners[key]();
