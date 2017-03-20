@@ -1,12 +1,20 @@
+/* eslint jsx-a11y/no-static-element-interactions: 0 */  // Needed to address cross-browser handling of on-click events + resultant sizing
+
 import React, { PropTypes } from 'react';
 
-import DatePicker from 'modules/common/components/datepicker';
+import Datetime from 'react-datetime';
+
+import { formatDate } from 'utils/format-date';
 
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
 import { NEW_MARKET_END_DATE } from 'modules/create-market/constants/new-market-creation-steps';
 
 const CreateMarketFormEndDate = (p) => {
   if (p.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) && Object.keys(p.endDate).length && !p.isValid) p.updateValidity(true);
+
+  const yesterday = Datetime.moment().subtract(1, 'day');
+  const valid = current => current.isAfter(yesterday);
+  const defaultValue = Object.keys(p.endDate).length ? p.endDate : '';
 
   return (
     <article className={`create-market-form-part create-market-form-part-end-date ${p.className || ''}`}>
@@ -17,21 +25,22 @@ const CreateMarketFormEndDate = (p) => {
             <span>What is the <strong>local</strong> date & time at which your event will resolve?</span>
           </aside>
           <div className="vertical-form-divider" />
-          <form onSubmit={e => e.preventDefault()} >
-            <button
-              className="unstyled"
-              onClick={() => {
-                p.updateNewMarket({ currentStep: p.currentStep }); // utilized to simply prompt a height update
+          <form
+            onClick={p.updateFormHeight}
+            onSubmit={e => e.preventDefault()}
+          >
+            <Datetime
+              open
+              isValidDate={valid}
+              dateFormat="YYYY/MM/DD"
+              timeFormat="hh:mm:ss a"
+              defaultValue={defaultValue}
+              inputProps={{ placeholder: 'YYYY/MM/DD hh:mm:ss a' }}
+              onChange={(date) => {
+                p.updateNewMarket({ endDate: formatDate(new Date(date)) });
+                p.updateValidity(true);
               }}
-            >
-              <DatePicker
-                endDate={p.endDate}
-                onValuesUpdated={(endDate) => {
-                  p.updateNewMarket({ endDate });
-                  p.updateValidity(true);
-                }}
-              />
-            </button>
+            />
           </form>
         </div>
       </div>
@@ -43,6 +52,7 @@ CreateMarketFormEndDate.propTypes = {
   currentStep: PropTypes.number.isRequired,
   isValid: PropTypes.bool.isRequired,
   endDate: PropTypes.object.isRequired,
+  updateFormHeight: PropTypes.func.isRequired,
   updateValidity: PropTypes.func.isRequired,
   updateNewMarket: PropTypes.func.isRequired
 };
