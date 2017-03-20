@@ -396,7 +396,7 @@ export default class CreateMarketFormOrderBook extends Component {
 
     // Validate Quantity
     if (orderQuantity !== '' && orderPrice !== '' && orderPrice.times(orderQuantity).plus(this.props.initialLiquidityEth).greaterThan(new BigNumber(this.props.availableEth))) {
-      // Done this way here since we spread the two arrays
+      // Done this way so both inputs are in err
       errors.quantity.push('Issufficient funds');
       errors.price.push('Issufficient funds');
     } else if (orderQuantity !== '' && orderQuantity.lessThan(new BigNumber(0))) {
@@ -444,7 +444,8 @@ export default class CreateMarketFormOrderBook extends Component {
     const p = this.props;
     const s = this.state;
 
-    const errors = [...s.errors.quantity, ...s.errors.price]; // Joined since only one input can be in an error state at a time
+    const errors = Array.from(new Set([...s.errors.quantity, ...s.errors.price]));
+
     const bids = getValue(p.orderBookSorted[s.selectedOutcome], `${BID}`);
     const asks = getValue(p.orderBookSorted[s.selectedOutcome], `${ASK}`);
 
