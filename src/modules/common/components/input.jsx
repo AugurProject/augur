@@ -160,8 +160,12 @@ export default class Input extends Component {
         {isIncrementable &&
           <div className="value-incrementers">
             <button
+              type="button"
+              tabIndex="-1"
               className="increment-value unstyled"
-              onClick={() => {
+              onClick={(e) => {
+                e.currentTarget.blur();
+
                 if ((!isNaN(parseFloat(s.value)) && isFinite(s.value)) || !s.value) {
                   const bnMax = sanitizeBound(max);
                   const bnMin = sanitizeBound(min);
@@ -186,8 +190,12 @@ export default class Input extends Component {
               <i className="fa fa-angle-up" />
             </button>
             <button
+              type="button"
+              tabIndex="-1"
               className="decrement-value unstyled"
-              onClick={() => {
+              onClick={(e) => {
+                e.currentTarget.blur();
+
                 if ((!isNaN(parseFloat(s.value)) && isFinite(s.value)) || !s.value) {
                   const bnMax = sanitizeBound(max);
                   const bnMin = sanitizeBound(min);
