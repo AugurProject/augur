@@ -103,6 +103,8 @@
     "style-loader": "0.14.1",
     "stylelint": "7.9.0",
     "stylelint-config-standard": "16.0.0",
+    "stylelint-no-browser-hacks": "^1.0.2",
+    "stylelint-order": "^0.4.1",
     "uglify-js": "2.8.13",
     "watchify": "3.9.0",
     "webpack": "2.2.1",

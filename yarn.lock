@@ -7468,7 +7468,7 @@ style-search@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/style-search/-/style-search-0.1.0.tgz#7958c793e47e32e07d2b5cafe5c0bf8e12e77902"
 
-stylehacks@^2.3.0:
+stylehacks@^2.3.0, stylehacks@^2.3.1:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/stylehacks/-/stylehacks-2.3.2.tgz#64c83e0438a68c9edf449e8c552a7d9ab6009b0b"
   dependencies:
@@ -7488,7 +7488,22 @@ stylelint-config-standard@16.0.0:
   version "16.0.0"
   resolved "https://registry.yarnpkg.com/stylelint-config-standard/-/stylelint-config-standard-16.0.0.tgz#bb7387bff1d7dd7186a52b3ebf885b2405d691bf"
 
-stylelint@7.9.0:
+stylelint-no-browser-hacks@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/stylelint-no-browser-hacks/-/stylelint-no-browser-hacks-1.0.2.tgz#2a94ac8021ade88706afbc64ef5b940c5fef12f2"
+  dependencies:
+    stylehacks "^2.3.1"
+    stylelint "^7.8.0"
+
+stylelint-order@^0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/stylelint-order/-/stylelint-order-0.4.1.tgz#ae265f63049cf3a9a901c88ef9580acfb46819c4"
+  dependencies:
+    lodash "^4.17.4"
+    postcss "^5.2.16"
+    stylelint "^7.9.0"
+
+stylelint@7.9.0, stylelint@^7.8.0, stylelint@^7.9.0:
   version "7.9.0"
   resolved "https://registry.yarnpkg.com/stylelint/-/stylelint-7.9.0.tgz#b8d9ea20f887ab351075c6aded9528de24509327"
   dependencies:
