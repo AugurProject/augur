@@ -138,7 +138,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
           type: UPDATE_TRADE_IN_PROGRESS,
           data: { marketID, outcomeID, details: tradingActions }
         });
-        cb && cb();
+        cb && cb(tradingActions);
       });
     } else {
       dispatch({

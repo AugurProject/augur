@@ -20,7 +20,7 @@ describe('modules/my-positions/actions/close-position.js', () => {
     const test = (t) => {
       it(t.description, () => {
         // mock store
-        const store = mockStore();
+        const store = mockStore(t.state);
 
         // mock methods
         const mockUpdateTradesInProgress = { updateTradesInProgress: () => {} };
@@ -31,7 +31,7 @@ describe('modules/my-positions/actions/close-position.js', () => {
         sinon.stub(mockUpdateTradesInProgress, 'updateTradesInProgress', (marketID, outcomeID, side, numShares, limitPrice, maxCost, cb) => (dispatch, getState) => {
           cb();
         });
-        sinon.stub(mockPlaceTrade, 'placeTrade', (marketID, outcomeID, doNotMakeOrders, cb) => (dispatch, getState) => {
+        sinon.stub(mockPlaceTrade, 'placeTrade', (marketID, outcomeID, tradesInProgress, doNotMakeOrders, cb) => (dispatch, getState) => {
           if (t.placeTradeFails) {
             cb(true);
           } else {
@@ -55,6 +55,11 @@ describe('modules/my-positions/actions/close-position.js', () => {
 
     test({
       description: `placeTrade returns tradeGroupID`,
+      state: {
+        tradesInProgress: {
+          '0xMarketID': {}
+        }
+      },
       arguments: {
         marketID: '0xMarketID',
         outcomeID: '1',
@@ -73,7 +78,12 @@ describe('modules/my-positions/actions/close-position.js', () => {
     });
 
     test({
-      description: `placeTrade returns tradeGroupID`,
+      description: `placeTrade fails`,
+      state: {
+        tradesInProgress: {
+          '0xMarketID': {}
+        }
+      },
       arguments: {
         marketID: '0xMarketID',
         outcomeID: '1',

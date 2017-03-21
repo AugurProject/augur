@@ -42,7 +42,7 @@ export default class Footer extends Component {
   }
 
   handleWindowResize() {
-    if (this.navRef.offsetHeight) { // navs present
+    if (this.navRef && this.navRef.offsetHeight) { // navs present
       this.slideFooter();
     } else if (this.state.verticalOffset !== 0) {
       this.slideFooter();

@@ -229,7 +229,7 @@ export function assembleMarket(
 
       market.marketLink = selectMarketLink(market, dispatch);
       market.onClickToggleFavorite = () => dispatch(toggleFavorite(marketID));
-      market.onSubmitPlaceTrade = outcomeID => dispatch(placeTrade(marketID, outcomeID));
+      market.onSubmitPlaceTrade = outcomeID => dispatch(placeTrade(marketID, outcomeID, marketTradeInProgress));
 
       market.report = {
         ...marketReport,

@@ -6,6 +6,7 @@ import { selectTopicLink } from '../../../modules/link/selectors/links';
 
 export default function () {
   const { topics } = store.getState();
+
   return {
     topics: selectTopics(topics),
     selectTopic: (topic) => {

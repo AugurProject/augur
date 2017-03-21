@@ -4,7 +4,7 @@ import ValueDenomination from 'modules/common/components/value-denomination';
 
 const MarketOutcomes = p => (
   <div className="market-preview-outcomes">
-    {p.outcomes.map((outcome, i) => (
+    {(p.outcomes || []).map((outcome, i) => (
       <div
         key={outcome.id}
         className="outcome"

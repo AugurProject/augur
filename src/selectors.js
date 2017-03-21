@@ -1,4 +1,4 @@
-import rawSelectors from 'src/selectors-raw';
+const rawSelectors = require('src/selectors-raw').default;
 
 module.exports = {};
 

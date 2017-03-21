@@ -10,6 +10,8 @@ export default class Input extends Component {
     // type: PropTypes.string,
     // className: PropTypes.string,
     value: PropTypes.any,
+    max: PropTypes.any,
+    min: PropTypes.any,
     // isMultiline: PropTypes.bool,
     isClearable: PropTypes.bool,
     debounceMS: PropTypes.number,
@@ -93,7 +95,7 @@ export default class Input extends Component {
   }
 
   render() {
-    const { isClearable, isIncrementable, incrementAmount, updateValue, canToggleVisibility, shouldMatchValue, comparisonValue, isSearch, ...p } = this.props;
+    const { debounceMS, isClearable, isIncrementable, incrementAmount, updateValue, canToggleVisibility, shouldMatchValue, comparisonValue, isSearch, min, max, ...p } = this.props; // eslint-disable-line no-unused-vars
     const s = this.state;
 
     return (
@@ -104,7 +106,7 @@ export default class Input extends Component {
         {!p.isMultiline &&
           <input
             {...p}
-            className={classNames('box', { 'search-input': p.isSearch })}
+            className={classNames('box', p.className, { 'search-input': p.isSearch })}
             type={p.type === 'password' && s.isHiddenContentVisible ? 'text' : p.type}
             value={s.value}
             onChange={this.handleOnChange}
@@ -158,19 +160,26 @@ export default class Input extends Component {
         {isIncrementable &&
           <div className="value-incrementers">
             <button
+              type="button"
+              tabIndex="-1"
               className="increment-value unstyled"
-              onClick={() => {
+              onClick={(e) => {
+                e.currentTarget.blur();
+
                 if ((!isNaN(parseFloat(s.value)) && isFinite(s.value)) || !s.value) {
+                  const bnMax = sanitizeBound(max);
+                  const bnMin = sanitizeBound(min);
+
                   let newValue = new BigNumber(s.value || 0);
 
-                  if (newValue > p.max) {
-                    newValue = new BigNumber(p.max);
-                  } else if (newValue < p.min) {
-                    newValue = new BigNumber(p.min).plus(new BigNumber(incrementAmount)).toString();
+                  if (bnMax !== null && newValue.greaterThan(bnMax)) {
+                    newValue = bnMax;
+                  } else if (bnMin !== null && newValue.lessThan(bnMin)) {
+                    newValue = bnMin.plus(new BigNumber(incrementAmount));
                   } else {
-                    newValue = newValue.plus(new BigNumber(incrementAmount)).toString();
-                    if (newValue > p.max) {
-                      newValue = new BigNumber(p.max);
+                    newValue = newValue.plus(new BigNumber(incrementAmount));
+                    if (bnMax !== null && newValue.greaterThan(bnMax)) {
+                      newValue = bnMax;
                     }
                   }
 
@@ -181,19 +190,26 @@ export default class Input extends Component {
               <i className="fa fa-angle-up" />
             </button>
             <button
+              type="button"
+              tabIndex="-1"
               className="decrement-value unstyled"
-              onClick={() => {
+              onClick={(e) => {
+                e.currentTarget.blur();
+
                 if ((!isNaN(parseFloat(s.value)) && isFinite(s.value)) || !s.value) {
+                  const bnMax = sanitizeBound(max);
+                  const bnMin = sanitizeBound(min);
+
                   let newValue = new BigNumber(s.value || 0);
 
-                  if (newValue > p.max) {
-                    newValue = new BigNumber(p.max).minus(new BigNumber(incrementAmount));
-                  } else if (newValue < p.min) {
-                    newValue = new BigNumber(p.min);
+                  if (bnMax !== null && newValue.greaterThan(bnMax)) {
+                    newValue = bnMax.minus(new BigNumber(incrementAmount));
+                  } else if (bnMin !== null && newValue.lessThan(bnMin)) {
+                    newValue = bnMin;
                   } else {
                     newValue = newValue.minus(new BigNumber(incrementAmount));
-                    if (newValue < p.min) {
-                      newValue = new BigNumber(p.min);
+                    if (bnMin !== null && newValue.lessThan(bnMin)) {
+                      newValue = bnMin;
                     }
                   }
 
@@ -208,4 +224,14 @@ export default class Input extends Component {
       </div>
     );
   }
+}
+
+function sanitizeBound(value) {
+  if (value == null) {
+    return null;
+  } else if (!(value instanceof BigNumber)) {
+    return new BigNumber(value);
+  }
+
+  return value;
 }

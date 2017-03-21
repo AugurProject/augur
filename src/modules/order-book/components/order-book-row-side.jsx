@@ -30,7 +30,7 @@ const OrderBookRowSide = (p) => {
 
             return (
               <div
-                key={i}
+                key={`order-${Math.random()}`}
                 className={classNames('order-book-side-row not-selectable', { 'is-of-current-user': order.isOfCurrentUser })}
                 data-tip
                 data-for={`${type}-${i}-orders`}

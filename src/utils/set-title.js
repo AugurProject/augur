@@ -22,8 +22,8 @@ export default function (title, params) {
       case views.AUTHENTICATION:
         setDocumentTitle(titles.AUTHENTICATION);
         break;
-      case views.MAKE:
-        setDocumentTitle(titles.CREATE);
+      case views.CREATE_MARKET:
+        setDocumentTitle(titles.CREATE_MARKET);
         break;
       case views.MY_POSITIONS:
         setDocumentTitle(titles.POSITIONS);

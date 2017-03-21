@@ -1,3 +1,5 @@
+/* eslint react/no-array-index-key: 0 */  // It's OK in this specific instance since the order NEVER changes
+
 import React, { PropTypes } from 'react';
 import ValueDenomination from 'modules/common/components/value-denomination';
 

@@ -2,11 +2,12 @@ import { augur } from '../../../services/augurjs';
 import { updateTradeCommitment, updateTradeCommitLock } from '../../trade/actions/update-trade-commitment';
 import { clearTradeInProgress } from '../../trade/actions/update-trades-in-progress';
 
-export const placeTrade = (marketID, outcomeID, doNotMakeOrders, callback) => (dispatch, getState) => {
+export const placeTrade = (marketID, outcomeID, trades, doNotMakeOrders, callback) => (dispatch, getState) => {
   if (!marketID) return null;
-  const { loginAccount, marketsData, tradesInProgress } = getState();
+  const { loginAccount, marketsData } = getState();
   const market = marketsData[marketID];
-  if (!tradesInProgress[marketID] || !market || outcomeID == null) {
+
+  if (!trades || !market || outcomeID == null) {
     console.error(`trade-in-progress not found for ${marketID} ${outcomeID}`);
     return dispatch(clearTradeInProgress(marketID));
   }
@@ -16,7 +17,7 @@ export const placeTrade = (marketID, outcomeID, doNotMakeOrders, callback) => (d
     loginAccount.address,
     () => getState().orderBooks,
     doNotMakeOrders,
-    tradesInProgress[marketID],
+    trades,
     data => dispatch(updateTradeCommitment(data)),
     isLocked => dispatch(updateTradeCommitLock(isLocked)),
     (err, tradeGroupID) => {

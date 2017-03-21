@@ -21,7 +21,6 @@ import store from 'src/store';
   selectedFilters: { isOpen: true },
   selectedSort: { prop: 'volume', isDesc: true },
   tradesInProgress: {},
-  createMarketInProgress: {},
   outcomes: {},
   bidsAsks: {},
   accountTrades: {},
@@ -84,10 +83,6 @@ describe(`store.js`, () => {
     assert.isOk(state.tradesInProgress, 'tradesInProgress is not defined');
     assert.isObject(state.tradesInProgress, 'tradesInProgress is not an object');
     assert.deepEqual(state.tradesInProgress, {}, 'tradesInProgress is not an empty object');
-
-    assert.isOk(state.createMarketInProgress, 'createMarketInProgress is not defined');
-    assert.isObject(state.createMarketInProgress, 'createMarketInProgress is not an object');
-    assert.deepEqual(state.createMarketInProgress, {}, 'createMarketInProgress is not an empty object');
 
     assert.isOk(state.outcomesData, 'outcomes is not defined');
     assert.isObject(state.outcomesData, 'outcomes is not an object');

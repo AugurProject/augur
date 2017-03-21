@@ -11,7 +11,7 @@ import { loadFullLoginAccountMarkets } from 'modules/portfolio/actions/load-full
 import updateUserLoginMessageVersionRead from 'modules/login-message/actions/update-user-login-message-version-read';
 import { updateSelectedMarketsHeader } from 'modules/markets/actions/update-selected-markets-header';
 
-import { ACCOUNT, M, MARKETS, MAKE, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS, LOGIN_MESSAGE, AUTHENTICATION } from 'modules/app/constants/views';
+import { ACCOUNT, M, MARKETS, CREATE_MARKET, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS, LOGIN_MESSAGE, AUTHENTICATION } from 'modules/app/constants/views';
 import { FAVORITES, PENDING_REPORTS } from 'modules/markets/constants/markets-subset';
 
 import { SEARCH_PARAM_NAME, FILTER_SORT_TYPE_PARAM_NAME, FILTER_SORT_SORT_PARAM_NAME, FILTER_SORT_ISDESC_PARAM_NAME, PAGE_PARAM_NAME, TAGS_PARAM_NAME, TOPIC_PARAM_NAME, SUBSET_PARAM_NAME } from 'modules/link/constants/param-names';
@@ -204,7 +204,7 @@ export const selectTransactionsLink = memoizerific(1)((dispatch) => {
 });
 
 export const selectCreateMarketLink = memoizerific(1)((dispatch) => {
-  const href = makeLocation({ page: MAKE }).url;
+  const href = makeLocation({ page: CREATE_MARKET }).url;
   return {
     href,
     onClick: () => dispatch(updateURL(href))

@@ -11,6 +11,8 @@ import auth from 'modules/auth/reducers/auth';
 import loginAccount from 'modules/auth/reducers/login-account';
 import activeView from 'modules/app/reducers/active-view';
 
+import newMarket from 'modules/create-market/reducers/new-market';
+
 import marketsData from 'modules/markets/reducers/markets-data';
 import hasLoadedMarkets from 'modules/markets/reducers/has-loaded-markets';
 import outcomesData from 'modules/markets/reducers/outcomes-data';
@@ -45,7 +47,7 @@ import reportCommitLock from 'modules/reports/reducers/report-commit-lock';
 import tradeCommitment from 'modules/trade/reducers/trade-commitment';
 import sellCompleteSetsLock from 'modules/my-positions/reducers/sell-complete-sets-lock';
 import smallestPositions from 'modules/my-positions/reducers/smallest-positions';
-import createMarketInProgress from 'modules/create-market/reducers/create-market-in-progress';
+// import createMarketInProgress from 'modules/create-market/reducers/create-market-in-progress';
 import keywords from 'modules/markets/reducers/keywords';
 import selectedTags from 'modules/markets/reducers/selected-tags';
 import selectedFilterSort from 'modules/markets/reducers/selected-filter-sort';
@@ -69,6 +71,8 @@ export function createReducer() {
     auth,
     loginAccount,
     activeView,
+
+    newMarket,
 
     marketsData,
     hasLoadedMarkets,
@@ -98,7 +102,6 @@ export function createReducer() {
     tradeCommitment,
     sellCompleteSetsLock,
     smallestPositions,
-    createMarketInProgress,
 
     orderBooks,
     orderCancellation,

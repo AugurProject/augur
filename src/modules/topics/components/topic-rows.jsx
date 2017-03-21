@@ -41,12 +41,12 @@ const TopicRows = (p) => {
     <div className="topic-rows">
       {Object.keys(rowItems).map((row, rowIndex) => (
         <div
-          key={`topic-row-${rowIndex}`}
+          key={JSON.stringify(row)}
           className={classNames('topic-row', { 'hero-row': p.hasHeroRow && rowIndex === 0, 'search-result': p.isSearchResult })}
         >
           {rowItems[row].map((topic, topicIndex) => (
             <Topic
-              key={`${topic.topic}-${topicIndex}`}
+              key={topic.topic}
               isSpacer={!Object.keys(topic).length}
               isHero={p.hasHeroRow && rowIndex === 0}
               topic={topic.topic}

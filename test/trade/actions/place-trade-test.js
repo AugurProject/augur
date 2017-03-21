@@ -71,7 +71,30 @@ describe(`modules/trade/actions/place-trade.js`, () => {
   });
 
   it('should place a BUY trade for a binary market', () => {
-    store.dispatch(action.placeTrade('testBinaryMarketID', '2'));
+    const tradeToExecute = {
+      2: {
+        side: BUY,
+        numShares: '10',
+        limitPrice: '0.5',
+        totalFee: '0.01',
+        totalCost: '5.01',
+        tradeActions: [{
+          action: 'BID',
+          shares: '10',
+          gasEth: '0.01450404',
+          feeEth: '0.01',
+          feePercent: '0.2',
+          costEth: '5.01',
+          avgPrice: '0.501',
+          noFeePrice: '0.5'
+        }],
+        tradingFeesEth: '0.01',
+        gasFeesRealEth: '0.01450404',
+        feePercent: '0.199203187250996016'
+      }
+    };
+
+    store.dispatch(action.placeTrade('testBinaryMarketID', '2', tradeToExecute));
     console.log(JSON.stringify(store.getActions(), null, 2));
     assert.deepEqual(store.getActions(), [{
       type: 'AUGURJS_EXECUTE_TRADING_ACTIONS',

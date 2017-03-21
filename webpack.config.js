@@ -59,6 +59,7 @@ let config = {
       },
       {
         test: /\.jsx?/,
+        exclude: /node_modules/,
         loader: 'babel-loader'
       },
       {
@@ -151,7 +152,7 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
     devtool: 'eval-source-map',
     plugins: [
       new webpack.HotModuleReplacementPlugin(),
-      new webpack.NoErrorsPlugin(),
+      new webpack.NoEmitOnErrorsPlugin(),
     ]
   });
 // PRODUCTION DEBUG CONFIG (unminified build + more specific source maps + no hot reload)

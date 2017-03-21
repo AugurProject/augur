@@ -40,6 +40,17 @@
   animation: @args;
 }
 
+// TODO -- deprecate this approach
 .keyframes(@name; @args) {
   @keyframes @name { @args(); }
 }
+
+// Shared Animations
+
+.keyframes(expandElementHeight, {
+to { height: auto; }
+});
+
+.keyframes(collapseElementHeight, {
+to { height: 0; }
+});

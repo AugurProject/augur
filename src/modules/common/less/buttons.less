@@ -27,6 +27,10 @@ button,
     cursor: default;
   }
 
+  &.disabled {
+    background-color: @color-gray;
+  }
+
   &.imperative {
     background-color: @color-red;
     color: @color-text-light; // shouldn't need this, should inherit from .button -- TODO: resolve styles further up

@@ -48,7 +48,7 @@ export default class OutcomeTrade extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.marketType !== nextProps.markettype) {
+    if (this.props.marketType !== nextProps.marketType) {
       this.setState({
         minLimitPrice: nextProps.marketType && nextProps.marketType === SCALAR ? nextProps.minLimitPrice : 0,
         maxLimitPrice: nextProps.marketType && nextProps.marketType === SCALAR ? nextProps.maxLimitPrice : 1

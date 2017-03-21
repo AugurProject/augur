@@ -1,27 +1,99 @@
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
+
+import CreateMarketMainTitle from 'modules/create-market/components/create-market-main-title';
+import CreateMarketPreview from 'modules/create-market/components/create-market-preview';
 import CreateMarketForm from 'modules/create-market/components/create-market-form';
+import CreateMarketFormButtons from 'modules/create-market/components/create-market-form-buttons';
 
-const CreateMarketPage = p => (
-  <section id="create_market_view">
-    <header className="page-header">
-      <span className="big-line">Be the market maker</span>.
-      Earn fees by making markets for people to trade.
-      The more people <b><i>trade</i></b> your markets, the more fees you will <b><i>make</i></b>.
-    </header>
+import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
 
-    <div className="page-content">
-      <CreateMarketForm
-        className="create-market-content"
-        {...p.createMarketForm}
-        scalarShareDenomination={p.scalarShareDenomination}
-      />
-    </div>
-  </section>
-);
+export default class CreateMarketView extends Component {
+  static propTypes = {
+    newMarket: PropTypes.object.isRequired,
+    updateNewMarket: PropTypes.func.isRequired,
+    addValidationToNewMarket: PropTypes.func.isRequired,
+    removeValidationFromNewMarket: PropTypes.func.isRequired
+  }
 
-CreateMarketPage.propTypes = {
-  className: PropTypes.string,
-  createMarketForm: PropTypes.object
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      buttonHeight: 0
+    };
+
+    this.updateValidations = this.updateValidations.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.newMarket.isValid !== nextProps.newMarket.isValid ||
+      (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep && nextProps.newMarket.isValid) ||
+      (this.props.newMarket.holdForUserAction !== nextProps.newMarket.holdForUserAction)
+    ) {
+      this.updateValidations(nextProps.newMarket.isValid, nextProps.newMarket.currentStep, nextProps.newMarket.holdForUserAction);
+    }
+  }
+
+  updateValidations(isValid, currentStep, isHolding = false) {
+    if (isValid && !isHolding) {
+      this.props.addValidationToNewMarket(newMarketCreationOrder[currentStep]);
+    } else {
+      this.props.removeValidationFromNewMarket(newMarketCreationOrder[currentStep]);
+    }
+  }
+
+  render() {
+    const p = this.props;
+    const s = this.state;
+
+    return (
+      <section
+        id="create_market_view"
+        style={{ marginBottom: s.buttonHeight + p.footerHeight }}
+      >
+        <div className="create-market-container">
+          <CreateMarketMainTitle
+            type={p.newMarket.type}
+            validations={p.newMarket.validations}
+            currentStep={p.newMarket.currentStep}
+            updateNewMarket={p.updateNewMarket}
+            clearNewMarket={p.clearNewMarket}
+          />
+          <CreateMarketPreview
+            newMarket={p.newMarket}
+            updateNewMarket={p.updateNewMarket}
+          />
+          <CreateMarketForm
+            branch={p.branch}
+            availableEth={p.availableEth}
+            newMarket={p.newMarket}
+            buttonHeight={s.buttonHeight}
+            addOrderToNewMarket={p.addOrderToNewMarket}
+            removeOrderFromNewMarket={p.removeOrderFromNewMarket}
+            updateNewMarket={p.updateNewMarket}
+            updateValidations={this.updateValidations}
+            addValidationToNewMarket={p.addValidationToNewMarket}
+            removeValidationFromNewMarket={p.removeValidationFromNewMarket}
+          />
+          <CreateMarketFormButtons
+            footerHeight={p.footerHeight}
+            currentStep={p.newMarket.currentStep}
+            type={p.newMarket.type}
+            isValid={p.newMarket.isValid}
+            holdForUserAction={p.newMarket.holdForUserAction}
+            validations={p.newMarket.validations}
+            newMarket={p.newMarket}
+            updateNewMarket={p.updateNewMarket}
+            submitNewMarket={p.submitNewMarket}
+            updateButtonHeight={buttonHeight => this.setState({ buttonHeight })}
+            updateValidations={this.updateValidations}
+          />
+        </div>
+      </section>
+    );
+  }
+}
+
+CreateMarketView.propTypes = {
+
 };
-
-export default CreateMarketPage;

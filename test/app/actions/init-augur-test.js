@@ -57,7 +57,8 @@ describe(`modules/app/actions/init-augur.js`, () => {
   beforeEach(() => {
     store.clearActions();
     global.XMLHttpRequest = sinon.useFakeXMLHttpRequest();
-    const requests = global.requests = [];
+    global.requests = [];
+    const requests = global.requests;
     global.XMLHttpRequest.onCreate = (xhr) => {
       requests.push(xhr);
     };

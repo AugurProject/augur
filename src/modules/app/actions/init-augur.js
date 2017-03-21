@@ -1,4 +1,4 @@
-import { augur, connect } from '../../../services/augurjs';
+import { augur, connect } from 'services/augurjs';
 import { BRANCH_ID } from '../../app/constants/network';
 import { updateEnv } from '../../app/actions/update-env';
 import { updateConnectionStatus } from '../../app/actions/update-connection';

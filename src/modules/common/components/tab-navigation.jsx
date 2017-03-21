@@ -12,7 +12,7 @@ const TabNavigation = p => (
 
       return (
         <Link
-          key={`${i}`}
+          key={navItem}
           className={classnames('nav-item', { active: navItem.page.indexOf(p.activeView) > -1 })}
           href={navItem.link.href}
           onClick={navItem.link.onClick}
