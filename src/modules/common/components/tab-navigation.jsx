@@ -1,3 +1,5 @@
+/* eslint react/no-array-index-key: 0 */
+
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
 import classnames from 'classnames';
@@ -12,7 +14,7 @@ const TabNavigation = p => (
 
       return (
         <Link
-          key={navItem}
+          key={i}
           className={classnames('nav-item', { active: navItem.page.indexOf(p.activeView) > -1 })}
           href={navItem.link.href}
           onClick={navItem.link.onClick}
