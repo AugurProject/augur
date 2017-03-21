@@ -371,19 +371,19 @@ augur-abi@1.1.1:
     ethereumjs-abi "0.6.2"
     js-sha3 "0.3.1"
 
-augur-contracts@2.11.1:
-  version "2.11.1"
-  resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-2.11.1.tgz#9fc4b0738a89dfe5351e423ccb7a75a51d64178d"
+augur-contracts@2.11.2:
+  version "2.11.2"
+  resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-2.11.2.tgz#5734782938b5c67f19bda903a64426d05bba14d2"
   dependencies:
     clone "1.0.2"
 
-augur.js@3.14.5:
-  version "3.14.5"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.14.5.tgz#c1ef268e0bea3efcdb6d6f2002bef38e13049408"
+augur.js@3.14.6:
+  version "3.14.6"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.14.6.tgz#def2da5a5cb26e34405fb121daa459f326986d15"
   dependencies:
     async "1.5.2"
     augur-abi "1.1.1"
-    augur-contracts "2.11.1"
+    augur-contracts "2.11.2"
     bignumber.js "2.3.0"
     browser-request "0.3.3"
     bs58 "3.0.0"
