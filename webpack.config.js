@@ -11,6 +11,7 @@ const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 const PATHS = {
   BUILD: path.resolve(__dirname, 'build'),
@@ -49,7 +50,12 @@ let config = {
     }
   },
   module: {
-    loaders: [
+    rules: [
+      {
+        test: /\.less/,
+        enforce: 'pre',
+        loader: 'import-glob-loader'
+      },
       {
         test: /\.html/,
         loader: 'html-loader',
@@ -142,10 +148,15 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
       ]
     },
     module: {
-      loaders: [
+      rules: [
         {
           test: /\.less/,
-          loaders: ['style-loader', 'css-loader', 'postcss-loader', 'less-loader', 'import-glob-loader']
+          use: [
+            'style-loader',
+            'css-loader',
+            'postcss-loader',
+            'less-loader'
+          ]
         }
       ]
     },
@@ -162,10 +173,15 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
       main: `${PATHS.APP}/main`
     },
     module: {
-      loaders: [
+      rules: [
         {
           test: /\.less/,
-          loaders: ['style-loader', 'css-loader', 'postcss-loader', 'less-loader', 'import-glob-loader']
+          use: [
+            'style-loader',
+            'css-loader',
+            'postcss-loader',
+            'less-loader'
+          ]
         }
       ]
     },
@@ -178,19 +194,29 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
       main: `${PATHS.APP}/main`
     },
     module: {
-      loaders: [
+      rules: [
         {
           test: /\.less/,
-          loaders: ExtractTextPlugin.extract({ fallbackLoader: 'style-loader', loader: 'css-loader!postcss-loader!less-loader!import-glob-loader' }),
+          use: ExtractTextPlugin.extract({
+            use: [
+              'css-loader',
+              'postcss-loader',
+              'less-loader'
+            ],
+            fallback: 'style-loader'
+          }),
         }
       ]
     },
     devtool: 'source-map',
     plugins: [
-      new ExtractTextPlugin('[name].css'),
-      new webpack.optimize.UglifyJsPlugin({
+      new ExtractTextPlugin({
+        filename: '[name].css'
+      }),
+      new UglifyJSPlugin({
         comments: false,
-        dropConsole: true
+        dropConsole: true,
+        sourceMap: true
       })
     ]
   });
