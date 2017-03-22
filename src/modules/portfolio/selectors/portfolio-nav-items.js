@@ -23,26 +23,32 @@ export const selectPortfolioNavItems = memoizerific(1)((links) => {
       page: MY_POSITIONS,
       leadingTitle: 'Total Number of Positions',
       leadingValue: (positionsSummary && positionsSummary.numPositions) || 0,
+      leadingValueNull: 'No Positions',
       trailingTitle: 'Total Profit/Loss',
-      trailingValue: (positionsSummary && positionsSummary.totalNet) || 0
+      trailingValue: (positionsSummary && positionsSummary.totalNet) || 0,
+      trailingValueNull: 'No Profit/Loss'
     },
     {
       label: 'Markets',
       link: links.myMarketsLink,
       page: MY_MARKETS,
       leadingTitle: 'Total Markets',
-      leadingValue: formatNumber(((marketsSummary && marketsSummary.numMarkets) || 0), { denomination: 'markets' }),
+      leadingValue: formatNumber(((marketsSummary && marketsSummary.numMarkets) || 0), { denomination: 'Markets' }),
+      leadingValueNull: 'No Markets',
       trailingTitle: 'Total Gain/Loss',
-      trailingValue: formatEther(((marketsSummary && marketsSummary.totalValue) || 0))
+      trailingValue: formatEther(((marketsSummary && marketsSummary.totalValue) || 0)),
+      trailingValueNull: 'No Gain/Loss'
     },
     {
       label: 'Reports',
       link: links.myReportsLink,
       page: MY_REPORTS,
       leadingTitle: 'Total Reports',
-      leadingValue: formatNumber((reportsSummary && reportsSummary.numReports), { denomination: 'reports' }),
+      leadingValue: formatNumber((reportsSummary && reportsSummary.numReports), { denomination: 'Reports' }),
+      leadingValueNull: 'No Reports',
       trailingTitle: 'Total Gain/Loss',
-      trailingValue: formatRep((reportsSummary && reportsSummary.netRep))
+      trailingValue: formatRep((reportsSummary && reportsSummary.netRep)),
+      trailingValueNull: 'No Gain/Loss'
     }
   ];
 });

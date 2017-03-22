@@ -23,6 +23,15 @@ export default class PortfolioNavs extends Component {
     window.addEventListener('resize', this.updatePortfolioNavHeight);
   }
 
+  componentDidMount() {
+    if (this.props.activeView === MY_POSITIONS ||
+      this.props.activeView === MY_MARKETS ||
+      this.props.activeView === MY_REPORTS
+    ) {
+      this.updatePortfolioNavHeight();
+    }
+  }
+
   componentWillReceiveProps(nextProps) {
     if (
       this.props.activeView !== nextProps.activeView &&
@@ -35,11 +44,7 @@ export default class PortfolioNavs extends Component {
   }
 
   updatePortfolioNavHeight() {
-    console.log('### measure dat height -- ', this.portfolioNavContainer, this.portfolioNavContainer.clientHeight);
-
     const newHeight = this.portfolioNavContainer && this.portfolioNavContainer.clientHeight;
-
-    console.log('newHeight -- ', newHeight);
 
     this.portfolioNav.style.height = `${newHeight}px`;
   }
@@ -66,12 +71,18 @@ export default class PortfolioNavs extends Component {
               >
                 <span>{navItem.label}</span>
                 <div className="portfolio-nav-item-stats">
-                  <ValueDenomination
-                    {...navItem.leadingValue || {}}
-                  />
-                  <ValueDenomination
-                    {...navItem.trailingValue || {}}
-                  />
+                  {navItem.leadingValue && navItem.leadingValue.value !== 0 ?
+                    <ValueDenomination
+                      {...navItem.leadingValue || {}}
+                    /> :
+                    <span className="null-portfolio-value">{navItem.leadingValueNull}</span>
+                  }
+                  {navItem.trailingValue && navItem.trailingValue.value !== 0 ?
+                    <ValueDenomination
+                      {...navItem.trailingValue || {}}
+                    /> :
+                    <span className="null-portfolio-value">{navItem.trailingValueNull}</span>
+                  }
                 </div>
               </Link>
             ))}

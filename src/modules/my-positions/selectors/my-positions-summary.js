@@ -69,7 +69,7 @@ export const generatePositionsSummary = memoizerific(20)((numPositions, qtyShare
     numPositions: formatNumber(numPositions, {
       decimals: 0,
       decimalsRounded: 0,
-      denomination: 'positions',
+      denomination: 'Positions',
       positiveSign: false,
       zeroStyled: false
     }),
