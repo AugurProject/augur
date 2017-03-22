@@ -33,7 +33,7 @@ export const selectPortfolioNavItems = memoizerific(1)((links) => {
       leadingTitle: 'Total Markets',
       leadingValue: formatNumber(((marketsSummary && marketsSummary.numMarkets) || 0), { denomination: 'markets' }),
       trailingTitle: 'Total Gain/Loss',
-      trailingValue: formatEther(((marketsSummary && marketsSummary.totalValue) || 0), { denomination: 'eth' })
+      trailingValue: formatEther(((marketsSummary && marketsSummary.totalValue) || 0))
     },
     {
       label: 'Reports',
@@ -42,7 +42,7 @@ export const selectPortfolioNavItems = memoizerific(1)((links) => {
       leadingTitle: 'Total Reports',
       leadingValue: formatNumber((reportsSummary && reportsSummary.numReports), { denomination: 'reports' }),
       trailingTitle: 'Total Gain/Loss',
-      trailingValue: formatRep((reportsSummary && reportsSummary.netRep), { denomination: 'rep' })
+      trailingValue: formatRep((reportsSummary && reportsSummary.netRep))
     }
   ];
 });

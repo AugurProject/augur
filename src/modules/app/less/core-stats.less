@@ -53,19 +53,21 @@
   }
 
   .additional-stats {
+    .border(true, @border-top, @border-light);
+
     display: flex;
     flex-basis: 100%;
     justify-content: center;
-    max-height: 0;
     opacity: 0;
-    transition-duration: @animation-speed-fast;
-    transition-property: opacity, visibility, max-height;
-    visibility: hidden;
+    transition-duration: @animation-speed-normal;
+    transition-property: height, opacity;
+
+    &:not(.display-additional-stats) {
+      height: 0 !important;
+    }
 
     &.display-additional-stats {
-      max-height: 10000px; // Simply set larger than anticipated to attain
       opacity: 1;
-      visibility: visible;
     }
   }
 }

@@ -7,7 +7,8 @@ import portfolioNavs from 'modules/portfolio/components/portfolio-navs';
 import portfolioNavItems from 'modules/portfolio/selectors/portfolio-nav-items';
 
 const mapStateToProps = state => ({
-  portfolioStats: portfolioNavItems()
+  activeView: state.activeView,
+  portfolioNavItems: portfolioNavItems()
 });
 
 const portfolioNav = connect(mapStateToProps)(portfolioNavs);

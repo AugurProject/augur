@@ -1,0 +1,37 @@
+.portfolio-navs {
+  overflow-x: hidden;
+  position: relative;
+
+  .portfolio-navs-container {
+    position: absolute;
+    width: 100%;
+
+    .portfolio-navs-content {
+      display: flex;
+
+      .portfolio-nav-item {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        padding: 1em;
+
+        &.active-nav-item {
+          background-color: @color-nav-background-active;
+          color: @color-white;
+        }
+
+        & > span {
+          padding-bottom: 0.4em;
+        }
+
+        & > * {
+          align-self: center;
+        }
+      }
+
+      .portfolio-nav-item-stats .value-denomination {
+        padding: 0 0.4em;
+      }
+    }
+  }
+}
