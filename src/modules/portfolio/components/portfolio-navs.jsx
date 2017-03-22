@@ -91,4 +91,4 @@ export default class PortfolioNavs extends Component {
       </article>
     );
   }
-};
+}
