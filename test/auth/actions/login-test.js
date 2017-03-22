@@ -1,6 +1,5 @@
 import { describe, it, beforeEach } from 'mocha';
 import { assert } from 'chai';
-import augur from 'augur.js';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
@@ -15,9 +14,7 @@ describe(`modules/auth/actions/login.js`, () => {
   const store = mockStore(thisTestState);
   const AugurJS = {
     augur: {
-      accounts: {},
-      base58Encode: augur.base58Encode,
-      base58Decode: augur.base58Decode
+      accounts: {}
     }
   };
   const LoadAccountData = {};

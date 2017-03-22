@@ -1,4 +1,5 @@
 import { augur } from '../../../services/augurjs';
+import { base58Encode } from '../../../utils/base-58';
 import { loadAccountData } from '../../auth/actions/load-account-data';
 import { savePersistentAccountToLocalStorage } from '../../auth/actions/save-persistent-account';
 import { updateLoginAccount } from '../../auth/actions/update-login-account';
@@ -11,7 +12,7 @@ export const register = (password, cb) => (dispatch) => {
     } else if (account.error) {
       return callback({ code: account.error, message: account.message });
     }
-    const loginID = augur.base58Encode(account);
+    const loginID = base58Encode(account);
     callback(null, loginID);
   });
 };
