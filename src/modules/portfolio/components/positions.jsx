@@ -1,5 +1,5 @@
 import React from 'react';
-import Positions from 'modules/my-positions/components/my-positions';
+import MyPositions from 'modules/my-positions/components/my-positions';
 import PositionsMarketOverview from 'modules/my-positions/components/my-positions-market-overview';
 import Link from 'modules/link/components/link';
 
@@ -14,7 +14,7 @@ const PortfolioPositions = p => (
           />
         </Link>
         {!!market.myPositionOutcomes && !!market.myPositionOutcomes.length &&
-          <Positions
+          <MyPositions
             className="page-content positions-content"
             market={market}
             marketLink={market.marketLink}

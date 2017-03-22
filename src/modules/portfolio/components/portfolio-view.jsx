@@ -1,34 +1,25 @@
 import React, { PropTypes } from 'react';
 
-// import TabNavigation from 'modules/common/components/tab-navigation';
-// import Positions from 'modules/portfolio/components/positions';
-// import Markets from 'modules/portfolio/components/markets';
-// import Reports from 'modules/portfolio/components/reports';
+import Positions from 'modules/portfolio/components/positions';
+import Markets from 'modules/portfolio/components/markets';
+import Reports from 'modules/portfolio/components/reports';
 
 import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views';
 
 const PortfolioView = (p) => {
-  let node;
+  console.log('@@@ PortfolioView -- ', p);
 
-  switch (p.activeView) {
-    default:
-    case MY_POSITIONS:
-      node = <span>Positions</span>
-      break;
-    case MY_MARKETS:
-      node = <span>Markets</span>
-      break;
-    case MY_REPORTS:
-      node = <span>Reports</span>
-      break;
-  }
   return (
     <section id="portfolio_view" >
-      <div className="page-content">
-        <section className="portfolio-content">
-          {node}
-        </section>
-      </div>
+      {p.activeView === MY_POSITIONS &&
+        <Positions {...p.positions} />
+      }
+      {p.activeView === MY_MARKETS &&
+        <Markets {...p.markets} />
+      }
+      {p.activeView === MY_REPORTS &&
+        <Reports {...p.reports} branch={p.branch} />
+      }
     </section>
   );
 };
