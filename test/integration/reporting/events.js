@@ -31,18 +31,6 @@ describe("getMarkets(" + eventID + ")", function () {
       test(r); done();
     });
   });
-  if (!augur.rpc.wsUrl) {
-    it("batched-async", function (done) {
-      var batch = augur.createBatch();
-      batch.add("getMarkets", [eventID], function (r) {
-        test(abi.hex(r));
-      });
-      batch.add("getMarkets", [eventID], function (r) {
-        test(abi.hex(r)); done();
-      });
-      batch.execute();
-    });
-  }
 });
 describe("getEventInfo(" + eventID + ")", function () {
   var test = function (res) {
@@ -57,18 +45,6 @@ describe("getEventInfo(" + eventID + ")", function () {
       test(r); done();
     });
   });
-  if (!augur.rpc.wsUrl) {
-    it("batched-async", function (done) {
-      var batch = augur.createBatch();
-      batch.add("getEventInfo", [eventID], function (r) {
-        test(r);
-      });
-      batch.add("getEventInfo", [eventID], function (r) {
-        test(r); done();
-      });
-      batch.execute();
-    });
-  }
 });
 
 describe("getEventBranch(" + eventID + ")", function () {
@@ -83,18 +59,6 @@ describe("getEventBranch(" + eventID + ")", function () {
       test(r); done();
     });
   });
-  if (!augur.rpc.wsUrl) {
-    it("batched-async", function (done) {
-      var batch = augur.createBatch();
-      batch.add("getEventBranch", [eventID], function (r) {
-        test(r);
-      });
-      batch.add("getEventBranch", [eventID], function (r) {
-        test(r); done();
-      });
-      batch.execute();
-    });
-  }
 });
 describe("getExpiration(" + eventID + ")", function () {
   var test = function (r) {
@@ -108,18 +72,6 @@ describe("getExpiration(" + eventID + ")", function () {
       test(r); done();
     });
   });
-  if (!augur.rpc.wsUrl) {
-    it("batched-async", function (done) {
-      var batch = augur.createBatch();
-      batch.add("getExpiration", [eventID], function (r) {
-        test(r);
-      });
-      batch.add("getExpiration", [eventID], function (r) {
-        test(r); done();
-      });
-      batch.execute();
-    });
-  }
 });
 describe("getOutcome(" + eventID + ")", function () {
   var test = function (r) {
@@ -133,18 +85,6 @@ describe("getOutcome(" + eventID + ")", function () {
       test(r); done();
     });
   });
-  if (!augur.rpc.wsUrl) {
-    it("batched-async", function (done) {
-      var batch = augur.createBatch();
-      batch.add("getOutcome", [eventID], function (r) {
-        test(r);
-      });
-      batch.add("getOutcome", [eventID], function (r) {
-        test(r); done();
-      });
-      batch.execute();
-    });
-  }
 });
 describe("getMinValue(" + eventID + ")", function () {
   var test = function (r) {
@@ -158,18 +98,6 @@ describe("getMinValue(" + eventID + ")", function () {
       test(r); done();
     });
   });
-  if (!augur.rpc.wsUrl) {
-    it("batched-async", function (done) {
-      var batch = augur.createBatch();
-      batch.add("getMinValue", [eventID], function (r) {
-        test(r);
-      });
-      batch.add("getMinValue", [eventID], function (r) {
-        test(r); done();
-      });
-      batch.execute();
-    });
-  }
 });
 describe("getMaxValue(" + eventID + ")", function () {
   var test = function (r) {
@@ -183,18 +111,6 @@ describe("getMaxValue(" + eventID + ")", function () {
       test(r); done();
     });
   });
-  if (!augur.rpc.wsUrl) {
-    it("batched-async", function (done) {
-      var batch = augur.createBatch();
-      batch.add("getMaxValue", [eventID], function (r) {
-        test(r);
-      });
-      batch.add("getMaxValue", [eventID], function (r) {
-        test(r); done();
-      });
-      batch.execute();
-    });
-  }
 });
 describe("getNumOutcomes(" + eventID + ")", function () {
   var test = function (r) {
@@ -208,16 +124,4 @@ describe("getNumOutcomes(" + eventID + ")", function () {
       test(r); done();
     });
   });
-  if (!augur.rpc.wsUrl) {
-    it("batched-async", function (done) {
-      var batch = augur.createBatch();
-      batch.add("getNumOutcomes", [eventID], function (r) {
-        test(r);
-      });
-      batch.add("getNumOutcomes", [eventID], function (r) {
-        test(r); done();
-      });
-      batch.execute();
-    });
-  }
 });

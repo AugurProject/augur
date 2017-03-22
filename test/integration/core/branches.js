@@ -28,18 +28,6 @@ describe("getBranches", function () {
       test(r); done();
     });
   });
-  if (!augur.rpc.wsUrl) {
-    it("batched-async", function (done) {
-      var batch = augur.createBatch();
-      batch.add("getBranches", [], function (r) {
-        test(r);
-      });
-      batch.add("getBranches", [], function (r) {
-        test(r); done();
-      });
-      batch.execute();
-    });
-  }
 });
 describe("getMarketsInBranch(" + branchID + ")", function () {
   if (parseInt(augur.getNumMarketsBranch(branchID), 10) <= 3000) {
@@ -55,18 +43,6 @@ describe("getMarketsInBranch(" + branchID + ")", function () {
         test(r); done();
       });
     });
-    if (!augur.rpc.wsUrl) {
-      it("batched-async", function (done) {
-        var batch = augur.createBatch();
-        batch.add("getMarketsInBranch", [branchID], function (r) {
-          test(r);
-        });
-        batch.add("getMarketsInBranch", [branchID], function (r) {
-          test(r); done();
-        });
-        batch.execute();
-      });
-    }
   }
 });
 describe("getSomeMarketsInBranch(" + branchID + ", 0, 10)", function () {
@@ -82,18 +58,6 @@ describe("getSomeMarketsInBranch(" + branchID + ", 0, 10)", function () {
       test(r); done();
     });
   });
-  if (!augur.rpc.wsUrl) {
-    it("batched-async", function (done) {
-      var batch = augur.createBatch();
-      batch.add("getSomeMarketsInBranch", [branchID, 0, 10], function (r) {
-        test(r);
-      });
-      batch.add("getSomeMarketsInBranch", [branchID, 0, 10], function (r) {
-        test(r); done();
-      });
-      batch.execute();
-    });
-  }
 });
 describe("getPeriodLength(" + branchID + ") == " + constants.DEFAULT_BRANCH_PERIOD_LENGTH, function () {
   var test = function (r) {
@@ -107,18 +71,6 @@ describe("getPeriodLength(" + branchID + ") == " + constants.DEFAULT_BRANCH_PERI
       test(r); done();
     });
   });
-  if (!augur.rpc.wsUrl) {
-    it("batched-async", function (done) {
-      var batch = augur.createBatch();
-      batch.add("getPeriodLength", [branchID], function (r) {
-        test(r);
-      });
-      batch.add("getPeriodLength", [branchID], function (r) {
-        test(r); done();
-      });
-      batch.execute();
-    });
-  }
 });
 describe("getVotePeriod(" + branchID + ") >= -1", function () {
   var test = function (r) {
@@ -132,18 +84,6 @@ describe("getVotePeriod(" + branchID + ") >= -1", function () {
       test(r); done();
     });
   });
-  if (!augur.rpc.wsUrl) {
-    it("batched-async", function (done) {
-      var batch = augur.createBatch();
-      batch.add("getVotePeriod", [branchID], function (r) {
-        test(r);
-      });
-      batch.add("getVotePeriod", [branchID], function (r) {
-        test(r); done();
-      });
-      batch.execute();
-    });
-  }
 });
 describe("getNumMarketsBranch(" + branchID + ") >= 1", function () {
   var test = function (r) {
@@ -157,18 +97,6 @@ describe("getNumMarketsBranch(" + branchID + ") >= 1", function () {
       test(r); done();
     });
   });
-  if (!augur.rpc.wsUrl) {
-    it("batched-async", function (done) {
-      var batch = augur.createBatch();
-      batch.add("getNumMarketsBranch", [branchID], function (r) {
-        test(r);
-      });
-      batch.add("getNumMarketsBranch", [branchID], function (r) {
-        test(r); done();
-      });
-      batch.execute();
-    });
-  }
 });
 describe("getMinTradingFee(" + branchID + ")", function () {
   var test = function (r) {
@@ -183,18 +111,6 @@ describe("getMinTradingFee(" + branchID + ")", function () {
       test(r); done();
     });
   });
-  if (!augur.rpc.wsUrl) {
-    it("batched-async", function (done) {
-      var batch = augur.createBatch();
-      batch.add("getMinTradingFee", [branchID], function (r) {
-        test(r);
-      });
-      batch.add("getMinTradingFee", [branchID], function (r) {
-        test(r); done();
-      });
-      batch.execute();
-    });
-  }
 });
 describe("getNumBranches()", function () {
   var test = function (r) {
@@ -208,18 +124,6 @@ describe("getNumBranches()", function () {
       test(r); done();
     });
   });
-  if (!augur.rpc.wsUrl) {
-    it("batched-async", function (done) {
-      var batch = augur.createBatch();
-      batch.add("getNumBranches", [], function (r) {
-        test(r);
-      });
-      batch.add("getNumBranches", [], function (r) {
-        test(r); done();
-      });
-      batch.execute();
-    });
-  }
 });
 describe("getBranchByNum(" + branchNumber + ")", function () {
   var test = function (r) {
@@ -233,16 +137,4 @@ describe("getBranchByNum(" + branchNumber + ")", function () {
       test(r); done();
     });
   });
-  if (!augur.rpc.wsUrl) {
-    it("batched-async", function (done) {
-      var batch = augur.createBatch();
-      batch.add("getBranchByNum", [branchNumber], function (r) {
-        test(r);
-      });
-      batch.add("getBranchByNum", [branchNumber], function (r) {
-        test(r); done();
-      });
-      batch.execute();
-    });
-  }
 });

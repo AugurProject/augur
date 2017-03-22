@@ -25,18 +25,6 @@ describe("getTotalRep(" + branchID + ")", function () {
       test(r); done();
     });
   });
-  if (!augur.rpc.wsUrl) {
-    it("batched-async", function (done) {
-      var batch = augur.createBatch();
-      batch.add("getTotalRep", [branchID], function (r) {
-        test(r);
-      });
-      batch.add("getTotalRep", [branchID], function (r) {
-        test(r); done();
-      });
-      batch.execute();
-    });
-  }
 });
 
 describe("getRepBalance(" + branchID + ") ", function () {
@@ -51,19 +39,6 @@ describe("getRepBalance(" + branchID + ") ", function () {
       test(r); done();
     });
   });
-  if (!augur.rpc.wsUrl) {
-    it("batched-async", function (done) {
-      var batch = augur.createBatch();
-      var params = [branchID, accounts[0]];
-      batch.add("getRepBalance", params, function (r) {
-        test(r);
-      });
-      batch.add("getRepBalance", params, function (r) {
-        test(r); done();
-      });
-      batch.execute();
-    });
-  }
 });
 
 describe("getRepByIndex(" + branchID + ", " + reporterIndex + ") ", function () {
@@ -78,19 +53,6 @@ describe("getRepByIndex(" + branchID + ", " + reporterIndex + ") ", function () 
       test(r); done();
     });
   });
-  if (!augur.rpc.wsUrl) {
-    it("batched-async", function (done) {
-      var batch = augur.createBatch();
-      var params = [branchID, reporterIndex];
-      batch.add("getRepByIndex", params, function (r) {
-        test(r);
-      });
-      batch.add("getRepByIndex", params, function (r) {
-        test(r); done();
-      });
-      batch.execute();
-    });
-  }
 });
 
 describe("getReporterID(" + branchID + ", " + reporterIndex + ") ", function () {
@@ -105,19 +67,6 @@ describe("getReporterID(" + branchID + ", " + reporterIndex + ") ", function () 
       test(r); done();
     });
   });
-  if (!augur.rpc.wsUrl) {
-    it("batched-async", function (done) {
-      var batch = augur.createBatch();
-      var params = [branchID, reporterIndex];
-      batch.add("getReporterID", params, function (r) {
-        test(r);
-      });
-      batch.add("getReporterID", params, function (r) {
-        test(r); done();
-      });
-      batch.execute();
-    });
-  }
 });
 
 describe("getNumberReporters(" + branchID + ") ", function () {
@@ -132,19 +81,6 @@ describe("getNumberReporters(" + branchID + ") ", function () {
       test(r); done();
     });
   });
-  if (!augur.rpc.wsUrl) {
-    it("batched-async", function (done) {
-      var batch = augur.createBatch();
-      var params = [branchID];
-      batch.add("getNumberReporters", params, function (r) {
-        test(r);
-      });
-      batch.add("getNumberReporters", params, function (r) {
-        test(r); done();
-      });
-      batch.execute();
-    });
-  }
 });
 
 describe("repIDToIndex(" + branchID + ", " + accounts[0] + ") ", function () {
@@ -159,17 +95,4 @@ describe("repIDToIndex(" + branchID + ", " + accounts[0] + ") ", function () {
       test(r); done();
     });
   });
-  if (!augur.rpc.wsUrl) {
-    it("batched-async", function (done) {
-      var batch = augur.createBatch();
-      var params = [branchID, accounts[0]];
-      batch.add("repIDToIndex", params, function (r) {
-        test(r);
-      });
-      batch.add("repIDToIndex", params, function (r) {
-        test(r); done();
-      });
-      batch.execute();
-    });
-  }
 });

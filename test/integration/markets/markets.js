@@ -66,19 +66,6 @@ var runtests = function (method, test) {
       var output = augur[method].apply(augur, params);
       test(errorCheck(output, done));
     });
-    if (augur.tx.Markets[method] && !augur.rpc.wsUrl) {
-      it("batch", function (done) {
-        this.timeout(tools.TIMEOUT);
-        var batch = augur.createBatch();
-        batch.add(method, params, function (output) {
-          test(errorCheck(output));
-        });
-        batch.add(method, params, function (output) {
-          test(errorCheck(output, done));
-        });
-        batch.execute();
-      });
-    }
   });
 };
 describe("getNumEvents", function () {
