@@ -7,7 +7,6 @@
 
 var BigNumber = require("bignumber.js");
 var clone = require("clone");
-var bs58 = require("bs58");
 var abi = require("augur-abi");
 var utils = require("../utilities");
 var constants = require("../constants");
@@ -399,13 +398,5 @@ module.exports = {
       if (this.options.debug.broadcast) console.error(exc, tag);
       return null;
     }
-  },
-
-  base58Decode: function (encoded) {
-    return JSON.parse(new Buffer(bs58.decode(encoded)).toString("utf8"));
-  },
-
-  base58Encode: function (o) {
-    return bs58.encode(new Buffer(JSON.stringify(o), "utf8"));
   }
 };

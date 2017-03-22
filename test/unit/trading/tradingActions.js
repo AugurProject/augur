@@ -249,17 +249,17 @@ describe("tradeActions.getTxGasEth", function() {
   test({
     description: 'Should handle getting the gas cost for a transaction with no gas value passed in the transaction.',
     tx: { value: '10' },
-    gasPrice: '0.01',
+    gasPrice: '0x2540be400',
     assertions: function(data) {
-      assert.equal(data.toFixed(), '0.002534125086747592');
+      assert.equal(data.toFixed(), '0.03135');
     }
   });
   test({
     description: 'Should handle getting the gas cost for a transaction with a gas value passed in the transaction.',
     tx: { value: '25', gas: 4500200 },
-    gasPrice: '0.003',
+    gasPrice: '0x4a817c800',
     assertions: function(data) {
-      assert.equal(data.toFixed(), '0.931241417617555053');
+      assert.equal(data.toFixed(), '0.090004');
     }
   });
 });

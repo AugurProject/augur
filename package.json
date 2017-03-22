@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "3.14.7",
+  "version": "3.14.8",
   "description": "Augur JavaScript SDK",
   "author": "The Augur Developers <team@augur.net>",
   "license": "AAL",
@@ -20,7 +20,6 @@
     "augur-contracts": "2.11.2",
     "bignumber.js": "2.3.0",
     "browser-request": "0.3.3",
-    "bs58": "3.0.0",
     "chalk": "1.1.1",
     "clone": "1.0.2",
     "ethereumjs-connect": "3.0.3",

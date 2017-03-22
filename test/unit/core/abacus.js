@@ -1325,34 +1325,3 @@ describe("abacus.decodeTag", function() {
     }
   });
 });
-
-describe("abacus.base58Decode", function() {
-  var test = function(t) {
-    it(JSON.stringify(t), function() {
-      t.assertions(abacus.base58Decode(t.encoded));
-    });
-  };
-  test({
-    encoded: 'kpXKnbi9Czht5bSPbpf7QoYiDWDF8UWZzmWiCrM7xoE4rbkZ7WmpM4dq9WLki1F8Qhg4bcBYtE8',
-    assertions: function(decoded) {
-      assert.deepEqual(decoded, {
-      	hello: 'world',
-      	description: 'this is a test object'
-      });
-    }
-  });
-});
-
-describe("abacus.base58Encode", function() {
-  var test = function(t) {
-    it(JSON.stringify(t), function() {
-      t.assertions(abacus.base58Encode(t.object));
-    });
-  };
-  test({
-    object: { hello: 'world', description: 'this is a test object' },
-    assertions: function(encoded) {
-      assert.deepEqual(encoded, 'kpXKnbi9Czht5bSPbpf7QoYiDWDF8UWZzmWiCrM7xoE4rbkZ7WmpM4dq9WLki1F8Qhg4bcBYtE8');
-    }
-  });
-});

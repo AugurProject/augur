@@ -2,7 +2,6 @@
 
 var clone = require("clone");
 var BigNumber = require("bignumber.js");
-var EthTx = require("ethereumjs-tx");
 var abi = require("augur-abi");
 var constants = require("../constants");
 var abacus = require("./abacus");
@@ -29,7 +28,7 @@ module.exports = {
   getTxGasEth: function (tx, gasPrice) {
     tx.gasLimit = tx.gas || this.rpc.DEFAULT_GAS;
     tx.gasPrice = gasPrice;
-    return abi.unfix((new EthTx(tx)).getUpfrontCost().toString());
+    return abi.unfix(abi.bignum(tx.gasLimit).times(abi.bignum(gasPrice)));
   },
 
   /**
