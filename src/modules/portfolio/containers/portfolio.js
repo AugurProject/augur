@@ -8,7 +8,8 @@ import portfolio from 'modules/portfolio/selectors/portfolio';
 
 const mapStateToProps = state => ({
   activeView: state.activeView,
-  portfolio: portfolio()
+  branch: state.branch,
+  ...portfolio()
 });
 
 const portfolioNav = connect(mapStateToProps)(portfolioView);

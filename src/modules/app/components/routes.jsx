@@ -89,14 +89,10 @@ export default class Routes extends Component {
       case MY_POSITIONS:
       case MY_MARKETS:
       case MY_REPORTS: {
-        viewProps = {
-          activeView: p.activeView,
-          branch: p.branch,
-          ...p.portfolio
-        };
-        import('modules/portfolio/components/portfolio-view').then((module) => {
+        viewProps = {};
+        import('modules/portfolio/containers/portfolio').then((module) => {
           const PortfolioView = module.default;
-          viewComponent = <PortfolioView {...viewProps} />;
+          viewComponent = <PortfolioView />;
           this.setState({ viewProps, viewComponent });
         }).catch((err) => {
           console.error(`ERROR: Failed to load 'portfolio' module -- `, err);
