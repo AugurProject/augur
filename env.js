@@ -33,7 +33,7 @@ try {
 global.balances = (global.balance = function (account, branch) {
   account = account || augur.from;
   var balances = {
-    cash: augur.getCashBalance(account),
+    cash: augur.Cash.balance(account),
     reputation: augur.Reporting.getRepBalance(branch || augur.constants.DEFAULT_BRANCH_ID, account),
     ether: abi.unfix(augur.rpc.balance(account), "string")
   };
