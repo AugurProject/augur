@@ -23,11 +23,11 @@
       flex-wrap: wrap;
     }
 
-    &:first-child {
+    &:first-of-type {
       justify-content: flex-start;
     }
 
-    &:last-child {
+    &:last-of-type {
       justify-content: flex-end;
     }
 
@@ -49,6 +49,23 @@
       .core-stat-value {
         .font-weight-normal();
       }
+    }
+  }
+
+  .additional-stats {
+    display: flex;
+    flex-basis: 100%;
+    justify-content: center;
+    max-height: 0;
+    opacity: 0;
+    transition-duration: @animation-speed-fast;
+    transition-property: opacity, visibility, max-height;
+    visibility: hidden;
+
+    &.display-additional-stats {
+      max-height: 10000px; // Simply set larger than anticipated to attain
+      opacity: 1;
+      visibility: visible;
     }
   }
 }
