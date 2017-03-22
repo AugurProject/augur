@@ -6,17 +6,17 @@
 "use strict";
 
 var assert = require("chai").assert;
-var rpc = require("ethrpc");
 var contracts = require("augur-contracts");
 var constants = require("../../../src/constants");
 var tools = require("../../tools");
+var augur = tools.setup(require("../../../src"), process.argv.slice(2));
 
 require("it-each")({testPerIteration: true});
 
 describe("Read contracts", function () {
 
   var test = function (c, network) {
-    var res = rpc.read(contracts[network][c]);
+    var res = augur.rpc.read(contracts[network][c], "latest");
     assert.notProperty(res, "error");
     assert.notStrictEqual(res, "0x");
   };
@@ -30,8 +30,7 @@ describe("Read contracts", function () {
 
   it.each(contract_list, "read %s", ['element'], function (element, next) {
     this.timeout(tools.TIMEOUT);
-    rpc.reset();
-    rpc.version(function (network) {
+    augur.rpc.version(function (network) {
       test(element, network);
       next();
     });
