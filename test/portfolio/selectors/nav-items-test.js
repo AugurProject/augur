@@ -92,8 +92,10 @@ describe('modules/portfolio/selectors/nav-items', () => {
       page: MY_POSITIONS,
       leadingTitle: 'Total Number of Positions',
       leadingValue: formatNumber(10, { denomination: 'positions' }),
+      leadingValueNull: 'No Positions',
       trailingTitle: 'Total Profit/Loss',
-      trailingValue: formatEther(2)
+      trailingValue: formatEther(2),
+      trailingValueNull: 'No Profit/Loss'
     },
     {
       label: 'Markets',
@@ -107,9 +109,11 @@ describe('modules/portfolio/selectors/nav-items', () => {
       },
       page: MY_MARKETS,
       leadingTitle: 'Total Markets',
-      leadingValue: formatNumber(30, { denomination: 'markets' }),
+      leadingValue: formatNumber(30, { denomination: 'Markets' }),
+      leadingValueNull: 'No Markets',
       trailingTitle: 'Total Gain/Loss',
-      trailingValue: formatEther(10, { denomination: 'eth' })
+      trailingValue: formatEther(10, { denomination: ' ETH' }),
+      trailingValueNull: 'No Gain/Loss'
     },
     {
       label: 'Reports',
@@ -123,9 +127,11 @@ describe('modules/portfolio/selectors/nav-items', () => {
       },
       page: MY_REPORTS,
       leadingTitle: 'Total Reports',
-      leadingValue: formatNumber(10, { denomination: 'reports' }),
+      leadingValue: formatNumber(10, { denomination: 'Reports' }),
+      leadingValueNull: 'No Reports',
       trailingTitle: 'Total Gain/Loss',
-      trailingValue: formatRep(5, { denomination: 'rep' })
+      trailingValue: formatRep(5, { denomination: ' REP' }),
+      trailingValueNull: 'No Gain/Loss'
     }
   ];
 
@@ -147,11 +153,5 @@ describe('modules/portfolio/selectors/nav-items', () => {
 
   it('should return the expected array', () => {
     assert.deepEqual(expected, actual, `Didn't return the expected array`);
-  });
-
-  it('should deliver the expected shape to augur-ui-react-components', () => {
-    actual = selector.default();
-
-    portfolioNavItemsAssertions(actual);
   });
 });
