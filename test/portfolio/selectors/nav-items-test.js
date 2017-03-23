@@ -1,6 +1,5 @@
 import { describe, it, before } from 'mocha';
 import { assert } from 'chai';
-import portfolioNavItemsAssertions from 'assertions/portfolio-nav-items';
 
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
@@ -8,8 +7,6 @@ import proxyquire from 'proxyquire';
 import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views';
 
 import { formatNumber, formatEther, formatRep } from 'utils/format-number';
-
-import * as selector from 'modules/portfolio/selectors/portfolio-nav-items';
 
 describe('modules/portfolio/selectors/nav-items', () => {
   proxyquire.noPreserveCache().noCallThru();
