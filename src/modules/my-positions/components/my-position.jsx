@@ -6,10 +6,16 @@ const Position = p => (
   <div className="my-position">
     <div className="my-position-group main-group">
       {p.type === SCALAR ?
-        <span className="position-name">{p.lastPricePercent.rounded}</span> :
-        <span className="position-name">{p.name}</span>
+        <span className="my-position-name">{p.lastPricePercent.rounded}</span> :
+        <span className="my-position-name">{p.name}</span>
       }
-      <ValueDenomination {...p.qtyShares} />
+      <div className="my-position-pair realized-net">
+        <span className="title">Shares</span>
+        <ValueDenomination
+          {...p.qtyShares}
+          denomination=""
+        />
+      </div>
     </div>
     <div className="my-position-group">
       <div className="my-position-pair purchase-price">

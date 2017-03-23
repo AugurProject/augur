@@ -9,7 +9,7 @@ const PositionsMarketOverview = p => (
       href={p.marketLink.href}
       onClick={p.marketLink.onClick}
     >
-      <span className="description">{p.description}</span>
+      <span className="my-positions-market-description">{p.description}</span>
     </Link>
     <div className="my-position-group">
       <div className="my-position-pair realized-net">

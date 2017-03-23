@@ -1,21 +1,23 @@
 .my-position {
-  display: table-row;
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0.6em 1em;
 
-  &:not(:first-child) {
-    border-top: 1px solid @color-border;
+  &:not(:first-of-type) {
+    .border(true, @border-top, @border-light);
   }
 }
 
 .my-position-group {
-  display: table-cell;
-  padding: 0.5em 0;
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
   text-align: right;
-  vertical-align: middle;
 
   .my-position-pair {
-    display: inline-block;
-    line-height: 1.1em;
-    min-width: 7.8em;
+    display: flex;
+    flex-basis: 33%;
+    flex-direction: column;
     white-space: nowrap;
 
     &.realized-net,
@@ -23,34 +25,26 @@
     &.total-net {
       .colorize();
     }
-
-    > * {
-      display: block;
-      margin-left: 0.5em;
-    }
-
-    .title {
-      font-size: 0.8em;
-    }
   }
 }
 
 .main-group {
-  text-align: left;
-  .colorize();
+  align-items: center;
+  display: flex;
+  justify-content: flex-start;
 
-  > * {
-    display: inline-block;
-    margin-right: 1em;
-    vertical-align: middle;
-  }
-
-  .my-position-pair {
-    white-space: nowrap;
+  & > * {
+    flex: 0;
   }
 
   .my-position-name {
-    min-width: 4.5em;
-    text-transform: uppercase;
+    .font-size-medium();
+
+    flex-basis: 33%;
+    text-align: left;
+  }
+
+  .value-denomination {
+    .colorize();
   }
 }
