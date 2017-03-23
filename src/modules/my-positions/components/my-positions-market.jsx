@@ -76,10 +76,13 @@ export default class PortfolioPositions extends Component {
             </div>
             {(myPositionOutcomes || []).map(outcome =>
               <MyPosition
-                key={`${p.market.id}-${outcome.id}`}
-                type={p.market.type}
                 {...outcome}
                 {...outcome.position}
+                key={`${p.market.id}-${outcome.id}`}
+                type={p.market.type}
+                closePositionStatus={p.closePositionStatus}
+                isTradeCommitLocked={p.isTradeCommitLocked}
+                scalarShareDenomination={p.scalarShareDenomination}
               />
             )}
           </div>

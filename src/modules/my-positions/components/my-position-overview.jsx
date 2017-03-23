@@ -14,9 +14,7 @@ const PositionsMarketOverview = p => (
 );
 
 PositionsMarketOverview.propTypes = {
-  description: React.PropTypes.string.isRequired,
-  unrealizedNet: React.PropTypes.object.isRequired,
-  realizedNet: React.PropTypes.object.isRequired
+  description: React.PropTypes.string.isRequired
 };
 
 export default PositionsMarketOverview;

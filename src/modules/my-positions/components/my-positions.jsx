@@ -10,6 +10,9 @@ const MyPositions = p => (
       p.markets.map(market => (
         <MyPositionsMarket
           market={market}
+          closePositionStatus={p.closePositionStatus}
+          isTradeCommitLocked={p.isTradeCommitLocked}
+          scalarShareDenomination={p.scalarShareDenomination}
         />
       )) :
       <NullStateMessage

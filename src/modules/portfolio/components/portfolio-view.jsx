@@ -9,7 +9,12 @@ import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/view
 const PortfolioView = p => (
   <section id="portfolio_view" >
     {p.activeView === MY_POSITIONS &&
-      <Positions {...p.positions} />
+      <Positions
+        {...p.positions}
+        closePositionStatus={p.closePositionStatus}
+        isTradeCommitLocked={p.isTradeCommitLocked}
+        scalarShareDenomination={p.scalarShareDenomination}
+      />
     }
     {p.activeView === MY_MARKETS &&
       <Markets {...p.markets} />
