@@ -3,7 +3,6 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
-import augur from 'augur.js';
 import thunk from 'redux-thunk';
 import testState from 'test/testState';
 
@@ -13,8 +12,7 @@ describe(`modules/auth/actions/register.js`, () => {
   const mockStore = configureMockStore(middlewares);
   const fakeAugurJS = {
     augur: {
-      accounts: { account: { address: '0x812e463089332df61e96b8ce663a66e61aadecd3' } },
-      base58Encode: augur.base58Encode
+      accounts: { account: { address: '0x812e463089332df61e96b8ce663a66e61aadecd3' } }
     }
   };
   const fakeAuthLink = {};

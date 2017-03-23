@@ -1,11 +1,12 @@
 import { augur } from '../../../services/augurjs';
+import { base58Encode } from '../../../utils/base-58';
 
 export const UPDATE_LOGIN_ACCOUNT = 'UPDATE_LOGIN_ACCOUNT';
 export const CLEAR_LOGIN_ACCOUNT = 'CLEAR_LOGIN_ACCOUNT';
 
 export function changeAccountName(name) {
   const accountObject = { ...augur.accounts.account, name };
-  const loginID = augur.base58Encode(accountObject);
+  const loginID = base58Encode(accountObject);
   const localStorageRef = typeof window !== 'undefined' && window.localStorage;
   if (localStorageRef && localStorageRef.setItem && localStorageRef.getItem && localStorageRef.getItem('account')) {
     localStorageRef.setItem('account', JSON.stringify({ ...accountObject, loginID }));
