@@ -1,0 +1,56 @@
+.my-position {
+  display: table-row;
+
+  &:not(:first-child) {
+    border-top: 1px solid @color-border;
+  }
+}
+
+.my-position-group {
+  display: table-cell;
+  padding: 0.5em 0;
+  text-align: right;
+  vertical-align: middle;
+
+  .my-position-pair {
+    display: inline-block;
+    line-height: 1.1em;
+    min-width: 7.8em;
+    white-space: nowrap;
+
+    &.realized-net,
+    &.unrealized-net,
+    &.total-net {
+      .colorize();
+    }
+
+    > * {
+      display: block;
+      margin-left: 0.5em;
+    }
+
+    .title {
+      font-size: 0.8em;
+    }
+  }
+}
+
+.main-group {
+  text-align: left;
+  .colorize();
+
+  > * {
+    display: inline-block;
+    margin-right: 1em;
+    vertical-align: middle;
+  }
+
+  .my-position-pair {
+    white-space: nowrap;
+  }
+
+  .my-position-name {
+    min-width: 4.5em;
+    text-transform: uppercase;
+  }
+}

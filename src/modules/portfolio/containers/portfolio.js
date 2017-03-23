@@ -4,14 +4,14 @@
 import { connect } from 'react-redux';
 import portfolioView from 'modules/portfolio/components/portfolio-view';
 
-import portfolio from 'modules/portfolio/selectors/portfolio';
+import getPortfolio from 'modules/portfolio/selectors/portfolio';
 
 const mapStateToProps = state => ({
   activeView: state.activeView,
   branch: state.branch,
-  ...portfolio()
+  ...getPortfolio()
 });
 
-const portfolioNav = connect(mapStateToProps)(portfolioView);
+const Portfolio = connect(mapStateToProps)(portfolioView);
 
-export default portfolioNav;
+export default Portfolio;

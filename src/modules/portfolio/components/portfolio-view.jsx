@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-import Positions from 'modules/portfolio/components/positions';
+import Positions from 'modules/my-positions/components/my-positions';
 import Markets from 'modules/portfolio/components/markets';
 import Reports from 'modules/portfolio/components/reports';
 
