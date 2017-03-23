@@ -55,10 +55,8 @@ export default class PortfolioPositions extends Component {
         {s.selectedNav === POSITIONS_POSITIONS &&
           <div>
             <div className="my-position">
-              <div className="my-position-group main-group">
-              </div>
-              <div className="my-position-group">
-              </div>
+              <div className="my-position-group main-group" />
+              <div className="my-position-group" />
               <div className="my-position-group">
                 <div className="my-position-pair realized-net">
                   <span className="title">total realized P/L</span>
@@ -73,6 +71,7 @@ export default class PortfolioPositions extends Component {
                   <ValueDenomination {...myPositionsSummary.totalNet} />
                 </div>
               </div>
+              <div className="close-trades" />
             </div>
             {(myPositionOutcomes || []).map(outcome =>
               <MyPosition
