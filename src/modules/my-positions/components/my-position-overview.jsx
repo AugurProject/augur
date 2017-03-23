@@ -1,7 +1,6 @@
 import React from 'react';
 
 import Link from 'modules/link/components/link';
-import ValueDenomination from 'modules/common/components/value-denomination';
 
 const PositionsMarketOverview = p => (
   <article className="my-positions-market-overview">
@@ -11,20 +10,6 @@ const PositionsMarketOverview = p => (
     >
       <span className="my-positions-market-description">{p.description}</span>
     </Link>
-    <div className="my-position-group">
-      <div className="my-position-pair realized-net">
-        <span className="title">total realized P/L</span>
-        <ValueDenomination {...p.realizedNet} />
-      </div>
-      <div className="my-position-pair unrealized-net">
-        <span className="title">total unrealized P/L</span>
-        <ValueDenomination {...p.unrealizedNet} />
-      </div>
-      <div className="my-position-pair total-net">
-        <span className="title">total P/L</span>
-        <ValueDenomination {...p.totalNet} />
-      </div>
-    </div>
   </article>
 );
 

@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 
 import ComponentNav from 'modules/common/components/component-nav';
+import ValueDenomination from 'modules/common/components/value-denomination';
 
 import MyPosition from 'modules/my-positions/components/my-position';
 import MyPositionOverview from 'modules/my-positions/components/my-position-overview';
@@ -37,12 +38,12 @@ export default class PortfolioPositions extends Component {
     const s = this.state;
 
     const myPositionOutcomes = getValue(p, 'market.myPositionOutcomes');
+    const myPositionsSummary = getValue(p, 'market.myPositionsSummary');
     const marketLink = getValue(p, 'market.marketLink');
 
     return (
       <article className="my-positions-market" >
         <MyPositionOverview
-          {...p.market.myPositionsSummary}
           description={p.market.description}
           marketLink={marketLink}
         />
@@ -52,14 +53,36 @@ export default class PortfolioPositions extends Component {
           updateSelectedNav={selectedNav => this.setState({ selectedNav })}
         />
         {s.selectedNav === POSITIONS_POSITIONS &&
-          (myPositionOutcomes || []).map(outcome =>
-            <MyPosition
-              key={`${p.market.id}-${outcome.id}`}
-              type={p.market.type}
-              {...outcome}
-              {...outcome.position}
-            />
-          )
+          <div>
+            <div className="my-position">
+              <div className="my-position-group main-group">
+              </div>
+              <div className="my-position-group">
+              </div>
+              <div className="my-position-group">
+                <div className="my-position-pair realized-net">
+                  <span className="title">total realized P/L</span>
+                  <ValueDenomination {...myPositionsSummary.realizedNet} />
+                </div>
+                <div className="my-position-pair unrealized-net">
+                  <span className="title">total unrealized P/L</span>
+                  <ValueDenomination {...myPositionsSummary.unrealizedNet} />
+                </div>
+                <div className="my-position-pair total-net">
+                  <span className="title">total P/L</span>
+                  <ValueDenomination {...myPositionsSummary.totalNet} />
+                </div>
+              </div>
+            </div>
+            {(myPositionOutcomes || []).map(outcome =>
+              <MyPosition
+                key={`${p.market.id}-${outcome.id}`}
+                type={p.market.type}
+                {...outcome}
+                {...outcome.position}
+              />
+            )}
+          </div>
         }
         {s.selectedNav === POSITIONS_ORDERS &&
           <MyOrders />
