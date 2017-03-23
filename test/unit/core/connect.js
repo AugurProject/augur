@@ -891,48 +891,6 @@ describe('connect.connect', function() {
       assert.isTrue(connection);
     }
   });
-  test({
-    description: 'Should handle a rpcinfo as an object with an augurNodes property',
-    rpcinfo: {
-      http: 'https://eth3.augur.net',
-      ipc: '/path/to/geth.ipc',
-      ws: 'wss://ws.augur.net',
-      augurNodes: ['https://1.augurNode.com', 'https://2.augurNode.com']
-    },
-    testThis: {
-      sync: noop,
-      augurNode: {
-        bootstrap: function(options, cb) {
-          assert.deepEqual(options, ['https://1.augurNode.com', 'https://2.augurNode.com']);
-          if (cb && cb.constructor === Function) {
-            cb();
-          }
-        }
-      }
-    },
-    connector: {
-      connect: function(options, cb) {
-        assert.deepEqual(options, {
-          httpAddresses: ['https://eth3.augur.net'],
-          ipcAddresses: ['/path/to/geth.ipc'],
-          wsAddresses: ['wss://ws.augur.net'],
-          augurNodes: ['https://1.augurNode.com', 'https://2.augurNode.com'],
-          contracts: Contracts,
-          api: Contracts.api
-        });
-
-        if (cb && cb.constructor === Function) {
-          cb(true);
-        } else {
-          return true;
-        }
-      },
-      rpc: { unsubscribe: function(_, callback) { setImmediate(function () { callback({ error: -32601, message: "Method not found"}) }); } }
-    },
-    assertions: function(connection) {
-      assert.isTrue(connection);
-    }
-  });
   // this final test is going to async only. It passes rpcinfo as a function which triggers conditionals in our test function. Please take note of this when reading this test.
   test({
     description: 'Should handle a rpcinfo as a function',
@@ -940,10 +898,7 @@ describe('connect.connect', function() {
       // simple set this to a function, we are going to pass through to assertions anyway and skip the sync tests in this case.
     },
     testThis: {
-      sync: noop,
-      augurNode: {
-        bootstrap: noop
-      }
+      sync: noop
     },
     connector: {
       connect: function(options, cb) {

@@ -96,24 +96,7 @@ module.exports = {
   },
 
   loadMarkets: function (branchID, chunkSize, isDesc, chunkCB) {
-    var self = this;
-
-    // Try hitting a cache node, if available
-    if (!this.augurNode.nodes.length) {
-      return this.loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB);
-    }
-    this.augurNode.getMarketsInfo(branchID, function (err, result) {
-      if (err) {
-        console.warn("cache node getMarketsInfo failed:", err);
-
-        // Abandon the use of cache nodes since there was a connection issue.
-        self.augurNode.nodes = [];
-
-        // fallback to loading in batches from chain
-        return self.loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB);
-      }
-      chunkCB(null, JSON.parse(result));
-    });
+    return this.loadMarketsHelper(branchID, chunkSize, isDesc, chunkCB);
   },
 
   loadAssets: function (branchID, accountID, cbEther, cbRep, cbRealEther) {
@@ -347,27 +330,14 @@ module.exports = {
       callback = callback || branch.callback;
       branch = branch.branch;
     }
-    // Only use cache if there are nodes available and no offset+numMarkets specified
-    // Can't rely on cache for partial markets fetches since no good way to verify partial data.
-    // var useCache = (this.augurNode.nodes.length > 0 && !offset && !numMarketsToLoad);
     branch = branch || this.constants.DEFAULT_BRANCH_ID;
     offset = offset || 0;
     numMarketsToLoad = numMarketsToLoad || 0;
     volumeMin = volumeMin || 0;
     volumeMax = volumeMax || 0;
-    if (!this.augurNode.nodes.length) {
-      tx = clone(this.tx.CompositeGetters.getMarketsInfo);
-      tx.params = [branch, offset, numMarketsToLoad, volumeMin, volumeMax];
-      tx.timeout = 240000;
-      return this.fire(tx, callback, this.parseMarketsInfo, branch);
-    }
-    this.augurNode.getMarketsInfo(branch, function (err, result) {
-      if (err) {
-        // clear the augurNodes and try again to avoid infinite loop
-        self.augurNode.nodes = [];
-        return self.getMarketsInfo(branch, offset, numMarketsToLoad, volumeMin, volumeMax, callback);
-      }
-      callback(JSON.parse(result));
-    });
+    tx = clone(this.tx.CompositeGetters.getMarketsInfo);
+    tx.params = [branch, offset, numMarketsToLoad, volumeMin, volumeMax];
+    tx.timeout = 240000;
+    return this.fire(tx, callback, this.parseMarketsInfo, branch);
   }
 };

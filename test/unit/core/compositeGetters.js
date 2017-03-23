@@ -539,7 +539,7 @@ describe('CompositeGetters.loadNextMarketsBatch', function() {
     }
   });
 });
-describe('CompositeGetters.loadMarketsHelper', function() {
+describe('CompositeGetters.loadMarkets', function() {
   // 3 tests total
   var getNumMarketsBranch = augur.getNumMarketsBranch;
   var loadNextMarketsBatch = augur.loadNextMarketsBatch;
@@ -555,7 +555,7 @@ describe('CompositeGetters.loadMarketsHelper', function() {
       augur.getNumMarketsBranch = t.getNumMarketsBranch;
       augur.loadNextMarketsBatch = t.loadNextMarketsBatch;
       augur.options = t.options;
-      augur.loadMarketsHelper(t.branchID, t.chunkSize, t.isDesc, function(err, marketsData) {
+      augur.loadMarkets(t.branchID, t.chunkSize, t.isDesc, function(err, marketsData) {
         chunkCBcc++;
         t.assertions(err, marketsData, chunkCBcc);
         if (chunkCBcc === (t.numMarkets/t.chunkSize)) { done(); }
@@ -573,7 +573,7 @@ describe('CompositeGetters.loadMarketsHelper', function() {
       cb(10);
     },
     loadNextMarketsBatch: function(branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass) {
-      assert.deepEqual(startIndex, 0, 'startIndex was not the expected value when passed to loadNextMarketsBatch in CompositeGetters.loadMarketsHelper, 1st test');
+      assert.deepEqual(startIndex, 0, 'startIndex was not the expected value when passed to loadNextMarketsBatch in CompositeGetters.loadMarkets, 1st test');
       if (volumeMax < 0) {
         // send back 5 markets with volume
         chunkCB(null, {
@@ -632,7 +632,7 @@ describe('CompositeGetters.loadMarketsHelper', function() {
       cb(10);
     },
     loadNextMarketsBatch: function(branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass) {
-      assert.deepEqual(startIndex, 6, 'startIndex was not the expected value when passed to loadNextMarketsBatch in CompositeGetters.loadMarketsHelper, 2nd test');
+      assert.deepEqual(startIndex, 6, 'startIndex was not the expected value when passed to loadNextMarketsBatch in CompositeGetters.loadMarkets, 2nd test');
       if (volumeMax < 0) {
         // send back 5 markets with volume
         chunkCB(null, {
@@ -692,7 +692,7 @@ describe('CompositeGetters.loadMarketsHelper', function() {
     },
     loadNextMarketsBatch: function(branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass) {
       if (startIndex === 0) {
-        assert.deepEqual(startIndex, 0, 'startIndex was not the expected value when passed to loadNextMarketsBatch in CompositeGetters.loadMarketsHelper, 3rd test, 1st pass.');
+        assert.deepEqual(startIndex, 0, 'startIndex was not the expected value when passed to loadNextMarketsBatch in CompositeGetters.loadMarkets, 3rd test, 1st pass.');
         // send back 5 markets with volume
         chunkCB(null, {
           '0x0a1': {id: '0x0a1', branchID: '101010', volume: '3000'},
@@ -706,7 +706,7 @@ describe('CompositeGetters.loadMarketsHelper', function() {
           augur.loadNextMarketsBatch(branchID, startIndex + chunkSize, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass);
         }, 5);
       } else {
-        assert.deepEqual(5, startIndex, 'startIndex was not the expected value when passed to loadNextMarketsBatch in CompositeGetters.loadMarketsHelper, 3rd test, 2nd pass');
+        assert.deepEqual(5, startIndex, 'startIndex was not the expected value when passed to loadNextMarketsBatch in CompositeGetters.loadMarkets, 3rd test, 2nd pass');
         // send back 5 more markets with volume
         chunkCB(null, {
           '0x0a6': {id: '0x0a6', branchID: '101010', volume: '50'},
@@ -739,102 +739,6 @@ describe('CompositeGetters.loadMarketsHelper', function() {
         });
         break;
       }
-    }
-  });
-});
-describe('CompositeGetters.loadMarkets', function() {
-  // 3 tests total
-  var loadMarketsHelper = augur.loadMarketsHelper;
-  var getMarketsInfo = augur.augurNode.getMarketsInfo;
-  var finished;
-  afterEach(function() {
-    augur.loadMarketsHelper = loadMarketsHelper;
-    augur.augurNode.getMarketsInfo = getMarketsInfo;
-    augur.augurNode.nodes = [];
-    finished = undefined;
-  });
-  var test = function(t) {
-    it(t.description, function(done) {
-      augur.loadMarketsHelper = t.loadMarketsHelper;
-      augur.augurNode.getMarketsInfo = t.getMarketsInfo;
-      augur.augurNode.nodes = t.nodes;
-      finished = done;
-
-      augur.loadMarkets(t.branchID, t.chunkSize, t.isDesc, t.chunkCB);
-    });
-  };
-  test({
-    description: 'Should pass args to loadMarketsHelper if augurNode.nodes is an empty array',
-    branchID: '101010',
-    chunkSize: '10',
-    isDesc: false,
-    chunkCB: function(err, o) {
-      // this isn't hit during this test - added an assertion that will fail if it gets hit.
-      assert.isNull('chunkCB called');
-    },
-    nodes: [],
-    loadMarketsHelper: function(branchID, chunkSize, isDesc, chunkCB) {
-      assert.deepEqual(branchID, '101010');
-      assert.deepEqual(chunkSize, '10');
-      assert.deepEqual(isDesc, false);
-      assert.isFunction(chunkCB);
-      finished();
-    },
-    getMarketsInfo: function(branchID, cb) {
-      // this isn't hit during this test - added an assertion that will fail if it gets hit.
-      assert.isNull('getMarketsInfo called');
-    }
-  });
-  test({
-    description: 'Should pass args to loadMarketsHelper if augurNode.nodes is populated but getMarketsInfo returns an error',
-    branchID: '101010',
-    chunkSize: '10',
-    isDesc: false,
-    chunkCB: function(err, o) {
-      // this isn't hit during this test - added an assertion that will fail if it gets hit.
-      assert.isNull('chunkCB called');
-    },
-    nodes: ['http://www.somenode.com'],
-    loadMarketsHelper: function(branchID, chunkSize, isDesc, chunkCB) {
-      // we want to confirm that the augurNode.nodes was cleared after getting an error from getMarketsInfo
-      assert.deepEqual(augur.augurNode.nodes, []);
-      assert.deepEqual(branchID, '101010');
-      assert.deepEqual(chunkSize, '10');
-      assert.deepEqual(isDesc, false);
-      assert.isFunction(chunkCB);
-      finished();
-    },
-    getMarketsInfo: function(branchID, cb) {
-      assert.deepEqual(branchID, '101010');
-      // pass back an error object
-      cb({error: 'Uh-Oh!'});
-    }
-  });
-  test({
-    description: 'Should pass the loaded markets to chunkCB from getMarketsInfo',
-    branchID: '101010',
-    chunkSize: '10',
-    isDesc: false,
-    chunkCB: function(err, o) {
-      assert.isNull(err);
-      assert.deepEqual(o, { '0x0a1':
-         { id: '0x0a1',
-         numOutcomes: '2',
-         type: 'binary',
-         blockNumber: '101010' } });
-      // confirm that augurNode.nodes wasn't wiped out
-      assert.deepEqual(augur.augurNode.nodes, ['https://test.augur.net/thisisfake', 'https://test2.augur.net/alsofake']);
-      finished();
-    },
-    nodes: ['https://test.augur.net/thisisfake', 'https://test2.augur.net/alsofake'],
-    loadMarketsHelper: function(branchID, chunkSize, isDesc, chunkCB) {
-      // This should not be called.
-      assert.isNull('loadMarketsHelper called');
-    },
-    getMarketsInfo: function(branchID, cb) {
-      assert.deepEqual(branchID, '101010');
-      // pass back a dummy market json string
-      cb(null, '{"0x0a1":{"id":"0x0a1","numOutcomes":"2","type":"binary","blockNumber":"101010"}}');
     }
   });
 });
@@ -1704,136 +1608,18 @@ describe('CompositeGetters.parseMarketsInfo', function() {
 describe('CompositeGetters.getMarketsInfo', function() {
   // 7 tests total
   var fire = augur.fire;
-  var augurNodeGetMarketsInfo = augur.augurNode.getMarketsInfo;
-  var augurNodes = augur.augurNode.nodes;
-  var augurNodeGetMarketsInfoCC = 0;
   afterEach(function() {
     augur.fire = fire;
-    augur.augurNode.getMarketsInfo = augurNodeGetMarketsInfo;
-    augur.augurNode.nodes = augurNodes;
-    augurNodeGetMarketsInfoCC = 0;
   });
   var test = function(t) {
     it(t.description + ' sync', function() {
-        augur.augurNode.nodes = t.nodes;
         augur.fire = t.fire;
-        augur.augurNode.getMarketsInfo = t.augurNodeGetMarketsInfo;
         augur.getMarketsInfo(t.branch, t.offset, t.numMarketsToLoad, t.volumeMin, t.volumeMax, t.callback);
       });
     };
+  };
   test({
-    description: 'Should return a markets object array, augurNodes available, all args passed in expected positions',
-    branch: '101010',
-    offset: 1,
-    numMarketsToLoad: 1,
-    volumeMin: 0,
-    volumeMax: -1,
-    callback: function(data) {
-      assert.deepEqual(data, [{id:'0x0a1', volumne: '10000', branch: '101010', type: 'binary'}]);
-    },
-    nodes: ["https://augurnode1.net", "https://augurnode2.net"],
-    fire: function(tx, callback, parseMarketsInfo, branch) {
-      // in this case, this function shouldn't be hit.
-    },
-    augurNodeGetMarketsInfo: function(branch, cb) {
-      cb(null, JSON.stringify([{id:'0x0a1', volumne: '10000', branch: '101010', type: 'binary'}]));
-    }
-  });
-  test({
-    description: 'Should return a markets object array, augurNodes available, all args passed in expected positions. augurNode.getMarketsInfo will return an error object which should cause the nodes to be cleared and getMarketsInfo to be called again with the same args.',
-    branch: '101010',
-    offset: 1,
-    numMarketsToLoad: 1,
-    volumeMin: 0,
-    volumeMax: -1,
-    callback: function(data) {
-      assert.deepEqual(data.params, ['101010', 1, 1, 0, -1]);
-      assert.deepEqual(data.to, augur.tx.CompositeGetters.getMarketsInfo.to);
-      // confirm we errored before clearing augurNode.nodes then recalled getMArketsInfo and didn't call augurNodeGetMarketsInfo again.
-      assert.deepEqual(augurNodeGetMarketsInfoCC, 1);
-    },
-    nodes: ["https://augurnode1.net", "https://augurnode2.net"],
-    fire: function(tx, callback, parseMarketsInfo, branch) {
-      // in this case, this function shouldn't be hit.
-      callback(tx);
-    },
-    augurNodeGetMarketsInfo: function(branch, cb) {
-      // increment call count
-      augurNodeGetMarketsInfoCC++;
-      // error
-      cb({ error: 'Uh-Oh!'});
-    }
-  });
-  test({
-    description: 'Should return a markets object array, augurNodes available, Single arg pass in',
-    branch: {
-      branch: '101010',
-      offset: 1,
-      numMarketsToLoad: 1,
-      volumeMin: 0,
-      volumeMax: -1,
-      callback: function(data) {
-        assert.deepEqual(data, [{id:'0x0a1', volumne: '10000', branch: '101010', type: 'binary'}]);
-      }
-    },
-    offset: undefined,
-    numMarketsToLoad: undefined,
-    volumeMin: undefined,
-    volumeMax: undefined,
-    callback: undefined,
-    nodes: ["https://augurnode1.net", "https://augurnode2.net"],
-    fire: function(tx, callback, parseMarketsInfo, branch) {
-      // in this case, this function shouldn't be hit.
-    },
-    augurNodeGetMarketsInfo: function(branch, cb) {
-      cb(null, JSON.stringify([{id:'0x0a1', volumne: '10000', branch: '101010', type: 'binary'}]));
-    }
-  });
-  test({
-    description: 'Should return a markets object array, augurNodes available, Single arg + offset as callback',
-    branch: {
-      branch: '101010',
-      offset: 1,
-      numMarketsToLoad: 1,
-      volumeMin: 0,
-      volumeMax: -1,
-      callback: undefined
-    },
-    offset: function(data) {
-      assert.deepEqual(data, [{id:'0x0a1', volumne: '10000', branch: '101010', type: 'binary'}]);
-    },
-    numMarketsToLoad: undefined,
-    volumeMin: undefined,
-    volumeMax: undefined,
-    callback: undefined,
-    nodes: ["https://augurnode1.net", "https://augurnode2.net"],
-    fire: function(tx, callback, parseMarketsInfo, branch) {
-      // in this case, this function shouldn't be hit.
-    },
-    augurNodeGetMarketsInfo: function(branch, cb) {
-      cb(null, JSON.stringify([{id:'0x0a1', volumne: '10000', branch: '101010', type: 'binary'}]));
-    }
-  });
-  test({
-    description: 'Should return a markets object array, augurNodes available, only callback passed',
-    branch: undefined,
-    offset: undefined,
-    numMarketsToLoad: undefined,
-    volumeMin: undefined,
-    volumeMax: undefined,
-    callback: function(data) {
-      assert.deepEqual(data, [{id:'0x0a1', volumne: '10000', branch: augur.constants.DEFAULT_BRANCH_ID, type: 'binary'}]);
-    },
-    nodes: ["https://augurnode1.net", "https://augurnode2.net"],
-    fire: function(tx, callback, parseMarketsInfo, branch) {
-      // in this case, this function shouldn't be hit.
-    },
-    augurNodeGetMarketsInfo: function(branch, cb) {
-      cb(null, JSON.stringify([{id:'0x0a1', volumne: '10000', branch: augur.constants.DEFAULT_BRANCH_ID, type: 'binary'}]));
-    }
-  });
-  test({
-    description: 'Should send default params to fire, augurNodes unavailable, only callback passed',
+    description: 'Should send default params to fire, only callback passed',
     branch: undefined,
     offset: undefined,
     numMarketsToLoad: undefined,
@@ -1843,16 +1629,12 @@ describe('CompositeGetters.getMarketsInfo', function() {
       assert.deepEqual(data.params, [augur.constants.DEFAULT_BRANCH_ID, 0, 0, 0, 0]);
       assert.deepEqual(data.to, augur.tx.CompositeGetters.getMarketsInfo.to);
     },
-    nodes: [],
     fire: function(tx, callback, parseMarketsInfo, branch) {
       callback(tx);
-    },
-    augurNodeGetMarketsInfo: function(branch, cb) {
-      // in this case, this function shouldn't be hit.
     }
   });
   test({
-    description: 'Should send params passed to fire, augurNodes unavailable, all args passed as expected',
+    description: 'Should send params passed to fire, all args passed as expected',
     branch: '101010',
     offset: 5,
     numMarketsToLoad: 10,
@@ -1862,12 +1644,8 @@ describe('CompositeGetters.getMarketsInfo', function() {
       assert.deepEqual(data.params, ['101010', 5, 10, -1, 0]);
       assert.deepEqual(data.to, augur.tx.CompositeGetters.getMarketsInfo.to);
     },
-    nodes: [],
     fire: function(tx, callback, parseMarketsInfo, branch) {
       callback(tx);
-    },
-    augurNodeGetMarketsInfo: function(branch, cb) {
-      // in this case, this function shouldn't be hit.
     }
   });
 });

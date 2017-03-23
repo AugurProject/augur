@@ -191,7 +191,6 @@ module.exports = {
           if (rpcinfo.http) options.httpAddresses.push(rpcinfo.http);
           if (rpcinfo.ws) options.wsAddresses.push(rpcinfo.ws);
           if (rpcinfo.ipc) options.ipcAddresses.push(rpcinfo.ipc);
-          if (rpcinfo.augurNodes) options.augurNodes = rpcinfo.augurNodes;
           options.contracts = Contracts;
           options.api = Contracts.api;
           break;
@@ -202,7 +201,6 @@ module.exports = {
     if (!utils.is_function(cb)) {
       connection = connector.connect(options);
       this.sync();
-      if (options.augurNodes) this.augurNode.bootstrap(options.augurNodes);
       return connection;
     }
     connector.connect(options, function (connection) {
@@ -213,13 +211,7 @@ module.exports = {
         else if (errorOrResult.error) self.subscriptionsSupported = false;
         else self.subscriptionsSupported = true;
         self.sync();
-        if (options.augurNodes) {
-          self.augurNode.bootstrap(options.augurNodes, function () {
-            cb(connection);
-          });
-        } else {
-          cb(connection);
-        }
+        cb(connection);
       });
     });
   }
