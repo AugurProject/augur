@@ -8,11 +8,12 @@ import selectLoginAccountReports from 'modules/my-reports/selectors/login-accoun
 import selectOpenOrders from 'modules/user-open-orders/selectors/open-orders';
 
 export default function () {
-  const positions = selectLoginAccountPositions();
+  const navItems = portfolioNavItems();
   const markets = selectLoginAccountMarkets();
   const reports = selectLoginAccountReports();
-  const navItems = portfolioNavItems();
   const totals = selectPortfolioTotals();
+
+  const positions = selectLoginAccountPositions();
   const openOrders = selectOpenOrders();
 
   return {

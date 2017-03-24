@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 
 import ComponentNav from 'modules/common/components/component-nav';
 import ValueDenomination from 'modules/common/components/value-denomination';
+import NullStateMessage from 'modules/common/components/null-state-message';
 
 import MyPosition from 'modules/my-positions/components/my-position';
 import MyPositionOverview from 'modules/my-positions/components/my-position-overview';
@@ -54,36 +55,41 @@ export default class PortfolioPositions extends Component {
         />
         {s.selectedNav === POSITIONS_POSITIONS &&
           <div>
-            <div className="my-position">
-              <div className="my-position-group main-group" />
-              <div className="my-position-group" />
-              <div className="my-position-group">
-                <div className="my-position-pair realized-net">
-                  <span className="title">total realized P/L</span>
-                  <ValueDenomination {...myPositionsSummary.realizedNet} />
+            {myPositionOutcomes && myPositionOutcomes.length ?
+              <div>
+                <div className="my-position">
+                  <div className="my-position-group main-group" />
+                  <div className="my-position-group" />
+                  <div className="my-position-group">
+                    <div className="my-position-pair realized-net">
+                      <span className="title">total realized P/L</span>
+                      <ValueDenomination {...myPositionsSummary.realizedNet} />
+                    </div>
+                    <div className="my-position-pair unrealized-net">
+                      <span className="title">total unrealized P/L</span>
+                      <ValueDenomination {...myPositionsSummary.unrealizedNet} />
+                    </div>
+                    <div className="my-position-pair total-net">
+                      <span className="title">total P/L</span>
+                      <ValueDenomination {...myPositionsSummary.totalNet} />
+                    </div>
+                  </div>
+                  <div className="close-trades" />
                 </div>
-                <div className="my-position-pair unrealized-net">
-                  <span className="title">total unrealized P/L</span>
-                  <ValueDenomination {...myPositionsSummary.unrealizedNet} />
-                </div>
-                <div className="my-position-pair total-net">
-                  <span className="title">total P/L</span>
-                  <ValueDenomination {...myPositionsSummary.totalNet} />
-                </div>
-              </div>
-              <div className="close-trades" />
-            </div>
-            {(myPositionOutcomes || []).map(outcome =>
-              <MyPosition
-                {...outcome}
-                {...outcome.position}
-                key={`${p.market.id}-${outcome.id}`}
-                type={p.market.type}
-                closePositionStatus={p.closePositionStatus}
-                isTradeCommitLocked={p.isTradeCommitLocked}
-                scalarShareDenomination={p.scalarShareDenomination}
-              />
-            )}
+                {(myPositionOutcomes || []).map(outcome =>
+                  <MyPosition
+                    {...outcome}
+                    {...outcome.position}
+                    key={`${p.market.id}-${outcome.id}`}
+                    type={p.market.type}
+                    closePositionStatus={p.closePositionStatus}
+                    isTradeCommitLocked={p.isTradeCommitLocked}
+                    scalarShareDenomination={p.scalarShareDenomination}
+                  />
+                )}
+              </div> :
+              <NullStateMessage message="No Positions Held" />
+            }
           </div>
         }
         {s.selectedNav === POSITIONS_ORDERS &&
