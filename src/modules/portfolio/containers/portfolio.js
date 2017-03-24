@@ -14,7 +14,8 @@ const mapStateToProps = state => ({
   branch: state.branch,
   isTradeCommitLocked: state.tradeCommitLock.isLocked,
   closePositionStatus: getClosePositionStatus(),
-  scalarShareDenomination: getScalarShareDenomination()
+  scalarShareDenomination: getScalarShareDenomination(),
+  orderCancellation: state.orderCancellation
 });
 
 const Portfolio = connect(mapStateToProps)(portfolioView);

@@ -42,6 +42,9 @@ export default class PortfolioPositions extends Component {
     const myPositionsSummary = getValue(p, 'market.myPositionsSummary');
     const marketLink = getValue(p, 'market.marketLink');
 
+    const userOpenOrdersCount = getValue(p, 'market.userOpenOrdersSummary.openOrdersCount.value');
+    const outcomes = getValue(p, 'market.outcomes');
+
     return (
       <article className="my-positions-market" >
         <MyPositionOverview
@@ -93,7 +96,16 @@ export default class PortfolioPositions extends Component {
           </div>
         }
         {s.selectedNav === POSITIONS_ORDERS &&
-          <MyOrders />
+          <div>
+            {userOpenOrdersCount ?
+              <MyOrders
+                outcomes={outcomes}
+                marketType={p.market.type}
+                orderCancellation={p.orderCancellation}
+              /> :
+              <NullStateMessage message="No Open Orders" />
+            }
+          </div>
         }
       </article>
     );

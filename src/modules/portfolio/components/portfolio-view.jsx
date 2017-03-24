@@ -14,6 +14,7 @@ const PortfolioView = p => (
         closePositionStatus={p.closePositionStatus}
         isTradeCommitLocked={p.isTradeCommitLocked}
         scalarShareDenomination={p.scalarShareDenomination}
+        orderCancellation={p.orderCancellation}
       />
     }
     {p.activeView === MY_MARKETS &&
@@ -32,6 +33,7 @@ PortfolioView.propTypes = {
   totals: PropTypes.object.isRequired,
   markets: PropTypes.object.isRequired,
   reports: PropTypes.object.isRequired,
+  openOrders: PropTypes.array.isRequired,
   positionsMarkets: PropTypes.array.isRequired
 };
 

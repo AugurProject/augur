@@ -13,6 +13,7 @@ const MyPositions = p => (
           closePositionStatus={p.closePositionStatus}
           isTradeCommitLocked={p.isTradeCommitLocked}
           scalarShareDenomination={p.scalarShareDenomination}
+          orderCancellation={p.orderCancellation}
         />
       )) :
       <NullStateMessage
