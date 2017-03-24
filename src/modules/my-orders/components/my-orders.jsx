@@ -2,14 +2,21 @@ import React from 'react';
 
 import MarketOpenOrdersGroup from 'modules/market/components/market-open-orders-group';
 
+import { SCALAR } from 'modules/markets/constants/market-types';
+
 import getValue from 'utils/get-value';
 
 const Orders = p => (
-  <article className="my-orders">
+  <article className="my-orders market-open-orders">
+    <div className="market-open-orders-header">
+      <span>{!p.marketType === SCALAR ? 'Outcomes' : 'Outcome'}</span>
+      <span>Type</span>
+      <span>Shares</span>
+      <span>Price</span>
+      <span>Action</span>
+    </div>
     {(p.outcomes || []).map((outcome, index) => {
       const lastPricePercent = getValue(outcome, 'lastPricePercent.rounded');
-
-      console.log('### p -- ', p);
 
       return (
         <MarketOpenOrdersGroup
