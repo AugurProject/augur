@@ -10,7 +10,7 @@ const PortfolioView = p => (
   <section id="portfolio_view" >
     {p.activeView === MY_POSITIONS &&
       <MyPositions
-        {...p.positions}
+        markets={p.positionsMarkets}
         closePositionStatus={p.closePositionStatus}
         isTradeCommitLocked={p.isTradeCommitLocked}
         scalarShareDenomination={p.scalarShareDenomination}
@@ -30,9 +30,9 @@ PortfolioView.propTypes = {
   branch: PropTypes.object.isRequired,
   navItems: PropTypes.array.isRequired,
   totals: PropTypes.object.isRequired,
-  positions: PropTypes.object.isRequired,
   markets: PropTypes.object.isRequired,
-  reports: PropTypes.object.isRequired
+  reports: PropTypes.object.isRequired,
+  positionsMarkets: PropTypes.array.isRequired
 };
 
 export default PortfolioView;
