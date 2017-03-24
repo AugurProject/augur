@@ -1,6 +1,7 @@
-import { parseURL } from '../../../utils/parse-url';
-import { loadFullMarket } from '../../market/actions/load-full-market';
-import setTitle from '../../../utils/set-title';
+import { loadFullMarket } from 'modules/market/actions/load-full-market';
+
+import setTitle from 'utils/set-title';
+import { parseURL } from 'utils/parse-url';
 
 export const UPDATE_URL = 'UPDATE_URL';
 

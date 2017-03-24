@@ -30,7 +30,7 @@ const Position = (p) => {
           <span className="my-position-name">{p.name}</span>
         }
         <div className="my-position-pair realized-net">
-          <span className="title">Shares</span>
+          <span className="title">shares</span>
           <ValueDenomination
             {...p.qtyShares}
             denomination=""

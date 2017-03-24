@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react';
 
-import Positions from 'modules/my-positions/components/my-positions';
+import MyPositions from 'modules/my-positions/components/my-positions';
 import Markets from 'modules/portfolio/components/markets';
 import Reports from 'modules/portfolio/components/reports';
 
@@ -9,7 +9,7 @@ import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/view
 const PortfolioView = p => (
   <section id="portfolio_view" >
     {p.activeView === MY_POSITIONS &&
-      <Positions
+      <MyPositions
         {...p.positions}
         closePositionStatus={p.closePositionStatus}
         isTradeCommitLocked={p.isTradeCommitLocked}

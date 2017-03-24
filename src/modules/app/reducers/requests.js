@@ -1,4 +1,4 @@
-import { MARKET_DATA_LOADING } from '../../market/actions/load-full-market';
+import { MARKET_DATA_LOADING } from 'modules/market/actions/load-full-market';
 
 // For tracking (AJAX) requests, whether they are running so UI can display loading indicator
 export default (requests = {}, action) => {
