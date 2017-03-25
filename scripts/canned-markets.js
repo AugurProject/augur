@@ -7,7 +7,8 @@
 
 var async = require("async");
 var chalk = require("chalk");
-var augur = require("../src");
+var Augur = require("../src");
+var augur = new Augur();
 var DEBUG = false;
 
 augur.options.debug.trading = DEBUG;

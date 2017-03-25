@@ -5,9 +5,10 @@
 var fs = require("fs");
 var join = require("path").join;
 var async = require("async");
-var augur = require("../src");
+var Augur = require("../src");
 var password = fs.readFileSync(join(process.env.HOME, ".ethereum", ".password")).toString();
 
+var augur = new Augur();
 augur.connect({
   http: "http://127.0.0.1:8545",
   ipc: process.env.GETH_IPC,
