@@ -145,15 +145,21 @@ module.exports = {
           sender: sender,
           periodLength: periodLength,
           onSent: function (r) {
-            console.log("collectFees sent:", r);
+            if (self.options.debug.reporting) {
+              console.log("collectFees sent:", r);
+            }
           },
           onSuccess: function (r) {
-            console.log("collectFees success:", r);
+            if (self.options.debug.reporting) {
+              console.log("collectFees success:", r);
+            }
             self.penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
           },
           onFailed: function (e) {
             if (e.error !== "-1") return callback(e);
-            console.info("collectFees:", e.message);
+            if (self.options.debug.reporting) {
+              console.info("collectFees:", e.message);
+            }
             self.penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
           }
         });
@@ -192,7 +198,9 @@ module.exports = {
             callback(null);
           },
           onFailed: function (e) {
-            console.error("[penaltyCatchUp] penalizationCatchup failed:", e);
+            if (self.options.debug.reporting) {
+              console.error("[penaltyCatchUp] penalizationCatchup failed:", e);
+            }
             callback(e);
           }
         });
@@ -213,7 +221,9 @@ module.exports = {
               callback(null);
             },
             onFailed: function (e) {
-              console.error("[penaltyCatchUp] penalizeWrong(0) error:", e);
+              if (self.options.debug.reporting) {
+                console.error("[penaltyCatchUp] penalizeWrong(0) error:", e);
+              }
               callback(e);
             }
           });

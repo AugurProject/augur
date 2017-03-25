@@ -31,7 +31,6 @@ module.exports = {
       scalarMinMax: scalarMinMax
     }, function (orderBookChunk) {
       if (!orderBookChunk || orderBookChunk.error) {
-        console.error("getOrderBook failed:", marketID, orderBookChunk);
         return callback(orderBookChunk);
       }
       chunkCB(orderBookChunk);
@@ -314,7 +313,7 @@ module.exports = {
   },
 
   getMarketsInfo: function (branch, offset, numMarketsToLoad, volumeMin, volumeMax, callback) {
-    var tx, self = this;
+    var tx;
     if (!callback && utils.is_function(offset)) {
       callback = offset;
       offset = null;

@@ -14,7 +14,7 @@ var augurpath = "../../../src/index";
 var constants = require("../../../src/constants");
 var tools = require("../../tools");
 
-var augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
+var augur = tools.setup(require(augurpath));
 
 var amount = "1";
 var branchID = augur.constants.DEFAULT_BRANCH_ID;
@@ -111,7 +111,7 @@ var testMarketInfo = function (market, info) {
 };
 
 before(function () {
-  augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
+  augur = tools.setup(require(augurpath));
 });
 describe("getMarketInfo", function () {
   var test = function (t, params) {

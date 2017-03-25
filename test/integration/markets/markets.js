@@ -15,7 +15,7 @@ var constants = require("../../../src/constants");
 var augurpath = "../../../src/index";
 var tools = require("../../tools");
 
-var augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
+var augur = tools.setup(require(augurpath));
 var amount = "1";
 var branchID = augur.constants.DEFAULT_BRANCH_ID;
 var accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);

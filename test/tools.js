@@ -1,7 +1,5 @@
 "use strict";
 
-var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
-
 var displayed_connection_info = false;
 
 var BigNumber = require("bignumber.js");
@@ -252,7 +250,7 @@ module.exports = {
     markets = {};
 
     // create a binary market
-    console.debug("New markets expire at:", expDate, parseInt(new Date().getTime() / 1000, 10), expDate - parseInt(new Date().getTime() / 1000, 10));
+    console.log("New markets expire at:", expDate, parseInt(new Date().getTime() / 1000, 10), expDate - parseInt(new Date().getTime() / 1000, 10));
     active = augur.from;
     if (augur.accounts.account.address) {
       clientSideAccount = clone(augur.accounts.account);
@@ -302,7 +300,7 @@ module.exports = {
               extraInfo: extraInfo,
               onSent: utils.noop,
               onSuccess: function (res) {
-                if (self.DEBUG) console.debug("Scalar market ID:", res.callReturn);
+                if (self.DEBUG) console.log("Scalar market ID:", res.callReturn);
                 markets.scalar = res.callReturn;
                 if (self.is_created(markets)) {
                   if (clientSideAccount) {
@@ -319,7 +317,7 @@ module.exports = {
             });
           },
           onSuccess: function (res) {
-            if (self.DEBUG) console.debug("Categorical market ID:", res.callReturn);
+            if (self.DEBUG) console.log("Categorical market ID:", res.callReturn);
             markets.categorical = res.callReturn;
             if (self.is_created(markets)) {
               if (clientSideAccount) {
@@ -336,7 +334,7 @@ module.exports = {
         });
       },
       onSuccess: function (res) {
-        if (self.DEBUG) console.debug("Binary market ID:", res.callReturn);
+        if (self.DEBUG) console.log("Binary market ID:", res.callReturn);
         markets.binary = res.callReturn;
         if (self.is_created(markets)) {
           if (clientSideAccount) {
@@ -580,28 +578,31 @@ module.exports = {
     return chalk.green(JSON.stringify(o, null, indent || 4));
   },
 
-  setup: function (augur, args, rpcinfo) {
-    var httpUrl;
-    if (NODE_JS) {
-      httpUrl = process.env.GETH_HTTP || "http://127.0.0.1:8545";
+  display_connection_info: function (augur) {
+    if ((!require.main && !displayed_connection_info) || augur.options.debug.connect) {
+      console.log(chalk.cyan.bold("sync:   "), chalk.cyan(augur.rpc.internalState.transporter.internalState.syncTransport.address));
+      console.log(chalk.yellow.bold("network: "), chalk.yellow(augur.network_id));
+      console.log(chalk.bold("coinbase:"), chalk.white.dim(augur.coinbase));
+      console.log(chalk.bold("from:    "), chalk.white.dim(augur.from));
+      displayed_connection_info = true;
     }
-    httpUrl = rpcinfo || httpUrl;
-    if (process.env.CONTINUOUS_INTEGRATION) {
-      this.TIMEOUT = 131072;
+  },
+
+  setup: function (Augur, callback) {
+    var self = this;
+    var augur = new Augur();
+    var connectParams = {
+      http: "http://127.0.0.1:8545",
+      noFallback: true
+    };
+    if (typeof callback !== "function") {
+      if (augur.connect(connectParams)) this.display_connection_info(augur);
+      return augur;
     }
-    augur.rpc.retryDroppedTxs = true;
-    augur.rpc.debug.broadcast = process.env.NODE_ENV === "development";
-    if (augur.connect({ http: httpUrl, noFallback: true })) {
-      if ((!require.main && !displayed_connection_info) || augur.options.debug.connect) {
-        console.log(chalk.cyan.bold("sync:   "), chalk.cyan(augur.rpc.internalState.transporter.internalState.syncTransport.address));
-        console.log(chalk.yellow.bold("network: "), chalk.yellow(augur.network_id));
-        console.log(chalk.bold("coinbase:"), chalk.white.dim(augur.coinbase));
-        console.log(chalk.bold("from:    "), chalk.white.dim(augur.from));
-        displayed_connection_info = true;
-      }
-      augur.rpc.clear();
-    }
-    return augur;
+    augur.connect(connectParams, function (isConnected) {
+      if (isConnected) self.display_connection_info(augur);
+      callback(augur);
+    });
   },
 
   reset: function (mod) {

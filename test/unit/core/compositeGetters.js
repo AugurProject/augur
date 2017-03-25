@@ -1,11 +1,11 @@
 "use strict";
 
 var assert = require('chai').assert;
-var augur = require('../../../src');
+var augur = new (require("../../../src"))();
 var utils = require("../../../src/utilities");
 var abi = require("augur-abi");
 var constants = require("../../../src/constants");
-// 66 tests total
+// 61 tests total
 
 describe("CompositeGetters.getOrderBookChunked", function () {
   var getOrderBook = augur.getOrderBook;
@@ -1238,7 +1238,7 @@ describe('CompositeGetters.getOrderBook', function() {
     assertions: function(tx, callback, parseOrderBook, scalarMinMax) {
       assert.isNull(scalarMinMax);
       assert.deepEqual(tx.params, ['0x0a1', 0, 0]);
-      assert.deepEqual(tx.to, augur.tx.CompositeGetters.getOrderBook.to);
+      assert.deepEqual(tx.to, augur.api.functions.CompositeGetters.getOrderBook.to);
     }
   });
   test({
@@ -1249,7 +1249,7 @@ describe('CompositeGetters.getOrderBook', function() {
     assertions: function(tx, callback, parseOrderBook, scalarMinMax) {
       assert.isUndefined(scalarMinMax);
       assert.deepEqual(tx.params, ['0x0a1', 0, 0]);
-      assert.deepEqual(tx.to, augur.tx.CompositeGetters.getOrderBook.to);
+      assert.deepEqual(tx.to, augur.api.functions.CompositeGetters.getOrderBook.to);
     }
   });
   test({
@@ -1260,7 +1260,7 @@ describe('CompositeGetters.getOrderBook', function() {
     assertions: function(tx, callback, parseOrderBook, scalarMinMax) {
       assert.isUndefined(scalarMinMax);
       assert.deepEqual(tx.params, ['0x0a1', 2, 10]);
-      assert.deepEqual(tx.to, augur.tx.CompositeGetters.getOrderBook.to);
+      assert.deepEqual(tx.to, augur.api.functions.CompositeGetters.getOrderBook.to);
     }
   });
   test({
@@ -1271,7 +1271,7 @@ describe('CompositeGetters.getOrderBook', function() {
     assertions: function(tx, callback, parseOrderBook, scalarMinMax) {
       assert.deepEqual(scalarMinMax, { minValue: '-10', maxValue: '110' });
       assert.deepEqual(tx.params, ['0x0a1', 1, 25]);
-      assert.deepEqual(tx.to, augur.tx.CompositeGetters.getOrderBook.to);
+      assert.deepEqual(tx.to, augur.api.functions.CompositeGetters.getOrderBook.to);
     }
   });
 });
@@ -1478,7 +1478,7 @@ describe('CompositeGetters.batchGetMarketInfo', function() {
     account: '0x0',
     callback: utils.noop,
     assertions: function(tx, callback, parseBatchMarketInfo, numMarketIDs) {
-      assert.deepEqual(tx.to, augur.tx.CompositeGetters.batchGetMarketInfo.to);
+      assert.deepEqual(tx.to, augur.api.functions.CompositeGetters.batchGetMarketInfo.to);
       assert.deepEqual(tx.params, [['0x0a1', '0x0a2', '0x0a3'],'0x0']);
       assert.deepEqual(numMarketIDs, 3);
     }
@@ -1489,7 +1489,7 @@ describe('CompositeGetters.batchGetMarketInfo', function() {
     account: utils.noop,
     callback: undefined,
     assertions: function(tx, callback, parseBatchMarketInfo, numMarketIDs) {
-      assert.deepEqual(tx.to, augur.tx.CompositeGetters.batchGetMarketInfo.to);
+      assert.deepEqual(tx.to, augur.api.functions.CompositeGetters.batchGetMarketInfo.to);
       assert.deepEqual(tx.params, [['0x0a1', '0x0a2', '0x0a3'], 0]);
       assert.deepEqual(numMarketIDs, 3);
     }
@@ -1606,17 +1606,16 @@ describe('CompositeGetters.parseMarketsInfo', function() {
   });
 });
 describe('CompositeGetters.getMarketsInfo', function() {
-  // 7 tests total
+  // 2 tests total
   var fire = augur.fire;
   afterEach(function() {
     augur.fire = fire;
   });
   var test = function(t) {
-    it(t.description + ' sync', function() {
-        augur.fire = t.fire;
-        augur.getMarketsInfo(t.branch, t.offset, t.numMarketsToLoad, t.volumeMin, t.volumeMax, t.callback);
-      });
-    };
+    it(t.description + ' async', function() {
+      augur.fire = t.fire;
+      augur.getMarketsInfo(t.branch, t.offset, t.numMarketsToLoad, t.volumeMin, t.volumeMax, t.callback);
+    });
   };
   test({
     description: 'Should send default params to fire, only callback passed',
@@ -1627,7 +1626,7 @@ describe('CompositeGetters.getMarketsInfo', function() {
     volumeMax: undefined,
     callback: function(data) {
       assert.deepEqual(data.params, [augur.constants.DEFAULT_BRANCH_ID, 0, 0, 0, 0]);
-      assert.deepEqual(data.to, augur.tx.CompositeGetters.getMarketsInfo.to);
+      assert.deepEqual(data.to, augur.api.functions.CompositeGetters.getMarketsInfo.to);
     },
     fire: function(tx, callback, parseMarketsInfo, branch) {
       callback(tx);
@@ -1642,7 +1641,7 @@ describe('CompositeGetters.getMarketsInfo', function() {
     volumeMax: 0,
     callback: function(data) {
       assert.deepEqual(data.params, ['101010', 5, 10, -1, 0]);
-      assert.deepEqual(data.to, augur.tx.CompositeGetters.getMarketsInfo.to);
+      assert.deepEqual(data.to, augur.api.functions.CompositeGetters.getMarketsInfo.to);
     },
     fire: function(tx, callback, parseMarketsInfo, branch) {
       callback(tx);

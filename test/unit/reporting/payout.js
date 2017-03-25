@@ -2,7 +2,7 @@
 
 var assert = require("chai").assert;
 var utils = require("../../../src/utilities.js");
-var augur = require('../../../src/');
+var augur = new (require('../../../src/'))();
 var clearCallCounts = require('../../tools').clearCallCounts;
 // 11 tests total
 
@@ -39,7 +39,7 @@ describe("payout.closeMarket", function() {
   test({
     testDescription: "Should handle sending a transaction to close a market",
     assertions: function(out) {
-      assert.deepEqual(out.to, augur.tx.CloseMarket.closeMarket.to);
+      assert.deepEqual(out.to, augur.api.functions.CloseMarket.closeMarket.to);
       assert.deepEqual(out.label, 'Close Market');
       assert.deepEqual(out.method, 'closeMarket');
       assert.deepEqual(out.params, [
@@ -56,7 +56,7 @@ describe("payout.closeMarket", function() {
   test({
     testDescription: "Should handle sending a transaction to close a market with a single object as the argument",
     assertions: function(out) {
-      assert.deepEqual(out.to, augur.tx.CloseMarket.closeMarket.to);
+      assert.deepEqual(out.to, augur.api.functions.CloseMarket.closeMarket.to);
       assert.deepEqual(out.label, 'Close Market');
       assert.deepEqual(out.method, 'closeMarket');
       assert.deepEqual(out.params, [

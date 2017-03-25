@@ -22,7 +22,7 @@ var DEBUG = false;
 describe("makeTradeHash", function () {
   var augur;
   before(function () {
-    augur = tools.setup(require(augurpath), process.argv.slice(2));
+    augur = tools.setup(require(augurpath));
   });
   var test = function (t) {
     it(JSON.stringify(t), function () {
@@ -64,7 +64,7 @@ describe("makeTradeHash", function () {
 
 describe("Trade", function () {
 
-  var augur = tools.setup(require(augurpath), process.argv.slice(2));
+  var augur = tools.setup(require(augurpath));
   augur.options.debug.trading = DEBUG;
   var password = fs.readFileSync(join(process.env.HOME, ".ethereum", ".password")).toString();
   var unlockable = augur.rpc.accounts();
@@ -305,7 +305,7 @@ describe("Trade", function () {
               market: markets[t.market],
               outcome: t.outcome,
               onSent: function (r) {
-                assert(r.txHash);
+                assert(r.hash);
                 assert.isNull(r.callReturn);
               },
               onSuccess: function (r) {

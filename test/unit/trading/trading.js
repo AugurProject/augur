@@ -9,7 +9,7 @@ var assert = require("chai").assert;
 var abi = require("augur-abi");
 var clone = require("clone");
 var augurpath = "../../../src/index";
-var augur = require(augurpath);
+var augur = new (require(augurpath))();
 var utils = require("../../../src/utilities");
 var tools = require("../../tools");
 var errors = require("ethrpc").errors;
@@ -440,7 +440,7 @@ describe("trade.trade", function() {
     },
     parseTradeReceipt: function() {},
     transact: function(tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.tx.Trade.trade.to);
+      assert.deepEqual(tx.to, augur.api.functions.Trade.trade.to);
       assert.deepEqual(tx.params, [
         '0x56bc75e2d63100000',
         '0x56bc75e2d63100000',
@@ -485,7 +485,7 @@ describe("trade.trade", function() {
              returns: 'hash[]',
              send: true,
              signature: [ 'int256', 'int256', 'int256[]', 'int256' ],
-             to: augur.tx.Trade.trade.to,
+             to: augur.api.functions.Trade.trade.to,
              params: [ '0x56bc75e2d63100000', '0x56bc75e2d63100000', [ '0xa1', '0xa2', '0xa3' ], '0xe1' ] },
           hash: '0x123abc456def7890'
         });
@@ -505,7 +505,7 @@ describe("trade.trade", function() {
     },
     parseTradeReceipt: function() {},
     transact: function(tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.tx.Trade.trade.to);
+      assert.deepEqual(tx.to, augur.api.functions.Trade.trade.to);
       assert.deepEqual(tx.params, [
         '0x56bc75e2d63100000',
         '0x56bc75e2d63100000',
@@ -556,7 +556,7 @@ describe("trade.trade", function() {
     },
     parseTradeReceipt: function() {},
     transact: function(tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.tx.Trade.trade.to);
+      assert.deepEqual(tx.to, augur.api.functions.Trade.trade.to);
       assert.deepEqual(tx.params, [
         '0x56bc75e2d63100000',
         '0x56bc75e2d63100000',
@@ -606,7 +606,7 @@ describe("trade.trade", function() {
       cb(undefined);
     },
     transact: function(tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.tx.Trade.trade.to);
+      assert.deepEqual(tx.to, augur.api.functions.Trade.trade.to);
       assert.deepEqual(tx.params, [
         '0x56bc75e2d63100000',
         '0x56bc75e2d63100000',
@@ -661,7 +661,7 @@ describe("trade.trade", function() {
       cb({ error: 999, message: 'Uh-Oh!' });
     },
     transact: function(tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.tx.Trade.trade.to);
+      assert.deepEqual(tx.to, augur.api.functions.Trade.trade.to);
       assert.deepEqual(tx.params, [
         '0x56bc75e2d63100000',
         '0x56bc75e2d63100000',
@@ -732,7 +732,7 @@ describe("trade.trade", function() {
       });
     },
     transact: function(tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.tx.Trade.trade.to);
+      assert.deepEqual(tx.to, augur.api.functions.Trade.trade.to);
       assert.deepEqual(tx.params, [
         '0x56bc75e2d63100000',
         '0x56bc75e2d63100000',
@@ -783,7 +783,7 @@ describe("trade.trade", function() {
         		returns: 'hash[]',
         		send: true,
         		signature: ['int256', 'int256', 'int256[]', 'int256'],
-        		to: augur.tx.Trade.trade.to,
+        		to: augur.api.functions.Trade.trade.to,
         		params: ['0x56bc75e2d63100000', '0x56bc75e2d63100000', ['0xa1', '0xa2', '0xa3'], '0xe1']
         	},
         	hash: '0x123abc456def7890'
@@ -805,7 +805,7 @@ describe("trade.trade", function() {
     parseTradeReceipt: function(receipt) {},
     receipt: function(txHash, cb) {},
     transact: function(tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.tx.Trade.trade.to);
+      assert.deepEqual(tx.to, augur.api.functions.Trade.trade.to);
       assert.deepEqual(tx.params, [
         '0x56bc75e2d63100000',
         '0x56bc75e2d63100000',
@@ -862,7 +862,7 @@ describe("trade.trade", function() {
     parseTradeReceipt: function(receipt) {},
     receipt: function(txHash, cb) {},
     transact: function(tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.tx.Trade.trade.to);
+      assert.deepEqual(tx.to, augur.api.functions.Trade.trade.to);
       assert.deepEqual(tx.params, [
         '0x56bc75e2d63100000',
         '0x56bc75e2d63100000',
@@ -1007,7 +1007,7 @@ describe("trade.short_sell", function() {
     },
     parseShortSellReceipt: function() {},
     transact: function(tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.tx.Trade.short_sell.to);
+      assert.deepEqual(tx.to, augur.api.functions.Trade.short_sell.to);
       assert.deepEqual(tx.params, [ '0xa1', '0x56bc75e2d63100000', '0xabc1' ]);
       onFailed({ error: 999, message: 'Uh-Oh!' });
     },
@@ -1054,7 +1054,7 @@ describe("trade.short_sell", function() {
     },
     parseShortSellReceipt: function() {},
     transact: function(tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.tx.Trade.short_sell.to);
+      assert.deepEqual(tx.to, augur.api.functions.Trade.short_sell.to);
       assert.deepEqual(tx.params, [ '0xa1', '0x56bc75e2d63100000', '0xabc1' ]);
       onSuccess({
       	callReturn: 0,
@@ -1099,7 +1099,7 @@ describe("trade.short_sell", function() {
         		returns: 'hash[]',
         		send: true,
         		signature: ['int256', 'int256', 'int256'],
-        		to: augur.tx.Trade.short_sell.to,
+        		to: augur.api.functions.Trade.short_sell.to,
         		params: ['0xa1', '0x56bc75e2d63100000', '0xabc1']
         	},
         	hash: '0x123abc456def7890'
@@ -1120,7 +1120,7 @@ describe("trade.short_sell", function() {
     },
     parseShortSellReceipt: function() {},
     transact: function(tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.tx.Trade.short_sell.to);
+      assert.deepEqual(tx.to, augur.api.functions.Trade.short_sell.to);
       assert.deepEqual(tx.params, [ '0xa1', '0x56bc75e2d63100000', '0xabc1' ]);
       onSuccess({
       	callReturn: '-1',
@@ -1170,7 +1170,7 @@ describe("trade.short_sell", function() {
     },
     parseShortSellReceipt: function() {},
     transact: function(tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.tx.Trade.short_sell.to);
+      assert.deepEqual(tx.to, augur.api.functions.Trade.short_sell.to);
       assert.deepEqual(tx.params, [ '0xa1', '0x56bc75e2d63100000', '0xabc1' ]);
       onSuccess({
         callReturn: [0],
@@ -1215,7 +1215,7 @@ describe("trade.short_sell", function() {
             returns: 'hash[]',
             send: true,
             signature: ['int256', 'int256', 'int256'],
-            to: augur.tx.Trade.short_sell.to,
+            to: augur.api.functions.Trade.short_sell.to,
             params: ['0xa1', '0x56bc75e2d63100000', '0xabc1']
           },
           hash: '0x123abc456def7890'
@@ -1236,7 +1236,7 @@ describe("trade.short_sell", function() {
     },
     parseShortSellReceipt: function() {},
     transact: function(tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.tx.Trade.short_sell.to);
+      assert.deepEqual(tx.to, augur.api.functions.Trade.short_sell.to);
       assert.deepEqual(tx.params, [ '0xa1', '0x56bc75e2d63100000', '0xabc1' ]);
       onSuccess({
         callReturn: ['-1'],
@@ -1278,7 +1278,7 @@ describe("trade.short_sell", function() {
             returns: 'hash[]',
             send: true,
             signature: ['int256', 'int256', 'int256'],
-            to: augur.tx.Trade.short_sell.to,
+            to: augur.api.functions.Trade.short_sell.to,
             params: ['0xa1', '0x56bc75e2d63100000', '0xabc1']
           },
           hash: '0x123abc456def7890'
@@ -1299,7 +1299,7 @@ describe("trade.short_sell", function() {
     },
     parseShortSellReceipt: function() {},
     transact: function(tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.tx.Trade.short_sell.to);
+      assert.deepEqual(tx.to, augur.api.functions.Trade.short_sell.to);
       assert.deepEqual(tx.params, [ '0xa1', '0x56bc75e2d63100000', '0xabc1' ]);
       onSuccess({
         callReturn: ['1', '0', '0'],
@@ -1345,7 +1345,7 @@ describe("trade.short_sell", function() {
     },
     parseShortSellReceipt: function() {},
     transact: function(tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.tx.Trade.short_sell.to);
+      assert.deepEqual(tx.to, augur.api.functions.Trade.short_sell.to);
       assert.deepEqual(tx.params, [ '0xa1', '0x56bc75e2d63100000', '0xabc1' ]);
       onSuccess({
         callReturn: ['1', abi.fix('0'), abi.fix('100'), abi.fix('50')],
@@ -1396,7 +1396,7 @@ describe("trade.short_sell", function() {
     },
     parseShortSellReceipt: function(receipt) {},
     transact: function(tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.tx.Trade.short_sell.to);
+      assert.deepEqual(tx.to, augur.api.functions.Trade.short_sell.to);
       assert.deepEqual(tx.params, [ '0xa1', '0x56bc75e2d63100000', '0xabc1' ]);
       onSuccess({
         callReturn: ['1', abi.fix('0'), abi.fix('100'), abi.fix('50')],
@@ -1459,7 +1459,7 @@ describe("trade.short_sell", function() {
       return receipt;
     },
     transact: function(tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.tx.Trade.short_sell.to);
+      assert.deepEqual(tx.to, augur.api.functions.Trade.short_sell.to);
       assert.deepEqual(tx.params, [ '0xa1', '0x56bc75e2d63100000', '0xabc1' ]);
       onSuccess({
         callReturn: ['1', abi.fix('0'), abi.fix('100'), abi.fix('0.5')],

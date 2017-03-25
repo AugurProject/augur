@@ -9,7 +9,7 @@ var assert = require("chai").assert;
 var abi = require("augur-abi");
 var BigNumber = require("bignumber.js");
 var augurpath = "../../../src/index";
-var augur = require(augurpath);
+var augur = new (require(augurpath))();
 var utils = require("../../../src/utilities");
 var tools = require("../../tools");
 var DEBUG = false;
@@ -19,7 +19,7 @@ describe("CreateMarket.createSingleEventMarket", function () {
 
   before(function (done) {
     this.timeout(tools.TIMEOUT);
-    augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
+    augur = tools.setup(require(augurpath));
     done();
   });
 
@@ -40,8 +40,7 @@ describe("CreateMarket.createSingleEventMarket", function () {
         resolution: t.resolution,
         onSent: function (r) {
           if (DEBUG) console.log("sent:", r);
-          assert(r.txHash);
-          assert.isNull(r.callReturn);
+          assert(r.hash);
         },
         onSuccess: function (r) {
           if (DEBUG) console.log("success:", r);
@@ -52,13 +51,6 @@ describe("CreateMarket.createSingleEventMarket", function () {
           var futurePeriod = abi.prefix_hex(new BigNumber(t.expDate, 10).dividedBy(new BigNumber(periodLength, 10)).floor().toString(16));
           var tradingFee = abi.bignum(t.takerFee).plus(abi.bignum(t.makerFee)).dividedBy(new BigNumber("1.5", 10));
           var formattedTags = augur.formatTags(t.tags);
-          assert.strictEqual(utils.sha3([
-            futurePeriod,
-            abi.fix(tradingFee, "hex"),
-            t.expDate,
-            new Buffer(t.description, "utf8").length,
-            t.description
-          ]), r.callReturn);
           assert.strictEqual(augur.getCreator(marketID), augur.coinbase);
           assert.strictEqual(augur.getExtraInfo(marketID), t.extraInfo);
 
@@ -69,8 +61,6 @@ describe("CreateMarket.createSingleEventMarket", function () {
           assert.strictEqual(augur.getResolution(eventID), t.resolution);
           var info = augur.getMarketInfo(marketID);
           assert.notProperty(info, "error");
-          assert.isArray(info.events);
-          assert.strictEqual(info.events.length, 1);
           done();
         },
         onFailed: function (err) {

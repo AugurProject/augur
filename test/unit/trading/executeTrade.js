@@ -1,7 +1,7 @@
 "use strict";
 
 var assert = require('chai').assert;
-var augur = require('../../../src');
+var augur = new (require("../../../src"))();
 var noop = require("../../../src/utilities").noop;
 var constants = require("../../../src/constants");
 var BigNumber = require("bignumber.js");

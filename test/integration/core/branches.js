@@ -10,7 +10,7 @@ var abi = require("augur-abi");
 var constants = require("../../../src/constants");
 var tools = require("../../tools");
 
-var augur = tools.setup(require("../../../src"), process.argv.slice(2));
+var augur = tools.setup(require("../../../src"));
 var branchID = augur.constants.DEFAULT_BRANCH_ID;
 var branchNumber = "0";
 

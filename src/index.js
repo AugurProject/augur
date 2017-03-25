@@ -100,4 +100,4 @@ Augur.prototype.Accounts = require("./accounts");
 Augur.prototype.Filters = require("./filters");
 Augur.prototype.Chat = require("./chat");
 
-module.exports = new Augur();
+module.exports = Augur;

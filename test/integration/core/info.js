@@ -9,7 +9,7 @@ var assert = require("chai").assert;
 var abi = require("augur-abi");
 var tools = require("../../tools");
 
-var augur = tools.setup(require("../../../src"), process.argv.slice(2));
+var augur = tools.setup(require("../../../src"));
 var constants = augur.constants;
 var branchID = augur.constants.DEFAULT_BRANCH_ID;
 var accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);

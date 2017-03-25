@@ -8,13 +8,13 @@
 var assert = require("chai").assert;
 var tools = require("../../tools");
 var augurpath = "../../../src/index";
-var augur = require(augurpath);
+var augur = new (require(augurpath))();
 require('it-each')({testPerIteration: true});
 
 describe("CreateMarket.createMarket", function () {
 
   beforeEach(function () {
-    augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
+    augur = tools.setup(require(augurpath));
   });
 
   describe("categorical", function () {
@@ -30,7 +30,7 @@ describe("CreateMarket.createMarket", function () {
           numOutcomes: t.numOutcomes,
           resolution: t.resolution,
           onSent: function (r) {
-            assert(r.txHash);
+            assert(r.hash);
             assert(r.callReturn);
           },
           onSuccess: function (r) {
@@ -51,9 +51,7 @@ describe("CreateMarket.createMarket", function () {
                 assert.strictEqual(augur.getMarketEvent(marketID, 0), eventID);
                 augur.getMarketInfo(marketID, function (info) {
                   if (info.error) return done(info);
-                  assert.isArray(info.events);
-                  assert.strictEqual(info.events.length, 1);
-                  assert.strictEqual(info.events[0].type, "categorical");
+                  assert.strictEqual(info.eventID, eventID);
                   assert.strictEqual(info.type, "categorical");
                   done();
                 });
@@ -185,9 +183,7 @@ describe("CreateMarket.createMarket", function () {
                 assert.strictEqual(augur.getMarketEvent(marketID, 0), eventID);
                 augur.getMarketInfo(marketID, null, function (info) {
                   if (info.error) return done(info);
-                  assert.isArray(info.events);
-                  assert.strictEqual(info.events.length, 1);
-                  assert.strictEqual(info.events[0].type, "scalar");
+                  assert.strictEqual(info.eventID, eventID);
                   assert.strictEqual(info.type, "scalar");
                   done();
                 });
@@ -311,9 +307,7 @@ describe("CreateMarket.createMarket", function () {
               assert.strictEqual(augur.getMarketEvent(marketID, 0), eventID);
               augur.getMarketInfo(marketID, null, function (info) {
                 if (info.error) return next(info);
-                assert.isArray(info.events);
-                assert.strictEqual(info.events.length, 1);
-                assert.strictEqual(info.events[0].type, "binary");
+                assert.strictEqual(info.eventID, eventID);
                 assert.strictEqual(info.type, "binary");
                 next();
               });

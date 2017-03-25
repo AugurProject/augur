@@ -14,7 +14,7 @@ describe("CreateMarket.createEvent", function () {
   var maxValue = 2;
   var numOutcomes = 2;
   var numEvents = 2;
-  var augur = tools.setup(require("../../../src"), process.argv.slice(2));
+  var augur = tools.setup(require("../../../src"));
   var branch = augur.constants.DEFAULT_BRANCH_ID;
   var period = augur.getVotePeriod(branch);
   var expDate = parseInt(new Date().getTime() / 995);

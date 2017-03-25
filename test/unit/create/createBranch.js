@@ -6,7 +6,7 @@
 "use strict";
 
 var assert = require("chai").assert;
-var augur = require("../../../src");
+var augur = new (require("../../../src"))();
 var random = require("../../random");
 var tools = require("../../tools");
 var utils = require("../../../src/utilities");
@@ -172,7 +172,7 @@ describe("createBranch.createSubbranch", function() {
         returns: 'hash',
         send: true,
         signature: [ 'bytes', 'int256', 'int256', 'int256', 'int256' ],
-        to: augur.tx.CreateBranch.createSubbranch.to,
+        to: augur.api.functions.CreateBranch.createSubbranch.to,
         params: [
           'This is a branch description',
           120,
@@ -224,7 +224,7 @@ describe("createBranch.createSubbranch", function() {
         returns: 'hash',
         send: true,
         signature: [ 'bytes', 'int256', 'int256', 'int256', 'int256' ],
-        to: augur.tx.CreateBranch.createSubbranch.to,
+        to: augur.api.functions.CreateBranch.createSubbranch.to,
         params: [
           'This is another branch description',
           120,

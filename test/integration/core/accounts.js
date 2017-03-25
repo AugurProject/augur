@@ -15,7 +15,8 @@ var utils = require("../../../src/utilities");
 var constants = require("../../../src/constants");
 var tools = require("../../tools");
 var random = require("../../random");
-var augur = tools.setup(require("../../../src"), process.argv.slice(2));
+var Augur = require("../../../src");
+var augur = tools.setup(Augur);
 
 // generate random private key
 var privateKey = crypto.randomBytes(32);
@@ -70,7 +71,7 @@ afterEach(function () { augur.accounts.logout(); });
 describe("eth_call", function () {
   it("call getBranches", function (done) {
     this.timeout(tools.TIMEOUT);
-    var augur = tools.setup(tools.reset("../../../src/index"), process.argv.slice(2));
+    var augur = tools.setup(Augur);
     augur.accounts.login(keystore, password, function (user) {
       assert.notProperty(user, "error");
       assert.strictEqual(user.address, augur.accounts.account.address);
@@ -104,7 +105,7 @@ describe("eth_call", function () {
 describe("Fund new account", function () {
   it("Address funding sequence", function (done) {
     this.timeout(tools.TIMEOUT*2);
-    var augur = tools.setup(tools.reset("../../../src/index"), process.argv.slice(2));
+    var augur = tools.setup(Augur);
     var sender = augur.from;
     augur.accounts.login(keystore, password, function (account) {
       // console.log("login:", account);
@@ -139,7 +140,7 @@ describe("Fund new account", function () {
   });
   it("Faucet funding sequence", function (done) {
     this.timeout(tools.TIMEOUT*2);
-    var augur = tools.setup(tools.reset("../../../src/index"), process.argv.slice(2));
+    var augur = tools.setup(Augur);
 
     // faucet only exists on network 3
     if (augur.network_id !== constants.DEFAULT_NETWORK_ID) return done();
@@ -180,7 +181,7 @@ describe("Fund new account", function () {
 describe("Send transaction", function () {
   it("detect logged in user and use raw transaction", function (done) {
     this.timeout(tools.TIMEOUT);
-    var augur = tools.setup(tools.reset("../../../src/index"), process.argv.slice(2));
+    var augur = tools.setup(Augur);
     augur.accounts.login(keystore, password, function (user) {
       assert.notProperty(user, "error");
       assert.strictEqual(user.address, augur.accounts.account.address);
@@ -213,7 +214,7 @@ describe("Send transaction", function () {
   });
   it("sign and send transaction using account 1", function (done) {
     this.timeout(tools.TIMEOUT);
-    var augur = tools.setup(tools.reset("../../../src/index"), process.argv.slice(2));
+    var augur = tools.setup(Augur);
     augur.accounts.login(keystore, password, function (user) {
       assert.notProperty(user, "error");
       var tx = clone(augur.api.functions.Faucets.reputationFaucet);
@@ -240,15 +241,7 @@ describe("Send transaction", function () {
 describe("Concurrent transactions", function () {
   it("staggered", function (done) {
     this.timeout(tools.TIMEOUT*2);
-    var augur = tools.setup(tools.reset("../../../src/index"), process.argv.slice(2));
-    var connectParams = {
-      http: "http://127.0.0.1:8545",
-      ws: "ws://127.0.0.1:8546",
-      ipc: null
-    };
-    // augur.rpc.debug.tx = true;
-    augur.connect(connectParams, function (connection) {
-      assert.isTrue(connection);
+    tools.setup(Augur, function (augur) {
       var sender = augur.from;
       augur.accounts.register(utils.sha256(Math.random().toString(36).substring(4)), function (user) {
         console.log("registered:", user);
@@ -314,15 +307,7 @@ describe("Concurrent transactions", function () {
   });
   it("simultaneous", function (done) {
     this.timeout(tools.TIMEOUT*2);
-    var augur = tools.setup(tools.reset("../../../src/index"), process.argv.slice(2));
-    var connectParams = {
-      http: "http://127.0.0.1:8545",
-      ws: "ws://127.0.0.1:8546",
-      ipc: null
-    };
-    // augur.rpc.debug.tx = true;
-    augur.connect(connectParams, function (connection) {
-      assert.isTrue(connection);
+    tools.setup(Augur, function (augur) {
       var sender = augur.from;
       augur.accounts.register(utils.sha256(Math.random().toString(36).substring(4)), function (user) {
         console.log("registered:", user);
@@ -384,15 +369,7 @@ describe("Concurrent transactions", function () {
   });
   it("duplicate nonce", function (done) {
     this.timeout(tools.TIMEOUT*2);
-    var augur = tools.setup(tools.reset("../../../src/index"), process.argv.slice(2));
-    var connectParams = {
-      http: "http://127.0.0.1:8545",
-      ws: "ws://127.0.0.1:8546",
-      ipc: null
-    };
-    // augur.rpc.debug.tx = true;
-    augur.connect(connectParams, function (connection) {
-      assert.isTrue(connection);
+    tools.setup(Augur, function (augur) {
       var sender = augur.from;
       augur.accounts.register(utils.sha256(Math.random().toString(36).substring(4)), function (user) {
         console.log("registered:", user);
@@ -454,15 +431,7 @@ describe("Concurrent transactions", function () {
   });
   it("duplicate payload", function (done) {
     this.timeout(tools.TIMEOUT*2);
-    var augur = tools.setup(tools.reset("../../../src/index"), process.argv.slice(2));
-    var connectParams = {
-      http: "http://127.0.0.1:8545",
-      ws: "ws://127.0.0.1:8546",
-      ipc: null
-    };
-    // augur.rpc.debug.tx = true;
-    augur.connect(connectParams, function (connection) {
-      assert.isTrue(connection);
+    tools.setup(Augur, function (augur) {
       var sender = augur.from;
       augur.accounts.register(utils.sha256(Math.random().toString(36).substring(4)), function (user) {
         console.log("registered:", user);
@@ -479,7 +448,6 @@ describe("Concurrent transactions", function () {
             augur.reputationFaucet({
               branch: branch,
               onSent: function (r) {
-                ++count;
                 assert.property(r, "callReturn");
               },
               onSuccess: function (r) {
@@ -492,7 +460,7 @@ describe("Concurrent transactions", function () {
                 assert.strictEqual(r.from, user.address);
                 assert.strictEqual(r.to, augur.contracts.Faucets);
                 assert.strictEqual(Number(r.value), 0);
-                if (count === 2) done();
+                if (++count === 2) done();
               },
               onFailed: function (err) {
                 console.log('1 failed:', count, err);
@@ -507,7 +475,6 @@ describe("Concurrent transactions", function () {
             augur.reputationFaucet({
               branch: branch,
               onSent: function (r) {
-                ++count;
                 assert.property(r, "callReturn");
               },
               onSuccess: function (r) {
@@ -520,7 +487,7 @@ describe("Concurrent transactions", function () {
                 assert.strictEqual(r.from, user.address);
                 assert.strictEqual(r.to, augur.contracts.Faucets);
                 assert.strictEqual(Number(r.value), 0);
-                if (count === 2) done();
+                if (++count === 2) done();
               },
               onFailed: function (err) {
                 console.log('2 failed:', count, err);

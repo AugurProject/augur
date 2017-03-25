@@ -2,7 +2,7 @@
 
 var assert = require("chai").assert;
 var utils = require("../../../src/utilities.js");
-var augur = require('../../../src/');
+var augur = new (require('../../../src/'))();
 var transact,
   getVotePeriod,
   getFeesCollected,
@@ -136,7 +136,7 @@ describe("collectFees", function() {
       cb('14327');
     },
     transact: function(tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.tx.CollectFees.collectFees.to);
+      assert.deepEqual(tx.to, augur.api.functions.CollectFees.collectFees.to);
       assert.deepEqual(tx.params, [ '0xb1', '0xa1' ]);
       assert.deepEqual(tx.gasPrice, '14327');
       assert.deepEqual(tx.value, '0x9a174ebe0');
@@ -184,7 +184,7 @@ describe("collectFees", function() {
       cb('14327');
     },
     transact: function(tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.tx.CollectFees.collectFees.to);
+      assert.deepEqual(tx.to, augur.api.functions.CollectFees.collectFees.to);
       assert.deepEqual(tx.params, [ '0xb1', '0xa1' ]);
       assert.deepEqual(tx.gasPrice, '14327');
       assert.deepEqual(tx.value, '0x9a174ebe0');
@@ -236,7 +236,7 @@ describe("collectFees", function() {
       cb('14327');
     },
     transact: function(tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.tx.CollectFees.collectFees.to);
+      assert.deepEqual(tx.to, augur.api.functions.CollectFees.collectFees.to);
       assert.deepEqual(tx.params, [ '0xb1', '0xa1' ]);
       assert.deepEqual(tx.gasPrice, '14327');
       assert.deepEqual(tx.value, '0x9a174ebe0');
@@ -291,7 +291,7 @@ describe("collectFees", function() {
       cb('14327');
     },
     transact: function(tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.tx.CollectFees.collectFees.to);
+      assert.deepEqual(tx.to, augur.api.functions.CollectFees.collectFees.to);
       assert.deepEqual(tx.params, [ '0xb1', '0xa1' ]);
       assert.deepEqual(tx.gasPrice, '14327');
       assert.deepEqual(tx.value, '0x9a174ebe0');
@@ -346,7 +346,7 @@ describe("collectFees", function() {
       cb('14327');
     },
     transact: function(tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.tx.CollectFees.collectFees.to);
+      assert.deepEqual(tx.to, augur.api.functions.CollectFees.collectFees.to);
       assert.deepEqual(tx.params, [ '0xb1', '0xa1' ]);
       assert.deepEqual(tx.gasPrice, '14327');
       assert.deepEqual(tx.value, '0x9a174ebe0');

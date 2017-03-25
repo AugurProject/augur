@@ -3,7 +3,7 @@
 var assert = require("chai").assert;
 var madlibs = require("madlibs");
 var tools = require("../../tools");
-var augur = tools.setup(require("../../../src"), process.argv.slice(2));
+var augur = tools.setup(require("../../../src"));
 
 describe("generateOrderBook", function () {
 

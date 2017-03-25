@@ -78,7 +78,6 @@ module.exports = {
       numTopicsToLoad: numTopicsToLoad || totalTopics
     }, function (topicsInfoChunk) {
       if (!topicsInfoChunk || topicsInfoChunk.error) {
-        console.error("getTopicsInfo failed:", branch, topicsInfoChunk);
         return callback(topicsInfoChunk);
       }
       chunkCB(topicsInfoChunk);

@@ -8,7 +8,7 @@
 var assert = require("chai").assert;
 var clone = require("clone");
 var abi = require("augur-abi");
-var augur = require("../../../src");
+var augur = new (require("../../../src"))();
 var utils = require("../../../src/utilities");
 
 describe("getCurrentPeriod", function() {

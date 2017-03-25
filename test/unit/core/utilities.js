@@ -767,7 +767,7 @@ describe("utilities.sha3", function () {
   });
 });
 describe("tools.checkTime", function() {
-  var augur = require("../../../src");
+  var augur = new (require("../../../src"))();
   var incrementPeriodAfterReporting = augur.Consensus.incrementPeriodAfterReporting;
   var getVotePeriod = augur.getVotePeriod;
   var getExpiration = augur.getExpiration;

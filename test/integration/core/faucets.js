@@ -6,7 +6,7 @@ var tools = require("../../tools");
 
 describe("Faucets", function () {
 
-  var augur = tools.setup(require("../../../src"), process.argv.slice(2));
+  var augur = tools.setup(require("../../../src"));
 
   if (augur.Cash.balance(augur.from) === "0") {
     it("Faucets.cashFaucet", function (done) {

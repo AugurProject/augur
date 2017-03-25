@@ -9,7 +9,7 @@ var assert = require("chai").assert;
 var contracts = require("augur-contracts");
 var constants = require("../../../src/constants");
 var tools = require("../../tools");
-var augur = tools.setup(require("../../../src"), process.argv.slice(2));
+var augur = tools.setup(require("../../../src"));
 
 require("it-each")({testPerIteration: true});
 

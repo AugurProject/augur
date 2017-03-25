@@ -11,7 +11,7 @@ var tools = require("../../tools");
 
 describe("CompleteSets", function () {
 
-  var augur = tools.setup(require("../../../src"), process.argv.slice(2));
+  var augur = tools.setup(require("../../../src"));
   var branchID = augur.constants.DEFAULT_BRANCH_ID;
   var numMarkets = parseInt(augur.getNumMarketsBranch(branchID), 10);
   var markets = augur.getSomeMarketsInBranch(branchID, numMarkets - 100, numMarkets);

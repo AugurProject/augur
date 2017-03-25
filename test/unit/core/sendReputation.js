@@ -1,7 +1,7 @@
 "use strict";
 
 var assert = require("chai").assert;
-var augur = require("../../../src");
+var augur = new (require("../../../src"))();
 var abi = require("augur-abi");
 // 10 tests total
 
@@ -45,7 +45,7 @@ describe("sendReputation Unit Tests", () => {
 
 			assert.isString(tx.to, "tx.to sent to this.transact isn't an String as expected");
 			// make sure the tx.to is sending to the correct contract.
-			assert.deepEqual(tx.to, augur.tx.SendReputation.sendReputation.to, "tx.to didn't point to the sendReputation contract");
+			assert.deepEqual(tx.to, augur.api.functions.SendReputation.sendReputation.to, "tx.to didn't point to the sendReputation contract");
 			assert.isArray(tx.params, "tx.params sent to this.transact isn't an array as expected");
 
 			assert.deepEqual(tx.params, ["3", "recipientAddress", abi.fix(5, "hex")], "tx.params didn't contain the expected values");

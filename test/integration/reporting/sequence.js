@@ -53,7 +53,7 @@ describe("Reporting sequence", function () {
 
     describe("Sequence:" + createNewBranch, function () {
 
-      augur = tools.setup(require(augurpath), process.argv.slice(2));
+      augur = tools.setup(require(augurpath));
       augur.options.debug.reporting = true;
       password = fs.readFileSync(join(process.env.HOME, ".ethereum", ".password")).toString();
       unlockable = augur.rpc.accounts();
@@ -71,7 +71,7 @@ describe("Reporting sequence", function () {
 
       before("Setup/first period", function (done) {
         this.timeout(tools.TIMEOUT*100);
-        augur = tools.setup(tools.reset(augurpath), process.argv.slice(2));
+        augur = tools.setup(require(augurpath));
         tools.top_up(augur, constants.DEFAULT_BRANCH_ID, unlockable, password, function (err, unlocked) {
           assert.isNull(err, JSON.stringify(err));
           assert.isArray(unlocked);

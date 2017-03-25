@@ -1,7 +1,7 @@
 "use strict";
 
 var assert = require('chai').assert;
-var augur = require('../../../src');
+var augur = new (require("../../../src"))();
 var errors = require("ethrpc").errors;
 var keys = require("keythereum");
 var constants = require("../../../src/constants");

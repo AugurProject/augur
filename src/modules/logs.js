@@ -276,7 +276,6 @@ module.exports = {
               completeSetsFilterParams.mergeInto = aux.mergedLogs;
               self.getParsedCompleteSetsLogs(account, completeSetsFilterParams, function (err, merged) {
                 if (err) {
-                  console.error("getAccountTrades:", err);
                   return callback(null, self.sortTradesByBlockNumber(aux.mergedLogs));
                 }
                 callback(null, self.sortTradesByBlockNumber(merged));

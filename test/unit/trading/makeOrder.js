@@ -1,7 +1,7 @@
 "use strict";
 
 var assert = require('chai').assert;
-var augur = require('../../../src');
+var augur = new (require("../../../src"))();
 
 describe("makeOrder.placeBid", function() {
   // 2 tests total

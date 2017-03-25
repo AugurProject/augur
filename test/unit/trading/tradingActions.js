@@ -6,7 +6,7 @@
 
 var assert = require("chai").assert;
 var abi = require("augur-abi");
-var augur = require("../../../src");
+var augur = new (require("../../../src"))();
 var constants = require("../../../src/constants");
 var utils = require("../../../src/utilities");
 var BigNumber = require('bignumber.js');
@@ -901,15 +901,15 @@ describe("getTradingActions", function () {
   var txOriginal;
   var calculateTradeTotals;
   before("getTradingActions", function () {
-    txOriginal = augur.tx;
+    txOriginal = augur.api.functions;
     calculateTradeTotals = augur.calculateTradeTotals;
-    augur.tx = new require("augur-contracts").Tx(constants.DEFAULT_NETWORK_ID).functions;
+    augur.api.functions = new require("augur-contracts").Tx(constants.DEFAULT_NETWORK_ID).functions;
     augur.calculateTradeTotals = function (type, numShares, limitPrice, tradeActions) {
       return tradeActions;
     };
   });
   after("getTradingActions", function () {
-    augur.tx = txOriginal;
+    augur.api.functions = txOriginal;
   });
   describe("buy actions", function () {
     runTestCase({

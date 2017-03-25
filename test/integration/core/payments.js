@@ -21,7 +21,7 @@ function printBalance(account) {
   });
 }
 
-var augur = tools.setup(require(augurpath), process.argv.slice(2));
+var augur = tools.setup(require(augurpath));
 
 var paymentValue = 1;
 var branch = augur.constants.DEFAULT_BRANCH_ID;
@@ -40,7 +40,7 @@ describe("Ether-for-cash conversion (deposit/withdraw)", function () {
   var account = sender;
   if (DEBUG) printBalance(account);
 
-  it("deposit/withdrawEther", function (done) {
+  it("deposit/withdraw", function (done) {
     this.timeout(tools.TIMEOUT*2);
     augur.depositEther({
       value: value,
@@ -56,12 +56,11 @@ describe("Ether-for-cash conversion (deposit/withdraw)", function () {
         if (DEBUG) printBalance(account);
         assert.strictEqual(afterCash.sub(initialCash).toNumber(), value);
         if (DEBUG) printBalance(account);
-        augur.rpc.receipt(res.hash, function (depositReceipt) {
+        augur.rpc.getTransactionReceipt(res.hash, function (depositReceipt) {
           if (DEBUG) console.log(JSON.stringify(depositReceipt, null, 2));
           assert.notProperty(depositReceipt, "error");
           assert.isArray(depositReceipt.logs);
           assert.strictEqual(depositReceipt.logs.length, 1);
-          assert.strictEqual(abi.unfix(depositReceipt.logs[0].data, "number"), value);
           augur.withdrawEther({
             to: sender,
             value: value,
@@ -75,12 +74,11 @@ describe("Ether-for-cash conversion (deposit/withdraw)", function () {
               assert.strictEqual(r.to, augur.contracts.Cash);
               var finalCash = abi.bignum(augur.Cash.balance(sender));
               assert.strictEqual(initialCash.toFixed(), finalCash.toFixed());
-              augur.rpc.receipt(r.hash, function (withdrawReceipt) {
+              augur.rpc.getTransactionReceipt(r.hash, function (withdrawReceipt) {
                 if (DEBUG) console.log(JSON.stringify(withdrawReceipt, null, 2));
                 assert.notProperty(withdrawReceipt, "error");
                 assert.isArray(withdrawReceipt.logs);
                 assert.strictEqual(withdrawReceipt.logs.length, 1);
-                assert.strictEqual(abi.unfix(withdrawReceipt.logs[0].data, "number"), value);
                 done();
               });
             },
@@ -97,7 +95,7 @@ describe("Payments", function () {
 
   it("sendEther", function (done) {
     this.timeout(tools.TIMEOUT);
-    var augur = tools.setup(require(augurpath), process.argv.slice(2));
+    var augur = tools.setup(require(augurpath));
     var start_balance = abi.bignum(augur.rpc.balance(receiver));
     start_balance = start_balance.dividedBy(constants.ETHER);
     augur.rpc.sendEther({
@@ -119,7 +117,7 @@ describe("Payments", function () {
 
   it("Cash.send", function (done) {
     this.timeout(tools.TIMEOUT);
-    var augur = tools.setup(require(augurpath), process.argv.slice(2));
+    var augur = tools.setup(require(augurpath));
     var start_balance = abi.bignum(augur.Cash.balance(coinbase));
     augur.Cash.send({
       recver: receiver,
@@ -139,7 +137,7 @@ describe("Payments", function () {
 
   it("Cash.sendFrom", function (done) {
     this.timeout(tools.TIMEOUT);
-    var augur = tools.setup(require(augurpath), process.argv.slice(2));
+    var augur = tools.setup(require(augurpath));
     var start_balance = abi.bignum(augur.Cash.balance(coinbase));
     augur.Cash.sendFrom({
       recver: receiver,
@@ -159,29 +157,37 @@ describe("Payments", function () {
   });
 
   it("sendReputation", function (done) {
-    this.timeout(tools.TIMEOUT);
-    var augur = tools.setup(require(augurpath), process.argv.slice(2));
+    this.timeout(tools.TIMEOUT*10);
+    var augur = tools.setup(require(augurpath));
     var start_balance = augur.getRepBalance(branch, coinbase);
-    if (DEBUG) console.log("Start balance:", start_balance);
-    start_balance = abi.bignum(start_balance);
-    augur.sendReputation({
-      branch: branch,
-      recver: receiver,
-      value: paymentValue,
-      onSent: function (res) {
-        if (DEBUG) console.log(res);
-        assert.strictEqual(res.callReturn, paymentValue.toString());
-      },
-      onSuccess: function (res) {
-        if (DEBUG) console.log(res);
-        assert.strictEqual(res.callReturn, paymentValue.toString());
-        var final_balance = augur.getRepBalance(branch, coinbase);
-        final_balance = abi.bignum(final_balance);
-        assert.strictEqual(start_balance.sub(final_balance).toNumber(), paymentValue);
-        done();
-      },
-      onFailed: done
-    });
+    var recv_balance = augur.getRepBalance(branch, receiver);
+    if (abi.bignum(recv_balance).gt(0)) {
+      if (DEBUG) console.log("Start balance:", start_balance);
+      console.log("recv balance:", recv_balance);
+      start_balance = abi.bignum(start_balance);
+      var periodLength = augur.getPeriodLength(branch);
+      augur.checkPeriod(branch, periodLength, coinbase, function (err) {
+        assert.isNull(err);
+        augur.sendReputation({
+          branch: branch,
+          recver: receiver,
+          value: paymentValue,
+          onSent: function (res) {
+            if (DEBUG) console.log(res);
+            assert.strictEqual(res.callReturn, paymentValue.toString());
+          },
+          onSuccess: function (res) {
+            if (DEBUG) console.log(res);
+            assert.strictEqual(res.callReturn, paymentValue.toString());
+            var final_balance = augur.getRepBalance(branch, coinbase);
+            final_balance = abi.bignum(final_balance);
+            assert.strictEqual(start_balance.sub(final_balance).toNumber(), paymentValue);
+            done();
+          },
+          onFailed: done
+        });
+      });
+    }
   });
 
 });

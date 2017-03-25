@@ -15,7 +15,7 @@ var utils = require("../../../src/utilities");
 var constants = require("../../../src/constants");
 var tools = require("../../tools");
 var random = require("../../random");
-var augur = require("../../../src");
+var augur = new (require("../../../src"))();
 
 // generate random private key
 var privateKey = crypto.randomBytes(32);

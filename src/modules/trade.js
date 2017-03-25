@@ -152,7 +152,7 @@ module.exports = {
             if (self.options.debug.trading) console.log("fastforward:", blockNumber);
             onNextBlock(blockNumber);
             tx = clone(self.tx.Trade.trade);
-            tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids, tradeGroupID];
+            tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids, tradeGroupID || 0];
             if (self.options.debug.trading) {
               console.log("trade tx:", JSON.stringify(tx, null, 2));
             }
@@ -249,7 +249,7 @@ module.exports = {
             var tx;
             onNextBlock(blockNumber);
             tx = clone(self.tx.Trade.short_sell);
-            tx.params = [buyer_trade_id, abi.fix(max_amount, "hex"), tradeGroupID];
+            tx.params = [buyer_trade_id, abi.fix(max_amount, "hex"), tradeGroupID || 0];
             if (self.options.debug.trading) {
               console.log("short_sell tx:", JSON.stringify(tx, null, 2));
             }

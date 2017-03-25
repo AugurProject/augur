@@ -11,7 +11,7 @@ var api = new require("augur-contracts").Tx();
 var tools = require("../../tools");
 var constants = require("../../../src/constants");
 var augurpath = "../../../src/index";
-var augur = require(augurpath);
+var augur = new (require(augurpath))();
 var utils = require("../../../src/utilities");
 
 var DEBUG = false;
