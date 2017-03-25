@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "3.15.0",
+  "version": "3.15.1",
   "description": "Augur JavaScript SDK",
   "author": "The Augur Developers <team@augur.net>",
   "license": "AAL",
@@ -12,7 +12,7 @@
     "lint": "eslint gulpfile.js src/*.js src/modules/*.js scripts/new-contracts.js test/*.js",
     "coverage-save": "istanbul cover ./node_modules/mocha/bin/_mocha test/unit/core test/unit/create test/unit/trading test/unit/reporting test/unit/markets",
     "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha test/unit/core test/unit/create test/unit/trading test/unit/reporting test/unit/markets --report lcovonly -- -R min && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
-    "link": "npm link augur-contracts && npm link ethrpc && npm link ethereumjs-connect && npm link keythereum && npm link augur-abi && npm link spammer"
+    "link": "npm link augur-contracts && npm link ethrpc && npm link ethereumjs-connect && npm link keythereum && npm link augur-abi"
   },
   "dependencies": {
     "async": "1.5.2",
@@ -24,7 +24,7 @@
     "clone": "1.0.2",
     "ethereumjs-connect": "3.0.4",
     "ethrpc": "3.0.4",
-    "keythereum": "0.4.3",
+    "keythereum": "0.4.5",
     "request": "2.74.0",
     "uuid": "3.0.0",
     "uuid-parse": "1.0.0"
@@ -56,9 +56,6 @@
     "coveralls": "^2.11.3",
     "del": "^1.2.0",
     "eslint": "^3.17.1",
-    "eslint-config-google": "^0.7.1",
-    "firebase": "^2.4.2",
-    "firebase-token-generator": "^2.0.0",
     "gulp": "^3.9.0",
     "gulp-uglify": "^1.5.1",
     "istanbul": "^0.3.17",
@@ -68,7 +65,6 @@
     "mocha": "3.2.0",
     "mocha-lcov-reporter": "0.0.2",
     "moment": "^2.13.0",
-    "posix-getopt": "^1.1.0",
     "proxyquire": "^1.7.11",
     "rimraf": "^2.4.0",
     "source-map": "^0.5.6",
