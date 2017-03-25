@@ -1,4 +1,4 @@
-import augurJS from 'augur.js';
+import Augur from 'augur.js';
 
 export const connect = function connect(env, cb) {
   const options = {
@@ -121,7 +121,7 @@ export const reportingTestSetup = function reportingTestSetup(periodLen, branchI
   });
 };
 
-export const augur = augurJS;
+export const augur = new Augur();
 export const rpc = augur.rpc;
 export const abi = augur.abi;
 export const accounts = augur.accounts;

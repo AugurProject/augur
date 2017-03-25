@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import augur from 'augur.js';
+import Augur from 'augur.js';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
@@ -10,6 +10,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
   proxyquire.noPreserveCache();
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
+  const augur = new Augur();
   const test = (t) => {
     it(t.description, () => {
       const store = mockStore(t.state);

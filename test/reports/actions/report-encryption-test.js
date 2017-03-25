@@ -1,11 +1,12 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import augur from 'augur.js';
+import Augur from 'augur.js';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 
 describe(`modules/reports/actions/report-encryption.js`, () => {
   proxyquire.noPreserveCache().noCallThru();
+  const augur = new Augur();
   describe('encryptReport', () => {
     const test = t => it(t.description, () => {
       const AugurJS = {
