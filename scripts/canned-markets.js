@@ -237,17 +237,6 @@ var cannedMarkets = [{
   extraInfo: "",
   resolution: ""
 }, {
-  description: "Will CR7 move to FC Barcelona by 20th February 2017?",
-  expDate: parseInt(new Date("3/1/2017").getTime() / 1000, 10),
-  minValue: 1,
-  maxValue: 2,
-  numOutcomes: 2,
-  takerFee: "0.02",
-  makerFee: "0.01",
-  tags: ["sports", "Ronaldo", "Barcelona"],
-  extraInfo: "",
-  resolution: ""
-}, {
   description: "Will Donald Trump be impeached and removed from the Presidency within two years of his inauguration?",
   expDate: parseInt(new Date("2/1/2019").getTime() / 1000, 10),
   minValue: 1,
@@ -256,17 +245,6 @@ var cannedMarkets = [{
   takerFee: "0.02",
   makerFee: "0.01",
   tags: ["politics", "Trump", "impeachment"],
-  extraInfo: "",
-  resolution: ""
-}, {
-  description: "Will it rain in Palo Alto on Sunday, February 19, 2017?",
-  expDate: parseInt(new Date("2/20/2017").getTime() / 1000, 10),
-  minValue: 1,
-  maxValue: 2,
-  numOutcomes: 2,
-  takerFee: "0.02",
-  makerFee: "0.01",
-  tags: ["weather"],
   extraInfo: "",
   resolution: ""
 }, {
