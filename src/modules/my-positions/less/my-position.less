@@ -1,24 +1,4 @@
 .my-position {
-  @media @breakpoint-2-3 {
-    .close-trades {
-      flex-basis: 100%;
-
-      button {
-        padding: 1em;
-      }
-    }
-  }
-
-  @media @breakpoint-1 {
-    .close-trades {
-      flex-basis: 100%;
-
-      button {
-        padding: 1em;
-      }
-    }
-  }
-
   .close-trades {
     display: flex;
     flex: 0.2;
@@ -26,6 +6,24 @@
 
     .close-dialog {
       flex: 1;
+    }
+
+    @media @breakpoint-2-3 {
+      flex-basis: 100%;
+      margin-left: 0;
+
+      button {
+        padding: 1em;
+      }
+    }
+
+    @media @breakpoint-1 {
+      flex-basis: 100%;
+      margin-left: 0;
+
+      button {
+        padding: 1em;
+      }
     }
   }
 }
