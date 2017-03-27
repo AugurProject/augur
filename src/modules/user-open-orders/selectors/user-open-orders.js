@@ -1,6 +1,6 @@
 import memoizerific from 'memoizerific';
 import BigNumber from 'bignumber.js';
-import { abi } from '../../../services/augurjs';
+import { abi } from 'services/augurjs';
 
 import store from 'src/store';
 
