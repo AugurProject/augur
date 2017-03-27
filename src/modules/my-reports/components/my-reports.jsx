@@ -51,6 +51,7 @@ const MyReports = p => (
 );
 
 MyReports.propTypes = {
+  branch: PropTypes.object.isRequired,
   reports: PropTypes.array.isRequired
 };
 

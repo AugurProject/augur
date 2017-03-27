@@ -46,11 +46,11 @@ const Market = p => (
 
 Market.propTypes = {
   endDate: PropTypes.object.isRequired,
+  fees: PropTypes.object.isRequired,
   openVolume: PropTypes.object.isRequired,
   volume: PropTypes.object.isRequired,
   numberOfTrades: PropTypes.object.isRequired,
-  averageTradeSize: PropTypes.object.isRequired,
-  fees: PropTypes.object.isRequired
+  averageTradeSize: PropTypes.object.isRequired
 };
 
 export default Market;
