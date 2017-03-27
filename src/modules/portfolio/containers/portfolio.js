@@ -7,6 +7,7 @@ import portfolioView from 'modules/portfolio/components/portfolio-view';
 import getPortfolio from 'modules/portfolio/selectors/portfolio';
 import getClosePositionStatus from 'modules/my-positions/selectors/close-position-status';
 import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination';
+import getOrderCancellation from 'modules/bids-asks/selectors/order-cancellation';
 
 const mapStateToProps = state => ({
   ...getPortfolio(),
@@ -15,7 +16,7 @@ const mapStateToProps = state => ({
   isTradeCommitLocked: state.tradeCommitLock.isLocked,
   closePositionStatus: getClosePositionStatus(),
   scalarShareDenomination: getScalarShareDenomination(),
-  orderCancellation: state.orderCancellation
+  orderCancellation: getOrderCancellation()
 });
 
 const Portfolio = connect(mapStateToProps)(portfolioView);
