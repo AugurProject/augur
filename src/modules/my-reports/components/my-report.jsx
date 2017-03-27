@@ -6,11 +6,13 @@ import ValueDate from 'modules/common/components/value-date';
 import EmDash from 'modules/common/components/em-dash';
 import ReportEthics from 'modules/my-reports/components/report-ethics';
 
-const Report = p => (
-  <div className="portfolio-row">
+const MyReport = p => (
+  <article
+    className="my-report portfolio-detail"
+  >
     <div className="portfolio-group portfolio-main-group">
       <div className="portfolio-pair">
-        <span className="report-main-group-title">outcome: </span>
+        <span className="main-group-title">outcome: </span>
         <span className="report-main-group-title-outcome">
           {p.outcome && p.outcomePercentage && p.outcomePercentage.value &&
             <span>{p.outcome}  (<ValueDenomination {...p.outcomePercentage} />)</span>
@@ -97,7 +99,7 @@ const Report = p => (
       </div>
     </div>
     <ReactTooltip type="light" effect="solid" place="top" />
-  </div>
+  </article>
 );
 
 // TODO -- Prop Validations
@@ -110,4 +112,4 @@ const Report = p => (
 // 	endDate: PropTypes.object.isRequired
 // };
 
-export default Report;
+export default MyReport;

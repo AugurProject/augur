@@ -3,8 +3,12 @@ import ValueDenomination from 'modules/common/components/value-denomination';
 import ValueDate from 'modules/common/components/value-date';
 
 const Market = p => (
-  <article className="my-market portfolio-detail">
-    <div className="portfolio-group portfolio-main-group">
+  <article
+    className="my-market portfolio-detail"
+  >
+    <div
+      className="portfolio-group portfolio-main-group"
+    >
       <span
         className="main-group-title"
       >
