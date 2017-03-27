@@ -1,6 +1,3 @@
-// NOTE --  The following is mostly a half-step towards the ultimate implementation
-//          of reselect (deferring work until the full-app refactor)
-
 import { connect } from 'react-redux';
 import portfolioNavs from 'modules/portfolio/components/portfolio-navs';
 

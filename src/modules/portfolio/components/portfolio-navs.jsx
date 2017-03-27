@@ -10,7 +10,8 @@ import debounce from 'utils/debounce';
 
 export default class PortfolioNavs extends Component {
   static propTypes = {
-    activeView: PropTypes.string.isRequired
+    activeView: PropTypes.string.isRequired,
+    portfolioNavItems: PropTypes.array.isRequired
   };
 
   constructor(props) {
