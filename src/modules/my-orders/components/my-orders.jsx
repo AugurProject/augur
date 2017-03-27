@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 import MarketOpenOrdersGroup from 'modules/market/components/market-open-orders-group';
 
@@ -6,7 +6,7 @@ import { SCALAR } from 'modules/markets/constants/market-types';
 
 import getValue from 'utils/get-value';
 
-const Orders = p => (
+const MyOrders = p => (
   <article className="my-orders market-open-orders">
     <div className="market-open-orders-header">
       <span>{!p.marketType === SCALAR ? 'Outcomes' : 'Outcome'}</span>
@@ -34,4 +34,10 @@ const Orders = p => (
   </article>
 );
 
-export default Orders;
+MyOrders.propTypes = {
+  outcomes: PropTypes.array.isRequired,
+  marketType: PropTypes.string.isRequired,
+  orderCancellation: PropTypes.object.isRequired
+};
+
+export default MyOrders;
