@@ -1,20 +1,26 @@
-.portfolio-main-group {
-  .report-main-group-title-outcome {
-    .report-committed {
+.my-reports {
+  .report-committed {
+    color: @color-red-light;
+  }
+
+  .fa {
+    padding: 0 0.4em;
+
+    &.outcome-challenged {
       color: @color-red-light;
     }
 
-    .fa {
-      padding: 0 0.4rem;
+    &.outcome-challengeable {
+      color: @color-orange-light;
+    }
 
-      &.report-equal {
-        color: @color-green-light;
-      }
+    &.report-equal {
+      color: @color-green-light;
+    }
 
-      &.report-unequal,
-      &.report-unthical {
-        color: @color-red-light;
-      }
+    &.report-unequal,
+    &.report-unthical {
+      color: @color-red-light;
     }
   }
 }

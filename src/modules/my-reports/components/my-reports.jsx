@@ -22,20 +22,20 @@ const MyReports = p => (
               >
                 <span className="description">
                   {market.description}
-                  {market.isChallenged &&
-                    <i
-                      className="fa fa-gavel outcome-challenged"
-                      data-tip="This outcome is currently being challenged"
-                    />
-                  }
-                  {!market.isChallenged && market.isChallengeable &&
-                    <i
-                      className="fa fa-exclamation-circle outcome-challengeable"
-                      data-tip="This outcome is eligible to be challenged"
-                    />
-                  }
                 </span>
               </Link>
+              {market.isChallenged &&
+                <i
+                  className="fa fa-gavel outcome-challenged"
+                  data-tip="This outcome is currently being challenged"
+                />
+              }
+              {!market.isChallenged && market.isChallengeable &&
+                <i
+                  className="fa fa-exclamation-circle outcome-challengeable"
+                  data-tip="This outcome is eligible to be challenged"
+                />
+              }
             </div>
             <MyReport
               {...market}
