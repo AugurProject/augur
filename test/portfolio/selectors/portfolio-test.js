@@ -15,20 +15,14 @@ describe('modules/portfolio/selectors/portfolio', () => {
     selectPortfolioTotals: () => {}
   };
 
-  const stubbedNavItems = sinon.stub(selectors, 'selectPortfolioNavItems');
   const stubbedPortfolioTotals = sinon.stub(selectors, 'selectPortfolioTotals');
 
   const proxiedSelector = proxyquire('../../../src/modules/portfolio/selectors/portfolio', {
-    './portfolio-nav-items': stubbedNavItems,
     './portfolio-totals': stubbedPortfolioTotals
   });
 
   before(() => {
     actual = proxiedSelector.default();
-  });
-
-  it(`should call 'selectPortfolioNavItems' once`, () => {
-    assert(stubbedNavItems.calledOnce, `Didn't call selectPortfolioNavItems once as expected`);
   });
 
   it(`should call 'selectPortfolioTotals' once`, () => {
