@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 
 import NullStateMessage from 'modules/common/components/null-state-message';
-
 import MyMarket from 'modules/my-markets/components/my-market';
 import Link from 'modules/link/components/link';
 
