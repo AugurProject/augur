@@ -9,7 +9,7 @@ import { POSITION } from 'modules/market/constants/trade-close-type';
 import getValue from 'utils/get-value';
 import setShareDenomination from 'utils/set-share-denomination';
 
-const Position = (p) => {
+const MyPosition = (p) => {
   const marketID = getValue(p, 'marketID');
   const outcomeID = getValue(p, 'id');
 
@@ -78,17 +78,20 @@ const Position = (p) => {
   );
 };
 
-Position.propTypes = {
-  name: PropTypes.string,
-  type: PropTypes.string,
-  qtyShares: PropTypes.object,
-  gainPercent: PropTypes.object,
-  lastPrice: PropTypes.object,
-  lastPricePercent: PropTypes.object,
-  purchasePrice: PropTypes.object,
-  realizedNet: PropTypes.object,
-  unrealizedNet: PropTypes.object,
-  totalNet: PropTypes.object
+MyPosition.propTypes = {
+  marketID: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  scalarShareDenomination: PropTypes.object.isRequired,
+  position: PropTypes.object.isRequired,
+  closePositionStatus: PropTypes.object.isRequired,
+  lastPricePercent: PropTypes.object.isRequired,
+  name: PropTypes.string.isRequired,
+  qtyShares: PropTypes.object.isRequired,
+  purchasePrice: PropTypes.object.isRequired,
+  lastPrice: PropTypes.object.isRequired,
+  realizedNet: PropTypes.object.isRequired,
+  unrealizedNet: PropTypes.object.isRequired,
+  totalNet: PropTypes.object.isRequired
 };
 
-export default Position;
+export default MyPosition;

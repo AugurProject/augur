@@ -25,7 +25,11 @@ const MyPositions = p => (
 );
 
 MyPositions.propTypes = {
-  markets: PropTypes.array.isRequired
+  markets: PropTypes.array.isRequired,
+  isTradeCommitLocked: PropTypes.bool,
+  closePositionStatus: PropTypes.object.isRequired,
+  scalarShareDenomination: PropTypes.object.isRequired,
+  orderCancellation: PropTypes.object.isRequired
 };
 
 export default MyPositions;
