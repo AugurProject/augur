@@ -139,23 +139,6 @@ describe("accounts.register", function() {
       assert.deepEqual(result, augur.accounts.account);
     }
   });
-  test({
-    description: 'should register an account given a valid password but derived key returns a hex string',
-    password: 'thisisavalidpassword',
-    deriveKey: function(password, salt, options, cb) {
-      // we are going to use our mock function to call the original function. However we need to apply keys as the this inside of the original function as it's not attached the the original keys object anymore. We do this to be able to pass a hex string version of derivedKey. This is to check the if statement that converts the derivedKey to a buffer if it isn't already.
-      deriveKey.apply(keys, [password, salt, options, function(derivedKey) {
-        cb(derivedKey.toString('hex'));
-      }]);
-    },
-    assertions: function(result) {
-      assert.isString(result.address);
-      assert.isObject(result.keystore);
-      assert(Buffer.isBuffer(result.privateKey));
-      assert(Buffer.isBuffer(result.derivedKey));
-      assert.deepEqual(result, augur.accounts.account);
-    }
-  });
 });
 describe("accounts.fundNewAccountFromFaucet", function() {
   // 7 tests total

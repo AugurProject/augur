@@ -121,12 +121,11 @@ module.exports = function () {
 
         // derive secret key from password
         keys.deriveKey(password, plain.salt, {kdf: constants.KDF}, function (derivedKey) {
-          var derivedKeyBuf, encryptedPrivateKey, address, kdfparams, keystore;
+          var encryptedPrivateKey, address, kdfparams, keystore;
           if (derivedKey.error) return callback(derivedKey);
-          derivedKeyBuf = (Buffer.isBuffer(derivedKey)) ? derivedKey : new Buffer(derivedKey, "hex");
           encryptedPrivateKey = new Buffer(keys.encrypt(
             plain.privateKey,
-            derivedKeyBuf.slice(0, 16),
+            derivedKey.slice(0, 16),
             plain.iv
           ), "base64").toString("hex");
 
@@ -153,7 +152,7 @@ module.exports = function () {
               cipherparams: {iv: plain.iv.toString("hex")},
               kdf: constants.KDF,
               kdfparams: kdfparams,
-              mac: keys.getMAC(derivedKeyBuf, encryptedPrivateKey)
+              mac: keys.getMAC(derivedKey, encryptedPrivateKey)
             },
             version: 3,
             id: uuid.v4()
@@ -164,7 +163,7 @@ module.exports = function () {
             privateKey: plain.privateKey,
             address: address,
             keystore: keystore,
-            derivedKey: derivedKeyBuf
+            derivedKey: derivedKey
           };
 
           return callback(clone(self.account));
@@ -221,7 +220,7 @@ module.exports = function () {
         kdfparams: keystoreCrypto.kdfparams,
         cipher: keystoreCrypto.kdf
       }, function (derivedKey) {
-        var storedKey, derivedKeyBuf, privateKey, e;
+        var storedKey, privateKey, e;
         if (!derivedKey || derivedKey.error) return callback(errors.BAD_CREDENTIALS);
 
         // verify that message authentication codes match
@@ -230,13 +229,11 @@ module.exports = function () {
           return callback(errors.BAD_CREDENTIALS);
         }
 
-        derivedKeyBuf = (Buffer.isBuffer(derivedKey)) ? derivedKey : new Buffer(derivedKey, "hex");
-
         // decrypt stored private key using secret key
         try {
           privateKey = new Buffer(keys.decrypt(
             storedKey,
-            derivedKeyBuf.slice(0, 16),
+            derivedKey.slice(0, 16),
             keystoreCrypto.cipherparams.iv
           ), "hex");
 
@@ -245,7 +242,7 @@ module.exports = function () {
             privateKey: privateKey,
             address: abi.format_address(keystore.address),
             keystore: keystore,
-            derivedKey: derivedKeyBuf
+            derivedKey: derivedKey
           };
           return callback(clone(self.account));
 

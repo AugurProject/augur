@@ -22972,10 +22972,9 @@ module.exports = function () {
 
         // derive secret key from password
         keys.deriveKey(password, plain.salt, { kdf: constants.KDF }, function (derivedKey) {
-          var derivedKeyBuf, encryptedPrivateKey, address, kdfparams, keystore;
+          var encryptedPrivateKey, address, kdfparams, keystore;
           if (derivedKey.error) return callback(derivedKey);
-          derivedKeyBuf = Buffer.isBuffer(derivedKey) ? derivedKey : new Buffer(derivedKey, "hex");
-          encryptedPrivateKey = new Buffer(keys.encrypt(plain.privateKey, derivedKeyBuf.slice(0, 16), plain.iv), "base64").toString("hex");
+          encryptedPrivateKey = new Buffer(keys.encrypt(plain.privateKey, derivedKey.slice(0, 16), plain.iv), "base64").toString("hex");
 
           // encrypt private key using derived key and IV, then
           // store encrypted key & IV, indexed by handle
@@ -23000,7 +22999,7 @@ module.exports = function () {
               cipherparams: { iv: plain.iv.toString("hex") },
               kdf: constants.KDF,
               kdfparams: kdfparams,
-              mac: keys.getMAC(derivedKeyBuf, encryptedPrivateKey)
+              mac: keys.getMAC(derivedKey, encryptedPrivateKey)
             },
             version: 3,
             id: uuid.v4()
@@ -23011,7 +23010,7 @@ module.exports = function () {
             privateKey: plain.privateKey,
             address: address,
             keystore: keystore,
-            derivedKey: derivedKeyBuf
+            derivedKey: derivedKey
           };
 
           return callback(clone(self.account));
@@ -23071,7 +23070,7 @@ module.exports = function () {
         kdfparams: keystoreCrypto.kdfparams,
         cipher: keystoreCrypto.kdf
       }, function (derivedKey) {
-        var storedKey, derivedKeyBuf, privateKey, e;
+        var storedKey, privateKey, e;
         if (!derivedKey || derivedKey.error) return callback(errors.BAD_CREDENTIALS);
 
         // verify that message authentication codes match
@@ -23080,18 +23079,16 @@ module.exports = function () {
           return callback(errors.BAD_CREDENTIALS);
         }
 
-        derivedKeyBuf = Buffer.isBuffer(derivedKey) ? derivedKey : new Buffer(derivedKey, "hex");
-
         // decrypt stored private key using secret key
         try {
-          privateKey = new Buffer(keys.decrypt(storedKey, derivedKeyBuf.slice(0, 16), keystoreCrypto.cipherparams.iv), "hex");
+          privateKey = new Buffer(keys.decrypt(storedKey, derivedKey.slice(0, 16), keystoreCrypto.cipherparams.iv), "hex");
 
           // while logged in, account object is set
           self.account = {
             privateKey: privateKey,
             address: abi.format_address(keystore.address),
             keystore: keystore,
-            derivedKey: derivedKeyBuf
+            derivedKey: derivedKey
           };
           return callback(clone(self.account));
 
@@ -23906,7 +23903,7 @@ BigNumber.config({
 function Augur() {
   var i, len, fn;
 
-  this.version = "3.15.1";
+  this.version = "3.15.2";
 
   this.options = {
     debug: {
@@ -47042,7 +47039,7 @@ function isFunction(f) {
 
 module.exports = {
 
-  version: "3.0.4",
+  version: "3.0.5",
 
   debug: false,
   rpc: rpc,
@@ -47454,7 +47451,11 @@ module.exports={
 (function (Buffer){
 'use strict';
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _classCallCheck(instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+}
 
 var ethUtil = require('ethereumjs-util');
 var fees = require('ethereum-common/params.json');
@@ -47575,7 +47576,6 @@ module.exports = function () {
    * @return {Boolean}
    */
 
-
   Transaction.prototype.toCreationAddress = function toCreationAddress() {
     return this.to.toString('hex') === '';
   };
@@ -47585,7 +47585,6 @@ module.exports = function () {
    * @param {Boolean} [includeSignature=true] whether or not to inculde the signature
    * @return {Buffer}
    */
-
 
   Transaction.prototype.hash = function hash(includeSignature) {
     if (includeSignature === undefined) includeSignature = true;
@@ -47620,7 +47619,6 @@ module.exports = function () {
    * @return {Buffer}
    */
 
-
   Transaction.prototype.getChainId = function getChainId() {
     return this._chainId;
   };
@@ -47629,7 +47627,6 @@ module.exports = function () {
    * returns the sender's address
    * @return {Buffer}
    */
-
 
   Transaction.prototype.getSenderAddress = function getSenderAddress() {
     if (this._from) {
@@ -47645,7 +47642,6 @@ module.exports = function () {
    * @return {Buffer}
    */
 
-
   Transaction.prototype.getSenderPublicKey = function getSenderPublicKey() {
     if (!this._senderPubKey || !this._senderPubKey.length) {
       if (!this.verifySignature()) throw new Error('Invalid Signature');
@@ -47657,7 +47653,6 @@ module.exports = function () {
    * Determines if the signature is valid
    * @return {Boolean}
    */
-
 
   Transaction.prototype.verifySignature = function verifySignature() {
     var msgHash = this.hash(false);
@@ -47684,7 +47679,6 @@ module.exports = function () {
    * @param {Buffer} privateKey
    */
 
-
   Transaction.prototype.sign = function sign(privateKey) {
     var msgHash = this.hash(false);
     var sig = ethUtil.ecsign(msgHash, privateKey);
@@ -47698,7 +47692,6 @@ module.exports = function () {
    * The amount of gas paid for the data in this tx
    * @return {BN}
    */
-
 
   Transaction.prototype.getDataFee = function getDataFee() {
     var data = this.raw[5];
@@ -47714,7 +47707,6 @@ module.exports = function () {
    * @return {BN}
    */
 
-
   Transaction.prototype.getBaseFee = function getBaseFee() {
     var fee = this.getDataFee().iaddn(fees.txGas.v);
     if (this._homestead && this.toCreationAddress()) {
@@ -47728,7 +47720,6 @@ module.exports = function () {
    * @return {BN}
    */
 
-
   Transaction.prototype.getUpfrontCost = function getUpfrontCost() {
     return new BN(this.gasLimit).imul(new BN(this.gasPrice)).iadd(new BN(this.value));
   };
@@ -47738,7 +47729,6 @@ module.exports = function () {
    * @param {Boolean} [stringError=false] whether to return a string with a dscription of why the validation failed or return a Bloolean
    * @return {Boolean|String}
    */
-
 
   Transaction.prototype.validate = function validate(stringError) {
     var errors = [];
@@ -47999,7 +47989,13 @@ module.exports={
 
 },{}],292:[function(require,module,exports){
 (function (Buffer){
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _typeof2 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
+  return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
+};
 
 var createKeccakHash = require('keccak');
 var secp256k1 = require('secp256k1');
@@ -53642,7 +53638,7 @@ module.exports = {
         if (returns === "number[]") {
           array[i] = abi.string(array[i]);
         } else if (returns === "unfix[]") {
-          array[i] = abi.unfix(array[i], "string");
+          array[i] = abi.unfix_signed(array[i], "string");
         }
       }
       return array;
@@ -53670,7 +53666,7 @@ module.exports = {
       } else if (returns === "bignumber") {
         res = abi.bignum(res, null, true);
       } else if (returns === "unfix") {
-        res = abi.unfix(res, "string");
+        res = abi.unfix_signed(res, "string");
       } else if (returns === "null") {
         res = null;
       } else if (returns === "address" || returns === "address[]") {
@@ -56292,6 +56288,20 @@ module.exports = {
   },
 
   /**
+   * Generate filename for a keystore file.
+   * @param {string} address Ethereum address.
+   * @return {string} Keystore filename.
+   */
+  generateKeystoreFilename: function (address) {
+    var filename = "UTC--" + new Date().toISOString() + "--" + address;
+
+    // Windows does not permit ":" in filenames, replace all with "-"
+    if (process.platform === "win32") filename = filename.split(":").join("-");
+
+    return filename;
+  },
+
+  /**
    * Export formatted JSON to keystore file.
    * @param {Object} keyObject Keystore object.
    * @param {string=} keystore Path to keystore folder (default: "keystore").
@@ -56313,11 +56323,7 @@ module.exports = {
     }
 
     keystore = keystore || "keystore";
-    outfile = "UTC--" + new Date().toISOString() + "--" + keyObject.address;
-
-    // Windows does not permit ":" in filenames, replace all with "-"
-    if (process.platform === "win32") outfile = outfile.split(":").join("-");
-
+    outfile = this.generateKeystoreFilename(keyObject.address);
     outpath = path.join(keystore, outfile);
     json = JSON.stringify(keyObject);
 
