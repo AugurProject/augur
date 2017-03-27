@@ -9,6 +9,7 @@ const MyPositions = p => (
     {p.markets && p.markets.length ?
       p.markets.map(market => (
         <MyPositionsMarket
+          key={market.id}
           market={market}
           closePositionStatus={p.closePositionStatus}
           isTradeCommitLocked={p.isTradeCommitLocked}

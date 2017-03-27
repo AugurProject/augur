@@ -12,9 +12,9 @@ import { POSITIONS_POSITIONS, POSITIONS_ORDERS } from 'modules/my-positions/cons
 
 import getValue from 'utils/get-value';
 
-export default class PortfolioPositions extends Component {
+export default class MyPositionsMarket extends Component {
   static propTypes = {
-    markets: PropTypes.array.isRequired
+    market: PropTypes.object.isRequired
   }
 
   constructor(props) {
@@ -46,7 +46,9 @@ export default class PortfolioPositions extends Component {
     const outcomes = getValue(p, 'market.outcomes');
 
     return (
-      <article className="my-positions-market portfolio-market" >
+      <article
+        className="my-positions-market portfolio-market"
+      >
         <MyPositionOverview
           description={p.market.description}
           marketLink={marketLink}
