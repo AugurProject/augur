@@ -1,4 +1,4 @@
-import augur from 'augur.js';
+import Augur from 'augur.js';
 import { describe, it, beforeEach, afterEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
@@ -8,6 +8,7 @@ import { BUY, tradeTestState, tradeConstOrderBooks } from 'test/trade/constants'
 
 describe(`modules/trade/actions/place-trade.js`, () => {
   proxyquire.noPreserveCache();
+  const augur = new Augur();
   const { state, mockStore } = mocks.default;
   const testState = Object.assign({}, state, tradeTestState);
   testState.orderBooks = tradeConstOrderBooks;

@@ -377,9 +377,9 @@ augur-contracts@2.11.2:
   dependencies:
     clone "1.0.2"
 
-augur.js@3.14.8:
-  version "3.14.8"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.14.8.tgz#17b295cfb7f17885d19b9ccb4c5721fe1040554a"
+augur.js@3.15.2:
+  version "3.15.2"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.15.2.tgz#a5533bdc80caab50c08e49534d463c75edf611e4"
   dependencies:
     async "1.5.2"
     augur-abi "1.1.1"
@@ -388,9 +388,9 @@ augur.js@3.14.8:
     browser-request "0.3.3"
     chalk "1.1.1"
     clone "1.0.2"
-    ethereumjs-connect "3.0.3"
-    ethrpc "3.0.3"
-    keythereum "0.4.3"
+    ethereumjs-connect "3.0.5"
+    ethrpc "3.0.5"
+    keythereum "0.4.6"
     request "2.74.0"
     uuid "3.0.0"
     uuid-parse "1.0.0"
@@ -2874,13 +2874,13 @@ ethereumjs-abi@0.6.2:
     bn.js "^4.10.0"
     ethereumjs-util "^4.3.0"
 
-ethereumjs-connect@3.0.3:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/ethereumjs-connect/-/ethereumjs-connect-3.0.3.tgz#e6534e05afedcc8defd80b2b6699417d5b5887c0"
+ethereumjs-connect@3.0.5:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/ethereumjs-connect/-/ethereumjs-connect-3.0.5.tgz#89965353280bfbd92c10a7bd5f85b7fb9d7a36e3"
   dependencies:
     async "1.5.2"
     clone "1.0.2"
-    ethrpc "3.0.3"
+    ethrpc "3.0.5"
 
 ethereumjs-tx@1.2.5:
   version "1.2.5"
@@ -2917,9 +2917,9 @@ ethjs-util@^0.1.3:
     is-hex-prefixed "1.0.0"
     strip-hex-prefix "1.0.0"
 
-ethrpc@3.0.3:
-  version "3.0.3"
-  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-3.0.3.tgz#9a1d08ddf91807d1bfaac02377e875fd515951ff"
+ethrpc@3.0.5:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-3.0.5.tgz#a4b61323487af95bcabad1b5129972f7597e097d"
   dependencies:
     async "1.5.2"
     augur-abi "1.1.1"
@@ -4563,9 +4563,9 @@ keycode@^2.1.0:
   version "2.1.8"
   resolved "https://registry.yarnpkg.com/keycode/-/keycode-2.1.8.tgz#94d2b7098215eff0e8f9a8931d5a59076c4532fb"
 
-keythereum@0.4.3:
-  version "0.4.3"
-  resolved "https://registry.yarnpkg.com/keythereum/-/keythereum-0.4.3.tgz#514acfec3cc4d04b33a21f5d081600719457d2c0"
+keythereum@0.4.6:
+  version "0.4.6"
+  resolved "https://registry.yarnpkg.com/keythereum/-/keythereum-0.4.6.tgz#0fdec7cf938ae39e5e3061b2f6e16677b766c5da"
   dependencies:
     elliptic "6.4.0"
     ethereumjs-util "5.1.1"

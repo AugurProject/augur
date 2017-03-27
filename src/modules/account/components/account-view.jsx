@@ -5,6 +5,7 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog';
 
 import Link from 'modules/link/components/link';
 import Input from 'modules/common/components/input';
+import PasswordInputForm from 'modules/account/components/password-input-form';
 
 const QRCode = require('qrcode.react');
 
@@ -28,7 +29,8 @@ export default class AccountPage extends Component {
       sendAmount: '',
       currency: 'ETH',
       recipientAddress: '',
-      isShowingModal: false
+      isShowingQRCodeModal: false,
+      isShowingPasswordInputModal: false
     };
 
     this.handleTransfer = this.handleTransfer.bind(this);
@@ -37,13 +39,14 @@ export default class AccountPage extends Component {
 
   handleModalClose = () => {
     this.setState({
-      isShowingModal: false
+      isShowingQRCodeModal: false,
+      isShowingPasswordInputModal: false
     });
   };
 
   handleModalOpenDeposit = () => {
     this.setState({
-      isShowingModal: true,
+      isShowingQRCodeModal: true,
       size: 300,
       message: 'Ether / REP Deposit Address',
       value: this.props.account.address && this.props.account.address.indexOf('0x') === 0 && this.props.account.address.replace('0x', '')
@@ -52,7 +55,7 @@ export default class AccountPage extends Component {
 
   handleModalOpenTransfer = () => {
     this.setState({
-      isShowingModal: true,
+      isShowingQRCodeModal: true,
       size: 300,
       message: 'Your Account Keystore Data',
       value: this.props.account.downloadAccountDataString
@@ -157,7 +160,7 @@ export default class AccountPage extends Component {
                     >
                       (QR code to despoit)
                     {
-                      this.state.isShowingModal &&
+                      s.isShowingQRCodeModal &&
                       <ModalContainer
                         onClose={this.handleModalClose}
                       >
@@ -165,12 +168,12 @@ export default class AccountPage extends Component {
                           onClose={this.handleModalClose}
                         >
                           <h1>
-                            {this.state.message}
+                            {s.message}
                           </h1>
                           <p>
                             <QRCode
-                              size={this.state.size}
-                              value={this.state.value}
+                              size={s.size}
+                              value={s.value}
                             />
                           </p>
                         </ModalDialog>
@@ -270,7 +273,7 @@ export default class AccountPage extends Component {
                   name="sendAmount"
                   placeholder="Amount to transfer"
                   data-tip data-for="amount-to-transfer-tooltip"
-                  value={this.state.sendAmount}
+                  value={s.sendAmount}
                   onChange={sendAmount => this.setState({ sendAmount: sendAmount.target.value })}
                 />
                 <select
@@ -289,7 +292,7 @@ export default class AccountPage extends Component {
                   name="recipientAddress"
                   placeholder="Recipient Address"
                   data-tip data-for="recipient-address-tooltip"
-                  value={this.state.recipientAddress}
+                  value={s.recipientAddress}
                   onChange={recipientAddress => this.setState({ recipientAddress: recipientAddress.target.value })}
                 />
                 <button
@@ -309,7 +312,7 @@ export default class AccountPage extends Component {
               </div>
             </div>
           </div>
-          <div className={classnames('account-section', { displayNone: p.account.isUnlocked || p.account.airbitzAccount })}>
+          <div className={classnames('account-section', { displayNone: p.account.isUnlocked || !p.account })}>
             <div className="account-info-item">
               <h2 className="heading">Download Account Key File</h2>
               <p>
@@ -322,48 +325,63 @@ export default class AccountPage extends Component {
               </p>
               <p>
                 <b>
-                  <a
-                    href="http://blog.augur.net/accidentally-sent-real-rep-eth-augur-beta/"
-                  >
+                  <a href="http://blog.augur.net/accidentally-sent-real-rep-eth-augur-beta/">
                     Did you accidentally send real REP or ETH to Augur beta? Learn how to get it back here!
                   </a>
                 </b>
               </p>
-              <a
-                className="button download-account"
-                href={p.account.downloadAccountDataString}
-                download={p.account.downloadAccountFileName}
-              >
-                Download Account Key File
-              </a>
-              <div className="transferWallet">
-                <button
-                  className="link"
-                  onClick={this.handleModalOpenTransfer}
-                >
-                  (QR code to transfer wallet)
-                {
-                  this.state.isShowingModal &&
-                  <ModalContainer
-                    onClose={this.handleModalClose}
+              {p.account.airbitzAccount &&
+                <span>
+                  <button
+                    className="download-account"
+                    onClick={() => this.setState({ isShowingPasswordInputModal: !this.isShowingPasswordInputModal })}
                   >
-                    <ModalDialog
-                      onClose={this.handleModalClose}
+                    Download Account Key File
+                  </button>
+                  <br />
+                  {s.isShowingPasswordInputModal &&
+                    <ModalContainer onClose={this.handleModalClose}>
+                      <ModalDialog onClose={this.handleModalClose}>
+                        <PasswordInputForm />
+                      </ModalDialog>
+                    </ModalContainer>
+                  }
+                </span>
+              }
+              {!p.account.airbitzAccount &&
+                <span>
+                  <a
+                    className="button download-account"
+                    href={p.account.downloadAccountDataString}
+                    download={p.account.downloadAccountFileName}
+                  >
+                    Download Account Key File
+                  </a>
+                  <div className="transferWallet">
+                    <button
+                      className="link"
+                      onClick={this.handleModalOpenTransfer}
                     >
-                      <h1>
-                        {this.state.message}
-                      </h1>
-                      <p>
-                        <QRCode
-                          size={this.state.size}
-                          value={this.state.value}
-                        />
-                      </p>
-                    </ModalDialog>
-                  </ModalContainer>
-                }
-                </button>
-              </div>
+                      (QR code to transfer wallet)
+                      {s.isShowingQRCodeModal &&
+                        <ModalContainer onClose={this.handleModalClose}>
+                          <ModalDialog onClose={this.handleModalClose}>
+                            <h1>
+                              {s.message}
+                            </h1>
+                            <p>
+                              <QRCode
+                                size={s.size}
+                                value={s.value}
+                              />
+                            </p>
+                          </ModalDialog>
+                        </ModalContainer>
+                      }
+                    </button>
+                  </div>
+                </span>
+              }
             </div>
           </div>
           <div className={classnames('account-section')}>
