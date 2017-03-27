@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 
 import Link from 'modules/link/components/link';
 
@@ -14,7 +14,8 @@ const PositionsMarketOverview = p => (
 );
 
 PositionsMarketOverview.propTypes = {
-  description: React.PropTypes.string.isRequired
+  description: PropTypes.string.isRequired,
+  marketLink: PropTypes.object.isRequired
 };
 
 export default PositionsMarketOverview;
