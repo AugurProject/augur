@@ -19,7 +19,6 @@ import filterSort from 'modules/markets/selectors/filter-sort';
 import keywords from 'modules/markets/selectors/keywords';
 import portfolio from 'modules/portfolio/selectors/portfolio';
 import loginAccountPositions from 'modules/my-positions/selectors/login-account-positions';
-import loginAccountMarkets from 'modules/my-markets/selectors/login-account-markets';
 import transactions from 'modules/transactions/selectors/transactions';
 import transactionsTotals from 'modules/transactions/selectors/transactions-totals';
 import isTransactionsWorking from 'modules/transactions/selectors/is-transactions-working';
@@ -61,7 +60,6 @@ const selectors = {
   keywords,
   portfolio,
   loginAccountPositions,
-  loginAccountMarkets,
   transactions,
   transactionsTotals,
   isTransactionsWorking,

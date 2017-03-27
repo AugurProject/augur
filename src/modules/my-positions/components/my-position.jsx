@@ -23,13 +23,13 @@ const Position = (p) => {
   const status = getValue(p, `closePositionStatus.${marketID}.${outcomeID}`);
 
   return (
-    <div className="my-position">
-      <div className="my-position-group main-group">
+    <div className="my-position portfolio-detail">
+      <div className="portfolio-group main-group">
         {p.type === SCALAR ?
           <span className="my-position-name">{p.lastPricePercent.rounded}</span> :
           <span className="my-position-name">{p.name}</span>
         }
-        <div className="my-position-pair realized-net">
+        <div className="portfolio-pair realized-net">
           <span className="title">shares</span>
           <ValueDenomination
             {...p.qtyShares}
@@ -37,26 +37,26 @@ const Position = (p) => {
           />
         </div>
       </div>
-      <div className="my-position-group">
-        <div className="my-position-pair purchase-price">
+      <div className="portfolio-group">
+        <div className="portfolio-pair purchase-price">
           <span className="title">average price of open position</span>
           <ValueDenomination {...p.purchasePrice} />
         </div>
-        <div className="my-position-pair last-price">
+        <div className="portfolio-pair last-price">
           <span className="title">last trade price</span>
           <ValueDenomination {...p.lastPrice} />
         </div>
       </div>
-      <div className="my-position-group">
-        <div className="my-position-pair realized-net">
+      <div className="portfolio-group">
+        <div className="portfolio-pair realized-net">
           <span className="title">realized P/L</span>
           <ValueDenomination {...p.realizedNet} />
         </div>
-        <div className="my-position-pair unrealized-net">
+        <div className="portfolio-pair unrealized-net">
           <span className="title">unrealized P/L</span>
           <ValueDenomination {...p.unrealizedNet} />
         </div>
-        <div className="my-position-pair total-net">
+        <div className="portfolio-pair total-net">
           <span className="title">total P/L</span>
           <ValueDenomination {...p.totalNet} />
         </div>

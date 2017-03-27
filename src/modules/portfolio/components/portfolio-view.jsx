@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 
 import MyPositions from 'modules/my-positions/components/my-positions';
-import Markets from 'modules/portfolio/components/markets';
+import MyMarkets from 'modules/my-markets/my-markets-container';
 import Reports from 'modules/portfolio/components/reports';
 
 import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views';
@@ -18,10 +18,13 @@ const PortfolioView = p => (
       />
     }
     {p.activeView === MY_MARKETS &&
-      <Markets {...p.markets} />
+      <MyMarkets />
     }
     {p.activeView === MY_REPORTS &&
-      <Reports {...p.reports} branch={p.branch} />
+      <Reports
+        {...p.reports}
+        branch={p.branch}
+      />
     }
   </section>
 );
@@ -31,7 +34,6 @@ PortfolioView.propTypes = {
   branch: PropTypes.object.isRequired,
   navItems: PropTypes.array.isRequired,
   totals: PropTypes.object.isRequired,
-  markets: PropTypes.object.isRequired,
   reports: PropTypes.object.isRequired,
   openOrders: PropTypes.array.isRequired,
   positionsMarkets: PropTypes.array.isRequired

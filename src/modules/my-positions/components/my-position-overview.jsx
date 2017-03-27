@@ -3,7 +3,7 @@ import React from 'react';
 import Link from 'modules/link/components/link';
 
 const PositionsMarketOverview = p => (
-  <article className="my-positions-market-overview">
+  <article className="portfolio-market-overview">
     <Link
       href={p.marketLink.href}
       onClick={p.marketLink.onClick}

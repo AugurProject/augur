@@ -1,15 +1,15 @@
-.my-position {
+.portfolio-detail {
   display: flex;
   flex-wrap: wrap;
   padding: 0.6em 1em;
 
   &:first-of-type {
     @media @breakpoint-2-3 {
-      .my-position-group {
+      .portfolio-group {
         flex-basis: 100%;
         justify-content: center;
 
-        .my-position-pair {
+        .portfolio-pair {
           flex-basis: 0;
 
           &:not(:last-of-type) {
@@ -20,11 +20,11 @@
     }
 
     @media @breakpoint-1 {
-      .my-position-group {
+      .portfolio-group {
         flex-basis: 100%;
         justify-content: center;
 
-        .my-position-pair {
+        .portfolio-pair {
           flex-basis: 0;
 
           &:not(:last-of-type) {
@@ -64,7 +64,7 @@
   }
 }
 
-.my-position-group {
+.portfolio-group {
   display: flex;
   flex: 1;
   justify-content: flex-end;
@@ -82,7 +82,7 @@
     flex-wrap: wrap;
   }
 
-  .my-position-pair {
+  .portfolio-pair {
     display: flex;
     flex-basis: 33%;
     flex-direction: column;
@@ -158,7 +158,7 @@
     .colorize();
   }
 
-  .my-position-pair {
+  .portfolio-pair {
     @media @breakpoint-2-3 {
       flex-basis: 0;
       text-align: left;

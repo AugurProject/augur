@@ -46,7 +46,7 @@ export default class PortfolioPositions extends Component {
     const outcomes = getValue(p, 'market.outcomes');
 
     return (
-      <article className="my-positions-market" >
+      <article className="my-positions-market portfolio-market" >
         <MyPositionOverview
           description={p.market.description}
           marketLink={marketLink}
@@ -60,19 +60,19 @@ export default class PortfolioPositions extends Component {
           <div>
             {myPositionOutcomes && myPositionOutcomes.length ?
               <div>
-                <div className="my-position">
-                  <div className="my-position-group main-group" />
-                  <div className="my-position-group" />
-                  <div className="my-position-group">
-                    <div className="my-position-pair realized-net">
+                <div className="my-position portfolio-detail">
+                  <div className="portfolio-group main-group" />
+                  <div className="portfolio-group" />
+                  <div className="portfolio-group">
+                    <div className="portfolio-pair realized-net">
                       <span className="title">total realized P/L</span>
                       <ValueDenomination {...myPositionsSummary.realizedNet} />
                     </div>
-                    <div className="my-position-pair unrealized-net">
+                    <div className="portfolio-pair unrealized-net">
                       <span className="title">total unrealized P/L</span>
                       <ValueDenomination {...myPositionsSummary.unrealizedNet} />
                     </div>
-                    <div className="my-position-pair total-net">
+                    <div className="portfolio-pair total-net">
                       <span className="title">total P/L</span>
                       <ValueDenomination {...myPositionsSummary.totalNet} />
                     </div>
