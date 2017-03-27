@@ -26,8 +26,8 @@ const Position = (p) => {
     <div className="my-position portfolio-detail">
       <div className="portfolio-group main-group">
         {p.type === SCALAR ?
-          <span className="my-position-name">{p.lastPricePercent.rounded}</span> :
-          <span className="my-position-name">{p.name}</span>
+          <span className="main-group-title">{p.lastPricePercent.rounded}</span> :
+          <span className="main-group-title">{p.name}</span>
         }
         <div className="portfolio-pair realized-net">
           <span className="title">shares</span>

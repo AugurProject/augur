@@ -15,7 +15,7 @@ const MyMarkets = p => (
             className="portfolio-market"
           >
             <div
-              className="my-markets-overview portfolio-market-overview"
+              className="my-market-overview portfolio-market-overview"
             >
               <Link
                 {...market.marketLink}
