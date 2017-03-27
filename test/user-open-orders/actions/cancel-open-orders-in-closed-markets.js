@@ -40,19 +40,17 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
   test({
     description: '1 open order in 1 open market',
     selectors: {
-      portfolio: {
-        openOrders: [{
-          id: '0xa1',
-          isOpen: true,
-          outcomes: [{
-            id: '0xc1',
-            userOpenOrders: [{
-              id: '0xd1',
-              type: 'buy'
-            }]
+      openOrders: [{
+        id: '0xa1',
+        isOpen: true,
+        outcomes: [{
+          id: '0xc1',
+          userOpenOrders: [{
+            id: '0xd1',
+            type: 'buy'
           }]
         }]
-      }
+      }]
     },
     assertions: (actions) => {
       assert.deepEqual(actions, []);
@@ -61,19 +59,17 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
   test({
     description: '1 open order in 1 closed market',
     selectors: {
-      portfolio: {
-        openOrders: [{
-          id: '0xa1',
-          isOpen: false,
-          outcomes: [{
-            id: '0xc1',
-            userOpenOrders: [{
-              id: '0xd1',
-              type: 'buy'
-            }]
+      openOrders: [{
+        id: '0xa1',
+        isOpen: false,
+        outcomes: [{
+          id: '0xc1',
+          userOpenOrders: [{
+            id: '0xd1',
+            type: 'buy'
           }]
         }]
-      }
+      }]
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
@@ -89,22 +85,20 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
   test({
     description: '2 open orders in 1 closed market',
     selectors: {
-      portfolio: {
-        openOrders: [{
-          id: '0xa1',
-          isOpen: false,
-          outcomes: [{
-            id: '0xc1',
-            userOpenOrders: [{
-              id: '0xd1',
-              type: 'buy'
-            }, {
-              id: '0xd2',
-              type: 'sell'
-            }]
+      openOrders: [{
+        id: '0xa1',
+        isOpen: false,
+        outcomes: [{
+          id: '0xc1',
+          userOpenOrders: [{
+            id: '0xd1',
+            type: 'buy'
+          }, {
+            id: '0xd2',
+            type: 'sell'
           }]
         }]
-      }
+      }]
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
@@ -127,35 +121,33 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
   test({
     description: '2 open orders each in 2 closed markets',
     selectors: {
-      portfolio: {
-        openOrders: [{
-          id: '0xa1',
-          isOpen: false,
-          outcomes: [{
-            id: '0xc1',
-            userOpenOrders: [{
-              id: '0xd1',
-              type: 'buy'
-            }, {
-              id: '0xd2',
-              type: 'sell'
-            }]
-          }]
-        }, {
-          id: '0xa2',
-          isOpen: false,
-          outcomes: [{
-            id: '0xc1',
-            userOpenOrders: [{
-              id: '0xd3',
-              type: 'buy'
-            }, {
-              id: '0xd4',
-              type: 'buy'
-            }]
+      openOrders: [{
+        id: '0xa1',
+        isOpen: false,
+        outcomes: [{
+          id: '0xc1',
+          userOpenOrders: [{
+            id: '0xd1',
+            type: 'buy'
+          }, {
+            id: '0xd2',
+            type: 'sell'
           }]
         }]
-      }
+      }, {
+        id: '0xa2',
+        isOpen: false,
+        outcomes: [{
+          id: '0xc1',
+          userOpenOrders: [{
+            id: '0xd3',
+            type: 'buy'
+          }, {
+            id: '0xd4',
+            type: 'buy'
+          }]
+        }]
+      }]
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
@@ -192,35 +184,33 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
   test({
     description: '2 open orders each in 1 closed and 1 open markets',
     selectors: {
-      portfolio: {
-        openOrders: [{
-          id: '0xa1',
-          isOpen: false,
-          outcomes: [{
-            id: '0xc1',
-            userOpenOrders: [{
-              id: '0xd1',
-              type: 'buy'
-            }, {
-              id: '0xd2',
-              type: 'sell'
-            }]
-          }]
-        }, {
-          id: '0xa2',
-          isOpen: true,
-          outcomes: [{
-            id: '0xc1',
-            userOpenOrders: [{
-              id: '0xd3',
-              type: 'buy'
-            }, {
-              id: '0xd4',
-              type: 'buy'
-            }]
+      openOrders: [{
+        id: '0xa1',
+        isOpen: false,
+        outcomes: [{
+          id: '0xc1',
+          userOpenOrders: [{
+            id: '0xd1',
+            type: 'buy'
+          }, {
+            id: '0xd2',
+            type: 'sell'
           }]
         }]
-      }
+      }, {
+        id: '0xa2',
+        isOpen: true,
+        outcomes: [{
+          id: '0xc1',
+          userOpenOrders: [{
+            id: '0xd3',
+            type: 'buy'
+          }, {
+            id: '0xd4',
+            type: 'buy'
+          }]
+        }]
+      }]
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
