@@ -41,6 +41,7 @@ export default class OrderBook extends Component {
     const s = this.state;
 
     const name = getValue(p, 'outcome.name');
+    const orderBookSeries = getValue(p, 'outcome.orderBookSeries');
 
     return (
       <article className="order-book">
@@ -66,7 +67,7 @@ export default class OrderBook extends Component {
         }
         {s.selectedNav === ORDER_BOOK_CHART &&
           <OrderBookChart
-            outcome={p.outcome}
+            orderBookSeries={orderBookSeries}
           />
         }
       </article>
