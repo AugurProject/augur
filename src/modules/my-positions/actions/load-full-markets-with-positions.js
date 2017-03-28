@@ -1,4 +1,6 @@
-import { loadFullMarket, MARKET_DATA_LOADING } from 'modules/market/actions/load-full-market';
+import { MARKET_DATA_LOADING } from 'modules/app/actions/update-market-data-loading';
+
+import { loadFullMarket } from 'modules/market/actions/load-full-market';
 
 import getValue from 'utils/get-value';
 
