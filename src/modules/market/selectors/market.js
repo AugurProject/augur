@@ -21,39 +21,40 @@ This is true for all selectors, but especially important for this one.
 */
 
 import memoizerific from 'memoizerific';
-import { formatShares, formatEther, formatPercent, formatNumber } from '../../../utils/format-number';
-import { formatDate } from '../../../utils/format-date';
-import { isMarketDataOpen, isMarketDataExpired } from '../../../utils/is-market-data-open';
+import { formatShares, formatEther, formatPercent, formatNumber } from 'utils/format-number';
+import { formatDate } from 'utils/format-date';
+import { isMarketDataOpen, isMarketDataExpired } from 'utils/is-market-data-open';
 
-import { BRANCH_ID } from '../../app/constants/network';
-import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
-import { BINARY_INDETERMINATE_OUTCOME_ID, CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
-import { abi } from '../../../services/augurjs';
+import { BRANCH_ID } from 'modules/app/constants/network';
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
+import { BINARY_INDETERMINATE_OUTCOME_ID, CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from 'modules/markets/constants/market-outcomes';
+import { abi } from 'services/augurjs';
 
-import { toggleFavorite } from '../../markets/actions/update-favorites';
-import { placeTrade } from '../../trade/actions/place-trade';
-import { commitReport } from '../../reports/actions/commit-report';
-import { slashRep } from '../../reports/actions/slash-rep';
-import { toggleTag } from '../../markets/actions/toggle-tag';
+import { toggleFavorite } from 'modules/markets/actions/update-favorites';
+import { placeTrade } from 'modules/trade/actions/place-trade';
+import { commitReport } from 'modules/reports/actions/commit-report';
+import { slashRep } from 'modules/reports/actions/slash-rep';
+import { toggleTag } from 'modules/markets/actions/toggle-tag';
 
-import store from '../../../store';
+import store from 'src/store';
 
-import { selectMarketLink } from '../../link/selectors/links';
-import selectUserOpenOrders from '../../user-open-orders/selectors/user-open-orders';
-import selectUserOpenOrdersSummary from '../../user-open-orders/selectors/user-open-orders-summary';
+import { selectMarketLink } from 'modules/link/selectors/links';
+import selectUserOpenOrders from 'modules/user-open-orders/selectors/user-open-orders';
+import selectUserOpenOrdersSummary from 'modules/user-open-orders/selectors/user-open-orders-summary';
 
-import { selectPriceTimeSeries } from '../../market/selectors/price-time-series';
+import { selectPriceTimeSeries } from 'modules/market/selectors/price-time-series';
 
-import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from '../../bids-asks/helpers/select-order-book';
-import getOutstandingShares from '../../market/selectors/helpers/get-outstanding-shares';
+import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from 'modules/bids-asks/helpers/select-order-book';
+import { orderBookSeries } from 'modules/order-book/selectors/order-book-series';
+import getOutstandingShares from 'modules/market/selectors/helpers/get-outstanding-shares';
 
-import { generateTrade, generateTradeSummary } from '../../market/selectors/helpers/generate-trade';
-import hasUserEnoughFunds from '../../trade/helpers/has-user-enough-funds';
-import { generateOutcomePositionSummary, generateMarketsPositionsSummary } from '../../../modules/my-positions/selectors/my-positions-summary';
+import { generateTrade, generateTradeSummary } from 'modules/market/selectors/helpers/generate-trade';
+import hasUserEnoughFunds from 'modules/trade/helpers/has-user-enough-funds';
+import { generateOutcomePositionSummary, generateMarketsPositionsSummary } from 'modules/my-positions/selectors/my-positions-summary';
 
-import { selectMyMarket } from '../../../modules/my-markets/selectors/my-markets';
+import { selectMyMarket } from 'modules/my-markets/selectors/my-markets';
 
-import { selectReportableOutcomes } from '../../reports/selectors/reportable-outcomes';
+import { selectReportableOutcomes } from 'modules/reports/selectors/reportable-outcomes';
 
 export default function () {
   const { selectedMarketID } = store.getState();
@@ -281,6 +282,7 @@ export function assembleMarket(
 
         const orderBook = selectAggregateOrderBook(outcome.id, orderBooks, orderCancellation);
         outcome.orderBook = orderBook;
+        outcome.orderBookSeries = orderBookSeries(orderBook);
         outcome.topBid = selectTopBid(orderBook, false);
         outcome.topAsk = selectTopAsk(orderBook, false);
         outcome.position = generateOutcomePositionSummary((marketAccountPositions || {})[outcomeID], (marketAccountTrades || {})[outcomeID], outcome.lastPrice.value, orderBook);
