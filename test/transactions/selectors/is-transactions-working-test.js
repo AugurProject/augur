@@ -15,45 +15,45 @@ describe(`modules/transactions/selectors/is-transaction-working.js`, () => {
   });
 
   it(`should check if a transaction is working`, () => {
-    let data = state.transactionsData;
-    actual = selector.selectIsWorking(data);
+    let transactionsData = state.transactionsData;
+    actual = selector.selectIsWorking({ transactionsData });
 
     assert.isFalse(actual, `Didn't mark the transaction as not working when status was ${FAILED}.`);
 
-    data = {
+    transactionsData = {
       testtransaction12345: {
         id: 'testtransaction12345',
         status: SUCCESS
       }
     };
-    actual = selector.selectIsWorking(data);
+    actual = selector.selectIsWorking({ transactionsData });
     assert.isFalse(actual, `Didn't mark the transaction as not working when status was ${SUCCESS}.`);
 
-    data = {
+    transactionsData = {
       testtransaction12345: {
         id: 'testtransaction12345',
         status: PENDING
       }
     };
-    actual = selector.selectIsWorking(data);
+    actual = selector.selectIsWorking({ transactionsData });
     assert.isFalse(actual, `Didn't mark the transaction as not working when status was ${PENDING}.`);
 
-    data = {
+    transactionsData = {
       testtransaction12345: {
         id: 'testtransaction12345',
         status: INTERRUPTED
       }
     };
-    actual = selector.selectIsWorking(data);
+    actual = selector.selectIsWorking({ transactionsData });
     assert.isFalse(actual, `Didn't mark the transaction as not working when status was ${INTERRUPTED}.`);
 
-    data = {
+    transactionsData = {
       testtransaction12345: {
         id: 'testtransaction12345',
         status: 'test'
       }
     };
-    actual = selector.selectIsWorking(data);
+    actual = selector.selectIsWorking({ transactionsData });
 
     isTransactionsWorkingAssertions(actual);
     assert.isTrue(actual, `Didn't mark the transaction as working when status was test.`);
