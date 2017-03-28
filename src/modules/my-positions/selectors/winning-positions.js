@@ -3,8 +3,8 @@ import { ZERO } from '../../trade/constants/numbers';
 import { SCALAR } from '../../markets/constants/market-types';
 
 export default function (outcomesData) {
-  const { portfolio } = require('../../../selectors');
-  return selectClosedMarketsWithWinningShares(portfolio.positions.markets, outcomesData);
+  const { loginAccountPositions } = require('../../../selectors');
+  return selectClosedMarketsWithWinningShares(loginAccountPositions.markets, outcomesData);
 }
 
 export const selectClosedMarketsWithWinningShares = (markets, outcomesData) => {

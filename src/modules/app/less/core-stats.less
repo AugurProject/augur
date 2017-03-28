@@ -23,11 +23,11 @@
       flex-wrap: wrap;
     }
 
-    &:first-child {
+    &:first-of-type {
       justify-content: flex-start;
     }
 
-    &:last-child {
+    &:last-of-type {
       justify-content: flex-end;
     }
 
@@ -49,6 +49,25 @@
       .core-stat-value {
         .font-weight-normal();
       }
+    }
+  }
+
+  .additional-stats {
+    .border(true, @border-top, @border-light);
+
+    display: flex;
+    flex-basis: 100%;
+    justify-content: center;
+    opacity: 0;
+    transition-duration: @animation-speed-normal;
+    transition-property: height, opacity;
+
+    &:not(.display-additional-stats) {
+      height: 0 !important;
+    }
+
+    &.display-additional-stats {
+      opacity: 1;
     }
   }
 }

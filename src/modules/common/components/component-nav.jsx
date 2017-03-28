@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import classNames from 'classnames';
 
 import Link from 'modules/link/components/link';
@@ -20,5 +20,11 @@ const ComponentNav = p => (
     ))}
   </ul>
 );
+
+ComponentNav.propTypes = {
+  fullWidth: PropTypes.bool,
+  navItems: PropTypes.object.isRequired,
+  selectedNav: PropTypes.string.isRequired
+};
 
 export default ComponentNav;
