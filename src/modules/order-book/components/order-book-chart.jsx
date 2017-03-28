@@ -26,7 +26,7 @@ export default class OrderBookChart extends Component {
         text: null
       },
       chart: {
-        height: 300
+        height: 300 // mirror this height in css container height declaration
       },
       lang: {
         noData: 'No orders to display'
@@ -74,7 +74,6 @@ export default class OrderBookChart extends Component {
   }
 
   updateChart() {
-    console.log('### updateChart');
     const bidSeries = getValue(this.props, `orderBookSeries.${BIDS}`) || [];
     const askSeries = getValue(this.props, `orderBookSeries.${ASKS}`) || [];
 
