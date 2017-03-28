@@ -88,6 +88,8 @@ export default class MarketTradeCloseDialog extends Component {
     const p = this.props;
     const s = this.state;
 
+    // console.log('### p -- ', p);
+
     const orderID = p.closeType === POSITION ? p.outcomeID : p.orderID;
 
     return (

@@ -57,8 +57,8 @@ export default function () {
       };
     })
     .sort((a, b) => {
-      if (a.endDate && b.endDate && a.endDate.value && b.endDate.value) {
-        return b.endDate.value.getTime() - a.endDate.value.getTime();
+      if (a.period && b.period) {
+        return b.period - a.period;
       }
       return 1;
     });

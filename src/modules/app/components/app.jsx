@@ -200,7 +200,10 @@ export default class App extends Component {
                 <div className="core-stats-bumper" />
               }
               {p.loginAccount && p.loginAccount.address &&
-                <CoreStats coreStats={p.coreStats} />
+                <CoreStats
+                  activeView={p.activeView}
+                  coreStats={p.coreStats}
+                />
               }
             </div>
           </div>
@@ -218,7 +221,10 @@ export default class App extends Component {
                 }
                 <div className={classnames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
                   {p.loginAccount && p.loginAccount.address &&
-                    <CoreStats coreStats={p.coreStats} />
+                    <CoreStats
+                      activeView={p.activeView}
+                      coreStats={p.coreStats}
+                    />
                   }
                 </div>
                 <Routes

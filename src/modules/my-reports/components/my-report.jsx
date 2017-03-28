@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import ReactTooltip from 'react-tooltip';
 
 import ValueDenomination from 'modules/common/components/value-denomination';
@@ -6,11 +6,13 @@ import ValueDate from 'modules/common/components/value-date';
 import EmDash from 'modules/common/components/em-dash';
 import ReportEthics from 'modules/my-reports/components/report-ethics';
 
-const Report = p => (
-  <div className="portfolio-row">
+const MyReport = p => (
+  <article
+    className="my-report portfolio-detail"
+  >
     <div className="portfolio-group portfolio-main-group">
       <div className="portfolio-pair">
-        <span className="report-main-group-title">outcome: </span>
+        <span className="main-group-title">outcome: </span>
         <span className="report-main-group-title-outcome">
           {p.outcome && p.outcomePercentage && p.outcomePercentage.value &&
             <span>{p.outcome}  (<ValueDenomination {...p.outcomePercentage} />)</span>
@@ -90,24 +92,25 @@ const Report = p => (
       </div>
       <div className="portfolio-pair">
         <span className="title">ended</span>
-        {p.endDate ?
-          <ValueDate {...p.endDate} /> :
-          <EmDash />
-        }
+        <ValueDate {...p.endDate} />
       </div>
     </div>
     <ReactTooltip type="light" effect="solid" place="top" />
-  </div>
+  </article>
 );
 
-// TODO -- Prop Validations
-// Report.propTypes = {
-// 	outcome: PropTypes.string,
-// 	reported: PropTypes.string,
-// 	isReportEqual: PropTypes.bool.isRequired,
-// 	feesEarned: PropTypes.object.isRequired,
-// 	repEarned: PropTypes.object.isRequired,
-// 	endDate: PropTypes.object.isRequired
-// };
+MyReport.propTypes = {
+  outcome: PropTypes.string,
+  outcomePercentage: PropTypes.object,
+  reported: PropTypes.string,
+  repEarned: PropTypes.object,
+  period: PropTypes.number,
+  isCommitted: PropTypes.bool,
+  isRevealed: PropTypes.bool,
+  isReportEqual: PropTypes.bool,
+  isUnethical: PropTypes.bool,
+  branch: PropTypes.object.isRequired,
+  endDate: PropTypes.object.isRequired
+};
 
-export default Report;
+export default MyReport;

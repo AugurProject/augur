@@ -1,32 +1,23 @@
-.portfolio-list {
-  .portfolio-main-group {
-    .report-main-group-title {
-      margin-right: 0.4em;
-      text-transform: uppercase;
+.my-reports {
+  .report-committed {
+    color: @color-red-light;
+  }
+
+  .fa {
+    padding: 0 0.4em;
+
+    &.report-unequal,
+    &.report-unethical,
+    &.outcome-challenged {
+      color: @color-red-light;
     }
 
-    .report-main-group-title-outcome {
-      text-transform: none;
+    &.outcome-challengeable {
+      color: @color-orange-light;
+    }
 
-      .report-committed {
-        color: @color-red-light;
-      }
-
-      .fa {
-        padding: 0 0.4rem;
-
-        &.report-equal {
-          color: @color-green-light;
-        }
-
-        &.report-unequal {
-          color: @color-red-light;
-        }
-
-        &.report-unethical {
-          color: @color-red-light;
-        }
-      }
+    &.report-equal {
+      color: @color-green-light;
     }
   }
 }

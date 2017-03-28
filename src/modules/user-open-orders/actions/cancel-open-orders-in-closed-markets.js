@@ -1,11 +1,11 @@
-import { cancelOrder } from '../../bids-asks/actions/cancel-order';
+import { cancelOrder } from 'modules/bids-asks/actions/cancel-order';
 
 export const cancelOpenOrdersInClosedMarkets = () => (dispatch) => {
-  const { portfolio } = require('../../../selectors');
-  if (portfolio && portfolio.openOrders && portfolio.openOrders.length) {
-    const numMarketsWithOpenOrders = portfolio.openOrders.length;
+  const { openOrders } = require('../../../selectors');
+  if (openOrders && openOrders.length) {
+    const numMarketsWithOpenOrders = openOrders.length;
     for (let i = 0; i < numMarketsWithOpenOrders; ++i) {
-      const market = portfolio.openOrders[i];
+      const market = openOrders[i];
       if (!market.isOpen) {
         const numOutcomes = market.outcomes.length;
         for (let j = 0; j < numOutcomes; ++j) {
