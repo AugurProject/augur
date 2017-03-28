@@ -283,9 +283,6 @@ export function assembleMarket(
         const orderBook = selectAggregateOrderBook(outcome.id, orderBooks, orderCancellation);
         outcome.orderBook = orderBook;
         outcome.orderBookSeries = getOrderBookSeries(orderBook);
-
-        console.log('### orderBookSeries -- ', outcome.orderBookSeries);
-
         outcome.topBid = selectTopBid(orderBook, false);
         outcome.topAsk = selectTopAsk(orderBook, false);
         outcome.position = generateOutcomePositionSummary((marketAccountPositions || {})[outcomeID], (marketAccountTrades || {})[outcomeID], outcome.lastPrice.value, orderBook);
