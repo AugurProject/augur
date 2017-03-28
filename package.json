@@ -51,6 +51,7 @@
     "redux": "3.6.0",
     "redux-thunk": "2.2.0",
     "redux-undo": "0.6.1",
+    "reselect": "3.0.0",
     "secure-random": "1.1.1",
     "shelljs": "0.7.7",
     "zxcvbn": "4.4.2"
