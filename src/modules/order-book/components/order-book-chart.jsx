@@ -1,7 +1,15 @@
 import React from 'react';
 
-const OrderBookChart = p => (
-  <span>Chart</span>
-);
+import getValue from 'utils/get-value';
+
+const OrderBookChart = (p) => {
+  const orderBookSeries = getValue(p, 'outcome.orderBookSeries');
+
+  console.log('orderBookSeries -- ', orderBookSeries);
+
+  return (
+    <span>Chart</span>
+  );
+};
 
 export default OrderBookChart;

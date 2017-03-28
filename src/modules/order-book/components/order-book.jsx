@@ -65,7 +65,9 @@ export default class OrderBook extends Component {
           />
         }
         {s.selectedNav === ORDER_BOOK_CHART &&
-          <OrderBookChart />
+          <OrderBookChart
+            outcome={p.outcome}
+          />
         }
       </article>
     );

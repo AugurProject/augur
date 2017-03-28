@@ -45,7 +45,7 @@ import selectUserOpenOrdersSummary from 'modules/user-open-orders/selectors/user
 import { selectPriceTimeSeries } from 'modules/market/selectors/price-time-series';
 
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from 'modules/bids-asks/helpers/select-order-book';
-import { orderBookSeries } from 'modules/order-book/selectors/order-book-series';
+import getOrderBookSeries from 'modules/order-book/selectors/order-book-series';
 import getOutstandingShares from 'modules/market/selectors/helpers/get-outstanding-shares';
 
 import { generateTrade, generateTradeSummary } from 'modules/market/selectors/helpers/generate-trade';
@@ -282,7 +282,10 @@ export function assembleMarket(
 
         const orderBook = selectAggregateOrderBook(outcome.id, orderBooks, orderCancellation);
         outcome.orderBook = orderBook;
-        outcome.orderBookSeries = orderBookSeries(orderBook);
+        outcome.orderBookSeries = getOrderBookSeries(orderBook);
+
+        console.log('### orderBookSeries -- ', outcome.orderBookSeries);
+
         outcome.topBid = selectTopBid(orderBook, false);
         outcome.topAsk = selectTopAsk(orderBook, false);
         outcome.position = generateOutcomePositionSummary((marketAccountPositions || {})[outcomeID], (marketAccountTrades || {})[outcomeID], outcome.lastPrice.value, orderBook);
