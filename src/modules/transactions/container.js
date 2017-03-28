@@ -9,6 +9,7 @@ const mapStateToProps = state => ({
   currentBlockNumber: state.blockchain.currentBlockNumber,
   transactions: selectTransactions(state),
   transactionsTotals: selectTransactionsTotals(state)
+});
 
 const Transactions = connect(mapStateToProps)(TransactionsView);
 
