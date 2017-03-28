@@ -4,12 +4,10 @@ import { loadFullMarket } from 'modules/market/actions/load-full-market';
 
 import getValue from 'utils/get-value';
 
-export function loadFullMarketsWithPositions(data) {
+export function loadFullMarketWithPosition(marketID) {
   return (dispatch, getState) => {
     const { requests } = getState();
-    Object.keys(data).forEach((marketID) => {
-      const isMarketLoading = getValue(requests, `${MARKET_DATA_LOADING}.${marketID}`);
-      if (!isMarketLoading) dispatch(loadFullMarket(marketID));
-    });
+    const isMarketLoading = getValue(requests, `${MARKET_DATA_LOADING}.${marketID}`);
+    if (!isMarketLoading) dispatch(loadFullMarket(marketID));
   };
 }

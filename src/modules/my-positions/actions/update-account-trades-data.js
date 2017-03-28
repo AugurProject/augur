@@ -1,5 +1,5 @@
 import { convertTradeLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
-import { loadFullMarketsWithPositions } from 'modules/my-positions/actions/load-full-markets-with-positions';
+import { loadFullMarketWithPosition } from 'modules/my-positions/actions/load-full-market-with-position';
 
 export const UPDATE_ACCOUNT_TRADES_DATA = 'UPDATE_ACCOUNT_TRADES_DATA';
 export const UPDATE_ACCOUNT_POSITIONS_DATA = 'UPDATE_ACCOUNT_POSITIONS_DATA';
@@ -19,7 +19,7 @@ export function updateSellCompleteSetsLock(marketID, isLocked) {
 export function updateAccountBidsAsksData(data, marketID) {
   return (dispatch, getState) => {
     dispatch(convertTradeLogsToTransactions('log_add_tx', data, marketID));
-    dispatch(loadFullMarketsWithPositions(data));
+    Object.keys(data).forEach(marketID => dispatch(loadFullMarketWithPosition(marketID)));
   };
 }
 
@@ -33,7 +33,7 @@ export function updateAccountTradesData(data, marketID) {
   return (dispatch, getState) => {
     dispatch(convertTradeLogsToTransactions('log_fill_tx', data, marketID));
     dispatch({ type: UPDATE_ACCOUNT_TRADES_DATA, data, marketID });
-    dispatch(loadFullMarketsWithPositions(data));
+    Object.keys(data).forEach(marketID => dispatch(loadFullMarketWithPosition(marketID)));
   };
 }
 

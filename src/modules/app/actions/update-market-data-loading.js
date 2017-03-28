@@ -1,4 +1,4 @@
-export const MARKET_DATA_LOADING = 'UPDATE_MARKET_DATA_LOADING';
+export const MARKET_DATA_LOADING = 'MARKET_DATA_LOADING';
 
 export function updateMarketDataLoading(marketID, status) {
   return {

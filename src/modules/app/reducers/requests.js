@@ -8,7 +8,7 @@ export default (requests = {}, data) => {
         ...requests,
         [MARKET_DATA_LOADING]: {
           ...requests[MARKET_DATA_LOADING],
-          [data.marketID]: data.state
+          [data.marketID]: data.status
         }
       };
     default:
