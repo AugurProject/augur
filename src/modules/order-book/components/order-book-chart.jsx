@@ -74,8 +74,7 @@ export default class OrderBookChart extends Component {
   }
 
   updateChart() {
-    console.log('### updateChart -- ', this.props.orderBookSeries, BIDS, ASKS);
-
+    console.log('### updateChart');
     const bidSeries = getValue(this.props, `orderBookSeries.${BIDS}`) || [];
     const askSeries = getValue(this.props, `orderBookSeries.${ASKS}`) || [];
 
@@ -87,10 +86,13 @@ export default class OrderBookChart extends Component {
 
   render() {
     return (
-      <articles
-        id="order_book_chart"
+      <article
         className="order-book-chart"
-      />
+      >
+        <div
+          id="order_book_chart"
+        />
+      </article>
     );
   }
 }
