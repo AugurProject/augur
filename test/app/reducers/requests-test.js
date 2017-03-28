@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import requestsReducer from 'modules/app/reducers/requests';
-import { MARKET_DATA_LOADING } from 'modules/market/actions/load-full-market';
+import { MARKET_DATA_LOADING } from 'modules/app/actions/update-market-data-loading';
 
 describe('modules/app/reducers/requests.js', () => {
   it('should react to default action', () => {
@@ -17,7 +17,8 @@ describe('modules/app/reducers/requests.js', () => {
 
     const newState = requestsReducer(currentState, {
       type: MARKET_DATA_LOADING,
-      marketID: 'marketID'
+      marketID: 'marketID',
+      status: true
     });
 
     assert.deepEqual(newState, {
