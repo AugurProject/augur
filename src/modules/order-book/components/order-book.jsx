@@ -1,44 +1,73 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 
-import OrderBookHeader from 'modules/order-book/components/order-book-header';
-import OrderBookRows from 'modules/order-book/components/order-book-rows';
+import OrderBookTable from 'modules/order-book/components/order-book-table';
+import OrderBookChart from 'modules/order-book/components/order-book-chart';
+
 import EmDash from 'modules/common/components/em-dash';
+import ComponentNav from 'modules/common/components/component-nav';
 
 import { SCALAR } from 'modules/markets/constants/market-types';
+import { ORDER_BOOK_TABLE, ORDER_BOOK_CHART } from 'modules/order-book/constants/order-book-internal-views';
 
 import getValue from 'utils/get-value';
 
-// NOTE --
-// Bids + Asks are rendered into individual row components -- flexbox is utilized for side-by-side layout
-const OrderBook = (p) => {
-  const name = getValue(p, 'outcome.name');
-  const id = getValue(p, 'outcome.id');
-  const trade = getValue(p, 'outcome.trade');
-  const bids = getValue(p, 'outcome.orderBook.bids');
-  const asks = getValue(p, 'outcome.orderBook.asks');
+export default class OrderBook extends Component {
+  static propTypes = {
+    selectedShareDenomination: PropTypes.string,
+    outcome: PropTypes.object.isRequired,
+    selectedTradeSide: PropTypes.object.isRequired,
+    updateTradeFromSelectedOrder: PropTypes.func.isRequired,
+  };
 
-  return (
-    <article className="order-book">
-      {p.marketType !== SCALAR ?
-        <h3>Order Book {name &&
-          <span><EmDash /> {name}</span>
-        }</h3> :
-        <h3>Order Book</h3>
+  constructor(props) {
+    super(props);
+
+    this.navItems = {
+      [ORDER_BOOK_TABLE]: {
+        label: 'Table'
+      },
+      [ORDER_BOOK_CHART]: {
+        label: 'Chart'
       }
-      <OrderBookHeader />
-      <div className="market-content-scrollable" >
-        <OrderBookRows
-          id={id}
-          trade={trade}
-          bids={bids}
-          asks={asks}
-          selectedTradeSide={p.selectedTradeSide}
-          updateTradeFromSelectedOrder={p.updateTradeFromSelectedOrder}
-          selectedShareDenomination={p.selectedShareDenomination}
-        />
-      </div>
-    </article>
-  );
-};
+    };
 
-export default OrderBook;
+    this.state = {
+      selectedNav: ORDER_BOOK_TABLE
+    };
+  }
+
+  render() {
+    const p = this.props;
+    const s = this.state;
+
+    const name = getValue(p, 'outcome.name');
+
+    return (
+      <article className="order-book">
+        {p.marketType !== SCALAR ?
+          <h3>Order Book {name &&
+            <span><EmDash /> {name}</span>
+          }</h3> :
+          <h3>Order Book</h3>
+        }
+        <ComponentNav
+          fullWidth
+          navItems={this.navItems}
+          selectedNav={s.selectedNav}
+          updateSelectedNav={selectedNav => this.setState({ selectedNav })}
+        />
+        {s.selectedNav === ORDER_BOOK_TABLE &&
+          <OrderBookTable
+            outcome={p.outcome}
+            selectedTradeSide={p.selectedTradeSide}
+            updateTradeFromSelectedOrder={p.updateTradeFromSelectedOrder}
+            selectedShareDenomination={p.selectedShareDenomination}
+          />
+        }
+        {s.selectedNav === ORDER_BOOK_CHART &&
+          <OrderBookChart />
+        }
+      </article>
+    );
+  }
+}
