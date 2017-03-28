@@ -1,7 +1,14 @@
 import { connect } from 'react-redux';
 import TransactionsView from 'modules/transactions/components/transactions-view';
 
-const mapStateToProps = state => ({ currentBlockNumber: state.blockchain.currentBlockNumber });
+import transactions from 'modules/transactions/selectors/transactions';
+
+const mapStateToProps = state => ({
+  branch: state.branch,
+  loginAccount: state.loginAccount,
+  transactions: transactions(),
+  currentBlockNumber: state.blockchain.currentBlockNumber
+});
 
 const Transactions = connect(mapStateToProps)(TransactionsView);
 

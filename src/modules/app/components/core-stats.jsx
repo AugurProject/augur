@@ -1,7 +1,12 @@
 /* eslint react/no-array-index-key: 0 */  // It's OK in this specific instance since the order NEVER changes
 
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
+
+import PortfolioNav from 'modules/portfolio/containers/portfolio-nav';
 import ValueDenomination from 'modules/common/components/value-denomination';
+
+import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views';
 
 const CoreStats = p => (
   <article className="core-stats" >
@@ -32,6 +37,11 @@ const CoreStats = p => (
         ))}
       </div>
     ))}
+    <PortfolioNav
+      className={classNames('additional-stats', {
+        'display-additional-stats': p.activeView === MY_POSITIONS || p.activeView === MY_MARKETS || p.activeView === MY_REPORTS
+      })}
+    />
   </article>
 );
 

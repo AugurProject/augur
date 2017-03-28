@@ -1,5 +1,6 @@
 import memoizerific from 'memoizerific';
 import BigNumber from 'bignumber.js';
+import { abi } from 'services/augurjs';
 
 import store from 'src/store';
 
@@ -65,7 +66,7 @@ function getUserOpenOrders(orders, orderType, outcomeID, userID, orderCancellati
     .map(order => (
       {
         id: order.id,
-        marketID: order.market,
+        marketID: abi.format_int256(order.market),
         type: orderType,
         originalShares: formatNone(),
         avgPrice: formatEther(order.price),

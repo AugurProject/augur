@@ -19,7 +19,6 @@ import filterSort from 'modules/markets/selectors/filter-sort';
 import keywords from 'modules/markets/selectors/keywords';
 import portfolio from 'modules/portfolio/selectors/portfolio';
 import loginAccountPositions from 'modules/my-positions/selectors/login-account-positions';
-import loginAccountMarkets from 'modules/my-markets/selectors/login-account-markets';
 import transactions from 'modules/transactions/selectors/transactions';
 import transactionsTotals from 'modules/transactions/selectors/transactions-totals';
 import isTransactionsWorking from 'modules/transactions/selectors/is-transactions-working';
@@ -38,6 +37,7 @@ import authLogin from 'modules/auth/selectors/auth-login';
 import authSignup from 'modules/auth/selectors/auth-signup';
 import authImport from 'modules/auth/selectors/auth-import';
 import closePositionStatus from 'modules/my-positions/selectors/close-position-status';
+import openOrders from 'modules/user-open-orders/selectors/open-orders';
 
 const selectors = {
   activeView,
@@ -61,7 +61,6 @@ const selectors = {
   keywords,
   portfolio,
   loginAccountPositions,
-  loginAccountMarkets,
   transactions,
   transactionsTotals,
   isTransactionsWorking,
@@ -79,7 +78,8 @@ const selectors = {
   authLogin,
   authSignup,
   authImport,
-  closePositionStatus
+  closePositionStatus,
+  openOrders
 };
 
 export default selectors;

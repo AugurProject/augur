@@ -1,53 +1,27 @@
 import React, { PropTypes } from 'react';
 
-import TabNavigation from 'modules/common/components/tab-navigation';
-import Positions from 'modules/portfolio/components/positions';
-import Markets from 'modules/portfolio/components/markets';
-import Reports from 'modules/portfolio/components/reports';
+import MyPositions from 'modules/my-positions/my-positions-container';
+import MyMarkets from 'modules/my-markets/my-markets-container';
+import MyReports from 'modules/my-reports/my-reports-container';
 
 import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views';
 
-const PortfolioView = (p) => {
-  let node;
-
-  switch (p.activeView) {
-    default:
-    case MY_POSITIONS:
-      node = <Positions {...p.positions} />;
-      break;
-    case MY_MARKETS:
-      node = <Markets {...p.markets} />;
-      break;
-    case MY_REPORTS:
-      node = <Reports {...p.reports} branch={p.branch} />;
-      break;
-  }
-  return (
-    <section id="portfolio_view" >
-      <header className="page-header portfolio-header">
-        {!!p.navItems && !!p.navItems.length &&
-          <TabNavigation
-            activeView={p.activeView}
-            navItems={p.navItems}
-          />
-        }
-      </header>
-
-      <div className="page-content">
-        <section className="portfolio-content">
-          {node}
-        </section>
-      </div>
-    </section>
-  );
-};
+const PortfolioView = p => (
+  <section id="portfolio_view" >
+    {p.activeView === MY_POSITIONS &&
+      <MyPositions />
+    }
+    {p.activeView === MY_MARKETS &&
+      <MyMarkets />
+    }
+    {p.activeView === MY_REPORTS &&
+      <MyReports />
+    }
+  </section>
+);
 
 PortfolioView.propTypes = {
-  navItems: PropTypes.array.isRequired,
-  totals: PropTypes.object.isRequired,
-  positions: PropTypes.object.isRequired,
-  markets: PropTypes.object.isRequired,
-  reports: PropTypes.object.isRequired
+  activeView: PropTypes.string.isRequired
 };
 
 export default PortfolioView;

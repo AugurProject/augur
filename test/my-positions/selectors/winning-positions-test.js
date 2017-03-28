@@ -24,10 +24,8 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
       outcomesData: {}
     },
     selectors: {
-      portfolio: {
-        positions: {
-          markets: []
-        }
+      loginAccountPositions: {
+        markets: []
       }
     },
     assertions: (selection) => {
@@ -46,19 +44,17 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
       }
     },
     selectors: {
-      portfolio: {
-        positions: {
-          markets: [{
-            id: '0xa1',
-            isOpen: false,
-            description: 'test market 1',
-            consensus: {
-              outcomeID: '2',
-              isIndeterminate: false,
-              isUnethical: false
-            }
-          }]
-        }
+      loginAccountPositions: {
+        markets: [{
+          id: '0xa1',
+          isOpen: false,
+          description: 'test market 1',
+          consensus: {
+            outcomeID: '2',
+            isIndeterminate: false,
+            isUnethical: false
+          }
+        }]
       }
     },
     assertions: (selection) => {
@@ -84,19 +80,17 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
       }
     },
     selectors: {
-      portfolio: {
-        positions: {
-          markets: [{
-            id: '0xa1',
-            isOpen: false,
-            description: 'test market 1',
-            consensus: {
-              outcomeID: '2',
-              isIndeterminate: true,
-              isUnethical: false
-            }
-          }]
-        }
+      loginAccountPositions: {
+        markets: [{
+          id: '0xa1',
+          isOpen: false,
+          description: 'test market 1',
+          consensus: {
+            outcomeID: '2',
+            isIndeterminate: true,
+            isUnethical: false
+          }
+        }]
       }
     },
     assertions: (selection) => {
@@ -122,19 +116,17 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
       }
     },
     selectors: {
-      portfolio: {
-        positions: {
-          markets: [{
-            id: '0xa1',
-            isOpen: false,
-            description: 'test market 1',
-            consensus: {
-              outcomeID: '0.5',
-              isIndeterminate: false,
-              isUnethical: true
-            }
-          }]
-        }
+      loginAccountPositions: {
+        markets: [{
+          id: '0xa1',
+          isOpen: false,
+          description: 'test market 1',
+          consensus: {
+            outcomeID: '0.5',
+            isIndeterminate: false,
+            isUnethical: true
+          }
+        }]
       }
     },
     assertions: (selection) => {
@@ -160,19 +152,17 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
       }
     },
     selectors: {
-      portfolio: {
-        positions: {
-          markets: [{
-            id: '0xa1',
-            isOpen: false,
-            description: 'test market 1',
-            consensus: {
-              outcomeID: '0.5',
-              isIndeterminate: true,
-              isUnethical: true
-            }
-          }]
-        }
+      loginAccountPositions: {
+        markets: [{
+          id: '0xa1',
+          isOpen: false,
+          description: 'test market 1',
+          consensus: {
+            outcomeID: '0.5',
+            isIndeterminate: true,
+            isUnethical: true
+          }
+        }]
       }
     },
     assertions: (selection) => {
@@ -198,20 +188,18 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
       }
     },
     selectors: {
-      portfolio: {
-        positions: {
-          markets: [{
-            id: '0xa1',
-            type: 'scalar',
-            isOpen: false,
-            description: 'test market 1',
-            consensus: {
-              outcomeID: '1.23456',
-              isIndeterminate: false,
-              isUnethical: false
-            }
-          }]
-        }
+      loginAccountPositions: {
+        markets: [{
+          id: '0xa1',
+          type: 'scalar',
+          isOpen: false,
+          description: 'test market 1',
+          consensus: {
+            outcomeID: '1.23456',
+            isIndeterminate: false,
+            isUnethical: false
+          }
+        }]
       }
     },
     assertions: (selection) => {
@@ -237,20 +225,18 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
       }
     },
     selectors: {
-      portfolio: {
-        positions: {
-          markets: [{
-            id: '0xa1',
-            type: 'scalar',
-            isOpen: false,
-            description: 'test market 1',
-            consensus: {
-              outcomeID: '1.23456',
-              isIndeterminate: true,
-              isUnethical: false
-            }
-          }]
-        }
+      loginAccountPositions: {
+        markets: [{
+          id: '0xa1',
+          type: 'scalar',
+          isOpen: false,
+          description: 'test market 1',
+          consensus: {
+            outcomeID: '1.23456',
+            isIndeterminate: true,
+            isUnethical: false
+          }
+        }]
       }
     },
     assertions: (selection) => {
@@ -276,20 +262,18 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
       }
     },
     selectors: {
-      portfolio: {
-        positions: {
-          markets: [{
-            id: '0xa1',
-            type: 'scalar',
-            isOpen: false,
-            description: 'test market 1',
-            consensus: {
-              outcomeID: '1.23456',
-              isIndeterminate: false,
-              isUnethical: true
-            }
-          }]
-        }
+      loginAccountPositions: {
+        markets: [{
+          id: '0xa1',
+          type: 'scalar',
+          isOpen: false,
+          description: 'test market 1',
+          consensus: {
+            outcomeID: '1.23456',
+            isIndeterminate: false,
+            isUnethical: true
+          }
+        }]
       }
     },
     assertions: (selection) => {
@@ -306,14 +290,12 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
       outcomesData: {}
     },
     selectors: {
-      portfolio: {
-        positions: {
-          markets: [{
-            id: '0xa1',
-            isOpen: true,
-            consensus: null
-          }]
-        }
+      loginAccountPositions: {
+        markets: [{
+          id: '0xa1',
+          isOpen: true,
+          consensus: null
+        }]
       }
     },
     assertions: (selection) => {
@@ -337,23 +319,21 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
       }
     },
     selectors: {
-      portfolio: {
-        positions: {
-          markets: [{
-            id: '0xa1',
-            isOpen: true,
-            consensus: null
-          }, {
-            id: '0xa2',
-            isOpen: false,
-            description: 'test market 2',
-            consensus: {
-              outcomeID: '2',
-              isIndeterminate: false,
-              isUnethical: false
-            }
-          }]
-        }
+      loginAccountPositions: {
+        markets: [{
+          id: '0xa1',
+          isOpen: true,
+          consensus: null
+        }, {
+          id: '0xa2',
+          isOpen: false,
+          description: 'test market 2',
+          consensus: {
+            outcomeID: '2',
+            isIndeterminate: false,
+            isUnethical: false
+          }
+        }]
       }
     },
     assertions: (selection) => {
@@ -386,32 +366,30 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
       }
     },
     selectors: {
-      portfolio: {
-        positions: {
-          markets: [{
-            id: '0xa1',
-            isOpen: true,
-            consensus: null
-          }, {
-            id: '0xa2',
-            isOpen: false,
-            description: 'test market 2',
-            consensus: {
-              outcomeID: '2',
-              isIndeterminate: false,
-              isUnethical: false
-            }
-          }, {
-            id: '0xa3',
-            isOpen: false,
-            description: 'test market 3',
-            consensus: {
-              outcomeID: '2',
-              isIndeterminate: false,
-              isUnethical: false
-            }
-          }]
-        }
+      loginAccountPositions: {
+        markets: [{
+          id: '0xa1',
+          isOpen: true,
+          consensus: null
+        }, {
+          id: '0xa2',
+          isOpen: false,
+          description: 'test market 2',
+          consensus: {
+            outcomeID: '2',
+            isIndeterminate: false,
+            isUnethical: false
+          }
+        }, {
+          id: '0xa3',
+          isOpen: false,
+          description: 'test market 3',
+          consensus: {
+            outcomeID: '2',
+            isIndeterminate: false,
+            isUnethical: false
+          }
+        }]
       }
     },
     assertions: (selection) => {
@@ -448,27 +426,25 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
       }
     },
     selectors: {
-      portfolio: {
-        positions: {
-          markets: [{
-            id: '0xa1',
-            isOpen: true,
-            consensus: null
-          }, {
-            id: '0xa2',
-            isOpen: true,
-            consensus: null
-          }, {
-            id: '0xa3',
-            isOpen: false,
-            description: 'test market 3',
-            consensus: {
-              outcomeID: '2',
-              isIndeterminate: false,
-              isUnethical: false
-            }
-          }]
-        }
+      loginAccountPositions: {
+        markets: [{
+          id: '0xa1',
+          isOpen: true,
+          consensus: null
+        }, {
+          id: '0xa2',
+          isOpen: true,
+          consensus: null
+        }, {
+          id: '0xa3',
+          isOpen: false,
+          description: 'test market 3',
+          consensus: {
+            outcomeID: '2',
+            isIndeterminate: false,
+            isUnethical: false
+          }
+        }]
       }
     },
     assertions: (selection) => {
