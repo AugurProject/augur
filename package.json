@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "3.15.2",
+  "version": "3.15.3",
   "description": "Augur JavaScript SDK",
   "author": "The Augur Developers <team@augur.net>",
   "license": "AAL",
@@ -17,7 +17,7 @@
   "dependencies": {
     "async": "1.5.2",
     "augur-abi": "1.1.1",
-    "augur-contracts": "2.11.2",
+    "augur-contracts": "2.11.3",
     "bignumber.js": "2.3.0",
     "browser-request": "0.3.3",
     "chalk": "1.1.1",
