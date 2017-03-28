@@ -1,40 +1,37 @@
-import memoizerific from 'memoizerific';
-import { augur } from '../../../services/augurjs';
-import { formatRep, formatEther } from '../../../utils/format-number';
-import store from '../../../store';
-import { changeAccountName } from '../../auth/actions/update-login-account';
-import { transferFunds } from '../../auth/actions/transfer-funds';
-import generateDownloadAccountLink from '../../auth/actions/generate-download-account-link';
+import { createSelector } from 'reselect';
+import { augur } from 'services/augurjs';
+import { formatRep, formatEther } from 'utils/format-number';
+import generateDownloadAccountLink from 'modules/auth/actions/generate-download-account-link';
+import abc from 'modules/auth/selectors/abc';
+import store from 'src/store';
 
 export default function () {
-  const { loginAccount } = store.getState();
-  return setupLoginAccount(loginAccount, store.dispatch);
+  return setupLoginAccount(store.getState());
 }
 
-export const setupLoginAccount = memoizerific(1)((loginAccount, dispatch) => {
-  const cleanAddress = loginAccount.address ? loginAccount.address.replace('0x', '') : undefined;
-  const prettyAddress = cleanAddress ? `${cleanAddress.substring(0, 4)}...${cleanAddress.substring(cleanAddress.length - 4)}` : undefined;
-  const prettyLoginID = loginAccount.loginID ? `${loginAccount.loginID.substring(0, 4)}...${loginAccount.loginID.substring(loginAccount.loginID.length - 4)}` : undefined;
-  const linkText = loginAccount.isUnlocked ? prettyAddress : loginAccount.name || prettyLoginID;
-  const { downloadAccountDataString, downloadAccountFileName } = generateDownloadAccountLink(loginAccount.address, augur.accounts.account.keystore);
-  if (loginAccount.airbitzAccount) {
-    loginAccount.onAirbitzManageAccount = () => {
-      require('../../../selectors').abc.openManageWindow(loginAccount.airbitzAccount, (result, account) => (
-        console.log('onAirbitzManageAccount:', result, account)
-      ));
+export const setupLoginAccount = createSelector(
+  state => state.loginAccount,
+  (loginAccount) => {
+    const cleanAddress = loginAccount.address ? loginAccount.address.replace('0x', '') : undefined;
+    const prettyAddress = cleanAddress ? `${cleanAddress.substring(0, 4)}...${cleanAddress.substring(cleanAddress.length - 4)}` : undefined;
+    const prettyLoginID = loginAccount.loginID ? `${loginAccount.loginID.substring(0, 4)}...${loginAccount.loginID.substring(loginAccount.loginID.length - 4)}` : undefined;
+    const linkText = loginAccount.isUnlocked ? prettyAddress : loginAccount.name || prettyLoginID;
+    if (loginAccount.airbitzAccount) {
+      loginAccount.onAirbitzManageAccount = () => {
+        abc.openManageWindow(loginAccount.airbitzAccount, (result, account) => (
+          console.log('onAirbitzManageAccount:', result, account)
+        ));
+      };
+    }
+    return {
+      ...loginAccount,
+      ...generateDownloadAccountLink(loginAccount.address, augur.accounts.account.keystore),
+      prettyLoginID,
+      prettyAddress,
+      linkText,
+      rep: formatRep(loginAccount.rep, { zeroStyled: false, decimalsRounded: 1 }),
+      ether: formatEther(loginAccount.ether, { zeroStyled: false, decimalsRounded: 2 }),
+      realEther: formatEther(loginAccount.realEther, { zeroStyled: false, decimalsRounded: 2 })
     };
   }
-  return {
-    ...loginAccount,
-    prettyLoginID,
-    prettyAddress,
-    linkText,
-    downloadAccountFileName,
-    downloadAccountDataString,
-    transferFunds: (amount, currency, toAddress) => dispatch(transferFunds(amount, currency, toAddress)),
-    editName: name => dispatch(changeAccountName(name)),
-    rep: formatRep(loginAccount.rep, { zeroStyled: false, decimalsRounded: 1 }),
-    ether: formatEther(loginAccount.ether, { zeroStyled: false, decimalsRounded: 2 }),
-    realEther: formatEther(loginAccount.realEther, { zeroStyled: false, decimalsRounded: 2 })
-  };
-});
+);

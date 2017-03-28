@@ -57,15 +57,12 @@ export default class Routes extends Component {
         });
         break;
       case ACCOUNT:
-        viewProps = {
-          loginMessageLink: p.links.loginMessageLink,
-          account: p.loginAccount,
-          onChangePass: p.loginAccount.onChangePass,
-          authLink: (p.links && p.links.authLink) || null,
-          onAirbitzManageAccount: p.loginAccount.onAirbitzManageAccount
-        };
-        import('modules/account/components/account-view').then((module) => {
+        import('modules/account/container').then((module) => {
           const AccountView = module.default;
+          viewProps = {
+            loginMessageLink: p.links.loginMessageLink,
+            authLink: (p.links && p.links.authLink) || null
+          };
           viewComponent = <AccountView {...viewProps} />;
           this.setState({ viewProps, viewComponent });
         }).catch((err) => {
@@ -75,13 +72,7 @@ export default class Routes extends Component {
       case TRANSACTIONS:
         import('modules/transactions/container').then((module) => {
           const TransactionsView = module.default;
-          viewProps = { // Global state props handled via react-redux in the transactions container
-            branch: p.branch,
-            loginAccount: p.loginAccount,
-            transactions: p.transactions
-          };
-          viewComponent = <TransactionsView {...viewProps} />;
-          this.setState({ viewProps, viewComponent });
+          this.setState({ viewComponent: <TransactionsView /> });
         }).catch((err) => {
           console.error(`ERROR: Failed to load 'transactions' module -- `, err);
         });
