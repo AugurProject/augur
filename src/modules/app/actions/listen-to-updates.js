@@ -10,6 +10,8 @@ import { claimProceeds } from '../../my-positions/actions/claim-proceeds';
 import { convertLogsToTransactions, convertTradeLogToTransaction } from '../../transactions/actions/convert-logs-to-transactions';
 import { updateMarketTopicPopularity } from '../../topics/actions/update-topics';
 import { SELL } from '../../outcomes/constants/trade-types';
+import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
+import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
 
 export function listenToUpdates() {
   return (dispatch, getState) => {
@@ -104,6 +106,8 @@ export function listenToUpdates() {
             }, msg.market));
             dispatch(updateAssets());
             dispatch(loadMarketsInfo([msg.market]));
+            dispatch(loadAccountTrades(msg.market));
+            dispatch(loadBidsAsks(msg.market));
           }
         }
       },
@@ -128,6 +132,8 @@ export function listenToUpdates() {
             }, msg.market));
             dispatch(updateAssets());
             dispatch(loadMarketsInfo([msg.market]));
+            dispatch(loadAccountTrades(msg.market));
+            dispatch(loadBidsAsks(msg.market));
           }
         }
       },
@@ -157,6 +163,7 @@ export function listenToUpdates() {
               [msg.market]: { [msg.outcome]: [msg] }
             }, msg.market));
             dispatch(updateAssets());
+            dispatch(loadBidsAsks(msg.market));
           }
         }
       },
@@ -173,6 +180,7 @@ export function listenToUpdates() {
               [msg.market]: { [msg.outcome]: [msg] }
             }, msg.market));
             dispatch(updateAssets());
+            dispatch(loadBidsAsks(msg.market));
           }
         }
       },
