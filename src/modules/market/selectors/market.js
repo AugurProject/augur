@@ -52,8 +52,6 @@ import { generateTrade, generateTradeSummary } from 'modules/market/selectors/he
 import hasUserEnoughFunds from 'modules/trade/helpers/has-user-enough-funds';
 import { generateOutcomePositionSummary, generateMarketsPositionsSummary } from 'modules/my-positions/selectors/my-positions-summary';
 
-import { selectMyMarket } from 'modules/my-markets/selectors/my-markets';
-
 import { selectReportableOutcomes } from 'modules/reports/selectors/reportable-outcomes';
 
 export default function () {
@@ -323,8 +321,6 @@ export function assembleMarket(
           delete market.myPositionsSummary.positionOutcomes;
         }
       }
-
-      market.myMarketSummary = selectMyMarket(market)[0];
 
       // Update the consensus object:
       //   - formatted reported outcome

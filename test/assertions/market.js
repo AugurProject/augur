@@ -413,37 +413,6 @@ export default function (market) {
       assertFormattedNumber(myPositionsSummary.totalNet, 'myPositionsSummary.totalNet');
     });
 
-    const myMarketSummary = market.myMarketSummary;
-    it('market.myMarketSummary.endDate', () => {
-      assert.isDefined(myMarketSummary.endDate);
-      assertFormattedDate(myMarketSummary.endDate, 'myMarketSummary.endDate');
-    });
-
-    it('market.myMarketSummary.fees', () => {
-      assert.isDefined(myMarketSummary.fees);
-      assertFormattedNumber(myMarketSummary.fees, 'myMarketSummary.fees');
-    });
-
-    it('market.myMarketSummary.volume', () => {
-      assert.isDefined(myMarketSummary.volume);
-      assertFormattedNumber(myMarketSummary.volume, 'myMarketSummary.volume');
-    });
-
-    it('market.myMarketSummary.numberOfTrades', () => {
-      assert.isDefined(myMarketSummary.numberOfTrades);
-      assertFormattedNumber(myMarketSummary.numberOfTrades, 'myMarketSummary.numberOfTrades');
-    });
-
-    it('market.myMarketSummary.averageTradeSize', () => {
-      assert.isDefined(myMarketSummary.averageTradeSize);
-      assertFormattedNumber(myMarketSummary.averageTradeSize, 'myMarketSummary.averageTradeSize');
-    });
-
-    it('market.myMarketSummary.openVolume', () => {
-      assert.isDefined(myMarketSummary.openVolume);
-      assertFormattedNumber(myMarketSummary.openVolume, 'myMarketSummary.openVolume');
-    });
-
     const report = market.report;
     it('market.report', () => {
       assert.isDefined(report);
