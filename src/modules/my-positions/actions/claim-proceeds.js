@@ -7,9 +7,9 @@ import { cancelOpenOrdersInClosedMarkets } from '../../user-open-orders/actions/
 import selectWinningPositions from '../../my-positions/selectors/winning-positions';
 
 export const claimProceeds = () => (dispatch, getState) => {
-  const { branch, loginAccount, outcomesData } = getState();
+  const { branch, loginAccount } = getState();
   if (loginAccount.address) {
-    const winningPositions = selectWinningPositions(outcomesData);
+    const winningPositions = selectWinningPositions();
     console.log('closed markets with winning shares:', winningPositions);
     if (winningPositions.length) {
       augur.claimMarketsProceeds(branch.id, winningPositions, (err, claimedMarkets) => {
