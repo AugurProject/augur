@@ -45,7 +45,7 @@ export default class OrderBookChart extends Component {
       },
       xAxis: {
         title: {
-          text: 'Price'
+          text: 'ETH'
         }
       },
       series: [
