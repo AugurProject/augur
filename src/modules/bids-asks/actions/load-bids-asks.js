@@ -5,6 +5,7 @@ import { clearMarketOrderBook, updateMarketOrderBook } from '../../bids-asks/act
 export const loadBidsAsks = (marketID, cb) => (dispatch, getState) => {
   const callback = cb || (e => e && console.error('loadBidsAsks:', e));
   const market = getState().marketsData[marketID];
+  console.log('### loadBidsAsks market -- ', market);
   const scalarMinMax = {};
   if (market.type === SCALAR) {
     scalarMinMax.minValue = market.minValue;

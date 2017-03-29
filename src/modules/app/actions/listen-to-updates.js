@@ -10,7 +10,6 @@ import { claimProceeds } from '../../my-positions/actions/claim-proceeds';
 import { convertLogsToTransactions, convertTradeLogToTransaction } from '../../transactions/actions/convert-logs-to-transactions';
 import { updateMarketTopicPopularity } from '../../topics/actions/update-topics';
 import { SELL } from '../../outcomes/constants/trade-types';
-import { loadFullMarketWithPosition } from '../../my-positions/actions/load-full-market-with-position';
 
 export function listenToUpdates() {
   return (dispatch, getState) => {
@@ -105,7 +104,6 @@ export function listenToUpdates() {
             }, msg.market));
             dispatch(updateAssets());
             dispatch(loadMarketsInfo([msg.market]));
-            dispatch(loadFullMarketWithPosition(msg.market));
           }
         }
       },
@@ -130,7 +128,6 @@ export function listenToUpdates() {
             }, msg.market));
             dispatch(updateAssets());
             dispatch(loadMarketsInfo([msg.market]));
-            dispatch(loadFullMarketWithPosition(msg.market));
           }
         }
       },
@@ -160,7 +157,6 @@ export function listenToUpdates() {
               [msg.market]: { [msg.outcome]: [msg] }
             }, msg.market));
             dispatch(updateAssets());
-            dispatch(loadFullMarketWithPosition(msg.market));
           }
         }
       },

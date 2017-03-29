@@ -1,9 +1,10 @@
 import async from 'async';
-import { augur } from '../../../services/augurjs';
-import { SUCCESS } from '../../transactions/constants/statuses';
-import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
-import { updateMarketsData } from '../../markets/actions/update-markets-data';
-import { constructTransaction, constructTradingTransaction, constructBasicTransaction } from '../../transactions/actions/construct-transaction';
+import { augur } from 'services/augurjs';
+import { SUCCESS } from 'modules/transactions/constants/statuses';
+import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data';
+import { updateMarketsData } from 'modules/markets/actions/update-markets-data';
+import { constructTransaction, constructTradingTransaction, constructBasicTransaction } from 'modules/transactions/actions/construct-transaction';
+import { loadBidsAsks } from 'modules/bids-asks/actions/load-bids-asks';
 
 export function convertTradeLogToTransaction(label, data, marketID) {
   return (dispatch, getState) => {
@@ -43,6 +44,7 @@ export function convertTradeLogsToTransactions(label, data, marketID) {
         }
         dispatch(updateMarketsData({ [marketID]: marketInfo }));
         dispatch(convertTradeLogToTransaction(label, data, marketID));
+        if (label === 'log_add_tx' || label === 'log_fill_tx') dispatch(loadBidsAsks(marketID)); // Utilized by portfolio to allow for the closure of positions
         next();
       });
     }, err => (err && console.error('convertTradeLogsToTransactions:', err)));
