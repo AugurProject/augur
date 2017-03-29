@@ -21,6 +21,12 @@ export default class OrderBookChart extends Component {
   componentDidMount() {
     noData(Highcharts);
 
+    Highcharts.setOptions({
+      lang: {
+        thousandsSep: ','
+      }
+    });
+
     this.orderBookChart = new Highcharts.Chart('order_book_chart', {
       title: {
         text: null
@@ -29,6 +35,7 @@ export default class OrderBookChart extends Component {
         height: 300 // mirror this height in css container height declaration
       },
       lang: {
+        thousandsSep: ',',
         noData: 'No orders to display'
       },
       yAxis: {
@@ -55,6 +62,11 @@ export default class OrderBookChart extends Component {
           data: []
         }
       ],
+      tooltip: {
+        headerFormat: null,
+        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y} Shares @ {point.x} ETH</b><br/>',
+        valueDecimals: 2
+      },
       credits: {
         enabled: false
       }

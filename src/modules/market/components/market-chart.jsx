@@ -18,6 +18,12 @@ export default class MarketChart extends Component {
   componentDidMount() {
     noData(Highcharts);
 
+    Highcharts.setOptions({
+      lang: {
+        thousandsSep: ','
+      }
+    });
+
     this.marketPriceChart = new Highcharts.Chart('market_price_history_chart', {
       title: {
         text: null
@@ -41,7 +47,7 @@ export default class MarketChart extends Component {
         enabled: true
       },
       tooltip: {
-        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
+        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y} ETH</b><br/>',
         valueDecimals: 2
       },
       credits: {
