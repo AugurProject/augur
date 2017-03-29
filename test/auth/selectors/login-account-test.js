@@ -6,7 +6,7 @@ describe(`modules/auth/selectors/login-account.js`, () => {
   proxyquire.noPreserveCache();
   const selector = proxyquire('../../../src/modules/auth/selectors/login-account', {});
   it(`should login an account`, () => {
-    loginAccountAssertions(selector.setupLoginAccount({
+    loginAccountAssertions(selector.selectLoginAccount({
       loginAccount: {
         address: '0xb0b',
         isUnlocked: false,

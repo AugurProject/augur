@@ -1,11 +1,11 @@
 import { connect } from 'react-redux';
 import { changeAccountName } from 'modules/auth/actions/update-login-account';
 import { transferFunds } from 'modules/auth/actions/transfer-funds';
-import { setupLoginAccount } from 'modules/auth/selectors/login-account';
+import { selectLoginAccount } from 'modules/auth/selectors/login-account';
 import AccountView from 'modules/account/components/account-view';
 
 const mapStateToProps = state => ({
-  loginAccount: setupLoginAccount(state)
+  loginAccount: selectLoginAccount(state)
 });
 
 const mapDispatchToProps = dispatch => ({

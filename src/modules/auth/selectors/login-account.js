@@ -6,10 +6,10 @@ import abc from 'modules/auth/selectors/abc';
 import store from 'src/store';
 
 export default function () {
-  return setupLoginAccount(store.getState());
+  return selectLoginAccount(store.getState());
 }
 
-export const setupLoginAccount = createSelector(
+export const selectLoginAccount = createSelector(
   state => state.loginAccount,
   (loginAccount) => {
     const cleanAddress = loginAccount.address ? loginAccount.address.replace('0x', '') : undefined;
