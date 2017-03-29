@@ -26,7 +26,7 @@ export default class MarketChart extends Component {
         height: 300 // mirror this height in css container height declaration
       },
       lang: {
-        noData: 'No orders to display'
+        noData: 'No price history'
       },
       rangeSelector: { selected: 1 },
       xAxis: {
@@ -71,7 +71,7 @@ export default class MarketChart extends Component {
           data: series.data
         }, false);
       } else {
-        this.marketPriceChart.series[i].setData(series, false);
+        this.marketPriceChart.series[i].setData(series.data, false);
       }
     });
 
@@ -80,7 +80,7 @@ export default class MarketChart extends Component {
 
   render() {
     return (
-      <article className="price-history-chart market-content-scrollable">
+      <article className="market-price-history-chart market-content-scrollable">
         <div
           id="market_price_history_chart"
         />
