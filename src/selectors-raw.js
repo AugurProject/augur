@@ -1,6 +1,6 @@
 import activeView from 'modules/app/selectors/active-view';
 import abc from 'modules/auth/selectors/abc';
-import loginAccount from 'modules/auth/selectors/login-account';
+import loginAccount from 'modules/account/selectors/login-account';
 import links from 'modules/link/selectors/links';
 import url from 'modules/link/selectors/url';
 import topics from 'modules/topics/selectors/topics';

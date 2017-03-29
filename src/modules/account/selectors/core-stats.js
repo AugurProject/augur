@@ -4,7 +4,7 @@ import { augur, abi } from 'services/augurjs';
 import { dateToBlock } from 'utils/date-to-block-to-date';
 import { formatEther } from 'utils/format-number';
 import { ZERO } from 'modules/trade/constants/numbers';
-import { selectLoginAccount } from 'modules/auth/selectors/login-account';
+import { selectLoginAccount } from 'modules/account/selectors/login-account';
 import selectLoginAccountPositions from 'modules/my-positions/selectors/login-account-positions';
 import getValue from 'utils/get-value';
 
