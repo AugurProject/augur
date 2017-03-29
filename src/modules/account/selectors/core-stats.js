@@ -84,17 +84,17 @@ export const selectCoreStats = createSelector(
     {
       totalPL: {
         label: 'Total P/L',
-        tile: 'Profit/Loss -- net of all trades',
+        title: 'Profit/Loss -- net of all trades',
         value: getValue(loginAccountPositions, 'summary.totalNet')
       },
       totalPLMonth: {
         label: '30 Day P/L',
-        tile: 'Profit/Loss -- net of all trades over the last 30 days',
+        title: 'Profit/Loss -- net of all trades over the last 30 days',
         value: formatEther(totalPLMonth)
       },
       totalPLDay: {
         label: '1 Day P/L',
-        tile: 'Profit/Loss -- net of all trades over the last day',
+        title: 'Profit/Loss -- net of all trades over the last day',
         value: formatEther(totalPLDay)
       }
     }
