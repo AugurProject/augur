@@ -36,11 +36,14 @@ export default class MarketChart extends Component {
       },
       rangeSelector: { selected: 1 },
       xAxis: {
-        type: 'datetime'
+        type: 'datetime',
+        title: {
+          text: 'Time'
+        }
       },
       yAxis: {
         title: {
-          text: 'price'
+          text: 'ETH'
         }
       },
       legend: {
