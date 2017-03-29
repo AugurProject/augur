@@ -58,7 +58,7 @@ export default class MarketTradeCloseDialog extends Component {
 
     switch (status) {
       case CLOSE_DIALOG_CLOSING:
-        return <span>closing</span>;
+        return <i className="icofont icofont-spinner-alt-4" />;
       case CLOSE_DIALOG_FAILED:
         return <span>failed</span>;
       case CLOSE_DIALOG_PARTIALLY_FAILED:
@@ -76,8 +76,13 @@ export default class MarketTradeCloseDialog extends Component {
             }}
           >
             {closeType === POSITION ?
-              <span>{isFullyClosable ? 'close' : 'minimize'}</span> :
-              'cancel'
+              <span>
+                {isFullyClosable ?
+                  <i className="fa fa-minus-circle" /> :
+                  <i className="fa fa-chevron-circle-down" />
+                }
+              </span> :
+              <i className="fa fa-minus-circle" />
             }
           </button>
         );
@@ -87,8 +92,6 @@ export default class MarketTradeCloseDialog extends Component {
   render() {
     const p = this.props;
     const s = this.state;
-
-    // console.log('### p -- ', p);
 
     const orderID = p.closeType === POSITION ? p.outcomeID : p.orderID;
 
