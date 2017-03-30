@@ -58,7 +58,7 @@ describe("Reporting sequence", function () {
       password = fs.readFileSync(join(process.env.HOME, ".ethereum", ".password")).toString();
       unlockable = augur.rpc.accounts();
       description = madlibs.adjective() + " " + madlibs.noun();
-      periodLength = 600;
+      periodLength = 1200;
       report = {
         binary: 2,
         categorical: 3,
@@ -83,7 +83,7 @@ describe("Reporting sequence", function () {
               assert.isString(newBranch);
               newBranchID = newBranch;
 
-                            // create an event (and market) of each type on the new branch
+              // create an event (and market) of each type on the new branch
               var t = new Date().getTime() / 1000;
               var untilNextPeriod = periodLength - (parseInt(t) % periodLength);
               var expDate = parseInt(t + untilNextPeriod + 1);
@@ -167,7 +167,6 @@ describe("Reporting sequence", function () {
             assert.isAbove(unlocked.length, 0);
             console.log('unlockable:', unlockable);
             console.log('unlocked:', unlocked);
-            // assert.sameMembers(unlockable, unlocked);
             augur.checkPeriod(newBranchID, periodLength, sender, function (err, votePeriod) {
               if (err) console.log("checkPeriod failed:", err);
               assert.isNull(err, JSON.stringify(err));
@@ -286,7 +285,6 @@ describe("Reporting sequence", function () {
             assert.isNull(err, JSON.stringify(err));
             assert.isArray(unlocked);
             assert.isAbove(unlocked.length, 0);
-            // assert.sameMembers(unlockable, unlocked);
             augur.useAccount(sender);
             async.forEachOf(events, function (event, type, nextEvent) {
               if (DEBUG) printReportingStatus(event, "[" + type  + "] Submitting report");
@@ -343,7 +341,7 @@ describe("Reporting sequence", function () {
                           },
                           onSuccess: function (res) {
                             if (DEBUG) {
-                              console.log("getReport:", {
+                              console.log("getReport params:", {
                                 branch: newBranchID,
                                 period: period,
                                 event: event,
@@ -402,7 +400,6 @@ describe("Reporting sequence", function () {
             assert.isNull(err, JSON.stringify(err));
             assert.isArray(unlocked);
             assert.isAbove(unlocked.length, 0);
-            // assert.sameMembers(unlockable, unlocked);
             augur.checkPeriod(newBranchID, periodLength, sender, function (err, votePeriod) {
               assert.isNull(err, JSON.stringify(err));
               if (DEBUG) printReportingStatus(eventID, "After checkPeriod");
@@ -413,87 +410,27 @@ describe("Reporting sequence", function () {
             });
           });
         });
-        it("closeMarket + penalizeWrong", function (done) {
-          this.timeout(tools.TIMEOUT*100);
+        it("claimMarketsProceeds", function (done) {
+          this.timeout(tools.TIMEOUT*3);
           augur.useAccount(sender);
           async.forEachOf(events, function (event, type, nextEvent) {
             if (DEBUG) printReportingStatus(event, "[" + type  + "] Penalizing incorrect reports for event " + event);
-            augur.rpc.personal("unlockAccount", [sender, password], function (res) {
-              if (res && res.error) return nextEvent(res);
-              augur.penalizeWrong({
-                branch: newBranchID,
-                event: event,
-                onSent: function (res) {
-                  assert.isNull(res.callReturn);
-                },
-                onSuccess: function (res) {
-                  assert.strictEqual(res.callReturn, "1");
-                  if (DEBUG) {
-                    printReportingStatus(event, "[" + type  + "] Event " + event + " penalized");
-                    console.log(chalk.white.dim("penalizeWrong return value:"), chalk.cyan(res.callReturn));
-                  }
-                  if (DEBUG) printReportingStatus(event, "[" + type  + "] Closing market " + markets[type]);
-                  augur.closeMarket({
-                    branch: newBranchID,
-                    market: markets[type],
-                    sender: sender,
-                    onSent: function (res) {
-                      assert.isNull(res.callReturn);
-                    },
-                    onSuccess: function (res) {
-                      assert.strictEqual(res.callReturn, "1");
-                      if (DEBUG) {
-                        printReportingStatus(event, "[" + type  + "] Market closed");
-                        console.log(chalk.white.dim("closeMarket txHash:"), chalk.green(res.hash));
-                        console.log(chalk.white.dim("closeMarket return value:"), chalk.cyan(res.callReturn));
-                      }
-                      var winningOutcomes = augur.getWinningOutcomes(markets[type]);
-                      var eventOutcome = augur.getOutcome(event);
-                      if (DEBUG) {
-                        console.log("winningOutcomes:", winningOutcomes);
-                        console.log("event", event, "outcome:", eventOutcome);
-                        console.log("expected outcome:", report[type]);
-                      }
-                      assert(parseInt(winningOutcomes[0]) !== 0);
-                      assert(parseInt(eventOutcome) !== 0);
-                      assert.strictEqual(Math.round(parseFloat(eventOutcome)), report[type]);
-                      if (type != "scalar") {
-                        assert.strictEqual(parseInt(winningOutcomes[0]), report[type]);
-                      }
-                      nextEvent();
-                    },
-                    onFailed: function (err) {
-                      if (DEBUG) {
-                        printReportingStatus(event, "closeMarket failed");
-                        console.error(chalk.red.bold("closeMarket error:"), err);
-                      }
-                      nextEvent(new Error(tools.pp(err)));
-                    }
-                  });
-                },
-                onFailed: function (err) {
-                  if (DEBUG) {
-                    printReportingStatus(event, "penalizeWrong failed");
-                    console.error(chalk.red.bold("penalizeWrong error:"), err);
-                  }
-                  nextEvent(new Error(tools.pp(err)));
-                }
-              });
-            });
-          }, function (e) {
-            if (e) return done(e);
+            augur.options.debug.reporting = true;
             augur.rpc.personal("unlockAccount", [unlockable[1], password], function (res) {
-              if (res && res.error) return done(new Error(tools.pp(res)));
-              var claimable = [markets.binary, markets.categorical, markets.scalar];
+              if (res && res.error) return nextEvent(new Error(tools.pp(res)));
+              var claimable = [
+                {id: markets.binary},
+                {id: markets.categorical},
+                {id: markets.scalar}
+              ];
               augur.claimMarketsProceeds(newBranchID, claimable, function (err, claimed) {
                 assert.isNull(err, "claimMarketsProceeds: " + JSON.stringify(err));
                 console.log('claimable:', claimable);
                 console.log('claimed:', claimed);
-                assert.sameMembers(claimable, claimed);
-                done();
+                nextEvent();
               });
             });
-          });
+          }, done);  
         });
       });
 
@@ -522,7 +459,6 @@ describe("Reporting sequence", function () {
             assert.isNull(err, JSON.stringify(err));
             assert.isArray(unlocked);
             assert.isAbove(unlocked.length, 0);
-                        // assert.sameMembers(unlockable, unlocked);
             augur.useAccount(sender);
             async.forEachOf(events, function (event, type, nextEvent) {
               augur.rpc.personal("unlockAccount", [sender, password], function (res) {
