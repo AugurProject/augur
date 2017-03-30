@@ -204,8 +204,8 @@ var cannedMarkets = [{
   extraInfo: "The Daily Dow market lives again! https://en.wikipedia.org/wiki/Dow_Jones_Industrial_Average",
   resolution: "https://www.google.com/finance?q=INDEXDJX:.DJI"
 }, {
-  description: "Will Augur's live release happen by the end of March, 2017?",
-  expDate: parseInt(new Date("4/1/2017").getTime() / 1000, 10),
+  description: "Will Augur's live release happen by the end of August, 2017?",
+  expDate: parseInt(new Date("9/1/2017").getTime() / 1000, 10),
   minValue: 1,
   maxValue: 2,
   numOutcomes: 2,
