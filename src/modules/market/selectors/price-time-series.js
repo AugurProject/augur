@@ -13,7 +13,6 @@ export const selectPriceTimeSeries = memoizerific(1)((outcomes, marketPriceHisto
   }
 
   const priceTimeSeries = outcomes.reduce((p, outcome, i) => {
-    console.log('### price time seris outcome', outcome);
     p[i] = {};
     p[i].id = outcome.id;
     p[i].name = outcome.name;
