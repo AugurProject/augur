@@ -1,4 +1,4 @@
-import memoizerific from 'memoizerific';
+import memoize from 'memoizee';
 
 import store from 'src/store';
 
@@ -16,7 +16,7 @@ import { formatShares, formatEther } from 'utils/format-number';
  * @param {String} outcomeID
  * @param {Object} marketOrderBook
  */
-export const selectAggregateOrderBook = memoizerific(100)((outcomeID, marketOrderBook, orderCancellation) => {
+export const selectAggregateOrderBook = memoize((outcomeID, marketOrderBook, orderCancellation) => {
   if (marketOrderBook == null) {
     return {
       [BIDS]: [],
@@ -28,9 +28,9 @@ export const selectAggregateOrderBook = memoizerific(100)((outcomeID, marketOrde
     bids: selectAggregatePricePoints(outcomeID, marketOrderBook.buy, orderCancellation).sort(sortPricePointsByPriceDesc),
     asks: selectAggregatePricePoints(outcomeID, marketOrderBook.sell, orderCancellation).sort(sortPricePointsByPriceAsc)
   };
-});
+}, { max: 100 });
 
-export const selectTopBid = memoizerific(10)((marketOrderBook, excludeCurrentUser) => {
+export const selectTopBid = memoize((marketOrderBook, excludeCurrentUser) => {
   let topBid;
   if (excludeCurrentUser) {
     const numBids = marketOrderBook.bids.length;
@@ -46,9 +46,9 @@ export const selectTopBid = memoizerific(10)((marketOrderBook, excludeCurrentUse
     topBid = marketOrderBook.bids[0];
   }
   return topBid != null ? topBid : null;
-});
+}, { max: 10 });
 
-export const selectTopAsk = memoizerific(10)((marketOrderBook, excludeCurrentUser) => {
+export const selectTopAsk = memoize((marketOrderBook, excludeCurrentUser) => {
   let topAsk;
   if (excludeCurrentUser) {
     const numAsks = marketOrderBook.asks.length;
@@ -64,7 +64,7 @@ export const selectTopAsk = memoizerific(10)((marketOrderBook, excludeCurrentUse
     topAsk = marketOrderBook.asks[0];
   }
   return topAsk != null ? topAsk : null;
-});
+}, { max: 10 });
 
 /**
  * Selects price points with aggregated amount of shares
@@ -72,7 +72,7 @@ export const selectTopAsk = memoizerific(10)((marketOrderBook, excludeCurrentUse
  * @param {String} outcomeID
  * @param {{String, Object}} orders Key is order ID, value is order
  */
-const selectAggregatePricePoints = memoizerific(100)((outcomeID, orders, orderCancellation) => {
+const selectAggregatePricePoints = memoize((outcomeID, orders, orderCancellation) => {
   if (orders == null) {
     return [];
   }
@@ -96,11 +96,9 @@ const selectAggregatePricePoints = memoizerific(100)((outcomeID, orders, orderCa
       };
       return obj;
     });
-});
+}, { max: 100 });
 
 /**
- *
- *
  * @param {Object} aggregateOrdersPerPrice
  * @param order
  * @return {Object} aggregateOrdersPerPrice

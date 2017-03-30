@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import memoizerific from 'memoizerific';
+import memoize from 'memoizee';
 
 import MyPositions from 'modules/my-positions/components/my-positions';
 
@@ -25,6 +25,6 @@ const mapStateToProps = (state) => {
 
 const MyPositionsContainer = connect(mapStateToProps)(MyPositions);
 
-const getPositionsMarkets = memoizerific(1)((positions, openOrders) => Array.from(new Set([...positions.markets, ...openOrders])));
+const getPositionsMarkets = memoize((positions, openOrders) => Array.from(new Set([...positions.markets, ...openOrders])), { max: 1 });
 
 export default MyPositionsContainer;

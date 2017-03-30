@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import store from 'src/store';
+import { selectTopicsState } from 'src/select-state';
 import { selectTopicLink } from '../../../modules/link/selectors/links';
 
 export default function () {
@@ -12,7 +13,7 @@ export default function () {
 }
 
 export const selectTopics = createSelector(
-  state => state.topics,
+  selectTopicsState,
   topics => Object.keys(topics || {})
     .map(topic => ({ topic, popularity: topics[topic] }))
     .sort(popularityDifference)

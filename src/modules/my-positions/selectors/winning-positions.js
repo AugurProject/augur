@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import store from 'src/store';
+import { selectOutcomesDataState } from 'src/select-state';
 import { abi } from '../../../services/augurjs';
 import selectLoginAccountPositions from '../../my-positions/selectors/login-account-positions';
 import { ZERO } from '../../trade/constants/numbers';
@@ -10,7 +11,7 @@ export default function () {
 }
 
 export const selectClosedMarketsWithWinningShares = createSelector(
-  state => state.outcomesData,
+  selectOutcomesDataState,
   selectLoginAccountPositions,
   (outcomesData, loginAccountPositions) => {
     const markets = loginAccountPositions.markets;

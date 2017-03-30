@@ -1,4 +1,4 @@
-import memoizerific from 'memoizerific';
+import memoize from 'memoizee';
 
 /**
  * Prepares data structure for Highcharts
@@ -7,7 +7,7 @@ import memoizerific from 'memoizerific';
  * @param {Object} marketPriceHistory
  * @return {Array}
  */
-export const selectPriceTimeSeries = memoizerific(1)((outcomes, marketPriceHistory) => {
+export const selectPriceTimeSeries = memoize((outcomes, marketPriceHistory) => {
   if (marketPriceHistory == null) {
     return [];
   }
@@ -23,4 +23,4 @@ export const selectPriceTimeSeries = memoizerific(1)((outcomes, marketPriceHisto
       ])
     };
   });
-});
+}, { max: 1 });

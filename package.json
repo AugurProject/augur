@@ -36,7 +36,7 @@
     "helmet": "3.5.0",
     "highcharts": "5.0.9",
     "keythereum": "0.4.6",
-    "memoizerific": "1.11.2",
+    "memoizee": "0.4.4",
     "moment": "2.18.0",
     "prerender-node": "2.7.0",
     "qrcode.react": "0.6.1",

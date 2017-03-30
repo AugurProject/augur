@@ -1,4 +1,4 @@
-import memorizerific from 'memoizerific';
+import memoize from 'memoizee';
 
 import store from 'src/store';
 
@@ -15,7 +15,7 @@ export default () => {
   };
 };
 
-const selectClosePositionStatus = memorizerific(5)((closePositionTradeGroups, transactionsData) => {
+const selectClosePositionStatus = memoize((closePositionTradeGroups, transactionsData) => {
   const statuses = Object.keys(closePositionTradeGroups).reduce((p, marketID) => {
     const outcomeStatuses = Object.keys(closePositionTradeGroups[marketID]).reduce((p, outcomeID) => {
       const closePositionTransactionIDs = closePositionTradeGroups[marketID][outcomeID].reduce((p, tradeGroupID) => {
@@ -79,7 +79,7 @@ const selectClosePositionStatus = memorizerific(5)((closePositionTradeGroups, tr
   }, {});
 
   return statuses;
-});
+}, { max: 5 });
 
 function delayClearTradeGroupIDs(marketID, outcomeID) {
   // waits, then clears tradeIDs from closePositionTradeGroups

@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import { selectLoginAccountState } from 'src/select-state';
 import { augur } from 'services/augurjs';
 import { formatRep, formatEther } from 'utils/format-number';
 import generateDownloadAccountLink from 'modules/auth/actions/generate-download-account-link';
@@ -10,7 +11,7 @@ export default function () {
 }
 
 export const selectLoginAccount = createSelector(
-  state => state.loginAccount,
+  selectLoginAccountState,
   (loginAccount) => {
     const cleanAddress = loginAccount.address ? loginAccount.address.replace('0x', '') : undefined;
     const prettyAddress = cleanAddress ? `${cleanAddress.substring(0, 4)}...${cleanAddress.substring(cleanAddress.length - 4)}` : undefined;

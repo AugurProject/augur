@@ -1,4 +1,4 @@
-import memoizerific from 'memoizerific';
+import memoize from 'memoizee';
 import { abi } from '../../../services/augurjs';
 import { ZERO } from '../../trade/constants/numbers';
 import store from '../../../store';
@@ -25,9 +25,9 @@ export const selectMyMarket = (market) => {
   return selectLoginAccountMarkets([market]);
 };
 
-export const selectFilteredMarkets = memoizerific(1)((allMarkets, authorID) => allMarkets.filter(market => market.author === authorID));
+export const selectFilteredMarkets = memoize((allMarkets, authorID) => allMarkets.filter(market => market.author === authorID), { max: 1 });
 
-export const selectLoginAccountMarkets = memoizerific(1)((authorOwnedMarkets) => {
+export const selectLoginAccountMarkets = memoize((authorOwnedMarkets) => {
   const { marketTrades, priceHistory, marketCreatorFees } = store.getState();
 
   const markets = [];
@@ -54,15 +54,15 @@ export const selectLoginAccountMarkets = memoizerific(1)((authorOwnedMarkets) =>
   });
 
   return markets;
-});
+}, { max: 1 });
 
-export const selectNumberOfTrades = memoizerific(1)((trades) => {
+export const selectNumberOfTrades = memoize((trades) => {
   if (!trades) {
     return 0;
   }
 
   return Object.keys(trades).reduce((p, outcome) => (p + trades[outcome].length), 0);
-});
+}, { max: 1 });
 
 export const selectOpenVolume = (market) => {
   let openVolume = ZERO;
@@ -78,7 +78,7 @@ export const selectOpenVolume = (market) => {
   return openVolume;
 };
 
-export const selectAverageTradeSize = memoizerific(1)((marketPriceHistory) => {
+export const selectAverageTradeSize = memoize((marketPriceHistory) => {
   if (!marketPriceHistory) {
     return 0;
   }
@@ -101,4 +101,4 @@ export const selectAverageTradeSize = memoizerific(1)((marketPriceHistory) => {
   }, initialState);
 
   return priceHistoryTotals.shares.dividedBy(abi.bignum(priceHistoryTotals.trades));
-});
+}, { max: 1 });

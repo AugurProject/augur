@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
-import store from '../../../store';
+import store from 'src/store';
+import { selectTransactionsDataState } from 'src/select-state';
 import { PENDING, SUCCESS, FAILED, INTERRUPTED } from '../../transactions/constants/statuses';
 
 export default function () {
@@ -7,7 +8,7 @@ export default function () {
 }
 
 export const selectIsWorking = createSelector(
-  state => state.transactionsData,
+  selectTransactionsDataState,
   transactionsData => Object.keys(transactionsData || {}).some(id =>
     [PENDING, SUCCESS, FAILED, INTERRUPTED].indexOf(transactionsData[id].status) < 0
   )

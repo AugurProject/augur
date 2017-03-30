@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
 import store from 'src/store';
+import { selectAccountTradesState, selectBlockchainState, selectOutcomesDataState } from 'src/select-state';
 import { augur, abi } from 'services/augurjs';
 import { dateToBlock } from 'utils/date-to-block-to-date';
 import { formatEther } from 'utils/format-number';
@@ -19,9 +20,9 @@ export const selectOutcomeLastPrice = (marketOutcomeData, outcomeID) => {
 
 // Period is in days
 export const createPeriodPLSelector = period => createSelector(
-  state => state.accountTrades,
-  state => state.blockchain,
-  state => state.outcomesData,
+  selectAccountTradesState,
+  selectBlockchainState,
+  selectOutcomesDataState,
   (accountTrades, blockchain, outcomesData) => {
     if (!accountTrades || !blockchain) return null;
     const periodDate = new Date(Date.now() - (period*24*60*60*1000));
@@ -40,9 +41,9 @@ export const createPeriodPLSelector = period => createSelector(
 );
 
 export const selectCoreStats = createSelector(
-  state => state.accountTrades,
-  state => state.blockchain,
-  state => state.outcomesData,
+  selectAccountTradesState,
+  selectBlockchainState,
+  selectOutcomesDataState,
   selectLoginAccount,
   selectLoginAccountPositions,
   createPeriodPLSelector(30),

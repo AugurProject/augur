@@ -1,5 +1,6 @@
 import { createSelector } from 'reselect';
-import store from '../../../store';
+import store from 'src/store';
+import { selectTransactionsDataState } from 'src/select-state';
 import { formatShares, formatEther, formatRep } from '../../../utils/format-number';
 import { selectMarketLink } from '../../link/selectors/links';
 
@@ -8,7 +9,7 @@ export default function () {
 }
 
 export const selectTransactions = createSelector(
-  state => state.transactionsData,
+  selectTransactionsDataState,
   transactionsData => Object.keys(transactionsData || {})
     .sort((a, b) => {
       const timestampA = transactionsData[a].timestamp;

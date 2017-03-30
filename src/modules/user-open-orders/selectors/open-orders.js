@@ -1,11 +1,11 @@
-import memoizerific from 'memoizerific';
+import memoize from 'memoizee';
 
 export default function () {
   const { allMarkets } = require('../../../selectors');
   return selectOpenOrdersMarkets(allMarkets);
 }
 
-export const selectOpenOrdersMarkets = memoizerific(1)((markets) => {
+export const selectOpenOrdersMarkets = memoize((markets) => {
   const openOrdersMarkets = [];
   if (markets) {
     const numMarkets = markets.length;
@@ -14,7 +14,7 @@ export const selectOpenOrdersMarkets = memoizerific(1)((markets) => {
     }
   }
   return openOrdersMarkets;
-});
+}, { max: 1 });
 
 const hasOpenOrdersInMarket = (market) => {
   const numOutcomes = market.outcomes.length;

@@ -1,4 +1,4 @@
-import memoizerific from 'memoizerific';
+import memoize from 'memoizee';
 import BigNumber from 'bignumber.js';
 import { abi } from 'services/augurjs';
 
@@ -33,7 +33,7 @@ export default function (outcomeId, marketOrderBook) {
  *
  * @return {Array}
  */
-const selectUserOpenOrders = memoizerific(10)((outcomeID, loginAccount, marketOrderBook, orderCancellation) => {
+const selectUserOpenOrders = memoize((outcomeID, loginAccount, marketOrderBook, orderCancellation) => {
   const isUserLoggedIn = loginAccount.address != null;
 
   if (!isUserLoggedIn || marketOrderBook == null) {
@@ -45,7 +45,7 @@ const selectUserOpenOrders = memoizerific(10)((outcomeID, loginAccount, marketOr
   const userAsks = marketOrderBook.sell == null ? [] : getUserOpenOrders(marketOrderBook.sell, ASK, outcomeID, loginAccount.address, orderCancellation);
 
   return userAsks.concat(userBids);
-});
+}, { max: 10 });
 
 /**
  * Returns user's order for specified outcome sorted by price

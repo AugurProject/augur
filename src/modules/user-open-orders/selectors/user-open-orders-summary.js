@@ -1,4 +1,4 @@
-import memoizerific from 'memoizerific';
+import memoize from 'memoizee';
 import store from '../../../store';
 import { formatNumber } from '../../../utils/format-number';
 
@@ -8,7 +8,7 @@ export default function (outcomes) {
   return selectUserOpenOrdersSummary(outcomes, loginAccount);
 }
 
-const selectUserOpenOrdersSummary = memoizerific(10)((outcomes, loginAccount) => {
+const selectUserOpenOrdersSummary = memoize((outcomes, loginAccount) => {
   if (loginAccount.address == null) {
     return null;
   }
@@ -20,4 +20,4 @@ const selectUserOpenOrdersSummary = memoizerific(10)((outcomes, loginAccount) =>
   return {
     openOrdersCount: formatNumber(openOrdersCount, { denomination: 'Open Orders' })
   };
-});
+}, { max: 10 });
