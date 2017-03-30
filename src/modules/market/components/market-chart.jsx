@@ -1,7 +1,8 @@
 import React, { Component, PropTypes } from 'react';
-import ReactHighcharts from 'react-highcharts';
+import Highcharts from 'highcharts';
+import noData from 'highcharts/modules/no-data-to-display';
 
-import NullStateMessage from 'modules/common/components/null-state-message';
+import debounce from 'utils/debounce';
 
 export default class MarketChart extends Component {
   static propTypes = {
@@ -11,52 +12,87 @@ export default class MarketChart extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      nullMessage: 'No Completed Trades'
-    };
+    this.updateChart = debounce(this.updateChart.bind(this));
   }
 
-  shouldComponentUpdate(nextProps) {
-    if (nextProps.series.length === this.props.series.length) return false;
+  componentDidMount() {
+    noData(Highcharts);
 
-    return true;
-  }
+    Highcharts.setOptions({
+      lang: {
+        thousandsSep: ','
+      }
+    });
 
-  render() {
-    const p = this.props;
-    const s = this.state;
-
-    const config = {
+    this.marketPriceChart = new Highcharts.Chart('market_price_history_chart', {
       title: {
-        text: ''
+        text: null
+      },
+      chart: {
+        height: 300 // mirror this height in css container height declaration
+      },
+      lang: {
+        noData: 'No price history'
       },
       rangeSelector: { selected: 1 },
       xAxis: {
-        type: 'datetime'
+        type: 'datetime',
+        title: {
+          text: 'Time'
+        }
       },
       yAxis: {
         title: {
-          text: 'price'
-        },
-        min: 0,
-        max: 1
+          text: 'ETH'
+        }
       },
       legend: {
         enabled: true
       },
       tooltip: {
-        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b><br/>',
+        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y} ETH</b><br/>',
         valueDecimals: 2
       },
-      series: p.series
-    };
+      credits: {
+        enabled: false
+      }
+    });
 
+    window.addEventListener('resize', this.updateChart);
+
+    this.updateChart();
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.series !== this.props.series) this.updateChart();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updateChart);
+  }
+
+  updateChart() {
+    (this.props.series || []).forEach((series, i) => {
+      if (this.marketPriceChart.series[i] == null) {
+        this.marketPriceChart.addSeries({
+          type: 'line',
+          name: series.name,
+          data: series.data
+        }, false);
+      } else {
+        this.marketPriceChart.series[i].setData(series.data, false);
+      }
+    });
+
+    this.marketPriceChart.redraw();
+  }
+
+  render() {
     return (
-      <article className="price-history-chart market-content-scrollable">
-        {!p.series || !p.series.length ?
-          <NullStateMessage message={s.nullMessage} /> :
-          <ReactHighcharts config={config} />
-        }
+      <article className="market-price-history-chart market-content-scrollable">
+        <div
+          id="market_price_history_chart"
+        />
       </article>
     );
   }
