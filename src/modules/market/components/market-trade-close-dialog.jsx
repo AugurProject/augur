@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 
+import Spinner from 'modules/common/components/spinner';
 import EmDash from 'modules/common/components/em-dash';
 
 import { POSITION, ORDER } from 'modules/market/constants/trade-close-type';
@@ -58,7 +59,7 @@ export default class MarketTradeCloseDialog extends Component {
 
     switch (status) {
       case CLOSE_DIALOG_CLOSING:
-        return <i className="icofont icofont-spinner-alt-4" />;
+        return <Spinner />
       case CLOSE_DIALOG_FAILED:
         return <span>failed</span>;
       case CLOSE_DIALOG_PARTIALLY_FAILED:
