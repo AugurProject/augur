@@ -396,35 +396,6 @@ var cannedMarkets = [{
   extraInfo: "Will antibiotic pan-resistance lead to a massive resurgence of infectious diseases?",
   resolution: "CDC"
 }, {
-  description: "Will Tiger Woods win the Genesis Open?",
-  expDate: parseInt(new Date("2-19-2017").getTime() / 1000, 10),
-  minValue: 1,
-  maxValue: 2,
-  numOutcomes: 2,
-  takerFee: "0.02",
-  makerFee: "0.01",
-  tags: ["sports", "golf", "PGA"],
-  extraInfo: "",
-  resolution: "espn.com",
-  orderBook: {
-    buy: {
-      "2": [
-        {shares: "100", price: "0.14"},
-        {shares: "250", price: "0.11"},
-        {shares: "400", price: "0.1"}
-      ],
-      "1": []
-    },
-    sell: {
-      "2": [
-        {shares: "300", price: "0.2"},
-        {shares: "200", price: "0.23"},
-        {shares: "500", price: "0.26"}
-      ],
-      "1": []
-    }
-  }
-}, {
   description: "Who will the Cleveland Browns select with the first pick in the NFL draft?~|>Myles Garrett|Any Quarterback|Reuben Foster|Trade The Pick",
   expDate: parseInt(new Date("4-27-2017").getTime() / 1000, 10),
   minValue: 1,
@@ -478,71 +449,6 @@ var cannedMarkets = [{
         {shares: "150", price: "0.23"},
         {shares: "100", price: "0.26"},
         {shares: "300", price: "0.29"}
-      ]
-    }
-  }
-}, {
-  description: "What will win the Grammy Award for Album of the Year?~|>Lemonade - Beyonce|Views - Drake|Purpose - Justin Beiber|25 - Adele|A Sailors Guide to Earth - Sturgill Simpson",
-  expDate: parseInt(new Date("2-12-2017").getTime() / 1000, 10),
-  minValue: 1,
-  maxValue: 5,
-  numOutcomes: 5,
-  takerFee: "0.02",
-  makerFee: "0.01",
-  tags: ["music", "Grammys", "award"],
-  extraInfo: "",
-  resolution: "grammy.com",
-  orderBook: {
-    buy: {
-      "1": [
-        {shares: "100", price: "0.27"},
-        {shares: "150", price: "0.25"},
-        {shares: "200", price: "0.23"}
-      ],
-      "2": [
-        {shares: "150", price: "0.17"},
-        {shares: "250", price: "0.15"},
-        {shares: "200", price: "0.12"}
-      ],
-      "3": [
-        {shares: "100", price: "0.13"},
-        {shares: "150", price: "0.1"},
-        {shares: "200", price: "0.08"}
-      ],
-      "4": [
-        {shares: "100", price: "0.32"},
-        {shares: "200", price: "0.28"},
-        {shares: "300", price: "0.25"}
-      ],
-      "5": [
-        {shares: "100", price: "0.08"},
-        {shares: "100", price: "0.05"}
-      ]
-    },
-    sell: {
-      "1": [
-        {shares: "150", price: "0.3"},
-        {shares: "200", price: "0.33"},
-        {shares: "250", price: "0.36"}
-      ],
-      "2": [
-        {shares: "100", price: "0.21"},
-        {shares: "100", price: "0.24"},
-        {shares: "200", price: "0.27"}
-      ],
-      "3": [
-        {shares: "150", price: "0.17"},
-        {shares: "250", price: "0.2"},
-        {shares: "150", price: "0.23"}
-      ],
-      "4": [
-        {shares: "150", price: "0.35"},
-        {shares: "100", price: "0.38"},
-        {shares: "300", price: "0.41"}
-      ],
-      "5": [
-        {shares: "100", price: "0.11"},
-        {shares: "500", price: "0.13"}
       ]
     }
   }
