@@ -325,8 +325,6 @@ export default class CreateMarketFormOrderBook extends Component {
       Object.keys(orderBook[outcome]).forEach((type) => {
         if (p[outcome][type] == null) p[outcome][type] = [];
 
-        // let totalQuantity = orderBook[outcome][type].reduce((p, order) => p.plus(order.quantity), new BigNumber(0));
-
         let totalQuantity = new BigNumber(0);
 
         orderBook[outcome][type].forEach((order) => {
