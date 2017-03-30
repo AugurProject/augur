@@ -45,7 +45,8 @@ describe('modules/portfolio/selectors/nav-items', () => {
   const selectors = {
     selectMyPositionsSummary: () => {},
     selectMyMarketsSummary: () => {},
-    selectMyReportsSummary: () => {}
+    selectMyReportsSummary: () => {},
+    selectLinks: () => {}
   };
 
   const stubbedMyPositionsSummary = sinon.stub(selectors, 'selectMyPositionsSummary', () => (
@@ -68,10 +69,13 @@ describe('modules/portfolio/selectors/nav-items', () => {
     }
   ));
 
+  const stubbedLinks = sinon.stub(selectors, 'selectLinks', () => stubbedSelectors.links);
+
   const proxiedSelector = proxyquire('../../../src/modules/portfolio/selectors/portfolio-nav-items', {
     '../../my-positions/selectors/my-positions-summary': stubbedMyPositionsSummary,
     '../../my-markets/selectors/my-markets-summary': stubbedMyMarketsSummary,
     '../../my-reports/selectors/my-reports-summary': stubbedMyReportsSummary,
+    '../../link/selectors/links': stubbedLinks,
     '../../../selectors': stubbedSelectors
   });
 
