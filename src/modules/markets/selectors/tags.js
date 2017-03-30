@@ -1,4 +1,4 @@
-import memoizerific from 'memoizerific';
+import memoize from 'memoizee';
 import { toggleTag } from '../../markets/actions/toggle-tag';
 import store from '../../../store';
 
@@ -9,7 +9,7 @@ export default function () {
   return selectTags(filteredMarkets, selectedTags, store.dispatch);
 }
 
-export const selectTags = memoizerific(1)((markets, selectedTags, dispatch) => {
+export const selectTags = memoize((markets, selectedTags, dispatch) => {
   const tagCounts = {};
 
   // count matches for each filter and tag
@@ -43,4 +43,4 @@ export const selectTags = memoizerific(1)((markets, selectedTags, dispatch) => {
     });
 
   return tags;
-});
+}, { max: 1 });

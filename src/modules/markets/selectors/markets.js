@@ -1,4 +1,4 @@
-import memoizerific from 'memoizerific';
+import memoize from 'memoizee';
 import { MY_POSITIONS } from '../../app/constants/views';
 import { PENDING_REPORTS } from '../../markets/constants/markets-subset';
 
@@ -26,6 +26,7 @@ export default function () {
   return markets;
 }
 
-export const selectPaginated = memoizerific(1)((markets, pageNum, numPerPage) =>
-  markets.slice((pageNum - 1) * numPerPage, pageNum * numPerPage)
+export const selectPaginated = memoize((markets, pageNum, numPerPage) =>
+  markets.slice((pageNum - 1) * numPerPage, pageNum * numPerPage),
+  { max: 1 }
 );

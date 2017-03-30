@@ -1,4 +1,4 @@
-import memoizerific from 'memoizerific';
+import memoize from 'memoizee';
 
 import { MY_POSITIONS } from '../../app/constants/views';
 import { FAVORITES, PENDING_REPORTS } from '../../markets/constants/markets-subset';
@@ -18,15 +18,17 @@ export default function () {
   );
 }
 
-export const selectPendingReports = memoizerific(1)(markets =>
-  markets.filter(market => !!market.isPendingReport)
+export const selectPendingReports = memoize(markets =>
+  markets.filter(market => !!market.isPendingReport),
+  { max: 1 }
 );
 
-export const selectPositions = memoizerific(1)(markets =>
-  markets.filter(market => market.positionsSummary && market.positionsSummary.qtyShares.value)
+export const selectPositions = memoize(markets =>
+  markets.filter(market => market.positionsSummary && market.positionsSummary.qtyShares.value),
+  { max: 1 }
 );
 
-export const selectUnpaginatedMarkets = memoizerific(1)((allMarkets, filteredMarkets, favoriteMarkets, activeView, selectedMarketsHeader) => {
+export const selectUnpaginatedMarkets = memoize((allMarkets, filteredMarkets, favoriteMarkets, activeView, selectedMarketsHeader) => {
   if (activeView === MY_POSITIONS) {
     return selectPositions(allMarkets);
   }
@@ -40,4 +42,4 @@ export const selectUnpaginatedMarkets = memoizerific(1)((allMarkets, filteredMar
   }
 
   return filteredMarkets;
-});
+}, { max: 1 });
