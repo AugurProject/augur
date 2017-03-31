@@ -20,7 +20,7 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
     '0xMARKET2': abi.bignum('11')
   };
 
-  const { loginAccount, allMarkets } = store.getState();
+  const { allMarkets } = store.getState();
 
   const mockedLinks = {
     selectMarketLink: () => {}
@@ -34,15 +34,14 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
     }
   ));
 
-  const stubbedSelectors = {
-    loginAccount,
-    allMarkets
+  const MarketsAll = {
+    selectMarkets: () => allMarkets
   };
 
   const proxiedSelector = proxyquire('../../../src/modules/my-markets/selectors/my-markets', {
     '../../link/selectors/links': mockedLinks,
-    '../../../selectors': stubbedSelectors,
-    '../../../store': store
+    '../../../store': store,
+    '../../markets/selectors/markets-all': MarketsAll
   });
 
   let actual = proxiedSelector.default();
@@ -88,8 +87,8 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
 
   it('should deliver the expected shape to augur-ui-react-components', () => {
     const proxiedSelector = proxyquire('../../../src/modules/my-markets/selectors/my-markets', {
-      '../../../selectors': stubbedSelectors,
-      '../../../store': store
+      '../../../store': store,
+      '../../markets/selectors/markets-all': MarketsAll
     });
 
     actual = proxiedSelector.default();

@@ -341,7 +341,7 @@ export function assembleMarket(
       }
 
       return market;
-    }, { max: 1, async: true });
+    }, { max: 1 });
   }
 
   return assembledMarketsCache[marketID].apply(this, arguments); // eslint-disable-line prefer-rest-params
