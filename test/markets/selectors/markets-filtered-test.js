@@ -61,9 +61,13 @@ describe(`modules/markets/selectors/markets-filtered.js`, () => {
     ]
   };
 
+  const Markets = {
+    selectMarkets: () => mockSelectors.allMarkets
+  };
+
   const selector = proxyquire('../../../src/modules/markets/selectors/markets-filtered.js', {
     '../../../store': store,
-    '../../../selectors': mockSelectors
+    '../../markets/selectors/markets-all': Markets
   });
 
   filteredMarkets = selector.default;

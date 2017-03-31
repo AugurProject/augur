@@ -1,6 +1,8 @@
-import { createSelector } from 'reselect';
+import memoize from 'memoizee';
+import { createSelectorCreator } from 'reselect';
 import store from 'src/store';
-import { selectBranchState, selectKeywordsState, selectSelectedFilterSortState, selectSelectedTagsState, selectSelectedTopicState } from 'src/select-state';
+import { selectKeywordsState, selectSelectedFilterSortState, selectSelectedTagsState, selectSelectedTopicState } from 'src/select-state';
+import { selectBranchReportPeriod } from '../../branch/selectors/branch';
 import { selectMarkets } from '../../markets/selectors/markets-all';
 import { cleanKeywordsArray } from '../../../utils/clean-keywords';
 import { FILTER_TYPE_OPEN, FILTER_TYPE_CLOSED, FILTER_TYPE_REPORTING } from '../../markets/constants/filter-sort';
@@ -10,18 +12,24 @@ export default function () {
   return selectFilteredMarkets(store.getState());
 }
 
-export const createFilteredMarketsSelector = selectedFilterSort => createSelector(
+export const selectFilteredMarkets = createSelectorCreator(memoize, { max: 3 })(
   selectMarkets,
   selectKeywordsState,
   selectSelectedTagsState,
   selectSelectedTopicState,
-  selectBranchState,
-  (markets, keywords, selectedTags, selectedTopic, branch) => (
-    markets.filter(market => isMarketFiltersMatch(market, keywords, selectedFilterSort, selectedTags, selectedTopic, branch.reportPeriod))
+  selectSelectedFilterSortState,
+  selectBranchReportPeriod,
+  (markets, keywords, selectedTags, selectedTopic, selectedFilterSort, reportPeriod) => (
+    markets.filter(market => isMarketFiltersMatch(
+      market,
+      keywords,
+      selectedFilterSort,
+      selectedTags,
+      selectedTopic,
+      reportPeriod
+    ))
   )
 );
-
-export const selectFilteredMarkets = createSelector(selectSelectedFilterSortState, createFilteredMarketsSelector);
 
 export const isMarketFiltersMatch = (market, keywords, selectedFilterSort, selectedTags, selectedTopic, reportPeriod) => {
 
