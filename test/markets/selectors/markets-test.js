@@ -90,9 +90,13 @@ describe(`modules/markets/selectors/markets.js`, () => {
     }]
   };
 
+  const MarketsUnpaginated = {
+    selectUnpaginatedMarkets: () => mockSelectors.unpaginatedMarkets
+  };
+
   const selector = proxyquire('../../../src/modules/markets/selectors/markets.js', {
     '../../../store': store,
-    '../../../selectors': mockSelectors
+    '../../markets/selectors/markets-unpaginated': MarketsUnpaginated
   });
 
   beforeEach(() => {

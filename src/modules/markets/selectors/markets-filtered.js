@@ -1,8 +1,7 @@
 import memoize from 'memoizee';
 import { createSelectorCreator } from 'reselect';
 import store from 'src/store';
-import { selectKeywordsState, selectSelectedFilterSortState, selectSelectedTagsState, selectSelectedTopicState } from 'src/select-state';
-import { selectBranchReportPeriod } from '../../branch/selectors/branch';
+import { selectKeywordsState, selectSelectedFilterSortState, selectSelectedTagsState, selectSelectedTopicState, selectBranchReportPeriod } from 'src/select-state';
 import { selectMarkets } from '../../markets/selectors/markets-all';
 import { cleanKeywordsArray } from '../../../utils/clean-keywords';
 import { FILTER_TYPE_OPEN, FILTER_TYPE_CLOSED, FILTER_TYPE_REPORTING } from '../../markets/constants/filter-sort';

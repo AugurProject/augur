@@ -1,3 +1,5 @@
+import { createSelector } from 'reselect';
+
 export const selectEnvState = state => state.env;
 export const selectRequestsState = state => state.requests;
 export const selectBlockchainState = state => state.blockchain;
@@ -45,3 +47,18 @@ export const selectScalarMarketsShareDenominationState = state => state.scalarMa
 export const selectClosePositionTradeGroupsState = state => state.closePositionTradeGroups;
 export const selectChatMessagesState = state => state.chatMessages;
 export const selectMarketCreatorFeesState = state => state.marketCreatorFees;
+
+export const selectBranchReportPeriod = createSelector(
+  selectBranchState,
+  branch => branch.reportPeriod
+);
+
+export const selectPaginationSelectedPageNum = createSelector(
+  selectPaginationState,
+  pagination => pagination.selectedPageNum
+);
+
+export const selectPaginationNumPerPage = createSelector(
+  selectPaginationState,
+  pagination => pagination.numPerPage
+);
