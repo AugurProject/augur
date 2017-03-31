@@ -40,7 +40,6 @@ export default function () {
     loginMessageLink: selectLoginMessageLink(loginAccount.address, loginMessage.version, store.dispatch),
     topicsLink: selectTopicsLink(store.dispatch)
   };
-
   // NOTE -- pagination links are a special case.  Reference the pagination selector for how those work.
 }
 
