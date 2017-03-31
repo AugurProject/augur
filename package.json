@@ -24,7 +24,7 @@
     "link": "npm link augur.js && npm link keythereum"
   },
   "dependencies": {
-    "airbitz-core-js-ui": "0.0.14",
+    "airbitz-core-js-ui": "0.1.2",
     "async": "2.1.5",
     "augur.js": "3.15.3",
     "bignumber.js": "4.0.0",
