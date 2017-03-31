@@ -18,16 +18,17 @@ export const selectUnpaginatedMarkets = createSelector(
   selectActiveViewState,
   selectSelectedMarketsHeaderState,
   (allMarkets, filteredMarkets, favoriteMarkets, activeView, selectedMarketsHeader) => {
-    if (activeView === MY_POSITIONS) return selectPositions(allMarkets);
-    if (selectedMarketsHeader === PENDING_REPORTS) return selectPendingReports(allMarkets);
+    // console.log('selectUnpaginated:');
+    // console.log('allMarkets:', allMarkets);
+    // console.log('filteredMarkets:', filteredMarkets);
+    // console.log('favoriteMarkets:', favoriteMarkets);
+    // console.log('activeView:', activeView);
+    // console.log('selectedMarketsHeader:', selectedMarketsHeader);
+    if (activeView === MY_POSITIONS) return selectPositions(store.getState());
+    if (selectedMarketsHeader === PENDING_REPORTS) return selectPendingReports(store.getState());
     if (selectedMarketsHeader === FAVORITES) return favoriteMarkets;
     return filteredMarkets;
   }
-);
-
-export const selectPendingReports = createSelector(
-  selectMarkets,
-  markets => markets.filter(market => !!market.isPendingReport)
 );
 
 export const selectPositions = createSelector(
@@ -35,4 +36,9 @@ export const selectPositions = createSelector(
   markets => markets.filter(market => (
     market.positionsSummary && market.positionsSummary.qtyShares.value
   ))
+);
+
+export const selectPendingReports = createSelector(
+  selectMarkets,
+  markets => markets.filter(market => !!market.isPendingReport)
 );

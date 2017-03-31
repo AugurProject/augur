@@ -1,5 +1,4 @@
-import memoize from 'memoizee';
-import { createSelectorCreator } from 'reselect';
+import { createBigCacheSelector } from 'utils/big-cache-selector';
 import store from 'src/store';
 import { selectKeywordsState, selectSelectedFilterSortState, selectSelectedTagsState, selectSelectedTopicState, selectBranchReportPeriod } from 'src/select-state';
 import { selectMarkets } from '../../markets/selectors/markets-all';
@@ -11,7 +10,7 @@ export default function () {
   return selectFilteredMarkets(store.getState());
 }
 
-export const selectFilteredMarkets = createSelectorCreator(memoize, { max: 3 })(
+export const selectFilteredMarkets = createBigCacheSelector(3)(
   selectMarkets,
   selectKeywordsState,
   selectSelectedTagsState,
