@@ -1,14 +1,15 @@
-import memoizerific from 'memoizerific';
+import { createSelector } from 'reselect';
+import store from 'src/store';
+import { selectTransactionsDataState } from 'src/select-state';
 import { PENDING, SUCCESS, FAILED, INTERRUPTED } from '../../transactions/constants/statuses';
-import store from '../../../store';
 
 export default function () {
-  const { transactionsData } = store.getState();
-  return selectIsWorking(transactionsData);
+  return selectIsWorking(store.getState());
 }
 
-export const selectIsWorking = memoizerific(1)(transactionsData =>
-  Object.keys(transactionsData || {}).some(id =>
+export const selectIsWorking = createSelector(
+  selectTransactionsDataState,
+  transactionsData => Object.keys(transactionsData || {}).some(id =>
     [PENDING, SUCCESS, FAILED, INTERRUPTED].indexOf(transactionsData[id].status) < 0
   )
 );

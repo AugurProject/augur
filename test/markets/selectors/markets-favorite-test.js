@@ -73,8 +73,12 @@ describe(`modules/markets/selectors/markets-favorite.js`, () => {
     }]
   };
 
+  const MarketsAll = {
+    selectMarkets: () => mockSelectors.allMarkets
+  };
+
   const selector = proxyquire('../../../src/modules/markets/selectors/markets-favorite.js', {
-    '../../../selectors': mockSelectors
+    '../../markets/selectors/markets-all': MarketsAll
   });
 
   favoriteMarkets = selector.default;

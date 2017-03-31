@@ -1,4 +1,4 @@
-import memoizerific from 'memoizerific';
+import memoize from 'memoizee';
 import BigNumber from 'bignumber.js';
 import { ZERO } from '../constants/numbers';
 
@@ -9,7 +9,7 @@ import { ZERO } from '../constants/numbers';
  * @param {Object} loginAccount
  * @return {boolean}
  */
-export default memoizerific(10)((trades, loginAccount) => {
+export default memoize((trades, loginAccount) => {
   if (!loginAccount || loginAccount.address == null || loginAccount.ether == null) {
     return false;
   }
@@ -20,4 +20,4 @@ export default memoizerific(10)((trades, loginAccount) => {
       totalCost.plus(new BigNumber(trade.totalFee.value, 10))
     ), ZERO);
   return totalCost.lte(new BigNumber(loginAccount.ether, 10));
-});
+}, { max: 10 });

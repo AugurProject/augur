@@ -1,4 +1,3 @@
-// import memoizerific from 'memoizerific';
 import store from '../../../store';
 
 export default function () {

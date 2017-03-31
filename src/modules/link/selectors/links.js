@@ -1,4 +1,4 @@
-import memoizerific from 'memoizerific';
+import memoize from 'memoizee';
 
 import store from 'src/store';
 
@@ -40,27 +40,26 @@ export default function () {
     loginMessageLink: selectLoginMessageLink(loginAccount.address, loginMessage.version, store.dispatch),
     topicsLink: selectTopicsLink(store.dispatch)
   };
-
   // NOTE -- pagination links are a special case.  Reference the pagination selector for how those work.
 }
 
-export const selectAccountLink = memoizerific(1)((dispatch) => {
+export const selectAccountLink = memoize((dispatch) => {
   const href = makeLocation({ page: ACCOUNT }).url;
   return {
     href,
     onClick: () => dispatch(updateURL(href))
   };
-});
+}, { max: 1 });
 
-export const selectPreviousLink = memoizerific(1)((dispatch) => {
+export const selectPreviousLink = memoize((dispatch) => {
   const href = makeLocation({ page: MARKETS }).url;
   return {
     href,
     onClick: () => dispatch(updateURL(href))
   };
-});
+}, { max: 1 });
 
-export const selectAuthLink = memoizerific(1)((authType, alsoLogout, dispatch) => {
+export const selectAuthLink = memoize((authType, alsoLogout, dispatch) => {
   const determineLocation = () => makeLocation({ page: AUTHENTICATION }).url;
 
   const href = determineLocation();
@@ -75,9 +74,9 @@ export const selectAuthLink = memoizerific(1)((authType, alsoLogout, dispatch) =
       dispatch(updateURL(href));
     }
   };
-});
+}, { max: 1 });
 
-export const selectAirbitzLink = memoizerific(1)((authType, dispatch) => ({
+export const selectAirbitzLink = memoize((authType, dispatch) => ({
   onClick: () => {
     require('../../../selectors').abc.openLoginWindow((result, airbitzAccount) => {
       if (airbitzAccount) {
@@ -87,9 +86,9 @@ export const selectAirbitzLink = memoizerific(1)((authType, dispatch) => ({
       }
     });
   }
-}));
+}), { max: 1 });
 
-export const selectAirbitzOnLoad = memoizerific(1)(dispatch => ({
+export const selectAirbitzOnLoad = memoize(dispatch => ({
   onLoad: () => {
     const abcContext = require('../../../selectors').abc.abcContext;
     const usernames = abcContext.listUsernames();
@@ -103,9 +102,9 @@ export const selectAirbitzOnLoad = memoizerific(1)(dispatch => ({
       });
     }
   }
-}));
+}), { max: 1 });
 
-export const selectMarketsLink = memoizerific(1)((keywords, selectedFilterSort, selectedTags, selectedPageNum, subSet, selectedTopic, dispatch) => {
+export const selectMarketsLink = memoize((keywords, selectedFilterSort, selectedTags, selectedPageNum, subSet, selectedTopic, dispatch) => {
   const params = {};
 
   // page
@@ -163,9 +162,9 @@ export const selectMarketsLink = memoizerific(1)((keywords, selectedFilterSort, 
       dispatch(updateURL(href));
     }
   };
-});
+}, { max: 1 });
 
-export const selectMarketLink = memoizerific(1)((market, dispatch) => {
+export const selectMarketLink = memoize((market, dispatch) => {
   const words = listWordsUnderLength(market.description, 300).map(word => encodeURIComponent(word)).join('_') + '_' + market.id;
   const href = makeLocation({ page: M, m: words }).url;
   const link = {
@@ -193,33 +192,33 @@ export const selectMarketLink = memoizerific(1)((market, dispatch) => {
   }
 
   return link;
-});
+}, { max: 1 });
 
-export const selectTransactionsLink = memoizerific(1)((dispatch) => {
+export const selectTransactionsLink = memoize((dispatch) => {
   const href = makeLocation({ page: TRANSACTIONS }).url;
   return {
     href,
     onClick: () => dispatch(updateURL(href))
   };
-});
+}, { max: 1 });
 
-export const selectCreateMarketLink = memoizerific(1)((dispatch) => {
+export const selectCreateMarketLink = memoize((dispatch) => {
   const href = makeLocation({ page: CREATE_MARKET }).url;
   return {
     href,
     onClick: () => dispatch(updateURL(href))
   };
-});
+}, { max: 1 });
 
-export const selectMyPositionsLink = memoizerific(1)((dispatch) => {
+export const selectMyPositionsLink = memoize((dispatch) => {
   const href = makeLocation({ page: MY_POSITIONS }).url;
   return {
     href,
     onClick: () => dispatch(updateURL(href))
   };
-});
+}, { max: 1 });
 
-export const selectMyMarketsLink = memoizerific(1)((dispatch) => {
+export const selectMyMarketsLink = memoize((dispatch) => {
   const href = makeLocation({ page: MY_MARKETS }).url;
   return {
     href,
@@ -228,9 +227,9 @@ export const selectMyMarketsLink = memoizerific(1)((dispatch) => {
       dispatch(updateURL(href));
     }
   };
-});
+}, { max: 1 });
 
-export const selectMyReportsLink = memoizerific(1)((dispatch) => {
+export const selectMyReportsLink = memoize((dispatch) => {
   const href = makeLocation({ page: MY_REPORTS }).url;
   return {
     href,
@@ -238,9 +237,9 @@ export const selectMyReportsLink = memoizerific(1)((dispatch) => {
       dispatch(updateURL(href));
     }
   };
-});
+}, { max: 1 });
 
-export const selectLoginMessageLink = memoizerific(1)((userID, currentLoginMessageVersion, dispatch) => {
+export const selectLoginMessageLink = memoize((userID, currentLoginMessageVersion, dispatch) => {
   const href = makeLocation({ page: LOGIN_MESSAGE }).url;
   return {
     href,
@@ -252,9 +251,9 @@ export const selectLoginMessageLink = memoizerific(1)((userID, currentLoginMessa
       }
     }
   };
-});
+}, { max: 1 });
 
-export const selectTopicsLink = memoizerific(1)((dispatch) => {
+export const selectTopicsLink = memoize((dispatch) => {
   const href = makeLocation({}).url;
   return {
     href,
@@ -262,9 +261,9 @@ export const selectTopicsLink = memoizerific(1)((dispatch) => {
       dispatch(updateURL(href));
     }
   };
-});
+}, { max: 1 });
 
-export const selectTopicLink = memoizerific(1)((topic, dispatch) => {
+export const selectTopicLink = memoize((topic, dispatch) => {
   const href = makeLocation({
     page: MARKETS,
     [TOPIC_PARAM_NAME]: topic
@@ -277,4 +276,4 @@ export const selectTopicLink = memoizerific(1)((topic, dispatch) => {
       dispatch(updateURL(href));
     }
   };
-});
+}, { max: 1 });

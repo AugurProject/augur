@@ -9,16 +9,20 @@ import favoriteMarkets from 'test/markets/selectors/markets-favorite-test';
 describe('modules/markets/selectors/markets-unpaginated', () => {
   proxyquire.noPreserveCache().noCallThru();
   const { store } = mockStore.default;
-
-  const mockSelectors = {
-    filteredMarkets: filteredMarkets(),
-    allMarkets: allMarkets(),
-    favoriteMarkets: favoriteMarkets()
+  const MarketsAll = {
+    selectMarkets: () => allMarkets()
   };
-
+  const MarketsFiltered = {
+    selectFilteredMarkets: () => filteredMarkets()
+  };
+  const MarketsFavorite = {
+    selectFavoriteMarkets: () => favoriteMarkets()
+  };
   const selector = proxyquire('../../../src/modules/markets/selectors/markets-unpaginated', {
     '../../../store': store,
-    '../../../selectors': mockSelectors
+    '../../markets/selectors/markets-all': MarketsAll,
+    '../../markets/selectors/markets-filtered': MarketsFiltered,
+    '../../markets/selectors/markets-favorite': MarketsFavorite
   });
 
   beforeEach(() => {
@@ -31,7 +35,6 @@ describe('modules/markets/selectors/markets-unpaginated', () => {
 
   it(`should return unpaginated markets`, () => {
     const actual = selector.default();
-
     const expected = [{
       isOpen: true,
       consensus: null,
@@ -57,7 +60,6 @@ describe('modules/markets/selectors/markets-unpaginated', () => {
         { name: 'tag' }
       ]
     }];
-
     assert.deepEqual(actual, expected, `didn't produce the expected output`);
   });
 });

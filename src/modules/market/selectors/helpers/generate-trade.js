@@ -1,4 +1,4 @@
-import memoizerific from 'memoizerific';
+import memoize from 'memoizee';
 import { formatPercent, formatEther, formatShares, formatRealEther } from 'utils/format-number';
 import { augur, abi } from 'services/augurjs';
 import { calculateMaxPossibleShares } from 'modules/market/selectors/helpers/calculate-max-possible-shares';
@@ -18,7 +18,7 @@ import store from 'src/store';
  * @param {Object} loginAccount
  * @param {Object} orderBooks Orders for market
  */
-export const generateTrade = memoizerific(5)((market, outcome, outcomeTradeInProgress, loginAccount, orderBooks) => {
+export const generateTrade = memoize((market, outcome, outcomeTradeInProgress, loginAccount, orderBooks) => {
   const side = (outcomeTradeInProgress && outcomeTradeInProgress.side) || BUY;
   const numShares = (outcomeTradeInProgress && outcomeTradeInProgress.numShares) || null;
   const limitPrice = (outcomeTradeInProgress && outcomeTradeInProgress.limitPrice) || null;
@@ -67,17 +67,17 @@ export const generateTrade = memoizerific(5)((market, outcome, outcomeTradeInPro
     updateTradeOrder: (shares, limitPrice, side) => store.dispatch(updateTradesInProgress(market.id, outcome.id, side, shares, limitPrice)),
     totalSharesUpToOrder: (orderIndex, side) => totalSharesUpToOrder(market.id, outcome.id, side, orderIndex, orderBooks)
   };
-});
+}, { max: 5 });
 
-const totalSharesUpToOrder = memoizerific(5)((marketID, outcomeID, side, orderIndex, orderBooks) => {
+const totalSharesUpToOrder = memoize((marketID, outcomeID, side, orderIndex, orderBooks) => {
   const { orderCancellation } = store.getState();
 
   const sideOrders = selectAggregateOrderBook(outcomeID, orderBooks, orderCancellation)[side === TRANSACTIONS_TYPES.BID ? BIDS : ASKS];
 
   return sideOrders.filter((order, i) => i <= orderIndex).reduce((p, order) => p + order.shares.value, 0);
-});
+}, { max: 5 });
 
-export const generateTradeSummary = memoizerific(5)((tradeOrders) => {
+export const generateTradeSummary = memoize((tradeOrders) => {
   let tradeSummary = { totalGas: ZERO, tradeOrders: [] };
 
   if (tradeOrders && tradeOrders.length) {
@@ -99,9 +99,9 @@ export const generateTradeSummary = memoizerific(5)((tradeOrders) => {
   tradeSummary.totalGas = formatRealEther(tradeSummary.totalGas);
 
   return tradeSummary;
-});
+}, { max: 5 });
 
-export const generateTradeOrders = memoizerific(5)((market, outcome, outcomeTradeInProgress) => {
+export const generateTradeOrders = memoize((market, outcome, outcomeTradeInProgress) => {
   const tradeActions = outcomeTradeInProgress && outcomeTradeInProgress.tradeActions;
   if (!market || !outcome || !outcomeTradeInProgress || !tradeActions || !tradeActions.length) {
     return [];
@@ -130,4 +130,4 @@ export const generateTradeOrders = memoizerific(5)((market, outcome, outcomeTrad
       gasFees: formatRealEther(tradeAction.gasEth)
     };
   });
-});
+}, { max: 5 });

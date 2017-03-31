@@ -1,27 +1,20 @@
-import { describe, it, before, after } from 'mocha';
+import { describe, it } from 'mocha';
 import proxyquire from 'proxyquire';
-import * as mockStore from 'test/mockStore';
 import loginAccountAssertions from 'assertions/login-account';
 
-describe(`modules/auth/selectors/login-account.js`, () => {
-  proxyquire.noPreserveCache().noCallThru();
-  const { store } = mockStore.default;
-
-  const selector = proxyquire('../../../src/modules/auth/selectors/login-account', {
-    '../../../store': store
-  });
-
-  before(() => {
-    store.clearActions();
-  });
-
-  after(() => {
-    store.clearActions();
-  });
-
+describe(`modules/account/selectors/login-account.js`, () => {
+  proxyquire.noPreserveCache();
+  const selector = proxyquire('../../../src/modules/account/selectors/login-account', {});
   it(`should login an account`, () => {
-    const actual = selector.default();
-
-    loginAccountAssertions(actual);
+    loginAccountAssertions(selector.selectLoginAccount({
+      loginAccount: {
+        address: '0xb0b',
+        isUnlocked: false,
+        localNode: false,
+        name: 'bob',
+        loginID: 'loginID',
+        privateKey: new Buffer('1337', 'hex')
+      }
+    }));
   });
 });

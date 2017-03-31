@@ -1,10 +1,12 @@
-import memoizerific from 'memoizerific';
+import { createSelector } from 'reselect';
+import store from 'src/store';
+import { selectMarkets } from 'modules/markets/selectors/markets-all';
 
 export default function () {
-  const { allMarkets } = require('../../../selectors');
-  return selectPositionsMarkets(allMarkets);
+  return selectPositionsMarkets(store.getState());
 }
 
-export const selectPositionsMarkets = memoizerific(1)(markets => (
-  (markets || []).filter(market => market.myPositionsSummary && market.myPositionsSummary.numPositions && market.myPositionsSummary.numPositions.value))
+export const selectPositionsMarkets = createSelector(
+  selectMarkets,
+  markets => (markets || []).filter(market => market.myPositionsSummary && market.myPositionsSummary.numPositions && market.myPositionsSummary.numPositions.value)
 );

@@ -34,7 +34,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
 
 
   it(`should return data on all transactions`, () => {
-    const actual = selector.default();
+    const actual = selector.selectTransactions(store.getState());
     transactionsAssertions(actual);
   });
 });

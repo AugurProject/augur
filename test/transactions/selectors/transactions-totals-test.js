@@ -1,7 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
-import * as selector from 'modules/transactions/selectors/transactions-totals';
 import { PENDING, SUCCESS, FAILED, INTERRUPTED } from 'modules/transactions/constants/statuses';
 import transactionsTotalsAssertions from 'assertions/transactions-totals';
 
@@ -10,29 +9,14 @@ describe(`modules/transactions/selectors/transactions-totals.js`, () => {
   let actual;
   let expected;
 
-  const selectors = {
-    transactions: [{
-      id: 'fake',
-      status: PENDING
-    }, {
-      id: 'example',
-      status: SUCCESS
-    }, {
-      id: 'test',
-      status: FAILED
-    }, {
-      id: 'mock',
-      status: INTERRUPTED
-    }]
-  };
-
-  const mockSelector = proxyquire('../../../src/modules/transactions/selectors/transactions-totals', {
-    '../../../selectors': selectors
-  });
-
-
   it(`should return the transaction totals for a blank state`, () => {
-    actual = selector.default();
+    const Transactions = {
+      selectTransactions: () => []
+    };
+    const selector = proxyquire('../../../src/modules/transactions/selectors/transactions-totals', {
+      '../../transactions/selectors/transactions': Transactions
+    });
+    actual = selector.selectTransactionsTotals({});
     expected = {
       numWorking: 0,
       numPending: 0,
@@ -47,7 +31,25 @@ describe(`modules/transactions/selectors/transactions-totals.js`, () => {
   });
 
   it(`should properly return total info on transactions`, () => {
-    actual = mockSelector.default();
+    const Transactions = {
+      selectTransactions: () => [{
+        id: 'fake',
+        status: PENDING
+      }, {
+        id: 'example',
+        status: SUCCESS
+      }, {
+        id: 'test',
+        status: FAILED
+      }, {
+        id: 'mock',
+        status: INTERRUPTED
+      }]
+    };
+    const selector = proxyquire('../../../src/modules/transactions/selectors/transactions-totals', {
+      '../../transactions/selectors/transactions': Transactions
+    });
+    actual = selector.selectTransactionsTotals({});
     expected = {
       numWorking: 0,
       numPending: 1,

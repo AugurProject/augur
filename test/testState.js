@@ -247,6 +247,9 @@ const testState = {
       data: {}
     }
   },
+  marketCreatorFees: {
+    '0xMARKET1': 21
+  },
   marketTrades: {
     '0xMARKET1': {
       0: [

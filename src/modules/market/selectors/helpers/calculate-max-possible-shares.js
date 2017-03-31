@@ -1,4 +1,4 @@
-import memoizerific from 'memoizerific';
+import memoize from 'memoizee';
 import BigNumber from 'bignumber.js';
 import { ZERO } from '../../../trade/constants/numbers';
 import { augur, abi, constants } from '../../../../services/augurjs';
@@ -13,7 +13,7 @@ import { augur, abi, constants } from '../../../../services/augurjs';
  * @param range {String}
  * @param outcomeTradeInProgress {Object} used to bust memoizerific cache
  */
-export const calculateMaxPossibleShares = memoizerific(100)((loginAccount, orders, makerFee, takerFee, range, outcomeTradeInProgress, scalarMinValue) => {
+export const calculateMaxPossibleShares = memoize((loginAccount, orders, makerFee, takerFee, range, outcomeTradeInProgress, scalarMinValue) => {
   if (loginAccount.address == null) {
     return null;
   }
@@ -75,4 +75,4 @@ export const calculateMaxPossibleShares = memoizerific(100)((loginAccount, order
     }
   }
   return maxPossibleShares.toString();
-});
+}, { max: 100 });

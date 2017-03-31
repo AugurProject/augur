@@ -1,35 +1,43 @@
+import { createSelector } from 'reselect';
+import store from 'src/store';
+import { selectOutcomesDataState } from 'src/select-state';
 import { abi } from '../../../services/augurjs';
+import selectLoginAccountPositions from '../../my-positions/selectors/login-account-positions';
 import { ZERO } from '../../trade/constants/numbers';
 import { SCALAR } from '../../markets/constants/market-types';
 
-export default function (outcomesData) {
-  const { loginAccountPositions } = require('../../../selectors');
-  return selectClosedMarketsWithWinningShares(loginAccountPositions.markets, outcomesData);
+export default function () {
+  return selectClosedMarketsWithWinningShares(store.getState());
 }
 
-export const selectClosedMarketsWithWinningShares = (markets, outcomesData) => {
-  const numPositions = markets.length;
-  const closedMarketsWithWinningShares = [];
-  for (let i = 0; i < numPositions; ++i) {
-    const market = markets[i];
-    if (!market.isOpen) {
-      const marketID = market.id;
-      const isSelectTotalShares = market.type === SCALAR ||
-        (market.consensus && (market.consensus.isIndeterminate || market.consensus.isUnethical));
-      const winningShares = isSelectTotalShares ?
-        selectTotalSharesInMarket(market, outcomesData[marketID]) :
-        selectWinningSharesInMarket(market, outcomesData[marketID]);
-      if (winningShares && winningShares.gt(ZERO)) {
-        closedMarketsWithWinningShares.push({
-          id: marketID,
-          description: market.description,
-          shares: winningShares.toFixed()
-        });
+export const selectClosedMarketsWithWinningShares = createSelector(
+  selectOutcomesDataState,
+  selectLoginAccountPositions,
+  (outcomesData, loginAccountPositions) => {
+    const markets = loginAccountPositions.markets;
+    const numPositions = markets.length;
+    const closedMarketsWithWinningShares = [];
+    for (let i = 0; i < numPositions; ++i) {
+      const market = markets[i];
+      if (!market.isOpen) {
+        const marketID = market.id;
+        const isSelectTotalShares = market.type === SCALAR ||
+          (market.consensus && (market.consensus.isIndeterminate || market.consensus.isUnethical));
+        const winningShares = isSelectTotalShares ?
+          selectTotalSharesInMarket(market, outcomesData[marketID]) :
+          selectWinningSharesInMarket(market, outcomesData[marketID]);
+        if (winningShares && winningShares.gt(ZERO)) {
+          closedMarketsWithWinningShares.push({
+            id: marketID,
+            description: market.description,
+            shares: winningShares.toFixed()
+          });
+        }
       }
     }
+    return closedMarketsWithWinningShares;
   }
-  return closedMarketsWithWinningShares;
-};
+);
 
 export const selectTotalSharesInMarket = (market, marketOutcomesData) => {
   const outcomeIDs = Object.keys(marketOutcomesData);

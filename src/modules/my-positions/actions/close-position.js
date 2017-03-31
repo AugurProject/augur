@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-
+import selectAccountPositions from 'modules/user-open-orders/selectors/positions-plus-asks';
 import { updateTradesInProgress } from 'modules/trade/actions/update-trades-in-progress';
 import { placeTrade } from 'modules/trade/actions/place-trade';
 import { addClosePositionTradeGroup } from 'modules/my-positions/actions/add-close-position-trade-group';
@@ -12,9 +12,9 @@ import getValue from 'utils/get-value';
 
 export function closePosition(marketID, outcomeID) {
   return (dispatch, getState) => {
-    const { accountPositions, orderBooks } = getState();
+    const { orderBooks } = getState();
 
-    const outcomeShares = new BigNumber(getValue(accountPositions, `${marketID}.${outcomeID}`) || 0);
+    const outcomeShares = new BigNumber(getValue(selectAccountPositions(), `${marketID}.${outcomeID}`) || 0);
     const bestFill = getBestFill(orderBooks, outcomeShares.toNumber() > 0 ? BUY : SELL, outcomeShares.absoluteValue(), marketID, outcomeID);
 
     dispatch(updateTradesInProgress(marketID, outcomeID, outcomeShares.toNumber() > 0 ? SELL : BUY, bestFill.amountOfShares.toNumber(), bestFill.price.toNumber(), null, () => {

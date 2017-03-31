@@ -1,19 +1,33 @@
-import memoizerific from 'memoizerific';
+import { createBigCacheSelector } from 'utils/big-cache-selector';
+import store from 'src/store';
+import { selectKeywordsState, selectSelectedFilterSortState, selectSelectedTagsState, selectSelectedTopicState, selectBranchReportPeriod } from 'src/select-state';
+import { selectMarkets } from '../../markets/selectors/markets-all';
 import { cleanKeywordsArray } from '../../../utils/clean-keywords';
-import store from '../../../store';
 import { FILTER_TYPE_OPEN, FILTER_TYPE_CLOSED, FILTER_TYPE_REPORTING } from '../../markets/constants/filter-sort';
 import { isMarketDataOpen } from '../../../utils/is-market-data-open';
 
 export default function () {
-  const { branch, keywords, selectedFilterSort, selectedTags, selectedTopic } = store.getState();
-  const { allMarkets } = require('src/selectors');
-
-  return selectFilteredMarkets(allMarkets, keywords, selectedFilterSort, selectedTags, selectedTopic, branch.reportPeriod);
+  return selectFilteredMarkets(store.getState());
 }
 
-export const selectFilteredMarkets = memoizerific(3)((markets, keywords, selectedFilterSort, selectedTags, selectedTopic, reportPeriod) => (
-  markets.filter(market => isMarketFiltersMatch(market, keywords, selectedFilterSort, selectedTags, selectedTopic, reportPeriod))
-));
+export const selectFilteredMarkets = createBigCacheSelector(3)(
+  selectMarkets,
+  selectKeywordsState,
+  selectSelectedTagsState,
+  selectSelectedTopicState,
+  selectSelectedFilterSortState,
+  selectBranchReportPeriod,
+  (markets, keywords, selectedTags, selectedTopic, selectedFilterSort, reportPeriod) => (
+    markets.filter(market => isMarketFiltersMatch(
+      market,
+      keywords,
+      selectedFilterSort,
+      selectedTags,
+      selectedTopic,
+      reportPeriod
+    ))
+  )
+);
 
 export const isMarketFiltersMatch = (market, keywords, selectedFilterSort, selectedTags, selectedTopic, reportPeriod) => {
 

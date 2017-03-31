@@ -1,8 +1,8 @@
-import memoizerific from 'memoizerific';
+import memoize from 'memoizee';
 
 /**
  * @type {Function}
  */
-export const isOrderOfUser = memoizerific(10)((order, userAddress) => (
+export const isOrderOfUser = memoize((order, userAddress) => (
   userAddress != null && order.owner === userAddress
-));
+), { max: 10 });
