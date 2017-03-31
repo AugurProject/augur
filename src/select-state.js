@@ -62,3 +62,8 @@ export const selectPaginationNumPerPage = createSelector(
   selectPaginationState,
   pagination => pagination.numPerPage
 );
+
+export const selectLoginAccountAddress = createSelector(
+  selectLoginAccountState,
+  loginAccount => loginAccount.address
+);

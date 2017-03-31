@@ -42,6 +42,7 @@ import { selectMarketLink } from 'modules/link/selectors/links';
 import selectUserOpenOrders from 'modules/user-open-orders/selectors/user-open-orders';
 import selectUserOpenOrdersSummary from 'modules/user-open-orders/selectors/user-open-orders-summary';
 
+import selectAccountPositions from 'modules/user-open-orders/selectors/positions-plus-asks';
 import { selectPriceTimeSeries } from 'modules/market/selectors/price-time-series';
 
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from 'modules/bids-asks/helpers/select-order-book';
@@ -72,7 +73,8 @@ export const selectMarketReport = (marketID, branchReports) => {
 };
 
 export const selectMarket = (marketID) => {
-  const { marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, priceHistory, orderBooks, branch, orderCancellation, smallestPositions, loginAccount } = store.getState();
+  const { marketsData, favorites, reports, outcomesData, netEffectiveTrades, accountTrades, tradesInProgress, priceHistory, orderBooks, branch, orderCancellation, smallestPositions, loginAccount } = store.getState();
+  const accountPositions = selectAccountPositions();
 
   if (!marketID || !marketsData || !marketsData[marketID]) {
     return {};
@@ -339,7 +341,7 @@ export function assembleMarket(
       }
 
       return market;
-    }, { max: 1 });
+    }, { max: 1, async: true });
   }
 
   return assembledMarketsCache[marketID].apply(this, arguments); // eslint-disable-line prefer-rest-params

@@ -4,7 +4,6 @@ import { updateAccountPositionsData, updateAccountTradesData, updateCompleteSets
 import { convertLogsToTransactions } from '../../../modules/transactions/actions/convert-logs-to-transactions';
 import { clearAccountTrades } from '../../../modules/my-positions/actions/clear-account-trades';
 import { sellCompleteSets } from '../../../modules/my-positions/actions/sell-complete-sets';
-import { selectPositionsPlusAsks } from '../../user-open-orders/selectors/positions-plus-asks';
 
 export function loadAccountTrades(marketID, cb) {
   return (dispatch, getState) => {
@@ -21,7 +20,7 @@ export function loadAccountTrades(marketID, cb) {
       (next) => {
         augur.getAdjustedPositions(account, options, (err, positions) => {
           if (err) return next(err);
-          dispatch(updateAccountPositionsData(selectPositionsPlusAsks(account, positions, getState().orderBooks), marketID));
+          dispatch(updateAccountPositionsData(positions, marketID));
           next(null);
         });
       },
