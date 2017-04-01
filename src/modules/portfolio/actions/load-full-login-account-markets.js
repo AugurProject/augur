@@ -1,13 +1,12 @@
-import { loadFullMarket } from '../../../modules/market/actions/load-full-market';
-import { loadMarketCreatorFees } from '../../my-markets/actions/load-market-creator-fees';
+import reselectMarkets from 'modules/markets/selectors/markets-all';
+import { loadFullMarket } from 'modules/market/actions/load-full-market';
+import { loadMarketCreatorFees } from 'modules/my-markets/actions/load-market-creator-fees';
 
-export function loadFullLoginAccountMarkets() {
-  return (dispatch) => {
-    const { allMarkets, loginAccount } = require('../../../selectors');
-
-    allMarkets.filter(market => market.author === loginAccount.address).forEach((market) => {
-      dispatch(loadFullMarket(market.id));
-      dispatch(loadMarketCreatorFees(market.id));
-    });
-  };
-}
+export const loadFullLoginAccountMarkets = () => (dispatch, getState) => {
+  const { address } = getState().loginAccount;
+  reselectMarkets().filter(market => market.author === address).forEach((market) => {
+    const marketID = market.id;
+    dispatch(loadFullMarket(marketID));
+    dispatch(loadMarketCreatorFees(marketID));
+  });
+};
