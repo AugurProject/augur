@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 
 import { ACCOUNT, CREATE_MARKET, TRANSACTIONS, M, MARKETS, MY_POSITIONS, MY_MARKETS, MY_REPORTS, AUTHENTICATION } from 'modules/app/constants/views';
 
-import getValue from 'utils/get-value';
 import { shouldComponentUpdateOnStateChangeOnly } from 'utils/should-component-update-pure';
 
 // NOTE --  the respective routes are imported within the switch statement so that
@@ -145,17 +144,9 @@ export default class Routes extends Component {
         break;
       }
       default: {
-        viewProps = {
-          topics: getValue(p, 'topics.topics'),
-          selectTopic: getValue(p, 'topics.selectTopic'),
-          loginAccount: p.loginAccount,
-          createMarketLink: (p.links || {}).createMarketLink,
-          branch: p.branch,
-        };
-        import('modules/topics/components/topics-view').then((module) => {
+        import('modules/topics/container').then((module) => {
           const TopicsView = module.default;
-          viewComponent = <TopicsView {...viewProps} />;
-          this.setState({ viewProps, viewComponent });
+          this.setState({ viewComponent: <TopicsView /> });
         }).catch((err) => {
           console.error(`ERROR: Failed to load 'topics' module -- `, err);
         });

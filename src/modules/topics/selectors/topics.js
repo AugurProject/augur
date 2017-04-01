@@ -1,15 +1,9 @@
 import { createSelector } from 'reselect';
 import store from 'src/store';
 import { selectTopicsState } from 'src/select-state';
-import { selectTopicLink } from '../../../modules/link/selectors/links';
 
 export default function () {
-  return {
-    topics: selectTopics(store.getState()),
-    selectTopic: (topic) => {
-      selectTopicLink(topic, store.dispatch).onClick();
-    }
-  };
+  return selectTopics(store.getState());
 }
 
 export const selectTopics = createSelector(
