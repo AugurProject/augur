@@ -26,11 +26,7 @@ import tradesInProgress from 'modules/trade/selectors/trade-in-progress';
 import tradeCommitLock from 'modules/trade/selectors/trade-commit-lock';
 import coreStats from 'modules/account/selectors/core-stats';
 import chat from 'modules/chat/selectors/chat-messages';
-import branch from 'modules/app/selectors/branch';
-import marketDataNavItems from 'modules/market/selectors/market-data-nav-items';
-import marketUserDataNavItems from 'modules/market/selectors/market-user-data-nav-items';
 import scalarShareDenomination from 'modules/market/selectors/scalar-share-denomination';
-import outcomeTradeNavItems from 'modules/outcomes/selectors/outcome-trade-nav-items';
 import authAirbitz from 'modules/auth/selectors/auth-airbitz';
 import authNavItems from 'modules/auth/selectors/auth-nav-items';
 import authLogin from 'modules/auth/selectors/auth-login';
@@ -68,11 +64,7 @@ const selectors = {
   tradeCommitLock,
   coreStats,
   chat,
-  branch,
-  marketDataNavItems,
-  marketUserDataNavItems,
   scalarShareDenomination,
-  outcomeTradeNavItems,
   authAirbitz,
   authNavItems,
   authLogin,

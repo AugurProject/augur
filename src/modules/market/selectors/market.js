@@ -20,7 +20,9 @@ That way the market only gets re-assembled when that specific favorite changes.
 This is true for all selectors, but especially important for this one.
 */
 
+import { createSelector } from 'reselect';
 import memoize from 'memoizee';
+import { selectSelectedMarketIDState } from 'src/select-state';
 import { formatShares, formatEther, formatPercent, formatNumber } from 'utils/format-number';
 import { formatDate } from 'utils/format-date';
 import { isMarketDataOpen, isMarketDataExpired } from 'utils/is-market-data-open';
@@ -56,21 +58,13 @@ import { generateOutcomePositionSummary, generateMarketsPositionsSummary } from 
 import { selectReportableOutcomes } from 'modules/reports/selectors/reportable-outcomes';
 
 export default function () {
-  const { selectedMarketID } = store.getState();
-  return selectMarket(selectedMarketID);
+  return selectSelectedMarket(store.getState());
 }
 
-export const selectMarketReport = (marketID, branchReports) => {
-  if (marketID && branchReports) {
-    const branchReportsEventIDs = Object.keys(branchReports);
-    const numBranchReports = branchReportsEventIDs.length;
-    for (let i = 0; i < numBranchReports; ++i) {
-      if (branchReports[branchReportsEventIDs[i]].marketID === marketID) {
-        return branchReports[branchReportsEventIDs[i]];
-      }
-    }
-  }
-};
+export const selectSelectedMarket = createSelector(
+  selectSelectedMarketIDState,
+  selectedMarketID => selectMarket(selectedMarketID)
+);
 
 export const selectMarket = (marketID) => {
   const { marketsData, favorites, reports, outcomesData, netEffectiveTrades, accountTrades, tradesInProgress, priceHistory, orderBooks, branch, orderCancellation, smallestPositions, loginAccount } = store.getState();
@@ -346,3 +340,15 @@ export function assembleMarket(
 
   return assembledMarketsCache[marketID].apply(this, arguments); // eslint-disable-line prefer-rest-params
 }
+
+export const selectMarketReport = (marketID, branchReports) => {
+  if (marketID && branchReports) {
+    const branchReportsEventIDs = Object.keys(branchReports);
+    const numBranchReports = branchReportsEventIDs.length;
+    for (let i = 0; i < numBranchReports; ++i) {
+      if (branchReports[branchReportsEventIDs[i]].marketID === marketID) {
+        return branchReports[branchReportsEventIDs[i]];
+      }
+    }
+  }
+};

@@ -106,25 +106,14 @@ export default class Routes extends Component {
         break;
       }
       case M: {
-        viewProps = {
-          logged: getValue(p, 'loginAccount.address'),
-          market: p.market,
-          marketDataNavItems: p.marketDataNavItems,
-          marketUserDataNavItems: p.marketUserDataNavItems,
-          selectedOutcome: p.selectedOutcome,
-          orderCancellation: p.orderCancellation,
-          numPendingReports: p.marketsTotals.numPendingReports,
-          isTradeCommitLocked: p.tradeCommitLock.isLocked,
-          scalarShareDenomination: p.scalarShareDenomination,
-          marketReportingNavItems: p.marketReportingNavItems,
-          outcomeTradeNavItems: p.outcomeTradeNavItems,
-          closePositionStatus: p.closePositionStatus,
-          branch: p.branch
-        };
-        import('modules/market/components/market-view').then((module) => {
+        // TODO are these needed?
+        // viewProps = {
+        //   selectedOutcome: p.selectedOutcome,
+        //   marketReportingNavItems: p.marketReportingNavItems
+        // };
+        import('modules/market/container').then((module) => {
           const MarketView = module.default;
-          viewComponent = <MarketView {...viewProps} />;
-          this.setState({ viewProps, viewComponent });
+          this.setState({ viewComponent: <MarketView /> });
         }).catch((err) => {
           console.error(`ERROR: Failed to load 'market' module -- `, err);
         });
