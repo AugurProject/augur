@@ -30,7 +30,7 @@ describe('modules/my-markets/selectors/my-markets-summary', () => {
   const spiedMyMarkets = sinon.spy(proxiedMyMarkets, 'default');
 
   const proxiedSelector = proxyquire('../../../src/modules/my-markets/selectors/my-markets-summary', {
-    '../../../modules/my-markets/selectors/my-markets': proxiedMyMarkets
+    './my-markets': proxiedMyMarkets
   });
 
   const expected = {

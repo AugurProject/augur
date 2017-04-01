@@ -2,11 +2,11 @@ import { createSelector } from 'reselect';
 import memoize from 'memoizee';
 import store from 'src/store';
 import { selectLoginAccountAddress, selectMarketTradesState, selectPriceHistoryState, selectMarketCreatorFeesState } from 'src/select-state';
-import { selectMarkets } from '../../markets/selectors/markets-all';
-import { abi } from '../../../services/augurjs';
-import { ZERO } from '../../trade/constants/numbers';
-import { formatNumber, formatEther } from '../../../utils/format-number';
-import { selectMarketLink } from '../../link/selectors/links';
+import { selectMarkets } from 'modules/markets/selectors/markets-all';
+import { abi } from 'services/augurjs';
+import { ZERO } from 'modules/trade/constants/numbers';
+import { formatNumber, formatEther } from 'utils/format-number';
+import { selectMarketLink } from 'modules/link/selectors/links';
 
 export default function () {
   return selectLoginAccountMarkets(store.getState());
