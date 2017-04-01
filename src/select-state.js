@@ -28,7 +28,6 @@ export const selectSelectedTopicState = state => state.selectedTopic;
 export const selectSelectedTagsState = state => state.selectedTags;
 export const selectSelectedFilterSortState = state => state.selectedFilterSort;
 export const selectPriceHistoryState = state => state.priceHistory;
-export const selectLoginMessageState = state => state.loginMessage;
 export const selectTradesInProgressState = state => state.tradesInProgress;
 export const selectTradeCommitLockState = state => state.tradeCommitLock;
 export const selectReportCommitLockState = state => state.reportCommitLock;

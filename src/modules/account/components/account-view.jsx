@@ -12,7 +12,6 @@ const QRCode = require('qrcode.react');
 export default class AccountPage extends Component {
   // TODO -- Prop Validations
   static propTypes = {
-    // loginMessageLink: PropTypes.object.isRequired,
     loginAccount: PropTypes.object,
     // siteHeader: PropTypes.object
     // authLink: PropTypes.object
@@ -382,14 +381,6 @@ export default class AccountPage extends Component {
                   </div>
                 </span>
               }
-            </div>
-          </div>
-          <div className={classnames('account-section')}>
-            <div className="account-info-item">
-              <h2 className="heading">Important Information</h2>
-              <p>
-                Read <Link {...p.loginMessageLink}> important information</Link> about Augur
-              </p>
             </div>
           </div>
           <ReactTooltip id="edit-name-tooltip" type="light" effect="solid" place="top">

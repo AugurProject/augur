@@ -32,10 +32,6 @@ export default function (links) {
       assertLink(links.createMarketLink, 'createMarketLink');
     });
 
-    it('loginMessageLink', () => {
-      assertLink(links.loginMessageLink, 'loginMessageLink');
-    });
-
     it('topicsLink', () => {
       assertLink(links.topicsLink, 'topicsLink');
     });

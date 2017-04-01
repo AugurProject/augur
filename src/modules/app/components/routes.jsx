@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { ACCOUNT, CREATE_MARKET, TRANSACTIONS, M, MARKETS, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE, AUTHENTICATION } from 'modules/app/constants/views';
+import { ACCOUNT, CREATE_MARKET, TRANSACTIONS, M, MARKETS, MY_POSITIONS, MY_MARKETS, MY_REPORTS, AUTHENTICATION } from 'modules/app/constants/views';
 
 import getValue from 'utils/get-value';
 import { shouldComponentUpdateOnStateChangeOnly } from 'utils/should-component-update-pure';
@@ -60,7 +60,6 @@ export default class Routes extends Component {
         import('modules/account/container').then((module) => {
           const AccountView = module.default;
           viewProps = {
-            loginMessageLink: p.links.loginMessageLink,
             authLink: (p.links && p.links.authLink) || null
           };
           viewComponent = <AccountView {...viewProps} />;
@@ -87,19 +86,6 @@ export default class Routes extends Component {
           this.setState({ viewProps, viewComponent });
         }).catch((err) => {
           console.error(`ERROR: Failed to load 'portfolio' module -- `, err);
-        });
-        break;
-      }
-      case LOGIN_MESSAGE: {
-        viewProps = {
-          topicsLink: (p.links && p.links.topicsLink) || null
-        };
-        import('modules/login-message/components/login-message-view').then((module) => {
-          const LoginMessageView = module.default;
-          viewComponent = <LoginMessageView {...viewProps} />;
-          this.setState({ viewProps, viewComponent });
-        }).catch((err) => {
-          console.error(`ERROR: Failed to load 'login-message' module -- `, err);
         });
         break;
       }

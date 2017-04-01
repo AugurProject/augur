@@ -18,7 +18,7 @@ export const login = (loginID, password, rememberMe, cb) => (dispatch, getState)
       return callback(account);
     }
     if (rememberMe) savePersistentAccountToLocalStorage({ ...account, loginID });
-    dispatch(loadAccountData({ loginID, address: account.address, name: accountObject.name }, true));
+    dispatch(loadAccountData({ loginID, address: account.address, name: accountObject.name }));
     callback(null);
   });
 };
