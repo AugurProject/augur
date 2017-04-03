@@ -48748,7 +48748,13 @@ module.exports={
 
 },{}],301:[function(require,module,exports){
 (function (Buffer){
-var _typeof4 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _typeof5 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _typeof4 = typeof Symbol === "function" && _typeof5(Symbol.iterator) === "symbol" ? function (obj) {
+  return typeof obj === "undefined" ? "undefined" : _typeof5(obj);
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof5(obj);
+};
 
 var _typeof3 = typeof Symbol === "function" && _typeof4(Symbol.iterator) === "symbol" ? function (obj) {
   return typeof obj === "undefined" ? "undefined" : _typeof4(obj);
@@ -59231,6 +59237,7 @@ BigNumber.config({
 
 function RPCError(err) {
   this.name = "RPCError";
+  this.error = err.error;
   this.message = JSON.stringify(err);
 }
 
@@ -59298,8 +59305,6 @@ module.exports = {
   excludedFromTxRelay: null,
 
   txs: null,
-
-  rawTxs: null,
 
   rawTxMaxNonce: null,
 
@@ -59416,7 +59421,6 @@ module.exports = {
     this.gasPrice = 20000000000;
     this.notifications = {};
     this.rawTxMaxNonce = -1;
-    this.rawTxs = {};
     this.requests = 1;
     this.txs = {};
   },
@@ -59799,7 +59803,6 @@ module.exports = {
       }
     }
     this.notifications = {};
-    this.rawTxs = {};
     this.txs = {};
     this.rawTxMaxNonce = -1;
   },
@@ -60436,19 +60439,6 @@ module.exports = {
    ********************/
 
   /**
-   * Save a raw transaction's info to the rawTxs object.
-   * @param {string} txhash Hash of a raw transaction.
-   * @param {Object} packaged Packaged transaction.
-   * @param {string} cost Upper-limit estimate of the transaction cost.
-   */
-  saveRawTransaction: function (txhash, packaged, cost) {
-    this.rawTxs[txhash] = {
-      tx: packaged,
-      cost: abi.unfix(cost, "string")
-    };
-  },
-
-  /**
    * Validate and submit a signed raw transaction to the network.
    * @param {Object} rawTransactionResponse Error response from the Ethereum node.
    * @return {Object|null} Error or null if retrying due to low nonce.
@@ -60500,7 +60490,10 @@ module.exports = {
       console.log("raw s:        0x" + rawTransaction.s.toString("hex"));
       console.log("raw data:     0x" + rawTransaction.data.toString("hex"));
     }
-    return rawTransaction;
+    if (!rawTransaction.validate()) {
+      throw new RPCError(errors.TRANSACTION_INVALID);
+    }
+    return rawTransaction.serialize().toString("hex");
   },
 
   /**
@@ -60526,9 +60519,9 @@ module.exports = {
    * @return {Object} Packaged transaction with nonce set.
    */
   setRawTransactionNonce: function (packaged, address, callback) {
-    var self = this;
+    var transactionCount, self = this;
     if (!isFunction(callback)) {
-      var transactionCount = this.pendingTxCount(address);
+      transactionCount = this.pendingTxCount(address);
       if (this.debug.nonce) {
         console.log("[ethrpc] transaction count:", parseInt(transactionCount, 16));
       }
@@ -60557,9 +60550,10 @@ module.exports = {
    * @return {Object} Packaged transaction with gasPrice set.
    */
   setRawTransactionGasPrice: function (packaged, callback) {
+    var gasPrice;
     if (!isFunction(callback)) {
       if (packaged.gasPrice) return packaged;
-      var gasPrice = this.getGasPrice();
+      gasPrice = this.getGasPrice();
       if (!gasPrice || gasPrice.error) throw new RPCError(errors.TRANSACTION_FAILED);
       packaged.gasPrice = gasPrice;
       return packaged;
@@ -60609,7 +60603,7 @@ module.exports = {
    * @return {string} Signed transaction.
    */
   packageAndSignRawTransaction: function (payload, address, privateKey, callback) {
-    var self = this;
+    var packaged, self = this;
     if (!payload || payload.constructor !== Object) {
       if (!isFunction(callback)) throw new RPCError(errors.TRANSACTION_FAILED);
       return callback(errors.TRANSACTION_FAILED);
@@ -60618,24 +60612,27 @@ module.exports = {
       if (!isFunction(callback)) throw new RPCError(errors.NOT_LOGGED_IN);
       return callback(errors.NOT_LOGGED_IN);
     }
-    var packaged = this.packageRawTransaction(payload, address);
+    packaged = this.packageRawTransaction(payload, address);
     if (payload.gasPrice) packaged.gasPrice = payload.gasPrice;
     if (this.debug.broadcast) {
       console.log("[ethrpc] packaged:", JSON.stringify(packaged, null, 2));
     }
     if (!isFunction(callback)) {
-      return {
-        signed: this.signRawTransaction(
-          this.setRawTransactionNonce(this.setRawTransactionGasPrice(packaged), address),
-          privateKey
-        ),
-        packaged: packaged
-      };
+      return this.signRawTransaction(
+        this.setRawTransactionNonce(this.setRawTransactionGasPrice(packaged), address),
+        privateKey
+      );
     }
     this.setRawTransactionGasPrice(packaged, function (packaged) {
       if (packaged.error) return callback(packaged);
       self.setRawTransactionNonce(packaged, address, function (packaged) {
-        callback(self.signRawTransaction(packaged, privateKey), packaged);
+        var signedRawTransaction;
+        try {
+          signedRawTransaction = self.signRawTransaction(packaged, privateKey);
+        } catch (exc) {
+          signedRawTransaction = exc;
+        }
+        callback(signedRawTransaction);
       });
     });
   },
@@ -60649,10 +60646,9 @@ module.exports = {
    * @return {string} Transaction hash (if successful).
    */
   packageAndSubmitRawTransaction: function (payload, address, privateKey, callback) {
-    var signedRawTransaction, response, err, self = this;
+    var response, err, self = this;
     if (!isFunction(callback)) {
-      signedRawTransaction = this.packageAndSignRawTransaction(payload, address, privateKey);
-      response = this.submitSignedRawTransaction(signedRawTransaction.signed);
+      response = this.sendRawTransaction(this.packageAndSignRawTransaction(payload, address, privateKey));
       if (this.debug.broadcast) console.log("[ethrpc] sendRawTransaction", response);
       if (!response) throw new RPCError(errors.RAW_TRANSACTION_ERROR);
       if (response.error) {
@@ -60660,12 +60656,11 @@ module.exports = {
         if (err !== null) throw new RPCError(err);
         return this.packageAndSubmitRawTransaction(payload, address, privateKey);
       }
-      this.saveRawTransaction(response, signedRawTransaction.packaged, signedRawTransaction.signed.getUpfrontCost().toString());
       return response;
     }
-    this.packageAndSignRawTransaction(payload, address, privateKey, function (signedRawTransaction, packaged) {
+    this.packageAndSignRawTransaction(payload, address, privateKey, function (signedRawTransaction) {
       if (signedRawTransaction.error) return callback(signedRawTransaction);
-      self.submitSignedRawTransaction(signedRawTransaction, function (response) {
+      self.sendRawTransaction(signedRawTransaction, function (response) {
         var err;
         if (self.debug.broadcast) console.log("[ethrpc] sendRawTransaction", response);
         if (!response) return callback(errors.RAW_TRANSACTION_ERROR);
@@ -60674,7 +60669,6 @@ module.exports = {
           if (err !== null) return callback(err);
           self.packageAndSubmitRawTransaction(payload, address, privateKey, callback);
         } else {
-          self.saveRawTransaction(response, packaged, signedRawTransaction.getUpfrontCost().toString());
           callback(response);
         }
       });
@@ -60994,45 +60988,12 @@ module.exports = {
     });
   },
 
-  checkDroppedTxForDuplicateNonce: function (txHash, callback) {
-    var duplicateNonce;
-    if (this.debug.tx) console.log("Raw transactions:", this.rawTxs);
-    if (!this.rawTxs[txHash] || !this.rawTxs[txHash].tx) {
-      if (!isFunction(callback)) {
-        throw new this.Error(errors.TRANSACTION_NOT_FOUND);
-      }
-      return callback(errors.TRANSACTION_NOT_FOUND);
-    }
-    for (var hash in this.rawTxs) {
-      if (!this.rawTxs.hasOwnProperty(hash)) continue;
-      if (this.rawTxs[hash].tx.nonce === this.rawTxs[txHash].tx.nonce &&
-        JSON.stringify(this.rawTxs[hash].tx) !== JSON.stringify(this.rawTxs[txHash].tx)) {
-        duplicateNonce = true;
-        console.warn("Warning: duplicate nonce found on raw tx:", txHash);
-        break;
-      }
-    }
-    if (!duplicateNonce) {
-      if (!isFunction(callback)) {
-        throw new this.Error(errors.TRANSACTION_NOT_FOUND);
-      }
-      return callback(errors.TRANSACTION_NOT_FOUND);
-    }
-    if (!isFunction(callback)) return null;
-    callback(null);
-  },
-
   txNotify: function (txHash, callback) {
     var self = this;
     if (!isFunction(callback)) {
       var tx = this.getTransaction(txHash);
       if (tx) return tx;
       --this.rawTxMaxNonce;
-      this.txs[txHash].status = "failed";
-
-      // only resubmit if this is a raw transaction and has a duplicate nonce
-      if (!this.retryDroppedTxs) this.checkDroppedTxForDuplicateNonce(txHash);
-
       this.txs[txHash].status = "resubmitted";
       return null;
     }
@@ -61040,18 +61001,9 @@ module.exports = {
       if (tx) return callback(null, tx);
       --self.rawTxMaxNonce;
       self.txs[txHash].status = "failed";
-      if (self.retryDroppedTxs) {
-        if (self.debug.broadcast) console.log(" *** Re-submitting transaction:", txHash);
-        self.txs[txHash].status = "resubmitted";
-        return callback(null, null);
-      }
-      // only resubmit if this is a raw transaction and has a duplicate nonce
-      self.checkDroppedTxForDuplicateNonce(txHash, function (err) {
-        if (err !== null) return callback(err);
-        if (self.debug.broadcast) console.log(" *** Re-submitting transaction:", txHash);
-        self.txs[txHash].status = "resubmitted";
-        return callback(null, null);
-      });
+      if (self.debug.broadcast) console.log(" *** Re-submitting transaction:", txHash);
+      self.txs[txHash].status = "resubmitted";
+      return callback(null, null);
     });
   },
 
