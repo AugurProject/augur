@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { ACCOUNT, CREATE_MARKET, TRANSACTIONS, M, MARKETS, MY_POSITIONS, MY_MARKETS, MY_REPORTS, AUTHENTICATION } from 'modules/app/constants/views';
 
 import { shouldComponentUpdateOnStateChangeOnly } from 'utils/should-component-update-pure';
+import getValue from 'utils/get-value';
 
 // NOTE --  the respective routes are imported within the switch statement so that
 //          webpack can properly code split the views
@@ -104,43 +105,65 @@ export default class Routes extends Component {
         });
         break;
       }
+      // case M: {
+      //   viewProps = {
+      //     logged: getValue(p, 'loginAccount.address'),
+      //     market: p.market,
+      //     marketDataNavItems: p.marketDataNavItems,
+      //     marketUserDataNavItems: p.marketUserDataNavItems,
+      //     selectedOutcome: p.selectedOutcome,
+      //     orderCancellation: p.orderCancellation,
+      //     numPendingReports: p.marketsTotals.numPendingReports,
+      //     isTradeCommitLocked: p.tradeCommitLock.isLocked,
+      //     scalarShareDenomination: p.scalarShareDenomination,
+      //     marketReportingNavItems: p.marketReportingNavItems,
+      //     outcomeTradeNavItems: p.outcomeTradeNavItems,
+      //     closePositionStatus: p.closePositionStatus,
+      //     branch: p.branch
+      //   };
+      //   import('modules/market/components/market-view').then((module) => {
+      //     const MarketView = module.default;
+      //     viewComponent = <MarketView {...viewProps} />;
+      //     this.setState({ viewProps, viewComponent });
+      //   }).catch((err) => {
+      //     console.error(`ERROR: Failed to load 'market' module -- `, err);
+      //   });
+      //   break;
+      // }
       case M: {
-        // TODO are these needed?
-        // viewProps = {
-        //   selectedOutcome: p.selectedOutcome,
-        //   marketReportingNavItems: p.marketReportingNavItems
-        // };
         import('modules/market/container').then((module) => {
           const MarketView = module.default;
-          this.setState({ viewComponent: <MarketView /> });
+          const viewProps = {
+            market: p.market,
+            selectedOutcome: p.selectedOutcome,
+            marketReportingNavItems: p.marketReportingNavItems
+          };
+          this.setState({ viewProps, viewComponent: <MarketView {...viewProps} /> });
         }).catch((err) => {
           console.error(`ERROR: Failed to load 'market' module -- `, err);
         });
         break;
       }
       case MARKETS: {
-        viewProps = {
-          loginAccount: p.loginAccount,
-          createMarketLink: (p.links || {}).createMarketLink,
-          markets: p.markets,
-          marketsHeader: p.marketsHeader,
-          favoriteMarkets: p.favoriteMarkets,
-          pagination: p.pagination,
-          filterSort: p.filterSort,
-          keywords: p.keywords,
-          branch: p.branch,
-          scalarShareDenomination: p.scalarShareDenomination
-        };
-        import('modules/markets/components/markets-view').then((module) => {
+        // viewProps = {
+        //   loginAccount: p.loginAccount,
+        //   createMarketLink: (p.links || {}).createMarketLink,
+        //   markets: p.markets,
+        //   marketsHeader: p.marketsHeader,
+        //   favoriteMarkets: p.favoriteMarkets,
+        //   pagination: p.pagination,
+        //   filterSort: p.filterSort,
+        //   keywords: p.keywords,
+        //   branch: p.branch,
+        //   scalarShareDenomination: p.scalarShareDenomination
+        // };
+        import('modules/markets/container').then((module) => {
           const MarketsView = module.default;
-          viewComponent = <MarketsView {...viewProps} />;
-          this.setState({ viewProps, viewComponent });
+          this.setState({ viewComponent: <MarketsView /> });
         }).catch((err) => {
           console.error(`ERROR: Failed to load 'markets' module -- `, err);
         });
-
         p.setSidebarAllowed(true);
-
         break;
       }
       default: {

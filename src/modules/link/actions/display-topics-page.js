@@ -1,8 +1,6 @@
 import { selectTopicsLink } from 'modules/link/selectors/links';
 
-export const displayTopicsPage = () => (dispatch) => {
+export const displayTopicsPage = redirect => (dispatch) => {
   const topicsLink = selectTopicsLink(dispatch);
-  if (topicsLink && typeof topicsLink.onClick === 'function') {
-    topicsLink.onClick();
-  }
+  if (topicsLink && redirect) topicsLink.onClick();
 };

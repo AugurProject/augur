@@ -22,6 +22,6 @@ export const setupAndFundNewAccount = (password, loginID, rememberMe, cb) => (di
   if (!loginID) return callback({ message: 'loginID is required' });
   if (rememberMe) savePersistentAccountToLocalStorage({ ...augur.accounts.account, loginID });
   dispatch(updateLoginAccount({ loginID, address: augur.accounts.account.address }));
-  dispatch(loadAccountData(getState().loginAccount));
+  dispatch(loadAccountData(getState().loginAccount, true));
   callback(null);
 };

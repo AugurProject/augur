@@ -27,7 +27,10 @@ const MarketsFilterSort = p => (
       </div>
     </div>
     <div className="view-header-group">
-      <MarketsSearch keywords={p.keywords} />
+      <MarketsSearch
+        keywords={p.keywords}
+        onChangeKeywords={p.onChangeKeywords}
+      />
     </div>
   </article>
 );

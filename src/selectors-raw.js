@@ -3,6 +3,7 @@ import abc from 'modules/auth/selectors/abc';
 import loginAccount from 'modules/account/selectors/login-account';
 import links from 'modules/link/selectors/links';
 import url from 'modules/link/selectors/url';
+import topics from 'modules/topics/selectors/topics';
 import marketsHeader from 'modules/markets/selectors/markets-header';
 import marketsTotals from 'modules/markets/selectors/markets-totals';
 import pagination from 'modules/markets/selectors/pagination';
@@ -15,7 +16,6 @@ import orderCancellation from 'modules/bids-asks/selectors/order-cancellation';
 import market from 'modules/market/selectors/market';
 import tags from 'modules/markets/selectors/tags';
 import filterSort from 'modules/markets/selectors/filter-sort';
-import keywords from 'modules/markets/selectors/keywords';
 import portfolio from 'modules/portfolio/selectors/portfolio';
 import loginAccountPositions from 'modules/my-positions/selectors/login-account-positions';
 import transactions from 'modules/transactions/selectors/transactions';
@@ -25,7 +25,10 @@ import tradesInProgress from 'modules/trade/selectors/trade-in-progress';
 import tradeCommitLock from 'modules/trade/selectors/trade-commit-lock';
 import coreStats from 'modules/account/selectors/core-stats';
 import chat from 'modules/chat/selectors/chat-messages';
+import { MARKET_DATA_NAV_ITEMS } from 'modules/market/constants/market-data-nav-items';
+import { MARKET_USER_DATA_NAV_ITEMS } from 'modules/market/constants/market-user-data-nav-items';
 import scalarShareDenomination from 'modules/market/selectors/scalar-share-denomination';
+import { OUTCOME_TRADE_NAV_ITEMS } from 'modules/outcomes/constants/outcome-trade-nav-items';
 import authAirbitz from 'modules/auth/selectors/auth-airbitz';
 import authNavItems from 'modules/auth/selectors/auth-nav-items';
 import authLogin from 'modules/auth/selectors/auth-login';
@@ -50,9 +53,9 @@ const selectors = {
   unpaginatedMarkets,
   orderCancellation,
   market,
+  topics,
   tags,
   filterSort,
-  keywords,
   portfolio,
   loginAccountPositions,
   transactions,
@@ -62,7 +65,10 @@ const selectors = {
   tradeCommitLock,
   coreStats,
   chat,
+  marketDataNavItems: () => MARKET_DATA_NAV_ITEMS,
+  marketUserDataNavItems: () => MARKET_USER_DATA_NAV_ITEMS,
   scalarShareDenomination,
+  outcomeTradeNavItems: () => OUTCOME_TRADE_NAV_ITEMS,
   authAirbitz,
   authNavItems,
   authLogin,

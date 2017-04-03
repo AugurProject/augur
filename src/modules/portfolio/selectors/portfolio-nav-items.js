@@ -9,8 +9,6 @@ import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/view
 import { formatNumber, formatEther, formatRep } from 'utils/format-number';
 
 export default function () {
-  // const { links } = require('../../../selectors');
-  // return selectPortfolioNavItems(links);
   return selectPortfolioNavItems();
 }
 
