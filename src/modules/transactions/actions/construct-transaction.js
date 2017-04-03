@@ -571,7 +571,8 @@ export const constructLogAddTxTransaction = (trade, marketID, marketType, descri
       totalCost: type === BID ? formatEther(abi.unfix(totalCost)) : undefined,
       totalReturn: type === ASK ? formatEther(abi.unfix(totalReturn)) : undefined,
       gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null,
-      blockNumber: trade.blockNumber
+      blockNumber: trade.blockNumber,
+      tradeID: trade.tradeid
     }
   };
 };
@@ -601,7 +602,8 @@ export const constructLogCancelTransaction = (trade, marketID, marketType, descr
       hash: trade.transactionHash,
       totalReturn: trade.inProgress ? null : formatEther(trade.cashRefund),
       gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null,
-      blockNumber: trade.blockNumber
+      blockNumber: trade.blockNumber,
+      tradeID: trade.tradeid
     }
   };
 };
