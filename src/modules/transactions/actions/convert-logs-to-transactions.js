@@ -44,7 +44,7 @@ export function convertTradeLogsToTransactions(label, data, marketID) {
         }
         dispatch(updateMarketsData({ [marketID]: marketInfo }));
         dispatch(convertTradeLogToTransaction(label, data, marketID));
-        if (label === 'log_add_tx' || label === 'log_fill_tx') dispatch(loadBidsAsks(marketID)); // Utilized by portfolio to allow for the closure of positions
+        // if (label === 'log_add_tx' || label === 'log_fill_tx') dispatch(loadBidsAsks(marketID)); // Utilized by portfolio to allow for the closure of positions
         next();
       });
     }, err => (err && console.error('convertTradeLogsToTransactions:', err)));

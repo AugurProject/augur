@@ -12,6 +12,7 @@ import { updateMarketTopicPopularity } from '../../topics/actions/update-topics'
 import { SELL } from '../../outcomes/constants/trade-types';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
+import { updateAccountBidsAsksData, updateAccountCancelsData } from '../../../modules/my-positions/actions/update-account-trades-data';
 
 export function listenToUpdates() {
   return (dispatch, getState) => {
@@ -155,15 +156,15 @@ export function listenToUpdates() {
               }));
             }
           }
-          dispatch(addOrder(msg));
 
           // if this is the user's order, then add it to the transaction display
           if (msg.sender === getState().loginAccount.address) {
-            dispatch(convertTradeLogToTransaction('log_add_tx', {
-              [msg.market]: { [msg.outcome]: [msg] }
-            }, msg.market));
+            dispatch(updateAccountBidsAsksData({
+              [msg.market]: {
+                [msg.outcome]: [msg]
+              }
+            }));
             dispatch(updateAssets());
-            dispatch(loadBidsAsks(msg.market));
           }
         }
       },
@@ -172,15 +173,12 @@ export function listenToUpdates() {
       log_cancel: (msg) => {
         console.log('log_cancel:', msg);
         if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
-          dispatch(removeOrder(msg));
-
           // if this is the user's order, then add it to the transaction display
           if (msg.sender === getState().loginAccount.address) {
-            dispatch(convertTradeLogToTransaction('log_cancel', {
+            dispatch(updateAccountCancelsData({
               [msg.market]: { [msg.outcome]: [msg] }
-            }, msg.market));
+            }));
             dispatch(updateAssets());
-            dispatch(loadBidsAsks(msg.market));
           }
         }
       },
