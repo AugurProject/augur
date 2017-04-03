@@ -13,4 +13,4 @@ export const AUTH_TYPES = {
 
 export const DEFAULT_AUTH_TYPE = REGISTER;
 
-export const AIRBITZ_WALLET_TYPE = 'wallet:repo:ethereum';
+export const AIRBITZ_WALLET_TYPE = 'wallet:ethereum';
