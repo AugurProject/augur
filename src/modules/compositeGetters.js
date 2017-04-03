@@ -336,7 +336,6 @@ module.exports = {
     volumeMax = volumeMax || 0;
     tx = clone(this.tx.CompositeGetters.getMarketsInfo);
     tx.params = [branch, offset, numMarketsToLoad, volumeMin, volumeMax];
-    tx.timeout = 240000;
     return this.fire(tx, callback, this.parseMarketsInfo, branch);
   }
 };
