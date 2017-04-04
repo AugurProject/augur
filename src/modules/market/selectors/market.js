@@ -42,7 +42,7 @@ import { selectMarketLink } from 'modules/link/selectors/links';
 import selectUserOpenOrders from 'modules/user-open-orders/selectors/user-open-orders';
 import selectUserOpenOrdersSummary from 'modules/user-open-orders/selectors/user-open-orders-summary';
 
-import selectAccountPositions from 'modules/user-open-orders/selectors/positions-plus-asks';
+import getPositionsPlusAsks from 'modules/user-open-orders/selectors/positions-plus-asks';
 import { selectPriceTimeSeries } from 'modules/market/selectors/price-time-series';
 
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from 'modules/bids-asks/helpers/select-order-book';
@@ -56,25 +56,14 @@ import { generateOutcomePositionSummary, generateMarketsPositionsSummary } from 
 import { selectReportableOutcomes } from 'modules/reports/selectors/reportable-outcomes';
 
 export default function () {
-  const { selectedMarketID } = store.getState();
-  return selectMarket(selectedMarketID);
+  return selectSelectedMarket(store.getState());
 }
 
-export const selectMarketReport = (marketID, branchReports) => {
-  if (marketID && branchReports) {
-    const branchReportsEventIDs = Object.keys(branchReports);
-    const numBranchReports = branchReportsEventIDs.length;
-    for (let i = 0; i < numBranchReports; ++i) {
-      if (branchReports[branchReportsEventIDs[i]].marketID === marketID) {
-        return branchReports[branchReportsEventIDs[i]];
-      }
-    }
-  }
-};
+export const selectSelectedMarket = state => selectMarket(state.selectedMarketID);
 
 export const selectMarket = (marketID) => {
   const { marketsData, favorites, reports, outcomesData, netEffectiveTrades, accountTrades, tradesInProgress, priceHistory, orderBooks, branch, orderCancellation, smallestPositions, loginAccount } = store.getState();
-  const accountPositions = selectAccountPositions();
+  const accountPositions = getPositionsPlusAsks();
 
   if (!marketID || !marketsData || !marketsData[marketID]) {
     return {};
@@ -112,20 +101,6 @@ export const selectMarket = (marketID) => {
     loginAccount,
     store.dispatch);
 };
-
-export const selectScalarMinimum = (market) => {
-  const scalarMinimum = {};
-  if (market && market.type === SCALAR) scalarMinimum.minValue = market.minValue;
-  return scalarMinimum;
-};
-
-export const selectMarketIDFromEventID = (eventID) => {
-  const marketIDs = store.getState().eventMarketsMap[eventID];
-  if (marketIDs && marketIDs.length) return marketIDs[0];
-  return null;
-};
-
-export const selectMarketFromEventID = eventID => selectMarket(selectMarketIDFromEventID(eventID));
 
 const assembledMarketsCache = {};
 
@@ -346,3 +321,29 @@ export function assembleMarket(
 
   return assembledMarketsCache[marketID].apply(this, arguments); // eslint-disable-line prefer-rest-params
 }
+
+export const selectMarketReport = (marketID, branchReports) => {
+  if (marketID && branchReports) {
+    const branchReportsEventIDs = Object.keys(branchReports);
+    const numBranchReports = branchReportsEventIDs.length;
+    for (let i = 0; i < numBranchReports; ++i) {
+      if (branchReports[branchReportsEventIDs[i]].marketID === marketID) {
+        return branchReports[branchReportsEventIDs[i]];
+      }
+    }
+  }
+};
+
+export const selectScalarMinimum = (market) => {
+  const scalarMinimum = {};
+  if (market && market.type === SCALAR) scalarMinimum.minValue = market.minValue;
+  return scalarMinimum;
+};
+
+export const selectMarketIDFromEventID = (eventID) => {
+  const marketIDs = store.getState().eventMarketsMap[eventID];
+  if (marketIDs && marketIDs.length) return marketIDs[0];
+  return null;
+};
+
+export const selectMarketFromEventID = eventID => selectMarket(selectMarketIDFromEventID(eventID));

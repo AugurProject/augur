@@ -387,10 +387,7 @@ const testState = {
       id: '0xMARKET4',
       author: '0xtest456'
     }
-  ],
-  loginMessage: {
-    version: 1
-  }
+  ]
 };
 
 export default testState;

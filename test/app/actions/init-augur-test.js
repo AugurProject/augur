@@ -18,7 +18,6 @@ describe(`modules/app/actions/init-augur.js`, () => {
   const mockRegisterTransactionRelay = {};
   const mockLoadChatMessages = { loadChatMessages: () => {} };
   const mockLoadBranch = { loadBranch: () => {} };
-  const mockCurrentMessage = sinon.stub().returns(true);
   const mockUserLogin = sinon.stub().returns(false);
 
   mockLoadBranch.loadBranch = sinon.stub().returns({ type: 'LOAD_BRANCH' });
@@ -49,8 +48,7 @@ describe(`modules/app/actions/init-augur.js`, () => {
     '../../reports/actions/reporting-test-setup': mockReportingTestSetup,
     '../../transactions/actions/register-transaction-relay': mockRegisterTransactionRelay,
     '../../chat/actions/load-chat-messages': mockLoadChatMessages,
-    '../../app/actions/load-branch': mockLoadBranch,
-    '../../login-message/helpers/is-current-login-message-read': mockCurrentMessage,
+    './load-branch': mockLoadBranch,
     '../../auth/helpers/is-user-logged-in': mockUserLogin
   });
 

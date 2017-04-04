@@ -15,7 +15,8 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 const PATHS = {
   BUILD: path.resolve(__dirname, 'build'),
-  APP: path.resolve(__dirname, 'src')
+  APP: path.resolve(__dirname, 'src'),
+  NODE_MODULES: path.resolve(__dirname, 'node_modules')
 };
 
 // COMMON CONFIG
@@ -37,6 +38,7 @@ let config = {
     publicPath: '/'
   },
   resolve: {
+    modules: [PATHS.NODE_MODULES, PATHS.APP],
     extensions: [
       '.html',
       '.less',
@@ -47,7 +49,8 @@ let config = {
     alias: {
       modules: path.resolve(PATHS.APP, 'modules'),
       utils: path.resolve(PATHS.APP, 'utils')
-    }
+    },
+    symlinks: false
   },
   module: {
     rules: [

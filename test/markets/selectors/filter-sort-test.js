@@ -21,7 +21,7 @@ describe(`modules/markets/selectors/filter-sort.js`, () => {
 
   const selector = proxyquire('../../../src/modules/markets/selectors/filter-sort.js', {
     '../../../store': store,
-    '../../markets/actions/update-selected-filter-sort': mockSort
+    '../actions/update-selected-filter-sort': mockSort
   });
 
   before(() => {

@@ -9,7 +9,6 @@ import getClosePositionStatus from 'modules/my-positions/selectors/close-positio
 import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination';
 import getOrderCancellation from 'modules/bids-asks/selectors/order-cancellation';
 
-
 const mapStateToProps = (state) => {
   const positions = getLoginAccountPositions();
   const openOrders = getOpenOrders();

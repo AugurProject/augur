@@ -3,7 +3,7 @@ import { selectLoginAccountState } from 'src/select-state';
 import { augur } from 'services/augurjs';
 import { formatRep, formatEther } from 'utils/format-number';
 import generateDownloadAccountLink from 'modules/auth/actions/generate-download-account-link';
-import selectAbc from 'modules/auth/selectors/abc';
+import getABCUIContext from 'modules/auth/selectors/abc';
 import store from 'src/store';
 
 export default function () {
@@ -19,7 +19,7 @@ export const selectLoginAccount = createSelector(
     const linkText = loginAccount.isUnlocked ? prettyAddress : loginAccount.name || prettyLoginID;
     if (loginAccount.airbitzAccount) {
       loginAccount.onAirbitzManageAccount = () => (
-        selectAbc().openManageWindow(loginAccount.airbitzAccount, (err) => {
+        getABCUIContext().openManageWindow(loginAccount.airbitzAccount, (err) => {
           if (err) console.error('onAirbitzManageAccount:', err);
         })
       );

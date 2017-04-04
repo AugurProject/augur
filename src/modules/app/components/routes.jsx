@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-
-import { ACCOUNT, CREATE_MARKET, TRANSACTIONS, M, MARKETS, MY_POSITIONS, MY_MARKETS, MY_REPORTS, LOGIN_MESSAGE, AUTHENTICATION } from 'modules/app/constants/views';
-
-import getValue from 'utils/get-value';
+import { ACCOUNT, CREATE_MARKET, TRANSACTIONS, M, MARKETS, MY_POSITIONS, MY_MARKETS, MY_REPORTS, AUTHENTICATION } from 'modules/app/constants/views';
 import { shouldComponentUpdateOnStateChangeOnly } from 'utils/should-component-update-pure';
 
 // NOTE --  the respective routes are imported within the switch statement so that
@@ -60,7 +57,6 @@ export default class Routes extends Component {
         import('modules/account/container').then((module) => {
           const AccountView = module.default;
           viewProps = {
-            loginMessageLink: p.links.loginMessageLink,
             authLink: (p.links && p.links.authLink) || null
           };
           viewComponent = <AccountView {...viewProps} />;
@@ -90,19 +86,6 @@ export default class Routes extends Component {
         });
         break;
       }
-      case LOGIN_MESSAGE: {
-        viewProps = {
-          topicsLink: (p.links && p.links.topicsLink) || null
-        };
-        import('modules/login-message/components/login-message-view').then((module) => {
-          const LoginMessageView = module.default;
-          viewComponent = <LoginMessageView {...viewProps} />;
-          this.setState({ viewProps, viewComponent });
-        }).catch((err) => {
-          console.error(`ERROR: Failed to load 'login-message' module -- `, err);
-        });
-        break;
-      }
       case CREATE_MARKET: {
         import('modules/create-market/container').then((module) => {
           const CreateMarketView = module.default;
@@ -120,67 +103,32 @@ export default class Routes extends Component {
         break;
       }
       case M: {
-        viewProps = {
-          logged: getValue(p, 'loginAccount.address'),
-          market: p.market,
-          marketDataNavItems: p.marketDataNavItems,
-          marketUserDataNavItems: p.marketUserDataNavItems,
-          selectedOutcome: p.selectedOutcome,
-          orderCancellation: p.orderCancellation,
-          numPendingReports: p.marketsTotals.numPendingReports,
-          isTradeCommitLocked: p.tradeCommitLock.isLocked,
-          scalarShareDenomination: p.scalarShareDenomination,
-          marketReportingNavItems: p.marketReportingNavItems,
-          outcomeTradeNavItems: p.outcomeTradeNavItems,
-          closePositionStatus: p.closePositionStatus,
-          branch: p.branch
-        };
-        import('modules/market/components/market-view').then((module) => {
+        import('modules/market/container').then((module) => {
           const MarketView = module.default;
-          viewComponent = <MarketView {...viewProps} />;
-          this.setState({ viewProps, viewComponent });
+          const viewProps = {
+            selectedOutcome: p.selectedOutcome,
+            marketReportingNavItems: p.marketReportingNavItems
+          };
+          this.setState({ viewProps, viewComponent: <MarketView {...viewProps} /> });
         }).catch((err) => {
           console.error(`ERROR: Failed to load 'market' module -- `, err);
         });
         break;
       }
       case MARKETS: {
-        viewProps = {
-          loginAccount: p.loginAccount,
-          createMarketLink: (p.links || {}).createMarketLink,
-          markets: p.markets,
-          marketsHeader: p.marketsHeader,
-          favoriteMarkets: p.favoriteMarkets,
-          pagination: p.pagination,
-          filterSort: p.filterSort,
-          keywords: p.keywords,
-          branch: p.branch,
-          scalarShareDenomination: p.scalarShareDenomination
-        };
-        import('modules/markets/components/markets-view').then((module) => {
+        import('modules/markets/container').then((module) => {
           const MarketsView = module.default;
-          viewComponent = <MarketsView {...viewProps} />;
-          this.setState({ viewProps, viewComponent });
+          this.setState({ viewComponent: <MarketsView /> });
         }).catch((err) => {
           console.error(`ERROR: Failed to load 'markets' module -- `, err);
         });
-
         p.setSidebarAllowed(true);
-
         break;
       }
       default: {
-        viewProps = {
-          topics: getValue(p, 'topics.topics'),
-          selectTopic: getValue(p, 'topics.selectTopic'),
-          loginAccount: p.loginAccount,
-          createMarketLink: (p.links || {}).createMarketLink,
-          branch: p.branch,
-        };
-        import('modules/topics/components/topics-view').then((module) => {
+        import('modules/topics/container').then((module) => {
           const TopicsView = module.default;
-          viewComponent = <TopicsView {...viewProps} />;
-          this.setState({ viewProps, viewComponent });
+          this.setState({ viewComponent: <TopicsView /> });
         }).catch((err) => {
           console.error(`ERROR: Failed to load 'topics' module -- `, err);
         });
@@ -189,8 +137,6 @@ export default class Routes extends Component {
   }
 
   render() {
-    const s = this.state;
-
-    return s.viewComponent;
+    return this.state.viewComponent;
   }
 }

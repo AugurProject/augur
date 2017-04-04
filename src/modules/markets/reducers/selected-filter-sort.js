@@ -2,7 +2,7 @@ import { UPDATE_URL } from '../../link/actions/update-url';
 import { FILTER_SORT_TYPE, FILTER_SORT_SORT, FILTER_SORT_ISDESC } from '../../markets/constants/filter-sort';
 import { FILTER_SORT_TYPE_PARAM_NAME, FILTER_SORT_SORT_PARAM_NAME, FILTER_SORT_ISDESC_PARAM_NAME } from '../../link/constants/param-names';
 import { UPDATE_SELECTED_FILTER_SORT } from '../../markets/actions/update-selected-filter-sort';
-import selectFilterSort from '../../markets/selectors/filter-sort';
+import getFilterSort from '../../markets/selectors/filter-sort';
 
 const INITIAL_STATE = {
   type: FILTER_SORT_TYPE,
@@ -35,7 +35,7 @@ export default function (selectedFilterSort = INITIAL_STATE, action) {
 }
 
 function determineParams(params) { // Insure the param is valid
-  const filterSort = selectFilterSort();
+  const filterSort = getFilterSort();
 
   const changes = {};
 

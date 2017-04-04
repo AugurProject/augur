@@ -3,8 +3,6 @@ import store from 'src/store';
 import { selectMarkets } from '../../markets/selectors/markets-all';
 
 export default function () {
-  // const { allMarkets } = require('../../../selectors');
-  // return selectOpenOrdersMarkets(allMarkets);
   return selectOpenOrdersMarkets(store.getState());
 }
 

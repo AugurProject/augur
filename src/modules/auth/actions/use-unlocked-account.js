@@ -10,6 +10,6 @@ export const useUnlockedAccount = unlockedAddress => (dispatch) => {
     }
     augur.accounts.logout(); // clear the client-side account
     console.info('using unlocked account:', unlockedAddress);
-    dispatch(loadAccountData({ address: unlockedAddress, isUnlocked: true }));
+    dispatch(loadAccountData({ address: unlockedAddress, isUnlocked: true }, true));
   });
 };

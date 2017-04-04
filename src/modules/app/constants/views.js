@@ -4,7 +4,6 @@ export const MARKETS = 'markets';
 export const CREATE_MARKET = 'create-market';
 export const TRANSACTIONS = 'transactions';
 export const ACCOUNT = 'account';
-export const LOGIN_MESSAGE = 'login-message';
 export const AUTHENTICATION = 'authentication';
 export const TOPICS = 'topics';
 

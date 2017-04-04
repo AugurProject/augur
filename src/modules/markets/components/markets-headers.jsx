@@ -28,6 +28,7 @@ const MarketsHeaders = p => (
     </div>
     <MarketsFilterSort
       keywords={p.keywords}
+      onChangeKeywords={p.onChangeKeywords}
       {...p.filterSort}
     />
   </article>
@@ -39,7 +40,8 @@ MarketsHeaders.propTypes = {
   loginAccount: PropTypes.object,
   marketsHeader: PropTypes.object,
   filterSort: PropTypes.object,
-  keywords: PropTypes.object
+  keywords: PropTypes.string,
+  onChangeKeywords: PropTypes.func
 };
 
 export default MarketsHeaders;
