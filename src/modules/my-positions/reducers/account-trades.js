@@ -14,8 +14,6 @@ export default function (accountTrades = DEFAULT_STATE, action) {
           return true;
         });
 
-        console.log(action.data.outcome === filteredTrades);
-
         return {
           ...p,
           [outcome]: [
