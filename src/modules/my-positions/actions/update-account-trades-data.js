@@ -3,7 +3,7 @@ import { loadAdjustedPositionsForMarket } from 'modules/my-positions/actions/loa
 import { addOrder, removeOrder } from 'modules/bids-asks/actions/update-market-order-book';
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 
-import { BID, ASK, SHORT_ASK, CANCEL_ORDER } from 'modules/transactions/constants/types';
+import { CANCEL_ORDER } from 'modules/transactions/constants/types';
 
 export const UPDATE_ACCOUNT_TRADES_DATA = 'UPDATE_ACCOUNT_TRADES_DATA';
 export const UPDATE_ACCOUNT_POSITIONS_DATA = 'UPDATE_ACCOUNT_POSITIONS_DATA';
@@ -38,11 +38,16 @@ export function updateAccountCancelsData(data, marketID) {
 export function updateAccountTradesData(data, marketID) {
   return (dispatch, getState) => {
     dispatch(convertTradeLogsToTransactions('log_fill_tx', data, marketID));
-    dispatch({ type: UPDATE_ACCOUNT_TRADES_DATA, data, marketID });
-    console.log('ADDED POSITION');
-    // const { loginAccount } = getState();
-    // const account = loginAccount.address;
-    // Object.keys(data).forEach(marketID => dispatch(loadAdjustedPositionsForMarket(account, marketID)));
+    const { loginAccount } = getState();
+    const account = loginAccount.address;
+    Object.keys(data).forEach((marketID) => {
+      dispatch(loadAdjustedPositionsForMarket(account, marketID));
+      dispatch({
+        type: UPDATE_ACCOUNT_TRADES_DATA,
+        marketID,
+        data: data[marketID]
+      });
+    });
   };
 }
 

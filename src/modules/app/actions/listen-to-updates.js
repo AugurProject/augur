@@ -12,7 +12,7 @@ import { updateMarketTopicPopularity } from '../../topics/actions/update-topics'
 import { SELL } from '../../outcomes/constants/trade-types';
 import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
-import { updateAccountBidsAsksData, updateAccountCancelsData } from '../../../modules/my-positions/actions/update-account-trades-data';
+import { updateAccountBidsAsksData, updateAccountCancelsData, updateAccountTradesData } from '../../../modules/my-positions/actions/update-account-trades-data';
 
 export function listenToUpdates() {
   return (dispatch, getState) => {
@@ -99,16 +99,14 @@ export function listenToUpdates() {
           const { address } = getState().loginAccount;
           if (msg.sender !== address) dispatch(fillOrder(msg));
           if (msg.sender === address || msg.owner === address) {
-            dispatch(convertTradeLogToTransaction('log_fill_tx', {
+            dispatch(updateAccountTradesData({
               [msg.market]: { [msg.outcome]: [{
                 ...msg,
                 maker: msg.owner === address
               }] }
-            }, msg.market));
+            }));
             dispatch(updateAssets());
             dispatch(loadMarketsInfo([msg.market]));
-            dispatch(loadAccountTrades(msg.market));
-            dispatch(loadBidsAsks(msg.market));
           }
         }
       },
@@ -124,17 +122,15 @@ export function listenToUpdates() {
 
           // if the user is either the maker or taker, add it to the transaction display
           if (msg.sender === address || msg.owner === address) {
-            dispatch(convertTradeLogToTransaction('log_fill_tx', {
+            dispatch(updateAccountTradesData({
               [msg.market]: { [msg.outcome]: [{
                 ...msg,
                 isShortSell: true,
                 maker: msg.owner === address
               }] }
-            }, msg.market));
+            }));
             dispatch(updateAssets());
             dispatch(loadMarketsInfo([msg.market]));
-            dispatch(loadAccountTrades(msg.market));
-            dispatch(loadBidsAsks(msg.market));
           }
         }
       },
