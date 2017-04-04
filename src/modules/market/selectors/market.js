@@ -20,9 +20,7 @@ That way the market only gets re-assembled when that specific favorite changes.
 This is true for all selectors, but especially important for this one.
 */
 
-import { createSelector } from 'reselect';
 import memoize from 'memoizee';
-import { selectSelectedMarketIDState } from 'src/select-state';
 import { formatShares, formatEther, formatPercent, formatNumber } from 'utils/format-number';
 import { formatDate } from 'utils/format-date';
 import { isMarketDataOpen, isMarketDataExpired } from 'utils/is-market-data-open';
@@ -44,7 +42,7 @@ import { selectMarketLink } from 'modules/link/selectors/links';
 import selectUserOpenOrders from 'modules/user-open-orders/selectors/user-open-orders';
 import selectUserOpenOrdersSummary from 'modules/user-open-orders/selectors/user-open-orders-summary';
 
-import selectAccountPositions from 'modules/user-open-orders/selectors/positions-plus-asks';
+import getPositionsPlusAsks from 'modules/user-open-orders/selectors/positions-plus-asks';
 import { selectPriceTimeSeries } from 'modules/market/selectors/price-time-series';
 
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from 'modules/bids-asks/helpers/select-order-book';
@@ -61,14 +59,11 @@ export default function () {
   return selectSelectedMarket(store.getState());
 }
 
-export const selectSelectedMarket = createSelector(
-  selectSelectedMarketIDState,
-  selectedMarketID => selectMarket(selectedMarketID)
-);
+export const selectSelectedMarket = state => selectMarket(state.selectedMarketID);
 
 export const selectMarket = (marketID) => {
   const { marketsData, favorites, reports, outcomesData, netEffectiveTrades, accountTrades, tradesInProgress, priceHistory, orderBooks, branch, orderCancellation, smallestPositions, loginAccount } = store.getState();
-  const accountPositions = selectAccountPositions();
+  const accountPositions = getPositionsPlusAsks();
 
   if (!marketID || !marketsData || !marketsData[marketID]) {
     return {};
@@ -106,20 +101,6 @@ export const selectMarket = (marketID) => {
     loginAccount,
     store.dispatch);
 };
-
-export const selectScalarMinimum = (market) => {
-  const scalarMinimum = {};
-  if (market && market.type === SCALAR) scalarMinimum.minValue = market.minValue;
-  return scalarMinimum;
-};
-
-export const selectMarketIDFromEventID = (eventID) => {
-  const marketIDs = store.getState().eventMarketsMap[eventID];
-  if (marketIDs && marketIDs.length) return marketIDs[0];
-  return null;
-};
-
-export const selectMarketFromEventID = eventID => selectMarket(selectMarketIDFromEventID(eventID));
 
 const assembledMarketsCache = {};
 
@@ -352,3 +333,17 @@ export const selectMarketReport = (marketID, branchReports) => {
     }
   }
 };
+
+export const selectScalarMinimum = (market) => {
+  const scalarMinimum = {};
+  if (market && market.type === SCALAR) scalarMinimum.minValue = market.minValue;
+  return scalarMinimum;
+};
+
+export const selectMarketIDFromEventID = (eventID) => {
+  const marketIDs = store.getState().eventMarketsMap[eventID];
+  if (marketIDs && marketIDs.length) return marketIDs[0];
+  return null;
+};
+
+export const selectMarketFromEventID = eventID => selectMarket(selectMarketIDFromEventID(eventID));

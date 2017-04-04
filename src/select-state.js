@@ -76,3 +76,8 @@ export const selectLoginAccountAddress = createSelector(
   selectLoginAccountState,
   loginAccount => loginAccount.address
 );
+
+export const selectTradeCommitLockIsLocked = createSelector(
+  selectTradeCommitLockState,
+  tradeCommitLock => tradeCommitLock.isLocked
+);

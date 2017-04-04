@@ -10,10 +10,7 @@ import { selectMarketsHeader } from 'modules/markets/selectors/markets-header';
 import { selectFavoriteMarkets } from 'modules/markets/selectors/markets-favorite';
 import { selectPagination } from 'modules/markets/selectors/pagination';
 
-import { updateScalarMarketShareDenomination } from 'modules/market/actions/update-scalar-market-share-denomination';
 import { updateKeywords } from 'modules/markets/actions/update-keywords';
-
-import { DENOMINATIONS } from 'modules/market/constants/share-denominations';
 
 const mapStateToProps = state => ({
   loginAccount: selectLoginAccount(state),

@@ -1,7 +1,7 @@
 import { augur } from 'services/augurjs';
 import { updateBranch } from 'modules/branch/actions/update-branch';
 import { syncBranch } from 'modules/branch/actions/sync-branch';
-import { reportingCycle } from 'modules/branch/selectors/reporting-cycle';
+import getReportingCycle from 'modules/branch/selectors/reporting-cycle';
 import { syncBlockchain } from 'modules/app/actions/sync-blockchain';
 import { listenToUpdates } from 'modules/app/actions/listen-to-updates';
 import { loadTopics } from 'modules/topics/actions/load-topics';

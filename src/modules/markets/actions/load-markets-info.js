@@ -15,31 +15,29 @@ export function filterMarketsInfoByBranch(marketsData, branchID) {
   return marketsData;
 }
 
-export function loadMarketsInfo(marketIDs, cb) {
-  return (dispatch, getState) => {
-    const numMarketsToLoad = marketIDs.length;
-    (function loader(stepStart) {
-      const stepEnd = stepStart + MARKETS_PER_BATCH;
-      const marketsToLoad = marketIDs.slice(stepStart, Math.min(numMarketsToLoad, stepEnd));
-      dispatch(updateMarketsLoadingStatus(marketsToLoad, true));
-      augur.batchGetMarketInfo(marketsToLoad, getState().loginAccount.address, (marketsData) => {
-        if (!marketsData || marketsData.error) {
-          console.error('ERROR loadMarketsInfo()', marketsData);
-        } else {
-          const branchMarketsData = filterMarketsInfoByBranch(marketsData, getState().branch.id);
-          const marketInfoIDs = Object.keys(branchMarketsData);
-          if (marketInfoIDs.length) {
-            dispatch(updateMarketsData(branchMarketsData));
-            marketInfoIDs.forEach((marketID) => {
-              dispatch(updateEventMarketsMap(branchMarketsData[marketID].eventID, [marketID]));
-              dispatch(loadCreatedMarketInfo(marketID));
-            });
-            dispatch(updateMarketsLoadingStatus(marketInfoIDs, false));
-          }
+export const loadMarketsInfo = (marketIDs, cb) => (dispatch, getState) => {
+  const numMarketsToLoad = marketIDs.length;
+  (function loader(stepStart) {
+    const stepEnd = stepStart + MARKETS_PER_BATCH;
+    const marketsToLoad = marketIDs.slice(stepStart, Math.min(numMarketsToLoad, stepEnd));
+    dispatch(updateMarketsLoadingStatus(marketsToLoad, true));
+    augur.batchGetMarketInfo(marketsToLoad, getState().loginAccount.address, (marketsData) => {
+      if (!marketsData || marketsData.error) {
+        console.error('ERROR loadMarketsInfo()', marketsData);
+      } else {
+        const branchMarketsData = filterMarketsInfoByBranch(marketsData, getState().branch.id);
+        const marketInfoIDs = Object.keys(branchMarketsData);
+        if (marketInfoIDs.length) {
+          dispatch(updateMarketsData(branchMarketsData));
+          marketInfoIDs.forEach((marketID) => {
+            dispatch(updateEventMarketsMap(branchMarketsData[marketID].eventID, [marketID]));
+            dispatch(loadCreatedMarketInfo(marketID));
+          });
+          dispatch(updateMarketsLoadingStatus(marketInfoIDs, false));
         }
-        if (stepEnd < numMarketsToLoad) return loader(stepEnd);
-        if (cb) cb();
-      });
-    }(0));
-  };
-}
+      }
+      if (stepEnd < numMarketsToLoad) return loader(stepEnd);
+      if (cb) cb();
+    });
+  }(0));
+};

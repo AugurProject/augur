@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-
 import { ACCOUNT, CREATE_MARKET, TRANSACTIONS, M, MARKETS, MY_POSITIONS, MY_MARKETS, MY_REPORTS, AUTHENTICATION } from 'modules/app/constants/views';
-
 import { shouldComponentUpdateOnStateChangeOnly } from 'utils/should-component-update-pure';
-import getValue from 'utils/get-value';
 
 // NOTE --  the respective routes are imported within the switch statement so that
 //          webpack can properly code split the views
@@ -105,36 +102,10 @@ export default class Routes extends Component {
         });
         break;
       }
-      // case M: {
-      //   viewProps = {
-      //     logged: getValue(p, 'loginAccount.address'),
-      //     market: p.market,
-      //     marketDataNavItems: p.marketDataNavItems,
-      //     marketUserDataNavItems: p.marketUserDataNavItems,
-      //     selectedOutcome: p.selectedOutcome,
-      //     orderCancellation: p.orderCancellation,
-      //     numPendingReports: p.marketsTotals.numPendingReports,
-      //     isTradeCommitLocked: p.tradeCommitLock.isLocked,
-      //     scalarShareDenomination: p.scalarShareDenomination,
-      //     marketReportingNavItems: p.marketReportingNavItems,
-      //     outcomeTradeNavItems: p.outcomeTradeNavItems,
-      //     closePositionStatus: p.closePositionStatus,
-      //     branch: p.branch
-      //   };
-      //   import('modules/market/components/market-view').then((module) => {
-      //     const MarketView = module.default;
-      //     viewComponent = <MarketView {...viewProps} />;
-      //     this.setState({ viewProps, viewComponent });
-      //   }).catch((err) => {
-      //     console.error(`ERROR: Failed to load 'market' module -- `, err);
-      //   });
-      //   break;
-      // }
       case M: {
         import('modules/market/container').then((module) => {
           const MarketView = module.default;
           const viewProps = {
-            market: p.market,
             selectedOutcome: p.selectedOutcome,
             marketReportingNavItems: p.marketReportingNavItems
           };
@@ -145,18 +116,6 @@ export default class Routes extends Component {
         break;
       }
       case MARKETS: {
-        // viewProps = {
-        //   loginAccount: p.loginAccount,
-        //   createMarketLink: (p.links || {}).createMarketLink,
-        //   markets: p.markets,
-        //   marketsHeader: p.marketsHeader,
-        //   favoriteMarkets: p.favoriteMarkets,
-        //   pagination: p.pagination,
-        //   filterSort: p.filterSort,
-        //   keywords: p.keywords,
-        //   branch: p.branch,
-        //   scalarShareDenomination: p.scalarShareDenomination
-        // };
         import('modules/markets/container').then((module) => {
           const MarketsView = module.default;
           this.setState({ viewComponent: <MarketsView /> });
@@ -178,8 +137,6 @@ export default class Routes extends Component {
   }
 
   render() {
-    const s = this.state;
-
-    return s.viewComponent;
+    return this.state.viewComponent;
   }
 }

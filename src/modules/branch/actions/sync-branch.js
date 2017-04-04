@@ -1,10 +1,10 @@
-import { isZero } from '../../../utils/math';
-import { augur } from '../../../services/augurjs';
-import { reportingCycle } from '../../branch/selectors/reporting-cycle';
-import { updateBranch } from '../../branch/actions/update-branch';
-import { checkPeriod } from '../../reports/actions/check-period';
-import { updateAssets } from '../../auth/actions/update-assets';
-import { claimProceeds } from '../../my-positions/actions/claim-proceeds';
+import { isZero } from 'utils/math';
+import { augur } from 'services/augurjs';
+import getReportingCycle from 'modules/branch/selectors/reporting-cycle';
+import { updateBranch } from 'modules/branch/actions/update-branch';
+import { checkPeriod } from 'modules/reports/actions/check-period';
+import { updateAssets } from 'modules/auth/actions/update-assets';
+import { claimProceeds } from 'modules/my-positions/actions/claim-proceeds';
 
 let checkPeriodLock = false;
 
@@ -37,9 +37,9 @@ export const syncReporterData = cb => (dispatch, getState) => {
 // Synchronize front-end branch state with blockchain branch state.
 export const syncBranch = cb => (dispatch, getState) => {
   const callback = cb || (e => e && console.log('syncBranch:', e));
-  const { blockchain, branch, loginAccount } = getState();
+  const { branch, loginAccount } = getState();
   if (!branch.periodLength) return callback(null);
-  const reportingCycleInfo = reportingCycle(branch.periodLength, blockchain.currentBlockTimestamp);
+  const reportingCycleInfo = getReportingCycle();
   const isChangedReportPhase = reportingCycleInfo.isReportRevealPhase !== branch.isReportRevealPhase;
   dispatch(updateBranch({ ...reportingCycleInfo }));
   if (branch.reportPeriod && (!loginAccount.address || !isChangedReportPhase)) {

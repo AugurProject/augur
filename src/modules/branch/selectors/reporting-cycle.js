@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect';
 import moment from 'moment';
-import store from '../../../store';
+import store from 'src/store';
 import { selectBlockchainCurrentBlockTimestamp, selectBranchPeriodLength } from 'src/select-state';
-import { augur, abi } from '../../../services/augurjs';
+import { augur, abi } from 'services/augurjs';
 import { ONE } from 'modules/trade/constants/numbers';
 
 export default function () {

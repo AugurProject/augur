@@ -24,9 +24,9 @@ describe(`modules/branch/actions/sync-branch.js`, () => {
         '../../../services/augurjs': AugurJS,
         '../../reports/actions/check-period': CheckPeriod,
         '../../my-positions/actions/claim-proceeds': ClaimProceeds,
-        '../../branch/selectors/reporting-cycle': ReportingCycle,
+        '../selectors/reporting-cycle': ReportingCycle,
         '../../auth/actions/update-assets': UpdateAssets,
-        '../../branch/actions/update-branch': UpdateBranch
+        './update-branch': UpdateBranch
       });
       AugurJS.augur.getVotePeriod = sinon.stub().yields(19);
       AugurJS.augur.getVotePeriod.onCall(1).yields(15);
@@ -41,7 +41,7 @@ describe(`modules/branch/actions/sync-branch.js`, () => {
         dispatch({ type: 'UPDATE_BRANCH', branch: { reportPeriod } });
         cb(null, reportPeriod);
       });
-      ReportingCycle.reportingCycle = sinon.stub().returns(t.selectors.reportingCycle);
+      ReportingCycle.default = sinon.stub().returns(t.selectors.reportingCycle);
       sinon.stub(UpdateAssets, 'updateAssets', cb => (dispatch) => {
         dispatch({ type: 'UPDATE_ASSETS' });
         cb(null, { ether: null, realEther: null, rep: null });
