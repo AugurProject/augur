@@ -76,15 +76,7 @@ export default class MarketTradeCloseDialog extends Component {
               }
             }}
           >
-            {closeType === POSITION ?
-              <span>
-                {isFullyClosable ?
-                  <i className="fa fa-minus-circle" /> :
-                  <i className="fa fa-chevron-circle-down" />
-                }
-              </span> :
-              <i className="fa fa-minus-circle" />
-            }
+            <span>∅</span>
           </button>
         );
     }
