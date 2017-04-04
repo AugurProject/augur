@@ -7,7 +7,7 @@ import selectMyPositions from 'modules/my-positions/selectors/my-positions';
 import { closePosition } from 'modules/my-positions/actions/close-position';
 
 import { ZERO } from 'modules/trade/constants/numbers';
-import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types';
+// import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types';
 
 import { augur, abi } from 'services/augurjs';
 import { formatEther, formatShares, formatNumber } from 'utils/format-number';
@@ -24,12 +24,11 @@ export const generateOutcomePositionSummary = memoize((adjustedPosition, outcome
 
   const trades = outcomeAccountTrades ? outcomeAccountTrades.slice() : [];
   const { position, realized, unrealized, meanOpenPrice } = augur.calculateProfitLoss(trades, lastPrice, adjustedPosition);
-  const relevantOrders = orderBook[position > 0 ? BIDS : ASKS];
   const positionShares = new BigNumber(position);
 
   return {
     ...generatePositionsSummary(1, position, meanOpenPrice, realized, unrealized),
-    isClosable: !!positionShares.toNumber() && !!relevantOrders.length, // Based on available orders, can this position be at least partially closed
+    isClosable: !!positionShares.toNumber(), // Based on position, can we attempt to close this position
     closePosition: (marketID, outcomeID) => {
       store.dispatch(closePosition(marketID, outcomeID));
     }
