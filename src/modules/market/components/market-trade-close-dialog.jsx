@@ -5,7 +5,13 @@ import Spinner from 'modules/common/components/spinner';
 import EmDash from 'modules/common/components/em-dash';
 
 import { POSITION, ORDER } from 'modules/market/constants/trade-close-type';
-import { CLOSE_DIALOG_CLOSING, CLOSE_DIALOG_FAILED, CLOSE_DIALOG_PARTIALLY_FAILED, CLOSE_DIALOG_SUCCESS } from 'modules/market/constants/close-dialog-status';
+import {
+  CLOSE_DIALOG_CLOSING,
+  CLOSE_DIALOG_NO_ORDERS,
+  CLOSE_DIALOG_FAILED,
+  CLOSE_DIALOG_PARTIALLY_FAILED,
+  CLOSE_DIALOG_SUCCESS
+} from 'modules/market/constants/close-dialog-status';
 
 export default class MarketTradeCloseDialog extends Component {
   static propTypes = {
@@ -23,7 +29,19 @@ export default class MarketTradeCloseDialog extends Component {
     this.renderCloseDialogContent = this.renderCloseDialogContent.bind(this);
   }
 
-  renderCloseDialogContent(marketID, orderID, closeType, isClosable, quantityOfShares, isConfirming, closePosition, status, orderType, cancelOrder, isTradeCommitLocked) {
+  renderCloseDialogContent(
+    marketID,
+    orderID,
+    closeType,
+    isClosable,
+    quantityOfShares,
+    isConfirming,
+    closePosition,
+    status,
+    orderType,
+    cancelOrder,
+    isTradeCommitLocked
+  ) {
     // Position -- No Available Actions
     if (closeType === POSITION && !status && (!parseFloat(quantityOfShares, 10) || !isClosable)) {
       return <EmDash />;
@@ -60,6 +78,8 @@ export default class MarketTradeCloseDialog extends Component {
     switch (status) {
       case CLOSE_DIALOG_CLOSING:
         return <Spinner />;
+      case CLOSE_DIALOG_NO_ORDERS:
+        return <span>no orders</span>;
       case CLOSE_DIALOG_FAILED:
         return <span>failed</span>;
       case CLOSE_DIALOG_PARTIALLY_FAILED:
@@ -95,7 +115,9 @@ export default class MarketTradeCloseDialog extends Component {
             'close-dialog', {
               'action-disabled': p.isTradeCommitLocked && p.closeType === POSITION,
               'action-running': p.status === CLOSE_DIALOG_CLOSING,
-              'action-failed': p.status === CLOSE_DIALOG_FAILED || p.status === CLOSE_DIALOG_PARTIALLY_FAILED,
+              'action-failed': p.status === CLOSE_DIALOG_NO_ORDERS ||
+                p.status === CLOSE_DIALOG_FAILED ||
+                p.status === CLOSE_DIALOG_PARTIALLY_FAILED,
               'action-succeeded': p.status === CLOSE_DIALOG_SUCCESS
             }
           )
