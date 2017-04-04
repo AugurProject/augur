@@ -47,6 +47,16 @@ export const selectClosePositionTradeGroupsState = state => state.closePositionT
 export const selectChatMessagesState = state => state.chatMessages;
 export const selectMarketCreatorFeesState = state => state.marketCreatorFees;
 
+export const selectBlockchainCurrentBlockTimestamp = createSelector(
+  selectBlockchainState,
+  blockchain => blockchain.currentBlockTimestamp
+);
+
+export const selectBranchPeriodLength = createSelector(
+  selectBranchState,
+  branch => branch.periodLength
+);
+
 export const selectBranchReportPeriod = createSelector(
   selectBranchState,
   branch => branch.reportPeriod
