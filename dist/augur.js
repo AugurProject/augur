@@ -23903,7 +23903,7 @@ BigNumber.config({
 function Augur() {
   var i, len, fn;
 
-  this.version = "3.15.4";
+  this.version = "3.15.5";
 
   this.options = {
     debug: {
@@ -47038,7 +47038,7 @@ function isFunction(f) {
 
 module.exports = {
 
-  version: "3.0.5",
+  version: "3.0.6",
 
   debug: false,
   rpc: rpc,
@@ -48104,14 +48104,15 @@ function reconcileLogHistoryWithAddedBlock(getLogs, logHistory, newBlock, onLogA
 exports.reconcileLogHistoryWithAddedBlock = reconcileLogHistoryWithAddedBlock;
 function getFilteredLogs(getLogs, newBlock, filters) {
     return __awaiter(this, void 0, void 0, function () {
-        var filterOptions;
+        var logPromises;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    if (filters.length === 0)
-                        filters = [{}];
-                    filterOptions = filters.map(function (filter) { return ({ fromBlock: newBlock.number, toBlock: newBlock.number, address: filter.address, topics: filter.topics, }); });
-                    return [4 /*yield*/, getLogs(filterOptions)];
+                    logPromises = filters
+                        .map(function (filter) { return ({ fromBlock: newBlock.number, toBlock: newBlock.number, address: filter.address, topics: filter.topics, }); })
+                        .map(function (filter) { return getLogs(filter); });
+                    return [4 /*yield*/, Promise.all(logPromises)
+                            .then(function (nestedLogs) { return nestedLogs.reduce(function (allLogs, logs) { return allLogs.concat(logs); }, []); })];
                 case 1: return [2 /*return*/, _a.sent()];
             }
         });
@@ -48748,7 +48749,25 @@ module.exports={
 
 },{}],301:[function(require,module,exports){
 (function (Buffer){
-var _typeof5 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+var _typeof8 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _typeof7 = typeof Symbol === "function" && _typeof8(Symbol.iterator) === "symbol" ? function (obj) {
+  return typeof obj === "undefined" ? "undefined" : _typeof8(obj);
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof8(obj);
+};
+
+var _typeof6 = typeof Symbol === "function" && _typeof7(Symbol.iterator) === "symbol" ? function (obj) {
+  return typeof obj === "undefined" ? "undefined" : _typeof7(obj);
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof7(obj);
+};
+
+var _typeof5 = typeof Symbol === "function" && _typeof6(Symbol.iterator) === "symbol" ? function (obj) {
+  return typeof obj === "undefined" ? "undefined" : _typeof6(obj);
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof6(obj);
+};
 
 var _typeof4 = typeof Symbol === "function" && _typeof5(Symbol.iterator) === "symbol" ? function (obj) {
   return typeof obj === "undefined" ? "undefined" : _typeof5(obj);
@@ -59238,7 +59257,7 @@ BigNumber.config({
 function RPCError(err) {
   this.name = "RPCError";
   this.error = err.error;
-  this.message = JSON.stringify(err);
+  this.message = err.message;
 }
 
 RPCError.prototype = Error.prototype;
@@ -60457,24 +60476,10 @@ module.exports = {
   },
 
   /**
-   * Validate and submit a signed raw transaction to the network.
-   * @param {Object} signedRawTransaction Unsigned transaction.
-   * @param {function=} callback Callback function (optional).
-   * @return {string|Object} Response (tx hash or error) from the Ethereum node.
-   */
-  submitSignedRawTransaction: function (signedRawTransaction, callback) {
-    if (!signedRawTransaction.validate()) {
-      if (!isFunction(callback)) throw new RPCError(errors.TRANSACTION_INVALID);
-      return callback(errors.TRANSACTION_INVALID);
-    }
-    return this.sendRawTransaction(signedRawTransaction.serialize().toString("hex"), callback);
-  },
-
-  /**
    * Sign the transaction using the private key.
    * @param {Object} packaged Unsigned transaction.
    * @param {buffer} privateKey The sender's plaintext private key.
-   * @return {Object} Signed ethereumjs-tx transaction object.
+   * @return {string} Signed and serialized raw transaction.
    */
   signRawTransaction: function (packaged, privateKey) {
     var rawTransaction = new EthTx(packaged);
