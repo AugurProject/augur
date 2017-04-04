@@ -19,7 +19,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
           }
         }
       };
-      const DisplayLoginMessage = {};
+      const DisplayTopicsPage = {};
       const FundNewAccount = { fundNewAccount: () => {} };
       const LoadAccountDataFromLocalStorage = {};
       const LoadRegisterBlockNumber = {};
@@ -27,19 +27,21 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       const UpdateLoginAccount = { updateLoginAccount: () => {} };
       const action = proxyquire('../../../src/modules/auth/actions/load-account-data.js', {
         '../../../services/augurjs': AugurJS,
-        '../../../modules/login-message/actions/display-login-message': DisplayLoginMessage,
-        '../../../modules/auth/actions/fund-new-account': FundNewAccount,
-        '../../../modules/auth/actions/load-account-data-from-local-storage': LoadAccountDataFromLocalStorage,
-        '../../../modules/auth/actions/load-register-block-number': LoadRegisterBlockNumber,
-        '../../../modules/auth/actions/update-assets': UpdateAssets,
-        '../../../modules/auth/actions/update-login-account': UpdateLoginAccount
+        '../../link/actions/display-topics-page': DisplayTopicsPage,
+        './fund-new-account': FundNewAccount,
+        './load-account-data-from-local-storage': LoadAccountDataFromLocalStorage,
+        './load-register-block-number': LoadRegisterBlockNumber,
+        './update-assets': UpdateAssets,
+        './update-login-account': UpdateLoginAccount
+      });
+      DisplayTopicsPage.displayTopicsPage = sinon.stub().returns({
+        type: 'DISPLAY_TOPICS_PAGE'
       });
       sinon.stub(AugurJS.augur.Register, 'register', params => params.onSuccess({ callReturn: '1' }));
       sinon.stub(AugurJS.augur, 'getRegisterBlockNumber', (address, callback) => {
         if (!callback) return t.blockchain.registerBlockNumber;
         callback(null, t.blockchain.registerBlockNumber);
       });
-      DisplayLoginMessage.displayLoginMessageOrTopics = sinon.stub().returns({ type: 'DISPLAY_LOGIN_MESSAGE_OR_MARKETS' });
       sinon.stub(FundNewAccount, 'fundNewAccount', () => (dispatch, getState) => {
         dispatch({ type: 'FUND_NEW_ACCOUNT' });
       });
@@ -98,7 +100,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         type: 'UPDATE_LOGIN_ACCOUNT',
         data: { address: '0xb0b' }
       }, {
-        type: 'DISPLAY_LOGIN_MESSAGE_OR_MARKETS'
+        type: 'DISPLAY_TOPICS_PAGE'
       }, {
         type: 'UPDATE_ASSETS'
       }, {
@@ -123,7 +125,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         type: 'UPDATE_LOGIN_ACCOUNT',
         data: { address: '0xb0b' }
       }, {
-        type: 'DISPLAY_LOGIN_MESSAGE_OR_MARKETS'
+        type: 'DISPLAY_TOPICS_PAGE'
       }, {
         type: 'UPDATE_ASSETS'
       }, {
@@ -148,7 +150,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         type: 'UPDATE_LOGIN_ACCOUNT',
         data: { address: '0xb0b' }
       }, {
-        type: 'DISPLAY_LOGIN_MESSAGE_OR_MARKETS'
+        type: 'DISPLAY_TOPICS_PAGE'
       }, {
         type: 'UPDATE_ASSETS'
       }, {
@@ -189,7 +191,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         type: 'UPDATE_LOGIN_ACCOUNT',
         data: { airbitzAccount: { username: 'jack' } }
       }, {
-        type: 'DISPLAY_LOGIN_MESSAGE_OR_MARKETS'
+        type: 'DISPLAY_TOPICS_PAGE'
       }, {
         type: 'UPDATE_ASSETS'
       }, {
@@ -218,7 +220,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         type: 'UPDATE_LOGIN_ACCOUNT',
         data: { loginID: 'loginID' }
       }, {
-        type: 'DISPLAY_LOGIN_MESSAGE_OR_MARKETS'
+        type: 'DISPLAY_TOPICS_PAGE'
       }, {
         type: 'UPDATE_ASSETS'
       }, {

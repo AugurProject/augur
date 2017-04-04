@@ -1,21 +1,11 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import proxyquire from 'proxyquire';
-import sinon from 'sinon';
 import { selectTopics } from 'modules/topics/selectors/topics';
 
 describe(`modules/topics/selectors/select-order-book.js`, () => {
-  const test = (t) => {
-    it(t.description, () => {
-      const mockLinks = {};
-      mockLinks.selectTopicLink = sinon.stub().returns({ onClick: sinon.stub() });
-      const selector = proxyquire('../../../src/modules/topics/selectors/topics', {
-        '../../../modules/link/selectors/links': mockLinks
-      }).default();
-      const output = selectTopics({ topics: t.topics });
-      t.assertions(output, selector, mockLinks);
-    });
-  };
+  const test = t => it(t.description, () => (
+    t.assertions(selectTopics({ topics: t.topics }))
+  ));
   test({
     description: 'no topics',
     topics: {},
@@ -103,14 +93,6 @@ describe(`modules/topics/selectors/select-order-book.js`, () => {
         { topic: 'twirling', popularity: 10 },
         { topic: 'frontflips', popularity: 10 }
       ]);
-    }
-  });
-  test({
-    description: 'should return the expected actions when calling `selectTopic`',
-    assertions: (output, selector, mockLinks) => {
-      selector.selectTopic();
-      assert.isTrue(mockLinks.selectTopicLink.calledOnce, `Didn't call 'selectTopicLink' once as expected`);
-      assert.isTrue(mockLinks.selectTopicLink().onClick.calledOnce, `Didn't call 'onClick' once as expected`);
     }
   });
 });

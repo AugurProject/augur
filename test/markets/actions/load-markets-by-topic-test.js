@@ -4,6 +4,7 @@ import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
+import testState from 'test/testState';
 
 describe('modules/markets/actions/load-markets-by-topic.js', () => {
   proxyquire.noPreserveCache().noCallThru();
@@ -12,17 +13,13 @@ describe('modules/markets/actions/load-markets-by-topic.js', () => {
 
   const test = (t) => {
     it(t.description, () => {
-      const store = mockStore();
+      const state = Object.assign({}, testState);
+      const store = mockStore(state);
       const AugurJS = {
         augur: {
           findMarketsWithTopic: () => {}
         }
       };
-      // const mockSelectors = {
-      //   branch: {
-      //     id: '0xbranch1'
-      //   }
-      // };
 
       const mockLoadMarketsInfo = {};
 
@@ -36,7 +33,6 @@ describe('modules/markets/actions/load-markets-by-topic.js', () => {
 
       const action = proxyquire('../../../src/modules/markets/actions/load-markets-by-topic', {
         '../../../services/augurjs': AugurJS,
-        // '../../selectors': mockSelectors,
         './load-markets-info': mockLoadMarketsInfo
       });
 
@@ -60,7 +56,6 @@ describe('modules/markets/actions/load-markets-by-topic.js', () => {
           hasLoadedTopic: { 'fail-err': false }
         }
       ];
-
 
       assert(actions, expected, 'error was not handled as expected');
     }

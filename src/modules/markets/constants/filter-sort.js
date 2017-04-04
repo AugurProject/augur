@@ -7,3 +7,45 @@ export const FILTER_SORT_ISDESC = true;
 export const FILTER_TYPE_OPEN = 'open';
 export const FILTER_TYPE_REPORTING = 'reporting';
 export const FILTER_TYPE_CLOSED = 'closed';
+
+export const SELECT_TYPE_OPTIONS = [
+  {
+    label: 'Open',
+    value: FILTER_TYPE_OPEN
+  },
+  {
+    label: 'Reporting',
+    value: FILTER_TYPE_REPORTING
+  },
+  {
+    label: 'Closed',
+    value: FILTER_TYPE_CLOSED
+  }
+];
+
+export const SELECT_SORT_OPTIONS = [
+  {
+    label: 'Volume',
+    value: 'volume'
+  },
+  {
+    label: 'Newest',
+    value: 'creationTime'
+  },
+  {
+    label: 'Expiration',
+    value: 'endDate'
+  },
+  {
+    label: 'Taker Fee',
+    value: 'takerFeePercent'
+  },
+  {
+    label: 'Maker Fee',
+    value: 'makerFeePercent'
+  }
+];
+
+export const SELECT_ORDER_OPTIONS = {
+  isDesc: true
+};

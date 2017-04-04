@@ -24,7 +24,9 @@ describe(`modules/markets/selectors/pagination.js`, () => {
       numUnpaginated: 100
     }
   };
-
+  const MarketsTotals = {
+    selectMarketsTotals: () => mockSelectors.marketsTotals
+  };
   sinon.stub(mockPage, 'updateSelectedPageNum', (pageNum, href) => ({
     type: 'UPDATE_SELECTED_PAGE_NUM',
     pageNum
@@ -34,6 +36,7 @@ describe(`modules/markets/selectors/pagination.js`, () => {
     '../../../store': store,
     '../../../selectors': mockSelectors,
     '../actions/update-selected-page-num': mockPage,
+    './markets-totals': MarketsTotals
   });
 
   const { makePaginationLink } = proxyquire('../../../src/modules/markets/selectors/pagination', {
@@ -70,9 +73,10 @@ describe(`modules/markets/selectors/pagination.js`, () => {
   });
 
   it('should deliver the correct shape to AURC', () => {
-    state.pagination.selectedPageNum = 2;
-
-    actual = selector.default();
+    actual = selector.selectPagination({
+      ...state,
+      pagination: { ...state.pagination, selectedPageNum: 2 }
+    });
 
     paginationAssertions(actual);
   });

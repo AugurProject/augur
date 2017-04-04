@@ -15,6 +15,7 @@ const MarketsView = p => (
       marketsHeader={p.marketsHeader}
       filterSort={p.filterSort}
       keywords={p.keywords}
+      onChangeKeywords={p.onChangeKeywords}
     />
     <MarketsList
       loginAccount={p.loginAccount}
@@ -31,9 +32,11 @@ MarketsView.propTypes = {
   marketsHeader: PropTypes.object,
   markets: PropTypes.array,
   pagination: PropTypes.object,
-  keywords: PropTypes.object,
+  keywords: PropTypes.string,
+  onChangeKeywords: PropTypes.func,
   branch: PropTypes.object,
-  loginAccount: PropTypes.object
+  loginAccount: PropTypes.object,
+  scalarShareDenomination: PropTypes.object
 };
 
 export default MarketsView;

@@ -20,17 +20,14 @@ const consoleLog = store => next => (action) => {
 const localStorageMiddleware = store => next => (action) => {
   next(action);
   const state = store.getState();
-
   if (!state || !state.loginAccount || !state.loginAccount.address) {
     return;
   }
-
   if (windowRef.localStorage && windowRef.localStorage.setItem) {
     windowRef.localStorage.setItem(state.loginAccount.address, JSON.stringify({
       scalarMarketsShareDenomination: state.scalarMarketsShareDenomination,
       favorites: state.favorites,
-      reports: state.reports,
-      loginMessageVersionRead: state.loginMessage.userVersionRead
+      reports: state.reports
     }));
   }
 };

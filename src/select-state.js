@@ -28,7 +28,6 @@ export const selectSelectedTopicState = state => state.selectedTopic;
 export const selectSelectedTagsState = state => state.selectedTags;
 export const selectSelectedFilterSortState = state => state.selectedFilterSort;
 export const selectPriceHistoryState = state => state.priceHistory;
-export const selectLoginMessageState = state => state.loginMessage;
 export const selectTradesInProgressState = state => state.tradesInProgress;
 export const selectTradeCommitLockState = state => state.tradeCommitLock;
 export const selectReportCommitLockState = state => state.reportCommitLock;
@@ -48,6 +47,16 @@ export const selectClosePositionTradeGroupsState = state => state.closePositionT
 export const selectChatMessagesState = state => state.chatMessages;
 export const selectMarketCreatorFeesState = state => state.marketCreatorFees;
 
+export const selectBlockchainCurrentBlockTimestamp = createSelector(
+  selectBlockchainState,
+  blockchain => blockchain.currentBlockTimestamp
+);
+
+export const selectBranchPeriodLength = createSelector(
+  selectBranchState,
+  branch => branch.periodLength
+);
+
 export const selectBranchReportPeriod = createSelector(
   selectBranchState,
   branch => branch.reportPeriod
@@ -66,4 +75,9 @@ export const selectPaginationNumPerPage = createSelector(
 export const selectLoginAccountAddress = createSelector(
   selectLoginAccountState,
   loginAccount => loginAccount.address
+);
+
+export const selectTradeCommitLockIsLocked = createSelector(
+  selectTradeCommitLockState,
+  tradeCommitLock => tradeCommitLock.isLocked
 );

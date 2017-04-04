@@ -7,15 +7,16 @@ const MarketsSearch = p => (
       isSearch
       isClearable
       placeholder="Search Markets"
-      value={p.keywords && p.keywords.value}
-      onChange={p.keywords && p.keywords.onChangeKeywords}
+      value={p.keywords}
+      onChange={p.onChangeKeywords}
     />
   </article>
 );
 
 MarketsSearch.propTypes = {
   className: PropTypes.string,
-  keywords: PropTypes.object
+  keywords: PropTypes.string,
+  onChangeKeywords: PropTypes.func
 };
 
 export default MarketsSearch;

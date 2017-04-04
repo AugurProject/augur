@@ -8,10 +8,9 @@ import { updateURL } from 'modules/link/actions/update-url';
 import { logout } from 'modules/auth/actions/logout';
 
 import { loadFullLoginAccountMarkets } from 'modules/portfolio/actions/load-full-login-account-markets';
-import updateUserLoginMessageVersionRead from 'modules/login-message/actions/update-user-login-message-version-read';
 import { updateSelectedMarketsHeader } from 'modules/markets/actions/update-selected-markets-header';
 
-import { ACCOUNT, M, MARKETS, CREATE_MARKET, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS, LOGIN_MESSAGE, AUTHENTICATION } from 'modules/app/constants/views';
+import { ACCOUNT, M, MARKETS, CREATE_MARKET, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS, AUTHENTICATION } from 'modules/app/constants/views';
 import { FAVORITES, PENDING_REPORTS } from 'modules/markets/constants/markets-subset';
 
 import { SEARCH_PARAM_NAME, FILTER_SORT_TYPE_PARAM_NAME, FILTER_SORT_SORT_PARAM_NAME, FILTER_SORT_ISDESC_PARAM_NAME, PAGE_PARAM_NAME, TAGS_PARAM_NAME, TOPIC_PARAM_NAME, SUBSET_PARAM_NAME } from 'modules/link/constants/param-names';
@@ -21,7 +20,7 @@ import { listWordsUnderLength } from 'utils/list-words-under-length';
 import { makeLocation } from 'utils/parse-url';
 
 export default function () {
-  const { keywords, selectedFilterSort, selectedTags, selectedTopic, pagination, loginAccount, auth, loginMessage } = store.getState();
+  const { keywords, selectedFilterSort, selectedTags, selectedTopic, pagination, loginAccount, auth } = store.getState();
   const { market } = require('../../../selectors');
   return {
     authLink: selectAuthLink(auth.selectedAuthType, !!loginAccount.address, store.dispatch),
@@ -37,7 +36,6 @@ export default function () {
     myPositionsLink: selectMyPositionsLink(store.dispatch),
     myMarketsLink: selectMyMarketsLink(store.dispatch),
     myReportsLink: selectMyReportsLink(store.dispatch),
-    loginMessageLink: selectLoginMessageLink(loginAccount.address, loginMessage.version, store.dispatch),
     topicsLink: selectTopicsLink(store.dispatch)
   };
   // NOTE -- pagination links are a special case.  Reference the pagination selector for how those work.
@@ -235,20 +233,6 @@ export const selectMyReportsLink = memoize((dispatch) => {
     href,
     onClick: () => {
       dispatch(updateURL(href));
-    }
-  };
-}, { max: 1 });
-
-export const selectLoginMessageLink = memoize((userID, currentLoginMessageVersion, dispatch) => {
-  const href = makeLocation({ page: LOGIN_MESSAGE }).url;
-  return {
-    href,
-    onClick: () => {
-      dispatch(updateURL(href));
-
-      if (userID != null) {
-        dispatch(updateUserLoginMessageVersionRead(currentLoginMessageVersion));
-      }
     }
   };
 }, { max: 1 });

@@ -3,8 +3,7 @@ import Augur from 'augur.js';
 export const connect = function connect(env, cb) {
   const options = {
     httpAddresses: [],
-    wsAddresses: [],
-    contracts: env.contracts
+    wsAddresses: []
   };
   const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
   const isEnvHttps = (env.gethHttpURL && env.gethHttpURL.split('//')[0] === 'https:');

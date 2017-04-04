@@ -1,16 +1,16 @@
 import { augur, connect } from 'services/augurjs';
-import { BRANCH_ID } from '../../app/constants/network';
-import { updateEnv } from '../../app/actions/update-env';
-import { updateConnectionStatus } from '../../app/actions/update-connection';
-import { updateAssets } from '../../auth/actions/update-assets';
-import { loadChatMessages } from '../../chat/actions/load-chat-messages';
-import { setLoginAccount } from '../../auth/actions/set-login-account';
-import { loadBranch } from '../../app/actions/load-branch';
-import { registerTransactionRelay } from '../../transactions/actions/register-transaction-relay';
-import { displayLoginMessageOrTopics } from '../../../modules/login-message/actions/display-login-message';
+import { BRANCH_ID } from 'modules/app/constants/network';
+import { updateEnv } from 'modules/app/actions/update-env';
+import { updateConnectionStatus } from 'modules/app/actions/update-connection';
+import { updateAssets } from 'modules/auth/actions/update-assets';
+import { loadChatMessages } from 'modules/chat/actions/load-chat-messages';
+import { setLoginAccount } from 'modules/auth/actions/set-login-account';
+import { loadBranch } from 'modules/app/actions/load-branch';
+import { registerTransactionRelay } from 'modules/transactions/actions/register-transaction-relay';
+import { displayTopicsPage } from 'modules/link/actions/display-topics-page';
 
 // for testing only
-import { reportingTestSetup } from '../../reports/actions/reporting-test-setup';
+import { reportingTestSetup } from 'modules/reports/actions/reporting-test-setup';
 
 // fixes Reflect not being recognized in test or node 4.2
 require('core-js/es6/reflect');
@@ -41,7 +41,7 @@ export function initAugur() {
                   augur.fundNewAccount(env.branchID || BRANCH_ID, augur.utils.noop, () => {
                     dispatch(updateAssets());
                     dispatch(loadBranch(env.branchID || BRANCH_ID));
-                    dispatch(displayLoginMessageOrTopics());
+                    dispatch(displayTopicsPage());
                   }, e => console.error(e));
                 } else {
                   dispatch(loadBranch(env.branchID || BRANCH_ID));
@@ -53,7 +53,7 @@ export function initAugur() {
             }
           } else {
             dispatch(loadBranch(env.branchID || BRANCH_ID));
-            dispatch(displayLoginMessageOrTopics());
+            dispatch(displayTopicsPage());
           }
         });
       }
