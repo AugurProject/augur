@@ -3,15 +3,13 @@ import { augur, abi } from '../../../services/augurjs';
 import { updateAssets } from '../../auth/actions/update-assets';
 import { syncBlockchain } from '../../app/actions/sync-blockchain';
 import { syncBranch } from '../../branch/actions/sync-branch';
-import { addOrder, removeOrder, fillOrder } from '../../bids-asks/actions/update-market-order-book';
+import { fillOrder } from '../../bids-asks/actions/update-market-order-book';
 import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
 import { updateOutcomePrice } from '../../markets/actions/update-outcome-price';
 import { claimProceeds } from '../../my-positions/actions/claim-proceeds';
-import { convertLogsToTransactions, convertTradeLogToTransaction } from '../../transactions/actions/convert-logs-to-transactions';
+import { convertLogsToTransactions } from '../../transactions/actions/convert-logs-to-transactions';
 import { updateMarketTopicPopularity } from '../../topics/actions/update-topics';
 import { SELL } from '../../outcomes/constants/trade-types';
-import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
-import { loadAccountTrades } from '../../../modules/my-positions/actions/load-account-trades';
 import { updateAccountBidsAsksData, updateAccountCancelsData, updateAccountTradesData } from '../../../modules/my-positions/actions/update-account-trades-data';
 
 export function listenToUpdates() {

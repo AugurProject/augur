@@ -1,5 +1,4 @@
 import { convertTradeLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
-import { loadAdjustedPositionsForMarket } from 'modules/my-positions/actions/load-adjusted-positions-for-market';
 import { addOrder, removeOrder } from 'modules/bids-asks/actions/update-market-order-book';
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 
