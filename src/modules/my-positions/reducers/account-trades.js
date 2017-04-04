@@ -9,7 +9,7 @@ export default function (accountTrades = DEFAULT_STATE, action) {
     case UPDATE_ACCOUNT_TRADES_DATA: {
       const updatedMarketOutcomes = Object.keys(action.data || {}).reduce((p, outcome) => {
         const filteredTrades = action.data[outcome].filter((actionTrade) => {
-          const hasIdenticalTrade = (p[outcome] || []).find(trade => trade.tradid === actionTrade.tradeid);
+          const hasIdenticalTrade = ((!!accountTrades[action.market] && accountTrades[action.market][outcome]) || []).find(trade => trade.tradeid === actionTrade.tradeid);
           if (hasIdenticalTrade) return false;
           return true;
         });
