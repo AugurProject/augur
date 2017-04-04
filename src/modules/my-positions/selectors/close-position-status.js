@@ -51,7 +51,6 @@ export const selectClosePositionStatus = createBigCacheSelector(5)(
         // Close Position Completely Failed
         if (numberOfFailedTransactions === closePositionTransactionIDs.length) {
           delayClearTradeGroupIDs(marketID, outcomeID);
-          releaseTradeLock();
 
           return { ...p, [outcomeID]: CLOSE_DIALOG_FAILED };
         }
@@ -61,19 +60,16 @@ export const selectClosePositionStatus = createBigCacheSelector(5)(
 
         if (numberOfSuccessfulTransactions === closePositionTransactionIDs.length) {
           delayClearTradeGroupIDs(marketID, outcomeID);
-          releaseTradeLock();
 
           return { ...p, [outcomeID]: CLOSE_DIALOG_SUCCESS };
         }
 
         // Close Position Partially Failed
         if (numberOfFailedTransactions && numberOfFailedTransactions !== closePositionTransactionIDs.length && numberOfSuccessfulTransactions === 0) {
-          releaseTradeLock();
 
           return { ...p, [outcomeID]: CLOSE_DIALOG_PARTIALLY_FAILED };
         } else if (numberOfFailedTransactions && numberOfFailedTransactions + numberOfSuccessfulTransactions === closePositionTransactionIDs.length) {
           delayClearTradeGroupIDs(marketID, outcomeID);
-          releaseTradeLock();
 
           return { ...p, [outcomeID]: CLOSE_DIALOG_PARTIALLY_FAILED };
         }
@@ -98,13 +94,10 @@ export const selectClosePositionStatus = createBigCacheSelector(5)(
 // user to try again if an action is available
 function delayClearTradeGroupIDs(marketID, outcomeID) {
   setTimeout(() => {
+    store.dispatch({
+      type: UPDATE_TRADE_COMMIT_LOCK,
+      isLocked: false
+    });
     store.dispatch(clearClosePositionOutcome(marketID, outcomeID));
   }, 3000);
-}
-
-function releaseTradeLock() {
-  store.dispatch({
-    type: UPDATE_TRADE_COMMIT_LOCK,
-    isLocked: false
-  });
 }
