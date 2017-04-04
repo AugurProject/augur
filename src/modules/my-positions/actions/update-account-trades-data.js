@@ -3,6 +3,8 @@ import { loadAdjustedPositionsForMarket } from 'modules/my-positions/actions/loa
 import { addOrder, removeOrder } from 'modules/bids-asks/actions/update-market-order-book';
 import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 
+import { augur } from 'services/augurjs';
+
 import { CANCEL_ORDER } from 'modules/transactions/constants/types';
 
 export const UPDATE_ACCOUNT_TRADES_DATA = 'UPDATE_ACCOUNT_TRADES_DATA';
@@ -40,12 +42,16 @@ export function updateAccountTradesData(data, marketID) {
     dispatch(convertTradeLogsToTransactions('log_fill_tx', data, marketID));
     const { loginAccount } = getState();
     const account = loginAccount.address;
-    Object.keys(data).forEach((marketID) => {
-      dispatch(loadAdjustedPositionsForMarket(account, marketID));
+    Object.keys(data).forEach((market) => {
+      // dispatch(loadAdjustedPositionsForMarket(account, market));
+      augur.getAdjustedPositions(account, { market }, (err, positions) => {
+        if (err) return console.error('getAdjustedPositions error: ', err);
+        dispatch(updateAccountPositionsData(positions, market));
+      });
       dispatch({
         type: UPDATE_ACCOUNT_TRADES_DATA,
-        marketID,
-        data: data[marketID]
+        market,
+        data: data[market]
       });
     });
   };

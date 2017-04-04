@@ -7,17 +7,27 @@ const DEFAULT_STATE = {};
 export default function (accountTrades = DEFAULT_STATE, action) {
   switch (action.type) {
     case UPDATE_ACCOUNT_TRADES_DATA: {
-      const updatedMarketOutcomes = Object.keys(action.data || {}).reduce((p, outcome) => ({
-        ...p,
-        [outcome]: [
-          ...((!!accountTrades[action.marketID] && accountTrades[action.marketID][outcome]) || []),
-          ...action.data[outcome]
-        ]
-      }), (accountTrades[action.marketID] || {}));
+      const updatedMarketOutcomes = Object.keys(action.data || {}).reduce((p, outcome) => {
+        const filteredTrades = action.data[outcome].filter((actionTrade) => {
+          const hasIdenticalTrade = (p[outcome] || []).find(trade => trade.tradid === actionTrade.tradeid);
+          if (hasIdenticalTrade) return false;
+          return true;
+        });
+
+        console.log(action.data.outcome === filteredTrades);
+
+        return {
+          ...p,
+          [outcome]: [
+            ...((!!accountTrades[action.market] && accountTrades[action.market][outcome]) || []),
+            ...filteredTrades
+          ]
+        };
+      }, (accountTrades[action.market] || {}));
 
       return {
         ...accountTrades,
-        [action.marketID]: {
+        [action.market]: {
           ...updatedMarketOutcomes
         }
       };
