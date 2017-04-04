@@ -1,15 +1,16 @@
-import memoizerific from 'memoizerific';
-import store from '../../../store';
+import { createSelector } from 'reselect';
+import store from 'src/store';
+import { selectTransactionsDataState } from 'src/select-state';
 import { formatShares, formatEther, formatRep } from '../../../utils/format-number';
 import { selectMarketLink } from '../../link/selectors/links';
 
 export default function () {
-  const { transactionsData } = store.getState();
-  return selectTransactions(transactionsData);
+  return selectTransactions(store.getState());
 }
 
-export const selectTransactions = memoizerific(1)(transactionsData => (
-  Object.keys(transactionsData || {})
+export const selectTransactions = createSelector(
+  selectTransactionsDataState,
+  transactionsData => Object.keys(transactionsData || {})
     .sort((a, b) => {
       const timestampA = transactionsData[a].timestamp;
       const timestampB = transactionsData[b].timestamp;
@@ -25,13 +26,10 @@ export const selectTransactions = memoizerific(1)(transactionsData => (
     .map((id) => {
       let marketLink = (transactionsData[id].data && transactionsData[id].data.marketLink) ? transactionsData[id].data.marketLink : null;
       if (marketLink === null && transactionsData[id].data && (transactionsData[id].data.id || transactionsData[id].data.marketID) && (transactionsData[id].data.description || transactionsData[id].description)) {
-        marketLink = selectMarketLink(
-          {
-            id: transactionsData[id].data.id || transactionsData[id].data.marketID,
-            description: transactionsData[id].description
-          },
-              store.dispatch
-            );
+        marketLink = selectMarketLink({
+          id: transactionsData[id].data.id || transactionsData[id].data.marketID,
+          description: transactionsData[id].description
+        }, store.dispatch);
       }
       return {
         ...transactionsData[id],
@@ -45,5 +43,4 @@ export const selectTransactions = memoizerific(1)(transactionsData => (
         rep: transactionsData[id].repChange && formatRep(transactionsData[id].repChange)
       };
     })
-  )
 );

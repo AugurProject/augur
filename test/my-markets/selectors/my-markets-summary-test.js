@@ -1,31 +1,36 @@
 import { describe, it, before } from 'mocha';
 import { assert } from 'chai';
 import myMarketsSummaryAssertions from 'assertions/my-markets-summary';
-
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
-
 import * as mockStore from 'test/mockStore';
 
 describe('modules/my-markets/selectors/my-markets-summary', () => {
   proxyquire.noPreserveCache().noCallThru();
-
   let actual;
-
   const { store } = mockStore.default;
-  const { loginAccount, allMarkets } = store.getState();
+  const { loginAccount, allMarkets, marketTrades, priceHistory, marketCreatorFees } = store.getState();
 
-  const stubbedSelectors = { loginAccount, allMarkets };
+  const MarketsAll = {
+    selectMarkets: () => allMarkets
+  };
+  const SelectState = {
+    selectLoginAccountAddress: () => loginAccount.address,
+    selectMarketTradesState: () => marketTrades,
+    selectPriceHistoryState: () => priceHistory,
+    selectMarketCreatorFeesState: () => marketCreatorFees
+  };
 
   const proxiedMyMarkets = proxyquire('../../../src/modules/my-markets/selectors/my-markets', {
-    '../../../selectors': stubbedSelectors,
+    '../../markets/selectors/markets-all': MarketsAll,
+    '../../../select-state': SelectState,
     '../../../store': store
   });
 
   const spiedMyMarkets = sinon.spy(proxiedMyMarkets, 'default');
 
   const proxiedSelector = proxyquire('../../../src/modules/my-markets/selectors/my-markets-summary', {
-    '../../../modules/my-markets/selectors/my-markets': proxiedMyMarkets
+    './my-markets': proxiedMyMarkets
   });
 
   const expected = {

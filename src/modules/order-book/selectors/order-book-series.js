@@ -1,11 +1,11 @@
 import BigNumber from 'bignumber.js';
-import memoizerific from 'memoizerific';
+import memoize from 'memoizee';
 
 export default function (orderBook) {
   return getOrderBookSeries(orderBook);
 }
 
-const getOrderBookSeries = memoizerific(1)((orderBook) => {
+const getOrderBookSeries = memoize((orderBook) => {
   const orderBookSeries = Object.keys(orderBook).reduce((p, type) => {
     if (p[type] == null) p[type] = [];
 
@@ -29,4 +29,4 @@ const getOrderBookSeries = memoizerific(1)((orderBook) => {
   }, {});
 
   return orderBookSeries;
-});
+}, { max: 1 });

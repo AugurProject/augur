@@ -1,4 +1,4 @@
-import memoizerific from 'memoizerific';
+import memoize from 'memoizee';
 import BigNumber from 'bignumber.js';
 
 import store from 'src/store';
@@ -17,7 +17,7 @@ export default function () {
   return generateMarketsPositionsSummary(myPositions);
 }
 
-export const generateOutcomePositionSummary = memoizerific(50)((adjustedPosition, outcomeAccountTrades, lastPrice, orderBook) => {
+export const generateOutcomePositionSummary = memoize((adjustedPosition, outcomeAccountTrades, lastPrice, orderBook) => {
   if ((!outcomeAccountTrades || !outcomeAccountTrades.length) && !adjustedPosition) {
     return null;
   }
@@ -35,9 +35,9 @@ export const generateOutcomePositionSummary = memoizerific(50)((adjustedPosition
       store.dispatch(closePosition(marketID, outcomeID));
     }
   };
-});
+}, { max: 50 });
 
-export const generateMarketsPositionsSummary = memoizerific(50)((markets) => {
+export const generateMarketsPositionsSummary = memoize((markets) => {
   if (!markets || !markets.length) {
     return null;
   }
@@ -61,9 +61,9 @@ export const generateMarketsPositionsSummary = memoizerific(50)((markets) => {
     ...positionsSummary,
     positionOutcomes
   };
-});
+}, { max: 50 });
 
-export const generatePositionsSummary = memoizerific(20)((numPositions, qtyShares, meanTradePrice, realizedNet, unrealizedNet) => {
+export const generatePositionsSummary = memoize((numPositions, qtyShares, meanTradePrice, realizedNet, unrealizedNet) => {
   const totalNet = abi.bignum(realizedNet).plus(abi.bignum(unrealizedNet));
   return {
     numPositions: formatNumber(numPositions, {
@@ -79,9 +79,9 @@ export const generatePositionsSummary = memoizerific(20)((numPositions, qtyShare
     unrealizedNet: formatEther(unrealizedNet),
     totalNet: formatEther(totalNet)
   };
-});
+}, { max: 20 });
 
-const isPositionFullyClosable = memoizerific(20)((position, orders) => {
+const isPositionFullyClosable = memoize((position, orders) => {
   let sharesFilled = new BigNumber(0);
 
   return !!orders.find((order) => {
@@ -93,4 +93,4 @@ const isPositionFullyClosable = memoizerific(20)((position, orders) => {
 
     return false;
   });
-});
+}, { max: 20 });

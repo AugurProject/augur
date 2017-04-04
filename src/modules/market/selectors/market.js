@@ -20,7 +20,7 @@ That way the market only gets re-assembled when that specific favorite changes.
 This is true for all selectors, but especially important for this one.
 */
 
-import memoizerific from 'memoizerific';
+import memoize from 'memoizee';
 import { formatShares, formatEther, formatPercent, formatNumber } from 'utils/format-number';
 import { formatDate } from 'utils/format-date';
 import { isMarketDataOpen, isMarketDataExpired } from 'utils/is-market-data-open';
@@ -42,6 +42,7 @@ import { selectMarketLink } from 'modules/link/selectors/links';
 import selectUserOpenOrders from 'modules/user-open-orders/selectors/user-open-orders';
 import selectUserOpenOrdersSummary from 'modules/user-open-orders/selectors/user-open-orders-summary';
 
+import selectAccountPositions from 'modules/user-open-orders/selectors/positions-plus-asks';
 import { selectPriceTimeSeries } from 'modules/market/selectors/price-time-series';
 
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from 'modules/bids-asks/helpers/select-order-book';
@@ -72,7 +73,8 @@ export const selectMarketReport = (marketID, branchReports) => {
 };
 
 export const selectMarket = (marketID) => {
-  const { marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, priceHistory, orderBooks, branch, orderCancellation, smallestPositions, loginAccount } = store.getState();
+  const { marketsData, favorites, reports, outcomesData, netEffectiveTrades, accountTrades, tradesInProgress, priceHistory, orderBooks, branch, orderCancellation, smallestPositions, loginAccount } = store.getState();
+  const accountPositions = selectAccountPositions();
 
   if (!marketID || !marketsData || !marketsData[marketID]) {
     return {};
@@ -152,7 +154,7 @@ export function assembleMarket(
     dispatch) {
 
   if (!assembledMarketsCache[marketID]) {
-    assembledMarketsCache[marketID] = memoizerific(1)((
+    assembledMarketsCache[marketID] = memoize((
       marketID,
       marketData,
       marketPriceHistory,
@@ -339,7 +341,7 @@ export function assembleMarket(
       }
 
       return market;
-    });
+    }, { max: 1 });
   }
 
   return assembledMarketsCache[marketID].apply(this, arguments); // eslint-disable-line prefer-rest-params

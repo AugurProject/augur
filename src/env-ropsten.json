@@ -2,14 +2,22 @@
   "gethHttpURL": "http://127.0.0.1:8545",
   "gethWebsocketsURL": "ws://127.0.0.1:8546",
   "hostedNodeFallback": true,
-  "augurNodeURL": null,
-  "autoLogin": true,
+  "autoLogin": false,
+  "loadZeroVolumeMarkets": true,
   "branchID": null,
   "reportingTest": false,
   "debug": {
-    "trading": true,
+    "connect": true,
+    "trading": false,
     "reporting": true,
-    "broadcast": false
+    "broadcast": false,
+    "nonce": false,
+    "tx": false,
+    "filters": false,
+    "sync": false,
+    "accounts": false,
+    "abi": false,
+    "tools": false
   },
   "fundNewAccountFromAddress": {
     "address": "0x0",

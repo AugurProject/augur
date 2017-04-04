@@ -1,7 +1,13 @@
-import memoizerific from 'memoizerific';
+import { createBigCacheSelector } from 'utils/big-cache-selector';
+import store from 'src/store';
+import { selectLoginAccountAddress, selectAccountPositionsState, selectOrderBooksState } from 'src/select-state';
 import { ZERO } from '../../trade/constants/numbers';
 import { abi } from '../../../services/augurjs';
 import { isOrderOfUser } from '../../bids-asks/helpers/is-order-of-user';
+
+export default function () {
+  return selectPositionsPlusAsks(store.getState());
+}
 
 /**
  * @param {String} account
@@ -9,19 +15,25 @@ import { isOrderOfUser } from '../../bids-asks/helpers/is-order-of-user';
  * @param {Object} orderBooks
  * @return {Object} Total number of shares in positions and open ask orders.
  */
-export const selectPositionsPlusAsks = memoizerific(10)((account, positions, orderBooks) => {
-  const adjustedMarkets = Object.keys(positions);
-  const numAdjustedMarkets = adjustedMarkets.length;
-  const positionsPlusAsks = {};
-  let marketID;
-  for (let i = 0; i < numAdjustedMarkets; ++i) {
-    marketID = adjustedMarkets[i];
-    if (orderBooks[marketID]) {
-      positionsPlusAsks[marketID] = selectMarketPositionPlusAsks(account, positions[marketID], orderBooks[marketID].sell);
+export const selectPositionsPlusAsks = createBigCacheSelector(10)(
+  selectLoginAccountAddress,
+  selectAccountPositionsState,
+  selectOrderBooksState,
+  (address, positions, orderBooks) => {
+    if (!positions) return null;
+    const adjustedMarkets = Object.keys(positions);
+    const numAdjustedMarkets = adjustedMarkets.length;
+    const positionsPlusAsks = {};
+    let marketID;
+    for (let i = 0; i < numAdjustedMarkets; ++i) {
+      marketID = adjustedMarkets[i];
+      if (orderBooks[marketID]) {
+        positionsPlusAsks[marketID] = selectMarketPositionPlusAsks(address, positions[marketID], orderBooks[marketID].sell);
+      }
     }
+    return positionsPlusAsks;
   }
-  return positionsPlusAsks;
-});
+);
 
 /**
  * @param {String} marketID
@@ -30,7 +42,7 @@ export const selectPositionsPlusAsks = memoizerific(10)((account, positions, ord
  * @param {Object} asks
  * @return {Object} Total number of shares in positions and open ask orders.
  */
-export const selectMarketPositionPlusAsks = memoizerific(10)((account, position, asks) => {
+export const selectMarketPositionPlusAsks = (account, position, asks) => {
   const positionPlusAsks = {};
   if (asks) {
     const adjustedOutcomes = Object.keys(position);
@@ -40,7 +52,7 @@ export const selectMarketPositionPlusAsks = memoizerific(10)((account, position,
     }
   }
   return positionPlusAsks;
-});
+};
 
 /**
  * @param {String} outcomeID

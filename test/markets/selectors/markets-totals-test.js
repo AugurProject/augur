@@ -150,6 +150,19 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
     favoriteMarkets: 'test'
   };
 
+  const AllMarkets = {
+    selectMarkets: () => mockSelectors.allMarkets
+  };
+  const FilteredMarkets = {
+    selectFilteredMarkets: () => mockSelectors.filteredMarkets
+  };
+  const UnpaginatedMarkets = {
+    selectUnpaginatedMarkets: () => mockSelectors.unpaginatedMarkets
+  };
+  const FavoriteMarkets = {
+    selectFavoriteMarkets: () => mockSelectors.favoriteMarkets
+  };
+
   sinon.stub(mockPositions, 'selectPositionsSummary', (numPositions, qtyShares, totalValue, totalCost) => ({
     numPositions,
     qtyShares,
@@ -159,7 +172,10 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
 
   const selector = proxyquire('../../../src/modules/markets/selectors/markets-totals.js', {
     '../../../store': store,
-    '../../../selectors': mockSelectors,
+    '../../markets/selectors/markets-all': AllMarkets,
+    '../../markets/selectors/markets-filtered': FilteredMarkets,
+    '../../markets/selectors/markets-unpaginated': UnpaginatedMarkets,
+    '../../markets/selectors/markets-favorite': FavoriteMarkets,
   });
 
   beforeEach(() => {

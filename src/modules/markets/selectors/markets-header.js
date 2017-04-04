@@ -1,26 +1,19 @@
-import memoizerific from 'memoizerific';
-
+import { createSelector } from 'reselect';
 import store from 'src/store';
+import { selectSelectedMarketsHeaderState } from 'src/select-state';
+import { selectMarketsTotals } from '../../markets/selectors/markets-totals';
 
 export default function () {
-  const { selectedMarketsHeader } = store.getState();
-  const { marketsTotals } = require('src/selectors');
-
-  return selectMarketsHeader(
-    selectedMarketsHeader,
-    marketsTotals.numFiltered,
-    marketsTotals.numFavorites,
-    marketsTotals.numPendingReports,
-    store.dispatch
-  );
+  return selectMarketsHeader(store.getState());
 }
 
-export const selectMarketsHeader = memoizerific(1)((selectedMarketsHeader, numFiltered, numFavorites, numPendingReports, dispatch) => {
-  const obj = {
+export const selectMarketsHeader = createSelector(
+  selectSelectedMarketsHeaderState,
+  selectMarketsTotals,
+  (selectedMarketsHeader, marketsTotals) => ({
     selectedMarketsHeader,
-    numMarkets: numFiltered,
-    numFavorites,
-    numPendingReports
-  };
-  return obj;
-});
+    numMarkets: marketsTotals.numFiltered,
+    numFavorites: marketsTotals.numFavorites,
+    numPendingReports: marketsTotals.numPendingReports
+  })
+);

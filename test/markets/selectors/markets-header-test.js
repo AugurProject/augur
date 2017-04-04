@@ -19,12 +19,13 @@ describe('modules/markets/selectors/markets-header.js', () => {
           numPendingReports: null
         }
       };
-
+      const MarketsTotals = {
+        selectMarketsTotals: () => mockSelectors.marketsTotals
+      };
       const selector = proxyquire('../../../src/modules/markets/selectors/markets-header', {
         '../../../store': store,
-        '../../../selectors': mockSelectors
+        '../../markets/selectors/markets-totals': MarketsTotals
       });
-
       t.assertions(selector, store);
     });
   };

@@ -13,7 +13,7 @@ export default class AccountPage extends Component {
   // TODO -- Prop Validations
   static propTypes = {
     // loginMessageLink: PropTypes.object.isRequired,
-    account: PropTypes.object,
+    loginAccount: PropTypes.object,
     // siteHeader: PropTypes.object
     // authLink: PropTypes.object
   }
@@ -22,7 +22,7 @@ export default class AccountPage extends Component {
     super(props);
 
     this.state = {
-      name: this.props.account.name,
+      name: this.props.loginAccount.name,
       editName: false,
       showFullID: false,
       msg: '',
@@ -49,7 +49,7 @@ export default class AccountPage extends Component {
       isShowingQRCodeModal: true,
       size: 300,
       message: 'Ether / REP Deposit Address',
-      value: this.props.account.address && this.props.account.address.indexOf('0x') === 0 && this.props.account.address.replace('0x', '')
+      value: this.props.loginAccount.address && this.props.loginAccount.address.indexOf('0x') === 0 && this.props.loginAccount.address.replace('0x', '')
     });
   };
 
@@ -58,7 +58,7 @@ export default class AccountPage extends Component {
       isShowingQRCodeModal: true,
       size: 300,
       message: 'Your Account Keystore Data',
-      value: this.props.account.downloadAccountDataString
+      value: this.props.loginAccount.downloadAccountDataString
     });
   };
 
@@ -69,7 +69,7 @@ export default class AccountPage extends Component {
     const currency = this.state.currency;
     const recipient = this.state.recipientAddress;
 
-    this.props.account.transferFunds(amount, currency, recipient);
+    this.props.loginAccount.transferFunds(amount, currency, recipient);
 
     this.setState({
       sendAmount: '',
@@ -101,19 +101,19 @@ export default class AccountPage extends Component {
             <h2 className="heading">Credentials</h2>
             <table className="account-info">
               <tbody>
-                <tr className={classnames('account-info-item', { displayNone: p.account.isUnlocked })}>
+                <tr className={classnames('account-info-item', { displayNone: p.loginAccount.isUnlocked })}>
                   <th className="title">Account Name:</th>
                   <td className="item">
                     {s.editName &&
                       <Input
                         type="text"
-                        value={p.account.name}
+                        value={p.loginAccount.name}
                         onChange={name => this.setState({ name })}
                       />
                     }
                     {!s.editName &&
                       <span data-tip data-for="edit-name-tooltip">
-                        {p.account.name || 'Click here to add a name.'}
+                        {p.loginAccount.name || 'Click here to add a name.'}
                       </span>
                     }
                     {!s.editName &&
@@ -138,7 +138,7 @@ export default class AccountPage extends Component {
                         className="button make"
                         data-tip data-for="save-name-tooltip"
                         onClick={() => {
-                          p.account.editName(s.name);
+                          p.loginAccount.editName(s.name);
                           this.setState({ name: '', editName: false });
                         }}
                       >
@@ -152,7 +152,7 @@ export default class AccountPage extends Component {
                   <th className="title">Account Address:</th>
                   <td className="item">
                     <span>
-                      {p.account.address && p.account.address.indexOf('0x') === 0 && p.account.address.replace('0x', '')}
+                      {p.loginAccount.address && p.loginAccount.address.indexOf('0x') === 0 && p.loginAccount.address.replace('0x', '')}
                     </span>
                     <button
                       className="link"
@@ -182,19 +182,19 @@ export default class AccountPage extends Component {
                     </button>
                   </td>
                 </tr>
-                <tr className={classnames('account-info-item', { displayNone: !p.account.loginID })}>
+                <tr className={classnames('account-info-item', { displayNone: !p.loginAccount.loginID })}>
                   <th className="title">Login ID:</th>
                   <td className="item">
                     {!s.showFullID &&
                       <span>
-                        {p.account.prettyLoginID}
+                        {p.loginAccount.prettyLoginID}
                       </span>
                     }
                     {s.showFullID &&
                       <textarea
                         ref="fullLoginID"
                         className="display-full-login-id"
-                        value={p.account.loginID}
+                        value={p.loginAccount.loginID}
                         readOnly
                         onClick={this.loginIDCopy}
                       />
@@ -218,11 +218,11 @@ export default class AccountPage extends Component {
                   </td>
                 </tr>
                 {
-                  p.onAirbitzManageAccount ?
+                  p.loginAccount.airbitzAccount ?
                   (
                     <tr className="account-info-item">
                       <td colSpan="2">
-                        <button className="button" onClick={p.onAirbitzManageAccount}>
+                        <button className="button" onClick={p.loginAccount.onAirbitzManageAccount}>
                           Manage Airbitz Account
                         </button>
                       </td>
@@ -312,7 +312,7 @@ export default class AccountPage extends Component {
               </div>
             </div>
           </div>
-          <div className={classnames('account-section', { displayNone: p.account.isUnlocked || !p.account })}>
+          <div className={classnames('account-section', { displayNone: p.loginAccount.isUnlocked || !p.loginAccount })}>
             <div className="account-info-item">
               <h2 className="heading">Download Account Key File</h2>
               <p>
@@ -330,7 +330,7 @@ export default class AccountPage extends Component {
                   </a>
                 </b>
               </p>
-              {p.account.airbitzAccount &&
+              {p.loginAccount.airbitzAccount &&
                 <span>
                   <button
                     className="download-account"
@@ -348,12 +348,12 @@ export default class AccountPage extends Component {
                   }
                 </span>
               }
-              {!p.account.airbitzAccount &&
+              {!p.loginAccount.airbitzAccount &&
                 <span>
                   <a
                     className="button download-account"
-                    href={p.account.downloadAccountDataString}
-                    download={p.account.downloadAccountFileName}
+                    href={p.loginAccount.downloadAccountDataString}
+                    download={p.loginAccount.downloadAccountFileName}
                   >
                     Download Account Key File
                   </a>
