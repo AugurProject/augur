@@ -23,7 +23,7 @@ export default class MarketTradeCloseDialog extends Component {
     this.renderCloseDialogContent = this.renderCloseDialogContent.bind(this);
   }
 
-  renderCloseDialogContent(marketID, orderID, closeType, isClosable, isFullyClosable, quantityOfShares, isConfirming, closePosition, status, orderType, cancelOrder, isTradeCommitLocked) {
+  renderCloseDialogContent(marketID, orderID, closeType, isClosable, quantityOfShares, isConfirming, closePosition, status, orderType, cancelOrder, isTradeCommitLocked) {
     // Position -- No Available Actions
     if (closeType === POSITION && !status && (!parseFloat(quantityOfShares, 10) || !isClosable)) {
       return <EmDash />;
@@ -59,7 +59,7 @@ export default class MarketTradeCloseDialog extends Component {
 
     switch (status) {
       case CLOSE_DIALOG_CLOSING:
-        return <Spinner />
+        return <Spinner />;
       case CLOSE_DIALOG_FAILED:
         return <span>failed</span>;
       case CLOSE_DIALOG_PARTIALLY_FAILED:
@@ -107,7 +107,6 @@ export default class MarketTradeCloseDialog extends Component {
             orderID,
             p.closeType,
             p.isClosable,
-            p.isFullyClosable,
             p.quantityOfShares,
             s.isConfirming,
             p.closePosition,

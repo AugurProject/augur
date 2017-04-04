@@ -30,7 +30,6 @@ export const generateOutcomePositionSummary = memoize((adjustedPosition, outcome
   return {
     ...generatePositionsSummary(1, position, meanOpenPrice, realized, unrealized),
     isClosable: !!positionShares.toNumber() && !!relevantOrders.length, // Based on available orders, can this position be at least partially closed
-    isFullyClosable: positionShares.toNumber() && relevantOrders.length ? isPositionFullyClosable(positionShares.absoluteValue(), relevantOrders) : false, // Based on available orders, can this position be fully closed
     closePosition: (marketID, outcomeID) => {
       store.dispatch(closePosition(marketID, outcomeID));
     }
@@ -79,18 +78,4 @@ export const generatePositionsSummary = memoize((numPositions, qtyShares, meanTr
     unrealizedNet: formatEther(unrealizedNet),
     totalNet: formatEther(totalNet)
   };
-}, { max: 20 });
-
-const isPositionFullyClosable = memoize((position, orders) => {
-  let sharesFilled = new BigNumber(0);
-
-  return !!orders.find((order) => {
-    sharesFilled = sharesFilled.plus(new BigNumber(order.shares.value));
-
-    if (sharesFilled.toNumber() >= position) {
-      return true;
-    }
-
-    return false;
-  });
 }, { max: 20 });
