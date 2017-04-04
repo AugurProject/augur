@@ -7,7 +7,6 @@ import selectMyPositions from 'modules/my-positions/selectors/my-positions';
 import { closePosition } from 'modules/my-positions/actions/close-position';
 
 import { ZERO } from 'modules/trade/constants/numbers';
-// import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types';
 
 import { augur, abi } from 'services/augurjs';
 import { formatEther, formatShares, formatNumber } from 'utils/format-number';
