@@ -115,8 +115,9 @@ export function listenToUpdates() {
         if (msg && msg.market && msg.price && msg.outcome != null) {
           dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
           dispatch(updateMarketTopicPopularity(msg.market, msg.amount));
-          if (msg.sender !== address) dispatch(fillOrder({ ...msg, type: SELL }));
+
           const { address } = getState().loginAccount;
+          if (msg.sender !== address) dispatch(fillOrder({ ...msg, type: SELL }));
 
           // if the user is either the maker or taker, add it to the transaction display
           if (msg.sender === address || msg.owner === address) {
