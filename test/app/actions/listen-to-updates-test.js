@@ -52,12 +52,8 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
   };
 
   const LoadMarketsInfo = {
-    loadMarketsInfo: () => {}
+    loadMarketsInfo: sinon.stub().returns({ type: 'LOAD_MARKETS_INFO' })
   };
-  sinon.stub(LoadMarketsInfo, 'loadMarketsInfo', marketID => ({
-    type: 'LOAD_BASIC_MARKET',
-    marketID
-  }));
 
   const UpdateMarketOrderBook = {
     addOrder: sinon.stub().returns({ type: 'ADD_ORDER' }),
@@ -71,6 +67,12 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 
   const ConverLogsToTransactions = {
     convertLogsToTransactions: sinon.stub().returns({ type: 'CONVERT_LOGS_TO_TRANSACTIONS' })
+  };
+
+  const UpdateAccountTradesData = {
+    updateAccountBidsAsksData: sinon.stub().returns({ type: 'UPDATE_ACCOUNT_BIDS_ASKS_DATA' }),
+    updateAccountCancelsData: sinon.stub().returns({ type: 'UPDATE_ACCOUNT_CANCELS_DATA' }),
+    updateAccountTradesData: sinon.stub().returns({ type: 'UPDATE_ACCOUNT_TRADES_DATA' })
   };
 
   // sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
@@ -98,7 +100,8 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     '../../markets/actions/load-markets-info': LoadMarketsInfo,
     '../../bids-asks/actions/update-market-order-book': UpdateMarketOrderBook,
     '../../topics/actions/update-topics': UpdateTopics,
-    '../../transactions/actions/convert-logs-to-transactions': ConverLogsToTransactions
+    '../../transactions/actions/convert-logs-to-transactions': ConverLogsToTransactions,
+    '../../my-positions/actions/update-account-trades-data': UpdateAccountTradesData
   });
 
   beforeEach(() => {
@@ -491,6 +494,111 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
       assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
     }
   });
+
+  test({
+    description: `should NOT dispatch actions from log_fill_tx callback WITHOUT correct argument properties`,
+    assertions: () => {
+      sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+        cb.log_fill_tx({});
+      });
+
+      store.dispatch(action.listenToUpdates());
+
+      const expected = [];
+
+      assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+    }
+  });
+
+  test({
+    description: `should dispatch actions from log_fill_tx callback WITH correct argument properties AND sender IS NOT logged user`,
+    assertions: (store) => {
+      sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+        cb.log_fill_tx({
+          market: '0xMARKET',
+          price: '0.2',
+          outcome: '1',
+          sender: '0xNOTUSER'
+        });
+      });
+
+      store.dispatch(action.listenToUpdates());
+
+      const expected = [
+        {
+          type: 'UPDATE_OUTCOME_PRICE'
+        },
+        {
+          type: 'UPDATE_MARKET_TOPIC_POPULARITY'
+        },
+        {
+          type: 'FILL_ORDER'
+        }
+      ];
+
+      assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+    }
+  });
+
+  test({
+    description: `should dispatch actions from log_fill_tx callback WITH correct argument properties AND sender IS logged user`,
+    assertions: (store) => {
+      sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+        cb.log_fill_tx({
+          market: '0xMARKET',
+          price: '0.2',
+          outcome: '1',
+          sender: '0x0000000000000000000000000000000000000001'
+        });
+      });
+
+      store.dispatch(action.listenToUpdates());
+
+      const expected = [
+        {
+          type: 'UPDATE_OUTCOME_PRICE'
+        },
+        {
+          type: 'UPDATE_MARKET_TOPIC_POPULARITY'
+        },
+        {
+          type: 'UPDATE_ACCOUNT_TRADES_DATA'
+        },
+        {
+          type: 'UPDATE_ASSETS'
+        },
+        {
+          type: 'LOAD_MARKETS_INFO'
+        }
+      ];
+
+      assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+    }
+  });
+
+  // test({
+  //   description: `should dispatch actions from submittedReportHash callback if sender IS logged user`,
+  //   assertions: (store) => {
+  //     sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+  //       cb.submittedReportHash({
+  //         sender: '0x0000000000000000000000000000000000000001'
+  //       });
+  //     });
+  //
+  //     store.dispatch(action.listenToUpdates());
+  //
+  //     const expected = [
+  //       {
+  //         type: 'UPDATE_ASSETS'
+  //       },
+  //       {
+  //         type: 'CONVERT_LOGS_TO_TRANSACTIONS'
+  //       }
+  //     ];
+  //
+  //     assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+  //   }
+  // });
 });
 
 // store.dispatch(action.listenToUpdates());
