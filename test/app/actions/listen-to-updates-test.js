@@ -29,9 +29,6 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
       bignum: () => {}
     }
   };
-  // sinon.stub(AugurJS.augur.CompositeGetters, 'getPositionInMarket', (market, trader, cb) => {
-  //   cb(['0x0', '0x1']);
-  // });
 
   const SyncBlockchain = {
     syncBlockchain: sinon.stub().returns({ type: 'SYNC_BLOCKCHAIN' })
@@ -76,21 +73,6 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     updateAccountCancelsData: sinon.stub().returns({ type: 'UPDATE_ACCOUNT_CANCELS_DATA' }),
     updateAccountTradesData: sinon.stub().returns({ type: 'UPDATE_ACCOUNT_TRADES_DATA' })
   };
-
-  // sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
-  //   cb.block('blockhash');
-  //   cb.log_fill_tx({
-  //     market: 'testMarketID',
-  //     outcome: 'testOutcome',
-  //     price: 123.44250502560001,
-  //     amount: '2'
-  //   });
-  //   cb.log_add_tx({ market: 'testMarketID' });
-  //   cb.log_cancel({ market: 'testMarketID' });
-  //   cb.marketCreated({ marketID: 'testID1', topic: 'topical' });
-  //   cb.tradingFeeUpdated({ marketID: 'testID1' });
-  // });
-
 
   const action = proxyquire('../../../src/modules/app/actions/listen-to-updates.js', {
     '../../../services/augurjs': AugurJS,
@@ -1390,82 +1372,4 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
       assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
     }
   });
-
-  // test({
-  //   description: `should dispatch actions from Approval callback WITH correct argument properties AND _owner IS logged user`,
-  //   assertions: (store) => {
-  //     sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
-  //       cb.Approval({
-  //         _owner: '0x0000000000000000000000000000000000000001',
-  //         _spender: '0xNOTUSER'
-  //       });
-  //     });
-  //
-  //     store.dispatch(action.listenToUpdates());
-  //
-  //     const expected = [
-  //       {
-  //         type: 'UPDATE_ASSETS'
-  //       },
-  //       {
-  //         type: 'CONVERT_LOGS_TO_TRANSACTIONS'
-  //       }
-  //     ];
-  //
-  //     assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
-  //   }
-  // });
-
-  // test({
-  //   description: `should dispatch actions from Approval callback WITH correct argument properties AND _spender IS logged user`,
-  //   assertions: (store) => {
-  //     sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
-  //       cb.Approval({
-  //         _owner: '0xNOTUSER',
-  //         _spender: '0x0000000000000000000000000000000000000001'
-  //       });
-  //     });
-  //
-  //     store.dispatch(action.listenToUpdates());
-  //
-  //     const expected = [
-  //       {
-  //         type: 'UPDATE_ASSETS'
-  //       },
-  //       {
-  //         type: 'CONVERT_LOGS_TO_TRANSACTIONS'
-  //       }
-  //     ];
-  //
-  //     assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
-  //   }
-  // });
 });
-
-// store.dispatch(action.listenToUpdates());
-// const out = [{
-//   type: 'SYNC_BLOCKCHAIN'
-// }, {
-//   type: 'UPDATE_ASSETS'
-// }, {
-//   type: 'SYNC_BRANCH'
-// }, {
-//   type: 'UPDATE_OUTCOME_PRICE'
-// }, {
-//   type: 'UPDATE_MARKET_TOPIC_POPULARITY'
-// }, {
-//   type: 'FILL_ORDER',
-// }, {
-//   type: 'LOAD_BASIC_MARKET',
-//   marketID: [
-//     'testID1'
-//   ]
-// }, {
-//   type: 'LOAD_BASIC_MARKET',
-//   marketID: [
-//     'testID1'
-//   ]
-// }, {
-//   type: 'UPDATE_ASSETS'
-// }];
-// assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects`);
