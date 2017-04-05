@@ -6,6 +6,8 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from 'test/testState';
 
+import { updateMarketsData } from 'modules/markets/actions/update-markets-data';
+
 describe(`modules/app/actions/listen-to-updates.js`, () => {
   proxyquire.noPreserveCache().noCallThru();
 
@@ -186,7 +188,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 
   test({
     description: `should NOT dispatch actions from payout callback if sender IS NOT logged user`,
-    assertions: () => {
+    assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
         cb.payout({
           sender: '0xNOTUSER'
@@ -227,7 +229,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 
   test({
     description: `should NOT dispatch actions from penalizationCatchUp callback if sender IS NOT logged user`,
-    assertions: () => {
+    assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
         cb.penalizationCaughtUp({
           sender: '0xNOTUSER'
@@ -268,7 +270,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 
   test({
     description: `should NOT dispatch actions from penalize callback if sender IS NOT logged user`,
-    assertions: () => {
+    assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
         cb.penalize({
           sender: '0xNOTUSER'
@@ -309,7 +311,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 
   test({
     description: `should NOT dispatch actions from registration callback if sender IS NOT logged user`,
-    assertions: () => {
+    assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
         cb.registration({
           sender: '0xNOTUSER'
@@ -347,7 +349,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 
   test({
     description: `should NOT dispatch actions from submittedReport callback if sender IS NOT logged user`,
-    assertions: () => {
+    assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
         cb.submittedReport({
           sender: '0xNOTUSER'
@@ -388,7 +390,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 
   test({
     description: `should NOT dispatch actions from submittedReportHash callback if sender IS NOT logged user`,
-    assertions: () => {
+    assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
         cb.submittedReportHash({
           sender: '0xNOTUSER'
@@ -429,7 +431,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 
   test({
     description: `should NOT dispatch actions from slashedRep callback if sender IS NOT logged user OR reporter`,
-    assertions: () => {
+    assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
         cb.slashedRep({
           sender: '0xNOTUSER',
@@ -497,7 +499,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 
   test({
     description: `should NOT dispatch actions from log_fill_tx callback WITHOUT correct argument properties`,
-    assertions: () => {
+    assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
         cb.log_fill_tx({});
       });
@@ -620,7 +622,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
 
   test({
     description: `should NOT dispatch actions from log_short_fill_tx callback WITHOUT correct argument properties`,
-    assertions: () => {
+    assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
         cb.log_short_fill_tx({});
       });
@@ -734,6 +736,118 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
         },
         {
           type: 'LOAD_MARKETS_INFO'
+        }
+      ];
+
+      assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+    }
+  });
+
+  test({
+    description: `should NOT dispatch actions from log_add_tx callback WITHOUT correct argument properties`,
+    assertions: (store) => {
+      sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+        cb.log_add_tx({});
+      });
+
+      store.dispatch(action.listenToUpdates());
+
+      const expected = [];
+
+      assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+    }
+  });
+
+  test({
+    description: `should dispatch actions from log_add_tx callback WITH correct argument properties AND NOT short ask AND sender IS NOT logged user`,
+    assertions: (store) => {
+      sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+        cb.log_add_tx({
+          market: '0xMARKET',
+          outcome: '1',
+          sender: '0xNOTUSER'
+        });
+      });
+
+      store.dispatch(action.listenToUpdates());
+
+      const expected = [];
+
+      assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+    }
+  });
+
+  test({
+    description: `should dispatch actions from log_add_tx callback WITH correct argument properties AND IS short ask AND market exists AND sender IS NOT logged user`,
+    assertions: (store) => {
+      sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+        cb.log_add_tx({
+          market: 'testMarketID2',
+          outcome: '1',
+          amount: '0.2',
+          isShortAsk: true,
+          sender: '0xNOTUSER'
+        });
+      });
+
+      store.dispatch(action.listenToUpdates());
+
+      const expected = [
+        {
+          type: 'UPDATE_MARKET_TOPIC_POPULARITY'
+        }
+      ];
+
+      assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+    }
+  });
+
+  test({
+    description: `should dispatch actions from log_add_tx callback WITH correct argument properties AND IS short ask AND market DOES NOT exist AND sender IS NOT logged user`,
+    assertions: (store) => {
+      sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+        cb.log_add_tx({
+          market: 'testMarketID3',
+          outcome: '1',
+          amount: '0.2',
+          isShortAsk: true,
+          sender: '0xNOTUSER'
+        });
+      });
+
+      store.dispatch(action.listenToUpdates());
+
+      const expected = [
+        {
+          type: 'LOAD_MARKETS_INFO'
+        }
+      ];
+
+      assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+    }
+  });
+
+  test({
+    description: `should dispatch actions from log_add_tx callback WITH correct argument properties AND NOT short ask AND sender IS logged user`,
+    assertions: (store) => {
+      sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+        cb.log_add_tx({
+          market: 'testMarketID3',
+          outcome: '1',
+          amount: '0.2',
+          isShortAsk: false,
+          sender: '0x0000000000000000000000000000000000000001'
+        });
+      });
+
+      store.dispatch(action.listenToUpdates());
+
+      const expected = [
+        {
+          type: 'UPDATE_ACCOUNT_BIDS_ASKS_DATA'
+        },
+        {
+          type: 'UPDATE_ASSETS'
         }
       ];
 
