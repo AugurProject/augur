@@ -69,7 +69,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     '../../../services/augurjs': AugurJS,
     '../../branch/actions/sync-branch': SyncBranch,
     '../../branch/actions/update-branch': UpdateBranch,
-    '../../app/actions/sync-blockchain': SyncBlockchain,
+    './sync-blockchain': SyncBlockchain,
     '../../auth/actions/update-assets': UpdateAssets,
     '../../markets/actions/update-outcome-price': OutcomePrice,
     '../../markets/actions/load-markets-info': LoadMarketsInfo,
@@ -117,7 +117,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
   });
 
   test({
-    description: `should NOT dispatch actions from collectedFees callback if sender is not logged in account`,
+    description: `should NOT dispatch actions from collectedFees callback if sender IS NOT logged in account`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
         cb.collectedFees({
@@ -132,6 +132,25 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
       assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
     }
   });
+
+  // test({
+  //   description: `should dispatch actions from collectedFees callback if sender IS logged in account`,
+  //   assertions: (store) => {
+  //     sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+  //       cb.collectedFees({
+  //         sender: '0x0000000000000000000000000000000000000001'
+  //       });
+  //     });
+  //
+  //     store.dispatch(action.listenToUpdates());
+  //
+  //     console.log('actions -- ', store.getActions());
+  //
+  //     const expected = [];
+  //
+  //     // assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+  //   }
+  // });
 });
 
 // store.dispatch(action.listenToUpdates());
