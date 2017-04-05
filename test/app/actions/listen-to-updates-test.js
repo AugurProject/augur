@@ -81,6 +81,10 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     store.clearActions();
   });
 
+  afterEach(() => {
+    AugurJS.augur.filters.listen.restore();
+  });
+
   const test = (t) => {
     it(t.description, () => {
       t.assertions(store);
@@ -107,6 +111,23 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
           type: 'SYNC_BRANCH'
         }
       ];
+
+      assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+    }
+  });
+
+  test({
+    description: `should NOT dispatch actions from collectedFees callback if sender is not logged in account`,
+    assertions: (store) => {
+      sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+        cb.collectedFees({
+          sender: '0xNOTUSER'
+        });
+      });
+
+      store.dispatch(action.listenToUpdates());
+
+      const expected = [];
 
       assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
     }
