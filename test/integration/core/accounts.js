@@ -190,8 +190,6 @@ describe("Send transaction", function () {
         onSent: function (r) {
           // sent
           assert.property(r, "callReturn");
-          assert.isObject(augur.rpc.rawTxs[r.hash].tx);
-          assert.isAbove(parseFloat(augur.rpc.rawTxs[r.hash].cost), 0);
         },
         onSuccess: function (r) {
           // success
@@ -203,8 +201,6 @@ describe("Send transaction", function () {
           assert.strictEqual(r.from, user.address);
           assert.strictEqual(r.to, augur.contracts.Faucets);
           assert.strictEqual(Number(r.value), 0);
-          assert.isObject(augur.rpc.rawTxs[r.hash].tx);
-          assert.isAbove(parseFloat(augur.rpc.rawTxs[r.hash].cost), 0);
           assert.strictEqual(augur.rpc.txs[r.hash].status, "confirmed");
           done();
         },
@@ -222,8 +218,6 @@ describe("Send transaction", function () {
       augur.rpc.packageAndSubmitRawTransaction(tx, user.address, user.privateKey, function (txhash) {
         assert.notProperty(txhash, "error");
         assert(txhash);
-        assert.isObject(augur.rpc.rawTxs[txhash].tx);
-        assert.isAbove(parseFloat(augur.rpc.rawTxs[txhash].cost), 0);
         augur.rpc.getTx(txhash, function (confirmTx) {
           assert.notProperty(confirmTx, "error");
           assert(confirmTx.hash);
