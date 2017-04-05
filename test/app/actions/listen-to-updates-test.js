@@ -1140,6 +1140,71 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
       assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
     }
   });
+
+  test({
+    description: `should NOT dispatch actions from sentCash callback WITHOUT correct argument properties`,
+    assertions: (store) => {
+      sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+        cb.sentCash();
+      });
+
+      store.dispatch(action.listenToUpdates());
+
+      const expected = [];
+
+      assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+    }
+  });
+
+  test({
+    description: `should dispatch actions from sentCash callback WITH correct argument properties AND _from IS logged user`,
+    assertions: (store) => {
+      sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+        cb.sentCash({
+          _from: '0x0000000000000000000000000000000000000001',
+          _to: '0xNOTUSER'
+        });
+      });
+
+      store.dispatch(action.listenToUpdates());
+
+      const expected = [
+        {
+          type: 'UPDATE_ASSETS'
+        },
+        {
+          type: 'CONVERT_LOGS_TO_TRANSACTIONS'
+        }
+      ];
+
+      assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+    }
+  });
+
+  test({
+    description: `should dispatch actions from sentCash callback WITH correct argument properties AND _to IS logged user`,
+    assertions: (store) => {
+      sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+        cb.sentCash({
+          _from: '0xNOTUSER',
+          _to: '0x0000000000000000000000000000000000000001'
+        });
+      });
+
+      store.dispatch(action.listenToUpdates());
+
+      const expected = [
+        {
+          type: 'UPDATE_ASSETS'
+        },
+        {
+          type: 'CONVERT_LOGS_TO_TRANSACTIONS'
+        }
+      ];
+
+      assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+    }
+  });
 });
 
 // store.dispatch(action.listenToUpdates());
