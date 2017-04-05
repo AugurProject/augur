@@ -1335,6 +1335,111 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
       assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
     }
   });
+
+  test({
+    description: `should NOT dispatch actions from closedMarket callback WITHOUT correct argument properties`,
+    assertions: (store) => {
+      sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+        cb.closedMarket();
+      });
+
+      store.dispatch(action.listenToUpdates());
+
+      const expected = [];
+
+      assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+    }
+  });
+
+  test({
+    description: `should NOT dispatch actions from closedMarket callback WITHOUT matched branch`,
+    assertions: (store) => {
+      sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+        cb.closedMarket({
+          market: '0xMARKET',
+          branch: '0xNOTMATCH'
+        });
+      });
+
+      store.dispatch(action.listenToUpdates());
+
+      const expected = [];
+
+      assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+    }
+  });
+
+  test({
+    description: `should dispatch actions from closedMarket callback WITH matched branch`,
+    assertions: (store) => {
+      sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+        cb.closedMarket({
+          market: '0xMARKET',
+          branch: '0xf69b5'
+        });
+      });
+
+      store.dispatch(action.listenToUpdates());
+
+      const expected = [
+        {
+          type: 'LOAD_MARKETS_INFO'
+        }
+      ];
+
+      assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+    }
+  });
+
+  // test({
+  //   description: `should dispatch actions from Approval callback WITH correct argument properties AND _owner IS logged user`,
+  //   assertions: (store) => {
+  //     sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+  //       cb.Approval({
+  //         _owner: '0x0000000000000000000000000000000000000001',
+  //         _spender: '0xNOTUSER'
+  //       });
+  //     });
+  //
+  //     store.dispatch(action.listenToUpdates());
+  //
+  //     const expected = [
+  //       {
+  //         type: 'UPDATE_ASSETS'
+  //       },
+  //       {
+  //         type: 'CONVERT_LOGS_TO_TRANSACTIONS'
+  //       }
+  //     ];
+  //
+  //     assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+  //   }
+  // });
+
+  // test({
+  //   description: `should dispatch actions from Approval callback WITH correct argument properties AND _spender IS logged user`,
+  //   assertions: (store) => {
+  //     sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+  //       cb.Approval({
+  //         _owner: '0xNOTUSER',
+  //         _spender: '0x0000000000000000000000000000000000000001'
+  //       });
+  //     });
+  //
+  //     store.dispatch(action.listenToUpdates());
+  //
+  //     const expected = [
+  //       {
+  //         type: 'UPDATE_ASSETS'
+  //       },
+  //       {
+  //         type: 'CONVERT_LOGS_TO_TRANSACTIONS'
+  //       }
+  //     ];
+  //
+  //     assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+  //   }
+  // });
 });
 
 // store.dispatch(action.listenToUpdates());
