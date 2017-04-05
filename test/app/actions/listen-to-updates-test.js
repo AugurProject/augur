@@ -548,7 +548,8 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
           market: '0xMARKET',
           price: '0.2',
           outcome: '1',
-          sender: '0x0000000000000000000000000000000000000001'
+          sender: '0x0000000000000000000000000000000000000001',
+          owner: '0xNOTUSER'
         });
       });
 
@@ -576,29 +577,45 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     }
   });
 
-  // test({
-  //   description: `should dispatch actions from submittedReportHash callback if sender IS logged user`,
-  //   assertions: (store) => {
-  //     sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
-  //       cb.submittedReportHash({
-  //         sender: '0x0000000000000000000000000000000000000001'
-  //       });
-  //     });
-  //
-  //     store.dispatch(action.listenToUpdates());
-  //
-  //     const expected = [
-  //       {
-  //         type: 'UPDATE_ASSETS'
-  //       },
-  //       {
-  //         type: 'CONVERT_LOGS_TO_TRANSACTIONS'
-  //       }
-  //     ];
-  //
-  //     assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
-  //   }
-  // });
+  test({
+    description: `should dispatch actions from log_fill_tx callback WITH correct argument properties AND owner IS logged user`,
+    assertions: (store) => {
+      sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+        cb.log_fill_tx({
+          market: '0xMARKET',
+          price: '0.2',
+          outcome: '1',
+          sender: '0xNOTUSER',
+          owner: '0x0000000000000000000000000000000000000001'
+        });
+      });
+
+      store.dispatch(action.listenToUpdates());
+
+      const expected = [
+        {
+          type: 'UPDATE_OUTCOME_PRICE'
+        },
+        {
+          type: 'UPDATE_MARKET_TOPIC_POPULARITY'
+        },
+        {
+          type: 'FILL_ORDER'
+        },
+        {
+          type: 'UPDATE_ACCOUNT_TRADES_DATA'
+        },
+        {
+          type: 'UPDATE_ASSETS'
+        },
+        {
+          type: 'LOAD_MARKETS_INFO'
+        }
+      ];
+
+      assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+    }
+  });
 });
 
 // store.dispatch(action.listenToUpdates());
