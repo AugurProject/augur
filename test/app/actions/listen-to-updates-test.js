@@ -1016,6 +1016,48 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
       assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
     }
   });
+
+  test({
+    description: `should NOT dispatch actions from tradingFeeUpdated callback WITHOUT correct argument properties`,
+    assertions: (store) => {
+      sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+        cb.tradingFeeUpdated();
+      });
+
+      store.dispatch(action.listenToUpdates());
+
+      const expected = [];
+
+      assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+    }
+  });
+
+  test({
+    description: `should dispatch actions from tradingFeeUpdated callback WITH correct argument properties`,
+    assertions: (store) => {
+      sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+        cb.tradingFeeUpdated({
+          marketID: '0xMARKET'
+        });
+      });
+
+      store.dispatch(action.listenToUpdates());
+
+      const expected = [
+        {
+          type: 'LOAD_MARKETS_INFO'
+        },
+        {
+          type: 'UPDATE_ASSETS'
+        },
+        {
+          type: 'CONVERT_LOGS_TO_TRANSACTIONS'
+        }
+      ];
+
+      assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+    }
+  });
 });
 
 // store.dispatch(action.listenToUpdates());
