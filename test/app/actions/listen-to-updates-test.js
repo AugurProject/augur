@@ -141,7 +141,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
   });
 
   test({
-    description: `should NOT dispatch actions from collectedFees callback if sender IS NOT logged in account`,
+    description: `should NOT dispatch actions from collectedFees callback if sender IS NOT logged user`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
         cb.collectedFees({
@@ -158,10 +158,51 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
   });
 
   test({
-    description: `should dispatch actions from collectedFees callback if sender IS logged in account`,
+    description: `should dispatch actions from collectedFees callback if sender IS logged user`,
     assertions: (store) => {
       sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
         cb.collectedFees({
+          sender: '0x0000000000000000000000000000000000000001'
+        });
+      });
+
+      store.dispatch(action.listenToUpdates());
+
+      const expected = [
+        {
+          type: 'UPDATE_ASSETS'
+        },
+        {
+          type: 'CONVERT_LOGS_TO_TRANSACTIONS'
+        }
+      ];
+
+      assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+    }
+  });
+
+  test({
+    description: `should NOT dispatch actions from payout callback if sender IS NOT logged user`,
+    assertions: () => {
+      sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+        cb.payout({
+          sender: '0xNOTUSER'
+        });
+      });
+
+      store.dispatch(action.listenToUpdates());
+
+      const expected = [];
+
+      assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+    }
+  });
+
+  test({
+    description: `should dispatch actions from payout callback if sender IS logged user`,
+    assertions: (store) => {
+      sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+        cb.payout({
           sender: '0x0000000000000000000000000000000000000001'
         });
       });
