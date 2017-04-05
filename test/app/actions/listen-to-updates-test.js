@@ -1,4 +1,4 @@
-import { describe, it, beforeEach, afterEach } from 'mocha';
+import { describe, it, beforeEach } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
@@ -8,6 +8,7 @@ import testState from 'test/testState';
 
 describe(`modules/app/actions/listen-to-updates.js`, () => {
   proxyquire.noPreserveCache().noCallThru();
+
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
   const state = Object.assign({}, testState);
@@ -47,19 +48,19 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
   }));
   UpdateTopics.updateMarketTopicPopularity = sinon.stub().returns({ type: 'UPDATE_MARKET_TOPIC_POPULARITY' });
   AugurJS.abi.number = sinon.stub().returns([0, 1]);
-  sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
-    cb.block('blockhash');
-    cb.log_fill_tx({
-      market: 'testMarketID',
-      outcome: 'testOutcome',
-      price: 123.44250502560001,
-      amount: '2'
-    });
-    cb.log_add_tx({ market: 'testMarketID' });
-    cb.log_cancel({ market: 'testMarketID' });
-    cb.marketCreated({ marketID: 'testID1', topic: 'topical' });
-    cb.tradingFeeUpdated({ marketID: 'testID1' });
-  });
+  // sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+  //   cb.block('blockhash');
+  //   cb.log_fill_tx({
+  //     market: 'testMarketID',
+  //     outcome: 'testOutcome',
+  //     price: 123.44250502560001,
+  //     amount: '2'
+  //   });
+  //   cb.log_add_tx({ market: 'testMarketID' });
+  //   cb.log_cancel({ market: 'testMarketID' });
+  //   cb.marketCreated({ marketID: 'testID1', topic: 'topical' });
+  //   cb.tradingFeeUpdated({ marketID: 'testID1' });
+  // });
   sinon.stub(AugurJS.augur.CompositeGetters, 'getPositionInMarket', (market, trader, cb) => {
     cb(['0x0', '0x1']);
   });
@@ -80,37 +81,62 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     store.clearActions();
   });
 
-  afterEach(() => {
-    store.clearActions();
-  });
+  const test = (t) => {
+    it(t.description, () => {
+      t.assertions(store);
+    });
+  };
 
-  it(`should listen for new updates`, () => {
-    store.dispatch(action.listenToUpdates());
-    const out = [{
-      type: 'SYNC_BLOCKCHAIN'
-    }, {
-      type: 'UPDATE_ASSETS'
-    }, {
-      type: 'SYNC_BRANCH'
-    }, {
-      type: 'UPDATE_OUTCOME_PRICE'
-    }, {
-      type: 'UPDATE_MARKET_TOPIC_POPULARITY'
-    }, {
-      type: 'FILL_ORDER',
-    }, {
-      type: 'LOAD_BASIC_MARKET',
-      marketID: [
-        'testID1'
-      ]
-    }, {
-      type: 'LOAD_BASIC_MARKET',
-      marketID: [
-        'testID1'
-      ]
-    }, {
-      type: 'UPDATE_ASSETS'
-    }];
-    assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects`);
+  test({
+    description: 'should dispatch expected actions from block callback',
+    assertions: (store) => {
+      sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+        cb.block('blockhash');
+      });
+
+      store.dispatch(action.listenToUpdates());
+
+      const expected = [
+        {
+          type: 'SYNC_BLOCKCHAIN'
+        },
+        {
+          type: 'UPDATE_ASSETS'
+        },
+        {
+          type: 'SYNC_BRANCH'
+        }
+      ];
+
+      assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+    }
   });
 });
+
+// store.dispatch(action.listenToUpdates());
+// const out = [{
+//   type: 'SYNC_BLOCKCHAIN'
+// }, {
+//   type: 'UPDATE_ASSETS'
+// }, {
+//   type: 'SYNC_BRANCH'
+// }, {
+//   type: 'UPDATE_OUTCOME_PRICE'
+// }, {
+//   type: 'UPDATE_MARKET_TOPIC_POPULARITY'
+// }, {
+//   type: 'FILL_ORDER',
+// }, {
+//   type: 'LOAD_BASIC_MARKET',
+//   marketID: [
+//     'testID1'
+//   ]
+// }, {
+//   type: 'LOAD_BASIC_MARKET',
+//   marketID: [
+//     'testID1'
+//   ]
+// }, {
+//   type: 'UPDATE_ASSETS'
+// }];
+// assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects`);
