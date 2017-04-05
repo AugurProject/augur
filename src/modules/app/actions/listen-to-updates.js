@@ -91,7 +91,7 @@ export function listenToUpdates() {
       // trade filled: { market, outcome (id), price }
       log_fill_tx: (msg) => {
         console.log('log_fill_tx:', msg);
-        if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
+        if (msg && msg.market && msg.price && msg.outcome != null) {
           dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
           dispatch(updateMarketTopicPopularity(msg.market, msg.amount));
           const { address } = getState().loginAccount;
@@ -112,7 +112,7 @@ export function listenToUpdates() {
       // short sell filled
       log_short_fill_tx: (msg) => {
         console.log('log_short_fill_tx:', msg);
-        if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
+        if (msg && msg.market && msg.price && msg.outcome != null) {
           dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
           dispatch(updateMarketTopicPopularity(msg.market, msg.amount));
           if (msg.sender !== address) dispatch(fillOrder({ ...msg, type: SELL }));
@@ -136,7 +136,7 @@ export function listenToUpdates() {
       // order added to orderbook
       log_add_tx: (msg) => {
         console.log('log_add_tx:', msg);
-        if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
+        if (msg && msg.market && msg.outcome != null) {
           if (msg.isShortAsk) {
             const market = getState().marketsData[msg.market];
             if (market && market.numOutcomes) {
@@ -166,7 +166,7 @@ export function listenToUpdates() {
       // order removed from orderbook
       log_cancel: (msg) => {
         console.log('log_cancel:', msg);
-        if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
+        if (msg && msg.market && msg.outcome != null) {
           // if this is the user's order, then add it to the transaction display
           if (msg.sender === getState().loginAccount.address) {
             dispatch(updateAccountCancelsData({
