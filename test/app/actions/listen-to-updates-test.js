@@ -951,6 +951,71 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
       assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
     }
   });
+
+  test({
+    description: `should NOT dispatch actions from marketCreated callback WITHOUT correct argument properties`,
+    assertions: (store) => {
+      sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+        cb.marketCreated();
+      });
+
+      store.dispatch(action.listenToUpdates());
+
+      const expected = [];
+
+      assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+    }
+  });
+
+  test({
+    description: `should dispatch actions from marketCreated callback WITH correct argument properties AND sender IS NOT logged user`,
+    assertions: (store) => {
+      sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+        cb.marketCreated({
+          marketID: '0xMARKET',
+          sender: '0xNOTUSER'
+        });
+      });
+
+      store.dispatch(action.listenToUpdates());
+
+      const expected = [
+        {
+          type: 'LOAD_MARKETS_INFO'
+        }
+      ];
+
+      assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+    }
+  });
+
+  test({
+    description: `should dispatch actions from marketCreated callback WITH correct argument properties AND sender IS logged user`,
+    assertions: (store) => {
+      sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+        cb.marketCreated({
+          marketID: '0xMARKET',
+          sender: '0x0000000000000000000000000000000000000001'
+        });
+      });
+
+      store.dispatch(action.listenToUpdates());
+
+      const expected = [
+        {
+          type: 'LOAD_MARKETS_INFO'
+        },
+        {
+          type: 'UPDATE_ASSETS'
+        },
+        {
+          type: 'CONVERT_LOGS_TO_TRANSACTIONS'
+        }
+      ];
+
+      assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+    }
+  });
 });
 
 // store.dispatch(action.listenToUpdates());
