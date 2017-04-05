@@ -915,82 +915,42 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     }
   });
 
-  // test({
-  //   description: `should dispatch actions from log_fill_tx callback WITH correct argument properties AND sender IS logged user`,
-  //   assertions: (store) => {
-  //     sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
-  //       cb.log_fill_tx({
-  //         market: '0xMARKET',
-  //         price: '0.2',
-  //         outcome: '1',
-  //         sender: '0x0000000000000000000000000000000000000001',
-  //         owner: '0xNOTUSER'
-  //       });
-  //     });
-  //
-  //     store.dispatch(action.listenToUpdates());
-  //
-  //     const expected = [
-  //       {
-  //         type: 'UPDATE_OUTCOME_PRICE'
-  //       },
-  //       {
-  //         type: 'UPDATE_MARKET_TOPIC_POPULARITY'
-  //       },
-  //       {
-  //         type: 'UPDATE_ACCOUNT_TRADES_DATA'
-  //       },
-  //       {
-  //         type: 'UPDATE_ASSETS'
-  //       },
-  //       {
-  //         type: 'LOAD_MARKETS_INFO'
-  //       }
-  //     ];
-  //
-  //     assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
-  //   }
-  // });
-  //
-  // test({
-  //   description: `should dispatch actions from log_fill_tx callback WITH correct argument properties AND owner IS logged user`,
-  //   assertions: (store) => {
-  //     sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
-  //       cb.log_fill_tx({
-  //         market: '0xMARKET',
-  //         price: '0.2',
-  //         outcome: '1',
-  //         sender: '0xNOTUSER',
-  //         owner: '0x0000000000000000000000000000000000000001'
-  //       });
-  //     });
-  //
-  //     store.dispatch(action.listenToUpdates());
-  //
-  //     const expected = [
-  //       {
-  //         type: 'UPDATE_OUTCOME_PRICE'
-  //       },
-  //       {
-  //         type: 'UPDATE_MARKET_TOPIC_POPULARITY'
-  //       },
-  //       {
-  //         type: 'FILL_ORDER'
-  //       },
-  //       {
-  //         type: 'UPDATE_ACCOUNT_TRADES_DATA'
-  //       },
-  //       {
-  //         type: 'UPDATE_ASSETS'
-  //       },
-  //       {
-  //         type: 'LOAD_MARKETS_INFO'
-  //       }
-  //     ];
-  //
-  //     assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
-  //   }
-  // });
+  test({
+    description: `should NOT dispatch actions from completeSets_logReturn callback WITHOUT correct argument properties`,
+    assertions: (store) => {
+      sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+        cb.completeSets_logReturn();
+      });
+
+      store.dispatch(action.listenToUpdates());
+
+      const expected = [];
+
+      assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+    }
+  });
+
+  test({
+    description: `should dispatch actions from completeSets_logReturn callback WITH correct argument properties`,
+    assertions: (store) => {
+      sinon.stub(AugurJS.augur.filters, 'listen', (cb) => {
+        cb.completeSets_logReturn({
+          amount: '10',
+          numOutcomes: '2'
+        });
+      });
+
+      store.dispatch(action.listenToUpdates());
+
+      const expected = [
+        {
+          type: 'UPDATE_MARKET_TOPIC_POPULARITY'
+        }
+      ];
+
+      assert.deepEqual(store.getActions(), expected, `Didn't return the expected actions`);
+    }
+  });
 });
 
 // store.dispatch(action.listenToUpdates());
