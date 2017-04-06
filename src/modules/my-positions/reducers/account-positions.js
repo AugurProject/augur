@@ -1,5 +1,5 @@
-import { UPDATE_ACCOUNT_POSITIONS_DATA } from '../../../modules/my-positions/actions/update-account-trades-data';
-import { CLEAR_LOGIN_ACCOUNT } from '../../auth/actions/update-login-account';
+import { UPDATE_ACCOUNT_POSITIONS_DATA } from 'modules/my-positions/actions/update-account-trades-data';
+import { CLEAR_LOGIN_ACCOUNT } from 'modules/auth/actions/update-login-account';
 
 const DEFAULT_STATE = {};
 
