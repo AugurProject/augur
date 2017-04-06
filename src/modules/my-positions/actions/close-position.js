@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import selectAccountPositions from 'modules/user-open-orders/selectors/positions-plus-asks';
+import { selectAccountPositions } from 'modules/user-open-orders/selectors/positions-plus-asks';
 import { updateTradesInProgress } from 'modules/trade/actions/update-trades-in-progress';
 import { placeTrade } from 'modules/trade/actions/place-trade';
 import { addClosePositionTradeGroup } from 'modules/my-positions/actions/add-close-position-trade-group';
@@ -44,12 +44,12 @@ export function closePosition(marketID, outcomeID) {
           dispatch(placeTrade(marketID, outcomeID, tradesInProgress[marketID], true, (err, tradeGroupID) => {
             if (err) {
               console.error('placeTrade err -- ', err);
-              dispatch(addClosePositionTradeGroup(marketID, outcomeID, CLOSE_DIALOG_FAILED));
 
               dispatch({
                 type: UPDATE_TRADE_COMMIT_LOCK,
                 isLocked: false
               });
+              dispatch(addClosePositionTradeGroup(marketID, outcomeID, CLOSE_DIALOG_FAILED));
             } else {
               dispatch(addClosePositionTradeGroup(marketID, outcomeID, tradeGroupID));
             }

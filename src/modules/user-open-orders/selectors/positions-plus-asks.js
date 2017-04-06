@@ -5,7 +5,7 @@ import { ZERO } from '../../trade/constants/numbers';
 import { abi } from '../../../services/augurjs';
 import { isOrderOfUser } from '../../bids-asks/helpers/is-order-of-user';
 
-export default function () {
+export function selectAccountPositions() {
   return selectPositionsPlusAsks(store.getState());
 }
 

@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import store from 'src/store';
 import { selectMarketsDataState, selectFavoritesState, selectReportsState, selectOutcomesDataState, selectNetEffectiveTradesState, selectAccountTradesState, selectTradesInProgressState, selectBranchState, selectSelectedFilterSortState, selectPriceHistoryState, selectOrderBooksState, selectOrderCancellationState, selectSmallestPositionsState, selectLoginAccountState } from 'src/select-state';
-import selectAccountPositions from 'modules/user-open-orders/selectors/positions-plus-asks';
+import { selectAccountPositions } from 'modules/user-open-orders/selectors/positions-plus-asks';
 import { isMarketDataOpen, isMarketDataExpired } from '../../../utils/is-market-data-open';
 import { assembleMarket, selectMarketReport } from '../../market/selectors/market';
 
