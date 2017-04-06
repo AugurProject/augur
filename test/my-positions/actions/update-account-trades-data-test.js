@@ -10,6 +10,8 @@ import {
   UPDATE_SELL_COMPLETE_SETS_LOCK,
   UPDATE_ACCOUNT_TRADES_DATA,
   UPDATE_ACCOUNT_POSITIONS_DATA,
+  UPDATE_NET_EFFECTIVE_TRADES_DATA,
+  UPDATE_COMPLETE_SETS_BOUGHT,
   updateSmallestPositions,
   updateSellCompleteSetsLock,
   updateAccountPositionsData,
@@ -274,6 +276,29 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
         const expected = [
           {
             type: UPDATE_ACCOUNT_POSITIONS_DATA,
+            data: {
+              '0xMARKETID': {}
+            },
+            marketID: '0xMARKETID'
+          }
+        ];
+
+        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`);
+      }
+    });
+  });
+
+  describe('updateNetEffectiveTradesData', () => {
+    test({
+      description: `should return the expected action`,
+      assertions: (store) => {
+        store.dispatch(updateNetEffectiveTradesData({ '0xMARKETID': {} }, '0xMARKETID'));
+
+        const actual = store.getActions();
+
+        const expected = [
+          {
+            type: UPDATE_NET_EFFECTIVE_TRADES_DATA,
             data: {
               '0xMARKETID': {}
             },
