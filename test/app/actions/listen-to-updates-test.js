@@ -6,14 +6,12 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from 'test/testState';
 
-import { updateMarketsData } from 'modules/markets/actions/update-markets-data';
-
 describe(`modules/app/actions/listen-to-updates.js`, () => {
   proxyquire.noPreserveCache().noCallThru();
 
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
-  const state = Object.assign({}, testState);
+  const state = testState;
   const store = mockStore(state);
   const AugurJS = {
     augur: {
