@@ -413,6 +413,3 @@ describe('modules/my-positions/actions/close-position.js', () => {
     });
   });
 });
-
-
-// console.log('bestFill -- ', bestFill.amountOfShares.toNumber(), bestFill.price.toNumber());
