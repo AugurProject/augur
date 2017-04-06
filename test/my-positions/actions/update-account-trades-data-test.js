@@ -8,7 +8,6 @@ import thunk from 'redux-thunk';
 import {
   updateSmallestPositions,
   updateSellCompleteSetsLock,
-  updateAccountBidsAsksData
 } from 'modules/my-positions/actions/update-account-trades-data';
 
 export const UPDATE_SMALLEST_POSITIONS = 'UPDATE_SMALLEST_POSITIONS';
@@ -120,6 +119,42 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
               '0xMARKETID': {}
             },
             isAddition: true
+          }
+        ];
+
+        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`);
+      }
+    });
+  });
+
+  describe('updateAccountCancelsData', () => {
+    test({
+      description: `should return the expected action`,
+      assertions: (store) => {
+        const action = proxyquire('../../../src/modules/my-positions/actions/update-account-trades-data', {
+          '../../transactions/actions/convert-logs-to-transactions': mockConvertTradeLogsToTransactions,
+          '../../my-orders/actions/update-orders': mockUpdateOrders
+        });
+
+        store.dispatch(action.updateAccountCancelsData({ '0xMARKETID': {} }, '0xMARKETID'));
+
+        const actual = store.getActions();
+
+        const expected = [
+          {
+            type: MOCK_ACTION_TYPES.CONVERT_TRADE_LOGS_TO_TRANSACTIONS,
+            logType: 'log_cancel',
+            data: {
+              '0xMARKETID': {}
+            },
+            marketID: '0xMARKETID'
+          },
+          {
+            type: MOCK_ACTION_TYPES.UPDATE_ORDERS,
+            data: {
+              '0xMARKETID': {}
+            },
+            isAddition: false
           }
         ];
 
