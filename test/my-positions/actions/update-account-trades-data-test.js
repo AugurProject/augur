@@ -310,4 +310,27 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
       }
     });
   });
+
+  describe('updateCompleteSetsBought', () => {
+    test({
+      description: `should return the expected action`,
+      assertions: (store) => {
+        store.dispatch(updateCompleteSetsBought({ '0xMARKETID': {} }, '0xMARKETID'));
+
+        const actual = store.getActions();
+
+        const expected = [
+          {
+            type: UPDATE_COMPLETE_SETS_BOUGHT,
+            data: {
+              '0xMARKETID': {}
+            },
+            marketID: '0xMARKETID'
+          }
+        ];
+
+        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`);
+      }
+    });
+  });
 });
