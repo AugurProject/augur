@@ -25,9 +25,11 @@ export function closePosition(marketID, outcomeID) {
 
     // Load order book + execute trade if possible
     dispatch(loadBidsAsks(marketID, () => {
-      const orderBook = getState().orderBooks[marketID];
+      const { orderBooks, accountPositions } = getState();
+      const orderBook = orderBooks[marketID];
 
-      const outcomeShares = new BigNumber(getValue(selectAccountPositions(), `${marketID}.${outcomeID}`) || 0);
+      const outcomeShares = new BigNumber(getValue(accountPositions, `${marketID}.${outcomeID}`) || 0);
+
       const bestFill = getBestFill(orderBook, outcomeShares.toNumber() > 0 ? BUY : SELL, outcomeShares.absoluteValue(), marketID, outcomeID);
 
       if (bestFill.amountOfShares.equals(ZERO)) {
@@ -81,7 +83,7 @@ export function getBestFill(orderBook, side, shares, marketID, outcomeID) {
 
     return aBN-bBN;
   }).find((order) => {
-    amountOfShares = amountOfShares.plus(new BigNumber(order.amount));
+    amountOfShares = amountOfShares.plus(new BigNumber(order.fullPrecisionAmount));
     price = new BigNumber(order.fullPrecisionPrice);
 
     if (amountOfShares.toNumber() >= shares.toNumber()) {

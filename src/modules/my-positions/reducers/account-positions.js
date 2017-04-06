@@ -1,7 +1,9 @@
 import { UPDATE_ACCOUNT_POSITIONS_DATA } from '../../../modules/my-positions/actions/update-account-trades-data';
 import { CLEAR_LOGIN_ACCOUNT } from '../../auth/actions/update-login-account';
 
-export default function (accountPositions = null, action) {
+const DEFAULT_STATE = {};
+
+export default function (accountPositions = DEFAULT_STATE, action) {
   switch (action.type) {
     case UPDATE_ACCOUNT_POSITIONS_DATA:
       if (action.data) {
@@ -21,7 +23,7 @@ export default function (accountPositions = null, action) {
       return accountPositions;
 
     case CLEAR_LOGIN_ACCOUNT:
-      return null;
+      return DEFAULT_STATE;
 
     default:
       return accountPositions;

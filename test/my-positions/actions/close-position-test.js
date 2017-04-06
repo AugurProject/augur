@@ -8,87 +8,258 @@ import sinon from 'sinon';
 //
 // import { getBestFill } from 'modules/my-positions/actions/close-position';
 //
-import { ADD_CLOSE_POSITION_TRADE_GROUP } from 'modules/my-positions/actions/add-close-position-trade-group';
 // import { CLOSE_DIALOG_FAILED } from 'modules/market/constants/close-dialog-status';
-// import { BUY, SELL } from 'modules/trade/constants/types';
+import { BUY, SELL } from 'modules/trade/constants/types';
+import { UPDATE_TRADE_COMMIT_LOCK } from 'modules/trade/actions/update-trade-commitment';
 
 describe('modules/my-positions/actions/close-position.js', () => {
-
+  proxyquire.noPreserveCache().noCallThru();
 
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
 
+  const MOCK_ACTION_TYPES = {
+    CLEAR_CLOSE_POSITION_OUTCOME: 'CLEAR_CLOSE_POSITION_OUTCOME',
+    ADD_CLOSE_POSITION_TRADE_GROUP: 'ADD_CLOSE_POSITION_TRADE_GROUP'
+  };
+
   describe('closePosition', () => {
     const mockUpdateTradesInProgress = {
-      updateTradesInProgress: sinon.stub().yields()
+      updateTradesInProgress: () => {}
     };
-    // sinon.stub(mockUpdateTradesInProgress, 'updateTradesInProgress', (marketID, outcomeID, side, numShares, limitPrice, maxCost, cb) => (dispatch, getState) => {
-    //   cb();
-    // });
+    sinon.stub(mockUpdateTradesInProgress, 'updateTradesInProgress', (marketID, outcomeID, side, numShares, limitPrice, maxCost, cb) => (dispatch, getState) => cb());
+    const mockClearClosePositionOutcome = {
+      clearClosePositionOutcome: sinon.stub().returns({ type: MOCK_ACTION_TYPES.CLEAR_CLOSE_POSITION_OUTCOME })
+    };
     const mockPlaceTrade = {
       placeTrade: () => {}
     };
     const mockAddClosePositionTradeGroup = {
-      addClosePositionTradeGroup: sinon.stub.returns({
-        type: ADD_CLOSE_POSITION_TRADE_GROUP
+      addClosePositionTradeGroup: sinon.stub().returns({
+        type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP
       })
     };
     const mockLoadBidsAsks = {
-      loadBidsAsks: () => sinon.stub().yields()
+      loadBidsAsks: () => {}
+    };
+    sinon.stub(mockLoadBidsAsks, 'loadBidsAsks', (marketID, cb) => dispatch => cb());
+
+    const action = proxyquire('../../../src/modules/my-positions/actions/close-position.js', {
+      '../../trade/actions/update-trades-in-progress': mockUpdateTradesInProgress,
+      '../../trade/actions/place-trade': mockPlaceTrade,
+      './add-close-position-trade-group': mockAddClosePositionTradeGroup,
+      './clear-close-position-outcome': mockClearClosePositionOutcome,
+      '../../bids-asks/actions/load-bids-asks': mockLoadBidsAsks
+    });
+
+    afterEach(() => {
+      mockPlaceTrade.placeTrade.restore();
+    });
+
+    const test = (t) => {
+      it(t.description, () => {
+        const store = mockStore(t.state || {});
+
+        sinon.stub(mockPlaceTrade, 'placeTrade', (marketID, outcomeID, tradesInProgress, doNotMakeOrders, cb) => (dispatch, getState) => {
+          if (t.placeTradeFails) {
+            cb(true);
+          } else {
+            cb(null, t.tradeGroupID);
+          }
+        });
+
+        t.assertions(store);
+      });
     };
 
-    proxyquire.noPreserveCache().noCallThru();
+    test({
+      description: `should dispatch the expected actions WITHOUT available orders`,
+      state: {
+        marketID: '0xMARKETID',
+        outcomeID: '1',
+        orderBooks: {
+          '0xMARKETID': {
+            [BUY]: {},
+            [SELL]: {}
+          }
+        }
+      },
+      assertions: (store) => {
+        const { marketID, outcomeID } = store.getState();
+        store.dispatch(action.closePosition(marketID, outcomeID));
 
-    const action = proxyquire('../../../src/modules/my-positions/actions/close-position.js', {});
+        const actual = store.getActions();
 
-    // const action = proxyquire('../../../src/modules/my-positions/actions/close-position.js', {
-    //   '../../trade/actions/update-trades-in-progress': mockUpdateTradesInProgress,
-    //   '../../trade/actions/place-trade': mockPlaceTrade,
-    //   './add-close-position-trade-group': mockAddClosePositionTradeGroup,
-    //   // '../../bids-asks/actions/load-bids-asks': mockLoadBidsAsks
-    // });
+        const expected = [
+          {
+            type: UPDATE_TRADE_COMMIT_LOCK,
+            isLocked: true
+          },
+          {
+            type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP
+          },
+          {
+            type: UPDATE_TRADE_COMMIT_LOCK,
+            isLocked: false
+          },
+          {
+            type: MOCK_ACTION_TYPES.CLEAR_CLOSE_POSITION_OUTCOME
+          },
+          {
+            type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP
+          }
+        ];
 
-    // const test = (t) => {
-    //   it(t.description, () => {
-    //     // const store = mockStore(t.state);
-    //
-    //     // sinon.stub(mockPlaceTrade, 'placeTrade', (marketID, outcomeID, tradesInProgress, doNotMakeOrders, cb) => (dispatch, getState) => {
-    //     //   if (t.placeTradeFails) {
-    //     //     cb(true);
-    //     //   } else {
-    //     //     cb(null, t.tradeGroupID);
-    //     //   }
-    //     // });
-    //
-    //     // t.assertions(store);
-    //
-    //     // store.clearActions();
-    //   });
-    // };
+        assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
+      }
+    });
 
-//   test({
-//     description: `placeTrade returns tradeGroupID`,
-//     state: {
-//       tradesInProgress: {
-//         '0xMarketID': {}
-//       }
-//     },
-//     arguments: {
-//       marketID: '0xMarketID',
-//       outcomeID: '1',
-//     },
-//     tradeGroupID: '0x00000TradeGroupID',
-//     assertions: (actions) => {
-//       assert.deepEqual(actions, [
-//         {
-//           type: ADD_CLOSE_POSITION_TRADE_GROUP,
-//           marketID: '0xMarketID',
-//           outcomeID: '1',
-//           tradeGroupID: '0x00000TradeGroupID'
-//         }
-//       ]);
-//     }
-//   });
+    test({
+      description: `should dispatch the expected actions WITH available orders AND placeTrade fails`,
+      state: {
+        marketID: '0xMARKETID',
+        outcomeID: '1',
+        accountPositions: {
+          '0xMARKETID': {
+            1: '10',
+            2: '0',
+            3: '0'
+          }
+        },
+        orderBooks: {
+          '0xMARKETID': {
+            [BUY]: {
+              '0xORDERID1': {
+                outcome: '1',
+                fullPrecisionAmount: '2',
+                fullPrecisionPrice: '0.3'
+              },
+              '0xORDERID2': {
+                outcome: '1',
+                fullPrecisionAmount: '13',
+                fullPrecisionPrice: '0.31'
+              },
+              '0xORDERID3': {
+                outcome: '2',
+                fullPrecisionAmount: '11',
+                fullPrecisionPrice: '0.7'
+              }
+            },
+            [SELL]: {}
+          }
+        },
+        tradesInProgress: {}
+      },
+      placeTradeFails: true,
+      assertions: (store) => {
+        const { marketID, outcomeID } = store.getState();
+        store.dispatch(action.closePosition(marketID, outcomeID));
+
+        const actual = store.getActions();
+
+        const expected = [
+          {
+            type: UPDATE_TRADE_COMMIT_LOCK,
+            isLocked: true
+          },
+          {
+            type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP
+          },
+          {
+            type: UPDATE_TRADE_COMMIT_LOCK,
+            isLocked: false
+          },
+          {
+            type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP
+          }
+        ];
+
+        assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions WITH available orders AND placeTrade succeeds`,
+      state: {
+        marketID: '0xMARKETID',
+        outcomeID: '1',
+        accountPositions: {
+          '0xMARKETID': {
+            1: '10',
+            2: '0',
+            3: '0'
+          }
+        },
+        orderBooks: {
+          '0xMARKETID': {
+            [BUY]: {
+              '0xORDERID1': {
+                outcome: '1',
+                fullPrecisionAmount: '2',
+                fullPrecisionPrice: '0.3'
+              },
+              '0xORDERID2': {
+                outcome: '1',
+                fullPrecisionAmount: '13',
+                fullPrecisionPrice: '0.31'
+              },
+              '0xORDERID3': {
+                outcome: '2',
+                fullPrecisionAmount: '11',
+                fullPrecisionPrice: '0.7'
+              }
+            },
+            [SELL]: {}
+          }
+        },
+        tradesInProgress: {}
+      },
+      assertions: (store) => {
+        const { marketID, outcomeID } = store.getState();
+        store.dispatch(action.closePosition(marketID, outcomeID));
+
+        const actual = store.getActions();
+
+        const expected = [
+          {
+            type: UPDATE_TRADE_COMMIT_LOCK,
+            isLocked: true
+          },
+          {
+            type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP
+          },
+          {
+            type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP
+          }
+        ];
+
+        assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
+      }
+    });
+
+  // test({
+  //   description: `placeTrade returns tradeGroupID`,
+  //   state: {
+  //     tradesInProgress: {
+  //       '0xMarketID': {}
+  //     }
+  //   },
+  //   arguments: {
+  //     marketID: '0xMarketID',
+  //     outcomeID: '1',
+  //   },
+  //   tradeGroupID: '0x00000TradeGroupID',
+  //   assertions: (actions) => {
+  //     assert.deepEqual(actions, [
+  //       {
+  //         type: ADD_CLOSE_POSITION_TRADE_GROUP,
+  //         marketID: '0xMarketID',
+  //         outcomeID: '1',
+  //         tradeGroupID: '0x00000TradeGroupID'
+  //       }
+  //     ]);
+  //   }
+  // });
 //
 //   test({
 //     description: `placeTrade fails`,
