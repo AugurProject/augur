@@ -29,7 +29,6 @@ export function closePosition(marketID, outcomeID) {
       const orderBook = orderBooks[marketID];
 
       const outcomeShares = new BigNumber(getValue(accountPositions, `${marketID}.${outcomeID}`) || 0);
-
       const bestFill = getBestFill(orderBook, outcomeShares.toNumber() > 0 ? BUY : SELL, outcomeShares.absoluteValue(), marketID, outcomeID);
 
       if (bestFill.amountOfShares.equals(ZERO)) {
