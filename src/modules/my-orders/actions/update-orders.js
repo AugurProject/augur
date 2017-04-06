@@ -9,27 +9,27 @@ export function updateOrders(data, isAddition) {
       const isMarketInfoLoaded = getState().marketsData[market];
 
       if (isMarketInfoLoaded) {
-        dispatchOrderUpdates(data[market], false, dispatch);
+        dispatchOrderUpdates(data[market], isAddition, dispatch, getState);
       } else {
         dispatch(loadMarketsInfo([market], () => {
-          dispatchOrderUpdates(data[market], false, dispatch);
+          dispatchOrderUpdates(data[market], isAddition, dispatch, getState);
         }));
       }
     });
-
-    function dispatchOrderUpdates(marketOrderData) {
-      Object.keys(marketOrderData).forEach((outcome) => {
-        marketOrderData[outcome].forEach((orderLog) => {
-          const transactionsData = getState().transactionsData;
-          const cancelledOrder = Object.keys(transactionsData).find(id => transactionsData[id].tradeID === orderLog.tradeid && transactionsData[id].type === CANCEL_ORDER);
-
-          if (isAddition && !cancelledOrder) {
-            dispatch(addOrder(orderLog));
-          } else {
-            dispatch(removeOrder(orderLog));
-          }
-        });
-      });
-    }
   };
+}
+
+function dispatchOrderUpdates(marketOrderData, isAddition, dispatch, getState) {
+  Object.keys(marketOrderData).forEach((outcome) => {
+    marketOrderData[outcome].forEach((orderLog) => {
+      const transactionsData = getState().transactionsData;
+      const cancelledOrder = Object.keys(transactionsData).find(id => transactionsData[id].tradeID === orderLog.tradeid && transactionsData[id].type === CANCEL_ORDER);
+
+      if (isAddition && !cancelledOrder) {
+        dispatch(addOrder(orderLog));
+      } else {
+        dispatch(removeOrder(orderLog));
+      }
+    });
+  });
 }
