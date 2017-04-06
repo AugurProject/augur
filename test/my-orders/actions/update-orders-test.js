@@ -5,11 +5,9 @@ import sinon from 'sinon';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 
-import { BUY, CANCEL_ORDER } from 'modules/transactions/constants/types';
+import { CANCEL_ORDER } from 'modules/transactions/constants/types';
 
 describe('modules/my-orders/actions/update-orders.js', () => {
-  // proxyquire.noPreserveCache().noCallThru();
-
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
 
