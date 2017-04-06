@@ -1,10 +1,6 @@
-import { convertTradeLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
-import { addOrder, removeOrder } from 'modules/bids-asks/actions/update-market-order-book';
-import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
-
 import { augur } from 'services/augurjs';
-
-import { CANCEL_ORDER } from 'modules/transactions/constants/types';
+import { convertTradeLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
+import { updateOrders } from 'modules/my-orders/actions/update-orders';
 
 export const UPDATE_ACCOUNT_TRADES_DATA = 'UPDATE_ACCOUNT_TRADES_DATA';
 export const UPDATE_ACCOUNT_POSITIONS_DATA = 'UPDATE_ACCOUNT_POSITIONS_DATA';
@@ -65,35 +61,4 @@ export function updateNetEffectiveTradesData(data, marketID) {
 
 export function updateCompleteSetsBought(data, marketID) {
   return { type: UPDATE_COMPLETE_SETS_BOUGHT, data, marketID };
-}
-
-export function updateOrders(data, isAddition) {
-  return (dispatch, getState) => {
-    Object.keys(data).forEach((market) => {
-      const isMarketInfoLoaded = getState().marketsData[market];
-
-      if (isMarketInfoLoaded) {
-        dispatchOrderUpdates(data[market], false, dispatch);
-      } else {
-        dispatch(loadMarketsInfo([market], () => {
-          dispatchOrderUpdates(data[market], false, dispatch);
-        }));
-      }
-    });
-
-    function dispatchOrderUpdates(marketOrderData) {
-      Object.keys(marketOrderData).forEach((outcome) => {
-        marketOrderData[outcome].forEach((orderLog) => {
-          const transactionsData = getState().transactionsData;
-          const cancelledOrder = Object.keys(transactionsData).find(id => transactionsData[id].tradeID === orderLog.tradeid && transactionsData[id].type === CANCEL_ORDER);
-
-          if (isAddition && !cancelledOrder) {
-            dispatch(addOrder(orderLog));
-          } else {
-            dispatch(removeOrder(orderLog));
-          }
-        });
-      });
-    }
-  };
 }
