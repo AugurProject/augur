@@ -12,6 +12,9 @@ import {
   UPDATE_ACCOUNT_POSITIONS_DATA,
   updateSmallestPositions,
   updateSellCompleteSetsLock,
+  updateAccountPositionsData,
+  updateNetEffectiveTradesData,
+  updateCompleteSetsBought
 } from 'modules/my-positions/actions/update-account-trades-data';
 
 describe('modules/my-positions/actions/update-account-trades-data.js', () => {
@@ -252,6 +255,29 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
             type: UPDATE_ACCOUNT_TRADES_DATA,
             market: '0xMARKETID',
             data: {}
+          }
+        ];
+
+        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`);
+      }
+    });
+  });
+
+  describe('updateAccountPositionsData', () => {
+    test({
+      description: `should return the expected action`,
+      assertions: (store) => {
+        store.dispatch(updateAccountPositionsData({ '0xMARKETID': {} }, '0xMARKETID'));
+
+        const actual = store.getActions();
+
+        const expected = [
+          {
+            type: UPDATE_ACCOUNT_POSITIONS_DATA,
+            data: {
+              '0xMARKETID': {}
+            },
+            marketID: '0xMARKETID'
           }
         ];
 
