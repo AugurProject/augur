@@ -9,7 +9,8 @@ import BigNumber from 'bignumber.js';
 
 import {
   generateOutcomePositionSummary,
-  generateMarketsPositionsSummary
+  generateMarketsPositionsSummary,
+  generatePositionsSummary
 } from 'modules/my-positions/selectors/my-positions-summary';
 
 import { formatEther, formatShares, formatNumber } from 'utils/format-number';
@@ -222,9 +223,6 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
   });
 
   describe('generateMarketsPositionsSummary', () => {
-    const proxyquire = require('proxyquire');
-    proxyquire.noPreserveCache().callThru();
-
     const test = (t) => {
       it(t.description, () => {
         t.assertions();
@@ -363,6 +361,38 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+  });
+
+  describe('generatePositionsSummary', () => {
+    const test = (t) => {
+      it(t.description, () => {
+        t.assertions();
+      });
+    };
+
+    test({
+      description: `should return the expected object`,
+      assertions: () => {
+        const actual = generatePositionsSummary(10, 2, 0.2, 10, -1);
+
+        const expected = {
+          numPositions: formatNumber(10, {
+            decimals: 0,
+            decimalsRounded: 0,
+            denomination: 'Positions',
+            positiveSign: false,
+            zeroStyled: false
+          }),
+          qtyShares: formatShares(2),
+          purchasePrice: formatEther(0.2),
+          realizedNet: formatEther(10),
+          unrealizedNet: formatEther(-1),
+          totalNet: formatEther(9)
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected value`);
       }
     });
   });

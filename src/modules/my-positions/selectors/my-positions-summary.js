@@ -61,7 +61,6 @@ export const generateMarketsPositionsSummary = memoize((markets) => {
 }, { max: 50 });
 
 export const generatePositionsSummary = memoize((numPositions, qtyShares, meanTradePrice, realizedNet, unrealizedNet) => {
-  // console.log('### generatePositionsSummary -- ', numPositions, qtyShares, meanTradePrice, realizedNet, unrealizedNet);
   const totalNet = abi.bignum(realizedNet).plus(abi.bignum(unrealizedNet));
   return {
     numPositions: formatNumber(numPositions, {
