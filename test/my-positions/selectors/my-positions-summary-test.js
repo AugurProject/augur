@@ -1,11 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import sinon from 'sinon';
-import thunk from 'redux-thunk';
-import configureMockStore from 'redux-mock-store';
-import BigNumber from 'bignumber.js';
-// import * as selector from 'modules/my-positions/selectors/my-positions-summary';
-// import positionsSummaryAssertions from 'assertions/positions-summary';
 
 import {
   generateOutcomePositionSummary,
