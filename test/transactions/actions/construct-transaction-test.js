@@ -16,7 +16,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
   const mockStore = configureMockStore(middlewares);
 
   const MOCK_ACTION_TYPES = {
-    CALLBACK: 'CALLBACK',
     LOAD_MARKET_THEN_RETRY_CONVERSION: 'LOAD_MARKET_THEN_RETRY_CONVERSION'
   };
 
@@ -49,9 +48,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           market: '0xMARKETID'
         };
         const isRetry = false;
-        const callback = () => ({
-          type: MOCK_ACTION_TYPES.CALLBACK
-        });
+        const callback = () => {};
 
         store.dispatch(action.loadDataForMarketTransaction(label, log, isRetry, callback));
 
@@ -64,6 +61,54 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         ];
 
         assert.deepEqual(actual, expected, `Didn't return the expected actions`);
+      }
+    });
+
+    test({
+      description: `should return expected actions with no loaded markets AND isRetry`,
+      state: {
+        marketsData: {}
+      },
+      assertions: (store) => {
+        const label = 'label';
+        const log = {
+          market: '0xMARKETID'
+        };
+        const isRetry = true;
+        const callback = sinon.spy();
+
+        store.dispatch(action.loadDataForMarketTransaction(label, log, isRetry, callback));
+
+        assert.isTrue(callback.calledOnce, `Didn't call callback once as expected`);
+      }
+    });
+
+    test({
+      description: `should return expected actions with loaded markets`,
+      state: {
+        marketsData: {
+          '0xMARKETID': {
+            description: 'market is loaded'
+          }
+        }
+      },
+      assertions: (store) => {
+        const label = 'label';
+        const log = {
+          market: '0xMARKETID'
+        };
+        const isRetry = false;
+        const callback = () => ({
+          type: MOCK_ACTION_TYPES.CALLBACK
+        });
+
+        const actual = store.dispatch(action.loadDataForMarketTransaction(label, log, isRetry, callback));
+
+        const expected = {
+          description: 'market is loaded'
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
       }
     });
   });
