@@ -35,8 +35,6 @@ export const generateOutcomePositionSummary = memoize((adjustedPosition, outcome
 }, { max: 50 });
 
 export const generateMarketsPositionsSummary = memoize((markets) => {
-  console.log('markets --', markets);
-
   if (!markets || !markets.length) {
     return null;
   }
@@ -47,7 +45,6 @@ export const generateMarketsPositionsSummary = memoize((markets) => {
   markets.forEach((market) => {
     market.outcomes.forEach((outcome) => {
       if (!outcome || !outcome.position || !outcome.position.numPositions || !outcome.position.numPositions.value || ((!outcome.position.qtyShares || !outcome.position.qtyShares.value) && (!outcome.position.realizedNet || !outcome.position.realizedNet.value))) {
-        console.log('here -- ', outcome);
         return;
       }
       qtyShares = qtyShares.plus(abi.bignum(outcome.position.qtyShares.value));
@@ -64,6 +61,7 @@ export const generateMarketsPositionsSummary = memoize((markets) => {
 }, { max: 50 });
 
 export const generatePositionsSummary = memoize((numPositions, qtyShares, meanTradePrice, realizedNet, unrealizedNet) => {
+  console.log('### generatePositionsSummary -- ', numPositions, qtyShares, meanTradePrice, realizedNet, unrealizedNet);
   const totalNet = abi.bignum(realizedNet).plus(abi.bignum(unrealizedNet));
   return {
     numPositions: formatNumber(numPositions, {

@@ -1,7 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import sinon from 'sinon';
-import proxyquire from 'proxyquire';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import BigNumber from 'bignumber.js';
@@ -12,14 +11,13 @@ import {
   generateOutcomePositionSummary
 } from 'modules/my-positions/selectors/my-positions-summary';
 
-import * as myPositionsSummary from 'modules/my-positions/selectors/my-positions-summary';
-
 import { formatEther, formatShares, formatNumber } from 'utils/format-number';
 
 describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
-  proxyquire.noPreserveCache().noCallThru();
-
   describe('default', () => {
+    const proxyquire = require('proxyquire');
+    proxyquire.noPreserveCache().noCallThru();
+
     const test = (t) => {
       it(t.description, () => {
         t.assertions();
@@ -95,6 +93,9 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
   });
 
   describe('generateOutcomePositionSummary', () => {
+    const proxyquire = require('proxyquire');
+    proxyquire.noPreserveCache().callThru();
+
     const test = (t) => {
       it(t.description, () => {
         t.assertions();
@@ -125,8 +126,6 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
             })
           }
         };
-
-        proxyquire.callThru();
 
         const selector = proxyquire('../../../src/modules/my-positions/selectors/my-positions-summary', {
           '../../../services/augurjs': mockAugur
@@ -180,8 +179,6 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
             })
           }
         };
-
-        proxyquire.callThru();
 
         const selector = proxyquire('../../../src/modules/my-positions/selectors/my-positions-summary', {
           '../../../services/augurjs': mockAugur
