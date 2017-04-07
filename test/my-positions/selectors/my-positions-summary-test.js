@@ -4,21 +4,22 @@ import sinon from 'sinon';
 import proxyquire from 'proxyquire';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
-
-// import memProfile =
+import BigNumber from 'bignumber.js';
 // import * as selector from 'modules/my-positions/selectors/my-positions-summary';
 // import positionsSummaryAssertions from 'assertions/positions-summary';
-// import { abi } from 'services/augurjs';
+
+import {
+  generateOutcomePositionSummary
+} from 'modules/my-positions/selectors/my-positions-summary';
 
 import * as myPositionsSummary from 'modules/my-positions/selectors/my-positions-summary';
 
 import { formatEther, formatShares, formatNumber } from 'utils/format-number';
 
 describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
+  proxyquire.noPreserveCache().noCallThru();
 
   describe('default', () => {
-    proxyquire.noPreserveCache().noCallThru();
-
     const test = (t) => {
       it(t.description, () => {
         t.assertions();
@@ -26,7 +27,7 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
     };
 
     test({
-      description: `default should return null if there ARE NO markets with positions`,
+      description: `should return null if there ARE NO markets with positions`,
       assertions: (store) => {
         const mockSelectMyPositions = sinon.stub().returns([]);
 
@@ -43,7 +44,7 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
     });
 
     test({
-      description: `default should return the expected object if there ARE markets with positions AND no outcomes have position object`,
+      description: `should return the expected object if there ARE markets with positions AND no outcomes have position object`,
       assertions: (store) => {
         const mockSelectMyPositions = sinon.stub().returns([
           {
@@ -89,6 +90,135 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expect object`);
+      }
+    });
+  });
+
+  describe('generateOutcomePositionSummary', () => {
+    const test = (t) => {
+      it(t.description, () => {
+        t.assertions();
+      });
+    };
+
+    test({
+      description: `should return the expected value when account trades and adjusted positions are undefined`,
+      assertions: () => {
+        const actual = generateOutcomePositionSummary(undefined, undefined, 0.2, {});
+
+        const expected = null;
+
+        assert.strictEqual(actual, expected, `Didn't return the expected value`);
+      }
+    });
+
+    test({
+      description: `should return the expected value when account trades and adjusted positions are defined AND position is zero`,
+      assertions: () => {
+        const mockAugur = {
+          augur: {
+            calculateProfitLoss: sinon.stub().returns({
+              position: 0,
+              realized: 10,
+              unrealized: -1,
+              meanOpenPrice: 0.2
+            })
+          }
+        };
+
+        proxyquire.callThru();
+
+        const selector = proxyquire('../../../src/modules/my-positions/selectors/my-positions-summary', {
+          '../../../services/augurjs': mockAugur
+        });
+
+        const actual = selector.generateOutcomePositionSummary(
+          10,
+          [{}],
+          0.2,
+          {}
+        );
+
+        const expected = {
+          numPositions: formatNumber(1, {
+            decimals: 0,
+            decimalsRounded: 0,
+            denomination: 'Positions',
+            positiveSign: false,
+            zeroStyled: false
+          }),
+          qtyShares: formatShares(0),
+          purchasePrice: formatEther(0.2),
+          realizedNet: formatEther(10),
+          unrealizedNet: formatEther(-1),
+          totalNet: formatEther(9),
+          isClosable: false
+        };
+
+        // More verbose since a `deepEqual` can't properly check equality w/ objects containing functions
+        assert.deepEqual(actual.numPositions, expected.numPositions, `Didn't return the expected object`);
+        assert.deepEqual(actual.qtyShares, expected.qtyShares, `Didn't return the expected object`);
+        assert.deepEqual(actual.purchasePrice, expected.purchasePrice, `Didn't return the expected object`);
+        assert.deepEqual(actual.realizedNet, expected.realizedNet, `Didn't return the expected object`);
+        assert.deepEqual(actual.unrealizedNet, expected.unrealizedNet, `Didn't return the expected object`);
+        assert.deepEqual(actual.totalNet, expected.totalNet, `Didn't return the expected object`);
+        assert.strictEqual(actual.isClosable, expected.isClosable, `Didn't return the expected value`);
+        assert.isFunction(actual.closePosition, `Didn't return a function as expected`);
+      }
+    });
+
+    test({
+      description: `should return the expected value when account trades and adjusted positions are defined AND position is non-zero`,
+      assertions: () => {
+        const mockAugur = {
+          augur: {
+            calculateProfitLoss: sinon.stub().returns({
+              position: 1,
+              realized: 10,
+              unrealized: -1,
+              meanOpenPrice: 0.2
+            })
+          }
+        };
+
+        proxyquire.callThru();
+
+        const selector = proxyquire('../../../src/modules/my-positions/selectors/my-positions-summary', {
+          '../../../services/augurjs': mockAugur
+        });
+
+        const actual = selector.generateOutcomePositionSummary(
+          10,
+          [{}],
+          0.2,
+          {}
+        );
+
+        const expected = {
+          numPositions: formatNumber(1, {
+            decimals: 0,
+            decimalsRounded: 0,
+            denomination: 'Positions',
+            positiveSign: false,
+            zeroStyled: false
+          }),
+          qtyShares: formatShares(1),
+          purchasePrice: formatEther(0.2),
+          realizedNet: formatEther(10),
+          unrealizedNet: formatEther(-1),
+          totalNet: formatEther(9),
+          isClosable: true
+        };
+
+        // More verbose since a `deepEqual` can't properly check equality w/ objects containing functions
+        assert.deepEqual(actual.numPositions, expected.numPositions, `Didn't return the expected object`);
+        assert.deepEqual(actual.qtyShares, expected.qtyShares, `Didn't return the expected object`);
+        assert.deepEqual(actual.purchasePrice, expected.purchasePrice, `Didn't return the expected object`);
+        assert.deepEqual(actual.realizedNet, expected.realizedNet, `Didn't return the expected object`);
+        assert.deepEqual(actual.unrealizedNet, expected.unrealizedNet, `Didn't return the expected object`);
+        assert.deepEqual(actual.totalNet, expected.totalNet, `Didn't return the expected object`);
+        assert.strictEqual(actual.isClosable, expected.isClosable, `Didn't return the expected value`);
+        assert.isFunction(actual.closePosition, `Didn't return a function as expected`);
       }
     });
   });
