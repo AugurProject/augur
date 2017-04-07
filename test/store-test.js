@@ -92,7 +92,7 @@ describe(`store.js`, () => {
     assert.isObject(state.orderBooks, 'orderBooks is not an object');
     assert.deepEqual(state.orderBooks, {}, 'orderBooks is not an empty object');
 
-    assert.deepEqual(state.accountTrades, null, 'accountTrades is an empty object');
+    assert.deepEqual(state.accountTrades, {}, 'accountTrades is an empty object');
 
     assert.isOk(state.transactionsData, 'transactionsData is not defined');
     assert.isObject(state.transactionsData, 'transactionsData is not an object');
