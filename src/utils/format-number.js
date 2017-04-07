@@ -135,7 +135,7 @@ export function formatShares(num, opts) {
     {
       decimals: 2,
       decimalsRounded: 2,
-      denomination: ` share${num !== 1 ? 's' : ''}`,
+      denomination: ` share${abi.number(num) !== 1 ? 's' : ''}`,
       minimized: true,
       zeroStyled: false,
       blankZero: false,

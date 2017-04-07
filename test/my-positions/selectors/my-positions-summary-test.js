@@ -8,7 +8,8 @@ import BigNumber from 'bignumber.js';
 // import positionsSummaryAssertions from 'assertions/positions-summary';
 
 import {
-  generateOutcomePositionSummary
+  generateOutcomePositionSummary,
+  generateMarketsPositionsSummary
 } from 'modules/my-positions/selectors/my-positions-summary';
 
 import { formatEther, formatShares, formatNumber } from 'utils/format-number';
@@ -216,6 +217,152 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
         assert.deepEqual(actual.totalNet, expected.totalNet, `Didn't return the expected object`);
         assert.strictEqual(actual.isClosable, expected.isClosable, `Didn't return the expected value`);
         assert.isFunction(actual.closePosition, `Didn't return a function as expected`);
+      }
+    });
+  });
+
+  describe('generateMarketsPositionsSummary', () => {
+    const proxyquire = require('proxyquire');
+    proxyquire.noPreserveCache().callThru();
+
+    const test = (t) => {
+      it(t.description, () => {
+        t.assertions();
+      });
+    };
+
+    test({
+      description: `should return the expected value when markets are undefined`,
+      assertions: () => {
+        const actual = generateMarketsPositionsSummary([]);
+
+        const expected = null;
+
+        assert.strictEqual(actual, expected, `Didn't return the expected value`);
+      }
+    });
+
+    test({
+      description: `should return the expected object if there ARE markets with positions AND no outcomes have position object`,
+      assertions: (store) => {
+        const actual = generateMarketsPositionsSummary([
+          {
+            id: '0xMARKETID1',
+            myPositionsSummary: {
+              numPositions: formatNumber(1, {
+                decimals: 0,
+                decimalsRounded: 0,
+                denomination: 'Positions',
+                positiveSign: false,
+                zeroStyled: false
+              }),
+              qtyShares: formatShares(1),
+              purchasePrice: formatEther(0.2),
+              realizedNet: formatEther(0),
+              unrealizedNet: formatEther(0),
+              totalNet: formatEther(0)
+            },
+            outcomes: [{}]
+          }
+        ]);
+
+        const expected = {
+          numPositions: formatNumber(0, {
+            decimals: 0,
+            decimalsRounded: 0,
+            denomination: 'Positions',
+            positiveSign: false,
+            zeroStyled: false
+          }),
+          qtyShares: formatShares(0),
+          purchasePrice: formatEther(0),
+          realizedNet: formatEther(0),
+          unrealizedNet: formatEther(0),
+          totalNet: formatEther(0),
+          positionOutcomes: []
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expect object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object if there ARE markets with positions AND outcomes have position`,
+      assertions: (store) => {
+        const actual = generateMarketsPositionsSummary([
+          {
+            id: '0xMARKETID1',
+            myPositionsSummary: {
+              numPositions: formatNumber(1, {
+                decimals: 0,
+                decimalsRounded: 0,
+                denomination: 'Positions',
+                positiveSign: false,
+                zeroStyled: false
+              }),
+              qtyShares: formatShares(1),
+              purchasePrice: formatEther(0.2),
+              realizedNet: formatEther(0),
+              unrealizedNet: formatEther(0),
+              totalNet: formatEther(0)
+            },
+            outcomes: [
+              {
+                position: {
+                  numPositions: formatNumber(1, {
+                    decimals: 0,
+                    decimalsRounded: 0,
+                    denomination: 'Positions',
+                    positiveSign: false,
+                    zeroStyled: false
+                  }),
+                  qtyShares: formatShares(1),
+                  purchasePrice: formatEther(0.2),
+                  realizedNet: formatEther(10),
+                  unrealizedNet: formatEther(-1),
+                  totalNet: formatEther(9),
+                  isClosable: true
+                }
+              }
+            ]
+          }
+        ]);
+
+        const expected = {
+          numPositions: formatNumber(1, {
+            decimals: 0,
+            decimalsRounded: 0,
+            denomination: 'Positions',
+            positiveSign: false,
+            zeroStyled: false
+          }),
+          qtyShares: formatShares(1),
+          purchasePrice: formatEther(0),
+          realizedNet: formatEther(10),
+          unrealizedNet: formatEther(-1),
+          totalNet: formatEther(9),
+          positionOutcomes: [
+            {
+              position: {
+                numPositions: formatNumber(1, {
+                  decimals: 0,
+                  decimalsRounded: 0,
+                  denomination: 'Positions',
+                  positiveSign: false,
+                  zeroStyled: false
+                }),
+                qtyShares: formatShares(1),
+                purchasePrice: formatEther(0.2),
+                realizedNet: formatEther(10),
+                unrealizedNet: formatEther(-1),
+                totalNet: formatEther(9),
+                isClosable: true
+              }
+            }
+          ]
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
       }
     });
   });
