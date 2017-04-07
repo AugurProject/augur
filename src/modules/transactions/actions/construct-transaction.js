@@ -1,14 +1,14 @@
-import { abi, augur, constants } from '../../../services/augurjs';
-import { ZERO } from '../../trade/constants/numbers';
-import { BINARY, SCALAR } from '../../markets/constants/market-types';
-import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, MATCH_BID, MATCH_ASK, COMMIT_REPORT, REVEAL_REPORT, CANCEL_ORDER } from '../../transactions/constants/types';
-import { formatEther, formatPercent, formatRealEther, formatRep, formatShares } from '../../../utils/format-number';
-import { formatDate } from '../../../utils/format-date';
-import { selectMarketLink } from '../../link/selectors/links';
-import { formatReportedOutcome } from '../../reports/selectors/reportable-outcomes';
-import { loadMarketThenRetryConversion, lookupEventMarketsThenRetryConversion } from '../../transactions/actions/retry-conversion';
-import { selectMarketIDFromEventID } from '../../market/selectors/market';
-import { updateEventsWithAccountReportData } from '../../my-reports/actions/update-events-with-account-report-data';
+import { abi, augur, constants } from 'services/augurjs';
+import { ZERO } from 'modules/trade/constants/numbers';
+import { BINARY, SCALAR } from 'modules/markets/constants/market-types';
+import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, MATCH_BID, MATCH_ASK, COMMIT_REPORT, REVEAL_REPORT, CANCEL_ORDER } from 'modules/transactions/constants/types';
+import { formatEther, formatPercent, formatRealEther, formatRep, formatShares } from 'utils/format-number';
+import { formatDate } from 'utils/format-date';
+import { selectMarketLink } from 'modules/link/selectors/links';
+import { formatReportedOutcome } from 'modules/reports/selectors/reportable-outcomes';
+import { loadMarketThenRetryConversion, lookupEventMarketsThenRetryConversion } from 'modules/transactions/actions/retry-conversion';
+import { selectMarketIDFromEventID } from 'modules/market/selectors/market';
+import { updateEventsWithAccountReportData } from 'modules/my-reports/actions/update-events-with-account-report-data';
 
 export function loadDataForMarketTransaction(label, log, isRetry, callback) {
   return (dispatch, getState) => {
