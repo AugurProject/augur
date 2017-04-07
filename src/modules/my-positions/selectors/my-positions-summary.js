@@ -12,7 +12,7 @@ import { augur, abi } from 'services/augurjs';
 import { formatEther, formatShares, formatNumber } from 'utils/format-number';
 
 export default function () {
-  const myPositions = selectMyPositions;
+  const myPositions = selectMyPositions();
   return generateMarketsPositionsSummary(myPositions);
 }
 
@@ -47,6 +47,7 @@ export const generateMarketsPositionsSummary = memoize((markets) => {
   markets.forEach((market) => {
     market.outcomes.forEach((outcome) => {
       if (!outcome || !outcome.position || !outcome.position.numPositions || !outcome.position.numPositions.value || ((!outcome.position.qtyShares || !outcome.position.qtyShares.value) && (!outcome.position.realizedNet || !outcome.position.realizedNet.value))) {
+        console.log('here -- ', outcome);
         return;
       }
       qtyShares = qtyShares.plus(abi.bignum(outcome.position.qtyShares.value));
