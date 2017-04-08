@@ -1,7 +1,7 @@
 "use strict";
 
 var assert = require("chai").assert;
-var formatCommonFields = require("../../../src/filters/format-common-fields");
+var formatCommonFields = require("../../../../src/format/log/format-common-fields");
 
 describe("formatCommonFields", function () {
   var test = function (t) {

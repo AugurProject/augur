@@ -1,13 +1,10 @@
-/**
- * Augur JavaScript SDK
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var abi = require("augur-abi");
 var utils = require("../utilities");
 var constants = require("../constants");
+var encodeTag = require("../format/tag/encode-tag");
+var decodeTag = require("../format/tag/decode-tag");
 
 module.exports = {
 
@@ -22,7 +19,7 @@ module.exports = {
 
   findMarketsWithTopic: function (topic, branchID, callback) {
     var self = this;
-    var formattedTopic = this.encodeTag(topic);
+    var formattedTopic = encodeTag(topic);
     if (!utils.is_function(callback)) {
       return this.filterByBranchID(branchID, this.getLogs("marketCreated", {topic: formattedTopic}));
     }
@@ -36,7 +33,7 @@ module.exports = {
   parseTopicsInfo: function (topicsInfo) {
     var i, len, parsedTopicsInfo = {};
     for (i = 0, len = topicsInfo.length; i < len; i += 2) {
-      parsedTopicsInfo[this.decodeTag(topicsInfo[i])] = abi.unfix(topicsInfo[i + 1], "number");
+      parsedTopicsInfo[decodeTag(topicsInfo[i])] = abi.unfix(topicsInfo[i + 1], "number");
     }
     return parsedTopicsInfo;
   },

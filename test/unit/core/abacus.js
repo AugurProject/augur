@@ -933,88 +933,6 @@ describe("abacus.parseMarketInfo", function() {
 
 });
 
-describe("abacus.encodeTag", function() {
-  var test = function(t) {
-    it(JSON.stringify(t), function() {
-      t.assertions(abacus.encodeTag(t.tag));
-    });
-  };
-  test({
-    tag: undefined,
-    assertions: function(tag) {
-      assert.deepEqual(tag, '0x0');
-    }
-  });
-  test({
-    tag: null,
-    assertions: function(tag) {
-      assert.deepEqual(tag, '0x0');
-    }
-  });
-  test({
-    tag: '',
-    assertions: function(tag) {
-      assert.deepEqual(tag, '0x0');
-    }
-  });
-  test({
-    tag: 'Hello World',
-    assertions: function(tag) {
-      assert.deepEqual(tag, '0x48656c6c6f20576f726c64000000000000000000000000000000000000000000');
-    }
-  });
-});
-
-describe("abacus.encodeTags", function() {
-  var test = function(t) {
-    it(JSON.stringify(t), function() {
-      t.assertions(abacus.encodeTags(t.tags));
-    });
-  };
-  test({
-    tags: undefined,
-    assertions: function(tags) {
-      assert.deepEqual(tags, [ '0x0', '0x0', '0x0' ]);
-    }
-  });
-  test({
-    tags: '',
-    assertions: function(tags) {
-      assert.deepEqual(tags, [ '0x0', '0x0', '0x0' ]);
-    }
-  });
-  test({
-    tags: ['Hello World'],
-    assertions: function(tags) {
-      assert.deepEqual(tags, [
-        '0x48656c6c6f20576f726c64000000000000000000000000000000000000000000',
-        '0x0',
-        '0x0'
-      ]);
-    }
-  });
-  test({
-    tags: ['Hello', 'World'],
-    assertions: function(tags) {
-      assert.deepEqual(tags, [
-        '0x48656c6c6f000000000000000000000000000000000000000000000000000000',
-        '0x576f726c64000000000000000000000000000000000000000000000000000000',
-        '0x0'
-      ]);
-    }
-  });
-  test({
-    tags: ['Hello', 'World', 'testing'],
-    assertions: function(tags) {
-      assert.deepEqual(tags, [
-        '0x48656c6c6f000000000000000000000000000000000000000000000000000000',
-        '0x576f726c64000000000000000000000000000000000000000000000000000000',
-        '0x74657374696e6700000000000000000000000000000000000000000000000000'
-      ]);
-    }
-  });
-});
-
 describe("abacus.calculateRequiredMarketValue", function() {
   var test = function (t) {
     it(JSON.stringify(t), function () {
@@ -1290,38 +1208,6 @@ describe("abacus.parseTradeInfo", function() {
     trade: ['0xabc1', '0x2', '0xa1', '802393203427423923123', '0', '0xc1', '101010', '1'],
     assertions: function(parsed) {
       assert.isNull(parsed);
-    }
-  });
-});
-
-describe("abacus.decodeTag", function() {
-  var test = function(t) {
-    it(JSON.stringify(t), function() {
-      t.assertions(abacus.decodeTag(t.tag));
-    });
-  };
-  test({
-    tag: undefined,
-    assertions: function(tag) {
-      assert.isNull(tag);
-    }
-  });
-  test({
-    tag: '0x',
-    assertions: function(tag) {
-      assert.isNull(tag);
-    }
-  });
-  test({
-    tag: '0x0',
-    assertions: function(tag) {
-      assert.isNull(tag);
-    }
-  });
-  test({
-    tag: abi.short_string_to_int256('This is my tag!'),
-    assertions: function(tag) {
-      assert.deepEqual(tag, 'This is my tag!');
     }
   });
 });

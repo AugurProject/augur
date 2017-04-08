@@ -2,8 +2,8 @@
 
 var assert = require("chai").assert;
 var abi = require("augur-abi");
-var encodeTag = require("../../../src/modules/abacus").encodeTag;
-var formatLogMessage = require("../../../src/filters/format-log-message");
+var encodeTag = require("../../../../src/format/tag/encode-tag");
+var formatLogMessage = require("../../../../src/format/log/format-log-message");
 
 describe("formatLogMessage", function () {
   var test = function (t) {

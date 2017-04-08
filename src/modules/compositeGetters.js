@@ -10,6 +10,7 @@ var clone = require("clone");
 var abi = require("augur-abi");
 var utils = require("../utilities");
 var constants = require("../constants");
+var decodeTag = require("../format/tag/decode-tag");
 
 module.exports = {
 
@@ -286,7 +287,7 @@ module.exports = {
           isIndeterminate: unfixed.isIndeterminate
         };
       }
-      topic = this.decodeTag(marketsArray[shift + 5]);
+      topic = decodeTag(marketsArray[shift + 5]);
       marketsInfo[marketID] = {
         id: marketID,
         branchID: branch,
@@ -297,7 +298,7 @@ module.exports = {
         creationTime: parseInt(marketsArray[shift + 3], 16),
         volume: abi.unfix(marketsArray[shift + 4], "string"),
         topic: topic,
-        tags: [topic, this.decodeTag(marketsArray[shift + 6]), this.decodeTag(marketsArray[shift + 7])],
+        tags: [topic, decodeTag(marketsArray[shift + 6]), decodeTag(marketsArray[shift + 7])],
         endDate: parseInt(marketsArray[shift + 8], 16),
         eventID: abi.format_int256(marketsArray[shift + 10]),
         minValue: minValue,

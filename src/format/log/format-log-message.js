@@ -2,6 +2,7 @@
 
 var abi = require("augur-abi");
 var clone = require("clone");
+var decodeTag = require("../tag/decode-tag");
 var formatTradeType = require("./format-trade-type");
 var formatCommonFields = require("./format-common-fields");
 
@@ -66,7 +67,7 @@ var formatLogMessage = function (label, msg) {
       fmt = formatCommonFields(msg);
       fmt.marketCreationFee = abi.unfix(msg.marketCreationFee, "string");
       fmt.eventBond = abi.unfix(msg.eventBond, "string");
-      fmt.topic = augur.decodeTag(msg.topic);
+      fmt.topic = decodeTag(msg.topic);
       return fmt;
     case "payout":
       fmt = formatCommonFields(msg);

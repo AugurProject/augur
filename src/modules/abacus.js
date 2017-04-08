@@ -6,11 +6,11 @@
 "use strict";
 
 var BigNumber = require("bignumber.js");
-var clone = require("clone");
 var abi = require("augur-abi");
 var utils = require("../utilities");
 var constants = require("../constants");
 var makeReports = require("./makeReports");
+var decodeTag = require("../format/tag/decode-tag");
 
 var ONE, ONE_POINT_FIVE, FXP_ONE_POINT_FIVE;
 
@@ -209,7 +209,7 @@ module.exports = {
       // marketInfo[14] = tags[2]
       index = 15;
       fees = this.calculateMakerTakerFees(rawInfo[4], rawInfo[1]);
-      topic = this.decodeTag(rawInfo[12]);
+      topic = decodeTag(rawInfo[12]);
       info = {
         id: abi.format_int256(rawInfo[0]),
         network: this.network_id,
@@ -226,7 +226,7 @@ module.exports = {
         creationFee: abi.unfix(rawInfo[10], "string"),
         author: abi.format_address(rawInfo[11]),
         topic: topic,
-        tags: [topic, this.decodeTag(rawInfo[13]), this.decodeTag(rawInfo[14])],
+        tags: [topic, decodeTag(rawInfo[13]), decodeTag(rawInfo[14])],
         minValue: abi.unfix_signed(rawInfo[index + 3], "string"),
         maxValue: abi.unfix_signed(rawInfo[index + 4], "string"),
         endDate: parseInt(rawInfo[index + 1], 16),
@@ -369,34 +369,5 @@ module.exports = {
       block: parseInt(trade[6], 16),
       outcome: abi.string(trade[7])
     };
-  },
-
-  encodeTag: function (tag) {
-    if (tag === null || tag === undefined || tag === "") return "0x0";
-    return abi.short_string_to_int256(tag.trim());
-  },
-
-  encodeTags: function (tags) {
-    var i, formattedTags = clone(tags);
-    if (!formattedTags || formattedTags.constructor !== Array) formattedTags = [];
-    if (formattedTags.length) {
-      for (i = 0; i < formattedTags.length; ++i) {
-        formattedTags[i] = this.encodeTag(formattedTags[i]);
-      }
-    }
-    while (formattedTags.length < 3) {
-      formattedTags.push("0x0");
-    }
-    return formattedTags;
-  },
-
-  decodeTag: function (tag) {
-    try {
-      return (tag && tag !== "0x0" && tag !== "0x") ?
-        abi.int256_to_short_string(abi.unfork(tag, true)) : null;
-    } catch (exc) {
-      if (this.options.debug.broadcast) console.error(exc, tag);
-      return null;
-    }
   }
 };

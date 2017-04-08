@@ -12,6 +12,7 @@ var augurpath = "../../../src/index";
 var augur = new (require(augurpath))();
 var utils = require("../../../src/utilities");
 var tools = require("../../tools");
+var encodeTagArray = require("../../../src/format/tag/encode-tag-array");
 var DEBUG = false;
 augur.rpc.debug.tx = DEBUG;
 
@@ -50,7 +51,7 @@ describe("CreateMarket.createSingleEventMarket", function () {
           var block = augur.rpc.getBlock(r.blockNumber);
           var futurePeriod = abi.prefix_hex(new BigNumber(t.expDate, 10).dividedBy(new BigNumber(periodLength, 10)).floor().toString(16));
           var tradingFee = abi.bignum(t.takerFee).plus(abi.bignum(t.makerFee)).dividedBy(new BigNumber("1.5", 10));
-          var formattedTags = augur.encodeTags(t.tags);
+          var formattedTags = encodeTagArray(t.tags);
           assert.strictEqual(augur.getCreator(marketID), augur.coinbase);
           assert.strictEqual(augur.getExtraInfo(marketID), t.extraInfo);
 

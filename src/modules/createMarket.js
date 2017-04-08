@@ -1,13 +1,9 @@
-/**
- * Augur JavaScript SDK
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
-var clone = require("clone");
 var abi = require("augur-abi");
+var clone = require("clone");
 var utils = require("../utilities");
+var encodeTagArray = require("../format/tag/encode-tag-array");
 
 module.exports = {
 
@@ -29,7 +25,7 @@ module.exports = {
       onFailed = branch.onFailed;               // function
       branch = branch.branch;               // sha256 hash
     }
-    formattedTags = this.encodeTags(tags);
+    formattedTags = encodeTagArray(tags);
     fees = this.calculateTradingFees(makerFee, takerFee);
     expDate = parseInt(expDate, 10);
     if (description) description = description.trim();
@@ -94,7 +90,7 @@ module.exports = {
       onFailed = branch.onFailed;
       branch = branch.branch;
     }
-    formattedTags = this.encodeTags(tags);
+    formattedTags = encodeTagArray(tags);
     fees = this.calculateTradingFees(makerFee, takerFee);
     tx = clone(this.tx.CreateMarket.createMarket);
     tx.params = [

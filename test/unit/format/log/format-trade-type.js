@@ -1,7 +1,7 @@
 "use strict";
 
 var assert = require("chai").assert;
-var formatTradeType = require("../../../src/filters/format-trade-type");
+var formatTradeType = require("../../../../src/format/log/format-trade-type");
 
 describe("formatTradeType", function () {
   var test = function (t) {

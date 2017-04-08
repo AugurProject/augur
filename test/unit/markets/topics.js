@@ -1,9 +1,11 @@
 "use strict";
 
 var assert = require("chai").assert;
-var augur = new (require("../../../src"))();
-var abi = require('augur-abi');
+var abi = require("augur-abi");
 var utils = require("../../../src/utilities");
+var encodeTag = require("../../../src/format/tag/encode-tag");
+var Augur = require("../../../src");
+var augur = new Augur();
 
 describe("Topics.filterByBranchID", function () {
   var test = function (t) {
@@ -202,16 +204,16 @@ describe("Topics.findMarketsWithTopic", function () {
     mocks: {
       getLogs: function (label, filterParams, aux, callback) {
         assert.strictEqual(label, "marketCreated");
-        assert.strictEqual(filterParams.topic, augur.encodeTag("weather"));
+        assert.strictEqual(filterParams.topic, encodeTag("weather"));
         var logs = [];
         if (!callback) return logs;
         callback(null, logs);
       },
       filterByBranchID: function(branch, logs) {
-        assert.strictEqual(branch, '0xb1');
+        assert.strictEqual(branch, "0xb1");
         var output = [];
         for (var i = 0; i < logs.length; i++) {
-          if (logs[i].branch === abi.format_int256('0xb1')) {
+          if (logs[i].branch === abi.format_int256("0xb1")) {
             output.push(logs[i].marketID);
           }
         }
@@ -232,7 +234,7 @@ describe("Topics.findMarketsWithTopic", function () {
     mocks: {
       getLogs: function (label, filterParams, aux, callback) {
         assert.strictEqual(label, "marketCreated");
-        assert.strictEqual(filterParams.topic, augur.encodeTag("reporting"));
+        assert.strictEqual(filterParams.topic, encodeTag("reporting"));
         var logs = [{
           sender: "0x0000000000000000000000000000000000000b0b",
           marketID: "0x00000000000000000000000000000000000000000000000000000000000000a1",
@@ -249,10 +251,10 @@ describe("Topics.findMarketsWithTopic", function () {
         callback(null, logs);
       },
       filterByBranchID: function(branch, logs) {
-        assert.strictEqual(branch, '0xb1');
+        assert.strictEqual(branch, "0xb1");
         var output = [];
         for (var i = 0; i < logs.length; i++) {
-          if (logs[i].branch === abi.format_int256('0xb1')) {
+          if (logs[i].branch === abi.format_int256("0xb1")) {
             output.push(logs[i].marketID);
           }
         }
@@ -275,7 +277,7 @@ describe("Topics.findMarketsWithTopic", function () {
     mocks: {
       getLogs: function (label, filterParams, aux, callback) {
         assert.strictEqual(label, "marketCreated");
-        assert.strictEqual(filterParams.topic, augur.encodeTag("reporting"));
+        assert.strictEqual(filterParams.topic, encodeTag("reporting"));
         var logs = [{
           sender: "0x0000000000000000000000000000000000000b0b",
           marketID: "0x00000000000000000000000000000000000000000000000000000000000000a1",
@@ -303,10 +305,10 @@ describe("Topics.findMarketsWithTopic", function () {
         callback(null, logs);
       },
       filterByBranchID: function(branch, logs) {
-        assert.strictEqual(branch, '0xb1');
+        assert.strictEqual(branch, "0xb1");
         var output = [];
         for (var i = 0; i < logs.length; i++) {
-          if (logs[i].branch === abi.format_int256('0xb1')) {
+          if (logs[i].branch === abi.format_int256("0xb1")) {
             output.push(logs[i].marketID);
           }
         }
@@ -330,18 +332,18 @@ describe("Topics.findMarketsWithTopic", function () {
     mocks: {
       getLogs: function (label, filterParams, aux, callback) {
         assert.strictEqual(label, "marketCreated");
-        assert.strictEqual(filterParams.topic, augur.encodeTag("reporting"));
-        var logs = { error: 999, message: 'Uh-Oh' };
+        assert.strictEqual(filterParams.topic, encodeTag("reporting"));
+        var logs = { error: 999, message: "Uh-Oh" };
         if (!callback) return logs;
         callback(logs);
       },
       filterByBranchID: function(branch, logs) {
-        assert.strictEqual(branch, '0xb1');
+        assert.strictEqual(branch, "0xb1");
         var output = [];
         if (logs && logs.error) return logs;
 
         for (var i = 0; i < logs.length; i++) {
-          if (logs[i].branch === abi.format_int256('0xb1')) {
+          if (logs[i].branch === abi.format_int256("0xb1")) {
             output.push(logs[i].marketID);
           }
         }
@@ -352,10 +354,10 @@ describe("Topics.findMarketsWithTopic", function () {
       if (markets) {
         // sync since err is always passed as null
         assert.isNull(err);
-        assert.deepEqual(markets, { error: 999, message: 'Uh-Oh' });
+        assert.deepEqual(markets, { error: 999, message: "Uh-Oh" });
       } else {
         // async
-        assert.deepEqual(err, { error: 999, message: 'Uh-Oh' });
+        assert.deepEqual(err, { error: 999, message: "Uh-Oh" });
         assert.isUndefined(markets);
       }
     }
