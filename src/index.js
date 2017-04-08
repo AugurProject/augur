@@ -90,10 +90,10 @@ function Augur() {
     }
   }
   this.accounts = this.Accounts();
-  this.filters = this.Filters();
   this.chat = this.Chat();
   if (this.options.debug.tools) this.tools = require("../test/tools");
   this.sync();
+  this.filters = this.Filters();
 }
 
 Augur.prototype.Accounts = require("./accounts");

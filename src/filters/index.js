@@ -1,7 +1,9 @@
 "use strict";
 
-var format = require("./format");
 var dispatch = require("./dispatch");
+var parseBlockMessage = require("./parse-block-message");
+var parseLogMessage = require("./parse-log-message");
+var parseAllLogsMessage = require("./parse-all-logs-message");
 
 var isFunction = function (f) {
   return typeof f === "function";
@@ -39,20 +41,20 @@ module.exports = function () {
       switch (label) {
         case "block":
           this.blockStream.subscribeToOnBlockAdded(function (msg) {
-            format.parseBlockMessage(msg, callback);
+            parseBlockMessage(msg, callback);
           });
           break;
         case "allLogs":
           this.addAllLogsFilter();
           dispatch.registerSubscriptionCallback(label, function (msg) {
-            format.parseAllLogsMessage(msg, callback);
+            parseAllLogsMessage(msg, callback);
           });
           break;
         default:
           if (eventsAPI[label]) {
             this.addLogFilter(label);
             dispatch.registerSubscriptionCallback(eventsAPI[label].signature, function (msg) {
-              format.parseLogMessage(label, msg, callback);
+              parseLogMessage(label, msg, callback);
             });
           }
       } 
