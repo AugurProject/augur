@@ -2,7 +2,7 @@
 
 var assert = require("chai").assert;
 var abi = require("augur-abi");
-var formatTag = require("../../../src/modules/abacus").formatTag;
+var encodeTag = require("../../../src/modules/abacus").encodeTag;
 var formatLogMessage = require("../../../src/filters/format-log-message");
 
 describe("formatLogMessage", function () {
@@ -161,7 +161,7 @@ describe("formatLogMessage", function () {
     msg: {
       marketCreationFee: abi.fix("1500"),
       eventBond: abi.fix("1000"),
-      topic: formatTag("testing")
+      topic: encodeTag("testing")
     },
     assertions: function (msg) {
       assert.deepEqual(JSON.stringify(msg), JSON.stringify({

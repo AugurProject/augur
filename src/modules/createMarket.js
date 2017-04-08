@@ -29,7 +29,7 @@ module.exports = {
       onFailed = branch.onFailed;               // function
       branch = branch.branch;               // sha256 hash
     }
-    formattedTags = this.formatTags(tags);
+    formattedTags = this.encodeTags(tags);
     fees = this.calculateTradingFees(makerFee, takerFee);
     expDate = parseInt(expDate, 10);
     if (description) description = description.trim();
@@ -94,7 +94,7 @@ module.exports = {
       onFailed = branch.onFailed;
       branch = branch.branch;
     }
-    formattedTags = this.formatTags(tags);
+    formattedTags = this.encodeTags(tags);
     fees = this.calculateTradingFees(makerFee, takerFee);
     tx = clone(this.tx.CreateMarket.createMarket);
     tx.params = [

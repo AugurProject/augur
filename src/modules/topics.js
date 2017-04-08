@@ -22,7 +22,7 @@ module.exports = {
 
   findMarketsWithTopic: function (topic, branchID, callback) {
     var self = this;
-    var formattedTopic = this.formatTag(topic);
+    var formattedTopic = this.encodeTag(topic);
     if (!utils.is_function(callback)) {
       return this.filterByBranchID(branchID, this.getLogs("marketCreated", {topic: formattedTopic}));
     }

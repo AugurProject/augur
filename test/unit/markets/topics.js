@@ -202,7 +202,7 @@ describe("Topics.findMarketsWithTopic", function () {
     mocks: {
       getLogs: function (label, filterParams, aux, callback) {
         assert.strictEqual(label, "marketCreated");
-        assert.strictEqual(filterParams.topic, augur.formatTag("weather"));
+        assert.strictEqual(filterParams.topic, augur.encodeTag("weather"));
         var logs = [];
         if (!callback) return logs;
         callback(null, logs);
@@ -232,7 +232,7 @@ describe("Topics.findMarketsWithTopic", function () {
     mocks: {
       getLogs: function (label, filterParams, aux, callback) {
         assert.strictEqual(label, "marketCreated");
-        assert.strictEqual(filterParams.topic, augur.formatTag("reporting"));
+        assert.strictEqual(filterParams.topic, augur.encodeTag("reporting"));
         var logs = [{
           sender: "0x0000000000000000000000000000000000000b0b",
           marketID: "0x00000000000000000000000000000000000000000000000000000000000000a1",
@@ -275,7 +275,7 @@ describe("Topics.findMarketsWithTopic", function () {
     mocks: {
       getLogs: function (label, filterParams, aux, callback) {
         assert.strictEqual(label, "marketCreated");
-        assert.strictEqual(filterParams.topic, augur.formatTag("reporting"));
+        assert.strictEqual(filterParams.topic, augur.encodeTag("reporting"));
         var logs = [{
           sender: "0x0000000000000000000000000000000000000b0b",
           marketID: "0x00000000000000000000000000000000000000000000000000000000000000a1",
@@ -330,7 +330,7 @@ describe("Topics.findMarketsWithTopic", function () {
     mocks: {
       getLogs: function (label, filterParams, aux, callback) {
         assert.strictEqual(label, "marketCreated");
-        assert.strictEqual(filterParams.topic, augur.formatTag("reporting"));
+        assert.strictEqual(filterParams.topic, augur.encodeTag("reporting"));
         var logs = { error: 999, message: 'Uh-Oh' };
         if (!callback) return logs;
         callback(logs);

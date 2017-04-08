@@ -295,25 +295,6 @@ module.exports = {
     return info;
   },
 
-  formatTag: function (tag) {
-    if (tag === null || tag === undefined || tag === "") return "0x0";
-    return abi.short_string_to_int256(tag.trim());
-  },
-
-  formatTags: function (tags) {
-    var i, formattedTags = clone(tags);
-    if (!formattedTags || formattedTags.constructor !== Array) formattedTags = [];
-    if (formattedTags.length) {
-      for (i = 0; i < formattedTags.length; ++i) {
-        formattedTags[i] = this.formatTag(formattedTags[i]);
-      }
-    }
-    while (formattedTags.length < 3) {
-      formattedTags.push("0x0");
-    }
-    return formattedTags;
-  },
-
   calculateRequiredMarketValue: function (gasPrice) {
     gasPrice = abi.bignum(gasPrice || constants.DEFAULT_GASPRICE);
     return abi.prefix_hex((new BigNumber("1200000", 10).times(gasPrice).plus(new BigNumber("500000", 10).times(gasPrice))).toString(16));
@@ -388,6 +369,25 @@ module.exports = {
       block: parseInt(trade[6], 16),
       outcome: abi.string(trade[7])
     };
+  },
+
+  encodeTag: function (tag) {
+    if (tag === null || tag === undefined || tag === "") return "0x0";
+    return abi.short_string_to_int256(tag.trim());
+  },
+
+  encodeTags: function (tags) {
+    var i, formattedTags = clone(tags);
+    if (!formattedTags || formattedTags.constructor !== Array) formattedTags = [];
+    if (formattedTags.length) {
+      for (i = 0; i < formattedTags.length; ++i) {
+        formattedTags[i] = this.encodeTag(formattedTags[i]);
+      }
+    }
+    while (formattedTags.length < 3) {
+      formattedTags.push("0x0");
+    }
+    return formattedTags;
   },
 
   decodeTag: function (tag) {

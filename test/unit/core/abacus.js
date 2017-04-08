@@ -933,10 +933,10 @@ describe("abacus.parseMarketInfo", function() {
 
 });
 
-describe("abacus.formatTag", function() {
+describe("abacus.encodeTag", function() {
   var test = function(t) {
     it(JSON.stringify(t), function() {
-      t.assertions(abacus.formatTag(t.tag));
+      t.assertions(abacus.encodeTag(t.tag));
     });
   };
   test({
@@ -965,10 +965,10 @@ describe("abacus.formatTag", function() {
   });
 });
 
-describe("abacus.formatTags", function() {
+describe("abacus.encodeTags", function() {
   var test = function(t) {
     it(JSON.stringify(t), function() {
-      t.assertions(abacus.formatTags(t.tags));
+      t.assertions(abacus.encodeTags(t.tags));
     });
   };
   test({
