@@ -1,9 +1,9 @@
 "use strict";
 
 var dispatch = require("./dispatch");
-var parseBlockMessage = require("./parse-block-message");
-var parseLogMessage = require("./parse-log-message");
-var parseAllLogsMessage = require("./parse-all-logs-message");
+var parseBlockMessage = require("./parse-message/parse-block-message");
+var parseLogMessage = require("./parse-message/parse-log-message");
+var parseAllLogsMessage = require("./parse-message/parse-all-logs-message");
 
 var isFunction = function (f) {
   return typeof f === "function";
@@ -54,7 +54,7 @@ module.exports = function () {
           if (eventsAPI[label]) {
             this.addLogFilter(label);
             dispatch.registerSubscriptionCallback(eventsAPI[label].signature, function (msg) {
-              parseLogMessage(label, msg, callback);
+              parseLogMessage(label, msg, eventsAPI[label].inputs, callback);
             });
           }
       } 

@@ -7,7 +7,19 @@ describe("parseBlockMessage", function () {
   var test = function (msg) {
     it(JSON.stringify(msg), function (done) {
       parseBlockMessage(msg, function (parsed) {
-        if (DEBUG) console.log("parseBlockMessage:", parsed);
+        if (msg.constructor === Array) {
+          if (msg[0].number) {
+            assert.deepEqual(parsed, msg[0].number);
+          } else {
+            assert.deepEqual(parsed, msg[0]);
+          }
+        } else {
+          if (msg.number) {
+            assert.deepEqual(parsed, msg.number);
+          } else {
+            assert.deepEqual(parsed, msg);
+          }
+        }
         done();
       });
     });

@@ -8,8 +8,8 @@ var parseLogMessage = require("../../../src/filters/parse-log-message");
 describe("parseLogMessage", function () {
   var test = function (t) {
     it(t.label + ": " + JSON.stringify(t.msg), function (done) {
-      parseLogMessage(t.label, t.msg, function (parsed) {
-        var inputs = api.events[t.label].inputs;
+      var inputs = api.events[t.label].inputs;
+      parseLogMessage(t.label, t.msg, inputs, function (parsed) {
         if (t.label === "log_fill_tx") {
           assert.property(parsed, "market");
           assert.property(parsed, "type");
