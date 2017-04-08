@@ -1,6 +1,5 @@
 "use strict";
 
-var abi = require("augur-abi");
 var clone = require("clone");
 var encodeTag = require("./encode-tag");
 

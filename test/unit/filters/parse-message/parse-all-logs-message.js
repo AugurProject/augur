@@ -1,7 +1,7 @@
 "use strict";
 
 var assert = require("chai").assert;
-var parseAllLogsMessage = require("../../../src/filters/parse-all-logs-message");
+var parseAllLogsMessage = require("../../../../src/filters/parse-message/parse-all-logs-message");
 
 describe("parseAllLogsMessage", function () {
   var test = function (msg) {

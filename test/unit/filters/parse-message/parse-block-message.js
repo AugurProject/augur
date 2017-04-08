@@ -1,7 +1,7 @@
 "use strict";
 
 var assert = require("chai").assert;
-var parseBlockMessage = require("../../../src/filters/parse-block-message");
+var parseBlockMessage = require("../../../../src/filters/parse-message/parse-block-message");
 
 describe("parseBlockMessage", function () {
   var test = function (msg) {

@@ -3,7 +3,6 @@
 var abi = require("augur-abi");
 var clone = require("clone");
 var decodeTag = require("../tag/decode-tag");
-var formatTradeType = require("./format-trade-type");
 var formatCommonFields = require("./format-common-fields");
 
 var formatLogMessage = function (label, msg) {
