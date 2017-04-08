@@ -35,7 +35,7 @@
     "hammerjs": "2.0.8",
     "helmet": "3.5.0",
     "highcharts": "5.0.9",
-    "keythereum": "0.4.8",
+    "keythereum": "0.5.1",
     "memoizee": "0.4.4",
     "moment": "2.18.0",
     "prerender-node": "2.7.0",
