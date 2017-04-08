@@ -1,15 +1,13 @@
-/**
- * Augur JavaScript SDK
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var async = require("async");
 var clone = require("clone");
 var abi = require("augur-abi");
+var unrollArray = require("ethrpc").unmarshal;
 var constants = require("../constants");
 var utils = require("../utilities");
+var formatTradeType = require("../format/log/format-trade-type");
+var parseLogMessage = require("../filters/parse-message/parse-log-message");
 
 var ONE = abi.bignum("1");
 
@@ -21,8 +19,8 @@ module.exports = {
     for (i = 0, n = logs.length; i < n; ++i) {
       if (logs[i] && logs[i].data !== undefined && logs[i].data !== null && logs[i].data !== "0x") {
         marketID = logs[i].topics[2];
-        logType = this.filters.format_trade_type(logs[i].topics[3]);
-        logData = this.rpc.unmarshal(logs[i].data);
+        logType = formatTradeType(logs[i].topics[3]);
+        logData = unrollArray(logs[i].data);
         numOutcomes = parseInt(logData[1], 16);
         if (mergeInto) {
           if (!parsed[marketID]) parsed[marketID] = {};
@@ -99,7 +97,6 @@ module.exports = {
 
   parametrizeFilter: function (event, params) {
     return {
-      // fromBlock: params.fromBlock || abi.hex(Math.max(1, this.rpc.block.number - 5000)),
       fromBlock: params.fromBlock || constants.GET_LOGS_DEFAULT_FROM_BLOCK,
       toBlock: params.toBlock || constants.GET_LOGS_DEFAULT_TO_BLOCK,
       address: this.contracts[event.contract],
@@ -137,7 +134,7 @@ module.exports = {
     if (!processedLogs) processedLogs = (index) ? {} : [];
     for (i = 0, numLogs = logs.length; i < numLogs; ++i) {
       if (!logs[i].removed) {
-        parsed = this.filters.parse_event_message(label, logs[i]);
+        parsed = parseLogMessage(label, logs[i], this.api.events[label].inputs);
         if (extraField && extraField.name) {
           parsed[extraField.name] = extraField.value;
         }

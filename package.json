@@ -6,7 +6,7 @@
   "license": "AAL",
   "main": "src/index.js",
   "scripts": {
-    "test": "scripts/runtests.sh --core --create --trading --reporting --markets",
+    "test": "mocha test/unit",
     "integration-test": "mocha test/integration/core test/integration/create test/integration/markets test/integration/trading test/integration/reporting",
     "reporting-sequence": "mocha test/integration/reporting/sequence.js -R spec",
     "lint": "eslint gulpfile.js src scripts/new-contracts.js test/*.js",

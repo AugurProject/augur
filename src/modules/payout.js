@@ -6,6 +6,7 @@
 "use strict";
 
 var async = require("async");
+var parseLogMessage = require("../filters/parse-message/parse-log-message");
 
 module.exports = {
 
@@ -70,13 +71,13 @@ module.exports = {
       }
       if (res.callReturn !== "1") return onFailed(res.callReturn);
       self.rpc.receipt(res.hash, function (receipt) {
-        var logs, sig, i, numLogs;
+        var logs, sig, i, numLogs, label = "payout";
         if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
           logs = receipt.logs;
           sig = self.api.events.payout.signature;
           for (i = 0, numLogs = logs.length; i < numLogs; ++i) {
             if (logs[i].topics[0] === sig) {
-              res.callReturn = self.filters.parse_event_message("payout", logs[i]);
+              res.callReturn = parseLogMessage(label, logs[i], self.api.events[label].inputs);
               break;
             }
           }
