@@ -24,7 +24,7 @@
     "clone": "1.0.2",
     "ethereumjs-connect": "3.0.8",
     "ethrpc": "3.1.4",
-    "keythereum": "0.5.0",
+    "keythereum": "0.5.1",
     "request": "2.74.0",
     "uuid": "3.0.0",
     "uuid-parse": "1.0.0"
