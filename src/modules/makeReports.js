@@ -145,12 +145,7 @@ module.exports = {
     if (!Buffer.isBuffer(key)) key = new Buffer(abi.pad_left(abi.hex(key)), "hex");
     if (!salt) salt = new Buffer("11111111111111111111111111111111", "hex");
     if (!Buffer.isBuffer(salt)) salt = new Buffer(abi.pad_left(abi.hex(salt)), "hex");
-    return abi.prefix_hex(
-      new Buffer(
-        keys.encrypt(report, key, salt.slice(0, 16), constants.REPORT_CIPHER),
-        "base64"
-      ).toString("hex")
-    );
+    return abi.prefix_hex(keys.encrypt(report, key, salt.slice(0, 16), constants.REPORT_CIPHER).toString("hex"));
   },
 
   // returns plaintext fixed-point report
@@ -159,9 +154,7 @@ module.exports = {
     if (!Buffer.isBuffer(key)) key = new Buffer(abi.pad_left(abi.hex(key)), "hex");
     if (!salt) salt = new Buffer("11111111111111111111111111111111", "hex");
     if (!Buffer.isBuffer(salt)) salt = new Buffer(abi.pad_left(abi.hex(salt)), "hex");
-    return abi.prefix_hex(
-      keys.decrypt(encryptedReport, key, salt.slice(0, 16), constants.REPORT_CIPHER)
-    );
+    return abi.prefix_hex(keys.decrypt(encryptedReport, key, salt.slice(0, 16), constants.REPORT_CIPHER).toString("hex"));
   },
 
   parseAndDecryptReport: function (arr, secret) {

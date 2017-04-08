@@ -123,11 +123,7 @@ module.exports = function () {
         keys.deriveKey(password, plain.salt, {kdf: constants.KDF}, function (derivedKey) {
           var encryptedPrivateKey, address, kdfparams, keystore;
           if (derivedKey.error) return callback(derivedKey);
-          encryptedPrivateKey = new Buffer(keys.encrypt(
-            plain.privateKey,
-            derivedKey.slice(0, 16),
-            plain.iv
-          ), "base64").toString("hex");
+          encryptedPrivateKey = keys.encrypt(plain.privateKey, derivedKey.slice(0, 16), plain.iv).toString("hex");
 
           // encrypt private key using derived key and IV, then
           // store encrypted key & IV, indexed by handle
@@ -231,11 +227,7 @@ module.exports = function () {
 
         // decrypt stored private key using secret key
         try {
-          privateKey = new Buffer(keys.decrypt(
-            storedKey,
-            derivedKey.slice(0, 16),
-            keystoreCrypto.cipherparams.iv
-          ), "hex");
+          privateKey = keys.decrypt(storedKey, derivedKey.slice(0, 16), keystoreCrypto.cipherparams.iv);
 
           // while logged in, account object is set
           self.account = {
