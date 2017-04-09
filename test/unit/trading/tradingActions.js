@@ -1,15 +1,10 @@
-/**
- * augur.js tests
- * @author Jack Peterson (jack@tinybike.net)
- */
 "use strict";
 
 var assert = require("chai").assert;
 var abi = require("augur-abi");
+var BigNumber = require("bignumber.js");
 var augur = new (require("../../../src"))();
 var constants = require("../../../src/constants");
-var utils = require("../../../src/utilities");
-var BigNumber = require('bignumber.js');
 
 var gasPrice = augur.rpc.gasPrice;
 

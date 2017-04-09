@@ -1,9 +1,9 @@
 "use strict";
 
-var assert = require('chai').assert;
-var augur = new (require("../../../src"))();
-var utils = require("../../../src/utilities");
+var assert = require("chai").assert;
 var abi = require("augur-abi");
+var augur = new (require("../../../src"))();
+var noop = require("../../../src/utils/noop");
 var constants = require("../../../src/constants");
 // 61 tests total
 
@@ -24,7 +24,6 @@ describe("CompositeGetters.getOrderBookChunked", function () {
       finished = done;
       augur.getOrderBook = t.getOrderBook;
       augur.get_total_trades = t.get_total_trades;
-
       augur.getOrderBookChunked(t.params.marketID, t.params.offset, t.params.numTradesToLoad, t.params.scalarMinMax, t.params.totalTrades, t.assertions, t.callback);
     });
   };
@@ -1096,23 +1095,23 @@ describe('CompositeGetters.getPositionInMarket', function() {
     description: 'Should prepare and pass the arguments to the getPositionInMarket Augur Contract CompositeGetters function.',
     market: '0x0a1',
     account: '0x0',
-    callback: utils.noop,
+    callback: noop,
     assertions: function(market, account, callback) {
       assert.deepEqual(market, '0x0a1');
       assert.deepEqual(account, '0x0');
-      assert.deepEqual(callback, utils.noop);
+      assert.deepEqual(callback, noop);
     }
   });
   test({
     description: 'Should handle account passed as the cb and pass the arguments to the getPositionInMarket Augur Contract CompositeGetters function.',
     market: '0x0a1',
-    account: utils.noop,
+    account: noop,
     callback: undefined,
     assertions: function(market, account, callback) {
       assert.deepEqual(market, '0x0a1');
       // in this case we didn't pass account so we expect it to be augur.from, however this is null by default so that's what we are confirming here.
       assert.isNull(account);
-      assert.deepEqual(callback, utils.noop);
+      assert.deepEqual(callback, noop);
     }
   });
 });
@@ -1233,7 +1232,7 @@ describe('CompositeGetters.getOrderBook', function() {
   test({
     description: 'Should handle scalarMinMax being passed as a callback',
     market: '0x0a1',
-    scalarMinMax: utils.noop,
+    scalarMinMax: noop,
     callback: undefined,
     assertions: function(tx, callback, parseOrderBook, scalarMinMax) {
       assert.isNull(scalarMinMax);
@@ -1245,7 +1244,7 @@ describe('CompositeGetters.getOrderBook', function() {
     description: 'Should handle a market Object with only minimal key/values with an undefined scalarMinMax and a callback passed',
     market: { market: '0x0a1' },
     scalarMinMax: undefined,
-    callback: utils.noop,
+    callback: noop,
     assertions: function(tx, callback, parseOrderBook, scalarMinMax) {
       assert.isUndefined(scalarMinMax);
       assert.deepEqual(tx.params, ['0x0a1', 0, 0]);
@@ -1254,7 +1253,7 @@ describe('CompositeGetters.getOrderBook', function() {
   });
   test({
     description: 'Should handle a market Object as only argument with an undefined scalarMinMax',
-    market: { market: '0x0a1', offset: 2, numTradesToLoad: 10, scalarMinMax: undefined, callback: utils.noop },
+    market: { market: '0x0a1', offset: 2, numTradesToLoad: 10, scalarMinMax: undefined, callback: noop },
     scalarMinMax: undefined,
     callback: undefined,
     assertions: function(tx, callback, parseOrderBook, scalarMinMax) {
@@ -1265,7 +1264,7 @@ describe('CompositeGetters.getOrderBook', function() {
   });
   test({
     description: 'Should handle a market Object as only argument with a scalarMinMax',
-    market: { market: '0x0a1', offset: 1, numTradesToLoad: 25, scalarMinMax: { minValue: '-10', maxValue: '110' }, callback: utils.noop },
+    market: { market: '0x0a1', offset: 1, numTradesToLoad: 25, scalarMinMax: { minValue: '-10', maxValue: '110' }, callback: noop },
     scalarMinMax: undefined,
     callback: undefined,
     assertions: function(tx, callback, parseOrderBook, scalarMinMax) {
@@ -1334,55 +1333,55 @@ describe('CompositeGetters.getMarketInfo', function() {
     description: 'Should prepare and pass the arguments to the getMarketInfo Augur Contract CompositeGetters function.',
     market: '0x0a1',
     account: '0x0',
-    callback: utils.noop,
+    callback: noop,
     assertions: function(market, account, callback) {
       assert.deepEqual(market, '0x0a1');
       assert.deepEqual(account, '0x0');
-      assert.deepEqual(callback, utils.noop);
+      assert.deepEqual(callback, noop);
     }
   });
   test({
     description: 'Should accept only one object argument but account is undefined and prepare and pass the arguments to the getMarketInfo Augur Contract CompositeGetters function.',
-    market: { market: '0x0a1', callback: utils.noop },
+    market: { market: '0x0a1', callback: noop },
     account: undefined,
     callback: undefined,
     assertions: function(market, account, callback) {
       assert.deepEqual(market, '0x0a1');
       assert.deepEqual(account, 0);
-      assert.deepEqual(callback, utils.noop);
+      assert.deepEqual(callback, noop);
     }
   });
   test({
     description: 'Should accept a market object argument with callback passed seperately and prepare and pass the arguments to the getMarketInfo Augur Contract CompositeGetters function.',
     market: { market: '0x0a1', account: '0x0' },
     account: undefined,
-    callback: utils.noop,
+    callback: noop,
     assertions: function(market, account, callback) {
       assert.deepEqual(market, '0x0a1');
       assert.deepEqual(account, '0x0');
-      assert.deepEqual(callback, utils.noop);
+      assert.deepEqual(callback, noop);
     }
   });
   test({
     description: 'Should accept a market object argument with callback passed seperately and prepare and pass the arguments to the getMarketInfo Augur Contract CompositeGetters function.',
     market: { market: '0x0a1', account: '0x0' },
     account: undefined,
-    callback: utils.noop,
+    callback: noop,
     assertions: function(market, account, callback) {
       assert.deepEqual(market, '0x0a1');
       assert.deepEqual(account, '0x0');
-      assert.deepEqual(callback, utils.noop);
+      assert.deepEqual(callback, noop);
     }
   });
   test({
     description: 'Should arguments with callback passed as account and prepare and pass the arguments to the getMarketInfo Augur Contract CompositeGetters function.',
     market: '0x0a1',
-    account: utils.noop,
+    account: noop,
     callback: undefined,
     assertions: function(market, account, callback) {
       assert.deepEqual(market, '0x0a1');
       assert.deepEqual(account, 0);
-      assert.deepEqual(callback, utils.noop);
+      assert.deepEqual(callback, noop);
     }
   });
 });
@@ -1476,7 +1475,7 @@ describe('CompositeGetters.batchGetMarketInfo', function() {
     description: 'Should prepare a batchGetMarketInfo transaction',
     marketIDs: ['0x0a1', '0x0a2', '0x0a3'],
     account: '0x0',
-    callback: utils.noop,
+    callback: noop,
     assertions: function(tx, callback, parseBatchMarketInfo, numMarketIDs) {
       assert.deepEqual(tx.to, augur.api.functions.CompositeGetters.batchGetMarketInfo.to);
       assert.deepEqual(tx.params, [['0x0a1', '0x0a2', '0x0a3'],'0x0']);
@@ -1486,7 +1485,7 @@ describe('CompositeGetters.batchGetMarketInfo', function() {
   test({
     description: 'Should prepare a batchGetMarketInfo transaction with the callback passed as account',
     marketIDs: ['0x0a1', '0x0a2', '0x0a3'],
-    account: utils.noop,
+    account: noop,
     callback: undefined,
     assertions: function(tx, callback, parseBatchMarketInfo, numMarketIDs) {
       assert.deepEqual(tx.to, augur.api.functions.CompositeGetters.batchGetMarketInfo.to);

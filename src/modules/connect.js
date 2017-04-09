@@ -1,6 +1,5 @@
 /**
- * Ethereum network connection / contract lookup
- * @author Jack Peterson (jack@tinybike.net)
+ * Ethereum network connection / contract lookup.
  */
 
 "use strict";
@@ -10,7 +9,8 @@ var abi = require("augur-abi");
 var connector = require("ethereumjs-connect");
 var Contracts = require("augur-contracts");
 var constants = require("../constants");
-var utils = require("../utilities");
+var compose = require("../utils/compose");
+var isFunction = require("../utils/is-function");
 
 module.exports = {
 
@@ -50,7 +50,7 @@ module.exports = {
               tx.params[i] = params[i];
             }
           }
-          if (params.length > numInputs && utils.is_function(params[numInputs])) {
+          if (params.length > numInputs && isFunction(params[numInputs])) {
             cb = params[numInputs];
           }
         }
@@ -61,10 +61,10 @@ module.exports = {
           }
         }
         if (!tx.parser) {
-          if (!utils.is_function(cb)) return self.fire(tx);
+          if (!isFunction(cb)) return self.fire(tx);
           return self.fire(tx, cb);
         }
-        if (!utils.is_function(cb)) return self[tx.parser](self.fire(tx));
+        if (!isFunction(cb)) return self[tx.parser](self.fire(tx));
         return self.fire(tx, cb, self[tx.parser]);
       }
       if (params && params[0] !== undefined && params[0] !== null && params[0].constructor === Object) {
@@ -84,13 +84,13 @@ module.exports = {
             tx.params[i] = params[i];
           }
         }
-        if (params.length > numInputs && utils.is_function(params[numInputs])) {
+        if (params.length > numInputs && isFunction(params[numInputs])) {
           onSent = params[numInputs];
         }
-        if (params.length > numInputs && utils.is_function(params[numInputs + 1])) {
+        if (params.length > numInputs && isFunction(params[numInputs + 1])) {
           onSuccess = params[numInputs + 1];
         }
-        if (params.length > numInputs && utils.is_function(params[numInputs + 2])) {
+        if (params.length > numInputs && isFunction(params[numInputs + 2])) {
           onFailed = params[numInputs + 2];
         }
       }
@@ -103,7 +103,7 @@ module.exports = {
       if (!tx.parser) {
         return self.transact(tx, onSent, onSuccess, onFailed);
       }
-      return self.transact(tx, onSent, utils.compose(self[tx.parser], onSuccess), onFailed);
+      return self.transact(tx, onSent, compose(self[tx.parser], onSuccess), onFailed);
     };
   },
 
@@ -198,7 +198,7 @@ module.exports = {
           break;
       }
     }
-    if (!utils.is_function(cb)) {
+    if (!isFunction(cb)) {
       connection = connector.connect(options);
       this.sync();
       return connection;

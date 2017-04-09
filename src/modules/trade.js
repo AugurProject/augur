@@ -3,9 +3,10 @@
 var clone = require("clone");
 var async = require("async");
 var abi = require("augur-abi");
-var utils = require("../utilities");
-var constants = require("../constants");
 var abacus = require("./abacus");
+var noop = require("../utils/noop");
+var compose = require("../utils/compose");
+var constants = require("../constants");
 
 module.exports = {
 
@@ -122,14 +123,14 @@ module.exports = {
       onTradeFailed = max_value.onTradeFailed;
       max_value = max_value.max_value;
     }
-    onTradeHash = onTradeHash || utils.noop;
-    onCommitSent = onCommitSent || utils.noop;
-    onCommitSuccess = onCommitSuccess || utils.noop;
-    onCommitFailed = onCommitFailed || utils.noop;
-    onNextBlock = onNextBlock || utils.noop;
-    onTradeSent = onTradeSent || utils.noop;
-    onTradeSuccess = onTradeSuccess || utils.noop;
-    onTradeFailed = onTradeFailed || utils.noop;
+    onTradeHash = onTradeHash || noop;
+    onCommitSent = onCommitSent || noop;
+    onCommitSuccess = onCommitSuccess || noop;
+    onCommitFailed = onCommitFailed || noop;
+    onNextBlock = onNextBlock || noop;
+    onTradeSent = onTradeSent || noop;
+    onTradeSuccess = onTradeSuccess || noop;
+    onTradeFailed = onTradeFailed || noop;
     this.checkGasLimit(trade_ids, abi.format_address(sender || this.from), function (err, trade_ids) {
       var bn_max_value, tradeHash;
       if (self.options.debug.trading) console.log("checkGasLimit:", err, trade_ids);
@@ -156,7 +157,7 @@ module.exports = {
             if (self.options.debug.trading) {
               console.log("trade tx:", JSON.stringify(tx, null, 2));
             }
-            self.transact(tx, onTradeSent, utils.compose(function (result, cb) {
+            self.transact(tx, onTradeSent, compose(function (result, cb) {
               var err, txHash;
               if (self.options.debug.trading) {
                 console.log("trade response:", JSON.stringify(result, null, 2));
@@ -227,14 +228,14 @@ module.exports = {
       onTradeFailed = buyer_trade_id.onTradeFailed;
       buyer_trade_id = buyer_trade_id.buyer_trade_id;
     }
-    onTradeHash = onTradeHash || utils.noop;
-    onCommitSent = onCommitSent || utils.noop;
-    onCommitSuccess = onCommitSuccess || utils.noop;
-    onCommitFailed = onCommitFailed || utils.noop;
-    onNextBlock = onNextBlock || utils.noop;
-    onTradeSent = onTradeSent || utils.noop;
-    onTradeSuccess = onTradeSuccess || utils.noop;
-    onTradeFailed = onTradeFailed || utils.noop;
+    onTradeHash = onTradeHash || noop;
+    onCommitSent = onCommitSent || noop;
+    onCommitSuccess = onCommitSuccess || noop;
+    onCommitFailed = onCommitFailed || noop;
+    onNextBlock = onNextBlock || noop;
+    onTradeSent = onTradeSent || noop;
+    onTradeSuccess = onTradeSuccess || noop;
+    onTradeFailed = onTradeFailed || noop;
     this.checkGasLimit([buyer_trade_id], abi.format_address(sender || this.from), function (err, trade_ids) {
       var tradeHash;
       if (err) return onTradeFailed(err);
@@ -253,7 +254,7 @@ module.exports = {
             if (self.options.debug.trading) {
               console.log("short_sell tx:", JSON.stringify(tx, null, 2));
             }
-            self.transact(tx, onTradeSent, utils.compose(function (result, cb) {
+            self.transact(tx, onTradeSent, compose(function (result, cb) {
               var err, txHash;
               if (self.options.debug.trading) {
                 console.log("short_sell response:", JSON.stringify(result, null, 2));

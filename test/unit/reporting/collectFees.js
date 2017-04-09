@@ -1,7 +1,6 @@
 "use strict";
 
 var assert = require("chai").assert;
-var utils = require("../../../src/utilities.js");
 var augur = new (require('../../../src/'))();
 var transact,
   getVotePeriod,

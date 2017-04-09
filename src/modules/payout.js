@@ -1,6 +1,5 @@
 /**
  * Cash payouts from closed markets
- * @author Jack Peterson (jack@tinybike.net)
  */
 
 "use strict";

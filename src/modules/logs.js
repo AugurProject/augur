@@ -2,14 +2,15 @@
 
 var async = require("async");
 var clone = require("clone");
+var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
 var unrollArray = require("ethrpc").unmarshal;
 var constants = require("../constants");
-var utils = require("../utilities");
+var isFunction = require("../utils/is-function");
 var formatTradeType = require("../format/log/format-trade-type");
 var parseLogMessage = require("../filters/parse-message/parse-log-message");
 
-var ONE = abi.bignum("1");
+var ONE = new BigNumber("1", 10);
 
 module.exports = {
 
@@ -54,14 +55,14 @@ module.exports = {
 
   getMarketPriceHistory: function (market, options, callback) {
     var params, aux, self = this;
-    if (!callback && utils.is_function(options)) {
+    if (!callback && isFunction(options)) {
       callback = options;
       options = null;
     }
     params = clone(options || {});
     params.market = market;
     aux = {index: "outcome", mergedLogs: {}};
-    if (!utils.is_function(callback)) {
+    if (!isFunction(callback)) {
       this.getLogs("log_fill_tx", params, aux);
       this.getLogs("log_short_fill_tx", params, aux);
       return aux.mergedLogs;
@@ -150,12 +151,12 @@ module.exports = {
 
   getFilteredLogs: function (label, filterParams, callback) {
     var filter;
-    if (!callback && utils.is_function(filterParams)) {
+    if (!callback && isFunction(filterParams)) {
       callback = filterParams;
       filterParams = null;
     }
     filter = this.parametrizeFilter(this.api.events[label], filterParams || {});
-    if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
+    if (!isFunction(callback)) return this.rpc.getLogs(filter);
     this.rpc.getLogs(filter, function (logs) {
       if (logs && logs.error) return callback(logs, null);
       if (!logs || !logs.length) return callback(null, []);
@@ -166,12 +167,12 @@ module.exports = {
   // aux: {index: str/arr, mergedLogs: {}, extraField: {name, value}}
   getLogs: function (label, filterParams, aux, callback) {
     var logs, self = this;
-    if (!utils.is_function(callback) && utils.is_function(aux)) {
+    if (!isFunction(callback) && isFunction(aux)) {
       callback = aux;
       aux = null;
     }
     aux = aux || {};
-    if (!utils.is_function(callback)) {
+    if (!isFunction(callback)) {
       logs = this.getFilteredLogs(label, filterParams || {});
       if (logs && logs.length) logs.reverse();
       return this.processLogs(label, aux.index, logs, aux.extraField, aux.mergedLogs);
@@ -232,7 +233,7 @@ module.exports = {
 
   getAccountTrades: function (account, filterParams, callback) {
     var takerTradesFilterParams, aux, self = this;
-    if (!callback && utils.is_function(filterParams)) {
+    if (!callback && isFunction(filterParams)) {
       callback = filterParams;
       filterParams = null;
     }
@@ -306,7 +307,7 @@ module.exports = {
 
   getShortSellLogs: function (account, options, callback) {
     var topics, filter;
-    if (!callback && utils.is_function(options)) {
+    if (!callback && isFunction(options)) {
       callback = options;
       options = null;
     }
@@ -326,7 +327,7 @@ module.exports = {
         topics: topics,
         timeout: constants.GET_LOGS_TIMEOUT
       };
-      if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
+      if (!isFunction(callback)) return this.rpc.getLogs(filter);
       this.rpc.getLogs(filter, function (logs) {
         if (logs && logs.error) return callback(logs, null);
         if (!logs || !logs.length) return callback(null, []);
@@ -337,7 +338,7 @@ module.exports = {
 
   getTakerShortSellLogs: function (account, filterParams, callback) {
     var params;
-    if (!callback && utils.is_function(filterParams)) {
+    if (!callback && isFunction(filterParams)) {
       callback = filterParams;
       filterParams = null;
     }
@@ -348,7 +349,7 @@ module.exports = {
 
   getShortAskBuyCompleteSetsLogs: function (account, options, callback) {
     var opt;
-    if (!callback && utils.is_function(options)) {
+    if (!callback && isFunction(options)) {
       callback = options;
       options = null;
     }
@@ -360,7 +361,7 @@ module.exports = {
 
   getParsedCompleteSetsLogs: function (account, options, callback) {
     var self = this;
-    if (!callback && utils.is_function(options)) {
+    if (!callback && isFunction(options)) {
       callback = options;
       options = null;
     }
@@ -373,7 +374,7 @@ module.exports = {
 
   getCompleteSetsLogs: function (account, options, callback) {
     var typeCode, market, filter;
-    if (!callback && utils.is_function(options)) {
+    if (!callback && isFunction(options)) {
       callback = options;
       options = null;
     }
@@ -393,7 +394,7 @@ module.exports = {
         ],
         timeout: constants.GET_LOGS_TIMEOUT
       };
-      if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
+      if (!isFunction(callback)) return this.rpc.getLogs(filter);
       this.rpc.getLogs(filter, function (logs) {
         if (logs && logs.error) return callback(logs, null);
         if (!logs || !logs.length) return callback(null, []);
@@ -404,7 +405,7 @@ module.exports = {
 
   getBuyCompleteSetsLogs: function (account, options, callback) {
     var opt;
-    if (!callback && utils.is_function(options)) {
+    if (!callback && isFunction(options)) {
       callback = options;
       options = null;
     }
@@ -416,7 +417,7 @@ module.exports = {
 
   getSellCompleteSetsLogs: function (account, options, callback) {
     var opt;
-    if (!callback && utils.is_function(options)) {
+    if (!callback && isFunction(options)) {
       callback = options;
       options = null;
     }

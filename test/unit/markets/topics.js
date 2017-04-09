@@ -2,7 +2,7 @@
 
 var assert = require("chai").assert;
 var abi = require("augur-abi");
-var utils = require("../../../src/utilities");
+var isFunction = require("../../../src/utils/is-function");
 var encodeTag = require("../../../src/format/tag/encode-tag");
 var Augur = require("../../../src");
 var augur = new Augur();
@@ -500,7 +500,7 @@ describe("Topics.getTopicsInfo", function() {
       assert.deepEqual(branch, '0xdad12f');
       assert.oneOf(offset, [1, 0]);
       assert.oneOf(numTopicsToLoad, [3, 0]);
-      if (utils.is_function(callback)) return callback([
+      if (isFunction(callback)) return callback([
         abi.short_string_to_int256('Politics'), abi.short_string_to_int256('Sports'), abi.short_string_to_int256('Food')
       ]);
       return [
@@ -523,7 +523,7 @@ describe("Topics.getTopicsInfo", function() {
       assert.deepEqual(branch, '0xdad12f');
       assert.oneOf(offset, [1, 0]);
       assert.oneOf(numTopicsToLoad, [3, 0]);
-      if (utils.is_function(callback)) return callback([
+      if (isFunction(callback)) return callback([
         abi.short_string_to_int256('Politics'), abi.short_string_to_int256('Sports'), abi.short_string_to_int256('Food')
       ]);
       return [

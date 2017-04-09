@@ -3,16 +3,16 @@
 var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
 var splitOrder = require("./splitOrder");
-var utils = require("../utilities");
+var noop = require("../utils/noop");
 var constants = require("../constants");
 
 module.exports = {
 
   placeBuy: function (market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback) {
     var marketID, getTradeIDs, self = this;
-    if (!callback) callback = utils.noop;
+    if (!callback) callback = noop;
     if (this.options.debug.trading) {
-      console.log("placeBuy:", market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks.toString(), doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback);
+      console.log("placeBuy:", market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks.toString(), doNotMakeOrders, tradeGroupID);
     }
     tradeCommitLockCallback(true);
     marketID = market.id;
@@ -39,9 +39,9 @@ module.exports = {
 
   placeSell: function (market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback) {
     var marketID, getTradeIDs, self = this;
-    if (!callback) callback = utils.noop;
+    if (!callback) callback = noop;
     if (this.options.debug.trading) {
-      console.log("placeSell:", market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks.toString(), doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback);
+      console.log("placeSell:", market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks.toString(), doNotMakeOrders, tradeGroupID);
     }
     tradeCommitLockCallback(true);
     marketID = market.id;
@@ -94,9 +94,9 @@ module.exports = {
 
   placeShortSell: function (market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback) {
     var marketID, getTradeIDs, self = this;
-    if (!callback) callback = utils.noop;
+    if (!callback) callback = noop;
     if (this.options.debug.trading) {
-      console.log("placeShortSell:", market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks.toString(), doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback);
+      console.log("placeShortSell:", market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks.toString(), doNotMakeOrders, tradeGroupID);
     }
     tradeCommitLockCallback(true);
     marketID = market.id;

@@ -1,6 +1,5 @@
 /**
  * augur.js unit tests
- * @author Jack Peterson (jack@tinybike.net)
  */
 
 "use strict";

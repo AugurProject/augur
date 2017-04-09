@@ -1,17 +1,12 @@
-/**
- * augur.js tests
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var async = require("async");
 var assert = require("chai").assert;
 var abi = require("augur-abi");
 var clone = require("clone");
-var utils = require("../../../src/utilities");
 var contracts = require("augur-contracts");
 var constants = require("../../../src/constants");
+var pass = require("../../../src/utils/pass");
 var augurpath = "../../../src/index";
 var tools = require("../../tools");
 
@@ -39,7 +34,7 @@ if (numMarkets > tools.MAX_TEST_SAMPLES) {
 tools.TIMEOUT *= 2;
 
 var errorCheck = function (output, done) {
-  done = done || utils.pass;
+  done = done || pass;
   if (output && output.constructor === Object && output.error) {
     return done(new Error(JSON.stringify(output)));
   }

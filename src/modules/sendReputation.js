@@ -1,13 +1,8 @@
-/**
- * Augur JavaScript SDK
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var clone = require("clone");
 var abi = require("augur-abi");
-var utils = require("../utilities");
+var compose = require("../utils/compose");
 
 module.exports = {
 
@@ -30,7 +25,7 @@ module.exports = {
     // if callReturn is 0, but account has sufficient Reputation and Rep
     // redistribution is done, then re-invoke sendReputation
     // (penalizationCatchup is being called)
-    this.transact(tx, onSent, utils.compose(function (result, cb) {
+    this.transact(tx, onSent, compose(function (result, cb) {
       if (!result || !result.callReturn || parseInt(result.callReturn, 16)) {
         return cb(result);
       }

@@ -1,8 +1,3 @@
-/**
- * augur.js tests
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var assert = require("chai").assert;
@@ -10,7 +5,6 @@ var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
 var augur = new (require("../../../src"))();
 var constants = require("../../../src/constants");
-var utils = require("../../../src/utilities");
 
 describe("positions", function () {
 

@@ -1,24 +1,26 @@
 "use strict";
 
-var assert = require('chai').assert;
-var augur = new (require("../../../src"))();
+var assert = require("chai").assert;
 var errors = require("ethrpc").errors;
 var keys = require("keythereum");
+var abi = require("augur-abi");
+var augur = new (require("../../../src"))();
 var constants = require("../../../src/constants");
-var utils = require("../../../src/utilities");
-var abi = require('augur-abi');
-var clearCallCounts = require('../../tools').clearCallCounts;
-var proxyquire = require('proxyquire').noCallThru().noPreserveCache();
+var noop = require("../../../src/utils/noop");
+var pass = require("../../../src/utils/pass");
+var sha256 = require("../../../src/utils/sha256");
+var clearCallCounts = require("../../tools").clearCallCounts;
+var proxyquire = require("proxyquire").noCallThru().noPreserveCache();
 
 var accounts = [{
   address: undefined,
-  password: 'helloWorld',
+  password: "helloWorld",
   keystore: undefined,
   privateKey: undefined,
   derivedKey: undefined
 }, {
   address: undefined,
-  password: 'password',
+  password: "password",
   keystore: undefined,
   privateKey: undefined,
   derivedKey: undefined
@@ -296,9 +298,9 @@ describe("accounts.fundNewAccountFromFaucet", function() {
     fundNewAccount: function(arg) {
       assert.deepEqual(arg, {
         branch: constants.DEFAULT_BRANCH_ID,
-        onSent: utils.noop,
-        onSuccess: utils.noop,
-        onFailed: utils.noop
+        onSent: noop,
+        onSuccess: noop,
+        onFailed: noop
       });
       assert.deepEqual(callCounts, {
         balance: 1,
@@ -321,9 +323,9 @@ describe("accounts.fundNewAccountFromFaucet", function() {
     description: 'Should retry to fund account by fastforwarding through the blocks until we hit the most recent block and balance returns a value greater than 0',
     registeredAddress: '0x1',
     branch: '101010',
-    onSent: utils.pass,
-    onSuccess: utils.pass,
-    onFailed: utils.pass,
+    onSent: pass,
+    onSuccess: pass,
+    onFailed: pass,
     balance: function(address, cb) {
       callCounts.balance++;
       assert.deepEqual(address, '0x1');
@@ -350,9 +352,9 @@ describe("accounts.fundNewAccountFromFaucet", function() {
     fundNewAccount: function(arg) {
       assert.deepEqual(arg, {
         branch: '101010',
-        onSent: utils.pass,
-        onSuccess: utils.pass,
-        onFailed: utils.pass
+        onSent: pass,
+        onSuccess: pass,
+        onFailed: pass
       });
       assert.deepEqual(callCounts, {
         balance: 5,
@@ -403,7 +405,7 @@ describe("accounts.fundNewAccountFromAddress", function() {
       assert.equal(tx.to, '0x2');
       assert.equal(tx.value, '10');
       assert.equal(tx.from, '0x1');
-      assert.deepEqual(tx.onSent, utils.noop);
+      assert.deepEqual(tx.onSent, noop);
       assert.isFunction(tx.onSuccess);
       assert.isFunction(tx.onFailed);
       tx.onFailed({ error: 999, message: 'Uh-Oh!' });
@@ -426,7 +428,7 @@ describe("accounts.fundNewAccountFromAddress", function() {
       assert.equal(tx.to, '0x2');
       assert.equal(tx.value, '10');
       assert.equal(tx.from, '0x1');
-      assert.deepEqual(tx.onSent, utils.noop);
+      assert.deepEqual(tx.onSent, noop);
       assert.isFunction(tx.onSuccess);
       assert.isFunction(tx.onFailed);
       tx.onSuccess({ callReturn: '1', txHash: '0x3'});
@@ -434,9 +436,9 @@ describe("accounts.fundNewAccountFromAddress", function() {
     fundNewAccount: function(tx) {
       assert.deepEqual(tx, {
         branch: '101010',
-        onSent: utils.noop,
-        onSuccess: utils.noop,
-        onFailed: utils.noop
+        onSent: noop,
+        onSuccess: noop,
+        onFailed: noop
       });
     }
   });
@@ -453,7 +455,7 @@ describe("accounts.fundNewAccountFromAddress", function() {
       assert.equal(tx.to, '0x2');
       assert.equal(tx.value, '10');
       assert.equal(tx.from, '0x1');
-      assert.deepEqual(tx.onSent, utils.noop);
+      assert.deepEqual(tx.onSent, noop);
       assert.isFunction(tx.onSuccess);
       assert.isFunction(tx.onFailed);
       tx.onSuccess({ callReturn: '1', txHash: '0x3'});
@@ -461,9 +463,9 @@ describe("accounts.fundNewAccountFromAddress", function() {
     fundNewAccount: function(tx) {
       assert.deepEqual(tx, {
         branch: constants.DEFAULT_BRANCH_ID,
-        onSent: utils.noop,
-        onSuccess: utils.noop,
-        onFailed: utils.noop
+        onSent: noop,
+        onSuccess: noop,
+        onFailed: noop
       });
     }
   });
@@ -778,8 +780,8 @@ describe("accounts.loginWithMasterKey", function() {
     assertions: function(account) {
       assert.deepEqual(account, {
         address: abi.format_address(keys.privateKeyToAddress(privateKey)),
-        privateKey: new Buffer(privateKey, "hex"),
-        derivedKey: new Buffer(abi.unfork(utils.sha256(new Buffer(privateKey, "hex"))), "hex")
+        privateKey: Buffer.from(privateKey, "hex"),
+        derivedKey: Buffer.from(abi.unfork(sha256(Buffer.from(privateKey, "hex"))), "hex")
       });
       assert.deepEqual(account, augur.accounts.account);
     }

@@ -1,11 +1,11 @@
 "use strict";
 
 var abi = require("augur-abi");
-var utils = require("../src/utilities");
+var sha256 = require("../src/utils/sha256");
 
 var random = {
   hash: function () {
-    return abi.prefix_hex(utils.sha256(Math.random().toString()));
+    return abi.prefix_hex(sha256(Math.random().toString()));
   },
   int256: function () {
     return this.hash();

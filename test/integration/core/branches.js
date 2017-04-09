@@ -1,8 +1,3 @@
-/**
- * augur.js tests
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var assert = require("chai").assert;
@@ -11,7 +6,7 @@ var constants = require("../../../src/constants");
 var tools = require("../../tools");
 
 var augur = tools.setup(require("../../../src"));
-var branchID = augur.constants.DEFAULT_BRANCH_ID;
+var branchID = constants.DEFAULT_BRANCH_ID;
 var branchNumber = "0";
 
 describe("getBranches", function () {

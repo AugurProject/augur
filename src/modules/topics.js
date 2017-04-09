@@ -1,8 +1,9 @@
 "use strict";
 
 var abi = require("augur-abi");
-var utils = require("../utilities");
 var constants = require("../constants");
+var noop = require("../utils/noop");
+var isFunction = require("../utils/is-function");
 var encodeTag = require("../format/tag/encode-tag");
 var decodeTag = require("../format/tag/decode-tag");
 
@@ -20,7 +21,7 @@ module.exports = {
   findMarketsWithTopic: function (topic, branchID, callback) {
     var self = this;
     var formattedTopic = encodeTag(topic);
-    if (!utils.is_function(callback)) {
+    if (!isFunction(callback)) {
       return this.filterByBranchID(branchID, this.getLogs("marketCreated", {topic: formattedTopic}));
     }
     // TODO filter by endDate? (get active markets only)
@@ -40,11 +41,11 @@ module.exports = {
 
   getTopicsInfo: function (branch, offset, numTopicsToLoad, callback) {
     if (!callback) {
-      if (utils.is_function(offset)) {
+      if (isFunction(offset)) {
         callback = offset;
         offset = null;
         numTopicsToLoad = null;
-      } else if (utils.is_function(numTopicsToLoad)) {
+      } else if (isFunction(numTopicsToLoad)) {
         callback = numTopicsToLoad;
         numTopicsToLoad = null;
       }
@@ -60,7 +61,7 @@ module.exports = {
 
   getTopicsInfoChunked: function (branch, offset, numTopicsToLoad, totalTopics, chunkCB, callback) {
     var self = this;
-    if (!utils.is_function(chunkCB)) chunkCB = utils.noop;
+    if (!isFunction(chunkCB)) chunkCB = noop;
     if (!totalTopics) {
       return this.getNumTopicsInBranch(branch, function (totalTopics) {
         if (!totalTopics || totalTopics.error || !parseInt(totalTopics, 10)) {

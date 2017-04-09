@@ -1,10 +1,10 @@
 /**
- * Client-side accounts
+ * Client-side (in-browser) accounts.
  */
 
 "use strict";
 
-var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
+var NODE_JS = typeof process !== "undefined" && process.nextTick && !process.browser;
 
 var async = require("async");
 var keys = require("keythereum");
@@ -14,7 +14,10 @@ var request = (NODE_JS) ? require("request") : require("browser-request");
 var abi = require("augur-abi");
 var errors = require("ethrpc").errors;
 var constants = require("./constants");
-var utils = require("./utilities");
+var noop = require("./utils/noop");
+var pass = require("./utils/pass");
+var isFunction = require("./utils/is-function");
+var sha256 = require("./utils/sha256");
 
 request = request.defaults({timeout: 999999});
 
@@ -32,9 +35,9 @@ module.exports = function () {
     // free (testnet) ether for new accounts on registration
     fundNewAccountFromFaucet: function (registeredAddress, branch, onSent, onSuccess, onFailed) {
       var onSentCallback, onSuccessCallback, onFailedCallback, url;
-      onSentCallback = onSent || utils.noop;
-      onSuccessCallback = onSuccess || utils.noop;
-      onFailedCallback = onFailed || utils.noop;
+      onSentCallback = onSent || noop;
+      onSuccessCallback = onSuccess || noop;
+      onFailedCallback = onFailed || noop;
       if (registeredAddress === undefined || registeredAddress === null || registeredAddress.constructor !== String) {
         return onFailed(registeredAddress);
       }
@@ -90,14 +93,14 @@ module.exports = function () {
 
     fundNewAccountFromAddress: function (fromAddress, amount, registeredAddress, branch, onSent, onSuccess, onFailed) {
       var onSentCallback, onSuccessCallback, onFailedCallback;
-      onSentCallback = onSent || utils.noop;
-      onSuccessCallback = onSuccess || utils.noop;
-      onFailedCallback = onFailed || utils.noop;
+      onSentCallback = onSent || noop;
+      onSuccessCallback = onSuccess || noop;
+      onFailedCallback = onFailed || noop;
       augur.rpc.sendEther({
         to: registeredAddress,
         value: amount,
         from: fromAddress,
-        onSent: utils.noop,
+        onSent: noop,
         onSuccess: function () {
           augur.fundNewAccount({
             branch: branch || constants.DEFAULT_BRANCH_ID,
@@ -112,7 +115,7 @@ module.exports = function () {
 
     register: function (password, cb) {
       var callback, self = this;
-      callback = (utils.is_function(cb)) ? cb : utils.pass;
+      callback = (isFunction(cb)) ? cb : pass;
       if (!password || password.length < 6) return cb(errors.PASSWORD_TOO_SHORT);
 
       // generate ECDSA private key and initialization vector
@@ -169,7 +172,7 @@ module.exports = function () {
 
     importAccount: function (password, keystore, cb) {
       var callback, self = this;
-      callback = (utils.is_function(cb)) ? cb : utils.pass;
+      callback = (isFunction(cb)) ? cb : pass;
       if (!password || password === "") return callback(errors.BAD_CREDENTIALS);
       keys.recover(password, keystore, function (privateKey) {
         var keystoreCrypto;
@@ -191,10 +194,10 @@ module.exports = function () {
       var privateKey = account.privateKey;
       var derivedKey = account.derivedKey;
       if (privateKey && !Buffer.isBuffer(privateKey)) {
-        privateKey = new Buffer(privateKey, "hex");
+        privateKey = Buffer.from(privateKey, "hex");
       }
       if (derivedKey && !Buffer.isBuffer(derivedKey)) {
-        derivedKey = new Buffer(derivedKey, "hex");
+        derivedKey = Buffer.from(derivedKey, "hex");
       }
       this.account = {
         privateKey: privateKey,
@@ -206,7 +209,7 @@ module.exports = function () {
 
     login: function (keystore, password, cb) {
       var keystoreCrypto, callback, self = this;
-      callback = (utils.is_function(cb)) ? cb : utils.pass;
+      callback = (isFunction(cb)) ? cb : pass;
       if (!keystore || !password || password === "") return callback(errors.BAD_CREDENTIALS);
       keystoreCrypto = keystore.crypto || keystore.Crypto;
 
@@ -249,12 +252,12 @@ module.exports = function () {
 
     // user-supplied plaintext private key
     loginWithMasterKey: function (privateKey, cb) {
-      var callback = (utils.is_function(cb)) ? cb : utils.pass;
-      var privateKeyBuf = (Buffer.isBuffer(privateKey)) ? privateKey : new Buffer(privateKey, "hex");
+      var callback = (isFunction(cb)) ? cb : pass;
+      var privateKeyBuf = (Buffer.isBuffer(privateKey)) ? privateKey : Buffer.from(privateKey, "hex");
       this.account = {
         address: abi.format_address(keys.privateKeyToAddress(privateKeyBuf)),
         privateKey: privateKeyBuf,
-        derivedKey: new Buffer(abi.unfork(utils.sha256(privateKeyBuf)), "hex")
+        derivedKey: Buffer.from(abi.unfork(sha256(privateKeyBuf)), "hex")
       };
       return callback(clone(this.account));
     },

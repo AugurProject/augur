@@ -1,12 +1,7 @@
-/**
- * Augur JavaScript SDK
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var clone = require("clone");
-var utils = require("../utilities");
+var isFunction = require("../utils/is-function");
 
 module.exports = {
 
@@ -15,7 +10,7 @@ module.exports = {
     var tx, winningOutcomes, numOutcomes, self = this;
     tx = clone(this.tx.Markets.getWinningOutcomes);
     tx.params = market;
-    if (!utils.is_function(callback)) {
+    if (!isFunction(callback)) {
       winningOutcomes = this.fire(tx);
       if (!winningOutcomes) return null;
       if (winningOutcomes.error || winningOutcomes.constructor !== Array) {

@@ -1,7 +1,7 @@
 "use strict";
 
-var assert = require('chai').assert;
-var parametrizeOrder = require('../../../src/modules/parametrizeOrder');
+var assert = require("chai").assert;
+var parametrizeOrder = require("../../../src/modules/parametrizeOrder");
 // 4 tests total
 
 describe("parametrizeOrder.getScalarMinimum", function() {

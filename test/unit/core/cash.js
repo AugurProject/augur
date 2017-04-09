@@ -1,9 +1,9 @@
 "use strict";
 
 var assert = require("chai").assert;
-var augur = new (require("../../../src"))();
 var abi = require("augur-abi");
-var utils = require("../../../src/utilities");
+var augur = new (require("../../../src"))();
+var noop = require("../../../src/utils/noop");
 // 12 total tests
 
 describe("cash.sendEther", function() {
@@ -23,9 +23,9 @@ describe("cash.sendEther", function() {
     to: 'toAddress',
     value: '10',
     from: 'fromAddress',
-    onSent: utils.noop,
-    onSuccess: utils.noop,
-    onFailed: utils.noop,
+    onSent: noop,
+    onSuccess: noop,
+    onFailed: noop,
     description: "handles a string input for value",
     transact: function(tx, onSent, onSuccess, onFailed) {
 	    // just return the tx to be passed to assertions.
@@ -43,9 +43,9 @@ describe("cash.sendEther", function() {
     to: 'toAddress',
     value: 25,
     from: 'fromAddress',
-    onSent: utils.noop,
-    onSuccess: utils.noop,
-    onFailed: utils.noop,
+    onSent: noop,
+    onSuccess: noop,
+    onFailed: noop,
     description: "handles a JS Number input for value",
     transact: function(tx, onSent, onSuccess, onFailed) {
 	    // just return the tx to be passed to assertions.
@@ -63,9 +63,9 @@ describe("cash.sendEther", function() {
     to: 'toAddress',
     value: abi.bignum(215.02345),
     from: 'fromAddress',
-    onSent: utils.noop,
-    onSuccess: utils.noop,
-    onFailed: utils.noop,
+    onSent: noop,
+    onSuccess: noop,
+    onFailed: noop,
     description: "handles a Big Number input for value",
     transact: function(tx, onSent, onSuccess, onFailed) {
 	    // just return the tx to be passed to assertions.
@@ -84,9 +84,9 @@ describe("cash.sendEther", function() {
       to: 'toAddress',
       value: '8.027033',
       from: 'fromAddress',
-      onSent: utils.noop,
-      onSuccess: utils.noop,
-      onFailed: utils.noop,
+      onSent: noop,
+      onSuccess: noop,
+      onFailed: noop,
     },
     description: "handles a string input for value, args passed as single arg object",
     transact: function(tx, onSent, onSuccess, onFailed) {
@@ -106,9 +106,9 @@ describe("cash.sendEther", function() {
       to: 'toAddress',
       value: 47,
       from: 'fromAddress',
-      onSent: utils.noop,
-      onSuccess: utils.noop,
-      onFailed: utils.noop,
+      onSent: noop,
+      onSuccess: noop,
+      onFailed: noop,
     },
     description: "handles a JS Number input for value, args passed as single arg object",
     transact: function(tx, onSent, onSuccess, onFailed) {
@@ -128,9 +128,9 @@ describe("cash.sendEther", function() {
       to: 'toAddress',
       value: abi.bignum(9.005),
       from: 'fromAddress',
-      onSent: utils.noop,
-      onSuccess: utils.noop,
-      onFailed: utils.noop,
+      onSent: noop,
+      onSuccess: noop,
+      onFailed: noop,
     },
     description: "handles a Big Number input for value, args passed as single arg object",
     transact: function(tx, onSent, onSuccess, onFailed) {

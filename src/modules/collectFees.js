@@ -1,14 +1,9 @@
-/**
- * Augur JavaScript SDK
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var BigNumber = require("bignumber.js");
 var clone = require("clone");
 var abi = require("augur-abi");
-var utils = require("../utilities");
+var compose = require("../utils/compose");
 
 module.exports = {
 
@@ -38,7 +33,7 @@ module.exports = {
         self.rpc.getGasPrice(function (gasPrice) {
           tx.gasPrice = gasPrice;
           tx.value = abi.prefix_hex(new BigNumber("500000", 10).times(new BigNumber(gasPrice, 16)).toString(16));
-          return self.transact(tx, onSent, utils.compose(function (res, cb) {
+          return self.transact(tx, onSent, compose(function (res, cb) {
             if (res && (res.callReturn === "1" || res.callReturn === "2")) {
               return cb(res);
             }

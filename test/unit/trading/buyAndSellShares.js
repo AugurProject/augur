@@ -4,7 +4,7 @@ var assert = require("chai").assert;
 var augur = new (require("../../../src"))();
 var abi = require("augur-abi");
 var BigNumber = require("bignumber.js");
-var noop = require("../../../src/utilities").noop;
+var noop = require("../../../src/utils/noop");
 
 // 61 tests total
 describe('augur.cancel tests', function() {

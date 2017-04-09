@@ -1,15 +1,10 @@
-/**
- * Augur JavaScript SDK
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var BigNumber = require("bignumber.js");
 var clone = require("clone");
 var abi = require("augur-abi");
 var keys = require("keythereum");
-var utils = require("../utilities");
+var sha3 = require("../utils/sha3");
 var constants = require("../constants");
 
 module.exports = {
@@ -136,24 +131,24 @@ module.exports = {
 
   // report in fixed-point
   makeHash: function (salt, report, event, from) {
-    return utils.sha3([from, abi.hex(salt), report, event]);
+    return sha3([from, abi.hex(salt), report, event]);
   },
 
   // report in fixed-point
   encryptReport: function (report, key, salt) {
-    if (!Buffer.isBuffer(report)) report = new Buffer(abi.pad_left(abi.hex(report)), "hex");
-    if (!Buffer.isBuffer(key)) key = new Buffer(abi.pad_left(abi.hex(key)), "hex");
-    if (!salt) salt = new Buffer("11111111111111111111111111111111", "hex");
-    if (!Buffer.isBuffer(salt)) salt = new Buffer(abi.pad_left(abi.hex(salt)), "hex");
+    if (!Buffer.isBuffer(report)) report = Buffer.from(abi.pad_left(abi.hex(report)), "hex");
+    if (!Buffer.isBuffer(key)) key = Buffer.from(abi.pad_left(abi.hex(key)), "hex");
+    if (!salt) salt = Buffer.from("11111111111111111111111111111111", "hex");
+    if (!Buffer.isBuffer(salt)) salt = Buffer.from(abi.pad_left(abi.hex(salt)), "hex");
     return abi.prefix_hex(keys.encrypt(report, key, salt.slice(0, 16), constants.REPORT_CIPHER).toString("hex"));
   },
 
   // returns plaintext fixed-point report
   decryptReport: function (encryptedReport, key, salt) {
-    if (!Buffer.isBuffer(encryptedReport)) encryptedReport = new Buffer(abi.pad_left(abi.hex(encryptedReport)), "hex");
-    if (!Buffer.isBuffer(key)) key = new Buffer(abi.pad_left(abi.hex(key)), "hex");
-    if (!salt) salt = new Buffer("11111111111111111111111111111111", "hex");
-    if (!Buffer.isBuffer(salt)) salt = new Buffer(abi.pad_left(abi.hex(salt)), "hex");
+    if (!Buffer.isBuffer(encryptedReport)) encryptedReport = Buffer.from(abi.pad_left(abi.hex(encryptedReport)), "hex");
+    if (!Buffer.isBuffer(key)) key = Buffer.from(abi.pad_left(abi.hex(key)), "hex");
+    if (!salt) salt = Buffer.from("11111111111111111111111111111111", "hex");
+    if (!Buffer.isBuffer(salt)) salt = Buffer.from(abi.pad_left(abi.hex(salt)), "hex");
     return abi.prefix_hex(keys.decrypt(encryptedReport, key, salt.slice(0, 16), constants.REPORT_CIPHER).toString("hex"));
   },
 

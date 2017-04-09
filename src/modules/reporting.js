@@ -1,6 +1,5 @@
 /**
  * Reporting time/period toolkit
- * @author Jack Peterson (jack@tinybike.net)
  */
 
 "use strict";
@@ -8,7 +7,8 @@
 var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
 var async = require("async");
-var utils = require("../utilities");
+var noop = require("../utils/noop");
+var sha3 = require("../utils/sha3");
 
 module.exports = {
 
@@ -24,7 +24,7 @@ module.exports = {
 
   hashSenderPlusEvent: function (sender, event) {
     return abi.wrap(
-      utils.sha3(abi.hex(abi.bignum(sender).plus(abi.bignum(event, null, true)), true))
+      sha3(abi.hex(abi.bignum(sender).plus(abi.bignum(event, null, true)), true))
     ).abs().dividedBy(abi.bignum("115792089237316195423571")).floor();
   },
 
@@ -95,7 +95,7 @@ module.exports = {
         }
         self.incrementPeriodAfterReporting({
           branch: branch,
-          onSent: utils.noop,
+          onSent: noop,
           onSuccess: function (r) {
             if (self.options.debug.reporting) {
               console.log("Incremented period:", r.callReturn);
@@ -190,7 +190,7 @@ module.exports = {
         return self.penalizationCatchup({
           branch: branch,
           sender: sender,
-          onSent: utils.noop,
+          onSent: noop,
           onSuccess: function (r) {
             if (self.options.debug.reporting) {
               console.log("[penaltyCatchUp] penalizationCatchup success:", r.callReturn);
@@ -213,7 +213,7 @@ module.exports = {
           self.penalizeWrong({
             branch: branch,
             event: 0,
-            onSent: utils.noop,
+            onSent: noop,
             onSuccess: function (r) {
               if (self.options.debug.reporting) {
                 console.log("[penaltyCatchUp] penalizeWrong(0) success:", r.callReturn);
@@ -246,7 +246,7 @@ module.exports = {
                   self.moveEvent({
                     branch: branch,
                     event: event,
-                    onSent: utils.noop,
+                    onSent: noop,
                     onSuccess: function (r) {
                       if (self.options.debug.reporting) {
                         console.log("[penaltyCatchUp] moveEvent success:", r);
@@ -275,7 +275,7 @@ module.exports = {
                   self.penalizeWrong({
                     branch: branch,
                     event: event,
-                    onSent: utils.noop,
+                    onSent: noop,
                     onSuccess: function (r) {
                       if (self.options.debug.reporting) {
                         console.log("[penaltyCatchUp] penalizeWrong success:", abi.bignum(r.callReturn, "string", true));

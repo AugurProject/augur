@@ -1,19 +1,13 @@
-/**
- * augur.js tests
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var assert = require("chai").assert;
 var abi = require("augur-abi");
 var clone = require("clone");
-var augurpath = "../../../src/index";
-var augur = new (require(augurpath))();
-var utils = require("../../../src/utilities");
-var tools = require("../../tools");
 var errors = require("ethrpc").errors;
+var augur = new (require("../../../src"))();
+var noop = require("../../../src/utils/noop");
 var trade = require("../../../src/modules/trade");
+var tools = require("../../tools");
 var DEBUG = false;
 
 describe("trade.checkGasLimit", function () {
@@ -416,7 +410,7 @@ describe("trade.trade", function() {
       onCommitSuccess: function(res) {
         assert.deepEqual(res, { callReturn: '1' });
       },
-      onCommitFailed: utils.noop,
+      onCommitFailed: noop,
       onNextBlock: function(block) {
         assert.deepEqual(block, '0xb1');
       },
@@ -463,7 +457,7 @@ describe("trade.trade", function() {
       onCommitSuccess: function(res) {
         assert.deepEqual(res, { callReturn: '1' });
       },
-      onCommitFailed: utils.noop,
+      onCommitFailed: noop,
       onNextBlock: function(block) {
         assert.deepEqual(block, '0xb1');
       },
@@ -528,7 +522,7 @@ describe("trade.trade", function() {
       onCommitSuccess: function(res) {
         assert.deepEqual(res, { callReturn: '1' });
       },
-      onCommitFailed: utils.noop,
+      onCommitFailed: noop,
       onNextBlock: function(block) {
         assert.deepEqual(block, '0xb1');
       },
@@ -579,7 +573,7 @@ describe("trade.trade", function() {
       onCommitSuccess: function(res) {
         assert.deepEqual(res, { callReturn: '1' });
       },
-      onCommitFailed: utils.noop,
+      onCommitFailed: noop,
       onNextBlock: function(block) {
         assert.deepEqual(block, '0xb1');
       },
@@ -634,7 +628,7 @@ describe("trade.trade", function() {
       onCommitSuccess: function(res) {
         assert.deepEqual(res, { callReturn: '1' });
       },
-      onCommitFailed: utils.noop,
+      onCommitFailed: noop,
       onNextBlock: function(block) {
         assert.deepEqual(block, '0xb1');
       },
@@ -689,7 +683,7 @@ describe("trade.trade", function() {
       onCommitSuccess: function(res) {
         assert.deepEqual(res, { callReturn: '1' });
       },
-      onCommitFailed: utils.noop,
+      onCommitFailed: noop,
       onNextBlock: function(block) {
         assert.deepEqual(block, '0xb1');
       },
@@ -760,7 +754,7 @@ describe("trade.trade", function() {
       onCommitSuccess: function(res) {
         assert.deepEqual(res, { callReturn: '1' });
       },
-      onCommitFailed: utils.noop,
+      onCommitFailed: noop,
       onNextBlock: function(block) {
         assert.deepEqual(block, '0xb1');
       },
@@ -833,7 +827,7 @@ describe("trade.trade", function() {
       onCommitSuccess: function(res) {
         assert.deepEqual(res, { callReturn: '1' });
       },
-      onCommitFailed: utils.noop,
+      onCommitFailed: noop,
       onNextBlock: function(block) {
         assert.deepEqual(block, '0xb1');
       },

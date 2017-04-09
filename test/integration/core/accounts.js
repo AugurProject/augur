@@ -1,8 +1,3 @@
-/**
- * augur.js tests
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var crypto = require("crypto");
@@ -11,7 +6,7 @@ var chalk = require("chalk");
 var clone = require("clone");
 var keys = require("keythereum");
 var abi = require("augur-abi");
-var utils = require("../../../src/utilities");
+var sha256 = require("../../../src/utils/sha256");
 var constants = require("../../../src/constants");
 var tools = require("../../tools");
 var random = require("../../random");
@@ -23,8 +18,8 @@ var privateKey = crypto.randomBytes(32);
 var address = keys.privateKeyToAddress(privateKey);
 
 // generate random passwords
-var password = utils.sha256(Math.random().toString(36).substring(4));
-var password2 = utils.sha256(Math.random().toString(36).substring(4)).slice(10);
+var password = sha256(Math.random().toString(36).substring(4));
+var password2 = sha256(Math.random().toString(36).substring(4)).slice(10);
 
 var numMarkets = parseInt(augur.getNumMarketsBranch(constants.DEFAULT_BRANCH_ID), 10);
 var markets = augur.getSomeMarketsInBranch(constants.DEFAULT_BRANCH_ID, numMarkets - 100, numMarkets);
@@ -237,7 +232,7 @@ describe("Concurrent transactions", function () {
     this.timeout(tools.TIMEOUT*2);
     tools.setup(Augur, function (augur) {
       var sender = augur.from;
-      augur.accounts.register(utils.sha256(Math.random().toString(36).substring(4)), function (user) {
+      augur.accounts.register(sha256(Math.random().toString(36).substring(4)), function (user) {
         console.log("registered:", user);
         assert.notProperty(user, "error");
         assert.strictEqual(user.address, augur.accounts.account.address);
@@ -303,7 +298,7 @@ describe("Concurrent transactions", function () {
     this.timeout(tools.TIMEOUT*2);
     tools.setup(Augur, function (augur) {
       var sender = augur.from;
-      augur.accounts.register(utils.sha256(Math.random().toString(36).substring(4)), function (user) {
+      augur.accounts.register(sha256(Math.random().toString(36).substring(4)), function (user) {
         console.log("registered:", user);
         assert.notProperty(user, "error");
         assert.strictEqual(user.address, augur.accounts.account.address);
@@ -365,7 +360,7 @@ describe("Concurrent transactions", function () {
     this.timeout(tools.TIMEOUT*2);
     tools.setup(Augur, function (augur) {
       var sender = augur.from;
-      augur.accounts.register(utils.sha256(Math.random().toString(36).substring(4)), function (user) {
+      augur.accounts.register(sha256(Math.random().toString(36).substring(4)), function (user) {
         console.log("registered:", user);
         assert.notProperty(user, "error");
         assert.strictEqual(user.address, augur.accounts.account.address);
@@ -427,7 +422,7 @@ describe("Concurrent transactions", function () {
     this.timeout(tools.TIMEOUT*2);
     tools.setup(Augur, function (augur) {
       var sender = augur.from;
-      augur.accounts.register(utils.sha256(Math.random().toString(36).substring(4)), function (user) {
+      augur.accounts.register(sha256(Math.random().toString(36).substring(4)), function (user) {
         console.log("registered:", user);
         assert.notProperty(user, "error");
         assert.strictEqual(user.address, augur.accounts.account.address);

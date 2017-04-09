@@ -5,7 +5,7 @@
 
 "use strict";
 
-var NODE_JS = (typeof module !== "undefined") && process && !process.browser;
+var NODE_JS = typeof process !== "undefined" && process.nextTick && !process.browser;
 
 var BigNumber = require("bignumber.js");
 
@@ -73,7 +73,6 @@ function Augur() {
 
   this.abi = require("augur-abi");
   this.constants = require("./constants");
-  this.utils = require("./utilities");
   this.rpc = require("ethrpc");
   this.subscriptionsSupported = false;
   this.errors = this.rpc.errors;

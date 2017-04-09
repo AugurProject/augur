@@ -1,13 +1,9 @@
-/**
- * Augur JavaScript SDK
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var clone = require("clone");
 var abi = require("augur-abi");
-var utils = require("../utilities");
+var isFunction = require("../utils/is-function");
+var sha3 = require("../utils/sha3");
 
 module.exports = {
 
@@ -25,7 +21,7 @@ module.exports = {
     }
     oracleOnly = oracleOnly || 0;
     description = description.trim();
-    if (!utils.is_function(onSent)) {
+    if (!isFunction(onSent)) {
       response = this.CreateBranch.createSubbranch({
         description: description,
         periodLength: periodLength,
@@ -34,7 +30,7 @@ module.exports = {
         oracleOnly: oracleOnly
       });
       block = this.rpc.getBlock(response.blockNumber);
-      response.branchID = utils.sha3([
+      response.branchID = sha3([
         response.from,
         "0x28c418afbbb5c0000",
         periodLength,
@@ -55,7 +51,7 @@ module.exports = {
       onSent: onSent,
       onSuccess: function (response) {
         self.rpc.getBlock(response.blockNumber, false, function (block) {
-          response.branchID = utils.sha3([
+          response.branchID = sha3([
             response.from,
             "0x28c418afbbb5c0000",
             periodLength,

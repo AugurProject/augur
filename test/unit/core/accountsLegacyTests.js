@@ -1,8 +1,3 @@
-/**
- * augur.js tests
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var crypto = require("crypto");
@@ -11,7 +6,7 @@ var chalk = require("chalk");
 var clone = require("clone");
 var keys = require("keythereum");
 var abi = require("augur-abi");
-var utils = require("../../../src/utilities");
+var sha256 = require("../../../src/utils/sha256");
 var constants = require("../../../src/constants");
 var tools = require("../../tools");
 var random = require("../../random");
@@ -22,8 +17,8 @@ var privateKey = crypto.randomBytes(32);
 var address = keys.privateKeyToAddress(privateKey);
 
 // generate random names and passwords
-var password = utils.sha256(Math.random().toString(36).substring(4));
-var password2 = utils.sha256(Math.random().toString(36).substring(4)).slice(10);
+var password = sha256(Math.random().toString(36).substring(4));
+var password2 = sha256(Math.random().toString(36).substring(4)).slice(10);
 
 var keystore, keystore2;
 
@@ -157,7 +152,7 @@ describe("Login", function () {
       assert.isUndefined(user.keystore);
       assert.strictEqual(augur.accounts.account.privateKey.toString("hex").length, constants.KEYSIZE*2);
       assert.strictEqual(augur.accounts.account.privateKey.toString("hex"), "5169fdd07cb61657ad0d1c60f1132eed52c91949d6d85654110b11ede80a6d2e");
-      assert.strictEqual(augur.accounts.account.derivedKey.toString("hex"), abi.unfork(utils.sha256(new Buffer("5169fdd07cb61657ad0d1c60f1132eed52c91949d6d85654110b11ede80a6d2e", "hex"))));
+      assert.strictEqual(augur.accounts.account.derivedKey.toString("hex"), abi.unfork(sha256(Buffer.from("5169fdd07cb61657ad0d1c60f1132eed52c91949d6d85654110b11ede80a6d2e", "hex"))));
       assert.strictEqual(user.address.length, 42);
       assert.strictEqual(user.address, abi.format_address(user.address));
       assert.strictEqual(user.address, abi.format_address(keys.privateKeyToAddress("5169fdd07cb61657ad0d1c60f1132eed52c91949d6d85654110b11ede80a6d2e", "hex")));
@@ -187,8 +182,8 @@ describe("Login", function () {
   });
   it("fail with error 403 when given an incorrect password", function (done) {
     this.timeout(tools.TIMEOUT);
-    var bad_password = utils.sha256(Math.random().toString(36).substring(4));
-    augur.accounts.login(keystore, bad_password, function (user) {
+    var badPassword = sha256(Math.random().toString(36).substring(4));
+    augur.accounts.login(keystore, badPassword, function (user) {
       assert.strictEqual(user.error, 403);
       done();
     });

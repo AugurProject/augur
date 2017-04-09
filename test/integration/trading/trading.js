@@ -1,8 +1,3 @@
-/**
- * augur.js tests
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var fs = require("fs");
@@ -12,8 +7,7 @@ var async = require("async");
 var abi = require("augur-abi");
 var clone = require("clone");
 var augurpath = "../../../src/index";
-var constants = require("../../../src/constants");
-var utils = require("../../../src/utilities");
+var noop = require("../../../src/utils/noop");
 var tools = require("../../tools");
 var random = require("../../random");
 var errors = require("ethrpc").errors;
@@ -297,7 +291,7 @@ describe("Trade", function () {
         augur.buyCompleteSets({
           market: markets[t.market],
           amount: t.amount,
-          onSent: utils.noop,
+          onSent: noop,
           onSuccess: function (r) {
             augur.sell({
               amount: t.amount,
@@ -395,14 +389,14 @@ describe("Trade", function () {
           augur.buyCompleteSets({
             market: markets[t.market],
             amount: t.amount,
-            onSent: utils.noop,
+            onSent: noop,
             onSuccess: function (r) {
               augur.sell({
                 amount: t.amount,
                 price: t.price,
                 market: markets[t.market],
                 outcome: t.outcome,
-                onSent: utils.noop,
+                onSent: noop,
                 onSuccess: function (r) {
                   var new_trade_id = r.callReturn;
                   augur.useAccount(unlockable[1]);
@@ -483,14 +477,14 @@ describe("Trade", function () {
             price: t.price,
             market: markets[t.market],
             outcome: t.outcome,
-            onSent: utils.noop,
+            onSent: noop,
             onSuccess: function (r) {
               var new_trade_id = r.callReturn;
               augur.useAccount(unlockable[1]);
               augur.buyCompleteSets({
                 market: markets[t.market],
                 amount: t.amount,
-                onSent: utils.noop,
+                onSent: noop,
                 onSuccess: function (r) {
                   var trade_ids = augur.get_trade_ids(markets[t.market], 0, 0);
                   assert.include(trade_ids, abi.hex(new_trade_id));
@@ -655,7 +649,7 @@ describe("Trade", function () {
           price: t.price,
           market: markets[t.market],
           outcome: t.outcome,
-          onSent: utils.noop,
+          onSent: noop,
           onSuccess: function (r) {
             var new_trade_id = r.callReturn;
             augur.useAccount(unlockable[1]);

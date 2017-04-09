@@ -1,8 +1,3 @@
-/**
- * augur.js tests
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var join = require("path").join;
@@ -15,7 +10,6 @@ var abi = require("augur-abi");
 var madlibs = require("madlibs");
 var augurpath = "../../../src/index";
 var constants = require("../../../src/constants");
-var utils = require("../../../src/utilities");
 var tools = require("../../tools");
 var DEBUG = true;
 tools.DEBUG = DEBUG;

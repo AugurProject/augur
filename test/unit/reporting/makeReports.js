@@ -1,17 +1,11 @@
-/**
- * augur.js tests
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var assert = require("chai").assert;
 var abi = require("augur-abi");
-var constants = require("../../../src/constants");
 var reporting = require("../../../src/modules/reporting");
 var makeReports = require("../../../src/modules/makeReports");
-var utils = require("../../../src/utilities");
-var keys = require("keythereum");
+var constants = require("../../../src/constants");
+var noop = require("../../../src/utils/noop");
 var augur = new (require("../../../src"))();
 
 describe("unfixConsensusOutcome", function () {
@@ -761,7 +755,7 @@ describe("getAndDecryptReport", function() {
       fire: function(tx, cb, options, aux) {
         assert.deepEqual(tx.params, ['0xb1', 150000000, '0x1', '0xe1']);
         assert.deepEqual(tx.to, augur.api.functions.ExpiringEvents.getEncryptedReport.to);
-        assert.deepEqual(cb, utils.noop);
+        assert.deepEqual(cb, noop);
         assert.deepEqual(options, makeReports.parseAndDecryptReport);
         assert.deepEqual(aux, { derivedKey: '0xabc123', salt: '0x123abc456' });
         finished();
@@ -774,14 +768,14 @@ describe("getAndDecryptReport", function() {
     reporter: '0x1',
     event: '0xe1',
     secret: { derivedKey: '0xabc123', salt: '0x123abc456' },
-    callback: utils.noop,
+    callback: noop,
   });
   test({
     testThis: {
       fire: function(tx, cb, options, aux) {
         assert.deepEqual(tx.params, ['0xb1', 150000000, '0x1', '0xe1']);
         assert.deepEqual(tx.to, augur.api.functions.ExpiringEvents.getEncryptedReport.to);
-        assert.deepEqual(cb, utils.noop);
+        assert.deepEqual(cb, noop);
         assert.deepEqual(options, makeReports.parseAndDecryptReport);
         assert.deepEqual(aux, { derivedKey: '0xabc123', salt: '0x123abc456' });
         finished();
@@ -795,7 +789,7 @@ describe("getAndDecryptReport", function() {
       reporter: '0x1',
       event: '0xe1',
       secret: { derivedKey: '0xabc123', salt: '0x123abc456' },
-      callback: utils.noop,
+      callback: noop,
     }
   });
   test({
@@ -803,7 +797,7 @@ describe("getAndDecryptReport", function() {
       fire: function(tx, cb, options, aux) {
         assert.deepEqual(tx.params, ['0xb1', 150000000, '0x1', '0xe1']);
         assert.deepEqual(tx.to, augur.api.functions.ExpiringEvents.getEncryptedReport.to);
-        assert.deepEqual(cb, utils.noop);
+        assert.deepEqual(cb, noop);
         assert.deepEqual(options, makeReports.parseAndDecryptReport);
         assert.deepEqual(aux, { derivedKey: '0xabc123', salt: '0x123abc456' });
         finished();
@@ -818,7 +812,7 @@ describe("getAndDecryptReport", function() {
       event: '0xe1',
       secret: { derivedKey: '0xabc123', salt: '0x123abc456' },
     },
-    callback: utils.noop
+    callback: noop
   });
 });
 
@@ -849,8 +843,8 @@ describe("submitReportHash", function() {
       branch: '0xb1',
       period: 1500,
       periodLength: 1000,
-      onSent: utils.noop,
-      onSuccess: utils.noop,
+      onSent: noop,
+      onSuccess: noop,
       onFailed: function(err) {
         assert.deepEqual(err, {"-2": "not in first half of period (commit phase)"});
         finished();
@@ -886,8 +880,8 @@ describe("submitReportHash", function() {
       branch: '0xb1',
       period: 1500,
       periodLength: 1000,
-      onSent: utils.noop,
-      onSuccess: utils.noop,
+      onSent: noop,
+      onSuccess: noop,
       onFailed: function(err) {
         assert.deepEqual(err, { error: -3, message: 'not eligible to report on this event' });
         finished();
@@ -922,12 +916,12 @@ describe("submitReportHash", function() {
     branch: '0xb1',
     period: 1500,
     periodLength: 1000,
-    onSent: utils.noop,
+    onSent: noop,
     onSuccess: function(res) {
       assert.deepEqual(res, { callReturn: '1' });
       finished();
     },
-    onFailed: utils.noop
+    onFailed: noop
   });
   test({
     testThis: {
@@ -959,8 +953,8 @@ describe("submitReportHash", function() {
     branch: '0xb1',
     period: 1500,
     periodLength: 1000,
-    onSent: utils.noop,
-    onSuccess: utils.noop,
+    onSent: noop,
+    onSuccess: noop,
     onFailed: function(err) {
       assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
       finished();
@@ -998,8 +992,8 @@ describe("submitReportHash", function() {
     branch: '0xb1',
     period: 1500,
     periodLength: 1000,
-    onSent: utils.noop,
-    onSuccess: utils.noop,
+    onSent: noop,
+    onSuccess: noop,
     onFailed: function(err) {
       assert.deepEqual(err, "rep redistribution not done");
       finished();
@@ -1041,12 +1035,12 @@ describe("submitReportHash", function() {
     branch: '0xb1',
     period: 1500,
     periodLength: 1000,
-    onSent: utils.noop,
+    onSent: noop,
     onSuccess: function(res) {
       assert.deepEqual(res, { callReturn: '1' });
       finished();
     },
-    onFailed: utils.noop
+    onFailed: noop
   });
   test({
     testThis: {
@@ -1084,8 +1078,8 @@ describe("submitReportHash", function() {
     branch: '0xb1',
     period: 1500,
     periodLength: 1000,
-    onSent: utils.noop,
-    onSuccess: utils.noop,
+    onSent: noop,
+    onSuccess: noop,
     onFailed: function(err) {
       assert.deepEqual(err, {"-2": "not in first half of period (commit phase)"});
       finished();
@@ -1127,12 +1121,12 @@ describe("submitReportHash", function() {
     branch: '0xb1',
     period: 1500,
     periodLength: 1000,
-    onSent: utils.noop,
+    onSent: noop,
     onSuccess: function(res) {
       assert.deepEqual(res, { callReturn: '1' });
       finished();
     },
-    onFailed: utils.noop
+    onFailed: noop
   });
 });
 
@@ -1169,9 +1163,9 @@ describe("submitReport", function() {
     maxValue: 2,
     type: 'binary',
     isIndeterminate: false,
-    onSent: utils.noop,
-    onSuccess: utils.noop,
-    onFailed: utils.noop
+    onSent: noop,
+    onSuccess: noop,
+    onFailed: noop
   });
   test({
     testThis: {
@@ -1199,9 +1193,9 @@ describe("submitReport", function() {
       maxValue: 2,
       type: 'binary',
       isIndeterminate: false,
-      onSent: utils.noop,
-      onSuccess: utils.noop,
-      onFailed: utils.noop
+      onSent: noop,
+      onSuccess: noop,
+      onFailed: noop
     }
   });
 });

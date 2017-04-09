@@ -1,15 +1,15 @@
 "use strict";
 
-var assert = require('chai').assert;
-var utils = require('../../../src/utilities.js');
+var assert = require("chai").assert;
 var abi = require("augur-abi");
-var augur = new (require('../../../src/'))();
+var noop = require("../../../src/utils/noop");
+var augur = new (require("../../../src/"))();
 // 15 tests total
 
-describe("createMarket.createSingleEventMarket", function() {
+describe("createMarket.createSingleEventMarket", function () {
   // 4 tests total
-  var test = function(t) {
-    it(t.testDescription, function() {
+  var test = function (t) {
+    it(t.testDescription, function () {
       var transact = augur.transact;
       var getGasPrice = augur.rpc.getGasPrice;
       // since transact is how all these functions end we are going to just use assertions from each test.
@@ -24,7 +24,7 @@ describe("createMarket.createSingleEventMarket", function() {
   };
   test({
     testDescription: "Should create a single event market",
-    assertions: function(tx, onSent, onSuccess, onFailed) {
+    assertions: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.CreateMarket.createSingleEventMarket.to);
       assert.deepEqual(tx.label, 'Create Market');
       assert.deepEqual(tx.method, 'createSingleEventMarket');
@@ -45,7 +45,7 @@ describe("createMarket.createSingleEventMarket", function() {
        'This is some extra information about this fascinating market.'
       ]);
     },
-    getGasPrice: function(cb) {
+    getGasPrice: function (cb) {
       // for simplicity's sake, just return 10.
       if (cb) return cb('10');
       return '10';
@@ -61,13 +61,13 @@ describe("createMarket.createSingleEventMarket", function() {
     tags: ['movies', 'tvshows', 'podcasts'],
     makerFee: 0.02,
     extraInfo: 'This is some extra information about this fascinating market.',
-    onSent: utils.noop,
-    onSuccess: utils.noop,
-    onFailed: utils.noop
+    onSent: noop,
+    onSuccess: noop,
+    onFailed: noop
   });
   test({
     testDescription: "Should create a single event market, no extra info or resolution passed.",
-    assertions: function(tx, onSent, onSuccess, onFailed) {
+    assertions: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.CreateMarket.createSingleEventMarket.to);
       assert.deepEqual(tx.label, 'Create Market');
       assert.deepEqual(tx.method, 'createSingleEventMarket');
@@ -88,7 +88,7 @@ describe("createMarket.createSingleEventMarket", function() {
        ''
       ]);
     },
-    getGasPrice: function(cb) {
+    getGasPrice: function (cb) {
       // for simplicity's sake, just return 10.
       if (cb) return cb('10');
       return '10';
@@ -104,13 +104,13 @@ describe("createMarket.createSingleEventMarket", function() {
     tags: ['movies', 'tvshows', 'podcasts'],
     makerFee: 0.02,
     extraInfo: undefined,
-    onSent: utils.noop,
-    onSuccess: utils.noop,
-    onFailed: utils.noop
+    onSent: noop,
+    onSuccess: noop,
+    onFailed: noop
   });
   test({
     testDescription: "Should create a single event market when no callbacks are passed",
-    assertions: function(tx, onSent, onSuccess, onFailed) {
+    assertions: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.CreateMarket.createSingleEventMarket.to);
       assert.deepEqual(tx.label, 'Create Market');
       assert.deepEqual(tx.method, 'createSingleEventMarket');
@@ -131,7 +131,7 @@ describe("createMarket.createSingleEventMarket", function() {
        'This is some extra information about this fascinating market.'
       ]);
     },
-    getGasPrice: function(cb) {
+    getGasPrice: function (cb) {
       // for simplicity's sake, just return 10.
       if (cb) return cb('10');
       return '10';
@@ -150,7 +150,7 @@ describe("createMarket.createSingleEventMarket", function() {
   });
   test({
     testDescription: "Should create a single event market with a single argument object",
-    assertions: function(tx, onSent, onSuccess, onFailed) {
+    assertions: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.CreateMarket.createSingleEventMarket.to);
       assert.deepEqual(tx.label, 'Create Market');
       assert.deepEqual(tx.method, 'createSingleEventMarket');
@@ -171,7 +171,7 @@ describe("createMarket.createSingleEventMarket", function() {
        'This is some extra information about this fascinating market.'
       ]);
     },
-    getGasPrice: function(cb) {
+    getGasPrice: function (cb) {
       // for simplicity's sake, just return 10.
       if (cb) return cb('10');
       return '10';
@@ -192,10 +192,10 @@ describe("createMarket.createSingleEventMarket", function() {
   });
 });
 
-describe("createMarket.createEvent", function() {
+describe("createMarket.createEvent", function () {
   // 4 tests total
-  var test = function(t) {
-    it(t.testDescription, function() {
+  var test = function (t) {
+    it(t.testDescription, function () {
       var transact = augur.transact;
       augur.transact = t.assertions;
 
@@ -213,10 +213,10 @@ describe("createMarket.createEvent", function() {
     maxValue: '2',
     numOutcomes: '2',
     resolution: 'https://iknoweverything.com',
-    onSent: utils.noop,
-    onSuccess: utils.noop,
-    onFailed: utils.noop,
-    assertions: function(tx, onSent, onSuccess, onFailed) {
+    onSent: noop,
+    onSuccess: noop,
+    onFailed: noop,
+    assertions: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.CreateMarket.createEvent.to);
       assert.deepEqual(tx.params, ['010101', 'This is a test event description', 1500000000, '0xde0b6b3a7640000', '0x1bc16d674ec80000', '2', 'https://iknoweverything.com']);
       assert.deepEqual(tx.label, 'Create Event');
@@ -232,10 +232,10 @@ describe("createMarket.createEvent", function() {
     maxValue: '2',
     numOutcomes: '2',
     resolution: undefined,
-    onSent: utils.noop,
-    onSuccess: utils.noop,
-    onFailed: utils.noop,
-    assertions: function(tx, onSent, onSuccess, onFailed) {
+    onSent: noop,
+    onSuccess: noop,
+    onFailed: noop,
+    assertions: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.CreateMarket.createEvent.to);
       assert.deepEqual(tx.params, ['010101', 'This is a test event description', 1500000000, '0xde0b6b3a7640000', '0x1bc16d674ec80000', '2', '']);
       assert.deepEqual(tx.label, 'Create Event');
@@ -251,10 +251,10 @@ describe("createMarket.createEvent", function() {
     maxValue: '2',
     numOutcomes: '2',
     resolution: '     https://iknoweverything.com',
-    onSent: utils.noop,
-    onSuccess: utils.noop,
-    onFailed: utils.noop,
-    assertions: function(tx, onSent, onSuccess, onFailed) {
+    onSent: noop,
+    onSuccess: noop,
+    onFailed: noop,
+    assertions: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.CreateMarket.createEvent.to);
       assert.deepEqual(tx.params, ['010101', 'This is a test event description', 1500000000, '0xde0b6b3a7640000', '0x1bc16d674ec80000', '2', 'https://iknoweverything.com']);
       assert.deepEqual(tx.label, 'Create Event');
@@ -271,11 +271,11 @@ describe("createMarket.createEvent", function() {
       maxValue: '5',
       numOutcomes: '5',
       resolution: '     https://iknowmostthings.com',
-      onSent: utils.noop,
-      onSuccess: utils.noop,
-      onFailed: utils.noop,
+      onSent: noop,
+      onSuccess: noop,
+      onFailed: noop,
     },
-    assertions: function(tx, onSent, onSuccess, onFailed) {
+    assertions: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.CreateMarket.createEvent.to);
       assert.deepEqual(tx.params, ['010101', 'This is a test event description', 1500000000, '0xde0b6b3a7640000', '0x4563918244f40000', '5', 'https://iknowmostthings.com']);
       assert.deepEqual(tx.label, 'Create Event');
@@ -284,10 +284,10 @@ describe("createMarket.createEvent", function() {
   });
 });
 
-describe("createMarket.createMarket", function() {
+describe("createMarket.createMarket", function () {
   // 4 tests total
-  var test = function(t) {
-    it(t.testDescription, function() {
+  var test = function (t) {
+    it(t.testDescription, function () {
       var transact = augur.transact;
       var getGasPrice = augur.rpc.getGasPrice;
       augur.transact = t.assertions;
@@ -302,7 +302,7 @@ describe("createMarket.createMarket", function() {
 
   test({
     testDescription: "Should handle creation of a market without callbacks",
-    assertions: function(tx, onSent, onSuccess, onFailed) {
+    assertions: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.CreateMarket.createMarket.to);
       assert.deepEqual(tx.label, 'Create Market');
       assert.deepEqual(tx.method, 'createMarket');
@@ -318,7 +318,7 @@ describe("createMarket.createMarket", function() {
         'more info'
       ]);
     },
-    getGasPrice: function(cb) {
+    getGasPrice: function (cb) {
       // for simplicity's sake, just return 10.
       if (cb) return cb('10');
       return '10';
@@ -332,7 +332,7 @@ describe("createMarket.createMarket", function() {
   });
   test({
     testDescription: "Should handle creation of a market without callbacks - no extraInfo provided",
-    assertions: function(tx, onSent, onSuccess, onFailed) {
+    assertions: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.CreateMarket.createMarket.to);
       assert.deepEqual(tx.label, 'Create Market');
       assert.deepEqual(tx.method, 'createMarket');
@@ -348,7 +348,7 @@ describe("createMarket.createMarket", function() {
         ''
       ]);
     },
-    getGasPrice: function(cb) {
+    getGasPrice: function (cb) {
       // for simplicity's sake, just return 10.
       if (cb) return cb('10');
       return '10';
@@ -362,7 +362,7 @@ describe("createMarket.createMarket", function() {
   });
   test({
     testDescription: "Should handle creation of a market with callbacks",
-    assertions: function(tx, onSent, onSuccess, onFailed) {
+    assertions: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.CreateMarket.createMarket.to);
       assert.deepEqual(tx.label, 'Create Market');
       assert.deepEqual(tx.method, 'createMarket');
@@ -378,7 +378,7 @@ describe("createMarket.createMarket", function() {
         'even more information'
       ]);
     },
-    getGasPrice: function(cb) {
+    getGasPrice: function (cb) {
       // for simplicity's sake, just return 10.
       if (cb) return cb('10');
       return '10';
@@ -389,13 +389,13 @@ describe("createMarket.createMarket", function() {
     tags: ['football', 'soccer', 'baseball'],
     makerFee: 0.02,
     extraInfo: 'even more information',
-    onSent: utils.noop,
-    onSuccess: utils.noop,
-    onFailed: utils.noop
+    onSent: noop,
+    onSuccess: noop,
+    onFailed: noop
   });
   test({
     testDescription: "Should handle creation of a market with callbacks and a single object argument",
-    assertions: function(tx, onSent, onSuccess, onFailed) {
+    assertions: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.CreateMarket.createMarket.to);
       assert.deepEqual(tx.label, 'Create Market');
       assert.deepEqual(tx.method, 'createMarket');
@@ -411,7 +411,7 @@ describe("createMarket.createMarket", function() {
         'even more information'
       ]);
     },
-    getGasPrice: function(cb) {
+    getGasPrice: function (cb) {
       // for simplicity's sake, just return 10.
       if (cb) return cb('10');
       return '10';
@@ -423,17 +423,17 @@ describe("createMarket.createMarket", function() {
       tags: ['football', 'soccer', 'baseball'],
       makerFee: 0.02,
       extraInfo: 'even more information',
-      onSent: utils.noop,
-      onSuccess: utils.noop,
-      onFailed: utils.noop
+      onSent: noop,
+      onSuccess: noop,
+      onFailed: noop
     }
   });
 });
 
-describe("createMarket.updateTradingFee", function() {
+describe("createMarket.updateTradingFee", function () {
   // 3 tests total
-  var test = function(t) {
-    it(t.testDescription, function() {
+  var test = function (t) {
+    it(t.testDescription, function () {
       var transact = augur.transact;
       augur.transact = t.assertions;
 
@@ -445,7 +445,7 @@ describe("createMarket.updateTradingFee", function() {
 
   test({
     testDescription: 'Should be able to send an updateTradingFee transaction',
-    assertions: function(tx, onSent, onSuccess, onFailed) {
+    assertions: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.CreateMarket.updateTradingFee.to);
       assert.deepEqual(tx.label, 'Update Trading Fee');
       assert.deepEqual(tx.method, 'updateTradingFee');
@@ -455,14 +455,14 @@ describe("createMarket.updateTradingFee", function() {
     market: 'someFakeMarketID',
     takerFee: 0.02,
     makerFee: 0.01,
-    onSent: utils.noop,
-    onSuccess: utils.noop,
-    onFailed: utils.noop
+    onSent: noop,
+    onSuccess: noop,
+    onFailed: noop
   });
 
   test({
     testDescription: 'Should be able to send an updateTradingFee transaction as one object',
-    assertions: function(tx, onSent, onSuccess, onFailed) {
+    assertions: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.CreateMarket.updateTradingFee.to);
       assert.deepEqual(tx.label, 'Update Trading Fee');
       assert.deepEqual(tx.method, 'updateTradingFee');
@@ -473,15 +473,15 @@ describe("createMarket.updateTradingFee", function() {
       market: 'someFakeMarketID',
       takerFee: 0.02,
       makerFee: 0.01,
-      onSent: utils.noop,
-      onSuccess: utils.noop,
-      onFailed: utils.noop
+      onSent: noop,
+      onSuccess: noop,
+      onFailed: noop
     }
   });
 
   test({
     testDescription: 'Should be able to send an updateTradingFee transaction without passing callbacks',
-    assertions: function(tx, onSent, onSuccess, onFailed) {
+    assertions: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.CreateMarket.updateTradingFee.to);
       assert.deepEqual(tx.label, 'Update Trading Fee');
       assert.deepEqual(tx.method, 'updateTradingFee');

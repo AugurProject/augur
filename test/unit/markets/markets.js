@@ -1,9 +1,9 @@
 "use strict";
 
 var assert = require("chai").assert;
-var augur = new (require("../../../src"))();
 var abi = require("augur-abi");
-var utils = require("../../../src/utilities");
+var augur = new (require("../../../src"))();
+var noop = require("../../../src/utils/noop");
 
 describe("Market.getWinningOutcomes", function() {
   var test = function (t) {
@@ -21,7 +21,7 @@ describe("Market.getWinningOutcomes", function() {
   };
 
   test({
-    assertions: utils.noop,
+    assertions: noop,
     description: 'Should return null to the callback if getWinningOutcomes transaction returns undefined',
     market: 'marketID',
     fire: function(tx, cb) {
@@ -36,7 +36,7 @@ describe("Market.getWinningOutcomes", function() {
     }
   });
   test({
-    assertions: utils.noop,
+    assertions: noop,
     description: 'Should return an error object to callback if getWinningOutcomes transaction returns an error object',
     market: 'marketID',
     fire: function(tx, cb) {
@@ -50,7 +50,7 @@ describe("Market.getWinningOutcomes", function() {
     }
   });
   test({
-    assertions: utils.noop,
+    assertions: noop,
     description: 'Should return any non array value to callback if getWinningOutcomes transaction does not return an array',
     market: 'marketID',
     fire: function(tx, cb) {
@@ -64,7 +64,7 @@ describe("Market.getWinningOutcomes", function() {
     }
   });
   test({
-    assertions: utils.noop,
+    assertions: noop,
     description: 'Should return the winning outcomes in an array',
     market: 'marketID',
     fire: function(tx, cb) {
@@ -78,7 +78,7 @@ describe("Market.getWinningOutcomes", function() {
     }
   });
   test({
-    assertions: utils.noop,
+    assertions: noop,
     description: 'Should return an error object if getMarketNumOutcomes returns an error',
     market: 'marketID',
     fire: function(tx, cb) {
@@ -92,7 +92,7 @@ describe("Market.getWinningOutcomes", function() {
     }
   });
   test({
-    assertions: utils.noop,
+    assertions: noop,
     description: 'Should return the winning outcomes if getMarketNumOutcomes returns undefined',
     market: 'marketID',
     fire: function(tx, cb) {

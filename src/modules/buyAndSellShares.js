@@ -1,12 +1,8 @@
-/**
- * Augur JavaScript SDK
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var abi = require("augur-abi");
-var utils = require("../utilities");
+var noop = require("../utils/noop");
+var compose = require("../utils/compose");
 var constants = require("../constants");
 
 module.exports = {
@@ -22,10 +18,10 @@ module.exports = {
       onFailed = trade_id.onFailed;
       trade_id = trade_id.trade_id;
     }
-    onSent = onSent || utils.noop;
-    onSuccess = onSuccess || utils.noop;
-    onFailed = onFailed || utils.noop;
-    this.BuyAndSellShares.cancel(trade_id, onSent, utils.compose(function (result, cb) {
+    onSent = onSent || noop;
+    onSuccess = onSuccess || noop;
+    onFailed = onFailed || noop;
+    this.BuyAndSellShares.cancel(trade_id, onSent, compose(function (result, cb) {
       if (!result || !result.callReturn) return cb(result);
       self.rpc.receipt(result.hash, function (receipt) {
         var logs, sig, numLogs, logdata, i;

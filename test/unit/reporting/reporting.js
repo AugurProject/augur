@@ -1,15 +1,9 @@
-/**
- * augur.js tests
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var assert = require("chai").assert;
 var clone = require("clone");
 var abi = require("augur-abi");
 var augur = new (require("../../../src"))();
-var utils = require("../../../src/utilities");
 
 describe("getCurrentPeriod", function() {
   var test = function(t) {

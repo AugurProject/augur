@@ -2,7 +2,7 @@
 
 var abi = require("augur-abi");
 var clone = require("clone");
-var utils = require("../utilities");
+var isFunction = require("../utils/is-function");
 var encodeTagArray = require("../format/tag/encode-tag-array");
 
 module.exports = {
@@ -46,7 +46,7 @@ module.exports = {
       abi.fix(fees.makerProportionOfFee, "hex"),
       extraInfo || ""
     ];
-    if (!utils.is_function(onSent)) {
+    if (!isFunction(onSent)) {
       gasPrice = this.rpc.getGasPrice();
       tx.gasPrice = gasPrice;
       tx.value = this.calculateRequiredMarketValue(gasPrice);
@@ -103,7 +103,7 @@ module.exports = {
       abi.fix(fees.makerProportionOfFee, "hex"),
       extraInfo || ""
     ];
-    if (!utils.is_function(onSent)) {
+    if (!isFunction(onSent)) {
       gasPrice = this.rpc.getGasPrice();
       tx.gasPrice = gasPrice;
       tx.value = this.calculateRequiredMarketValue(gasPrice);

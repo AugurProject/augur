@@ -1,15 +1,15 @@
 "use strict";
 
 var parametrizeOrder = require("./parametrizeOrder");
-var utils = require("../utilities");
+var noop = require("../utils/noop");
 
 module.exports = {
 
   placeBid: function (market, outcomeID, numShares, limitPrice, tradeGroupID, callback) {
     var params;
-    if (!callback) callback = utils.noop;
+    if (!callback) callback = noop;
     params = parametrizeOrder.parametrizeOrder(market, outcomeID, numShares, limitPrice, tradeGroupID);
-    params.onSent = utils.noop;
+    params.onSent = noop;
     params.onSuccess = function () {
       callback(null);
     };
@@ -19,9 +19,9 @@ module.exports = {
 
   placeAsk: function (market, outcomeID, numShares, limitPrice, tradeGroupID, callback) {
     var params;
-    if (!callback) callback = utils.noop;
+    if (!callback) callback = noop;
     params = parametrizeOrder.parametrizeOrder(market, outcomeID, numShares, limitPrice, tradeGroupID);
-    params.onSent = utils.noop;
+    params.onSent = noop;
     params.onSuccess = function () {
       callback(null);
     };
@@ -31,9 +31,9 @@ module.exports = {
 
   placeShortAsk: function (market, outcomeID, numShares, limitPrice, tradeGroupID, callback) {
     var params;
-    if (!callback) callback = utils.noop;
+    if (!callback) callback = noop;
     params = parametrizeOrder.parametrizeOrder(market, outcomeID, numShares, limitPrice, tradeGroupID);
-    params.onSent = utils.noop;
+    params.onSent = noop;
     params.onSuccess = function () {
       callback(null);
     };
@@ -43,12 +43,12 @@ module.exports = {
 
   placeAskAndShortAsk: function (market, outcomeID, askShares, shortAskShares, limitPrice, tradeGroupID, callback) {
     var success, askParams, shortAskParams;
-    if (!callback) callback = utils.noop;
+    if (!callback) callback = noop;
     success = {ask: false, shortAsk: false};
     askParams = parametrizeOrder.parametrizeOrder(market, outcomeID, askShares, limitPrice, tradeGroupID);
     shortAskParams = parametrizeOrder.parametrizeOrder(market, outcomeID, shortAskShares, limitPrice, tradeGroupID);
-    askParams.onSent = utils.noop;
-    shortAskParams.onSent = utils.noop;
+    askParams.onSent = noop;
+    shortAskParams.onSent = noop;
     askParams.onSuccess = function () {
       success.ask = true;
       if (success.ask && success.shortAsk) callback(null);

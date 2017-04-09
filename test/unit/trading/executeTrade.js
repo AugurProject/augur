@@ -1,11 +1,11 @@
 "use strict";
 
-var assert = require('chai').assert;
+var assert = require("chai").assert;
 var augur = new (require("../../../src"))();
-var noop = require("../../../src/utilities").noop;
+var noop = require("../../../src/utils/noop");
 var constants = require("../../../src/constants");
 var BigNumber = require("bignumber.js");
-var clearCallCounts = require('../../tools').clearCallCounts;
+var clearCallCounts = require("../../tools").clearCallCounts;
 // 15 tests total
 
 describe("executeTrade.executeTrade", function() {

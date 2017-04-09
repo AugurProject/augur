@@ -1,9 +1,9 @@
 "use strict";
 
 var assert = require("chai").assert;
-var utils = require("../../../src/utilities.js");
+var noop = require("../../../src/utils/noop");
 var augur = new (require('../../../src/'))();
-var clearCallCounts = require('../../tools').clearCallCounts;
+var clearCallCounts = require("../../tools").clearCallCounts;
 // 11 tests total
 
 describe("payout.closeMarket", function() {
@@ -35,7 +35,6 @@ describe("payout.closeMarket", function() {
     });
   };
 
-
   test({
     testDescription: "Should handle sending a transaction to close a market",
     assertions: function(out) {
@@ -49,9 +48,9 @@ describe("payout.closeMarket", function() {
     branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
     market: '09f7e3e3fbc7d5b4c7e9e8fb3013efb22a47b326e7461c7655a2e8466ac27f9b',
     sender: '2c72686849275a98be3d3d06f062d3fbb3821cc30890218721cce9c67c91157e',
-    onSent: utils.noop,
-    onSuccess: utils.noop,
-    onFailed: utils.noop
+    onSent: noop,
+    onSuccess: noop,
+    onFailed: noop
   });
   test({
     testDescription: "Should handle sending a transaction to close a market with a single object as the argument",
@@ -67,9 +66,9 @@ describe("payout.closeMarket", function() {
       branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
       market: '09f7e3e3fbc7d5b4c7e9e8fb3013efb22a47b326e7461c7655a2e8466ac27f9b',
       sender: '2c72686849275a98be3d3d06f062d3fbb3821cc30890218721cce9c67c91157e',
-      onSent: utils.noop,
-      onSuccess: utils.noop,
-      onFailed: utils.noop
+      onSent: noop,
+      onSuccess: noop,
+      onFailed: noop
     }
   });
 });
@@ -127,7 +126,7 @@ describe("payout.claimProceeds", function() {
     branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
     market: '9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd',
     description: 'This market is extremely interesting and thought provoking.',
-    onSent: utils.noop,
+    onSent: noop,
     onSuccess: function(res) {
 			// onSuccess will act as the assertions function because it is expected to be called.
       assert.equal(res.hash, '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055');
@@ -136,7 +135,7 @@ describe("payout.claimProceeds", function() {
       assert.equal(res.callReturn.transactionHash, 'd898cbf2afbc9e10fa5936ec1f5666d3ea288ea79570e92dbf16ce57e3104f93')
       assert.equal(res.callReturn.shares, '100');
     },
-    onFailed: utils.noop
+    onFailed: noop
   });
 
   test({
@@ -146,7 +145,7 @@ describe("payout.claimProceeds", function() {
     branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
     market: '9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd',
     description: 'This market is extremely interesting and thought provoking.',
-    onSent: utils.noop,
+    onSent: noop,
     onSuccess: function(res) {
 			// onSuccess will act as the assertions function because it is expected to be called.
       assert.equal(res.hash, '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055');
@@ -155,7 +154,7 @@ describe("payout.claimProceeds", function() {
       assert.equal(res.callReturn.transactionHash, 'd898cbf2afbc9e10fa5936ec1f5666d3ea288ea79570e92dbf16ce57e3104f93')
       assert.equal(res.callReturn.shares, '100');
     },
-    onFailed: utils.noop
+    onFailed: noop
   });
 
   test({
@@ -163,13 +162,13 @@ describe("payout.claimProceeds", function() {
     branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
     market: '9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd',
     description: 'This market is extremely interesting and thought provoking.',
-    onSent: utils.noop,
+    onSent: noop,
     onSuccess: function(res) {
 			// onSuccess will act as the assertions function because it is expected to be called.
       assert.equal(res.hash, '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055');
       assert.equal(res.callReturn, '1');
     },
-    onFailed: utils.noop
+    onFailed: noop
   });
 
   test({
@@ -180,7 +179,7 @@ describe("payout.claimProceeds", function() {
       branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
       market: '9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd',
       description: 'This market is extremely interesting and thought provoking.',
-      onSent: utils.noop,
+      onSent: noop,
       onSuccess: function(res) {
 				// onSuccess will act as the assertions function because it is expected to be called.
         assert.equal(res.hash, '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055');
@@ -189,7 +188,7 @@ describe("payout.claimProceeds", function() {
         assert.equal(res.callReturn.transactionHash, 'd898cbf2afbc9e10fa5936ec1f5666d3ea288ea79570e92dbf16ce57e3104f93')
         assert.equal(res.callReturn.shares, '100');
       },
-      onFailed: utils.noop
+      onFailed: noop
     }
   });
 
@@ -200,8 +199,8 @@ describe("payout.claimProceeds", function() {
       branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
       market: '9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd',
       description: 'This market is extremely interesting and thought provoking.',
-      onSent: utils.noop,
-      onSuccess: utils.noop,
+      onSent: noop,
+      onSuccess: noop,
       onFailed: function(res) {
         assert.deepEqual(res, '-1');
       }
@@ -214,8 +213,8 @@ describe("payout.claimProceeds", function() {
     branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
     market: '9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd',
     description: 'This market is extremely interesting and thought provoking.',
-    onSent: utils.noop,
-    onSuccess: utils.noop,
+    onSent: noop,
+    onSuccess: noop,
     onFailed: function(res) {
       assert.deepEqual(res, '-8');
     }
@@ -227,8 +226,8 @@ describe("payout.claimProceeds", function() {
     branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
     market: '9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd',
     description: 'This market is extremely interesting and thought provoking.',
-    onSent: utils.noop,
-    onSuccess: utils.noop,
+    onSent: noop,
+    onSuccess: noop,
     onFailed: function(res) {
       assert.deepEqual(res, '0');
     }

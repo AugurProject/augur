@@ -1,8 +1,8 @@
 "use strict";
-var chat = require('../../../src/chat.js')
-var abi = require('augur-abi');
-var utils = require('../../../src/utilities.js');
-var assert = require('chai').assert;
+
+var assert = require("chai").assert;
+var abi = require("augur-abi");
+var chat = require("../../../src/chat")
 
 function prepMessage(message) {
   // simple function to handle a commonly needed conversion in this test series.

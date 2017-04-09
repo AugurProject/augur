@@ -4,7 +4,8 @@ var async = require("async");
 var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
 var constants = require("../constants");
-var utils = require("../utilities");
+var noop = require("../utils/noop");
+var isFunction = require("../utils/is-function");
 
 module.exports = {
 
@@ -119,7 +120,7 @@ module.exports = {
       market: market,
       outcome: outcome,
       scalarMinMax: scalarMinMax,
-      onSent: utils.noop,
+      onSent: noop,
       onSuccess: function (res) {
         callback(null, {
           id: res.callReturn,
@@ -222,12 +223,12 @@ module.exports = {
       market = market.market;
     }
     if (!marketInfo) return onFailed(this.errors.NO_MARKET_INFO);
-    onSimulate = onSimulate || utils.noop;
-    onBuyCompleteSets = onBuyCompleteSets || utils.noop;
-    onSetupOutcome = onSetupOutcome || utils.noop;
-    onSetupOrder = onSetupOrder || utils.noop;
-    onSuccess = onSuccess || utils.noop;
-    onFailed = onFailed || utils.noop;
+    onSimulate = onSimulate || noop;
+    onBuyCompleteSets = onBuyCompleteSets || noop;
+    onSetupOutcome = onSetupOutcome || noop;
+    onSetupOrder = onSetupOrder || noop;
+    onSuccess = onSuccess || noop;
+    onFailed = onFailed || noop;
     liquidity = abi.bignum(liquidity);
     initialFairPrices = abi.bignum(initialFairPrices);
     startingQuantity = abi.bignum(startingQuantity);
@@ -241,7 +242,7 @@ module.exports = {
     scalarMinMax = (marketInfo.type === "scalar") ? minMax : {};
     orders = this.calculateOrderPrices(liquidity, startingQuantity, bestStartingQuantity, initialFairPrices, minMax.minValue, minMax.maxValue, halfPriceWidth);
     if (orders.error) return onFailed(orders);
-    if (utils.is_function(onSimulate)) {
+    if (isFunction(onSimulate)) {
       onSimulate({
         shares: orders.shares.toFixed(),
         numBuyOrders: orders.numBuyOrders,
@@ -255,7 +256,7 @@ module.exports = {
     this.buyCompleteSets({
       market: market,
       amount: orders.shares.toFixed(),
-      onSent: utils.noop,
+      onSent: noop,
       onSuccess: function (res) {
         onBuyCompleteSets(res);
         self.generateOrders(market, self.assignOutcomeIDs(numOutcomes), orders, bestStartingQuantity, startingQuantity, scalarMinMax, onSetupOutcome, onSetupOrder, onSuccess, onFailed);

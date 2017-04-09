@@ -2,10 +2,7 @@
 
 var addFilter = require("./add-filter");
 var dispatch = require("./subscription/dispatch");
-
-var isFunction = function (f) {
-  return typeof f === "function";
-};
+var isFunction = require("../utils/is-function");
 
 module.exports = function () {
 

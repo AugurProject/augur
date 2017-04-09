@@ -1,6 +1,5 @@
 /**
  * Tools to adjust positions in Augur markets for display.
- * @author Jack Peterson (jack@tinybike.net)
  */
 
 "use strict";
@@ -8,8 +7,9 @@
 var async = require("async");
 var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
+var isFunction = require("../utils/is-function");
+var unique = require("../utils/unique");
 var constants = require("../constants");
-var utils = require("../utilities");
 
 var ONE = new BigNumber("1", 10);
 
@@ -166,7 +166,7 @@ module.exports = {
   adjustPositions: function (account, marketIDs, shareTotals, callback) {
     var i, numMarketIDs, adjustedPositions, onChainPosition, marketID, shortAskBuyCompleteSetsShareTotal, shortSellBuyCompleteSetsShareTotal, sellCompleteSetsShareTotal, self = this;
     adjustedPositions = {};
-    if (!utils.is_function(callback)) {
+    if (!isFunction(callback)) {
       for (i = 0, numMarketIDs = marketIDs.length; i < numMarketIDs; ++i) {
         marketID = marketIDs[i];
         onChainPosition = this.getPositionInMarket(marketID, account);
@@ -211,7 +211,7 @@ module.exports = {
     return Object.keys(shareTotals.shortAskBuyCompleteSets)
       .concat(Object.keys(shareTotals.shortSellBuyCompleteSets))
       .concat(Object.keys(shareTotals.sellCompleteSets))
-      .filter(utils.unique);
+      .filter(unique);
   },
 
   /**
@@ -234,12 +234,12 @@ module.exports = {
    */
   getAdjustedPositions: function (account, options, callback) {
     var shareTotals, marketIDs, self = this;
-    if (!callback && utils.is_function(options)) {
+    if (!callback && isFunction(options)) {
       callback = options;
       options = null;
     }
     options = options || {};
-    if (!utils.is_function(callback)) {
+    if (!isFunction(callback)) {
       shareTotals = this.calculateShareTotals({
         shortAskBuyCompleteSets: this.getShortAskBuyCompleteSetsLogs(account, options),
         shortSellBuyCompleteSets: this.getTakerShortSellLogs(account, options),

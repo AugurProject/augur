@@ -7,17 +7,12 @@
 
 var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
-var utils = require("../utilities");
 var constants = require("../constants");
 var makeReports = require("./makeReports");
+var sha3 = require("../utils/sha3");
 var decodeTag = require("../format/tag/decode-tag");
 
 var ONE, ONE_POINT_FIVE, FXP_ONE_POINT_FIVE;
-
-BigNumber.config({
-  MODULO_MODE: BigNumber.EUCLID,
-  ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
-});
 
 ONE = new BigNumber("1", 10);
 ONE_POINT_FIVE = new BigNumber("1.5", 10);
@@ -124,7 +119,7 @@ module.exports = {
   },
 
   makeTradeHash: function (max_value, max_amount, trade_ids) {
-    return utils.sha3([
+    return sha3([
       this.sumTrades(trade_ids),
       abi.fix(max_amount, "hex"),
       abi.fix(max_value, "hex")

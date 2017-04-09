@@ -1,7 +1,3 @@
-/**
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var abi = require("augur-abi");

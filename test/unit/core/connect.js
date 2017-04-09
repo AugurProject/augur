@@ -1,25 +1,25 @@
 "use strict";
 
-var assert = require('chai').assert;
-var augur = new (require("../../../src"))();
-var Contracts = require('augur-contracts');
-var constants = require("../../../src/constants");
-var clearCallCounts = require('../../tools').clearCallCounts;
-var noop = require('../../../src/utilities.js').noop;
+var assert = require("chai").assert;
 var BigNumber = require("bignumber.js");
-var proxyquire = require('proxyquire').noCallThru().noPreserveCache();
+var Contracts = require('augur-contracts');
+var augur = new (require("../../../src"))();
+var constants = require("../../../src/constants");
+var clearCallCounts = require("../../tools").clearCallCounts;
+var noop = require("../../../src/utils/noop");
+var proxyquire = require("proxyquire").noCallThru().noPreserveCache();
 // 27 tests total
 
-describe('connect.bindContractMethod', function() {
+describe('connect.bindContractMethod', function () {
   // 11 tests total
   var fire = augur.fire;
   var transact = augur.transact;
-  afterEach(function() {
+  afterEach(function () {
     augur.fire = fire;
     augur.transact = transact;
   });
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
         augur.fire = t.fire;
         augur.transact = t.transact;
         t.callMethod(augur.bindContractMethod(t.contract, t.method));
@@ -29,11 +29,11 @@ describe('connect.bindContractMethod', function() {
     description: 'Should handle binding a method and then handling the method correctly when the method required inputs and has no callback. no parser, not fixed, send false',
     contract: 'Cash',
     method: 'balance',
-    callMethod: function(method) {
+    callMethod: function (method) {
       // (address, callback)
       method('0xa1', undefined);
     },
-    fire: function(tx, onSent, onSuccess, onFailed) {
+    fire: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx, {
       	inputs: ['address'],
       	label: 'Balance',
@@ -47,7 +47,7 @@ describe('connect.bindContractMethod', function() {
       assert.isUndefined(onSuccess);
       assert.isUndefined(onFailed);
     },
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, onSent, onSuccess, onFailed) {
       // Shouldn't get hit in this case
       assert.isFalse(true);
     }
@@ -56,11 +56,11 @@ describe('connect.bindContractMethod', function() {
     description: 'Should handle binding a method and then handling the method correctly when the method required inputs and has callback. no parser, not fixed, send false',
     contract: 'Cash',
     method: 'balance',
-    callMethod: function(method) {
+    callMethod: function (method) {
       // (address, callback)
       method('0xa1', noop);
     },
-    fire: function(tx, onSent, onSuccess, onFailed) {
+    fire: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx, {
       	inputs: ['address'],
       	label: 'Balance',
@@ -74,7 +74,7 @@ describe('connect.bindContractMethod', function() {
       assert.isUndefined(onSuccess);
       assert.isUndefined(onFailed);
     },
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, onSent, onSuccess, onFailed) {
       // Shouldn't get hit in this case
       assert.isFalse(true);
     }
@@ -83,11 +83,11 @@ describe('connect.bindContractMethod', function() {
     description: 'Should handle binding a method and then handling the method correctly when the method has inputs, without callback. method transaction has a parser, not fixed, send false',
     contract: 'Branches',
     method: 'getEventForkedOver',
-    callMethod: function(method) {
+    callMethod: function (method) {
       // (branch, cb)
       method('1010101', undefined);
     },
-    fire: function(tx, onSent, onSuccess, onFailed) {
+    fire: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx, { inputs: [ 'branch' ],
         label: 'Get Event Forked Over',
         method: 'getEventForkedOver',
@@ -101,7 +101,7 @@ describe('connect.bindContractMethod', function() {
       assert.isUndefined(onSuccess);
       assert.isUndefined(onFailed);
     },
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, onSent, onSuccess, onFailed) {
       // Shouldn't get hit in this case
       assert.isFalse(true);
     }
@@ -110,11 +110,11 @@ describe('connect.bindContractMethod', function() {
     description: 'Should handle binding a method and then handling the method correctly when the method has inputs, with callback. method transaction has a parser, not fixed, send false',
     contract: 'Branches',
     method: 'getEventForkedOver',
-    callMethod: function(method) {
+    callMethod: function (method) {
       // (branch, cb)
       method('1010101', noop);
     },
-    fire: function(tx, onSent, onSuccess, onFailed) {
+    fire: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx, { inputs: [ 'branch' ],
         label: 'Get Event Forked Over',
         method: 'getEventForkedOver',
@@ -128,7 +128,7 @@ describe('connect.bindContractMethod', function() {
       assert.deepEqual(onSuccess, augur[tx.parser]);
       assert.isUndefined(onFailed);
     },
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, onSent, onSuccess, onFailed) {
       // Shouldn't get hit in this case
       assert.isFalse(true);
     }
@@ -137,11 +137,11 @@ describe('connect.bindContractMethod', function() {
     description: 'Should handle binding a method and then handling the method correctly when the method has inputs, without callback. method transaction without a parser, fixed, send false',
     contract: 'Topics',
     method: 'updateTopicPopularity',
-    callMethod: function(method) {
+    callMethod: function (method) {
       // (branch, topic, fxpAmount, cb)
       method('1010101', 'politics', '10000000000000000', undefined);
     },
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx,{
         fixed: [ 2 ],
         inputs: [ 'branch', 'topic', 'fxpAmount' ],
@@ -157,7 +157,7 @@ describe('connect.bindContractMethod', function() {
       assert.isUndefined(onSuccess);
       assert.isUndefined(onFailed);
     },
-    fire: function(tx, callback) {
+    fire: function (tx, callback) {
       // Shouldn't get hit in this case
       assert.isTrue(false);
     }
@@ -166,14 +166,14 @@ describe('connect.bindContractMethod', function() {
     description: 'Should handle binding a method and then handling the method correctly when the method has inputs, with callback. method transaction without a parser, fixed, send false. arg as one object',
     contract: 'Topics',
     method: 'updateTopicPopularity',
-    callMethod: function(method) {
+    callMethod: function (method) {
       // (branch, topic, fxpAmount, cb)
       method({branch: '1010101', topic: 'politics', fxpAmount: '10000000000000000', callback: noop});
     },
-    fire: function(tx, callback) {
+    fire: function (tx, callback) {
       assert.isFalse(true);
     },
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx,{
         fixed: [ 2 ],
         inputs: [ 'branch', 'topic', 'fxpAmount' ],
@@ -191,15 +191,15 @@ describe('connect.bindContractMethod', function() {
     description: 'Should handle binding a method and then handling the method correctly when the method required inputs and has no callback. no parser, fixed tx, send true',
     contract: 'Cash',
     method: 'addCash',
-    callMethod: function(method) {
+    callMethod: function (method) {
       // (ID, amount, callback)
       method('0xa1', '10000000000000000', undefined);
     },
-    fire: function(tx, onSent, onSuccess, onFailed) {
+    fire: function (tx, onSent, onSuccess, onFailed) {
       // Shouldn't get hit in this case
       assert.isTrue(false);
     },
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx, {
         fixed: [ 1 ],
         inputs: [ 'ID', 'amount' ],
@@ -220,15 +220,15 @@ describe('connect.bindContractMethod', function() {
     description: 'Should handle binding a method and then handling the method correctly when the method required inputs and has all callbacks. no parser, fixed tx, send true',
     contract: 'Cash',
     method: 'addCash',
-    callMethod: function(method) {
+    callMethod: function (method) {
       // (ID, amount, onSent, onSuccess, onFailed)
       method('0xa1', '10000000000000000', noop, noop, noop);
     },
-    fire: function(tx, onSent, onSuccess, onFailed) {
+    fire: function (tx, onSent, onSuccess, onFailed) {
       // Shouldn't get hit in this case
       assert.isTrue(false);
     },
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx, {
         fixed: [ 1 ],
         inputs: [ 'ID', 'amount' ],
@@ -249,15 +249,15 @@ describe('connect.bindContractMethod', function() {
     description: 'Should handle binding a method and then handling the method correctly when the method required inputs and has callback. no parser, fixed tx, send true, single object arg',
     contract: 'Cash',
     method: 'addCash',
-    callMethod: function(method) {
+    callMethod: function (method) {
       // (ID, amount, callback)
       method({ ID: '0xa1', amount: '10000000000000000', callback: noop});
     },
-    fire: function(tx, onSent, onSuccess, onFailed) {
+    fire: function (tx, onSent, onSuccess, onFailed) {
       // Shouldn't get hit in this case
       assert.isTrue(false);
     },
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx, {
         fixed: [ 1 ],
         inputs: [ 'ID', 'amount' ],
@@ -278,15 +278,15 @@ describe('connect.bindContractMethod', function() {
     description: 'Should handle binding a method and then handling the method correctly when the method passed no args and is a method where send is true',
     contract: 'Cash',
     method: 'addCash',
-    callMethod: function(method) {
+    callMethod: function (method) {
       // (ID, amount, callback)
       method();
     },
-    fire: function(tx, onSent, onSuccess, onFailed) {
+    fire: function (tx, onSent, onSuccess, onFailed) {
       // Shouldn't get hit in this case
       assert.isFalse(true);
     },
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx, {
         fixed: [ 1 ],
         inputs: [ 'ID', 'amount' ],
@@ -306,11 +306,11 @@ describe('connect.bindContractMethod', function() {
     description: 'Should handle binding a method and then handling the method correctly when the method passed no args and is a method where send is false',
     contract: 'Cash',
     method: 'balance',
-    callMethod: function(method) {
+    callMethod: function (method) {
       // (account, callback)
       method();
     },
-    fire: function(tx, onSent, onSuccess, onFailed) {
+    fire: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx, {
         inputs: [ 'address' ],
         label: 'Balance',
@@ -323,7 +323,7 @@ describe('connect.bindContractMethod', function() {
       assert.isUndefined(onSuccess);
       assert.isUndefined(onFailed);
     },
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, onSent, onSuccess, onFailed) {
       // Shouldn't get hit in this case
       assert.isFalse(true);
     }
@@ -332,11 +332,11 @@ describe('connect.bindContractMethod', function() {
     description: 'Should handle binding a method and then handling the method correctly send is false, args are present, not fixed, no parser',
     contract: 'MakeReports',
     method: 'makeHash',
-    callMethod: function(method) {
+    callMethod: function (method) {
       // (account, callback)
       method({ salt: '1337', report: '1', eventID: '0xe1', sender: '0xf1', callback: noop });
     },
-    fire: function(tx, onSent, onSuccess, onFailed) {
+    fire: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx, {
         inputs: [ 'salt', 'report', 'eventID', 'sender' ],
         label: 'Make Hash',
@@ -350,7 +350,7 @@ describe('connect.bindContractMethod', function() {
       assert.isUndefined(onSuccess);
       assert.isUndefined(onFailed);
     },
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, onSent, onSuccess, onFailed) {
       // Shouldn't get hit in this case
       assert.isFalse(true);
     }
@@ -359,11 +359,11 @@ describe('connect.bindContractMethod', function() {
     description: 'Should handle binding a method and then handling the method correctly send is false, args are present, fixed, no parser',
     contract: 'MakeReports',
     method: 'validateReport',
-    callMethod: function(method) {
+    callMethod: function (method) {
       // (account, callback)
       method({ eventID: '0xe1', branch: '0xb1', votePeriod: '1000', report: '1', forkedOverEthicality: '0', forkedOverThisEvent: '0', roundTwo: '1001', balance: '1000', callback: noop });
     },
-    fire: function(tx, onSent, onSuccess, onFailed) {
+    fire: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx, {
         fixed: [ 3, 7 ],
         inputs: [ 'eventID', 'branch', 'votePeriod', 'report', 'forkedOverEthicality', 'forkedOverThisEvent', 'roundTwo', 'balance' ],
@@ -378,7 +378,7 @@ describe('connect.bindContractMethod', function() {
       assert.isUndefined(onSuccess);
       assert.isUndefined(onFailed);
     },
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, onSent, onSuccess, onFailed) {
       // Shouldn't get hit in this case
       assert.isFalse(true);
     }
@@ -387,7 +387,7 @@ describe('connect.bindContractMethod', function() {
     description: 'Should handle binding a method and then handling the method correctly send is true, parser',
     contract: 'FakeContract',
     method: 'fakeMethod',
-    callMethod: function(method) {
+    callMethod: function (method) {
       // because no functions currently exist where send is true and we require a parser, we are going to make a fake function to do this so we can unit test.
       augur.api.functions.FakeContract = {
         fakeMethod: {
@@ -404,11 +404,11 @@ describe('connect.bindContractMethod', function() {
       method({ branch: '0xb1', callback: noop });
       augur.api.functions.fakeContract = undefined;
     },
-    fire: function(tx, onSent, onSuccess, onFailed) {
+    fire: function (tx, onSent, onSuccess, onFailed) {
       // Shouldn't get hit in this case
       assert.isFalse(true);
     },
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx, {
         inputs: [ 'branch' ],
         label: 'Fake Method',
@@ -427,16 +427,16 @@ describe('connect.bindContractMethod', function() {
   });
 });
 
-describe('connect.bindContractAPI', function() {
+describe('connect.bindContractAPI', function () {
   // 2 tests total
   var callCounts = {
     bindContractMethod: 0
   };
-  afterEach(function() {
+  afterEach(function () {
     clearCallCounts(callCounts);
   });
-  var test = function(t) {
-    it(t.description, function(done) {
+  var test = function (t) {
+    it(t.description, function (done) {
       // These tests will be slightly different then the usual format. This is designed to isolate only the bindContractAPI method so we don't start messing with augur.js object as a whole and then have to clean it up.
       var isolatedBindContractAPI = proxyquire('../../../src/modules/connect.js', {}).bindContractAPI.bind(t.testThis);
       t.assertions(isolatedBindContractAPI(t.methods), done);
@@ -446,7 +446,7 @@ describe('connect.bindContractAPI', function() {
     description: 'For each of the methods passed in, bindContractMethod should be called and we should return the methods bound.',
     testThis: {
       api: { functions: {} },
-      bindContractMethod: function(contract, method) {
+      bindContractMethod: function (contract, method) {
         callCounts.bindContractMethod++;
         assert.oneOf(contract, ['testFunctionGroup1', 'testFunctionGroup2']);
         assert.oneOf(method, ['testFunction1', 'testFunction2', 'testFunction3', 'testFunction4']);
@@ -510,7 +510,7 @@ describe('connect.bindContractAPI', function() {
         },
     	}
     },
-    assertions: function(methods, done) {
+    assertions: function (methods, done) {
       assert.deepEqual(methods, {
       	testFunctionGroup1: {
       		testFunction1: {
@@ -586,14 +586,14 @@ describe('connect.bindContractAPI', function() {
   				}
   			}
   		},
-      bindContractMethod: function(contract, method) {
+      bindContractMethod: function (contract, method) {
         callCounts.bindContractMethod++;
         assert.oneOf(contract, ['testFunctionGroup1']);
         assert.oneOf(method, ['testFunction1', 'testFunction2']);
       }
     },
     methods: undefined,
-    assertions: function(methods, done) {
+    assertions: function (methods, done) {
       assert.deepEqual(methods, {
       	testFunctionGroup1: {
       		testFunction1: {
@@ -620,16 +620,16 @@ describe('connect.bindContractAPI', function() {
   });
 });
 
-describe('connect.sync', function() {
+describe('connect.sync', function () {
   // 3 tests total
   var callCounts = {
     bindContractAPI: 0,
   };
-  afterEach(function() {
+  afterEach(function () {
     clearCallCounts(callCounts);
   });
-  var test = function(t) {
-    it(t.description, function(done) {
+  var test = function (t) {
+    it(t.description, function (done) {
       // bind connect to t.testThis instead of augur, replace ethereumjs-connect with a test mock.
       var isolatedSync = proxyquire('../../../src/modules/connect.js', {
         'ethereumjs-connect': t.connector,
@@ -641,7 +641,7 @@ describe('connect.sync', function() {
   test({
     description: 'Should be able to sync when connector state is missing contracts, and networkID prior to call to sync.',
     testThis: {
-      bindContractAPI: function() {
+      bindContractAPI: function () {
         callCounts.bindContractAPI++;
       },
     },
@@ -660,7 +660,7 @@ describe('connect.sync', function() {
       setupEventsAPI: noop,
       rpc: { desc: 'this is the ethrpc object' }
     },
-    assertions: function(out, testThis, connector, done) {
+    assertions: function (out, testThis, connector, done) {
       assert.isTrue(out);
       assert.isNull(testThis.network_id);
       assert.deepEqual(testThis.from, connector.state.from);
@@ -678,7 +678,7 @@ describe('connect.sync', function() {
   test({
     description: 'Should be able to sync if connector.state.api.functions is undefined forcing this.api to use Contracts.api',
     testThis: {
-      bindContractAPI: function() {
+      bindContractAPI: function () {
         callCounts.bindContractAPI++;
       },
     },
@@ -697,7 +697,7 @@ describe('connect.sync', function() {
       setupFunctionsAPI: noop,
       setupEventsAPI: noop
     },
-    assertions: function(out, testThis, connector, done) {
+    assertions: function (out, testThis, connector, done) {
       assert.isTrue(out);
       assert.deepEqual(testThis.network_id, connector.state.networkID);
       assert.deepEqual(testThis.from, connector.state.from);
@@ -715,12 +715,12 @@ describe('connect.sync', function() {
   test({
     description: 'Should return false if connector isnt an Object',
     testThis: {
-      bindContractAPI: function() {
+      bindContractAPI: function () {
         callCounts.bindContractAPI++;
       },
     },
     connector: [],
-    assertions: function(out, testThis, connector, done) {
+    assertions: function (out, testThis, connector, done) {
       assert.isFalse(out);
       assert.deepEqual(callCounts, {
         bindContractAPI: 0,
@@ -730,15 +730,15 @@ describe('connect.sync', function() {
   });
 });
 
-describe('connect.useAccount', function() {
+describe('connect.useAccount', function () {
   // 1 test total
   var connector;
   var callCounts = {
   	setFrom: 0,
   	sync: 0
   };
-  var test = function(t) {
-  	it(t.description, function() {
+  var test = function (t) {
+  	it(t.description, function () {
       var connect = proxyquire('../../../src/modules/connect.js', {
         'ethereumjs-connect': t.connector
       });
@@ -750,7 +750,7 @@ describe('connect.useAccount', function() {
   	description: 'Should set connector.from to the account passed, should call setFrom and sync.',
   	account: '0xabc123',
     testThis: {
-      sync: function() {
+      sync: function () {
     		callCounts.sync++;
     		assert.equal(connector.from, '0xabc123');
     		assert.deepEqual(callCounts, {
@@ -761,7 +761,7 @@ describe('connect.useAccount', function() {
     },
     connector: {
       from: '0x0',
-      setFrom: function(account) {
+      setFrom: function (account) {
     		callCounts.setFrom++;
     		assert.equal(account, '0xabc123');
         connector.from = account;
@@ -770,12 +770,12 @@ describe('connect.useAccount', function() {
   });
 });
 
-describe('connect.connect', function() {
+describe('connect.connect', function () {
   // 9 tests total (5 async, 4 sync)
-  var test = function(t) {
+  var test = function (t) {
     // for the one test where rpcinfo is passed as a function the sync test is not required...
     if (t.rpcinfo.constructor !== Function) {
-      it(t.description + ' sync', function() {
+      it(t.description + ' sync', function () {
         var connect = proxyquire('../../../src/modules/connect', {
           'ethereumjs-connect': t.connector
         });
@@ -783,19 +783,19 @@ describe('connect.connect', function() {
         t.assertions(connect.connect.call(t.testThis, t.rpcinfo, undefined));
       });
     }
-    it(t.description + ' async', function(done) {
+    it(t.description + ' async', function (done) {
       var connect = proxyquire('../../../src/modules/connect', {
         'ethereumjs-connect': t.connector
       });
       // this is in place to call this function different for one test
       if (t.rpcinfo.constructor === Function) {
-        connect.connect.call(t.testThis, function(connection) {
+        connect.connect.call(t.testThis, function (connection) {
           t.assertions(connection);
           done();
         }, undefined);
       } else {
         // all tests except for the test passing rpcinfo as a function will use this call
-        connect.connect.call(t.testThis, t.rpcinfo, function(connection) {
+        connect.connect.call(t.testThis, t.rpcinfo, function (connection) {
           t.assertions(connection);
           done();
         });
@@ -810,7 +810,7 @@ describe('connect.connect', function() {
       sync: noop
     },
     connector: {
-      connect: function(options, cb) {
+      connect: function (options, cb) {
         assert.deepEqual(options, {
           httpAddresses: [],
           wsAddresses: [],
@@ -825,9 +825,9 @@ describe('connect.connect', function() {
           return true;
         }
       },
-      rpc: { unsubscribe: function(_, callback) { setImmediate(function () { callback({ error: -32601, message: "Method not found"}) }); } }
+      rpc: { unsubscribe: function (_, callback) { setImmediate(function () { callback({ error: -32601, message: "Method not found"}) }); } }
     },
-    assertions: function(connection) {
+    assertions: function (connection) {
       assert.isTrue(connection);
     }
   });
@@ -838,7 +838,7 @@ describe('connect.connect', function() {
       sync: noop
     },
     connector: {
-      connect: function(options, cb) {
+      connect: function (options, cb) {
         assert.deepEqual(options, {
           httpAddresses: ['https://eth3.augur.net'],
           wsAddresses: [],
@@ -853,9 +853,9 @@ describe('connect.connect', function() {
           return true;
         }
       },
-      rpc: { unsubscribe: function(_, callback) { setImmediate(function () { callback({ error: -32601, message: "Method not found"}) }); } }
+      rpc: { unsubscribe: function (_, callback) { setImmediate(function () { callback({ error: -32601, message: "Method not found"}) }); } }
     },
-    assertions: function(connection) {
+    assertions: function (connection) {
       assert.isTrue(connection);
     }
   });
@@ -870,7 +870,7 @@ describe('connect.connect', function() {
       sync: noop,
     },
     connector: {
-      connect: function(options, cb) {
+      connect: function (options, cb) {
         assert.deepEqual(options, {
           httpAddresses: ['https://eth3.augur.net'],
           ipcAddresses: ['/path/to/geth.ipc'],
@@ -885,23 +885,23 @@ describe('connect.connect', function() {
           return true;
         }
       },
-      rpc: { unsubscribe: function(_, callback) { setImmediate(function () { callback({ error: -32601, message: "Method not found"}) }); } }
+      rpc: { unsubscribe: function (_, callback) { setImmediate(function () { callback({ error: -32601, message: "Method not found"}) }); } }
     },
-    assertions: function(connection) {
+    assertions: function (connection) {
       assert.isTrue(connection);
     }
   });
   // this final test is going to async only. It passes rpcinfo as a function which triggers conditionals in our test function. Please take note of this when reading this test.
   test({
     description: 'Should handle a rpcinfo as a function',
-    rpcinfo: function() {
+    rpcinfo: function () {
       // simple set this to a function, we are going to pass through to assertions anyway and skip the sync tests in this case.
     },
     testThis: {
       sync: noop
     },
     connector: {
-      connect: function(options, cb) {
+      connect: function (options, cb) {
         assert.deepEqual(options, {
           httpAddresses: [],
           wsAddresses: [],
@@ -916,9 +916,9 @@ describe('connect.connect', function() {
           return true;
         }
       },
-      rpc: { unsubscribe: function(_, callback) { setImmediate(function () { callback({ error: -32601, message: "Method not found"}) }); } }
+      rpc: { unsubscribe: function (_, callback) { setImmediate(function () { callback({ error: -32601, message: "Method not found"}) }); } }
     },
-    assertions: function(connection) {
+    assertions: function (connection) {
       assert.isTrue(connection);
     }
   });

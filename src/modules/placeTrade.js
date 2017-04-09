@@ -6,20 +6,20 @@ var uuid = require("uuid");
 var uuidParse = require("uuid-parse");
 var abi = require("augur-abi");
 var splitOrder = require("./splitOrder");
-var utils = require("../utilities");
+var noop = require("../utils/noop");
 var constants = require("../constants");
 
 module.exports = {
 
   generateTradeGroupID: function () {
-    return abi.format_int256(new Buffer(uuidParse.parse(uuid.v4())).toString("hex"));
+    return abi.format_int256(Buffer.from(uuidParse.parse(uuid.v4())).toString("hex"));
   },
 
   executeTradingActions: function (market, outcomeID, address, getOrderBooks, doNotMakeOrders, tradesInProgress, tradeCommitmentCallback, tradeCommitLockCallback, callback) {
     var tradeGroupID, self = this;
-    if (!tradeCommitmentCallback) tradeCommitmentCallback = utils.noop;
-    if (!tradeCommitLockCallback) tradeCommitLockCallback = utils.noop;
-    if (!callback) callback = utils.noop;
+    if (!tradeCommitmentCallback) tradeCommitmentCallback = noop;
+    if (!tradeCommitLockCallback) tradeCommitLockCallback = noop;
+    if (!callback) callback = noop;
     tradeGroupID = this.generateTradeGroupID();
     async.eachSeries(tradesInProgress, function (tradeInProgress, nextTradeInProgress) {
       if (!tradeInProgress.limitPrice || !tradeInProgress.numShares || !tradeInProgress.totalCost) {

@@ -1,6 +1,5 @@
 /**
  * ethrpc fire/transact wrappers
- * @author Jack Peterson (jack@tinybike.net)
  */
 
 "use strict";

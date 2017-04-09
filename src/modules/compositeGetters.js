@@ -1,22 +1,18 @@
-/**
- * Augur JavaScript SDK
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var BigNumber = require("bignumber.js");
 var clone = require("clone");
 var abi = require("augur-abi");
-var utils = require("../utilities");
-var constants = require("../constants");
+var isFunction = require("../utils/is-function");
+var noop = require("../utils/noop");
 var decodeTag = require("../format/tag/decode-tag");
+var constants = require("../constants");
 
 module.exports = {
 
   getOrderBookChunked: function (marketID, offset, numTradesToLoad, scalarMinMax, totalTrades, chunkCB, callback) {
     var self = this;
-    if (!utils.is_function(chunkCB)) chunkCB = utils.noop;
+    if (!isFunction(chunkCB)) chunkCB = noop;
     if (!totalTrades) {
       return this.get_total_trades(marketID, function (totalTrades) {
         if (!totalTrades || totalTrades.error || !parseInt(totalTrades, 10)) {
@@ -68,7 +64,7 @@ module.exports = {
         setTimeout(function () {
           self.loadNextMarketsBatch(branchID, startIndex + chunkSize, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass);
         }, pause);
-      } else if (utils.is_function(nextPass)) {
+      } else if (isFunction(nextPass)) {
         setTimeout(function () { nextPass(); }, pause);
       }
     });
@@ -152,7 +148,7 @@ module.exports = {
   },
 
   getPositionInMarket: function (market, account, callback) {
-    if (!callback && utils.is_function(account)) {
+    if (!callback && isFunction(account)) {
       callback = account;
       account = null;
     }
@@ -186,7 +182,7 @@ module.exports = {
   // scalarMinMax: null if not scalar; {minValue, maxValue} if scalar
   getOrderBook: function (market, scalarMinMax, callback) {
     var offset, numTradesToLoad, tx;
-    if (!callback && utils.is_function(scalarMinMax)) {
+    if (!callback && isFunction(scalarMinMax)) {
       callback = scalarMinMax;
       scalarMinMax = null;
     }
@@ -217,7 +213,7 @@ module.exports = {
       account = market.account;
       market = market.market;
     }
-    if (!callback && utils.is_function(account)) {
+    if (!callback && isFunction(account)) {
       callback = account;
       account = null;
     }
@@ -245,7 +241,7 @@ module.exports = {
 
   batchGetMarketInfo: function (marketIDs, account, callback) {
     var tx;
-    if (!callback && utils.is_function(account)) {
+    if (!callback && isFunction(account)) {
       callback = account;
       account = null;
     }
@@ -315,7 +311,7 @@ module.exports = {
 
   getMarketsInfo: function (branch, offset, numMarketsToLoad, volumeMin, volumeMax, callback) {
     var tx;
-    if (!callback && utils.is_function(offset)) {
+    if (!callback && isFunction(offset)) {
       callback = offset;
       offset = null;
       numMarketsToLoad = null;

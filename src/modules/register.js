@@ -1,11 +1,6 @@
-/**
- * Augur JavaScript SDK
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
-var utils = require("../utilities");
+var isFunction = require("../utils/is-function");
 
 module.exports = {
 
@@ -15,12 +10,12 @@ module.exports = {
 
   getRegisterBlockNumber: function (account, options, callback) {
     var logs, self = this;
-    if (!callback && utils.is_function(options)) {
+    if (!callback && isFunction(options)) {
       callback = options;
       options = null;
     }
     options = options || {};
-    if (!utils.is_function(callback)) {
+    if (!isFunction(callback)) {
       logs = this.getLogs("registration", {sender: account});
       if (!logs || !logs.length) return null;
       return self.parseLastBlockNumber(logs);
