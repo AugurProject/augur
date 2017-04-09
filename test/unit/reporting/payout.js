@@ -38,7 +38,7 @@ describe("payout.closeMarket", function () {
   test({
     testDescription: "Should handle sending a transaction to close a market",
     assertions: function (out) {
-      assert.deepEqual(out.to, augur.api.functions.CloseMarket.closeMarket.to);
+      assert.deepEqual(out.to, augur.store.getState().contractsAPI.functions.CloseMarket.closeMarket.to);
       assert.deepEqual(out.label, 'Close Market');
       assert.deepEqual(out.method, 'closeMarket');
       assert.deepEqual(out.params, [
@@ -55,7 +55,7 @@ describe("payout.closeMarket", function () {
   test({
     testDescription: "Should handle sending a transaction to close a market with a single object as the argument",
     assertions: function (out) {
-      assert.deepEqual(out.to, augur.api.functions.CloseMarket.closeMarket.to);
+      assert.deepEqual(out.to, augur.store.getState().contractsAPI.functions.CloseMarket.closeMarket.to);
       assert.deepEqual(out.label, 'Close Market');
       assert.deepEqual(out.method, 'closeMarket');
       assert.deepEqual(out.params, [
@@ -91,7 +91,7 @@ describe("payout.claimProceeds", function () {
       var logs = [];
       for (var i = 0, numLogs = Cash.length; i < numLogs; i++) {
         logs.push({
-          topics: [augur.api.events.payout.signature],
+          topics: [augur.store.getState().contractsAPI.events.payout.signature],
           blockNumber: '1000000000',
           transactionHash: 'd898cbf2afbc9e10fa5936ec1f5666d3ea288ea79570e92dbf16ce57e3104f93',
           removed: false,

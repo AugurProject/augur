@@ -16,8 +16,8 @@ var amount = "1";
 var branchID = augur.constants.DEFAULT_BRANCH_ID;
 var accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
 var outcome = 1;
-var numMarkets = parseInt(augur.getNumMarketsBranch(branchID), 10);
-var markets = augur.getSomeMarketsInBranch(branchID, numMarkets - 100, numMarkets);
+var numMarkets = parseInt(augur.Branches.getNumMarketsBranch(branchID), 10);
+var markets = augur.Branches.getSomeMarketsInBranch(branchID, numMarkets - 100, numMarkets);
 var numMarkets = markets.length;
 var marketId = tools.select_random(markets);
 if (numMarkets > tools.MAX_TEST_SAMPLES) {
@@ -137,7 +137,7 @@ describe("getMarketsInfo", function () {
     }
     options = options || {};
     assert.isObject(info);
-    var numMarkets = options.numMarkets || parseInt(augur.getNumMarketsBranch(branchID));
+    var numMarkets = options.numMarkets || parseInt(augur.Branches.getNumMarketsBranch(branchID));
     var market;
     assert.strictEqual(Object.keys(info).length, numMarkets);
     for (var marketId in info) {

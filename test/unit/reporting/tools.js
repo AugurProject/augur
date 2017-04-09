@@ -75,21 +75,21 @@ describe("tools.remove_duplicates", function () {
 describe("tools.checkTime", function () {
   var augur = new (require("../../../src"))();
   var incrementPeriodAfterReporting = augur.Consensus.incrementPeriodAfterReporting;
-  var getVotePeriod = augur.getVotePeriod;
+  var getVotePeriod = augur.Branches.getVotePeriod;
   var getExpiration = augur.getExpiration;
   var getCurrentPeriod = augur.getCurrentPeriod;
   var finished;
   var testState;
   afterEach(function () {
     augur.Consensus.incrementPeriodAfterReporting = incrementPeriodAfterReporting;
-    augur.getVotePeriod = getVotePeriod;
+    augur.Branches.getVotePeriod = getVotePeriod;
     augur.getExpiration = getExpiration;
     augur.getCurrentPeriod = getCurrentPeriod;
   });
   var test = function (t) {
     it(JSON.stringify(t), function (done) {
       augur.Consensus.incrementPeriodAfterReporting = t.incrementPeriodAfterReporting;
-      augur.getVotePeriod = t.getVotePeriod;
+      augur.Branches.getVotePeriod = t.getVotePeriod;
       augur.getExpiration = t.getExpiration;
       augur.getCurrentPeriod = t.getCurrentPeriod;
       finished = done;

@@ -144,7 +144,13 @@ describe("Login", function () {
   });
   it("login with a private key", function (done) {
     this.timeout(tools.TIMEOUT);
+    var state = require('../../../src/accounts/state');
+    console.log('state before:', state);
     augur.accounts.loginWithMasterKey("5169fdd07cb61657ad0d1c60f1132eed52c91949d6d85654110b11ede80a6d2e", function (user) {
+      console.log('user.derivedKey:', user.derivedKey.toString("hex"));
+      console.log('user.privateKey:', user.privateKey.toString("hex"));
+      console.log('augur.accounts.account:', augur.accounts.account);
+      console.log('state after:', state);
       assert.notProperty(user, "error");
       assert.isTrue(Buffer.isBuffer(augur.accounts.account.privateKey));
       assert.isTrue(Buffer.isBuffer(augur.accounts.account.derivedKey));

@@ -540,18 +540,18 @@ describe('CompositeGetters.loadNextMarketsBatch', function () {
 });
 describe('CompositeGetters.loadMarkets', function () {
   // 3 tests total
-  var getNumMarketsBranch = augur.getNumMarketsBranch;
+  var getNumMarketsBranch = augur.Branches.getNumMarketsBranch;
   var loadNextMarketsBatch = augur.loadNextMarketsBatch;
   var options = augur.options;
   afterEach(function () {
-    augur.getNumMarketsBranch = getNumMarketsBranch;
+    augur.Branches.getNumMarketsBranch = getNumMarketsBranch;
     augur.loadNextMarketsBatch = loadNextMarketsBatch;
     augur.options = options;
   });
   var test = function (t) {
     it(t.description + " async", function (done) {
       var chunkCBcc = 0;
-      augur.getNumMarketsBranch = t.getNumMarketsBranch;
+      augur.Branches.getNumMarketsBranch = t.getNumMarketsBranch;
       augur.loadNextMarketsBatch = t.loadNextMarketsBatch;
       augur.options = t.options;
       augur.loadMarkets(t.branchID, t.chunkSize, t.isDesc, function (err, marketsData) {
@@ -746,16 +746,16 @@ describe('CompositeGetters.loadAssets', function () {
   var test = function (t) {
     it(t.description, function () {
       var getCashBalance = augur.Cash.balance;
-      var getRepBalance = augur.getRepBalance;
+      var getRepBalance = augur.Reporting.getRepBalance;
       var balance = augur.rpc.balance;
       augur.Cash.balance = t.Cash.balance;
-      augur.getRepBalance = t.getRepBalance;
+      augur.Reporting.getRepBalance = t.getRepBalance;
       augur.rpc.balance = t.balance;
 
       augur.loadAssets(t.branchID, t.accountID, t.cbEther, t.cbRep, t.cbRealEther);
 
       augur.Cash.balance = getCashBalance;
-      augur.getRepBalance = getRepBalance;
+      augur.Reporting.getRepBalance = getRepBalance;
       augur.rpc.balance = balance;
     });
   };
@@ -1109,7 +1109,7 @@ describe('CompositeGetters.getPositionInMarket', function () {
     callback: undefined,
     assertions: function (market, account, callback) {
       assert.deepEqual(market, '0x0a1');
-      // in this case we didn't pass account so we expect it to be augur.from, however this is null by default so that's what we are confirming here.
+      // in this case we didn't pass account so we expect it to be augur.store.getState().fromAddress, however this is null by default so that's what we are confirming here.
       assert.isNull(account);
       assert.deepEqual(callback, noop);
     }
@@ -1237,7 +1237,7 @@ describe('CompositeGetters.getOrderBook', function () {
     assertions: function (tx, callback, parseOrderBook, scalarMinMax) {
       assert.isNull(scalarMinMax);
       assert.deepEqual(tx.params, ['0x0a1', 0, 0]);
-      assert.deepEqual(tx.to, augur.api.functions.CompositeGetters.getOrderBook.to);
+      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.CompositeGetters.getOrderBook.to);
     }
   });
   test({
@@ -1248,7 +1248,7 @@ describe('CompositeGetters.getOrderBook', function () {
     assertions: function (tx, callback, parseOrderBook, scalarMinMax) {
       assert.isUndefined(scalarMinMax);
       assert.deepEqual(tx.params, ['0x0a1', 0, 0]);
-      assert.deepEqual(tx.to, augur.api.functions.CompositeGetters.getOrderBook.to);
+      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.CompositeGetters.getOrderBook.to);
     }
   });
   test({
@@ -1259,7 +1259,7 @@ describe('CompositeGetters.getOrderBook', function () {
     assertions: function (tx, callback, parseOrderBook, scalarMinMax) {
       assert.isUndefined(scalarMinMax);
       assert.deepEqual(tx.params, ['0x0a1', 2, 10]);
-      assert.deepEqual(tx.to, augur.api.functions.CompositeGetters.getOrderBook.to);
+      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.CompositeGetters.getOrderBook.to);
     }
   });
   test({
@@ -1270,7 +1270,7 @@ describe('CompositeGetters.getOrderBook', function () {
     assertions: function (tx, callback, parseOrderBook, scalarMinMax) {
       assert.deepEqual(scalarMinMax, { minValue: '-10', maxValue: '110' });
       assert.deepEqual(tx.params, ['0x0a1', 1, 25]);
-      assert.deepEqual(tx.to, augur.api.functions.CompositeGetters.getOrderBook.to);
+      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.CompositeGetters.getOrderBook.to);
     }
   });
 });
@@ -1477,7 +1477,7 @@ describe('CompositeGetters.batchGetMarketInfo', function () {
     account: '0x0',
     callback: noop,
     assertions: function (tx, callback, parseBatchMarketInfo, numMarketIDs) {
-      assert.deepEqual(tx.to, augur.api.functions.CompositeGetters.batchGetMarketInfo.to);
+      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.CompositeGetters.batchGetMarketInfo.to);
       assert.deepEqual(tx.params, [['0x0a1', '0x0a2', '0x0a3'],'0x0']);
       assert.deepEqual(numMarketIDs, 3);
     }
@@ -1488,7 +1488,7 @@ describe('CompositeGetters.batchGetMarketInfo', function () {
     account: noop,
     callback: undefined,
     assertions: function (tx, callback, parseBatchMarketInfo, numMarketIDs) {
-      assert.deepEqual(tx.to, augur.api.functions.CompositeGetters.batchGetMarketInfo.to);
+      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.CompositeGetters.batchGetMarketInfo.to);
       assert.deepEqual(tx.params, [['0x0a1', '0x0a2', '0x0a3'], 0]);
       assert.deepEqual(numMarketIDs, 3);
     }
@@ -1625,7 +1625,7 @@ describe('CompositeGetters.getMarketsInfo', function () {
     volumeMax: undefined,
     callback: function (data) {
       assert.deepEqual(data.params, [augur.constants.DEFAULT_BRANCH_ID, 0, 0, 0, 0]);
-      assert.deepEqual(data.to, augur.api.functions.CompositeGetters.getMarketsInfo.to);
+      assert.deepEqual(data.to, augur.store.getState().contractsAPI.functions.CompositeGetters.getMarketsInfo.to);
     },
     fire: function (tx, callback, parseMarketsInfo, branch) {
       callback(tx);
@@ -1640,7 +1640,7 @@ describe('CompositeGetters.getMarketsInfo', function () {
     volumeMax: 0,
     callback: function (data) {
       assert.deepEqual(data.params, ['101010', 5, 10, -1, 0]);
-      assert.deepEqual(data.to, augur.api.functions.CompositeGetters.getMarketsInfo.to);
+      assert.deepEqual(data.to, augur.store.getState().contractsAPI.functions.CompositeGetters.getMarketsInfo.to);
     },
     fire: function (tx, callback, parseMarketsInfo, branch) {
       callback(tx);

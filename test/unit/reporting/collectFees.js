@@ -20,7 +20,7 @@ describe("collectFees", function () {
 			// set mocks to a per test level version
       augur.getCurrentPeriodProgress = t.getCurrentPeriodProgress;
       augur.getCurrentPeriod = t.getCurrentPeriod;
-      augur.getVotePeriod = t.getVotePeriod;
+      augur.Branches.getVotePeriod = t.getVotePeriod;
       augur.getFeesCollected = t.getFeesCollected;
       augur.getAfterRep = t.getAfterRep;
       augur.transact = t.transact;
@@ -34,7 +34,7 @@ describe("collectFees", function () {
 		// save normal versions of each function that will be mocked
     getCurrentPeriodProgress = augur.getCurrentPeriodProgress;
     getCurrentPeriod = augur.getCurrentPeriod;
-    getVotePeriod = augur.getVotePeriod;
+    getVotePeriod = augur.Branches.getVotePeriod;
     getFeesCollected = augur.getFeesCollected;
     getAfterRep = augur.getAfterRep;
     transact = augur.transact;
@@ -45,7 +45,7 @@ describe("collectFees", function () {
 		// revert augur functions to the original functions
     augur.getCurrentPeriodProgress = getCurrentPeriodProgress;
     augur.getCurrentPeriod = getCurrentPeriod;
-    augur.getVotePeriod = getVotePeriod;
+    augur.Branches.getVotePeriod = getVotePeriod;
     augur.getFeesCollected = getFeesCollected;
     augur.getAfterRep = getAfterRep;
     augur.transact = transact;
@@ -135,7 +135,7 @@ describe("collectFees", function () {
       cb('14327');
     },
     transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.api.functions.CollectFees.collectFees.to);
+      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.CollectFees.collectFees.to);
       assert.deepEqual(tx.params, [ '0xb1', '0xa1' ]);
       assert.deepEqual(tx.gasPrice, '14327');
       assert.deepEqual(tx.value, '0x9a174ebe0');
@@ -183,7 +183,7 @@ describe("collectFees", function () {
       cb('14327');
     },
     transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.api.functions.CollectFees.collectFees.to);
+      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.CollectFees.collectFees.to);
       assert.deepEqual(tx.params, [ '0xb1', '0xa1' ]);
       assert.deepEqual(tx.gasPrice, '14327');
       assert.deepEqual(tx.value, '0x9a174ebe0');
@@ -235,7 +235,7 @@ describe("collectFees", function () {
       cb('14327');
     },
     transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.api.functions.CollectFees.collectFees.to);
+      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.CollectFees.collectFees.to);
       assert.deepEqual(tx.params, [ '0xb1', '0xa1' ]);
       assert.deepEqual(tx.gasPrice, '14327');
       assert.deepEqual(tx.value, '0x9a174ebe0');
@@ -290,7 +290,7 @@ describe("collectFees", function () {
       cb('14327');
     },
     transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.api.functions.CollectFees.collectFees.to);
+      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.CollectFees.collectFees.to);
       assert.deepEqual(tx.params, [ '0xb1', '0xa1' ]);
       assert.deepEqual(tx.gasPrice, '14327');
       assert.deepEqual(tx.value, '0x9a174ebe0');
@@ -345,7 +345,7 @@ describe("collectFees", function () {
       cb('14327');
     },
     transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.api.functions.CollectFees.collectFees.to);
+      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.CollectFees.collectFees.to);
       assert.deepEqual(tx.params, [ '0xb1', '0xa1' ]);
       assert.deepEqual(tx.gasPrice, '14327');
       assert.deepEqual(tx.value, '0x9a174ebe0');

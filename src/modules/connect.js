@@ -11,6 +11,7 @@ var Contracts = require("augur-contracts");
 var constants = require("../constants");
 var compose = require("../utils/compose");
 var isFunction = require("../utils/is-function");
+var store = require("../store");
 
 module.exports = {
 
@@ -27,7 +28,7 @@ module.exports = {
     var self = this;
     return function () {
       var tx, params, numInputs, numFixed, cb, i, onSent, onSuccess, onFailed;
-      tx = clone(self.api.functions[contract][method]);
+      tx = clone(store.getState().contractsAPI.functions[contract][method]);
       if (!arguments || !arguments.length) {
         if (!tx.send) return self.fire(tx);
         return self.transact(tx);
@@ -109,13 +110,14 @@ module.exports = {
 
   bindContractAPI: function (methods) {
     var contract, method;
-    methods = methods || this.api.functions;
+    methods = methods || store.getState().contractsAPI.functions;
     for (contract in methods) {
       if (methods.hasOwnProperty(contract)) {
         this[contract] = {};
         for (method in methods[contract]) {
           if (methods[contract].hasOwnProperty(method)) {
             this[contract][method] = this.bindContractMethod(contract, method);
+            // TODO remove root-level auto bindings
             if (!this[method]) this[method] = this[contract][method];
           }
         }
@@ -125,10 +127,16 @@ module.exports = {
   },
 
   sync: function () {
+    var api;
     if (connector && connector.constructor === Object) {
-      this.network_id = connector.state.networkID;
-      this.from = connector.state.from;
-      this.coinbase = connector.state.coinbase;
+      store.dispatch({
+        type: "SET_FROM_ADDRESS",
+        fromAddress: connector.state.from
+      });
+      store.dispatch({
+        type: "SET_COINBASE_ADDRESS",
+        coinbaseAddress: connector.state.coinbase
+      });
       this.rpc = connector.rpc;
       if (!connector.state.contracts) {
         connector.configure({contracts: Contracts, api: Contracts.api});
@@ -137,15 +145,22 @@ module.exports = {
         }
         connector.setContracts();
       }
-      this.contracts = connector.state.contracts;
+      store.dispatch({
+        type: "SET_CONTRACT_ADDRESSES",
+        contractAddresses: connector.state.contracts
+      });
       connector.setupFunctionsAPI();
       connector.setupEventsAPI();
       if (connector.state.api && connector.state.api.functions) {
-        this.api = connector.state.api;
+        api = connector.state.api;
       } else {
-        this.api = Contracts.api;
+        api = Contracts.api;
       }
-      this.tx = this.api.functions;
+      store.dispatch({
+        type: "SET_CONTRACTS_API",
+        contractsAPI: api
+      });
+      // this.tx = store.getState().contractsAPI.functions; // TODO remove tx prop
       this.bindContractAPI();
       return true;
     }
@@ -204,15 +219,8 @@ module.exports = {
       return connection;
     }
     connector.connect(options, function (connection) {
-      // check to see if the connection supports subscriptions, if so make note of that so we can leverage it later
-      connector.rpc.unsubscribe("0x0123456789abcdef0123456789abcdef", function (errorOrResult) {
-        if (errorOrResult.message === "subscription not found") self.subscriptionsSupported = true;
-        else if (errorOrResult instanceof Error) self.subscriptionsSupported = false;
-        else if (errorOrResult.error) self.subscriptionsSupported = false;
-        else self.subscriptionsSupported = true;
-        self.sync();
-        cb(connection);
-      });
+      self.sync();
+      cb(connection);
     });
   }
 };

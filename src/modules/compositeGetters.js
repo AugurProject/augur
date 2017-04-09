@@ -7,6 +7,7 @@ var isFunction = require("../utils/is-function");
 var noop = require("../utils/noop");
 var decodeTag = require("../format/tag/decode-tag");
 var constants = require("../constants");
+var store = require("../store");
 
 module.exports = {
 
@@ -193,7 +194,7 @@ module.exports = {
       callback = callback || market.callback;
       market = market.market;
     }
-    tx = clone(this.tx.CompositeGetters.getOrderBook);
+    tx = clone(store.getState().contractsAPI.functions.CompositeGetters.getOrderBook);
     tx.params = [market, offset || 0, numTradesToLoad || 0];
     return this.fire(tx, callback, this.parseOrderBook, scalarMinMax);
   },
@@ -245,7 +246,7 @@ module.exports = {
       callback = account;
       account = null;
     }
-    tx = clone(this.tx.CompositeGetters.batchGetMarketInfo);
+    tx = clone(store.getState().contractsAPI.functions.CompositeGetters.batchGetMarketInfo);
     tx.params = [marketIDs, account || 0];
     return this.fire(tx, callback, this.parseBatchMarketInfo, marketIDs.length);
   },
@@ -331,7 +332,7 @@ module.exports = {
     numMarketsToLoad = numMarketsToLoad || 0;
     volumeMin = volumeMin || 0;
     volumeMax = volumeMax || 0;
-    tx = clone(this.tx.CompositeGetters.getMarketsInfo);
+    tx = clone(store.getState().contractsAPI.functions.CompositeGetters.getMarketsInfo);
     tx.params = [branch, offset, numMarketsToLoad, volumeMin, volumeMax];
     return this.fire(tx, callback, this.parseMarketsInfo, branch);
   }

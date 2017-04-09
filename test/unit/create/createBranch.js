@@ -164,7 +164,7 @@ describe("createBranch.createSubbranch", function () {
         returns: "hash",
         send: true,
         signature: [ "bytes", "int256", "int256", "int256", "int256" ],
-        to: augur.api.functions.CreateBranch.createSubbranch.to,
+        to: augur.store.getState().contractsAPI.functions.CreateBranch.createSubbranch.to,
         params: [
           "This is a branch description",
           120,
@@ -216,7 +216,7 @@ describe("createBranch.createSubbranch", function () {
         returns: "hash",
         send: true,
         signature: [ "bytes", "int256", "int256", "int256", "int256" ],
-        to: augur.api.functions.CreateBranch.createSubbranch.to,
+        to: augur.store.getState().contractsAPI.functions.CreateBranch.createSubbranch.to,
         params: [
           "This is another branch description",
           120,

@@ -202,7 +202,7 @@ function time_getMarketsInfo(numMarkets) {
 }
 
 function timing(maxNumMarkets) {
-  var numMarkets = parseInt(augur.getNumMarketsBranch(augur.constants.DEFAULT_BRANCH_ID));
+  var numMarkets = parseInt(augur.Branches.getNumMarketsBranch(augur.constants.DEFAULT_BRANCH_ID));
   console.log("Found", numMarkets, "markets");
   if (numMarkets >= maxNumMarkets) {
     return time_getMarketsInfo(numMarkets);

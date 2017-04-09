@@ -157,7 +157,7 @@ describe("trade.parseTradeReceipt", function () {
   test({
     receipt: {
       logs: [{
-        topics: [augur.api.events.log_fill_tx.signature],
+        topics: [augur.store.getState().contractsAPI.events.log_fill_tx.signature],
         data: ['1', 'notUsed', abi.fix('10').toString(), 'notUsed', 'notUsed', 'notUsed', abi.fix('0.03').toString(), 'notUsed', abi.fix('-5')]
       }],
     },
@@ -172,10 +172,10 @@ describe("trade.parseTradeReceipt", function () {
   test({
     receipt: {
       logs: [{
-        topics: [augur.api.events.log_fill_tx.signature],
+        topics: [augur.store.getState().contractsAPI.events.log_fill_tx.signature],
         data: ['1', 'notUsed', abi.fix('10').toString(), 'notUsed', 'notUsed', 'notUsed', abi.fix('0.03').toString(), 'notUsed', abi.fix('-5')]
       }, {
-        topics: [augur.api.events.log_fill_tx.signature],
+        topics: [augur.store.getState().contractsAPI.events.log_fill_tx.signature],
         data: ['1', 'notUsed', abi.fix('20').toString(), 'notUsed', 'notUsed', 'notUsed', abi.fix('0.03').toString(), 'notUsed', abi.fix('-10')]
       }],
     },
@@ -190,7 +190,7 @@ describe("trade.parseTradeReceipt", function () {
   test({
     receipt: {
       logs: [{
-        topics: [augur.api.events.log_fill_tx.signature],
+        topics: [augur.store.getState().contractsAPI.events.log_fill_tx.signature],
         data: ['2', 'notUsed', abi.fix('100').toString(), 'notUsed', 'notUsed', 'notUsed', abi.fix('0.02').toString(), 'notUsed', abi.fix('0.5')]
       }],
     },
@@ -205,15 +205,15 @@ describe("trade.parseTradeReceipt", function () {
   test({
     receipt: {
       logs: [{
-        topics: [augur.api.events.log_fill_tx.signature],
+        topics: [augur.store.getState().contractsAPI.events.log_fill_tx.signature],
         data: ['2', 'notUsed', abi.fix('100').toString(), 'notUsed', 'notUsed', 'notUsed', abi.fix('0.02').toString(), 'notUsed', abi.fix('0.5')]
       },
       {
-        topics: [augur.api.events.log_fill_tx.signature],
+        topics: [augur.store.getState().contractsAPI.events.log_fill_tx.signature],
         data: ['2', 'notUsed', abi.fix('400').toString(), 'notUsed', 'notUsed', 'notUsed', abi.fix('0.02').toString(), 'notUsed', abi.fix('0.25')]
       },
       {
-        topics: [augur.api.events.log_fill_tx.signature],
+        topics: [augur.store.getState().contractsAPI.events.log_fill_tx.signature],
         data: ['2', 'notUsed', abi.fix('250').toString(), 'notUsed', 'notUsed', 'notUsed', abi.fix('0.02').toString(), 'notUsed', abi.fix('0.2')]
       }],
     },
@@ -260,15 +260,15 @@ describe("trade.parseShortSellReceipt", function () {
   test({
     receipt: {
       logs: [{
-        topics: [augur.api.events.log_short_fill_tx.signature],
+        topics: [augur.store.getState().contractsAPI.events.log_short_fill_tx.signature],
         data: ['notUsed', abi.fix('100').toString(), 'notUsed', 'notUsed', 'notUsed', abi.fix('0.02').toString(), 'notUsed', 'notUsed', abi.fix('0.5')]
       },
       {
-        topics: [augur.api.events.log_short_fill_tx.signature],
+        topics: [augur.store.getState().contractsAPI.events.log_short_fill_tx.signature],
         data: ['notUsed', abi.fix('400').toString(), 'notUsed', 'notUsed', 'notUsed', abi.fix('0.02').toString(), 'notUsed', 'notUsed', abi.fix('0.25')]
       },
       {
-        topics: [augur.api.events.log_short_fill_tx.signature],
+        topics: [augur.store.getState().contractsAPI.events.log_short_fill_tx.signature],
         data: ['notUsed', abi.fix('250').toString(), 'notUsed', 'notUsed', 'notUsed', abi.fix('0.02').toString(), 'notUsed', 'notUsed', abi.fix('0.2')]
       }],
     },
@@ -330,7 +330,7 @@ describe("trade.trade", function () {
       },
     },
     checkGasLimit: function (trade_ids, sender, cb) {
-      assert.deepEqual(sender, abi.format_address(augur.from));
+      assert.deepEqual(sender, abi.format_address(augur.store.getState().fromAddress));
       cb({ error: 999, message: 'Uh-Oh!' });
     },
     makeTradeHash: function () {},
@@ -434,7 +434,7 @@ describe("trade.trade", function () {
     },
     parseTradeReceipt: function () {},
     transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.api.functions.Trade.trade.to);
+      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.Trade.trade.to);
       assert.deepEqual(tx.params, [
         '0x56bc75e2d63100000',
         '0x56bc75e2d63100000',
@@ -479,7 +479,7 @@ describe("trade.trade", function () {
              returns: 'hash[]',
              send: true,
              signature: [ 'int256', 'int256', 'int256[]', 'int256' ],
-             to: augur.api.functions.Trade.trade.to,
+             to: augur.store.getState().contractsAPI.functions.Trade.trade.to,
              params: [ '0x56bc75e2d63100000', '0x56bc75e2d63100000', [ '0xa1', '0xa2', '0xa3' ], '0xe1' ] },
           hash: '0x123abc456def7890'
         });
@@ -499,7 +499,7 @@ describe("trade.trade", function () {
     },
     parseTradeReceipt: function () {},
     transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.api.functions.Trade.trade.to);
+      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.Trade.trade.to);
       assert.deepEqual(tx.params, [
         '0x56bc75e2d63100000',
         '0x56bc75e2d63100000',
@@ -550,7 +550,7 @@ describe("trade.trade", function () {
     },
     parseTradeReceipt: function () {},
     transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.api.functions.Trade.trade.to);
+      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.Trade.trade.to);
       assert.deepEqual(tx.params, [
         '0x56bc75e2d63100000',
         '0x56bc75e2d63100000',
@@ -600,7 +600,7 @@ describe("trade.trade", function () {
       cb(undefined);
     },
     transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.api.functions.Trade.trade.to);
+      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.Trade.trade.to);
       assert.deepEqual(tx.params, [
         '0x56bc75e2d63100000',
         '0x56bc75e2d63100000',
@@ -655,7 +655,7 @@ describe("trade.trade", function () {
       cb({ error: 999, message: 'Uh-Oh!' });
     },
     transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.api.functions.Trade.trade.to);
+      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.Trade.trade.to);
       assert.deepEqual(tx.params, [
         '0x56bc75e2d63100000',
         '0x56bc75e2d63100000',
@@ -726,7 +726,7 @@ describe("trade.trade", function () {
       });
     },
     transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.api.functions.Trade.trade.to);
+      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.Trade.trade.to);
       assert.deepEqual(tx.params, [
         '0x56bc75e2d63100000',
         '0x56bc75e2d63100000',
@@ -777,7 +777,7 @@ describe("trade.trade", function () {
         		returns: 'hash[]',
         		send: true,
         		signature: ['int256', 'int256', 'int256[]', 'int256'],
-        		to: augur.api.functions.Trade.trade.to,
+        		to: augur.store.getState().contractsAPI.functions.Trade.trade.to,
         		params: ['0x56bc75e2d63100000', '0x56bc75e2d63100000', ['0xa1', '0xa2', '0xa3'], '0xe1']
         	},
         	hash: '0x123abc456def7890'
@@ -799,7 +799,7 @@ describe("trade.trade", function () {
     parseTradeReceipt: function (receipt) {},
     receipt: function (txHash, cb) {},
     transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.api.functions.Trade.trade.to);
+      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.Trade.trade.to);
       assert.deepEqual(tx.params, [
         '0x56bc75e2d63100000',
         '0x56bc75e2d63100000',
@@ -856,7 +856,7 @@ describe("trade.trade", function () {
     parseTradeReceipt: function (receipt) {},
     receipt: function (txHash, cb) {},
     transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.api.functions.Trade.trade.to);
+      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.Trade.trade.to);
       assert.deepEqual(tx.params, [
         '0x56bc75e2d63100000',
         '0x56bc75e2d63100000',
@@ -922,7 +922,7 @@ describe("trade.short_sell", function () {
       }
     },
     checkGasLimit: function (trade_ids, sender, cb) {
-      assert.deepEqual(sender, abi.format_address(augur.from));
+      assert.deepEqual(sender, abi.format_address(augur.store.getState().fromAddress));
       cb({ error: 999, message: 'Uh-Oh!' });
     },
     commitTrade: function () {},
@@ -1001,7 +1001,7 @@ describe("trade.short_sell", function () {
     },
     parseShortSellReceipt: function () {},
     transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.api.functions.Trade.short_sell.to);
+      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.Trade.short_sell.to);
       assert.deepEqual(tx.params, [ '0xa1', '0x56bc75e2d63100000', '0xabc1' ]);
       onFailed({ error: 999, message: 'Uh-Oh!' });
     },
@@ -1048,7 +1048,7 @@ describe("trade.short_sell", function () {
     },
     parseShortSellReceipt: function () {},
     transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.api.functions.Trade.short_sell.to);
+      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.Trade.short_sell.to);
       assert.deepEqual(tx.params, [ '0xa1', '0x56bc75e2d63100000', '0xabc1' ]);
       onSuccess({
       	callReturn: 0,
@@ -1093,7 +1093,7 @@ describe("trade.short_sell", function () {
         		returns: 'hash[]',
         		send: true,
         		signature: ['int256', 'int256', 'int256'],
-        		to: augur.api.functions.Trade.short_sell.to,
+        		to: augur.store.getState().contractsAPI.functions.Trade.short_sell.to,
         		params: ['0xa1', '0x56bc75e2d63100000', '0xabc1']
         	},
         	hash: '0x123abc456def7890'
@@ -1114,7 +1114,7 @@ describe("trade.short_sell", function () {
     },
     parseShortSellReceipt: function () {},
     transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.api.functions.Trade.short_sell.to);
+      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.Trade.short_sell.to);
       assert.deepEqual(tx.params, [ '0xa1', '0x56bc75e2d63100000', '0xabc1' ]);
       onSuccess({
       	callReturn: '-1',
@@ -1164,7 +1164,7 @@ describe("trade.short_sell", function () {
     },
     parseShortSellReceipt: function () {},
     transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.api.functions.Trade.short_sell.to);
+      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.Trade.short_sell.to);
       assert.deepEqual(tx.params, [ '0xa1', '0x56bc75e2d63100000', '0xabc1' ]);
       onSuccess({
         callReturn: [0],
@@ -1209,7 +1209,7 @@ describe("trade.short_sell", function () {
             returns: 'hash[]',
             send: true,
             signature: ['int256', 'int256', 'int256'],
-            to: augur.api.functions.Trade.short_sell.to,
+            to: augur.store.getState().contractsAPI.functions.Trade.short_sell.to,
             params: ['0xa1', '0x56bc75e2d63100000', '0xabc1']
           },
           hash: '0x123abc456def7890'
@@ -1230,7 +1230,7 @@ describe("trade.short_sell", function () {
     },
     parseShortSellReceipt: function () {},
     transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.api.functions.Trade.short_sell.to);
+      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.Trade.short_sell.to);
       assert.deepEqual(tx.params, [ '0xa1', '0x56bc75e2d63100000', '0xabc1' ]);
       onSuccess({
         callReturn: ['-1'],
@@ -1272,7 +1272,7 @@ describe("trade.short_sell", function () {
             returns: 'hash[]',
             send: true,
             signature: ['int256', 'int256', 'int256'],
-            to: augur.api.functions.Trade.short_sell.to,
+            to: augur.store.getState().contractsAPI.functions.Trade.short_sell.to,
             params: ['0xa1', '0x56bc75e2d63100000', '0xabc1']
           },
           hash: '0x123abc456def7890'
@@ -1293,7 +1293,7 @@ describe("trade.short_sell", function () {
     },
     parseShortSellReceipt: function () {},
     transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.api.functions.Trade.short_sell.to);
+      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.Trade.short_sell.to);
       assert.deepEqual(tx.params, [ '0xa1', '0x56bc75e2d63100000', '0xabc1' ]);
       onSuccess({
         callReturn: ['1', '0', '0'],
@@ -1339,7 +1339,7 @@ describe("trade.short_sell", function () {
     },
     parseShortSellReceipt: function () {},
     transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.api.functions.Trade.short_sell.to);
+      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.Trade.short_sell.to);
       assert.deepEqual(tx.params, [ '0xa1', '0x56bc75e2d63100000', '0xabc1' ]);
       onSuccess({
         callReturn: ['1', abi.fix('0'), abi.fix('100'), abi.fix('50')],
@@ -1390,7 +1390,7 @@ describe("trade.short_sell", function () {
     },
     parseShortSellReceipt: function (receipt) {},
     transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.api.functions.Trade.short_sell.to);
+      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.Trade.short_sell.to);
       assert.deepEqual(tx.params, [ '0xa1', '0x56bc75e2d63100000', '0xabc1' ]);
       onSuccess({
         callReturn: ['1', abi.fix('0'), abi.fix('100'), abi.fix('50')],
@@ -1453,7 +1453,7 @@ describe("trade.short_sell", function () {
       return receipt;
     },
     transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.api.functions.Trade.short_sell.to);
+      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.Trade.short_sell.to);
       assert.deepEqual(tx.params, [ '0xa1', '0x56bc75e2d63100000', '0xabc1' ]);
       onSuccess({
         callReturn: ['1', abi.fix('0'), abi.fix('100'), abi.fix('0.5')],

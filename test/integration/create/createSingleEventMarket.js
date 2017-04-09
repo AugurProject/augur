@@ -46,7 +46,7 @@ describe("CreateMarket.createSingleEventMarket", function () {
           var futurePeriod = abi.prefix_hex(new BigNumber(t.expDate, 10).dividedBy(new BigNumber(periodLength, 10)).floor().toString(16));
           var tradingFee = abi.bignum(t.takerFee).plus(abi.bignum(t.makerFee)).dividedBy(new BigNumber("1.5", 10));
           var formattedTags = encodeTagArray(t.tags);
-          assert.strictEqual(augur.getCreator(marketID), augur.coinbase);
+          assert.strictEqual(augur.getCreator(marketID), augur.store.getState().coinbaseAddress);
           assert.strictEqual(augur.getExtraInfo(marketID), t.extraInfo);
 
           // get market's event and check its properties are correct

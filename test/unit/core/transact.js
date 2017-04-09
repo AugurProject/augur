@@ -7,8 +7,8 @@ describe("Transact", function () {
 	// 16 total tests
   var rpcFire = augur.rpc.fire;
   var rpcTransact = augur.rpc.transact;
-  var coinbase = augur.coinbase;
-  var from = augur.from;
+  var coinbase = augur.store.getState().coinbaseAddress;
+  var from = augur.store.getState().fromAddress;
   var web = augur.accounts;
   function noop() {};
 
@@ -93,10 +93,10 @@ describe("Transact", function () {
       wrapper: noop,
       aux: noop,
       setup: function () {
-        augur.coinbase = 'coinbase';
+        augur.store.getState().coinbaseAddress = 'coinbase';
       },
       tearDown: function () {
-        augur.coinbase = coinbase;
+        augur.store.getState().coinbaseAddress = coinbase;
       },
       assertions: function (out) {
         assert.deepEqual(out.from, 'coinbase');
@@ -117,10 +117,10 @@ describe("Transact", function () {
       wrapper: noop,
       aux: noop,
       setup: function () {
-        augur.from = 'augurFromAddress';
+        augur.store.getState().fromAddress = 'augurFromAddress';
       },
       tearDown: function () {
-        augur.from = from;
+        augur.store.getState().fromAddress = from;
       },
       assertions: function (out) {
         assert.deepEqual(out.from, 'augurFromAddress');
@@ -167,13 +167,13 @@ describe("Transact", function () {
       aux: noop,
       setup: function () {
         augur.accounts = { account: { address: 'browserAccountAddress' } };
-        augur.from = 'augurFromAddress';
-        augur.coinbase = 'coinbase';
+        augur.store.getState().fromAddress = 'augurFromAddress';
+        augur.store.getState().coinbaseAddress = 'coinbase';
       },
       tearDown: function () {
         augur.accounts = web;
-        augur.from = from;
-        augur.coinbase = coinbase;
+        augur.store.getState().fromAddress = from;
+        augur.store.getState().coinbaseAddress = coinbase;
       },
       assertions: function (out) {
         assert.deepEqual(out.from, 'browserAccountAddress');
@@ -195,12 +195,12 @@ describe("Transact", function () {
       wrapper: noop,
       aux: noop,
       setup: function () {
-        augur.from = 'augurFromAddress';
-        augur.coinbase = 'coinbase';
+        augur.store.getState().fromAddress = 'augurFromAddress';
+        augur.store.getState().coinbaseAddress = 'coinbase';
       },
       tearDown: function () {
-        augur.from = from;
-        augur.coinbase = coinbase;
+        augur.store.getState().fromAddress = from;
+        augur.store.getState().coinbaseAddress = coinbase;
       },
       assertions: function (out) {
         assert.deepEqual(out.from, 'txFromAddress');
@@ -221,12 +221,12 @@ describe("Transact", function () {
       wrapper: noop,
       aux: noop,
       setup: function () {
-        augur.from = 'augurFromAddress';
-        augur.coinbase = 'coinbase';
+        augur.store.getState().fromAddress = 'augurFromAddress';
+        augur.store.getState().coinbaseAddress = 'coinbase';
       },
       tearDown: function () {
-        augur.from = from;
-        augur.coinbase = coinbase;
+        augur.store.getState().fromAddress = from;
+        augur.store.getState().coinbaseAddress = coinbase;
       },
       assertions: function (out) {
         assert.deepEqual(out.from, 'augurFromAddress');
@@ -314,10 +314,10 @@ describe("Transact", function () {
       onSuccess: noop,
       onFailed: noop,
       setup: function () {
-        augur.coinbase = 'coinbase';
+        augur.store.getState().coinbaseAddress = 'coinbase';
       },
       tearDown: function () {
-        augur.coinbase = coinbase;
+        augur.store.getState().coinbaseAddress = coinbase;
       },
       assertions: function (out) {
         assert.deepEqual(out.from, 'coinbase');
@@ -338,10 +338,10 @@ describe("Transact", function () {
       onSuccess: noop,
       onFailed: noop,
       setup: function () {
-        augur.from = 'augurFromAddress';
+        augur.store.getState().fromAddress = 'augurFromAddress';
       },
       tearDown: function () {
-        augur.from = from;
+        augur.store.getState().fromAddress = from;
       },
       assertions: function (out) {
         assert.deepEqual(out.from, 'augurFromAddress');
@@ -394,13 +394,13 @@ describe("Transact", function () {
           address: 'browserAccountAddress',
           privateKey: 'browserAccountPrivateKey'
         } };
-        augur.from = 'augurFromAddress';
-        augur.coinbase = 'coinbase';
+        augur.store.getState().fromAddress = 'augurFromAddress';
+        augur.store.getState().coinbaseAddress = 'coinbase';
       },
       tearDown: function () {
         augur.accounts = web;
-        augur.from = from;
-        augur.coinbase = coinbase;
+        augur.store.getState().fromAddress = from;
+        augur.store.getState().coinbaseAddress = coinbase;
       },
       assertions: function (out) {
         assert.deepEqual(out.from, 'browserAccountAddress');
@@ -422,12 +422,12 @@ describe("Transact", function () {
       onSuccess: noop,
       onFailed: noop,
       setup: function () {
-        augur.from = 'augurFromAddress';
-        augur.coinbase = 'coinbase';
+        augur.store.getState().fromAddress = 'augurFromAddress';
+        augur.store.getState().coinbaseAddress = 'coinbase';
       },
       tearDown: function () {
-        augur.from = from;
-        augur.coinbase = coinbase;
+        augur.store.getState().fromAddress = from;
+        augur.store.getState().coinbaseAddress = coinbase;
       },
       assertions: function (out) {
         assert.deepEqual(out.from, 'txFromAddress');
@@ -448,12 +448,12 @@ describe("Transact", function () {
       onSuccess: noop,
       onFailed: noop,
       setup: function () {
-        augur.from = 'augurFromAddress';
-        augur.coinbase = 'coinbase';
+        augur.store.getState().fromAddress = 'augurFromAddress';
+        augur.store.getState().coinbaseAddress = 'coinbase';
       },
       tearDown: function () {
-        augur.from = from;
-        augur.coinbase = coinbase;
+        augur.store.getState().fromAddress = from;
+        augur.store.getState().coinbaseAddress = coinbase;
       },
       assertions: function (out) {
         assert.deepEqual(out.from, 'augurFromAddress');

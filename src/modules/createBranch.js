@@ -4,6 +4,7 @@ var clone = require("clone");
 var abi = require("augur-abi");
 var isFunction = require("../utils/is-function");
 var sha3 = require("../utils/sha3");
+var store = require("../store");
 
 module.exports = {
 
@@ -82,7 +83,7 @@ module.exports = {
     }
     oracleOnly = oracleOnly || 0;
     description = description.trim();
-    tx = clone(this.tx.CreateBranch.createSubbranch);
+    tx = clone(store.getState().contractsAPI.functions.CreateBranch.createSubbranch);
     tx.params = [
       description,
       periodLength,

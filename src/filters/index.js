@@ -3,11 +3,12 @@
 var addFilter = require("./add-filter");
 var dispatch = require("./subscription/dispatch");
 var isFunction = require("../utils/is-function");
+var store = require("../store");
 
 module.exports = function () {
 
-  var contracts = this.contracts;
-  var eventsAPI = this.api.events;
+  var contracts = store.getState().contractAddresses;
+  var eventsAPI = store.getState().contractsAPI.events;
   var getBlockAndLogStreamer = this.rpc.getBlockAndLogStreamer.bind(this.rpc);
 
   return {
@@ -33,6 +34,7 @@ module.exports = function () {
 
     ignore: function (uninstall, cb, complete) {
       var token;
+      console.log(uninstall, cb, complete);
       if (this.blockStream) {
         for (token in this.blockStream.onLogAddedSubscribers) {
           if (this.blockStream.onLogAddedSubscribers.hasOwnProperty(token)) {

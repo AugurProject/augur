@@ -3,6 +3,7 @@
 var clone = require("clone");
 var abi = require("augur-abi");
 var compose = require("../utils/compose");
+var store = require("../store");
 
 module.exports = {
 
@@ -19,7 +20,7 @@ module.exports = {
       onFailed = branch.onFailed;
       branch = branch.branch;
     }
-    tx = clone(this.tx.SendReputation.sendReputation);
+    tx = clone(store.getState().contractsAPI.functions.SendReputation.sendReputation);
     tx.params = [branch, recver, abi.fix(value, "hex")];
 
     // if callReturn is 0, but account has sufficient Reputation and Rep

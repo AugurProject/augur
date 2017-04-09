@@ -282,7 +282,7 @@ describe("periodCatchUp", function () {
     var penalizeWrong = augur.penalizeWrong;
     var getNumMarkets = augur.getNumMarkets;
     var getMarkets = augur.getMarkets;
-    var getVotePeriod = augur.getVotePeriod;
+    var getVotePeriod = augur.Branches.getVotePeriod;
     var getCurrentPeriod = augur.getCurrentPeriod;
     var incrementPeriodAfterReporting = augur.incrementPeriodAfterReporting;
     after(function () {
@@ -291,7 +291,7 @@ describe("periodCatchUp", function () {
       augur.penalizeWrong = penalizeWrong;
       augur.getNumMarkets = getNumMarkets;
       augur.getMarkets = getMarkets;
-      augur.getVotePeriod = getVotePeriod;
+      augur.Branches.getVotePeriod = getVotePeriod;
       augur.getCurrentPeriod = getCurrentPeriod;
       augur.incrementPeriodAfterReporting = incrementPeriodAfterReporting;
     });
@@ -302,7 +302,7 @@ describe("periodCatchUp", function () {
         sequence.push({method: "getCurrentPeriod", params: [periodLength]});
         return state.currentPeriod[t.branchID];
       };
-      augur.getVotePeriod = function (branchID, callback) {
+      augur.Branches.getVotePeriod = function (branchID, callback) {
         sequence.push({method: "getVotePeriod", params: [branchID]});
         callback(state.reportPeriod[branchID]);
       };
@@ -654,7 +654,7 @@ describe("feePenaltyCatchUp", function () {
     var penalizeWrong = augur.penalizeWrong;
     var getNumMarkets = augur.getNumMarkets;
     var getMarkets = augur.getMarkets;
-    var getVotePeriod = augur.getVotePeriod;
+    var getVotePeriod = augur.Branches.getVotePeriod;
     var getCurrentPeriod = augur.getCurrentPeriod;
     var incrementPeriodAfterReporting = augur.incrementPeriodAfterReporting;
     var closeEventMarkets = augur.closeEventMarkets;
@@ -671,7 +671,7 @@ describe("feePenaltyCatchUp", function () {
       augur.penalizeWrong = penalizeWrong;
       augur.getNumMarkets = getNumMarkets;
       augur.getMarkets = getMarkets;
-      augur.getVotePeriod = getVotePeriod;
+      augur.Branches.getVotePeriod = getVotePeriod;
       augur.getCurrentPeriod = getCurrentPeriod;
       augur.incrementPeriodAfterReporting = incrementPeriodAfterReporting;
       augur.closeEventMarkets = closeEventMarkets;
@@ -695,7 +695,7 @@ describe("feePenaltyCatchUp", function () {
         sequence.push({method: "getCurrentPeriod", params: [periodLength]});
         return state.currentPeriod[t.branchID];
       };
-      augur.getVotePeriod = function (branchID, callback) {
+      augur.Branches.getVotePeriod = function (branchID, callback) {
         sequence.push({method: "getVotePeriod", params: [branchID]});
         callback(state.reportPeriod[branchID]);
       };

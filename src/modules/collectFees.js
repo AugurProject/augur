@@ -4,6 +4,7 @@ var BigNumber = require("bignumber.js");
 var clone = require("clone");
 var abi = require("augur-abi");
 var compose = require("../utils/compose");
+var store = require("../store");
 
 module.exports = {
 
@@ -22,7 +23,7 @@ module.exports = {
         "-2": "needs to be second half of reporting period to claim rep"
       });
     }
-    tx = clone(this.tx.CollectFees.collectFees);
+    tx = clone(store.getState().contractsAPI.functions.CollectFees.collectFees);
     tx.params = [branch, sender];
     this.getVotePeriod(branch, function (period) {
       self.getFeesCollected(branch, sender, period - 1, function (feesCollected) {

@@ -11,7 +11,7 @@ describe("CreateMarket.createEvent", function () {
   var numEvents = 2;
   var augur = tools.setup(require("../../../src"));
   var branch = augur.constants.DEFAULT_BRANCH_ID;
-  var period = augur.getVotePeriod(branch);
+  var period = augur.Branches.getVotePeriod(branch);
   var expDate = parseInt(new Date().getTime() / 995);
   var resolution = "https://www.google.com";
   var events = [];
@@ -30,7 +30,7 @@ describe("CreateMarket.createEvent", function () {
       onSuccess: function (r) {
         var eventID = r.callReturn;
         assert.strictEqual(augur.Events.getResolution(eventID), resolution);
-        assert.strictEqual(augur.getCreator(eventID), augur.coinbase);
+        assert.strictEqual(augur.getCreator(eventID), augur.store.getState().coinbaseAddress);
         assert.strictEqual(augur.getDescription(eventID), description);
         done();
       },

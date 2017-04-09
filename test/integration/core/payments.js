@@ -11,7 +11,7 @@ var DEBUG = false;
 function printBalance(account) {
   console.log({
     cash: augur.Cash.balance(account),
-    reputation: augur.getRepBalance(branch || augur.constants.DEFAULT_BRANCH_ID, account),
+    reputation: augur.Reporting.getRepBalance(branch || augur.constants.DEFAULT_BRANCH_ID, account),
     ether: abi.unfix(augur.rpc.balance(account), "string")
   });
 }
@@ -20,7 +20,7 @@ var augur = tools.setup(require(augurpath));
 
 var paymentValue = 1;
 var branch = augur.constants.DEFAULT_BRANCH_ID;
-var coinbase = augur.coinbase;
+var coinbase = augur.store.getState().coinbaseAddress;
 
 var testAccounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
 var receiver = testAccounts[2];
@@ -30,7 +30,7 @@ describe("Ether-for-cash conversion (deposit/withdraw)", function () {
 
   var value = paymentValue;
   var weiValue = abi.fix(value, "string");
-  var sender = augur.from;
+  var sender = augur.store.getState().fromAddress;
   var initialCash = abi.bignum(augur.Cash.balance(sender));
   var account = sender;
   if (DEBUG) printBalance(account);
@@ -45,7 +45,7 @@ describe("Ether-for-cash conversion (deposit/withdraw)", function () {
       onSuccess: function (res) {
         assert.strictEqual(weiValue, res.callReturn);
         assert.strictEqual(res.from, sender);
-        assert.strictEqual(res.to, augur.contracts.Cash);
+        assert.strictEqual(res.to, augur.store.getState().contractAddresses.Cash);
         var afterCash = abi.bignum(augur.Cash.balance(sender));
         if (DEBUG) console.log(afterCash.sub(initialCash).toNumber(), value);
         if (DEBUG) printBalance(account);
@@ -66,7 +66,7 @@ describe("Ether-for-cash conversion (deposit/withdraw)", function () {
               if (DEBUG) printBalance(account);
               assert.strictEqual(r.callReturn, "1");
               assert.strictEqual(r.from, sender);
-              assert.strictEqual(r.to, augur.contracts.Cash);
+              assert.strictEqual(r.to, augur.store.getState().contractAddresses.Cash);
               var finalCash = abi.bignum(augur.Cash.balance(sender));
               assert.strictEqual(initialCash.toFixed(), finalCash.toFixed());
               augur.rpc.getTransactionReceipt(r.hash, function (withdrawReceipt) {
@@ -96,7 +96,7 @@ describe("Payments", function () {
     augur.rpc.sendEther({
       to: receiver,
       value: paymentValue,
-      from: augur.coinbase,
+      from: augur.store.getState().coinbaseAddress,
       onSent: function (res) {
         if (DEBUG) console.log(res);
       },
@@ -154,8 +154,8 @@ describe("Payments", function () {
   it("sendReputation", function (done) {
     this.timeout(tools.TIMEOUT*10);
     var augur = tools.setup(require(augurpath));
-    var start_balance = augur.getRepBalance(branch, coinbase);
-    var recv_balance = augur.getRepBalance(branch, receiver);
+    var start_balance = augur.Reporting.getRepBalance(branch, coinbase);
+    var recv_balance = augur.Reporting.getRepBalance(branch, receiver);
     if (abi.bignum(recv_balance).gt(0)) {
       if (DEBUG) console.log("Start balance:", start_balance);
       console.log("recv balance:", recv_balance);
@@ -174,7 +174,7 @@ describe("Payments", function () {
           onSuccess: function (res) {
             if (DEBUG) console.log(res);
             assert.strictEqual(res.callReturn, paymentValue.toString());
-            var final_balance = augur.getRepBalance(branch, coinbase);
+            var final_balance = augur.Reporting.getRepBalance(branch, coinbase);
             final_balance = abi.bignum(final_balance);
             assert.strictEqual(start_balance.sub(final_balance).toNumber(), paymentValue);
             done();

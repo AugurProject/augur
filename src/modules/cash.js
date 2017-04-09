@@ -2,6 +2,7 @@
 
 var abi = require("augur-abi");
 var clone = require("clone");
+var store = require("../store");
 
 module.exports = {
 
@@ -13,7 +14,7 @@ module.exports = {
       onFailed = value.onFailed;
       value = value.value;
     }
-    tx = clone(this.api.functions.Cash.depositEther);
+    tx = clone(store.getState().contractsAPI.functions.Cash.depositEther);
     tx.value = abi.fix(value, "hex");
     return this.transact(tx, onSent, onSuccess, onFailed);
   },

@@ -168,7 +168,7 @@ function faucets(geth) {
     branch: branch,
     onSent: augur.utils.noop,
     onSuccess: function (r) {
-      var rep_balance = augur.getRepBalance(branch, coinbase);
+      var rep_balance = augur.Reporting.getRepBalance(branch, coinbase);
       var cash_balance = augur.getCashBalance(coinbase);
       augur.sendCash({
         value: 0,
@@ -180,7 +180,7 @@ function faucets(geth) {
             onSent: augur.utils.noop,
             onSuccess: function (res) {
               var cash_balance = augur.getCashBalance(coinbase);
-              var rep_balance = augur.getRepBalance(branch, coinbase);
+              var rep_balance = augur.Reporting.getRepBalance(branch, coinbase);
               var ether_balance = abi.bignum(augur.rpc.balance(coinbase)).dividedBy(constants.ETHER).toFixed();
               console.log(chalk.cyan("\nBalances:"));
               console.log("Cash:       " + chalk.green(cash_balance));

@@ -9,10 +9,10 @@ var constants = augur.constants;
 var branchID = augur.constants.DEFAULT_BRANCH_ID;
 var accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
 var testAccount = accounts[0];
-var numMarkets = parseInt(augur.getNumMarketsBranch(branchID), 10);
+var numMarkets = parseInt(augur.Branches.getNumMarketsBranch(branchID), 10);
 var markets;
 if (numMarkets > 100) {
-  markets = augur.getSomeMarketsInBranch(branchID, numMarkets - 100, numMarkets);
+  markets = augur.Branches.getSomeMarketsInBranch(branchID, numMarkets - 100, numMarkets);
 } else {
   markets = augur.getMarketsInBranch(branchID);
 }

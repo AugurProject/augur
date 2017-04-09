@@ -67,14 +67,13 @@ function Augur() {
   };
   this.protocol = NODE_JS || document.location.protocol;
 
-  this.connection = null;
-  this.coinbase = null;
-  this.from = null;
+  this.store = require("./store");
+  this.accounts = require("./accounts");
+  this.constants = require("./constants");
 
   this.abi = require("augur-abi");
-  this.constants = require("./constants");
   this.rpc = require("ethrpc");
-  this.subscriptionsSupported = false;
+
   this.errors = this.rpc.errors;
   this.abi.debug = this.options.debug.abi;
   this.rpc.debug = this.options.debug;
@@ -88,15 +87,16 @@ function Augur() {
       }
     }
   }
-  this.accounts = this.Accounts();
+
+  this.fundNewAccount = this.FundNewAccount();
   this.chat = this.Chat();
   if (this.options.debug.tools) this.tools = require("../test/tools");
   this.sync();
   this.filters = this.Filters();
 }
 
-Augur.prototype.Accounts = require("./accounts");
 Augur.prototype.Filters = require("./filters");
 Augur.prototype.Chat = require("./chat");
+Augur.prototype.FundNewAccount = require("./fund-new-account");
 
 module.exports = Augur;

@@ -4,26 +4,30 @@
 
 "use strict";
 
+var store = require("../store");
+
 module.exports = {
 
   fire: function (tx, callback, wrapper, aux) {
-    if (this.accounts && this.accounts.account && this.accounts.account.address) {
-      tx.from = this.accounts.account.address;
+    var activeAccount = store.getState().activeAccount;
+    if (activeAccount && activeAccount.address) {
+      tx.from = activeAccount.address;
     } else {
-      tx.from = tx.from || this.from || this.coinbase;
+      tx.from = tx.from || store.getState().fromAddress || store.getState().coinbaseAddress;
     }
     return this.rpc.fire(tx, callback, wrapper, aux);
   },
 
   transact: function (tx, onSent, onSuccess, onFailed) {
     var self = this;
-    if (this.accounts && this.accounts.account && this.accounts.account.address && this.accounts.account.privateKey) {
-      tx.from = this.accounts.account.address;
+    var activeAccount = store.getState().activeAccount;
+    if (activeAccount && activeAccount.address && activeAccount.privateKey) {
+      tx.from = activeAccount.address;
       tx.invoke = function (payload, onSent, onSuccess, onFailed) {
-        return self.rpc.packageAndSubmitRawTransaction(payload, self.accounts.account.address, self.accounts.account.privateKey, onSent, onSuccess, onFailed);
+        return self.rpc.packageAndSubmitRawTransaction(payload, activeAccount.address, activeAccount.privateKey, onSent, onSuccess, onFailed);
       };
     } else {
-      tx.from = tx.from || this.from || this.coinbase;
+      tx.from = tx.from || store.getState().fromAddress || store.getState().coinbaseAddress;
     }
     return this.rpc.transact(tx, onSent, onSuccess, onFailed);
   }

@@ -103,7 +103,7 @@ describe("Trade", function () {
             market: markets[t.market],
             outcome: t.outcome,
             onSent: function (r) {
-              assert.isString(r.txHash);
+              assert.isString(r.hash);
               assert.isNull(r.callReturn);
             },
             onSuccess: function (r) {
@@ -185,7 +185,7 @@ describe("Trade", function () {
     var test = function (t) {
       it(JSON.stringify(t), function (done) {
         this.timeout(tools.TIMEOUT);
-        var initShares = augur.getParticipantSharesPurchased(markets[t.market], augur.from, t.outcome);
+        var initShares = augur.getParticipantSharesPurchased(markets[t.market], augur.store.getState().fromAddress, t.outcome);
         augur.buyCompleteSets({
           market: markets[t.market],
           amount: t.amount,
@@ -193,7 +193,7 @@ describe("Trade", function () {
             assert.isNull(r.callReturn);
           },
           onSuccess: function (r) {
-            var finalShares = augur.getParticipantSharesPurchased(markets[t.market], augur.from, t.outcome);
+            var finalShares = augur.getParticipantSharesPurchased(markets[t.market], augur.store.getState().fromAddress, t.outcome);
             assert.strictEqual(parseFloat(finalShares - initShares), parseFloat(t.amount));
             augur.get_total_trades(markets[t.market], function (initialTotalTrades) {
               initialTotalTrades = parseInt(initialTotalTrades);
@@ -203,7 +203,7 @@ describe("Trade", function () {
                 market: markets[t.market],
                 outcome: t.outcome,
                 onSent: function (r) {
-                  assert.isString(r.txHash);
+                  assert.isString(r.hash);
                   assert.isNull(r.callReturn);
                 },
                 onSuccess: function (r) {
@@ -381,7 +381,7 @@ describe("Trade", function () {
     var test = function (t) {
       it(JSON.stringify(t), function (done) {
         this.timeout(tools.TIMEOUT*3);
-        var active = augur.from;
+        var active = augur.store.getState().fromAddress;
         augur.rpc.personal("unlockAccount", [unlockable[0], password]);
         augur.rpc.personal("unlockAccount", [unlockable[1], password]);
         augur.useAccount(unlockable[0]);
@@ -640,7 +640,7 @@ describe("Trade", function () {
     var test = function (t) {
       it(JSON.stringify(t), function (done) {
         this.timeout(tools.TIMEOUT*3);
-        var active = augur.from;
+        var active = augur.store.getState().fromAddress;
         augur.rpc.personal("unlockAccount", [unlockable[0], password]);
         augur.rpc.personal("unlockAccount", [unlockable[1], password]);
         augur.useAccount(unlockable[0]);
@@ -752,7 +752,7 @@ describe("Trade", function () {
     var test = function (t) {
       it(JSON.stringify(t), function (done) {
         this.timeout(tools.TIMEOUT);
-        var initShares = augur.getParticipantSharesPurchased(markets[t.market], augur.from, t.outcome);
+        var initShares = augur.getParticipantSharesPurchased(markets[t.market], augur.store.getState().fromAddress, t.outcome);
         var initialTotalTrades = parseInt(augur.get_total_trades(markets[t.market]));
         augur.shortAsk({
           amount: t.amount,
@@ -765,7 +765,7 @@ describe("Trade", function () {
           onSuccess: function (r) {
             assert.isNotNull(r.callReturn);
             var tradeID = r.callReturn;
-            var finalShares = augur.getParticipantSharesPurchased(markets[t.market], augur.from, t.outcome);
+            var finalShares = augur.getParticipantSharesPurchased(markets[t.market], augur.store.getState().fromAddress, t.outcome);
             assert.strictEqual(parseFloat(finalShares - initShares), 0);
             assert.include(augur.get_trade_ids(markets[t.market], 0, 0), abi.hex(tradeID));
             var trade = augur.get_trade(tradeID);

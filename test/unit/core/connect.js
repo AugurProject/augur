@@ -40,7 +40,7 @@ describe('connect.bindContractMethod', function () {
       	method: 'balance',
       	returns: 'unfix',
       	signature: ['int256'],
-      	to: augur.api.functions.Cash.balance.to,
+      	to: augur.store.getState().contractsAPI.functions.Cash.balance.to,
       	params: ['0xa1']
       });
       assert.isUndefined(onSent);
@@ -67,7 +67,7 @@ describe('connect.bindContractMethod', function () {
       	method: 'balance',
       	returns: 'unfix',
       	signature: ['int256'],
-      	to: augur.api.functions.Cash.balance.to,
+      	to: augur.store.getState().contractsAPI.functions.Cash.balance.to,
       	params: ['0xa1']
       });
       assert.isFunction(onSent);
@@ -94,7 +94,7 @@ describe('connect.bindContractMethod', function () {
         parser: 'parseMarket',
         returns: 'int256',
         signature: [ 'int256' ],
-        to: augur.api.functions.Branches.getEventForkedOver.to,
+        to: augur.store.getState().contractsAPI.functions.Branches.getEventForkedOver.to,
         params: [ '1010101' ]
       });
       assert.isUndefined(onSent);
@@ -121,7 +121,7 @@ describe('connect.bindContractMethod', function () {
         parser: 'parseMarket',
         returns: 'int256',
         signature: [ 'int256' ],
-        to: augur.api.functions.Branches.getEventForkedOver.to,
+        to: augur.store.getState().contractsAPI.functions.Branches.getEventForkedOver.to,
         params: [ '1010101' ]
       });
       assert.isFunction(onSent);
@@ -150,7 +150,7 @@ describe('connect.bindContractMethod', function () {
         returns: 'number',
         send: true,
         signature: [ 'int256', 'int256', 'int256' ],
-        to: augur.api.functions.Topics.updateTopicPopularity.to,
+        to: augur.store.getState().contractsAPI.functions.Topics.updateTopicPopularity.to,
         params: [ '1010101', 'politics', '0x1ed09bead87c0378d8e6400000000' ]
       });
       assert.isUndefined(onSent);
@@ -182,7 +182,7 @@ describe('connect.bindContractMethod', function () {
         returns: 'number',
         send: true,
         signature: [ 'int256', 'int256', 'int256' ],
-        to: augur.api.functions.Topics.updateTopicPopularity.to,
+        to: augur.store.getState().contractsAPI.functions.Topics.updateTopicPopularity.to,
         params: [ '1010101', 'politics', '0x1ed09bead87c0378d8e6400000000' ]
       });
     },
@@ -208,7 +208,7 @@ describe('connect.bindContractMethod', function () {
         returns: 'number',
         send: true,
         signature: [ 'int256', 'int256' ],
-        to: augur.api.functions.Cash.addCash.to,
+        to: augur.store.getState().contractsAPI.functions.Cash.addCash.to,
         params: [ '0xa1', '0x1ed09bead87c0378d8e6400000000' ]
       });
       assert.isUndefined(onSent);
@@ -237,7 +237,7 @@ describe('connect.bindContractMethod', function () {
         returns: 'number',
         send: true,
         signature: [ 'int256', 'int256' ],
-        to: augur.api.functions.Cash.addCash.to,
+        to: augur.store.getState().contractsAPI.functions.Cash.addCash.to,
         params: [ '0xa1', '0x1ed09bead87c0378d8e6400000000' ]
       });
       assert.deepEqual(onSent, noop);
@@ -266,7 +266,7 @@ describe('connect.bindContractMethod', function () {
         returns: 'number',
         send: true,
         signature: [ 'int256', 'int256' ],
-        to: augur.api.functions.Cash.addCash.to,
+        to: augur.store.getState().contractsAPI.functions.Cash.addCash.to,
         params: [ '0xa1', '0x1ed09bead87c0378d8e6400000000' ]
       });
       assert.isUndefined(onSent);
@@ -295,7 +295,7 @@ describe('connect.bindContractMethod', function () {
         returns: 'number',
         send: true,
         signature: [ 'int256', 'int256' ],
-        to: augur.api.functions.Cash.addCash.to
+        to: augur.store.getState().contractsAPI.functions.Cash.addCash.to
       });
       assert.isUndefined(onSent);
       assert.isUndefined(onSuccess);
@@ -317,7 +317,7 @@ describe('connect.bindContractMethod', function () {
         method: 'balance',
         returns: 'unfix',
         signature: [ 'int256' ],
-        to: augur.api.functions.Cash.balance.to
+        to: augur.store.getState().contractsAPI.functions.Cash.balance.to
       });
       assert.isUndefined(onSent);
       assert.isUndefined(onSuccess);
@@ -344,7 +344,7 @@ describe('connect.bindContractMethod', function () {
         params: [ '1337', '1', '0xe1', '0xf1' ],
         returns: 'hash',
         signature: [ 'int256', 'int256', 'int256', 'int256' ],
-        to: augur.api.functions.MakeReports.makeHash.to
+        to: augur.store.getState().contractsAPI.functions.MakeReports.makeHash.to
       });
       assert.isFunction(onSent);
       assert.isUndefined(onSuccess);
@@ -372,7 +372,7 @@ describe('connect.bindContractMethod', function () {
         params: [ '0xe1', '0xb1', '1000', '0xde0b6b3a7640000', '0', '0', '1001', '0x3635c9adc5dea00000' ],
         returns: 'number',
         signature: [ 'int256', 'int256', 'int256', 'int256', 'int256', 'int256', 'int256', 'int256' ],
-        to: augur.api.functions.MakeReports.validateReport.to
+        to: augur.store.getState().contractsAPI.functions.MakeReports.validateReport.to
       });
       assert.isFunction(onSent);
       assert.isUndefined(onSuccess);
@@ -389,7 +389,7 @@ describe('connect.bindContractMethod', function () {
     method: 'fakeMethod',
     callMethod: function (method) {
       // because no functions currently exist where send is true and we require a parser, we are going to make a fake function to do this so we can unit test.
-      augur.api.functions.FakeContract = {
+      augur.store.getState().contractsAPI.functions.FakeContract = {
         fakeMethod: {
           inputs: [ 'branch' ],
           label: 'Fake Method',
@@ -402,7 +402,7 @@ describe('connect.bindContractMethod', function () {
         }
       };
       method({ branch: '0xb1', callback: noop });
-      augur.api.functions.fakeContract = undefined;
+      augur.store.getState().contractsAPI.functions.fakeContract = undefined;
     },
     fire: function (tx, onSent, onSuccess, onFailed) {
       // Shouldn't get hit in this case
@@ -552,7 +552,7 @@ describe('connect.bindContractAPI', function () {
     }
   });
   test({
-    description: 'If no args are passed then it should use this.api.functions instead. bindContractMethod should be called for each function and we should return the methods bound.',
+    description: 'If no args are passed then it should use store.getState().contractsAPI.functions instead. bindContractMethod should be called for each function and we should return the methods bound.',
     testThis: {
   		api: {
   			functions: {
@@ -662,7 +662,7 @@ describe('connect.sync', function () {
     },
     assertions: function (out, testThis, connector, done) {
       assert.isTrue(out);
-      assert.isNull(testThis.network_id);
+      assert.isNull(testThis.rpc.networkID);
       assert.deepEqual(testThis.from, connector.state.from);
       assert.deepEqual(testThis.coinbase, connector.state.coinbase);
       assert.deepEqual(testThis.rpc, connector.rpc);
@@ -699,7 +699,7 @@ describe('connect.sync', function () {
     },
     assertions: function (out, testThis, connector, done) {
       assert.isTrue(out);
-      assert.deepEqual(testThis.network_id, connector.state.networkID);
+      assert.deepEqual(testThis.rpc.networkID, connector.state.networkID);
       assert.deepEqual(testThis.from, connector.state.from);
       assert.deepEqual(testThis.coinbase, connector.state.coinbase);
       assert.deepEqual(testThis.rpc, connector.rpc);

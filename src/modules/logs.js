@@ -9,6 +9,7 @@ var constants = require("../constants");
 var isFunction = require("../utils/is-function");
 var formatTradeType = require("../format/log/format-trade-type");
 var parseLogMessage = require("../filters/parse-message/parse-log-message");
+var store = require("../store");
 
 var ONE = new BigNumber("1", 10);
 
@@ -100,7 +101,7 @@ module.exports = {
     return {
       fromBlock: params.fromBlock || constants.GET_LOGS_DEFAULT_FROM_BLOCK,
       toBlock: params.toBlock || constants.GET_LOGS_DEFAULT_TO_BLOCK,
-      address: this.contracts[event.contract],
+      address: store.getState().contractAddresses[event.contract],
       topics: this.buildTopicsList(event, params),
       timeout: constants.GET_LOGS_TIMEOUT
     };
@@ -135,7 +136,7 @@ module.exports = {
     if (!processedLogs) processedLogs = (index) ? {} : [];
     for (i = 0, numLogs = logs.length; i < numLogs; ++i) {
       if (!logs[i].removed) {
-        parsed = parseLogMessage(label, logs[i], this.api.events[label].inputs);
+        parsed = parseLogMessage(label, logs[i], store.getState().contractsAPI.events[label].inputs);
         if (extraField && extraField.name) {
           parsed[extraField.name] = extraField.value;
         }
@@ -155,7 +156,7 @@ module.exports = {
       callback = filterParams;
       filterParams = null;
     }
-    filter = this.parametrizeFilter(this.api.events[label], filterParams || {});
+    filter = this.parametrizeFilter(store.getState().contractsAPI.events[label], filterParams || {});
     if (!isFunction(callback)) return this.rpc.getLogs(filter);
     this.rpc.getLogs(filter, function (logs) {
       if (logs && logs.error) return callback(logs, null);
@@ -314,7 +315,7 @@ module.exports = {
     options = options || {};
     if (account !== undefined && account !== null) {
       topics = [
-        this.api.events.log_short_fill_tx.signature,
+        store.getState().contractsAPI.events.log_short_fill_tx.signature,
         options.market ? abi.format_int256(options.market) : null,
         null,
         null
@@ -323,7 +324,7 @@ module.exports = {
       filter = {
         fromBlock: options.fromBlock || "0x1",
         toBlock: options.toBlock || "latest",
-        address: this.contracts.Trade,
+        address: store.getState().contractAddresses.Trade,
         topics: topics,
         timeout: constants.GET_LOGS_TIMEOUT
       };
@@ -385,9 +386,9 @@ module.exports = {
       filter = {
         fromBlock: options.fromBlock || "0x1",
         toBlock: options.toBlock || "latest",
-        address: (options.shortAsk) ? this.contracts.BuyAndSellShares : this.contracts.CompleteSets,
+        address: (options.shortAsk) ? store.getState().contractAddresses.BuyAndSellShares : store.getState().contractAddresses.CompleteSets,
         topics: [
-          this.api.events.completeSets_logReturn.signature,
+          store.getState().contractsAPI.events.completeSets_logReturn.signature,
           abi.format_int256(account),
           market,
           typeCode

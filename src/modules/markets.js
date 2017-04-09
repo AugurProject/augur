@@ -2,13 +2,14 @@
 
 var clone = require("clone");
 var isFunction = require("../utils/is-function");
+var store = require("../store");
 
 module.exports = {
 
   // market: hash id
   getWinningOutcomes: function (market, callback) {
     var tx, winningOutcomes, numOutcomes, self = this;
-    tx = clone(this.tx.Markets.getWinningOutcomes);
+    tx = clone(store.getState().contractsAPI.functions.Markets.getWinningOutcomes);
     tx.params = market;
     if (!isFunction(callback)) {
       winningOutcomes = this.fire(tx);

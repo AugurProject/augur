@@ -17,7 +17,7 @@ describe("sendReputation Unit Tests", () => {
 		assert.deepEqual(r, 'onSuccess should never have been called if this test worked correctly!');
 	};
 	var transact = augur.transact;
-	var getRepBalance = augur.getRepBalance;
+	var getRepBalance = augur.Reporting.getRepBalance;
 	var getRepRedistributionDone = augur.getRepRedistributionDone;
 	var onSuccessToTest;
 	var	getRepBalanceCallCount = 0;
@@ -45,7 +45,7 @@ describe("sendReputation Unit Tests", () => {
 
 			assert.isString(tx.to, "tx.to sent to this.transact isn't an String as expected");
 			// make sure the tx.to is sending to the correct contract.
-			assert.deepEqual(tx.to, augur.api.functions.SendReputation.sendReputation.to, "tx.to didn't point to the sendReputation contract");
+			assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.SendReputation.sendReputation.to, "tx.to didn't point to the sendReputation contract");
 			assert.isArray(tx.params, "tx.params sent to this.transact isn't an array as expected");
 
 			assert.deepEqual(tx.params, ["3", "recipientAddress", abi.fix(5, "hex")], "tx.params didn't contain the expected values");
@@ -56,7 +56,7 @@ describe("sendReputation Unit Tests", () => {
 			// save the onSuccess function produced by sendReputation so we can test the prepare function contained within
 			onSuccessToTest = onSuccess;
 		};
-		augur.getRepBalance = function (branch, from, cb) {
+		augur.Reporting.getRepBalance = function (branch, from, cb) {
 			getRepBalanceCallCount++;
 			switch (getRepBalanceCallCount) {
 			case 2:
@@ -91,7 +91,7 @@ describe("sendReputation Unit Tests", () => {
 
 	after(function () {
 		augur.transact = transact;
-		augur.getRepBalance = getRepBalance;
+		augur.Reporting.getRepBalance = getRepBalance;
 		augur.getRepRedistributionDone = getRepRedistributionDone;
 	});
 

@@ -5,6 +5,7 @@ var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
 var constants = require("../constants");
 var abacus = require("./abacus");
+var store = require("../store");
 
 module.exports = {
 
@@ -73,7 +74,7 @@ module.exports = {
    * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
    */
   getBidAction: function (shares, limitPrice, makerFee, gasPrice) {
-    var bidGasEth = this.getTxGasEth(clone(this.tx.BuyAndSellShares.buy), gasPrice);
+    var bidGasEth = this.getTxGasEth(clone(store.getState().contractsAPI.functions.BuyAndSellShares.buy), gasPrice);
     var etherToBid = shares.times(limitPrice).dividedBy(constants.ONE).floor();
     var feeEth = etherToBid.times(makerFee).dividedBy(constants.ONE).floor();
     return {
@@ -97,7 +98,7 @@ module.exports = {
    * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
    */
   getBuyAction: function (buyEth, sharesFilled, takerFeeEth, gasPrice) {
-    var tradeGasEth = this.getTxGasEth(clone(this.tx.Trade.trade), gasPrice);
+    var tradeGasEth = this.getTxGasEth(clone(store.getState().contractsAPI.functions.Trade.trade), gasPrice);
     var fxpBuyEth = abi.fix(buyEth);
     var fxpTakerFeeEth = abi.fix(takerFeeEth);
     var fxpSharesFilled = abi.fix(sharesFilled);
@@ -122,7 +123,7 @@ module.exports = {
    * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
    */
   getAskAction: function (shares, limitPrice, makerFee, gasPrice) {
-    var askGasEth = this.getTxGasEth(clone(this.tx.BuyAndSellShares.sell), gasPrice);
+    var askGasEth = this.getTxGasEth(clone(store.getState().contractsAPI.functions.BuyAndSellShares.sell), gasPrice);
     var costEth = shares.times(limitPrice).dividedBy(constants.ONE).floor();
     var feeEth = costEth.times(makerFee).dividedBy(constants.ONE).floor();
     return {
@@ -146,7 +147,7 @@ module.exports = {
    * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
    */
   getSellAction: function (sellEth, sharesFilled, takerFeeEth, gasPrice) {
-    var tradeGasEth = this.getTxGasEth(clone(this.tx.Trade.trade), gasPrice);
+    var tradeGasEth = this.getTxGasEth(clone(store.getState().contractsAPI.functions.Trade.trade), gasPrice);
     var fxpSellEth = abi.fix(sellEth);
     var fxpSharesFilled = abi.fix(sharesFilled);
     var fxpTakerFeeEth = abi.fix(takerFeeEth);
@@ -171,7 +172,7 @@ module.exports = {
    * @return {{action: string, shares: string, gasEth, feeEth: string, costEth: string, avgPrice: string}}
    */
   getShortSellAction: function (shortSellEth, shares, takerFeeEth, gasPrice) {
-    var shortSellGasEth = this.getTxGasEth(clone(this.tx.Trade.short_sell), gasPrice);
+    var shortSellGasEth = this.getTxGasEth(clone(store.getState().contractsAPI.functions.Trade.short_sell), gasPrice);
     var fxpShortSellEth = abi.fix(shortSellEth);
     var fxpTakerFeeEth = abi.fix(takerFeeEth);
     var fxpShares = abi.fix(shares);
@@ -196,8 +197,8 @@ module.exports = {
    * @return {{action: string, shares: string, gasEth: string, feeEth: string, costEth: string, avgPrice: string}}
    */
   getShortAskAction: function (shares, limitPrice, makerFee, gasPrice) {
-    var buyCompleteSetsGasEth = this.getTxGasEth(clone(this.tx.CompleteSets.buyCompleteSets), gasPrice);
-    var askGasEth = this.getTxGasEth(clone(this.tx.BuyAndSellShares.sell), gasPrice);
+    var buyCompleteSetsGasEth = this.getTxGasEth(clone(store.getState().contractsAPI.functions.CompleteSets.buyCompleteSets), gasPrice);
+    var askGasEth = this.getTxGasEth(clone(store.getState().contractsAPI.functions.BuyAndSellShares.sell), gasPrice);
     var feeEth = shares.times(limitPrice).dividedBy(constants.ONE).floor().times(makerFee).dividedBy(constants.ONE).floor();
     var costEth = shares.neg().minus(feeEth);
     return {

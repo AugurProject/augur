@@ -207,7 +207,7 @@ module.exports = {
       topic = decodeTag(rawInfo[12]);
       info = {
         id: abi.format_int256(rawInfo[0]),
-        network: this.network_id,
+        network: this.rpc && this.rpc.networkID,
         makerFee: fees.maker,
         takerFee: fees.taker,
         tradingFee: fees.trading,

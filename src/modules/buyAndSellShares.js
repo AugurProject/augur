@@ -4,6 +4,7 @@ var abi = require("augur-abi");
 var noop = require("../utils/noop");
 var compose = require("../utils/compose");
 var constants = require("../constants");
+var store = require("../store");
 
 module.exports = {
 
@@ -29,7 +30,7 @@ module.exports = {
         if (receipt.error) return onFailed(receipt);
         if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
           logs = receipt.logs;
-          sig = self.api.events.log_cancel.signature;
+          sig = store.getState().contractsAPI.events.log_cancel.signature;
           result.cashRefund = "0";
           numLogs = logs.length;
           for (i = 0; i < numLogs; ++i) {

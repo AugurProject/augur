@@ -1,10 +1,11 @@
 "use strict";
 
-var accountState = require("./state");
+var rpc = require("ethrpc");
+var store = require("../store");
 
 var logout = function () {
-  accountState = {};
-  this.rpc.clear();
+  store.dispatch({type: "CLEAR_ACTIVE_ACCOUNT"});
+  rpc.clear();
 };
 
 module.exports = logout;

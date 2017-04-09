@@ -7,6 +7,7 @@ var abacus = require("./abacus");
 var noop = require("../utils/noop");
 var compose = require("../utils/compose");
 var constants = require("../constants");
+var store = require("../store");
 
 module.exports = {
 
@@ -55,7 +56,7 @@ module.exports = {
     tradingFees = constants.ZERO;
     if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
       logs = receipt.logs;
-      sig = this.api.events.log_fill_tx.signature;
+      sig = store.getState().contractsAPI.events.log_fill_tx.signature;
       for (i = 0, numLogs = logs.length; i < numLogs; ++i) {
         if (logs[i].topics[0] === sig) {
           logdata = this.rpc.unmarshal(logs[i].data);
@@ -86,7 +87,7 @@ module.exports = {
     tradingFees = constants.ZERO;
     if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
       logs = receipt.logs;
-      sig = this.api.events.log_short_fill_tx.signature;
+      sig = store.getState().contractsAPI.events.log_short_fill_tx.signature;
       for (i = 0, numLogs = logs.length; i < numLogs; ++i) {
         if (logs[i].topics[0] === sig) {
           logdata = this.rpc.unmarshal(logs[i].data);
@@ -152,7 +153,7 @@ module.exports = {
             var tx;
             if (self.options.debug.trading) console.log("fastforward:", blockNumber);
             onNextBlock(blockNumber);
-            tx = clone(self.tx.Trade.trade);
+            tx = clone(store.getState().contractsAPI.functions.Trade.trade);
             tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids, tradeGroupID || 0];
             if (self.options.debug.trading) {
               console.log("trade tx:", JSON.stringify(tx, null, 2));
@@ -249,7 +250,7 @@ module.exports = {
           self.rpc.fastforward(1, function (blockNumber) {
             var tx;
             onNextBlock(blockNumber);
-            tx = clone(self.tx.Trade.short_sell);
+            tx = clone(store.getState().contractsAPI.functions.Trade.short_sell);
             tx.params = [buyer_trade_id, abi.fix(max_amount, "hex"), tradeGroupID || 0];
             if (self.options.debug.trading) {
               console.log("short_sell tx:", JSON.stringify(tx, null, 2));

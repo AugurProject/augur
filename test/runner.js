@@ -15,14 +15,14 @@ var augur = new (require("../src"))();
 var test, run;
 
 augur.api = new contracts.Tx(process.env.ETHEREUM_NETWORK_ID || constants.DEFAULT_NETWORK_ID);
-augur.api.functions = augur.api.functions;
+augur.store.getState().contractsAPI.functions = augur.store.getState().contractsAPI.functions;
 augur.bindContractAPI();
 
 test = {
   eth_call: function (t, next) {
     var expected, fire, params;
     next = next || noop;
-    expected = clone(augur.api.functions[t.contract][t.method]);
+    expected = clone(augur.store.getState().contractsAPI.functions[t.contract][t.method]);
     if (t.params && t.params.length === 1) {
       expected.params = t.params[0];
     } else {
@@ -48,7 +48,7 @@ test = {
     object: function (t, next) {
       var i, expected, transact, labels, params;
       next = next || noop;
-      expected = clone(augur.api.functions[t.contract][t.method]);
+      expected = clone(augur.store.getState().contractsAPI.functions[t.contract][t.method]);
       if (t.params && t.params.length === 1) {
         expected.params = t.params[0];
       } else {
@@ -67,7 +67,7 @@ test = {
         augur.transact = transact;
         next();
       };
-      labels = augur.api.functions[t.contract][t.method].inputs || [];
+      labels = augur.store.getState().contractsAPI.functions[t.contract][t.method].inputs || [];
       params = {onSent: noop, onSuccess: noop, onFailed: noop};
       for (i = 0; i < labels.length; ++i) {
         if (!params[labels[i]]) params[labels[i]] = t.params[i];
@@ -75,7 +75,7 @@ test = {
       augur[t.contract][t.method](params);
     },
     positional: function (t, next) {
-      var transact, expected = clone(augur.api.functions[t.contract][t.method]);
+      var transact, expected = clone(augur.store.getState().contractsAPI.functions[t.contract][t.method]);
       if (t.params && t.params.length === 1) {
         expected.params = t.params[0];
       } else {

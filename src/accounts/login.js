@@ -6,9 +6,10 @@ var abi = require("augur-abi");
 var errors = require("ethrpc").errors;
 var pass = require("../utils/pass");
 var isFunction = require("../utils/is-function");
+var setActiveAccount = require("./set-active-account");
 
 var login = function (keystore, password, cb) {
-  var keystoreCrypto, callback, self = this;
+  var keystoreCrypto, callback;
   callback = (isFunction(cb)) ? cb : pass;
   if (!keystore || !password || password === "") return callback(errors.BAD_CREDENTIALS);
   keystoreCrypto = keystore.crypto || keystore.Crypto;
@@ -19,7 +20,7 @@ var login = function (keystore, password, cb) {
     kdfparams: keystoreCrypto.kdfparams,
     cipher: keystoreCrypto.kdf
   }, function (derivedKey) {
-    var storedKey, privateKey, e;
+    var storedKey, privateKey, e, account;
     if (!derivedKey || derivedKey.error) return callback(errors.BAD_CREDENTIALS);
 
     // verify that message authentication codes match
@@ -33,15 +34,16 @@ var login = function (keystore, password, cb) {
       privateKey = keys.decrypt(storedKey, derivedKey.slice(0, 16), keystoreCrypto.cipherparams.iv);
 
       // while logged in, account object is set
-      self.account = {
+      account = {
         privateKey: privateKey,
         address: abi.format_address(keystore.address),
         keystore: keystore,
         derivedKey: derivedKey
       };
-      return callback(clone(self.account));
+      setActiveAccount(account);
+      callback(account);
 
-      // decryption failure: bad password
+    // decryption failure: bad password
     } catch (exc) {
       e = clone(errors.BAD_CREDENTIALS);
       e.bubble = exc;

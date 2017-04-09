@@ -6,6 +6,7 @@ var abi = require("augur-abi");
 var keys = require("keythereum");
 var sha3 = require("../utils/sha3");
 var constants = require("../constants");
+var store = require("../store");
 
 module.exports = {
 
@@ -173,7 +174,7 @@ module.exports = {
       callback = callback || branch.callback;
       branch = branch.branch;
     }
-    tx = clone(this.tx.ExpiringEvents.getEncryptedReport);
+    tx = clone(store.getState().contractsAPI.functions.ExpiringEvents.getEncryptedReport);
     tx.params = [branch, expDateIndex, reporter, event];
     return this.fire(tx, callback, this.parseAndDecryptReport, secret);
   },
@@ -196,7 +197,7 @@ module.exports = {
     if (this.getCurrentPeriodProgress(periodLength) >= 50) {
       return onFailed({"-2": "not in first half of period (commit phase)"});
     }
-    tx = clone(this.tx.MakeReports.submitReportHash);
+    tx = clone(store.getState().contractsAPI.functions.MakeReports.submitReportHash);
     tx.params = [
       event,
       reportHash,

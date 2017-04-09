@@ -4,6 +4,7 @@ var abi = require("augur-abi");
 var clone = require("clone");
 var isFunction = require("../utils/is-function");
 var encodeTagArray = require("../format/tag/encode-tag-array");
+var store = require("../store");
 
 module.exports = {
 
@@ -30,7 +31,7 @@ module.exports = {
     expDate = parseInt(expDate, 10);
     if (description) description = description.trim();
     if (resolution) resolution = resolution.trim();
-    tx = clone(this.tx.CreateMarket.createSingleEventMarket);
+    tx = clone(store.getState().contractsAPI.functions.CreateMarket.createSingleEventMarket);
     tx.params = [
       branch,
       description,
@@ -92,7 +93,7 @@ module.exports = {
     }
     formattedTags = encodeTagArray(tags);
     fees = this.calculateTradingFees(makerFee, takerFee);
-    tx = clone(this.tx.CreateMarket.createMarket);
+    tx = clone(store.getState().contractsAPI.functions.CreateMarket.createMarket);
     tx.params = [
       branch,
       abi.fix(fees.tradingFee, "hex"),

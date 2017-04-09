@@ -28,7 +28,7 @@ describe("makeHash", function () {
     test({
       salt: salt,
       report: report,
-      from: augur.from,
+      from: augur.store.getState().fromAddress,
       event: event,
       isScalar: false,
       isIndeterminate: false
@@ -36,7 +36,7 @@ describe("makeHash", function () {
     test({
       salt: salt,
       report: report,
-      from: augur.from,
+      from: augur.store.getState().fromAddress,
       event: event,
       isScalar: true,
       isIndeterminate: false
@@ -44,7 +44,7 @@ describe("makeHash", function () {
     test({
       salt: salt,
       report: report,
-      from: augur.from,
+      from: augur.store.getState().fromAddress,
       event: event,
       isScalar: false,
       isIndeterminate: true
@@ -52,7 +52,7 @@ describe("makeHash", function () {
     test({
       salt: salt,
       report: report,
-      from: augur.from,
+      from: augur.store.getState().fromAddress,
       event: event,
       isScalar: false,
       isIndeterminate: false
