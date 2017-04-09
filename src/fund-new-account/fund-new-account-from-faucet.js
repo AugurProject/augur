@@ -5,8 +5,8 @@ var NODE_JS = typeof process !== "undefined" && process.nextTick && !process.bro
 var async = require("async");
 var request = (NODE_JS) ? require("request") : require("browser-request");
 var abi = require("augur-abi");
-var constants = require("./constants");
-var noop = require("./utils/noop");
+var constants = require("../constants");
+var noop = require("../utils/noop");
 
 request = request.defaults({timeout: 999999});
 

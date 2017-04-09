@@ -9,15 +9,15 @@ function prepMessage(message) {
   return abi.encode_hex(JSON.stringify(message));
 }
 // get/post messages
-describe("getNewMessages", function() {
+describe("getNewMessages", function () {
   var testChat;
-  var test = function(t) {
-    it(t.description, function(done) {
+  var test = function (t) {
+    it(t.description, function (done) {
       testChat = chat.call(t.testThis);
       // prep whisper for testing
       testChat.whisper = t.whisper;
 
-      testChat.getNewMessages(t.roomName, function(err, messages) {
+      testChat.getNewMessages(t.roomName, function (err, messages) {
         t.assertions(err, messages);
         done();
       });
@@ -27,7 +27,7 @@ describe("getNewMessages", function() {
     description: 'Should handle getting new messages successfully',
     testThis: {
     	rpc: {
-    		shh: function(method, options, cb) {
+    		shh: function (method, options, cb) {
           switch(method) {
           case 'getFilterChanges':
             assert.deepEqual(options, '0xf1');
@@ -54,21 +54,21 @@ describe("getNewMessages", function() {
     		}
     	}
     },
-    assertions: function(err, msgs) {
+    assertions: function (err, msgs) {
       assert.isNull(err);
       assert.deepEqual(msgs, [{ message: 'hello world' }, { message: 'goodbye world' }]);
     }
   });
 });
-describe("postMessage", function() {
+describe("postMessage", function () {
   var testChat;
-  var test = function(t) {
-    it(t.description, function(done) {
+  var test = function (t) {
+    it(t.description, function (done) {
       testChat = chat.call(t.testThis);
       // prep whisper for testing
       testChat.whisper = t.whisper;
 
-      testChat.postMessage(t.roomName, t.message, t.senderAddress, t.senderName, function(posted) {
+      testChat.postMessage(t.roomName, t.message, t.senderAddress, t.senderName, function (posted) {
         t.assertions(posted);
         done();
       });
@@ -78,7 +78,7 @@ describe("postMessage", function() {
     description: 'Should handle posting a message to the room',
     testThis: {
     	rpc: {
-    		shh: function(method, options, cb) {
+    		shh: function (method, options, cb) {
     			switch (method) {
     				case 'post':
               assert.deepEqual(options.from, '0x1');
@@ -108,7 +108,7 @@ describe("postMessage", function() {
     message: 'hello world',
     senderAddress: '0xb0b',
     senderName: 'bob',
-    assertions: function(posted) {
+    assertions: function (posted) {
       assert.isNull(posted);
     }
   });
@@ -116,7 +116,7 @@ describe("postMessage", function() {
     description: 'Should handle posting a message to the room',
     testThis: {
     	rpc: {
-    		shh: function(method, options, cb) {
+    		shh: function (method, options, cb) {
     			switch (method) {
     				case 'post':
               assert.deepEqual(options.from, '0x2');
@@ -147,51 +147,51 @@ describe("postMessage", function() {
     message: 'goodbye world',
     senderAddress: '0xa11ce',
     senderName: 'alice',
-    assertions: function(posted) {
+    assertions: function (posted) {
       assert.deepEqual(posted, "couldn't post message: goodbye world");
     }
   });
 });
 
 // parse message(s)
-describe("parseMessage", function() {
-  var test = function(t) {
-    it(JSON.stringify(t), function() {
+describe("parseMessage", function () {
+  var test = function (t) {
+    it(JSON.stringify(t), function () {
       t.assertions(chat.call(t.testThis).parseMessage(t.message));
     });
   };
   test({
     message: prepMessage({ message: 'hello world' }),
     testThis: {rpc: {}},
-    assertions: function(parsedMsg) {
+    assertions: function (parsedMsg) {
       assert.deepEqual(parsedMsg, { message: 'hello world' });
     }
   });
 });
-describe("parseMessages", function() {
-  var test = function(t) {
-    it(JSON.stringify(t), function() {
+describe("parseMessages", function () {
+  var test = function (t) {
+    it(JSON.stringify(t), function () {
       t.assertions(chat.call(t.testThis).parseMessages(t.messages));
     });
   };
   test({
     messages: undefined,
     testThis: { rpc: {} },
-    assertions: function(messages) {
+    assertions: function (messages) {
       assert.deepEqual(messages, []);
     }
   });
   test({
     messages: {},
     testThis: { rpc: {} },
-    assertions: function(messages) {
+    assertions: function (messages) {
       assert.deepEqual(messages, []);
     }
   });
   test({
     messages: [],
     testThis: { rpc: {} },
-    assertions: function(messages) {
+    assertions: function (messages) {
       assert.deepEqual(messages, []);
     }
   });
@@ -201,7 +201,7 @@ describe("parseMessages", function() {
     	payload: prepMessage({ message: 'goodbye world' })
     }],
     testThis: { rpc: {} },
-    assertions: function(messages) {
+    assertions: function (messages) {
       assert.deepEqual(messages, [{
       	message: 'hello world'
       }, {
@@ -212,11 +212,11 @@ describe("parseMessages", function() {
 });
 
 // room management
-describe("joinRoom", function() {
+describe("joinRoom", function () {
   var finished;
   var testChat;
-  var test = function(t) {
-    it(JSON.stringify(t), function(done) {
+  var test = function (t) {
+    it(JSON.stringify(t), function (done) {
       testChat = chat.call(t.testThis);
       // change the poll interval to 1 millisecond
       testChat.POLL_INTERVAL = 1;
@@ -228,7 +228,7 @@ describe("joinRoom", function() {
   test({
     testThis: {
     	rpc: {
-    		shh: function(method, option, cb) {
+    		shh: function (method, option, cb) {
           switch(method) {
           case 'newIdentity':
             return '0x1';
@@ -261,7 +261,7 @@ describe("joinRoom", function() {
     	}
     },
     roomName: 'testRoom',
-    onMessages: function(messages) {
+    onMessages: function (messages) {
       assert.deepEqual(testChat.whisper.filters.testRoom.id, '0xf1');
       assert.deepEqual(testChat.whisper.id, '0x1');
       if (messages[0].message === 'pre-existing message') {
@@ -281,11 +281,11 @@ describe("joinRoom", function() {
     }
   });
 });
-describe("leaveRoom", function() {
+describe("leaveRoom", function () {
   var finished;
   var testChat;
-  var test = function(t) {
-    it(t.description, function(done) {
+  var test = function (t) {
+    it(t.description, function (done) {
       testChat = chat.call(t.testThis);
       // set the initial whisper state so we can leave the room
       testChat.whisper = t.whisper;
@@ -298,7 +298,7 @@ describe("leaveRoom", function() {
     description: 'should handle an error leaving a chatroom',
     testThis: {
     	rpc: {
-    		shh: function(method, option, cb) {
+    		shh: function (method, option, cb) {
     			switch (method) {
     				case 'uninstallFilter':
     					assert.deepEqual(option, '0xf1');
@@ -323,7 +323,7 @@ describe("leaveRoom", function() {
     		}
     	}
     },
-    callback: function(err, uninstalled) {
+    callback: function (err, uninstalled) {
       assert.isUndefined(uninstalled);
       assert.deepEqual(err, "couldn't leave room: testRoom");
       assert.deepEqual(testChat.whisper, {
@@ -342,7 +342,7 @@ describe("leaveRoom", function() {
     description: 'should handle successfully leaving the chatroom',
     testThis: {
     	rpc: {
-    		shh: function(method, option, cb) {
+    		shh: function (method, option, cb) {
     			switch (method) {
     				case 'uninstallFilter':
     					assert.deepEqual(option, '0xf1');
@@ -370,7 +370,7 @@ describe("leaveRoom", function() {
     		}
     	}
     },
-    callback: function(err, uninstalled) {
+    callback: function (err, uninstalled) {
       assert.isNull(err);
       assert.isTrue(uninstalled);
       assert.deepEqual(testChat.whisper, { id: '0x1', filters: { testRoom: null }});

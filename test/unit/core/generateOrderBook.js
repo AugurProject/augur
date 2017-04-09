@@ -110,21 +110,21 @@ describe("calculateOrderPrices", function () {
   });
 });
 
-describe("generateOrderBook", function() {
+describe("generateOrderBook", function () {
   // 15 tests total
   var buyCompleteSets = augur.buyCompleteSets;
   var buy = augur.buy;
   var sell = augur.sell;
   var getOrderBook = augur.getOrderBook;
-  afterEach(function() {
+  afterEach(function () {
     augur.buyCompleteSets = buyCompleteSets;
     augur.buy = buy;
     augur.sell = sell;
     augur.getOrderBook = getOrderBook;
   });
-  var test = function(t) {
+  var test = function (t) {
     // This function is async by default so lets do async tests only.
-    it(t.description + ' async', function(done) {
+    it(t.description + ' async', function (done) {
       augur.buyCompleteSets = t.buyCompleteSets;
       augur.buy = t.buy,
       augur.sell = t.sell,
@@ -133,14 +133,14 @@ describe("generateOrderBook", function() {
       if (t.callbacks) {
         // there is one case where callbacks won't be defined to completely unit test this function.
         var functionToReplace = t.callbacks[t.assertionFunction];
-        var assertion = function(input) {
+        var assertion = function (input) {
           functionToReplace(input);
           done();
         };
         t.callbacks[t.assertionFunction] = assertion;
       } else {
         var functionToReplace = t.params[t.assertionFunction];
-        var assertion = function(input) {
+        var assertion = function (input) {
           functionToReplace(input);
           done();
         };
@@ -164,21 +164,21 @@ describe("generateOrderBook", function() {
   		isSimulationOnly: false
   	},
   	callbacks: {
-    	onSimulate: function(simulation) {},
-    	onBuyCompleteSets: function(res) {},
-    	onSetupOutcome: function(outcome) {},
-    	onSetupOrder: function(order) {},
-    	onSuccess: function(orderBook) {},
-    	onFailed: function(err) {
+    	onSimulate: function (simulation) {},
+    	onBuyCompleteSets: function (res) {},
+    	onSetupOutcome: function (outcome) {},
+    	onSetupOrder: function (order) {},
+    	onSuccess: function (orderBook) {},
+    	onFailed: function (err) {
         // this callback should be called, lets assert we get the expected error back.
         assert.deepEqual(err, augur.errors.NO_MARKET_INFO);
       }
     },
     assertionFunction: 'onFailed',
-    buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {},
-    buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
-    sell: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
-    getOrderBook: function(market, scalarMinMax, onSuccess) {},
+    buyCompleteSets: function (market, amount, onSent, onSuccess, onFailed) {},
+    buy: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+    sell: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+    getOrderBook: function (market, scalarMinMax, onSuccess) {},
   });
   test({
     description: 'Should handle missing marketInfo and call onFailed with an error when everything is passed in one object.',
@@ -192,22 +192,22 @@ describe("generateOrderBook", function() {
       // marketInfo that is undefined
       marketInfo: undefined,
       isSimulationOnly: false,
-      onSimulate: function(simulation) {},
-      onBuyCompleteSets: function(res) {},
-      onSetupOutcome: function(outcome) {},
-      onSetupOrder: function(order) {},
-      onSuccess: function(orderBook) {},
-      onFailed: function(err) {
+      onSimulate: function (simulation) {},
+      onBuyCompleteSets: function (res) {},
+      onSetupOutcome: function (outcome) {},
+      onSetupOrder: function (order) {},
+      onSuccess: function (orderBook) {},
+      onFailed: function (err) {
         // this callback should be called, lets assert we get the expected error back.
         assert.deepEqual(err, augur.errors.NO_MARKET_INFO);
       }
     },
     callbacks: undefined,
     assertionFunction: 'onFailed',
-    buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {},
-    buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
-    sell: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
-    getOrderBook: function(market, scalarMinMax, onSuccess) {},
+    buyCompleteSets: function (market, amount, onSent, onSuccess, onFailed) {},
+    buy: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+    sell: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+    getOrderBook: function (market, scalarMinMax, onSuccess) {},
   });
   test({
     description: 'Should handle marketInfo that has a different number of outcomes then expected, should call onFailed.',
@@ -223,21 +223,21 @@ describe("generateOrderBook", function() {
   		isSimulationOnly: false
     },
     callbacks: {
-      onSimulate: function(simulation) {},
-      onBuyCompleteSets: function(res) {},
-      onSetupOutcome: function(outcome) {},
-      onSetupOrder: function(order) {},
-      onSuccess: function(orderBook) {},
-      onFailed: function(err) {
+      onSimulate: function (simulation) {},
+      onBuyCompleteSets: function (res) {},
+      onSetupOutcome: function (outcome) {},
+      onSetupOrder: function (order) {},
+      onSuccess: function (orderBook) {},
+      onFailed: function (err) {
         // this callback should be called, lets assert we get the expected error back.
         assert.deepEqual(err, augur.errors.WRONG_NUMBER_OF_OUTCOMES);
       }
     },
     assertionFunction: 'onFailed',
-    buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {},
-    buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
-    sell: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
-    getOrderBook: function(market, scalarMinMax, onSuccess) {},
+    buyCompleteSets: function (market, amount, onSent, onSuccess, onFailed) {},
+    buy: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+    sell: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+    getOrderBook: function (market, scalarMinMax, onSuccess) {},
   });
   test({
     description: 'Should handle a binary market where priceDepth is less than or equal to 0, triggering an onFailed called.',
@@ -253,21 +253,21 @@ describe("generateOrderBook", function() {
       isSimulationOnly: false
     },
     callbacks: {
-      onSimulate: function(simulation) {},
-      onBuyCompleteSets: function(res) {},
-      onSetupOutcome: function(outcome) {},
-      onSetupOrder: function(order) {},
-      onSuccess: function(orderBook) {},
-      onFailed: function(err) {
+      onSimulate: function (simulation) {},
+      onBuyCompleteSets: function (res) {},
+      onSetupOutcome: function (outcome) {},
+      onSetupOrder: function (order) {},
+      onSuccess: function (orderBook) {},
+      onFailed: function (err) {
         // this callback should be called, lets assert we get the expected error back.
         assert.deepEqual(err, augur.errors.INSUFFICIENT_LIQUIDITY);
       }
     },
     assertionFunction: 'onFailed',
-    buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {},
-    buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
-    sell: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
-    getOrderBook: function(market, scalarMinMax, onSuccess) {},
+    buyCompleteSets: function (market, amount, onSent, onSuccess, onFailed) {},
+    buy: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+    sell: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+    getOrderBook: function (market, scalarMinMax, onSuccess) {},
   });
   test({
     description: 'Should handle a binary market where priceDepth is Infinity, triggering an onFailed called.',
@@ -283,21 +283,21 @@ describe("generateOrderBook", function() {
       isSimulationOnly: false
     },
     callbacks: {
-      onSimulate: function(simulation) {},
-      onBuyCompleteSets: function(res) {},
-      onSetupOutcome: function(outcome) {},
-      onSetupOrder: function(order) {},
-      onSuccess: function(orderBook) {},
-      onFailed: function(err) {
+      onSimulate: function (simulation) {},
+      onBuyCompleteSets: function (res) {},
+      onSetupOutcome: function (outcome) {},
+      onSetupOrder: function (order) {},
+      onSuccess: function (orderBook) {},
+      onFailed: function (err) {
         // this callback should be called, lets assert we get the expected error back.
         assert.deepEqual(err, augur.errors.INSUFFICIENT_LIQUIDITY);
       }
     },
     assertionFunction: 'onFailed',
-    buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {},
-    buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
-    sell: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
-    getOrderBook: function(market, scalarMinMax, onSuccess) {},
+    buyCompleteSets: function (market, amount, onSent, onSuccess, onFailed) {},
+    buy: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+    sell: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+    getOrderBook: function (market, scalarMinMax, onSuccess) {},
   });
   test({
     description: 'Should handle a binary market where initial price is out of bounds, too low, should trigger onFailed',
@@ -313,21 +313,21 @@ describe("generateOrderBook", function() {
       isSimulationOnly: false
     },
     callbacks: {
-      onSimulate: function(simulation) {},
-      onBuyCompleteSets: function(res) {},
-      onSetupOutcome: function(outcome) {},
-      onSetupOrder: function(order) {},
-      onSuccess: function(orderBook) {},
-      onFailed: function(err) {
+      onSimulate: function (simulation) {},
+      onBuyCompleteSets: function (res) {},
+      onSetupOutcome: function (outcome) {},
+      onSetupOrder: function (order) {},
+      onSuccess: function (orderBook) {},
+      onFailed: function (err) {
         // this callback should be called, lets assert we get the expected error back.
         assert.deepEqual(err, augur.errors.INITIAL_PRICE_OUT_OF_BOUNDS);
       }
     },
     assertionFunction: 'onFailed',
-    buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {},
-    buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
-    sell: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
-    getOrderBook: function(market, scalarMinMax, onSuccess) {},
+    buyCompleteSets: function (market, amount, onSent, onSuccess, onFailed) {},
+    buy: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+    sell: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+    getOrderBook: function (market, scalarMinMax, onSuccess) {},
   });
   test({
     description: 'Should handle a binary market where initial price is out of bounds, too high, should trigger onFailed',
@@ -343,21 +343,21 @@ describe("generateOrderBook", function() {
       isSimulationOnly: false
     },
     callbacks: {
-      onSimulate: function(simulation) {},
-      onBuyCompleteSets: function(res) {},
-      onSetupOutcome: function(outcome) {},
-      onSetupOrder: function(order) {},
-      onSuccess: function(orderBook) {},
-      onFailed: function(err) {
+      onSimulate: function (simulation) {},
+      onBuyCompleteSets: function (res) {},
+      onSetupOutcome: function (outcome) {},
+      onSetupOrder: function (order) {},
+      onSuccess: function (orderBook) {},
+      onFailed: function (err) {
         // this callback should be called, lets assert we get the expected error back.
         assert.deepEqual(err, augur.errors.INITIAL_PRICE_OUT_OF_BOUNDS);
       }
     },
     assertionFunction: 'onFailed',
-    buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {},
-    buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
-    sell: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
-    getOrderBook: function(market, scalarMinMax, onSuccess) {},
+    buyCompleteSets: function (market, amount, onSent, onSuccess, onFailed) {},
+    buy: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+    sell: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+    getOrderBook: function (market, scalarMinMax, onSuccess) {},
   });
   test({
     description: 'Should handle a binary market where price width is out of bounds, too high, should trigger onFailed',
@@ -373,21 +373,21 @@ describe("generateOrderBook", function() {
       isSimulationOnly: false
     },
     callbacks: {
-      onSimulate: function(simulation) {},
-      onBuyCompleteSets: function(res) {},
-      onSetupOutcome: function(outcome) {},
-      onSetupOrder: function(order) {},
-      onSuccess: function(orderBook) {},
-      onFailed: function(err) {
+      onSimulate: function (simulation) {},
+      onBuyCompleteSets: function (res) {},
+      onSetupOutcome: function (outcome) {},
+      onSetupOrder: function (order) {},
+      onSuccess: function (orderBook) {},
+      onFailed: function (err) {
         // this callback should be called, lets assert we get the expected error back.
         assert.deepEqual(err, augur.errors.PRICE_WIDTH_OUT_OF_BOUNDS);
       }
     },
     assertionFunction: 'onFailed',
-    buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {},
-    buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
-    sell: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
-    getOrderBook: function(market, scalarMinMax, onSuccess) {},
+    buyCompleteSets: function (market, amount, onSent, onSuccess, onFailed) {},
+    buy: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+    sell: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+    getOrderBook: function (market, scalarMinMax, onSuccess) {},
   });
   test({
     description: 'Should handle a binary market where price width is out of bounds, too low, should trigger onFailed',
@@ -403,21 +403,21 @@ describe("generateOrderBook", function() {
       isSimulationOnly: false
     },
     callbacks: {
-      onSimulate: function(simulation) {},
-      onBuyCompleteSets: function(res) {},
-      onSetupOutcome: function(outcome) {},
-      onSetupOrder: function(order) {},
-      onSuccess: function(orderBook) {},
-      onFailed: function(err) {
+      onSimulate: function (simulation) {},
+      onBuyCompleteSets: function (res) {},
+      onSetupOutcome: function (outcome) {},
+      onSetupOrder: function (order) {},
+      onSuccess: function (orderBook) {},
+      onFailed: function (err) {
         // this callback should be called, lets assert we get the expected error back.
         assert.deepEqual(err, augur.errors.PRICE_WIDTH_OUT_OF_BOUNDS);
       }
     },
     assertionFunction: 'onFailed',
-    buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {},
-    buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
-    sell: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
-    getOrderBook: function(market, scalarMinMax, onSuccess) {},
+    buyCompleteSets: function (market, amount, onSent, onSuccess, onFailed) {},
+    buy: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+    sell: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+    getOrderBook: function (market, scalarMinMax, onSuccess) {},
   });
   test({
     description: 'Should handle a binary market and produce a simulation of generating the order book',
@@ -432,7 +432,7 @@ describe("generateOrderBook", function() {
       isSimulationOnly: true
     },
     callbacks: {
-      onSimulate: function(simulation) {
+      onSimulate: function (simulation) {
         assert.deepEqual(simulation, {
           shares: '4509',
           numBuyOrders: [ 3, 3 ],
@@ -467,10 +467,10 @@ describe("generateOrderBook", function() {
       onFailed: undefined
     },
     assertionFunction: 'onSimulate',
-    buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {},
-    buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
-    sell: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
-    getOrderBook: function(market, scalarMinMax, onSuccess) {},
+    buyCompleteSets: function (market, amount, onSent, onSuccess, onFailed) {},
+    buy: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+    sell: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+    getOrderBook: function (market, scalarMinMax, onSuccess) {},
   });
   test({
     description: 'Should handle a binary market, non simulation, when buyCompleteSets returns an error to onFailed',
@@ -487,25 +487,25 @@ describe("generateOrderBook", function() {
     },
     callbacks: {
       onSimulate: undefined,
-      onBuyCompleteSets: function(res) {},
-      onSetupOutcome: function(outcome) {},
-      onSetupOrder: function(order) {},
-      onSuccess: function(orderBook) {},
-      onFailed: function(err) {
+      onBuyCompleteSets: function (res) {},
+      onSetupOutcome: function (outcome) {},
+      onSetupOrder: function (order) {},
+      onSuccess: function (orderBook) {},
+      onFailed: function (err) {
         // confirm that onFailed was called with the error passed from buyCompleteSets
         assert.deepEqual(err, {error: 999, message: 'uh-oh!'});
       }
     },
     assertionFunction: 'onFailed',
-    buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {
+    buyCompleteSets: function (market, amount, onSent, onSuccess, onFailed) {
       // generateOrderBook always passes a single argument object to buyCompleteSets...
       market.onSent();
       // lets fail when buyCompleteSets is called for this test.
       market.onFailed({error: 999, message: 'uh-oh!'});
     },
-    buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
-    sell: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
-    getOrderBook: function(market, scalarMinMax, onSuccess) {},
+    buy: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+    sell: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {},
+    getOrderBook: function (market, scalarMinMax, onSuccess) {},
   });
   test({
     description: 'Should handle a binary market, with simulation, when buyCompleteSets completes and all buy and sell orders complete as expected',
@@ -521,7 +521,7 @@ describe("generateOrderBook", function() {
       isSimulationOnly: false
     },
     callbacks: {
-      onSimulate: function(simulation) {
+      onSimulate: function (simulation) {
         assert.deepEqual(simulation, {
           shares: '43',
           numBuyOrders: [ 3, 3 ],
@@ -531,14 +531,14 @@ describe("generateOrderBook", function() {
           numTransactions: 18
         });
       },
-      onBuyCompleteSets: function(res) {
+      onBuyCompleteSets: function (res) {
         assert.deepEqual(res, {callReturn: ['43']});
       },
-      onSetupOutcome: function(outcome) {
+      onSetupOutcome: function (outcome) {
         assert.oneOf(outcome.outcome, [1, 2]);
         assert.equal(outcome.market, '0xa1');
       },
-      onSetupOrder: function(order) {
+      onSetupOrder: function (order) {
         if (order.type === 'buy') {
           assert.oneOf(order.price, ['0.25', '0.146875', '0.04375']);
         }
@@ -551,27 +551,27 @@ describe("generateOrderBook", function() {
         assert.equal(order.hash, '0xf1');
         assert.equal(order.gasUsed, '0.005');
       },
-      onSuccess: function(orderBook) {
+      onSuccess: function (orderBook) {
         assert.deepEqual(orderBook, { market: '0xa1', scalarMinMax: {} });
       },
-      onFailed: function(err) {
+      onFailed: function (err) {
         // Shouldn't be called in this test.
       }
     },
     assertionFunction: 'onSuccess',
-    buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {
+    buyCompleteSets: function (market, amount, onSent, onSuccess, onFailed) {
       market.onSent();
       market.onSuccess({ callReturn: [market.amount.toString()]});
     },
-    buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {
+    buy: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {
       amount.onSent();
       amount.onSuccess({ callReturn: '0xc1', gasUsed: '0.005', timestamp: 150000000, hash: '0xf1'});
     },
-    sell: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {
+    sell: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {
       amount.onSent();
       amount.onSuccess({ callReturn: '0xc1', gasUsed: '0.005', timestamp: 150000000, hash: '0xf1'});
     },
-    getOrderBook: function(market, scalarMinMax, onSuccess) {
+    getOrderBook: function (market, scalarMinMax, onSuccess) {
       onSuccess({market: market, scalarMinMax: scalarMinMax });
     },
   });
@@ -589,7 +589,7 @@ describe("generateOrderBook", function() {
       isSimulationOnly: false
     },
     callbacks: {
-      onSimulate: function(simulation) {
+      onSimulate: function (simulation) {
         assert.deepEqual(simulation, {
           shares: '43',
           numBuyOrders: [ 3, 3 ],
@@ -599,38 +599,38 @@ describe("generateOrderBook", function() {
           numTransactions: 18
         });
       },
-      onBuyCompleteSets: function(res) {
+      onBuyCompleteSets: function (res) {
         assert.deepEqual(res, {callReturn: ['43']});
       },
-      onSetupOutcome: function(outcome) {
+      onSetupOutcome: function (outcome) {
         assert.deepEqual(outcome.outcome, 1);
         assert.equal(outcome.market, '0xa1');
       },
-      onSetupOrder: function(order) {
+      onSetupOrder: function (order) {
         assert.isNull(true, 'onSetupOrder should not get called in this test');
       },
-      onSuccess: function(orderBook) {
+      onSuccess: function (orderBook) {
         assert.isNull(true, 'onSuccess should not get called in this test');
       },
-      onFailed: function(err) {
+      onFailed: function (err) {
         assert.deepEqual(err, { error: 999, message: 'Uh-Oh!'});
       }
     },
     assertionFunction: 'onFailed',
-    buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {
+    buyCompleteSets: function (market, amount, onSent, onSuccess, onFailed) {
       market.onSent();
       market.onSuccess({ callReturn: [market.amount.toString()]});
     },
-    buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {
+    buy: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {
       amount.onSent();
       // on call return an error
       amount.onFailed({ error: 999, message: 'Uh-Oh!'});
     },
-    sell: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {
+    sell: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {
       // should never get a chance to get called...
       assert.isNull(true, 'sell should not get called in this test');
     },
-    getOrderBook: function(market, scalarMinMax, onSuccess) {
+    getOrderBook: function (market, scalarMinMax, onSuccess) {
       // Shouldn't get called in this example
       assert.isNull(true, 'getOrderBook should not get called in this test');
     },
@@ -649,7 +649,7 @@ describe("generateOrderBook", function() {
       isSimulationOnly: false
     },
     callbacks: {
-      onSimulate: function(simulation) {
+      onSimulate: function (simulation) {
         assert.deepEqual(simulation, {
           shares: '43',
           numBuyOrders: [ 3, 3 ],
@@ -659,14 +659,14 @@ describe("generateOrderBook", function() {
           numTransactions: 18
         });
       },
-      onBuyCompleteSets: function(res) {
+      onBuyCompleteSets: function (res) {
         assert.deepEqual(res, {callReturn: ['43']});
       },
-      onSetupOutcome: function(outcome) {
+      onSetupOutcome: function (outcome) {
         assert.deepEqual(outcome.outcome, 1);
         assert.equal(outcome.market, '0xa1');
       },
-      onSetupOrder: function(order) {
+      onSetupOrder: function (order) {
         // in this test only the buy orders should call onSetupOrder
         assert.strictEqual(order.type, 'buy');
         assert.oneOf(order.price, ['0.25', '0.146875', '0.04375']);
@@ -676,28 +676,28 @@ describe("generateOrderBook", function() {
         assert.equal(order.hash, '0xf1');
         assert.equal(order.gasUsed, '0.005');
       },
-      onSuccess: function(orderBook) {
+      onSuccess: function (orderBook) {
         assert.isNull(true, 'onSuccess should not get called in this test');
       },
-      onFailed: function(err) {
+      onFailed: function (err) {
         assert.deepEqual(err, { error: 999, message: 'Uh-Oh!'});
       }
     },
     assertionFunction: 'onFailed',
-    buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {
+    buyCompleteSets: function (market, amount, onSent, onSuccess, onFailed) {
       market.onSent();
       market.onSuccess({ callReturn: [market.amount.toString()]});
     },
-    buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {
+    buy: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {
       amount.onSent();
       amount.onSuccess({ callReturn: '0xc1', gasUsed: '0.005', timestamp: 150000000, hash: '0xf1'});
     },
-    sell: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {
+    sell: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {
       amount.onSent();
       // return an error...
       amount.onFailed({ error: 999, message: 'Uh-Oh!'});
     },
-    getOrderBook: function(market, scalarMinMax, onSuccess) {
+    getOrderBook: function (market, scalarMinMax, onSuccess) {
       // Shouldn't get called in this example
       assert.isNull(true, 'getOrderBook should not get called in this test');
     },
@@ -716,7 +716,7 @@ describe("generateOrderBook", function() {
       isSimulationOnly: false
     },
     callbacks: {
-      onSimulate: function(simulation) {
+      onSimulate: function (simulation) {
         assert.deepEqual(simulation, {
           shares: '98',
           numBuyOrders: [ 1, 1 ],
@@ -742,14 +742,14 @@ describe("generateOrderBook", function() {
           numTransactions: 24
         });
       },
-      onBuyCompleteSets: function(res) {
+      onBuyCompleteSets: function (res) {
         assert.deepEqual(res, {callReturn: ['98']});
       },
-      onSetupOutcome: function(outcome) {
+      onSetupOutcome: function (outcome) {
         assert.oneOf(outcome.outcome, [1, 2]);
         assert.equal(outcome.market, '0xa1');
       },
-      onSetupOrder: function(order) {
+      onSetupOrder: function (order) {
         if (order.type === 'buy') {
           assert.deepEqual(order.price, '0.25');
         }
@@ -771,7 +771,7 @@ describe("generateOrderBook", function() {
         assert.equal(order.hash, '0xf1');
         assert.equal(order.gasUsed, '0.005');
       },
-      onSuccess: function(orderBook) {
+      onSuccess: function (orderBook) {
         assert.strictEqual(JSON.stringify(orderBook), JSON.stringify({
           market: '0xa1',
           scalarMinMax: {
@@ -780,25 +780,25 @@ describe("generateOrderBook", function() {
           }
         }));
       },
-      onFailed: function(err) {
+      onFailed: function (err) {
         // Shouldn't be called in this test.
         assert.isNull(true, 'onFailed called unexpectedly.');
       }
     },
     assertionFunction: 'onSuccess',
-    buyCompleteSets: function(market, amount, onSent, onSuccess, onFailed) {
+    buyCompleteSets: function (market, amount, onSent, onSuccess, onFailed) {
       market.onSent();
       market.onSuccess({ callReturn: [market.amount.toString()]});
     },
-    buy: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {
+    buy: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {
       amount.onSent();
       amount.onSuccess({ callReturn: '0xc1', gasUsed: '0.005', timestamp: 150000000, hash: '0xf1'});
     },
-    sell: function(amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {
+    sell: function (amount, price, market, outcome, scalarMinMax, onSent, onSuccess, onFailed) {
       amount.onSent();
       amount.onSuccess({ callReturn: '0xc1', gasUsed: '0.005', timestamp: 150000000, hash: '0xf1'});
     },
-    getOrderBook: function(market, scalarMinMax, onSuccess) {
+    getOrderBook: function (market, scalarMinMax, onSuccess) {
       onSuccess({market: market, scalarMinMax: scalarMinMax });
     },
   });

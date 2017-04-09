@@ -690,16 +690,16 @@ describe("makeHash", function () {
   });
 });
 
-describe("parseAndDecryptReport", function() {
-  var test = function(t) {
-    it(JSON.stringify(t), function() {
+describe("parseAndDecryptReport", function () {
+  var test = function (t) {
+    it(JSON.stringify(t), function () {
       t.assertions(makeReports.parseAndDecryptReport(t.arr, t.secret));
     });
   };
   test({
     arr: ['0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e', '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27'],
     secret: { derivedKey: '0xabc123', salt: '0x123abc456'},
-    assertions: function(report) {
+    assertions: function (report) {
       assert.deepEqual(report, {
         salt: abi.prefix_hex(abi.pad_left(abi.hex('1337'))),
         report: abi.prefix_hex(abi.pad_left(makeReports.fixReport('1', 1, 2, 'binary'))),
@@ -710,7 +710,7 @@ describe("parseAndDecryptReport", function() {
   test({
     arr: ['0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e', '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27', '1'],
     secret: { derivedKey: '0xabc123', salt: '0x123abc456'},
-    assertions: function(report) {
+    assertions: function (report) {
       assert.deepEqual(report, {
         salt: abi.prefix_hex(abi.pad_left(abi.hex('1337'))),
         report: abi.prefix_hex(abi.pad_left(makeReports.fixReport('1', 1, 2, 'binary'))),
@@ -721,30 +721,30 @@ describe("parseAndDecryptReport", function() {
   test({
     arr: ['0x6b6cfe160a6263631b292f879eeff926c9d2b5db15fd8902ab0b42cb64d38014'],
     secret: { derivedKey: '0x1', salt: '0x1'},
-    assertions: function(report) {
+    assertions: function (report) {
       assert.isNull(report);
     }
   });
   test({
     arr: '',
     secret: { derivedKey: '0x1', salt: '0x1'},
-    assertions: function(report) {
+    assertions: function (report) {
       assert.isNull(report);
     }
   });
   test({
     arr: undefined,
     secret: { derivedKey: '0x1', salt: '0x1'},
-    assertions: function(report) {
+    assertions: function (report) {
       assert.isNull(report);
     }
   });
 });
 
-describe("getAndDecryptReport", function() {
+describe("getAndDecryptReport", function () {
   var finished;
-  var test = function(t) {
-    it(JSON.stringify(t), function(done) {
+  var test = function (t) {
+    it(JSON.stringify(t), function (done) {
       finished = done;
 
       makeReports.getAndDecryptReport.call(t.testThis, t.branch, t.expDateIndex, t.reporter, t.event, t.secret, t.callback);
@@ -752,7 +752,7 @@ describe("getAndDecryptReport", function() {
   };
   test({
     testThis: {
-      fire: function(tx, cb, options, aux) {
+      fire: function (tx, cb, options, aux) {
         assert.deepEqual(tx.params, ['0xb1', 150000000, '0x1', '0xe1']);
         assert.deepEqual(tx.to, augur.api.functions.ExpiringEvents.getEncryptedReport.to);
         assert.deepEqual(cb, noop);
@@ -772,7 +772,7 @@ describe("getAndDecryptReport", function() {
   });
   test({
     testThis: {
-      fire: function(tx, cb, options, aux) {
+      fire: function (tx, cb, options, aux) {
         assert.deepEqual(tx.params, ['0xb1', 150000000, '0x1', '0xe1']);
         assert.deepEqual(tx.to, augur.api.functions.ExpiringEvents.getEncryptedReport.to);
         assert.deepEqual(cb, noop);
@@ -794,7 +794,7 @@ describe("getAndDecryptReport", function() {
   });
   test({
     testThis: {
-      fire: function(tx, cb, options, aux) {
+      fire: function (tx, cb, options, aux) {
         assert.deepEqual(tx.params, ['0xb1', 150000000, '0x1', '0xe1']);
         assert.deepEqual(tx.to, augur.api.functions.ExpiringEvents.getEncryptedReport.to);
         assert.deepEqual(cb, noop);
@@ -816,10 +816,10 @@ describe("getAndDecryptReport", function() {
   });
 });
 
-describe("submitReportHash", function() {
+describe("submitReportHash", function () {
   var finished;
-  var test = function(t) {
-    it(JSON.stringify(t.event), function(done) {
+  var test = function (t) {
+    it(JSON.stringify(t.event), function (done) {
       finished = done;
       makeReports.submitReportHash.call(t.testThis, t.event, t.reportHash, t.encryptedReport, t.encryptedSalt, t.ethics, t.branch, t.period, t.periodLength, t.onSent, t.onSuccess, t.onFailed);
     });
@@ -828,11 +828,11 @@ describe("submitReportHash", function() {
     testThis: {
     	options: { debug: { reporting: false } },
       tx: augur.api.functions,
-      transact: function() {},
-      getCurrentPeriodProgress: function(periodLength) { return 85; },
-      checkPeriod: function() {},
-      getRepRedistributionDone: function() {},
-    	ExpiringEvents: {getReportHash: function(branch) {} }
+      transact: function () {},
+      getCurrentPeriodProgress: function (periodLength) { return 85; },
+      checkPeriod: function () {},
+      getRepRedistributionDone: function () {},
+    	ExpiringEvents: {getReportHash: function (branch) {} }
     },
     event: {
       event: '0xe1',
@@ -845,7 +845,7 @@ describe("submitReportHash", function() {
       periodLength: 1000,
       onSent: noop,
       onSuccess: noop,
-      onFailed: function(err) {
+      onFailed: function (err) {
         assert.deepEqual(err, {"-2": "not in first half of period (commit phase)"});
         finished();
       }
@@ -855,7 +855,7 @@ describe("submitReportHash", function() {
     testThis: {
     	options: { debug: { reporting: false } },
       tx: augur.api.functions,
-      transact: function(tx, onSent, onSuccess, onFailed) {
+      transact: function (tx, onSent, onSuccess, onFailed) {
         assert.deepEqual(tx.params, [
           '0xe1',
           '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
@@ -866,10 +866,10 @@ describe("submitReportHash", function() {
         assert.deepEqual(tx.to, augur.api.functions.MakeReports.submitReportHash.to);
         onFailed({ error: -3, message: 'not eligible to report on this event' });
       },
-      getCurrentPeriodProgress: function(periodLength) { return 23; },
-      checkPeriod: function() {},
-      getRepRedistributionDone: function() {},
-    	ExpiringEvents: {getReportHash: function(branch) {} }
+      getCurrentPeriodProgress: function (periodLength) { return 23; },
+      checkPeriod: function () {},
+      getRepRedistributionDone: function () {},
+    	ExpiringEvents: {getReportHash: function (branch) {} }
     },
     event: {
       event: '0xe1',
@@ -882,7 +882,7 @@ describe("submitReportHash", function() {
       periodLength: 1000,
       onSent: noop,
       onSuccess: noop,
-      onFailed: function(err) {
+      onFailed: function (err) {
         assert.deepEqual(err, { error: -3, message: 'not eligible to report on this event' });
         finished();
       }
@@ -892,7 +892,7 @@ describe("submitReportHash", function() {
     testThis: {
     	options: { debug: { reporting: false } },
       tx: augur.api.functions,
-      transact: function(tx, onSent, onSuccess, onFailed) {
+      transact: function (tx, onSent, onSuccess, onFailed) {
         assert.deepEqual(tx.params, [
           '0xe1',
           '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
@@ -903,10 +903,10 @@ describe("submitReportHash", function() {
         assert.deepEqual(tx.to, augur.api.functions.MakeReports.submitReportHash.to);
         onSuccess({ callReturn: '1' });
       },
-      getCurrentPeriodProgress: function(periodLength) { return 23; },
-      checkPeriod: function() {},
-      getRepRedistributionDone: function() {},
-    	ExpiringEvents: {getReportHash: function(branch) {} }
+      getCurrentPeriodProgress: function (periodLength) { return 23; },
+      checkPeriod: function () {},
+      getRepRedistributionDone: function () {},
+    	ExpiringEvents: {getReportHash: function (branch) {} }
     },
     event: '0xe1',
     reportHash: '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
@@ -917,7 +917,7 @@ describe("submitReportHash", function() {
     period: 1500,
     periodLength: 1000,
     onSent: noop,
-    onSuccess: function(res) {
+    onSuccess: function (res) {
       assert.deepEqual(res, { callReturn: '1' });
       finished();
     },
@@ -927,7 +927,7 @@ describe("submitReportHash", function() {
     testThis: {
     	options: { debug: { reporting: false } },
       tx: augur.api.functions,
-      transact: function(tx, onSent, onSuccess, onFailed) {
+      transact: function (tx, onSent, onSuccess, onFailed) {
         assert.deepEqual(tx.params, [
           '0xe1',
           '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
@@ -938,12 +938,12 @@ describe("submitReportHash", function() {
         assert.deepEqual(tx.to, augur.api.functions.MakeReports.submitReportHash.to);
         onSuccess({ callReturn: '0' });
       },
-      getCurrentPeriodProgress: function(periodLength) { return 23; },
-      checkPeriod: function(branch, periodLength, from, cb) {
+      getCurrentPeriodProgress: function (periodLength) { return 23; },
+      checkPeriod: function (branch, periodLength, from, cb) {
         cb({ error: 999, message: 'Uh-Oh!' });
       },
-      getRepRedistributionDone: function() {},
-    	ExpiringEvents: {getReportHash: function(branch) {} }
+      getRepRedistributionDone: function () {},
+    	ExpiringEvents: {getReportHash: function (branch) {} }
     },
     event: '0xe1',
     reportHash: '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
@@ -955,7 +955,7 @@ describe("submitReportHash", function() {
     periodLength: 1000,
     onSent: noop,
     onSuccess: noop,
-    onFailed: function(err) {
+    onFailed: function (err) {
       assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
       finished();
     }
@@ -964,7 +964,7 @@ describe("submitReportHash", function() {
     testThis: {
     	options: { debug: { reporting: false } },
       tx: augur.api.functions,
-      transact: function(tx, onSent, onSuccess, onFailed) {
+      transact: function (tx, onSent, onSuccess, onFailed) {
         assert.deepEqual(tx.params, [
           '0xe1',
           '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
@@ -975,14 +975,14 @@ describe("submitReportHash", function() {
         assert.deepEqual(tx.to, augur.api.functions.MakeReports.submitReportHash.to);
         onSuccess({ callReturn: '0' });
       },
-      getCurrentPeriodProgress: function(periodLength) { return 23; },
-      checkPeriod: function(branch, periodLength, from, cb) {
+      getCurrentPeriodProgress: function (periodLength) { return 23; },
+      checkPeriod: function (branch, periodLength, from, cb) {
         cb(null, 1501);
       },
-      getRepRedistributionDone: function(branch, from, cb) {
+      getRepRedistributionDone: function (branch, from, cb) {
         cb('0');
       },
-    	ExpiringEvents: {getReportHash: function(branch) {} }
+    	ExpiringEvents: {getReportHash: function (branch) {} }
     },
     event: '0xe1',
     reportHash: '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
@@ -994,7 +994,7 @@ describe("submitReportHash", function() {
     periodLength: 1000,
     onSent: noop,
     onSuccess: noop,
-    onFailed: function(err) {
+    onFailed: function (err) {
       assert.deepEqual(err, "rep redistribution not done");
       finished();
     }
@@ -1002,12 +1002,12 @@ describe("submitReportHash", function() {
   test({
     testThis: {
     	options: { debug: { reporting: false } },
-      submitReportHash: function(event) {
+      submitReportHash: function (event) {
         // since this test will be calling self.submitReportHash that will point to this function. normally we recursively would be calling submitReportHash but we want to assume that the 2nd time through it works as expected.
         event.onSuccess({ callReturn: '1' });
       },
       tx: augur.api.functions,
-      transact: function(tx, onSent, onSuccess, onFailed) {
+      transact: function (tx, onSent, onSuccess, onFailed) {
         assert.deepEqual(tx.params, [
           '0xe1',
           '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
@@ -1018,14 +1018,14 @@ describe("submitReportHash", function() {
         assert.deepEqual(tx.to, augur.api.functions.MakeReports.submitReportHash.to);
         onSuccess({ callReturn: '0' });
       },
-      getCurrentPeriodProgress: function(periodLength) { return 23; },
-      checkPeriod: function(branch, periodLength, from, cb) {
+      getCurrentPeriodProgress: function (periodLength) { return 23; },
+      checkPeriod: function (branch, periodLength, from, cb) {
         cb(null, 1501);
       },
-      getRepRedistributionDone: function(branch, from, cb) {
+      getRepRedistributionDone: function (branch, from, cb) {
         cb('1');
       },
-    	ExpiringEvents: {getReportHash: function(branch) {} }
+    	ExpiringEvents: {getReportHash: function (branch) {} }
     },
     event: '0xe1',
     reportHash: '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
@@ -1036,7 +1036,7 @@ describe("submitReportHash", function() {
     period: 1500,
     periodLength: 1000,
     onSent: noop,
-    onSuccess: function(res) {
+    onSuccess: function (res) {
       assert.deepEqual(res, { callReturn: '1' });
       finished();
     },
@@ -1046,7 +1046,7 @@ describe("submitReportHash", function() {
     testThis: {
       options: { debug: { reporting: false } },
       tx: augur.api.functions,
-      transact: function(tx, onSent, onSuccess, onFailed) {
+      transact: function (tx, onSent, onSuccess, onFailed) {
         assert.deepEqual(tx.params, [
           '0xe1',
           '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
@@ -1057,15 +1057,15 @@ describe("submitReportHash", function() {
         assert.deepEqual(tx.to, augur.api.functions.MakeReports.submitReportHash.to);
         onSuccess({ callReturn: '-2' });
       },
-      getCurrentPeriodProgress: function(periodLength) { return 23; },
-      checkPeriod: function(branch, periodLength, from, cb) {
+      getCurrentPeriodProgress: function (periodLength) { return 23; },
+      checkPeriod: function (branch, periodLength, from, cb) {
         // shouldn't be called.
       },
-      getRepRedistributionDone: function(branch, from, cb) {
+      getRepRedistributionDone: function (branch, from, cb) {
         // shouldn't be called.
       },
       ExpiringEvents: {
-        getReportHash: function(branch) {
+        getReportHash: function (branch) {
           branch.callback('something that parseInt wont like very much and it will fail causing onFailed to be called.');
         }
       }
@@ -1080,7 +1080,7 @@ describe("submitReportHash", function() {
     periodLength: 1000,
     onSent: noop,
     onSuccess: noop,
-    onFailed: function(err) {
+    onFailed: function (err) {
       assert.deepEqual(err, {"-2": "not in first half of period (commit phase)"});
       finished();
     }
@@ -1089,7 +1089,7 @@ describe("submitReportHash", function() {
     testThis: {
       options: { debug: { reporting: false } },
       tx: augur.api.functions,
-      transact: function(tx, onSent, onSuccess, onFailed) {
+      transact: function (tx, onSent, onSuccess, onFailed) {
         assert.deepEqual(tx.params, [
           '0xe1',
           '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
@@ -1100,15 +1100,15 @@ describe("submitReportHash", function() {
         assert.deepEqual(tx.to, augur.api.functions.MakeReports.submitReportHash.to);
         onSuccess({ callReturn: '-2' });
       },
-      getCurrentPeriodProgress: function(periodLength) { return 23; },
-      checkPeriod: function(branch, periodLength, from, cb) {
+      getCurrentPeriodProgress: function (periodLength) { return 23; },
+      checkPeriod: function (branch, periodLength, from, cb) {
         // shouldn't be called.
       },
-      getRepRedistributionDone: function(branch, from, cb) {
+      getRepRedistributionDone: function (branch, from, cb) {
         // shouldn't be called.
       },
       ExpiringEvents: {
-        getReportHash: function(branch) {
+        getReportHash: function (branch) {
           branch.callback('0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f');
         }
       }
@@ -1122,7 +1122,7 @@ describe("submitReportHash", function() {
     period: 1500,
     periodLength: 1000,
     onSent: noop,
-    onSuccess: function(res) {
+    onSuccess: function (res) {
       assert.deepEqual(res, { callReturn: '1' });
       finished();
     },
@@ -1130,10 +1130,10 @@ describe("submitReportHash", function() {
   });
 });
 
-describe("submitReport", function() {
+describe("submitReport", function () {
   var finished;
-  var test = function(t) {
-    it(JSON.stringify(t), function(done) {
+  var test = function (t) {
+    it(JSON.stringify(t), function (done) {
       finished = done;
       makeReports.submitReport.call(t.testThis, t.event, t.salt, t.report, t.ethics, t.minValue, t.maxValue, t.type, t.isIndeterminate, t.onSent, t.onSuccess, t.onFailed);
     });
@@ -1143,7 +1143,7 @@ describe("submitReport", function() {
     	options: { debug: { reporting: false } },
     	fixReport: makeReports.fixReport,
     	MakeReports: {
-    		submitReport: function(event, salt, report, ethics, onSent, onSuccess, onFailed) {
+    		submitReport: function (event, salt, report, ethics, onSent, onSuccess, onFailed) {
     			assert.deepEqual(event, '0xe1');
     			assert.deepEqual(salt, '0x4e61436c');
     			assert.deepEqual(report, '0xde0b6b3a7640000');
@@ -1172,7 +1172,7 @@ describe("submitReport", function() {
     	options: { debug: { reporting: false } },
     	fixReport: makeReports.fixReport,
     	MakeReports: {
-    		submitReport: function(event, salt, report, ethics, onSent, onSuccess, onFailed) {
+    		submitReport: function (event, salt, report, ethics, onSent, onSuccess, onFailed) {
     			assert.deepEqual(event, '0xe1');
     			assert.deepEqual(salt, '0x4e61436c');
     			assert.deepEqual(report, '0xde0b6b3a7640000');

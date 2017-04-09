@@ -16,14 +16,14 @@ after(function () {
   augur.rpc.gasPrice = gasPrice;
 });
 
-describe("tradeActions.calculateBuyTradeIDs", function() {
+describe("tradeActions.calculateBuyTradeIDs", function () {
   // 3 tests total
   var filterByPriceAndOutcomeAndUserSortByPrice = augur.filterByPriceAndOutcomeAndUserSortByPrice;
-  afterEach(function() {
+  afterEach(function () {
     augur.filterByPriceAndOutcomeAndUserSortByPrice = filterByPriceAndOutcomeAndUserSortByPrice;
   });
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
       augur.filterByPriceAndOutcomeAndUserSortByPrice = t.filterByPriceAndOutcomeAndUserSortByPrice;
       t.assertions(augur.calculateBuyTradeIDs(t.marketID, t.outcomeID, t.limitPrice, t.orderBooks, t.address));
     });
@@ -45,7 +45,7 @@ describe("tradeActions.calculateBuyTradeIDs", function() {
     	}
     },
     address: '0x1',
-    filterByPriceAndOutcomeAndUserSortByPrice: function(orders, traderOrderType, limitPrice, outcomeId, userAddress) {
+    filterByPriceAndOutcomeAndUserSortByPrice: function (orders, traderOrderType, limitPrice, outcomeId, userAddress) {
       assert.deepEqual(orders, {
         '0xb1': { amount: '10', price: '0.5', outcome: '1', owner: '0x2', id: '0xb1'},
         '0xb2': { amount: '20', price: '0.4', outcome: '1', owner: '0x2', id: '0xb2'},
@@ -98,7 +98,7 @@ describe("tradeActions.calculateBuyTradeIDs", function() {
     	}
     },
     address: '0x1',
-    filterByPriceAndOutcomeAndUserSortByPrice: function(orders, traderOrderType, limitPrice, outcomeId, userAddress) {
+    filterByPriceAndOutcomeAndUserSortByPrice: function (orders, traderOrderType, limitPrice, outcomeId, userAddress) {
       assert.deepEqual(orders, {});
       assert.equal(limitPrice, '0.5');
       assert.equal(outcomeId, '1');
@@ -118,7 +118,7 @@ describe("tradeActions.calculateBuyTradeIDs", function() {
     limitPrice: '0.7',
     orderBooks: {},
     address: '0x1',
-    filterByPriceAndOutcomeAndUserSortByPrice: function(orders, traderOrderType, limitPrice, outcomeId, userAddress) {
+    filterByPriceAndOutcomeAndUserSortByPrice: function (orders, traderOrderType, limitPrice, outcomeId, userAddress) {
       assert.deepEqual(orders, {});
       assert.equal(limitPrice, '0.7');
       assert.equal(outcomeId, '2');
@@ -132,14 +132,14 @@ describe("tradeActions.calculateBuyTradeIDs", function() {
     }
   });
 });
-describe("tradeActions.calculateSellTradeIDs", function() {
+describe("tradeActions.calculateSellTradeIDs", function () {
   // 3 tests total
   var filterByPriceAndOutcomeAndUserSortByPrice = augur.filterByPriceAndOutcomeAndUserSortByPrice;
-  afterEach(function() {
+  afterEach(function () {
     augur.filterByPriceAndOutcomeAndUserSortByPrice = filterByPriceAndOutcomeAndUserSortByPrice;
   });
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
       augur.filterByPriceAndOutcomeAndUserSortByPrice = t.filterByPriceAndOutcomeAndUserSortByPrice;
       t.assertions(augur.calculateSellTradeIDs(t.marketID, t.outcomeID, t.limitPrice, t.orderBooks, t.address));
     });
@@ -161,7 +161,7 @@ describe("tradeActions.calculateSellTradeIDs", function() {
         }
     },
     address: '0x1',
-    filterByPriceAndOutcomeAndUserSortByPrice: function(orders, traderOrderType, limitPrice, outcomeId, userAddress) {
+    filterByPriceAndOutcomeAndUserSortByPrice: function (orders, traderOrderType, limitPrice, outcomeId, userAddress) {
       assert.deepEqual(orders, {
         '0xb1': { amount: '10', price: '0.5', outcome: '1', owner: '0x2', id: '0xb1'},
         '0xb2': { amount: '20', price: '0.7', outcome: '1', owner: '0x2', id: '0xb2'},
@@ -200,7 +200,7 @@ describe("tradeActions.calculateSellTradeIDs", function() {
       }
     },
     address: '0x1',
-    filterByPriceAndOutcomeAndUserSortByPrice: function(orders, traderOrderType, limitPrice, outcomeId, userAddress) {
+    filterByPriceAndOutcomeAndUserSortByPrice: function (orders, traderOrderType, limitPrice, outcomeId, userAddress) {
       assert.deepEqual(orders, {});
       assert.equal(limitPrice, '0.5');
       assert.equal(outcomeId, '1');
@@ -220,7 +220,7 @@ describe("tradeActions.calculateSellTradeIDs", function() {
     limitPrice: '0.7',
     orderBooks: {},
     address: '0x1',
-    filterByPriceAndOutcomeAndUserSortByPrice: function(orders, traderOrderType, limitPrice, outcomeId, userAddress) {
+    filterByPriceAndOutcomeAndUserSortByPrice: function (orders, traderOrderType, limitPrice, outcomeId, userAddress) {
       assert.deepEqual(orders, {});
       assert.equal(limitPrice, '0.7');
       assert.equal(outcomeId, '2');
@@ -234,10 +234,10 @@ describe("tradeActions.calculateSellTradeIDs", function() {
     }
   });
 });
-describe("tradeActions.getTxGasEth", function() {
+describe("tradeActions.getTxGasEth", function () {
   // 2 tests total
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
       t.assertions(augur.getTxGasEth(t.tx, t.gasPrice));
     });
   };
@@ -245,7 +245,7 @@ describe("tradeActions.getTxGasEth", function() {
     description: 'Should handle getting the gas cost for a transaction with no gas value passed in the transaction.',
     tx: { value: '10' },
     gasPrice: '0x2540be400',
-    assertions: function(data) {
+    assertions: function (data) {
       assert.equal(data.toFixed(), '0.03135');
     }
   });
@@ -253,15 +253,15 @@ describe("tradeActions.getTxGasEth", function() {
     description: 'Should handle getting the gas cost for a transaction with a gas value passed in the transaction.',
     tx: { value: '25', gas: 4500200 },
     gasPrice: '0x4a817c800',
-    assertions: function(data) {
+    assertions: function (data) {
       assert.equal(data.toFixed(), '0.090004');
     }
   });
 });
-describe("tradeActions.filterByPriceAndOutcomeAndUserSortByPrice", function() {
+describe("tradeActions.filterByPriceAndOutcomeAndUserSortByPrice", function () {
   // 5 tests total
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
       t.assertions(augur.filterByPriceAndOutcomeAndUserSortByPrice(t.orders, t.traderOrderType, t.limitPrice, t.outcomeId, t.userAddress));
     });
   };
@@ -272,7 +272,7 @@ describe("tradeActions.filterByPriceAndOutcomeAndUserSortByPrice", function() {
     limitPrice: '0.5',
     outcomeId: '1',
     userAddress: '0x1',
-    assertions: function(output) {
+    assertions: function (output) {
       assert.deepEqual(output, []);
     }
   });
@@ -292,7 +292,7 @@ describe("tradeActions.filterByPriceAndOutcomeAndUserSortByPrice", function() {
     limitPrice: undefined,
     outcomeId: '1',
     userAddress: '0x1',
-    assertions: function(output) {
+    assertions: function (output) {
       assert.deepEqual(output, [{
         price: '0.45',
         amount: '25',
@@ -342,7 +342,7 @@ describe("tradeActions.filterByPriceAndOutcomeAndUserSortByPrice", function() {
     limitPrice: null,
     outcomeId: '1',
     userAddress: '0x1',
-    assertions: function(output) {
+    assertions: function (output) {
       assert.deepEqual(output, [{
       	price: '0.45',
       	amount: '25',
@@ -392,7 +392,7 @@ describe("tradeActions.filterByPriceAndOutcomeAndUserSortByPrice", function() {
     limitPrice: '0.5',
     outcomeId: '1',
     userAddress: '0x1',
-    assertions: function(output) {
+    assertions: function (output) {
       assert.deepEqual(output, [{
       	price: '0.45',
       	amount: '25',
@@ -424,7 +424,7 @@ describe("tradeActions.filterByPriceAndOutcomeAndUserSortByPrice", function() {
     limitPrice: '0.5',
     outcomeId: '1',
     userAddress: '0x1',
-    assertions: function(output) {
+    assertions: function (output) {
       assert.deepEqual(output, [{
     		price: '0.7',
     		amount: '150',
@@ -456,10 +456,10 @@ describe("tradeActions.filterByPriceAndOutcomeAndUserSortByPrice", function() {
     }
   });
 });
-describe("tradeActions.getBidAction", function() {
+describe("tradeActions.getBidAction", function () {
   // 1 test total
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
       t.assertions(augur.getBidAction(t.shares, t.limitPrice, t.makerFee, t.gasPrice));
     });
   };
@@ -469,7 +469,7 @@ describe("tradeActions.getBidAction", function() {
     limitPrice: new BigNumber('500000000000000000'),
     makerFee: new BigNumber('10000000000000000'),
     gasPrice: 1000,
-    assertions: function(output) {
+    assertions: function (output) {
       assert.deepEqual(output, {
         action: 'BID',
         shares: '10',
@@ -483,10 +483,10 @@ describe("tradeActions.getBidAction", function() {
     }
   });
 });
-describe("tradeActions.getBuyAction", function() {
+describe("tradeActions.getBuyAction", function () {
   // 1 test total
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
       t.assertions(augur.getBuyAction(t.buyEth, t.sharesFilled, t.takerFeeEth, t.gasPrice));
     });
   };
@@ -496,7 +496,7 @@ describe("tradeActions.getBuyAction", function() {
     sharesFilled: new BigNumber('10'),
     takerFeeEth: new BigNumber('0.05'),
     gasPrice: 93045,
-    assertions: function(output) {
+    assertions: function (output) {
       assert.deepEqual(output, {
         action: 'BUY',
         shares: '10',
@@ -510,10 +510,10 @@ describe("tradeActions.getBuyAction", function() {
     }
   });
 });
-describe("tradeActions.getAskAction", function() {
+describe("tradeActions.getAskAction", function () {
   // 1 test total
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
       t.assertions(augur.getAskAction(t.shares, t.limitPrice, t.makerFee, t.gasPrice));
     });
   };
@@ -523,7 +523,7 @@ describe("tradeActions.getAskAction", function() {
     limitPrice: new BigNumber('500000000000000000'),
     makerFee: new BigNumber('2000000000000000'),
     gasPrice: 93045,
-    assertions: function(output) {
+    assertions: function (output) {
       assert.deepEqual(output, {
         action: 'ASK',
         avgPrice: '0.499',
@@ -537,10 +537,10 @@ describe("tradeActions.getAskAction", function() {
     }
   });
 });
-describe("tradeActions.getSellAction", function() {
+describe("tradeActions.getSellAction", function () {
   // 1 test total
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
       t.assertions(augur.getSellAction(t.sellEth, t.sharesFilled, t.takerFeeEth, t.gasPrice));
     });
   };
@@ -550,7 +550,7 @@ describe("tradeActions.getSellAction", function() {
     sharesFilled: new BigNumber('100'),
     takerFeeEth: new BigNumber('0.01'),
     gasPrice: 93045,
-    assertions: function(output) {
+    assertions: function (output) {
       assert.deepEqual(output, {
         action: 'SELL',
         shares: '100',
@@ -564,10 +564,10 @@ describe("tradeActions.getSellAction", function() {
     }
   });
 });
-describe("tradeActions.getShortSellAction", function() {
+describe("tradeActions.getShortSellAction", function () {
   // 1 test total
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
       t.assertions(augur.getShortSellAction(t.shortSellEth, t.shares, t.takerFeeEth, t.gasPrice));
     });
   };
@@ -577,7 +577,7 @@ describe("tradeActions.getShortSellAction", function() {
     shares: new BigNumber('100'),
     takerFeeEth: new BigNumber('0.01'),
     gasPrice: 93045,
-    assertions: function(output) {
+    assertions: function (output) {
       assert.deepEqual(output, {
         action: 'SHORT_SELL',
         shares: '100',
@@ -591,10 +591,10 @@ describe("tradeActions.getShortSellAction", function() {
     }
   });
 });
-describe("tradeActions.getShortAskAction", function() {
+describe("tradeActions.getShortAskAction", function () {
   // 1 test total
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
       t.assertions(augur.getShortAskAction(t.shares, t.limitPrice, t.makerFee, t.gasPrice));
     });
   };
@@ -604,7 +604,7 @@ describe("tradeActions.getShortAskAction", function() {
     limitPrice: new BigNumber('500000000000000000'),
     makerFee: new BigNumber('10000000000000000'),
     gasPrice: 93045,
-    assertions: function(output) {
+    assertions: function (output) {
       assert.deepEqual(output, {
         action: 'SHORT_ASK',
         shares: '100',
@@ -618,10 +618,10 @@ describe("tradeActions.getShortAskAction", function() {
     }
   });
 });
-describe("tradeActions.calculateTradeTotals", function() {
+describe("tradeActions.calculateTradeTotals", function () {
   // 5 tests total
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
       t.assertions(augur.calculateTradeTotals(t.type, t.numShares, t.limitPrice, t.tradeActions));
     });
   };
@@ -631,7 +631,7 @@ describe("tradeActions.calculateTradeTotals", function() {
     numShares: '10',
     limitPrice: '0.5',
     tradeActions: [],
-    assertions: function(output) {
+    assertions: function (output) {
       assert.deepEqual(output, {
         numShares: '10',
         limitPrice: '0.5',
@@ -656,7 +656,7 @@ describe("tradeActions.calculateTradeTotals", function() {
     	avgPrice: '0.505',
     	noFeePrice: '0.5'
     }],
-    assertions: function(output) {
+    assertions: function (output) {
       assert.deepEqual(output, {
         numShares: '10',
         limitPrice: '0.5',
@@ -693,7 +693,7 @@ describe("tradeActions.calculateTradeTotals", function() {
       noFeePrice: '0.5',
       shares: '100'
     }],
-    assertions: function(output) {
+    assertions: function (output) {
       assert.deepEqual(output, {
         numShares: '100',
         limitPrice: '0.5',
@@ -739,7 +739,7 @@ describe("tradeActions.calculateTradeTotals", function() {
       avgPrice: '0.5',
       noFeePrice: '0.495'
     }],
-    assertions: function(output) {
+    assertions: function (output) {
       assert.deepEqual(output, {
         numShares: '20',
         limitPrice: '0.5',
@@ -811,7 +811,7 @@ describe("tradeActions.calculateTradeTotals", function() {
       avgPrice: '1.005',
       noFeePrice: '0.5'
     }],
-    assertions: function(output) {
+    assertions: function (output) {
       assert.deepEqual(output, {
         numShares: '400',
         limitPrice: '0.5',

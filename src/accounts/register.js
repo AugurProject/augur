@@ -5,9 +5,9 @@ var uuid = require("uuid");
 var clone = require("clone");
 var abi = require("augur-abi");
 var errors = require("ethrpc").errors;
-var constants = require("./constants");
-var pass = require("./utils/pass");
-var isFunction = require("./utils/is-function");
+var constants = require("../constants");
+var pass = require("../utils/pass");
+var isFunction = require("../utils/is-function");
 
 var register = function (password, cb) {
   var callback, self = this;

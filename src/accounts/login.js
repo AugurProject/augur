@@ -4,8 +4,8 @@ var keys = require("keythereum");
 var clone = require("clone");
 var abi = require("augur-abi");
 var errors = require("ethrpc").errors;
-var pass = require("./utils/pass");
-var isFunction = require("./utils/is-function");
+var pass = require("../utils/pass");
+var isFunction = require("../utils/is-function");
 
 var login = function (keystore, password, cb) {
   var keystoreCrypto, callback, self = this;

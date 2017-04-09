@@ -23,14 +23,14 @@ describe("sendReputation Unit Tests", () => {
 	var	getRepBalanceCallCount = 0;
 	var	getRepRedistributionDoneCallCount = 0;
 	var test = function (t) {
-		it(t.description, function() {
+		it(t.description, function () {
 			augur.sendReputation(t.branch, t.recver, t.value, t.onSent, t.onSuccess, t.onFailed);
 			onSuccessToTest(t.successResult);
 		});
 	};
 
-	before(function() {
-		augur.transact = function(tx, onSent, onSuccess, onFailed) {
+	before(function () {
+		augur.transact = function (tx, onSent, onSuccess, onFailed) {
 			assert.isObject(tx, "tx sent to this.transact is not a Object");
 			assert.isArray(tx.inputs, "tx.inputs sent to this.transact isn't an array as expected");
 
@@ -56,7 +56,7 @@ describe("sendReputation Unit Tests", () => {
 			// save the onSuccess function produced by sendReputation so we can test the prepare function contained within
 			onSuccessToTest = onSuccess;
 		};
-		augur.getRepBalance = function(branch, from, cb) {
+		augur.getRepBalance = function (branch, from, cb) {
 			getRepBalanceCallCount++;
 			switch (getRepBalanceCallCount) {
 			case 2:
@@ -73,7 +73,7 @@ describe("sendReputation Unit Tests", () => {
 				break;
 			}
 		};
-		augur.getRepRedistributionDone = function(branch, from, cb) {
+		augur.getRepRedistributionDone = function (branch, from, cb) {
 			getRepRedistributionDoneCallCount++;
 			switch (getRepRedistributionDoneCallCount) {
 			case 1:
@@ -89,7 +89,7 @@ describe("sendReputation Unit Tests", () => {
 		};
 	});
 
-	after(function() {
+	after(function () {
 		augur.transact = transact;
 		augur.getRepBalance = getRepBalance;
 		augur.getRepRedistributionDone = getRepRedistributionDone;
@@ -162,7 +162,7 @@ describe("sendReputation Unit Tests", () => {
 		value: 5,
 		onSent: noop,
 		onSuccess: successError,
-		onFailed: function(e) {
+		onFailed: function (e) {
 			assert.deepEqual(e, { error: '0', message: 'not enough reputation' });
 		},
 		successResult: { callReturn: "0", from: 'fromAddress' }
@@ -174,7 +174,7 @@ describe("sendReputation Unit Tests", () => {
 		value: 5,
 		onSent: noop,
 		onSuccess: successError,
-		onFailed: function(e) {
+		onFailed: function (e) {
 			assert.deepEqual(e, { error: "-1", message: "There was an issue with getRepBalance()."});
 		},
 		successResult: { callReturn: "0", from: 'fromAddress' }
@@ -186,7 +186,7 @@ describe("sendReputation Unit Tests", () => {
 		value: 5,
 		onSent: noop,
 		onSuccess: successError,
-		onFailed: function(e) {
+		onFailed: function (e) {
 			assert.deepEqual(e, undefined);
 		},
 		successResult: { callReturn: "0", from: 'fromAddress' }
@@ -198,7 +198,7 @@ describe("sendReputation Unit Tests", () => {
 		value: 5,
 		onSent: noop,
 		onSuccess: successError,
-		onFailed: function(e) {
+		onFailed: function (e) {
 			assert.deepEqual(e, {error: "-3", message: "cannot send reputation until redistribution is complete"});
 		},
 		successResult: { callReturn: "0", from: 'fromAddress' }
@@ -210,7 +210,7 @@ describe("sendReputation Unit Tests", () => {
 		value: 5,
 		onSent: noop,
 		onSuccess: successError,
-		onFailed: function(e) {
+		onFailed: function (e) {
 			assert.deepEqual(e, {error: "-3", message: "cannot send reputation until redistribution is complete"});
 		},
 		successResult: { callReturn: "0", from: 'fromAddress' }

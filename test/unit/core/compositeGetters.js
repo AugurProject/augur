@@ -51,7 +51,7 @@ describe("CompositeGetters.getOrderBookChunked", function () {
     assertions: function (orderBookChunk) {
       throw new Error(JSON.stringify(orderBookChunked));
     },
-    callback: function(res) {
+    callback: function (res) {
       assert.deepEqual(res, 0);
       finished();
     }
@@ -75,7 +75,7 @@ describe("CompositeGetters.getOrderBookChunked", function () {
     },
     get_total_trades: undefined,
     assertions: undefined,
-    callback: function(res) {
+    callback: function (res) {
       assert.deepEqual(res, { error: 999, message: 'Uh-Oh!' });
       finished();
     }
@@ -210,7 +210,7 @@ describe("CompositeGetters.getOrderBookChunked", function () {
         }
       });
     },
-    callback: function(res) {
+    callback: function (res) {
       assert.isNull(res);
       finished();
     }
@@ -360,30 +360,30 @@ describe("CompositeGetters.getOrderBookChunked", function () {
       }
       assert.deepEqual(orderBookChunk, expectedChunk);
     },
-    callback: function(res) {
+    callback: function (res) {
       assert.isNull(res);
       finished();
     }
   });
 });
-describe('CompositeGetters.loadNextMarketsBatch', function() {
+describe('CompositeGetters.loadNextMarketsBatch', function () {
   // 5 tests total
   var assertionsCC = 0;
   var getMarketsInfo = augur.getMarketsInfo;
-  afterEach(function() {
+  afterEach(function () {
     augur.getMarketsInfo = getMarketsInfo;
   });
-  var test = function(t) {
+  var test = function (t) {
     assertionsCC = 0;
-    it(t.description + " async", function(done) {
+    it(t.description + " async", function (done) {
       augur.getMarketsInfo = t.getMarketsInfo;
       var pause = constants.PAUSE_BETWEEN_MARKET_BATCHES;
       constants.PAUSE_BETWEEN_MARKET_BATCHES = 1;
       // if we pass in t.nextPass as true then use a mock, else set nextPass to undefined.
       var nextPass = t.nextPass ?
-        function() { done(); } :
+        function () { done(); } :
         undefined;
-      augur.loadNextMarketsBatch(t.branchID, t.startIndex, t.chunkSize, t.numMarkets, t.isDesc, t.volumeMin, t.volumeMax, function(err, marketsData) {
+      augur.loadNextMarketsBatch(t.branchID, t.startIndex, t.chunkSize, t.numMarkets, t.isDesc, t.volumeMin, t.volumeMax, function (err, marketsData) {
         // chunkCB
         var finished = t.assertions(err, marketsData);
         if (finished) { done(); }
@@ -400,13 +400,13 @@ describe('CompositeGetters.loadNextMarketsBatch', function() {
     volumeMin: 0,
     volumeMax: -1,
     nextPass: false,
-    getMarketsInfo: function(branch, cb) {
+    getMarketsInfo: function (branch, cb) {
       var offset = branch.offset;
       var numMarketsToLoad = branch.numMarketsToLoad;
       var allMarkets = [{ id: '0x01', volume: '1000'}, { id: '0x02', volume: '1000'}, { id: '0x03', volume: '1000'}, { id: '0x04', volume: '1000'}, { id: '0x05', volume: '1000'}, { id: '0x06', volume: '1000'}, { id: '0x07', volume: '1000'}, { id: '0x08', volume: '1000'}, { id: '0x09', volume: '1000'}, { id: '0x0a', volume: '1000'}];
       cb(allMarkets.slice(offset, offset + numMarketsToLoad));
     },
-    assertions: function(err, marketsData) {
+    assertions: function (err, marketsData) {
       assert.isNull(err);
       // depending on marketsData we will assert what we expect then return true/false to indicate that done() should be called.
       if (marketsData[4].id === '0x0a') {
@@ -428,13 +428,13 @@ describe('CompositeGetters.loadNextMarketsBatch', function() {
     volumeMin: 0,
     volumeMax: -1,
     nextPass: true,
-    getMarketsInfo: function(branch, cb) {
+    getMarketsInfo: function (branch, cb) {
       var offset = branch.offset;
       var numMarketsToLoad = branch.numMarketsToLoad;
       var allMarkets = [{ id: '0x01', volume: '1000'}, { id: '0x02', volume: '1000'}, { id: '0x03', volume: '1000'}, { id: '0x04', volume: '1000'}, { id: '0x05', volume: '1000'}, { id: '0x06', volume: '1000'}, { id: '0x07', volume: '1000'}, { id: '0x08', volume: '1000'}, { id: '0x09', volume: '1000'}, { id: '0x0a', volume: '1000'}];
       cb(allMarkets.slice(offset, offset + numMarketsToLoad));
     },
-    assertions: function(err, marketsData) {
+    assertions: function (err, marketsData) {
       assert.isNull(err);
       // depending on marketsData we will assert what we expect then return false since nextPass should call Done() once complete.
       if (marketsData[4].id === '0x0a') {
@@ -456,10 +456,10 @@ describe('CompositeGetters.loadNextMarketsBatch', function() {
     volumeMin: 0,
     volumeMax: -1,
     nextPass: false,
-    getMarketsInfo: function(branch, cb) {
+    getMarketsInfo: function (branch, cb) {
       cb({ error: 'Uh-Oh!' });
     },
-    assertions: function(err, marketsData) {
+    assertions: function (err, marketsData) {
       assertionsCC++;
       assert.deepEqual(err, { error: 'Uh-Oh!' });
       assert.isUndefined(marketsData);
@@ -477,7 +477,7 @@ describe('CompositeGetters.loadNextMarketsBatch', function() {
     volumeMin: 0,
     volumeMax: -1,
     nextPass: false,
-    getMarketsInfo: function(branch, cb) {
+    getMarketsInfo: function (branch, cb) {
       var offset = branch.offset;
       var numMarketsToLoad = branch.numMarketsToLoad;
       var allMarkets = [{ id: '0x01', volume: '1000'}, { id: '0x02', volume: '1000'}, { id: '0x03', volume: '1000'}, { id: '0x04', volume: '1000'}, { id: '0x05', volume: '1000'}, { id: '0x06', volume: '1000'}, { id: '0x07', volume: '1000'}, { id: '0x08', volume: '1000'}, { id: '0x09', volume: '1000'}, { id: '0x0a', volume: '1000'}];
@@ -487,7 +487,7 @@ describe('CompositeGetters.loadNextMarketsBatch', function() {
       }
       cb(output);
     },
-    assertions: function(err, marketsData) {
+    assertions: function (err, marketsData) {
       assert.isNull(err);
       // depending on marketsData we will assert what we expect then return true/false to indicate that done() should be called.
       if (marketsData.constructor === Array && !marketsData.length) {
@@ -512,7 +512,7 @@ describe('CompositeGetters.loadNextMarketsBatch', function() {
     volumeMin: -1,
     volumeMax: 0,
     nextPass: true,
-    getMarketsInfo: function(branch, cb) {
+    getMarketsInfo: function (branch, cb) {
       var offset = branch.offset;
       var numMarketsToLoad = branch.numMarketsToLoad;
       var allMarkets = [{ id: '0x01', volume: '0'}, { id: '0x02', volume: '0'}, { id: '0x03', volume: '0'}, { id: '0x04', volume: '0'}, { id: '0x05', volume: '0'}, { id: '0x06', volume: '0'}, { id: '0x07', volume: '0'}, { id: '0x08', volume: '0'}, { id: '0x09', volume: '0'}, { id: '0x0a', volume: '0'}];
@@ -522,7 +522,7 @@ describe('CompositeGetters.loadNextMarketsBatch', function() {
       }
       cb(output);
     },
-    assertions: function(err, marketsData) {
+    assertions: function (err, marketsData) {
       assert.isNull(err);
       // depending on marketsData we will assert what we expect then return true/false to indicate that done() should be called.
       if (marketsData.constructor === Array && !marketsData.length) {
@@ -538,23 +538,23 @@ describe('CompositeGetters.loadNextMarketsBatch', function() {
     }
   });
 });
-describe('CompositeGetters.loadMarkets', function() {
+describe('CompositeGetters.loadMarkets', function () {
   // 3 tests total
   var getNumMarketsBranch = augur.getNumMarketsBranch;
   var loadNextMarketsBatch = augur.loadNextMarketsBatch;
   var options = augur.options;
-  afterEach(function() {
+  afterEach(function () {
     augur.getNumMarketsBranch = getNumMarketsBranch;
     augur.loadNextMarketsBatch = loadNextMarketsBatch;
     augur.options = options;
   });
-  var test = function(t) {
-    it(t.description + " async", function(done) {
+  var test = function (t) {
+    it(t.description + " async", function (done) {
       var chunkCBcc = 0;
       augur.getNumMarketsBranch = t.getNumMarketsBranch;
       augur.loadNextMarketsBatch = t.loadNextMarketsBatch;
       augur.options = t.options;
-      augur.loadMarkets(t.branchID, t.chunkSize, t.isDesc, function(err, marketsData) {
+      augur.loadMarkets(t.branchID, t.chunkSize, t.isDesc, function (err, marketsData) {
         chunkCBcc++;
         t.assertions(err, marketsData, chunkCBcc);
         if (chunkCBcc === (t.numMarkets/t.chunkSize)) { done(); }
@@ -568,10 +568,10 @@ describe('CompositeGetters.loadMarkets', function() {
     isDesc: false,
     options: { loadZeroVolumeMarkets: true },
     numMarkets: 10,
-    getNumMarketsBranch: function(branch, cb) {
+    getNumMarketsBranch: function (branch, cb) {
       cb(10);
     },
-    loadNextMarketsBatch: function(branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass) {
+    loadNextMarketsBatch: function (branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass) {
       assert.deepEqual(startIndex, 0, 'startIndex was not the expected value when passed to loadNextMarketsBatch in CompositeGetters.loadMarkets, 1st test');
       if (volumeMax < 0) {
         // send back 5 markets with volume
@@ -596,7 +596,7 @@ describe('CompositeGetters.loadMarkets', function() {
         });
       }
     },
-    assertions: function(err, marketsData, callCount) {
+    assertions: function (err, marketsData, callCount) {
       assert.isNull(err);
       switch(callCount) {
       case 1:
@@ -627,10 +627,10 @@ describe('CompositeGetters.loadMarkets', function() {
     isDesc: true,
     options: { loadZeroVolumeMarkets: true },
     numMarkets: 10,
-    getNumMarketsBranch: function(branch, cb) {
+    getNumMarketsBranch: function (branch, cb) {
       cb(10);
     },
-    loadNextMarketsBatch: function(branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass) {
+    loadNextMarketsBatch: function (branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass) {
       assert.deepEqual(startIndex, 6, 'startIndex was not the expected value when passed to loadNextMarketsBatch in CompositeGetters.loadMarkets, 2nd test');
       if (volumeMax < 0) {
         // send back 5 markets with volume
@@ -655,7 +655,7 @@ describe('CompositeGetters.loadMarkets', function() {
         });
       }
     },
-    assertions: function(err, marketsData, callCount) {
+    assertions: function (err, marketsData, callCount) {
       assert.isNull(err);
       switch(callCount) {
       case 1:
@@ -686,10 +686,10 @@ describe('CompositeGetters.loadMarkets', function() {
     isDesc: false,
     options: { loadZeroVolumeMarkets: false },
     numMarkets: 10,
-    getNumMarketsBranch: function(branch, cb) {
+    getNumMarketsBranch: function (branch, cb) {
       cb(10);
     },
-    loadNextMarketsBatch: function(branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass) {
+    loadNextMarketsBatch: function (branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass) {
       if (startIndex === 0) {
         assert.deepEqual(startIndex, 0, 'startIndex was not the expected value when passed to loadNextMarketsBatch in CompositeGetters.loadMarkets, 3rd test, 1st pass.');
         // send back 5 markets with volume
@@ -716,7 +716,7 @@ describe('CompositeGetters.loadMarkets', function() {
         });
       }
     },
-    assertions: function(err, marketsData, callCount) {
+    assertions: function (err, marketsData, callCount) {
       assert.isNull(err);
       switch(callCount) {
       case 1:
@@ -741,10 +741,10 @@ describe('CompositeGetters.loadMarkets', function() {
     }
   });
 });
-describe('CompositeGetters.loadAssets', function() {
+describe('CompositeGetters.loadAssets', function () {
   // 3 tests total
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
       var getCashBalance = augur.Cash.balance;
       var getRepBalance = augur.getRepBalance;
       var balance = augur.rpc.balance;
@@ -763,29 +763,29 @@ describe('CompositeGetters.loadAssets', function() {
     description: 'Should call all 3 callbacks passed with the values they expect when getCashBalance, getRepBalance, and rpc.balance all return non error values',
     branchID: '1010101',
     accountID: '0x0',
-    cbEther: function(err, ether) {
+    cbEther: function (err, ether) {
       assert.isNull(err);
       assert.deepEqual(ether, '10000');
     },
-    cbRep: function(err, rep) {
+    cbRep: function (err, rep) {
       assert.isNull(err);
       assert.deepEqual(rep, '47');
     },
-    cbRealEther: function(err, wei) {
+    cbRealEther: function (err, wei) {
       assert.isNull(err);
       assert.deepEqual(wei, '2.5');
     },
     Cash: {
-      balance: function(branchID, cb) {
+      balance: function (branchID, cb) {
         // return 10,000 like the faucet
         cb(10000);
       }
     },
-    getRepBalance: function(branchID, accountID, cb) {
+    getRepBalance: function (branchID, accountID, cb) {
       // return 47 like the faucet
       cb(47);
     },
-    balance: function(branchID, cb) {
+    balance: function (branchID, cb) {
       // return 2.5 like the faucet
       cb(2500000000000000000);
     }
@@ -794,29 +794,29 @@ describe('CompositeGetters.loadAssets', function() {
     description: 'Should call all 3 callbacks with errors when getCashBalance, getRepBalance, rpc.balance return error objects',
     branchID: '1010101',
     accountID: '0x0',
-    cbEther: function(err, ether) {
+    cbEther: function (err, ether) {
       assert.isUndefined(ether);
       assert.deepEqual(err, { error: 'Uh-Oh!' });
     },
-    cbRep: function(err, rep) {
+    cbRep: function (err, rep) {
       assert.isUndefined(rep);
       assert.deepEqual(err, { error: 'Uh-Oh!' });
     },
-    cbRealEther: function(err, wei) {
+    cbRealEther: function (err, wei) {
       assert.isUndefined(wei);
       assert.deepEqual(err, { error: 'Uh-Oh!' });
     },
     Cash: {
-      balance: function(branchID, cb) {
+      balance: function (branchID, cb) {
         // return an error object
         cb({ error: 'Uh-Oh!' });
       }
     },
-    getRepBalance: function(branchID, accountID, cb) {
+    getRepBalance: function (branchID, accountID, cb) {
       // return an error object
       cb({ error: 'Uh-Oh!' });
     },
-    balance: function(branchID, cb) {
+    balance: function (branchID, cb) {
       // return an error object
       cb({ error: 'Uh-Oh!' });
     }
@@ -825,39 +825,39 @@ describe('CompositeGetters.loadAssets', function() {
     description: 'Should call all 3 callbacks with undefined when getCashBalance, getRepBalance, rpc.balance return undefined',
     branchID: '1010101',
     accountID: '0x0',
-    cbEther: function(err, ether) {
+    cbEther: function (err, ether) {
       assert.isUndefined(ether);
       assert.isUndefined(err);
     },
-    cbRep: function(err, rep) {
+    cbRep: function (err, rep) {
       assert.isUndefined(rep);
       assert.isUndefined(err);
     },
-    cbRealEther: function(err, wei) {
+    cbRealEther: function (err, wei) {
       assert.isUndefined(wei);
       assert.isUndefined(err);
     },
     Cash: {
-      balance: function(branchID, cb) {
+      balance: function (branchID, cb) {
         // return undefined
         cb(undefined);
       }
     },
-    getRepBalance: function(branchID, accountID, cb) {
+    getRepBalance: function (branchID, accountID, cb) {
       // return undefined
       cb(undefined);
     },
-    balance: function(branchID, cb) {
+    balance: function (branchID, cb) {
       // return undefined
       cb(undefined);
     }
   });
 });
-describe('CompositeGetters.finishLoadBranch', function() {
+describe('CompositeGetters.finishLoadBranch', function () {
   // 2 tests total
   var callbackCallCount = 0;
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
       // we will increment the callback callcount each time it is called to test if the conditional hit the callback or not.
       callbackCallCount = 0;
       t.assertions(augur.finishLoadBranch(t.branch, t.callback));
@@ -866,10 +866,10 @@ describe('CompositeGetters.finishLoadBranch', function() {
   test({
     description: 'Should do nothing if the branch passed does not meet the critieria',
     branch: {id: '0x0', periodLength: undefined, description: undefined, baseReporters: undefined },
-    callback: function(err, branch) {
+    callback: function (err, branch) {
       callbackCallCount++;
     },
-    assertions: function() {
+    assertions: function () {
       // This test shouldn't have called callback at all, so we are confirming the callcount is 0 still after calling finishLoadBranch with an undefined branch argument.
       assert.deepEqual(callbackCallCount, 0);
     }
@@ -882,7 +882,7 @@ describe('CompositeGetters.finishLoadBranch', function() {
       description: 'This is a branch description',
       baseReporters: ['0x01', '0x02'],
     },
-    callback: function(err, branch) {
+    callback: function (err, branch) {
       callbackCallCount++;
       assert.isNull(err);
       assert.deepEqual(branch, {
@@ -892,16 +892,16 @@ describe('CompositeGetters.finishLoadBranch', function() {
         baseReporters: ['0x01', '0x02'],
       });
     },
-    assertions: function() {
+    assertions: function () {
       // This test should have called the callback 1 time, confirm the callcount.
       assert.deepEqual(callbackCallCount, 1);
     }
   });
 });
-describe('CompositeGetters.loadBranch', function() {
+describe('CompositeGetters.loadBranch', function () {
   // 7 tests total
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
       var getPeriodLength = augur.getPeriodLength;
       var getDescription = augur.getDescription;
       var getBaseReporters = augur.getBaseReporters;
@@ -919,35 +919,35 @@ describe('CompositeGetters.loadBranch', function() {
   test({
     description: 'Should return a branch after getPeriodLength, getDescription, and getBaseReporters return their expected values',
     branchID: '1010101',
-    callback: function(err, branch) {
+    callback: function (err, branch) {
       assert.isNull(err);
       assert.deepEqual(branch, { id: '0xf69b5', periodLength: 100, description: 'this is a description for the branch', baseReporters: 25 });
     },
-    getPeriodLength: function(branch, cb) {
+    getPeriodLength: function (branch, cb) {
       cb(100);
     },
-    getDescription: function(branch, cb) {
+    getDescription: function (branch, cb) {
       cb('this is a description for the branch');
     },
-    getBaseReporters: function(branch, cb) {
+    getBaseReporters: function (branch, cb) {
       cb(25);
     }
   });
   test({
     description: 'Should return an error after getPeriodLength returns undefined.',
     branchID: '1010101',
-    callback: function(err, branch) {
+    callback: function (err, branch) {
       assert.isUndefined(err);
       assert.isUndefined(branch);
     },
-    getPeriodLength: function(branch, cb) {
+    getPeriodLength: function (branch, cb) {
       cb(undefined);
     },
-    getDescription: function(branch, cb) {
+    getDescription: function (branch, cb) {
       // shouldn't be hit
       cb('this is a description for the branch');
     },
-    getBaseReporters: function(branch, cb) {
+    getBaseReporters: function (branch, cb) {
       // shouldn't be hit
       cb(25);
     }
@@ -955,18 +955,18 @@ describe('CompositeGetters.loadBranch', function() {
   test({
     description: 'Should return an error Object after getPeriodLength returns an Object with an error key.',
     branchID: '1010101',
-    callback: function(err, branch) {
+    callback: function (err, branch) {
       assert.deepEqual(err, {error: 'Uh-Oh!'});
       assert.isUndefined(branch);
     },
-    getPeriodLength: function(branch, cb) {
+    getPeriodLength: function (branch, cb) {
       cb({error: 'Uh-Oh!'});
     },
-    getDescription: function(branch, cb) {
+    getDescription: function (branch, cb) {
       // shouldn't be hit
       cb('this is a description for the branch');
     },
-    getBaseReporters: function(branch, cb) {
+    getBaseReporters: function (branch, cb) {
       // shouldn't be hit
       cb(25);
     }
@@ -974,17 +974,17 @@ describe('CompositeGetters.loadBranch', function() {
   test({
     description: 'Should return an error after getDescription returns undefined.',
     branchID: '1010101',
-    callback: function(err, branch) {
+    callback: function (err, branch) {
       assert.isUndefined(err);
       assert.isUndefined(branch);
     },
-    getPeriodLength: function(branch, cb) {
+    getPeriodLength: function (branch, cb) {
       cb(100);
     },
-    getDescription: function(branch, cb) {
+    getDescription: function (branch, cb) {
       cb(undefined);
     },
-    getBaseReporters: function(branch, cb) {
+    getBaseReporters: function (branch, cb) {
       // shouldn't be hit
       cb(25);
     }
@@ -992,17 +992,17 @@ describe('CompositeGetters.loadBranch', function() {
   test({
     description: 'Should return an error Object after getDescription returns an Object with an error key.',
     branchID: '1010101',
-    callback: function(err, branch) {
+    callback: function (err, branch) {
       assert.deepEqual(err, {error: 'Uh-Oh!'});
       assert.isUndefined(branch);
     },
-    getPeriodLength: function(branch, cb) {
+    getPeriodLength: function (branch, cb) {
       cb(100);
     },
-    getDescription: function(branch, cb) {
+    getDescription: function (branch, cb) {
       cb({error: 'Uh-Oh!'});
     },
-    getBaseReporters: function(branch, cb) {
+    getBaseReporters: function (branch, cb) {
       // shouldn't be hit
       cb(25);
     }
@@ -1010,78 +1010,78 @@ describe('CompositeGetters.loadBranch', function() {
   test({
     description: 'Should return an error after getBaseReporters returns undefined.',
     branchID: '1010101',
-    callback: function(err, branch) {
+    callback: function (err, branch) {
       assert.isUndefined(err);
       assert.isUndefined(branch);
     },
-    getPeriodLength: function(branch, cb) {
+    getPeriodLength: function (branch, cb) {
       cb(100);
     },
-    getDescription: function(branch, cb) {
+    getDescription: function (branch, cb) {
       cb('this is a description for the branch');
     },
-    getBaseReporters: function(branch, cb) {
+    getBaseReporters: function (branch, cb) {
       cb(undefined);
     }
   });
   test({
     description: 'Should return an error Object after getBaseReporters returns an Object with an error key.',
     branchID: '1010101',
-    callback: function(err, branch) {
+    callback: function (err, branch) {
       assert.deepEqual(err, {error: 'Uh-Oh!'});
       assert.isUndefined(branch);
     },
-    getPeriodLength: function(branch, cb) {
+    getPeriodLength: function (branch, cb) {
       cb(100);
     },
-    getDescription: function(branch, cb) {
+    getDescription: function (branch, cb) {
       cb('this is a description for the branch');
     },
-    getBaseReporters: function(branch, cb) {
+    getBaseReporters: function (branch, cb) {
       cb({error: 'Uh-Oh!'});
     }
   });
 });
-describe('CompositeGetters.parsePositionInMarket', function() {
+describe('CompositeGetters.parsePositionInMarket', function () {
   // 4 tests total
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
       t.assertions(augur.parsePositionInMarket(t.positionInMarket));
     });
   };
   test({
     description: 'Should should return undefined if positionInMarket is undefined',
     positionInMarket: undefined,
-    assertions: function(o) {
+    assertions: function (o) {
       assert.isUndefined(o);
     }
   });
   test({
     description: 'Should should return positionInMarket if positionInMarket is an object with an error key',
     positionInMarket: { error: 'Uh-Oh!' },
-    assertions: function(o) {
+    assertions: function (o) {
       assert.deepEqual(o, { error: 'Uh-Oh!' });
     }
   });
   test({
     description: 'Should should return position object broken down by outcomes passed in positionInMarket',
     positionInMarket: ['1000000000000000000000', false, '231023558000000'],
-    assertions: function(o) {
+    assertions: function (o) {
       assert.deepEqual(o, {'1': '1000', '2': '0', '3': '0.000231023558'});
     }
   });
   test({
     description: 'Should should return empty position object if positionInMarket is an empty array',
     positionInMarket: [],
-    assertions: function(o) {
+    assertions: function (o) {
       assert.deepEqual(o, {});
     }
   });
 });
-describe('CompositeGetters.getPositionInMarket', function() {
+describe('CompositeGetters.getPositionInMarket', function () {
   // 4 tests total
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
       var getPositionInMarket = augur.CompositeGetters.getPositionInMarket;
       // we are going to pass our test assertions as our getPositionInMarket contract function
       augur.CompositeGetters.getPositionInMarket = t.assertions;
@@ -1096,7 +1096,7 @@ describe('CompositeGetters.getPositionInMarket', function() {
     market: '0x0a1',
     account: '0x0',
     callback: noop,
-    assertions: function(market, account, callback) {
+    assertions: function (market, account, callback) {
       assert.deepEqual(market, '0x0a1');
       assert.deepEqual(account, '0x0');
       assert.deepEqual(callback, noop);
@@ -1107,7 +1107,7 @@ describe('CompositeGetters.getPositionInMarket', function() {
     market: '0x0a1',
     account: noop,
     callback: undefined,
-    assertions: function(market, account, callback) {
+    assertions: function (market, account, callback) {
       assert.deepEqual(market, '0x0a1');
       // in this case we didn't pass account so we expect it to be augur.from, however this is null by default so that's what we are confirming here.
       assert.isNull(account);
@@ -1115,10 +1115,10 @@ describe('CompositeGetters.getPositionInMarket', function() {
     }
   });
 });
-describe('CompositeGetters.parseOrderBook', function() {
+describe('CompositeGetters.parseOrderBook', function () {
   // 5 tests total
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
       t.assertions(augur.parseOrderBook(t.orderArray, t.scalarMinMax));
     });
   };
@@ -1126,7 +1126,7 @@ describe('CompositeGetters.parseOrderBook', function() {
     description: 'should handle an order array with 2 trade orders in it, no scalar markets',
     orderArray: ['0x01', '0x1', '0x0a1', '100000000000000000000', '2530000000000000000', '0x0d1', '101010', '1', '0x02', '0x2', '0x0a2', '54200000000000000000000', '9320000000000000000000', '0x0d2', '101010', '2'],
     scalarMinMax: {},
-    assertions: function(o) {
+    assertions: function (o) {
       assert.deepEqual(o, { buy:
          { '0x0000000000000000000000000000000000000000000000000000000000000001':
           { id: '0x0000000000000000000000000000000000000000000000000000000000000001',
@@ -1159,7 +1159,7 @@ describe('CompositeGetters.parseOrderBook', function() {
     description: 'should handle an order array with 2 trade orders in it, with scalar markets',
     orderArray: ['0x01', '0x1', '0x0a1', '150000000000000000000', '80000000000000000000', '0x0d1', '101010', '1', '0x02', '0x1', '0x0a1', '736200000000000000000000', '12340000000000000000000', '0x0d1', '101010', '2'],
     scalarMinMax: { minValue: '10', maxValue: '140'},
-    assertions: function(o) {
+    assertions: function (o) {
       assert.deepEqual(o, {
         buy: {
           '0x0000000000000000000000000000000000000000000000000000000000000001': {
@@ -1195,7 +1195,7 @@ describe('CompositeGetters.parseOrderBook', function() {
     description: 'should return a blank orderBook Object if orderArray is empty',
     orderArray: [],
     scalarMinMax: undefined,
-    assertions: function(o) {
+    assertions: function (o) {
       assert.deepEqual(o, {buy: {}, sell: {}});
     }
   });
@@ -1203,7 +1203,7 @@ describe('CompositeGetters.parseOrderBook', function() {
     description: 'should return orderArray passed in if orderArray is undefined',
     orderArray: undefined,
     scalarMinMax: undefined,
-    assertions: function(o) {
+    assertions: function (o) {
       assert.isUndefined(o);
     }
   });
@@ -1211,15 +1211,15 @@ describe('CompositeGetters.parseOrderBook', function() {
     description: 'should return orderArray passed in if orderArray is am object with an error key',
     orderArray: { error: 'Uh-Oh!' },
     scalarMinMax: { minValue: '10', maxValue: '140'},
-    assertions: function(o) {
+    assertions: function (o) {
       assert.deepEqual(o, { error: 'Uh-Oh!' });
     }
   });
 });
-describe('CompositeGetters.getOrderBook', function() {
+describe('CompositeGetters.getOrderBook', function () {
   // 4 tests total
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
       var fire = augur.fire;
       // use fire as our assertions...
       augur.fire = t.assertions;
@@ -1234,7 +1234,7 @@ describe('CompositeGetters.getOrderBook', function() {
     market: '0x0a1',
     scalarMinMax: noop,
     callback: undefined,
-    assertions: function(tx, callback, parseOrderBook, scalarMinMax) {
+    assertions: function (tx, callback, parseOrderBook, scalarMinMax) {
       assert.isNull(scalarMinMax);
       assert.deepEqual(tx.params, ['0x0a1', 0, 0]);
       assert.deepEqual(tx.to, augur.api.functions.CompositeGetters.getOrderBook.to);
@@ -1245,7 +1245,7 @@ describe('CompositeGetters.getOrderBook', function() {
     market: { market: '0x0a1' },
     scalarMinMax: undefined,
     callback: noop,
-    assertions: function(tx, callback, parseOrderBook, scalarMinMax) {
+    assertions: function (tx, callback, parseOrderBook, scalarMinMax) {
       assert.isUndefined(scalarMinMax);
       assert.deepEqual(tx.params, ['0x0a1', 0, 0]);
       assert.deepEqual(tx.to, augur.api.functions.CompositeGetters.getOrderBook.to);
@@ -1256,7 +1256,7 @@ describe('CompositeGetters.getOrderBook', function() {
     market: { market: '0x0a1', offset: 2, numTradesToLoad: 10, scalarMinMax: undefined, callback: noop },
     scalarMinMax: undefined,
     callback: undefined,
-    assertions: function(tx, callback, parseOrderBook, scalarMinMax) {
+    assertions: function (tx, callback, parseOrderBook, scalarMinMax) {
       assert.isUndefined(scalarMinMax);
       assert.deepEqual(tx.params, ['0x0a1', 2, 10]);
       assert.deepEqual(tx.to, augur.api.functions.CompositeGetters.getOrderBook.to);
@@ -1267,17 +1267,17 @@ describe('CompositeGetters.getOrderBook', function() {
     market: { market: '0x0a1', offset: 1, numTradesToLoad: 25, scalarMinMax: { minValue: '-10', maxValue: '110' }, callback: noop },
     scalarMinMax: undefined,
     callback: undefined,
-    assertions: function(tx, callback, parseOrderBook, scalarMinMax) {
+    assertions: function (tx, callback, parseOrderBook, scalarMinMax) {
       assert.deepEqual(scalarMinMax, { minValue: '-10', maxValue: '110' });
       assert.deepEqual(tx.params, ['0x0a1', 1, 25]);
       assert.deepEqual(tx.to, augur.api.functions.CompositeGetters.getOrderBook.to);
     }
   });
 });
-describe('CompositeGetters.validateMarketInfo', function() {
+describe('CompositeGetters.validateMarketInfo', function () {
   // 3 tests total
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
       var parseMarketInfo = augur.parseMarketInfo;
       augur.parseMarketInfo = t.parseMarketInfo;
 
@@ -1289,37 +1289,37 @@ describe('CompositeGetters.validateMarketInfo', function() {
   test({
     description: 'Should return null if marketInfo is undefined',
     marketInfo: undefined,
-    assertions: function(o) {
+    assertions: function (o) {
       assert.isNull(o);
     }
   });
   test({
     description: 'Should return null if parseMarketInfo returns parsedMarketInfo that does not contain a numOutcomes key',
     marketInfo: {},
-    parseMarketInfo: function(marketInfo) {
+    parseMarketInfo: function (marketInfo) {
       // return an empty object so it fails the next conditional statement.
       return {};
     },
-    assertions: function(o) {
+    assertions: function (o) {
       assert.isNull(o);
     }
   });
   test({
     description: 'Should return parsedMarketInfo',
     marketInfo: {},
-    parseMarketInfo: function(marketInfo) {
+    parseMarketInfo: function (marketInfo) {
       // return an object that has a numOutcomes key so that it will pass the next conditional and return our parsedMarketInfo.
       return { numOutcomes: 2 };
     },
-    assertions: function(o) {
+    assertions: function (o) {
       assert.deepEqual(o, { numOutcomes: 2 });
     }
   });
 });
-describe('CompositeGetters.getMarketInfo', function() {
+describe('CompositeGetters.getMarketInfo', function () {
   // 5 tests total
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
       var getMarketInfo = augur.CompositeGetters.getMarketInfo;
       // we are going to pass our test assertions as our getMarketInfo contract function
       augur.CompositeGetters.getMarketInfo = t.assertions;
@@ -1334,7 +1334,7 @@ describe('CompositeGetters.getMarketInfo', function() {
     market: '0x0a1',
     account: '0x0',
     callback: noop,
-    assertions: function(market, account, callback) {
+    assertions: function (market, account, callback) {
       assert.deepEqual(market, '0x0a1');
       assert.deepEqual(account, '0x0');
       assert.deepEqual(callback, noop);
@@ -1345,7 +1345,7 @@ describe('CompositeGetters.getMarketInfo', function() {
     market: { market: '0x0a1', callback: noop },
     account: undefined,
     callback: undefined,
-    assertions: function(market, account, callback) {
+    assertions: function (market, account, callback) {
       assert.deepEqual(market, '0x0a1');
       assert.deepEqual(account, 0);
       assert.deepEqual(callback, noop);
@@ -1356,7 +1356,7 @@ describe('CompositeGetters.getMarketInfo', function() {
     market: { market: '0x0a1', account: '0x0' },
     account: undefined,
     callback: noop,
-    assertions: function(market, account, callback) {
+    assertions: function (market, account, callback) {
       assert.deepEqual(market, '0x0a1');
       assert.deepEqual(account, '0x0');
       assert.deepEqual(callback, noop);
@@ -1367,7 +1367,7 @@ describe('CompositeGetters.getMarketInfo', function() {
     market: { market: '0x0a1', account: '0x0' },
     account: undefined,
     callback: noop,
-    assertions: function(market, account, callback) {
+    assertions: function (market, account, callback) {
       assert.deepEqual(market, '0x0a1');
       assert.deepEqual(account, '0x0');
       assert.deepEqual(callback, noop);
@@ -1378,17 +1378,17 @@ describe('CompositeGetters.getMarketInfo', function() {
     market: '0x0a1',
     account: noop,
     callback: undefined,
-    assertions: function(market, account, callback) {
+    assertions: function (market, account, callback) {
       assert.deepEqual(market, '0x0a1');
       assert.deepEqual(account, 0);
       assert.deepEqual(callback, noop);
     }
   });
 });
-describe('CompositeGetters.parseBatchMarketInfo', function() {
+describe('CompositeGetters.parseBatchMarketInfo', function () {
   // 4 tests total
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
       var parseMarketInfo = augur.parseMarketInfo;
       augur.parseMarketInfo = t.parseMarketInfo;
 
@@ -1401,11 +1401,11 @@ describe('CompositeGetters.parseBatchMarketInfo', function() {
     description: 'Should return the marketsArray if it is undefined',
     marketsArray: undefined,
     numMarkets: 3,
-    parseMarketInfo: function(info) {
+    parseMarketInfo: function (info) {
       // shouldn't be reached
       assert.isNull('parseMarketInfo hit');
     },
-    assertions: function(o) {
+    assertions: function (o) {
       assert.isUndefined(o);
     }
   });
@@ -1413,11 +1413,11 @@ describe('CompositeGetters.parseBatchMarketInfo', function() {
     description: 'Should return the marketsArray if it is not an array',
     marketsArray: {},
     numMarkets: 3,
-    parseMarketInfo: function(info) {
+    parseMarketInfo: function (info) {
       // shouldn't be reached
       assert.isNull('parseMarketInfo hit');
     },
-    assertions: function(o) {
+    assertions: function (o) {
       assert.deepEqual(o, {});
     }
   });
@@ -1425,11 +1425,11 @@ describe('CompositeGetters.parseBatchMarketInfo', function() {
     description: 'Should return the marketsArray if it is an empty array',
     marketsArray: [],
     numMarkets: 3,
-    parseMarketInfo: function(info) {
+    parseMarketInfo: function (info) {
       // shouldn't be reached
       assert.isNull('parseMarketInfo hit');
     },
-    assertions: function(o) {
+    assertions: function (o) {
       assert.deepEqual(o, []);
     }
   });
@@ -1437,10 +1437,10 @@ describe('CompositeGetters.parseBatchMarketInfo', function() {
     description: 'Should return marketInfo after parsing the marketsArray',
     marketsArray: ['4', '0x0a1', '2', 'binary', '4', '0x0a2', '2', 'binary'],
     numMarkets: 2,
-    parseMarketInfo: function(info) {
+    parseMarketInfo: function (info) {
       return {marketID: info[0], numOutcomes: info[1], type: info[2]};
     },
-    assertions: function(o) {
+    assertions: function (o) {
       assert.deepEqual(o, {
         '0x00000000000000000000000000000000000000000000000000000000000000a1': { marketID: '0x0a1', numOutcomes: '2', type: 'binary' },
         '0x00000000000000000000000000000000000000000000000000000000000000a2': { marketID: '0x0a2', numOutcomes: '2', type: 'binary' },
@@ -1451,18 +1451,18 @@ describe('CompositeGetters.parseBatchMarketInfo', function() {
     description: 'Should return empty marketInfo after parsing the marketsArray but parseMarket keeps returning empty objects',
     marketsArray: ['4', '0x0a1', '2', 'binary', '4', '0x0a2', '2', 'binary'],
     numMarkets: 2,
-    parseMarketInfo: function(info) {
+    parseMarketInfo: function (info) {
       return {};
     },
-    assertions: function(o) {
+    assertions: function (o) {
       assert.deepEqual(o, {});
     }
   });
 });
-describe('CompositeGetters.batchGetMarketInfo', function() {
+describe('CompositeGetters.batchGetMarketInfo', function () {
   // 2 tests total
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
       var fire = augur.fire;
       augur.fire = t.assertions;
 
@@ -1476,7 +1476,7 @@ describe('CompositeGetters.batchGetMarketInfo', function() {
     marketIDs: ['0x0a1', '0x0a2', '0x0a3'],
     account: '0x0',
     callback: noop,
-    assertions: function(tx, callback, parseBatchMarketInfo, numMarketIDs) {
+    assertions: function (tx, callback, parseBatchMarketInfo, numMarketIDs) {
       assert.deepEqual(tx.to, augur.api.functions.CompositeGetters.batchGetMarketInfo.to);
       assert.deepEqual(tx.params, [['0x0a1', '0x0a2', '0x0a3'],'0x0']);
       assert.deepEqual(numMarketIDs, 3);
@@ -1487,17 +1487,17 @@ describe('CompositeGetters.batchGetMarketInfo', function() {
     marketIDs: ['0x0a1', '0x0a2', '0x0a3'],
     account: noop,
     callback: undefined,
-    assertions: function(tx, callback, parseBatchMarketInfo, numMarketIDs) {
+    assertions: function (tx, callback, parseBatchMarketInfo, numMarketIDs) {
       assert.deepEqual(tx.to, augur.api.functions.CompositeGetters.batchGetMarketInfo.to);
       assert.deepEqual(tx.params, [['0x0a1', '0x0a2', '0x0a3'], 0]);
       assert.deepEqual(numMarketIDs, 3);
     }
   });
 });
-describe('CompositeGetters.parseMarketsInfo', function() {
+describe('CompositeGetters.parseMarketsInfo', function () {
   // 4 tests total
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
       t.assertions(augur.parseMarketsInfo(t.marketsArray, t.branch));
     });
   };
@@ -1511,7 +1511,7 @@ describe('CompositeGetters.parseMarketsInfo', function() {
     '0x11', '0x0a3', '500', '200000000000000000', 140000000, '125000000000000000000', abi.short_string_to_int256('sports'), abi.short_string_to_int256('baseball'), abi.short_string_to_int256('mlb'), 15000000, '10000000000000000', '0x0e3', '1000000000000000000', '50000000000000000000', '5', '',
     '5768696368207465616d2077696c6c2077696e2074686520414c204561737420696e20746865203230313720736561736f6e206f66204d4c423f'],
     branch: augur.constants.DEFAULT_BRANCH_ID,
-    assertions: function(parsedMarketsInfo) {
+    assertions: function (parsedMarketsInfo) {
       assert.deepEqual(parsedMarketsInfo, {
         '0x00000000000000000000000000000000000000000000000000000000000000a1': {
           id: '0x00000000000000000000000000000000000000000000000000000000000000a1',
@@ -1583,7 +1583,7 @@ describe('CompositeGetters.parseMarketsInfo', function() {
     description: 'Should handle an empty markets array and return null',
     marketsArray: [],
     branch: augur.constants.DEFAULT_BRANCH_ID,
-    assertions: function(parsedMarketsInfo) {
+    assertions: function (parsedMarketsInfo) {
       assert.isNull(parsedMarketsInfo);
     }
   });
@@ -1591,7 +1591,7 @@ describe('CompositeGetters.parseMarketsInfo', function() {
     description: 'Should handle a non array passed as marketsArray and return null',
     marketsArray: {},
     branch: augur.constants.DEFAULT_BRANCH_ID,
-    assertions: function(parsedMarketsInfo) {
+    assertions: function (parsedMarketsInfo) {
       assert.isNull(parsedMarketsInfo);
     }
   });
@@ -1599,19 +1599,19 @@ describe('CompositeGetters.parseMarketsInfo', function() {
     description: 'Should handle undefined passed as marketsArray and return null',
     marketsArray: undefined,
     branch: augur.constants.DEFAULT_BRANCH_ID,
-    assertions: function(parsedMarketsInfo) {
+    assertions: function (parsedMarketsInfo) {
       assert.isNull(parsedMarketsInfo);
     }
   });
 });
-describe('CompositeGetters.getMarketsInfo', function() {
+describe('CompositeGetters.getMarketsInfo', function () {
   // 2 tests total
   var fire = augur.fire;
-  afterEach(function() {
+  afterEach(function () {
     augur.fire = fire;
   });
-  var test = function(t) {
-    it(t.description + ' async', function() {
+  var test = function (t) {
+    it(t.description + ' async', function () {
       augur.fire = t.fire;
       augur.getMarketsInfo(t.branch, t.offset, t.numMarketsToLoad, t.volumeMin, t.volumeMax, t.callback);
     });
@@ -1623,11 +1623,11 @@ describe('CompositeGetters.getMarketsInfo', function() {
     numMarketsToLoad: undefined,
     volumeMin: undefined,
     volumeMax: undefined,
-    callback: function(data) {
+    callback: function (data) {
       assert.deepEqual(data.params, [augur.constants.DEFAULT_BRANCH_ID, 0, 0, 0, 0]);
       assert.deepEqual(data.to, augur.api.functions.CompositeGetters.getMarketsInfo.to);
     },
-    fire: function(tx, callback, parseMarketsInfo, branch) {
+    fire: function (tx, callback, parseMarketsInfo, branch) {
       callback(tx);
     }
   });
@@ -1638,11 +1638,11 @@ describe('CompositeGetters.getMarketsInfo', function() {
     numMarketsToLoad: 10,
     volumeMin: -1,
     volumeMax: 0,
-    callback: function(data) {
+    callback: function (data) {
       assert.deepEqual(data.params, ['101010', 5, 10, -1, 0]);
       assert.deepEqual(data.to, augur.api.functions.CompositeGetters.getMarketsInfo.to);
     },
-    fire: function(tx, callback, parseMarketsInfo, branch) {
+    fire: function (tx, callback, parseMarketsInfo, branch) {
       callback(tx);
     }
   });

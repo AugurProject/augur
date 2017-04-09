@@ -6,14 +6,14 @@ var augur = new (require("../../../src"))();
 var noop = require("../../../src/utils/noop");
 // 12 total tests
 
-describe("cash.sendEther", function() {
+describe("cash.sendEther", function () {
   // 6 total tests
   var transact = augur.transact;
-  afterEach(function() {
+  afterEach(function () {
       augur.transact = transact;
   });
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
       augur.transact = t.transact;
       t.assertions(augur.sendEther(t.to, t.value, t.from, t.onSent, t.onSuccess, t.onFailed));
     });
@@ -27,11 +27,11 @@ describe("cash.sendEther", function() {
     onSuccess: noop,
     onFailed: noop,
     description: "handles a string input for value",
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, onSent, onSuccess, onFailed) {
 	    // just return the tx to be passed to assertions.
       return tx;
     },
-    assertions: function(out) {
+    assertions: function (out) {
       assert.deepEqual(out.from, 'fromAddress');
       assert.deepEqual(out.to, 'toAddress');
       assert.deepEqual(out.value, '0x8ac7230489e80000');
@@ -47,11 +47,11 @@ describe("cash.sendEther", function() {
     onSuccess: noop,
     onFailed: noop,
     description: "handles a JS Number input for value",
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, onSent, onSuccess, onFailed) {
 	    // just return the tx to be passed to assertions.
       return tx;
     },
-    assertions: function(out) {
+    assertions: function (out) {
       assert.deepEqual(out.from, 'fromAddress');
       assert.deepEqual(out.to, 'toAddress');
       assert.deepEqual(out.value, '0x15af1d78b58c40000');
@@ -67,11 +67,11 @@ describe("cash.sendEther", function() {
     onSuccess: noop,
     onFailed: noop,
     description: "handles a Big Number input for value",
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, onSent, onSuccess, onFailed) {
 	    // just return the tx to be passed to assertions.
       return tx;
     },
-    assertions: function(out) {
+    assertions: function (out) {
       assert.deepEqual(out.from, 'fromAddress');
       assert.deepEqual(out.to, 'toAddress');
       assert.deepEqual(out.value, '0xba80cc0882cf7a000');
@@ -89,11 +89,11 @@ describe("cash.sendEther", function() {
       onFailed: noop,
     },
     description: "handles a string input for value, args passed as single arg object",
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, onSent, onSuccess, onFailed) {
 	    // just return the tx to be passed to assertions.
       return tx;
     },
-    assertions: function(out) {
+    assertions: function (out) {
       assert.deepEqual(out.from, 'fromAddress');
       assert.deepEqual(out.to, 'toAddress');
       assert.deepEqual(out.value, '0x6f65bffc05569000');
@@ -111,11 +111,11 @@ describe("cash.sendEther", function() {
       onFailed: noop,
     },
     description: "handles a JS Number input for value, args passed as single arg object",
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, onSent, onSuccess, onFailed) {
 	    // just return the tx to be passed to assertions.
       return tx;
     },
-    assertions: function(out) {
+    assertions: function (out) {
       assert.deepEqual(out.from, 'fromAddress');
       assert.deepEqual(out.to, 'toAddress');
       assert.deepEqual(out.value, '0x28c418afbbb5c0000');
@@ -133,11 +133,11 @@ describe("cash.sendEther", function() {
       onFailed: noop,
     },
     description: "handles a Big Number input for value, args passed as single arg object",
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, onSent, onSuccess, onFailed) {
 	    // just return the tx to be passed to assertions.
       return tx;
     },
-    assertions: function(out) {
+    assertions: function (out) {
       assert.deepEqual(out.from, 'fromAddress');
       assert.deepEqual(out.to, 'toAddress');
       assert.deepEqual(out.value, '0x7cf82fca1a648000');

@@ -3,14 +3,14 @@
 var assert = require("chai").assert;
 var augur = new (require("../../../src"))();
 
-describe("makeOrder.placeBid", function() {
+describe("makeOrder.placeBid", function () {
   // 2 tests total
   var buy = augur.buy;
-  afterEach(function() {
+  afterEach(function () {
     augur.buy = buy;
   });
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
       augur.buy = t.assertions;
       augur.placeBid(t.market, t.outcomeID, t.numShares, t.limitPrice, t.tradeGroupID, t.callback);
     });
@@ -22,10 +22,10 @@ describe("makeOrder.placeBid", function() {
     numShares: '100',
     limitPrice: '0.5',
     tradeGroupID: '0xab12',
-    callback: function(out) {
+    callback: function (out) {
       assert.isNull(out);
     },
-    assertions: function(order) {
+    assertions: function (order) {
       assert.deepEqual(order.amount, '100');
       assert.deepEqual(order.price, '0.5');
       assert.deepEqual(order.market, '0xa1');
@@ -45,7 +45,7 @@ describe("makeOrder.placeBid", function() {
     numShares: '100',
     limitPrice: '0.5',
     tradeGroupID: '0xab12',
-    assertions: function(order) {
+    assertions: function (order) {
       assert.deepEqual(order.amount, '100');
       assert.deepEqual(order.price, '0.5');
       assert.deepEqual(order.market, '0xa1');
@@ -58,14 +58,14 @@ describe("makeOrder.placeBid", function() {
     }
   });
 });
-describe("makeOrder.placeAsk", function() {
+describe("makeOrder.placeAsk", function () {
   // 2 tests total
   var sell = augur.sell;
-  afterEach(function() {
+  afterEach(function () {
     augur.sell = sell;
   });
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
       augur.sell = t.assertions;
       augur.placeAsk(t.market, t.outcomeID, t.numShares, t.limitPrice, t.tradeGroupID, t.callback);
     });
@@ -77,10 +77,10 @@ describe("makeOrder.placeAsk", function() {
     numShares: '100',
     limitPrice: '0.5',
     tradeGroupID: '0xab12',
-    callback: function(out) {
+    callback: function (out) {
       assert.isNull(out);
     },
-    assertions: function(order) {
+    assertions: function (order) {
       assert.deepEqual(order.amount, '100');
       assert.deepEqual(order.price, '0.5');
       assert.deepEqual(order.market, '0xa1');
@@ -100,7 +100,7 @@ describe("makeOrder.placeAsk", function() {
     numShares: '100',
     limitPrice: '0.5',
     tradeGroupID: '0xab12',
-    assertions: function(order) {
+    assertions: function (order) {
       assert.deepEqual(order.amount, '100');
       assert.deepEqual(order.price, '0.5');
       assert.deepEqual(order.market, '0xa1');
@@ -113,14 +113,14 @@ describe("makeOrder.placeAsk", function() {
     }
   });
 });
-describe("makeOrder.placeShortAsk", function() {
+describe("makeOrder.placeShortAsk", function () {
   // 2 tests total
   var shortAsk = augur.shortAsk;
-  afterEach(function() {
+  afterEach(function () {
     augur.shortAsk = shortAsk;
   });
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
       augur.shortAsk = t.assertions;
       augur.placeShortAsk(t.market, t.outcomeID, t.numShares, t.limitPrice, t.tradeGroupID, t.callback);
     });
@@ -132,10 +132,10 @@ describe("makeOrder.placeShortAsk", function() {
     numShares: '100',
     limitPrice: '0.5',
     tradeGroupID: '0xab12',
-    callback: function(out) {
+    callback: function (out) {
       assert.isNull(out);
     },
-    assertions: function(order) {
+    assertions: function (order) {
       assert.deepEqual(order.amount, '100');
       assert.deepEqual(order.price, '0.5');
       assert.deepEqual(order.market, '0xa1');
@@ -155,7 +155,7 @@ describe("makeOrder.placeShortAsk", function() {
     numShares: '100',
     limitPrice: '0.5',
     tradeGroupID: '0xab12',
-    assertions: function(order) {
+    assertions: function (order) {
       assert.deepEqual(order.amount, '100');
       assert.deepEqual(order.price, '0.5');
       assert.deepEqual(order.market, '0xa1');
@@ -168,19 +168,19 @@ describe("makeOrder.placeShortAsk", function() {
     }
   });
 });
-describe("makeOrder.placeAskAndShortAsk", function() {
+describe("makeOrder.placeAskAndShortAsk", function () {
   // 3 tests total
   var shortAsk = augur.shortAsk;
   var sell = augur.sell;
   var finished;
   var shortAskOnSuccess;
   var askOnSuccess;
-  afterEach(function() {
+  afterEach(function () {
     augur.shortAsk = shortAsk;
     augur.sell = sell;
   });
-  var test = function(t) {
-    it(t.description, function(done) {
+  var test = function (t) {
+    it(t.description, function (done) {
       augur.shortAsk = t.shortAsk;
       augur.sell = t.sell;
       finished = done;
@@ -195,11 +195,11 @@ describe("makeOrder.placeAskAndShortAsk", function() {
     shortAskShares: '10',
     limitPrice: '0.45',
     tradeGroupID: '0xabc12345',
-    callback: function(arg) {
+    callback: function (arg) {
       assert.isNull(arg);
       finished();
     },
-    shortAsk: function(arg) {
+    shortAsk: function (arg) {
       assert.deepEqual(arg.amount, '10');
       assert.deepEqual(arg.price, '0.45');
       assert.deepEqual(arg.market, '0xa1');
@@ -214,7 +214,7 @@ describe("makeOrder.placeAskAndShortAsk", function() {
       shortAskOnSuccess();
       askOnSuccess();
     },
-    sell: function(arg) {
+    sell: function (arg) {
       assert.deepEqual(arg.amount, '20');
       assert.deepEqual(arg.price, '0.45');
       assert.deepEqual(arg.market, '0xa1');
@@ -236,7 +236,7 @@ describe("makeOrder.placeAskAndShortAsk", function() {
     limitPrice: '0.39',
     tradeGroupID: '0xabc54321',
     callback: undefined,
-    shortAsk: function(arg) {
+    shortAsk: function (arg) {
       assert.deepEqual(arg.amount, '5');
       assert.deepEqual(arg.price, '0.39');
       assert.deepEqual(arg.market, '0xa1');
@@ -250,7 +250,7 @@ describe("makeOrder.placeAskAndShortAsk", function() {
       // in this case we are just going to call the sell.onSuccess then shortAsk.onSuccess, no need for vars from previous test.
       finished();
     },
-    sell: function(arg) {
+    sell: function (arg) {
       assert.deepEqual(arg.amount, '10');
       assert.deepEqual(arg.price, '0.39');
       assert.deepEqual(arg.market, '0xa1');
@@ -271,10 +271,10 @@ describe("makeOrder.placeAskAndShortAsk", function() {
     shortAskShares: '34',
     limitPrice: '-20.05',
     tradeGroupID: '0x12345abc',
-    callback: function(arg) {
+    callback: function (arg) {
       assert.deepEqual(arg, { error: 999, message: 'Uh-Oh!' });
     },
-    shortAsk: function(arg) {
+    shortAsk: function (arg) {
       assert.deepEqual(arg.amount, '34');
       assert.deepEqual(arg.price, '-20.05');
       assert.deepEqual(arg.market, '0xa3');
@@ -288,7 +288,7 @@ describe("makeOrder.placeAskAndShortAsk", function() {
       // in this case we are just going to call the sell.onFailed then shortAsk.onFailed, no need for vars from the first test.
       finished();
     },
-    sell: function(arg) {
+    sell: function (arg) {
       assert.deepEqual(arg.amount, '120');
       assert.deepEqual(arg.price, '-20.05');
       assert.deepEqual(arg.market, '0xa3');

@@ -3,7 +3,7 @@
 var assert = require("chai").assert;
 var augur = new (require("../../../src"))();
 
-describe("Transact", function() {
+describe("Transact", function () {
 	// 16 total tests
   var rpcFire = augur.rpc.fire;
   var rpcTransact = augur.rpc.transact;
@@ -12,18 +12,18 @@ describe("Transact", function() {
   var web = augur.accounts;
   function noop() {};
 
-  describe("fire", function() {
+  describe("fire", function () {
 		// 8 total tests
-    var test = function(t) {
-      it(t.description, function() {
+    var test = function (t) {
+      it(t.description, function () {
         t.setup();
         t.assertions(augur.fire(t.tx, t.callback, t.wrapper, t.aux));
         t.tearDown();
       });
     };
 
-    before(function() {
-      augur.rpc.fire = function(tx, callback, wrapper, aux) {
+    before(function () {
+      augur.rpc.fire = function (tx, callback, wrapper, aux) {
         assert.deepEqual(callback, noop);
         assert.deepEqual(wrapper, noop);
         assert.deepEqual(aux, noop);
@@ -32,7 +32,7 @@ describe("Transact", function() {
       };
     });
 
-    after(function() {
+    after(function () {
       augur.rpc.fire = rpcFire;
     });
 
@@ -51,9 +51,9 @@ describe("Transact", function() {
       callback: noop,
       wrapper: noop,
       aux: noop,
-      setup: function() {},
-      tearDown: function() {},
-      assertions: function(out) {
+      setup: function () {},
+      tearDown: function () {},
+      assertions: function (out) {
         assert.deepEqual(out.from, null);
       }
     });
@@ -72,9 +72,9 @@ describe("Transact", function() {
       callback: noop,
       wrapper: noop,
       aux: noop,
-      setup: function() {},
-      tearDown: function() {},
-      assertions: function(out) {
+      setup: function () {},
+      tearDown: function () {},
+      assertions: function (out) {
         assert.deepEqual(out.from, 'txFromAddress');
       }
     });
@@ -92,13 +92,13 @@ describe("Transact", function() {
       callback: noop,
       wrapper: noop,
       aux: noop,
-      setup: function() {
+      setup: function () {
         augur.coinbase = 'coinbase';
       },
-      tearDown: function() {
+      tearDown: function () {
         augur.coinbase = coinbase;
       },
-      assertions: function(out) {
+      assertions: function (out) {
         assert.deepEqual(out.from, 'coinbase');
       }
     });
@@ -116,13 +116,13 @@ describe("Transact", function() {
       callback: noop,
       wrapper: noop,
       aux: noop,
-      setup: function() {
+      setup: function () {
         augur.from = 'augurFromAddress';
       },
-      tearDown: function() {
+      tearDown: function () {
         augur.from = from;
       },
-      assertions: function(out) {
+      assertions: function (out) {
         assert.deepEqual(out.from, 'augurFromAddress');
       }
     });
@@ -140,13 +140,13 @@ describe("Transact", function() {
       callback: noop,
       wrapper: noop,
       aux: noop,
-      setup: function() {
+      setup: function () {
         augur.accounts = { account: { address: 'browserAccountAddress' } };
       },
-      tearDown: function() {
+      tearDown: function () {
         augur.accounts = web;
       },
-      assertions: function(out) {
+      assertions: function (out) {
         assert.deepEqual(out.from, 'browserAccountAddress');
       }
     });
@@ -165,17 +165,17 @@ describe("Transact", function() {
       callback: noop,
       wrapper: noop,
       aux: noop,
-      setup: function() {
+      setup: function () {
         augur.accounts = { account: { address: 'browserAccountAddress' } };
         augur.from = 'augurFromAddress';
         augur.coinbase = 'coinbase';
       },
-      tearDown: function() {
+      tearDown: function () {
         augur.accounts = web;
         augur.from = from;
         augur.coinbase = coinbase;
       },
-      assertions: function(out) {
+      assertions: function (out) {
         assert.deepEqual(out.from, 'browserAccountAddress');
       }
     });
@@ -194,15 +194,15 @@ describe("Transact", function() {
       callback: noop,
       wrapper: noop,
       aux: noop,
-      setup: function() {
+      setup: function () {
         augur.from = 'augurFromAddress';
         augur.coinbase = 'coinbase';
       },
-      tearDown: function() {
+      tearDown: function () {
         augur.from = from;
         augur.coinbase = coinbase;
       },
-      assertions: function(out) {
+      assertions: function (out) {
         assert.deepEqual(out.from, 'txFromAddress');
       }
     });
@@ -220,32 +220,32 @@ describe("Transact", function() {
       callback: noop,
       wrapper: noop,
       aux: noop,
-      setup: function() {
+      setup: function () {
         augur.from = 'augurFromAddress';
         augur.coinbase = 'coinbase';
       },
-      tearDown: function() {
+      tearDown: function () {
         augur.from = from;
         augur.coinbase = coinbase;
       },
-      assertions: function(out) {
+      assertions: function (out) {
         assert.deepEqual(out.from, 'augurFromAddress');
       }
     });
   });
 
-  describe("transact", function() {
+  describe("transact", function () {
 		// 8 total tests
-    var test = function(t) {
-      it(t.description, function() {
+    var test = function (t) {
+      it(t.description, function () {
         t.setup();
         t.assertions(augur.transact(t.tx, t.onSent, t.onSuccess, t.onFailed));
         t.tearDown();
       });
     };
 
-    before(function() {
-      augur.rpc.transact = function(tx, onSent, onSuccess, onFailed) {
+    before(function () {
+      augur.rpc.transact = function (tx, onSent, onSuccess, onFailed) {
         assert.deepEqual(onSent, noop);
         assert.deepEqual(onSuccess, noop);
         assert.deepEqual(onFailed, noop);
@@ -253,7 +253,7 @@ describe("Transact", function() {
       };
     });
 
-    after(function() {
+    after(function () {
       augur.rpc.transact = rpcTransact;
     });
 
@@ -272,9 +272,9 @@ describe("Transact", function() {
       onSent: noop,
       onSuccess: noop,
       onFailed: noop,
-      setup: function() {},
-      tearDown: function() {},
-      assertions: function(out) {
+      setup: function () {},
+      tearDown: function () {},
+      assertions: function (out) {
         assert.deepEqual(out.from, null);
       }
     });
@@ -293,9 +293,9 @@ describe("Transact", function() {
       onSent: noop,
       onSuccess: noop,
       onFailed: noop,
-      setup: function() {},
-      tearDown: function() {},
-      assertions: function(out) {
+      setup: function () {},
+      tearDown: function () {},
+      assertions: function (out) {
         assert.deepEqual(out.from, 'txFromAddress');
       }
     });
@@ -313,13 +313,13 @@ describe("Transact", function() {
       onSent: noop,
       onSuccess: noop,
       onFailed: noop,
-      setup: function() {
+      setup: function () {
         augur.coinbase = 'coinbase';
       },
-      tearDown: function() {
+      tearDown: function () {
         augur.coinbase = coinbase;
       },
-      assertions: function(out) {
+      assertions: function (out) {
         assert.deepEqual(out.from, 'coinbase');
       }
     });
@@ -337,13 +337,13 @@ describe("Transact", function() {
       onSent: noop,
       onSuccess: noop,
       onFailed: noop,
-      setup: function() {
+      setup: function () {
         augur.from = 'augurFromAddress';
       },
-      tearDown: function() {
+      tearDown: function () {
         augur.from = from;
       },
-      assertions: function(out) {
+      assertions: function (out) {
         assert.deepEqual(out.from, 'augurFromAddress');
       }
     });
@@ -361,16 +361,16 @@ describe("Transact", function() {
       onSent: noop,
       onSuccess: noop,
       onFailed: noop,
-      setup: function() {
+      setup: function () {
         augur.accounts = { account: {
           address: 'browserAccountAddress',
           privateKey: 'browserAccountPrivateKey'
         } };
       },
-      tearDown: function() {
+      tearDown: function () {
         augur.accounts = web;
       },
-      assertions: function(out) {
+      assertions: function (out) {
         assert.deepEqual(out.from, 'browserAccountAddress');
       }
     });
@@ -389,7 +389,7 @@ describe("Transact", function() {
       onSent: noop,
       onSuccess: noop,
       onFailed: noop,
-      setup: function() {
+      setup: function () {
         augur.accounts = { account: {
           address: 'browserAccountAddress',
           privateKey: 'browserAccountPrivateKey'
@@ -397,12 +397,12 @@ describe("Transact", function() {
         augur.from = 'augurFromAddress';
         augur.coinbase = 'coinbase';
       },
-      tearDown: function() {
+      tearDown: function () {
         augur.accounts = web;
         augur.from = from;
         augur.coinbase = coinbase;
       },
-      assertions: function(out) {
+      assertions: function (out) {
         assert.deepEqual(out.from, 'browserAccountAddress');
       }
     });
@@ -421,15 +421,15 @@ describe("Transact", function() {
       onSent: noop,
       onSuccess: noop,
       onFailed: noop,
-      setup: function() {
+      setup: function () {
         augur.from = 'augurFromAddress';
         augur.coinbase = 'coinbase';
       },
-      tearDown: function() {
+      tearDown: function () {
         augur.from = from;
         augur.coinbase = coinbase;
       },
-      assertions: function(out) {
+      assertions: function (out) {
         assert.deepEqual(out.from, 'txFromAddress');
       }
     });
@@ -447,15 +447,15 @@ describe("Transact", function() {
       onSent: noop,
       onSuccess: noop,
       onFailed: noop,
-      setup: function() {
+      setup: function () {
         augur.from = 'augurFromAddress';
         augur.coinbase = 'coinbase';
       },
-      tearDown: function() {
+      tearDown: function () {
         augur.from = from;
         augur.coinbase = coinbase;
       },
-      assertions: function(out) {
+      assertions: function (out) {
         assert.deepEqual(out.from, 'augurFromAddress');
       }
     });

@@ -122,16 +122,16 @@ describe("trade.checkGasLimit", function () {
   });
 });
 
-describe("trade.parseTradeReceipt", function() {
+describe("trade.parseTradeReceipt", function () {
   // 6 tests total
-  var test = function(t) {
-    it(JSON.stringify(t), function() {
+  var test = function (t) {
+    it(JSON.stringify(t), function () {
       t.assertions(augur.parseTradeReceipt(t.receipt));
     });
   };
   test({
     receipt: {},
-    assertions: function(parsed) {
+    assertions: function (parsed) {
       assert.deepEqual(parsed, {
         sharesBought: '0',
         cashFromTrade: '0',
@@ -146,7 +146,7 @@ describe("trade.parseTradeReceipt", function() {
         data: ''
       }],
     },
-    assertions: function(parsed) {
+    assertions: function (parsed) {
       assert.deepEqual(parsed, {
         sharesBought: '0',
         cashFromTrade: '0',
@@ -161,7 +161,7 @@ describe("trade.parseTradeReceipt", function() {
         data: ['1', 'notUsed', abi.fix('10').toString(), 'notUsed', 'notUsed', 'notUsed', abi.fix('0.03').toString(), 'notUsed', abi.fix('-5')]
       }],
     },
-    assertions: function(parsed) {
+    assertions: function (parsed) {
       assert.deepEqual(parsed, {
         sharesBought: '10',
         cashFromTrade: '0',
@@ -179,7 +179,7 @@ describe("trade.parseTradeReceipt", function() {
         data: ['1', 'notUsed', abi.fix('20').toString(), 'notUsed', 'notUsed', 'notUsed', abi.fix('0.03').toString(), 'notUsed', abi.fix('-10')]
       }],
     },
-    assertions: function(parsed) {
+    assertions: function (parsed) {
       assert.deepEqual(parsed, {
         sharesBought: '30',
         cashFromTrade: '0',
@@ -194,7 +194,7 @@ describe("trade.parseTradeReceipt", function() {
         data: ['2', 'notUsed', abi.fix('100').toString(), 'notUsed', 'notUsed', 'notUsed', abi.fix('0.02').toString(), 'notUsed', abi.fix('0.5')]
       }],
     },
-    assertions: function(parsed) {
+    assertions: function (parsed) {
       assert.deepEqual(parsed, {
         sharesBought: '0',
         cashFromTrade: '50',
@@ -217,7 +217,7 @@ describe("trade.parseTradeReceipt", function() {
         data: ['2', 'notUsed', abi.fix('250').toString(), 'notUsed', 'notUsed', 'notUsed', abi.fix('0.02').toString(), 'notUsed', abi.fix('0.2')]
       }],
     },
-    assertions: function(parsed) {
+    assertions: function (parsed) {
       assert.deepEqual(parsed, {
         sharesBought: '0',
         cashFromTrade: '200',
@@ -227,16 +227,16 @@ describe("trade.parseTradeReceipt", function() {
   });
 });
 
-describe("trade.parseShortSellReceipt", function() {
+describe("trade.parseShortSellReceipt", function () {
   // 6 tests total
-  var test = function(t) {
-    it(JSON.stringify(t), function() {
+  var test = function (t) {
+    it(JSON.stringify(t), function () {
       t.assertions(augur.parseShortSellReceipt(t.receipt));
     });
   };
   test({
     receipt: {},
-    assertions: function(parsed) {
+    assertions: function (parsed) {
       assert.deepEqual(parsed, {
         cashFromTrade: '0',
         tradingFees: '0'
@@ -250,7 +250,7 @@ describe("trade.parseShortSellReceipt", function() {
         data: ''
       }],
     },
-    assertions: function(parsed) {
+    assertions: function (parsed) {
       assert.deepEqual(parsed, {
         cashFromTrade: '0',
         tradingFees: '0'
@@ -272,7 +272,7 @@ describe("trade.parseShortSellReceipt", function() {
         data: ['notUsed', abi.fix('250').toString(), 'notUsed', 'notUsed', 'notUsed', abi.fix('0.02').toString(), 'notUsed', 'notUsed', abi.fix('0.2')]
       }],
     },
-    assertions: function(parsed) {
+    assertions: function (parsed) {
       assert.deepEqual(parsed, {
         cashFromTrade: '200',
         tradingFees: '0.06'
@@ -281,7 +281,7 @@ describe("trade.parseShortSellReceipt", function() {
   });
 });
 
-describe("trade.trade", function() {
+describe("trade.trade", function () {
   var checkGasLimit = augur.checkGasLimit;
   var commitTrade = augur.commitTrade;
   var fastforward = augur.rpc.fastforward;
@@ -289,7 +289,7 @@ describe("trade.trade", function() {
   var transact = augur.transact;
   var receipt = augur.rpc.receipt;
   var finished;
-  afterEach(function() {
+  afterEach(function () {
     augur.checkGasLimit = checkGasLimit;
     augur.commitTrade = commitTrade;
     augur.rpc.fastforward = fastforward;
@@ -297,8 +297,8 @@ describe("trade.trade", function() {
     augur.transact = transact;
     augur.rpc.receipt = receipt;
   });
-  var test = function(t) {
-    it(JSON.stringify(t), function(done) {
+  var test = function (t) {
+    it(JSON.stringify(t), function (done) {
       augur.checkGasLimit = t.checkGasLimit;
       augur.commitTrade = t.commitTrade;
       augur.rpc.fastforward = t.fastforward;
@@ -324,20 +324,20 @@ describe("trade.trade", function() {
       onNextBlock: undefined,
       onTradeSent: undefined,
       onTradeSuccess: undefined,
-      onTradeFailed: function(err) {
+      onTradeFailed: function (err) {
         assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
         finished();
       },
     },
-    checkGasLimit: function(trade_ids, sender, cb) {
+    checkGasLimit: function (trade_ids, sender, cb) {
       assert.deepEqual(sender, abi.format_address(augur.from));
       cb({ error: 999, message: 'Uh-Oh!' });
     },
-    makeTradeHash: function() {},
-    commitTrade: function() {},
-    fastforward: function() {},
-    parseTradeReceipt: function() {},
-    transact: function() {}
+    makeTradeHash: function () {},
+    commitTrade: function () {},
+    fastforward: function () {},
+    parseTradeReceipt: function () {},
+    transact: function () {}
   });
   test({
     max_value:{
@@ -353,19 +353,19 @@ describe("trade.trade", function() {
       onNextBlock: undefined,
       onTradeSent: undefined,
       onTradeSuccess: undefined,
-      onTradeFailed: function(err) {
+      onTradeFailed: function (err) {
         assert.deepEqual(err, {error: "-4", message: augur.errors.trade["-4"]});
         finished();
       },
     },
-    checkGasLimit: function(trade_ids, sender, cb) {
+    checkGasLimit: function (trade_ids, sender, cb) {
       cb(null, ['0xa1', '0xa2', '0xa3']);
     },
-    makeTradeHash: function() {},
-    commitTrade: function() {},
-    fastforward: function() {},
-    parseTradeReceipt: function() {},
-    transact: function() {}
+    makeTradeHash: function () {},
+    commitTrade: function () {},
+    fastforward: function () {},
+    parseTradeReceipt: function () {},
+    transact: function () {}
   });
   test({
     max_value:{
@@ -374,10 +374,10 @@ describe("trade.trade", function() {
       trade_ids: ['0xa1', '0xa2', '0xa3'],
       tradeGroupID: '0xe1',
       sender: '0x1',
-      onTradeHash: function(hash) { assert.deepEqual(hash, '0x55db664e568d4982f250e5f8fa2e731f93718999978c4bbfc1966de8655e3ca0'); },
+      onTradeHash: function (hash) { assert.deepEqual(hash, '0x55db664e568d4982f250e5f8fa2e731f93718999978c4bbfc1966de8655e3ca0'); },
       onCommitSent: undefined,
       onCommitSuccess: undefined,
-      onCommitFailed: function(err) {
+      onCommitFailed: function (err) {
         assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
         finished();
       },
@@ -386,17 +386,17 @@ describe("trade.trade", function() {
       onTradeSuccess: undefined,
       onTradeFailed: undefined,
     },
-    checkGasLimit: function(trade_ids, sender, cb) {
+    checkGasLimit: function (trade_ids, sender, cb) {
       cb(null, ['0xa1', '0xa2', '0xa3']);
     },
-    commitTrade: function(trade) {
+    commitTrade: function (trade) {
       assert.deepEqual(trade.hash, '0x55db664e568d4982f250e5f8fa2e731f93718999978c4bbfc1966de8655e3ca0');
       trade.onSent();
       trade.onFailed({ error: 999, message: 'Uh-Oh!' });
     },
-    fastforward: function() {},
-    parseTradeReceipt: function() {},
-    transact: function() {}
+    fastforward: function () {},
+    parseTradeReceipt: function () {},
+    transact: function () {}
   });
   test({
     max_value:{
@@ -405,35 +405,35 @@ describe("trade.trade", function() {
       trade_ids: ['0xa1', '0xa2', '0xa3'],
       tradeGroupID: '0xe1',
       sender: '0x1',
-      onTradeHash: function(hash) { assert.deepEqual(hash, '0x55db664e568d4982f250e5f8fa2e731f93718999978c4bbfc1966de8655e3ca0'); },
+      onTradeHash: function (hash) { assert.deepEqual(hash, '0x55db664e568d4982f250e5f8fa2e731f93718999978c4bbfc1966de8655e3ca0'); },
       onCommitSent: undefined,
-      onCommitSuccess: function(res) {
+      onCommitSuccess: function (res) {
         assert.deepEqual(res, { callReturn: '1' });
       },
       onCommitFailed: noop,
-      onNextBlock: function(block) {
+      onNextBlock: function (block) {
         assert.deepEqual(block, '0xb1');
       },
       onTradeSent: undefined,
       onTradeSuccess: undefined,
-      onTradeFailed: function(err) {
+      onTradeFailed: function (err) {
         assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
         finished();
       },
     },
-    checkGasLimit: function(trade_ids, sender, cb) {
+    checkGasLimit: function (trade_ids, sender, cb) {
       cb(null, ['0xa1', '0xa2', '0xa3']);
     },
-    commitTrade: function(trade) {
+    commitTrade: function (trade) {
       assert.deepEqual(trade.hash, '0x55db664e568d4982f250e5f8fa2e731f93718999978c4bbfc1966de8655e3ca0');
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function(forward, cb) {
+    fastforward: function (forward, cb) {
       cb('0xb1');
     },
-    parseTradeReceipt: function() {},
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    parseTradeReceipt: function () {},
+    transact: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.Trade.trade.to);
       assert.deepEqual(tx.params, [
         '0x56bc75e2d63100000',
@@ -452,18 +452,18 @@ describe("trade.trade", function() {
       trade_ids: ['0xa1', '0xa2', '0xa3'],
       tradeGroupID: '0xe1',
       sender: '0x1',
-      onTradeHash: function(hash) { assert.deepEqual(hash, '0x55db664e568d4982f250e5f8fa2e731f93718999978c4bbfc1966de8655e3ca0'); },
+      onTradeHash: function (hash) { assert.deepEqual(hash, '0x55db664e568d4982f250e5f8fa2e731f93718999978c4bbfc1966de8655e3ca0'); },
       onCommitSent: undefined,
-      onCommitSuccess: function(res) {
+      onCommitSuccess: function (res) {
         assert.deepEqual(res, { callReturn: '1' });
       },
       onCommitFailed: noop,
-      onNextBlock: function(block) {
+      onNextBlock: function (block) {
         assert.deepEqual(block, '0xb1');
       },
       onTradeSent: undefined,
       onTradeSuccess: undefined,
-      onTradeFailed: function(err) {
+      onTradeFailed: function (err) {
         assert.deepEqual(err, {
           error: {
             error: '-1', message: 'oracle only branch'
@@ -486,19 +486,19 @@ describe("trade.trade", function() {
         finished();
       },
     },
-    checkGasLimit: function(trade_ids, sender, cb) {
+    checkGasLimit: function (trade_ids, sender, cb) {
       cb(null, ['0xa1', '0xa2', '0xa3']);
     },
-    commitTrade: function(trade) {
+    commitTrade: function (trade) {
       assert.deepEqual(trade.hash, '0x55db664e568d4982f250e5f8fa2e731f93718999978c4bbfc1966de8655e3ca0');
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function(forward, cb) {
+    fastforward: function (forward, cb) {
       cb('0xb1');
     },
-    parseTradeReceipt: function() {},
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    parseTradeReceipt: function () {},
+    transact: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.Trade.trade.to);
       assert.deepEqual(tx.params, [
         '0x56bc75e2d63100000',
@@ -517,18 +517,18 @@ describe("trade.trade", function() {
       trade_ids: ['0xa1', '0xa2', '0xa3'],
       tradeGroupID: '0xe1',
       sender: '0x1',
-      onTradeHash: function(hash) { assert.deepEqual(hash, '0x55db664e568d4982f250e5f8fa2e731f93718999978c4bbfc1966de8655e3ca0'); },
+      onTradeHash: function (hash) { assert.deepEqual(hash, '0x55db664e568d4982f250e5f8fa2e731f93718999978c4bbfc1966de8655e3ca0'); },
       onCommitSent: undefined,
-      onCommitSuccess: function(res) {
+      onCommitSuccess: function (res) {
         assert.deepEqual(res, { callReturn: '1' });
       },
       onCommitFailed: noop,
-      onNextBlock: function(block) {
+      onNextBlock: function (block) {
         assert.deepEqual(block, '0xb1');
       },
       onTradeSent: undefined,
       onTradeSuccess: undefined,
-      onTradeFailed: function(err) {
+      onTradeFailed: function (err) {
         assert.deepEqual(err, {
         	error: 711,
         	message: 'trade failed, instead of success value (1), received 0',
@@ -537,19 +537,19 @@ describe("trade.trade", function() {
         finished();
       },
     },
-    checkGasLimit: function(trade_ids, sender, cb) {
+    checkGasLimit: function (trade_ids, sender, cb) {
       cb(null, ['0xa1', '0xa2', '0xa3']);
     },
-    commitTrade: function(trade) {
+    commitTrade: function (trade) {
       assert.deepEqual(trade.hash, '0x55db664e568d4982f250e5f8fa2e731f93718999978c4bbfc1966de8655e3ca0');
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function(forward, cb) {
+    fastforward: function (forward, cb) {
       cb('0xb1');
     },
-    parseTradeReceipt: function() {},
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    parseTradeReceipt: function () {},
+    transact: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.Trade.trade.to);
       assert.deepEqual(tx.params, [
         '0x56bc75e2d63100000',
@@ -568,38 +568,38 @@ describe("trade.trade", function() {
       trade_ids: ['0xa1', '0xa2', '0xa3'],
       tradeGroupID: '0xe1',
       sender: '0x1',
-      onTradeHash: function(hash) { assert.deepEqual(hash, '0x55db664e568d4982f250e5f8fa2e731f93718999978c4bbfc1966de8655e3ca0'); },
+      onTradeHash: function (hash) { assert.deepEqual(hash, '0x55db664e568d4982f250e5f8fa2e731f93718999978c4bbfc1966de8655e3ca0'); },
       onCommitSent: undefined,
-      onCommitSuccess: function(res) {
+      onCommitSuccess: function (res) {
         assert.deepEqual(res, { callReturn: '1' });
       },
       onCommitFailed: noop,
-      onNextBlock: function(block) {
+      onNextBlock: function (block) {
         assert.deepEqual(block, '0xb1');
       },
       onTradeSent: undefined,
       onTradeSuccess: undefined,
-      onTradeFailed: function(err) {
+      onTradeFailed: function (err) {
         assert.deepEqual(err, augur.errors.TRANSACTION_RECEIPT_NOT_FOUND);
         finished();
       },
     },
-    checkGasLimit: function(trade_ids, sender, cb) {
+    checkGasLimit: function (trade_ids, sender, cb) {
       cb(null, ['0xa1', '0xa2', '0xa3']);
     },
-    commitTrade: function(trade) {
+    commitTrade: function (trade) {
       assert.deepEqual(trade.hash, '0x55db664e568d4982f250e5f8fa2e731f93718999978c4bbfc1966de8655e3ca0');
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function(forward, cb) {
+    fastforward: function (forward, cb) {
       cb('0xb1');
     },
-    parseTradeReceipt: function() {},
-    receipt: function(txHash, cb) {
+    parseTradeReceipt: function () {},
+    receipt: function (txHash, cb) {
       cb(undefined);
     },
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.Trade.trade.to);
       assert.deepEqual(tx.params, [
         '0x56bc75e2d63100000',
@@ -623,38 +623,38 @@ describe("trade.trade", function() {
       trade_ids: ['0xa1', '0xa2', '0xa3'],
       tradeGroupID: '0xe1',
       sender: '0x1',
-      onTradeHash: function(hash) { assert.deepEqual(hash, '0x55db664e568d4982f250e5f8fa2e731f93718999978c4bbfc1966de8655e3ca0'); },
+      onTradeHash: function (hash) { assert.deepEqual(hash, '0x55db664e568d4982f250e5f8fa2e731f93718999978c4bbfc1966de8655e3ca0'); },
       onCommitSent: undefined,
-      onCommitSuccess: function(res) {
+      onCommitSuccess: function (res) {
         assert.deepEqual(res, { callReturn: '1' });
       },
       onCommitFailed: noop,
-      onNextBlock: function(block) {
+      onNextBlock: function (block) {
         assert.deepEqual(block, '0xb1');
       },
       onTradeSent: undefined,
       onTradeSuccess: undefined,
-      onTradeFailed: function(err) {
+      onTradeFailed: function (err) {
         assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
         finished();
       },
     },
-    checkGasLimit: function(trade_ids, sender, cb) {
+    checkGasLimit: function (trade_ids, sender, cb) {
       cb(null, ['0xa1', '0xa2', '0xa3']);
     },
-    commitTrade: function(trade) {
+    commitTrade: function (trade) {
       assert.deepEqual(trade.hash, '0x55db664e568d4982f250e5f8fa2e731f93718999978c4bbfc1966de8655e3ca0');
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function(forward, cb) {
+    fastforward: function (forward, cb) {
       cb('0xb1');
     },
-    parseTradeReceipt: function() {},
-    receipt: function(txHash, cb) {
+    parseTradeReceipt: function () {},
+    receipt: function (txHash, cb) {
       cb({ error: 999, message: 'Uh-Oh!' });
     },
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.Trade.trade.to);
       assert.deepEqual(tx.params, [
         '0x56bc75e2d63100000',
@@ -678,17 +678,17 @@ describe("trade.trade", function() {
       trade_ids: ['0xa1', '0xa2', '0xa3'],
       tradeGroupID: '0xe1',
       sender: '0x1',
-      onTradeHash: function(hash) { assert.deepEqual(hash, '0x55db664e568d4982f250e5f8fa2e731f93718999978c4bbfc1966de8655e3ca0'); },
+      onTradeHash: function (hash) { assert.deepEqual(hash, '0x55db664e568d4982f250e5f8fa2e731f93718999978c4bbfc1966de8655e3ca0'); },
       onCommitSent: undefined,
-      onCommitSuccess: function(res) {
+      onCommitSuccess: function (res) {
         assert.deepEqual(res, { callReturn: '1' });
       },
       onCommitFailed: noop,
-      onNextBlock: function(block) {
+      onNextBlock: function (block) {
         assert.deepEqual(block, '0xb1');
       },
       onTradeSent: undefined,
-      onTradeSuccess: function(res) {
+      onTradeSuccess: function (res) {
         assert.deepEqual(res, {
           hash: '0x123abc456def7890',
           unmatchedCash: '0',
@@ -703,29 +703,29 @@ describe("trade.trade", function() {
       },
       onTradeFailed: undefined,
     },
-    checkGasLimit: function(trade_ids, sender, cb) {
+    checkGasLimit: function (trade_ids, sender, cb) {
       cb(null, ['0xa1', '0xa2', '0xa3']);
     },
-    commitTrade: function(trade) {
+    commitTrade: function (trade) {
       assert.deepEqual(trade.hash, '0x55db664e568d4982f250e5f8fa2e731f93718999978c4bbfc1966de8655e3ca0');
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function(forward, cb) {
+    fastforward: function (forward, cb) {
       cb('0xb1');
     },
-    parseTradeReceipt: function(receipt) {
+    parseTradeReceipt: function (receipt) {
       // just simplify this since we test parseTradeReceipt in it's own unit test.
       return receipt;
     },
-    receipt: function(txHash, cb) {
+    receipt: function (txHash, cb) {
       cb({
         sharesBought: '100',
         cashFromTrade: '-100.5',
         tradingFees: '0.5'
       });
     },
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.Trade.trade.to);
       assert.deepEqual(tx.params, [
         '0x56bc75e2d63100000',
@@ -749,18 +749,18 @@ describe("trade.trade", function() {
       trade_ids: ['0xa1', '0xa2', '0xa3'],
       tradeGroupID: '0xe1',
       sender: '0x1',
-      onTradeHash: function(hash) { assert.deepEqual(hash, '0x55db664e568d4982f250e5f8fa2e731f93718999978c4bbfc1966de8655e3ca0'); },
+      onTradeHash: function (hash) { assert.deepEqual(hash, '0x55db664e568d4982f250e5f8fa2e731f93718999978c4bbfc1966de8655e3ca0'); },
       onCommitSent: undefined,
-      onCommitSuccess: function(res) {
+      onCommitSuccess: function (res) {
         assert.deepEqual(res, { callReturn: '1' });
       },
       onCommitFailed: noop,
-      onNextBlock: function(block) {
+      onNextBlock: function (block) {
         assert.deepEqual(block, '0xb1');
       },
       onTradeSent: undefined,
       onTradeSuccess: undefined,
-      onTradeFailed: function(err) {
+      onTradeFailed: function (err) {
         assert.deepEqual(err, {
         	error: {
         		error: '-1',
@@ -785,20 +785,20 @@ describe("trade.trade", function() {
         finished();
       },
     },
-    checkGasLimit: function(trade_ids, sender, cb) {
+    checkGasLimit: function (trade_ids, sender, cb) {
       cb(null, ['0xa1', '0xa2', '0xa3']);
     },
-    commitTrade: function(trade) {
+    commitTrade: function (trade) {
       assert.deepEqual(trade.hash, '0x55db664e568d4982f250e5f8fa2e731f93718999978c4bbfc1966de8655e3ca0');
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function(forward, cb) {
+    fastforward: function (forward, cb) {
       cb('0xb1');
     },
-    parseTradeReceipt: function(receipt) {},
-    receipt: function(txHash, cb) {},
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    parseTradeReceipt: function (receipt) {},
+    receipt: function (txHash, cb) {},
+    transact: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.Trade.trade.to);
       assert.deepEqual(tx.params, [
         '0x56bc75e2d63100000',
@@ -822,18 +822,18 @@ describe("trade.trade", function() {
       trade_ids: ['0xa1', '0xa2', '0xa3'],
       tradeGroupID: '0xe1',
       sender: '0x1',
-      onTradeHash: function(hash) { assert.deepEqual(hash, '0x55db664e568d4982f250e5f8fa2e731f93718999978c4bbfc1966de8655e3ca0'); },
+      onTradeHash: function (hash) { assert.deepEqual(hash, '0x55db664e568d4982f250e5f8fa2e731f93718999978c4bbfc1966de8655e3ca0'); },
       onCommitSent: undefined,
-      onCommitSuccess: function(res) {
+      onCommitSuccess: function (res) {
         assert.deepEqual(res, { callReturn: '1' });
       },
       onCommitFailed: noop,
-      onNextBlock: function(block) {
+      onNextBlock: function (block) {
         assert.deepEqual(block, '0xb1');
       },
       onTradeSent: undefined,
       onTradeSuccess: undefined,
-      onTradeFailed: function(err) {
+      onTradeFailed: function (err) {
         assert.deepEqual(err, {
         	error: 711,
         	message: 'trade failed, instead of success value (1), received 0',
@@ -842,20 +842,20 @@ describe("trade.trade", function() {
         finished();
       },
     },
-    checkGasLimit: function(trade_ids, sender, cb) {
+    checkGasLimit: function (trade_ids, sender, cb) {
       cb(null, ['0xa1', '0xa2', '0xa3']);
     },
-    commitTrade: function(trade) {
+    commitTrade: function (trade) {
       assert.deepEqual(trade.hash, '0x55db664e568d4982f250e5f8fa2e731f93718999978c4bbfc1966de8655e3ca0');
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function(forward, cb) {
+    fastforward: function (forward, cb) {
       cb('0xb1');
     },
-    parseTradeReceipt: function(receipt) {},
-    receipt: function(txHash, cb) {},
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    parseTradeReceipt: function (receipt) {},
+    receipt: function (txHash, cb) {},
+    transact: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.Trade.trade.to);
       assert.deepEqual(tx.params, [
         '0x56bc75e2d63100000',
@@ -874,7 +874,7 @@ describe("trade.trade", function() {
   });
 });
 
-describe("trade.short_sell", function() {
+describe("trade.short_sell", function () {
   var checkGasLimit = augur.checkGasLimit;
   var commitTrade = augur.commitTrade;
   var fastforward = augur.rpc.fastforward;
@@ -882,7 +882,7 @@ describe("trade.short_sell", function() {
   var transact = augur.transact;
   var receipt = augur.rpc.receipt;
   var finished;
-  afterEach(function() {
+  afterEach(function () {
     augur.checkGasLimit = checkGasLimit;
     augur.commitTrade = commitTrade;
     augur.rpc.fastforward = fastforward;
@@ -890,8 +890,8 @@ describe("trade.short_sell", function() {
     augur.transact = transact;
     augur.rpc.receipt = receipt;
   });
-  var test = function(t) {
-    it(JSON.stringify(t), function(done) {
+  var test = function (t) {
+    it(JSON.stringify(t), function (done) {
       augur.checkGasLimit = t.checkGasLimit;
       augur.commitTrade = t.commitTrade;
       augur.rpc.fastforward = t.fastforward;
@@ -916,20 +916,20 @@ describe("trade.short_sell", function() {
       onNextBlock: undefined,
       onTradeSent: undefined,
       onTradeSuccess: undefined,
-      onTradeFailed: function(err) {
+      onTradeFailed: function (err) {
         assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
         finished();
       }
     },
-    checkGasLimit: function(trade_ids, sender, cb) {
+    checkGasLimit: function (trade_ids, sender, cb) {
       assert.deepEqual(sender, abi.format_address(augur.from));
       cb({ error: 999, message: 'Uh-Oh!' });
     },
-    commitTrade: function() {},
-    fastforward: function() {},
-    parseShortSellReceipt: function() {},
-    transact: function() {},
-    receipt: function() {}
+    commitTrade: function () {},
+    fastforward: function () {},
+    parseShortSellReceipt: function () {},
+    transact: function () {},
+    receipt: function () {}
   });
   test({
     buyer_trade_id: {
@@ -937,12 +937,12 @@ describe("trade.short_sell", function() {
       max_amount: '100',
       tradeGroupID: '0xabc1',
       sender: '0x1',
-      onTradeHash: function(hash) {
+      onTradeHash: function (hash) {
         assert.deepEqual(hash, '0x10acace6664b0aab78b8ae82735879cd4d7517f31d41af71e90a0cb3a948b09b');
       },
       onCommitSent: undefined,
       onCommitSuccess: undefined,
-      onCommitFailed: function(err) {
+      onCommitFailed: function (err) {
         assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
         finished();
       },
@@ -951,18 +951,18 @@ describe("trade.short_sell", function() {
       onTradeSuccess: undefined,
       onTradeFailed: undefined
     },
-    checkGasLimit: function(trade_ids, sender, cb) {
+    checkGasLimit: function (trade_ids, sender, cb) {
       assert.deepEqual(sender, abi.format_address('0x1'));
       cb(null, trade_ids);
     },
-    commitTrade: function(trade) {
+    commitTrade: function (trade) {
       trade.onSent();
       trade.onFailed({ error: 999, message: 'Uh-Oh!' });
     },
-    fastforward: function() {},
-    parseShortSellReceipt: function() {},
-    transact: function() {},
-    receipt: function() {}
+    fastforward: function () {},
+    parseShortSellReceipt: function () {},
+    transact: function () {},
+    receipt: function () {}
   });
   test({
     buyer_trade_id: {
@@ -970,42 +970,42 @@ describe("trade.short_sell", function() {
       max_amount: '100',
       tradeGroupID: '0xabc1',
       sender: '0x1',
-      onTradeHash: function(hash) {
+      onTradeHash: function (hash) {
         assert.deepEqual(hash, '0x10acace6664b0aab78b8ae82735879cd4d7517f31d41af71e90a0cb3a948b09b');
       },
       onCommitSent: undefined,
-      onCommitSuccess: function(res) {
+      onCommitSuccess: function (res) {
         assert.deepEqual(res, { callReturn: '1' });
       },
       onCommitFailed: undefined,
-      onNextBlock: function(block) {
+      onNextBlock: function (block) {
         assert.deepEqual(block, '0xb1');
       },
       onTradeSent: undefined,
       onTradeSuccess: undefined,
-      onTradeFailed: function(err) {
+      onTradeFailed: function (err) {
         assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
         finished();
       }
     },
-    checkGasLimit: function(trade_ids, sender, cb) {
+    checkGasLimit: function (trade_ids, sender, cb) {
       assert.deepEqual(sender, abi.format_address('0x1'));
       cb(null, trade_ids);
     },
-    commitTrade: function(trade) {
+    commitTrade: function (trade) {
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function(forward, cb) {
+    fastforward: function (forward, cb) {
       cb('0xb1');
     },
-    parseShortSellReceipt: function() {},
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    parseShortSellReceipt: function () {},
+    transact: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.Trade.short_sell.to);
       assert.deepEqual(tx.params, [ '0xa1', '0x56bc75e2d63100000', '0xabc1' ]);
       onFailed({ error: 999, message: 'Uh-Oh!' });
     },
-    receipt: function() {}
+    receipt: function () {}
   });
   test({
     buyer_trade_id: {
@@ -1013,20 +1013,20 @@ describe("trade.short_sell", function() {
       max_amount: '100',
       tradeGroupID: '0xabc1',
       sender: '0x1',
-      onTradeHash: function(hash) {
+      onTradeHash: function (hash) {
         assert.deepEqual(hash, '0x10acace6664b0aab78b8ae82735879cd4d7517f31d41af71e90a0cb3a948b09b');
       },
       onCommitSent: undefined,
-      onCommitSuccess: function(res) {
+      onCommitSuccess: function (res) {
         assert.deepEqual(res, { callReturn: '1' });
       },
       onCommitFailed: undefined,
-      onNextBlock: function(block) {
+      onNextBlock: function (block) {
         assert.deepEqual(block, '0xb1');
       },
       onTradeSent: undefined,
       onTradeSuccess: undefined,
-      onTradeFailed: function(err) {
+      onTradeFailed: function (err) {
         assert.deepEqual(err, {
     			error: 711,
     			message: 'trade failed, instead of success value (1), received 0',
@@ -1035,19 +1035,19 @@ describe("trade.short_sell", function() {
         finished();
       }
     },
-    checkGasLimit: function(trade_ids, sender, cb) {
+    checkGasLimit: function (trade_ids, sender, cb) {
       assert.deepEqual(sender, abi.format_address('0x1'));
       cb(null, trade_ids);
     },
-    commitTrade: function(trade) {
+    commitTrade: function (trade) {
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function(forward, cb) {
+    fastforward: function (forward, cb) {
       cb('0xb1');
     },
-    parseShortSellReceipt: function() {},
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    parseShortSellReceipt: function () {},
+    transact: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.Trade.short_sell.to);
       assert.deepEqual(tx.params, [ '0xa1', '0x56bc75e2d63100000', '0xabc1' ]);
       onSuccess({
@@ -1055,7 +1055,7 @@ describe("trade.short_sell", function() {
         hash: '0x123abc456def7890'
       });
     },
-    receipt: function() {}
+    receipt: function () {}
   });
   test({
     buyer_trade_id: {
@@ -1063,20 +1063,20 @@ describe("trade.short_sell", function() {
       max_amount: '100',
       tradeGroupID: '0xabc1',
       sender: '0x1',
-      onTradeHash: function(hash) {
+      onTradeHash: function (hash) {
         assert.deepEqual(hash, '0x10acace6664b0aab78b8ae82735879cd4d7517f31d41af71e90a0cb3a948b09b');
       },
       onCommitSent: undefined,
-      onCommitSuccess: function(res) {
+      onCommitSuccess: function (res) {
         assert.deepEqual(res, { callReturn: '1' });
       },
       onCommitFailed: undefined,
-      onNextBlock: function(block) {
+      onNextBlock: function (block) {
         assert.deepEqual(block, '0xb1');
       },
       onTradeSent: undefined,
       onTradeSuccess: undefined,
-      onTradeFailed: function(err) {
+      onTradeFailed: function (err) {
         assert.deepEqual(err, {
         	error: {
         		error: '-1',
@@ -1101,19 +1101,19 @@ describe("trade.short_sell", function() {
         finished();
       }
     },
-    checkGasLimit: function(trade_ids, sender, cb) {
+    checkGasLimit: function (trade_ids, sender, cb) {
       assert.deepEqual(sender, abi.format_address('0x1'));
       cb(null, trade_ids);
     },
-    commitTrade: function(trade) {
+    commitTrade: function (trade) {
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function(forward, cb) {
+    fastforward: function (forward, cb) {
       cb('0xb1');
     },
-    parseShortSellReceipt: function() {},
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    parseShortSellReceipt: function () {},
+    transact: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.Trade.short_sell.to);
       assert.deepEqual(tx.params, [ '0xa1', '0x56bc75e2d63100000', '0xabc1' ]);
       onSuccess({
@@ -1121,7 +1121,7 @@ describe("trade.short_sell", function() {
         hash: '0x123abc456def7890'
       });
     },
-    receipt: function() {}
+    receipt: function () {}
   });
   test({
     buyer_trade_id: {
@@ -1129,20 +1129,20 @@ describe("trade.short_sell", function() {
       max_amount: '100',
       tradeGroupID: '0xabc1',
       sender: '0x1',
-      onTradeHash: function(hash) {
+      onTradeHash: function (hash) {
         assert.deepEqual(hash, '0x10acace6664b0aab78b8ae82735879cd4d7517f31d41af71e90a0cb3a948b09b');
       },
       onCommitSent: undefined,
-      onCommitSuccess: function(res) {
+      onCommitSuccess: function (res) {
         assert.deepEqual(res, { callReturn: '1' });
       },
       onCommitFailed: undefined,
-      onNextBlock: function(block) {
+      onNextBlock: function (block) {
         assert.deepEqual(block, '0xb1');
       },
       onTradeSent: undefined,
       onTradeSuccess: undefined,
-      onTradeFailed: function(err) {
+      onTradeFailed: function (err) {
         assert.deepEqual(err, {
     			error: 711,
     			message: 'trade failed, instead of success value (1), received 0',
@@ -1151,19 +1151,19 @@ describe("trade.short_sell", function() {
         finished();
       }
     },
-    checkGasLimit: function(trade_ids, sender, cb) {
+    checkGasLimit: function (trade_ids, sender, cb) {
       assert.deepEqual(sender, abi.format_address('0x1'));
       cb(null, trade_ids);
     },
-    commitTrade: function(trade) {
+    commitTrade: function (trade) {
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function(forward, cb) {
+    fastforward: function (forward, cb) {
       cb('0xb1');
     },
-    parseShortSellReceipt: function() {},
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    parseShortSellReceipt: function () {},
+    transact: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.Trade.short_sell.to);
       assert.deepEqual(tx.params, [ '0xa1', '0x56bc75e2d63100000', '0xabc1' ]);
       onSuccess({
@@ -1171,7 +1171,7 @@ describe("trade.short_sell", function() {
         hash: '0x123abc456def7890'
       });
     },
-    receipt: function() {}
+    receipt: function () {}
   });
   test({
     buyer_trade_id: {
@@ -1179,20 +1179,20 @@ describe("trade.short_sell", function() {
       max_amount: '100',
       tradeGroupID: '0xabc1',
       sender: '0x1',
-      onTradeHash: function(hash) {
+      onTradeHash: function (hash) {
         assert.deepEqual(hash, '0x10acace6664b0aab78b8ae82735879cd4d7517f31d41af71e90a0cb3a948b09b');
       },
       onCommitSent: undefined,
-      onCommitSuccess: function(res) {
+      onCommitSuccess: function (res) {
         assert.deepEqual(res, { callReturn: '1' });
       },
       onCommitFailed: undefined,
-      onNextBlock: function(block) {
+      onNextBlock: function (block) {
         assert.deepEqual(block, '0xb1');
       },
       onTradeSent: undefined,
       onTradeSuccess: undefined,
-      onTradeFailed: function(err) {
+      onTradeFailed: function (err) {
         assert.deepEqual(err, {
           error: {
             error: '-1',
@@ -1217,19 +1217,19 @@ describe("trade.short_sell", function() {
         finished();
       }
     },
-    checkGasLimit: function(trade_ids, sender, cb) {
+    checkGasLimit: function (trade_ids, sender, cb) {
       assert.deepEqual(sender, abi.format_address('0x1'));
       cb(null, trade_ids);
     },
-    commitTrade: function(trade) {
+    commitTrade: function (trade) {
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function(forward, cb) {
+    fastforward: function (forward, cb) {
       cb('0xb1');
     },
-    parseShortSellReceipt: function() {},
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    parseShortSellReceipt: function () {},
+    transact: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.Trade.short_sell.to);
       assert.deepEqual(tx.params, [ '0xa1', '0x56bc75e2d63100000', '0xabc1' ]);
       onSuccess({
@@ -1237,7 +1237,7 @@ describe("trade.short_sell", function() {
         hash: '0x123abc456def7890'
       });
     },
-    receipt: function() {}
+    receipt: function () {}
   });
   test({
     buyer_trade_id: {
@@ -1245,20 +1245,20 @@ describe("trade.short_sell", function() {
       max_amount: '100',
       tradeGroupID: '0xabc1',
       sender: '0x1',
-      onTradeHash: function(hash) {
+      onTradeHash: function (hash) {
         assert.deepEqual(hash, '0x10acace6664b0aab78b8ae82735879cd4d7517f31d41af71e90a0cb3a948b09b');
       },
       onCommitSent: undefined,
-      onCommitSuccess: function(res) {
+      onCommitSuccess: function (res) {
         assert.deepEqual(res, { callReturn: '1' });
       },
       onCommitFailed: undefined,
-      onNextBlock: function(block) {
+      onNextBlock: function (block) {
         assert.deepEqual(block, '0xb1');
       },
       onTradeSent: undefined,
       onTradeSuccess: undefined,
-      onTradeFailed: function(err) {
+      onTradeFailed: function (err) {
         assert.deepEqual(err, {
           error: 1,
           message: undefined,
@@ -1280,19 +1280,19 @@ describe("trade.short_sell", function() {
         finished();
       }
     },
-    checkGasLimit: function(trade_ids, sender, cb) {
+    checkGasLimit: function (trade_ids, sender, cb) {
       assert.deepEqual(sender, abi.format_address('0x1'));
       cb(null, trade_ids);
     },
-    commitTrade: function(trade) {
+    commitTrade: function (trade) {
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function(forward, cb) {
+    fastforward: function (forward, cb) {
       cb('0xb1');
     },
-    parseShortSellReceipt: function() {},
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    parseShortSellReceipt: function () {},
+    transact: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.Trade.short_sell.to);
       assert.deepEqual(tx.params, [ '0xa1', '0x56bc75e2d63100000', '0xabc1' ]);
       onSuccess({
@@ -1300,7 +1300,7 @@ describe("trade.short_sell", function() {
         hash: '0x123abc456def7890'
       });
     },
-    receipt: function() {}
+    receipt: function () {}
   });
   test({
     buyer_trade_id: {
@@ -1308,37 +1308,37 @@ describe("trade.short_sell", function() {
       max_amount: '100',
       tradeGroupID: '0xabc1',
       sender: '0x1',
-      onTradeHash: function(hash) {
+      onTradeHash: function (hash) {
         assert.deepEqual(hash, '0x10acace6664b0aab78b8ae82735879cd4d7517f31d41af71e90a0cb3a948b09b');
       },
       onCommitSent: undefined,
-      onCommitSuccess: function(res) {
+      onCommitSuccess: function (res) {
         assert.deepEqual(res, { callReturn: '1' });
       },
       onCommitFailed: undefined,
-      onNextBlock: function(block) {
+      onNextBlock: function (block) {
         assert.deepEqual(block, '0xb1');
       },
       onTradeSent: undefined,
       onTradeSuccess: undefined,
-      onTradeFailed: function(err) {
+      onTradeFailed: function (err) {
         assert.deepEqual(err, augur.errors.TRANSACTION_RECEIPT_NOT_FOUND);
         finished();
       }
     },
-    checkGasLimit: function(trade_ids, sender, cb) {
+    checkGasLimit: function (trade_ids, sender, cb) {
       assert.deepEqual(sender, abi.format_address('0x1'));
       cb(null, trade_ids);
     },
-    commitTrade: function(trade) {
+    commitTrade: function (trade) {
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function(forward, cb) {
+    fastforward: function (forward, cb) {
       cb('0xb1');
     },
-    parseShortSellReceipt: function() {},
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    parseShortSellReceipt: function () {},
+    transact: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.Trade.short_sell.to);
       assert.deepEqual(tx.params, [ '0xa1', '0x56bc75e2d63100000', '0xabc1' ]);
       onSuccess({
@@ -1348,7 +1348,7 @@ describe("trade.short_sell", function() {
         timestamp: 15000000
       });
     },
-    receipt: function(txHash, cb) {
+    receipt: function (txHash, cb) {
       assert.deepEqual(txHash, '0x123abc456def7890');
       cb(undefined);
     }
@@ -1359,37 +1359,37 @@ describe("trade.short_sell", function() {
       max_amount: '100',
       tradeGroupID: '0xabc1',
       sender: '0x1',
-      onTradeHash: function(hash) {
+      onTradeHash: function (hash) {
         assert.deepEqual(hash, '0x10acace6664b0aab78b8ae82735879cd4d7517f31d41af71e90a0cb3a948b09b');
       },
       onCommitSent: undefined,
-      onCommitSuccess: function(res) {
+      onCommitSuccess: function (res) {
         assert.deepEqual(res, { callReturn: '1' });
       },
       onCommitFailed: undefined,
-      onNextBlock: function(block) {
+      onNextBlock: function (block) {
         assert.deepEqual(block, '0xb1');
       },
       onTradeSent: undefined,
       onTradeSuccess: undefined,
-      onTradeFailed: function(err) {
+      onTradeFailed: function (err) {
         assert.deepEqual(err, {error: 999, message: 'Uh-Oh!'});
         finished();
       }
     },
-    checkGasLimit: function(trade_ids, sender, cb) {
+    checkGasLimit: function (trade_ids, sender, cb) {
       assert.deepEqual(sender, abi.format_address('0x1'));
       cb(null, trade_ids);
     },
-    commitTrade: function(trade) {
+    commitTrade: function (trade) {
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function(forward, cb) {
+    fastforward: function (forward, cb) {
       cb('0xb1');
     },
-    parseShortSellReceipt: function(receipt) {},
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    parseShortSellReceipt: function (receipt) {},
+    transact: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.Trade.short_sell.to);
       assert.deepEqual(tx.params, [ '0xa1', '0x56bc75e2d63100000', '0xabc1' ]);
       onSuccess({
@@ -1399,7 +1399,7 @@ describe("trade.short_sell", function() {
         timestamp: 15000000
       });
     },
-    receipt: function(txHash, cb) {
+    receipt: function (txHash, cb) {
       assert.deepEqual(txHash, '0x123abc456def7890');
       cb({error: 999, message: 'Uh-Oh!'});
     }
@@ -1410,19 +1410,19 @@ describe("trade.short_sell", function() {
       max_amount: '100',
       tradeGroupID: '0xabc1',
       sender: '0x1',
-      onTradeHash: function(hash) {
+      onTradeHash: function (hash) {
         assert.deepEqual(hash, '0x10acace6664b0aab78b8ae82735879cd4d7517f31d41af71e90a0cb3a948b09b');
       },
       onCommitSent: undefined,
-      onCommitSuccess: function(res) {
+      onCommitSuccess: function (res) {
         assert.deepEqual(res, { callReturn: '1' });
       },
       onCommitFailed: undefined,
-      onNextBlock: function(block) {
+      onNextBlock: function (block) {
         assert.deepEqual(block, '0xb1');
       },
       onTradeSent: undefined,
-      onTradeSuccess: function(res) {
+      onTradeSuccess: function (res) {
         assert.deepEqual(res, {
           hash: '0x123abc456def7890',
           unmatchedShares: '0',
@@ -1437,22 +1437,22 @@ describe("trade.short_sell", function() {
       },
       onTradeFailed: undefined
     },
-    checkGasLimit: function(trade_ids, sender, cb) {
+    checkGasLimit: function (trade_ids, sender, cb) {
       assert.deepEqual(sender, abi.format_address('0x1'));
       cb(null, trade_ids);
     },
-    commitTrade: function(trade) {
+    commitTrade: function (trade) {
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function(forward, cb) {
+    fastforward: function (forward, cb) {
       cb('0xb1');
     },
-    parseShortSellReceipt: function(receipt) {
+    parseShortSellReceipt: function (receipt) {
       // simplified...
       return receipt;
     },
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.to, augur.api.functions.Trade.short_sell.to);
       assert.deepEqual(tx.params, [ '0xa1', '0x56bc75e2d63100000', '0xabc1' ]);
       onSuccess({
@@ -1462,7 +1462,7 @@ describe("trade.short_sell", function() {
         timestamp: 15000000
       });
     },
-    receipt: function(txHash, cb) {
+    receipt: function (txHash, cb) {
       assert.deepEqual(txHash, '0x123abc456def7890');
       cb({
         cashFromTrade: '49.5',

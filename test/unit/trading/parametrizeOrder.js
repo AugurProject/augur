@@ -4,10 +4,10 @@ var assert = require("chai").assert;
 var parametrizeOrder = require("../../../src/modules/parametrizeOrder");
 // 4 tests total
 
-describe("parametrizeOrder.getScalarMinimum", function() {
+describe("parametrizeOrder.getScalarMinimum", function () {
   // 2 tests total
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
       t.assertions(parametrizeOrder.getScalarMinimum(t.type, t.minValue));
     });
   };
@@ -15,7 +15,7 @@ describe("parametrizeOrder.getScalarMinimum", function() {
     description: 'Should return an empty object for non scalar markets',
     type: 'binary',
     minValue: 0,
-    assertions: function(scalarMinimum) {
+    assertions: function (scalarMinimum) {
       assert.deepEqual(scalarMinimum, {});
     }
   });
@@ -23,15 +23,15 @@ describe("parametrizeOrder.getScalarMinimum", function() {
     description: 'Should return an object with a minValue key set to the minValue passed if type is scalar',
     type: 'scalar',
     minValue: 20,
-    assertions: function(scalarMinimum) {
+    assertions: function (scalarMinimum) {
       assert.deepEqual(scalarMinimum, { minValue: 20 });
     }
   });
 });
-describe("parametrizeOrder.parametrizeOrder", function() {
+describe("parametrizeOrder.parametrizeOrder", function () {
   // 2 tests total
-  var test = function(t) {
-    it(t.description, function() {
+  var test = function (t) {
+    it(t.description, function () {
       t.assertions(parametrizeOrder.parametrizeOrder(t.market, t.outcomeID, t.numShares, t.limitPrice, t.tradeGroupID));
     });
   };
@@ -42,7 +42,7 @@ describe("parametrizeOrder.parametrizeOrder", function() {
     numShares: '100',
     limitPrice: '0.5',
     tradeGroupID: '0xab12',
-    assertions: function(parametrizedOrder) {
+    assertions: function (parametrizedOrder) {
       assert.deepEqual(parametrizedOrder, {
         amount: '100',
         price: '0.5',
@@ -60,7 +60,7 @@ describe("parametrizeOrder.parametrizeOrder", function() {
     numShares: '100',
     limitPrice: '0.5',
     tradeGroupID: '0xab12',
-    assertions: function(parametrizedOrder) {
+    assertions: function (parametrizedOrder) {
       assert.deepEqual(parametrizedOrder, {
         amount: '100',
         price: '0.5',

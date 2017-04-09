@@ -3,7 +3,7 @@
 var assert = require("chai").assert;
 var augur = new (require("../../../src"))();
 
-describe("register.parseLastBlockNumber", function() {
+describe("register.parseLastBlockNumber", function () {
   var test = function (t) {
     it(t.description, function () {
       t.assertions(augur.parseLastBlockNumber(t.logs));
@@ -30,10 +30,10 @@ describe("register.parseLastBlockNumber", function() {
     }
   });
 });
-describe("register.getRegisterBlockNumber", function() {
+describe("register.getRegisterBlockNumber", function () {
   var getLogs = augur.getLogs;
   var finished;
-  afterEach(function() {
+  afterEach(function () {
     augur.getLogs = getLogs;
   });
   var test = function (t) {
@@ -42,7 +42,7 @@ describe("register.getRegisterBlockNumber", function() {
       finished = done;
       augur.getRegisterBlockNumber(t.account, t.options, t.callback);
     });
-    it(t.description + 'sync', function(done) {
+    it(t.description + 'sync', function (done) {
       augur.getLogs = t.getLogs;
       finished = done;
       var assertions = t.callback;
@@ -58,7 +58,7 @@ describe("register.getRegisterBlockNumber", function() {
     description: "no registers",
     account: "0xbob",
     logs: [],
-    getLogs: function(label, params, callback) {
+    getLogs: function (label, params, callback) {
       if (!callback) return [];
       callback(null, []);
     },
@@ -82,7 +82,7 @@ describe("register.getRegisterBlockNumber", function() {
     logs: [{
       blockNumber: 2
     }],
-    getLogs: function(label, params, callback) {
+    getLogs: function (label, params, callback) {
       if (!callback) return [{
         blockNumber: 2
       }];
@@ -112,7 +112,7 @@ describe("register.getRegisterBlockNumber", function() {
       blockNumber: 2
     }],
     options: {},
-    getLogs: function(label, params, callback) {
+    getLogs: function (label, params, callback) {
       if (!callback) return [{
         blockNumber: 1
       }, {
@@ -142,7 +142,7 @@ describe("register.getRegisterBlockNumber", function() {
     account: "0xb0b",
     logs: 'in this case, there will be an error',
     options: {},
-    getLogs: function(label, params, callback) {
+    getLogs: function (label, params, callback) {
       if (!callback) return { error: 999, message: 'Uh-Oh!' };
       callback({ error: 999, message: 'Uh-Oh!' });
     },

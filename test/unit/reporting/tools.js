@@ -72,7 +72,7 @@ describe("tools.remove_duplicates", function () {
   });
 });
 
-describe("tools.checkTime", function() {
+describe("tools.checkTime", function () {
   var augur = new (require("../../../src"))();
   var incrementPeriodAfterReporting = augur.Consensus.incrementPeriodAfterReporting;
   var getVotePeriod = augur.getVotePeriod;
@@ -80,14 +80,14 @@ describe("tools.checkTime", function() {
   var getCurrentPeriod = augur.getCurrentPeriod;
   var finished;
   var testState;
-  afterEach(function() {
+  afterEach(function () {
     augur.Consensus.incrementPeriodAfterReporting = incrementPeriodAfterReporting;
     augur.getVotePeriod = getVotePeriod;
     augur.getExpiration = getExpiration;
     augur.getCurrentPeriod = getCurrentPeriod;
   });
-  var test = function(t) {
-    it(JSON.stringify(t), function(done) {
+  var test = function (t) {
+    it(JSON.stringify(t), function (done) {
       augur.Consensus.incrementPeriodAfterReporting = t.incrementPeriodAfterReporting;
       augur.getVotePeriod = t.getVotePeriod;
       augur.getExpiration = t.getExpiration;
@@ -106,7 +106,7 @@ describe("tools.checkTime", function() {
     branch: "0xb1",
     event: "0xe1",
     periodLength: 1,
-    periodGap: function(err) {
+    periodGap: function (err) {
       assert.isNull(err);
       assert.deepEqual(testState, {
         currentPeriod: 200,
@@ -115,16 +115,16 @@ describe("tools.checkTime", function() {
       });
       finished();
     },
-    getExpiration: function(event, cb) {
+    getExpiration: function (event, cb) {
       cb(testState.expirationTime);
     },
-    getVotePeriod: function(branch, cb) {
+    getVotePeriod: function (branch, cb) {
       // This function is not called during this test.
     },
-    getCurrentPeriod: function(periodLength) {
+    getCurrentPeriod: function (periodLength) {
       return testState.currentPeriod;
     },
-    incrementPeriodAfterReporting: function(branch) {
+    incrementPeriodAfterReporting: function (branch) {
       // This function is not called during this test.
     }
   });
@@ -137,7 +137,7 @@ describe("tools.checkTime", function() {
     branch: "0xb1",
     event: "0xe1",
     periodLength: 1,
-    periodGap: function(err) {
+    periodGap: function (err) {
       assert.isNull(err);
       assert.deepEqual(testState, {
         currentPeriod: 101,
@@ -146,17 +146,17 @@ describe("tools.checkTime", function() {
       });
       finished();
     },
-    getExpiration: function(event, cb) {
+    getExpiration: function (event, cb) {
       cb(testState.expirationTime);
     },
-    getVotePeriod: function(branch, cb) {
+    getVotePeriod: function (branch, cb) {
       testState.votePeriod++;
       cb(testState.votePeriod);
     },
-    getCurrentPeriod: function(periodLength) {
+    getCurrentPeriod: function (periodLength) {
       return testState.currentPeriod;
     },
-    incrementPeriodAfterReporting: function(branch) {
+    incrementPeriodAfterReporting: function (branch) {
       testState.currentPeriod++;
       branch.onSent({ callReturn: "1" });
       branch.onSuccess({ callReturn: "1" });
@@ -171,7 +171,7 @@ describe("tools.checkTime", function() {
     branch: "0xb1",
     event: "0xe1",
     periodLength: 1,
-    periodGap: function(err) {
+    periodGap: function (err) {
       assert.deepEqual(err, { error: 999, message: "Uh-Oh!" });
       assert.deepEqual(testState, {
         currentPeriod: 101,
@@ -180,16 +180,16 @@ describe("tools.checkTime", function() {
       });
       finished();
     },
-    getExpiration: function(event, cb) {
+    getExpiration: function (event, cb) {
       cb(testState.expirationTime);
     },
-    getVotePeriod: function(branch, cb) {
+    getVotePeriod: function (branch, cb) {
       assert.fail();
     },
-    getCurrentPeriod: function(periodLength) {
+    getCurrentPeriod: function (periodLength) {
       return testState.currentPeriod;
     },
-    incrementPeriodAfterReporting: function(branch) {
+    incrementPeriodAfterReporting: function (branch) {
       testState.currentPeriod++;
       branch.onSent({ callReturn: "1" });
       branch.onFailed({ error: 999, message: "Uh-Oh!" });

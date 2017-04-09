@@ -4,14 +4,13 @@ var keys = require("keythereum");
 var clone = require("clone");
 var abi = require("augur-abi");
 var errors = require("ethrpc").errors;
-var constants = require("./constants");
-var pass = require("./utils/pass");
-var isFunction = require("./utils/is-function");
+var constants = require("../constants");
+var pass = require("../utils/pass");
+var isFunction = require("../utils/is-function");
 var accountState = require("./state");
 
 var importAccount = function (password, keystore, cb) {
-  var callback;
-  callback = (isFunction(cb)) ? cb : pass;
+  var callback = (isFunction(cb)) ? cb : pass;
   if (!password || password === "") return callback(errors.BAD_CREDENTIALS);
   keys.recover(password, keystore, function (privateKey) {
     var keystoreCrypto;

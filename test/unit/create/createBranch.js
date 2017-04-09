@@ -51,18 +51,18 @@ describe("createBranch", function () {
   }
 });
 
-describe("createBranch.createBranch", function() {
+describe("createBranch.createBranch", function () {
   // 2 tests each
   var createSubbranch = augur.createSubbranch;
   var createBranchcreateSubbranch = augur.CreateBranch.createSubbranch;
   var getBlock = augur.rpc.getBlock;
-  afterEach(function() {
+  afterEach(function () {
     augur.createSubbranch = createSubbranch;
     augur.CreateBranch.createSubbranch = createBranchcreateSubbranch;
     augur.rpc.getBlock = getBlock;
   });
-  var test = function(t) {
-    it(JSON.stringify(t), function() {
+  var test = function (t) {
+    it(JSON.stringify(t), function () {
       augur.createSubbranch = t.createSubbranch;
       augur.CreateBranch.createSubbranch = t.createSubbranch;
       augur.rpc.getBlock = t.getBlock;
@@ -77,7 +77,7 @@ describe("createBranch.createBranch", function() {
       minTradingFee: "0.01",
       oracleOnly: 1,
       onSent: noop,
-      onSuccess: function(res) {
+      onSuccess: function (res) {
         assert.deepEqual(res, {
           blockNumber: "101010",
           from: "0xb1",
@@ -86,15 +86,15 @@ describe("createBranch.createBranch", function() {
       },
       onFailed: noop,
     },
-    createSubbranch: function(arg) {
+    createSubbranch: function (arg) {
       assert.deepEqual(arg.description, "This is a branch description");
       arg.onSuccess({ blockNumber: "101010", from: "0xb1" });
     },
-    getBlock: function(blockNumber, full, cb) {
+    getBlock: function (blockNumber, full, cb) {
       assert.deepEqual(blockNumber, "101010");
       cb({ timestamp: 15000000 });
     },
-    assertions: function(res) {
+    assertions: function (res) {
       // res shouldn't be defined in this case since we have cbs defined.
       assert.isUndefined(res);
     }
@@ -110,15 +110,15 @@ describe("createBranch.createBranch", function() {
       onSuccess: undefined,
       onFailed: undefined,
     },
-    createSubbranch: function(arg) {
+    createSubbranch: function (arg) {
       assert.deepEqual(arg.description, "This is a branch description!");
       return { blockNumber: "101011", from: "0xb2" };
     },
-    getBlock: function(blockNumber, full, cb) {
+    getBlock: function (blockNumber, full, cb) {
       assert.deepEqual(blockNumber, "101011");
       return { timestamp: 15000000 };
     },
-    assertions: function(res) {
+    assertions: function (res) {
       assert.deepEqual(res, {
         blockNumber: "101011",
         from: "0xb2",
@@ -128,14 +128,14 @@ describe("createBranch.createBranch", function() {
   });
 });
 
-describe("createBranch.createSubbranch", function() {
+describe("createBranch.createSubbranch", function () {
   // 2 tests each
   var transact = augur.transact;
-  afterEach(function() {
+  afterEach(function () {
     augur.transact = transact;
   });
-  var test = function(t) {
-    it(JSON.stringify(t), function() {
+  var test = function (t) {
+    it(JSON.stringify(t), function () {
       augur.transact = t.transact;
 
       t.assertions(augur.createSubbranch(t.description, t.periodLength, t.parent, t.minTradingFee, t.oracleOnly, t.onSent, t.onSuccess, t.onFailed));
@@ -150,7 +150,7 @@ describe("createBranch.createSubbranch", function() {
     onSent: noop,
     onSuccess: noop,
     onFailed: noop,
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx, {
         inputs: [
           "description",
@@ -178,7 +178,7 @@ describe("createBranch.createSubbranch", function() {
       assert.deepEqual(onSuccess, noop);
       assert.deepEqual(onFailed, noop);
     },
-    assertions: function(res) {
+    assertions: function (res) {
       // transact doesn't return anything in this case because we are mocking async where cbs are defined as functions.
       assert.isUndefined(res);
     }
@@ -194,14 +194,14 @@ describe("createBranch.createSubbranch", function() {
       onSuccess: undefined,
       onFailed: undefined
     },
-    transact: function(tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, onSent, onSuccess, onFailed) {
       assert.isUndefined(onSent);
       assert.isUndefined(onSuccess);
       assert.isUndefined(onFailed);
       // this example has no cb's, so return tx for assertions
       return tx;
     },
-    assertions: function(res) {
+    assertions: function (res) {
       // transact will return the tx it was called with for assertions in this case.
       assert.deepEqual(res, {
         inputs: [

@@ -209,7 +209,7 @@ describe("Topics.findMarketsWithTopic", function () {
         if (!callback) return logs;
         callback(null, logs);
       },
-      filterByBranchID: function(branch, logs) {
+      filterByBranchID: function (branch, logs) {
         assert.strictEqual(branch, "0xb1");
         var output = [];
         for (var i = 0; i < logs.length; i++) {
@@ -250,7 +250,7 @@ describe("Topics.findMarketsWithTopic", function () {
         if (!callback) return logs;
         callback(null, logs);
       },
-      filterByBranchID: function(branch, logs) {
+      filterByBranchID: function (branch, logs) {
         assert.strictEqual(branch, "0xb1");
         var output = [];
         for (var i = 0; i < logs.length; i++) {
@@ -304,7 +304,7 @@ describe("Topics.findMarketsWithTopic", function () {
         if (!callback) return logs;
         callback(null, logs);
       },
-      filterByBranchID: function(branch, logs) {
+      filterByBranchID: function (branch, logs) {
         assert.strictEqual(branch, "0xb1");
         var output = [];
         for (var i = 0; i < logs.length; i++) {
@@ -337,7 +337,7 @@ describe("Topics.findMarketsWithTopic", function () {
         if (!callback) return logs;
         callback(logs);
       },
-      filterByBranchID: function(branch, logs) {
+      filterByBranchID: function (branch, logs) {
         assert.strictEqual(branch, "0xb1");
         var output = [];
         if (logs && logs.error) return logs;
@@ -445,48 +445,48 @@ describe("Topics.parseTopicsInfo", function () {
   });
 });
 
-describe("Topics.getTopicsInfo", function() {
+describe("Topics.getTopicsInfo", function () {
   // 12 tests total
   var getTopicsInfo = augur.Topics.getTopicsInfo;
-  afterEach(function() {
+  afterEach(function () {
     augur.Topics.getTopicsInfo = getTopicsInfo;
   });
-  var test = function(t) {
-    it(JSON.stringify(t) + ' sync', function() {
+  var test = function (t) {
+    it(JSON.stringify(t) + ' sync', function () {
       augur.Topics.getTopicsInfo = t.getTopicsInfo;
 
       t.assertions(augur.getTopicsInfo(t.branch, t.offset, t.numTopicsToLoad, undefined));
     });
-    it(JSON.stringify(t) + ' async', function(done) {
+    it(JSON.stringify(t) + ' async', function (done) {
       augur.Topics.getTopicsInfo = t.getTopicsInfo;
 
-      augur.getTopicsInfo(t.branch, t.offset, t.numTopicsToLoad, function(out) {
+      augur.getTopicsInfo(t.branch, t.offset, t.numTopicsToLoad, function (out) {
         t.assertions(out);
         done();
       });
     });
-    it(JSON.stringify(t) + ' sync', function() {
+    it(JSON.stringify(t) + ' sync', function () {
       augur.Topics.getTopicsInfo = t.getTopicsInfo;
 
       t.assertions(augur.getTopicsInfo(t.branch, t.offset, undefined, undefined));
     });
-    it(JSON.stringify(t) + ' async', function(done) {
+    it(JSON.stringify(t) + ' async', function (done) {
       augur.Topics.getTopicsInfo = t.getTopicsInfo;
 
-      augur.getTopicsInfo(t.branch, t.offset, function(out) {
+      augur.getTopicsInfo(t.branch, t.offset, function (out) {
         t.assertions(out);
         done();
       });
     });
-    it(JSON.stringify(t) + ' sync', function() {
+    it(JSON.stringify(t) + ' sync', function () {
       augur.Topics.getTopicsInfo = t.getTopicsInfo;
 
       t.assertions(augur.getTopicsInfo(t.branch, undefined, undefined, undefined));
     });
-    it(JSON.stringify(t) + ' async', function(done) {
+    it(JSON.stringify(t) + ' async', function (done) {
       augur.Topics.getTopicsInfo = t.getTopicsInfo;
 
-      augur.getTopicsInfo(t.branch, function(out) {
+      augur.getTopicsInfo(t.branch, function (out) {
         t.assertions(out);
         done();
       });
@@ -496,7 +496,7 @@ describe("Topics.getTopicsInfo", function() {
     branch: '0xdad12f',
     offset: 1,
     numTopicsToLoad: 3,
-    getTopicsInfo: function(branch, offset, numTopicsToLoad, callback) {
+    getTopicsInfo: function (branch, offset, numTopicsToLoad, callback) {
       assert.deepEqual(branch, '0xdad12f');
       assert.oneOf(offset, [1, 0]);
       assert.oneOf(numTopicsToLoad, [3, 0]);
@@ -507,7 +507,7 @@ describe("Topics.getTopicsInfo", function() {
         abi.short_string_to_int256('Politics'), abi.short_string_to_int256('Sports'), abi.short_string_to_int256('Food')
       ];
     },
-    assertions: function(out) {
+    assertions: function (out) {
       assert.deepEqual(out, [
         '0x506f6c6974696373000000000000000000000000000000000000000000000000', '0x53706f7274730000000000000000000000000000000000000000000000000000', '0x466f6f6400000000000000000000000000000000000000000000000000000000'
   		]);
@@ -519,7 +519,7 @@ describe("Topics.getTopicsInfo", function() {
       offset: 1,
       numTopicsToLoad: 3,
     },
-    getTopicsInfo: function(branch, offset, numTopicsToLoad, callback) {
+    getTopicsInfo: function (branch, offset, numTopicsToLoad, callback) {
       assert.deepEqual(branch, '0xdad12f');
       assert.oneOf(offset, [1, 0]);
       assert.oneOf(numTopicsToLoad, [3, 0]);
@@ -530,7 +530,7 @@ describe("Topics.getTopicsInfo", function() {
         abi.short_string_to_int256('Politics'), abi.short_string_to_int256('Sports'), abi.short_string_to_int256('Food')
       ];
     },
-    assertions: function(out) {
+    assertions: function (out) {
       assert.deepEqual(out, [
         '0x506f6c6974696373000000000000000000000000000000000000000000000000', '0x53706f7274730000000000000000000000000000000000000000000000000000', '0x466f6f6400000000000000000000000000000000000000000000000000000000'
   		]);
@@ -563,7 +563,7 @@ describe("Topics.getTopicsInfoChunked", function () {
       offset: null,
       numTopicsToLoad: null,
       totalTopics: null,
-      callback: function(topicsInfo) {
+      callback: function (topicsInfo) {
         finished();
       }
     },
@@ -611,7 +611,7 @@ describe("Topics.getTopicsInfoChunked", function () {
       offset: null,
       numTopicsToLoad: null,
       totalTopics: '18',
-      callback: function(topicsInfo) {
+      callback: function (topicsInfo) {
         assert.deepEqual(topicsInfo, { error: 999, message: 'Uh-Oh!' });
         finished();
       }
@@ -660,7 +660,7 @@ describe("Topics.getTopicsInfoChunked", function () {
       offset: 0,
       numTopicsToLoad: 10,
       totalTopics: 18,
-      callback: function(topicsInfo) {
+      callback: function (topicsInfo) {
         finished();
       }
     },
@@ -708,7 +708,7 @@ describe("Topics.getTopicsInfoChunked", function () {
       offset: null,
       numTopicsToLoad: null,
       totalTopics: null,
-      callback: function(topicsInfo) {
+      callback: function (topicsInfo) {
         assert.deepEqual(topicsInfo, { error: 999, message: 'Uh-Oh!' });
         finished();
       }
