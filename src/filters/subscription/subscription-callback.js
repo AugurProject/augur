@@ -1,6 +1,6 @@
 "use strict";
 
-var subscriptions = require("./subscriptions");
+var subscriptions = require("./state");
 
 var registerSubscriptionCallback = function (id, callback) {
   subscriptions[id] = callback;

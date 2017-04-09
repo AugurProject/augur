@@ -1,6 +1,6 @@
 "use strict";
 
-var subscriptions = require("./subscriptions");
+var subscriptions = require("./state");
 
 var onLogAdded = function (log) {
   console.log("[filters/subscription/dispatch] log added:", log);
