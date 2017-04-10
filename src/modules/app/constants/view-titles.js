@@ -6,5 +6,4 @@ export const MARKETS = 'Markets';
 export const REPORTS = 'Reports';
 export const TRANSACTIONS = 'Transactions';
 export const ACCOUNT = 'Account';
-export const WELCOME = 'Welcome!';
 export const AUTHENTICATION = 'Authentication';
