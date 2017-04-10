@@ -5,7 +5,7 @@ import proxyquire from 'proxyquire';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 
-import { abi, constants } from 'services/augurjs';
+import { abi, augur, constants } from 'services/augurjs';
 
 import { formatRealEther, formatEther, formatRep, formatPercent, formatShares } from 'utils/format-number';
 import { formatDate } from 'utils/format-date';
@@ -25,7 +25,8 @@ import {
   constructFundedAccountTransaction
 } from 'modules/transactions/actions/construct-transaction';
 
-import { CREATE_MARKET, COMMIT_REPORT, REVEAL_REPORT } from 'modules/transactions/constants/types';
+import { CREATE_MARKET, COMMIT_REPORT, REVEAL_REPORT, BUY, SELL, MATCH_BID, MATCH_ASK } from 'modules/transactions/constants/types';
+import { BINARY, SCALAR } from 'modules/markets/constants/market-types';
 import { ZERO } from 'modules/trade/constants/numbers';
 
 describe('modules/transactions/actions/contruct-transaction.js', () => {
@@ -2254,6 +2255,563 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+  });
+
+  describe('constructLogFillTxTransaction', () => {
+    const mockLinks = {
+      selectMarketLink: sinon.stub().returns({})
+    };
+    const action = proxyquire('../../../src/modules/transactions/actions/construct-transaction', {
+      '../../link/selectors/links': mockLinks
+    });
+
+    const test = t => it(t.description, () => {
+      const store = mockStore();
+      t.assertions(store);
+    });
+
+    test({
+      description: `should return the expected transaction object with necessary data missing`,
+      assertions: (store) => {
+        const trade = {};
+
+        const actual = store.dispatch(action.constructLogFillTxTransaction(trade));
+
+        const expected = null;
+
+        assert.strictEqual(actual, expected, `Didn't return the expected value`);
+      }
+    });
+
+    test({
+      description: `should return the expected transaction object with maker and type BUY and inProgress false`,
+      assertions: (store) => {
+        const trade = {
+          transactionHash: '0xHASH',
+          tradeid: '0xTRADEID',
+          tradeGroupID: '0xTRADEGROUPID',
+          price: '0.1',
+          amount: '2',
+          maker: true,
+          makerFee: '0.01',
+          type: BUY,
+          timestamp: 1491843278,
+          blockNumber: 123456,
+          gasFees: 0.001
+        };
+        const marketID = '0xMARKETID';
+        const marketType = BINARY;
+        const minValue = '0';
+        const description = 'test description';
+        const outcomeID = '1';
+        const status = 'testing';
+
+        const price = formatEther(trade.price);
+        const shares = formatShares(trade.amount);
+        const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
+        const bnShares = abi.bignum(trade.amount);
+        const bnPrice = marketType === SCALAR ? abi.bignum(augur.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
+        const totalCost = bnPrice.times(bnShares).plus(tradingFees);
+        const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
+        const totalCostPerShare = totalCost.dividedBy(bnShares);
+
+        const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status));
+
+        const expected = {
+          '0xHASH-0xTRADEID': {
+            type: MATCH_ASK,
+            hash: trade.transactionHash,
+            tradeGroupID: trade.tradeGroupID,
+            status,
+            description,
+            data: {
+              marketType,
+              outcomeName: outcomeID,
+              outcomeID,
+              marketID,
+              marketLink: {}
+            },
+            message: `sold ${shares.full} for ${formatEther(totalCostPerShare).full} / share`,
+            numShares: shares,
+            noFeePrice: price,
+            avgPrice: price,
+            timestamp: formatDate(new Date(trade.timestamp * 1000)),
+            tradingFees: formatEther(tradingFees),
+            feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
+            totalCost: undefined,
+            totalReturn: formatEther(totalReturn),
+            gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null,
+            blockNumber: trade.blockNumber
+          }
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected value`);
+      }
+    });
+
+    test({
+      description: `should return the expected transaction object with maker and type BUY and inProgress`,
+      assertions: (store) => {
+        const trade = {
+          transactionHash: '0xHASH',
+          tradeid: '0xTRADEID',
+          tradeGroupID: '0xTRADEGROUPID',
+          price: '0.1',
+          amount: '2',
+          maker: true,
+          makerFee: '0.01',
+          type: BUY,
+          timestamp: 1491843278,
+          blockNumber: 123456,
+          gasFees: 0.001,
+          inProgress: true
+        };
+        const marketID = '0xMARKETID';
+        const marketType = BINARY;
+        const minValue = '0';
+        const description = 'test description';
+        const outcomeID = '1';
+        const status = 'testing';
+
+        const price = formatEther(trade.price);
+        const shares = formatShares(trade.amount);
+        const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
+        const bnShares = abi.bignum(trade.amount);
+        const bnPrice = marketType === SCALAR ? abi.bignum(augur.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
+        const totalCost = bnPrice.times(bnShares).plus(tradingFees);
+        const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
+        const totalCostPerShare = totalCost.dividedBy(bnShares);
+
+        const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status));
+
+        const expected = {
+          '0xHASH-0xTRADEID': {
+            type: MATCH_ASK,
+            hash: trade.transactionHash,
+            tradeGroupID: trade.tradeGroupID,
+            status,
+            description,
+            data: {
+              marketType,
+              outcomeName: outcomeID,
+              outcomeID,
+              marketID,
+              marketLink: {}
+            },
+            message: `${MATCH_ASK} ${shares.full} for ${formatEther(totalCostPerShare).full} / share`,
+            numShares: shares,
+            noFeePrice: price,
+            avgPrice: price,
+            timestamp: formatDate(new Date(trade.timestamp * 1000)),
+            tradingFees: formatEther(tradingFees),
+            feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
+            totalCost: undefined,
+            totalReturn: formatEther(totalReturn),
+            gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null,
+            blockNumber: trade.blockNumber
+          }
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected value`);
+      }
+    });
+
+    test({
+      description: `should return the expected transaction object with maker and type SELL and inProgress false`,
+      assertions: (store) => {
+        const trade = {
+          transactionHash: '0xHASH',
+          tradeid: '0xTRADEID',
+          tradeGroupID: '0xTRADEGROUPID',
+          price: '0.1',
+          amount: '2',
+          maker: true,
+          makerFee: '0.01',
+          type: SELL,
+          timestamp: 1491843278,
+          blockNumber: 123456,
+          gasFees: 0.001
+        };
+        const marketID = '0xMARKETID';
+        const marketType = BINARY;
+        const minValue = '0';
+        const description = 'test description';
+        const outcomeID = '1';
+        const status = 'testing';
+
+        const price = formatEther(trade.price);
+        const shares = formatShares(trade.amount);
+        const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
+        const bnShares = abi.bignum(trade.amount);
+        const bnPrice = marketType === SCALAR ? abi.bignum(augur.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
+        const totalCost = bnPrice.times(bnShares).plus(tradingFees);
+        const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
+        const totalReturnPerShare = totalReturn.dividedBy(bnShares);
+
+        const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status));
+
+        const expected = {
+          '0xHASH-0xTRADEID': {
+            type: MATCH_BID,
+            hash: trade.transactionHash,
+            tradeGroupID: trade.tradeGroupID,
+            status,
+            description,
+            data: {
+              marketType,
+              outcomeName: outcomeID,
+              outcomeID,
+              marketID,
+              marketLink: {}
+            },
+            message: `bought ${shares.full} for ${formatEther(totalReturnPerShare).full} / share`,
+            numShares: shares,
+            noFeePrice: price,
+            avgPrice: price,
+            timestamp: formatDate(new Date(trade.timestamp * 1000)),
+            tradingFees: formatEther(tradingFees),
+            feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
+            totalCost: formatEther(totalCost),
+            totalReturn: undefined,
+            gasFees: formatRealEther(trade.gasFees),
+            blockNumber: trade.blockNumber
+          }
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected value`);
+      }
+    });
+
+    test({
+      description: `should return the expected transaction object with maker and type SELL and inProgress`,
+      assertions: (store) => {
+        const trade = {
+          transactionHash: '0xHASH',
+          tradeid: '0xTRADEID',
+          tradeGroupID: '0xTRADEGROUPID',
+          price: '0.1',
+          amount: '2',
+          maker: true,
+          makerFee: '0.01',
+          type: SELL,
+          timestamp: 1491843278,
+          blockNumber: 123456,
+          gasFees: 0.001,
+          inProgress: true
+        };
+        const marketID = '0xMARKETID';
+        const marketType = BINARY;
+        const minValue = '0';
+        const description = 'test description';
+        const outcomeID = '1';
+        const status = 'testing';
+
+        const price = formatEther(trade.price);
+        const shares = formatShares(trade.amount);
+        const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
+        const bnShares = abi.bignum(trade.amount);
+        const bnPrice = marketType === SCALAR ? abi.bignum(augur.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
+        const totalCost = bnPrice.times(bnShares).plus(tradingFees);
+        const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
+        const totalReturnPerShare = totalReturn.dividedBy(bnShares);
+
+        const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status));
+
+        const expected = {
+          '0xHASH-0xTRADEID': {
+            type: MATCH_BID,
+            hash: trade.transactionHash,
+            tradeGroupID: trade.tradeGroupID,
+            status,
+            description,
+            data: {
+              marketType,
+              outcomeName: outcomeID,
+              outcomeID,
+              marketID,
+              marketLink: {}
+            },
+            message: `${MATCH_BID} ${shares.full} for ${formatEther(totalReturnPerShare).full} / share`,
+            numShares: shares,
+            noFeePrice: price,
+            avgPrice: price,
+            timestamp: formatDate(new Date(trade.timestamp * 1000)),
+            tradingFees: formatEther(tradingFees),
+            feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
+            totalCost: formatEther(totalCost),
+            totalReturn: undefined,
+            gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null,
+            blockNumber: trade.blockNumber
+          }
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected value`);
+      }
+    });
+
+    test({
+      description: `should return the expected transaction object with taker and type BUY and inProgress false`,
+      assertions: (store) => {
+        const trade = {
+          transactionHash: '0xHASH',
+          tradeid: '0xTRADEID',
+          tradeGroupID: '0xTRADEGROUPID',
+          price: '0.1',
+          amount: '2',
+          maker: false,
+          takerFee: '0.01',
+          type: BUY,
+          timestamp: 1491843278,
+          blockNumber: 123456,
+          gasFees: 0.001
+        };
+        const marketID = '0xMARKETID';
+        const marketType = BINARY;
+        const minValue = '0';
+        const description = 'test description';
+        const outcomeID = '1';
+        const status = 'testing';
+
+        const price = formatEther(trade.price);
+        const shares = formatShares(trade.amount);
+        const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
+        const bnShares = abi.bignum(trade.amount);
+        const bnPrice = marketType === SCALAR ? abi.bignum(augur.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
+        const totalCost = bnPrice.times(bnShares).plus(tradingFees);
+        const totalCostPerShare = totalCost.dividedBy(bnShares);
+
+        const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status));
+
+        const expected = {
+          '0xHASH-0xTRADEID': {
+            type: BUY,
+            hash: trade.transactionHash,
+            tradeGroupID: trade.tradeGroupID,
+            status,
+            description,
+            data: {
+              marketType,
+              outcomeName: outcomeID,
+              outcomeID,
+              marketID,
+              marketLink: {}
+            },
+            message: `bought ${shares.full} for ${formatEther(totalCostPerShare).full} / share`,
+            numShares: shares,
+            noFeePrice: price,
+            avgPrice: price,
+            timestamp: formatDate(new Date(trade.timestamp * 1000)),
+            tradingFees: formatEther(tradingFees),
+            feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
+            totalCost: formatEther(totalCost),
+            totalReturn: undefined,
+            gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null,
+            blockNumber: trade.blockNumber
+          }
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected value`);
+      }
+    });
+
+    test({
+      description: `should return the expected transaction object with taker and type BUY and inProgress`,
+      assertions: (store) => {
+        const trade = {
+          transactionHash: '0xHASH',
+          tradeid: '0xTRADEID',
+          tradeGroupID: '0xTRADEGROUPID',
+          price: '0.1',
+          amount: '2',
+          maker: false,
+          takerFee: '0.01',
+          type: BUY,
+          timestamp: 1491843278,
+          blockNumber: 123456,
+          gasFees: 0.001,
+          inProgress: true
+        };
+        const marketID = '0xMARKETID';
+        const marketType = BINARY;
+        const minValue = '0';
+        const description = 'test description';
+        const outcomeID = '1';
+        const status = 'testing';
+
+        const price = formatEther(trade.price);
+        const shares = formatShares(trade.amount);
+        const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
+        const bnShares = abi.bignum(trade.amount);
+        const bnPrice = marketType === SCALAR ? abi.bignum(augur.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
+        const totalCost = bnPrice.times(bnShares).plus(tradingFees);
+        const totalCostPerShare = totalCost.dividedBy(bnShares);
+
+        const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status));
+
+        const expected = {
+          '0xHASH-0xTRADEID': {
+            type: BUY,
+            hash: trade.transactionHash,
+            tradeGroupID: trade.tradeGroupID,
+            status,
+            description,
+            data: {
+              marketType,
+              outcomeName: outcomeID,
+              outcomeID,
+              marketID,
+              marketLink: {}
+            },
+            message: `${BUY} ${shares.full} for ${formatEther(totalCostPerShare).full} / share`,
+            numShares: shares,
+            noFeePrice: price,
+            avgPrice: price,
+            timestamp: formatDate(new Date(trade.timestamp * 1000)),
+            tradingFees: formatEther(tradingFees),
+            feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
+            totalCost: formatEther(totalCost),
+            totalReturn: undefined,
+            gasFees: formatRealEther(trade.gasFees),
+            blockNumber: trade.blockNumber
+          }
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected value`);
+      }
+    });
+
+    test({
+      description: `should return the expected transaction object with taker and type SELL and inProgress false`,
+      assertions: (store) => {
+        const trade = {
+          transactionHash: '0xHASH',
+          tradeid: '0xTRADEID',
+          tradeGroupID: '0xTRADEGROUPID',
+          price: '0.1',
+          amount: '2',
+          maker: false,
+          takerFee: '0.01',
+          type: SELL,
+          timestamp: 1491843278,
+          blockNumber: 123456,
+          gasFees: 0.001
+        };
+        const marketID = '0xMARKETID';
+        const marketType = BINARY;
+        const minValue = '0';
+        const description = 'test description';
+        const outcomeID = '1';
+        const status = 'testing';
+
+        const price = formatEther(trade.price);
+        const shares = formatShares(trade.amount);
+        const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
+        const bnShares = abi.bignum(trade.amount);
+        const bnPrice = marketType === SCALAR ? abi.bignum(augur.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
+        const totalCost = bnPrice.times(bnShares).plus(tradingFees);
+        const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
+        const totalReturnPerShare = totalReturn.dividedBy(bnShares);
+
+        const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status));
+
+        const expected = {
+          '0xHASH-0xTRADEID': {
+            type: SELL,
+            hash: trade.transactionHash,
+            tradeGroupID: trade.tradeGroupID,
+            status,
+            description,
+            data: {
+              marketType,
+              outcomeName: outcomeID,
+              outcomeID,
+              marketID,
+              marketLink: {}
+            },
+            message: `sold ${shares.full} for ${formatEther(totalReturnPerShare).full} / share`,
+            numShares: shares,
+            noFeePrice: price,
+            avgPrice: price,
+            timestamp: formatDate(new Date(trade.timestamp * 1000)),
+            tradingFees: formatEther(tradingFees),
+            feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
+            totalCost: undefined,
+            totalReturn: formatEther(totalReturn),
+            gasFees: formatRealEther(trade.gasFees),
+            blockNumber: trade.blockNumber
+          }
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected value`);
+      }
+    });
+
+    test({
+      description: `should return the expected transaction object with taker and type SELL and inProgress`,
+      assertions: (store) => {
+        const trade = {
+          transactionHash: '0xHASH',
+          tradeid: '0xTRADEID',
+          tradeGroupID: '0xTRADEGROUPID',
+          price: '0.1',
+          amount: '2',
+          maker: false,
+          takerFee: '0.01',
+          type: SELL,
+          timestamp: 1491843278,
+          blockNumber: 123456,
+          gasFees: 0.001,
+          inProgress: true
+        };
+        const marketID = '0xMARKETID';
+        const marketType = BINARY;
+        const minValue = '0';
+        const description = 'test description';
+        const outcomeID = '1';
+        const status = 'testing';
+
+        const price = formatEther(trade.price);
+        const shares = formatShares(trade.amount);
+        const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
+        const bnShares = abi.bignum(trade.amount);
+        const bnPrice = marketType === SCALAR ? abi.bignum(augur.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
+        const totalCost = bnPrice.times(bnShares).plus(tradingFees);
+        const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
+        const totalReturnPerShare = totalReturn.dividedBy(bnShares);
+
+        const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status));
+
+        const expected = {
+          '0xHASH-0xTRADEID': {
+            type: SELL,
+            hash: trade.transactionHash,
+            tradeGroupID: trade.tradeGroupID,
+            status,
+            description,
+            data: {
+              marketType,
+              outcomeName: outcomeID,
+              outcomeID,
+              marketID,
+              marketLink: {}
+            },
+            message: `${SELL} ${shares.full} for ${formatEther(totalReturnPerShare).full} / share`,
+            numShares: shares,
+            noFeePrice: price,
+            avgPrice: price,
+            timestamp: formatDate(new Date(trade.timestamp * 1000)),
+            tradingFees: formatEther(tradingFees),
+            feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
+            totalCost: undefined,
+            totalReturn: formatEther(totalReturn),
+            gasFees: formatRealEther(trade.gasFees),
+            blockNumber: trade.blockNumber
+          }
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected value`);
       }
     });
   });
