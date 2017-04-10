@@ -14,7 +14,8 @@ import {
   constructBasicTransaction,
   constructDefaultTransaction,
   constructApprovalTransaction,
-  constructCollectedFeesTransaction
+  constructCollectedFeesTransaction,
+  constructDepositTransaction
 } from 'modules/transactions/actions/construct-transaction';
 
 describe('modules/transactions/actions/contruct-transaction.js', () => {
@@ -632,6 +633,52 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
             value: formatRealEther(log.notReportingBond)
           },
           message: `reporting with ${formatRep(log.initialRepBalance).full} (${percentRep.full})`
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+  });
+
+  describe('constructDepositTransaction', () => {
+    const test = t => it(t.description, () => t.assertions());
+
+    test({
+      description: `should return the expected object with inProgress false`,
+      assertions: () => {
+        const log = {
+          inProgress: false,
+          value: '10'
+        };
+
+        const actual = constructDepositTransaction(log);
+
+        const expected = {
+          data: {},
+          type: 'Deposit Ether',
+          description: 'Convert Ether to tradeable Ether token',
+          message: `deposited ${formatEther(log.value).full}`
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with inProgress`,
+      assertions: () => {
+        const log = {
+          inProgress: true,
+          value: '10'
+        };
+
+        const actual = constructDepositTransaction(log);
+
+        const expected = {
+          data: {},
+          type: 'Deposit Ether',
+          description: 'Convert Ether to tradeable Ether token',
+          message: `depositing ${formatEther(log.value).full}`
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
