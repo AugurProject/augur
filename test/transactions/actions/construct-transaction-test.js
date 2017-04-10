@@ -15,7 +15,8 @@ import {
   constructDefaultTransaction,
   constructApprovalTransaction,
   constructCollectedFeesTransaction,
-  constructDepositTransaction
+  constructDepositTransaction,
+  constructRegistrationTransaction
 } from 'modules/transactions/actions/construct-transaction';
 
 describe('modules/transactions/actions/contruct-transaction.js', () => {
@@ -679,6 +680,52 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           type: 'Deposit Ether',
           description: 'Convert Ether to tradeable Ether token',
           message: `depositing ${formatEther(log.value).full}`
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+  });
+
+  describe('constructRegistrationTransaction', () => {
+    const test = t => it(t.description, () => t.assertions());
+
+    test({
+      description: `should return the expected object with inProgress false`,
+      assertions: () => {
+        const log = {
+          inProgress: false,
+          sender: '0xSENDER'
+        };
+
+        const actual = constructRegistrationTransaction(log);
+
+        const expected = {
+          data: {},
+          type: 'Register New Account',
+          description: `Register account ${log.sender.replace('0x', '')}`,
+          message: `saved registration timestamp`
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with inProgress`,
+      assertions: () => {
+        const log = {
+          inProgress: true,
+          sender: '0xSENDER'
+        };
+
+        const actual = constructRegistrationTransaction(log);
+
+        const expected = {
+          data: {},
+          type: 'Register New Account',
+          description: `Register account ${log.sender.replace('0x', '')}`,
+          message: `saving registration timestamp`
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
