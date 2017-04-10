@@ -5,7 +5,7 @@ import proxyquire from 'proxyquire';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 
-import { abi } from 'services/augurjs';
+import { abi, constants } from 'services/augurjs';
 
 import { formatRealEther, formatEther, formatRep, formatPercent, formatShares } from 'utils/format-number';
 import { formatDate } from 'utils/format-date';
@@ -26,6 +26,7 @@ import {
 } from 'modules/transactions/actions/construct-transaction';
 
 import { CREATE_MARKET } from 'modules/transactions/constants/types';
+import { ZERO } from 'modules/trade/constants/numbers';
 
 describe('modules/transactions/actions/contruct-transaction.js', () => {
   proxyquire.noPreserveCache().noCallThru();
@@ -35,7 +36,8 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
   const MOCK_ACTION_TYPES = {
     LOAD_MARKET_THEN_RETRY_CONVERSION: 'LOAD_MARKET_THEN_RETRY_CONVERSION',
-    LOOKUP_EVENT_MARKETS_THEN_RETRY_CONVERSION: 'LOOKUP_EVENT_MARKETS_THEN_RETRY_CONVERSION'
+    LOOKUP_EVENT_MARKETS_THEN_RETRY_CONVERSION: 'LOOKUP_EVENT_MARKETS_THEN_RETRY_CONVERSION',
+    UPDATE_EVENTS_WITH_ACCOUNT_REPORT_DATA: 'UPDATE_EVENTS_WITH_ACCOUNT_REPORT_DATA'
   };
 
   const mockRetryConversion = {
@@ -1468,6 +1470,325 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+  });
+
+  describe('constructTradingFeeUpdatedTransaction', () => {
+    const mockLinks = {
+      selectMarketLink: sinon.stub().returns({})
+    };
+    const action = proxyquire('../../../src/modules/transactions/actions/construct-transaction', {
+      '../../link/selectors/links': mockLinks
+    });
+
+    const test = t => it(t.description, () => t.assertions());
+
+    test({
+      description: `should return the expected object with no marketID`,
+      assertions: () => {
+        const log = {
+          tradingFee: '0.01'
+        };
+        const market = {
+          description: 'test description'
+        };
+
+        const actual = action.constructTradingFeeUpdatedTransaction(log, market);
+
+        const expected = {
+          data: {
+            marketID: null,
+            marketLink: {}
+          },
+          description: 'test description',
+          message: `updated trading fee: ${formatPercent(abi.bignum(log.tradingFee).times(100)).full}`
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with marketID`,
+      assertions: () => {
+        const log = {
+          marketID: '0xMARKETID',
+          tradingFee: '0.01'
+        };
+        const market = {
+          description: 'test description'
+        };
+
+        const actual = action.constructTradingFeeUpdatedTransaction(log, market);
+
+        const expected = {
+          data: {
+            marketID: '0xMARKETID',
+            marketLink: {}
+          },
+          description: 'test description',
+          message: `updated trading fee: ${formatPercent(abi.bignum(log.tradingFee).times(100)).full}`
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+  });
+
+  describe('constructPenalizeTransaction', () => {
+    const mockLinks = {
+      selectMarketLink: sinon.stub().returns({})
+    };
+
+    const mockReportableOutcomes = {
+      formatReportedOutcome: sinon.stub().returns('formatted reported outcome')
+    };
+
+    const mockUpdateEventsWithAccountReportData = {
+      updateEventsWithAccountReportData: sinon.stub().returns({
+        type: MOCK_ACTION_TYPES.UPDATE_EVENTS_WITH_ACCOUNT_REPORT_DATA
+      })
+    };
+
+    const action = proxyquire('../../../src/modules/transactions/actions/construct-transaction', {
+      '../../link/selectors/links': mockLinks,
+      '../../reports/selectors/reportable-outcomes': mockReportableOutcomes,
+      '../../my-reports/actions/update-events-with-account-report-data': mockUpdateEventsWithAccountReportData
+    });
+
+    const test = (t) => {
+      const store = mockStore();
+      it(t.description, () => {
+        t.assertions(store);
+      });
+    };
+
+    test({
+      description: `should return the expected object and dispatch the expected actions with no repChange and inProgress false and reportValue !== log.outcome`,
+      assertions: (store) => {
+        const log = {
+          reportValue: '1',
+          outcome: '2'
+        };
+        const marketID = '0xMARKETID';
+        const market = {
+          description: 'test description'
+        };
+
+        const result = action.constructPenalizeTransaction(log, marketID, market, {}, store.dispatch);
+
+        const expectedResult = {
+          data: {
+            marketLink: {},
+            marketID
+          },
+          type: 'Compare Report To Consensus',
+          description: 'test description',
+          message: `✘ report formatted reported outcome does not match consensus formatted reported outcome`
+        };
+
+        assert.deepEqual(result, expectedResult, `Didn't return the expected object`);
+
+        const actions = store.getActions();
+
+        const expectedActions = [
+          {
+            type: MOCK_ACTION_TYPES.UPDATE_EVENTS_WITH_ACCOUNT_REPORT_DATA
+          }
+        ];
+
+        assert.deepEqual(actions, expectedActions, `Didn't dispatch the expected actions`);
+      }
+    });
+
+    test({
+      description: `should return the expected object and dispatch the expected actions with repChange equals 0 and inProgress false and reportValue !== log.outcome`,
+      assertions: (store) => {
+        const log = {
+          reportValue: '1',
+          outcome: '2',
+          repchange: '0',
+          oldrep: '2'
+        };
+        const marketID = '0xMARKETID';
+        const market = {
+          description: 'test description'
+        };
+
+        const result = action.constructPenalizeTransaction(log, marketID, market, {}, store.dispatch);
+
+        const expectedResult = {
+          data: {
+            marketLink: {},
+            marketID,
+            balances: [
+              {
+                change: formatRep(abi.bignum(log.repchange), { positiveSign: true }),
+                balance: formatRep(2)
+              }
+            ]
+          },
+          type: 'Compare Report To Consensus',
+          description: 'test description',
+          message: `✘ report formatted reported outcome does not match consensus formatted reported outcome`
+        };
+
+        assert.deepEqual(result, expectedResult, `Didn't return the expected object`);
+
+        const actions = store.getActions();
+
+        const expectedActions = [
+          {
+            type: MOCK_ACTION_TYPES.UPDATE_EVENTS_WITH_ACCOUNT_REPORT_DATA
+          },
+          {
+            type: MOCK_ACTION_TYPES.UPDATE_EVENTS_WITH_ACCOUNT_REPORT_DATA
+          }
+        ];
+
+        assert.deepEqual(actions, expectedActions, `Didn't dispatch the expected actions`);
+      }
+    });
+
+    test({
+      description: `should return the expected object and dispatch the expected actions with repChange not equal to 0 and inProgress false and reportValue !== log.outcome`,
+      assertions: (store) => {
+        const log = {
+          reportValue: '1',
+          outcome: '2',
+          repchange: '0',
+          oldrep: '2'
+        };
+        const marketID = '0xMARKETID';
+        const market = {
+          description: 'test description'
+        };
+
+        const result = action.constructPenalizeTransaction(log, marketID, market, {}, store.dispatch);
+
+        const expectedResult = {
+          data: {
+            marketLink: {},
+            marketID,
+            balances: [
+              {
+                change: formatRep(constants.ZERO, { positiveSign: true }),
+                balance: formatRep('2')
+              }
+            ]
+          },
+          type: 'Compare Report To Consensus',
+          description: 'test description',
+          message: `✘ report formatted reported outcome does not match consensus formatted reported outcome`
+        };
+
+        assert.deepEqual(result, expectedResult, `Didn't return the expected object`);
+
+        const actions = store.getActions();
+
+        const expectedActions = [
+          {
+            type: MOCK_ACTION_TYPES.UPDATE_EVENTS_WITH_ACCOUNT_REPORT_DATA
+          },
+          {
+            type: MOCK_ACTION_TYPES.UPDATE_EVENTS_WITH_ACCOUNT_REPORT_DATA
+          }
+        ];
+
+        assert.deepEqual(actions, expectedActions, `Didn't dispatch the expected actions`);
+      }
+    });
+
+    test({
+      description: `should return the expected object and dispatch the expected actions with repChange not equal to 0 and inProgress false and reportValue === log.outcome`,
+      assertions: (store) => {
+        const log = {
+          reportValue: '1',
+          outcome: '1',
+          repchange: '0',
+          oldrep: '2'
+        };
+        const marketID = '0xMARKETID';
+        const market = {
+          description: 'test description'
+        };
+
+        const result = action.constructPenalizeTransaction(log, marketID, market, {}, store.dispatch);
+
+        const expectedResult = {
+          data: {
+            marketLink: {},
+            marketID,
+            balances: [
+              {
+                change: formatRep(constants.ZERO, { positiveSign: true }),
+                balance: formatRep('2')
+              }
+            ]
+          },
+          type: 'Compare Report To Consensus',
+          description: 'test description',
+          message: `✔ report formatted reported outcome matches consensus`
+        };
+
+        assert.deepEqual(result, expectedResult, `Didn't return the expected object`);
+
+        const actions = store.getActions();
+
+        const expectedActions = [
+          {
+            type: MOCK_ACTION_TYPES.UPDATE_EVENTS_WITH_ACCOUNT_REPORT_DATA
+          },
+          {
+            type: MOCK_ACTION_TYPES.UPDATE_EVENTS_WITH_ACCOUNT_REPORT_DATA
+          }
+        ];
+
+        assert.deepEqual(actions, expectedActions, `Didn't dispatch the expected actions`);
+      }
+    });
+
+    test({
+      description: `should return the expected object and dispatch the expected actions with repChange not equal to 0 and inProgress and reportValue === log.outcome`,
+      assertions: (store) => {
+        const log = {
+          reportValue: '1',
+          outcome: '1',
+          repchange: '0',
+          oldrep: '2',
+          inProgress: true
+        };
+        const marketID = '0xMARKETID';
+        const market = {
+          description: 'test description'
+        };
+
+        const result = action.constructPenalizeTransaction(log, marketID, market, {}, store.dispatch);
+
+        const expectedResult = {
+          data: {
+            marketLink: {},
+            marketID,
+            balances: [
+              {
+                change: formatRep(constants.ZERO, { positiveSign: true }),
+                balance: formatRep('2')
+              }
+            ]
+          },
+          type: 'Compare Report To Consensus',
+          description: 'test description',
+          message: 'comparing report to consensus'
+        };
+
+        assert.deepEqual(result, expectedResult, `Didn't return the expected object`);
+
+        const actions = store.getActions();
+
+        const expectedActions = [];
+
+        assert.deepEqual(actions, expectedActions, `Didn't dispatch the expected actions`);
       }
     });
   });
