@@ -25,7 +25,7 @@ import {
   constructFundedAccountTransaction
 } from 'modules/transactions/actions/construct-transaction';
 
-import { CREATE_MARKET } from 'modules/transactions/constants/types';
+import { CREATE_MARKET, COMMIT_REPORT } from 'modules/transactions/constants/types';
 import { ZERO } from 'modules/trade/constants/numbers';
 
 describe('modules/transactions/actions/contruct-transaction.js', () => {
@@ -1787,6 +1787,187 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const actions = store.getActions();
 
         const expectedActions = [];
+
+        assert.deepEqual(actions, expectedActions, `Didn't dispatch the expected actions`);
+      }
+    });
+  });
+
+  describe('constructSubmittedReportHashTransaction', () => {
+    proxyquire.callThru();
+
+    const mockAugur = {
+      augur: {
+        parseAndDecryptReport: sinon.stub().returns({
+          report: 'testing'
+        })
+      }
+    };
+
+    const mockLinks = {
+      selectMarketLink: sinon.stub().returns({})
+    };
+
+    const mockReportableOutcomes = {
+      formatReportedOutcome: sinon.stub().returns('formatted reported outcome')
+    };
+
+    const mockUpdateEventsWithAccountReportData = {
+      updateEventsWithAccountReportData: sinon.stub().returns({
+        type: MOCK_ACTION_TYPES.UPDATE_EVENTS_WITH_ACCOUNT_REPORT_DATA
+      })
+    };
+
+    const action = proxyquire('../../../src/modules/transactions/actions/construct-transaction', {
+      '../../../services/augurjs': mockAugur,
+      '../../link/selectors/links': mockLinks,
+      '../../reports/selectors/reportable-outcomes': mockReportableOutcomes,
+      '../../my-reports/actions/update-events-with-account-report-data': mockUpdateEventsWithAccountReportData
+    });
+
+    after(() => {
+      proxyquire.noCallThru();
+    });
+
+    const test = (t) => {
+      const store = mockStore();
+      it(t.description, () => {
+        t.assertions(store);
+      });
+    };
+
+    test({
+      description: `should return the expected object and dispatch the expected actions with no decryptionKey and no ethics and inProgress`,
+      assertions: (store) => {
+        const log = {
+          inProgress: true
+        };
+        const marketID = '0xMARKETID';
+        const market = {
+          description: 'test description'
+        };
+
+        const result = action.constructSubmittedReportHashTransaction(log, marketID, market, null, null, store.dispatch);
+
+        const expectedResult = {
+          data: {
+            marketLink: {},
+            marketID,
+            market,
+            isUnethical: true
+          },
+          type: COMMIT_REPORT,
+          description: market.description,
+          message: 'committing to report'
+        };
+
+        assert.deepEqual(result, expectedResult, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object and dispatch the expected actions with no decryptionKey and ethics and inProgress`,
+      assertions: (store) => {
+        const log = {
+          ethics: '1',
+          inProgress: true
+        };
+        const marketID = '0xMARKETID';
+        const market = {
+          description: 'test description'
+        };
+
+        const result = action.constructSubmittedReportHashTransaction(log, marketID, market, null, null, store.dispatch);
+
+        const expectedResult = {
+          data: {
+            marketLink: {},
+            marketID,
+            market,
+            isUnethical: false
+          },
+          type: COMMIT_REPORT,
+          description: market.description,
+          message: 'committing to report'
+        };
+
+        assert.deepEqual(result, expectedResult, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object and dispatch the expected actions with decryptionKey and ethics and inProgress`,
+      assertions: (store) => {
+        const log = {
+          ethics: '1',
+          inProgress: true
+        };
+        const marketID = '0xMARKETID';
+        const market = {
+          description: 'test description'
+        };
+
+        const result = action.constructSubmittedReportHashTransaction(log, marketID, market, null, '123DECRYPTIONKEY', store.dispatch);
+
+        const expectedResult = {
+          data: {
+            marketLink: {},
+            marketID,
+            market,
+            isUnethical: false,
+            reportedOutcomeID: 'formatted reported outcome',
+            outcome: {
+              name: 'formatted reported outcome'
+            },
+          },
+          type: COMMIT_REPORT,
+          description: market.description,
+          message: 'committing to report: formatted reported outcome'
+        };
+
+        assert.deepEqual(result, expectedResult, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object and dispatch the expected actions with decryptionKey and ethics and inProgress false`,
+      assertions: (store) => {
+        const log = {
+          ethics: '1',
+          inProgress: false
+        };
+        const marketID = '0xMARKETID';
+        const market = {
+          description: 'test description'
+        };
+
+        const result = action.constructSubmittedReportHashTransaction(log, marketID, market, null, '123DECRYPTIONKEY', store.dispatch);
+
+        const expectedResult = {
+          data: {
+            marketLink: {},
+            marketID,
+            market,
+            isUnethical: false,
+            reportedOutcomeID: 'formatted reported outcome',
+            outcome: {
+              name: 'formatted reported outcome'
+            },
+          },
+          type: COMMIT_REPORT,
+          description: market.description,
+          message: 'committed to report: formatted reported outcome'
+        };
+
+        assert.deepEqual(result, expectedResult, `Didn't return the expected object`);
+
+        const actions = store.getActions();
+
+        const expectedActions = [
+          {
+            type: MOCK_ACTION_TYPES.UPDATE_EVENTS_WITH_ACCOUNT_REPORT_DATA
+          }
+        ];
 
         assert.deepEqual(actions, expectedActions, `Didn't dispatch the expected actions`);
       }
