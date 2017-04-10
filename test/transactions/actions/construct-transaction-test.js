@@ -22,8 +22,11 @@ import {
   constructSentEtherTransaction,
   constructSentCashTransaction,
   constructTransferTransaction,
-  constructFundedAccountTransaction
+  constructFundedAccountTransaction,
+  constructMarketCreatedTransaction
 } from 'modules/transactions/actions/construct-transaction';
+
+import { CREATE_MARKET } from 'modules/transactions/constants/types';
 
 describe('modules/transactions/actions/contruct-transaction.js', () => {
   proxyquire.noPreserveCache().noCallThru();
@@ -1283,6 +1286,81 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           },
           type: 'fund_account',
           message: 'requesting testnet funding'
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+  });
+
+  describe('constructMarketCreatedTransaction', () => {
+    const mockLinks = {
+      selectMarketLink: sinon.stub().returns({})
+    };
+    const action = proxyquire('../../../src/modules/transactions/actions/construct-transaction', {
+      '../../link/selectors/links': mockLinks
+    });
+
+    const test = t => it(t.description, () => t.assertions());
+
+    test({
+      description: `should return the expected object with inProgress false`,
+      assertions: () => {
+        const log = {
+          inProgress: false,
+          marketCreationFee: '10',
+          marketID: '0xMARKETID',
+          eventBond: '10'
+        };
+        const description = 'test description~|>one|two|three';
+
+        const actual = action.constructMarketCreatedTransaction(log, description);
+
+        const expected = {
+          data: {
+            marketID: log.marketID,
+            marketLink: {},
+          },
+          type: CREATE_MARKET,
+          description: 'test description',
+          marketCreationFee: formatEther(log.marketCreationFee),
+          bond: {
+            label: 'event validity',
+            value: formatEther(log.eventBond)
+          },
+          message: 'created market'
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with inProgress true`,
+      assertions: () => {
+        const log = {
+          inProgress: true,
+          marketCreationFee: '10',
+          marketID: '0xMARKETID',
+          eventBond: '10'
+        };
+        const description = 'test description~|>one|two|three';
+
+        const actual = action.constructMarketCreatedTransaction(log, description);
+
+        const expected = {
+          data: {
+            marketID: log.marketID,
+            marketLink: {},
+          },
+          type: CREATE_MARKET,
+          description: 'test description',
+          marketCreationFee: formatEther(log.marketCreationFee),
+          bond: {
+            label: 'event validity',
+            value: formatEther(log.eventBond)
+          },
+          message: 'creating market'
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
