@@ -7,7 +7,7 @@ import configureMockStore from 'redux-mock-store';
 
 import { abi } from 'services/augurjs';
 
-import { formatRealEther, formatEther, formatRep, formatPercent } from 'utils/format-number';
+import { formatRealEther, formatEther, formatRep, formatPercent, formatShares } from 'utils/format-number';
 import { formatDate } from 'utils/format-date';
 
 import {
@@ -22,8 +22,7 @@ import {
   constructSentEtherTransaction,
   constructSentCashTransaction,
   constructTransferTransaction,
-  constructFundedAccountTransaction,
-  constructMarketCreatedTransaction
+  constructFundedAccountTransaction
 } from 'modules/transactions/actions/construct-transaction';
 
 import { CREATE_MARKET } from 'modules/transactions/constants/types';
@@ -1361,6 +1360,111 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
             value: formatEther(log.eventBond)
           },
           message: 'creating market'
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+  });
+
+  describe('constructPayoutTransaction', () => {
+    const mockLinks = {
+      selectMarketLink: sinon.stub().returns({})
+    };
+    const action = proxyquire('../../../src/modules/transactions/actions/construct-transaction', {
+      '../../link/selectors/links': mockLinks
+    });
+
+    const test = t => it(t.description, () => t.assertions());
+
+    test({
+      description: `should return the expected object with no cashPayout and no log.market and inProgress false`,
+      assertions: () => {
+        const log = {
+          shares: '10',
+          inProgress: false
+        };
+        const market = {
+          description: 'test description'
+        };
+
+        const actual = action.constructPayoutTransaction(log, market);
+
+        const expected = {
+          data: {
+            shares: '10',
+            marketLink: {},
+            marketID: null
+          },
+          type: 'Claim Trading Payout',
+          description: 'test description',
+          message: `closed out ${formatShares(log.shares).full}`
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with no cashPayout and log.market and inProgress false`,
+      assertions: () => {
+        const log = {
+          shares: '10',
+          inProgress: false,
+          market: '0xMARKETID'
+        };
+        const market = {
+          description: 'test description'
+        };
+
+        const actual = action.constructPayoutTransaction(log, market);
+
+        const expected = {
+          data: {
+            shares: '10',
+            marketLink: {},
+            marketID: '0xMARKETID'
+          },
+          type: 'Claim Trading Payout',
+          description: 'test description',
+          message: `closed out ${formatShares(log.shares).full}`
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with cashPayout and log.market and inProgress false`,
+      assertions: () => {
+        const log = {
+          shares: '10',
+          inProgress: false,
+          market: '0xMARKETID',
+          cashPayout: '10',
+          cashBalance: '10'
+        };
+        const market = {
+          description: 'test description'
+        };
+
+        const actual = action.constructPayoutTransaction(log, market);
+
+        const expected = {
+          data: {
+            shares: '10',
+            marketLink: {},
+            marketID: '0xMARKETID',
+            balances: [
+              {
+                change: formatEther(log.cashPayout, { positiveSign: true }),
+                balance: formatEther(log.cashBalance)
+              }
+            ]
+          },
+          type: 'Claim Trading Payout',
+          description: 'test description',
+          message: `closed out ${formatShares(log.shares).full}`
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
