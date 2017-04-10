@@ -10,7 +10,8 @@ import { formatDate } from 'utils/format-date';
 
 import {
   constructBasicTransaction,
-  constructDefaultTransaction
+  constructDefaultTransaction,
+  constructApprovalTransaction
 } from 'modules/transactions/actions/construct-transaction';
 
 describe('modules/transactions/actions/contruct-transaction.js', () => {
@@ -359,6 +360,52 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           type: label,
           message: 'log message',
           description: 'log description'
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+  });
+
+  describe('constructApprovalTransaction', () => {
+    const test = t => it(t.description, () => t.assertions());
+
+    test({
+      description: 'should return the expected object with inProgress false',
+      assertions: () => {
+        const log = {
+          _sender: '0xSENDER',
+          inProgress: false
+        };
+
+        const actual = constructApprovalTransaction(log);
+
+        const expected = {
+          data: {},
+          type: 'Approved to Send Reputation',
+          description: `Approve ${log._spender} to send Reputation`,
+          message: 'approved'
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: 'should return the expected object with inProgress true',
+      assertions: () => {
+        const log = {
+          _sender: '0xSENDER',
+          inProgress: true
+        };
+
+        const actual = constructApprovalTransaction(log);
+
+        const expected = {
+          data: {},
+          type: 'Approved to Send Reputation',
+          description: `Approve ${log._spender} to send Reputation`,
+          message: 'approving'
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
