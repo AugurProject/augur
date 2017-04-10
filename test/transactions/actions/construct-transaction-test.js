@@ -25,7 +25,7 @@ import {
   constructFundedAccountTransaction
 } from 'modules/transactions/actions/construct-transaction';
 
-import { CREATE_MARKET, COMMIT_REPORT, REVEAL_REPORT, BUY, SELL, MATCH_BID, MATCH_ASK } from 'modules/transactions/constants/types';
+import { CREATE_MARKET, COMMIT_REPORT, REVEAL_REPORT, BUY, SELL, MATCH_BID, MATCH_ASK, SHORT_SELL } from 'modules/transactions/constants/types';
 import { BINARY, SCALAR } from 'modules/markets/constants/market-types';
 import { ZERO } from 'modules/trade/constants/numbers';
 
@@ -2812,6 +2812,278 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected value`);
+      }
+    });
+
+    test({
+      description: `should return the expected transaction object with type scalar and taker and type SELL and inProgress`,
+      assertions: (store) => {
+        const trade = {
+          transactionHash: '0xHASH',
+          tradeid: '0xTRADEID',
+          tradeGroupID: '0xTRADEGROUPID',
+          price: '0.1',
+          amount: '2',
+          maker: false,
+          takerFee: '0.01',
+          type: SELL,
+          timestamp: 1491843278,
+          blockNumber: 123456,
+          gasFees: 0.001,
+          inProgress: true
+        };
+        const marketID = '0xMARKETID';
+        const marketType = SCALAR;
+        const minValue = '0';
+        const description = 'test description';
+        const outcomeID = '1';
+        const status = 'testing';
+
+        const price = formatEther(trade.price);
+        const shares = formatShares(trade.amount);
+        const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
+        const bnShares = abi.bignum(trade.amount);
+        const bnPrice = abi.bignum(augur.shrinkScalarPrice(minValue, trade.price));
+        const totalCost = bnPrice.times(bnShares).plus(tradingFees);
+        const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
+        const totalReturnPerShare = totalReturn.dividedBy(bnShares);
+
+        const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status));
+
+        const expected = {
+          '0xHASH-0xTRADEID': {
+            type: SELL,
+            hash: trade.transactionHash,
+            tradeGroupID: trade.tradeGroupID,
+            status,
+            description,
+            data: {
+              marketType,
+              outcomeName: outcomeID,
+              outcomeID,
+              marketID,
+              marketLink: {}
+            },
+            message: `${SELL} ${shares.full} for ${formatEther(totalReturnPerShare).full} / share`,
+            numShares: shares,
+            noFeePrice: price,
+            avgPrice: price,
+            timestamp: formatDate(new Date(trade.timestamp * 1000)),
+            tradingFees: formatEther(tradingFees),
+            feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
+            totalCost: undefined,
+            totalReturn: formatEther(totalReturn),
+            gasFees: formatRealEther(trade.gasFees),
+            blockNumber: trade.blockNumber
+          }
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected value`);
+      }
+    });
+  });
+
+  describe('constructLogFillTxTransaction', () => {
+    const mockLinks = {
+      selectMarketLink: sinon.stub().returns({})
+    };
+    const action = proxyquire('../../../src/modules/transactions/actions/construct-transaction', {
+      '../../link/selectors/links': mockLinks
+    });
+
+    const test = t => it(t.description, () => {
+      const store = mockStore();
+      t.assertions(store);
+    });
+
+    test({
+      description: `should return the expected object with inProgress false`,
+      assertions: (store) => {
+        const trade = {
+          transactionHash: '0xHASH',
+          tradeid: '0xTRADEID',
+          tradeGroupID: '0xTRADEGROUPID',
+          price: '0.1',
+          amount: '2',
+          maker: false,
+          takerFee: '0.01',
+          type: SELL,
+          timestamp: 1491843278,
+          blockNumber: 123456,
+          gasFees: 0.001
+        };
+        const marketID = '0xMARKETID';
+        const marketType = BINARY;
+        const maxValue = '1';
+        const description = 'test description';
+        const outcomeID = '1';
+        const status = 'testing';
+
+        const price = formatEther(trade.price);
+        const shares = formatShares(trade.amount);
+        const bnPrice = abi.bignum(trade.price);
+        const tradingFees = abi.bignum(trade.takerFee);
+        const bnShares = abi.bignum(trade.amount);
+        const totalCost = bnShares.minus(bnPrice.times(bnShares).plus(tradingFees));
+        const totalCostPerShare = totalCost.dividedBy(bnShares);
+
+        const actual = store.dispatch(action.constructLogShortFillTxTransaction(trade, marketID, marketType, maxValue, description, outcomeID, null, status));
+
+        const expected = {
+          '0xHASH-0xTRADEID': {
+            type: SHORT_SELL,
+            hash: trade.transactionHash,
+            status,
+            description,
+            data: {
+              marketType,
+              outcomeName: outcomeID,
+              outcomeID,
+              marketID,
+              marketLink: {}
+            },
+            message: `short sold ${shares.full} for ${formatEther(totalCostPerShare).full} / share`,
+            numShares: shares,
+            noFeePrice: price,
+            avgPrice: formatEther(totalCost.minus(bnShares).dividedBy(bnShares).abs()),
+            timestamp: formatDate(new Date(trade.timestamp * 1000)),
+            tradingFees: formatEther(tradingFees),
+            feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
+            totalCost: formatEther(totalCost),
+            gasFees: formatRealEther(trade.gasFees),
+            blockNumber: trade.blockNumber
+          }
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with inProgress`,
+      assertions: (store) => {
+        const trade = {
+          transactionHash: '0xHASH',
+          tradeid: '0xTRADEID',
+          tradeGroupID: '0xTRADEGROUPID',
+          price: '0.1',
+          amount: '2',
+          maker: false,
+          takerFee: '0.01',
+          type: SELL,
+          timestamp: 1491843278,
+          blockNumber: 123456,
+          gasFees: 0.001,
+          inProgress: true
+        };
+        const marketID = '0xMARKETID';
+        const marketType = BINARY;
+        const maxValue = '1';
+        const description = 'test description';
+        const outcomeID = '1';
+        const status = 'testing';
+
+        const price = formatEther(trade.price);
+        const shares = formatShares(trade.amount);
+        const bnPrice = abi.bignum(trade.price);
+        const tradingFees = abi.bignum(trade.takerFee);
+        const bnShares = abi.bignum(trade.amount);
+        const totalCost = bnShares.minus(bnPrice.times(bnShares).plus(tradingFees));
+        const totalCostPerShare = totalCost.dividedBy(bnShares);
+
+        const actual = store.dispatch(action.constructLogShortFillTxTransaction(trade, marketID, marketType, maxValue, description, outcomeID, null, status));
+
+        const expected = {
+          '0xHASH-0xTRADEID': {
+            type: SHORT_SELL,
+            hash: trade.transactionHash,
+            status,
+            description,
+            data: {
+              marketType,
+              outcomeName: outcomeID,
+              outcomeID,
+              marketID,
+              marketLink: {}
+            },
+            message: `short selling ${shares.full} for ${formatEther(totalCostPerShare).full} / share`,
+            numShares: shares,
+            noFeePrice: price,
+            avgPrice: formatEther(totalCost.minus(bnShares).dividedBy(bnShares).abs()),
+            timestamp: formatDate(new Date(trade.timestamp * 1000)),
+            tradingFees: formatEther(tradingFees),
+            feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
+            totalCost: formatEther(totalCost),
+            gasFees: formatRealEther(trade.gasFees),
+            blockNumber: trade.blockNumber
+          }
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with type scalar and inProgress`,
+      assertions: (store) => {
+        const trade = {
+          transactionHash: '0xHASH',
+          tradeid: '0xTRADEID',
+          tradeGroupID: '0xTRADEGROUPID',
+          price: '0.1',
+          amount: '2',
+          maker: false,
+          takerFee: '0.01',
+          type: SELL,
+          timestamp: 1491843278,
+          blockNumber: 123456,
+          gasFees: 0.001,
+          inProgress: true
+        };
+        const marketID = '0xMARKETID';
+        const marketType = SCALAR;
+        const maxValue = '1';
+        const description = 'test description';
+        const outcomeID = '1';
+        const status = 'testing';
+
+        const price = formatEther(trade.price);
+        const shares = formatShares(trade.amount);
+        const bnPrice = abi.bignum(trade.price);
+        const tradingFees = abi.bignum(trade.takerFee);
+        const bnShares = abi.bignum(trade.amount);
+        const totalCost = abi.bignum(maxValue).times(bnShares).minus(bnPrice.times(bnShares).plus(tradingFees));
+        const totalCostPerShare = totalCost.dividedBy(bnShares);
+
+        const actual = store.dispatch(action.constructLogShortFillTxTransaction(trade, marketID, marketType, maxValue, description, outcomeID, null, status));
+
+        const expected = {
+          '0xHASH-0xTRADEID': {
+            type: SHORT_SELL,
+            hash: trade.transactionHash,
+            status,
+            description,
+            data: {
+              marketType,
+              outcomeName: outcomeID,
+              outcomeID,
+              marketID,
+              marketLink: {}
+            },
+            message: `short selling ${shares.full} for ${formatEther(totalCostPerShare).full} / share`,
+            numShares: shares,
+            noFeePrice: price,
+            avgPrice: formatEther(totalCost.minus(bnShares).dividedBy(bnShares).abs()),
+            timestamp: formatDate(new Date(trade.timestamp * 1000)),
+            tradingFees: formatEther(tradingFees),
+            feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
+            totalCost: formatEther(totalCost),
+            gasFees: formatRealEther(trade.gasFees),
+            blockNumber: trade.blockNumber
+          }
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
       }
     });
   });
