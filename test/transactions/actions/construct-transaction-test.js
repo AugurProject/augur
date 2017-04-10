@@ -21,7 +21,8 @@ import {
   constructWithdrawTransaction,
   constructSentEtherTransaction,
   constructSentCashTransaction,
-  constructTransferTransaction
+  constructTransferTransaction,
+  constructFundedAccountTransaction
 } from 'modules/transactions/actions/construct-transaction';
 
 describe('modules/transactions/actions/contruct-transaction.js', () => {
@@ -1197,6 +1198,91 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           type: 'Receive Reputation',
           description: `Receive Reputation from ${abi.strip_0x(log._from)}`,
           message: 'receiving REP'
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+  });
+
+  describe('constructFundedAccountTransaction', () => {
+    const test = t => it(t.description, () => t.assertions());
+
+    test({
+      description: `should return the expected object with no cashBalance and no repBalance and inProgress false`,
+      assertions: () => {
+        const log = {
+          inProgress: false
+        };
+
+        const actual = constructFundedAccountTransaction(log);
+
+        const expected = {
+          data: {},
+          type: 'fund_account',
+          message: ''
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with no cashBalance and no repBalance and inProgress false`,
+      assertions: () => {
+        const log = {
+          inProgress: false,
+          cashBalance: '10',
+          repBalance: '100'
+        };
+
+        const actual = constructFundedAccountTransaction(log);
+
+        const expected = {
+          data: {
+            balances: [
+              {
+                change: formatEther(log.cashBalance, { positiveSign: true }),
+                balance: formatEther(log.cashBalance)
+              }, {
+                change: formatRep(log.repBalance, { positiveSign: true }),
+                balance: formatRep(log.repBalance)
+              }
+            ]
+          },
+          type: 'fund_account',
+          message: ''
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with no cashBalance and no repBalance and inProgress`,
+      assertions: () => {
+        const log = {
+          inProgress: true,
+          cashBalance: '10',
+          repBalance: '100'
+        };
+
+        const actual = constructFundedAccountTransaction(log);
+
+        const expected = {
+          data: {
+            balances: [
+              {
+                change: formatEther(log.cashBalance, { positiveSign: true }),
+                balance: formatEther(log.cashBalance)
+              }, {
+                change: formatRep(log.repBalance, { positiveSign: true }),
+                balance: formatRep(log.repBalance)
+              }
+            ]
+          },
+          type: 'fund_account',
+          message: 'requesting testnet funding'
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
