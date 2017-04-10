@@ -146,7 +146,7 @@ export function constructSentEtherTransaction(log, address) {
     }];
     action = log.inProgress ? 'sending' : 'sent';
   }
-  transaction.message = action ? `${action} ETH` : '';
+  transaction.message = `${action} ETH`;
   return transaction;
 }
 
