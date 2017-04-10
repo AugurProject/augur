@@ -59,7 +59,7 @@ module.exports = {
       sig = store.getState().contractsAPI.events.log_fill_tx.signature;
       for (i = 0, numLogs = logs.length; i < numLogs; ++i) {
         if (logs[i].topics[0] === sig) {
-          logdata = this.rpc.unmarshal(logs[i].data);
+          logdata = abi.unroll_array(logs[i].data);
           if (logdata && logdata.constructor === Array && logdata.length > 6) {
             tradingFees = tradingFees.plus(abi.unfix(logdata[6]));
             // buy (matched sell order)
@@ -90,7 +90,7 @@ module.exports = {
       sig = store.getState().contractsAPI.events.log_short_fill_tx.signature;
       for (i = 0, numLogs = logs.length; i < numLogs; ++i) {
         if (logs[i].topics[0] === sig) {
-          logdata = this.rpc.unmarshal(logs[i].data);
+          logdata = abi.unroll_array(logs[i].data);
           if (logdata && logdata.constructor === Array && logdata.length > 8) {
             cashFromTrade = cashFromTrade.plus(abi.unfix_signed(logdata[8]).times(abi.unfix(logdata[1])));
             tradingFees = tradingFees.plus(abi.unfix(logdata[5]));

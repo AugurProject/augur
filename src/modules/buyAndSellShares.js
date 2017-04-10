@@ -35,7 +35,7 @@ module.exports = {
           numLogs = logs.length;
           for (i = 0; i < numLogs; ++i) {
             if (logs[i].topics[0] === sig) {
-              logdata = self.rpc.unmarshal(logs[i].data);
+              logdata = abi.unroll_array(logs[i].data);
               if (logdata && logdata.constructor === Array && logdata.length) {
                 result.cashRefund = abi.unfix(logdata[5], "string");
                 break;

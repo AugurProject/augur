@@ -4,7 +4,6 @@ var async = require("async");
 var clone = require("clone");
 var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
-var unrollArray = require("ethrpc").unmarshal;
 var constants = require("../constants");
 var isFunction = require("../utils/is-function");
 var formatTradeType = require("../format/log/format-trade-type");
@@ -22,7 +21,7 @@ module.exports = {
       if (logs[i] && logs[i].data !== undefined && logs[i].data !== null && logs[i].data !== "0x") {
         marketID = logs[i].topics[2];
         logType = formatTradeType(logs[i].topics[3]);
-        logData = unrollArray(logs[i].data);
+        logData = abi.unroll_array(logs[i].data);
         numOutcomes = parseInt(logData[1], 16);
         if (mergeInto) {
           if (!parsed[marketID]) parsed[marketID] = {};

@@ -14,8 +14,8 @@ describe("filters/add-filter", function () {
       var addFilter = proxyquire("../../../src/filters/add-filter.js", {
         "./subscription/subscription-callback": SubscriptionCallback
       });
-      addFilter(t.params.blockStream, t.params.label, t.params.eventAPI, t.params.contracts, function (result) {
-        t.assertions(result, store.getState());
+      addFilter(t.params.blockStream, t.params.label, t.params.eventAPI, t.params.contracts, function (message) {
+        t.assertions(message, store.getState());
         done();
       });
     });
@@ -33,8 +33,8 @@ describe("filters/add-filter", function () {
       contracts: undefined
     },
     mock: {},
-    assertions: function (result, state) {
-      assert.strictEqual(result, "0x42");
+    assertions: function (message, state) {
+      assert.strictEqual(message, "0x42");
       assert.deepEqual(state.subscriptions, {});
     }
   });
@@ -77,8 +77,8 @@ describe("filters/add-filter", function () {
         });
       }
     },
-    assertions: function (result, state) {
-      assert.deepEqual(result, {
+    assertions: function (message, state) {
+      assert.deepEqual(message, {
         address: "0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f",
         topics: [
           "0x8f9d87fc01c4c1a9057249423e7e9c38c4f8899a494502d7aaa64c0b7c40cf9e",
@@ -179,8 +179,8 @@ describe("filters/add-filter", function () {
         });
       }
     },
-    assertions: function (result, state) {
-      assert.deepEqual(result, {
+    assertions: function (message, state) {
+      assert.deepEqual(message, {
         sender: "0x0e52ec96687f8281dae987934f4619d1990ecbde",
         marketID: "0xbcec0378dfeeb59908c886aff93b0e820bb579f63acaeb4b3d4004ec01153115",
         topic: "roflcopter",

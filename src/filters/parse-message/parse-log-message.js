@@ -1,6 +1,6 @@
 "use strict";
 
-var unrollArray = require("ethrpc").unmarshal;
+var abi = require("augur-abi");
 var formatLogMessage = require("../../format/log/format-log-message");
 
 var parseLogMessage = function (label, msg, inputs, onMessage) {
@@ -18,7 +18,7 @@ var parseLogMessage = function (label, msg, inputs, onMessage) {
           topicIndex = 0;
           dataIndex = 0;
           topics = msg.topics;
-          data = unrollArray(msg.data);
+          data = abi.unroll_array(msg.data);
           if (data && data.constructor !== Array) data = [data];
           for (i = 0; i < inputs.length; ++i) {
             parsed[inputs[i].name] = 0;

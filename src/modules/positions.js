@@ -49,7 +49,7 @@ module.exports = {
       if (logs[i] && logs[i].data && logs[i].data !== "0x") {
         marketID = logs[i].topics[2];
         if (!shareTotals[marketID]) shareTotals[marketID] = constants.ZERO;
-        logData = this.rpc.unmarshal(logs[i].data);
+        logData = abi.unroll_array(logs[i].data);
         if (logData && logData.length) {
           shareTotals[marketID] = this.modifyPosition(logs[i].topics[3], shareTotals[marketID], logData[0]);
         }
@@ -72,7 +72,7 @@ module.exports = {
       if (logs[i] && logs[i].data && logs[i].data !== "0x") {
         marketID = logs[i].topics[2];
         if (!effectivePrice[marketID]) {
-          logData = this.rpc.unmarshal(logs[i].data);
+          logData = abi.unroll_array(logs[i].data);
           if (logData && logData.length) {
             effectivePrice[marketID] = ONE.dividedBy(abi.bignum(logData[1]));
           }
@@ -96,7 +96,7 @@ module.exports = {
       if (logs[i] && logs[i].data && logs[i].data !== "0x") {
         marketID = logs[i].topics[1];
         if (!effectivePrice[marketID]) {
-          logData = this.rpc.unmarshal(logs[i].data);
+          logData = abi.unroll_array(logs[i].data);
           if (logData && logData.length && logData.length === 8) {
             effectivePrice[marketID] = ONE.dividedBy(abi.bignum(logData[7]));
           }
@@ -120,7 +120,7 @@ module.exports = {
     for (i = 0, numLogs = logs.length; i < numLogs; ++i) {
       if (logs[i] && logs[i].data && logs[i].data !== "0x") {
         marketID = logs[i].topics[1];
-        logData = this.rpc.unmarshal(logs[i].data);
+        logData = abi.unroll_array(logs[i].data);
         if (!sharesOutcomes[marketID]) sharesOutcomes[marketID] = {};
         outcomeID = parseInt(logData[3], 16).toString();
         if (!sharesOutcomes[marketID][outcomeID]) sharesOutcomes[marketID][outcomeID] = constants.ZERO;
