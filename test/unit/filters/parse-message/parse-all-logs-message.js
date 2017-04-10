@@ -5,7 +5,7 @@
 var assert = require("chai").assert;
 var parseAllLogsMessage = require("../../../../src/filters/parse-message/parse-all-logs-message");
 
-describe("parseAllLogsMessage", function () {
+describe("parse-message/parse-all-logs-message", function () {
   var test = function (msg) {
     it(JSON.stringify(msg), function (done) {
       parseAllLogsMessage(msg, function (parsed) {

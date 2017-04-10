@@ -8,7 +8,7 @@ var addAllLogsFilter = function (blockStream, contracts) {
       contractList.push(contracts[contractName]);
     }
   }
-  blockStream.addLogFilter({address: contractList});
+  blockStream.addLogFilter({ address: contractList });
 };
 
 module.exports = addAllLogsFilter;

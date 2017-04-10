@@ -5,7 +5,7 @@
 var assert = require("chai").assert;
 var parseBlockMessage = require("../../../../src/filters/parse-message/parse-block-message");
 
-describe("parseBlockMessage", function () {
+describe("filters/parse-message/parse-block-message", function () {
   var test = function (msg) {
     it(JSON.stringify(msg), function (done) {
       parseBlockMessage(msg, function (parsed) {

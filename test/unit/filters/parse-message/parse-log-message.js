@@ -7,7 +7,7 @@ var abi = require("augur-abi");
 var api = new require("augur-contracts").Tx();
 var parseLogMessage = require("../../../../src/filters/parse-message/parse-log-message");
 
-describe("parseLogMessage", function () {
+describe("filters/parse-message/parse-log-message", function () {
   var test = function (t) {
     it(t.label + ": " + JSON.stringify(t.msg), function (done) {
       var inputs = api.events[t.label].inputs;
