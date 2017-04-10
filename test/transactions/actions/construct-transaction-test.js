@@ -5,13 +5,16 @@ import proxyquire from 'proxyquire';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 
-import { formatRealEther } from 'utils/format-number';
+import { abi } from 'services/augurjs';
+
+import { formatRealEther, formatEther, formatRep, formatPercent } from 'utils/format-number';
 import { formatDate } from 'utils/format-date';
 
 import {
   constructBasicTransaction,
   constructDefaultTransaction,
-  constructApprovalTransaction
+  constructApprovalTransaction,
+  constructCollectedFeesTransaction
 } from 'modules/transactions/actions/construct-transaction';
 
 describe('modules/transactions/actions/contruct-transaction.js', () => {
@@ -406,6 +409,229 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           type: 'Approved to Send Reputation',
           description: `Approve ${log._spender} to send Reputation`,
           message: 'approving'
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+  });
+
+  describe('constructCollectedFeesTransaction', () => {
+    const test = t => it(t.description, () => t.assertions());
+
+    test({
+      description: `should return the expected object with initialRepBalance undefined and no totalReportingRep and no cashFeesCollected and inProgress false`,
+      assertions: () => {
+        const log = {
+          repGain: '1',
+          inProgress: false,
+          newRepBalance: '1',
+          period: 1234,
+          notReportingBond: '1'
+        };
+
+        const actual = constructCollectedFeesTransaction(log);
+
+        const repGain = abi.bignum(log.repGain);
+        const initialRepBalance = abi.bignum(log.newRepBalance).minus(repGain).toFixed();
+
+        const expected = {
+          data: {},
+          type: 'Reporting Payment',
+          description: `Reporting cycle #${log.period}`,
+          bond: {
+            label: 'reporting',
+            value: formatRealEther(log.notReportingBond)
+          },
+          message: `reported with ${formatRep(initialRepBalance).full}`
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with initialRepBalance and no totalReportingRep and no cashFeesCollected and inProgress false`,
+      assertions: () => {
+        const log = {
+          repGain: '1',
+          inProgress: false,
+          newRepBalance: '1',
+          period: 1234,
+          notReportingBond: '1',
+          initialRepBalance: '1'
+        };
+
+        const actual = constructCollectedFeesTransaction(log);
+
+        const expected = {
+          data: {},
+          type: 'Reporting Payment',
+          description: `Reporting cycle #${log.period}`,
+          bond: {
+            label: 'reporting',
+            value: formatRealEther(log.notReportingBond)
+          },
+          message: `reported with ${formatRep(log.initialRepBalance).full}`
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with initialRepBalance and totalReportingRep equals zero and no cashFeesCollected and inProgress false`,
+      assertions: () => {
+        const log = {
+          repGain: '1',
+          inProgress: false,
+          newRepBalance: '1',
+          period: 1234,
+          notReportingBond: '1',
+          initialRepBalance: '1',
+          totalReportingRep: '0'
+        };
+
+        const actual = constructCollectedFeesTransaction(log);
+
+        const expected = {
+          data: {},
+          type: 'Reporting Payment',
+          description: `Reporting cycle #${log.period}`,
+          bond: {
+            label: 'reporting',
+            value: formatRealEther(log.notReportingBond)
+          },
+          message: `reported with ${formatRep(log.initialRepBalance).full}`
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with initialRepBalance and totalReportingRep and no cashFeesCollected and inProgress false`,
+      assertions: () => {
+        const log = {
+          repGain: '1',
+          inProgress: false,
+          newRepBalance: '1',
+          period: 1234,
+          notReportingBond: '1',
+          initialRepBalance: '1',
+          totalReportingRep: '100'
+        };
+
+        const actual = constructCollectedFeesTransaction(log);
+
+        const totalReportingRep = abi.bignum(log.totalReportingRep);
+        const percentRep = formatPercent(abi.bignum(log.initialRepBalance).dividedBy(totalReportingRep).times(100), { decimals: 0 });
+
+        const expected = {
+          data: {},
+          type: 'Reporting Payment',
+          description: `Reporting cycle #${log.period}`,
+          bond: {
+            label: 'reporting',
+            value: formatRealEther(log.notReportingBond)
+          },
+          message: `reported with ${formatRep(log.initialRepBalance).full} (${percentRep.full})`
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with initialRepBalance and totalReportingRep and cashFeesCollected and inProgress false`,
+      assertions: () => {
+        const log = {
+          repGain: '1',
+          inProgress: false,
+          period: 1234,
+          notReportingBond: '1',
+          initialRepBalance: '1',
+          newRepBalance: '1',
+          totalReportingRep: '100',
+          cashFeesCollected: '100',
+          newCashBalance: '101'
+        };
+
+        const actual = constructCollectedFeesTransaction(log);
+
+        const repGain = abi.bignum(log.repGain);
+
+        const totalReportingRep = abi.bignum(log.totalReportingRep);
+        const percentRep = formatPercent(abi.bignum(log.initialRepBalance).dividedBy(totalReportingRep).times(100), { decimals: 0 });
+
+        const expected = {
+          data: {
+            balances: [
+              {
+                change: formatEther(log.cashFeesCollected, { positiveSign: true }),
+                balance: formatEther(log.newCashBalance)
+              },
+              {
+                change: formatRep(repGain, { positiveSign: true }),
+                balance: formatRep(log.newRepBalance)
+              }
+            ]
+          },
+          type: 'Reporting Payment',
+          description: `Reporting cycle #${log.period}`,
+          bond: {
+            label: 'reporting',
+            value: formatRealEther(log.notReportingBond)
+          },
+          message: `reported with ${formatRep(log.initialRepBalance).full} (${percentRep.full})`
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with initialRepBalance and totalReportingRep and cashFeesCollected and inProgress true`,
+      assertions: () => {
+        const log = {
+          repGain: '1',
+          inProgress: true,
+          period: 1234,
+          notReportingBond: '1',
+          initialRepBalance: '1',
+          newRepBalance: '1',
+          totalReportingRep: '100',
+          cashFeesCollected: '100',
+          newCashBalance: '101'
+        };
+
+        const actual = constructCollectedFeesTransaction(log);
+
+        const repGain = abi.bignum(log.repGain);
+
+        const totalReportingRep = abi.bignum(log.totalReportingRep);
+        const percentRep = formatPercent(abi.bignum(log.initialRepBalance).dividedBy(totalReportingRep).times(100), { decimals: 0 });
+
+        const expected = {
+          data: {
+            balances: [
+              {
+                change: formatEther(log.cashFeesCollected, { positiveSign: true }),
+                balance: formatEther(log.newCashBalance)
+              },
+              {
+                change: formatRep(repGain, { positiveSign: true }),
+                balance: formatRep(log.newRepBalance)
+              }
+            ]
+          },
+          type: 'Reporting Payment',
+          description: `Reporting cycle #${log.period}`,
+          bond: {
+            label: 'reporting',
+            value: formatRealEther(log.notReportingBond)
+          },
+          message: `reporting with ${formatRep(log.initialRepBalance).full} (${percentRep.full})`
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);

@@ -68,6 +68,8 @@ export function constructCollectedFeesTransaction(log) {
   const transaction = { data: {} };
   const repGain = abi.bignum(log.repGain);
   const initialRepBalance = log.initialRepBalance !== undefined ? log.initialRepBalance : abi.bignum(log.newRepBalance).minus(repGain).toFixed();
+  const action = log.inProgress ? 'reporting' : 'reported';
+  transaction.message = `${action} with ${formatRep(initialRepBalance).full}`;
   transaction.type = `Reporting Payment`;
   if (log.totalReportingRep) {
     const totalReportingRep = abi.bignum(log.totalReportingRep);
@@ -87,8 +89,6 @@ export function constructCollectedFeesTransaction(log) {
     }];
   }
   transaction.bond = { label: 'reporting', value: formatRealEther(log.notReportingBond) };
-  const action = log.inProgress ? 'reporting' : 'reported';
-  transaction.message = `${action} with ${formatRep(initialRepBalance).full}`;
   return transaction;
 }
 
