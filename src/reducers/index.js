@@ -19,8 +19,8 @@ var reducer = function (state, action) {
 };
 
 module.exports = function (state, action) {
-  if (action.type === "RESET_STATE") {
-    return reducer({}, action);
-  }
+  // if (action.type === "RESET_STATE") {
+  //   return reducer({}, action);
+  // }
   return reducer(state || {}, action);
 };

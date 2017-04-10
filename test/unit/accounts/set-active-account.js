@@ -9,7 +9,7 @@ var store = require("../../../src/store");
 describe("accounts/set-active-account", function () {
   var test = function (t) {
     it(t.description, function () {
-      store.dispatch({type: "RESET_STATE"});
+      store.reset();
       setActiveAccount(t.account);
       t.assertions(store.getState());
     });
