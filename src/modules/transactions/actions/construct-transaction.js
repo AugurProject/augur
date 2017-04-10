@@ -369,7 +369,7 @@ export function constructSubmittedReportTransaction(log, marketID, market, outco
 
 export function constructSlashedRepTransaction(log, market, outcomes, address, dispatch) {
   const transaction = { data: {} };
-  console.debug('constructSlashedRepTransaction:', log, market, outcomes, address);
+  console.log('constructSlashedRepTransaction:', log, market, outcomes, address);
   transaction.description = market.description;
   transaction.data.marketLink = selectMarketLink({ id: market.id, description: market.description }, dispatch);
   transaction.data.marketID = market.id ? market.id : null;
@@ -398,7 +398,7 @@ export function constructSlashedRepTransaction(log, market, outcomes, address, d
     }
     transaction.message = `fined by ${abi.strip_0x(log.sender)}`;
   }
-  console.debug('slashed rep transaction:', transaction);
+  console.log('slashed rep transaction:', transaction);
   return transaction;
 }
 

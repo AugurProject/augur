@@ -2110,4 +2110,151 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
       }
     });
   });
+
+  describe('constructSlashedRepTransaction', () => {
+    const mockLinks = {
+      selectMarketLink: sinon.stub().returns({})
+    };
+    const action = proxyquire('../../../src/modules/transactions/actions/construct-transaction', {
+      '../../link/selectors/links': mockLinks
+    });
+
+    const test = t => it(t.description, () => t.assertions());
+
+    test({
+      description: `should return the expected object with sender not equal to user and repSlashed false and inProgress false`,
+      assertions: () => {
+        const log = {
+          reporter: '0xREPORTER',
+          sender: '0xSENDER'
+        };
+        const market = {
+          id: '0xMARKETID',
+          description: 'test description'
+        };
+
+        const actual = action.constructSlashedRepTransaction(log, market);
+
+        const expected = {
+          data: {
+            marketLink: {},
+            marketID: '0xMARKETID',
+            market
+          },
+          description: market.description,
+          type: 'Pay Collusion Fine',
+          message: `fined by ${abi.strip_0x(log.sender)}`
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with sender equal to user and repSlashed false and inProgress false`,
+      assertions: () => {
+        const log = {
+          reporter: '0xREPORTER',
+          sender: '0xSENDER'
+        };
+        const market = {
+          id: '0xMARKETID',
+          description: 'test description'
+        };
+        const address = '0xSENDER';
+
+        const actual = action.constructSlashedRepTransaction(log, market, null, address);
+
+        const expected = {
+          data: {
+            marketLink: {},
+            marketID: '0xMARKETID',
+            market
+          },
+          description: market.description,
+          type: 'Snitch Reward',
+          message: `fined ${abi.strip_0x(log.reporter)} ${formatRep(log.repSlashed).full}`
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with sender equal to user and repSlashed and inProgress false`,
+      assertions: () => {
+        const log = {
+          reporter: '0xREPORTER',
+          sender: '0xSENDER',
+          repSlashed: '10',
+          slasherBalance: '20'
+        };
+        const market = {
+          id: '0xMARKETID',
+          description: 'test description'
+        };
+        const address = '0xSENDER';
+
+        const actual = action.constructSlashedRepTransaction(log, market, null, address);
+
+        const expected = {
+          data: {
+            marketLink: {},
+            marketID: '0xMARKETID',
+            market,
+            balances: [
+              {
+                change: formatRep(5, { positiveSign: true }),
+                balance: formatRep(log.slasherBalance)
+              }
+            ]
+          },
+          description: market.description,
+          type: 'Snitch Reward',
+          message: `fined ${abi.strip_0x(log.reporter)} ${formatRep(log.repSlashed).full}`
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with sender equal to user and repSlashed and inProgress`,
+      assertions: () => {
+        const log = {
+          reporter: '0xREPORTER',
+          sender: '0xSENDER',
+          repSlashed: '10',
+          slasherBalance: '20',
+          inProgress: true
+        };
+        const market = {
+          id: '0xMARKETID',
+          description: 'test description'
+        };
+        const address = '0xSENDER';
+
+        const actual = action.constructSlashedRepTransaction(log, market, null, address);
+
+        const expected = {
+          data: {
+            marketLink: {},
+            marketID: '0xMARKETID',
+            market,
+            balances: [
+              {
+                change: formatRep(5, { positiveSign: true }),
+                balance: formatRep(log.slasherBalance)
+              }
+            ]
+          },
+          description: market.description,
+          type: 'Snitch Reward',
+          message: `fining ${abi.strip_0x(log.reporter)}`
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+  });
 });
