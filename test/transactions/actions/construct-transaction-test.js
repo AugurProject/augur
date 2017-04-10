@@ -17,7 +17,9 @@ import {
   constructCollectedFeesTransaction,
   constructDepositTransaction,
   constructRegistrationTransaction,
-  constructPenalizationCaughtUpTransaction
+  constructPenalizationCaughtUpTransaction,
+  constructWithdrawTransaction,
+  constructSentEtherTransaction
 } from 'modules/transactions/actions/construct-transaction';
 
 describe('modules/transactions/actions/contruct-transaction.js', () => {
@@ -815,6 +817,137 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           type: 'Reporting Cycle Catch-Up',
           description: `Missed Reporting cycles ${log.penalizedFrom} to cycle ${log.penalizedUpTo}`,
           message: `catching up ${parseInt(log.penalizedUpTo, 10) - parseInt(log.penalizedFrom, 10)} cycles`
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+  });
+
+  describe('constructWithdrawTransaction', () => {
+    const test = t => it(t.description, () => t.assertions());
+
+    test({
+      description: `should return the expected object with inProgress false`,
+      assertions: () => {
+        const log = {
+          inProgress: false,
+          value: '10'
+        };
+
+        const actual = constructWithdrawTransaction(log);
+
+        const expected = {
+          data: {},
+          type: 'Withdraw Ether',
+          description: 'Convert tradeable Ether token to Ether',
+          message: `withdrew ${formatEther(log.value).full}`
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with inProgress`,
+      assertions: () => {
+        const log = {
+          inProgress: true,
+          value: '10'
+        };
+
+        const actual = constructWithdrawTransaction(log);
+
+        const expected = {
+          data: {},
+          type: 'Withdraw Ether',
+          description: 'Convert tradeable Ether token to Ether',
+          message: `withdrawing ${formatEther(log.value).full}`
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+  });
+
+  describe('constructSentEtherTransaction', () => {
+    const test = t => it(t.description, () => t.assertions());
+
+    test({
+      description: `should return the expected object with address not equal and inProgress false`,
+      assertions: () => {
+        const address = '0xUSERADDRESS';
+        const log = {
+          _from: '0xNOTUSERADDRESS',
+          inProgress: false,
+          value: '10'
+        };
+
+        const actual = constructSentEtherTransaction(log, address);
+
+        const expected = {
+          data: {},
+          message: ''
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with address equal and inProgress false`,
+      assertions: () => {
+        const address = '0xUSERADDRESS';
+        const log = {
+          _from: '0xUSERADDRESS',
+          _to: '0xOTHERUSERADDRESS',
+          inProgress: false,
+          _value: '10'
+        };
+
+        const actual = constructSentEtherTransaction(log, address);
+
+        const expected = {
+          data: {
+            balances: [
+              {
+                change: formatRealEther(abi.bignum(log._value).neg(), { positiveSign: true })
+              }
+            ]
+          },
+          type: 'Send Real Ether',
+          description: `Send Real Ether to ${abi.strip_0x(log._to)}`,
+          message: `sent ETH`
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with address equal and inProgress`,
+      assertions: () => {
+        const address = '0xUSERADDRESS';
+        const log = {
+          _from: '0xUSERADDRESS',
+          _to: '0xOTHERUSERADDRESS',
+          inProgress: true,
+          _value: '10'
+        };
+
+        const actual = constructSentEtherTransaction(log, address);
+
+        const expected = {
+          data: {
+            balances: [
+              {
+                change: formatRealEther(abi.bignum(log._value).neg(), { positiveSign: true })
+              }
+            ]
+          },
+          type: 'Send Real Ether',
+          description: `Send Real Ether to ${abi.strip_0x(log._to)}`,
+          message: `sending ETH`
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
