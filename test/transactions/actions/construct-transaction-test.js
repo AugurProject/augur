@@ -20,7 +20,8 @@ import {
   constructPenalizationCaughtUpTransaction,
   constructWithdrawTransaction,
   constructSentEtherTransaction,
-  constructSentCashTransaction
+  constructSentCashTransaction,
+  constructTransferTransaction
 } from 'modules/transactions/actions/construct-transaction';
 
 describe('modules/transactions/actions/contruct-transaction.js', () => {
@@ -1072,6 +1073,130 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           type: 'Receive Ether',
           description: `Receive Ether from ${abi.strip_0x(log._from)}`,
           message: 'receiving ETH'
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+  });
+
+  describe('constructTransferTransaction', () => {
+    const test = t => it(t.description, () => t.assertions());
+
+    test({
+      description: `should return the expected object with _from equal to address and _to not equal to address and inProgress false`,
+      assertions: () => {
+        const address = '0xUSERADDRESS';
+        const log = {
+          _from: '0xUSERADDRESS',
+          _to: '0xNOTUSERADDRESS',
+          inProgress: false,
+          _value: '10'
+        };
+
+        const actual = constructTransferTransaction(log, address);
+
+        const expected = {
+          data: {
+            balances: [
+              {
+                change: formatRep(abi.bignum(log._value).neg(), { positiveSign: true })
+              }
+            ]
+          },
+          type: 'Send Reputation',
+          description: `Send Reputation to ${abi.strip_0x(log._to)}`,
+          message: 'sent REP'
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with _from equal to address and _to not equal to address and inProgress`,
+      assertions: () => {
+        const address = '0xUSERADDRESS';
+        const log = {
+          _from: '0xUSERADDRESS',
+          _to: '0xNOTUSERADDRESS',
+          inProgress: true,
+          _value: '10'
+        };
+
+        const actual = constructTransferTransaction(log, address);
+
+        const expected = {
+          data: {
+            balances: [
+              {
+                change: formatRep(abi.bignum(log._value).neg(), { positiveSign: true })
+              }
+            ]
+          },
+          type: 'Send Reputation',
+          description: `Send Reputation to ${abi.strip_0x(log._to)}`,
+          message: 'sending REP'
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with _from equal to address and _to not equal to address and inProgress false`,
+      assertions: () => {
+        const address = '0xUSERADDRESS';
+        const log = {
+          _from: '0xNOTUSERADDRESS',
+          _to: '0xUSERADDRESS',
+          inProgress: false,
+          _value: '10'
+        };
+
+        const actual = constructTransferTransaction(log, address);
+
+        const expected = {
+          data: {
+            balances: [
+              {
+                change: formatRep(abi.bignum(log._value), { positiveSign: true })
+              }
+            ]
+          },
+          type: 'Receive Reputation',
+          description: `Receive Reputation from ${abi.strip_0x(log._from)}`,
+          message: 'received REP'
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with _from equal to address and _to not equal to address and inProgress`,
+      assertions: () => {
+        const address = '0xUSERADDRESS';
+        const log = {
+          _from: '0xNOTUSERADDRESS',
+          _to: '0xUSERADDRESS',
+          inProgress: true,
+          _value: '10'
+        };
+
+        const actual = constructTransferTransaction(log, address);
+
+        const expected = {
+          data: {
+            balances: [
+              {
+                change: formatRep(abi.bignum(log._value), { positiveSign: true })
+              }
+            ]
+          },
+          type: 'Receive Reputation',
+          description: `Receive Reputation from ${abi.strip_0x(log._from)}`,
+          message: 'receiving REP'
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
