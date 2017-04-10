@@ -5,9 +5,12 @@ import proxyquire from 'proxyquire';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 
-// import {
-//   loadDataForMarketTransaction
-// } from 'modules/transactions/actions/construct-transaction';
+import { formatRealEther } from 'utils/format-number';
+import { formatDate } from 'utils/format-date';
+
+import {
+  constructBasicTransaction
+} from 'modules/transactions/actions/construct-transaction';
 
 describe('modules/transactions/actions/contruct-transaction.js', () => {
   proxyquire.noPreserveCache().noCallThru();
@@ -270,6 +273,68 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         };
 
         assert.deepEqual(result, expected, `Didn't return the expected actions`);
+      }
+    });
+  });
+
+  describe('constructBasicTransaction', () => {
+    const test = t => it(t.description, () => {
+      const store = mockStore();
+      t.assertions(store);
+    });
+
+    test({
+      description: 'should return the expected object with no arguments passed',
+      assertions: (store) => {
+        const actual = store.dispatch(constructBasicTransaction());
+
+        const expected = {
+          hash: undefined,
+          status: undefined
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: 'should return the expected object with just hash and status passed',
+      assertions: (store) => {
+        const hash = '0xHASH';
+        const status = 'status';
+
+        const actual = store.dispatch(constructBasicTransaction(hash, status));
+
+        const expected = {
+          hash,
+          status
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: 'should return the expected object with all arguments passed',
+      assertions: (store) => {
+        const hash = '0xHASH';
+        const status = 'status';
+        const blockNumber = 123456;
+        const timestamp = 1491843278;
+        const gasFees = 0.001;
+
+
+        const actual = store.dispatch(constructBasicTransaction(hash, status, blockNumber, timestamp, gasFees));
+
+        const expected = {
+          hash,
+          status,
+          blockNumber,
+          timestamp: formatDate(new Date(timestamp * 1000)),
+          gasFees: formatRealEther(gasFees)
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
       }
     });
   });
