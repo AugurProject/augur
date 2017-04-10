@@ -16,7 +16,8 @@ import {
   constructApprovalTransaction,
   constructCollectedFeesTransaction,
   constructDepositTransaction,
-  constructRegistrationTransaction
+  constructRegistrationTransaction,
+  constructPenalizationCaughtUpTransaction
 } from 'modules/transactions/actions/construct-transaction';
 
 describe('modules/transactions/actions/contruct-transaction.js', () => {
@@ -726,6 +727,94 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           type: 'Register New Account',
           description: `Register account ${log.sender.replace('0x', '')}`,
           message: `saving registration timestamp`
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+  });
+
+  describe('constructPenalizationCaughtUpTransaction', () => {
+    const test = t => it(t.description, () => t.assertions());
+
+    test({
+      description: `should return the expected object with no repLost and no newRepBalance and inProgress false`,
+      assertions: () => {
+        const log = {
+          penalizedFrom: 1233,
+          penalizedUpTo: 1235,
+          inProgress: false
+        };
+
+        const actual = constructPenalizationCaughtUpTransaction(log);
+
+        const expected = {
+          data: {},
+          type: 'Reporting Cycle Catch-Up',
+          description: `Missed Reporting cycles ${log.penalizedFrom} to cycle ${log.penalizedUpTo}`,
+          message: `caught up ${parseInt(log.penalizedUpTo, 10) - parseInt(log.penalizedFrom, 10)} cycles`
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with repLost and newRepBalance and inProgress false`,
+      assertions: () => {
+        const log = {
+          penalizedFrom: 1233,
+          penalizedUpTo: 1235,
+          inProgress: false,
+          repLost: '10',
+          newRepBalance: '90'
+        };
+
+        const actual = constructPenalizationCaughtUpTransaction(log);
+
+        const expected = {
+          data: {
+            balances: [
+              {
+                change: formatRep(log.repLost, { positiveSign: true }),
+                balance: formatRep(log.newRepBalance)
+              }
+            ]
+          },
+          type: 'Reporting Cycle Catch-Up',
+          description: `Missed Reporting cycles ${log.penalizedFrom} to cycle ${log.penalizedUpTo}`,
+          message: `caught up ${parseInt(log.penalizedUpTo, 10) - parseInt(log.penalizedFrom, 10)} cycles`
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with repLost and newRepBalance and inProgress false`,
+      assertions: () => {
+        const log = {
+          penalizedFrom: 1233,
+          penalizedUpTo: 1235,
+          inProgress: true,
+          repLost: '10',
+          newRepBalance: '90'
+        };
+
+        const actual = constructPenalizationCaughtUpTransaction(log);
+
+        const expected = {
+          data: {
+            balances: [
+              {
+                change: formatRep(log.repLost, { positiveSign: true }),
+                balance: formatRep(log.newRepBalance)
+              }
+            ]
+          },
+          type: 'Reporting Cycle Catch-Up',
+          description: `Missed Reporting cycles ${log.penalizedFrom} to cycle ${log.penalizedUpTo}`,
+          message: `catching up ${parseInt(log.penalizedUpTo, 10) - parseInt(log.penalizedFrom, 10)} cycles`
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
