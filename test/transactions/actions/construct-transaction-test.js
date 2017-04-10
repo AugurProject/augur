@@ -9,7 +9,8 @@ import { formatRealEther } from 'utils/format-number';
 import { formatDate } from 'utils/format-date';
 
 import {
-  constructBasicTransaction
+  constructBasicTransaction,
+  constructDefaultTransaction
 } from 'modules/transactions/actions/construct-transaction';
 
 describe('modules/transactions/actions/contruct-transaction.js', () => {
@@ -332,6 +333,32 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           blockNumber,
           timestamp: formatDate(new Date(timestamp * 1000)),
           gasFees: formatRealEther(gasFees)
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+  });
+
+  describe('constructDefaultTransaction', () => {
+    const test = t => it(t.description, () => t.assertions());
+
+    test({
+      description: 'should return the expected object',
+      assertions: () => {
+        const label = 'transaction';
+        const log = {
+          message: 'log message',
+          description: 'log description'
+        };
+
+        const actual = constructDefaultTransaction(label, log);
+
+        const expected = {
+          data: {},
+          type: label,
+          message: 'log message',
+          description: 'log description'
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
