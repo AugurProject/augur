@@ -26,7 +26,7 @@ import {
   constructFundedAccountTransaction
 } from 'modules/transactions/actions/construct-transaction';
 
-import { CREATE_MARKET, COMMIT_REPORT, REVEAL_REPORT, BUY, SELL, MATCH_BID, MATCH_ASK, SHORT_SELL, BID, ASK, SHORT_ASK } from 'modules/transactions/constants/types';
+import { CREATE_MARKET, COMMIT_REPORT, REVEAL_REPORT, BUY, SELL, MATCH_BID, MATCH_ASK, SHORT_SELL, BID, ASK, SHORT_ASK, CANCEL_ORDER } from 'modules/transactions/constants/types';
 import { BINARY, SCALAR } from 'modules/markets/constants/market-types';
 import { ZERO } from 'modules/trade/constants/numbers';
 
@@ -3437,6 +3437,132 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           assert.deepEqual(actual, expected, `Didn't return the expected object`);
         }
       });
+    });
+  });
+
+  describe('constructLogCancelTransaction', () => {
+    const mockLinks = {
+      selectMarketLink: sinon.stub().returns({})
+    };
+    const action = proxyquire('../../../src/modules/transactions/actions/construct-transaction', {
+      '../../link/selectors/links': mockLinks
+    });
+
+    let trade = {
+      transactionHash: '0xHASH',
+      tradeid: '0xTRADEID',
+      tradeGroupID: '0xTRADEGROUPID',
+      price: '0.1',
+      amount: '2',
+      maker: false,
+      takerFee: '0.01',
+      type: SELL,
+      timestamp: 1491843278,
+      blockNumber: 123456,
+      gasFees: 0.001,
+      inProgress: false,
+      cashRefund: '10'
+    };
+    const marketID = '0xMARKETID';
+    const marketType = BINARY;
+    const description = 'test description';
+    const outcomeID = '1';
+    const status = 'testing';
+
+    const test = t => it(t.description, () => {
+      const store = mockStore();
+      t.assertions(store);
+    });
+
+    test({
+      description: `should return the expected object with inProgress false`,
+      assertions: (store) => {
+        const actual = store.dispatch(action.constructLogCancelTransaction(trade, marketID, marketType, description, outcomeID, null, status));
+
+        const price = formatEther(trade.price);
+        const shares = formatShares(trade.amount);
+
+        const expected = {
+          '0xHASH': {
+            type: CANCEL_ORDER,
+            status,
+            description,
+            data: {
+              order: {
+                type: trade.type,
+                shares
+              },
+              marketType,
+              outcome: {
+                name: outcomeID
+              },
+              outcomeID,
+              marketID,
+              marketLink: {}
+            },
+            message: `canceled order to ${trade.type} ${shares.full} for ${price.full} each`,
+            numShares: shares,
+            noFeePrice: price,
+            avgPrice: price,
+            timestamp: formatDate(new Date(trade.timestamp * 1000)),
+            hash: trade.transactionHash,
+            totalReturn: formatEther(trade.cashRefund),
+            gasFees: formatRealEther(trade.gasFees),
+            blockNumber: trade.blockNumber,
+            tradeID: trade.tradeid
+          }
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+
+    test({
+      description: `should return the expected object with inProgress false`,
+      assertions: (store) => {
+        trade = {
+          ...trade,
+          inProgress: true
+        };
+
+        const actual = store.dispatch(action.constructLogCancelTransaction(trade, marketID, marketType, description, outcomeID, null, status));
+
+        const price = formatEther(trade.price);
+        const shares = formatShares(trade.amount);
+
+        const expected = {
+          '0xHASH': {
+            type: CANCEL_ORDER,
+            status,
+            description,
+            data: {
+              order: {
+                type: trade.type,
+                shares
+              },
+              marketType,
+              outcome: {
+                name: outcomeID
+              },
+              outcomeID,
+              marketID,
+              marketLink: {}
+            },
+            message: `canceling order to ${trade.type} ${shares.full} for ${price.full} each`,
+            numShares: shares,
+            noFeePrice: price,
+            avgPrice: price,
+            timestamp: formatDate(new Date(trade.timestamp * 1000)),
+            hash: trade.transactionHash,
+            totalReturn: null,
+            gasFees: formatRealEther(trade.gasFees),
+            blockNumber: trade.blockNumber,
+            tradeID: trade.tradeid
+          }
+        };
+
+        assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
     });
   });
 });
