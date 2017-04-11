@@ -1,5 +1,6 @@
 import { describe, it } from 'mocha';
-import { assert } from 'chai';
+import chai, { assert } from 'chai';
+import chaiSubset from 'chai-subset';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
 import thunk from 'redux-thunk';
@@ -25,9 +26,11 @@ import {
   constructFundedAccountTransaction
 } from 'modules/transactions/actions/construct-transaction';
 
-import { CREATE_MARKET, COMMIT_REPORT, REVEAL_REPORT, BUY, SELL, MATCH_BID, MATCH_ASK, SHORT_SELL } from 'modules/transactions/constants/types';
+import { CREATE_MARKET, COMMIT_REPORT, REVEAL_REPORT, BUY, SELL, MATCH_BID, MATCH_ASK, SHORT_SELL, BID, ASK, SHORT_ASK } from 'modules/transactions/constants/types';
 import { BINARY, SCALAR } from 'modules/markets/constants/market-types';
 import { ZERO } from 'modules/trade/constants/numbers';
+
+chai.use(chaiSubset);
 
 describe('modules/transactions/actions/contruct-transaction.js', () => {
   proxyquire.noPreserveCache().noCallThru();
@@ -3085,6 +3088,355 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
       }
+    });
+  });
+
+  describe('constructLogFillTxTransaction', () => {
+    const mockLinks = {
+      selectMarketLink: sinon.stub().returns({})
+    };
+    const action = proxyquire('../../../src/modules/transactions/actions/construct-transaction', {
+      '../../link/selectors/links': mockLinks
+    });
+
+    const test = t => it(t.description, () => {
+      const store = mockStore();
+      t.assertions(store);
+    });
+
+    describe('related conditionals: trade type, isShortAsk, and inProgress', () => {
+      let trade = {
+        transactionHash: '0xHASH',
+        tradeid: '0xTRADEID',
+        tradeGroupID: '0xTRADEGROUPID',
+        price: '0.1',
+        amount: '2',
+        maker: false,
+        takerFee: '0.01',
+        type: SELL,
+        timestamp: 1491843278,
+        blockNumber: 123456,
+        gasFees: 0.001
+      };
+      const marketID = '0xMARKETID';
+      let marketType = BINARY;
+      const description = 'test description';
+      const outcomeID = '1';
+      const market = {
+        makerFee: '0.025',
+        takerFee: '0.05',
+        minValue: '0',
+        maxValue: '1'
+      };
+      const status = 'testing';
+
+      test({
+        description: `BUY, false, false`,
+        assertions: (store) => {
+          trade = {
+            ...trade,
+            type: BUY,
+            isShortAsk: false,
+            inProgress: false
+          };
+
+          const actual = store.dispatch(action.constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, null, market, status));
+
+          const expected = {
+            '0xHASH': {
+              type: BID,
+              message: 'bid 2 shares for 0.1009 ETH / share',
+              freeze: {
+                verb: 'froze',
+                noFeeCost: formatEther(0.2)
+              },
+              totalCost: formatEther(0.2018),
+              totalReturn: undefined
+            }
+          };
+
+          assert.containSubset(actual, expected, `Didn't contain the expected subset`);
+        }
+      });
+
+      test({
+        description: `BUY, false, true`,
+        assertions: (store) => {
+          trade = {
+            ...trade,
+            type: BUY,
+            isShortAsk: false,
+            inProgress: true
+          };
+
+          const actual = store.dispatch(action.constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, null, market, status));
+
+          const expected = {
+            '0xHASH': {
+              type: BID,
+              message: 'bidding 2 shares for 0.1009 ETH / share',
+              freeze: {
+                verb: 'freezing',
+                noFeeCost: formatEther(0.2)
+              },
+              totalCost: formatEther(0.2018),
+              totalReturn: undefined
+            }
+          };
+
+          assert.containSubset(actual, expected, `Didn't contain the expected subset`);
+        }
+      });
+
+      test({
+        description: `SELL, false, false`,
+        assertions: (store) => {
+          trade = {
+            ...trade,
+            type: SELL,
+            isShortAsk: false,
+            inProgress: false
+          };
+
+          const actual = store.dispatch(action.constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, null, market, status));
+
+          const expected = {
+            '0xHASH': {
+              type: ASK,
+              message: 'ask 2 shares for 0.0991 ETH / share',
+              freeze: {
+                verb: 'froze',
+                noFeeCost: undefined
+              },
+              totalCost: undefined,
+              totalReturn: formatEther(0.1982)
+            }
+          };
+
+          assert.containSubset(actual, expected, `Didn't contain the expected subset`);
+        }
+      });
+
+      test({
+        description: `SELL, false, true`,
+        assertions: (store) => {
+          trade = {
+            ...trade,
+            type: SELL,
+            isShortAsk: false,
+            inProgress: true
+          };
+
+          const actual = store.dispatch(action.constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, null, market, status));
+
+          const expected = {
+            '0xHASH': {
+              type: ASK,
+              message: 'asking 2 shares for 0.0991 ETH / share',
+              freeze: {
+                verb: 'freezing',
+                noFeeCost: undefined
+              },
+              totalCost: undefined,
+              totalReturn: formatEther(0.1982)
+            }
+          };
+
+          assert.containSubset(actual, expected, `Didn't contain the expected subset`);
+        }
+      });
+
+      test({
+        description: `SELL, true, false`,
+        assertions: (store) => {
+          trade = {
+            ...trade,
+            type: SELL,
+            isShortAsk: true,
+            inProgress: true
+          };
+
+          const actual = store.dispatch(action.constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, null, market, status));
+
+          const expected = {
+            '0xHASH': {
+              type: SHORT_ASK,
+              message: 'short asking 2 shares for 0.0991 ETH / share',
+              freeze: {
+                verb: 'freezing',
+                noFeeCost: formatEther(2)
+              },
+              totalCost: undefined,
+              totalReturn: undefined
+            }
+          };
+
+          assert.containSubset(actual, expected, `Didn't contain the expected subset`);
+        }
+      });
+    });
+
+    describe('conditionals: market type', () => {
+      let trade = {
+        transactionHash: '0xHASH',
+        tradeid: '0xTRADEID',
+        tradeGroupID: '0xTRADEGROUPID',
+        price: '0.1',
+        amount: '2',
+        maker: false,
+        takerFee: '0.01',
+        type: SELL,
+        timestamp: 1491843278,
+        blockNumber: 123456,
+        gasFees: 0.001
+      };
+      const marketID = '0xMARKETID';
+      let marketType = BINARY;
+      const description = 'test description';
+      const outcomeID = '1';
+      let market = {
+        makerFee: '0.025',
+        takerFee: '0.05',
+        minValue: '0',
+        maxValue: '1'
+      };
+      const status = 'testing';
+
+      test({
+        description: 'BINARY',
+        assertions: (store) => {
+          const actual = store.dispatch(action.constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, null, market, status));
+
+          const expected = {
+            '0xHASH': {
+              noFeePrice: formatEther(0.1),
+              freeze: {
+                tradingFees: formatEther(0.0018)
+              },
+              feePercent: formatPercent(0.8919722497522299),
+              message: 'ask 2 shares for 0.0991 ETH / share'
+            }
+          };
+
+          assert.containSubset(actual, expected, `Didn't contain the expected subset`);
+        }
+      });
+
+      test({
+        description: 'SCALAR',
+        assertions: (store) => {
+          marketType = SCALAR;
+          market = {
+            ...market,
+            minValue: -1,
+            maxValue: 1
+          }
+
+          const actual = store.dispatch(action.constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, null, market, status));
+
+          const expected = {
+            '0xHASH': {
+              noFeePrice: formatEther(-0.9),
+              freeze: {
+                tradingFees: formatEther(0.00095)
+              },
+              feePercent: formatPercent(0.4727544165215227),
+              message: 'ask 2 shares for 0.0995 ETH / share'
+            }
+          };
+
+          assert.containSubset(actual, expected, `Didn't contain the expected subset`);
+        }
+      });
+    });
+
+    describe('general calculations', () => {
+      const trade = {
+        transactionHash: '0xHASH',
+        tradeid: '0xTRADEID',
+        tradeGroupID: '0xTRADEGROUPID',
+        price: '0.1',
+        amount: '2',
+        maker: false,
+        takerFee: '0.01',
+        type: SELL,
+        timestamp: 1491843278,
+        blockNumber: 123456,
+        gasFees: 0.001,
+        inProgress: false
+      };
+      const marketID = '0xMARKETID';
+      const marketType = BINARY;
+      const description = 'test description';
+      const outcomeID = '1';
+      const market = {
+        makerFee: '0.025',
+        takerFee: '0.05',
+        minValue: '0',
+        maxValue: '1'
+      };
+      const status = 'testing';
+
+      test({
+        description: `should return the expected object`,
+        assertions: (store) => {
+          const actual = store.dispatch(action.constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, null, market, status));
+
+          const makerFee = market.makerFee;
+          const takerFee = market.takerFee;
+          const fees = augur.calculateFxpTradingFees(makerFee, takerFee);
+          const range = constants.ONE;
+          const adjustedFees = augur.calculateFxpMakerTakerFees(augur.calculateFxpAdjustedTradingFee(fees.tradingFee, abi.fix(trade.price), range), fees.makerProportionOfFee, false, true);
+          const fxpShares = abi.fix(trade.amount);
+          const fxpPrice = abi.fix(trade.price);
+          const tradingFees = adjustedFees.maker.times(fxpShares).dividedBy(constants.ONE)
+            .floor()
+            .times(fxpPrice)
+            .dividedBy(constants.ONE)
+            .floor();
+          const noFeeCost = fxpPrice.times(fxpShares).dividedBy(constants.ONE).floor();
+          const totalCost = noFeeCost.plus(tradingFees);
+          const totalCostPerShare = totalCost.dividedBy(fxpShares).times(constants.ONE).floor();
+          const totalReturn = fxpPrice.times(fxpShares).dividedBy(constants.ONE)
+            .floor()
+            .minus(tradingFees);
+          const totalReturnPerShare = totalReturn.dividedBy(fxpShares).times(constants.ONE).floor();
+
+          const expected = {
+            '0xHASH': {
+              type: ASK,
+              status,
+              description,
+              data: {
+                marketType,
+                outcomeName: outcomeID,
+                outcomeID,
+                marketID,
+                marketLink: {}
+              },
+              message: 'ask 2 shares for 0.0991 ETH / share',
+              numShares: formatShares(trade.amount),
+              noFeePrice: formatEther(trade.price),
+              freeze: {
+                verb: 'froze',
+                noFeeCost: undefined,
+                tradingFees: formatEther(0.0018)
+              },
+              avgPrice: formatEther(trade.price),
+              timestamp: formatDate(new Date(trade.timestamp * 1000)),
+              hash: trade.transactionHash,
+              feePercent: formatPercent(0.8919722497522299),
+              totalCost: undefined,
+              totalReturn: formatEther(0.1982),
+              gasFees: formatRealEther(trade.gasFees),
+              blockNumber: trade.blockNumber,
+              tradeID: trade.tradeid
+            }
+          };
+
+          assert.deepEqual(actual, expected, `Didn't return the expected object`);
+        }
+      });
     });
   });
 });
