@@ -23,10 +23,7 @@ import {
   constructSentEtherTransaction,
   constructSentCashTransaction,
   constructTransferTransaction,
-  constructFundedAccountTransaction,
-  constructMarketTransaction,
-  constructPayoutTransaction,
-  __RewireAPI__ as constructTransactionAPI
+  constructFundedAccountTransaction
 } from 'modules/transactions/actions/construct-transaction';
 
 import { CREATE_MARKET, COMMIT_REPORT, REVEAL_REPORT, BUY, SELL, MATCH_BID, MATCH_ASK, SHORT_SELL, BID, ASK, SHORT_ASK, CANCEL_ORDER } from 'modules/transactions/constants/types';
@@ -3129,7 +3126,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         gasFees: 0.001
       };
       const marketID = '0xMARKETID';
-      let marketType = BINARY;
+      const marketType = BINARY;
       const description = 'test description';
       const outcomeID = '1';
       const market = {
@@ -3287,7 +3284,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
     });
 
     describe('conditionals: market type', () => {
-      let trade = {
+      const trade = {
         transactionHash: '0xHASH',
         tradeid: '0xTRADEID',
         tradeGroupID: '0xTRADEGROUPID',
@@ -3340,7 +3337,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
             ...market,
             minValue: -1,
             maxValue: 1
-          }
+          };
 
           const actual = store.dispatch(action.constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, null, market, status));
 
@@ -3391,26 +3388,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         description: `should return the expected object`,
         assertions: (store) => {
           const actual = store.dispatch(action.constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, null, market, status));
-
-          const makerFee = market.makerFee;
-          const takerFee = market.takerFee;
-          const fees = augur.calculateFxpTradingFees(makerFee, takerFee);
-          const range = constants.ONE;
-          const adjustedFees = augur.calculateFxpMakerTakerFees(augur.calculateFxpAdjustedTradingFee(fees.tradingFee, abi.fix(trade.price), range), fees.makerProportionOfFee, false, true);
-          const fxpShares = abi.fix(trade.amount);
-          const fxpPrice = abi.fix(trade.price);
-          const tradingFees = adjustedFees.maker.times(fxpShares).dividedBy(constants.ONE)
-            .floor()
-            .times(fxpPrice)
-            .dividedBy(constants.ONE)
-            .floor();
-          const noFeeCost = fxpPrice.times(fxpShares).dividedBy(constants.ONE).floor();
-          const totalCost = noFeeCost.plus(tradingFees);
-          const totalCostPerShare = totalCost.dividedBy(fxpShares).times(constants.ONE).floor();
-          const totalReturn = fxpPrice.times(fxpShares).dividedBy(constants.ONE)
-            .floor()
-            .minus(tradingFees);
-          const totalReturnPerShare = totalReturn.dividedBy(fxpShares).times(constants.ONE).floor();
 
           const expected = {
             '0xHASH': {
