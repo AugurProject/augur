@@ -623,6 +623,7 @@ export const constructTradingTransaction = (label, trade, marketID, outcomeID, s
   }
   switch (label) {
     case 'log_fill_tx': {
+      console.log('here');
       return dispatch(constructLogFillTxTransaction(trade, marketID, marketType, market.minValue, description, outcomeID, outcomeName, status));
     }
     case 'log_short_fill_tx': {

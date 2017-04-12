@@ -3,6 +3,7 @@ import chai, { assert } from 'chai';
 import chaiSubset from 'chai-subset';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
+import rewire from 'rewire';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 
@@ -41,7 +42,11 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
   const MOCK_ACTION_TYPES = {
     LOAD_MARKET_THEN_RETRY_CONVERSION: 'LOAD_MARKET_THEN_RETRY_CONVERSION',
     LOOKUP_EVENT_MARKETS_THEN_RETRY_CONVERSION: 'LOOKUP_EVENT_MARKETS_THEN_RETRY_CONVERSION',
-    UPDATE_EVENTS_WITH_ACCOUNT_REPORT_DATA: 'UPDATE_EVENTS_WITH_ACCOUNT_REPORT_DATA'
+    UPDATE_EVENTS_WITH_ACCOUNT_REPORT_DATA: 'UPDATE_EVENTS_WITH_ACCOUNT_REPORT_DATA',
+    CONSTRUCT_LOG_FILL_TX_TRANSACTION: 'CONSTRUCT_LOG_FILL_TX_TRANSACTION',
+    CONSTRUCT_LOG_SHORT_FILL_TX_TRANSACTIONS: 'CONSTRUCT_LOG_SHORT_FILL_TX_TRANSACTIONS',
+    CONSTRUCT_LOG_ADD_TX_TRANSACTION: 'CONSTRUCT_LOG_ADD_TX_TRANSACTION',
+    CONSTRUCT_LOG_CANCEL_TRANSACTION: 'CONSTRUCT_LOG_CANCEL_TRANSACTION'
   };
 
   const mockRetryConversion = {
@@ -3562,6 +3567,51 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      }
+    });
+  });
+
+  describe('constructTradingTransaction', () => {
+    const constructTransaction = rewire('../../../src/modules/transactions/actions/construct-transaction');
+
+    constructTransaction.__set__('constructLogFillTxTransaction', sinon.stub().returns({
+      type: MOCK_ACTION_TYPES.CONSTRUCT_LOG_FILL_TX_TRANSACTION
+    }));
+
+    // constructTransaction.constructLogFillTxTransaction = sinon.stub().returns({
+    //   type: MOCK_ACTION_TYPES.CONSTRUCT_LOG_FILL_TX_TRANSACTION
+    // });
+    // constructTransaction.constructLogShortFillTxTransaction = sinon.stub().returns({
+    //   type: MOCK_ACTION_TYPES.CONSTRUCT_LOG_SHORT_FILL_TX_TRANSACTIONS
+    // });
+    // constructTransaction.constructLogAddTxTransaction = sinon.stub().returns({
+    //   type: MOCK_ACTION_TYPES.CONSTRUCT_LOG_ADD_TX_TRANSACTION
+    // });
+    // constructTransaction.constructLogCancelTransaction = sinon.stub().returns({
+    //   type: MOCK_ACTION_TYPES.CONSTRUCT_LOG_CANCEL_TRANSACTION
+    // });
+
+    console.log('constructTransaction -- ', constructTransaction);
+
+    const test = t => it(t.description, () => {
+      const store = mockStore(t.state);
+      t.assertions(store);
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'log_fill_tx'`,
+      state: {
+        marketsData: {
+          '0xMARKETID': {}
+        },
+        outcomesData: {}
+      },
+      assertions: (store) => {
+        const actual = store.dispatch(constructTransaction.constructTradingTransaction('log_fill_tx', {}, '0xMARKETID'));
+
+        const actions = store.getActions();
+
+        console.log('actions -- ', actions, actual);
       }
     });
   });
