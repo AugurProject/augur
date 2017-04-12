@@ -677,6 +677,10 @@ babel-plugin-module-resolver@2.5.0:
     glob "^7.1.1"
     resolve "^1.2.0"
 
+babel-plugin-rewire@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-rewire/-/babel-plugin-rewire-1.1.0.tgz#a6b966d9d8c06c03d95dcda2eec4e2521519549b"
+
 babel-plugin-syntax-async-functions@^6.8.0:
   version "6.13.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-syntax-async-functions/-/babel-plugin-syntax-async-functions-6.13.0.tgz#cad9cad1191b5ad634bf30ae0872391e0647be95"
@@ -7299,10 +7303,6 @@ restore-cursor@^1.0.1:
 retry@^0.10.0, retry@~0.10.0:
   version "0.10.1"
   resolved "https://registry.yarnpkg.com/retry/-/retry-0.10.1.tgz#e76388d217992c252750241d3d3956fed98d8ff4"
-
-rewire@^2.5.2:
-  version "2.5.2"
-  resolved "https://registry.yarnpkg.com/rewire/-/rewire-2.5.2.tgz#6427de7b7feefa7d36401507eb64a5385bc58dc7"
 
 right-align@^0.1.1:
   version "0.1.3"

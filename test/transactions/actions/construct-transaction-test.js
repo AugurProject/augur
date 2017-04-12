@@ -3,7 +3,6 @@ import chai, { assert } from 'chai';
 import chaiSubset from 'chai-subset';
 import sinon from 'sinon';
 import proxyquire from 'proxyquire';
-import rewire from 'rewire';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 
@@ -24,7 +23,10 @@ import {
   constructSentEtherTransaction,
   constructSentCashTransaction,
   constructTransferTransaction,
-  constructFundedAccountTransaction
+  constructFundedAccountTransaction,
+  constructMarketTransaction,
+  constructPayoutTransaction,
+  __RewireAPI__ as constructTransactionAPI
 } from 'modules/transactions/actions/construct-transaction';
 
 import { CREATE_MARKET, COMMIT_REPORT, REVEAL_REPORT, BUY, SELL, MATCH_BID, MATCH_ASK, SHORT_SELL, BID, ASK, SHORT_ASK, CANCEL_ORDER } from 'modules/transactions/constants/types';
@@ -46,7 +48,8 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
     CONSTRUCT_LOG_FILL_TX_TRANSACTION: 'CONSTRUCT_LOG_FILL_TX_TRANSACTION',
     CONSTRUCT_LOG_SHORT_FILL_TX_TRANSACTIONS: 'CONSTRUCT_LOG_SHORT_FILL_TX_TRANSACTIONS',
     CONSTRUCT_LOG_ADD_TX_TRANSACTION: 'CONSTRUCT_LOG_ADD_TX_TRANSACTION',
-    CONSTRUCT_LOG_CANCEL_TRANSACTION: 'CONSTRUCT_LOG_CANCEL_TRANSACTION'
+    CONSTRUCT_LOG_CANCEL_TRANSACTION: 'CONSTRUCT_LOG_CANCEL_TRANSACTION',
+    CONSTRUCT_PAYOUT_TRANSACTION: 'CONSTRUCT_PAYOUT_TRANSACTION'
   };
 
   const mockRetryConversion = {
@@ -3572,7 +3575,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
   });
 
   describe('constructTradingTransaction', () => {
-    const constructTransaction = rewire('../../../src/modules/transactions/actions/construct-transaction');
+    const constructTransaction = require('../../../src/modules/transactions/actions/construct-transaction');
 
     constructTransaction.__set__('constructLogFillTxTransaction', sinon.stub().returns({
       type: MOCK_ACTION_TYPES.CONSTRUCT_LOG_FILL_TX_TRANSACTION
@@ -3681,6 +3684,52 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         ];
 
         assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
+      }
+    });
+  });
+
+  describe('constructTradingTransaction', () => {
+    const { __RewireAPI__, constructMarketTransaction } = require('../../../src/modules/transactions/actions/construct-transaction');
+
+    const test = t => it(t.description, () => {
+      const store = mockStore();
+      t.assertions(store);
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'payout'`,
+      assertions: (store) => {
+        __RewireAPI__.__set__('constructPayoutTransaction', () => 'constructPayoutTransaction');
+
+        const actual = store.dispatch(constructMarketTransaction('payout'));
+
+        const expected = 'constructPayoutTransaction';
+
+        assert.strictEqual(actual, expected, `Didn't call the expected method`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'tradingFeeUpdated'`,
+      assertions: (store) => {
+        __RewireAPI__.__set__('constructTradingFeeUpdatedTransaction', () => 'constructTradingFeeUpdatedTransaction');
+
+        const actual = store.dispatch(constructMarketTransaction('tradingFeeUpdated'));
+
+        const expected = 'constructTradingFeeUpdatedTransaction';
+
+        assert.strictEqual(actual, expected, `Didn't call the expected method`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for default label`,
+      assertions: (store) => {
+        const actual = store.dispatch(constructMarketTransaction(undefined));
+
+        const expected = null;
+
+        assert.strictEqual(actual, expected, `Didn't call the expected method`);
       }
     });
   });
