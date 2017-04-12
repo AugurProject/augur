@@ -112,7 +112,7 @@ describe('modules/user-open-orders/selectors/positions-plus-asks', () => {
     });
   });
 
-  describe('selectPositionsPlusAsks', () => {
+  describe('selectMarketPositionPlusAsks', () => {
     const positionsPlusAsks = require('modules/user-open-orders/selectors/positions-plus-asks');
 
     positionsPlusAsks.__Rewire__('getOpenAskShares', () => 1);
