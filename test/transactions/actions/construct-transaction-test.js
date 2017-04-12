@@ -3688,7 +3688,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
     });
   });
 
-  describe('constructTradingTransaction', () => {
+  describe('constructMarketTransaction', () => {
     const { __RewireAPI__, constructMarketTransaction } = require('../../../src/modules/transactions/actions/construct-transaction');
 
     const test = t => it(t.description, () => {
@@ -3697,7 +3697,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
     });
 
     test({
-      description: `should dispatch the expected actions for label 'payout'`,
+      description: `should call the expected method for label 'payout'`,
       assertions: (store) => {
         __RewireAPI__.__set__('constructPayoutTransaction', () => 'constructPayoutTransaction');
 
@@ -3710,7 +3710,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
     });
 
     test({
-      description: `should dispatch the expected actions for label 'tradingFeeUpdated'`,
+      description: `should call the expected method for label 'tradingFeeUpdated'`,
       assertions: (store) => {
         __RewireAPI__.__set__('constructTradingFeeUpdatedTransaction', () => 'constructTradingFeeUpdatedTransaction');
 
@@ -3723,9 +3723,84 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
     });
 
     test({
-      description: `should dispatch the expected actions for default label`,
+      description: `should dispatch the expected method for default label`,
       assertions: (store) => {
         const actual = store.dispatch(constructMarketTransaction(undefined));
+
+        const expected = null;
+
+        assert.strictEqual(actual, expected, `Didn't call the expected method`);
+      }
+    });
+  });
+
+  describe('constructReportingTransaction', () => {
+    const { __RewireAPI__, constructReportingTransaction } = require('../../../src/modules/transactions/actions/construct-transaction');
+
+    const test = t => it(t.description, () => {
+      const store = mockStore({
+        address: '',
+        derivedKey: ''
+      });
+      t.assertions(store);
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'penalize'`,
+      assertions: (store) => {
+        __RewireAPI__.__set__('constructPenalizeTransaction', () => 'constructPenalizeTransaction');
+
+        const actual = store.dispatch(constructReportingTransaction('penalize'));
+
+        const expected = 'constructPenalizeTransaction';
+
+        assert.strictEqual(actual, expected, `Didn't call the expected method`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'submittedReport'`,
+      assertions: (store) => {
+        __RewireAPI__.__set__('constructSubmittedReportTransaction', () => 'constructSubmittedReportTransaction');
+
+        const actual = store.dispatch(constructReportingTransaction('submittedReport'));
+
+        const expected = 'constructSubmittedReportTransaction';
+
+        assert.strictEqual(actual, expected, `Didn't call the expected method`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'submittedReportHash'`,
+      assertions: (store) => {
+        __RewireAPI__.__set__('constructSubmittedReportHashTransaction', () => 'constructSubmittedReportHashTransaction');
+
+        const actual = store.dispatch(constructReportingTransaction('submittedReportHash'));
+
+        const expected = 'constructSubmittedReportHashTransaction';
+
+        assert.strictEqual(actual, expected, `Didn't call the expected method`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'slashedRep'`,
+      assertions: (store) => {
+        __RewireAPI__.__set__('constructSlashedRepTransaction', () => 'constructSlashedRepTransaction');
+
+        const actual = store.dispatch(constructReportingTransaction('slashedRep'));
+
+        const expected = 'constructSlashedRepTransaction';
+
+        assert.strictEqual(actual, expected, `Didn't call the expected method`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected method for default label`,
+      assertions: (store) => {
+        const actual = store.dispatch(constructReportingTransaction(undefined));
 
         const expected = null;
 
