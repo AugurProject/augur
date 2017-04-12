@@ -1,9 +1,9 @@
 import { createBigCacheSelector } from 'utils/big-cache-selector';
 import store from 'src/store';
 import { selectLoginAccountAddress, selectAccountPositionsState, selectOrderBooksState } from 'src/select-state';
-import { ZERO } from '../../trade/constants/numbers';
-import { abi } from '../../../services/augurjs';
-import { isOrderOfUser } from '../../bids-asks/helpers/is-order-of-user';
+import { ZERO } from 'modules/trade/constants/numbers';
+import { abi } from 'services/augurjs';
+import { isOrderOfUser } from 'modules/bids-asks/helpers/is-order-of-user';
 
 export function selectAccountPositions() {
   return selectPositionsPlusAsks(store.getState());
@@ -60,7 +60,7 @@ export const selectMarketPositionPlusAsks = (account, position, asks) => {
  * @param {Object} askOrders
  * @return {BigNumber} Total number of shares in open ask orders.
  */
-function getOpenAskShares(account, outcomeID, askOrders) {
+export function getOpenAskShares(account, outcomeID, askOrders) {
   if (!account || !askOrders) return ZERO;
   let order;
   let askShares = ZERO;
