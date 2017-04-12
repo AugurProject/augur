@@ -49,7 +49,9 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
     CONSTRUCT_LOG_SHORT_FILL_TX_TRANSACTIONS: 'CONSTRUCT_LOG_SHORT_FILL_TX_TRANSACTIONS',
     CONSTRUCT_LOG_ADD_TX_TRANSACTION: 'CONSTRUCT_LOG_ADD_TX_TRANSACTION',
     CONSTRUCT_LOG_CANCEL_TRANSACTION: 'CONSTRUCT_LOG_CANCEL_TRANSACTION',
-    CONSTRUCT_PAYOUT_TRANSACTION: 'CONSTRUCT_PAYOUT_TRANSACTION'
+    CONSTRUCT_PAYOUT_TRANSACTION: 'CONSTRUCT_PAYOUT_TRANSACTION',
+    CONSTRUCT_MARKET_TRANSACTION: 'CONSTRUCT_MARKET_TRANSACTION',
+    CONSTRUCT_REPORTING_TRANSACTION: 'CONSTRUCT_REPORTING_TRANSACTION'
   };
 
   const mockRetryConversion = {
@@ -3729,7 +3731,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const expected = null;
 
-        assert.strictEqual(actual, expected, `Didn't call the expected method`);
+        assert.strictEqual(actual, expected, `Didn't return the expected value`);
       }
     });
   });
@@ -3803,6 +3805,488 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const actual = store.dispatch(constructReportingTransaction(undefined));
 
         const expected = null;
+
+        assert.strictEqual(actual, expected, `Didn't return the expected value`);
+      }
+    });
+  });
+
+  describe('constructTransaction', () => {
+    const { __RewireAPI__, constructTransaction } = require('../../../src/modules/transactions/actions/construct-transaction');
+
+    const test = t => it(t.description, () => {
+      const store = mockStore(t.state || {});
+      t.assertions(store);
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'Approval'`,
+      assertions: (store) => {
+        __RewireAPI__.__set__('constructApprovalTransaction', () => 'constructApprovalTransaction');
+
+        const actual = store.dispatch(constructTransaction('Approval'));
+
+        const expected = 'constructApprovalTransaction';
+
+        assert.strictEqual(actual, expected, `Didn't call the expected method`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'collectedFees'`,
+      assertions: (store) => {
+        __RewireAPI__.__set__('constructCollectedFeesTransaction', () => 'constructCollectedFeesTransaction');
+
+        const actual = store.dispatch(constructTransaction('collectedFees'));
+
+        const expected = 'constructCollectedFeesTransaction';
+
+        assert.strictEqual(actual, expected, `Didn't call the expected method`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'deposit'`,
+      assertions: (store) => {
+        __RewireAPI__.__set__('constructDepositTransaction', () => 'constructDepositTransaction');
+
+        const actual = store.dispatch(constructTransaction('deposit'));
+
+        const expected = 'constructDepositTransaction';
+
+        assert.strictEqual(actual, expected, `Didn't call the expected method`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'fundedAccount'`,
+      assertions: (store) => {
+        __RewireAPI__.__set__('constructFundedAccountTransaction', () => 'constructFundedAccountTransaction');
+
+        const actual = store.dispatch(constructTransaction('fundedAccount'));
+
+        const expected = 'constructFundedAccountTransaction';
+
+        assert.strictEqual(actual, expected, `Didn't call the expected method`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'penalizationCaughtUp'`,
+      assertions: (store) => {
+        __RewireAPI__.__set__('constructPenalizationCaughtUpTransaction', () => 'constructPenalizationCaughtUpTransaction');
+
+        const actual = store.dispatch(constructTransaction('penalizationCaughtUp'));
+
+        const expected = 'constructPenalizationCaughtUpTransaction';
+
+        assert.strictEqual(actual, expected, `Didn't call the expected method`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'registration'`,
+      assertions: (store) => {
+        __RewireAPI__.__set__('constructRegistrationTransaction', () => 'constructRegistrationTransaction');
+
+        const actual = store.dispatch(constructTransaction('registration'));
+
+        const expected = 'constructRegistrationTransaction';
+
+        assert.strictEqual(actual, expected, `Didn't call the expected method`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'withdraw'`,
+      assertions: (store) => {
+        __RewireAPI__.__set__('constructWithdrawTransaction', () => 'constructWithdrawTransaction');
+
+        const actual = store.dispatch(constructTransaction('withdraw'));
+
+        const expected = 'constructWithdrawTransaction';
+
+        assert.strictEqual(actual, expected, `Didn't call the expected method`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'sentCash' with trasnactionHash in state`,
+      state: {
+        transactionsData: {
+          '0xHASH': {}
+        }
+      },
+      assertions: (store) => {
+        const actual = store.dispatch(constructTransaction('sentCash', {
+          transactionHash: '0xHASH'
+        }));
+
+        const expected = null;
+
+        assert.strictEqual(actual, expected, `Didn't return the expected value`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'sentCash' without trasnactionHash in state`,
+      state: {
+        transactionsData: {},
+        loginAccount: {}
+      },
+      assertions: (store) => {
+        __RewireAPI__.__set__('constructSentCashTransaction', () => 'constructSentCashTransaction');
+
+        const actual = store.dispatch(constructTransaction('sentCash', {
+          transactionHash: '0xHASH'
+        }));
+
+        const expected = 'constructSentCashTransaction';
+
+        assert.strictEqual(actual, expected, `Didn't call the expected method`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'sentEther' with trasnactionHash in state`,
+      state: {
+        transactionsData: {
+          '0xHASH': {}
+        }
+      },
+      assertions: (store) => {
+        const actual = store.dispatch(constructTransaction('sentEther', {
+          transactionHash: '0xHASH'
+        }));
+
+        const expected = null;
+
+        assert.strictEqual(actual, expected, `Didn't return the expected value`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'sentEther' without trasnactionHash in state`,
+      state: {
+        transactionsData: {},
+        loginAccount: {}
+      },
+      assertions: (store) => {
+        __RewireAPI__.__set__('constructSentEtherTransaction', () => 'constructSentEtherTransaction');
+
+        const actual = store.dispatch(constructTransaction('sentEther', {
+          transactionHash: '0xHASH'
+        }));
+
+        const expected = 'constructSentEtherTransaction';
+
+        assert.strictEqual(actual, expected, `Didn't call the expected method`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'Transfer' with trasnactionHash in state`,
+      state: {
+        transactionsData: {
+          '0xHASH': {}
+        }
+      },
+      assertions: (store) => {
+        const actual = store.dispatch(constructTransaction('Transfer', {
+          transactionHash: '0xHASH'
+        }));
+
+        const expected = null;
+
+        assert.strictEqual(actual, expected, `Didn't return the expected value`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'Transfer' without trasnactionHash in state`,
+      state: {
+        transactionsData: {},
+        loginAccount: {}
+      },
+      assertions: (store) => {
+        __RewireAPI__.__set__('constructTransferTransaction', () => 'constructTransferTransaction');
+
+        const actual = store.dispatch(constructTransaction('Transfer', {
+          transactionHash: '0xHASH'
+        }));
+
+        const expected = 'constructTransferTransaction';
+
+        assert.strictEqual(actual, expected, `Didn't call the expected method`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'marketCreated' without description in log`,
+      assertions: (store) => {
+        __RewireAPI__.__set__('constructMarketCreatedTransaction', () => 'constructMarketCreatedTransaction');
+
+        const actual = store.dispatch(constructTransaction('marketCreated', {
+          description: 'testing'
+        }));
+
+        const expected = 'constructMarketCreatedTransaction';
+
+        assert.strictEqual(actual, expected, `Didn't call the expected method`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'marketCreated' without description in returned market`,
+      assertions: (store) => {
+        __RewireAPI__.__set__('loadDataForMarketTransaction', () => dispatch => ({}));
+
+        const actual = store.dispatch(constructTransaction('marketCreated', {}));
+
+        const expected = undefined;
+
+        assert.strictEqual(actual, expected, `Didn't return the expected value`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'marketCreated' with description in returned market`,
+      assertions: (store) => {
+        __RewireAPI__.__set__('loadDataForMarketTransaction', () => dispatch => ({
+          description: 'testing'
+        }));
+        __RewireAPI__.__set__('constructMarketCreatedTransaction', () => 'constructMarketCreatedTransaction');
+
+        const actual = store.dispatch(constructTransaction('marketCreated', {}));
+
+        const expected = 'constructMarketCreatedTransaction';
+
+        assert.strictEqual(actual, expected, `Didn't call the expected method`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'payout' without description in returned market`,
+      assertions: (store) => {
+        __RewireAPI__.__set__('loadDataForMarketTransaction', () => dispatch => ({}));
+
+        const actual = store.dispatch(constructTransaction('payout', {}));
+
+        const expected = undefined;
+
+        assert.strictEqual(actual, expected, `Didn't return the expected value`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'payout' with description in returned market`,
+      assertions: (store) => {
+        __RewireAPI__.__set__('loadDataForMarketTransaction', () => dispatch => ({
+          description: 'testing'
+        }));
+        __RewireAPI__.__set__('constructMarketTransaction', sinon.stub().returns({
+          type: MOCK_ACTION_TYPES.CONSTRUCT_MARKET_TRANSACTION
+        }));
+
+        store.dispatch(constructTransaction('payout', {}));
+
+        const actual = store.getActions();
+
+        const expected = [
+          {
+            type: MOCK_ACTION_TYPES.CONSTRUCT_MARKET_TRANSACTION
+          }
+        ];
+
+        assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'tradingFeeUpdated' without description in returned market`,
+      assertions: (store) => {
+        __RewireAPI__.__set__('loadDataForMarketTransaction', () => dispatch => ({}));
+
+        const actual = store.dispatch(constructTransaction('payout', {}));
+
+        const expected = undefined;
+
+        assert.strictEqual(actual, expected, `Didn't return the expected value`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'tradingFeeUpdated' with description in returned market`,
+      assertions: (store) => {
+        __RewireAPI__.__set__('loadDataForMarketTransaction', () => dispatch => ({
+          description: 'testing'
+        }));
+        __RewireAPI__.__set__('constructMarketTransaction', sinon.stub().returns({
+          type: MOCK_ACTION_TYPES.CONSTRUCT_MARKET_TRANSACTION
+        }));
+
+        store.dispatch(constructTransaction('payout', {}));
+
+        const actual = store.getActions();
+
+        const expected = [
+          {
+            type: MOCK_ACTION_TYPES.CONSTRUCT_MARKET_TRANSACTION
+          }
+        ];
+
+        assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'penalize' without aux`,
+      assertions: (store) => {
+        __RewireAPI__.__set__('loadDataForReportingTransaction', () => dispatch => undefined);
+
+        const actual = store.dispatch(constructTransaction('penalize', {}));
+
+        const expected = undefined;
+
+        assert.strictEqual(actual, expected, `Didn't return the expected value`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'penalize' with description in returned market`,
+      assertions: (store) => {
+        __RewireAPI__.__set__('loadDataForReportingTransaction', () => dispatch => ({}));
+        __RewireAPI__.__set__('constructReportingTransaction', sinon.stub().returns({
+          type: MOCK_ACTION_TYPES.CONSTRUCT_REPORTING_TRANSACTION
+        }));
+
+        store.dispatch(constructTransaction('penalize', {}));
+
+        const actual = store.getActions();
+
+        const expected = [
+          {
+            type: MOCK_ACTION_TYPES.CONSTRUCT_REPORTING_TRANSACTION
+          }
+        ];
+
+        assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'slashedRep' without aux`,
+      assertions: (store) => {
+        __RewireAPI__.__set__('loadDataForReportingTransaction', () => dispatch => undefined);
+
+        const actual = store.dispatch(constructTransaction('penalize', {}));
+
+        const expected = undefined;
+
+        assert.strictEqual(actual, expected, `Didn't return the expected value`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'slashedRep' with description in returned market`,
+      assertions: (store) => {
+        __RewireAPI__.__set__('loadDataForReportingTransaction', () => dispatch => ({}));
+        __RewireAPI__.__set__('constructReportingTransaction', sinon.stub().returns({
+          type: MOCK_ACTION_TYPES.CONSTRUCT_REPORTING_TRANSACTION
+        }));
+
+        store.dispatch(constructTransaction('penalize', {}));
+
+        const actual = store.getActions();
+
+        const expected = [
+          {
+            type: MOCK_ACTION_TYPES.CONSTRUCT_REPORTING_TRANSACTION
+          }
+        ];
+
+        assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'submittedReport' without aux`,
+      assertions: (store) => {
+        __RewireAPI__.__set__('loadDataForReportingTransaction', () => dispatch => undefined);
+
+        const actual = store.dispatch(constructTransaction('penalize', {}));
+
+        const expected = undefined;
+
+        assert.strictEqual(actual, expected, `Didn't return the expected value`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'submittedReport' with description in returned market`,
+      assertions: (store) => {
+        __RewireAPI__.__set__('loadDataForReportingTransaction', () => dispatch => ({}));
+        __RewireAPI__.__set__('constructReportingTransaction', sinon.stub().returns({
+          type: MOCK_ACTION_TYPES.CONSTRUCT_REPORTING_TRANSACTION
+        }));
+
+        store.dispatch(constructTransaction('penalize', {}));
+
+        const actual = store.getActions();
+
+        const expected = [
+          {
+            type: MOCK_ACTION_TYPES.CONSTRUCT_REPORTING_TRANSACTION
+          }
+        ];
+
+        assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'submittedReportHash' without aux`,
+      assertions: (store) => {
+        __RewireAPI__.__set__('loadDataForReportingTransaction', () => dispatch => undefined);
+
+        const actual = store.dispatch(constructTransaction('penalize', {}));
+
+        const expected = undefined;
+
+        assert.strictEqual(actual, expected, `Didn't return the expected value`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'submittedReportHash' with description in returned market`,
+      assertions: (store) => {
+        __RewireAPI__.__set__('loadDataForReportingTransaction', () => dispatch => ({}));
+        __RewireAPI__.__set__('constructReportingTransaction', sinon.stub().returns({
+          type: MOCK_ACTION_TYPES.CONSTRUCT_REPORTING_TRANSACTION
+        }));
+
+        store.dispatch(constructTransaction('penalize', {}));
+
+        const actual = store.getActions();
+
+        const expected = [
+          {
+            type: MOCK_ACTION_TYPES.CONSTRUCT_REPORTING_TRANSACTION
+          }
+        ];
+
+        assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for default label`,
+      assertions: (store) => {
+        __RewireAPI__.__set__('constructDefaultTransaction', () => 'constructDefaultTransaction');
+
+        const actual = store.dispatch(constructTransaction(undefined));
+
+        const expected = 'constructDefaultTransaction';
 
         assert.strictEqual(actual, expected, `Didn't call the expected method`);
       }
