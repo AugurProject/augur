@@ -3,9 +3,9 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mockStore from 'test/mockStore';
-import * as setTitle from 'utils/set-title';
 
 describe(`modules/link/actions/update-url.js`, () => {
+  const setTitle = require('utils/set-title');
   const { store } = mockStore.default;
   const URL = '/test?search=example';
 
