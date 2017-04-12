@@ -3577,21 +3577,15 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
     constructTransaction.__set__('constructLogFillTxTransaction', sinon.stub().returns({
       type: MOCK_ACTION_TYPES.CONSTRUCT_LOG_FILL_TX_TRANSACTION
     }));
-
-    // constructTransaction.constructLogFillTxTransaction = sinon.stub().returns({
-    //   type: MOCK_ACTION_TYPES.CONSTRUCT_LOG_FILL_TX_TRANSACTION
-    // });
-    // constructTransaction.constructLogShortFillTxTransaction = sinon.stub().returns({
-    //   type: MOCK_ACTION_TYPES.CONSTRUCT_LOG_SHORT_FILL_TX_TRANSACTIONS
-    // });
-    // constructTransaction.constructLogAddTxTransaction = sinon.stub().returns({
-    //   type: MOCK_ACTION_TYPES.CONSTRUCT_LOG_ADD_TX_TRANSACTION
-    // });
-    // constructTransaction.constructLogCancelTransaction = sinon.stub().returns({
-    //   type: MOCK_ACTION_TYPES.CONSTRUCT_LOG_CANCEL_TRANSACTION
-    // });
-
-    console.log('constructTransaction -- ', constructTransaction);
+    constructTransaction.__set__('constructLogShortFillTxTransaction', sinon.stub().returns({
+      type: MOCK_ACTION_TYPES.CONSTRUCT_LOG_SHORT_FILL_TX_TRANSACTIONS
+    }));
+    constructTransaction.__set__('constructLogAddTxTransaction', sinon.stub().returns({
+      type: MOCK_ACTION_TYPES.CONSTRUCT_LOG_ADD_TX_TRANSACTION
+    }));
+    constructTransaction.__set__('constructLogCancelTransaction', sinon.stub().returns({
+      type: MOCK_ACTION_TYPES.CONSTRUCT_LOG_CANCEL_TRANSACTION
+    }));
 
     const test = t => it(t.description, () => {
       const store = mockStore(t.state);
@@ -3607,11 +3601,86 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         outcomesData: {}
       },
       assertions: (store) => {
-        const actual = store.dispatch(constructTransaction.constructTradingTransaction('log_fill_tx', {}, '0xMARKETID'));
+        store.dispatch(constructTransaction.constructTradingTransaction('log_fill_tx', {}, '0xMARKETID'));
 
-        const actions = store.getActions();
+        const actual = store.getActions();
 
-        console.log('actions -- ', actions, actual);
+        const expected = [
+          {
+            type: MOCK_ACTION_TYPES.CONSTRUCT_LOG_FILL_TX_TRANSACTION
+          }
+        ];
+
+        assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'log_short_fill_tx'`,
+      state: {
+        marketsData: {
+          '0xMARKETID': {}
+        },
+        outcomesData: {}
+      },
+      assertions: (store) => {
+        store.dispatch(constructTransaction.constructTradingTransaction('log_short_fill_tx', {}, '0xMARKETID'));
+
+        const actual = store.getActions();
+
+        const expected = [
+          {
+            type: MOCK_ACTION_TYPES.CONSTRUCT_LOG_SHORT_FILL_TX_TRANSACTIONS
+          }
+        ];
+
+        assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'log_add_tx'`,
+      state: {
+        marketsData: {
+          '0xMARKETID': {}
+        },
+        outcomesData: {}
+      },
+      assertions: (store) => {
+        store.dispatch(constructTransaction.constructTradingTransaction('log_add_tx', {}, '0xMARKETID'));
+
+        const actual = store.getActions();
+
+        const expected = [
+          {
+            type: MOCK_ACTION_TYPES.CONSTRUCT_LOG_ADD_TX_TRANSACTION
+          }
+        ];
+
+        assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions for label 'log_cancel'`,
+      state: {
+        marketsData: {
+          '0xMARKETID': {}
+        },
+        outcomesData: {}
+      },
+      assertions: (store) => {
+        store.dispatch(constructTransaction.constructTradingTransaction('log_cancel', {}, '0xMARKETID'));
+
+        const actual = store.getActions();
+
+        const expected = [
+          {
+            type: MOCK_ACTION_TYPES.CONSTRUCT_LOG_CANCEL_TRANSACTION
+          }
+        ];
+
+        assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
       }
     });
   });
