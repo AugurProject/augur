@@ -40,9 +40,6 @@ export default function (title, params) {
       case views.ACCOUNT:
         setDocumentTitle(titles.ACCOUNT);
         break;
-      case views.LOGIN_MESSAGE:
-        setDocumentTitle(titles.WELCOME);
-        break;
       default:
         setDocumentTitle(titles.DEFAULT);
     }
