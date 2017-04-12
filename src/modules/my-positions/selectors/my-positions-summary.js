@@ -17,7 +17,7 @@ export default function () {
 }
 
 export const generateOutcomePositionSummary = memoize((adjustedPosition, outcomeAccountTrades, lastPrice, orderBook) => {
-  if ((!outcomeAccountTrades || !outcomeAccountTrades.length) && !adjustedPosition) {
+  if (!outcomeAccountTrades || !outcomeAccountTrades.length) {
     return null;
   }
 
@@ -44,7 +44,7 @@ export const generateMarketsPositionsSummary = memoize((markets) => {
   const positionOutcomes = [];
   markets.forEach((market) => {
     market.outcomes.forEach((outcome) => {
-      if (!outcome || !outcome.position || !outcome.position.numPositions || !outcome.position.numPositions.value || ((!outcome.position.qtyShares || !outcome.position.qtyShares.value) && (!outcome.position.realizedNet || !outcome.position.realizedNet.value))) {
+      if (!outcome || !outcome.position || !outcome.position.numPositions || !outcome.position.numPositions.value) {
         return;
       }
       qtyShares = qtyShares.plus(abi.bignum(outcome.position.qtyShares.value));
