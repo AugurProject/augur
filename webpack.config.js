@@ -38,7 +38,7 @@ let config = {
     publicPath: '/'
   },
   resolve: {
-    modules: [PATHS.NODE_MODULES, PATHS.APP],
+    modules: ['node_modules', PATHS.APP],
     extensions: [
       '.html',
       '.less',
@@ -52,16 +52,23 @@ let config = {
     },
     symlinks: false
   },
+  resolveLoader: {
+    moduleExtensions: ['-loader']
+  },
   module: {
     rules: [
       {
+        test: /npm-cli|node-hid/,
+        loader: 'null'
+      },
+      {
         test: /\.less/,
         enforce: 'pre',
-        loader: 'import-glob-loader'
+        loader: 'import-glob'
       },
       {
         test: /\.html/,
-        loader: 'html-loader',
+        loader: 'html',
         query: {
           minimize: true
         }
@@ -69,11 +76,11 @@ let config = {
       {
         test: /\.jsx?/,
         exclude: /node_modules/,
-        loader: 'babel-loader'
+        loader: 'babel'
       },
       {
         test: /\.json/,
-        loader: 'json-loader'
+        loader: 'json'
       }
     ]
   },
@@ -137,7 +144,7 @@ let config = {
     net: 'empty',
     tls: 'empty',
     child_process: 'empty'
-  },
+  }
 };
 
 // DEVELOPMENT CONFIG
