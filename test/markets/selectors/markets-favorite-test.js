@@ -1,7 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
-import sinon from 'sinon';
 
 // TODO -- this really should be handled differently via local state for the requiring tests
 let favoriteMarkets;  // eslint-disable-line import/no-mutable-exports
