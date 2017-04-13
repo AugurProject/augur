@@ -1,6 +1,7 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
+import sinon from 'sinon';
 
 // TODO -- this really should be handled differently via local state for the requiring tests
 let favoriteMarkets;  // eslint-disable-line import/no-mutable-exports
@@ -73,12 +74,10 @@ describe(`modules/markets/selectors/markets-favorite.js`, () => {
     }]
   };
 
-  const MarketsAll = {
-    selectMarkets: () => mockSelectors.allMarkets
-  };
+  const MarketsAll = () => mockSelectors.allMarkets;
 
   const selector = proxyquire('../../../src/modules/markets/selectors/markets-favorite.js', {
-    '../../markets/selectors/markets-all': MarketsAll
+    './markets-all': MarketsAll
   });
 
   favoriteMarkets = selector.default;

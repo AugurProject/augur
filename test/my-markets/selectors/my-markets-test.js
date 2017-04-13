@@ -34,9 +34,7 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
     }
   ));
 
-  const MarketsAll = {
-    selectMarkets: () => allMarkets
-  };
+  const MarketsAll = () => allMarkets;
 
   const proxiedSelector = proxyquire('../../../src/modules/my-markets/selectors/my-markets', {
     '../../link/selectors/links': mockedLinks,

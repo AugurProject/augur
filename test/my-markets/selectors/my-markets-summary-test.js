@@ -11,9 +11,8 @@ describe('modules/my-markets/selectors/my-markets-summary', () => {
   const { store } = mockStore.default;
   const { loginAccount, allMarkets, marketTrades, priceHistory, marketCreatorFees } = store.getState();
 
-  const MarketsAll = {
-    selectMarkets: () => allMarkets
-  };
+  const MarketsAll = () => allMarkets;
+
   const SelectState = {
     selectLoginAccountAddress: () => loginAccount.address,
     selectMarketTradesState: () => marketTrades,

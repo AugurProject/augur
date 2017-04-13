@@ -150,9 +150,8 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
     favoriteMarkets: 'test'
   };
 
-  const AllMarkets = {
-    selectMarkets: () => mockSelectors.allMarkets
-  };
+  const AllMarkets = () => mockSelectors.allMarkets;
+
   const FilteredMarkets = {
     selectFilteredMarkets: () => mockSelectors.filteredMarkets
   };
