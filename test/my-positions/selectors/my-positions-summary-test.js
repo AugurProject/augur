@@ -116,7 +116,6 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
         const mockAugur = {
           augur: {
             calculateProfitLoss: sinon.stub().returns({
-              position: 0,
               realized: 10,
               unrealized: -1,
               meanOpenPrice: 0.2
@@ -129,7 +128,7 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
         });
 
         const actual = selector.generateOutcomePositionSummary(
-          10,
+          0,
           [{}],
           0.2,
           {}
@@ -169,7 +168,6 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
         const mockAugur = {
           augur: {
             calculateProfitLoss: sinon.stub().returns({
-              position: 1,
               realized: 10,
               unrealized: -1,
               meanOpenPrice: 0.2
@@ -196,7 +194,7 @@ describe(`modules/my-positions/selectors/my-positions-summary.js`, () => {
             positiveSign: false,
             zeroStyled: false
           }),
-          qtyShares: formatShares(1),
+          qtyShares: formatShares(10),
           purchasePrice: formatEther(0.2),
           realizedNet: formatEther(10),
           unrealizedNet: formatEther(-1),

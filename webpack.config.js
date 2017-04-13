@@ -137,7 +137,7 @@ let config = {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV),
         GETH_PASSWORD: JSON.stringify(process.env.GETH_PASSWORD)
       }
-    }),
+    })
   ],
   node: {
     fs: 'empty',
