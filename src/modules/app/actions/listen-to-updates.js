@@ -13,6 +13,7 @@ import { SELL } from 'modules/outcomes/constants/trade-types';
 import { updateAccountBidsAsksData, updateAccountCancelsData, updateAccountTradesData } from 'modules/my-positions/actions/update-account-trades-data';
 
 export function listenToUpdates() {
+  console.log('listenToUpdates');
   return (dispatch, getState) => {
     augur.filters.listen({
 

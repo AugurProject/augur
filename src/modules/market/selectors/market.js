@@ -42,7 +42,6 @@ import { selectMarketLink } from 'modules/link/selectors/links';
 import selectUserOpenOrders from 'modules/user-open-orders/selectors/user-open-orders';
 import selectUserOpenOrdersSummary from 'modules/user-open-orders/selectors/user-open-orders-summary';
 
-import { selectAccountPositions } from 'modules/user-open-orders/selectors/positions-plus-asks';
 import { selectPriceTimeSeries } from 'modules/market/selectors/price-time-series';
 
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from 'modules/bids-asks/helpers/select-order-book';
@@ -62,8 +61,7 @@ export default function () {
 export const selectSelectedMarket = state => selectMarket(state.selectedMarketID);
 
 export const selectMarket = (marketID) => {
-  const { marketsData, favorites, reports, outcomesData, netEffectiveTrades, accountTrades, tradesInProgress, priceHistory, orderBooks, branch, orderCancellation, smallestPositions, loginAccount } = store.getState();
-  const accountPositions = selectAccountPositions();
+  const { marketsData, favorites, reports, outcomesData, netEffectiveTrades, accountTrades, accountPositions, tradesInProgress, priceHistory, orderBooks, branch, orderCancellation, smallestPositions, loginAccount } = store.getState();
 
   if (!marketID || !marketsData || !marketsData[marketID]) {
     return {};

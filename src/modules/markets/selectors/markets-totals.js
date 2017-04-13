@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import store from 'src/store';
-import { selectMarkets } from '../../markets/selectors/markets-all';
+import selectAllMarkets from '../../markets/selectors/markets-all';
 import { selectFilteredMarkets } from '../../markets/selectors/markets-filtered';
 import { selectUnpaginatedMarkets } from '../../markets/selectors/markets-unpaginated';
 import { selectFavoriteMarkets } from '../../markets/selectors/markets-favorite';
@@ -10,7 +10,7 @@ export default function () {
 }
 
 export const selectMarketsTotals = createSelector(
-  selectMarkets,
+  selectAllMarkets,
   selectFilteredMarkets,
   selectUnpaginatedMarkets,
   selectFavoriteMarkets,

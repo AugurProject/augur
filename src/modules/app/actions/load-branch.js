@@ -22,6 +22,7 @@ export const loadBranch = branchID => (dispatch, getState) => {
     dispatch(syncBlockchain());
     dispatch(syncBranch((err) => {
       if (err) console.error('syncBranch:', err);
+      console.log('fire listeners');
       dispatch(listenToUpdates());
     }));
   });
