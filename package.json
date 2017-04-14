@@ -18,7 +18,6 @@
     "__": "",
     "lint": "node scripts/lint.js",
     "test": "node scripts/test.js",
-    "coverage": "node scripts/coverage.js",
     "___": "",
     "link": "npm link augur.js && npm link keythereum"
   },
