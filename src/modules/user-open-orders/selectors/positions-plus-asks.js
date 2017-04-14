@@ -27,6 +27,10 @@ export const selectPositionsPlusAsks = createBigCacheSelector(10)(
     let marketID;
     for (let i = 0; i < numAdjustedMarkets; ++i) {
       marketID = adjustedMarkets[i];
+
+      // NOTE --  This conditional is here to accomodate the scenario where
+      //          a user has positions within a market, but the order book is
+      //          not loaded due to lazy load (user has trades + no orders in market)
       if (orderBooks[marketID]) {
         positionsPlusAsks[marketID] = selectMarketPositionPlusAsks(address, positions[marketID], orderBooks[marketID].sell);
       } else {
