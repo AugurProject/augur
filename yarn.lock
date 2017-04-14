@@ -309,7 +309,7 @@ arraybuffer.slice@0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/arraybuffer.slice/-/arraybuffer.slice-0.0.6.tgz#f33b2159f0532a3f3107a272c0ccfbd1ad2979ca"
 
-arrify@^1.0.0, arrify@^1.0.1, arrify@~1.0.1:
+arrify@^1.0.0, arrify@~1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/arrify/-/arrify-1.0.1.tgz#898508da2226f380df904728456849c1501a4b0d"
 
@@ -427,9 +427,9 @@ augur-contracts@2.11.3:
   dependencies:
     clone "1.0.2"
 
-augur.js@3.15.8:
-  version "3.15.8"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.15.8.tgz#4eef0f3266a9fea51a5f21d22bbb9f21494a1260"
+augur.js@3.15.7:
+  version "3.15.7"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.15.7.tgz#13aeceebc0e6e8b60d447af649fb6e6b6856e04c"
   dependencies:
     async "1.5.2"
     augur-abi "1.1.1"
@@ -669,14 +669,6 @@ babel-plugin-check-es2015-constants@^6.22.0:
   dependencies:
     babel-runtime "^6.22.0"
 
-babel-plugin-istanbul@4.1.1:
-  version "4.1.1"
-  resolved "https://registry.yarnpkg.com/babel-plugin-istanbul/-/babel-plugin-istanbul-4.1.1.tgz#c12de0fc6fe42adfb16be56f1ad11e4a9782eca9"
-  dependencies:
-    find-up "^2.1.0"
-    istanbul-lib-instrument "^1.6.2"
-    test-exclude "^4.0.3"
-
 babel-plugin-module-resolver@2.5.0:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-module-resolver/-/babel-plugin-module-resolver-2.5.0.tgz#a1204b4aeada066e8afb9b9f9c43e238d73d41bb"
@@ -684,10 +676,6 @@ babel-plugin-module-resolver@2.5.0:
     find-babel-config "^1.0.1"
     glob "^7.1.1"
     resolve "^1.2.0"
-
-babel-plugin-rewire@1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/babel-plugin-rewire/-/babel-plugin-rewire-1.1.0.tgz#a6b966d9d8c06c03d95dcda2eec4e2521519549b"
 
 babel-plugin-syntax-async-functions@^6.8.0:
   version "6.13.0"
@@ -1599,10 +1587,6 @@ center-align@^0.1.1:
     align-text "^0.1.3"
     lazy-cache "^1.0.3"
 
-chai-subset@1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/chai-subset/-/chai-subset-1.5.0.tgz#d03dbcfa8c9daad848643bbde4e63376b7882427"
-
 chai@3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/chai/-/chai-3.5.0.tgz#4d02637b067fe958bdbfdd3a40ec56fef7373247"
@@ -1834,7 +1818,7 @@ colors@1.0.3, colors@1.0.x:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/colors/-/colors-1.0.3.tgz#0433f44d809680fdeb60ed260f1b0c262e82a40b"
 
-colors@~1.1.2:
+colors@^1.0.3, colors@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/colors/-/colors-1.1.2.tgz#168a4701756b6a7f51a12ce0c97bfa28c084ed63"
 
@@ -3329,12 +3313,6 @@ find-up@1.1.2, find-up@^1.0.0:
     path-exists "^2.0.0"
     pinkie-promise "^2.0.0"
 
-find-up@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/find-up/-/find-up-2.1.0.tgz#45d1b7e506c717ddd482775a2b77920a3c0c57a7"
-  dependencies:
-    locate-path "^2.0.0"
-
 firebase-tools@3.5.0:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/firebase-tools/-/firebase-tools-3.5.0.tgz#2c934f1f0c9cf4d0b55c3f6e748b0efcabf2ca9e"
@@ -4480,9 +4458,9 @@ istanbul-api@^1.1.0-alpha:
     mkdirp "^0.5.1"
     once "^1.4.0"
 
-istanbul-lib-coverage@^1.0.0, istanbul-lib-coverage@^1.0.0-alpha, istanbul-lib-coverage@^1.0.0-alpha.0, istanbul-lib-coverage@^1.0.2:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/istanbul-lib-coverage/-/istanbul-lib-coverage-1.0.2.tgz#87a0c015b6910651cb3b184814dfb339337e25e1"
+istanbul-lib-coverage@^1.0.0, istanbul-lib-coverage@^1.0.0-alpha, istanbul-lib-coverage@^1.0.0-alpha.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/istanbul-lib-coverage/-/istanbul-lib-coverage-1.0.1.tgz#f263efb519c051c5f1f3343034fc40e7b43ff212"
 
 istanbul-lib-hook@^1.0.0:
   version "1.0.0"
@@ -4490,16 +4468,16 @@ istanbul-lib-hook@^1.0.0:
   dependencies:
     append-transform "^0.4.0"
 
-istanbul-lib-instrument@^1.3.0, istanbul-lib-instrument@^1.6.2:
-  version "1.7.0"
-  resolved "https://registry.yarnpkg.com/istanbul-lib-instrument/-/istanbul-lib-instrument-1.7.0.tgz#b8e0dc25709bb44e17336ab47b7bb5c97c23f659"
+istanbul-lib-instrument@^1.3.0:
+  version "1.4.2"
+  resolved "https://registry.yarnpkg.com/istanbul-lib-instrument/-/istanbul-lib-instrument-1.4.2.tgz#0e2fdfac93c1dabf2e31578637dc78a19089f43e"
   dependencies:
     babel-generator "^6.18.0"
     babel-template "^6.16.0"
     babel-traverse "^6.18.0"
     babel-types "^6.18.0"
     babylon "^6.13.0"
-    istanbul-lib-coverage "^1.0.2"
+    istanbul-lib-coverage "^1.0.0"
     semver "^5.3.0"
 
 istanbul-lib-report@^1.0.0-alpha.3:
@@ -4724,7 +4702,7 @@ jws@^3.0.0:
     jwa "^1.1.4"
     safe-buffer "^5.0.1"
 
-keccak@1.2.0, keccak@^1.0.2:
+keccak@^1.0.2:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/keccak/-/keccak-1.2.0.tgz#b53618fc7961b642f6e73f1546eec3329f7effe0"
   dependencies:
@@ -4753,15 +4731,6 @@ keythereum@0.4.6:
     sjcl "1.0.6"
     uuid "3.0.0"
     validator "4.0.2"
-
-keythereum@0.5.2:
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/keythereum/-/keythereum-0.5.2.tgz#73a15f0232efc2c98f258492157a2d684ead5205"
-  dependencies:
-    keccak "1.2.0"
-    secp256k1 "3.2.5"
-    sjcl "1.0.6"
-    uuid "3.0.0"
 
 kind-of@^2.0.1:
   version "2.0.1"
@@ -4950,13 +4919,6 @@ loader-utils@^1.0.2:
     big.js "^3.1.3"
     emojis-list "^2.0.0"
     json5 "^0.5.0"
-
-locate-path@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/locate-path/-/locate-path-2.0.0.tgz#2b568b265eec944c6d9c0de9c3dbbbca0354cd8e"
-  dependencies:
-    p-locate "^2.0.0"
-    path-exists "^3.0.0"
 
 lockfile@~1.0.2:
   version "1.0.3"
@@ -5803,7 +5765,7 @@ nth-check@~1.0.1:
   dependencies:
     boolbase "~1.0.0"
 
-null-loader@0.1.1:
+null-loader@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/null-loader/-/null-loader-0.1.1.tgz#17be9abfcd3ff0e1512f6fc4afcb1f5039378fae"
 
@@ -5973,16 +5935,6 @@ outpipe@^1.1.0:
   resolved "https://registry.yarnpkg.com/outpipe/-/outpipe-1.1.1.tgz#50cf8616365e87e031e29a5ec9339a3da4725fa2"
   dependencies:
     shell-quote "^1.4.2"
-
-p-limit@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/p-limit/-/p-limit-1.1.0.tgz#b07ff2d9a5d88bec806035895a2bab66a27988bc"
-
-p-locate@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/p-locate/-/p-locate-2.0.0.tgz#20a0103b222a70c8fd39cc2e580680f3dde5ec43"
-  dependencies:
-    p-limit "^1.1.0"
 
 package-json@^1.0.0:
   version "1.2.0"
@@ -7422,7 +7374,7 @@ scrypt-js@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/scrypt-js/-/scrypt-js-2.0.3.tgz#bb0040be03043da9a012a2cea9fc9f852cfc87d4"
 
-secp256k1@3.2.5, secp256k1@^3.0.1:
+secp256k1@^3.0.1:
   version "3.2.5"
   resolved "https://registry.yarnpkg.com/secp256k1/-/secp256k1-3.2.5.tgz#0dde5b27e5021665f6dffca7b2c3e010c6c13c93"
   dependencies:
@@ -8113,16 +8065,6 @@ tar@^2.0.0, tar@^2.2.0, tar@~2.2.1:
     fstream "^1.0.2"
     inherits "2"
 
-test-exclude@^4.0.3:
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/test-exclude/-/test-exclude-4.0.3.tgz#86a13ce3effcc60e6c90403cf31a27a60ac6c4e7"
-  dependencies:
-    arrify "^1.0.1"
-    micromatch "^2.3.11"
-    object-assign "^4.1.0"
-    read-pkg-up "^1.0.1"
-    require-main-filename "^1.0.1"
-
 text-table@^0.2.0, text-table@~0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/text-table/-/text-table-0.2.0.tgz#7f5ee823ae805207c00af2df4a84ec3fcfa570b4"
@@ -8252,6 +8194,15 @@ tryit@^1.0.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/tryit/-/tryit-1.0.3.tgz#393be730a9446fd1ead6da59a014308f36c289cb"
 
+ts-loader@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/ts-loader/-/ts-loader-2.0.3.tgz#89b8c87598f048df065766e07e1538f0eaeb1165"
+  dependencies:
+    colors "^1.0.3"
+    enhanced-resolve "^3.0.0"
+    loader-utils "^1.0.2"
+    semver "^5.0.1"
+
 tty-browserify@0.0.0, tty-browserify@~0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/tty-browserify/-/tty-browserify-0.0.0.tgz#a157ba402da24e9bf957f9aa69d524eed42901a6"
@@ -8294,6 +8245,10 @@ typedarray-to-buffer@^3.1.2:
 typedarray@^0.0.6, typedarray@~0.0.5:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
+
+typescript@^2.2.2:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-2.2.2.tgz#606022508479b55ffa368b58fee963a03dfd7b0c"
 
 ua-parser-js@^0.7.9:
   version "0.7.12"
