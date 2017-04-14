@@ -42,13 +42,21 @@ describe('modules/my-positions/actions/close-position.js', () => {
       loadBidsAsks: () => {}
     };
     sinon.stub(mockLoadBidsAsks, 'loadBidsAsks', (marketID, cb) => dispatch => cb());
+    const mockPositionsPlusAsks = sinon.stub().returns({
+      '0xMARKETID': {
+        1: '10',
+        2: '0',
+        3: '0'
+      }
+    });
 
     const action = proxyquire('../../../src/modules/my-positions/actions/close-position.js', {
       '../../trade/actions/update-trades-in-progress': mockUpdateTradesInProgress,
       '../../trade/actions/place-trade': mockPlaceTrade,
       './add-close-position-trade-group': mockAddClosePositionTradeGroup,
       './clear-close-position-outcome': mockClearClosePositionOutcome,
-      '../../bids-asks/actions/load-bids-asks': mockLoadBidsAsks
+      '../../bids-asks/actions/load-bids-asks': mockLoadBidsAsks,
+      '../../user-open-orders/selectors/positions-plus-asks': mockPositionsPlusAsks
     });
 
     afterEach(() => {
@@ -81,6 +89,9 @@ describe('modules/my-positions/actions/close-position.js', () => {
             [BUY]: {},
             [SELL]: {}
           }
+        },
+        loginAccount: {
+          address: '0xUSERADDRESS'
         }
       },
       assertions: (store) => {
@@ -118,13 +129,6 @@ describe('modules/my-positions/actions/close-position.js', () => {
       state: {
         marketID: '0xMARKETID',
         outcomeID: '1',
-        accountPositions: {
-          '0xMARKETID': {
-            1: '10',
-            2: '0',
-            3: '0'
-          }
-        },
         orderBooks: {
           '0xMARKETID': {
             [BUY]: {
@@ -142,12 +146,21 @@ describe('modules/my-positions/actions/close-position.js', () => {
                 outcome: '2',
                 fullPrecisionAmount: '11',
                 fullPrecisionPrice: '0.7'
+              },
+              '0xORDERID4': {
+                outcome: '1',
+                fullPrecisionAmount: '11',
+                fullPrecisionPrice: '0.8',
+                owner: '0xUSERADDRESS'
               }
             },
             [SELL]: {}
           }
         },
-        tradesInProgress: {}
+        tradesInProgress: {},
+        loginAccount: {
+          address: '0xUSERADDRESS'
+        }
       },
       placeTradeFails: true,
       assertions: (store) => {
@@ -206,12 +219,21 @@ describe('modules/my-positions/actions/close-position.js', () => {
                 outcome: '2',
                 fullPrecisionAmount: '11',
                 fullPrecisionPrice: '0.7'
+              },
+              '0xORDERID4': {
+                outcome: '1',
+                fullPrecisionAmount: '11',
+                fullPrecisionPrice: '0.8',
+                owner: '0xUSERADDRESS'
               }
             },
             [SELL]: {}
           }
         },
-        tradesInProgress: {}
+        tradesInProgress: {},
+        loginAccount: {
+          address: '0xUSERADDRESS'
+        }
       },
       assertions: (store) => {
         const { marketID, outcomeID } = store.getState();
@@ -240,7 +262,7 @@ describe('modules/my-positions/actions/close-position.js', () => {
   describe('getBestFill', () => {
     const test = (t) => {
       it(t.description, () => {
-        const bestFill = getBestFill(t.state.orderBook, t.arguments.side, t.arguments.shares, t.arguments.marketID, t.arguments.outcomeID);
+        const bestFill = getBestFill(t.state.orderBook, t.arguments.side, t.arguments.shares, t.arguments.marketID, t.arguments.outcomeID, t.arguments.userAddress);
 
         t.assertions(bestFill);
       });
@@ -255,7 +277,8 @@ describe('modules/my-positions/actions/close-position.js', () => {
         side: SELL,
         shares: new BigNumber(-1).absoluteValue(),
         marketID: '0xMarketID1',
-        outcomeID: '1'
+        outcomeID: '1',
+        userAddress: '0xUSERADDRESS'
       },
       assertions: (bestFill) => {
         assert.deepEqual(bestFill, {
@@ -274,7 +297,8 @@ describe('modules/my-positions/actions/close-position.js', () => {
         side: BUY,
         shares: new BigNumber(1).absoluteValue(),
         marketID: '0xMarketID1',
-        outcomeID: '1'
+        outcomeID: '1',
+        userAddress: '0xUSERADDRESS'
       },
       assertions: (bestFill) => {
         assert.deepEqual(bestFill, {
@@ -298,6 +322,12 @@ describe('modules/my-positions/actions/close-position.js', () => {
               fullPrecisionAmount: '8',
               fullPrecisionPrice: '0.2',
               outcome: '1'
+            },
+            '0xOrderID3': {
+              fullPrecisionAmount: '8',
+              fullPrecisionPrice: '0.8',
+              outcome: '1',
+              owner: '0xUSERADDRESS'
             }
           }
         }
@@ -306,7 +336,8 @@ describe('modules/my-positions/actions/close-position.js', () => {
         side: BUY,
         shares: new BigNumber(10).absoluteValue(),
         marketID: '0xMarketID1',
-        outcomeID: '1'
+        outcomeID: '1',
+        userAddress: '0xUSERADDRESS'
       },
       assertions: (bestFill) => {
         assert.deepEqual(bestFill, {
@@ -330,6 +361,12 @@ describe('modules/my-positions/actions/close-position.js', () => {
               fullPrecisionAmount: '1',
               fullPrecisionPrice: '0.10',
               outcome: '1'
+            },
+            '0xOrderID3': {
+              fullPrecisionAmount: '8',
+              fullPrecisionPrice: '0.8',
+              outcome: '1',
+              owner: '0xUSERADDRESS'
             }
           }
         }
@@ -338,7 +375,8 @@ describe('modules/my-positions/actions/close-position.js', () => {
         side: BUY,
         shares: new BigNumber(10).absoluteValue(),
         marketID: '0xMarketID1',
-        outcomeID: '1'
+        outcomeID: '1',
+        userAddress: '0xUSERADDRESS'
       },
       assertions: (bestFill) => {
         assert.deepEqual(bestFill, {
@@ -362,6 +400,12 @@ describe('modules/my-positions/actions/close-position.js', () => {
               fullPrecisionAmount: '8',
               fullPrecisionPrice: '0.2',
               outcome: '1'
+            },
+            '0xOrderID3': {
+              fullPrecisionAmount: '8',
+              fullPrecisionPrice: '0.01',
+              outcome: '1',
+              owner: '0xUSERADDRESS'
             }
           }
         }
@@ -370,7 +414,8 @@ describe('modules/my-positions/actions/close-position.js', () => {
         side: SELL,
         shares: new BigNumber(-10).absoluteValue(),
         marketID: '0xMarketID1',
-        outcomeID: '1'
+        outcomeID: '1',
+        userAddress: '0xUSERADDRESS'
       },
       assertions: (bestFill) => {
         assert.deepEqual(bestFill, {
@@ -394,6 +439,12 @@ describe('modules/my-positions/actions/close-position.js', () => {
               fullPrecisionAmount: '1',
               fullPrecisionPrice: '0.10',
               outcome: '1'
+            },
+            '0xOrderID3': {
+              fullPrecisionAmount: '8',
+              fullPrecisionPrice: '0.01',
+              outcome: '1',
+              owner: '0xUSERADDRESS'
             }
           }
         }
@@ -402,7 +453,8 @@ describe('modules/my-positions/actions/close-position.js', () => {
         side: SELL,
         shares: new BigNumber(-10).absoluteValue(),
         marketID: '0xMarketID1',
-        outcomeID: '1'
+        outcomeID: '1',
+        userAddress: '0xUSERADDRESS'
       },
       assertions: (bestFill) => {
         assert.deepEqual(bestFill, {
