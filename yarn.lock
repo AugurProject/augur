@@ -4710,7 +4710,7 @@ jws@^3.0.0:
     jwa "^1.1.4"
     safe-buffer "^5.0.1"
 
-keccak@^1.0.2:
+keccak@1.2.0, keccak@^1.0.2:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/keccak/-/keccak-1.2.0.tgz#b53618fc7961b642f6e73f1546eec3329f7effe0"
   dependencies:
@@ -4739,6 +4739,15 @@ keythereum@0.4.6:
     sjcl "1.0.6"
     uuid "3.0.0"
     validator "4.0.2"
+
+keythereum@0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/keythereum/-/keythereum-0.5.1.tgz#2d6a186a1cad5886ec6ba9378a214f651509f191"
+  dependencies:
+    keccak "1.2.0"
+    secp256k1 "3.2.5"
+    sjcl "1.0.6"
+    uuid "3.0.0"
 
 kind-of@^2.0.1:
   version "2.0.1"
@@ -7382,7 +7391,7 @@ scrypt-js@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/scrypt-js/-/scrypt-js-2.0.3.tgz#bb0040be03043da9a012a2cea9fc9f852cfc87d4"
 
-secp256k1@^3.0.1:
+secp256k1@3.2.5, secp256k1@^3.0.1:
   version "3.2.5"
   resolved "https://registry.yarnpkg.com/secp256k1/-/secp256k1-3.2.5.tgz#0dde5b27e5021665f6dffca7b2c3e010c6c13c93"
   dependencies:
