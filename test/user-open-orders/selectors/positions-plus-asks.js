@@ -25,7 +25,7 @@ describe('modules/user-open-orders/selectors/positions-plus-asks', () => {
     test({
       description: `should call the expected methods`,
       assertions: () => {
-        const actual = positionsPlusAsks.selectAccountPositions();
+        const actual = positionsPlusAsks.default();
 
         const expected = 'selectPositionsPlusAsks';
 
@@ -65,25 +65,9 @@ describe('modules/user-open-orders/selectors/positions-plus-asks', () => {
       assertions: (store) => {
         const actual = positionsPlusAsks.selectPositionsPlusAsks(store.getState());
 
-        const expected = {};
-
-        assert.deepEqual(actual, expected, `Didn't return the expected object`);
-      }
-    });
-
-    test({
-      description: `should return the expected value with positions and no market order book`,
-      state: {
-        loginAccount: {},
-        accountPositions: {
+        const expected = {
           '0xMARKETID': {}
-        },
-        orderBooks: {}
-      },
-      assertions: (store) => {
-        const actual = positionsPlusAsks.selectPositionsPlusAsks(store.getState());
-
-        const expected = {};
+        };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
       }
