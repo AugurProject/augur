@@ -45,32 +45,36 @@ module.exports = {
   loadNextMarketsBatch: function (branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass) {
     var self = this;
     var numMarketsToLoad = isDesc ? Math.min(chunkSize, startIndex) : Math.min(chunkSize, numMarkets - startIndex);
-    this.getMarketsInfo({
-      branch: branchID,
-      offset: startIndex,
-      numMarketsToLoad: numMarketsToLoad,
-      volumeMin: volumeMin,
-      volumeMax: volumeMax
-    }, function (marketsData) {
-      var pause;
-      if (!marketsData || marketsData.error) {
-        chunkCB(marketsData);
-      } else {
-        chunkCB(null, marketsData);
-      }
-      pause = (Object.keys(marketsData).length) ? constants.PAUSE_BETWEEN_MARKET_BATCHES : 5;
-      if (isDesc && startIndex > 0) {
-        setTimeout(function () {
-          self.loadNextMarketsBatch(branchID, Math.max(startIndex - chunkSize, 0), chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass);
-        }, pause);
-      } else if (!isDesc && startIndex + chunkSize < numMarkets) {
-        setTimeout(function () {
-          self.loadNextMarketsBatch(branchID, startIndex + chunkSize, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass);
-        }, pause);
-      } else if (utils.is_function(nextPass)) {
-        setTimeout(function () { nextPass(); }, pause);
-      }
-    });
+    if (numMarketsToLoad > 0) {
+      this.getMarketsInfo({
+        branch: branchID,
+        offset: startIndex,
+        numMarketsToLoad: numMarketsToLoad,
+        volumeMin: volumeMin,
+        volumeMax: volumeMax
+      }, function (marketsData) {
+        var pause;
+        if (!marketsData || marketsData.error) {
+          chunkCB(marketsData);
+        } else {
+          chunkCB(null, marketsData);
+        }
+        pause = (Object.keys(marketsData).length) ? constants.PAUSE_BETWEEN_MARKET_BATCHES : 5;
+        if (isDesc && startIndex > 0) {
+          setTimeout(function () {
+            self.loadNextMarketsBatch(branchID, Math.max(startIndex - chunkSize, 0), chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass);
+          }, pause);
+        } else if (!isDesc && startIndex + chunkSize < numMarkets) {
+          setTimeout(function () {
+            self.loadNextMarketsBatch(branchID, startIndex + chunkSize, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass);
+          }, pause);
+        } else if (utils.is_function(nextPass)) {
+          nextPass();
+        }
+      });
+    } else if (utils.is_function(nextPass)) {
+      nextPass();
+    }
   },
 
   loadMarketsHelper: function (branchID, chunkSize, isDesc, chunkCB) {
