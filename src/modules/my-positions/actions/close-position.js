@@ -3,6 +3,7 @@ import { updateTradesInProgress } from 'modules/trade/actions/update-trades-in-p
 import { placeTrade } from 'modules/trade/actions/place-trade';
 import { addClosePositionTradeGroup } from 'modules/my-positions/actions/add-close-position-trade-group';
 import { clearClosePositionOutcome } from 'modules/my-positions/actions/clear-close-position-outcome';
+import selectAccountPositions from 'modules/user-open-orders/selectors/positions-plus-asks';
 
 import { loadBidsAsks } from 'modules/bids-asks/actions/load-bids-asks';
 
@@ -24,11 +25,13 @@ export function closePosition(marketID, outcomeID) {
 
     // Load order book + execute trade if possible
     dispatch(loadBidsAsks(marketID, () => {
-      const { orderBooks, accountPositions } = getState();
+      const { orderBooks, loginAccount } = getState();
       const orderBook = orderBooks[marketID];
+      const userAddress = loginAccount && loginAccount.address;
+      const accountPositions = selectAccountPositions();
 
       const outcomeShares = new BigNumber(getValue(accountPositions, `${marketID}.${outcomeID}`) || 0);
-      const bestFill = getBestFill(orderBook, outcomeShares.toNumber() > 0 ? BUY : SELL, outcomeShares.absoluteValue(), marketID, outcomeID);
+      const bestFill = getBestFill(orderBook, outcomeShares.toNumber() > 0 ? BUY : SELL, outcomeShares.absoluteValue(), marketID, outcomeID, userAddress);
 
       if (bestFill.amountOfShares.equals(ZERO)) {
         dispatch({
@@ -60,14 +63,14 @@ export function closePosition(marketID, outcomeID) {
   };
 }
 
-export function getBestFill(orderBook, side, shares, marketID, outcomeID) {
+export function getBestFill(orderBook, side, shares, marketID, outcomeID, userAddress) {
   let price = ZERO;
   let amountOfShares = ZERO;
 
   Object.keys(orderBook[side] || {}).reduce((p, orderID) => {
     const orderOutcome = getValue(orderBook, `${side}.${orderID}`);
 
-    if (orderOutcome.outcome === outcomeID) {
+    if (orderOutcome.outcome === outcomeID && orderOutcome.owner !== userAddress) {
       p.push(orderOutcome);
     }
 
