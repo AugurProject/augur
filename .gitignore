@@ -7,8 +7,6 @@ core
 *~
 node_modules/
 overflow/
-coverage/
-.nyc_output/
 target
 scratch
 
