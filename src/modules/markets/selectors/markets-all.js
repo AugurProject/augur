@@ -7,7 +7,6 @@ import {
   selectOutcomesDataState,
   selectNetEffectiveTradesState,
   selectAccountTradesState,
-  selectAccountPositionsState,
   selectTradesInProgressState,
   selectBranchState,
   selectSelectedFilterSortState,
@@ -17,6 +16,7 @@ import {
   selectSmallestPositionsState,
   selectLoginAccountState
 } from 'src/select-state';
+import selectAccountPositions from 'modules/user-open-orders/selectors/positions-plus-asks';
 import { isMarketDataOpen, isMarketDataExpired } from '../../../utils/is-market-data-open';
 import { assembleMarket, selectMarketReport } from '../../market/selectors/market';
 
@@ -29,7 +29,7 @@ export const selectMarkets = createSelector(
   selectFavoritesState,
   selectReportsState,
   selectOutcomesDataState,
-  selectAccountPositionsState,
+  selectAccountPositions,
   selectNetEffectiveTradesState,
   selectAccountTradesState,
   selectTradesInProgressState,

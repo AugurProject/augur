@@ -5,7 +5,7 @@ import { ZERO } from 'modules/trade/constants/numbers';
 import { abi } from 'services/augurjs';
 import { isOrderOfUser } from 'modules/bids-asks/helpers/is-order-of-user';
 
-export function selectAccountPositions() {
+export default function () {
   return selectPositionsPlusAsks(store.getState());
 }
 
@@ -29,6 +29,8 @@ export const selectPositionsPlusAsks = createBigCacheSelector(10)(
       marketID = adjustedMarkets[i];
       if (orderBooks[marketID]) {
         positionsPlusAsks[marketID] = selectMarketPositionPlusAsks(address, positions[marketID], orderBooks[marketID].sell);
+      } else {
+        positionsPlusAsks[marketID] = positions[marketID];
       }
     }
     return positionsPlusAsks;
