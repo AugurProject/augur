@@ -70,7 +70,7 @@ module.exports = {
         console.log("claimProceeds success:", market, res);
       }
       if (res.callReturn !== "1") return onFailed(res.callReturn);
-      self.rpc.receipt(res.hash, function (receipt) {
+      self.rpc.getTransactionReceipt(res.hash, function (receipt) {
         var logs, sig, i, numLogs, eventAPI;
         if (receipt && receipt.logs && receipt.logs.constructor === Array && receipt.logs.length) {
           logs = receipt.logs;

@@ -24,7 +24,7 @@ module.exports = {
     onFailed = onFailed || noop;
     this.BuyAndSellShares.cancel(trade_id, onSent, compose(function (result, cb) {
       if (!result || !result.callReturn) return cb(result);
-      self.rpc.receipt(result.hash, function (receipt) {
+      self.rpc.getTransactionReceipt(result.hash, function (receipt) {
         var logs, sig, numLogs, logdata, i;
         if (!receipt) return onFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
         if (receipt.error) return onFailed(receipt);

@@ -82,12 +82,12 @@ describe("payout.claimProceeds", function () {
   var Shares;
   before(function () {
     transact = augur.transact;
-    receipt = augur.rpc.receipt;
+    receipt = augur.rpc.getTransactionReceipt;
     augur.transact = function (tx, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx.params, ['0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d', '9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd']);
       onSuccess({ callReturn: callReturn, hash: '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055' });
     };
-    augur.rpc.receipt = function (hash, cb) {
+    augur.rpc.getTransactionReceipt = function (hash, cb) {
       var logs = [];
       for (var i = 0, numLogs = Cash.length; i < numLogs; i++) {
         logs.push({
@@ -108,7 +108,7 @@ describe("payout.claimProceeds", function () {
   });
   after(function () {
     augur.transact = transact;
-    augur.rpc.receipt = receipt;
+    augur.rpc.getTransactionReceipt = receipt;
   });
   var test = function (t) {
     it(t.testDescription, function () {

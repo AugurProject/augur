@@ -5,7 +5,7 @@ var augur = new (require("../../../src"))();
 
 describe("Transact", function () {
 	// 16 total tests
-  var rpcFire = augur.rpc.fire;
+  var rpcFire = augur.rpc.callContractFunction;
   var rpcTransact = augur.rpc.transact;
   var coinbase = augur.store.getState().coinbaseAddress;
   var from = augur.store.getState().fromAddress;
@@ -23,7 +23,7 @@ describe("Transact", function () {
     };
 
     before(function () {
-      augur.rpc.fire = function (tx, callback, wrapper, aux) {
+      augur.rpc.callContractFunction = function (tx, callback, wrapper, aux) {
         assert.deepEqual(callback, noop);
         assert.deepEqual(wrapper, noop);
         assert.deepEqual(aux, noop);
@@ -33,7 +33,7 @@ describe("Transact", function () {
     });
 
     after(function () {
-      augur.rpc.fire = rpcFire;
+      augur.rpc.callContractFunction = rpcFire;
     });
 
 

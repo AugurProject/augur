@@ -149,9 +149,9 @@ module.exports = {
         onSuccess: function (res) {
           if (self.options.debug.trading) console.log("commitTrade:", res);
           onCommitSuccess(res);
-          self.rpc.fastforward(1, function (blockNumber) {
+          self.rpc.waitForNextBlocks(1, function (blockNumber) {
             var tx;
-            if (self.options.debug.trading) console.log("fastforward:", blockNumber);
+            if (self.options.debug.trading) console.log("waitForNextBlocks:", blockNumber);
             onNextBlock(blockNumber);
             tx = clone(store.getState().contractsAPI.functions.Trade.trade);
             tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids, tradeGroupID || 0];
@@ -176,7 +176,7 @@ module.exports = {
                   }
                   return onTradeFailed({error: err, message: self.errors.trade[err], tx: tx, hash: txHash});
                 }
-                self.rpc.receipt(txHash, function (receipt) {
+                self.rpc.getTransactionReceipt(txHash, function (receipt) {
                   var parsedReceipt;
                   if (!receipt) return onTradeFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
                   if (receipt.error) return onTradeFailed(receipt);
@@ -247,7 +247,7 @@ module.exports = {
         onSent: onCommitSent,
         onSuccess: function (res) {
           onCommitSuccess(res);
-          self.rpc.fastforward(1, function (blockNumber) {
+          self.rpc.waitForNextBlocks(1, function (blockNumber) {
             var tx;
             onNextBlock(blockNumber);
             tx = clone(store.getState().contractsAPI.functions.Trade.short_sell);
@@ -273,7 +273,7 @@ module.exports = {
                   }
                   return onTradeFailed({error: err, message: self.errors.short_sell[err], tx: tx, hash: txHash});
                 }
-                self.rpc.receipt(txHash, function (receipt) {
+                self.rpc.getTransactionReceipt(txHash, function (receipt) {
                   var parsedReceipt;
                   if (!receipt) return onTradeFailed(self.errors.TRANSACTION_RECEIPT_NOT_FOUND);
                   if (receipt.error) return onTradeFailed(receipt);

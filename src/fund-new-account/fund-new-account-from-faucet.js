@@ -46,7 +46,7 @@ module.exports = function (registeredAddress, branch, onSent, onSuccess, onFaile
         async.until(function () {
           return balance > 0;
         }, function (callback) {
-          self.rpc.fastforward(1, function (nextBlock) {
+          self.rpc.waitForNextBlocks(1, function (nextBlock) {
             if (self.options.debug.accounts) console.log("Block:", nextBlock);
             self.rpc.balance(registeredAddress, function (ethBalance) {
               if (self.options.debug.accounts) console.debug("Balance:", ethBalance);

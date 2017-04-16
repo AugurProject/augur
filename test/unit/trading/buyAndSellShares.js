@@ -10,15 +10,15 @@ var noop = require("../../../src/utils/noop");
 describe('augur.cancel tests', function () {
 	// 7 tests total
   var transact = augur.transact;
-  var receipt = augur.rpc.receipt;
+  var receipt = augur.rpc.getTransactionReceipt;
   afterEach(function () {
     augur.transact = transact;
-    augur.rpc.receipt = receipt;
+    augur.rpc.getTransactionReceipt = receipt;
   });
   var test = function (t) {
     it(t.description, function (done) {
       augur.transact = t.transact;
-      augur.rpc.receipt = t.receipt;
+      augur.rpc.getTransactionReceipt = t.receipt;
       if (t.trade_id.constructor === Object) {
         augur.cancel({
           trade_id: t.trade_id.trade_id,

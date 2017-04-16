@@ -13,23 +13,23 @@ var augur = new Augur();
 describe("fund-new-account/fund-new-account-from-faucet", function () {
   var balance = augur.rpc.balance;
   var fundNewAccount = augur.fundNewAccount;
-  var fastforward = augur.rpc.fastforward;
+  var waitForNextBlocks = augur.rpc.waitForNextBlocks;
   var finished;
   var callCounts = {
     balance: 0,
-    fastforward: 0
+    waitForNextBlocks: 0
   };
   afterEach(function () {
     clearCallCounts(callCounts);
     augur.rpc.balance = balance;
     augur.fundNewAccount = fundNewAccount;
-    augur.rpc.fastforward = fastforward;
+    augur.rpc.waitForNextBlocks = waitForNextBlocks;
   });
   var test = function (t) {
     it(t.description, function (done) {
       augur.rpc.balance = t.balance || balance;
       augur.fundNewAccount = t.fundNewAccount || fundNewAccount;
-      augur.rpc.fastforward = t.fastforward || fastforward;
+      augur.rpc.waitForNextBlocks = t.waitForNextBlocks || waitForNextBlocks;
 
       finished = done;
       // before each test, call accounts module but replace request with our mock, then run the function exported from accounts with augur set as our this. finally call fundNewAccountFromFaucet to test.
@@ -47,7 +47,7 @@ describe("fund-new-account/fund-new-account-from-faucet", function () {
       assert.isNull(err);
       assert.deepEqual(callCounts, {
         balance: 0,
-        fastforward: 0
+        waitForNextBlocks: 0
       });
       finished();
     },
@@ -70,7 +70,7 @@ describe("fund-new-account/fund-new-account-from-faucet", function () {
       assert.isUndefined(err);
       assert.deepEqual(callCounts, {
         balance: 0,
-        fastforward: 0
+        waitForNextBlocks: 0
       });
       finished();
     },
@@ -93,7 +93,7 @@ describe("fund-new-account/fund-new-account-from-faucet", function () {
       assert.deepEqual(err, {});
       assert.deepEqual(callCounts, {
         balance: 0,
-        fastforward: 0
+        waitForNextBlocks: 0
       });
       finished();
     },
@@ -116,7 +116,7 @@ describe("fund-new-account/fund-new-account-from-faucet", function () {
       assert.deepEqual(err, new Error('Invalid URI "' + constants.FAUCET + '0x0000000000000000000000000000000000000001'));
       assert.deepEqual(callCounts, {
         balance: 0,
-        fastforward: 0
+        waitForNextBlocks: 0
       });
       finished();
     },
@@ -139,7 +139,7 @@ describe("fund-new-account/fund-new-account-from-faucet", function () {
       assert.deepEqual(err, 404);
       assert.deepEqual(callCounts, {
         balance: 0,
-        fastforward: 0
+        waitForNextBlocks: 0
       });
       finished();
     },
@@ -171,7 +171,7 @@ describe("fund-new-account/fund-new-account-from-faucet", function () {
       });
       assert.deepEqual(callCounts, {
         balance: 1,
-        fastforward: 0
+        waitForNextBlocks: 0
       });
       finished();
     },
@@ -187,7 +187,7 @@ describe("fund-new-account/fund-new-account-from-faucet", function () {
     }
   });
   test({
-    description: 'Should retry to fund account by fastforwarding through the blocks until we hit the most recent block and balance returns a value greater than 0',
+    description: 'Should retry to fund account by waitForNextBlocksing through the blocks until we hit the most recent block and balance returns a value greater than 0',
     registeredAddress: '0x1',
     branch: '101010',
     onSent: pass,
@@ -205,9 +205,9 @@ describe("fund-new-account/fund-new-account-from-faucet", function () {
         break;
       }
     },
-    fastforward: function (blocks, cb) {
-      callCounts.fastforward++;
-      switch(callCounts.fastforward) {
+    waitForNextBlocks: function (blocks, cb) {
+      callCounts.waitForNextBlocks++;
+      switch(callCounts.waitForNextBlocks) {
       case 4:
         cb('101010');
         break;
@@ -225,7 +225,7 @@ describe("fund-new-account/fund-new-account-from-faucet", function () {
       });
       assert.deepEqual(callCounts, {
         balance: 5,
-        fastforward: 4
+        waitForNextBlocks: 4
       });
       finished();
     },

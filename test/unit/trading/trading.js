@@ -284,27 +284,27 @@ describe("trade.parseShortSellReceipt", function () {
 describe("trade.trade", function () {
   var checkGasLimit = augur.checkGasLimit;
   var commitTrade = augur.commitTrade;
-  var fastforward = augur.rpc.fastforward;
+  var waitForNextBlocks = augur.rpc.waitForNextBlocks;
   var parseTradeReceipt = augur.parseTradeReceipt;
   var transact = augur.transact;
-  var receipt = augur.rpc.receipt;
+  var receipt = augur.rpc.getTransactionReceipt;
   var finished;
   afterEach(function () {
     augur.checkGasLimit = checkGasLimit;
     augur.commitTrade = commitTrade;
-    augur.rpc.fastforward = fastforward;
+    augur.rpc.waitForNextBlocks = waitForNextBlocks;
     augur.parseTradeReceipt = parseTradeReceipt;
     augur.transact = transact;
-    augur.rpc.receipt = receipt;
+    augur.rpc.getTransactionReceipt = receipt;
   });
   var test = function (t) {
     it(JSON.stringify(t), function (done) {
       augur.checkGasLimit = t.checkGasLimit;
       augur.commitTrade = t.commitTrade;
-      augur.rpc.fastforward = t.fastforward;
+      augur.rpc.waitForNextBlocks = t.waitForNextBlocks;
       augur.parseTradeReceipt = t.parseTradeReceipt;
       augur.transact = t.transact;
-      augur.rpc.receipt = t.receipt;
+      augur.rpc.getTransactionReceipt = t.receipt;
       finished = done;
 
       augur.trade(t.max_value, t.max_amount, t.trade_ids, t.tradeGroupID, t.sender, t.onTradeHash, t.onCommitSent, t.onCommitSuccess, t.onCommitFailed, t.onNextBlock, t.onTradeSent, t.onTradeSuccess, t.onTradeFailed);
@@ -335,7 +335,7 @@ describe("trade.trade", function () {
     },
     makeTradeHash: function () {},
     commitTrade: function () {},
-    fastforward: function () {},
+    waitForNextBlocks: function () {},
     parseTradeReceipt: function () {},
     transact: function () {}
   });
@@ -363,7 +363,7 @@ describe("trade.trade", function () {
     },
     makeTradeHash: function () {},
     commitTrade: function () {},
-    fastforward: function () {},
+    waitForNextBlocks: function () {},
     parseTradeReceipt: function () {},
     transact: function () {}
   });
@@ -394,7 +394,7 @@ describe("trade.trade", function () {
       trade.onSent();
       trade.onFailed({ error: 999, message: 'Uh-Oh!' });
     },
-    fastforward: function () {},
+    waitForNextBlocks: function () {},
     parseTradeReceipt: function () {},
     transact: function () {}
   });
@@ -429,7 +429,7 @@ describe("trade.trade", function () {
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function (forward, cb) {
+    waitForNextBlocks: function (forward, cb) {
       cb('0xb1');
     },
     parseTradeReceipt: function () {},
@@ -494,7 +494,7 @@ describe("trade.trade", function () {
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function (forward, cb) {
+    waitForNextBlocks: function (forward, cb) {
       cb('0xb1');
     },
     parseTradeReceipt: function () {},
@@ -545,7 +545,7 @@ describe("trade.trade", function () {
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function (forward, cb) {
+    waitForNextBlocks: function (forward, cb) {
       cb('0xb1');
     },
     parseTradeReceipt: function () {},
@@ -592,7 +592,7 @@ describe("trade.trade", function () {
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function (forward, cb) {
+    waitForNextBlocks: function (forward, cb) {
       cb('0xb1');
     },
     parseTradeReceipt: function () {},
@@ -647,7 +647,7 @@ describe("trade.trade", function () {
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function (forward, cb) {
+    waitForNextBlocks: function (forward, cb) {
       cb('0xb1');
     },
     parseTradeReceipt: function () {},
@@ -711,7 +711,7 @@ describe("trade.trade", function () {
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function (forward, cb) {
+    waitForNextBlocks: function (forward, cb) {
       cb('0xb1');
     },
     parseTradeReceipt: function (receipt) {
@@ -793,7 +793,7 @@ describe("trade.trade", function () {
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function (forward, cb) {
+    waitForNextBlocks: function (forward, cb) {
       cb('0xb1');
     },
     parseTradeReceipt: function (receipt) {},
@@ -850,7 +850,7 @@ describe("trade.trade", function () {
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function (forward, cb) {
+    waitForNextBlocks: function (forward, cb) {
       cb('0xb1');
     },
     parseTradeReceipt: function (receipt) {},
@@ -877,27 +877,27 @@ describe("trade.trade", function () {
 describe("trade.short_sell", function () {
   var checkGasLimit = augur.checkGasLimit;
   var commitTrade = augur.commitTrade;
-  var fastforward = augur.rpc.fastforward;
+  var waitForNextBlocks = augur.rpc.waitForNextBlocks;
   var parseShortSellReceipt = augur.parseShortSellReceipt;
   var transact = augur.transact;
-  var receipt = augur.rpc.receipt;
+  var receipt = augur.rpc.getTransactionReceipt;
   var finished;
   afterEach(function () {
     augur.checkGasLimit = checkGasLimit;
     augur.commitTrade = commitTrade;
-    augur.rpc.fastforward = fastforward;
+    augur.rpc.waitForNextBlocks = waitForNextBlocks;
     augur.parseShortSellReceipt = parseShortSellReceipt;
     augur.transact = transact;
-    augur.rpc.receipt = receipt;
+    augur.rpc.getTransactionReceipt = receipt;
   });
   var test = function (t) {
     it(JSON.stringify(t), function (done) {
       augur.checkGasLimit = t.checkGasLimit;
       augur.commitTrade = t.commitTrade;
-      augur.rpc.fastforward = t.fastforward;
+      augur.rpc.waitForNextBlocks = t.waitForNextBlocks;
       augur.parseShortSellReceipt = t.parseShortSellReceipt;
       augur.transact = t.transact;
-      augur.rpc.receipt = t.receipt;
+      augur.rpc.getTransactionReceipt = t.receipt;
       finished = done;
 
       augur.short_sell(t.buyer_trade_id, t.max_amount, t.tradeGroupID, t.sender, t.onTradeHash, t.onCommitSent, t.onCommitSuccess, t.onCommitFailed, t.onNextBlock, t.onTradeSent, t.onTradeSuccess, t.onTradeFailed);
@@ -926,7 +926,7 @@ describe("trade.short_sell", function () {
       cb({ error: 999, message: 'Uh-Oh!' });
     },
     commitTrade: function () {},
-    fastforward: function () {},
+    waitForNextBlocks: function () {},
     parseShortSellReceipt: function () {},
     transact: function () {},
     receipt: function () {}
@@ -959,7 +959,7 @@ describe("trade.short_sell", function () {
       trade.onSent();
       trade.onFailed({ error: 999, message: 'Uh-Oh!' });
     },
-    fastforward: function () {},
+    waitForNextBlocks: function () {},
     parseShortSellReceipt: function () {},
     transact: function () {},
     receipt: function () {}
@@ -996,7 +996,7 @@ describe("trade.short_sell", function () {
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function (forward, cb) {
+    waitForNextBlocks: function (forward, cb) {
       cb('0xb1');
     },
     parseShortSellReceipt: function () {},
@@ -1043,7 +1043,7 @@ describe("trade.short_sell", function () {
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function (forward, cb) {
+    waitForNextBlocks: function (forward, cb) {
       cb('0xb1');
     },
     parseShortSellReceipt: function () {},
@@ -1109,7 +1109,7 @@ describe("trade.short_sell", function () {
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function (forward, cb) {
+    waitForNextBlocks: function (forward, cb) {
       cb('0xb1');
     },
     parseShortSellReceipt: function () {},
@@ -1159,7 +1159,7 @@ describe("trade.short_sell", function () {
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function (forward, cb) {
+    waitForNextBlocks: function (forward, cb) {
       cb('0xb1');
     },
     parseShortSellReceipt: function () {},
@@ -1225,7 +1225,7 @@ describe("trade.short_sell", function () {
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function (forward, cb) {
+    waitForNextBlocks: function (forward, cb) {
       cb('0xb1');
     },
     parseShortSellReceipt: function () {},
@@ -1288,7 +1288,7 @@ describe("trade.short_sell", function () {
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function (forward, cb) {
+    waitForNextBlocks: function (forward, cb) {
       cb('0xb1');
     },
     parseShortSellReceipt: function () {},
@@ -1334,7 +1334,7 @@ describe("trade.short_sell", function () {
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function (forward, cb) {
+    waitForNextBlocks: function (forward, cb) {
       cb('0xb1');
     },
     parseShortSellReceipt: function () {},
@@ -1385,7 +1385,7 @@ describe("trade.short_sell", function () {
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function (forward, cb) {
+    waitForNextBlocks: function (forward, cb) {
       cb('0xb1');
     },
     parseShortSellReceipt: function (receipt) {},
@@ -1445,7 +1445,7 @@ describe("trade.short_sell", function () {
       trade.onSent();
       trade.onSuccess({ callReturn: '1' });
     },
-    fastforward: function (forward, cb) {
+    waitForNextBlocks: function (forward, cb) {
       cb('0xb1');
     },
     parseShortSellReceipt: function (receipt) {

@@ -73,7 +73,7 @@ describe("eth_call", function () {
       var tx = clone(augur.store.getState().contractsAPI.functions.Branches.getBranches);
 
       // sync
-      var branches = augur.rpc.fire(tx);
+      var branches = augur.rpc.callContractFunction(tx);
       assert.notProperty(branches, "error");
       assert.isAbove(branches.length, 0);
       assert.isArray(branches);
@@ -83,7 +83,7 @@ describe("eth_call", function () {
       );
 
       // async
-      augur.rpc.fire(tx, function (branches) {
+      augur.rpc.callContractFunction(tx, function (branches) {
         assert.notProperty(branches, "error");
         assert.isAbove(branches.length, 0);
         assert.isArray(branches);
@@ -247,7 +247,7 @@ describe("Concurrent transactions", function () {
             var tx2 = clone(augur.store.getState().contractsAPI.functions.Faucets.fundNewAccount);
             tx1.params = [random.hash()];
             tx2.params = [random.hash()];
-            var txCount = parseInt(augur.rpc.pendingTxCount(user.address), 16);
+            var txCount = parseInt(augur.rpc.getPendingTransactionCount(user.address), 16);
             tx1.nonce = txCount;
             tx2.nonce = txCount + 1;
             augur.transact(tx1, function (r) {
@@ -313,7 +313,7 @@ describe("Concurrent transactions", function () {
             var tx2 = clone(augur.store.getState().contractsAPI.functions.Faucets.fundNewAccount);
             tx1.params = [random.hash()];
             tx2.params = [random.hash()];
-            var txCount = parseInt(augur.rpc.pendingTxCount(user.address), 16);
+            var txCount = parseInt(augur.rpc.getPendingTransactionCount(user.address), 16);
             tx1.nonce = txCount;
             tx2.nonce = txCount + 1;
             augur.transact(tx1, function (r) {
@@ -375,7 +375,7 @@ describe("Concurrent transactions", function () {
             var tx2 = clone(augur.store.getState().contractsAPI.functions.Faucets.fundNewAccount);
             tx1.params = [random.hash()];
             tx2.params = [random.hash()];
-            var txCount = parseInt(augur.rpc.pendingTxCount(user.address), 16);
+            var txCount = parseInt(augur.rpc.getPendingTransactionCount(user.address), 16);
             tx1.nonce = txCount;
             tx2.nonce = txCount;
             augur.transact(tx1, function (r) {

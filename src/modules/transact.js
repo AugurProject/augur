@@ -16,7 +16,7 @@ module.exports = {
     } else {
       tx.from = tx.from || state.fromAddress || state.coinbaseAddress;
     }
-    return this.rpc.fire(tx, callback, wrapper, aux);
+    return this.rpc.callContractFunction(tx, callback, wrapper, aux);
   },
 
   transact: function (tx, onSent, onSuccess, onFailed) {
