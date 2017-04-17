@@ -4,7 +4,7 @@ var abi = require("augur-abi");
 
 module.exports = function () {
 
-  var rpc = this.rpc;
+  var augur = this;
 
   return {
 
@@ -31,10 +31,10 @@ module.exports = function () {
 
     joinRoom: function (roomName, onMessages) {
       var self = this;
-      if (!this.whisper.id) this.whisper.id = rpc.shh("newIdentity");
+      if (!this.whisper.id) this.whisper.id = augur.rpc.shh("newIdentity");
       if (!this.whisper.filters[roomName]) {
         this.whisper.filters[roomName] = {
-          id: rpc.shh("newFilter", {
+          id: augur.rpc.shh("newFilter", {
             topics: [abi.prefix_hex(abi.encode_hex(roomName))]
           }),
           heartbeat: setInterval(function () {
@@ -45,7 +45,7 @@ module.exports = function () {
           }, this.POLL_INTERVAL)
         };
       }
-      rpc.shh("getMessages", this.whisper.filters[roomName].id, function (messages) {
+      augur.rpc.shh("getMessages", this.whisper.filters[roomName].id, function (messages) {
         onMessages(self.parseMessages(messages));
       });
     },
@@ -53,7 +53,7 @@ module.exports = function () {
     getNewMessages: function (roomName, callback) {
       var self = this;
       if (this.whisper.filters[roomName] && this.whisper.filters[roomName].id) {
-        rpc.shh("getFilterChanges", this.whisper.filters[roomName].id, function (messages) {
+        augur.rpc.shh("getFilterChanges", this.whisper.filters[roomName].id, function (messages) {
           callback(null, self.parseMessages(messages));
         });
       }
@@ -66,7 +66,7 @@ module.exports = function () {
         message: message,
         timestamp: new Date().getTime()
       };
-      rpc.shh("post", {
+      augur.rpc.shh("post", {
         from: this.whisper.id,
         topics: [abi.prefix_hex(abi.encode_hex(roomName))],
         payload: abi.prefix_hex(abi.encode_hex(JSON.stringify(payload))),
@@ -80,7 +80,7 @@ module.exports = function () {
 
     leaveRoom: function (roomName, callback) {
       var self = this;
-      rpc.shh("uninstallFilter", this.whisper.filters[roomName].id, function (uninstalled) {
+      augur.rpc.shh("uninstallFilter", this.whisper.filters[roomName].id, function (uninstalled) {
         if (!uninstalled) return callback("couldn't leave room: " + roomName);
         clearInterval(self.whisper.filters[roomName].heartbeat);
         self.whisper.filters[roomName] = null;

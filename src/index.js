@@ -74,11 +74,8 @@ function Augur() {
   this.abi = require("augur-abi");
   this.constants = require("./constants");
   this.utils = require("./utilities");
-  this.rpc = require("ethrpc");
   this.subscriptionsSupported = false;
-  this.errors = this.rpc.errors;
-  this.abi.debug = this.options.debug.abi;
-  this.rpc.debug = this.options.debug;
+  this.errors = require("ethrpc").errors;
 
   // Load submodules
   for (i = 0, len = modules.length; i < len; ++i) {
