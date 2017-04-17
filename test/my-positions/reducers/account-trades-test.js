@@ -54,7 +54,7 @@ describe('modules/my-positions/reducers/account-trades.js', () => {
           data: {
             1: [
               {
-                tradeid: '0xTRADEID1'
+                transactionHash: '0xTRANSACTIONHASH1'
               }
             ]
           },
@@ -65,7 +65,7 @@ describe('modules/my-positions/reducers/account-trades.js', () => {
         '0xMARKETID1': {
           1: [
             {
-              tradeid: '0xTRADEID1'
+              transactionHash: '0xTRANSACTIONHASH1'
             }
           ]
         }
@@ -83,20 +83,20 @@ describe('modules/my-positions/reducers/account-trades.js', () => {
           '0xMARKETID2': {
             2: [
               {
-                tradeid: '0x2TRADEID2'
+                transactionHash: '0x2TRANSACTIONHASH2'
               },
               {
-                tradeid: '0x2TRADEID1'
+                transactionHash: '0x2TRANSACTIONHASH1'
               }
             ]
           },
           '0xMARKETID1': {
             1: [
               {
-                tradeid: '0xTRADEID2'
+                transactionHash: '0xTRANSACTIONHASH2'
               },
               {
-                tradeid: '0xTRADEID1'
+                transactionHash: '0xTRANSACTIONHASH1'
               }
             ]
           }
@@ -106,7 +106,7 @@ describe('modules/my-positions/reducers/account-trades.js', () => {
           data: {
             1: [
               {
-                tradeid: '0xTRADEID1'
+                transactionHash: '0xTRANSACTIONHASH1'
               }
             ]
           },
@@ -117,20 +117,20 @@ describe('modules/my-positions/reducers/account-trades.js', () => {
         '0xMARKETID2': {
           2: [
             {
-              tradeid: '0x2TRADEID2'
+              transactionHash: '0x2TRANSACTIONHASH2'
             },
             {
-              tradeid: '0x2TRADEID1'
+              transactionHash: '0x2TRANSACTIONHASH1'
             }
           ]
         },
         '0xMARKETID1': {
           1: [
             {
-              tradeid: '0xTRADEID2'
+              transactionHash: '0xTRANSACTIONHASH2'
             },
             {
-              tradeid: '0xTRADEID1'
+              transactionHash: '0xTRANSACTIONHASH1'
             }
           ]
         }
@@ -148,20 +148,20 @@ describe('modules/my-positions/reducers/account-trades.js', () => {
           '0xMARKETID2': {
             2: [
               {
-                tradeid: '0x2TRADEID2'
+                transactionHash: '0x2TRANSACTIONHASH2'
               },
               {
-                tradeid: '0x2TRADEID1'
+                transactionHash: '0x2TRANSACTIONHASH1'
               }
             ]
           },
           '0xMARKETID1': {
             1: [
               {
-                tradeid: '0xTRADEID2'
+                transactionHash: '0xTRANSACTIONHASH2'
               },
               {
-                tradeid: '0xTRADEID1'
+                transactionHash: '0xTRANSACTIONHASH1'
               }
             ]
           }
@@ -171,7 +171,7 @@ describe('modules/my-positions/reducers/account-trades.js', () => {
           data: {
             1: [
               {
-                tradeid: '0xTRADEID3'
+                transactionHash: '0xTRANSACTIONHASH3'
               }
             ]
           },
@@ -182,23 +182,23 @@ describe('modules/my-positions/reducers/account-trades.js', () => {
         '0xMARKETID2': {
           2: [
             {
-              tradeid: '0x2TRADEID2'
+              transactionHash: '0x2TRANSACTIONHASH2'
             },
             {
-              tradeid: '0x2TRADEID1'
+              transactionHash: '0x2TRANSACTIONHASH1'
             }
           ]
         },
         '0xMARKETID1': {
           1: [
             {
-              tradeid: '0xTRADEID2'
+              transactionHash: '0xTRANSACTIONHASH2'
             },
             {
-              tradeid: '0xTRADEID1'
+              transactionHash: '0xTRANSACTIONHASH1'
             },
             {
-              tradeid: '0xTRADEID3'
+              transactionHash: '0xTRANSACTIONHASH3'
             },
           ]
         }
