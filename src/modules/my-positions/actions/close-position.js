@@ -3,7 +3,7 @@ import { updateTradesInProgress } from 'modules/trade/actions/update-trades-in-p
 import { placeTrade } from 'modules/trade/actions/place-trade';
 import { addClosePositionTradeGroup } from 'modules/my-positions/actions/add-close-position-trade-group';
 import { clearClosePositionOutcome } from 'modules/my-positions/actions/clear-close-position-outcome';
-import selectAccountPositions from 'modules/user-open-orders/selectors/positions-plus-asks';
+import selectAllMarkets from 'modules/markets/selectors/markets-all';
 
 import { loadBidsAsks } from 'modules/bids-asks/actions/load-bids-asks';
 
@@ -26,12 +26,13 @@ export function closePosition(marketID, outcomeID) {
     // Load order book + execute trade if possible
     dispatch(loadBidsAsks(marketID, () => {
       const { orderBooks, loginAccount } = getState();
+      const markets = selectAllMarkets();
+      const market = markets.length ? markets.find(market => market.id === marketID) : null;
+      const positionOutcome = market ? market.myPositionOutcomes.find(outcome => outcome.id === outcomeID) : null;
+      const positionShares = new BigNumber(getValue(positionOutcome, 'position.qtyShares.value') || '0');
       const orderBook = orderBooks[marketID];
       const userAddress = loginAccount && loginAccount.address;
-      const accountPositions = selectAccountPositions();
-
-      const outcomeShares = new BigNumber(getValue(accountPositions, `${marketID}.${outcomeID}`) || 0);
-      const bestFill = getBestFill(orderBook, outcomeShares.toNumber() > 0 ? BUY : SELL, outcomeShares.absoluteValue(), marketID, outcomeID, userAddress);
+      const bestFill = getBestFill(orderBook, positionShares.toNumber() > 0 ? BUY : SELL, positionShares.absoluteValue(), marketID, outcomeID, userAddress);
 
       if (bestFill.amountOfShares.equals(ZERO)) {
         dispatch({
@@ -42,7 +43,7 @@ export function closePosition(marketID, outcomeID) {
         dispatch(clearClosePositionOutcome(marketID, outcomeID));
         dispatch(addClosePositionTradeGroup(marketID, outcomeID, CLOSE_DIALOG_NO_ORDERS));
       } else {
-        dispatch(updateTradesInProgress(marketID, outcomeID, outcomeShares.toNumber() > 0 ? SELL : BUY, bestFill.amountOfShares.toNumber(), bestFill.price.toNumber(), null, () => {
+        dispatch(updateTradesInProgress(marketID, outcomeID, positionShares.toNumber() > 0 ? SELL : BUY, bestFill.amountOfShares.toNumber(), bestFill.price.toNumber(), null, () => {
           const { tradesInProgress } = getState();
           dispatch(placeTrade(marketID, outcomeID, tradesInProgress[marketID], true, (err, tradeGroupID) => {
             if (err) {

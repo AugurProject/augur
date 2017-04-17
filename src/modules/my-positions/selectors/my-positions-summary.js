@@ -23,7 +23,6 @@ export const generateOutcomePositionSummary = memoize((adjustedPosition, outcome
 
   const trades = outcomeAccountTrades ? outcomeAccountTrades.slice() : [];
   const { position, realized, unrealized, meanOpenPrice } = augur.calculateProfitLoss(trades, lastPrice);
-
   const isClosable = !!new BigNumber(position || '0').toNumber(); // Based on position, can we attempt to close this position
 
   return {
