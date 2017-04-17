@@ -11,8 +11,6 @@ import { getBestFill } from 'modules/my-positions/actions/close-position';
 import { BUY, SELL } from 'modules/trade/constants/types';
 import { UPDATE_TRADE_COMMIT_LOCK } from 'modules/trade/actions/update-trade-commitment';
 
-import { formatShares } from 'utils/format-number';
-
 describe('modules/my-positions/actions/close-position.js', () => {
   proxyquire.noPreserveCache().noCallThru();
 
