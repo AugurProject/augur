@@ -1,4 +1,4 @@
-import { createBigCacheSelector } from 'utils/big-cache-selector';
+import { createSelector } from 'reselect';
 import store from 'src/store';
 import { selectClosePositionTradeGroupsState, selectTransactionsDataState } from 'src/select-state';
 import { clearClosePositionOutcome } from 'modules/my-positions/actions/clear-close-position-outcome';
@@ -11,7 +11,7 @@ export default function () {
   return selectClosePositionStatus(store.getState());
 }
 
-export const selectClosePositionStatus = createBigCacheSelector(5)(
+export const selectClosePositionStatus = createSelector(
   selectClosePositionTradeGroupsState,
   selectTransactionsDataState,
   (closePositionTradeGroups, transactionsData) => {
