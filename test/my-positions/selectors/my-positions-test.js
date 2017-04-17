@@ -51,6 +51,13 @@ describe(`modules/my-positions/selectors/my-positions.js`, () => {
               '0xMARKETID1': {},
               '0xMARKETID3': {}
             }
+          ),
+          selectAccountTradesState: () => (
+            {
+              '0xMARKETID1': {},
+              '0xMARKETID2': {},
+              '0xMARKETID3': {}
+            }
           )
         };
 
