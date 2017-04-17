@@ -11,6 +11,8 @@ import { getBestFill } from 'modules/my-positions/actions/close-position';
 import { BUY, SELL } from 'modules/trade/constants/types';
 import { UPDATE_TRADE_COMMIT_LOCK } from 'modules/trade/actions/update-trade-commitment';
 
+import { formatShares } from 'utils/format-number';
+
 describe('modules/my-positions/actions/close-position.js', () => {
   proxyquire.noPreserveCache().noCallThru();
 
@@ -42,13 +44,21 @@ describe('modules/my-positions/actions/close-position.js', () => {
       loadBidsAsks: () => {}
     };
     sinon.stub(mockLoadBidsAsks, 'loadBidsAsks', (marketID, cb) => dispatch => cb());
-    const mockPositionsPlusAsks = sinon.stub().returns({
-      '0xMARKETID': {
-        1: '10',
-        2: '0',
-        3: '0'
+    const mockMarkets = sinon.stub().returns([
+      {
+        id: '0xMARKETID',
+        myPositionOutcomes: [
+          {
+            id: '1',
+            position: {
+              qtyShares: {
+                value: 10
+              }
+            }
+          }
+        ]
       }
-    });
+    ]);
 
     const action = proxyquire('../../../src/modules/my-positions/actions/close-position.js', {
       '../../trade/actions/update-trades-in-progress': mockUpdateTradesInProgress,
@@ -56,7 +66,7 @@ describe('modules/my-positions/actions/close-position.js', () => {
       './add-close-position-trade-group': mockAddClosePositionTradeGroup,
       './clear-close-position-outcome': mockClearClosePositionOutcome,
       '../../bids-asks/actions/load-bids-asks': mockLoadBidsAsks,
-      '../../user-open-orders/selectors/positions-plus-asks': mockPositionsPlusAsks
+      '../../markets/selectors/markets-all': mockMarkets
     });
 
     afterEach(() => {
@@ -160,6 +170,20 @@ describe('modules/my-positions/actions/close-position.js', () => {
         tradesInProgress: {},
         loginAccount: {
           address: '0xUSERADDRESS'
+        },
+        marketsData: {
+          '0xMARKETID': {
+            myPositionOutcomes: [
+              0: {
+                id: '1',
+                position: {
+                  qtyShares: {
+                    value: 10
+                  }
+                }
+              }
+            ]
+          }
         }
       },
       placeTradeFails: true,
