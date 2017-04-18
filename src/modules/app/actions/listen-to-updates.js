@@ -1,16 +1,16 @@
 import BigNumber from 'bignumber.js';
-import { augur, abi } from '../../../services/augurjs';
-import { updateAssets } from '../../auth/actions/update-assets';
-import { syncBlockchain } from '../../app/actions/sync-blockchain';
-import { syncBranch } from '../../branch/actions/sync-branch';
-import { addOrder, removeOrder, fillOrder } from '../../bids-asks/actions/update-market-order-book';
-import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
-import { updateOutcomePrice } from '../../markets/actions/update-outcome-price';
-import { claimProceeds } from '../../my-positions/actions/claim-proceeds';
-import { convertLogsToTransactions, convertTradeLogToTransaction } from '../../transactions/actions/convert-logs-to-transactions';
-import { updateMarketTopicPopularity } from '../../topics/actions/update-topics';
-import { SELL } from '../../outcomes/constants/trade-types';
-import { loadFullMarketWithPosition } from '../../my-positions/actions/load-full-market-with-position';
+import { augur, abi } from 'services/augurjs';
+import { updateAssets } from 'modules/auth/actions/update-assets';
+import { syncBlockchain } from 'modules/app/actions/sync-blockchain';
+import { syncBranch } from 'modules/branch/actions/sync-branch';
+import { fillOrder } from 'modules/bids-asks/actions/update-market-order-book';
+import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
+import { updateOutcomePrice } from 'modules/markets/actions/update-outcome-price';
+import { claimProceeds } from 'modules/my-positions/actions/claim-proceeds';
+import { convertLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
+import { updateMarketTopicPopularity } from 'modules/topics/actions/update-topics';
+import { SELL } from 'modules/outcomes/constants/trade-types';
+import { updateAccountBidsAsksData, updateAccountCancelsData, updateAccountTradesData } from 'modules/my-positions/actions/update-account-trades-data';
 
 export function listenToUpdates() {
   return (dispatch, getState) => {
@@ -91,21 +91,20 @@ export function listenToUpdates() {
       // trade filled: { market, outcome (id), price }
       log_fill_tx: (msg) => {
         console.log('log_fill_tx:', msg);
-        if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
+        if (msg && msg.market && msg.price && msg.outcome != null) {
           dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
           dispatch(updateMarketTopicPopularity(msg.market, msg.amount));
           const { address } = getState().loginAccount;
           if (msg.sender !== address) dispatch(fillOrder(msg));
           if (msg.sender === address || msg.owner === address) {
-            dispatch(convertTradeLogToTransaction('log_fill_tx', {
+            dispatch(updateAccountTradesData({
               [msg.market]: { [msg.outcome]: [{
                 ...msg,
                 maker: msg.owner === address
               }] }
-            }, msg.market));
+            }));
             dispatch(updateAssets());
             dispatch(loadMarketsInfo([msg.market]));
-            dispatch(loadFullMarketWithPosition(msg.market));
           }
         }
       },
@@ -113,24 +112,24 @@ export function listenToUpdates() {
       // short sell filled
       log_short_fill_tx: (msg) => {
         console.log('log_short_fill_tx:', msg);
-        if (msg && msg.market && msg.price && msg.outcome !== undefined && msg.outcome !== null) {
+        if (msg && msg.market && msg.price && msg.outcome != null) {
           dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
           dispatch(updateMarketTopicPopularity(msg.market, msg.amount));
-          if (msg.sender !== address) dispatch(fillOrder({ ...msg, type: SELL }));
+
           const { address } = getState().loginAccount;
+          if (msg.sender !== address) dispatch(fillOrder({ ...msg, type: SELL }));
 
           // if the user is either the maker or taker, add it to the transaction display
           if (msg.sender === address || msg.owner === address) {
-            dispatch(convertTradeLogToTransaction('log_fill_tx', {
+            dispatch(updateAccountTradesData({
               [msg.market]: { [msg.outcome]: [{
                 ...msg,
                 isShortSell: true,
                 maker: msg.owner === address
               }] }
-            }, msg.market));
+            }));
             dispatch(updateAssets());
             dispatch(loadMarketsInfo([msg.market]));
-            dispatch(loadFullMarketWithPosition(msg.market));
           }
         }
       },
@@ -138,7 +137,7 @@ export function listenToUpdates() {
       // order added to orderbook
       log_add_tx: (msg) => {
         console.log('log_add_tx:', msg);
-        if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
+        if (msg && msg.market && msg.outcome != null) {
           if (msg.isShortAsk) {
             const market = getState().marketsData[msg.market];
             if (market && market.numOutcomes) {
@@ -152,15 +151,15 @@ export function listenToUpdates() {
               }));
             }
           }
-          dispatch(addOrder(msg));
 
           // if this is the user's order, then add it to the transaction display
           if (msg.sender === getState().loginAccount.address) {
-            dispatch(convertTradeLogToTransaction('log_add_tx', {
-              [msg.market]: { [msg.outcome]: [msg] }
-            }, msg.market));
+            dispatch(updateAccountBidsAsksData({
+              [msg.market]: {
+                [msg.outcome]: [msg]
+              }
+            }));
             dispatch(updateAssets());
-            dispatch(loadFullMarketWithPosition(msg.market));
           }
         }
       },
@@ -168,14 +167,12 @@ export function listenToUpdates() {
       // order removed from orderbook
       log_cancel: (msg) => {
         console.log('log_cancel:', msg);
-        if (msg && msg.market && msg.outcome !== undefined && msg.outcome !== null) {
-          dispatch(removeOrder(msg));
-
+        if (msg && msg.market && msg.outcome != null) {
           // if this is the user's order, then add it to the transaction display
           if (msg.sender === getState().loginAccount.address) {
-            dispatch(convertTradeLogToTransaction('log_cancel', {
+            dispatch(updateAccountCancelsData({
               [msg.market]: { [msg.outcome]: [msg] }
-            }, msg.market));
+            }));
             dispatch(updateAssets());
           }
         }

@@ -1,11 +1,13 @@
 const shell = require('shelljs');
 
-shell.echo('== Running Augur Coverage ==');
+const colors = require('./common/colors');
+
+shell.echo(colors.title('== Running Augur Coverage =='));
 
 process.env.NODE_ENV = 'test';
 process.env.FORCE_COLOR = true;
 
-shell.exec('istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- --require babel-register --timeout 10000 -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rimraf ./coverage', (code) => {
+shell.exec('./node_modules/nyc/bin/nyc.js ./node_modules/mocha/bin/_mocha && node ./node_modules/rimraf/bin.js ./.nyc_output', (code) => {
   if (code !== 0) {
     shell.exit(code);
   }

@@ -1,7 +1,7 @@
 import { createBigCacheSelector } from 'utils/big-cache-selector';
 import store from 'src/store';
 import { selectKeywordsState, selectSelectedFilterSortState, selectSelectedTagsState, selectSelectedTopicState, selectBranchReportPeriod } from 'src/select-state';
-import { selectMarkets } from '../../markets/selectors/markets-all';
+import selectAllMarkets from '../../markets/selectors/markets-all';
 import { cleanKeywordsArray } from '../../../utils/clean-keywords';
 import { FILTER_TYPE_OPEN, FILTER_TYPE_CLOSED, FILTER_TYPE_REPORTING } from '../../markets/constants/filter-sort';
 import { isMarketDataOpen } from '../../../utils/is-market-data-open';
@@ -11,7 +11,7 @@ export default function () {
 }
 
 export const selectFilteredMarkets = createBigCacheSelector(3)(
-  selectMarkets,
+  selectAllMarkets,
   selectKeywordsState,
   selectSelectedTagsState,
   selectSelectedTopicState,

@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import store from 'src/store';
 import { selectActiveViewState, selectSelectedMarketsHeaderState } from 'src/select-state';
-import { selectMarkets } from '../../markets/selectors/markets-all';
+import selectAllMarkets from '../../markets/selectors/markets-all';
 import { selectFilteredMarkets } from '../../markets/selectors/markets-filtered';
 import { selectFavoriteMarkets } from '../../markets/selectors/markets-favorite';
 import { MY_POSITIONS } from '../../app/constants/views';
@@ -12,7 +12,7 @@ export default function () {
 }
 
 export const selectUnpaginatedMarkets = createSelector(
-  selectMarkets,
+  selectAllMarkets,
   selectFilteredMarkets,
   selectFavoriteMarkets,
   selectActiveViewState,
@@ -26,13 +26,13 @@ export const selectUnpaginatedMarkets = createSelector(
 );
 
 export const selectPositions = createSelector(
-  selectMarkets,
+  selectAllMarkets,
   markets => markets.filter(market => (
     market.positionsSummary && market.positionsSummary.qtyShares.value
   ))
 );
 
 export const selectPendingReports = createSelector(
-  selectMarkets,
+  selectAllMarkets,
   markets => markets.filter(market => !!market.isPendingReport)
 );

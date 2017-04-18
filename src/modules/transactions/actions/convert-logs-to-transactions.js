@@ -1,9 +1,9 @@
 import async from 'async';
-import { augur } from '../../../services/augurjs';
-import { SUCCESS } from '../../transactions/constants/statuses';
-import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
-import { updateMarketsData } from '../../markets/actions/update-markets-data';
-import { constructTransaction, constructTradingTransaction, constructBasicTransaction } from '../../transactions/actions/construct-transaction';
+import { augur } from 'services/augurjs';
+import { SUCCESS } from 'modules/transactions/constants/statuses';
+import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data';
+import { updateMarketsData } from 'modules/markets/actions/update-markets-data';
+import { constructTransaction, constructTradingTransaction, constructBasicTransaction } from 'modules/transactions/actions/construct-transaction';
 
 export function convertTradeLogToTransaction(label, data, marketID) {
   return (dispatch, getState) => {

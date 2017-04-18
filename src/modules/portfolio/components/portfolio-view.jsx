@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
 
-import MyPositions from 'modules/my-positions/my-positions-container';
-import MyMarkets from 'modules/my-markets/my-markets-container';
-import MyReports from 'modules/my-reports/my-reports-container';
+import MyPositions from 'modules/my-positions/container';
+import MyMarkets from 'modules/my-markets/container';
+import MyReports from 'modules/my-reports/container';
 
 import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views';
 

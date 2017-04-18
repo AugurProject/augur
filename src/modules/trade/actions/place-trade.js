@@ -2,7 +2,7 @@ import { augur } from '../../../services/augurjs';
 import { updateTradeCommitment, updateTradeCommitLock } from '../../trade/actions/update-trade-commitment';
 import { clearTradeInProgress } from '../../trade/actions/update-trades-in-progress';
 
-export const placeTrade = (marketID, outcomeID, trades, doNotMakeOrders, callback) => (dispatch, getState) => {
+export const placeTrade = (marketID, outcomeID, trades, doNotMakeOrders, cb) => (dispatch, getState) => {
   if (!marketID) return null;
   const { loginAccount, marketsData } = getState();
   const market = marketsData[marketID];
@@ -22,9 +22,9 @@ export const placeTrade = (marketID, outcomeID, trades, doNotMakeOrders, callbac
     isLocked => dispatch(updateTradeCommitLock(isLocked)),
     (err, tradeGroupID) => {
       if (err) console.error('place trade:', err, marketID, tradeGroupID);
-      if (callback) callback(err, tradeGroupID);
+      cb && cb(err, tradeGroupID);
     }
   );
   dispatch(clearTradeInProgress(marketID));
-  console.log('tradeGroupID:', tradeGroupID);
+  cb && cb(null, tradeGroupID);
 };

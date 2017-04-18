@@ -17,7 +17,6 @@ const MyPosition = (p) => {
   const quantityOfShares = setShareDenomination(getValue(p, 'position.qtyShares.formatted'), selectedShareDenomination);
 
   const isClosable = getValue(p, 'position.isClosable');
-  const isFullyClosable = getValue(p, 'position.isFullyClosable');
   const closePosition = getValue(p, 'position.closePosition');
 
   const status = getValue(p, `closePositionStatus.${marketID}.${outcomeID}`);
@@ -69,7 +68,6 @@ const MyPosition = (p) => {
           quantityOfShares={quantityOfShares}
           closePosition={closePosition}
           isClosable={isClosable}
-          isFullyClosable={isFullyClosable}
           status={status}
           isTradeCommitLocked={p.isTradeCommitLocked}
         />

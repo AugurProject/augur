@@ -5,9 +5,10 @@ import configureMockStore from 'redux-mock-store';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 
-import { CLOSE_DIALOG_CLOSING, CLOSE_DIALOG_FAILED, CLOSE_DIALOG_PARTIALLY_FAILED, CLOSE_DIALOG_SUCCESS } from 'modules/market/constants/close-dialog-status';
+import { CLOSE_DIALOG_CLOSING, CLOSE_DIALOG_NO_ORDERS, CLOSE_DIALOG_FAILED, CLOSE_DIALOG_PARTIALLY_FAILED, CLOSE_DIALOG_SUCCESS } from 'modules/market/constants/close-dialog-status';
 import { SUCCESS, FAILED } from 'modules/transactions/constants/statuses';
 import { CLEAR_CLOSE_POSITION_OUTCOME } from 'modules/my-positions/actions/clear-close-position-outcome';
+import { UPDATE_TRADE_COMMIT_LOCK } from 'modules/trade/actions/update-trade-commitment';
 
 describe('modules/my-positions/selectors/close-position-status', function () {
   proxyquire.noPreserveCache().noCallThru();
@@ -53,11 +54,13 @@ describe('modules/my-positions/selectors/close-position-status', function () {
       }
     },
     assertions: (res) => {
-      assert.deepEqual(res, {
+      const expected = {
         '0xMarketID1': {
           0: CLOSE_DIALOG_CLOSING
         }
-      });
+      };
+
+      assert.deepEqual(res, expected, `Didn't return the expected object`);
     }
   });
 
@@ -79,11 +82,13 @@ describe('modules/my-positions/selectors/close-position-status', function () {
       }
     },
     assertions: (res) => {
-      assert.deepEqual(res, {
+      const expected = {
         '0xMarketID1': {
           0: CLOSE_DIALOG_CLOSING
         }
-      });
+      };
+
+      assert.deepEqual(res, expected, `Didn't return the expected object`);
     }
   });
 
@@ -102,19 +107,31 @@ describe('modules/my-positions/selectors/close-position-status', function () {
       }
     },
     assertions: (res, store, clock) => {
-      assert.deepEqual(res, {
+      let expected = {
         '0xMarketID1': {
           0: CLOSE_DIALOG_FAILED
         }
-      });
+      };
+
+      assert.deepEqual(res, expected, `Didn't return the expected object`);
 
       clock.tick(3000);
 
-      assert.deepEqual(store.getActions(), [{
-        type: CLEAR_CLOSE_POSITION_OUTCOME,
-        marketID: '0xMarketID1',
-        outcomeID: '0'
-      }]);
+      const actual = store.getActions();
+
+      expected = [
+        {
+          type: UPDATE_TRADE_COMMIT_LOCK,
+          isLocked: false
+        },
+        {
+          type: CLEAR_CLOSE_POSITION_OUTCOME,
+          marketID: '0xMarketID1',
+          outcomeID: '0'
+        }
+      ];
+
+      assert.deepEqual(actual, expected, `Didn't return the expected actions`);
     }
   });
 
@@ -141,19 +158,31 @@ describe('modules/my-positions/selectors/close-position-status', function () {
       }
     },
     assertions: (res, store, clock) => {
-      assert.deepEqual(res, {
+      let expected = {
         '0xMarketID1': {
           0: CLOSE_DIALOG_FAILED
         }
-      });
+      };
+
+      assert.deepEqual(res, expected, `Didn't return the expected object`);
 
       clock.tick(3000);
 
-      assert.deepEqual(store.getActions(), [{
-        type: CLEAR_CLOSE_POSITION_OUTCOME,
-        marketID: '0xMarketID1',
-        outcomeID: '0'
-      }]);
+      const actual = store.getActions();
+
+      expected = [
+        {
+          type: UPDATE_TRADE_COMMIT_LOCK,
+          isLocked: false
+        },
+        {
+          type: CLEAR_CLOSE_POSITION_OUTCOME,
+          marketID: '0xMarketID1',
+          outcomeID: '0'
+        }
+      ];
+
+      assert.deepEqual(actual, expected, `Didn't return the expected actions`);
     }
   });
 
@@ -180,19 +209,31 @@ describe('modules/my-positions/selectors/close-position-status', function () {
       }
     },
     assertions: (res, store, clock) => {
-      assert.deepEqual(res, {
+      let expected = {
         '0xMarketID1': {
           0: CLOSE_DIALOG_PARTIALLY_FAILED
         }
-      });
+      };
+
+      assert.deepEqual(res, expected, `Didn't return the expected object`);
 
       clock.tick(3000);
 
-      assert.deepEqual(store.getActions(), [{
-        type: CLEAR_CLOSE_POSITION_OUTCOME,
-        marketID: '0xMarketID1',
-        outcomeID: '0'
-      }]);
+      const actual = store.getActions();
+
+      expected = [
+        {
+          type: UPDATE_TRADE_COMMIT_LOCK,
+          isLocked: false
+        },
+        {
+          type: CLEAR_CLOSE_POSITION_OUTCOME,
+          marketID: '0xMarketID1',
+          outcomeID: '0'
+        }
+      ];
+
+      assert.deepEqual(actual, expected, `Didn't return the expected actions`);
     }
   });
 
@@ -218,11 +259,13 @@ describe('modules/my-positions/selectors/close-position-status', function () {
       }
     },
     assertions: (res) => {
-      assert.deepEqual(res, {
+      const expected = {
         '0xMarketID1': {
           0: CLOSE_DIALOG_PARTIALLY_FAILED
         }
-      });
+      };
+
+      assert.deepEqual(res, expected, `Didn't return the expected object`);
     }
   });
 
@@ -249,19 +292,74 @@ describe('modules/my-positions/selectors/close-position-status', function () {
       }
     },
     assertions: (res, store, clock) => {
-      assert.deepEqual(res, {
+      let expected = {
         '0xMarketID1': {
           0: CLOSE_DIALOG_SUCCESS
         }
-      });
+      };
+
+      assert.deepEqual(res, expected, `Didn't return the expected object`);
 
       clock.tick(3000);
 
-      assert.deepEqual(store.getActions(), [{
-        type: CLEAR_CLOSE_POSITION_OUTCOME,
-        marketID: '0xMarketID1',
-        outcomeID: '0'
-      }]);
+      const actual = store.getActions();
+
+      expected = [
+        {
+          type: UPDATE_TRADE_COMMIT_LOCK,
+          isLocked: false
+        },
+        {
+          type: CLEAR_CLOSE_POSITION_OUTCOME,
+          marketID: '0xMarketID1',
+          outcomeID: '0'
+        }
+      ];
+
+      assert.deepEqual(actual, expected, `Didn't return the expected actions`);
+    }
+  });
+
+  test({
+    description: 'should return CLOSE_DIALOG_NO_ORDERS status if no orders are available to fulfill transaction execution',
+    state: {
+      closePositionTradeGroups: {
+        '0xMarketID1': {
+          0: [CLOSE_DIALOG_NO_ORDERS]
+        }
+      },
+      transactionsData: {
+        '0xUnrelatedTransactionID': {
+          tradeGroupID: '0x00000UnrelatedTradeGroupID'
+        }
+      }
+    },
+    assertions: (res, store, clock) => {
+      let expected = {
+        '0xMarketID1': {
+          0: CLOSE_DIALOG_NO_ORDERS
+        }
+      };
+
+      assert.deepEqual(res, expected, `Didn't return the expected object`);
+
+      clock.tick(3000);
+
+      const actual = store.getActions();
+
+      expected = [
+        {
+          type: UPDATE_TRADE_COMMIT_LOCK,
+          isLocked: false
+        },
+        {
+          type: CLEAR_CLOSE_POSITION_OUTCOME,
+          marketID: '0xMarketID1',
+          outcomeID: '0'
+        }
+      ];
+
+      assert.deepEqual(actual, expected, `Didn't return the expected actions`);
     }
   });
 });

@@ -9,9 +9,8 @@ import favoriteMarkets from 'test/markets/selectors/markets-favorite-test';
 describe('modules/markets/selectors/markets-unpaginated', () => {
   proxyquire.noPreserveCache().noCallThru();
   const { store } = mockStore.default;
-  const MarketsAll = {
-    selectMarkets: () => allMarkets()
-  };
+  const MarketsAll = () => allMarkets();
+
   const MarketsFiltered = {
     selectFilteredMarkets: () => filteredMarkets()
   };

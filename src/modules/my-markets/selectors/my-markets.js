@@ -2,7 +2,7 @@ import { createSelector } from 'reselect';
 import memoize from 'memoizee';
 import store from 'src/store';
 import { selectLoginAccountAddress, selectMarketTradesState, selectPriceHistoryState, selectMarketCreatorFeesState } from 'src/select-state';
-import { selectMarkets } from 'modules/markets/selectors/markets-all';
+import selectAllMarkets from 'modules/markets/selectors/markets-all';
 import { abi } from 'services/augurjs';
 import { ZERO } from 'modules/trade/constants/numbers';
 import { formatNumber, formatEther } from 'utils/format-number';
@@ -13,7 +13,7 @@ export default function () {
 }
 
 export const selectAuthorOwnedMarkets = createSelector(
-  selectMarkets,
+  selectAllMarkets,
   selectLoginAccountAddress,
   (allMarkets, authorID) => {
     if (!allMarkets || !authorID) return null;

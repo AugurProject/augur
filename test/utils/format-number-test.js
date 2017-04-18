@@ -91,6 +91,21 @@ describe('utils/format-number.js', () => {
       }
     },
     {
+      func: 'formatShares',
+      denom: 'shares',
+      num: 1,
+      out: {
+        value: 1,
+        formattedValue: 1,
+        roundedValue: 1,
+        formatted: '1',
+        rounded: '1.00',
+        minimized: '1',
+        denomination: ' share',
+        full: '1 share'
+      }
+    },
+    {
       func: 'formatRep',
       denom: 'REP',
       out: {
@@ -110,10 +125,10 @@ describe('utils/format-number.js', () => {
     describe(`${currentUtil.func}`, () => {
       it('should return a correctly formatted object', () => {
         assert.deepEqual(
-					formatNumber[`${currentUtil.func}`](num),
-					currentUtil.out,
-					'returned formatted number is not correctly formatted'
-				);
+          formatNumber[`${currentUtil.func}`](currentUtil.num || num),
+          currentUtil.out,
+          'returned formatted number is not correctly formatted'
+        );
       });
     });
   });

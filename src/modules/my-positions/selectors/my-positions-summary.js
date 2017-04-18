@@ -7,7 +7,6 @@ import selectMyPositions from 'modules/my-positions/selectors/my-positions';
 import { closePosition } from 'modules/my-positions/actions/close-position';
 
 import { ZERO } from 'modules/trade/constants/numbers';
-import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types';
 
 import { augur, abi } from 'services/augurjs';
 import { formatEther, formatShares, formatNumber } from 'utils/format-number';
@@ -18,19 +17,17 @@ export default function () {
 }
 
 export const generateOutcomePositionSummary = memoize((adjustedPosition, outcomeAccountTrades, lastPrice, orderBook) => {
-  if ((!outcomeAccountTrades || !outcomeAccountTrades.length) && !adjustedPosition) {
+  if (!outcomeAccountTrades || !outcomeAccountTrades.length) {
     return null;
   }
 
   const trades = outcomeAccountTrades ? outcomeAccountTrades.slice() : [];
-  const { position, realized, unrealized, meanOpenPrice } = augur.calculateProfitLoss(trades, lastPrice, adjustedPosition);
-  const relevantOrders = orderBook[position > 0 ? BIDS : ASKS];
-  const positionShares = new BigNumber(position);
+  const { position, realized, unrealized, meanOpenPrice } = augur.calculateProfitLoss(trades, lastPrice);
+  const isClosable = !!new BigNumber(position || '0').toNumber(); // Based on position, can we attempt to close this position
 
   return {
     ...generatePositionsSummary(1, position, meanOpenPrice, realized, unrealized),
-    isClosable: !!positionShares.toNumber() && !!relevantOrders.length, // Based on available orders, can this position be at least partially closed
-    isFullyClosable: positionShares.toNumber() && relevantOrders.length ? isPositionFullyClosable(positionShares.absoluteValue(), relevantOrders) : false, // Based on available orders, can this position be fully closed
+    isClosable,
     closePosition: (marketID, outcomeID) => {
       store.dispatch(closePosition(marketID, outcomeID));
     }
@@ -47,7 +44,7 @@ export const generateMarketsPositionsSummary = memoize((markets) => {
   const positionOutcomes = [];
   markets.forEach((market) => {
     market.outcomes.forEach((outcome) => {
-      if (!outcome || !outcome.position || !outcome.position.numPositions || !outcome.position.numPositions.value || ((!outcome.position.qtyShares || !outcome.position.qtyShares.value) && (!outcome.position.realizedNet || !outcome.position.realizedNet.value))) {
+      if (!outcome || !outcome.position || !outcome.position.numPositions || !outcome.position.numPositions.value) {
         return;
       }
       qtyShares = qtyShares.plus(abi.bignum(outcome.position.qtyShares.value));
@@ -79,18 +76,4 @@ export const generatePositionsSummary = memoize((numPositions, qtyShares, meanTr
     unrealizedNet: formatEther(unrealizedNet),
     totalNet: formatEther(totalNet)
   };
-}, { max: 20 });
-
-const isPositionFullyClosable = memoize((position, orders) => {
-  let sharesFilled = new BigNumber(0);
-
-  return !!orders.find((order) => {
-    sharesFilled = sharesFilled.plus(new BigNumber(order.shares.value));
-
-    if (sharesFilled.toNumber() >= position) {
-      return true;
-    }
-
-    return false;
-  });
 }, { max: 20 });

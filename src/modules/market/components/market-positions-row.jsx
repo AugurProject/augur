@@ -22,7 +22,6 @@ const MarketPositionsRow = (p) => {
   const totalNet = getValue(p, 'outcome.position.totalNet.formatted');
 
   const isClosable = getValue(p, 'outcome.position.isClosable');
-  const isFullyClosable = getValue(p, 'outcome.position.isFullyClosable');
   const closePosition = getValue(p, 'outcome.position.closePosition');
 
   const status = getValue(p, `closePositionStatus.${marketID}.${outcomeID}`);
@@ -46,7 +45,6 @@ const MarketPositionsRow = (p) => {
         quantityOfShares={quantityOfShares}
         closePosition={closePosition}
         isClosable={isClosable}
-        isFullyClosable={isFullyClosable}
         status={status}
         isTradeCommitLocked={p.isTradeCommitLocked}
       />

@@ -75,6 +75,26 @@ const testState = {
       creationBlock: 42,
       outstandingShares: formatShares(10),
       extraInfo: 'some extra info'
+    },
+    testMarketID2: {
+      author: '0x0000000000000000000000000000000000000001',
+      eventID: 'testEventID2',
+      name: 'testMarket2',
+      description: 'some test description',
+      endDate: 123,
+      type: 'binary',
+      minValue: 1,
+      maxValue: 2,
+      makerFee: 0.02,
+      takerFee: 0.05,
+      volume: 500,
+      tags: ['tag1', 'tag2', 'tag3'],
+      resolution: 'http://lmgtfy.com',
+      creationTime: 100,
+      creationBlock: 42,
+      outstandingShares: formatShares(10),
+      extraInfo: 'some extra info',
+      numOutcomes: 2
     }
   },
   orderBooks: {

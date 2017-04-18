@@ -1,14 +1,14 @@
-import { abi, augur, constants } from '../../../services/augurjs';
-import { ZERO } from '../../trade/constants/numbers';
-import { BINARY, SCALAR } from '../../markets/constants/market-types';
-import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, MATCH_BID, MATCH_ASK, COMMIT_REPORT, REVEAL_REPORT, CANCEL_ORDER } from '../../transactions/constants/types';
-import { formatEther, formatPercent, formatRealEther, formatRep, formatShares } from '../../../utils/format-number';
-import { formatDate } from '../../../utils/format-date';
-import { selectMarketLink } from '../../link/selectors/links';
-import { formatReportedOutcome } from '../../reports/selectors/reportable-outcomes';
-import { loadMarketThenRetryConversion, lookupEventMarketsThenRetryConversion } from '../../transactions/actions/retry-conversion';
-import { selectMarketIDFromEventID } from '../../market/selectors/market';
-import { updateEventsWithAccountReportData } from '../../my-reports/actions/update-events-with-account-report-data';
+import { abi, augur, constants } from 'services/augurjs';
+import { ZERO } from 'modules/trade/constants/numbers';
+import { BINARY, SCALAR } from 'modules/markets/constants/market-types';
+import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, MATCH_BID, MATCH_ASK, COMMIT_REPORT, REVEAL_REPORT, CANCEL_ORDER } from 'modules/transactions/constants/types';
+import { formatEther, formatPercent, formatRealEther, formatRep, formatShares } from 'utils/format-number';
+import { formatDate } from 'utils/format-date';
+import { selectMarketLink } from 'modules/link/selectors/links';
+import { formatReportedOutcome } from 'modules/reports/selectors/reportable-outcomes';
+import { loadMarketThenRetryConversion, lookupEventMarketsThenRetryConversion } from 'modules/transactions/actions/retry-conversion';
+import { selectMarketIDFromEventID } from 'modules/market/selectors/market';
+import { updateEventsWithAccountReportData } from 'modules/my-reports/actions/update-events-with-account-report-data';
 
 export function loadDataForMarketTransaction(label, log, isRetry, callback) {
   return (dispatch, getState) => {
@@ -68,6 +68,8 @@ export function constructCollectedFeesTransaction(log) {
   const transaction = { data: {} };
   const repGain = abi.bignum(log.repGain);
   const initialRepBalance = log.initialRepBalance !== undefined ? log.initialRepBalance : abi.bignum(log.newRepBalance).minus(repGain).toFixed();
+  const action = log.inProgress ? 'reporting' : 'reported';
+  transaction.message = `${action} with ${formatRep(initialRepBalance).full}`;
   transaction.type = `Reporting Payment`;
   if (log.totalReportingRep) {
     const totalReportingRep = abi.bignum(log.totalReportingRep);
@@ -87,8 +89,6 @@ export function constructCollectedFeesTransaction(log) {
     }];
   }
   transaction.bond = { label: 'reporting', value: formatRealEther(log.notReportingBond) };
-  const action = log.inProgress ? 'reporting' : 'reported';
-  transaction.message = `${action} with ${formatRep(initialRepBalance).full}`;
   return transaction;
 }
 
@@ -369,7 +369,7 @@ export function constructSubmittedReportTransaction(log, marketID, market, outco
 
 export function constructSlashedRepTransaction(log, market, outcomes, address, dispatch) {
   const transaction = { data: {} };
-  console.debug('constructSlashedRepTransaction:', log, market, outcomes, address);
+  console.log('constructSlashedRepTransaction:', log, market, outcomes, address);
   transaction.description = market.description;
   transaction.data.marketLink = selectMarketLink({ id: market.id, description: market.description }, dispatch);
   transaction.data.marketID = market.id ? market.id : null;
@@ -398,7 +398,7 @@ export function constructSlashedRepTransaction(log, market, outcomes, address, d
     }
     transaction.message = `fined by ${abi.strip_0x(log.sender)}`;
   }
-  console.debug('slashed rep transaction:', transaction);
+  console.log('slashed rep transaction:', transaction);
   return transaction;
 }
 
@@ -571,7 +571,8 @@ export const constructLogAddTxTransaction = (trade, marketID, marketType, descri
       totalCost: type === BID ? formatEther(abi.unfix(totalCost)) : undefined,
       totalReturn: type === ASK ? formatEther(abi.unfix(totalReturn)) : undefined,
       gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null,
-      blockNumber: trade.blockNumber
+      blockNumber: trade.blockNumber,
+      tradeID: trade.tradeid
     }
   };
 };
@@ -601,7 +602,8 @@ export const constructLogCancelTransaction = (trade, marketID, marketType, descr
       hash: trade.transactionHash,
       totalReturn: trade.inProgress ? null : formatEther(trade.cashRefund),
       gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null,
-      blockNumber: trade.blockNumber
+      blockNumber: trade.blockNumber,
+      tradeID: trade.tradeid
     }
   };
 };

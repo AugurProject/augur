@@ -1,13 +1,13 @@
 import { createSelector } from 'reselect';
 import store from 'src/store';
-import { selectMarkets } from '../../markets/selectors/markets-all';
+import selectAllMarkets from '../../markets/selectors/markets-all';
 
 export default function () {
   return selectOpenOrdersMarkets(store.getState());
 }
 
 export const selectOpenOrdersMarkets = createSelector(
-  selectMarkets,
+  selectAllMarkets,
   (markets) => {
     const openOrdersMarkets = [];
     if (markets) {

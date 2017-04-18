@@ -61,9 +61,7 @@ describe(`modules/markets/selectors/markets-filtered.js`, () => {
     ]
   };
 
-  const Markets = {
-    selectMarkets: () => mockSelectors.allMarkets
-  };
+  const Markets = () => mockSelectors.allMarkets;
 
   const selector = proxyquire('../../../src/modules/markets/selectors/markets-filtered.js', {
     '../../../store': store,
