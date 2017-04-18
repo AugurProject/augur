@@ -1,7 +1,7 @@
 import { eachOfSeries, eachLimit } from 'async';
 import { augur, constants } from 'services/augurjs';
 
-import { clearNewMarket } from 'modules/create-market/actions/update-new-market';
+import { invalidateMarketCreation, clearNewMarket } from 'modules/create-market/actions/update-new-market';
 import { updateTradesInProgress } from 'modules/trade/actions/update-trades-in-progress';
 import { placeTrade } from 'modules/trade/actions/place-trade';
 
@@ -11,8 +11,6 @@ import { BID } from 'modules/transactions/constants/types';
 import { BUY, SELL } from 'modules/trade/constants/types';
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
 import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR } from 'modules/markets/constants/market-outcomes';
-
-import { invalidateMarketCreation } from 'modules/create-market/actions/update-new-market';
 
 export function submitNewMarket(newMarket) {
   return (dispatch, getState) => {
@@ -24,8 +22,7 @@ export function submitNewMarket(newMarket) {
       description: newMarket.description,
       expDate: newMarket.endDate.timestamp / 1000,
       resolution: newMarket.expirySource,
-      // takerFee: newMarket.takerFee / 100,
-      takerFee: -2000,
+      takerFee: newMarket.takerFee / 100,
       makerFee: newMarket.makerFee / 100,
       extraInfo: newMarket.detailsText,
       tags: [
