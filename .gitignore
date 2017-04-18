@@ -7,6 +7,7 @@ core
 *~
 node_modules/
 overflow/
+coverage/
 target
 scratch
 
