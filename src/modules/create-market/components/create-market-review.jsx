@@ -6,10 +6,13 @@ import { formatRealEtherEstimate, formatEtherEstimate } from 'utils/format-numbe
 import getValue from 'utils/get-value';
 
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
+import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications';
 import { NEW_MARKET_REVIEW } from 'modules/create-market/constants/new-market-creation-steps';
 
 export default class CreateMarketReview extends Component {
   static propTypes = {
+    isValid: PropTypes.bool.isRequired,
+    creationError: PropTypes.string.isRequired,
     branch: PropTypes.object.isRequired,
     currentStep: PropTypes.number.isRequired,
     initialLiquidityEth: PropTypes.instanceOf(BigNumber).isRequired,
@@ -159,6 +162,11 @@ export default class CreateMarketReview extends Component {
               }
             </form>
           </div>
+          { !p.isValid &&
+            <CreateMarketFormInputNotifications
+              errors={[p.creationError]}
+            />
+          }
         </div>
       </article>
     );

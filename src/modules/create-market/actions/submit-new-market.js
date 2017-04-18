@@ -12,10 +12,10 @@ import { BUY, SELL } from 'modules/trade/constants/types';
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
 import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR } from 'modules/markets/constants/market-outcomes';
 
+import { invalidateMarketCreation } from 'modules/create-market/actions/update-new-market';
+
 export function submitNewMarket(newMarket) {
   return (dispatch, getState) => {
-    selectTransactionsLink(dispatch).onClick();
-
     const { branch } = getState();
 
     // General Properties
@@ -24,7 +24,8 @@ export function submitNewMarket(newMarket) {
       description: newMarket.description,
       expDate: newMarket.endDate.timestamp / 1000,
       resolution: newMarket.expirySource,
-      takerFee: newMarket.takerFee / 100,
+      // takerFee: newMarket.takerFee / 100,
+      takerFee: -2000,
       makerFee: newMarket.makerFee / 100,
       extraInfo: newMarket.detailsText,
       tags: [
@@ -58,6 +59,7 @@ export function submitNewMarket(newMarket) {
       onSent: (res) => {
         console.log('createSingleEventMarket sent:', res);
 
+        selectTransactionsLink(dispatch).onClick();
         dispatch(clearNewMarket());
       },
       onSuccess: (res) => {
@@ -89,7 +91,11 @@ export function submitNewMarket(newMarket) {
           });
         }
       },
-      onFailed: err => console.error('ERROR createSingleEventMarket failed:', err)
+      onFailed: (err) => {
+        console.error('ERROR createSingleEventMarket failed:', err);
+
+        dispatch(invalidateMarketCreation(err.message));
+      }
     });
   };
 }
