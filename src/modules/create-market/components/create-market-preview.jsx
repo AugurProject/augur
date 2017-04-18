@@ -122,15 +122,17 @@ export default class CreateMarketPreview extends Component {
   }
 
   updatePreviewHeight(step) {
-    let newHeight = 0;
-    if (step) newHeight = this.marketPreview.getElementsByClassName('create-market-preview-content')[0].clientHeight + 13; // + value to accomodate padding + borders
+    if (this.marketPreview) {
+      let newHeight = 0;
+      if (step) newHeight = this.marketPreview.getElementsByClassName('create-market-preview-content')[0].clientHeight + 13; // + value to accomodate padding + borders
 
-    if (step === 0) {
-      this.marketPreview.style.height = `${newHeight}px`;
-    } else {
-      setTimeout(() => {
+      if (step === 0) {
         this.marketPreview.style.height = `${newHeight}px`;
-      }, 1500);
+      } else {
+        setTimeout(() => {
+          this.marketPreview.style.height = `${newHeight}px`;
+        }, 1500);
+      }
     }
   }
 
@@ -139,26 +141,28 @@ export default class CreateMarketPreview extends Component {
     const askSeries = getValue(this.props.newMarket.orderBookSeries[this.state.selectedOutcome], `${ASK}`) || [];
     let width;
 
-    if (window.getComputedStyle(this.orderBookChart).getPropertyValue('will-change') === 'contents') {
-      width = this.orderBookPreview.clientWidth - 40; // 20px horizontal padding
-    } else {
-      width = this.orderBookPreview.clientWidth * 0.60;
-    }
-
-    this.orderBookPreviewChart.update({
-      title: {
-        text: `${this.props.newMarket.type === CATEGORICAL ? ''+this.state.selectedOutcome+': ' : ''}Depth Chart`
-      },
-      chart: {
-        width,
-        height: 300
+    if (this.orderBookChart) {
+      if (window.getComputedStyle(this.orderBookChart).getPropertyValue('will-change') === 'contents') {
+        width = this.orderBookPreview.clientWidth - 40; // 20px horizontal padding
+      } else {
+        width = this.orderBookPreview.clientWidth * 0.60;
       }
-    }, false);
 
-    this.orderBookPreviewChart.series[0].setData(bidSeries, false);
-    this.orderBookPreviewChart.series[1].setData(askSeries, false);
+      this.orderBookPreviewChart.update({
+        title: {
+          text: `${this.props.newMarket.type === CATEGORICAL ? ''+this.state.selectedOutcome+': ' : ''}Depth Chart`
+        },
+        chart: {
+          width,
+          height: 300
+        }
+      }, false);
 
-    this.orderBookPreviewChart.redraw();
+      this.orderBookPreviewChart.series[0].setData(bidSeries, false);
+      this.orderBookPreviewChart.series[1].setData(askSeries, false);
+
+      this.orderBookPreviewChart.redraw();
+    }
   }
 
   updateMarketLiquidity(orderBook) {
