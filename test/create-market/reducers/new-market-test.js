@@ -51,7 +51,8 @@ describe('modules/create-market/reducers/new-market.js', () => {
         orderBookSeries: {},
         initialLiquidityEth: new BigNumber(0),
         initialLiquidityGas: new BigNumber(0),
-        initialLiquidityFees: new BigNumber(0)
+        initialLiquidityFees: new BigNumber(0),
+        creationError: 'Unable to create market.  Ensure your market is unique and all values are valid.'
       };
 
       assert.deepEqual(actual, expected, `Didn't return the expected default value`);
@@ -388,7 +389,8 @@ describe('modules/create-market/reducers/new-market.js', () => {
         orderBookSeries: {},
         initialLiquidityEth: new BigNumber(0),
         initialLiquidityGas: new BigNumber(0),
-        initialLiquidityFees: new BigNumber(0)
+        initialLiquidityFees: new BigNumber(0),
+        creationError: 'Unable to create market.  Ensure your market is unique and all values are valid.'
       };
 
       assert.deepEqual(actual, expected, `Didn't return the expected newMarket object`);
