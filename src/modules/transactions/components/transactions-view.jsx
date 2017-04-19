@@ -2,32 +2,35 @@ import React from 'react';
 import Transactions from 'modules/transactions/components/transactions';
 import Branch from 'modules/branch/components/branch';
 
-const TransactionsPage = p => (
-  <section id="transactions_view">
-    {!!p.loginAccount.rep && !!p.loginAccount.rep.value && !!p.branch.id &&
-      <Branch {...p.branch} />
-    }
+import getValue from 'utils/get-value';
 
-    <div className="view-header">
-      <h2>Transactions</h2>
-    </div>
+const TransactionsPage = (p) => {
+  const hasRep = !!getValue(p, 'loginAccount.rep.value');
+  const hasBranch = !!getValue(p, 'branch.id');
 
-    <div className="page-content">
+  return (
+    <section id="transactions_view">
+      {hasRep && hasBranch &&
+        <Branch {...p.branch} />
+      }
+
+      <div className="view-header">
+        <h2>Transactions</h2>
+      </div>
+
       <Transactions
-        className="transactions-content"
         transactions={p.transactions}
         currentBlockNumber={p.currentBlockNumber}
       />
-    </div>
-  </section>
-);
+    </section>
+  );
+};
 
 TransactionsPage.propTypes = {
   branch: React.PropTypes.object,
-  className: React.PropTypes.string,
+  currentBlockNumber: React.PropTypes.number,
   loginAccount: React.PropTypes.object,
-  transactions: React.PropTypes.array,
-  currentBlockNumber: React.PropTypes.number
+  transactions: React.PropTypes.array
 };
 
 export default TransactionsPage;

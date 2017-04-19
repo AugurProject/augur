@@ -1,189 +1,195 @@
-#transactions_view {
-  .page-content {
-    background: white;
-    font-size: 1.2rem;
-
-    .transactions-container {
-      display: table;
-      width: 100%;
-
-      .transaction-item {
-        .animation-flash-slow(@color-orange);
-
-        background: @color-orange-light;
-        border-bottom: 1px solid @color-border;
-        display: table-row;
-        font-size: 1.3rem;
-        font-weight: 900;
-        line-height: 2.5rem;
-        padding: 2.4vh 0 1.3vh;
-
-        &.failed,
-        &.interrupted {
-          animation-name: unset;
-          background: @color-red-extra-light;
-
-          .status-and-message {
-            color: @color-red;
-          }
-        }
-
-        &.pending {
-          animation-name: unset;
-          background: @color-white-muted;
-
-          .status-and-message {
-            color: @color-black-muted;
-          }
-        }
-
-        &.success {
-          animation-name: unset;
-          background: @color-green-extra-light;
-
-          .status-and-message {
-            color: @color-green-dark-light;
-          }
-        }
-
-        > * {
-          display: table-cell;
-          padding: 2vh 2vw;
-          vertical-align: middle;
-        }
-
-        .index {
-          padding-right: 0;
-          text-align: right;
-        }
-
-        .description {
-          font-weight: 400;
-          line-height: 1.5em;
-          text-align: left;
-
-          > * {
-            display: inline-block;
-            margin-right: 0.3rem;
-          }
-
-          .action {
-            text-transform: uppercase;
-          }
-
-          .action,
-          .shares,
-          .avg-price {
-            font-weight: 900;
-          }
-
-          .outcome-name {
-            text-transform: uppercase;
-          }
-
-          .market-description {
-            font-size: 0.8em;
-            line-height: 1.5em;
-          }
-
-          .hide-in-tx-display {
-            display: none;
-          }
-
-          .avgPrice {
-            display: none;
-          }
-
-          .value-timestamp {
-            color: #6d6d6d;
-            font-size: 75%;
-          }
-        }
-
-        .fa {
-          padding: 0 0.4rem;
-
-          &.report-equal {
-            color: @color-green-light;
-          }
-
-          &.report-unequal {
-            color: @color-red-light;
-          }
-
-          &.report-unethical {
-            color: @color-red-light;
-          }
-        }
-
-        .value-changes {
-          display: none;
-        }
-
-        .status-and-message {
-          color: orange;
-          display: block;
-          line-height: 1.4rem;
-          text-align: right;
-          word-break: break-all;
-
-          .status {
-            font-size: 0.75em;
-            font-weight: bold;
-
-            .confirmations {
-              border-left: 1px solid;
-              margin-left: 0.5em;
-              padding-left: 0.5em;
-            }
-          }
-
-          .message {
-            font-size: 0.95em;
-          }
-
-          .balance-message {
-            font-size: 0.8em;
-          }
-
-          .gasFees-message {
-            font-size: 0.8em;
-          }
-
-          .bond-message {
-            font-size: 0.8em;
-          }
-
-          .marketCreationFee-message {
-            font-size: 0.8em;
-          }
-
-          .tradingFees-message {
-            font-size: 0.85em;
-          }
-
-          .totalCost-message {
-            font-size: 0.85em;
-          }
-
-          .totalReturn-message {
-            font-size: 0.85em;
-          }
-
-          .freeze-message {
-            font-size: 0.85em;
-          }
-        }
-      }
-    }
-
-    .feel-free {
-      color: @color-gray-muted;
-      display: block;
-      font-size: 1.1rem;
-      font-style: italic;
-      padding: 2rem 3rem 5rem;
-      text-align: right;
-    }
+.transactions-list {
+  .transactions-group {
+    margin: 1em;
   }
 }
+
+// #transactions_view {
+//   .page-content {
+//     background: white;
+//     font-size: 1.2rem;
+//
+//     .transactions-container {
+//       display: table;
+//       width: 100%;
+//
+//       .transaction-item {
+//         .animation-flash-slow(@color-orange);
+//
+//         background: @color-orange-light;
+//         border-bottom: 1px solid @color-border;
+//         display: table-row;
+//         font-size: 1.3rem;
+//         font-weight: 900;
+//         line-height: 2.5rem;
+//         padding: 2.4vh 0 1.3vh;
+//
+//         &.failed,
+//         &.interrupted {
+//           animation-name: unset;
+//           background: @color-red-extra-light;
+//
+//           .status-and-message {
+//             color: @color-red;
+//           }
+//         }
+//
+//         &.pending {
+//           animation-name: unset;
+//           background: @color-white-muted;
+//
+//           .status-and-message {
+//             color: @color-black-muted;
+//           }
+//         }
+//
+//         &.success {
+//           animation-name: unset;
+//           background: @color-green-extra-light;
+//
+//           .status-and-message {
+//             color: @color-green-dark-light;
+//           }
+//         }
+//
+//         > * {
+//           display: table-cell;
+//           padding: 2vh 2vw;
+//           vertical-align: middle;
+//         }
+//
+//         .index {
+//           padding-right: 0;
+//           text-align: right;
+//         }
+//
+//         .description {
+//           font-weight: 400;
+//           line-height: 1.5em;
+//           text-align: left;
+//
+//           > * {
+//             display: inline-block;
+//             margin-right: 0.3rem;
+//           }
+//
+//           .action {
+//             text-transform: uppercase;
+//           }
+//
+//           .action,
+//           .shares,
+//           .avg-price {
+//             font-weight: 900;
+//           }
+//
+//           .outcome-name {
+//             text-transform: uppercase;
+//           }
+//
+//           .market-description {
+//             font-size: 0.8em;
+//             line-height: 1.5em;
+//           }
+//
+//           .hide-in-tx-display {
+//             display: none;
+//           }
+//
+//           .avgPrice {
+//             display: none;
+//           }
+//
+//           .value-timestamp {
+//             color: #6d6d6d;
+//             font-size: 75%;
+//           }
+//         }
+//
+//         .fa {
+//           padding: 0 0.4rem;
+//
+//           &.report-equal {
+//             color: @color-green-light;
+//           }
+//
+//           &.report-unequal {
+//             color: @color-red-light;
+//           }
+//
+//           &.report-unethical {
+//             color: @color-red-light;
+//           }
+//         }
+//
+//         .value-changes {
+//           display: none;
+//         }
+//
+//         .status-and-message {
+//           color: orange;
+//           display: block;
+//           line-height: 1.4rem;
+//           text-align: right;
+//           word-break: break-all;
+//
+//           .status {
+//             font-size: 0.75em;
+//             font-weight: bold;
+//
+//             .confirmations {
+//               border-left: 1px solid;
+//               margin-left: 0.5em;
+//               padding-left: 0.5em;
+//             }
+//           }
+//
+//           .message {
+//             font-size: 0.95em;
+//           }
+//
+//           .balance-message {
+//             font-size: 0.8em;
+//           }
+//
+//           .gasFees-message {
+//             font-size: 0.8em;
+//           }
+//
+//           .bond-message {
+//             font-size: 0.8em;
+//           }
+//
+//           .marketCreationFee-message {
+//             font-size: 0.8em;
+//           }
+//
+//           .tradingFees-message {
+//             font-size: 0.85em;
+//           }
+//
+//           .totalCost-message {
+//             font-size: 0.85em;
+//           }
+//
+//           .totalReturn-message {
+//             font-size: 0.85em;
+//           }
+//
+//           .freeze-message {
+//             font-size: 0.85em;
+//           }
+//         }
+//       }
+//     }
+//
+//     .feel-free {
+//       color: @color-gray-muted;
+//       display: block;
+//       font-size: 1.1rem;
+//       font-style: italic;
+//       padding: 2rem 3rem 5rem;
+//       text-align: right;
+//     }
+//   }
+// }
