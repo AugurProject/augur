@@ -49,7 +49,7 @@ BigNumber.config({
 function Augur() {
   var i, len, fn;
 
-  this.version = "3.15.7";
+  this.version = "4.0.0";
 
   this.options = {
     debug: {

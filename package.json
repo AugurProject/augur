@@ -1,9 +1,9 @@
 {
   "name": "augur.js",
-  "version": "3.15.7",
-  "description": "Augur JavaScript SDK",
+  "version": "4.0.0",
+  "description": "Augur JavaScript API",
   "author": "The Augur Developers <team@augur.net>",
-  "license": "AAL",
+  "license": "MIT",
   "main": "src/index.js",
   "scripts": {
     "test": "mocha test/unit",
@@ -22,8 +22,8 @@
     "browser-request": "0.3.3",
     "chalk": "1.1.1",
     "clone": "1.0.2",
-    "ethereumjs-connect": "3.0.8",
-    "ethrpc": "3.1.4",
+    "ethereumjs-connect": "4.0.0",
+    "ethrpc": "4.0.0",
     "keythereum": "0.5.1",
     "redux": "3.6.0",
     "request": "2.74.0",
