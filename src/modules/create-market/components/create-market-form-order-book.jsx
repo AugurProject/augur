@@ -179,30 +179,32 @@ export default class CreateMarketFormOrderBook extends Component {
   }
 
   updateChart() {
-    const bidSeries = getValue(this.props.orderBookSeries[this.state.selectedOutcome], `${BID}`) || [];
-    const askSeries = getValue(this.props.orderBookSeries[this.state.selectedOutcome], `${ASK}`) || [];
-    let width;
+    if (this.orderBookChart) {
+      const bidSeries = getValue(this.props.orderBookSeries[this.state.selectedOutcome], `${BID}`) || [];
+      const askSeries = getValue(this.props.orderBookSeries[this.state.selectedOutcome], `${ASK}`) || [];
+      let width;
 
-    if (window.getComputedStyle(this.orderBookChart).getPropertyValue('will-change') === 'contents') {
-      width = this.orderBookForm.clientWidth - 40; // 20px horizontal padding
-    } else {
-      width = this.orderBookPreview.clientWidth * 0.60;
-    }
-
-    this.orderBookPreviewChart.update({
-      title: {
-        text: `${this.props.type === CATEGORICAL ? ''+this.state.selectedOutcome+': ' : ''}Depth Chart`
-      },
-      chart: {
-        width,
-        height: 400
+      if (window.getComputedStyle(this.orderBookChart).getPropertyValue('will-change') === 'contents') {
+        width = this.orderBookForm.clientWidth - 40; // 20px horizontal padding
+      } else {
+        width = this.orderBookPreview.clientWidth * 0.60;
       }
-    }, false);
 
-    this.orderBookPreviewChart.series[0].setData(bidSeries, false);
-    this.orderBookPreviewChart.series[1].setData(askSeries, false);
+      this.orderBookPreviewChart.update({
+        title: {
+          text: `${this.props.type === CATEGORICAL ? ''+this.state.selectedOutcome+': ' : ''}Depth Chart`
+        },
+        chart: {
+          width,
+          height: 400
+        }
+      }, false);
 
-    this.orderBookPreviewChart.redraw();
+      this.orderBookPreviewChart.series[0].setData(bidSeries, false);
+      this.orderBookPreviewChart.series[1].setData(askSeries, false);
+
+      this.orderBookPreviewChart.redraw();
+    }
   }
 
   updatePriceBounds(type, selectedOutcome, selectedSide, orderBook, scalarSmallNum, scalarBigNum) {

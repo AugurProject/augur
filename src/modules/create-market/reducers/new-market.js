@@ -34,7 +34,8 @@ const DEFAULT_STATE = {
   orderBookSeries: {}, // for order book chart
   initialLiquidityEth: new BigNumber(0),
   initialLiquidityGas: new BigNumber(0),
-  initialLiquidityFees: new BigNumber(0)
+  initialLiquidityFees: new BigNumber(0),
+  creationError: 'Unable to create market.  Ensure your market is unique and all values are valid.'
 };
 
 export default function (newMarket = DEFAULT_STATE, action) {

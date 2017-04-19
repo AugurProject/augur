@@ -74,16 +74,18 @@ export default class CreateMarketForm extends Component {
   }
 
   updateFormHeight() {
-    let newHeight = 0;
+    if (this.createMarketForm) {
+      let newHeight = 0;
 
-    if (this.state.currentStep === 0) { // Initial form height
-      newHeight = this.createMarketForm.children[0].clientHeight;
+      if (this.state.currentStep === 0) { // Initial form height
+        newHeight = this.createMarketForm.children[0].clientHeight;
+        this.createMarketForm.style.height = `${newHeight}px`;
+      } else {
+        newHeight = this.createMarketForm.getElementsByClassName('display-form-part')[0].clientHeight;
+      }
+
       this.createMarketForm.style.height = `${newHeight}px`;
-    } else {
-      newHeight = this.createMarketForm.getElementsByClassName('display-form-part')[0].clientHeight;
     }
-
-    this.createMarketForm.style.height = `${newHeight}px`;
   }
 
   updateValidity(isValid, holdForUserAction = false) {
@@ -235,6 +237,8 @@ export default class CreateMarketForm extends Component {
             'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_REVIEW),
             'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_REVIEW) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK)
           })}
+          isValid={p.newMarket.isValid}
+          creationError={p.newMarket.creationError}
           branch={p.branch}
           currentStep={p.newMarket.currentStep}
           takerFee={p.newMarket.takerFee}

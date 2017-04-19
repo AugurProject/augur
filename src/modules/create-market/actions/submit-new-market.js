@@ -1,7 +1,7 @@
 import { eachOfSeries, eachLimit } from 'async';
 import { augur, constants } from 'services/augurjs';
 
-import { clearNewMarket } from 'modules/create-market/actions/update-new-market';
+import { invalidateMarketCreation, clearNewMarket } from 'modules/create-market/actions/update-new-market';
 import { updateTradesInProgress } from 'modules/trade/actions/update-trades-in-progress';
 import { placeTrade } from 'modules/trade/actions/place-trade';
 
@@ -14,8 +14,6 @@ import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR } from 'm
 
 export function submitNewMarket(newMarket) {
   return (dispatch, getState) => {
-    selectTransactionsLink(dispatch).onClick();
-
     const { branch } = getState();
 
     // General Properties
@@ -58,6 +56,7 @@ export function submitNewMarket(newMarket) {
       onSent: (res) => {
         console.log('createSingleEventMarket sent:', res);
 
+        selectTransactionsLink(dispatch).onClick();
         dispatch(clearNewMarket());
       },
       onSuccess: (res) => {
@@ -89,7 +88,11 @@ export function submitNewMarket(newMarket) {
           });
         }
       },
-      onFailed: err => console.error('ERROR createSingleEventMarket failed:', err)
+      onFailed: (err) => {
+        console.error('ERROR createSingleEventMarket failed:', err);
+
+        dispatch(invalidateMarketCreation(err.message));
+      }
     });
   };
 }
