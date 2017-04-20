@@ -14,26 +14,43 @@ export const selectTransactions = createSelector(
   selectTransactionsDataState,
   (transactionsData) => {
     const tradeGroups = [];
-    const formattedTransactions = Object.keys(transactionsData || {}).reduce((p, id) => {
-      const tradeGroupID = transactionsData[id].tradeGroupID;
-      if (tradeGroupID) {
-        if (tradeGroups.indexOf(tradeGroupID) === -1) {
-          tradeGroups.push(tradeGroupID);
-          const filteredTransactions = Object.keys(transactionsData).filter(id => transactionsData[id].tradeGroupID === tradeGroupID).map(id => transactionsData[id]);
+    const formattedTransactions = Object.keys(transactionsData || {})
+      .reduce((p, id) => {
+        const tradeGroupID = transactionsData[id].tradeGroupID;
+        if (tradeGroupID) {
+          if (tradeGroups.indexOf(tradeGroupID) === -1) {
+            tradeGroups.push(tradeGroupID);
+            const filteredTransactions = Object.keys(transactionsData).filter(id => transactionsData[id].tradeGroupID === tradeGroupID).map(id => transactionsData[id]);
 
-          if (filteredTransactions.length === 1) {
-            p.push(formatTransaction(filteredTransactions[0]));
-          } else {
-            p.push(formatGroupedTransactions(filteredTransactions));
+            if (filteredTransactions.length === 1) {
+              p.push(formatTransaction(filteredTransactions[0]));
+            } else {
+              p.push(formatGroupedTransactions(filteredTransactions));
+            }
           }
+
+          return p;
         }
 
+        p.push(formatTransaction(transactionsData[id]));
         return p;
-      }
+      }, [])
+      .sort((a, b) => getValue(b, 'timestamp.timestamp') - getValue(a, 'timestamp.timestamp'));
 
-      p.push(formatTransaction(transactionsData[id]));
-      return p;
-    }, []).sort((a, b) => getValue(b, 'timestamp.timestamp') - getValue(a, 'timestamp.timestamp'));
+    let currentTransactionIndex = 1;
+    formattedTransactions.forEach((transaction, i, transactions) => {
+      const currentTransaction = transactions[(transactions.length - 1) - i];
+
+      if (currentTransaction.transactions && currentTransaction.transactions.length > 1) {
+        currentTransaction.transactions.forEach((groupedTransaction, groupedIndex) => {
+          currentTransaction.transactions[(currentTransaction.transactions.length - 1) - groupedIndex].transactionIndex = currentTransactionIndex;
+          currentTransactionIndex += 1;
+        });
+      } else {
+        currentTransaction.transactionIndex = currentTransactionIndex;
+        currentTransactionIndex += 1;
+      }
+    });
 
     return formattedTransactions;
   }
@@ -62,7 +79,7 @@ export function formatTransaction(transaction) {
 }
 
 export function formatGroupedTransactions(transactions) {
-  const formattedTransactions = transactions.map(transaction => formatTransaction(transaction)).sort((a, b) => getValue(a, 'timestamp.timestamp') - getValue(b, 'timestamp.timestamp'));
+  const formattedTransactions = transactions.map(transaction => formatTransaction(transaction)).sort((a, b) => getValue(b, 'timestamp.timestamp') - getValue(a, 'timestamp.timestamp'));
 
   return {
     timestamp: formattedTransactions[formattedTransactions.length - 1].timestamp,
