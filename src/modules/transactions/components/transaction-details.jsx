@@ -4,8 +4,8 @@ import TransactionStatus from 'modules/transactions/components/transaction-statu
 
 function liveDangerously(thisBetterBeSanitized) { return { __html: thisBetterBeSanitized }; }
 
-const TransactionMessage = p => (
-  <div className="status-and-message">
+const TransactionDetails = p => (
+  <article className="status-and-message">
     {!!p.message &&
       <span className="message" dangerouslySetInnerHTML={liveDangerously(p.message)} />
     }
@@ -110,29 +110,7 @@ const TransactionMessage = p => (
       </span>
     }
     <TransactionStatus status={p.status} currentBlockNumber={p.currentBlockNumber} blockNumber={p.blockNumber} />
-  </div>
+  </article>
 );
 
-TransactionMessage.propTypes = {
-  className: React.PropTypes.string,
-  index: React.PropTypes.number,
-  type: React.PropTypes.string,
-  status: React.PropTypes.string.isRequired,
-  data: React.PropTypes.object,
-  description: React.PropTypes.string,
-  shares: React.PropTypes.object,
-  gas: React.PropTypes.object,
-  hash: React.PropTypes.string,
-  freeze: React.PropTypes.object,
-  gasFees: React.PropTypes.object,
-  tradingFees: React.PropTypes.object,
-  marketCreationFee: React.PropTypes.object,
-  bond: React.PropTypes.object,
-  totalCost: React.PropTypes.object,
-  totalReturn: React.PropTypes.object,
-  timestamp: React.PropTypes.object,
-  currentBlockNumber: React.PropTypes.number,
-  blockNumber: React.PropTypes.number
-};
-
-export default TransactionMessage;
+export default TransactionDetails;
