@@ -2,7 +2,7 @@
 
 var addFilter = require("./add-filter");
 var isFunction = require("../utils/is-function");
-var subscriptions = require("./subscription");
+var subscriptions = require("./subscriptions");
 var getState = require("../store").getState;
 
 module.exports = function (getBlockAndLogStreamer) {
