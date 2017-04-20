@@ -16,7 +16,7 @@ var test, run;
 
 augur.api = new contracts.Tx(process.env.ETHEREUM_NETWORK_ID || constants.DEFAULT_NETWORK_ID);
 augur.store.getState().contractsAPI.functions = augur.store.getState().contractsAPI.functions;
-augur.bindContractAPI();
+augur.bindContractAPI(augur.api.functions);
 
 test = {
   eth_call: function (t, next) {

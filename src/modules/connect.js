@@ -11,6 +11,8 @@ var Contracts = require("augur-contracts");
 var constants = require("../constants");
 var compose = require("../utils/compose");
 var isFunction = require("../utils/is-function");
+var isObject = require("../utils/is-object");
+var filters = require("../filters");
 var store = require("../store");
 
 module.exports = {
@@ -110,7 +112,6 @@ module.exports = {
 
   bindContractAPI: function (methods) {
     var contract, method;
-    methods = methods || store.getState().contractsAPI.functions;
     for (contract in methods) {
       if (methods.hasOwnProperty(contract)) {
         this[contract] = {};
@@ -126,51 +127,25 @@ module.exports = {
     return methods;
   },
 
-  sync: function () {
-    var api;
-    if (connector && connector.constructor === Object) {
-      store.dispatch({
-        type: "SET_FROM_ADDRESS",
-        fromAddress: connector.state.from
-      });
-      store.dispatch({
-        type: "SET_COINBASE_ADDRESS",
-        coinbaseAddress: connector.state.coinbase
-      });
-      this.rpc = connector.rpc;
-      if (!connector.state.contracts) {
-        connector.configure({contracts: Contracts, api: Contracts.api});
-        if (!connector.state.networkID) {
-          connector.state.networkID = constants.DEFAULT_NETWORK_ID;
-        }
-        connector.setContracts();
-      }
-      store.dispatch({
-        type: "SET_CONTRACT_ADDRESSES",
-        contractAddresses: connector.state.contracts
-      });
-      connector.setupFunctionsAPI();
-      connector.setupEventsAPI();
-      if (connector.state.api && connector.state.api.functions) {
-        api = connector.state.api;
-      } else {
-        api = Contracts.api;
-      }
-      store.dispatch({
-        type: "SET_CONTRACTS_API",
-        contractsAPI: api
-      });
-      // this.tx = store.getState().contractsAPI.functions; // TODO remove tx prop
-      this.bindContractAPI();
-      return true;
-    }
-    return false;
+  setAddressesAndAPI: function (vitals) {
+    var api, contractAddresses;
+    if (!isObject(vitals)) return null;
+    store.dispatch({ type: "SET_FROM_ADDRESS", fromAddress: vitals.coinbase });
+    store.dispatch({ type: "SET_COINBASE_ADDRESS", coinbaseAddress: vitals.coinbase });
+    contractAddresses = vitals.contracts || Contracts[constants.DEFAULT_NETWORK_ID];
+    store.dispatch({ type: "SET_CONTRACT_ADDRESSES", contractAddresses: contractAddresses });
+    api = (vitals.api && vitals.api.functions) ? vitals.api : Contracts.api;
+    store.dispatch({ type: "SET_CONTRACTS_API", contractsAPI: api });
+    this.bindContractAPI(api.functions);
+    return vitals.rpc;
   },
 
-  useAccount: function (account) {
-    connector.from = account;
-    connector.setFrom(account);
-    this.sync();
+  useAccount: function (address) {
+    store.dispatch({ type: "SET_FROM_ADDRESS", fromAddress: address });
+    store.dispatch({
+      type: "SET_FUNCTIONS_API",
+      functionsAPI: connector.setFrom(store.getState().contractsAPI.functions, address)
+    });
   },
 
   /**
@@ -180,10 +155,10 @@ module.exports = {
    *         ipc: "/path/to/geth.ipc",
    *         ws: "wss://ws.augur.net" }
    *    2. URL string for HTTP RPC: "https://eth3.augur.net"
-   * @param cb {function=} Callback function.
+   * @param callback {function=} Callback function.
    */
-  connect: function (rpcinfo, cb) {
-    var options, connection, self = this;
+  connect: function (rpcinfo, callback) {
+    var options, vitals, self = this;
     options = {
       contracts: Contracts,
       api: Contracts.api,
@@ -197,7 +172,7 @@ module.exports = {
           options.httpAddresses.push(rpcinfo);
           break;
         case Function:
-          cb = rpcinfo;
+          callback = rpcinfo;
           break;
         case Object:
           if (rpcinfo.httpAddresses) options.httpAddresses = rpcinfo.httpAddresses;
@@ -213,14 +188,18 @@ module.exports = {
           break;
       }
     }
-    if (!isFunction(cb)) {
-      connection = connector.connect(options);
-      this.sync();
-      return connection;
+    if (!isFunction(callback)) {
+      vitals = connector.connect(options);
+      if (vitals instanceof Error) return vitals;
+      this.rpc = this.setAddressesAndAPI(vitals);
+      this.filters = filters(this.rpc.getBlockAndLogStreamer);
+      return true;
     }
-    connector.connect(options, function (connection) {
-      self.sync();
-      cb(connection);
+    connector.connect(options, function (err, vitals) {
+      if (err) return callback(err);
+      self.rpc = self.setAddressesAndAPI(vitals);
+      self.filters = filters(self.rpc.getBlockAndLogStreamer);
+      callback(true);
     });
   }
 };

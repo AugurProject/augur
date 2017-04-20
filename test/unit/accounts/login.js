@@ -42,7 +42,7 @@ describe("accounts/login", function () {
   });
   var test = function (t) {
     it(t.description, function (done) {
-      store.reset();
+      store.dispatch({ type: "RESET_STATE" });
       keys.deriveKey = t.deriveKey || deriveKey;
       keys.getMAC = t.getMAC || getMAC;
       keys.decrypt = t.decrypt || decrypt;

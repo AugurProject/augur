@@ -14,7 +14,7 @@ var privateKey = "10000000000000000000000000000000000000000000000000000000000000
 describe("accounts/login-with-master-key", function () {
   var test = function (t) {
     it(t.description, function () {
-      store.reset();
+      store.dispatch({ type: "RESET_STATE" });
       loginWithMasterKey(t.privateKey, function (account) {
         t.assertions(account, store.getState());
       });

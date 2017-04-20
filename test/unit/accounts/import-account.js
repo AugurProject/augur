@@ -43,7 +43,7 @@ describe("accounts/import-account", function () {
   });
   var test = function (t) {
     it(t.description, function (done) {
-      store.reset();
+      store.dispatch({ type: "RESET_STATE" });
       keys.recover = t.recover || recover;
       keys.deriveKey = t.deriveKey || deriveKey;
       if (t.params.cb) {

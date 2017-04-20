@@ -16,7 +16,7 @@ describe("accounts/register", function () {
   var KDF = constants.KDF;
   var test = function (t) {
     it(t.description, function (done) {
-      store.reset();
+      store.dispatch({ type: "RESET_STATE" });
       keys.create = t.create || create;
       keys.deriveKey = t.deriveKey || deriveKey;
       constants.KDF = t.KDF || KDF;
