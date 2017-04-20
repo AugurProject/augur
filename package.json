@@ -26,23 +26,12 @@
     "ethereumjs-connect": "4.0.1",
     "ethrpc": "4.0.1",
     "keythereum": "0.5.1",
+    "lodash.assign": "4.2.0",
     "redux": "3.6.0",
     "request": "2.74.0",
     "uuid": "3.0.0",
     "uuid-parse": "1.0.0"
   },
-  "engines": {
-    "node": ">= 4.2.x"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/AugurProject/augur.js.git"
-  },
-  "keywords": [],
-  "bugs": {
-    "url": "https://github.com/AugurProject/augur.js/issues"
-  },
-  "homepage": "https://github.com/AugurProject/augur.js",
   "devDependencies": {
     "babel-cli": "^6.22.2",
     "babel-plugin-transform-es3-member-expression-literals": "^6.22.0",
@@ -71,13 +60,25 @@
   "optionalDependencies": {
     "madlibs": "0.0.0"
   },
+  "browser": {
+    "request": false
+  },
+  "engines": {
+    "node": ">= 4.2.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AugurProject/augur.js.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/AugurProject/augur.js/issues"
+  },
+  "homepage": "https://github.com/AugurProject/augur.js",
   "directories": {
     "dist": "dist",
     "scripts": "scripts",
     "src": "src",
     "test": "test"
-  },
-  "browser": {
-    "request": false
   }
 }

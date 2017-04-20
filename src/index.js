@@ -72,11 +72,10 @@ function Augur() {
   this.constants = require("./constants");
 
   this.abi = require("augur-abi");
-  this.rpc = require("ethrpc");
-
-  this.errors = this.rpc.errors;
   this.abi.debug = this.options.debug.abi;
-  this.rpc.debug = this.options.debug;
+
+  this.rpc = require("ethrpc");
+  this.errors = this.rpc.errors;
 
   // Load submodules
   for (i = 0, len = modules.length; i < len; ++i) {
@@ -91,11 +90,9 @@ function Augur() {
   this.fundNewAccount = this.FundNewAccount();
   this.chat = this.Chat();
   if (this.options.debug.tools) this.tools = require("../test/tools");
-  this.sync();
-  this.filters = this.Filters();
+  this.filters = {};
 }
 
-Augur.prototype.Filters = require("./filters");
 Augur.prototype.Chat = require("./chat");
 Augur.prototype.FundNewAccount = require("./fund-new-account");
 

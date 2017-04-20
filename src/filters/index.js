@@ -1,53 +1,44 @@
 "use strict";
 
 var addFilter = require("./add-filter");
-var dispatch = require("./subscription/dispatch");
 var isFunction = require("../utils/is-function");
-var store = require("../store");
+var subscriptions = require("./subscription");
+var getState = require("../store").getState;
 
-module.exports = function () {
-
-  var contracts = store.getState().contractAddresses;
-  var eventsAPI = store.getState().contractsAPI.events;
-  var getBlockAndLogStreamer = this.rpc.getBlockAndLogStreamer.bind(this.rpc);
+module.exports = function (getBlockAndLogStreamer) {
 
   return {
 
-    blockStream: null,
-
     listen: function (callbacks, onSetupComplete) {
-      var label;
-      if (!this.blockStream) this.blockStream = getBlockAndLogStreamer();
+      var label, contracts, eventsAPI, blockStream;
+      contracts = getState().contractAddresses;
+      eventsAPI = getState().contractsAPI.events;
+      blockStream = getBlockAndLogStreamer();
       for (label in callbacks) {
-        if (callbacks.hasOwnProperty(label)) {
-          if (label !== null && label !== undefined) {
-            if (isFunction(callbacks[label])) {
-              addFilter(this.blockStream, label, eventsAPI[label], contracts, callbacks[label]);
-            }
-          }
+        if (callbacks.hasOwnProperty(label) && label != null && isFunction(callbacks[label])) {
+          addFilter(blockStream, label, eventsAPI[label], contracts, subscriptions.addSubscription, callbacks[label]);
         }
       }
-      this.blockStream.subscribeToOnLogAdded(dispatch.onLogAdded);
-      this.blockStream.subscribeToOnLogRemoved(dispatch.onLogRemoved);
+      blockStream.subscribeToOnLogAdded(subscriptions.onLogAdded);
+      blockStream.subscribeToOnLogRemoved(subscriptions.onLogRemoved);
       if (isFunction(onSetupComplete)) onSetupComplete();
     },
 
-    ignore: function (uninstall, cb, complete) {
-      var token;
-      console.log(uninstall, cb, complete);
-      if (this.blockStream) {
-        for (token in this.blockStream.onLogAddedSubscribers) {
-          if (this.blockStream.onLogAddedSubscribers.hasOwnProperty(token)) {
-            this.blockStream.unsubscribeFromOnLogAdded(token);
-          }
+    ignore: function () {
+      var token, blockStream = getBlockAndLogStreamer();
+      if (!blockStream) return false;
+      for (token in blockStream.onLogAddedSubscribers) {
+        if (blockStream.onLogAddedSubscribers.hasOwnProperty(token)) {
+          blockStream.unsubscribeFromOnLogAdded(token);
         }
-        for (token in this.blockStream.logFilters) {
-          if (this.blockStream.logFilters.hasOwnProperty(token)) {
-            this.blockStream.removeLogFilter(token);
-          }
-        }
-        // subscriptionCallback.unregister
       }
+      for (token in subscriptions.getSubscriptions()) {
+        if (blockStream.logFilters.hasOwnProperty(token)) {
+          blockStream.removeLogFilter(token);
+          subscriptions.removeSubscription(token);
+        }
+      }
+      return true;
     }
   };
 };

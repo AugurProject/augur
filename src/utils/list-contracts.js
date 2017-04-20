@@ -1,6 +1,6 @@
 "use strict";
 
-var addAllLogsFilter = function (blockStream, contracts) {
+module.exports = function (contracts) {
   var contractName, contractList;
   contractList = [];
   for (contractName in contracts) {
@@ -8,7 +8,5 @@ var addAllLogsFilter = function (blockStream, contracts) {
       contractList.push(contracts[contractName]);
     }
   }
-  blockStream.addLogFilter({ address: contractList });
+  return contractList;
 };
-
-module.exports = addAllLogsFilter;

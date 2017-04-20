@@ -1,32 +1,34 @@
 "use strict";
 
-var addAllLogsFilter = require("./add-all-logs-filter");
-var addLogFilter = require("./add-log-filter");
-var subscriptionCallback = require("./subscription/subscription-callback");
 var parseBlockMessage = require("./parse-message/parse-block-message");
 var parseLogMessage = require("./parse-message/parse-log-message");
 var parseAllLogsMessage = require("./parse-message/parse-all-logs-message");
+var listContracts = require("../utils/list-contracts");
 
-var addFilter = function (blockStream, label, eventAPI, contracts, onMessage) {
+var addFilter = function (blockStream, label, eventAPI, contracts, addSubscription, onMessage) {
   switch (label) {
     case "block":
-      blockStream.subscribeToOnBlockAdded(function (msg) {
-        parseBlockMessage(msg, onMessage);
+      blockStream.subscribeToOnBlockAdded(function (message) {
+        parseBlockMessage(message, onMessage);
       });
       break;
     case "allLogs":
-      addAllLogsFilter(blockStream, contracts);
-      subscriptionCallback.register(label, function (msg) {
-        parseAllLogsMessage(msg, onMessage);
+      addSubscription(label, blockStream.addLogFilter({
+        address: listContracts(contracts)
+      }), function (message) {
+        parseAllLogsMessage(message, onMessage);
       });
       break;
     default:
-      if (eventAPI && eventAPI.contract && eventAPI.signature && eventAPI.inputs && contracts[eventAPI.contract]) {
-        addLogFilter(blockStream, label, contracts[eventAPI.contract], eventAPI.signature);
-        subscriptionCallback.register(eventAPI.signature, function (msg) {
-          parseLogMessage(label, msg, eventAPI.inputs, onMessage);
-        });
-      }
+      if (!eventAPI) return null;
+      if (!eventAPI.contract || !eventAPI.signature || !eventAPI.inputs) return null;
+      if (!contracts[eventAPI.contract]) return null;
+      addSubscription(eventAPI.signature, blockStream.addLogFilter({
+        address: contracts[eventAPI.contract],
+        topics: [eventAPI.signature]
+      }), function (message) {
+        parseLogMessage(label, message, eventAPI.inputs, onMessage);
+      });
   }
 };
 

@@ -9,7 +9,7 @@ var store = require("../../../src/store");
 describe("filters/add-filter", function () {
   var test = function (t) {
     it(t.description, function (done) {
-      store.reset();
+      store.dispatch({ type: "RESET_STATE" });
       var SubscriptionCallback = { register: t.mock.register };
       var addFilter = proxyquire("../../../src/filters/add-filter.js", {
         "./subscription/subscription-callback": SubscriptionCallback
