@@ -10,73 +10,26 @@ import { SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types';
 
 import getValue from 'utils/get-value';
 
-const TransactionSummary = (p) => {
-  let reportedOutcome = null;
-  if (p.type === COMMIT_REPORT || p.type === REVEAL_REPORT) {
-    const type = getValue(p, 'data.market.type');
-    const outcomeName = getValue(p, 'data.outcome.name');
-    reportedOutcome = (p.data.isScalar || type === SCALAR) ?
-      p.data.reportedOutcomeID :
-      outcomeName && `${outcomeName.substring(0, 35)}${outcomeName.length > 35 && '...'}`;
-  }
-
-  return (
-    <article className="transaction-summary">
-      <div className="transaction-action">
-        {transactionAction(p)}
-        {transactionActionDetails(p)}
-      </div>
-      {!!p.data.isUnethical &&
-        <ReportEthics isUnethical={p.data.isUnethical} />
-      }
-      {!!p.numShares && /* Trading Transactions */
-        <div className="transaction-trade-action-summary">
-          <ValueDenomination
-            className="transaction-shares"
-            {...p.numShares}
-          />
-          {p.data.marketType === CATEGORICAL &&
-            <span>
-              <span className="of">of</span> <span className="outcome-name">{p.data.outcomeName && p.data.outcomeName.toString().substring(0, 35) + ((p.data.outcomeName.toString().length > 35 && '...') || '')}</span>
-            </span>
-          }
-          <span className="at">@</span>
-          <ValueDenomination className="noFeePrice" {...p.noFeePrice} />
-          <br className="hide-in-tx-display" />
-          <ValueDenomination className="avgPrice" {...p.avgPrice} prefix="estimated total (including trading fees):" postfix="/ share" />
-          <br />
-        </div>
-      }
-      {!!p.data.order &&
-        <div className="transaction-cancel-order-summary">
-          <span className="at">to {p.data.order.type}</span>
-          <ValueDenomination
-            className="shares"
-            {...p.data.order.shares}
-          />
-          <span className="of">of</span>
-          <span className="outcome-name">{p.data.outcome.name && p.data.outcome.name.substring(0, 35) + ((p.data.outcome.name.length > 35 && '...') || '')}</span>
-          <br />
-        </div>
-      }
-      {!!reportedOutcome && /* Reporting Transactions */
-        <span className="transaction-reported-outcome">{reportedOutcome}</span>
-      }
-      <div className="transaction-description">
-        {p.data.marketLink ?
-          <Link {...p.data.marketLink}>
-            <span>{transactionDescription(p)}</span>
-          </Link> :
+const TransactionSummary = p => (
+  <article className="transaction-summary">
+    <div className="transaction-action">
+      {transactionAction(p)}
+      {transactionActionDetails(p)}
+    </div>
+    <div className="transaction-description">
+      {p.data.marketLink ?
+        <Link {...p.data.marketLink}>
           <span>{transactionDescription(p)}</span>
-        }
-      </div>
-      <ValueTimestamp
-        className="transaction-timestamp"
-        {...p.timestamp}
-      />
-    </article>
-  );
-};
+        </Link> :
+        <span>{transactionDescription(p)}</span>
+      }
+    </div>
+    <ValueTimestamp
+      className="transaction-timestamp"
+      {...p.timestamp}
+    />
+  </article>
+);
 
 TransactionSummary.propTypes = {
   type: PropTypes.string.isRequired
@@ -119,7 +72,7 @@ function transactionAction(transaction) {
     }
   };
 
-  return <span className="transaction-action-type">{action}</span>;
+  return <span className="transaction-action-type">{action()}</span>;
 }
 
 function transactionActionDetails(transaction) {
@@ -158,6 +111,25 @@ function transactionActionDetails(transaction) {
           <ValueDenomination className="shares" {...transaction.data.order.shares} />
           <span className="of">of</span>
           <span className="outcome-name">{transaction.data.outcome.name && transaction.data.outcome.name.substring(0, 35) + ((transaction.data.outcome.name.length > 35 && '...') || '')}</span>
+        </div>
+      );
+    }
+    case COMMIT_REPORT:
+    case REVEAL_REPORT: {
+      const type = getValue(transaction, 'data.market.type');
+      const outcomeName = getValue(transaction, 'data.outcome.name');
+      const reportedOutcome = (transaction.data.isScalar || type === SCALAR) ?
+        transaction.data.reportedOutcomeID :
+        outcomeName && `${outcomeName.substring(0, 35)}${outcomeName.length > 35 && '...'}`;
+
+      return (
+        <div className="transaction-trade-action-report-details">
+          {!!reportedOutcome &&
+            <span className="transaction-reported-outcome">{reportedOutcome}</span>
+          }
+          {!!transaction.data.isUnethical &&
+            <ReportEthics isUnethical={transaction.data.isUnethical} />
+          }
         </div>
       );
     }
