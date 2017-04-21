@@ -4,12 +4,12 @@ import TransactionDetails from 'modules/transactions/components/transaction-deta
 import TransactionSummary from 'modules/transactions/components/transaction-summary';
 import Spinner from 'modules/common/components/spinner';
 
-import { SUCCESS, FAILED } from 'modules/transactions/constants/statuses';
+import { SUCCESS, FAILED, INTERRUPTED } from 'modules/transactions/constants/statuses';
 
 const Transaction = p => (
-  <article className={classnames('transaction', p.status)}>
-    <span className="transaction-index">
-      {p.status === SUCCESS || p.status === FAILED ?
+  <article className="transaction">
+    <span className={classnames('transaction-index', p.status)}>
+      {p.status === SUCCESS || p.status === FAILED || p.status === INTERRUPTED ?
         p.transactionIndex :
         <Spinner />
       }

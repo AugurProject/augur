@@ -13,6 +13,24 @@
 
   .transaction-index {
     .border(true, @border-right, @style: @border-dotted);
+    .border(true, @border-left, @color-orange-light, @border-width-3);
+
+    &.failed,
+    &.interruped,
+    &.pending,
+    &.success {
+      animation: none;
+      background-color: inherit;
+    }
+
+    &.failed,
+    &.interrupted {
+      .border(true, @border-left, @color-red-light, @border-width-3);
+    }
+
+    &.success {
+      .border(true, @border-left, @color-green-light, @border-width-3);
+    }
   }
 
   &:not(:last-of-type) {
