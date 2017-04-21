@@ -44,7 +44,7 @@ module.exports = {
   // load each batch of marketdata sequentially and recursively until complete
   loadNextMarketsBatch: function (branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass) {
     var self = this;
-    var numMarketsToLoad = isDesc ? Math.min(chunkSize, startIndex) : Math.min(chunkSize, numMarkets - startIndex);
+    var numMarketsToLoad = Math.min(chunkSize, numMarkets - startIndex);
     if (numMarketsToLoad > 0) {
       this.getMarketsInfo({
         branch: branchID,

@@ -103,8 +103,7 @@ module.exports = {
       fromBlock: params.fromBlock || constants.GET_LOGS_DEFAULT_FROM_BLOCK,
       toBlock: params.toBlock || constants.GET_LOGS_DEFAULT_TO_BLOCK,
       address: this.contracts[event.contract],
-      topics: this.buildTopicsList(event, params),
-      timeout: constants.GET_LOGS_TIMEOUT
+      topics: this.buildTopicsList(event, params)
     };
   },
 
@@ -326,8 +325,7 @@ module.exports = {
         fromBlock: options.fromBlock || "0x1",
         toBlock: options.toBlock || "latest",
         address: this.contracts.Trade,
-        topics: topics,
-        timeout: constants.GET_LOGS_TIMEOUT
+        topics: topics
       };
       if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
       this.rpc.getLogs(filter, function (logs) {
@@ -393,8 +391,7 @@ module.exports = {
           abi.format_int256(account),
           market,
           typeCode
-        ],
-        timeout: constants.GET_LOGS_TIMEOUT
+        ]
       };
       if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
       this.rpc.getLogs(filter, function (logs) {
