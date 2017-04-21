@@ -1,6 +1,7 @@
 import Augur from 'augur.js';
+import logError from 'utils/log-error';
 
-export const connect = function connect(env, cb) {
+export const connect = (env, callback) => {
   const options = {
     httpAddresses: [],
     wsAddresses: []
@@ -14,26 +15,20 @@ export const connect = function connect(env, cb) {
   if (env.hostedNodeFallback) options.wsAddresses.push('wss://ws9000.augur.net');
   Object.keys(env.debug).forEach((opt) => { augur.options.debug[opt] = env.debug[opt]; });
   if (env.loadZeroVolumeMarkets != null) augur.options.loadZeroVolumeMarkets = env.loadZeroVolumeMarkets;
-  augur.connect(options, (connection) => {
-    if (!connection) return cb('could not connect to ethereum');
-    console.log('connected:', connection);
-    if (env.augurNodeURL && !isHttps) {
-      console.debug('fetching cached data from', env.augurNodeURL);
-      augur.augurNode.bootstrap([env.augurNodeURL]);
-    }
-    cb(null, connection);
+  augur.connect(options, (vitals) => {
+    if (!vitals) return callback('could not connect to ethereum:' + JSON.stringify(vitals));
+    console.log('connected:', vitals);
+    const contractAddresses = vitals.contracts || Contracts[constants.DEFAULT_NETWORK_ID];
+    const api = (vitals.api && vitals.api.functions) ? vitals.api : Contracts.api;
+    callback(null, vitals);
   });
 };
 
-export const reportingMarketsSetup = function reportingMarketsSetup(periodLength, branchID, cb) {
+export const reportingMarketsSetup = (periodLength, branchID, callback = logError) => {
   const tools = augur.tools;
   tools.DEBUG = true;
   const accounts = augur.rpc.accounts();
   const sender = augur.accounts.account.address || augur.from;
-  const callback = cb || function callback(e, r) {
-    if (e) console.error(e);
-    if (r) console.log(r);
-  };
 
   // create an event (and market) of each type on the new branch
   const t = new Date().getTime() / 1000;
@@ -95,28 +90,24 @@ export const reportingMarketsSetup = function reportingMarketsSetup(periodLength
 // Setup a new branch and prep it for reporting tests:
 // Add markets + events to it, trade in the markets, hit the Rep faucet
 // (Note: requires augur.options.debug.tools = true and access to the rpc.personal API)
-export const reportingTestSetup = function reportingTestSetup(periodLen, branchID, cb) {
+export const reportingTestSetup = (periodLen, branchID, callback = logError) => {
   const self = this;
-  if (!augur.tools) return cb('augur.js needs augur.options.debug.tools=true to run reportingTestSetup');
+  if (!augur.tools) return callback('augur.js needs augur.options.debug.tools=true to run reportingTestSetup');
   const tools = augur.tools;
   const constants = augur.constants;
   const sender = augur.accounts.account.address || augur.from;
   const periodLength = periodLen || 1200;
-  const callback = cb || function callback(e, r) {
-    if (e) console.error(e);
-    if (r) console.log(r);
-  };
   tools.DEBUG = true;
   if (branchID) {
     return augur.getPeriodLength(branchID, (branchPeriodLength) => {
       console.debug('Using branch', branchID, 'for reporting tests, reporting cycle length', branchPeriodLength);
-      self.reportingMarketsSetup(branchPeriodLength, branchID, callback);
+      reportingMarketsSetup(branchPeriodLength, branchID, callback);
     });
   }
   console.debug('Setting up new branch for reporting tests...');
   tools.setup_new_branch(augur, periodLength, constants.DEFAULT_BRANCH_ID, [sender], (err, newBranchID) => {
     if (err) return callback(err);
-    self.reportingMarketsSetup(periodLength, newBranchID, callback);
+    reportingMarketsSetup(periodLength, newBranchID, callback);
   });
 };
 

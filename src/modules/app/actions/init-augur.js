@@ -3,11 +3,15 @@ import { BRANCH_ID } from 'modules/app/constants/network';
 import { updateEnv } from 'modules/app/actions/update-env';
 import { updateConnectionStatus } from 'modules/app/actions/update-connection';
 import { updateAssets } from 'modules/auth/actions/update-assets';
+import { updateContractAddresses } from 'modules/contracts/actions/update-contract-addresses';
+import { updateContractAPI } from 'modules/contracts/actions/update-contract-api';
 import { loadChatMessages } from 'modules/chat/actions/load-chat-messages';
 import { setLoginAccount } from 'modules/auth/actions/set-login-account';
 import { loadBranch } from 'modules/app/actions/load-branch';
 import { registerTransactionRelay } from 'modules/transactions/actions/register-transaction-relay';
 import { displayTopicsPage } from 'modules/link/actions/display-topics-page';
+import logError from 'utils/log-error';
+import noop from 'utils/noop';
 
 // for testing only
 import { reportingTestSetup } from 'modules/reports/actions/reporting-test-setup';
@@ -25,7 +29,9 @@ export function initAugur() {
         dispatch(updateEnv(env));
         connect(env, (err, connected) => {
           if (err) return console.error('connect failure:', err);
-          dispatch(updateConnectionStatus(connected));
+          dispatch(updateConnectionStatus(true));
+          dispatch(updateContractAddresses(vitals.contracts));
+          dispatch(updateContractAPI(vitals.api));
           dispatch(registerTransactionRelay());
           dispatch(loadChatMessages('augur'));
           dispatch(setLoginAccount(env.autoLogin));
@@ -38,11 +44,11 @@ export function initAugur() {
                 env.branchID = branches[branches.length - 1];
                 env.reportingTest = false;
                 if (getState().loginAccount.address) {
-                  augur.fundNewAccount(env.branchID || BRANCH_ID, augur.utils.noop, () => {
+                  augur.fundNewAccount(env.branchID || BRANCH_ID, noop, () => {
                     dispatch(updateAssets());
                     dispatch(loadBranch(env.branchID || BRANCH_ID));
                     dispatch(displayTopicsPage());
-                  }, e => console.error(e));
+                  }, logError);
                 } else {
                   dispatch(loadBranch(env.branchID || BRANCH_ID));
                 }
