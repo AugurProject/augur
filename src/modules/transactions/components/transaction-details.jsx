@@ -1,17 +1,12 @@
 import React from 'react';
 import classNames from 'classnames';
 import ValueDenomination from 'modules/common/components/value-denomination';
-import TransactionStatus from 'modules/transactions/components/transaction-status';
-
-function liveDangerously(thisBetterBeSanitized) { return { __html: thisBetterBeSanitized }; }
+import { formatConfirmations } from 'utils/format-number';
+import { SUCCESS } from 'modules/transactions/constants/statuses';
 
 const TransactionDetails = p => (
   <article className={classNames('transaction-details', p.isVisible ? 'visible' : 'hidden')}>
     <div className="transaction-details-content">
-      {!!p.message &&
-        <span className="message" dangerouslySetInnerHTML={liveDangerously(p.message)} />
-      }
-      <br />
       {!!p.tradingFees && p.tradingFees.value !== null && p.tradingFees.value !== undefined &&
         <span>
           <ValueDenomination
@@ -111,7 +106,14 @@ const TransactionDetails = p => (
           <br />
         </span>
       }
-      <TransactionStatus status={p.status} currentBlockNumber={p.currentBlockNumber} blockNumber={p.blockNumber} />
+      <span className="transaction-status">
+        status: <span className="detail-value">{p.status}</span>
+      </span>
+      {p.status === SUCCESS &&
+        <span className="transaction-confirmations">
+          <ValueDenomination {...formatConfirmations(p.currentBlockNumber - p.blockNumber)} />
+        </span>
+      }
     </div>
   </article>
 );

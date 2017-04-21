@@ -6,7 +6,7 @@
   }
 
   .transaction-group + & {
-    .border(true, @border-top, @border-light);
+    .border(true, @border-top, @border-muted);
   }
 
   .transaction-index,
@@ -72,4 +72,11 @@
       }
     }
   }
+}
+
+.transaction-action {
+  .font-size-medium();
+  .font-weight-normal();
+
+  margin-bottom: 0.3em;
 }

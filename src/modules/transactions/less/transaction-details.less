@@ -3,9 +3,8 @@
   max-height: 0px; /* stylelint-disable-line length-zero-no-unit */
   overflow-y: hidden;
   transform: translateZ(0); // Force hardware accelleration
-  transition-delay: 0s, @animation-speed-slow;
-  transition-duration: @animation-speed-slow;
-  transition-property: max-height border-top;
+  transition-duration: @animation-speed-normal;
+  transition-property: border-top, max-height;
 
   &.visible {
     .border(true, @border-top, @border-light);
@@ -16,4 +15,8 @@
   .transaction-details-content {
     padding: 0.4em;
   }
+}
+
+.transaction-group .transaction-details-content {
+  padding: 0.4em 1.4em;
 }
