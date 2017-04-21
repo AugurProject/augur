@@ -8,14 +8,14 @@ var abi = require("augur-abi");
 var constants = require("../constants");
 var noop = require("../utils/noop");
 
-request = request.defaults({timeout: 999999});
+request = request.defaults({ timeout: 999999 });
 
 module.exports = function (registeredAddress, branch, onSent, onSuccess, onFailed) {
   var onSentCallback, onSuccessCallback, onFailedCallback, url, self = this;
   onSentCallback = onSent || noop;
   onSuccessCallback = onSuccess || noop;
   onFailedCallback = onFailed || noop;
-  if (registeredAddress === undefined || registeredAddress === null || registeredAddress.constructor !== String) {
+  if (registeredAddress == null || registeredAddress.constructor !== String) {
     return onFailed(registeredAddress);
   }
   url = constants.FAUCET + abi.format_address(registeredAddress);
@@ -36,7 +36,7 @@ module.exports = function (registeredAddress, branch, onSent, onSuccess, onFaile
       if (self.options.debug.accounts) console.debug("Balance:", ethBalance);
       balance = parseInt(ethBalance, 16);
       if (balance > 0) {
-        self.fundNewAccount({
+        self.Faucets.fundNewAccount({
           branch: branch || constants.DEFAULT_BRANCH_ID,
           onSent: onSentCallback,
           onSuccess: onSuccessCallback,
@@ -56,7 +56,7 @@ module.exports = function (registeredAddress, branch, onSent, onSuccess, onFaile
           });
         }, function (e) {
           if (e) console.error(e);
-          self.fundNewAccount({
+          self.Faucets.fundNewAccount({
             branch: branch || constants.DEFAULT_BRANCH_ID,
             onSent: onSentCallback,
             onSuccess: onSuccessCallback,

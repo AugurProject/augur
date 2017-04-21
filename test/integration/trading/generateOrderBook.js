@@ -9,7 +9,7 @@ describe("generateOrderBook", function () {
 
   before("top up account", function (done) {
     this.timeout(tools.TIMEOUT);
-    augur.fundNewAccount({
+    augur.Faucets.fundNewAccount({
       branch: augur.constants.DEFAULT_BRANCH_ID,
       onSent: function (r) {
         assert.strictEqual(r.callReturn, "1");

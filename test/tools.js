@@ -109,7 +109,7 @@ module.exports = {
                 }
                 return next();
               }
-              augur.fundNewAccount({
+              augur.Faucets.fundNewAccount({
                 branch: branch,
                 onSent: noop,
                 onSuccess: function (r) {
@@ -190,7 +190,7 @@ module.exports = {
           if (account !== augur.accounts.account.address) {
             augur.useAccount(account);
           }
-          augur.fundNewAccount({
+          augur.Faucets.fundNewAccount({
             branch: newBranchID,
             onSent: function () {},
             onSuccess: function () {

@@ -8,6 +8,7 @@
 var NODE_JS = typeof process !== "undefined" && process.nextTick && !process.browser;
 
 var BigNumber = require("bignumber.js");
+var augurContracts = require("augur-contracts");
 
 var modules = [
   require("./modules/connect"),
@@ -47,7 +48,7 @@ BigNumber.config({
 });
 
 function Augur() {
-  var i, len, fn;
+  var i, len, fn, self = this;
 
   this.version = "4.0.0";
 
@@ -76,6 +77,10 @@ function Augur() {
 
   this.rpc = require("ethrpc");
   this.errors = this.rpc.errors;
+
+  Object.keys(augurContracts[this.constants.DEFAULT_NETWORK_ID]).map(function (contractName) {
+    if (!self[contractName]) self[contractName] = {};
+  });
 
   // Load submodules
   for (i = 0, len = modules.length; i < len; ++i) {

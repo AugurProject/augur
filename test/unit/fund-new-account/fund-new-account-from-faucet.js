@@ -5,14 +5,18 @@
 var assert = require("chai").assert;
 var pass = require("../../../src/utils/pass");
 var fundNewAccountFromFaucet = require("../../../src/fund-new-account/fund-new-account-from-faucet");
+var constants = require("../../../src/constants");
+var noop = require("../../../src/utils/noop");
+var isFunction = require("../../../src/utils/is-function");
 var store = require("../../../src/store");
 var Augur = require("../../../src");
+var clearCallCounts = require("../../tools").clearCallCounts;
 var proxyquire = require("proxyquire").noCallThru().noPreserveCache();
 var augur = new Augur();
 
 describe("fund-new-account/fund-new-account-from-faucet", function () {
   var balance = augur.rpc.balance;
-  var fundNewAccount = augur.fundNewAccount;
+  var fundNewAccount = augur.Faucets.fundNewAccount;
   var waitForNextBlocks = augur.rpc.waitForNextBlocks;
   var finished;
   var callCounts = {
@@ -22,21 +26,23 @@ describe("fund-new-account/fund-new-account-from-faucet", function () {
   afterEach(function () {
     clearCallCounts(callCounts);
     augur.rpc.balance = balance;
-    augur.fundNewAccount = fundNewAccount;
+    augur.Faucets.fundNewAccount = fundNewAccount;
     augur.rpc.waitForNextBlocks = waitForNextBlocks;
   });
   var test = function (t) {
     it(t.description, function (done) {
+      var fundNewAccountFromFaucet;
       augur.rpc.balance = t.balance || balance;
-      augur.fundNewAccount = t.fundNewAccount || fundNewAccount;
+      augur.Faucets.fundNewAccount = t.fundNewAccount || fundNewAccount;
       augur.rpc.waitForNextBlocks = t.waitForNextBlocks || waitForNextBlocks;
-
       finished = done;
+
       // before each test, call accounts module but replace request with our mock, then run the function exported from accounts with augur set as our this. finally call fundNewAccountFromFaucet to test.
-      proxyquire('../../../src/fund-new-account', {
-        'request': t.mockRequest
-      }).call(augur).fundNewAccountFromFaucet(t.registeredAddress, t.branch, t.onSent, t.onSuccess, t.onFailed);
-      // augur.fundNewAccount.fundNewAccountFromFaucet(t.registeredAddress, t.branch, t.onSent, t.onSuccess, t.onFailed);
+      fundNewAccountFromFaucet = proxyquire("../../../src/fund-new-account/fund-new-account-from-faucet", {
+        "request": t.mockRequest,
+        "browser-request": t.mockRequest
+      }).bind(augur);
+      fundNewAccountFromFaucet(t.registeredAddress, t.branch, t.onSent, t.onSuccess, t.onFailed);
     });
   };
   test({

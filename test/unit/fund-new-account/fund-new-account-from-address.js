@@ -3,23 +3,24 @@
 "use strict";
 
 var assert = require("chai").assert;
-var fundNewAccountFromAddress = require("../../../src/fund-new-account/fund-new-account-from-address");
+var noop = require("../../../src/utils/noop");
+var constants = require("../../../src/constants");
 var store = require("../../../src/store");
 var Augur = require("../../../src");
 var augur = new Augur();
 
 describe("fund-new-account/fund-new-account-from-address", function () {
   var sendEther = augur.rpc.sendEther;
-  var fundNewAccount = augur.fundNewAccount;
+  var fundNewAccount = augur.Faucets.fundNewAccount;
   afterEach(function () {
     augur.rpc.sendEther = sendEther;
-    augur.fundNewAccount = fundNewAccount;
+    augur.Faucets.fundNewAccount = fundNewAccount;
   });
   var test = function (t) {
     it(t.description, function () {
       augur.rpc.sendEther = t.sendEther;
-      augur.fundNewAccount = t.fundNewAccount;
-      fundNewAccountFromAddress(t.fromAddress, t.amount, t.registeredAddress, t.branch, t.onSent, t.onSuccess, t.onFailed);
+      augur.Faucets.fundNewAccount = t.fundNewAccount;
+      augur.fundNewAccount.fundNewAccountFromAddress(t.fromAddress, t.amount, t.registeredAddress, t.branch, t.onSent, t.onSuccess, t.onFailed);
     });
   };
   test({
