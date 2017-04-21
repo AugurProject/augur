@@ -1,0 +1,32 @@
+.transaction {
+  &:not(:last-of-type) {
+    .border(true, @border-bottom, @border-muted, @style: @border-dashed);
+  }
+
+  .transaction-main {
+    display: flex;
+    flex: 1;
+
+    .transaction-index,
+    .transaction-toggle {
+      align-items: center;
+      display: flex;
+      flex: 1;
+      justify-content: center;
+      min-width: 1em;
+    }
+
+    .transaction-index {
+      .border(true, @border-right, @style: @border-dotted);
+    }
+
+    .transaction-summary {
+      flex: 10;
+      padding: 0.2em;
+    }
+  }
+
+  .transaction-details {
+    display: none;
+  }
+}

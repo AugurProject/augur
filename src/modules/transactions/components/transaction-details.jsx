@@ -5,7 +5,7 @@ import TransactionStatus from 'modules/transactions/components/transaction-statu
 function liveDangerously(thisBetterBeSanitized) { return { __html: thisBetterBeSanitized }; }
 
 const TransactionDetails = p => (
-  <article className="status-and-message">
+  <article className="transaction-details">
     {!!p.message &&
       <span className="message" dangerouslySetInnerHTML={liveDangerously(p.message)} />
     }

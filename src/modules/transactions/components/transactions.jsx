@@ -4,7 +4,7 @@ import TransactionGroup from 'modules/transactions/components/transaction-group'
 import NullStateMessage from 'modules/common/components/null-state-message';
 
 const Transactions = p => (
-  <article className="transactions-list">
+  <article className="transactions">
     {p.transactions.length ?
       <div>
         {p.transactions.map((transaction, i) => (

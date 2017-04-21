@@ -2,11 +2,26 @@ import React, { PropTypes } from 'react';
 import classnames from 'classnames';
 import TransactionDetails from 'modules/transactions/components/transaction-details';
 import TransactionSummary from 'modules/transactions/components/transaction-summary';
+import Spinner from 'modules/common/components/spinner';
+
+import { SUCCESS, FAILED } from 'modules/transactions/constants/statuses';
 
 const Transaction = p => (
   <article className={classnames('transaction', p.status)}>
-    <span className="transaction-index">{p.transactionIndex}</span>
-    <TransactionSummary {...p} />
+    <div className="transaction-main">
+      <span className="transaction-index">
+        {p.status === SUCCESS || p.status === FAILED ?
+          p.transactionIndex :
+          <Spinner />
+        }
+      </span>
+      <TransactionSummary {...p} />
+      <button
+        className="unstyled transaction-toggle"
+      >
+        <i className="fa fa-plus" />
+      </button>
+    </div>
     <TransactionDetails {...p} />
   </article>
 );
