@@ -3,22 +3,20 @@
 var addFilter = require("./add-filter");
 var isFunction = require("../utils/is-function");
 var subscriptions = require("./subscriptions");
-var getState = require("../store").getState;
 
 module.exports = function (getBlockAndLogStreamer) {
 
   return {
 
-    listen: function (callbacks, onSetupComplete) {
-      var label, contracts, eventsAPI, blockStream;
-      contracts = getState().contractAddresses;
-      eventsAPI = getState().contractsAPI.events;
-      blockStream = getBlockAndLogStreamer();
-      for (label in callbacks) {
-        if (callbacks.hasOwnProperty(label) && label != null && isFunction(callbacks[label])) {
-          addFilter(blockStream, label, eventsAPI[label], contracts, subscriptions.addSubscription, callbacks[label]);
+    listen: function (contracts, eventsAPI, subscriptionCallbacks, onSetupComplete) {
+      var label, contracts, eventsAPI, blockStream = getBlockAndLogStreamer();
+      // contracts = getState().contractAddresses;
+      // eventsAPI = getState().contractsAPI.events;
+      Object.keys(subscriptionCallbacks).map(function (label) {
+        if (isFunction(subscriptionCallbacks[label])) {
+          addFilter(blockStream, label, eventsAPI[label], contracts, subscriptions.addSubscription, subscriptionCallbacks[label]);
         }
-      }
+      });
       blockStream.subscribeToOnLogAdded(subscriptions.onLogAdded);
       blockStream.subscribeToOnLogRemoved(subscriptions.onLogRemoved);
       if (isFunction(onSetupComplete)) onSetupComplete();

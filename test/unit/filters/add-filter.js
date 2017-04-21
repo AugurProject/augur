@@ -4,14 +4,12 @@
 
 var assert = require("chai").assert;
 var proxyquire = require("proxyquire").noPreserveCache();
-var store = require("../../../src/store");
 var subscriptions = require("../../../src/filters/subscriptions");
 var addFilter = require("../../../src/filters/add-filter");
 
 describe("filters/add-filter", function () {
   var test = function (t) {
     it(t.description, function (done) {
-      store.dispatch({ type: "RESET_STATE" });
       addFilter(t.params.blockStream, t.params.label, t.params.eventAPI, t.params.contracts, t.params.addSubscription, function (message) {
         t.assertions(message, subscriptions.getSubscriptions());
         done();

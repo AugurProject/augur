@@ -9,6 +9,7 @@ var NODE_JS = typeof process !== "undefined" && process.nextTick && !process.bro
 
 var BigNumber = require("bignumber.js");
 var augurContracts = require("augur-contracts");
+var constants = require("./constants");
 
 var modules = [
   require("./modules/connect"),
@@ -68,21 +69,19 @@ function Augur() {
   };
   this.protocol = NODE_JS || document.location.protocol;
 
-  this.store = require("./store");
   this.accounts = require("./accounts");
-  this.constants = require("./constants");
-
+  this.constants = constants;
   this.abi = require("augur-abi");
-  this.abi.debug = this.options.debug.abi;
-
   this.rpc = require("ethrpc");
+
+  this.abi.debug = this.options.debug.abi;
   this.errors = this.rpc.errors;
 
-  Object.keys(augurContracts[this.constants.DEFAULT_NETWORK_ID]).map(function (contractName) {
+  Object.keys(augurContracts[constants.DEFAULT_NETWORK_ID]).map(function (contractName) {
     if (!self[contractName]) self[contractName] = {};
   });
 
-  // Load submodules
+  // Load and bind submodules
   for (i = 0, len = modules.length; i < len; ++i) {
     for (fn in modules[i]) {
       if (modules[i].hasOwnProperty(fn)) {

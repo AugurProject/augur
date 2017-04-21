@@ -6,6 +6,7 @@
 
 var clone = require("clone");
 var abi = require("augur-abi");
+var rpc = require("ethrpc");
 var connector = require("ethereumjs-connect");
 var Contracts = require("augur-contracts");
 var constants = require("../constants");
@@ -13,7 +14,6 @@ var compose = require("../utils/compose");
 var isFunction = require("../utils/is-function");
 var isObject = require("../utils/is-object");
 var filters = require("../filters");
-var store = require("../store");
 
 module.exports = {
 
@@ -26,11 +26,11 @@ module.exports = {
    *    expects a fixed-point number, you must do that conversion
    *    yourself and pass the fixed-point number in).
    */
-  bindContractMethod: function (contract, method) {
+  bindContractMethod: function (functionsAPI, contract, method) {
     var self = this;
     return function () {
       var tx, params, numInputs, numFixed, cb, i, onSent, onSuccess, onFailed;
-      tx = clone(store.getState().contractsAPI.functions[contract][method]);
+      tx = clone(functionsAPI[contract][method]);
       if (!arguments || !arguments.length) {
         if (!tx.send) return self.fire(tx);
         return self.transact(tx);
@@ -110,46 +110,33 @@ module.exports = {
     };
   },
 
-  bindContractAPI: function (methods) {
+  bindContractAPI: function (functionsAPI) {
     var contract, method;
-    for (contract in methods) {
-      if (methods.hasOwnProperty(contract)) {
+    for (contract in functionsAPI) {
+      if (functionsAPI.hasOwnProperty(contract)) {
         this[contract] = {};
-        for (method in methods[contract]) {
-          if (methods[contract].hasOwnProperty(method)) {
-            this[contract][method] = this.bindContractMethod(contract, method);
+        for (method in functionsAPI[contract]) {
+          if (functionsAPI[contract].hasOwnProperty(method)) {
+            this[contract][method] = this.bindContractMethod(functionsAPI, contract, method);
             // TODO remove root-level auto bindings
             if (!this[method]) this[method] = this[contract][method];
           }
         }
       }
     }
-    return methods;
+    return functionsAPI;
   },
 
-  setAddressesAndAPI: function (vitals) {
-    var api, contractAddresses;
-    if (!isObject(vitals)) return null;
-    store.dispatch({ type: "SET_FROM_ADDRESS", fromAddress: vitals.coinbase });
-    store.dispatch({ type: "SET_COINBASE_ADDRESS", coinbaseAddress: vitals.coinbase });
-    contractAddresses = vitals.contracts || Contracts[constants.DEFAULT_NETWORK_ID];
-    store.dispatch({ type: "SET_CONTRACT_ADDRESSES", contractAddresses: contractAddresses });
-    api = (vitals.api && vitals.api.functions) ? vitals.api : Contracts.api;
-    store.dispatch({ type: "SET_CONTRACTS_API", contractsAPI: api });
-    this.bindContractAPI(api.functions);
-    return vitals.rpc;
-  },
-
-  useAccount: function (address) {
-    store.dispatch({ type: "SET_FROM_ADDRESS", fromAddress: address });
-    store.dispatch({
-      type: "SET_FUNCTIONS_API",
-      functionsAPI: connector.setFrom(store.getState().contractsAPI.functions, address)
-    });
-  },
+  // useAccount: function (address) {
+  //   store.dispatch({ type: "SET_FROM_ADDRESS", fromAddress: address });
+  //   store.dispatch({
+  //     type: "SET_FUNCTIONS_API",
+  //     functionsAPI: connector.setFrom(store.getState().contractsAPI.functions, address)
+  //   });
+  // },
 
   /**
-   * @param rpcinfo {Object|string=} Two forms accepted:
+   * @param connectOptions {Object|string=} Two forms accepted:
    *    1. Object with connection info fields:
    *       { http: "https://eth3.augur.net",
    *         ipc: "/path/to/geth.ipc",
@@ -157,30 +144,31 @@ module.exports = {
    *    2. URL string for HTTP RPC: "https://eth3.augur.net"
    * @param callback {function=} Callback function.
    */
-  connect: function (rpcinfo, callback) {
+  connect: function (connectOptions, callback) {
     var options, vitals, self = this;
     options = {
+      rpc: rpc,
       contracts: Contracts,
       api: Contracts.api,
       httpAddresses: [],
       wsAddresses: [],
       ipcAddresses: []
     };
-    if (rpcinfo) {
-      switch (rpcinfo.constructor) {
+    if (connectOptions) {
+      switch (connectOptions.constructor) {
         case String:
-          options.httpAddresses.push(rpcinfo);
+          options.httpAddresses.push(connectOptions);
           break;
         case Function:
-          callback = rpcinfo;
+          callback = connectOptions;
           break;
         case Object:
-          if (rpcinfo.httpAddresses) options.httpAddresses = rpcinfo.httpAddresses;
-          if (rpcinfo.wsAddresses) options.wsAddresses = rpcinfo.wsAddresses;
-          if (rpcinfo.ipcAddresses) options.ipcAddresses = rpcinfo.ipcAddresses;
-          if (rpcinfo.http) options.httpAddresses.push(rpcinfo.http);
-          if (rpcinfo.ws) options.wsAddresses.push(rpcinfo.ws);
-          if (rpcinfo.ipc) options.ipcAddresses.push(rpcinfo.ipc);
+          if (connectOptions.httpAddresses) options.httpAddresses = connectOptions.httpAddresses;
+          if (connectOptions.wsAddresses) options.wsAddresses = connectOptions.wsAddresses;
+          if (connectOptions.ipcAddresses) options.ipcAddresses = connectOptions.ipcAddresses;
+          if (connectOptions.http) options.httpAddresses.push(connectOptions.http);
+          if (connectOptions.ws) options.wsAddresses.push(connectOptions.ws);
+          if (connectOptions.ipc) options.ipcAddresses.push(connectOptions.ipc);
           options.contracts = Contracts;
           options.api = Contracts.api;
           break;
@@ -191,15 +179,21 @@ module.exports = {
     if (!isFunction(callback)) {
       vitals = connector.connect(options);
       if (vitals instanceof Error) return vitals;
-      this.rpc = this.setAddressesAndAPI(vitals);
+      vitals.contracts = vitals.contracts || Contracts[constants.DEFAULT_NETWORK_ID];
+      vitals.api = (vitals.api && vitals.api.functions) ? vitals.api : Contracts.api;
+      this.bindContractAPI(vitals.api.functions);
+      this.rpc = vitals.rpc;
       this.filters = filters(this.rpc.getBlockAndLogStreamer);
-      return true;
+      return vitals;
     }
     connector.connect(options, function (err, vitals) {
       if (err) return callback(err);
-      self.rpc = self.setAddressesAndAPI(vitals);
+      vitals.contracts = vitals.contracts || Contracts[constants.DEFAULT_NETWORK_ID];
+      vitals.api = (vitals.api && vitals.api.functions) ? vitals.api : Contracts.api;
+      self.bindContractAPI(vitals.api.functions);
+      self.rpc = vitals.rpc;
       self.filters = filters(self.rpc.getBlockAndLogStreamer);
-      callback(true);
+      callback(vitals);
     });
   }
 };
