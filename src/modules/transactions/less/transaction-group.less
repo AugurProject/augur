@@ -1,5 +1,15 @@
 .transaction-group {
+  .border(true, @border-top, @style: @border-dashed);
+
+  .transaction-group-summary {
+    .border(true, @border-left, @color-black-extra-light, @border-width-3);
+
+    padding: 1em 0.4em;
+  }
+
   .transaction {
+    .border(true, @border-top, @border-muted, @style: @border-dashed);
+
     margin: 0;
   }
 }

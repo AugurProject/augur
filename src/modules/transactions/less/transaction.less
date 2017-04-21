@@ -1,6 +1,14 @@
 .transaction {
   display: flex;
 
+  &:not(:first-of-type) {
+    .border(true, @border-top, @border-muted, @style: @border-dashed);
+  }
+
+  .transaction-group + & {
+    .border(true, @border-top, @style: @border-dashed);
+  }
+
   .transaction-index,
   .transaction-toggle {
     .font-size-medium();
@@ -12,29 +20,24 @@
   }
 
   .transaction-index {
+    // Right Border
     .border(true, @border-right, @style: @border-dotted);
-    .border(true, @border-left, @color-orange-light, @border-width-3);
 
-    &.failed,
-    &.interruped,
-    &.pending,
-    &.success {
-      animation: none;
-      background-color: inherit;
-    }
+    // Left Border
+    .border(true, @border-left, @color-orange-light, @border-width-3);
 
     &.failed,
     &.interrupted {
       .border(true, @border-left, @color-red-light, @border-width-3);
     }
 
+    &.pending {
+      .border(true, @border-left, @color-gray, @border-width-3);
+    }
+
     &.success {
       .border(true, @border-left, @color-green-light, @border-width-3);
     }
-  }
-
-  &:not(:last-of-type) {
-    .border(true, @border-bottom, @border-muted, @style: @border-dashed);
   }
 
   .transaction-main {
@@ -43,6 +46,16 @@
 
     .transaction-summary {
       flex: 1;
+
+      &.transaction-grouped {
+        & > .transaction-summary-content {
+          padding: 0.4em 1.4em;
+        }
+
+        .link {
+          padding: 0.4em 1.4em;
+        }
+      }
 
       & > .transaction-summary-content {
         padding: 0.4em;

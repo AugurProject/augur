@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 import Link from 'modules/link/components/link';
 import ValueDenomination from 'modules/common/components/value-denomination';
 import ValueTimestamp from 'modules/common/components/value-timestamp';
@@ -11,7 +12,7 @@ import { SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types';
 import getValue from 'utils/get-value';
 
 const TransactionSummary = p => (
-  <article className="transaction-summary">
+  <article className={classNames('transaction-summary', p.isGroupedTransaction && 'transaction-grouped')}>
     {p.data.marketLink ?
       <Link {...p.data.marketLink}>
         <TransactionSummaryContent {...p} />
