@@ -279,7 +279,7 @@ var abi = require("augur-abi");
 
 module.exports = function () {
 
-  var rpc = this.rpc;
+  var augur = this;
 
   return {
 
@@ -308,10 +308,10 @@ module.exports = function () {
 
     joinRoom: function joinRoom(roomName, onMessages) {
       var self = this;
-      if (!this.whisper.id) this.whisper.id = rpc.shh("newIdentity");
+      if (!this.whisper.id) this.whisper.id = augur.rpc.shh("newIdentity");
       if (!this.whisper.filters[roomName]) {
         this.whisper.filters[roomName] = {
-          id: rpc.shh("newFilter", {
+          id: augur.rpc.shh("newFilter", {
             topics: [abi.prefix_hex(abi.encode_hex(roomName))]
           }),
           heartbeat: setInterval(function () {
@@ -322,7 +322,7 @@ module.exports = function () {
           }, this.POLL_INTERVAL)
         };
       }
-      rpc.shh("getMessages", this.whisper.filters[roomName].id, function (messages) {
+      augur.rpc.shh("getMessages", this.whisper.filters[roomName].id, function (messages) {
         onMessages(self.parseMessages(messages));
       });
     },
@@ -330,7 +330,7 @@ module.exports = function () {
     getNewMessages: function getNewMessages(roomName, callback) {
       var self = this;
       if (this.whisper.filters[roomName] && this.whisper.filters[roomName].id) {
-        rpc.shh("getFilterChanges", this.whisper.filters[roomName].id, function (messages) {
+        augur.rpc.shh("getFilterChanges", this.whisper.filters[roomName].id, function (messages) {
           callback(null, self.parseMessages(messages));
         });
       }
@@ -343,7 +343,7 @@ module.exports = function () {
         message: message,
         timestamp: new Date().getTime()
       };
-      rpc.shh("post", {
+      augur.rpc.shh("post", {
         from: this.whisper.id,
         topics: [abi.prefix_hex(abi.encode_hex(roomName))],
         payload: abi.prefix_hex(abi.encode_hex(JSON.stringify(payload))),
@@ -357,7 +357,7 @@ module.exports = function () {
 
     leaveRoom: function leaveRoom(roomName, callback) {
       var self = this;
-      rpc.shh("uninstallFilter", this.whisper.filters[roomName].id, function (uninstalled) {
+      augur.rpc.shh("uninstallFilter", this.whisper.filters[roomName].id, function (uninstalled) {
         if (!uninstalled) return callback("couldn't leave room: " + roomName);
         clearInterval(self.whisper.filters[roomName].heartbeat);
         self.whisper.filters[roomName] = null;
@@ -1055,7 +1055,7 @@ BigNumber.config({
 function Augur() {
   var i, len, fn;
 
-  this.version = "3.15.8";
+  this.version = "3.15.9";
 
   this.options = {
     debug: {
@@ -1080,11 +1080,8 @@ function Augur() {
   this.abi = require("augur-abi");
   this.constants = require("./constants");
   this.utils = require("./utilities");
-  this.rpc = require("ethrpc");
   this.subscriptionsSupported = false;
-  this.errors = this.rpc.errors;
-  this.abi.debug = this.options.debug.abi;
-  this.rpc.debug = this.options.debug;
+  this.errors = require("ethrpc").errors;
 
   // Load submodules
   for (i = 0, len = modules.length; i < len; ++i) {
@@ -1781,7 +1778,7 @@ module.exports = {
   // load each batch of marketdata sequentially and recursively until complete
   loadNextMarketsBatch: function loadNextMarketsBatch(branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass) {
     var self = this;
-    var numMarketsToLoad = isDesc ? Math.min(chunkSize, startIndex) : Math.min(chunkSize, numMarkets - startIndex);
+    var numMarketsToLoad = Math.min(chunkSize, numMarkets - startIndex);
     if (numMarketsToLoad > 0) {
       this.getMarketsInfo({
         branch: branchID,
@@ -3150,8 +3147,7 @@ module.exports = {
       fromBlock: params.fromBlock || constants.GET_LOGS_DEFAULT_FROM_BLOCK,
       toBlock: params.toBlock || constants.GET_LOGS_DEFAULT_TO_BLOCK,
       address: this.contracts[event.contract],
-      topics: this.buildTopicsList(event, params),
-      timeout: constants.GET_LOGS_TIMEOUT
+      topics: this.buildTopicsList(event, params)
     };
   },
 
@@ -3372,8 +3368,7 @@ module.exports = {
         fromBlock: options.fromBlock || "0x1",
         toBlock: options.toBlock || "latest",
         address: this.contracts.Trade,
-        topics: topics,
-        timeout: constants.GET_LOGS_TIMEOUT
+        topics: topics
       };
       if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
       this.rpc.getLogs(filter, function (logs) {
@@ -3434,8 +3429,7 @@ module.exports = {
         fromBlock: options.fromBlock || "0x1",
         toBlock: options.toBlock || "latest",
         address: options.shortAsk ? this.contracts.BuyAndSellShares : this.contracts.CompleteSets,
-        topics: [this.api.events.completeSets_logReturn.signature, abi.format_int256(account), market, typeCode],
-        timeout: constants.GET_LOGS_TIMEOUT
+        topics: [this.api.events.completeSets_logReturn.signature, abi.format_int256(account), market, typeCode]
       };
       if (!utils.is_function(callback)) return this.rpc.getLogs(filter);
       this.rpc.getLogs(filter, function (logs) {
@@ -35246,21 +35240,9 @@ function ethereumJsConnectConfigToEthrpcConfig(ethereumJsConnectConfig) {
 (function (Buffer){
 'use strict';
 
-var _createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];descriptor.enumerable = descriptor.enumerable || false;descriptor.configurable = true;if ("value" in descriptor) descriptor.writable = true;Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);if (staticProps) defineProperties(Constructor, staticProps);return Constructor;
-  };
-}();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _classCallCheck(instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-}
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var ethUtil = require('ethereumjs-util');
 var fees = require('ethereum-common/params.json');
@@ -35380,6 +35362,7 @@ module.exports = function () {
    * If the tx's `to` is to the creation address
    * @return {Boolean}
    */
+
 
   _createClass(Transaction, [{
     key: 'toCreationAddress',
@@ -35582,31 +35565,7 @@ module.exports = function () {
 (function (Buffer){
 'use strict';
 
-var _typeof5 = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
-var _typeof4 = typeof Symbol === "function" && _typeof5(Symbol.iterator) === "symbol" ? function (obj) {
-  return typeof obj === "undefined" ? "undefined" : _typeof5(obj);
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof5(obj);
-};
-
-var _typeof3 = typeof Symbol === "function" && _typeof4(Symbol.iterator) === "symbol" ? function (obj) {
-  return typeof obj === "undefined" ? "undefined" : _typeof4(obj);
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof4(obj);
-};
-
-var _typeof2 = typeof Symbol === "function" && _typeof3(Symbol.iterator) === "symbol" ? function (obj) {
-  return typeof obj === "undefined" ? "undefined" : _typeof3(obj);
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof3(obj);
-};
-
-var _typeof = typeof Symbol === "function" && _typeof2(Symbol.iterator) === "symbol" ? function (obj) {
-  return typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj === "undefined" ? "undefined" : _typeof2(obj);
-};
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var createKeccakHash = require('keccak');
 var secp256k1 = require('secp256k1');
