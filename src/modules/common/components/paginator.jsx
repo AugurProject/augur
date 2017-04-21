@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import Link from 'modules/link/components/link';
 
 const Paginator = p => (
@@ -34,5 +34,15 @@ const Paginator = p => (
     </div>
   </article>
 );
+
+Paginator.propTypes = {
+  previousPageNum: PropTypes.number,
+  previousPageLink: PropTypes.object,
+  startItemNum: PropTypes.number,
+  endItemNum: PropTypes.number,
+  numUnpaginated: PropTypes.number,
+  nextPageNum: PropTypes.number,
+  nextPageLink: PropTypes.object
+};
 
 export default Paginator;
