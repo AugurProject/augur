@@ -6,7 +6,7 @@
   }
 
   .transaction-group + & {
-    .border(true, @border-top, @style: @border-dashed);
+    .border(true, @border-top, @border-light);
   }
 
   .transaction-index,
@@ -40,9 +40,10 @@
     }
   }
 
-  .transaction-main {
+  .transaction-content {
     display: flex;
     flex: 1;
+    flex-wrap: wrap;
 
     .transaction-summary {
       flex: 1;
@@ -65,9 +66,5 @@
         padding: 0.4em;
       }
     }
-  }
-
-  .transaction-details {
-    display: none;
   }
 }

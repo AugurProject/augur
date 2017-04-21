@@ -5,7 +5,7 @@ import Transaction from 'modules/transactions/components/transaction';
 const TransactionGroup = p => (
   <article className="transaction-group">
     <div className="transaction-group-summary">
-      <span>Grouped Transactions</span>
+      <span>Grouped Transaction</span>
     </div>
     {p.transactions.map((transaction, i) => (
       <Transaction

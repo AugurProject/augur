@@ -1,11 +1,12 @@
 import React from 'react';
+import classNames from 'classnames';
 import ValueDenomination from 'modules/common/components/value-denomination';
 import TransactionStatus from 'modules/transactions/components/transaction-status';
 
 function liveDangerously(thisBetterBeSanitized) { return { __html: thisBetterBeSanitized }; }
 
 const TransactionDetails = p => (
-  <article className="transaction-details">
+  <article className={classNames('transaction-details', p.isVisible && 'visible')}>
     {!!p.message &&
       <span className="message" dangerouslySetInnerHTML={liveDangerously(p.message)} />
     }
