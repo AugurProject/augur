@@ -1,4 +1,20 @@
 .transaction {
+  display: flex;
+
+  .transaction-index,
+  .transaction-toggle {
+    .font-size-medium();
+
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    min-width: 3em;
+  }
+
+  .transaction-index {
+    .border(true, @border-right, @style: @border-dotted);
+  }
+
   &:not(:last-of-type) {
     .border(true, @border-bottom, @border-muted, @style: @border-dashed);
   }
@@ -7,22 +23,16 @@
     display: flex;
     flex: 1;
 
-    .transaction-index,
-    .transaction-toggle {
-      align-items: center;
-      display: flex;
-      flex: 1;
-      justify-content: center;
-      min-width: 1em;
-    }
-
-    .transaction-index {
-      .border(true, @border-right, @style: @border-dotted);
-    }
-
     .transaction-summary {
-      flex: 10;
-      padding: 0.2em;
+      flex: 1;
+
+      & > .transaction-summary-content {
+        padding: 0.4em;
+      }
+
+      .link {
+        padding: 0.4em;
+      }
     }
   }
 

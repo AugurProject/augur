@@ -8,13 +8,13 @@ import { SUCCESS, FAILED } from 'modules/transactions/constants/statuses';
 
 const Transaction = p => (
   <article className={classnames('transaction', p.status)}>
+    <span className="transaction-index">
+      {p.status === SUCCESS || p.status === FAILED ?
+        p.transactionIndex :
+        <Spinner />
+      }
+    </span>
     <div className="transaction-main">
-      <span className="transaction-index">
-        {p.status === SUCCESS || p.status === FAILED ?
-          p.transactionIndex :
-          <Spinner />
-        }
-      </span>
       <TransactionSummary {...p} />
       <button
         className="unstyled transaction-toggle"

@@ -12,28 +12,30 @@ import getValue from 'utils/get-value';
 
 const TransactionSummary = p => (
   <article className="transaction-summary">
+    {p.data.marketLink ?
+      <Link {...p.data.marketLink}>
+        <TransactionSummaryContent {...p} />
+      </Link> :
+      <TransactionSummaryContent {...p} />
+    }
+  </article>
+);
+
+const TransactionSummaryContent = p => (
+  <div className="transaction-summary-content">
     <div className="transaction-action">
       {transactionAction(p)}
       {transactionActionDetails(p)}
     </div>
     <div className="transaction-description">
-      {p.data.marketLink ?
-        <Link {...p.data.marketLink}>
-          <span>{transactionDescription(p)}</span>
-        </Link> :
-        <span>{transactionDescription(p)}</span>
-      }
+      <span>{transactionDescription(p)}</span>
     </div>
     <ValueTimestamp
       className="transaction-timestamp"
       {...p.timestamp}
     />
-  </article>
+  </div>
 );
-
-TransactionSummary.propTypes = {
-  type: PropTypes.string.isRequired
-};
 
 function transactionAction(transaction) {
   const action = () => {
@@ -98,9 +100,6 @@ function transactionActionDetails(transaction) {
           }
           <span className="at">@</span>
           <ValueDenomination className="noFeePrice" {...transaction.noFeePrice} />
-          <br className="hide-in-tx-display" />
-          <ValueDenomination className="avgPrice" {...transaction.avgPrice} prefix="estimated total (including trading fees):" postfix="/ share" />
-          <br />
         </div>
       );
     }
@@ -179,6 +178,10 @@ function transactionDescription(transaction) {
   // }
   // return <span>{description(isShortened)}</span>;
 }
+
+TransactionSummary.propTypes = {
+  type: PropTypes.string.isRequired
+};
 
 export default TransactionSummary;
 
