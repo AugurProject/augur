@@ -27,7 +27,6 @@
     "ethrpc": "4.0.2",
     "keythereum": "0.5.1",
     "lodash.assign": "4.2.0",
-    "redux": "3.6.0",
     "request": "2.74.0",
     "uuid": "3.0.0",
     "uuid-parse": "1.0.0"
