@@ -213,7 +213,7 @@ module.exports = {
       filterParams.fromBlock = parseInt(constants.GET_LOGS_DEFAULT_FROM_BLOCK, 16);
     }
     if (!filterParams.toBlock) {
-      filterParams.toBlock = this.rpc.block.number;
+      filterParams.toBlock = parseInt(this.rpc.getCurrentBlock().number, 16);
     }
     chunks = this.chunkBlocks(abi.number(filterParams.fromBlock), abi.number(filterParams.toBlock));
     async.eachSeries(chunks, function (chunk, nextChunk) {

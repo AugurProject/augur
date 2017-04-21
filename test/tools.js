@@ -577,7 +577,7 @@ module.exports = {
   display_connection_info: function (augur) {
     if ((!require.main && !displayedConnectionInfo) || augur.options.debug.connect) {
       console.log(chalk.cyan.bold("sync:   "), chalk.cyan(augur.rpc.internalState.transporter.internalState.syncTransport.address));
-      console.log(chalk.yellow.bold("network: "), chalk.yellow(augur.rpc.networkID));
+      console.log(chalk.yellow.bold("network: "), chalk.yellow(augur.rpc.getNetworkID()));
       console.log(chalk.bold("coinbase:"), chalk.white.dim(augur.store.getState().coinbaseAddress));
       console.log(chalk.bold("from:    "), chalk.white.dim(augur.store.getState().fromAddress));
       displayedConnectionInfo = true;

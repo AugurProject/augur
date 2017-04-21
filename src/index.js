@@ -1,5 +1,5 @@
 /**
- * Augur JavaScript SDK
+ * Augur JavaScript API
  * @author Jack Peterson (jack@tinybike.net)
  */
 

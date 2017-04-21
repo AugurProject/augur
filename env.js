@@ -23,7 +23,7 @@ global.Augur = require("./src");
     global.rpc = augur.rpc;
     try {
       global.password = fs.readFileSync(path.join(process.env.HOME, ".ethereum", ".password")).toString();
-      global.accounts = rpc.personal("listAccounts");
+      global.accounts = rpc.personal.listAccounts();
     } catch (exc) {
       console.log(exc);
     }
@@ -43,7 +43,7 @@ global.Augur = require("./src");
       global.market = markets[markets.length - 1];
     }
 
-    console.log(chalk.cyan("Network"), chalk.green(augur.rpc.networkID));
+    console.log(chalk.cyan("Network"), chalk.green(augur.rpc.getNetworkID()));
 
     console.log(chalk.cyan("Balances:"));
     console.log("Cash:       " + chalk.green(balances.cash));

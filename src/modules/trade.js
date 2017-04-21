@@ -15,7 +15,7 @@ module.exports = {
     var self = this;
     var gas = 0;
     var count = {buy: 0, sell: 0};
-    var block = this.rpc.block;
+    var block = this.rpc.getCurrentBlock();
     var checked_trade_ids = trade_ids.slice();
     async.forEachOfSeries(trade_ids, function (trade_id, i, next) {
       self.get_trade(trade_id, function (trade) {

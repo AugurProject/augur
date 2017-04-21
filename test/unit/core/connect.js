@@ -662,7 +662,7 @@ describe('connect.sync', function () {
     },
     assertions: function (out, testThis, connector, done) {
       assert.isTrue(out);
-      assert.isNull(testThis.rpc.networkID);
+      assert.isNull(testThis.rpc.getNetworkID());
       assert.deepEqual(testThis.from, connector.state.from);
       assert.deepEqual(testThis.coinbase, connector.state.coinbase);
       assert.deepEqual(testThis.rpc, connector.rpc);
@@ -699,7 +699,7 @@ describe('connect.sync', function () {
     },
     assertions: function (out, testThis, connector, done) {
       assert.isTrue(out);
-      assert.deepEqual(testThis.rpc.networkID, connector.state.networkID);
+      assert.deepEqual(testThis.rpc.getNetworkID(), connector.state.networkID);
       assert.deepEqual(testThis.from, connector.state.from);
       assert.deepEqual(testThis.coinbase, connector.state.coinbase);
       assert.deepEqual(testThis.rpc, connector.rpc);

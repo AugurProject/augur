@@ -138,7 +138,7 @@ describe("Fund new account", function () {
     var augur = tools.setup(Augur);
 
     // faucet only exists on network 3
-    if (augur.rpc.networkID !== constants.DEFAULT_NETWORK_ID) return done();
+    if (augur.rpc.getNetworkID() !== constants.DEFAULT_NETWORK_ID) return done();
 
     augur.accounts.login(keystore2, password2, function (account) {
       // console.log("login:", account);

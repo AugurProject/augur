@@ -28,3 +28,7 @@ module.exports.removeSubscription = function (token) {
     return p;
   }, {});
 };
+
+module.exports.resetState = function () {
+  subscriptions = {};
+};
