@@ -43,27 +43,32 @@
   .transaction-content {
     display: flex;
     flex: 1;
-    flex-wrap: wrap;
+    flex-direction: column;
 
-    .transaction-summary {
+    .transaction-content-main {
+      display: flex;
       flex: 1;
 
-      &.transaction-grouped {
+      .transaction-summary {
+        flex: 1;
+
+        &.transaction-grouped {
+          & > .transaction-summary-content {
+            padding: 0.4em 1.4em;
+          }
+
+          .link {
+            padding: 0.4em 1.4em;
+          }
+        }
+
         & > .transaction-summary-content {
-          padding: 0.4em 1.4em;
+          padding: 0.4em;
         }
 
         .link {
-          padding: 0.4em 1.4em;
+          padding: 0.4em;
         }
-      }
-
-      & > .transaction-summary-content {
-        padding: 0.4em;
-      }
-
-      .link {
-        padding: 0.4em;
       }
     }
   }

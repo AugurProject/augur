@@ -1,8 +1,19 @@
 .transaction-details {
-  display: none;
-  flex: 1 0 100%;
+  border-top: 0px solid transparent; /* stylelint-disable-line length-zero-no-unit */
+  max-height: 0px; /* stylelint-disable-line length-zero-no-unit */
+  overflow-y: hidden;
+  transform: translateZ(0); // Force hardware accelleration
+  transition-delay: 0s, @animation-speed-slow;
+  transition-duration: @animation-speed-slow;
+  transition-property: max-height border-top;
 
   &.visible {
-    display: block;
+    .border(true, @border-top, @border-light);
+
+    max-height: 1000px;
+  }
+
+  .transaction-details-content {
+    padding: 0.4em;
   }
 }

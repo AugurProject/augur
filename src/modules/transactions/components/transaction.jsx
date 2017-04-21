@@ -34,19 +34,21 @@ export default class Transaction extends Component {
           }
         </span>
         <div className="transaction-content" >
-          <TransactionSummary
-            isGroupedTransaction={p.isGroupedTransaction}
-            {...p}
-          />
-          <button
-            className="unstyled transaction-toggle"
-            onClick={() => this.setState({ isFullTransactionVisible: !s.isFullTransactionVisible })}
-          >
-            {s.isFullTransactionVisible ?
-              <i className="fa fa-minus" /> :
-              <i className="fa fa-plus" />
-            }
-          </button>
+          <div className={classNames('transaction-content-main', s.isFullTransactionVisible && 'transaction-details-visible')}>
+            <TransactionSummary
+              isGroupedTransaction={p.isGroupedTransaction}
+              {...p}
+            />
+            <button
+              className="unstyled transaction-toggle"
+              onClick={() => this.setState({ isFullTransactionVisible: !s.isFullTransactionVisible })}
+            >
+              {s.isFullTransactionVisible ?
+                <i className="fa fa-minus" /> :
+                <i className="fa fa-plus" />
+              }
+            </button>
+          </div>
           <TransactionDetails
             isVisible={s.isFullTransactionVisible}
             {...p}
