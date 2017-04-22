@@ -18,8 +18,6 @@ export const connect = (env, callback) => {
   augur.connect(options, (vitals) => {
     if (!vitals) return callback('could not connect to ethereum:' + JSON.stringify(vitals));
     console.log('connected:', vitals);
-    const contractAddresses = vitals.contracts || Contracts[constants.DEFAULT_NETWORK_ID];
-    const api = (vitals.api && vitals.api.functions) ? vitals.api : Contracts.api;
     callback(null, vitals);
   });
 };
@@ -91,7 +89,6 @@ export const reportingMarketsSetup = (periodLength, branchID, callback = logErro
 // Add markets + events to it, trade in the markets, hit the Rep faucet
 // (Note: requires augur.options.debug.tools = true and access to the rpc.personal API)
 export const reportingTestSetup = (periodLen, branchID, callback = logError) => {
-  const self = this;
   if (!augur.tools) return callback('augur.js needs augur.options.debug.tools=true to run reportingTestSetup');
   const tools = augur.tools;
   const constants = augur.constants;

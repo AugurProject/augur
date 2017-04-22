@@ -3,7 +3,7 @@ import { UPDATE_CONTRACT_ADDRESSES } from 'modules/contracts/actions/update-cont
 export default function (contractAddresses = {}, action) {
   switch (action.type) {
     case UPDATE_CONTRACT_ADDRESSES:
-      return { 
+      return {
         ...contractAddresses,
         ...action.contractAddresses
       };

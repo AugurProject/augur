@@ -27,11 +27,12 @@ export function initAugur() {
       if (xhttp.readyState === 4 && xhttp.status === 200) {
         const env = JSON.parse(xhttp.responseText);
         dispatch(updateEnv(env));
-        connect(env, (err, connected) => {
+        connect(env, (err, vitals) => {
           if (err) return console.error('connect failure:', err);
           dispatch(updateConnectionStatus(true));
           dispatch(updateContractAddresses(vitals.contracts));
-          dispatch(updateContractAPI(vitals.api));
+          dispatch(updateFunctionsAPI(vitals.api.functions));
+          dispatch(updateEventsAPI(vitals.api.events));
           dispatch(registerTransactionRelay());
           dispatch(loadChatMessages('augur'));
           dispatch(setLoginAccount(env.autoLogin));

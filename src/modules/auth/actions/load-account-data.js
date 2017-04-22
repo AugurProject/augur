@@ -10,6 +10,7 @@ export const loadAccountData = (account, redirect) => (dispatch, getState) => {
   if (!account || !account.address) return console.error({ message: 'account address required' });
   dispatch(loadAccountDataFromLocalStorage(account.address));
   dispatch(updateLoginAccount({ address: account.address }));
+  dispatch(updateFromAddress(account.address));
   if (account.isUnlocked) dispatch(updateLoginAccount({ isUnlocked: !!account.isUnlocked }));
   if (account.loginID) dispatch(updateLoginAccount({ loginID: account.loginID }));
   if (account.name) dispatch(updateLoginAccount({ name: account.name }));

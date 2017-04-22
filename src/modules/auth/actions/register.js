@@ -1,8 +1,8 @@
-import { augur } from '../../../services/augurjs';
-import { base58Encode } from '../../../utils/base-58';
-import { loadAccountData } from '../../auth/actions/load-account-data';
-import { savePersistentAccountToLocalStorage } from '../../auth/actions/save-persistent-account';
-import { updateLoginAccount } from '../../auth/actions/update-login-account';
+import { augur } from 'services/augurjs';
+import { base58Encode } from 'utils/base-58';
+import { loadAccountData } from 'modules/auth/actions/load-account-data';
+import { updateLoginAccount } from 'modules/auth/actions/update-login-account';
+import logError from 'utils/log-error';
 
 export const register = (password, cb) => (dispatch) => {
   const callback = cb || (e => e && console.error('register:', e));
@@ -17,10 +17,8 @@ export const register = (password, cb) => (dispatch) => {
   });
 };
 
-export const setupAndFundNewAccount = (password, loginID, rememberMe, cb) => (dispatch, getState) => {
-  const callback = cb || (e => e && console.error('setupAndFundNewAccount:', e));
+export const setupAndFundNewAccount = (password, loginID, rememberMe, callback = logError) => (dispatch, getState) => {
   if (!loginID) return callback({ message: 'loginID is required' });
-  if (rememberMe) savePersistentAccountToLocalStorage({ ...augur.accounts.account, loginID });
   dispatch(updateLoginAccount({ loginID, address: augur.accounts.account.address }));
   dispatch(loadAccountData(getState().loginAccount, true));
   callback(null);

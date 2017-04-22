@@ -58,7 +58,8 @@ import chatMessages from 'modules/chat/reducers/chat-messages';
 import marketCreatorFees from 'modules/my-markets/reducers/market-creator-fees';
 
 import contractAddresses from 'modules/contracts/reducers/contract-addresses';
-import contractAPI from 'modules/contracts/reducers/contracts-api';
+import functionsAPI from 'modules/contracts/reducers/functions-api';
+import eventsAPI from 'modules/contracts/reducers/events-api';
 
 export function createReducer() {
   return combineReducers({
@@ -119,6 +120,7 @@ export function createReducer() {
     marketCreatorFees,
 
     contractAddresses,
-    contractAPI
+    functionsAPI,
+    eventsAPI
   });
 }
