@@ -2,6 +2,8 @@
 
 var BigNumber = require("bignumber.js");
 var clone = require("clone");
+var abacus = require("./abacus");
+var roundToPrecision = require("../utils/round-to-precision");
 var constants = require("../constants");
 
 module.exports = {
@@ -48,7 +50,7 @@ module.exports = {
           delete newOrderBook[filledOrderType][orderID];
         } else {
           order.fullPrecisionAmount = updatedAmount.toFixed();
-          order.amount = this.roundToPrecision(updatedAmount, constants.MINIMUM_TRADE_SIZE);
+          order.amount = roundToPrecision(updatedAmount, constants.MINIMUM_TRADE_SIZE);
           if (this.options.debug.trading) {
             console.log("updated order:", order);
           }
@@ -60,8 +62,8 @@ module.exports = {
 
   adjustScalarOrder: function (order, minValue) {
     var adjustedOrder = clone(order);
-    adjustedOrder.fullPrecisionPrice = this.expandScalarPrice(minValue, order.fullPrecisionPrice || order.price);
-    adjustedOrder.price = this.expandScalarPrice(minValue, order.price);
+    adjustedOrder.fullPrecisionPrice = abacus.expandScalarPrice(minValue, order.fullPrecisionPrice || order.price);
+    adjustedOrder.price = abacus.expandScalarPrice(minValue, order.price);
     return adjustedOrder;
   },
 
@@ -80,7 +82,7 @@ module.exports = {
       id: adjustedLog.tradeid,
       type: adjustedLog.type,
       market: adjustedLog.market,
-      amount: this.roundToPrecision(new BigNumber(adjustedLog.amount, 10), constants.MINIMUM_TRADE_SIZE),
+      amount: roundToPrecision(new BigNumber(adjustedLog.amount, 10), constants.MINIMUM_TRADE_SIZE),
       fullPrecisionAmount: adjustedLog.amount,
       price: this.roundToPrecision(new BigNumber(adjustedLog.price, 10), constants.PRECISION.zero, round, roundingMode),
       fullPrecisionPrice: adjustedLog.price,

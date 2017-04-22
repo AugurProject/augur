@@ -1,20 +1,21 @@
 "use strict";
 
-var constants = require("../constants");
+var api = require("../api/contract-api");
+var rpc = require("../rpc-interface");
 var noop = require("../utils/noop");
+var constants = require("../constants");
 
-var fundNewAccountFromAddress = function (fromAddress, amount, registeredAddress, branch, onSent, onSuccess, onFailed) {
-  var onSentCallback, onSuccessCallback, onFailedCallback, self = this;
-  onSentCallback = onSent || noop;
-  onSuccessCallback = onSuccess || noop;
-  onFailedCallback = onFailed || noop;
-  this.rpc.sendEther({
+function fundNewAccountFromAddress(fromAddress, amount, registeredAddress, branch, onSent, onSuccess, onFailed) {
+  var onSentCallback = onSent || noop;
+  var onSuccessCallback = onSuccess || noop;
+  var onFailedCallback = onFailed || noop;
+  rpc.sendEther({
     to: registeredAddress,
     value: amount,
     from: fromAddress,
     onSent: noop,
     onSuccess: function () {
-      self.Faucets.fundNewAccount({
+      api.Faucets.fundNewAccount({
         branch: branch || constants.DEFAULT_BRANCH_ID,
         onSent: onSentCallback,
         onSuccess: onSuccessCallback,
@@ -23,6 +24,6 @@ var fundNewAccountFromAddress = function (fromAddress, amount, registeredAddress
     },
     onFailed: onFailedCallback
   });
-};
+}
 
 module.exports = fundNewAccountFromAddress;

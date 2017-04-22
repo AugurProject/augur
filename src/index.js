@@ -13,22 +13,7 @@ var constants = require("./constants");
 
 var modules = [
   require("./modules/connect"),
-  require("./modules/transact"),
-  require("./modules/cash"),
-  require("./modules/events"),
   require("./modules/markets"),
-  require("./modules/buyAndSellShares"),
-  require("./modules/trade"),
-  require("./modules/createBranch"),
-  require("./modules/sendReputation"),
-  require("./modules/makeReports"),
-  require("./modules/collectFees"),
-  require("./modules/createMarket"),
-  require("./modules/compositeGetters"),
-  require("./modules/slashRep"),
-  require("./modules/logs"),
-  require("./modules/abacus"),
-  require("./modules/reporting"),
   require("./modules/payout"),
   require("./modules/placeTrade"),
   require("./modules/tradingActions"),
@@ -72,14 +57,12 @@ function Augur() {
   this.accounts = require("./accounts");
   this.constants = constants;
   this.abi = require("augur-abi");
-  this.rpc = require("ethrpc");
+  this.rpc = require("./rpc-interface");
 
   this.abi.debug = this.options.debug.abi;
   this.errors = this.rpc.errors;
 
-  Object.keys(augurContracts[constants.DEFAULT_NETWORK_ID]).map(function (contractName) {
-    if (!self[contractName]) self[contractName] = {};
-  });
+  this.bindContractAPI(augurContracts.api.functions);
 
   // Load and bind submodules
   for (i = 0, len = modules.length; i < len; ++i) {

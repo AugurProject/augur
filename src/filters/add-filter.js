@@ -5,7 +5,7 @@ var parseLogMessage = require("./parse-message/parse-log-message");
 var parseAllLogsMessage = require("./parse-message/parse-all-logs-message");
 var listContracts = require("../utils/list-contracts");
 
-var addFilter = function (blockStream, label, eventAPI, contracts, addSubscription, onMessage) {
+function addFilter(blockStream, label, eventAPI, contracts, addSubscription, onMessage) {
   switch (label) {
     case "block":
       blockStream.subscribeToOnBlockAdded(function (message) {
@@ -30,6 +30,6 @@ var addFilter = function (blockStream, label, eventAPI, contracts, addSubscripti
         parseLogMessage(label, message, eventAPI.inputs, onMessage);
       });
   }
-};
+}
 
 module.exports = addFilter;

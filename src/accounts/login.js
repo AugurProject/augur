@@ -11,7 +11,7 @@ var setActiveAccount = require("./set-active-account");
 var login = function (keystore, password, cb) {
   var keystoreCrypto, callback;
   callback = (isFunction(cb)) ? cb : pass;
-  if (!keystore || !password || password === "") return callback(errors.BAD_CREDENTIALS);
+  if (!keystore || password == null || password === "") return callback(errors.BAD_CREDENTIALS);
   keystoreCrypto = keystore.crypto || keystore.Crypto;
 
   // derive secret key from password
@@ -31,23 +31,17 @@ var login = function (keystore, password, cb) {
 
     // decrypt stored private key using secret key
     try {
-      privateKey = keys.decrypt(storedKey, derivedKey.slice(0, 16), keystoreCrypto.cipherparams.iv);
-
-      // while logged in, account object is set
-      account = {
-        privateKey: privateKey,
+      callback({
+        privateKey: keys.decrypt(storedKey, derivedKey.slice(0, 16), keystoreCrypto.cipherparams.iv),
         address: abi.format_address(keystore.address),
         keystore: keystore,
         derivedKey: derivedKey
-      };
-      setActiveAccount(account);
-      callback(account);
+      });
 
     // decryption failure: bad password
     } catch (exc) {
-      e = clone(errors.BAD_CREDENTIALS);
-      e.bubble = exc;
-      return callback(e);
+      console.error(exc);
+      callback(errors.BAD_CREDENTIALS);
     }
   }); // deriveKey
 };

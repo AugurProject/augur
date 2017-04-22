@@ -31,14 +31,6 @@ module.exports = {
     });
   },
 
-  parseTopicsInfo: function (topicsInfo) {
-    var i, len, parsedTopicsInfo = {};
-    for (i = 0, len = topicsInfo.length; i < len; i += 2) {
-      parsedTopicsInfo[decodeTag(topicsInfo[i])] = abi.unfix(topicsInfo[i + 1], "number");
-    }
-    return parsedTopicsInfo;
-  },
-
   getTopicsInfo: function (branch, offset, numTopicsToLoad, callback) {
     if (!callback) {
       if (isFunction(offset)) {

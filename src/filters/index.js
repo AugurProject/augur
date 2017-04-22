@@ -4,14 +4,12 @@ var addFilter = require("./add-filter");
 var isFunction = require("../utils/is-function");
 var subscriptions = require("./subscriptions");
 
-module.exports = function (getBlockAndLogStreamer) {
+module.exports = function (getBlockStream) {
 
   return {
 
     listen: function (contracts, eventsAPI, subscriptionCallbacks, onSetupComplete) {
-      var label, contracts, eventsAPI, blockStream = getBlockAndLogStreamer();
-      // contracts = getState().contractAddresses;
-      // eventsAPI = getState().contractsAPI.events;
+      var label, contracts, eventsAPI, blockStream = getBlockStream();
       Object.keys(subscriptionCallbacks).map(function (label) {
         if (isFunction(subscriptionCallbacks[label])) {
           addFilter(blockStream, label, eventsAPI[label], contracts, subscriptions.addSubscription, subscriptionCallbacks[label]);
@@ -23,7 +21,7 @@ module.exports = function (getBlockAndLogStreamer) {
     },
 
     ignore: function () {
-      var token, blockStream = getBlockAndLogStreamer();
+      var token, blockStream = getBlockStream();
       if (!blockStream) return false;
       for (token in blockStream.onLogAddedSubscribers) {
         if (blockStream.onLogAddedSubscribers.hasOwnProperty(token)) {
