@@ -56,7 +56,7 @@ describe(`modules/auth/actions/register.js`, () => {
       { type: loadAccountDataTestString }
     ];
     store.dispatch(action.register('password', fakeCallback));
-    store.dispatch(action.setupAndFundNewAccount('password', testState.loginAccount.loginID, false, fakeCallback));
+    store.dispatch(action.setupAndFundNewAccount('password', testState.loginAccount.loginID, fakeCallback));
     assert(fakeCallback.calledTwice, `the callback wasn't triggered 2 times as expected`);
     assert.deepEqual(store.getActions(), expectedOutput, `Didn't create a new account as expected`);
   });

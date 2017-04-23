@@ -7,15 +7,16 @@ import { updateLoginAccount } from 'modules/auth/actions/update-login-account';
 import { displayTopicsPage } from 'modules/link/actions/display-topics-page';
 
 export const loadAccountData = (account, redirect) => (dispatch, getState) => {
-  if (!account || !account.address) return console.error({ message: 'account address required' });
+  if (!account || !account.address) return console.error('account address required');
   dispatch(loadAccountDataFromLocalStorage(account.address));
-  dispatch(updateLoginAccount({ address: account.address }));
+  // dispatch(updateLoginAccount({ address: account.address }));
+  dispatch(updateLoginAccount(account));
   dispatch(updateFromAddress(account.address));
-  if (account.isUnlocked) dispatch(updateLoginAccount({ isUnlocked: !!account.isUnlocked }));
-  if (account.loginID) dispatch(updateLoginAccount({ loginID: account.loginID }));
-  if (account.name) dispatch(updateLoginAccount({ name: account.name }));
-  if (account.airbitzAccount) dispatch(updateLoginAccount({ airbitzAccount: account.airbitzAccount }));
-  if (account.registerBlockNumber) dispatch(updateLoginAccount({ registerBlockNumber: account.registerBlockNumber }));
+  // if (account.isUnlocked != null) dispatch(updateLoginAccount({ isUnlocked: !!account.isUnlocked }));
+  // if (account.loginID != null) dispatch(updateLoginAccount({ loginID: account.loginID }));
+  // if (account.name != null) dispatch(updateLoginAccount({ name: account.name }));
+  // if (account.airbitzAccount != null) dispatch(updateLoginAccount({ airbitzAccount: account.airbitzAccount }));
+  // if (account.registerBlockNumber != null) dispatch(updateLoginAccount({ registerBlockNumber: account.registerBlockNumber }));
   dispatch(displayTopicsPage(redirect));
   dispatch(updateAssets((err, balances) => {
     if (err) return console.error(err);

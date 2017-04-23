@@ -1,5 +1,5 @@
-import { augur } from '../../../services/augurjs';
-import { loadAccountData } from '../../auth/actions/load-account-data';
+import { augur } from 'services/augurjs';
+import { loadAccountData } from 'modules/auth/actions/load-account-data';
 
 // Use unlocked local address (if actually unlocked)
 export const useUnlockedAccount = unlockedAddress => (dispatch) => {

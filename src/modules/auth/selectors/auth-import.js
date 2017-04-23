@@ -8,6 +8,6 @@ export default function () {
   };
 }
 
-function importAccountFromFile(password, remember, keystore) {
-  store.dispatch(importAccount(password, remember, keystore));
+function importAccountFromFile(password, keystore) {
+  store.dispatch(importAccount(password, keystore));
 }
