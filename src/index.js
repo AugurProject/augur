@@ -13,17 +13,11 @@ var constants = require("./constants");
 
 var modules = [
   require("./modules/connect"),
-  require("./modules/markets"),
-  require("./modules/payout"),
   require("./modules/placeTrade"),
-  require("./modules/tradingActions"),
   require("./modules/makeOrder"),
   require("./modules/takeOrder"),
-  require("./modules/selectOrder"),
   require("./modules/executeTrade"),
   require("./modules/positions"),
-  require("./modules/register"),
-  require("./modules/topics"),
   require("./modules/modifyOrderBook"),
   require("./modules/generateOrderBook")
 ];
@@ -34,7 +28,7 @@ BigNumber.config({
 });
 
 function Augur() {
-  var i, len, fn, self = this;
+  var i, len, fn;
 
   this.version = "4.0.0";
 

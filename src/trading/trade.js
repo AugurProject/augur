@@ -2,12 +2,16 @@
 
 var abi = require("augur-abi");
 var clone = require("clone");
+var api = require("../api");
 var checkGasLimit = require("./check-gas-limit");
 var makeTradeHash = require("./make-trade-hash");
+var parseTradeReceipt = require("./parse-trade-receipt");
 var isObject = require("../utils/is-object");
-var constants = require("../constants");
+var noop = require("../utils/noop");
+var compose = require("../utils/compose");
 var rpcInterface = require("../rpc-interface");
 var errors = rpcInterface.errors;
+var constants = require("../constants");
 
 // TODO break this up
 function trade(max_value, max_amount, trade_ids, tradeGroupID, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
@@ -43,60 +47,64 @@ function trade(max_value, max_amount, trade_ids, tradeGroupID, sender, onTradeHa
     }
     tradeHash = makeTradeHash(max_value, max_amount, trade_ids);
     onTradeHash(tradeHash);
-    self.commitTrade({
+    api.Trades.commitTrade({
       hash: tradeHash,
       onSent: onCommitSent,
       onSuccess: function (res) {
         onCommitSuccess(res);
-        self.rpc.waitForNextBlocks(1, function (blockNumber) {
-          var tx;
+        rpcInterface.waitForNextBlocks(1, function (blockNumber) {
           onNextBlock(blockNumber);
-          tx = clone(store.getState().contractsAPI.functions.Trade.trade);
-          tx.params = [abi.fix(max_value, "hex"), abi.fix(max_amount, "hex"), trade_ids, tradeGroupID || 0];
-          // console.log("trade tx:", JSON.stringify(tx, null, 2));
-          self.transact(tx, onTradeSent, compose(function (result, cb) {
-            var err, txHash;
-            // console.log("trade response:", JSON.stringify(result, null, 2));
-            txHash = result.hash;
-            if (Array.isArray(result.callReturn)) {
-              result.callReturn[0] = parseInt(result.callReturn[0], 16);
-              if (result.callReturn[0] !== 1 || result.callReturn.length !== 3) {
-                err = self.rpc.errorCodes("trade", "number", result.callReturn[0]);
+          api.Trade.trade({
+            max_value: abi.fix(max_value, "hex"),
+            max_amount: abi.fix(max_amount, "hex"),
+            trade_ids: trade_ids,
+            tradeGroupID: tradeGroupID || 0,
+            onSent: onTradeSent,
+            onSuccess: compose(function (result, callback) {
+              var err, txHash;
+              // console.log("trade response:", JSON.stringify(result, null, 2));
+              txHash = result.hash;
+              if (Array.isArray(result.callReturn)) {
+                result.callReturn[0] = parseInt(result.callReturn[0], 16);
+                if (result.callReturn[0] !== 1 || result.callReturn.length !== 3) {
+                  err = rpcInterface.handleRPCError("trade", "number", result.callReturn[0]);
+                  if (!err) {
+                    err = clone(errors.TRADE_FAILED);
+                    err.hash = txHash;
+                    err.message += result.callReturn[0].toString();
+                    return onTradeFailed(err);
+                  }
+                  return onTradeFailed({ error: err, message: errors.trade[err], tx: tx, hash: txHash });
+                }
+                rpcInterface.getTransactionReceipt(txHash, function (receipt) {
+                  var parsedReceipt;
+                  if (!receipt) return onTradeFailed(errors.TRANSACTION_RECEIPT_NOT_FOUND);
+                  if (receipt.error) return onTradeFailed(receipt);
+                  parsedReceipt = parseTradeReceipt(receipt);
+                  callback({
+                    hash: txHash,
+                    unmatchedCash: abi.unfix_signed(result.callReturn[1], "string"),
+                    unmatchedShares: abi.unfix(result.callReturn[2], "string"),
+                    sharesBought: parsedReceipt.sharesBought,
+                    cashFromTrade: parsedReceipt.cashFromTrade,
+                    tradingFees: parsedReceipt.tradingFees,
+                    gasFees: result.gasFees,
+                    timestamp: result.timestamp
+                  });
+                });
+              } else {
+                err = rpcInterface.handleRPCError("trade", "number", result.callReturn);
                 if (!err) {
                   err = clone(errors.TRADE_FAILED);
                   err.hash = txHash;
-                  err.message += result.callReturn[0].toString();
+                  err.message += result.callReturn.toString();
                   return onTradeFailed(err);
                 }
-                return onTradeFailed({error: err, message: errors.trade[err], tx: tx, hash: txHash});
+                onTradeFailed({ error: err, message: errors[err], tx: tx, hash: txHash });
               }
-              self.rpc.getTransactionReceipt(txHash, function (receipt) {
-                var parsedReceipt;
-                if (!receipt) return onTradeFailed(errors.TRANSACTION_RECEIPT_NOT_FOUND);
-                if (receipt.error) return onTradeFailed(receipt);
-                parsedReceipt = self.parseTradeReceipt(receipt);
-                cb({
-                  hash: txHash,
-                  unmatchedCash: abi.unfix_signed(result.callReturn[1], "string"),
-                  unmatchedShares: abi.unfix(result.callReturn[2], "string"),
-                  sharesBought: parsedReceipt.sharesBought,
-                  cashFromTrade: parsedReceipt.cashFromTrade,
-                  tradingFees: parsedReceipt.tradingFees,
-                  gasFees: result.gasFees,
-                  timestamp: result.timestamp
-                });
-              });
-            } else {
-              err = self.rpc.errorCodes("trade", "number", result.callReturn);
-              if (!err) {
-                err = clone(errors.TRADE_FAILED);
-                err.hash = txHash;
-                err.message += result.callReturn.toString();
-                return onTradeFailed(err);
-              }
-              onTradeFailed({error: err, message: errors[err], tx: tx, hash: txHash});
-            }
-          }, onTradeSuccess), onTradeFailed);
+            }, onTradeSuccess),
+            onFailed: onTradeFailed
+          });
         });
       },
       onFailed: onCommitFailed

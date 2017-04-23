@@ -2,14 +2,13 @@
 
 var abi = require("augur-abi");
 
-function buildTopicsList(event, params) {
+function buildTopicsList(eventSignature, eventInputs. params) {
   var i, numInputs;
-  var topics = [event.signature];
-  var inputs = event.inputs;
-  for (i = 0, numInputs = inputs.length; i < numInputs; ++i) {
-    if (inputs[i].indexed) {
-      if (params[inputs[i].name]) {
-        topics.push(abi.format_int256(params[inputs[i].name]));
+  var topics = [eventSignature];
+  for (i = 0, numInputs = eventInputs.length; i < numInputs; ++i) {
+    if (eventInputs[i].indexed) {
+      if (params[eventInputs[i].name]) {
+        topics.push(abi.format_int256(params[eventInputs[i].name]));
       } else {
         topics.push(null);
       }

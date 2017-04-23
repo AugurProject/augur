@@ -1,13 +1,16 @@
 "use strict";
 
+var augurContracts = require("augur-contracts");
+var buildTopicsList = require("./build-topics-list");
+var rpcInterface = require("../rpc-interface");
 var constants = require("../constants");
 
-function parametrizeFilter(event, params) {
+function parametrizeFilter(eventAPI, params) {
   return {
     fromBlock: params.fromBlock || constants.GET_LOGS_DEFAULT_FROM_BLOCK,
     toBlock: params.toBlock || constants.GET_LOGS_DEFAULT_TO_BLOCK,
-    address: store.getState().contractAddresses[event.contract],
-    topics: this.buildTopicsList(event, params),
+    address: augurContracts[rpcInterface.getNetworkID()][eventAPI.contract],
+    topics: buildTopicsList(eventAPI.signature, eventAPI.inputs, params),
     timeout: constants.GET_LOGS_TIMEOUT
   };
 }
