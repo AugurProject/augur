@@ -19,13 +19,13 @@ var DEFAULT_NETWORK_ID = require("../constants").DEFAULT_NETWORK_ID;
  */
 function connect(connectOptions, callback) {
   var vitals, options = {
-    rpc: ethrpc,
-    contracts: augurContracts,
-    api: augurContracts.api,
-    httpAddresses: [],
-    wsAddresses: [],
-    ipcAddresses: []
-  };
+      rpc: ethrpc,
+      contracts: augurContracts,
+      api: augurContracts.api,
+      httpAddresses: [],
+      wsAddresses: [],
+      ipcAddresses: []
+    };
   if (connectOptions) {
     switch (connectOptions.constructor) {
       case String:

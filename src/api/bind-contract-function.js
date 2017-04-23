@@ -91,6 +91,6 @@ function bindContractFunction(functionsAPI, contract, method) {
     if (!tx.parser) return rpcInterface.transact(tx, onSent, onSuccess, onFailed);
     return rpcInterface.transact(tx, onSent, compose(contractDataParsers[tx.parser], onSuccess, extraArgument), onFailed);
   };
-};
+}
 
 module.exports = bindContractFunction;
