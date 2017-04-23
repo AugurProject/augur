@@ -25,6 +25,7 @@
     "clone": "1.0.2",
     "ethereumjs-connect": "4.0.2",
     "ethrpc": "4.0.3",
+    "immutable-delete": "1.0.1",
     "keythereum": "0.5.1",
     "lodash.assign": "4.2.0",
     "request": "2.74.0",

@@ -9,17 +9,11 @@ var NODE_JS = typeof process !== "undefined" && process.nextTick && !process.bro
 
 var BigNumber = require("bignumber.js");
 var augurContracts = require("augur-contracts");
+var api = require("./api");
 var constants = require("./constants");
 
 var modules = [
-  require("./modules/connect"),
-  require("./modules/placeTrade"),
-  require("./modules/makeOrder"),
-  require("./modules/takeOrder"),
-  require("./modules/executeTrade"),
-  require("./modules/positions"),
-  require("./modules/modifyOrderBook"),
-  require("./modules/generateOrderBook")
+  require("./modules/connect")
 ];
 
 BigNumber.config({
@@ -47,16 +41,16 @@ function Augur() {
     loadZeroVolumeMarkets: true
   };
   this.protocol = NODE_JS || document.location.protocol;
-
-  this.accounts = require("./accounts");
   this.constants = constants;
+
   this.abi = require("augur-abi");
+  this.abi.debug = this.options.debug.abi;
+  this.accounts = require("./accounts");
+  this.filters = require("./filters");
+  this.chat = require("./chat");
   this.rpc = require("./rpc-interface");
 
-  this.abi.debug = this.options.debug.abi;
-  this.errors = this.rpc.errors;
-
-  this.bindContractAPI(augurContracts.api.functions);
+  api.generateContractAPI(augurContracts.api.functions);
 
   // Load and bind submodules
   for (i = 0, len = modules.length; i < len; ++i) {
@@ -68,13 +62,14 @@ function Augur() {
     }
   }
 
-  this.fundNewAccount = this.FundNewAccount();
+  this.fundNewAccount = {
+    fundNewAccountFromAddress: require("./fund-new-account/fund-new-account-from-address"),
+    fundNewAccountFromFaucet: require("./fund-new-account/fund-new-account-from-faucet")
+  };
   this.chat = this.Chat();
   if (this.options.debug.tools) this.tools = require("../test/tools");
-  this.filters = {};
 }
 
 Augur.prototype.Chat = require("./chat");
-Augur.prototype.FundNewAccount = require("./fund-new-account");
 
 module.exports = Augur;

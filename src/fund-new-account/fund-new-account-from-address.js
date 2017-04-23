@@ -1,7 +1,7 @@
 "use strict";
 
-var api = require("../api/contract-api");
-var rpc = require("../rpc-interface");
+var api = require("../api");
+var rpcInterface = require("../rpc-interface");
 var noop = require("../utils/noop");
 var constants = require("../constants");
 
@@ -9,7 +9,7 @@ function fundNewAccountFromAddress(fromAddress, amount, registeredAddress, branc
   var onSentCallback = onSent || noop;
   var onSuccessCallback = onSuccess || noop;
   var onFailedCallback = onFailed || noop;
-  rpc.sendEther({
+  rpcInterface.sendEther({
     to: registeredAddress,
     value: amount,
     from: fromAddress,
