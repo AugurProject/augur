@@ -89,6 +89,7 @@ export default class TransactionsView extends Component {
   render() {
     const p = this.props;
     const s = this.state;
+    const transactionsListRef = this.transactionsList;
 
     const hasRep = !!getValue(p, 'loginAccount.rep.value');
     const hasBranch = !!getValue(p, 'branch.id');
@@ -103,12 +104,20 @@ export default class TransactionsView extends Component {
           <h2>Transactions</h2>
         </div>
 
-        <Transactions
-          paginatedTransactions={s.paginatedTransactions}
-          currentBlockNumber={p.currentBlockNumber}
-        />
+        <div
+          ref={(transactionsList) => { this.transactionsList = transactionsList; }}
+        >
+          <Transactions
+            paginatedTransactions={s.paginatedTransactions}
+            currentBlockNumber={p.currentBlockNumber}
+          />
+        </div>
         {!!p.transactions.length &&
-          <Paginator {...s.pagination} />
+          <Paginator
+            {...s.pagination}
+            isMobile={p.isMobile}
+            scrollList={transactionsListRef}
+          />
         }
       </section>
     );

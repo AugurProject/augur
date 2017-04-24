@@ -22,6 +22,7 @@ export default class App extends Component {
     super(props);
 
     this.state = {
+      isMobile: false, // Determined via CSS media query + pre-defined breakpoint
       isSideBarAllowed: false,
       isSideBarCollapsed: false,
       isSideBarPersistent: true,
@@ -96,12 +97,14 @@ export default class App extends Component {
     // CSS breakpoint sets the value when a user is mobile
     if (window.getComputedStyle(this.main).getPropertyValue('will-change') === 'contents') {
       this.setState({
+        isMobile: true,
         isSideBarCollapsed: true,
         isSideBarPersistent: false
       });
       this.attachTouchHandler();
     } else {
       this.setState({
+        isMobile: false,
         isSideBarCollapsed: false,
         isSideBarPersistent: true
       });
@@ -229,6 +232,7 @@ export default class App extends Component {
                 </div>
                 <Routes
                   {...p}
+                  isMobile={s.isMobile}
                   setSidebarAllowed={this.setSidebarAllowed}
                   footerHeight={s.footerHeight}
                 />
