@@ -41,21 +41,6 @@ export const selectTransactions = createSelector(
       }, [])
       .sort((a, b) => getValue(b, 'timestamp.timestamp') - getValue(a, 'timestamp.timestamp'));
 
-    let currentTransactionIndex = 1;
-    formattedTransactions.forEach((transaction, i, transactions) => {
-      const currentTransaction = transactions[(transactions.length - 1) - i];
-
-      if (currentTransaction.transactions && currentTransaction.transactions.length > 1) {
-        currentTransaction.transactions.forEach((groupedTransaction, groupedIndex) => {
-          currentTransaction.transactions[(currentTransaction.transactions.length - 1) - groupedIndex].transactionIndex = currentTransactionIndex;
-          currentTransactionIndex += 1;
-        });
-      } else {
-        currentTransaction.transactionIndex = currentTransactionIndex;
-        currentTransactionIndex += 1;
-      }
-    });
-
     return formattedTransactions;
   }
 );
