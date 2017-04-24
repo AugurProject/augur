@@ -37,7 +37,7 @@ export function loadAccountTrades(marketID, callback = logError) {
       })
     ], (err) => {
       if (err) return callback(err);
-      dispatch(sellCompleteSets(marketID, cb));
+      dispatch(sellCompleteSets(marketID, callback));
     });
   };
 }

@@ -3,7 +3,6 @@ import { clearTopics, updateTopics } from 'modules/topics/actions/update-topics'
 import logError from 'utils/log-error';
 
 export const loadTopics = (branchID, callback = logError) => (dispatch) => {
-  const callback = cb || (e => e && console.error('loadTopics:', e));
   let firstChunkLoaded;
   augur.topics.getTopicsInfoChunked(branchID, 0, null, null, (topicsInfoChunk) => {
     console.log('topics info chunk:', topicsInfoChunk);

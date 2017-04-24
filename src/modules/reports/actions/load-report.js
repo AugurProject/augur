@@ -68,8 +68,8 @@ export function loadReport(branchID, period, eventID, marketID, callback) {
             isCommitted: true
           }));
           callback(null);
-        });
-      }));
+        }));
+      });
     });
   };
 }
