@@ -6,15 +6,15 @@ export function fundNewAccount() {
   return (dispatch, getState) => {
     const { env, branch, loginAccount } = getState();
     if (env.fundNewAccountFromAddress && env.fundNewAccountFromAddress.amount) {
-      const fromAddress = env.fundNewAccountFromAddress.address || augur.from;
+      const fromAddress = env.fundNewAccountFromAddress.address;
       const amount = env.fundNewAccountFromAddress.amount;
-      augur.accounts.fundNewAccountFromAddress(fromAddress, amount, loginAccount.address, branch.id, utils.noop, (r) => {
+      augur.beta.fundNewAccountFromAddress(fromAddress, amount, loginAccount.address, branch.id, utils.noop, (r) => {
         console.log('fundNewAccountFromAddress success:', r);
         dispatch(updateAssets());
         dispatch(loadRegisterBlockNumber());
       }, e => console.error('fundNewAccountFromAddress:', e));
     } else {
-      augur.accounts.fundNewAccountFromFaucet(loginAccount.address, branch.id, utils.noop, (r) => {
+      augur.beta.fundNewAccountFromFaucet(loginAccount.address, branch.id, utils.noop, (r) => {
         console.log('fundNewAccountFromFaucet success:', r);
         dispatch(updateAssets());
         dispatch(loadRegisterBlockNumber());

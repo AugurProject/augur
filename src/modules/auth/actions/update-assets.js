@@ -9,7 +9,7 @@ export function updateAssets(cb) {
     const { loginAccount, branch } = getState();
     const balances = { ether: undefined, realEther: undefined, rep: undefined };
     if (!loginAccount.address) return dispatch(updateLoginAccount(balances));
-    augur.loadAssets(branch.id || BRANCH_ID, loginAccount.address,
+    augur.assets.loadAssets(branch.id || BRANCH_ID, loginAccount.address,
       (err, ether) => {
         if (err) return callback(err);
         balances.ether = ether;

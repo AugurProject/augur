@@ -51,7 +51,7 @@ export function submitNewMarket(newMarket) {
         formattedNewMarket.numOutcomes = 2;
     }
 
-    augur.createSingleEventMarket({
+    augur.create.createSingleEventMarket({
       ...formattedNewMarket,
       onSent: (res) => {
         console.log('createSingleEventMarket sent:', res);

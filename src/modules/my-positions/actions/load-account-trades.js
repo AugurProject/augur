@@ -1,13 +1,13 @@
 import async from 'async';
-import { augur } from '../../../services/augurjs';
-import { updateAccountTradesData, updateCompleteSetsBought, updateAccountPositionsData } from '../../../modules/my-positions/actions/update-account-trades-data';
-import { convertLogsToTransactions } from '../../../modules/transactions/actions/convert-logs-to-transactions';
-import { clearAccountTrades } from '../../../modules/my-positions/actions/clear-account-trades';
-import { sellCompleteSets } from '../../../modules/my-positions/actions/sell-complete-sets';
+import { augur } from 'services/augurjs';
+import { updateAccountTradesData, updateCompleteSetsBought, updateAccountPositionsData } from 'modules/my-positions/actions/update-account-trades-data';
+import { convertLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
+import { clearAccountTrades } from 'modules/my-positions/actions/clear-account-trades';
+import { sellCompleteSets } from 'modules/my-positions/actions/sell-complete-sets';
+import logError from 'utils/log-error';
 
-export function loadAccountTrades(marketID, cb) {
+export function loadAccountTrades(marketID, callback = logError) {
   return (dispatch, getState) => {
-    const callback = cb || (e => e && console.error('loadAccountTrades:', e));
     const { loginAccount } = getState();
     const account = loginAccount.address;
     if (!account) return callback();
@@ -17,22 +17,22 @@ export function loadAccountTrades(marketID, cb) {
     }
     if (!marketID) dispatch(clearAccountTrades());
     async.parallel([
-      next => augur.getAdjustedPositions(account, options, (err, positions) => {
+      next => augur.trading.positions.getAdjustedPositions(account, options, (err, positions) => {
         if (err) return next(err);
         dispatch(updateAccountPositionsData(positions, marketID));
         next(null);
       }),
-      next => augur.getAccountTrades(account, options, (err, trades) => {
+      next => augur.logs.getAccountTrades(account, options, (err, trades) => {
         if (err) return next(err);
         dispatch(updateAccountTradesData(trades, marketID));
         next(null);
       }),
-      next => augur.getLogsChunked('payout', { fromBlock: options.fromBlock, sender: account }, null, (payouts) => {
+      next => augur.logs.getLogsChunked('payout', { fromBlock: options.fromBlock, sender: account }, null, (payouts) => {
         if (payouts && payouts.length) dispatch(convertLogsToTransactions('payout', payouts));
       }, next),
-      next => augur.getBuyCompleteSetsLogs(account, options, (err, completeSets) => {
+      next => augur.logs.getBuyCompleteSetsLogs(account, options, (err, completeSets) => {
         if (err) return next(err);
-        dispatch(updateCompleteSetsBought(augur.parseCompleteSetsLogs(completeSets), marketID));
+        dispatch(updateCompleteSetsBought(augur.logs.parseCompleteSetsLogs(completeSets), marketID));
         next(null);
       })
     ], (err) => {

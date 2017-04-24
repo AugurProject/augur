@@ -1,6 +1,5 @@
 import { createSelector } from 'reselect';
 import { selectLoginAccountState } from 'src/select-state';
-import { augur } from 'services/augurjs';
 import { formatRep, formatEther } from 'utils/format-number';
 import generateDownloadAccountLink from 'modules/auth/actions/generate-download-account-link';
 import getABCUIContext from 'modules/auth/selectors/abc';
@@ -26,7 +25,7 @@ export const selectLoginAccount = createSelector(
     }
     return {
       ...loginAccount,
-      ...generateDownloadAccountLink(loginAccount.address, augur.accounts.account.keystore),
+      ...generateDownloadAccountLink(loginAccount.address, loginAccount.keystore),
       prettyLoginID,
       prettyAddress,
       linkText,

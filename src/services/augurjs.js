@@ -22,11 +22,10 @@ export const connect = (env, callback) => {
   });
 };
 
-export const reportingMarketsSetup = (periodLength, branchID, callback = logError) => {
+export const reportingMarketsSetup = (sender, periodLength, branchID, callback = logError) => {
   const tools = augur.tools;
   tools.DEBUG = true;
-  const accounts = augur.rpc.accounts();
-  const sender = augur.accounts.account.address || augur.from;
+  const accounts = augur.rpc.eth.accounts();
 
   // create an event (and market) of each type on the new branch
   const t = new Date().getTime() / 1000;
@@ -46,7 +45,7 @@ export const reportingMarketsSetup = (periodLength, branchID, callback = logErro
     const types = Object.keys(markets);
     const numTypes = types.length;
     for (let i = 0; i < numTypes; ++i) {
-      events[types[i]] = augur.getMarketEvent(markets[types[i]], 0);
+      events[types[i]] = augur.api.Events.getMarketEvent(markets[types[i]], 0);
     }
     const eventID = events.binary;
     console.debug('Binary event:', events.binary);
@@ -63,15 +62,15 @@ export const reportingMarketsSetup = (periodLength, branchID, callback = logErro
       tools.wait_until_expiration(augur, events.binary, (err) => {
         if (err) return callback(err);
         callback(null, 4);
-        const periodLength = augur.getPeriodLength(augur.getBranch(eventID));
-        const expirationPeriod = Math.floor(augur.getExpiration(eventID) / periodLength);
+        const periodLength = augur.reporting.getPeriodLength(augur.api.Events.getBranch(eventID));
+        const expirationPeriod = Math.floor(augur.api.Events.getExpiration(eventID) / periodLength);
         tools.print_reporting_status(augur, eventID, 'Wait complete');
-        console.log('Current period:', augur.getCurrentPeriod(periodLength));
+        console.log('Current period:', augur.reporting.getCurrentPeriod(periodLength));
         console.log('Expiration period + 1:', expirationPeriod + 1);
         callback(null, 5);
 
         // wait for second period to start
-        augur.checkPeriod(branchID, periodLength, sender, (err, votePeriod) => {
+        augur.reporting.prepareToReport(branchID, periodLength, sender, (err, votePeriod) => {
           if (err) console.error('checkVotePeriod failed:', err);
           callback(null, 6);
           tools.print_reporting_status(augur, eventID, 'After checkVotePeriod');
@@ -88,23 +87,22 @@ export const reportingMarketsSetup = (periodLength, branchID, callback = logErro
 // Setup a new branch and prep it for reporting tests:
 // Add markets + events to it, trade in the markets, hit the Rep faucet
 // (Note: requires augur.options.debug.tools = true and access to the rpc.personal API)
-export const reportingTestSetup = (periodLen, branchID, callback = logError) => {
+export const reportingTestSetup = (sender, periodLen, branchID, callback = logError) => {
   if (!augur.tools) return callback('augur.js needs augur.options.debug.tools=true to run reportingTestSetup');
   const tools = augur.tools;
   const constants = augur.constants;
-  const sender = augur.accounts.account.address || augur.from;
   const periodLength = periodLen || 1200;
   tools.DEBUG = true;
   if (branchID) {
-    return augur.getPeriodLength(branchID, (branchPeriodLength) => {
+    return augur.api.Branches.getPeriodLength(branchID, (branchPeriodLength) => {
       console.debug('Using branch', branchID, 'for reporting tests, reporting cycle length', branchPeriodLength);
-      reportingMarketsSetup(branchPeriodLength, branchID, callback);
+      reportingMarketsSetup(sender, branchPeriodLength, branchID, callback);
     });
   }
   console.debug('Setting up new branch for reporting tests...');
   tools.setup_new_branch(augur, periodLength, constants.DEFAULT_BRANCH_ID, [sender], (err, newBranchID) => {
     if (err) return callback(err);
-    reportingMarketsSetup(periodLength, newBranchID, callback);
+    reportingMarketsSetup(sender, periodLength, newBranchID, callback);
   });
 };
 

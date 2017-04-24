@@ -46,7 +46,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         gasFees
       }, abi.format_int256(p.market), p.outcome, status));
     case 'cancel': {
-      const order = augur.selectOrder(p.trade_id, getState().orderBooks);
+      const order = augur.trading.takeOrder.selectOrder(p.trade_id, getState().orderBooks);
       if (!order) return null;
       return dispatch(constructTradingTransaction('log_cancel', {
         ...p,
@@ -74,7 +74,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           const market = marketsData[abi.format_int256(order.market)];
           let price;
           if (market.type === SCALAR) {
-            price = abi.bignum(augur.shrinkScalarPrice(market.minValue, order.price));
+            price = abi.bignum(augur.trading.shrinkScalarPrice(market.minValue, order.price));
           } else {
             price = abi.bignum(order.price);
           }
@@ -182,7 +182,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             const market = marketsData[abi.format_int256(order.market)];
             let price;
             if (market.type === SCALAR) {
-              price = abi.bignum(augur.shrinkScalarPrice(market.minValue, order.price));
+              price = abi.bignum(augur.trading.shrinkScalarPrice(market.minValue, order.price));
             } else {
               price = abi.bignum(order.price);
             }
@@ -335,8 +335,8 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           const { baseReporters, numEventsCreatedInPast24Hours, numEventsInReportPeriod, periodLength } = getState().branch;
           transaction = dispatch(constructTransaction('marketCreated', {
             ...p,
-            eventBond: augur.calculateValidityBond(p.tradingFee, periodLength, baseReporters, numEventsCreatedInPast24Hours, numEventsInReportPeriod),
-            marketCreationFee: abi.unfix(augur.calculateRequiredMarketValue(gasPrice), 'string')
+            eventBond: augur.create.calculateValidityBond(p.tradingFee, periodLength, baseReporters, numEventsCreatedInPast24Hours, numEventsInReportPeriod),
+            marketCreationFee: abi.unfix(augur.create.calculateRequiredMarketValue(gasPrice), 'string')
           }));
           break;
         }

@@ -20,7 +20,7 @@ export function checkPeriod(unlock, cb) {
       tracker.notSoCurrentPeriod = currentPeriod;
       dispatch(clearOldReports());
     }
-    augur.checkPeriod(branch.id, branch.periodLength, loginAccount.address, (err, reportPeriod) => {
+    augur.reporting.prepareToReport(branch.id, branch.periodLength, loginAccount.address, (err, reportPeriod) => {
       console.log('checkPeriod complete:', err, reportPeriod);
       if (err) return callback(err);
       dispatch(updateBranch({ reportPeriod }));

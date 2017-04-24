@@ -11,7 +11,6 @@ export const loadAccountData = (account, redirect) => (dispatch, getState) => {
   dispatch(loadAccountDataFromLocalStorage(account.address));
   // dispatch(updateLoginAccount({ address: account.address }));
   dispatch(updateLoginAccount(account));
-  dispatch(updateFromAddress(account.address));
   // if (account.isUnlocked != null) dispatch(updateLoginAccount({ isUnlocked: !!account.isUnlocked }));
   // if (account.loginID != null) dispatch(updateLoginAccount({ loginID: account.loginID }));
   // if (account.name != null) dispatch(updateLoginAccount({ name: account.name }));

@@ -12,7 +12,7 @@ export const claimProceeds = () => (dispatch, getState) => {
     const winningPositions = selectWinningPositions();
     console.log('closed markets with winning shares:', winningPositions);
     if (winningPositions.length) {
-      augur.claimMarketsProceeds(branch.id, winningPositions, (err, claimedMarkets) => {
+      augur.trading.payout.claimMarketsProceeds(branch.id, winningPositions, (err, claimedMarkets) => {
         if (err) console.error('claimMarketsProceeds failed:', err);
         dispatch(updateAssets());
         async.each(claimedMarkets, (marketID, nextMarket) => (

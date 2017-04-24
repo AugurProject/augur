@@ -108,7 +108,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
     // trade actions
     if (newTradeDetails.side && newTradeDetails.numShares && loginAccount.address) {
       const market = selectMarket(marketID);
-      augur.getParticipantSharesPurchased(marketID, loginAccount.address, outcomeID, (sharesPurchased) => {
+      augur.api.Markets.getParticipantSharesPurchased(marketID, loginAccount.address, outcomeID, (sharesPurchased) => {
         if (!sharesPurchased || sharesPurchased.error) {
           console.error('getParticipantSharesPurchased:', sharesPurchased);
           return dispatch({
@@ -117,7 +117,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
           });
         }
         const position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
-        const tradingActions = augur.getTradingActions(
+        const tradingActions = augur.trading.simulation.getTradingActions(
           newTradeDetails.side,
           newTradeDetails.numShares,
           newTradeDetails.limitPrice,

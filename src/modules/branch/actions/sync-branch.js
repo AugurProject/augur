@@ -11,12 +11,12 @@ let checkPeriodLock = false;
 export const syncReporterData = cb => (dispatch, getState) => {
   const callback = cb || (e => e && console.log('syncReporterData:', e));
   const { branch, loginAccount } = getState();
-  augur.getPenalizedUpTo(branch.id, loginAccount.address, (penalizedUpTo) => {
+  augur.api.ConsensusData.getPenalizedUpTo(branch.id, loginAccount.address, (penalizedUpTo) => {
     if (!penalizedUpTo || penalizedUpTo.error) {
       return callback(penalizedUpTo || 'could not look up last period penalized');
     }
     dispatch(updateBranch({ lastPeriodPenalized: parseInt(penalizedUpTo, 10) }));
-    augur.getFeesCollected(branch.id, loginAccount.address, penalizedUpTo, (feesCollected) => {
+    augur.api.ConsensusData.getFeesCollected(branch.id, loginAccount.address, penalizedUpTo, (feesCollected) => {
       if (!feesCollected || feesCollected.error) {
         return callback(feesCollected || 'could not look up fees collected');
       }
@@ -46,18 +46,18 @@ export const syncBranch = cb => (dispatch, getState) => {
     return callback(null);
   }
   console.log('syncing branch...');
-  augur.getVotePeriod(branch.id, (period) => {
+  augur.api.Branches.getVotePeriod(branch.id, (period) => {
     if (!period || period.error) {
       return callback(period || 'could not look up report period');
     }
     const reportPeriod = parseInt(period, 10);
     dispatch(updateBranch({ reportPeriod }));
-    augur.getPast24(period, (past24) => {
+    augur.api.Events.getPast24(period, (past24) => {
       if (!past24 || past24.error) {
         return callback(past24 || 'could not look up past 24');
       }
       dispatch(updateBranch({ numEventsCreatedInPast24Hours: parseInt(past24, 10) }));
-      augur.getNumberEvents(branch.id, period, (numberEvents) => {
+      augur.api.ExpiringEvents.getNumberEvents(branch.id, period, (numberEvents) => {
         if (!numberEvents || numberEvents.error) {
           return callback(numberEvents || 'could not look up number of events');
         }

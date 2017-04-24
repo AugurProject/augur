@@ -10,7 +10,8 @@ export default class PasswordInputForm extends Component {
       isReadyToDownload: false,
       downloadAccountDataString: undefined,
       downloadAccountFileName: undefined,
-      passwordInput: ''
+      passwordInput: '',
+      privateKey: this.props.privateKey
     };
     this.handleSubmitPasswordInput = this.handleSubmitPasswordInput.bind(this);
   }
@@ -19,6 +20,7 @@ export default class PasswordInputForm extends Component {
     e.preventDefault();
     encryptPrivateKeyWithPassword(
       this.state.passwordInput,
+      this.state.loginAccount.privateKey,
       keystore => this.setState({
         ...generateDownloadAccountLink(keystore.address, keystore),
         isReadyToDownload: true

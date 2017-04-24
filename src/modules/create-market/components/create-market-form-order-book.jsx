@@ -360,9 +360,9 @@ export default class CreateMarketFormOrderBook extends Component {
     let action;
 
     if (order.type === BID) {
-      action = augur.getBidAction(order.quantity, order.price, makerFee, gasPrice);
+      action = augur.trading.simulation.getBidAction(order.quantity, order.price, makerFee, gasPrice);
     } else {
-      action = augur.getShortAskAction(order.quantity, order.price, makerFee, gasPrice);
+      action = augur.trading.simulation.getShortAskAction(order.quantity, order.price, makerFee, gasPrice);
     }
 
     if (shouldReduce) {

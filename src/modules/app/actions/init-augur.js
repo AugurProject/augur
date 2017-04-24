@@ -4,7 +4,7 @@ import { updateEnv } from 'modules/app/actions/update-env';
 import { updateConnectionStatus } from 'modules/app/actions/update-connection';
 import { updateAssets } from 'modules/auth/actions/update-assets';
 import { updateContractAddresses } from 'modules/contracts/actions/update-contract-addresses';
-import { updateContractAPI } from 'modules/contracts/actions/update-contract-api';
+import { updateFunctionsAPI, updateEventsAPI } from 'modules/contracts/actions/update-contract-api';
 import { loadChatMessages } from 'modules/chat/actions/load-chat-messages';
 import { setLoginAccount } from 'modules/auth/actions/set-login-account';
 import { loadBranch } from 'modules/app/actions/load-branch';
@@ -40,12 +40,12 @@ export function initAugur() {
 
             // 127.0.0.1 only: configure for follow-on (multi-user) reporting testing
             if (typeof window !== 'undefined' && window.location.hostname === '127.0.0.1' && env.reportingTest === true) {
-              augur.getBranches((branches) => {
+              augur.api.Branches.getBranches((branches) => {
                 console.debug(window.location.hostname, branches[branches.length - 1]);
                 env.branchID = branches[branches.length - 1];
                 env.reportingTest = false;
                 if (getState().loginAccount.address) {
-                  augur.fundNewAccount(env.branchID || BRANCH_ID, noop, () => {
+                  augur.api.Faucets.fundNewAccount(env.branchID || BRANCH_ID, noop, () => {
                     dispatch(updateAssets());
                     dispatch(loadBranch(env.branchID || BRANCH_ID));
                     dispatch(displayTopicsPage());

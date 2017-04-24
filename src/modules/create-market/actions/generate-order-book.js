@@ -5,7 +5,7 @@ import { updateSellCompleteSetsLock } from '../../my-positions/actions/update-ac
 
 export const submitGenerateOrderBook = market => (dispatch) => {
   dispatch(updateSellCompleteSetsLock(market.id, true));
-  augur.generateOrderBook({
+  augur.create.generateOrderBook({
     market: market.id,
     liquidity: market.initialLiquidity,
     initialFairPrices: market.initialFairPrices.raw,

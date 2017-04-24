@@ -16,7 +16,6 @@
     "filters": false,
     "sync": false,
     "accounts": false,
-    "abi": false,
     "tools": false
   },
   "fundNewAccountFromAddress": {

@@ -8,7 +8,7 @@ export function loadMarkets(branchID) {
   return (dispatch) => {
     dispatch(updateHasLoadedMarkets(true));
 
-    augur.loadMarkets(branchID, chunkSize, true, true, (err, marketsData) => {
+    augur.markets.loadMarkets(branchID, chunkSize, true, true, (err, marketsData) => {
       if (err) {
         console.log('ERROR loadMarkets()', err);
         dispatch(updateHasLoadedMarkets(false));

@@ -318,7 +318,7 @@ export function constructSubmittedReportHashTransaction(log, marketID, market, o
   const action = log.inProgress ? 'committing' : 'committed';
   transaction.message = `${action} to report`;
   if (decryptionKey) {
-    const formattedReport = formatReportedOutcome(augur.parseAndDecryptReport([
+    const formattedReport = formatReportedOutcome(augur.reporting.crypto.parseAndDecryptReport([
       log.encryptedReport,
       log.encryptedSalt
     ], { derivedKey: decryptionKey }).report, market.minValue, market.maxValue, market.type, outcomes);
@@ -411,7 +411,7 @@ export const constructLogFillTxTransaction = (trade, marketID, marketType, minVa
   const shares = formatShares(trade.amount);
   const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
   const bnShares = abi.bignum(trade.amount);
-  const bnPrice = marketType === SCALAR ? abi.bignum(augur.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
+  const bnPrice = marketType === SCALAR ? abi.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
   const totalCost = bnPrice.times(bnShares).plus(tradingFees);
   const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
   const totalCostPerShare = totalCost.dividedBy(bnShares);
@@ -521,10 +521,10 @@ export const constructLogAddTxTransaction = (trade, marketID, marketType, descri
   const takerFee = market.takerFee;
   const maxValue = abi.bignum(market.maxValue);
   const minValue = abi.bignum(market.minValue);
-  const fees = augur.calculateFxpTradingFees(makerFee, takerFee);
-  const rawPrice = marketType === SCALAR ? augur.expandScalarPrice(minValue, trade.price) : trade.price;
+  const fees = augur.trading.fees.calculateFxpTradingFees(makerFee, takerFee);
+  const rawPrice = marketType === SCALAR ? augur.trading.expandScalarPrice(minValue, trade.price) : trade.price;
   const range = marketType === SCALAR ? abi.fix(maxValue.minus(minValue)) : constants.ONE;
-  const adjustedFees = augur.calculateFxpMakerTakerFees(augur.calculateFxpAdjustedTradingFee(fees.tradingFee, abi.fix(trade.price), range), fees.makerProportionOfFee, false, true);
+  const adjustedFees = augur.trading.fees.calculateFxpMakerTakerFees(augur.trading.fees.calculateFxpAdjustedTradingFee(fees.tradingFee, abi.fix(trade.price), range), fees.makerProportionOfFee, false, true);
   const fxpShares = abi.fix(trade.amount);
   const fxpPrice = abi.fix(trade.price);
   const tradingFees = adjustedFees.maker.times(fxpShares).dividedBy(constants.ONE)
@@ -651,7 +651,7 @@ export const constructMarketTransaction = (label, log, market) => (dispatch, get
 };
 
 export const constructReportingTransaction = (label, log, marketID, market, outcomes) => (dispatch, getState) => {
-  const { address, derivedKey } = augur.accounts.account;
+  const { address, derivedKey } = getState().loginAccount;
   switch (label) {
     case 'penalize':
       return constructPenalizeTransaction(log, marketID, market, outcomes, dispatch);

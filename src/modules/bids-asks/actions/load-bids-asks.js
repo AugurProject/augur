@@ -11,7 +11,7 @@ export const loadBidsAsks = (marketID, cb) => (dispatch, getState) => {
     scalarMinMax.maxValue = market.maxValue;
   }
   let firstChunkLoaded;
-  augur.getOrderBookChunked(marketID, 0, null, scalarMinMax, null, (orderBookChunk) => {
+  augur.trading.orderBook.getOrderBookChunked(marketID, 0, null, scalarMinMax, null, (orderBookChunk) => {
     console.log('order book chunk:', marketID, orderBookChunk);
     if (!firstChunkLoaded) {
       firstChunkLoaded = true;

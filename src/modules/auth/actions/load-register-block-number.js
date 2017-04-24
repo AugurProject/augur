@@ -6,10 +6,10 @@ export const loadRegisterBlockNumber = () => (dispatch, getState) => {
   const { loginAccount } = getState();
   if (loginAccount && loginAccount.address) {
     if (loginAccount.registerBlockNumber) return dispatch(loadAccountHistory());
-    augur.getRegisterBlockNumber(loginAccount.address, (err, blockNumber) => {
+    augur.accounts.getRegisterBlockNumber(loginAccount.address, (err, blockNumber) => {
       if (err) return console.error(err);
       if (!blockNumber) {
-        augur.Register.register(augur.utils.noop, (r) => {
+        augur.api.Register.register(augur.utils.noop, (r) => {
           console.log('Register.register success:', r);
           dispatch(updateLoginAccount({ registerBlockNumber: r.blockNumber }));
           dispatch(loadAccountHistory());

@@ -4,7 +4,7 @@ import { updateMarketCreatorFees } from '../../my-markets/actions/update-market-
 
 export function loadMarketCreatorFees(marketID) {
   return (dispatch) => {
-    augur.getMarketCreatorFeesCollected(marketID, (fees) => {
+    augur.api.MarketCreator.getMarketCreatorFeesCollected(marketID, (fees) => {
       if (fees) {
         const marketFees = {};
         marketFees[marketID] = abi.bignum(fees);

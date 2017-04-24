@@ -21,7 +21,7 @@ export const loadMarketsInfo = (marketIDs, cb) => (dispatch, getState) => {
     const stepEnd = stepStart + MARKETS_PER_BATCH;
     const marketsToLoad = marketIDs.slice(stepStart, Math.min(numMarketsToLoad, stepEnd));
     dispatch(updateMarketsLoadingStatus(marketsToLoad, true));
-    augur.batchGetMarketInfo(marketsToLoad, getState().loginAccount.address, (marketsData) => {
+    augur.markets.batchGetMarketInfo(marketsToLoad, getState().loginAccount.address, (marketsData) => {
       if (!marketsData || marketsData.error) {
         console.error('ERROR loadMarketsInfo()', marketsData);
       } else {

@@ -12,7 +12,7 @@ export const handleRelayTransaction = tx => (dispatch, getState) => {
     const { loginAccount, transactionsData } = getState();
     if (tx.data.from === loginAccount.address) {
       const gasPrice = rpc.gasPrice || augur.constants.DEFAULT_GASPRICE;
-      const gasFees = tx.response.gasFees || augur.getTxGasEth({ ...tx.data }, gasPrice).toFixed();
+      const gasFees = tx.response.gasFees || augur.trading.simulation.getTxGasEth({ ...tx.data }, gasPrice).toFixed();
       if (hash) {
         switch (tx.data.method) {
           case 'commitTrade':

@@ -1809,9 +1809,13 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
     const mockAugur = {
       augur: {
-        parseAndDecryptReport: sinon.stub().returns({
-          report: 'testing'
-        })
+        reporting: {
+          crypto: {
+            parseAndDecryptReport: sinon.stub().returns({
+              report: 'testing'
+            })
+          }
+        }
       }
     };
 
@@ -2322,7 +2326,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const shares = formatShares(trade.amount);
         const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
         const bnShares = abi.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? abi.bignum(augur.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
+        const bnPrice = marketType === SCALAR ? abi.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
         const totalCost = bnPrice.times(bnShares).plus(tradingFees);
         const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
         const totalCostPerShare = totalCost.dividedBy(bnShares);
@@ -2389,7 +2393,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const shares = formatShares(trade.amount);
         const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
         const bnShares = abi.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? abi.bignum(augur.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
+        const bnPrice = marketType === SCALAR ? abi.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
         const totalCost = bnPrice.times(bnShares).plus(tradingFees);
         const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
         const totalCostPerShare = totalCost.dividedBy(bnShares);
@@ -2455,7 +2459,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const shares = formatShares(trade.amount);
         const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
         const bnShares = abi.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? abi.bignum(augur.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
+        const bnPrice = marketType === SCALAR ? abi.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
         const totalCost = bnPrice.times(bnShares).plus(tradingFees);
         const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
         const totalReturnPerShare = totalReturn.dividedBy(bnShares);
@@ -2522,7 +2526,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const shares = formatShares(trade.amount);
         const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
         const bnShares = abi.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? abi.bignum(augur.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
+        const bnPrice = marketType === SCALAR ? abi.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
         const totalCost = bnPrice.times(bnShares).plus(tradingFees);
         const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
         const totalReturnPerShare = totalReturn.dividedBy(bnShares);
@@ -2588,7 +2592,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const shares = formatShares(trade.amount);
         const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
         const bnShares = abi.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? abi.bignum(augur.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
+        const bnPrice = marketType === SCALAR ? abi.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
         const totalCost = bnPrice.times(bnShares).plus(tradingFees);
         const totalCostPerShare = totalCost.dividedBy(bnShares);
 
@@ -2654,7 +2658,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const shares = formatShares(trade.amount);
         const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
         const bnShares = abi.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? abi.bignum(augur.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
+        const bnPrice = marketType === SCALAR ? abi.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
         const totalCost = bnPrice.times(bnShares).plus(tradingFees);
         const totalCostPerShare = totalCost.dividedBy(bnShares);
 
@@ -2719,7 +2723,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const shares = formatShares(trade.amount);
         const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
         const bnShares = abi.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? abi.bignum(augur.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
+        const bnPrice = marketType === SCALAR ? abi.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
         const totalCost = bnPrice.times(bnShares).plus(tradingFees);
         const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
         const totalReturnPerShare = totalReturn.dividedBy(bnShares);
@@ -2786,7 +2790,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const shares = formatShares(trade.amount);
         const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
         const bnShares = abi.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? abi.bignum(augur.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
+        const bnPrice = marketType === SCALAR ? abi.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
         const totalCost = bnPrice.times(bnShares).plus(tradingFees);
         const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
         const totalReturnPerShare = totalReturn.dividedBy(bnShares);
@@ -2853,7 +2857,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const shares = formatShares(trade.amount);
         const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
         const bnShares = abi.bignum(trade.amount);
-        const bnPrice = abi.bignum(augur.shrinkScalarPrice(minValue, trade.price));
+        const bnPrice = abi.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price));
         const totalCost = bnPrice.times(bnShares).plus(tradingFees);
         const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
         const totalReturnPerShare = totalReturn.dividedBy(bnShares);
