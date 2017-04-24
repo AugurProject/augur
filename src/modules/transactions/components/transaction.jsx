@@ -9,7 +9,6 @@ import { SUBMITTED, PENDING } from 'modules/transactions/constants/statuses';
 export default class Transaction extends Component {
   static propTypes = {
     status: PropTypes.string.isRequired,
-    transactionIndex: PropTypes.number.isRequired,
     isGroupedTransaction: PropTypes.bool
   }
 
