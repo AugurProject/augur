@@ -5,15 +5,15 @@
 "use strict";
 
 var keythereum = require("keythereum");
-var constants = require("../constants");
+var ROUNDS = require("../constants").ROUNDS;
 
-keythereum.constants.pbkdf2.c = constants.ROUNDS;
-keythereum.constants.scrypt.n = constants.ROUNDS;
+keythereum.constants.pbkdf2.c = ROUNDS;
+keythereum.constants.scrypt.n = ROUNDS;
 
 module.exports = {
-  register: require("./register"),
+  importAccount: require("./import-account"),
   login: require("./login"),
   loginWithMasterKey: require("./login-with-master-key"),
   logout: require("./logout"),
-  importAccount: require("./import-account")
+  register: require("./register")
 };

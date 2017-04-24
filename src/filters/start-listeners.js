@@ -6,7 +6,7 @@ var isFunction = require("../utils/is-function");
 var subscriptions = require("./subscriptions");
 
 function startListeners(contracts, eventsAPI, subscriptionCallbacks, onSetupComplete) {
-  var label, contracts, eventsAPI, blockStream = rpcInterface.getBlockStream();
+  var blockStream = rpcInterface.getBlockStream();
   Object.keys(subscriptionCallbacks).map(function (label) {
     if (isFunction(subscriptionCallbacks[label])) {
       addFilter(blockStream, label, eventsAPI[label], contracts, subscriptions.addSubscription, subscriptionCallbacks[label]);

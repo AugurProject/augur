@@ -1,6 +1,7 @@
 "use strict";
 
 var abi = require("augur-abi");
+var BigNumber = require("bignumber.js");
 
 var ONE_POINT_FIVE = new BigNumber("1.5", 10);
 

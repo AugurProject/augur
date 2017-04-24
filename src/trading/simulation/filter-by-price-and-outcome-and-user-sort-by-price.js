@@ -2,8 +2,12 @@
 
 var BigNumber = require("bignumber.js");
 
-function compareOrdersByPrice(order1, order2) {
-  return traderOrderType === "buy" ? order1.price - order2.price : order2.price - order1.price;
+function compareBuyOrdersByPrice(order1, order2) {
+  return order1.price - order2.price;
+}
+
+function compareSellOrdersByPrice(order1, order2) {
+  return order2.price - order1.price;
 }
 
 /**
@@ -17,10 +21,10 @@ function compareOrdersByPrice(order1, order2) {
  * @return {Array.<Object>}
  */
 function filterByPriceAndOutcomeAndUserSortByPrice(orders, traderOrderType, limitPrice, outcomeID, userAddress) {
-  var isMarketOrder;
+  var isMarketOrder, filteredOrders;
   if (!orders) return [];
   isMarketOrder = limitPrice == null;
-  return Object.keys(orders).map(function (orderID) {
+  filteredOrders = Object.keys(orders).map(function (orderID) {
     return orders[orderID];
   }).filter(function (order) {
     var isMatchingPrice;
@@ -31,7 +35,9 @@ function filterByPriceAndOutcomeAndUserSortByPrice(orders, traderOrderType, limi
       isMatchingPrice = traderOrderType === "buy" ? new BigNumber(order.price, 10).lte(limitPrice) : new BigNumber(order.price, 10).gte(limitPrice);
     }
     return order.outcome === outcomeID && order.owner !== userAddress && isMatchingPrice;
-  }).sort(compareOrdersByPrice);
+  });
+  if (traderOrderType === "buy") return filteredOrders.sort(compareBuyOrdersByPrice);
+  return filteredOrders.sort(compareSellOrdersByPrice);
 }
 
 module.exports = filterByPriceAndOutcomeAndUserSortByPrice;

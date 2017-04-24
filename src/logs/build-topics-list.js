@@ -2,7 +2,7 @@
 
 var abi = require("augur-abi");
 
-function buildTopicsList(eventSignature, eventInputs. params) {
+function buildTopicsList(eventSignature, eventInputs, params) {
   var i, numInputs;
   var topics = [eventSignature];
   for (i = 0, numInputs = eventInputs.length; i < numInputs; ++i) {

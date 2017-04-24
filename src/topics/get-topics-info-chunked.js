@@ -3,6 +3,7 @@
 var getTopicsInfo = require("./get-topics-info");
 var api = require("../api");
 var isFunction = require("../utils/is-function");
+var noop = require("../utils/noop");
 var GETTER_CHUNK_SIZE = require("../constants").GETTER_CHUNK_SIZE;
 
 function getTopicsInfoChunked(branch, offset, numTopicsToLoad, totalTopics, chunkCB, callback) {

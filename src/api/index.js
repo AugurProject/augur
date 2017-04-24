@@ -10,7 +10,6 @@
 
 "use strict";
 
-var bindContractFunction = require("./bind-contract-function");
 var generateContractAPI = require("./generate-contract-api");
 
 var api = generateContractAPI(require("augur-contracts").api.functions);

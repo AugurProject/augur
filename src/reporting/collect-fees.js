@@ -2,7 +2,6 @@
 
 var abi = require("augur-abi");
 var BigNumber = require("bignumber.js");
-var clone = require("clone");
 var getCurrentPeriodProgress = require("../reporting/get-current-period-progress");
 var rpcInterface = require("../rpc-interface");
 var api = require("../api");
@@ -24,7 +23,6 @@ function collectFees(branch, sender, periodLength, onSent, onSuccess, onFailed) 
   }
   api.Branches.getVotePeriod(branch, function (period) {
     api.ConsensusData.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
-      var gasPrice;
       if (feesCollected === "1") return onSuccess({callReturn: "2"});
       api.CollectFees.collectFees({
         branch: branch,

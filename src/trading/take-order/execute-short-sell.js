@@ -2,10 +2,8 @@
 
 var abi = require("augur-abi");
 var async = require("async");
-var BigNumber = require("bignumber.js");
 var selectOrder = require("./select-order");
 var short_sell = require("./short-sell");
-var api = require("../../api");
 var noop = require("../../utils/noop");
 var constants = require("../../constants");
 var PRECISION = constants.PRECISION;

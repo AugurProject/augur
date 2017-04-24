@@ -1,7 +1,7 @@
 "use strict";
 
 var BigNumber = require("bignumber.js");
-var errors = reqiure("../../rpc-interface").errors;
+var errors = require("../../rpc-interface").errors;
 var ZERO = require("../../constants").ZERO;
 
 function calculateOrderPrices(liquidity, startingQuantity, bestStartingQuantity, initialFairPrices, minValue, maxValue, halfPriceWidth) {

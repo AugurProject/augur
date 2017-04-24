@@ -8,6 +8,7 @@ var createRpcInterface = function (ethrpc) {
     shh: ethrpc.shh,
     miner: ethrpc.miner,
     personal: ethrpc.personal,
+    clear: ethrpc.clear,
     getBlockStream: ethrpc.getBlockStream,
     getCurrentBlock: ethrpc.getCurrentBlock,
     getGasPrice: ethrpc.getGasPrice,

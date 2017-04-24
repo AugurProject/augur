@@ -1,11 +1,9 @@
 "use strict";
 
-var rpc = require("ethrpc");
-var store = require("../store");
+var rpcInterface = require("../rpc-interface");
 
-var logout = function () {
-  store.dispatch({type: "CLEAR_ACTIVE_ACCOUNT"});
-  rpc.clear();
-};
+function logout() {
+  rpcInterface.clear();
+}
 
 module.exports = logout;

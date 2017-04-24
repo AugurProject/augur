@@ -1,33 +1,29 @@
 "use strict";
 
-var keys = require("keythereum");
 var abi = require("augur-abi");
-var errors = require("ethrpc").errors;
-var constants = require("../constants");
+var keythereum = require("keythereum");
+var errors = require("../rpc-interface").errors;
 var pass = require("../utils/pass");
 var isFunction = require("../utils/is-function");
-var setActiveAccount = require("./set-active-account");
+var KDF = require("../constants").KDF;
 
-var importAccount = function (password, keystore, cb) {
+function importAccount(password, keystore, cb) {
   var callback = (isFunction(cb)) ? cb : pass;
   if (!password || password === "") return callback(errors.BAD_CREDENTIALS);
-  keys.recover(password, keystore, function (privateKey) {
+  keythereum.recover(password, keystore, function (privateKey) {
     var keystoreCrypto;
     if (!privateKey || privateKey.error) return callback(errors.BAD_CREDENTIALS);
     keystoreCrypto = keystore.crypto || keystore.Crypto;
-    keys.deriveKey(password, keystoreCrypto.kdfparams.salt, {kdf: constants.KDF}, function (derivedKey) {
-      var account;
+    keythereum.deriveKey(password, keystoreCrypto.kdfparams.salt, { kdf: KDF }, function (derivedKey) {
       if (!derivedKey || derivedKey.error) return callback(errors.BAD_CREDENTIALS);
-      account = {
+      callback({
         privateKey: privateKey,
         address: abi.format_address(keystore.address),
         keystore: keystore,
         derivedKey: derivedKey
-      };
-      setActiveAccount(account);
-      callback(account);
+      });
     });
   });
-};
+}
 
 module.exports = importAccount;

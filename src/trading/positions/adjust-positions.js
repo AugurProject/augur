@@ -2,7 +2,7 @@
 
 var async = require("async");
 var decreasePosition = require("./decrease-position");
-var getPositionInMarket = require("../../composite-getters/get-position-in-market");
+var getPositionInMarket = require("../../markets/get-position-in-market");
 var isFunction = require("../../utils/is-function");
 var ZERO = require("../../constants").ZERO;
 
@@ -48,7 +48,7 @@ function adjustPositions(account, marketIDs, shareTotals, callback) {
       if (onChainPosition.error) return nextMarket(onChainPosition);
       shortAskBuyCompleteSetsShareTotal = shareTotals.shortAskBuyCompleteSets[marketID] || ZERO;
       shortSellBuyCompleteSetsShareTotal = shareTotals.shortSellBuyCompleteSets[marketID] || ZERO;
-      sellCompleteSetsShareTotal = shareTotals.sellCompleteSets[marketID] || constants.ZERO;
+      sellCompleteSetsShareTotal = shareTotals.sellCompleteSets[marketID] || ZERO;
       if (sellCompleteSetsShareTotal.abs().gt(shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal))) {
         sellCompleteSetsShareTotal = shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).neg();
       }

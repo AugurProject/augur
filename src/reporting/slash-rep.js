@@ -2,7 +2,7 @@
 
 var abi = require("augur-abi");
 var api = require("../api");
-var fixReport = require("./fix-report");
+var fixReport = require("./format/fix-report");
 var isObject = require("../utils/is-object");
 
 function slashRep(branch, salt, report, reporter, eventID, minValue, maxValue, type, isIndeterminate, isUnethical, onSent, onSuccess, onFailed) {

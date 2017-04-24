@@ -1,9 +1,8 @@
 "use strict";
 
 var abi = require("augur-abi");
+var createSubbranch = require("./create-subbranch");
 var rpcInterface = require("../rpc-interface");
-var api = require("../api");
-var isFunction = require("../utils/is-function");
 var sha3 = require("../utils/sha3");
 var isObject = require("../utils/is-object");
 

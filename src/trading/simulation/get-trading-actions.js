@@ -2,6 +2,7 @@
 
 var abi = require("augur-abi");
 var BigNumber = require("bignumber.js");
+var clone = require("clone");
 var calculateTradeTotals = require("./calculate-trade-totals");
 var getBidAction = require("./get-bid-action");
 var getBuyAction = require("./get-buy-action");
@@ -128,9 +129,9 @@ function getTradingActions(type, orderShares, orderLimitPrice, takerFee, makerFe
           bidAmount = new BigNumber(bid.amount, 10);
           orderSharesFilled = BigNumber.min(bidAmount, remainingOrderShares, remainingPositionShares);
           fullPrecisionPrice = (scalarMinMax && scalarMinMax.minValue) ?
-            abacus.shrinkScalarPrice(scalarMinMax.minValue, bid.fullPrecisionPrice) :
+            shrinkScalarPrice(scalarMinMax.minValue, bid.fullPrecisionPrice) :
             bid.fullPrecisionPrice;
-          tradingCost = abacus.calculateFxpTradingCost(orderSharesFilled, fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
+          tradingCost = calculateFxpTradingCost(orderSharesFilled, fullPrecisionPrice, fees.tradingFee, fees.makerProportionOfFee, range);
           totalTakerFeeEth = totalTakerFeeEth.plus(tradingCost.fee);
           etherToSell = etherToSell.plus(tradingCost.cash);
           remainingOrderShares = remainingOrderShares.minus(orderSharesFilled);

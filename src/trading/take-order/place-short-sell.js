@@ -1,6 +1,5 @@
 "use strict";
 
-var abi = require("augur-abi");
 var calculateSellTradeIDs = require("./calculate-sell-trade-ids");
 var executeShortSell = require("./execute-short-sell");
 var placeShortAsk = require("../make-order/place-short-ask");

@@ -1,6 +1,7 @@
 "use strict";
 
 var abi = require("augur-abi");
+var BigNumber = require("bignumber.js");
 var calculateFxpAdjustedTradingFee = require("./calculate-fxp-adjusted-trading-fee");
 var constants = require("../../constants");
 var ONE = constants.ONE;

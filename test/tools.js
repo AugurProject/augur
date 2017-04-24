@@ -8,7 +8,7 @@ var async = require("async");
 var chalk = require("chalk");
 var clone = require("clone");
 var constants = require("../src/constants");
-var reptools = require("../src/modules/reporting");
+var reptools = require("../src/reporting");
 var noop = require("../src/utils/noop");
 var isFunction = require("../src/utils/is-function");
 var path, madlibs;

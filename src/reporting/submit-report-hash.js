@@ -2,7 +2,7 @@
 
 var abi = require("augur-abi");
 var getCurrentPeriodProgress = require("./get-current-period-progress");
-var checkPeriod = require("./check-period");
+var prepareToReport = require("./prepare-to-report");
 var api = require("../api");
 var isObject = require("../utils/is-object");
 
@@ -33,7 +33,7 @@ function submitReportHash(event, reportHash, encryptedReport, encryptedSalt, eth
     onSuccess: function (res) {
       res.callReturn = abi.bignum(res.callReturn, "string", true);
       if (res.callReturn === "0") {
-        return checkPeriod(branch, periodLength, res.from, function (err) {
+        return prepareToReport(branch, periodLength, res.from, function (err) {
           if (err) return onFailed(err);
           api.ConsensusData.getRepRedistributionDone(branch, res.from, function (repRedistributionDone) {
             if (repRedistributionDone === "0") {

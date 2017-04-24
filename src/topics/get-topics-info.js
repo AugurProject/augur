@@ -1,5 +1,6 @@
 "use strict";
 
+var api = require("../api");
 var isFunction = require("../utils/is-function");
 var isObject = require("../utils/is-object");
 

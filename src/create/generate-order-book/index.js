@@ -10,7 +10,7 @@ var api = require("../../api");
 var noop = require("../../utils/noop");
 var isFunction = require("../../utils/is-function");
 var isObject = require("../../utils/is-object");
-var errors = reqiure("../../rpc-interface").errors;
+var errors = require("../../rpc-interface").errors;
 
 /**
  * generateOrderBook: convenience method for generating an initial order book

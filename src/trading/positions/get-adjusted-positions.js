@@ -48,4 +48,6 @@ function getAdjustedPositions(account, options, callback) {
     marketIDs = options.market ? [options.market] : findUniqueMarketIDs(shareTotals);
     adjustPositions(account, marketIDs, shareTotals, callback);
   });
-},
+}
+
+module.exports = getAdjustedPositions;

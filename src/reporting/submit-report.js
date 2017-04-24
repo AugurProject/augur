@@ -1,7 +1,7 @@
 "use strict";
 
 var abi = require("augur-abi");
-var fixReport = require("./fix-report");
+var fixReport = require("./format/fix-report");
 var api = require("../api");
 var isObject = require("../utils/is-object");
 

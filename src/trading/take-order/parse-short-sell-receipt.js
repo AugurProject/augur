@@ -4,7 +4,7 @@ var abi = require("augur-abi");
 var eventsAPI = require("augur-contracts").api.events;
 var ZERO = require("../../constants").ZERO;
 
-parseShortSellReceipt: function (receipt) {
+function parseShortSellReceipt(receipt) {
   var i, numLogs, cashFromTrade, tradingFees, logs, sig, logdata;
   cashFromTrade = ZERO;
   tradingFees = ZERO;

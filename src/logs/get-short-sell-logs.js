@@ -1,7 +1,7 @@
 "use strict";
 
 var abi = require("augur-abi");
-var augurContacts = require("augur-contracts");
+var augurContracts = require("augur-contracts");
 var eventsAPI = augurContracts.api.events;
 var rpcInterface = require("../rpc-interface");
 var isFunction = require("../utils/is-function");
@@ -24,7 +24,7 @@ function getShortSellLogs(account, options, callback) {
     filter = {
       fromBlock: options.fromBlock || "0x1",
       toBlock: options.toBlock || "latest",
-      address: augurContracts[rpcInterface.getNetworkID()].Trade
+      address: augurContracts[rpcInterface.getNetworkID()].Trade,
       topics: topics
     };
     if (!isFunction(callback)) return rpcInterface.getLogs(filter);

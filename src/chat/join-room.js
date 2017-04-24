@@ -9,8 +9,8 @@ var rpcInterface = require("../rpc-interface");
 var POLL_INTERVAL = 6000; // poll for updates every 6 seconds
 
 function joinRoom(roomName, onMessages) {
-  if (!whisperState.id) whisper.setWhisperID(rpcInterface.shh.newIdentity());
-  if (!whisperState.filters[roomName]) {
+  if (!whisper.getWhisperID()) whisper.setWhisperID(rpcInterface.shh.newIdentity());
+  if (!whisper.getFilter(roomName)) {
     whisper.setFilter(rpcInterface.shh.newFilter({
       topics: [abi.prefix_hex(abi.encode_hex(roomName))]
     }), setInterval(function () {

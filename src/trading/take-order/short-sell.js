@@ -2,15 +2,15 @@
 
 var abi = require("augur-abi");
 var clone = require("clone");
-var checkGasLimit = require("./check-gas-limit");
 var makeTradeHash = require("./make-trade-hash");
 var parseShortSellReceipt = require("./parse-short-sell-receipt");
-var isObject = require("../utils/is-object");
-var noop = require("../utils/noop");
-var compose = require("../utils/compose");
-var rpcInterface = require("../rpc-interface");
+var checkGasLimit = require("../check-gas-limit");
+var api = require("../../api");
+var isObject = require("../../utils/is-object");
+var noop = require("../../utils/noop");
+var compose = require("../../utils/compose");
+var rpcInterface = require("../../rpc-interface");
 var errors = rpcInterface.errors;
-var constants = require("../constants");
 
 // TODO break this up
 function short_sell(buyer_trade_id, max_amount, tradeGroupID, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
@@ -67,7 +67,7 @@ function short_sell(buyer_trade_id, max_amount, tradeGroupID, sender, onTradeHas
                     err.message += result.callReturn[0].toString();
                     return onTradeFailed(err);
                   }
-                  return onTradeFailed({ error: err, message: errors.short_sell[err], tx: tx, hash: txHash });
+                  return onTradeFailed({ error: err, message: errors.short_sell[err], hash: txHash });
                 }
                 rpcInterface.getTransactionReceipt(txHash, function (receipt) {
                   var parsedReceipt;
@@ -93,7 +93,7 @@ function short_sell(buyer_trade_id, max_amount, tradeGroupID, sender, onTradeHas
                   err.message += result.callReturn.toString();
                   return onTradeFailed(err);
                 }
-                onTradeFailed({ error: err, message: errors.short_sell[err], tx: tx, hash: txHash });
+                onTradeFailed({ error: err, message: errors.short_sell[err], hash: txHash });
               }
             }, onTradeSuccess),
             onFailed: onTradeFailed

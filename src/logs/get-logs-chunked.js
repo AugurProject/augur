@@ -1,6 +1,7 @@
 "use strict";
 
 var abi = require("augur-abi");
+var async = require("async");
 var clone = require("clone");
 var chunkBlocks = require("./chunk-blocks");
 var getLogs = require("./get-logs");

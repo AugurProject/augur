@@ -1,6 +1,7 @@
 "use strict";
 
 var abi = require("augur-abi");
+var BigNumber = require("bignumber.js");
 var calculateSellTradeIDs = require("./calculate-sell-trade-ids");
 var executeTrade = require("./execute-trade");
 var splitOrder = require("./split-order");

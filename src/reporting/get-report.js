@@ -1,6 +1,6 @@
 "use strict";
 
-var unfixReport = require("./unfix-report");
+var unfixReport = require("./format/unfix-report");
 var api = require("../api");
 var isObject = require("../utils/is-object");
 var errors = require("../rpc-interface").errors;

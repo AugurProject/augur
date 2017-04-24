@@ -2,16 +2,16 @@
 
 var abi = require("augur-abi");
 var clone = require("clone");
-var api = require("../api");
-var checkGasLimit = require("./check-gas-limit");
 var makeTradeHash = require("./make-trade-hash");
 var parseTradeReceipt = require("./parse-trade-receipt");
-var isObject = require("../utils/is-object");
-var noop = require("../utils/noop");
-var compose = require("../utils/compose");
-var rpcInterface = require("../rpc-interface");
+var checkGasLimit = require("../check-gas-limit");
+var api = require("../../api");
+var isObject = require("../../utils/is-object");
+var noop = require("../../utils/noop");
+var compose = require("../../utils/compose");
+var rpcInterface = require("../../rpc-interface");
 var errors = rpcInterface.errors;
-var constants = require("../constants");
+var constants = require("../../constants");
 
 // TODO break this up
 function trade(max_value, max_amount, trade_ids, tradeGroupID, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
@@ -74,7 +74,7 @@ function trade(max_value, max_amount, trade_ids, tradeGroupID, sender, onTradeHa
                     err.message += result.callReturn[0].toString();
                     return onTradeFailed(err);
                   }
-                  return onTradeFailed({ error: err, message: errors.trade[err], tx: tx, hash: txHash });
+                  return onTradeFailed({ error: err, message: errors.trade[err], hash: txHash });
                 }
                 rpcInterface.getTransactionReceipt(txHash, function (receipt) {
                   var parsedReceipt;
@@ -100,7 +100,7 @@ function trade(max_value, max_amount, trade_ids, tradeGroupID, sender, onTradeHa
                   err.message += result.callReturn.toString();
                   return onTradeFailed(err);
                 }
-                onTradeFailed({ error: err, message: errors[err], tx: tx, hash: txHash });
+                onTradeFailed({ error: err, message: errors[err], hash: txHash });
               }
             }, onTradeSuccess),
             onFailed: onTradeFailed

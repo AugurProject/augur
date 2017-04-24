@@ -21,7 +21,7 @@ function fundNewAccountFromFaucet(registeredAddress, branch, onSent, onSuccess, 
     return onFailed(registeredAddress);
   }
   url = constants.FAUCET + abi.format_address(registeredAddress);
-  request(url, function (err, response, body) {
+  request(url, function (err, response/*, body */) {
     if (err) return onFailed(err);
     if (response.statusCode !== 200) return onFailed(response.statusCode);
     rpcInterface.getBalance(registeredAddress, function (ethBalance) {
@@ -37,7 +37,7 @@ function fundNewAccountFromFaucet(registeredAddress, branch, onSent, onSuccess, 
         async.until(function () {
           return balance > 0;
         }, function (callback) {
-          rpcInterface.waitForNextBlocks(1, function (nextBlock) {
+          rpcInterface.waitForNextBlocks(1, function (/* nextBlock */) {
             rpcInterface.balance(registeredAddress, function (ethBalance) {
               balance = parseInt(ethBalance, 16);
               callback(null, balance);

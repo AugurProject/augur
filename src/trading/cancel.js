@@ -5,6 +5,7 @@ var eventsAPI = require("augur-contracts").api.events;
 var api = require("../api");
 var compose = require("../utils/compose");
 var isObject = require("../utils/is-object");
+var noop = require("../utils/noop");
 var rpcInterface = require("../rpc-interface");
 var errors = rpcInterface.errors;
 

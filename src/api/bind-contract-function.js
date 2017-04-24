@@ -1,9 +1,10 @@
 "use strict";
 
+var abi = require("augur-abi");
 var assign = require("lodash.assign");
 var clone = require("clone");
 var rpcInterface = require("../rpc-interface");
-var contractDataParsers = require("../contract-data-parsers");
+var parsers = require("../parsers");
 var compose = require("../utils/compose");
 var isFunction = require("../utils/is-function");
 var isObject = require("../utils/is-object");
@@ -52,8 +53,8 @@ function bindContractFunction(functionsAPI, contract, method) {
         if (!isFunction(cb)) return rpcInterface.callContractFunction(tx);
         return rpcInterface.callContractFunction(tx, cb);
       }
-      if (!isFunction(cb)) return contractDataParsers[tx.parser](rpcInterface.callContractFunction(tx), extraArgument);
-      return rpcInterface.callContractFunction(tx, cb, contractDataParsers[tx.parser], extraArgument);
+      if (!isFunction(cb)) return parsers[tx.parser](rpcInterface.callContractFunction(tx), extraArgument);
+      return rpcInterface.callContractFunction(tx, cb, parsers[tx.parser], extraArgument);
     }
     if (params && isObject(params[0])) {
       onSent = params[0].onSent;
@@ -89,7 +90,7 @@ function bindContractFunction(functionsAPI, contract, method) {
       }
     }
     if (!tx.parser) return rpcInterface.transact(tx, onSent, onSuccess, onFailed);
-    return rpcInterface.transact(tx, onSent, compose(contractDataParsers[tx.parser], onSuccess, extraArgument), onFailed);
+    return rpcInterface.transact(tx, onSent, compose(parsers[tx.parser], onSuccess, extraArgument), onFailed);
   };
 }
 
