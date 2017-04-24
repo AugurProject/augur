@@ -219,7 +219,7 @@ export default class TopicsView extends Component {
             <NullStateMessage message={s.nullMessage} />
           }
           {!!s.filteredTopics.length &&
-            <Paginator pagination={s.pagination} />
+            <Paginator {...s.pagination} />
           }
         </div>
       </section>
