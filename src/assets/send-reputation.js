@@ -21,7 +21,7 @@ function sendReputation(branch, recver, value, onSent, onSuccess, onFailed) {
   // if callReturn is 0, but account has sufficient Reputation and Rep
   // redistribution is done, then re-invoke sendReputation
   // (penalizationCatchup is being called)
-  api.SendReputation.sendReputation({
+  api().SendReputation.sendReputation({
     branch: branch,
     recver: recver,
     value: abi.fix(value, "hex"),
@@ -30,14 +30,14 @@ function sendReputation(branch, recver, value, onSent, onSuccess, onFailed) {
       if (!result || !result.callReturn || parseInt(result.callReturn, 16)) {
         return callback(result);
       }
-      api.Reporting.getRepBalance(branch, result.from, function (repBalance) {
+      api().Reporting.getRepBalance(branch, result.from, function (repBalance) {
         if (!repBalance || repBalance.error) {
           return onFailed(repBalance);
         }
         if (abi.bignum(repBalance).lt(abi.bignum(value))) {
           return onFailed({ error: "0", message: "not enough reputation" });
         }
-        api.ConsensusData.getRepRedistributionDone(branch, result.from, function (repRedistributionDone) {
+        api().ConsensusData.getRepRedistributionDone(branch, result.from, function (repRedistributionDone) {
           if (!repRedistributionDone || !parseInt(repRedistributionDone, 16)) {
             return onFailed({ error: "-3", message: "cannot send reputation until redistribution is complete" });
           }

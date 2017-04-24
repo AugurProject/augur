@@ -21,7 +21,7 @@ function shortAsk(amount, price, market, outcome, tradeGroupID, scalarMinMax, on
   if (scalarMinMax && scalarMinMax.minValue !== undefined) {
     price = shrinkScalarPrice(scalarMinMax.minValue, price);
   }
-  return api.BuyAndSellShares.shortAsk(abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome, abi.fix(MINIMUM_TRADE_SIZE, "hex"), tradeGroupID || 0, onSent, onSuccess, onFailed);
+  return api().BuyAndSellShares.shortAsk(abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome, abi.fix(MINIMUM_TRADE_SIZE, "hex"), tradeGroupID || 0, onSent, onSuccess, onFailed);
 }
 
 module.exports = shortAsk;

@@ -21,7 +21,7 @@ function getMarketsInfo(branch, offset, numMarketsToLoad, volumeMin, volumeMax, 
     callback = callback || branch.callback;
     branch = branch.branch;
   }
-  return api.CompositeGetters.getMarketsInfo(
+  return api().CompositeGetters.getMarketsInfo(
     branch || DEFAULT_BRANCH_ID,
     offset || 0,
     numMarketsToLoad || 0,

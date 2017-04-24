@@ -19,7 +19,7 @@ function cancel(trade_id, onSent, onSuccess, onFailed) {
   onSent = onSent || noop;
   onSuccess = onSuccess || noop;
   onFailed = onFailed || noop;
-  api.BuyAndSellShares.cancel(trade_id, onSent, compose(function (result, callback) {
+  api().BuyAndSellShares.cancel(trade_id, onSent, compose(function (result, callback) {
     if (!result || !result.callReturn) return callback(result);
     rpcInterface.getTransactionReceipt(result.hash, function (receipt) {
       var logs, sig, numLogs, logdata, i;

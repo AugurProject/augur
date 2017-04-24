@@ -14,7 +14,7 @@ function getPositionInMarket(market, account, callback) {
     callback = callback || market.callback;
     market = market.market;
   }
-  return api.CompositeGetters.getPositionInMarket(market, account, callback);
+  return api().CompositeGetters.getPositionInMarket(market, account, callback);
 }
 
 module.exports = getPositionInMarket;

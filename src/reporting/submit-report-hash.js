@@ -23,7 +23,7 @@ function submitReportHash(event, reportHash, encryptedReport, encryptedSalt, eth
   if (getCurrentPeriodProgress(periodLength) >= 50) {
     return onFailed({"-2": "not in first half of period (commit phase)"});
   }
-  return api.MakeReports.submitReportHash({
+  return api().MakeReports.submitReportHash({
     event: event,
     reportHash: reportHash,
     encryptedReport: encryptedReport || 0,
@@ -35,7 +35,7 @@ function submitReportHash(event, reportHash, encryptedReport, encryptedSalt, eth
       if (res.callReturn === "0") {
         return prepareToReport(branch, periodLength, res.from, function (err) {
           if (err) return onFailed(err);
-          api.ConsensusData.getRepRedistributionDone(branch, res.from, function (repRedistributionDone) {
+          api().ConsensusData.getRepRedistributionDone(branch, res.from, function (repRedistributionDone) {
             if (repRedistributionDone === "0") {
               return onFailed("rep redistribution not done");
             }
@@ -57,7 +57,7 @@ function submitReportHash(event, reportHash, encryptedReport, encryptedSalt, eth
       } else if (res.callReturn !== "-2") {
         return onSuccess(res);
       }
-      api.ExpiringEvents.getReportHash({
+      api().ExpiringEvents.getReportHash({
         branch: branch,
         expDateIndex: period,
         reporter: res.from,

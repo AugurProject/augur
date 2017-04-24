@@ -13,7 +13,7 @@ function checkGasLimit(trade_ids, sender, callback) {
   var block = rpcInterface.getCurrentBlock();
   var checked_trade_ids = trade_ids.slice();
   async.forEachOfSeries(trade_ids, function (trade_id, i, next) {
-    api.Trades.get_trade(trade_id, function (trade) {
+    api().Trades.get_trade(trade_id, function (trade) {
       if (!trade || !trade.id) {
         checked_trade_ids.splice(checked_trade_ids.indexOf(trade_id), 1);
         if (!checked_trade_ids.length) {

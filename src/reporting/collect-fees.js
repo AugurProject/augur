@@ -21,10 +21,10 @@ function collectFees(branch, sender, periodLength, onSent, onSuccess, onFailed) 
   if (getCurrentPeriodProgress(periodLength) < 50) {
     return onFailed({ "-2": "needs to be second half of reporting period to claim rep" });
   }
-  api.Branches.getVotePeriod(branch, function (period) {
-    api.ConsensusData.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
+  api().Branches.getVotePeriod(branch, function (period) {
+    api().ConsensusData.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
       if (feesCollected === "1") return onSuccess({callReturn: "2"});
-      api.CollectFees.collectFees({
+      api().CollectFees.collectFees({
         branch: branch,
         sender: sender,
         tx: {
@@ -35,13 +35,13 @@ function collectFees(branch, sender, periodLength, onSent, onSuccess, onFailed) 
           if (res && (res.callReturn === "1" || res.callReturn === "2")) {
             return callback(res);
           }
-          api.Branches.getVotePeriod(branch, function (period) {
-            api.ConsensusData.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
+          api().Branches.getVotePeriod(branch, function (period) {
+            api().ConsensusData.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
               if (feesCollected !== "1") {
                 res.callReturn = "2";
                 return callback(res);
               }
-              api.ExpiringEvents.getAfterRep(branch, period - 1, sender, function (afterRep) {
+              api().ExpiringEvents.getAfterRep(branch, period - 1, sender, function (afterRep) {
                 if (parseInt(afterRep, 10) <= 1) {
                   res.callReturn = "2";
                   return callback(res);

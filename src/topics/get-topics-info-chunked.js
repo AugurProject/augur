@@ -9,7 +9,7 @@ var GETTER_CHUNK_SIZE = require("../constants").GETTER_CHUNK_SIZE;
 function getTopicsInfoChunked(branch, offset, numTopicsToLoad, totalTopics, chunkCB, callback) {
   if (!isFunction(chunkCB)) chunkCB = noop;
   if (!totalTopics) {
-    return api.Topics.getNumTopicsInBranch(branch, function (totalTopics) {
+    return api().Topics.getNumTopicsInBranch(branch, function (totalTopics) {
       if (!totalTopics || totalTopics.error || !parseInt(totalTopics, 10)) {
         return callback(totalTopics);
       }

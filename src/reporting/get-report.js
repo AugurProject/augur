@@ -16,7 +16,7 @@ function getReport(branch, period, event, sender, minValue, maxValue, type, call
     callback = callback || branch.callback;
     branch = branch.branch;
   }
-  api.ExpiringEvents.getReport(branch, period, event, sender, function (rawReport) {
+  api().ExpiringEvents.getReport(branch, period, event, sender, function (rawReport) {
     if (!rawReport || rawReport.error) {
       return callback(rawReport || errors.REPORT_NOT_FOUND);
     }

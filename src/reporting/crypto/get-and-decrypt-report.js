@@ -15,9 +15,9 @@ function getAndDecryptReport(branch, expDateIndex, reporter, event, secret, call
     branch = branch.branch;
   }
   if (!isFunction(callback)) {
-    return parseAndDecryptReport(api.ExpiringEvents.getEncryptedReport(branch, expDateIndex, reporter, event), secret);
+    return parseAndDecryptReport(api().ExpiringEvents.getEncryptedReport(branch, expDateIndex, reporter, event), secret);
   }
-  api.ExpiringEvents.getEncryptedReport(branch, expDateIndex, reporter, event, function (result) {
+  api().ExpiringEvents.getEncryptedReport(branch, expDateIndex, reporter, event, function (result) {
     if (!result || result.error) return callback(result);
     callback(parseAndDecryptReport(result), secret);
   });

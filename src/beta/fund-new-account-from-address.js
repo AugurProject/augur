@@ -15,7 +15,7 @@ function fundNewAccountFromAddress(fromAddress, amount, registeredAddress, branc
     from: fromAddress,
     onSent: noop,
     onSuccess: function () {
-      api.Faucets.fundNewAccount({
+      api().Faucets.fundNewAccount({
         branch: branch || constants.DEFAULT_BRANCH_ID,
         onSent: onSentCallback,
         onSuccess: onSuccessCallback,

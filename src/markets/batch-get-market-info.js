@@ -14,7 +14,7 @@ function batchGetMarketInfo(marketIDs, account, callback) {
     callback = account;
     account = null;
   }
-  return api.CompositeGetters.batchGetMarketInfo(marketIDs, account || 0, callback, { extraArgument: marketIDs.length });
+  return api().CompositeGetters.batchGetMarketInfo(marketIDs, account || 0, callback, { extraArgument: marketIDs.length });
 }
 
 module.exports = batchGetMarketInfo;

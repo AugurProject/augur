@@ -5,7 +5,7 @@ var noop = require("../../utils/noop");
 
 function generateOrder(type, market, outcome, amount, price, scalarMinMax, callback) {
   var makeOrder;
-  makeOrder = (type === "buy") ? api.BuyAndSellShares.buy : api.BuyAndSellShares.sell;
+  makeOrder = (type === "buy") ? api().BuyAndSellShares.buy : api().BuyAndSellShares.sell;
   makeOrder({
     amount: amount,
     price: price,

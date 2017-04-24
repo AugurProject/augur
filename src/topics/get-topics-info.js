@@ -21,7 +21,7 @@ function getTopicsInfo(branch, offset, numTopicsToLoad, callback) {
     callback = callback || branch.callback;
     branch = branch.branch;
   }
-  return api.Topics.getTopicsInfo(branch, offset || 0, numTopicsToLoad || 0, callback);
+  return api().Topics.getTopicsInfo(branch, offset || 0, numTopicsToLoad || 0, callback);
 }
 
 module.exports = getTopicsInfo;

@@ -23,7 +23,7 @@ function createMarket(branch, takerFee, event, tags, makerFee, extraInfo, onSent
   }
   formattedTags = encodeTagArray(tags);
   fees = calculateTradingFees(makerFee, takerFee);
-  api.CreateMarket.createMarket({
+  api().CreateMarket.createMarket({
     branch: branch,
     tradingFee: abi.fix(fees.tradingFee, "hex"),
     event: event,

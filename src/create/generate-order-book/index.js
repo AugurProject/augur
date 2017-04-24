@@ -84,7 +84,7 @@ function generateOrderBook(market, liquidity, initialFairPrices, startingQuantit
     });
     if (isSimulationOnly) return;
   }
-  api.CompleteSets.buyCompleteSets({
+  api().CompleteSets.buyCompleteSets({
     market: market,
     amount: orders.shares.toFixed(),
     onSent: noop,

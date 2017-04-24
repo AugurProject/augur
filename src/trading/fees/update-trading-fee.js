@@ -17,7 +17,7 @@ function updateTradingFee(branch, market, takerFee, makerFee, onSent, onSuccess,
     branch = branch.branch;
   }
   fees = calculateTradingFees(makerFee, takerFee);
-  return api.CreateMarket.updateTradingFee({
+  return api().CreateMarket.updateTradingFee({
     branch: branch,
     market: market,
     tradingFee: abi.fix(fees.tradingFee, "hex"),

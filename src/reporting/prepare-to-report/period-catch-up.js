@@ -5,9 +5,9 @@ var api = require("../../api");
 var noop = require("../../utils/noop");
 
 function periodCatchUp(branch, periodLength, callback) {
-  api.Branches.getVotePeriod(branch, function (votePeriod) {
+  api().Branches.getVotePeriod(branch, function (votePeriod) {
     if (votePeriod < getCurrentPeriod(periodLength) - 1) {
-      api.Consensus.incrementPeriodAfterReporting({
+      api().Consensus.incrementPeriodAfterReporting({
         branch: branch,
         onSent: noop,
         onSuccess: function () {

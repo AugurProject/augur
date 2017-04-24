@@ -34,13 +34,14 @@ function Augur() {
   };
   this.abi = require("augur-abi");
   this.accounts = require("./accounts");
-  this.api = require("./api").generateContractAPI(require("augur-contracts").api.functions);
+  this.api = require("./api")();
   this.assets = require("./assets");
+  this.beta = require("./beta");
   this.chat = require("./chat");
+  this.connect = require("./connect").bind(this);
   this.constants = require("./constants");
   this.create = require("./create");
   this.filters = require("./filters");
-  this.fundNewAccount = require("./fund-new-account");
   this.logs = require("./logs");
   this.markets = require("./markets");
   this.reporting = require("./reporting");

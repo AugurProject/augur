@@ -41,9 +41,9 @@ function executeTrade(marketID, outcomeID, numShares, totalEthWithFee, tradingFe
       (bnTotalEth.gt(ZERO) && bnCashBalance.lte(PRECISION.zero));
   }, function (nextTrade) {
     var tradeIDs = matchingTradeIDs.slice(0, 3);
-    api.Markets.getParticipantSharesPurchased(marketID, address, outcomeID, function (sharesPurchased) {
+    api().Markets.getParticipantSharesPurchased(marketID, address, outcomeID, function (sharesPurchased) {
       bnSharesPurchased = abi.bignum(sharesPurchased);
-      api.Cash.balance(address, function (cashBalance) {
+      api().Cash.balance(address, function (cashBalance) {
         var isRemainder, maxAmount, maxValue;
         bnCashBalance = abi.bignum(cashBalance);
         if (res.remainingShares.gt(bnSharesPurchased)) {
@@ -103,9 +103,9 @@ function executeTrade(marketID, outcomeID, numShares, totalEthWithFee, tradingFe
               tradingFees: res.tradingFees.toFixed(),
               gasFees: res.gasFees.toFixed()
             });
-            api.Markets.getParticipantSharesPurchased(marketID, address, outcomeID, function (sharesPurchased) {
+            api().Markets.getParticipantSharesPurchased(marketID, address, outcomeID, function (sharesPurchased) {
               bnSharesPurchased = abi.bignum(sharesPurchased);
-              api.Cash.balance(address, function (cashBalance) {
+              api().Cash.balance(address, function (cashBalance) {
                 bnCashBalance = abi.bignum(cashBalance);
                 nextTrade();
               });

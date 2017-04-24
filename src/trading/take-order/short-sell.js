@@ -41,14 +41,14 @@ function short_sell(buyer_trade_id, max_amount, tradeGroupID, sender, onTradeHas
     if (err) return onTradeFailed(err);
     tradeHash = makeTradeHash(0, max_amount, trade_ids);
     onTradeHash(tradeHash);
-    api.Trades.commitTrade({
+    api().Trades.commitTrade({
       hash: tradeHash,
       onSent: onCommitSent,
       onSuccess: function (res) {
         onCommitSuccess(res);
         rpcInterface.waitForNextBlocks(1, function (blockNumber) {
           onNextBlock(blockNumber);
-          api.Trade.short_sell({
+          api().Trade.short_sell({
             buyer_trade_id: buyer_trade_id,
             max_amount: abi.fix(max_amount, "hex"),
             tradeGroupID: tradeGroupID || 0,

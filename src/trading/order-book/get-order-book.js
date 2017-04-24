@@ -18,7 +18,7 @@ function getOrderBook(market, scalarMinMax, callback) {
     callback = callback || market.callback;
     market = market.market;
   }
-  return api.CompositeGetters.getOrderBook(market, offset || 0, numTradesToLoad || 0, callback, { extraArgument: scalarMinMax });
+  return api().CompositeGetters.getOrderBook(market, offset || 0, numTradesToLoad || 0, callback, { extraArgument: scalarMinMax });
 }
 
 module.exports = getOrderBook;

@@ -27,7 +27,7 @@ function fundNewAccountFromFaucet(registeredAddress, branch, onSent, onSuccess, 
     rpcInterface.getBalance(registeredAddress, function (ethBalance) {
       var balance = parseInt(ethBalance, 16);
       if (balance > 0) {
-        api.Faucets.fundNewAccount({
+        api().Faucets.fundNewAccount({
           branch: branch || constants.DEFAULT_BRANCH_ID,
           onSent: onSentCallback,
           onSuccess: onSuccessCallback,
@@ -45,7 +45,7 @@ function fundNewAccountFromFaucet(registeredAddress, branch, onSent, onSuccess, 
           });
         }, function (e) {
           if (e) console.error(e);
-          api.Faucets.fundNewAccount({
+          api().Faucets.fundNewAccount({
             branch: branch || constants.DEFAULT_BRANCH_ID,
             onSent: onSentCallback,
             onSuccess: onSuccessCallback,

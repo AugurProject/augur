@@ -31,7 +31,7 @@ function createSingleEventMarket(branch, description, expDate, minValue, maxValu
   expDate = parseInt(expDate, 10);
   if (description) description = description.trim();
   if (resolution) resolution = resolution.trim();
-  api.CreateMarket.createSingleEventMarket({
+  api().CreateMarket.createSingleEventMarket({
     branch: branch,
     description: description,
     expDate: expDate,

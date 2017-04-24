@@ -9,7 +9,7 @@ var store = require("../../../src/store");
 var Augur = require("../../../src");
 var augur = new Augur();
 
-describe("fund-new-account/fund-new-account-from-address", function () {
+describe("beta/fund-new-account-from-address", function () {
   var sendEther = augur.rpc.sendEther;
   var fundNewAccount = augur.Faucets.fundNewAccount;
   afterEach(function () {

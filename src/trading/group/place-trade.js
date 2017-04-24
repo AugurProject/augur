@@ -32,7 +32,7 @@ function placeTrade(market, outcomeID, tradeType, numShares, limitPrice, trading
     // check if user has position
     //  - if so, sell/ask
     //  - if not, short sell/short ask
-    api.Markets.getParticipantSharesPurchased(marketID, address, outcomeID, function (sharesPurchased) {
+    api().Markets.getParticipantSharesPurchased(marketID, address, outcomeID, function (sharesPurchased) {
       var position, tradeIDs, shares, askShares, shortAskShares, hasAskShares, hasShortAskShares;
       if (!sharesPurchased || sharesPurchased.error) return callback(sharesPurchased);
       position = abi.bignum(sharesPurchased).round(PRECISION.decimals, BigNumber.ROUND_DOWN);

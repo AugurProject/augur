@@ -19,7 +19,7 @@ function createEvent(branch, description, expDate, minValue, maxValue, numOutcom
   }
   if (description) description = description.trim();
   if (resolution) resolution = resolution.trim();
-  return api.CreateMarket.createEvent({
+  return api().CreateMarket.createEvent({
     branch: branch,
     description: description,
     expDate: parseInt(expDate, 10),

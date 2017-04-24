@@ -16,7 +16,7 @@ function createSubbranch(description, periodLength, parent, minTradingFee, oracl
     description = description.description;
   }
   description = description.trim();
-  api.CreateBranch.createSubbranch({
+  api().CreateBranch.createSubbranch({
     description: description,
     periodLength: periodLength,
     parent: parent,

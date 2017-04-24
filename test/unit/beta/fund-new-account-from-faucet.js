@@ -14,7 +14,7 @@ var clearCallCounts = require("../../tools").clearCallCounts;
 var proxyquire = require("proxyquire").noCallThru().noPreserveCache();
 var augur = new Augur();
 
-describe("fund-new-account/fund-new-account-from-faucet", function () {
+describe("beta/fund-new-account-from-faucet", function () {
   var balance = augur.rpc.balance;
   var fundNewAccount = augur.Faucets.fundNewAccount;
   var waitForNextBlocks = augur.rpc.waitForNextBlocks;
@@ -38,7 +38,7 @@ describe("fund-new-account/fund-new-account-from-faucet", function () {
       finished = done;
 
       // before each test, call accounts module but replace request with our mock, then run the function exported from accounts with augur set as our this. finally call fundNewAccountFromFaucet to test.
-      fundNewAccountFromFaucet = proxyquire("../../../src/fund-new-account/fund-new-account-from-faucet", {
+      fundNewAccountFromFaucet = proxyquire("../../../src/beta/fund-new-account-from-faucet", {
         "request": t.mockRequest,
         "browser-request": t.mockRequest
       }).bind(augur);

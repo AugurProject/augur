@@ -11,7 +11,7 @@ function depositEther(value, onSent, onSuccess, onFailed) {
     onFailed = value.onFailed;
     value = value.value;
   }
-  return api.Cash.depositEther({
+  return api().Cash.depositEther({
     tx: { value: abi.fix(value, "hex") },
     onSent: onSent,
     onSuccess: onSuccess,

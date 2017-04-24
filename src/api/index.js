@@ -13,6 +13,14 @@
 var generateContractAPI = require("./generate-contract-api");
 
 var api = generateContractAPI(require("augur-contracts").api.functions);
-api.generateContractAPI = generateContractAPI;
 
-module.exports = api;
+function getAPI() {
+  return api;
+}
+
+getAPI.generateContractAPI = function (functionsAPI) {
+  api = generateContractAPI(functionsAPI);
+  return api;
+};
+
+module.exports = getAPI;

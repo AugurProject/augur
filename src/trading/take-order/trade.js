@@ -47,14 +47,14 @@ function trade(max_value, max_amount, trade_ids, tradeGroupID, sender, onTradeHa
     }
     tradeHash = makeTradeHash(max_value, max_amount, trade_ids);
     onTradeHash(tradeHash);
-    api.Trades.commitTrade({
+    api().Trades.commitTrade({
       hash: tradeHash,
       onSent: onCommitSent,
       onSuccess: function (res) {
         onCommitSuccess(res);
         rpcInterface.waitForNextBlocks(1, function (blockNumber) {
           onNextBlock(blockNumber);
-          api.Trade.trade({
+          api().Trade.trade({
             max_value: abi.fix(max_value, "hex"),
             max_amount: abi.fix(max_amount, "hex"),
             trade_ids: trade_ids,

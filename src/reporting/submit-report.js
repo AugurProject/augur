@@ -19,7 +19,7 @@ function submitReport(event, salt, report, ethics, minValue, maxValue, type, isI
     onFailed = event.onFailed;
     event = event.event;
   }
-  return api.MakeReports.submitReport(
+  return api().MakeReports.submitReport(
     event,
     abi.hex(salt),
     fixReport(report, minValue, maxValue, type, isIndeterminate),

@@ -21,7 +21,7 @@ function slashRep(branch, salt, report, reporter, eventID, minValue, maxValue, t
     onFailed = branch.onFailed;
     branch = branch.branch;
   }
-  return api.SlashRep.slashRep({
+  return api().SlashRep.slashRep({
     branch: branch,
     salt: abi.hex(salt),
     report: fixReport(report, minValue, maxValue, type, isIndeterminate),

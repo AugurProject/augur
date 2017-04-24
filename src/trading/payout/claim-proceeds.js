@@ -14,7 +14,7 @@ function claimProceeds(branch, market, onSent, onSuccess, onFailed) {
     onFailed = branch.onFailed;
     branch = branch.branch;
   }
-  api.CloseMarket.claimProceeds({
+  api().CloseMarket.claimProceeds({
     branch: branch,
     market: market,
     onSent: onSent,

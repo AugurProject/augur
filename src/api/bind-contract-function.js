@@ -33,6 +33,8 @@ function bindContractFunction(functionsAPI, contract, method) {
         }
         if (isObject(params[0].tx)) assign(tx, params[0].tx);
       } else {
+        console.log(tx);
+        console.log(params);
         if (numInputs) {
           tx.params = new Array(numInputs);
           for (i = 0; i < numInputs; ++i) {

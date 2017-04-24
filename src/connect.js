@@ -1,12 +1,12 @@
 "use strict";
 
-var connector = require("ethereumjs-connect");
 var augurContracts = require("augur-contracts");
+var connector = require("ethereumjs-connect");
 var ethrpc = require("ethrpc");
-var api = require("../api");
-var rpcInterface = require("../rpc-interface");
-var isFunction = require("../utils/is-function");
-var DEFAULT_NETWORK_ID = require("../constants").DEFAULT_NETWORK_ID;
+var api = require("./api");
+var rpcInterface = require("./rpc-interface");
+var isFunction = require("./utils/is-function");
+var DEFAULT_NETWORK_ID = require("./constants").DEFAULT_NETWORK_ID;
 
 /**
  * @param connectOptions {Object|string=} Two forms accepted:
@@ -53,7 +53,7 @@ function connect(connectOptions, callback) {
     if (vitals instanceof Error) return vitals;
     vitals.contracts = vitals.contracts || augurContracts[DEFAULT_NETWORK_ID];
     vitals.api = (vitals.api && vitals.api.functions) ? vitals.api : augurContracts.api;
-    api.generateContractAPI(vitals.api.functions);
+    this.api = api.generateContractAPI(vitals.api.functions);
     rpcInterface.createRpcInterface(vitals.rpc);
     return vitals;
   }
@@ -61,10 +61,10 @@ function connect(connectOptions, callback) {
     if (err) return callback(err);
     vitals.contracts = vitals.contracts || augurContracts[DEFAULT_NETWORK_ID];
     vitals.api = (vitals.api && vitals.api.functions) ? vitals.api : augurContracts.api;
-    api.generateContractAPI(vitals.api.functions);
-    rpcInterface.createRpcInterface(vitals.rpc);
+    this.api = api.generateContractAPI(vitals.api.functions);
+    this.rpc = rpcInterface.createRpcInterface(vitals.rpc);
     callback(vitals);
-  });
+  }.bind(this));
 }
 
 module.exports = connect;

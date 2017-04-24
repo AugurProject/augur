@@ -15,7 +15,7 @@ function getMarketInfo(market, account, callback) {
     callback = account;
     account = null;
   }
-  return api.CompositeGetters.getMarketInfo(market, account || 0, callback);
+  return api().CompositeGetters.getMarketInfo(market, account || 0, callback);
 }
 
 module.exports = getMarketInfo;

@@ -9,7 +9,7 @@ var noop = require("../../utils/noop");
 
 // TODO break this monster up into multiple functions
 function penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback) {
-  api.ConsensusData.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
+  api().ConsensusData.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
     lastPeriodPenalized = parseInt(lastPeriodPenalized, 10);
     if (lastPeriodPenalized === 0 || lastPeriodPenalized >= periodToCheck) {
       return callback(null);
@@ -17,7 +17,7 @@ function penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback) {
       if (getCurrentPeriodProgress(periodLength) >= 50) {
         return callback(null);
       }
-      return api.PenalizationCatchup.penalizationCatchup({
+      return api().PenalizationCatchup.penalizationCatchup({
         branch: branch,
         sender: sender,
         onSent: noop,
@@ -25,10 +25,10 @@ function penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback) {
         onFailed: callback
       });
     }
-    api.ExpiringEvents.getEvents(branch, periodToCheck, function (events) {
+    api().ExpiringEvents.getEvents(branch, periodToCheck, function (events) {
       if (!Array.isArray(events) || !events.length) {
         // console.log("[penaltyCatchUp] No events found in period", periodToCheck);
-        api.Consensus.penalizeWrong({
+        api().Consensus.penalizeWrong({
           branch: branch,
           event: 0,
           onSent: noop,
@@ -39,15 +39,15 @@ function penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback) {
         // console.log("[penaltyCatchUp] Events in period " + periodToCheck + ":", events);
         async.eachSeries(events, function (event, nextEvent) {
           if (!event || !parseInt(event, 16)) return nextEvent(null);
-          api.ExpiringEvents.getNumReportsEvent(branch, periodToCheck, event, function (numReportsEvent) {
+          api().ExpiringEvents.getNumReportsEvent(branch, periodToCheck, event, function (numReportsEvent) {
             // console.log("[penaltyCatchUp] getNumReportsEvent:", numReportsEvent);
             if (parseInt(numReportsEvent, 10) === 0) {
               // check to make sure event hasn't been moved forward already
-              api.Events.getExpiration(event, function (expiration) {
+              api().Events.getExpiration(event, function (expiration) {
                 if (!new BigNumber(expiration, 10).dividedBy(periodLength).floor().eq(periodToCheck)) {
                   return nextEvent(null);
                 }
-                api.ExpiringEvents.moveEvent({
+                api().ExpiringEvents.moveEvent({
                   branch: branch,
                   event: event,
                   onSent: noop,
@@ -56,12 +56,12 @@ function penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback) {
                 });
               });
             } else {
-              api.ExpiringEvents.getReport(branch, periodToCheck, event, sender, function (report) {
+              api().ExpiringEvents.getReport(branch, periodToCheck, event, sender, function (report) {
                 console.log("[penaltyCatchUp] ExpiringEvents.getReport:", report);
                 if (parseInt(report, 10) === 0) {
                   return closeEventMarkets(branch, event, sender, nextEvent);
                 }
-                api.Consensus.penalizeWrong({
+                api().Consensus.penalizeWrong({
                   branch: branch,
                   event: event,
                   onSent: noop,
