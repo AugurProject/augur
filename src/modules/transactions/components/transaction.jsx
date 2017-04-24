@@ -4,7 +4,7 @@ import TransactionDetails from 'modules/transactions/components/transaction-deta
 import TransactionSummary from 'modules/transactions/components/transaction-summary';
 import Spinner from 'modules/common/components/spinner';
 
-import { SUCCESS, FAILED, INTERRUPTED } from 'modules/transactions/constants/statuses';
+import { SUBMITTED, PENDING } from 'modules/transactions/constants/statuses';
 
 export default class Transaction extends Component {
   static propTypes = {
@@ -27,18 +27,18 @@ export default class Transaction extends Component {
 
     return (
       <article className="transaction">
-        <span className={classNames('transaction-index', p.status, p.isGroupedTransaction && 'transaction-grouped')}>
-          {p.status === SUCCESS || p.status === FAILED || p.status === INTERRUPTED ?
-            p.transactionIndex :
-            <Spinner />
-          }
-        </span>
+        <span className={classNames('transaction-status', p.status)} />
         <div className="transaction-content" >
           <div className={classNames('transaction-content-main', s.isFullTransactionVisible && 'transaction-details-visible')}>
             <TransactionSummary
               isGroupedTransaction={p.isGroupedTransaction}
               {...p}
             />
+            <span className="transaction-spinner">
+              {(p.status === SUBMITTED || p.status === PENDING) &&
+                <Spinner />
+              }
+            </span>
             <button
               className="unstyled transaction-toggle"
               onClick={() => this.setState({ isFullTransactionVisible: !s.isFullTransactionVisible })}

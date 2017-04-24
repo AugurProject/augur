@@ -1,5 +1,5 @@
 .transaction-details {
-  border-top: 0px solid transparent; /* stylelint-disable-line length-zero-no-unit */
+  border-top: 0px dotted transparent; /* stylelint-disable-line length-zero-no-unit */
   max-height: 0px; /* stylelint-disable-line length-zero-no-unit */
   overflow-y: hidden;
   transform: translateZ(0); // Force hardware accelleration
@@ -7,7 +7,7 @@
   transition-property: border-top, max-height;
 
   &.visible {
-    .border(true, @border-top, @border-light);
+    .border(true, @border-top, @style: @border-dotted);
 
     max-height: 1000px;
   }

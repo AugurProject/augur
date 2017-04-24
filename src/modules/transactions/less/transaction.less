@@ -10,6 +10,7 @@
   }
 
   .transaction-index,
+  .transaction-spinner,
   .transaction-toggle {
     .font-size-medium();
 
@@ -19,10 +20,7 @@
     min-width: 3em;
   }
 
-  .transaction-index {
-    // Right Border
-    .border(true, @border-right, @style: @border-dotted);
-
+  .transaction-status {
     // Left Border
     .border(true, @border-left, @color-orange-light, @border-width-3);
 
@@ -38,6 +36,10 @@
     &.success {
       .border(true, @border-left, @color-green-light, @border-width-3);
     }
+  }
+
+  .transaction-toggle {
+    .border(true, @border-left, @style: @border-dotted);
   }
 
   .transaction-content {

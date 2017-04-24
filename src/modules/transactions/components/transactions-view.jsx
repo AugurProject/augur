@@ -17,7 +17,7 @@ export default class TransactionsView extends Component {
     super(props);
 
     this.state = {
-      transactionsPerPage: 5, // -- Update this value to change pagination size
+      transactionsPerPage: 50, // -- Update this value to change pagination size
       nullMessage: 'No Transaction Data',
       lowerIndex: null,
       upperIndex: null,
