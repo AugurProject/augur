@@ -21,8 +21,6 @@ export default class Paginator extends Component {
   render() {
     const p = this.props;
 
-    console.log('inf -- ', p.isMobile, p.scrollList);
-
     return (
       <article className="paginator">
         <div className="pagination-control-container">
