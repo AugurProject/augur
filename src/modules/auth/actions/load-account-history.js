@@ -13,7 +13,7 @@ export const loadAccountHistory = loadAllHistory => (dispatch, getState) => {
   const initialTransactionCount = Object.keys(transactionsData || {}).length;
 
   // Adjust these to constrain the effective loading amount
-  const blockChunkSize = 7200; // ~1 Day
+  const blockChunkSize = 5760; // ~1 Day based on 15 second blocks
   const transactionSoftLimit = 100; // Used if blockChunkSize does not load # of transactions up to the soft limit
 
   const registerBlock = loginAccount.registerBlockNumber;
