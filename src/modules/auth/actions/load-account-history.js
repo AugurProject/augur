@@ -26,36 +26,40 @@ export const loadAccountHistory = loadAllHistory => (dispatch, getState) => {
   }
 
   if (registerBlock && oldestLoadedBlock && oldestLoadedBlock !== registerBlock) {
-    let fromBlock = null;
+
+    const options = {};
     if (!loadAllHistory) {
-      fromBlock = oldestLoadedBlock - blockChunkSize < registerBlock ?
+      options.toBlock = oldestLoadedBlock - 1;
+
+      const prospectiveFromBlock = options.toBlock - blockChunkSize;
+      options.fromBlock = prospectiveFromBlock < registerBlock ?
         registerBlock :
-        oldestLoadedBlock - blockChunkSize;
+        prospectiveFromBlock;
     }
 
-    console.log('fromBlock -- ', fromBlock);
+    console.log('fromBlock -- ', options);
     async.parallel([
-      next => dispatch(loadAccountTrades(null, fromBlock, (err) => {
+      next => dispatch(loadAccountTrades(options, (err) => {
         if (err) next(err);
         next(null);
       })),
-      next => dispatch(loadBidsAsksHistory(null, fromBlock, (err) => {
+      next => dispatch(loadBidsAsksHistory(options, (err) => {
         if (err) next(err);
         next(null);
       })),
-      next => dispatch(loadFundingHistory(fromBlock, (err) => {
+      next => dispatch(loadFundingHistory(options, (err) => {
         if (err) next(err);
         next(null);
       })),
-      next => dispatch(loadTransferHistory(fromBlock, (err) => {
+      next => dispatch(loadTransferHistory(options, (err) => {
         if (err) next(err);
         next(null);
       })),
-      next => dispatch(loadCreateMarketHistory(null, fromBlock, (err) => {
+      next => dispatch(loadCreateMarketHistory(options, (err) => {
         if (err) next(err);
         next(null);
       })),
-      next => dispatch(loadReportingHistory(fromBlock, (err) => {
+      next => dispatch(loadReportingHistory(options, (err) => {
         if (err) next(err);
         next(null);
       }))
