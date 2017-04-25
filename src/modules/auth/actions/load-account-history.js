@@ -6,19 +6,18 @@ import { loadCreateMarketHistory } from 'modules/create-market/actions/load-crea
 import { loadFundingHistory, loadTransferHistory } from 'modules/account/actions/load-funding-history';
 import { loadReportingHistory } from 'modules/my-reports/actions/load-reporting-history';
 import { syncBranch } from 'modules/branch/actions/sync-branch';
+import { updateTransactionsOldestLoadedBlock } from 'modules/transactions/actions/update-transactions-oldest-loaded-block';
 
 export const loadAccountHistory = loadAllHistory => (dispatch, getState) => {
-  const { transactionsOldestLoadedBlock, blockchain, loginAccount } = getState();
+  const { transactionsOldestLoadedBlock, blockchain, loginAccount, transactionsData } = getState();
+  const initialTransactionCount = Object.keys(transactionsData || {}).length;
 
-  console.log('state -- ', transactionsOldestLoadedBlock, blockchain, loginAccount);
-
-  const blockChunkSize = 100;
-  const transactionSoftLimit = 100;
+  // Adjust these to constrain the effective chunk size
+  const blockChunkSize = 7200; // ~1 Day
+  const transactionSoftLimit = 100; // Used if blockChunkSize does not load up to the soft limit
 
   const registerBlock = loginAccount.registerBlockNumber;
   const oldestLoadedBlock = transactionsOldestLoadedBlock || blockchain.currentBlockNumber;
-
-  console.log('### loadAllHistory -- ', blockChunkSize, transactionSoftLimit, registerBlock, oldestLoadedBlock);
 
   if (!transactionsOldestLoadedBlock) { // Denotes nothing has loaded yet
     dispatch(clearReports());
@@ -37,34 +36,64 @@ export const loadAccountHistory = loadAllHistory => (dispatch, getState) => {
         prospectiveFromBlock;
     }
 
-    console.log('fromBlock -- ', options);
-    async.parallel([
-      next => dispatch(loadAccountTrades(options, (err) => {
-        if (err) next(err);
-        next(null);
-      })),
-      next => dispatch(loadBidsAsksHistory(options, (err) => {
-        if (err) next(err);
-        next(null);
-      })),
-      next => dispatch(loadFundingHistory(options, (err) => {
-        if (err) next(err);
-        next(null);
-      })),
-      next => dispatch(loadTransferHistory(options, (err) => {
-        if (err) next(err);
-        next(null);
-      })),
-      next => dispatch(loadCreateMarketHistory(options, (err) => {
-        if (err) next(err);
-        next(null);
-      })),
-      next => dispatch(loadReportingHistory(options, (err) => {
-        if (err) next(err);
-        next(null);
-      }))
-    ], (err, result) => {
-      console.log('loadAccountHistory finished -- ', err, result);
-    });
+    const callback = (options) => {
+      if (!loadAllHistory) {
+        const { transactionsData } = getState();
+        const updatedTransactionsCount = Object.keys(transactionsData || {}).length;
+        const updatedOptions = {
+          ...options
+        };
+
+        dispatch(updateTransactionsOldestLoadedBlock(options.fromBlock));
+
+        if (!(updatedTransactionsCount - initialTransactionCount > transactionSoftLimit) && options.fromBlock !== registerBlock) {
+          updatedOptions.toBlock = updatedOptions.fromBlock - 1;
+
+          const prospectiveFromBlock = updatedOptions.toBlock - blockChunkSize;
+          updatedOptions.fromBlock = prospectiveFromBlock < registerBlock ?
+            registerBlock :
+            prospectiveFromBlock;
+
+          loadTransactions(dispatch, updatedOptions, callback);
+        }
+
+        return;
+      }
+      dispatch(updateTransactionsOldestLoadedBlock(oldestLoadedBlock));
+    };
+
+    loadTransactions(dispatch, options, callback);
   }
 };
+
+export function loadTransactions(dispatch, options, cb) {
+  async.parallel([
+    next => dispatch(loadAccountTrades(options, (err) => {
+      if (err) next(err);
+      next(null);
+    })),
+    next => dispatch(loadBidsAsksHistory(options, (err) => {
+      if (err) next(err);
+      next(null);
+    })),
+    next => dispatch(loadFundingHistory(options, (err) => {
+      if (err) next(err);
+      next(null);
+    })),
+    next => dispatch(loadTransferHistory(options, (err) => {
+      if (err) next(err);
+      next(null);
+    })),
+    next => dispatch(loadCreateMarketHistory(options, (err) => {
+      if (err) next(err);
+      next(null);
+    })),
+    next => dispatch(loadReportingHistory(options, (err) => {
+      if (err) next(err);
+      next(null);
+    }))
+  ], (err) => {
+    if (err) return console.error('ERROR loadTransactions: ', err);
+    cb(options);
+  });
+}
