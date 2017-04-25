@@ -5,15 +5,15 @@ import { convertLogsToTransactions } from '../../../modules/transactions/actions
 import { clearAccountTrades } from '../../../modules/my-positions/actions/clear-account-trades';
 import { sellCompleteSets } from '../../../modules/my-positions/actions/sell-complete-sets';
 
-export function loadAccountTrades(marketID, cb) {
+export function loadAccountTrades(marketID, fromBlock, cb) {
   return (dispatch, getState) => {
     const callback = cb || (e => e && console.error('loadAccountTrades:', e));
     const { loginAccount } = getState();
     const account = loginAccount.address;
     if (!account) return callback();
     const options = { market: marketID };
-    if (loginAccount.registerBlockNumber) {
-      options.fromBlock = loginAccount.registerBlockNumber;
+    if (fromBlock || loginAccount.registerBlockNumber) {
+      options.fromBlock = fromBlock || loginAccount.registerBlockNumber;
     }
     if (!marketID) dispatch(clearAccountTrades());
     async.parallel([

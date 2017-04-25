@@ -32,7 +32,7 @@ export const submitGenerateOrderBook = market => (dispatch) => {
     onSuccess: (r) => {
       console.log('generateOrderBook onSuccess:', r);
       dispatch(loadBidsAsks(market.id));
-      dispatch(loadAccountTrades(market.id, () => dispatch(updateSellCompleteSetsLock(market.id, false))));
+      dispatch(loadAccountTrades(market.id, null, () => dispatch(updateSellCompleteSetsLock(market.id, false))));
     },
     onFailed: e => console.error('generateOrderBook onFailed:', e)
   });

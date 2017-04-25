@@ -1,6 +1,6 @@
-import { UPDATE_TRANSACTIONS_DATA } from '../../transactions/actions/update-transactions-data';
-import { DELETE_TRANSACTION } from '../../transactions/actions/delete-transaction';
-import { CLEAR_LOGIN_ACCOUNT } from '../../auth/actions/update-login-account';
+import { UPDATE_TRANSACTIONS_DATA } from 'modules/transactions/actions/update-transactions-data';
+import { DELETE_TRANSACTION } from 'modules/transactions/actions/delete-transaction';
+import { CLEAR_LOGIN_ACCOUNT } from 'modules/auth/actions/update-login-account';
 
 export default function (transactionsData = {}, action) {
   switch (action.type) {

@@ -17,7 +17,7 @@ export const claimProceeds = () => (dispatch, getState) => {
         dispatch(updateAssets());
         async.each(claimedMarkets, (marketID, nextMarket) => (
           dispatch(loadMarketsInfo([marketID], () => (
-            dispatch(loadAccountTrades(marketID, () => nextMarket()))
+            dispatch(loadAccountTrades(marketID, null, () => nextMarket()))
           )))
         ), err => err && console.error(err));
       });
