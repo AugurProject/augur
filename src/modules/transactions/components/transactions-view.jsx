@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import classNames from 'classnames';
 import Transactions from 'modules/transactions/components/transactions';
 import Branch from 'modules/branch/components/branch';
 import Paginator from 'modules/common/components/paginator';
@@ -109,7 +110,35 @@ export default class TransactionsView extends Component {
             <h2>Transactions</h2>
           </div>
           <div className="view-header-group">
-            <span>Testing...</span>
+            {p.transactionsLoading &&
+              <div className="transactions-loading-spinner" >
+                <Spinner />
+              </div>
+            }
+            {!p.transactionsLoading && !p.hasAllTransactionsLoaded &&
+              <div className="transactions-load-buttons">
+                <button
+                  className="unstyled"
+                  onClick={() => p.loadMoreTransactions()}
+                >
+                  <span>Load More</span>
+                </button>
+                <button
+                  className="unstyled"
+                  onClick={() => p.loadAllTransactions()}
+                >
+                  <span>Load All</span>
+                </button>
+              </div>
+            }
+            {!p.transactionsLoading && p.hasAllTransactionsLoaded &&
+              <span
+                className="transactions-all-loaded-message"
+              >
+                All Transactions Loaded
+              </span>
+            }
+
           </div>
         </div>
 

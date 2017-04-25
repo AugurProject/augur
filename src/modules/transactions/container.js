@@ -9,12 +9,13 @@ const mapStateToProps = state => ({
   currentBlockNumber: state.blockchain.currentBlockNumber,
   loginAccount: selectLoginAccount(state),
   transactions: selectTransactions(state),
-  transactionsLoading: state.transactionsLoading
+  transactionsLoading: state.transactionsLoading,
+  hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber
 });
 
 const mapDispatchToProps = dispatch => ({
-  loadMoreTransactions: dispatch(loadAccountHistory()),
-  loadAllTransactions: dispatch(loadAccountHistory(true))
+  loadMoreTransactions: () => dispatch(loadAccountHistory()),
+  loadAllTransactions: () => dispatch(loadAccountHistory(true))
 });
 
 const Transactions = connect(mapStateToProps, mapDispatchToProps)(TransactionsView);
