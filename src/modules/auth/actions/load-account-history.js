@@ -7,6 +7,7 @@ import { loadFundingHistory, loadTransferHistory } from 'modules/account/actions
 import { loadReportingHistory } from 'modules/my-reports/actions/load-reporting-history';
 import { syncBranch } from 'modules/branch/actions/sync-branch';
 import { updateTransactionsOldestLoadedBlock } from 'modules/transactions/actions/update-transactions-oldest-loaded-block';
+import { updateTransactionsLoading } from 'modules/transactions/actions/update-transactions-loading';
 
 export const loadAccountHistory = loadAllHistory => (dispatch, getState) => {
   const { transactionsOldestLoadedBlock, blockchain, loginAccount, transactionsData } = getState();
@@ -55,11 +56,15 @@ export const loadAccountHistory = loadAllHistory => (dispatch, getState) => {
             prospectiveFromBlock;
 
           loadTransactions(dispatch, updatedOptions, callback);
+        } else {
+          dispatch(updateTransactionsLoading(false));
         }
 
         return;
       }
+
       dispatch(updateTransactionsOldestLoadedBlock(oldestLoadedBlock));
+      dispatch(updateTransactionsLoading(false));
     };
 
     loadTransactions(dispatch, options, callback);
@@ -67,6 +72,8 @@ export const loadAccountHistory = loadAllHistory => (dispatch, getState) => {
 };
 
 export function loadTransactions(dispatch, options, cb) {
+  dispatch(updateTransactionsLoading(true));
+
   async.parallel([
     next => dispatch(loadAccountTrades(options, (err) => {
       if (err) next(err);

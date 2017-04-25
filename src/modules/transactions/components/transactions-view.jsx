@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import Transactions from 'modules/transactions/components/transactions';
 import Branch from 'modules/branch/components/branch';
 import Paginator from 'modules/common/components/paginator';
+import Spinner from 'modules/common/components/spinner';
 
 import getValue from 'utils/get-value';
 
@@ -10,7 +11,10 @@ export default class TransactionsView extends Component {
     branch: PropTypes.object,
     currentBlockNumber: PropTypes.number,
     loginAccount: PropTypes.object,
-    transactions: PropTypes.array.isRequired
+    transactions: PropTypes.array.isRequired,
+    transactionsLoading: PropTypes.bool.isRequired,
+    loadMoreTransactions: PropTypes.func.isRequired,
+    loadAllTransactions: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -101,7 +105,12 @@ export default class TransactionsView extends Component {
         }
 
         <div className="view-header">
-          <h2>Transactions</h2>
+          <div className="view-header-group">
+            <h2>Transactions</h2>
+          </div>
+          <div className="view-header-group">
+            <span>Testing...</span>
+          </div>
         </div>
 
         <div

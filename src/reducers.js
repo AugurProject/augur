@@ -32,6 +32,7 @@ import completeSetsBought from 'modules/my-positions/reducers/complete-sets-boug
 import netEffectiveTrades from 'modules/my-positions/reducers/net-effective-trades';
 import transactionsData from 'modules/transactions/reducers/transactions-data';
 import transactionsOldestLoadedBlock from 'modules/transactions/reducers/transactions-oldest-loaded-block';
+import transactionsLoading from 'modules/transactions/reducers/transactions-loading';
 import scalarMarketsShareDenomination from 'modules/market/reducers/scalar-markets-share-denomination';
 import closePositionTradeGroups from 'modules/my-positions/reducers/close-position-trade-groups';
 
@@ -110,6 +111,7 @@ export function createReducer() {
     netEffectiveTrades,
     transactionsData,
     transactionsOldestLoadedBlock,
+    transactionsLoading,
     scalarMarketsShareDenomination,
     closePositionTradeGroups,
 
