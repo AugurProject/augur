@@ -4,7 +4,7 @@ import TransactionDetails from 'modules/transactions/components/transaction-deta
 import TransactionSummary from 'modules/transactions/components/transaction-summary';
 import Spinner from 'modules/common/components/spinner';
 
-import { SUBMITTED, PENDING } from 'modules/transactions/constants/statuses';
+import { SUBMITTED, PENDING, COMMITTING } from 'modules/transactions/constants/statuses';
 
 export default class Transaction extends Component {
   static propTypes = {
@@ -25,7 +25,7 @@ export default class Transaction extends Component {
     const s = this.state;
 
     return (
-      <article className="transaction">
+      <article className={classNames('transaction', p.status)}>
         <span className={classNames('transaction-status', p.status)} />
         <div className="transaction-content" >
           <div className={classNames('transaction-content-main', s.isFullTransactionVisible && 'transaction-details-visible')}>
@@ -34,7 +34,7 @@ export default class Transaction extends Component {
               {...p}
             />
             <span className="transaction-spinner">
-              {(p.status === SUBMITTED || p.status === PENDING) &&
+              {(p.status === SUBMITTED || p.status === PENDING || p.status === COMMITTING) &&
                 <Spinner />
               }
             </span>

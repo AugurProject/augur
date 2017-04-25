@@ -6,4 +6,35 @@
   .transaction-action {
     margin-bottom: 0.3em;
   }
+
+  .transaction,
+  .transaction-group {
+    &.transaction-appear,
+    &.transaction-enter {
+      background-color: @color-orange-light;
+      max-height: 0px;
+
+      &.failed,
+      &.interrupted {
+        background-color: @color-red-light;
+      }
+
+      &.pending {
+        background-color: @color-gray;
+      }
+
+      &.success {
+        background-color: @color-green-light;
+      }
+
+      &.transaction-appear-active,
+      &.transaction-enter-active {
+        background-color: inherit;
+        max-height: 1000px;
+        transition-duration: @animation-speed-slow, @animation-speed-very-slow;
+        transition-property: background-color, max-height;
+        transition-timing-function: @animation-default-type;
+      }
+    }
+  }
 }
