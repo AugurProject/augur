@@ -1,4 +1,4 @@
-import { UPDATE_TRANSACTIONS_OLDEST_LOADED_BLOCK } from 'modules/transactions/actions/update-transactions-data';
+import { UPDATE_TRANSACTIONS_OLDEST_LOADED_BLOCK } from 'modules/transactions/actions/update-transactions-oldest-loaded-block';
 import { CLEAR_LOGIN_ACCOUNT } from 'modules/auth/actions/update-login-account';
 
 const DEFAULT_STATE = null;
