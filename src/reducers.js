@@ -59,6 +59,8 @@ import chatMessages from 'modules/chat/reducers/chat-messages';
 
 import marketCreatorFees from 'modules/my-markets/reducers/market-creator-fees';
 
+import notifications from 'modules/notifications/reducers/notifications';
+
 export function createReducer() {
   return combineReducers({
     env,
@@ -117,6 +119,8 @@ export function createReducer() {
 
     chatMessages,
 
-    marketCreatorFees
+    marketCreatorFees,
+
+    notifications
   });
 }
