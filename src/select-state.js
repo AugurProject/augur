@@ -46,6 +46,7 @@ export const selectScalarMarketsShareDenominationState = state => state.scalarMa
 export const selectClosePositionTradeGroupsState = state => state.closePositionTradeGroups;
 export const selectChatMessagesState = state => state.chatMessages;
 export const selectMarketCreatorFeesState = state => state.marketCreatorFees;
+export const selectNotificationsState = state => state.notifications;
 
 export const selectBlockchainCurrentBlockTimestamp = createSelector(
   selectBlockchainState,
