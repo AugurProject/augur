@@ -3366,6 +3366,10 @@ flatten@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/flatten/-/flatten-1.0.2.tgz#dae46a9d78fbe25292258cc1e780a41d95c03782"
 
+flow-bin@^0.44.0:
+  version "0.44.2"
+  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.44.2.tgz#3893c7db5de043ed82674f327a04b1309db208b5"
+
 for-in@^1.0.1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/for-in/-/for-in-1.0.2.tgz#81068d295a8142ec0ac726c6e2200c30fb6d5e80"
@@ -6304,7 +6308,15 @@ qr.js@0.0.0:
   version "0.0.0"
   resolved "https://registry.yarnpkg.com/qr.js/-/qr.js-0.0.0.tgz#cace86386f59a0db8050fa90d9b6b0e88a1e364f"
 
-qrcode.react@0.6.1, qrcode.react@~0.6.1:
+qrcode.react@0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/qrcode.react/-/qrcode.react-0.7.0.tgz#64e2c63e8cd00756f6d622041390403655cb0076"
+  dependencies:
+    flow-bin "^0.44.0"
+    prop-types "^15.5.8"
+    qr.js "0.0.0"
+
+qrcode.react@~0.6.1:
   version "0.6.1"
   resolved "https://registry.yarnpkg.com/qrcode.react/-/qrcode.react-0.6.1.tgz#e718192d17cdf87cb1f156a34cea16dd67575932"
   dependencies:

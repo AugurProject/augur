@@ -2,6 +2,7 @@
   display: flex;
   flex: 1;
   justify-content: center;
+  position: relative;
   z-index: @above-all-content;
 
   .app-nav-link:not(button) {
@@ -56,8 +57,20 @@
         padding-right: 0.4em;
       }
 
+      &.button-notifications {
+        .border(true, @border-right, @border-faded);
+
+        i {
+          padding: 0;
+        }
+      }
+
       @media @breakpoint-mobile {
         padding: 1.1em;
+
+        &.button-notifications {
+          .border(false);
+        }
       }
     }
 
