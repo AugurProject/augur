@@ -3,12 +3,29 @@
   position: absolute;
   transform: translateY(100%);
 
+  @media @breakpoint-mobile {
+    left: auto !important; // Overrides inline style
+    right: 0;
+  }
+
   #notifications_view {
-    .border(true);
+    .border(true, @border-right);
+    .border(true, @border-bottom);
+    .border(true, @border-left);
 
     background-color: @color-white;
+    box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.2);
     margin: 0;
+    transform: translateX(-50%);
     width: 300px;
+
+    @media @breakpoint-mobile {
+      transform: translateX(0);
+    }
+
+    @media @breakpoint-1 {
+      width: 100vw;
+    }
 
     &.notifications-enter {
       opacity: 0;

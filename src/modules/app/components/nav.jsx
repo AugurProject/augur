@@ -10,12 +10,14 @@ import NotificationsContainer from 'modules/notifications/container';
 import { ACCOUNT, MARKETS, TRANSACTIONS, MY_POSITIONS, MY_MARKETS, MY_REPORTS, AUTHENTICATION } from 'modules/app/constants/views';
 import { FAVORITES, PENDING_REPORTS } from 'modules/markets/constants/markets-subset';
 
+import debounce from 'utils/debounce';
+
 // NOTE --  first child div is there to pass up a ref so that other methods can
 //          acquire the row height of the navs in the footer
 
 export default class Nav extends Component {
   static propTypes = {
-    logged: PropTypes.bool,
+    logged: PropTypes.string,
     updateIsFooterCollapsed: PropTypes.func
   }
 
@@ -28,11 +30,13 @@ export default class Nav extends Component {
     };
 
     this.collapseFooter = this.collapseFooter.bind(this);
-    this.setNotificationIconOffeset = this.setNotificationIconOffeset.bind(this);
+    this.setNotificationIconOffeset = debounce(this.setNotificationIconOffeset.bind(this));
   }
 
   componentDidMount() {
     this.setNotificationIconOffeset();
+
+    window.addEventListener('resize', this.setNotificationIconOffeset);
   }
 
   componentDidUpdate(prevProps) {
@@ -41,9 +45,15 @@ export default class Nav extends Component {
     }
   }
 
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.setNotificationIconOffeset);
+  }
+
   setNotificationIconOffeset() {
     if (this.props.logged) {
-      const notificationIconXOffset = this.notificationIcon.offsetLeft;
+      const xOffset = this.notificationIcon.offsetLeft;
+      const width = this.notificationIcon.clientWidth;
+      const notificationIconXOffset = xOffset + (width / 2);
       this.setState({ notificationIconXOffset });
     }
   }
@@ -186,12 +196,15 @@ export default class Nav extends Component {
         }
         <CSSTransitionGroup
           id="transition_notifications_view"
+          style={{ left: s.notificationIconXOffset }}
           transitionName="notifications"
           transitionEnterTimeout={animationInSpeed}
           transitionLeaveTimeout={animationOutSpeed}
         >
           {p.logged && s.isNotificationsVisible &&
-            <NotificationsContainer />
+            <NotificationsContainer
+              notificationIconXOffset={s.notificationIconXOffset}
+            />
           }
         </CSSTransitionGroup>
       </nav>
