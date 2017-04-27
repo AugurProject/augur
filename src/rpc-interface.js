@@ -29,7 +29,8 @@ var createRpcInterface = function (ethrpc) {
     excludeFromTransactionRelay: ethrpc.excludeFromTransactionRelay,
     includeInTransactionRelay: ethrpc.includeInTransactionRelay,
     registerTransactionRelay: ethrpc.registerTransactionRelay,
-    unregisterTransactionRelay: ethrpc.unregisterTransactionRelay
+    unregisterTransactionRelay: ethrpc.unregisterTransactionRelay,
+    setDebugOptions: ethrpc.setDebugOptions
   };
 };
 
