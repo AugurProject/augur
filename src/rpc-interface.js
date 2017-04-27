@@ -25,7 +25,11 @@ var createRpcInterface = function (ethrpc) {
     packageAndSubmitRawTransaction: ethrpc.packageAndSubmitRawTransaction,
     callContractFunction: ethrpc.callContractFunction,
     transact: ethrpc.transact,
-    handleRPCError: ethrpc.handleRPCError
+    handleRPCError: ethrpc.handleRPCError,
+    excludeFromTransactionRelay: ethrpc.excludeFromTransactionRelay,
+    includeInTransactionRelay: ethrpc.includeInTransactionRelay,
+    registerTransactionRelay: ethrpc.registerTransactionRelay,
+    unregisterTransactionRelay: ethrpc.unregisterTransactionRelay
   };
 };
 
