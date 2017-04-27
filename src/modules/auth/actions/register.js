@@ -10,14 +10,12 @@ export const register = (password, callback = logError) => dispatch => (
     } else if (account.error) {
       return callback({ code: account.error, message: account.message });
     }
-    const loginID = base58Encode(account);
-    callback(null, loginID);
+    callback(null, base58Encode(account));
   })
 );
 
 export const setupAndFundNewAccount = (password, loginID, callback = logError) => (dispatch, getState) => {
   if (!loginID) return callback({ message: 'loginID is required' });
-  const keystore = base58Decode(loginID);
-  dispatch(loadAccountData({ loginID, keystore, address: keystore.address }, true));
+  dispatch(loadAccountData({ loginID, ...base58Decode(loginID) }, true));
   callback(null);
 };

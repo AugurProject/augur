@@ -10,8 +10,8 @@ export const changeAccountName = name => (dispatch, getState) => {
 };
 
 export const updateLoginAccount = loginAccount => (dispatch, getState) => {
-  if (loginAccount && loginAccount.address) dispatch(updateFromAddress(loginAccount.address));
   dispatch({ type: UPDATE_LOGIN_ACCOUNT, data: loginAccount });
+  if (loginAccount && loginAccount.address) dispatch(updateFromAddress(loginAccount.address));
 };
 
 export const clearLoginAccount = () => ({ type: CLEAR_LOGIN_ACCOUNT });
