@@ -8,17 +8,32 @@ export function fundNewAccount() {
     if (env.fundNewAccountFromAddress && env.fundNewAccountFromAddress.amount) {
       const fromAddress = env.fundNewAccountFromAddress.address;
       const amount = env.fundNewAccountFromAddress.amount;
-      augur.beta.fundNewAccountFromAddress(fromAddress, amount, loginAccount.address, branch.id, utils.noop, (r) => {
-        console.log('fundNewAccountFromAddress success:', r);
-        dispatch(updateAssets());
-        dispatch(loadRegisterBlockNumber());
-      }, e => console.error('fundNewAccountFromAddress:', e));
+      augur.beta.fundNewAccountFromAddress({
+        _signer: loginAccount.privateKey,
+        fromAddress: fromAddress,
+        amount: amount,
+        registeredAddress: loginAccount.address,
+        branch: branch.id,
+        onSent: utils.noop,
+        onSuccess: (r) => {
+          console.log('fundNewAccountFromAddress success:', r);
+          dispatch(updateAssets());
+          dispatch(loadRegisterBlockNumber());
+        },
+        onFailed: e => console.error('fundNewAccountFromAddress:', e)
+      });
     } else {
-      augur.beta.fundNewAccountFromFaucet(loginAccount.address, branch.id, utils.noop, (r) => {
-        console.log('fundNewAccountFromFaucet success:', r);
-        dispatch(updateAssets());
-        dispatch(loadRegisterBlockNumber());
-      }, e => console.error('fundNewAccountFromFaucet:', e));
+      augur.beta.fundNewAccountFromFaucet({
+        registeredAddress: loginAccount.address,
+        branch: branch.id,
+        onSent: utils.noop,
+        onSuccess: (r) => {
+          console.log('fundNewAccountFromFaucet success:', r);
+          dispatch(updateAssets());
+          dispatch(loadRegisterBlockNumber());
+        },
+        onFailed: e => console.error('fundNewAccountFromFaucet:', e)
+      });
     }
   };
 }

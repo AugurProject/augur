@@ -8,7 +8,7 @@ const TIME_TO_WAIT_BEFORE_FINAL_ACTION_MILLIS = 3000;
 
 export function cancelOrder(orderID, marketID, type) {
   return (dispatch, getState) => {
-    const { orderBooks, outcomesData, marketsData } = getState();
+    const { loginAccount, orderBooks, outcomesData, marketsData } = getState();
     const order = getOrder(orderID, marketID, type, orderBooks);
     const market = marketsData[marketID];
     if (order != null && market != null && outcomesData[marketID] != null) {
@@ -16,6 +16,7 @@ export function cancelOrder(orderID, marketID, type) {
       if (outcome != null) {
         dispatch(updateOrderStatus(orderID, CLOSE_DIALOG_CLOSING, marketID, type));
         augur.trading.cancel({
+          _signer: loginAccount.privateKey,
           trade_id: orderID,
           onSent: res => console.log('cancel sent:', res),
           onSuccess: res => console.log('cancel success:', res),
