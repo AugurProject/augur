@@ -15,6 +15,7 @@ import { FAVORITES, PENDING_REPORTS } from 'modules/markets/constants/markets-su
 
 export default class Nav extends Component {
   static propTypes = {
+    logged: PropTypes.bool,
     updateIsFooterCollapsed: PropTypes.func
   }
 
@@ -23,8 +24,7 @@ export default class Nav extends Component {
 
     this.state = {
       isNotificationsVisible: false,
-      notificationIconXOffset: null,
-      notificationIconYOffset: null
+      notificationIconXOffset: null
     };
 
     this.collapseFooter = this.collapseFooter.bind(this);
@@ -35,8 +35,17 @@ export default class Nav extends Component {
     this.setNotificationIconOffeset();
   }
 
+  componentDidUpdate(prevProps) {
+    if (this.props.logged && prevProps.logged !== this.props.logged) {
+      this.setNotificationIconOffeset();
+    }
+  }
+
   setNotificationIconOffeset() {
-    console.log('### setNotificationIconOffeset -- ', this.notificationBell);
+    if (this.props.logged) {
+      const notificationIconXOffset = this.notificationIcon.offsetLeft;
+      this.setState({ notificationIconXOffset });
+    }
   }
 
   collapseFooter() {
@@ -70,13 +79,11 @@ export default class Nav extends Component {
         </div>
         {p.logged &&
           <button
+            ref={(notificationIcon) => { this.notificationIcon = notificationIcon; }}
             className="unstyled button-notifications app-nav-link"
             onClick={() => this.setState({ isNotificationsVisible: !s.isNotificationsVisible })}
           >
-            <i
-              ref={(notificationBell) => { this.notificationBell = notificationBell; }}
-              className="fa fa-bell-o"
-            />
+            <i className="fa fa-bell-o" />
           </button>
         }
         <Link
