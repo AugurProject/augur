@@ -9,13 +9,7 @@ import { displayTopicsPage } from 'modules/link/actions/display-topics-page';
 export const loadAccountData = (account, redirect) => (dispatch, getState) => {
   if (!account || !account.address) return console.error('account address required');
   dispatch(loadAccountDataFromLocalStorage(account.address));
-  // dispatch(updateLoginAccount({ address: account.address }));
   dispatch(updateLoginAccount(account));
-  // if (account.isUnlocked != null) dispatch(updateLoginAccount({ isUnlocked: !!account.isUnlocked }));
-  // if (account.loginID != null) dispatch(updateLoginAccount({ loginID: account.loginID }));
-  // if (account.name != null) dispatch(updateLoginAccount({ name: account.name }));
-  // if (account.airbitzAccount != null) dispatch(updateLoginAccount({ airbitzAccount: account.airbitzAccount }));
-  // if (account.registerBlockNumber != null) dispatch(updateLoginAccount({ registerBlockNumber: account.registerBlockNumber }));
   dispatch(displayTopicsPage(redirect));
   dispatch(updateAssets((err, balances) => {
     if (err) return console.error(err);

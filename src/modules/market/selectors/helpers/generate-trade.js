@@ -28,7 +28,7 @@ export const generateTrade = memoize((market, outcome, outcomeTradeInProgress, l
 
   let maxNumShares;
   if (limitPrice != null) {
-    const orders = augur.filterByPriceAndOutcomeAndUserSortByPrice(
+    const orders = augur.trading.simulation.filterByPriceAndOutcomeAndUserSortByPrice(
       orderBooks[side === BUY ? ASK : BID],
       side,
       limitPrice,

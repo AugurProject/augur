@@ -80,6 +80,6 @@ export const handleRelayTransaction = tx => (dispatch, getState) => {
 };
 
 export const registerTransactionRelay = () => (dispatch) => {
-  rpc.excludeFromTxRelay(NO_RELAY);
-  rpc.registerTxRelay(tx => dispatch(handleRelayTransaction(tx)));
+  rpc.excludeFromTransactionRelay(NO_RELAY);
+  rpc.registerTransactionRelay(transaction => dispatch(handleRelayTransaction(transaction)));
 };
