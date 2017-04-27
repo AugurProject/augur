@@ -58,6 +58,7 @@ To help ensure this, the following conventions have been employed:
 * The full breadth of Less's functionality is permissible.
 * All external borders (parent level components within a view) should be the normal border color
 * All internal borders should be either muted or light (depending on the application)
+* When utilizing `CSSTransitionGroup`, styling of this wrapper should be housed within the rendered child's stylesheet
 
 ### Other Conventions
 Above are the main points, but additional structural and styling conventions of the stylesheets themselves are enforced through linting.

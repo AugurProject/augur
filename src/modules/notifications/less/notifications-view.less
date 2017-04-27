@@ -1,10 +1,42 @@
-#notifications_view {
-  .border(true);
-
-  background-color: @color-white;
+#transition_notifications_view {
   bottom: 0;
-  margin: 0;
   position: absolute;
   transform: translateY(100%);
-  width: 300px;
+
+  #notifications_view {
+    .border(true);
+
+    background-color: @color-white;
+    margin: 0;
+    width: 300px;
+
+    &.notifications-enter {
+      opacity: 0;
+
+      &.notifications-enter-active {
+        opacity: 1;
+        transition-duration: @animation-speed-fast;
+        transition-property: opacity;
+        transition-timing-function: @animation-default-type;
+      }
+    }
+
+    &.notifications-leave {
+      opacity: 1;
+
+      &.notifications-leave-active {
+        opacity: 0;
+        transition-duration: @animation-speed-very-fast;
+        transition-property: opacity;
+        transition-timing-function: @animation-default-type;
+      }
+    }
+
+    h3 {
+      .border(true, @border-bottom);
+      .font-color-dark();
+
+      padding-left: 1em;
+    }
+  }
 }

@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import classnames from 'classnames';
 
 import Link from 'modules/link/components/link';
@@ -22,10 +22,21 @@ export default class Nav extends Component {
     super(props);
 
     this.state = {
-      isNotificationsVisible: false
+      isNotificationsVisible: false,
+      notificationIconXOffset: null,
+      notificationIconYOffset: null
     };
 
     this.collapseFooter = this.collapseFooter.bind(this);
+    this.setNotificationIconOffeset = this.setNotificationIconOffeset.bind(this);
+  }
+
+  componentDidMount() {
+    this.setNotificationIconOffeset();
+  }
+
+  setNotificationIconOffeset() {
+    console.log('### setNotificationIconOffeset -- ', this.notificationBell);
   }
 
   collapseFooter() {
@@ -37,6 +48,9 @@ export default class Nav extends Component {
   render() {
     const p = this.props;
     const s = this.state;
+
+    const animationInSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-fast'), 10);
+    const animationOutSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-very'), 10);
 
     return (
       <nav className={`app-nav ${p.className ? p.className : ''}`}>
@@ -59,7 +73,10 @@ export default class Nav extends Component {
             className="unstyled button-notifications app-nav-link"
             onClick={() => this.setState({ isNotificationsVisible: !s.isNotificationsVisible })}
           >
-            <i className="fa fa-bell-o" />
+            <i
+              ref={(notificationBell) => { this.notificationBell = notificationBell; }}
+              className="fa fa-bell-o"
+            />
           </button>
         }
         <Link
@@ -160,9 +177,16 @@ export default class Nav extends Component {
             Sign Up / Login
           </Link>
         }
-        {p.logged && s.isNotificationsVisible &&
-          <NotificationsContainer />
-        }
+        <CSSTransitionGroup
+          id="transition_notifications_view"
+          transitionName="notifications"
+          transitionEnterTimeout={animationInSpeed}
+          transitionLeaveTimeout={animationOutSpeed}
+        >
+          {p.logged && s.isNotificationsVisible &&
+            <NotificationsContainer />
+          }
+        </CSSTransitionGroup>
       </nav>
     );
   }
