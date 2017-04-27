@@ -1,5 +1,6 @@
 "use strict";
 
+var assign =require("lodash.assign");
 var abi = require("augur-abi");
 var eventsAPI = require("augur-contracts").api.events;
 var api = require("../api");
@@ -11,9 +12,7 @@ var errors = rpcInterface.errors;
 
 // { trade_id, onSent, onSuccess, onFailed }
 function cancel(p) {
-  api().BuyAndSellShares.cancel({
-    trade_id: p.trade_id,
-    onSent: p.onSent,
+  api().BuyAndSellShares.cancel(assign({}, p, {
     onSuccess: compose(function (result, callback) {
       if (!result || !result.callReturn) return callback(result);
       rpcInterface.getTransactionReceipt(result.hash, function (receipt) {
@@ -38,8 +37,7 @@ function cancel(p) {
         callback(result);
       });
     }, p.onSuccess),
-    onFailed: p.onFailed
-  });
+  }));
 }
 
 module.exports = cancel;

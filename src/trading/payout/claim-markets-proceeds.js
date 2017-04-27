@@ -1,11 +1,12 @@
 "use strict";
 
+var assign = require("lodash.assign");
 var async = require("async");
 var api = require("../../api");
 var noop = require("../../utils/noop");
 
 // markets: array of market IDs for which to claim proceeds
-function claimMarketsProceeds(branch, markets, callback) {
+function claimMarketsProceeds(p, branch, markets, callback) {
   var claimedMarkets = [];
   async.eachSeries(markets, function (market, nextMarket) {
     var marketID = market.id;
@@ -13,7 +14,7 @@ function claimMarketsProceeds(branch, markets, callback) {
       if (!Array.isArray(winningOutcomes) || !winningOutcomes.length || !winningOutcomes[0] || winningOutcomes[0] === "0") {
         return nextMarket(); // market not yet resolved
       }
-      api().CloseMarket.claimProceeds({
+      api().CloseMarket.claimProceeds(assign({}, p, {
         branch: branch,
         market: marketID,
         onSent: noop,
@@ -22,7 +23,7 @@ function claimMarketsProceeds(branch, markets, callback) {
           nextMarket();
         },
         onFailed: nextMarket
-      });
+      }));
     });
   }, function (err) {
     if (err) return callback(err);

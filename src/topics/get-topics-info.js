@@ -6,7 +6,11 @@ var isObject = require("../utils/is-object");
 
 // { branch, offset, numTopicsToLoad }
 function getTopicsInfo(p, callback) {
-  return api().Topics.getTopicsInfo(p.branch, p.offset || 0, p.numTopicsToLoad || 0, callback);
+  return api().Topics.getTopicsInfo({
+    branch: p.branch,
+    offset: p.offset || 0,
+    numTopicsToLoad: p.numTopicsToLoad || 0
+  }, callback);
 }
 
 module.exports = getTopicsInfo;

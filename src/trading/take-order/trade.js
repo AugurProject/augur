@@ -1,5 +1,6 @@
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var clone = require("clone");
 var makeTradeHash = require("./make-trade-hash");
@@ -16,14 +17,14 @@ var constants = require("../../constants");
 // TODO break this up
 // { max_value, max_amount, trade_ids, tradeGroupID, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed }
 function trade(p) {
-  var onTradeHash = onTradeHash || noop;
-  var onCommitSent = onCommitSent || noop;
-  var onCommitSuccess = onCommitSuccess || noop;
-  var onCommitFailed = onCommitFailed || noop;
-  var onNextBlock = onNextBlock || noop;
-  var onTradeSent = onTradeSent || noop;
-  var onTradeSuccess = onTradeSuccess || noop;
-  var onTradeFailed = onTradeFailed || noop;
+  var onTradeHash = p.onTradeHash || noop;
+  var onCommitSent = p.onCommitSent || noop;
+  var onCommitSuccess = p.onCommitSuccess || noop;
+  var onCommitFailed = p.onCommitFailed || noop;
+  var onNextBlock = p.onNextBlock || noop;
+  var onTradeSent = p.onTradeSent || noop;
+  var onTradeSuccess = p.onTradeSuccess || noop;
+  var onTradeFailed = p.onTradeFailed || noop;
   checkGasLimit(p.trade_ids, abi.format_address(p.sender), function (err, trade_ids) {
     var bn_max_value, tradeHash;
     if (err) return onTradeFailed(err);
@@ -33,14 +34,14 @@ function trade(p) {
     }
     tradeHash = makeTradeHash(p.max_value, p.max_amount, trade_ids);
     onTradeHash(tradeHash);
-    api().Trades.commitTrade({
+    api().Trades.commitTrade(assign({}, p, {
       hash: tradeHash,
       onSent: onCommitSent,
       onSuccess: function (res) {
         onCommitSuccess(res);
         rpcInterface.waitForNextBlocks(1, function (blockNumber) {
           onNextBlock(blockNumber);
-          api().Trade.trade({
+          api().Trade.trade(assign({}, p, {
             max_value: abi.fix(p.max_value, "hex"),
             max_amount: abi.fix(p.max_amount, "hex"),
             trade_ids: trade_ids,
@@ -90,11 +91,11 @@ function trade(p) {
               }
             }, onTradeSuccess),
             onFailed: onTradeFailed
-          });
+          }));
         });
       },
       onFailed: onCommitFailed
-    });
+    }));
   });
 }
 

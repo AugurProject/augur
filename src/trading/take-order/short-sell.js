@@ -1,5 +1,6 @@
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var clone = require("clone");
 var makeTradeHash = require("./make-trade-hash");
@@ -28,14 +29,14 @@ function short_sell(p) {
     if (err) return onTradeFailed(err);
     tradeHash = makeTradeHash(0, p.max_amount, trade_ids);
     onTradeHash(tradeHash);
-    api().Trades.commitTrade({
+    api().Trades.commitTrade(assign({}, p, {
       hash: tradeHash,
       onSent: onCommitSent,
       onSuccess: function (res) {
         onCommitSuccess(res);
         rpcInterface.waitForNextBlocks(1, function (blockNumber) {
           onNextBlock(blockNumber);
-          api().Trade.short_sell({
+          api().Trade.short_sell(assign({}, p, {
             buyer_trade_id: p.buyer_trade_id,
             max_amount: abi.fix(p.max_amount, "hex"),
             tradeGroupID: p.tradeGroupID || 0,
@@ -84,11 +85,11 @@ function short_sell(p) {
               }
             }, onTradeSuccess),
             onFailed: onTradeFailed
-          });
+          }));
         });
       },
       onFailed: onCommitFailed
-    });
+    }));
   });
 }
 

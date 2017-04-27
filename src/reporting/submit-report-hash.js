@@ -1,5 +1,6 @@
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var getCurrentPeriodProgress = require("./get-current-period-progress");
 var prepareToReport = require("./prepare-to-report");
@@ -11,13 +12,10 @@ function submitReportHash(p) {
   if (getCurrentPeriodProgress(p.periodLength) >= 50) {
     return p.onFailed({ "-2": "not in first half of period (commit phase)" });
   }
-  return api().MakeReports.submitReportHash({
-    event: p.event,
-    reportHash: p.reportHash,
+  return api().MakeReports.submitReportHash(assign({}, p, {
     encryptedReport: p.encryptedReport || 0,
     encryptedSalt: p.encryptedSalt || 0,
     ethics: abi.fix(p.ethics, "hex"),
-    onSent: p.onSent,
     onSuccess: function (res) {
       res.callReturn = abi.bignum(res.callReturn, "string", true);
       if (res.callReturn === "0") {
@@ -49,9 +47,8 @@ function submitReportHash(p) {
         }
         onFailed({ "-2": "not in first half of period (commit phase)" });
       });
-    },
-    onFailed: p.onFailed
-  });
+    }
+  }));
 }
 
 module.exports = submitReportHash;

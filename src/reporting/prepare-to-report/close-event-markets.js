@@ -1,10 +1,11 @@
 "use strict";
 
+var assign = require("lodash.assign");
 var async = require("async");
 var api = require("../../api");
 var noop = require("../../utils/noop");
 
-function closeEventMarkets(branch, event, sender, callback) {
+function closeEventMarkets(p, branch, event, sender, callback) {
   api().Events.getMarkets({ event: event }, function (markets) {
     if (!Array.isArray(markets) || !markets.length) {
       return callback("no markets found for " + event);
@@ -15,7 +16,7 @@ function closeEventMarkets(branch, event, sender, callback) {
         // console.log("winning outcomes for", market, winningOutcomes);
         if (!winningOutcomes || winningOutcomes.error) return nextMarket(winningOutcomes);
         if (Array.isArray(winningOutcomes) && winningOutcomes.length && !parseInt(winningOutcomes[0], 10)) {
-          api().CloseMarket.closeMarket({
+          api().CloseMarket.closeMarket(assign({}, p, {
             branch: branch,
             market: market,
             sender: sender,
@@ -31,7 +32,7 @@ function closeEventMarkets(branch, event, sender, callback) {
                 nextMarket(null);
               });
             }
-          });
+          }));
         } else {
           nextMarket(null);
         }

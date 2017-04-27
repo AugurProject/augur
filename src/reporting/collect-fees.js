@@ -1,5 +1,6 @@
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var BigNumber = require("bignumber.js");
 var getCurrentPeriodProgress = require("../reporting/get-current-period-progress");
@@ -21,13 +22,10 @@ function collectFees(p) {
       period: p.period - 1,
     }, function (feesCollected) {
       if (feesCollected === "1") return p.onSuccess({ callReturn: "2" });
-      api().CollectFees.collectFees({
-        branch: p.branch,
-        sender: p.sender,
+      api().CollectFees.collectFees(assign({}, p, {
         tx: {
           value: abi.hex(new BigNumber("500000", 10).times(rpcInterface.getGasPrice()))
         },
-        onSent: p.onSent,
         onSuccess: compose(function (res, callback) {
           if (res && (res.callReturn === "1" || res.callReturn === "2")) {
             return callback(res);
@@ -56,9 +54,8 @@ function collectFees(p) {
               });
             });
           });
-        }, p.onSuccess),
-        onFailed: p.onFailed
-      });
+        }, p.onSuccess)
+      }));
     });
   });
 }

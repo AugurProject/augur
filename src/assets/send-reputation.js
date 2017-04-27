@@ -1,5 +1,6 @@
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var api = require("../api");
 var compose = require("../utils/compose");
@@ -10,11 +11,8 @@ var isObject = require("../utils/is-object");
 // (penalizationCatchup is being called)
 // { branch, recver, value, onSent, onSuccess, onFailed }
 function sendReputation(p) {
-  api().SendReputation.sendReputation({
-    branch: p.branch,
-    recver: p.recver,
+  api().SendReputation.sendReputation(assign({}, p, {
     value: abi.fix(p.value, "hex"),
-    onSent: p.onSent,
     onSuccess: compose(function (result, callback) {
       if (!result || !result.callReturn || parseInt(result.callReturn, 16)) {
         return callback(result);

@@ -1,5 +1,6 @@
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var shrinkScalarPrice = require("../shrink-scalar-price");
 var api = require("../../api");
@@ -11,7 +12,7 @@ function buy(p) {
   if (isObject(p.scalarMinMax) && p.scalarMinMax.minValue !== undefined) {
     p.price = shrinkScalarPrice(p.scalarMinMax.minValue, p.price);
   }
-  return api().BuyAndSellShares.buy({
+  return api().BuyAndSellShares.buy(assign({}, p, {
     amount: abi.fix(p.amount, "hex"),
     price: abi.fix(p.price, "hex"),
     market: p.market,
@@ -21,7 +22,7 @@ function buy(p) {
     onSent: p.onSent,
     onSuccess: p.onSuccess,
     onFailed: p.onFailed
-  });
+  }));
 }
 
 module.exports = buy;
