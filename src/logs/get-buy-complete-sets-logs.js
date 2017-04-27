@@ -2,18 +2,14 @@
 
 var clone = require("clone");
 var getCompleteSetsLogs = require("./get-complete-sets-logs");
-var isFunction = require("../utils/is-function");
 
-function getBuyCompleteSetsLogs(account, options, callback) {
-  var opt;
-  if (!callback && isFunction(options)) {
-    callback = options;
-    options = null;
-  }
-  opt = options ? clone(options) : {};
-  opt.shortAsk = false;
-  opt.type = "buy";
-  return getCompleteSetsLogs(account, opt, callback);
+// { account, filter }
+function getBuyCompleteSetsLogs(p, callback) {
+  var filter;
+  filter = p.filter ? clone(p.filter) : {};
+  filter.shortAsk = false;
+  filter.type = "buy";
+  return getCompleteSetsLogs({ account: p.account, filter: p.filter }, callback);
 }
 
 module.exports = getBuyCompleteSetsLogs;

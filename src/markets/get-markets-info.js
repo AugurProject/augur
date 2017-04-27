@@ -4,7 +4,7 @@ var api = require("../api");
 var DEFAULT_BRANCH_ID = require("../constants").DEFAULT_BRANCH_ID;
 
 // { branch, offset, numMarketsToLoad, volumeMin, volumeMax, callback }
-function getMarketsInfo(p) {
+function getMarketsInfo(p, callback) {
   return api().CompositeGetters.getMarketsInfo({
     branch: p.branch || DEFAULT_BRANCH_ID,
     offset: p.offset || 0,

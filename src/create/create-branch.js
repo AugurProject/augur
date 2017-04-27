@@ -16,12 +16,12 @@ function createBranch(p) {
         response.branchID = sha3([
           response.from,
           "0x28c418afbbb5c0000",
-          periodLength,
+          p.periodLength,
           block.timestamp,
-          parent,
-          abi.fix(minTradingFee, "hex"),
-          oracleOnly,
-          description
+          p.parent,
+          abi.fix(p.minTradingFee, "hex"),
+          p.oracleOnly,
+          p.description.trim()
         ]);
         p.onSuccess(response);
       });

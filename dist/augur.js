@@ -420,19 +420,17 @@ var abi = require("augur-abi");
 var api = require("../api");
 var rpcInterface = require("../rpc-interface");
 
-function loadAssets(branchID, address, cbEther, cbRep, cbRealEther) {
-  api().Cash.balance({ address: address }, function (result) {
+// { branchID, address }
+function loadAssets(p, cbEther, cbRep, cbRealEther) {
+  api().Cash.balance({ address: p.address }, function (result) {
     if (!result || result.error) return cbEther(result);
     return cbEther(null, abi.string(result));
   });
-  api().Reporting.getRepBalance({
-    branch: branchID,
-    address: address
-  }, function (result) {
+  api().Reporting.getRepBalance(p, function (result) {
     if (!result || result.error) return cbRep(result);
     return cbRep(null, abi.string(result));
   });
-  rpcInterface.getBalance(address, function (wei) {
+  rpcInterface.getBalance(p.address, function (wei) {
     if (!wei || wei.error) return cbRealEther(wei);
     return cbRealEther(null, abi.unfix(wei, "string"));
   });
@@ -899,44 +897,28 @@ module.exports = calculateValidityBond;
 },{"../constants":15,"../rpc-interface":106,"augur-abi":229}],18:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var createSubbranch = require("./create-subbranch");
 var rpcInterface = require("../rpc-interface");
 var sha3 = require("../utils/sha3");
-var isObject = require("../utils/is-object");
 
-function createBranch(description, periodLength, parent, minTradingFee, oracleOnly, onSent, _onSuccess, onFailed) {
-  if (isObject(description)) {
-    periodLength = description.periodLength;
-    parent = description.parent;
-    minTradingFee = description.minTradingFee;
-    oracleOnly = description.oracleOnly;
-    onSent = description.onSent;
-    _onSuccess = description.onSuccess;
-    onFailed = description.onFailed;
-    description = description.description;
-  }
-  oracleOnly = oracleOnly || 0;
-  description = description.trim();
-  createSubbranch({
-    description: description,
-    periodLength: periodLength,
-    parent: parent,
-    minTradingFee: minTradingFee,
-    oracleOnly: oracleOnly,
-    onSent: onSent,
+// { description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed }
+function createBranch(p) {
+  createSubbranch(assign({}, p, {
+    description: p.description.trim(),
+    oracleOnly: p.oracleOnly || 0,
     onSuccess: function onSuccess(response) {
       rpcInterface.getBlockByNumber(response.blockNumber, false, function (block) {
-        response.branchID = sha3([response.from, "0x28c418afbbb5c0000", periodLength, block.timestamp, parent, abi.fix(minTradingFee, "hex"), oracleOnly, description]);
-        _onSuccess(response);
+        response.branchID = sha3([response.from, "0x28c418afbbb5c0000", p.periodLength, block.timestamp, p.parent, abi.fix(p.minTradingFee, "hex"), p.oracleOnly, p.description.trim()]);
+        p.onSuccess(response);
       });
-    },
-    onFailed: onFailed
-  });
+    }
+  }));
 }
 
 module.exports = createBranch;
-},{"../rpc-interface":106,"../utils/is-object":201,"../utils/sha3":208,"./create-subbranch":22,"augur-abi":229}],19:[function(require,module,exports){
+},{"../rpc-interface":106,"../utils/sha3":208,"./create-subbranch":22,"augur-abi":229,"lodash.assign":352}],19:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -2276,50 +2258,46 @@ var clone = require("clone");
 var getLogs = require("./get-logs");
 var sortTradesByBlockNumber = require("./sort-trades-by-block-number");
 var getParsedCompleteSetsLogs = require("./get-parsed-complete-sets-logs");
-var isFunction = require("../utils/is-function");
 
-function getAccountTrades(account, filterParams, callback) {
-  var takerTradesFilterParams, aux;
-  if (!callback && isFunction(filterParams)) {
-    callback = filterParams;
-    filterParams = null;
-  }
-  filterParams = filterParams || {};
-  takerTradesFilterParams = clone(filterParams);
-  takerTradesFilterParams.sender = account;
+// { account, filter }
+function getAccountTrades(p, callback) {
+  var takerTradesFilter, aux;
+  p.filter = p.filter || {};
+  takerTradesFilter = clone(p.filter);
+  takerTradesFilter.sender = p.account;
   aux = {
     index: ["market", "outcome"],
     mergedLogs: {},
     extraField: { name: "maker", value: false }
   };
-  getLogs("log_fill_tx", takerTradesFilterParams, aux, function (err) {
-    var makerTradesFilterParams;
+  getLogs({ label: "log_fill_tx", filter: takerTradesFilter, aux: aux }, function (err) {
+    var makerTradesFilter;
     if (err) return callback(err);
-    makerTradesFilterParams = clone(filterParams);
-    makerTradesFilterParams.owner = account;
+    makerTradesFilter = clone(p.filter);
+    makerTradesFilter.owner = p.account;
     aux.extraField.value = true;
-    getLogs("log_fill_tx", makerTradesFilterParams, aux, function (err) {
-      var takerShortSellsFilterParams;
+    getLogs({ label: "log_fill_tx", filter: makerTradesFilter, aux: aux }, function (err) {
+      var takerShortSellsFilter;
       if (err) return callback(err);
-      takerShortSellsFilterParams = clone(filterParams);
-      takerShortSellsFilterParams.sender = account;
+      takerShortSellsFilter = clone(p.filter);
+      takerShortSellsFilter.sender = p.account;
       aux.extraField.value = false;
-      getLogs("log_short_fill_tx", takerShortSellsFilterParams, aux, function (err) {
-        var makerShortSellsFilterParams;
+      getLogs({ label: "log_short_fill_tx", filter: takerShortSellsFilter, aux: aux }, function (err) {
+        var makerShortSellsFilter;
         if (err) return callback(err);
-        makerShortSellsFilterParams = clone(filterParams);
-        makerShortSellsFilterParams.owner = account;
+        makerShortSellsFilter = clone(p.filter);
+        makerShortSellsFilter.owner = p.account;
         aux.extraField.value = true;
-        getLogs("log_short_fill_tx", makerShortSellsFilterParams, aux, function (err) {
-          var completeSetsFilterParams;
+        getLogs({ label: "log_short_fill_tx", filter: makerShortSellsFilter, aux: aux }, function (err) {
+          var completeSetsFilter;
           if (err) return callback(err);
-          if (filterParams.noCompleteSets) {
+          if (p.filter.noCompleteSets) {
             callback(null, sortTradesByBlockNumber(aux.mergedLogs));
           } else {
-            completeSetsFilterParams = clone(filterParams);
-            completeSetsFilterParams.shortAsk = false;
-            completeSetsFilterParams.mergeInto = aux.mergedLogs;
-            getParsedCompleteSetsLogs(account, completeSetsFilterParams, function (err, merged) {
+            completeSetsFilter = clone(p.filter);
+            completeSetsFilter.shortAsk = false;
+            completeSetsFilter.mergeInto = aux.mergedLogs;
+            getParsedCompleteSetsLogs({ account: p.account, filter: completeSetsFilter }, function (err, merged) {
               if (err) {
                 return callback(null, sortTradesByBlockNumber(aux.mergedLogs));
               }
@@ -2333,63 +2311,52 @@ function getAccountTrades(account, filterParams, callback) {
 }
 
 module.exports = getAccountTrades;
-},{"../utils/is-function":200,"./get-logs":49,"./get-parsed-complete-sets-logs":51,"./sort-trades-by-block-number":61,"clone":274}],45:[function(require,module,exports){
+},{"./get-logs":49,"./get-parsed-complete-sets-logs":51,"./sort-trades-by-block-number":61,"clone":274}],45:[function(require,module,exports){
 "use strict";
 
 var clone = require("clone");
 var getCompleteSetsLogs = require("./get-complete-sets-logs");
-var isFunction = require("../utils/is-function");
 
-function getBuyCompleteSetsLogs(account, options, callback) {
-  var opt;
-  if (!callback && isFunction(options)) {
-    callback = options;
-    options = null;
-  }
-  opt = options ? clone(options) : {};
-  opt.shortAsk = false;
-  opt.type = "buy";
-  return getCompleteSetsLogs(account, opt, callback);
+// { account, filter }
+function getBuyCompleteSetsLogs(p, callback) {
+  var filter;
+  filter = p.filter ? clone(p.filter) : {};
+  filter.shortAsk = false;
+  filter.type = "buy";
+  return getCompleteSetsLogs({ account: p.account, filter: p.filter }, callback);
 }
 
 module.exports = getBuyCompleteSetsLogs;
-},{"../utils/is-function":200,"./get-complete-sets-logs":46,"clone":274}],46:[function(require,module,exports){
+},{"./get-complete-sets-logs":46,"clone":274}],46:[function(require,module,exports){
 "use strict";
 
 var abi = require("augur-abi");
 var augurContracts = require("augur-contracts");
 var eventsAPI = augurContracts.api.events;
 var rpcInterface = require("../rpc-interface");
-var isFunction = require("../utils/is-function");
 var LOG_TYPE_CODES = require("../constants").LOG_TYPE_CODES;
 
-function getCompleteSetsLogs(account, options, callback) {
-  var typeCode, market, filter;
-  if (!callback && isFunction(options)) {
-    callback = options;
-    options = null;
-  }
-  options = options || {};
-  if (account != null) {
-    typeCode = LOG_TYPE_CODES[options.type] || null;
-    market = options.market ? abi.format_int256(options.market) : null;
-    filter = {
-      fromBlock: options.fromBlock || "0x1",
-      toBlock: options.toBlock || "latest",
-      address: options.shortAsk ? augurContracts[rpcInterface.getNetworkID()].BuyAndSellShares : augurContracts[rpcInterface.getNetworkID()].CompleteSets,
-      topics: [eventsAPI.completeSets_logReturn.signature, abi.format_int256(account), market, typeCode]
-    };
-    if (!isFunction(callback)) return rpcInterface.getLogs(filter);
-    rpcInterface.getLogs(filter, function (logs) {
-      if (logs && logs.error) return callback(logs, null);
-      if (!logs || !logs.length) return callback(null, []);
-      callback(null, logs);
-    });
-  }
+// { account, filter }
+function getCompleteSetsLogs(p, callback) {
+  var typeCode, market;
+  p.filter = p.filter || {};
+  if (p.account == null) return callback("account required");
+  typeCode = LOG_TYPE_CODES[p.filter.type] || null;
+  market = p.filter.market ? abi.format_int256(p.filter.market) : null;
+  rpcInterface.getLogs({
+    fromBlock: p.filter.fromBlock || "0x1",
+    toBlock: p.filter.toBlock || "latest",
+    address: p.filter.shortAsk ? augurContracts[rpcInterface.getNetworkID()].BuyAndSellShares : augurContracts[rpcInterface.getNetworkID()].CompleteSets,
+    topics: [eventsAPI.completeSets_logReturn.signature, abi.format_int256(p.account), market, typeCode]
+  }, function (logs) {
+    if (logs && logs.error) return callback(logs, null);
+    if (!Array.isArray(logs) || !logs.length) return callback(null, []);
+    callback(null, logs);
+  });
 }
 
 module.exports = getCompleteSetsLogs;
-},{"../constants":15,"../rpc-interface":106,"../utils/is-function":200,"augur-abi":229,"augur-contracts":232}],47:[function(require,module,exports){
+},{"../constants":15,"../rpc-interface":106,"augur-abi":229,"augur-contracts":232}],47:[function(require,module,exports){
 "use strict";
 
 var eventsAPI = require("augur-contracts").api.events;
@@ -2416,6 +2383,7 @@ module.exports = getFilteredLogs;
 },{"../rpc-interface":106,"../utils/is-function":200,"./parametrize-filter":58,"augur-contracts":232}],48:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var async = require("async");
 var clone = require("clone");
@@ -2424,85 +2392,62 @@ var getLogs = require("./get-logs");
 var rpcInterface = require("../rpc-interface");
 var GET_LOGS_DEFAULT_FROM_BLOCK = require("../constants").GET_LOGS_DEFAULT_FROM_BLOCK;
 
-function getLogsChunked(label, filterParams, aux, onChunkReceived, callback) {
-  var chunks;
-  aux = aux || {};
-  filterParams = filterParams || {};
-  if (!filterParams.fromBlock) {
-    filterParams.fromBlock = parseInt(GET_LOGS_DEFAULT_FROM_BLOCK, 16);
+// { label, filter, aux }
+function getLogsChunked(p, onChunkReceived, onComplete) {
+  p.aux = p.aux || {};
+  p.filter = p.filter || {};
+  if (!p.filter.fromBlock) {
+    p.filter.fromBlock = parseInt(GET_LOGS_DEFAULT_FROM_BLOCK, 16);
   }
-  if (!filterParams.toBlock) {
-    filterParams.toBlock = parseInt(rpcInterface.getCurrentBlock().number, 16);
+  if (!p.filter.toBlock) {
+    p.filter.toBlock = parseInt(rpcInterface.getCurrentBlock().number, 16);
   }
-  chunks = chunkBlocks(abi.number(filterParams.fromBlock), abi.number(filterParams.toBlock));
-  async.eachSeries(chunks, function (chunk, nextChunk) {
-    var filterParamsChunk = clone(filterParams);
-    filterParamsChunk.fromBlock = chunk.fromBlock;
-    filterParamsChunk.toBlock = chunk.toBlock;
-    getLogs(label, filterParamsChunk, aux, function (err, logs) {
+  async.eachSeries(chunkBlocks(abi.number(p.filter.fromBlock), abi.number(p.filter.toBlock)), function (chunk, nextChunk) {
+    var filterChunk = clone(p.filter);
+    filterChunk.fromBlock = chunk.fromBlock;
+    filterChunk.toBlock = chunk.toBlock;
+    getLogs(assign({}, p, { filter: filterChunk }), function (err, logs) {
       if (err) return nextChunk(err);
       onChunkReceived(logs);
       nextChunk(null);
     });
   }, function (err) {
-    if (err) return callback(err);
-    callback(null);
+    if (err) return onComplete(err);
+    onComplete(null);
   });
 }
 
 module.exports = getLogsChunked;
-},{"../constants":15,"../rpc-interface":106,"./chunk-blocks":43,"./get-logs":49,"async":228,"augur-abi":229,"clone":274}],49:[function(require,module,exports){
+},{"../constants":15,"../rpc-interface":106,"./chunk-blocks":43,"./get-logs":49,"async":228,"augur-abi":229,"clone":274,"lodash.assign":352}],49:[function(require,module,exports){
 "use strict";
 
 var getFilteredLogs = require("./get-filtered-logs");
 var processLogs = require("./process-logs");
-var isFunction = require("../utils/is-function");
 
-// aux: {index: str/arr, mergedLogs: {}, extraField: {name, value}}
-function getLogs(label, filterParams, aux, callback) {
-  var logs;
-  if (!isFunction(callback) && isFunction(aux)) {
-    callback = aux;
-    aux = null;
-  }
-  aux = aux || {};
-  if (!isFunction(callback)) {
-    logs = getFilteredLogs(label, filterParams || {});
-    if (logs && logs.length) logs.reverse();
-    return processLogs(label, aux.index, logs, aux.extraField, aux.mergedLogs);
-  }
-  getFilteredLogs(label, filterParams || {}, function (err, logs) {
+// { label, filter, aux: {index: str/arr, mergedLogs: {}, extraField: {name, value}} }
+function getLogs(p, callback) {
+  p.aux = p.aux || {};
+  getFilteredLogs(p.label, p.filter || {}, function (err, logs) {
     if (err) return callback(err);
     if (logs && logs.length) logs = logs.reverse();
-    callback(null, processLogs(label, aux.index, logs, aux.extraField, aux.mergedLogs));
+    callback(null, processLogs(p.label, p.aux.index, logs, p.aux.extraField, p.aux.mergedLogs));
   });
 }
 
 module.exports = getLogs;
-},{"../utils/is-function":200,"./get-filtered-logs":47,"./process-logs":60}],50:[function(require,module,exports){
+},{"./get-filtered-logs":47,"./process-logs":60}],50:[function(require,module,exports){
 "use strict";
 
-var clone = require("clone");
+var assign = require("lodash.assign");
 var getLogs = require("./get-logs");
-var isFunction = require("../utils/is-function");
 
-function getMarketPriceHistory(market, options, callback) {
-  var params, aux;
-  if (!callback && isFunction(options)) {
-    callback = options;
-    options = null;
-  }
-  params = clone(options || {});
-  params.market = market;
-  aux = { index: "outcome", mergedLogs: {} };
-  if (!isFunction(callback)) {
-    getLogs("log_fill_tx", params, aux);
-    getLogs("log_short_fill_tx", params, aux);
-    return aux.mergedLogs;
-  }
-  getLogs("log_fill_tx", params, aux, function (err) {
+// { market, filter }
+function getMarketPriceHistory(p, callback) {
+  var filter = assign({}, p.filter, { market: p.market });
+  var aux = { index: "outcome", mergedLogs: {} };
+  getLogs({ label: "log_fill_tx", filter: filter, aux: aux }, function (err) {
     if (err) return callback(err);
-    getLogs("log_short_fill_tx", params, aux, function (err) {
+    getLogs({ label: "log_short_fill_tx", filter: filter, aux: aux }, function (err) {
       if (err) return callback(err);
       callback(null, aux.mergedLogs);
     });
@@ -2510,67 +2455,53 @@ function getMarketPriceHistory(market, options, callback) {
 }
 
 module.exports = getMarketPriceHistory;
-},{"../utils/is-function":200,"./get-logs":49,"clone":274}],51:[function(require,module,exports){
+},{"./get-logs":49,"lodash.assign":352}],51:[function(require,module,exports){
 "use strict";
 
 var getCompleteSetsLogs = require("./get-complete-sets-logs");
 var parseCompleteSetsLogs = require("./parse-complete-sets-logs");
-var isFunction = require("../utils/is-function");
 
-function getParsedCompleteSetsLogs(account, options, callback) {
-  if (!callback && isFunction(options)) {
-    callback = options;
-    options = null;
-  }
-  options = options || {};
-  getCompleteSetsLogs(account, options, function (err, logs) {
+// { account, filter }
+function getParsedCompleteSetsLogs(p, callback) {
+  p.filter = p.filter || {};
+  getCompleteSetsLogs(p, function (err, logs) {
     if (err) return callback(err);
-    callback(null, parseCompleteSetsLogs(logs, options.mergeInto));
+    callback(null, parseCompleteSetsLogs(logs, p.filter.mergeInto));
   });
 }
 
 module.exports = getParsedCompleteSetsLogs;
-},{"../utils/is-function":200,"./get-complete-sets-logs":46,"./parse-complete-sets-logs":59}],52:[function(require,module,exports){
+},{"./get-complete-sets-logs":46,"./parse-complete-sets-logs":59}],52:[function(require,module,exports){
 "use strict";
 
 var clone = require("clone");
 var getCompleteSetsLogs = require("./get-complete-sets-logs");
-var isFunction = require("../utils/is-function");
 
-function getSellCompleteSetsLogs(account, options, callback) {
-  var opt;
-  if (!callback && isFunction(options)) {
-    callback = options;
-    options = null;
-  }
-  opt = options ? clone(options) : {};
+// { account, filter }
+function getSellCompleteSetsLogs(p, callback) {
+  var opt = p.filter ? clone(p.filter) : {};
   opt.shortAsk = false;
   opt.type = "sell";
-  return getCompleteSetsLogs(account, opt, callback);
+  return getCompleteSetsLogs({ account: p.account, filter: opt }, callback);
 }
 
 module.exports = getSellCompleteSetsLogs;
-},{"../utils/is-function":200,"./get-complete-sets-logs":46,"clone":274}],53:[function(require,module,exports){
+},{"./get-complete-sets-logs":46,"clone":274}],53:[function(require,module,exports){
 "use strict";
 
 var clone = require("clone");
 var getCompleteSetsLogs = require("./get-complete-sets-logs");
-var isFunction = require("../utils/is-function");
 
-function getShortAskBuyCompleteSetsLogs(account, options, callback) {
-  var opt;
-  if (!callback && isFunction(options)) {
-    callback = options;
-    options = null;
-  }
-  opt = options ? clone(options) : {};
+// { account, filter }
+function getShortAskBuyCompleteSetsLogs(p, callback) {
+  var opt = p.filter ? clone(p.filter) : {};
   opt.shortAsk = true;
   opt.type = "buy";
-  return getCompleteSetsLogs(account, opt, callback);
+  return getCompleteSetsLogs({ account: p.account, filter: opt }, callback);
 }
 
 module.exports = getShortAskBuyCompleteSetsLogs;
-},{"../utils/is-function":200,"./get-complete-sets-logs":46,"clone":274}],54:[function(require,module,exports){
+},{"./get-complete-sets-logs":46,"clone":274}],54:[function(require,module,exports){
 "use strict";
 
 var abi = require("augur-abi");
@@ -2610,21 +2541,16 @@ module.exports = getShortSellLogs;
 
 var clone = require("clone");
 var getShortSellLogs = require("./get-short-sell-logs");
-var isFunction = require("../utils/is-function");
 
-function getTakerShortSellLogs(account, filterParams, callback) {
-  var params;
-  if (!callback && isFunction(filterParams)) {
-    callback = filterParams;
-    filterParams = null;
-  }
-  params = clone(filterParams || {});
+// { account, filter }
+function getTakerShortSellLogs(p, callback) {
+  var params = clone(p.filter || {});
   params.maker = false;
-  return getShortSellLogs(account, params, callback);
+  return getShortSellLogs({ account: p.account, filter: params }, callback);
 }
 
 module.exports = getTakerShortSellLogs;
-},{"../utils/is-function":200,"./get-short-sell-logs":54,"clone":274}],56:[function(require,module,exports){
+},{"./get-short-sell-logs":54,"clone":274}],56:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -2812,31 +2738,21 @@ module.exports = getMarketInfo;
 "use strict";
 
 var api = require("../api");
-var isFunction = require("../utils/is-function");
-var isObject = require("../utils/is-object");
 var DEFAULT_BRANCH_ID = require("../constants").DEFAULT_BRANCH_ID;
 
-function getMarketsInfo(branch, offset, numMarketsToLoad, volumeMin, volumeMax, callback) {
-  if (!callback && isFunction(offset)) {
-    callback = offset;
-    offset = null;
-    numMarketsToLoad = null;
-    volumeMin = null;
-    volumeMax = null;
-  }
-  if (isObject(branch)) {
-    offset = branch.offset;
-    numMarketsToLoad = branch.numMarketsToLoad;
-    volumeMin = branch.volumeMin;
-    volumeMax = branch.volumeMax;
-    callback = callback || branch.callback;
-    branch = branch.branch;
-  }
-  return api().CompositeGetters.getMarketsInfo(branch || DEFAULT_BRANCH_ID, offset || 0, numMarketsToLoad || 0, volumeMin || 0, volumeMax || 0, callback, { extraArgument: branch });
+// { branch, offset, numMarketsToLoad, volumeMin, volumeMax, callback }
+function getMarketsInfo(p, callback) {
+  return api().CompositeGetters.getMarketsInfo({
+    branch: p.branch || DEFAULT_BRANCH_ID,
+    offset: p.offset || 0,
+    numMarketsToLoad: p.numMarketsToLoad || 0,
+    volumeMin: p.volumeMin || 0,
+    volumeMax: p.volumeMax || 0
+  }, callback, { extraArgument: p.branch });
 }
 
 module.exports = getMarketsInfo;
-},{"../api":4,"../constants":15,"../utils/is-function":200,"../utils/is-object":201}],65:[function(require,module,exports){
+},{"../api":4,"../constants":15}],65:[function(require,module,exports){
 "use strict";
 
 var api = require("../api");
@@ -2863,64 +2779,82 @@ module.exports = {
 },{"./batch-get-market-info":62,"./get-market-info":63,"./get-markets-info":64,"./get-position-in-market":65,"./load-markets":68}],67:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var getMarketsInfo = require("./get-markets-info");
 var isFunction = require("../utils/is-function");
 var PAUSE_BETWEEN_MARKET_BATCHES = require("../constants").PAUSE_BETWEEN_MARKET_BATCHES;
 
 // load each batch of marketdata sequentially and recursively until complete
-function loadMarketsBatch(branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass) {
-  var numMarketsToLoad = isDesc ? Math.min(chunkSize, startIndex) : Math.min(chunkSize, numMarkets - startIndex);
+// { branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax }
+function loadMarketsBatch(p, onChunkReceived, onComplete) {
   getMarketsInfo({
-    branch: branchID,
-    offset: startIndex,
-    numMarketsToLoad: numMarketsToLoad,
-    volumeMin: volumeMin,
-    volumeMax: volumeMax
+    branch: p.branchID,
+    offset: p.startIndex,
+    numMarketsToLoad: Math.min(p.chunkSize, p.numMarkets - p.startIndex),
+    volumeMin: p.volumeMin,
+    volumeMax: p.volumeMax
   }, function (marketsData) {
     var pause;
     if (!marketsData || marketsData.error) {
-      chunkCB(marketsData);
+      onChunkReceived(marketsData);
     } else {
-      chunkCB(null, marketsData);
+      onChunkReceived(null, marketsData);
     }
     pause = Object.keys(marketsData).length ? PAUSE_BETWEEN_MARKET_BATCHES : 5;
-    if (isDesc && startIndex > 0) {
+    if (p.isDesc && p.startIndex > 0) {
       setTimeout(function () {
-        loadMarketsBatch(branchID, Math.max(startIndex - chunkSize, 0), chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass);
+        loadMarketsBatch(assign({}, p, { startIndex: Math.max(p.startIndex - p.chunkSize, 0) }), onChunkReceived, onComplete);
       }, pause);
-    } else if (!isDesc && startIndex + chunkSize < numMarkets) {
+    } else if (!p.isDesc && p.startIndex + p.chunkSize < p.numMarkets) {
       setTimeout(function () {
-        loadMarketsBatch(branchID, startIndex + chunkSize, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass);
+        loadMarketsBatch(assign({}, p, { startIndex: p.startIndex + p.chunkSize }), onChunkReceived, onComplete);
       }, pause);
-    } else if (isFunction(nextPass)) {
+    } else if (isFunction(onComplete)) {
       setTimeout(function () {
-        nextPass();
+        onComplete();
       }, pause);
     }
   });
 }
 
 module.exports = loadMarketsBatch;
-},{"../constants":15,"../utils/is-function":200,"./get-markets-info":64}],68:[function(require,module,exports){
+},{"../constants":15,"../utils/is-function":200,"./get-markets-info":64,"lodash.assign":352}],68:[function(require,module,exports){
 "use strict";
 
 var loadMarketsBatch = require("./load-markets-batch");
 var api = require("../api");
 
-function loadMarkets(branchID, chunkSize, isDesc, loadZeroVolumeMarkets, chunkCB) {
-  // load the total number of markets
-  api().Branches.getNumMarketsBranch({ branch: branchID }, function (numMarketsRaw) {
-    var numMarkets, firstStartIndex;
-    numMarkets = parseInt(numMarketsRaw, 10);
-    firstStartIndex = isDesc ? Math.max(numMarkets - chunkSize + 1, 0) : 0;
+// { branchID, chunkSize, isDesc, loadZeroVolumeMarkets }
+// load markets in batches
+function loadMarkets(p, onChunk) {
 
-    // load markets in batches
-    // first pass: only markets with nonzero volume
-    loadMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, 0, -1, chunkCB, function () {
+  // load the total number of markets
+  api().Branches.getNumMarketsBranch({ branch: p.branchID }, function (numMarketsRaw) {
+    var numMarkets = parseInt(numMarketsRaw, 10);
+    var firstStartIndex = p.isDesc ? Math.max(numMarkets - p.chunkSize + 1, 0) : 0;
+
+    // first pass: only markets with non-zero volume
+    loadMarketsBatch({
+      branchID: p.branchID,
+      firstStartIndex: firstStartIndex,
+      chunkSize: p.chunkSize,
+      numMarkets: numMarkets,
+      isDesc: p.isDesc,
+      volumeMin: 0,
+      volumeMax: -1
+    }, onChunk, function () {
 
       // second pass: zero-volume markets
-      if (loadZeroVolumeMarkets) {
-        loadMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, -1, 0, chunkCB);
+      if (p.loadZeroVolumeMarkets) {
+        loadMarketsBatch({
+          branchID: p.branchID,
+          firstStartIndex: firstStartIndex,
+          chunkSize: p.chunkSize,
+          numMarkets: numMarkets,
+          isDesc: p.isDesc,
+          volumeMin: -1,
+          volumeMax: 0
+        }, onChunk);
       }
     });
   });
@@ -4101,22 +4035,18 @@ module.exports = filterByBranchID;
 var filterByBranchID = require("./filter-by-branch-id");
 var getLogs = require("../logs/get-logs");
 var encodeTag = require("../format/tag/encode-tag");
-var isFunction = require("../utils/is-function");
 
-function findMarketsWithTopic(topic, branchID, callback) {
-  var encodedTopic = { topic: encodeTag(topic) };
-  if (!isFunction(callback)) {
-    return filterByBranchID(branchID, getLogs("marketCreated", encodedTopic));
-  }
-  // TODO filter by endDate? (get active markets only)
-  getLogs("marketCreated", encodedTopic, null, function (err, logs) {
+// TODO filter by endDate? (get active markets only)
+// { topic, branchID }
+function findMarketsWithTopic(p, callback) {
+  getLogs("marketCreated", { topic: encodeTag(p.topic) }, null, function (err, logs) {
     if (err) return callback(err);
-    callback(null, filterByBranchID(branchID, logs));
+    callback(null, filterByBranchID(p.branchID, logs));
   });
 }
 
 module.exports = findMarketsWithTopic;
-},{"../format/tag/encode-tag":40,"../logs/get-logs":49,"../utils/is-function":200,"./filter-by-branch-id":107}],109:[function(require,module,exports){
+},{"../format/tag/encode-tag":40,"../logs/get-logs":49,"./filter-by-branch-id":107}],109:[function(require,module,exports){
 "use strict";
 
 var getTopicsInfo = require("./get-topics-info");
@@ -4958,41 +4888,44 @@ module.exports = fillOrder;
 },{"../../constants":15,"../../utils/round-to-precision":205,"bignumber.js":235,"clone":274}],146:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var getOrderBook = require("./get-order-book");
 var api = require("../../api");
 var isFunction = require("../../utils/is-function");
 var noop = require("../../utils/noop");
 var GETTER_CHUNK_SIZE = require("../../constants").GETTER_CHUNK_SIZE;
 
-function getOrderBookChunked(marketID, offset, numTradesToLoad, scalarMinMax, totalTrades, chunkCB, callback) {
-  if (!isFunction(chunkCB)) chunkCB = noop;
-  if (!totalTrades) {
-    return api().Trades.get_total_trades({ market_id: marketID }, function (totalTrades) {
+// { marketID, offset, numTradesToLoad, scalarMinMax, totalTrades }
+function getOrderBookChunked(p, onChunkReceived, onComplete) {
+  if (!isFunction(onChunkReceived)) onChunkReceived = noop;
+  if (!p.totalTrades) {
+    return api().Trades.get_total_trades({ market_id: p.marketID }, function (totalTrades) {
       if (!totalTrades || totalTrades.error || !parseInt(totalTrades, 10)) {
-        return callback(totalTrades);
+        return onComplete(totalTrades);
       }
-      getOrderBookChunked(marketID, offset, Math.min(parseInt(totalTrades, 10), GETTER_CHUNK_SIZE), scalarMinMax, totalTrades, chunkCB, callback);
+      getOrderBookChunked(assign({}, p, {
+        numTradesToLoad: Math.min(parseInt(totalTrades, 10), GETTER_CHUNK_SIZE),
+        totalTrades: totalTrades
+      }), onChunkReceived, onComplete);
     });
   }
   getOrderBook({
-    market: marketID,
-    offset: offset,
-    numTradesToLoad: numTradesToLoad || totalTrades,
-    scalarMinMax: scalarMinMax
+    market: p.marketID,
+    offset: p.offset,
+    numTradesToLoad: p.numTradesToLoad || p.totalTrades,
+    scalarMinMax: p.scalarMinMax
   }, function (orderBookChunk) {
-    if (!orderBookChunk || orderBookChunk.error) {
-      return callback(orderBookChunk);
+    if (!orderBookChunk || orderBookChunk.error) return onComplete(orderBookChunk);
+    onChunkReceived(orderBookChunk);
+    if (p.offset + p.numTradesToLoad < p.totalTrades) {
+      return getOrderBookChunked(assign({}, p, { offset: p.offset + p.numTradesToLoad }), onChunkReceived, onComplete);
     }
-    chunkCB(orderBookChunk);
-    if (offset + numTradesToLoad < totalTrades) {
-      return getOrderBookChunked(marketID, offset + numTradesToLoad, numTradesToLoad, scalarMinMax, totalTrades, chunkCB, callback);
-    }
-    callback(null);
+    onComplete(null);
   });
 }
 
 module.exports = getOrderBookChunked;
-},{"../../api":4,"../../constants":15,"../../utils/is-function":200,"../../utils/noop":203,"./get-order-book":147}],147:[function(require,module,exports){
+},{"../../api":4,"../../constants":15,"../../utils/is-function":200,"../../utils/noop":203,"./get-order-book":147,"lodash.assign":352}],147:[function(require,module,exports){
 "use strict";
 
 var api = require("../../api");
@@ -5074,26 +5007,17 @@ module.exports = claimMarketsProceeds;
 },{"../../api":4,"../../utils/noop":203,"async":228,"lodash.assign":352}],151:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var eventsAPI = require("augur-contracts").api.events;
 var rpcInterface = require("../../rpc-interface");
 var api = require("../../api");
 var parseLogMessage = require("../../filters/parse-message/parse-log-message");
-var isObject = require("../../utils/is-object");
 
-function claimProceeds(branch, market, onSent, _onSuccess, onFailed) {
-  if (isObject(branch)) {
-    market = branch.market;
-    onSent = branch.onSent;
-    _onSuccess = branch.onSuccess;
-    onFailed = branch.onFailed;
-    branch = branch.branch;
-  }
-  api().CloseMarket.claimProceeds({
-    branch: branch,
-    market: market,
-    onSent: onSent,
+// { branch, market, onSent, onSuccess, onFailed }
+function claimProceeds(p) {
+  api().CloseMarket.claimProceeds(assign({}, p, {
     onSuccess: function onSuccess(res) {
-      if (res.callReturn !== "1") return onFailed(res.callReturn);
+      if (res.callReturn !== "1") return p.onFailed(res.callReturn);
       rpcInterface.getTransactionReceipt(res.hash, function (receipt) {
         var logs, sig, i, numLogs, inputs;
         if (receipt && Array.isArray(receipt.logs) && receipt.logs.length) {
@@ -5107,15 +5031,14 @@ function claimProceeds(branch, market, onSent, _onSuccess, onFailed) {
             }
           }
         }
-        _onSuccess(res);
+        p.onSuccess(res);
       });
-    },
-    onFailed: onFailed
-  });
+    }
+  }));
 }
 
 module.exports = claimProceeds;
-},{"../../api":4,"../../filters/parse-message/parse-log-message":34,"../../rpc-interface":106,"../../utils/is-object":201,"augur-contracts":232}],152:[function(require,module,exports){
+},{"../../api":4,"../../filters/parse-message/parse-log-message":34,"../../rpc-interface":106,"augur-contracts":232,"lodash.assign":352}],152:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -5128,7 +5051,6 @@ module.exports = {
 var async = require("async");
 var decreasePosition = require("./decrease-position");
 var getPositionInMarket = require("../../markets/get-position-in-market");
-var isFunction = require("../../utils/is-function");
 var ZERO = require("../../constants").ZERO;
 
 /**
@@ -5149,24 +5071,10 @@ var ZERO = require("../../constants").ZERO;
  * @return {Object} Adjusted positions keyed by marketID.
  */
 function adjustPositions(account, marketIDs, shareTotals, callback) {
-  var i, numMarketIDs, adjustedPositions, onChainPosition, marketID, shortAskBuyCompleteSetsShareTotal, shortSellBuyCompleteSetsShareTotal, sellCompleteSetsShareTotal;
-  adjustedPositions = {};
-  if (!isFunction(callback)) {
-    for (i = 0, numMarketIDs = marketIDs.length; i < numMarketIDs; ++i) {
-      marketID = marketIDs[i];
-      onChainPosition = getPositionInMarket(marketID, account);
-      shortAskBuyCompleteSetsShareTotal = shareTotals.shortAskBuyCompleteSets[marketID] || ZERO;
-      shortSellBuyCompleteSetsShareTotal = shareTotals.shortSellBuyCompleteSets[marketID] || ZERO;
-      sellCompleteSetsShareTotal = shareTotals.sellCompleteSets[marketID] || ZERO;
-      if (sellCompleteSetsShareTotal.abs().gt(shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal))) {
-        sellCompleteSetsShareTotal = shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).neg();
-      }
-      adjustedPositions[marketID] = decreasePosition(onChainPosition, shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).plus(sellCompleteSetsShareTotal));
-    }
-    return adjustedPositions;
-  }
+  var adjustedPositions = {};
   async.eachSeries(marketIDs, function (marketID, nextMarket) {
     getPositionInMarket(marketID, account, function (onChainPosition) {
+      var shortAskBuyCompleteSetsShareTotal, shortSellBuyCompleteSetsShareTotal, sellCompleteSetsShareTotal;
       if (!onChainPosition) return nextMarket("couldn't load position in " + marketID);
       if (onChainPosition.error) return nextMarket(onChainPosition);
       shortAskBuyCompleteSetsShareTotal = shareTotals.shortAskBuyCompleteSets[marketID] || ZERO;
@@ -5185,7 +5093,7 @@ function adjustPositions(account, marketIDs, shareTotals, callback) {
 }
 
 module.exports = adjustPositions;
-},{"../../constants":15,"../../markets/get-position-in-market":65,"../../utils/is-function":200,"./decrease-position":162,"async":228}],154:[function(require,module,exports){
+},{"../../constants":15,"../../markets/get-position-in-market":65,"./decrease-position":162,"async":228}],154:[function(require,module,exports){
 "use strict";
 
 var abi = require("augur-abi");
@@ -5507,51 +5415,37 @@ var findUniqueMarketIDs = require("./find-unique-market-ids");
 var getShortAskBuyCompleteSetsLogs = require("../../logs/get-short-ask-buy-complete-sets-logs");
 var getTakerShortSellLogs = require("../../logs/get-taker-short-sell-logs");
 var getSellCompleteSetsLogs = require("../../logs/get-sell-complete-sets-logs");
-var isFunction = require("../../utils/is-function");
 
 /**
  * @param {string} account Ethereum account address.
- * @param {Object=} options eth_getLogs parameters (optional).
+ * @param {Object=} filter eth_getLogs parameters (optional).
  * @param {function=} callback Callback function (optional).
  * @return {Object} Adjusted positions keyed by marketID.
  */
-function getAdjustedPositions(account, options, callback) {
-  var shareTotals, marketIDs;
-  if (!callback && isFunction(options)) {
-    callback = options;
-    options = null;
-  }
-  options = options || {};
-  if (!isFunction(callback)) {
-    shareTotals = calculateShareTotals({
-      shortAskBuyCompleteSets: getShortAskBuyCompleteSetsLogs(account, options),
-      shortSellBuyCompleteSets: getTakerShortSellLogs(account, options),
-      sellCompleteSets: getSellCompleteSetsLogs(account, options)
-    });
-    marketIDs = options.market ? [options.market] : findUniqueMarketIDs(shareTotals);
-    return adjustPositions(account, marketIDs, shareTotals);
-  }
+// { account, filter }
+function getAdjustedPositions(p, callback) {
+  p.filter = p.filter || {};
   async.parallel({
     shortAskBuyCompleteSets: function shortAskBuyCompleteSets(done) {
-      getShortAskBuyCompleteSetsLogs(account, options, done);
+      getShortAskBuyCompleteSetsLogs(p, done);
     },
     shortSellBuyCompleteSets: function shortSellBuyCompleteSets(done) {
-      getTakerShortSellLogs(account, options, done);
+      getTakerShortSellLogs(p, done);
     },
     sellCompleteSets: function sellCompleteSets(done) {
-      getSellCompleteSetsLogs(account, options, done);
+      getSellCompleteSetsLogs(p, done);
     }
   }, function (err, logs) {
     var shareTotals, marketIDs;
     if (err) return callback(err);
     shareTotals = calculateShareTotals(logs);
-    marketIDs = options.market ? [options.market] : findUniqueMarketIDs(shareTotals);
-    adjustPositions(account, marketIDs, shareTotals, callback);
+    marketIDs = p.filter.market ? [p.filter.market] : findUniqueMarketIDs(shareTotals);
+    adjustPositions(p.account, marketIDs, shareTotals, callback);
   });
 }
 
 module.exports = getAdjustedPositions;
-},{"../../logs/get-sell-complete-sets-logs":52,"../../logs/get-short-ask-buy-complete-sets-logs":53,"../../logs/get-taker-short-sell-logs":55,"../../utils/is-function":200,"./adjust-positions":153,"./calculate-share-totals":158,"./find-unique-market-ids":163,"async":228}],165:[function(require,module,exports){
+},{"../../logs/get-sell-complete-sets-logs":52,"../../logs/get-short-ask-buy-complete-sets-logs":53,"../../logs/get-taker-short-sell-logs":55,"./adjust-positions":153,"./calculate-share-totals":158,"./find-unique-market-ids":163,"async":228}],165:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -5942,35 +5836,30 @@ var ZERO = constants.ZERO;
  * @param {Object} scalarMinMax {minValue, maxValue} if scalar, null otherwise
  * @return {Array}
  */
-function getTradingActions(type, orderShares, orderLimitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeID, range, marketOrderBook, scalarMinMax) {
-  var remainingOrderShares, i, length, orderSharesFilled, bid, ask, bidAmount, isMarketOrder, fees, adjustedFees, totalTakerFeeEth, adjustedLimitPrice, bnTakerFee, bnMakerFee, bnRange, gasPrice, tradingCost, fullPrecisionPrice, matchingSortedAsks, areSuitableOrders, buyActions, etherToTrade, matchingSortedBids, areSuitableBids, userHasPosition, sellActions, etherToSell, remainingPositionShares, newBid, askShares, newTradeActions, etherToShortSell, tradingActions;
-  if (isObject(type)) {
-    orderShares = type.orderShares;
-    orderLimitPrice = type.orderLimitPrice;
-    takerFee = type.takerFee;
-    makerFee = type.makerFee;
-    userAddress = type.userAddress;
-    userPositionShares = type.userPositionShares;
-    outcomeID = type.outcomeID;
-    marketOrderBook = type.marketOrderBook;
-    range = type.range;
-    scalarMinMax = type.scalarMinMax;
-    type = type.type;
-  }
-  userAddress = abi.format_address(userAddress);
-  orderShares = new BigNumber(orderShares, 10);
-  orderLimitPrice = orderLimitPrice === null || orderLimitPrice === undefined ? null : new BigNumber(orderLimitPrice, 10);
-  bnTakerFee = new BigNumber(takerFee, 10);
-  bnMakerFee = new BigNumber(makerFee, 10);
-  bnRange = new BigNumber(range, 10);
-  userPositionShares = new BigNumber(userPositionShares, 10);
-  isMarketOrder = orderLimitPrice === null || orderLimitPrice === undefined;
-  fees = calculateFxpTradingFees(bnMakerFee, bnTakerFee);
+// { type, orderShares, orderLimitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeID, range, marketOrderBook, scalarMinMax }
+function getTradingActions(p) {
+  var remainingOrderShares, i, length, orderSharesFilled, bid, ask, bidAmount, adjustedFees, totalTakerFeeEth, adjustedLimitPrice, tradingCost, fullPrecisionPrice, matchingSortedAsks, areSuitableOrders, buyActions, etherToTrade, matchingSortedBids, areSuitableBids, userHasPosition, sellActions, etherToSell, remainingPositionShares, newBid, askShares, newTradeActions, etherToShortSell, tradingActions;
+  var type = p.type;
+  var takerFee = p.takerFee;
+  var makerFee = p.makerFee;
+  var outcomeID = p.outcomeID;
+  var range = p.range;
+  var marketOrderBook = p.marketOrderBook;
+  var scalarMinMax = p.scalarMinMax;
+  var userAddress = abi.format_address(p.userAddress);
+  var orderShares = new BigNumber(p.orderShares, 10);
+  var orderLimitPrice = p.orderLimitPrice == null ? null : new BigNumber(p.orderLimitPrice, 10);
+  var bnTakerFee = new BigNumber(p.takerFee, 10);
+  var bnMakerFee = new BigNumber(p.makerFee, 10);
+  var bnRange = new BigNumber(p.range, 10);
+  var userPositionShares = new BigNumber(p.userPositionShares, 10);
+  var isMarketOrder = orderLimitPrice == null;
+  var fees = calculateFxpTradingFees(bnMakerFee, bnTakerFee);
+  var gasPrice = rpcInterface.getGasPrice();
   if (!isMarketOrder) {
-    adjustedLimitPrice = scalarMinMax && scalarMinMax.minValue ? new BigNumber(shrinkScalarPrice(scalarMinMax.minValue, orderLimitPrice), 10) : orderLimitPrice;
+    adjustedLimitPrice = isObject(scalarMinMax) && scalarMinMax.minValue ? new BigNumber(shrinkScalarPrice(scalarMinMax.minValue, orderLimitPrice), 10) : orderLimitPrice;
     adjustedFees = calculateFxpMakerTakerFees(calculateFxpAdjustedTradingFee(fees.tradingFee, abi.fix(adjustedLimitPrice), abi.fix(bnRange)), fees.makerProportionOfFee);
   }
-  gasPrice = rpcInterface.getGasPrice();
   if (type === "buy") {
     matchingSortedAsks = filterByPriceAndOutcomeAndUserSortByPrice(marketOrderBook.sell, type, orderLimitPrice, outcomeID, userAddress);
     areSuitableOrders = matchingSortedAsks.length > 0;

@@ -3,20 +3,37 @@
 var loadMarketsBatch = require("./load-markets-batch");
 var api = require("../api");
 
-function loadMarkets(branchID, chunkSize, isDesc, loadZeroVolumeMarkets, chunkCB) {
-  // load the total number of markets
-  api().Branches.getNumMarketsBranch({ branch: branchID }, function (numMarketsRaw) {
-    var numMarkets, firstStartIndex;
-    numMarkets = parseInt(numMarketsRaw, 10);
-    firstStartIndex = isDesc ? Math.max(numMarkets - chunkSize + 1, 0) : 0;
+// { branchID, chunkSize, isDesc, loadZeroVolumeMarkets }
+// load markets in batches
+function loadMarkets(p, onChunk) {
 
-    // load markets in batches
-    // first pass: only markets with nonzero volume
-    loadMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, 0, -1, chunkCB, function () {
+  // load the total number of markets
+  api().Branches.getNumMarketsBranch({ branch: p.branchID }, function (numMarketsRaw) {
+    var numMarkets = parseInt(numMarketsRaw, 10);
+    var firstStartIndex = p.isDesc ? Math.max(numMarkets - p.chunkSize + 1, 0) : 0;
+
+    // first pass: only markets with non-zero volume
+    loadMarketsBatch({
+      branchID: p.branchID,
+      firstStartIndex: firstStartIndex,
+      chunkSize: p.chunkSize,
+      numMarkets: numMarkets,
+      isDesc: p.isDesc,
+      volumeMin: 0,
+      volumeMax: -1
+    }, onChunk, function () {
 
       // second pass: zero-volume markets
-      if (loadZeroVolumeMarkets) {
-        loadMarketsBatch(branchID, firstStartIndex, chunkSize, numMarkets, isDesc, -1, 0, chunkCB);
+      if (p.loadZeroVolumeMarkets) {
+        loadMarketsBatch({
+          branchID: p.branchID,
+          firstStartIndex: firstStartIndex,
+          chunkSize: p.chunkSize,
+          numMarkets: numMarkets,
+          isDesc: p.isDesc,
+          volumeMin: -1,
+          volumeMax: 0
+        }, onChunk);
       }
     });
   });

@@ -2,17 +2,12 @@
 
 var clone = require("clone");
 var getShortSellLogs = require("./get-short-sell-logs");
-var isFunction = require("../utils/is-function");
 
-function getTakerShortSellLogs(account, filterParams, callback) {
-  var params;
-  if (!callback && isFunction(filterParams)) {
-    callback = filterParams;
-    filterParams = null;
-  }
-  params = clone(filterParams || {});
+// { account, filter }
+function getTakerShortSellLogs(p, callback) {
+  var params = clone(p.filter || {});
   params.maker = false;
-  return getShortSellLogs(account, params, callback);
+  return getShortSellLogs({ account: p.account, filter: params }, callback);
 }
 
 module.exports = getTakerShortSellLogs;

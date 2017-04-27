@@ -1,26 +1,15 @@
 "use strict";
 
-var clone = require("clone");
+var assign = require("lodash.assign");
 var getLogs = require("./get-logs");
-var isFunction = require("../utils/is-function");
 
-function getMarketPriceHistory(market, options, callback) {
-  var params, aux;
-  if (!callback && isFunction(options)) {
-    callback = options;
-    options = null;
-  }
-  params = clone(options || {});
-  params.market = market;
-  aux = { index: "outcome", mergedLogs: {} };
-  if (!isFunction(callback)) {
-    getLogs("log_fill_tx", params, aux);
-    getLogs("log_short_fill_tx", params, aux);
-    return aux.mergedLogs;
-  }
-  getLogs("log_fill_tx", params, aux, function (err) {
+// { market, filter }
+function getMarketPriceHistory(p, callback) {
+  var filter = assign({}, p.filter, { market: p.market });
+  var aux = { index: "outcome", mergedLogs: {} };
+  getLogs({ label: "log_fill_tx", filter: filter, aux: aux }, function (err) {
     if (err) return callback(err);
-    getLogs("log_short_fill_tx", params, aux, function (err) {
+    getLogs({ label: "log_short_fill_tx", filter: filter, aux: aux }, function (err) {
       if (err) return callback(err);
       callback(null, aux.mergedLogs);
     });

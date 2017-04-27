@@ -7,46 +7,32 @@ var findUniqueMarketIDs = require("./find-unique-market-ids");
 var getShortAskBuyCompleteSetsLogs = require("../../logs/get-short-ask-buy-complete-sets-logs");
 var getTakerShortSellLogs = require("../../logs/get-taker-short-sell-logs");
 var getSellCompleteSetsLogs = require("../../logs/get-sell-complete-sets-logs");
-var isFunction = require("../../utils/is-function");
 
 /**
  * @param {string} account Ethereum account address.
- * @param {Object=} options eth_getLogs parameters (optional).
+ * @param {Object=} filter eth_getLogs parameters (optional).
  * @param {function=} callback Callback function (optional).
  * @return {Object} Adjusted positions keyed by marketID.
  */
-function getAdjustedPositions(account, options, callback) {
-  var shareTotals, marketIDs;
-  if (!callback && isFunction(options)) {
-    callback = options;
-    options = null;
-  }
-  options = options || {};
-  if (!isFunction(callback)) {
-    shareTotals = calculateShareTotals({
-      shortAskBuyCompleteSets: getShortAskBuyCompleteSetsLogs(account, options),
-      shortSellBuyCompleteSets: getTakerShortSellLogs(account, options),
-      sellCompleteSets: getSellCompleteSetsLogs(account, options)
-    });
-    marketIDs = options.market ? [options.market] : findUniqueMarketIDs(shareTotals);
-    return adjustPositions(account, marketIDs, shareTotals);
-  }
+// { account, filter }
+function getAdjustedPositions(p, callback) {
+  p.filter = p.filter || {};
   async.parallel({
     shortAskBuyCompleteSets: function (done) {
-      getShortAskBuyCompleteSetsLogs(account, options, done);
+      getShortAskBuyCompleteSetsLogs(p, done);
     },
     shortSellBuyCompleteSets: function (done) {
-      getTakerShortSellLogs(account, options, done);
+      getTakerShortSellLogs(p, done);
     },
     sellCompleteSets: function (done) {
-      getSellCompleteSetsLogs(account, options, done);
+      getSellCompleteSetsLogs(p, done);
     }
   }, function (err, logs) {
     var shareTotals, marketIDs;
     if (err) return callback(err);
     shareTotals = calculateShareTotals(logs);
-    marketIDs = options.market ? [options.market] : findUniqueMarketIDs(shareTotals);
-    adjustPositions(account, marketIDs, shareTotals, callback);
+    marketIDs = p.filter.market ? [p.filter.market] : findUniqueMarketIDs(shareTotals);
+    adjustPositions(p.account, marketIDs, shareTotals, callback);
   });
 }
 

@@ -4,50 +4,46 @@ var clone = require("clone");
 var getLogs = require("./get-logs");
 var sortTradesByBlockNumber = require("./sort-trades-by-block-number");
 var getParsedCompleteSetsLogs = require("./get-parsed-complete-sets-logs");
-var isFunction = require("../utils/is-function");
 
-function getAccountTrades(account, filterParams, callback) {
-  var takerTradesFilterParams, aux;
-  if (!callback && isFunction(filterParams)) {
-    callback = filterParams;
-    filterParams = null;
-  }
-  filterParams = filterParams || {};
-  takerTradesFilterParams = clone(filterParams);
-  takerTradesFilterParams.sender = account;
+// { account, filter }
+function getAccountTrades(p, callback) {
+  var takerTradesFilter, aux;
+  p.filter = p.filter || {};
+  takerTradesFilter = clone(p.filter);
+  takerTradesFilter.sender = p.account;
   aux = {
     index: ["market", "outcome"],
     mergedLogs: {},
     extraField: {name: "maker", value: false}
   };
-  getLogs("log_fill_tx", takerTradesFilterParams, aux, function (err) {
-    var makerTradesFilterParams;
+  getLogs({ label: "log_fill_tx", filter: takerTradesFilter, aux: aux }, function (err) {
+    var makerTradesFilter;
     if (err) return callback(err);
-    makerTradesFilterParams = clone(filterParams);
-    makerTradesFilterParams.owner = account;
+    makerTradesFilter = clone(p.filter);
+    makerTradesFilter.owner = p.account;
     aux.extraField.value = true;
-    getLogs("log_fill_tx", makerTradesFilterParams, aux, function (err) {
-      var takerShortSellsFilterParams;
+    getLogs({ label: "log_fill_tx", filter: makerTradesFilter, aux: aux }, function (err) {
+      var takerShortSellsFilter;
       if (err) return callback(err);
-      takerShortSellsFilterParams = clone(filterParams);
-      takerShortSellsFilterParams.sender = account;
+      takerShortSellsFilter = clone(p.filter);
+      takerShortSellsFilter.sender = p.account;
       aux.extraField.value = false;
-      getLogs("log_short_fill_tx", takerShortSellsFilterParams, aux, function (err) {
-        var makerShortSellsFilterParams;
+      getLogs({ label: "log_short_fill_tx", filter: takerShortSellsFilter, aux: aux }, function (err) {
+        var makerShortSellsFilter;
         if (err) return callback(err);
-        makerShortSellsFilterParams = clone(filterParams);
-        makerShortSellsFilterParams.owner = account;
+        makerShortSellsFilter = clone(p.filter);
+        makerShortSellsFilter.owner = p.account;
         aux.extraField.value = true;
-        getLogs("log_short_fill_tx", makerShortSellsFilterParams, aux, function (err) {
-          var completeSetsFilterParams;
+        getLogs({ label: "log_short_fill_tx", filter: makerShortSellsFilter, aux: aux }, function (err) {
+          var completeSetsFilter;
           if (err) return callback(err);
-          if (filterParams.noCompleteSets) {
+          if (p.filter.noCompleteSets) {
             callback(null, sortTradesByBlockNumber(aux.mergedLogs));
           } else {
-            completeSetsFilterParams = clone(filterParams);
-            completeSetsFilterParams.shortAsk = false;
-            completeSetsFilterParams.mergeInto = aux.mergedLogs;
-            getParsedCompleteSetsLogs(account, completeSetsFilterParams, function (err, merged) {
+            completeSetsFilter = clone(p.filter);
+            completeSetsFilter.shortAsk = false;
+            completeSetsFilter.mergeInto = aux.mergedLogs;
+            getParsedCompleteSetsLogs({ account: p.account, filter: completeSetsFilter }, function (err, merged) {
               if (err) {
                 return callback(null, sortTradesByBlockNumber(aux.mergedLogs));
               }
