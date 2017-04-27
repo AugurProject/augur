@@ -138,13 +138,10 @@ export default class Nav extends Component {
               p.transactionsLink.onClick();
               this.collapseFooter();
             }}
-            className={classnames('app-nav-link', TRANSACTIONS, { active: p.activeView === TRANSACTIONS }, { working: p.isTransactionsWorking })}
+            className={classnames('app-nav-link', TRANSACTIONS, { active: p.activeView === TRANSACTIONS })}
           >
             <i className="nav-icon fa fa-tasks" />
-            {p.numTransactionsWorking ?
-              <span className="nav-count">{p.numTransactionsWorking} Transactions Working</span> :
-              <span>Transactions</span>
-            }
+            Transactions
           </Link>
         }
         {p.logged &&
