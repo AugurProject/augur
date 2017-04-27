@@ -9,13 +9,13 @@ var compose = require("../utils/compose");
 var isFunction = require("../utils/is-function");
 var isObject = require("../utils/is-object");
 
-function bindContractFunction(functionsAPI, contract, method) {
+function bindContractFunction(functionsAPI, contract, method, privateKeyOrSigner) {
   return function () {
     var tx, params, numInputs, numFixed, cb, i, onSent, onSuccess, onFailed, extraArgument;
     tx = clone(functionsAPI[contract][method]);
     if (!arguments || !arguments.length) {
       if (!tx.send) return rpcInterface.callContractFunction(tx);
-      return rpcInterface.transact(tx);
+      return rpcInterface.transact(tx, privateKeyOrSigner);
     }
     params = Array.prototype.slice.call(arguments);
     numInputs = (tx.inputs && tx.inputs.length) ? tx.inputs.length : 0;
@@ -89,8 +89,8 @@ function bindContractFunction(functionsAPI, contract, method) {
         tx.params[tx.fixed[i]] = abi.fix(tx.params[tx.fixed[i]], "hex");
       }
     }
-    if (!tx.parser) return rpcInterface.transact(tx, onSent, onSuccess, onFailed);
-    return rpcInterface.transact(tx, onSent, compose(parsers[tx.parser], onSuccess, extraArgument), onFailed);
+    if (!tx.parser) return rpcInterface.transact(tx, privateKeyOrSigner, onSent, onSuccess, onFailed);
+    return rpcInterface.transact(tx, privateKeyOrSigner, onSent, compose(parsers[tx.parser], onSuccess, extraArgument), onFailed);
   };
 }
 
