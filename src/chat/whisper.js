@@ -18,7 +18,7 @@ module.exports.setFilter = function (roomName, id, heartbeat) {
 };
 
 module.exports.getFilter = function (roomName) {
-  return state[roomName];
+  return state.filters[roomName];
 };
 
 module.exports.clearFilter = function (roomName) {

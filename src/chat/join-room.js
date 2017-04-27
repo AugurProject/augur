@@ -11,7 +11,7 @@ var POLL_INTERVAL = 6000; // poll for updates every 6 seconds
 function joinRoom(roomName, onMessages) {
   if (!whisper.getWhisperID()) whisper.setWhisperID(rpcInterface.shh.newIdentity());
   if (!whisper.getFilter(roomName)) {
-    whisper.setFilter(rpcInterface.shh.newFilter({
+    whisper.setFilter(roomName, rpcInterface.shh.newFilter({
       topics: [abi.prefix_hex(abi.encode_hex(roomName))]
     }), setInterval(function () {
       getNewMessages(roomName, function (err, messages) {
