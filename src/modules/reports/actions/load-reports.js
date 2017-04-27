@@ -17,7 +17,12 @@ export function loadReports(cb) {
     const account = loginAccount.address;
     const branchID = branch.id;
     const branchReports = reports[branchID];
-    augur.api.ReportingThreshold.getEventsToReportOn(branchID, period, account, 0, (eventsToReportOn) => {
+    augur.api.ReportingThreshold.getEventsToReportOn({
+      branch: branchID,
+      period: period,
+      sender: account,
+      start: 0
+    }, (eventsToReportOn) => {
       console.log('eventsToReportOn:', eventsToReportOn);
       async.eachSeries(eventsToReportOn, (eventID, nextEvent) => {
         if (!eventID || !parseInt(eventID, 16)) return nextEvent();
@@ -29,7 +34,7 @@ export function loadReports(cb) {
         if (marketID) {
           return dispatch(loadReport(branchID, period, eventID, marketID, nextEvent));
         }
-        augur.api.Events.getMarkets(eventID, (markets) => {
+        augur.api.Events.getMarkets({ event: eventID }, (markets) => {
           dispatch(updateEventMarketsMap(eventID, markets));
           const marketID = markets[0];
           dispatch(loadMarketsInfo([marketID], () => {

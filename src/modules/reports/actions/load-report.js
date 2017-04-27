@@ -30,7 +30,12 @@ export function loadReport(branchID, period, eventID, marketID, callback) {
         }));
         return callback(null);
       }
-      augur.api.ExpiringEvents.getReportHash(branchID, period, loginAccount.address, eventID, (reportHash) => {
+      augur.api.ExpiringEvents.getReportHash({
+        branch: branchID,
+        expDateIndex: period,
+        reporter: loginAccount.address,
+        event: eventID
+      }, (reportHash) => {
         if (!reportHash || reportHash.error || !parseInt(reportHash, 16)) {
           console.log('reportHash:', reportHash);
           dispatch(updateReport(branchID, eventID, {

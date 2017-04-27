@@ -18,7 +18,7 @@ export function loadMarketThenRetryConversion(marketID, label, log, callback) {
 
 export function lookupEventMarketsThenRetryConversion(eventID, label, log, callback) {
   return (dispatch, getState) => {
-    augur.api.Events.getMarkets(eventID, (markets) => {
+    augur.api.Events.getMarkets({ event: eventID }, (markets) => {
       if (!markets || markets.error) {
         if (markets && markets.error) console.error('augur.api.Events.getMarkets:', markets);
         return callback(`[${label}] couldn't load market IDs for event ${eventID}: ${JSON.stringify(log)}`);

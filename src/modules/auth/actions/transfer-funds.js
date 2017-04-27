@@ -14,11 +14,34 @@ export function transferFunds(amount, currency, toAddress) {
     const onFailed = e => console.error('transfer', currency, 'failed:', e);
     switch (currency) {
       case 'ETH':
-        return augur.api.Cash.send(to, amount, onSent, onSuccess, onFailed);
+        return augur.api.Cash.send({
+          _signer: loginAccount.privateKey,
+          recver: to,
+          value: amount,
+          onSent: onSent,
+          onSuccess: onSuccess,
+          onFailed: onFailed
+        });
       case 'real ETH':
-        return augur.api.sendEther(to, amount, fromAddress, onSent, onSuccess, onFailed);
+        return augur.api.sendEther({
+          _signer: loginAccount.privateKey,
+          to: to,
+          value: amount,
+          from: fromAddress,
+          onSent: onSent,
+          onSuccess: onSuccess,
+          onFailed: onFailed
+        });
       case 'REP':
-        return augur.api.sendReputation(branch.id, to, amount, onSent, onSuccess, onFailed);
+        return augur.api.sendReputation({
+          _signer: loginAccount.privateKey,
+          branch: branch.id,
+          recver: to,
+          value: amount,
+          onSent: onSent,
+          onSuccess: onSuccess,
+          onFailed: onFailed
+        });
       default:
         console.error('transferFunds: unknown currency', currency);
     }

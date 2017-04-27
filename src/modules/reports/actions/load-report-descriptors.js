@@ -24,7 +24,12 @@ export function loadReportDescriptors(callback) {
         BINARY_INDETERMINATE_OUTCOME_ID :
         CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID;
       report.isIndeterminate = report.reportedOutcomeID === indeterminateOutcomeID;
-      augur.api.ExpiringEvents.getEthicReport(branch.id, branch.reportPeriod, eventID, loginAccount.address, (ethics) => {
+      augur.api.ExpiringEvents.getEthicReport({
+        branch: branch.id,
+        period: branch.reportPeriod,
+        event: eventID,
+        sender: loginAccount.address
+      }, (ethics) => {
         // ethics values: 0=unethical, 1=ethical
         report.isUnethical = ethics === '0';
         branchReports[eventID] = report;

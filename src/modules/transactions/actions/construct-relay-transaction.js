@@ -24,7 +24,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
   const contract = Object.keys(contracts).find(c => contracts[c] === tx.data.to);
   const gasPrice = rpc.gasPrice || augur.constants.DEFAULT_GASPRICE;
   const gasFees = tx.response.gasFees ? tx.response.gasFees : augur.getTxGasEth({
-    ...augur.api.functions[contract][method]
+    ...getState().functionsAPI[contract][method]
   }, gasPrice).toFixed();
   switch (method) {
     case 'buy':

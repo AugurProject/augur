@@ -45,7 +45,7 @@ export const reportingMarketsSetup = (sender, periodLength, branchID, callback =
     const types = Object.keys(markets);
     const numTypes = types.length;
     for (let i = 0; i < numTypes; ++i) {
-      events[types[i]] = augur.api.Events.getMarketEvent(markets[types[i]], 0);
+      events[types[i]] = augur.api.Events.getMarketEvent({ market: markets[types[i]], index: 0 });
     }
     const eventID = events.binary;
     console.debug('Binary event:', events.binary);
@@ -63,7 +63,7 @@ export const reportingMarketsSetup = (sender, periodLength, branchID, callback =
         if (err) return callback(err);
         callback(null, 4);
         const periodLength = augur.reporting.getPeriodLength(augur.api.Events.getBranch(eventID));
-        const expirationPeriod = Math.floor(augur.api.Events.getExpiration(eventID) / periodLength);
+        const expirationPeriod = Math.floor(augur.api.Events.getExpiration({ event: eventID }) / periodLength);
         tools.print_reporting_status(augur, eventID, 'Wait complete');
         console.log('Current period:', augur.reporting.getCurrentPeriod(periodLength));
         console.log('Expiration period + 1:', expirationPeriod + 1);
@@ -94,7 +94,7 @@ export const reportingTestSetup = (sender, periodLen, branchID, callback = logEr
   const periodLength = periodLen || 1200;
   tools.DEBUG = true;
   if (branchID) {
-    return augur.api.Branches.getPeriodLength(branchID, (branchPeriodLength) => {
+    return augur.api.Branches.getPeriodLength({ branch: branchID }, (branchPeriodLength) => {
       console.debug('Using branch', branchID, 'for reporting tests, reporting cycle length', branchPeriodLength);
       reportingMarketsSetup(sender, branchPeriodLength, branchID, callback);
     });

@@ -45,11 +45,17 @@ export function initAugur() {
                 env.branchID = branches[branches.length - 1];
                 env.reportingTest = false;
                 if (getState().loginAccount.address) {
-                  augur.api.Faucets.fundNewAccount(env.branchID || BRANCH_ID, noop, () => {
-                    dispatch(updateAssets());
-                    dispatch(loadBranch(env.branchID || BRANCH_ID));
-                    dispatch(displayTopicsPage());
-                  }, logError);
+                  augur.api.Faucets.fundNewAccount({
+                    _signer: getState().loginAccount.privateKey,
+                    branch: env.branchID || BRANCH_ID,
+                    onSent: noop,
+                    onSuccess: () => {
+                      dispatch(updateAssets());
+                      dispatch(loadBranch(env.branchID || BRANCH_ID));
+                      dispatch(displayTopicsPage());
+                    },
+                    onFailed: logError
+                  });
                 } else {
                   dispatch(loadBranch(env.branchID || BRANCH_ID));
                 }
