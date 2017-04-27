@@ -1,59 +1,69 @@
-#transition_notifications_view {
+#notifications_arrow_up {
+  @arrow-size: 8px;
+  .border(true, @border-right, transparent, @arrow-size);
+  .border(true, @border-bottom, @color-white, @arrow-size);
+  .border(true, @border-left, transparent, @arrow-size);
+
   bottom: 0;
+  height: 0;
+  left: 50%;
   position: absolute;
-  transform: translateY(100%);
+  transform: translateX(-50%);
+  width: 0;
+  z-index: @above-all-content;
+}
+
+#notifications_view {
+  .border(true, @border-right);
+  .border(true, @border-bottom);
+  .border(true, @border-left);
+
+  background-color: @color-white;
+  bottom: 0;
+  box-shadow: 0 2px 5px 1px rgba(0, 0, 0, 0.2);
+  left: 50%;
+  margin: 0;
+  position: absolute;
+  text-align: left;
+  transform: translate(-50%, 100%);
+  width: 300px;
 
   @media @breakpoint-mobile {
-    left: auto !important; // Overrides inline style
+    left: initial;
     right: 0;
+    transform: translate(0, 100%);
   }
 
-  #notifications_view {
-    .border(true, @border-right);
+  @media @breakpoint-1 {
+    width: 100vw;
+  }
+
+  h3 {
     .border(true, @border-bottom);
-    .border(true, @border-left);
+    .font-color-dark();
 
-    background-color: @color-white;
-    box-shadow: 0 1px 5px 1px rgba(0, 0, 0, 0.2);
-    margin: 0;
-    transform: translateX(-50%);
-    width: 300px;
+    padding-left: 1em;
+  }
+}
 
-    @media @breakpoint-mobile {
-      transform: translateX(0);
-    }
+.notifications-enter {
+  opacity: 0;
 
-    @media @breakpoint-1 {
-      width: 100vw;
-    }
+  &.notifications-enter-active {
+    opacity: 1;
+    transition-duration: @animation-speed-fast;
+    transition-property: opacity;
+    transition-timing-function: @animation-default-type;
+  }
+}
 
-    &.notifications-enter {
-      opacity: 0;
+.notifications-leave {
+  opacity: 1;
 
-      &.notifications-enter-active {
-        opacity: 1;
-        transition-duration: @animation-speed-fast;
-        transition-property: opacity;
-        transition-timing-function: @animation-default-type;
-      }
-    }
-
-    &.notifications-leave {
-      opacity: 1;
-
-      &.notifications-leave-active {
-        opacity: 0;
-        transition-duration: @animation-speed-very-fast;
-        transition-property: opacity;
-        transition-timing-function: @animation-default-type;
-      }
-    }
-
-    h3 {
-      .border(true, @border-bottom);
-      .font-color-dark();
-
-      padding-left: 1em;
-    }
+  &.notifications-leave-active {
+    opacity: 0;
+    transition-duration: @animation-speed-very-fast;
+    transition-property: opacity;
+    transition-timing-function: @animation-default-type;
   }
 }

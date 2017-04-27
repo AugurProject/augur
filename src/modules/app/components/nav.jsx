@@ -10,11 +10,8 @@ import NotificationsContainer from 'modules/notifications/container';
 import { ACCOUNT, MARKETS, TRANSACTIONS, MY_POSITIONS, MY_MARKETS, MY_REPORTS, AUTHENTICATION } from 'modules/app/constants/views';
 import { FAVORITES, PENDING_REPORTS } from 'modules/markets/constants/markets-subset';
 
-import debounce from 'utils/debounce';
-
 // NOTE --  first child div is there to pass up a ref so that other methods can
 //          acquire the row height of the navs in the footer
-
 export default class Nav extends Component {
   static propTypes = {
     logged: PropTypes.string,
@@ -25,37 +22,10 @@ export default class Nav extends Component {
     super(props);
 
     this.state = {
-      isNotificationsVisible: false,
-      notificationIconXOffset: null
+      isNotificationsVisible: false
     };
 
     this.collapseFooter = this.collapseFooter.bind(this);
-    this.setNotificationIconOffeset = debounce(this.setNotificationIconOffeset.bind(this));
-  }
-
-  componentDidMount() {
-    this.setNotificationIconOffeset();
-
-    window.addEventListener('resize', this.setNotificationIconOffeset);
-  }
-
-  componentDidUpdate(prevProps) {
-    if (this.props.logged && prevProps.logged !== this.props.logged) {
-      this.setNotificationIconOffeset();
-    }
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.setNotificationIconOffeset);
-  }
-
-  setNotificationIconOffeset() {
-    if (this.props.logged) {
-      const xOffset = this.notificationIcon.offsetLeft;
-      const width = this.notificationIcon.clientWidth;
-      const notificationIconXOffset = xOffset + (width / 2);
-      this.setState({ notificationIconXOffset });
-    }
   }
 
   collapseFooter() {
@@ -94,6 +64,19 @@ export default class Nav extends Component {
             onClick={() => this.setState({ isNotificationsVisible: !s.isNotificationsVisible })}
           >
             <i className="fa fa-bell-o" />
+            <CSSTransitionGroup
+              id="transition_notifications_view"
+              transitionName="notifications"
+              transitionEnterTimeout={animationInSpeed}
+              transitionLeaveTimeout={animationOutSpeed}
+            >
+              {p.logged && s.isNotificationsVisible &&
+                <span id="notifications_arrow_up" />
+              }
+              {p.logged && s.isNotificationsVisible &&
+                <NotificationsContainer />
+              }
+            </CSSTransitionGroup>
           </button>
         }
         <Link
@@ -194,19 +177,6 @@ export default class Nav extends Component {
             Sign Up / Login
           </Link>
         }
-        <CSSTransitionGroup
-          id="transition_notifications_view"
-          style={{ left: s.notificationIconXOffset }}
-          transitionName="notifications"
-          transitionEnterTimeout={animationInSpeed}
-          transitionLeaveTimeout={animationOutSpeed}
-        >
-          {p.logged && s.isNotificationsVisible &&
-            <NotificationsContainer
-              notificationIconXOffset={s.notificationIconXOffset}
-            />
-          }
-        </CSSTransitionGroup>
       </nav>
     );
   }
