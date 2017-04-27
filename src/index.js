@@ -35,6 +35,7 @@ function Augur() {
   this.abi = require("augur-abi");
   this.accounts = require("./accounts");
   this.api = require("./api")();
+  this.generateContractAPI = require("./api").generateContractAPI;
   this.assets = require("./assets");
   this.beta = require("./beta");
   this.chat = require("./chat");
