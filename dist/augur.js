@@ -277,17 +277,16 @@ module.exports = function () {
 
 var abi = require("augur-abi");
 var assign = require("lodash.assign");
-var clone = require("clone");
 var rpcInterface = require("../rpc-interface");
 var parsers = require("../parsers");
 var compose = require("../utils/compose");
 var isFunction = require("../utils/is-function");
 var isObject = require("../utils/is-object");
 
-function bindContractFunction(functionsAPI, contract, method) {
+function bindContractFunction(staticAPI) {
   return function () {
-    var tx, params, numInputs, numFixed, cb, i, onSent, onSuccess, onFailed, extraArgument;
-    tx = clone(functionsAPI[contract][method]);
+    var tx, params, numInputs, numFixed, cb, i, onSent, onSuccess, onFailed, extraArgument, signer;
+    tx = assign({}, staticAPI);
     if (!arguments || !arguments.length) {
       if (!tx.send) return rpcInterface.callContractFunction(tx);
       return rpcInterface.transact(tx);
@@ -307,17 +306,8 @@ function bindContractFunction(functionsAPI, contract, method) {
           }
         }
         if (isObject(params[0].tx)) assign(tx, params[0].tx);
-      } else {
-        if (numInputs) {
-          tx.params = new Array(numInputs);
-          for (i = 0; i < numInputs; ++i) {
-            tx.params[i] = params[i];
-          }
-        }
-        if (params.length > numInputs && isFunction(params[numInputs])) {
-          cb = params[numInputs];
-        }
       }
+      if (isFunction(params[params.length - 1])) cb = params[1];
       if (tx.fixed && tx.fixed.length) {
         numFixed = tx.fixed.length;
         for (i = 0; i < numFixed; ++i) {
@@ -341,22 +331,8 @@ function bindContractFunction(functionsAPI, contract, method) {
           tx.params[i] = params[0][tx.inputs[i]];
         }
       }
-    } else {
-      if (numInputs) {
-        tx.params = new Array(numInputs);
-        for (i = 0; i < tx.inputs.length; ++i) {
-          tx.params[i] = params[i];
-        }
-      }
-      if (params.length > numInputs && isFunction(params[numInputs])) {
-        onSent = params[numInputs];
-      }
-      if (params.length > numInputs && isFunction(params[numInputs + 1])) {
-        onSuccess = params[numInputs + 1];
-      }
-      if (params.length > numInputs && isFunction(params[numInputs + 2])) {
-        onFailed = params[numInputs + 2];
-      }
+      if (isObject(params[0].tx)) assign(tx, params[0].tx);
+      if (params[0]._signer) signer = params[0]._signer;
     }
     if (tx.fixed && tx.fixed.length) {
       numFixed = tx.fixed.length;
@@ -364,13 +340,13 @@ function bindContractFunction(functionsAPI, contract, method) {
         tx.params[tx.fixed[i]] = abi.fix(tx.params[tx.fixed[i]], "hex");
       }
     }
-    if (!tx.parser) return rpcInterface.transact(tx, onSent, onSuccess, onFailed);
-    return rpcInterface.transact(tx, onSent, compose(parsers[tx.parser], onSuccess, extraArgument), onFailed);
+    if (!tx.parser) return rpcInterface.transact(tx, signer, onSent, onSuccess, onFailed);
+    return rpcInterface.transact(tx, signer, onSent, compose(parsers[tx.parser], onSuccess, extraArgument), onFailed);
   };
 }
 
 module.exports = bindContractFunction;
-},{"../parsers":71,"../rpc-interface":106,"../utils/compose":198,"../utils/is-function":200,"../utils/is-object":201,"augur-abi":229,"clone":274,"lodash.assign":352}],3:[function(require,module,exports){
+},{"../parsers":71,"../rpc-interface":106,"../utils/compose":198,"../utils/is-function":200,"../utils/is-object":201,"augur-abi":229,"lodash.assign":352}],3:[function(require,module,exports){
 "use strict";
 
 var bindContractFunction = require("./bind-contract-function");
@@ -379,7 +355,7 @@ function generateContractAPI(functionsAPI) {
   return Object.keys(functionsAPI).reduce(function (p, contractName) {
     p[contractName] = {};
     Object.keys(functionsAPI[contractName]).map(function (functionName) {
-      p[contractName][functionName] = bindContractFunction(functionsAPI, contractName, functionName);
+      p[contractName][functionName] = bindContractFunction(functionsAPI[contractName][functionName]);
     });
     return p;
   }, {});
@@ -416,27 +392,19 @@ module.exports = getAPI;
 },{"./generate-contract-api":3,"augur-contracts":232}],5:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var api = require("../api");
-var isObject = require("../utils/is-object");
 
-function depositEther(value, onSent, onSuccess, onFailed) {
-  if (isObject(value)) {
-    onSent = value.onSent;
-    onSuccess = value.onSuccess;
-    onFailed = value.onFailed;
-    value = value.value;
-  }
-  return api().Cash.depositEther({
-    tx: { value: abi.fix(value, "hex") },
-    onSent: onSent,
-    onSuccess: onSuccess,
-    onFailed: onFailed
-  });
+// { value, onSent, onSuccess, onFailed }
+function depositEther(p) {
+  return api().Cash.depositEther(assign({}, p, {
+    tx: { value: abi.fix(p.value, "hex") }
+  }));
 }
 
 module.exports = depositEther;
-},{"../api":4,"../utils/is-object":201,"augur-abi":229}],6:[function(require,module,exports){
+},{"../api":4,"augur-abi":229,"lodash.assign":352}],6:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -452,16 +420,19 @@ var abi = require("augur-abi");
 var api = require("../api");
 var rpcInterface = require("../rpc-interface");
 
-function loadAssets(branchID, accountID, cbEther, cbRep, cbRealEther) {
-  api().Cash.balance(accountID, function (result) {
+function loadAssets(branchID, address, cbEther, cbRep, cbRealEther) {
+  api().Cash.balance({ address: address }, function (result) {
     if (!result || result.error) return cbEther(result);
     return cbEther(null, abi.string(result));
   });
-  api().Reporting.getRepBalance(branchID, accountID, function (result) {
+  api().Reporting.getRepBalance({
+    branch: branchID,
+    address: address
+  }, function (result) {
     if (!result || result.error) return cbRep(result);
     return cbRep(null, abi.string(result));
   });
-  rpcInterface.getBalance(accountID, function (wei) {
+  rpcInterface.getBalance(address, function (wei) {
     if (!wei || wei.error) return cbRealEther(wei);
     return cbRealEther(null, abi.unfix(wei, "string"));
   });
@@ -472,81 +443,68 @@ module.exports = loadAssets;
 "use strict";
 
 var abi = require("augur-abi");
-var isObject = require("../utils/is-object");
 var rpcInterface = require("../rpc-interface");
 
-function sendEther(to, value, from, onSent, onSuccess, onFailed) {
-  if (isObject(to)) {
-    value = to.value;
-    from = to.from;
-    onSent = to.onSent;
-    onSuccess = to.onSuccess;
-    onFailed = to.onFailed;
-    to = to.to;
-  }
+// { to, value, from, onSent, onSuccess, onFailed }
+function sendEther(p) {
   return rpcInterface.transact({
-    from: from,
-    to: to,
-    value: abi.fix(value, "hex"),
+    from: p.from,
+    to: p.to,
+    value: abi.fix(p.value, "hex"),
     returns: "null",
     gas: "0xcf08"
-  }, onSent, onSuccess, onFailed);
+  }, p.signer, p.onSent, p.onSuccess, p.onFailed);
 }
 
 module.exports = sendEther;
-},{"../rpc-interface":106,"../utils/is-object":201,"augur-abi":229}],9:[function(require,module,exports){
+},{"../rpc-interface":106,"augur-abi":229}],9:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var api = require("../api");
 var compose = require("../utils/compose");
-var isObject = require("../utils/is-object");
 
-// branch: hash id
-// recver: ethereum address of recipient
-// value: number -> fixed-point
-function sendReputation(branch, recver, value, onSent, onSuccess, onFailed) {
-  if (isObject(branch)) {
-    recver = branch.recver;
-    value = branch.value;
-    onSent = branch.onSent;
-    onSuccess = branch.onSuccess;
-    onFailed = branch.onFailed;
-    branch = branch.branch;
-  }
-
-  // if callReturn is 0, but account has sufficient Reputation and Rep
-  // redistribution is done, then re-invoke sendReputation
-  // (penalizationCatchup is being called)
-  api().SendReputation.sendReputation({
-    branch: branch,
-    recver: recver,
-    value: abi.fix(value, "hex"),
-    onSent: onSent,
+// if callReturn is 0, but account has sufficient Reputation and Rep
+// redistribution is done, then re-invoke sendReputation
+// (penalizationCatchup is being called)
+// { branch, recver, value, onSent, onSuccess, onFailed }
+function sendReputation(p) {
+  api().SendReputation.sendReputation(assign({}, p, {
+    value: abi.fix(p.value, "hex"),
     onSuccess: compose(function (result, callback) {
       if (!result || !result.callReturn || parseInt(result.callReturn, 16)) {
         return callback(result);
       }
-      api().Reporting.getRepBalance(branch, result.from, function (repBalance) {
+      api().Reporting.getRepBalance({
+        branch: p.branch,
+        address: result.from
+      }, function (repBalance) {
         if (!repBalance || repBalance.error) {
-          return onFailed(repBalance);
+          return p.onFailed(repBalance);
         }
-        if (abi.bignum(repBalance).lt(abi.bignum(value))) {
-          return onFailed({ error: "0", message: "not enough reputation" });
+        if (abi.bignum(repBalance).lt(abi.bignum(p.value))) {
+          return p.onFailed({ error: "0", message: "not enough reputation" });
         }
-        api().ConsensusData.getRepRedistributionDone(branch, result.from, function (repRedistributionDone) {
+        api().ConsensusData.getRepRedistributionDone({
+          branch: p.branch,
+          reporter: result.from
+        }, function (repRedistributionDone) {
           if (!repRedistributionDone || !parseInt(repRedistributionDone, 16)) {
-            return onFailed({ error: "-3", message: "cannot send reputation until redistribution is complete" });
+            return p.onFailed({
+              error: "-3",
+              message: "cannot send reputation until redistribution is complete"
+            });
           }
-          sendReputation(branch, recver, value, onSent, onSuccess, onFailed);
+          sendReputation(p);
         });
       });
-    }, onSuccess)
-  });
+    }, p.onSuccess)
+  }));
 }
 
 module.exports = sendReputation;
-},{"../api":4,"../utils/compose":198,"../utils/is-object":201,"augur-abi":229}],10:[function(require,module,exports){
+},{"../api":4,"../utils/compose":198,"augur-abi":229,"lodash.assign":352}],10:[function(require,module,exports){
 "use strict";
 
 var api = require("../api");
@@ -554,18 +512,22 @@ var rpcInterface = require("../rpc-interface");
 var noop = require("../utils/noop");
 var constants = require("../constants");
 
-function fundNewAccountFromAddress(fromAddress, amount, registeredAddress, branch, onSent, onSuccess, onFailed) {
-  var onSentCallback = onSent || noop;
-  var onSuccessCallback = onSuccess || noop;
-  var onFailedCallback = onFailed || noop;
+// { fromAddress, amount, registeredAddress, branch, onSent, onSuccess, onFailed }
+function fundNewAccountFromAddress(p) {
+  var onSentCallback = p.onSent || noop;
+  var onSuccessCallback = p.onSuccess || noop;
+  var onFailedCallback = p.onFailed || noop;
   rpcInterface.sendEther({
-    to: registeredAddress,
-    value: amount,
-    from: fromAddress,
-    onSent: noop,
-    onSuccess: function onSuccess() {
+    to: p.registeredAddress,
+    value: p.amount,
+    from: p.fromAddress,
+    onSent: function onSent(r) {
+      console.log("sendEther sent:", r);
+    },
+    onSuccess: function onSuccess(r) {
+      console.log("sendEther success:", r);
       api().Faucets.fundNewAccount({
-        branch: branch || constants.DEFAULT_BRANCH_ID,
+        branch: p.branch || constants.DEFAULT_BRANCH_ID,
         onSent: onSentCallback,
         onSuccess: onSuccessCallback,
         onFailed: onFailedCallback
@@ -582,6 +544,7 @@ module.exports = fundNewAccountFromAddress;
 
 var NODE_JS = typeof process !== "undefined" && process.nextTick && !process.browser;
 
+var assign = require("lodash.assign");
 var async = require("async");
 var abi = require("augur-abi");
 var request = NODE_JS ? require("request") : require("browser-request");
@@ -592,45 +555,46 @@ var constants = require("../constants");
 
 request = request.defaults({ timeout: 999999 });
 
-function fundNewAccountFromFaucet(registeredAddress, branch, onSent, onSuccess, onFailed) {
+// { registeredAddress, branch, onSent, onSuccess, onFailed }
+function fundNewAccountFromFaucet(p) {
   var onSentCallback, onSuccessCallback, onFailedCallback, url;
-  onSentCallback = onSent || noop;
-  onSuccessCallback = onSuccess || noop;
-  onFailedCallback = onFailed || noop;
-  if (registeredAddress == null || registeredAddress.constructor !== String) {
-    return onFailed(registeredAddress);
+  onSentCallback = p.onSent || noop;
+  onSuccessCallback = p.onSuccess || noop;
+  onFailedCallback = p.onFailed || noop;
+  if (p.registeredAddress == null || p.registeredAddress.constructor !== String) {
+    return onFailedCallback(p.registeredAddress);
   }
-  url = constants.FAUCET + abi.format_address(registeredAddress);
+  url = constants.FAUCET + abi.format_address(p.registeredAddress);
   request(url, function (err, response /*, body */) {
-    if (err) return onFailed(err);
-    if (response.statusCode !== 200) return onFailed(response.statusCode);
-    rpcInterface.getBalance(registeredAddress, function (ethBalance) {
+    if (err) return onFailedCallback(err);
+    if (response.statusCode !== 200) return onFailedCallback(response.statusCode);
+    rpcInterface.getBalance(p.registeredAddress, function (ethBalance) {
       var balance = parseInt(ethBalance, 16);
       if (balance > 0) {
-        api().Faucets.fundNewAccount({
-          branch: branch || constants.DEFAULT_BRANCH_ID,
+        api().Faucets.fundNewAccount(assign({}, p, {
+          branch: p.branch || constants.DEFAULT_BRANCH_ID,
           onSent: onSentCallback,
           onSuccess: onSuccessCallback,
           onFailed: onFailedCallback
-        });
+        }));
       } else {
         async.until(function () {
           return balance > 0;
         }, function (callback) {
           rpcInterface.waitForNextBlocks(1, function () /* nextBlock */{
-            rpcInterface.balance(registeredAddress, function (ethBalance) {
+            rpcInterface.balance(p.registeredAddress, function (ethBalance) {
               balance = parseInt(ethBalance, 16);
               callback(null, balance);
             });
           });
         }, function (e) {
           if (e) console.error(e);
-          api().Faucets.fundNewAccount({
-            branch: branch || constants.DEFAULT_BRANCH_ID,
+          api().Faucets.fundNewAccount(assign({}, p, {
+            branch: p.branch || constants.DEFAULT_BRANCH_ID,
             onSent: onSentCallback,
             onSuccess: onSuccessCallback,
             onFailed: onFailedCallback
-          });
+          }));
         });
       }
     });
@@ -639,7 +603,7 @@ function fundNewAccountFromFaucet(registeredAddress, branch, onSent, onSuccess, 
 
 module.exports = fundNewAccountFromFaucet;
 }).call(this,require('_process'))
-},{"../api":4,"../constants":15,"../rpc-interface":106,"../utils/noop":203,"_process":366,"async":228,"augur-abi":229,"browser-request":239,"request":240}],12:[function(require,module,exports){
+},{"../api":4,"../constants":15,"../rpc-interface":106,"../utils/noop":203,"_process":366,"async":228,"augur-abi":229,"browser-request":239,"lodash.assign":352,"request":240}],12:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -975,173 +939,101 @@ module.exports = createBranch;
 },{"../rpc-interface":106,"../utils/is-object":201,"../utils/sha3":208,"./create-subbranch":22,"augur-abi":229}],19:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var api = require("../api");
-var isObject = require("../utils/is-object");
 
-function createEvent(branch, description, expDate, minValue, maxValue, numOutcomes, resolution, onSent, onSuccess, onFailed) {
-  if (isObject(branch)) {
-    description = branch.description;
-    minValue = branch.minValue;
-    maxValue = branch.maxValue;
-    numOutcomes = branch.numOutcomes;
-    expDate = branch.expDate;
-    resolution = branch.resolution;
-    onSent = branch.onSent;
-    onSuccess = branch.onSuccess;
-    onFailed = branch.onFailed;
-    branch = branch.branch;
-  }
-  if (description) description = description.trim();
-  if (resolution) resolution = resolution.trim();
-  return api().CreateMarket.createEvent({
-    branch: branch,
-    description: description,
-    expDate: parseInt(expDate, 10),
-    minValue: abi.fix(minValue, "hex"),
-    maxValue: abi.fix(maxValue, "hex"),
-    numOutcomes: numOutcomes,
-    resolution: resolution || "",
-    onSent: onSent,
-    onSuccess: onSuccess,
-    onFailed: onFailed
-  });
+// { branch, description, expDate, minValue, maxValue, numOutcomes, resolution, onSent, onSuccess, onFailed }
+function createEvent(p) {
+  if (p.description) p.description = p.description.trim();
+  if (p.resolution) p.resolution = p.resolution.trim();
+  return api().CreateMarket.createEvent(assign({}, p, {
+    expDate: parseInt(p.expDate, 10),
+    minValue: abi.fix(p.minValue, "hex"),
+    maxValue: abi.fix(p.maxValue, "hex"),
+    resolution: p.resolution || ""
+  }));
 }
 
 module.exports = createEvent;
-},{"../api":4,"../utils/is-object":201,"augur-abi":229}],20:[function(require,module,exports){
+},{"../api":4,"augur-abi":229,"lodash.assign":352}],20:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var api = require("../api");
 var rpcInterface = require("../rpc-interface");
 var calculateRequiredMarketValue = require("../create/calculate-required-market-value");
 var calculateTradingFees = require("../trading/fees/calculate-trading-fees");
 var encodeTagArray = require("../format/tag/encode-tag-array");
-var isObject = require("../utils/is-object");
 
-function createMarket(branch, takerFee, event, tags, makerFee, extraInfo, onSent, onSuccess, onFailed) {
-  var formattedTags, fees;
-  if (isObject(branch)) {
-    takerFee = branch.takerFee;
-    event = branch.event;
-    tags = branch.tags;
-    makerFee = branch.makerFee;
-    extraInfo = branch.extraInfo;
-    onSent = branch.onSent;
-    onSuccess = branch.onSuccess;
-    onFailed = branch.onFailed;
-    branch = branch.branch;
-  }
-  formattedTags = encodeTagArray(tags);
-  fees = calculateTradingFees(makerFee, takerFee);
-  api().CreateMarket.createMarket({
-    branch: branch,
+// { branch, takerFee, event, tags, makerFee, extraInfo, onSent, onSuccess, onFailed }
+function createMarket(p) {
+  var formattedTags = encodeTagArray(p.tags);
+  var fees = calculateTradingFees(p.makerFee, p.takerFee);
+  api().CreateMarket.createMarket(assign({}, p, {
     tradingFee: abi.fix(fees.tradingFee, "hex"),
-    event: event,
     tag1: formattedTags[0],
     tag2: formattedTags[1],
     tag3: formattedTags[2],
     makerFees: abi.fix(fees.makerProportionOfFee, "hex"),
-    extraInfo: extraInfo || "",
-    tx: { value: calculateRequiredMarketValue(rpcInterface.getGasPrice()) },
-    onSent: onSent,
-    onSuccess: onSuccess,
-    onFailed: onFailed
-  });
+    extraInfo: p.extraInfo || "",
+    tx: { value: calculateRequiredMarketValue(rpcInterface.getGasPrice()) }
+  }));
 }
 
 module.exports = createMarket;
-},{"../api":4,"../create/calculate-required-market-value":16,"../format/tag/encode-tag-array":39,"../rpc-interface":106,"../trading/fees/calculate-trading-fees":123,"../utils/is-object":201,"augur-abi":229}],21:[function(require,module,exports){
+},{"../api":4,"../create/calculate-required-market-value":16,"../format/tag/encode-tag-array":39,"../rpc-interface":106,"../trading/fees/calculate-trading-fees":123,"augur-abi":229,"lodash.assign":352}],21:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var api = require("../api");
 var rpcInterface = require("../rpc-interface");
 var calculateRequiredMarketValue = require("../create/calculate-required-market-value");
 var calculateTradingFees = require("../trading/fees/calculate-trading-fees");
 var encodeTagArray = require("../format/tag/encode-tag-array");
-var isObject = require("../utils/is-object");
 
-function createSingleEventMarket(branch, description, expDate, minValue, maxValue, numOutcomes, resolution, takerFee, tags, makerFee, extraInfo, onSent, onSuccess, onFailed) {
-  var formattedTags, fees;
-  if (isObject(branch)) {
-    description = branch.description;
-    expDate = branch.expDate;
-    minValue = branch.minValue;
-    maxValue = branch.maxValue;
-    numOutcomes = branch.numOutcomes;
-    resolution = branch.resolution;
-    takerFee = branch.takerFee;
-    tags = branch.tags;
-    makerFee = branch.makerFee;
-    extraInfo = branch.extraInfo;
-    onSent = branch.onSent;
-    onSuccess = branch.onSuccess;
-    onFailed = branch.onFailed;
-    branch = branch.branch;
-  }
-  formattedTags = encodeTagArray(tags);
-  fees = calculateTradingFees(makerFee, takerFee);
-  expDate = parseInt(expDate, 10);
-  if (description) description = description.trim();
-  if (resolution) resolution = resolution.trim();
-  api().CreateMarket.createSingleEventMarket({
-    branch: branch,
-    description: description,
-    expDate: expDate,
-    minValue: abi.fix(minValue, "hex"),
-    maxValue: abi.fix(maxValue, "hex"),
-    numOutcomes: numOutcomes,
-    resolution: resolution || "",
+// { branch, description, expDate, minValue, maxValue, numOutcomes, resolution, takerFee, tags, makerFee, extraInfo, onSent, onSuccess, onFailed }
+function createSingleEventMarket(p) {
+  var formattedTags = encodeTagArray(p.tags);
+  var fees = calculateTradingFees(p.makerFee, p.takerFee);
+  if (p.description) p.description = p.description.trim();
+  if (p.resolution) p.resolution = p.resolution.trim();
+  api().CreateMarket.createSingleEventMarket(assign({}, p, {
+    expDate: parseInt(p.expDate, 10),
+    minValue: abi.fix(p.minValue, "hex"),
+    maxValue: abi.fix(p.maxValue, "hex"),
     tradingFee: abi.fix(fees.tradingFee, "hex"),
     tag1: formattedTags[0],
     tag2: formattedTags[1],
     tag3: formattedTags[2],
     makerFees: abi.fix(fees.makerProportionOfFee, "hex"),
-    extraInfo: extraInfo || "",
-    tx: { value: calculateRequiredMarketValue(rpcInterface.getGasPrice()) },
-    onSent: onSent,
-    onSuccess: onSuccess,
-    onFailed: onFailed
-  });
+    extraInfo: p.extraInfo || "",
+    tx: { value: calculateRequiredMarketValue(rpcInterface.getGasPrice()) }
+  }));
 }
 
 module.exports = createSingleEventMarket;
-},{"../api":4,"../create/calculate-required-market-value":16,"../format/tag/encode-tag-array":39,"../rpc-interface":106,"../trading/fees/calculate-trading-fees":123,"../utils/is-object":201,"augur-abi":229}],22:[function(require,module,exports){
+},{"../api":4,"../create/calculate-required-market-value":16,"../format/tag/encode-tag-array":39,"../rpc-interface":106,"../trading/fees/calculate-trading-fees":123,"augur-abi":229,"lodash.assign":352}],22:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var api = require("../api");
-var isObject = require("../utils/is-object");
 
-function createSubbranch(description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed) {
-  if (isObject(description)) {
-    periodLength = description.periodLength;
-    parent = description.parent;
-    minTradingFee = description.minTradingFee;
-    oracleOnly = description.oracleOnly;
-    onSent = description.onSent;
-    onSuccess = description.onSuccess;
-    onFailed = description.onFailed;
-    description = description.description;
-  }
-  description = description.trim();
-  api().CreateBranch.createSubbranch({
-    description: description,
-    periodLength: periodLength,
-    parent: parent,
-    minTradingFee: abi.fix(minTradingFee, "hex"),
-    oracleOnly: oracleOnly || 0,
-    tx: { description: description },
-    onSent: onSent,
-    onSuccess: onSuccess,
-    onFailed: onFailed
-  });
+// { description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed }
+function createSubbranch(p) {
+  p.description = p.description.trim();
+  api().CreateBranch.createSubbranch(assign({}, p, {
+    minTradingFee: abi.fix(p.minTradingFee, "hex"),
+    oracleOnly: p.oracleOnly || 0,
+    tx: { description: p.description }
+  }));
 }
 
 module.exports = createSubbranch;
-},{"../api":4,"../utils/is-object":201,"augur-abi":229}],23:[function(require,module,exports){
+},{"../api":4,"augur-abi":229,"lodash.assign":352}],23:[function(require,module,exports){
 "use strict";
 
 function assignOutcomeIDs(numOutcomes) {
@@ -2891,46 +2783,32 @@ module.exports = sortTradesByBlockNumber;
 "use strict";
 
 var api = require("../api");
-var isFunction = require("../utils/is-function");
-var isObject = require("../utils/is-object");
 
-function batchGetMarketInfo(marketIDs, account, callback) {
-  if (isObject(marketIDs)) {
-    callback = callback || marketIDs.callback;
-    account = marketIDs.account;
-    marketIDs = marketIDs.marketIDs;
-  }
-  if (!callback && isFunction(account)) {
-    callback = account;
-    account = null;
-  }
-  return api().CompositeGetters.batchGetMarketInfo(marketIDs, account || 0, callback, { extraArgument: marketIDs.length });
+// { marketIDs, account }
+function batchGetMarketInfo(p, callback) {
+  return api().CompositeGetters.batchGetMarketInfo({
+    marketIDs: p.marketIDs,
+    account: p.account || 0
+  }, callback, { extraArgument: p.marketIDs.length });
 }
 
 module.exports = batchGetMarketInfo;
-},{"../api":4,"../utils/is-function":200,"../utils/is-object":201}],63:[function(require,module,exports){
+},{"../api":4}],63:[function(require,module,exports){
 "use strict";
 
 var api = require("../api");
-var isFunction = require("../utils/is-function");
-var isObject = require("../utils/is-object");
 
 // account is optional, if provided will return sharesPurchased
-function getMarketInfo(market, account, callback) {
-  if (isObject(market)) {
-    callback = callback || market.callback;
-    account = market.account;
-    market = market.market;
-  }
-  if (!callback && isFunction(account)) {
-    callback = account;
-    account = null;
-  }
-  return api().CompositeGetters.getMarketInfo(market, account || 0, callback);
+// { marketID, account }
+function getMarketInfo(p, callback) {
+  return api().CompositeGetters.getMarketInfo({
+    marketID: p.marketID,
+    account: p.account || 0
+  }, callback);
 }
 
 module.exports = getMarketInfo;
-},{"../api":4,"../utils/is-function":200,"../utils/is-object":201}],64:[function(require,module,exports){
+},{"../api":4}],64:[function(require,module,exports){
 "use strict";
 
 var api = require("../api");
@@ -2962,24 +2840,17 @@ module.exports = getMarketsInfo;
 "use strict";
 
 var api = require("../api");
-var isFunction = require("../utils/is-function");
-var isObject = require("../utils/is-object");
 
-function getPositionInMarket(market, account, callback) {
-  if (!callback && isFunction(account)) {
-    callback = account;
-    account = null;
-  }
-  if (isObject(market)) {
-    account = market.account;
-    callback = callback || market.callback;
-    market = market.market;
-  }
-  return api().CompositeGetters.getPositionInMarket(market, account, callback);
+// { market, account }
+function getPositionInMarket(p, callback) {
+  return api().CompositeGetters.getPositionInMarket({
+    market: p.market,
+    account: p.account
+  }, callback);
 }
 
 module.exports = getPositionInMarket;
-},{"../api":4,"../utils/is-function":200,"../utils/is-object":201}],66:[function(require,module,exports){
+},{"../api":4}],66:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -3038,7 +2909,7 @@ var api = require("../api");
 
 function loadMarkets(branchID, chunkSize, isDesc, loadZeroVolumeMarkets, chunkCB) {
   // load the total number of markets
-  api().Branches.getNumMarketsBranch(branchID, function (numMarketsRaw) {
+  api().Branches.getNumMarketsBranch({ branch: branchID }, function (numMarketsRaw) {
     var numMarkets, firstStartIndex;
     numMarkets = parseInt(numMarketsRaw, 10);
     firstStartIndex = isDesc ? Math.max(numMarkets - chunkSize + 1, 0) : 0;
@@ -3408,48 +3279,50 @@ module.exports = function (trade) {
 },{"../constants":15,"../utils/round-to-precision":205,"augur-abi":229,"bignumber.js":235}],78:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var BigNumber = require("bignumber.js");
 var getCurrentPeriodProgress = require("../reporting/get-current-period-progress");
 var rpcInterface = require("../rpc-interface");
 var api = require("../api");
 var compose = require("../utils/compose");
-var isObject = require("../utils/is-object");
 
 // TODO break this apart
-function collectFees(branch, sender, periodLength, onSent, onSuccess, onFailed) {
-  if (isObject(branch)) {
-    sender = branch.sender;
-    periodLength = branch.periodLength;
-    onSent = branch.onSent;
-    onSuccess = branch.onSuccess;
-    onFailed = branch.onFailed;
-    branch = branch.branch;
+// { branch, sender, periodLength, onSent, onSuccess, onFailed }
+function collectFees(p) {
+  if (getCurrentPeriodProgress(p.periodLength) < 50) {
+    return p.onFailed({ "-2": "needs to be second half of reporting period to claim rep" });
   }
-  if (getCurrentPeriodProgress(periodLength) < 50) {
-    return onFailed({ "-2": "needs to be second half of reporting period to claim rep" });
-  }
-  api().Branches.getVotePeriod(branch, function (period) {
-    api().ConsensusData.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
-      if (feesCollected === "1") return onSuccess({ callReturn: "2" });
-      api().CollectFees.collectFees({
-        branch: branch,
-        sender: sender,
+  api().Branches.getVotePeriod({ branch: p.branch }, function (period) {
+    api().ConsensusData.getFeesCollected({
+      branch: p.branch,
+      address: p.sender,
+      period: period - 1
+    }, function (feesCollected) {
+      if (feesCollected === "1") return p.onSuccess({ callReturn: "2" });
+      api().CollectFees.collectFees(assign({}, p, {
         tx: {
           value: abi.hex(new BigNumber("500000", 10).times(rpcInterface.getGasPrice()))
         },
-        onSent: onSent,
         onSuccess: compose(function (res, callback) {
           if (res && (res.callReturn === "1" || res.callReturn === "2")) {
             return callback(res);
           }
-          api().Branches.getVotePeriod(branch, function (period) {
-            api().ConsensusData.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
+          api().Branches.getVotePeriod({ branch: p.branch }, function (period) {
+            api().ConsensusData.getFeesCollected({
+              branch: p.branch,
+              address: p.sender,
+              period: period - 1
+            }, function (feesCollected) {
               if (feesCollected !== "1") {
                 res.callReturn = "2";
                 return callback(res);
               }
-              api().ExpiringEvents.getAfterRep(branch, period - 1, sender, function (afterRep) {
+              api().ExpiringEvents.getAfterRep({
+                branch: p.branch,
+                period: period - 1,
+                sender: p.sender
+              }, function (afterRep) {
                 if (parseInt(afterRep, 10) <= 1) {
                   res.callReturn = "2";
                   return callback(res);
@@ -3459,15 +3332,14 @@ function collectFees(branch, sender, periodLength, onSent, onSuccess, onFailed) 
               });
             });
           });
-        }, onSuccess),
-        onFailed: onFailed
-      });
+        }, p.onSuccess)
+      }));
     });
   });
 }
 
 module.exports = collectFees;
-},{"../api":4,"../reporting/get-current-period-progress":93,"../rpc-interface":106,"../utils/compose":198,"../utils/is-object":201,"augur-abi":229,"bignumber.js":235}],79:[function(require,module,exports){
+},{"../api":4,"../reporting/get-current-period-progress":93,"../rpc-interface":106,"../utils/compose":198,"augur-abi":229,"bignumber.js":235,"lodash.assign":352}],79:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -3510,29 +3382,22 @@ module.exports = encryptReport;
 
 var parseAndDecryptReport = require("./parse-and-decrypt-report");
 var api = require("../../api");
-var isFunction = require("../../utils/is-function");
-var isObject = require("../../utils/is-object");
 
-function getAndDecryptReport(branch, expDateIndex, reporter, event, secret, callback) {
-  if (isObject(branch)) {
-    expDateIndex = branch.expDateIndex;
-    reporter = branch.reporter;
-    event = branch.event;
-    secret = branch.secret;
-    callback = callback || branch.callback;
-    branch = branch.branch;
-  }
-  if (!isFunction(callback)) {
-    return parseAndDecryptReport(api().ExpiringEvents.getEncryptedReport(branch, expDateIndex, reporter, event), secret);
-  }
-  api().ExpiringEvents.getEncryptedReport(branch, expDateIndex, reporter, event, function (result) {
+// { branch, expDateIndex, reporter, event, secret }
+function getAndDecryptReport(p, callback) {
+  api().ExpiringEvents.getEncryptedReport({
+    branch: p.branch,
+    expDateIndex: p.expDateIndex,
+    reporter: p.reporter,
+    event: p.event
+  }, function (result) {
     if (!result || result.error) return callback(result);
-    callback(parseAndDecryptReport(result), secret);
+    callback(parseAndDecryptReport(result), p.secret);
   });
 }
 
 module.exports = getAndDecryptReport;
-},{"../../api":4,"../../utils/is-function":200,"../../utils/is-object":201,"./parse-and-decrypt-report":84}],82:[function(require,module,exports){
+},{"../../api":4,"./parse-and-decrypt-report":84}],82:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -3769,33 +3634,28 @@ module.exports = getCurrentPeriod;
 
 var unfixReport = require("./format/unfix-report");
 var api = require("../api");
-var isObject = require("../utils/is-object");
 var errors = require("../rpc-interface").errors;
 
-function getReport(branch, period, event, sender, minValue, maxValue, type, callback) {
-  if (isObject(branch)) {
-    period = branch.period;
-    event = branch.event;
-    sender = branch.sender;
-    minValue = branch.minValue;
-    maxValue = branch.maxValue;
-    type = branch.type;
-    callback = callback || branch.callback;
-    branch = branch.branch;
-  }
-  api().ExpiringEvents.getReport(branch, period, event, sender, function (rawReport) {
+// { branch, period, event, sender, minValue, maxValue, type }
+function getReport(p, callback) {
+  api().ExpiringEvents.getReport({
+    branch: p.branch,
+    period: p.period,
+    event: p.event,
+    sender: p.sender
+  }, function (rawReport) {
     if (!rawReport || rawReport.error) {
       return callback(rawReport || errors.REPORT_NOT_FOUND);
     }
     if (!parseInt(rawReport, 16)) {
       return callback({ report: "0", isIndeterminate: false });
     }
-    callback(unfixReport(rawReport, minValue, maxValue, type));
+    callback(unfixReport(rawReport, p.minValue, p.maxValue, p.type));
   });
 }
 
 module.exports = getReport;
-},{"../api":4,"../rpc-interface":106,"../utils/is-object":201,"./format/unfix-report":92}],96:[function(require,module,exports){
+},{"../api":4,"../rpc-interface":106,"./format/unfix-report":92}],96:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -3825,17 +3685,17 @@ function finishLoadBranch(branch, callback) {
 
 function loadBranch(branchID, callback) {
   var branch = { id: abi.hex(branchID) };
-  api().Branches.getPeriodLength(branchID, function (periodLength) {
+  api().Branches.getPeriodLength({ branch: branchID }, function (periodLength) {
     if (!periodLength || periodLength.error) return callback(periodLength);
     branch.periodLength = periodLength;
     finishLoadBranch(branch, callback);
   });
-  api().Info.getDescription(branchID, function (description) {
+  api().Info.getDescription({ ID: branchID }, function (description) {
     if (!description || description.error) return callback(description);
     branch.description = description;
     finishLoadBranch(branch, callback);
   });
-  api().Branches.getBaseReporters(branchID, function (baseReporters) {
+  api().Branches.getBaseReporters({ branch: branchID }, function (baseReporters) {
     if (!baseReporters || baseReporters.error) return callback(baseReporters);
     branch.baseReporters = parseInt(baseReporters, 10);
     finishLoadBranch(branch, callback);
@@ -3846,22 +3706,23 @@ module.exports = loadBranch;
 },{"../api":4,"augur-abi":229}],98:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var async = require("async");
 var api = require("../../api");
 var noop = require("../../utils/noop");
 
-function closeEventMarkets(branch, event, sender, callback) {
-  api().Events.getMarkets(event, function (markets) {
+function closeEventMarkets(p, branch, event, sender, callback) {
+  api().Events.getMarkets({ event: event }, function (markets) {
     if (!Array.isArray(markets) || !markets.length) {
       return callback("no markets found for " + event);
     }
     if (markets && markets.error) return callback(markets);
     async.eachSeries(markets, function (market, nextMarket) {
-      api().Markets.getWinningOutcomes(market, function (winningOutcomes) {
+      api().Markets.getWinningOutcomes({ market: market }, function (winningOutcomes) {
         // console.log("winning outcomes for", market, winningOutcomes);
         if (!winningOutcomes || winningOutcomes.error) return nextMarket(winningOutcomes);
         if (Array.isArray(winningOutcomes) && winningOutcomes.length && !parseInt(winningOutcomes[0], 10)) {
-          api().CloseMarket.closeMarket({
+          api().CloseMarket.closeMarket(assign({}, p, {
             branch: branch,
             market: market,
             sender: sender,
@@ -3870,7 +3731,7 @@ function closeEventMarkets(branch, event, sender, callback) {
               nextMarket(null);
             },
             onFailed: function onFailed(e) {
-              api().Markets.getWinningOutcomes(market, function (winningOutcomes) {
+              api().Markets.getWinningOutcomes({ market: market }, function (winningOutcomes) {
                 if (!winningOutcomes) return nextMarket(e);
                 if (winningOutcomes.error) return nextMarket(winningOutcomes);
                 if (Array.isArray(winningOutcomes) && winningOutcomes.length && !parseInt(winningOutcomes[0], 10)) {
@@ -3879,7 +3740,7 @@ function closeEventMarkets(branch, event, sender, callback) {
                 nextMarket(null);
               });
             }
-          });
+          }));
         } else {
           nextMarket(null);
         }
@@ -3889,9 +3750,10 @@ function closeEventMarkets(branch, event, sender, callback) {
 }
 
 module.exports = closeEventMarkets;
-},{"../../api":4,"../../utils/noop":203,"async":228}],99:[function(require,module,exports){
+},{"../../api":4,"../../utils/noop":203,"async":228,"lodash.assign":352}],99:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var penaltyCatchUp = require("./penalty-catch-up");
 var getCurrentPeriodProgress = require("../get-current-period-progress");
 var api = require("../../api");
@@ -3900,48 +3762,55 @@ var noop = require("../../utils/noop");
 // If reported last period and called collectfees then call the penalization functions in
 // consensus [i.e. penalizeWrong], if didn't report last period or didn't call collectfees
 // last period then call penalizationCatchup in order to allow submitReportHash to work.
-function feePenaltyCatchUp(branch, periodLength, periodToCheck, sender, callback) {
-  api().ConsensusData.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
+function feePenaltyCatchUp(p, branch, periodLength, periodToCheck, sender, callback) {
+  api().ConsensusData.getPenalizedUpTo({
+    branch: branch,
+    sender: sender
+  }, function (lastPeriodPenalized) {
     lastPeriodPenalized = parseInt(lastPeriodPenalized, 10);
-    api().ConsensusData.getFeesCollected(branch, sender, lastPeriodPenalized, function (feesCollected) {
+    api().ConsensusData.getFeesCollected({
+      branch: branch,
+      address: sender,
+      period: lastPeriodPenalized
+    }, function (feesCollected) {
       if (!feesCollected || feesCollected.error) {
         return callback(feesCollected || "couldn't get fees collected");
       }
       if (feesCollected === "1") {
-        return penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
+        return penaltyCatchUp(p, branch, periodLength, periodToCheck, sender, callback);
       }
       if (getCurrentPeriodProgress(periodLength) < 50) {
-        return penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
+        return penaltyCatchUp(p, branch, periodLength, periodToCheck, sender, callback);
       }
-      api().CollectFees.collectFees({
+      api().CollectFees.collectFees(assign({}, p, {
         branch: branch,
         sender: sender,
         periodLength: periodLength,
         onSent: noop,
         onSuccess: function onSuccess() {
-          penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
+          penaltyCatchUp(p, branch, periodLength, periodToCheck, sender, callback);
         },
         onFailed: function onFailed(e) {
           if (e.error !== "-1") return callback(e);
-          penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
+          penaltyCatchUp(p, branch, periodLength, periodToCheck, sender, callback);
         }
-      });
+      }));
     });
   });
 }
 
 module.exports = feePenaltyCatchUp;
-},{"../../api":4,"../../utils/noop":203,"../get-current-period-progress":93,"./penalty-catch-up":101}],100:[function(require,module,exports){
+},{"../../api":4,"../../utils/noop":203,"../get-current-period-progress":93,"./penalty-catch-up":101,"lodash.assign":352}],100:[function(require,module,exports){
 "use strict";
 
 var periodCatchUp = require("./period-catch-up");
 var feePenaltyCatchUp = require("./fee-penalty-catch-up");
 
 // Increment vote period until vote period = current period - 1
-function prepareToReport(branch, periodLength, sender, callback) {
-  periodCatchUp(branch, periodLength, function (err, votePeriod) {
+function prepareToReport(p, branch, periodLength, sender, callback) {
+  periodCatchUp(p, branch, periodLength, function (err, votePeriod) {
     if (err) return callback(err);
-    feePenaltyCatchUp(branch, periodLength, votePeriod - 1, sender, function (err) {
+    feePenaltyCatchUp(p, branch, periodLength, votePeriod - 1, sender, function (err) {
       if (err) return callback(err);
       callback(null, votePeriod);
     });
@@ -3952,6 +3821,7 @@ module.exports = prepareToReport;
 },{"./fee-penalty-catch-up":99,"./period-catch-up":102}],101:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var async = require("async");
 var BigNumber = require("bignumber.js");
 var closeEventMarkets = require("./close-event-markets");
@@ -3960,8 +3830,11 @@ var api = require("../../api");
 var noop = require("../../utils/noop");
 
 // TODO break this monster up into multiple functions
-function penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback) {
-  api().ConsensusData.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
+function penaltyCatchUp(p, branch, periodLength, periodToCheck, sender, callback) {
+  api().ConsensusData.getPenalizedUpTo({
+    branch: branch,
+    sender: sender
+  }, function (lastPeriodPenalized) {
     lastPeriodPenalized = parseInt(lastPeriodPenalized, 10);
     if (lastPeriodPenalized === 0 || lastPeriodPenalized >= periodToCheck) {
       return callback(null);
@@ -3969,7 +3842,7 @@ function penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback) {
       if (getCurrentPeriodProgress(periodLength) >= 50) {
         return callback(null);
       }
-      return api().PenalizationCatchup.penalizationCatchup({
+      return api().PenalizationCatchup.penalizationCatchup(assign({}, p, {
         branch: branch,
         sender: sender,
         onSent: noop,
@@ -3977,12 +3850,15 @@ function penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback) {
           callback(null);
         },
         onFailed: callback
-      });
+      }));
     }
-    api().ExpiringEvents.getEvents(branch, periodToCheck, function (events) {
+    api().ExpiringEvents.getEvents({
+      branch: branch,
+      expDateIndex: periodToCheck
+    }, function (events) {
       if (!Array.isArray(events) || !events.length) {
         // console.log("[penaltyCatchUp] No events found in period", periodToCheck);
-        api().Consensus.penalizeWrong({
+        api().Consensus.penalizeWrong(assign({}, p, {
           branch: branch,
           event: 0,
           onSent: noop,
@@ -3990,20 +3866,24 @@ function penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback) {
             callback(null);
           },
           onFailed: callback
-        });
+        }));
       } else {
         // console.log("[penaltyCatchUp] Events in period " + periodToCheck + ":", events);
         async.eachSeries(events, function (event, nextEvent) {
           if (!event || !parseInt(event, 16)) return nextEvent(null);
-          api().ExpiringEvents.getNumReportsEvent(branch, periodToCheck, event, function (numReportsEvent) {
+          api().ExpiringEvents.getNumReportsEvent({
+            branch: branch,
+            votePeriod: periodToCheck,
+            eventID: event
+          }, function (numReportsEvent) {
             // console.log("[penaltyCatchUp] getNumReportsEvent:", numReportsEvent);
             if (parseInt(numReportsEvent, 10) === 0) {
               // check to make sure event hasn't been moved forward already
-              api().Events.getExpiration(event, function (expiration) {
+              api().Events.getExpiration({ event: event }, function (expiration) {
                 if (!new BigNumber(expiration, 10).dividedBy(periodLength).floor().eq(periodToCheck)) {
                   return nextEvent(null);
                 }
-                api().ExpiringEvents.moveEvent({
+                api().ExpiringEvents.moveEvent(assign({}, p, {
                   branch: branch,
                   event: event,
                   onSent: noop,
@@ -4011,23 +3891,28 @@ function penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback) {
                     nextEvent(null);
                   },
                   onFailed: nextEvent
-                });
+                }));
               });
             } else {
-              api().ExpiringEvents.getReport(branch, periodToCheck, event, sender, function (report) {
+              api().ExpiringEvents.getReport({
+                branch: branch,
+                period: periodToCheck,
+                event: event,
+                sender: sender
+              }, function (report) {
                 console.log("[penaltyCatchUp] ExpiringEvents.getReport:", report);
                 if (parseInt(report, 10) === 0) {
-                  return closeEventMarkets(branch, event, sender, nextEvent);
+                  return closeEventMarkets(p, branch, event, sender, nextEvent);
                 }
-                api().Consensus.penalizeWrong({
+                api().Consensus.penalizeWrong(assign({}, p, {
                   branch: branch,
                   event: event,
                   onSent: noop,
                   onSuccess: function onSuccess() {
-                    closeEventMarkets(branch, event, sender, nextEvent);
+                    closeEventMarkets(p, branch, event, sender, nextEvent);
                   },
                   onFailed: nextEvent
-                });
+                }));
               });
             }
           });
@@ -4038,24 +3923,25 @@ function penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback) {
 }
 
 module.exports = penaltyCatchUp;
-},{"../../api":4,"../../utils/noop":203,"../get-current-period-progress":93,"./close-event-markets":98,"async":228,"bignumber.js":235}],102:[function(require,module,exports){
+},{"../../api":4,"../../utils/noop":203,"../get-current-period-progress":93,"./close-event-markets":98,"async":228,"bignumber.js":235,"lodash.assign":352}],102:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var getCurrentPeriod = require("../get-current-period");
 var api = require("../../api");
 var noop = require("../../utils/noop");
 
-function periodCatchUp(branch, periodLength, callback) {
-  api().Branches.getVotePeriod(branch, function (votePeriod) {
+function periodCatchUp(p, branch, periodLength, callback) {
+  api().Branches.getVotePeriod({ branch: branch }, function (votePeriod) {
     if (votePeriod < getCurrentPeriod(periodLength) - 1) {
-      api().Consensus.incrementPeriodAfterReporting({
+      api().Consensus.incrementPeriodAfterReporting(assign({}, p, {
         branch: branch,
         onSent: noop,
         onSuccess: function onSuccess() {
-          periodCatchUp(branch, periodLength, callback);
+          periodCatchUp(p, branch, periodLength, callback);
         },
         onFailed: callback
-      });
+      }));
     } else {
       callback(null, votePeriod);
     }
@@ -4063,149 +3949,95 @@ function periodCatchUp(branch, periodLength, callback) {
 }
 
 module.exports = periodCatchUp;
-},{"../../api":4,"../../utils/noop":203,"../get-current-period":94}],103:[function(require,module,exports){
+},{"../../api":4,"../../utils/noop":203,"../get-current-period":94,"lodash.assign":352}],103:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var api = require("../api");
 var fixReport = require("./format/fix-report");
-var isObject = require("../utils/is-object");
 
-function slashRep(branch, salt, report, reporter, eventID, minValue, maxValue, type, isIndeterminate, isUnethical, onSent, onSuccess, onFailed) {
-  if (isObject(branch)) {
-    salt = branch.salt;
-    report = branch.report;
-    reporter = branch.reporter;
-    eventID = branch.eventID;
-    minValue = branch.minValue;
-    maxValue = branch.maxValue;
-    type = branch.type;
-    isIndeterminate = branch.isIndeterminate;
-    isUnethical = branch.isUnethical;
-    onSent = branch.onSent;
-    onSuccess = branch.onSuccess;
-    onFailed = branch.onFailed;
-    branch = branch.branch;
-  }
-  return api().SlashRep.slashRep({
-    branch: branch,
-    salt: abi.hex(salt),
-    report: fixReport(report, minValue, maxValue, type, isIndeterminate),
-    reporter: reporter,
-    eventID: eventID,
-    onSent: onSent,
-    onSuccess: onSuccess,
-    onFailed: onFailed
-  });
+// branch, salt, report, reporter, eventID, minValue, maxValue, type, isIndeterminate, isUnethical, onSent, onSuccess, onFailed
+function slashRep(p) {
+  return api().SlashRep.slashRep(assign({}, p, {
+    salt: abi.hex(p.salt),
+    report: fixReport(p.report, p.minValue, p.maxValue, p.type, p.isIndeterminate)
+  }));
 }
 
 module.exports = slashRep;
-},{"../api":4,"../utils/is-object":201,"./format/fix-report":85,"augur-abi":229}],104:[function(require,module,exports){
+},{"../api":4,"./format/fix-report":85,"augur-abi":229,"lodash.assign":352}],104:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var getCurrentPeriodProgress = require("./get-current-period-progress");
 var prepareToReport = require("./prepare-to-report");
 var api = require("../api");
-var isObject = require("../utils/is-object");
 
-function submitReportHash(event, reportHash, encryptedReport, encryptedSalt, ethics, branch, period, periodLength, onSent, _onSuccess, onFailed) {
-  if (isObject(event)) {
-    reportHash = event.reportHash;
-    encryptedReport = event.encryptedReport;
-    encryptedSalt = event.encryptedSalt;
-    ethics = event.ethics;
-    branch = event.branch;
-    period = event.period;
-    periodLength = event.periodLength;
-    onSent = event.onSent;
-    _onSuccess = event.onSuccess;
-    onFailed = event.onFailed;
-    event = event.event;
+// { event, reportHash, encryptedReport, encryptedSalt, ethics, branch, period, periodLength, onSent, onSuccess, onFailed }
+function submitReportHash(p) {
+  if (getCurrentPeriodProgress(p.periodLength) >= 50) {
+    return p.onFailed({ "-2": "not in first half of period (commit phase)" });
   }
-  if (getCurrentPeriodProgress(periodLength) >= 50) {
-    return onFailed({ "-2": "not in first half of period (commit phase)" });
-  }
-  return api().MakeReports.submitReportHash({
-    event: event,
-    reportHash: reportHash,
-    encryptedReport: encryptedReport || 0,
-    encryptedSalt: encryptedSalt || 0,
-    ethics: abi.fix(ethics, "hex"),
-    onSent: onSent,
+  return api().MakeReports.submitReportHash(assign({}, p, {
+    encryptedReport: p.encryptedReport || 0,
+    encryptedSalt: p.encryptedSalt || 0,
+    ethics: abi.fix(p.ethics, "hex"),
     onSuccess: function onSuccess(res) {
       res.callReturn = abi.bignum(res.callReturn, "string", true);
       if (res.callReturn === "0") {
-        return prepareToReport(branch, periodLength, res.from, function (err) {
-          if (err) return onFailed(err);
-          api().ConsensusData.getRepRedistributionDone(branch, res.from, function (repRedistributionDone) {
-            if (repRedistributionDone === "0") {
-              return onFailed("rep redistribution not done");
+        return prepareToReport(p.branch, p.periodLength, res.from, function (err) {
+          if (err) return p.onFailed(err);
+          api().ConsensusData.getRepRedistributionDone({
+            branch: p.branch,
+            reporter: res.from,
+            callback: function callback(repRedistributionDone) {
+              if (repRedistributionDone === "0") {
+                return p.onFailed("Rep redistribution not done");
+              }
+              submitReportHash(p);
             }
-            submitReportHash({
-              event: event,
-              reportHash: reportHash,
-              encryptedReport: encryptedReport,
-              encryptedSalt: encryptedSalt,
-              ethics: ethics,
-              branch: branch,
-              period: period,
-              periodLength: periodLength,
-              onSent: onSent,
-              onSuccess: _onSuccess,
-              onFailed: onFailed
-            });
           });
         });
       } else if (res.callReturn !== "-2") {
-        return _onSuccess(res);
+        return p.onSuccess(res);
       }
       api().ExpiringEvents.getReportHash({
-        branch: branch,
-        expDateIndex: period,
+        branch: p.branch,
+        expDateIndex: p.period,
         reporter: res.from,
-        event: event,
-        callback: function callback(storedReportHash) {
-          if (parseInt(storedReportHash, 16)) {
-            res.callReturn = "1";
-            return _onSuccess(res);
-          }
-          onFailed({ "-2": "not in first half of period (commit phase)" });
+        event: p.event
+      }, function (storedReportHash) {
+        if (parseInt(storedReportHash, 16)) {
+          res.callReturn = "1";
+          return p.onSuccess(res);
         }
+        p.onFailed({ "-2": "not in first half of period (commit phase)" });
       });
-    },
-    onFailed: onFailed
-  });
+    }
+  }));
 }
 
 module.exports = submitReportHash;
-},{"../api":4,"../utils/is-object":201,"./get-current-period-progress":93,"./prepare-to-report":100,"augur-abi":229}],105:[function(require,module,exports){
+},{"../api":4,"./get-current-period-progress":93,"./prepare-to-report":100,"augur-abi":229,"lodash.assign":352}],105:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var fixReport = require("./format/fix-report");
 var api = require("../api");
-var isObject = require("../utils/is-object");
 
-function submitReport(event, salt, report, ethics, minValue, maxValue, type, isIndeterminate, onSent, onSuccess, onFailed) {
-  if (isObject(event)) {
-    salt = event.salt;
-    report = event.report;
-    ethics = event.ethics;
-    minValue = event.minValue;
-    maxValue = event.maxValue;
-    type = event.type;
-    isIndeterminate = event.isIndeterminate;
-    onSent = event.onSent;
-    onSuccess = event.onSuccess;
-    onFailed = event.onFailed;
-    event = event.event;
-  }
-  return api().MakeReports.submitReport(event, abi.hex(salt), fixReport(report, minValue, maxValue, type, isIndeterminate), ethics, onSent, onSuccess, onFailed);
+// { event, salt, report, ethics, minValue, maxValue, type, isIndeterminate }
+function submitReport(p) {
+  return api().MakeReports.submitReport(assign({}, p, {
+    salt: abi.hex(p.salt),
+    report: fixReport(p.report, p.minValue, p.maxValue, p.type, p.isIndeterminate)
+  }));
 }
 
 module.exports = submitReport;
-},{"../api":4,"../utils/is-object":201,"./format/fix-report":85,"augur-abi":229}],106:[function(require,module,exports){
+},{"../api":4,"./format/fix-report":85,"augur-abi":229,"lodash.assign":352}],106:[function(require,module,exports){
 "use strict";
 
 var createRpcInterface = function createRpcInterface(ethrpc) {
@@ -4237,7 +4069,8 @@ var createRpcInterface = function createRpcInterface(ethrpc) {
     excludeFromTransactionRelay: ethrpc.excludeFromTransactionRelay,
     includeInTransactionRelay: ethrpc.includeInTransactionRelay,
     registerTransactionRelay: ethrpc.registerTransactionRelay,
-    unregisterTransactionRelay: ethrpc.unregisterTransactionRelay
+    unregisterTransactionRelay: ethrpc.unregisterTransactionRelay,
+    setDebugOptions: ethrpc.setDebugOptions
   };
 };
 
@@ -4295,7 +4128,7 @@ var GETTER_CHUNK_SIZE = require("../constants").GETTER_CHUNK_SIZE;
 function getTopicsInfoChunked(branch, offset, numTopicsToLoad, totalTopics, chunkCB, callback) {
   if (!isFunction(chunkCB)) chunkCB = noop;
   if (!totalTopics) {
-    return api().Topics.getNumTopicsInBranch(branch, function (totalTopics) {
+    return api().Topics.getNumTopicsInBranch({ branch: branch }, function (totalTopics) {
       if (!totalTopics || totalTopics.error || !parseInt(totalTopics, 10)) {
         return callback(totalTopics);
       }
@@ -4321,31 +4154,18 @@ module.exports = getTopicsInfoChunked;
 "use strict";
 
 var api = require("../api");
-var isFunction = require("../utils/is-function");
-var isObject = require("../utils/is-object");
 
-function getTopicsInfo(branch, offset, numTopicsToLoad, callback) {
-  if (!callback) {
-    if (isFunction(offset)) {
-      callback = offset;
-      offset = null;
-      numTopicsToLoad = null;
-    } else if (isFunction(numTopicsToLoad)) {
-      callback = numTopicsToLoad;
-      numTopicsToLoad = null;
-    }
-  }
-  if (isObject(branch)) {
-    offset = branch.offset;
-    numTopicsToLoad = branch.numTopicsToLoad;
-    callback = callback || branch.callback;
-    branch = branch.branch;
-  }
-  return api().Topics.getTopicsInfo(branch, offset || 0, numTopicsToLoad || 0, callback);
+// { branch, offset, numTopicsToLoad }
+function getTopicsInfo(p, callback) {
+  return api().Topics.getTopicsInfo({
+    branch: p.branch,
+    offset: p.offset || 0,
+    numTopicsToLoad: p.numTopicsToLoad || 0
+  }, callback);
 }
 
 module.exports = getTopicsInfo;
-},{"../api":4,"../utils/is-function":200,"../utils/is-object":201}],111:[function(require,module,exports){
+},{"../api":4}],111:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -4369,53 +4189,46 @@ module.exports = adjustScalarSellPrice;
 },{"augur-abi":229,"bignumber.js":235}],113:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var eventsAPI = require("augur-contracts").api.events;
 var api = require("../api");
 var compose = require("../utils/compose");
-var isObject = require("../utils/is-object");
-var noop = require("../utils/noop");
 var rpcInterface = require("../rpc-interface");
 var errors = rpcInterface.errors;
 
-function cancel(trade_id, onSent, onSuccess, onFailed) {
-  if (isObject(trade_id)) {
-    onSent = trade_id.onSent;
-    onSuccess = trade_id.onSuccess;
-    onFailed = trade_id.onFailed;
-    trade_id = trade_id.trade_id;
-  }
-  onSent = onSent || noop;
-  onSuccess = onSuccess || noop;
-  onFailed = onFailed || noop;
-  api().BuyAndSellShares.cancel(trade_id, onSent, compose(function (result, callback) {
-    if (!result || !result.callReturn) return callback(result);
-    rpcInterface.getTransactionReceipt(result.hash, function (receipt) {
-      var logs, sig, numLogs, logdata, i;
-      if (!receipt) return onFailed(errors.TRANSACTION_RECEIPT_NOT_FOUND);
-      if (receipt.error) return onFailed(receipt);
-      if (receipt && Array.isArray(receipt.logs) && receipt.logs.length) {
-        logs = receipt.logs;
-        sig = eventsAPI.log_cancel.signature;
-        result.cashRefund = "0";
-        numLogs = logs.length;
-        for (i = 0; i < numLogs; ++i) {
-          if (logs[i].topics[0] === sig) {
-            logdata = abi.unroll_array(logs[i].data);
-            if (Array.isArray(logdata) && logdata.length) {
-              result.cashRefund = abi.unfix(logdata[5], "string");
-              break;
+// { trade_id, onSent, onSuccess, onFailed }
+function cancel(p) {
+  api().BuyAndSellShares.cancel(assign({}, p, {
+    onSuccess: compose(function (result, callback) {
+      if (!result || !result.callReturn) return callback(result);
+      rpcInterface.getTransactionReceipt(result.hash, function (receipt) {
+        var logs, sig, numLogs, logdata, i;
+        if (!receipt) return p.onFailed(errors.TRANSACTION_RECEIPT_NOT_FOUND);
+        if (receipt.error) return p.onFailed(receipt);
+        if (receipt && Array.isArray(receipt.logs) && receipt.logs.length) {
+          logs = receipt.logs;
+          sig = eventsAPI.log_cancel.signature;
+          result.cashRefund = "0";
+          numLogs = logs.length;
+          for (i = 0; i < numLogs; ++i) {
+            if (logs[i].topics[0] === sig) {
+              logdata = abi.unroll_array(logs[i].data);
+              if (Array.isArray(logdata) && logdata.length) {
+                result.cashRefund = abi.unfix(logdata[5], "string");
+                break;
+              }
             }
           }
         }
-      }
-      callback(result);
-    });
-  }, onSuccess), onFailed);
+        callback(result);
+      });
+    }, p.onSuccess)
+  }));
 }
 
 module.exports = cancel;
-},{"../api":4,"../rpc-interface":106,"../utils/compose":198,"../utils/is-object":201,"../utils/noop":203,"augur-abi":229,"augur-contracts":232}],114:[function(require,module,exports){
+},{"../api":4,"../rpc-interface":106,"../utils/compose":198,"augur-abi":229,"augur-contracts":232,"lodash.assign":352}],114:[function(require,module,exports){
 "use strict";
 
 var async = require("async");
@@ -4431,7 +4244,7 @@ function checkGasLimit(trade_ids, sender, callback) {
   var block = rpcInterface.getCurrentBlock();
   var checked_trade_ids = trade_ids.slice();
   async.forEachOfSeries(trade_ids, function (trade_id, i, next) {
-    api().Trades.get_trade(trade_id, function (trade) {
+    api().Trades.get_trade({ id: trade_id }, function (trade) {
       if (!trade || !trade.id) {
         checked_trade_ids.splice(checked_trade_ids.indexOf(trade_id), 1);
         if (!checked_trade_ids.length) {
@@ -4673,36 +4486,22 @@ module.exports = {
 },{"./calculate-adjusted-trading-fee":116,"./calculate-maker-taker-fees":121,"./calculate-trading-cost":122,"./calculate-trading-fees":123,"./update-trading-fee":125}],125:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var calculateTradingFees = require("./calculate-trading-fees");
 var api = require("../../api");
-var isObject = require("../../utils/is-object");
 
-function updateTradingFee(branch, market, takerFee, makerFee, onSent, onSuccess, onFailed) {
-  var fees;
-  if (isObject(branch)) {
-    market = branch.market;
-    takerFee = branch.takerFee;
-    makerFee = branch.makerFee;
-    onSent = branch.onSent;
-    onSuccess = branch.onSuccess;
-    onFailed = branch.onFailed;
-    branch = branch.branch;
-  }
-  fees = calculateTradingFees(makerFee, takerFee);
-  return api().CreateMarket.updateTradingFee({
-    branch: branch,
-    market: market,
+// { branch, market, takerFee, makerFee, onSent, onSuccess, onFailed }
+function updateTradingFee(p) {
+  var fees = calculateTradingFees(p.makerFee, p.takerFee);
+  return api().CreateMarket.updateTradingFee(assign({}, p, {
     tradingFee: abi.fix(fees.tradingFee, "hex"),
-    makerFees: abi.fix(fees.makerProportionOfFee, "hex"),
-    onSent: onSent,
-    onSuccess: onSuccess,
-    onFailed: onFailed
-  });
+    makerFees: abi.fix(fees.makerProportionOfFee, "hex")
+  }));
 }
 
 module.exports = updateTradingFee;
-},{"../../api":4,"../../utils/is-object":201,"./calculate-trading-fees":123,"augur-abi":229}],126:[function(require,module,exports){
+},{"../../api":4,"./calculate-trading-fees":123,"augur-abi":229,"lodash.assign":352}],126:[function(require,module,exports){
 "use strict";
 
 var abi = require("augur-abi");
@@ -4788,7 +4587,11 @@ function placeTrade(market, outcomeID, tradeType, numShares, limitPrice, trading
     // check if user has position
     //  - if so, sell/ask
     //  - if not, short sell/short ask
-    api().Markets.getParticipantSharesPurchased(marketID, address, outcomeID, function (sharesPurchased) {
+    api().Markets.getParticipantSharesPurchased({
+      market: marketID,
+      trader: address,
+      outcome: outcomeID
+    }, function (sharesPurchased) {
       var position, tradeIDs, shares, askShares, shortAskShares, hasAskShares, hasShortAskShares;
       if (!sharesPurchased || sharesPurchased.error) return callback(sharesPurchased);
       position = abi.bignum(sharesPurchased).round(PRECISION.decimals, BigNumber.ROUND_DOWN);
@@ -4843,32 +4646,33 @@ module.exports = {
 },{"./cancel":113,"./fees":124,"./group":128,"./make-order":133,"./order-book":148,"./payout":152,"./positions":165,"./simulation":179,"./take-order":184}],131:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var shrinkScalarPrice = require("../shrink-scalar-price");
 var api = require("../../api");
 var isObject = require("../../utils/is-object");
 var MINIMUM_TRADE_SIZE = require("../../constants").MINIMUM_TRADE_SIZE;
 
-function buy(amount, price, market, outcome, tradeGroupID, scalarMinMax, onSent, onSuccess, onFailed) {
-  if (isObject(amount)) {
-    price = amount.price;
-    market = amount.market;
-    outcome = amount.outcome;
-    tradeGroupID = amount.tradeGroupID;
-    scalarMinMax = amount.scalarMinMax;
-    onSent = amount.onSent;
-    onSuccess = amount.onSuccess;
-    onFailed = amount.onFailed;
-    amount = amount.amount;
+// { amount, price, market, outcome, tradeGroupID, scalarMinMax, onSent, onSuccess, onFailed }
+function buy(p) {
+  if (isObject(p.scalarMinMax) && p.scalarMinMax.minValue !== undefined) {
+    p.price = shrinkScalarPrice(p.scalarMinMax.minValue, p.price);
   }
-  if (scalarMinMax && scalarMinMax.minValue !== undefined) {
-    price = shrinkScalarPrice(scalarMinMax.minValue, price);
-  }
-  return api().BuyAndSellShares.buy(abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome, abi.fix(MINIMUM_TRADE_SIZE, "hex"), tradeGroupID || 0, onSent, onSuccess, onFailed);
+  return api().BuyAndSellShares.buy(assign({}, p, {
+    amount: abi.fix(p.amount, "hex"),
+    price: abi.fix(p.price, "hex"),
+    market: p.market,
+    outcome: p.outcome,
+    minimumTradeSize: abi.fix(MINIMUM_TRADE_SIZE, "hex"),
+    tradeGroupID: p.tradeGroupID || 0,
+    onSent: p.onSent,
+    onSuccess: p.onSuccess,
+    onFailed: p.onFailed
+  }));
 }
 
 module.exports = buy;
-},{"../../api":4,"../../constants":15,"../../utils/is-object":201,"../shrink-scalar-price":168,"augur-abi":229}],132:[function(require,module,exports){
+},{"../../api":4,"../../constants":15,"../../utils/is-object":201,"../shrink-scalar-price":168,"augur-abi":229,"lodash.assign":352}],132:[function(require,module,exports){
 "use strict";
 
 function getScalarMinimum(type, minValue) {
@@ -5001,60 +4805,52 @@ module.exports = placeShortAsk;
 },{"../../utils/noop":203,"./parametrize-order":134,"./short-ask":140}],139:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var shrinkScalarPrice = require("../shrink-scalar-price");
 var api = require("../../api");
 var isObject = require("../../utils/is-object");
 var MINIMUM_TRADE_SIZE = require("../../constants").MINIMUM_TRADE_SIZE;
 
-function sell(amount, price, market, outcome, tradeGroupID, scalarMinMax, onSent, onSuccess, onFailed) {
-  if (isObject(amount)) {
-    price = amount.price;
-    market = amount.market;
-    outcome = amount.outcome;
-    tradeGroupID = amount.tradeGroupID;
-    scalarMinMax = amount.scalarMinMax;
-    onSent = amount.onSent;
-    onSuccess = amount.onSuccess;
-    onFailed = amount.onFailed;
-    amount = amount.amount;
+// { amount, price, market, outcome, tradeGroupID, scalarMinMax, onSent, onSuccess, onFailed }
+function sell(p) {
+  if (isObject(p.scalarMinMax) && p.scalarMinMax.minValue !== undefined) {
+    p.price = shrinkScalarPrice(p.scalarMinMax.minValue, p.price);
   }
-  if (scalarMinMax && scalarMinMax.minValue !== undefined) {
-    price = shrinkScalarPrice(scalarMinMax.minValue, price);
-  }
-  return api().BuyAndSellShares.sell(abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome, abi.fix(MINIMUM_TRADE_SIZE, "hex"), 0, tradeGroupID || 0, onSent, onSuccess, onFailed);
+  return api().BuyAndSellShares.sell(assign({}, p, {
+    amount: abi.fix(p.amount, "hex"),
+    price: abi.fix(p.price, "hex"),
+    minimumTradeSize: abi.fix(MINIMUM_TRADE_SIZE, "hex"),
+    isShortAsk: 0,
+    tradeGroupID: p.tradeGroupID || 0
+  }));
 }
 
 module.exports = sell;
-},{"../../api":4,"../../constants":15,"../../utils/is-object":201,"../shrink-scalar-price":168,"augur-abi":229}],140:[function(require,module,exports){
+},{"../../api":4,"../../constants":15,"../../utils/is-object":201,"../shrink-scalar-price":168,"augur-abi":229,"lodash.assign":352}],140:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var shrinkScalarPrice = require("../shrink-scalar-price");
 var api = require("../../api");
-var isObject = require("../../utils/is-object");
 var MINIMUM_TRADE_SIZE = require("../../constants").MINIMUM_TRADE_SIZE;
 
-function shortAsk(amount, price, market, outcome, tradeGroupID, scalarMinMax, onSent, onSuccess, onFailed) {
-  if (isObject(amount)) {
-    price = amount.price;
-    market = amount.market;
-    outcome = amount.outcome;
-    tradeGroupID = amount.tradeGroupID;
-    scalarMinMax = amount.scalarMinMax;
-    onSent = amount.onSent;
-    onSuccess = amount.onSuccess;
-    onFailed = amount.onFailed;
-    amount = amount.amount;
+// { amount, price, market, outcome, tradeGroupID, scalarMinMax, onSent, onSuccess, onFailed }
+function shortAsk(p) {
+  if (p.scalarMinMax && p.scalarMinMax.minValue !== undefined) {
+    p.price = shrinkScalarPrice(p.scalarMinMax.minValue, p.price);
   }
-  if (scalarMinMax && scalarMinMax.minValue !== undefined) {
-    price = shrinkScalarPrice(scalarMinMax.minValue, price);
-  }
-  return api().BuyAndSellShares.shortAsk(abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome, abi.fix(MINIMUM_TRADE_SIZE, "hex"), tradeGroupID || 0, onSent, onSuccess, onFailed);
+  return api().BuyAndSellShares.shortAsk(assign({}, p, {
+    amount: abi.fix(p.amount, "hex"),
+    price: abi.fix(p.price, "hex"),
+    minimumTradeSize: abi.fix(MINIMUM_TRADE_SIZE, "hex"),
+    tradeGroupID: p.tradeGroupID || 0
+  }));
 }
 
 module.exports = shortAsk;
-},{"../../api":4,"../../constants":15,"../../utils/is-object":201,"../shrink-scalar-price":168,"augur-abi":229}],141:[function(require,module,exports){
+},{"../../api":4,"../../constants":15,"../shrink-scalar-price":168,"augur-abi":229,"lodash.assign":352}],141:[function(require,module,exports){
 "use strict";
 
 var TRADE_GAS = require("../constants").TRADE_GAS;
@@ -5171,7 +4967,7 @@ var GETTER_CHUNK_SIZE = require("../../constants").GETTER_CHUNK_SIZE;
 function getOrderBookChunked(marketID, offset, numTradesToLoad, scalarMinMax, totalTrades, chunkCB, callback) {
   if (!isFunction(chunkCB)) chunkCB = noop;
   if (!totalTrades) {
-    return api().Trades.get_total_trades(marketID, function (totalTrades) {
+    return api().Trades.get_total_trades({ market_id: marketID }, function (totalTrades) {
       if (!totalTrades || totalTrades.error || !parseInt(totalTrades, 10)) {
         return callback(totalTrades);
       }
@@ -5200,28 +4996,19 @@ module.exports = getOrderBookChunked;
 "use strict";
 
 var api = require("../../api");
-var isFunction = require("../../utils/is-function");
-var isObject = require("../../utils/is-object");
 
 // scalarMinMax: null if not scalar; {minValue, maxValue} if scalar
-function getOrderBook(market, scalarMinMax, callback) {
-  var offset, numTradesToLoad;
-  if (!callback && isFunction(scalarMinMax)) {
-    callback = scalarMinMax;
-    scalarMinMax = null;
-  }
-  if (isObject(market)) {
-    offset = market.offset;
-    numTradesToLoad = market.numTradesToLoad;
-    scalarMinMax = scalarMinMax || market.scalarMinMax;
-    callback = callback || market.callback;
-    market = market.market;
-  }
-  return api().CompositeGetters.getOrderBook(market, offset || 0, numTradesToLoad || 0, callback, { extraArgument: scalarMinMax });
+// { market, scalarMinMax }
+function getOrderBook(p, callback) {
+  return api().CompositeGetters.getOrderBook({
+    marketID: p.market,
+    offset: p.offset || 0,
+    numTradesToLoad: p.numTradesToLoad || 0
+  }, callback, { extraArgument: p.scalarMinMax });
 }
 
 module.exports = getOrderBook;
-},{"../../api":4,"../../utils/is-function":200,"../../utils/is-object":201}],148:[function(require,module,exports){
+},{"../../api":4}],148:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -5252,20 +5039,21 @@ module.exports = removeOrder;
 },{"immutable-delete":337,"lodash.assign":352}],150:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var async = require("async");
 var api = require("../../api");
 var noop = require("../../utils/noop");
 
 // markets: array of market IDs for which to claim proceeds
-function claimMarketsProceeds(branch, markets, callback) {
+function claimMarketsProceeds(p, branch, markets, callback) {
   var claimedMarkets = [];
   async.eachSeries(markets, function (market, nextMarket) {
     var marketID = market.id;
-    api().Markets.getWinningOutcomes(marketID, function (winningOutcomes) {
+    api().Markets.getWinningOutcomes({ market: marketID }, function (winningOutcomes) {
       if (!Array.isArray(winningOutcomes) || !winningOutcomes.length || !winningOutcomes[0] || winningOutcomes[0] === "0") {
         return nextMarket(); // market not yet resolved
       }
-      api().CloseMarket.claimProceeds({
+      api().CloseMarket.claimProceeds(assign({}, p, {
         branch: branch,
         market: marketID,
         onSent: noop,
@@ -5274,7 +5062,7 @@ function claimMarketsProceeds(branch, markets, callback) {
           nextMarket();
         },
         onFailed: nextMarket
-      });
+      }));
     });
   }, function (err) {
     if (err) return callback(err);
@@ -5283,7 +5071,7 @@ function claimMarketsProceeds(branch, markets, callback) {
 }
 
 module.exports = claimMarketsProceeds;
-},{"../../api":4,"../../utils/noop":203,"async":228}],151:[function(require,module,exports){
+},{"../../api":4,"../../utils/noop":203,"async":228,"lodash.assign":352}],151:[function(require,module,exports){
 "use strict";
 
 var eventsAPI = require("augur-contracts").api.events;
@@ -6491,9 +6279,13 @@ function executeTrade(marketID, outcomeID, numShares, totalEthWithFee, tradingFe
     return !matchingTradeIDs || !matchingTradeIDs.length || res.remainingEth.lte(PRECISION.zero) && res.remainingShares.lte(PRECISION.zero) || bnNumShares.gt(ZERO) && bnSharesPurchased.lte(PRECISION.zero) || bnTotalEth.gt(ZERO) && bnCashBalance.lte(PRECISION.zero);
   }, function (nextTrade) {
     var tradeIDs = matchingTradeIDs.slice(0, 3);
-    api().Markets.getParticipantSharesPurchased(marketID, address, outcomeID, function (sharesPurchased) {
+    api().Markets.getParticipantSharesPurchased({
+      market: marketID,
+      trader: address,
+      outcome: outcomeID
+    }, function (sharesPurchased) {
       bnSharesPurchased = abi.bignum(sharesPurchased);
-      api().Cash.balance(address, function (cashBalance) {
+      api().Cash.balance({ address: address }, function (cashBalance) {
         var isRemainder, maxAmount, maxValue;
         bnCashBalance = abi.bignum(cashBalance);
         if (res.remainingShares.gt(bnSharesPurchased)) {
@@ -6553,9 +6345,13 @@ function executeTrade(marketID, outcomeID, numShares, totalEthWithFee, tradingFe
               tradingFees: res.tradingFees.toFixed(),
               gasFees: res.gasFees.toFixed()
             });
-            api().Markets.getParticipantSharesPurchased(marketID, address, outcomeID, function (sharesPurchased) {
+            api().Markets.getParticipantSharesPurchased({
+              market: marketID,
+              trader: address,
+              outcome: outcomeID
+            }, function (sharesPurchased) {
               bnSharesPurchased = abi.bignum(sharesPurchased);
-              api().Cash.balance(address, function (cashBalance) {
+              api().Cash.balance({ address: address }, function (cashBalance) {
                 bnCashBalance = abi.bignum(cashBalance);
                 nextTrade();
               });
@@ -6730,7 +6526,11 @@ function placeSell(market, outcomeID, numShares, limitPrice, address, totalCost,
     tradeCommitLockCallback(false);
     if (err) return callback(err);
     if (res.remainingShares.gt(PRECISION.zero)) {
-      api().Markets.getParticipantSharesPurchased(marketID, address, outcomeID, function (sharesPurchased) {
+      api().Markets.getParticipantSharesPurchased({
+        market: marketID,
+        trader: address,
+        outcome: outcomeID
+      }, function (sharesPurchased) {
         var position, remainingShares, shares, askShares, shortAskShares, hasAskShares, hasShortAskShares, tradeIDs;
         position = abi.bignum(sharesPurchased).round(PRECISION.decimals, BigNumber.ROUND_DOWN);
         remainingShares = abi.bignum(res.remainingShares);
@@ -6835,58 +6635,45 @@ module.exports = selectOrder;
 },{"./select-order-in-order-book-side":191}],193:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var clone = require("clone");
 var makeTradeHash = require("./make-trade-hash");
 var parseShortSellReceipt = require("./parse-short-sell-receipt");
 var checkGasLimit = require("../check-gas-limit");
 var api = require("../../api");
-var isObject = require("../../utils/is-object");
 var noop = require("../../utils/noop");
 var compose = require("../../utils/compose");
 var rpcInterface = require("../../rpc-interface");
 var errors = rpcInterface.errors;
 
 // TODO break this up
-function short_sell(buyer_trade_id, max_amount, tradeGroupID, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
-  if (isObject(buyer_trade_id)) {
-    max_amount = buyer_trade_id.max_amount;
-    tradeGroupID = buyer_trade_id.tradeGroupID;
-    sender = buyer_trade_id.sender;
-    onTradeHash = buyer_trade_id.onTradeHash;
-    onCommitSent = buyer_trade_id.onCommitSent;
-    onCommitSuccess = buyer_trade_id.onCommitSuccess;
-    onCommitFailed = buyer_trade_id.onCommitFailed;
-    onNextBlock = buyer_trade_id.onNextBlock;
-    onTradeSent = buyer_trade_id.onTradeSent;
-    onTradeSuccess = buyer_trade_id.onTradeSuccess;
-    onTradeFailed = buyer_trade_id.onTradeFailed;
-    buyer_trade_id = buyer_trade_id.buyer_trade_id;
-  }
-  onTradeHash = onTradeHash || noop;
-  onCommitSent = onCommitSent || noop;
-  onCommitSuccess = onCommitSuccess || noop;
-  onCommitFailed = onCommitFailed || noop;
-  onNextBlock = onNextBlock || noop;
-  onTradeSent = onTradeSent || noop;
-  onTradeSuccess = onTradeSuccess || noop;
-  onTradeFailed = onTradeFailed || noop;
-  checkGasLimit([buyer_trade_id], abi.format_address(sender), function (err, trade_ids) {
+// { buyer_trade_id, max_amount, tradeGroupID, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed }
+function short_sell(p) {
+  var onTradeHash = p.onTradeHash || noop;
+  var onCommitSent = p.onCommitSent || noop;
+  var onCommitSuccess = p.onCommitSuccess || noop;
+  var onCommitFailed = p.onCommitFailed || noop;
+  var onNextBlock = p.onNextBlock || noop;
+  var onTradeSent = p.onTradeSent || noop;
+  var onTradeSuccess = p.onTradeSuccess || noop;
+  var onTradeFailed = p.onTradeFailed || noop;
+  checkGasLimit([p.buyer_trade_id], abi.format_address(p.sender), function (err, trade_ids) {
     var tradeHash;
     if (err) return onTradeFailed(err);
-    tradeHash = makeTradeHash(0, max_amount, trade_ids);
+    tradeHash = makeTradeHash(0, p.max_amount, trade_ids);
     onTradeHash(tradeHash);
-    api().Trades.commitTrade({
+    api().Trades.commitTrade(assign({}, p, {
       hash: tradeHash,
       onSent: onCommitSent,
       onSuccess: function onSuccess(res) {
         onCommitSuccess(res);
         rpcInterface.waitForNextBlocks(1, function (blockNumber) {
           onNextBlock(blockNumber);
-          api().Trade.short_sell({
-            buyer_trade_id: buyer_trade_id,
-            max_amount: abi.fix(max_amount, "hex"),
-            tradeGroupID: tradeGroupID || 0,
+          api().Trade.short_sell(assign({}, p, {
+            buyer_trade_id: p.buyer_trade_id,
+            max_amount: abi.fix(p.max_amount, "hex"),
+            tradeGroupID: p.tradeGroupID || 0,
             onSent: onTradeSent,
             onSuccess: compose(function (result, callback) {
               var err, txHash;
@@ -6932,16 +6719,16 @@ function short_sell(buyer_trade_id, max_amount, tradeGroupID, sender, onTradeHas
               }
             }, onTradeSuccess),
             onFailed: onTradeFailed
-          });
+          }));
         });
       },
       onFailed: onCommitFailed
-    });
+    }));
   });
 }
 
 module.exports = short_sell;
-},{"../../api":4,"../../rpc-interface":106,"../../utils/compose":198,"../../utils/is-object":201,"../../utils/noop":203,"../check-gas-limit":114,"./make-trade-hash":185,"./parse-short-sell-receipt":186,"augur-abi":229,"clone":274}],194:[function(require,module,exports){
+},{"../../api":4,"../../rpc-interface":106,"../../utils/compose":198,"../../utils/noop":203,"../check-gas-limit":114,"./make-trade-hash":185,"./parse-short-sell-receipt":186,"augur-abi":229,"clone":274,"lodash.assign":352}],194:[function(require,module,exports){
 "use strict";
 
 var ROUND_DOWN = require("bignumber.js").ROUND_DOWN;
@@ -6980,13 +6767,13 @@ module.exports = sumTrades;
 },{"augur-abi":229,"bignumber.js":235}],196:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var clone = require("clone");
 var makeTradeHash = require("./make-trade-hash");
 var parseTradeReceipt = require("./parse-trade-receipt");
 var checkGasLimit = require("../check-gas-limit");
 var api = require("../../api");
-var isObject = require("../../utils/is-object");
 var noop = require("../../utils/noop");
 var compose = require("../../utils/compose");
 var rpcInterface = require("../../rpc-interface");
@@ -6994,51 +6781,37 @@ var errors = rpcInterface.errors;
 var constants = require("../../constants");
 
 // TODO break this up
-function trade(max_value, max_amount, trade_ids, tradeGroupID, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
-  if (isObject(max_value)) {
-    max_amount = max_value.max_amount;
-    trade_ids = max_value.trade_ids;
-    tradeGroupID = max_value.tradeGroupID;
-    sender = max_value.sender;
-    onTradeHash = max_value.onTradeHash;
-    onCommitSent = max_value.onCommitSent;
-    onCommitSuccess = max_value.onCommitSuccess;
-    onCommitFailed = max_value.onCommitFailed;
-    onNextBlock = max_value.onNextBlock;
-    onTradeSent = max_value.onTradeSent;
-    onTradeSuccess = max_value.onTradeSuccess;
-    onTradeFailed = max_value.onTradeFailed;
-    max_value = max_value.max_value;
-  }
-  onTradeHash = onTradeHash || noop;
-  onCommitSent = onCommitSent || noop;
-  onCommitSuccess = onCommitSuccess || noop;
-  onCommitFailed = onCommitFailed || noop;
-  onNextBlock = onNextBlock || noop;
-  onTradeSent = onTradeSent || noop;
-  onTradeSuccess = onTradeSuccess || noop;
-  onTradeFailed = onTradeFailed || noop;
-  checkGasLimit(trade_ids, abi.format_address(sender), function (err, trade_ids) {
+// { max_value, max_amount, trade_ids, tradeGroupID, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed }
+function trade(p) {
+  var onTradeHash = p.onTradeHash || noop;
+  var onCommitSent = p.onCommitSent || noop;
+  var onCommitSuccess = p.onCommitSuccess || noop;
+  var onCommitFailed = p.onCommitFailed || noop;
+  var onNextBlock = p.onNextBlock || noop;
+  var onTradeSent = p.onTradeSent || noop;
+  var onTradeSuccess = p.onTradeSuccess || noop;
+  var onTradeFailed = p.onTradeFailed || noop;
+  checkGasLimit(p.trade_ids, abi.format_address(p.sender), function (err, trade_ids) {
     var bn_max_value, tradeHash;
     if (err) return onTradeFailed(err);
-    bn_max_value = abi.bignum(max_value);
+    bn_max_value = abi.bignum(p.max_value);
     if (bn_max_value.gt(constants.ZERO) && bn_max_value.lt(constants.MINIMUM_TRADE_SIZE)) {
       return onTradeFailed({ error: "-4", message: errors.trade["-4"] });
     }
-    tradeHash = makeTradeHash(max_value, max_amount, trade_ids);
+    tradeHash = makeTradeHash(p.max_value, p.max_amount, trade_ids);
     onTradeHash(tradeHash);
-    api().Trades.commitTrade({
+    api().Trades.commitTrade(assign({}, p, {
       hash: tradeHash,
       onSent: onCommitSent,
       onSuccess: function onSuccess(res) {
         onCommitSuccess(res);
         rpcInterface.waitForNextBlocks(1, function (blockNumber) {
           onNextBlock(blockNumber);
-          api().Trade.trade({
-            max_value: abi.fix(max_value, "hex"),
-            max_amount: abi.fix(max_amount, "hex"),
+          api().Trade.trade(assign({}, p, {
+            max_value: abi.fix(p.max_value, "hex"),
+            max_amount: abi.fix(p.max_amount, "hex"),
             trade_ids: trade_ids,
-            tradeGroupID: tradeGroupID || 0,
+            tradeGroupID: p.tradeGroupID || 0,
             onSent: onTradeSent,
             onSuccess: compose(function (result, callback) {
               var err, txHash;
@@ -7084,16 +6857,16 @@ function trade(max_value, max_amount, trade_ids, tradeGroupID, sender, onTradeHa
               }
             }, onTradeSuccess),
             onFailed: onTradeFailed
-          });
+          }));
         });
       },
       onFailed: onCommitFailed
-    });
+    }));
   });
 }
 
 module.exports = trade;
-},{"../../api":4,"../../constants":15,"../../rpc-interface":106,"../../utils/compose":198,"../../utils/is-object":201,"../../utils/noop":203,"../check-gas-limit":114,"./make-trade-hash":185,"./parse-trade-receipt":187,"augur-abi":229,"clone":274}],197:[function(require,module,exports){
+},{"../../api":4,"../../constants":15,"../../rpc-interface":106,"../../utils/compose":198,"../../utils/noop":203,"../check-gas-limit":114,"./make-trade-hash":185,"./parse-trade-receipt":187,"augur-abi":229,"clone":274,"lodash.assign":352}],197:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -59927,17 +59700,16 @@ exports.createContext = Script.createContext = function (context) {
 
 var abi = require("augur-abi");
 var assign = require("lodash.assign");
-var clone = require("clone");
 var rpcInterface = require("../rpc-interface");
 var parsers = require("../parsers");
 var compose = require("../utils/compose");
 var isFunction = require("../utils/is-function");
 var isObject = require("../utils/is-object");
 
-function bindContractFunction(functionsAPI, contract, method) {
+function bindContractFunction(staticAPI) {
   return function () {
-    var tx, params, numInputs, numFixed, cb, i, onSent, onSuccess, onFailed, extraArgument;
-    tx = clone(functionsAPI[contract][method]);
+    var tx, params, numInputs, numFixed, cb, i, onSent, onSuccess, onFailed, extraArgument, signer;
+    tx = assign({}, staticAPI);
     if (!arguments || !arguments.length) {
       if (!tx.send) return rpcInterface.callContractFunction(tx);
       return rpcInterface.transact(tx);
@@ -59957,17 +59729,8 @@ function bindContractFunction(functionsAPI, contract, method) {
           }
         }
         if (isObject(params[0].tx)) assign(tx, params[0].tx);
-      } else {
-        if (numInputs) {
-          tx.params = new Array(numInputs);
-          for (i = 0; i < numInputs; ++i) {
-            tx.params[i] = params[i];
-          }
-        }
-        if (params.length > numInputs && isFunction(params[numInputs])) {
-          cb = params[numInputs];
-        }
       }
+      if (isFunction(params[params.length - 1])) cb = params[1];
       if (tx.fixed && tx.fixed.length) {
         numFixed = tx.fixed.length;
         for (i = 0; i < numFixed; ++i) {
@@ -59991,22 +59754,8 @@ function bindContractFunction(functionsAPI, contract, method) {
           tx.params[i] = params[0][tx.inputs[i]];
         }
       }
-    } else {
-      if (numInputs) {
-        tx.params = new Array(numInputs);
-        for (i = 0; i < tx.inputs.length; ++i) {
-          tx.params[i] = params[i];
-        }
-      }
-      if (params.length > numInputs && isFunction(params[numInputs])) {
-        onSent = params[numInputs];
-      }
-      if (params.length > numInputs && isFunction(params[numInputs + 1])) {
-        onSuccess = params[numInputs + 1];
-      }
-      if (params.length > numInputs && isFunction(params[numInputs + 2])) {
-        onFailed = params[numInputs + 2];
-      }
+      if (isObject(params[0].tx)) assign(tx, params[0].tx);
+      if (params[0]._signer) signer = params[0]._signer;
     }
     if (tx.fixed && tx.fixed.length) {
       numFixed = tx.fixed.length;
@@ -60014,14 +59763,14 @@ function bindContractFunction(functionsAPI, contract, method) {
         tx.params[tx.fixed[i]] = abi.fix(tx.params[tx.fixed[i]], "hex");
       }
     }
-    if (!tx.parser) return rpcInterface.transact(tx, onSent, onSuccess, onFailed);
-    return rpcInterface.transact(tx, onSent, compose(parsers[tx.parser], onSuccess, extraArgument), onFailed);
+    if (!tx.parser) return rpcInterface.transact(tx, signer, onSent, onSuccess, onFailed);
+    return rpcInterface.transact(tx, signer, onSent, compose(parsers[tx.parser], onSuccess, extraArgument), onFailed);
   };
 }
 
 module.exports = bindContractFunction;
 
-},{"../parsers":423,"../rpc-interface":458,"../utils/compose":462,"../utils/is-function":463,"../utils/is-object":464,"augur-abi":229,"clone":274,"lodash.assign":352}],417:[function(require,module,exports){
+},{"../parsers":423,"../rpc-interface":458,"../utils/compose":462,"../utils/is-function":463,"../utils/is-object":464,"augur-abi":229,"lodash.assign":352}],417:[function(require,module,exports){
 "use strict";
 
 var bindContractFunction = require("./bind-contract-function");
@@ -60030,7 +59779,7 @@ function generateContractAPI(functionsAPI) {
   return Object.keys(functionsAPI).reduce(function (p, contractName) {
     p[contractName] = {};
     Object.keys(functionsAPI[contractName]).map(function (functionName) {
-      p[contractName][functionName] = bindContractFunction(functionsAPI, contractName, functionName);
+      p[contractName][functionName] = bindContractFunction(functionsAPI[contractName][functionName]);
     });
     return p;
   }, {});
@@ -60530,48 +60279,50 @@ module.exports = function (trade) {
 },{"../constants":419,"../utils/round-to-precision":466,"augur-abi":229,"bignumber.js":235}],430:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var BigNumber = require("bignumber.js");
 var getCurrentPeriodProgress = require("../reporting/get-current-period-progress");
 var rpcInterface = require("../rpc-interface");
 var api = require("../api");
 var compose = require("../utils/compose");
-var isObject = require("../utils/is-object");
 
 // TODO break this apart
-function collectFees(branch, sender, periodLength, onSent, onSuccess, onFailed) {
-  if (isObject(branch)) {
-    sender = branch.sender;
-    periodLength = branch.periodLength;
-    onSent = branch.onSent;
-    onSuccess = branch.onSuccess;
-    onFailed = branch.onFailed;
-    branch = branch.branch;
+// { branch, sender, periodLength, onSent, onSuccess, onFailed }
+function collectFees(p) {
+  if (getCurrentPeriodProgress(p.periodLength) < 50) {
+    return p.onFailed({ "-2": "needs to be second half of reporting period to claim rep" });
   }
-  if (getCurrentPeriodProgress(periodLength) < 50) {
-    return onFailed({ "-2": "needs to be second half of reporting period to claim rep" });
-  }
-  api().Branches.getVotePeriod(branch, function (period) {
-    api().ConsensusData.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
-      if (feesCollected === "1") return onSuccess({callReturn: "2"});
-      api().CollectFees.collectFees({
-        branch: branch,
-        sender: sender,
+  api().Branches.getVotePeriod({ branch: p.branch }, function (period) {
+    api().ConsensusData.getFeesCollected({
+      branch: p.branch,
+      address: p.sender,
+      period: period - 1
+    }, function (feesCollected) {
+      if (feesCollected === "1") return p.onSuccess({ callReturn: "2" });
+      api().CollectFees.collectFees(assign({}, p, {
         tx: {
           value: abi.hex(new BigNumber("500000", 10).times(rpcInterface.getGasPrice()))
         },
-        onSent: onSent,
         onSuccess: compose(function (res, callback) {
           if (res && (res.callReturn === "1" || res.callReturn === "2")) {
             return callback(res);
           }
-          api().Branches.getVotePeriod(branch, function (period) {
-            api().ConsensusData.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
+          api().Branches.getVotePeriod({ branch: p.branch }, function (period) {
+            api().ConsensusData.getFeesCollected({
+              branch: p.branch,
+              address: p.sender,
+              period: period - 1
+            }, function (feesCollected) {
               if (feesCollected !== "1") {
                 res.callReturn = "2";
                 return callback(res);
               }
-              api().ExpiringEvents.getAfterRep(branch, period - 1, sender, function (afterRep) {
+              api().ExpiringEvents.getAfterRep({
+                branch: p.branch,
+                period: period - 1,
+                sender: p.sender
+              }, function (afterRep) {
                 if (parseInt(afterRep, 10) <= 1) {
                   res.callReturn = "2";
                   return callback(res);
@@ -60581,16 +60332,15 @@ function collectFees(branch, sender, periodLength, onSent, onSuccess, onFailed) 
               });
             });
           });
-        }, onSuccess),
-        onFailed: onFailed
-      });
+        }, p.onSuccess)
+      }));
     });
   });
 }
 
 module.exports = collectFees;
 
-},{"../api":418,"../reporting/get-current-period-progress":445,"../rpc-interface":458,"../utils/compose":462,"../utils/is-object":464,"augur-abi":229,"bignumber.js":235}],431:[function(require,module,exports){
+},{"../api":418,"../reporting/get-current-period-progress":445,"../rpc-interface":458,"../utils/compose":462,"augur-abi":229,"bignumber.js":235,"lodash.assign":352}],431:[function(require,module,exports){
 (function (Buffer){
 "use strict";
 
@@ -60635,30 +60385,23 @@ module.exports = encryptReport;
 
 var parseAndDecryptReport = require("./parse-and-decrypt-report");
 var api = require("../../api");
-var isFunction = require("../../utils/is-function");
-var isObject = require("../../utils/is-object");
 
-function getAndDecryptReport(branch, expDateIndex, reporter, event, secret, callback) {
-  if (isObject(branch)) {
-    expDateIndex = branch.expDateIndex;
-    reporter = branch.reporter;
-    event = branch.event;
-    secret = branch.secret;
-    callback = callback || branch.callback;
-    branch = branch.branch;
-  }
-  if (!isFunction(callback)) {
-    return parseAndDecryptReport(api().ExpiringEvents.getEncryptedReport(branch, expDateIndex, reporter, event), secret);
-  }
-  api().ExpiringEvents.getEncryptedReport(branch, expDateIndex, reporter, event, function (result) {
+// { branch, expDateIndex, reporter, event, secret }
+function getAndDecryptReport(p, callback) {
+  api().ExpiringEvents.getEncryptedReport({
+    branch: p.branch,
+    expDateIndex: p.expDateIndex,
+    reporter: p.reporter,
+    event: p.event
+  }, function (result) {
     if (!result || result.error) return callback(result);
-    callback(parseAndDecryptReport(result), secret);
+    callback(parseAndDecryptReport(result), p.secret);
   });
 }
 
 module.exports = getAndDecryptReport;
 
-},{"../../api":418,"../../utils/is-function":463,"../../utils/is-object":464,"./parse-and-decrypt-report":436}],434:[function(require,module,exports){
+},{"../../api":418,"./parse-and-decrypt-report":436}],434:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -60909,34 +60652,29 @@ module.exports = getCurrentPeriod;
 
 var unfixReport = require("./format/unfix-report");
 var api = require("../api");
-var isObject = require("../utils/is-object");
 var errors = require("../rpc-interface").errors;
 
-function getReport(branch, period, event, sender, minValue, maxValue, type, callback) {
-  if (isObject(branch)) {
-    period = branch.period;
-    event = branch.event;
-    sender = branch.sender;
-    minValue = branch.minValue;
-    maxValue = branch.maxValue;
-    type = branch.type;
-    callback = callback || branch.callback;
-    branch = branch.branch;
-  }
-  api().ExpiringEvents.getReport(branch, period, event, sender, function (rawReport) {
+// { branch, period, event, sender, minValue, maxValue, type }
+function getReport(p, callback) {
+  api().ExpiringEvents.getReport({
+    branch: p.branch,
+    period: p.period,
+    event: p.event,
+    sender: p.sender
+  }, function (rawReport) {
     if (!rawReport || rawReport.error) {
       return callback(rawReport || errors.REPORT_NOT_FOUND);
     }
     if (!parseInt(rawReport, 16)) {
-      return callback({report: "0", isIndeterminate: false});
+      return callback({ report: "0", isIndeterminate: false });
     }
-    callback(unfixReport(rawReport, minValue, maxValue, type));
+    callback(unfixReport(rawReport, p.minValue, p.maxValue, p.type));
   });
 }
 
 module.exports = getReport;
 
-},{"../api":418,"../rpc-interface":458,"../utils/is-object":464,"./format/unfix-report":444}],448:[function(require,module,exports){
+},{"../api":418,"../rpc-interface":458,"./format/unfix-report":444}],448:[function(require,module,exports){
 "use strict";
 
 module.exports = {
@@ -60967,17 +60705,17 @@ function finishLoadBranch(branch, callback) {
 
 function loadBranch(branchID, callback) {
   var branch = { id: abi.hex(branchID) };
-  api().Branches.getPeriodLength(branchID, function (periodLength) {
+  api().Branches.getPeriodLength({ branch: branchID }, function (periodLength) {
     if (!periodLength || periodLength.error) return callback(periodLength);
     branch.periodLength = periodLength;
     finishLoadBranch(branch, callback);
   });
-  api().Info.getDescription(branchID, function (description) {
+  api().Info.getDescription({ ID: branchID }, function (description) {
     if (!description || description.error) return callback(description);
     branch.description = description;
     finishLoadBranch(branch, callback);
   });
-  api().Branches.getBaseReporters(branchID, function (baseReporters) {
+  api().Branches.getBaseReporters({ branch: branchID }, function (baseReporters) {
     if (!baseReporters || baseReporters.error) return callback(baseReporters);
     branch.baseReporters = parseInt(baseReporters, 10);
     finishLoadBranch(branch, callback);
@@ -60989,29 +60727,30 @@ module.exports = loadBranch;
 },{"../api":418,"augur-abi":229}],450:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var async = require("async");
 var api = require("../../api");
 var noop = require("../../utils/noop");
 
-function closeEventMarkets(branch, event, sender, callback) {
-  api().Events.getMarkets(event, function (markets) {
+function closeEventMarkets(p, branch, event, sender, callback) {
+  api().Events.getMarkets({ event: event }, function (markets) {
     if (!Array.isArray(markets) || !markets.length) {
       return callback("no markets found for " + event);
     }
     if (markets && markets.error) return callback(markets);
     async.eachSeries(markets, function (market, nextMarket) {
-      api().Markets.getWinningOutcomes(market, function (winningOutcomes) {
+      api().Markets.getWinningOutcomes({ market: market }, function (winningOutcomes) {
         // console.log("winning outcomes for", market, winningOutcomes);
         if (!winningOutcomes || winningOutcomes.error) return nextMarket(winningOutcomes);
         if (Array.isArray(winningOutcomes) && winningOutcomes.length && !parseInt(winningOutcomes[0], 10)) {
-          api().CloseMarket.closeMarket({
+          api().CloseMarket.closeMarket(assign({}, p, {
             branch: branch,
             market: market,
             sender: sender,
             onSent: noop,
             onSuccess: function () { nextMarket(null); },
             onFailed: function (e) {
-              api().Markets.getWinningOutcomes(market, function (winningOutcomes) {
+              api().Markets.getWinningOutcomes({ market: market }, function (winningOutcomes) {
                 if (!winningOutcomes) return nextMarket(e);
                 if (winningOutcomes.error) return nextMarket(winningOutcomes);
                 if (Array.isArray(winningOutcomes) && winningOutcomes.length && !parseInt(winningOutcomes[0], 10)) {
@@ -61020,7 +60759,7 @@ function closeEventMarkets(branch, event, sender, callback) {
                 nextMarket(null);
               });
             }
-          });
+          }));
         } else {
           nextMarket(null);
         }
@@ -61031,9 +60770,10 @@ function closeEventMarkets(branch, event, sender, callback) {
 
 module.exports = closeEventMarkets;
 
-},{"../../api":418,"../../utils/noop":465,"async":228}],451:[function(require,module,exports){
+},{"../../api":418,"../../utils/noop":465,"async":228,"lodash.assign":352}],451:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var penaltyCatchUp = require("./penalty-catch-up");
 var getCurrentPeriodProgress = require("../get-current-period-progress");
 var api = require("../../api");
@@ -61042,49 +60782,56 @@ var noop = require("../../utils/noop");
 // If reported last period and called collectfees then call the penalization functions in
 // consensus [i.e. penalizeWrong], if didn't report last period or didn't call collectfees
 // last period then call penalizationCatchup in order to allow submitReportHash to work.
-function feePenaltyCatchUp(branch, periodLength, periodToCheck, sender, callback) {
-  api().ConsensusData.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
+function feePenaltyCatchUp(p, branch, periodLength, periodToCheck, sender, callback) {
+  api().ConsensusData.getPenalizedUpTo({
+    branch: branch,
+    sender: sender
+  }, function (lastPeriodPenalized) {
     lastPeriodPenalized = parseInt(lastPeriodPenalized, 10);
-    api().ConsensusData.getFeesCollected(branch, sender, lastPeriodPenalized, function (feesCollected) {
+    api().ConsensusData.getFeesCollected({
+      branch: branch,
+      address: sender,
+      period: lastPeriodPenalized
+    }, function (feesCollected) {
       if (!feesCollected || feesCollected.error) {
         return callback(feesCollected || "couldn't get fees collected");
       }
       if (feesCollected === "1") {
-        return penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
+        return penaltyCatchUp(p, branch, periodLength, periodToCheck, sender, callback);
       }
       if (getCurrentPeriodProgress(periodLength) < 50) {
-        return penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
+        return penaltyCatchUp(p, branch, periodLength, periodToCheck, sender, callback);
       }
-      api().CollectFees.collectFees({
+      api().CollectFees.collectFees(assign({}, p, {
         branch: branch,
         sender: sender,
         periodLength: periodLength,
         onSent: noop,
         onSuccess: function () {
-          penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
+          penaltyCatchUp(p, branch, periodLength, periodToCheck, sender, callback);
         },
         onFailed: function (e) {
           if (e.error !== "-1") return callback(e);
-          penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback);
+          penaltyCatchUp(p, branch, periodLength, periodToCheck, sender, callback);
         }
-      });
+      }));
     });
   });
 }
 
 module.exports = feePenaltyCatchUp;
 
-},{"../../api":418,"../../utils/noop":465,"../get-current-period-progress":445,"./penalty-catch-up":453}],452:[function(require,module,exports){
+},{"../../api":418,"../../utils/noop":465,"../get-current-period-progress":445,"./penalty-catch-up":453,"lodash.assign":352}],452:[function(require,module,exports){
 "use strict";
 
 var periodCatchUp = require("./period-catch-up");
 var feePenaltyCatchUp = require("./fee-penalty-catch-up");
 
 // Increment vote period until vote period = current period - 1
-function prepareToReport(branch, periodLength, sender, callback) {
-  periodCatchUp(branch, periodLength, function (err, votePeriod) {
+function prepareToReport(p, branch, periodLength, sender, callback) {
+  periodCatchUp(p, branch, periodLength, function (err, votePeriod) {
     if (err) return callback(err);
-    feePenaltyCatchUp(branch, periodLength, votePeriod - 1, sender, function (err) {
+    feePenaltyCatchUp(p, branch, periodLength, votePeriod - 1, sender, function (err) {
       if (err) return callback(err);
       callback(null, votePeriod);
     });
@@ -61096,6 +60843,7 @@ module.exports = prepareToReport;
 },{"./fee-penalty-catch-up":451,"./period-catch-up":454}],453:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var async = require("async");
 var BigNumber = require("bignumber.js");
 var closeEventMarkets = require("./close-event-markets");
@@ -61104,8 +60852,11 @@ var api = require("../../api");
 var noop = require("../../utils/noop");
 
 // TODO break this monster up into multiple functions
-function penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback) {
-  api().ConsensusData.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
+function penaltyCatchUp(p, branch, periodLength, periodToCheck, sender, callback) {
+  api().ConsensusData.getPenalizedUpTo({
+    branch: branch,
+    sender: sender
+  }, function (lastPeriodPenalized) {
     lastPeriodPenalized = parseInt(lastPeriodPenalized, 10);
     if (lastPeriodPenalized === 0 || lastPeriodPenalized >= periodToCheck) {
       return callback(null);
@@ -61113,59 +60864,71 @@ function penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback) {
       if (getCurrentPeriodProgress(periodLength) >= 50) {
         return callback(null);
       }
-      return api().PenalizationCatchup.penalizationCatchup({
+      return api().PenalizationCatchup.penalizationCatchup(assign({}, p, {
         branch: branch,
         sender: sender,
         onSent: noop,
         onSuccess: function () { callback(null); },
         onFailed: callback
-      });
+      }));
     }
-    api().ExpiringEvents.getEvents(branch, periodToCheck, function (events) {
+    api().ExpiringEvents.getEvents({
+      branch: branch,
+      expDateIndex: periodToCheck
+    }, function (events) {
       if (!Array.isArray(events) || !events.length) {
         // console.log("[penaltyCatchUp] No events found in period", periodToCheck);
-        api().Consensus.penalizeWrong({
+        api().Consensus.penalizeWrong(assign({}, p, {
           branch: branch,
           event: 0,
           onSent: noop,
           onSuccess: function () { callback(null); },
           onFailed: callback
-        });
+        }));
       } else {
         // console.log("[penaltyCatchUp] Events in period " + periodToCheck + ":", events);
         async.eachSeries(events, function (event, nextEvent) {
           if (!event || !parseInt(event, 16)) return nextEvent(null);
-          api().ExpiringEvents.getNumReportsEvent(branch, periodToCheck, event, function (numReportsEvent) {
+          api().ExpiringEvents.getNumReportsEvent({
+            branch: branch,
+            votePeriod: periodToCheck,
+            eventID: event
+          }, function (numReportsEvent) {
             // console.log("[penaltyCatchUp] getNumReportsEvent:", numReportsEvent);
             if (parseInt(numReportsEvent, 10) === 0) {
               // check to make sure event hasn't been moved forward already
-              api().Events.getExpiration(event, function (expiration) {
+              api().Events.getExpiration({ event: event }, function (expiration) {
                 if (!new BigNumber(expiration, 10).dividedBy(periodLength).floor().eq(periodToCheck)) {
                   return nextEvent(null);
                 }
-                api().ExpiringEvents.moveEvent({
+                api().ExpiringEvents.moveEvent(assign({}, p, {
                   branch: branch,
                   event: event,
                   onSent: noop,
                   onSuccess: function () { nextEvent(null); },
                   onFailed: nextEvent
-                });
+                }));
               });
             } else {
-              api().ExpiringEvents.getReport(branch, periodToCheck, event, sender, function (report) {
+              api().ExpiringEvents.getReport({
+                branch: branch,
+                period: periodToCheck,
+                event: event,
+                sender: sender
+              }, function (report) {
                 console.log("[penaltyCatchUp] ExpiringEvents.getReport:", report);
                 if (parseInt(report, 10) === 0) {
-                  return closeEventMarkets(branch, event, sender, nextEvent);
+                  return closeEventMarkets(p, branch, event, sender, nextEvent);
                 }
-                api().Consensus.penalizeWrong({
+                api().Consensus.penalizeWrong(assign({}, p, {
                   branch: branch,
                   event: event,
                   onSent: noop,
                   onSuccess: function () {
-                    closeEventMarkets(branch, event, sender, nextEvent);
+                    closeEventMarkets(p, branch, event, sender, nextEvent);
                   },
                   onFailed: nextEvent
-                });
+                }));
               });
             }
           });
@@ -61177,24 +60940,25 @@ function penaltyCatchUp(branch, periodLength, periodToCheck, sender, callback) {
 
 module.exports = penaltyCatchUp;
 
-},{"../../api":418,"../../utils/noop":465,"../get-current-period-progress":445,"./close-event-markets":450,"async":228,"bignumber.js":235}],454:[function(require,module,exports){
+},{"../../api":418,"../../utils/noop":465,"../get-current-period-progress":445,"./close-event-markets":450,"async":228,"bignumber.js":235,"lodash.assign":352}],454:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var getCurrentPeriod = require("../get-current-period");
 var api = require("../../api");
 var noop = require("../../utils/noop");
 
-function periodCatchUp(branch, periodLength, callback) {
-  api().Branches.getVotePeriod(branch, function (votePeriod) {
+function periodCatchUp(p, branch, periodLength, callback) {
+  api().Branches.getVotePeriod({ branch: branch }, function (votePeriod) {
     if (votePeriod < getCurrentPeriod(periodLength) - 1) {
-      api().Consensus.incrementPeriodAfterReporting({
+      api().Consensus.incrementPeriodAfterReporting(assign({}, p, {
         branch: branch,
         onSent: noop,
         onSuccess: function () {
-          periodCatchUp(branch, periodLength, callback);
+          periodCatchUp(p, branch, periodLength, callback);
         },
         onFailed: callback
-      });
+      }));
     } else {
       callback(null, votePeriod);
     }
@@ -61203,160 +60967,98 @@ function periodCatchUp(branch, periodLength, callback) {
 
 module.exports = periodCatchUp;
 
-},{"../../api":418,"../../utils/noop":465,"../get-current-period":446}],455:[function(require,module,exports){
+},{"../../api":418,"../../utils/noop":465,"../get-current-period":446,"lodash.assign":352}],455:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var api = require("../api");
 var fixReport = require("./format/fix-report");
-var isObject = require("../utils/is-object");
 
-function slashRep(branch, salt, report, reporter, eventID, minValue, maxValue, type, isIndeterminate, isUnethical, onSent, onSuccess, onFailed) {
-  if (isObject(branch)) {
-    salt = branch.salt;
-    report = branch.report;
-    reporter = branch.reporter;
-    eventID = branch.eventID;
-    minValue = branch.minValue;
-    maxValue = branch.maxValue;
-    type = branch.type;
-    isIndeterminate = branch.isIndeterminate;
-    isUnethical = branch.isUnethical;
-    onSent = branch.onSent;
-    onSuccess = branch.onSuccess;
-    onFailed = branch.onFailed;
-    branch = branch.branch;
-  }
-  return api().SlashRep.slashRep({
-    branch: branch,
-    salt: abi.hex(salt),
-    report: fixReport(report, minValue, maxValue, type, isIndeterminate),
-    reporter: reporter,
-    eventID: eventID,
-    onSent: onSent,
-    onSuccess: onSuccess,
-    onFailed: onFailed
-  });
+// branch, salt, report, reporter, eventID, minValue, maxValue, type, isIndeterminate, isUnethical, onSent, onSuccess, onFailed
+function slashRep(p) {
+  return api().SlashRep.slashRep(assign({}, p, {
+    salt: abi.hex(p.salt),
+    report: fixReport(p.report, p.minValue, p.maxValue, p.type, p.isIndeterminate)
+  }));
 }
 
 module.exports = slashRep;
 
-},{"../api":418,"../utils/is-object":464,"./format/fix-report":437,"augur-abi":229}],456:[function(require,module,exports){
+},{"../api":418,"./format/fix-report":437,"augur-abi":229,"lodash.assign":352}],456:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var getCurrentPeriodProgress = require("./get-current-period-progress");
 var prepareToReport = require("./prepare-to-report");
 var api = require("../api");
-var isObject = require("../utils/is-object");
 
-function submitReportHash(event, reportHash, encryptedReport, encryptedSalt, ethics, branch, period, periodLength, onSent, onSuccess, onFailed) {
-  if (isObject(event)) {
-    reportHash = event.reportHash;
-    encryptedReport = event.encryptedReport;
-    encryptedSalt = event.encryptedSalt;
-    ethics = event.ethics;
-    branch = event.branch;
-    period = event.period;
-    periodLength = event.periodLength;
-    onSent = event.onSent;
-    onSuccess = event.onSuccess;
-    onFailed = event.onFailed;
-    event = event.event;
+// { event, reportHash, encryptedReport, encryptedSalt, ethics, branch, period, periodLength, onSent, onSuccess, onFailed }
+function submitReportHash(p) {
+  if (getCurrentPeriodProgress(p.periodLength) >= 50) {
+    return p.onFailed({ "-2": "not in first half of period (commit phase)" });
   }
-  if (getCurrentPeriodProgress(periodLength) >= 50) {
-    return onFailed({"-2": "not in first half of period (commit phase)"});
-  }
-  return api().MakeReports.submitReportHash({
-    event: event,
-    reportHash: reportHash,
-    encryptedReport: encryptedReport || 0,
-    encryptedSalt: encryptedSalt || 0,
-    ethics: abi.fix(ethics, "hex"),
-    onSent: onSent,
+  return api().MakeReports.submitReportHash(assign({}, p, {
+    encryptedReport: p.encryptedReport || 0,
+    encryptedSalt: p.encryptedSalt || 0,
+    ethics: abi.fix(p.ethics, "hex"),
     onSuccess: function (res) {
       res.callReturn = abi.bignum(res.callReturn, "string", true);
       if (res.callReturn === "0") {
-        return prepareToReport(branch, periodLength, res.from, function (err) {
-          if (err) return onFailed(err);
-          api().ConsensusData.getRepRedistributionDone(branch, res.from, function (repRedistributionDone) {
-            if (repRedistributionDone === "0") {
-              return onFailed("rep redistribution not done");
+        return prepareToReport(p.branch, p.periodLength, res.from, function (err) {
+          if (err) return p.onFailed(err);
+          api().ConsensusData.getRepRedistributionDone({
+            branch: p.branch,
+            reporter: res.from,
+            callback: function (repRedistributionDone) {
+              if (repRedistributionDone === "0") {
+                return p.onFailed("Rep redistribution not done");
+              }
+              submitReportHash(p);
             }
-            submitReportHash({
-              event: event,
-              reportHash: reportHash,
-              encryptedReport: encryptedReport,
-              encryptedSalt: encryptedSalt,
-              ethics: ethics,
-              branch: branch,
-              period: period,
-              periodLength: periodLength,
-              onSent: onSent,
-              onSuccess: onSuccess,
-              onFailed: onFailed
-            });
           });
         });
       } else if (res.callReturn !== "-2") {
-        return onSuccess(res);
+        return p.onSuccess(res);
       }
       api().ExpiringEvents.getReportHash({
-        branch: branch,
-        expDateIndex: period,
+        branch: p.branch,
+        expDateIndex: p.period,
         reporter: res.from,
-        event: event,
-        callback: function (storedReportHash) {
-          if (parseInt(storedReportHash, 16)) {
-            res.callReturn = "1";
-            return onSuccess(res);
-          }
-          onFailed({"-2": "not in first half of period (commit phase)"});
+        event: p.event
+      }, function (storedReportHash) {
+        if (parseInt(storedReportHash, 16)) {
+          res.callReturn = "1";
+          return p.onSuccess(res);
         }
+        p.onFailed({ "-2": "not in first half of period (commit phase)" });
       });
-    },
-    onFailed: onFailed
-  });
+    }
+  }));
 }
 
 module.exports = submitReportHash;
 
-},{"../api":418,"../utils/is-object":464,"./get-current-period-progress":445,"./prepare-to-report":452,"augur-abi":229}],457:[function(require,module,exports){
+},{"../api":418,"./get-current-period-progress":445,"./prepare-to-report":452,"augur-abi":229,"lodash.assign":352}],457:[function(require,module,exports){
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var fixReport = require("./format/fix-report");
 var api = require("../api");
-var isObject = require("../utils/is-object");
 
-function submitReport(event, salt, report, ethics, minValue, maxValue, type, isIndeterminate, onSent, onSuccess, onFailed) {
-  if (isObject(event)) {
-    salt = event.salt;
-    report = event.report;
-    ethics = event.ethics;
-    minValue = event.minValue;
-    maxValue = event.maxValue;
-    type = event.type;
-    isIndeterminate = event.isIndeterminate;
-    onSent = event.onSent;
-    onSuccess = event.onSuccess;
-    onFailed = event.onFailed;
-    event = event.event;
-  }
-  return api().MakeReports.submitReport(
-    event,
-    abi.hex(salt),
-    fixReport(report, minValue, maxValue, type, isIndeterminate),
-    ethics,
-    onSent,
-    onSuccess,
-    onFailed
-  );
+// { event, salt, report, ethics, minValue, maxValue, type, isIndeterminate }
+function submitReport(p) {
+  return api().MakeReports.submitReport(assign({}, p, {
+    salt: abi.hex(p.salt),
+    report: fixReport(p.report, p.minValue, p.maxValue, p.type, p.isIndeterminate)
+  }));
 }
 
 module.exports = submitReport;
 
-},{"../api":418,"../utils/is-object":464,"./format/fix-report":437,"augur-abi":229}],458:[function(require,module,exports){
+},{"../api":418,"./format/fix-report":437,"augur-abi":229,"lodash.assign":352}],458:[function(require,module,exports){
 "use strict";
 
 var createRpcInterface = function (ethrpc) {
@@ -61388,7 +61090,8 @@ var createRpcInterface = function (ethrpc) {
     excludeFromTransactionRelay: ethrpc.excludeFromTransactionRelay,
     includeInTransactionRelay: ethrpc.includeInTransactionRelay,
     registerTransactionRelay: ethrpc.registerTransactionRelay,
-    unregisterTransactionRelay: ethrpc.unregisterTransactionRelay
+    unregisterTransactionRelay: ethrpc.unregisterTransactionRelay,
+    setDebugOptions: ethrpc.setDebugOptions
   };
 };
 
@@ -62362,8 +62065,589 @@ module.exports = {
 
 }).call(this,"/test")
 },{"../src/constants":419,"../src/reporting":448,"../src/utils/is-function":463,"../src/utils/noop":465,"./madlibs":469,"async":228,"augur-abi":229,"bignumber.js":235,"chalk":272,"clone":274,"fs":267,"madlibs":353,"path":362}],471:[function(require,module,exports){
-arguments[4][229][0].apply(exports,arguments)
-},{"bignumber.js":474,"buffer":271,"dup":229,"ethereumjs-abi":472,"js-sha3":522}],472:[function(require,module,exports){
+(function (Buffer){
+/**
+ * Ethereum contract ABI data serialization.
+ * @author Jack Peterson (jack@tinybike.net)
+ */
+
+"use strict";
+
+var BigNumber = require("bignumber.js");
+var keccak_256 = require("js-sha3").keccak_256;
+var ethabi = require("ethereumjs-abi");
+
+BigNumber.config({
+  MODULO_MODE: BigNumber.EUCLID,
+  ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN
+});
+
+module.exports = {
+
+  debug: false,
+
+  version: "1.2.1",
+
+  constants: {
+    ONE: new BigNumber(10).toPower(new BigNumber(18)),
+    BYTES_32: new BigNumber(2).toPower(new BigNumber(252)),
+    // Serpent integers are bounded by [-2^255, 2^255-1]
+    SERPINT_MIN: new BigNumber(2).toPower(new BigNumber(255)).neg(),
+    SERPINT_MAX: new BigNumber(2).toPower(new BigNumber(255)).minus(new BigNumber(1)),
+    MOD: new BigNumber(2).toPower(new BigNumber(256))
+  },
+
+  abi: ethabi,
+
+  keccak_256: keccak_256,
+
+  // Unroll an abi-encoded string into an array
+  unroll_array: function (string, returns, stride, init) {
+    var elements, array, position, i;
+    if (string && string.length >= 66) {
+      stride = stride || 64;
+      elements = Math.ceil((string.length - 2) / stride);
+      array = new Array(elements);
+      position = init || 2;
+      for (i = 0; i < elements; ++i) {
+        array[i] = this.prefix_hex(string.slice(position, position + stride));
+        position += stride;
+      }
+      if (array.length) {
+        if (parseInt(array[1], 16) === array.length - 2 || parseInt(array[1], 16) / 32 === array.length - 2) {
+          array.splice(0, 2);
+        }
+      }
+      for (i = 0; i < array.length; ++i) {
+        if (returns === "number[]") {
+          array[i] = this.string(array[i]);
+        } else if (returns === "unfix[]") {
+          array[i] = this.unfix_signed(array[i], "string");
+        }
+      }
+      return array;
+    } else {
+      return string;
+    }
+  },
+
+  // Convert hex to byte array for sha3
+  // (https://github.com/ethereum/dapp-bin/blob/master/ether_ad/scripts/sha3.min.js)
+  hex_to_bytes: function (s) {
+    var o = [];
+    var alpha = "0123456789abcdef";
+    for (var i = (s.substr(0, 2) === "0x" ? 2 : 0); i < s.length; i += 2) {
+      var index1 = alpha.indexOf(s[i]);
+      var index2 = alpha.indexOf(s[i + 1]);
+      if (index1 < 0 || index2 < 0) {
+        throw("Bad input to hex decoding: " + s + " " + i + " " + index1 + " " + index2);
+      }
+      o.push(16*index1 + index2);
+    }
+    return o;
+  },
+
+  bytes_to_hex: function (b) {
+    var hexbyte, h = "";
+    for (var i = 0, n = b.length; i < n; ++i) {
+      hexbyte = this.strip_0x(b[i].toString(16));
+      if (hexbyte.length === 1) hexbyte = "0" + hexbyte;
+      h += hexbyte;
+    }
+    return h;
+  },
+
+  sha3: function (hexstr) {
+    return keccak_256(this.hex_to_bytes(hexstr));
+  },
+
+  copy: function (obj) {
+    if (null === obj || "object" !== typeof obj) return obj;
+    var copy = obj.constructor();
+    for (var attr in obj) {
+      if (obj.hasOwnProperty(attr)) copy[attr] = obj[attr];
+    }
+    return copy;
+  },
+
+  is_numeric: function (n) {
+    return Number(parseFloat(n)) == n;
+  },
+
+  remove_leading_zeros: function (h) {
+    var hex = h.toString();
+    if (hex.slice(0, 2) === "0x") {
+      hex = hex.slice(2);
+    }
+    if (!/^0+$/.test(hex)) {
+      while (hex.slice(0, 2) === "00") {
+        hex = hex.slice(2);
+      }
+    }
+    return hex;
+  },
+
+  remove_trailing_zeros: function (h, utf8) {
+    var hex = h.toString();
+    if (utf8) {
+      while (hex.slice(-1) === "\u0000") {
+        hex = hex.slice(0, -1);
+      }
+    } else {
+      while (hex.slice(-2) === "00") {
+        hex = hex.slice(0, -2);
+      }
+    }
+    return hex;
+  },
+
+  bytes_to_utf16: function (bytearray) {
+    var el, bytestring;
+    if (Buffer.isBuffer(bytearray)) {
+      return new Buffer(bytearray, "hex").toString("utf8");
+    }
+    if (bytearray.constructor === Array) {
+      bytestring = '';
+      for (var i = 0, numBytes = bytearray.length; i < numBytes; ++i) {
+        el = bytearray[i];
+        if (el !== undefined && el !== null) {
+          if (el.constructor === String) {
+            el = this.strip_0x(el);
+            if (el.length % 2 !== 0) el = '0' + el;
+            bytestring += el;
+          } else if (el.constructor === Number || el.constructor === BigNumber) {
+            el = el.toString(16);
+            if (el.length % 2 !== 0) el = '0' + el;
+            bytestring += el;
+          } else if (Buffer.isBuffer(el)) {
+            bytestring += el.toString("hex");
+          }
+        }
+      }
+    }
+    if (bytearray.constructor === String) {
+      bytestring = this.strip_0x(bytearray);
+    } else if (bytearray.constructor === Number || bytearray.constructor === BigNumber) {
+      bytestring = bytearray.toString(16);
+    }
+    try {
+      bytestring = new Buffer(bytestring, "hex");
+    } catch (ex) {
+      console.error("[augur-abi] bytes_to_utf16:", JSON.stringify(bytestring, null, 2));
+      throw ex;
+    }
+    return bytestring.toString("utf8");
+  },
+
+  short_string_to_int256: function (shortstring) {
+    var int256 = shortstring;
+    if (int256.length > 32) int256 = int256.slice(0, 32);
+    return this.prefix_hex(this.pad_right(new Buffer(int256, "utf8").toString("hex")));
+  },
+
+  int256_to_short_string: function (int256) {
+    return new Buffer(this.strip_0x(this.remove_trailing_zeros(int256)), "hex").toString("utf8");
+  },
+
+  decode_hex: function (h, strip) {
+    var hex = h.toString();
+    var str = '';
+    if (hex.slice(0,2) === "0x") hex = hex.slice(2);
+    // first 32 bytes = offset
+    // second 32 bytes = string length
+    if (strip) {
+      hex = hex.slice(128);
+      hex = this.remove_trailing_zeros(hex);
+    }
+    for (var i = 0, l = hex.length; i < l; i += 2) {
+      str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+    }
+    return str;
+  },
+
+  // convert bytes to hex
+  encode_hex: function (str, toArray) {
+    var hexbyte, hex, i, len;
+    if (str && str.constructor === Object || str.constructor === Array) {
+      str = JSON.stringify(str);
+    }
+    len = str.length;
+    if (toArray) {
+      hex = [];
+      for (i = 0; i < len; ++i) {
+        hexbyte = str.charCodeAt(i).toString(16);
+        if (hexbyte.length === 1) hexbyte = "0" + hexbyte;
+        hex.push(this.prefix_hex(hexbyte));
+      }
+    } else {
+      hex = '';
+      for (i = 0; i < len; ++i) {
+        hexbyte = str.charCodeAt(i).toString(16);
+        if (hexbyte.length === 1) hexbyte = "0" + hexbyte;
+        hex += hexbyte;
+      }
+    }
+    return hex;
+  },
+
+  raw_encode_hex: function (str) {
+    return ethabi.rawEncode(["string"], [str]).toString("hex");
+  },
+
+  raw_decode_hex: function (hex) {
+    if (!Buffer.isBuffer(hex)) hex = new Buffer(this.strip_0x(hex), "hex");
+    return ethabi.rawDecode(["string"], hex)[0];
+  },
+
+  unfork: function (forked, prefix) {
+    if (forked !== null && forked !== undefined && forked.constructor !== Object) {
+      var unforked = this.bignum(forked);
+      if (unforked.constructor === BigNumber) {
+        var superforked = unforked.plus(this.constants.MOD);
+        if (superforked.gte(this.constants.BYTES_32) && superforked.lt(this.constants.MOD)) {
+          unforked = superforked;
+        }
+        if (forked.constructor === BigNumber) return unforked;
+        unforked = this.pad_left(unforked.toString(16));
+        if (prefix) unforked = this.prefix_hex(unforked);
+        return unforked;
+      } else {
+        throw new Error("abi.unfork failed (bad input): " + JSON.stringify(forked));
+      }
+    } else {
+      throw new Error("abi.unfork failed (bad input): " + JSON.stringify(forked));
+    }
+  },
+
+  hex: function (n, wrap) {
+    var h;
+    if (n !== undefined && n !== null && n.constructor) {
+      switch (n.constructor) {
+        case Buffer:
+          h = n.toString("hex");
+          break;
+        case Object:
+          h = this.encode_hex(JSON.stringify(n));
+          break;
+        case Array:
+          h = this.bignum(n, "hex", wrap);
+          break;
+        case BigNumber:
+          if (wrap) {
+            h = this.wrap(n.floor()).toString(16);
+          } else {
+            h = n.floor().toString(16);
+          }
+          break;
+        case String:
+          if (n === "-0x0") {
+            h = "0x0";
+          } else if (n === "-0") {
+            h = "0";
+          } else if (n.slice(0, 3) === "-0x" || n.slice(0, 2) === "-0x") {
+            h = this.bignum(n, "hex", wrap);
+          } else {
+            if (isFinite(n)) {
+              h = this.bignum(n, "hex", wrap);
+            } else {
+              h = this.encode_hex(n);
+            }
+          }
+          break;
+        case Boolean:
+          h = (n) ? "0x1" : "0x0";
+          break;
+        default:
+          h = this.bignum(n, "hex", wrap);
+      }
+    }
+    return this.prefix_hex(h);
+  },
+
+  is_hex: function (str) {
+    if (str && str.constructor === String) {
+      if (str.slice(0, 1) === '-' && str.length > 1) {
+        return /^[0-9A-F]+$/i.test(str.slice(1));
+      }
+      return /^[0-9A-F]+$/i.test(str);
+    }
+    return false;
+  },
+
+  format_int256: function (s) {
+    if (s === undefined || s === null || s === "0x") return s;
+    if (Array.isArray(s)) return s.map(this.format_int256.bind(this));
+    if (Buffer.isBuffer(s)) s = s.toString("hex");
+    if (s.constructor !== String) s = s.toString(16);
+    if (s.slice(0, 1) === "-") s = this.unfork(s);
+    s = this.strip_0x(s);
+    if (s.length > 64) {
+      if (this.debug) {
+        var overflow = (s.length / 2) - 32;
+        console.warn("input " + overflow + " bytes too large for int256, truncating");
+      }
+      s = s.slice(0, 64);
+    }
+    return this.prefix_hex(this.pad_left(s));
+  },
+
+  format_address: function (addr) {
+    if (addr && addr.constructor === String) {
+      addr = this.strip_0x(addr);
+      while (addr.length > 40 && addr.slice(0, 1) === "0") {
+        addr = addr.slice(1);
+      }
+      while (addr.length < 40) {
+        addr = "0" + addr;
+      }
+      return this.prefix_hex(addr);
+    }
+  },
+
+  strip_0x: function (str) {
+    if (str && str.constructor === String && str.length >= 2) {
+      var h = str;
+      if (h === "-0x0" || h === "0x0") {
+        return "0";
+      }
+      if (h.slice(0, 2) === "0x" && h.length > 2) {
+        h = h.slice(2);
+      } else if (h.slice(0, 3) === "-0x" && h.length > 3) {
+        h = '-' + h.slice(3);
+      }
+      if (this.is_hex(h)) return h;
+    }
+    return str;
+  },
+
+  zero_prefix: function (h) {
+    if (h !== undefined && h !== null && h.constructor === String) {
+      h = this.strip_0x(h);
+      if (h.length % 2) h = "0" + h;
+      if (h.slice(0,2) !== "0x" && h.slice(0,3) !== "-0x") {
+        if (h.slice(0,1) === '-') {
+          h = "-0x" + h.slice(1);
+        } else {
+          h = "0x" + h;
+        }
+      }
+    }
+    return h;
+  },
+
+  prefix_hex: function (n) {
+    if (n === undefined || n === null || n === "") return n;
+    if (n.constructor === Number || n.constructor === BigNumber) {
+      n = n.toString(16);
+    }
+    if (n.constructor === String && n.slice(0,2) !== "0x" && n.slice(0,3) !== "-0x") {
+      if (n.slice(0,1) === '-') {
+        n = "-0x" + n.slice(1);
+      } else {
+        n = "0x" + n;
+      }
+    }
+    return n;
+  },
+
+  bignum: function (n, encoding, wrap) {
+    var bn, len;
+    if (n !== null && n !== undefined && n !== "0x" && !n.error && !n.message) {
+      switch (n.constructor) {
+        case BigNumber:
+          bn = n;
+          break;
+        case Number:
+          bn = new BigNumber(n, 10);
+          break;
+        case String:
+          try {
+            bn = new BigNumber(n, 10);
+          } catch (exc) {
+            if (this.is_hex(n)) {
+              bn = new BigNumber(n, 16);
+            } else {
+              return n;
+            }
+          }
+          break;
+        case Array:
+          len = n.length;
+          bn = new Array(len);
+          for (var i = 0; i < len; ++i) {
+            bn[i] = this.bignum(n[i], encoding, wrap);
+          }
+          break;
+        default:
+          if (this.is_hex(n)) {
+            bn = new BigNumber(n, 16);
+          } else {
+            bn = new BigNumber(n, 10);
+          }
+      }
+      if (bn !== undefined && bn !== null && bn.constructor === BigNumber) {
+        if (wrap) bn = this.wrap(bn);
+        if (encoding) {
+          if (encoding === "number") {
+            bn = bn.toNumber();
+          } else if (encoding === "string") {
+            bn = bn.toFixed();
+          } else if (encoding === "hex") {
+            bn = this.prefix_hex(bn.floor().toString(16));
+          }
+        }
+      }
+      return bn;
+    } else {
+      return n;
+    }
+  },
+
+  wrap: function (bn) {
+    if (bn === undefined || bn === null) return bn;
+    if (bn.constructor !== BigNumber) bn = this.bignum(bn);
+    if (bn.gt(this.constants.SERPINT_MAX)) {
+      return bn.sub(this.constants.MOD);
+    } else if (bn.lt(this.constants.SERPINT_MIN)) {
+      return bn.plus(this.constants.MOD);
+    }
+    return bn;
+  },
+
+  fix: function (n, encode, wrap) {
+    var fixed;
+    if (n && n !== "0x" && !n.error && !n.message) {
+      if (encode && n.constructor === String) {
+        encode = encode.toLowerCase();
+      }
+      if (n.constructor === Array) {
+        var len = n.length;
+        fixed = new Array(len);
+        for (var i = 0; i < len; ++i) {
+          fixed[i] = this.fix(n[i], encode);
+        }
+      } else {
+        if (n.constructor === BigNumber) {
+          fixed = n.mul(this.constants.ONE).round();
+        } else {
+          fixed = this.bignum(n).mul(this.constants.ONE).round();
+        }
+        if (wrap) fixed = this.wrap(fixed);
+        if (encode) {
+          if (encode === "string") {
+            fixed = fixed.toFixed();
+          } else if (encode === "hex") {
+            if (fixed.constructor === BigNumber) {
+              fixed = fixed.toString(16);
+            }
+            fixed = this.prefix_hex(fixed);
+          }
+        }
+      }
+      return fixed;
+    } else {
+      return n;
+    }
+  },
+
+  unfix: function (n, encode) {
+    var unfixed;
+    if (n && n !== "0x" && !n.error && !n.message) {
+      if (encode) encode = encode.toLowerCase();
+      if (n.constructor === Array) {
+        var len = n.length;
+        unfixed = new Array(len);
+        for (var i = 0; i < len; ++i) {
+          unfixed[i] = this.unfix(n[i], encode);
+        }
+      } else {
+        if (n.constructor === BigNumber) {
+          unfixed = n.dividedBy(this.constants.ONE);
+        } else {
+          unfixed = this.bignum(n).dividedBy(this.constants.ONE);
+        }
+        if (unfixed && encode) {
+          if (encode === "hex") {
+            unfixed = this.prefix_hex(unfixed.round());
+          } else if (encode === "string") {
+            unfixed = unfixed.toFixed();
+          } else if (encode === "number") {
+            unfixed = unfixed.toNumber();
+          }
+        }
+      }
+      return unfixed;
+    } else {
+      return n;
+    }
+  },
+
+  unfix_signed: function (n, encode) {
+    return this.unfix(this.hex(n, true), encode);
+  },
+
+  string: function (n, wrap) {
+    return this.bignum(n, "string", wrap);
+  },
+
+  number: function (s, wrap) {
+    return this.bignum(s, "number", wrap);
+  },
+
+  chunk: function (total_len, chunk_len) {
+    chunk_len = chunk_len || 64;
+    return Math.ceil(total_len / chunk_len);
+  },
+
+  pad_right: function (s, chunk_len, prefix) {
+    chunk_len = chunk_len || 64;
+    s = this.strip_0x(s);
+    var multiple = chunk_len * (this.chunk(s.length, chunk_len) || 1);
+    while (s.length < multiple) {
+      s += '0';
+    }
+    if (prefix) s = this.prefix_hex(s);
+    return s;
+  },
+
+  pad_left: function (s, chunk_len, prefix) {
+    chunk_len = chunk_len || 64;
+    s = this.strip_0x(s);
+    var multiple = chunk_len * (this.chunk(s.length, chunk_len) || 1);
+    while (s.length < multiple) {
+      s = '0' + s;
+    }
+    if (prefix) s = this.prefix_hex(s);
+    return s;
+  },
+
+  encode_int: function (value) {
+    var cs, x, output;
+    cs = [];
+    x = new BigNumber(value);
+    while (x.gt(new BigNumber(0))) {
+      cs.push(String.fromCharCode(x.mod(new BigNumber(256))));
+      x = x.dividedBy(new BigNumber(256)).floor();
+    }
+    output = this.encode_hex((cs.reverse()).join(''));
+    while (output.length < 64) {
+      output = '0' + output;
+    }
+    return output;
+  },
+
+  // hex-encode a function's ABI data and return it
+  encode: function (tx) {
+    tx.signature = tx.signature || [];
+    return this.prefix_hex(Buffer.concat([
+      ethabi.methodID(tx.method, tx.signature),
+      ethabi.rawEncode(tx.signature, tx.params)
+    ]).toString("hex"));
+  }
+};
+
+}).call(this,require("buffer").Buffer)
+},{"bignumber.js":474,"buffer":271,"ethereumjs-abi":472,"js-sha3":522}],472:[function(require,module,exports){
 arguments[4][309][0].apply(exports,arguments)
 },{"./lib/index.js":473,"dup":309}],473:[function(require,module,exports){
 arguments[4][310][0].apply(exports,arguments)
@@ -79929,8 +80213,7 @@ var errors = require("../errors/codes");
 
 function transact(payload, privateKeyOrSigner, onSent, onSuccess, onFailed) {
   return function (dispatch, getState) {
-    var onSentCallback, onSuccessCallback, onFailedCallback, debug;
-    debug = getState().debug;
+    var onSentCallback, onSuccessCallback, onFailedCallback, debug = getState().debug;
     if (debug.tx) console.log("payload transact:", payload);
     if (!isFunction(onSent)) return dispatch(callOrSendTransaction(payload));
     onSentCallback = onSent;
@@ -80309,8 +80592,9 @@ function registerTransactionRelay(transactionRelay) {
       Object.keys(transactions).map(function (hash) {
         var payload;
         if (transactions[hash] !== oldTransactions[hash]) {
+          console.log("changed transaction:", transactions[hash]);
           payload = transactions[hash].payload;
-          if (payload.method && !noRelay[payload.method]) {
+          if (payload && payload.method && !noRelay[payload.method]) {
             transactionRelay({
               hash: hash,
               type: payload.label || payload.method,
@@ -81482,10 +81766,11 @@ module.exports = resendTransaction;
 
 var abi = require("augur-abi");
 var transact = require("../transact/transact");
+var isObject = require("../utils/is-object");
 
 function sendEther(to, value, from, onSent, onSuccess, onFailed) {
   return function (dispatch) {
-    if (to && to.constructor === Object) {
+    if (isObject(to)) {
       value = to.value;
       from = to.from;
       onSent = to.onSent;
@@ -81499,13 +81784,13 @@ function sendEther(to, value, from, onSent, onSuccess, onFailed) {
       value: abi.fix(value, "hex"),
       returns: "null",
       gas: "0xcf08"
-    }, onSent, onSuccess, onFailed));
+    }, null, onSent, onSuccess, onFailed));
   };
 }
 
 module.exports = sendEther;
 
-},{"../transact/transact":653,"augur-abi":471}],699:[function(require,module,exports){
+},{"../transact/transact":653,"../utils/is-object":676,"augur-abi":471}],699:[function(require,module,exports){
 "use strict";
 
 var abi = require("augur-abi");

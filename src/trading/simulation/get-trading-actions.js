@@ -40,34 +40,28 @@ var ZERO = constants.ZERO;
  * @param {Object} scalarMinMax {minValue, maxValue} if scalar, null otherwise
  * @return {Array}
  */
-function getTradingActions(type, orderShares, orderLimitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeID, range, marketOrderBook, scalarMinMax) {
-  var remainingOrderShares, i, length, orderSharesFilled, bid, ask, bidAmount, isMarketOrder, fees, adjustedFees, totalTakerFeeEth, adjustedLimitPrice, bnTakerFee, bnMakerFee, bnRange, gasPrice, tradingCost, fullPrecisionPrice, matchingSortedAsks, areSuitableOrders, buyActions, etherToTrade, matchingSortedBids, areSuitableBids, userHasPosition, sellActions, etherToSell, remainingPositionShares, newBid, askShares, newTradeActions, etherToShortSell, tradingActions;
-  if (isObject(type)) {
-    orderShares = type.orderShares;
-    orderLimitPrice = type.orderLimitPrice;
-    takerFee = type.takerFee;
-    makerFee = type.makerFee;
-    userAddress = type.userAddress;
-    userPositionShares = type.userPositionShares;
-    outcomeID = type.outcomeID;
-    marketOrderBook = type.marketOrderBook;
-    range = type.range;
-    scalarMinMax = type.scalarMinMax;
-    type = type.type;
-  }
-  userAddress = abi.format_address(userAddress);
-  orderShares = new BigNumber(orderShares, 10);
-  orderLimitPrice = (orderLimitPrice === null || orderLimitPrice === undefined) ?
-    null :
-    new BigNumber(orderLimitPrice, 10);
-  bnTakerFee = new BigNumber(takerFee, 10);
-  bnMakerFee = new BigNumber(makerFee, 10);
-  bnRange = new BigNumber(range, 10);
-  userPositionShares = new BigNumber(userPositionShares, 10);
-  isMarketOrder = orderLimitPrice === null || orderLimitPrice === undefined;
-  fees = calculateFxpTradingFees(bnMakerFee, bnTakerFee);
+// { type, orderShares, orderLimitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeID, range, marketOrderBook, scalarMinMax }
+function getTradingActions(p) {
+  var remainingOrderShares, i, length, orderSharesFilled, bid, ask, bidAmount, adjustedFees, totalTakerFeeEth, adjustedLimitPrice, tradingCost, fullPrecisionPrice, matchingSortedAsks, areSuitableOrders, buyActions, etherToTrade, matchingSortedBids, areSuitableBids, userHasPosition, sellActions, etherToSell, remainingPositionShares, newBid, askShares, newTradeActions, etherToShortSell, tradingActions;
+  var type = p.type;
+  var takerFee = p.takerFee;
+  var makerFee = p.makerFee;
+  var outcomeID = p.outcomeID;
+  var range = p.range;
+  var marketOrderBook = p.marketOrderBook;
+  var scalarMinMax = p.scalarMinMax;
+  var userAddress = abi.format_address(p.userAddress);
+  var orderShares = new BigNumber(p.orderShares, 10);
+  var orderLimitPrice = (p.orderLimitPrice == null) ? null : new BigNumber(p.orderLimitPrice, 10);
+  var bnTakerFee = new BigNumber(p.takerFee, 10);
+  var bnMakerFee = new BigNumber(p.makerFee, 10);
+  var bnRange = new BigNumber(p.range, 10);
+  var userPositionShares = new BigNumber(p.userPositionShares, 10);
+  var isMarketOrder = orderLimitPrice == null;
+  var fees = calculateFxpTradingFees(bnMakerFee, bnTakerFee);
+  var gasPrice = rpcInterface.getGasPrice();
   if (!isMarketOrder) {
-    adjustedLimitPrice = (scalarMinMax && scalarMinMax.minValue) ?
+    adjustedLimitPrice = (isObject(scalarMinMax) && scalarMinMax.minValue) ?
       new BigNumber(shrinkScalarPrice(scalarMinMax.minValue, orderLimitPrice), 10) :
       orderLimitPrice;
     adjustedFees = calculateFxpMakerTakerFees(
@@ -75,7 +69,6 @@ function getTradingActions(type, orderShares, orderLimitPrice, takerFee, makerFe
       fees.makerProportionOfFee
     );
   }
-  gasPrice = rpcInterface.getGasPrice();
   if (type === "buy") {
     matchingSortedAsks = filterByPriceAndOutcomeAndUserSortByPrice(marketOrderBook.sell, type, orderLimitPrice, outcomeID, userAddress);
     areSuitableOrders = matchingSortedAsks.length > 0;

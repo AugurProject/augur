@@ -5,7 +5,6 @@ var abi = require("augur-abi");
 var getCurrentPeriodProgress = require("./get-current-period-progress");
 var prepareToReport = require("./prepare-to-report");
 var api = require("../api");
-var isObject = require("../utils/is-object");
 
 // { event, reportHash, encryptedReport, encryptedSalt, ethics, branch, period, periodLength, onSent, onSuccess, onFailed }
 function submitReportHash(p) {
@@ -39,13 +38,13 @@ function submitReportHash(p) {
         branch: p.branch,
         expDateIndex: p.period,
         reporter: res.from,
-        event: p.event,
+        event: p.event
       }, function (storedReportHash) {
         if (parseInt(storedReportHash, 16)) {
           res.callReturn = "1";
           return p.onSuccess(res);
         }
-        onFailed({ "-2": "not in first half of period (commit phase)" });
+        p.onFailed({ "-2": "not in first half of period (commit phase)" });
       });
     }
   }));

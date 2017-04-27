@@ -7,7 +7,6 @@ var makeTradeHash = require("./make-trade-hash");
 var parseTradeReceipt = require("./parse-trade-receipt");
 var checkGasLimit = require("../check-gas-limit");
 var api = require("../../api");
-var isObject = require("../../utils/is-object");
 var noop = require("../../utils/noop");
 var compose = require("../../utils/compose");
 var rpcInterface = require("../../rpc-interface");

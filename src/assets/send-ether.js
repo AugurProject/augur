@@ -1,7 +1,6 @@
 "use strict";
 
 var abi = require("augur-abi");
-var isObject = require("../utils/is-object");
 var rpcInterface = require("../rpc-interface");
 
 // { to, value, from, onSent, onSuccess, onFailed }

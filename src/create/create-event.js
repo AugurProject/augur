@@ -3,7 +3,6 @@
 var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var api = require("../api");
-var isObject = require("../utils/is-object");
 
 // { branch, description, expDate, minValue, maxValue, numOutcomes, resolution, onSent, onSuccess, onFailed }
 function createEvent(p) {

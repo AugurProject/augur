@@ -2,7 +2,6 @@
 
 var unfixReport = require("./format/unfix-report");
 var api = require("../api");
-var isObject = require("../utils/is-object");
 var errors = require("../rpc-interface").errors;
 
 // { branch, period, event, sender, minValue, maxValue, type }
@@ -19,7 +18,7 @@ function getReport(p, callback) {
     if (!parseInt(rawReport, 16)) {
       return callback({ report: "0", isIndeterminate: false });
     }
-    callback(unfixReport(rawReport, minValue, maxValue, type));
+    callback(unfixReport(rawReport, p.minValue, p.maxValue, p.type));
   });
 }
 

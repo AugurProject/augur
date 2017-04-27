@@ -1,8 +1,6 @@
 "use strict";
 
 var api = require("../../api");
-var isFunction = require("../../utils/is-function");
-var isObject = require("../../utils/is-object");
 
 // scalarMinMax: null if not scalar; {minValue, maxValue} if scalar
 // { market, scalarMinMax }

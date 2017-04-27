@@ -1,31 +1,16 @@
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var createSubbranch = require("./create-subbranch");
 var rpcInterface = require("../rpc-interface");
 var sha3 = require("../utils/sha3");
-var isObject = require("../utils/is-object");
 
-function createBranch(description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed) {
-  if (isObject(description)) {
-    periodLength = description.periodLength;
-    parent = description.parent;
-    minTradingFee = description.minTradingFee;
-    oracleOnly = description.oracleOnly;
-    onSent = description.onSent;
-    onSuccess = description.onSuccess;
-    onFailed = description.onFailed;
-    description = description.description;
-  }
-  oracleOnly = oracleOnly || 0;
-  description = description.trim();
-  createSubbranch({
-    description: description,
-    periodLength: periodLength,
-    parent: parent,
-    minTradingFee: minTradingFee,
-    oracleOnly: oracleOnly,
-    onSent: onSent,
+// { description, periodLength, parent, minTradingFee, oracleOnly, onSent, onSuccess, onFailed }
+function createBranch(p) {
+  createSubbranch(assign({}, p, {
+    description: p.description.trim(),
+    oracleOnly: p.oracleOnly || 0,
     onSuccess: function (response) {
       rpcInterface.getBlockByNumber(response.blockNumber, false, function (block) {
         response.branchID = sha3([
@@ -38,11 +23,10 @@ function createBranch(description, periodLength, parent, minTradingFee, oracleOn
           oracleOnly,
           description
         ]);
-        onSuccess(response);
+        p.onSuccess(response);
       });
-    },
-    onFailed: onFailed
-  });
+    }
+  }));
 }
 
 module.exports = createBranch;

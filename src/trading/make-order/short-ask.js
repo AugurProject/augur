@@ -4,7 +4,6 @@ var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var shrinkScalarPrice = require("../shrink-scalar-price");
 var api = require("../../api");
-var isObject = require("../../utils/is-object");
 var MINIMUM_TRADE_SIZE = require("../../constants").MINIMUM_TRADE_SIZE;
 
 // { amount, price, market, outcome, tradeGroupID, scalarMinMax, onSent, onSuccess, onFailed }

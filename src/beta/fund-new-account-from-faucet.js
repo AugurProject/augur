@@ -20,12 +20,12 @@ function fundNewAccountFromFaucet(p) {
   onSuccessCallback = p.onSuccess || noop;
   onFailedCallback = p.onFailed || noop;
   if (p.registeredAddress == null || p.registeredAddress.constructor !== String) {
-    return onFailed(p.registeredAddress);
+    return onFailedCallback(p.registeredAddress);
   }
   url = constants.FAUCET + abi.format_address(p.registeredAddress);
   request(url, function (err, response/*, body */) {
-    if (err) return onFailed(err);
-    if (response.statusCode !== 200) return onFailed(response.statusCode);
+    if (err) return onFailedCallback(err);
+    if (response.statusCode !== 200) return onFailedCallback(response.statusCode);
     rpcInterface.getBalance(p.registeredAddress, function (ethBalance) {
       var balance = parseInt(ethBalance, 16);
       if (balance > 0) {

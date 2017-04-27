@@ -7,7 +7,6 @@ var getCurrentPeriodProgress = require("../reporting/get-current-period-progress
 var rpcInterface = require("../rpc-interface");
 var api = require("../api");
 var compose = require("../utils/compose");
-var isObject = require("../utils/is-object");
 
 // TODO break this apart
 // { branch, sender, periodLength, onSent, onSuccess, onFailed }
@@ -19,7 +18,7 @@ function collectFees(p) {
     api().ConsensusData.getFeesCollected({
       branch: p.branch,
       address: p.sender,
-      period: p.period - 1,
+      period: period - 1
     }, function (feesCollected) {
       if (feesCollected === "1") return p.onSuccess({ callReturn: "2" });
       api().CollectFees.collectFees(assign({}, p, {
@@ -34,16 +33,16 @@ function collectFees(p) {
             api().ConsensusData.getFeesCollected({
               branch: p.branch,
               address: p.sender,
-              period: p.period - 1
+              period: period - 1
             }, function (feesCollected) {
               if (feesCollected !== "1") {
                 res.callReturn = "2";
                 return callback(res);
               }
               api().ExpiringEvents.getAfterRep({
-                branch: branch,
+                branch: p.branch,
                 period: period - 1,
-                sender: sender
+                sender: p.sender
               }, function (afterRep) {
                 if (parseInt(afterRep, 10) <= 1) {
                   res.callReturn = "2";

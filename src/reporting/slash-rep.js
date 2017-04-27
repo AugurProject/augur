@@ -4,7 +4,6 @@ var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var api = require("../api");
 var fixReport = require("./format/fix-report");
-var isObject = require("../utils/is-object");
 
 // branch, salt, report, reporter, eventID, minValue, maxValue, type, isIndeterminate, isUnethical, onSent, onSuccess, onFailed
 function slashRep(p) {

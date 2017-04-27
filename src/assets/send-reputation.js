@@ -4,7 +4,6 @@ var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var api = require("../api");
 var compose = require("../utils/compose");
-var isObject = require("../utils/is-object");
 
 // if callReturn is 0, but account has sufficient Reputation and Rep
 // redistribution is done, then re-invoke sendReputation
@@ -41,7 +40,7 @@ function sendReputation(p) {
         });
       });
     }, p.onSuccess)
-  });
+  }));
 }
 
 module.exports = sendReputation;

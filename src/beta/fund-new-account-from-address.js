@@ -11,14 +11,14 @@ function fundNewAccountFromAddress(p) {
   var onSuccessCallback = p.onSuccess || noop;
   var onFailedCallback = p.onFailed || noop;
   rpcInterface.sendEther({
-    to: registeredAddress,
+    to: p.registeredAddress,
     value: p.amount,
     from: p.fromAddress,
     onSent: function (r) {
-      console.log('sendEther sent:', r);
+      console.log("sendEther sent:", r);
     },
     onSuccess: function (r) {
-      console.log('sendEther success:', r);
+      console.log("sendEther success:", r);
       api().Faucets.fundNewAccount({
         branch: p.branch || constants.DEFAULT_BRANCH_ID,
         onSent: onSentCallback,

@@ -7,7 +7,6 @@ var rpcInterface = require("../rpc-interface");
 var calculateRequiredMarketValue = require("../create/calculate-required-market-value");
 var calculateTradingFees = require("../trading/fees/calculate-trading-fees");
 var encodeTagArray = require("../format/tag/encode-tag-array");
-var isObject = require("../utils/is-object");
 
 // { branch, takerFee, event, tags, makerFee, extraInfo, onSent, onSuccess, onFailed }
 function createMarket(p) {

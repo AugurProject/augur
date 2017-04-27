@@ -7,7 +7,6 @@ var rpcInterface = require("../rpc-interface");
 var calculateRequiredMarketValue = require("../create/calculate-required-market-value");
 var calculateTradingFees = require("../trading/fees/calculate-trading-fees");
 var encodeTagArray = require("../format/tag/encode-tag-array");
-var isObject = require("../utils/is-object");
 
 // { branch, description, expDate, minValue, maxValue, numOutcomes, resolution, takerFee, tags, makerFee, extraInfo, onSent, onSuccess, onFailed }
 function createSingleEventMarket(p) {
@@ -26,7 +25,7 @@ function createSingleEventMarket(p) {
     makerFees: abi.fix(fees.makerProportionOfFee, "hex"),
     extraInfo: p.extraInfo || "",
     tx: { value: calculateRequiredMarketValue(rpcInterface.getGasPrice()) }
-  });
+  }));
 }
 
 module.exports = createSingleEventMarket;

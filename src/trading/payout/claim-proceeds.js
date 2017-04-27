@@ -1,25 +1,16 @@
 "use strict";
 
+var assign = require("lodash.assign");
 var eventsAPI = require("augur-contracts").api.events;
 var rpcInterface = require("../../rpc-interface");
 var api = require("../../api");
 var parseLogMessage = require("../../filters/parse-message/parse-log-message");
-var isObject = require("../../utils/is-object");
 
-function claimProceeds(branch, market, onSent, onSuccess, onFailed) {
-  if (isObject(branch)) {
-    market = branch.market;
-    onSent = branch.onSent;
-    onSuccess = branch.onSuccess;
-    onFailed = branch.onFailed;
-    branch = branch.branch;
-  }
-  api().CloseMarket.claimProceeds({
-    branch: branch,
-    market: market,
-    onSent: onSent,
+// { branch, market, onSent, onSuccess, onFailed }
+function claimProceeds(p) {
+  api().CloseMarket.claimProceeds(assign({}, p, {
     onSuccess: function (res) {
-      if (res.callReturn !== "1") return onFailed(res.callReturn);
+      if (res.callReturn !== "1") return p.onFailed(res.callReturn);
       rpcInterface.getTransactionReceipt(res.hash, function (receipt) {
         var logs, sig, i, numLogs, inputs;
         if (receipt && Array.isArray(receipt.logs) && receipt.logs.length) {
@@ -33,11 +24,10 @@ function claimProceeds(branch, market, onSent, onSuccess, onFailed) {
             }
           }
         }
-        onSuccess(res);
+        p.onSuccess(res);
       });
-    },
-    onFailed: onFailed
-  });
+    }
+  }));
 }
 
 module.exports = claimProceeds;

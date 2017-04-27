@@ -2,14 +2,13 @@
 
 var abi = require("augur-abi");
 var assign = require("lodash.assign");
-var clone = require("clone");
 var rpcInterface = require("../rpc-interface");
 var parsers = require("../parsers");
 var compose = require("../utils/compose");
 var isFunction = require("../utils/is-function");
 var isObject = require("../utils/is-object");
 
-function bindContractFunction(staticAPI, contract, method) {
+function bindContractFunction(staticAPI) {
   return function () {
     var tx, params, numInputs, numFixed, cb, i, onSent, onSuccess, onFailed, extraArgument, signer;
     tx = assign({}, staticAPI);
@@ -66,7 +65,6 @@ function bindContractFunction(staticAPI, contract, method) {
         tx.params[tx.fixed[i]] = abi.fix(tx.params[tx.fixed[i]], "hex");
       }
     }
-    console.log("transaction:", tx);
     if (!tx.parser) return rpcInterface.transact(tx, signer, onSent, onSuccess, onFailed);
     return rpcInterface.transact(tx, signer, onSent, compose(parsers[tx.parser], onSuccess, extraArgument), onFailed);
   };
