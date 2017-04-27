@@ -25,7 +25,11 @@ function placeSell(market, outcomeID, numShares, limitPrice, address, totalCost,
     tradeCommitLockCallback(false);
     if (err) return callback(err);
     if (res.remainingShares.gt(PRECISION.zero)) {
-      api().Markets.getParticipantSharesPurchased(marketID, address, outcomeID, function (sharesPurchased) {
+      api().Markets.getParticipantSharesPurchased({
+        market: marketID,
+        trader: address,
+        outcome: outcomeID
+      }, function (sharesPurchased) {
         var position, remainingShares, shares, askShares, shortAskShares, hasAskShares, hasShortAskShares, tradeIDs;
         position = abi.bignum(sharesPurchased).round(PRECISION.decimals, BigNumber.ROUND_DOWN);
         remainingShares = abi.bignum(res.remainingShares);

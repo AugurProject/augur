@@ -9,13 +9,13 @@ var compose = require("../utils/compose");
 var isFunction = require("../utils/is-function");
 var isObject = require("../utils/is-object");
 
-function bindContractFunction(functionsAPI, contract, method, privateKeyOrSigner) {
+function bindContractFunction(staticAPI, contract, method) {
   return function () {
-    var tx, params, numInputs, numFixed, cb, i, onSent, onSuccess, onFailed, extraArgument;
-    tx = clone(functionsAPI[contract][method]);
+    var tx, params, numInputs, numFixed, cb, i, onSent, onSuccess, onFailed, extraArgument, signer;
+    tx = assign({}, staticAPI);
     if (!arguments || !arguments.length) {
       if (!tx.send) return rpcInterface.callContractFunction(tx);
-      return rpcInterface.transact(tx, privateKeyOrSigner);
+      return rpcInterface.transact(tx);
     }
     params = Array.prototype.slice.call(arguments);
     numInputs = (tx.inputs && tx.inputs.length) ? tx.inputs.length : 0;
@@ -32,16 +32,7 @@ function bindContractFunction(functionsAPI, contract, method, privateKeyOrSigner
           }
         }
         if (isObject(params[0].tx)) assign(tx, params[0].tx);
-      } else {
-        if (numInputs) {
-          tx.params = new Array(numInputs);
-          for (i = 0; i < numInputs; ++i) {
-            tx.params[i] = params[i];
-          }
-        }
-        if (params.length > numInputs && isFunction(params[numInputs])) {
-          cb = params[numInputs];
-        }
+        if (params.length === 2 && isFunction(params[1])) cb = params[1];
       }
       if (tx.fixed && tx.fixed.length) {
         numFixed = tx.fixed.length;
@@ -66,22 +57,8 @@ function bindContractFunction(functionsAPI, contract, method, privateKeyOrSigner
           tx.params[i] = params[0][tx.inputs[i]];
         }
       }
-    } else {
-      if (numInputs) {
-        tx.params = new Array(numInputs);
-        for (i = 0; i < tx.inputs.length; ++i) {
-          tx.params[i] = params[i];
-        }
-      }
-      if (params.length > numInputs && isFunction(params[numInputs])) {
-        onSent = params[numInputs];
-      }
-      if (params.length > numInputs && isFunction(params[numInputs + 1])) {
-        onSuccess = params[numInputs + 1];
-      }
-      if (params.length > numInputs && isFunction(params[numInputs + 2])) {
-        onFailed = params[numInputs + 2];
-      }
+      if (isObject(params[0].tx)) assign(tx, params[0].tx);
+      if (isObject(params[0].signer)) signer = params[0].signer;
     }
     if (tx.fixed && tx.fixed.length) {
       numFixed = tx.fixed.length;
@@ -89,8 +66,9 @@ function bindContractFunction(functionsAPI, contract, method, privateKeyOrSigner
         tx.params[tx.fixed[i]] = abi.fix(tx.params[tx.fixed[i]], "hex");
       }
     }
-    if (!tx.parser) return rpcInterface.transact(tx, privateKeyOrSigner, onSent, onSuccess, onFailed);
-    return rpcInterface.transact(tx, privateKeyOrSigner, onSent, compose(parsers[tx.parser], onSuccess, extraArgument), onFailed);
+    console.log("transaction:", tx);
+    if (!tx.parser) return rpcInterface.transact(tx, signer, onSent, onSuccess, onFailed);
+    return rpcInterface.transact(tx, signer, onSent, compose(parsers[tx.parser], onSuccess, extraArgument), onFailed);
   };
 }
 

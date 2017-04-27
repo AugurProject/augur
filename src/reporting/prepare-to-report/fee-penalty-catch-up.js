@@ -9,9 +9,16 @@ var noop = require("../../utils/noop");
 // consensus [i.e. penalizeWrong], if didn't report last period or didn't call collectfees
 // last period then call penalizationCatchup in order to allow submitReportHash to work.
 function feePenaltyCatchUp(branch, periodLength, periodToCheck, sender, callback) {
-  api().ConsensusData.getPenalizedUpTo(branch, sender, function (lastPeriodPenalized) {
+  api().ConsensusData.getPenalizedUpTo({
+    branch: branch,
+    sender: sender
+  }, function (lastPeriodPenalized) {
     lastPeriodPenalized = parseInt(lastPeriodPenalized, 10);
-    api().ConsensusData.getFeesCollected(branch, sender, lastPeriodPenalized, function (feesCollected) {
+    api().ConsensusData.getFeesCollected({
+      branch: branch,
+      address: sender,
+      period: lastPeriodPenalized
+    }, function (feesCollected) {
       if (!feesCollected || feesCollected.error) {
         return callback(feesCollected || "couldn't get fees collected");
       }

@@ -9,39 +9,44 @@ var compose = require("../utils/compose");
 var isObject = require("../utils/is-object");
 
 // TODO break this apart
-function collectFees(branch, sender, periodLength, onSent, onSuccess, onFailed) {
-  if (isObject(branch)) {
-    sender = branch.sender;
-    periodLength = branch.periodLength;
-    onSent = branch.onSent;
-    onSuccess = branch.onSuccess;
-    onFailed = branch.onFailed;
-    branch = branch.branch;
+// { branch, sender, periodLength, onSent, onSuccess, onFailed }
+function collectFees(p) {
+  if (getCurrentPeriodProgress(p.periodLength) < 50) {
+    return p.onFailed({ "-2": "needs to be second half of reporting period to claim rep" });
   }
-  if (getCurrentPeriodProgress(periodLength) < 50) {
-    return onFailed({ "-2": "needs to be second half of reporting period to claim rep" });
-  }
-  api().Branches.getVotePeriod(branch, function (period) {
-    api().ConsensusData.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
-      if (feesCollected === "1") return onSuccess({callReturn: "2"});
+  api().Branches.getVotePeriod({ branch: p.branch }, function (period) {
+    api().ConsensusData.getFeesCollected({
+      branch: p.branch,
+      address: p.sender,
+      period: p.period - 1,
+    }, function (feesCollected) {
+      if (feesCollected === "1") return p.onSuccess({ callReturn: "2" });
       api().CollectFees.collectFees({
-        branch: branch,
-        sender: sender,
+        branch: p.branch,
+        sender: p.sender,
         tx: {
           value: abi.hex(new BigNumber("500000", 10).times(rpcInterface.getGasPrice()))
         },
-        onSent: onSent,
+        onSent: p.onSent,
         onSuccess: compose(function (res, callback) {
           if (res && (res.callReturn === "1" || res.callReturn === "2")) {
             return callback(res);
           }
-          api().Branches.getVotePeriod(branch, function (period) {
-            api().ConsensusData.getFeesCollected(branch, sender, period - 1, function (feesCollected) {
+          api().Branches.getVotePeriod({ branch: p.branch }, function (period) {
+            api().ConsensusData.getFeesCollected({
+              branch: p.branch,
+              address: p.sender,
+              period: p.period - 1
+            }, function (feesCollected) {
               if (feesCollected !== "1") {
                 res.callReturn = "2";
                 return callback(res);
               }
-              api().ExpiringEvents.getAfterRep(branch, period - 1, sender, function (afterRep) {
+              api().ExpiringEvents.getAfterRep({
+                branch: branch,
+                period: period - 1,
+                sender: sender
+              }, function (afterRep) {
                 if (parseInt(afterRep, 10) <= 1) {
                   res.callReturn = "2";
                   return callback(res);
@@ -51,8 +56,8 @@ function collectFees(branch, sender, periodLength, onSent, onSuccess, onFailed) 
               });
             });
           });
-        }, onSuccess),
-        onFailed: onFailed
+        }, p.onSuccess),
+        onFailed: p.onFailed
       });
     });
   });

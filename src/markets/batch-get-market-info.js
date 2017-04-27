@@ -4,17 +4,12 @@ var api = require("../api");
 var isFunction = require("../utils/is-function");
 var isObject = require("../utils/is-object");
 
-function batchGetMarketInfo(marketIDs, account, callback) {
-  if (isObject(marketIDs)) {
-    callback = callback || marketIDs.callback;
-    account = marketIDs.account;
-    marketIDs = marketIDs.marketIDs;
-  }
-  if (!callback && isFunction(account)) {
-    callback = account;
-    account = null;
-  }
-  return api().CompositeGetters.batchGetMarketInfo(marketIDs, account || 0, callback, { extraArgument: marketIDs.length });
+// { marketIDs, account }
+function batchGetMarketInfo(p, callback) {
+  return api().CompositeGetters.batchGetMarketInfo({
+    marketIDs: p.marketIDs,
+    account: p.account || 0
+  }, callback, { extraArgument: p.marketIDs.length });
 }
 
 module.exports = batchGetMarketInfo;

@@ -6,72 +6,51 @@ var prepareToReport = require("./prepare-to-report");
 var api = require("../api");
 var isObject = require("../utils/is-object");
 
-function submitReportHash(event, reportHash, encryptedReport, encryptedSalt, ethics, branch, period, periodLength, onSent, onSuccess, onFailed) {
-  if (isObject(event)) {
-    reportHash = event.reportHash;
-    encryptedReport = event.encryptedReport;
-    encryptedSalt = event.encryptedSalt;
-    ethics = event.ethics;
-    branch = event.branch;
-    period = event.period;
-    periodLength = event.periodLength;
-    onSent = event.onSent;
-    onSuccess = event.onSuccess;
-    onFailed = event.onFailed;
-    event = event.event;
-  }
-  if (getCurrentPeriodProgress(periodLength) >= 50) {
-    return onFailed({"-2": "not in first half of period (commit phase)"});
+// { event, reportHash, encryptedReport, encryptedSalt, ethics, branch, period, periodLength, onSent, onSuccess, onFailed }
+function submitReportHash(p) {
+  if (getCurrentPeriodProgress(p.periodLength) >= 50) {
+    return p.onFailed({ "-2": "not in first half of period (commit phase)" });
   }
   return api().MakeReports.submitReportHash({
-    event: event,
-    reportHash: reportHash,
-    encryptedReport: encryptedReport || 0,
-    encryptedSalt: encryptedSalt || 0,
-    ethics: abi.fix(ethics, "hex"),
-    onSent: onSent,
+    event: p.event,
+    reportHash: p.reportHash,
+    encryptedReport: p.encryptedReport || 0,
+    encryptedSalt: p.encryptedSalt || 0,
+    ethics: abi.fix(p.ethics, "hex"),
+    onSent: p.onSent,
     onSuccess: function (res) {
       res.callReturn = abi.bignum(res.callReturn, "string", true);
       if (res.callReturn === "0") {
-        return prepareToReport(branch, periodLength, res.from, function (err) {
-          if (err) return onFailed(err);
-          api().ConsensusData.getRepRedistributionDone(branch, res.from, function (repRedistributionDone) {
-            if (repRedistributionDone === "0") {
-              return onFailed("rep redistribution not done");
+        return prepareToReport(p.branch, p.periodLength, res.from, function (err) {
+          if (err) return p.onFailed(err);
+          api().ConsensusData.getRepRedistributionDone({
+            branch: p.branch,
+            reporter: res.from,
+            callback: function (repRedistributionDone) {
+              if (repRedistributionDone === "0") {
+                return p.onFailed("Rep redistribution not done");
+              }
+              submitReportHash(p);
             }
-            submitReportHash({
-              event: event,
-              reportHash: reportHash,
-              encryptedReport: encryptedReport,
-              encryptedSalt: encryptedSalt,
-              ethics: ethics,
-              branch: branch,
-              period: period,
-              periodLength: periodLength,
-              onSent: onSent,
-              onSuccess: onSuccess,
-              onFailed: onFailed
-            });
           });
         });
       } else if (res.callReturn !== "-2") {
-        return onSuccess(res);
+        return p.onSuccess(res);
       }
       api().ExpiringEvents.getReportHash({
-        branch: branch,
-        expDateIndex: period,
+        branch: p.branch,
+        expDateIndex: p.period,
         reporter: res.from,
-        event: event,
-        callback: function (storedReportHash) {
-          if (parseInt(storedReportHash, 16)) {
-            res.callReturn = "1";
-            return onSuccess(res);
-          }
-          onFailed({"-2": "not in first half of period (commit phase)"});
+        event: p.event,
+      }, function (storedReportHash) {
+        if (parseInt(storedReportHash, 16)) {
+          res.callReturn = "1";
+          return p.onSuccess(res);
         }
+        onFailed({ "-2": "not in first half of period (commit phase)" });
       });
     },
-    onFailed: onFailed
+    onFailed: p.onFailed
   });
 }
 

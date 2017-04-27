@@ -6,22 +6,22 @@ var api = require("../../api");
 var isObject = require("../../utils/is-object");
 var MINIMUM_TRADE_SIZE = require("../../constants").MINIMUM_TRADE_SIZE;
 
-function shortAsk(amount, price, market, outcome, tradeGroupID, scalarMinMax, onSent, onSuccess, onFailed) {
-  if (isObject(amount)) {
-    price = amount.price;
-    market = amount.market;
-    outcome = amount.outcome;
-    tradeGroupID = amount.tradeGroupID;
-    scalarMinMax = amount.scalarMinMax;
-    onSent = amount.onSent;
-    onSuccess = amount.onSuccess;
-    onFailed = amount.onFailed;
-    amount = amount.amount;
+// { amount, price, market, outcome, tradeGroupID, scalarMinMax, onSent, onSuccess, onFailed }
+function shortAsk(p) {
+  if (p.scalarMinMax && p.scalarMinMax.minValue !== undefined) {
+    p.price = shrinkScalarPrice(p.scalarMinMax.minValue, p.price);
   }
-  if (scalarMinMax && scalarMinMax.minValue !== undefined) {
-    price = shrinkScalarPrice(scalarMinMax.minValue, price);
-  }
-  return api().BuyAndSellShares.shortAsk(abi.fix(amount, "hex"), abi.fix(price, "hex"), market, outcome, abi.fix(MINIMUM_TRADE_SIZE, "hex"), tradeGroupID || 0, onSent, onSuccess, onFailed);
+  return api().BuyAndSellShares.shortAsk({
+    amount: abi.fix(p.amount, "hex"),
+    price: abi.fix(p.price, "hex"),
+    market: p.market,
+    outcome: p.outcome,
+    minimumTradeSize: abi.fix(MINIMUM_TRADE_SIZE, "hex"),
+    tradeGroupID: p.tradeGroupID || 0,
+    onSent: p.onSent,
+    onSuccess: p.onSuccess,
+    onFailed: p.onFailed
+  });
 }
 
 module.exports = shortAsk;

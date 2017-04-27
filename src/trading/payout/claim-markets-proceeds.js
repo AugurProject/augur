@@ -9,7 +9,7 @@ function claimMarketsProceeds(branch, markets, callback) {
   var claimedMarkets = [];
   async.eachSeries(markets, function (market, nextMarket) {
     var marketID = market.id;
-    api().Markets.getWinningOutcomes(marketID, function (winningOutcomes) {
+    api().Markets.getWinningOutcomes({ market: marketID }, function (winningOutcomes) {
       if (!Array.isArray(winningOutcomes) || !winningOutcomes.length || !winningOutcomes[0] || winningOutcomes[0] === "0") {
         return nextMarket(); // market not yet resolved
       }

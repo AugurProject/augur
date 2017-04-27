@@ -11,17 +11,17 @@ function finishLoadBranch(branch, callback) {
 
 function loadBranch(branchID, callback) {
   var branch = { id: abi.hex(branchID) };
-  api().Branches.getPeriodLength(branchID, function (periodLength) {
+  api().Branches.getPeriodLength({ branch: branchID }, function (periodLength) {
     if (!periodLength || periodLength.error) return callback(periodLength);
     branch.periodLength = periodLength;
     finishLoadBranch(branch, callback);
   });
-  api().Info.getDescription(branchID, function (description) {
+  api().Info.getDescription({ ID: branchID }, function (description) {
     if (!description || description.error) return callback(description);
     branch.description = description;
     finishLoadBranch(branch, callback);
   });
-  api().Branches.getBaseReporters(branchID, function (baseReporters) {
+  api().Branches.getBaseReporters({ branch: branchID }, function (baseReporters) {
     if (!baseReporters || baseReporters.error) return callback(baseReporters);
     branch.baseReporters = parseInt(baseReporters, 10);
     finishLoadBranch(branch, callback);

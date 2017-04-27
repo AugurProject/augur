@@ -5,21 +5,24 @@ var api = require("../../api");
 var isFunction = require("../../utils/is-function");
 var isObject = require("../../utils/is-object");
 
-function getAndDecryptReport(branch, expDateIndex, reporter, event, secret, callback) {
-  if (isObject(branch)) {
-    expDateIndex = branch.expDateIndex;
-    reporter = branch.reporter;
-    event = branch.event;
-    secret = branch.secret;
-    callback = callback || branch.callback;
-    branch = branch.branch;
-  }
+// { branch, expDateIndex, reporter, event, secret }
+function getAndDecryptReport(p, callback) {
   if (!isFunction(callback)) {
-    return parseAndDecryptReport(api().ExpiringEvents.getEncryptedReport(branch, expDateIndex, reporter, event), secret);
+    return parseAndDecryptReport(api().ExpiringEvents.getEncryptedReport({
+      branch: p.branch,
+      expDateIndex: p.expDateIndex,
+      reporter: p.reporter,
+      event: p.event
+    }), p.secret);
   }
-  api().ExpiringEvents.getEncryptedReport(branch, expDateIndex, reporter, event, function (result) {
+  api().ExpiringEvents.getEncryptedReport({
+    branch: p.branch,
+    expDateIndex: p.expDateIndex,
+    reporter: p.reporter,
+    event: p.event
+  }, function (result) {
     if (!result || result.error) return callback(result);
-    callback(parseAndDecryptReport(result), secret);
+    callback(parseAndDecryptReport(result), p.secret);
   });
 }
 

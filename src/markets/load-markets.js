@@ -5,7 +5,7 @@ var api = require("../api");
 
 function loadMarkets(branchID, chunkSize, isDesc, loadZeroVolumeMarkets, chunkCB) {
   // load the total number of markets
-  api().Branches.getNumMarketsBranch(branchID, function (numMarketsRaw) {
+  api().Branches.getNumMarketsBranch({ branch: branchID }, function (numMarketsRaw) {
     var numMarkets, firstStartIndex;
     numMarkets = parseInt(numMarketsRaw, 10);
     firstStartIndex = isDesc ? Math.max(numMarkets - chunkSize + 1, 0) : 0;

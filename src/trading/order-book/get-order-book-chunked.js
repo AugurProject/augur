@@ -9,7 +9,7 @@ var GETTER_CHUNK_SIZE = require("../../constants").GETTER_CHUNK_SIZE;
 function getOrderBookChunked(marketID, offset, numTradesToLoad, scalarMinMax, totalTrades, chunkCB, callback) {
   if (!isFunction(chunkCB)) chunkCB = noop;
   if (!totalTrades) {
-    return api().Trades.get_total_trades(marketID, function (totalTrades) {
+    return api().Trades.get_total_trades({ market_id: marketID }, function (totalTrades) {
       if (!totalTrades || totalTrades.error || !parseInt(totalTrades, 10)) {
         return callback(totalTrades);
       }

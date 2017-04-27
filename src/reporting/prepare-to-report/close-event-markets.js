@@ -5,13 +5,13 @@ var api = require("../../api");
 var noop = require("../../utils/noop");
 
 function closeEventMarkets(branch, event, sender, callback) {
-  api().Events.getMarkets(event, function (markets) {
+  api().Events.getMarkets({ event: event }, function (markets) {
     if (!Array.isArray(markets) || !markets.length) {
       return callback("no markets found for " + event);
     }
     if (markets && markets.error) return callback(markets);
     async.eachSeries(markets, function (market, nextMarket) {
-      api().Markets.getWinningOutcomes(market, function (winningOutcomes) {
+      api().Markets.getWinningOutcomes({ market: market }, function (winningOutcomes) {
         // console.log("winning outcomes for", market, winningOutcomes);
         if (!winningOutcomes || winningOutcomes.error) return nextMarket(winningOutcomes);
         if (Array.isArray(winningOutcomes) && winningOutcomes.length && !parseInt(winningOutcomes[0], 10)) {
@@ -22,7 +22,7 @@ function closeEventMarkets(branch, event, sender, callback) {
             onSent: noop,
             onSuccess: function () { nextMarket(null); },
             onFailed: function (e) {
-              api().Markets.getWinningOutcomes(market, function (winningOutcomes) {
+              api().Markets.getWinningOutcomes({ market: market }, function (winningOutcomes) {
                 if (!winningOutcomes) return nextMarket(e);
                 if (winningOutcomes.error) return nextMarket(winningOutcomes);
                 if (Array.isArray(winningOutcomes) && winningOutcomes.length && !parseInt(winningOutcomes[0], 10)) {

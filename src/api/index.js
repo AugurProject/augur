@@ -18,8 +18,8 @@ function getAPI() {
   return api;
 }
 
-getAPI.generateContractAPI = function (functionsAPI, privateKeyOrSigner) {
-  api = generateContractAPI(functionsAPI, privateKeyOrSigner);
+getAPI.generateContractAPI = function (functionsAPI) {
+  api = generateContractAPI(functionsAPI);
   return api;
 };
 
