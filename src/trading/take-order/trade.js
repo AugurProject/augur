@@ -14,38 +14,24 @@ var errors = rpcInterface.errors;
 var constants = require("../../constants");
 
 // TODO break this up
-function trade(max_value, max_amount, trade_ids, tradeGroupID, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
-  if (isObject(max_value)) {
-    max_amount = max_value.max_amount;
-    trade_ids = max_value.trade_ids;
-    tradeGroupID = max_value.tradeGroupID;
-    sender = max_value.sender;
-    onTradeHash = max_value.onTradeHash;
-    onCommitSent = max_value.onCommitSent;
-    onCommitSuccess = max_value.onCommitSuccess;
-    onCommitFailed = max_value.onCommitFailed;
-    onNextBlock = max_value.onNextBlock;
-    onTradeSent = max_value.onTradeSent;
-    onTradeSuccess = max_value.onTradeSuccess;
-    onTradeFailed = max_value.onTradeFailed;
-    max_value = max_value.max_value;
-  }
-  onTradeHash = onTradeHash || noop;
-  onCommitSent = onCommitSent || noop;
-  onCommitSuccess = onCommitSuccess || noop;
-  onCommitFailed = onCommitFailed || noop;
-  onNextBlock = onNextBlock || noop;
-  onTradeSent = onTradeSent || noop;
-  onTradeSuccess = onTradeSuccess || noop;
-  onTradeFailed = onTradeFailed || noop;
-  checkGasLimit(trade_ids, abi.format_address(sender), function (err, trade_ids) {
+// { max_value, max_amount, trade_ids, tradeGroupID, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed }
+function trade(p) {
+  var onTradeHash = onTradeHash || noop;
+  var onCommitSent = onCommitSent || noop;
+  var onCommitSuccess = onCommitSuccess || noop;
+  var onCommitFailed = onCommitFailed || noop;
+  var onNextBlock = onNextBlock || noop;
+  var onTradeSent = onTradeSent || noop;
+  var onTradeSuccess = onTradeSuccess || noop;
+  var onTradeFailed = onTradeFailed || noop;
+  checkGasLimit(p.trade_ids, abi.format_address(p.sender), function (err, trade_ids) {
     var bn_max_value, tradeHash;
     if (err) return onTradeFailed(err);
-    bn_max_value = abi.bignum(max_value);
+    bn_max_value = abi.bignum(p.max_value);
     if (bn_max_value.gt(constants.ZERO) && bn_max_value.lt(constants.MINIMUM_TRADE_SIZE)) {
       return onTradeFailed({error: "-4", message: errors.trade["-4"]});
     }
-    tradeHash = makeTradeHash(max_value, max_amount, trade_ids);
+    tradeHash = makeTradeHash(p.max_value, p.max_amount, trade_ids);
     onTradeHash(tradeHash);
     api().Trades.commitTrade({
       hash: tradeHash,
@@ -55,10 +41,10 @@ function trade(max_value, max_amount, trade_ids, tradeGroupID, sender, onTradeHa
         rpcInterface.waitForNextBlocks(1, function (blockNumber) {
           onNextBlock(blockNumber);
           api().Trade.trade({
-            max_value: abi.fix(max_value, "hex"),
-            max_amount: abi.fix(max_amount, "hex"),
+            max_value: abi.fix(p.max_value, "hex"),
+            max_amount: abi.fix(p.max_amount, "hex"),
             trade_ids: trade_ids,
-            tradeGroupID: tradeGroupID || 0,
+            tradeGroupID: p.tradeGroupID || 0,
             onSent: onTradeSent,
             onSuccess: compose(function (result, callback) {
               var err, txHash;

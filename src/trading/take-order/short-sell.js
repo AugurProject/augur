@@ -13,33 +13,20 @@ var rpcInterface = require("../../rpc-interface");
 var errors = rpcInterface.errors;
 
 // TODO break this up
-function short_sell(buyer_trade_id, max_amount, tradeGroupID, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed) {
-  if (isObject(buyer_trade_id)) {
-    max_amount = buyer_trade_id.max_amount;
-    tradeGroupID = buyer_trade_id.tradeGroupID;
-    sender = buyer_trade_id.sender;
-    onTradeHash = buyer_trade_id.onTradeHash;
-    onCommitSent = buyer_trade_id.onCommitSent;
-    onCommitSuccess = buyer_trade_id.onCommitSuccess;
-    onCommitFailed = buyer_trade_id.onCommitFailed;
-    onNextBlock = buyer_trade_id.onNextBlock;
-    onTradeSent = buyer_trade_id.onTradeSent;
-    onTradeSuccess = buyer_trade_id.onTradeSuccess;
-    onTradeFailed = buyer_trade_id.onTradeFailed;
-    buyer_trade_id = buyer_trade_id.buyer_trade_id;
-  }
-  onTradeHash = onTradeHash || noop;
-  onCommitSent = onCommitSent || noop;
-  onCommitSuccess = onCommitSuccess || noop;
-  onCommitFailed = onCommitFailed || noop;
-  onNextBlock = onNextBlock || noop;
-  onTradeSent = onTradeSent || noop;
-  onTradeSuccess = onTradeSuccess || noop;
-  onTradeFailed = onTradeFailed || noop;
-  checkGasLimit([buyer_trade_id], abi.format_address(sender), function (err, trade_ids) {
+// { buyer_trade_id, max_amount, tradeGroupID, sender, onTradeHash, onCommitSent, onCommitSuccess, onCommitFailed, onNextBlock, onTradeSent, onTradeSuccess, onTradeFailed }
+function short_sell(p) {
+  var onTradeHash = p.onTradeHash || noop;
+  var onCommitSent = p.onCommitSent || noop;
+  var onCommitSuccess = p.onCommitSuccess || noop;
+  var onCommitFailed = p.onCommitFailed || noop;
+  var onNextBlock = p.onNextBlock || noop;
+  var onTradeSent = p.onTradeSent || noop;
+  var onTradeSuccess = p.onTradeSuccess || noop;
+  var onTradeFailed = p.onTradeFailed || noop;
+  checkGasLimit([p.buyer_trade_id], abi.format_address(p.sender), function (err, trade_ids) {
     var tradeHash;
     if (err) return onTradeFailed(err);
-    tradeHash = makeTradeHash(0, max_amount, trade_ids);
+    tradeHash = makeTradeHash(0, p.max_amount, trade_ids);
     onTradeHash(tradeHash);
     api().Trades.commitTrade({
       hash: tradeHash,
@@ -49,9 +36,9 @@ function short_sell(buyer_trade_id, max_amount, tradeGroupID, sender, onTradeHas
         rpcInterface.waitForNextBlocks(1, function (blockNumber) {
           onNextBlock(blockNumber);
           api().Trade.short_sell({
-            buyer_trade_id: buyer_trade_id,
-            max_amount: abi.fix(max_amount, "hex"),
-            tradeGroupID: tradeGroupID || 0,
+            buyer_trade_id: p.buyer_trade_id,
+            max_amount: abi.fix(p.max_amount, "hex"),
+            tradeGroupID: p.tradeGroupID || 0,
             onSent: onTradeSent,
             onSuccess: compose(function (result, callback) {
               var err, txHash;

@@ -4,22 +4,15 @@ var abi = require("augur-abi");
 var isObject = require("../utils/is-object");
 var rpcInterface = require("../rpc-interface");
 
-function sendEther(to, value, from, onSent, onSuccess, onFailed) {
-  if (isObject(to)) {
-    value = to.value;
-    from = to.from;
-    onSent = to.onSent;
-    onSuccess = to.onSuccess;
-    onFailed = to.onFailed;
-    to = to.to;
-  }
+// { to, value, from, onSent, onSuccess, onFailed }
+function sendEther(p) {
   return rpcInterface.transact({
-    from: from,
-    to: to,
-    value: abi.fix(value, "hex"),
+    from: p.from,
+    to: p.to,
+    value: abi.fix(p.value, "hex"),
     returns: "null",
     gas: "0xcf08"
-  }, onSent, onSuccess, onFailed);
+  }, p.signer, p.onSent, p.onSuccess, p.onFailed);
 }
 
 module.exports = sendEther;

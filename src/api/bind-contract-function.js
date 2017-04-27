@@ -32,8 +32,8 @@ function bindContractFunction(staticAPI, contract, method) {
           }
         }
         if (isObject(params[0].tx)) assign(tx, params[0].tx);
-        if (params.length === 2 && isFunction(params[1])) cb = params[1];
       }
+      if (isFunction(params[params.length - 1])) cb = params[1];
       if (tx.fixed && tx.fixed.length) {
         numFixed = tx.fixed.length;
         for (i = 0; i < numFixed; ++i) {
@@ -58,7 +58,7 @@ function bindContractFunction(staticAPI, contract, method) {
         }
       }
       if (isObject(params[0].tx)) assign(tx, params[0].tx);
-      if (isObject(params[0].signer)) signer = params[0].signer;
+      if (params[0]._signer) signer = params[0]._signer;
     }
     if (tx.fixed && tx.fixed.length) {
       numFixed = tx.fixed.length;
