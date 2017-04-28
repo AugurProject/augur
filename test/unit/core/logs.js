@@ -493,10 +493,9 @@ describe("logs.parametrizeFilter", function () {
       assert.deepEqual(o, {
         fromBlock: augur.constants.GET_LOGS_DEFAULT_FROM_BLOCK,
         toBlock: augur.constants.GET_LOGS_DEFAULT_TO_BLOCK,
-        address: augur.store.getState().contractAddresses.CompleteSets,
-        topics: [augur.store.getState().contractsAPI.events.completeSets_logReturn.signature, '0x0000000000000000000000000000000000000000000000000000000000000050', '0x00000000000000000000000000000000000000000000000000000000000000a1',
-        '0x0000000000000000000000000000000000000000000000000000000000000002'],
-        timeout: augur.constants.GET_LOGS_TIMEOUT,
+        address: augur.contracts.CompleteSets,
+        topics: [augur.api.events.completeSets_logReturn.signature, '0x0000000000000000000000000000000000000000000000000000000000000050', '0x00000000000000000000000000000000000000000000000000000000000000a1',
+        '0x0000000000000000000000000000000000000000000000000000000000000002']
       });
     }
   });
@@ -510,10 +509,9 @@ describe("logs.parametrizeFilter", function () {
       assert.deepEqual(o, {
         fromBlock: '0x0b1',
         toBlock: '0x0b2',
-        address: augur.store.getState().contractAddresses.CompleteSets,
-        topics: [augur.store.getState().contractsAPI.events.completeSets_logReturn.signature, '0x0000000000000000000000000000000000000000000000000000000000000050', '0x00000000000000000000000000000000000000000000000000000000000000a1',
-        '0x0000000000000000000000000000000000000000000000000000000000000002'],
-        timeout: augur.constants.GET_LOGS_TIMEOUT,
+        address: augur.contracts.CompleteSets,
+        topics: [augur.api.events.completeSets_logReturn.signature, '0x0000000000000000000000000000000000000000000000000000000000000050', '0x00000000000000000000000000000000000000000000000000000000000000a1',
+        '0x0000000000000000000000000000000000000000000000000000000000000002']
       });
     }
   });
@@ -901,8 +899,7 @@ describe("logs.getFilteredLogs", function () {
         topics: [augur.store.getState().contractsAPI.events['log_add_tx'].signature,
           null,
           null
-        ],
-        timeout: 480000
+        ]
       });
     }
   });
@@ -927,8 +924,7 @@ describe("logs.getFilteredLogs", function () {
         topics: [augur.store.getState().contractsAPI.events['log_add_tx'].signature,
           null,
           null
-        ],
-        timeout: 480000
+        ]
       });
     }
   });
@@ -949,8 +945,7 @@ describe("logs.getFilteredLogs", function () {
         topics: [augur.store.getState().contractsAPI.events['log_add_tx'].signature,
           null,
           null
-        ],
-        timeout: 480000
+        ]
       });
     },
     getLogs: function (filters, cb) {
@@ -1878,9 +1873,8 @@ describe("logs.getShortSellLogs", function () {
        assert.deepEqual(o, {
          fromBlock: augur.constants.GET_LOGS_DEFAULT_FROM_BLOCK,
          toBlock: augur.constants.GET_LOGS_DEFAULT_TO_BLOCK,
-         address: augur.store.getState().contractAddresses.Trade,
-         topics: [augur.store.getState().contractsAPI.events.log_short_fill_tx.signature, null, '0x00000000000000000000000002a32d32ca2b37495839dd932c9e92fea10cba12', null],
-         timeout: augur.constants.GET_LOGS_TIMEOUT
+         address: augur.contracts.Trade,
+         topics: [augur.api.events.log_short_fill_tx.signature, null, '0x00000000000000000000000002a32d32ca2b37495839dd932c9e92fea10cba12', null]
        });
      }
    });
@@ -1895,9 +1889,8 @@ describe("logs.getShortSellLogs", function () {
        assert.deepEqual(o, {
          fromBlock: '0x0b1',
          toBlock: '0x0c1',
-         address: augur.store.getState().contractAddresses.Trade,
-         topics: [augur.store.getState().contractsAPI.events.log_short_fill_tx.signature, '0x00000000000000000000000000000000000000000000000000000000000000a1', '0x00000000000000000000000002a32d32ca2b37495839dd932c9e92fea10cba12', null],
-         timeout: augur.constants.GET_LOGS_TIMEOUT
+         address: augur.contracts.Trade,
+         topics: [augur.api.events.log_short_fill_tx.signature, '0x00000000000000000000000000000000000000000000000000000000000000a1', '0x00000000000000000000000002a32d32ca2b37495839dd932c9e92fea10cba12', null]
        });
      }
    });
@@ -1911,9 +1904,8 @@ describe("logs.getShortSellLogs", function () {
        assert.deepEqual(logs[0], {
          fromBlock: '0x0b1',
          toBlock: '0x0c1',
-         address: augur.store.getState().contractAddresses.Trade,
-         topics: [augur.store.getState().contractsAPI.events.log_short_fill_tx.signature, '0x00000000000000000000000000000000000000000000000000000000000000a1', null, '0x00000000000000000000000002a32d32ca2b37495839dd932c9e92fea10cba12'],
-         timeout: augur.constants.GET_LOGS_TIMEOUT
+         address: augur.contracts.Trade,
+         topics: [augur.api.events.log_short_fill_tx.signature, '0x00000000000000000000000000000000000000000000000000000000000000a1', null, '0x00000000000000000000000002a32d32ca2b37495839dd932c9e92fea10cba12']
        });
      },
      getLogs: function (filter, cb) {
@@ -1969,9 +1961,8 @@ describe("logs.getShortSellLogs", function () {
        assert.deepEqual(logs[0], {
          fromBlock: augur.constants.GET_LOGS_DEFAULT_FROM_BLOCK,
          toBlock: augur.constants.GET_LOGS_DEFAULT_TO_BLOCK,
-         address: augur.store.getState().contractAddresses.Trade,
-         topics: [augur.store.getState().contractsAPI.events.log_short_fill_tx.signature, null, '0x00000000000000000000000002a32d32ca2b37495839dd932c9e92fea10cba12', null],
-         timeout: augur.constants.GET_LOGS_TIMEOUT
+         address: augur.contracts.Trade,
+         topics: [augur.api.events.log_short_fill_tx.signature, null, '0x00000000000000000000000002a32d32ca2b37495839dd932c9e92fea10cba12', null]
        });
      },
      callback: undefined,
@@ -2259,8 +2250,7 @@ describe("logs.getCompleteSetsLogs", function () {
       		'0x00000000000000000000000000000000000000000000000000000deadbeef123',
       		null,
       		null
-      	],
-      	timeout: 480000
+      	]
       });
       if(isFunction(cb)) {
         return cb({ error: 999, message: 'Uh-Oh!' });
@@ -2294,8 +2284,7 @@ describe("logs.getCompleteSetsLogs", function () {
       		'0x00000000000000000000000000000000000000000000000000000deadbeef123',
       		'0x00000000000000000000000000000000000000000000000000000000000000a1',
       		null
-      	],
-      	timeout: 480000
+      	]
       });
       if(isFunction(cb)) {
         return cb([]);
@@ -2345,8 +2334,7 @@ describe("logs.getCompleteSetsLogs", function () {
       		'0x00000000000000000000000000000000000000000000000000000deadbeef123',
       		'0x00000000000000000000000000000000000000000000000000000000000000a1',
       		'0x0000000000000000000000000000000000000000000000000000000000000001'
-      	],
-      	timeout: 480000
+      	]
       });
       if(isFunction(cb)) {
         return cb([{

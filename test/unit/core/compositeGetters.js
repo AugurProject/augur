@@ -380,13 +380,11 @@ describe('CompositeGetters.loadNextMarketsBatch', function () {
       var pause = constants.PAUSE_BETWEEN_MARKET_BATCHES;
       constants.PAUSE_BETWEEN_MARKET_BATCHES = 1;
       // if we pass in t.nextPass as true then use a mock, else set nextPass to undefined.
-      var nextPass = t.nextPass ?
-        function () { done(); } :
-        undefined;
-      augur.loadNextMarketsBatch(t.branchID, t.startIndex, t.chunkSize, t.numMarkets, t.isDesc, t.volumeMin, t.volumeMax, function (err, marketsData) {
+      var nextPass = t.nextPass ? function() { done(); } : undefined;
+      augur.loadNextMarketsBatch(t.branchID, t.startIndex, t.chunkSize, t.numMarkets, t.isDesc, t.volumeMin, t.volumeMax, function(err, marketsData) {
         // chunkCB
         var finished = t.assertions(err, marketsData);
-        if (finished) { done(); }
+        if (finished) done();
       }, nextPass);
     });
   };
@@ -490,15 +488,12 @@ describe('CompositeGetters.loadNextMarketsBatch', function () {
     assertions: function (err, marketsData) {
       assert.isNull(err);
       // depending on marketsData we will assert what we expect then return true/false to indicate that done() should be called.
-      if (marketsData.constructor === Array && !marketsData.length) {
-        // empty array back, we have completed getting records, return true to end the test.
-        return true;
-      } else if (marketsData[0].id === '0x0a') {
+      if (marketsData[0].id === '0x0a') {
         assert.deepEqual(marketsData, [{ id: '0x0a', volume: '1000'}, { id: '0x09', volume: '1000'}, { id: '0x08', volume: '1000'}, { id: '0x07', volume: '1000'}, { id: '0x06', volume: '1000'} ]);
         return false;
       } else {
         assert.deepEqual(marketsData, [{ id: '0x05', volume: '1000'}, { id: '0x04', volume: '1000'}, { id: '0x03', volume: '1000'}, { id: '0x02', volume: '1000'}, { id: '0x01', volume: '1000'}]);
-        return false;
+        return true;
       }
     }
   });
