@@ -258,6 +258,13 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           break;
         }
         case 'slashRep':
+          notification = {
+            id: p.transactionHash,
+            title: `Snitch Reward - ${tx.status}`,
+            description: p.reporter,
+            timestamp: p.timestamp,
+            href: transactionsHref
+          };
           transaction = dispatch(constructTransaction('slashedRep', {
             ...p,
             sender: tx.data.from
