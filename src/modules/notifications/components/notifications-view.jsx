@@ -14,16 +14,31 @@ const NotificationsView = (p) => {
 
   return (
     <section id="notifications_view" >
-      <h3>Notifications</h3>
+      <div className="notifications-header">
+        <h3>Notifications</h3>
+        {!!notifications && !!notifications.length &&
+          <button
+            className="unstyled notifications-button-clear"
+            onClick={(e) => {
+              e.stopPropagation();
+              p.clearNotifications();
+              console.log('clear!');
+            }}
+          >
+            clear
+          </button>
+        }
+      </div>
       {notifications && notifications.length ?
         <CSSTransitionGroup
           transitionName="notification"
           transitionEnterTimeout={animationInSpeed}
           transitionLeaveTimeout={animationOutSpeed}
         >
-          {notifications.map(notification => (
+          {notifications.map((notification, i) => (
             <Notification
               key={`${notification.id}-${notification.title}`}
+              removeNotification={() => p.removeNotification(i)}
               {...notification}
             />
           ))}
@@ -35,7 +50,9 @@ const NotificationsView = (p) => {
 };
 
 NotificationsView.propTypes = {
-  notifications: PropTypes.object.isRequired
+  notifications: PropTypes.object.isRequired,
+  removeNotification: PropTypes.func.isRequired,
+  clearNotifications: PropTypes.func.isRequired
 };
 
 export default NotificationsView;

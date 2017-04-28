@@ -12,23 +12,21 @@ const DEFAULT_STATE = [];
 // {string} title - action that occurred, truncated in UI
 // {string} description - additional details, truncated in UI
 // {object} timestamp - UTC epoch
-// {func} onClick - formatted via link selector, where a user can view additional information
-// {bool} seen - has the user seen this notification already
+// {string} href - link to more context
+//
+// The `seen` param gets handled behind the scenes (reference action + view component)
 
 export default function (notifications = DEFAULT_STATE, action) {
   switch (action.type) {
     case ADD_NOTIFICATION: {
-      console.log('ADD_NOTIFICATION -- ', action);
       return [
         ...notifications,
-        {
-          seen: false,
-          ...action.data.notification
-        }
+        action.data.notification
       ];
     }
     case REMOVE_NOTIFICATION: {
-      return notifications.filter((notification, i) => i !== action.data.index);
+      console.log('remove it! -- ', action);
+      return notifications.filter((notification, i) => i !== action.data);
     }
     case UPDATE_NOTIFICATION: {
       return notifications.map((notification, i) => {
