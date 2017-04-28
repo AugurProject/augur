@@ -310,6 +310,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         }
         case 'claimProceeds': {
           const { outcomesData, transactionsData } = getState();
+
           let shares;
           if (transactionsData[hash] && transactionsData[hash].data.shares) {
             shares = transactionsData[hash].data.shares;
@@ -317,10 +318,25 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             const winningPositions = selectWinningPositions(outcomesData);
             shares = (winningPositions.find(position => position.id === abi.format_int256(p.market)) || {}).shares;
           }
+
+          notification = {
+            id: p.transactionHash,
+            title: `Claim Trading Payout - ${tx.status}`,
+            description: `${shares} Shares`,
+            timestamp: p.timestamp,
+            href: transactionsHref
+          };
           transaction = dispatch(constructTransaction('payout', { ...p, shares }));
           break;
         }
         case 'send':
+          notification = {
+            id: p.transactionHash,
+            title: `Send Ether - ${tx.status}`,
+            description: `${abi.unfix(p.value, 'string')} ETH`,
+            timestamp: p.timestamp,
+            href: transactionsHref
+          };
           transaction = dispatch(constructTransaction('sentCash', {
             ...p,
             _from: abi.format_address(p.from),
