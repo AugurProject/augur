@@ -3,7 +3,7 @@ import { ZERO } from 'modules/trade/constants/numbers';
 import { SCALAR } from 'modules/markets/constants/market-types';
 import { updateTradeCommitment } from 'modules/trade/actions/update-trade-commitment';
 import { deleteTransaction } from 'modules/transactions/actions/delete-transaction';
-import { constructBasicTransaction, constructTradingTransaction, constructTransaction } from 'modules/transactions/actions/construct-transaction';
+import { constructBasicTransaction, constructTradingTransaction, constructTransaction, loadDataForReportingTransaction } from 'modules/transactions/actions/construct-transaction';
 import { fillOrder } from 'modules/bids-asks/actions/update-market-order-book';
 import unpackTransactionParameters from 'modules/transactions/actions/unpack-transaction-parameters';
 import { selectMarketFromEventID } from 'modules/market/selectors/market';
@@ -263,18 +263,36 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             sender: tx.data.from
           }));
           break;
-        case 'submitReport':
+        case 'submitReport': {
+          const additionalInfo = dispatch(loadDataForReportingTransaction('submittedReportHash', { ...p }));
+          notification = {
+            id: p.transactionHash,
+            title: `Reveal Report - ${tx.status}`,
+            description: additionalInfo.market.description || '',
+            timestamp: p.timestamp,
+            href: transactionsHref
+          };
           transaction = dispatch(constructTransaction('submittedReport', {
             ...p, // { event, report, salt }
             ethics: parseInt(p.ethics, 16)
           }));
           break;
-        case 'submitReportHash':
+        }
+        case 'submitReportHash': {
+          const additionalInfo = dispatch(loadDataForReportingTransaction('submittedReportHash', { ...p }));
+          notification = {
+            id: p.transactionHash,
+            title: `Commit Report - ${tx.status}`,
+            description: additionalInfo.market.description || '',
+            timestamp: p.timestamp,
+            href: transactionsHref
+          };
           transaction = dispatch(constructTransaction('submittedReportHash', {
             ...p, // { event, encryptedReport, encryptedSalt }
             ethics: parseInt(p.ethics, 16)
           }));
           break;
+        }
         case 'penalizeWrong': {
           const { eventsWithSubmittedReport } = getState();
           if (!parseInt(p.event, 16) || !eventsWithSubmittedReport || !eventsWithSubmittedReport[p.event]) {
