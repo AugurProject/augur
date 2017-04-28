@@ -6,7 +6,7 @@ const Notification = p => (
       className="unstyled notification-details"
       onClick={(e) => {
         e.stopPropagation();
-        if (p.onClick) p.onClick();
+        if (p.onClick) p.onClick(p.href);
       }}
     >
       <span className="notification-title">{p.title}</span>
@@ -27,7 +27,8 @@ const Notification = p => (
 Notification.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
-  removeNotification: PropTypes.func.isRequired
+  removeNotification: PropTypes.func.isRequired,
+  href: PropTypes.string
 };
 
 export default Notification;

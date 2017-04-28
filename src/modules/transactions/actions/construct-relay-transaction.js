@@ -34,9 +34,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
     ...augur.api.functions[contract][method]
   }, gasPrice).toFixed();
 
-  const transactionsOnClick = selectTransactionsLink(dispatch).onClick;
-
-  console.log('transactionsOnClick -- ', transactionsOnClick);
+  const transactionsHref = selectTransactionsLink(dispatch).href;
 
   switch (method) {
     case 'buy':
@@ -246,15 +244,15 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
     default: {
       let transaction;
       let notification;
+      console.log('### DEFAULT -- ', p);
       switch (method) {
         case 'fundNewAccount': {
-          console.log('### fundNewAccount -- ', p);
           notification = {
             id: p.transactionHash,
             title: `Fund Account Request - ${tx.status}`,
             description: 'Requesting Testnet ETH & REP',
             timestamp: p.timestamp,
-            onClick: transactionsOnClick
+            href: transactionsHref
           };
           transaction = dispatch(constructTransaction('fundedAccount', p));
           break;

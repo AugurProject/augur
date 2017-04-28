@@ -38,6 +38,7 @@ const NotificationsView = (p) => {
             <Notification
               key={`${notification.id}-${notification.title}`}
               removeNotification={() => p.removeNotification(i)}
+              onClick={p.onClick}
               {...notification}
             />
           ))}
@@ -51,7 +52,8 @@ const NotificationsView = (p) => {
 NotificationsView.propTypes = {
   notifications: PropTypes.object.isRequired,
   removeNotification: PropTypes.func.isRequired,
-  clearNotifications: PropTypes.func.isRequired
+  clearNotifications: PropTypes.func.isRequired,
+  onClick: PropTypes.func
 };
 
 export default NotificationsView;
