@@ -300,6 +300,13 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         }
         case 'collectFees': {
           const { branch, loginAccount } = getState();
+          notification = {
+            id: p.transactionHash,
+            title: `Reporting Payout - ${tx.status}`,
+            description: `${p.repGain} REP`,
+            timestamp: p.timestamp,
+            href: transactionsHref
+          };
           transaction = dispatch(constructTransaction('collectedFees', {
             ...p,
             initialRepBalance: loginAccount.rep,
