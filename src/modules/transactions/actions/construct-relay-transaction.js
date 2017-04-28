@@ -250,7 +250,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           notification = {
             id: p.transactionHash,
             title: `Fund Account Request - ${tx.status}`,
-            description: 'Requesting Testnet ETH & REP',
+            description: 'Requesting testnet ETH & REP',
             timestamp: p.timestamp,
             href: transactionsHref
           };
@@ -355,7 +355,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           notification = {
             id: p.transactionHash,
             title: `Registration - ${tx.status}`,
-            description: 'Logging Account Registration',
+            description: 'Logging account registration',
             timestamp: p.timestamp,
             href: transactionsHref
           };
@@ -366,6 +366,13 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           break;
         case 'createMarket':
         case 'createSingleEventMarket': {
+          notification = {
+            id: p.transactionHash,
+            title: `Create Market - ${tx.status}`,
+            description: p.description,
+            timestamp: p.timestamp,
+            href: transactionsHref
+          };
           const { baseReporters, numEventsCreatedInPast24Hours, numEventsInReportPeriod, periodLength } = getState().branch;
           transaction = dispatch(constructTransaction('marketCreated', {
             ...p,
