@@ -1,15 +1,6 @@
-/**
- * augur.js tests
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var assert = require("chai").assert;
-var BigNumber = require("bignumber.js");
-var abi = require("augur-abi");
-var constants = require("../../../src/constants");
-var utils = require("../../../src/utilities");
 var tools = require("../../tools");
 
 describe("chat", function () {
@@ -17,7 +8,7 @@ describe("chat", function () {
   var augur;
 
   before(function () {
-    augur = tools.setup(require("../../../src/index"), process.argv.slice(2));
+    augur = tools.setup(require("../../../src"));
   });
 
   describe("joinRoom", function () {
@@ -102,5 +93,4 @@ describe("chat", function () {
       senderName: "jack"
     });
   });
-
 });

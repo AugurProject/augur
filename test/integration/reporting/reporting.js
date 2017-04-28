@@ -1,8 +1,3 @@
-/**
- * augur.js tests
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var assert = require("chai").assert;
@@ -32,10 +27,10 @@ describe("getRepBalance(" + branchID + ") ", function () {
     tools.gteq0(r);
   };
   it("sync", function () {
-    test(augur.getRepBalance(branchID, accounts[0]));
+    test(augur.Reporting.getRepBalance(branchID, accounts[0]));
   });
   it("async", function (done) {
-    augur.getRepBalance(branchID, accounts[0], function (r) {
+    augur.Reporting.getRepBalance(branchID, accounts[0], function (r) {
       test(r); done();
     });
   });
@@ -74,10 +69,10 @@ describe("getNumberReporters(" + branchID + ") ", function () {
     assert(parseInt(r) >= 1);
   };
   it("sync", function () {
-    test(augur.getNumberReporters(branchID));
+    test(augur.Reporting.Reporting.getNumberReporters(branchID));
   });
   it("async", function (done) {
-    augur.getNumberReporters(branchID, function (r) {
+    augur.Reporting.Reporting.getNumberReporters(branchID, function (r) {
       test(r); done();
     });
   });

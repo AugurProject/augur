@@ -1,8 +1,3 @@
-/**
- * augur.js tests
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var crypto = require("crypto");
@@ -11,7 +6,7 @@ var chalk = require("chalk");
 var clone = require("clone");
 var keys = require("keythereum");
 var abi = require("augur-abi");
-var utils = require("../../../src/utilities");
+var sha256 = require("../../../src/utils/sha256");
 var constants = require("../../../src/constants");
 var tools = require("../../tools");
 var random = require("../../random");
@@ -23,11 +18,11 @@ var privateKey = crypto.randomBytes(32);
 var address = keys.privateKeyToAddress(privateKey);
 
 // generate random passwords
-var password = utils.sha256(Math.random().toString(36).substring(4));
-var password2 = utils.sha256(Math.random().toString(36).substring(4)).slice(10);
+var password = sha256(Math.random().toString(36).substring(4));
+var password2 = sha256(Math.random().toString(36).substring(4)).slice(10);
 
-var numMarkets = parseInt(augur.getNumMarketsBranch(constants.DEFAULT_BRANCH_ID), 10);
-var markets = augur.getSomeMarketsInBranch(constants.DEFAULT_BRANCH_ID, numMarkets - 100, numMarkets);
+var numMarkets = parseInt(augur.Branches.getNumMarketsBranch(constants.DEFAULT_BRANCH_ID), 10);
+var markets = augur.Branches.getSomeMarketsInBranch(constants.DEFAULT_BRANCH_ID, numMarkets - 100, numMarkets);
 var market_id = markets[markets.length - 1];
 
 var keystore, keystore2;
@@ -75,10 +70,10 @@ describe("eth_call", function () {
     augur.accounts.login(keystore, password, function (user) {
       assert.notProperty(user, "error");
       assert.strictEqual(user.address, augur.accounts.account.address);
-      var tx = clone(augur.api.functions.Branches.getBranches);
+      var tx = clone(augur.store.getState().contractsAPI.functions.Branches.getBranches);
 
       // sync
-      var branches = augur.rpc.fire(tx);
+      var branches = augur.rpc.callContractFunction(tx);
       assert.notProperty(branches, "error");
       assert.isAbove(branches.length, 0);
       assert.isArray(branches);
@@ -88,7 +83,7 @@ describe("eth_call", function () {
       );
 
       // async
-      augur.rpc.fire(tx, function (branches) {
+      augur.rpc.callContractFunction(tx, function (branches) {
         assert.notProperty(branches, "error");
         assert.isAbove(branches.length, 0);
         assert.isArray(branches);
@@ -106,14 +101,14 @@ describe("Fund new account", function () {
   it("Address funding sequence", function (done) {
     this.timeout(tools.TIMEOUT*2);
     var augur = tools.setup(Augur);
-    var sender = augur.from;
+    var sender = augur.store.getState().fromAddress;
     augur.accounts.login(keystore, password, function (account) {
       // console.log("login:", account);
       checkAccount(augur, account);
       var recipient = account.address;
       var initial_balance = abi.fix(augur.rpc.balance(recipient));
       // console.log("initial balance:", initial_balance.toFixed());
-      augur.accounts.fundNewAccountFromAddress(sender, 1, recipient, augur.constants.DEFAULT_BRANCH_ID,
+      augur.fundNewAccount.fundNewAccountFromAddress(sender, 1, recipient, augur.constants.DEFAULT_BRANCH_ID,
         function (res) {
           assert.notProperty(res, "error");
         },
@@ -124,7 +119,7 @@ describe("Fund new account", function () {
           // console.log("final balance:", final_balance.toFixed());
           assert.isAbove(final_balance.toNumber(), 0);
           assert.isAbove(final_balance.minus(initial_balance).toNumber(), 0);
-          augur.getRepBalance(augur.constants.DEFAULT_BRANCH_ID, recipient, function (repBalance) {
+          augur.Reporting.getRepBalance(augur.constants.DEFAULT_BRANCH_ID, recipient, function (repBalance) {
             assert.notProperty(repBalance, "error");
             assert.strictEqual(abi.number(repBalance), 47);
             augur.Cash.balance(recipient, function (cashBalance) {
@@ -143,7 +138,7 @@ describe("Fund new account", function () {
     var augur = tools.setup(Augur);
 
     // faucet only exists on network 3
-    if (augur.network_id !== constants.DEFAULT_NETWORK_ID) return done();
+    if (augur.rpc.getNetworkID() !== constants.DEFAULT_NETWORK_ID) return done();
 
     augur.accounts.login(keystore2, password2, function (account) {
       // console.log("login:", account);
@@ -151,7 +146,7 @@ describe("Fund new account", function () {
       var recipient = account.address;
       var initial_balance = abi.unfix(augur.rpc.balance(recipient));
       // console.log("initial balance:", initial_balance.toFixed());
-      augur.accounts.fundNewAccountFromFaucet(recipient, augur.constants.DEFAULT_BRANCH_ID,
+      augur.fundNewAccount.fundNewAccountFromFaucet(recipient, augur.constants.DEFAULT_BRANCH_ID,
         function (res) {
           assert.notProperty(res, "error");
         },
@@ -162,7 +157,7 @@ describe("Fund new account", function () {
           // console.log("final balance:", final_balance.toFixed());
           assert.isAbove(final_balance.toNumber(), 0);
           assert.isAbove(final_balance.minus(initial_balance).toNumber(), 0);
-          augur.getRepBalance(augur.constants.DEFAULT_BRANCH_ID, recipient, function (repBalance) {
+          augur.Reporting.getRepBalance(augur.constants.DEFAULT_BRANCH_ID, recipient, function (repBalance) {
             assert.notProperty(repBalance, "error");
             assert.strictEqual(abi.number(repBalance), 47);
             augur.Cash.balance(recipient, function (cashBalance) {
@@ -190,8 +185,6 @@ describe("Send transaction", function () {
         onSent: function (r) {
           // sent
           assert.property(r, "callReturn");
-          assert.isObject(augur.rpc.rawTxs[r.hash].tx);
-          assert.isAbove(parseFloat(augur.rpc.rawTxs[r.hash].cost), 0);
         },
         onSuccess: function (r) {
           // success
@@ -201,10 +194,8 @@ describe("Send transaction", function () {
           assert.isAbove(parseInt(r.blockNumber), 0);
           assert.strictEqual(r.callReturn, "1");
           assert.strictEqual(r.from, user.address);
-          assert.strictEqual(r.to, augur.contracts.Faucets);
+          assert.strictEqual(r.to, augur.store.getState().contractAddresses.Faucets);
           assert.strictEqual(Number(r.value), 0);
-          assert.isObject(augur.rpc.rawTxs[r.hash].tx);
-          assert.isAbove(parseFloat(augur.rpc.rawTxs[r.hash].cost), 0);
           assert.strictEqual(augur.rpc.txs[r.hash].status, "confirmed");
           done();
         },
@@ -217,13 +208,11 @@ describe("Send transaction", function () {
     var augur = tools.setup(Augur);
     augur.accounts.login(keystore, password, function (user) {
       assert.notProperty(user, "error");
-      var tx = clone(augur.api.functions.Faucets.reputationFaucet);
+      var tx = clone(augur.store.getState().contractsAPI.functions.Faucets.reputationFaucet);
       tx.params = augur.constants.DEFAULT_BRANCH_ID;
       augur.rpc.packageAndSubmitRawTransaction(tx, user.address, user.privateKey, function (txhash) {
         assert.notProperty(txhash, "error");
         assert(txhash);
-        assert.isObject(augur.rpc.rawTxs[txhash].tx);
-        assert.isAbove(parseFloat(augur.rpc.rawTxs[txhash].cost), 0);
         augur.rpc.getTx(txhash, function (confirmTx) {
           assert.notProperty(confirmTx, "error");
           assert(confirmTx.hash);
@@ -242,23 +231,23 @@ describe("Concurrent transactions", function () {
   it("staggered", function (done) {
     this.timeout(tools.TIMEOUT*2);
     tools.setup(Augur, function (augur) {
-      var sender = augur.from;
-      augur.accounts.register(utils.sha256(Math.random().toString(36).substring(4)), function (user) {
+      var sender = augur.store.getState().fromAddress;
+      augur.accounts.register(sha256(Math.random().toString(36).substring(4)), function (user) {
         console.log("registered:", user);
         assert.notProperty(user, "error");
         assert.strictEqual(user.address, augur.accounts.account.address);
-        augur.accounts.fundNewAccountFromAddress(sender, 1, user.address, augur.constants.DEFAULT_BRANCH_ID,
+        augur.fundNewAccount.fundNewAccountFromAddress(sender, 1, user.address, augur.constants.DEFAULT_BRANCH_ID,
           function (r) {
             // console.log("fundNewAccountFromAddress sent:", r);
           },
           function (r) {
             console.log("fundNewAccountFromAddress success:", r.from, user.address, sender);
             var count = 0;
-            var tx1 = clone(augur.api.functions.Faucets.reputationFaucet);
-            var tx2 = clone(augur.api.functions.Faucets.fundNewAccount);
+            var tx1 = clone(augur.store.getState().contractsAPI.functions.Faucets.reputationFaucet);
+            var tx2 = clone(augur.store.getState().contractsAPI.functions.Faucets.fundNewAccount);
             tx1.params = [random.hash()];
             tx2.params = [random.hash()];
-            var txCount = parseInt(augur.rpc.pendingTxCount(user.address), 16);
+            var txCount = parseInt(augur.rpc.getPendingTransactionCount(user.address), 16);
             tx1.nonce = txCount;
             tx2.nonce = txCount + 1;
             augur.transact(tx1, function (r) {
@@ -276,7 +265,7 @@ describe("Concurrent transactions", function () {
                 assert.strictEqual(r.callReturn, "1");
                 assert.isAbove(parseInt(r.blockNumber), 0);
                 assert.strictEqual(r.from, user.address);
-                assert.strictEqual(r.to, augur.contracts.Faucets);
+                assert.strictEqual(r.to, augur.store.getState().contractAddresses.Faucets);
                 assert.strictEqual(Number(r.value), 0);
                 if (count === 2) done();
               }, function (err) {
@@ -291,7 +280,7 @@ describe("Concurrent transactions", function () {
               assert.strictEqual(r.callReturn, "1");
               assert.isAbove(parseInt(r.blockNumber), 0);
               assert.strictEqual(r.from, user.address);
-              assert.strictEqual(r.to, augur.contracts.Faucets);
+              assert.strictEqual(r.to, augur.store.getState().contractAddresses.Faucets);
               assert.strictEqual(Number(r.value), 0);
               if (count === 2) done();
             }, function (err) {
@@ -308,23 +297,23 @@ describe("Concurrent transactions", function () {
   it("simultaneous", function (done) {
     this.timeout(tools.TIMEOUT*2);
     tools.setup(Augur, function (augur) {
-      var sender = augur.from;
-      augur.accounts.register(utils.sha256(Math.random().toString(36).substring(4)), function (user) {
+      var sender = augur.store.getState().fromAddress;
+      augur.accounts.register(sha256(Math.random().toString(36).substring(4)), function (user) {
         console.log("registered:", user);
         assert.notProperty(user, "error");
         assert.strictEqual(user.address, augur.accounts.account.address);
-        augur.accounts.fundNewAccountFromAddress(sender, 1, user.address, augur.constants.DEFAULT_BRANCH_ID,
+        augur.fundNewAccount.fundNewAccountFromAddress(sender, 1, user.address, augur.constants.DEFAULT_BRANCH_ID,
           function (r) {
               // console.log("fundNewAccountFromAddress sent:", r);
           },
           function (r) {
             console.log("fundNewAccountFromAddress success:", r.from, user.address, sender);
             var count = 0;
-            var tx1 = clone(augur.api.functions.Faucets.reputationFaucet);
-            var tx2 = clone(augur.api.functions.Faucets.fundNewAccount);
+            var tx1 = clone(augur.store.getState().contractsAPI.functions.Faucets.reputationFaucet);
+            var tx2 = clone(augur.store.getState().contractsAPI.functions.Faucets.fundNewAccount);
             tx1.params = [random.hash()];
             tx2.params = [random.hash()];
-            var txCount = parseInt(augur.rpc.pendingTxCount(user.address), 16);
+            var txCount = parseInt(augur.rpc.getPendingTransactionCount(user.address), 16);
             tx1.nonce = txCount;
             tx2.nonce = txCount + 1;
             augur.transact(tx1, function (r) {
@@ -337,7 +326,7 @@ describe("Concurrent transactions", function () {
               assert.strictEqual(r.callReturn, "1");
               assert.isAbove(parseInt(r.blockNumber), 0);
               assert.strictEqual(r.from, user.address);
-              assert.strictEqual(r.to, augur.contracts.Faucets);
+              assert.strictEqual(r.to, augur.store.getState().contractAddresses.Faucets);
               assert.strictEqual(Number(r.value), 0);
               if (count === 2) done();
             }, function (err) {
@@ -353,7 +342,7 @@ describe("Concurrent transactions", function () {
               assert.strictEqual(r.callReturn, "1");
               assert.isAbove(parseInt(r.blockNumber), 0);
               assert.strictEqual(r.from, user.address);
-              assert.strictEqual(r.to, augur.contracts.Faucets);
+              assert.strictEqual(r.to, augur.store.getState().contractAddresses.Faucets);
               assert.strictEqual(Number(r.value), 0);
               if (count === 2) done();
             }, function (err) {
@@ -370,23 +359,23 @@ describe("Concurrent transactions", function () {
   it("duplicate nonce", function (done) {
     this.timeout(tools.TIMEOUT*2);
     tools.setup(Augur, function (augur) {
-      var sender = augur.from;
-      augur.accounts.register(utils.sha256(Math.random().toString(36).substring(4)), function (user) {
+      var sender = augur.store.getState().fromAddress;
+      augur.accounts.register(sha256(Math.random().toString(36).substring(4)), function (user) {
         console.log("registered:", user);
         assert.notProperty(user, "error");
         assert.strictEqual(user.address, augur.accounts.account.address);
-        augur.accounts.fundNewAccountFromAddress(sender, 1, user.address, augur.constants.DEFAULT_BRANCH_ID,
+        augur.fundNewAccount.fundNewAccountFromAddress(sender, 1, user.address, augur.constants.DEFAULT_BRANCH_ID,
           function (r) {
             // console.log("fundNewAccountFromAddress sent:", r);
           },
           function (r) {
             console.log("fundNewAccountFromAddress success:", r.from, user.address, sender);
             var count = 0;
-            var tx1 = clone(augur.api.functions.Faucets.reputationFaucet);
-            var tx2 = clone(augur.api.functions.Faucets.fundNewAccount);
+            var tx1 = clone(augur.store.getState().contractsAPI.functions.Faucets.reputationFaucet);
+            var tx2 = clone(augur.store.getState().contractsAPI.functions.Faucets.fundNewAccount);
             tx1.params = [random.hash()];
             tx2.params = [random.hash()];
-            var txCount = parseInt(augur.rpc.pendingTxCount(user.address), 16);
+            var txCount = parseInt(augur.rpc.getPendingTransactionCount(user.address), 16);
             tx1.nonce = txCount;
             tx2.nonce = txCount;
             augur.transact(tx1, function (r) {
@@ -399,7 +388,7 @@ describe("Concurrent transactions", function () {
               assert.strictEqual(r.callReturn, "1");
               assert.isAbove(parseInt(r.blockNumber), 0);
               assert.strictEqual(r.from, user.address);
-              assert.strictEqual(r.to, augur.contracts.Faucets);
+              assert.strictEqual(r.to, augur.store.getState().contractAddresses.Faucets);
               assert.strictEqual(Number(r.value), 0);
               if (count === 2) done();
             }, function (err) {
@@ -415,7 +404,7 @@ describe("Concurrent transactions", function () {
               assert.strictEqual(r.callReturn, "1");
               assert.isAbove(parseInt(r.blockNumber), 0);
               assert.strictEqual(r.from, user.address);
-              assert.strictEqual(r.to, augur.contracts.Faucets);
+              assert.strictEqual(r.to, augur.store.getState().contractAddresses.Faucets);
               assert.strictEqual(Number(r.value), 0);
               if (count === 2) done();
             }, function (err) {
@@ -432,12 +421,12 @@ describe("Concurrent transactions", function () {
   it("duplicate payload", function (done) {
     this.timeout(tools.TIMEOUT*2);
     tools.setup(Augur, function (augur) {
-      var sender = augur.from;
-      augur.accounts.register(utils.sha256(Math.random().toString(36).substring(4)), function (user) {
+      var sender = augur.store.getState().fromAddress;
+      augur.accounts.register(sha256(Math.random().toString(36).substring(4)), function (user) {
         console.log("registered:", user);
         assert.notProperty(user, "error");
         assert.strictEqual(user.address, augur.accounts.account.address);
-        augur.accounts.fundNewAccountFromAddress(sender, 1, user.address, augur.constants.DEFAULT_BRANCH_ID,
+        augur.fundNewAccount.fundNewAccountFromAddress(sender, 1, user.address, augur.constants.DEFAULT_BRANCH_ID,
           function (r) {
             // console.log("fundNewAccountFromAddress sent:", r);
           },
@@ -458,7 +447,7 @@ describe("Concurrent transactions", function () {
                 assert.strictEqual(r.callReturn, "1");
                 assert.isAbove(parseInt(r.blockNumber), 0);
                 assert.strictEqual(r.from, user.address);
-                assert.strictEqual(r.to, augur.contracts.Faucets);
+                assert.strictEqual(r.to, augur.store.getState().contractAddresses.Faucets);
                 assert.strictEqual(Number(r.value), 0);
                 if (++count === 2) done();
               },
@@ -485,7 +474,7 @@ describe("Concurrent transactions", function () {
                 assert.strictEqual(r.callReturn, "1");
                 assert.isAbove(parseInt(r.blockNumber), 0);
                 assert.strictEqual(r.from, user.address);
-                assert.strictEqual(r.to, augur.contracts.Faucets);
+                assert.strictEqual(r.to, augur.store.getState().contractAddresses.Faucets);
                 assert.strictEqual(Number(r.value), 0);
                 if (++count === 2) done();
               },

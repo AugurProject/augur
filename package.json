@@ -1,46 +1,37 @@
 {
   "name": "augur.js",
-  "version": "3.15.9",
-  "description": "Augur JavaScript SDK",
+  "version": "4.0.0",
+  "description": "Augur JavaScript API",
   "author": "The Augur Developers <team@augur.net>",
-  "license": "AAL",
+  "license": "MIT",
   "main": "src/index.js",
   "scripts": {
-    "test": "scripts/runtests.sh --core --create --trading --reporting --markets",
+    "test": "mocha test/unit",
     "integration-test": "mocha test/integration/core test/integration/create test/integration/markets test/integration/trading test/integration/reporting",
     "reporting-sequence": "mocha test/integration/reporting/sequence.js -R spec",
-    "lint": "eslint gulpfile.js src/*.js src/modules/*.js scripts/new-contracts.js test/*.js",
+    "lint": "eslint gulpfile.js src scripts/new-contracts.js test/*.js",
     "coverage-save": "istanbul cover ./node_modules/mocha/bin/_mocha test/unit/core test/unit/create test/unit/trading test/unit/reporting test/unit/markets",
     "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha test/unit/core test/unit/create test/unit/trading test/unit/reporting test/unit/markets --report lcovonly -- -R min && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
-    "link": "npm link augur-contracts && npm link ethrpc && npm link ethereumjs-connect && npm link keythereum && npm link augur-abi"
+    "link": "npm link augur-contracts && npm link ethrpc && npm link ethereumjs-connect && npm link keythereum && npm link augur-abi",
+    "build": "babel ./node_modules/uuid-parse --source-root ./node_modules/uuid-parse -d ./node_modules/uuid-parse && babel ./src --source-root ./src -d ./build && browserify ./exports.js > ./dist/augur.js && uglifyjs ./dist/augur.js > ./dist/augur.min.js"
   },
   "dependencies": {
     "async": "1.5.2",
-    "augur-abi": "1.1.1",
+    "augur-abi": "1.2.1",
     "augur-contracts": "2.11.3",
     "bignumber.js": "2.3.0",
     "browser-request": "0.3.3",
     "chalk": "1.1.1",
     "clone": "1.0.2",
-    "ethereumjs-connect": "3.0.8",
-    "ethrpc": "3.1.4",
-    "keythereum": "0.4.6",
+    "ethereumjs-connect": "4.0.4",
+    "ethrpc": "4.0.7",
+    "immutable-delete": "1.0.1",
+    "keythereum": "0.5.1",
+    "lodash.assign": "4.2.0",
     "request": "2.74.0",
     "uuid": "3.0.0",
     "uuid-parse": "1.0.0"
   },
-  "engines": {
-    "node": ">= 4.2.x"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/AugurProject/augur.js.git"
-  },
-  "keywords": [],
-  "bugs": {
-    "url": "https://github.com/AugurProject/augur.js/issues"
-  },
-  "homepage": "https://github.com/AugurProject/augur.js",
   "devDependencies": {
     "babel-cli": "^6.22.2",
     "babel-plugin-transform-es3-member-expression-literals": "^6.22.0",
@@ -54,10 +45,7 @@
     "browserify": "^12.0.1",
     "chai": "^3.0.0",
     "coveralls": "^2.11.3",
-    "del": "^1.2.0",
     "eslint": "^3.17.1",
-    "gulp": "^3.9.0",
-    "gulp-uglify": "^1.5.1",
     "istanbul": "^0.3.17",
     "it-each": "^0.3.1",
     "locks": "^0.2.2",
@@ -67,21 +55,30 @@
     "moment": "^2.13.0",
     "proxyquire": "^1.7.11",
     "rimraf": "^2.4.0",
-    "source-map": "^0.5.6",
-    "uglify-js": "^2.6.1",
-    "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0"
+    "uglify-js": "^2.6.1"
   },
   "optionalDependencies": {
     "madlibs": "0.0.0"
   },
+  "browser": {
+    "request": false
+  },
+  "engines": {
+    "node": ">= 4.2.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AugurProject/augur.js.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/AugurProject/augur.js/issues"
+  },
+  "homepage": "https://github.com/AugurProject/augur.js",
   "directories": {
     "dist": "dist",
     "scripts": "scripts",
     "src": "src",
     "test": "test"
-  },
-  "browser": {
-    "request": false
   }
 }

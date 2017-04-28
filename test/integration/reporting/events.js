@@ -1,8 +1,3 @@
-/**
- * augur.js tests
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var assert = require("chai").assert;
@@ -12,8 +7,8 @@ var tools = require("../../tools");
 var augur = tools.setup(require("../../../src"));
 var amount = "1";
 var branchID = augur.constants.DEFAULT_BRANCH_ID;
-var numMarkets = parseInt(augur.getNumMarketsBranch(branchID), 10);
-var markets = augur.getSomeMarketsInBranch(branchID, numMarkets - 100, numMarkets);
+var numMarkets = parseInt(augur.Branches.getNumMarketsBranch(branchID), 10);
+var markets = augur.Branches.getSomeMarketsInBranch(branchID, numMarkets - 100, numMarkets);
 var marketID = markets[markets.length - 1];
 var eventID = augur.getMarketEvent(marketID, 0);
 

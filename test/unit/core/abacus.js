@@ -302,10 +302,10 @@ describe("abacus.calculateTradingCost", function () {
   });
 });
 
-describe("abacus.calculateValidityBond", function() {
+describe("abacus.calculateValidityBond", function () {
   // 2 tests total
-  var test = function(t) {
-    it(JSON.stringify(t), function() {
+  var test = function (t) {
+    it(JSON.stringify(t), function () {
       t.assertions(abacus.calculateValidityBond.call(t.testThis, t.tradingFee, t.periodLength, t.baseReporters, t.numEventsCreatedInPast24Hours, t.numEventsInReportPeriod));
     });
   };
@@ -316,7 +316,7 @@ describe("abacus.calculateValidityBond", function() {
     baseReporters: 50,
     numEventsCreatedInPast24Hours: 20,
     numEventsInReportPeriod: 25,
-    assertions: function(result) {
+    assertions: function (result) {
       assert.deepEqual(result, '0.98103632478632478632');
     }
   });
@@ -327,7 +327,7 @@ describe("abacus.calculateValidityBond", function() {
     baseReporters: 100,
     numEventsCreatedInPast24Hours: 20,
     numEventsInReportPeriod: 25,
-    assertions: function(result) {
+    assertions: function (result) {
       assert.deepEqual(result, '0.15411324786324786325');
     }
   });
@@ -631,7 +631,7 @@ describe("abacus.sumTradeGas", function () {
   });
 });
 
-describe("abacus.sumTrades", function() {
+describe("abacus.sumTrades", function () {
   var test = function (t) {
     it(JSON.stringify(t), function () {
       t.assertions(abacus.sumTrades(t.trade_ids));
@@ -639,25 +639,25 @@ describe("abacus.sumTrades", function() {
   };
   test({
     trade_ids: ['1', '2'],
-    assertions: function(trades) {
+    assertions: function (trades) {
       assert.deepEqual(trades, '0x3');
     }
   });
   test({
     trade_ids: [],
-    assertions: function(trades) {
+    assertions: function (trades) {
       assert.deepEqual(trades, '0x0');
     }
   });
   test({
     trade_ids: ['25', '233023', '100', '12', '6', '34'],
-    assertions: function(trades) {
+    assertions: function (trades) {
       assert.deepEqual(trades, '0x38ef0');
     }
   });
 });
 
-describe("abacus.makeTradeHash", function() {
+describe("abacus.makeTradeHash", function () {
   var test = function (t) {
     it(JSON.stringify(t), function () {
       t.assertions(abacus.makeTradeHash(t.max_value, t.max_amount, t.trade_ids));
@@ -667,7 +667,7 @@ describe("abacus.makeTradeHash", function() {
     max_value: '100',
     max_amount: '200',
     trade_ids: ['15', '12', '200'],
-    assertions: function(sha3) {
+    assertions: function (sha3) {
       assert.deepEqual(sha3, '0x9dbb8636c9cdd0d31d02b19bf88ca090e8df5138ba666c167be06a4860aead39');
     }
   });
@@ -675,7 +675,7 @@ describe("abacus.makeTradeHash", function() {
     max_value: '0',
     max_amount: '10',
     trade_ids: ['150', '12333', '12320', '1', '23', '12'],
-    assertions: function(sha3) {
+    assertions: function (sha3) {
       assert.deepEqual(sha3, '0x9731ed6e55710832de4e483a8edf597029d636e58b701458b8cdd2bfd2829be6');
     }
   });
@@ -683,7 +683,7 @@ describe("abacus.makeTradeHash", function() {
     max_value: '120',
     max_amount: '0',
     trade_ids: ['10', '120', '20', '321'],
-    assertions: function(sha3) {
+    assertions: function (sha3) {
       assert.deepEqual(sha3, '0xb7740eac4fa741a5f8db90da5c9d261598bc7dfe031e361c4010d2f436d71717');
     }
   });
@@ -691,15 +691,15 @@ describe("abacus.makeTradeHash", function() {
     max_value: '120',
     max_amount: '300',
     trade_ids: [],
-    assertions: function(sha3) {
+    assertions: function (sha3) {
       assert.deepEqual(sha3, '0x604350686ce84371b506c8497ef58fea535df1b2dab9fc00ef31bc8898271428');
     }
   });
 });
 
-describe("abacus.parseMarketInfo", function() {
-  var test = function(t) {
-    it(JSON.stringify(t), function() {
+describe("abacus.parseMarketInfo", function () {
+  var test = function (t) {
+    it(JSON.stringify(t), function () {
       // the following if statements setup the rawInfo's shape correctly with description/resolution/extraInfo
       if (t.description) t.rawInfo.splice.apply(t.rawInfo, [t.rawInfo.length - 2, 0].concat(t.description));
       if (t.resolution) t.rawInfo.splice.apply(t.rawInfo, [t.rawInfo.length - 1, 0].concat(t.resolution));
@@ -758,7 +758,7 @@ describe("abacus.parseMarketInfo", function() {
   // marketInfo[???] = extraInfo
   test({
     rawInfo: [],
-    assertions: function(info) {
+    assertions: function (info) {
       assert.deepEqual(info, {});
     }
   });
@@ -767,7 +767,7 @@ describe("abacus.parseMarketInfo", function() {
     description: abi.hex_to_bytes(abi.hex('This is a scalar market that has a report')),
     resolution: abi.hex_to_bytes(abi.hex('https://www.resolutions.com')),
     extraInfo: abi.hex_to_bytes(abi.hex('This is extra information used to help with reporting')),
-    assertions: function(info) {
+    assertions: function (info) {
       assert.deepEqual(info, {
       	id: '0x00000000000000000000000000000000000000000000000000000000000000a1',
       	network: undefined,
@@ -818,7 +818,7 @@ describe("abacus.parseMarketInfo", function() {
     description: abi.hex_to_bytes(abi.hex('This describes my market')),
     resolution: abi.hex_to_bytes(abi.hex('https://www.resolutions.com')),
     extraInfo: abi.hex_to_bytes(abi.hex('This is some extra information')),
-    assertions: function(info) {
+    assertions: function (info) {
       assert.deepEqual(info, {
       	id: '0x00000000000000000000000000000000000000000000000000000000000000a2',
       	network: undefined,
@@ -869,7 +869,7 @@ describe("abacus.parseMarketInfo", function() {
     description: abi.hex_to_bytes(abi.hex('Generally, What color is the sky?')),
     resolution: abi.hex_to_bytes(abi.hex('https://www.resolutions.com')),
     extraInfo: abi.hex_to_bytes(abi.hex('This is some extra information about my categorical market.')),
-    assertions: function(info) {
+    assertions: function (info) {
       assert.deepEqual(info, {
       	id: '0x00000000000000000000000000000000000000000000000000000000000000a3',
       	network: undefined,
@@ -933,89 +933,7 @@ describe("abacus.parseMarketInfo", function() {
 
 });
 
-describe("abacus.formatTag", function() {
-  var test = function(t) {
-    it(JSON.stringify(t), function() {
-      t.assertions(abacus.formatTag(t.tag));
-    });
-  };
-  test({
-    tag: undefined,
-    assertions: function(tag) {
-      assert.deepEqual(tag, '0x0');
-    }
-  });
-  test({
-    tag: null,
-    assertions: function(tag) {
-      assert.deepEqual(tag, '0x0');
-    }
-  });
-  test({
-    tag: '',
-    assertions: function(tag) {
-      assert.deepEqual(tag, '0x0');
-    }
-  });
-  test({
-    tag: 'Hello World',
-    assertions: function(tag) {
-      assert.deepEqual(tag, '0x48656c6c6f20576f726c64000000000000000000000000000000000000000000');
-    }
-  });
-});
-
-describe("abacus.formatTags", function() {
-  var test = function(t) {
-    it(JSON.stringify(t), function() {
-      t.assertions(abacus.formatTags(t.tags));
-    });
-  };
-  test({
-    tags: undefined,
-    assertions: function(tags) {
-      assert.deepEqual(tags, [ '0x0', '0x0', '0x0' ]);
-    }
-  });
-  test({
-    tags: '',
-    assertions: function(tags) {
-      assert.deepEqual(tags, [ '0x0', '0x0', '0x0' ]);
-    }
-  });
-  test({
-    tags: ['Hello World'],
-    assertions: function(tags) {
-      assert.deepEqual(tags, [
-        '0x48656c6c6f20576f726c64000000000000000000000000000000000000000000',
-        '0x0',
-        '0x0'
-      ]);
-    }
-  });
-  test({
-    tags: ['Hello', 'World'],
-    assertions: function(tags) {
-      assert.deepEqual(tags, [
-        '0x48656c6c6f000000000000000000000000000000000000000000000000000000',
-        '0x576f726c64000000000000000000000000000000000000000000000000000000',
-        '0x0'
-      ]);
-    }
-  });
-  test({
-    tags: ['Hello', 'World', 'testing'],
-    assertions: function(tags) {
-      assert.deepEqual(tags, [
-        '0x48656c6c6f000000000000000000000000000000000000000000000000000000',
-        '0x576f726c64000000000000000000000000000000000000000000000000000000',
-        '0x74657374696e6700000000000000000000000000000000000000000000000000'
-      ]);
-    }
-  });
-});
-
-describe("abacus.calculateRequiredMarketValue", function() {
+describe("abacus.calculateRequiredMarketValue", function () {
   var test = function (t) {
     it(JSON.stringify(t), function () {
       t.assertions(abacus.calculateRequiredMarketValue(t.gasPrice));
@@ -1023,27 +941,27 @@ describe("abacus.calculateRequiredMarketValue", function() {
   };
   test({
     gasPrice: '0.00354',
-    assertions: function(marketValue) {
+    assertions: function (marketValue) {
       assert.deepEqual(marketValue, '0x1782');
     }
   });
   test({
     gasPrice: '0.07502',
-    assertions: function(marketValue) {
+    assertions: function (marketValue) {
       assert.deepEqual(marketValue, '0x1f22e');
     }
   });
   test({
     gasPrice: '0.53',
-    assertions: function(marketValue) {
+    assertions: function (marketValue) {
       assert.deepEqual(marketValue, '0xdbf88');
     }
   });
 });
 
-describe("abacus.calculateMakerTakerFees", function() {
-  var test = function(t) {
-    it(JSON.stringify(t), function() {
+describe("abacus.calculateMakerTakerFees", function () {
+  var test = function (t) {
+    it(JSON.stringify(t), function () {
       t.assertions(abacus.calculateMakerTakerFees(t.tradingFee, t.makerProportionOfFee, t.isUnfixed, t.returnBigNumber));
     });
   };
@@ -1052,7 +970,7 @@ describe("abacus.calculateMakerTakerFees", function() {
     makerProportionOfFee: abi.fix('0.67'),
     isUnfixed: false,
     returnBigNumber: true,
-    assertions: function(makerTaker) {
+    assertions: function (makerTaker) {
       assert.deepEqual(JSON.stringify(makerTaker), JSON.stringify({
         trading: abi.bignum('0.03'),
         maker: abi.bignum('0.0201'),
@@ -1065,7 +983,7 @@ describe("abacus.calculateMakerTakerFees", function() {
     makerProportionOfFee: '0.392',
     isUnfixed: true,
     returnBigNumber: false,
-    assertions: function(makerTaker) {
+    assertions: function (makerTaker) {
       assert.deepEqual(JSON.stringify(makerTaker), JSON.stringify({
         trading: '0.026',
         maker: '0.010192',
@@ -1075,253 +993,89 @@ describe("abacus.calculateMakerTakerFees", function() {
   });
 });
 
-describe("abacus.shrinkScalarPrice", function() {
-  var test = function(t) {
-    it(JSON.stringify(t), function() {
+describe("abacus.shrinkScalarPrice", function () {
+  var test = function (t) {
+    it(JSON.stringify(t), function () {
       t.assertions(abacus.shrinkScalarPrice(t.minValue, t.price));
     });
   };
   test({
     minValue: new BigNumber('10'),
     price: new BigNumber('.5'),
-    assertions: function(shrunkenScalarPrice) {
+    assertions: function (shrunkenScalarPrice) {
       assert.deepEqual(shrunkenScalarPrice, '-9.5');
     }
   });
   test({
     minValue: '100',
     price: '20',
-    assertions: function(shrunkenScalarPrice) {
+    assertions: function (shrunkenScalarPrice) {
       assert.deepEqual(shrunkenScalarPrice, '-80');
     }
   });
   test({
     minValue: '-20',
     price: '20',
-    assertions: function(shrunkenScalarPrice) {
+    assertions: function (shrunkenScalarPrice) {
       assert.deepEqual(shrunkenScalarPrice, '40');
     }
   });
 });
 
-describe("abacus.expandScalarPrice", function() {
-  var test = function(t) {
-    it(JSON.stringify(t), function() {
+describe("abacus.expandScalarPrice", function () {
+  var test = function (t) {
+    it(JSON.stringify(t), function () {
       t.assertions(abacus.expandScalarPrice(t.minValue, t.price));
     });
   };
   test({
     minValue: new BigNumber('10'),
     price: new BigNumber('.5'),
-    assertions: function(expandedScalarPrice) {
+    assertions: function (expandedScalarPrice) {
       assert.deepEqual(expandedScalarPrice, '10.5');
     }
   });
   test({
     minValue: '100',
     price: '5',
-    assertions: function(expandedScalarPrice) {
+    assertions: function (expandedScalarPrice) {
       assert.deepEqual(expandedScalarPrice, '105');
     }
   });
   test({
     minValue: '-10',
     price: '50',
-    assertions: function(expandedScalarPrice) {
+    assertions: function (expandedScalarPrice) {
       assert.deepEqual(expandedScalarPrice, '40');
     }
   });
 });
 
-describe("abacus.adjustScalarSellPrice", function() {
-  var test = function(t) {
-    it(JSON.stringify(t), function() {
+describe("abacus.adjustScalarSellPrice", function () {
+  var test = function (t) {
+    it(JSON.stringify(t), function () {
       t.assertions(abacus.adjustScalarSellPrice(t.maxValue, t.price));
     });
   };
   test({
     maxValue: new BigNumber('100'),
     price: new BigNumber('.5'),
-    assertions: function(adjustedScalarPrice) {
+    assertions: function (adjustedScalarPrice) {
       assert.deepEqual(adjustedScalarPrice, '99.5');
     }
   });
   test({
     maxValue: '50',
     price: '.7',
-    assertions: function(adjustedScalarPrice) {
+    assertions: function (adjustedScalarPrice) {
       assert.deepEqual(adjustedScalarPrice, '49.3');
     }
   });
   test({
     maxValue: '500',
     price: '320',
-    assertions: function(adjustedScalarPrice) {
+    assertions: function (adjustedScalarPrice) {
       assert.deepEqual(adjustedScalarPrice, '180');
-    }
-  });
-});
-
-describe("abacus.roundToPrecision", function() {
-  var test = function(t) {
-    it(JSON.stringify(t), function() {
-      t.assertions(abacus.roundToPrecision(t.value, t.minimum, t.round, t.roundingMode));
-    });
-  };
-  test({
-    value: new BigNumber('10.042383874392382392'),
-    minimum: new BigNumber('15'),
-    round: 'ceil',
-    roundingMode: '1',
-    assertions: function(roundedValue) {
-      assert.isNull(roundedValue);
-    }
-  });
-  test({
-    value: new BigNumber('0.00058472239302029387432'),
-    minimum: new BigNumber('-15'),
-    round: 'ceil',
-    roundingMode: BigNumber.ROUND_UP,
-    assertions: function(roundedValue) {
-      assert.deepEqual(roundedValue, '0.0005847');
-    }
-  });
-  test({
-    value: new BigNumber('0.0007889577234892349872349823403'),
-    minimum: new BigNumber('0'),
-    round: 'floor',
-    roundingMode: BigNumber.ROUND_DOWN,
-    assertions: function(roundedValue) {
-      assert.deepEqual(roundedValue, '0.0007889');
-    }
-  });
-  test({
-    value: new BigNumber('932.9238374636282823839223'),
-    minimum: new BigNumber('0'),
-    round: 'ceil',
-    roundingMode: BigNumber.ROUND_UP,
-    assertions: function(roundedValue) {
-      assert.deepEqual(roundedValue, '932.9239');
-    }
-  });
-  test({
-    value: new BigNumber('42.119238375652328232332124568'),
-    minimum: new BigNumber('5'),
-    round: 'floor',
-    roundingMode: BigNumber.ROUND_DOWN,
-    assertions: function(roundedValue) {
-      assert.deepEqual(roundedValue, '42.1192');
-    }
-  });
-});
-
-describe("abacus.parseTradeInfo", function() {
-  var test = function(t) {
-    it(JSON.stringify(t), function() {
-      t.assertions(abacus.parseTradeInfo(t.trade));
-    });
-  };
-  // trade: [ tradeID, tradeType, marketID, FullPercisionAmount, fullPrecisionPrice, owner, blockID, outcomeID ]
-  test({
-    trade: undefined,
-    assertions: function(parsed) {
-      assert.isNull(parsed);
-    }
-  });
-  test({
-    trade: [],
-    assertions: function(parsed) {
-      assert.isNull(parsed);
-    }
-  });
-  test({
-    trade: ['fail'],
-    assertions: function(parsed) {
-      assert.isNull(parsed);
-    }
-  });
-  test({
-    trade: ['0xa1', '0x1', '0xb1', '0000004500234500120000', '5002342211221110328', '0xc1', '101010', '1'],
-    assertions: function(parsed) {
-      assert.isNull(parsed);
-    }
-  });
-  test({
-    trade: ['0xa1', '0x1', '0xb1', '10004500234500120000', '00000000000000000000000', '0xc1', '101010', '1'],
-    assertions: function(parsed) {
-      assert.isNull(parsed);
-    }
-  });
-  test({
-    trade: ['0xa1', '0x1', '0xb1', '10004500234500120000', '5002342211221110328', '0xc1', '101010', '1'],
-    assertions: function(parsed) {
-      assert.deepEqual(parsed, {
-        id: '0x00000000000000000000000000000000000000000000000000000000000000a1',
-        type: 'buy',
-        market: '0xb1',
-        amount: '10.0045',
-        fullPrecisionAmount: '10.00450023450012',
-        price: '5.0023',
-        fullPrecisionPrice: '5.002342211221110328',
-        owner: '0x00000000000000000000000000000000000000c1',
-        block: 1052688,
-        outcome: '1'
-      });
-    }
-  });
-  test({
-    trade: ['0xabc1', '0x2', '0xa1', '802393203427423923123', '42375829238539345978345', '0xc1', '101010', '1'],
-    assertions: function(parsed) {
-      assert.deepEqual(parsed, {
-        id: '0x000000000000000000000000000000000000000000000000000000000000abc1',
-        type: 'sell',
-        market: '0xa1',
-        amount: '802.3932',
-        fullPrecisionAmount: '802.393203427423923123',
-        price: '42375.8293',
-        fullPrecisionPrice: '42375.829238539345978345',
-        owner: '0x00000000000000000000000000000000000000c1',
-        block: 1052688,
-        outcome: '1'
-      });
-    }
-  });
-  test({
-    trade: ['0xabc1', '0x2', '0xa1', '802393203427423923123', '0', '0xc1', '101010', '1'],
-    assertions: function(parsed) {
-      assert.isNull(parsed);
-    }
-  });
-});
-
-describe("abacus.decodeTag", function() {
-  var test = function(t) {
-    it(JSON.stringify(t), function() {
-      t.assertions(abacus.decodeTag(t.tag));
-    });
-  };
-  test({
-    tag: undefined,
-    assertions: function(tag) {
-      assert.isNull(tag);
-    }
-  });
-  test({
-    tag: '0x',
-    assertions: function(tag) {
-      assert.isNull(tag);
-    }
-  });
-  test({
-    tag: '0x0',
-    assertions: function(tag) {
-      assert.isNull(tag);
-    }
-  });
-  test({
-    tag: abi.short_string_to_int256('This is my tag!'),
-    assertions: function(tag) {
-      assert.deepEqual(tag, 'This is my tag!');
     }
   });
 });

@@ -1,14 +1,14 @@
 "use strict";
 
-var assert = require('chai').assert;
+var assert = require("chai").assert;
 var augur = new (require("../../../src"))();
-var noop = require("../../../src/utilities").noop;
+var noop = require("../../../src/utils/noop");
 var constants = require("../../../src/constants");
 var BigNumber = require("bignumber.js");
-var clearCallCounts = require('../../tools').clearCallCounts;
+var clearCallCounts = require("../../tools").clearCallCounts;
 // 15 tests total
 
-describe("executeTrade.executeTrade", function() {
+describe("executeTrade.executeTrade", function () {
   // 8 tests total
   var getParticipantSharesPurchased = augur.getParticipantSharesPurchased;
   var getCashBalance = augur.Cash.balance;
@@ -20,19 +20,19 @@ describe("executeTrade.executeTrade", function() {
     getTradeIDs: 0,
     tradeCommitmentCallback: 0
   }
-  afterEach(function() {
+  afterEach(function () {
     clearCallCounts(callCounts);
     augur.getParticipantSharesPurchased = getParticipantSharesPurchased;
     augur.Cash.balance = getCashBalance;
     augur.trade = trade;
   });
-  var test = function(t) {
-    it(t.description, function(done) {
+  var test = function (t) {
+    it(t.description, function (done) {
       augur.getParticipantSharesPurchased = t.getParticipantSharesPurchased;
       augur.Cash.balance = t.Cash.balance;
       augur.trade = t.trade;
 
-      augur.executeTrade(t.marketID, t.outcomeID, t.numShares, t.totalEthWithFee, t.tradingFees, t.tradeGroupID, t.address, t.getOrderBooks, t.getTradeIDs, t.tradeCommitmentCallback, function(err, res) {
+      augur.executeTrade(t.marketID, t.outcomeID, t.numShares, t.totalEthWithFee, t.tradingFees, t.tradeGroupID, t.address, t.getOrderBooks, t.getTradeIDs, t.tradeCommitmentCallback, function (err, res) {
         t.assertions(err, res);
         done();
       });
@@ -59,11 +59,11 @@ describe("executeTrade.executeTrade", function() {
         }
       };
     },
-    getTradeIDs: function() {
+    getTradeIDs: function () {
       callCounts.getTradeIDs++;
       return ['0xb1', '0xb2', '0xb3'];
     },
-    tradeCommitmentCallback: function(commit) {
+    tradeCommitmentCallback: function (commit) {
       callCounts.tradeCommitmentCallback++;
       assert.deepEqual(commit, {
         tradeHash: '0x0000000000000000000000000000000000000000000000000000000abc543012',
@@ -82,7 +82,7 @@ describe("executeTrade.executeTrade", function() {
         gasFees: '0'
       });
     },
-    getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
+    getParticipantSharesPurchased: function (marketID, address, outcomeID, cb) {
       callCounts.getParticipantSharesPurchased++;
       assert.equal(marketID, '0xa1');
       assert.equal(address, '0x1');
@@ -90,13 +90,13 @@ describe("executeTrade.executeTrade", function() {
       cb('0');
     },
     Cash: {
-      balance: function(address, cb) {
+      balance: function (address, cb) {
         callCounts.getCashBalance++;
         assert.equal(address, '0x1');
         cb('1000');
       }
     },
-    trade: function(trade) {
+    trade: function (trade) {
       callCounts.trade++;
       assert.equal(trade.max_value, '51');
       assert.equal(trade.max_amount, '0');
@@ -115,7 +115,7 @@ describe("executeTrade.executeTrade", function() {
       trade.onCommitSent('1');
       trade.onCommitFailed({ error: 999, message: 'Uh-Oh!' });
     },
-    assertions: function(err, res) {
+    assertions: function (err, res) {
       assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
       assert.isUndefined(res);
       assert.deepEqual(callCounts, {
@@ -148,11 +148,11 @@ describe("executeTrade.executeTrade", function() {
         }
       };
     },
-    getTradeIDs: function() {
+    getTradeIDs: function () {
       callCounts.getTradeIDs++;
       return ['0xb1', '0xb2', '0xb3'];
     },
-    tradeCommitmentCallback: function(commit) {
+    tradeCommitmentCallback: function (commit) {
       callCounts.tradeCommitmentCallback++;
       switch(callCounts.tradeCommitmentCallback) {
       case 1:
@@ -179,7 +179,7 @@ describe("executeTrade.executeTrade", function() {
       }
 
     },
-    getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
+    getParticipantSharesPurchased: function (marketID, address, outcomeID, cb) {
       callCounts.getParticipantSharesPurchased++;
       assert.equal(marketID, '0xa1');
       assert.equal(address, '0x1');
@@ -187,13 +187,13 @@ describe("executeTrade.executeTrade", function() {
       cb('0');
     },
     Cash: {
-      balance: function(address, cb) {
+      balance: function (address, cb) {
         callCounts.getCashBalance++;
         assert.equal(address, '0x1');
         cb('1000');
       }
     },
-    trade: function(trade) {
+    trade: function (trade) {
       callCounts.trade++;
       assert.equal(trade.max_value, '51');
       assert.equal(trade.max_amount, '0');
@@ -215,7 +215,7 @@ describe("executeTrade.executeTrade", function() {
       trade.onTradeSent('1');
       trade.onTradeFailed({ error: 999, message: 'Uh-Oh!' });
     },
-    assertions: function(err, res) {
+    assertions: function (err, res) {
       assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
       assert.isUndefined(res);
       assert.deepEqual(callCounts, {
@@ -248,11 +248,11 @@ describe("executeTrade.executeTrade", function() {
         }
       };
     },
-    getTradeIDs: function() {
+    getTradeIDs: function () {
       callCounts.getTradeIDs++;
       return ['0xb1', '0xb2', '0xb3'];
     },
-    tradeCommitmentCallback: function(commit) {
+    tradeCommitmentCallback: function (commit) {
       callCounts.tradeCommitmentCallback++;
       switch(callCounts.tradeCommitmentCallback) {
       case 1:
@@ -353,7 +353,7 @@ describe("executeTrade.executeTrade", function() {
         break;
       }
     },
-    getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
+    getParticipantSharesPurchased: function (marketID, address, outcomeID, cb) {
       callCounts.getParticipantSharesPurchased++;
       assert.equal(marketID, '0xa1');
       assert.equal(address, '0x1');
@@ -376,7 +376,7 @@ describe("executeTrade.executeTrade", function() {
       }
     },
     Cash: {
-      balance: function(address, cb) {
+      balance: function (address, cb) {
         callCounts.getCashBalance++;
         assert.equal(address, '0x1');
         switch(callCounts.getCashBalance) {
@@ -397,7 +397,7 @@ describe("executeTrade.executeTrade", function() {
         }
       }
     },
-    trade: function(trade) {
+    trade: function (trade) {
       callCounts.trade++;
       assert.deepEqual(trade.trade_ids, ['0xb1', '0xb2', '0xb3']);
       assert.equal(trade.tradeGroupID, '0x000abc123');
@@ -455,7 +455,7 @@ describe("executeTrade.executeTrade", function() {
       }
 
     },
-    assertions: function(err, res) {
+    assertions: function (err, res) {
       assert.isNull(err);
       assert.strictEqual(JSON.stringify(res), JSON.stringify({
         remainingEth: new BigNumber('0'),
@@ -494,7 +494,7 @@ describe("executeTrade.executeTrade", function() {
         }
       };
     },
-    getTradeIDs: function() {
+    getTradeIDs: function () {
       callCounts.getTradeIDs++;
       switch(callCounts.getTradeIDs) {
       case 1:
@@ -506,7 +506,7 @@ describe("executeTrade.executeTrade", function() {
         break;
       }
     },
-    tradeCommitmentCallback: function(commit) {
+    tradeCommitmentCallback: function (commit) {
       callCounts.tradeCommitmentCallback++;
       switch(callCounts.tradeCommitmentCallback) {
       case 1:
@@ -574,7 +574,7 @@ describe("executeTrade.executeTrade", function() {
         break;
       }
     },
-    getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
+    getParticipantSharesPurchased: function (marketID, address, outcomeID, cb) {
       callCounts.getParticipantSharesPurchased++;
       assert.equal(marketID, '0xa1');
       assert.equal(address, '0x1');
@@ -593,7 +593,7 @@ describe("executeTrade.executeTrade", function() {
       }
     },
     Cash: {
-      balance: function(address, cb) {
+      balance: function (address, cb) {
         callCounts.getCashBalance++;
         assert.equal(address, '0x1');
         switch(callCounts.getCashBalance) {
@@ -610,7 +610,7 @@ describe("executeTrade.executeTrade", function() {
         }
       }
     },
-    trade: function(trade) {
+    trade: function (trade) {
       callCounts.trade++;
       assert.deepEqual(trade.trade_ids, ['0xb1', '0xb2']);
       assert.equal(trade.tradeGroupID, '0x000abc123');
@@ -656,7 +656,7 @@ describe("executeTrade.executeTrade", function() {
       }
 
     },
-    assertions: function(err, res) {
+    assertions: function (err, res) {
       assert.isNull(err);
       assert.strictEqual(JSON.stringify(res), JSON.stringify({
         remainingEth: new BigNumber('0'),
@@ -694,7 +694,7 @@ describe("executeTrade.executeTrade", function() {
         }
       };
     },
-    getTradeIDs: function() {
+    getTradeIDs: function () {
       callCounts.getTradeIDs++;
       switch(callCounts.getTradeIDs) {
       case 1:
@@ -705,7 +705,7 @@ describe("executeTrade.executeTrade", function() {
         break;
       }
     },
-    tradeCommitmentCallback: function(commit) {
+    tradeCommitmentCallback: function (commit) {
       callCounts.tradeCommitmentCallback++;
       switch(callCounts.tradeCommitmentCallback) {
       case 1:
@@ -742,7 +742,7 @@ describe("executeTrade.executeTrade", function() {
         break;
       }
     },
-    getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
+    getParticipantSharesPurchased: function (marketID, address, outcomeID, cb) {
       callCounts.getParticipantSharesPurchased++;
       assert.equal(marketID, '0xa1');
       assert.equal(address, '0x1');
@@ -757,7 +757,7 @@ describe("executeTrade.executeTrade", function() {
       }
     },
     Cash: {
-      balance: function(address, cb) {
+      balance: function (address, cb) {
         callCounts.getCashBalance++;
         assert.equal(address, '0x1');
         switch(callCounts.getCashBalance) {
@@ -770,7 +770,7 @@ describe("executeTrade.executeTrade", function() {
         }
       }
     },
-    trade: function(trade) {
+    trade: function (trade) {
       callCounts.trade++;
       assert.deepEqual(trade.trade_ids, ['0xb1']);
       assert.equal(trade.tradeGroupID, '0x000abc123');
@@ -804,7 +804,7 @@ describe("executeTrade.executeTrade", function() {
       }
 
     },
-    assertions: function(err, res) {
+    assertions: function (err, res) {
       assert.isNull(err);
       assert.strictEqual(JSON.stringify(res), JSON.stringify({
         remainingEth: new BigNumber('0'),
@@ -840,25 +840,25 @@ describe("executeTrade.executeTrade", function() {
         }
       };
     },
-    getTradeIDs: function() {
+    getTradeIDs: function () {
       callCounts.getTradeIDs++;
       return undefined;
     },
-    tradeCommitmentCallback: function(commit) {
+    tradeCommitmentCallback: function (commit) {
       callCounts.tradeCommitmentCallback++;
     },
-    getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
+    getParticipantSharesPurchased: function (marketID, address, outcomeID, cb) {
       callCounts.getParticipantSharesPurchased++;
     },
     Cash: {
-      balance: function(address, cb) {
+      balance: function (address, cb) {
         callCounts.getCashBalance++;
       }
     },
-    trade: function(trade) {
+    trade: function (trade) {
       callCounts.trade++;
     },
-    assertions: function(err, res) {
+    assertions: function (err, res) {
       assert.isNull(err);
       assert.strictEqual(JSON.stringify(res), JSON.stringify({
         remainingEth: constants.ZERO,
@@ -894,25 +894,25 @@ describe("executeTrade.executeTrade", function() {
         }
       };
     },
-    getTradeIDs: function() {
+    getTradeIDs: function () {
       callCounts.getTradeIDs++;
       return [];
     },
-    tradeCommitmentCallback: function(commit) {
+    tradeCommitmentCallback: function (commit) {
       callCounts.tradeCommitmentCallback++;
     },
-    getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
+    getParticipantSharesPurchased: function (marketID, address, outcomeID, cb) {
       callCounts.getParticipantSharesPurchased++;
     },
     Cash: {
-      balance: function(address, cb) {
+      balance: function (address, cb) {
         callCounts.getCashBalance++;
       }
     },
-    trade: function(trade) {
+    trade: function (trade) {
       callCounts.trade++;
     },
-    assertions: function(err, res) {
+    assertions: function (err, res) {
       assert.isNull(err);
       assert.strictEqual(JSON.stringify(res), JSON.stringify({
         remainingEth: constants.ZERO,
@@ -948,25 +948,25 @@ describe("executeTrade.executeTrade", function() {
         }
       };
     },
-    getTradeIDs: function() {
+    getTradeIDs: function () {
       callCounts.getTradeIDs++;
       return ['0xb1'];
     },
-    tradeCommitmentCallback: function(commit) {
+    tradeCommitmentCallback: function (commit) {
       callCounts.tradeCommitmentCallback++;
     },
-    getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
+    getParticipantSharesPurchased: function (marketID, address, outcomeID, cb) {
       callCounts.getParticipantSharesPurchased++;
     },
     Cash: {
-      balance: function(address, cb) {
+      balance: function (address, cb) {
         callCounts.getCashBalance++;
       }
     },
-    trade: function(trade) {
+    trade: function (trade) {
       callCounts.trade++;
     },
-    assertions: function(err, res) {
+    assertions: function (err, res) {
       assert.isNull(err);
       assert.strictEqual(JSON.stringify(res), JSON.stringify({
         remainingEth: constants.ZERO,
@@ -1002,25 +1002,25 @@ describe("executeTrade.executeTrade", function() {
         }
       };
     },
-    getTradeIDs: function() {
+    getTradeIDs: function () {
       callCounts.getTradeIDs++;
       return ['0xb1'];
     },
-    tradeCommitmentCallback: function(commit) {
+    tradeCommitmentCallback: function (commit) {
       callCounts.tradeCommitmentCallback++;
     },
-    getParticipantSharesPurchased: function(marketID, address, outcomeID, cb) {
+    getParticipantSharesPurchased: function (marketID, address, outcomeID, cb) {
       callCounts.getParticipantSharesPurchased++;
     },
     Cash: {
-      balance: function(address, cb) {
+      balance: function (address, cb) {
         callCounts.getCashBalance++;
       }
     },
-    trade: function(trade) {
+    trade: function (trade) {
       callCounts.trade++;
     },
-    assertions: function(err, res) {
+    assertions: function (err, res) {
       assert.isNull(err);
       assert.strictEqual(JSON.stringify(res), JSON.stringify({
         remainingEth: constants.ZERO,
@@ -1041,7 +1041,7 @@ describe("executeTrade.executeTrade", function() {
   });
 });
 
-describe("executeTrade.executeShortSell", function() {
+describe("executeTrade.executeShortSell", function () {
   // 7 tests total
   var short_sell = augur.short_sell;
   var callCounts = {
@@ -1049,15 +1049,15 @@ describe("executeTrade.executeShortSell", function() {
     tradeCommitmentCallback: 0,
     short_sell: 0
   };
-  afterEach(function() {
+  afterEach(function () {
     clearCallCounts(callCounts);
     augur.short_sell = short_sell;
   });
-  var test = function(t) {
-    it(t.description, function(done) {
+  var test = function (t) {
+    it(t.description, function (done) {
       augur.short_sell = t.short_sell;
 
-      augur.executeShortSell(t.marketID, t.outcomeID, t.numShares, t.tradingFees, t.tradeGroupID, t.address, t.getOrderBooks, t.getTradeIDs, t.tradeCommitmentCallback, function(err, res) {
+      augur.executeShortSell(t.marketID, t.outcomeID, t.numShares, t.tradingFees, t.tradeGroupID, t.address, t.getOrderBooks, t.getTradeIDs, t.tradeCommitmentCallback, function (err, res) {
         t.assertions(err, res);
         done();
       });
@@ -1074,17 +1074,17 @@ describe("executeTrade.executeShortSell", function() {
     getOrderBooks: function () {
       return { '0xa1': { buy: {}, sell: {} } };
     },
-    getTradeIDs: function() {
+    getTradeIDs: function () {
       callCounts.getTradeIDs++;
       return undefined;
     },
-    tradeCommitmentCallback: function(commit) {
+    tradeCommitmentCallback: function (commit) {
       callCounts.tradeCommitmentCallback++;
     },
-    short_sell: function() {
+    short_sell: function () {
       callCounts.short_sell++;
     },
-    assertions: function(err, res) {
+    assertions: function (err, res) {
       assert.isNull(err);
       assert.strictEqual(JSON.stringify(res), JSON.stringify({
         remainingShares: new BigNumber('100'),
@@ -1109,17 +1109,17 @@ describe("executeTrade.executeShortSell", function() {
     tradeGroupID: '0x000abc123',
     address: '0x1',
     getOrderBooks: function () { return { '0xa1': { buy: {}, sell: {} } }; },
-    getTradeIDs: function() {
+    getTradeIDs: function () {
       callCounts.getTradeIDs++;
       return [];
     },
-    tradeCommitmentCallback: function(commit) {
+    tradeCommitmentCallback: function (commit) {
       callCounts.tradeCommitmentCallback++;
     },
-    short_sell: function() {
+    short_sell: function () {
       callCounts.short_sell++;
     },
-    assertions: function(err, res) {
+    assertions: function (err, res) {
       assert.isNull(err);
       assert.strictEqual(JSON.stringify(res), JSON.stringify({
         remainingShares: new BigNumber('100'),
@@ -1146,17 +1146,17 @@ describe("executeTrade.executeShortSell", function() {
     getOrderBooks: function () {
       return { '0xa1': { buy: { '0xb1': { amount: '100', price: '0.45' }, '0xb2': { amount: '50', price: '0.35' }}, sell: {} } };
     },
-    getTradeIDs: function() {
+    getTradeIDs: function () {
       callCounts.getTradeIDs++;
       return ['0xb1', '0xb2'];
     },
-    tradeCommitmentCallback: function(commit) {
+    tradeCommitmentCallback: function (commit) {
       callCounts.tradeCommitmentCallback++;
     },
-    short_sell: function() {
+    short_sell: function () {
       callCounts.short_sell++;
     },
-    assertions: function(err, res) {
+    assertions: function (err, res) {
       assert.isNull(err);
       assert.strictEqual(JSON.stringify(res), JSON.stringify({
         remainingShares: constants.ZERO,
@@ -1183,11 +1183,11 @@ describe("executeTrade.executeShortSell", function() {
     getOrderBooks: function () {
       return { '0xa1': { buy: { '0xb1': { amount: '100', price: '0.4' } }, sell: {} } };
     },
-    getTradeIDs: function() {
+    getTradeIDs: function () {
       callCounts.getTradeIDs++;
       return ['0xb1'];
     },
-    tradeCommitmentCallback: function(commit) {
+    tradeCommitmentCallback: function (commit) {
       callCounts.tradeCommitmentCallback++;
       switch(callCounts.tradeCommitmentCallback) {
       case 1:
@@ -1219,7 +1219,7 @@ describe("executeTrade.executeShortSell", function() {
         break;
       }
     },
-    short_sell: function(trade) {
+    short_sell: function (trade) {
       callCounts.short_sell++;
       assert.equal(trade.max_amount, '100');
       assert.equal(trade.buyer_trade_id, '0xb1');
@@ -1246,7 +1246,7 @@ describe("executeTrade.executeShortSell", function() {
         gasFees: '0.045',
       });
     },
-    assertions: function(err, res) {
+    assertions: function (err, res) {
       assert.isNull(err);
       assert.strictEqual(JSON.stringify(res), JSON.stringify({
         remainingShares: new BigNumber('0'),
@@ -1287,11 +1287,11 @@ describe("executeTrade.executeShortSell", function() {
         }
       };
     },
-    getTradeIDs: function() {
+    getTradeIDs: function () {
       callCounts.getTradeIDs++;
       return ['0xb1', '0xb2'];
     },
-    tradeCommitmentCallback: function(commit) {
+    tradeCommitmentCallback: function (commit) {
       callCounts.tradeCommitmentCallback++;
       switch(callCounts.tradeCommitmentCallback) {
       case 1:
@@ -1350,7 +1350,7 @@ describe("executeTrade.executeShortSell", function() {
         break;
       }
     },
-    short_sell: function(trade) {
+    short_sell: function (trade) {
       callCounts.short_sell++;
       assert.oneOf(trade.max_amount, ['100', '50']);
       assert.oneOf(trade.buyer_trade_id, ['0xb1', '0xb2']);
@@ -1396,7 +1396,7 @@ describe("executeTrade.executeShortSell", function() {
       }
 
     },
-    assertions: function(err, res) {
+    assertions: function (err, res) {
       assert.isNull(err);
       assert.strictEqual(JSON.stringify(res), JSON.stringify({
         remainingShares: new BigNumber('0'),
@@ -1433,11 +1433,11 @@ describe("executeTrade.executeShortSell", function() {
         }
       };
     },
-    getTradeIDs: function() {
+    getTradeIDs: function () {
       callCounts.getTradeIDs++;
       return ['0xb1'];
     },
-    tradeCommitmentCallback: function(commit) {
+    tradeCommitmentCallback: function (commit) {
       callCounts.tradeCommitmentCallback++;
       assert.deepEqual(commit, {
         tradeHash: '0x0000000000000000000000000000000000000000000000000000000abc543012',
@@ -1453,7 +1453,7 @@ describe("executeTrade.executeShortSell", function() {
         isShortSell: true
       });
     },
-    short_sell: function(trade) {
+    short_sell: function (trade) {
       callCounts.short_sell++;
       assert.oneOf(trade.max_amount, ['100', '50']);
       assert.oneOf(trade.buyer_trade_id, ['0xb1', '0xb2']);
@@ -1472,7 +1472,7 @@ describe("executeTrade.executeShortSell", function() {
       trade.onCommitFailed({ error: 999, message: 'Uh-Oh!' });
 
     },
-    assertions: function(err, res) {
+    assertions: function (err, res) {
       assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
       assert.isUndefined(res);
       assert.deepEqual(callCounts, {
@@ -1503,11 +1503,11 @@ describe("executeTrade.executeShortSell", function() {
         }
       };
     },
-    getTradeIDs: function() {
+    getTradeIDs: function () {
       callCounts.getTradeIDs++;
       return ['0xb1'];
     },
-    tradeCommitmentCallback: function(commit) {
+    tradeCommitmentCallback: function (commit) {
       callCounts.tradeCommitmentCallback++;
       switch(callCounts.tradeCommitmentCallback) {
       case 2:
@@ -1530,7 +1530,7 @@ describe("executeTrade.executeShortSell", function() {
         break;
       }
     },
-    short_sell: function(trade) {
+    short_sell: function (trade) {
       callCounts.short_sell++;
       assert.equal(trade.max_amount, '100');
       assert.equal(trade.buyer_trade_id, '0xb1');
@@ -1554,7 +1554,7 @@ describe("executeTrade.executeShortSell", function() {
       });
 
     },
-    assertions: function(err, res) {
+    assertions: function (err, res) {
       assert.deepEqual(err, {
         error: 999, message: 'Uh-Oh!'
       });

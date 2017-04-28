@@ -1,139 +1,61 @@
-/**
- * augur.js tests
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var assert = require("chai").assert;
 var clone = require("clone");
 var abi = require("augur-abi");
 var augur = new (require("../../../src"))();
-var utils = require("../../../src/utilities");
 
-describe("getCurrentPeriod", function() {
-  var test = function(t) {
-    it(JSON.stringify(t), function() {
+describe("getCurrentPeriod", function () {
+  var test = function (t) {
+    it(JSON.stringify(t), function () {
       t.assertions(augur.getCurrentPeriod(t.periodLength, t.timestamp));
     });
   };
   test({
     periodLength: 1000,
     timestamp: 150000000,
-    assertions: function(out) {
+    assertions: function (out) {
       assert.deepEqual(out, 150000);
     }
   });
   test({
     periodLength: 1000,
     timestamp: undefined,
-    assertions: function(out) {
+    assertions: function (out) {
       assert.deepEqual(out, Math.floor((parseInt(new Date().getTime() / 1000)) / 1000));
     }
   });
 });
-describe("getCurrentPeriodProgress", function() {
-  var test = function(t) {
-    it(JSON.stringify(t), function() {
+describe("getCurrentPeriodProgress", function () {
+  var test = function (t) {
+    it(JSON.stringify(t), function () {
       t.assertions(augur.getCurrentPeriodProgress(t.periodLength, t.timestamp));
     });
   };
   test({
     periodLength: 1000,
     timestamp: 150000000,
-    assertions: function(out) {
+    assertions: function (out) {
       assert.deepEqual(out, 0);
     }
   });
   test({
     periodLength: 1500,
     timestamp: undefined,
-    assertions: function(out) {
+    assertions: function (out) {
       var t = parseInt(new Date().getTime() / 1000);
       assert.deepEqual(out, (100 * (t % 1500) / 1500));
     }
   });
 });
-describe("hashSenderPlusEvent", function () {
-  var test = function (t) {
-    it("sender: " + t.sender + ", event: " + t.event, function () {
-      t.assertions(abi.hex(augur.hashSenderPlusEvent(t.sender, t.event)));
-    });
-  };
-  test({
-    sender: "0x7c0d52faab596c08f484e3478aebc6205f3f5d8c",
-    event: "0x2bf6e5787b2a7a379f1b83efc34d454d6bb870565980280780fd16b75e943106",
-    assertions: function (output) {
-      assert.strictEqual(output, "0x35d9b91c2831cd006c2bce8e6041d5cf3556854a11edb");
-    }
-  });
-  test({
-    sender: "0xffffffffffffffffffffffffffffffffffffffff",
-        // max event ID: 2^255-1
-    event: "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-    assertions: function (output) {
-      assert.strictEqual(output, "0x15ee6af1180c99de9bc7df673404eff65d5fb88c18024");
-    }
-  });
-  test({
-    sender: "0xffffffffffffffffffffffffffffffffffffffff",
-    event: "0x2bf6e5787b2a7a379f1b83efc34d454d6bb870565980280780fd16b75e943106",
-    assertions: function (output) {
-      assert.strictEqual(output, "0x3f3e8cbbdebd40c2ef199bb5974e7190d580064a0f3ba");
-    }
-  });
-  test({
-    sender: "0x7c0d52faab596c08f484e3478aebc6205f3f5d8c",
-    event: "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-    assertions: function (output) {
-      assert.strictEqual(output, "0x515cf8bc0ec96f3d0739e87d99117651a5bbccc18f2fb");
-    }
-  });
-  test({
-    sender: "0x0000000000000000000000000000000000000001",
-        // min event ID: 2^255
-    event: "-0x8000000000000000000000000000000000000000000000000000000000000000",
-    assertions: function (output) {
-      assert.strictEqual(output, "0x6ad5dc4ea393410284d203f975d4899358e9c07371");
-    }
-  });
-  test({
-    sender: "0xffffffffffffffffffffffffffffffffffffffff",
-    event: "-0x8000000000000000000000000000000000000000000000000000000000000000",
-    assertions: function (output) {
-      assert.strictEqual(output, "0x473effe6033fdc3ade8c4efad2b9b162e74bdc7783390");
-    }
-  });
-  test({
-    sender: "0x7c0d52faab596c08f484e3478aebc6205f3f5d8c",
-    event: "-0x8000000000000000000000000000000000000000000000000000000000000000",
-    assertions: function (output) {
-      assert.strictEqual(output, "0x2c118f32317f17d58e4221d9b5d36db1e2d88f7bb2166");
-    }
-  });
-  test({
-    sender: "0x0000000000000000000000000000000000000001",
-    event: "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-    assertions: function (output) {
-      assert.strictEqual(output, "0x160a0ce2ed63d80a420d26ecdcb7f355346d206166778");
-    }
-  });
-  test({
-    sender: "0x0000000000000000000000000000000000000001",
-    event: "0x2bf6e5787b2a7a379f1b83efc34d454d6bb870565980280780fd16b75e943106",
-    assertions: function (output) {
-      assert.strictEqual(output, "0x3ab2205acd2f4f80962e55de910b7249ab79273b0cdc5");
-    }
-  });
-});
-describe("getReport", function() {
+describe("getReport", function () {
   var getReport = augur.ExpiringEvents.getReport;
   var finished;
-  afterEach(function() {
+  afterEach(function () {
     augur.ExpiringEvents.getReport = getReport;
   });
-  var test = function(t) {
-    it(JSON.stringify(t), function(done) {
+  var test = function (t) {
+    it(JSON.stringify(t), function (done) {
       augur.ExpiringEvents.getReport = t.getReport;
       finished = done;
       augur.getReport(t.branch, t.period, t.event, t.sender, t.minValue, t.maxValue, t.type, t.callback);
@@ -147,10 +69,10 @@ describe("getReport", function() {
     minValue: 1,
     maxValue: 2,
     type: 'binary',
-    getReport: function(branch, period, event, sender, cb) {
+    getReport: function (branch, period, event, sender, cb) {
       cb(abi.fix(1).toString());
     },
-    callback: function(report) {
+    callback: function (report) {
       assert.deepEqual(report, { report: '1', isIndeterminate: false });
       finished();
     }
@@ -165,10 +87,10 @@ describe("getReport", function() {
       maxValue: 2,
       type: 'binary'
     },
-    getReport: function(branch, period, event, sender, cb) {
+    getReport: function (branch, period, event, sender, cb) {
       cb(undefined);
     },
-    callback: function(report) {
+    callback: function (report) {
       assert.deepEqual(report, augur.errors.REPORT_NOT_FOUND);
       finished();
     }
@@ -182,12 +104,12 @@ describe("getReport", function() {
       minValue: 1,
       maxValue: 2,
       type: 'binary',
-      callback: function(report) {
+      callback: function (report) {
         assert.deepEqual(report, { error: 999, message: 'Uh-Oh!' });
         finished();
       }
     },
-    getReport: function(branch, period, event, sender, cb) {
+    getReport: function (branch, period, event, sender, cb) {
       cb({ error: 999, message: 'Uh-Oh!' });
     }
   });
@@ -199,25 +121,25 @@ describe("getReport", function() {
     minValue: 1,
     maxValue: 2,
     type: 'binary',
-    getReport: function(branch, period, event, sender, cb) {
+    getReport: function (branch, period, event, sender, cb) {
       cb('something that parseInt will not like');
     },
-    callback: function(report) {
+    callback: function (report) {
       assert.deepEqual(report, {report: "0", isIndeterminate: false});
       finished();
     }
   });
 });
-describe("checkPeriod", function() {
+describe("checkPeriod", function () {
   var periodCatchUp = augur.periodCatchUp;
   var feePenaltyCatchUp = augur.feePenaltyCatchUp;
   var finished;
-  afterEach(function() {
+  afterEach(function () {
     augur.periodCatchUp = periodCatchUp;
     augur.feePenaltyCatchUp = feePenaltyCatchUp;
   });
-  var test = function(t) {
-    it(JSON.stringify(t), function(done) {
+  var test = function (t) {
+    it(JSON.stringify(t), function (done) {
       augur.periodCatchUp = t.periodCatchUp;
       augur.feePenaltyCatchUp = t.feePenaltyCatchUp;
       finished = done;
@@ -228,16 +150,16 @@ describe("checkPeriod", function() {
     branch: '0xb1',
     periodLength: 1000,
     sender: '0x1',
-    callback: function(err, votePeriod) {
+    callback: function (err, votePeriod) {
       assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
       assert.isUndefined(votePeriod);
       finished();
     },
-    periodCatchUp: function(branch, periodLength, cb) {
+    periodCatchUp: function (branch, periodLength, cb) {
       // cb (err, votePeriod)
       cb({ error: 999, message: 'Uh-Oh!' });
     },
-    feePenaltyCatchUp: function(branch, periodLength, votePeriod, sender, cb) {
+    feePenaltyCatchUp: function (branch, periodLength, votePeriod, sender, cb) {
       // cb (err)
       // in this case won't be hit
     }
@@ -246,16 +168,16 @@ describe("checkPeriod", function() {
     branch: '0xb1',
     periodLength: 1000,
     sender: '0x1',
-    callback: function(err, votePeriod) {
+    callback: function (err, votePeriod) {
       assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
       assert.isUndefined(votePeriod);
       finished();
     },
-    periodCatchUp: function(branch, periodLength, cb) {
+    periodCatchUp: function (branch, periodLength, cb) {
       // cb (err, votePeriod)
       cb(null, 100);
     },
-    feePenaltyCatchUp: function(branch, periodLength, votePeriod, sender, cb) {
+    feePenaltyCatchUp: function (branch, periodLength, votePeriod, sender, cb) {
       // cb (err)
       assert.deepEqual(votePeriod, 99);
       cb({ error: 999, message: 'Uh-Oh!' });
@@ -265,16 +187,16 @@ describe("checkPeriod", function() {
     branch: '0xb1',
     periodLength: 1000,
     sender: '0x1',
-    callback: function(err, votePeriod) {
+    callback: function (err, votePeriod) {
       assert.isNull(err);
       assert.deepEqual(votePeriod, 100);
       finished();
     },
-    periodCatchUp: function(branch, periodLength, cb) {
+    periodCatchUp: function (branch, periodLength, cb) {
       // cb (err, votePeriod)
       cb(null, 100);
     },
-    feePenaltyCatchUp: function(branch, periodLength, votePeriod, sender, cb) {
+    feePenaltyCatchUp: function (branch, periodLength, votePeriod, sender, cb) {
       // cb (err)
       assert.deepEqual(votePeriod, 99);
       cb(null);
@@ -288,7 +210,7 @@ describe("periodCatchUp", function () {
     var penalizeWrong = augur.penalizeWrong;
     var getNumMarkets = augur.getNumMarkets;
     var getMarkets = augur.getMarkets;
-    var getVotePeriod = augur.getVotePeriod;
+    var getVotePeriod = augur.Branches.getVotePeriod;
     var getCurrentPeriod = augur.getCurrentPeriod;
     var incrementPeriodAfterReporting = augur.incrementPeriodAfterReporting;
     after(function () {
@@ -297,7 +219,7 @@ describe("periodCatchUp", function () {
       augur.penalizeWrong = penalizeWrong;
       augur.getNumMarkets = getNumMarkets;
       augur.getMarkets = getMarkets;
-      augur.getVotePeriod = getVotePeriod;
+      augur.Branches.getVotePeriod = getVotePeriod;
       augur.getCurrentPeriod = getCurrentPeriod;
       augur.incrementPeriodAfterReporting = incrementPeriodAfterReporting;
     });
@@ -308,7 +230,7 @@ describe("periodCatchUp", function () {
         sequence.push({method: "getCurrentPeriod", params: [periodLength]});
         return state.currentPeriod[t.branchID];
       };
-      augur.getVotePeriod = function (branchID, callback) {
+      augur.Branches.getVotePeriod = function (branchID, callback) {
         sequence.push({method: "getVotePeriod", params: [branchID]});
         callback(state.reportPeriod[branchID]);
       };
@@ -660,7 +582,7 @@ describe("feePenaltyCatchUp", function () {
     var penalizeWrong = augur.penalizeWrong;
     var getNumMarkets = augur.getNumMarkets;
     var getMarkets = augur.getMarkets;
-    var getVotePeriod = augur.getVotePeriod;
+    var getVotePeriod = augur.Branches.getVotePeriod;
     var getCurrentPeriod = augur.getCurrentPeriod;
     var incrementPeriodAfterReporting = augur.incrementPeriodAfterReporting;
     var closeEventMarkets = augur.closeEventMarkets;
@@ -677,7 +599,7 @@ describe("feePenaltyCatchUp", function () {
       augur.penalizeWrong = penalizeWrong;
       augur.getNumMarkets = getNumMarkets;
       augur.getMarkets = getMarkets;
-      augur.getVotePeriod = getVotePeriod;
+      augur.Branches.getVotePeriod = getVotePeriod;
       augur.getCurrentPeriod = getCurrentPeriod;
       augur.incrementPeriodAfterReporting = incrementPeriodAfterReporting;
       augur.closeEventMarkets = closeEventMarkets;
@@ -701,7 +623,7 @@ describe("feePenaltyCatchUp", function () {
         sequence.push({method: "getCurrentPeriod", params: [periodLength]});
         return state.currentPeriod[t.branchID];
       };
-      augur.getVotePeriod = function (branchID, callback) {
+      augur.Branches.getVotePeriod = function (branchID, callback) {
         sequence.push({method: "getVotePeriod", params: [branchID]});
         callback(state.reportPeriod[branchID]);
       };
@@ -1422,7 +1344,7 @@ describe("feePenaltyCatchUp", function () {
     }
   });
 });
-describe("feePenaltyCatchUp-Unit", function() {
+describe("feePenaltyCatchUp-Unit", function () {
   // added these tests to be simple unit tests that simply make sure to hit every branch of this function.
   var finished;
   var getPenalizedUpTo = augur.getPenalizedUpTo;
@@ -1430,15 +1352,15 @@ describe("feePenaltyCatchUp-Unit", function() {
   var penaltyCatchUp = augur.penaltyCatchUp;
   var getCurrentPeriodProgress = augur.getCurrentPeriodProgress;
   var collectFees = augur.collectFees;
-  afterEach(function() {
+  afterEach(function () {
     augur.getPenalizedUpTo = getPenalizedUpTo;
     augur.getFeesCollected = getFeesCollected;
     augur.penaltyCatchUp = penaltyCatchUp;
     augur.getCurrentPeriodProgress = getCurrentPeriodProgress;
     augur.collectFees = collectFees;
   });
-  var test = function(t) {
-    it(JSON.stringify(t), function(done) {
+  var test = function (t) {
+    it(JSON.stringify(t), function (done) {
       augur.getPenalizedUpTo = t.getPenalizedUpTo;
       augur.getFeesCollected = t.getFeesCollected;
       augur.penaltyCatchUp = t.penaltyCatchUp;
@@ -1455,25 +1377,25 @@ describe("feePenaltyCatchUp-Unit", function() {
     periodLength: 1000,
     periodToCheck: 500,
     sender: '0x1',
-    callback: function(out) {
+    callback: function (out) {
       assert.deepEqual(out, "couldn't get fees collected");
       finished();
     },
-    getPenalizedUpTo: function(branch, sender, cb) {
+    getPenalizedUpTo: function (branch, sender, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(sender, '0x1');
       cb('499');
     },
-    getFeesCollected: function(branch, sender, lastPeriodPenalized, cb) {
+    getFeesCollected: function (branch, sender, lastPeriodPenalized, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(sender, '0x1');
       assert.deepEqual(lastPeriodPenalized, 499);
       // return nothing so we fail.
       cb();
     },
-    penaltyCatchUp: function(branch, periodLength, periodToCheck, sender, cb) {},
-    getCurrentPeriodProgress: function(periodLength) {},
-    collectFees: function(branch) {}
+    penaltyCatchUp: function (branch, periodLength, periodToCheck, sender, cb) {},
+    getCurrentPeriodProgress: function (periodLength) {},
+    collectFees: function (branch) {}
   });
   test({
     description: 'should handle an error object back from getFeesCollected and return it to callback.',
@@ -1481,25 +1403,25 @@ describe("feePenaltyCatchUp-Unit", function() {
     periodLength: 1000,
     periodToCheck: 500,
     sender: '0x1',
-    callback: function(out) {
+    callback: function (out) {
       assert.deepEqual(out, { error: 999, message: 'Uh-Oh!' });
       finished();
     },
-    getPenalizedUpTo: function(branch, sender, cb) {
+    getPenalizedUpTo: function (branch, sender, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(sender, '0x1');
       cb('499');
     },
-    getFeesCollected: function(branch, sender, lastPeriodPenalized, cb) {
+    getFeesCollected: function (branch, sender, lastPeriodPenalized, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(sender, '0x1');
       assert.deepEqual(lastPeriodPenalized, 499);
       // return nothing so we fail.
       cb({ error: 999, message: 'Uh-Oh!' });
     },
-    penaltyCatchUp: function(branch, periodLength, periodToCheck, sender, cb) {},
-    getCurrentPeriodProgress: function(periodLength) {},
-    collectFees: function(branch) {}
+    penaltyCatchUp: function (branch, periodLength, periodToCheck, sender, cb) {},
+    getCurrentPeriodProgress: function (periodLength) {},
+    collectFees: function (branch) {}
   });
   test({
     description: 'Should call penaltyCatchUp if feesCollected is returned as "1"',
@@ -1507,31 +1429,31 @@ describe("feePenaltyCatchUp-Unit", function() {
     periodLength: 1000,
     periodToCheck: 500,
     sender: '0x1',
-    callback: function(out) {
+    callback: function (out) {
       assert.isUndefined(out);
       finished();
     },
-    getPenalizedUpTo: function(branch, sender, cb) {
+    getPenalizedUpTo: function (branch, sender, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(sender, '0x1');
       cb('499');
     },
-    getFeesCollected: function(branch, sender, lastPeriodPenalized, cb) {
+    getFeesCollected: function (branch, sender, lastPeriodPenalized, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(sender, '0x1');
       assert.deepEqual(lastPeriodPenalized, 499);
       // return nothing so we fail.
       cb("1");
     },
-    penaltyCatchUp: function(branch, periodLength, periodToCheck, sender, cb) {
+    penaltyCatchUp: function (branch, periodLength, periodToCheck, sender, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(periodLength, 1000);
       assert.deepEqual(periodToCheck, 500);
       assert.deepEqual(sender, '0x1');
       cb();
     },
-    getCurrentPeriodProgress: function(periodLength) {},
-    collectFees: function(branch) {}
+    getCurrentPeriodProgress: function (periodLength) {},
+    collectFees: function (branch) {}
   });
   test({
     description: 'should call penaltyCatchUp if getFeesCollected returns 0 and getCurrentPeriodProgress is less than 50 *first half*',
@@ -1539,34 +1461,34 @@ describe("feePenaltyCatchUp-Unit", function() {
     periodLength: 1000,
     periodToCheck: 500,
     sender: '0x1',
-    callback: function(out) {
+    callback: function (out) {
       assert.isUndefined(out);
       finished();
     },
-    getPenalizedUpTo: function(branch, sender, cb) {
+    getPenalizedUpTo: function (branch, sender, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(sender, '0x1');
       cb('499');
     },
-    getFeesCollected: function(branch, sender, lastPeriodPenalized, cb) {
+    getFeesCollected: function (branch, sender, lastPeriodPenalized, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(sender, '0x1');
       assert.deepEqual(lastPeriodPenalized, 499);
       // return nothing so we fail.
       cb("0");
     },
-    penaltyCatchUp: function(branch, periodLength, periodToCheck, sender, cb) {
+    penaltyCatchUp: function (branch, periodLength, periodToCheck, sender, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(periodLength, 1000);
       assert.deepEqual(periodToCheck, 500);
       assert.deepEqual(sender, '0x1');
       cb();
     },
-    getCurrentPeriodProgress: function(periodLength) {
+    getCurrentPeriodProgress: function (periodLength) {
       assert.deepEqual(periodLength, 1000);
       return 40;
     },
-    collectFees: function(branch) {}
+    collectFees: function (branch) {}
   });
   test({
     description: 'should call collectFees if we are in the 2nd half of reporting and we havent collected fees yet (getFeesCollected returns 0). If collectFees throws an error that isnt -1',
@@ -1574,34 +1496,34 @@ describe("feePenaltyCatchUp-Unit", function() {
     periodLength: 1000,
     periodToCheck: 500,
     sender: '0x1',
-    callback: function(out) {
+    callback: function (out) {
       assert.deepEqual(out, { error: 999, message: 'Uh-Oh!' });
       finished();
     },
-    getPenalizedUpTo: function(branch, sender, cb) {
+    getPenalizedUpTo: function (branch, sender, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(sender, '0x1');
       cb('499');
     },
-    getFeesCollected: function(branch, sender, lastPeriodPenalized, cb) {
+    getFeesCollected: function (branch, sender, lastPeriodPenalized, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(sender, '0x1');
       assert.deepEqual(lastPeriodPenalized, 499);
       // return nothing so we fail.
       cb("0");
     },
-    penaltyCatchUp: function(branch, periodLength, periodToCheck, sender, cb) {
+    penaltyCatchUp: function (branch, periodLength, periodToCheck, sender, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(periodLength, 1000);
       assert.deepEqual(periodToCheck, 500);
       assert.deepEqual(sender, '0x1');
       cb();
     },
-    getCurrentPeriodProgress: function(periodLength) {
+    getCurrentPeriodProgress: function (periodLength) {
       assert.deepEqual(periodLength, 1000);
       return 89;
     },
-    collectFees: function(branch) {
+    collectFees: function (branch) {
       assert.deepEqual(branch.branch, '0xb1');
       assert.deepEqual(branch.sender, '0x1');
       assert.deepEqual(branch.periodLength, 1000);
@@ -1619,23 +1541,23 @@ describe("feePenaltyCatchUp-Unit", function() {
     periodLength: 1000,
     periodToCheck: 500,
     sender: '0x1',
-    callback: function(out) {
+    callback: function (out) {
       assert.isUndefined(out);
       finished();
     },
-    getPenalizedUpTo: function(branch, sender, cb) {
+    getPenalizedUpTo: function (branch, sender, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(sender, '0x1');
       cb('499');
     },
-    getFeesCollected: function(branch, sender, lastPeriodPenalized, cb) {
+    getFeesCollected: function (branch, sender, lastPeriodPenalized, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(sender, '0x1');
       assert.deepEqual(lastPeriodPenalized, 499);
       // return nothing so we fail.
       cb("0");
     },
-    penaltyCatchUp: function(branch, periodLength, periodToCheck, sender, cb) {
+    penaltyCatchUp: function (branch, periodLength, periodToCheck, sender, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(periodLength, 1000);
       assert.deepEqual(periodToCheck, 500);
@@ -1643,11 +1565,11 @@ describe("feePenaltyCatchUp-Unit", function() {
       // return undefined to finish this test case
       cb();
     },
-    getCurrentPeriodProgress: function(periodLength) {
+    getCurrentPeriodProgress: function (periodLength) {
       assert.deepEqual(periodLength, 1000);
       return 89;
     },
-    collectFees: function(branch) {
+    collectFees: function (branch) {
       assert.deepEqual(branch.branch, '0xb1');
       assert.deepEqual(branch.sender, '0x1');
       assert.deepEqual(branch.periodLength, 1000);
@@ -1665,23 +1587,23 @@ describe("feePenaltyCatchUp-Unit", function() {
     periodLength: 1000,
     periodToCheck: 500,
     sender: '0x1',
-    callback: function(out) {
+    callback: function (out) {
       assert.isUndefined(out);
       finished();
     },
-    getPenalizedUpTo: function(branch, sender, cb) {
+    getPenalizedUpTo: function (branch, sender, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(sender, '0x1');
       cb('499');
     },
-    getFeesCollected: function(branch, sender, lastPeriodPenalized, cb) {
+    getFeesCollected: function (branch, sender, lastPeriodPenalized, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(sender, '0x1');
       assert.deepEqual(lastPeriodPenalized, 499);
       // return nothing so we fail.
       cb("0");
     },
-    penaltyCatchUp: function(branch, periodLength, periodToCheck, sender, cb) {
+    penaltyCatchUp: function (branch, periodLength, periodToCheck, sender, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(periodLength, 1000);
       assert.deepEqual(periodToCheck, 500);
@@ -1689,11 +1611,11 @@ describe("feePenaltyCatchUp-Unit", function() {
       // return undefined to finish this test case
       cb();
     },
-    getCurrentPeriodProgress: function(periodLength) {
+    getCurrentPeriodProgress: function (periodLength) {
       assert.deepEqual(periodLength, 1000);
       return 89;
     },
-    collectFees: function(branch) {
+    collectFees: function (branch) {
       assert.deepEqual(branch.branch, '0xb1');
       assert.deepEqual(branch.sender, '0x1');
       assert.deepEqual(branch.periodLength, 1000);
@@ -1706,7 +1628,7 @@ describe("feePenaltyCatchUp-Unit", function() {
     }
   });
 });
-describe("penaltyCatchUp", function() {
+describe("penaltyCatchUp", function () {
   var finished;
   var getPenalizedUpTo = augur.getPenalizedUpTo;
   var getCurrentPeriodProgress = augur.getCurrentPeriodProgress;
@@ -1718,7 +1640,7 @@ describe("penaltyCatchUp", function() {
   var moveEvent = augur.moveEvent;
   var getReport = augur.ExpiringEvents.getReport;
   var closeEventMarkets = augur.closeEventMarkets;
-  afterEach(function() {
+  afterEach(function () {
     augur.getPenalizedUpTo = getPenalizedUpTo;
     augur.getCurrentPeriodProgress = getCurrentPeriodProgress;
     augur.penalizationCatchup = penalizationCatchup;
@@ -1730,8 +1652,8 @@ describe("penaltyCatchUp", function() {
     augur.ExpiringEvents.getReport = getReport;
     augur.closeEventMarkets = closeEventMarkets;
   });
-  var test = function(t) {
-    it(JSON.stringify(t), function(done) {
+  var test = function (t) {
+    it(JSON.stringify(t), function (done) {
       augur.getPenalizedUpTo = t.getPenalizedUpTo;
       augur.getCurrentPeriodProgress = t.getCurrentPeriodProgress;
       augur.penalizationCatchup = t.penalizationCatchup;
@@ -1753,27 +1675,27 @@ describe("penaltyCatchUp", function() {
     periodLength: 1000,
     periodToCheck: 500,
     sender: '0x1',
-    callback: function(out) {
+    callback: function (out) {
       assert.isNull(out);
       finished();
     },
-    getPenalizedUpTo: function(branch, sender, cb) {
+    getPenalizedUpTo: function (branch, sender, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(sender, '0x1');
       cb('498');
     },
-    getCurrentPeriodProgress: function(periodLength) {
+    getCurrentPeriodProgress: function (periodLength) {
       assert.deepEqual(periodLength, 1000);
       return 90;
     },
-    penalizationCatchup: function(branch) {},
-    getEvents: function(branch, periodToCheck, cb) {},
-    penalizeWrong: function(branch) {},
-    getNumReportsEvent: function(branch, periodToCheck, event, cb) {},
-    getExpiration: function(event, cb) {},
-    moveEvent: function(branch) {},
-    getReport: function(branch, periodToCheck, event, sender, cb) {},
-    closeEventMarkets: function(branch, event, sender, cb) {},
+    penalizationCatchup: function (branch) {},
+    getEvents: function (branch, periodToCheck, cb) {},
+    penalizeWrong: function (branch) {},
+    getNumReportsEvent: function (branch, periodToCheck, event, cb) {},
+    getExpiration: function (event, cb) {},
+    moveEvent: function (branch) {},
+    getReport: function (branch, periodToCheck, event, sender, cb) {},
+    closeEventMarkets: function (branch, event, sender, cb) {},
   });
   test({
     description: 'Should call the callback with an error if we get one from penalizationCatchup and onFailed is triggered',
@@ -1781,20 +1703,20 @@ describe("penaltyCatchUp", function() {
     periodLength: 1000,
     periodToCheck: 500,
     sender: '0x1',
-    callback: function(out) {
+    callback: function (out) {
       assert.deepEqual(out, { error: 999, message: 'Uh-Oh!' });
       finished();
     },
-    getPenalizedUpTo: function(branch, sender, cb) {
+    getPenalizedUpTo: function (branch, sender, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(sender, '0x1');
       cb('498');
     },
-    getCurrentPeriodProgress: function(periodLength) {
+    getCurrentPeriodProgress: function (periodLength) {
       assert.deepEqual(periodLength, 1000);
       return 30;
     },
-    penalizationCatchup: function(branch) {
+    penalizationCatchup: function (branch) {
       assert.deepEqual(branch.branch, '0xb1');
       assert.deepEqual(branch.sender, '0x1');
       assert.isFunction(branch.onSent);
@@ -1802,13 +1724,13 @@ describe("penaltyCatchUp", function() {
       assert.isFunction(branch.onFailed);
       branch.onFailed({ error: 999, message: 'Uh-Oh!' });
     },
-    getEvents: function(branch, periodToCheck, cb) {},
-    penalizeWrong: function(branch) {},
-    getNumReportsEvent: function(branch, periodToCheck, event, cb) {},
-    getExpiration: function(event, cb) {},
-    moveEvent: function(branch) {},
-    getReport: function(branch, periodToCheck, event, sender, cb) {},
-    closeEventMarkets: function(branch, event, sender, cb) {},
+    getEvents: function (branch, periodToCheck, cb) {},
+    penalizeWrong: function (branch) {},
+    getNumReportsEvent: function (branch, periodToCheck, event, cb) {},
+    getExpiration: function (event, cb) {},
+    moveEvent: function (branch) {},
+    getReport: function (branch, periodToCheck, event, sender, cb) {},
+    closeEventMarkets: function (branch, event, sender, cb) {},
   });
   test({
     description: 'Should call the callback with an error if we get one from penalizeWrong if we have no events returned from getEvents.',
@@ -1816,23 +1738,23 @@ describe("penaltyCatchUp", function() {
     periodLength: 1000,
     periodToCheck: 500,
     sender: '0x1',
-    callback: function(out) {
+    callback: function (out) {
       assert.deepEqual(out, { error: 999, message: 'Uh-Oh!' });
       finished();
     },
-    getPenalizedUpTo: function(branch, sender, cb) {
+    getPenalizedUpTo: function (branch, sender, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(sender, '0x1');
       cb('499');
     },
-    getCurrentPeriodProgress: function(periodLength) {},
-    penalizationCatchup: function(branch) {},
-    getEvents: function(branch, periodToCheck, cb) {
+    getCurrentPeriodProgress: function (periodLength) {},
+    penalizationCatchup: function (branch) {},
+    getEvents: function (branch, periodToCheck, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(periodToCheck, 500);
       cb([]);
     },
-    penalizeWrong: function(branch) {
+    penalizeWrong: function (branch) {
       assert.deepEqual(branch.branch, '0xb1');
       assert.deepEqual(branch.event, 0);
       assert.isFunction(branch.onSent);
@@ -1841,11 +1763,11 @@ describe("penaltyCatchUp", function() {
       branch.onSent();
       branch.onFailed({ error: 999, message: 'Uh-Oh!' });
     },
-    getNumReportsEvent: function(branch, periodToCheck, event, cb) {},
-    getExpiration: function(event, cb) {},
-    moveEvent: function(branch) {},
-    getReport: function(branch, periodToCheck, event, sender, cb) {},
-    closeEventMarkets: function(branch, event, sender, cb) {},
+    getNumReportsEvent: function (branch, periodToCheck, event, cb) {},
+    getExpiration: function (event, cb) {},
+    moveEvent: function (branch) {},
+    getReport: function (branch, periodToCheck, event, sender, cb) {},
+    closeEventMarkets: function (branch, event, sender, cb) {},
   });
   test({
     description: 'Should call nextEvent with null if an event is not defined or not parsable by base 16.',
@@ -1853,28 +1775,28 @@ describe("penaltyCatchUp", function() {
     periodLength: 1000,
     periodToCheck: 500,
     sender: '0x1',
-    callback: function(out) {
+    callback: function (out) {
       assert.isNull(out);
       finished();
     },
-    getPenalizedUpTo: function(branch, sender, cb) {
+    getPenalizedUpTo: function (branch, sender, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(sender, '0x1');
       cb('499');
     },
-    getCurrentPeriodProgress: function(periodLength) {},
-    penalizationCatchup: function(branch) {},
-    getEvents: function(branch, periodToCheck, cb) {
+    getCurrentPeriodProgress: function (periodLength) {},
+    penalizationCatchup: function (branch) {},
+    getEvents: function (branch, periodToCheck, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(periodToCheck, 500);
       cb(['NaN']);
     },
-    penalizeWrong: function(branch) {},
-    getNumReportsEvent: function(branch, periodToCheck, event, cb) {},
-    getExpiration: function(event, cb) {},
-    moveEvent: function(branch) {},
-    getReport: function(branch, periodToCheck, event, sender, cb) {},
-    closeEventMarkets: function(branch, event, sender, cb) {},
+    penalizeWrong: function (branch) {},
+    getNumReportsEvent: function (branch, periodToCheck, event, cb) {},
+    getExpiration: function (event, cb) {},
+    moveEvent: function (branch) {},
+    getReport: function (branch, periodToCheck, event, sender, cb) {},
+    closeEventMarkets: function (branch, event, sender, cb) {},
   });
   test({
     description: 'Should handle an event that has no reports and has been moved forward by calling nextEvent with null as an arg.',
@@ -1882,36 +1804,36 @@ describe("penaltyCatchUp", function() {
     periodLength: 1000,
     periodToCheck: 500,
     sender: '0x1',
-    callback: function(out) {
+    callback: function (out) {
       assert.isNull(out);
       finished();
     },
-    getPenalizedUpTo: function(branch, sender, cb) {
+    getPenalizedUpTo: function (branch, sender, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(sender, '0x1');
       cb('499');
     },
-    getCurrentPeriodProgress: function(periodLength) {},
-    penalizationCatchup: function(branch) {},
-    getEvents: function(branch, periodToCheck, cb) {
+    getCurrentPeriodProgress: function (periodLength) {},
+    penalizationCatchup: function (branch) {},
+    getEvents: function (branch, periodToCheck, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(periodToCheck, 500);
       cb(['0xe1']);
     },
-    penalizeWrong: function(branch) {},
-    getNumReportsEvent: function(branch, periodToCheck, event, cb) {
+    penalizeWrong: function (branch) {},
+    getNumReportsEvent: function (branch, periodToCheck, event, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(periodToCheck, 500);
       assert.deepEqual(event, '0xe1');
       cb(0);
     },
-    getExpiration: function(event, cb) {
+    getExpiration: function (event, cb) {
       assert.deepEqual(event, '0xe1');
       cb(501000);
     },
-    moveEvent: function(branch) {},
-    getReport: function(branch, periodToCheck, event, sender, cb) {},
-    closeEventMarkets: function(branch, event, sender, cb) {},
+    moveEvent: function (branch) {},
+    getReport: function (branch, periodToCheck, event, sender, cb) {},
+    closeEventMarkets: function (branch, event, sender, cb) {},
   });
   test({
     description: 'Should handle an event that has no reports and has not been moved forward, but fails in an attempt to move the event forward. Should call nextEvent with null',
@@ -1919,34 +1841,34 @@ describe("penaltyCatchUp", function() {
     periodLength: 1000,
     periodToCheck: 500,
     sender: '0x1',
-    callback: function(out) {
+    callback: function (out) {
       assert.isNull(out);
       finished();
     },
-    getPenalizedUpTo: function(branch, sender, cb) {
+    getPenalizedUpTo: function (branch, sender, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(sender, '0x1');
       cb('499');
     },
-    getCurrentPeriodProgress: function(periodLength) {},
-    penalizationCatchup: function(branch) {},
-    getEvents: function(branch, periodToCheck, cb) {
+    getCurrentPeriodProgress: function (periodLength) {},
+    penalizationCatchup: function (branch) {},
+    getEvents: function (branch, periodToCheck, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(periodToCheck, 500);
       cb(['0xe1']);
     },
-    penalizeWrong: function(branch) {},
-    getNumReportsEvent: function(branch, periodToCheck, event, cb) {
+    penalizeWrong: function (branch) {},
+    getNumReportsEvent: function (branch, periodToCheck, event, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(periodToCheck, 500);
       assert.deepEqual(event, '0xe1');
       cb(0);
     },
-    getExpiration: function(event, cb) {
+    getExpiration: function (event, cb) {
       assert.deepEqual(event, '0xe1');
       cb(500000);
     },
-    moveEvent: function(branch) {
+    moveEvent: function (branch) {
       assert.deepEqual(branch.branch, '0xb1');
       assert.deepEqual(branch.event, '0xe1');
       assert.isFunction(branch.onSent);
@@ -1955,8 +1877,8 @@ describe("penaltyCatchUp", function() {
       branch.onSent();
       branch.onFailed({ error: 999, message: 'Uh-Oh!' });
     },
-    getReport: function(branch, periodToCheck, event, sender, cb) {},
-    closeEventMarkets: function(branch, event, sender, cb) {},
+    getReport: function (branch, periodToCheck, event, sender, cb) {},
+    closeEventMarkets: function (branch, event, sender, cb) {},
   });
   test({
     description: 'Should handle an event that has reports but the report for the event returns 0, should call closeEventMarkets then call nextEvent as closeEventMarkets callback.',
@@ -1964,32 +1886,32 @@ describe("penaltyCatchUp", function() {
     periodLength: 1000,
     periodToCheck: 500,
     sender: '0x1',
-    callback: function(out) {
+    callback: function (out) {
       assert.isNull(out);
       finished();
     },
-    getPenalizedUpTo: function(branch, sender, cb) {
+    getPenalizedUpTo: function (branch, sender, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(sender, '0x1');
       cb('499');
     },
-    getCurrentPeriodProgress: function(periodLength) {},
-    penalizationCatchup: function(branch) {},
-    getEvents: function(branch, periodToCheck, cb) {
+    getCurrentPeriodProgress: function (periodLength) {},
+    penalizationCatchup: function (branch) {},
+    getEvents: function (branch, periodToCheck, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(periodToCheck, 500);
       cb(['0xe1']);
     },
-    penalizeWrong: function(branch) {},
-    getNumReportsEvent: function(branch, periodToCheck, event, cb) {
+    penalizeWrong: function (branch) {},
+    getNumReportsEvent: function (branch, periodToCheck, event, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(periodToCheck, 500);
       assert.deepEqual(event, '0xe1');
       cb(10);
     },
-    getExpiration: function(event, cb) {},
-    moveEvent: function(branch) {},
-    getReport: function(branch, periodToCheck, event, sender, cb) {
+    getExpiration: function (event, cb) {},
+    moveEvent: function (branch) {},
+    getReport: function (branch, periodToCheck, event, sender, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(periodToCheck, 500);
       assert.deepEqual(event, '0xe1');
@@ -1997,7 +1919,7 @@ describe("penaltyCatchUp", function() {
       assert.isFunction(cb);
       cb(0);
     },
-    closeEventMarkets: function(branch, event, sender, cb) {
+    closeEventMarkets: function (branch, event, sender, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(event, '0xe1');
       assert.deepEqual(sender, '0x1');
@@ -2011,23 +1933,23 @@ describe("penaltyCatchUp", function() {
     periodLength: 1000,
     periodToCheck: 500,
     sender: '0x1',
-    callback: function(out) {
+    callback: function (out) {
       assert.deepEqual(out, { error: 999, message: 'Uh-Oh!' });
       finished();
     },
-    getPenalizedUpTo: function(branch, sender, cb) {
+    getPenalizedUpTo: function (branch, sender, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(sender, '0x1');
       cb('499');
     },
-    getCurrentPeriodProgress: function(periodLength) {},
-    penalizationCatchup: function(branch) {},
-    getEvents: function(branch, periodToCheck, cb) {
+    getCurrentPeriodProgress: function (periodLength) {},
+    penalizationCatchup: function (branch) {},
+    getEvents: function (branch, periodToCheck, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(periodToCheck, 500);
       cb(['0xe1']);
     },
-    penalizeWrong: function(branch) {
+    penalizeWrong: function (branch) {
       assert.deepEqual(branch.branch, '0xb1');
       assert.deepEqual(branch.branch, '0xb1');
       assert.isFunction(branch.onSent);
@@ -2036,15 +1958,15 @@ describe("penaltyCatchUp", function() {
       assert.isFunction(branch.onFailed);
       branch.onFailed({ error: 999, message: 'Uh-Oh!' });
     },
-    getNumReportsEvent: function(branch, periodToCheck, event, cb) {
+    getNumReportsEvent: function (branch, periodToCheck, event, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(periodToCheck, 500);
       assert.deepEqual(event, '0xe1');
       cb(10);
     },
-    getExpiration: function(event, cb) {},
-    moveEvent: function(branch) {},
-    getReport: function(branch, periodToCheck, event, sender, cb) {
+    getExpiration: function (event, cb) {},
+    moveEvent: function (branch) {},
+    getReport: function (branch, periodToCheck, event, sender, cb) {
       assert.deepEqual(branch, '0xb1');
       assert.deepEqual(periodToCheck, 500);
       assert.deepEqual(event, '0xe1');
@@ -2052,22 +1974,22 @@ describe("penaltyCatchUp", function() {
       assert.isFunction(cb);
       cb(1);
     },
-    closeEventMarkets: function(branch, event, sender, cb) {},
+    closeEventMarkets: function (branch, event, sender, cb) {},
   });
 });
-describe("closeEventMarkets", function() {
+describe("closeEventMarkets", function () {
   var getMarkets = augur.getMarkets;
   var getWinningOutcomes = augur.getWinningOutcomes;
   var closeMarket = augur.closeMarket;
   var finished;
   var testState;
-  afterEach(function() {
+  afterEach(function () {
     augur.getMarkets = getMarkets;
     augur.getWinningOutcomes = getWinningOutcomes;
     augur.closeMarket = closeMarket;
   });
-  var test = function(t) {
-    it(JSON.stringify(t), function(done) {
+  var test = function (t) {
+    it(JSON.stringify(t), function (done) {
       augur.getMarkets = t.getMarkets;
       augur.getWinningOutcomes = t.getWinningOutcomes;
       augur.closeMarket = t.closeMarket;
@@ -2088,18 +2010,18 @@ describe("closeEventMarkets", function() {
     branch: '0xb1',
     event: '0xe1',
     sender: '0x1',
-    callback: function(err) {
+    callback: function (err) {
       assert.isNull(err);
       assert.deepEqual(testState.markets, ['0xa1', null, null]);
       finished();
     },
-    getMarkets: function(event, cb) {
+    getMarkets: function (event, cb) {
       cb(testState.markets);
     },
-    getWinningOutcomes: function(market, cb) {
+    getWinningOutcomes: function (market, cb) {
       cb(testState.winningOutcomes[market]);
     },
-    closeMarket: function(branch) {
+    closeMarket: function (branch) {
       branch.onSent();
       var index = testState.markets.indexOf(branch.market);
       if (index > -1) {
@@ -2116,17 +2038,17 @@ describe("closeEventMarkets", function() {
     branch: '0xb1',
     event: '0xe1',
     sender: '0x1',
-    callback: function(err) {
+    callback: function (err) {
       assert.deepEqual(err, "no markets found for 0xe1");
       finished();
     },
-    getMarkets: function(event, cb) {
+    getMarkets: function (event, cb) {
       cb(testState.markets);
     },
-    getWinningOutcomes: function(market, cb) {
+    getWinningOutcomes: function (market, cb) {
       // Shouldn't get called in this test.
     },
-    closeMarket: function(branch) {
+    closeMarket: function (branch) {
       // Shouldn't get called in this test.
     }
   });
@@ -2138,17 +2060,17 @@ describe("closeEventMarkets", function() {
     branch: '0xb1',
     event: '0xe1',
     sender: '0x1',
-    callback: function(err) {
+    callback: function (err) {
       assert.deepEqual(err, "no markets found for 0xe1");
       finished();
     },
-    getMarkets: function(event, cb) {
+    getMarkets: function (event, cb) {
       cb(testState.markets);
     },
-    getWinningOutcomes: function(market, cb) {
+    getWinningOutcomes: function (market, cb) {
       // Shouldn't get called in this test.
     },
-    closeMarket: function(branch) {
+    closeMarket: function (branch) {
       // Shouldn't get called in this test.
     }
   });
@@ -2160,17 +2082,17 @@ describe("closeEventMarkets", function() {
     branch: '0xb1',
     event: '0xe1',
     sender: '0x1',
-    callback: function(err) {
+    callback: function (err) {
       assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
       finished();
     },
-    getMarkets: function(event, cb) {
+    getMarkets: function (event, cb) {
       cb(testState.markets);
     },
-    getWinningOutcomes: function(market, cb) {
+    getWinningOutcomes: function (market, cb) {
       // Shouldn't get called in this test.
     },
-    closeMarket: function(branch) {
+    closeMarket: function (branch) {
       // Shouldn't get called in this test.
     }
   });
@@ -2186,18 +2108,18 @@ describe("closeEventMarkets", function() {
     branch: '0xb1',
     event: '0xe1',
     sender: '0x1',
-    callback: function(err) {
+    callback: function (err) {
       assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
       assert.deepEqual(testState.markets, ['0xa1', '0xa2', '0xa3']);
       finished();
     },
-    getMarkets: function(event, cb) {
+    getMarkets: function (event, cb) {
       cb(testState.markets);
     },
-    getWinningOutcomes: function(market, cb) {
+    getWinningOutcomes: function (market, cb) {
       cb(testState.winningOutcomes[market]);
     },
-    closeMarket: function(branch) {
+    closeMarket: function (branch) {
       // doesn't get called in this example.
     }
   });
@@ -2211,18 +2133,18 @@ describe("closeEventMarkets", function() {
     branch: '0xb1',
     event: '0xe1',
     sender: '0x1',
-    callback: function(err) {
+    callback: function (err) {
       assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
       assert.deepEqual(testState.markets, ['0xa1']);
       finished();
     },
-    getMarkets: function(event, cb) {
+    getMarkets: function (event, cb) {
       cb(testState.markets);
     },
-    getWinningOutcomes: function(market, cb) {
+    getWinningOutcomes: function (market, cb) {
       cb(testState.winningOutcomes[market]);
     },
-    closeMarket: function(branch) {
+    closeMarket: function (branch) {
       branch.onSent();
       // set winningOutcomes for this market to undefined so when we call getWinningOutcomes again in the onFailed called we get undefined back this time to trigger to error being passed to callback.
       testState.winningOutcomes[branch.market] = undefined;
@@ -2239,18 +2161,18 @@ describe("closeEventMarkets", function() {
     branch: '0xb1',
     event: '0xe1',
     sender: '0x1',
-    callback: function(err) {
+    callback: function (err) {
       assert.deepEqual(err, { error: 998, message: 'Uh-Oh! Winning Outcomes Error!' });
       assert.deepEqual(testState.markets, ['0xa1']);
       finished();
     },
-    getMarkets: function(event, cb) {
+    getMarkets: function (event, cb) {
       cb(testState.markets);
     },
-    getWinningOutcomes: function(market, cb) {
+    getWinningOutcomes: function (market, cb) {
       cb(testState.winningOutcomes[market]);
     },
-    closeMarket: function(branch) {
+    closeMarket: function (branch) {
       branch.onSent();
       // set winningOutcomes for this market to undefined so when we call getWinningOutcomes again in the onFailed called we get undefined back this time to trigger to error being passed to callback.
       testState.winningOutcomes[branch.market] = { error: 998, message: 'Uh-Oh! Winning Outcomes Error!' };
@@ -2267,18 +2189,18 @@ describe("closeEventMarkets", function() {
     branch: '0xb1',
     event: '0xe1',
     sender: '0x1',
-    callback: function(err) {
+    callback: function (err) {
       assert.deepEqual(err, ['0']);
       assert.deepEqual(testState.markets, ['0xa1']);
       finished();
     },
-    getMarkets: function(event, cb) {
+    getMarkets: function (event, cb) {
       cb(testState.markets);
     },
-    getWinningOutcomes: function(market, cb) {
+    getWinningOutcomes: function (market, cb) {
       cb(testState.winningOutcomes[market]);
     },
-    closeMarket: function(branch) {
+    closeMarket: function (branch) {
       branch.onSent();
       return branch.onFailed({ error: 999, message: 'Uh-Oh!' });
     }
@@ -2293,18 +2215,18 @@ describe("closeEventMarkets", function() {
     branch: '0xb1',
     event: '0xe1',
     sender: '0x1',
-    callback: function(err) {
+    callback: function (err) {
       assert.isNull(err);
       assert.deepEqual(testState.markets, ['0xa1']);
       finished();
     },
-    getMarkets: function(event, cb) {
+    getMarkets: function (event, cb) {
       cb(testState.markets);
     },
-    getWinningOutcomes: function(market, cb) {
+    getWinningOutcomes: function (market, cb) {
       cb(testState.winningOutcomes[market]);
     },
-    closeMarket: function(branch) {
+    closeMarket: function (branch) {
       branch.onSent();
       // change the winning outcome to 1 so that we skip this market.
       testState.winningOutcomes[branch.market] = ['1'];

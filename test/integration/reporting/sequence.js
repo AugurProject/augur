@@ -1,8 +1,3 @@
-/**
- * augur.js tests
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var join = require("path").join;
@@ -15,7 +10,6 @@ var abi = require("augur-abi");
 var madlibs = require("madlibs");
 var augurpath = "../../../src/index";
 var constants = require("../../../src/constants");
-var utils = require("../../../src/utilities");
 var tools = require("../../tools");
 var DEBUG = true;
 tools.DEBUG = DEBUG;
@@ -67,7 +61,7 @@ describe("Reporting sequence", function () {
       salt = "1337";
       markets = {};
       events = {};
-      sender = augur.from;
+      sender = augur.store.getState().fromAddress;
 
       before("Setup/first period", function (done) {
         this.timeout(tools.TIMEOUT*100);
@@ -117,7 +111,7 @@ describe("Reporting sequence", function () {
               });
             });
           } else {
-            var branches = augur.getBranches();
+            var branches = augur.Branches.getBranches();
             newBranchID = branches[branches.length - 1];
             console.log("BranchID:", newBranchID);
 
@@ -182,8 +176,8 @@ describe("Reporting sequence", function () {
         it("makeReports.submitReportHash", function (done) {
           this.timeout(tools.TIMEOUT*100);
           var branch = newBranchID;
-          var period = parseInt(augur.getVotePeriod(branch));
-          var eventsToReportOn = augur.getEventsToReportOn(branch, period, sender, 0);
+          var period = parseInt(augur.Branches.getVotePeriod(branch));
+          var eventsToReportOn = augur.ReportingThreshold.getEventsToReportOn(branch, period, sender, 0);
           if (DEBUG) {
             console.log(chalk.white.dim("Events in period ") + chalk.cyan(period) + chalk.white.dim(":"), augur.ExpiringEvents.getEvents(branch, period));
             console.log(chalk.white.dim("Events to report on:"), eventsToReportOn);
@@ -280,7 +274,7 @@ describe("Reporting sequence", function () {
         });
         it("makeReports.submitReport", function (done) {
           this.timeout(tools.TIMEOUT*100);
-          var period = augur.getVotePeriod(newBranchID);
+          var period = augur.Branches.getVotePeriod(newBranchID);
           tools.top_up(augur, newBranchID, unlockable, password, function (err, unlocked) {
             assert.isNull(err, JSON.stringify(err));
             assert.isArray(unlocked);
@@ -337,7 +331,7 @@ describe("Reporting sequence", function () {
                           type: type,
                           isIndeterminate: false,
                           onSent: function (res) {
-                            console.log(chalk.white.dim("submitReport txhash:"), chalk.green(res.txHash));
+                            console.log(chalk.white.dim("submitReport txhash:"), chalk.green(res.hash));
                           },
                           onSuccess: function (res) {
                             if (DEBUG) {

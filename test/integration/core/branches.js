@@ -1,8 +1,3 @@
-/**
- * augur.js tests
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var assert = require("chai").assert;
@@ -11,7 +6,7 @@ var constants = require("../../../src/constants");
 var tools = require("../../tools");
 
 var augur = tools.setup(require("../../../src"));
-var branchID = augur.constants.DEFAULT_BRANCH_ID;
+var branchID = constants.DEFAULT_BRANCH_ID;
 var branchNumber = "0";
 
 describe("getBranches", function () {
@@ -21,16 +16,16 @@ describe("getBranches", function () {
     assert(abi.bignum(r[0]).eq(abi.bignum(branchID)));
   };
   it("sync", function () {
-    test(augur.getBranches());
+    test(augur.Branches.getBranches());
   });
   it("async", function (done) {
-    augur.getBranches(function (r) {
+    augur.Branches.getBranches(function (r) {
       test(r); done();
     });
   });
 });
 describe("getMarketsInBranch(" + branchID + ")", function () {
-  if (parseInt(augur.getNumMarketsBranch(branchID), 10) <= 3000) {
+  if (parseInt(augur.Branches.getNumMarketsBranch(branchID), 10) <= 3000) {
     var test = function (r) {
       assert.isArray(r);
       assert.isAbove(r.length, 1);
@@ -48,13 +43,13 @@ describe("getMarketsInBranch(" + branchID + ")", function () {
 describe("getSomeMarketsInBranch(" + branchID + ", 0, 10)", function () {
   var test = function (r) {
     assert.isArray(r);
-    assert.strictEqual(r.length, Math.min(parseInt(augur.getNumMarketsBranch(branchID), 10), 10));
+    assert.strictEqual(r.length, Math.min(parseInt(augur.Branches.getNumMarketsBranch(branchID), 10), 10));
   };
   it("sync", function () {
-    test(augur.getSomeMarketsInBranch(branchID, 0, 10));
+    test(augur.Branches.getSomeMarketsInBranch(branchID, 0, 10));
   });
   it("async", function (done) {
-    augur.getSomeMarketsInBranch(branchID, 0, 10, function (r) {
+    augur.Branches.getSomeMarketsInBranch(branchID, 0, 10, function (r) {
       test(r); done();
     });
   });
@@ -77,10 +72,10 @@ describe("getVotePeriod(" + branchID + ") >= -1", function () {
     assert(parseInt(r) >= -1);
   };
   it("sync", function () {
-    test(augur.getVotePeriod(branchID));
+    test(augur.Branches.getVotePeriod(branchID));
   });
   it("async", function (done) {
-    augur.getVotePeriod(branchID, function (r) {
+    augur.Branches.getVotePeriod(branchID, function (r) {
       test(r); done();
     });
   });
@@ -90,10 +85,10 @@ describe("getNumMarketsBranch(" + branchID + ") >= 1", function () {
     assert(parseInt(r) >= 1);
   };
   it("sync", function () {
-    test(augur.getNumMarketsBranch(branchID));
+    test(augur.Branches.getNumMarketsBranch(branchID));
   });
   it("async", function (done) {
-    augur.getNumMarketsBranch(branchID, function (r) {
+    augur.Branches.getNumMarketsBranch(branchID, function (r) {
       test(r); done();
     });
   });

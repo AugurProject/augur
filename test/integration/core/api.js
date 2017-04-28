@@ -1,6 +1,5 @@
 /**
  * augur.js unit tests
- * @author Jack Peterson (jack@tinybike.net)
  */
 
 "use strict";
@@ -12,20 +11,20 @@ var augur = new (require("../../../src"))();
 var constants = require("../../../src/constants");
 var runner = require("../../runner");
 
-var invoke = function (send) {
+var callOrSendTransaction = function (send) {
   return (send) ? "eth_sendTransaction" : "eth_call";
 };
 
 describe("Auto-generated API", function () {
   augur.sync();
-  async.forEachOfSeries(augur.api.functions, function (methods, contract, nextContract) {
+  async.forEachOfSeries(augur.store.getState().contractsAPI.functions, function (methods, contract, nextContract) {
     describe(contract, function () {
       var api, methodLists;
       methodLists = {eth_sendTransaction: [], eth_call: []};
       for (var method in methods) {
         if (methods.hasOwnProperty(method)) {
-          api = augur.api.functions[this.title][method];
-          methodLists[invoke(api.send)].push({
+          api = augur.store.getState().contractsAPI.functions[this.title][method];
+          methodLists[callOrSendTransaction(api.send)].push({
             method: method,
             parameters: api.signature || []
           });

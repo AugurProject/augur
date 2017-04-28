@@ -1,8 +1,3 @@
-/**
- * augur.js tests
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var assert = require("chai").assert;
@@ -10,7 +5,6 @@ var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
 var augur = new (require("../../../src"))();
 var constants = require("../../../src/constants");
-var utils = require("../../../src/utilities");
 
 describe("positions", function () {
 
@@ -129,7 +123,7 @@ describe("positions", function () {
     test({
       description: 'logs completely missing',
       logs: undefined,
-      assertions: function(output) {
+      assertions: function (output) {
         assert.deepEqual(output, {});
       }
     });
@@ -361,21 +355,21 @@ describe("positions", function () {
     });
   });
 
-  describe("calculateCompleteSetsEffectivePrice", function() {
-    var test = function(t) {
-      it(JSON.stringify(t), function() {
+  describe("calculateCompleteSetsEffectivePrice", function () {
+    var test = function (t) {
+      it(JSON.stringify(t), function () {
         t.assertions(augur.calculateCompleteSetsEffectivePrice(t.logs));
       });
     };
     test({
       logs: undefined,
-      assertions: function(out) {
+      assertions: function (out) {
         assert.deepEqual(out, {});
       }
     });
     test({
       logs: [],
-      assertions: function(out) {
+      assertions: function (out) {
         assert.deepEqual(out, {});
       }
     });
@@ -388,7 +382,7 @@ describe("positions", function () {
         topics: ['0x0', '0x0', '0xa2'],
         data: '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003'
       }],
-      assertions: function(out) {
+      assertions: function (out) {
         assert.deepEqual(JSON.stringify(out), JSON.stringify({
           '0xa1': '0.2',
           '0xa2': '0.33333333333333333333'
@@ -397,22 +391,22 @@ describe("positions", function () {
     });
   });
 
-  describe("calculateShortSellBuyCompleteSetsEffectivePrice", function() {
+  describe("calculateShortSellBuyCompleteSetsEffectivePrice", function () {
     // 3 tests total
-    var test = function(t) {
-      it(JSON.stringify(t), function() {
+    var test = function (t) {
+      it(JSON.stringify(t), function () {
         t.assertions(augur.calculateShortSellBuyCompleteSetsEffectivePrice(t.logs));
       });
     };
     test({
       logs: undefined,
-      assertions: function(effectivePrice) {
+      assertions: function (effectivePrice) {
         assert.deepEqual(effectivePrice, {});
       }
     });
     test({
       logs: [],
-      assertions: function(effectivePrice) {
+      assertions: function (effectivePrice) {
         assert.deepEqual(effectivePrice, {});
       }
     });
@@ -421,7 +415,7 @@ describe("positions", function () {
         data: fix('1') + stripFix('2') + stripFix('3') + stripFix('4') + stripFix('5') + stripFix('6') + stripFix('7')+ stripFix('0.000000000000000002'),
         topics: ['0x0', '0xa1'],
       }],
-      assertions: function(effectivePrice) {
+      assertions: function (effectivePrice) {
         assert.deepEqual(JSON.stringify(effectivePrice), JSON.stringify({
           '0xa1': new BigNumber('.5')
         }));
@@ -2326,8 +2320,8 @@ describe("positions", function () {
     });
   });
 
-  describe("calculateNetEffectiveTrades", function() {
-    var test = function(t) {
+  describe("calculateNetEffectiveTrades", function () {
+    var test = function (t) {
       t.assertions(augur.calculateNetEffectiveTrades(t.logs));
     };
     test({
@@ -2357,7 +2351,7 @@ describe("positions", function () {
           data: fix('5') + abi.strip_0x(abi.hex('25'))
         }],
       },
-      assertions: function(out) {
+      assertions: function (out) {
         assert.deepEqual(JSON.stringify(out), JSON.stringify({
           '0xa1': {
             shortAskBuyCompleteSets: {
@@ -2399,9 +2393,9 @@ describe("positions", function () {
     });
   });
 
-  describe("calculateUnrealizedPL", function() {
-    var test = function(t) {
-      it(JSON.stringify(t), function() {
+  describe("calculateUnrealizedPL", function () {
+    var test = function (t) {
+      it(JSON.stringify(t), function () {
         t.assertions(augur.calculateUnrealizedPL(t.position, t.meanOpenPrice, t.lastTradePrice));
       });
     };
@@ -2409,7 +2403,7 @@ describe("positions", function () {
       position: null,
       meanOpenPrice: null,
       lastTradePrice: constants.ZERO,
-      assertions: function(out) {
+      assertions: function (out) {
         assert.deepEqual(out, constants.ZERO);
       }
     });

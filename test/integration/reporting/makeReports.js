@@ -1,15 +1,10 @@
-/**
- * augur.js tests
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var assert = require("chai").assert;
 var abi = require("augur-abi");
-var utils = require("../../../src/utilities");
+var sha256 = require("../../../src/utils/sha256");
 var makeReports = require("../../../src/modules/makeReports");
-var augur = require("../../tools").setup(require("../../../src"), process.argv.slice(2));
+var augur = require("../../tools").setup(require("../../../src"));
 
 before(function () {
   makeReports.options = {debug: {reporting: false}};
@@ -27,13 +22,13 @@ describe("makeHash", function () {
   };
   var salt, report, from, event, isScalar, isIndeterminate;
   for (var i = 0; i < 10; ++i) {
-    salt = abi.prefix_hex(utils.sha256(Math.random().toString()));
+    salt = abi.prefix_hex(sha256(Math.random().toString()));
     report = Math.round(Math.random() * 50);
-    event = abi.prefix_hex(utils.sha256(Math.random().toString()));
+    event = abi.prefix_hex(sha256(Math.random().toString()));
     test({
       salt: salt,
       report: report,
-      from: augur.from,
+      from: augur.store.getState().fromAddress,
       event: event,
       isScalar: false,
       isIndeterminate: false
@@ -41,7 +36,7 @@ describe("makeHash", function () {
     test({
       salt: salt,
       report: report,
-      from: augur.from,
+      from: augur.store.getState().fromAddress,
       event: event,
       isScalar: true,
       isIndeterminate: false
@@ -49,7 +44,7 @@ describe("makeHash", function () {
     test({
       salt: salt,
       report: report,
-      from: augur.from,
+      from: augur.store.getState().fromAddress,
       event: event,
       isScalar: false,
       isIndeterminate: true
@@ -57,7 +52,7 @@ describe("makeHash", function () {
     test({
       salt: salt,
       report: report,
-      from: augur.from,
+      from: augur.store.getState().fromAddress,
       event: event,
       isScalar: false,
       isIndeterminate: false

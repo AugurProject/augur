@@ -1,15 +1,11 @@
-/**
- * augur.js tests
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var assert = require("chai").assert;
 var async = require("async");
 var abi = require("augur-abi");
 var clone = require("clone");
-var utils = require("../../../src/utilities");
+var pass = require("../../../src/utils/pass");
+var isFunction = require("../../../src/utils/is-function");
 var augurpath = "../../../src/index";
 var constants = require("../../../src/constants");
 var tools = require("../../tools");
@@ -20,8 +16,8 @@ var amount = "1";
 var branchID = augur.constants.DEFAULT_BRANCH_ID;
 var accounts = tools.get_test_accounts(augur, tools.MAX_TEST_ACCOUNTS);
 var outcome = 1;
-var numMarkets = parseInt(augur.getNumMarketsBranch(branchID), 10);
-var markets = augur.getSomeMarketsInBranch(branchID, numMarkets - 100, numMarkets);
+var numMarkets = parseInt(augur.Branches.getNumMarketsBranch(branchID), 10);
+var markets = augur.Branches.getSomeMarketsInBranch(branchID, numMarkets - 100, numMarkets);
 var numMarkets = markets.length;
 var marketId = tools.select_random(markets);
 if (numMarkets > tools.MAX_TEST_SAMPLES) {
@@ -38,7 +34,7 @@ if (numMarkets > tools.MAX_TEST_SAMPLES) {
 tools.TIMEOUT *= 2;
 
 var errorCheck = function (output, done) {
-  done = done || utils.pass;
+  done = done || pass;
   if (output && output.constructor === Object && output.error) {
     return done(new Error(JSON.stringify(output)));
   }
@@ -135,13 +131,13 @@ describe("batchGetMarketInfo", function () {
 });
 describe("getMarketsInfo", function () {
   var test = function (info, options, done) {
-    if (utils.is_function(options) && !done) {
+    if (isFunction(options) && !done) {
       done = options;
       options = undefined;
     }
     options = options || {};
     assert.isObject(info);
-    var numMarkets = options.numMarkets || parseInt(augur.getNumMarketsBranch(branchID));
+    var numMarkets = options.numMarkets || parseInt(augur.Branches.getNumMarketsBranch(branchID));
     var market;
     assert.strictEqual(Object.keys(info).length, numMarkets);
     for (var marketId in info) {

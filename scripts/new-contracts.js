@@ -27,7 +27,7 @@ augur.connect({
         augur.useAccount(account);
         augur.rpc.personal("unlockAccount", [account, password], function (unlocked) {
           if (unlocked && unlocked.error) return nextAccount();
-          augur.fundNewAccount(augur.constants.DEFAULT_BRANCH_ID, function (res) {
+          augur.Faucets.fundNewAccount(augur.constants.DEFAULT_BRANCH_ID, function (res) {
             console.log("fundNewAccount", account, "sent:", res);
           }, function (res) {
             console.log("fundNewAccount", account, "success:", res);

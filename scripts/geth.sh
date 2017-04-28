@@ -7,9 +7,10 @@ trap "exit" INT
 if [ `hostname` = "heavy" ]; then
   address="0xab50dcce6c36a033dc4a3b451d23868c909afbd6"
 else
+  # address="0x01114f4bda09ed6c6715cf0baf606b5bce1dc96a"
   address="0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b"
   # address="0x639b41c4d3d399894f2a57894278e1653e7cd24c"
-# address="0x0da70d5a92d6cfcd4c12e2a83950676fdf4c95f9"
+  # address="0x0da70d5a92d6cfcd4c12e2a83950676fdf4c95f9"
 fi
 maxpeers="128"
 network="${1}"
@@ -39,4 +40,4 @@ if [ -L $symlink ]; then
 fi
 ln -s "$HOME/.ethereum-${network}" $symlink
 
-geth $optargs --shh --ws --wsapi "eth,net,web3,admin,personal,miner,txpool,shh" --wsport 8546 --wsorigins "*" --cache 2048 --networkid $network --rpc --rpcapi "eth,net,web3,admin,personal,miner,txpool,shh" --ipcapi "admin,eth,debug,miner,net,txpool,personal,web3,shh" --rpccorsdomain "*" --maxpeers $maxpeers --etherbase $address --unlock $address --password $passfile console
+geth $optargs --shh --ws --wsapi "eth,net,web3,admin,personal,miner,txpool,shh" --wsport 8546 --wsorigins "*" --cache 2048 --networkid $network --rpc --rpcapi "eth,net,web3,admin,personal,miner,txpool,shh" --rpccorsdomain "*" --maxpeers $maxpeers --etherbase $address --unlock $address --password $passfile console

@@ -20,8 +20,8 @@ var DELAY = 2500;
 
 var augur = tools.setup(require(augurpath));
 var branch = constants.DEFAULT_BRANCH_ID;
-var numMarkets = parseInt(augur.getNumMarketsBranch(branch), 10);
-var markets = augur.getSomeMarketsInBranch(branch, numMarkets - 100, numMarkets);
+var numMarkets = parseInt(augur.Branches.getNumMarketsBranch(branch), 10);
+var markets = augur.Branches.getSomeMarketsInBranch(branch, numMarkets - 100, numMarkets);
 var marketId = markets[markets.length - 1];
 var tradeMarket = {};
 tradeMarket[augur.getMarketInfo(marketId).type] = marketId;

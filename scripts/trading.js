@@ -27,7 +27,7 @@ var test = function (t) {
     },
     onSuccess: function (r) {
       console.log("commit success:", r);
-      augur.rpc.fastforward(1, function (block) {
+      augur.rpc.waitForNextBlocks(1, function (block) {
         console.log("got block:", block);
         console.log("calling checkHash:", tradeHash, augur.from);
         var _augur = augur;

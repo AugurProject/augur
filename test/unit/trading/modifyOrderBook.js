@@ -958,9 +958,9 @@ describe("modifyOrderBook.fillOrder", function () {
   });
 });
 
-describe("modifyOrderBook.adjustScalarOrder", function() {
-  var test = function(t) {
-    it(t.description, function() {
+describe("modifyOrderBook.adjustScalarOrder", function () {
+  var test = function (t) {
+    it(t.description, function () {
       t.assertions(augur.adjustScalarOrder(t.params.order, t.params.minValue));
     });
   };
@@ -970,7 +970,7 @@ describe("modifyOrderBook.adjustScalarOrder", function() {
       order: { price: "25" },
       minValue: "10"
     },
-    assertions: function(o) {
+    assertions: function (o) {
       assert.deepEqual(o, { price: "35", fullPrecisionPrice: "35" });
     }
   });
@@ -980,7 +980,7 @@ describe("modifyOrderBook.adjustScalarOrder", function() {
       order: { price: "15", fullPrecisionPrice: "30" },
       minValue: "-5"
     },
-    assertions: function(o) {
+    assertions: function (o) {
       assert.deepEqual(o, { price: "10", fullPrecisionPrice: "25" });
     }
   });

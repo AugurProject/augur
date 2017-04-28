@@ -8,19 +8,21 @@ var clone = require("clone");
 var contracts = require("augur-contracts");
 var random = require("./random");
 var tools = require("./tools");
-var utils = require("../src/utilities");
+var noop = require("../src/utils/noop");
 var constants = require("../src/constants");
 var augur = new (require("../src"))();
+
 var test, run;
+
 augur.api = new contracts.Tx(process.env.ETHEREUM_NETWORK_ID || constants.DEFAULT_NETWORK_ID);
-augur.api.functions = augur.api.functions;
-augur.bindContractAPI();
+augur.store.getState().contractsAPI.functions = augur.store.getState().contractsAPI.functions;
+augur.bindContractAPI(augur.api.functions);
 
 test = {
   eth_call: function (t, next) {
     var expected, fire, params;
-    next = next || utils.noop;
-    expected = clone(augur.api.functions[t.contract][t.method]);
+    next = next || noop;
+    expected = clone(augur.store.getState().contractsAPI.functions[t.contract][t.method]);
     if (t.params && t.params.length === 1) {
       expected.params = t.params[0];
     } else {
@@ -45,8 +47,8 @@ test = {
   eth_sendTransaction: {
     object: function (t, next) {
       var i, expected, transact, labels, params;
-      next = next || utils.noop;
-      expected = clone(augur.api.functions[t.contract][t.method]);
+      next = next || noop;
+      expected = clone(augur.store.getState().contractsAPI.functions[t.contract][t.method]);
       if (t.params && t.params.length === 1) {
         expected.params = t.params[0];
       } else {
@@ -65,15 +67,15 @@ test = {
         augur.transact = transact;
         next();
       };
-      labels = augur.api.functions[t.contract][t.method].inputs || [];
-      params = {onSent: utils.noop, onSuccess: utils.noop, onFailed: utils.noop};
+      labels = augur.store.getState().contractsAPI.functions[t.contract][t.method].inputs || [];
+      params = {onSent: noop, onSuccess: noop, onFailed: noop};
       for (i = 0; i < labels.length; ++i) {
         if (!params[labels[i]]) params[labels[i]] = t.params[i];
       }
       augur[t.contract][t.method](params);
     },
     positional: function (t, next) {
-      var transact, expected = clone(augur.api.functions[t.contract][t.method]);
+      var transact, expected = clone(augur.store.getState().contractsAPI.functions[t.contract][t.method]);
       if (t.params && t.params.length === 1) {
         expected.params = t.params[0];
       } else {
@@ -92,7 +94,7 @@ test = {
         augur.transact = transact;
         next();
       };
-      augur[t.contract][t.method].apply(augur, t.params.concat([utils.noop, utils.noop, utils.noop]));
+      augur[t.contract][t.method].apply(augur, t.params.concat([noop, noop, noop]));
     }
   }
 };
@@ -134,7 +136,7 @@ run = {
               params: params,
               fixed: fixed,
               ether: ether,
-              callback: utils.noop
+              callback: noop
             }, callback);
           });
         } else {
@@ -144,7 +146,7 @@ run = {
             params: params,
             fixed: fixed,
             ether: ether,
-            callback: utils.noop
+            callback: noop
           }, callback);
         }
       },

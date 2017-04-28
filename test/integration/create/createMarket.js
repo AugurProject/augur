@@ -1,8 +1,3 @@
-/**
- * augur.js tests
- * @author Jack Peterson (jack@tinybike.net)
- */
-
 "use strict";
 
 var assert = require("chai").assert;
@@ -35,7 +30,7 @@ describe("CreateMarket.createMarket", function () {
           },
           onSuccess: function (r) {
             var eventID = r.callReturn;
-            assert.strictEqual(augur.getCreator(eventID), augur.from);
+            assert.strictEqual(augur.getCreator(eventID), augur.store.getState().fromAddress);
             assert.strictEqual(augur.getDescription(eventID), t.description);
             augur.createMarket({
               branch: t.branch,
@@ -47,7 +42,7 @@ describe("CreateMarket.createMarket", function () {
               onSent: function (res) {},
               onSuccess: function (res) {
                 var marketID = res.callReturn;
-                assert.strictEqual(augur.getCreator(marketID), augur.from);
+                assert.strictEqual(augur.getCreator(marketID), augur.store.getState().fromAddress);
                 assert.strictEqual(augur.getMarketEvent(marketID, 0), eventID);
                 augur.getMarketInfo(marketID, function (info) {
                   if (info.error) return done(info);
@@ -166,7 +161,7 @@ describe("CreateMarket.createMarket", function () {
           onSent: function (r) {},
           onSuccess: function (r) {
             var eventID = r.callReturn;
-            assert.strictEqual(augur.getCreator(eventID), augur.coinbase);
+            assert.strictEqual(augur.getCreator(eventID), augur.store.getState().coinbaseAddress);
             assert.strictEqual(augur.getDescription(eventID), t.description);
             augur.createMarket({
               branch: t.branch,
@@ -179,7 +174,7 @@ describe("CreateMarket.createMarket", function () {
               onSuccess: function (res) {
                 var marketID = res.callReturn;
                 augur.getMarketInfo(marketID);
-                assert.strictEqual(augur.getCreator(marketID), augur.coinbase);
+                assert.strictEqual(augur.getCreator(marketID), augur.store.getState().coinbaseAddress);
                 assert.strictEqual(augur.getMarketEvent(marketID, 0), eventID);
                 augur.getMarketInfo(marketID, null, function (info) {
                   if (info.error) return done(info);
@@ -279,10 +274,10 @@ describe("CreateMarket.createMarket", function () {
         onSuccess: function (r) {
           var eventID = r.callReturn;
           var creator = augur.getCreator(eventID);
-          if (creator !== augur.coinbase) {
+          if (creator !== augur.store.getState().coinbaseAddress) {
             console.log("\n  createEvent:", tools.pp(r));
           }
-          assert.strictEqual(creator, augur.coinbase);
+          assert.strictEqual(creator, augur.store.getState().coinbaseAddress);
           assert.strictEqual(augur.getDescription(eventID), description);
 
           // incorporate the new event into a market
@@ -298,12 +293,12 @@ describe("CreateMarket.createMarket", function () {
             onSuccess: function (res) {
               var marketID = res.callReturn;
               var creator = augur.getCreator(marketID);
-              if (creator !== augur.coinbase) {
+              if (creator !== augur.store.getState().coinbaseAddress) {
                 console.log("\n  createMarket:", tools.pp(res));
                 console.log("  getMarketInfo:", tools.pp(augur.getMarketInfo(marketID)));
                 console.log("  description:", tools.pp(augur.getDescription(eventID)));
               }
-              assert.strictEqual(creator, augur.coinbase);
+              assert.strictEqual(creator, augur.store.getState().coinbaseAddress);
               assert.strictEqual(augur.getMarketEvent(marketID, 0), eventID);
               augur.getMarketInfo(marketID, null, function (info) {
                 if (info.error) return next(info);

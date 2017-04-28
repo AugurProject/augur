@@ -40,9 +40,6 @@ module.exports = {
   // milliseconds to wait between getMarketsInfo batches
   PAUSE_BETWEEN_MARKET_BATCHES: 50,
 
-  // milliseconds to wait before the rpc.getLogs method times out
-  GET_LOGS_TIMEOUT: 480000,
-
   GET_LOGS_DEFAULT_FROM_BLOCK: "0x1",
   GET_LOGS_DEFAULT_TO_BLOCK: "latest",
 
