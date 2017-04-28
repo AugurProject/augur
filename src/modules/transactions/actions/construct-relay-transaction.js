@@ -1,15 +1,20 @@
-import { abi, augur, rpc } from '../../../services/augurjs';
-import { ZERO } from '../../trade/constants/numbers';
-import { SCALAR } from '../../markets/constants/market-types';
-import { updateTradeCommitment } from '../../trade/actions/update-trade-commitment';
-import { deleteTransaction } from '../../transactions/actions/delete-transaction';
-import { constructBasicTransaction, constructTradingTransaction, constructTransaction } from '../../transactions/actions/construct-transaction';
-import { fillOrder } from '../../bids-asks/actions/update-market-order-book';
-import unpackTransactionParameters from '../../transactions/actions/unpack-transaction-parameters';
-import { selectMarketFromEventID } from '../../market/selectors/market';
-import selectWinningPositions from '../../my-positions/selectors/winning-positions';
+import { abi, augur, rpc } from 'services/augurjs';
+import { ZERO } from 'modules/trade/constants/numbers';
+import { SCALAR } from 'modules/markets/constants/market-types';
+import { updateTradeCommitment } from 'modules/trade/actions/update-trade-commitment';
+import { deleteTransaction } from 'modules/transactions/actions/delete-transaction';
+import { constructBasicTransaction, constructTradingTransaction, constructTransaction } from 'modules/transactions/actions/construct-transaction';
+import { fillOrder } from 'modules/bids-asks/actions/update-market-order-book';
+import unpackTransactionParameters from 'modules/transactions/actions/unpack-transaction-parameters';
+import { selectMarketFromEventID } from 'modules/market/selectors/market';
+import selectWinningPositions from 'modules/my-positions/selectors/winning-positions';
+import { addNotification } from 'modules/notifications/actions/update-notifications';
+import { selectTransactionsLink } from 'modules/link/selectors/links';
 
 export const constructRelayTransaction = (tx, status) => (dispatch, getState) => {
+  console.log('### constructRelayTransaction -- ', status);
+  console.log('### tx -- ', tx);
+
   const hash = tx.response.hash;
   const p = {
     ...unpackTransactionParameters(tx),
@@ -18,6 +23,8 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
     timestamp: tx.response.timestamp || parseInt(Date.now() / 1000, 10),
     inProgress: !tx.response.blockHash
   };
+  console.log('### p -- ', p);
+
   console.log('unpacked:', JSON.stringify(p, null, 2));
   const method = tx.data.method;
   const contracts = augur.contracts;
@@ -26,6 +33,11 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
   const gasFees = tx.response.gasFees ? tx.response.gasFees : augur.getTxGasEth({
     ...augur.api.functions[contract][method]
   }, gasPrice).toFixed();
+
+  const transactionsOnClick = selectTransactionsLink(dispatch).onClick;
+
+  console.log('transactionsOnClick -- ', transactionsOnClick);
+
   switch (method) {
     case 'buy':
       return dispatch(constructTradingTransaction('log_add_tx', {
@@ -60,6 +72,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
       const { marketsData } = getState();
       const numTradeIDs = orders.length;
       const transactions = new Array(numTradeIDs);
+      let market;
       let remainingEth = abi.bignum(maxValue);
       for (let i = 0; i < numTradeIDs; ++i) {
         const order = orders[i];
@@ -71,7 +84,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             amount = remainingShares;
           }
         } else {
-          const market = marketsData[abi.format_int256(order.market)];
+          market = marketsData[abi.format_int256(order.market)];
           let price;
           if (market.type === SCALAR) {
             price = abi.bignum(augur.shrinkScalarPrice(market.minValue, order.price));
@@ -94,6 +107,12 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         console.log('calculated amount:', amount);
         const label = isShortSell ? 'log_short_fill_tx' : 'log_fill_tx';
         console.log('commit order:', order);
+        dispatch(addNotification({
+          id: hash,
+          title: `Committed to buy ${p.amount.toFixed()} shares of ${order.outcome}`,
+          description: market.description,
+          timestamp: p.timestamp
+        }));
         transactions[i] = dispatch(constructTradingTransaction(label, {
           ...p,
           inProgress: true,
@@ -226,10 +245,20 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
     }
     default: {
       let transaction;
+      let notification;
       switch (method) {
-        case 'fundNewAccount':
+        case 'fundNewAccount': {
+          console.log('### fundNewAccount -- ', p);
+          notification = {
+            id: p.transactionHash,
+            title: `Fund Account Request - ${tx.status}`,
+            description: 'Requesting Testnet ETH & REP',
+            timestamp: p.timestamp,
+            onClick: transactionsOnClick
+          };
           transaction = dispatch(constructTransaction('fundedAccount', p));
           break;
+        }
         case 'slashRep':
           transaction = dispatch(constructTransaction('slashedRep', {
             ...p,
@@ -343,6 +372,8 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         default:
           return null;
       }
+      console.log('### transaction -- ', transaction, notification);
+      dispatch(addNotification(notification));
       return {
         [hash]: {
           ...dispatch(constructBasicTransaction(hash, status, p.blockNumber, p.timestamp, gasFees)),

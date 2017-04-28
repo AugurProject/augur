@@ -8,18 +8,25 @@ import {
 const DEFAULT_STATE = [];
 
 // NOTE -- a well formed notification should have the following properties:
-// {string} description - should be terse, truncated in the UI if not
-// {object} timestamp - formatted via formatDate utility method
+// {any} id - unique identifier
+// {string} title - action that occurred, truncated in UI
+// {string} description - additional details, truncated in UI
+// {object} timestamp - UTC epoch
 // {func} onClick - formatted via link selector, where a user can view additional information
 // {bool} seen - has the user seen this notification already
 
 export default function (notifications = DEFAULT_STATE, action) {
   switch (action.type) {
-    case ADD_NOTIFICATION:
+    case ADD_NOTIFICATION: {
+      console.log('ADD_NOTIFICATION -- ', action);
       return [
         ...notifications,
-        action.data.notification
+        {
+          seen: false,
+          ...action.data.notification
+        }
       ];
+    }
     case REMOVE_NOTIFICATION: {
       return notifications.filter((notification, i) => i !== action.data.index);
     }

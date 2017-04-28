@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import classNames from 'classnames';
 import TransactionDetails from 'modules/transactions/components/transaction-details';
 import TransactionSummary from 'modules/transactions/components/transaction-summary';
@@ -24,6 +25,8 @@ export default class Transaction extends Component {
     const p = this.props;
     const s = this.state;
 
+    const animationSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-fast'), 10);
+
     return (
       <article className={classNames('transaction', p.status)}>
         <span className={classNames('transaction-status', p.status)} />
@@ -48,10 +51,17 @@ export default class Transaction extends Component {
               }
             </button>
           </div>
-          <TransactionDetails
-            isVisible={s.isFullTransactionVisible}
-            {...p}
-          />
+          <CSSTransitionGroup
+            transitionName="transaction"
+            transitionEnterTimeout={animationSpeed}
+            transitionLeaveTimeout={animationSpeed}
+          >
+            {s.isFullTransactionVisible &&
+              <TransactionDetails
+                {...p}
+              />
+            }
+          </CSSTransitionGroup>
         </div>
       </article>
     );

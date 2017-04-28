@@ -4,6 +4,8 @@ export const UPDATE_NOTIFICATION = 'UPDATE_NOTIFICATION';
 export const CLEAR_NOTIFICATIONS = 'CLEAR_NOTIFICATIONS';
 
 export function addNotification(notification) {
+  console.log('add notification -- ', notification);
+
   return {
     type: ADD_NOTIFICATION,
     data: {
