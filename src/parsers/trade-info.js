@@ -10,13 +10,13 @@ module.exports = function (trade) {
   if (!trade || !trade.length || !parseInt(trade[0], 16)) return null;
 
   // 0x1=buy, 0x2=sell
-  switch (trade[1]) {
-    case "0x1":
+  switch (parseInt(trade[1], 16)) {
+    case 1:
       type = "buy";
       round = "floor";
       roundingMode = BigNumber.ROUND_DOWN;
       break;
-    case "0x2":
+    case 2:
       type = "sell";
       round = "ceil";
       roundingMode = BigNumber.ROUND_UP;

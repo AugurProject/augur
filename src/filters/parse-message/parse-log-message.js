@@ -19,7 +19,7 @@ var parseLogMessage = function (label, msg, inputs, onMessage) {
           dataIndex = 0;
           topics = msg.topics;
           data = abi.unroll_array(msg.data);
-          if (data && data.constructor !== Array) data = [data];
+          if (data && !Array.isArray(data)) data = [data];
           for (i = 0; i < inputs.length; ++i) {
             parsed[inputs[i].name] = 0;
             if (inputs[i].indexed) {

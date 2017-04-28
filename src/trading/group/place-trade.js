@@ -16,14 +16,14 @@ var api = require("../../api");
 var PRECISION = require("../../constants").PRECISION;
 
 // market: {id, type, minValue (for scalars)}
-function placeTrade(market, outcomeID, tradeType, numShares, limitPrice, tradingFees, address, totalCost, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback) {
+function placeTrade(p, market, outcomeID, tradeType, numShares, limitPrice, tradingFees, address, totalCost, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback) {
   var tradeIDs, marketID = market.id;
   if (tradeType === "buy") {
     tradeIDs = calculateBuyTradeIDs(marketID, outcomeID, limitPrice, getOrderBooks(), address);
     if (tradeIDs && tradeIDs.length) {
-      placeBuy(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback);
+      placeBuy(p, market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback);
     } else if (!doNotMakeOrders) {
-      placeBid(market, outcomeID, numShares, limitPrice, tradeGroupID, callback);
+      placeBid(p, market, outcomeID, numShares, limitPrice, tradeGroupID, callback);
     } else {
       callback(null);
     }
@@ -43,7 +43,7 @@ function placeTrade(market, outcomeID, tradeType, numShares, limitPrice, trading
       tradeIDs = calculateSellTradeIDs(marketID, outcomeID, limitPrice, getOrderBooks(), address);
       if (position && position.gt(PRECISION.zero)) {
         if (tradeIDs && tradeIDs.length) {
-          placeSell(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback);
+          placeSell(p, market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback);
         } else if (!doNotMakeOrders) {
           shares = splitOrder(abi.bignum(numShares), position);
           askShares = shares.askShares;
@@ -51,11 +51,11 @@ function placeTrade(market, outcomeID, tradeType, numShares, limitPrice, trading
           hasAskShares = abi.bignum(askShares).gt(PRECISION.zero);
           hasShortAskShares = abi.bignum(shortAskShares).gt(PRECISION.zero);
           if (hasAskShares && hasShortAskShares) {
-            placeAskAndShortAsk(market, outcomeID, askShares, shortAskShares, limitPrice, tradeGroupID, callback);
+            placeAskAndShortAsk(p, market, outcomeID, askShares, shortAskShares, limitPrice, tradeGroupID, callback);
           } else if (hasAskShares) {
-            placeAsk(market, outcomeID, askShares, limitPrice, tradeGroupID, callback);
+            placeAsk(p, market, outcomeID, askShares, limitPrice, tradeGroupID, callback);
           } else if (hasShortAskShares) {
-            placeShortAsk(market, outcomeID, shortAskShares, limitPrice, tradeGroupID, callback);
+            placeShortAsk(p, market, outcomeID, shortAskShares, limitPrice, tradeGroupID, callback);
           } else {
             callback(null);
           }
@@ -63,9 +63,9 @@ function placeTrade(market, outcomeID, tradeType, numShares, limitPrice, trading
           callback(null);
         }
       } else if (tradeIDs && tradeIDs.length) {
-        placeShortSell(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback);
+        placeShortSell(p, market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback);
       } else if (!doNotMakeOrders) {
-        placeShortAsk(market, outcomeID, numShares, limitPrice, tradeGroupID, callback);
+        placeShortAsk(p, market, outcomeID, numShares, limitPrice, tradeGroupID, callback);
       } else {
         callback(null);
       }

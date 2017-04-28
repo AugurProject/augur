@@ -2,6 +2,7 @@
 
 var abi = require("augur-abi");
 var calculateUnrealizedPL = require("./calculate-unrealized-pl");
+var calculateTradesPL = require("./calculate-trades-pl");
 var updateRealizedPL = require("./update-realized-pl");
 var constants = require("../../constants");
 var PRECISION = constants.PRECISION;
@@ -29,7 +30,7 @@ function calculateProfitLoss(trades, lastTradePrice) {
   };
   bnLastTradePrice = abi.bignum(lastTradePrice) || ZERO;
   if (trades) {
-    PL = this.calculateTradesPL(PL, trades);
+    PL = calculateTradesPL(PL, trades);
     // console.log('Raw P/L:', JSON.stringify(PL, null, 2));
     queuedShares = ZERO;
     if (PL.tradeQueue && PL.tradeQueue.length) {

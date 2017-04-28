@@ -19,7 +19,7 @@ function bindContractFunction(staticAPI) {
     params = Array.prototype.slice.call(arguments);
     numInputs = (tx.inputs && tx.inputs.length) ? tx.inputs.length : 0;
     if (params && params.length && isObject(params[params.length - 1]) && params[params.length - 1].extraArgument) {
-      extraArgument = params.pop();
+      extraArgument = params.pop().extraArgument;
     }
     if (!tx.send) {
       if (params && isObject(params[0])) {

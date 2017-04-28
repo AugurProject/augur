@@ -14,12 +14,10 @@ function fundNewAccountFromAddress(p) {
     to: p.registeredAddress,
     value: p.amount,
     from: p.fromAddress,
-    onSent: function (r) {
-      console.log("sendEther sent:", r);
-    },
-    onSuccess: function (r) {
-      console.log("sendEther success:", r);
+    onSent: noop,
+    onSuccess: function () {
       api().Faucets.fundNewAccount({
+        _signer: p._signer,
         branch: p.branch || constants.DEFAULT_BRANCH_ID,
         onSent: onSentCallback,
         onSuccess: onSuccessCallback,

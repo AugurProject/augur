@@ -4,33 +4,27 @@ var abi = require("augur-abi");
 var augurContracts = require("augur-contracts");
 var eventsAPI = augurContracts.api.events;
 var rpcInterface = require("../rpc-interface");
-var isFunction = require("../utils/is-function");
 
-function getShortSellLogs(account, options, callback) {
-  var topics, filter;
-  if (!callback && isFunction(options)) {
-    callback = options;
-    options = null;
-  }
-  options = options || {};
-  if (account != null) {
+// { account, filter }
+function getShortSellLogs(p, callback) {
+  var topics;
+  p.filter = p.filter || {};
+  if (p.account != null) {
     topics = [
       eventsAPI.log_short_fill_tx.signature,
-      options.market ? abi.format_int256(options.market) : null,
+      p.filter.market ? abi.format_int256(p.filter.market) : null,
       null,
       null
     ];
-    topics[options.maker ? 3 : 2] = abi.format_int256(account);
-    filter = {
-      fromBlock: options.fromBlock || "0x1",
-      toBlock: options.toBlock || "latest",
+    topics[p.filter.maker ? 3 : 2] = abi.format_int256(p.account);
+    rpcInterface.getLogs({
+      fromBlock: p.filter.fromBlock || "0x1",
+      toBlock: p.filter.toBlock || "latest",
       address: augurContracts[rpcInterface.getNetworkID()].Trade,
       topics: topics
-    };
-    if (!isFunction(callback)) return rpcInterface.getLogs(filter);
-    rpcInterface.getLogs(filter, function (logs) {
+    }, function (logs) {
       if (logs && logs.error) return callback(logs, null);
-      if (!logs || !logs.length) return callback(null, []);
+      if (!Array.isArray(logs) || !logs.length) return callback(null, []);
       callback(null, logs);
     });
   }

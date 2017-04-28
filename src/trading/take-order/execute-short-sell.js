@@ -1,5 +1,6 @@
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var async = require("async");
 var selectOrder = require("./select-order");
@@ -9,7 +10,7 @@ var constants = require("../../constants");
 var PRECISION = constants.PRECISION;
 var ZERO = constants.ZERO;
 
-function executeShortSell(marketID, outcomeID, numShares, tradingFees, tradeGroupID, address, getOrderBooks, getTradeIDs, tradeCommitmentCallback, cb) {
+function executeShortSell(p, marketID, outcomeID, numShares, tradingFees, tradeGroupID, address, getOrderBooks, getTradeIDs, tradeCommitmentCallback, cb) {
   var res = {
     remainingShares: abi.bignum(numShares) || ZERO,
     filledShares: ZERO,
@@ -21,7 +22,7 @@ function executeShortSell(marketID, outcomeID, numShares, tradingFees, tradeGrou
   if (!matchingIDs || !matchingIDs.length || res.remainingShares.lte(ZERO)) return cb(null, res);
   async.eachSeries(matchingIDs, function (matchingID, nextMatchingID) {
     var maxAmount = res.remainingShares.toFixed();
-    short_sell({
+    short_sell(assign({}, p, {
       max_amount: maxAmount,
       buyer_trade_id: matchingID,
       sender: address,
@@ -74,7 +75,7 @@ function executeShortSell(marketID, outcomeID, numShares, tradingFees, tradeGrou
         nextMatchingID({ isComplete: true });
       },
       onTradeFailed: nextMatchingID
-    });
+    }));
   }, function (err) {
     if (err && !err.isComplete) return cb(err);
     cb(null, res);

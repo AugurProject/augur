@@ -25,7 +25,7 @@ var ZERO = require("../../constants").ZERO;
 function adjustPositions(account, marketIDs, shareTotals, callback) {
   var adjustedPositions = {};
   async.eachSeries(marketIDs, function (marketID, nextMarket) {
-    getPositionInMarket(marketID, account, function (onChainPosition) {
+    getPositionInMarket({ market: marketID, account: account }, function (onChainPosition) {
       var shortAskBuyCompleteSetsShareTotal, shortSellBuyCompleteSetsShareTotal, sellCompleteSetsShareTotal;
       if (!onChainPosition) return nextMarket("couldn't load position in " + marketID);
       if (onChainPosition.error) return nextMarket(onChainPosition);

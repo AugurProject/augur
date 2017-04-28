@@ -1,5 +1,6 @@
 "use strict";
 
+var assign = require("lodash.assign");
 var abi = require("augur-abi");
 var async = require("async");
 var BigNumber = require("bignumber.js");
@@ -12,7 +13,7 @@ var PRECISION = constants.PRECISION;
 var ZERO = constants.ZERO;
 
 // if buying numShares must be 0, if selling totalEthWithFee must be 0
-function executeTrade(marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, address, getOrderBooks, getTradeIDs, tradeCommitmentCallback, cb) {
+function executeTrade(p, marketID, outcomeID, numShares, totalEthWithFee, tradingFees, tradeGroupID, address, getOrderBooks, getTradeIDs, tradeCommitmentCallback, cb) {
   var bnTotalEth, bnNumShares, res, matchingTradeIDs, bnSharesPurchased, bnCashBalance, commitMaxAmount, commitMaxValue;
   bnTotalEth = abi.bignum(totalEthWithFee) || ZERO;
   bnNumShares = abi.bignum(numShares) || ZERO;
@@ -58,7 +59,7 @@ function executeTrade(marketID, outcomeID, numShares, totalEthWithFee, tradingFe
           isRemainder = false;
         }
         maxValue = BigNumber.min(res.remainingEth, bnCashBalance);
-        trade({
+        trade(assign({}, p, {
           max_value: maxValue.toFixed(),
           max_amount: maxAmount.toFixed(),
           trade_ids: tradeIDs,
@@ -120,7 +121,7 @@ function executeTrade(marketID, outcomeID, numShares, totalEthWithFee, tradingFe
             });
           },
           onTradeFailed: nextTrade
-        });
+        }));
       });
     });
   }, function (err) {

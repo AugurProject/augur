@@ -3,14 +3,21 @@
 var subscriptions = {};
 
 module.exports.onLogAdded = function (log) {
-  console.log("[filters/subscription/dispatch] log added:", log);
-  subscriptions[log.topics[0]](log);
+  console.log("[filters/subscription] log added:", log.topics[0]);
+  console.log("subscriptions:", subscriptions);
+  if (subscriptions[log.topics[0]]) {
+    console.log("calling sub");
+    subscriptions[log.topics[0]].callback(log);
+  } else {
+    console.log("subscription not found!", log);
+  }
   if (subscriptions.allLogs) subscriptions.allLogs(log);
 };
 
 module.exports.onLogRemoved = function (log) {
-  console.log("[filters/subscription/dispatch] log removed:", log);
-  subscriptions[log.topics[0]](log);
+  console.log("[filters/subscription] log removed:", log.topics[0], log);
+  console.log("subscriptions:", subscriptions);
+  if (subscriptions[log.topics[0]]) subscriptions[log.topics[0]].callback(log);
   if (subscriptions.allLogs) subscriptions.allLogs(log);
 };
 

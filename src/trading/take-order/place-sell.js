@@ -13,7 +13,7 @@ var api = require("../../api");
 var noop = require("../../utils/noop");
 var PRECISION = require("../../constants").PRECISION;
 
-function placeSell(market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback) {
+function placeSell(p, market, outcomeID, numShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback) {
   var marketID, getTradeIDs;
   if (!callback) callback = noop;
   tradeCommitLockCallback(true);
@@ -21,7 +21,7 @@ function placeSell(market, outcomeID, numShares, limitPrice, address, totalCost,
   getTradeIDs = function (orderBooks) {
     return calculateSellTradeIDs(marketID, outcomeID, limitPrice, orderBooks, address);
   };
-  executeTrade(marketID, outcomeID, numShares, 0, tradingFees, tradeGroupID, address, getOrderBooks, getTradeIDs, tradeCommitmentCallback, function (err, res) {
+  executeTrade(p, marketID, outcomeID, numShares, 0, tradingFees, tradeGroupID, address, getOrderBooks, getTradeIDs, tradeCommitmentCallback, function (err, res) {
     tradeCommitLockCallback(false);
     if (err) return callback(err);
     if (res.remainingShares.gt(PRECISION.zero)) {
@@ -41,11 +41,11 @@ function placeSell(market, outcomeID, numShares, limitPrice, address, totalCost,
             hasAskShares = abi.bignum(askShares).gt(PRECISION.zero);
             hasShortAskShares = abi.bignum(shortAskShares).gt(PRECISION.zero);
             if (hasAskShares && hasShortAskShares) {
-              placeAskAndShortAsk(market, outcomeID, askShares, shortAskShares, limitPrice, tradeGroupID, callback);
+              placeAskAndShortAsk(p, market, outcomeID, askShares, shortAskShares, limitPrice, tradeGroupID, callback);
             } else if (hasAskShares) {
-              placeAsk(market, outcomeID, askShares, limitPrice, tradeGroupID, callback);
+              placeAsk(p, market, outcomeID, askShares, limitPrice, tradeGroupID, callback);
             } else if (hasShortAskShares) {
-              placeShortAsk(market, outcomeID, shortAskShares, limitPrice, tradeGroupID, callback);
+              placeShortAsk(p, market, outcomeID, shortAskShares, limitPrice, tradeGroupID, callback);
             } else {
               callback(null);
             }
@@ -55,9 +55,9 @@ function placeSell(market, outcomeID, numShares, limitPrice, address, totalCost,
         } else {
           tradeIDs = calculateSellTradeIDs(marketID, outcomeID, limitPrice, getOrderBooks(), address);
           if (tradeIDs && tradeIDs.length) {
-            placeShortSell(market, outcomeID, res.remainingShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback);
+            placeShortSell(p, market, outcomeID, res.remainingShares, limitPrice, address, totalCost, tradingFees, getOrderBooks, doNotMakeOrders, tradeGroupID, tradeCommitmentCallback, tradeCommitLockCallback, callback);
           } else if (!doNotMakeOrders) {
-            placeShortAsk(market, outcomeID, res.remainingShares, limitPrice, tradeGroupID, callback);
+            placeShortAsk(p, market, outcomeID, res.remainingShares, limitPrice, tradeGroupID, callback);
           } else {
             callback(null);
           }

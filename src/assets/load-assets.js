@@ -10,7 +10,10 @@ function loadAssets(p, cbEther, cbRep, cbRealEther) {
     if (!result || result.error) return cbEther(result);
     return cbEther(null, abi.string(result));
   });
-  api().Reporting.getRepBalance(p, function (result) {
+  api().Reporting.getRepBalance({
+    branch: p.branchID,
+    address: p.address
+  }, function (result) {
     if (!result || result.error) return cbRep(result);
     return cbRep(null, abi.string(result));
   });

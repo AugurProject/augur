@@ -8,7 +8,7 @@ function parseLastBlockNumber(logs) {
 
 // { account }
 function getRegisterBlockNumber(p, callback) {
-  getLogs("registration", { sender: p.account }, function (err, logs) {
+  getLogs({ label: "registration", filter: { sender: p.account } }, function (err, logs) {
     if (err) return callback(err);
     if (!logs || !logs.length) return callback(null, null);
     callback(null, parseLastBlockNumber(logs));

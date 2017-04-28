@@ -11,7 +11,7 @@ var GETTER_CHUNK_SIZE = require("../../constants").GETTER_CHUNK_SIZE;
 function getOrderBookChunked(p, onChunkReceived, onComplete) {
   if (!isFunction(onChunkReceived)) onChunkReceived = noop;
   if (!p.totalTrades) {
-    return api().Trades.get_total_trades({ market_id: p.marketID }, function (totalTrades) {
+    return api().Markets.get_total_trades({ market_id: p.marketID }, function (totalTrades) {
       if (!totalTrades || totalTrades.error || !parseInt(totalTrades, 10)) {
         return onComplete(totalTrades);
       }
