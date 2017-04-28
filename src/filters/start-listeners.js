@@ -9,7 +9,6 @@ function startListeners(contracts, eventsAPI, subscriptionCallbacks, onSetupComp
   var blockStream = rpcInterface.getBlockStream();
   Object.keys(subscriptionCallbacks).map(function (label) {
     if (isFunction(subscriptionCallbacks[label])) {
-      console.log("starting listener:", label, eventsAPI[label] && eventsAPI[label].signature);
       addFilter(blockStream, label, eventsAPI[label], contracts, subscriptions.addSubscription, subscriptionCallbacks[label]);
     }
   });

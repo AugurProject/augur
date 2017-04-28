@@ -43,6 +43,7 @@ function Augur() {
   this.constants = require("./constants");
   this.create = require("./create");
   this.filters = require("./filters");
+  this.format = require("./format");
   this.logs = require("./logs");
   this.markets = require("./markets");
   this.reporting = require("./reporting");
