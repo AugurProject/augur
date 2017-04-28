@@ -291,6 +291,13 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         }
         case 'penalizationCatchup': {
           const { lastPeriodPenalized, reportPeriod } = getState().branch;
+          notification = {
+            id: p.transactionHash,
+            title: `Missed Reports Penalty - ${tx.status}`,
+            description: `-${p.repLost} REP`,
+            timestamp: p.timestamp,
+            href: transactionsHref
+          };
           transaction = dispatch(constructTransaction('penalizationCaughtUp', {
             ...p,
             penalizedFrom: lastPeriodPenalized,
