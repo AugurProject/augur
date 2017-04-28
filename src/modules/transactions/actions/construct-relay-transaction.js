@@ -329,6 +329,13 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           }));
           break;
         case 'sendEther':
+          notification = {
+            id: p.transactionHash,
+            title: `Send Real Ether - ${tx.status}`,
+            description: `${abi.unfix(p.value, 'string')} Real ETH`,
+            timestamp: p.timestamp,
+            href: transactionsHref
+          };
           transaction = dispatch(constructTransaction('sentEther', {
             ...p,
             _from: abi.format_address(p.from),
@@ -341,7 +348,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           notification = {
             id: p.transactionHash,
             title: `Transfer Reputation - ${tx.status}`,
-            description: '',
+            description: `${abi.unfix(p.value, 'string')} REP`,
             timestamp: p.timestamp,
             href: transactionsHref
           };
