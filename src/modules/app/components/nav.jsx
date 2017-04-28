@@ -26,11 +26,23 @@ export default class Nav extends Component {
     };
 
     this.collapseFooter = this.collapseFooter.bind(this);
+    this.handleWindowOnClick = this.handleWindowOnClick.bind(this);
+  }
+
+  componentDidMount() {
+    window.addEventListener('click', this.handleWindowOnClick);
   }
 
   collapseFooter() {
     if (this.props.updateIsFooterCollapsed) {
       this.props.updateIsFooterCollapsed(true);
+    }
+  }
+
+  handleWindowOnClick(e) {
+    // Can generalize this later if more nav modals are needed
+    if (this.state.isNotificationsVisible) {
+      this.setState({ isNotificationsVisible: false });
     }
   }
 
@@ -58,11 +70,20 @@ export default class Nav extends Component {
           </Link>
         </div>
         {p.logged &&
-          <div className="modal-link">
+          <div
+            className="modal-link"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+          >
             <button
               ref={(notificationIcon) => { this.notificationIcon = notificationIcon; }}
               className="unstyled button-notifications app-nav-link"
-              onClick={() => this.setState({ isNotificationsVisible: !s.isNotificationsVisible })}
+              onClick={(e) => {
+                e.stopPropagation();
+                this.setState({ isNotificationsVisible: !s.isNotificationsVisible });
+              }}
             >
               <i className="fa fa-bell-o" />
             </button>

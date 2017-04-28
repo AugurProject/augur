@@ -13,7 +13,7 @@ const NotificationsView = (p) => {
   const animationOutSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-fast'), 10);
 
   return (
-    <section id="notifications_view" >
+    <section id="notifications_view">
       <div className="notifications-header">
         <h3>Notifications</h3>
         {!!notifications && !!notifications.length &&
