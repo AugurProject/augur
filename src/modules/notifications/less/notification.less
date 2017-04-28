@@ -5,7 +5,11 @@
   pointer-events: all;
 
   .notification-details {
+    display: flex;
     flex: 1;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 0.2em 0 0.2em 0.2em;
 
     .notification-title {
       .font-weight-normal();
@@ -18,5 +22,13 @@
 
   .notification-remove {
     min-width: 2em;
+  }
+
+  .notification-details,
+  .notification-remove {
+    &:not(:first-of-type),
+    &:not(:last-of-type) {
+      .border(true, @border-bottom, @border-light);
+    }
   }
 }

@@ -352,6 +352,13 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           }));
           break;
         case 'register':
+          notification = {
+            id: p.transactionHash,
+            title: `Registration - ${tx.status}`,
+            description: 'Logging Account Registration',
+            timestamp: p.timestamp,
+            href: transactionsHref
+          };
           transaction = dispatch(constructTransaction('registration', {
             ...p,
             sender: abi.format_address(tx.data.from)

@@ -1,20 +1,20 @@
-import store from 'src/store';
-
 export const ADD_NOTIFICATION = 'ADD_NOTIFICATION';
 export const REMOVE_NOTIFICATION = 'REMOVE_NOTIFICATION';
 export const UPDATE_NOTIFICATION = 'UPDATE_NOTIFICATION';
 export const CLEAR_NOTIFICATIONS = 'CLEAR_NOTIFICATIONS';
 
 export function addNotification(notification) {
-  return {
-    type: ADD_NOTIFICATION,
-    data: {
-      notification: {
-        seen: false,
-        ...notification
+  if (notification != null) {
+    return {
+      type: ADD_NOTIFICATION,
+      data: {
+        notification: {
+          seen: false,
+          ...notification
+        }
       }
-    }
-  };
+    };
+  }
 }
 
 export function removeNotification(index) {
