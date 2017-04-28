@@ -80347,7 +80347,7 @@ function transactAsync(payload, callReturn, privateKeyOrSigner, onSent, onSucces
       // to the client, using the onSent callback
       onSent({ hash: txHash, callReturn: callReturn });
 
-      dispatch(verifyTxSubmitted(payload, txHash, callReturn, onSent, onSuccess, onFailed, function (err) {
+      dispatch(verifyTxSubmitted(payload, txHash, callReturn, privateKeyOrSigner, onSent, onSuccess, onFailed, function (err) {
         if (err != null) {
           err.hash = txHash;
           return onFailed(err);
@@ -80449,7 +80449,7 @@ function updateMinedTx(txHash) {
             dispatch({
               type: "UPDATE_TRANSACTION",
               hash: txHash,
-              data: { tx: { callReturn: transaction.callReturn } }
+              data: { tx: { callReturn: transaction.tx.callReturn } }
             });
             dispatch(eth.getTransactionReceipt(txHash, function (receipt) {
               if (debug.tx) console.log("got receipt:", receipt);
@@ -80568,7 +80568,7 @@ function updatePendingTx(txHash) {
           dispatch({ type: "UNLOCK_TRANSACTION", hash: txHash });
           storedTransaction = getState().transactions[txHash];
           if (getState().debug.tx) console.log("resubmitting tx:", storedTransaction.hash);
-          dispatch(transact(storedTransaction.payload, storedTransaction.onSent, storedTransaction.onSuccess, storedTransaction.onFailed));
+          dispatch(transact(storedTransaction.payload, storedTransaction.signer, storedTransaction.onSent, storedTransaction.onSuccess, storedTransaction.onFailed));
         }
 
       // non-null transaction: transaction still alive and kicking!
@@ -80656,48 +80656,30 @@ var RPCError = require("../errors/rpc-error");
 var isFunction = require("../utils/is-function");
 var errors = require("../errors/codes");
 
-function verifyTxSubmitted(payload, txHash, callReturn, onSent, onSuccess, onFailed, callback) {
+function verifyTxSubmitted(payload, txHash, callReturn, privateKeyOrSigner, onSent, onSuccess, onFailed, callback) {
   return function (dispatch, getState) {
-    if (!isFunction(callback)) {
-      if (!payload || ((!payload.mutable && payload.returns !== "null") && (txHash === null || txHash === undefined))) {
-        throw new RPCError(errors.TRANSACTION_FAILED);
-      }
-      if (getState().transactions[txHash]) {
-        throw new RPCError(errors.DUPLICATE_TRANSACTION);
-      }
-      dispatch({
-        type: "ADD_TRANSACTION",
-        transaction: {
-          hash: txHash,
-          payload: payload,
-          tx: { callReturn: callReturn },
-          count: 0,
-          status: "pending"
-        }
-      });
-    } else {
-      if (!payload || txHash === null || txHash === undefined) {
-        return callback(errors.TRANSACTION_FAILED);
-      }
-      if (getState().transactions[txHash]) {
-        return callback(errors.DUPLICATE_TRANSACTION);
-      }
-      dispatch({
-        type: "ADD_TRANSACTION",
-        transaction: {
-          hash: txHash,
-          payload: payload,
-          tx: { callReturn: callReturn },
-          onSent: onSent,
-          onSuccess: onSuccess,
-          onFailed: onFailed,
-          count: 0,
-          status: "pending"
-        }
-      });
-      dispatch(updateTx.default(txHash));
-      callback(null);
+    if (!payload || txHash == null) {
+      return callback(errors.TRANSACTION_FAILED);
     }
+    if (getState().transactions[txHash]) {
+      return callback(errors.DUPLICATE_TRANSACTION);
+    }
+    dispatch({
+      type: "ADD_TRANSACTION",
+      transaction: {
+        hash: txHash,
+        payload: payload,
+        tx: { callReturn: callReturn },
+        signer: privateKeyOrSigner,
+        onSent: onSent,
+        onSuccess: onSuccess,
+        onFailed: onFailed,
+        count: 0,
+        status: "pending"
+      }
+    });
+    dispatch(updateTx.default(txHash));
+    callback(null);
   };
 }
 
