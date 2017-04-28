@@ -282,6 +282,14 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           }
           const market = selectMarketFromEventID(p.event);
           if (!market) return null;
+
+          notification = {
+            id: p.transactionHash,
+            title: `Wrong Report Penalty - ${tx.status}`,
+            description: `${p.repchange} REP`,
+            timestamp: p.timestamp,
+            href: transactionsHref
+          };
           transaction = dispatch(constructTransaction('penalize', {
             ...p, // { event }
             reportValue: eventsWithSubmittedReport[p.event].accountReport,
@@ -294,7 +302,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           notification = {
             id: p.transactionHash,
             title: `Missed Reports Penalty - ${tx.status}`,
-            description: `-${p.repLost} REP`,
+            description: `${p.repLost} REP`,
             timestamp: p.timestamp,
             href: transactionsHref
           };
