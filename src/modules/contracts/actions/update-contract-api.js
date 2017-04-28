@@ -11,6 +11,5 @@ export const updateFunctionsAPI = functionsAPI => (dispatch) => {
 };
 export const updateFromAddress = fromAddress => (dispatch, getState) => {
   dispatch({ type: UPDATE_FROM_ADDRESS, fromAddress });
-  const { functionsAPI } = getState();
-  augur.api = augur.generateContractAPI(functionsAPI);
+  augur.api = augur.generateContractAPI(getState().functionsAPI);
 };

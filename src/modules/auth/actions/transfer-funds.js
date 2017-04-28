@@ -18,19 +18,19 @@ export function transferFunds(amount, currency, toAddress) {
           _signer: loginAccount.privateKey,
           recver: to,
           value: amount,
-          onSent: onSent,
-          onSuccess: onSuccess,
-          onFailed: onFailed
+          onSent,
+          onSuccess,
+          onFailed
         });
       case 'real ETH':
         return augur.api.sendEther({
           _signer: loginAccount.privateKey,
-          to: to,
+          to,
           value: amount,
           from: fromAddress,
-          onSent: onSent,
-          onSuccess: onSuccess,
-          onFailed: onFailed
+          onSent,
+          onSuccess,
+          onFailed
         });
       case 'REP':
         return augur.api.sendReputation({
@@ -38,9 +38,9 @@ export function transferFunds(amount, currency, toAddress) {
           branch: branch.id,
           recver: to,
           value: amount,
-          onSent: onSent,
-          onSuccess: onSuccess,
-          onFailed: onFailed
+          onSent,
+          onSuccess,
+          onFailed
         });
       default:
         console.error('transferFunds: unknown currency', currency);

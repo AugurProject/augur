@@ -3,9 +3,10 @@ import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
 import { loadAccountTrades } from '../../my-positions/actions/load-account-trades';
 import { updateSellCompleteSetsLock } from '../../my-positions/actions/update-account-trades-data';
 
-export const submitGenerateOrderBook = market => (dispatch) => {
+export const submitGenerateOrderBook = market => (dispatch, getState) => {
   dispatch(updateSellCompleteSetsLock(market.id, true));
   augur.create.generateOrderBook({
+    _signer: getState().loginAccount.privateKey,
     market: market.id,
     liquidity: market.initialLiquidity,
     initialFairPrices: market.initialFairPrices.raw,

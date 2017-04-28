@@ -10,13 +10,12 @@ export function fundNewAccount() {
       const amount = env.fundNewAccountFromAddress.amount;
       augur.beta.fundNewAccountFromAddress({
         _signer: loginAccount.privateKey,
-        fromAddress: fromAddress,
-        amount: amount,
+        fromAddress,
+        amount,
         registeredAddress: loginAccount.address,
         branch: branch.id,
         onSent: utils.noop,
-        onSuccess: (r) => {
-          console.log('fundNewAccountFromAddress success:', r);
+        onSuccess: () => {
           dispatch(updateAssets());
           dispatch(loadRegisterBlockNumber());
         },
@@ -24,11 +23,11 @@ export function fundNewAccount() {
       });
     } else {
       augur.beta.fundNewAccountFromFaucet({
+        _signer: loginAccount.privateKey,
         registeredAddress: loginAccount.address,
         branch: branch.id,
         onSent: utils.noop,
-        onSuccess: (r) => {
-          console.log('fundNewAccountFromFaucet success:', r);
+        onSuccess: () => {
           dispatch(updateAssets());
           dispatch(loadRegisterBlockNumber());
         },

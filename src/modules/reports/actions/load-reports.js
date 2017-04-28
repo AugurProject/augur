@@ -19,7 +19,7 @@ export function loadReports(cb) {
     const branchReports = reports[branchID];
     augur.api.ReportingThreshold.getEventsToReportOn({
       branch: branchID,
-      period: period,
+      period,
       sender: account,
       start: 0
     }, (eventsToReportOn) => {

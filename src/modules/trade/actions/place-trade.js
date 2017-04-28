@@ -12,6 +12,7 @@ export const placeTrade = (marketID, outcomeID, trades, doNotMakeOrders, cb) => 
     return dispatch(clearTradeInProgress(marketID));
   }
   const tradeGroupID = augur.trading.group.executeTradingActions(
+    { _signer: loginAccount.privateKey },
     market,
     outcomeID,
     loginAccount.address,

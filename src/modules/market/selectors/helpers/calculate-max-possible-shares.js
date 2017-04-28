@@ -22,10 +22,7 @@ export const calculateMaxPossibleShares = memoize((loginAccount, orders, makerFe
     return '0';
   }
   const ordersLength = orders.length;
-  const { tradingFee, makerProportionOfFee } = augur.calculateFxpTradingFees(
-    new BigNumber(makerFee, 10),
-    new BigNumber(takerFee, 10)
-  );
+  const { tradingFee, makerProportionOfFee } = augur.trading.fees.calculateFxpTradingFees(new BigNumber(makerFee, 10), new BigNumber(takerFee, 10));
   let runningCost = ZERO;
   let updatedRunningCost;
   let maxPossibleShares = ZERO;
@@ -37,9 +34,9 @@ export const calculateMaxPossibleShares = memoize((loginAccount, orders, makerFe
     order = orders[i];
     orderAmount = new BigNumber(order.amount, 10);
     fullPrecisionPrice = scalarMinValue !== null ?
-      augur.shrinkScalarPrice(scalarMinValue, order.fullPrecisionPrice) :
+      augur.trading.shrinkScalarPrice(scalarMinValue, order.fullPrecisionPrice) :
       order.fullPrecisionPrice;
-    orderCost = augur.calculateFxpTradingCost(
+    orderCost = augur.trading.fees.calculateFxpTradingCost(
       orderAmount,
       new BigNumber(fullPrecisionPrice, 10),
       tradingFee,

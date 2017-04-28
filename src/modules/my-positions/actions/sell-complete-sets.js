@@ -43,7 +43,10 @@ export function sellCompleteSetsMarket(marketID, callback) {
 
 export function completeSetsCheck(marketID, callback) {
   return (dispatch, getState) => {
-    augur.markets.getPositionInMarket(marketID, getState().loginAccount.address, (position) => {
+    augur.markets.getPositionInMarket({
+      market: marketID,
+      account: getState().loginAccount.address
+    }, (position) => {
       if (!position || position.error) {
         return callback(position || marketID);
       }

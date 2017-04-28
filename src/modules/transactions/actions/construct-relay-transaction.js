@@ -10,20 +10,21 @@ import { selectMarketFromEventID } from '../../market/selectors/market';
 import selectWinningPositions from '../../my-positions/selectors/winning-positions';
 
 export const constructRelayTransaction = (tx, status) => (dispatch, getState) => {
-  const hash = tx.response.hash;
+  const hash = tx.hash;
   const p = {
     ...unpackTransactionParameters(tx),
     transactionHash: hash,
-    blockNumber: tx.response.blockNumber,
+    blockNumber: tx.response.blockNumber && parseInt(tx.response.blockNumber, 16),
     timestamp: tx.response.timestamp || parseInt(Date.now() / 1000, 10),
     inProgress: !tx.response.blockHash
   };
   console.log('unpacked:', JSON.stringify(p, null, 2));
+  console.log('status:', status);
   const method = tx.data.method;
-  const contracts = augur.contracts;
+  const contracts = getState().contractAddresses;
   const contract = Object.keys(contracts).find(c => contracts[c] === tx.data.to);
   const gasPrice = rpc.gasPrice || augur.constants.DEFAULT_GASPRICE;
-  const gasFees = tx.response.gasFees ? tx.response.gasFees : augur.getTxGasEth({
+  const gasFees = tx.response.gasFees ? tx.response.gasFees : augur.trading.simulation.getTxGasEth({
     ...getState().functionsAPI[contract][method]
   }, gasPrice).toFixed();
   switch (method) {
@@ -125,7 +126,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         isEmptyTrade = unmatchedShares.eq(abi.bignum(p.max_amount));
       }
       if (isEmptyTrade) {
-        return dispatch(deleteTransaction(`${tx.response.hash}-${p.buyer_trade_id}`));
+        return dispatch(deleteTransaction(`${hash}-${p.buyer_trade_id}`));
       }
       if (status === 'submitted') {
         dispatch(deleteTransaction(`${transactionHash}-${p.buyer_trade_id}`));
@@ -169,7 +170,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
       for (let i = 0; i < numTradeIDs; ++i) {
         const order = orders[i];
         if (isEmptyTrade) {
-          dispatch(deleteTransaction(`${tx.response.hash}-${order.id}`));
+          dispatch(deleteTransaction(`${hash}-${order.id}`));
         } else {
           let amount;
           if (abi.bignum(remainingShares).gt(ZERO)) {

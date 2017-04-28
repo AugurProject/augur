@@ -47,6 +47,11 @@ const testState = {
     address: '0x0000000000000000000000000000000000000001',
     name: 'testTesterson',
     loginID: 'testSecureID',
+    privateKey: Buffer.from("0000000000000000000000000000000000000000000000000000000000000001", "hex"),
+    derivedKey: Buffer.from("0000000000000000000000000000000000000000000000000000000000000002", "hex"),
+    keystore: {
+      address: '0x0000000000000000000000000000000000000001'
+    },
     localNode: false,
     prettyAddress: '0xte...t123',
     linkText: 'testTesterson',

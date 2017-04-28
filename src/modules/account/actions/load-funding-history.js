@@ -1,10 +1,10 @@
 import async from 'async';
-import { augur, constants } from '../../../services/augurjs';
-import { convertLogsToTransactions } from '../../../modules/transactions/actions/convert-logs-to-transactions';
+import { augur, constants } from 'services/augurjs';
+import { convertLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
+import logError from 'utils/log-error';
 
-export function loadFundingHistory(cb) {
+export function loadFundingHistory(callback = logError) {
   return (dispatch, getState) => {
-    const callback = cb || (e => e && console.error('loadFundingHistory:', e));
     const { branch, loginAccount } = getState();
     const params = { sender: loginAccount.address, branch: branch.id };
     if (loginAccount.registerBlockNumber) {
@@ -17,17 +17,19 @@ export function loadFundingHistory(cb) {
       'withdraw',
       'Approval'
     ], constants.PARALLEL_LIMIT, (label, nextLabel) => {
-      const p = label === 'fundedAccount' ? { ...params, fromBlock: null } : params;
-      augur.logs.getLogsChunked(label, p, null, (logs) => {
-        if (logs && logs.length) dispatch(convertLogsToTransactions(label, logs));
+      augur.logs.getLogsChunked({
+        label,
+        filter: label === 'fundedAccount' ? { ...params, fromBlock: null } : params,
+        aux: null
+      }, (logs) => {
+        if (Array.isArray(logs) && logs.length) dispatch(convertLogsToTransactions(label, logs));
       }, nextLabel);
     }, callback);
   };
 }
 
-export function loadTransferHistory(cb) {
+export function loadTransferHistory(callback = logError) {
   return (dispatch, getState) => {
-    const callback = cb || (e => e && console.error('loadTransferHistory:', e));
     const { loginAccount } = getState();
     const params = {};
     if (loginAccount.registerBlockNumber) {
@@ -37,14 +39,21 @@ export function loadTransferHistory(cb) {
       'Transfer',
       'sentCash'
     ], constants.PARALLEL_LIMIT, (label, nextLabel) => {
-      augur.logs.getLogsChunked(label, { ...params, _from: loginAccount.address }, null, (logs) => {
-        if (logs && logs.length) dispatch(convertLogsToTransactions(label, logs));
+      augur.logs.getLogsChunked({
+        label,
+        filter: { ...params, _from: loginAccount.address },
+        aux: null
+      }, (logs) => {
+        if (Array.isArray(logs) && logs.length) dispatch(convertLogsToTransactions(label, logs));
       }, (err) => {
-        augur.logs.getLogsChunked(label, { ...params, _to: loginAccount.address }, null, (logs) => {
-          if (logs && logs.length) dispatch(convertLogsToTransactions(label, logs));
+        augur.logs.getLogsChunked({
+          label,
+          filter: { ...params, _to: loginAccount.address },
+          aux: null
+        }, (logs) => {
+          if (Array.isArray(logs) && logs.length) dispatch(convertLogsToTransactions(label, logs));
         }, nextLabel);
       });
     }, callback);
   };
 }
-
