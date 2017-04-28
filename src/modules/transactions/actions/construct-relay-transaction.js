@@ -36,6 +36,8 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
 
   const transactionsHref = selectTransactionsLink(dispatch).href;
 
+  const { loginAccount } = getState();
+
   switch (method) {
     case 'buy':
       return dispatch(constructTradingTransaction('log_add_tx', {
@@ -224,6 +226,15 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
               outcome: parseInt(order.outcome, 10)
             }));
           }
+          // notification = {
+          //   id: p.transactionHash,
+          //   title: `${order.type === 'buy' ? 'sell' : 'buy'} - ${tx.status}`,
+          //   description: 'Requesting testnet ETH & REP',
+          //   timestamp: p.timestamp,
+          //   href: transactionsHref
+          // };
+
+          console.log('### order -- ', order);
           transactions[i] = dispatch(constructTradingTransaction('log_fill_tx', {
             ...p,
             price: order.price,
@@ -258,13 +269,23 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           break;
         }
         case 'slashRep':
-          notification = {
-            id: p.transactionHash,
-            title: `Snitch Reward - ${tx.status}`,
-            description: p.reporter,
-            timestamp: p.timestamp,
-            href: transactionsHref
-          };
+          if (tx.data.from === loginAccount.address) {
+            notification = {
+              id: p.transactionHash,
+              title: `Snitch Reward - ${tx.status}`,
+              description: p.reporter,
+              timestamp: p.timestamp,
+              href: transactionsHref
+            };
+          } else {
+            notification = {
+              id: p.transactionHash,
+              title: `Pay Collusion Fine - ${tx.status}`,
+              description: abi.strip_0x(tx.data.from),
+              timestamp: p.timestamp,
+              href: transactionsHref
+            };
+          }
           transaction = dispatch(constructTransaction('slashedRep', {
             ...p,
             sender: tx.data.from
