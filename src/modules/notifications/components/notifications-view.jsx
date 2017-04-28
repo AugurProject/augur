@@ -30,6 +30,8 @@ const NotificationsView = (p) => {
       </div>
       {notifications && notifications.length ?
         <CSSTransitionGroup
+          className="notifications"
+          component="div"
           transitionName="notification"
           transitionEnterTimeout={animationInSpeed}
           transitionLeaveTimeout={animationOutSpeed}

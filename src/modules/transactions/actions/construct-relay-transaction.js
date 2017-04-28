@@ -338,6 +338,13 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           break;
         case 'transfer':
         case 'sendReputation':
+          notification = {
+            id: p.transactionHash,
+            title: `Transfer Reputation - ${tx.status}`,
+            description: '',
+            timestamp: p.timestamp,
+            href: transactionsHref
+          };
           transaction = dispatch(constructTransaction('Transfer', {
             ...p,
             _from: abi.format_address(tx.data.from),
@@ -346,7 +353,13 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           }));
           break;
         case 'approve':
-          transaction = dispatch(constructTransaction('Approve', {
+          notification = {
+            id: p.transactionHash,
+            title: `Approve Spender - ${tx.status}`,
+            description: abi.format_address(p.spender),
+            timestamp: p.timestamp
+          };
+          transaction = dispatch(constructTransaction('Approval', {
             ...p,
             _spender: abi.format_address(p.spender)
           }));
