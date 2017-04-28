@@ -40,6 +40,7 @@ export const handleRelayTransaction = tx => (dispatch, getState) => {
           }
           default: {
             if (transactionsData[hash]) {
+              dispatch(constructRelayTransaction(tx, status));
               dispatch(updateTransactionsData({
                 [hash]: { ...transactionsData[hash], gasFees: formatRealEther(gasFees) }
               }));

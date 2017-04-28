@@ -11,7 +11,7 @@ export default function () {
 export const selectNotificationsAndSeenCount = createSelector(
   selectNotificationsState,
   (notifications) => {
-    const sortedNotifications = notifications.sort((a, b) => getValue(b, 'timestamp.timestamp') - getValue(a, 'timestamp.timestamp'));
+    const sortedNotifications = notifications.sort((a, b) => getValue(b, 'timestamp') - getValue(a, 'timestamp'));
     const unseenCount = sortedNotifications.reduce((p, notification) => {
       if (!notification.seen) return 1 + p;
       return p;
