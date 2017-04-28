@@ -58,12 +58,14 @@ export default class Nav extends Component {
           </Link>
         </div>
         {p.logged &&
-          <button
-            ref={(notificationIcon) => { this.notificationIcon = notificationIcon; }}
-            className="unstyled button-notifications app-nav-link"
-            onClick={() => this.setState({ isNotificationsVisible: !s.isNotificationsVisible })}
-          >
-            <i className="fa fa-bell-o" />
+          <div className="modal-link">
+            <button
+              ref={(notificationIcon) => { this.notificationIcon = notificationIcon; }}
+              className="unstyled button-notifications app-nav-link"
+              onClick={() => this.setState({ isNotificationsVisible: !s.isNotificationsVisible })}
+            >
+              <i className="fa fa-bell-o" />
+            </button>
             <CSSTransitionGroup
               id="transition_notifications_view"
               transitionName="notifications"
@@ -77,7 +79,7 @@ export default class Nav extends Component {
                 <NotificationsContainer />
               }
             </CSSTransitionGroup>
-          </button>
+          </div>
         }
         <Link
           {...p.allMarketsLink}

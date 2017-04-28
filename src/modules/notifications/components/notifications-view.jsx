@@ -22,7 +22,6 @@ const NotificationsView = (p) => {
             onClick={(e) => {
               e.stopPropagation();
               p.clearNotifications();
-              console.log('clear!');
             }}
           >
             clear
