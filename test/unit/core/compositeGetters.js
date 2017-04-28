@@ -375,7 +375,7 @@ describe('CompositeGetters.loadNextMarketsBatch', function () {
   });
   var test = function (t) {
     assertionsCC = 0;
-    it(t.description + " async", function (done) {
+    it.only(t.description + " async", function(done) {
       augur.getMarketsInfo = t.getMarketsInfo;
       var pause = constants.PAUSE_BETWEEN_MARKET_BATCHES;
       constants.PAUSE_BETWEEN_MARKET_BATCHES = 1;
@@ -401,23 +401,52 @@ describe('CompositeGetters.loadNextMarketsBatch', function () {
     getMarketsInfo: function (branch, cb) {
       var offset = branch.offset;
       var numMarketsToLoad = branch.numMarketsToLoad;
-      var allMarkets = [{ id: '0x01', volume: '1000'}, { id: '0x02', volume: '1000'}, { id: '0x03', volume: '1000'}, { id: '0x04', volume: '1000'}, { id: '0x05', volume: '1000'}, { id: '0x06', volume: '1000'}, { id: '0x07', volume: '1000'}, { id: '0x08', volume: '1000'}, { id: '0x09', volume: '1000'}, { id: '0x0a', volume: '1000'}];
-      cb(allMarkets.slice(offset, offset + numMarketsToLoad));
+      var allMarkets = [
+        { id: "0x01", volume: "1000" },
+        { id: "0x02", volume: "1000" },
+        { id: "0x03", volume: "1000" },
+        { id: "0x04", volume: "1000" },
+        { id: "0x05", volume: "1000" },
+        { id: "0x06", volume: "1000" },
+        { id: "0x07", volume: "1000" },
+        { id: "0x08", volume: "1000" },
+        { id: "0x09", volume: "1000" },
+        { id: "0x0a", volume: "1000" },
+      ]
+      var output = {};
+      for (var i = 0; i < numMarketsToLoad; i++) {
+        if (offset + i > allMarkets.length) break;
+        var market = allMarkets[offset + i];
+        output[market.id] = market;
+      }
+      cb(output);
     },
     assertions: function (err, marketsData) {
       assert.isNull(err);
       // depending on marketsData we will assert what we expect then return true/false to indicate that done() should be called.
-      if (marketsData[4].id === '0x0a') {
-        assert.deepEqual(marketsData, [{ id: '0x06', volume: '1000'}, { id: '0x07', volume: '1000'}, { id: '0x08', volume: '1000'}, { id: '0x09', volume: '1000'}, { id: '0x0a', volume: '1000'}]);
+      if (marketsData["0x0a"]) {
+        assert.deepEqual(marketsData, {
+          "0x06": { id: "0x06", volume: "1000" },
+          "0x07": { id: "0x07", volume: "1000" },
+          "0x08": { id: "0x08", volume: "1000" },
+          "0x09": { id: "0x09", volume: "1000" },
+          "0x0a": { id: "0x0a", volume: "1000" },
+        });
         return true;
       } else {
-        assert.deepEqual(marketsData, [{ id: '0x01', volume: '1000'}, { id: '0x02', volume: '1000'}, { id: '0x03', volume: '1000'}, { id: '0x04', volume: '1000'}, { id: '0x05', volume: '1000'}]);
+        assert.deepEqual(marketsData, {
+          "0x01": { id: "0x01", volume: "1000" },
+          "0x02": { id: "0x02", volume: "1000" },
+          "0x03": { id: "0x03", volume: "1000" },
+          "0x04": { id: "0x04", volume: "1000" },
+          "0x05": { id: "0x05", volume: "1000" },
+        });
         return false;
       }
     }
   });
   test({
-    description: 'Should get marketsData ascending, only non-zero volume markets, then call nextPass',
+    description: 'Should get marketsData ascending, then call nextPass',
     branchID: '101010',
     startIndex: 0,
     chunkSize: 5,
@@ -429,17 +458,46 @@ describe('CompositeGetters.loadNextMarketsBatch', function () {
     getMarketsInfo: function (branch, cb) {
       var offset = branch.offset;
       var numMarketsToLoad = branch.numMarketsToLoad;
-      var allMarkets = [{ id: '0x01', volume: '1000'}, { id: '0x02', volume: '1000'}, { id: '0x03', volume: '1000'}, { id: '0x04', volume: '1000'}, { id: '0x05', volume: '1000'}, { id: '0x06', volume: '1000'}, { id: '0x07', volume: '1000'}, { id: '0x08', volume: '1000'}, { id: '0x09', volume: '1000'}, { id: '0x0a', volume: '1000'}];
-      cb(allMarkets.slice(offset, offset + numMarketsToLoad));
+      var allMarkets = [
+        { id: "0x01", volume: "1000" },
+        { id: "0x02", volume: "1000" },
+        { id: "0x03", volume: "1000" },
+        { id: "0x04", volume: "1000" },
+        { id: "0x05", volume: "1000" },
+        { id: "0x06", volume: "1000" },
+        { id: "0x07", volume: "1000" },
+        { id: "0x08", volume: "1000" },
+        { id: "0x09", volume: "1000" },
+        { id: "0x0a", volume: "1000" },
+      ]
+      var output = {};
+      for (var i = 0; i < numMarketsToLoad; i++) {
+        if (offset + i > allMarkets.length) break;
+        var market = allMarkets[offset + i];
+        output[market.id] = market;
+      }
+      cb(output);
     },
     assertions: function (err, marketsData) {
       assert.isNull(err);
-      // depending on marketsData we will assert what we expect then return false since nextPass should call Done() once complete.
-      if (marketsData[4].id === '0x0a') {
-        assert.deepEqual(marketsData, [{ id: '0x06', volume: '1000'}, { id: '0x07', volume: '1000'}, { id: '0x08', volume: '1000'}, { id: '0x09', volume: '1000'}, { id: '0x0a', volume: '1000'}]);
+      // depending on marketsData we will assert what we expect then return true/false to indicate that done() should be called.
+      if (marketsData["0x0a"]) {
+        assert.deepEqual(marketsData, {
+          "0x06": { id: "0x06", volume: "1000" },
+          "0x07": { id: "0x07", volume: "1000" },
+          "0x08": { id: "0x08", volume: "1000" },
+          "0x09": { id: "0x09", volume: "1000" },
+          "0x0a": { id: "0x0a", volume: "1000" },
+        });
         return false;
       } else {
-        assert.deepEqual(marketsData, [{ id: '0x01', volume: '1000'}, { id: '0x02', volume: '1000'}, { id: '0x03', volume: '1000'}, { id: '0x04', volume: '1000'}, { id: '0x05', volume: '1000'}]);
+        assert.deepEqual(marketsData, {
+          "0x01": { id: "0x01", volume: "1000" },
+          "0x02": { id: "0x02", volume: "1000" },
+          "0x03": { id: "0x03", volume: "1000" },
+          "0x04": { id: "0x04", volume: "1000" },
+          "0x05": { id: "0x05", volume: "1000" },
+        });
         return false;
       }
     }
@@ -466,9 +524,9 @@ describe('CompositeGetters.loadNextMarketsBatch', function () {
     }
   });
   test({
-    description: 'Should get marketsData descending, only non-zero volume markets, no NextPass',
+    description: 'Should get marketsData descending, no NextPass',
     branchID: '101010',
-    startIndex: 10,
+    startIndex: 5,
     chunkSize: 5,
     numMarkets: 10,
     isDesc: true,
@@ -478,57 +536,47 @@ describe('CompositeGetters.loadNextMarketsBatch', function () {
     getMarketsInfo: function (branch, cb) {
       var offset = branch.offset;
       var numMarketsToLoad = branch.numMarketsToLoad;
-      var allMarkets = [{ id: '0x01', volume: '1000'}, { id: '0x02', volume: '1000'}, { id: '0x03', volume: '1000'}, { id: '0x04', volume: '1000'}, { id: '0x05', volume: '1000'}, { id: '0x06', volume: '1000'}, { id: '0x07', volume: '1000'}, { id: '0x08', volume: '1000'}, { id: '0x09', volume: '1000'}, { id: '0x0a', volume: '1000'}];
-      var output = [];
+      var allMarkets = [
+        { id: "0x01", volume: "1000" },
+        { id: "0x02", volume: "1000" },
+        { id: "0x03", volume: "1000" },
+        { id: "0x04", volume: "1000" },
+        { id: "0x05", volume: "1000" },
+        { id: "0x06", volume: "1000" },
+        { id: "0x07", volume: "1000" },
+        { id: "0x08", volume: "1000" },
+        { id: "0x09", volume: "1000" },
+        { id: "0x0a", volume: "1000" },
+      ]
+      var output = {};
       for (var i = 0; i < numMarketsToLoad; i++) {
-        output.push(allMarkets[(offset - 1) - i]);
+        if (offset + i > allMarkets.length) break;
+        var market = allMarkets[offset + i];
+        output[market.id] = market;
       }
       cb(output);
     },
     assertions: function (err, marketsData) {
       assert.isNull(err);
       // depending on marketsData we will assert what we expect then return true/false to indicate that done() should be called.
-      if (marketsData[0].id === '0x0a') {
-        assert.deepEqual(marketsData, [{ id: '0x0a', volume: '1000'}, { id: '0x09', volume: '1000'}, { id: '0x08', volume: '1000'}, { id: '0x07', volume: '1000'}, { id: '0x06', volume: '1000'} ]);
+      if (marketsData["0x0a"]) {
+        assert.deepEqual(marketsData, {
+          "0x06": { id: "0x06", volume: "1000" },
+          "0x07": { id: "0x07", volume: "1000" },
+          "0x08": { id: "0x08", volume: "1000" },
+          "0x09": { id: "0x09", volume: "1000" },
+          "0x0a": { id: "0x0a", volume: "1000" },
+        });
         return false;
       } else {
-        assert.deepEqual(marketsData, [{ id: '0x05', volume: '1000'}, { id: '0x04', volume: '1000'}, { id: '0x03', volume: '1000'}, { id: '0x02', volume: '1000'}, { id: '0x01', volume: '1000'}]);
+        assert.deepEqual(marketsData, {
+          "0x01": { id: "0x01", volume: "1000" },
+          "0x02": { id: "0x02", volume: "1000" },
+          "0x03": { id: "0x03", volume: "1000" },
+          "0x04": { id: "0x04", volume: "1000" },
+          "0x05": { id: "0x05", volume: "1000" },
+        });
         return true;
-      }
-    }
-  });
-  test({
-    description: 'Should get marketsData descending, only zero volume markets, then call NextPass',
-    branchID: '101010',
-    startIndex: 10,
-    chunkSize: 5,
-    numMarkets: 10,
-    isDesc: true,
-    volumeMin: -1,
-    volumeMax: 0,
-    nextPass: true,
-    getMarketsInfo: function (branch, cb) {
-      var offset = branch.offset;
-      var numMarketsToLoad = branch.numMarketsToLoad;
-      var allMarkets = [{ id: '0x01', volume: '0'}, { id: '0x02', volume: '0'}, { id: '0x03', volume: '0'}, { id: '0x04', volume: '0'}, { id: '0x05', volume: '0'}, { id: '0x06', volume: '0'}, { id: '0x07', volume: '0'}, { id: '0x08', volume: '0'}, { id: '0x09', volume: '0'}, { id: '0x0a', volume: '0'}];
-      var output = [];
-      for (var i = 0; i < numMarketsToLoad; i++) {
-        output.push(allMarkets[(offset - 1) - i]);
-      }
-      cb(output);
-    },
-    assertions: function (err, marketsData) {
-      assert.isNull(err);
-      // depending on marketsData we will assert what we expect then return true/false to indicate that done() should be called.
-      if (marketsData.constructor === Array && !marketsData.length) {
-        // empty array back, we have completed getting records, return false to have the function call nextPass.
-        return false;
-      } else if (marketsData[0].id === '0x0a') {
-        assert.deepEqual(marketsData, [{ id: '0x0a', volume: '0'}, { id: '0x09', volume: '0'}, { id: '0x08', volume: '0'}, { id: '0x07', volume: '0'}, { id: '0x06', volume: '0'} ]);
-        return false;
-      } else {
-        assert.deepEqual(marketsData, [{ id: '0x05', volume: '0'}, { id: '0x04', volume: '0'}, { id: '0x03', volume: '0'}, { id: '0x02', volume: '0'}, { id: '0x01', volume: '0'}]);
-        return false;
       }
     }
   });
