@@ -17,8 +17,6 @@ export const selectNotificationsAndSeenCount = createSelector(
       return p;
     }, 0);
 
-    console.log('### notifications -- ', sortedNotifications, unseenCount);
-
     return {
       unseenCount,
       notifications: sortedNotifications

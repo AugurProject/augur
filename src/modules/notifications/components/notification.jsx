@@ -7,7 +7,6 @@ const Notification = p => (
       onClick={(e) => {
         e.stopPropagation();
         if (p.onClick) p.onClick();
-        console.log('hery');
       }}
     >
       <span className="notification-title">{p.title}</span>
@@ -18,7 +17,6 @@ const Notification = p => (
       onClick={(e) => {
         e.stopPropagation();
         p.removeNotification(p.notificationIndex);
-        console.log('close!');
       }}
     >
       <i className="fa fa-close" />
