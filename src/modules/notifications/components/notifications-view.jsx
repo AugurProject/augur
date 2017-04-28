@@ -24,7 +24,7 @@ const NotificationsView = (p) => {
               p.clearNotifications();
             }}
           >
-            clear
+            clear all
           </button>
         }
       </div>

@@ -42,13 +42,18 @@
   .notifications-header {
     .border(true, @border-bottom);
 
+    align-items: flex-end;
+    display: flex;
+
     h3 {
+      flex: 1;
       margin-bottom: 0;
       padding-left: 1em;
     }
 
     .notifications-button-clear {
-      pointer-events: all;
+      color: @color-text-dark-light;
+      padding-right: 1em;
     }
   }
 }
