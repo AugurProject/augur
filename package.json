@@ -18,7 +18,7 @@
   "dependencies": {
     "async": "1.5.2",
     "augur-abi": "1.2.1",
-    "augur-contracts": "2.11.3",
+    "augur-contracts": "2.11.4",
     "bignumber.js": "2.3.0",
     "browser-request": "0.3.3",
     "chalk": "1.1.1",
