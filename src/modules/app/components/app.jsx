@@ -168,7 +168,8 @@ export default class App extends Component {
       authLink: getValue(p, 'links.authLink'),
       accountLink: getValue(p, 'links.accountLink'),
       myPositionsLink: getValue(p, 'links.myPositionsLink'),
-      topicsLink: getValue(p, 'links.topicsLink')
+      topicsLink: getValue(p, 'links.topicsLink'),
+      notifications: p.notifications
     };
 
     const sideBarProps = {

@@ -10,12 +10,15 @@ import NotificationsContainer from 'modules/notifications/container';
 import { ACCOUNT, MARKETS, TRANSACTIONS, MY_POSITIONS, MY_MARKETS, MY_REPORTS, AUTHENTICATION } from 'modules/app/constants/views';
 import { FAVORITES, PENDING_REPORTS } from 'modules/markets/constants/markets-subset';
 
+import getValue from 'utils/get-value';
+
 // NOTE --  first child div is there to pass up a ref so that other methods can
 //          acquire the row height of the navs in the footer
 export default class Nav extends Component {
   static propTypes = {
     logged: PropTypes.string,
-    updateIsFooterCollapsed: PropTypes.func
+    updateIsFooterCollapsed: PropTypes.func,
+    notifications: PropTypes.object
   }
 
   constructor(props) {
@@ -50,8 +53,10 @@ export default class Nav extends Component {
     const p = this.props;
     const s = this.state;
 
-    const animationInSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-fast'), 10);
-    const animationOutSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-very'), 10);
+    const animationSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-fast'), 10);
+    const animationCountSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-very-slow'), 10);
+
+    const unseenCount = getValue(p, 'notifications.unseenCount');
 
     return (
       <nav className={`app-nav ${p.className ? p.className : ''}`}>
@@ -85,13 +90,25 @@ export default class Nav extends Component {
                 this.setState({ isNotificationsVisible: !s.isNotificationsVisible });
               }}
             >
-              <i className="fa fa-bell-o" />
+              {s.isNotificationsVisible ?
+                <i className="fa fa-bell" /> :
+                <i className="fa fa-bell-o" />
+              }
+              <CSSTransitionGroup
+                transitionName="unseen-count"
+                transitionEnterTimeout={animationSpeed}
+                transitionLeaveTimeout={animationSpeed}
+              >
+                {!!unseenCount &&
+                  <span className="unseen-count">{unseenCount}</span>
+                }
+              </CSSTransitionGroup>
             </button>
             <CSSTransitionGroup
               id="transition_notifications_view"
               transitionName="notifications"
-              transitionEnterTimeout={animationInSpeed}
-              transitionLeaveTimeout={animationOutSpeed}
+              transitionEnterTimeout={animationSpeed}
+              transitionLeaveTimeout={animationSpeed}
             >
               {p.logged && s.isNotificationsVisible &&
                 <span id="notifications_arrow_up" />
