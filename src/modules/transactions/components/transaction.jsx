@@ -25,7 +25,8 @@ export default class Transaction extends Component {
     const p = this.props;
     const s = this.state;
 
-    const animationSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-fast'), 10);
+    const animationInSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-fast'), 10);
+    const animationOutSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-normal'), 10);
 
     return (
       <article className={classNames('transaction', p.status)}>
@@ -52,9 +53,9 @@ export default class Transaction extends Component {
             </button>
           </div>
           <CSSTransitionGroup
-            transitionName="transaction"
-            transitionEnterTimeout={animationSpeed}
-            transitionLeaveTimeout={animationSpeed}
+            transitionName="transaction-details"
+            transitionEnterTimeout={animationInSpeed}
+            transitionLeaveTimeout={animationOutSpeed}
           >
             {s.isFullTransactionVisible &&
               <TransactionDetails
