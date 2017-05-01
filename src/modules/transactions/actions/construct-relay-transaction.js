@@ -39,14 +39,25 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
   const { loginAccount } = getState();
 
   switch (method) {
-    case 'buy':
+    case 'buy': {
+      const { marketsData } = getState();
+      const market = marketsData[abi.format_int256(p.market)];
+      const amount = abi.unfix(p.amount, 'string');
+      dispatch(addNotification({
+        id: p.transactionHash,
+        title: `Bid ${amount || ''} ${amount && 'Share'}${amount && parseFloat(amount, 10) === 1 ? '' : 's'} - ${status || tx.status}`,
+        description: market.description || '',
+        timestamp: p.timestamp,
+        href: transactionsHref
+      }));
       return dispatch(constructTradingTransaction('log_add_tx', {
         type: 'buy',
         ...p,
+        amount,
+        gasFees,
         price: abi.unfix_signed(p.price, 'string'),
-        amount: abi.unfix(p.amount, 'string'),
-        gasFees
       }, abi.format_int256(p.market), p.outcome, status));
+    }
     case 'shortAsk':
       p.isShortAsk = true; // eslint-disable-line no-fallthrough
     case 'sell':
@@ -72,7 +83,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
       const { marketsData } = getState();
       const numTradeIDs = orders.length;
       const transactions = new Array(numTradeIDs);
-      let market;
+      let market = {};
       let remainingEth = abi.bignum(maxValue);
       for (let i = 0; i < numTradeIDs; ++i) {
         const order = orders[i];
@@ -107,11 +118,13 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         console.log('calculated amount:', amount);
         const label = isShortSell ? 'log_short_fill_tx' : 'log_fill_tx';
         console.log('commit order:', order);
+
         dispatch(addNotification({
-          id: hash,
-          title: `Committed to buy ${p.amount.toFixed()} shares of ${order.outcome}`,
-          description: market.description,
-          timestamp: p.timestamp
+          id: p.transactionHash,
+          title: `Committting to ${order.type === 'buy' ? 'sell' : 'buy'} ${amount || ''} ${amount && 'Share'}${amount && parseFloat(amount, 10) === 1 ? '' : 's'} - ${status}`,
+          description: market.description || '',
+          timestamp: p.timestamp,
+          href: transactionsHref
         }));
         transactions[i] = dispatch(constructTradingTransaction(label, {
           ...p,
@@ -180,6 +193,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
       const transactions = new Array(numTradeIDs);
       let remainingEth = abi.bignum(maxValue);
       let isEmptyTrade;
+      let notification;
       if (status === 'success') {
         const unmatchedCash = abi.unfix_signed(tx.response.callReturn[1]);
         const unmatchedShares = abi.unfix(tx.response.callReturn[2]);
@@ -187,6 +201,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
       }
       for (let i = 0; i < numTradeIDs; ++i) {
         const order = orders[i];
+        let market = {};
         if (isEmptyTrade) {
           dispatch(deleteTransaction(`${tx.response.hash}-${order.id}`));
         } else {
@@ -198,7 +213,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
               amount = remainingShares;
             }
           } else {
-            const market = marketsData[abi.format_int256(order.market)];
+            market = marketsData[abi.format_int256(order.market)];
             let price;
             if (market.type === SCALAR) {
               price = abi.bignum(augur.shrinkScalarPrice(market.minValue, order.price));
@@ -226,15 +241,14 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
               outcome: parseInt(order.outcome, 10)
             }));
           }
-          // notification = {
-          //   id: p.transactionHash,
-          //   title: `${order.type === 'buy' ? 'sell' : 'buy'} - ${tx.status}`,
-          //   description: 'Requesting testnet ETH & REP',
-          //   timestamp: p.timestamp,
-          //   href: transactionsHref
-          // };
 
-          console.log('### order -- ', order);
+          notification = {
+            id: p.transactionHash,
+            title: `${order.type === 'buy' ? 'sell' : 'buy'} ${amount || ''} ${amount && 'Share'}${amount && parseFloat(amount, 10) === 1 ? '' : 's'} - ${tx.status}`,
+            description: market.description || '',
+            timestamp: p.timestamp,
+            href: transactionsHref
+          };
           transactions[i] = dispatch(constructTradingTransaction('log_fill_tx', {
             ...p,
             price: order.price,
@@ -250,12 +264,12 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           }, abi.format_int256(order.market), order.outcome, status));
         }
       }
+      dispatch(addNotification(notification));
       return transactions;
     }
     default: {
       let transaction;
       let notification;
-      console.log('### DEFAULT -- ', p);
       switch (method) {
         case 'fundNewAccount': {
           notification = {
@@ -488,7 +502,6 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         default:
           return null;
       }
-      console.log('### transaction -- ', transaction, notification);
       dispatch(addNotification(notification));
       return {
         [hash]: {
