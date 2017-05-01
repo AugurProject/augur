@@ -2,6 +2,8 @@
   .font-size-normal();
 
   display: flex;
+  overflow-x: none;
+  overflow-y: hidden;
   pointer-events: all;
 
   .notification-details {
@@ -31,6 +33,34 @@
     &:not(:first-of-type),
     &:not(:last-of-type) {
       .border(true, @border-bottom, @border-light);
+    }
+  }
+
+  &.notification-enter,
+  &.notification-appear {
+    max-height: 0px; /* stylelint-disable-line length-zero-no-unit */
+    opacity: 0;
+
+    &.notification-enter-active,
+    &.notification-appear-active {
+      max-height: 1000px;
+      opacity: 1;
+      transition-duration: @animation-speed-fast;
+      transition-property: max-height, opacity;
+      transition-timing-function: @animation-default-type;
+    }
+  }
+
+  &.notification-leave {
+    max-height: 1000px;
+    opacity: 1;
+
+    &.notification-leave-active {
+      max-height: 0px; /* stylelint-disable-line length-zero-no-unit */
+      opacity: 0;
+      transition-duration: @animation-speed-very-fast;
+      transition-property: max-height, opacity;
+      transition-timing-function: @animation-default-type;
     }
   }
 }

@@ -9,8 +9,7 @@ import getValue from 'utils/get-value';
 const NotificationsView = (p) => {
   const notifications = getValue(p, 'notifications.notifications');
 
-  const animationInSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-normal'), 10);
-  const animationOutSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-fast'), 10);
+  const animationSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-normal'), 10);
 
   return (
     <section id="notifications_view">
@@ -33,8 +32,10 @@ const NotificationsView = (p) => {
           className="notifications"
           component="div"
           transitionName="notification"
-          transitionEnterTimeout={animationInSpeed}
-          transitionLeaveTimeout={animationOutSpeed}
+          transitionAppear
+          transitionAppearTimeout={animationSpeed}
+          transitionEnterTimeout={animationSpeed}
+          transitionLeaveTimeout={animationSpeed}
         >
           {notifications.map((notification, i) => (
             <Notification
