@@ -12,9 +12,6 @@ import { addNotification } from 'modules/notifications/actions/update-notificati
 import { selectTransactionsLink } from 'modules/link/selectors/links';
 
 export const constructRelayTransaction = (tx, status) => (dispatch, getState) => {
-  console.log('### constructRelayTransaction -- ', status);
-  console.log('### tx -- ', tx);
-
   const hash = tx.response.hash;
   const p = {
     ...unpackTransactionParameters(tx),
@@ -23,7 +20,6 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
     timestamp: tx.response.timestamp || parseInt(Date.now() / 1000, 10),
     inProgress: !tx.response.blockHash
   };
-  console.log('### p -- ', p);
 
   console.log('unpacked:', JSON.stringify(p, null, 2));
   const method = tx.data.method;
@@ -60,7 +56,17 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
     }
     case 'shortAsk':
       p.isShortAsk = true; // eslint-disable-line no-fallthrough
-    case 'sell':
+    case 'sell': {
+      const { marketsData } = getState();
+      const market = marketsData[abi.format_int256(p.market)];
+      const amount = abi.unfix(p.amount, 'string');
+      dispatch(addNotification({
+        id: p.transactionHash,
+        title: `${p.isShortAsk ? 'short ask' : 'ask'} ${amount || ''} ${amount && 'Share'}${amount && parseFloat(amount, 10) === 1 ? '' : 's'} - ${status || tx.status}`,
+        description: market.description || '',
+        timestamp: p.timestamp,
+        href: transactionsHref
+      }));
       return dispatch(constructTradingTransaction('log_add_tx', {
         type: 'sell',
         ...p,
@@ -68,9 +74,35 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         amount: abi.unfix(p.amount, 'string'),
         gasFees
       }, abi.format_int256(p.market), p.outcome, status));
+    }
     case 'cancel': {
       const order = augur.selectOrder(p.trade_id, getState().orderBooks);
+
+      if (tx.status === 'success') {
+        const { transactionsData } = getState();
+        const cancelledOrder = transactionsData[p.transactionHash];
+
+        dispatch(addNotification({
+          id: p.transactionHash,
+          title: `Cancel ${cancelledOrder.numShares.formatted} Share${cancelledOrder.numShares.value === 1 ? '' : 's'} - success`,
+          description: cancelledOrder.description,
+          timestamp: p.timestamp,
+          href: transactionsHref
+        }));
+      }
+
       if (!order) return null;
+
+      const { marketsData } = getState();
+      const market = marketsData[abi.format_int256(order.market)];
+      const amount = order.amount;
+      dispatch(addNotification({
+        id: p.transactionHash,
+        title: `Cancel ${amount || ''} ${amount && 'Share'}${amount && parseFloat(amount, 10) === 1 ? '' : 's'} - ${status || tx.status}`,
+        description: market.description || '',
+        timestamp: p.timestamp,
+        href: transactionsHref
+      }));
       return dispatch(constructTradingTransaction('log_cancel', {
         ...p,
         ...order,
