@@ -184,7 +184,7 @@ export default class CreateMarketFormOrderBook extends Component {
       const askSeries = getValue(this.props.orderBookSeries[this.state.selectedOutcome], `${ASK}`) || [];
       let width;
 
-      if (window.getComputedStyle(this.orderBookChart).getPropertyValue('--adjust-width')) {
+      if (window.getComputedStyle(this.orderBookChart).getPropertyValue('--adjust-width').indexOf('true') !== -1) {
         width = this.orderBookForm.clientWidth - 40; // 20px horizontal padding
       } else {
         width = this.orderBookPreview.clientWidth * 0.60;

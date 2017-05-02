@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from 'react';
-import classNames from 'classnames';
 import Transactions from 'modules/transactions/components/transactions';
 import Branch from 'modules/branch/components/branch';
 import Paginator from 'modules/common/components/paginator';
 import Spinner from 'modules/common/components/spinner';
 
 import getValue from 'utils/get-value';
+import debounce from 'utils/debounce';
 
 export default class TransactionsView extends Component {
   static propTypes = {
@@ -15,29 +15,38 @@ export default class TransactionsView extends Component {
     transactions: PropTypes.array.isRequired,
     transactionsLoading: PropTypes.bool.isRequired,
     loadMoreTransactions: PropTypes.func.isRequired,
-    loadAllTransactions: PropTypes.func.isRequired
+    loadAllTransactions: PropTypes.func.isRequired,
+    isMobile: PropTypes.bool.isRequired
   };
 
   constructor(props) {
     super(props);
 
+    console.log('props -- ', props);
+
     this.state = {
-      transactionsPerPage: 10, // -- Update this value to change pagination size
+      transactionsPerPage: 20, // -- Update this value to change pagination size
       nullMessage: 'No Transaction Data',
       lowerIndex: null,
       upperIndex: null,
       currentPage: 1,
       pageChanged: false,
       pagination: {},
-      paginatedTransactions: []
+      paginatedTransactions: [],
+      hasAttachedScrollListener: false
     };
 
     this.updatePagination = this.updatePagination.bind(this);
     this.paginateTransactions = this.paginateTransactions.bind(this);
+    this.handleScroll = debounce(this.handleScroll.bind(this), 100);
   }
 
   componentWillMount() {
     this.updatePagination(this.props, this.state);
+  }
+
+  componentDidMount() {
+    this.manageScrollEventListener(this.props, this.state);
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -50,9 +59,48 @@ export default class TransactionsView extends Component {
 
     // This is to prevent the CSSTransitionGroup from transitioning transactions on pagination
     if (this.state.pageChanged !== nextState.pageChanged) this.setState({ pageChanged: false });
+
+    if (!nextState.hasAttachedScrollListener && nextProps.isMobile) this.setState({ hasAttachedScrollListener: true });
+    if (nextState.hasAttachedScrollListener && !nextProps.isMobile) this.setState({ hasAttachedScrollListener: false });
   }
 
-  updatePagination(p, s, pageChanged) {
+  componentDidUpdate(prevProps, prevState) {
+    this.manageScrollEventListener(this.props, this.state);
+  }
+
+  componentWillUnmount() {
+    if (this.state.hasAttachedScrollListener) window.removeEventListener('scroll', this.handleScroll);
+  }
+
+  handleScroll() {
+    console.log('handling scroll');
+
+    const D = document;
+    const documentHeight = Math.max(
+        D.body.scrollHeight, D.documentElement.scrollHeight,
+        D.body.offsetHeight, D.documentElement.offsetHeight,
+        D.body.clientHeight, D.documentElement.clientHeight
+    ); // Cross Browser Compatibility
+    const currentScrollPosition = (document.documentElement.scrollTop || document.body.scrollTop) + window.innerHeight;
+
+    console.log('Values -- ', documentHeight, currentScrollPosition);
+
+    if (documentHeight - currentScrollPosition < 200 && !this.props.transactionsLoading) {
+      this.props.loadMoreTransactions();
+    }
+  }
+
+  manageScrollEventListener(p, s) {
+    if (p.isMobile && !s.hasAttachedScrollListener) {
+      window.addEventListener('scroll', this.handleScroll);
+      this.setState({ hasAttachedScrollListener: true });
+    } else if (!p.isMobile && s.hasAttachedScrollListener) {
+      window.removeEventListener('scroll', this.handleScroll);
+      this.setState({ hasAttachedScrollListener: false });
+    }
+  }
+
+  updatePagination(p, s, pageChanged = false) {
     const itemsPerPage = s.transactionsPerPage - 1; // Convert to zero index
     const lowerIndex = (s.currentPage - 1) * s.transactionsPerPage;
     const upperIndex = (p.transactions.length - 1) > lowerIndex + itemsPerPage ?
@@ -101,7 +149,6 @@ export default class TransactionsView extends Component {
   render() {
     const p = this.props;
     const s = this.state;
-    const transactionsListRef = this.transactionsList;
 
     const hasRep = !!getValue(p, 'loginAccount.rep.value');
     const hasBranch = !!getValue(p, 'branch.id');
@@ -145,25 +192,34 @@ export default class TransactionsView extends Component {
                 All Transactions Loaded
               </span>
             }
-
           </div>
         </div>
 
-        <div
-          ref={(transactionsList) => { this.transactionsList = transactionsList; }}
-        >
-          <Transactions
-            paginatedTransactions={s.paginatedTransactions}
-            currentBlockNumber={p.currentBlockNumber}
-            pageChanged={s.pageChanged}
-          />
-        </div>
-        {!!p.transactions.length &&
-          <Paginator
-            {...s.pagination}
-            isMobile={p.isMobile}
-            scrollList={transactionsListRef}
-          />
+        <Transactions
+          transactions={p.isMobile ? p.transactions : s.paginatedTransactions}
+          currentBlockNumber={p.currentBlockNumber}
+          pageChanged={s.pageChanged}
+        />
+
+        {!!p.transactions.length && !p.isMobile &&
+          <Paginator {...s.pagination} />
+        }
+
+        {p.isMobile &&
+          <div className="transactions-loading-status">
+            {!!p.transactions.length && p.isMobile && p.transactionsLoading &&
+              <div className="transactions-loading-spinner" >
+                <Spinner />
+              </div>
+            }
+            {!p.transactionsLoading && p.hasAllTransactionsLoaded &&
+              <span
+                className="transactions-all-loaded-message"
+              >
+                All Transactions Loaded
+              </span>
+            }
+          </div>
         }
       </section>
     );

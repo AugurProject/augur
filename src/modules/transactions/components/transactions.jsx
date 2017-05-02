@@ -9,14 +9,14 @@ const Transactions = (p) => {
 
   return (
     <article className="transactions">
-      {p.paginatedTransactions.length ?
+      {p.transactions.length ?
         <CSSTransitionGroup
           transitionName="transaction"
           transitionEnter={!p.pageChanged}
           transitionEnterTimeout={animationSpeed}
           transitionLeave={false}
         >
-          {p.paginatedTransactions.map((transaction, i) => (
+          {p.transactions.map((transaction, i) => (
             transaction.transactions && transaction.transactions.length > 1 ?
               <TransactionGroup
                 key={transaction.transactions[0].hash}

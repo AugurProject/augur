@@ -22,7 +22,7 @@ export default class App extends Component {
     super(props);
 
     this.state = {
-      isMobile: false, // Determined via CSS media query + pre-defined breakpoint
+      isMobile: false, // Determined via CSS media query, ref method `checkIfMobile` below
       isSideBarAllowed: false,
       isSideBarCollapsed: false,
       isSideBarPersistent: true,
@@ -95,7 +95,9 @@ export default class App extends Component {
   checkIfMobile() {
     // This method sets up the side bar's state + calls the method to attach the touch event handler for when a user is mobile
     // CSS breakpoint sets the value when a user is mobile
-    const isMobile = window.getComputedStyle(document.body).getPropertyValue('--is-mobile');
+    const isMobile = window.getComputedStyle(document.body).getPropertyValue('--is-mobile').indexOf('true') !== -1;
+
+    console.log('auth isMobile -- ', isMobile, window.getComputedStyle(document.body).getPropertyValue('--is-mobile'));
 
     if (isMobile) {
       this.setState({
