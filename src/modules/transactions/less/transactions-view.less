@@ -12,6 +12,7 @@
       .border(true);
 
       background-color: @color-white;
+      position: relative;
 
       & > button {
         padding: 1em 1.2em;
@@ -19,6 +20,16 @@
 
       & > button:not(:last-of-type) {
         .border(true, @border-right);
+      }
+
+      .transactions-loading-spinner {
+        position: absolute;
+        top: 0;
+        width: 100%;
+
+        .spinner {
+          margin-top: 1em;
+        }
       }
     }
   }

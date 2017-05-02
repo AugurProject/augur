@@ -1,4 +1,5 @@
 import React, { Component, PropTypes } from 'react';
+import classNames from 'classnames';
 import Transactions from 'modules/transactions/components/transactions';
 import Branch from 'modules/branch/components/branch';
 import Paginator from 'modules/common/components/paginator';
@@ -158,25 +159,29 @@ export default class TransactionsView extends Component {
             <h2>Transactions</h2>
           </div>
           <div className="view-header-group">
-            {p.transactionsLoading &&
-              <div className="transactions-loading-spinner" >
-                <Spinner />
-              </div>
-            }
-            {!p.transactionsLoading && !p.hasAllTransactionsLoaded &&
+            {!p.hasAllTransactionsLoaded &&
               <div className="transactions-load-buttons">
                 <button
-                  className="unstyled"
-                  onClick={() => p.loadMoreTransactions()}
+                  className={classNames('unstyled', { disabled: p.transactionsLoading })}
+                  onClick={() => {
+                    if (!p.transactionsLoading) p.loadMoreTransactions();
+                  }}
                 >
                   <span>Load More</span>
                 </button>
                 <button
-                  className="unstyled"
-                  onClick={() => p.loadAllTransactions()}
+                  className={classNames('unstyled', { disabled: p.transactionsLoading })}
+                  onClick={() => {
+                    if (p.transactionsLoading) p.loadAllTransactions();
+                  }}
                 >
                   <span>Load All</span>
                 </button>
+                {p.transactionsLoading &&
+                  <div className="transactions-loading-spinner" >
+                    <Spinner />
+                  </div>
+                }
               </div>
             }
             {!p.transactionsLoading && p.hasAllTransactionsLoaded &&
@@ -201,7 +206,7 @@ export default class TransactionsView extends Component {
 
         {p.isMobile &&
           <div className="transactions-loading-status">
-            {!!p.transactions.length && p.isMobile && p.transactionsLoading &&
+            {p.isMobile && p.transactionsLoading &&
               <div className="transactions-loading-spinner" >
                 <Spinner />
               </div>
