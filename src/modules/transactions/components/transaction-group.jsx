@@ -29,6 +29,6 @@ const TransactionGroup = (p) => {
       </CSSTransitionGroup>
     </article>
   );
-}
+};
 
 export default TransactionGroup;

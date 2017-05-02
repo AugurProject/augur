@@ -78,7 +78,7 @@ export default class Nav extends Component {
           </Link>
         </div>
         {p.logged &&
-          <div
+          <div // eslint-disable-line jsx-a11y/no-static-element-interactions
             className="modal-link"
             onClick={(e) => {
               e.preventDefault();
