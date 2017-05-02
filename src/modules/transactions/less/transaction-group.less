@@ -4,12 +4,11 @@
   overflow-y: hidden;
 
   .transaction-group-summary {
+    .border(true, @border-left, @color-orange-light, @border-width-3);
+
     display: flex;
     flex-direction: column;
     padding: @transaction-default-padding;
-
-    // Left Border
-    .border(true, @border-left, @color-orange-light, @border-width-3);
 
     &.failed,
     &.interrupted {
