@@ -97,8 +97,6 @@ export default class App extends Component {
     // CSS breakpoint sets the value when a user is mobile
     const isMobile = window.getComputedStyle(document.body).getPropertyValue('--is-mobile').indexOf('true') !== -1;
 
-    console.log('auth isMobile -- ', isMobile, window.getComputedStyle(document.body).getPropertyValue('--is-mobile'));
-
     if (isMobile) {
       this.setState({
         isMobile,

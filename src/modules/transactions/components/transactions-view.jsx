@@ -22,8 +22,6 @@ export default class TransactionsView extends Component {
   constructor(props) {
     super(props);
 
-    console.log('props -- ', props);
-
     this.state = {
       transactionsPerPage: 20, // -- Update this value to change pagination size
       nullMessage: 'No Transaction Data',
@@ -73,8 +71,6 @@ export default class TransactionsView extends Component {
   }
 
   handleScroll() {
-    console.log('handling scroll');
-
     const D = document;
     const documentHeight = Math.max(
         D.body.scrollHeight, D.documentElement.scrollHeight,
@@ -82,8 +78,6 @@ export default class TransactionsView extends Component {
         D.body.clientHeight, D.documentElement.clientHeight
     ); // Cross Browser Compatibility
     const currentScrollPosition = (document.documentElement.scrollTop || document.body.scrollTop) + window.innerHeight;
-
-    console.log('Values -- ', documentHeight, currentScrollPosition);
 
     if (documentHeight - currentScrollPosition < 200 && !this.props.transactionsLoading) {
       this.props.loadMoreTransactions();
