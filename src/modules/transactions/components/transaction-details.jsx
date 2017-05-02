@@ -6,8 +6,6 @@ import getValue from 'utils/get-value';
 import { formatConfirmations } from 'utils/format-number';
 
 const TransactionDetails = (p) => {
-  console.log('### p -- ', p);
-
   const tradingFees = getValue(p, 'tradingFees.value');
   const balances = getValue(p, 'data.balances');
   const totalCost = getValue(p, 'totalCost.value');
@@ -104,7 +102,7 @@ const TransactionDetails = (p) => {
         }
         <div className="transaction-detail">
           <span className="transaction-detail-title">Status: </span>
-          <span>{p.status}</span>
+          <span className="transaction-status">{p.status}</span>
         </div>
         {p.status === SUCCESS &&
           <div className="transaction-detail">

@@ -42,34 +42,34 @@ function transactionAction(transaction) {
   const action = () => {
     switch (transaction.type) {
       case FUND_ACCOUNT:
-        return 'Fund Account';
+        return 'Fund Account ';
       case BUY:
-        return 'Buy';
+        return 'Buy ';
       case BID:
-        return 'Bid';
+        return 'Bid ';
       case SELL:
-        return 'Sell';
+        return 'Sell ';
       case ASK:
-        return 'Ask';
+        return 'Ask ';
       case SHORT_SELL:
-        return 'Short Sell';
+        return 'Short Sell ';
       case SHORT_ASK:
-        return 'Short Ask';
+        return 'Short Ask ';
       case MATCH_BID:
-        return 'Bid Filled';
+        return 'Bid Filled ';
       case MATCH_ASK:
-        return 'Ask Filled';
+        return 'Ask Filled ';
       case CANCEL_ORDER:
-        return 'Cancel Order';
+        return 'Cancel Order ';
       case SELL_COMPLETE_SETS:
-        return `Redeem ${transaction.numShares.formatted} Complete Sets`;
+        return `Redeem ${transaction.numShares.formatted} Complete Sets `;
       case CREATE_MARKET:
-        return 'Create Market';
+        return 'Create Market ';
       case GENERATE_ORDER_BOOK:
-        return 'Generate Order Book';
+        return 'Generate Order Book ';
       case COMMIT_REPORT:
       case REVEAL_REPORT:
-        return transaction.type === COMMIT_REPORT ? 'Commit Report' : 'Reveal Report';
+        return transaction.type === COMMIT_REPORT ? 'Commit Report ' : 'Reveal Report ';
       default:
         return transaction.type;
     }
@@ -96,10 +96,10 @@ function transactionActionDetails(transaction) {
           />
           {transaction.data.marketType === CATEGORICAL &&
             <span>
-              <span className="of">of</span> <span className="outcome-name">{transaction.data.outcomeName && transaction.data.outcomeName.toString().substring(0, 35) + ((transaction.data.outcomeName.toString().length > 35 && '...') || '')}</span>
+              <span className="short-word"> of </span><span className="outcome-name">{transaction.data.outcomeName && transaction.data.outcomeName.toString().substring(0, 35) + ((transaction.data.outcomeName.toString().length > 35 && '...') || '')}</span>
             </span>
           }
-          <span className="at">@</span>
+          <span className="at"> @ </span>
           <ValueDenomination className="noFeePrice" {...transaction.noFeePrice} />
         </div>
       );
@@ -107,9 +107,10 @@ function transactionActionDetails(transaction) {
     case CANCEL_ORDER: {
       return (
         <div className="transaction-trade-action-details">
-          <span className="at">to {transaction.data.order.type}</span>
-          <ValueDenomination className="shares" {...transaction.data.order.shares} />
-          <span className="of">of</span>
+          <span className="short-word">to</span>
+          <span> {transaction.data.order.type} </span>
+          <ValueDenomination {...transaction.data.order.shares} />
+          <span className="short-word"> of </span>
           <span className="outcome-name">{transaction.data.outcome.name && transaction.data.outcome.name.substring(0, 35) + ((transaction.data.outcome.name.length > 35 && '...') || '')}</span>
         </div>
       );
