@@ -5,14 +5,15 @@ import TransactionGroup from 'modules/transactions/components/transaction-group'
 import NullStateMessage from 'modules/common/components/null-state-message';
 
 const Transactions = (p) => {
-  const animationInSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-very-slow'), 10);
+  const animationSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-very-slow'), 10);
 
   return (
     <article className="transactions">
       {p.paginatedTransactions.length ?
         <CSSTransitionGroup
           transitionName="transaction"
-          transitionEnterTimeout={animationInSpeed}
+          transitionEnter={!p.pageChanged}
+          transitionEnterTimeout={animationSpeed}
           transitionLeave={false}
         >
           {p.paginatedTransactions.map((transaction, i) => (
@@ -38,6 +39,7 @@ const Transactions = (p) => {
 };
 
 Transactions.propTypes = {
+  pageChanged: PropTypes.bool.isRequired,
   className: PropTypes.string,
   transactions: PropTypes.array,
   currentBlockNumber: PropTypes.number

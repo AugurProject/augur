@@ -27,6 +27,7 @@ export default class TransactionsView extends Component {
       lowerIndex: null,
       upperIndex: null,
       currentPage: 1,
+      pageChanged: false,
       pagination: {},
       paginatedTransactions: []
     };
@@ -44,11 +45,14 @@ export default class TransactionsView extends Component {
       this.props.transactions !== nextProps.transactions ||
       this.state.currentPage !== nextState.currentPage
     ) {
-      this.updatePagination(nextProps, nextState, this.state.currentPage < nextState.currentPage);
+      this.updatePagination(nextProps, nextState, this.state.currentPage !== nextState.currentPage);
     }
+
+    // This is to prevent the CSSTransitionGroup from transitioning transactions on pagination
+    if (this.state.pageChanged !== nextState.pageChanged) this.setState({ pageChanged: false });
   }
 
-  updatePagination(p, s) {
+  updatePagination(p, s, pageChanged) {
     const itemsPerPage = s.transactionsPerPage - 1; // Convert to zero index
     const lowerIndex = (s.currentPage - 1) * s.transactionsPerPage;
     const upperIndex = (p.transactions.length - 1) > lowerIndex + itemsPerPage ?
@@ -78,16 +82,19 @@ export default class TransactionsView extends Component {
         null
       }
     }, () => {
-      this.paginateTransactions(this.props, this.state);
+      this.paginateTransactions(this.props, this.state, pageChanged);
     });
   }
 
-  paginateTransactions(p, s) {
+  paginateTransactions(p, s, pageChanged) {
     // Filter Based on Pagination
     const paginatedTransactions = p.transactions.slice(s.lowerIndex, s.upperIndex + 1);
 
     if (paginatedTransactions !== s.paginatedTransactions) {
-      this.setState({ paginatedTransactions });
+      this.setState({
+        paginatedTransactions,
+        pageChanged
+      });
     }
   }
 
@@ -148,6 +155,7 @@ export default class TransactionsView extends Component {
           <Transactions
             paginatedTransactions={s.paginatedTransactions}
             currentBlockNumber={p.currentBlockNumber}
+            pageChanged={s.pageChanged}
           />
         </div>
         {!!p.transactions.length &&

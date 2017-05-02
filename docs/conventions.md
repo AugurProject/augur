@@ -25,6 +25,7 @@ To help ensure this, the following conventions have been employed:
 * Null component states (ex: 'no markets', 'no tags', etc.) should always come first in the component.
 * Conditional display should occur as far down the component tree as possible.
 * Props that are being passed to a component should be explicit from both ends
+* Prop validations should have required props first, optional props after
 * TODO -- convention re: import order
 
 ### Other Conventions
