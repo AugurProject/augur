@@ -42,11 +42,15 @@ export default class Nav extends Component {
     }
   }
 
-  handleWindowOnClick(e) {
+  handleWindowOnClick() {
     // Can generalize this later if more nav modals are needed
     if (this.state.isNotificationsVisible) {
       this.setState({ isNotificationsVisible: false });
     }
+  }
+
+  toggleNotifications() {
+    this.setState({ isNotificationsVisible: !this.state.isNotificationsVisible });
   }
 
   render() {
@@ -54,7 +58,6 @@ export default class Nav extends Component {
     const s = this.state;
 
     const animationSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-fast'), 10);
-    const animationCountSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-very-slow'), 10);
 
     const unseenCount = getValue(p, 'notifications.unseenCount');
 
@@ -87,7 +90,7 @@ export default class Nav extends Component {
               className="unstyled button-notifications app-nav-link"
               onClick={(e) => {
                 e.stopPropagation();
-                this.setState({ isNotificationsVisible: !s.isNotificationsVisible });
+                this.toggleNotifications();
               }}
             >
               {s.isNotificationsVisible ?
@@ -114,7 +117,9 @@ export default class Nav extends Component {
                 <span id="notifications_arrow_up" />
               }
               {p.logged && s.isNotificationsVisible &&
-                <NotificationsContainer />
+                <NotificationsContainer
+                  toggleNotifications={() => this.toggleNotifications()}
+                />
               }
             </CSSTransitionGroup>
           </div>

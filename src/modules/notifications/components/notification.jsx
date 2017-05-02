@@ -6,7 +6,11 @@ const Notification = p => (
       className="unstyled notification-details"
       onClick={(e) => {
         e.stopPropagation();
-        if (p.onClick) p.onClick(p.href);
+        console.log('p -- ', p);
+        if (p.onClick) {
+          p.onClick(p.href);
+          p.toggleNotifications();
+        }
       }}
     >
       <span className="notification-title">{p.title}</span>
@@ -28,6 +32,7 @@ Notification.propTypes = {
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
   removeNotification: PropTypes.func.isRequired,
+  toggleNotifications: PropTypes.func.isRequired,
   href: PropTypes.string
 };
 
