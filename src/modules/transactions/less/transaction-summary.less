@@ -8,7 +8,6 @@
   }
 
   .transaction-action {
-    .font-size-medium();
     .font-weight-normal();
 
     text-transform: capitalize;
@@ -17,13 +16,23 @@
       text-transform: lowercase;
     }
 
+    .denomination {
+      .font-weight-normal();
+
+      margin-left: 0;
+    }
+
     * {
       display: inline;
     }
+  }
 
-    .denomination {
-      margin-left: 0;
-    }
+  .transaction-description {
+    .font-weight-light();
+  }
+
+  .transaction-timestamp {
+    .font-weight-extra-light();
   }
 
   &.report-unequal,

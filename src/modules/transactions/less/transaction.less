@@ -22,7 +22,6 @@
   }
 
   > .transaction-status {
-    // Left Border
     .border(true, @border-left, @color-orange-light, @border-width-3);
 
     &.failed,
@@ -57,11 +56,11 @@
 
         &.transaction-grouped {
           & > .transaction-summary-content {
-            padding: @transaction-default-padding calc(@transaction-default-padding * 1.5);
+            padding: @transaction-default-padding calc(@transaction-default-padding * 2);
           }
 
           .link {
-            padding: @transaction-default-padding calc(@transaction-default-padding * 1.5);
+            padding: @transaction-default-padding calc(@transaction-default-padding * 2);
           }
         }
 
@@ -78,7 +77,6 @@
 }
 
 .transaction-action {
-  .font-size-medium();
   .font-weight-normal();
 
   margin-bottom: 0.3em;

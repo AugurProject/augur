@@ -1,7 +1,7 @@
 .transaction-details {
   box-shadow:
-    inset 0 11px 5px -10px #cccccc,
-    inset 0 -11px 5px -10px #cccccc;
+    inset 0 11px 5px -10px @color-drop-shadow,
+    inset 0 -11px 5px -10px @color-drop-shadow;
   overflow-y: hidden;
 
   .transaction-details-content {
@@ -25,7 +25,11 @@
       .transaction-detail-title,
       .prefix {
         .font-weight-normal();
+      }
 
+      .transaction-detail-title,
+      .prefix,
+      .transaction-status {
         text-transform: capitalize;
       }
     }

@@ -26,25 +26,23 @@ const TransactionDetails = (p) => {
             />
           </div>
         }
-        <ul>
-          {(balances || []).map(b => (
-            <li
-              key={`${b.change && b.change.full}-${b.balance && b.balance.full}`}
-              className="transaction-detail"
-            >
-              <span className="transaction-detail-title">Balance Change: </span>
-              {!!b.change &&
-                <ValueDenomination {...b.change} />
-              }
-              {!!b.balance &&
-                <ValueDenomination
-                  prefix=" [ balance:" postfix="]"
-                  {...b.balance}
-                />
-              }
-            </li>
-          ))}
-        </ul>
+        {(balances || []).map(b => (
+          <div
+            key={`${b.change && b.change.full}-${b.balance && b.balance.full}`}
+            className="transaction-detail"
+          >
+            <span className="transaction-detail-title">Balance Change: </span>
+            {!!b.change &&
+              <ValueDenomination {...b.change} />
+            }
+            {!!b.balance &&
+              <ValueDenomination
+                prefix=" [ balance:" postfix="]"
+                {...b.balance}
+              />
+            }
+          </div>
+        ))}
         {!!p.freeze &&
           <div className="transaction-detail">
             <span className="transaction-detail-title">{p.freeze.verb} Funds: </span>
