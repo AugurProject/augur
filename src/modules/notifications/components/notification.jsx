@@ -1,12 +1,13 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 
 const Notification = p => (
   <article className="notification">
     <button
-      className="unstyled notification-details"
+      className={classNames('unstyled notification-details', { navigational: !!p.onClick })}
       onClick={(e) => {
         e.stopPropagation();
-        console.log('p -- ', p);
+
         if (p.onClick) {
           p.onClick(p.href);
           p.toggleNotifications();
