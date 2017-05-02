@@ -1,36 +1,57 @@
 .transaction-details {
-  .border(true, @border-top, @border-light);
+  // .border(true, @border-top, @border-light, @style: @border-dotted);
+
+  box-shadow:
+  inset 0px 11px 5px -10px #CCC,
+  inset 0px -11px 5px -10px #CCC;
 
   overflow-y: hidden;
 
   .transaction-details-content {
     padding: 0.4em;
+
+    .transaction-detail {
+      @transaction-detail-padding: 0.3em;
+
+      &:first-of-type {
+        padding-bottom: @transaction-detail-padding;
+      }
+
+      &:not(:first-of-type):not(:last-of-type) {
+        padding: @transaction-detail-padding 0;
+      }
+
+      &:last-of-type {
+        padding-top: @transaction-detail-padding;
+      }
+
+      .transaction-detail-title,
+      .prefix {
+        .font-weight-normal();
+
+        text-transform: capitalize;
+      }
+    }
   }
 
   &.transaction-details-enter {
-    border-top: 0px dotted transparent; /* stylelint-disable-line length-zero-no-unit */
     max-height: 0px; /* stylelint-disable-line length-zero-no-unit */
 
     &.transaction-details-enter-active {
-      .border(true, @border-top, @border-light);
-
       max-height: 1000px;
       transition-duration: @animation-speed-normal;
-      transition-property: border-top, max-height;
+      transition-property: max-height;
       transition-timing-function: @animation-default-type;
     }
   }
 
   &.transaction-details-leave {
-    .border(true, @border-top, @border-light);
-
     max-height: 1000px;
 
     &.transaction-details-leave-active {
-      border-top: 0px dotted transparent; /* stylelint-disable-line length-zero-no-unit */
       max-height: 0px; /* stylelint-disable-line length-zero-no-unit */
       transition-duration: @animation-speed-normal;
-      transition-property: border-top, max-height;
+      transition-property: max-height;
       transition-timing-function: @animation-default-type;
     }
   }
