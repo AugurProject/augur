@@ -57,20 +57,20 @@
 
         &.transaction-grouped {
           & > .transaction-summary-content {
-            padding: 0.4em 1.4em;
+            padding: @transaction-default-padding calc(@transaction-default-padding * 150%);
           }
 
           .link {
-            padding: 0.4em 1.4em;
+            padding: @transaction-default-padding calc(@transaction-default-padding * 150%);
           }
         }
 
         & > .transaction-summary-content {
-          padding: 0.4em;
+          padding: @transaction-default-padding;
         }
 
         .link {
-          padding: 0.4em;
+          padding: @transaction-default-padding;
         }
       }
     }
