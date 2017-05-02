@@ -95,16 +95,18 @@ export default class App extends Component {
   checkIfMobile() {
     // This method sets up the side bar's state + calls the method to attach the touch event handler for when a user is mobile
     // CSS breakpoint sets the value when a user is mobile
-    if (window.getComputedStyle(this.main).getPropertyValue('will-change') === 'contents') {
+    const isMobile = window.getComputedStyle(document.body).getPropertyValue('--is-mobile');
+
+    if (isMobile) {
       this.setState({
-        isMobile: true,
+        isMobile,
         isSideBarCollapsed: true,
         isSideBarPersistent: false
       });
       this.attachTouchHandler();
     } else {
       this.setState({
-        isMobile: false,
+        isMobile,
         isSideBarCollapsed: false,
         isSideBarPersistent: true
       });
