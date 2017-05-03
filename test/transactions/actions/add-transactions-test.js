@@ -19,7 +19,7 @@ describe(`modules/transactions/actions/add-transactions.js`, () => {
   });
 
   const action = proxyquire('../../../src/modules/transactions/actions/add-transactions.js', {
-    '../../transactions/actions/update-transactions-data': mockUpdateTrans
+    './update-transactions-data': mockUpdateTrans
   });
 
   beforeEach(() => {
