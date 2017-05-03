@@ -26,7 +26,6 @@ export const loadAccountHistory = loadAllHistory => (dispatch, getState) => {
   }
 
   if (registerBlock && oldestLoadedBlock && oldestLoadedBlock !== registerBlock) {
-
     const options = {};
     if (!loadAllHistory) {
       options.toBlock = oldestLoadedBlock - 1;
@@ -63,7 +62,7 @@ export const loadAccountHistory = loadAllHistory => (dispatch, getState) => {
         return;
       }
 
-      dispatch(updateTransactionsOldestLoadedBlock(oldestLoadedBlock));
+      dispatch(updateTransactionsOldestLoadedBlock(registerBlock));
       dispatch(updateTransactionsLoading(false));
     };
 
