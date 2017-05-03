@@ -38,8 +38,8 @@ describe(`modules/auth/actions/register.js`, () => {
     '../../../services/augurjs': fakeAugurJS,
     '../../../selectors': fakeSelectors,
     '../../link/selectors/links': fakeAuthLink,
-    '../../auth/actions/update-login-account': updateLoginAccountStub,
-    '../../auth/actions/load-account-data': loadAccountDataStub
+    './update-login-account': updateLoginAccountStub,
+    './load-account-data': loadAccountDataStub
   });
 
   beforeEach(() => {
