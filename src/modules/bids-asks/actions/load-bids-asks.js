@@ -1,6 +1,6 @@
-import { augur } from '../../../services/augurjs';
-import { SCALAR } from '../../markets/constants/market-types';
-import { clearMarketOrderBook, updateMarketOrderBook } from '../../bids-asks/actions/update-market-order-book';
+import { augur } from 'services/augurjs';
+import { SCALAR } from 'modules/markets/constants/market-types';
+import { clearMarketOrderBook, updateMarketOrderBook } from 'modules/bids-asks/actions/update-market-order-book';
 
 export const loadBidsAsks = (marketID, cb) => (dispatch, getState) => {
   const callback = cb || (e => e && console.error('loadBidsAsks:', e));

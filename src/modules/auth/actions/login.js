@@ -1,7 +1,7 @@
-import { augur } from '../../../services/augurjs';
-import { base58Decode } from '../../../utils/base-58';
-import { loadAccountData } from '../../auth/actions/load-account-data';
-import { savePersistentAccountToLocalStorage } from '../../auth/actions/save-persistent-account';
+import { augur } from 'services/augurjs';
+import { base58Decode } from 'utils/base-58';
+import { loadAccountData } from 'modules/auth/actions/load-account-data';
+import { savePersistentAccountToLocalStorage } from 'modules/auth/actions/save-persistent-account';
 
 export const login = (loginID, password, rememberMe, cb) => (dispatch, getState) => {
   const callback = cb || (e => e && console.error('login:', e));

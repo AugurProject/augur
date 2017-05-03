@@ -1,6 +1,6 @@
-import { augur } from '../../../services/augurjs';
-import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
-import { BINARY_NO_ID, BINARY_NO_OUTCOME_NAME, BINARY_YES_ID, BINARY_YES_OUTCOME_NAME, CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from '../../markets/constants/market-outcomes';
+import { augur } from 'services/augurjs';
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
+import { BINARY_NO_ID, BINARY_NO_OUTCOME_NAME, BINARY_YES_ID, BINARY_YES_OUTCOME_NAME, CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from 'modules/markets/constants/market-outcomes';
 
 export const selectReportableOutcomes = (type, outcomes) => {
   switch (type) {

@@ -1,4 +1,4 @@
-import { CLEAR_MARKETS_DATA, UPDATE_EVENT_MARKETS_MAP } from '../../markets/actions/update-markets-data';
+import { CLEAR_MARKETS_DATA, UPDATE_EVENT_MARKETS_MAP } from 'modules/markets/actions/update-markets-data';
 
 export default function (eventMarketsMap = {}, action) {
   switch (action.type) {

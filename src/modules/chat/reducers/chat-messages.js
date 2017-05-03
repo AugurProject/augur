@@ -1,4 +1,4 @@
-import { UPDATE_CHAT_MESSAGES } from '../../../modules/chat/actions/load-chat-messages';
+import { UPDATE_CHAT_MESSAGES } from 'modules/chat/actions/load-chat-messages';
 
 export default function (chatMessages = {}, action) {
   switch (action.type) {

@@ -1,10 +1,10 @@
-import * as AugurJS from '../../../services/augurjs';
-import { loadBranch } from '../../app/actions/load-branch';
-import { loadMarkets } from '../../markets/actions/load-markets';
-import { loadFullMarket } from '../../market/actions/load-full-market';
-import { syncBlockchain } from '../../app/actions/sync-blockchain';
-import { syncBranch } from '../../branch/actions/sync-branch';
-import { updateAssets } from '../../auth/actions/update-assets';
+import * as AugurJS from 'services/augurjs';
+import { loadBranch } from 'modules/app/actions/load-branch';
+import { loadMarkets } from 'modules/markets/actions/load-markets';
+import { loadFullMarket } from 'modules/market/actions/load-full-market';
+import { syncBlockchain } from 'modules/app/actions/sync-blockchain';
+import { syncBranch } from 'modules/branch/actions/sync-branch';
+import { updateAssets } from 'modules/auth/actions/update-assets';
 
 export const REPORTING_TEST_SETUP = 'REPORTING_TEST_SETUP';
 

@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import store from 'src/store';
-import { selectTransactions } from '../../transactions/selectors/transactions';
-import { PENDING, SUCCESS, FAILED, INTERRUPTED } from '../../transactions/constants/statuses';
+import { selectTransactions } from 'modules/transactions/selectors/transactions';
+import { PENDING, SUCCESS, FAILED, INTERRUPTED } from 'modules/transactions/constants/statuses';
 
 export default function () {
   return selectTransactionsTotals(store.getState());

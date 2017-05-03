@@ -1,6 +1,6 @@
 import async from 'async';
-import { augur, constants } from '../../../services/augurjs';
-import { updateAccountBidsAsksData, updateAccountCancelsData } from '../../../modules/my-positions/actions/update-account-trades-data';
+import { augur, constants } from 'services/augurjs';
+import { updateAccountBidsAsksData, updateAccountCancelsData } from 'modules/my-positions/actions/update-account-trades-data';
 
 export function loadBidsAsksHistory(options, cb) {
   return (dispatch, getState) => {

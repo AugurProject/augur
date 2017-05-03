@@ -1,12 +1,12 @@
-import { UPDATE_SELECTED_PAGE_NUM } from '../../markets/actions/update-selected-page-num';
-import { UPDATE_SELECTED_FILTER_SORT } from '../../markets/actions/update-selected-filter-sort';
-import { UPDATE_KEYWORDS } from '../../markets/actions/update-keywords';
-import { TOGGLE_TAG } from '../../markets/actions/toggle-tag';
-import { UPDATE_SELECTED_MARKETS_HEADER } from '../../markets/actions/update-selected-markets-header';
-import { PAGE_PARAM_NAME } from '../../link/constants/param-names';
-import { DEFAULT_PAGE } from '../../markets/constants/pagination';
+import { UPDATE_SELECTED_PAGE_NUM } from 'modules/markets/actions/update-selected-page-num';
+import { UPDATE_SELECTED_FILTER_SORT } from 'modules/markets/actions/update-selected-filter-sort';
+import { UPDATE_KEYWORDS } from 'modules/markets/actions/update-keywords';
+import { TOGGLE_TAG } from 'modules/markets/actions/toggle-tag';
+import { UPDATE_SELECTED_MARKETS_HEADER } from 'modules/markets/actions/update-selected-markets-header';
+import { PAGE_PARAM_NAME } from 'modules/link/constants/param-names';
+import { DEFAULT_PAGE } from 'modules/markets/constants/pagination';
 
-import { UPDATE_URL } from '../../link/actions/update-url';
+import { UPDATE_URL } from 'modules/link/actions/update-url';
 
 export default function (pagination = { selectedPageNum: DEFAULT_PAGE, numPerPage: 10 }, action) {
   let newPageNum;

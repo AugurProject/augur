@@ -1,4 +1,4 @@
-import { MILLIS_PER_BLOCK } from '../modules/app/constants/network';
+import { MILLIS_PER_BLOCK } from 'modules/app/constants/network';
 
 /**
  * @param {Number} block

@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import store from 'src/store';
-import selectAllMarkets from '../../markets/selectors/markets-all';
+import selectAllMarkets from 'modules/markets/selectors/markets-all';
 
 export default function () {
   return selectOpenOrdersMarkets(store.getState());

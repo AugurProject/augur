@@ -17,8 +17,9 @@ import {
   selectLoginAccountState
 } from 'src/select-state';
 import selectAccountPositions from 'modules/user-open-orders/selectors/positions-plus-asks';
-import { isMarketDataOpen, isMarketDataExpired } from '../../../utils/is-market-data-open';
-import { assembleMarket, selectMarketReport } from '../../market/selectors/market';
+import { assembleMarket, selectMarketReport } from 'modules/market/selectors/market';
+
+import { isMarketDataOpen, isMarketDataExpired } from 'utils/is-market-data-open';
 
 export default function () {
   return selectMarkets(store.getState());

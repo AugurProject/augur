@@ -1,10 +1,10 @@
 import { createSelector } from 'reselect';
 import store from 'src/store';
 import { selectOutcomesDataState } from 'src/select-state';
-import { abi } from '../../../services/augurjs';
-import selectLoginAccountPositions from '../../my-positions/selectors/login-account-positions';
-import { ZERO } from '../../trade/constants/numbers';
-import { SCALAR } from '../../markets/constants/market-types';
+import { abi } from 'services/augurjs';
+import selectLoginAccountPositions from 'modules/my-positions/selectors/login-account-positions';
+import { ZERO } from 'modules/trade/constants/numbers';
+import { SCALAR } from 'modules/markets/constants/market-types';
 
 export default function () {
   return selectClosedMarketsWithWinningShares(store.getState());

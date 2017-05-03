@@ -1,5 +1,5 @@
-import { UPDATE_TRADE_IN_PROGRESS, CLEAR_TRADE_IN_PROGRESS } from '../../trade/actions/update-trades-in-progress';
-import { CLEAR_LOGIN_ACCOUNT } from '../../auth/actions/update-login-account';
+import { UPDATE_TRADE_IN_PROGRESS, CLEAR_TRADE_IN_PROGRESS } from 'modules/trade/actions/update-trades-in-progress';
+import { CLEAR_LOGIN_ACCOUNT } from 'modules/auth/actions/update-login-account';
 
 export default function (tradesInProgress = {}, action) {
   switch (action.type) {

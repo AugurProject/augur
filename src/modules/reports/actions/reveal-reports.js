@@ -1,8 +1,8 @@
 import async from 'async';
-import { augur } from '../../../services/augurjs';
-import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
-import { updateAssets } from '../../auth/actions/update-assets';
-import { updateReports } from '../../reports/actions/update-reports';
+import { augur } from 'services/augurjs';
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
+import { updateAssets } from 'modules/auth/actions/update-assets';
+import { updateReports } from 'modules/reports/actions/update-reports';
 
 const revealReportLock = {};
 

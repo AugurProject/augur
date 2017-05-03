@@ -1,10 +1,10 @@
 import secureRandom from 'secure-random';
-import { augur } from '../../../services/augurjs';
-import { bytesToHex } from '../../../utils/bytes-to-hex';
-import { CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
-import { updateReport } from '../../reports/actions/update-reports';
-import { nextReportPage } from '../../reports/actions/next-report-page';
-import { encryptReport } from '../../reports/actions/report-encryption';
+import { augur } from 'services/augurjs';
+import { bytesToHex } from 'utils/bytes-to-hex';
+import { CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
+import { updateReport } from 'modules/reports/actions/update-reports';
+import { nextReportPage } from 'modules/reports/actions/next-report-page';
+import { encryptReport } from 'modules/reports/actions/report-encryption';
 
 export const UPDATE_REPORT_COMMIT_LOCK = 'UPDATE_REPORT_COMMIT_LOCK';
 

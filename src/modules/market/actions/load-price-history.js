@@ -1,6 +1,6 @@
-import { augur } from '../../../services/augurjs';
-import { updateMarketPriceHistory } from '../../market/actions/update-market-price-history';
-import { updateMarketTradesData } from '../../portfolio/actions/update-market-trades-data';
+import { augur } from 'services/augurjs';
+import { updateMarketPriceHistory } from 'modules/market/actions/update-market-price-history';
+import { updateMarketTradesData } from 'modules/portfolio/actions/update-market-trades-data';
 
 export const loadPriceHistory = (marketID, cb) => (dispatch, getState) => (
   augur.getMarketPriceHistory(marketID, { fromBlock: getState().marketsData[marketID].creationBlock }, (err, priceHistory) => {

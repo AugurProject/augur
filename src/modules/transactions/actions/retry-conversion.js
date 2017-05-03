@@ -1,6 +1,6 @@
-import { augur } from '../../../services/augurjs';
-import { updateMarketsData, updateEventMarketsMap } from '../../markets/actions/update-markets-data';
-import { convertLogsToTransactions } from '../../transactions/actions/convert-logs-to-transactions';
+import { augur } from 'services/augurjs';
+import { updateMarketsData, updateEventMarketsMap } from 'modules/markets/actions/update-markets-data';
+import { convertLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
 
 export function loadMarketThenRetryConversion(marketID, label, log, callback) {
   return (dispatch, getState) => {

@@ -1,6 +1,6 @@
 import async from 'async';
-import { augur, constants } from '../../../services/augurjs';
-import { convertLogsToTransactions } from '../../../modules/transactions/actions/convert-logs-to-transactions';
+import { augur, constants } from 'services/augurjs';
+import { convertLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
 
 export function loadReportingHistory(options, cb) {
   return (dispatch, getState) => {

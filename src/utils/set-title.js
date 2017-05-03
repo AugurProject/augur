@@ -1,5 +1,5 @@
-import * as views from '../modules/app/constants/views';
-import * as titles from '../modules/app/constants/view-titles';
+import * as views from 'modules/app/constants/views';
+import * as titles from 'modules/app/constants/view-titles';
 
 export default function (title, params) {
   if (title) {

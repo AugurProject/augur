@@ -1,9 +1,9 @@
-import { formatEther, formatPercent, formatRep } from '../../../utils/format-number';
-import { formatDate } from '../../../utils/format-date';
-import { abi } from '../../../services/augurjs';
-import { TWO } from '../../trade/constants/numbers';
-import store from '../../../store';
-import { selectMarketLink } from '../../link/selectors/links';
+import { formatEther, formatPercent, formatRep } from 'utils/format-number';
+import { formatDate } from 'utils/format-date';
+import { abi } from 'services/augurjs';
+import { TWO } from 'modules/trade/constants/numbers';
+import store from 'src/store';
+import { selectMarketLink } from 'modules/link/selectors/links';
 
 export default function () {
   const { eventsWithAccountReport } = store.getState();

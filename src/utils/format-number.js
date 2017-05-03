@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js';
 
-import { abi, constants } from '../services/augurjs';
-import { ZERO, TEN } from '../modules/trade/constants/numbers';
-import addCommas from '../utils/add-commas-to-number';
+import { abi, constants } from 'services/augurjs';
+import { ZERO, TEN } from 'modules/trade/constants/numbers';
+import addCommas from 'utils/add-commas-to-number';
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
   Produces a formatted number object used for display and calculations

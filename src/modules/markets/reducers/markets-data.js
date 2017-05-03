@@ -1,7 +1,7 @@
-import { abi } from '../../../services/augurjs';
-import { UPDATE_MARKETS_DATA, CLEAR_MARKETS_DATA, UPDATE_MARKETS_LOADING_STATUS, UPDATE_MARKET_TOPIC } from '../../markets/actions/update-markets-data';
-import { CATEGORICAL, BINARY } from '../../markets/constants/market-types';
-import { CATEGORICAL_OUTCOMES_SEPARATOR } from '../../markets/constants/market-outcomes';
+import { abi } from 'services/augurjs';
+import { UPDATE_MARKETS_DATA, CLEAR_MARKETS_DATA, UPDATE_MARKETS_LOADING_STATUS, UPDATE_MARKET_TOPIC } from 'modules/markets/actions/update-markets-data';
+import { CATEGORICAL, BINARY } from 'modules/markets/constants/market-types';
+import { CATEGORICAL_OUTCOMES_SEPARATOR } from 'modules/markets/constants/market-outcomes';
 
 export default function (marketsData = {}, action) {
   switch (action.type) {

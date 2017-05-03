@@ -1,8 +1,8 @@
 import async from 'async';
-import { BINARY, CATEGORICAL, SCALAR } from '../../markets/constants/market-types';
-import { BINARY_INDETERMINATE_OUTCOME_ID, CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID } from '../../markets/constants/market-outcomes';
-import { augur } from '../../../services/augurjs';
-import { updateReports } from '../../reports/actions/update-reports';
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
+import { BINARY_INDETERMINATE_OUTCOME_ID, CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID } from 'modules/markets/constants/market-outcomes';
+import { augur } from 'services/augurjs';
+import { updateReports } from 'modules/reports/actions/update-reports';
 
 export function loadReportDescriptors(callback) {
   return (dispatch, getState) => {

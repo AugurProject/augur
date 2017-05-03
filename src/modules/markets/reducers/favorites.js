@@ -1,5 +1,5 @@
-import { UPDATE_FAVORITES, TOGGLE_FAVORITE } from '../../markets/actions/update-favorites';
-import { CLEAR_LOGIN_ACCOUNT } from '../../auth/actions/update-login-account';
+import { UPDATE_FAVORITES, TOGGLE_FAVORITE } from 'modules/markets/actions/update-favorites';
+import { CLEAR_LOGIN_ACCOUNT } from 'modules/auth/actions/update-login-account';
 
 export default function (favorites = {}, action) {
   let newFavorites;

@@ -1,10 +1,10 @@
 import async from 'async';
-import { augur } from '../../../services/augurjs';
-import { loadReport } from '../../reports/actions/load-report';
-import { loadReportDescriptors } from '../../reports/actions/load-report-descriptors';
-import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
-import { updateEventMarketsMap } from '../../markets/actions/update-markets-data';
-import { selectMarketIDFromEventID } from '../../market/selectors/market';
+import { augur } from 'services/augurjs';
+import { loadReport } from 'modules/reports/actions/load-report';
+import { loadReportDescriptors } from 'modules/reports/actions/load-report-descriptors';
+import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
+import { updateEventMarketsMap } from 'modules/markets/actions/update-markets-data';
+import { selectMarketIDFromEventID } from 'modules/market/selectors/market';
 
 export function loadReports(cb) {
   return (dispatch, getState) => {

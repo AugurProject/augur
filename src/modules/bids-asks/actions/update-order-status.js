@@ -1,5 +1,5 @@
-import getOrder from '../../bids-asks/helpers/get-order';
-import store from '../../../store';
+import getOrder from 'modules/bids-asks/helpers/get-order';
+import store from 'src/store';
 
 export const UPDATE_ORDER_STATUS = 'UPDATE_ORDER_STATUS';
 

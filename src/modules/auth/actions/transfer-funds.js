@@ -1,5 +1,5 @@
-import { abi, augur } from '../../../services/augurjs';
-import { updateAssets } from '../../auth/actions/update-assets';
+import { abi, augur } from 'services/augurjs';
+import { updateAssets } from 'modules/auth/actions/update-assets';
 
 export function transferFunds(amount, currency, toAddress) {
   return (dispatch, getState) => {

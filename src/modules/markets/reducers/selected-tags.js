@@ -1,6 +1,6 @@
-import { UPDATE_URL } from '../../link/actions/update-url';
-import { TOGGLE_TAG } from '../../markets/actions/toggle-tag';
-import { TAGS_PARAM_NAME } from '../../link/constants/param-names';
+import { UPDATE_URL } from 'modules/link/actions/update-url';
+import { TOGGLE_TAG } from 'modules/markets/actions/toggle-tag';
+import { TAGS_PARAM_NAME } from 'modules/link/constants/param-names';
 
 export default function (selectedTags = {}, action) {
   let newSelectedTags;

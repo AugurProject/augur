@@ -1,8 +1,8 @@
-import { UPDATE_URL } from '../../link/actions/update-url';
-import { FILTER_SORT_TYPE, FILTER_SORT_SORT, FILTER_SORT_ISDESC } from '../../markets/constants/filter-sort';
-import { FILTER_SORT_TYPE_PARAM_NAME, FILTER_SORT_SORT_PARAM_NAME, FILTER_SORT_ISDESC_PARAM_NAME } from '../../link/constants/param-names';
-import { UPDATE_SELECTED_FILTER_SORT } from '../../markets/actions/update-selected-filter-sort';
-import getFilterSort from '../../markets/selectors/filter-sort';
+import { UPDATE_URL } from 'modules/link/actions/update-url';
+import { FILTER_SORT_TYPE, FILTER_SORT_SORT, FILTER_SORT_ISDESC } from 'modules/markets/constants/filter-sort';
+import { FILTER_SORT_TYPE_PARAM_NAME, FILTER_SORT_SORT_PARAM_NAME, FILTER_SORT_ISDESC_PARAM_NAME } from 'modules/link/constants/param-names';
+import { UPDATE_SELECTED_FILTER_SORT } from 'modules/markets/actions/update-selected-filter-sort';
+import getFilterSort from 'modules/markets/selectors/filter-sort';
 
 const INITIAL_STATE = {
   type: FILTER_SORT_TYPE,

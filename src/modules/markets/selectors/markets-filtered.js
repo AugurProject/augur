@@ -1,10 +1,12 @@
-import { createBigCacheSelector } from 'utils/big-cache-selector';
 import store from 'src/store';
 import { selectKeywordsState, selectSelectedFilterSortState, selectSelectedTagsState, selectSelectedTopicState, selectBranchReportPeriod } from 'src/select-state';
-import selectAllMarkets from '../../markets/selectors/markets-all';
-import { cleanKeywordsArray } from '../../../utils/clean-keywords';
-import { FILTER_TYPE_OPEN, FILTER_TYPE_CLOSED, FILTER_TYPE_REPORTING } from '../../markets/constants/filter-sort';
-import { isMarketDataOpen } from '../../../utils/is-market-data-open';
+import selectAllMarkets from 'modules/markets/selectors/markets-all';
+
+import { FILTER_TYPE_OPEN, FILTER_TYPE_CLOSED, FILTER_TYPE_REPORTING } from 'modules/markets/constants/filter-sort';
+
+import { cleanKeywordsArray } from 'utils/clean-keywords';
+import { isMarketDataOpen } from 'utils/is-market-data-open';
+import { createBigCacheSelector } from 'utils/big-cache-selector';
 
 export default function () {
   return selectFilteredMarkets(store.getState());
