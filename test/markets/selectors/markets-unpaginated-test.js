@@ -19,9 +19,9 @@ describe('modules/markets/selectors/markets-unpaginated', () => {
   };
   const selector = proxyquire('../../../src/modules/markets/selectors/markets-unpaginated', {
     '../../../store': store,
-    '../../markets/selectors/markets-all': MarketsAll,
-    '../../markets/selectors/markets-filtered': MarketsFiltered,
-    '../../markets/selectors/markets-favorite': MarketsFavorite
+    './markets-all': MarketsAll,
+    './markets-filtered': MarketsFiltered,
+    './markets-favorite': MarketsFavorite
   });
 
   beforeEach(() => {
