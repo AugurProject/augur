@@ -20,7 +20,7 @@ export const loadFullMarket = marketID => (dispatch, getState) => {
 // the necessary actions to save each part in relevant state
 export const loadMarketDetails = marketID => dispatch => (
   dispatch(loadBidsAsks(marketID, () => (
-    dispatch(loadAccountTrades(null, () => (
+    dispatch(loadAccountTrades({ market: marketID }, () => (
       dispatch(loadPriceHistory(marketID, () => (
         dispatch(updateMarketDataLoading(marketID, false))
       )))
