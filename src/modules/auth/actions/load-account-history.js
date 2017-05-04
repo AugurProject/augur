@@ -28,7 +28,7 @@ export const loadAccountHistory = loadAllHistory => (dispatch, getState) => {
   if (registerBlock && oldestLoadedBlock && oldestLoadedBlock !== registerBlock) {
     const options = {};
     if (!loadAllHistory) {
-      options.toBlock = oldestLoadedBlock - 1;
+      options.toBlock = oldestLoadedBlock === blockchain.currentBlockNumber ? oldestLoadedBlock : oldestLoadedBlock - 1;
 
       const prospectiveFromBlock = options.toBlock - blockChunkSize;
       options.fromBlock = prospectiveFromBlock < registerBlock ?
@@ -36,41 +36,50 @@ export const loadAccountHistory = loadAllHistory => (dispatch, getState) => {
         prospectiveFromBlock;
     }
 
-    const callback = (options) => {
-      if (!loadAllHistory) {
-        const { transactionsData } = getState();
-        const updatedTransactionsCount = Object.keys(transactionsData || {}).length;
-        const updatedOptions = {
-          ...options
-        };
-
-        dispatch(updateTransactionsOldestLoadedBlock(options.fromBlock));
-
-        if (!(updatedTransactionsCount - initialTransactionCount > transactionSoftLimit) && options.fromBlock !== registerBlock) {
-          updatedOptions.toBlock = updatedOptions.fromBlock - 1;
-
-          const prospectiveFromBlock = updatedOptions.toBlock - blockChunkSize;
-          updatedOptions.fromBlock = prospectiveFromBlock < registerBlock ?
-            registerBlock :
-            prospectiveFromBlock;
-
-          loadTransactions(dispatch, updatedOptions, callback);
-        } else {
-          dispatch(updateTransactionsLoading(false));
-        }
-
-        return;
-      }
-
-      dispatch(updateTransactionsOldestLoadedBlock(registerBlock));
-      dispatch(updateTransactionsLoading(false));
+    const constraints = {
+      loadAllHistory,
+      initialTransactionCount,
+      transactionSoftLimit,
+      registerBlock,
+      blockChunkSize
     };
 
-    loadTransactions(dispatch, options, callback);
+    loadTransactions(dispatch, getState, options, constraints, loadMoreTransactions);
   }
 };
 
-export function loadTransactions(dispatch, options, cb) {
+export function loadMoreTransactions(dispatch, getState, options, constraints) {
+  if (!constraints.loadAllHistory) {
+    const { transactionsData } = getState();
+
+    const updatedTransactionsCount = Object.keys(transactionsData || {}).length;
+    const updatedOptions = {
+      ...options
+    };
+
+    dispatch(updateTransactionsOldestLoadedBlock(options.fromBlock));
+
+    if (!(updatedTransactionsCount - constraints.initialTransactionCount >= constraints.transactionSoftLimit) && options.fromBlock !== constraints.registerBlock) {
+      updatedOptions.toBlock = updatedOptions.fromBlock - 1;
+
+      const prospectiveFromBlock = updatedOptions.toBlock - constraints.blockChunkSize;
+      updatedOptions.fromBlock = prospectiveFromBlock < constraints.registerBlock ?
+        constraints.registerBlock :
+        prospectiveFromBlock;
+
+      loadTransactions(dispatch, getState, updatedOptions, constraints, loadMoreTransactions);
+    } else {
+      dispatch(updateTransactionsLoading(false));
+    }
+
+    return;
+  }
+
+  dispatch(updateTransactionsOldestLoadedBlock(constraints.registerBlock));
+  dispatch(updateTransactionsLoading(false));
+}
+
+function loadTransactions(dispatch, getState, options, constraints, cb) {
   dispatch(updateTransactionsLoading(true));
 
   async.parallel([
@@ -100,6 +109,6 @@ export function loadTransactions(dispatch, options, cb) {
     }))
   ], (err) => {
     if (err) return console.error('ERROR loadTransactions: ', err);
-    cb(options);
+    cb(dispatch, getState, options, constraints);
   });
 }
