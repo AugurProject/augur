@@ -20,7 +20,7 @@ describe('modules/transactions/reducers/transactions-loading', () => {
   });
 
   test({
-    description: `should return the expected value`,
+    description: `should return the expected value for case UPDATE_TRANSACTIONS_LOADING`,
     assertions: () => {
       const actual = transactionsLoading(false, {
         type: UPDATE_TRANSACTIONS_LOADING,
