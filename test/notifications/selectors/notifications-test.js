@@ -28,20 +28,6 @@ describe('modules/notifications/selectors/notifications', () => {
     }
   });
 
-  test({
-    description: `should call the expected function`,
-    assertions: (store) => {
-      const notifications = require('modules/notifications/selectors/notifications');
-
-      notifications.__RewireAPI__.__Rewire__('selectNotificationsAndSeenCount', () => 'selectNotificationsAndSeenCount');
-
-      const actual = notifications.default();
-      const expected = 'selectNotificationsAndSeenCount';
-
-      assert.strictEqual(actual, expected, `Didn't call the expected method`);
-    }
-  });
-
   describe('selectNotificationsAndSeenCount', () => {
     test({
       description: `should return the expected object`,
