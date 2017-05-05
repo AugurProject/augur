@@ -4,10 +4,6 @@
   margin-bottom: 1em;
 
   .view-header {
-    .transactions-loading-spinner {
-      min-width: 3em;
-    }
-
     .transactions-load-buttons {
       .border(true);
 
@@ -21,15 +17,20 @@
       & > button:not(:last-of-type) {
         .border(true, @border-right);
       }
+    }
 
-      .transactions-loading-spinner {
+    .transactions-loading-spinner {
+      min-width: 3em;
+      position: relative;
+
+      .transactions-loading-message {
+        margin-right: 2.2em;
+      }
+
+      .spinner-container {
         position: absolute;
-        top: 0;
-        width: 100%;
-
-        .spinner {
-          margin-top: 1em;
-        }
+        right: 1em;
+        top: 50%;
       }
     }
   }

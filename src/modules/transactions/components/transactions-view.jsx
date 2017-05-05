@@ -159,7 +159,7 @@ export default class TransactionsView extends Component {
             <h2>Transactions</h2>
           </div>
           <div className="view-header-group">
-            {!p.hasAllTransactionsLoaded &&
+            {!p.transactionsLoading && !p.hasAllTransactionsLoaded &&
               <div className="transactions-load-buttons">
                 <button
                   className={classNames('unstyled', { disabled: p.transactionsLoading })}
@@ -172,16 +172,17 @@ export default class TransactionsView extends Component {
                 <button
                   className={classNames('unstyled', { disabled: p.transactionsLoading })}
                   onClick={() => {
-                    if (p.transactionsLoading) p.loadAllTransactions();
+                    if (!p.transactionsLoading) p.loadAllTransactions();
                   }}
                 >
                   <span>Load All</span>
                 </button>
-                {p.transactionsLoading &&
-                  <div className="transactions-loading-spinner" >
-                    <Spinner />
-                  </div>
-                }
+              </div>
+            }
+            {p.transactionsLoading &&
+              <div className="transactions-loading-spinner" >
+                <span className="transactions-loading-message">Loading More Transactions</span>
+                <Spinner />
               </div>
             }
             {!p.transactionsLoading && p.hasAllTransactionsLoaded &&
