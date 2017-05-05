@@ -5,6 +5,8 @@ import { ZERO } from 'modules/trade/constants/numbers';
 import { abi } from 'services/augurjs';
 import { isOrderOfUser } from 'modules/bids-asks/helpers/is-order-of-user';
 
+import getValue from 'utils/get-value';
+
 export default function () {
   return selectPositionsPlusAsks(store.getState());
 }
@@ -31,8 +33,9 @@ export const selectPositionsPlusAsks = createBigCacheSelector(10)(
       // NOTE --  This conditional is here to accomodate the scenario where
       //          a user has positions within a market + no orders.
       //          The order book is not loaded due to lazy load
-      if (orderBooks[marketID]) {
-        positionsPlusAsks[marketID] = selectMarketPositionPlusAsks(address, positions[marketID], orderBooks[marketID].sell);
+      const asks = getValue(orderBooks, `${marketID}.sell`);
+      if (asks && asks.length) {
+        positionsPlusAsks[marketID] = selectMarketPositionPlusAsks(address, positions[marketID], asks);
       } else {
         positionsPlusAsks[marketID] = positions[marketID];
       }

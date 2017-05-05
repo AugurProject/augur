@@ -181,7 +181,7 @@ export default class TransactionsView extends Component {
             }
             {p.transactionsLoading &&
               <div className="transactions-loading-spinner" >
-                <span className="transactions-loading-message">Loading More Transactions</span>
+                <span className="transactions-loading-message">Loading More History</span>
                 <Spinner />
               </div>
             }
@@ -189,7 +189,7 @@ export default class TransactionsView extends Component {
               <span
                 className="transactions-all-loaded-message"
               >
-                All Transactions Loaded
+                All History Loaded
               </span>
             }
           </div>

@@ -19,11 +19,6 @@ export function loadAccountTrades(options, cb) {
     }
     if (!params.market) dispatch(clearAccountTrades());
     async.parallel([
-      next => augur.getAdjustedPositions(account, params, (err, positions) => {
-        if (err) return next(err);
-        dispatch(updateAccountPositionsData(positions, params.market));
-        next(null);
-      }),
       next => augur.getAccountTrades(account, params, (err, trades) => {
         if (err) return next(err);
         dispatch(updateAccountTradesData(trades, params.market));
