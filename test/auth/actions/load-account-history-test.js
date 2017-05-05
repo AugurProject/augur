@@ -5,8 +5,6 @@ import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import thunk from 'redux-thunk';
 
-import { loadMoreTransactions } from 'modules/auth/actions/load-account-history';
-
 describe(`modules/auth/actions/load-account-history.js`, () => {
   proxyquire.noPreserveCache();
   const mockStore = configureMockStore([thunk]);
