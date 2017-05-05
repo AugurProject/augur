@@ -1,6 +1,6 @@
 import async from 'async';
 import { augur } from 'services/augurjs';
-import { updateAccountTradesData, updateCompleteSetsBought, updateAccountPositionsData } from 'modules/my-positions/actions/update-account-trades-data';
+import { updateAccountTradesData, updateCompleteSetsBought } from 'modules/my-positions/actions/update-account-trades-data';
 import { convertLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
 import { clearAccountTrades } from 'modules/my-positions/actions/clear-account-trades';
 import { sellCompleteSets } from 'modules/my-positions/actions/sell-complete-sets';
