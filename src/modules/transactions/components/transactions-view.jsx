@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react';
-import classNames from 'classnames';
 import Transactions from 'modules/transactions/components/transactions';
 import Branch from 'modules/branch/components/branch';
 import Paginator from 'modules/common/components/paginator';
 import Spinner from 'modules/common/components/spinner';
+import TransactionsLoadingActions from 'modules/transactions/components/transactions-loading-actions';
 
 import getValue from 'utils/get-value';
 import debounce from 'utils/debounce';
@@ -159,39 +159,12 @@ export default class TransactionsView extends Component {
             <h2>Transactions</h2>
           </div>
           <div className="view-header-group">
-            {!p.transactionsLoading && !p.hasAllTransactionsLoaded &&
-              <div className="transactions-load-buttons">
-                <button
-                  className={classNames('unstyled', { disabled: p.transactionsLoading })}
-                  onClick={() => {
-                    if (!p.transactionsLoading) p.loadMoreTransactions();
-                  }}
-                >
-                  <span>Load More</span>
-                </button>
-                <button
-                  className={classNames('unstyled', { disabled: p.transactionsLoading })}
-                  onClick={() => {
-                    if (!p.transactionsLoading) p.loadAllTransactions();
-                  }}
-                >
-                  <span>Load All</span>
-                </button>
-              </div>
-            }
-            {p.transactionsLoading &&
-              <div className="transactions-loading-spinner" >
-                <span className="transactions-loading-message">Loading More History</span>
-                <Spinner />
-              </div>
-            }
-            {!p.transactionsLoading && p.hasAllTransactionsLoaded &&
-              <span
-                className="transactions-all-loaded-message"
-              >
-                All History Loaded
-              </span>
-            }
+            <TransactionsLoadingActions
+              loadMoreTransactions={p.loadMoreTransactions}
+              loadAllTransactions={p.loadAllTransactions}
+              transactionsLoading={p.transactionsLoading}
+              hasAllTransactionsLoaded={p.hasAllTransactionsLoaded}
+            />
           </div>
         </div>
 

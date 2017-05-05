@@ -13,9 +13,11 @@ export const loadAccountHistory = loadAllHistory => (dispatch, getState) => {
   const { transactionsOldestLoadedBlock, blockchain, loginAccount, transactionsData } = getState();
   const initialTransactionCount = Object.keys(transactionsData || {}).length;
 
-  // Adjust these to constrain the effective loading amount
-  const blockChunkSize = 5760; // ~1 Day based on 15 second blocks
-  const transactionSoftLimit = 40; // Used if blockChunkSize does not load # of transactions up to the soft limit (approximately two UI pages of transactions)
+  // Adjust these to constrain the loading boundaries
+  // const blockChunkSize = 5760; // ~1 Day based on 15 second blocks
+  // const transactionSoftLimit = 40; // Used if blockChunkSize does not load # of transactions up to the soft limit (approximately two UI pages of transactions)
+  const blockChunkSize = 1000; // ~1 Day based on 15 second blocks
+  const transactionSoftLimit = 2; // Used if blockChunkSize does not load # of transactions up to the soft limit (approximately two UI pages of transactions)
 
   const registerBlock = loginAccount.registerBlockNumber;
   const oldestLoadedBlock = transactionsOldestLoadedBlock || blockchain.currentBlockNumber;
