@@ -71,16 +71,11 @@ export function formatGroupedTransactions(transactions) {
   const formattedTransactions = transactions.map(transaction => formatTransaction(transaction)).sort((a, b) => getValue(b, 'timestamp.timestamp') - getValue(a, 'timestamp.timestamp'));
 
   const status = formattedTransactions.reduce((p, transaction) => {
-    if (p !== FAILED || p !== INTERRUPTED) {
-      if (transaction.status === FAILED) return FAILED;
-      if (transaction.status === INTERRUPTED) return INTERRUPTED;
-
-      if (p !== PENDING) {
-        if (transaction.status === PENDING) return PENDING;
-        if (transaction.status === SUBMITTED) return SUBMITTED;
-        if (transaction.status === SUCCESS) return SUCCESS;
-      }
-    }
+    if (p === FAILED || transaction.status === FAILED) return FAILED;
+    if (p === INTERRUPTED || transaction.status === INTERRUPTED) return INTERRUPTED;
+    if (p === PENDING || transaction.status === PENDING) return PENDING;
+    if (p === SUBMITTED || transaction.status === SUBMITTED) return SUBMITTED;
+    if (transaction.status === SUCCESS) return SUCCESS;
 
     return p;
   }, null);
