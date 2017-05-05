@@ -47,7 +47,7 @@ export const selectTransactions = createSelector(
 
 export function formatTransaction(transaction) {
   let marketLink = getValue(transaction, 'data.marketLink');
-  if (marketLink === null && transaction.data && (transaction.data.id || transaction.data.marketID) && (transaction.data.description || transaction.description)) {
+  if (marketLink == null && transaction.data && (transaction.data.id || transaction.data.marketID) && (transaction.data.description || transaction.description)) {
     marketLink = selectMarketLink({
       id: transaction.data.id || transaction.data.marketID,
       description: transaction.description
