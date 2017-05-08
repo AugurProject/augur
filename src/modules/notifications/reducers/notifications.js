@@ -14,7 +14,7 @@ const DEFAULT_STATE = [];
 // {object} timestamp - UTC epoch
 // {string} href - link to more context
 //
-// The `seen` param gets handled behind the scenes (reference action + view component)
+// The `seen` + `index` params get handled behind the scenes
 
 export default function (notifications = DEFAULT_STATE, action) {
   switch (action.type) {
