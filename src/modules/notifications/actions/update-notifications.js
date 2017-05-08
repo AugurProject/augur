@@ -25,7 +25,6 @@ export function removeNotification(index) {
 }
 
 export function updateNotification(index, notification) {
-  console.log('update -- ', index, notification);
   return {
     type: UPDATE_NOTIFICATION,
     data: {

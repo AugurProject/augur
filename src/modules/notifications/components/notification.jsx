@@ -14,6 +14,7 @@ export default class Notification extends Component {
     updateNotification: PropTypes.func.isRequired,
     notificationsBounds: PropTypes.object.isRequired,
     updateNotificationsBoundingBox: PropTypes.func.isRequired,
+    checkSeen: PropTypes.bool.isRequired,
     href: PropTypes.string
   };
 
@@ -29,19 +30,27 @@ export default class Notification extends Component {
   }
 
   componentDidMount() {
-    this.props.updateNotificationsBoundingBox();
     this.updateNotificationBoundingBox();
 
     window.addEventListener('scroll', this.updateNotificationBoundingBox);
   }
 
   componentWillUpdate(nextProps, nextState) {
+    if (this.state.notificationBounds !== nextState.notificationBounds) {
+      this.props.updateNotificationsBoundingBox();
+    }
+
     if (
       this.props.notificationsBounds !== nextProps.notificationsBounds ||
       this.state.notificationBounds !== nextState.notificationBounds
     ) {
       this.hasNotificationBeenSeen(nextProps.notificationsBounds, nextState.notificationBounds);
     }
+
+    if (this.props.checkSeen !== nextProps.checkSeen && nextProps.checkSeen) {
+      this.updateNotificationBoundingBox();
+    }
+
   }
 
   componentWillUnmount() {
@@ -53,15 +62,15 @@ export default class Notification extends Component {
   }
 
   hasNotificationBeenSeen(notificationsBounds, notificationBounds) {
-    const topBound = notificationsBounds.top;
-    const bottomBound = notificationsBounds.bottom;
-    const notificationMidpoint = (notificationBounds.top + notificationBounds.bottom) / 2;
-    if (!this.seen) {
+    if (!this.seen && notificationsBounds.top && notificationsBounds.bottom && notificationBounds.top && notificationBounds.bottom) {
+      const topBound = notificationsBounds.top;
+      const bottomBound = notificationsBounds.bottom;
+      const notificationMidpoint = (notificationBounds.top + notificationBounds.bottom) / 2;
+
       if (
-        notificationMidpoint <= topBound ||
-        notificationMidpoint >= bottomBound
+        notificationMidpoint >= topBound &&
+        notificationMidpoint <= bottomBound
       ) {
-        console.log('has been seen');
         this.props.updateNotification(this.props.index, { seen: true });
       }
     }

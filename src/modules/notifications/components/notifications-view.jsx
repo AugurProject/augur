@@ -5,20 +5,46 @@ import NullStateMessage from 'modules/common/components/null-state-message';
 import Notification from 'modules/notifications/components/notification';
 
 import getValue from 'utils/get-value';
+import debounce from 'utils/debounce';
 
 export default class NotificationsView extends Component {
+  static propTypes = {
+    notifications: PropTypes.object.isRequired,
+    updateNotification: PropTypes.func.isRequired,
+    removeNotification: PropTypes.func.isRequired,
+    clearNotifications: PropTypes.func.isRequired,
+    toggleNotifications: PropTypes.func.isRequired,
+    onClick: PropTypes.func
+  };
+
   constructor(props) {
     super(props);
 
     this.state = {
-      notificationsBounds: {}
+      notificationsBounds: {},
+      checkSeen: false
     };
 
     this.updateNotificationsBoundingBox = this.updateNotificationsBoundingBox.bind(this);
+    this.setCheckSeen = debounce(this.setCheckSeen.bind(this), 100);
   }
 
   componentDidMount() {
     this.updateNotificationsBoundingBox();
+
+    this.notifications && this.notifications.addEventListener('scroll', () => { this.setCheckSeen(true); });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.checkSeen && prevState.checkSeen !== this.state.checkSeen) this.setCheckSeen(false);
+  }
+
+  componentWillUnmount() {
+    this.notifications && this.notifications.removeEventListener('scroll', this.setCheckSeen);
+  }
+
+  setCheckSeen(checkSeen) {
+    this.setState({ checkSeen });
   }
 
   updateNotificationsBoundingBox() {
@@ -53,9 +79,9 @@ export default class NotificationsView extends Component {
             ref={(notifications) => {
               this.notifications = notifications;
             }}
+            className="notifications"
           >
             <CSSTransitionGroup
-              className="notifications"
               component="div"
               transitionName="notification"
               transitionAppear
@@ -71,7 +97,8 @@ export default class NotificationsView extends Component {
                   toggleNotifications={p.toggleNotifications}
                   updateNotification={p.updateNotification}
                   notificationsBounds={s.notificationsBounds}
-                  updateNotificationsBoundingBox={this.updateNotificationsBoundingBox}
+                  checkSeen={s.checkSeen}
+                  updateNotificationsBoundingBox={this.updateNotificationsBoundingBox()}
                   {...notification}
                 />
               ))}
@@ -83,64 +110,3 @@ export default class NotificationsView extends Component {
     );
   }
 }
-
-// const NotificationsView = (p) => {
-//   const notifications = getValue(p, 'notifications.notifications');
-//
-//   const animationSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-normal'), 10);
-//
-//   return (
-//     <section id="notifications_view">
-//       <div className="notifications-header">
-//         <h3>Notifications</h3>
-//         {!!notifications && !!notifications.length &&
-//           <button
-//             className="unstyled notifications-button-clear"
-//             onClick={(e) => {
-//               e.stopPropagation();
-//               p.clearNotifications();
-//             }}
-//           >
-//             clear all
-//           </button>
-//         }
-//       </div>
-//       {notifications && notifications.length ?
-//         <CSSTransitionGroup
-//           ref={(notifications) => {
-//             this.notificationsBounds = notifications.getBoundingClientRect();
-//           }}
-//           className="notifications"
-//           component="div"
-//           transitionName="notification"
-//           transitionAppear
-//           transitionAppearTimeout={animationSpeed}
-//           transitionEnterTimeout={animationSpeed}
-//           transitionLeaveTimeout={animationSpeed}
-//         >
-//           {notifications.map((notification, i) => (
-//             <Notification
-//               key={`${notification.id}-${notification.title}`}
-//               removeNotification={() => p.removeNotification(i)}
-//               onClick={p.onClick}
-//               toggleNotifications={p.toggleNotifications}
-//               notificationContainer={this.notifications}
-//               {...notification}
-//             />
-//           ))}
-//         </CSSTransitionGroup> :
-//         <NullStateMessage message="No Notifications" />
-//       }
-//     </section>
-//   );
-// };
-//
-// NotificationsView.propTypes = {
-//   notifications: PropTypes.object.isRequired,
-//   removeNotification: PropTypes.func.isRequired,
-//   clearNotifications: PropTypes.func.isRequired,
-//   toggleNotifications: PropTypes.func.isRequired,
-//   onClick: PropTypes.func
-// };
-//
-// export default NotificationsView;
