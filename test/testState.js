@@ -6,6 +6,7 @@ import { formatNumber, formatShares } from 'utils/format-number';
 import { formatDate } from 'utils/format-date';
 
 const testState = {
+  marketLoading: [],
   activeView: 'markets',
   accountTrades: {
     testMarketID: {
