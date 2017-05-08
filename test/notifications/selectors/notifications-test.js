@@ -61,17 +61,20 @@ describe('modules/notifications/selectors/notifications', () => {
             {
               seen: true,
               id: '0xTEST1',
-              timestamp: 3
+              timestamp: 3,
+              index: 1
             },
             {
               seen: false,
               id: '0xTEST2',
-              timestamp: 2
+              timestamp: 2,
+              index: 2
             },
             {
               seen: false,
               id: '0xTEST0',
-              timestamp: 1
+              timestamp: 1,
+              index: 0
             }
           ]
         };
