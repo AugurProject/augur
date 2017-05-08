@@ -2,10 +2,10 @@ import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
 import { loadBidsAsks } from 'modules/bids-asks/actions/load-bids-asks';
 import { loadAccountTrades } from 'modules/my-positions/actions/load-account-trades';
 import { loadPriceHistory } from 'modules/market/actions/load-price-history';
-import { updateMarketDataLoading } from 'modules/app/actions/update-market-data-loading';
+import { addMarketLoading, removeMarketLoading } from 'modules/market/actions/update-market-loading';
 
 export const loadFullMarket = marketID => (dispatch, getState) => {
-  dispatch(updateMarketDataLoading(marketID, true));
+  dispatch(addMarketLoading(marketID));
 
   // if the basic data is already loaded, just load the details
   if (getState().marketsData[marketID]) {
@@ -21,9 +21,9 @@ export const loadFullMarket = marketID => (dispatch, getState) => {
 export const loadMarketDetails = marketID => dispatch => (
   dispatch(loadBidsAsks(marketID, () => (
     dispatch(loadAccountTrades({ market: marketID }, () => (
-      dispatch(loadPriceHistory(marketID, () => (
-        dispatch(updateMarketDataLoading(marketID, false))
-      )))
+      dispatch(loadPriceHistory(marketID, () => {
+        dispatch(removeMarketLoading(marketID));
+      }))
     )))
   )))
 );

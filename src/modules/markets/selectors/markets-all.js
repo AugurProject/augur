@@ -2,6 +2,7 @@ import { createSelector } from 'reselect';
 import store from 'src/store';
 import {
   selectMarketsDataState,
+  selectMarketLoadingState,
   selectFavoritesState,
   selectReportsState,
   selectOutcomesDataState,
@@ -27,6 +28,7 @@ export default function () {
 
 export const selectMarkets = createSelector(
   selectMarketsDataState,
+  selectMarketLoadingState,
   selectFavoritesState,
   selectReportsState,
   selectOutcomesDataState,
@@ -41,7 +43,7 @@ export const selectMarkets = createSelector(
   selectOrderCancellationState,
   selectSmallestPositionsState,
   selectLoginAccountState,
-  (marketsData, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, branch, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, loginAccount) => {
+  (marketsData, marketLoading, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, branch, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, loginAccount) => {
     if (!marketsData) return [];
     return Object.keys(marketsData).map((marketID) => {
       if (!marketID || !marketsData[marketID]) return {};
@@ -50,6 +52,7 @@ export const selectMarkets = createSelector(
       return assembleMarket(
         marketID,
         marketsData[marketID],
+        marketLoading.indexOf(marketID) !== -1,
         priceHistory[marketID],
         isMarketDataOpen(marketsData[marketID]),
         isMarketDataExpired(marketsData[marketID], new Date().getTime()),

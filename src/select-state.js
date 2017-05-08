@@ -1,7 +1,6 @@
 import { createSelector } from 'reselect';
 
 export const selectEnvState = state => state.env;
-export const selectRequestsState = state => state.requests;
 export const selectBlockchainState = state => state.blockchain;
 export const selectBranchState = state => state.branch;
 export const selectConnectionState = state => state.connection;
@@ -11,6 +10,7 @@ export const selectLoginAccountState = state => state.loginAccount;
 export const selectActiveViewState = state => state.activeView;
 export const selectNewMarketState = state => state.newMarket;
 export const selectMarketsDataState = state => state.marketsData;
+export const selectMarketLoadingState = state => state.marketLoading;
 export const selectHasLoadedMarketsState = state => state.hasLoadedMarkets;
 export const selectOutcomesDataState = state => state.outcomesData;
 export const selectEventMarketsMapState = state => state.eventMarketsMap;
