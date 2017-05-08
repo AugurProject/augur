@@ -84,7 +84,7 @@ export default class Notification extends Component {
         ref={(notification) => {
           this.notification = notification;
         }}
-        className="notification"
+        className={classNames('notification', { 'notification-unseen': !p.seen })}
       >
         <button
           className={classNames('unstyled notification-details', { navigational: !!p.onClick })}

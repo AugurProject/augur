@@ -1,10 +1,18 @@
 .notification {
   .font-size-normal();
 
+  background-color: @color-white;
   display: flex;
   overflow-x: none;
   overflow-y: hidden;
   pointer-events: all;
+  transition-duration: @animation-speed-fast;
+  transition-property: background-color;
+  transition-timing-function: @animation-default-type;
+
+  &.notification-unseen {
+    background-color: @color-orange-light;
+  }
 
   .notification-details {
     display: flex;

@@ -98,7 +98,7 @@ export default class NotificationsView extends Component {
                   updateNotification={p.updateNotification}
                   notificationsBounds={s.notificationsBounds}
                   checkSeen={s.checkSeen}
-                  updateNotificationsBoundingBox={this.updateNotificationsBoundingBox()}
+                  updateNotificationsBoundingBox={this.updateNotificationsBoundingBox}
                   {...notification}
                 />
               ))}
