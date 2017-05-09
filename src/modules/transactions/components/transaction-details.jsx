@@ -9,7 +9,6 @@ import { formatConfirmations } from 'utils/format-number';
 
 const TransactionDetails = (p) => {
   const TransactionDetails = (p) => {
-    console.log('PPP -- ', p);
     const tradingFees = getValue(p, 'tradingFees.value');
     const balances = getValue(p, 'data.balances');
     const totalCost = getValue(p, 'totalCost.value');
