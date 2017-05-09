@@ -39,7 +39,7 @@
     "prerender-node": "2.7.1",
     "qrcode.react": "0.7.0",
     "rc-progress": "2.1.1",
-    "react": "15.5.4",
+    "react": "15.4.2",
     "react-datetime": "2.8.10",
     "react-dom": "15.5.4",
     "react-highcharts": "11.5.0",
