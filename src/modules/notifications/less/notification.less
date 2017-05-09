@@ -1,7 +1,7 @@
 .notification {
   .font-size-normal();
 
-  background-color: @color-white;
+  background-color: transparent;
   display: flex;
   overflow-x: none;
   overflow-y: hidden;
@@ -54,14 +54,6 @@
     min-width: 2em;
   }
 
-  .notification-details,
-  .notification-remove {
-    &:not(:first-of-type),
-    &:not(:last-of-type) {
-      .border(true, @border-bottom, @border-light);
-    }
-  }
-
   &.notification-enter,
   &.notification-appear {
     max-height: 0px; /* stylelint-disable-line length-zero-no-unit */
@@ -88,5 +80,13 @@
       transition-property: max-height, opacity;
       transition-timing-function: @animation-default-type;
     }
+  }
+}
+
+.notifications > div article {
+  .border(true, @border-bottom, @border-light);
+
+  &:last-child {
+    .border(false);
   }
 }
