@@ -19,16 +19,34 @@
     flex: 1;
     flex-direction: column;
     justify-content: flex-start;
-    padding: 0.2em 0 0.2em 0.2em;
+    padding: 0.2em 0 0.2em 0.4em;
 
     .notification-title {
       .font-weight-normal();
 
+      margin-bottom: 0.1em;
+      max-width: 250px;
+      overflow: hidden;
+      text-overflow: ellipsis;
       text-transform: capitalize;
+      white-space: nowrap;
+
+      @media @breakpoint-1 {
+        max-width: calc(@step-1 - 50px);
+      }
     }
 
     .notification-description {
       .font-size-small();
+
+      max-width: 250px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      @media @breakpoint-1 {
+        max-width: calc(@step-1 - 50px);
+      }
     }
   }
 
