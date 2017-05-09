@@ -1,21 +1,24 @@
 import React from 'react';
 import ValueDenomination from 'modules/common/components/value-denomination';
+import Link from 'modules/link/components/link';
+
 import { SUCCESS } from 'modules/transactions/constants/statuses';
 
 import getValue from 'utils/get-value';
 import { formatConfirmations } from 'utils/format-number';
 
 const TransactionDetails = (p) => {
-  const tradingFees = getValue(p, 'tradingFees.value');
-  const balances = getValue(p, 'data.balances');
-  const totalCost = getValue(p, 'totalCost.value');
-  const totalReturn = getValue(p, 'totalReturn.value');
-  const marketCreationFee = getValue(p, 'marketCreationFee.value');
-  const bond = getValue(p, 'bond.value');
-  const gasFees = getValue(p, 'gasFees.value');
+  const TransactionDetails = (p) => {
+    console.log('PPP -- ', p);
+    const tradingFees = getValue(p, 'tradingFees.value');
+    const balances = getValue(p, 'data.balances');
+    const totalCost = getValue(p, 'totalCost.value');
+    const totalReturn = getValue(p, 'totalReturn.value');
+    const marketCreationFee = getValue(p, 'marketCreationFee.value');
+    const bond = getValue(p, 'bond.value');
+    const gasFees = getValue(p, 'gasFees.value');
 
-  return (
-    <article className="transaction-details">
+    return (
       <div className="transaction-details-content">
         {!!tradingFees &&
           <div className="transaction-detail">
@@ -112,6 +115,17 @@ const TransactionDetails = (p) => {
           </div>
         }
       </div>
+    );
+  };
+
+  return (
+    <article className="transaction-details">
+      {p.hash ?
+        <Link href={`https://testnet.etherscan.io/tx/${p.hash}`} target="_blank">
+          <TransactionDetails {...p} />
+        </Link> :
+        <TransactionDetails {...p} />
+      }
     </article>
   );
 };
