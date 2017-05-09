@@ -71,7 +71,9 @@ export default class Notification extends Component {
         notificationMidpoint >= topBound &&
         notificationMidpoint <= bottomBound
       ) {
-        this.props.updateNotification(this.props.index, { seen: true });
+        setTimeout(() => {
+          this.props.updateNotification(this.props.index, { seen: true });
+        }, 1000);
       }
     }
   }
