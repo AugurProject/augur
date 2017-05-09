@@ -34,7 +34,7 @@ export const selectPositionsPlusAsks = createBigCacheSelector(10)(
       //          a user has positions within a market + no orders.
       //          The order book is not loaded due to lazy load
       const asks = getValue(orderBooks, `${marketID}.sell`);
-      if (asks && asks.length) {
+      if (asks && Object.keys(asks).length) {
         positionsPlusAsks[marketID] = selectMarketPositionPlusAsks(address, positions[marketID], asks);
       } else {
         positionsPlusAsks[marketID] = positions[marketID];
