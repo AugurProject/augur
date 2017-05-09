@@ -6,19 +6,18 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
+describe(`modules/transactions/actions/construct-relay-transaction.js`, function () { // eslint-disable-line func-names, prefer-arrow-callback
   proxyquire.noPreserveCache();
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
   const augur = new Augur();
-  let clock;
 
   beforeEach(() => {
-    clock = sinon.useFakeTimers(new Date(2017, 1, 1).getTime());
+    this.clock = sinon.useFakeTimers(1485907200000);
   });
 
   after(() => {
-    clock.restore();
+    this.clock.restore();
   });
 
   const test = (t) => {
@@ -229,7 +228,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
               href: '/?page=transactions',
               id: '0x5bde43fc683d39c9f449424760401b2de067c8bda09acbf4c61dc923c0c98878',
               seen: false,
-              timestamp: 1485932400,
+              timestamp: 1485907200,
               title: 'Bid 5 Shares - sent',
             }
           },
@@ -491,7 +490,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
               href: '/?page=transactions',
               id: '0xe8109915cb0972d1aae971014ded4c744b7ad688704b0a973f626c42220a9ba4',
               seen: false,
-              timestamp: 1485932400,
+              timestamp: 1485907200,
               title: 'short ask 5 Shares - sent',
             }
           },
@@ -753,7 +752,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
               href: '/?page=transactions',
               id: '0xe8109915cb0972d1aae971014ded4c744b7ad688704b0a973f626c42220a9ba4',
               seen: false,
-              timestamp: 1485932400,
+              timestamp: 1485907200,
               title: 'ask 5 Shares - sent',
             }
           },
