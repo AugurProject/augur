@@ -119,6 +119,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
       let remainingEth = abi.bignum(maxValue);
       for (let i = 0; i < numTradeIDs; ++i) {
         const order = orders[i];
+        market = marketsData[abi.format_int256(order.market)];
         let amount;
         if (abi.bignum(remainingShares).gt(ZERO)) {
           if (abi.bignum(remainingShares).gt(abi.bignum(order.amount))) {
@@ -127,7 +128,6 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             amount = remainingShares;
           }
         } else {
-          market = marketsData[abi.format_int256(order.market)];
           let price;
           if (market.type === SCALAR) {
             price = abi.bignum(augur.shrinkScalarPrice(market.minValue, order.price));
@@ -153,7 +153,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
 
         dispatch(addNotification({
           id: p.transactionHash,
-          title: `Committting to ${order.type === 'buy' ? 'sell' : 'buy'} ${amount || ''} ${amount && 'Share'}${amount && parseFloat(amount, 10) === 1 ? '' : 's'} - ${status}`,
+          title: `Committing to ${order.type === 'buy' ? 'sell' : 'buy'} ${amount || ''} ${amount && 'Share'}${amount && parseFloat(amount, 10) === 1 ? '' : 's'} - ${status}`,
           description: market.description || '',
           timestamp: p.timestamp,
           href: transactionsHref
