@@ -24,6 +24,7 @@ function createSingleEventMarket(p) {
     tag3: formattedTags[2],
     makerFees: abi.fix(fees.makerProportionOfFee, "hex"),
     extraInfo: p.extraInfo || "",
+    resolution: p.resolution || "",
     tx: { value: calculateRequiredMarketValue(rpcInterface.getGasPrice()) }
   }));
 }
