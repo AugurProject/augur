@@ -44,10 +44,16 @@ export default class PortfolioNavs extends Component {
     }
   }
 
-  updatePortfolioNavHeight() {
-    const newHeight = this.portfolioNavContainer && this.portfolioNavContainer.clientHeight;
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.updatePortfolioNavHeight);
+  }
 
-    this.portfolioNav.style.height = `${newHeight}px`;
+  updatePortfolioNavHeight() {
+    if (this.portfolioNav) {
+      const newHeight = this.portfolioNavContainer && this.portfolioNavContainer.clientHeight;
+
+      this.portfolioNav.style.height = `${newHeight}px`;
+    }
   }
 
   render() {
