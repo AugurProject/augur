@@ -1,11 +1,11 @@
 "use strict";
 
-var api = require("../../api");
+var buy = require("../../trading/make-order/buy");
+var sell = require("../../trading/make-order/sell");
 var noop = require("../../utils/noop");
 
 function generateOrder(type, market, outcome, amount, price, scalarMinMax, callback) {
-  var makeOrder;
-  makeOrder = (type === "buy") ? api().BuyAndSellShares.buy : api().BuyAndSellShares.sell;
+  var makeOrder = (type === "buy") ? buy : sell;
   makeOrder({
     amount: amount,
     price: price,

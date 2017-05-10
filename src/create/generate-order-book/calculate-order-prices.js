@@ -1,12 +1,13 @@
 "use strict";
 
 var BigNumber = require("bignumber.js");
+var calculatePriceDepth = require("./calculate-price-depth");
 var errors = require("../../rpc-interface").errors;
 var ZERO = require("../../constants").ZERO;
 
 function calculateOrderPrices(liquidity, startingQuantity, bestStartingQuantity, initialFairPrices, minValue, maxValue, halfPriceWidth) {
   var priceDepth, numOutcomes, buyPrices, sellPrices, numSellOrders, numBuyOrders, shares, i, j, buyPrice, sellPrice, outcomeShares;
-  priceDepth = this.calculatePriceDepth(liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue);
+  priceDepth = calculatePriceDepth(liquidity, startingQuantity, bestStartingQuantity, halfPriceWidth, minValue, maxValue);
   if (priceDepth.lte(ZERO) || priceDepth.toNumber() === Infinity) {
     return errors.INSUFFICIENT_LIQUIDITY;
   }

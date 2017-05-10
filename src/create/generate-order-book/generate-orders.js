@@ -10,7 +10,7 @@ function generateOrders(market, outcomes, orders, bestStartingQuantity, starting
     generateOrdersForOutcome(index, market, outcome, orders, bestStartingQuantity, startingQuantity, scalarMinMax, onSetupOutcome, onSetupOrder, nextOutcome);
   }, function (err) {
     if (err) return onFailed(err);
-    getOrderBook(market, scalarMinMax, onSuccess);
+    getOrderBook({ market: market, scalarMinMax: scalarMinMax }, onSuccess);
   });
 }
 
