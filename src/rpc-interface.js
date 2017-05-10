@@ -10,6 +10,7 @@ var createRpcInterface = function (ethrpc) {
     personal: ethrpc.personal,
     clear: ethrpc.clear,
     getBlockStream: ethrpc.getBlockStream,
+    getCoinbase: ethrpc.getCoinbase,
     getCurrentBlock: ethrpc.getCurrentBlock,
     getGasPrice: ethrpc.getGasPrice,
     getNetworkID: ethrpc.getNetworkID,
