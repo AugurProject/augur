@@ -1,5 +1,5 @@
-import { selectMarketFromEventID } from '../../market/selectors/market';
-import { selectMarketLink } from '../../link/selectors/links';
+import { selectMarketFromEventID } from 'modules/market/selectors/market';
+import { selectMarketLink } from 'modules/link/selectors/links';
 
 export function nextReportPage() {
   return (dispatch, getState) => {

@@ -23,18 +23,18 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
       const WinningPositions = sinon.stub().returns(t.selectors.winningPositions);
       const action = proxyquire('../../../src/modules/my-positions/actions/claim-proceeds.js', {
         '../../../services/augurjs': AugurJS,
-        '../../my-positions/actions/load-account-trades': LoadAccountTrades,
+        './load-account-trades': LoadAccountTrades,
         '../../markets/actions/load-markets-info': LoadMarketsInfo,
         '../../auth/actions/update-assets': UpdateAssets,
-        '../../my-positions/selectors/winning-positions': WinningPositions
+        '../selectors/winning-positions': WinningPositions
       });
       sinon.stub(AugurJS.abi, 'bignum', n => new BigNumber(n, 10));
       sinon.stub(AugurJS.augur, 'claimMarketsProceeds', (branchID, markets, cb) => {
         store.dispatch({ type: 'CLAIM_MARKETS_PROCEEDS', markets });
         cb(null, markets.map(market => market.id));
       });
-      sinon.stub(LoadAccountTrades, 'loadAccountTrades', (marketID, cb) => (dispatch, getState) => {
-        dispatch({ type: 'LOAD_ACCOUNT_TRADES', marketID });
+      sinon.stub(LoadAccountTrades, 'loadAccountTrades', (options, cb) => (dispatch, getState) => {
+        dispatch({ type: 'LOAD_ACCOUNT_TRADES', ...options });
         cb(null);
       });
       sinon.stub(LoadMarketsInfo, 'loadMarketsInfo', (marketIDs, cb) => (dispatch, getState) => {
@@ -47,6 +47,7 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
       store.clearActions();
     });
   };
+
   test({
     description: 'no positions',
     state: {
@@ -66,6 +67,7 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
       assert.deepEqual(actions, []);
     }
   });
+
   test({
     description: '1 position in closed market',
     state: {
@@ -106,10 +108,11 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
         marketIDs: ['0xa1'],
       }, {
         type: 'LOAD_ACCOUNT_TRADES',
-        marketID: '0xa1',
+        market: '0xa1',
       }]);
     }
   });
+
   test({
     description: '1 position in open market',
     state: {
@@ -135,6 +138,7 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
       assert.deepEqual(actions, []);
     }
   });
+
   test({
     description: '1 position in open market, 1 position in closed market',
     state: {
@@ -180,10 +184,11 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
         marketIDs: ['0xa2'],
       }, {
         type: 'LOAD_ACCOUNT_TRADES',
-        marketID: '0xa2',
+        market: '0xa2',
       }]);
     }
   });
+
   test({
     description: '1 position in open market, 2 positions in closed markets',
     state: {
@@ -242,16 +247,17 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
         marketIDs: ['0xa2'],
       }, {
         type: 'LOAD_ACCOUNT_TRADES',
-        marketID: '0xa2',
+        market: '0xa2',
       }, {
         type: 'LOAD_MARKETS_INFO',
         marketIDs: ['0xa3'],
       }, {
         type: 'LOAD_ACCOUNT_TRADES',
-        marketID: '0xa3',
+        market: '0xa3',
       }]);
     }
   });
+
   test({
     description: '2 position in open markets, 1 position in closed market',
     state: {
@@ -302,7 +308,7 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
         marketIDs: ['0xa3'],
       }, {
         type: 'LOAD_ACCOUNT_TRADES',
-        marketID: '0xa3',
+        market: '0xa3',
       }]);
     }
   });

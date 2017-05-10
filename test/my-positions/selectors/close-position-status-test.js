@@ -10,7 +10,7 @@ import { SUCCESS, FAILED } from 'modules/transactions/constants/statuses';
 import { CLEAR_CLOSE_POSITION_OUTCOME } from 'modules/my-positions/actions/clear-close-position-outcome';
 import { UPDATE_TRADE_COMMIT_LOCK } from 'modules/trade/actions/update-trade-commitment';
 
-describe('modules/my-positions/selectors/close-position-status', function () {
+describe('modules/my-positions/selectors/close-position-status', function () { // eslint-disable-line func-names, prefer-arrow-callback
   proxyquire.noPreserveCache().noCallThru();
 
   const middlewares = [thunk];

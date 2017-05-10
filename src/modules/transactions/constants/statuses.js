@@ -1,6 +1,7 @@
 export const PENDING = 'pending';
 export const SUCCESS = 'success';
 export const FAILED = 'failed';
+export const COMMITTING = 'committing';
 export const SUBMITTED = 'submitted';
 export const INTERRUPTED = 'interrupted';
 

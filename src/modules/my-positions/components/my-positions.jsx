@@ -1,11 +1,22 @@
 import React, { PropTypes } from 'react';
 
 import NullStateMessage from 'modules/common/components/null-state-message';
-
 import MyPositionsMarket from 'modules/my-positions/components/my-positions-market';
+import TransactionsLoadingActions from 'modules/transactions/components/transactions-loading-actions';
 
 const MyPositions = p => (
   <article className="my-positions">
+    <div className="view-header">
+      <div className="view-header-group" />
+      <div className="view-header-group">
+        <TransactionsLoadingActions
+          loadMoreTransactions={p.loadMoreTransactions}
+          loadAllTransactions={p.loadAllTransactions}
+          transactionsLoading={p.transactionsLoading}
+          hasAllTransactionsLoaded={p.hasAllTransactionsLoaded}
+        />
+      </div>
+    </div>
     {p.markets && p.markets.length ?
       p.markets.map(market => (
         <MyPositionsMarket

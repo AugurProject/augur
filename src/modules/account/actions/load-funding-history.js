@@ -1,13 +1,17 @@
 import async from 'async';
-import { augur, constants } from '../../../services/augurjs';
-import { convertLogsToTransactions } from '../../../modules/transactions/actions/convert-logs-to-transactions';
+import { augur, constants } from 'services/augurjs';
+import { convertLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
 
-export function loadFundingHistory(cb) {
+export function loadFundingHistory(options, cb) {
   return (dispatch, getState) => {
     const callback = cb || (e => e && console.error('loadFundingHistory:', e));
     const { branch, loginAccount } = getState();
-    const params = { sender: loginAccount.address, branch: branch.id };
-    if (loginAccount.registerBlockNumber) {
+    const params = {
+      ...options,
+      sender: loginAccount.address,
+      branch: branch.id
+    };
+    if (!params.fromBlock && loginAccount.registerBlockNumber) {
       params.fromBlock = loginAccount.registerBlockNumber;
     }
     async.eachLimit([
@@ -25,12 +29,14 @@ export function loadFundingHistory(cb) {
   };
 }
 
-export function loadTransferHistory(cb) {
+export function loadTransferHistory(options, cb) {
   return (dispatch, getState) => {
     const callback = cb || (e => e && console.error('loadTransferHistory:', e));
     const { loginAccount } = getState();
-    const params = {};
-    if (loginAccount.registerBlockNumber) {
+    const params = {
+      ...options
+    };
+    if (!params.fromBlock && loginAccount.registerBlockNumber) {
       params.fromBlock = loginAccount.registerBlockNumber;
     }
     async.eachLimit([
@@ -47,4 +53,3 @@ export function loadTransferHistory(cb) {
     }, callback);
   };
 }
-

@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import store from 'src/store';
 import { selectSelectedMarketsHeaderState } from 'src/select-state';
-import { selectMarketsTotals } from '../../markets/selectors/markets-totals';
+import { selectMarketsTotals } from 'modules/markets/selectors/markets-totals';
 
 export default function () {
   return selectMarketsHeader(store.getState());

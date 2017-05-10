@@ -1,6 +1,7 @@
 import { augur } from 'services/augurjs';
 import { convertTradeLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
 import { updateOrders } from 'modules/my-orders/actions/update-orders';
+import { loadBidsAsksHistory } from 'modules/bids-asks/actions/load-bids-asks-history';
 
 export const UPDATE_ACCOUNT_TRADES_DATA = 'UPDATE_ACCOUNT_TRADES_DATA';
 export const UPDATE_ACCOUNT_POSITIONS_DATA = 'UPDATE_ACCOUNT_POSITIONS_DATA';
@@ -41,6 +42,7 @@ export function updateAccountTradesData(data, marketID) {
       augur.getAdjustedPositions(account, { market }, (err, positions) => {
         if (err) return console.error('getAdjustedPositions error: ', err);
         dispatch(updateAccountPositionsData(positions, market));
+        dispatch(loadBidsAsksHistory({ market }));
       });
       dispatch({
         type: UPDATE_ACCOUNT_TRADES_DATA,

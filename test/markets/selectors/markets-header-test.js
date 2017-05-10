@@ -24,7 +24,7 @@ describe('modules/markets/selectors/markets-header.js', () => {
       };
       const selector = proxyquire('../../../src/modules/markets/selectors/markets-header', {
         '../../../store': store,
-        '../../markets/selectors/markets-totals': MarketsTotals
+        './markets-totals': MarketsTotals
       });
       t.assertions(selector, store);
     });

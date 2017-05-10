@@ -65,7 +65,7 @@ describe(`modules/markets/selectors/markets-filtered.js`, () => {
 
   const selector = proxyquire('../../../src/modules/markets/selectors/markets-filtered.js', {
     '../../../store': store,
-    '../../markets/selectors/markets-all': Markets
+    './markets-all': Markets
   });
 
   filteredMarkets = selector.default;

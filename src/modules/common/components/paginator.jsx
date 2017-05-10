@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import Link from 'modules/link/components/link';
 
 const Paginator = p => (
   <article className="paginator">
     <div className="pagination-control-container">
       <div className="pagination-group-1">
-        {!!p.pagination && !!p.pagination.previousPageNum &&
+        {!!p.previousPageLink &&
           <Link
-            {...p.pagination.previousPageLink}
+            {...p.previousPageLink}
             className="button"
           >
             <i className="fa fa-angle-left" />
@@ -17,14 +17,14 @@ const Paginator = p => (
 
       <div className="pagination-group-2">
         <span className="pagination-count">
-          {`${p.pagination.startItemNum} - ${p.pagination.endItemNum}`} <strong>of</strong> {p.pagination.numUnpaginated}
+          {p.startItemNum}{!!p.endItemNum && p.endItemNum > 1 && ` - ${p.endItemNum}`} <strong>of</strong> {p.numUnpaginated}
         </span>
       </div>
 
       <div className="pagination-group-3">
-        {!!p.pagination && !!p.pagination.nextPageNum &&
+        {!!p.nextPageLink &&
           <Link
-            {...p.pagination.nextPageLink}
+            {...p.nextPageLink}
             className="button"
           >
             <i className="fa fa-angle-right" />
@@ -34,5 +34,16 @@ const Paginator = p => (
     </div>
   </article>
 );
+
+Paginator.propTypes = {
+  previousPageNum: PropTypes.number,
+  previousPageLink: PropTypes.object,
+  startItemNum: PropTypes.number,
+  endItemNum: PropTypes.number,
+  numUnpaginated: PropTypes.number,
+  nextPageNum: PropTypes.number,
+  nextPageLink: PropTypes.object,
+  isMobile: PropTypes.bool
+};
 
 export default Paginator;

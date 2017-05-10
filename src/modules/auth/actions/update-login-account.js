@@ -1,5 +1,5 @@
-import { augur } from '../../../services/augurjs';
-import { base58Encode } from '../../../utils/base-58';
+import { augur } from 'services/augurjs';
+import { base58Encode } from 'utils/base-58';
 
 export const UPDATE_LOGIN_ACCOUNT = 'UPDATE_LOGIN_ACCOUNT';
 export const CLEAR_LOGIN_ACCOUNT = 'CLEAR_LOGIN_ACCOUNT';

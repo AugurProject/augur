@@ -1,4 +1,4 @@
-import { UPDATE_MARKET_ORDER_BOOK, REPLACE_MARKET_ORDER_BOOK, CLEAR_MARKET_ORDER_BOOK } from '../../bids-asks/actions/update-market-order-book';
+import { UPDATE_MARKET_ORDER_BOOK, REPLACE_MARKET_ORDER_BOOK, CLEAR_MARKET_ORDER_BOOK } from 'modules/bids-asks/actions/update-market-order-book';
 
 /**
  * @param {Object} orderBooks

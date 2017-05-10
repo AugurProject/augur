@@ -1,6 +1,6 @@
-import store from '../../../store';
-import { postChatMessage } from '../../chat/actions/post-chat-message';
-import { formatDate } from '../../../utils/format-date';
+import store from 'src/store';
+import { postChatMessage } from 'modules/chat/actions/post-chat-message';
+import { formatDate } from 'utils/format-date';
 
 export default function () {
   const { chatMessages } = store.getState();

@@ -1,5 +1,5 @@
-import { augur } from '../../../services/augurjs';
-import { clearLoginAccount } from '../../auth/actions/update-login-account';
+import { augur } from 'services/augurjs';
+import { clearLoginAccount } from 'modules/auth/actions/update-login-account';
 
 export function logout() {
   return (dispatch, getState) => {

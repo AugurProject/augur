@@ -24,7 +24,7 @@ describe(`modules/auth/actions/login.js`, () => {
 
   const action = proxyquire('../../../src/modules/auth/actions/login', {
     '../../../services/augurjs': AugurJS,
-    '../../auth/actions/load-account-data': LoadAccountData
+    './load-account-data': LoadAccountData
   });
 
   beforeEach(() => {

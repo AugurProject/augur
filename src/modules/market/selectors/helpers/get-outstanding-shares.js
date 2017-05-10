@@ -1,5 +1,5 @@
-import { abi } from '../../../../services/augurjs';
-import { ZERO } from '../../../trade/constants/numbers';
+import { abi } from 'services/augurjs';
+import { ZERO } from 'modules/trade/constants/numbers';
 
 /**
  *

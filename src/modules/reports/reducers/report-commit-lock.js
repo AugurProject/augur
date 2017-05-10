@@ -1,4 +1,4 @@
-import { UPDATE_REPORT_COMMIT_LOCK } from '../../reports/actions/commit-report';
+import { UPDATE_REPORT_COMMIT_LOCK } from 'modules/reports/actions/commit-report';
 
 export default function (reportCommitLock = {}, action) {
   switch (action.type) {

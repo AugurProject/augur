@@ -1,11 +1,11 @@
 import BigNumber from 'bignumber.js';
-import { augur, abi, constants } from '../../../services/augurjs';
-import { BUY, SELL } from '../../trade/constants/types';
-import { TWO } from '../../trade/constants/numbers';
-import { SCALAR } from '../../markets/constants/market-types';
+import { augur, abi, constants } from 'services/augurjs';
+import { BUY, SELL } from 'modules/trade/constants/types';
+import { TWO } from 'modules/trade/constants/numbers';
+import { SCALAR } from 'modules/markets/constants/market-types';
 
-import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from '../../bids-asks/helpers/select-order-book';
-import { selectMarket } from '../../market/selectors/market';
+import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from 'modules/bids-asks/helpers/select-order-book';
+import { selectMarket } from 'modules/market/selectors/market';
 
 export const UPDATE_TRADE_IN_PROGRESS = 'UPDATE_TRADE_IN_PROGRESS';
 export const CLEAR_TRADE_IN_PROGRESS = 'CLEAR_TRADE_IN_PROGRESS';

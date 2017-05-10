@@ -17,7 +17,7 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
   const store = mocks.store;
   const loadBidsAsksModule = proxyquire('../../../src/modules/bids-asks/actions/load-bids-asks', {
     '../../../services/augurjs': augurJsMock,
-    '../../bids-asks/actions/update-market-order-book': updateMarketOrderBookModule,
+    './update-market-order-book': updateMarketOrderBookModule,
     '../../../store': store
   });
 

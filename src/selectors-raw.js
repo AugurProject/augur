@@ -36,6 +36,7 @@ import authSignup from 'modules/auth/selectors/auth-signup';
 import authImport from 'modules/auth/selectors/auth-import';
 import closePositionStatus from 'modules/my-positions/selectors/close-position-status';
 import openOrders from 'modules/user-open-orders/selectors/open-orders';
+import notifications from 'modules/notifications/selectors/notifications';
 
 const selectors = {
   activeView,
@@ -60,6 +61,7 @@ const selectors = {
   loginAccountPositions,
   transactions,
   transactionsTotals,
+  notifications,
   isTransactionsWorking,
   tradesInProgress,
   tradeCommitLock,

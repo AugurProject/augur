@@ -1,8 +1,8 @@
-import { augur } from '../../../services/augurjs';
-import { base58Encode } from '../../../utils/base-58';
-import { loadAccountData } from '../../auth/actions/load-account-data';
-import { savePersistentAccountToLocalStorage } from '../../auth/actions/save-persistent-account';
-import { updateLoginAccount } from '../../auth/actions/update-login-account';
+import { augur } from 'services/augurjs';
+import { base58Encode } from 'utils/base-58';
+import { loadAccountData } from 'modules/auth/actions/load-account-data';
+import { savePersistentAccountToLocalStorage } from 'modules/auth/actions/save-persistent-account';
+import { updateLoginAccount } from 'modules/auth/actions/update-login-account';
 
 export const register = (password, cb) => (dispatch) => {
   const callback = cb || (e => e && console.error('register:', e));

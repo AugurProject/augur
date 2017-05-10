@@ -1,7 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
-import { BINARY_INDETERMINATE_OUTCOME_ID, CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID } from '../../markets/constants/market-outcomes';
+import { BINARY_INDETERMINATE_OUTCOME_ID, CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID } from 'modules/markets/constants/market-outcomes';
 
 const OutcomeOptions = p => (
   <article className="outcome-options">

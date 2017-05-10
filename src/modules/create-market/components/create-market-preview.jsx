@@ -142,7 +142,7 @@ export default class CreateMarketPreview extends Component {
     let width;
 
     if (this.orderBookChart) {
-      if (window.getComputedStyle(this.orderBookChart).getPropertyValue('will-change') === 'contents') {
+      if (window.getComputedStyle(this.orderBookChart).getPropertyValue('--adjust-width').indexOf('true') !== -1) {
         width = this.orderBookPreview.clientWidth - 40; // 20px horizontal padding
       } else {
         width = this.orderBookPreview.clientWidth * 0.60;

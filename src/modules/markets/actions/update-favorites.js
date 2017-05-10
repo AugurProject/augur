@@ -1,4 +1,4 @@
-import store from '../../../store';
+import store from 'src/store';
 
 export const UPDATE_FAVORITES = 'UPDATE_FAVORITES';
 export const TOGGLE_FAVORITE = 'TOGGLE_FAVORITE';

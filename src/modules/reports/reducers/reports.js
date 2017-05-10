@@ -1,5 +1,5 @@
-import { UPDATE_REPORTS, UPDATE_REPORT, CLEAR_REPORTS } from '../../reports/actions/update-reports';
-import { CLEAR_OLD_REPORTS } from '../../reports/actions/clear-old-reports';
+import { UPDATE_REPORTS, UPDATE_REPORT, CLEAR_REPORTS } from 'modules/reports/actions/update-reports';
+import { CLEAR_OLD_REPORTS } from 'modules/reports/actions/clear-old-reports';
 
 export default function (reports = {}, action) {
   switch (action.type) {

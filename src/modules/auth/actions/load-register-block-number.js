@@ -1,6 +1,6 @@
-import { augur } from '../../../services/augurjs';
-import { loadAccountHistory } from '../../../modules/auth/actions/load-account-history';
-import { updateLoginAccount } from '../../../modules/auth/actions/update-login-account';
+import { augur } from 'services/augurjs';
+import { loadAccountHistory } from 'modules/auth/actions/load-account-history';
+import { updateLoginAccount } from 'modules/auth/actions/update-login-account';
 
 export const loadRegisterBlockNumber = () => (dispatch, getState) => {
   const { loginAccount } = getState();

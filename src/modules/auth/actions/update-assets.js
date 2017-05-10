@@ -1,7 +1,7 @@
-import { augur } from '../../../services/augurjs';
-import { BRANCH_ID } from '../../app/constants/network';
-import { updateLoginAccount } from '../../auth/actions/update-login-account';
-import { allAssetsLoaded } from '../../auth/selectors/balances';
+import { augur } from 'services/augurjs';
+import { BRANCH_ID } from 'modules/app/constants/network';
+import { updateLoginAccount } from 'modules/auth/actions/update-login-account';
+import { allAssetsLoaded } from 'modules/auth/selectors/balances';
 
 export function updateAssets(cb) {
   return (dispatch, getState) => {

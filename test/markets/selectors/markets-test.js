@@ -96,7 +96,7 @@ describe(`modules/markets/selectors/markets.js`, () => {
 
   const selector = proxyquire('../../../src/modules/markets/selectors/markets.js', {
     '../../../store': store,
-    '../../markets/selectors/markets-unpaginated': MarketsUnpaginated
+    './markets-unpaginated': MarketsUnpaginated
   });
 
   beforeEach(() => {

@@ -1,5 +1,5 @@
-import { augur } from '../../../services/augurjs';
-import { updateAssets } from '../../auth/actions/update-assets';
+import { augur } from 'services/augurjs';
+import { updateAssets } from 'modules/auth/actions/update-assets';
 
 export const slashRep = (market, salt, report, reporter, isIndeterminate, isUnethical) => (
   dispatch => augur.slashRep({

@@ -1,4 +1,4 @@
-import { UPDATE_LOGIN_ACCOUNT, CLEAR_LOGIN_ACCOUNT } from '../../auth/actions/update-login-account';
+import { UPDATE_LOGIN_ACCOUNT, CLEAR_LOGIN_ACCOUNT } from 'modules/auth/actions/update-login-account';
 
 export default function (loginAccount = {}, action) {
   switch (action.type) {

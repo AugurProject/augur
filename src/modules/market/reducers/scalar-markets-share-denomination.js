@@ -1,4 +1,4 @@
-import { UPDATE_SCALAR_MARKET_SHARE_DENOMINATION } from '../../market/actions/update-scalar-market-share-denomination';
+import { UPDATE_SCALAR_MARKET_SHARE_DENOMINATION } from 'modules/market/actions/update-scalar-market-share-denomination';
 
 export default function (denominations = {}, action) {
   switch (action.type) {

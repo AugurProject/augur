@@ -1,4 +1,4 @@
-import { UPDATE_CONNECTION_STATUS } from '../../app/actions/update-connection';
+import { UPDATE_CONNECTION_STATUS } from 'modules/app/actions/update-connection';
 
 export default function (connection = { isConnected: false }, action) {
   switch (action.type) {

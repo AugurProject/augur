@@ -20,7 +20,7 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
       const LoadAccountData = { loadAccountData: () => {} };
       const action = proxyquire('../../../src/modules/auth/actions/use-unlocked-account.js', {
         '../../../services/augurjs': AugurJS,
-        '../../auth/actions/load-account-data': LoadAccountData
+        './load-account-data': LoadAccountData
       });
       sinon.stub(AugurJS.augur.rpc, 'unlocked', (address, callback) => {
         callback(t.state.isUnlocked);

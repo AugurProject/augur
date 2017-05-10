@@ -1,7 +1,5 @@
-#main_responsive_state {
+body {
   @media @breakpoint-mobile {
-    & {
-      will-change: contents; // This gets read in app.jsx on mount
-    }
+    --is-mobile: true;
   }
 }

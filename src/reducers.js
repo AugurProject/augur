@@ -1,7 +1,6 @@
 import { combineReducers } from 'redux';
 
 import env from 'modules/app/reducers/env';
-import requests from 'modules/app/reducers/requests';
 import blockchain from 'modules/app/reducers/blockchain';
 import branch from 'modules/branch/reducers/branch';
 import connection from 'modules/app/reducers/connection';
@@ -14,6 +13,7 @@ import activeView from 'modules/app/reducers/active-view';
 import newMarket from 'modules/create-market/reducers/new-market';
 
 import marketsData from 'modules/markets/reducers/markets-data';
+import marketLoading from 'modules/market/reducers/market-loading';
 import hasLoadedMarkets from 'modules/markets/reducers/has-loaded-markets';
 import outcomesData from 'modules/markets/reducers/outcomes-data';
 import eventMarketsMap from 'modules/markets/reducers/event-markets-map';
@@ -31,6 +31,8 @@ import accountPositions from 'modules/my-positions/reducers/account-positions';
 import completeSetsBought from 'modules/my-positions/reducers/complete-sets-bought';
 import netEffectiveTrades from 'modules/my-positions/reducers/net-effective-trades';
 import transactionsData from 'modules/transactions/reducers/transactions-data';
+import transactionsOldestLoadedBlock from 'modules/transactions/reducers/transactions-oldest-loaded-block';
+import transactionsLoading from 'modules/transactions/reducers/transactions-loading';
 import scalarMarketsShareDenomination from 'modules/market/reducers/scalar-markets-share-denomination';
 import closePositionTradeGroups from 'modules/my-positions/reducers/close-position-trade-groups';
 
@@ -57,10 +59,11 @@ import chatMessages from 'modules/chat/reducers/chat-messages';
 
 import marketCreatorFees from 'modules/my-markets/reducers/market-creator-fees';
 
+import notifications from 'modules/notifications/reducers/notifications';
+
 export function createReducer() {
   return combineReducers({
     env,
-    requests,
     blockchain,
     branch,
     connection,
@@ -73,6 +76,7 @@ export function createReducer() {
     newMarket,
 
     marketsData,
+    marketLoading,
     hasLoadedMarkets,
     outcomesData,
     eventMarketsMap,
@@ -108,11 +112,15 @@ export function createReducer() {
     completeSetsBought,
     netEffectiveTrades,
     transactionsData,
+    transactionsOldestLoadedBlock,
+    transactionsLoading,
     scalarMarketsShareDenomination,
     closePositionTradeGroups,
 
     chatMessages,
 
-    marketCreatorFees
+    marketCreatorFees,
+
+    notifications
   });
 }

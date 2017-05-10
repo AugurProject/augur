@@ -2,6 +2,7 @@
   display: flex;
   flex: 1;
   justify-content: center;
+  position: relative;
   z-index: @above-all-content;
 
   .app-nav-link:not(button) {
@@ -54,6 +55,56 @@
         .font-size-medium();
 
         padding-right: 0.4em;
+      }
+
+      &.button-notifications {
+        .border(true, @border-right, @border-faded);
+
+        position: relative;
+
+        @media @breakpoint-mobile {
+          .border(false);
+        }
+
+        i {
+          padding: 0;
+        }
+
+        .unseen-count {
+          .font-color-dark();
+          .font-size-small();
+          .font-weight-normal();
+
+          background-color: @color-white-muted;
+          border-radius: 50%;
+          bottom: 50%;
+          display: block;
+          padding: 0.25em 0.5em;
+          position: absolute;
+          right: 25%;
+
+          &.unseen-count-enter {
+            transform: scale(0);
+
+            &.unseen-count-enter-active {
+              transform: scale(1);
+              transition-duration: @animation-speed-fast;
+              transition-property: transform;
+              transition-timing-function: @animation-default-type;
+            }
+          }
+
+          &.unseen-count-leave {
+            transform: scale(1);
+
+            &.unseen-count-leave-active {
+              transform: scale(0);
+              transition-duration: @animation-speed-fast;
+              transition-property: transform;
+              transition-timing-function: @animation-default-type;
+            }
+          }
+        }
       }
 
       @media @breakpoint-mobile {
@@ -118,6 +169,14 @@
 
       .nav-count {
         margin-right: 0.2em;
+      }
+    }
+
+    .modal-link {
+      position: relative;
+
+      .app-nav-link {
+        height: 100%;
       }
     }
   }

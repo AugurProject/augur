@@ -43,8 +43,8 @@ describe('modules/reports/actions/check-period.js', () => {
 
   const action = proxyquire('../../../src/modules/reports/actions/check-period.js', {
     '../../../services/augurjs': mockAugurJS,
-    '../../reports/actions/load-reports': mockLoadReports,
-    '../../reports/actions/reveal-reports': mockRevealReports
+    './load-reports': mockLoadReports,
+    './reveal-reports': mockRevealReports
   });
 
   beforeEach(() => {

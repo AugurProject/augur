@@ -1,5 +1,5 @@
-import { augur } from '../../../services/augurjs';
-import { clearTopics, updateTopics } from '../../topics/actions/update-topics';
+import { augur } from 'services/augurjs';
+import { clearTopics, updateTopics } from 'modules/topics/actions/update-topics';
 
 export const loadTopics = (branchID, cb) => (dispatch) => {
   const callback = cb || (e => e && console.error('loadTopics:', e));

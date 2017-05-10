@@ -1,4 +1,4 @@
-import { UPDATE_SMALLEST_POSITIONS } from '../../my-positions/actions/update-account-trades-data';
+import { UPDATE_SMALLEST_POSITIONS } from 'modules/my-positions/actions/update-account-trades-data';
 
 export default function (smallestPositions = {}, action) {
   switch (action.type) {

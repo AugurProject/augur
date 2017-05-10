@@ -25,7 +25,7 @@ describe('modules/reports/actions/load-report.js', () => {
       };
       const action = proxyquire('../../../src/modules/reports/actions/load-report', {
         '../../../services/augurjs': AugurJS,
-        '../../reports/actions/report-encryption': ReportEncryption
+        './report-encryption': ReportEncryption
       });
       sinon.stub(AugurJS.augur, 'getReport', (branchID, period, eventID, address, minValue, maxValue, type, cb) => {
         cb({

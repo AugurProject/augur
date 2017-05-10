@@ -1,4 +1,4 @@
-import { augur } from '../../../services/augurjs';
+import { augur } from 'services/augurjs';
 
 export const UPDATE_CHAT_MESSAGES = 'UPDATE_CHAT_MESSAGES';
 

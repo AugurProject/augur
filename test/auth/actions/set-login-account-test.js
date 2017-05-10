@@ -24,8 +24,8 @@ describe(`modules/auth/actions/set-login-account.js`, () => {
       const UseUnlockedAccount = { useUnlockedAccount: () => {} };
       const action = proxyquire('../../../src/modules/auth/actions/set-login-account.js', {
         '../../../services/augurjs': AugurJS,
-        '../../auth/actions/load-account-data': LoadAccountData,
-        '../../auth/actions/use-unlocked-account': UseUnlockedAccount
+        './load-account-data': LoadAccountData,
+        './use-unlocked-account': UseUnlockedAccount
       });
       sinon.stub(LoadAccountData, 'loadAccountData', account => (dispatch) => {
         dispatch({ type: 'LOAD_FULL_ACCOUNT_DATA', account });

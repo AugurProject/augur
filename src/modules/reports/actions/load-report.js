@@ -1,6 +1,6 @@
-import { augur } from '../../../services/augurjs';
-import { decryptReport } from '../../reports/actions/report-encryption';
-import { updateReport } from '../../reports/actions/update-reports';
+import { augur } from 'services/augurjs';
+import { decryptReport } from 'modules/reports/actions/report-encryption';
+import { updateReport } from 'modules/reports/actions/update-reports';
 
 export function loadReport(branchID, period, eventID, marketID, callback) {
   return (dispatch, getState) => {

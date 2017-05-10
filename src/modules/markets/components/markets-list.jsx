@@ -25,16 +25,10 @@ const MarketsList = (p) => {
         );
       }) : <NullStateMessage message={nullMessage} /> }
       {!!p.pagination && !!p.pagination.numUnpaginated &&
-        <Paginator pagination={p.pagination} />
+        <Paginator {...p.pagination} />
       }
     </article>
   );
 };
-
-// TODO -- Prop Validations
-// MarketsList.propTypes = {
-// 	markets: PropTypes.array,
-// 	pagination: PropTypes.object
-// };
 
 export default MarketsList;

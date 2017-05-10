@@ -25,6 +25,7 @@ To help ensure this, the following conventions have been employed:
 * Null component states (ex: 'no markets', 'no tags', etc.) should always come first in the component.
 * Conditional display should occur as far down the component tree as possible.
 * Props that are being passed to a component should be explicit from both ends
+* Prop validations should have required props first, optional props after
 * TODO -- convention re: import order
 
 ### Other Conventions
@@ -58,6 +59,9 @@ To help ensure this, the following conventions have been employed:
 * The full breadth of Less's functionality is permissible.
 * All external borders (parent level components within a view) should be the normal border color
 * All internal borders should be either muted or light (depending on the application)
+* When utilizing `CSSTransitionGroup`, styling of this wrapper should be housed within the rendered child's stylesheet
+* If you need a less variable to be accessible during runtime, create a rule set for `body` and with identically
+  named custom properties which have their values as the respective less variables.  You can then get these values by calling `getComputedStyle` and `getPropertyValue` on `document.body`.
 
 ### Other Conventions
 Above are the main points, but additional structural and styling conventions of the stylesheets themselves are enforced through linting.

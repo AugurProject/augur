@@ -1,5 +1,5 @@
-import { PENDING } from '../../transactions/constants/statuses';
-import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
+import { PENDING } from 'modules/transactions/constants/statuses';
+import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data';
 
 export function addTransactions(transactionsArray) {
   return (dispatch, getState) => {

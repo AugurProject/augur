@@ -1,7 +1,7 @@
-import { augur } from '../../../services/augurjs';
-import { loadBidsAsks } from '../../bids-asks/actions/load-bids-asks';
-import { loadAccountTrades } from '../../my-positions/actions/load-account-trades';
-import { updateSellCompleteSetsLock } from '../../my-positions/actions/update-account-trades-data';
+import { augur } from 'services/augurjs';
+import { loadBidsAsks } from 'modules/bids-asks/actions/load-bids-asks';
+import { loadAccountTrades } from 'modules/my-positions/actions/load-account-trades';
+import { updateSellCompleteSetsLock } from 'modules/my-positions/actions/update-account-trades-data';
 
 export const submitGenerateOrderBook = market => (dispatch) => {
   dispatch(updateSellCompleteSetsLock(market.id, true));
@@ -32,7 +32,7 @@ export const submitGenerateOrderBook = market => (dispatch) => {
     onSuccess: (r) => {
       console.log('generateOrderBook onSuccess:', r);
       dispatch(loadBidsAsks(market.id));
-      dispatch(loadAccountTrades(market.id, () => dispatch(updateSellCompleteSetsLock(market.id, false))));
+      dispatch(loadAccountTrades({ market: market.id }, () => dispatch(updateSellCompleteSetsLock(market.id, false))));
     },
     onFailed: e => console.error('generateOrderBook onFailed:', e)
   });
