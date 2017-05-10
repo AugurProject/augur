@@ -77,53 +77,6 @@ export default class Nav extends Component {
             <AugurLogoIcon />
           </Link>
         </div>
-        {p.logged &&
-          <div // eslint-disable-line jsx-a11y/no-static-element-interactions
-            className="modal-link"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-            }}
-          >
-            <button
-              ref={(notificationIcon) => { this.notificationIcon = notificationIcon; }}
-              className="unstyled button-notifications app-nav-link"
-              onClick={(e) => {
-                e.stopPropagation();
-                this.toggleNotifications();
-              }}
-            >
-              {s.isNotificationsVisible ?
-                <i className="fa fa-bell" /> :
-                <i className="fa fa-bell-o" />
-              }
-              <CSSTransitionGroup
-                transitionName="unseen-count"
-                transitionEnterTimeout={animationSpeed}
-                transitionLeaveTimeout={animationSpeed}
-              >
-                {!!unseenCount &&
-                  <span className="unseen-count">{unseenCount}</span>
-                }
-              </CSSTransitionGroup>
-            </button>
-            <CSSTransitionGroup
-              id="transition_notifications_view"
-              transitionName="notifications"
-              transitionEnterTimeout={animationSpeed}
-              transitionLeaveTimeout={animationSpeed}
-            >
-              {p.logged && s.isNotificationsVisible &&
-                <span id="notifications_arrow_up" />
-              }
-              {p.logged && s.isNotificationsVisible &&
-                <NotificationsContainer
-                  toggleNotifications={() => this.toggleNotifications()}
-                />
-              }
-            </CSSTransitionGroup>
-          </div>
-        }
         <Link
           {...p.allMarketsLink}
           onClick={() => {
@@ -218,6 +171,53 @@ export default class Nav extends Component {
             </div>
             Sign Up / Login
           </Link>
+        }
+        {p.logged &&
+          <div // eslint-disable-line jsx-a11y/no-static-element-interactions
+            className="modal-link"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+            }}
+          >
+            <button
+              ref={(notificationIcon) => { this.notificationIcon = notificationIcon; }}
+              className="unstyled button-notifications app-nav-link"
+              onClick={(e) => {
+                e.stopPropagation();
+                this.toggleNotifications();
+              }}
+            >
+              {s.isNotificationsVisible ?
+                <i className="fa fa-bell" /> :
+                <i className="fa fa-bell-o" />
+              }
+              <CSSTransitionGroup
+                transitionName="unseen-count"
+                transitionEnterTimeout={animationSpeed}
+                transitionLeaveTimeout={animationSpeed}
+              >
+                {!!unseenCount &&
+                  <span className="unseen-count">{unseenCount}</span>
+                }
+              </CSSTransitionGroup>
+            </button>
+            <CSSTransitionGroup
+              id="transition_notifications_view"
+              transitionName="notifications"
+              transitionEnterTimeout={animationSpeed}
+              transitionLeaveTimeout={animationSpeed}
+            >
+              {p.logged && s.isNotificationsVisible &&
+                <span id="notifications_arrow_up" />
+              }
+              {p.logged && s.isNotificationsVisible &&
+                <NotificationsContainer
+                  toggleNotifications={() => this.toggleNotifications()}
+                />
+              }
+            </CSSTransitionGroup>
+          </div>
         }
       </nav>
     );
