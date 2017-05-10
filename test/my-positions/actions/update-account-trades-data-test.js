@@ -110,11 +110,24 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
 
   describe('updateAccountBidsAsksData', () => {
     test({
-      description: `should return the expected action`,
+      description: `should dispatch the expected actions WITH getAdjustedPositions returning an error`,
+      state: {
+        loginAccount: {
+          address: '0xUSERID'
+        }
+      },
       assertions: (store) => {
+        const mockAugur = {
+          augur: {
+            getAdjustedPositions: () => {}
+          }
+        };
+        sinon.stub(mockAugur.augur, 'getAdjustedPositions', (account, { market }, cb) => cb(true));
+
         const action = proxyquire('../../../src/modules/my-positions/actions/update-account-trades-data', {
           '../../transactions/actions/convert-logs-to-transactions': mockConvertTradeLogsToTransactions,
-          '../../my-orders/actions/update-orders': mockUpdateOrders
+          '../../my-orders/actions/update-orders': mockUpdateOrders,
+          '../../../services/augurjs': mockAugur
         });
 
         store.dispatch(action.updateAccountBidsAsksData({ '0xMARKETID': {} }, '0xMARKETID'));
@@ -137,6 +150,58 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
             },
             isAddition: true
           }
+        ];
+
+        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions WITHOUT getAdjustedPositions returning an error`,
+      state: {
+        loginAccount: {
+          address: '0xUSERID'
+        }
+      },
+      assertions: (store) => {
+        const mockAugur = {
+          augur: {
+            getAdjustedPositions: () => {}
+          }
+        };
+        sinon.stub(mockAugur.augur, 'getAdjustedPositions', (account, { market }, cb) => cb(null, {}));
+
+        const action = proxyquire('../../../src/modules/my-positions/actions/update-account-trades-data', {
+          '../../transactions/actions/convert-logs-to-transactions': mockConvertTradeLogsToTransactions,
+          '../../my-orders/actions/update-orders': mockUpdateOrders,
+          '../../../services/augurjs': mockAugur
+        });
+
+        store.dispatch(action.updateAccountBidsAsksData({ '0xMARKETID': {} }, '0xMARKETID'));
+
+        const actual = store.getActions();
+
+        const expected = [
+          {
+            type: MOCK_ACTION_TYPES.CONVERT_TRADE_LOGS_TO_TRANSACTIONS,
+            logType: 'log_add_tx',
+            data: {
+              '0xMARKETID': {}
+            },
+            marketID: '0xMARKETID'
+          },
+          {
+            type: MOCK_ACTION_TYPES.UPDATE_ORDERS,
+            data: {
+              '0xMARKETID': {}
+            },
+            isAddition: true
+          },
+          {
+            type: UPDATE_ACCOUNT_POSITIONS_DATA,
+            data: {},
+            marketID: '0xMARKETID'
+          },
         ];
 
         assert.deepEqual(actual, expected, `Didn't dispatch the expect action`);

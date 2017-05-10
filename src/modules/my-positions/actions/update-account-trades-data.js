@@ -3,8 +3,6 @@ import { convertTradeLogsToTransactions } from 'modules/transactions/actions/con
 import { updateOrders } from 'modules/my-orders/actions/update-orders';
 import { loadBidsAsksHistory } from 'modules/bids-asks/actions/load-bids-asks-history';
 
-import { addMarketLoading, removeMarketLoading } from 'modules/market/actions/update-market-loading';
-
 export const UPDATE_ACCOUNT_TRADES_DATA = 'UPDATE_ACCOUNT_TRADES_DATA';
 export const UPDATE_ACCOUNT_POSITIONS_DATA = 'UPDATE_ACCOUNT_POSITIONS_DATA';
 export const UPDATE_COMPLETE_SETS_BOUGHT = 'UPDATE_COMPLETE_SETS_BOUGHT';
