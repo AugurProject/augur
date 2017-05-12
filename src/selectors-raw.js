@@ -29,11 +29,6 @@ import { MARKET_DATA_NAV_ITEMS } from 'modules/market/constants/market-data-nav-
 import { MARKET_USER_DATA_NAV_ITEMS } from 'modules/market/constants/market-user-data-nav-items';
 import scalarShareDenomination from 'modules/market/selectors/scalar-share-denomination';
 import { OUTCOME_TRADE_NAV_ITEMS } from 'modules/outcomes/constants/outcome-trade-nav-items';
-import authAirbitz from 'modules/auth/selectors/auth-airbitz';
-import authNavItems from 'modules/auth/selectors/auth-nav-items';
-import authLogin from 'modules/auth/selectors/auth-login';
-import authSignup from 'modules/auth/selectors/auth-signup';
-import authImport from 'modules/auth/selectors/auth-import';
 import closePositionStatus from 'modules/my-positions/selectors/close-position-status';
 import openOrders from 'modules/user-open-orders/selectors/open-orders';
 import notifications from 'modules/notifications/selectors/notifications';
@@ -71,11 +66,6 @@ const selectors = {
   marketUserDataNavItems: () => MARKET_USER_DATA_NAV_ITEMS,
   scalarShareDenomination,
   outcomeTradeNavItems: () => OUTCOME_TRADE_NAV_ITEMS,
-  authAirbitz,
-  authNavItems,
-  authLogin,
-  authSignup,
-  authImport,
   closePositionStatus,
   openOrders
 };

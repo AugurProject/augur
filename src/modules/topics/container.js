@@ -1,7 +1,5 @@
-import React from 'react';
 import { connect } from 'react-redux';
 import asyncComponent from 'modules/app/helpers/async-component';
-// import TopicsView from 'modules/topics/components/topics-view';
 
 import { selectLoginAccount } from 'modules/account/selectors/login-account';
 import { selectTopicLink, selectCreateMarketLink } from 'modules/link/selectors/links';

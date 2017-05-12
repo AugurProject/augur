@@ -3,6 +3,7 @@ import { ACCOUNT, CREATE_MARKET, TRANSACTIONS, M, MARKETS, MY_POSITIONS, MY_MARK
 import { shouldComponentUpdateOnStateChangeOnly } from 'utils/should-component-update-pure';
 
 import Topics from 'modules/topics/container';
+import Authentication from 'modules/auth/container';
 
 // NOTE --  the respective routes are imported within the switch statement so that
 //          webpack can properly code split the views
@@ -145,6 +146,18 @@ export default class Routes extends Component {
   }
 
   render() {
-    return null;
+    const p = this.props;
+
+    let currentView = p.activeView;
+    if (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10))) { // TODO -- markets pagination should really be component level state
+      currentView = MARKETS;
+    }
+
+    switch (currentView) {
+      case AUTHENTICATION:
+        return <Authentication />;
+      default:
+        return <Topics />;
+    }
   }
 }
