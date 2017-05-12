@@ -26,6 +26,8 @@ console.log(`
   window.state      -- all state data
   window.selectors  -- component data
   window.augur      -- Augur API methods
+-------------------------------------------
+  Augur.js Version: ${augur.version}
 *******************************************
 `);
 
