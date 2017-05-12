@@ -13,10 +13,12 @@ export function updateURL(url, title) {
   return (dispatch, getState) => {
     const parsedURL = parseURL(url);
 
+    console.log('title -- ', title);
+
     if (title) {
       setTitle(title);
     } else if (title !== false) {
-      setTitle(null, (parsedURL.searchParams|| null));
+      setTitle(null, (parsedURL.searchParams || null));
     }
 
     dispatch({ type: UPDATE_URL, parsedURL });

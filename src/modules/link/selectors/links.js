@@ -10,7 +10,21 @@ import { logout } from 'modules/auth/actions/logout';
 import { loadFullLoginAccountMarkets } from 'modules/portfolio/actions/load-full-login-account-markets';
 import { updateSelectedMarketsHeader } from 'modules/markets/actions/update-selected-markets-header';
 
-import { ACCOUNT, M, MARKETS, CREATE_MARKET, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS, AUTHENTICATION } from 'modules/app/constants/views';
+import {
+  ACCOUNT,
+  M,
+  MARKETS,
+  CREATE_MARKET,
+  MY_POSITIONS,
+  MY_MARKETS,
+  MY_REPORTS,
+  TRANSACTIONS,
+  AUTHENTICATION,
+  ACCOUNT_DETAILS,
+  ACCOUNT_DEPOSIT,
+  ACCOUNT_CONVERT,
+  ACCOUNT_WITHDRAW
+} from 'modules/app/constants/views';
 import { FAVORITES, PENDING_REPORTS } from 'modules/markets/constants/markets-subset';
 
 import { SEARCH_PARAM_NAME, FILTER_SORT_TYPE_PARAM_NAME, FILTER_SORT_SORT_PARAM_NAME, FILTER_SORT_ISDESC_PARAM_NAME, PAGE_PARAM_NAME, TAGS_PARAM_NAME, TOPIC_PARAM_NAME, SUBSET_PARAM_NAME } from 'modules/link/constants/param-names';

@@ -1,10 +1,17 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { ACCOUNT, CREATE_MARKET, TRANSACTIONS, M, MARKETS, MY_POSITIONS, MY_MARKETS, MY_REPORTS, AUTHENTICATION } from 'modules/app/constants/views';
 import { shouldComponentUpdateOnStateChangeOnly } from 'utils/should-component-update-pure';
 
 // NOTE --  the respective routes are imported within the switch statement so that
 //          webpack can properly code split the views
 export default class Routes extends Component {
+  static propTypes = {
+    activeView: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string
+    ]).isRequired
+  }
+
   constructor(props) {
     super(props);
 
@@ -22,7 +29,7 @@ export default class Routes extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.handleRouting(nextProps);
+    if (this.props.activeView !== nextProps.activeView) this.handleRouting(nextProps);
   }
 
   handleRouting(p) {

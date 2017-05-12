@@ -1,212 +1,230 @@
 #account_view {
-  .page-header {
+  align-items: center;
+  display: flex;
+  margin: 0;
+  z-index: @default-z-index;
+
+  .account-content {
+    .border(true, @border-right);
+    .border(true, @border-bottom);
+    .border(true, @border-left);
+
+    background-color: @color-white;
     display: flex;
-    flex-wrap: nowrap;
-    width: 100%;
-
-    .big-line {
-      flex: 2;
-    }
-
-    .sign-out {
-      font-size: 0.7em;
-
-      &:hover,
-      &:focus,
-      &:active {
-        background: @color-black-light;
-      }
-    }
-  }
-
-  .account-section {
-    background: white;
-    border: 1px solid @color-border;
-    border-radius: 1px;
-    font-size: 1.5rem;
-    padding: 2vmin 6vmin 4vmin;
-
-    .heading {
-      font-size: 1.3em;
-      margin: 2vmin 0;
-    }
-
-    .link {
-      color: @color-blue;
-
-      &:hover,
-      &:active,
-      &:focus {
-        color: @color-blue-subtle;
-        text-decoration: underline;
-      }
-    }
-
-    .password-change-container {
-      form > * {
-        margin: 0 0.5rem 0.5rem 0;
-      }
-    }
-
-    .transfer-funds-section {
-      align-items: center;
-      display: flex;
-      flex-flow: row wrap;
-
-      span {
-        margin: 1.5vmin;
-      }
-
-      select {
-        margin: 1.5vmin;
-      }
-
-      input {
-        margin: 1.5vmin;
-      }
-
-      input:last-of-type {
-        flex-grow: 0.45;
-      }
-
-      input[type="number"] {
-        appearance: textfield;
-      }
-
-      input[type=number]::-webkit-inner-spin-button,
-      input[type=number]::-webkit-outer-spin-button {
-        appearance: none;
-        margin: 0;
-      }
-
-      .button {
-        font-size: 0.8em;
-        margin: 1.5vmin;
-      }
-      // responsive design for mobile display.
-      // @media screen and (max-width: @media-mobile-width) {
-      //  margin-top: 3vmin;
-      //
-      //  span {
-      //    margin: 1.5vmin 1.5vmin 1.5vmin 0;
-      //    width: 12%;
-      //  }
-      //
-      //  span:first-of-type {
-      //    margin: 1.5vmin 1.5vmin 1.5vmin 0;
-      //    width: 100%;
-      //  }
-      //
-      //  select {
-      //    margin: 1.5vmin 0 1.5vmin 0.5vmin;
-      //    width: 45%;
-      //  }
-      //
-      //  input {
-      //    margin: 1.5vmin 0;
-      //    width: 86%;
-      //  }
-      //
-      //  input:first-of-type {
-      //    margin: 1.5vmin 0.5vmin 1.5vmin 0;
-      //    width: 53%;
-      //  }
-      //
-      //  .button {
-      //    font-size: 0.8em;
-      //    margin: 0;
-      //  }
-      // }
-    }
-
-    .account-info {
-      padding: 2vmin 0;
-
-      .account-info-item {
-        margin: 0.5rem 1vmin;
-
-        p {
-          margin: 3vmin 0;
-          width: 100%;
-        }
-
-        .title {
-          font-size: 0.8em;
-          padding-top: 0.8em;
-          text-align: left;
-          vertical-align: top;
-          white-space: nowrap;
-          width: 1%;
-        }
-
-        .item {
-          padding: 0.5em 0 0.5em 0.5em;
-          word-break: break-all;
-
-          > * {
-            margin: 0 0.5rem 0.5rem 0;
-          }
-        }
-
-        .button {
-          font-size: 1.2rem;
-        }
-      }
-
-      .display-full-login-id {
-        cursor: pointer;
-        font-size: 0.8rem;
-        height: 5rem;
-        overflow: hidden;
-        padding: 0.3rem;
-        resize: none;
-        width: 95%;
-      }
-    }
-
-    .remember {
-      margin: 1rem 0;
-
-      p:first-child {
-        font-weight: bold;
-      }
-
-      p:last-child {
-        font-style: italic;
-        font-weight: bold;
-      }
-    }
-
-    .button.download-account {
-      font-size: 0.8em;
-      margin-top: 1em;
-    }
-  }
-
-  .password-msg {
-    color: @color-green-dark-extra-light;
-    font-size: 0.8em;
-    font-weight: bold;
-    margin: 0.5em 0;
-
-    .dismiss-message {
-      color: @color-black-extra-light;
-      cursor: pointer;
-      font-family: 'Font Awesome';
-    }
-  }
-
-  .button.intigrations {
-    font-size: 0.8em;
-    margin: 1.5vmin;
-  }
-
-  .transferWallet {
-    margin-top: 1.5em;
-  }
-
-  #warning {
-    color: red;
-    margin-bottom: 1.75em;
+    flex-direction: column;
+    padding-top: 1em;
   }
 }
+
+// #account_view {
+//   .page-header {
+//     display: flex;
+//     flex-wrap: nowrap;
+//     width: 100%;
+//
+//     .big-line {
+//       flex: 2;
+//     }
+//
+//     .sign-out {
+//       font-size: 0.7em;
+//
+//       &:hover,
+//       &:focus,
+//       &:active {
+//         background: @color-black-light;
+//       }
+//     }
+//   }
+//
+//   .account-section {
+//     background: white;
+//     border: 1px solid @color-border;
+//     border-radius: 1px;
+//     font-size: 1.5rem;
+//     padding: 2vmin 6vmin 4vmin;
+//
+//     .heading {
+//       font-size: 1.3em;
+//       margin: 2vmin 0;
+//     }
+//
+//     .link {
+//       color: @color-blue;
+//
+//       &:hover,
+//       &:active,
+//       &:focus {
+//         color: @color-blue-subtle;
+//         text-decoration: underline;
+//       }
+//     }
+//
+//     .password-change-container {
+//       form > * {
+//         margin: 0 0.5rem 0.5rem 0;
+//       }
+//     }
+//
+//     .transfer-funds-section {
+//       align-items: center;
+//       display: flex;
+//       flex-flow: row wrap;
+//
+//       span {
+//         margin: 1.5vmin;
+//       }
+//
+//       select {
+//         margin: 1.5vmin;
+//       }
+//
+//       input {
+//         margin: 1.5vmin;
+//       }
+//
+//       input:last-of-type {
+//         flex-grow: 0.45;
+//       }
+//
+//       input[type="number"] {
+//         appearance: textfield;
+//       }
+//
+//       input[type=number]::-webkit-inner-spin-button,
+//       input[type=number]::-webkit-outer-spin-button {
+//         appearance: none;
+//         margin: 0;
+//       }
+//
+//       .button {
+//         font-size: 0.8em;
+//         margin: 1.5vmin;
+//       }
+//       // responsive design for mobile display.
+//       // @media screen and (max-width: @media-mobile-width) {
+//       //  margin-top: 3vmin;
+//       //
+//       //  span {
+//       //    margin: 1.5vmin 1.5vmin 1.5vmin 0;
+//       //    width: 12%;
+//       //  }
+//       //
+//       //  span:first-of-type {
+//       //    margin: 1.5vmin 1.5vmin 1.5vmin 0;
+//       //    width: 100%;
+//       //  }
+//       //
+//       //  select {
+//       //    margin: 1.5vmin 0 1.5vmin 0.5vmin;
+//       //    width: 45%;
+//       //  }
+//       //
+//       //  input {
+//       //    margin: 1.5vmin 0;
+//       //    width: 86%;
+//       //  }
+//       //
+//       //  input:first-of-type {
+//       //    margin: 1.5vmin 0.5vmin 1.5vmin 0;
+//       //    width: 53%;
+//       //  }
+//       //
+//       //  .button {
+//       //    font-size: 0.8em;
+//       //    margin: 0;
+//       //  }
+//       // }
+//     }
+//
+//     .account-info {
+//       padding: 2vmin 0;
+//
+//       .account-info-item {
+//         margin: 0.5rem 1vmin;
+//
+//         p {
+//           margin: 3vmin 0;
+//           width: 100%;
+//         }
+//
+//         .title {
+//           font-size: 0.8em;
+//           padding-top: 0.8em;
+//           text-align: left;
+//           vertical-align: top;
+//           white-space: nowrap;
+//           width: 1%;
+//         }
+//
+//         .item {
+//           padding: 0.5em 0 0.5em 0.5em;
+//           word-break: break-all;
+//
+//           > * {
+//             margin: 0 0.5rem 0.5rem 0;
+//           }
+//         }
+//
+//         .button {
+//           font-size: 1.2rem;
+//         }
+//       }
+//
+//       .display-full-login-id {
+//         cursor: pointer;
+//         font-size: 0.8rem;
+//         height: 5rem;
+//         overflow: hidden;
+//         padding: 0.3rem;
+//         resize: none;
+//         width: 95%;
+//       }
+//     }
+//
+//     .remember {
+//       margin: 1rem 0;
+//
+//       p:first-child {
+//         font-weight: bold;
+//       }
+//
+//       p:last-child {
+//         font-style: italic;
+//         font-weight: bold;
+//       }
+//     }
+//
+//     .button.download-account {
+//       font-size: 0.8em;
+//       margin-top: 1em;
+//     }
+//   }
+//
+//   .password-msg {
+//     color: @color-green-dark-extra-light;
+//     font-size: 0.8em;
+//     font-weight: bold;
+//     margin: 0.5em 0;
+//
+//     .dismiss-message {
+//       color: @color-black-extra-light;
+//       cursor: pointer;
+//       font-family: 'Font Awesome';
+//     }
+//   }
+//
+//   .button.intigrations {
+//     font-size: 0.8em;
+//     margin: 1.5vmin;
+//   }
+//
+//   .transferWallet {
+//     margin-top: 1.5em;
+//   }
+//
+//   #warning {
+//     color: red;
+//     margin-bottom: 1.75em;
+//   }
+// }

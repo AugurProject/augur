@@ -13,10 +13,10 @@ export default function () {
 export const selectLoginAccount = createSelector(
   selectLoginAccountState,
   (loginAccount) => {
-    const cleanAddress = loginAccount.address ? loginAccount.address.replace('0x', '') : undefined;
-    const prettyAddress = cleanAddress ? `${cleanAddress.substring(0, 4)}...${cleanAddress.substring(cleanAddress.length - 4)}` : undefined;
-    const prettyLoginID = loginAccount.loginID ? `${loginAccount.loginID.substring(0, 4)}...${loginAccount.loginID.substring(loginAccount.loginID.length - 4)}` : undefined;
-    const linkText = loginAccount.isUnlocked ? prettyAddress : loginAccount.name || prettyLoginID;
+    const cleanAddress = loginAccount.address ? loginAccount.address.replace('0x', '') : null;
+    const trimmedAddress = cleanAddress ? `${cleanAddress.substring(0, 4)}...${cleanAddress.substring(cleanAddress.length - 4)}` : null;
+    const trimmedLoginID = loginAccount.loginID ? `${loginAccount.loginID.substring(0, 4)}...${loginAccount.loginID.substring(loginAccount.loginID.length - 4)}` : null;
+    const linkText = loginAccount.isUnlocked ? trimmedAddress : loginAccount.name || trimmedLoginID;
     if (loginAccount.airbitzAccount) {
       loginAccount.onAirbitzManageAccount = () => (
         getABCUIContext().openManageWindow(loginAccount.airbitzAccount, (err) => {
@@ -27,8 +27,8 @@ export const selectLoginAccount = createSelector(
     return {
       ...loginAccount,
       ...generateDownloadAccountLink(loginAccount.address, augur.accounts.account.keystore),
-      prettyLoginID,
-      prettyAddress,
+      trimmedLoginID,
+      trimmedAddress,
       linkText,
       rep: formatRep(loginAccount.rep, { zeroStyled: false, decimalsRounded: 1 }),
       ether: formatEther(loginAccount.ether, { zeroStyled: false, decimalsRounded: 2 }),

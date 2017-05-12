@@ -36,8 +36,15 @@ import React, { PropTypes } from 'react';
 
 const AccountFundsManagement = p => (
   <article className="account-funds-management">
-    <span>Account Funds Management</span>
+    <span>Account Funds Management - TODO</span>
+  </article>
+);
 
+AccountFundsManagement.propTypes = {
+  // TODO
+};
+
+export default AccountFundsManagement;
 
       // <div className={classnames('account-section')}>
       //   <div className="account-info-item">
@@ -200,11 +207,3 @@ const AccountFundsManagement = p => (
       // <ReactTooltip id="recipient-address-tooltip" type="light" effect="solid" place="top">
       //   <span className="tooltip-text">Recipient&#39;s Ethereum address</span>
       // </ReactTooltip>
-  </article>
-);
-
-AccountFundsManagement.propTypes = {
-  // TODO
-};
-
-export default AccountFundsManagement;
