@@ -9,6 +9,7 @@ describe(`modules/app/actions/init-augur.js`, () => {
   const { store } = mocks;
 
   const mockAugurJS = {
+    connect: () => {},
     augur: {
       loadBranch: () => {}
     }
@@ -23,9 +24,10 @@ describe(`modules/app/actions/init-augur.js`, () => {
   mockLoadBranch.loadBranch = sinon.stub().returns({ type: 'LOAD_BRANCH' });
   mockLoadChatMessages.loadChatMessages = sinon.stub().returns({ type: 'LOAD_CHAT_MESSAGES' });
 
-  mockAugurJS.connect = sinon.stub().yields(null, {
-    connect: 'test'
-  });
+  sinon.stub(mockAugurJS, 'connect', (env, cb) => {
+    console.log('in connect', env);
+    cb(null, { contracts: {}, api: { functions: {}, events: {} } });
+  })
   mockSetLoginAccount.setLoginAccount = sinon.stub().returns({
     type: 'SET_LOGIN_ACCOUNT'
   });
@@ -69,10 +71,17 @@ describe(`modules/app/actions/init-augur.js`, () => {
 
   it(`should initiate the augur app`, () => {
     const out = [{ type: 'UPDATE_ENV', env: { reportingTest: false } }, {
-      isConnected: {
-        connect: 'test'
-      },
+      isConnected: true,
       type: 'UPDATE_CONNECTION_STATUS'
+    }, {
+      contractAddresses: {},
+      type: 'UPDATE_CONTRACT_ADDRESSES'
+    }, {
+      functionsAPI: {},
+      type: 'UPDATE_FUNCTIONS_API'
+    }, {
+      eventsAPI: {},
+      type: 'UPDATE_EVENTS_API'
     }, {
       type: 'REGISTER_TRANSACTION_RELAY'
     }, {
