@@ -22,8 +22,8 @@ const PATHS = {
 // COMMON CONFIG
 let config = {
   entry: {
-    'assets/styles/styles': `${PATHS.APP}/styles`,
-    'assets/scripts/vendor': [
+    'styles': `${PATHS.APP}/styles`,
+    'vendor': [
       'react',
       'react-dom',
       'redux',
@@ -34,6 +34,7 @@ let config = {
   },
   output: {
     filename: '[name].[chunkhash].js',
+    chunkFilename: '[name].[chunkhash].js',
     path: PATHS.BUILD,
     publicPath: '/'
   },

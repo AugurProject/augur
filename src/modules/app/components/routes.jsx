@@ -16,7 +16,6 @@ export default class Routes extends Component {
     super(props);
 
     this.state = {
-      viewProps: null,
       viewComponent: null
     };
 
@@ -33,7 +32,7 @@ export default class Routes extends Component {
   }
 
   handleRouting(p) {
-    let viewProps;
+    let viewProps = {};
     let viewComponent;
     let currentView = p.activeView;
 
@@ -52,7 +51,7 @@ export default class Routes extends Component {
           authImport: p.authImport,
           authNavItems: p.authNavItems
         };
-        import('modules/auth/components/auth-view').then((module) => {
+        import(/* webpackChunkName: 'auth-view' */ 'modules/auth/components/auth-view').then((module) => {
           const AuthView = module.default;
           viewComponent = <AuthView {...viewProps} />;
           this.setState({ viewProps, viewComponent });
@@ -61,7 +60,7 @@ export default class Routes extends Component {
         });
         break;
       case ACCOUNT:
-        import('modules/account/container').then((module) => {
+        import(/* webpackChunkName: 'account' */'modules/account/container').then((module) => {
           const AccountView = module.default;
           viewProps = {
             authLink: (p.links && p.links.authLink) || null
@@ -73,7 +72,7 @@ export default class Routes extends Component {
         });
         break;
       case TRANSACTIONS:
-        import('modules/transactions/container').then((module) => {
+        import(/* webpackChunkName: 'transactions' */ 'modules/transactions/container').then((module) => {
           const TransactionsView = module.default;
           viewProps = {
             isMobile: p.isMobile
@@ -86,9 +85,8 @@ export default class Routes extends Component {
       case MY_POSITIONS:
       case MY_MARKETS:
       case MY_REPORTS: {
-        import('modules/portfolio/containers/portfolio').then((module) => {
+        import(/* webpackChunkName: 'portfolio' */ 'modules/portfolio/containers/portfolio').then((module) => {
           const PortfolioView = module.default;
-          viewProps = {}; // Global state props handled via react-redux in the portfolio container
           viewComponent = <PortfolioView />;
           this.setState({ viewProps, viewComponent });
         }).catch((err) => {
@@ -97,7 +95,7 @@ export default class Routes extends Component {
         break;
       }
       case CREATE_MARKET: {
-        import('modules/create-market/container').then((module) => {
+        import(/* webpackChunkName: 'create-market' */ 'modules/create-market/container').then((module) => {
           const CreateMarketView = module.default;
 
           viewProps = { // Global state props handled via react-redux in the create-market container
@@ -113,22 +111,20 @@ export default class Routes extends Component {
         break;
       }
       case M: {
-        import('modules/market/container').then((module) => {
-          const MarketView = module.default;
+        import(/* webpackChunkName: 'market' */ 'modules/market/container').then((module) => {
           const viewProps = {
             selectedOutcome: p.selectedOutcome,
             marketReportingNavItems: p.marketReportingNavItems
           };
-          this.setState({ viewProps, viewComponent: <MarketView {...viewProps} /> });
+          this.setState({ viewProps, viewComponent: <module.default {...viewProps} /> });
         }).catch((err) => {
           console.error(`ERROR: Failed to load 'market' module -- `, err);
         });
         break;
       }
       case MARKETS: {
-        import('modules/markets/container').then((module) => {
-          const MarketsView = module.default;
-          this.setState({ viewComponent: <MarketsView /> });
+        import(/* webpackChunkName: 'markets' */ 'modules/markets/container').then((module) => {
+          this.setState({ viewComponent: <module.default /> });
         }).catch((err) => {
           console.error(`ERROR: Failed to load 'markets' module -- `, err);
         });
@@ -136,9 +132,8 @@ export default class Routes extends Component {
         break;
       }
       default: {
-        import('modules/topics/container').then((module) => {
-          const TopicsView = module.default;
-          this.setState({ viewComponent: <TopicsView /> });
+        import(/* webpackChunkName: 'topics' */ 'modules/topics/container').then((module) => {
+          this.setState({ viewComponent: <module.default /> });
         }).catch((err) => {
           console.error(`ERROR: Failed to load 'topics' module -- `, err);
         });
