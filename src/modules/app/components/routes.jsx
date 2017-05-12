@@ -2,6 +2,8 @@ import React, { Component, PropTypes } from 'react';
 import { ACCOUNT, CREATE_MARKET, TRANSACTIONS, M, MARKETS, MY_POSITIONS, MY_MARKETS, MY_REPORTS, AUTHENTICATION } from 'modules/app/constants/views';
 import { shouldComponentUpdateOnStateChangeOnly } from 'utils/should-component-update-pure';
 
+import Topics from 'modules/topics/container';
+
 // NOTE --  the respective routes are imported within the switch statement so that
 //          webpack can properly code split the views
 export default class Routes extends Component {
@@ -132,6 +134,7 @@ export default class Routes extends Component {
         break;
       }
       default: {
+        this.setState({ viewComponent: <Topics /> });
         import(/* webpackChunkName: 'topics' */ 'modules/topics/container').then((module) => {
           this.setState({ viewComponent: <module.default /> });
         }).catch((err) => {
@@ -142,6 +145,6 @@ export default class Routes extends Component {
   }
 
   render() {
-    return this.state.viewComponent;
+    return null;
   }
 }
