@@ -14,7 +14,7 @@ describe(`modules/auth/actions/login.js`, () => {
   const store = mockStore(thisTestState);
   const AugurJS = {
     augur: {
-      accounts: { login: () => {}}
+      accounts: { login: () => {} }
     }
   };
   const LoadAccountData = { loadAccountData: () => {} };

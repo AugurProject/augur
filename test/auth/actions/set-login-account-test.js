@@ -25,9 +25,7 @@ describe(`modules/auth/actions/set-login-account.js`, () => {
         '../../../services/augurjs': AugurJS,
         './use-unlocked-account': UseUnlockedAccount
       });
-      sinon.stub(UseUnlockedAccount, 'useUnlockedAccount', (account) => {
-        return { type: 'USE_UNLOCKED_ACCOUNT', account };
-      });
+      sinon.stub(UseUnlockedAccount, 'useUnlockedAccount', account => ({ type: 'USE_UNLOCKED_ACCOUNT', account }));
       store.dispatch(action.setLoginAccount(t.params.autoLogin));
       t.assertions(store.getActions());
       store.clearActions();

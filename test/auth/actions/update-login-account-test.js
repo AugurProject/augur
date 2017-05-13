@@ -2,9 +2,9 @@ import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import configureMockStore from 'redux-mock-store';
 import proxyquire from 'proxyquire';
-import { base58Decode, base58Encode } from '../../../src/utils/base-58';
 import sinon from 'sinon';
 import thunk from 'redux-thunk';
+import { base58Encode } from '../../../src/utils/base-58';
 
 describe(`modules/auth/actions/update-login-account.js`, () => {
   proxyquire.noPreserveCache();
@@ -16,52 +16,50 @@ describe(`modules/auth/actions/update-login-account.js`, () => {
       const action = proxyquire('../../../src/modules/auth/actions/update-login-account.js', {
         '../../contracts/actions/update-contract-api': UpdateFromAddress
       });
-      sinon.stub(UpdateFromAddress, 'updateFromAddress', (address) => {
-        return { type: 'UPDATE_FROM_ADDRESS', address };
-      });
+      sinon.stub(UpdateFromAddress, 'updateFromAddress', address => ({ type: 'UPDATE_FROM_ADDRESS', address }));
       store.dispatch(action[t.method](t.param));
       t.assertions(store.getActions());
       store.clearActions();
     });
   };
   test({
-    description: "should fire a UPDATE_LOGIN_ACCOUNT action type with data when changing names",
+    description: 'should fire a UPDATE_LOGIN_ACCOUNT action type with data when changing names',
     state: { loginAccount: { address: '0xb0b', name: 'hello' } },
-    method: "changeAccountName",
+    method: 'changeAccountName',
     param: 'world',
     assertions: (actions) => {
       const output = [{
-    		type: 'UPDATE_LOGIN_ACCOUNT',
-    		data: { name: 'world', loginID: base58Encode({ address: '0xb0b', name: 'world' }) }
-    	}];
+        type: 'UPDATE_LOGIN_ACCOUNT',
+        data: { name: 'world', loginID: base58Encode({ address: '0xb0b', name: 'world' }) }
+      }];
       assert.deepEqual(actions, output, `The action fired incorrectly`);
     }
   });
   test({
-    description: "should fire a UPDATE_LOGIN_ACCOUNT action type with data",
+    description: 'should fire a UPDATE_LOGIN_ACCOUNT action type with data',
     state: {},
-    method: "updateLoginAccount",
+    method: 'updateLoginAccount',
     param: { address: '0xb0b' },
     assertions: (actions) => {
       const output = [{
-    		type: 'UPDATE_LOGIN_ACCOUNT',
-    		data: { address: '0xb0b' }
-    	}, {
-    		type: 'UPDATE_FROM_ADDRESS',
-    		address: '0xb0b'
-    	}];
+        type: 'UPDATE_LOGIN_ACCOUNT',
+        data: { address: '0xb0b' }
+      }, {
+        type: 'UPDATE_FROM_ADDRESS',
+        address: '0xb0b'
+      }];
       assert.deepEqual(actions, output, `The action fired incorrectly`);
     }
   });
   test({
-    description: "should fire a CLEAR_LOGIN_ACCOUNT action type",
+    description: 'should fire a CLEAR_LOGIN_ACCOUNT action type',
     state: {},
-    method: "clearLoginAccount",
+    method: 'clearLoginAccount',
     param: { address: '0xb0b' },
     assertions: (actions) => {
       const output = [{
-          type: 'CLEAR_LOGIN_ACCOUNT'
-        }];
+        type: 'CLEAR_LOGIN_ACCOUNT'
+      }];
       assert.deepEqual(actions, output, `The action fired incorrectly`);
     }
   });

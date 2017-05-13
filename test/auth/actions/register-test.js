@@ -4,8 +4,8 @@ import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { base58Decode, base58Encode } from '../../../src/utils/base-58';
 import testState from 'test/testState';
+import { base58Encode } from '../../../src/utils/base-58';
 
 describe(`modules/auth/actions/register.js`, () => {
   proxyquire.noPreserveCache();

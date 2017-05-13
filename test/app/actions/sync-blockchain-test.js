@@ -20,9 +20,7 @@ describe(`modules/app/actions/sync-blockchain.js`, () => {
   const store = mockStore(state);
   const AugurJS = {
     rpc: {
-      getCurrentBlock: () => {
-        return { number: 10000, timestamp: 4886718345 };
-      },
+      getCurrentBlock: () => ({ number: 10000, timestamp: 4886718345 }),
       block: { number: 10000, timestamp: 4886718345 }
     }
   };
@@ -46,8 +44,8 @@ describe(`modules/app/actions/sync-blockchain.js`, () => {
     const out = [{
       type: 'UPDATE_BLOCKCHAIN',
       data: {
-        currentBlockNumber: parseInt(10000, 16),
-        currentBlockTimestamp: parseInt(4886718345, 16),
+        currentBlockNumber: 0x10000,
+        currentBlockTimestamp: 0x4886718345,
         currentBlockMillisSinceEpoch: 12345
       }
     }];

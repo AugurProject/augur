@@ -27,7 +27,7 @@ describe(`modules/app/actions/init-augur.js`, () => {
   sinon.stub(mockAugurJS, 'connect', (env, cb) => {
     console.log('in connect', env);
     cb(null, { contracts: {}, api: { functions: {}, events: {} } });
-  })
+  });
   mockSetLoginAccount.setLoginAccount = sinon.stub().returns({
     type: 'SET_LOGIN_ACCOUNT'
   });
