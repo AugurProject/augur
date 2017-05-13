@@ -14,15 +14,15 @@ describe(`modules/auth/actions/use-unlocked-account.js`, () => {
       const AugurJS = {
         augur: {
           accounts: { logout: () => {} },
-          rpc: { unlocked: () => {} }
+          rpc: { isUnlocked: () => {} }
         }
       };
       const LoadAccountData = { loadAccountData: () => {} };
       const action = proxyquire('../../../src/modules/auth/actions/use-unlocked-account.js', {
         '../../../services/augurjs': AugurJS,
-        '../../auth/actions/load-account-data': LoadAccountData
+        './load-account-data': LoadAccountData
       });
-      sinon.stub(AugurJS.augur.rpc, 'unlocked', (address, callback) => {
+      sinon.stub(AugurJS.augur.rpc, 'isUnlocked', (address, callback) => {
         callback(t.state.isUnlocked);
       });
       sinon.stub(LoadAccountData, 'loadAccountData', account => (dispatch) => {
