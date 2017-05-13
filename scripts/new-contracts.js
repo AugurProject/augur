@@ -22,7 +22,6 @@ augur.connect({
     onSuccess: function (res) {
       console.log("initDefaultBranch success:", res);
       augur.rpc.personal.listAccounts([], function (accounts) {
-        console.log('listAccount:', accounts)
         if (!accounts || accounts.constructor !== Array || !accounts.length) {
           return console.error("listAccounts error:", accounts);
         }
