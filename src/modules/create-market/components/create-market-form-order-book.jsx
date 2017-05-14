@@ -574,10 +574,10 @@ export default class CreateMarketFormOrderBook extends Component {
                 />
                 <div className="order-book-preview-table">
                   <div className="order-book-preview-table-header">
-                    <span>Bid Q.</span>
+                    <span>Bid Qty</span>
                     <span>Bid</span>
                     <span>Ask</span>
-                    <span>Ask Q.</span>
+                    <span>Ask Qty</span>
                   </div>
                   <div className="order-book-preview-table-content">
                     <ul className="order-book-preview-table-bids">
