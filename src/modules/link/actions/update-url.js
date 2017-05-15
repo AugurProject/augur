@@ -20,7 +20,7 @@ export function updateURL(url, title) {
     const parsedURL = parseURL(url);
     const { branch, hasLoadedMarkets, hasLoadedTopic, loginAccount, selectedMarketID, connection } = getState();
 
-    //  Re-route the user if attempting to nav to authenticated view
+    //  Re-route the user if attempting to nav to authenticated view unauthenticated
     if (!loginAccount.address && authenticatedViews.indexOf(parsedURL.searchParams.page) !== -1) {
       dispatch(updateURL(makeLocation({ page: AUTHENTICATION }).url));
     } else {
