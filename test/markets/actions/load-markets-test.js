@@ -19,15 +19,15 @@ describe(`modules/markets/actions/load-markets.js`, () => {
     it(t.description, () => {
       const store = mockStore(state);
       const AugurJS = {
-        augur: {}
+        augur: { markets: {} }
       };
 
-      AugurJS.augur.loadMarkets = sinon.stub();
+      AugurJS.augur.markets.loadMarkets = sinon.stub();
 
-      if (t.toTest === 'err') AugurJS.augur.loadMarkets.yields('fails', null);
-      if (t.toTest === 'null-markets-data') AugurJS.augur.loadMarkets.yields(null, null);
-      if (t.toTest === 'object') AugurJS.augur.loadMarkets.yields(null, { test: 'test' });
-      if (t.toTest === 'empty-object') AugurJS.augur.loadMarkets.yields(null, {});
+      if (t.toTest === 'err') AugurJS.augur.markets.loadMarkets.yields('fails', null);
+      if (t.toTest === 'null-markets-data') AugurJS.augur.markets.loadMarkets.yields(null, null);
+      if (t.toTest === 'object') AugurJS.augur.markets.loadMarkets.yields(null, { test: 'test' });
+      if (t.toTest === 'empty-object') AugurJS.augur.markets.loadMarkets.yields(null, {});
 
       const action = proxyquire('../../../src/modules/markets/actions/load-markets', {
         '../../../services/augurjs': AugurJS
