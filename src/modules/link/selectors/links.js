@@ -1,3 +1,10 @@
+// NOTE --  I'm working on a way to refine the site view component linking to be more elegant that what we currently have below.
+//          Planning to do a rework during CH #2478, since pagination will be getting slightly reworked for markets at that point,
+//          leaving an opportune time to take a deeper look at these as well.
+//          Largest motivation being the relatively recent implementation of react-redux, in large part the removing the necessity for these.
+//          In the market link we've also conflated what would probably be better suited for the component with the ideal duties
+//          of the link selectors, which generally should just be to handle routing to the next view.
+
 import memoize from 'memoizee';
 
 import store from 'src/store';
