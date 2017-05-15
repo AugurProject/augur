@@ -10,7 +10,6 @@ var errors = require("ethrpc").errors;
 var constants = require("../../../src/constants");
 var noop = require("../../../src/utils/noop");
 var importAccount = require("../../../src/accounts/import-account");
-var store = require("../../../src/store");
 
 var keystore = {
   address: "289d485d9771714cce91d3393d764e1311907acc",
@@ -43,17 +42,16 @@ describe("accounts/import-account", function () {
   });
   var test = function (t) {
     it(t.description, function (done) {
-      store.dispatch({ type: "RESET_STATE" });
       keys.recover = t.recover || recover;
       keys.deriveKey = t.deriveKey || deriveKey;
       if (t.params.cb) {
         importAccount(t.params.password, t.params.keystore, function (account) {
-          t.assertions(account, store.getState());
+          t.assertions(account);
           done();
         });
       } else {
         var output = importAccount(t.params.password, t.params.keystore);
-        t.assertions(output, store.getState());
+        t.assertions(output);
         done();
       }
     });
@@ -65,7 +63,7 @@ describe("accounts/import-account", function () {
       keystore: keystore,
       cb: noop
     },
-    assertions: function (account, state) {
+    assertions: function (account) {
       var expected = {
         privateKey: Buffer.from("14a447d8d4c69714f8750e1688feb98857925e1fec6dee7c75f0079d10519d25", "hex"),
         derivedKey: Buffer.from("6149823a44b50a20e7d5a6d7e60798c576f330888a3c6bc0113da5b687662586", "hex"),
@@ -73,7 +71,6 @@ describe("accounts/import-account", function () {
         keystore: keystore
       };
       assert.deepEqual(account, expected);
-      assert.deepEqual(state.activeAccount, expected);
     }
   });
   test({
@@ -82,9 +79,8 @@ describe("accounts/import-account", function () {
       password: "",
       keystore: keystore
     },
-    assertions: function (account, state) {
+    assertions: function (account) {
       assert.deepEqual(account, errors.BAD_CREDENTIALS);
-      assert.deepEqual(state.activeAccount, {});
     }
   });
   test({
@@ -97,9 +93,26 @@ describe("accounts/import-account", function () {
     recover: function (password, keystore, cb) {
       cb({error: "Uh-Oh!"});
     },
-    assertions: function (account, state) {
+    assertions: function (account) {
       assert.deepEqual(account, errors.BAD_CREDENTIALS);
-      assert.deepEqual(state.activeAccount, {});
+    }
+  });
+  test({
+    description: "Should handle an issue with derivedKey by returning an error",
+    params: {
+      password: "foobar",
+      keystore: keystore,
+      cb: noop
+    },
+    recover: function (password, keystore, cb) {
+      // don't call the real recover as it calls deriveKey within and we don't want to call our mock early, we want to test a conditional failure later in import-account.
+      cb('somePrivateKey');
+    },
+    deriveKey: function (password, salt, cipher, cb) {
+      cb({error: "Uh-Oh!"});
+    },
+    assertions: function (account) {
+      assert.deepEqual(account, errors.BAD_CREDENTIALS);
     }
   });
 });

@@ -7,7 +7,6 @@ var keys = require("keythereum");
 var errors = require("ethrpc").errors;
 var noop = require("../../../src/utils/noop");
 var login = require("../../../src/accounts/login");
-var store = require("../../../src/store");
 
 var keystore = {
   address: "289d485d9771714cce91d3393d764e1311907acc",
@@ -42,18 +41,17 @@ describe("accounts/login", function () {
   });
   var test = function (t) {
     it(t.description, function (done) {
-      store.dispatch({ type: "RESET_STATE" });
       keys.deriveKey = t.deriveKey || deriveKey;
       keys.getMAC = t.getMAC || getMAC;
       keys.decrypt = t.decrypt || decrypt;
       if (t.params.cb) {
         login(t.params.keystore, t.params.password, function (account) {
-          t.assertions(account, store.getState());
+          t.assertions(account);
           done();
-        }); 
+        });
       } else {
         var account = login(t.params.keystore, t.params.password);
-        t.assertions(account, store.getState());
+        t.assertions(account);
         done();
       }
     });
@@ -65,9 +63,8 @@ describe("accounts/login", function () {
       password: "",
       cb: noop
     },
-    assertions: function (account, state) {
+    assertions: function (account) {
       assert.deepEqual(account, errors.BAD_CREDENTIALS);
-      assert.deepEqual(state.activeAccount, {});
     }
   });
   test({
@@ -77,9 +74,8 @@ describe("accounts/login", function () {
       password: undefined,
       cb: undefined
     },
-    assertions: function (account, state) {
+    assertions: function (account) {
       assert.deepEqual(account, errors.BAD_CREDENTIALS);
-      assert.deepEqual(state.activeAccount, {});
     }
   });
   test({
@@ -89,9 +85,8 @@ describe("accounts/login", function () {
       password: "foobar",
       cb: noop
     },
-    assertions: function (account, state) {
+    assertions: function (account) {
       assert.deepEqual(account, errors.BAD_CREDENTIALS);
-      assert.deepEqual(state.activeAccount, {});
     }
   });
   test({
@@ -104,9 +99,8 @@ describe("accounts/login", function () {
     deriveKey: function (password, salt, options, cb) {
       cb({error: "DeriveKey failed!"});
     },
-    assertions: function (account, state) {
+    assertions: function (account) {
       assert.deepEqual(account, errors.BAD_CREDENTIALS);
-      assert.deepEqual(state.activeAccount, {});
     }
   });
   test({
@@ -119,9 +113,8 @@ describe("accounts/login", function () {
     getMAC: function (derivedKey, storedKey) {
       return "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
     },
-    assertions: function (account, state) {
+    assertions: function (account) {
       assert.deepEqual(account, errors.BAD_CREDENTIALS);
-      assert.deepEqual(state.activeAccount, {});
     }
   });
   test({
@@ -137,11 +130,10 @@ describe("accounts/login", function () {
     decrypt: function (ciphertext, key, iv, algo) {
       throw new Error("Uh-Oh!");
     },
-    assertions: function (account, state) {
+    assertions: function (account) {
       var expected = errors.BAD_CREDENTIALS;
       expected.bubble = new Error("Uh-Oh!");
       assert.deepEqual(account, expected);
-      assert.deepEqual(state.activeAccount, {});
     }
   });
   test({
@@ -151,8 +143,7 @@ describe("accounts/login", function () {
       password: "foobar",
       cb: noop
     },
-    assertions: function (account, state) {
-      assert.deepEqual(state.activeAccount, account);
+    assertions: function (account) {
       assert.strictEqual(account.address, "0x289d485d9771714cce91d3393d764e1311907acc");
       assert.deepEqual(account.privateKey, Buffer.from("14a447d8d4c69714f8750e1688feb98857925e1fec6dee7c75f0079d10519d25", "hex"));
       assert.deepEqual(account.derivedKey, Buffer.from("8eb07bbcf844b11128fe6cb9556e3ce26ef781a19ef661fef8daa100953d3a53", "hex"));
