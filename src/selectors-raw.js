@@ -1,3 +1,5 @@
+// NOTE -- no longer used, leaving temporarily for historical ref
+
 import activeView from 'modules/app/selectors/active-view';
 import abc from 'modules/auth/selectors/abc';
 import loginAccount from 'modules/account/selectors/login-account';

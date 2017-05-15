@@ -1,16 +1,14 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom';
-import { AppContainer } from 'react-hot-loader'; // eslint-disable-line import/no-extraneous-dependencies
+import { AppContainer } from 'react-hot-loader';
 
 import App from 'modules/app/container';
 import { initAugur } from 'modules/app/actions/init-augur';
 import { updateURL } from 'modules/link/actions/update-url';
 
 import * as selectors from 'src/select-state';
-
 import store from 'src/store';
-
 import { augur } from 'services/augurjs';
 
 require('core-js/fn/array/find');
@@ -34,6 +32,10 @@ console.log(`
 *******************************************
 `);
 
+window.onpopstate = (e) => {
+  store.dispatch(updateURL(window.location.pathname + window.location.search));
+};
+
 store.dispatch(updateURL(window.location.pathname + window.location.search));
 store.dispatch(initAugur());
 
@@ -51,10 +53,6 @@ function render() {
 }
 
 store.subscribe(render);
-
-window.onpopstate = (e) => {
-  store.dispatch(updateURL(window.location.pathname + window.location.search));
-};
 
 if (module.hot) {
   module.hot.accept();

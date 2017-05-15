@@ -1,3 +1,5 @@
+// NOTE -- no longer used, leaving temporarily for historical ref
+
 const rawSelectors = require('src/selectors-raw').default;
 
 module.exports = {};
