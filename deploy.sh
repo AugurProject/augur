@@ -10,6 +10,6 @@ yarn lint
 yarn test
 git push origin master
 firebase deploy
-$AUGUR_CORE/load_contracts/update_private_chain_augur.sh
+ssh jack@45.33.62.72 -t "cd /home/jack/augur && /home/jack/augur/update-local.sh && cp /home/jack/augur/src/env-9000.json /home/jack/augur/build/config/env.json && sudo service augur restart"
 git push heroku master
 ssh augur@45.33.59.27 -t "cd /home/augur/augur; /home/augur/augur/update-local.sh"
