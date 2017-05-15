@@ -27,10 +27,10 @@ import {
   MY_REPORTS,
   TRANSACTIONS,
   AUTHENTICATION,
-  ACCOUNT_DETAILS,
-  ACCOUNT_DEPOSIT,
-  ACCOUNT_CONVERT,
-  ACCOUNT_WITHDRAW
+  // ACCOUNT_DETAILS,
+  // ACCOUNT_DEPOSIT,
+  // ACCOUNT_CONVERT,
+  // ACCOUNT_WITHDRAW
 } from 'modules/app/constants/views';
 import { FAVORITES, PENDING_REPORTS } from 'modules/markets/constants/markets-subset';
 

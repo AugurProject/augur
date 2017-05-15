@@ -151,33 +151,26 @@ export default class AppView extends Component {
     const p = this.props;
     const s = this.state;
 
-    const logged = getValue(p, 'loginAccount.address');
-
     const navProps = {
-      logged,
+      activeView: p.activeView,
+      marketsLink: p.marketsLink,
+      allMarketsLink: p.allMarketsLink,
+      favortiesLink: p.favortiesLink,
+      pendingReportsLink: p.pendingReportsLink,
+      transactionsLink: p.transactionsLink,
+      authLink: p.authLink,
+      accountLink: p.accountLink,
+      myPositionsLink: p.myPositionsLink,
+      topicsLink: p.topicsLink,
+      logged: p.logged,
+      notifications: p.notifications,
+      marketsInfo: p.marketsInfo,
+      numFavorites: p.numFavorites,
+      numPendingReports: p.numPendingReports,
       isSideBarAllowed: s.isSideBarAllowed,
       isSideBarCollapsed: s.isSideBarCollapsed,
       isSideBarPersistent: s.isSideBarPersistent,
-      toggleSideBar: () => { this.toggleSideBar(); },
-      activeView: p.activeView,
-      positionsSummary: p.positionsSummary,
-      transactionsTotals: p.transactionsTotals,
-      isTransactionsWorking: p.isTransactionsWorking,
-      marketsInfo: p.marketsHeader,
-      portfolioTotals: getValue(p, 'portfolio.totals'),
-      numFavorites: getValue(p, 'marketsHeader.numFavorites'),
-      numPendingReports: getValue(p, 'marketsHeader.numPendingReports'),
-      numTransactionsWorking: getValue(p, 'transactionsTotals.numWorking'),
-      marketsLink: getValue(p, 'links.marketsLink'),
-      allMarketsLink: getValue(p, 'links.allMarketsLink'),
-      favoritesLink: getValue(p, 'links.favoritesLink'),
-      pendingReportsLink: getValue(p, 'links.pendingReportsLink'),
-      transactionsLink: getValue(p, 'links.transactionsLink'),
-      authLink: getValue(p, 'links.authLink'),
-      accountLink: getValue(p, 'links.accountLink'),
-      myPositionsLink: getValue(p, 'links.myPositionsLink'),
-      topicsLink: getValue(p, 'links.topicsLink'),
-      notifications: p.notifications
+      toggleSideBar: () => { this.toggleSideBar(); }
     };
 
     const sideBarProps = {
@@ -241,7 +234,6 @@ export default class AppView extends Component {
                   </div>
                   <Routes
                     activeView={p.activeView}
-                    logged={logged}
                     isMobile={s.isMobile}
                     setSidebarAllowed={this.setSidebarAllowed}
                     footerHeight={s.footerHeight}
