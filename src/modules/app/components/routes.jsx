@@ -41,77 +41,68 @@ export default class Routes extends Component {
 
     switch (activeView) {
       case AUTHENTICATION:
-        import(/* webpackChunkName: 'auth' */ 'modules/auth/container').then((module) => {
-          this.setState({ currentView: <module.default /> });
-        }).catch((err) => {
-          console.error(`ERROR: Failed to load 'auth' module -- `, err);
-        });
-        break;
+        return import(/* webpackChunkName: 'auth' */ 'modules/auth/container')
+          .then((module) => {
+            this.setState({ currentView: <module.default /> });
+          })
+          .catch(err => asyncModuleLoadError('auth', err));
       case ACCOUNT:
-        import(/* webpackChunkName: 'account' */ 'modules/account/container').then((module) => {
-          this.setState({ currentView: <module.default authLink={(p.links && p.links.authLink) || null} /> });
-        }).catch((err) => {
-          console.error(`ERROR: Failed to load 'account' module -- `, err);
-        });
-        break;
+        return import(/* webpackChunkName: 'account' */ 'modules/account/container')
+          .then((module) => {
+            this.setState({ currentView: <module.default authLink={(p.links && p.links.authLink) || null} /> });
+          })
+          .catch(err => asyncModuleLoadError('account', err));
       case TRANSACTIONS:
-        import(/* webpackChunkName: 'transactions' */ 'modules/transactions/container').then((module) => {
-          console.log('transactions -- ', module, p);
-          this.setState({ currentView: <module.default isMobile={p.isMobile} /> });
-        }).catch((err) => {
-          console.error(`ERROR: Failed to load 'transactions' module -- `, err);
-        });
-        break;
+        return import(/* webpackChunkName: 'transactions' */ 'modules/transactions/container')
+          .then((module) => {
+            this.setState({ currentView: <module.default isMobile={p.isMobile} /> });
+          })
+          .catch(err => asyncModuleLoadError('transactions', err));
       case MY_POSITIONS:
       case MY_MARKETS:
-      case MY_REPORTS: {
-        import(/* webpackChunkName: 'portfolio' */ 'modules/portfolio/containers/portfolio').then((module) => {
-          this.setState({ currentView: <module.default /> });
-        }).catch((err) => {
-          console.error(`ERROR: Failed to load 'portfolio' module -- `, err);
-        });
-        break;
-      }
-      case CREATE_MARKET: {
-        import(/* webpackChunkName: 'create-market' */ 'modules/create-market/container').then((module) => {
-          this.setState({ currentView: <module.default footerHeight={p.footerHeight} /> });
-        }).catch((err) => {
-          console.error(`ERROR: Failed to load 'create-market' module -- `, err);
-        });
-        break;
-      }
-      case M: {
-        import(/* webpackChunkName: 'market' */ 'modules/market/container').then((module) => {
-          const viewProps = {
-            selectedOutcome: p.selectedOutcome,
-            marketReportingNavItems: p.marketReportingNavItems
-          };
-          this.setState({ currentView: <module.default {...viewProps} /> });
-        }).catch((err) => {
-          console.error(`ERROR: Failed to load 'market' module -- `, err);
-        });
-        break;
-      }
+      case MY_REPORTS:
+        return import(/* webpackChunkName: 'portfolio' */ 'modules/portfolio/containers/portfolio')
+          .then((module) => {
+            this.setState({ currentView: <module.default /> });
+          })
+          .catch(err => asyncModuleLoadError('portfolio', err));
+      case CREATE_MARKET:
+        return import(/* webpackChunkName: 'create-market' */ 'modules/create-market/container')
+          .then(module => this.setState({ currentView: <module.default footerHeight={p.footerHeight} /> }))
+          .catch(err => asyncModuleLoadError('create-market', err));
+      case M:
+        return import(/* webpackChunkName: 'market' */ 'modules/market/container')
+          .then((module) => {
+            const viewProps = {
+              selectedOutcome: p.selectedOutcome,
+              marketReportingNavItems: p.marketReportingNavItems
+            };
+            this.setState({ currentView: <module.default {...viewProps} /> });
+          })
+          .catch(err => asyncModuleLoadError('market', err));
       case MARKETS: {
-        import(/* webpackChunkName: 'markets' */ 'modules/markets/container').then((module) => {
-          this.setState({ currentView: <module.default /> });
-        }).catch((err) => {
-          console.error(`ERROR: Failed to load 'markets' module -- `, err);
-        });
         p.setSidebarAllowed(true);
-        break;
+
+        return import(/* webpackChunkName: 'markets' */ 'modules/markets/container')
+          .then((module) => {
+            this.setState({ currentView: <module.default /> });
+          })
+          .catch(err => asyncModuleLoadError('markets', err));
       }
-      default: {
-        import(/* webpackChunkName: 'topics' */ 'modules/topics/container').then((module) => {
-          this.setState({ currentView: <module.default /> });
-        }).catch((err) => {
-          console.error(`ERROR: Failed to load 'topics' module -- `, err);
-        });
-      }
+      default:
+        return import(/* webpackChunkName: 'topics' */ 'modules/topics/container')
+          .then((module) => {
+            this.setState({ currentView: <module.default /> });
+          })
+          .catch(err => asyncModuleLoadError('topics', err));
     }
   }
 
   render() {
     return this.state.currentView;
   }
+}
+
+function asyncModuleLoadError(module, err) {
+  console.error(`ERROR: Failed to load '${module}' module -- `, err);
 }
