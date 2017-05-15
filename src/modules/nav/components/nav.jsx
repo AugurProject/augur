@@ -116,14 +116,14 @@ export default class Nav extends Component {
             Pending Reports
           </Link>
         }
-        {p.logged && !!p.portfolioTotals &&
+        {p.logged &&
           <Link
             {...p.myPositionsLink}
             onClick={() => {
               p.myPositionsLink.onClick();
               this.collapseFooter();
             }}
-            className={classnames('app-nav-link', MY_POSITIONS, { active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activeView) > -1 })}
+            className={classnames('app-nav-link', MY_POSITIONS, { active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activeView) !== -1 })}
           >
             <i className="nav-icon fa fa-money" />
             Portfolio
