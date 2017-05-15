@@ -3,18 +3,17 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import mocks from 'test/mockStore';
-import { augur } from 'services/augurjs';
 
 describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
   proxyquire.noPreserveCache().noCallThru();
   const getOrderBookChunkedStub = sinon.stub().yields({});
   const augurJsMock = {
     augur: {
-    	trading: {
-    		orderBook: {
-    			getOrderBookChunked: getOrderBookChunkedStub
-    		}
-    	}
+      trading: {
+        orderBook: {
+          getOrderBookChunked: getOrderBookChunkedStub
+        }
+      }
     }
   };
   const updateMarketOrderBookModule = {
@@ -39,11 +38,10 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
     it(`should load orders for a market`, () => {
       store.dispatch(loadBidsAsksModule.loadBidsAsks('testMarketID', 0, null, {}, (orderBookChunk) => {}));
       const expectedActions = [{
-          type: 'MOCK_ACTION'
-        }, {
-          type: 'MOCK_ACTION'
-        }
-      ];
+        type: 'MOCK_ACTION'
+      }, {
+        type: 'MOCK_ACTION'
+      }];
       assert.deepEqual(store.getActions(), expectedActions);
       sinon.assert.calledOnce(augurJsMock.augur.trading.orderBook.getOrderBookChunked);
       sinon.assert.calledOnce(updateMarketOrderBookModule.updateMarketOrderBook);

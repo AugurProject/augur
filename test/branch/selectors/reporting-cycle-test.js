@@ -27,8 +27,10 @@ describe(`modules/branch/selectors/reporting-cycle.js`, () => {
     },
     stub: {
       augur: {
-        getCurrentPeriod: (periodLength, timestamp) => 42,
-        getCurrentPeriodProgress: (periodLength, timestamp) => 0
+        reporting: {
+          getCurrentPeriod: (periodLength, timestamp) => 42,
+          getCurrentPeriodProgress: (periodLength, timestamp) => 0
+        }
       }
     },
     assertions: (reportingCycle) => {
@@ -53,8 +55,10 @@ describe(`modules/branch/selectors/reporting-cycle.js`, () => {
     },
     stub: {
       augur: {
-        getCurrentPeriod: (periodLength, timestamp) => 42,
-        getCurrentPeriodProgress: (periodLength, timestamp) => 10
+        reporting: {
+          getCurrentPeriod: (periodLength, timestamp) => 42,
+          getCurrentPeriodProgress: (periodLength, timestamp) => 10
+        }
       }
     },
     assertions: (reportingCycle) => {
@@ -79,8 +83,10 @@ describe(`modules/branch/selectors/reporting-cycle.js`, () => {
     },
     stub: {
       augur: {
-        getCurrentPeriod: (periodLength, timestamp) => 42,
-        getCurrentPeriodProgress: (periodLength, timestamp) => 10
+        reporting: {
+          getCurrentPeriod: (periodLength, timestamp) => 42,
+          getCurrentPeriodProgress: (periodLength, timestamp) => 10
+        }
       }
     },
     assertions: (reportingCycle) => {
@@ -105,8 +111,10 @@ describe(`modules/branch/selectors/reporting-cycle.js`, () => {
     },
     stub: {
       augur: {
-        getCurrentPeriod: (periodLength, timestamp) => 42,
-        getCurrentPeriodProgress: (periodLength, timestamp) => 51
+        reporting: {
+          getCurrentPeriod: (periodLength, timestamp) => 42,
+          getCurrentPeriodProgress: (periodLength, timestamp) => 51
+        }
       }
     },
     assertions: (reportingCycle) => {
@@ -131,8 +139,10 @@ describe(`modules/branch/selectors/reporting-cycle.js`, () => {
     },
     stub: {
       augur: {
-        getCurrentPeriod: (periodLength, timestamp) => 42,
-        getCurrentPeriodProgress: (periodLength, timestamp) => 99
+        reporting: {
+          getCurrentPeriod: (periodLength, timestamp) => 42,
+          getCurrentPeriodProgress: (periodLength, timestamp) => 99
+        }
       }
     },
     assertions: (reportingCycle) => {
