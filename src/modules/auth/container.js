@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-// import asyncComponent from 'modules/app/helpers/async-component';
 import AuthView from 'modules/auth/components/auth-view';
 
 import { register, setupAndFundNewAccount } from 'modules/auth/actions/register';
@@ -22,13 +21,6 @@ const mapDispatchToProps = dispatch => ({
   airbitzLoginLink: selectAirbitzLink(null, dispatch),
   airbitzOnLoad: selectAirbitzOnLoad(dispatch)
 });
-
-// const Auth = asyncComponent(() => import(/* webpackChunkName: 'auth' */ 'modules/auth/components/auth-view')
-//   .then(module => connect(mapStateToProps, mapDispatchToProps)(module.default))
-//   .catch((err) => {
-//     console.error(`ERROR: Failed to load 'Auth' module -- `, err);
-//   })
-// );
 
 const Auth = connect(mapStateToProps, mapDispatchToProps)(AuthView);
 

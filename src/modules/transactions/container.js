@@ -1,8 +1,9 @@
 import { connect } from 'react-redux';
+import TransactionsView from 'modules/transactions/components/transactions-view';
+
 import { selectTransactions } from 'modules/transactions/selectors/transactions';
 import { selectLoginAccount } from 'modules/account/selectors/login-account';
 import { loadAccountHistory } from 'modules/auth/actions/load-account-history';
-import TransactionsView from 'modules/transactions/components/transactions-view';
 
 const mapStateToProps = state => ({
   branch: state.branch,

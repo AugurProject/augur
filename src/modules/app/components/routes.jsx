@@ -2,12 +2,6 @@ import React, { Component, PropTypes } from 'react';
 import { ACCOUNT, CREATE_MARKET, TRANSACTIONS, M, MARKETS, MY_POSITIONS, MY_MARKETS, MY_REPORTS, AUTHENTICATION } from 'modules/app/constants/views';
 import { shouldComponentUpdateOnStateChangeOnly } from 'utils/should-component-update-pure';
 
-import asyncComponent from 'modules/app/helpers/async-component';
-
-import Account from 'modules/account/container';
-import Authentication from 'modules/auth/container';
-import Topics from 'modules/topics/container';
-
 // NOTE --  the respective routes are imported within the switch statement so that
 //          webpack can properly code split the views
 export default class Routes extends Component {
@@ -55,14 +49,15 @@ export default class Routes extends Component {
         break;
       case ACCOUNT:
         import(/* webpackChunkName: 'account' */ 'modules/account/container').then((module) => {
-          this.setState({ currentView: <module.default /> });
+          this.setState({ currentView: <module.default authLink={(p.links && p.links.authLink) || null} /> });
         }).catch((err) => {
           console.error(`ERROR: Failed to load 'account' module -- `, err);
         });
         break;
       case TRANSACTIONS:
         import(/* webpackChunkName: 'transactions' */ 'modules/transactions/container').then((module) => {
-          this.setState({ viewComponent: <module.default isMobile={p.isMobile} /> });
+          console.log('transactions -- ', module, p);
+          this.setState({ currentView: <module.default isMobile={p.isMobile} /> });
         }).catch((err) => {
           console.error(`ERROR: Failed to load 'transactions' module -- `, err);
         });
