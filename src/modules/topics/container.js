@@ -1,8 +1,5 @@
 import { connect } from 'react-redux';
-// import asyncComponent from 'modules/app/helpers/async-component';
-
 import TopicsView from 'modules/topics/components/topics-view';
-
 import { selectLoginAccount } from 'modules/account/selectors/login-account';
 import { selectTopicLink, selectCreateMarketLink } from 'modules/link/selectors/links';
 import { selectTopics } from 'modules/topics/selectors/topics';
@@ -19,12 +16,5 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const Topics = connect(mapStateToProps, mapDispatchToProps)(TopicsView);
-
-// const Topics = asyncComponent(() => import(/* webpackChunkName: 'topics' */ 'modules/topics/components/topics-view')
-//   .then(module => connect(mapStateToProps, mapDispatchToProps)(module.default))
-//   .catch((err) => {
-//     console.error(`ERROR: Failed to load 'topics' module -- `, err);
-//   })
-// );
 
 export default Topics;

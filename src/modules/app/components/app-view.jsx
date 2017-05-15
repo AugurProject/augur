@@ -17,7 +17,11 @@ import handleScrollTop from 'utils/scroll-top-on-change';
 import getValue from 'utils/get-value';
 import debounce from 'utils/debounce';
 
-export default class App extends Component {
+export default class AppView extends Component {
+  static propTypes = {
+    url: PropTypes.string
+  };
+
   constructor(props) {
     super(props);
 
@@ -147,8 +151,10 @@ export default class App extends Component {
     const p = this.props;
     const s = this.state;
 
+    const logged = getValue(p, 'loginAccount.address');
+
     const navProps = {
-      logged: getValue(p, 'loginAccount.address'),
+      logged,
       isSideBarAllowed: s.isSideBarAllowed,
       isSideBarCollapsed: s.isSideBarCollapsed,
       isSideBarPersistent: s.isSideBarPersistent,
@@ -234,7 +240,8 @@ export default class App extends Component {
                   }
                 </div>
                 <Routes
-                  {...p}
+                  activeView={p.activeView}
+                  logged={logged}
                   isMobile={s.isMobile}
                   setSidebarAllowed={this.setSidebarAllowed}
                   footerHeight={s.footerHeight}
@@ -266,7 +273,3 @@ export default class App extends Component {
     );
   }
 }
-
-App.propTypes = {
-  url: PropTypes.string
-};

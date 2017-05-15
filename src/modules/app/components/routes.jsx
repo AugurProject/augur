@@ -9,7 +9,8 @@ export default class Routes extends Component {
     activeView: PropTypes.oneOfType([
       PropTypes.number,
       PropTypes.string
-    ]).isRequired
+    ]).isRequired,
+    logged: PropTypes.string
   }
 
   constructor(props) {
@@ -28,7 +29,7 @@ export default class Routes extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.activeView !== nextProps.activeView) this.handleRouting(nextProps);
+    this.handleRouting(nextProps);
   }
 
   handleRouting(p) {
