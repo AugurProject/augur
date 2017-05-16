@@ -5,6 +5,7 @@ import { selectNotificationsAndSeenCount } from 'modules/notifications/selectors
 import { selectMarketsHeader } from 'modules/markets/selectors/markets-header';
 import { selectTags } from 'modules/markets/selectors/tags';
 import { selectCoreStats } from 'modules/account/selectors/core-stats';
+import { updateIsMobile } from 'modules/app/actions/update-is-mobile';
 import links from 'modules/link/selectors/links';
 
 import getValue from 'utils/get-value';
@@ -27,10 +28,13 @@ const mapStateToProps = state => ({
   marketsInfo: selectMarketsHeader(state),
   numFavorites: selectMarketsHeader(state).numFavorites,
   numPendingReports: selectMarketsHeader(state).numPendingReports,
+  isMobile: state.isMobile
 });
 
-// TODO -- set app level responsive state into redux state
+const mapDispatchToProps = dispatch => ({
+  updateIsMobile: isMobile => dispatch(updateIsMobile(isMobile))
+});
 
-const AppContainer = connect(mapStateToProps)(App);
+const AppContainer = connect(mapStateToProps, mapDispatchToProps)(App);
 
 export default AppContainer;

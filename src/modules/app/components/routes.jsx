@@ -50,13 +50,13 @@ export default class Routes extends Component {
       case ACCOUNT:
         return import(/* webpackChunkName: 'account' */ 'modules/account/container')
           .then((module) => {
-            this.setState({ currentView: <module.default authLink={(p.links && p.links.authLink) || null} /> });
+            this.setState({ currentView: <module.default /> });
           })
           .catch(err => asyncModuleLoadError('account', err));
       case TRANSACTIONS:
         return import(/* webpackChunkName: 'transactions' */ 'modules/transactions/container')
           .then((module) => {
-            this.setState({ currentView: <module.default isMobile={p.isMobile} /> });
+            this.setState({ currentView: <module.default /> });
           })
           .catch(err => asyncModuleLoadError('transactions', err));
       case MY_POSITIONS:

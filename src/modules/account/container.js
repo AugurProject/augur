@@ -4,7 +4,7 @@ import AccountView from 'modules/account/components/account-view';
 
 import { changeAccountName } from 'modules/auth/actions/update-login-account';
 import { transferFunds } from 'modules/auth/actions/transfer-funds';
-import { links } from 'modules/link/selectors/links';
+import links from 'modules/link/selectors/links';
 
 import { selectLoginAccount } from 'modules/account/selectors/login-account';
 

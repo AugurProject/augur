@@ -11,7 +11,8 @@ const mapStateToProps = state => ({
   loginAccount: selectLoginAccount(state),
   transactions: selectTransactions(state),
   transactionsLoading: state.transactionsLoading,
-  hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber
+  hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber,
+  isMobile: state.isMobile
 });
 
 const mapDispatchToProps = dispatch => ({

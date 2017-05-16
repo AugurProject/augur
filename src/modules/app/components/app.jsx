@@ -20,17 +20,14 @@ export default class AppView extends Component {
   static propTypes = {
     url: PropTypes.string,
     tags: PropTypes.array.isRequired,
-    coreStats: PropTypes.object.isRequired
-    // TODO
+    coreStats: PropTypes.array.isRequired,
+    updateIsMobile: PropTypes.func.isRequired
   };
 
   constructor(props) {
     super(props);
 
-    console.log('### APP -- ', props);
-
     this.state = {
-      isMobile: false, // Determined via CSS media query, ref method `checkIfMobile` below
       isSideBarAllowed: false,
       isSideBarCollapsed: false,
       isSideBarPersistent: true,
@@ -105,16 +102,16 @@ export default class AppView extends Component {
     // CSS breakpoint sets the value when a user is mobile
     const isMobile = window.getComputedStyle(document.body).getPropertyValue('--is-mobile').indexOf('true') !== -1;
 
+    this.props.updateIsMobile(isMobile);
+
     if (isMobile) {
       this.setState({
-        isMobile,
         isSideBarCollapsed: true,
         isSideBarPersistent: false
       });
       this.attachTouchHandler();
     } else {
       this.setState({
-        isMobile,
         isSideBarCollapsed: false,
         isSideBarPersistent: true
       });
@@ -238,9 +235,8 @@ export default class AppView extends Component {
                   </div>
                   <Routes
                     activeView={p.activeView}
-                    isMobile={s.isMobile}
-                    setSidebarAllowed={this.setSidebarAllowed}
                     footerHeight={s.footerHeight}
+                    setSidebarAllowed={this.setSidebarAllowed}
                   />
                   {p.activeView !== CREATE_MARKET &&
                     <Footer {...navProps} />
