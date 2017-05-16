@@ -36,6 +36,10 @@ describe(`modules/trade/actions/place-trade.js`, () => {
       }
     }
   };
+  testState.loginAccount = {
+    address: '0xb0b',
+    privateKey: 'this is a private key'
+  };
   const store = mockStore(testState);
   const SelectMarket = { selectMarket: () => {} };
   const AugurJS = {
@@ -44,13 +48,15 @@ describe(`modules/trade/actions/place-trade.js`, () => {
       format_int256: () => {}
     },
     augur: {
-      executeTradingActions: () => {}
+      trading: {
+        group: { executeTradingActions: () => {} }
+      }
     }
   };
   sinon.stub(SelectMarket, 'selectMarket', marketID => store.getState().marketsData[marketID]);
   sinon.stub(AugurJS.abi, 'bignum', n => augur.abi.bignum(n));
   sinon.stub(AugurJS.abi, 'format_int256', n => augur.abi.format_int256(n));
-  sinon.stub(AugurJS.augur, 'executeTradingActions', (market, outcomeID, address, getOrderBooks, doNotMakeOrders, tradesInProgress, tradeCommitmentCallback, tradeCommitLockCallback, callback) => {
+  sinon.stub(AugurJS.augur.trading.group, 'executeTradingActions', (market, outcomeID, address, getOrderBooks, doNotMakeOrders, tradesInProgress, tradeCommitmentCallback, tradeCommitLockCallback, callback) => {
     store.dispatch({
       type: 'AUGURJS_EXECUTE_TRADING_ACTIONS',
       params: [market, outcomeID, address, doNotMakeOrders, tradesInProgress]
@@ -96,10 +102,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
     };
 
     store.dispatch(action.placeTrade('testBinaryMarketID', '2', tradeToExecute));
-    console.log(JSON.stringify(store.getActions(), null, 2));
+    // console.log(JSON.stringify(store.getActions(), null, 2));
     assert.deepEqual(store.getActions(), [{
       type: 'AUGURJS_EXECUTE_TRADING_ACTIONS',
       params: [
+        { _signer: 'this is a private key' },
         {
           author: 'testAuthor1',
           branchID: '0x010101',
@@ -125,35 +132,15 @@ describe(`modules/trade/actions/place-trade.js`, () => {
           volume: '3030'
         },
         '2',
-        'testUser1',
+        store.getActions()[0].params[3],
         undefined,
-        {
-          2: {
-            side: 'buy',
-            numShares: '10',
-            limitPrice: '0.5',
-            totalFee: '0.01',
-            totalCost: '5.01',
-            tradeActions: [{
-              action: 'BID',
-              shares: '10',
-              gasEth: '0.01450404',
-              feeEth: '0.01',
-              feePercent: '0.2',
-              costEth: '5.01',
-              avgPrice: '0.501',
-              noFeePrice: '0.5'
-            }],
-            tradingFeesEth: '0.01',
-            gasFeesRealEth: '0.01450404',
-            feePercent: '0.199203187250996016'
-          }
-        }
       ]
-    }, {
+    }, { type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: null },  {
       type: 'CLEAR_TRADE_IN_PROGRESS',
       marketID: 'testBinaryMarketID'
     }]);
+    assert.isFunction(store.getActions()[0].params[3], 'expected the 4th param in the AUGURJS_EXECUTE_TRADING_ACTIONS action to be a function');
+    assert.deepEqual(store.getActions()[0].params[3].toString(), (() => getState().orderBooks).toString(), 'expected the 4th param in the AUGURJS_EXECUTE_TRADING_ACTIONS action to be equal to the expected function of () => getState().orderBooks');
   });
 
   it('should handle a null/undefined outcomeID', () => {
