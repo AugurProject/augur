@@ -33,12 +33,12 @@ export default class Routes extends Component {
   }
 
   handleRouting(p) {
+    p.setSidebarAllowed(false);
+
     let activeView = p.activeView;
     if (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10))) {
       activeView = MARKETS;
     }
-
-    p.setSidebarAllowed(false);
 
     // NOTE -- I personally hate the use of a 'magic comment' inside the import args, but it is what it is
     switch (activeView) {
@@ -79,10 +79,9 @@ export default class Routes extends Component {
           })
           .catch(err => asyncModuleLoadError('market', err));
       case MARKETS: {
-        p.setSidebarAllowed(true);
-
         return import(/* webpackChunkName: 'markets' */ 'modules/markets/container')
           .then((module) => {
+            p.setSidebarAllowed(true);
             this.setState({ currentView: <module.default /> });
           })
           .catch(err => asyncModuleLoadError('markets', err));
