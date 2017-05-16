@@ -20,10 +20,13 @@ import debounce from 'utils/debounce';
 export default class AppView extends Component {
   static propTypes = {
     url: PropTypes.string
+    // TODO
   };
 
   constructor(props) {
     super(props);
+
+    console.log('### APP -- ', props);
 
     this.state = {
       isMobile: false, // Determined via CSS media query, ref method `checkIfMobile` below
