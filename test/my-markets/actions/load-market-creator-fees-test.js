@@ -12,10 +12,10 @@ describe('modules/my-markets/actions/load-market-creator-fees.js', () => {
   const { store } = mockStore.default;
 
   const mockAugurJS = {
-    augur: {},
+    augur: { api: { MarketCreator: {} } },
     abi
   };
-  mockAugurJS.augur.getMarketCreatorFeesCollected = sinon.stub().yields('10');
+  mockAugurJS.augur.api.MarketCreator.getMarketCreatorFeesCollected = sinon.stub().yields('10');
 
   const mockActions = {
     updateMarketCreatorFees: () => {}
@@ -30,18 +30,8 @@ describe('modules/my-markets/actions/load-market-creator-fees.js', () => {
     '../../../services/augurjs': mockAugurJS
   });
 
-  before(() => {
+  afterEach(() => {
     store.clearActions();
-
-    store.dispatch(action.loadMarketCreatorFees('0x0000000000000000000000000000000000000001'));
-  });
-
-  after(() => {
-    store.clearActions();
-  });
-
-  it(`should call augur's 'getMarketCreatorFeesCollected'`, () => {
-    assert(mockAugurJS.augur.getMarketCreatorFeesCollected.calledOnce, `'augur.getMarketCreatorFeesCollected' wasn't called once as expected`);
   });
 
   it(`should dispatch 'updateMarketCreatorFees' with the correct object`, () => {
@@ -51,8 +41,9 @@ describe('modules/my-markets/actions/load-market-creator-fees.js', () => {
         '0x0000000000000000000000000000000000000001': abi.bignum('10')
       }
     }];
-
-    assert(mockActions.updateMarketCreatorFees.calledOnce, `'updateMarketCreatorFees' wasn't called once as expected`);
+    store.dispatch(action.loadMarketCreatorFees('0x0000000000000000000000000000000000000001'));
+    sinon.assert.calledOnce(mockAugurJS.augur.api.MarketCreator.getMarketCreatorFeesCollected);
+    sinon.assert.calledOnce(mockActions.updateMarketCreatorFees);
     assert.deepEqual(store.getActions(), out, `actions dispatched did not have the expected shape`);
   });
 });
