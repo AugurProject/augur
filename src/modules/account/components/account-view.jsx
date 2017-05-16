@@ -1,8 +1,12 @@
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 // import ReactTooltip from 'react-tooltip';
 // import classnames from 'classnames';
 // import { ModalContainer, ModalDialog } from 'react-modal-dialog';
 import Link from 'modules/link/components/link';
+import ComponentNav from 'modules/common/components/component-nav';
+
+import { ACCOUNT_NAV_ITEMS } from 'modules/account/constants/account-nav-items';
+import { ACCOUNT_DETAILS } from 'modules/app/constants/views';
 
 import AccountDetails from 'modules/account/components/account-details';
 
@@ -30,41 +34,64 @@ import AccountDetails from 'modules/account/components/account-details';
 //   this.loginIDCopy = this.loginIDCopy.bind(this);
 // }
 
-// TODO
-// Details
-// Deposit
-// Convert
-// Withdraw
+export default class AccountView extends Component {
+  static propTypes = {
+    loginAccount: PropTypes.object.isRequired
+  };
 
-const AccountView = (p) => {
-  console.log('### AccountView -- ', p);
+  constructor(props) {
+    super(props);
 
-  const loginAccount = p.loginAccount;
+    console.log('ACCOUNT -- ', ACCOUNT_NAV_ITEMS);
 
-  return (
-    <section id="account_view">
-      <article
-        className="account-content"
-      >
-        <div className="account-header">
-          <h2>Account</h2>
-          <Link {...p.authLink} >Sign Out</Link>
-        </div>
-      </article>
-    </section>
-  );
-};
+    this.state = {
+      selectedNav: ACCOUNT_DETAILS
+    };
 
-AccountView.propTypes = {
-  loginAccount: PropTypes.object.isRequired
-};
+    this.updateSelectedNav = this.updateSelectedNav.bind(this);
+  }
+
+  updateSelectedNav(selectedNav) {
+    this.setState({ selectedNav });
+  }
+
+  render() {
+    // TODO
+    // Details
+    // Deposit
+    // Convert
+    // Withdraw
+
+    const p = this.props;
+    const s = this.state;
+
+    // const loginAccount = p.loginAccount;
+
+    return (
+      <section id="account_view">
+        <article
+          className="account-content"
+        >
+          <div className="account-header">
+            <h2>Account</h2>
+            <Link {...p.authLink} >Sign Out</Link>
+          </div>
+          <ComponentNav
+            fullWidth
+            navItems={ACCOUNT_NAV_ITEMS}
+            selectedNav={s.selectedNav}
+            updateSelectedNav={this.updateSelectedNav}
+          />
+        </article>
+      </section>
+    );
+  }
+}
 
 // static propTypes = {
 //   loginAccount: PropTypes.object.isRequired,
 //   authLink: PropTypes.object.isRequired
 // }
-
-export default AccountView;
 
 
 // <div className="view-header">

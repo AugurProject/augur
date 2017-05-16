@@ -24,7 +24,8 @@ const ComponentNav = p => (
 ComponentNav.propTypes = {
   fullWidth: PropTypes.bool,
   navItems: PropTypes.object.isRequired,
-  selectedNav: PropTypes.string.isRequired
+  selectedNav: PropTypes.string.isRequired,
+  updateSelectedNav: PropTypes.func.isRequired
 };
 
 export default ComponentNav;
