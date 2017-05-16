@@ -2,7 +2,7 @@ import { loadFullMarket } from 'modules/market/actions/load-full-market';
 import { loadMarkets } from 'modules/markets/actions/load-markets';
 import { loadMarketsByTopic } from 'modules/markets/actions/load-markets-by-topic';
 
-import { MARKETS, AUTHENTICATION } from 'modules/app/constants/views';
+import { MARKETS, AUTHENTICATION, TOPICS } from 'modules/app/constants/views';
 import authenticatedViews from 'modules/app/constants/authenticated-views';
 
 import getValue from 'utils/get-value';
@@ -20,9 +20,10 @@ export function updateURL(url, title) {
     const parsedURL = parseURL(url);
     const { branch, hasLoadedMarkets, hasLoadedTopic, loginAccount, selectedMarketID, connection } = getState();
 
-    //  Re-route the user if attempting to nav to authenticated view unauthenticated
-    if (!loginAccount.address && authenticatedViews.indexOf(parsedURL.searchParams.page) !== -1) {
+    if (!loginAccount.address && authenticatedViews.indexOf(parsedURL.searchParams.page) !== -1) { //  Reroute the user if they are unauthenticated and attempting to traverse to authenticated views
       dispatch(updateURL(makeLocation({ page: AUTHENTICATION }).url));
+    } else if (loginAccount.address && parsedURL.searchParams.page === AUTHENTICATION) { // Reroute the user if they are authenticated and attempting to traverse to auth view
+      dispatch(updateURL(makeLocation({ page: TOPICS }).url));
     } else {
       dispatch({ type: UPDATE_URL, parsedURL });
 

@@ -37,6 +37,8 @@ import AccountDetails from 'modules/account/components/account-details';
 // Withdraw
 
 const AccountView = (p) => {
+  console.log('### AccountView -- ', p);
+
   const loginAccount = p.loginAccount;
 
   return (

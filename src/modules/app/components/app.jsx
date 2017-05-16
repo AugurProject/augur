@@ -20,7 +20,7 @@ export default class AppView extends Component {
   static propTypes = {
     url: PropTypes.string,
     tags: PropTypes.array.isRequired,
-    coreState: PropTypes.object.isRequired
+    coreStats: PropTypes.object.isRequired
     // TODO
   };
 

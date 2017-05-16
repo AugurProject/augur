@@ -15,7 +15,7 @@ import { reportingTestSetup } from 'modules/reports/actions/reporting-test-setup
 // fixes Reflect not being recognized in test or node 4.2
 require('core-js/es6/reflect');
 
-export function initAugur() {
+export function initAugur(cb) {
   return (dispatch, getState) => {
     const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = () => {
@@ -54,6 +54,7 @@ export function initAugur() {
             dispatch(loadBranch(env.branchID || BRANCH_ID));
             dispatch(displayTopicsPage());
           }
+          cb && cb();
         });
       }
     };

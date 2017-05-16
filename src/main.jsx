@@ -36,8 +36,9 @@ window.onpopstate = (e) => {
   store.dispatch(updateURL(window.location.pathname + window.location.search));
 };
 
-store.dispatch(updateURL(window.location.pathname + window.location.search));
-store.dispatch(initAugur());
+store.dispatch(initAugur(() => {
+  store.dispatch(updateURL(window.location.pathname + window.location.search));
+}));
 
 const appElement = document.getElementById('app');
 
