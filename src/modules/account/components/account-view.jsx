@@ -6,9 +6,12 @@ import Link from 'modules/link/components/link';
 import ComponentNav from 'modules/common/components/component-nav';
 
 import { ACCOUNT_NAV_ITEMS } from 'modules/account/constants/account-nav-items';
-import { ACCOUNT_DETAILS } from 'modules/app/constants/views';
+import { ACCOUNT_DETAILS, ACCOUNT_DEPOSIT, ACCOUNT_CONVERT, ACCOUNT_WITHDRAW } from 'modules/app/constants/views';
 
 import AccountDetails from 'modules/account/components/account-details';
+import AccountDeposit from 'modules/account/components/account-deposit';
+import AccountConvert from 'modules/account/components/account-convert';
+import AccountWithdraw from 'modules/account/components/account-withdraw';
 
 // import Input from 'modules/common/components/input';
 // import PasswordInputForm from 'modules/account/components/password-input-form';
@@ -82,6 +85,18 @@ export default class AccountView extends Component {
             selectedNav={s.selectedNav}
             updateSelectedNav={this.updateSelectedNav}
           />
+          {s.selectedNav === ACCOUNT_DETAILS &&
+            <AccountDetails />
+          }
+          {s.selectedNav === ACCOUNT_DEPOSIT &&
+            <AccountDeposit />
+          }
+          {s.selectedNav === ACCOUNT_CONVERT &&
+            <AccountConvert />
+          }
+          {s.selectedNav === ACCOUNT_WITHDRAW &&
+            <AccountWithdraw />
+          }
         </article>
       </section>
     );

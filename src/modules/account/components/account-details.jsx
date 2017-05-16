@@ -24,37 +24,38 @@ const AccountDetails = (p) => {
   return (
     <article className="account-details">
       <h3>Details</h3>
-      <div
-        className="account-detail"
-      >
-        <span className="account-detail-label">Name:</span>
-        <span className="account-detail-value">{p.name}</span>
-      </div>
-      <div
-        className="account-detail"
-      >
-        <span className="account-detail-label">Address:</span>
-        <span className="account-detail-value">{p.address}</span>
-      </div>
-      <div
-        className="account-detail"
-      >
-        <span className="account-detail-label">LoginID:</span>
-        <span className="account-detail-value">{p.trimmedLoginID}</span>
-      </div>
     </article>
   );
 };
 
-AccountDetails.propTypes = {
-  address: PropTypes.string.isRequired,
-  trimmedAddress: PropTypes.string.isRequired,
-  loginID: PropTypes.string.isRequired,
-  trimmedLoginID: PropTypes.string.isRequired,
-  name: PropTypes.string
-};
+// AccountDetails.propTypes = {
+//   address: PropTypes.string.isRequired,
+//   trimmedAddress: PropTypes.string.isRequired,
+//   loginID: PropTypes.string.isRequired,
+//   trimmedLoginID: PropTypes.string.isRequired,
+//   name: PropTypes.string
+// };
 
 export default AccountDetails;
+
+// <div
+//   className="account-detail"
+// >
+//   <span className="account-detail-label">Name:</span>
+//   <span className="account-detail-value">{p.name}</span>
+// </div>
+// <div
+//   className="account-detail"
+// >
+//   <span className="account-detail-label">Address:</span>
+//   <span className="account-detail-value">{p.address}</span>
+// </div>
+// <div
+//   className="account-detail"
+// >
+//   <span className="account-detail-label">LoginID:</span>
+//   <span className="account-detail-value">{p.trimmedLoginID}</span>
+// </div>
 
   // <div className="account-section">
   //   <h2 className="heading">Credentials</h2>
