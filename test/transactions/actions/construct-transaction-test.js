@@ -3722,8 +3722,10 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
     const test = t => it(t.description, () => {
       const store = mockStore({
-        address: '',
-        derivedKey: ''
+        loginAccount: {
+          address: '',
+          derivedKey: ''
+        }
       });
       t.assertions(store);
     });

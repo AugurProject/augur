@@ -11,6 +11,46 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
   const augur = new Augur();
+  // save the default result for calling augur.trading.simulation.getTxGasEth
+  const defaultTxGasEth = augur.abi.unfix(augur.abi.bignum(augur.rpc.constants.DEFAULT_GAS).times(augur.abi.bignum(augur.constants.DEFAULT_GASPRICE))).toFixed();
+  const functionsAPI = augur.api;
+  const contractAddresses = {
+    Backstops: '0x708fdfe18bf28afe861a69e95419d183ace003eb',
+    Branches: '0x482c57abdce592b39434e3f619ffc3db62ab6d01',
+    BuyAndSellShares: '0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3',
+    Cash: '0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55',
+    CloseMarket: '0x3f3276849a878a176b2f02dd48a483e8182a49e4',
+    CollectFees: '0x81a7621e9a286d061b3dea040888a51c96693b1c',
+    CompleteSets: '0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea',
+    CompositeGetters: '0x4803e0b158ab66eae81a48bba2799f905c379eb2',
+    Consensus: '0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79',
+    ConsensusData: '0x4a61f3db785f1e2a23ffefeafaceeef2df551667',
+    CreateBranch: '0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645',
+    CreateMarket: '0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f',
+    EventResolution: '0x35152caa07026203a1add680771afb690d872d7d',
+    Events: '0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7',
+    ExpiringEvents: '0xe4714fcbdcdba49629bc408183ef40d120700b8d',
+    Faucets: '0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e',
+    ForkPenalize: '0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7',
+    Forking: '0xcd6c7bc634257f82903b182142aae7156d72a200',
+    FxpFunctions: '0xe5b327630cfa7f4b2324f9066c897dceecfd88a3',
+    Info: '0x8a4e2993a9972ee035453bb5674816fc3a698718',
+    MakeReports: '0x8c19616de17acdfbc933b99d9f529a689d22098f',
+    Markets: '0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d',
+    Payout: '0x52ccb0490bc81a2ae363fccbb2b367bca546cec7',
+    PenalizationCatchup: '0xabe47f122a496a732d6c4b38b3ca376d597d75dd',
+    PenalizeNotEnoughReports: '0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df',
+    ProportionCorrect: '0x0fbddb6bfb81c8d0965a894567cf4061446072c2',
+    Register: '0xa34c9f6fc047cea795f69b34a063d32e6cb6288c',
+    Reporting: '0x77c424f86a1b80f1e303d1c2651acd6aba653cb6',
+    ReportingThreshold: '0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68',
+    RoundTwo: '0x9308cf21b5a11f182f9707ca284bbb71bb84f893',
+    RoundTwoPenalize: '0x7d4b581a0868204b7481c316b430a97fd292a2fb',
+    SendReputation: '0x70a893eb9569041e97a3787f0c76a1eb6378d8b2',
+    SlashRep: '0x5069d883e31429c6dd1325d961f443007747c7a2',
+    Trade: '0x031d9d02520cc708ea3c865278508c9cdb92bd51',
+    Trades: '0x448c01a2e1fd6c2ef133402c403d2f48c99993e7'
+  };
   const test = (t) => {
     it(t.description, () => {
       const store = mockStore(t.state);
@@ -23,46 +63,14 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
         },
         augur: {
           api: augur.api,
-          calculateRequiredMarketValue: augur.calculateRequiredMarketValue,
-          calculateValidityBond: augur.calculateValidityBond,
-          contracts: {
-            Backstops: '0x708fdfe18bf28afe861a69e95419d183ace003eb',
-            Branches: '0x482c57abdce592b39434e3f619ffc3db62ab6d01',
-            BuyAndSellShares: '0xd70c6e1f3857d23bd96c3e4d2ec346fa7c3931f3',
-            Cash: '0xbd19195b9e8a2d8ed14fc3a2823856b5c16f7f55',
-            CloseMarket: '0x3f3276849a878a176b2f02dd48a483e8182a49e4',
-            CollectFees: '0x81a7621e9a286d061b3dea040888a51c96693b1c',
-            CompleteSets: '0x60cb05deb51f92ee25ce99f67181ecaeb0b743ea',
-            CompositeGetters: '0x4803e0b158ab66eae81a48bba2799f905c379eb2',
-            Consensus: '0xc1c4e2f32e4b84a60b8b7983b6356af4269aab79',
-            ConsensusData: '0x4a61f3db785f1e2a23ffefeafaceeef2df551667',
-            CreateBranch: '0x9fe69262bbaa47f013b7dbd6ca5f01e17446c645',
-            CreateMarket: '0x2e5a882aa53805f1a9da3cf18f73673bca98fa0f',
-            EventResolution: '0x35152caa07026203a1add680771afb690d872d7d',
-            Events: '0x8f2c2267687cb0f047b28a1b6f945da6e101a0d7',
-            ExpiringEvents: '0xe4714fcbdcdba49629bc408183ef40d120700b8d',
-            Faucets: '0xc21cfa6688dbfd2eca2548d894aa55fd0bbf1c7e',
-            ForkPenalize: '0xd15a6cfc462ae76b9ec590cab8b34bfa8e1302d7',
-            Forking: '0xcd6c7bc634257f82903b182142aae7156d72a200',
-            FxpFunctions: '0xe5b327630cfa7f4b2324f9066c897dceecfd88a3',
-            Info: '0x8a4e2993a9972ee035453bb5674816fc3a698718',
-            MakeReports: '0x8c19616de17acdfbc933b99d9f529a689d22098f',
-            Markets: '0x8caf2c0ce7cdc2e81b58f74322cefdef440b3f8d',
-            Payout: '0x52ccb0490bc81a2ae363fccbb2b367bca546cec7',
-            PenalizationCatchup: '0xabe47f122a496a732d6c4b38b3ca376d597d75dd',
-            PenalizeNotEnoughReports: '0x5f67ab9ff79be97b27ac8f26ef9f4b429b82e2df',
-            ProportionCorrect: '0x0fbddb6bfb81c8d0965a894567cf4061446072c2',
-            Register: '0xa34c9f6fc047cea795f69b34a063d32e6cb6288c',
-            Reporting: '0x77c424f86a1b80f1e303d1c2651acd6aba653cb6',
-            ReportingThreshold: '0x6c4c9fa11d6d8ed2c7a08ddcf4d4654c85194f68',
-            RoundTwo: '0x9308cf21b5a11f182f9707ca284bbb71bb84f893',
-            RoundTwoPenalize: '0x7d4b581a0868204b7481c316b430a97fd292a2fb',
-            SendReputation: '0x70a893eb9569041e97a3787f0c76a1eb6378d8b2',
-            SlashRep: '0x5069d883e31429c6dd1325d961f443007747c7a2',
-            Trade: '0x031d9d02520cc708ea3c865278508c9cdb92bd51',
-            Trades: '0x448c01a2e1fd6c2ef133402c403d2f48c99993e7'
+          create: {
+            calculateRequiredMarketValue: augur.create.calculateRequiredMarketValue,
+            calculateValidityBond: augur.create.calculateValidityBond,
           },
-          getTxGasEth: augur.getTxGasEth
+          trading: {
+            takeOrder: { selectOrder: () => {} },
+            simulation: { getTxGasEth: augur.trading.simulation.getTxGasEth }
+          },
         },
         rpc: {
           gasPrice: 20000000000
@@ -78,7 +86,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
       const Market = {
         selectMarketFromEventID: () => {}
       };
-      AugurJS.augur.selectOrder = sinon.stub().returns(t.selectors.order);
+      AugurJS.augur.trading.takeOrder.selectOrder = sinon.stub().returns(t.selectors.order);
       const UpdateTradeCommitment = {
         updateTradeCommitment: () => {}
       };
@@ -119,6 +127,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
       tx: {
         type: 'Bid',
         status: 'sent',
+        hash: '0x5bde43fc683d39c9f449424760401b2de067c8bda09acbf4c61dc923c0c98878',
         data: {
           events: [
             'log_add_tx',
@@ -174,7 +183,9 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b'
       },
-      tradeCommitment: {}
+      tradeCommitment: {},
+      contractAddresses: contractAddresses,
+      functionsAPI: functionsAPI
     },
     selectors: {
       marketFromEventID: {
@@ -199,7 +210,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
           blockNumber: undefined,
           timestamp: relayTransaction.trade.timestamp,
           inProgress: true,
-          gasFees: '0.01450404'
+          gasFees: defaultTxGasEth
         },
         marketID: '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2',
         outcomeID: '2',
@@ -216,6 +227,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
       tx: {
         type: 'Bid',
         status: 'success',
+        hash: '0x5bde43fc683d39c9f449424760401b2de067c8bda09acbf4c61dc923c0c98878',
         data: {
           events: [
             'log_add_tx',
@@ -285,7 +297,9 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b'
       },
-      tradeCommitment: {}
+      tradeCommitment: {},
+      contractAddresses: contractAddresses,
+      functionsAPI: functionsAPI
     },
     selectors: {
       marketFromEventID: {
@@ -307,7 +321,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
           minimumTradeSize: '0x2386f26fc10000',
           tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
           transactionHash: '0x5bde43fc683d39c9f449424760401b2de067c8bda09acbf4c61dc923c0c98878',
-          blockNumber: 1741,
+          blockNumber: parseInt(1741, 16),
           timestamp: 1484208293,
           inProgress: false,
           gasFees: '0.00651868'
@@ -327,6 +341,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
       tx: {
         type: 'Short Ask',
         status: 'sent',
+        hash: '0xe8109915cb0972d1aae971014ded4c744b7ad688704b0a973f626c42220a9ba4',
         data: {
           events: [
             'completeSets_logReturn',
@@ -384,7 +399,9 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b'
       },
-      tradeCommitment: {}
+      tradeCommitment: {},
+      contractAddresses: contractAddresses,
+      functionsAPI: functionsAPI
     },
     selectors: {
       marketFromEventID: {
@@ -410,7 +427,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
           timestamp: relayTransaction.trade.timestamp,
           inProgress: true,
           isShortAsk: true,
-          gasFees: '0.03'
+          gasFees: defaultTxGasEth
         },
         marketID: '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2',
         outcomeID: '2',
@@ -427,6 +444,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
       tx: {
         type: 'Short Ask',
         status: 'success',
+        hash: '0xe8109915cb0972d1aae971014ded4c744b7ad688704b0a973f626c42220a9ba4',
         data: {
           events: [
             'completeSets_logReturn',
@@ -498,7 +516,9 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b'
       },
-      tradeCommitment: {}
+      tradeCommitment: {},
+      contractAddresses: contractAddresses,
+      functionsAPI: functionsAPI
     },
     selectors: {
       marketFromEventID: {
@@ -520,7 +540,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
           minimumTradeSize: '0x2386f26fc10000',
           tradeGroupID: '0x000000000000000000000000000000008a649a9af5874931863de583aea36e17',
           transactionHash: '0xe8109915cb0972d1aae971014ded4c744b7ad688704b0a973f626c42220a9ba4',
-          blockNumber: 1805,
+          blockNumber: parseInt(1805, 16),
           timestamp: 1484210643,
           inProgress: false,
           isShortAsk: true,
@@ -541,6 +561,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
       tx: {
         type: 'Ask',
         status: 'sent',
+        hash: '0xe8109915cb0972d1aae971014ded4c744b7ad688704b0a973f626c42220a9ba4',
         data: {
           events: [
             'sentCash',
@@ -597,7 +618,9 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b'
       },
-      tradeCommitment: {}
+      tradeCommitment: {},
+      contractAddresses: contractAddresses,
+      functionsAPI: functionsAPI
     },
     selectors: {
       marketFromEventID: {
@@ -622,7 +645,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
           blockNumber: undefined,
           timestamp: relayTransaction.trade.timestamp,
           inProgress: true,
-          gasFees: '0.01393518'
+          gasFees: defaultTxGasEth
         },
         marketID: '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2',
         outcomeID: '2',
@@ -636,9 +659,11 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
     description: 'construct relayed sell transaction (success)',
     params: {
       status: 'success',
+      hash: '0xe8109915cb0972d1aae971014ded4c744b7ad688704b0a973f626c42220a9ba4',
       tx: {
         type: 'Ask',
         status: 'success',
+        hash: '0xe8109915cb0972d1aae971014ded4c744b7ad688704b0a973f626c42220a9ba4',
         data: {
           events: [
             'sentCash',
@@ -709,7 +734,9 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b'
       },
-      tradeCommitment: {}
+      tradeCommitment: {},
+      contractAddresses: contractAddresses,
+      functionsAPI: functionsAPI
     },
     selectors: {
       marketFromEventID: {
@@ -731,7 +758,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
           minimumTradeSize: '0x2386f26fc10000',
           tradeGroupID: '0x000000000000000000000000000000008a649a9af5874931863de583aea36e17',
           transactionHash: '0xe8109915cb0972d1aae971014ded4c744b7ad688704b0a973f626c42220a9ba4',
-          blockNumber: 1805,
+          blockNumber: parseInt(1805, 16),
           timestamp: 1484210643,
           inProgress: false,
           gasFees: '0.01090406'
