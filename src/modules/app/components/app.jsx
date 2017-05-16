@@ -14,12 +14,13 @@ import { CREATE_MARKET } from 'modules/app/constants/views';
 
 import shouldComponentUpdatePure from 'utils/should-component-update-pure';
 import handleScrollTop from 'utils/scroll-top-on-change';
-import getValue from 'utils/get-value';
 import debounce from 'utils/debounce';
 
 export default class AppView extends Component {
   static propTypes = {
-    url: PropTypes.string
+    url: PropTypes.string,
+    tags: PropTypes.array.isRequired,
+    coreState: PropTypes.object.isRequired
     // TODO
   };
 
@@ -203,11 +204,11 @@ export default class AppView extends Component {
                 {...navProps}
                 updateHeaderHeight={this.updateHeaderHeight}
               />
-              <div className={classnames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
+              <div className={classnames('sub-header', { 'logged-out': !p.logged })} >
                 {s.isSideBarAllowed && !s.isSideBarCollapsed &&
                   <div className="core-stats-bumper" />
                 }
-                {p.loginAccount && p.loginAccount.address &&
+                {p.logged &&
                   <CoreStats
                     activeView={p.activeView}
                     coreStats={p.coreStats}
@@ -227,8 +228,8 @@ export default class AppView extends Component {
                   {s.isSideBarAllowed && !s.isSideBarCollapsed &&
                     <div className="core-stats-bumper" />
                   }
-                  <div className={classnames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
-                    {p.loginAccount && p.loginAccount.address &&
+                  <div className={classnames('sub-header', { 'logged-out': !p.logged })} >
+                    {p.logged &&
                       <CoreStats
                         activeView={p.activeView}
                         coreStats={p.coreStats}

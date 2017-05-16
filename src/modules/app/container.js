@@ -4,6 +4,7 @@ import App from 'modules/app/components/app';
 import { selectNotificationsAndSeenCount } from 'modules/notifications/selectors/notifications';
 import { selectMarketsHeader } from 'modules/markets/selectors/markets-header';
 import { selectTags } from 'modules/markets/selectors/tags';
+import { selectCoreStats } from 'modules/account/selectors/core-stats';
 import links from 'modules/link/selectors/links';
 
 import getValue from 'utils/get-value';
@@ -20,6 +21,7 @@ const mapStateToProps = state => ({
   myPositionsLink: links().myPositionsLink,
   topicsLink: links().topicsLink,
   tags: selectTags(state),
+  coreStats: selectCoreStats(state),
   logged: getValue(state, 'loginAccount.address'),
   notifications: selectNotificationsAndSeenCount(state),
   marketsInfo: selectMarketsHeader(state),
