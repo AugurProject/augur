@@ -9,5 +9,6 @@ module.exports = {
   positions: require("./positions"),
   simulation: require("./simulation"),
   takeOrder: require("./take-order"),
-  cancel: require("./cancel")
+  cancel: require("./cancel"),
+  shrinkScalarPrice: require("./shrink-scalar-price")
 };
