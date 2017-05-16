@@ -14,7 +14,9 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
     it(t.description, () => {
       const store = mockStore(t.state);
       const AugurJS = {
-        augur: { claimMarketsProceeds: () => {} },
+        augur: {
+          trading: { payout: { claimMarketsProceeds: () => {} } }
+        },
         abi: { bignum: () => {} }
       };
       const LoadAccountTrades = { loadAccountTrades: () => {} };
@@ -29,7 +31,7 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
         '../../my-positions/selectors/winning-positions': WinningPositions
       });
       sinon.stub(AugurJS.abi, 'bignum', n => new BigNumber(n, 10));
-      sinon.stub(AugurJS.augur, 'claimMarketsProceeds', (branchID, markets, cb) => {
+      sinon.stub(AugurJS.augur.trading.payout, 'claimMarketsProceeds', (branchID, markets, cb) => {
         store.dispatch({ type: 'CLAIM_MARKETS_PROCEEDS', markets });
         cb(null, markets.map(market => market.id));
       });
