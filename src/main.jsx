@@ -32,11 +32,13 @@ console.log(`
 *******************************************
 `);
 
+store.dispatch(updateURL(window.location.pathname + window.location.search));
+
 window.onpopstate = (e) => {
   store.dispatch(updateURL(window.location.pathname + window.location.search));
 };
 
-store.dispatch(initAugur(() => {
+store.dispatch(initAugur(() => { // Dispatched again in case the user is authd and shouldn't be accessing specific view(s)
   store.dispatch(updateURL(window.location.pathname + window.location.search));
 }));
 

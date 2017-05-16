@@ -3,14 +3,14 @@ import { ACCOUNT, CREATE_MARKET, TRANSACTIONS, M, MARKETS, MY_POSITIONS, MY_MARK
 import { shouldComponentUpdateOnStateChangeOnly } from 'utils/should-component-update-pure';
 
 // NOTE --  the respective routes are imported within the switch statement so that
-//          webpack can properly code split the views
+//          webpack can properly code split the views into independently loadable chunks
 export default class Routes extends Component {
   static propTypes = {
     activeView: PropTypes.oneOfType([
       PropTypes.number,
       PropTypes.string
     ]).isRequired,
-    logged: PropTypes.string
+    setSidebarAllowed: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -40,6 +40,7 @@ export default class Routes extends Component {
 
     p.setSidebarAllowed(false);
 
+    // NOTE -- I personally hate the use of a 'magic comment' inside the import args, but it is what it is
     switch (activeView) {
       case AUTHENTICATION:
         return import(/* webpackChunkName: 'auth' */ 'modules/auth/container')
@@ -69,16 +70,12 @@ export default class Routes extends Component {
           .catch(err => asyncModuleLoadError('portfolio', err));
       case CREATE_MARKET:
         return import(/* webpackChunkName: 'create-market' */ 'modules/create-market/container')
-          .then(module => this.setState({ currentView: <module.default footerHeight={p.footerHeight} /> }))
+          .then(module => this.setState({ currentView: <module.default /> }))
           .catch(err => asyncModuleLoadError('create-market', err));
       case M:
         return import(/* webpackChunkName: 'market' */ 'modules/market/container')
           .then((module) => {
-            const viewProps = {
-              selectedOutcome: p.selectedOutcome,
-              marketReportingNavItems: p.marketReportingNavItems
-            };
-            this.setState({ currentView: <module.default {...viewProps} /> });
+            this.setState({ currentView: <module.default /> });
           })
           .catch(err => asyncModuleLoadError('market', err));
       case MARKETS: {

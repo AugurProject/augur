@@ -21,7 +21,10 @@ export default class AppView extends Component {
     url: PropTypes.string,
     tags: PropTypes.array.isRequired,
     coreStats: PropTypes.array.isRequired,
-    updateIsMobile: PropTypes.func.isRequired
+    isMobile: PropTypes.bool.isRequired,
+    updateIsMobile: PropTypes.func.isRequired,
+    heightHeight: PropTypes.number.isRequired,
+    footerHeight: PropTypes.number.isRequired
   };
 
   constructor(props) {
@@ -34,8 +37,6 @@ export default class AppView extends Component {
       isChatCollapsed: true,
       doScrollTop: false,
       currentRoute: null,
-      headerHeight: 0,
-      footerHeight: 0,
       footerPush: 0,
       isFooterCollapsed: true
     };
@@ -48,8 +49,6 @@ export default class AppView extends Component {
     this.handleSwipeEvent = this.handleSwipeEvent.bind(this);
     this.handleWindowScroll = debounce(this.handleWindowScroll.bind(this));
     this.handleWindowResize = debounce(this.handleWindowResize.bind(this));
-    this.updateHeaderHeight = this.updateHeaderHeight.bind(this);
-    this.updateFooterHeight = this.updateFooterHeight.bind(this);
     this.updateIsFooterCollapsed = this.updateIsFooterCollapsed.bind(this);
     this.checkIfMobile = this.checkIfMobile.bind(this);
   }
@@ -71,15 +70,6 @@ export default class AppView extends Component {
   }
   toggleSideBar() {
     this.setState({ isSideBarCollapsed: !this.state.isSideBarCollapsed });
-  }
-
-  //	Bounding Element Dimentions
-  //	NOTE -- used by mobile side-bar
-  updateHeaderHeight(headerHeight) {
-    this.setState({ headerHeight });
-  }
-  updateFooterHeight(footerHeight) {
-    this.setState({ footerHeight });
   }
 
   //	Footer
@@ -176,8 +166,8 @@ export default class AppView extends Component {
 
     const sideBarProps = {
       tags: p.tags,
-      headerHeight: s.headerHeight,
-      footerHeight: s.footerHeight
+      headerHeight: p.headerHeight,
+      footerHeight: p.footerHeight
     };
 
     // NOTE -- A few implementation details:
@@ -191,15 +181,15 @@ export default class AppView extends Component {
             {s.isSideBarAllowed && !s.isSideBarCollapsed &&
               <SidebarMask
                 style={{
-                  top: s.headerHeight,
-                  bottom: s.footerHeight
+                  top: p.headerHeight,
+                  bottom: p.footerHeight
                 }}
               />
             }
             <div id="app_header">
               <Header
                 {...navProps}
-                updateHeaderHeight={this.updateHeaderHeight}
+                updateHeaderHeight={p.updateHeaderHeight}
               />
               <div className={classnames('sub-header', { 'logged-out': !p.logged })} >
                 {s.isSideBarAllowed && !s.isSideBarCollapsed &&
@@ -235,7 +225,6 @@ export default class AppView extends Component {
                   </div>
                   <Routes
                     activeView={p.activeView}
-                    footerHeight={s.footerHeight}
                     setSidebarAllowed={this.setSidebarAllowed}
                   />
                   {p.activeView !== CREATE_MARKET &&
@@ -256,7 +245,7 @@ export default class AppView extends Component {
             <Footer
               {...navProps}
               isFooterCollapsed={s.isFooterCollapsed}
-              updateFooterHeight={this.updateFooterHeight}
+              updateFooterHeight={p.updateFooterHeight}
               updateIsFooterCollapsed={this.updateIsFooterCollapsed}
             />
           </div>
