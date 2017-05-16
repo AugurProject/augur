@@ -23,12 +23,14 @@ export default class AppView extends Component {
     coreStats: PropTypes.array.isRequired,
     isMobile: PropTypes.bool.isRequired,
     updateIsMobile: PropTypes.func.isRequired,
-    heightHeight: PropTypes.number.isRequired,
+    headerHeight: PropTypes.number.isRequired,
     footerHeight: PropTypes.number.isRequired
   };
 
   constructor(props) {
     super(props);
+
+    console.log('### App -- ', props);
 
     this.state = {
       isSideBarAllowed: false,

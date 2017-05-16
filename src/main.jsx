@@ -7,7 +7,7 @@ import App from 'modules/app/container';
 import { initAugur } from 'modules/app/actions/init-augur';
 import { updateURL } from 'modules/link/actions/update-url';
 
-import * as selectors from 'src/select-state';
+import selectors from 'src/selectors-raw';
 import store from 'src/store';
 import { augur } from 'services/augurjs';
 
@@ -23,7 +23,7 @@ window.augur = augur;
 console.log(`
 *******************************************
            DEVELOPMENT MODE
-  window.state      -- all state data
+  window.state      -- raw state data
   window.selectors  -- processed state data
   window.augur      -- Augur API methods
 -------------------------------------------

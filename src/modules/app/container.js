@@ -30,7 +30,9 @@ const mapStateToProps = state => ({
   marketsInfo: selectMarketsHeader(state),
   numFavorites: selectMarketsHeader(state).numFavorites,
   numPendingReports: selectMarketsHeader(state).numPendingReports,
-  isMobile: state.isMobile
+  isMobile: state.isMobile,
+  headerHeight: state.headerHeight,
+  footerHeight: state.footerHeight
 });
 
 const mapDispatchToProps = dispatch => ({
