@@ -1,4 +1,4 @@
-import { describe, it, before, after } from 'mocha';
+import { describe, it, afterEach } from 'mocha';
 import { assert } from 'chai';
 
 import proxyquire from 'proxyquire';

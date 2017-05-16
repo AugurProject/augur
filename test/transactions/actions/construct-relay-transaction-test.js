@@ -184,8 +184,8 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
         address: '0x0000000000000000000000000000000000000b0b'
       },
       tradeCommitment: {},
-      contractAddresses: contractAddresses,
-      functionsAPI: functionsAPI
+      contractAddresses,
+      functionsAPI
     },
     selectors: {
       marketFromEventID: {
@@ -298,8 +298,8 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
         address: '0x0000000000000000000000000000000000000b0b'
       },
       tradeCommitment: {},
-      contractAddresses: contractAddresses,
-      functionsAPI: functionsAPI
+      contractAddresses,
+      functionsAPI
     },
     selectors: {
       marketFromEventID: {
@@ -321,7 +321,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
           minimumTradeSize: '0x2386f26fc10000',
           tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036',
           transactionHash: '0x5bde43fc683d39c9f449424760401b2de067c8bda09acbf4c61dc923c0c98878',
-          blockNumber: parseInt(1741, 16),
+          blockNumber: 0x1741,
           timestamp: 1484208293,
           inProgress: false,
           gasFees: '0.00651868'
@@ -400,8 +400,8 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
         address: '0x0000000000000000000000000000000000000b0b'
       },
       tradeCommitment: {},
-      contractAddresses: contractAddresses,
-      functionsAPI: functionsAPI
+      contractAddresses,
+      functionsAPI
     },
     selectors: {
       marketFromEventID: {
@@ -517,8 +517,8 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
         address: '0x0000000000000000000000000000000000000b0b'
       },
       tradeCommitment: {},
-      contractAddresses: contractAddresses,
-      functionsAPI: functionsAPI
+      contractAddresses,
+      functionsAPI
     },
     selectors: {
       marketFromEventID: {
@@ -540,7 +540,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
           minimumTradeSize: '0x2386f26fc10000',
           tradeGroupID: '0x000000000000000000000000000000008a649a9af5874931863de583aea36e17',
           transactionHash: '0xe8109915cb0972d1aae971014ded4c744b7ad688704b0a973f626c42220a9ba4',
-          blockNumber: parseInt(1805, 16),
+          blockNumber: 0x1805,
           timestamp: 1484210643,
           inProgress: false,
           isShortAsk: true,
@@ -619,8 +619,8 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
         address: '0x0000000000000000000000000000000000000b0b'
       },
       tradeCommitment: {},
-      contractAddresses: contractAddresses,
-      functionsAPI: functionsAPI
+      contractAddresses,
+      functionsAPI
     },
     selectors: {
       marketFromEventID: {
@@ -735,8 +735,8 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
         address: '0x0000000000000000000000000000000000000b0b'
       },
       tradeCommitment: {},
-      contractAddresses: contractAddresses,
-      functionsAPI: functionsAPI
+      contractAddresses,
+      functionsAPI
     },
     selectors: {
       marketFromEventID: {
@@ -758,7 +758,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
           minimumTradeSize: '0x2386f26fc10000',
           tradeGroupID: '0x000000000000000000000000000000008a649a9af5874931863de583aea36e17',
           transactionHash: '0xe8109915cb0972d1aae971014ded4c744b7ad688704b0a973f626c42220a9ba4',
-          blockNumber: parseInt(1805, 16),
+          blockNumber: 0x1805,
           timestamp: 1484210643,
           inProgress: false,
           gasFees: '0.01090406'

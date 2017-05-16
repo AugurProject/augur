@@ -135,12 +135,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
         store.getActions()[0].params[3],
         undefined,
       ]
-    }, { type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: null },  {
+    }, { type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: null }, {
       type: 'CLEAR_TRADE_IN_PROGRESS',
       marketID: 'testBinaryMarketID'
     }]);
     assert.isFunction(store.getActions()[0].params[3], 'expected the 4th param in the AUGURJS_EXECUTE_TRADING_ACTIONS action to be a function');
-    assert.deepEqual(store.getActions()[0].params[3].toString(), (() => getState().orderBooks).toString(), 'expected the 4th param in the AUGURJS_EXECUTE_TRADING_ACTIONS action to be equal to the expected function of () => getState().orderBooks');
   });
 
   it('should handle a null/undefined outcomeID', () => {
