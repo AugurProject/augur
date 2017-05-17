@@ -583,7 +583,7 @@ describe('CompositeGetters.loadNextMarketsBatch', function () {
 });
 describe('CompositeGetters.loadMarkets', function () {
   // 3 tests total
-  var getNumMarketsBranch = augur.Branches.getNumMarketsBranch;
+  var getNumMarketsBranch = augur.markets.getNumMarketsBranch;
   var loadNextMarketsBatch = augur.loadNextMarketsBatch;
   var options = augur.options;
   afterEach(function () {

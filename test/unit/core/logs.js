@@ -5,6 +5,10 @@ var abi = require("augur-abi");
 var noop = require("../../../src/utils/noop");
 var isFunction = require("../../../src/utils/is-function");
 var augur = new (require("../../../src"))();
+var AugurContracts = require('augur-contracts');
+var DEFAULT_NETWORK_ID = require("../../../src/constants").DEFAULT_NETWORK_ID;
+var contractAddresses = AugurContracts[DEFAULT_NETWORK_ID];
+var contractsAPI = AugurContracts.api;
 
 describe("logs.parseCompleteSetsLogs", function () {
   // 6 tests total
@@ -447,7 +451,7 @@ describe("logs.buildTopicsList", function () {
 
   test({
     description: 'should handle an event with a single input',
-    event: { signature: augur.store.getState().contractsAPI.events.completeSets_logReturn.signature, inputs: [{ name: 'amount', indexed: true }]},
+    event: { signature: contractsAPI.events.completeSets_logReturn.signature, inputs: [{ name: 'amount', indexed: true }]},
     params: { amount: '50' },
     assertions: function (o) {
       assert.deepEqual(o, [ '0x59193f204bd4754cff0e765b9ee9157305fb373586ec5d680b49e6341ef922a6' , '0x0000000000000000000000000000000000000000000000000000000000000050']);
@@ -456,7 +460,7 @@ describe("logs.buildTopicsList", function () {
 
   test({
     description: 'should handle an event with a multiple inputs, some indexed some not',
-    event: { signature: augur.store.getState().contractsAPI.events.completeSets_logReturn.signature, inputs: [{ name: 'amount', indexed: true }, { name: 'unindexed', indexed: false }, { name: 'shares', indexed: true } ]},
+    event: { signature: contractsAPI.events.completeSets_logReturn.signature, inputs: [{ name: 'amount', indexed: true }, { name: 'unindexed', indexed: false }, { name: 'shares', indexed: true } ]},
     params: { amount: '50', unindexed: 'this shouldnt be in the topics array out', shares: '10' },
     assertions: function (o) {
       assert.deepEqual(o, [ '0x59193f204bd4754cff0e765b9ee9157305fb373586ec5d680b49e6341ef922a6' , '0x0000000000000000000000000000000000000000000000000000000000000050',
@@ -466,7 +470,7 @@ describe("logs.buildTopicsList", function () {
 
   test({
     description: 'should handle an event with no inputs',
-    event: { signature: augur.store.getState().contractsAPI.events.completeSets_logReturn.signature, inputs: []},
+    event: { signature: contractsAPI.events.completeSets_logReturn.signature, inputs: []},
     params: {},
     assertions: function (o) {
       assert.deepEqual(o, [ '0x59193f204bd4754cff0e765b9ee9157305fb373586ec5d680b49e6341ef922a6']);
@@ -486,7 +490,7 @@ describe("logs.parametrizeFilter", function () {
 
   test({
     description: 'should return a prepared filter object',
-    event: { signature: augur.store.getState().contractsAPI.events.completeSets_logReturn.signature, inputs: [ { name: 'amount', indexed: true }, { name: 'market', indexed: true }, { name: 'numOutcomes', indexed: true } ], contract: 'CompleteSets'},
+    event: { signature: contractsAPI.events.completeSets_logReturn.signature, inputs: [ { name: 'amount', indexed: true }, { name: 'market', indexed: true }, { name: 'numOutcomes', indexed: true } ], contract: 'CompleteSets'},
     params: { amount: '50', market: '0x0a1', numOutcomes: '2' },
     state: { blockNumber: 100 },
     assertions: function (o) {
@@ -502,7 +506,7 @@ describe("logs.parametrizeFilter", function () {
 
   test({
     description: 'should return a prepared filter object when given to/from blocks',
-    event: { signature: augur.store.getState().contractsAPI.events.completeSets_logReturn.signature, inputs: [ { name: 'amount', indexed: true }, { name: 'market', indexed: true }, { name: 'numOutcomes', indexed: true } ], contract: 'CompleteSets'},
+    event: { signature: contractsAPI.events.completeSets_logReturn.signature, inputs: [ { name: 'amount', indexed: true }, { name: 'market', indexed: true }, { name: 'numOutcomes', indexed: true } ], contract: 'CompleteSets'},
     params: { amount: '50', market: '0x0a1', numOutcomes: '2', toBlock: '0x0b2', fromBlock: '0x0b1' },
     state: { blockNumber: 100 },
     assertions: function (o) {
@@ -895,8 +899,8 @@ describe("logs.getFilteredLogs", function () {
       assert.deepEqual(o, {
         fromBlock: '0x1',
         toBlock: 'latest',
-        address: augur.store.getState().contractsAPI.events['log_add_tx'].address,
-        topics: [augur.store.getState().contractsAPI.events['log_add_tx'].signature,
+        address: contractsAPI.events['log_add_tx'].address,
+        topics: [contractsAPI.events['log_add_tx'].signature,
           null,
           null
         ]
@@ -920,8 +924,8 @@ describe("logs.getFilteredLogs", function () {
       assert.deepEqual(o, {
         fromBlock: '0x0b1',
         toBlock: '0x0b2',
-        address: augur.store.getState().contractsAPI.events['log_add_tx'].address,
-        topics: [augur.store.getState().contractsAPI.events['log_add_tx'].signature,
+        address: contractsAPI.events['log_add_tx'].address,
+        topics: [contractsAPI.events['log_add_tx'].signature,
           null,
           null
         ]
@@ -941,8 +945,8 @@ describe("logs.getFilteredLogs", function () {
       assert.deepEqual(logs[0], {
         fromBlock: '0x0b1',
         toBlock: '0x0b2',
-        address: augur.store.getState().contractsAPI.events['log_add_tx'].address,
-        topics: [augur.store.getState().contractsAPI.events['log_add_tx'].signature,
+        address: contractsAPI.events['log_add_tx'].address,
+        topics: [contractsAPI.events['log_add_tx'].signature,
           null,
           null
         ]
@@ -2244,9 +2248,9 @@ describe("logs.getCompleteSetsLogs", function () {
       assert.deepEqual(filter, {
       	fromBlock: '0x1',
       	toBlock: 'latest',
-      	address: augur.store.getState().contractAddresses.CompleteSets,
+      	address: contractAddresses.CompleteSets,
       	topics: [
-          augur.store.getState().contractsAPI.events.completeSets_logReturn.signature,
+          contractsAPI.events.completeSets_logReturn.signature,
       		'0x00000000000000000000000000000000000000000000000000000deadbeef123',
       		null,
       		null
@@ -2278,9 +2282,9 @@ describe("logs.getCompleteSetsLogs", function () {
       assert.deepEqual(filter, {
       	fromBlock: '0xb1',
       	toBlock: '0xb2',
-      	address: augur.store.getState().contractAddresses.BuyAndSellShares,
+      	address: contractAddresses.BuyAndSellShares,
       	topics: [
-          augur.store.getState().contractsAPI.events.completeSets_logReturn.signature,
+          contractsAPI.events.completeSets_logReturn.signature,
       		'0x00000000000000000000000000000000000000000000000000000deadbeef123',
       		'0x00000000000000000000000000000000000000000000000000000000000000a1',
       		null
@@ -2328,9 +2332,9 @@ describe("logs.getCompleteSetsLogs", function () {
       assert.deepEqual(filter, {
       	fromBlock: '0xb1',
       	toBlock: '0xb2',
-      	address: augur.store.getState().contractAddresses.CompleteSets,
+      	address: contractAddresses.CompleteSets,
       	topics: [
-          augur.store.getState().contractsAPI.events.completeSets_logReturn.signature,
+          contractsAPI.events.completeSets_logReturn.signature,
       		'0x00000000000000000000000000000000000000000000000000000deadbeef123',
       		'0x00000000000000000000000000000000000000000000000000000000000000a1',
       		'0x0000000000000000000000000000000000000000000000000000000000000001'

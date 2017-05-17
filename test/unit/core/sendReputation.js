@@ -3,6 +3,8 @@
 var assert = require("chai").assert;
 var augur = new (require("../../../src"))();
 var abi = require("augur-abi");
+var AugurContracts = require('augur-contracts');
+var contractsAPI = AugurContracts.api;
 // 10 tests total
 
 describe("sendReputation Unit Tests", () => {
@@ -17,14 +19,14 @@ describe("sendReputation Unit Tests", () => {
 		assert.deepEqual(r, 'onSuccess should never have been called if this test worked correctly!');
 	};
 	var transact = augur.transact;
-	var getRepBalance = augur.Reporting.getRepBalance;
-	var getRepRedistributionDone = augur.getRepRedistributionDone;
+	var getRepBalance = augur.api.Reporting.getRepBalance;
+	var getRepRedistributionDone = augur.api.ConsensusData.getRepRedistributionDone;
 	var onSuccessToTest;
 	var	getRepBalanceCallCount = 0;
 	var	getRepRedistributionDoneCallCount = 0;
 	var test = function (t) {
 		it(t.description, function () {
-			augur.sendReputation(t.branch, t.recver, t.value, t.onSent, t.onSuccess, t.onFailed);
+			augur.assets.sendReputation(t.branch, t.recver, t.value, t.onSent, t.onSuccess, t.onFailed);
 			onSuccessToTest(t.successResult);
 		});
 	};
@@ -45,7 +47,7 @@ describe("sendReputation Unit Tests", () => {
 
 			assert.isString(tx.to, "tx.to sent to this.transact isn't an String as expected");
 			// make sure the tx.to is sending to the correct contract.
-			assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.SendReputation.sendReputation.to, "tx.to didn't point to the sendReputation contract");
+			assert.deepEqual(tx.to, contractsAPI.functions.SendReputation.sendReputation.to, "tx.to didn't point to the sendReputation contract");
 			assert.isArray(tx.params, "tx.params sent to this.transact isn't an array as expected");
 
 			assert.deepEqual(tx.params, ["3", "recipientAddress", abi.fix(5, "hex")], "tx.params didn't contain the expected values");
@@ -56,7 +58,7 @@ describe("sendReputation Unit Tests", () => {
 			// save the onSuccess function produced by sendReputation so we can test the prepare function contained within
 			onSuccessToTest = onSuccess;
 		};
-		augur.Reporting.getRepBalance = function (branch, from, cb) {
+		augur.api.Reporting.getRepBalance = function (branch, from, cb) {
 			getRepBalanceCallCount++;
 			switch (getRepBalanceCallCount) {
 			case 2:
@@ -73,7 +75,7 @@ describe("sendReputation Unit Tests", () => {
 				break;
 			}
 		};
-		augur.getRepRedistributionDone = function (branch, from, cb) {
+		augur.api.ConsensusData.getRepRedistributionDone = function (branch, from, cb) {
 			getRepRedistributionDoneCallCount++;
 			switch (getRepRedistributionDoneCallCount) {
 			case 1:
@@ -91,8 +93,8 @@ describe("sendReputation Unit Tests", () => {
 
 	after(function () {
 		augur.transact = transact;
-		augur.Reporting.getRepBalance = getRepBalance;
-		augur.getRepRedistributionDone = getRepRedistributionDone;
+		augur.api.Reporting.getRepBalance = getRepBalance;
+		augur.api.ConsensusData.getRepRedistributionDone = getRepRedistributionDone;
 	});
 
 	test({

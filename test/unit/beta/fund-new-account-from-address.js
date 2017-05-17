@@ -5,13 +5,12 @@
 var assert = require("chai").assert;
 var noop = require("../../../src/utils/noop");
 var constants = require("../../../src/constants");
-var store = require("../../../src/store");
 var Augur = require("../../../src");
 var augur = new Augur();
 
 describe("beta/fund-new-account-from-address", function () {
   var sendEther = augur.rpc.sendEther;
-  var fundNewAccount = augur.Faucets.fundNewAccount;
+  var fundNewAccount = augur.beta.fundNewAccount;
   afterEach(function () {
     augur.rpc.sendEther = sendEther;
     augur.Faucets.fundNewAccount = fundNewAccount;

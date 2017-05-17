@@ -4,11 +4,10 @@
 
 var assert = require("chai").assert;
 var pass = require("../../../src/utils/pass");
-var fundNewAccountFromFaucet = require("../../../src/fund-new-account/fund-new-account-from-faucet");
+var fundNewAccountFromFaucet = require("../../../src/beta/fund-new-account-from-faucet");
 var constants = require("../../../src/constants");
 var noop = require("../../../src/utils/noop");
 var isFunction = require("../../../src/utils/is-function");
-var store = require("../../../src/store");
 var Augur = require("../../../src");
 var clearCallCounts = require("../../tools").clearCallCounts;
 var proxyquire = require("proxyquire").noCallThru().noPreserveCache();
@@ -16,7 +15,7 @@ var augur = new Augur();
 
 describe("beta/fund-new-account-from-faucet", function () {
   var balance = augur.rpc.balance;
-  var fundNewAccount = augur.Faucets.fundNewAccount;
+  var fundNewAccount = augur.beta.fundNewAccount;
   var waitForNextBlocks = augur.rpc.waitForNextBlocks;
   var finished;
   var callCounts = {
@@ -26,14 +25,14 @@ describe("beta/fund-new-account-from-faucet", function () {
   afterEach(function () {
     clearCallCounts(callCounts);
     augur.rpc.balance = balance;
-    augur.Faucets.fundNewAccount = fundNewAccount;
+    augur.beta.fundNewAccount = fundNewAccount;
     augur.rpc.waitForNextBlocks = waitForNextBlocks;
   });
   var test = function (t) {
     it(t.description, function (done) {
       var fundNewAccountFromFaucet;
       augur.rpc.balance = t.balance || balance;
-      augur.Faucets.fundNewAccount = t.fundNewAccount || fundNewAccount;
+      augur.beta.fundNewAccount = t.fundNewAccount || fundNewAccount;
       augur.rpc.waitForNextBlocks = t.waitForNextBlocks || waitForNextBlocks;
       finished = done;
 
