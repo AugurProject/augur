@@ -60,7 +60,7 @@ export default class AccountView extends Component {
 
   render() {
     // TODO
-    // Details
+    // Details <
     // Deposit
     // Convert
     // Withdraw
@@ -68,7 +68,7 @@ export default class AccountView extends Component {
     const p = this.props;
     const s = this.state;
 
-    // const loginAccount = p.loginAccount;
+    const loginAccount = p.loginAccount;
 
     return (
       <section id="account_view">
@@ -86,7 +86,13 @@ export default class AccountView extends Component {
             updateSelectedNav={this.updateSelectedNav}
           />
           {s.selectedNav === ACCOUNT_DETAILS &&
-            <AccountDetails />
+            <AccountDetails
+              name={loginAccount.name}
+              address={loginAccount.address}
+              trimmedAddress={loginAccount.trimmedAddress}
+              loginID={loginAccount.loginID}
+              trimmedLoginID={loginAccount.trimmedLoginID}
+            />
           }
           {s.selectedNav === ACCOUNT_DEPOSIT &&
             <AccountDeposit />
