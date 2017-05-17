@@ -10,28 +10,31 @@ var augur = new Augur();
 
 describe("beta/fund-new-account-from-address", function () {
   var sendEther = augur.rpc.sendEther;
-  var fundNewAccount = augur.beta.fundNewAccount;
+  var fundNewAccount = augur.api.Faucets.fundNewAccount;
+
   afterEach(function () {
     augur.rpc.sendEther = sendEther;
-    augur.Faucets.fundNewAccount = fundNewAccount;
+    augur.api.Faucets.fundNewAccount = fundNewAccount;
   });
   var test = function (t) {
     it(t.description, function () {
       augur.rpc.sendEther = t.sendEther;
-      augur.Faucets.fundNewAccount = t.fundNewAccount;
-      augur.fundNewAccount.fundNewAccountFromAddress(t.fromAddress, t.amount, t.registeredAddress, t.branch, t.onSent, t.onSuccess, t.onFailed);
+      augur.api.Faucets.fundNewAccount = t.fundNewAccount;
+      augur.beta.fundNewAccountFromAddress(t.params);
     });
   };
   test({
     description: 'Should handle an error from rpc.sendEther',
-    fromAddress: '0x1',
-    amount: '10',
-    registeredAddress: '0x2',
-    branch: '101010',
-    onSent: function () {},
-    onSuccess: function () {},
-    onFailed: function (err) {
-      assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
+    params: {
+      fromAddress: '0x1',
+      amount: '10',
+      registeredAddress: '0x2',
+      branch: '101010',
+      onSent: function () {},
+      onSuccess: function () {},
+      onFailed: function (err) {
+        assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
+      },
     },
     sendEther: function (tx) {
       assert.equal(tx.to, '0x2');
@@ -49,13 +52,15 @@ describe("beta/fund-new-account-from-address", function () {
   });
   test({
     description: 'Should pass args to sendEther and then call fundNewAccount on success',
-    fromAddress: '0x1',
-    amount: '10',
-    registeredAddress: '0x2',
-    branch: '101010',
-    onSent: undefined,
-    onSuccess: undefined,
-    onFailed: undefined,
+    params: {
+      fromAddress: '0x1',
+      amount: '10',
+      registeredAddress: '0x2',
+      branch: '101010',
+      onSent: undefined,
+      onSuccess: undefined,
+      onFailed: undefined,
+    },
     sendEther: function (tx) {
       assert.equal(tx.to, '0x2');
       assert.equal(tx.value, '10');
@@ -67,6 +72,7 @@ describe("beta/fund-new-account-from-address", function () {
     },
     fundNewAccount: function (tx) {
       assert.deepEqual(tx, {
+        _signer: undefined,
         branch: '101010',
         onSent: noop,
         onSuccess: noop,
@@ -76,13 +82,15 @@ describe("beta/fund-new-account-from-address", function () {
   });
   test({
     description: 'Should pass args to sendEther and then call fundNewAccount on success, if no branch passed, should default to default banch',
-    fromAddress: '0x1',
-    amount: '10',
-    registeredAddress: '0x2',
-    branch: undefined,
-    onSent: undefined,
-    onSuccess: undefined,
-    onFailed: undefined,
+    params: {
+      fromAddress: '0x1',
+      amount: '10',
+      registeredAddress: '0x2',
+      branch: undefined,
+      onSent: undefined,
+      onSuccess: undefined,
+      onFailed: undefined,
+    },
     sendEther: function (tx) {
       assert.equal(tx.to, '0x2');
       assert.equal(tx.value, '10');
@@ -94,6 +102,7 @@ describe("beta/fund-new-account-from-address", function () {
     },
     fundNewAccount: function (tx) {
       assert.deepEqual(tx, {
+        _signer: undefined,
         branch: constants.DEFAULT_BRANCH_ID,
         onSent: noop,
         onSuccess: noop,

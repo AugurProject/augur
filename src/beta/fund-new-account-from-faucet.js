@@ -40,7 +40,7 @@ function fundNewAccountFromFaucet(p) {
           return balance > 0;
         }, function (callback) {
           rpcInterface.waitForNextBlocks(1, function (/* nextBlock */) {
-            rpcInterface.balance(p.registeredAddress, function (ethBalance) {
+            rpcInterface.getBalance(p.registeredAddress, function (ethBalance) {
               balance = parseInt(ethBalance, 16);
               callback(null, balance);
             });
