@@ -15,7 +15,7 @@ function loadMarkets(p, onChunk) {
     // first pass: only markets with non-zero volume
     loadMarketsBatch({
       branchID: p.branchID,
-      firstStartIndex: firstStartIndex,
+      startIndex: firstStartIndex,
       chunkSize: p.chunkSize,
       numMarkets: numMarkets,
       isDesc: p.isDesc,
@@ -27,7 +27,7 @@ function loadMarkets(p, onChunk) {
       if (p.loadZeroVolumeMarkets) {
         loadMarketsBatch({
           branchID: p.branchID,
-          firstStartIndex: firstStartIndex,
+          startIndex: firstStartIndex,
           chunkSize: p.chunkSize,
           numMarkets: numMarkets,
           isDesc: p.isDesc,
