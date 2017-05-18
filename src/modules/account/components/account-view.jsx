@@ -6,7 +6,6 @@ import Input from 'modules/common/components/input';
 import Link from 'modules/link/components/link';
 import ComponentNav from 'modules/common/components/component-nav';
 import Identicon from 'react-blockies';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
 import { ACCOUNT_NAV_ITEMS } from 'modules/account/constants/account-nav-items';
 import { ACCOUNT_DEPOSIT, ACCOUNT_CONVERT, ACCOUNT_WITHDRAW } from 'modules/app/constants/views';
@@ -43,16 +42,15 @@ import AccountWithdraw from 'modules/account/components/account-withdraw';
 export default class AccountView extends Component {
   static propTypes = {
     loginAccount: PropTypes.object.isRequired,
-    authLink: PropTypes.object.isRequired
+    authLink: PropTypes.object.isRequired,
+    updateAccountName: PropTypes.func.isRequired
   };
 
   constructor(props) {
     super(props);
 
     this.state = {
-      selectedNav: ACCOUNT_DEPOSIT,
-      nameInputVisible: false,
-      fullAccountVisible: false
+      selectedNav: ACCOUNT_DEPOSIT
     };
 
     this.updateSelectedNav = this.updateSelectedNav.bind(this);
@@ -81,6 +79,7 @@ export default class AccountView extends Component {
         >
           <AccountDetails
             name={loginAccount.name}
+            updateAccountName={p.updateAccountName}
             address={loginAccount.address}
             trimmedAddress={loginAccount.trimmedAddress}
             signOut={p.authLink}

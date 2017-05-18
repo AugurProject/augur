@@ -1,10 +1,10 @@
-import React, { PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 import Identicon from 'react-blockies';
 
 import Link from 'modules/link/components/link';
-
-// import Identicon from 'modules/common/components/identicon'
+import Input from 'modules/common/components/input';
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
 // loginIDCopy = (e) => {
 //   try {
@@ -24,42 +24,117 @@ import Link from 'modules/link/components/link';
 //   });
 // };
 
-const AccountDetails = p => (
-  <article className="account-details">
-    <div
-      className="account-details-core"
-    >
-      <Identicon
-        seed={p.address}
-        scale={8}
-      />
-      <div
-        className="account-details-core-values"
-      >
-        <div className="account-details-name">
-          <button
-            className="unstyled"
+export default class AccountDetails extends Component {
+  static propTypes = {
+    address: PropTypes.string.isRequired,
+    trimmedAddress: PropTypes.string.isRequired,
+    // loginID: PropTypes.string.isRequired,
+    // trimmedLoginID: PropTypes.string.isRequired,
+    signOut: PropTypes.object.isRequired,
+    updateAccountName: PropTypes.func.isRequired,
+    name: PropTypes.string
+  };
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      nameInputVisible: false,
+      fullAccountVisible: false
+    };
+
+    this.toggleNameInputVisibility = this.toggleNameInputVisibility.bind(this);
+    this.toggleFullAccountVisibility = this.toggleFullAccountVisibility.bind(this);
+  }
+
+  toggleNameInputVisibility() {
+    this.setState({ nameInputVisible: !this.state.nameInputVisible });
+  }
+
+  toggleFullAccountVisibility() {
+    this.setState({ fullAccountVisible: !this.state.fullAccountVisible });
+  }
+
+  updateAccountName(name) {
+    if (this.props.name !== name) this.props.updateAccountName(name);
+  }
+
+  render() {
+    const p = this.props;
+    const s = this.state;
+
+    const animationSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-very-fast'), 10);
+    const nameInputPlaceholder = 'Set Account Name';
+
+    return (
+      <article className="account-details">
+        <div
+          className="account-details-core"
+        >
+          <Identicon
+            seed={p.address}
+            scale={8}
+          />
+          <div
+            className="account-details-core-values"
           >
-            <span className={classNames('account-details-name-copy', { 'name-unset': !p.name })}>{p.name || 'Set Account Name'}</span>
-          </button>
+            <CSSTransitionGroup
+              className="account-details-name"
+              transitionName="account-details-name"
+              transitionEnterTimeout={animationSpeed}
+              transitionLeaveTimeout={animationSpeed}
+            >
+              {s.nameInputVisible &&
+                <Input
+                  autoFocus
+                  className={classNames({ 'name-unset': !p.name })}
+                  type="text"
+                  value={p.name}
+                  onChange={name => this.updateAccountName(name)}
+                  onBlur={() => this.toggleNameInputVisibility()}
+                  placeholder={nameInputPlaceholder}
+                />
+              }
+              <button
+                className="unstyled"
+                onClick={() => {
+                  if (!s.nameInputVisible) this.toggleNameInputVisibility();
+                }}
+              >
+                <span
+                  className={classNames('account-details-name-copy', {
+                    'name-unset': !p.name,
+                    'input-visible': s.nameInputVisible
+                  })}
+                >
+                  {p.name || nameInputPlaceholder}
+                </span>
+              </button>
+            </CSSTransitionGroup>
+            <button
+              className="unstyled"
+              onClick={() => this.toggleFullAccountVisibility()}
+            >
+              <CSSTransitionGroup
+                transitionName="account-details-address"
+                transitionEnterTimeout={animationSpeed}
+                transitionLeaveTimeout={animationSpeed}
+              >
+                {s.fullAccountVisible &&
+                  <span className="account-details-address">{p.address}</span>
+                }
+                {!s.fullAccountVisible &&
+                  <span className="account-details-address">{p.trimmedAddress}</span>
+                }
+              </CSSTransitionGroup>
+            </button>
+          </div>
         </div>
-        <span className="account-details-address">{p.trimmedAddress}</span>
-      </div>
-    </div>
-    <Link {...p.signOut} >Sign Out</Link>
-  </article>
-);
-
-AccountDetails.propTypes = {
-  address: PropTypes.string.isRequired,
-  trimmedAddress: PropTypes.string.isRequired,
-  // loginID: PropTypes.string.isRequired,
-  // trimmedLoginID: PropTypes.string.isRequired,
-  signOut: PropTypes.object.isRequired,
-  name: PropTypes.string
-};
-
-export default AccountDetails;
+        <Link {...p.signOut} >Sign Out</Link>
+      </article>
+    );
+  }
+}
 
   // <div className="account-section">
   //   <h2 className="heading">Credentials</h2>

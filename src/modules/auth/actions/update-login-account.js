@@ -7,6 +7,7 @@ export const CLEAR_LOGIN_ACCOUNT = 'CLEAR_LOGIN_ACCOUNT';
 export function changeAccountName(name) {
   const accountObject = { ...augur.accounts.account, name };
   const loginID = base58Encode(accountObject);
+  console.log('updatedLoginID -- ', loginID);
   const localStorageRef = typeof window !== 'undefined' && window.localStorage;
   if (localStorageRef && localStorageRef.setItem && localStorageRef.getItem && localStorageRef.getItem('account')) {
     localStorageRef.setItem('account', JSON.stringify({ ...accountObject, loginID }));
