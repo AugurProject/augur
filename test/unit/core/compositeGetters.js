@@ -826,7 +826,7 @@ describe('augur.assets.loadAssets', function () {
     }
   });
 });
-describe('CompositeGetters.loadBranch', function () {
+describe('augur.reporting.loadBranch', function () {
   // 7 tests total
   var test = function (t) {
     it(t.description, function () {
@@ -971,238 +971,237 @@ describe('CompositeGetters.loadBranch', function () {
     }
   });
 });
-// describe('CompositeGetters.parsePositionInMarket', function () {
-//   // 4 tests total
-//   var test = function (t) {
-//     it(t.description, function () {
-//       t.assertions(augur.parsePositionInMarket(t.positionInMarket));
-//     });
-//   };
-//   test({
-//     description: 'Should should return undefined if positionInMarket is undefined',
-//     positionInMarket: undefined,
-//     assertions: function (o) {
-//       assert.isUndefined(o);
-//     }
-//   });
-//   test({
-//     description: 'Should should return positionInMarket if positionInMarket is an object with an error key',
-//     positionInMarket: { error: 'Uh-Oh!' },
-//     assertions: function (o) {
-//       assert.deepEqual(o, { error: 'Uh-Oh!' });
-//     }
-//   });
-//   test({
-//     description: 'Should should return position object broken down by outcomes passed in positionInMarket',
-//     positionInMarket: ['1000000000000000000000', false, '231023558000000'],
-//     assertions: function (o) {
-//       assert.deepEqual(o, {'1': '1000', '2': '0', '3': '0.000231023558'});
-//     }
-//   });
-//   test({
-//     description: 'Should should return empty position object if positionInMarket is an empty array',
-//     positionInMarket: [],
-//     assertions: function (o) {
-//       assert.deepEqual(o, {});
-//     }
-//   });
-// });
-// describe('CompositeGetters.getPositionInMarket', function () {
-//   // 4 tests total
-//   var test = function (t) {
-//     it(t.description, function () {
-//       var getPositionInMarket = augur.CompositeGetters.getPositionInMarket;
-//       // we are going to pass our test assertions as our getPositionInMarket contract function
-//       augur.CompositeGetters.getPositionInMarket = t.assertions;
-//
-//       augur.getPositionInMarket(t.market, t.account, t.callback);
-//
-//       augur.CompositeGetters.getPositionInMarket = getPositionInMarket;
-//     });
-//   };
-//   test({
-//     description: 'Should prepare and pass the arguments to the getPositionInMarket Augur Contract CompositeGetters function.',
-//     market: '0x0a1',
-//     account: '0x0',
-//     callback: noop,
-//     assertions: function (market, account, callback) {
-//       assert.deepEqual(market, '0x0a1');
-//       assert.deepEqual(account, '0x0');
-//       assert.deepEqual(callback, noop);
-//     }
-//   });
-//   test({
-//     description: 'Should handle account passed as the cb and pass the arguments to the getPositionInMarket Augur Contract CompositeGetters function.',
-//     market: '0x0a1',
-//     account: noop,
-//     callback: undefined,
-//     assertions: function (market, account, callback) {
-//       assert.deepEqual(market, '0x0a1');
-//       // in this case we didn't pass account so we expect it to be augur.store.getState().fromAddress, however this is null by default so that's what we are confirming here.
-//       assert.isNull(account);
-//       assert.deepEqual(callback, noop);
-//     }
-//   });
-// });
-// describe('CompositeGetters.parseOrderBook', function () {
-//   // 5 tests total
-//   var test = function (t) {
-//     it(t.description, function () {
-//       t.assertions(augur.parseOrderBook(t.orderArray, t.scalarMinMax));
-//     });
-//   };
-//   test({
-//     description: 'should handle an order array with 2 trade orders in it, no scalar markets',
-//     orderArray: ['0x01', '0x1', '0x0a1', '100000000000000000000', '2530000000000000000', '0x0d1', '101010', '1', '0x02', '0x2', '0x0a2', '54200000000000000000000', '9320000000000000000000', '0x0d2', '101010', '2'],
-//     scalarMinMax: {},
-//     assertions: function (o) {
-//       assert.deepEqual(o, { buy:
-//          { '0x0000000000000000000000000000000000000000000000000000000000000001':
-//           { id: '0x0000000000000000000000000000000000000000000000000000000000000001',
-//           type: 'buy',
-//           market: '0x0a1',
-//           amount: '100',
-//           fullPrecisionAmount: '100',
-//           price: '2.53',
-//           fullPrecisionPrice: '2.53',
-//           owner: '0x00000000000000000000000000000000000000d1',
-//           block: 1052688,
-//           outcome: '1' } },
-//         sell:
-//          { '0x0000000000000000000000000000000000000000000000000000000000000002':
-//           { id: '0x0000000000000000000000000000000000000000000000000000000000000002',
-//           type: 'sell',
-//           market: '0x0a2',
-//           amount: '54200',
-//           fullPrecisionAmount: '54200',
-//           price: '9320',
-//           fullPrecisionPrice: '9320',
-//           owner: '0x00000000000000000000000000000000000000d2',
-//           block: 1052688,
-//           outcome: '2' }
-//         }
-//       });
-//     }
-//   });
-//   test({
-//     description: 'should handle an order array with 2 trade orders in it, with scalar markets',
-//     orderArray: ['0x01', '0x1', '0x0a1', '150000000000000000000', '80000000000000000000', '0x0d1', '101010', '1', '0x02', '0x1', '0x0a1', '736200000000000000000000', '12340000000000000000000', '0x0d1', '101010', '2'],
-//     scalarMinMax: { minValue: '10', maxValue: '140'},
-//     assertions: function (o) {
-//       assert.deepEqual(o, {
-//         buy: {
-//           '0x0000000000000000000000000000000000000000000000000000000000000001': {
-//             id: '0x0000000000000000000000000000000000000000000000000000000000000001',
-//             type: 'buy',
-//             market: '0x0a1',
-//             amount: '150',
-//             fullPrecisionAmount: '150',
-//             price: '90',
-//             fullPrecisionPrice: '90',
-//             owner: '0x00000000000000000000000000000000000000d1',
-//             block: 1052688,
-//             outcome: '1'
-//           },
-//           '0x0000000000000000000000000000000000000000000000000000000000000002': {
-//             id: '0x0000000000000000000000000000000000000000000000000000000000000002',
-//             type: 'buy',
-//             market: '0x0a1',
-//             amount: '736200',
-//             fullPrecisionAmount: '736200',
-//             price: '12350',
-//             fullPrecisionPrice: '12350',
-//             owner: '0x00000000000000000000000000000000000000d1',
-//             block: 1052688,
-//             outcome: '2'
-//           }
-//         },
-//         sell: {}
-//       });
-//     }
-//   });
-//   test({
-//     description: 'should return a blank orderBook Object if orderArray is empty',
-//     orderArray: [],
-//     scalarMinMax: undefined,
-//     assertions: function (o) {
-//       assert.deepEqual(o, {buy: {}, sell: {}});
-//     }
-//   });
-//   test({
-//     description: 'should return orderArray passed in if orderArray is undefined',
-//     orderArray: undefined,
-//     scalarMinMax: undefined,
-//     assertions: function (o) {
-//       assert.isUndefined(o);
-//     }
-//   });
-//   test({
-//     description: 'should return orderArray passed in if orderArray is am object with an error key',
-//     orderArray: { error: 'Uh-Oh!' },
-//     scalarMinMax: { minValue: '10', maxValue: '140'},
-//     assertions: function (o) {
-//       assert.deepEqual(o, { error: 'Uh-Oh!' });
-//     }
-//   });
-// });
-// describe('CompositeGetters.getOrderBook', function () {
-//   // 4 tests total
-//   var test = function (t) {
-//     it(t.description, function () {
-//       var fire = augur.fire;
-//       // use fire as our assertions...
-//       augur.fire = t.assertions;
-//
-//       augur.getOrderBook(t.market, t.scalarMinMax, t.callback);
-//
-//       augur.fire = fire;
-//     });
-//   };
-//   test({
-//     description: 'Should handle scalarMinMax being passed as a callback',
-//     market: '0x0a1',
-//     scalarMinMax: noop,
-//     callback: undefined,
-//     assertions: function (tx, callback, parseOrderBook, scalarMinMax) {
-//       assert.isNull(scalarMinMax);
-//       assert.deepEqual(tx.params, ['0x0a1', 0, 0]);
-//       assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.CompositeGetters.getOrderBook.to);
-//     }
-//   });
-//   test({
-//     description: 'Should handle a market Object with only minimal key/values with an undefined scalarMinMax and a callback passed',
-//     market: { market: '0x0a1' },
-//     scalarMinMax: undefined,
-//     callback: noop,
-//     assertions: function (tx, callback, parseOrderBook, scalarMinMax) {
-//       assert.isUndefined(scalarMinMax);
-//       assert.deepEqual(tx.params, ['0x0a1', 0, 0]);
-//       assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.CompositeGetters.getOrderBook.to);
-//     }
-//   });
-//   test({
-//     description: 'Should handle a market Object as only argument with an undefined scalarMinMax',
-//     market: { market: '0x0a1', offset: 2, numTradesToLoad: 10, scalarMinMax: undefined, callback: noop },
-//     scalarMinMax: undefined,
-//     callback: undefined,
-//     assertions: function (tx, callback, parseOrderBook, scalarMinMax) {
-//       assert.isUndefined(scalarMinMax);
-//       assert.deepEqual(tx.params, ['0x0a1', 2, 10]);
-//       assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.CompositeGetters.getOrderBook.to);
-//     }
-//   });
-//   test({
-//     description: 'Should handle a market Object as only argument with a scalarMinMax',
-//     market: { market: '0x0a1', offset: 1, numTradesToLoad: 25, scalarMinMax: { minValue: '-10', maxValue: '110' }, callback: noop },
-//     scalarMinMax: undefined,
-//     callback: undefined,
-//     assertions: function (tx, callback, parseOrderBook, scalarMinMax) {
-//       assert.deepEqual(scalarMinMax, { minValue: '-10', maxValue: '110' });
-//       assert.deepEqual(tx.params, ['0x0a1', 1, 25]);
-//       assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.CompositeGetters.getOrderBook.to);
-//     }
-//   });
-// });
+describe('augur.parsers.positionInMarket', function () {
+  // 4 tests total
+  var parsePositionInMarket = require('../../../src/parsers/position-in-market');
+  var test = function (t) {
+    it(t.description, function () {
+      t.assertions(parsePositionInMarket(t.positionInMarket));
+    });
+  };
+  test({
+    description: 'Should should return undefined if positionInMarket is undefined',
+    positionInMarket: undefined,
+    assertions: function (o) {
+      assert.isUndefined(o);
+    }
+  });
+  test({
+    description: 'Should should return positionInMarket if positionInMarket is an object with an error key',
+    positionInMarket: { error: 'Uh-Oh!' },
+    assertions: function (o) {
+      assert.deepEqual(o, { error: 'Uh-Oh!' });
+    }
+  });
+  test({
+    description: 'Should should return position object broken down by outcomes passed in positionInMarket',
+    positionInMarket: ['1000000000000000000000', false, '231023558000000'],
+    assertions: function (o) {
+      assert.deepEqual(o, {'1': '1000', '2': '0', '3': '0.000231023558'});
+    }
+  });
+  test({
+    description: 'Should should return empty position object if positionInMarket is an empty array',
+    positionInMarket: [],
+    assertions: function (o) {
+      assert.deepEqual(o, {});
+    }
+  });
+});
+describe('augur.markets.getPositionInMarket', function () {
+  // 1 tests total
+  var test = function (t) {
+    it(t.description, function () {
+      var getPositionInMarket = augur.api.CompositeGetters.getPositionInMarket;
+      // we are going to pass our test assertions as our getPositionInMarket contract function
+      augur.api.CompositeGetters.getPositionInMarket = t.assertions;
+
+      augur.markets.getPositionInMarket(t.params, t.callback);
+
+      augur.api.CompositeGetters.getPositionInMarket = getPositionInMarket;
+    });
+  };
+  test({
+    description: 'Should prepare and pass the arguments to the getPositionInMarket Augur Contract CompositeGetters function.',
+    params: {
+      market: '0x0a1',
+      account: '0x0',
+    },
+    callback: noop,
+    assertions: function (p, callback) {
+      assert.deepEqual(p.market, '0x0a1');
+      assert.deepEqual(p.account, '0x0');
+      assert.deepEqual(callback, noop);
+    }
+  });
+});
+describe('augur.parsers.OrderBook', function () {
+  // 5 tests total
+  var parseOrderBook = require('../../../src/parsers/order-book');
+  var test = function (t) {
+    it(t.description, function () {
+      t.assertions(parseOrderBook(t.orderArray, t.scalarMinMax));
+    });
+  };
+  test({
+    description: 'should handle an order array with 2 trade orders in it, no scalar markets',
+    orderArray: ['0x01', '0x1', '0x0a1', '100000000000000000000', '2530000000000000000', '0x0d1', '101010', '1', '0x02', '0x2', '0x0a2', '54200000000000000000000', '9320000000000000000000', '0x0d2', '101010', '2'],
+    scalarMinMax: {},
+    assertions: function (o) {
+      assert.deepEqual(o, { buy:
+         { '0x0000000000000000000000000000000000000000000000000000000000000001':
+          { id: '0x0000000000000000000000000000000000000000000000000000000000000001',
+          type: 'buy',
+          market: '0x0a1',
+          amount: '100',
+          fullPrecisionAmount: '100',
+          price: '2.53',
+          fullPrecisionPrice: '2.53',
+          owner: '0x00000000000000000000000000000000000000d1',
+          block: 1052688,
+          outcome: '1' } },
+        sell:
+         { '0x0000000000000000000000000000000000000000000000000000000000000002':
+          { id: '0x0000000000000000000000000000000000000000000000000000000000000002',
+          type: 'sell',
+          market: '0x0a2',
+          amount: '54200',
+          fullPrecisionAmount: '54200',
+          price: '9320',
+          fullPrecisionPrice: '9320',
+          owner: '0x00000000000000000000000000000000000000d2',
+          block: 1052688,
+          outcome: '2' }
+        }
+      });
+    }
+  });
+  test({
+    description: 'should handle an order array with 2 trade orders in it, with scalar markets',
+    orderArray: ['0x01', '0x1', '0x0a1', '150000000000000000000', '80000000000000000000', '0x0d1', '101010', '1', '0x02', '0x1', '0x0a1', '736200000000000000000000', '12340000000000000000000', '0x0d1', '101010', '2'],
+    scalarMinMax: { minValue: '10', maxValue: '140'},
+    assertions: function (o) {
+      assert.deepEqual(o, {
+        buy: {
+          '0x0000000000000000000000000000000000000000000000000000000000000001': {
+            id: '0x0000000000000000000000000000000000000000000000000000000000000001',
+            type: 'buy',
+            market: '0x0a1',
+            amount: '150',
+            fullPrecisionAmount: '150',
+            price: '90',
+            fullPrecisionPrice: '90',
+            owner: '0x00000000000000000000000000000000000000d1',
+            block: 1052688,
+            outcome: '1'
+          },
+          '0x0000000000000000000000000000000000000000000000000000000000000002': {
+            id: '0x0000000000000000000000000000000000000000000000000000000000000002',
+            type: 'buy',
+            market: '0x0a1',
+            amount: '736200',
+            fullPrecisionAmount: '736200',
+            price: '12350',
+            fullPrecisionPrice: '12350',
+            owner: '0x00000000000000000000000000000000000000d1',
+            block: 1052688,
+            outcome: '2'
+          }
+        },
+        sell: {}
+      });
+    }
+  });
+  test({
+    description: 'should return a blank orderBook Object if orderArray is empty',
+    orderArray: [],
+    scalarMinMax: undefined,
+    assertions: function (o) {
+      assert.deepEqual(o, {buy: {}, sell: {}});
+    }
+  });
+  test({
+    description: 'should return orderArray passed in if orderArray is undefined',
+    orderArray: undefined,
+    scalarMinMax: undefined,
+    assertions: function (o) {
+      assert.isUndefined(o);
+    }
+  });
+  test({
+    description: 'should return orderArray passed in if orderArray is am object with an error key',
+    orderArray: { error: 'Uh-Oh!' },
+    scalarMinMax: { minValue: '10', maxValue: '140'},
+    assertions: function (o) {
+      assert.deepEqual(o, { error: 'Uh-Oh!' });
+    }
+  });
+});
+describe('augur.trading.getOrderBook', function () {
+  // 3 tests total
+  var test = function (t) {
+    it(t.description, function () {
+      var getOrderBook = augur.api.CompositeGetters.getOrderBook;
+
+      augur.api.CompositeGetters.getOrderBook = t.assertions;
+
+      augur.trading.orderBook.getOrderBook(t.params, t.callback);
+
+      augur.api.CompositeGetters.getOrderBook = getOrderBook;
+    });
+  };
+  test({
+    description: 'should handle passing args to api.CompositeGetters.getOrderBook with just a market',
+    params: {
+      market: '0x0a1'
+    },
+    callback: noop,
+    assertions: function(p, cb, extraArgs) {
+      assert.deepEqual(p, {
+        marketID: '0x0a1',
+        offset: 0,
+        numTradesToLoad: 0
+      });
+      assert.isFunction(cb);
+      assert.deepEqual(extraArgs, { extraArgument: undefined });
+    }
+  });
+  test({
+    description: 'should handle passing args to api.CompositeGetters.getOrderBook with a market and scalarMinMax',
+    params: {
+      market: '0x0a1',
+      scalarMinMax: { minValue: 10, maxValue: 100 }
+    },
+    callback: noop,
+    assertions: function(p, cb, extraArgs) {
+      assert.deepEqual(p, {
+        marketID: '0x0a1',
+        offset: 0,
+        numTradesToLoad: 0
+      });
+      assert.isFunction(cb);
+      assert.deepEqual(extraArgs, { extraArgument: { minValue: 10, maxValue: 100 } });
+    }
+  });
+  test({
+    description: 'should handle passing args to api.CompositeGetters.getOrderBook with a market, offset, and numTradesToLoad',
+    params: {
+      market: '0x0a1',
+      offset: 5,
+      numTradesToLoad: 15,
+    },
+    callback: noop,
+    assertions: function(p, cb, extraArgs) {
+      assert.deepEqual(p, {
+        marketID: '0x0a1',
+        offset: 5,
+        numTradesToLoad: 15
+      });
+      assert.isFunction(cb);
+      assert.deepEqual(extraArgs, { extraArgument: undefined });
+    }
+  });
+});
 // describe('CompositeGetters.validateMarketInfo', function () {
 //   // 3 tests total
 //   var test = function (t) {
