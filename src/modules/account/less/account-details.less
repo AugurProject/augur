@@ -1,19 +1,29 @@
 .account-details {
+  align-items: center;
   display: flex;
-  flex-direction: column;
+  margin: 1em;
 
-  .account-detail {
-    display: table-row;
+  .link {
+    align-self: flex-start;
+    flex: 1;
+    text-align: right;
+  }
 
-    .account-detail-label {
-      .font-weight-normal();
+  .account-details-name {
+    margin-bottom: 0.5em;
 
-      display: table-cell;
+    .account-details-name-copy {
+      &.name-unset {
+        color: @color-text-dark-extra-light;
+      }
     }
+  }
 
-    .account-detail-value {
-      display: table-cell;
-      margin-left: 0.2em;
-    }
+  .identicon {
+    border-radius: 50%;
+  }
+
+  .account-details-address {
+    margin: 0.5em 0 1em;
   }
 }

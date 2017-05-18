@@ -1,12 +1,15 @@
 import React, { Component, PropTypes } from 'react';
 // import ReactTooltip from 'react-tooltip';
-// import classnames from 'classnames';
+import classNames from 'classnames';
 // import { ModalContainer, ModalDialog } from 'react-modal-dialog';
+import Input from 'modules/common/components/input';
 import Link from 'modules/link/components/link';
 import ComponentNav from 'modules/common/components/component-nav';
+import Identicon from 'react-blockies';
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
 import { ACCOUNT_NAV_ITEMS } from 'modules/account/constants/account-nav-items';
-import { ACCOUNT_DETAILS, ACCOUNT_DEPOSIT, ACCOUNT_CONVERT, ACCOUNT_WITHDRAW } from 'modules/app/constants/views';
+import { ACCOUNT_DEPOSIT, ACCOUNT_CONVERT, ACCOUNT_WITHDRAW } from 'modules/app/constants/views';
 
 import AccountDetails from 'modules/account/components/account-details';
 import AccountDeposit from 'modules/account/components/account-deposit';
@@ -39,16 +42,17 @@ import AccountWithdraw from 'modules/account/components/account-withdraw';
 
 export default class AccountView extends Component {
   static propTypes = {
-    loginAccount: PropTypes.object.isRequired
+    loginAccount: PropTypes.object.isRequired,
+    authLink: PropTypes.object.isRequired
   };
 
   constructor(props) {
     super(props);
 
-    console.log('ACCOUNT -- ', ACCOUNT_NAV_ITEMS);
-
     this.state = {
-      selectedNav: ACCOUNT_DETAILS
+      selectedNav: ACCOUNT_DEPOSIT,
+      nameInputVisible: false,
+      fullAccountVisible: false
     };
 
     this.updateSelectedNav = this.updateSelectedNav.bind(this);
@@ -75,25 +79,18 @@ export default class AccountView extends Component {
         <article
           className="account-content"
         >
-          <div className="account-header">
-            <h2>Account</h2>
-            <Link {...p.authLink} >Sign Out</Link>
-          </div>
+          <AccountDetails
+            name={loginAccount.name}
+            address={loginAccount.address}
+            trimmedAddress={loginAccount.trimmedAddress}
+            signOut={p.authLink}
+          />
           <ComponentNav
             fullWidth
             navItems={ACCOUNT_NAV_ITEMS}
             selectedNav={s.selectedNav}
             updateSelectedNav={this.updateSelectedNav}
           />
-          {s.selectedNav === ACCOUNT_DETAILS &&
-            <AccountDetails
-              name={loginAccount.name}
-              address={loginAccount.address}
-              trimmedAddress={loginAccount.trimmedAddress}
-              loginID={loginAccount.loginID}
-              trimmedLoginID={loginAccount.trimmedLoginID}
-            />
-          }
           {s.selectedNav === ACCOUNT_DEPOSIT &&
             <AccountDeposit />
           }

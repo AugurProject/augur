@@ -1,5 +1,8 @@
 import React, { PropTypes } from 'react';
+import classNames from 'classnames';
 import Identicon from 'react-blockies';
+
+import Link from 'modules/link/components/link';
 
 // import Identicon from 'modules/common/components/identicon'
 
@@ -21,42 +24,38 @@ import Identicon from 'react-blockies';
 //   });
 // };
 
-const AccountDetails = (p) => {
-  console.log('### AccountDetails -- ', p);
-
-  return (
-    <article className="account-details">
-      <h3>Details</h3>
+const AccountDetails = p => (
+  <article className="account-details">
+    <div
+      className="account-details-core"
+    >
       <Identicon
         seed={p.address}
+        scale={8}
       />
       <div
-        className="account-detail"
+        className="account-details-core-values"
       >
-        <span className="account-detail-label">Name:</span>
-        <span className="account-detail-value">{p.name}</span>
+        <div className="account-details-name">
+          <button
+            className="unstyled"
+          >
+            <span className={classNames('account-details-name-copy', { 'name-unset': !p.name })}>{p.name || 'Set Account Name'}</span>
+          </button>
+        </div>
+        <span className="account-details-address">{p.trimmedAddress}</span>
       </div>
-      <div
-        className="account-detail"
-      >
-        <span className="account-detail-label">Address:</span>
-        <span className="account-detail-value">{p.address}</span>
-      </div>
-      <div
-        className="account-detail"
-      >
-        <span className="account-detail-label">LoginID:</span>
-        <span className="account-detail-value">{p.trimmedLoginID}</span>
-      </div>
-    </article>
-  );
-};
+    </div>
+    <Link {...p.signOut} >Sign Out</Link>
+  </article>
+);
 
 AccountDetails.propTypes = {
   address: PropTypes.string.isRequired,
   trimmedAddress: PropTypes.string.isRequired,
-  loginID: PropTypes.string.isRequired,
-  trimmedLoginID: PropTypes.string.isRequired,
+  // loginID: PropTypes.string.isRequired,
+  // trimmedLoginID: PropTypes.string.isRequired,
+  signOut: PropTypes.object.isRequired,
   name: PropTypes.string
 };
 

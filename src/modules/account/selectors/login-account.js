@@ -14,7 +14,7 @@ export const selectLoginAccount = createSelector(
   selectLoginAccountState,
   (loginAccount) => {
     const cleanAddress = loginAccount.address ? loginAccount.address.replace('0x', '') : null;
-    const trimmedAddress = cleanAddress ? `${cleanAddress.substring(0, 4)}...${cleanAddress.substring(cleanAddress.length - 4)}` : null;
+    const trimmedAddress = loginAccount.address ? `${loginAccount.address.substring(0, 4)}...${loginAccount.address.substring(loginAccount.address.length - 4)}` : null;
     const trimmedLoginID = loginAccount.loginID ? `${loginAccount.loginID.substring(0, 4)}...${loginAccount.loginID.substring(loginAccount.loginID.length - 4)}` : null;
     const linkText = loginAccount.isUnlocked ? trimmedAddress : loginAccount.name || trimmedLoginID;
     if (loginAccount.airbitzAccount) {
