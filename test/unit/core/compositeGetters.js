@@ -2,6 +2,7 @@
 
 var assert = require("chai").assert;
 var abi = require("augur-abi");
+var proxyquire = require('proxyquire');
 var augur = new (require("../../../src"))();
 var noop = require("../../../src/utils/noop");
 var constants = require("../../../src/constants");
@@ -597,508 +598,379 @@ describe('augur/src/markets/loadMarketsBatch', function () {
 });
 describe('augur.markets.loadMarkets', function () {
   // 3 tests total
-  var getNumMarketsBranch = augur.api.Branches.getNumMarketsBranch;
-  var loadMarketsBatch = augur.loadMarketsBatch;
-  var options = augur.options;
-  afterEach(function () {
-    augur.api.Branches.getNumMarketsBranch = getNumMarketsBranch;
-    augur.loadNextMarketsBatch = loadMarketsBatch;
-    augur.options = options;
-  });
+  proxyquire.noCallThru().noPreserveCache();
+  var finished;
+  var mockAPI = function() {
+    return {
+    	Branches: {
+    		getNumMarketsBranch: function(p, cb) {
+    			cb(10);
+    		}
+    	}
+    };
+  };
   var test = function (t) {
     it(t.description + " async", function (done) {
-      var chunkCBcc = 0;
-      augur.api.Branches.getNumMarketsBranch = t.getNumMarketsBranch;
-      augur.loadMarketsBatch = t.loadMarketsBatch;
-      augur.options = t.options;
-      augur.markets.loadMarkets(t.branchID, t.chunkSize, t.isDesc, function (err, marketsData) {
-        chunkCBcc++;
-        t.assertions(err, marketsData, chunkCBcc);
-        if (chunkCBcc === (t.numMarkets/t.chunkSize)) { done(); }
+      finished = done;
+      var loadMarkets = proxyquire('../../../src/markets/load-markets', {
+        './load-markets-batch': t.loadMarketsBatch,
+        '../api': mockAPI
       });
+      loadMarkets(t.params, noop);
     });
   };
-  // test({
-  //   description: 'Should return a batch of markets in ascending order, including zero volume markets',
-  //   branchID: '101010',
-  //   chunkSize: 5,
-  //   isDesc: false,
-  //   options: { loadZeroVolumeMarkets: true },
-  //   numMarkets: 10,
-  //   getNumMarketsBranch: function (branch, cb) {
-  //     cb(10);
-  //   },
-  //   loadNextMarketsBatch: function (branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass) {
-  //     assert.deepEqual(startIndex, 0, 'startIndex was not the expected value when passed to loadNextMarketsBatch in CompositeGetters.loadMarkets, 1st test');
-  //     if (volumeMax < 0) {
-  //       // send back 5 markets with volume
-  //       chunkCB(null, {
-  //         '0x0a1': {id: '0x0a1', branchID: '101010', volume: '3000'},
-  //         '0x0a2': {id: '0x0a2', branchID: '101010', volume: '4000'},
-  //         '0x0a3': {id: '0x0a3', branchID: '101010', volume: '5000'},
-  //         '0x0a4': {id: '0x0a4', branchID: '101010', volume: '1500'},
-  //         '0x0a5': {id: '0x0a5', branchID: '101010', volume: '2000'},
-  //       });
-  //       setTimeout(function () {
-  //         nextPass();
-  //       }, 5);
-  //     } else {
-  //       // send back 5 markets with no volume
-  //       chunkCB(null, {
-  //         '0x0a6': {id: '0x0a6', branchID: '101010', volume: '0'},
-  //         '0x0a7': {id: '0x0a7', branchID: '101010', volume: '0'},
-  //         '0x0a8': {id: '0x0a8', branchID: '101010', volume: '0'},
-  //         '0x0a9': {id: '0x0a9', branchID: '101010', volume: '0'},
-  //         '0x0aa': {id: '0x0aa', branchID: '101010', volume: '0'},
-  //       });
-  //     }
-  //   },
-  //   assertions: function (err, marketsData, callCount) {
-  //     assert.isNull(err);
-  //     switch(callCount) {
-  //     case 1:
-  //       assert.deepEqual(marketsData, {
-  //         '0x0a1': {id: '0x0a1', branchID: '101010', volume: '3000'},
-  //         '0x0a2': {id: '0x0a2', branchID: '101010', volume: '4000'},
-  //         '0x0a3': {id: '0x0a3', branchID: '101010', volume: '5000'},
-  //         '0x0a4': {id: '0x0a4', branchID: '101010', volume: '1500'},
-  //         '0x0a5': {id: '0x0a5', branchID: '101010', volume: '2000'},
-  //       });
-  //       break;
-  //     default:
-  //       assert.deepEqual(marketsData, {
-  //         '0x0a6': {id: '0x0a6', branchID: '101010', volume: '0'},
-  //         '0x0a7': {id: '0x0a7', branchID: '101010', volume: '0'},
-  //         '0x0a8': {id: '0x0a8', branchID: '101010', volume: '0'},
-  //         '0x0a9': {id: '0x0a9', branchID: '101010', volume: '0'},
-  //         '0x0aa': {id: '0x0aa', branchID: '101010', volume: '0'},
-  //       });
-  //       break;
-  //     }
-  //   }
-  // });
-  // test({
-  //   description: 'Should return a batch of markets in descending order, including zero volume markets',
-  //   branchID: '101010',
-  //   chunkSize: 5,
-  //   isDesc: true,
-  //   options: { loadZeroVolumeMarkets: true },
-  //   numMarkets: 10,
-  //   getNumMarketsBranch: function (branch, cb) {
-  //     cb(10);
-  //   },
-  //   loadNextMarketsBatch: function (branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass) {
-  //     assert.deepEqual(startIndex, 6, 'startIndex was not the expected value when passed to loadNextMarketsBatch in CompositeGetters.loadMarkets, 2nd test');
-  //     if (volumeMax < 0) {
-  //       // send back 5 markets with volume
-  //       chunkCB(null, {
-  //         '0x0a5': {id: '0x0a5', branchID: '101010', volume: '2000'},
-  //         '0x0a4': {id: '0x0a4', branchID: '101010', volume: '1500'},
-  //         '0x0a3': {id: '0x0a3', branchID: '101010', volume: '5000'},
-  //         '0x0a2': {id: '0x0a2', branchID: '101010', volume: '4000'},
-  //         '0x0a1': {id: '0x0a1', branchID: '101010', volume: '3000'},
-  //       });
-  //       setTimeout(function () {
-  //         nextPass();
-  //       }, 5);
-  //     } else {
-  //       // send back 5 markets with no volume
-  //       chunkCB(null, {
-  //         '0x0aa': {id: '0x0aa', branchID: '101010', volume: '0'},
-  //         '0x0a9': {id: '0x0a9', branchID: '101010', volume: '0'},
-  //         '0x0a8': {id: '0x0a8', branchID: '101010', volume: '0'},
-  //         '0x0a7': {id: '0x0a7', branchID: '101010', volume: '0'},
-  //         '0x0a6': {id: '0x0a6', branchID: '101010', volume: '0'},
-  //       });
-  //     }
-  //   },
-  //   assertions: function (err, marketsData, callCount) {
-  //     assert.isNull(err);
-  //     switch(callCount) {
-  //     case 1:
-  //       assert.deepEqual(marketsData, {
-  //         '0x0a5': {id: '0x0a5', branchID: '101010', volume: '2000'},
-  //         '0x0a4': {id: '0x0a4', branchID: '101010', volume: '1500'},
-  //         '0x0a3': {id: '0x0a3', branchID: '101010', volume: '5000'},
-  //         '0x0a2': {id: '0x0a2', branchID: '101010', volume: '4000'},
-  //         '0x0a1': {id: '0x0a1', branchID: '101010', volume: '3000'},
-  //       });
-  //       break;
-  //     default:
-  //       assert.deepEqual(marketsData, {
-  //         '0x0aa': {id: '0x0aa', branchID: '101010', volume: '0'},
-  //         '0x0a9': {id: '0x0a9', branchID: '101010', volume: '0'},
-  //         '0x0a8': {id: '0x0a8', branchID: '101010', volume: '0'},
-  //         '0x0a7': {id: '0x0a7', branchID: '101010', volume: '0'},
-  //         '0x0a6': {id: '0x0a6', branchID: '101010', volume: '0'},
-  //       });
-  //       break;
-  //     }
-  //   }
-  // });
-  // test({
-  //   description: 'Should return a batch of markets in ascending order, Do not include zero volume markets',
-  //   branchID: '101010',
-  //   chunkSize: 5,
-  //   isDesc: false,
-  //   options: { loadZeroVolumeMarkets: false },
-  //   numMarkets: 10,
-  //   getNumMarketsBranch: function (branch, cb) {
-  //     cb(10);
-  //   },
-  //   loadNextMarketsBatch: function (branchID, startIndex, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass) {
-  //     if (startIndex === 0) {
-  //       assert.deepEqual(startIndex, 0, 'startIndex was not the expected value when passed to loadNextMarketsBatch in CompositeGetters.loadMarkets, 3rd test, 1st pass.');
-  //       // send back 5 markets with volume
-  //       chunkCB(null, {
-  //         '0x0a1': {id: '0x0a1', branchID: '101010', volume: '3000'},
-  //         '0x0a2': {id: '0x0a2', branchID: '101010', volume: '4000'},
-  //         '0x0a3': {id: '0x0a3', branchID: '101010', volume: '5000'},
-  //         '0x0a4': {id: '0x0a4', branchID: '101010', volume: '1500'},
-  //         '0x0a5': {id: '0x0a5', branchID: '101010', volume: '2000'},
-  //       });
-  //       // numMarkets is 10, we have produced 5, call loadNextMarketsBatch again for the next chunk(5)
-  //       setTimeout(function () {
-  //         augur.loadNextMarketsBatch(branchID, startIndex + chunkSize, chunkSize, numMarkets, isDesc, volumeMin, volumeMax, chunkCB, nextPass);
-  //       }, 5);
-  //     } else {
-  //       assert.deepEqual(5, startIndex, 'startIndex was not the expected value when passed to loadNextMarketsBatch in CompositeGetters.loadMarkets, 3rd test, 2nd pass');
-  //       // send back 5 more markets with volume
-  //       chunkCB(null, {
-  //         '0x0a6': {id: '0x0a6', branchID: '101010', volume: '50'},
-  //         '0x0a7': {id: '0x0a7', branchID: '101010', volume: '990'},
-  //         '0x0a8': {id: '0x0a8', branchID: '101010', volume: '8800'},
-  //         '0x0a9': {id: '0x0a9', branchID: '101010', volume: '1337'},
-  //         '0x0aa': {id: '0x0aa', branchID: '101010', volume: '10000'},
-  //       });
-  //     }
-  //   },
-  //   assertions: function (err, marketsData, callCount) {
-  //     assert.isNull(err);
-  //     switch(callCount) {
-  //     case 1:
-  //       assert.deepEqual(marketsData, {
-  //         '0x0a1': {id: '0x0a1', branchID: '101010', volume: '3000'},
-  //         '0x0a2': {id: '0x0a2', branchID: '101010', volume: '4000'},
-  //         '0x0a3': {id: '0x0a3', branchID: '101010', volume: '5000'},
-  //         '0x0a4': {id: '0x0a4', branchID: '101010', volume: '1500'},
-  //         '0x0a5': {id: '0x0a5', branchID: '101010', volume: '2000'},
-  //       });
-  //       break;
-  //     default:
-  //       assert.deepEqual(marketsData, {
-  //         '0x0a6': {id: '0x0a6', branchID: '101010', volume: '50'},
-  //         '0x0a7': {id: '0x0a7', branchID: '101010', volume: '990'},
-  //         '0x0a8': {id: '0x0a8', branchID: '101010', volume: '8800'},
-  //         '0x0a9': {id: '0x0a9', branchID: '101010', volume: '1337'},
-  //         '0x0aa': {id: '0x0aa', branchID: '101010', volume: '10000'},
-  //       });
-  //       break;
-  //     }
-  //   }
-  // });
+  test({
+    description: 'should handle loading non-zero volume markets, asending',
+    params: {
+      branchID: '1010101',
+      chunkSize: 5,
+      isDesc: false,
+      loadZeroVolumeMarkets: false
+    },
+    loadMarketsBatch: function(params, onChunk, onComplete) {
+      assert.isFunction(onChunk);
+      assert.deepEqual(params, {
+        branchID: '1010101',
+        startIndex: 0,
+        chunkSize: 5,
+        numMarkets: 10,
+        isDesc: false,
+        volumeMin: 0,
+        volumeMax: -1
+      });
+      onComplete();
+      finished();
+    }
+  });
+  test({
+    description: 'should handle loading all markets, ascending',
+    params: {
+      branchID: '1010101',
+      chunkSize: 5,
+      isDesc: false,
+      loadZeroVolumeMarkets: true
+    },
+    loadMarketsBatch: function(params, onChunk, onComplete) {
+      assert.isFunction(onChunk);
+      if (typeof onComplete !== 'function') {
+        assert.deepEqual(params, {
+          branchID: '1010101',
+          startIndex: 0,
+          chunkSize: 5,
+          numMarkets: 10,
+          isDesc: false,
+          volumeMin: -1,
+          volumeMax: 0
+        });
+        assert.isUndefined(onComplete);
+        finished();
+      }
+      assert.deepEqual(params, {
+        branchID: '1010101',
+        startIndex: 0,
+        chunkSize: 5,
+        numMarkets: 10,
+        isDesc: false,
+        volumeMin: 0,
+        volumeMax: -1
+      });
+      onComplete();
+    }
+  });
+  test({
+    description: 'should handle loading all markets, descending',
+    params: {
+      branchID: '1010101',
+      chunkSize: 5,
+      isDesc: true,
+      loadZeroVolumeMarkets: true
+    },
+    loadMarketsBatch: function(params, onChunk, onComplete) {
+      assert.isFunction(onChunk);
+      if (typeof onComplete !== 'function') {
+        assert.deepEqual(params, {
+          branchID: '1010101',
+          startIndex: 6,
+          chunkSize: 5,
+          numMarkets: 10,
+          isDesc: true,
+          volumeMin: -1,
+          volumeMax: 0
+        });
+        assert.isUndefined(onComplete);
+        finished();
+      }
+      assert.deepEqual(params, {
+        branchID: '1010101',
+        startIndex: 6,
+        chunkSize: 5,
+        numMarkets: 10,
+        isDesc: true,
+        volumeMin: 0,
+        volumeMax: -1
+      });
+      onComplete();
+    }
+  });
 });
-// describe('CompositeGetters.loadAssets', function () {
-//   // 3 tests total
-//   var test = function (t) {
-//     it(t.description, function () {
-//       var getCashBalance = augur.Cash.balance;
-//       var getRepBalance = augur.Reporting.getRepBalance;
-//       var balance = augur.rpc.balance;
-//       augur.Cash.balance = t.Cash.balance;
-//       augur.Reporting.getRepBalance = t.getRepBalance;
-//       augur.rpc.balance = t.balance;
-//
-//       augur.loadAssets(t.branchID, t.accountID, t.cbEther, t.cbRep, t.cbRealEther);
-//
-//       augur.Cash.balance = getCashBalance;
-//       augur.Reporting.getRepBalance = getRepBalance;
-//       augur.rpc.balance = balance;
-//     });
-//   };
-//   test({
-//     description: 'Should call all 3 callbacks passed with the values they expect when getCashBalance, getRepBalance, and rpc.balance all return non error values',
-//     branchID: '1010101',
-//     accountID: '0x0',
-//     cbEther: function (err, ether) {
-//       assert.isNull(err);
-//       assert.deepEqual(ether, '10000');
-//     },
-//     cbRep: function (err, rep) {
-//       assert.isNull(err);
-//       assert.deepEqual(rep, '47');
-//     },
-//     cbRealEther: function (err, wei) {
-//       assert.isNull(err);
-//       assert.deepEqual(wei, '2.5');
-//     },
-//     Cash: {
-//       balance: function (branchID, cb) {
-//         // return 10,000 like the faucet
-//         cb(10000);
-//       }
-//     },
-//     getRepBalance: function (branchID, accountID, cb) {
-//       // return 47 like the faucet
-//       cb(47);
-//     },
-//     balance: function (branchID, cb) {
-//       // return 2.5 like the faucet
-//       cb(2500000000000000000);
-//     }
-//   });
-//   test({
-//     description: 'Should call all 3 callbacks with errors when getCashBalance, getRepBalance, rpc.balance return error objects',
-//     branchID: '1010101',
-//     accountID: '0x0',
-//     cbEther: function (err, ether) {
-//       assert.isUndefined(ether);
-//       assert.deepEqual(err, { error: 'Uh-Oh!' });
-//     },
-//     cbRep: function (err, rep) {
-//       assert.isUndefined(rep);
-//       assert.deepEqual(err, { error: 'Uh-Oh!' });
-//     },
-//     cbRealEther: function (err, wei) {
-//       assert.isUndefined(wei);
-//       assert.deepEqual(err, { error: 'Uh-Oh!' });
-//     },
-//     Cash: {
-//       balance: function (branchID, cb) {
-//         // return an error object
-//         cb({ error: 'Uh-Oh!' });
-//       }
-//     },
-//     getRepBalance: function (branchID, accountID, cb) {
-//       // return an error object
-//       cb({ error: 'Uh-Oh!' });
-//     },
-//     balance: function (branchID, cb) {
-//       // return an error object
-//       cb({ error: 'Uh-Oh!' });
-//     }
-//   });
-//   test({
-//     description: 'Should call all 3 callbacks with undefined when getCashBalance, getRepBalance, rpc.balance return undefined',
-//     branchID: '1010101',
-//     accountID: '0x0',
-//     cbEther: function (err, ether) {
-//       assert.isUndefined(ether);
-//       assert.isUndefined(err);
-//     },
-//     cbRep: function (err, rep) {
-//       assert.isUndefined(rep);
-//       assert.isUndefined(err);
-//     },
-//     cbRealEther: function (err, wei) {
-//       assert.isUndefined(wei);
-//       assert.isUndefined(err);
-//     },
-//     Cash: {
-//       balance: function (branchID, cb) {
-//         // return undefined
-//         cb(undefined);
-//       }
-//     },
-//     getRepBalance: function (branchID, accountID, cb) {
-//       // return undefined
-//       cb(undefined);
-//     },
-//     balance: function (branchID, cb) {
-//       // return undefined
-//       cb(undefined);
-//     }
-//   });
-// });
-// describe('CompositeGetters.finishLoadBranch', function () {
-//   // 2 tests total
-//   var callbackCallCount = 0;
-//   var test = function (t) {
-//     it(t.description, function () {
-//       // we will increment the callback callcount each time it is called to test if the conditional hit the callback or not.
-//       callbackCallCount = 0;
-//       t.assertions(augur.finishLoadBranch(t.branch, t.callback));
-//     });
-//   };
-//   test({
-//     description: 'Should do nothing if the branch passed does not meet the critieria',
-//     branch: {id: '0x0', periodLength: undefined, description: undefined, baseReporters: undefined },
-//     callback: function (err, branch) {
-//       callbackCallCount++;
-//     },
-//     assertions: function () {
-//       // This test shouldn't have called callback at all, so we are confirming the callcount is 0 still after calling finishLoadBranch with an undefined branch argument.
-//       assert.deepEqual(callbackCallCount, 0);
-//     }
-//   });
-//   test({
-//     description: 'Should do nothing if the branch passed does not meet the critieria',
-//     branch: {
-//       id: '0x0',
-//       periodLength: '100',
-//       description: 'This is a branch description',
-//       baseReporters: ['0x01', '0x02'],
-//     },
-//     callback: function (err, branch) {
-//       callbackCallCount++;
-//       assert.isNull(err);
-//       assert.deepEqual(branch, {
-//         id: '0x0',
-//         periodLength: '100',
-//         description: 'This is a branch description',
-//         baseReporters: ['0x01', '0x02'],
-//       });
-//     },
-//     assertions: function () {
-//       // This test should have called the callback 1 time, confirm the callcount.
-//       assert.deepEqual(callbackCallCount, 1);
-//     }
-//   });
-// });
-// describe('CompositeGetters.loadBranch', function () {
-//   // 7 tests total
-//   var test = function (t) {
-//     it(t.description, function () {
-//       var getPeriodLength = augur.getPeriodLength;
-//       var getDescription = augur.getDescription;
-//       var getBaseReporters = augur.getBaseReporters;
-//       augur.getPeriodLength = t.getPeriodLength;
-//       augur.getDescription = t.getDescription;
-//       augur.getBaseReporters = t.getBaseReporters;
-//
-//       augur.loadBranch(t.branchID, t.callback);
-//
-//       augur.getPeriodLength = getPeriodLength;
-//       augur.getDescription = getDescription;
-//       augur.getBaseReporters = getBaseReporters;
-//     });
-//   };
-//   test({
-//     description: 'Should return a branch after getPeriodLength, getDescription, and getBaseReporters return their expected values',
-//     branchID: '1010101',
-//     callback: function (err, branch) {
-//       assert.isNull(err);
-//       assert.deepEqual(branch, { id: '0xf69b5', periodLength: 100, description: 'this is a description for the branch', baseReporters: 25 });
-//     },
-//     getPeriodLength: function (branch, cb) {
-//       cb(100);
-//     },
-//     getDescription: function (branch, cb) {
-//       cb('this is a description for the branch');
-//     },
-//     getBaseReporters: function (branch, cb) {
-//       cb(25);
-//     }
-//   });
-//   test({
-//     description: 'Should return an error after getPeriodLength returns undefined.',
-//     branchID: '1010101',
-//     callback: function (err, branch) {
-//       assert.isUndefined(err);
-//       assert.isUndefined(branch);
-//     },
-//     getPeriodLength: function (branch, cb) {
-//       cb(undefined);
-//     },
-//     getDescription: function (branch, cb) {
-//       // shouldn't be hit
-//       cb('this is a description for the branch');
-//     },
-//     getBaseReporters: function (branch, cb) {
-//       // shouldn't be hit
-//       cb(25);
-//     }
-//   });
-//   test({
-//     description: 'Should return an error Object after getPeriodLength returns an Object with an error key.',
-//     branchID: '1010101',
-//     callback: function (err, branch) {
-//       assert.deepEqual(err, {error: 'Uh-Oh!'});
-//       assert.isUndefined(branch);
-//     },
-//     getPeriodLength: function (branch, cb) {
-//       cb({error: 'Uh-Oh!'});
-//     },
-//     getDescription: function (branch, cb) {
-//       // shouldn't be hit
-//       cb('this is a description for the branch');
-//     },
-//     getBaseReporters: function (branch, cb) {
-//       // shouldn't be hit
-//       cb(25);
-//     }
-//   });
-//   test({
-//     description: 'Should return an error after getDescription returns undefined.',
-//     branchID: '1010101',
-//     callback: function (err, branch) {
-//       assert.isUndefined(err);
-//       assert.isUndefined(branch);
-//     },
-//     getPeriodLength: function (branch, cb) {
-//       cb(100);
-//     },
-//     getDescription: function (branch, cb) {
-//       cb(undefined);
-//     },
-//     getBaseReporters: function (branch, cb) {
-//       // shouldn't be hit
-//       cb(25);
-//     }
-//   });
-//   test({
-//     description: 'Should return an error Object after getDescription returns an Object with an error key.',
-//     branchID: '1010101',
-//     callback: function (err, branch) {
-//       assert.deepEqual(err, {error: 'Uh-Oh!'});
-//       assert.isUndefined(branch);
-//     },
-//     getPeriodLength: function (branch, cb) {
-//       cb(100);
-//     },
-//     getDescription: function (branch, cb) {
-//       cb({error: 'Uh-Oh!'});
-//     },
-//     getBaseReporters: function (branch, cb) {
-//       // shouldn't be hit
-//       cb(25);
-//     }
-//   });
-//   test({
-//     description: 'Should return an error after getBaseReporters returns undefined.',
-//     branchID: '1010101',
-//     callback: function (err, branch) {
-//       assert.isUndefined(err);
-//       assert.isUndefined(branch);
-//     },
-//     getPeriodLength: function (branch, cb) {
-//       cb(100);
-//     },
-//     getDescription: function (branch, cb) {
-//       cb('this is a description for the branch');
-//     },
-//     getBaseReporters: function (branch, cb) {
-//       cb(undefined);
-//     }
-//   });
-//   test({
-//     description: 'Should return an error Object after getBaseReporters returns an Object with an error key.',
-//     branchID: '1010101',
-//     callback: function (err, branch) {
-//       assert.deepEqual(err, {error: 'Uh-Oh!'});
-//       assert.isUndefined(branch);
-//     },
-//     getPeriodLength: function (branch, cb) {
-//       cb(100);
-//     },
-//     getDescription: function (branch, cb) {
-//       cb('this is a description for the branch');
-//     },
-//     getBaseReporters: function (branch, cb) {
-//       cb({error: 'Uh-Oh!'});
-//     }
-//   });
-// });
+describe('augur.assets.loadAssets', function () {
+  // 3 tests total
+  proxyquire.noCallThru().noPreserveCache();
+  var test = function (t) {
+    it(t.description, function () {
+      var mockAPI = function() {
+        return {
+          Cash: { balance: t.balance },
+          Reporting: { getRepBalance: t.getRepBalance }
+        };
+      };
+      var mockRPC = { getBalance: t.getBalance };
+      var loadAssets = proxyquire('../../../src/assets/load-assets', {
+        '../api': mockAPI,
+        '../rpc-interface': mockRPC
+      });
+      loadAssets(t.params, t.cbEther, t.cbRep, t.cbRealEther);
+    });
+  };
+  test({
+    description: 'Should call all 3 callbacks passed with the values they expect when getCashBalance, getRepBalance, and rpc.getBalance all return non error values',
+    params: {
+      branchID: '1010101',
+      accountID: '0x0',
+    },
+    cbEther: function (err, ether) {
+      assert.isNull(err);
+      assert.deepEqual(ether, '10000');
+    },
+    cbRep: function (err, rep) {
+      assert.isNull(err);
+      assert.deepEqual(rep, '47');
+    },
+    cbRealEther: function (err, wei) {
+      assert.isNull(err);
+      assert.deepEqual(wei, '2.5');
+    },
+    balance: function (branchID, cb) {
+      // return 10,000 like the faucet
+      cb(10000);
+    },
+    getRepBalance: function (params, cb) {
+      // return 47 like the faucet
+      cb(47);
+    },
+    getBalance: function (branchID, cb) {
+      // return 2.5 like the faucet
+      cb(2500000000000000000);
+    }
+  });
+  test({
+    description: 'Should call all 3 callbacks with errors when getCashBalance, getRepBalance, rpc.getBalance return error objects',
+    params: {
+      branchID: '1010101',
+      accountID: '0x0',
+    },
+    cbEther: function (err, ether) {
+      assert.isUndefined(ether);
+      assert.deepEqual(err, { error: 'Uh-Oh!' });
+    },
+    cbRep: function (err, rep) {
+      assert.isUndefined(rep);
+      assert.deepEqual(err, { error: 'Uh-Oh!' });
+    },
+    cbRealEther: function (err, wei) {
+      assert.isUndefined(wei);
+      assert.deepEqual(err, { error: 'Uh-Oh!' });
+    },
+    balance: function (branchID, cb) {
+      // return an error object
+      cb({ error: 'Uh-Oh!' });
+    },
+    getRepBalance: function (params, cb) {
+      // return an error object
+      cb({ error: 'Uh-Oh!' });
+    },
+    getBalance: function (branchID, cb) {
+      // return an error object
+      cb({ error: 'Uh-Oh!' });
+    }
+  });
+  test({
+    description: 'Should call all 3 callbacks with undefined when getCashBalance, getRepBalance, rpc.getBalance return undefined',
+    params: {
+      branchID: '1010101',
+      accountID: '0x0',
+    },
+    cbEther: function (err, ether) {
+      assert.isUndefined(ether);
+      assert.isUndefined(err);
+    },
+    cbRep: function (err, rep) {
+      assert.isUndefined(rep);
+      assert.isUndefined(err);
+    },
+    cbRealEther: function (err, wei) {
+      assert.isUndefined(wei);
+      assert.isUndefined(err);
+    },
+    balance: function (branchID, cb) {
+      // return undefined
+      cb(undefined);
+    },
+    getRepBalance: function (params, cb) {
+      // return undefined
+      cb(undefined);
+    },
+    getBalance: function (branchID, cb) {
+      // return undefined
+      cb(undefined);
+    }
+  });
+});
+describe('CompositeGetters.loadBranch', function () {
+  // 7 tests total
+  var test = function (t) {
+    it(t.description, function () {
+
+      var getPeriodLength = augur.api.Branches.getPeriodLength;
+      var getDescription = augur.api.Info.getDescription;
+      var getBaseReporters = augur.api.Branches.getBaseReporters;
+      augur.api.Branches.getPeriodLength = t.getPeriodLength;
+      augur.api.Info.getDescription = t.getDescription;
+      augur.api.Branches.getBaseReporters = t.getBaseReporters;
+
+      augur.reporting.loadBranch(t.branchID, t.callback);
+
+      augur.api.Branches.getPeriodLength = getPeriodLength;
+      augur.api.Info.getDescription = getDescription;
+      augur.api.Branches.getBaseReporters = getBaseReporters;
+    });
+  };
+  test({
+    description: 'Should return a branch after getPeriodLength, getDescription, and getBaseReporters return their expected values',
+    branchID: '1010101',
+    callback: function (err, branch) {
+      assert.isNull(err);
+      assert.deepEqual(branch, { id: '0xf69b5', periodLength: 100, description: 'this is a description for the branch', baseReporters: 25 });
+    },
+    getPeriodLength: function (branch, cb) {
+      cb(100);
+    },
+    getDescription: function (branch, cb) {
+      cb('this is a description for the branch');
+    },
+    getBaseReporters: function (branch, cb) {
+      cb(25);
+    }
+  });
+  test({
+    description: 'Should return an error after getPeriodLength returns undefined.',
+    branchID: '1010101',
+    callback: function (err, branch) {
+      assert.isUndefined(err);
+      assert.isUndefined(branch);
+    },
+    getPeriodLength: function (branch, cb) {
+      cb(undefined);
+    },
+    getDescription: function (branch, cb) {
+      // shouldn't be hit
+      cb('this is a description for the branch');
+    },
+    getBaseReporters: function (branch, cb) {
+      // shouldn't be hit
+      cb(25);
+    }
+  });
+  test({
+    description: 'Should return an error Object after getPeriodLength returns an Object with an error key.',
+    branchID: '1010101',
+    callback: function (err, branch) {
+      assert.deepEqual(err, {error: 'Uh-Oh!'});
+      assert.isUndefined(branch);
+    },
+    getPeriodLength: function (branch, cb) {
+      cb({error: 'Uh-Oh!'});
+    },
+    getDescription: function (branch, cb) {
+      // shouldn't be hit
+      cb('this is a description for the branch');
+    },
+    getBaseReporters: function (branch, cb) {
+      // shouldn't be hit
+      cb(25);
+    }
+  });
+  test({
+    description: 'Should return an error after getDescription returns undefined.',
+    branchID: '1010101',
+    callback: function (err, branch) {
+      assert.isUndefined(err);
+      assert.isUndefined(branch);
+    },
+    getPeriodLength: function (branch, cb) {
+      cb(100);
+    },
+    getDescription: function (branch, cb) {
+      cb(undefined);
+    },
+    getBaseReporters: function (branch, cb) {
+      // shouldn't be hit
+      cb(25);
+    }
+  });
+  test({
+    description: 'Should return an error Object after getDescription returns an Object with an error key.',
+    branchID: '1010101',
+    callback: function (err, branch) {
+      assert.deepEqual(err, {error: 'Uh-Oh!'});
+      assert.isUndefined(branch);
+    },
+    getPeriodLength: function (branch, cb) {
+      cb(100);
+    },
+    getDescription: function (branch, cb) {
+      cb({error: 'Uh-Oh!'});
+    },
+    getBaseReporters: function (branch, cb) {
+      // shouldn't be hit
+      cb(25);
+    }
+  });
+  test({
+    description: 'Should return an error after getBaseReporters returns undefined.',
+    branchID: '1010101',
+    callback: function (err, branch) {
+      assert.isUndefined(err);
+      assert.isUndefined(branch);
+    },
+    getPeriodLength: function (branch, cb) {
+      cb(100);
+    },
+    getDescription: function (branch, cb) {
+      cb('this is a description for the branch');
+    },
+    getBaseReporters: function (branch, cb) {
+      cb(undefined);
+    }
+  });
+  test({
+    description: 'Should return an error Object after getBaseReporters returns an Object with an error key.',
+    branchID: '1010101',
+    callback: function (err, branch) {
+      assert.deepEqual(err, {error: 'Uh-Oh!'});
+      assert.isUndefined(branch);
+    },
+    getPeriodLength: function (branch, cb) {
+      cb(100);
+    },
+    getDescription: function (branch, cb) {
+      cb('this is a description for the branch');
+    },
+    getBaseReporters: function (branch, cb) {
+      cb({error: 'Uh-Oh!'});
+    }
+  });
+});
 // describe('CompositeGetters.parsePositionInMarket', function () {
 //   // 4 tests total
 //   var test = function (t) {
