@@ -7,6 +7,27 @@
   width: 100%;
   z-index: @default-z-index;
 
+  .account-sub-view {
+    padding: 1em;
+
+    aside {
+      .border(true, @border-right);
+
+      flex: 1;
+      padding-right: 1em;
+
+      .warning {
+        .font-weight-normal();
+
+        color: @color-red;
+      }
+
+      .italic {
+        font-style: italic;
+      }
+    }
+  }
+
   .account-content {
     .border(true, @border-right);
     .border(true, @border-bottom);
@@ -16,10 +37,6 @@
     display: flex;
     flex-direction: column;
     padding-top: 1em;
-  }
-
-  .account-deposit {
-    padding: 1em;
   }
 }
 

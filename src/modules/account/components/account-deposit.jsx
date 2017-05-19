@@ -42,7 +42,7 @@ export default class AccountDeposit extends Component {
   }
 
   setAddressScale() {
-    fitText(this.depositData, this.depositAddress);
+    fitText(this.depositData, this.depositAddress, true);
   }
 
   render() {
@@ -50,7 +50,7 @@ export default class AccountDeposit extends Component {
     const s = this.state;
 
     return (
-      <article className="account-deposit">
+      <article className="account-deposit account-sub-view">
         <aside>
           <h3>Deposit Funds To Account</h3>
           <p className="warning"><strong>NOTE</strong> -- Augur is in beta, only send <span className="italic">testnet</span> ETH and REP.</p>
