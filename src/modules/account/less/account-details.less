@@ -4,6 +4,7 @@
   margin: 1em;
 
   .account-details-core {
+    align-items: center;
     display: flex;
     flex: 1;
 
@@ -13,10 +14,10 @@
     }
 
     .account-details-core-values {
+      align-content: flex-start;
       display: flex;
       flex: 1;
       flex-direction: column;
-      justify-content: center;
 
       .account-details-name {
         position: relative;
@@ -28,10 +29,32 @@
         }
 
         .input {
+          display: block;
           left: -1px;
+          opacity: 1;
+          padding: 0.2em;
           position: absolute;
-          top: -1px;
+          top: calc(~"-0.2em - 1px");
+          transition-duration: @animation-speed-very-fast;
+          transition-property: opacity;
+          transition-timing-function: @animation-default-type;
           width: 50%;
+
+          &.name-input-enter {
+            opacity: 0;
+
+            &.name-input-enter-active {
+              opacity: 1;
+            }
+          }
+
+          &.name-input-leave {
+            opacity: 1;
+
+            &.name-input-leave-active {
+              opacity: 0;
+            }
+          }
 
           &.name-unset input::placeholder {
             font-style: italic;
@@ -44,6 +67,7 @@
 
         .account-details-name-copy {
           opacity: 1;
+          padding: 0.2em;
 
           &.name-unset {
             color: @color-text-dark-extra-light;
@@ -61,6 +85,8 @@
 
       .account-details-address {
         .font-size-medium();
+
+        align-self: flex-start;
       }
     }
   }

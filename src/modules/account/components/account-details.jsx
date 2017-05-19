@@ -66,6 +66,8 @@ export default class AccountDetails extends Component {
     const animationSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-very-fast'), 10);
     const nameInputPlaceholder = 'Set Account Name';
 
+    console.log('animationSpeed -- ', animationSpeed);
+
     return (
       <article className="account-details">
         <div
@@ -78,23 +80,23 @@ export default class AccountDetails extends Component {
           <div
             className="account-details-core-values"
           >
-            <CSSTransitionGroup
-              className="account-details-name"
-              transitionName="account-details-name"
-              transitionEnterTimeout={animationSpeed}
-              transitionLeaveTimeout={animationSpeed}
-            >
-              {s.nameInputVisible &&
-                <Input
-                  autoFocus
-                  className={classNames({ 'name-unset': !p.name })}
-                  type="text"
-                  value={p.name}
-                  onChange={name => this.updateAccountName(name)}
-                  onBlur={() => this.toggleNameInputVisibility()}
-                  placeholder={nameInputPlaceholder}
-                />
-              }
+            <div className="account-details-name">
+              <CSSTransitionGroup
+                transitionName="name-input"
+                transitionEnterTimeout={animationSpeed}
+                transitionLeaveTimeout={animationSpeed}
+              >
+                {s.nameInputVisible &&
+                  <Input
+                    autoFocus
+                    type="text"
+                    value={p.name}
+                    onChange={name => this.updateAccountName(name)}
+                    onBlur={() => this.toggleNameInputVisibility()}
+                    placeholder={nameInputPlaceholder}
+                  />
+                }
+              </CSSTransitionGroup>
               <button
                 className="unstyled"
                 onClick={() => {
@@ -110,7 +112,7 @@ export default class AccountDetails extends Component {
                   {p.name || nameInputPlaceholder}
                 </span>
               </button>
-            </CSSTransitionGroup>
+            </div>
             <button
               className="unstyled"
               onClick={() => this.toggleFullAccountVisibility()}
