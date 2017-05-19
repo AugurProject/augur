@@ -1,7 +1,6 @@
 .checkbox-container {
   display: flex;
   flex: 1;
-  max-width: @side-bar-max-width;
 }
 
 .checkbox {
@@ -31,15 +30,6 @@
     position: relative;
     vertical-align: middle;
     width: 0.8rem;
-  }
-
-  .checkbox-label {
-    //  Increase subtracted amount below (to ~100px) when any tag has more than 999 markets in it; doing so will further truncate the tag name
-    max-width: calc(@side-bar-max-width - 90px);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-transform: capitalize;
-    white-space: nowrap;
   }
 
   .checkbox-label,

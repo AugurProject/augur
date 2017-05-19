@@ -6,10 +6,12 @@
   background-color: @color-side-bar-background;
   color: @color-text-light-muted;
   flex: 1 0 auto;
+  width: 100%;
 
   @media @breakpoint-mobile {
     overflow-y: auto;
     position: fixed;
+    width: @side-bar-max-width-mobile;
   }
 
   footer {
@@ -36,6 +38,7 @@
     flex: 1;
     flex-direction: column;
     padding: 0.5rem 0;
+    width: 100%;
 
     .null-state {
       align-self: center;
@@ -45,8 +48,29 @@
     .checkbox.tag {
       .transition(background-color @animation-speed-very-fast, color @animation-speed-very-fast;);
 
+      display: flex;
+      flex: 1;
+      flex-wrap: nowrap;
       padding: 1em 2rem;
       text-align: left;
+      width: 100%;
+
+      .checkbox-label {
+        //  Increase subtracted amount below (to ~90px) when any tag has more than 999 markets in it; doing so will further truncate the tag name
+        max-width: @side-bar-max-width;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-transform: capitalize;
+        white-space: nowrap;
+
+        @media @breakpoint-mobile {
+          max-width: side-bar-max-width-mobile;
+        }
+      }
+
+      .checkbox-label2 {
+        flex: 1 0 auto;
+      }
 
       &:hover,
       &.checked {
