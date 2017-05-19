@@ -5,216 +5,181 @@ var augur = new (require("../../../src"))();
 var abi = require("augur-abi");
 var AugurContracts = require('augur-contracts');
 var contractsAPI = AugurContracts.api;
-// 10 tests total
+var noop = require("../../../src/utils/noop");
+// 5 tests total
 
 describe("sendReputation Unit Tests", () => {
-	// define noop to use as dummy functions for onSent
-	function noop() {};
-	function failedError(e) {
-		// this is a function for onFailed placeholder to fail if it's called for tests that shouldn't be calling onFailed.
-		assert.deepEqual(e, 'onFailed should never have been called if this test worked correctly!');
-	};
-	function successError(r) {
-		// this is a function for onSuccess placeholder to fail if it's called for tests that shouldn't be calling onSuccess.
-		assert.deepEqual(r, 'onSuccess should never have been called if this test worked correctly!');
-	};
-	var transact = augur.transact;
+	var sendReputation = augur.api.SendReputation.sendReputation;
 	var getRepBalance = augur.api.Reporting.getRepBalance;
 	var getRepRedistributionDone = augur.api.ConsensusData.getRepRedistributionDone;
-	var onSuccessToTest;
-	var	getRepBalanceCallCount = 0;
-	var	getRepRedistributionDoneCallCount = 0;
-	var test = function (t) {
-		it(t.description, function () {
-			augur.assets.sendReputation(t.branch, t.recver, t.value, t.onSent, t.onSuccess, t.onFailed);
-			onSuccessToTest(t.successResult);
-		});
-	};
-
-	before(function () {
-		augur.transact = function (tx, onSent, onSuccess, onFailed) {
-			assert.isObject(tx, "tx sent to this.transact is not a Object");
-			assert.isArray(tx.inputs, "tx.inputs sent to this.transact isn't an array as expected");
-
-			assert.deepEqual(tx.inputs, [ "branch", "recver", "value" ], "tx.inputs didn't contain the expected values");
-
-			assert.isString(tx.method, "tx.method sent to this.transact isn't an String as expected");
-			assert.isString(tx.returns, "tx.returns sent to this.transact isn't an String as expected");
-			assert.isBoolean(tx.send, "tx.send sent to this.transact isn't a Boolean as expected");
-			assert.isArray(tx.signature, "tx.signature sent to this.transact isn't an Array as expected");
-
-			assert.deepEqual(tx.signature, ["int256", "int256", "int256"], "tx.signature didn't contain the expected values");
-
-			assert.isString(tx.to, "tx.to sent to this.transact isn't an String as expected");
-			// make sure the tx.to is sending to the correct contract.
-			assert.deepEqual(tx.to, contractsAPI.functions.SendReputation.sendReputation.to, "tx.to didn't point to the sendReputation contract");
-			assert.isArray(tx.params, "tx.params sent to this.transact isn't an array as expected");
-
-			assert.deepEqual(tx.params, ["3", "recipientAddress", abi.fix(5, "hex")], "tx.params didn't contain the expected values");
-
-			assert.isFunction(onSent, "onSent passed to this.transact is not a function");
-			assert.isFunction(onSuccess, "onSuccess passed to this.transact is not a function");
-			assert.isFunction(onFailed, "onFailed passed to this.transact is not a function");
-			// save the onSuccess function produced by sendReputation so we can test the prepare function contained within
-			onSuccessToTest = onSuccess;
-		};
-		augur.api.Reporting.getRepBalance = function (branch, from, cb) {
-			getRepBalanceCallCount++;
-			switch (getRepBalanceCallCount) {
-			case 2:
-				cb('1.5');
-				break;
-			case 3:
-				cb({ error: "-1", message: "There was an issue with getRepBalance()."});
-				break;
-			case 4:
-				cb(undefined);
-				break;
-			default:
-				cb('1000.0');
-				break;
-			}
-		};
-		augur.api.ConsensusData.getRepRedistributionDone = function (branch, from, cb) {
-			getRepRedistributionDoneCallCount++;
-			switch (getRepRedistributionDoneCallCount) {
-			case 1:
-				cb("1");
-				break;
-			case 2:
-				cb("0");
-				break;
-			default:
-				cb(undefined);
-				break;
-			}
-		};
-	});
-
-	after(function () {
-		augur.transact = transact;
+	var sendReputationCallCount = 0;
+	afterEach(function() {
+		augur.api.SendReputation.sendReputation = sendReputation;
 		augur.api.Reporting.getRepBalance = getRepBalance;
 		augur.api.ConsensusData.getRepRedistributionDone = getRepRedistributionDone;
+		sendReputationCallCount = 0;
 	});
+	var test = function (t) {
+		it(t.description, function () {
+			augur.api.SendReputation.sendReputation = t.sendReputation;
+			augur.api.Reporting.getRepBalance = t.getRepBalance;
+			augur.api.ConsensusData.getRepRedistributionDone = t.getRepRedistributionDone;
 
+			augur.assets.sendReputation(t.params);
+		});
+	};
 	test({
-		description: "Should handle a request to send rep given a JS Number 'value'",
-		branch: "3",
-		recver: "recipientAddress",
-		value: 5,
-		onSent: noop,
-		onSuccess: function (r) {
-			assert.deepEqual(r, { callReturn: "1", from: 'fromAddress' });
-		},
-		onFailed: failedError,
-		successResult: { callReturn: "1", from: 'fromAddress' }
-	});
-	test({
-		description: "Should handle a request to send rep given a String 'value'",
-		branch: "3",
-		recver: "recipientAddress",
-		value: "5",
-		onSent: noop,
-		onSuccess: function (r) {
-			assert.deepEqual(r, { callReturn: "1", from: 'fromAddress' });
-		},
-		onFailed: noop,
-		successResult: { callReturn: "1", from: 'fromAddress' }
-	});
-	test({
-		description: "Should handle a request to send rep given a BigNumber 'value'",
-		branch: "3",
-		recver: "recipientAddress",
-		value: abi.bignum(5),
-		onSent: noop,
-		onSuccess: function (r) {
-			assert.deepEqual(r, { callReturn: "1", from: 'fromAddress' });
-		},
-		onFailed: failedError,
-		successResult: { callReturn: "1", from: 'fromAddress' }
-	});
-	test({
-		description: "Should handle a request to send rep with only 1 large object arg",
-		branch: {
-			branch: "3",
+		description: "Should handle a request to send rep where sendReputation is successful with a callreturn of 1",
+		params: {
+			branch: "1010101",
 			recver: "recipientAddress",
-			value: "5",
+			value: 5,
 			onSent: noop,
 			onSuccess: function (r) {
 				assert.deepEqual(r, { callReturn: "1", from: 'fromAddress' });
 			},
-			onFailed: failedError
+			onFailed: noop,
 		},
-		successResult: { callReturn: "1", from: 'fromAddress' }
+		sendReputation: function (p) {
+			assert.deepEqual(p.branch, '1010101');
+			assert.deepEqual(p.recver, 'recipientAddress');
+			assert.deepEqual(p.value, abi.fix(5, "hex"));
+			p.onSuccess({ callReturn: '1', from: 'fromAddress' })
+		},
+		getRepBalance: function (p, cb) {},
+		getRepRedistributionDone: function (p, cb) {}
 	});
 	test({
-		description: "Should handle a request to send rep that requires a retry to send the rep",
-		branch: "3",
-		recver: "recipientAddress",
-		value: 5,
-		onSent: noop,
-		onSuccess: successError,
-		onFailed: failedError,
-		successResult: { callReturn: "0", from: 'fromAddress' }
+		description: "Should handle a request to send rep that fails due to an error calling getRepBalance",
+		params: {
+			branch: "1010101",
+			recver: "recipientAddress",
+			value: "5",
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: function(err) {
+				assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
+			},
+		},
+		sendReputation: function (p) {
+			assert.deepEqual(p.branch, '1010101');
+			assert.deepEqual(p.recver, 'recipientAddress');
+			assert.deepEqual(p.value, abi.fix(5, "hex"));
+			p.onSuccess({ callReturn: '0', from: 'fromAddress' })
+		},
+		getRepBalance: function (p, cb) {
+			assert.deepEqual(p, {
+				branch: '1010101',
+				address: 'fromAddress'
+			});
+			cb({ error: 999, message: 'Uh-Oh!' });
+		},
+		getRepRedistributionDone: function (p, cb) {}
 	});
 	test({
-		description: "Should handle a request to send rep that fails due to not enough rep on the account",
-		branch: "3",
-		recver: "recipientAddress",
-		value: 5,
-		onSent: noop,
-		onSuccess: successError,
-		onFailed: function (e) {
-			assert.deepEqual(e, { error: '0', message: 'not enough reputation' });
+		description: "Should handle a request to send rep that fails due to not enough balance",
+		params: {
+			branch: "1010101",
+			recver: "recipientAddress",
+			value: "5",
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: function(err) {
+				assert.deepEqual(err, { error: "0", message: "not enough reputation" });
+			},
 		},
-		successResult: { callReturn: "0", from: 'fromAddress' }
+		sendReputation: function (p) {
+			assert.deepEqual(p.branch, '1010101');
+			assert.deepEqual(p.recver, 'recipientAddress');
+			assert.deepEqual(p.value, abi.fix(5, "hex"));
+			p.onSuccess({ callReturn: '0', from: 'fromAddress' })
+		},
+		getRepBalance: function (p, cb) {
+			assert.deepEqual(p, {
+				branch: '1010101',
+				address: 'fromAddress'
+			});
+			cb('1');
+		},
+		getRepRedistributionDone: function (p, cb) {}
 	});
 	test({
-		description: "Should handle a request to send rep that fails because getRepBalance returns an error",
-		branch: "3",
-		recver: "recipientAddress",
-		value: 5,
-		onSent: noop,
-		onSuccess: successError,
-		onFailed: function (e) {
-			assert.deepEqual(e, { error: "-1", message: "There was an issue with getRepBalance()."});
+		description: "Should handle a request to send rep that fails due to rep redistribution not being complete",
+		params: {
+			branch: "1010101",
+			recver: "recipientAddress",
+			value: "5",
+			onSent: noop,
+			onSuccess: noop,
+			onFailed: function(err) {
+				assert.deepEqual(err, {
+					error: "-3",
+					message: "cannot send reputation until redistribution is complete"
+				});
+			},
 		},
-		successResult: { callReturn: "0", from: 'fromAddress' }
+		sendReputation: function (p) {
+			assert.deepEqual(p.branch, '1010101');
+			assert.deepEqual(p.recver, 'recipientAddress');
+			assert.deepEqual(p.value, abi.fix(5, "hex"));
+			p.onSuccess({ callReturn: '0', from: 'fromAddress' })
+		},
+		getRepBalance: function (p, cb) {
+			assert.deepEqual(p, {
+				branch: '1010101',
+				address: 'fromAddress'
+			});
+			cb('100');
+		},
+		getRepRedistributionDone: function (p, cb) {
+			assert.deepEqual(p, {
+				branch: '1010101',
+				reporter: 'fromAddress'
+			});
+			cb('0');
+		}
 	});
 	test({
-		description: "Should handle a request to send rep that fails because getRepBalance returns undefined",
-		branch: "3",
-		recver: "recipientAddress",
-		value: 5,
-		onSent: noop,
-		onSuccess: successError,
-		onFailed: function (e) {
-			assert.deepEqual(e, undefined);
+		description: "Should handle a request to send rep that succeeds on the 2nd call",
+		params: {
+			branch: "1010101",
+			recver: "recipientAddress",
+			value: "5",
+			onSent: noop,
+			onSuccess: function(result) {
+				assert.deepEqual(result, { callReturn: '1', from: 'fromAddress' });
+			},
+			onFailed: noop,
 		},
-		successResult: { callReturn: "0", from: 'fromAddress' }
-	});
-	test({
-		description: "Should handle a request to send rep that fails because repRedistribution is not complete.",
-		branch: "3",
-		recver: "recipientAddress",
-		value: 5,
-		onSent: noop,
-		onSuccess: successError,
-		onFailed: function (e) {
-			assert.deepEqual(e, {error: "-3", message: "cannot send reputation until redistribution is complete"});
+		sendReputation: function (p) {
+			sendReputationCallCount++;
+
+			assert.deepEqual(p.branch, '1010101');
+			assert.deepEqual(p.recver, 'recipientAddress');
+			assert.deepEqual(p.value, abi.fix(5, "hex"));
+
+			switch (sendReputationCallCount) {
+			case 1:
+				p.onSuccess({ callReturn: '1', from: 'fromAddress' });
+				break;
+			default:
+				p.onSuccess({ callReturn: '0', from: 'fromAddress' });
+				break;
+			}
 		},
-		successResult: { callReturn: "0", from: 'fromAddress' }
-	});
-	test({
-		description: "Should handle a request to send rep that fails because repRedistributionDone returns undefined.",
-		branch: "3",
-		recver: "recipientAddress",
-		value: 5,
-		onSent: noop,
-		onSuccess: successError,
-		onFailed: function (e) {
-			assert.deepEqual(e, {error: "-3", message: "cannot send reputation until redistribution is complete"});
+		getRepBalance: function (p, cb) {
+			assert.deepEqual(p, {
+				branch: '1010101',
+				address: 'fromAddress'
+			});
+			cb('100');
 		},
-		successResult: { callReturn: "0", from: 'fromAddress' }
+		getRepRedistributionDone: function (p, cb) {
+			assert.deepEqual(p, {
+				branch: '1010101',
+				reporter: 'fromAddress'
+			});
+			cb('1');
+		}
 	});
 });
