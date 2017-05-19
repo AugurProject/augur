@@ -1,0 +1,34 @@
+.account-deposit {
+  display: flex;
+
+  aside {
+    .border(true, @border-right);
+
+    flex: 1;
+    padding-right: 1em;
+
+    .warning {
+      .font-weight-normal();
+
+      color: @color-red;
+    }
+
+    .italic {
+      font-style: italic;
+    }
+  }
+
+  .account-deposit-data {
+    align-items: center;
+    display: flex;
+    flex: 3;
+    flex-direction: column;
+
+    .account-deposit-address {
+      .font-weight-normal();
+
+      margin: 2em 0;
+      padding: 0 1em;
+    }
+  }
+}

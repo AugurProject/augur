@@ -91,7 +91,9 @@ export default class AccountView extends Component {
             updateSelectedNav={this.updateSelectedNav}
           />
           {s.selectedNav === ACCOUNT_DEPOSIT &&
-            <AccountDeposit />
+            <AccountDeposit
+              address={loginAccount.address}
+            />
           }
           {s.selectedNav === ACCOUNT_CONVERT &&
             <AccountConvert />
