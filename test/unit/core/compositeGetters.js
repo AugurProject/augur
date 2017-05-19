@@ -1202,7 +1202,7 @@ describe('augur.trading.getOrderBook', function () {
     }
   });
 });
-// describe('CompositeGetters.validateMarketInfo', function () {
+// describe.skip('CompositeGetters.validateMarketInfo', function () {
 //   // 3 tests total
 //   var test = function (t) {
 //     it(t.description, function () {
@@ -1244,334 +1244,318 @@ describe('augur.trading.getOrderBook', function () {
 //     }
 //   });
 // });
-// describe('CompositeGetters.getMarketInfo', function () {
-//   // 5 tests total
-//   var test = function (t) {
-//     it(t.description, function () {
-//       var getMarketInfo = augur.CompositeGetters.getMarketInfo;
-//       // we are going to pass our test assertions as our getMarketInfo contract function
-//       augur.CompositeGetters.getMarketInfo = t.assertions;
-//
-//       augur.getMarketInfo(t.market, t.account, t.callback);
-//
-//       augur.CompositeGetters.getMarketInfo = getMarketInfo;
-//     });
-//   };
-//   test({
-//     description: 'Should prepare and pass the arguments to the getMarketInfo Augur Contract CompositeGetters function.',
-//     market: '0x0a1',
-//     account: '0x0',
-//     callback: noop,
-//     assertions: function (market, account, callback) {
-//       assert.deepEqual(market, '0x0a1');
-//       assert.deepEqual(account, '0x0');
-//       assert.deepEqual(callback, noop);
-//     }
-//   });
-//   test({
-//     description: 'Should accept only one object argument but account is undefined and prepare and pass the arguments to the getMarketInfo Augur Contract CompositeGetters function.',
-//     market: { market: '0x0a1', callback: noop },
-//     account: undefined,
-//     callback: undefined,
-//     assertions: function (market, account, callback) {
-//       assert.deepEqual(market, '0x0a1');
-//       assert.deepEqual(account, 0);
-//       assert.deepEqual(callback, noop);
-//     }
-//   });
-//   test({
-//     description: 'Should accept a market object argument with callback passed seperately and prepare and pass the arguments to the getMarketInfo Augur Contract CompositeGetters function.',
-//     market: { market: '0x0a1', account: '0x0' },
-//     account: undefined,
-//     callback: noop,
-//     assertions: function (market, account, callback) {
-//       assert.deepEqual(market, '0x0a1');
-//       assert.deepEqual(account, '0x0');
-//       assert.deepEqual(callback, noop);
-//     }
-//   });
-//   test({
-//     description: 'Should accept a market object argument with callback passed seperately and prepare and pass the arguments to the getMarketInfo Augur Contract CompositeGetters function.',
-//     market: { market: '0x0a1', account: '0x0' },
-//     account: undefined,
-//     callback: noop,
-//     assertions: function (market, account, callback) {
-//       assert.deepEqual(market, '0x0a1');
-//       assert.deepEqual(account, '0x0');
-//       assert.deepEqual(callback, noop);
-//     }
-//   });
-//   test({
-//     description: 'Should arguments with callback passed as account and prepare and pass the arguments to the getMarketInfo Augur Contract CompositeGetters function.',
-//     market: '0x0a1',
-//     account: noop,
-//     callback: undefined,
-//     assertions: function (market, account, callback) {
-//       assert.deepEqual(market, '0x0a1');
-//       assert.deepEqual(account, 0);
-//       assert.deepEqual(callback, noop);
-//     }
-//   });
-// });
-// describe('CompositeGetters.parseBatchMarketInfo', function () {
-//   // 4 tests total
-//   var test = function (t) {
-//     it(t.description, function () {
-//       var parseMarketInfo = augur.parseMarketInfo;
-//       augur.parseMarketInfo = t.parseMarketInfo;
-//
-//       t.assertions(augur.parseBatchMarketInfo(t.marketsArray, t.numMarkets));
-//
-//       augur.parseMarketInfo = parseMarketInfo;
-//     });
-//   };
-//   test({
-//     description: 'Should return the marketsArray if it is undefined',
-//     marketsArray: undefined,
-//     numMarkets: 3,
-//     parseMarketInfo: function (info) {
-//       // shouldn't be reached
-//       assert.isNull('parseMarketInfo hit');
-//     },
-//     assertions: function (o) {
-//       assert.isUndefined(o);
-//     }
-//   });
-//   test({
-//     description: 'Should return the marketsArray if it is not an array',
-//     marketsArray: {},
-//     numMarkets: 3,
-//     parseMarketInfo: function (info) {
-//       // shouldn't be reached
-//       assert.isNull('parseMarketInfo hit');
-//     },
-//     assertions: function (o) {
-//       assert.deepEqual(o, {});
-//     }
-//   });
-//   test({
-//     description: 'Should return the marketsArray if it is an empty array',
-//     marketsArray: [],
-//     numMarkets: 3,
-//     parseMarketInfo: function (info) {
-//       // shouldn't be reached
-//       assert.isNull('parseMarketInfo hit');
-//     },
-//     assertions: function (o) {
-//       assert.deepEqual(o, []);
-//     }
-//   });
-//   test({
-//     description: 'Should return marketInfo after parsing the marketsArray',
-//     marketsArray: ['4', '0x0a1', '2', 'binary', '4', '0x0a2', '2', 'binary'],
-//     numMarkets: 2,
-//     parseMarketInfo: function (info) {
-//       return {marketID: info[0], numOutcomes: info[1], type: info[2]};
-//     },
-//     assertions: function (o) {
-//       assert.deepEqual(o, {
-//         '0x00000000000000000000000000000000000000000000000000000000000000a1': { marketID: '0x0a1', numOutcomes: '2', type: 'binary' },
-//         '0x00000000000000000000000000000000000000000000000000000000000000a2': { marketID: '0x0a2', numOutcomes: '2', type: 'binary' },
-//       });
-//     }
-//   });
-//   test({
-//     description: 'Should return empty marketInfo after parsing the marketsArray but parseMarket keeps returning empty objects',
-//     marketsArray: ['4', '0x0a1', '2', 'binary', '4', '0x0a2', '2', 'binary'],
-//     numMarkets: 2,
-//     parseMarketInfo: function (info) {
-//       return {};
-//     },
-//     assertions: function (o) {
-//       assert.deepEqual(o, {});
-//     }
-//   });
-// });
-// describe('CompositeGetters.batchGetMarketInfo', function () {
-//   // 2 tests total
-//   var test = function (t) {
-//     it(t.description, function () {
-//       var fire = augur.fire;
-//       augur.fire = t.assertions;
-//
-//       augur.batchGetMarketInfo(t.marketIDs, t.account, t.callback);
-//
-//       augur.fire = fire;
-//     });
-//   };
-//   test({
-//     description: 'Should prepare a batchGetMarketInfo transaction',
-//     marketIDs: ['0x0a1', '0x0a2', '0x0a3'],
-//     account: '0x0',
-//     callback: noop,
-//     assertions: function (tx, callback, parseBatchMarketInfo, numMarketIDs) {
-//       assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.CompositeGetters.batchGetMarketInfo.to);
-//       assert.deepEqual(tx.params, [['0x0a1', '0x0a2', '0x0a3'],'0x0']);
-//       assert.deepEqual(numMarketIDs, 3);
-//     }
-//   });
-//   test({
-//     description: 'Should prepare a batchGetMarketInfo transaction with the callback passed as account',
-//     marketIDs: ['0x0a1', '0x0a2', '0x0a3'],
-//     account: noop,
-//     callback: undefined,
-//     assertions: function (tx, callback, parseBatchMarketInfo, numMarketIDs) {
-//       assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.CompositeGetters.batchGetMarketInfo.to);
-//       assert.deepEqual(tx.params, [['0x0a1', '0x0a2', '0x0a3'], 0]);
-//       assert.deepEqual(numMarketIDs, 3);
-//     }
-//   });
-// });
-// describe('CompositeGetters.parseMarketsInfo', function () {
-//   // 4 tests total
-//   var test = function (t) {
-//     it(t.description, function () {
-//       t.assertions(augur.parseMarketsInfo(t.marketsArray, t.branch));
-//     });
-//   };
-//   // [numMarketsTotal, MarketLength, marketID, tradingPeriod, tradingFee, creationTime, volume, tag1, tag2, tag3, endDate, makerProportionOfFee, eventID, minVale, maxValue, numOutcomes, reportedOutcome, description]
-//   test({
-//     description: 'Should handle a marketsArray with all three market types and process everything correctly.',
-//     marketsArray: ['3', '0x11', '0x0a1', '500', '400000000000000000', 140000000, '1000000000000000000000', abi.short_string_to_int256('sports'), abi.short_string_to_int256('football'), abi.short_string_to_int256('nfl'), 15000000, '20000000000000000', '0x0e1', '1000000000000000000', '2000000000000000000', '2', '1000000000000000000',
-//     '57696c6c2074686520436c6576656c616e642042726f776e732077696e205375706572626f776c204c493f',
-//     '0x11', '0x0a2', '500', '600000000000000000', 140000000, '2500000000000000000000', abi.short_string_to_int256('sports'), abi.short_string_to_int256('basketball'), abi.short_string_to_int256('nba'), 15000000, '30000000000000000', '0x0e2', '1000000000000000000', '250000000000000000000', '2', '',
-//     '486f77206d616e7920706f696e74732077696c6c2062652073636f72656420696e2067616d652031206f66207468652032303137204e42412066696e616c733f',
-//     '0x11', '0x0a3', '500', '200000000000000000', 140000000, '125000000000000000000', abi.short_string_to_int256('sports'), abi.short_string_to_int256('baseball'), abi.short_string_to_int256('mlb'), 15000000, '10000000000000000', '0x0e3', '1000000000000000000', '50000000000000000000', '5', '',
-//     '5768696368207465616d2077696c6c2077696e2074686520414c204561737420696e20746865203230313720736561736f6e206f66204d4c423f'],
-//     branch: augur.constants.DEFAULT_BRANCH_ID,
-//     assertions: function (parsedMarketsInfo) {
-//       assert.deepEqual(parsedMarketsInfo, {
-//         '0x00000000000000000000000000000000000000000000000000000000000000a1': {
-//           id: '0x00000000000000000000000000000000000000000000000000000000000000a1',
-//           branchID: '0xf69b5',
-//           tradingPeriod: 1280,
-//           tradingFee: '0.4',
-//           makerFee: '0.008',
-//           takerFee: '0.592',
-//           creationTime: 5368709120,
-//           volume: '1000',
-//           topic: 'sports',
-//           tags: ['sports', 'football', 'nfl'],
-//           endDate: 352321536,
-//           eventID: '0x00000000000000000000000000000000000000000000000000000000000000e1',
-//           minValue: '1',
-//           maxValue: '2',
-//           numOutcomes: 2,
-//           type: 'binary',
-//           consensus: {
-//             outcomeID: '1',
-//             isIndeterminate: false
-//           },
-//           description: 'Will the Cleveland Browns win Superbowl LI?'
-//         },
-//         '0x00000000000000000000000000000000000000000000000000000000000000a2': {
-//           id: '0x00000000000000000000000000000000000000000000000000000000000000a2',
-//           branchID: '0xf69b5',
-//           tradingPeriod: 1280,
-//           tradingFee: '0.6',
-//           makerFee: '0.018',
-//           takerFee: '0.882',
-//           creationTime: 5368709120,
-//           volume: '2500',
-//           topic: 'sports',
-//           tags: ['sports', 'basketball', 'nba'],
-//           endDate: 352321536,
-//           eventID: '0x00000000000000000000000000000000000000000000000000000000000000e2',
-//           minValue: '1',
-//           maxValue: '250',
-//           numOutcomes: 2,
-//           type: 'scalar',
-//           consensus: null,
-//           description: 'How many points will be scored in game 1 of the 2017 NBA finals?'
-//         },
-//         '0x00000000000000000000000000000000000000000000000000000000000000a3': {
-//           id: '0x00000000000000000000000000000000000000000000000000000000000000a3',
-//           branchID: '0xf69b5',
-//           tradingPeriod: 1280,
-//           tradingFee: '0.2',
-//           makerFee: '0.002',
-//           takerFee: '0.298',
-//           creationTime: 5368709120,
-//           volume: '125',
-//           topic: 'sports',
-//           tags: ['sports', 'baseball', 'mlb'],
-//           endDate: 352321536,
-//           eventID: '0x00000000000000000000000000000000000000000000000000000000000000e3',
-//           minValue: '1',
-//           maxValue: '50',
-//           numOutcomes: 5,
-//           type: 'categorical',
-//           consensus: null,
-//           description: 'Which team will win the AL East in the 2017 season of MLB?'
-//         }
-//       });
-//     }
-//   });
-//   test({
-//     description: 'Should handle an empty markets array and return null',
-//     marketsArray: [],
-//     branch: augur.constants.DEFAULT_BRANCH_ID,
-//     assertions: function (parsedMarketsInfo) {
-//       assert.isNull(parsedMarketsInfo);
-//     }
-//   });
-//   test({
-//     description: 'Should handle a non array passed as marketsArray and return null',
-//     marketsArray: {},
-//     branch: augur.constants.DEFAULT_BRANCH_ID,
-//     assertions: function (parsedMarketsInfo) {
-//       assert.isNull(parsedMarketsInfo);
-//     }
-//   });
-//   test({
-//     description: 'Should handle undefined passed as marketsArray and return null',
-//     marketsArray: undefined,
-//     branch: augur.constants.DEFAULT_BRANCH_ID,
-//     assertions: function (parsedMarketsInfo) {
-//       assert.isNull(parsedMarketsInfo);
-//     }
-//   });
-// });
-// describe('CompositeGetters.getMarketsInfo', function () {
-//   // 2 tests total
-//   var fire = augur.fire;
-//   afterEach(function () {
-//     augur.fire = fire;
-//   });
-//   var test = function (t) {
-//     it(t.description + ' async', function () {
-//       augur.fire = t.fire;
-//       augur.getMarketsInfo(t.branch, t.offset, t.numMarketsToLoad, t.volumeMin, t.volumeMax, t.callback);
-//     });
-//   };
-//   test({
-//     description: 'Should send default params to fire, only callback passed',
-//     branch: undefined,
-//     offset: undefined,
-//     numMarketsToLoad: undefined,
-//     volumeMin: undefined,
-//     volumeMax: undefined,
-//     callback: function (data) {
-//       assert.deepEqual(data.params, [augur.constants.DEFAULT_BRANCH_ID, 0, 0, 0, 0]);
-//       assert.deepEqual(data.to, augur.store.getState().contractsAPI.functions.CompositeGetters.getMarketsInfo.to);
-//     },
-//     fire: function (tx, callback, parseMarketsInfo, branch) {
-//       callback(tx);
-//     }
-//   });
-//   test({
-//     description: 'Should send params passed to fire, all args passed as expected',
-//     branch: '101010',
-//     offset: 5,
-//     numMarketsToLoad: 10,
-//     volumeMin: -1,
-//     volumeMax: 0,
-//     callback: function (data) {
-//       assert.deepEqual(data.params, ['101010', 5, 10, -1, 0]);
-//       assert.deepEqual(data.to, augur.store.getState().contractsAPI.functions.CompositeGetters.getMarketsInfo.to);
-//     },
-//     fire: function (tx, callback, parseMarketsInfo, branch) {
-//       callback(tx);
-//     }
-//   });
-// });
+describe('augur.markets.getMarketInfo', function () {
+  // 2 tests total
+  var test = function (t) {
+    it(t.description, function () {
+      var getMarketInfo = augur.api.CompositeGetters.getMarketInfo;
+      // we are going to pass our test assertions as our getMarketInfo contract function
+      augur.api.CompositeGetters.getMarketInfo = t.assertions;
+
+      augur.markets.getMarketInfo(t.params, t.callback);
+
+      augur.api.CompositeGetters.getMarketInfo = getMarketInfo;
+    });
+  };
+  test({
+    description: 'Should prepare and pass the arguments to the getMarketInfo Augur Contract CompositeGetters function.',
+    params: {
+      marketID: '0x0a1',
+      account: '0x0',
+    },
+    callback: noop,
+    assertions: function (params, callback) {
+      assert.deepEqual(params.marketID, '0x0a1');
+      assert.deepEqual(params.account, '0x0');
+      assert.deepEqual(callback, noop);
+    }
+  });
+  test({
+    description: 'Should handle account undefined and prepare and pass the arguments to the getMarketInfo Augur Contract CompositeGetters function.',
+    params: { marketID: '0x0a1' },
+    callback: undefined,
+    assertions: function (params, callback) {
+      assert.deepEqual(params.marketID, '0x0a1');
+      assert.deepEqual(params.account, 0);
+      assert.isUndefined(callback);
+    }
+  });
+});
+describe('augur.parsers.parseBatchMarketInfo', function () {
+  // 5 tests total
+  var test = function (t) {
+    it(t.description, function () {
+      var parseBatchMarketInfo = proxyquire('../../../src/parsers/batch-market-info', {
+        './market-info': t.parseMarketInfo
+      });
+      t.assertions(parseBatchMarketInfo(t.marketsArray, t.numMarkets));
+    });
+  };
+  test({
+    description: 'Should return the marketsArray if it is undefined',
+    marketsArray: undefined,
+    numMarkets: 3,
+    parseMarketInfo: function (info) {
+      // shouldn't be reached
+      assert.isNull('parseMarketInfo hit');
+    },
+    assertions: function (o) {
+      assert.isUndefined(o);
+    }
+  });
+  test({
+    description: 'Should return the marketsArray if it is not an array',
+    marketsArray: {},
+    numMarkets: 3,
+    parseMarketInfo: function (info) {
+      // shouldn't be reached
+      assert.isNull('parseMarketInfo hit');
+    },
+    assertions: function (o) {
+      assert.deepEqual(o, {});
+    }
+  });
+  test({
+    description: 'Should return the marketsArray if it is an empty array',
+    marketsArray: [],
+    numMarkets: 3,
+    parseMarketInfo: function (info) {
+      // shouldn't be reached
+      assert.isNull('parseMarketInfo hit');
+    },
+    assertions: function (o) {
+      assert.deepEqual(o, []);
+    }
+  });
+  test({
+    description: 'Should return marketInfo after parsing the marketsArray',
+    marketsArray: ['4', '0x0a1', '2', 'binary', '4', '0x0a2', '2', 'binary'],
+    numMarkets: 2,
+    parseMarketInfo: function (info) {
+      return { marketID: info[0], numOutcomes: info[1], type: info[2] };
+    },
+    assertions: function (o) {
+      assert.deepEqual(o, {
+        '0x00000000000000000000000000000000000000000000000000000000000000a1': { marketID: '0x0a1', numOutcomes: '2', type: 'binary' },
+        '0x00000000000000000000000000000000000000000000000000000000000000a2': { marketID: '0x0a2', numOutcomes: '2', type: 'binary' },
+      });
+    }
+  });
+  test({
+    description: 'Should return empty marketInfo after parsing the marketsArray but parseMarket keeps returning empty objects',
+    marketsArray: ['4', '0x0a1', '2', 'binary', '4', '0x0a2', '2', 'binary'],
+    numMarkets: 2,
+    parseMarketInfo: function (info) {
+      return {};
+    },
+    assertions: function (o) {
+      assert.deepEqual(o, {});
+    }
+  });
+});
+describe('augur.markets.batchGetMarketInfo', function () {
+  // 2 tests total
+  var test = function (t) {
+    it(t.description, function () {
+      var batchGetMarketInfo = augur.api.CompositeGetters.batchGetMarketInfo;
+      augur.api.CompositeGetters.batchGetMarketInfo = t.assertions;
+
+      augur.markets.batchGetMarketInfo(t.params, t.callback);
+
+      augur.api.CompositeGetters.batchGetMarketInfo = batchGetMarketInfo;
+    });
+  };
+  test({
+    description: 'Should prepare a batchGetMarketInfo transaction',
+    params: {
+      marketIDs: ['0x0a1', '0x0a2', '0x0a3'],
+      account: '0x0',
+    },
+    callback: noop,
+    assertions: function (params, cb, extraArgs) {
+      assert.deepEqual(params, {
+        marketIDs: ['0x0a1', '0x0a2', '0x0a3'],
+        account: '0x0',
+      });
+      assert.isFunction(cb);
+      assert.deepEqual(extraArgs, { extraArgument: 3 });
+    }
+  });
+  test({
+    description: 'Should prepare a batchGetMarketInfo transaction with the callback & account undefined',
+    params: {
+      marketIDs: ['0x0a1', '0x0a2', '0x0a3'],
+    },
+    callback: undefined,
+    assertions: function (params, cb, extraArgs) {
+      assert.deepEqual(params, {
+        marketIDs: ['0x0a1', '0x0a2', '0x0a3'],
+        account: 0,
+      });
+      assert.isUndefined(cb);
+      assert.deepEqual(extraArgs, { extraArgument: 3 });
+    }
+  });
+});
+describe('augur.parsers.parseMarketsInfo', function () {
+  // 4 tests total
+  var parseMarketsInfo = require('../../../src/parsers/markets-info');
+  var test = function (t) {
+    it(t.description, function () {
+      t.assertions(parseMarketsInfo(t.marketsArray, t.branch));
+    });
+  };
+  // [numMarketsTotal, MarketLength, marketID, tradingPeriod, tradingFee, creationTime, volume, tag1, tag2, tag3, endDate, makerProportionOfFee, eventID, minVale, maxValue, numOutcomes, reportedOutcome, description]
+  test({
+    description: 'Should handle a marketsArray with all three market types and process everything correctly.',
+    marketsArray: ['3', '0x11', '0x0a1', '500', '400000000000000000', 140000000, '1000000000000000000000', abi.short_string_to_int256('sports'), abi.short_string_to_int256('football'), abi.short_string_to_int256('nfl'), 15000000, '20000000000000000', '0x0e1', '1000000000000000000', '2000000000000000000', '2', '1000000000000000000',
+    '57696c6c2074686520436c6576656c616e642042726f776e732077696e205375706572626f776c204c493f',
+    '0x11', '0x0a2', '500', '600000000000000000', 140000000, '2500000000000000000000', abi.short_string_to_int256('sports'), abi.short_string_to_int256('basketball'), abi.short_string_to_int256('nba'), 15000000, '30000000000000000', '0x0e2', '1000000000000000000', '250000000000000000000', '2', '',
+    '486f77206d616e7920706f696e74732077696c6c2062652073636f72656420696e2067616d652031206f66207468652032303137204e42412066696e616c733f',
+    '0x11', '0x0a3', '500', '200000000000000000', 140000000, '125000000000000000000', abi.short_string_to_int256('sports'), abi.short_string_to_int256('baseball'), abi.short_string_to_int256('mlb'), 15000000, '10000000000000000', '0x0e3', '1000000000000000000', '50000000000000000000', '5', '',
+    '5768696368207465616d2077696c6c2077696e2074686520414c204561737420696e20746865203230313720736561736f6e206f66204d4c423f'],
+    branch: augur.constants.DEFAULT_BRANCH_ID,
+    assertions: function (parsedMarketsInfo) {
+      assert.deepEqual(parsedMarketsInfo, {
+        '0x00000000000000000000000000000000000000000000000000000000000000a1': {
+          id: '0x00000000000000000000000000000000000000000000000000000000000000a1',
+          branchID: '0xf69b5',
+          tradingPeriod: 1280,
+          tradingFee: '0.4',
+          makerFee: '0.008',
+          takerFee: '0.592',
+          creationTime: 5368709120,
+          volume: '1000',
+          topic: 'sports',
+          tags: ['sports', 'football', 'nfl'],
+          endDate: 352321536,
+          eventID: '0x00000000000000000000000000000000000000000000000000000000000000e1',
+          minValue: '1',
+          maxValue: '2',
+          numOutcomes: 2,
+          type: 'binary',
+          consensus: {
+            outcomeID: '1',
+            isIndeterminate: false
+          },
+          description: 'Will the Cleveland Browns win Superbowl LI?'
+        },
+        '0x00000000000000000000000000000000000000000000000000000000000000a2': {
+          id: '0x00000000000000000000000000000000000000000000000000000000000000a2',
+          branchID: '0xf69b5',
+          tradingPeriod: 1280,
+          tradingFee: '0.6',
+          makerFee: '0.018',
+          takerFee: '0.882',
+          creationTime: 5368709120,
+          volume: '2500',
+          topic: 'sports',
+          tags: ['sports', 'basketball', 'nba'],
+          endDate: 352321536,
+          eventID: '0x00000000000000000000000000000000000000000000000000000000000000e2',
+          minValue: '1',
+          maxValue: '250',
+          numOutcomes: 2,
+          type: 'scalar',
+          consensus: null,
+          description: 'How many points will be scored in game 1 of the 2017 NBA finals?'
+        },
+        '0x00000000000000000000000000000000000000000000000000000000000000a3': {
+          id: '0x00000000000000000000000000000000000000000000000000000000000000a3',
+          branchID: '0xf69b5',
+          tradingPeriod: 1280,
+          tradingFee: '0.2',
+          makerFee: '0.002',
+          takerFee: '0.298',
+          creationTime: 5368709120,
+          volume: '125',
+          topic: 'sports',
+          tags: ['sports', 'baseball', 'mlb'],
+          endDate: 352321536,
+          eventID: '0x00000000000000000000000000000000000000000000000000000000000000e3',
+          minValue: '1',
+          maxValue: '50',
+          numOutcomes: 5,
+          type: 'categorical',
+          consensus: null,
+          description: 'Which team will win the AL East in the 2017 season of MLB?'
+        }
+      });
+    }
+  });
+  test({
+    description: 'Should handle an empty markets array and return null',
+    marketsArray: [],
+    branch: augur.constants.DEFAULT_BRANCH_ID,
+    assertions: function (parsedMarketsInfo) {
+      assert.isNull(parsedMarketsInfo);
+    }
+  });
+  test({
+    description: 'Should handle a non array passed as marketsArray and return null',
+    marketsArray: {},
+    branch: augur.constants.DEFAULT_BRANCH_ID,
+    assertions: function (parsedMarketsInfo) {
+      assert.isNull(parsedMarketsInfo);
+    }
+  });
+  test({
+    description: 'Should handle undefined passed as marketsArray and return null',
+    marketsArray: undefined,
+    branch: augur.constants.DEFAULT_BRANCH_ID,
+    assertions: function (parsedMarketsInfo) {
+      assert.isNull(parsedMarketsInfo);
+    }
+  });
+});
+describe('augur.parsers.getMarketsInfo', function () {
+  // 2 tests total
+  var test = function (t) {
+    it(t.description + ' async', function () {
+      var getMarketsInfo = augur.api.CompositeGetters.getMarketsInfo;
+      augur.api.CompositeGetters.getMarketsInfo = t.assertions;
+
+      augur.markets.getMarketsInfo(t.params, t.callback);
+
+      augur.api.CompositeGetters.getMarketsInfo = getMarketsInfo;
+    });
+  };
+  test({
+    description: 'Should send default params to fire, only callback passed',
+    params: {},
+    callback: noop,
+    assertions: function (params, cb, extraArgs) {
+      assert.deepEqual(params, {
+        branch: '0xf69b5',
+        offset: 0,
+        numMarketsToLoad: 0,
+        volumeMin: 0,
+        volumeMax: 0
+      });
+      assert.isFunction(cb);
+      assert.deepEqual(extraArgs, { extraArgument: undefined });
+    }
+  });
+  test({
+    description: 'Should send params passed to fire, all args passed as expected',
+    params: {
+      branch: '1010101',
+      offset: 5,
+      numMarketsToLoad: 10,
+      volumeMin: -1,
+      volumeMax: 0,
+    },
+    callback: noop,
+    assertions: function (params, cb, extraArgs) {
+      assert.deepEqual(params, {
+        branch: '1010101',
+        offset: 5,
+        numMarketsToLoad: 10,
+        volumeMin: -1,
+        volumeMax: 0
+      });
+      assert.isFunction(cb);
+      assert.deepEqual(extraArgs, { extraArgument: '1010101' });
+    }
+  });
+});
