@@ -1,7 +1,13 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 
-const AccountConvert = p => (
-  <span>Account Convert</span>
-);
+export default class AccountConvert extends Component {
+  static propTypes = {
 
-export default AccountConvert;
+  };
+
+  render() {
+    return (
+<span>Account Convert</span>
+    );
+  }
+}
