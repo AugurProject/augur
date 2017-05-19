@@ -63,10 +63,8 @@ export default class AccountDetails extends Component {
     const p = this.props;
     const s = this.state;
 
-    const animationSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-very-fast'), 10);
     const nameInputPlaceholder = 'Set Account Name';
-
-    console.log('animationSpeed -- ', animationSpeed);
+    const animationSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-very-fast'), 10);
 
     return (
       <article className="account-details">
@@ -89,6 +87,7 @@ export default class AccountDetails extends Component {
                 {s.nameInputVisible &&
                   <Input
                     autoFocus
+                    className={classNames({ 'name-unset': !p.name })}
                     type="text"
                     value={p.name}
                     onChange={name => this.updateAccountName(name)}
@@ -114,19 +113,21 @@ export default class AccountDetails extends Component {
               </button>
             </div>
             <button
-              className="unstyled"
+              className="unstyled account-details-address"
               onClick={() => this.toggleFullAccountVisibility()}
             >
               <CSSTransitionGroup
-                transitionName="account-details-address"
+                component="div"
+                className="account-details-address-values"
+                transitionName="address"
                 transitionEnterTimeout={animationSpeed}
                 transitionLeaveTimeout={animationSpeed}
               >
                 {s.fullAccountVisible &&
-                  <span className="account-details-address">{p.address}</span>
+                  <span>{p.address}</span>
                 }
                 {!s.fullAccountVisible &&
-                  <span className="account-details-address">{p.trimmedAddress}</span>
+                  <span>{p.trimmedAddress}</span>
                 }
               </CSSTransitionGroup>
             </button>

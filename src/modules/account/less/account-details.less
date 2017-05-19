@@ -1,5 +1,4 @@
 .account-details {
-  align-items: center;
   display: flex;
   margin: 1em;
 
@@ -20,7 +19,9 @@
       flex-direction: column;
 
       .account-details-name {
+        left: calc(~"-0.2em - 1px");
         position: relative;
+        top: -0.2em;
 
         .account-details-name-copy,
         .input {
@@ -29,7 +30,6 @@
         }
 
         .input {
-          display: block;
           left: -1px;
           opacity: 1;
           padding: 0.2em;
@@ -68,6 +68,7 @@
         .account-details-name-copy {
           opacity: 1;
           padding: 0.2em;
+          position: relative;
 
           &.name-unset {
             color: @color-text-dark-extra-light;
@@ -87,6 +88,37 @@
         .font-size-medium();
 
         align-self: flex-start;
+        height: @font-size-medium;
+        padding-top: 0.2em;
+        position: relative;
+
+        .account-details-address-values {
+          height: @font-size-medium; // Match whatever the font size is set to for the addresses
+        }
+
+        span {
+          opacity: 1;
+          position: absolute;
+          transition-duration: @animation-speed-very-fast;
+          transition-property: opacity;
+          transition-timing-function: @animation-default-type;
+
+          &.address-enter {
+            opacity: 0;
+
+            &.address-enter-active {
+              opacity: 1;
+            }
+          }
+
+          &.address-leave {
+            opacity: 1;
+
+            &.address-leave-active {
+              opacity: 0;
+            }
+          }
+        }
       }
     }
   }
