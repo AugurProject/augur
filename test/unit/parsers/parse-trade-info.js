@@ -3,12 +3,12 @@
 "use strict";
 
 var assert = require("chai").assert;
-var parseTradeInfo = require("../../../src/parsers/parse-trade-info");
+var parseTradeInfo = require("../../../src/parsers/trade-info");
 
-describe("parsers/parse-trade-info", function () {
+describe("parsers/trade-info", function () {
   var test = function (t) {
     it(JSON.stringify(t), function () {
-      t.assertions(parsers.parseTradeInfo(t.trade));
+      t.assertions(parseTradeInfo(t.trade));
     });
   };
   // trade: [ tradeID, tradeType, marketID, FullPercisionAmount, fullPrecisionPrice, owner, blockID, outcomeID ]
