@@ -8,6 +8,7 @@
   z-index: @default-z-index;
 
   .account-sub-view {
+    display: flex;
     padding: 1em;
 
     aside {
@@ -25,6 +26,10 @@
       .italic {
         font-style: italic;
       }
+    }
+
+    & > div {
+      flex: 3;
     }
   }
 

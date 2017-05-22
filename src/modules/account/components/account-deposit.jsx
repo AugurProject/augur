@@ -53,8 +53,8 @@ export default class AccountDeposit extends Component {
       <article className="account-deposit account-sub-view">
         <aside>
           <h3>Deposit Funds To Account</h3>
-          <p className="warning"><strong>NOTE</strong> -- Augur is in beta, only send <span className="italic">testnet</span> ETH and REP.</p>
-          <p>Scan the QR code <strong>or</strong> copy the full account address to transfer fund to your account.</p>
+          <p className="warning">DO NOT deposit mainnet ETH or REP.</p>
+          <p>Scan the QR code <strong>or</strong> copy the full account address to transfer funds to your account.</p>
         </aside>
         <div
           ref={(depositData) => { this.depositData = depositData; }}
