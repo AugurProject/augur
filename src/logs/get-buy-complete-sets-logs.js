@@ -9,7 +9,7 @@ function getBuyCompleteSetsLogs(p, callback) {
   filter = p.filter ? clone(p.filter) : {};
   filter.shortAsk = false;
   filter.type = "buy";
-  return getCompleteSetsLogs({ account: p.account, filter: p.filter }, callback);
+  return getCompleteSetsLogs({ account: p.account, filter: filter }, callback);
 }
 
 module.exports = getBuyCompleteSetsLogs;
