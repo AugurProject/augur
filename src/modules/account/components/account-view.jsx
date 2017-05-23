@@ -8,12 +8,12 @@ import ComponentNav from 'modules/common/components/component-nav';
 import Identicon from 'react-blockies';
 
 import { ACCOUNT_NAV_ITEMS } from 'modules/account/constants/account-nav-items';
-import { ACCOUNT_DEPOSIT, ACCOUNT_CONVERT, ACCOUNT_WITHDRAW } from 'modules/app/constants/views';
+import { ACCOUNT_DEPOSIT, ACCOUNT_CONVERT, ACCOUNT_TRANSFER } from 'modules/app/constants/views';
 
 import AccountDetails from 'modules/account/components/account-details';
 import AccountDeposit from 'modules/account/components/account-deposit';
 import AccountConvert from 'modules/account/components/account-convert';
-import AccountWithdraw from 'modules/account/components/account-withdraw';
+import AccountTransfer from 'modules/account/components/account-transfer';
 
 // import Input from 'modules/common/components/input';
 // import PasswordInputForm from 'modules/account/components/password-input-form';
@@ -61,12 +61,6 @@ export default class AccountView extends Component {
   }
 
   render() {
-    // TODO
-    // Details <
-    // Deposit
-    // Convert
-    // Withdraw
-
     const p = this.props;
     const s = this.state;
 
@@ -105,8 +99,12 @@ export default class AccountView extends Component {
               convertToEther={p.convertToEther}
             />
           }
-          {s.selectedNav === ACCOUNT_WITHDRAW &&
-            <AccountWithdraw />
+          {s.selectedNav === ACCOUNT_TRANSFER &&
+            <AccountTransfer
+              etherTokens={loginAccount.ether}
+              ether={loginAccount.realEther}
+              rep={loginAccount.rep}
+            />
           }
         </article>
       </section>

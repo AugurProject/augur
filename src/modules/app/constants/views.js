@@ -35,7 +35,6 @@ export const MARKET_USER_DATA_NAV_POSITIONS = 'positions';
 export const MARKET_USER_DATA_NAV_OPEN_ORDERS = 'open-orders';
 
 //  Account
-export const ACCOUNT_DETAILS = 'account-details';
 export const ACCOUNT_DEPOSIT = 'deposit-funds';
 export const ACCOUNT_CONVERT = 'convert-funds';
-export const ACCOUNT_WITHDRAW = 'withdraw-funds';
+export const ACCOUNT_TRANSFER = 'transfer-funds';
