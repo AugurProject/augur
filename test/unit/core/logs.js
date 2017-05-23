@@ -7,7 +7,8 @@ var noop = require("../../../src/utils/noop");
 var isFunction = require("../../../src/utils/is-function");
 var augur = new (require("../../../src"))();
 var AugurContracts = require('augur-contracts');
-var DEFAULT_NETWORK_ID = require("../../../src/constants").DEFAULT_NETWORK_ID;
+var constants = require("../../../src/constants")
+var DEFAULT_NETWORK_ID = constants.DEFAULT_NETWORK_ID;
 var contractAddresses = AugurContracts[DEFAULT_NETWORK_ID];
 var contractsAPI = AugurContracts.api;
 
@@ -1003,10 +1004,11 @@ describe("logs.getFilteredLogs", function () {
     }
   });
 });
-describe.skip("logs.chunkBlocks", function () {
+describe("logs.chunkBlocks", function () {
+  var chunkBlocks = require('../../../src/logs/chunk-blocks');
   var test = function (t) {
     it(t.description, function () {
-      t.assertions(augur.chunkBlocks(t.params.fromBlock, t.params.toBlock));
+      t.assertions(chunkBlocks(t.params.fromBlock, t.params.toBlock));
     });
   };
   test({
@@ -1138,22 +1140,21 @@ describe.skip("logs.chunkBlocks", function () {
     }
   });
 });
-describe.skip("logs.getLogsChunked", function () {
-  var getLogs = augur.getLogs;
-  var block = augur.rpc.block;
+describe("logs.getLogsChunked", function () {
+  // 6 tests total
   var finished;
-  afterEach(function () {
-    augur.getLogs = getLogs;
-    augur.rpc.block = block;
-    finished = undefined;
-  });
   var test = function (t) {
     it(t.description, function (done) {
-      augur.getLogs = t.getLogs;
-      augur.rpc.block = t.block || block;
+      var getLogsChunked = proxyquire('../../../src/logs/get-logs-chunked', {
+        './get-logs': t.getLogs,
+        '../rpc-interface': {
+          getCurrentBlock: function() {
+            return t.block;
+          }
+        }
+      });
       finished = done;
-
-      augur.getLogsChunked(t.params.label, t.params.filterParams, t.params.aux, function (logsChunk) {
+      getLogsChunked(t.params, function (logsChunk) {
         t.assertions(logsChunk);
       }, t.callback || done);
     });
@@ -1162,13 +1163,14 @@ describe.skip("logs.getLogsChunked", function () {
     description: "Error from getLogs",
     params: {
       label: "marketCreated",
-      filterParams: {
+      filter: {
         fromBlock: 500,
         toBlock: 1000
       },
       aux: null
     },
-    getLogs: function (label, filterParams, aux, callback) {
+    block: { number: 1000 },
+    getLogs: function (params, callback) {
       callback({ error: 999, message: 'Uh-Oh!' });
     },
     assertions: function (logsChunk) {
@@ -1181,22 +1183,29 @@ describe.skip("logs.getLogsChunked", function () {
     }
   });
   test({
-    description: "marketCreated on without passing filterParams",
+    description: "marketCreated without passing filter, should cause multiple chunks",
     params: {
       label: "marketCreated",
-      filterParams: undefined,
+      filter: undefined,
       aux: null
     },
     block: { number: 500 },
-    getLogs: function (label, filterParams, aux, callback) {
-      var params = {label: label, filterParams: filterParams, aux: aux};
+    getLogs: function (params, callback) {
       if (!callback) return params;
       callback(null, params);
     },
     assertions: function (logsChunk) {
       assert.strictEqual(logsChunk.label, "marketCreated");
-      assert.strictEqual(logsChunk.filterParams.fromBlock, 1);
-      assert.strictEqual(logsChunk.filterParams.toBlock, 500);
+      assert.oneOf(logsChunk.filter.fromBlock, [
+        parseInt(0x500) - constants.BLOCKS_PER_CHUNK,
+        parseInt(0x500) - (constants.BLOCKS_PER_CHUNK * 2),
+        parseInt(constants.GET_LOGS_DEFAULT_FROM_BLOCK, 16)
+      ]);
+      assert.oneOf(logsChunk.filter.toBlock, [
+        0x500,
+        parseInt(0x500) - constants.BLOCKS_PER_CHUNK - 1,
+        parseInt(0x500) - (constants.BLOCKS_PER_CHUNK * 2) - 1
+      ]);
       assert.deepEqual(logsChunk.aux, {});
     }
   });
@@ -1204,21 +1213,21 @@ describe.skip("logs.getLogsChunked", function () {
     description: "marketCreated on [500, 1000]",
     params: {
       label: "marketCreated",
-      filterParams: {
+      filter: {
         fromBlock: 500,
         toBlock: 1000
       },
       aux: null
     },
-    getLogs: function (label, filterParams, aux, callback) {
-      var params = {label: label, filterParams: filterParams, aux: aux};
+    block: { number: 500 },
+    getLogs: function (params, callback) {
       if (!callback) return params;
       callback(null, params);
     },
     assertions: function (logsChunk) {
       assert.strictEqual(logsChunk.label, "marketCreated");
-      assert.strictEqual(logsChunk.filterParams.fromBlock, 500);
-      assert.strictEqual(logsChunk.filterParams.toBlock, 1000);
+      assert.strictEqual(logsChunk.filter.fromBlock, 500);
+      assert.strictEqual(logsChunk.filter.toBlock, 1000);
       assert.deepEqual(logsChunk.aux, {});
     }
   });
@@ -1226,21 +1235,21 @@ describe.skip("logs.getLogsChunked", function () {
     description: "marketCreated on [400, 1000]",
     params: {
       label: "marketCreated",
-      filterParams: {
+      filter: {
         fromBlock: 400,
         toBlock: 1000
       },
       aux: null
     },
-    getLogs: function (label, filterParams, aux, callback) {
-      var params = {label: label, filterParams: filterParams, aux: aux};
+    block: { number: 1500 },
+    getLogs: function (params, callback) {
       if (!callback) return params;
       callback(null, params);
     },
     assertions: function (logsChunk) {
       assert.strictEqual(logsChunk.label, "marketCreated");
-      assert.include([500, 400], logsChunk.filterParams.fromBlock);
-      assert.include([1000, 499], logsChunk.filterParams.toBlock);
+      assert.include([500, 400], logsChunk.filter.fromBlock);
+      assert.include([1000, 499], logsChunk.filter.toBlock);
       assert.deepEqual(logsChunk.aux, {});
     }
   });
@@ -1248,21 +1257,21 @@ describe.skip("logs.getLogsChunked", function () {
     description: "marketCreated on [100, 100]",
     params: {
       label: "marketCreated",
-      filterParams: {
+      filter: {
         fromBlock: 100,
         toBlock: 100
       },
       aux: null
     },
-    getLogs: function (label, filterParams, aux, callback) {
-      var params = {label: label, filterParams: filterParams, aux: aux};
+    block: { number: 500 },
+    getLogs: function (params, callback) {
       if (!callback) return params;
       callback(null, params);
     },
     assertions: function (logsChunk) {
       assert.strictEqual(logsChunk.label, "marketCreated");
-      assert.strictEqual(logsChunk.filterParams.fromBlock, 100);
-      assert.strictEqual(logsChunk.filterParams.toBlock, 100);
+      assert.strictEqual(logsChunk.filter.fromBlock, 100);
+      assert.strictEqual(logsChunk.filter.toBlock, 100);
       assert.deepEqual(logsChunk.aux, {});
     }
   });
@@ -1270,14 +1279,14 @@ describe.skip("logs.getLogsChunked", function () {
     description: "marketCreated on [100, 99]",
     params: {
       label: "marketCreated",
-      filterParams: {
+      filter: {
         fromBlock: 100,
         toBlock: 99
       },
       aux: null
     },
-    getLogs: function (label, filterParams, aux, callback) {
-      var params = {label: label, filterParams: filterParams, aux: aux};
+    block: { number: 500 },
+    getLogs: function (params, callback) {
       if (!callback) return params;
       callback(null, params);
     },
@@ -1286,36 +1295,36 @@ describe.skip("logs.getLogsChunked", function () {
     }
   });
 });
-describe.skip("logs.getLogs", function () {
+describe("logs.getLogs", function () {
   // 5 total tests
   var test = function (t) {
     it(t.description, function () {
-      var processLogs = augur.processLogs;
-      var getFilteredLogs = augur.getFilteredLogs;
-      augur.processLogs = t.processLogs;
-      augur.getFilteredLogs = t.getFilteredLogs;
-      t.assertions(augur.getLogs(t.label, t.filterParams, t.aux, t.callback));
-      augur.processLogs = processLogs;
-      augur.getFilteredLogs = getFilteredLogs;
+      var getLogs = proxyquire('../../../src/logs/get-logs', {
+        './process-logs': t.processLogs,
+        './get-filtered-logs': t.getFilteredLogs
+      });
+
+      getLogs(t.params, t.assertions);
     });
   };
 
   test({
-    description: 'should handle only a label with no params, aux, or callback',
-    label: 'log_add_tx',
-    filterParams: undefined,
-    aux: undefined,
-    callback: undefined,
+    description: 'should handle only a label with no filter, aux',
+    params: {
+      label: 'log_add_tx',
+      filter: undefined,
+      aux: undefined,
+    },
     processLogs: function (label, index, filteredLogs, extraField, mergedLogs) {
       // pass the args as an object so that they can be tested by assertions
       return {label: label, index: index, filteredLogs: filteredLogs, extraField: extraField, mergedLogs: mergedLogs };
     },
-    getFilteredLogs: function (label, filterParams) {
-      // pass back the filterParams only to test what was sent to getFilteredLogs
-      return filterParams;
+    getFilteredLogs: function (label, filter, cb) {
+      cb(null, filter);
     },
-    assertions: function (o) {
-      assert.deepEqual(o, {
+    assertions: function (err, logs) {
+      assert.isNull(err);
+      assert.deepEqual(logs, {
         label: 'log_add_tx',
         index: undefined,
         filteredLogs: {},
@@ -1326,24 +1335,26 @@ describe.skip("logs.getLogs", function () {
   });
 
   test({
-    description: 'should handle a label with params. no aux or callback',
-    label: 'log_add_tx',
-    filterParams: {
-      toBlock: '0x0b2',
-      fromBlock: '0x0b1'
+    description: 'should handle a label with filter. no aux',
+    params: {
+      label: 'log_add_tx',
+      filter: {
+        toBlock: '0x0b2',
+        fromBlock: '0x0b1'
+      },
+      aux: undefined,
     },
-    aux: undefined,
-    callback: undefined,
     processLogs: function (label, index, filteredLogs, extraField, mergedLogs) {
       // pass the args as an object so that they can be tested by assertions
       return {label: label, index: index, filteredLogs: filteredLogs, extraField: extraField, mergedLogs: mergedLogs };
     },
-    getFilteredLogs: function (label, filterParams) {
-      // pass back the filterParams only to test what was sent to getFilteredLogs
-      return filterParams;
+    getFilteredLogs: function (label, filter, cb) {
+      // pass back the filter only to test what was sent to getFilteredLogs
+      cb(null, filter);
     },
-    assertions: function (o) {
-      assert.deepEqual(o, {
+    assertions: function (err, logs) {
+      assert.isNull(err);
+      assert.deepEqual(logs, {
         label: 'log_add_tx',
         index: undefined,
         filteredLogs: {
@@ -1357,45 +1368,24 @@ describe.skip("logs.getLogs", function () {
   });
 
   test({
-    description: 'should handle a label with params and aux, no callback',
-    label: 'log_add_tx',
-    filterParams: {
-      toBlock: '0x0b2',
-      fromBlock: '0x0b1'
+    description: 'should handle a label with filter and aux',
+    params: {
+      label: 'log_add_tx',
+      filter: {
+        toBlock: '0x0b2',
+        fromBlock: '0x0b1'
+      },
+      aux: {index: '0x000abc123', mergedLogs: {}, extraField: {name: 'test', value: 'example'}},
     },
-    aux: {index: '0x000abc123', mergedLogs: {}, extraField: {name: 'test', value: 'example'}},
-    callback: undefined,
     processLogs: function (label, index, filteredLogs, extraField, mergedLogs) {
       // pass the args as an object so that they can be tested by assertions
       return {label: label, index: index, filteredLogs: filteredLogs, extraField: extraField, mergedLogs: mergedLogs };
     },
-    getFilteredLogs: function (label, filterParams) {
-      // pass back the filterParams only to test what was sent to getFilteredLogs
-      return filterParams;
+    getFilteredLogs: function (label, filter, cb) {
+      // pass back the filter only to test what was sent to getFilteredLogs
+      cb(null, filter);
     },
-    assertions: function (o) {
-      assert.deepEqual(o, {
-        label: 'log_add_tx',
-        index: '0x000abc123',
-        filteredLogs: {
-          toBlock: '0x0b2',
-          fromBlock: '0x0b1'
-        },
-        extraField: { name: 'test', value: 'example'},
-        mergedLogs: {}
-      });
-    }
-  });
-
-  test({
-    description: 'should handle a label with params, aux, and callback where getFilteredLogs does not error',
-    label: 'log_add_tx',
-    filterParams: {
-      toBlock: '0x0b2',
-      fromBlock: '0x0b1'
-    },
-    aux: {index: '0x000abc123', mergedLogs: {}, extraField: {name: 'test', value: 'example'}},
-    callback: function (err, logs) {
+    assertions: function (err, logs) {
       assert.isNull(err);
       assert.deepEqual(logs, {
         label: 'log_add_tx',
@@ -1407,45 +1397,64 @@ describe.skip("logs.getLogs", function () {
         extraField: { name: 'test', value: 'example'},
         mergedLogs: {}
       });
-    },
-    processLogs: function (label, index, filteredLogs, extraField, mergedLogs) {
-      // pass the args as an object so that they can be tested by assertions
-      return {label: label, index: index, filteredLogs: filteredLogs, extraField: extraField, mergedLogs: mergedLogs };
-    },
-    getFilteredLogs: function (label, filterParams, cb) {
-      // simply pass back the filterParams to be asserted later
-      cb(null, filterParams);
-    },
-    assertions: function (o) {
-      // not used, see callback
     }
   });
 
   test({
-    description: 'should handle a label with params, aux as the callback and undefined callback passed where getFilteredLogs does error',
-    label: 'log_add_tx',
-    filterParams: {
-      toBlock: '0x0b2',
-      fromBlock: '0x0b1'
+    description: 'should handle a label with filter and aux where getFilteredLogs does error',
+    params: {
+      label: 'log_add_tx',
+      filter: {
+        toBlock: '0x0b2',
+        fromBlock: '0x0b1'
+      },
+      aux: {index: '0x000abc123', mergedLogs: {}, extraField: {name: 'test', value: 'example'}},
     },
-    aux: function (err, logs) {
-      assert.deepEqual(err, { error: 'uh-oh!' });
-    },
-    callback: undefined,
     processLogs: function (label, index, filteredLogs, extraField, mergedLogs) {
       // pass the args as an object so that they can be tested by assertions
       return {label: label, index: index, filteredLogs: filteredLogs, extraField: extraField, mergedLogs: mergedLogs };
     },
     getFilteredLogs: function (label, filterParams, cb) {
       // simply pass back the filterParams to be asserted later
-      cb({ error: 'uh-oh!' });
+      cb({ error: 999, message: 'Uh-Oh!' });
     },
-    assertions: function (o) {
-      // not used, see callback
+    assertions: function (err, logs) {
+      assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
+      assert.isUndefined(logs);
+    }
+  });
+
+  test({
+    description: 'should handle a label with filter and aux, multiple logs',
+    params: {
+      label: 'log_add_tx',
+      filter: {
+        toBlock: '0x0b2',
+        fromBlock: '0x0b1'
+      },
+      aux: {index: '0x000abc123', mergedLogs: {}, extraField: {name: 'test', value: 'example'}},
+    },
+    processLogs: function (label, index, filteredLogs, extraField, mergedLogs) {
+      // pass the args as an object so that they can be tested by assertions
+      return {label: label, index: index, filteredLogs: filteredLogs, extraField: extraField, mergedLogs: mergedLogs };
+    },
+    getFilteredLogs: function (label, filter, cb) {
+      // simply pass back the filterParams to be asserted later
+      cb(null, [filter, { hello: 'world' }]);
+    },
+    assertions: function (err, logs) {
+      assert.isNull(err);
+      assert.deepEqual(logs, {
+        label: 'log_add_tx',
+        index: '0x000abc123',
+        filteredLogs: [ { hello: 'world' }, { toBlock: '0x0b2', fromBlock: '0x0b1' }],
+        extraField: { name: 'test', value: 'example' },
+        mergedLogs: {}
+      });
     }
   });
 });
-describe.skip("logs.getAccountTrades", function () {
+describe("logs.getAccountTrades", function () {
   // 4 (so far - not talled at top) tests total
   var getLogsCC = 0;
   var getParsedCompleteSetsLogsCC = 0;
@@ -1461,121 +1470,148 @@ describe.skip("logs.getAccountTrades", function () {
   })
   var test = function (t) {
     it(t.description, function (done) {
-      augur.getLogs = t.getLogs;
+      getLogsCC = 0;
+      getParsedCompleteSetsLogsCC = 0;
       finished = done;
-      augur.getParsedCompleteSetsLogs = t.getParsedCompleteSetsLogs;
+      var getAccountTrades = proxyquire('../../../src/logs/get-account-trades', {
+        './get-logs': t.getLogs,
+        './get-parsed-complete-sets-logs': t.getParsedCompleteSetsLogs
+      });
 
-      augur.getAccountTrades(t.account, t.filterParams, t.callback);
+      getAccountTrades(t.params, t.callback);
     });
   };
   test({
-    description: 'Should handle no filter params passed as well as an error from getLogs on the first call.',
-    account: '0x0',
-    filterParams: undefined,
-    getLogs: function (label, filterParams, aux, callback) {
+    description: 'Should handle no filter passed as well as an error from getLogs on the first call.',
+    params: {
+      account: '0x0',
+      filter: undefined,
+    },
+    getLogs: function (params, callback) {
       // just confirming we get the expected Aux object:
       getLogsCC++;
-      assert.deepEqual(aux, {
+      assert.deepEqual(params.aux, {
           index: ["market", "outcome"],
           mergedLogs: {},
           extraField: {name: "maker", value: false}
       });
-      assert.deepEqual(filterParams, { sender: '0x0' });
-      callback({ error: 'Uh-Oh!' });
+      assert.deepEqual(params.filter, { sender: '0x0' });
+      callback({ error: 999, message: 'Uh-Oh!' });
+    },
+    getParsedCompleteSetsLogs: function (params, cb) {
+      getParsedCompleteSetsLogsCC++;
+      // shouldn't be hit this test...
+      cb({ error: 999, message: 'Uh-Oh!' });
     },
     callback: function (err, trades) {
       // this functions as our assertion function
       assert.isUndefined(trades);
-      assert.deepEqual(err, { error: 'Uh-Oh!' });
+      assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
       assert.deepEqual(getLogsCC, 1);
       assert.deepEqual(getParsedCompleteSetsLogsCC, 0);
       finished();
     }
   });
   test({
-    description: 'Should handle no filter params passed as well as an error from getLogs on the first call - filterParams passed as callback.',
-    account: '0x0',
-    filterParams: function (err, trades) {
+    description: 'Should handle no filter passed as well as an error from getLogs on the first call',
+    params: {
+      account: '0x0',
+      filter: undefined
+    },
+    callback: function (err, trades) {
       // this functions as our assertion function
       assert.isUndefined(trades);
-      assert.deepEqual(err, { error: 'Uh-Oh!' });
+      assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
       assert.deepEqual(getLogsCC, 1);
       assert.deepEqual(getParsedCompleteSetsLogsCC, 0);
       finished();
     },
-    getLogs: function (label, filterParams, aux, callback) {
+    getLogs: function (params, callback) {
       // just confirming we get the expected Aux object:
       getLogsCC++;
-      assert.deepEqual(aux, {
+      assert.deepEqual(params.aux, {
           index: ["market", "outcome"],
           mergedLogs: {},
           extraField: {name: "maker", value: false}
       });
-      assert.deepEqual(filterParams, { sender: '0x0' });
-      callback({ error: 'Uh-Oh!' });
+      assert.deepEqual(params.filter, { sender: '0x0' });
+      callback({ error: 999, message: 'Uh-Oh!' });
     },
-    callback: undefined
+    getParsedCompleteSetsLogs: function (params, cb) {
+      getParsedCompleteSetsLogsCC++;
+      // shouldn't be hit this test...
+      cb({ error: 999, message: 'Uh-Oh!' });
+    },
   });
   test({
     description: 'Should handle no filter params passed as well as an error from getLogs on the second call.',
-    account: '0x0',
-    filterParams: undefined,
-    getLogs: function (label, filterParams, aux, callback) {
+    params: {
+      account: '0x0',
+      filter: undefined,
+    },
+    getLogs: function (params, callback) {
       // just confirming we get the expected Aux object:
       switch(getLogsCC) {
       case 1:
         getLogsCC++;
-        assert.deepEqual(filterParams, { owner: '0x0' });
-        assert.deepEqual(aux, {
+        assert.deepEqual(params.filter, { owner: '0x0' });
+        assert.deepEqual(params.aux, {
             index: ["market", "outcome"],
             mergedLogs: {},
             extraField: {name: "maker", value: true}
         });
-        callback({ error: 'Uh-Oh!' });
+        callback({ error: 999, message: 'Uh-Oh!' });
         break;
       default:
         getLogsCC++;
-        assert.deepEqual(aux, {
+        assert.deepEqual(params.aux, {
             index: ["market", "outcome"],
             mergedLogs: {},
             extraField: {name: "maker", value: false}
         });
-        assert.deepEqual(filterParams, { sender: '0x0' });
+        assert.deepEqual(params.filter, { sender: '0x0' });
         // 2nd argument doesn't matter in this case. only merged will be updated however in this test I am just skipping to error checks
         callback(null, []);
         break;
       }
     },
+    getParsedCompleteSetsLogs: function (params, cb) {
+      getParsedCompleteSetsLogsCC++;
+      // shouldn't be hit this test...
+      cb({ error: 999, message: 'Uh-Oh!' });
+    },
     callback: function (err, trades) {
       // this functions as our assertion function
       assert.isUndefined(trades);
-      assert.deepEqual(err, { error: 'Uh-Oh!' });
+      assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
       assert.deepEqual(getLogsCC, 2);
       assert.deepEqual(getParsedCompleteSetsLogsCC, 0);
       finished();
     }
   });
   test({
-    description: 'Should handle no filter params passed as well as an error from getLogs on the third call.',
-    account: '0x0',
-    filterParams: undefined,
-    getLogs: function (label, filterParams, aux, callback) {
+    description: 'Should handle no filter passed as well as an error from getLogs on the third call.',
+    params: {
+      account: '0x0',
+      filterParams: undefined,
+    },
+    getLogs: function (params, callback) {
       // just confirming we get the expected Aux object:
       switch(getLogsCC) {
       case 2:
         getLogsCC++;
-        assert.deepEqual(filterParams, { sender: '0x0' });
-        assert.deepEqual(aux, {
+        assert.deepEqual(params.filter, { sender: '0x0' });
+        assert.deepEqual(params.aux, {
             index: ["market", "outcome"],
             mergedLogs: {},
             extraField: {name: "maker", value: false }
         });
-        callback({ error: 'Uh-Oh!' });
+        callback({ error: 999, message: 'Uh-Oh!' });
         break;
       case 1:
         getLogsCC++;
-        assert.deepEqual(filterParams, { owner: '0x0' });
-        assert.deepEqual(aux, {
+        assert.deepEqual(params.filter, { owner: '0x0' });
+        assert.deepEqual(params.aux, {
             index: ["market", "outcome"],
             mergedLogs: {},
             extraField: {name: "maker", value: true}
@@ -1584,22 +1620,27 @@ describe.skip("logs.getAccountTrades", function () {
         break;
       default:
         getLogsCC++;
-        assert.deepEqual(aux, {
+        assert.deepEqual(params.aux, {
             index: ["market", "outcome"],
             mergedLogs: {},
             extraField: {name: "maker", value: false}
         });
-        assert.deepEqual(filterParams, { sender: '0x0' });
+        assert.deepEqual(params.filter, { sender: '0x0' });
         // 2nd argument doesn't matter in this case. only merged will be updated however in this test I am just skipping to error checks
         callback(null, []);
         break;
       }
 
     },
+    getParsedCompleteSetsLogs: function (params, cb) {
+      getParsedCompleteSetsLogsCC++;
+      // shouldn't be hit this test...
+      cb({ error: 999, message: 'Uh-Oh!' });
+    },
     callback: function (err, trades) {
       // this functions as our assertion function
       assert.isUndefined(trades);
-      assert.deepEqual(err, { error: 'Uh-Oh!' });
+      assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
       assert.deepEqual(getLogsCC, 3);
       assert.deepEqual(getParsedCompleteSetsLogsCC, 0);
       finished();
@@ -1607,25 +1648,27 @@ describe.skip("logs.getAccountTrades", function () {
   });
   test({
     description: 'Should handle no filter params passed as well as an error from getLogs on the fourth call.',
-    account: '0x0',
-    filterParams: undefined,
-    getLogs: function (label, filterParams, aux, callback) {
+    params: {
+      account: '0x0',
+      filterParams: undefined,
+    },
+    getLogs: function (params, callback) {
       // just confirming we get the expected Aux object:
       switch(getLogsCC) {
       case 3:
         getLogsCC++;
-        assert.deepEqual(filterParams, { owner: '0x0' });
-        assert.deepEqual(aux, {
+        assert.deepEqual(params.filter, { owner: '0x0' });
+        assert.deepEqual(params.aux, {
             index: ["market", "outcome"],
             mergedLogs: {},
             extraField: {name: "maker", value: true }
         });
-        callback({ error: 'Uh-Oh!' });
+        callback({ error: 999, message: 'Uh-Oh!' });
         break;
       case 2:
         getLogsCC++;
-        assert.deepEqual(filterParams, { sender: '0x0' });
-        assert.deepEqual(aux, {
+        assert.deepEqual(params.filter, { sender: '0x0' });
+        assert.deepEqual(params.aux, {
             index: ["market", "outcome"],
             mergedLogs: {},
             extraField: {name: "maker", value: false }
@@ -1634,8 +1677,8 @@ describe.skip("logs.getAccountTrades", function () {
         break;
       case 1:
         getLogsCC++;
-        assert.deepEqual(filterParams, { owner: '0x0' });
-        assert.deepEqual(aux, {
+        assert.deepEqual(params.filter, { owner: '0x0' });
+        assert.deepEqual(params.aux, {
             index: ["market", "outcome"],
             mergedLogs: {},
             extraField: {name: "maker", value: true}
@@ -1644,51 +1687,62 @@ describe.skip("logs.getAccountTrades", function () {
         break;
       default:
         getLogsCC++;
-        assert.deepEqual(aux, {
+        assert.deepEqual(params.aux, {
             index: ["market", "outcome"],
             mergedLogs: {},
             extraField: {name: "maker", value: false}
         });
-        assert.deepEqual(filterParams, { sender: '0x0' });
+        assert.deepEqual(params.filter, { sender: '0x0' });
         // 2nd argument doesn't matter in this case. only merged will be updated however in this test I am just skipping to error checks
         callback(null, []);
         break;
       }
-
+    },
+    getParsedCompleteSetsLogs: function (params, cb) {
+      getParsedCompleteSetsLogsCC++;
+      // shouldn't be hit this test...
+      cb({ error: 999, message: 'Uh-Oh!' });
     },
     callback: function (err, trades) {
       // this functions as our assertion function
       assert.isUndefined(trades);
-      assert.deepEqual(err, { error: 'Uh-Oh!' });
+      assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
       assert.deepEqual(getLogsCC, 4);
       assert.deepEqual(getParsedCompleteSetsLogsCC, 0);
       finished();
     }
   });
   test({
-    description: 'Should handle filter params with noCompleteSets passed.',
-    account: '0x0',
-    filterParams: { noCompleteSets: true },
-    getLogs: function (label, filterParams, aux, callback) {
+    description: 'Should handle a filter with noCompleteSets passed.',
+    params: {
+      account: '0x0',
+      filter: { noCompleteSets: true },
+    },
+    getLogs: function (params, callback) {
       // just confirming we get the expected Aux object:
       getLogsCC++;
-      assert.isTrue(filterParams.noCompleteSets);
-      if (filterParams.owner) {
-        assert.deepEqual(filterParams.owner, '0x0');
-        assert.deepEqual(aux, {
+      assert.isTrue(params.filter.noCompleteSets);
+      if (params.filter.owner) {
+        assert.deepEqual(params.filter.owner, '0x0');
+        assert.deepEqual(params.aux, {
             index: ["market", "outcome"],
             mergedLogs: {},
             extraField: {name: "maker", value: true }
         });
       } else {
-        assert.deepEqual(filterParams.sender, '0x0');
-        assert.deepEqual(aux, {
+        assert.deepEqual(params.filter.sender, '0x0');
+        assert.deepEqual(params.aux, {
             index: ["market", "outcome"],
             mergedLogs: {},
             extraField: {name: "maker", value: false }
         });
       }
       callback(null);
+    },
+    getParsedCompleteSetsLogs: function (params, cb) {
+      getParsedCompleteSetsLogsCC++;
+      // shouldn't be hit this test...
+      cb({ error: 999, message: 'Uh-Oh!' });
     },
     callback: function (err, trades) {
       // this functions as our assertion function
@@ -1701,21 +1755,23 @@ describe.skip("logs.getAccountTrades", function () {
   });
   test({
     description: 'Should handle logs including complete sets, error returned from getParsedCompleteSetsLogs.',
-    account: '0x0',
-    filterParams: {},
-    getLogs: function (label, filterParams, aux, callback) {
+    params: {
+      account: '0x0',
+      filterParams: {},
+    },
+    getLogs: function (params, callback) {
       // just confirming we get the expected Aux object:
       getLogsCC++;
-      if (filterParams.owner) {
-        assert.deepEqual(filterParams.owner, '0x0');
-        assert.deepEqual(aux, {
+      if (params.filter.owner) {
+        assert.deepEqual(params.filter.owner, '0x0');
+        assert.deepEqual(params.aux, {
             index: ["market", "outcome"],
             mergedLogs: {},
             extraField: {name: "maker", value: true }
         });
       } else {
-        assert.deepEqual(filterParams.sender, '0x0');
-        assert.deepEqual(aux, {
+        assert.deepEqual(params.filter.sender, '0x0');
+        assert.deepEqual(params.aux, {
             index: ["market", "outcome"],
             mergedLogs: {},
             extraField: {name: "maker", value: false }
@@ -1723,10 +1779,10 @@ describe.skip("logs.getAccountTrades", function () {
       }
       callback(null);
     },
-    getParsedCompleteSetsLogs: function (account, filterParams, cb) {
+    getParsedCompleteSetsLogs: function (params, cb) {
       getParsedCompleteSetsLogsCC++;
-      assert.deepEqual(account, '0x0');
-      assert.deepEqual(filterParams, { shortAsk: false, mergeInto: {} });
+      assert.deepEqual(params.account, '0x0');
+      assert.deepEqual(params.filter, { shortAsk: false, mergeInto: {} });
       cb({ error: 999, message: 'Uh-Oh!' });
     },
     callback: function (err, trades) {
@@ -1740,21 +1796,23 @@ describe.skip("logs.getAccountTrades", function () {
   });
   test({
     description: 'Should handle logs including complete sets.',
-    account: '0x0',
-    filterParams: {},
-    getLogs: function (label, filterParams, aux, callback) {
+    params: {
+      account: '0x0',
+      filterParams: {},
+    },
+    getLogs: function (params, callback) {
       // just confirming we get the expected Aux object:
       getLogsCC++;
-      if (filterParams.owner) {
-        assert.deepEqual(filterParams.owner, '0x0');
-        assert.deepEqual(aux, {
+      if (params.filter.owner) {
+        assert.deepEqual(params.filter.owner, '0x0');
+        assert.deepEqual(params.aux, {
             index: ["market", "outcome"],
             mergedLogs: {},
             extraField: {name: "maker", value: true }
         });
       } else {
-        assert.deepEqual(filterParams.sender, '0x0');
-        assert.deepEqual(aux, {
+        assert.deepEqual(params.filter.sender, '0x0');
+        assert.deepEqual(params.aux, {
             index: ["market", "outcome"],
             mergedLogs: {},
             extraField: {name: "maker", value: false }
@@ -1762,10 +1820,10 @@ describe.skip("logs.getAccountTrades", function () {
       }
       callback(null);
     },
-    getParsedCompleteSetsLogs: function (account, filterParams, cb) {
+    getParsedCompleteSetsLogs: function (params, cb) {
       getParsedCompleteSetsLogsCC++;
-      assert.deepEqual(account, '0x0');
-      assert.deepEqual(filterParams, { shortAsk: false, mergeInto: {} });
+      assert.deepEqual(params.account, '0x0');
+      assert.deepEqual(params.filter, { shortAsk: false, mergeInto: {} });
       cb(null, {});
     },
     callback: function (err, trades) {
@@ -2125,14 +2183,14 @@ describe.skip("logs.getParsedCompleteSetsLogs", function () {
     account: '0x0',
     options: undefined,
     callback: function (err, logs) {
-      assert.deepEqual(err, { error: 'Uh-Oh!' });
+      assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
       assert.isUndefined(logs);
     },
     getCompleteSetsLogs: function (account, options, callback) {
       assert.deepEqual(account, '0x0');
       assert.deepEqual(options, {});
       assert.isFunction(callback);
-      callback({ error: 'Uh-Oh!' });
+      callback({ error: 999, message: 'Uh-Oh!' });
     },
     parseCompleteSetsLogs: function (logs, mergeInto) {
       // Shouldn't be hit.
