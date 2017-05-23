@@ -214,7 +214,7 @@ export function listenToUpdates() {
         if (msg && msg.sender === getState().loginAccount.address) {
           console.log('deposit:', msg);
           dispatch(updateAssets());
-          dispatch(convertLogsToTransactions('deposit', [msg]));
+          dispatch(convertLogsToTransactions('depositEther', [msg]));
         }
       },
 
@@ -222,7 +222,7 @@ export function listenToUpdates() {
         if (msg && msg.sender === getState().loginAccount.address) {
           console.log('withdraw:', msg);
           dispatch(updateAssets());
-          dispatch(convertLogsToTransactions('withdraw', [msg]));
+          dispatch(convertLogsToTransactions('withdrawEther', [msg]));
         }
       },
 

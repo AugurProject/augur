@@ -608,6 +608,36 @@ export const constructLogCancelTransaction = (trade, marketID, marketType, descr
   };
 };
 
+export const constructConvertEthTokenToEthTransaction = (log) => {
+  console.log('constructConvertEthTokenToEthTransaction -- ', log);
+
+  const transaction = {};
+  const amount = abi.unfix(log.value).toNumber();
+
+  transaction.type = log.data.method;
+  transaction.message = `Convert ETH Token to ETH`;
+  transaction.description = `Convert ${amount} ETH Token${amount < 1 && amount >= 2 ? '' : 's'} to ETH`;
+  transaction.data = log.data;
+
+  return transaction;
+};
+
+export const constructConvertEthToEthTokenTransaction = (log) => {
+  console.log('constructConvertEthTokenToEthTransaction -- ', log);
+
+  const transaction = {};
+  const amount = abi.unfix(log.data.value).toNumber();
+
+  transaction.type = log.data.method;
+  transaction.message = `Convert ETH to ETH Token`;
+  transaction.description = `Convert ${amount} ETH to ETH Token${amount < 1 && amount >= 2 ? '' : 's'}`;
+  transaction.data = log.data;
+
+  console.log('resultant trans -- ', transaction);
+
+  return transaction;
+};
+
 export const constructTradingTransaction = (label, trade, marketID, outcomeID, status) => (dispatch, getState) => {
   console.log('constructTradingTransaction:', label, trade);
   const { marketsData, outcomesData } = getState();
@@ -672,8 +702,10 @@ export const constructTransaction = (label, log, isRetry, callback) => (dispatch
       return constructApprovalTransaction(log);
     case 'collectedFees':
       return constructCollectedFeesTransaction(log);
-    case 'deposit':
-      return constructDepositTransaction(log);
+    case 'withdrawEther':
+      return constructConvertEthTokenToEthTransaction(log);
+    case 'depositEther':
+      return constructConvertEthToEthTokenTransaction(log);
     case 'fundedAccount':
       return constructFundedAccountTransaction(log);
     case 'penalizationCaughtUp':

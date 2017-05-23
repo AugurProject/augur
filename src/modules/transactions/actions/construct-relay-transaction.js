@@ -3,7 +3,7 @@ import { ZERO } from 'modules/trade/constants/numbers';
 import { SCALAR } from 'modules/markets/constants/market-types';
 import { updateTradeCommitment } from 'modules/trade/actions/update-trade-commitment';
 import { deleteTransaction } from 'modules/transactions/actions/delete-transaction';
-import { constructBasicTransaction, constructTradingTransaction, constructTransaction, loadDataForReportingTransaction } from 'modules/transactions/actions/construct-transaction';
+import { constructBasicTransaction, constructTradingTransaction, constructConvertTransaction, constructTransaction, loadDataForReportingTransaction } from 'modules/transactions/actions/construct-transaction';
 import { fillOrder } from 'modules/bids-asks/actions/update-market-order-book';
 import unpackTransactionParameters from 'modules/transactions/actions/unpack-transaction-parameters';
 import { selectMarketFromEventID } from 'modules/market/selectors/market';
@@ -33,6 +33,8 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
   const transactionsHref = selectTransactionsLink(dispatch).href;
 
   const { loginAccount } = getState();
+
+  console.log('method -- ', method);
 
   switch (method) {
     case 'buy': {
@@ -303,6 +305,32 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
       let transaction;
       let notification;
       switch (method) {
+        case 'withdrawEther': {
+          const amount = abi.unfix(p.value).toNumber();
+
+          notification = {
+            id: p.transactionHash,
+            title: `Convert ETH Token to ETH - ${tx.status}`,
+            description: `Convert ${amount} ETH Token${amount < 1 && amount >= 2 ? '' : 's'} to ETH`,
+            timestamp: p.timestamp,
+            href: transactionsHref
+          };
+          transaction = dispatch(constructTransaction('withdrawEther', { ...p, ...tx }));
+          break;
+        }
+        case 'depositEther': {
+          const amount = abi.unfix(tx.data.value).toNumber();
+
+          notification = {
+            id: p.transactionHash,
+            title: `Convert ETH to ETH Token - ${tx.status}`,
+            description: `Convert ${amount} ETH to ETH Token${amount < 1 && amount >= 2 ? '' : 's'}`,
+            timestamp: p.timestamp,
+            href: transactionsHref
+          };
+          transaction = dispatch(constructTransaction('depositEther', { ...p, ...tx }));
+          break;
+        }
         case 'fundNewAccount': {
           notification = {
             id: p.transactionHash,
