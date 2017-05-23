@@ -1,0 +1,89 @@
+.account-convert {
+  .account-actions {
+    display: flex;
+    justify-content: center;
+
+    form {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 50%;
+
+      .account-convert-select-direction {
+        display: flex;
+        flex: 1;
+        height: 10em;
+        justify-content: center;
+        margin-bottom: 1em;
+
+        .logo-button {
+          align-items: center;
+          display: flex;
+          flex-direction: column;
+          padding: 1em 0;
+
+          span {
+            .font-size-medium();
+
+            margin-top: 1em;
+          }
+
+          &:hover {
+            background-color: @color-gray-light;
+          }
+
+          .logo {
+            width: 10em;
+          }
+        }
+
+        .direction-indicator {
+          margin: 0 1em;
+
+          .fa {
+            align-self: center;
+            color: @color-text-dark-extra-light;
+            font-size: 3em;
+            position: relative;
+            top: -0.5em;
+            transition-duration: @animation-speed-very-fast;
+            transition-property: transform;
+            transition-timing-function: @animation-default-type;
+
+            &:not(.direction-to-token) {
+              transform: rotateY(180deg);
+            }
+          }
+        }
+      }
+
+      .account-convert-amount-error {
+        color: @color-red;
+        min-height: @font-size-normal;
+        opacity: 0;
+        padding: 0.4em 0 0;
+        transition-duration: @animation-speed-very-fast;
+        transition-property: opacity;
+        transition-timing-function: @animation-default-type;
+        visibility: hidden;
+
+        &.form-in-error {
+          opacity: 1;
+          visibility: visible;
+        }
+      }
+
+      .account-convert-submit {
+        cursor: default;
+        opacity: 0;
+        transition-duration: @animation-speed-very-fast;
+        transition-property: opacity;
+        transition-timing-function: @animation-default-type;
+
+        &.form-is-valid {
+          opacity: 1;
+        }
+      }
+    }
+  }
+}

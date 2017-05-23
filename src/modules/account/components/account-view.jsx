@@ -72,6 +72,8 @@ export default class AccountView extends Component {
 
     const loginAccount = p.loginAccount;
 
+    // console.log('loginAccount -- ', loginAccount);
+
     return (
       <section id="account_view">
         <article
@@ -96,7 +98,12 @@ export default class AccountView extends Component {
             />
           }
           {s.selectedNav === ACCOUNT_CONVERT &&
-            <AccountConvert />
+            <AccountConvert
+              etherTokens={loginAccount.ether}
+              ether={loginAccount.realEther}
+              convertToToken={p.convertToToken}
+              convertToEther={p.convertToEther}
+            />
           }
           {s.selectedNav === ACCOUNT_WITHDRAW &&
             <AccountWithdraw />

@@ -3,7 +3,7 @@ import React from 'react';
 // NOTE -- To employ, just set the width or height on the containing element and this SVG will respond appropriately
 const EtherLogo = () => (
   <svg
-    className="ether-logo"
+    className="ether-logo logo"
     viewBox="0 0 1269 1269"
   >
     <defs>

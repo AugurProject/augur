@@ -1,8 +1,13 @@
 import { augur } from 'services/augurjs';
 
-export function convertToEtherToken(value) {
+export function convertToToken(value) {
   return (dispatch) => {
-    augur.depositEther({ value });
+    augur.depositEther({
+      value,
+      onSent: () => {},
+      onSuccess: () => {},
+      onFailed: () => {}
+    });
   };
 }
 
@@ -11,7 +16,13 @@ export function convertToEther(amount) {
     const { loginAccount } = getState();
 
     if (loginAccount.address) {
-      augur.withdrawEther(loginAccount.address, amount);
+      augur.withdrawEther(
+        loginAccount.address,
+        amount,
+        () => {},
+        () => {},
+        () => {}
+      );
     }
   };
 }

@@ -7,7 +7,7 @@ import debounce from 'utils/debounce';
 export default class Input extends Component {
   // TODO -- Prop Validations
   static propTypes = {
-    // type: PropTypes.string,
+    type: PropTypes.string,
     // className: PropTypes.string,
     value: PropTypes.any,
     max: PropTypes.any,
