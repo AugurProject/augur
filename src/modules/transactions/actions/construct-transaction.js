@@ -609,31 +609,23 @@ export const constructLogCancelTransaction = (trade, marketID, marketType, descr
 };
 
 export const constructConvertEthTokenToEthTransaction = (log) => {
-  console.log('constructConvertEthTokenToEthTransaction -- ', log);
-
   const transaction = {};
-  const amount = abi.unfix(log.value).toNumber();
+  const amount = abi.is_hex(log.value) ? parseFloat(log.value, 10) : abi.unfix(log.value).toNumber();
 
-  transaction.type = log.data.method;
-  transaction.message = `Convert ETH Token to ETH`;
-  transaction.description = `Convert ${amount} ETH Token${amount < 1 && amount >= 2 ? '' : 's'} to ETH`;
+  transaction.type = `Convert ETH Token to ETH`;
+  transaction.description = `Converting ${amount.toLocaleString()} ETH Token${amount === 1 ? '' : 's'} to ETH`;
   transaction.data = log.data;
 
   return transaction;
 };
 
 export const constructConvertEthToEthTokenTransaction = (log) => {
-  console.log('constructConvertEthTokenToEthTransaction -- ', log);
-
   const transaction = {};
-  const amount = abi.unfix(log.data.value).toNumber();
+  const amount = abi.is_hex(log.data.value) ? parseFloat(log.data.value, 10) : abi.unfix(log.data.value).toNumber();
 
-  transaction.type = log.data.method;
-  transaction.message = `Convert ETH to ETH Token`;
-  transaction.description = `Convert ${amount} ETH to ETH Token${amount < 1 && amount >= 2 ? '' : 's'}`;
+  transaction.type = `Convert ETH to ETH Token`;
+  transaction.description = `Converting ${amount.toLocaleString()} ETH to ETH Token${amount === 1 ? '' : 's'}`;
   transaction.data = log.data;
-
-  console.log('resultant trans -- ', transaction);
 
   return transaction;
 };

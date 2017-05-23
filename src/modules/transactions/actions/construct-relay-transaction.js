@@ -306,12 +306,12 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
       let notification;
       switch (method) {
         case 'withdrawEther': {
-          const amount = abi.unfix(p.value).toNumber();
+          const amount = abi.is_hex(p.value) ? parseFloat(p.value, 10) : abi.unfix(p.value).toNumber();
 
           notification = {
             id: p.transactionHash,
             title: `Convert ETH Token to ETH - ${tx.status}`,
-            description: `Convert ${amount} ETH Token${amount < 1 && amount >= 2 ? '' : 's'} to ETH`,
+            description: `Converting ${amount.toLocaleString()} ETH Token${amount === 1 ? '' : 's'} to ETH`,
             timestamp: p.timestamp,
             href: transactionsHref
           };
@@ -319,12 +319,12 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           break;
         }
         case 'depositEther': {
-          const amount = abi.unfix(tx.data.value).toNumber();
+          const amount = abi.is_hex(tx.data.value) ? parseFloat(tx.data.value, 10) : abi.unfix(tx.data.value).toNumber();
 
           notification = {
             id: p.transactionHash,
             title: `Convert ETH to ETH Token - ${tx.status}`,
-            description: `Convert ${amount} ETH to ETH Token${amount < 1 && amount >= 2 ? '' : 's'}`,
+            description: `Converting ${amount.toLocaleString()} ETH to ETH Token${amount === 1 ? '' : 's'}`,
             timestamp: p.timestamp,
             href: transactionsHref
           };
