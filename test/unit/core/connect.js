@@ -10,7 +10,7 @@ var noop = require("../../../src/utils/noop");
 var proxyquire = require("proxyquire").noCallThru().noPreserveCache();
 // 27 tests total
 
-describe('connect.bindContractMethod', function () {
+describe.skip('connect.bindContractMethod', function () {
   // 11 tests total
   var fire = augur.fire;
   var transact = augur.transact;
@@ -427,7 +427,7 @@ describe('connect.bindContractMethod', function () {
   });
 });
 
-describe('connect.bindContractAPI', function () {
+describe.skip('connect.bindContractAPI', function () {
   // 2 tests total
   var callCounts = {
     bindContractMethod: 0
@@ -620,7 +620,7 @@ describe('connect.bindContractAPI', function () {
   });
 });
 
-describe('connect.sync', function () {
+describe.skip('connect.sync', function () {
   // 3 tests total
   var callCounts = {
     bindContractAPI: 0,
@@ -730,72 +730,41 @@ describe('connect.sync', function () {
   });
 });
 
-describe('connect.useAccount', function () {
-  // 1 test total
-  var connector;
-  var callCounts = {
-  	setFrom: 0,
-  	sync: 0
-  };
-  var test = function (t) {
-  	it(t.description, function () {
-      var connect = proxyquire('../../../src/modules/connect.js', {
-        'ethereumjs-connect': t.connector
-      });
-      connector = t.connector;
-  		connect.useAccount.call(t.testThis, t.account);
-  	});
-  };
-  test({
-  	description: 'Should set connector.from to the account passed, should call setFrom and sync.',
-  	account: '0xabc123',
-    testThis: {
-      sync: function () {
-    		callCounts.sync++;
-    		assert.equal(connector.from, '0xabc123');
-    		assert.deepEqual(callCounts, {
-    			setFrom: 1,
-    			sync: 1
-    		});
-    	}
-    },
-    connector: {
-      from: '0x0',
-      setFrom: function (account) {
-    		callCounts.setFrom++;
-    		assert.equal(account, '0xabc123');
-        connector.from = account;
-    	}
-    }
-  });
-});
-
 describe('connect.connect', function () {
   // 9 tests total (5 async, 4 sync)
   var test = function (t) {
+    var rpcInterface = { createRpcInterface: function(rpc) {
+        return { rpc: 'testing placeholder' };
+      }
+    };
+    var ethrpc = 'ethrpc';
     // for the one test where rpcinfo is passed as a function the sync test is not required...
     if (t.rpcinfo.constructor !== Function) {
       it(t.description + ' sync', function () {
-        var connect = proxyquire('../../../src/modules/connect', {
-          'ethereumjs-connect': t.connector
+        var connect = proxyquire('../../../src/connect.js', {
+          'ethereumjs-connect': t.connector,
+          './rpc-interface': rpcInterface,
+          'ethrpc': ethrpc
         });
 
-        t.assertions(connect.connect.call(t.testThis, t.rpcinfo, undefined));
+        t.assertions(connect.call(t.testThis, t.rpcinfo, undefined));
       });
     }
     it(t.description + ' async', function (done) {
-      var connect = proxyquire('../../../src/modules/connect', {
-        'ethereumjs-connect': t.connector
+      var connect = proxyquire('../../../src/connect.js', {
+        'ethereumjs-connect': t.connector,
+        './rpc-interface': rpcInterface,
+          'ethrpc': ethrpc
       });
       // this is in place to call this function different for one test
       if (t.rpcinfo.constructor === Function) {
-        connect.connect.call(t.testThis, function (connection) {
+        connect.call(t.testThis, function (connection) {
           t.assertions(connection);
           done();
         }, undefined);
       } else {
         // all tests except for the test passing rpcinfo as a function will use this call
-        connect.connect.call(t.testThis, t.rpcinfo, function (connection) {
+        connect.call(t.testThis, t.rpcinfo, function (connection) {
           t.assertions(connection);
           done();
         });
@@ -812,6 +781,7 @@ describe('connect.connect', function () {
     connector: {
       connect: function (options, cb) {
         assert.deepEqual(options, {
+          rpc: 'ethrpc',
           httpAddresses: [],
           wsAddresses: [],
           ipcAddresses: [],
@@ -820,15 +790,22 @@ describe('connect.connect', function () {
         });
 
         if (cb && cb.constructor === Function) {
-          cb(true);
+          cb(null, options);
         } else {
-          return true;
+          return options;
         }
       },
       rpc: { unsubscribe: function (_, callback) { setImmediate(function () { callback({ error: -32601, message: "Method not found"}) }); } }
     },
     assertions: function (connection) {
-      assert.isTrue(connection);
+      assert.deepEqual(connection, {
+        rpc: 'ethrpc',
+        contracts: Contracts,
+        api: Contracts.api,
+        httpAddresses: [],
+        wsAddresses: [],
+        ipcAddresses: []
+      });
     }
   });
   test({
@@ -840,27 +817,81 @@ describe('connect.connect', function () {
     connector: {
       connect: function (options, cb) {
         assert.deepEqual(options, {
+          rpc: 'ethrpc',
           httpAddresses: ['https://eth3.augur.net'],
           wsAddresses: [],
           ipcAddresses: [],
           contracts: Contracts,
           api: Contracts.api
         });
+        var vitals = {
+          rpc: options.rpc,
+          httpAddresses: options.httpAddresses,
+          wsAddresses: options.wsAddresses,
+          ipcAddresses: options.ipcAddresses,
+        };
 
         if (cb && cb.constructor === Function) {
-          cb(true);
+          cb(null, vitals);
         } else {
-          return true;
+          return vitals;
         }
       },
       rpc: { unsubscribe: function (_, callback) { setImmediate(function () { callback({ error: -32601, message: "Method not found"}) }); } }
     },
     assertions: function (connection) {
-      assert.isTrue(connection);
+      assert.deepEqual(connection, {
+        rpc: 'ethrpc',
+        contracts: Contracts[constants.DEFAULT_NETWORK_ID],
+        api: Contracts.api,
+        httpAddresses: ['https://eth3.augur.net'],
+        wsAddresses: [],
+        ipcAddresses: []
+      })
     }
   });
   test({
-    description: 'Should handle a rpcinfo as an object',
+    description: 'Should handle a rpcinfo as an object with addresses arrays',
+    rpcinfo: {
+      httpAddresses: ['https://eth3.augur.net'],
+      ipcAddresses: ['/path/to/geth.ipc'],
+      wsAddresses: ['wss://ws.augur.net']
+    },
+    testThis: {
+      sync: noop,
+    },
+    connector: {
+      connect: function (options, cb) {
+        assert.deepEqual(options, {
+          rpc: 'ethrpc',
+          httpAddresses: ['https://eth3.augur.net'],
+          ipcAddresses: ['/path/to/geth.ipc'],
+          wsAddresses: ['wss://ws.augur.net'],
+          contracts: Contracts,
+          api: Contracts.api
+        });
+
+        if (cb && cb.constructor === Function) {
+          cb(null, options);
+        } else {
+          return options;
+        }
+      },
+      rpc: { unsubscribe: function (_, callback) { setImmediate(function () { callback({ error: -32601, message: "Method not found"}) }); } }
+    },
+    assertions: function (connection) {
+      assert.deepEqual(connection, {
+        rpc: 'ethrpc',
+        httpAddresses: ['https://eth3.augur.net'],
+        ipcAddresses: ['/path/to/geth.ipc'],
+        wsAddresses: ['wss://ws.augur.net'],
+        contracts: Contracts,
+        api: Contracts.api
+      });
+    }
+  });
+  test({
+    description: 'Should handle a rpcinfo as an object - error back from connect',
     rpcinfo: {
       http: 'https://eth3.augur.net',
       ipc: '/path/to/geth.ipc',
@@ -872,6 +903,7 @@ describe('connect.connect', function () {
     connector: {
       connect: function (options, cb) {
         assert.deepEqual(options, {
+          rpc: 'ethrpc',
           httpAddresses: ['https://eth3.augur.net'],
           ipcAddresses: ['/path/to/geth.ipc'],
           wsAddresses: ['wss://ws.augur.net'],
@@ -880,15 +912,18 @@ describe('connect.connect', function () {
         });
 
         if (cb && cb.constructor === Function) {
-          cb(true);
+          cb({ error: 999, message: "Uh-Oh!"});
         } else {
-          return true;
+          var err = new Error('Uh-Oh!');
+          err.error = 999;
+          return err;
         }
       },
       rpc: { unsubscribe: function (_, callback) { setImmediate(function () { callback({ error: -32601, message: "Method not found"}) }); } }
     },
     assertions: function (connection) {
-      assert.isTrue(connection);
+      assert.deepEqual(connection.error, 999);
+      assert.deepEqual(connection.message, 'Uh-Oh!');
     }
   });
   // this final test is going to async only. It passes rpcinfo as a function which triggers conditionals in our test function. Please take note of this when reading this test.
@@ -903,6 +938,7 @@ describe('connect.connect', function () {
     connector: {
       connect: function (options, cb) {
         assert.deepEqual(options, {
+          rpc: 'ethrpc',
           httpAddresses: [],
           wsAddresses: [],
           ipcAddresses: [],
@@ -911,15 +947,22 @@ describe('connect.connect', function () {
         });
 
         if (cb && cb.constructor === Function) {
-          cb(true);
+          cb(null, options);
         } else {
-          return true;
+          return options;
         }
       },
       rpc: { unsubscribe: function (_, callback) { setImmediate(function () { callback({ error: -32601, message: "Method not found"}) }); } }
     },
     assertions: function (connection) {
-      assert.isTrue(connection);
+      assert.deepEqual(connection, {
+        rpc: 'ethrpc',
+        httpAddresses: [],
+        wsAddresses: [],
+        ipcAddresses: [],
+        contracts: Contracts,
+        api: Contracts.api
+      });
     }
   });
 });
