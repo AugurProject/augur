@@ -8,21 +8,23 @@ var constants = require("../../../src/constants");
 var clearCallCounts = require("../../tools").clearCallCounts;
 var noop = require("../../../src/utils/noop");
 var proxyquire = require("proxyquire").noCallThru().noPreserveCache();
-// 27 tests total
+// 22 tests total
 
-describe.skip('connect.bindContractMethod', function () {
-  // 11 tests total
-  var fire = augur.fire;
-  var transact = augur.transact;
-  afterEach(function () {
-    augur.fire = fire;
-    augur.transact = transact;
-  });
+describe('connect.bindContractFunction', function () {
+  // 13 tests total
   var test = function (t) {
     it(t.description, function () {
-        augur.fire = t.fire;
-        augur.transact = t.transact;
-        t.callMethod(augur.bindContractMethod(t.contract, t.method));
+        var bindContractFunction = proxyquire('../../../src/api/bind-contract-function', {
+          '../rpc-interface': {
+            transact: t.transact,
+            callContractFunction: t.callContractFunction,
+          },
+          '../parsers': t.parsers || {}
+        });
+        // in case of further setup, which is just the final test right now...
+        if (t.prepare) t.prepare();
+
+        t.callMethod(bindContractFunction(Contracts.api.functions[t.contract][t.method]));
     });
   };
   test({
@@ -30,24 +32,25 @@ describe.skip('connect.bindContractMethod', function () {
     contract: 'Cash',
     method: 'balance',
     callMethod: function (method) {
-      // (address, callback)
-      method('0xa1', undefined);
+      // ({ address }, callback)
+      method({
+        address: '0xa1'
+      }, undefined);
     },
-    fire: function (tx, onSent, onSuccess, onFailed) {
+    callContractFunction: function (tx, cb, parsers, extraArgs) {
       assert.deepEqual(tx, {
       	inputs: ['address'],
       	label: 'Balance',
       	method: 'balance',
       	returns: 'unfix',
       	signature: ['int256'],
-      	to: augur.store.getState().contractsAPI.functions.Cash.balance.to,
       	params: ['0xa1']
       });
-      assert.isUndefined(onSent);
-      assert.isUndefined(onSuccess);
-      assert.isUndefined(onFailed);
+      assert.isUndefined(cb);
+      assert.isUndefined(parsers);
+      assert.isUndefined(extraArgs);
     },
-    transact: function (tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, signer, onSent, onSuccess, onFailed) {
       // Shouldn't get hit in this case
       assert.isFalse(true);
     }
@@ -58,77 +61,86 @@ describe.skip('connect.bindContractMethod', function () {
     method: 'balance',
     callMethod: function (method) {
       // (address, callback)
-      method('0xa1', noop);
+      method({ address: '0xa1' }, noop);
     },
-    fire: function (tx, onSent, onSuccess, onFailed) {
+    callContractFunction: function (tx, cb, parsers, extraArgs) {
       assert.deepEqual(tx, {
       	inputs: ['address'],
       	label: 'Balance',
       	method: 'balance',
       	returns: 'unfix',
       	signature: ['int256'],
-      	to: augur.store.getState().contractsAPI.functions.Cash.balance.to,
       	params: ['0xa1']
       });
-      assert.isFunction(onSent);
-      assert.isUndefined(onSuccess);
-      assert.isUndefined(onFailed);
+      assert.isFunction(cb);
+      assert.isUndefined(parsers);
+      assert.isUndefined(extraArgs);
     },
-    transact: function (tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, signer, onSent, onSuccess, onFailed) {
       // Shouldn't get hit in this case
       assert.isFalse(true);
     }
   });
   test({
     description: 'Should handle binding a method and then handling the method correctly when the method has inputs, without callback. method transaction has a parser, not fixed, send false',
-    contract: 'Branches',
-    method: 'getEventForkedOver',
+    contract: 'Topics',
+    method: 'getTopicsInfo',
     callMethod: function (method) {
-      // (branch, cb)
-      method('1010101', undefined);
+      // ({ branch, offset, numTopicsToLoad }, cb)
+      method({ branch: '1010101', offset: 0, numTopicsToLoad: 1 }, undefined);
     },
-    fire: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx, { inputs: [ 'branch' ],
-        label: 'Get Event Forked Over',
-        method: 'getEventForkedOver',
-        parser: 'parseMarket',
-        returns: 'int256',
-        signature: [ 'int256' ],
-        to: augur.store.getState().contractsAPI.functions.Branches.getEventForkedOver.to,
-        params: [ '1010101' ]
+    callContractFunction: function (tx, cb, parsers, extraArgs) {
+      assert.deepEqual(tx, { inputs: [ 'branch', 'offset', 'numTopicsToLoad' ],
+        label: 'Get Topics Info',
+        method: 'getTopicsInfo',
+        parser: 'parseTopicsInfo',
+        returns: 'int256[]',
+        signature: [ 'int256', 'int256', 'int256' ],
+        params: [ '1010101', 0, 1 ]
       });
-      assert.isUndefined(onSent);
-      assert.isUndefined(onSuccess);
-      assert.isUndefined(onFailed);
+      assert.isUndefined(cb);
+      assert.isUndefined(parsers);
+      assert.isUndefined(extraArgs);
+      return ['the returned value goes to getTopicsInfo for parsing...'];
     },
-    transact: function (tx, onSent, onSuccess, onFailed) {
+    parsers: {
+      parseTopicsInfo: function(topicsInfo) {
+        assert.deepEqual(topicsInfo, ['the returned value goes to getTopicsInfo for parsing...']);
+      }
+    },
+    transact: function (tx, signer, onSent, onSuccess, onFailed) {
       // Shouldn't get hit in this case
       assert.isFalse(true);
     }
   });
   test({
     description: 'Should handle binding a method and then handling the method correctly when the method has inputs, with callback. method transaction has a parser, not fixed, send false',
-    contract: 'Branches',
-    method: 'getEventForkedOver',
+    contract: 'Topics',
+    method: 'getTopicsInfo',
     callMethod: function (method) {
-      // (branch, cb)
-      method('1010101', noop);
+      // ({ branch, offset, numTopicsToLoad }, cb)
+      method({ branch: '1010101', offset: 0, numTopicsToLoad: 1 }, noop);
     },
-    fire: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx, { inputs: [ 'branch' ],
-        label: 'Get Event Forked Over',
-        method: 'getEventForkedOver',
-        parser: 'parseMarket',
-        returns: 'int256',
-        signature: [ 'int256' ],
-        to: augur.store.getState().contractsAPI.functions.Branches.getEventForkedOver.to,
-        params: [ '1010101' ]
+    callContractFunction: function (tx, cb, parsers, extraArgs) {
+      assert.deepEqual(tx, { inputs: [ 'branch', 'offset', 'numTopicsToLoad' ],
+        label: 'Get Topics Info',
+        method: 'getTopicsInfo',
+        parser: 'parseTopicsInfo',
+        returns: 'int256[]',
+        signature: [ 'int256', 'int256', 'int256' ],
+        params: [ '1010101', 0, 1 ]
       });
-      assert.isFunction(onSent);
-      assert.deepEqual(onSuccess, augur[tx.parser]);
-      assert.isUndefined(onFailed);
+      assert.isFunction(cb);
+      assert.isFunction(parsers);
+      assert.isUndefined(extraArgs);
+      parsers(['the returned value goes to getTopicsInfo for parsing...']);
     },
-    transact: function (tx, onSent, onSuccess, onFailed) {
+    parsers: {
+      parseTopicsInfo: function(topicsInfo) {
+        assert.deepEqual(topicsInfo, ['the returned value goes to getTopicsInfo for parsing...']);
+      }
+    },
+    transact: function (tx, signer, onSent, onSuccess, onFailed) {
       // Shouldn't get hit in this case
       assert.isFalse(true);
     }
@@ -139,9 +151,9 @@ describe.skip('connect.bindContractMethod', function () {
     method: 'updateTopicPopularity',
     callMethod: function (method) {
       // (branch, topic, fxpAmount, cb)
-      method('1010101', 'politics', '10000000000000000', undefined);
+      method({ branch: '1010101', topic: 'politics', fxpAmount: '10000000000000000'}, undefined);
     },
-    transact: function (tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, signer, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx,{
         fixed: [ 2 ],
         inputs: [ 'branch', 'topic', 'fxpAmount' ],
@@ -150,30 +162,30 @@ describe.skip('connect.bindContractMethod', function () {
         returns: 'number',
         send: true,
         signature: [ 'int256', 'int256', 'int256' ],
-        to: augur.store.getState().contractsAPI.functions.Topics.updateTopicPopularity.to,
         params: [ '1010101', 'politics', '0x1ed09bead87c0378d8e6400000000' ]
       });
+      assert.isUndefined(signer);
       assert.isUndefined(onSent);
       assert.isUndefined(onSuccess);
       assert.isUndefined(onFailed);
     },
-    fire: function (tx, callback) {
+    callContractFunction: function (tx, cb, parsers, extraArgs) {
       // Shouldn't get hit in this case
       assert.isTrue(false);
     }
   });
   test({
-    description: 'Should handle binding a method and then handling the method correctly when the method has inputs, with callback. method transaction without a parser, fixed, send false. arg as one object',
+    description: 'Should handle binding a method and then handling the method correctly when the method has inputs, with callbacks. method transaction without a parser, fixed, send false, signer and all one arg.',
     contract: 'Topics',
     method: 'updateTopicPopularity',
     callMethod: function (method) {
       // (branch, topic, fxpAmount, cb)
-      method({branch: '1010101', topic: 'politics', fxpAmount: '10000000000000000', callback: noop});
+      method({branch: '1010101', topic: 'politics', fxpAmount: '10000000000000000', _signer: '0xdeadbeef', onSent: noop, onSuccess: noop, onFailed: noop });
     },
-    fire: function (tx, callback) {
+    callContractFunction: function (tx, cb, parsers, extraArgs) {
       assert.isFalse(true);
     },
-    transact: function (tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, signer, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx,{
         fixed: [ 2 ],
         inputs: [ 'branch', 'topic', 'fxpAmount' ],
@@ -182,9 +194,12 @@ describe.skip('connect.bindContractMethod', function () {
         returns: 'number',
         send: true,
         signature: [ 'int256', 'int256', 'int256' ],
-        to: augur.store.getState().contractsAPI.functions.Topics.updateTopicPopularity.to,
         params: [ '1010101', 'politics', '0x1ed09bead87c0378d8e6400000000' ]
       });
+      assert.deepEqual(signer, '0xdeadbeef');
+      assert.isFunction(onSent);
+      assert.isFunction(onSuccess);
+      assert.isFunction(onFailed);
     },
   });
   test({
@@ -193,13 +208,13 @@ describe.skip('connect.bindContractMethod', function () {
     method: 'addCash',
     callMethod: function (method) {
       // (ID, amount, callback)
-      method('0xa1', '10000000000000000', undefined);
+      method({ ID: '0xa1', amount: '10000000000000000', _signer: '0xdeadbeef' }, undefined);
     },
-    fire: function (tx, onSent, onSuccess, onFailed) {
+    callContractFunction: function (tx, cb, parsers, extraArgs) {
       // Shouldn't get hit in this case
       assert.isTrue(false);
     },
-    transact: function (tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, signer, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx, {
         fixed: [ 1 ],
         inputs: [ 'ID', 'amount' ],
@@ -208,9 +223,9 @@ describe.skip('connect.bindContractMethod', function () {
         returns: 'number',
         send: true,
         signature: [ 'int256', 'int256' ],
-        to: augur.store.getState().contractsAPI.functions.Cash.addCash.to,
         params: [ '0xa1', '0x1ed09bead87c0378d8e6400000000' ]
       });
+      assert.deepEqual(signer, '0xdeadbeef');
       assert.isUndefined(onSent);
       assert.isUndefined(onSuccess);
       assert.isUndefined(onFailed);
@@ -222,13 +237,13 @@ describe.skip('connect.bindContractMethod', function () {
     method: 'addCash',
     callMethod: function (method) {
       // (ID, amount, onSent, onSuccess, onFailed)
-      method('0xa1', '10000000000000000', noop, noop, noop);
+      method({ ID: '0xa1', amount: '10000000000000000', onSent: noop, onSuccess: noop, onFailed: noop });
     },
-    fire: function (tx, onSent, onSuccess, onFailed) {
+    callContractFunction: function (tx, cb, parsers, extraArgs) {
       // Shouldn't get hit in this case
       assert.isTrue(false);
     },
-    transact: function (tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, signer, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx, {
         fixed: [ 1 ],
         inputs: [ 'ID', 'amount' ],
@@ -237,41 +252,12 @@ describe.skip('connect.bindContractMethod', function () {
         returns: 'number',
         send: true,
         signature: [ 'int256', 'int256' ],
-        to: augur.store.getState().contractsAPI.functions.Cash.addCash.to,
         params: [ '0xa1', '0x1ed09bead87c0378d8e6400000000' ]
       });
+      assert.isUndefined(signer);
       assert.deepEqual(onSent, noop);
       assert.deepEqual(onSuccess, noop);
       assert.deepEqual(onFailed, noop);
-    }
-  });
-  test({
-    description: 'Should handle binding a method and then handling the method correctly when the method required inputs and has callback. no parser, fixed tx, send true, single object arg',
-    contract: 'Cash',
-    method: 'addCash',
-    callMethod: function (method) {
-      // (ID, amount, callback)
-      method({ ID: '0xa1', amount: '10000000000000000', callback: noop});
-    },
-    fire: function (tx, onSent, onSuccess, onFailed) {
-      // Shouldn't get hit in this case
-      assert.isTrue(false);
-    },
-    transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx, {
-        fixed: [ 1 ],
-        inputs: [ 'ID', 'amount' ],
-        label: 'Add Cash',
-        method: 'addCash',
-        returns: 'number',
-        send: true,
-        signature: [ 'int256', 'int256' ],
-        to: augur.store.getState().contractsAPI.functions.Cash.addCash.to,
-        params: [ '0xa1', '0x1ed09bead87c0378d8e6400000000' ]
-      });
-      assert.isUndefined(onSent);
-      assert.isUndefined(onSuccess);
-      assert.isUndefined(onFailed);
     }
   });
   test({
@@ -282,11 +268,11 @@ describe.skip('connect.bindContractMethod', function () {
       // (ID, amount, callback)
       method();
     },
-    fire: function (tx, onSent, onSuccess, onFailed) {
+    callContractFunction: function (tx, cb, parsers, extraArgs) {
       // Shouldn't get hit in this case
       assert.isFalse(true);
     },
-    transact: function (tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, signer, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx, {
         fixed: [ 1 ],
         inputs: [ 'ID', 'amount' ],
@@ -295,8 +281,8 @@ describe.skip('connect.bindContractMethod', function () {
         returns: 'number',
         send: true,
         signature: [ 'int256', 'int256' ],
-        to: augur.store.getState().contractsAPI.functions.Cash.addCash.to
       });
+      assert.isUndefined(signer);
       assert.isUndefined(onSent);
       assert.isUndefined(onSuccess);
       assert.isUndefined(onFailed);
@@ -310,20 +296,19 @@ describe.skip('connect.bindContractMethod', function () {
       // (account, callback)
       method();
     },
-    fire: function (tx, onSent, onSuccess, onFailed) {
+    callContractFunction: function (tx, cb, parsers, extraArgs) {
       assert.deepEqual(tx, {
         inputs: [ 'address' ],
         label: 'Balance',
         method: 'balance',
         returns: 'unfix',
         signature: [ 'int256' ],
-        to: augur.store.getState().contractsAPI.functions.Cash.balance.to
       });
-      assert.isUndefined(onSent);
-      assert.isUndefined(onSuccess);
-      assert.isUndefined(onFailed);
+      assert.isUndefined(cb);
+      assert.isUndefined(parsers);
+      assert.isUndefined(extraArgs);
     },
-    transact: function (tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, signer, onSent, onSuccess, onFailed) {
       // Shouldn't get hit in this case
       assert.isFalse(true);
     }
@@ -336,21 +321,20 @@ describe.skip('connect.bindContractMethod', function () {
       // (account, callback)
       method({ salt: '1337', report: '1', eventID: '0xe1', sender: '0xf1', callback: noop });
     },
-    fire: function (tx, onSent, onSuccess, onFailed) {
+    callContractFunction: function (tx, cb, parsers, extraArgs) {
       assert.deepEqual(tx, {
         inputs: [ 'salt', 'report', 'eventID', 'sender' ],
         label: 'Make Hash',
         method: 'makeHash',
         params: [ '1337', '1', '0xe1', '0xf1' ],
-        returns: 'hash',
+        returns: 'int256',
         signature: [ 'int256', 'int256', 'int256', 'int256' ],
-        to: augur.store.getState().contractsAPI.functions.MakeReports.makeHash.to
       });
-      assert.isFunction(onSent);
-      assert.isUndefined(onSuccess);
-      assert.isUndefined(onFailed);
+      assert.isFunction(cb);
+      assert.isUndefined(parsers);
+      assert.isUndefined(extraArgs);
     },
-    transact: function (tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, signer, onSent, onSuccess, onFailed) {
       // Shouldn't get hit in this case
       assert.isFalse(true);
     }
@@ -363,7 +347,7 @@ describe.skip('connect.bindContractMethod', function () {
       // (account, callback)
       method({ eventID: '0xe1', branch: '0xb1', votePeriod: '1000', report: '1', forkedOverEthicality: '0', forkedOverThisEvent: '0', roundTwo: '1001', balance: '1000', callback: noop });
     },
-    fire: function (tx, onSent, onSuccess, onFailed) {
+    callContractFunction: function (tx, cb, parsers, extraArgs) {
       assert.deepEqual(tx, {
         fixed: [ 3, 7 ],
         inputs: [ 'eventID', 'branch', 'votePeriod', 'report', 'forkedOverEthicality', 'forkedOverThisEvent', 'roundTwo', 'balance' ],
@@ -372,13 +356,12 @@ describe.skip('connect.bindContractMethod', function () {
         params: [ '0xe1', '0xb1', '1000', '0xde0b6b3a7640000', '0', '0', '1001', '0x3635c9adc5dea00000' ],
         returns: 'number',
         signature: [ 'int256', 'int256', 'int256', 'int256', 'int256', 'int256', 'int256', 'int256' ],
-        to: augur.store.getState().contractsAPI.functions.MakeReports.validateReport.to
       });
-      assert.isFunction(onSent);
-      assert.isUndefined(onSuccess);
-      assert.isUndefined(onFailed);
+      assert.isFunction(cb);
+      assert.isUndefined(parsers);
+      assert.isUndefined(extraArgs);
     },
-    transact: function (tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, signer, onSent, onSuccess, onFailed) {
       // Shouldn't get hit in this case
       assert.isFalse(true);
     }
@@ -387,9 +370,9 @@ describe.skip('connect.bindContractMethod', function () {
     description: 'Should handle binding a method and then handling the method correctly send is true, parser',
     contract: 'FakeContract',
     method: 'fakeMethod',
-    callMethod: function (method) {
+    prepare: function() {
       // because no functions currently exist where send is true and we require a parser, we are going to make a fake function to do this so we can unit test.
-      augur.store.getState().contractsAPI.functions.FakeContract = {
+      Contracts.api.functions.FakeContract = {
         fakeMethod: {
           inputs: [ 'branch' ],
           label: 'Fake Method',
@@ -398,17 +381,18 @@ describe.skip('connect.bindContractMethod', function () {
           returns: 'number',
           send: true,
           signature: [ 'int256' ],
-          to: '0xdeadbeef'
         }
       };
-      method({ branch: '0xb1', callback: noop });
-      augur.store.getState().contractsAPI.functions.fakeContract = undefined;
     },
-    fire: function (tx, onSent, onSuccess, onFailed) {
+    callMethod: function (method) {
+      method({ branch: '0xb1', callback: noop });
+      Contracts.api.functions.fakeContract = undefined;
+    },
+    callContractFunction: function (tx, cb, parsers, extraArgs) {
       // Shouldn't get hit in this case
       assert.isFalse(true);
     },
-    transact: function (tx, onSent, onSuccess, onFailed) {
+    transact: function (tx, signer, onSent, onSuccess, onFailed) {
       assert.deepEqual(tx, {
         inputs: [ 'branch' ],
         label: 'Fake Method',
@@ -418,8 +402,8 @@ describe.skip('connect.bindContractMethod', function () {
         returns: 'number',
         send: true,
         signature: [ 'int256' ],
-        to: '0xdeadbeef'
       });
+      assert.isUndefined(signer);
       assert.isUndefined(onSent);
       assert.isNull(onSuccess);
       assert.isUndefined(onFailed);
@@ -614,116 +598,6 @@ describe.skip('connect.bindContractAPI', function () {
       });
       assert.deepEqual(callCounts, {
         bindContractMethod: 2
-      });
-      done();
-    }
-  });
-});
-
-describe.skip('connect.sync', function () {
-  // 3 tests total
-  var callCounts = {
-    bindContractAPI: 0,
-  };
-  afterEach(function () {
-    clearCallCounts(callCounts);
-  });
-  var test = function (t) {
-    it(t.description, function (done) {
-      // bind connect to t.testThis instead of augur, replace ethereumjs-connect with a test mock.
-      var isolatedSync = proxyquire('../../../src/modules/connect.js', {
-        'ethereumjs-connect': t.connector,
-      }).sync.bind(t.testThis);
-
-      t.assertions(isolatedSync(), t.testThis, t.connector, done);
-    });
-  };
-  test({
-    description: 'Should be able to sync when connector state is missing contracts, and networkID prior to call to sync.',
-    testThis: {
-      bindContractAPI: function () {
-        callCounts.bindContractAPI++;
-      },
-    },
-    connector: {
-      isTest: true,
-      state: {
-      	contracts: {},
-      	networkID: null,
-      	api: { functions: {} },
-      	coinbase: '0x444',
-      	from: '0x1'
-      },
-      configure: noop,
-      setContracts: noop,
-      setupFunctionsAPI: noop,
-      setupEventsAPI: noop,
-      rpc: { desc: 'this is the ethrpc object' }
-    },
-    assertions: function (out, testThis, connector, done) {
-      assert.isTrue(out);
-      assert.isNull(testThis.rpc.getNetworkID());
-      assert.deepEqual(testThis.from, connector.state.from);
-      assert.deepEqual(testThis.coinbase, connector.state.coinbase);
-      assert.deepEqual(testThis.rpc, connector.rpc);
-      assert.deepEqual(testThis.contracts, connector.state.contracts);
-      assert.deepEqual(testThis.api, connector.state.api);
-      assert.deepEqual(testThis.tx, testThis.api.functions);
-      assert.deepEqual(callCounts, {
-        bindContractAPI: 1,
-      });
-      done();
-    }
-  });
-  test({
-    description: 'Should be able to sync if connector.state.api.functions is undefined forcing this.api to use Contracts.api',
-    testThis: {
-      bindContractAPI: function () {
-        callCounts.bindContractAPI++;
-      },
-    },
-    connector: {
-      isTest: true,
-      state: {
-      	contracts: {},
-      	networkID: constants.DEFAULT_NETWORK_ID,
-      	api: {},
-      	coinbase: '0x444',
-      	from: '0x1'
-      },
-      configure: noop,
-      setContracts: noop,
-      rpc: { desc: 'this is the ethrpc object' },
-      setupFunctionsAPI: noop,
-      setupEventsAPI: noop
-    },
-    assertions: function (out, testThis, connector, done) {
-      assert.isTrue(out);
-      assert.deepEqual(testThis.rpc.getNetworkID(), connector.state.networkID);
-      assert.deepEqual(testThis.from, connector.state.from);
-      assert.deepEqual(testThis.coinbase, connector.state.coinbase);
-      assert.deepEqual(testThis.rpc, connector.rpc);
-      assert.deepEqual(testThis.contracts, connector.state.contracts);
-      assert.deepEqual(testThis.api, Contracts.api);
-      assert.deepEqual(testThis.tx, testThis.api.functions);
-      assert.deepEqual(callCounts, {
-        bindContractAPI: 1,
-      });
-      done();
-    }
-  });
-  test({
-    description: 'Should return false if connector isnt an Object',
-    testThis: {
-      bindContractAPI: function () {
-        callCounts.bindContractAPI++;
-      },
-    },
-    connector: [],
-    assertions: function (out, testThis, connector, done) {
-      assert.isFalse(out);
-      assert.deepEqual(callCounts, {
-        bindContractAPI: 0,
       });
       done();
     }
