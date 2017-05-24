@@ -93,17 +93,18 @@ export default class AccountView extends Component {
           }
           {s.selectedNav === ACCOUNT_CONVERT &&
             <AccountConvert
-              etherTokens={loginAccount.ether}
-              ether={loginAccount.realEther}
+              ethTokens={loginAccount.ether}
+              eth={loginAccount.realEther}
               convertToToken={p.convertToToken}
               convertToEther={p.convertToEther}
             />
           }
           {s.selectedNav === ACCOUNT_TRANSFER &&
             <AccountTransfer
-              etherTokens={loginAccount.ether}
-              ether={loginAccount.realEther}
+              ethTokens={loginAccount.ether}
+              eth={loginAccount.realEther}
               rep={loginAccount.rep}
+              transferFunds={p.transferFunds}
             />
           }
         </article>

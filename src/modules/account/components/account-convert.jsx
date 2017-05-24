@@ -7,8 +7,8 @@ import EtherTokenLogo from 'modules/common/components/ether-token-logo';
 
 export default class AccountConvert extends Component {
   static propTypes = {
-    etherTokens: PropTypes.object.isRequired,
-    ether: PropTypes.object.isRequired,
+    ethTokens: PropTypes.object.isRequired,
+    eth: PropTypes.object.isRequired,
     convertToToken: PropTypes.func.isRequired,
     convertToEther: PropTypes.func.isRequired
   };
@@ -31,7 +31,7 @@ export default class AccountConvert extends Component {
 
   checkValidity(amount) {
     const amountToCheck = (amount == null || amount === '') ? '' : amount;
-    const upperBound = this.state.direction === this.TO_TOKEN ? this.props.ether.value : this.props.etherTokens.value;
+    const upperBound = this.state.direction === this.TO_TOKEN ? this.props.eth.value : this.props.ethTokens.value;
 
     if (amountToCheck !== '') {
       if (isNaN(parseFloat(amountToCheck)) || !isFinite(amountToCheck) || (amountToCheck > upperBound || amountToCheck <= 0)) {
@@ -111,7 +111,7 @@ export default class AccountConvert extends Component {
             <Input
               isIncrementable
               incrementAmount={1}
-              max={s.direction === this.TO_TOKEN ? p.ether.value : p.etherTokens.value}
+              max={s.direction === this.TO_TOKEN ? p.eth.value : p.ethTokens.value}
               min={0.1}
               value={s.amount}
               updateValue={amount => this.checkValidity(amount)}
@@ -123,7 +123,7 @@ export default class AccountConvert extends Component {
                 'form-in-error': !s.isValid && s.amount !== ''
               })}
             >
-              {`Amount must be between 0 and ${s.direction === this.TO_TOKEN ? p.ether.value : p.etherTokens.value}`}
+              {`Amount must be between 0 and ${s.direction === this.TO_TOKEN ? p.eth.value : p.ethTokens.value}`}
             </span>
             <button
               type="submit"
