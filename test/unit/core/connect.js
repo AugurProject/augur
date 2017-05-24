@@ -386,7 +386,8 @@ describe('connect.bindContractFunction', function () {
     },
     callMethod: function (method) {
       method({ branch: '0xb1', callback: noop });
-      Contracts.api.functions.fakeContract = undefined;
+      // clean up the fakeContract and it's fakeMethod
+      delete Contracts.api.functions.fakeContract;
     },
     callContractFunction: function (tx, cb, parsers, extraArgs) {
       // Shouldn't get hit in this case
