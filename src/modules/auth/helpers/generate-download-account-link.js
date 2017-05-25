@@ -1,8 +1,11 @@
 import keythereum from 'keythereum';
 
 export default function (address, keystore) {
+  const stringifiedKeystore = JSON.stringify(keystore);
+
   return {
-    downloadAccountDataString: `data:,${encodeURIComponent(JSON.stringify(keystore))}`,
+    stringifiedKeystore,
+    downloadAccountDataString: `data:,${encodeURIComponent(stringifiedKeystore)}`,
     downloadAccountFileName: keythereum.generateKeystoreFilename(address)
   };
 }
