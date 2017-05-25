@@ -29,7 +29,44 @@
     }
 
     & > div {
+      display: flex;
       flex: 3;
+      justify-content: center;
+
+      form {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        width: 50%;
+
+        .account-input-error {
+          color: @color-red;
+          min-height: @font-size-normal;
+          opacity: 0;
+          padding: 0.4em 0 0;
+          transition-duration: @animation-speed-very-fast;
+          transition-property: opacity;
+          transition-timing-function: @animation-default-type;
+          visibility: hidden;
+
+          &.form-in-error {
+            opacity: 1;
+            visibility: visible;
+          }
+        }
+
+        .account-convert-submit {
+          cursor: default;
+          opacity: 0;
+          transition-duration: @animation-speed-very-fast;
+          transition-property: opacity;
+          transition-timing-function: @animation-default-type;
+
+          &.form-is-valid {
+            opacity: 1;
+          }
+        }
+      }
     }
   }
 
