@@ -21,31 +21,42 @@ export default class AccountConvert extends Component {
 
     this.state = {
       direction: this.TO_TOKEN,
+      upperBound: props.eth.value,
       amount: '',
-      isValid: false
+      isValid: null,
+      isAmountValid: null
     };
 
-    this.checkValidity = this.checkValidity.bind(this);
+    this.setDirection = this.setDirection.bind(this);
+    this.validateAmount = this.validateAmount.bind(this);
     this.convert = this.convert.bind(this);
   }
 
-  checkValidity(amount) {
-    const amountToCheck = (amount == null || amount === '') ? '' : amount;
-    const upperBound = this.state.direction === this.TO_TOKEN ? this.props.eth.value : this.props.ethTokens.value;
+  setDirection(direction) {
+    this.setState({
+      direction,
+      upperBound: direction === this.TO_TOKEN ? this.props.eth.value : this.props.ethTokens.value
+    });
+  }
 
-    if (amountToCheck !== '') {
-      if (isNaN(parseFloat(amountToCheck)) || !isFinite(amountToCheck) || (amountToCheck > upperBound || amountToCheck <= 0)) {
-        this.setState({
-          amount: '',
-          isValid: false
-        });
-        return;
-      }
+  validateAmount(amount) {
+    const sanitizedAmount = (amount == null || amount === '') ? '' : amount;
+
+    console.log('sanitizedAmount -- ', sanitizedAmount);
+
+    if (isNaN(parseFloat(sanitizedAmount)) || !isFinite(sanitizedAmount) || (sanitizedAmount > this.state.upperBound || sanitizedAmount <= 0)) {
+      this.setState({
+        amount: sanitizedAmount,
+        isAmountValid: false,
+        isValid: false,
+      });
+      return;
     }
 
     this.setState({
-      amount: amountToCheck, // Set sanitized amount
-      isValid: true
+      amount: sanitizedAmount,
+      isValid: true,
+      isAmountValid: true
     });
   }
 
@@ -66,6 +77,7 @@ export default class AccountConvert extends Component {
     const p = this.props;
     const s = this.state;
 
+    console.log('s -- ', s);
 
     return (
       <article className="account-convert account-sub-view">
@@ -87,7 +99,7 @@ export default class AccountConvert extends Component {
               <button
                 type="button"
                 className="unstyled logo-button"
-                onClick={() => this.setState({ direction: this.TO_TOKEN })}
+                onClick={() => this.setDirection(this.TO_TOKEN)}
               >
                 <EtherTokenLogo />
                 <span>Ether Token</span>
@@ -95,14 +107,14 @@ export default class AccountConvert extends Component {
               <button
                 type="button"
                 className="unstyled direction-indicator"
-                onClick={() => this.setState({ direction: this.state.direction === this.TO_TOKEN ? this.TO_ETHER : this.TO_TOKEN })}
+                onClick={() => this.setDirection(s.direction === this.TO_TOKEN ? this.TO_ETHER : this.TO_TOKEN)}
               >
                 <i className={classNames('fa fa-angle-double-left', { 'direction-to-token': s.direction === this.TO_TOKEN })} />
               </button>
               <button
                 type="button"
                 className="unstyled logo-button"
-                onClick={() => this.setState({ direction: this.TO_ETHER })}
+                onClick={() => this.setDirection(this.TO_ETHER)}
               >
                 <EtherLogo />
                 <span>Ether</span>
@@ -114,20 +126,20 @@ export default class AccountConvert extends Component {
               max={s.direction === this.TO_TOKEN ? p.eth.value : p.ethTokens.value}
               min={0.1}
               value={s.amount}
-              updateValue={amount => this.checkValidity(amount)}
-              onChange={amount => this.checkValidity(amount)}
+              updateValue={amount => this.validateAmount(amount)}
+              onChange={amount => this.validateAmount(amount)}
               placeholder={`Amount of ${s.direction === this.TO_TOKEN ? 'ETH' : 'ETH Tokens'} to Convert`}
             />
             <span
-              className={classNames('account-convert-amount-error', {
-                'form-in-error': !s.isValid && s.amount !== ''
+              className={classNames('account-input-error', {
+                'form-in-error': s.amount !== '' && s.isAmountValid !== null && !s.isAmountValid
               })}
             >
-              {`Amount must be between 0 and ${s.direction === this.TO_TOKEN ? p.eth.value : p.ethTokens.value}`}
+              {`Amount must be between 0 and ${(s.direction === this.TO_TOKEN ? p.eth.value : p.ethTokens.value).toLocaleString()} ${s.direction === this.TO_TOKEN ? 'ETH' : 'ETH Tokens'}`}
             </span>
             <button
               type="submit"
-              className={classNames('account-convert-submit', { 'form-is-valid': s.isValid && s.amount !== '' })}
+              className={classNames('account-convert-submit', { 'form-is-valid': s.isValid !== null && s.isValid })}
             >
               Convert
             </button>
