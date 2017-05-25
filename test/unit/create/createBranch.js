@@ -1,190 +1,109 @@
 "use strict";
 
 var assert = require("chai").assert;
+var abi = require("augur-abi");
+var proxyquire = require('proxyquire');
 var augur = new (require("../../../src"))();
 var random = require("../../random");
 var tools = require("../../tools");
 var noop = require("../../../src/utils/noop");
+var sha3 = require("../../../src/utils/sha3");
 
-describe("createBranch", function () {
+describe("augur.create.createBranch", function () {
+  var passedParams;
+  var finished;
   var test = function (params) {
-    var count = 0;
-    var createSubbranch = augur.createSubbranch;
-    augur.createSubbranch = function (subparams) {
-      it(JSON.stringify(params), function () {
-        assert.strictEqual(params.description, subparams.description);
-        assert.strictEqual(params.periodLength, subparams.periodLength);
-        assert.strictEqual(params.parent, subparams.parent);
-        assert.strictEqual(params.minTradingFee, subparams.minTradingFee);
-        assert.strictEqual(params.oracleOnly || 0, subparams.oracleOnly);
-        assert.isFunction(subparams.onSent);
-        assert.isFunction(subparams.onSuccess);
-        assert.isFunction(subparams.onFailed);
-      });
-      if (!params.onSent) {
-        params.onSent = noop;
-        params.onSuccess = noop;
-        params.onFailed = noop;
-        return augur.createBranch(params);
-      }
-      augur.createSubbranch = createSubbranch;
-    };
-    augur.createBranch(
-      params.description,
-      params.periodLength,
-      params.parent,
-      params.minTradingFee,
-      params.oracleOnly,
-      noop,
-      noop,
-      noop
-    );
+    it(JSON.stringify(params), function(done) {
+      finished = done;
+      passedParams = params;
+      proxyquire('../../../src/create/create-branch', {
+        '../rpc-interface': {
+          getBlockByNumber: function (blockNum, returnFullTransactions, cb) {
+            assert.deepEqual(blockNum, 1010101);
+            cb({ timestamp: 10000 });
+          }
+        },
+        './create-subbranch': function (p) {
+            assert.deepEqual(p.description, params.description);
+            assert.deepEqual(p.periodLength, params.periodLength)
+            assert.deepEqual(p.parent, params.parent)
+            assert.deepEqual(p.minTradingFee, params.minTradingFee)
+            assert.deepEqual(p.oracleOnly, params.oracleOnly)
+            assert.isFunction(p.onSuccess);
+            p.onSuccess({ blockNumber: 1010101, from: '0xdeadbeef' });
+        }
+      })(params);
+    });
   };
+
   for (var i = 0; i < tools.UNIT_TEST_SAMPLES; ++i) {
     test({
       description: random.string(),
       periodLength: random.int(),
       parent: random.hash(),
       minTradingFee: random.fixed(),
-      oracleOnly: random.bool()
+      oracleOnly: random.bool(),
+      onSuccess: function (response) {
+        assert.deepEqual(JSON.stringify(response), JSON.stringify({
+          blockNumber: 1010101,
+          from: '0xdeadbeef',
+          branchID: sha3([
+            response.from,
+            "0x28c418afbbb5c0000",
+            passedParams.periodLength,
+            10000,
+            passedParams.parent,
+            abi.fix(passedParams.minTradingFee, "hex"),
+            passedParams.oracleOnly,
+            passedParams.description.trim()
+          ])
+        }));
+        finished();
+      }
     });
   }
 });
 
-describe("createBranch.createBranch", function () {
+describe("augur.create.createSubbranch", function () {
   // 2 tests each
-  var createSubbranch = augur.createSubbranch;
-  var createBranchcreateSubbranch = augur.CreateBranch.createSubbranch;
-  var getBlock = augur.rpc.getBlock;
-  afterEach(function () {
-    augur.createSubbranch = createSubbranch;
-    augur.CreateBranch.createSubbranch = createBranchcreateSubbranch;
-    augur.rpc.getBlock = getBlock;
-  });
   var test = function (t) {
     it(JSON.stringify(t), function () {
-      augur.createSubbranch = t.createSubbranch;
-      augur.CreateBranch.createSubbranch = t.createSubbranch;
-      augur.rpc.getBlock = t.getBlock;
-      t.assertions(augur.createBranch(t.description, t.periodLength, t.parent, t.minTradingFee, t.oracleOnly, t.onSent, t.onSuccess, t.onFailed));
+      var createSubbranch = augur.api.CreateBranch.createSubbranch;
+
+      augur.api.CreateBranch.createSubbranch = t.assertions;
+
+      augur.create.createSubbranch(t.params);
+
+      augur.api.CreateBranch.createSubbranch = createSubbranch;
     });
   };
   test({
-    description: {
+    params: {
       description: "  This is a branch description  ",
       periodLength: 120,
       parent: "0xb1",
       minTradingFee: "0.01",
       oracleOnly: 1,
       onSent: noop,
-      onSuccess: function (res) {
-        assert.deepEqual(res, {
-          blockNumber: "101010",
-          from: "0xb1",
-          branchID: "0x280297e372d2d65969058d4dc311cabcd7943439848e0cfd14a7ee670ffab9ef"
-        });
-      },
+      onSuccess: noop,
       onFailed: noop,
     },
-    createSubbranch: function (arg) {
-      assert.deepEqual(arg.description, "This is a branch description");
-      arg.onSuccess({ blockNumber: "101010", from: "0xb1" });
-    },
-    getBlock: function (blockNumber, full, cb) {
-      assert.deepEqual(blockNumber, "101010");
-      cb({ timestamp: 15000000 });
-    },
-    assertions: function (res) {
-      // res shouldn't be defined in this case since we have cbs defined.
-      assert.isUndefined(res);
+    assertions: function (params) {
+      assert.deepEqual(JSON.stringify(params), JSON.stringify({
+        description: 'This is a branch description',
+        periodLength: 120,
+        parent: '0xb1',
+        minTradingFee: abi.fix('0.01', "hex"),
+        oracleOnly: 1,
+        onSent: noop,
+        onSuccess: noop,
+        onFailed: noop,
+        tx: { description: 'This is a branch description' }
+      }));
     }
   });
   test({
-    description: {
-      description: "  This is a branch description!  ",
-      periodLength: 180,
-      parent: "0xb2",
-      minTradingFee: "0.02",
-      oracleOnly: undefined,
-      onSent: undefined,
-      onSuccess: undefined,
-      onFailed: undefined,
-    },
-    createSubbranch: function (arg) {
-      assert.deepEqual(arg.description, "This is a branch description!");
-      return { blockNumber: "101011", from: "0xb2" };
-    },
-    getBlock: function (blockNumber, full, cb) {
-      assert.deepEqual(blockNumber, "101011");
-      return { timestamp: 15000000 };
-    },
-    assertions: function (res) {
-      assert.deepEqual(res, {
-        blockNumber: "101011",
-        from: "0xb2",
-        branchID: "0x3aa83e51255cb642fcf894ed6299ac75fdabf380be6793daf2e939c22009518d"
-      });
-    }
-  });
-});
-
-describe("createBranch.createSubbranch", function () {
-  // 2 tests each
-  var transact = augur.transact;
-  afterEach(function () {
-    augur.transact = transact;
-  });
-  var test = function (t) {
-    it(JSON.stringify(t), function () {
-      augur.transact = t.transact;
-
-      t.assertions(augur.createSubbranch(t.description, t.periodLength, t.parent, t.minTradingFee, t.oracleOnly, t.onSent, t.onSuccess, t.onFailed));
-    });
-  };
-  test({
-    description: "  This is a branch description  ",
-    periodLength: 120,
-    parent: "0xb1",
-    minTradingFee: "0.01",
-    oracleOnly: 1,
-    onSent: noop,
-    onSuccess: noop,
-    onFailed: noop,
-    transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx, {
-        inputs: [
-          "description",
-          "periodLength",
-          "parent",
-          "minTradingFee",
-          "oracleOnly"
-        ],
-        label: "Fork Reputation",
-        method: "createSubbranch",
-        returns: "hash",
-        send: true,
-        signature: [ "bytes", "int256", "int256", "int256", "int256" ],
-        to: augur.store.getState().contractsAPI.functions.CreateBranch.createSubbranch.to,
-        params: [
-          "This is a branch description",
-          120,
-          "0xb1",
-          "0x2386f26fc10000",
-          1
-        ],
-        description: "This is a branch description"
-      });
-      assert.deepEqual(onSent, noop);
-      assert.deepEqual(onSuccess, noop);
-      assert.deepEqual(onFailed, noop);
-    },
-    assertions: function (res) {
-      // transact doesn't return anything in this case because we are mocking async where cbs are defined as functions.
-      assert.isUndefined(res);
-    }
-  });
-  test({
-    description: {
+    params: {
       description: "  This is another branch description  ",
       periodLength: 120,
       parent: "0xb1",
@@ -194,38 +113,15 @@ describe("createBranch.createSubbranch", function () {
       onSuccess: undefined,
       onFailed: undefined
     },
-    transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.isUndefined(onSent);
-      assert.isUndefined(onSuccess);
-      assert.isUndefined(onFailed);
-      // this example has no cb's, so return tx for assertions
-      return tx;
-    },
-    assertions: function (res) {
-      // transact will return the tx it was called with for assertions in this case.
-      assert.deepEqual(res, {
-        inputs: [
-          "description",
-          "periodLength",
-          "parent",
-          "minTradingFee",
-          "oracleOnly"
-        ],
-        label: "Fork Reputation",
-        method: "createSubbranch",
-        returns: "hash",
-        send: true,
-        signature: [ "bytes", "int256", "int256", "int256", "int256" ],
-        to: augur.store.getState().contractsAPI.functions.CreateBranch.createSubbranch.to,
-        params: [
-          "This is another branch description",
-          120,
-          "0xb1",
-          "0x470de4df820000",
-          0
-        ],
-        description: "This is another branch description"
-      });
+    assertions: function (params) {
+      assert.deepEqual(JSON.stringify(params), JSON.stringify({
+        description: 'This is another branch description',
+        periodLength: 120,
+        parent: '0xb1',
+        minTradingFee: abi.fix('0.02', "hex"),
+        oracleOnly: 0,
+        tx: { description: 'This is another branch description' }
+      }));
     }
   });
 });
