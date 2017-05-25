@@ -46,6 +46,9 @@ export default class AccountTransfer extends Component {
     };
 
     this.updateSelectedAsset = this.updateSelectedAsset.bind(this);
+    this.validateAmount = this.validateAmount.bind(this);
+    this.validateAddress = this.validateAddress.bind(this);
+    this.validateForm = this.validateForm.bind(this);
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -78,19 +81,18 @@ export default class AccountTransfer extends Component {
   }
 
   validateAmount(amount) {
-    const amountToCheck = sanitizeArg(amount);
+    const sanitizedAmount = sanitizeArg(amount);
 
-    if (amountToCheck !== '') {
-      if (isNaN(parseFloat(amountToCheck)) || !isFinite(amountToCheck) || (amountToCheck > this.state.upperBound || amountToCheck <= 0)) {
-        this.setState({
-          isAmountValid: false
-        });
-        return;
-      }
+    if (isNaN(parseFloat(sanitizedAmount)) || !isFinite(sanitizedAmount) || (sanitizedAmount > this.state.upperBound || sanitizedAmount <= 0)) {
+      this.setState({
+        amount: sanitizedAmount,
+        isAmountValid: false
+      });
+      return;
     }
 
     this.setState({
-      amount: amountToCheck,
+      amount: sanitizedAmount,
       isAmountValid: true
     });
   }
@@ -98,13 +100,12 @@ export default class AccountTransfer extends Component {
   validateAddress(address) {
     const sanitizedAddress = sanitizeArg(address);
 
-    if (sanitizedAddress !== '') {
-      if (!isAddress(sanitizedAddress)) {
-        this.setState({
-          isAddressValid: false
-        });
-        return;
-      }
+    if (!isAddress(sanitizedAddress)) {
+      this.setState({
+        address: sanitizedAddress,
+        isAddressValid: false
+      });
+      return;
     }
 
     this.setState({
@@ -128,7 +129,7 @@ export default class AccountTransfer extends Component {
   render() {
     const s = this.state;
 
-    // console.log('s -- ', s);
+    console.log('s -- ', s);
 
     return (
       <article className="account-transfer account-sub-view">
@@ -160,8 +161,8 @@ export default class AccountTransfer extends Component {
               placeholder={`Amount of ${this.assetTypes.find(asset => asset.value === s.selectedAsset).label} to send`}
             />
             <span
-              className={classNames('account-transfer-amount-error', {
-                'input-in-error': s.isAmountValid !== null && !s.isAmountValid
+              className={classNames('account-input-error', {
+                'input-in-error': s.amount !== '' && s.isAmountValid !== null && !s.isAmountValid
               })}
             >
               {`Amount must be between 0 and ${s.upperBound} ${this.assetTypes.find(asset => asset.value === s.selectedAsset).label}`}
@@ -173,8 +174,8 @@ export default class AccountTransfer extends Component {
               placeholder={`Recipient address`}
             />
             <span
-              className={classNames('account-transfer-amount-error', {
-                'input-in-error': s.isAddressValid !== null && !s.isAddressValid
+              className={classNames('account-input-error', {
+                'input-in-error': s.address !== '' && s.isAddressValid !== null && !s.isAddressValid
               })}
             >
               Not a valid Ethereum address

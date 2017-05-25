@@ -128,7 +128,7 @@ export default class AccountConvert extends Component {
             />
             <span
               className={classNames('account-input-error', {
-                'form-in-error': s.amount !== '' && s.isAmountValid !== null && !s.isAmountValid
+                'input-in-error': s.amount !== '' && s.isAmountValid !== null && !s.isAmountValid
               })}
             >
               {`Amount must be between 0 and ${(s.direction === this.TO_TOKEN ? p.eth.value : p.ethTokens.value).toLocaleString()} ${s.direction === this.TO_TOKEN ? 'ETH' : 'ETH Tokens'}`}
