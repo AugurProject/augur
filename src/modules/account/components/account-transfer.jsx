@@ -1,10 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
+import BigNumber from 'bignumber.js';
 
 import Input from 'modules/common/components/input';
 import DropDown from 'modules/common/components/dropdown';
 
-import isAddress from 'utils/is-address';
+import { ETH_TOKEN, ETH, REP } from 'modules/account/constants/asset-types';
+
+import isAddress from 'modules/auth/helpers/is-address';
 
 export default class AccountTransfer extends Component {
   static propTypes = {
@@ -16,26 +19,23 @@ export default class AccountTransfer extends Component {
 
   constructor(props) {
     super(props);
-    this.ETH = 'ETHER';
-    this.ETH_TOKEN = 'ETH_TOKEN';
-    this.REP = 'REP';
 
     this.assetTypes = [
       {
         label: 'ETH',
-        value: this.ETH
+        value: ETH
       },
       {
         label: 'ETH Tokens',
-        value: this.ETH_TOKEN
+        value: ETH_TOKEN
       },
       {
         label: 'REP',
-        value: this.REP
+        value: REP
       }
     ];
 
-    this.state = {
+    this.DEFAULT_STATE = {
       upperBound: this.props.eth.value,
       selectedAsset: this.assetTypes[0].value,
       amount: '',
@@ -44,6 +44,8 @@ export default class AccountTransfer extends Component {
       isAmountValid: null,
       isAddressValid: null
     };
+
+    this.state = this.DEFAULT_STATE;
 
     this.updateSelectedAsset = this.updateSelectedAsset.bind(this);
     this.validateAmount = this.validateAmount.bind(this);
@@ -127,9 +129,8 @@ export default class AccountTransfer extends Component {
   }
 
   render() {
+    const p = this.props;
     const s = this.state;
-
-    console.log('s -- ', s);
 
     return (
       <article className="account-transfer account-sub-view">
@@ -143,6 +144,13 @@ export default class AccountTransfer extends Component {
               e.preventDefault();
 
               console.log('submit transfer');
+
+              if (s.isValid) {
+                const stringedAmount = s.amount instanceof BigNumber ? s.amount.toString() : s.amount;
+                p.transferFunds(stringedAmount, s.selectedAsset, s.to);
+
+                this.setState(this.DEFAULT_STATE);
+              }
             }}
           >
             <DropDown

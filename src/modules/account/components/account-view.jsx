@@ -1,19 +1,14 @@
 import React, { Component, PropTypes } from 'react';
-// import ReactTooltip from 'react-tooltip';
-import classNames from 'classnames';
-// import { ModalContainer, ModalDialog } from 'react-modal-dialog';
-import Input from 'modules/common/components/input';
-import Link from 'modules/link/components/link';
 import ComponentNav from 'modules/common/components/component-nav';
-import Identicon from 'react-blockies';
 
 import { ACCOUNT_NAV_ITEMS } from 'modules/account/constants/account-nav-items';
-import { ACCOUNT_DEPOSIT, ACCOUNT_CONVERT, ACCOUNT_TRANSFER } from 'modules/app/constants/views';
+import { ACCOUNT_DEPOSIT, ACCOUNT_CONVERT, ACCOUNT_TRANSFER, ACCOUNT_EXPORT } from 'modules/app/constants/views';
 
 import AccountDetails from 'modules/account/components/account-details';
 import AccountDeposit from 'modules/account/components/account-deposit';
 import AccountConvert from 'modules/account/components/account-convert';
 import AccountTransfer from 'modules/account/components/account-transfer';
+import AccountExport from 'modules/account/components/account-export';
 
 // import Input from 'modules/common/components/input';
 // import PasswordInputForm from 'modules/account/components/password-input-form';
@@ -66,8 +61,6 @@ export default class AccountView extends Component {
 
     const loginAccount = p.loginAccount;
 
-    // console.log('loginAccount -- ', loginAccount);
-
     return (
       <section id="account_view">
         <article
@@ -105,6 +98,13 @@ export default class AccountView extends Component {
               eth={loginAccount.realEther}
               rep={loginAccount.rep}
               transferFunds={p.transferFunds}
+            />
+          }
+          {s.selectedNav === ACCOUNT_EXPORT &&
+            <AccountExport
+              airbitzAccount={loginAccount.airbitzAccount}
+              downloadAccountDataString={loginAccount.downloadAccountDataString}
+              downloadAccountFile={loginAccount.downloadAccountFile}
             />
           }
         </article>

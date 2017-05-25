@@ -2,7 +2,7 @@ import { createSelector } from 'reselect';
 import { selectLoginAccountState } from 'src/select-state';
 import { augur } from 'services/augurjs';
 import { formatRep, formatEther } from 'utils/format-number';
-import generateDownloadAccountLink from 'modules/auth/actions/generate-download-account-link';
+import generateDownloadAccountLink from 'modules/auth/helpers/generate-download-account-link';
 import getABCUIContext from 'modules/auth/selectors/abc';
 import store from 'src/store';
 
@@ -13,7 +13,6 @@ export default function () {
 export const selectLoginAccount = createSelector(
   selectLoginAccountState,
   (loginAccount) => {
-    const cleanAddress = loginAccount.address ? loginAccount.address.replace('0x', '') : null;
     const trimmedAddress = loginAccount.address ? `${loginAccount.address.substring(0, 4)}...${loginAccount.address.substring(loginAccount.address.length - 4)}` : null;
     const trimmedLoginID = loginAccount.loginID ? `${loginAccount.loginID.substring(0, 4)}...${loginAccount.loginID.substring(loginAccount.loginID.length - 4)}` : null;
     const linkText = loginAccount.isUnlocked ? trimmedAddress : loginAccount.name || trimmedLoginID;

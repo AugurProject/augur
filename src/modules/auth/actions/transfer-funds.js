@@ -1,7 +1,11 @@
 import { abi, augur } from 'services/augurjs';
 import { updateAssets } from 'modules/auth/actions/update-assets';
 
+import { ETH_TOKEN, ETH, REP } from 'modules/account/constants/asset-types';
+
 export function transferFunds(amount, currency, toAddress) {
+  console.log('transferFunds -- ', amount, currency, toAddress);
+
   return (dispatch, getState) => {
     const { branch, loginAccount } = getState();
     const fromAddress = loginAccount.address;
@@ -13,11 +17,11 @@ export function transferFunds(amount, currency, toAddress) {
     };
     const onFailed = e => console.error('transfer', currency, 'failed:', e);
     switch (currency) {
-      case 'ETH':
+      case ETH_TOKEN:
         return augur.Cash.send(to, amount, onSent, onSuccess, onFailed);
-      case 'real ETH':
+      case ETH:
         return augur.sendEther(to, amount, fromAddress, onSent, onSuccess, onFailed);
-      case 'REP':
+      case REP:
         return augur.sendReputation(branch.id, to, amount, onSent, onSuccess, onFailed);
       default:
         console.error('transferFunds: unknown currency', currency);
