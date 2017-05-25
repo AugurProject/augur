@@ -80,11 +80,12 @@ export default class AccountDetails extends Component {
               scale={8}
             />
             {p.airbitzAccount &&
-              <div
-                className="airbitz-logo-container"
+              <button
+                className="unstyled airbitz-logo-container"
+                onClick={() => p.onAirbitzManageAccount()}
               >
                 <AirbitzLogoIcon />
-              </div>
+              </button>
             }
           </div>
           <div
@@ -142,6 +143,12 @@ export default class AccountDetails extends Component {
                   <span>{p.trimmedAddress}</span>
                 }
               </CSSTransitionGroup>
+            </button>
+            <button
+              className="unstyled account-details-airbitz"
+              onClick={() => p.onAirbitzManageAccount()}
+            >
+              Manage Airbitz Account
             </button>
           </div>
         </div>
