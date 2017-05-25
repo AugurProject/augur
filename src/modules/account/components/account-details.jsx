@@ -1,10 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 import Identicon from 'react-blockies';
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
 import Link from 'modules/link/components/link';
 import Input from 'modules/common/components/input';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import AirbitzLogoIcon from 'modules/common/components/airbitz-logo-icon';
 
 // loginIDCopy = (e) => {
 //   try {
@@ -28,11 +29,11 @@ export default class AccountDetails extends Component {
   static propTypes = {
     address: PropTypes.string.isRequired,
     trimmedAddress: PropTypes.string.isRequired,
-    // loginID: PropTypes.string.isRequired,
-    // trimmedLoginID: PropTypes.string.isRequired,
     signOut: PropTypes.object.isRequired,
     updateAccountName: PropTypes.func.isRequired,
-    name: PropTypes.string
+    name: PropTypes.string,
+    airbitzAccount: PropTypes.object,
+    onAirbitzManageAccount: PropTypes.func
   };
 
   constructor(props) {
@@ -71,10 +72,21 @@ export default class AccountDetails extends Component {
         <div
           className="account-details-core"
         >
-          <Identicon
-            seed={p.address}
-            scale={8}
-          />
+          <div
+            className="identicon-container"
+          >
+            <Identicon
+              seed={p.address}
+              scale={8}
+            />
+            {p.airbitzAccount &&
+              <div
+                className="airbitz-logo-container"
+              >
+                <AirbitzLogoIcon />
+              </div>
+            }
+          </div>
           <div
             className="account-details-core-values"
           >
