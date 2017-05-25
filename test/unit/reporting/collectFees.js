@@ -1,14 +1,13 @@
 "use strict";
 
 var assert = require("chai").assert;
+var proxyquire = require('proxyquire');
 var augur = new (require('../../../src/'))();
-var transact,
+var noop = require("../../../src/utils/noop");
+var apiCollectFees,
   getVotePeriod,
   getFeesCollected,
-  getGasPrice,
-  getAfterRep,
-  getCurrentPeriod,
-  getCurrentPeriodProgress;
+  getAfterRep;
 // 7 tests total
 
 describe("collectFees", function () {
@@ -17,113 +16,102 @@ describe("collectFees", function () {
   var test = function (t) {
     it(t.description, function () {
       getFeesCollectedCC = 1;
+      var collectFees = proxyquire('../../../src/reporting/collect-fees', {
+        '../rpc-interface': {
+          getGasPrice: function () {
+            return '14327';
+          }
+        },
+        '../reporting/get-current-period-progress': t.getCurrentPeriodProgress
+      });
 			// set mocks to a per test level version
-      augur.getCurrentPeriodProgress = t.getCurrentPeriodProgress;
-      augur.getCurrentPeriod = t.getCurrentPeriod;
-      augur.Branches.getVotePeriod = t.getVotePeriod;
-      augur.getFeesCollected = t.getFeesCollected;
-      augur.getAfterRep = t.getAfterRep;
-      augur.transact = t.transact;
-      augur.rpc.getGasPrice = t.getGasPrice;
+      augur.api.Branches.getVotePeriod = function (params, cb) {
+  			// return the voting period as 98
+        cb(98);
+      };
+      augur.api.ConsensusData.getFeesCollected = t.getFeesCollected || noop;
+      augur.api.ExpiringEvents.getAfterRep = t.getAfterRep || noop;
+      augur.api.CollectFees.collectFees = t.collectFees || noop;
 			// call collectFees
-      augur.collectFees(t.branch, t.sender, t.periodLength, t.onSent, t.onSuccess, t.onFailed);
+      collectFees(t.params);
     });
   };
 
-  before(function () {
+  beforeEach(function () {
 		// save normal versions of each function that will be mocked
-    getCurrentPeriodProgress = augur.getCurrentPeriodProgress;
-    getCurrentPeriod = augur.getCurrentPeriod;
-    getVotePeriod = augur.Branches.getVotePeriod;
-    getFeesCollected = augur.getFeesCollected;
-    getAfterRep = augur.getAfterRep;
-    transact = augur.transact;
-    getGasPrice = augur.rpc.getGasPrice;
+    getVotePeriod = augur.api.Branches.getVotePeriod;
+    getFeesCollected = augur.api.ConsensusData.getFeesCollected;
+    getAfterRep = augur.api.ExpiringEvents.getAfterRep;
+    apiCollectFees = augur.api.CollectFees.collectFees;
   });
 
-  after(function () {
+  afterEach(function () {
 		// revert augur functions to the original functions
-    augur.getCurrentPeriodProgress = getCurrentPeriodProgress;
-    augur.getCurrentPeriod = getCurrentPeriod;
-    augur.Branches.getVotePeriod = getVotePeriod;
-    augur.getFeesCollected = getFeesCollected;
-    augur.getAfterRep = getAfterRep;
-    augur.transact = transact;
-    augur.rpc.getGasPrice = getGasPrice;
+    augur.api.Branches.getVotePeriod = getVotePeriod;
+    augur.api.ConsensusData.getFeesCollected = getFeesCollected;
+    augur.api.ExpiringEvents.getAfterRep = getAfterRep;
+    augur.api.CollectFees.collectFees = apiCollectFees;
   });
 
   test({
     description: 'should fail if not in the 2nd half of reporting period',
+    params: {
+      branch: '0xb1',
+      sender: '0xa1',
+      periodLength: '100',
+      onSent: noop,
+      onSuccess: noop,
+      onFailed: function (t) {
+        assert.deepEqual(t, { '-2': 'needs to be second half of reporting period to claim rep' });
+      }
+    },
     getCurrentPeriodProgress: function (periodLength) {
-			// return that we are only 25% of the way through the reporting period. this should trigger an onFailed call.
+      // return that we are only 25% of the way through the reporting period. this should trigger an onFailed call.
       return 25;
     },
-    branch: '0xb1',
-    sender: '0xa1',
-    periodLength: '100',
-    onSent: function (t) {
-		 console.log('sent', t);
-    },
-    onSuccess: function (t) {
-		 console.log('success', t);
-    },
- 		onFailed: function (t) {
-   assert.deepEqual(t, { '-2': 'needs to be second half of reporting period to claim rep' });
- }
   });
-
   test({
     description: 'should return a callreturn of 2 if the fees have already been collected.',
+    params: {
+      branch: '0xb1',
+      sender: '0xa1',
+      periodLength: '100',
+      onSent: noop,
+      onSuccess: function (t) {
+        assert.deepEqual(t, { callReturn: '2' });
+      },
+   		onFailed: noop
+    },
     getCurrentPeriodProgress: function (periodLength) {
 			// return that we are in deed past the 50% mark of the reporting period.
       return 75;
     },
-    getCurrentPeriod: function (periodLength) {
-			// we will return that we are currently in period 100 just to use a number.
-      return 100;
-    },
-    getVotePeriod: function (branch, cb) {
-			// return the voting period as 98
-      cb(98);
-    },
-    getFeesCollected: function (branch, sender, period, cb) {
+    getFeesCollected: function (p, cb) {
 			// return feesCollected as 1 indicating that the fees have been collected.
-      assert.deepEqual(period, 97, 'period passed to getFeesCollected is expected to be 1 less than the period returned from getVotePeriod');
+      assert.deepEqual(p.period, 97, 'period passed to getFeesCollected is expected to be 1 less than the period returned from getVotePeriod');
       cb("1");
-    },
-    branch: {
-      branch: '0xb1',
-      sender: '0xa1',
-      periodLength: '100',
-      onSent: function (t) {
-        console.log('sent', t);
-      },
-      onSuccess: function (t) {
-        assert.deepEqual(t, { callReturn: '2' });
-      },
-   		onFailed: function (t) {
-        assert.deepEqual(t, { '-2': 'needs to be second half of reporting period to claim rep' });
-      }
     }
   });
 
   test({
     description: 'should return a callreturn of 1 if collection of fees have been completed.',
+    params: {
+      branch: '0xb1',
+      sender: '0xa1',
+      periodLength: '100',
+      onSent: noop,
+      onSuccess: function (t) {
+        assert.deepEqual(t, { callReturn: '1' });
+      },
+      onFailed: noop
+    },
     getCurrentPeriodProgress: function (periodLength) {
 			// return that we are in deed past the 50% mark of the reporting period.
       return 75;
     },
-    getCurrentPeriod: function (periodLength) {
-			// we will return that we are currently in period 100 just to use a number.
-      return 100;
-    },
-    getVotePeriod: function (branch, cb) {
-			// return the voting period as 98
-      cb(98);
-    },
-    getFeesCollected: function (branch, sender, period, cb) {
+    getFeesCollected: function (p, cb) {
 			// return feesCollected as 1 indicating that the fees have been collected.
-      assert.deepEqual(period, 97, 'period passed to getFeesCollected is expected to be 1 less than the period returned from getVotePeriod');
+      assert.deepEqual(p.period, 97, 'period passed to getFeesCollected is expected to be 1 less than the period returned from getVotePeriod');
       switch(getFeesCollectedCC) {
         default:
           getFeesCollectedCC++;
@@ -131,47 +119,37 @@ describe("collectFees", function () {
           break;
       }
     },
-    getGasPrice: function (cb) {
-      cb('14327');
-    },
-    transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.CollectFees.collectFees.to);
-      assert.deepEqual(tx.params, [ '0xb1', '0xa1' ]);
-      assert.deepEqual(tx.gasPrice, '14327');
-      assert.deepEqual(tx.value, '0x9a174ebe0');
-      onSuccess({ callReturn: "1" });
-    },
-    branch: '0xb1',
-    sender: '0xa1',
-    periodLength: '100',
-    onSent: function (t) {
-      console.log('sent', t);
-    },
-    onSuccess: function (t) {
-      assert.deepEqual(t, { callReturn: '1' });
-    },
-    onFailed: function (t) {
-      assert.deepEqual(t, { '-2': 'needs to be second half of reporting period to claim rep' });
+    collectFees: function (tx) {
+      assert.deepEqual(tx.branch, '0xb1');
+      assert.deepEqual(tx.sender, '0xa1');
+      assert.deepEqual(tx.periodLength, '100');
+      assert.isFunction(tx.onSent);
+      assert.isFunction(tx.onSuccess);
+      assert.isFunction(tx.onFailed);
+      assert.deepEqual(tx.tx, { value: '0x1aafa55e0' });
+      tx.onSuccess({ callReturn: "1" });
     }
   });
 
   test({
     description: 'should return a callreturn of 2 if the fees have already been claimed.',
+    params: {
+      branch: '0xb1',
+      sender: '0xa1',
+      periodLength: '100',
+      onSent: noop,
+      onSuccess: function (t) {
+        assert.deepEqual(t, { callReturn: '2' });
+      },
+      onFailed: noop
+    },
     getCurrentPeriodProgress: function (periodLength) {
 			// return that we are in deed past the 50% mark of the reporting period.
       return 75;
     },
-    getCurrentPeriod: function (periodLength) {
-			// we will return that we are currently in period 100 just to use a number.
-      return 100;
-    },
-    getVotePeriod: function (branch, cb) {
-			// return the voting period as 98
-      cb(98);
-    },
-    getFeesCollected: function (branch, sender, period, cb) {
+    getFeesCollected: function (p, cb) {
 			// return feesCollected as 1 indicating that the fees have been collected.
-      assert.deepEqual(period, 97, 'period passed to getFeesCollected is expected to be 1 less than the period returned from getVotePeriod');
+      assert.deepEqual(p.period, 97, 'period passed to getFeesCollected is expected to be 1 less than the period returned from getVotePeriod');
       switch(getFeesCollectedCC) {
         default:
           getFeesCollectedCC++;
@@ -179,47 +157,37 @@ describe("collectFees", function () {
           break;
       }
     },
-    getGasPrice: function (cb) {
-      cb('14327');
-    },
-    transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.CollectFees.collectFees.to);
-      assert.deepEqual(tx.params, [ '0xb1', '0xa1' ]);
-      assert.deepEqual(tx.gasPrice, '14327');
-      assert.deepEqual(tx.value, '0x9a174ebe0');
-      onSuccess({ callReturn: "2" });
-    },
-    branch: '0xb1',
-    sender: '0xa1',
-    periodLength: '100',
-    onSent: function (t) {
-      console.log('sent', t);
-    },
-    onSuccess: function (t) {
-      assert.deepEqual(t, { callReturn: '2' });
-    },
-    onFailed: function (t) {
-      assert.deepEqual(t, { '-2': 'needs to be second half of reporting period to claim rep' });
+    collectFees: function (tx) {
+      assert.deepEqual(tx.branch, '0xb1');
+      assert.deepEqual(tx.sender, '0xa1');
+      assert.deepEqual(tx.periodLength, '100');
+      assert.isFunction(tx.onSent);
+      assert.isFunction(tx.onSuccess);
+      assert.isFunction(tx.onFailed);
+      assert.deepEqual(tx.tx, { value: '0x1aafa55e0' });
+      tx.onSuccess({ callReturn: "2" });
     }
   });
 
   test({
     description: 'should return a callreturn of 2 if after a response from getFeesCollected of not 1.',
+    params: {
+      branch: '0xb1',
+      sender: '0xa1',
+      periodLength: '100',
+      onSent: noop,
+      onSuccess: function (t) {
+        assert.deepEqual(t, { callReturn: '2' });
+      },
+      onFailed: noop
+    },
     getCurrentPeriodProgress: function (periodLength) {
 			// return that we are in deed past the 50% mark of the reporting period.
       return 75;
     },
-    getCurrentPeriod: function (periodLength) {
-			// we will return that we are currently in period 100 just to use a number.
-      return 100;
-    },
-    getVotePeriod: function (branch, cb) {
-			// return the voting period as 98
-      cb(98);
-    },
-    getFeesCollected: function (branch, sender, period, cb) {
+    getFeesCollected: function (p, cb) {
 			// return feesCollected as 1 indicating that the fees have been collected.
-      assert.deepEqual(period, 97, 'period passed to getFeesCollected is expected to be 1 less than the period returned from getVotePeriod');
+      assert.deepEqual(p.period, 97, 'period passed to getFeesCollected is expected to be 1 less than the period returned from getVotePeriod');
       switch(getFeesCollectedCC) {
         case 2:
           getFeesCollectedCC++;
@@ -231,50 +199,37 @@ describe("collectFees", function () {
           break;
       }
     },
-    getGasPrice: function (cb) {
-      cb('14327');
-    },
-    transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.CollectFees.collectFees.to);
-      assert.deepEqual(tx.params, [ '0xb1', '0xa1' ]);
-      assert.deepEqual(tx.gasPrice, '14327');
-      assert.deepEqual(tx.value, '0x9a174ebe0');
-      onSuccess({ callReturn: "-1" });
-    },
-    getAfterRep: function (branch, period, sender, cb) {
-      cb("0")
-    },
-    branch: '0xb1',
-    sender: '0xa1',
-    periodLength: '100',
-    onSent: function (t) {
-      console.log('sent', t);
-    },
-    onSuccess: function (t) {
-      assert.deepEqual(t, { callReturn: '2' });
-    },
-    onFailed: function (t) {
-      assert.deepEqual(t, { '-2': 'needs to be second half of reporting period to claim rep' });
+    collectFees: function (tx) {
+      assert.deepEqual(tx.branch, '0xb1');
+      assert.deepEqual(tx.sender, '0xa1');
+      assert.deepEqual(tx.periodLength, '100');
+      assert.isFunction(tx.onSent);
+      assert.isFunction(tx.onSuccess);
+      assert.isFunction(tx.onFailed);
+      assert.deepEqual(tx.tx, { value: '0x1aafa55e0' });
+      tx.onSuccess({ callReturn: "-1" });
     }
   });
 
   test({
     description: 'should return a callreturn of 2 if after a response from getFeesCollected is 1, and getAfterRep returns a number <= 1.',
+    params: {
+      branch: '0xb1',
+      sender: '0xa1',
+      periodLength: '100',
+      onSent: noop,
+      onSuccess: function (t) {
+        assert.deepEqual(t, { callReturn: '2' });
+      },
+      onFailed: noop
+    },
     getCurrentPeriodProgress: function (periodLength) {
 			// return that we are in deed past the 50% mark of the reporting period.
       return 75;
     },
-    getCurrentPeriod: function (periodLength) {
-			// we will return that we are currently in period 100 just to use a number.
-      return 100;
-    },
-    getVotePeriod: function (branch, cb) {
-			// return the voting period as 98
-      cb(98);
-    },
-    getFeesCollected: function (branch, sender, period, cb) {
+    getFeesCollected: function (p, cb) {
 			// return feesCollected as 1 indicating that the fees have been collected.
-      assert.deepEqual(period, 97, 'period passed to getFeesCollected is expected to be 1 less than the period returned from getVotePeriod');
+      assert.deepEqual(p.period, 97, 'period passed to getFeesCollected is expected to be 1 less than the period returned from getVotePeriod');
       switch(getFeesCollectedCC) {
         case 2:
           getFeesCollectedCC++;
@@ -286,50 +241,41 @@ describe("collectFees", function () {
           break;
       }
     },
-    getGasPrice: function (cb) {
-      cb('14327');
+    collectFees: function (tx) {
+      assert.deepEqual(tx.branch, '0xb1');
+      assert.deepEqual(tx.sender, '0xa1');
+      assert.deepEqual(tx.periodLength, '100');
+      assert.isFunction(tx.onSent);
+      assert.isFunction(tx.onSuccess);
+      assert.isFunction(tx.onFailed);
+      assert.deepEqual(tx.tx, { value: '0x1aafa55e0' });
+      tx.onSuccess({ callReturn: "-1" });
     },
-    transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.CollectFees.collectFees.to);
-      assert.deepEqual(tx.params, [ '0xb1', '0xa1' ]);
-      assert.deepEqual(tx.gasPrice, '14327');
-      assert.deepEqual(tx.value, '0x9a174ebe0');
-      onSuccess({ callReturn: "-1" });
-    },
-    getAfterRep: function (branch, period, sender, cb) {
+    getAfterRep: function (p, cb) {
+      assert.deepEqual(p, { branch: '0xb1', period: 97, sender: '0xa1' });
       cb("0.5")
-    },
-    branch: '0xb1',
-    sender: '0xa1',
-    periodLength: '100',
-    onSent: function (t) {
-      console.log('sent', t);
-    },
-    onSuccess: function (t) {
-      assert.deepEqual(t, { callReturn: '2' });
-    },
-    onFailed: function (t) {
-      assert.deepEqual(t, { '-2': 'needs to be second half of reporting period to claim rep' });
     }
   });
 
   test({
     description: 'should return a callreturn of 1 if after a response from getFeesCollected is 1, and getAfterRep returns a number larger than 1',
+    params: {
+      branch: '0xb1',
+      sender: '0xa1',
+      periodLength: '100',
+      onSent: noop,
+      onSuccess: function (t) {
+        assert.deepEqual(t, { callReturn: '1' });
+      },
+      onFailed: noop
+    },
     getCurrentPeriodProgress: function (periodLength) {
 			// return that we are in deed past the 50% mark of the reporting period.
       return 75;
     },
-    getCurrentPeriod: function (periodLength) {
-			// we will return that we are currently in period 100 just to use a number.
-      return 100;
-    },
-    getVotePeriod: function (branch, cb) {
-			// return the voting period as 98
-      cb(98);
-    },
-    getFeesCollected: function (branch, sender, period, cb) {
+    getFeesCollected: function (p, cb) {
 			// return feesCollected as 1 indicating that the fees have been collected.
-      assert.deepEqual(period, 97, 'period passed to getFeesCollected is expected to be 1 less than the period returned from getVotePeriod');
+      assert.deepEqual(p.period, 97, 'period passed to getFeesCollected is expected to be 1 less than the period returned from getVotePeriod');
       switch(getFeesCollectedCC) {
         case 2:
           getFeesCollectedCC++;
@@ -341,30 +287,19 @@ describe("collectFees", function () {
           break;
       }
     },
-    getGasPrice: function (cb) {
-      cb('14327');
+    collectFees: function (tx) {
+      assert.deepEqual(tx.branch, '0xb1');
+      assert.deepEqual(tx.sender, '0xa1');
+      assert.deepEqual(tx.periodLength, '100');
+      assert.isFunction(tx.onSent);
+      assert.isFunction(tx.onSuccess);
+      assert.isFunction(tx.onFailed);
+      assert.deepEqual(tx.tx, { value: '0x1aafa55e0' });
+      tx.onSuccess({ callReturn: "-1" });
     },
-    transact: function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.CollectFees.collectFees.to);
-      assert.deepEqual(tx.params, [ '0xb1', '0xa1' ]);
-      assert.deepEqual(tx.gasPrice, '14327');
-      assert.deepEqual(tx.value, '0x9a174ebe0');
-      onSuccess({ callReturn: "-1" });
-    },
-    getAfterRep: function (branch, period, sender, cb) {
+    getAfterRep: function (p, cb) {
+      assert.deepEqual(p, { branch: '0xb1', period: 97, sender: '0xa1' });
       cb("200")
-    },
-    branch: '0xb1',
-    sender: '0xa1',
-    periodLength: '100',
-    onSent: function (t) {
-      console.log('sent', t);
-    },
-    onSuccess: function (t) {
-      assert.deepEqual(t, { callReturn: '1' });
-    },
-    onFailed: function (t) {
-      assert.deepEqual(t, { '-2': 'needs to be second half of reporting period to claim rep' });
     }
   });
 });
