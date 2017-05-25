@@ -42,8 +42,6 @@ export default class AccountConvert extends Component {
   validateAmount(amount) {
     const sanitizedAmount = (amount == null || amount === '') ? '' : amount;
 
-    console.log('sanitizedAmount -- ', sanitizedAmount);
-
     if (isNaN(parseFloat(sanitizedAmount)) || !isFinite(sanitizedAmount) || (sanitizedAmount > this.state.upperBound || sanitizedAmount <= 0)) {
       this.setState({
         amount: sanitizedAmount,
@@ -76,8 +74,6 @@ export default class AccountConvert extends Component {
   render() {
     const p = this.props;
     const s = this.state;
-
-    console.log('s -- ', s);
 
     return (
       <article className="account-convert account-sub-view">

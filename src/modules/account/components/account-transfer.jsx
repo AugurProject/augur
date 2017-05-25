@@ -36,30 +36,39 @@ export default class AccountTransfer extends Component {
     ];
 
     this.state = {
-      upperBound: this.props.eth,
+      upperBound: this.props.eth.value,
       selectedAsset: this.assetTypes[0].value,
       amount: '',
-      to: '',
-      isValid: false,
-      isAmountValid: false,
-      isAddressValid: false
+      address: '',
+      isValid: null,
+      isAmountValid: null,
+      isAddressValid: null
     };
 
     this.updateSelectedAsset = this.updateSelectedAsset.bind(this);
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (
+      this.state.isAmountValid !== nextState.isAmountValid ||
+      this.state.isAddressValid !== nextState.isAddressValid
+    ) {
+      this.validateForm(nextState.isAmountValid, nextState.isAddressValid);
+    }
   }
 
   updateSelectedAsset(selectedAsset) {
     let upperBound;
     switch (selectedAsset) {
       case this.ETH_TOKEN:
-        upperBound = this.props.ethTokens;
+        upperBound = this.props.ethTokens.value;
         break;
       case this.REP:
-        upperBound = this.props.rep;
+        upperBound = this.props.rep.value;
         break;
       case this.ETH:
       default:
-        upperBound = this.props.eth;
+        upperBound = this.props.eth.value;
     }
 
     this.setState({
@@ -68,52 +77,58 @@ export default class AccountTransfer extends Component {
     });
   }
 
-  checkValidity(amount, address) {
+  validateAmount(amount) {
     const amountToCheck = sanitizeArg(amount);
-    const addressToCheck = sanitizeArg(address);
 
-    let validity = {};
-
-    if (amountToCheck !== '' || addressToCheck !== '') {
-      if (
-        amountToCheck !== '' &&
-        (
-          isNaN(parseFloat(amountToCheck)) ||
-          !isFinite(amountToCheck) ||
-          (amountToCheck > this.state.upperBound || amountToCheck <= 0)
-        )
-      ) {
-        validity = {
-          amount: '',
-          isValid: false,
+    if (amountToCheck !== '') {
+      if (isNaN(parseFloat(amountToCheck)) || !isFinite(amountToCheck) || (amountToCheck > this.state.upperBound || amountToCheck <= 0)) {
+        this.setState({
           isAmountValid: false
-        };
-      }
-      if (addressToCheck !== '' && !isAddress(addressToCheck)) {
-        validity = {
-          ...validity,
-          address: '',
-          isValid: false,
-          isAddressValid: false
-        };
+        });
+        return;
       }
     }
 
     this.setState({
-      amount: validity.amount || amountToCheck,
-      address: validity.address || addressToCheck,
-      isValid: validity.isValid || true,
-      isAmountValid: validity.isAmountValid || true,
-      isAddressValid: validity.isAddressValid || true
+      amount: amountToCheck,
+      isAmountValid: true
     });
+  }
 
-    function sanitizeArg(arg) {
-      return (arg == null || arg === '') ? '' : arg;
+  validateAddress(address) {
+    const sanitizedAddress = sanitizeArg(address);
+
+    if (sanitizedAddress !== '') {
+      if (!isAddress(sanitizedAddress)) {
+        this.setState({
+          isAddressValid: false
+        });
+        return;
+      }
+    }
+
+    this.setState({
+      address: sanitizedAddress,
+      isAddressValid: true
+    });
+  }
+
+  validateForm(isAmountValid, isAddressValid) {
+    if (isAmountValid && isAddressValid) {
+      this.setState({
+        isValid: true
+      });
+    } else {
+      this.setState({
+        isValid: false
+      });
     }
   }
 
   render() {
     const s = this.state;
+
+    // console.log('s -- ', s);
 
     return (
       <article className="account-transfer account-sub-view">
@@ -122,49 +137,61 @@ export default class AccountTransfer extends Component {
           <p>Use this form to send your ETH Tokens, ETH, and REP to another address.</p>
         </aside>
         <div className="account-actions">
-          <DropDown
-            default={this.assetTypes[0].value}
-            options={this.assetTypes}
-            onChange={selectedAsset => this.updateSelectedAsset(selectedAsset)}
-          />
-          <Input
-            isIncrementable
-            incrementAmount={1}
-            max={s.upperBound}
-            min={0.1}
-            value={s.amount}
-            updateValue={amount => this.checkValidity(amount)}
-            onChange={amount => this.checkValidity(amount)}
-            placeholder={`Amount of ${this.assetTypes.find(asset => asset.value === s.selectedAsset).label} to send`}
-          />
-          <span
-            className={classNames('account-transfer-amount-error', {
-              'input-in-error': !s.isAmountValid
-            })}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+
+              console.log('submit transfer');
+            }}
           >
-            {`Amount must be between 0 and ${s.upperBound} ${this.assetTypes.find(asset => asset.value === s.selectedAsset).label}`}
-          </span>
-          <Input
-            value={s.to}
-            updateValue={to => this.setState({ to })}
-            onChange={to => this.setState({ to })}
-            placeholder={`Recipient address`}
-          />
-          <span
-            className={classNames('account-transfer-amount-error', {
-              'input-in-error': !s.isAddressValid
-            })}
-          >
-            Not a valid Ethereum address
-          </span>
-          <button
-            type="submit"
-            className={classNames('account-convert-submit', { 'form-is-valid': s.isValid })}
-          >
-            Transfer
-          </button>
+            <DropDown
+              default={this.assetTypes[0].value}
+              options={this.assetTypes}
+              onChange={selectedAsset => this.updateSelectedAsset(selectedAsset)}
+            />
+            <Input
+              isIncrementable
+              incrementAmount={1}
+              max={s.upperBound}
+              min={0.1}
+              value={s.amount}
+              updateValue={amount => this.validateAmount(amount)}
+              onChange={amount => this.validateAmount(amount)}
+              placeholder={`Amount of ${this.assetTypes.find(asset => asset.value === s.selectedAsset).label} to send`}
+            />
+            <span
+              className={classNames('account-transfer-amount-error', {
+                'input-in-error': s.isAmountValid !== null && !s.isAmountValid
+              })}
+            >
+              {`Amount must be between 0 and ${s.upperBound} ${this.assetTypes.find(asset => asset.value === s.selectedAsset).label}`}
+            </span>
+            <Input
+              value={s.address}
+              updateValue={address => this.validateAddress(address)}
+              onChange={address => this.validateAddress(address)}
+              placeholder={`Recipient address`}
+            />
+            <span
+              className={classNames('account-transfer-amount-error', {
+                'input-in-error': s.isAddressValid !== null && !s.isAddressValid
+              })}
+            >
+              Not a valid Ethereum address
+            </span>
+            <button
+              type="submit"
+              className={classNames('account-convert-submit', { 'form-is-valid': s.isValid })}
+            >
+              Transfer
+            </button>
+          </form>
         </div>
       </article>
     );
   }
+}
+
+function sanitizeArg(arg) {
+  return (arg == null || arg === '') ? '' : arg;
 }
