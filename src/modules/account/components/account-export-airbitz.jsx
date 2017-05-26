@@ -1,9 +1,14 @@
 import React, { Component, PropTypes } from 'react';
+import classNames from 'classnames';
+import zxcvbn from 'zxcvbn';
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
 import encryptPrivateKeyWithPassword from 'modules/auth/helpers/encrypt-privatekey-with-password';
 import generateDownloadAccountLink from 'modules/auth/helpers/generate-download-account-link';
 import Input from 'modules/common/components/input';
 import Spinner from 'modules/common/components/spinner';
+
+import { REQUIRED_PASSWORD_STRENGTH } from 'modules/auth/constants/password-strength';
 
 export default class AccountExportAirbitz extends Component {
   static propTypes = {
@@ -14,24 +19,81 @@ export default class AccountExportAirbitz extends Component {
     super(props);
 
     this.state = {
-      pass: '',
-      canSubmit: false,
+      password: '',
+      passwordConfirm: '',
+      isStrongPass: false,
+      isPasswordConfirmDisplayable: false,
+      passwordSuggestions: [],
+      isValid: false,
       generatingKeyFile: false,
       stringifiedKeystore: null,
       downloadAccountDataString: null,
-      downloadAccountFileName: null
+      downloadAccountFileName: null,
+      animationSpeed: 0
     };
 
-    this.handleSubmitPassword = this.handleSubmitPassword.bind(this);
+    this.updateAnimationSpeedValue = this.updateAnimationSpeedValue.bind(this);
+    this.generateEncryptedKeyFile = this.generateEncryptedKeyFile.bind(this);
+    this.scorePassword = this.scorePassword.bind(this);
   }
 
-  handleSubmitPassword() {
+  componentDidMount() {
+    this.updateAnimationSpeedValue();
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (this.state.passwordConfirm.length && !nextState.isStrongPass) this.setState({ passwordConfirm: '' });
+
+    if (this.state.passwordConfirm !== nextState.passwordConfirm) {
+      if (nextState.password === nextState.passwordConfirm) {
+        this.setState({ isValid: true });
+      } else {
+        this.setState({ isValid: false });
+      }
+    }
+
+    if (this.state.isValid !== nextState.isValid && nextState.isValid) {
+      setTimeout(() => {
+        this.generateEncryptedKeyFile();
+      }, nextState.animationSpeed); // Allow for animations before calling blocking method
+    }
+  }
+
+  scorePassword = (password) => {
+    const scoreResult = zxcvbn(password);
+    const passwordSuggestions = scoreResult.feedback.suggestions;
+    const currentScore = scoreResult.score;
+
+    console.log('scoreResult -- ', scoreResult);
+
+    this.setState({
+      passwordSuggestions
+    });
+
+    if (passwordSuggestions.length && !this.state.isPasswordsSuggestionDisplayable) {
+      this.setState({ isPasswordsSuggestionDisplayable: true });
+    }
+
+    if (currentScore >= REQUIRED_PASSWORD_STRENGTH) {
+      this.setState({
+        isStrongPass: true,
+        isPasswordConfirmDisplayable: true
+      });
+    } else if (this.state.isStrongPass === true) {
+      this.setState({
+        isStrongPass: false,
+        isPasswordConfirmDisplayable: false
+      });
+    }
+  }
+
+  generateEncryptedKeyFile() {
     console.log('handle it');
     this.setState({
       generatingKeyFile: true
     }, () => {
       encryptPrivateKeyWithPassword(
-        this.state.pass,
+        this.state.password,
         (keystore) => {
           console.log('keystore -- ', keystore);
 
@@ -44,10 +106,14 @@ export default class AccountExportAirbitz extends Component {
     });
   }
 
+  updateAnimationSpeedValue() {
+    this.setState({
+      animationSpeed: parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-very-fast'), 10)
+    });
+  }
+
   render() {
     const s = this.state;
-
-    console.log('s -- ', s);
 
     return (
       <article className="account-export">
@@ -60,37 +126,80 @@ export default class AccountExportAirbitz extends Component {
           }}
         >
           <Input
+            autoFocus
+            canToggleVisibility
+            className={classNames('account-export-password', { 'input-error': s.authError })}
+            disabled={s.generatingKeyFile}
+            name="password"
             type="password"
-            value={s.pass}
-            onChange={(pass) => {
-              if (pass.length) {
-                this.setState({
-                  canSubmit: true
-                });
-              } else {
-                this.setState({
-                  canSubmit: false
-                });
-              }
-
-              this.setState({
-                pass
-              });
+            placeholder="Password"
+            value={s.password}
+            onChange={(password) => {
+              this.setState({ password });
+              this.scorePassword(password);
             }}
           />
-          <button
-            type="submit"
+          <Input
+            className={classNames('account-export-password-confirm', {
+              'input-error': s.authError,
+            })}
+            disabled={!s.isStrongPass || s.generatingKeyFile}
+            shouldMatchValue
+            comparisonValue={s.password}
+            name="password-confirm"
+            type="password"
+            placeholder="Confirm Password"
+            value={s.passwordConfirm}
+            onChange={(passwordConfirm) => {
+              this.setState({ passwordConfirm });
+            }}
+          />
+          <div
+            className={classNames('account-export-password-suggestions', {})}
           >
-            {s.generatingKeyFile ?
-              <Spinner /> :
-              'Generate'
-            }
-          </button>
+            <ul>
+              {s.passwordSuggestions.map((suggestion, i) => (
+                <li
+                  key={suggestion}
+                >
+                  {suggestion}
+                </li>
+              ))}
+            </ul>
+          </div>
+          {s.generatingKeyFile &&
+            <div
+              className={classNames('account-export-generating-key-file', {})}
+            >
+              <span>Generating Encrypted Key File</span>
+              <Spinner />
+            </div>
+          }
         </form>
       </article>
     );
   }
 }
+
+// <Input
+//   type="password"
+//   value={s.pass}
+//   onChange={(pass) => {
+//     if (pass.length) {
+//       this.setState({
+//         canSubmit: true
+//       });
+//     } else {
+//       this.setState({
+//         canSubmit: false
+//       });
+//     }
+//
+//     this.setState({
+//       pass
+//     });
+//   }}
+// />
 
 // 10 characters min
 
