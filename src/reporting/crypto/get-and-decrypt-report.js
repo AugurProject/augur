@@ -12,7 +12,7 @@ function getAndDecryptReport(p, callback) {
     event: p.event
   }, function (result) {
     if (!result || result.error) return callback(result);
-    callback(parseAndDecryptReport(result), p.secret);
+    callback(parseAndDecryptReport(result, p.secret));
   });
 }
 

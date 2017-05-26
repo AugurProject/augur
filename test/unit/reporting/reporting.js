@@ -2048,7 +2048,7 @@ describe("closeEventMarkets", function () {
     augur.api.CloseMarket.closeMarket = closeMarket;
   });
   var test = function (t) {
-    it.only(JSON.stringify(t), function (done) {
+    it(JSON.stringify(t), function (done) {
       augur.api.Events.getMarkets = t.getMarkets;
       augur.api.Markets.getWinningOutcomes = t.getWinningOutcomes;
       augur.api.CloseMarket.closeMarket = t.closeMarket;
