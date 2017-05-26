@@ -50,7 +50,7 @@ export default class AccountExport extends Component {
           <h4>Export Key File</h4>
           <p>Use either the QR code or download link save a copy of the key file for import into a wallet.</p>
           <p className="notice">NOTE: Augur does not store any user account information and therefore has no ability to restore or recover lost accounts.</p>
-          <p className="warning">Do NOT share your downloaded account key file or QR code with anyone. Your funds could be stolen.</p>
+          <p className="warning">Do NOT share your downloaded account key file or QR code with anyone as your funds could be stolen.</p>
         </aside>
         <div
           ref={(exportData) => { this.exportData = exportData; }}

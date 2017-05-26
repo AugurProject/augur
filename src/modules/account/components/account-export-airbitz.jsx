@@ -3,6 +3,7 @@ import React, { Component, PropTypes } from 'react';
 import encryptPrivateKeyWithPassword from 'modules/auth/helpers/encrypt-privatekey-with-password';
 import generateDownloadAccountLink from 'modules/auth/helpers/generate-download-account-link';
 import Input from 'modules/common/components/input';
+import Spinner from 'modules/common/components/spinner';
 
 export default class AccountExportAirbitz extends Component {
   static propTypes = {
@@ -15,6 +16,7 @@ export default class AccountExportAirbitz extends Component {
     this.state = {
       pass: '',
       canSubmit: false,
+      generatingKeyFile: false,
       stringifiedKeystore: null,
       downloadAccountDataString: null,
       downloadAccountFileName: null
@@ -23,31 +25,45 @@ export default class AccountExportAirbitz extends Component {
     this.handleSubmitPassword = this.handleSubmitPassword.bind(this);
   }
 
-  handleSubmitPassword(e) {
-    e.preventDefault();
-    encryptPrivateKeyWithPassword(
-      this.state.passwordInput,
-      keystore => this.setState({
-        ...generateDownloadAccountLink(keystore.address, keystore)
-      })
-    );
+  handleSubmitPassword() {
+    console.log('handle it');
+    this.setState({
+      generatingKeyFile: true
+    }, () => {
+      encryptPrivateKeyWithPassword(
+        this.state.pass,
+        (keystore) => {
+          console.log('keystore -- ', keystore);
+
+          this.setState({
+            generatingKeyFile: false,
+            ...generateDownloadAccountLink(keystore.address, keystore)
+          });
+        }
+      );
+    });
   }
 
   render() {
     const s = this.state;
+
+    console.log('s -- ', s);
 
     return (
       <article className="account-export">
         <form
           onSubmit={(e) => {
             e.preventDefault();
+            console.log('submt');
+
+            this.handleSubmitPassword();
           }}
         >
           <Input
             type="password"
             value={s.pass}
             onChange={(pass) => {
-              if (pass.length >= 10) {
+              if (pass.length) {
                 this.setState({
                   canSubmit: true
                 });
@@ -62,6 +78,14 @@ export default class AccountExportAirbitz extends Component {
               });
             }}
           />
+          <button
+            type="submit"
+          >
+            {s.generatingKeyFile ?
+              <Spinner /> :
+              'Generate'
+            }
+          </button>
         </form>
       </article>
     );
