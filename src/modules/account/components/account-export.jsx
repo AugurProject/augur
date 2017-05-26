@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import QRCode from 'qrcode.react';
 
 import Link from 'modules/link/components/link';
+import AccountExportAirbitz from 'modules/account/components/account-export-airbitz';
 
 import debounce from 'utils/debounce';
 import getValue from 'utils/get-value';
@@ -72,7 +73,7 @@ export default class AccountExport extends Component {
             </div>
           }
           {p.airbitzAccount &&
-            <span>TODO -- airbitz export</span>
+            <AccountExportAirbitz />
           }
         </div>
       </article>

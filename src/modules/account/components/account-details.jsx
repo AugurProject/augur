@@ -112,7 +112,7 @@ export default class AccountDetails extends Component {
               <button
                 className="unstyled"
                 onClick={() => {
-                  if (!s.nameInputVisible) this.toggleNameInputVisibility();
+                  if (!s.nameInputVisible && !p.airbitzAccount) this.toggleNameInputVisibility();
                 }}
               >
                 <span
@@ -144,12 +144,14 @@ export default class AccountDetails extends Component {
                 }
               </CSSTransitionGroup>
             </button>
-            <button
-              className="unstyled account-details-airbitz"
-              onClick={() => p.onAirbitzManageAccount()}
-            >
-              Manage Airbitz Account
-            </button>
+            {p.airbitzAccount && p.onAirbitzManageAccount &&
+              <button
+                className="unstyled account-details-airbitz"
+                onClick={() => p.onAirbitzManageAccount()}
+              >
+                Manage Airbitz Account
+              </button>
+            }
           </div>
         </div>
         <Link {...p.signOut} >Sign Out</Link>
