@@ -1,0 +1,31 @@
+.account-export-airbitz {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+
+  div.account-export-password {
+    z-index: @above-all-content;
+  }
+
+  div.account-export-password-confirm {
+    transition-duration: @animation-speed-very-fast;
+    transition-property: transform;
+    transition-timing-function: @animation-default-type;
+
+    &.password-confirm-enter {
+      transform: translateY(-100%);
+
+      &.password-confirm-enter-active {
+        transform: translateY(0);
+      }
+    }
+
+    &.password-confirm-leave {
+      transform: translateY(0);
+
+      &.password-confirm-leave-active {
+        transform: translateY(-100%);
+      }
+    }
+  }
+}

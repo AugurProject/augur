@@ -116,7 +116,7 @@ export default class AccountExportAirbitz extends Component {
     const s = this.state;
 
     return (
-      <article className="account-export">
+      <article className="account-export-airbitz">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -139,21 +139,30 @@ export default class AccountExportAirbitz extends Component {
               this.scorePassword(password);
             }}
           />
-          <Input
-            className={classNames('account-export-password-confirm', {
-              'input-error': s.authError,
-            })}
-            disabled={!s.isStrongPass || s.generatingKeyFile}
-            shouldMatchValue
-            comparisonValue={s.password}
-            name="password-confirm"
-            type="password"
-            placeholder="Confirm Password"
-            value={s.passwordConfirm}
-            onChange={(passwordConfirm) => {
-              this.setState({ passwordConfirm });
-            }}
-          />
+          <CSSTransitionGroup
+            component="div"
+            transitionName="password-confirm"
+            transitionEnterTimeout={s.animationSpeed}
+            transitionLeaveTimeout={s.animationSpeed}
+          >
+            {s.isStrongPass &&
+              <Input
+                className={classNames('account-export-password-confirm', {
+                  'input-error': s.authError,
+                })}
+                disabled={!s.isStrongPass || s.generatingKeyFile}
+                shouldMatchValue
+                comparisonValue={s.password}
+                name="password-confirm"
+                type="password"
+                placeholder="Confirm Password"
+                value={s.passwordConfirm}
+                onChange={(passwordConfirm) => {
+                  this.setState({ passwordConfirm });
+                }}
+              />
+            }
+          </CSSTransitionGroup>
           <div
             className={classNames('account-export-password-suggestions', {})}
           >
