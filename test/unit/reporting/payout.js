@@ -1,204 +1,200 @@
 "use strict";
 
 var assert = require("chai").assert;
+var abi = require('augur-abi');
 var noop = require("../../../src/utils/noop");
+var proxyquire = require('proxyquire');
 var augur = new (require('../../../src/'))();
 var clearCallCounts = require("../../tools").clearCallCounts;
+var eventsAPI = require("augur-contracts").api.events;
 // 11 tests total
 
-describe("payout.closeMarket", function () {
-	// 2 tests total
-  var transact;
-  var currentAssertions;
-  before(function () {
-    transact = augur.transact;
-    augur.transact = function (tx, onSent, onSuccess, onFailed) {
-			// if onSent is defined then callbacks where passed, check that they are functions.
-      if (onSent) {
-        assert.isFunction(onSent);
-        assert.isFunction(onSuccess);
-        assert.isFunction(onFailed);
-      }
-			// pass transaction object to assertions
-      currentAssertions(tx);
-    };
-  });
+// describe("payout.closeMarket", function () {
+// 	// 2 tests total
+//   var transact;
+//   var currentAssertions;
+//   before(function () {
+//     transact = augur.transact;
+//     augur.transact = function (tx, onSent, onSuccess, onFailed) {
+// 			// if onSent is defined then callbacks where passed, check that they are functions.
+//       if (onSent) {
+//         assert.isFunction(onSent);
+//         assert.isFunction(onSuccess);
+//         assert.isFunction(onFailed);
+//       }
+// 			// pass transaction object to assertions
+//       currentAssertions(tx);
+//     };
+//   });
+//
+//   after(function () {
+//     augur.transact = transact;
+//   });
+//
+//   var test = function (t) {
+//     it(t.testDescription, function () {
+//       currentAssertions = t.assertions;
+//       augur.closeMarket(t.branch, t.market, t.sender, t.onSent, t.onSuccess, t.onFailed);
+//     });
+//   };
+//
+//   test({
+//     testDescription: "Should handle sending a transaction to close a market",
+//     assertions: function (out) {
+//       assert.deepEqual(out.to, augur.store.getState().contractsAPI.functions.CloseMarket.closeMarket.to);
+//       assert.deepEqual(out.label, 'Close Market');
+//       assert.deepEqual(out.method, 'closeMarket');
+//       assert.deepEqual(out.params, [
+//         '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d', '09f7e3e3fbc7d5b4c7e9e8fb3013efb22a47b326e7461c7655a2e8466ac27f9b', '2c72686849275a98be3d3d06f062d3fbb3821cc30890218721cce9c67c91157e'
+//       ]);
+//     },
+//     branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
+//     market: '09f7e3e3fbc7d5b4c7e9e8fb3013efb22a47b326e7461c7655a2e8466ac27f9b',
+//     sender: '2c72686849275a98be3d3d06f062d3fbb3821cc30890218721cce9c67c91157e',
+//     onSent: noop,
+//     onSuccess: noop,
+//     onFailed: noop
+//   });
+//   test({
+//     testDescription: "Should handle sending a transaction to close a market with a single object as the argument",
+//     assertions: function (out) {
+//       assert.deepEqual(out.to, augur.store.getState().contractsAPI.functions.CloseMarket.closeMarket.to);
+//       assert.deepEqual(out.label, 'Close Market');
+//       assert.deepEqual(out.method, 'closeMarket');
+//       assert.deepEqual(out.params, [
+//         '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d', '09f7e3e3fbc7d5b4c7e9e8fb3013efb22a47b326e7461c7655a2e8466ac27f9b', '2c72686849275a98be3d3d06f062d3fbb3821cc30890218721cce9c67c91157e'
+//       ]);
+//     },
+//     branch: {
+//       branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
+//       market: '09f7e3e3fbc7d5b4c7e9e8fb3013efb22a47b326e7461c7655a2e8466ac27f9b',
+//       sender: '2c72686849275a98be3d3d06f062d3fbb3821cc30890218721cce9c67c91157e',
+//       onSent: noop,
+//       onSuccess: noop,
+//       onFailed: noop
+//     }
+//   });
+// });
 
-  after(function () {
-    augur.transact = transact;
-  });
-
+describe("augur.trading.payout.claimProceeds", function () {
+	// 6 tests total
+	var Cash;
+	var Shares;
+	var CallReturn;
+	var getTransactionReceipt = function (hash, cb) {
+		assert.deepEqual(hash, '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055');
+		assert.isFunction(cb);
+		var logs = [];
+		for (var i = 0, numLogs = Cash.length; i < numLogs; i++) {
+			logs.push({
+				topics: [eventsAPI.payout.signature, '0xdeadbeef', '9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd'],
+				blockNumber: '1000000000',
+				transactionHash: hash,
+				removed: false,
+				data: [
+					Cash[i],
+					abi.fix('20000000'),
+					Shares[i],
+					'15000000000',
+				]
+			});
+		}
+		cb({ logs: logs });
+	};
+	var mockClaimProceeds = function(p) {
+		assert.isFunction(p.onSuccess);
+		p.onSuccess({
+			callReturn: CallReturn,
+			hash: '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055',
+			transactionHash: '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055'
+		});
+	};
   var test = function (t) {
     it(t.testDescription, function () {
-      currentAssertions = t.assertions;
-      augur.closeMarket(t.branch, t.market, t.sender, t.onSent, t.onSuccess, t.onFailed);
-    });
-  };
+			var apiClaimProceeds = augur.api.CloseMarket.claimProceeds;
+			var claimProceeds = proxyquire('../../../src/trading/payout/claim-proceeds', {
+				'../../rpc-interface': {
+					getTransactionReceipt: getTransactionReceipt
+				}
+			});
+			Cash = t.receiptCash || [];
+			Shares = t.receiptShares || [];
+			CallReturn = t.callReturn || "1";
+			augur.api.CloseMarket.claimProceeds = mockClaimProceeds;
 
-  test({
-    testDescription: "Should handle sending a transaction to close a market",
-    assertions: function (out) {
-      assert.deepEqual(out.to, augur.store.getState().contractsAPI.functions.CloseMarket.closeMarket.to);
-      assert.deepEqual(out.label, 'Close Market');
-      assert.deepEqual(out.method, 'closeMarket');
-      assert.deepEqual(out.params, [
-        '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d', '09f7e3e3fbc7d5b4c7e9e8fb3013efb22a47b326e7461c7655a2e8466ac27f9b', '2c72686849275a98be3d3d06f062d3fbb3821cc30890218721cce9c67c91157e'
-      ]);
-    },
-    branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
-    market: '09f7e3e3fbc7d5b4c7e9e8fb3013efb22a47b326e7461c7655a2e8466ac27f9b',
-    sender: '2c72686849275a98be3d3d06f062d3fbb3821cc30890218721cce9c67c91157e',
-    onSent: noop,
-    onSuccess: noop,
-    onFailed: noop
-  });
-  test({
-    testDescription: "Should handle sending a transaction to close a market with a single object as the argument",
-    assertions: function (out) {
-      assert.deepEqual(out.to, augur.store.getState().contractsAPI.functions.CloseMarket.closeMarket.to);
-      assert.deepEqual(out.label, 'Close Market');
-      assert.deepEqual(out.method, 'closeMarket');
-      assert.deepEqual(out.params, [
-        '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d', '09f7e3e3fbc7d5b4c7e9e8fb3013efb22a47b326e7461c7655a2e8466ac27f9b', '2c72686849275a98be3d3d06f062d3fbb3821cc30890218721cce9c67c91157e'
-      ]);
-    },
-    branch: {
-      branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
-      market: '09f7e3e3fbc7d5b4c7e9e8fb3013efb22a47b326e7461c7655a2e8466ac27f9b',
-      sender: '2c72686849275a98be3d3d06f062d3fbb3821cc30890218721cce9c67c91157e',
-      onSent: noop,
-      onSuccess: noop,
-      onFailed: noop
-    }
-  });
-});
-
-describe("payout.claimProceeds", function () {
-	// 7 tests total
-  var transact;
-  var receipt;
-  var callReturn;
-  var Cash;
-  var Shares;
-  before(function () {
-    transact = augur.transact;
-    receipt = augur.rpc.getTransactionReceipt;
-    augur.transact = function (tx, onSent, onSuccess, onFailed) {
-      assert.deepEqual(tx.params, ['0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d', '9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd']);
-      onSuccess({ callReturn: callReturn, hash: '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055' });
-    };
-    augur.rpc.getTransactionReceipt = function (hash, cb) {
-      var logs = [];
-      for (var i = 0, numLogs = Cash.length; i < numLogs; i++) {
-        logs.push({
-          topics: [augur.store.getState().contractsAPI.events.payout.signature],
-          blockNumber: '1000000000',
-          transactionHash: 'd898cbf2afbc9e10fa5936ec1f5666d3ea288ea79570e92dbf16ce57e3104f93',
-          removed: false,
-          data: [
-            Cash[i],
-            augur.abi.fix('20000000'),
-            Shares[i],
-            '15000000000',
-          ]
-        });
-      }
-      cb({ logs: logs });
-    };
-  });
-  after(function () {
-    augur.transact = transact;
-    augur.rpc.getTransactionReceipt = receipt;
-  });
-  var test = function (t) {
-    it(t.testDescription, function () {
-      callReturn = t.callReturn || "1";
-      Cash = t.receiptCash || [];
-      Shares = t.receiptShares || [];
-      augur.claimProceeds(t.branch, t.market, t.description, t.onSent, t.onSuccess, t.onFailed);
+      claimProceeds(t.params);
+			augur.api.CloseMarket.claimProceeds = apiClaimProceeds;
     });
   };
 
   test({
     testDescription: 'should claim Proceeds for a given market if user has shares on the winning outcome',
-    receiptCash: [augur.abi.fix('3000')],
-    receiptShares: [augur.abi.fix('100')],
-    branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
-    market: '9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd',
-    description: 'This market is extremely interesting and thought provoking.',
-    onSent: noop,
-    onSuccess: function (res) {
-			// onSuccess will act as the assertions function because it is expected to be called.
-      assert.equal(res.hash, '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055');
-      assert.equal(res.callReturn.cashPayout, '3000');
-      assert.equal(res.callReturn.cashBalance, '20000000');
-      assert.equal(res.callReturn.transactionHash, 'd898cbf2afbc9e10fa5936ec1f5666d3ea288ea79570e92dbf16ce57e3104f93')
-      assert.equal(res.callReturn.shares, '100');
-    },
-    onFailed: noop
+		receiptCash: [abi.fix(3000)],
+		receiptShares: [abi.fix(100)],
+		params: {
+			branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
+	    market: '9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd',
+			onSent: noop,
+	    onSuccess: function (res) {
+				// onSuccess will act as the assertions function because it is expected to be called.
+				assert.deepEqual(res.hash, '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055');
+				assert.equal(res.transactionHash, '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055');
+				assert.deepEqual(res.callReturn.sender, '0x00000000000000000000000000000000deadbeef');
+				assert.deepEqual(res.callReturn.market, '9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd');
+	      assert.deepEqual(res.callReturn.cashPayout, '3000');
+	      assert.deepEqual(res.callReturn.cashBalance, '20000000');
+	      assert.deepEqual(res.callReturn.transactionHash, '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055')
+	      assert.deepEqual(res.callReturn.shares, '100');
+	    },
+	    onFailed: noop
+		}
   });
 
   test({
     testDescription: 'should claim Proceeds on a market with multiple logs for the transaction and should choose the last log with the correct signature',
     receiptCash: [augur.abi.fix('3000'), augur.abi.fix('1200'), augur.abi.fix('800')],
     receiptShares: [augur.abi.fix('100'), augur.abi.fix('25'), augur.abi.fix('15')],
-    branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
-    market: '9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd',
-    description: 'This market is extremely interesting and thought provoking.',
-    onSent: noop,
-    onSuccess: function (res) {
-			// onSuccess will act as the assertions function because it is expected to be called.
-      assert.equal(res.hash, '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055');
-      assert.equal(res.callReturn.cashPayout, '3000');
-      assert.equal(res.callReturn.cashBalance, '20000000');
-      assert.equal(res.callReturn.transactionHash, 'd898cbf2afbc9e10fa5936ec1f5666d3ea288ea79570e92dbf16ce57e3104f93')
-      assert.equal(res.callReturn.shares, '100');
-    },
-    onFailed: noop
+		params: {
+			branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
+	    market: '9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd',
+	    onSent: noop,
+	    onSuccess: function (res) {
+				// onSuccess will act as the assertions function because it is expected to be called.
+				assert.equal(res.hash, '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055');
+				assert.equal(res.transactionHash, '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055');
+				assert.deepEqual(res.callReturn.sender, '0x00000000000000000000000000000000deadbeef');
+				assert.deepEqual(res.callReturn.market, '9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd');
+	      assert.equal(res.callReturn.cashPayout, '3000');
+	      assert.equal(res.callReturn.cashBalance, '20000000');
+	      assert.equal(res.callReturn.transactionHash, '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055')
+	      assert.equal(res.callReturn.shares, '100');
+	    },
+	    onFailed: noop
+		}
   });
 
   test({
     testDescription: 'should get 0 proceeds if the user holds no winning positions',
-    branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
-    market: '9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd',
-    description: 'This market is extremely interesting and thought provoking.',
-    onSent: noop,
-    onSuccess: function (res) {
-			// onSuccess will act as the assertions function because it is expected to be called.
-      assert.equal(res.hash, '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055');
-      assert.equal(res.callReturn, '1');
-    },
-    onFailed: noop
-  });
-
-  test({
-    testDescription: 'should claim Proceeds on a market with multiple logs for the transaction and should choose the last log with the correct signature But with a single arg passed to claimProceeds',
-    receiptCash: [augur.abi.fix('3000'), augur.abi.fix('1200')],
-    receiptShares: [augur.abi.fix('100'), augur.abi.fix('25')],
-    branch: {
-      branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
-      market: '9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd',
-      description: 'This market is extremely interesting and thought provoking.',
-      onSent: noop,
-      onSuccess: function (res) {
+		params: {
+			branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
+	    market: '9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd',
+	    onSent: noop,
+	    onSuccess: function (res) {
 				// onSuccess will act as the assertions function because it is expected to be called.
-        assert.equal(res.hash, '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055');
-        assert.equal(res.callReturn.cashPayout, '3000');
-        assert.equal(res.callReturn.cashBalance, '20000000');
-        assert.equal(res.callReturn.transactionHash, 'd898cbf2afbc9e10fa5936ec1f5666d3ea288ea79570e92dbf16ce57e3104f93')
-        assert.equal(res.callReturn.shares, '100');
-      },
-      onFailed: noop
-    }
+	      assert.equal(res.hash, '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055');
+				assert.equal(res.transactionHash, '614eba37f9829f16d755243d5da9dd545c1a964b0ade8a0f215488fda0889055');
+	      assert.equal(res.callReturn, '1');
+	    },
+	    onFailed: noop
+		}
   });
 
   test({
     testDescription: 'should fail to claim any proceeds if transact responds that trader does not exist',
     callReturn: "-1",
-    branch: {
+    params: {
       branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
       market: '9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd',
-      description: 'This market is extremely interesting and thought provoking.',
       onSent: noop,
       onSuccess: noop,
       onFailed: function (res) {
@@ -210,34 +206,36 @@ describe("payout.claimProceeds", function () {
   test({
     testDescription: 'should fail to claim any proceeds if transact responds that the branch is invalid',
     callReturn: "-8",
-    branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
-    market: '9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd',
-    description: 'This market is extremely interesting and thought provoking.',
-    onSent: noop,
-    onSuccess: noop,
-    onFailed: function (res) {
-      assert.deepEqual(res, '-8');
-    }
+		params: {
+			branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
+	    market: '9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd',
+	    onSent: noop,
+	    onSuccess: noop,
+	    onFailed: function (res) {
+	      assert.deepEqual(res, '-8');
+	    }
+		}
   });
 
   test({
     testDescription: 'should fail to claim any proceeds if transact responds that the market is not resolved',
     callReturn: "0",
-    branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
-    market: '9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd',
-    description: 'This market is extremely interesting and thought provoking.',
-    onSent: noop,
-    onSuccess: noop,
-    onFailed: function (res) {
-      assert.deepEqual(res, '0');
-    }
+		params: {
+			branch: '0a1d18a485f77dcee53ea81f1010276b67153b745219afc4eac4288045f5ca3d',
+	    market: '9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd',
+	    onSent: noop,
+	    onSuccess: noop,
+	    onFailed: function (res) {
+	      assert.deepEqual(res, '0');
+	    }
+		}
   });
 });
 
 describe("payout.claimMarketsProceeds", function () {
 	// 2 tests total
-  var claimProceeds = augur.claimProceeds;
-  var getWinningOutcomes = augur.getWinningOutcomes;
+  var claimProceeds = augur.api.CloseMarket.claimProceeds;
+  var getWinningOutcomes = augur.api.Markets.getWinningOutcomes;
   var finished;
   var callCounts = {
     getWinningOutcomes: 0,
@@ -245,15 +243,15 @@ describe("payout.claimMarketsProceeds", function () {
   };
   afterEach(function () {
     clearCallCounts(callCounts);
-    augur.claimProceeds = claimProceeds;
-    augur.getWinningOutcomes = getWinningOutcomes;
+    augur.api.CloseMarket.claimProceeds = claimProceeds;
+    augur.api.Markets.getWinningOutcomes = getWinningOutcomes;
   });
   var test = function (t) {
     it(t.testDescription, function (done) {
       finished = done;
-      augur.claimProceeds = t.claimProceeds;
-      augur.getWinningOutcomes = t.getWinningOutcomes;
-      augur.claimMarketsProceeds(t.branch, t.markets, t.callback);
+      augur.api.CloseMarket.claimProceeds = t.claimProceeds;
+      augur.api.Markets.getWinningOutcomes = t.getWinningOutcomes;
+      augur.trading.payout.claimMarketsProceeds({}, t.branch, t.markets, t.callback);
     });
   };
   test({
