@@ -139,42 +139,47 @@ export default class AccountExportAirbitz extends Component {
               this.scorePassword(password);
             }}
           />
-          <CSSTransitionGroup
-            component="div"
-            transitionName="password-confirm"
-            transitionEnterTimeout={s.animationSpeed}
-            transitionLeaveTimeout={s.animationSpeed}
-          >
-            {s.isStrongPass &&
-              <Input
-                className={classNames('account-export-password-confirm', {
-                  'input-error': s.authError,
-                })}
-                disabled={!s.isStrongPass || s.generatingKeyFile}
-                shouldMatchValue
-                comparisonValue={s.password}
-                name="password-confirm"
-                type="password"
-                placeholder="Confirm Password"
-                value={s.passwordConfirm}
-                onChange={(passwordConfirm) => {
-                  this.setState({ passwordConfirm });
-                }}
-              />
-            }
-          </CSSTransitionGroup>
-          <div
-            className={classNames('account-export-password-suggestions', {})}
-          >
-            <ul>
-              {s.passwordSuggestions.map((suggestion, i) => (
-                <li
-                  key={suggestion}
-                >
-                  {suggestion}
-                </li>
-              ))}
-            </ul>
+          <div className="account-export-overlappers">
+            <CSSTransitionGroup
+              component="div"
+              transitionName="password-suggestions"
+              transitionEnterTimeout={s.animationSpeed}
+              transitionLeaveTimeout={s.animationSpeed}
+            >
+              <ul className="account-export-password-suggestions">
+                {s.passwordSuggestions.map((suggestion, i) => (
+                  <li
+                    key={suggestion}
+                  >
+                    {suggestion}
+                  </li>
+                ))}
+              </ul>
+            </CSSTransitionGroup>
+            <CSSTransitionGroup
+              component="div"
+              transitionName="password-confirm"
+              transitionEnterTimeout={s.animationSpeed}
+              transitionLeaveTimeout={s.animationSpeed}
+            >
+              {s.isStrongPass &&
+                <Input
+                  className={classNames('account-export-password-confirm', {
+                    'input-error': s.authError,
+                  })}
+                  disabled={!s.isStrongPass || s.generatingKeyFile}
+                  shouldMatchValue
+                  comparisonValue={s.password}
+                  name="password-confirm"
+                  type="password"
+                  placeholder="Confirm Password"
+                  value={s.passwordConfirm}
+                  onChange={(passwordConfirm) => {
+                    this.setState({ passwordConfirm });
+                  }}
+                />
+              }
+            </CSSTransitionGroup>
           </div>
           {s.generatingKeyFile &&
             <div

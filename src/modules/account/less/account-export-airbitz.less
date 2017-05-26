@@ -7,24 +7,39 @@
     z-index: @above-all-content;
   }
 
-  div.account-export-password-confirm {
-    transition-duration: @animation-speed-very-fast;
-    transition-property: transform;
-    transition-timing-function: @animation-default-type;
+  .account-export-overlappers {
+    position: relative;
 
-    &.password-confirm-enter {
-      transform: translateY(-100%);
-
-      &.password-confirm-enter-active {
-        transform: translateY(0);
-      }
+    .account-export-password-suggestions {
+      color: @color-orange-light;
+      left: 1em;
+      list-style-type: disc;
+      padding: 0.4em 0 0 0.4em;
+      position: absolute;
+      top: 0;
     }
 
-    &.password-confirm-leave {
-      transform: translateY(0);
+    div.account-export-password-confirm {
+      border-top: none;
+      transition-duration: @animation-speed-very-fast;
+      transition-property: transform;
+      transition-timing-function: @animation-default-type;
+      z-index: @above-all-content;
 
-      &.password-confirm-leave-active {
+      &.password-confirm-enter {
         transform: translateY(-100%);
+
+        &.password-confirm-enter-active {
+          transform: translateY(calc(~"0% - 1px"));
+        }
+      }
+
+      &.password-confirm-leave {
+        transform: translateY(0);
+
+        &.password-confirm-leave-active {
+          transform: translateY(-100%);
+        }
       }
     }
   }
