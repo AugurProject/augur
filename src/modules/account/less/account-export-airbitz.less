@@ -3,6 +3,23 @@
   flex: 1;
   justify-content: center;
 
+  form {
+    z-index: @above-all-content;
+
+    &.export-form-leave {
+      opacity: 1;
+      transform: translateY(0);
+
+      &.export-form-leave-active {
+        opacity: 0;
+        transform: translateY(-10%);
+        transition-duration: @animation-speed-very-fast;
+        transition-property: opacity, transform;
+        transition-timing-function: @animation-default-type;
+      }
+    }
+  }
+
   div.account-export-password {
     z-index: @above-all-content;
   }

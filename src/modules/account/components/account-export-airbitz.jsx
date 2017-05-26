@@ -25,7 +25,9 @@ export default class AccountExportAirbitz extends Component {
       isPasswordConfirmDisplayable: false,
       passwordSuggestions: [],
       isValid: false,
+      formComplete: false,
       generatingKeyFile: false,
+      keyFileGenerated: false,
       stringifiedKeystore: null,
       downloadAccountDataString: null,
       downloadAccountFileName: null,
@@ -44,7 +46,7 @@ export default class AccountExportAirbitz extends Component {
   componentWillUpdate(nextProps, nextState) {
     if (this.state.passwordConfirm.length && !nextState.isStrongPass) this.setState({ passwordConfirm: '' });
 
-    if (this.state.passwordConfirm !== nextState.passwordConfirm) {
+    if (this.state.passwordConfirm !== nextState.passwordConfirm && nextState.passwordConfirm !== '') {
       if (nextState.password === nextState.passwordConfirm) {
         this.setState({ isValid: true });
       } else {
@@ -53,9 +55,15 @@ export default class AccountExportAirbitz extends Component {
     }
 
     if (this.state.isValid !== nextState.isValid && nextState.isValid) {
-      setTimeout(() => {
-        this.generateEncryptedKeyFile();
-      }, nextState.animationSpeed); // Allow for animations before calling blocking method
+      console.log('here');
+      this.setState({
+        formComplete: true
+      }, () => {
+        setTimeout(() => {
+          console.log('make call');
+          this.generateEncryptedKeyFile();
+        }, nextState.animationSpeed); // Allow for animations before calling blocking method
+      });
     }
   }
 
@@ -99,6 +107,7 @@ export default class AccountExportAirbitz extends Component {
 
           this.setState({
             generatingKeyFile: false,
+            keyFileGenerated: true,
             ...generateDownloadAccountLink(keystore.address, keystore)
           });
         }
@@ -117,70 +126,86 @@ export default class AccountExportAirbitz extends Component {
 
     return (
       <article className="account-export-airbitz">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            console.log('submt');
-
-            this.handleSubmitPassword();
-          }}
+        <CSSTransitionGroup
+          component="div"
+          transitionName="export-form"
+          transitionEnter={false}
+          transitionLeaveTimeout={s.animationSpeed}
         >
-          <Input
-            autoFocus
-            canToggleVisibility
-            className={classNames('account-export-password', { 'input-error': s.authError })}
-            disabled={s.generatingKeyFile}
-            name="password"
-            type="password"
-            placeholder="Password"
-            value={s.password}
-            onChange={(password) => {
-              this.setState({ password });
-              this.scorePassword(password);
-            }}
-          />
-          <div className="account-export-overlappers">
-            <CSSTransitionGroup
-              component="div"
-              transitionName="password-suggestions"
-              transitionEnterTimeout={s.animationSpeed}
-              transitionLeaveTimeout={s.animationSpeed}
+          {!s.formComplete &&
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                console.log('submt');
+
+                this.handleSubmitPassword();
+              }}
             >
-              <ul className="account-export-password-suggestions">
-                {s.passwordSuggestions.map((suggestion, i) => (
-                  <li
-                    key={suggestion}
-                  >
-                    {suggestion}
-                  </li>
-                ))}
-              </ul>
-            </CSSTransitionGroup>
-            <CSSTransitionGroup
-              component="div"
-              transitionName="password-confirm"
-              transitionEnterTimeout={s.animationSpeed}
-              transitionLeaveTimeout={s.animationSpeed}
-            >
-              {s.isStrongPass &&
-                <Input
-                  className={classNames('account-export-password-confirm', {
-                    'input-error': s.authError,
-                  })}
-                  disabled={!s.isStrongPass || s.generatingKeyFile}
-                  shouldMatchValue
-                  comparisonValue={s.password}
-                  name="password-confirm"
-                  type="password"
-                  placeholder="Confirm Password"
-                  value={s.passwordConfirm}
-                  onChange={(passwordConfirm) => {
-                    this.setState({ passwordConfirm });
-                  }}
-                />
-              }
-            </CSSTransitionGroup>
-          </div>
+              <Input
+                autoFocus
+                canToggleVisibility
+                className={classNames('account-export-password', { 'input-error': s.authError })}
+                disabled={s.generatingKeyFile || s.keyFileGenerated}
+                name="password"
+                type="password"
+                placeholder="Password"
+                value={s.password}
+                onChange={(password) => {
+                  this.setState({ password });
+                  this.scorePassword(password);
+                }}
+              />
+              <div className="account-export-overlappers">
+                <CSSTransitionGroup
+                  component="div"
+                  transitionName="password-suggestions"
+                  transitionEnterTimeout={s.animationSpeed}
+                  transitionLeaveTimeout={s.animationSpeed}
+                >
+                  <ul className="account-export-password-suggestions">
+                    {s.passwordSuggestions.map((suggestion, i) => (
+                      <li
+                        key={suggestion}
+                      >
+                        {suggestion}
+                      </li>
+                    ))}
+                  </ul>
+                </CSSTransitionGroup>
+                <CSSTransitionGroup
+                  component="div"
+                  transitionName="password-confirm"
+                  transitionEnterTimeout={s.animationSpeed}
+                  transitionLeaveTimeout={s.animationSpeed}
+                >
+                  {s.isStrongPass &&
+                    <Input
+                      className={classNames('account-export-password-confirm', {
+                        'input-error': s.authError,
+                      })}
+                      disabled={!s.isStrongPass || s.generatingKeyFile || s.keyFileGenerated}
+                      shouldMatchValue
+                      comparisonValue={s.password}
+                      name="password-confirm"
+                      type="password"
+                      placeholder="Confirm Password"
+                      value={s.passwordConfirm}
+                      onChange={(passwordConfirm) => {
+                        this.setState({ passwordConfirm });
+                      }}
+                    />
+                  }
+                </CSSTransitionGroup>
+              </div>
+            </form>
+          }
+        </CSSTransitionGroup>
+        <CSSTransitionGroup
+          container="div"
+          transitionName="generating"
+          transitionEnterTimeout={s.animationSpeed}
+          transitionLeaveTimeout={s.animationSpeed}
+        >
           {s.generatingKeyFile &&
             <div
               className={classNames('account-export-generating-key-file', {})}
@@ -189,7 +214,17 @@ export default class AccountExportAirbitz extends Component {
               <Spinner />
             </div>
           }
-        </form>
+        </CSSTransitionGroup>
+        <CSSTransitionGroup
+          container="div"
+          transitionName="keyfile"
+          transitionEnterTimeout={s.animationSpeed}
+          transitionLeave={false}
+        >
+          {s.keyFileGenerated &&
+            <span>Generated</span>
+          }
+        </CSSTransitionGroup>
       </article>
     );
   }
