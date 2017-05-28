@@ -1,5 +1,6 @@
 import memoize from 'memoizee';
 import { formatPercent, formatEther, formatShares, formatRealEther } from 'utils/format-number';
+import calcPreOrderProfitLossPercents from 'utils/calc-order-profit-loss-percents';
 import { augur, abi } from 'services/augurjs';
 import { calculateMaxPossibleShares } from 'modules/market/selectors/helpers/calculate-max-possible-shares';
 import { BUY, SELL } from 'modules/trade/constants/types';
@@ -25,6 +26,13 @@ export const generateTrade = memoize((market, outcome, outcomeTradeInProgress, l
   const totalFee = (outcomeTradeInProgress && outcomeTradeInProgress.totalFee) || 0;
   const gasFeesRealEth = (outcomeTradeInProgress && outcomeTradeInProgress.gasFeesRealEth) || 0;
   const totalCost = (outcomeTradeInProgress && outcomeTradeInProgress.totalCost) || 0;
+  if (totalCost) console.log(`totalCost : ${totalCost}`);
+  const marketType = (outcomeTradeInProgress && market.type) || null;
+  const minValue = (outcomeTradeInProgress && market && market.minValue) || null;
+  const maxValue = (outcomeTradeInProgress && market && market.maxValue) || null;
+  const preOrderProfitLoss = ((numShares && limitPrice && side && minValue && maxValue && marketType) && (
+    calcPreOrderProfitLossPercents(numShares, limitPrice, side, minValue, maxValue, marketType)
+  )) || null;
 
   let maxNumShares;
   if (limitPrice != null) {
@@ -53,6 +61,11 @@ export const generateTrade = memoize((market, outcome, outcomeTradeInProgress, l
     numShares,
     limitPrice,
     maxNumShares,
+
+    potentialEthProfit: preOrderProfitLoss ? formatEther(preOrderProfitLoss.potentialEthProfit) : null,
+    potentialEthLoss: preOrderProfitLoss ? formatEther(preOrderProfitLoss.potentialEthLoss) : null,
+    potentialLossPercent: preOrderProfitLoss ? formatPercent(preOrderProfitLoss.potentialLossPercent) : null,
+    potentialProfitPercent: preOrderProfitLoss ? formatPercent(preOrderProfitLoss.potentialProfitPercent) : null,
 
     totalFee: formatEther(totalFee, { blankZero: true }),
     gasFeesRealEth: formatEther(gasFeesRealEth, { blankZero: true }),
@@ -127,7 +140,11 @@ export const generateTradeOrders = memoize((market, outcome, outcomeTradeInProgr
       noFeePrice: formatEther(noFeePrice),
       tradingFees: formatEther(tradeAction.feeEth),
       feePercent: formatPercent(tradeAction.feePercent),
-      gasFees: formatRealEther(tradeAction.gasEth)
+      gasFees: formatRealEther(tradeAction.gasEth),
+      potentialEthProfit: formatRealEther(tradeAction.potentialEthProfit),
+      potentialEthLoss: formatRealEther(tradeAction.potentialEthLoss),
+      potentialLossPercent: formatRealEther(tradeAction.potentialLossPercent),
+      potentialProfitPercent: formatRealEther(tradeAction.potentialProfitPercent)
     };
   });
 }, { max: 5 });
