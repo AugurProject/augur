@@ -9,7 +9,7 @@ import calcProfits from 'utils/calc-order-profit-loss-percents';
 describe('utils/calc-order-profit-loss-percents.js', () => {
   const orders = [
     {
-      numShares: 10,
+      numShares: '10',
       limitPrice: '0.5',
       side: BUY,
       minValue: '1',
@@ -107,16 +107,6 @@ describe('utils/calc-order-profit-loss-percents.js', () => {
       }
     },
     {
-      //  return empty object if price over 1 for non-scalar markets
-      numShares: '122',
-      limitPrice: '1.1',
-      side: BUY,
-      minValue: '0',
-      maxValue: '10',
-      type: 'binary',
-      actual: {}
-    },
-    {
       numShares: '23',
       limitPrice: '.83',
       side: BUY,
@@ -131,8 +121,8 @@ describe('utils/calc-order-profit-loss-percents.js', () => {
       }
     },
     {
-      numShares: 20,
-      limitPrice: 0.4,
+      numShares: '20',
+      limitPrice: '0.4',
       side: BUY,
       minValue: '1',
       maxValue: '2',
@@ -145,8 +135,8 @@ describe('utils/calc-order-profit-loss-percents.js', () => {
       }
     },
     {
-      numShares: 210,
-      limitPrice: 0.5,
+      numShares: '210',
+      limitPrice: '0.5',
       side: SELL,
       minValue: '1',
       maxValue: '2',
@@ -159,17 +149,17 @@ describe('utils/calc-order-profit-loss-percents.js', () => {
       }
     },
     {
-      numShares: 43.51234,
-      limitPrice: 0.35577,
+      numShares: '43.51234',
+      limitPrice: '0.35577',
       side: SELL,
       minValue: '1',
       maxValue: '2',
       type: 'binary',
       actual: {
-        potentialEthLoss: '28.0319547982',
+        potentialEthLoss: '28.031954798200004351234',
         potentialEthProfit: '15.4803852018',
-        potentialProfitPercent: 100,
-        potentialLossPercent: 100
+        potentialProfitPercent: '55.224065939183202393',
+        potentialLossPercent: '181.080473339517131855'
       }
     },
     {
@@ -196,8 +186,8 @@ describe('utils/calc-order-profit-loss-percents.js', () => {
       actual: {
         potentialEthLoss: '5000',
         potentialEthProfit: '5000',
-        potentialProfitPercent: 100,
-        potentialLossPercent: 100
+        potentialProfitPercent: '100',
+        potentialLossPercent: '100'
       }
     }
   ];
