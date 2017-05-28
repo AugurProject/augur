@@ -17,27 +17,16 @@ import { BUY } from 'modules/trade/constants/types';
  */
 
 export default function (numShares, limitPrice, side, minValue, maxValue, type) {
-
-  if (limitPrice > 1 && type !== 'scalar') return {};
+  //  TODO prevent bignumber.js times() number type has more than 15 significant digits error (without using 4 try/catch blocks (see:
+  // https://github.com/MikeMcl/bignumber.js/issues/123)
   //  If minValue is less than zero, set minValue and maxValue to both be greater than zero (but same range) to prevent division by zero when determining percents below
   const max = type !== 'scalar' ? 1 : Math.abs(maxValue - minValue);
-  // const min = type !== 'scalar' ? 1 : 0;
   const limit = type !== 'scalar' ? limitPrice : Math.abs(limitPrice - minValue);
 
-  console.log(`max      : ${max}`);
-  console.log(`side     : ${side}`);
-  console.log(`type     : ${type}`);
-  console.log(`limit    : ${limit}`);
-  console.log(`numShares: ${numShares}`);
   const potentialEthProfit = side === BUY ? new BigNumber(max).minus(limit).times(numShares).toString() : new BigNumber(limit).times(numShares).toString();
-  const potentialEthLoss = side === BUY ? new BigNumber(limit).times(numShares) : new BigNumber(numShares).times(max - limit).toString();
+  const potentialEthLoss = side === BUY ? new BigNumber(limit).times(numShares).toString() : new BigNumber(numShares).times(max - limit).toString();
   const potentialProfitPercent = side === BUY ? new BigNumber(max).div(limit).times(100).minus(100).toString() : new BigNumber(limit).div(max - limit).times(100).toString();
   const potentialLossPercent = side === BUY ? new BigNumber(100).toString() : new BigNumber(max - limit).div(limit).times(100).toString();
-
-  console.log(`potentialEthProfit     : ${potentialEthProfit}`);
-  console.log(`potentialEthLoss       : ${potentialEthLoss}`);
-  console.log(`potentialProfitPercent : ${potentialProfitPercent}`);
-  console.log(`potentialLossPercent   : ${potentialLossPercent}`);
 
   return {
     potentialEthProfit,

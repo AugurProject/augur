@@ -129,35 +129,7 @@ describe('utils/calc-order-profit-loss-percents.js', () => {
         potentialProfitPercent: '20.481927710843373494',
         potentialLossPercent: '100'
       }
-    }/*,
-    {
-      numShares: '100',
-      limitPrice: '50',
-      side: BUY,
-      minValue: '0',
-      maxValue: '100',
-      type: 'scalar',
-      actual: {
-        potentialEthLoss: '5000',
-        potentialEthProfit: '5000',
-        potentialProfitPercent: 100,
-        potentialLossPercent: 100
-      }
-    }/*,
-    {
-     numShares: 10,
-     limitPrice: 0.5,
-     side: BUY,
-     minValue: '1',
-     maxValue: '2',
-     type: 'binary',
-     actual: {
-     potentialEthLoss: '5',
-     potentialEthProfit: '5',
-     potentialProfitPercent: 100,
-     potentialLossPercent: 100
-     }
-     },
+    },
     {
       numShares: 20,
       limitPrice: 0.4,
@@ -169,20 +141,6 @@ describe('utils/calc-order-profit-loss-percents.js', () => {
         potentialEthLoss: '8',
         potentialEthProfit: '12',
         potentialProfitPercent: '150',
-        potentialLossPercent: '100'
-      }
-    },
-    {
-      numShares: 1,
-      limitPrice: 0.5,
-      side: BUY,
-      minValue: '1',
-      maxValue: '2',
-      type: 'binary',
-      actual: {
-        potentialEthLoss: '0.5',
-        potentialEthProfit: '0.5',
-        potentialProfitPercent: '100',
         potentialLossPercent: '100'
       }
     },
@@ -216,16 +174,16 @@ describe('utils/calc-order-profit-loss-percents.js', () => {
     },
     {
       numShares: '435134',
-      limitPrice: '0.1335577',
+      limitPrice: '0.1335',
       side: BUY,
       minValue: '1',
       maxValue: '2',
       type: 'binary',
       actual: {
-        potentialEthLoss: '58115.4962318',
-        potentialEthProfit: 3258022.56,
-        potentialProfitPercent: 648.740057667959241586,
-        potentialLossPercent: 100
+        potentialEthLoss: '58090.389',
+        potentialEthProfit: '377043.611',
+        potentialProfitPercent: '649.063670411985018727',
+        potentialLossPercent: '100'
       }
     },
     {
@@ -236,178 +194,12 @@ describe('utils/calc-order-profit-loss-percents.js', () => {
       maxValue: '100',
       type: 'scalar',
       actual: {
-        potentialEthLoss: 50,
-        potentialEthProfit: 50,
+        potentialEthLoss: '5000',
+        potentialEthProfit: '5000',
         potentialProfitPercent: 100,
         potentialLossPercent: 100
       }
-    },
-    {
-      numShares: 10,
-      limitPrice: 0.50,
-      side: BUY,
-      type: 'binary',
-      minValue: '1',
-      maxValue: '2',
-      actual: {
-        potentialEthLoss: 5,
-        potentialEthProfit: 5,
-        potentialProfitPercent: 100,
-        potentialLossPercent: 100
-      }
-    }/*,
-    {
-      numShares: 10,
-      limitPrice: 100.6,
-      side: BUY,
-      minValue: '-500',
-      maxValue: '500',
-      type: 'scalar',
-      actual: {
-        potentialEthLoss: 10,
-        potentialEthProfit: 20,
-        potentialProfitPercent: 203,
-        potentialLossPercent: 100
-      }
-    },
-    {
-      numShares: 1234,
-      limitPrice: 1.6,
-      side: BUY,
-      minValue: '-50',
-      maxValue: '1000',
-      type: 'scalar',
-      actual: {
-        potentialEthLoss: 10,
-        potentialEthProfit: 20,
-        potentialProfitPercent: 203,
-        potentialLossPercent: 100
-      }
-    },
-    {
-      numShares: 54321,
-      limitPrice: 0.31,
-      side: BUY,
-      type: 'binary',
-      maxValue: '',
-      minValue: '',
-      actual: {
-        potentialEthLoss: 16839.51,
-        potentialEthProfit: 37182.72,
-        potentialProfitPercent: 316,
-        potentialLossPercent: 100
-      }
-    },
-    {
-      numShares: 24.65,
-      limitPrice: 0.83,
-      side: BUY,
-      type: 'binary',
-      actual: {
-        potentialEthLoss: 20.46,
-        potentialEthProfit: 4.19,
-        potentialProfitPercent: 17,
-        potentialLossPercent: 100
-      }
-    },
-    {
-      numShares: 97,
-      limitPrice: 0.12,
-      side: BUY,
-      type: 'scalar',
-      maxValue: '',
-      minValue: '',
-      actual: {
-        potentialEthLoss: 11.64,
-        potentialEthProfit: 85.36,
-        potentialProfitPercent: 1150,
-        potentialLossPercent: 100
-      }
-    },
-    {
-      numShares: 10,
-      limitPrice: 0.5,
-      side: SELL,
-      type: 'scalar',
-      maxValue: '',
-      minValue: '',
-      actual: {
-        potentialEthLoss: 5,
-        potentialEthProfit: 5,
-        potentialProfitPercent: 100,
-        potentialLossPercent: 100
-      }
-    },
-    {
-      numShares: 10,
-      limitPrice: 0.50,
-      side: BUY,
-      type: 'binary',
-      minValue: '1',
-      maxValue: '2',
-      actual: {
-        potentialEthLoss: 5,
-        potentialEthProfit: 5,
-        potentialProfitPercent: 100,
-        potentialLossPercent: 100
-      }
-    },
-    {
-      numShares: 101.50,
-      limitPrice: 0.10,
-      side: SELL,
-      type: '',
-      maxValue: '',
-      minValue: '',
-      actual: {
-        potentialEthLoss: 91.35,
-        potentialEthProfit: 10.15,
-        potentialProfitPercent: 100,
-        potentialLossPercent: 900
-      }
-    },
-    {
-      numShares: 1.50,
-      limitPrice: 0.10,
-      side: SELL,
-      type: '',
-      maxValue: '',
-      minValue: '',
-      actual: {
-        potentialEthLoss: 13.5,
-        potentialEthProfit: 0.15,
-        potentialProfitPercent: 100,
-        potentialLossPercent: 900
-      }
-    },
-    {
-      numShares: 12,
-      limitPrice: 0.8,
-      side: SELL,
-      type: '',
-      maxValue: '',
-      minValue: '',
-      actual: {
-        potentialEthLoss: 2.4,
-        potentialEthProfit: 12,
-        potentialProfitPercent: 100,
-        potentialLossPercent: 25
-      }
-    },
-    {
-      numShares: 101.50,
-      limitPrice: 0.17,
-      side: SELL,
-      type: '',
-      maxValue: '',
-      minValue: '',
-      actual: {
-        potentialEthLoss: 597.05,
-        potentialEthProfit: 17.255,
-        potentialProfitPercent: 100,
-        potentialLossPercent: 488.23
-      }
-    }*/
+    }
   ];
 
   orders.forEach((order) => {
