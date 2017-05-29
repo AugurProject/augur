@@ -2,6 +2,7 @@
 
 var assert = require("chai").assert;
 var abi = require("augur-abi");
+var proxyquire = require('proxyquire');
 var BigNumber = require("bignumber.js");
 var augur = new (require("../../../src"))();
 var constants = require("../../../src/constants");
@@ -16,16 +17,14 @@ after(function () {
   augur.rpc.gasPrice = gasPrice;
 });
 
-describe("tradeActions.calculateBuyTradeIDs", function () {
+describe("trading/take-order/calculateBuyTradeIDs", function () {
   // 3 tests total
-  var filterByPriceAndOutcomeAndUserSortByPrice = augur.filterByPriceAndOutcomeAndUserSortByPrice;
-  afterEach(function () {
-    augur.filterByPriceAndOutcomeAndUserSortByPrice = filterByPriceAndOutcomeAndUserSortByPrice;
-  });
   var test = function (t) {
     it(t.description, function () {
-      augur.filterByPriceAndOutcomeAndUserSortByPrice = t.filterByPriceAndOutcomeAndUserSortByPrice;
-      t.assertions(augur.calculateBuyTradeIDs(t.marketID, t.outcomeID, t.limitPrice, t.orderBooks, t.address));
+      var calculateBuyTradeIDs = proxyquire('../../../src/trading/take-order/calculate-buy-trade-ids', {
+        '../simulation/filter-by-price-and-outcome-and-user-sort-by-price': t.filterByPriceAndOutcomeAndUserSortByPrice
+      });
+      t.assertions(calculateBuyTradeIDs(t.marketID, t.outcomeID, t.limitPrice, t.orderBooks, t.address));
     });
   };
   test({
@@ -132,16 +131,14 @@ describe("tradeActions.calculateBuyTradeIDs", function () {
     }
   });
 });
-describe("tradeActions.calculateSellTradeIDs", function () {
+describe("trading/take-order/calculateSellTradeIDs", function () {
   // 3 tests total
-  var filterByPriceAndOutcomeAndUserSortByPrice = augur.filterByPriceAndOutcomeAndUserSortByPrice;
-  afterEach(function () {
-    augur.filterByPriceAndOutcomeAndUserSortByPrice = filterByPriceAndOutcomeAndUserSortByPrice;
-  });
   var test = function (t) {
     it(t.description, function () {
-      augur.filterByPriceAndOutcomeAndUserSortByPrice = t.filterByPriceAndOutcomeAndUserSortByPrice;
-      t.assertions(augur.calculateSellTradeIDs(t.marketID, t.outcomeID, t.limitPrice, t.orderBooks, t.address));
+      var calculateSellTradeIDs = proxyquire('../../../src/trading/take-order/calculate-sell-trade-ids', {
+        '../simulation/filterByPriceAndOutcomeAndUserSortByPrice': t.filterByPriceAndOutcomeAndUserSortByPrice
+      });
+      t.assertions(calculateSellTradeIDs(t.marketID, t.outcomeID, t.limitPrice, t.orderBooks, t.address));
     });
   };
   test({
@@ -234,11 +231,11 @@ describe("tradeActions.calculateSellTradeIDs", function () {
     }
   });
 });
-describe("tradeActions.getTxGasEth", function () {
+describe("augur.trading.simulation.getTxGasEth", function () {
   // 2 tests total
   var test = function (t) {
     it(t.description, function () {
-      t.assertions(augur.getTxGasEth(t.tx, t.gasPrice));
+      t.assertions(augur.trading.simulation.getTxGasEth(t.tx, t.gasPrice));
     });
   };
   test({
@@ -258,11 +255,11 @@ describe("tradeActions.getTxGasEth", function () {
     }
   });
 });
-describe("tradeActions.filterByPriceAndOutcomeAndUserSortByPrice", function () {
+describe("augur.trading.simulation.filterByPriceAndOutcomeAndUserSortByPrice", function () {
   // 5 tests total
   var test = function (t) {
     it(t.description, function () {
-      t.assertions(augur.filterByPriceAndOutcomeAndUserSortByPrice(t.orders, t.traderOrderType, t.limitPrice, t.outcomeId, t.userAddress));
+      t.assertions(augur.trading.simulation.filterByPriceAndOutcomeAndUserSortByPrice(t.orders, t.traderOrderType, t.limitPrice, t.outcomeId, t.userAddress));
     });
   };
   test({
@@ -456,11 +453,11 @@ describe("tradeActions.filterByPriceAndOutcomeAndUserSortByPrice", function () {
     }
   });
 });
-describe("tradeActions.getBidAction", function () {
+describe("augur.trading.simulation.getBidAction", function () {
   // 1 test total
   var test = function (t) {
     it(t.description, function () {
-      t.assertions(augur.getBidAction(t.shares, t.limitPrice, t.makerFee, t.gasPrice));
+      t.assertions(augur.trading.simulation.getBidAction(t.shares, t.limitPrice, t.makerFee, t.gasPrice));
     });
   };
   test({
@@ -483,11 +480,11 @@ describe("tradeActions.getBidAction", function () {
     }
   });
 });
-describe("tradeActions.getBuyAction", function () {
+describe("augur.trading.simulation.getBuyAction", function () {
   // 1 test total
   var test = function (t) {
     it(t.description, function () {
-      t.assertions(augur.getBuyAction(t.buyEth, t.sharesFilled, t.takerFeeEth, t.gasPrice));
+      t.assertions(augur.trading.simulation.getBuyAction(t.buyEth, t.sharesFilled, t.takerFeeEth, t.gasPrice));
     });
   };
   test({
@@ -510,11 +507,11 @@ describe("tradeActions.getBuyAction", function () {
     }
   });
 });
-describe("tradeActions.getAskAction", function () {
+describe("augur.trading.simulation.getAskAction", function () {
   // 1 test total
   var test = function (t) {
     it(t.description, function () {
-      t.assertions(augur.getAskAction(t.shares, t.limitPrice, t.makerFee, t.gasPrice));
+      t.assertions(augur.trading.simulation.getAskAction(t.shares, t.limitPrice, t.makerFee, t.gasPrice));
     });
   };
   test({
@@ -537,11 +534,11 @@ describe("tradeActions.getAskAction", function () {
     }
   });
 });
-describe("tradeActions.getSellAction", function () {
+describe("augur.trading.simulation.getSellAction", function () {
   // 1 test total
   var test = function (t) {
     it(t.description, function () {
-      t.assertions(augur.getSellAction(t.sellEth, t.sharesFilled, t.takerFeeEth, t.gasPrice));
+      t.assertions(augur.trading.simulation.getSellAction(t.sellEth, t.sharesFilled, t.takerFeeEth, t.gasPrice));
     });
   };
   test({
@@ -564,11 +561,11 @@ describe("tradeActions.getSellAction", function () {
     }
   });
 });
-describe("tradeActions.getShortSellAction", function () {
+describe("augur.trading.simulation.getShortSellAction", function () {
   // 1 test total
   var test = function (t) {
     it(t.description, function () {
-      t.assertions(augur.getShortSellAction(t.shortSellEth, t.shares, t.takerFeeEth, t.gasPrice));
+      t.assertions(augur.trading.simulation.getShortSellAction(t.shortSellEth, t.shares, t.takerFeeEth, t.gasPrice));
     });
   };
   test({
@@ -591,11 +588,11 @@ describe("tradeActions.getShortSellAction", function () {
     }
   });
 });
-describe("tradeActions.getShortAskAction", function () {
+describe("augur.trading.simulation.getShortAskAction", function () {
   // 1 test total
   var test = function (t) {
     it(t.description, function () {
-      t.assertions(augur.getShortAskAction(t.shares, t.limitPrice, t.makerFee, t.gasPrice));
+      t.assertions(augur.trading.simulation.getShortAskAction(t.shares, t.limitPrice, t.makerFee, t.gasPrice));
     });
   };
   test({
@@ -618,11 +615,11 @@ describe("tradeActions.getShortAskAction", function () {
     }
   });
 });
-describe("tradeActions.calculateTradeTotals", function () {
+describe("trading/simulation/calculateTradeTotals", function () {
   // 5 tests total
   var test = function (t) {
     it(t.description, function () {
-      t.assertions(augur.calculateTradeTotals(t.type, t.numShares, t.limitPrice, t.tradeActions));
+      t.assertions(require('../../../src/trading/simulation/calculate-trade-totals')(t.type, t.numShares, t.limitPrice, t.tradeActions));
     });
   };
   test({
@@ -877,7 +874,7 @@ describe("getTradingActions", function () {
   }
   function runTestCase(testCase) {
     it(testCase.description, function () {
-      var actions = augur.getTradingActions({
+      var actions = augur.trading.simulation.getTradingActions({
         type: testCase.type,
         orderShares: testCase.orderShares,
         orderLimitPrice: testCase.orderLimitPrice,
@@ -895,17 +892,17 @@ describe("getTradingActions", function () {
   }
   var txOriginal;
   var calculateTradeTotals;
-  before("getTradingActions", function () {
-    txOriginal = augur.store.getState().contractsAPI.functions;
-    calculateTradeTotals = augur.calculateTradeTotals;
-    augur.store.getState().contractsAPI.functions = new require("augur-contracts").Tx(constants.DEFAULT_NETWORK_ID).functions;
-    augur.calculateTradeTotals = function (type, numShares, limitPrice, tradeActions) {
-      return tradeActions;
-    };
-  });
-  after("getTradingActions", function () {
-    augur.store.getState().contractsAPI.functions = txOriginal;
-  });
+  // before("getTradingActions", function () {
+  //   txOriginal = augur.store.getState().contractsAPI.functions;
+  //   calculateTradeTotals = augur.calculateTradeTotals;
+  //   augur.store.getState().contractsAPI.functions = new require("augur-contracts").Tx(constants.DEFAULT_NETWORK_ID).functions;
+  //   augur.calculateTradeTotals = function (type, numShares, limitPrice, tradeActions) {
+  //     return tradeActions;
+  //   };
+  // });
+  // after("getTradingActions", function () {
+  //   augur.store.getState().contractsAPI.functions = txOriginal;
+  // });
   describe("buy actions", function () {
     runTestCase({
       description: "no asks",
@@ -923,8 +920,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 1);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 1);
         var expected = [{
           action: "BID",
           shares: "5",
@@ -935,7 +932,7 @@ describe("getTradingActions", function () {
           feePercent: "0.96",
           noFeePrice: "0.6"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
     runTestCase({
@@ -954,8 +951,7 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 0);
+        assert.isUndefined(actions.tradeActions);
       }
     });
     runTestCase({
@@ -975,8 +971,8 @@ describe("getTradingActions", function () {
       scalarMinMax: {minValue: -10, maxValue: 10},
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 1);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 1);
         var expected = [{
           "action": "BID",
           "shares": "5",
@@ -987,7 +983,7 @@ describe("getTradingActions", function () {
           "avgPrice": "9.5947625",
           "noFeePrice": "9.5"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
     runTestCase({
@@ -1007,8 +1003,8 @@ describe("getTradingActions", function () {
       scalarMinMax: {minValue: -10, maxValue: 10},
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 1);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 1);
         var expected = [{
           action: "BID",
           shares: "5",
@@ -1019,7 +1015,7 @@ describe("getTradingActions", function () {
           avgPrice: "10.1",
           noFeePrice: "10"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
     runTestCase({
@@ -1039,8 +1035,8 @@ describe("getTradingActions", function () {
       scalarMinMax: {minValue: -10, maxValue: 10},
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 1);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 1);
         var expected = [{
           action: "BID",
           shares: "5",
@@ -1051,7 +1047,7 @@ describe("getTradingActions", function () {
           avgPrice: "10.6047375",
           noFeePrice: "10.5"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
     runTestCase({
@@ -1070,8 +1066,7 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 0);
+        assert.isUndefined(actions.tradeActions);
       }
     });
     runTestCase({
@@ -1116,8 +1111,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 1);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 1);
         var expected = [{
           action: "BID",
           shares: "5",
@@ -1128,7 +1123,7 @@ describe("getTradingActions", function () {
           feePercent: "0.96",
           noFeePrice: "0.6"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
     runTestCase({
@@ -1156,8 +1151,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 1);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 1);
         var expected = [{
           action: "BUY",
           shares: "5",
@@ -1168,7 +1163,7 @@ describe("getTradingActions", function () {
           feePercent: "1.8838304552590266",
           noFeePrice: "0.6"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
     runTestCase({
@@ -1196,7 +1191,7 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
+        assert.isArray(actions.tradeActions);
         var expected = [{
           action: "BUY",
           shares: "0.0001",
@@ -1207,8 +1202,8 @@ describe("getTradingActions", function () {
           feePercent: "1.263823064770932",
           noFeePrice: "0.8"
         }];
-        assert.lengthOf(actions, expected.length);
-        testTradeActions(actions, expected);
+        assert.lengthOf(actions.tradeActions, expected.length);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
     runTestCase({
@@ -1236,8 +1231,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 2);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 2);
         var expected = [{
           action: "BUY",
           shares: "2",
@@ -1257,7 +1252,7 @@ describe("getTradingActions", function () {
           feePercent: "0.96",
           noFeePrice: "0.6"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
     runTestCase({
@@ -1285,8 +1280,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 1);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 1);
         var expected = [{
           action: "BUY",
           shares: "5",
@@ -1297,7 +1292,7 @@ describe("getTradingActions", function () {
           feePercent: "1.8838304552590266",
           noFeePrice: "0.4"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
     runTestCase({
@@ -1325,8 +1320,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 2);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 2);
         var expected = [{
           action: "BUY",
           shares: "2",
@@ -1346,7 +1341,7 @@ describe("getTradingActions", function () {
           feePercent: "0.96",
           noFeePrice: "0.6"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
     runTestCase({
@@ -1390,8 +1385,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 1);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 1);
         var expected = [{
           action: "BUY",
           shares: "5",
@@ -1402,7 +1397,7 @@ describe("getTradingActions", function () {
           feePercent: "1.6080062970875969",
           noFeePrice: "0.28"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
     runTestCase({
@@ -1438,8 +1433,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 2);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 2);
         var expected = [{
           action: "BUY",
           shares: "3",
@@ -1459,7 +1454,7 @@ describe("getTradingActions", function () {
           feePercent: "0.96",
           noFeePrice: "0.6"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
     runTestCase({
@@ -1495,8 +1490,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 1);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 1);
         var expected = [{
           action: "BUY",
           shares: "3",
@@ -1507,7 +1502,7 @@ describe("getTradingActions", function () {
           feePercent: "1.7450086464392391",
           avgPrice: "0.339253333333333333"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
   });
@@ -1528,8 +1523,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 1);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 1);
         var expected = [{
           action: "SHORT_ASK",
           shares: "5",
@@ -1540,7 +1535,7 @@ describe("getTradingActions", function () {
           feePercent: "0.96",
           noFeePrice: "0.6"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
 
@@ -1561,8 +1556,8 @@ describe("getTradingActions", function () {
       scalarMinMax: {minValue: -10, maxValue: 10},
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 1);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 1);
         var expected = [{
           action: "ASK",
           shares: "5",
@@ -1573,7 +1568,7 @@ describe("getTradingActions", function () {
           avgPrice: "9.4052375",
           noFeePrice: "9.5"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
     runTestCase({
@@ -1593,8 +1588,8 @@ describe("getTradingActions", function () {
       scalarMinMax: {minValue: -10, maxValue: 10},
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 1);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 1);
         var expected = [{
           action: "ASK",
           shares: "5",
@@ -1605,7 +1600,7 @@ describe("getTradingActions", function () {
           avgPrice: "9.9",
           noFeePrice: "10"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
     runTestCase({
@@ -1625,8 +1620,8 @@ describe("getTradingActions", function () {
       scalarMinMax: {minValue: -10, maxValue: 10},
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 1);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 1);
         var expected = [{
           action: "ASK",
           shares: "5",
@@ -1637,7 +1632,7 @@ describe("getTradingActions", function () {
           avgPrice: "10.3952625",
           noFeePrice: "10.5"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
 
@@ -1666,8 +1661,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 1);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 1);
         var expected = [{
           action: "SHORT_SELL",
           shares: "5",
@@ -1678,7 +1673,7 @@ describe("getTradingActions", function () {
           feePercent: "2.7993779160186625",
           noFeePrice: "0.42304"
         }];
-        assert.deepEqual(actions, expected);
+        assert.deepEqual(actions.tradeActions, expected);
       }
     });
 
@@ -1707,8 +1702,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 2);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 2);
         var expected = [{
           action: "SELL",
           shares: "2",
@@ -1728,7 +1723,7 @@ describe("getTradingActions", function () {
           feePercent: "0.96",
           noFeePrice: "0.6"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
 
@@ -1757,8 +1752,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 3);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 3);
         var expected = [{
           action: "SELL",
           shares: "2",
@@ -1787,7 +1782,7 @@ describe("getTradingActions", function () {
           feePercent: "0.96",
           noFeePrice: "0.6"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
 
@@ -1816,8 +1811,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 2);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 2);
         var expected = [{
           action: "SHORT_SELL",
           shares: "2",
@@ -1837,7 +1832,7 @@ describe("getTradingActions", function () {
           feePercent: "0.96",
           noFeePrice: "0.6"
         }];
-        assert.deepEqual(actions, expected);
+        assert.deepEqual(actions.tradeActions, expected);
       }
     });
 
@@ -1866,8 +1861,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 1);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 1);
         var expected = [{
           action: "SHORT_SELL",
           shares: "5",
@@ -1878,7 +1873,7 @@ describe("getTradingActions", function () {
           feePercent: "3.7721324095458044",
           noFeePrice: "0.32352"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
 
@@ -1907,8 +1902,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 2);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 2);
         var expected = [{
           action: "SHORT_SELL",
           shares: "2",
@@ -1928,7 +1923,7 @@ describe("getTradingActions", function () {
           feePercent: "0.96",
           noFeePrice: "0.6"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
 
@@ -1965,8 +1960,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 2);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 2);
         var expected = [{
           action: "SHORT_SELL",
           shares: "3",
@@ -1986,7 +1981,7 @@ describe("getTradingActions", function () {
           feePercent: "0.96",
           noFeePrice: "0.6"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
 
@@ -2031,8 +2026,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 1);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 1);
         var expected = [{
           action: "SHORT_SELL",
           shares: "5",
@@ -2043,7 +2038,7 @@ describe("getTradingActions", function () {
           feePercent: "4.7820567075751163",
           noFeePrice: "0.19808"
         }];
-        assert.deepEqual(actions, expected);
+        assert.deepEqual(actions.tradeActions, expected);
       }
     });
 
@@ -2088,8 +2083,7 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 0);
+        assert.isUndefined(actions.tradeActions);
       }
     });
 
@@ -2109,8 +2103,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 2);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 2);
         var expected = [{
           action: "ASK",
           shares: "2",
@@ -2130,7 +2124,7 @@ describe("getTradingActions", function () {
           feePercent: "0.96",
           noFeePrice: "0.6"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
 
@@ -2159,8 +2153,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 2);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 2);
         var expected = [{
           action: "SELL",
           shares: "2",
@@ -2180,7 +2174,7 @@ describe("getTradingActions", function () {
           feePercent: "2.7993779160186625",
           noFeePrice: "0.42304"
         }];
-        assert.deepEqual(actions, expected);
+        assert.deepEqual(actions.tradeActions, expected);
       }
     });
 
@@ -2209,8 +2203,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 2);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 2);
         var expected = [{
           action: "SELL",
           shares: "2",
@@ -2230,7 +2224,7 @@ describe("getTradingActions", function () {
           feePercent: "0.96",
           noFeePrice: "0.6"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
 
@@ -2259,8 +2253,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 2);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 2);
         var expected = [{
           action: "SELL",
           shares: "2",
@@ -2280,7 +2274,7 @@ describe("getTradingActions", function () {
           feePercent: "3.7721324095458044",
           noFeePrice: "0.32352"
         }];
-        assert.deepEqual(actions, expected);
+        assert.deepEqual(actions.tradeActions, expected);
       }
     });
 
@@ -2309,8 +2303,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 2);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 2);
         var expected = [{
           action: "SELL",
           shares: "2",
@@ -2330,7 +2324,7 @@ describe("getTradingActions", function () {
           feePercent: "0.96",
           noFeePrice: "0.6"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
 
@@ -2367,8 +2361,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 3);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 3);
         var expected = [{
           action: "SELL",
           shares: "2",
@@ -2397,7 +2391,7 @@ describe("getTradingActions", function () {
           feePercent: "0.96",
           noFeePrice: "0.6"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
 
@@ -2442,8 +2436,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 2);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 2);
         var expected = [{
           action: "SELL",
           shares: "2",
@@ -2463,7 +2457,7 @@ describe("getTradingActions", function () {
           feePercent: "4.4029280017480607",
           noFeePrice: "0.254826666666666666"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
 
@@ -2508,8 +2502,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 1);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 1);
         var expected = [{
           action: "SELL",
           shares: "2",
@@ -2520,7 +2514,7 @@ describe("getTradingActions", function () {
           feePercent: "0.72522159548751",
           noFeePrice: "0.9"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
 
@@ -2540,8 +2534,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 1);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 1);
         var expected = [{
           action: "ASK",
           shares: "5",
@@ -2552,7 +2546,7 @@ describe("getTradingActions", function () {
           feePercent: "0.96",
           noFeePrice: "0.6"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
 
@@ -2581,8 +2575,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 1);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 1);
         var expected = [{
           action: "SELL",
           shares: "5",
@@ -2593,7 +2587,7 @@ describe("getTradingActions", function () {
           feePercent: "1.9575856443719412",
           noFeePrice: "0.6"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
 
@@ -2622,8 +2616,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 2);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 2);
         var expected = [{
           action: "SELL",
           shares: "2",
@@ -2643,7 +2637,7 @@ describe("getTradingActions", function () {
           feePercent: "0.96",
           noFeePrice: "0.6"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
 
@@ -2672,8 +2666,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 1);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 1);
         var expected = [{
           action: "SELL",
           shares: "5",
@@ -2684,7 +2678,7 @@ describe("getTradingActions", function () {
           feePercent: "1.7087062652563059",
           noFeePrice: "0.7"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
 
@@ -2713,8 +2707,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 2);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 2);
         var expected = [{
           action: "SELL",
           shares: "2",
@@ -2734,7 +2728,7 @@ describe("getTradingActions", function () {
           feePercent: "0.96",
           noFeePrice: "0.6"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
 
@@ -2771,8 +2765,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 2);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 2);
         var expected = [{
           action: "SELL",
           shares: "3",
@@ -2792,7 +2786,7 @@ describe("getTradingActions", function () {
           feePercent: "0.96",
           noFeePrice: "0.6"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
 
@@ -2837,8 +2831,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 1);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 1);
         var expected = [{
           action: "SELL",
           shares: "5",
@@ -2849,7 +2843,7 @@ describe("getTradingActions", function () {
           feePercent: "1.1147282233402387",
           noFeePrice: "0.82"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
 
@@ -2894,8 +2888,8 @@ describe("getTradingActions", function () {
       },
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
-        assert.lengthOf(actions, 1);
+        assert.isArray(actions.tradeActions);
+        assert.lengthOf(actions.tradeActions, 1);
         var expected = [{
           action: "SELL",
           shares: "5",
@@ -2906,7 +2900,7 @@ describe("getTradingActions", function () {
           feePercent: "1.1147282233402387",
           noFeePrice: "0.82"
         }];
-        testTradeActions(actions, expected);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
 
@@ -2936,7 +2930,7 @@ describe("getTradingActions", function () {
       scalarMinMax: {minValue: "15", maxValue: "20"}, // range [15, 20]
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
+        assert.isArray(actions.tradeActions);
         var expected = [{
           action: "SHORT_SELL",
           shares: "5",
@@ -2947,8 +2941,8 @@ describe("getTradingActions", function () {
           avgPrice: "17.0576",
           noFeePrice: "17.1152"
         }];
-        assert.lengthOf(actions, expected.length);
-        testTradeActions(actions, expected);
+        assert.lengthOf(actions.tradeActions, expected.length);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
 
@@ -2978,7 +2972,7 @@ describe("getTradingActions", function () {
       scalarMinMax: {minValue: "15", maxValue: "20"}, // range [15, 20]
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
+        assert.isArray(actions.tradeActions);
         var expected = [{
           action: "SELL",
           shares: "5",
@@ -2989,8 +2983,8 @@ describe("getTradingActions", function () {
           avgPrice: "1.9616",
           noFeePrice: "2"
         }];
-        assert.lengthOf(actions, expected.length);
-        testTradeActions(actions, expected);
+        assert.lengthOf(actions.tradeActions, expected.length);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
 
@@ -3020,7 +3014,7 @@ describe("getTradingActions", function () {
       scalarMinMax: {minValue: "15", maxValue: "20"}, // range [15, 20]
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
+        assert.isArray(actions.tradeActions);
         var expected = [{
           action: "SELL",
           shares: "3",
@@ -3040,8 +3034,8 @@ describe("getTradingActions", function () {
           avgPrice: "17.0576",
           noFeePrice: "17.1152"
         }];
-        assert.lengthOf(actions, expected.length);
-        testTradeActions(actions, expected);
+        assert.lengthOf(actions.tradeActions, expected.length);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
 
@@ -3071,7 +3065,7 @@ describe("getTradingActions", function () {
       scalarMinMax: {minValue: "15", maxValue: "20"}, // range [15, 20]
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
+        assert.isArray(actions.tradeActions);
         var expected = [{
           action: "SELL",
           shares: "3",
@@ -3091,8 +3085,8 @@ describe("getTradingActions", function () {
           avgPrice: "17.0576",
           noFeePrice: "17.1152"
         }];
-        assert.lengthOf(actions, expected.length);
-        testTradeActions(actions, expected);
+        assert.lengthOf(actions.tradeActions.tradeActions, expected.length);
+        testTradeActions(actions.tradeActions.tradeActions, expected);
       }
     });
 
@@ -3122,7 +3116,7 @@ describe("getTradingActions", function () {
       scalarMinMax: {minValue: "15", maxValue: "20"}, // range [15, 20]
       userAddress: "abcd1234",
       assertions: function (actions) {
-        assert.isArray(actions);
+        assert.isArray(actions.tradeActions);
         var expected = [{
           action: "SELL",
           shares: "5",
@@ -3133,8 +3127,8 @@ describe("getTradingActions", function () {
           avgPrice: "1.9616",
           noFeePrice: "2"
         }];
-        assert.lengthOf(actions, expected.length);
-        testTradeActions(actions, expected);
+        assert.lengthOf(actions.tradeActions, expected.length);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
   });
