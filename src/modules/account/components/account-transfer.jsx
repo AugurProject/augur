@@ -3,7 +3,10 @@ import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 
 import Input from 'modules/common/components/input';
-import DropDown from 'modules/common/components/dropdown';
+// import DropDown from 'modules/common/components/dropdown';
+import EtherLogo from 'modules/common/components/ether-logo';
+import EtherTokenLogo from 'modules/common/components/ether-token-logo';
+import AugurLogoIcon from 'modules/common/components/augur-logo-icon';
 
 import { ETH_TOKEN, ETH, REP } from 'modules/account/constants/asset-types';
 
@@ -153,41 +156,68 @@ export default class AccountTransfer extends Component {
               }
             }}
           >
-            <DropDown
-              default={this.assetTypes[0].value}
-              options={this.assetTypes}
-              onChange={selectedAsset => this.updateSelectedAsset(selectedAsset)}
-            />
-            <Input
-              isIncrementable
-              incrementAmount={1}
-              max={s.upperBound}
-              min={0.1}
-              value={s.amount}
-              updateValue={amount => this.validateAmount(amount)}
-              onChange={amount => this.validateAmount(amount)}
-              placeholder={`Amount of ${this.assetTypes.find(asset => asset.value === s.selectedAsset).label} to send`}
-            />
-            <span
-              className={classNames('account-input-error', {
-                'input-in-error': s.amount !== '' && s.isAmountValid !== null && !s.isAmountValid
-              })}
-            >
-              {`Amount must be between 0 and ${s.upperBound} ${this.assetTypes.find(asset => asset.value === s.selectedAsset).label}`}
-            </span>
-            <Input
-              value={s.address}
-              updateValue={address => this.validateAddress(address)}
-              onChange={address => this.validateAddress(address)}
-              placeholder={`Recipient address`}
-            />
-            <span
-              className={classNames('account-input-error', {
-                'input-in-error': s.address !== '' && s.isAddressValid !== null && !s.isAddressValid
-              })}
-            >
-              Not a valid Ethereum address
-            </span>
+            <div className="account-transfer-step account-transfer-asset-type">
+              <button
+                type="button"
+                className="unstyled logo-button"
+                onClick={() => this.setDirection(this.TO_ETHER)}
+              >
+                <EtherLogo />
+                <span>Ether</span>
+              </button>
+              <button
+                type="button"
+                className="unstyled logo-button"
+                onClick={() => this.setDirection(this.TO_TOKEN)}
+              >
+                <EtherTokenLogo />
+                <span>Ether Token</span>
+              </button>
+              <button
+                type="button"
+                className="unstyled logo-button"
+                onClick={() => this.setDirection(this.TO_TOKEN)}
+              >
+                <AugurLogoIcon
+                  invert
+                />
+                <span>Augur REP</span>
+              </button>
+            </div>
+            <div className="account-transfer-step">
+              <Input
+                isIncrementable
+                incrementAmount={1}
+                max={s.upperBound}
+                min={0.1}
+                value={s.amount}
+                updateValue={amount => this.validateAmount(amount)}
+                onChange={amount => this.validateAmount(amount)}
+                placeholder={`Amount of ${this.assetTypes.find(asset => asset.value === s.selectedAsset).label} to send`}
+              />
+              <span
+                className={classNames('account-input-error', {
+                  'input-in-error': s.amount !== '' && s.isAmountValid !== null && !s.isAmountValid
+                })}
+              >
+                {`Amount must be between 0 and ${s.upperBound} ${this.assetTypes.find(asset => asset.value === s.selectedAsset).label}`}
+              </span>
+            </div>
+            <div className="account-transfer-step">
+              <Input
+                value={s.address}
+                updateValue={address => this.validateAddress(address)}
+                onChange={address => this.validateAddress(address)}
+                placeholder={`Recipient address`}
+              />
+              <span
+                className={classNames('account-input-error', {
+                  'input-in-error': s.address !== '' && s.isAddressValid !== null && !s.isAddressValid
+                })}
+              >
+                Not a valid Ethereum address
+              </span>
+            </div>
             <button
               type="submit"
               className={classNames('account-convert-submit', { 'form-is-valid': s.isValid })}
@@ -204,3 +234,11 @@ export default class AccountTransfer extends Component {
 function sanitizeArg(arg) {
   return (arg == null || arg === '') ? '' : arg;
 }
+
+/*
+<DropDown
+  default={this.assetTypes[0].value}
+  options={this.assetTypes}
+  onChange={selectedAsset => this.updateSelectedAsset(selectedAsset)}
+/>
+*/
