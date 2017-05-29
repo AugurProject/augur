@@ -14,8 +14,7 @@ import { REQUIRED_PASSWORD_STRENGTH } from 'modules/auth/constants/password-stre
 
 export default class AccountExportAirbitz extends Component {
   static propTypes = {
-    qrSize: PropTypes.number.isRequired,
-    loginID: PropTypes.string.isRequired
+    qrSize: PropTypes.number.isRequired
   };
 
   constructor(props) {
@@ -102,7 +101,7 @@ export default class AccountExportAirbitz extends Component {
         this.setState({
           generatingKeyFile: false,
           keyFileGenerated: true,
-          ...generateDownloadAccountLink(keystore.address, keystore, this.props.loginID)
+          ...generateDownloadAccountLink(keystore.address, keystore, null)
         });
       }
     );
