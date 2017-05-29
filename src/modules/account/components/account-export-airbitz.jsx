@@ -217,7 +217,7 @@ export default class AccountExportAirbitz extends Component {
           {s.keyFileGenerated &&
             <div className="account-export-account account-export-airbitz-keyfile">
               <QRCode
-                value={s.stringifiedKeystore}
+                value={s.accountPrivateKey}
                 size={p.qrSize}
               />
               <h4>or</h4>
@@ -226,7 +226,7 @@ export default class AccountExportAirbitz extends Component {
                 href={s.downloadAccountDataString}
                 download={s.downloadAccountFileName}
               >
-                Download Keyfile
+                Download Key File
               </Link>
             </div>
           }

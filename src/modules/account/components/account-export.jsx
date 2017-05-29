@@ -10,6 +10,7 @@ import getValue from 'utils/get-value';
 export default class AccountExport extends Component {
   static propTypes = {
     airbitzAccount: PropTypes.object,
+    accountPrivateKey: PropTypes.string,
     downloadAccountDataString: PropTypes.string,
     downloadAccountFileName: PropTypes.string
   };
@@ -59,7 +60,7 @@ export default class AccountExport extends Component {
           {!p.airbitzAccount &&
             <div className="account-export-account">
               <QRCode
-                value={p.stringifiedKeystore}
+                value={p.accountPrivateKey}
                 size={s.qrSize}
               />
               <h4>or</h4>
@@ -68,7 +69,7 @@ export default class AccountExport extends Component {
                 href={p.downloadAccountDataString}
                 download={p.downloadAccountFileName}
               >
-                Download Keyfile
+                Download Key File
               </Link>
             </div>
           }
