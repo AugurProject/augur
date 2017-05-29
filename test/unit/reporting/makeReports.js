@@ -807,386 +807,288 @@ describe("getAndDecryptReport", function () {
   });
 });
 
-// describe("submitReportHash", function () {
-//   var finished;
-//   var test = function (t) {
-//     it(JSON.stringify(t.event), function (done) {
-//       finished = done;
-//       makeReports.submitReportHash.call(t.testThis, t.event, t.reportHash, t.encryptedReport, t.encryptedSalt, t.ethics, t.branch, t.period, t.periodLength, t.onSent, t.onSuccess, t.onFailed);
-//     });
-//   };
-//   test({
-//     testThis: {
-//     	options: { debug: { reporting: false } },
-//       tx: augur.store.getState().contractsAPI.functions,
-//       transact: function () {},
-//       getCurrentPeriodProgress: function (periodLength) { return 85; },
-//       checkPeriod: function () {},
-//       getRepRedistributionDone: function () {},
-//     	ExpiringEvents: {getReportHash: function (branch) {} }
-//     },
-//     event: {
-//       event: '0xe1',
-//       reportHash: '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
-//       encryptedReport: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
-//       encryptedSalt: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27',
-//       ethics: false,
-//       branch: '0xb1',
-//       period: 1500,
-//       periodLength: 1000,
-//       onSent: noop,
-//       onSuccess: noop,
-//       onFailed: function (err) {
-//         assert.deepEqual(err, {"-2": "not in first half of period (commit phase)"});
-//         finished();
-//       }
-//     }
-//   });
-//   test({
-//     testThis: {
-//     	options: { debug: { reporting: false } },
-//       tx: augur.store.getState().contractsAPI.functions,
-//       transact: function (tx, onSent, onSuccess, onFailed) {
-//         assert.deepEqual(tx.params, [
-//           '0xe1',
-//           '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
-//           0,
-//           0,
-//           false
-//         ]);
-//         assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.MakeReports.submitReportHash.to);
-//         onFailed({ error: -3, message: 'not eligible to report on this event' });
-//       },
-//       getCurrentPeriodProgress: function (periodLength) { return 23; },
-//       checkPeriod: function () {},
-//       getRepRedistributionDone: function () {},
-//     	ExpiringEvents: {getReportHash: function (branch) {} }
-//     },
-//     event: {
-//       event: '0xe1',
-//       reportHash: '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
-//       encryptedReport: undefined,
-//       encryptedSalt: undefined,
-//       ethics: false,
-//       branch: '0xb1',
-//       period: 1500,
-//       periodLength: 1000,
-//       onSent: noop,
-//       onSuccess: noop,
-//       onFailed: function (err) {
-//         assert.deepEqual(err, { error: -3, message: 'not eligible to report on this event' });
-//         finished();
-//       }
-//     }
-//   });
-//   test({
-//     testThis: {
-//     	options: { debug: { reporting: false } },
-//       tx: augur.store.getState().contractsAPI.functions,
-//       transact: function (tx, onSent, onSuccess, onFailed) {
-//         assert.deepEqual(tx.params, [
-//           '0xe1',
-//           '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
-//           '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
-//           '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27',
-//           '0xde0b6b3a7640000'
-//         ]);
-//         assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.MakeReports.submitReportHash.to);
-//         onSuccess({ callReturn: '1' });
-//       },
-//       getCurrentPeriodProgress: function (periodLength) { return 23; },
-//       checkPeriod: function () {},
-//       getRepRedistributionDone: function () {},
-//     	ExpiringEvents: {getReportHash: function (branch) {} }
-//     },
-//     event: '0xe1',
-//     reportHash: '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
-//     encryptedReport: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
-//     encryptedSalt: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27',
-//     ethics: '1',
-//     branch: '0xb1',
-//     period: 1500,
-//     periodLength: 1000,
-//     onSent: noop,
-//     onSuccess: function (res) {
-//       assert.deepEqual(res, { callReturn: '1' });
-//       finished();
-//     },
-//     onFailed: noop
-//   });
-//   test({
-//     testThis: {
-//     	options: { debug: { reporting: false } },
-//       tx: augur.store.getState().contractsAPI.functions,
-//       transact: function (tx, onSent, onSuccess, onFailed) {
-//         assert.deepEqual(tx.params, [
-//           '0xe1',
-//           '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
-//           '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
-//           '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27',
-//           '0xde0b6b3a7640000'
-//         ]);
-//         assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.MakeReports.submitReportHash.to);
-//         onSuccess({ callReturn: '0' });
-//       },
-//       getCurrentPeriodProgress: function (periodLength) { return 23; },
-//       checkPeriod: function (branch, periodLength, from, cb) {
-//         cb({ error: 999, message: 'Uh-Oh!' });
-//       },
-//       getRepRedistributionDone: function () {},
-//     	ExpiringEvents: {getReportHash: function (branch) {} }
-//     },
-//     event: '0xe1',
-//     reportHash: '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
-//     encryptedReport: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
-//     encryptedSalt: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27',
-//     ethics: '1',
-//     branch: '0xb1',
-//     period: 1500,
-//     periodLength: 1000,
-//     onSent: noop,
-//     onSuccess: noop,
-//     onFailed: function (err) {
-//       assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
-//       finished();
-//     }
-//   });
-//   test({
-//     testThis: {
-//     	options: { debug: { reporting: false } },
-//       tx: augur.store.getState().contractsAPI.functions,
-//       transact: function (tx, onSent, onSuccess, onFailed) {
-//         assert.deepEqual(tx.params, [
-//           '0xe1',
-//           '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
-//           '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
-//           '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27',
-//           '0xde0b6b3a7640000'
-//         ]);
-//         assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.MakeReports.submitReportHash.to);
-//         onSuccess({ callReturn: '0' });
-//       },
-//       getCurrentPeriodProgress: function (periodLength) { return 23; },
-//       checkPeriod: function (branch, periodLength, from, cb) {
-//         cb(null, 1501);
-//       },
-//       getRepRedistributionDone: function (branch, from, cb) {
-//         cb('0');
-//       },
-//     	ExpiringEvents: {getReportHash: function (branch) {} }
-//     },
-//     event: '0xe1',
-//     reportHash: '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
-//     encryptedReport: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
-//     encryptedSalt: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27',
-//     ethics: '1',
-//     branch: '0xb1',
-//     period: 1500,
-//     periodLength: 1000,
-//     onSent: noop,
-//     onSuccess: noop,
-//     onFailed: function (err) {
-//       assert.deepEqual(err, "rep redistribution not done");
-//       finished();
-//     }
-//   });
-//   test({
-//     testThis: {
-//     	options: { debug: { reporting: false } },
-//       submitReportHash: function (event) {
-//         // since this test will be calling self.submitReportHash that will point to this function. normally we recursively would be calling submitReportHash but we want to assume that the 2nd time through it works as expected.
-//         event.onSuccess({ callReturn: '1' });
-//       },
-//       tx: augur.store.getState().contractsAPI.functions,
-//       transact: function (tx, onSent, onSuccess, onFailed) {
-//         assert.deepEqual(tx.params, [
-//           '0xe1',
-//           '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
-//           '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
-//           '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27',
-//           '0xde0b6b3a7640000'
-//         ]);
-//         assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.MakeReports.submitReportHash.to);
-//         onSuccess({ callReturn: '0' });
-//       },
-//       getCurrentPeriodProgress: function (periodLength) { return 23; },
-//       checkPeriod: function (branch, periodLength, from, cb) {
-//         cb(null, 1501);
-//       },
-//       getRepRedistributionDone: function (branch, from, cb) {
-//         cb('1');
-//       },
-//     	ExpiringEvents: {getReportHash: function (branch) {} }
-//     },
-//     event: '0xe1',
-//     reportHash: '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
-//     encryptedReport: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
-//     encryptedSalt: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27',
-//     ethics: '1',
-//     branch: '0xb1',
-//     period: 1500,
-//     periodLength: 1000,
-//     onSent: noop,
-//     onSuccess: function (res) {
-//       assert.deepEqual(res, { callReturn: '1' });
-//       finished();
-//     },
-//     onFailed: noop
-//   });
-//   test({
-//     testThis: {
-//       options: { debug: { reporting: false } },
-//       tx: augur.store.getState().contractsAPI.functions,
-//       transact: function (tx, onSent, onSuccess, onFailed) {
-//         assert.deepEqual(tx.params, [
-//           '0xe1',
-//           '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
-//           '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
-//           '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27',
-//           '0xde0b6b3a7640000'
-//         ]);
-//         assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.MakeReports.submitReportHash.to);
-//         onSuccess({ callReturn: '-2' });
-//       },
-//       getCurrentPeriodProgress: function (periodLength) { return 23; },
-//       checkPeriod: function (branch, periodLength, from, cb) {
-//         // shouldn't be called.
-//       },
-//       getRepRedistributionDone: function (branch, from, cb) {
-//         // shouldn't be called.
-//       },
-//       ExpiringEvents: {
-//         getReportHash: function (branch) {
-//           branch.callback('something that parseInt wont like very much and it will fail causing onFailed to be called.');
-//         }
-//       }
-//     },
-//     event: '0xe1',
-//     reportHash: '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
-//     encryptedReport: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
-//     encryptedSalt: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27',
-//     ethics: '1',
-//     branch: '0xb1',
-//     period: 1500,
-//     periodLength: 1000,
-//     onSent: noop,
-//     onSuccess: noop,
-//     onFailed: function (err) {
-//       assert.deepEqual(err, {"-2": "not in first half of period (commit phase)"});
-//       finished();
-//     }
-//   });
-//   test({
-//     testThis: {
-//       options: { debug: { reporting: false } },
-//       tx: augur.store.getState().contractsAPI.functions,
-//       transact: function (tx, onSent, onSuccess, onFailed) {
-//         assert.deepEqual(tx.params, [
-//           '0xe1',
-//           '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
-//           '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
-//           '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27',
-//           '0xde0b6b3a7640000'
-//         ]);
-//         assert.deepEqual(tx.to, augur.store.getState().contractsAPI.functions.MakeReports.submitReportHash.to);
-//         onSuccess({ callReturn: '-2' });
-//       },
-//       getCurrentPeriodProgress: function (periodLength) { return 23; },
-//       checkPeriod: function (branch, periodLength, from, cb) {
-//         // shouldn't be called.
-//       },
-//       getRepRedistributionDone: function (branch, from, cb) {
-//         // shouldn't be called.
-//       },
-//       ExpiringEvents: {
-//         getReportHash: function (branch) {
-//           branch.callback('0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f');
-//         }
-//       }
-//     },
-//     event: '0xe1',
-//     reportHash: '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
-//     encryptedReport: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
-//     encryptedSalt: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a6497847355b964e27',
-//     ethics: '1',
-//     branch: '0xb1',
-//     period: 1500,
-//     periodLength: 1000,
-//     onSent: noop,
-//     onSuccess: function (res) {
-//       assert.deepEqual(res, { callReturn: '1' });
-//       finished();
-//     },
-//     onFailed: noop
-//   });
-// });
-//
-// describe("submitReport", function () {
-//   var finished;
-//   var test = function (t) {
-//     it(JSON.stringify(t), function (done) {
-//       finished = done;
-//       makeReports.submitReport.call(t.testThis, t.event, t.salt, t.report, t.ethics, t.minValue, t.maxValue, t.type, t.isIndeterminate, t.onSent, t.onSuccess, t.onFailed);
-//     });
-//   };
-//   test({
-//     testThis: {
-//     	options: { debug: { reporting: false } },
-//     	fixReport: makeReports.fixReport,
-//     	MakeReports: {
-//     		submitReport: function (event, salt, report, ethics, onSent, onSuccess, onFailed) {
-//     			assert.deepEqual(event, '0xe1');
-//     			assert.deepEqual(salt, '0x4e61436c');
-//     			assert.deepEqual(report, '0xde0b6b3a7640000');
-//     			assert.deepEqual(ethics, '6565656565650000000000000000000000000000000000000000000000000000');
-//     			assert.isFunction(onSent);
-//     			assert.isFunction(onSuccess);
-//     			assert.isFunction(onFailed);
-//     			finished();
-//     		}
-//     	}
-//     },
-//     event: '0xe1',
-//     salt: 'NaCl',
-//     report: '1',
-//     ethics: '6565656565650000000000000000000000000000000000000000000000000000',
-//     minValue: 1,
-//     maxValue: 2,
-//     type: 'binary',
-//     isIndeterminate: false,
-//     onSent: noop,
-//     onSuccess: noop,
-//     onFailed: noop
-//   });
-//   test({
-//     testThis: {
-//     	options: { debug: { reporting: false } },
-//     	fixReport: makeReports.fixReport,
-//     	MakeReports: {
-//     		submitReport: function (event, salt, report, ethics, onSent, onSuccess, onFailed) {
-//     			assert.deepEqual(event, '0xe1');
-//     			assert.deepEqual(salt, '0x4e61436c');
-//     			assert.deepEqual(report, '0xde0b6b3a7640000');
-//     			assert.deepEqual(ethics, '6565656565650000000000000000000000000000000000000000000000000000');
-//     			assert.isFunction(onSent);
-//     			assert.isFunction(onSuccess);
-//     			assert.isFunction(onFailed);
-//     			finished();
-//     		}
-//     	}
-//     },
-//     event: {
-//       event: '0xe1',
-//       salt: 'NaCl',
-//       report: '1',
-//       ethics: '6565656565650000000000000000000000000000000000000000000000000000',
-//       minValue: 1,
-//       maxValue: 2,
-//       type: 'binary',
-//       isIndeterminate: false,
-//       onSent: noop,
-//       onSuccess: noop,
-//       onFailed: noop
-//     }
-//   });
-// });
+describe("submitReportHash", function () {
+  var finished;
+  var apiSubmitReportHash = augur.api.MakeReports.submitReportHash;
+  var getRepRedistributionDone = augur.api.ConsensusData.getRepRedistributionDone;
+  var getReportHash = augur.api.ExpiringEvents.getReportHash;
+  var submitReportHashCC = 0;
+
+  var test = function (t) {
+    it(JSON.stringify(t.params), function (done) {
+      submitReportHashCC = 0;
+      finished = done;
+
+      var submitReportHash = proxyquire('../../../src/reporting/submit-report-hash', {
+        './get-current-period-progress': t.getCurrentPeriodProgress,
+        './prepare-to-report': t.prepareToReport
+      });
+      augur.api.MakeReports.submitReportHash = t.submitReportHash;
+      augur.api.ConsensusData.getRepRedistributionDone = t.getRepRedistributionDone;
+      augur.api.ExpiringEvents.getReportHash = t.getReportHash;
+
+      submitReportHash(t.params);
+
+      augur.api.MakeReports.submitReportHash = apiSubmitReportHash;
+      augur.api.ConsensusData.getRepRedistributionDone = getRepRedistributionDone;
+      augur.api.ExpiringEvents.getReportHash = getReportHash;
+    });
+  };
+  test({
+    params: {
+      event: '0xe1',
+      reportHash: '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
+      encryptedReport: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
+      encryptedSalt: '0xb4d39f3969a897a0d3872361ecadf9d87e7d43ee3eb63ccff7f94ed548b95d2c',
+      ethics: '1',
+      branch: '0xb1',
+      period: 1500,
+      periodLength: 1000,
+      onSent: noop,
+      onSuccess: noop,
+      onFailed: function (err) {
+        assert.deepEqual(err, {"-2": "not in first half of period (commit phase)"});
+        finished();
+      }
+    },
+    submitReportHash: function (p) {},
+    getCurrentPeriodProgress: function (periodLength) { return 85; },
+    prepareToReport: function (branch, periodLength, address, cb) {},
+    getRepRedistributionDone: function (p) {},
+    getReportHash: function (p, cb) {}
+  });
+  test({
+    params: {
+      event: '0xe1',
+      reportHash: '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
+      encryptedReport: undefined,
+      encryptedSalt: undefined,
+      ethics: '1',
+      branch: '0xb1',
+      period: 1500,
+      periodLength: 1000,
+      onSent: noop,
+      onSuccess: noop,
+      onFailed: function (err) {
+        assert.deepEqual(err, { error: 999, message: 'Uh-Oh!' });
+        finished();
+      }
+    },
+    submitReportHash: function (p) {
+      assert.deepEqual(p.encryptedReport, 0);
+      assert.deepEqual(p.encryptedSalt, 0);
+      assert.deepEqual(p.ethics, abi.fix('1', 'hex'));
+      assert.isFunction(p.onSuccess);
+      p.onSuccess({ callReturn: '0', from: '0xdeadbeef' });
+    },
+    getCurrentPeriodProgress: function (periodLength) { return 23; },
+    prepareToReport: function (branch, periodLength, address, cb) {
+      assert.deepEqual(branch, '0xb1');
+      assert.deepEqual(periodLength, 1000);
+      assert.deepEqual(address, '0xdeadbeef');
+      cb({ error: 999, message: 'Uh-Oh!' });
+    },
+    getRepRedistributionDone: function (p) {},
+    getReportHash: function (p, cb) {}
+  });
+  test({
+    params: {
+      event: '0xe1',
+      reportHash: '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
+      encryptedReport: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
+      encryptedSalt: '0xb4d39f3969a897a0d3872361ecadf9d87e7d43ee3eb63ccff7f94ed548b95d2c',
+      ethics: '1',
+      branch: '0xb1',
+      period: 1500,
+      periodLength: 1000,
+      onSent: noop,
+      onSuccess: noop,
+      onFailed: function (err) {
+        assert.deepEqual(err, "Rep redistribution not done");
+        finished();
+      }
+    },
+    submitReportHash: function (p) {
+      assert.deepEqual(p.encryptedReport, '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e');
+      assert.deepEqual(p.encryptedSalt, '0xb4d39f3969a897a0d3872361ecadf9d87e7d43ee3eb63ccff7f94ed548b95d2c');
+      assert.deepEqual(p.ethics, abi.fix('1', 'hex'));
+      assert.isFunction(p.onSuccess);
+      p.onSuccess({ callReturn: '0', from: '0xdeadbeef' });
+    },
+    getCurrentPeriodProgress: function (periodLength) { return 23; },
+    prepareToReport: function (branch, periodLength, address, cb) {
+      assert.deepEqual(branch, '0xb1');
+      assert.deepEqual(periodLength, 1000);
+      assert.deepEqual(address, '0xdeadbeef');
+      cb();
+    },
+    getRepRedistributionDone: function (p) {
+      assert.deepEqual(p.branch, '0xb1');
+      assert.deepEqual(p.reporter, '0xdeadbeef');
+      p.callback("0");
+    },
+    getReportHash: function (p, cb) {}
+  });
+  test({
+    params: {
+      event: '0xe1',
+      reportHash: '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
+      encryptedReport: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
+      encryptedSalt: '0xb4d39f3969a897a0d3872361ecadf9d87e7d43ee3eb63ccff7f94ed548b95d2c',
+      ethics: '1',
+      branch: '0xb1',
+      period: 1500,
+      periodLength: 1000,
+      onSent: noop,
+      onSuccess: function (res) {
+        assert.deepEqual(res, { callReturn: '1', from: '0xdeadbeef' });
+        assert.deepEqual(submitReportHashCC, 2);
+        finished();
+      },
+      onFailed: noop
+    },
+    submitReportHash: function (p) {
+      submitReportHashCC++;
+      assert.deepEqual(p.encryptedReport, '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e');
+      assert.deepEqual(p.encryptedSalt, '0xb4d39f3969a897a0d3872361ecadf9d87e7d43ee3eb63ccff7f94ed548b95d2c');
+      assert.deepEqual(p.ethics, abi.fix('1', 'hex'));
+      assert.isFunction(p.onSuccess);
+      p.onSuccess({ callReturn: (submitReportHashCC - 1), from: '0xdeadbeef' });
+    },
+    getCurrentPeriodProgress: function (periodLength) { return 23; },
+    prepareToReport: function (branch, periodLength, address, cb) {
+      assert.deepEqual(branch, '0xb1');
+      assert.deepEqual(periodLength, 1000);
+      assert.deepEqual(address, '0xdeadbeef');
+      cb();
+    },
+    getRepRedistributionDone: function (p) {
+      assert.deepEqual(p.branch, '0xb1');
+      assert.deepEqual(p.reporter, '0xdeadbeef');
+      p.callback("1");
+    },
+    getReportHash: function (p, cb) {}
+  });
+  test({
+    params: {
+      event: '0xe1',
+      reportHash: '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
+      encryptedReport: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
+      encryptedSalt: '0xb4d39f3969a897a0d3872361ecadf9d87e7d43ee3eb63ccff7f94ed548b95d2c',
+      ethics: '1',
+      branch: '0xb1',
+      period: 1500,
+      periodLength: 1000,
+      onSent: noop,
+      onSuccess: function (res) {
+        assert.deepEqual(res, { callReturn: '1', from: '0xdeadbeef' });
+        assert.deepEqual(submitReportHashCC, 1);
+        finished();
+      },
+      onFailed: noop
+    },
+    submitReportHash: function (p) {
+      submitReportHashCC++;
+      assert.deepEqual(p.encryptedReport, '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e');
+      assert.deepEqual(p.encryptedSalt, '0xb4d39f3969a897a0d3872361ecadf9d87e7d43ee3eb63ccff7f94ed548b95d2c');
+      assert.deepEqual(p.ethics, abi.fix('1', 'hex'));
+      assert.isFunction(p.onSuccess);
+      p.onSuccess({ callReturn: '-2', from: '0xdeadbeef' });
+    },
+    getCurrentPeriodProgress: function (periodLength) { return 23; },
+    prepareToReport: function (branch, periodLength, address, cb) {},
+    getRepRedistributionDone: function (p) {},
+    getReportHash: function (p, cb) {
+      assert.deepEqual(p, {
+        branch: '0xb1',
+        expDateIndex: 1500,
+        reporter: '0xdeadbeef',
+        event: '0xe1'
+      });
+      cb('0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f')
+    }
+  });
+  test({
+    params: {
+      event: '0xe1',
+      reportHash: '0x7757ad460dc257b396f42cb184d5d166c259ae817bdeef01d88a8b00e152f10f',
+      encryptedReport: '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e',
+      encryptedSalt: '0xb4d39f3969a897a0d3872361ecadf9d87e7d43ee3eb63ccff7f94ed548b95d2c',
+      ethics: '1',
+      branch: '0xb1',
+      period: 1500,
+      periodLength: 1000,
+      onSent: noop,
+      onSuccess: noop,
+      onFailed: function (err) {
+        assert.deepEqual(err, { "-2": "not in first half of period (commit phase)" });
+        finished();
+      }
+    },
+    submitReportHash: function (p) {
+      submitReportHashCC++;
+      assert.deepEqual(p.encryptedReport, '0x90c6b55cf923c83de5155e4ddc0480040976efcf39a900a64498f186fcf24b1e');
+      assert.deepEqual(p.encryptedSalt, '0xb4d39f3969a897a0d3872361ecadf9d87e7d43ee3eb63ccff7f94ed548b95d2c');
+      assert.deepEqual(p.ethics, abi.fix('1', 'hex'));
+      assert.isFunction(p.onSuccess);
+      p.onSuccess({ callReturn: '-2', from: '0xdeadbeef' });
+    },
+    getCurrentPeriodProgress: function (periodLength) { return 23; },
+    prepareToReport: function (branch, periodLength, address, cb) {},
+    getRepRedistributionDone: function (p) {},
+    getReportHash: function (p, cb) {
+      assert.deepEqual(p, {
+        branch: '0xb1',
+        expDateIndex: 1500,
+        reporter: '0xdeadbeef',
+        event: '0xe1'
+      });
+      cb();
+    }
+  });
+});
+
+describe("submitReport", function () {
+  var finished;
+  var submitReport = augur.api.MakeReports.submitReport;
+  var test = function (t) {
+    it.only(JSON.stringify(t), function (done) {
+      finished = done;
+
+      augur.api.MakeReports.submitReport = t.submitReport;
+
+      t.assertions(augur.reporting.submitReport(t.params));
+
+      augur.api.MakeReports.submitReport = submitReport;
+    });
+  };
+  test({
+    params: {
+      event: '0xe1',
+      salt: 'salt',
+      report: '1',
+      ethics: 1,
+      minValue: 1,
+      maxValue: 2,
+      type: 'binary',
+      isIndeterminate: false,
+    },
+    assertions: function (out) {
+      assert.deepEqual(JSON.stringify(out), JSON.stringify({
+        event: '0xe1',
+        salt: abi.hex('salt'),
+        report: '0xde0b6b3a7640000',
+        ethics: 1,
+        minValue: 1,
+        maxValue: 2,
+        type: 'binary',
+        isIndeterminate: false,
+      }));
+      finished();
+    },
+    submitReport: function (p) {
+      // simply return inputs for the assetion function
+      return p;
+    }
+  });
+});
