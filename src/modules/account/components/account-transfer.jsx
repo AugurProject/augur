@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
 import Input from 'modules/common/components/input';
 // import DropDown from 'modules/common/components/dropdown';
@@ -23,24 +24,11 @@ export default class AccountTransfer extends Component {
   constructor(props) {
     super(props);
 
-    this.assetTypes = [
-      {
-        label: 'ETH',
-        value: ETH
-      },
-      {
-        label: 'ETH Tokens',
-        value: ETH_TOKEN
-      },
-      {
-        label: 'REP',
-        value: REP
-      }
-    ];
-
     this.DEFAULT_STATE = {
-      upperBound: this.props.eth.value,
-      selectedAsset: this.assetTypes[0].value,
+      animationSpeed: 0,
+      upperBound: null,
+      selectedAsset: null,
+      selectedAssetLabel: null,
       amount: '',
       address: '',
       isValid: null,
@@ -50,10 +38,15 @@ export default class AccountTransfer extends Component {
 
     this.state = this.DEFAULT_STATE;
 
+    this.setAnimationSpeed = this.setAnimationSpeed.bind(this);
     this.updateSelectedAsset = this.updateSelectedAsset.bind(this);
     this.validateAmount = this.validateAmount.bind(this);
     this.validateAddress = this.validateAddress.bind(this);
     this.validateForm = this.validateForm.bind(this);
+  }
+
+  componentDidMount() {
+    this.setAnimationSpeed();
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -65,23 +58,32 @@ export default class AccountTransfer extends Component {
     }
   }
 
+  setAnimationSpeed() {
+    this.setState({ animationSpeed: parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-very-fast'), 10) });
+  }
+
   updateSelectedAsset(selectedAsset) {
     let upperBound;
+    let selectedAssetLabel;
     switch (selectedAsset) {
-      case this.ETH_TOKEN:
+      case ETH_TOKEN:
         upperBound = this.props.ethTokens.value;
+        selectedAssetLabel = 'ETH Tokens';
         break;
-      case this.REP:
+      case REP:
         upperBound = this.props.rep.value;
+        selectedAssetLabel = 'REP';
         break;
-      case this.ETH:
+      case ETH:
       default:
         upperBound = this.props.eth.value;
+        selectedAssetLabel = 'ETH';
     }
 
     this.setState({
       selectedAsset,
-      upperBound
+      upperBound,
+      selectedAssetLabel
     });
   }
 
@@ -135,6 +137,8 @@ export default class AccountTransfer extends Component {
     const p = this.props;
     const s = this.state;
 
+    console.log('state -- ', s.amount, s.isAmountValid);
+
     return (
       <article className="account-transfer account-sub-view">
         <aside>
@@ -159,24 +163,24 @@ export default class AccountTransfer extends Component {
             <div className="account-transfer-step account-transfer-asset-type">
               <button
                 type="button"
-                className="unstyled logo-button"
-                onClick={() => this.setDirection(this.TO_ETHER)}
+                className={classNames('unstyled logo-button', { 'selected-asset': s.selectedAsset === ETH })}
+                onClick={() => this.updateSelectedAsset(ETH)}
               >
                 <EtherLogo />
                 <span>Ether</span>
               </button>
               <button
                 type="button"
-                className="unstyled logo-button"
-                onClick={() => this.setDirection(this.TO_TOKEN)}
+                className={classNames('unstyled logo-button', { 'selected-asset': s.selectedAsset === ETH_TOKEN })}
+                onClick={() => this.updateSelectedAsset(ETH_TOKEN)}
               >
                 <EtherTokenLogo />
                 <span>Ether Token</span>
               </button>
               <button
                 type="button"
-                className="unstyled logo-button"
-                onClick={() => this.setDirection(this.TO_TOKEN)}
+                className={classNames('unstyled logo-button', { 'selected-asset': s.selectedAsset === REP })}
+                onClick={() => this.updateSelectedAsset(REP)}
               >
                 <AugurLogoIcon
                   invert
@@ -184,46 +188,71 @@ export default class AccountTransfer extends Component {
                 <span>Augur REP</span>
               </button>
             </div>
-            <div className="account-transfer-step">
-              <Input
-                isIncrementable
-                incrementAmount={1}
-                max={s.upperBound}
-                min={0.1}
-                value={s.amount}
-                updateValue={amount => this.validateAmount(amount)}
-                onChange={amount => this.validateAmount(amount)}
-                placeholder={`Amount of ${this.assetTypes.find(asset => asset.value === s.selectedAsset).label} to send`}
-              />
-              <span
-                className={classNames('account-input-error', {
-                  'input-in-error': s.amount !== '' && s.isAmountValid !== null && !s.isAmountValid
-                })}
-              >
-                {`Amount must be between 0 and ${s.upperBound} ${this.assetTypes.find(asset => asset.value === s.selectedAsset).label}`}
-              </span>
-            </div>
-            <div className="account-transfer-step">
-              <Input
-                value={s.address}
-                updateValue={address => this.validateAddress(address)}
-                onChange={address => this.validateAddress(address)}
-                placeholder={`Recipient address`}
-              />
-              <span
-                className={classNames('account-input-error', {
-                  'input-in-error': s.address !== '' && s.isAddressValid !== null && !s.isAddressValid
-                })}
-              >
-                Not a valid Ethereum address
-              </span>
-            </div>
-            <button
-              type="submit"
-              className={classNames('account-convert-submit', { 'form-is-valid': s.isValid })}
+            <CSSTransitionGroup
+              component="div"
+              transitionName="amount-transfer"
+              transitionEnterTimeout={s.animationSpeed}
+              transitionLeave={false}
             >
-              Transfer
-            </button>
+              {!!s.selectedAsset &&
+                <div className="account-transfer-step">
+                  <Input
+                    isIncrementable
+                    incrementAmount={1}
+                    max={s.upperBound}
+                    min={0.1}
+                    value={s.amount}
+                    updateValue={amount => this.validateAmount(amount)}
+                    onChange={amount => this.validateAmount(amount)}
+                    placeholder={`Amount of ${s.selectedAssetLabel} to send`}
+                  />
+                  <span
+                    className={classNames('account-input-error', {
+                      'input-in-error': s.amount !== '' && s.isAmountValid !== null && !s.isAmountValid
+                    })}
+                  >
+                    {`Amount must be between 0 and ${s.upperBound} ${s.selectedAssetLabel}`}
+                  </span>
+                </div>
+              }
+            </CSSTransitionGroup>
+            <CSSTransitionGroup
+              component="div"
+              transitionName="address-transfer"
+              transitionEnterTimeout={s.animationSpeed}
+              transitionLeaveTimeout={s.animationSpeed}
+            >
+              {!!s.isAmountValid &&
+                <div className="account-transfer-step">
+                  <Input
+                    value={s.address}
+                    updateValue={address => this.validateAddress(address)}
+                    onChange={address => this.validateAddress(address)}
+                    placeholder={`Recipient address`}
+                  />
+                  <span
+                    className={classNames('account-input-error', {
+                      'input-in-error': s.address !== '' && s.isAddressValid !== null && !s.isAddressValid
+                    })}
+                  >
+                    Not a valid Ethereum address
+                  </span>
+                </div>
+              }
+            </CSSTransitionGroup>
+            <CSSTransitionGroup
+              component="div"
+              transitionName="submit-transfer"
+              transitionEnterTimeout={s.animationSpeed}
+              transitionLeaveTimeout={s.animationSpeed}
+            >
+              <button
+                type="submit"
+                className={classNames('account-convert-submit', { 'form-is-valid': s.isValid })}
+              >
+                Transfer
+              </button>
+            </CSSTransitionGroup>
           </form>
         </div>
       </article>

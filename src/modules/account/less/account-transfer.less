@@ -2,6 +2,8 @@
   .account-transfer-step {
     &.account-transfer-asset-type {
       display: flex;
+      flex: 1;
+      margin-bottom: 1em;
 
       .logo-button {
         align-items: center;
@@ -12,6 +14,10 @@
 
         &:hover {
           background-color: @color-gray-light;
+        }
+
+        &.selected-asset {
+          background-color: @color-gray-muted;
         }
 
         span {
@@ -25,5 +31,41 @@
         }
       }
     }
+  }
+
+  .amount-transfer-enter,
+  .address-transfer-enter,
+  .submit-transfer-enter {
+    opacity: 0;
+    transform: translateY(-20%);
+  }
+
+  .amount-transfer-enter-active,
+  .address-transfer-enter-active,
+  .submit-transfer-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition-duration: @animation-speed-very-fast;
+    transition-property: opacity, transform;
+    transition-timing-function: @animation-default-type;
+  }
+
+  .address-transfer-leave,
+  .submit-transfer-leave {
+    opacity: 1;
+    transform: translate(0);
+  }
+
+  .address-transfer-leave-active,
+  .submit-transfer-leave-active {
+    opacity: 0;
+    transform: translateY(-20%);
+    transition-duration: @animation-speed-very-fast;
+    transition-property: opacity, transform;
+    transition-timing-function: @animation-default-type;
+  }
+
+  button {
+    width: 100%;
   }
 }
