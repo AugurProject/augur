@@ -4,7 +4,7 @@ import React, { PropTypes } from 'react';
 // To employ, just set the width or height on the containing element and this SVG will respond appropriately
 const AugurLogoIcon = p => (
   <svg
-    className="augur-logo-icon"
+    className="augur-logo-icon logo"
     viewBox="0 0 240 240"
   >
     <defs>

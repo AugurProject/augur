@@ -1,5 +1,29 @@
 .account-transfer {
-  .dropdown {
-    margin-bottom: 1.8em;
+  .account-transfer-step {
+    &.account-transfer-asset-type {
+      display: flex;
+
+      .logo-button {
+        align-items: center;
+        display: flex;
+        flex: 1 1 auto;
+        flex-direction: column;
+        padding: 1em;
+
+        &:hover {
+          background-color: @color-gray-light;
+        }
+
+        span {
+          .font-size-medium();
+
+          margin-top: 1em;
+        }
+
+        .logo {
+          width: 100%;
+        }
+      }
+    }
   }
 }
