@@ -3,11 +3,10 @@
 var assert = require("chai").assert;
 var augur = new (require("../../../src"))();
 
-describe("modifyOrderBook.addOrder", function () {
+describe("augur.trading.orderBook.addOrder", function () {
   var test = function (t) {
     it(t.description, function () {
-      var orderBook = augur.addOrder(t.params.order, t.params.orderBook);
-      t.assertions(orderBook);
+      t.assertions(augur.trading.orderBook.addOrder(t.params.order, t.params.orderBook));
     });
   };
   test({
@@ -224,11 +223,10 @@ describe("modifyOrderBook.addOrder", function () {
   });
 });
 
-describe("modifyOrderBook.removeOrder", function () {
+describe("augur.trading.orderBook.removeOrder", function () {
   var test = function (t) {
     it(t.description, function () {
-      var orderBook = augur.removeOrder(t.params.orderID, t.params.orderType, t.params.orderBook);
-      t.assertions(orderBook);
+      t.assertions(augur.trading.orderBook.removeOrder(t.params.orderID, t.params.orderType, t.params.orderBook));
     });
   };
   test({
@@ -513,11 +511,10 @@ describe("modifyOrderBook.removeOrder", function () {
   });
 });
 
-describe("modifyOrderBook.fillOrder", function () {
+describe("augur.trading.orderBook.fillOrder", function () {
   var test = function (t) {
     it(t.description, function () {
-      var orderBook = augur.fillOrder(t.params.orderID, t.params.amount, t.params.filledOrderType, t.params.orderBook);
-      t.assertions(orderBook);
+      t.assertions(augur.trading.orderBook.fillOrder(t.params.orderID, t.params.amount, t.params.filledOrderType, t.params.orderBook));
     });
   };
   test({
@@ -958,10 +955,10 @@ describe("modifyOrderBook.fillOrder", function () {
   });
 });
 
-describe("modifyOrderBook.adjustScalarOrder", function () {
+describe("trading/order-book/adjust-scalar-order", function () {
   var test = function (t) {
     it(t.description, function () {
-      t.assertions(augur.adjustScalarOrder(t.params.order, t.params.minValue));
+      t.assertions(require('../../../src/trading/order-book/adjust-scalar-order.js')(t.params.order, t.params.minValue));
     });
   };
   test({
@@ -986,11 +983,10 @@ describe("modifyOrderBook.adjustScalarOrder", function () {
   });
 });
 
-describe("modifyOrderBook.convertAddTxLogToOrder", function () {
+describe("augur.trading.orderBook.convertAddTxLogToOrder", function () {
   var test = function (t) {
     it(t.description, function () {
-      var order = augur.convertAddTxLogToOrder(t.params.log, t.params.marketType, t.params.minValue);
-      t.assertions(order);
+      t.assertions(augur.trading.orderBook.convertAddTxLogToOrder(t.params.log, t.params.marketType, t.params.minValue));
     });
   };
   test({

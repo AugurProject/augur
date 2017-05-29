@@ -1052,7 +1052,7 @@ describe("submitReport", function () {
   var finished;
   var submitReport = augur.api.MakeReports.submitReport;
   var test = function (t) {
-    it.only(JSON.stringify(t), function (done) {
+    it(JSON.stringify(t), function (done) {
       finished = done;
 
       augur.api.MakeReports.submitReport = t.submitReport;

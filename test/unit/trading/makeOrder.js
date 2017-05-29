@@ -1,18 +1,17 @@
 "use strict";
 
 var assert = require("chai").assert;
+var proxyquire = require('proxyquire');
 var augur = new (require("../../../src"))();
 
 describe("makeOrder.placeBid", function () {
   // 2 tests total
-  var buy = augur.buy;
-  afterEach(function () {
-    augur.buy = buy;
-  });
   var test = function (t) {
     it(t.description, function () {
-      augur.buy = t.assertions;
-      augur.placeBid(t.market, t.outcomeID, t.numShares, t.limitPrice, t.tradeGroupID, t.callback);
+      var placeBid = proxyquire('../../../src/trading/make-order/place-bid', {
+        './buy': t.assertions
+      });
+      placeBid({}, t.market, t.outcomeID, t.numShares, t.limitPrice, t.tradeGroupID, t.callback);
     });
   };
   test({
@@ -60,14 +59,12 @@ describe("makeOrder.placeBid", function () {
 });
 describe("makeOrder.placeAsk", function () {
   // 2 tests total
-  var sell = augur.sell;
-  afterEach(function () {
-    augur.sell = sell;
-  });
   var test = function (t) {
     it(t.description, function () {
-      augur.sell = t.assertions;
-      augur.placeAsk(t.market, t.outcomeID, t.numShares, t.limitPrice, t.tradeGroupID, t.callback);
+      var placeAsk = proxyquire('../../../src/trading/make-order/place-ask', {
+        './sell': t.assertions
+      });
+      placeAsk({}, t.market, t.outcomeID, t.numShares, t.limitPrice, t.tradeGroupID, t.callback);
     });
   };
   test({
@@ -115,14 +112,12 @@ describe("makeOrder.placeAsk", function () {
 });
 describe("makeOrder.placeShortAsk", function () {
   // 2 tests total
-  var shortAsk = augur.shortAsk;
-  afterEach(function () {
-    augur.shortAsk = shortAsk;
-  });
   var test = function (t) {
     it(t.description, function () {
-      augur.shortAsk = t.assertions;
-      augur.placeShortAsk(t.market, t.outcomeID, t.numShares, t.limitPrice, t.tradeGroupID, t.callback);
+      var placeShortAsk = proxyquire('../../../src/trading/make-order/place-short-ask', {
+        './short-ask': t.assertions
+      });
+      placeShortAsk({}, t.market, t.outcomeID, t.numShares, t.limitPrice, t.tradeGroupID, t.callback);
     });
   };
   test({
@@ -175,16 +170,14 @@ describe("makeOrder.placeAskAndShortAsk", function () {
   var finished;
   var shortAskOnSuccess;
   var askOnSuccess;
-  afterEach(function () {
-    augur.shortAsk = shortAsk;
-    augur.sell = sell;
-  });
   var test = function (t) {
     it(t.description, function (done) {
-      augur.shortAsk = t.shortAsk;
-      augur.sell = t.sell;
+      var placeAskAndShortAsk = proxyquire('../../../src/trading/make-order/place-ask-and-short-ask', {
+        './short-ask': t.shortAsk,
+        './sell': t.sell
+      });
       finished = done;
-      augur.placeAskAndShortAsk(t.market, t.outcomeID, t.askShares, t.shortAskShares, t.limitPrice, t.tradeGroupID, t.callback);
+      placeAskAndShortAsk({}, t.market, t.outcomeID, t.askShares, t.shortAskShares, t.limitPrice, t.tradeGroupID, t.callback);
     });
   };
   test({
