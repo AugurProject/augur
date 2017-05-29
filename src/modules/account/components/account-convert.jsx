@@ -95,25 +95,25 @@ export default class AccountConvert extends Component {
               <button
                 type="button"
                 className="unstyled logo-button"
-                onClick={() => this.setDirection(this.TO_TOKEN)}
+                onClick={() => this.setDirection(this.TO_ETHER)}
               >
-                <EtherTokenLogo />
-                <span>Ether Token</span>
+                <EtherLogo />
+                <span>Ether</span>
               </button>
               <button
                 type="button"
                 className="unstyled direction-indicator"
                 onClick={() => this.setDirection(s.direction === this.TO_TOKEN ? this.TO_ETHER : this.TO_TOKEN)}
               >
-                <i className={classNames('fa fa-angle-double-left', { 'direction-to-token': s.direction === this.TO_TOKEN })} />
+                <i className={classNames('fa fa-angle-double-right', { 'direction-to-token': s.direction === this.TO_TOKEN })} />
               </button>
               <button
                 type="button"
                 className="unstyled logo-button"
-                onClick={() => this.setDirection(this.TO_ETHER)}
+                onClick={() => this.setDirection(this.TO_TOKEN)}
               >
-                <EtherLogo />
-                <span>Ether</span>
+                <EtherTokenLogo />
+                <span>Ether Token</span>
               </button>
             </div>
             <Input
