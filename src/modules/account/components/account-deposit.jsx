@@ -54,7 +54,7 @@ export default class AccountDeposit extends Component {
         <aside>
           <h3>Deposit Funds To Account</h3>
           <p className="warning">DO NOT deposit mainnet ETH or REP.</p>
-          <p>Scan the QR code <strong>or</strong> copy the full account address to transfer funds to your account.</p>
+          <p>Scan the QR code or copy the full account address to transfer funds to your account.</p>
         </aside>
         <div
           ref={(depositData) => { this.depositData = depositData; }}

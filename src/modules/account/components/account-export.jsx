@@ -9,10 +9,13 @@ import getValue from 'utils/get-value';
 
 export default class AccountExport extends Component {
   static propTypes = {
-    airbitzAccount: PropTypes.object,
-    accountPrivateKey: PropTypes.string,
-    downloadAccountDataString: PropTypes.string,
-    downloadAccountFileName: PropTypes.string
+    loginID: PropTypes.string.isRequired,
+    accountPrivateKey: PropTypes.string.isRequired,
+    downloadLoginIDDataString: PropTypes.string.isRequired,
+    downloadLoginIDFileName: PropTypes.string.isRequired,
+    downloadAccountDataString: PropTypes.string.isRequired,
+    downloadAccountFileName: PropTypes.string.isRequired,
+    airbitzAccount: PropTypes.object
   };
 
   constructor(props) {
@@ -38,7 +41,7 @@ export default class AccountExport extends Component {
 
   setQRSize() {
     const width = getValue(this, 'exportData.clientWidth');
-    if (width) this.setState({ qrSize: width / 2 });
+    if (width) this.setState({ qrSize: width / 3 });
   }
 
   render() {
@@ -71,11 +74,19 @@ export default class AccountExport extends Component {
               >
                 Download Key File
               </Link>
+              <Link
+                className="button"
+                href={p.downloadLoginIDDataString}
+                download={p.downloadLoginIDFileName}
+              >
+                Download Login ID
+              </Link>
             </div>
           }
           {p.airbitzAccount &&
             <AccountExportAirbitz
               qrSize={s.qrSize}
+              loginID={p.loginID}
             />
           }
         </div>

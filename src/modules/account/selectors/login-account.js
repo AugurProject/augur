@@ -25,7 +25,7 @@ export const selectLoginAccount = createSelector(
     }
     return {
       ...loginAccount,
-      ...generateDownloadAccountLink(loginAccount.address, augur.accounts.account.keystore),
+      ...generateDownloadAccountLink(loginAccount.address, augur.accounts.account.keystore, loginAccount.loginID),
       trimmedLoginID,
       trimmedAddress,
       linkText,
