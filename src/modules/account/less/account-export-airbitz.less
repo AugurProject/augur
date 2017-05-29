@@ -1,7 +1,13 @@
 .account-export-airbitz {
   display: flex;
   flex: 1;
-  justify-content: center;
+  flex-direction: column;
+  overflow-y: hidden;
+
+  & > div {
+    display: flex;
+    justify-content: center;
+  }
 
   form {
     z-index: @above-all-content;
@@ -47,7 +53,7 @@
         transform: translateY(-100%);
 
         &.password-confirm-enter-active {
-          transform: translateY(calc(~"0% - 1px"));
+          transform: translateY(0);
         }
       }
 
@@ -57,6 +63,54 @@
         &.password-confirm-leave-active {
           transform: translateY(-100%);
         }
+      }
+    }
+  }
+
+  .account-export-generating-keyfile {
+    transition-duration: @animation-speed-very-fast;
+    transition-property: opacity, transform;
+    transition-timing-function: @animation-default-type;
+
+    &.generating-enter {
+      opacity: 0;
+      transform: translateY(-20%);
+
+      &.generating-enter-active {
+        opacity: 1;
+        transform: translateY(0);
+        transition-delay: @animation-speed-very-fast;
+      }
+    }
+
+    &.generating-leave {
+      opacity: 1;
+      transform: translate(0);
+
+      &.generating-leave-active {
+        opacity: 0;
+        transform: translateY(-10%);
+      }
+    }
+
+    .spinner {
+      margin-top: 1em;
+    }
+  }
+
+  .account-export-airbitz-keyfile {
+    transition-duration: @animation-speed-very-fast;
+    transition-property: opacity, transform;
+    transition-timing-function: @animation-default-type;
+
+    &.keyfile-enter {
+      opacity: 0;
+      transform: translateY(-20%);
+
+      &.keyfile-enter-active {
+        opacity: 1;
+        transform: translateY(0);
+        transition-delay: @animation-speed-very-fast;
       }
     }
   }

@@ -73,7 +73,9 @@ export default class AccountExport extends Component {
             </div>
           }
           {p.airbitzAccount &&
-            <AccountExportAirbitz />
+            <AccountExportAirbitz
+              qrSize={s.qrSize}
+            />
           }
         </div>
       </article>

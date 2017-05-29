@@ -2,17 +2,21 @@ import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 import zxcvbn from 'zxcvbn';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import QRCode from 'qrcode.react';
 
 import encryptPrivateKeyWithPassword from 'modules/auth/helpers/encrypt-privatekey-with-password';
 import generateDownloadAccountLink from 'modules/auth/helpers/generate-download-account-link';
 import Input from 'modules/common/components/input';
 import Spinner from 'modules/common/components/spinner';
+import Link from 'modules/link/components/link';
+
+import debounce from 'utils/debounce';
 
 import { REQUIRED_PASSWORD_STRENGTH } from 'modules/auth/constants/password-strength';
 
 export default class AccountExportAirbitz extends Component {
   static propTypes = {
-
+    qrSize: PropTypes.number.isRequired
   };
 
   constructor(props) {
@@ -55,14 +59,13 @@ export default class AccountExportAirbitz extends Component {
     }
 
     if (this.state.isValid !== nextState.isValid && nextState.isValid) {
-      console.log('here');
       this.setState({
+        generatingKeyFile: true,
         formComplete: true
       }, () => {
         setTimeout(() => {
-          console.log('make call');
           this.generateEncryptedKeyFile();
-        }, nextState.animationSpeed); // Allow for animations before calling blocking method
+        }, nextState.animationSpeed * 2); // Allow for animations before calling blocking method
       });
     }
   }
@@ -71,8 +74,6 @@ export default class AccountExportAirbitz extends Component {
     const scoreResult = zxcvbn(password);
     const passwordSuggestions = scoreResult.feedback.suggestions;
     const currentScore = scoreResult.score;
-
-    console.log('scoreResult -- ', scoreResult);
 
     this.setState({
       passwordSuggestions
@@ -96,23 +97,18 @@ export default class AccountExportAirbitz extends Component {
   }
 
   generateEncryptedKeyFile() {
-    console.log('handle it');
-    this.setState({
-      generatingKeyFile: true
-    }, () => {
-      encryptPrivateKeyWithPassword(
-        this.state.password,
-        (keystore) => {
-          console.log('keystore -- ', keystore);
+    encryptPrivateKeyWithPassword(
+      this.state.password,
+      (keystore) => {
+        console.log('keystore -- ', keystore);
 
-          this.setState({
-            generatingKeyFile: false,
-            keyFileGenerated: true,
-            ...generateDownloadAccountLink(keystore.address, keystore)
-          });
-        }
-      );
-    });
+        this.setState({
+          generatingKeyFile: false,
+          keyFileGenerated: true,
+          ...generateDownloadAccountLink(keystore.address, keystore)
+        });
+      }
+    );
   }
 
   updateAnimationSpeedValue() {
@@ -122,6 +118,7 @@ export default class AccountExportAirbitz extends Component {
   }
 
   render() {
+    const p = this.props;
     const s = this.state;
 
     return (
@@ -136,9 +133,7 @@ export default class AccountExportAirbitz extends Component {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                console.log('submt');
-
-                this.handleSubmitPassword();
+                // NOTE -- submits automatically on password match
               }}
             >
               <Input
@@ -201,28 +196,39 @@ export default class AccountExportAirbitz extends Component {
           }
         </CSSTransitionGroup>
         <CSSTransitionGroup
-          container="div"
+          component="div"
           transitionName="generating"
           transitionEnterTimeout={s.animationSpeed}
           transitionLeaveTimeout={s.animationSpeed}
         >
           {s.generatingKeyFile &&
-            <div
-              className={classNames('account-export-generating-key-file', {})}
-            >
+            <div className="account-export-generating-keyfile">
               <span>Generating Encrypted Key File</span>
               <Spinner />
             </div>
           }
         </CSSTransitionGroup>
         <CSSTransitionGroup
-          container="div"
+          component="div"
           transitionName="keyfile"
           transitionEnterTimeout={s.animationSpeed}
           transitionLeave={false}
         >
           {s.keyFileGenerated &&
-            <span>Generated</span>
+            <div className="account-export-account account-export-airbitz-keyfile">
+              <QRCode
+                value={s.stringifiedKeystore}
+                size={p.qrSize}
+              />
+              <h4>or</h4>
+              <Link
+                className="button"
+                href={s.downloadAccountDataString}
+                download={s.downloadAccountFileName}
+              >
+                Download Keyfile
+              </Link>
+            </div>
           }
         </CSSTransitionGroup>
       </article>
