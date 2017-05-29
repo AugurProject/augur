@@ -10,8 +10,6 @@ import Input from 'modules/common/components/input';
 import Spinner from 'modules/common/components/spinner';
 import Link from 'modules/link/components/link';
 
-import debounce from 'utils/debounce';
-
 import { REQUIRED_PASSWORD_STRENGTH } from 'modules/auth/constants/password-strength';
 
 export default class AccountExportAirbitz extends Component {
@@ -100,8 +98,6 @@ export default class AccountExportAirbitz extends Component {
     encryptPrivateKeyWithPassword(
       this.state.password,
       (keystore) => {
-        console.log('keystore -- ', keystore);
-
         this.setState({
           generatingKeyFile: false,
           keyFileGenerated: true,
@@ -235,47 +231,3 @@ export default class AccountExportAirbitz extends Component {
     );
   }
 }
-
-// <Input
-//   type="password"
-//   value={s.pass}
-//   onChange={(pass) => {
-//     if (pass.length) {
-//       this.setState({
-//         canSubmit: true
-//       });
-//     } else {
-//       this.setState({
-//         canSubmit: false
-//       });
-//     }
-//
-//     this.setState({
-//       pass
-//     });
-//   }}
-// />
-
-// 10 characters min
-
-// <form onSubmit={this.handleSubmitPasswordInput}>
-//   <h3>Please enter your password:</h3>
-//   <input
-//     type="password"
-//     placeholder="Password"
-//     value={this.state.passwordInput}
-//     onChange={e => this.setState({ passwordInput: e.target.value })}
-//   />
-//   {!this.state.isReadyToDownload &&
-//     <input type="submit" value="Generate Key File" />
-//   }
-//   {this.state.isReadyToDownload &&
-//     <a
-//       className="button"
-//       href={this.state.downloadAccountDataString}
-//       download={this.state.downloadAccountFileName}
-//     >
-//       Download Key File
-//     </a>
-//   }
-// </form>
