@@ -26,7 +26,6 @@ export const generateTrade = memoize((market, outcome, outcomeTradeInProgress, l
   const totalFee = (outcomeTradeInProgress && outcomeTradeInProgress.totalFee) || 0;
   const gasFeesRealEth = (outcomeTradeInProgress && outcomeTradeInProgress.gasFeesRealEth) || 0;
   const totalCost = (outcomeTradeInProgress && outcomeTradeInProgress.totalCost) || 0;
-  if (totalCost) console.log(`totalCost : ${totalCost}`);
   const marketType = (outcomeTradeInProgress && market.type) || null;
   const minValue = (outcomeTradeInProgress && market && market.minValue) || null;
   const maxValue = (outcomeTradeInProgress && market && market.maxValue) || null;
@@ -140,11 +139,7 @@ export const generateTradeOrders = memoize((market, outcome, outcomeTradeInProgr
       noFeePrice: formatEther(noFeePrice),
       tradingFees: formatEther(tradeAction.feeEth),
       feePercent: formatPercent(tradeAction.feePercent),
-      gasFees: formatRealEther(tradeAction.gasEth),
-      potentialEthProfit: formatRealEther(tradeAction.potentialEthProfit),
-      potentialEthLoss: formatRealEther(tradeAction.potentialEthLoss),
-      potentialLossPercent: formatRealEther(tradeAction.potentialLossPercent),
-      potentialProfitPercent: formatRealEther(tradeAction.potentialProfitPercent)
+      gasFees: formatRealEther(tradeAction.gasEth)
     };
   });
 }, { max: 5 });

@@ -4,6 +4,7 @@ import env from 'src/env.json';
 
 import { formatNumber, formatShares } from 'utils/format-number';
 import { formatDate } from 'utils/format-date';
+import { BUY } from 'modules/trade/constants/types';
 
 const testState = {
   marketLoading: [],
@@ -253,8 +254,10 @@ const testState = {
   tradesInProgress: {
     testMarketID: {
       numShares: 5000,
-      limitPrice: 100,
-      totalCost: 50
+      limitPrice: '0.50',
+      totalCost: '2500',
+      type: 'binary',
+      side: BUY
     }
   },
   tradeCommitLock: {},

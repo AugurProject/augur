@@ -21,7 +21,7 @@ describe('modules/market/selectors/helpers/generate-trade.js', () => {
         roundedValue: 0,
         value: 0
       },
-      limitPrice: 100,
+      limitPrice: '0.50',
       maxNumShares: {
         denomination: ' shares',
         formatted: '0',
@@ -33,16 +33,56 @@ describe('modules/market/selectors/helpers/generate-trade.js', () => {
         value: 0
       },
       numShares: 5000,
+      potentialEthLoss: {
+        denomination: ' ETH',
+        formatted: '2,500.0000',
+        formattedValue: 2500,
+        full: '2,500.0000 ETH',
+        minimized: '2,500',
+        rounded: '2,500.0000',
+        roundedValue: 2500,
+        value: 2500
+      },
+      potentialEthProfit: {
+        denomination: ' ETH',
+        formatted: '2,500.0000',
+        formattedValue: 2500,
+        full: '2,500.0000 ETH',
+        minimized: '2,500',
+        rounded: '2,500.0000',
+        roundedValue: 2500,
+        value: 2500
+      },
+      potentialLossPercent: {
+        denomination: '%',
+        formatted: '100.0',
+        formattedValue: 100,
+        full: '100.0%',
+        minimized: '100',
+        rounded: '100',
+        roundedValue: 100,
+        value: 100
+      },
+      potentialProfitPercent: {
+        denomination: '%',
+        formatted: '100.0',
+        formattedValue: 100,
+        full: '100.0%',
+        minimized: '100',
+        rounded: '100',
+        roundedValue: 100,
+        value: 100
+      },
       side: 'buy',
       totalCost: {
         denomination: ' ETH',
-        formatted: '50.0000',
-        formattedValue: 50,
-        full: '50.0000 ETH',
-        minimized: '50',
-        rounded: '50.0000',
-        roundedValue: 50,
-        value: 50
+        formatted: '2,500.0000',
+        formattedValue: 2500,
+        full: '2,500.0000 ETH',
+        minimized: '2,500',
+        rounded: '2,500.0000',
+        roundedValue: 2500,
+        value: 2500
       },
       totalFee: {
         denomination: '',
@@ -77,8 +117,8 @@ describe('modules/market/selectors/helpers/generate-trade.js', () => {
           value: 'sell'
         }
       ],
+      totalSharesUpToOrder: trade.totalSharesUpToOrder,
       updateTradeOrder: trade.updateTradeOrder, // self reference for function
-      totalSharesUpToOrder: trade.totalSharesUpToOrder
     }
     );
     assert.isFunction(trade.updateTradeOrder);
