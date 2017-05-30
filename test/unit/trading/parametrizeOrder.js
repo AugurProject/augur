@@ -1,14 +1,15 @@
 "use strict";
 
 var assert = require("chai").assert;
-var parametrizeOrder = require("../../../src/modules/parametrizeOrder");
+var parametrizeOrder = require("../../../src/trading/make-order/parametrize-order");
+var getScalarMinimum = require('../../../src/trading/make-order/get-scalar-minimum');
 // 4 tests total
 
 describe("parametrizeOrder.getScalarMinimum", function () {
   // 2 tests total
   var test = function (t) {
     it(t.description, function () {
-      t.assertions(parametrizeOrder.getScalarMinimum(t.type, t.minValue));
+      t.assertions(getScalarMinimum(t.type, t.minValue));
     });
   };
   test({
@@ -32,7 +33,7 @@ describe("parametrizeOrder.parametrizeOrder", function () {
   // 2 tests total
   var test = function (t) {
     it(t.description, function () {
-      t.assertions(parametrizeOrder.parametrizeOrder(t.market, t.outcomeID, t.numShares, t.limitPrice, t.tradeGroupID));
+      t.assertions(parametrizeOrder({}, t.market, t.outcomeID, t.numShares, t.limitPrice, t.tradeGroupID));
     });
   };
   test({
