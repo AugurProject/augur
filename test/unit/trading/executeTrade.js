@@ -1,41 +1,41 @@
 "use strict";
 
 var assert = require("chai").assert;
+var proxyquire = require('proxyquire');
 var augur = new (require("../../../src"))();
 var noop = require("../../../src/utils/noop");
 var constants = require("../../../src/constants");
 var BigNumber = require("bignumber.js");
 var clearCallCounts = require("../../tools").clearCallCounts;
-// 15 tests total
+// 16 tests total
 
 describe("executeTrade.executeTrade", function () {
-  // 8 tests total
-  var getParticipantSharesPurchased = augur.getParticipantSharesPurchased;
-  var getCashBalance = augur.Cash.balance;
-  var trade = augur.trade;
+  // 9 tests total
+  var finished;
+  var getParticipantSharesPurchased = augur.api.Markets.getParticipantSharesPurchased;
+  var getCashBalance = augur.api.Cash.balance;
   var callCounts = {
     getParticipantSharesPurchased: 0,
     getCashBalance: 0,
     trade: 0,
     getTradeIDs: 0,
     tradeCommitmentCallback: 0
-  }
+  };
   afterEach(function () {
     clearCallCounts(callCounts);
-    augur.getParticipantSharesPurchased = getParticipantSharesPurchased;
-    augur.Cash.balance = getCashBalance;
-    augur.trade = trade;
   });
   var test = function (t) {
     it(t.description, function (done) {
-      augur.getParticipantSharesPurchased = t.getParticipantSharesPurchased;
-      augur.Cash.balance = t.Cash.balance;
-      augur.trade = t.trade;
-
-      augur.executeTrade(t.marketID, t.outcomeID, t.numShares, t.totalEthWithFee, t.tradingFees, t.tradeGroupID, t.address, t.getOrderBooks, t.getTradeIDs, t.tradeCommitmentCallback, function (err, res) {
-        t.assertions(err, res);
-        done();
+      finished = done;
+      augur.api.Markets.getParticipantSharesPurchased = t.getParticipantSharesPurchased;
+      augur.api.Cash.balance = t.balance;
+      var executeTrade = proxyquire('../../../src/trading/take-order/execute-trade', {
+        './trade': t.trade
       });
+
+      executeTrade({}, t.marketID, t.outcomeID, t.numShares, t.totalEthWithFee, t.tradingFees, t.tradeGroupID, t.address, t.getOrderBooks, t.getTradeIDs, t.tradeCommitmentCallback, t.assertions);
+      augur.api.Markets.getParticipantSharesPurchased = getParticipantSharesPurchased;
+      augur.api.Cash.balance = getCashBalance;
     });
   };
   test({
@@ -82,19 +82,17 @@ describe("executeTrade.executeTrade", function () {
         gasFees: '0'
       });
     },
-    getParticipantSharesPurchased: function (marketID, address, outcomeID, cb) {
+    getParticipantSharesPurchased: function (p, cb) {
       callCounts.getParticipantSharesPurchased++;
-      assert.equal(marketID, '0xa1');
-      assert.equal(address, '0x1');
-      assert.equal(outcomeID, '2');
+      assert.equal(p.market, '0xa1');
+      assert.equal(p.trader, '0x1');
+      assert.equal(p.outcome, '2');
       cb('0');
     },
-    Cash: {
-      balance: function (address, cb) {
-        callCounts.getCashBalance++;
-        assert.equal(address, '0x1');
-        cb('1000');
-      }
+    balance: function (p, cb) {
+      callCounts.getCashBalance++;
+      assert.equal(p.address, '0x1');
+      cb('1000');
     },
     trade: function (trade) {
       callCounts.trade++;
@@ -125,6 +123,7 @@ describe("executeTrade.executeTrade", function () {
         getTradeIDs: 1,
         tradeCommitmentCallback: 1
       });
+      finished();
     }
   });
   test({
@@ -179,19 +178,17 @@ describe("executeTrade.executeTrade", function () {
       }
 
     },
-    getParticipantSharesPurchased: function (marketID, address, outcomeID, cb) {
+    getParticipantSharesPurchased: function (p, cb) {
       callCounts.getParticipantSharesPurchased++;
-      assert.equal(marketID, '0xa1');
-      assert.equal(address, '0x1');
-      assert.equal(outcomeID, '2');
+      assert.equal(p.market, '0xa1');
+      assert.equal(p.trader, '0x1');
+      assert.equal(p.outcome, '2');
       cb('0');
     },
-    Cash: {
-      balance: function (address, cb) {
-        callCounts.getCashBalance++;
-        assert.equal(address, '0x1');
-        cb('1000');
-      }
+    balance: function (p, cb) {
+      callCounts.getCashBalance++;
+      assert.equal(p.address, '0x1');
+      cb('1000');
     },
     trade: function (trade) {
       callCounts.trade++;
@@ -225,6 +222,7 @@ describe("executeTrade.executeTrade", function () {
         getTradeIDs: 1,
         tradeCommitmentCallback: 2
       });
+      finished();
     }
   });
   test({
@@ -353,11 +351,11 @@ describe("executeTrade.executeTrade", function () {
         break;
       }
     },
-    getParticipantSharesPurchased: function (marketID, address, outcomeID, cb) {
+    getParticipantSharesPurchased: function (p, cb) {
       callCounts.getParticipantSharesPurchased++;
-      assert.equal(marketID, '0xa1');
-      assert.equal(address, '0x1');
-      assert.equal(outcomeID, '2');
+      assert.equal(p.market, '0xa1');
+      assert.equal(p.trader, '0x1');
+      assert.equal(p.outcome, '2');
       switch(callCounts.getParticipantSharesPurchased) {
       case 6:
         cb('100');
@@ -375,26 +373,24 @@ describe("executeTrade.executeTrade", function () {
         break;
       }
     },
-    Cash: {
-      balance: function (address, cb) {
-        callCounts.getCashBalance++;
-        assert.equal(address, '0x1');
-        switch(callCounts.getCashBalance) {
-        case 6:
-          cb('949');
-          break;
-        case 4:
-        case 5:
-          cb('959.2');
-          break;
-        case 3:
-        case 2:
-          cb('974.5');
-          break;
-        default:
-          cb('1000');
-          break;
-        }
+    balance: function (p, cb) {
+      callCounts.getCashBalance++;
+      assert.equal(p.address, '0x1');
+      switch(callCounts.getCashBalance) {
+      case 6:
+        cb('949');
+        break;
+      case 4:
+      case 5:
+        cb('959.2');
+        break;
+      case 3:
+      case 2:
+        cb('974.5');
+        break;
+      default:
+        cb('1000');
+        break;
       }
     },
     trade: function (trade) {
@@ -472,6 +468,7 @@ describe("executeTrade.executeTrade", function () {
         getTradeIDs: 4,
         tradeCommitmentCallback: 9
       });
+      finished();
     }
   });
   test({
@@ -574,11 +571,11 @@ describe("executeTrade.executeTrade", function () {
         break;
       }
     },
-    getParticipantSharesPurchased: function (marketID, address, outcomeID, cb) {
+    getParticipantSharesPurchased: function (p, cb) {
       callCounts.getParticipantSharesPurchased++;
-      assert.equal(marketID, '0xa1');
-      assert.equal(address, '0x1');
-      assert.equal(outcomeID, '2');
+      assert.equal(p.market, '0xa1');
+      assert.equal(p.trader, '0x1');
+      assert.equal(p.outcome, '2');
       switch(callCounts.getParticipantSharesPurchased) {
       case 1:
         cb('100');
@@ -592,22 +589,20 @@ describe("executeTrade.executeTrade", function () {
         break;
       }
     },
-    Cash: {
-      balance: function (address, cb) {
-        callCounts.getCashBalance++;
-        assert.equal(address, '0x1');
-        switch(callCounts.getCashBalance) {
-        case 1:
-          cb('1000');
-          break;
-        case 3:
-        case 2:
-          cb('1025');
-          break;
-        default:
-          cb('1050');
-          break;
-        }
+    balance: function (p, cb) {
+      callCounts.getCashBalance++;
+      assert.equal(p.address, '0x1');
+      switch(callCounts.getCashBalance) {
+      case 1:
+        cb('1000');
+        break;
+      case 3:
+      case 2:
+        cb('1025');
+        break;
+      default:
+        cb('1050');
+        break;
       }
     },
     trade: function (trade) {
@@ -654,7 +649,6 @@ describe("executeTrade.executeTrade", function () {
         });
         break;
       }
-
     },
     assertions: function (err, res) {
       assert.isNull(err);
@@ -673,6 +667,7 @@ describe("executeTrade.executeTrade", function () {
         getTradeIDs: 3,
         tradeCommitmentCallback: 6
       });
+      finished();
     }
   });
   test({
@@ -742,11 +737,11 @@ describe("executeTrade.executeTrade", function () {
         break;
       }
     },
-    getParticipantSharesPurchased: function (marketID, address, outcomeID, cb) {
+    getParticipantSharesPurchased: function (p, cb) {
       callCounts.getParticipantSharesPurchased++;
-      assert.equal(marketID, '0xa1');
-      assert.equal(address, '0x1');
-      assert.equal(outcomeID, '2');
+      assert.equal(p.market, '0xa1');
+      assert.equal(p.trader, '0x1');
+      assert.equal(p.outcome, '2');
       switch(callCounts.getParticipantSharesPurchased) {
       case 1:
         cb('80');
@@ -756,18 +751,16 @@ describe("executeTrade.executeTrade", function () {
         break;
       }
     },
-    Cash: {
-      balance: function (address, cb) {
-        callCounts.getCashBalance++;
-        assert.equal(address, '0x1');
-        switch(callCounts.getCashBalance) {
-        case 1:
-          cb('1000');
-          break;
-        default:
-          cb('1020');
-          break;
-        }
+    balance: function (p, cb) {
+      callCounts.getCashBalance++;
+      assert.equal(p.address, '0x1');
+      switch(callCounts.getCashBalance) {
+      case 1:
+        cb('1000');
+        break;
+      default:
+        cb('1020');
+        break;
       }
     },
     trade: function (trade) {
@@ -821,6 +814,7 @@ describe("executeTrade.executeTrade", function () {
         getTradeIDs: 2,
         tradeCommitmentCallback: 3
       });
+      finished();
     }
   });
   test({
@@ -847,13 +841,11 @@ describe("executeTrade.executeTrade", function () {
     tradeCommitmentCallback: function (commit) {
       callCounts.tradeCommitmentCallback++;
     },
-    getParticipantSharesPurchased: function (marketID, address, outcomeID, cb) {
+    getParticipantSharesPurchased: function (p, cb) {
       callCounts.getParticipantSharesPurchased++;
     },
-    Cash: {
-      balance: function (address, cb) {
-        callCounts.getCashBalance++;
-      }
+    balance: function (address, cb) {
+      callCounts.getCashBalance++;
     },
     trade: function (trade) {
       callCounts.trade++;
@@ -875,6 +867,7 @@ describe("executeTrade.executeTrade", function () {
         getTradeIDs: 1,
         tradeCommitmentCallback: 0
       });
+      finished();
     }
   });
   test({
@@ -901,13 +894,11 @@ describe("executeTrade.executeTrade", function () {
     tradeCommitmentCallback: function (commit) {
       callCounts.tradeCommitmentCallback++;
     },
-    getParticipantSharesPurchased: function (marketID, address, outcomeID, cb) {
+    getParticipantSharesPurchased: function (p, cb) {
       callCounts.getParticipantSharesPurchased++;
     },
-    Cash: {
-      balance: function (address, cb) {
-        callCounts.getCashBalance++;
-      }
+    balance: function (p, cb) {
+      callCounts.getCashBalance++;
     },
     trade: function (trade) {
       callCounts.trade++;
@@ -929,6 +920,7 @@ describe("executeTrade.executeTrade", function () {
         getTradeIDs: 1,
         tradeCommitmentCallback: 0
       });
+      finished();
     }
   });
   test({
@@ -955,13 +947,11 @@ describe("executeTrade.executeTrade", function () {
     tradeCommitmentCallback: function (commit) {
       callCounts.tradeCommitmentCallback++;
     },
-    getParticipantSharesPurchased: function (marketID, address, outcomeID, cb) {
+    getParticipantSharesPurchased: function (p, cb) {
       callCounts.getParticipantSharesPurchased++;
     },
-    Cash: {
-      balance: function (address, cb) {
-        callCounts.getCashBalance++;
-      }
+    balance: function (p, cb) {
+      callCounts.getCashBalance++;
     },
     trade: function (trade) {
       callCounts.trade++;
@@ -983,6 +973,7 @@ describe("executeTrade.executeTrade", function () {
         getTradeIDs: 1,
         tradeCommitmentCallback: 0
       });
+      finished();
     }
   });
   test({
@@ -1009,13 +1000,11 @@ describe("executeTrade.executeTrade", function () {
     tradeCommitmentCallback: function (commit) {
       callCounts.tradeCommitmentCallback++;
     },
-    getParticipantSharesPurchased: function (marketID, address, outcomeID, cb) {
+    getParticipantSharesPurchased: function (p, cb) {
       callCounts.getParticipantSharesPurchased++;
     },
-    Cash: {
-      balance: function (address, cb) {
-        callCounts.getCashBalance++;
-      }
+    balance: function (p, cb) {
+      callCounts.getCashBalance++;
     },
     trade: function (trade) {
       callCounts.trade++;
@@ -1037,13 +1026,14 @@ describe("executeTrade.executeTrade", function () {
         getTradeIDs: 1,
         tradeCommitmentCallback: 0
       });
+      finished();
     }
   });
 });
 
 describe("executeTrade.executeShortSell", function () {
   // 7 tests total
-  var short_sell = augur.short_sell;
+  var finished;
   var callCounts = {
     getTradeIDs: 0,
     tradeCommitmentCallback: 0,
@@ -1051,16 +1041,14 @@ describe("executeTrade.executeShortSell", function () {
   };
   afterEach(function () {
     clearCallCounts(callCounts);
-    augur.short_sell = short_sell;
   });
   var test = function (t) {
     it(t.description, function (done) {
-      augur.short_sell = t.short_sell;
-
-      augur.executeShortSell(t.marketID, t.outcomeID, t.numShares, t.tradingFees, t.tradeGroupID, t.address, t.getOrderBooks, t.getTradeIDs, t.tradeCommitmentCallback, function (err, res) {
-        t.assertions(err, res);
-        done();
+      finished = done;
+      var executeShortSell = proxyquire('../../../src/trading/take-order/execute-short-sell', {
+        './short-sell': t.short_sell
       });
+      executeShortSell({}, t.marketID, t.outcomeID, t.numShares, t.tradingFees, t.tradeGroupID, t.address, t.getOrderBooks, t.getTradeIDs, t.tradeCommitmentCallback, t.assertions);
     });
   };
   test({
@@ -1081,7 +1069,7 @@ describe("executeTrade.executeShortSell", function () {
     tradeCommitmentCallback: function (commit) {
       callCounts.tradeCommitmentCallback++;
     },
-    short_sell: function () {
+    short_sell: function (p) {
       callCounts.short_sell++;
     },
     assertions: function (err, res) {
@@ -1098,6 +1086,7 @@ describe("executeTrade.executeShortSell", function () {
         tradeCommitmentCallback: 0,
         short_sell: 0
       });
+      finished();
     }
   });
   test({
@@ -1116,7 +1105,7 @@ describe("executeTrade.executeShortSell", function () {
     tradeCommitmentCallback: function (commit) {
       callCounts.tradeCommitmentCallback++;
     },
-    short_sell: function () {
+    short_sell: function (p) {
       callCounts.short_sell++;
     },
     assertions: function (err, res) {
@@ -1133,6 +1122,7 @@ describe("executeTrade.executeShortSell", function () {
         tradeCommitmentCallback: 0,
         short_sell: 0
       });
+      finished();
     }
   });
   test({
@@ -1153,7 +1143,7 @@ describe("executeTrade.executeShortSell", function () {
     tradeCommitmentCallback: function (commit) {
       callCounts.tradeCommitmentCallback++;
     },
-    short_sell: function () {
+    short_sell: function (p) {
       callCounts.short_sell++;
     },
     assertions: function (err, res) {
@@ -1170,6 +1160,7 @@ describe("executeTrade.executeShortSell", function () {
         tradeCommitmentCallback: 0,
         short_sell: 0
       });
+      finished();
     }
   });
   test({
@@ -1260,6 +1251,7 @@ describe("executeTrade.executeShortSell", function () {
         tradeCommitmentCallback: 3,
         short_sell: 1
       });
+      finished();
     }
   });
   test({
@@ -1394,7 +1386,6 @@ describe("executeTrade.executeShortSell", function () {
         });
         break;
       }
-
     },
     assertions: function (err, res) {
       assert.isNull(err);
@@ -1410,6 +1401,7 @@ describe("executeTrade.executeShortSell", function () {
         tradeCommitmentCallback: 6,
         short_sell: 2
       });
+      finished();
     }
   });
   test({
@@ -1480,6 +1472,7 @@ describe("executeTrade.executeShortSell", function () {
         tradeCommitmentCallback: 1,
         short_sell: 1
       });
+      finished();
     }
   });
   test({
@@ -1564,6 +1557,7 @@ describe("executeTrade.executeShortSell", function () {
         tradeCommitmentCallback: 2,
         short_sell: 1
       });
+      finished();
     }
   });
 });
