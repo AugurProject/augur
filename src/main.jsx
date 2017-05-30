@@ -25,10 +25,10 @@ console.log(`
            DEVELOPMENT MODE
   window.state      -- raw state data
   window.selectors  -- processed state data
-  window.augur      -- Augur API methods
+  window.augur      -- augur.js API methods
 -------------------------------------------
-          DEPENDENCY VERSION
-  augur.js: ${augur.version}
+        ADDITIONAL INFORMATION
+  augur.js version: ${augur.version}
 *******************************************
 `);
 
