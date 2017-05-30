@@ -8,7 +8,7 @@ import configureMockStore from 'redux-mock-store';
 
 import { abi, augur, constants } from 'services/augurjs';
 
-import { formatRealEther, formatEther, formatRep, formatPercent, formatShares } from 'utils/format-number';
+import { formatEther, formatEtherTokens, formatRep, formatPercent, formatShares } from 'utils/format-number';
 import { formatDate } from 'utils/format-date';
 
 import {
@@ -359,7 +359,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           status,
           blockNumber,
           timestamp: formatDate(new Date(timestamp * 1000)),
-          gasFees: formatRealEther(gasFees)
+          gasFees: formatEther(gasFees)
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
@@ -464,7 +464,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           description: `Reporting cycle #${log.period}`,
           bond: {
             label: 'reporting',
-            value: formatRealEther(log.notReportingBond)
+            value: formatEther(log.notReportingBond)
           },
           message: `reported with ${formatRep(initialRepBalance).full}`
         };
@@ -493,7 +493,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           description: `Reporting cycle #${log.period}`,
           bond: {
             label: 'reporting',
-            value: formatRealEther(log.notReportingBond)
+            value: formatEther(log.notReportingBond)
           },
           message: `reported with ${formatRep(log.initialRepBalance).full}`
         };
@@ -523,7 +523,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           description: `Reporting cycle #${log.period}`,
           bond: {
             label: 'reporting',
-            value: formatRealEther(log.notReportingBond)
+            value: formatEther(log.notReportingBond)
           },
           message: `reported with ${formatRep(log.initialRepBalance).full}`
         };
@@ -556,7 +556,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           description: `Reporting cycle #${log.period}`,
           bond: {
             label: 'reporting',
-            value: formatRealEther(log.notReportingBond)
+            value: formatEther(log.notReportingBond)
           },
           message: `reported with ${formatRep(log.initialRepBalance).full} (${percentRep.full})`
         };
@@ -591,8 +591,8 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           data: {
             balances: [
               {
-                change: formatEther(log.cashFeesCollected, { positiveSign: true }),
-                balance: formatEther(log.newCashBalance)
+                change: formatEtherTokens(log.cashFeesCollected, { positiveSign: true }),
+                balance: formatEtherTokens(log.newCashBalance)
               },
               {
                 change: formatRep(repGain, { positiveSign: true }),
@@ -604,7 +604,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           description: `Reporting cycle #${log.period}`,
           bond: {
             label: 'reporting',
-            value: formatRealEther(log.notReportingBond)
+            value: formatEther(log.notReportingBond)
           },
           message: `reported with ${formatRep(log.initialRepBalance).full} (${percentRep.full})`
         };
@@ -639,8 +639,8 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           data: {
             balances: [
               {
-                change: formatEther(log.cashFeesCollected, { positiveSign: true }),
-                balance: formatEther(log.newCashBalance)
+                change: formatEtherTokens(log.cashFeesCollected, { positiveSign: true }),
+                balance: formatEtherTokens(log.newCashBalance)
               },
               {
                 change: formatRep(repGain, { positiveSign: true }),
@@ -652,7 +652,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           description: `Reporting cycle #${log.period}`,
           bond: {
             label: 'reporting',
-            value: formatRealEther(log.notReportingBond)
+            value: formatEther(log.notReportingBond)
           },
           message: `reporting with ${formatRep(log.initialRepBalance).full} (${percentRep.full})`
         };
@@ -679,7 +679,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           data: {},
           type: 'Deposit Ether',
           description: 'Convert Ether to tradeable Ether token',
-          message: `deposited ${formatEther(log.value).full}`
+          message: `deposited ${formatEtherTokens(log.value).full}`
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
@@ -700,7 +700,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           data: {},
           type: 'Deposit Ether',
           description: 'Convert Ether to tradeable Ether token',
-          message: `depositing ${formatEther(log.value).full}`
+          message: `depositing ${formatEtherTokens(log.value).full}`
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
@@ -859,7 +859,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           data: {},
           type: 'Withdraw Ether',
           description: 'Convert tradeable Ether token to Ether',
-          message: `withdrew ${formatEther(log.value).full}`
+          message: `withdrew ${formatEtherTokens(log.value).full}`
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
@@ -880,7 +880,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           data: {},
           type: 'Withdraw Ether',
           description: 'Convert tradeable Ether token to Ether',
-          message: `withdrawing ${formatEther(log.value).full}`
+          message: `withdrawing ${formatEtherTokens(log.value).full}`
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
@@ -928,12 +928,12 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           data: {
             balances: [
               {
-                change: formatRealEther(abi.bignum(log._value).neg(), { positiveSign: true })
+                change: formatEther(abi.bignum(log._value).neg(), { positiveSign: true })
               }
             ]
           },
-          type: 'Send Real Ether',
-          description: `Send Real Ether to ${abi.strip_0x(log._to)}`,
+          type: 'Send Ether',
+          description: `Send Ether to ${abi.strip_0x(log._to)}`,
           message: `sent ETH`
         };
 
@@ -958,12 +958,12 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           data: {
             balances: [
               {
-                change: formatRealEther(abi.bignum(log._value).neg(), { positiveSign: true })
+                change: formatEther(abi.bignum(log._value).neg(), { positiveSign: true })
               }
             ]
           },
-          type: 'Send Real Ether',
-          description: `Send Real Ether to ${abi.strip_0x(log._to)}`,
+          type: 'Send Ether',
+          description: `Send Ether to ${abi.strip_0x(log._to)}`,
           message: `sending ETH`
         };
 
@@ -992,7 +992,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           data: {
             balances: [
               {
-                change: formatEther(abi.bignum(log._value).neg(), { positiveSign: true })
+                change: formatEtherTokens(abi.bignum(log._value).neg(), { positiveSign: true })
               }
             ]
           },
@@ -1022,7 +1022,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           data: {
             balances: [
               {
-                change: formatEther(abi.bignum(log._value).neg(), { positiveSign: true })
+                change: formatEtherTokens(abi.bignum(log._value).neg(), { positiveSign: true })
               }
             ]
           },
@@ -1052,7 +1052,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           data: {
             balances: [
               {
-                change: formatEther(abi.bignum(log._value), { positiveSign: true })
+                change: formatEtherTokens(abi.bignum(log._value), { positiveSign: true })
               }
             ]
           },
@@ -1082,7 +1082,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           data: {
             balances: [
               {
-                change: formatEther(abi.bignum(log._value), { positiveSign: true })
+                change: formatEtherTokens(abi.bignum(log._value), { positiveSign: true })
               }
             ]
           },
@@ -1257,8 +1257,8 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           data: {
             balances: [
               {
-                change: formatEther(log.cashBalance, { positiveSign: true }),
-                balance: formatEther(log.cashBalance)
+                change: formatEtherTokens(log.cashBalance, { positiveSign: true }),
+                balance: formatEtherTokens(log.cashBalance)
               }, {
                 change: formatRep(log.repBalance, { positiveSign: true }),
                 balance: formatRep(log.repBalance)
@@ -1288,8 +1288,8 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           data: {
             balances: [
               {
-                change: formatEther(log.cashBalance, { positiveSign: true }),
-                balance: formatEther(log.cashBalance)
+                change: formatEtherTokens(log.cashBalance, { positiveSign: true }),
+                balance: formatEtherTokens(log.cashBalance)
               }, {
                 change: formatRep(log.repBalance, { positiveSign: true }),
                 balance: formatRep(log.repBalance)
@@ -1335,10 +1335,10 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           },
           type: CREATE_MARKET,
           description: 'test description',
-          marketCreationFee: formatEther(log.marketCreationFee),
+          marketCreationFee: formatEtherTokens(log.marketCreationFee),
           bond: {
             label: 'event validity',
-            value: formatEther(log.eventBond)
+            value: formatEtherTokens(log.eventBond)
           },
           message: 'created market'
         };
@@ -1367,10 +1367,10 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           },
           type: CREATE_MARKET,
           description: 'test description',
-          marketCreationFee: formatEther(log.marketCreationFee),
+          marketCreationFee: formatEtherTokens(log.marketCreationFee),
           bond: {
             label: 'event validity',
-            value: formatEther(log.eventBond)
+            value: formatEtherTokens(log.eventBond)
           },
           message: 'creating market'
         };
@@ -1470,8 +1470,8 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
             marketID: '0xMARKETID',
             balances: [
               {
-                change: formatEther(log.cashPayout, { positiveSign: true }),
-                balance: formatEther(log.cashBalance)
+                change: formatEtherTokens(log.cashPayout, { positiveSign: true }),
+                balance: formatEtherTokens(log.cashBalance)
               }
             ]
           },
@@ -2318,7 +2318,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const outcomeID = '1';
         const status = 'testing';
 
-        const price = formatEther(trade.price);
+        const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
         const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
         const bnShares = abi.bignum(trade.amount);
@@ -2343,16 +2343,16 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               marketID,
               marketLink: {}
             },
-            message: `sold ${shares.full} for ${formatEther(totalCostPerShare).full} / share`,
+            message: `sold ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
             numShares: shares,
             noFeePrice: price,
             avgPrice: price,
             timestamp: formatDate(new Date(trade.timestamp * 1000)),
-            tradingFees: formatEther(tradingFees),
+            tradingFees: formatEtherTokens(tradingFees),
             feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
             totalCost: undefined,
-            totalReturn: formatEther(totalReturn),
-            gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null,
+            totalReturn: formatEtherTokens(totalReturn),
+            gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
             blockNumber: trade.blockNumber
           }
         };
@@ -2385,7 +2385,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const outcomeID = '1';
         const status = 'testing';
 
-        const price = formatEther(trade.price);
+        const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
         const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
         const bnShares = abi.bignum(trade.amount);
@@ -2410,16 +2410,16 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               marketID,
               marketLink: {}
             },
-            message: `${MATCH_ASK} ${shares.full} for ${formatEther(totalCostPerShare).full} / share`,
+            message: `${MATCH_ASK} ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
             numShares: shares,
             noFeePrice: price,
             avgPrice: price,
             timestamp: formatDate(new Date(trade.timestamp * 1000)),
-            tradingFees: formatEther(tradingFees),
+            tradingFees: formatEtherTokens(tradingFees),
             feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
             totalCost: undefined,
-            totalReturn: formatEther(totalReturn),
-            gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null,
+            totalReturn: formatEtherTokens(totalReturn),
+            gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
             blockNumber: trade.blockNumber
           }
         };
@@ -2451,7 +2451,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const outcomeID = '1';
         const status = 'testing';
 
-        const price = formatEther(trade.price);
+        const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
         const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
         const bnShares = abi.bignum(trade.amount);
@@ -2476,16 +2476,16 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               marketID,
               marketLink: {}
             },
-            message: `bought ${shares.full} for ${formatEther(totalReturnPerShare).full} / share`,
+            message: `bought ${shares.full} for ${formatEtherTokens(totalReturnPerShare).full} / share`,
             numShares: shares,
             noFeePrice: price,
             avgPrice: price,
             timestamp: formatDate(new Date(trade.timestamp * 1000)),
-            tradingFees: formatEther(tradingFees),
+            tradingFees: formatEtherTokens(tradingFees),
             feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
-            totalCost: formatEther(totalCost),
+            totalCost: formatEtherTokens(totalCost),
             totalReturn: undefined,
-            gasFees: formatRealEther(trade.gasFees),
+            gasFees: formatEther(trade.gasFees),
             blockNumber: trade.blockNumber
           }
         };
@@ -2518,7 +2518,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const outcomeID = '1';
         const status = 'testing';
 
-        const price = formatEther(trade.price);
+        const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
         const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
         const bnShares = abi.bignum(trade.amount);
@@ -2543,16 +2543,16 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               marketID,
               marketLink: {}
             },
-            message: `${MATCH_BID} ${shares.full} for ${formatEther(totalReturnPerShare).full} / share`,
+            message: `${MATCH_BID} ${shares.full} for ${formatEtherTokens(totalReturnPerShare).full} / share`,
             numShares: shares,
             noFeePrice: price,
             avgPrice: price,
             timestamp: formatDate(new Date(trade.timestamp * 1000)),
-            tradingFees: formatEther(tradingFees),
+            tradingFees: formatEtherTokens(tradingFees),
             feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
-            totalCost: formatEther(totalCost),
+            totalCost: formatEtherTokens(totalCost),
             totalReturn: undefined,
-            gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null,
+            gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
             blockNumber: trade.blockNumber
           }
         };
@@ -2584,7 +2584,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const outcomeID = '1';
         const status = 'testing';
 
-        const price = formatEther(trade.price);
+        const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
         const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
         const bnShares = abi.bignum(trade.amount);
@@ -2608,16 +2608,16 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               marketID,
               marketLink: {}
             },
-            message: `bought ${shares.full} for ${formatEther(totalCostPerShare).full} / share`,
+            message: `bought ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
             numShares: shares,
             noFeePrice: price,
             avgPrice: price,
             timestamp: formatDate(new Date(trade.timestamp * 1000)),
-            tradingFees: formatEther(tradingFees),
+            tradingFees: formatEtherTokens(tradingFees),
             feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
-            totalCost: formatEther(totalCost),
+            totalCost: formatEtherTokens(totalCost),
             totalReturn: undefined,
-            gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null,
+            gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
             blockNumber: trade.blockNumber
           }
         };
@@ -2650,7 +2650,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const outcomeID = '1';
         const status = 'testing';
 
-        const price = formatEther(trade.price);
+        const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
         const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
         const bnShares = abi.bignum(trade.amount);
@@ -2674,16 +2674,16 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               marketID,
               marketLink: {}
             },
-            message: `${BUY} ${shares.full} for ${formatEther(totalCostPerShare).full} / share`,
+            message: `${BUY} ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
             numShares: shares,
             noFeePrice: price,
             avgPrice: price,
             timestamp: formatDate(new Date(trade.timestamp * 1000)),
-            tradingFees: formatEther(tradingFees),
+            tradingFees: formatEtherTokens(tradingFees),
             feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
-            totalCost: formatEther(totalCost),
+            totalCost: formatEtherTokens(totalCost),
             totalReturn: undefined,
-            gasFees: formatRealEther(trade.gasFees),
+            gasFees: formatEther(trade.gasFees),
             blockNumber: trade.blockNumber
           }
         };
@@ -2715,7 +2715,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const outcomeID = '1';
         const status = 'testing';
 
-        const price = formatEther(trade.price);
+        const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
         const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
         const bnShares = abi.bignum(trade.amount);
@@ -2740,16 +2740,16 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               marketID,
               marketLink: {}
             },
-            message: `sold ${shares.full} for ${formatEther(totalReturnPerShare).full} / share`,
+            message: `sold ${shares.full} for ${formatEtherTokens(totalReturnPerShare).full} / share`,
             numShares: shares,
             noFeePrice: price,
             avgPrice: price,
             timestamp: formatDate(new Date(trade.timestamp * 1000)),
-            tradingFees: formatEther(tradingFees),
+            tradingFees: formatEtherTokens(tradingFees),
             feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
             totalCost: undefined,
-            totalReturn: formatEther(totalReturn),
-            gasFees: formatRealEther(trade.gasFees),
+            totalReturn: formatEtherTokens(totalReturn),
+            gasFees: formatEther(trade.gasFees),
             blockNumber: trade.blockNumber
           }
         };
@@ -2782,7 +2782,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const outcomeID = '1';
         const status = 'testing';
 
-        const price = formatEther(trade.price);
+        const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
         const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
         const bnShares = abi.bignum(trade.amount);
@@ -2807,16 +2807,16 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               marketID,
               marketLink: {}
             },
-            message: `${SELL} ${shares.full} for ${formatEther(totalReturnPerShare).full} / share`,
+            message: `${SELL} ${shares.full} for ${formatEtherTokens(totalReturnPerShare).full} / share`,
             numShares: shares,
             noFeePrice: price,
             avgPrice: price,
             timestamp: formatDate(new Date(trade.timestamp * 1000)),
-            tradingFees: formatEther(tradingFees),
+            tradingFees: formatEtherTokens(tradingFees),
             feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
             totalCost: undefined,
-            totalReturn: formatEther(totalReturn),
-            gasFees: formatRealEther(trade.gasFees),
+            totalReturn: formatEtherTokens(totalReturn),
+            gasFees: formatEther(trade.gasFees),
             blockNumber: trade.blockNumber
           }
         };
@@ -2849,7 +2849,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const outcomeID = '1';
         const status = 'testing';
 
-        const price = formatEther(trade.price);
+        const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
         const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
         const bnShares = abi.bignum(trade.amount);
@@ -2874,16 +2874,16 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               marketID,
               marketLink: {}
             },
-            message: `${SELL} ${shares.full} for ${formatEther(totalReturnPerShare).full} / share`,
+            message: `${SELL} ${shares.full} for ${formatEtherTokens(totalReturnPerShare).full} / share`,
             numShares: shares,
             noFeePrice: price,
             avgPrice: price,
             timestamp: formatDate(new Date(trade.timestamp * 1000)),
-            tradingFees: formatEther(tradingFees),
+            tradingFees: formatEtherTokens(tradingFees),
             feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
             totalCost: undefined,
-            totalReturn: formatEther(totalReturn),
-            gasFees: formatRealEther(trade.gasFees),
+            totalReturn: formatEtherTokens(totalReturn),
+            gasFees: formatEther(trade.gasFees),
             blockNumber: trade.blockNumber
           }
         };
@@ -2929,7 +2929,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const outcomeID = '1';
         const status = 'testing';
 
-        const price = formatEther(trade.price);
+        const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
         const bnPrice = abi.bignum(trade.price);
         const tradingFees = abi.bignum(trade.takerFee);
@@ -2952,15 +2952,15 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               marketID,
               marketLink: {}
             },
-            message: `short sold ${shares.full} for ${formatEther(totalCostPerShare).full} / share`,
+            message: `short sold ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
             numShares: shares,
             noFeePrice: price,
-            avgPrice: formatEther(totalCost.minus(bnShares).dividedBy(bnShares).abs()),
+            avgPrice: formatEtherTokens(totalCost.minus(bnShares).dividedBy(bnShares).abs()),
             timestamp: formatDate(new Date(trade.timestamp * 1000)),
-            tradingFees: formatEther(tradingFees),
+            tradingFees: formatEtherTokens(tradingFees),
             feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
-            totalCost: formatEther(totalCost),
-            gasFees: formatRealEther(trade.gasFees),
+            totalCost: formatEtherTokens(totalCost),
+            gasFees: formatEther(trade.gasFees),
             blockNumber: trade.blockNumber
           }
         };
@@ -2993,7 +2993,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const outcomeID = '1';
         const status = 'testing';
 
-        const price = formatEther(trade.price);
+        const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
         const bnPrice = abi.bignum(trade.price);
         const tradingFees = abi.bignum(trade.takerFee);
@@ -3016,15 +3016,15 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               marketID,
               marketLink: {}
             },
-            message: `short selling ${shares.full} for ${formatEther(totalCostPerShare).full} / share`,
+            message: `short selling ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
             numShares: shares,
             noFeePrice: price,
-            avgPrice: formatEther(totalCost.minus(bnShares).dividedBy(bnShares).abs()),
+            avgPrice: formatEtherTokens(totalCost.minus(bnShares).dividedBy(bnShares).abs()),
             timestamp: formatDate(new Date(trade.timestamp * 1000)),
-            tradingFees: formatEther(tradingFees),
+            tradingFees: formatEtherTokens(tradingFees),
             feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
-            totalCost: formatEther(totalCost),
-            gasFees: formatRealEther(trade.gasFees),
+            totalCost: formatEtherTokens(totalCost),
+            gasFees: formatEther(trade.gasFees),
             blockNumber: trade.blockNumber
           }
         };
@@ -3057,7 +3057,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const outcomeID = '1';
         const status = 'testing';
 
-        const price = formatEther(trade.price);
+        const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
         const bnPrice = abi.bignum(trade.price);
         const tradingFees = abi.bignum(trade.takerFee);
@@ -3080,15 +3080,15 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               marketID,
               marketLink: {}
             },
-            message: `short selling ${shares.full} for ${formatEther(totalCostPerShare).full} / share`,
+            message: `short selling ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
             numShares: shares,
             noFeePrice: price,
-            avgPrice: formatEther(totalCost.minus(bnShares).dividedBy(bnShares).abs()),
+            avgPrice: formatEtherTokens(totalCost.minus(bnShares).dividedBy(bnShares).abs()),
             timestamp: formatDate(new Date(trade.timestamp * 1000)),
-            tradingFees: formatEther(tradingFees),
+            tradingFees: formatEtherTokens(tradingFees),
             feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
-            totalCost: formatEther(totalCost),
-            gasFees: formatRealEther(trade.gasFees),
+            totalCost: formatEtherTokens(totalCost),
+            gasFees: formatEther(trade.gasFees),
             blockNumber: trade.blockNumber
           }
         };
@@ -3155,9 +3155,9 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               message: 'bid 2 shares for 0.1009 ETH / share',
               freeze: {
                 verb: 'froze',
-                noFeeCost: formatEther(0.2)
+                noFeeCost: formatEtherTokens(0.2)
               },
-              totalCost: formatEther(0.2018),
+              totalCost: formatEtherTokens(0.2018),
               totalReturn: undefined
             }
           };
@@ -3184,9 +3184,9 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               message: 'bidding 2 shares for 0.1009 ETH / share',
               freeze: {
                 verb: 'freezing',
-                noFeeCost: formatEther(0.2)
+                noFeeCost: formatEtherTokens(0.2)
               },
-              totalCost: formatEther(0.2018),
+              totalCost: formatEtherTokens(0.2018),
               totalReturn: undefined
             }
           };
@@ -3216,7 +3216,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
                 noFeeCost: undefined
               },
               totalCost: undefined,
-              totalReturn: formatEther(0.1982)
+              totalReturn: formatEtherTokens(0.1982)
             }
           };
 
@@ -3245,7 +3245,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
                 noFeeCost: undefined
               },
               totalCost: undefined,
-              totalReturn: formatEther(0.1982)
+              totalReturn: formatEtherTokens(0.1982)
             }
           };
 
@@ -3271,7 +3271,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               message: 'short asking 2 shares for 0.0991 ETH / share',
               freeze: {
                 verb: 'freezing',
-                noFeeCost: formatEther(2)
+                noFeeCost: formatEtherTokens(2)
               },
               totalCost: undefined,
               totalReturn: undefined
@@ -3316,9 +3316,9 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
           const expected = {
             '0xHASH': {
-              noFeePrice: formatEther(0.1),
+              noFeePrice: formatEtherTokens(0.1),
               freeze: {
-                tradingFees: formatEther(0.0018)
+                tradingFees: formatEtherTokens(0.0018)
               },
               feePercent: formatPercent(0.8919722497522299),
               message: 'ask 2 shares for 0.0991 ETH / share'
@@ -3343,9 +3343,9 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
           const expected = {
             '0xHASH': {
-              noFeePrice: formatEther(-0.9),
+              noFeePrice: formatEtherTokens(-0.9),
               freeze: {
-                tradingFees: formatEther(0.00095)
+                tradingFees: formatEtherTokens(0.00095)
               },
               feePercent: formatPercent(0.4727544165215227),
               message: 'ask 2 shares for 0.0995 ETH / share'
@@ -3403,19 +3403,19 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               },
               message: 'ask 2 shares for 0.0991 ETH / share',
               numShares: formatShares(trade.amount),
-              noFeePrice: formatEther(trade.price),
+              noFeePrice: formatEtherTokens(trade.price),
               freeze: {
                 verb: 'froze',
                 noFeeCost: undefined,
-                tradingFees: formatEther(0.0018)
+                tradingFees: formatEtherTokens(0.0018)
               },
-              avgPrice: formatEther(trade.price),
+              avgPrice: formatEtherTokens(trade.price),
               timestamp: formatDate(new Date(trade.timestamp * 1000)),
               hash: trade.transactionHash,
               feePercent: formatPercent(0.8919722497522299),
               totalCost: undefined,
-              totalReturn: formatEther(0.1982),
-              gasFees: formatRealEther(trade.gasFees),
+              totalReturn: formatEtherTokens(0.1982),
+              gasFees: formatEther(trade.gasFees),
               blockNumber: trade.blockNumber,
               tradeID: trade.tradeid
             }
@@ -3466,7 +3466,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
       assertions: (store) => {
         const actual = store.dispatch(action.constructLogCancelTransaction(trade, marketID, marketType, description, outcomeID, null, status));
 
-        const price = formatEther(trade.price);
+        const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
 
         const expected = {
@@ -3493,8 +3493,8 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
             avgPrice: price,
             timestamp: formatDate(new Date(trade.timestamp * 1000)),
             hash: trade.transactionHash,
-            totalReturn: formatEther(trade.cashRefund),
-            gasFees: formatRealEther(trade.gasFees),
+            totalReturn: formatEtherTokens(trade.cashRefund),
+            gasFees: formatEther(trade.gasFees),
             blockNumber: trade.blockNumber,
             tradeID: trade.tradeid
           }
@@ -3514,7 +3514,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const actual = store.dispatch(action.constructLogCancelTransaction(trade, marketID, marketType, description, outcomeID, null, status));
 
-        const price = formatEther(trade.price);
+        const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
 
         const expected = {
@@ -3542,7 +3542,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
             timestamp: formatDate(new Date(trade.timestamp * 1000)),
             hash: trade.transactionHash,
             totalReturn: null,
-            gasFees: formatRealEther(trade.gasFees),
+            gasFees: formatEther(trade.gasFees),
             blockNumber: trade.blockNumber,
             tradeID: trade.tradeid
           }

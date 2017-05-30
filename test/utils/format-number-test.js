@@ -7,6 +7,20 @@ describe('utils/format-number.js', () => {
   const	num = 1000.100;
   const utils = [
     {
+      func: 'formatEtherTokens',
+      denom: 'ETH Tokens',
+      out: {
+        value: 1000.1,
+        formattedValue: 1000.1,
+        roundedValue: 1000.1,
+        formatted: '1,000.1000',
+        rounded: '1,000.1000',
+        minimized: '1,000.1',
+        denomination: ' ETH Tokens',
+        full: '1,000.1000 ETH Tokens'
+      }
+    },
+    {
       func: 'formatEther',
       denom: 'ETH',
       out: {
@@ -21,8 +35,8 @@ describe('utils/format-number.js', () => {
       }
     },
     {
-      func: 'formatRealEther',
-      denom: 'real ETH',
+      func: 'formatEtherTokensEstimate',
+      denom: 'ETH Tokens (estimated)',
       out: {
         value: 1000.1,
         formattedValue: 1000.1,
@@ -30,8 +44,8 @@ describe('utils/format-number.js', () => {
         formatted: '1,000.1000',
         rounded: '1,000.1000',
         minimized: '1,000.1',
-        denomination: ' real ETH',
-        full: '1,000.1000 real ETH'
+        denomination: ' ETH Tokens (estimated)',
+        full: '1,000.1000 ETH Tokens (estimated)'
       }
     },
     {
@@ -46,20 +60,6 @@ describe('utils/format-number.js', () => {
         minimized: '1,000.1',
         denomination: ' ETH (estimated)',
         full: '1,000.1000 ETH (estimated)'
-      }
-    },
-    {
-      func: 'formatRealEtherEstimate',
-      denom: 'real ETH (estimated)',
-      out: {
-        value: 1000.1,
-        formattedValue: 1000.1,
-        roundedValue: 1000.1,
-        formatted: '1,000.1000',
-        rounded: '1,000.1000',
-        minimized: '1,000.1',
-        denomination: ' real ETH (estimated)',
-        full: '1,000.1000 real ETH (estimated)'
       }
     },
     {

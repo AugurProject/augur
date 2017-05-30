@@ -8,7 +8,7 @@ import { BUY } from 'modules/transactions/constants/types';
 import { PENDING, SUCCESS, FAILED, SUBMITTED, INTERRUPTED } from 'modules/transactions/constants/statuses';
 
 import getValue from 'utils/get-value';
-import { formatShares, formatEther, formatRep } from 'utils/format-number';
+import { formatShares, formatEtherTokens, formatEther, formatRep } from 'utils/format-number';
 
 export default function () {
   return selectTransactions(store.getState());
@@ -61,7 +61,7 @@ export function formatTransaction(transaction) {
       marketLink
     },
     gas: transaction.gas && formatEther(transaction.gas),
-    ether: transaction.etherWithoutGas && formatEther(transaction.etherWithoutGas),
+    ethTokens: transaction.etherWithoutGas && formatEtherTokens(transaction.etherWithoutGas),
     shares: transaction.sharesChange && formatShares(transaction.sharesChange),
     rep: transaction.repChange && formatRep(transaction.repChange)
   };

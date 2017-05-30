@@ -28,7 +28,7 @@ export const submitGenerateOrderBook = market => (dispatch) => {
       market.outcomes[r.outcome - 1].name
       }' at ${
       r.buyPrice || r.sellPrice
-      } ETH created.`, r),
+      } ETH Tokens created.`, r),
     onSuccess: (r) => {
       console.log('generateOrderBook onSuccess:', r);
       dispatch(loadBidsAsks(market.id));

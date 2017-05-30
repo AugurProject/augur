@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { augur, abi, rpc, constants } from 'services/augurjs';
 import BigNumber from 'bignumber.js';
 
-import { formatRealEtherEstimate, formatEtherEstimate } from 'utils/format-number';
+import { formatEtherEstimate, formatEtherTokensEstimate } from 'utils/format-number';
 import getValue from 'utils/get-value';
 
 import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
@@ -39,9 +39,9 @@ export default class CreateMarketReview extends Component {
         gas: null,
         fees: null
       },
-      formattedInitialLiquidityEth: formatEtherEstimate(this.props.initialLiquidityEth),
+      formattedInitialLiquidityEth: formatEtherTokensEstimate(this.props.initialLiquidityEth),
       formattedInitialLiquidityGas: formatEtherEstimate(this.props.initialLiquidityGas),
-      formattedInitialLiquidityFees: formatEtherEstimate(this.props.initialLiquidityFees)
+      formattedInitialLiquidityFees: formatEtherTokensEstimate(this.props.initialLiquidityFees)
     };
   }
 
@@ -52,21 +52,21 @@ export default class CreateMarketReview extends Component {
       this.calculateMarketCreationCosts();
     }
 
-    if (this.props.initialLiquidityEth !== nextProps.initialLiquidityEth) this.setState({ formattedInitialLiquidityEth: formatEtherEstimate(nextProps.initialLiquidityEth) });
+    if (this.props.initialLiquidityEth !== nextProps.initialLiquidityEth) this.setState({ formattedInitialLiquidityEth: formatEtherTokensEstimate(nextProps.initialLiquidityEth) });
     if (this.props.initialLiquidityGas !== nextProps.initialLiquidityGas) this.setState({ formattedInitialLiquidityGas: formatEtherEstimate(nextProps.initialLiquidityGas) });
-    if (this.props.initialLiquidityFees !== nextProps.initialLiquidityFees) this.setState({ formattedInitialLiquidityFees: formatEtherEstimate(nextProps.initialLiquidityFees) });
+    if (this.props.initialLiquidityFees !== nextProps.initialLiquidityFees) this.setState({ formattedInitialLiquidityFees: formatEtherTokensEstimate(nextProps.initialLiquidityFees) });
   }
 
   calculateMarketCreationCosts() {
     const gasPrice = rpc.gasPrice || constants.DEFAULT_GASPRICE;
 
-    const gasCost = formatRealEtherEstimate(augur.getTxGasEth({ ...augur.api.functions.CreateMarket.createMarket }, gasPrice));
-    const creationFee = formatRealEtherEstimate(abi.unfix(augur.calculateRequiredMarketValue(gasPrice)));
+    const gasCost = formatEtherEstimate(augur.getTxGasEth({ ...augur.api.functions.CreateMarket.createMarket }, gasPrice));
+    const creationFee = formatEtherEstimate(abi.unfix(augur.calculateRequiredMarketValue(gasPrice)));
 
     // Event Bond
     const tradingFee = augur.calculateTradingFees(this.props.makerFee, this.props.takerFee).tradingFee;
     const validityBond = augur.calculateValidityBond(tradingFee, this.props.branch.periodLength, this.props.branch.baseReporters, this.props.branch.numEventsCreatedInPast24Hours, this.props.branch.numEventsInReportPeriod);
-    const eventBond = formatEtherEstimate(validityBond);
+    const eventBond = formatEtherTokensEstimate(validityBond);
 
     this.setState({
       gasCost,
@@ -104,7 +104,7 @@ export default class CreateMarketReview extends Component {
                   </span>
                   <span>
                     {creationFee}
-                    <span className="cost-denomination">{creationFee && 'Real ETH'}</span>
+                    <span className="cost-denomination">{creationFee && 'ETH'}</span>
                   </span>
                 </li>
                 <li>
@@ -113,7 +113,7 @@ export default class CreateMarketReview extends Component {
                   </span>
                   <span>
                     {eventBond}
-                    <span className="cost-denomination">{eventBond && 'ETH'}</span>
+                    <span className="cost-denomination">{eventBond && 'ETH Tokens'}</span>
                   </span>
                 </li>
                 <li>
@@ -122,7 +122,7 @@ export default class CreateMarketReview extends Component {
                   </span>
                   <span>
                     {gasCost}
-                    <span className="cost-denomination">{gasCost && 'Real ETH'}</span>
+                    <span className="cost-denomination">{gasCost && 'ETH'}</span>
                   </span>
                 </li>
               </ul>
@@ -136,7 +136,7 @@ export default class CreateMarketReview extends Component {
                       </span>
                       <span>
                         {liquidityEth}
-                        <span className="cost-denomination">{liquidityEth && 'ETH'}</span>
+                        <span className="cost-denomination">{liquidityEth && 'ETH Tokens'}</span>
                       </span>
                     </li>
                     <li>
@@ -154,7 +154,7 @@ export default class CreateMarketReview extends Component {
                       </span>
                       <span>
                         {liquidityFees}
-                        <span className="cost-denomination">{liquidityFees && 'ETH'}</span>
+                        <span className="cost-denomination">{liquidityFees && 'ETH Tokens'}</span>
                       </span>
                     </li>
                   </ul>

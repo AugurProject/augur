@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import { selectLoginAccountState } from 'src/select-state';
 import { augur } from 'services/augurjs';
-import { formatRep, formatEther } from 'utils/format-number';
+import { formatRep, formatEtherTokens, formatEther } from 'utils/format-number';
 import generateDownloadAccountLink from 'modules/auth/helpers/generate-download-account-link';
 import getABCUIContext from 'modules/auth/selectors/abc';
 import store from 'src/store';
@@ -30,8 +30,8 @@ export const selectLoginAccount = createSelector(
       trimmedAddress,
       linkText,
       rep: formatRep(loginAccount.rep, { zeroStyled: false, decimalsRounded: 1 }),
-      ether: formatEther(loginAccount.ether, { zeroStyled: false, decimalsRounded: 2 }),
-      realEther: formatEther(loginAccount.realEther, { zeroStyled: false, decimalsRounded: 2 })
+      eth: formatEther(loginAccount.eth, { zeroStyled: false, decimalsRounded: 2 }),
+      ethTokens: formatEtherTokens(loginAccount.ethTokens, { zeroStyled: false, decimalsRounded: 2 })
     };
   }
 );

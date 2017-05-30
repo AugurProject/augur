@@ -9,7 +9,7 @@ import { isOrderOfUser } from 'modules/bids-asks/helpers/is-order-of-user';
 import { BID, ASK } from 'modules/bids-asks/constants/bids-asks-types';
 import { CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-status';
 
-import { formatNone, formatEther, formatShares } from 'utils/format-number';
+import { formatNone, formatEtherTokens, formatShares } from 'utils/format-number';
 
 /**
  *
@@ -69,7 +69,7 @@ function getUserOpenOrders(orders, orderType, outcomeID, userID, orderCancellati
         marketID: abi.format_int256(order.market),
         type: orderType,
         originalShares: formatNone(),
-        avgPrice: formatEther(order.price),
+        avgPrice: formatEtherTokens(order.price),
         matchedShares: formatNone(),
         unmatchedShares: formatShares(order.amount)
       }

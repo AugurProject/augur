@@ -1,4 +1,4 @@
-import { formatEther, formatPercent, formatRep } from 'utils/format-number';
+import { formatEtherTokens, formatPercent, formatRep } from 'utils/format-number';
 import { formatDate } from 'utils/format-date';
 import { abi } from 'services/augurjs';
 import { TWO } from 'modules/trade/constants/numbers';
@@ -68,11 +68,10 @@ export default function () {
 
 export const calculateFeesEarned = (event) => {
   if (!event.marketFees || !event.repBalance || !event.eventWeight) return null;
-  return formatEther(
+  return formatEtherTokens(
     abi.bignum(event.marketFees)
       .times(abi.bignum(event.repBalance))
       .dividedBy(TWO)
-      .dividedBy(abi.bignum(event.eventWeight)),
-    { denomination: ' ETH' }
+      .dividedBy(abi.bignum(event.eventWeight))
   );
 };

@@ -15,19 +15,19 @@ const OutcomeTradeSummary = (p) => {
       {tradingFees && feePercent &&
         <div className="outcome-trade-summary-group">
           <span>Fees:</span>
-          <span><ValueDenomination formatted={p.tradeOrder.tradingFees.formatted} /> <span>ETH ({p.tradeOrder.feePercent.formatted}%)</span></span>
+          <span><ValueDenomination formatted={p.tradeOrder.tradingFees.formatted} /><span>{p.tradeOrder.tradingFees.denomination} ({p.tradeOrder.feePercent.formatted}%)</span></span>
         </div>
       }
       {gasFees &&
         <div className="outcome-trade-summary-group">
           <span>Gas:</span>
-          <span><ValueDenomination formatted={p.tradeOrder.gasFees.formatted} /><span>ETH</span></span>
+          <span><ValueDenomination formatted={p.tradeOrder.gasFees.formatted} /><span>{p.tradeOrder.gasFees.denomination}</span></span>
         </div>
       }
       {totalCost &&
         <div className="outcome-trade-summary-group">
           <span>Total:</span>
-          <span><ValueDenomination formatted={p.trade.totalCost.formatted} /><span>ETH</span></span>
+          <span><ValueDenomination formatted={p.trade.totalCost.formatted} /><span>{p.trade.totalCost.denomination}</span></span>
         </div>
       }
     </article>

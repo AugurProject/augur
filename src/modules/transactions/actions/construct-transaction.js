@@ -2,7 +2,7 @@ import { abi, augur, constants } from 'services/augurjs';
 import { ZERO } from 'modules/trade/constants/numbers';
 import { BINARY, SCALAR } from 'modules/markets/constants/market-types';
 import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, MATCH_BID, MATCH_ASK, COMMIT_REPORT, REVEAL_REPORT, CANCEL_ORDER } from 'modules/transactions/constants/types';
-import { formatEther, formatPercent, formatRealEther, formatRep, formatShares } from 'utils/format-number';
+import { formatEtherTokens, formatPercent, formatEther, formatRep, formatShares } from 'utils/format-number';
 import { formatDate } from 'utils/format-date';
 import { selectMarketLink } from 'modules/link/selectors/links';
 import { formatReportedOutcome } from 'modules/reports/selectors/reportable-outcomes';
@@ -44,7 +44,7 @@ export const constructBasicTransaction = (hash, status, blockNumber, timestamp, 
   const transaction = { hash, status };
   if (blockNumber) transaction.blockNumber = blockNumber;
   if (timestamp) transaction.timestamp = formatDate(new Date(timestamp * 1000));
-  if (gasFees) transaction.gasFees = formatRealEther(gasFees);
+  if (gasFees) transaction.gasFees = formatEther(gasFees);
   return transaction;
 };
 
@@ -81,14 +81,14 @@ export function constructCollectedFeesTransaction(log) {
   transaction.description = `Reporting cycle #${log.period}`;
   if (log.cashFeesCollected !== undefined && log.repGain !== undefined) {
     transaction.data.balances = [{
-      change: formatEther(log.cashFeesCollected, { positiveSign: true }),
-      balance: formatEther(log.newCashBalance)
+      change: formatEtherTokens(log.cashFeesCollected, { positiveSign: true }),
+      balance: formatEtherTokens(log.newCashBalance)
     }, {
       change: formatRep(log.repGain, { positiveSign: true }),
       balance: formatRep(log.newRepBalance)
     }];
   }
-  transaction.bond = { label: 'reporting', value: formatRealEther(log.notReportingBond) };
+  transaction.bond = { label: 'reporting', value: formatEther(log.notReportingBond) };
   return transaction;
 }
 
@@ -97,7 +97,7 @@ export function constructDepositTransaction(log) {
   transaction.type = 'Deposit Ether';
   transaction.description = 'Convert Ether to tradeable Ether token';
   const action = log.inProgress ? 'depositing' : 'deposited';
-  transaction.message = `${action} ${formatEther(log.value).full}`;
+  transaction.message = `${action} ${formatEtherTokens(log.value).full}`;
   return transaction;
 }
 
@@ -131,7 +131,7 @@ export function constructWithdrawTransaction(log) {
   transaction.type = 'Withdraw Ether';
   transaction.description = 'Convert tradeable Ether token to Ether';
   const action = log.inProgress ? 'withdrawing' : 'withdrew';
-  transaction.message = `${action} ${formatEther(log.value).full}`;
+  transaction.message = `${action} ${formatEtherTokens(log.value).full}`;
   return transaction;
 }
 
@@ -139,10 +139,10 @@ export function constructSentEtherTransaction(log, address) {
   const transaction = { data: {} };
   let action;
   if (log._from === address) {
-    transaction.type = 'Send Real Ether';
-    transaction.description = `Send Real Ether to ${abi.strip_0x(log._to)}`;
+    transaction.type = 'Send Ether';
+    transaction.description = `Send Ether to ${abi.strip_0x(log._to)}`;
     transaction.data.balances = [{
-      change: formatRealEther(abi.bignum(log._value).neg(), { positiveSign: true })
+      change: formatEther(abi.bignum(log._value).neg(), { positiveSign: true })
     }];
     action = log.inProgress ? 'sending' : 'sent';
   }
@@ -154,21 +154,21 @@ export function constructSentCashTransaction(log, address) {
   const transaction = { data: {} };
   let action;
   if (log._from === address) {
-    transaction.type = 'Send Ether';
-    transaction.description = `Send Ether to ${abi.strip_0x(log._to)}`;
+    transaction.type = 'Send Ether Tokens';
+    transaction.description = `Send Ether Tokens to ${abi.strip_0x(log._to)}`;
     transaction.data.balances = [{
-      change: formatEther(abi.bignum(log._value).neg(), { positiveSign: true })
+      change: formatEtherTokens(abi.bignum(log._value).neg(), { positiveSign: true })
     }];
     action = log.inProgress ? 'sending' : 'sent';
   } else if (log._to === address) {
-    transaction.type = 'Receive Ether';
-    transaction.description = `Receive Ether from ${abi.strip_0x(log._from)}`;
+    transaction.type = 'Receive Ether Tokens';
+    transaction.description = `Receive Ether Tokens from ${abi.strip_0x(log._from)}`;
     transaction.data.balances = [{
-      change: formatEther(log._value, { positiveSign: true })
+      change: formatEtherTokens(log._value, { positiveSign: true })
     }];
     action = log.inProgress ? 'receiving' : 'received';
   }
-  transaction.message = `${action} ETH`;
+  transaction.message = `${action} ETH Tokens`;
   return transaction;
 }
 
@@ -199,8 +199,8 @@ export function constructFundedAccountTransaction(log) {
   transaction.type = 'fund_account';
   if (log.cashBalance && log.repBalance) {
     transaction.data.balances = [{
-      change: formatEther(log.cashBalance, { positiveSign: true }),
-      balance: formatEther(log.cashBalance)
+      change: formatEtherTokens(log.cashBalance, { positiveSign: true }),
+      balance: formatEtherTokens(log.cashBalance)
     }, {
       change: formatRep(log.repBalance, { positiveSign: true }),
       balance: formatRep(log.repBalance)
@@ -214,10 +214,10 @@ export function constructMarketCreatedTransaction(log, description, dispatch) {
   const transaction = { data: {} };
   transaction.type = CREATE_MARKET;
   transaction.description = description.split('~|>')[0];
-  transaction.marketCreationFee = formatEther(log.marketCreationFee);
+  transaction.marketCreationFee = formatEtherTokens(log.marketCreationFee);
   transaction.data.marketLink = selectMarketLink({ id: log.marketID, description: transaction.description }, dispatch);
   transaction.data.marketID = log.marketID ? log.marketID : null;
-  transaction.bond = { label: 'event validity', value: formatEther(log.eventBond) };
+  transaction.bond = { label: 'event validity', value: formatEtherTokens(log.eventBond) };
   const action = log.inProgress ? 'creating' : 'created';
   transaction.message = `${action} market`;
   return transaction;
@@ -230,8 +230,8 @@ export function constructPayoutTransaction(log, market, dispatch) {
   transaction.description = market.description;
   if (log.cashPayout) {
     transaction.data.balances = [{
-      change: formatEther(log.cashPayout, { positiveSign: true }),
-      balance: formatEther(log.cashBalance)
+      change: formatEtherTokens(log.cashPayout, { positiveSign: true }),
+      balance: formatEtherTokens(log.cashBalance)
     }];
   }
   transaction.data.shares = log.shares;
@@ -407,7 +407,7 @@ export const constructLogFillTxTransaction = (trade, marketID, marketType, minVa
   if (!trade.amount || !trade.price || (!trade.makerFee && !trade.takerFee)) return null;
   const transactionID = `${trade.transactionHash}-${trade.tradeid}`;
   const tradeGroupID = trade.tradeGroupID;
-  const price = formatEther(trade.price);
+  const price = formatEtherTokens(trade.price);
   const shares = formatShares(trade.amount);
   const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
   const bnShares = abi.bignum(trade.amount);
@@ -423,13 +423,13 @@ export const constructLogFillTxTransaction = (trade, marketID, marketType, minVa
   if (trade.maker) {
     type = trade.type === SELL ? MATCH_BID : MATCH_ASK;
     perfectType = trade.type === SELL ? 'bought' : 'sold';
-    formattedTotalCost = trade.type === SELL ? formatEther(totalCost) : undefined;
-    formattedTotalReturn = trade.type === BUY ? formatEther(totalReturn) : undefined;
+    formattedTotalCost = trade.type === SELL ? formatEtherTokens(totalCost) : undefined;
+    formattedTotalReturn = trade.type === BUY ? formatEtherTokens(totalReturn) : undefined;
   } else {
     type = trade.type === BUY ? BUY : SELL;
     perfectType = trade.type === BUY ? 'bought' : 'sold';
-    formattedTotalCost = trade.type === BUY ? formatEther(totalCost) : undefined;
-    formattedTotalReturn = trade.type === SELL ? formatEther(totalReturn) : undefined;
+    formattedTotalCost = trade.type === BUY ? formatEtherTokens(totalCost) : undefined;
+    formattedTotalReturn = trade.type === SELL ? formatEtherTokens(totalReturn) : undefined;
   }
   const action = trade.inProgress ? type : perfectType;
   const transaction = {
@@ -446,16 +446,16 @@ export const constructLogFillTxTransaction = (trade, marketID, marketType, minVa
         marketID,
         marketLink: selectMarketLink({ id: marketID, description }, dispatch),
       },
-      message: `${action} ${shares.full} for ${formatEther(trade.type === BUY ? totalCostPerShare : totalReturnPerShare).full} / share`,
+      message: `${action} ${shares.full} for ${formatEtherTokens(trade.type === BUY ? totalCostPerShare : totalReturnPerShare).full} / share`,
       numShares: shares,
       noFeePrice: price,
       avgPrice: price,
       timestamp: formatDate(new Date(trade.timestamp * 1000)),
-      tradingFees: formatEther(tradingFees),
+      tradingFees: formatEtherTokens(tradingFees),
       feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
       totalCost: formattedTotalCost,
       totalReturn: formattedTotalReturn,
-      gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null,
+      gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
       blockNumber: trade.blockNumber
     }
   };
@@ -464,7 +464,7 @@ export const constructLogFillTxTransaction = (trade, marketID, marketType, minVa
 
 export const constructLogShortFillTxTransaction = (trade, marketID, marketType, maxValue, description, outcomeID, outcomeName, status) => (dispatch, getState) => {
   const transactionID = `${trade.transactionHash}-${trade.tradeid}`;
-  const price = formatEther(trade.price);
+  const price = formatEtherTokens(trade.price);
   const shares = formatShares(trade.amount);
   const bnPrice = abi.bignum(trade.price);
   const tradingFees = abi.bignum(trade.takerFee);
@@ -487,15 +487,15 @@ export const constructLogShortFillTxTransaction = (trade, marketID, marketType, 
         marketID,
         marketLink: selectMarketLink({ id: marketID, description }, dispatch)
       },
-      message: `${action} ${shares.full} for ${formatEther(totalCostPerShare).full} / share`,
+      message: `${action} ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
       numShares: shares,
       noFeePrice: price,
-      avgPrice: formatEther(totalCost.minus(bnShares).dividedBy(bnShares).abs()),
+      avgPrice: formatEtherTokens(totalCost.minus(bnShares).dividedBy(bnShares).abs()),
       timestamp: formatDate(new Date(trade.timestamp * 1000)),
-      tradingFees: formatEther(tradingFees),
+      tradingFees: formatEtherTokens(tradingFees),
       feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
-      totalCost: formatEther(totalCost),
-      gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null,
+      totalCost: formatEtherTokens(totalCost),
+      gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
       blockNumber: trade.blockNumber
     }
   };
@@ -515,7 +515,7 @@ export const constructLogAddTxTransaction = (trade, marketID, marketType, descri
     type = ASK;
     action = trade.inProgress ? 'asking' : 'ask';
   }
-  const price = formatEther(trade.price);
+  const price = formatEtherTokens(trade.price);
   const shares = formatShares(trade.amount);
   const makerFee = market.makerFee;
   const takerFee = market.takerFee;
@@ -556,21 +556,21 @@ export const constructLogAddTxTransaction = (trade, marketID, marketType, descri
         marketID,
         marketLink: selectMarketLink({ id: marketID, description }, dispatch)
       },
-      message: `${action} ${shares.full} for ${formatEther(abi.unfix(trade.type === BUY ? totalCostPerShare : totalReturnPerShare)).full} / share`,
+      message: `${action} ${shares.full} for ${formatEtherTokens(abi.unfix(trade.type === BUY ? totalCostPerShare : totalReturnPerShare)).full} / share`,
       numShares: shares,
-      noFeePrice: formatEther(rawPrice),
+      noFeePrice: formatEtherTokens(rawPrice),
       freeze: {
         verb: trade.inProgress ? 'freezing' : 'froze',
-        noFeeCost: type === ASK ? undefined : formatEther(abi.unfix(noFeeCost)),
-        tradingFees: formatEther(abi.unfix(tradingFees))
+        noFeeCost: type === ASK ? undefined : formatEtherTokens(abi.unfix(noFeeCost)),
+        tradingFees: formatEtherTokens(abi.unfix(tradingFees))
       },
       avgPrice: price,
       timestamp: formatDate(new Date(trade.timestamp * 1000)),
       hash: trade.transactionHash,
       feePercent: formatPercent(abi.unfix(tradingFees.dividedBy(totalCost).times(constants.ONE).floor()).times(100)),
-      totalCost: type === BID ? formatEther(abi.unfix(totalCost)) : undefined,
-      totalReturn: type === ASK ? formatEther(abi.unfix(totalReturn)) : undefined,
-      gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null,
+      totalCost: type === BID ? formatEtherTokens(abi.unfix(totalCost)) : undefined,
+      totalReturn: type === ASK ? formatEtherTokens(abi.unfix(totalReturn)) : undefined,
+      gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
       blockNumber: trade.blockNumber,
       tradeID: trade.tradeid
     }
@@ -578,7 +578,7 @@ export const constructLogAddTxTransaction = (trade, marketID, marketType, descri
 };
 
 export const constructLogCancelTransaction = (trade, marketID, marketType, description, outcomeID, outcomeName, status) => (dispatch, getState) => {
-  const price = formatEther(trade.price);
+  const price = formatEtherTokens(trade.price);
   const shares = formatShares(trade.amount);
   const action = trade.inProgress ? 'canceling' : 'canceled';
   return {
@@ -600,8 +600,8 @@ export const constructLogCancelTransaction = (trade, marketID, marketType, descr
       avgPrice: price,
       timestamp: formatDate(new Date(trade.timestamp * 1000)),
       hash: trade.transactionHash,
-      totalReturn: trade.inProgress ? null : formatEther(trade.cashRefund),
-      gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatRealEther(trade.gasFees) : null,
+      totalReturn: trade.inProgress ? null : formatEtherTokens(trade.cashRefund),
+      gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
       blockNumber: trade.blockNumber,
       tradeID: trade.tradeid
     }
@@ -612,7 +612,7 @@ export const constructConvertEthTokenToEthTransaction = (log) => {
   const transaction = {};
   const amount = abi.is_hex(log.value) ? parseFloat(log.value, 10) : abi.unfix(log.value).toNumber();
 
-  transaction.type = `Convert ETH Token to ETH`;
+  transaction.type = `Convert ETH Tokens to ETH`;
   transaction.description = `Converting ${amount.toLocaleString()} ETH Token${amount === 1 ? '' : 's'} to ETH`;
   transaction.data = log.data;
 
@@ -623,7 +623,7 @@ export const constructConvertEthToEthTokenTransaction = (log) => {
   const transaction = {};
   const amount = abi.is_hex(log.data.value) ? parseFloat(log.data.value, 10) : abi.unfix(log.data.value).toNumber();
 
-  transaction.type = `Convert ETH to ETH Token`;
+  transaction.type = `Convert ETH to ETH Tokens`;
   transaction.description = `Converting ${amount.toLocaleString()} ETH to ETH Token${amount === 1 ? '' : 's'}`;
   transaction.data = log.data;
 

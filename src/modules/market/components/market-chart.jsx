@@ -50,7 +50,7 @@ export default class MarketChart extends Component {
         enabled: true
       },
       tooltip: {
-        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y} ETH</b><br/>',
+        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y} ETH Tokens</b><br/>',
         valueDecimals: 2
       },
       credits: {

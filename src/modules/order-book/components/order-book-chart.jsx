@@ -45,7 +45,7 @@ export default class OrderBookChart extends Component {
       },
       xAxis: {
         title: {
-          text: 'ETH'
+          text: 'ETH Tokens'
         }
       },
       series: [
@@ -64,7 +64,7 @@ export default class OrderBookChart extends Component {
       ],
       tooltip: {
         headerFormat: null,
-        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y} Shares @ {point.x} ETH</b><br/>',
+        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y} Shares @ {point.x} ETH Tokens</b><br/>',
         valueDecimals: 2
       },
       credits: {

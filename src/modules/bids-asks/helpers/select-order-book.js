@@ -10,7 +10,7 @@ import { isOrderOfUser } from 'modules/bids-asks/helpers/is-order-of-user';
 import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types';
 import { CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-status';
 
-import { formatShares, formatEther } from 'utils/format-number';
+import { formatShares, formatEtherTokens } from 'utils/format-number';
 
 /**
  * @param {String} outcomeID
@@ -92,7 +92,7 @@ const selectAggregatePricePoints = memoize((outcomeID, orders, orderCancellation
       const obj = {
         isOfCurrentUser: shareCountPerPrice[price].isOfCurrentUser,
         shares: formatShares(shareCountPerPrice[price].shares),
-        price: formatEther(parseFloat(price))
+        price: formatEtherTokens(parseFloat(price))
       };
       return obj;
     });

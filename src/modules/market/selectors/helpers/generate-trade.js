@@ -1,5 +1,5 @@
 import memoize from 'memoizee';
-import { formatPercent, formatEther, formatShares, formatRealEther } from 'utils/format-number';
+import { formatPercent, formatEtherTokens, formatShares, formatEther } from 'utils/format-number';
 import { augur, abi } from 'services/augurjs';
 import { calculateMaxPossibleShares } from 'modules/market/selectors/helpers/calculate-max-possible-shares';
 import { BUY, SELL } from 'modules/trade/constants/types';
@@ -54,9 +54,9 @@ export const generateTrade = memoize((market, outcome, outcomeTradeInProgress, l
     limitPrice,
     maxNumShares,
 
-    totalFee: formatEther(totalFee, { blankZero: true }),
-    gasFeesRealEth: formatEther(gasFeesRealEth, { blankZero: true }),
-    totalCost: formatEther(totalCost, { blankZero: false }),
+    totalFee: formatEtherTokens(totalFee, { blankZero: true }),
+    gasFeesRealEth: formatEtherTokens(gasFeesRealEth, { blankZero: true }),
+    totalCost: formatEtherTokens(totalCost, { blankZero: false }),
 
     tradeTypeOptions: [
       { label: BUY, value: BUY },
@@ -96,7 +96,7 @@ export const generateTradeSummary = memoize((tradeOrders) => {
     }, tradeSummary);
   }
 
-  tradeSummary.totalGas = formatRealEther(tradeSummary.totalGas);
+  tradeSummary.totalGas = formatEther(tradeSummary.totalGas);
 
   return tradeSummary;
 }, { max: 5 });
@@ -123,11 +123,11 @@ export const generateTradeOrders = memoize((market, outcome, outcomeTradeInProgr
       data: { marketID, outcomeID, marketType, outcomeName },
       description,
       numShares: formatShares(tradeAction.shares),
-      avgPrice: formatEther(avgPrice),
-      noFeePrice: formatEther(noFeePrice),
-      tradingFees: formatEther(tradeAction.feeEth),
+      avgPrice: formatEtherTokens(avgPrice),
+      noFeePrice: formatEtherTokens(noFeePrice),
+      tradingFees: formatEtherTokens(tradeAction.feeEth),
       feePercent: formatPercent(tradeAction.feePercent),
-      gasFees: formatRealEther(tradeAction.gasEth)
+      gasFees: formatEther(tradeAction.gasEth)
     };
   });
 }, { max: 5 });

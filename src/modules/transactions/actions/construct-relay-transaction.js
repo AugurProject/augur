@@ -335,7 +335,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           notification = {
             id: p.transactionHash,
             title: `Fund Account Request - ${tx.status}`,
-            description: 'Requesting testnet ETH & REP',
+            description: 'Requesting testnet ETH, ETH Tokens, and REP',
             timestamp: p.timestamp,
             href: transactionsHref
           };
@@ -474,8 +474,8 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         case 'send':
           notification = {
             id: p.transactionHash,
-            title: `Send Ether - ${tx.status}`,
-            description: `${abi.unfix(p.value, 'string')} ETH`,
+            title: `Send Ether Tokens - ${tx.status}`,
+            description: `${abi.unfix(p.value, 'string')} ETH Tokens`,
             timestamp: p.timestamp,
             href: transactionsHref
           };
@@ -489,8 +489,8 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         case 'sendEther':
           notification = {
             id: p.transactionHash,
-            title: `Send Real Ether - ${tx.status}`,
-            description: `${abi.unfix(p.value, 'string')} Real ETH`,
+            title: `Send Ether - ${tx.status}`,
+            description: `${abi.unfix(p.value, 'string')} ETH`,
             timestamp: p.timestamp,
             href: transactionsHref
           };

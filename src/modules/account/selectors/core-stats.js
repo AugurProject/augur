@@ -3,7 +3,7 @@ import store from 'src/store';
 import { selectAccountTradesState, selectBlockchainState, selectOutcomesDataState } from 'src/select-state';
 import { augur, abi } from 'services/augurjs';
 import { dateToBlock } from 'utils/date-to-block-to-date';
-import { formatEther } from 'utils/format-number';
+import { formatEtherTokens } from 'utils/format-number';
 import { ZERO } from 'modules/trade/constants/numbers';
 import { selectLoginAccount } from 'modules/account/selectors/login-account';
 import selectLoginAccountPositions from 'modules/my-positions/selectors/login-account-positions';
@@ -52,14 +52,14 @@ export const selectCoreStats = createSelector(
     // Group 1
     {
       totalEth: {
-        label: 'ETH',
-        title: 'Ether -- outcome trading currency',
-        value: { ...loginAccount.ether, denomination: null }
+        label: 'ETH Tokens',
+        title: 'Ether Tokens -- outcome trading currency',
+        value: { ...loginAccount.ethTokens, denomination: null }
       },
       totalRealEth: {
-        label: 'Real ETH',
-        title: 'Real Ether -- pays transaction gas fees',
-        value: { ...loginAccount.realEther, denomination: null }
+        label: 'ETH',
+        title: 'Ether -- pays transaction gas fees',
+        value: { ...loginAccount.eth, denomination: null }
       },
       totalRep: {
         label: 'REP',
@@ -91,12 +91,12 @@ export const selectCoreStats = createSelector(
       totalPLMonth: {
         label: '30 Day P/L',
         title: 'Profit/Loss -- net of all trades over the last 30 days',
-        value: formatEther(totalPLMonth)
+        value: formatEtherTokens(totalPLMonth)
       },
       totalPLDay: {
         label: '1 Day P/L',
         title: 'Profit/Loss -- net of all trades over the last day',
-        value: formatEther(totalPLDay)
+        value: formatEtherTokens(totalPLDay)
       }
     }
   ]

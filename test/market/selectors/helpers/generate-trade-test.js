@@ -35,10 +35,10 @@ describe('modules/market/selectors/helpers/generate-trade.js', () => {
       numShares: 5000,
       side: 'buy',
       totalCost: {
-        denomination: ' ETH',
+        denomination: ' ETH Tokens',
         formatted: '50.0000',
         formattedValue: 50,
-        full: '50.0000 ETH',
+        full: '50.0000 ETH Tokens',
         minimized: '50',
         rounded: '50.0000',
         roundedValue: 50,
@@ -56,10 +56,10 @@ describe('modules/market/selectors/helpers/generate-trade.js', () => {
       },
       tradeSummary: {
         totalGas: {
-          denomination: ' real ETH',
+          denomination: ' ETH',
           formatted: '0',
           formattedValue: 0,
-          full: '0 real ETH',
+          full: '0 ETH',
           minimized: '0',
           rounded: '0.0000',
           roundedValue: 0,
