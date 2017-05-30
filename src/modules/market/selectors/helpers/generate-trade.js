@@ -1,6 +1,6 @@
 import memoize from 'memoizee';
 import { formatPercent, formatEther, formatShares, formatRealEther } from 'utils/format-number';
-import calcPreOrderProfitLossPercents from 'utils/calc-order-profit-loss-percents';
+import calcOrderProfitLossPercents from 'modules/trade/helpers/calc-order-profit-loss-percents';
 import { augur, abi } from 'services/augurjs';
 import { calculateMaxPossibleShares } from 'modules/market/selectors/helpers/calculate-max-possible-shares';
 import { BUY, SELL } from 'modules/trade/constants/types';
@@ -26,11 +26,11 @@ export const generateTrade = memoize((market, outcome, outcomeTradeInProgress, l
   const totalFee = (outcomeTradeInProgress && outcomeTradeInProgress.totalFee) || 0;
   const gasFeesRealEth = (outcomeTradeInProgress && outcomeTradeInProgress.gasFeesRealEth) || 0;
   const totalCost = (outcomeTradeInProgress && outcomeTradeInProgress.totalCost) || 0;
-  const marketType = (outcomeTradeInProgress && market.type) || null;
-  const minValue = (outcomeTradeInProgress && market && market.minValue) || null;
-  const maxValue = (outcomeTradeInProgress && market && market.maxValue) || null;
+  const marketType = (market && market.type) || null;
+  const minValue = (market && market.minValue) || null;
+  const maxValue = (market && market.maxValue) || null;
   const preOrderProfitLoss = ((numShares && limitPrice && side && minValue && maxValue && marketType) && (
-    calcPreOrderProfitLossPercents(numShares, limitPrice, side, minValue, maxValue, marketType)
+      calcOrderProfitLossPercents(numShares, limitPrice, side, minValue, maxValue, marketType)
   )) || null;
 
   let maxNumShares;
