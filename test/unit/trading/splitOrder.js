@@ -2,14 +2,13 @@
 
 var assert = require("chai").assert;
 var BigNumber = require("bignumber.js");
-var splitOrder = require('../../../src/modules/splitOrder');
 // 2 tests total
 
 describe("splitOrder", function () {
   // 2 tests total
   var test = function (t) {
     it(t.description, function () {
-      t.assertions(splitOrder(t.numShares, t.position));
+      t.assertions(require('../../../src/trading/take-order/split-order')(t.numShares, t.position));
     });
   };
   test({
