@@ -3,6 +3,7 @@
 var assert = require("chai").assert;
 var BigNumber = require("bignumber.js");
 var abi = require("augur-abi");
+var proxyquire = require('proxyquire');
 var augur = new (require("../../../src"))();
 var constants = require("../../../src/constants");
 
@@ -19,7 +20,7 @@ describe("positions", function () {
   describe("modifyPosition", function () {
     var test = function (t) {
       it(t.description, function () {
-        t.assertions(augur.modifyPosition(t.typeCode, t.position, t.numShares));
+        t.assertions(require('../../../src/trading/positions/modify-position')(t.typeCode, t.position, t.numShares));
       });
     };
     test({
@@ -117,7 +118,7 @@ describe("positions", function () {
   describe("calculateCompleteSetsShareTotals", function () {
     var test = function (t) {
       it(t.description, function () {
-        t.assertions(augur.calculateCompleteSetsShareTotals(t.logs));
+        t.assertions(require('../../../src/trading/positions/calculate-complete-sets-share-totals')(t.logs));
       });
     };
     test({
@@ -358,7 +359,7 @@ describe("positions", function () {
   describe("calculateCompleteSetsEffectivePrice", function () {
     var test = function (t) {
       it(JSON.stringify(t), function () {
-        t.assertions(augur.calculateCompleteSetsEffectivePrice(t.logs));
+        t.assertions(require('../../../src/trading/positions/calculate-complete-sets-effective-price')(t.logs));
       });
     };
     test({
@@ -395,7 +396,7 @@ describe("positions", function () {
     // 3 tests total
     var test = function (t) {
       it(JSON.stringify(t), function () {
-        t.assertions(augur.calculateShortSellBuyCompleteSetsEffectivePrice(t.logs));
+        t.assertions(require('../../../src/trading/positions/calculate-short-sell-buy-complete-sets-effective-price')(t.logs));
       });
     };
     test({
@@ -426,7 +427,7 @@ describe("positions", function () {
   describe("calculateShortSellShareTotals", function () {
     var test = function (t) {
       it(t.description, function () {
-        t.assertions(augur.calculateShortSellShareTotals(t.logs));
+        t.assertions(require('../../../src/trading/positions/calculate-short-sell-share-totals')(t.logs));
       });
     };
     test({
@@ -594,7 +595,7 @@ describe("positions", function () {
   describe("calculateShareTotals", function () {
     var test = function (t) {
       it(t.description, function () {
-        t.assertions(augur.calculateShareTotals(t.logs));
+        t.assertions(require('../../../src/trading/positions/calculate-share-totals')(t.logs));
       });
     };
     test({
@@ -691,7 +692,7 @@ describe("positions", function () {
   describe("decreasePosition", function () {
     var test = function (t) {
       it(t.description, function () {
-        t.assertions(augur.decreasePosition(t.position, t.adjustment));
+        t.assertions(require('../../../src/trading/positions/decrease-position')(t.position, t.adjustment));
       });
     };
     test({
@@ -797,7 +798,7 @@ describe("positions", function () {
   describe("findUniqueMarketIDs", function () {
     var test = function (t) {
       it(t.description, function () {
-        t.assertions(augur.findUniqueMarketIDs(t.shareTotals));
+        t.assertions(require('../../../src/trading/positions/find-unique-market-ids')(t.shareTotals));
       });
     };
     test({
@@ -924,26 +925,17 @@ describe("positions", function () {
   });
 
   describe("adjustPositions", function () {
-    var getPositionInMarket;
-    beforeEach(function () {
-      getPositionInMarket = augur.getPositionInMarket;
-    });
-    afterEach(function () {
-      augur.getPositionInMarket = getPositionInMarket;
-    });
+    var finished;
     var test = function (t) {
       it(t.description, function (done) {
-        augur.getPositionInMarket = function (marketID, account, callback) {
-          if (!callback) return t.onChainPosition[marketID];
-          callback(t.onChainPosition[marketID]);
-        };
-        augur.adjustPositions(t.account, t.marketIDs, t.shareTotals, function (err, adjusted) {
-          t.assertions(err, {
-            async: adjusted,
-            sync: augur.adjustPositions(t.account, t.marketIDs, t.shareTotals)
-          });
-          done();
+        finished = done;
+        var adjustPositions = proxyquire('../../../src/trading/positions/adjust-positions', {
+          '../../markets/get-position-in-market': function (p, callback) {
+            if (!callback) return t.onChainPosition[p.market];
+            callback(t.onChainPosition[p.market]);
+          }
         });
+        adjustPositions(t.account, t.marketIDs, t.shareTotals, t.assertions);
       });
     };
     test({
@@ -963,16 +955,13 @@ describe("positions", function () {
       },
       assertions: function (err, output) {
         assert.isNull(err);
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {
+        assert.deepEqual(output, {
           "0x1": {
             "1": "0",
             "2": "0"
           }
         });
+        finished();
       }
     });
     test({
@@ -988,13 +977,9 @@ describe("positions", function () {
         "0x1": undefined
       },
       assertions: function (err, output) {
-        assert.deepEqual(err, "couldn't load position in 0x1")
-        assert.isObject(output);
-        assert.isUndefined(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.sync, {
-          "0x1": {}
-        });
+        assert.deepEqual(err, "couldn't load position in 0x1");
+        assert.isUndefined(output);
+        finished();
       }
     });
     test({
@@ -1014,16 +999,13 @@ describe("positions", function () {
       },
       assertions: function (err, output) {
         assert.isNull(err);
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {
+        assert.deepEqual(output, {
           "0x1": {
             "1": "1",
             "2": "0"
           }
         });
+        finished();
       }
     });
     test({
@@ -1045,16 +1027,13 @@ describe("positions", function () {
       },
       assertions: function (err, output) {
         assert.isNull(err);
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {
+        assert.deepEqual(output, {
           "0x1": {
             "1": "-1",
             "2": "0"
           }
         });
+        finished();
       }
     });
     test({
@@ -1076,16 +1055,13 @@ describe("positions", function () {
       },
       assertions: function (err, output) {
         assert.isNull(err);
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {
+        assert.deepEqual(output, {
           "0x1": {
             "1": "0",
             "2": "0"
           }
         });
+        finished();
       }
     });
     test({
@@ -1109,16 +1085,13 @@ describe("positions", function () {
       },
       assertions: function (err, output) {
         assert.isNull(err);
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {
+        assert.deepEqual(output, {
           "0x1": {
             "1": "-1",
             "2": "0"
           }
         });
+        finished();
       }
     });
     test({
@@ -1140,16 +1113,13 @@ describe("positions", function () {
       },
       assertions: function (err, output) {
         assert.isNull(err);
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {
+        assert.deepEqual(output, {
           "0x1": {
             "1": "0",
             "2": "-2"
           }
         });
+        finished();
       }
     });
     test({
@@ -1171,16 +1141,13 @@ describe("positions", function () {
       },
       assertions: function (err, output) {
         assert.isNull(err);
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {
+        assert.deepEqual(output, {
           "0x1": {
             "1": "-1",
             "2": "-1"
           }
         });
+        finished();
       }
     });
     test({
@@ -1204,16 +1171,13 @@ describe("positions", function () {
       },
       assertions: function (err, output) {
         assert.isNull(err);
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {
+        assert.deepEqual(output, {
           "0x1": {
             "1": "-2",
             "2": "0"
           }
         });
+        finished();
       }
     });
     test({
@@ -1237,16 +1201,13 @@ describe("positions", function () {
       },
       assertions: function (err, output) {
         assert.isNull(err);
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {
+        assert.deepEqual(output, {
           "0x1": {
             "1": "-1",
             "2": "-1"
           }
         });
+        finished();
       }
     });
     test({
@@ -1270,16 +1231,13 @@ describe("positions", function () {
       },
       assertions: function (err, output) {
         assert.isNull(err);
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {
+        assert.deepEqual(output, {
           "0x1": {
             "1": "0",
             "2": "-5"
           }
         });
+        finished();
       }
     });
     test({
@@ -1303,16 +1261,13 @@ describe("positions", function () {
       },
       assertions: function (err, output) {
         assert.isNull(err);
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {
+        assert.deepEqual(output, {
           "0x1": {
             "1": "-2",
             "2": "0"
           }
         });
+        finished();
       }
     });
     test({
@@ -1336,16 +1291,13 @@ describe("positions", function () {
       },
       assertions: function (err, output) {
         assert.isNull(err);
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {
+        assert.deepEqual(output, {
           "0x1": {
             "1": "-1.2",
             "2": "-1"
           }
         });
+        finished();
       }
     });
     test({
@@ -1379,11 +1331,7 @@ describe("positions", function () {
       },
       assertions: function (err, output) {
         assert.isNull(err);
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {
+        assert.deepEqual(output, {
           "0x1": {
             "1": "-1.2",
             "2": "-1"
@@ -1398,6 +1346,7 @@ describe("positions", function () {
             "7": "0"
           }
         });
+        finished();
       }
     });
     test({
@@ -1432,11 +1381,7 @@ describe("positions", function () {
       },
       assertions: function (err, output) {
         assert.isNull(err);
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {
+        assert.deepEqual(output, {
           "0x1": {
             "1": "-1.2",
             "2": "-1"
@@ -1451,6 +1396,7 @@ describe("positions", function () {
             "7": "0"
           }
         });
+        finished();
       }
     });
     test({
@@ -1483,16 +1429,13 @@ describe("positions", function () {
       },
       assertions: function (err, output) {
         assert.isNull(err);
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {
+        assert.deepEqual(output, {
           "0x1": {
             "1": "-1",
             "2": "0"
           }
         });
+        finished();
       }
     });
     test({
@@ -1525,16 +1468,13 @@ describe("positions", function () {
       },
       assertions: function (err, output) {
         assert.isNull(err);
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {
+        assert.deepEqual(output, {
           "0x1": {
             "1": "-0.2",
             "2": "0"
           }
         });
+        finished();
       }
     });
     test({
@@ -1572,11 +1512,7 @@ describe("positions", function () {
       },
       assertions: function (err, output) {
         assert.isNull(err);
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {
+        assert.deepEqual(output, {
           "0x1": {
             "1": "-0.2",
             "2": "0"
@@ -1591,6 +1527,7 @@ describe("positions", function () {
             "7": "0"
           }
         });
+        finished();
       }
     });
     test({
@@ -1616,16 +1553,13 @@ describe("positions", function () {
       },
       assertions: function (err, output) {
         assert.isNull(err);
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {
+        assert.deepEqual(output, {
           "0x1": {
             "1": "2",
             "2": "1"
           }
         });
+        finished();
       }
     });
     test({
@@ -1651,16 +1585,13 @@ describe("positions", function () {
       },
       assertions: function (err, output) {
         assert.isNull(err);
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {
+        assert.deepEqual(output, {
           "0x1": {
             "1": "1",
             "2": "10.101"
           }
         });
+        finished();
       }
     });
     test({
@@ -1698,11 +1629,7 @@ describe("positions", function () {
       },
       assertions: function (err, output) {
         assert.isNull(err);
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {
+        assert.deepEqual(output, {
           "0x1": {
             "1": "-0.1",
             "2": "0"
@@ -1717,80 +1644,65 @@ describe("positions", function () {
             "7": "0"
           }
         });
+        finished();
       }
     });
   });
 
   describe("getAdjustedPositions", function () {
-    var getPositionInMarket;
-    var getShortAskBuyCompleteSetsLogs;
-    var getTakerShortSellLogs;
-    var getCompleteSetsLogs;
-    beforeEach(function () {
-      getPositionInMarket = augur.getPositionInMarket;
-      getShortAskBuyCompleteSetsLogs = augur.getShortAskBuyCompleteSetsLogs;
-      getTakerShortSellLogs = augur.getTakerShortSellLogs;
-      getCompleteSetsLogs = augur.getCompleteSetsLogs;
-    });
-    afterEach(function () {
-      augur.getPositionInMarket = getPositionInMarket;
-      augur.getShortAskBuyCompleteSetsLogs = getShortAskBuyCompleteSetsLogs;
-      augur.getTakerShortSellLogs = getTakerShortSellLogs;
-      augur.getCompleteSetsLogs = getCompleteSetsLogs;
-    });
+    var finished;
     var test = function (t) {
       it(t.description, function (done) {
-        augur.getPositionInMarket = function (marketID, account, callback) {
-          if (!callback) return t.onChainPosition[marketID];
-          callback(t.onChainPosition[marketID]);
-        };
-        augur.getShortAskBuyCompleteSetsLogs = function (account, options, callback) {
-          if (!callback) return t.logs.shortAskBuyCompleteSets;
-          callback(null, t.logs.shortAskBuyCompleteSets);
-        }
-        augur.getTakerShortSellLogs = function (account, options, callback) {
-          if (!callback) return t.logs.shortSellBuyCompleteSets;
-          callback(null, t.logs.shortSellBuyCompleteSets);
-        }
-        augur.getCompleteSetsLogs = function (account, options, callback) {
-          if (!callback) return t.logs.sellCompleteSets;
-          callback(null, t.logs.sellCompleteSets);
-        }
-        augur.getAdjustedPositions(t.account, t.options, function (err, adjusted) {
-          assert.isNull(err);
-          t.assertions({
-            async: adjusted,
-            sync: augur.getAdjustedPositions(t.account, t.options)
-          });
-          done();
+        finished = done;
+        var getAdjustedPositions = proxyquire('../../../src/trading/positions/get-adjusted-positions', {
+          './adjust-positions': function(account, marketIDs, shareTotals, callback) {
+            callback(null, { account: account, marketIDs: marketIDs, shareTotals: shareTotals });
+          },
+          '../../logs/get-short-ask-buy-complete-sets-logs': function (p, callback) {
+            if (!callback) return t.logs.shortAskBuyCompleteSets;
+            callback(null, t.logs.shortAskBuyCompleteSets);
+          },
+          '../../logs/get-taker-short-sell-logs': function (p, callback) {
+            if (!callback) return t.logs.shortSellBuyCompleteSets;
+            callback(null, t.logs.shortSellBuyCompleteSets);
+          },
+          '../../logs/get-sell-complete-sets-logs': function (p, callback) {
+            if (!callback) return t.logs.sellCompleteSets;
+            callback(null, t.logs.sellCompleteSets);
+          },
         });
+
+        getAdjustedPositions(t.params, t.assertions);
       });
     };
     test({
       description: "no logs",
-      account: "0xb0b",
-      onChainPosition: {},
+      params: {
+        account: "0xb0b",
+      },
       logs: {
         shortAskBuyCompleteSets: [],
         shortSellBuyCompleteSets: [],
         sellCompleteSets: []
       },
-      assertions: function (output) {
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {});
+      assertions: function (err, output) {
+        assert.isNull(err);
+        assert.deepEqual(output, {
+          account: '0xb0b',
+          marketIDs: [],
+          shareTotals: {
+            shortAskBuyCompleteSets: {},
+            shortSellBuyCompleteSets: {},
+            sellCompleteSets: {},
+          }
+        });
+        finished();
       }
     });
     test({
       description: "1 market, 1 short ask",
-      account: "0xb0b",
-      onChainPosition: {
-        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
-          "1": "3",
-          "2": "3"
-        }
+      params: {
+        account: "0xb0b",
       },
       logs: {
         shortAskBuyCompleteSets: [{
@@ -1805,27 +1717,26 @@ describe("positions", function () {
         shortSellBuyCompleteSets: [],
         sellCompleteSets: []
       },
-      assertions: function (output) {
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {
-          "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
-            "1": "0",
-            "2": "0"
+      assertions: function (err, output) {
+        assert.isNull(err);
+        assert.deepEqual(JSON.stringify(output), JSON.stringify({
+          account: '0xb0b',
+          marketIDs: [ '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' ],
+          shareTotals: {
+            shortAskBuyCompleteSets: {
+              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '3'
+            },
+            shortSellBuyCompleteSets: {},
+            sellCompleteSets: {}
           }
-        });
+        }));
+        finished();
       }
     });
     test({
       description: "1 market, 1 short sell",
-      account: "0xb0b",
-      onChainPosition: {
-        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
-          "1": "0",
-          "2": "1"
-        }
+      params: {
+        account: "0xb0b",
       },
       logs: {
         shortAskBuyCompleteSets: [],
@@ -1844,27 +1755,26 @@ describe("positions", function () {
         }],
         sellCompleteSets: []
       },
-      assertions: function (output) {
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {
-          "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
-            "1": "-1",
-            "2": "0"
+      assertions: function (err, output) {
+        assert.isNull(err);
+        assert.deepEqual(JSON.stringify(output), JSON.stringify({
+          account: '0xb0b',
+          marketIDs: [ '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' ],
+          shareTotals: {
+            shortAskBuyCompleteSets: {},
+            shortSellBuyCompleteSets: {
+              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '1'
+            },
+            sellCompleteSets: {}
           }
-        });
+        }));
+        finished();
       }
     });
     test({
       description: "1 market, 2 sell complete sets",
-      account: "0xb0b",
-      onChainPosition: {
-        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
-          "1": "1.2",
-          "2": "1.2"
-        }
+      params: {
+        account: "0xb0b",
       },
       logs: {
         shortAskBuyCompleteSets: [],
@@ -1887,27 +1797,27 @@ describe("positions", function () {
           ]
         }]
       },
-      assertions: function (output) {
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {
-          "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
-            "1": "1.2",
-            "2": "1.2"
+      assertions: function (err, output) {
+        assert.isNull(err);
+        assert.deepEqual(JSON.stringify(output), JSON.stringify({
+          account: '0xb0b',
+          marketIDs: [ '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' ],
+          shareTotals: {
+            shortAskBuyCompleteSets: {},
+            shortSellBuyCompleteSets: {},
+            sellCompleteSets: {
+              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '-5.1'
+            }
           }
-        });
+        }));
+        finished();
       }
     });
     test({
       description: "1 market, 1 short ask, 2 sell complete sets",
-      account: "0xb0b",
-      onChainPosition: {
-        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
-          "1": "0.9",
-          "2": "0.9"
-        }
+      params: {
+        account: "0xb0b",
+        filter: { market: '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' }
       },
       logs: {
         shortAskBuyCompleteSets: [{
@@ -1938,27 +1848,28 @@ describe("positions", function () {
           ]
         }]
       },
-      assertions: function (output) {
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {
-          "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
-            "1": "0",
-            "2": "0"
+      assertions: function (err, output) {
+        assert.isNull(err);
+        assert.deepEqual(JSON.stringify(output), JSON.stringify({
+          account: '0xb0b',
+          marketIDs: [ '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' ],
+          shareTotals: {
+            shortAskBuyCompleteSets: {
+              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '6'
+            },
+            shortSellBuyCompleteSets: {},
+            sellCompleteSets: {
+              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '-5.1'
+            }
           }
-        });
+        }));
+        finished();
       }
     });
     test({
       description: "1 market, 1 short ask, 1 short sell, 1 sell complete sets",
-      account: "0xb0b",
-      onChainPosition: {
-        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
-          "1": "3.9",
-          "2": "4.9"
-        }
+      params: {
+        account: '0xb0b',
       },
       logs: {
         shortAskBuyCompleteSets: [{
@@ -1993,27 +1904,30 @@ describe("positions", function () {
           ]
         }]
       },
-      assertions: function (output) {
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {
-          "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
-            "1": "-1",
-            "2": "0"
+      assertions: function (err, output) {
+        assert.isNull(err);
+        assert.deepEqual(JSON.stringify(output), JSON.stringify({
+          account: '0xb0b',
+          marketIDs: [ '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' ],
+          shareTotals: {
+            shortAskBuyCompleteSets: {
+              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '3'
+            },
+            shortSellBuyCompleteSets: {
+              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '1'
+            },
+            sellCompleteSets: {
+              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '0.9'
+            }
           }
-        });
+        }));
+        finished();
       }
     });
     test({
       description: "1 market, 1 short ask, 2 short sells [0.1 outcome 1, 0.2 outcome 1], 1 sell complete sets",
-      account: "0xb0b",
-      onChainPosition: {
-        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
-          "1": "3.9",
-          "2": "4.2"
-        }
+      params: {
+        account: "0xb0b",
       },
       logs: {
         shortAskBuyCompleteSets: [{
@@ -2060,27 +1974,30 @@ describe("positions", function () {
           ]
         }]
       },
-      assertions: function (output) {
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {
-          "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
-            "1": "-0.3",
-            "2": "0"
+      assertions: function (err, output) {
+        assert.isNull(err);
+        assert.deepEqual(JSON.stringify(output), JSON.stringify({
+          account: '0xb0b',
+          marketIDs: [ '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' ],
+          shareTotals: {
+            shortAskBuyCompleteSets: {
+              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '3'
+            },
+            shortSellBuyCompleteSets: {
+              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '0.3'
+            },
+            sellCompleteSets: {
+              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '0.9'
+            }
           }
-        });
+        }));
+        finished();
       }
     });
     test({
       description: "1 market, 1 short ask, 2 short sells [0.1 outcome 1, 0.2 outcome 2], 2 complete sets [buy 3, sell 2.1]",
-      account: "0xb0b",
-      onChainPosition: {
-        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
-          "1": "4.1",
-          "2": "4.0"
-        }
+      params: {
+        account: "0xb0b",
       },
       logs: {
         shortAskBuyCompleteSets: [{
@@ -2135,37 +2052,30 @@ describe("positions", function () {
           ]
         }]
       },
-      assertions: function (output) {
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {
-          "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
-            "1": "0",
-            "2": "-0.1"
+      assertions: function (err, output) {
+        assert.isNull(err);
+        assert.deepEqual(JSON.stringify(output), JSON.stringify({
+          account: '0xb0b',
+          marketIDs: [ '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' ],
+          shareTotals: {
+            shortAskBuyCompleteSets: {
+              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '3'
+            },
+            shortSellBuyCompleteSets: {
+              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '0.2'
+            },
+            sellCompleteSets: {
+              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '0.9'
+            }
           }
-        });
+        }));
+        finished();
       }
     });
     test({
       description: "2 markets, position ([0, 0], [2, 2, 2, 2, 2, 2, 2, 2]), 2 short sells [0.1 outcome 2 market 1, 0.2 outcome 2 market 2], 1 sell complete sets [1 market 2]",
-      account: "0xb0b",
-      onChainPosition: {
-        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
-          "1": "0.0",
-          "2": "0.1"
-        },
-        "0x8000000000000000000000000000000000000000000000000000000000000000": {
-          "1": "1.2",
-          "2": "1",
-          "3": "1.2",
-          "4": "1.2",
-          "5": "1.2",
-          "6": "1.2",
-          "7": "1.2",
-          "8": "1.2"
-        }
+      params: {
+        account: "0xb0b",
       },
       logs: {
         shortAskBuyCompleteSets: [],
@@ -2204,47 +2114,28 @@ describe("positions", function () {
           ]
         }]
       },
-      assertions: function (output) {
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {
-          "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
-            "1": "-0.1",
-            "2": "0"
-          },
-          "0x8000000000000000000000000000000000000000000000000000000000000000": {
-            "1": "1.2",
-            "2": "1",
-            "3": "1.2",
-            "4": "1.2",
-            "5": "1.2",
-            "6": "1.2",
-            "7": "1.2",
-            "8": "1.2"
+      assertions: function (err, output) {
+        assert.isNull(err);
+        assert.deepEqual(JSON.stringify(output), JSON.stringify({
+          account: '0xb0b',
+          marketIDs: [ '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', '0x8000000000000000000000000000000000000000000000000000000000000000' ],
+          shareTotals: {
+            shortAskBuyCompleteSets: {},
+            shortSellBuyCompleteSets: {
+              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '0.1', '0x8000000000000000000000000000000000000000000000000000000000000000': '0.2'
+            },
+            sellCompleteSets: {
+              '0x8000000000000000000000000000000000000000000000000000000000000000': '-1'
+            }
           }
-        });
+        }));
+        finished();
       }
     });
     test({
       description: "2 markets, 3 short sells [0.1 outcome 2 market 1, 1.2 outcome 2 market 2, 10000.00001 outcome 7 market 2], 1 sell complete sets [1.2 market 2]",
-      account: "0xb0b",
-      onChainPosition: {
-        "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
-          "1": "0.0",
-          "2": "0.1"
-        },
-        "0x8000000000000000000000000000000000000000000000000000000000000000": {
-          "1": "10001.00001",
-          "2": "9998.80001",
-          "3": "10001.00001",
-          "4": "10001.00001",
-          "5": "10001.00001",
-          "6": "10001.00001",
-          "7": "0",
-          "8": "10001.00001"
-        }
+      params: {
+        account: "0xb0b",
       },
       logs: {
         shortAskBuyCompleteSets: [],
@@ -2295,34 +2186,31 @@ describe("positions", function () {
           ]
         }]
       },
-      assertions: function (output) {
-        assert.isObject(output);
-        assert.isObject(output.async);
-        assert.isObject(output.sync);
-        assert.deepEqual(output.async, output.sync);
-        assert.deepEqual(output.async, {
-          "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": {
-            "1": "-0.1",
-            "2": "0"
-          },
-          "0x8000000000000000000000000000000000000000000000000000000000000000": {
-            "1": "2.2",
-            "2": "0",
-            "3": "2.2",
-            "4": "2.2",
-            "5": "2.2",
-            "6": "2.2",
-            "7": "-9998.80001",
-            "8": "2.2"
+      assertions: function (err, output) {
+        assert.isNull(err);
+        assert.deepEqual(JSON.stringify(output), JSON.stringify({
+          account: '0xb0b',
+          marketIDs: [ '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', '0x8000000000000000000000000000000000000000000000000000000000000000' ],
+          shareTotals: {
+            shortAskBuyCompleteSets: {},
+            shortSellBuyCompleteSets: {
+              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '0.1', '0x8000000000000000000000000000000000000000000000000000000000000000': '10000.00001'
+            },
+            sellCompleteSets: {
+              '0x8000000000000000000000000000000000000000000000000000000000000000': '-1.2'
+            }
           }
-        });
+        }));
+        finished();
       }
     });
   });
 
   describe("calculateNetEffectiveTrades", function () {
     var test = function (t) {
-      t.assertions(augur.calculateNetEffectiveTrades(t.logs));
+      it(JSON.stringify(t), function() {
+        t.assertions(require('../../../src/trading/positions/calculate-net-effective-trades')(t.logs));
+      });
     };
     test({
       logs: {
@@ -2388,7 +2276,6 @@ describe("positions", function () {
             },
           },
         }));
-
       }
     });
   });
@@ -2396,7 +2283,7 @@ describe("positions", function () {
   describe("calculateUnrealizedPL", function () {
     var test = function (t) {
       it(JSON.stringify(t), function () {
-        t.assertions(augur.calculateUnrealizedPL(t.position, t.meanOpenPrice, t.lastTradePrice));
+        t.assertions(require('../../../src/trading/positions/calculate-unrealized-pl')(t.position, t.meanOpenPrice, t.lastTradePrice));
       });
     };
     test({
@@ -2412,7 +2299,7 @@ describe("positions", function () {
   describe("calculateProfitLoss", function () {
     var test = function (t) {
       it(t.description, function () {
-        t.assertions(augur.calculateProfitLoss(t.trades, t.lastPrice));
+        t.assertions(require('../../../src/trading/positions/calculate-profit-loss')(t.trades, t.lastPrice));
       });
     };
     test({
