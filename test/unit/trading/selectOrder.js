@@ -1,14 +1,14 @@
 "use strict";
 
 var assert = require("chai").assert;
-var selectOrder = require("../../../src/modules/selectOrder");
+// var selectOrder = require("../../../src/modules/selectOrder");
 // 5 tests total
 
 describe("selectOrder.selectOrder", function () {
   // 3 tests total
   var test = function (t) {
     it(t.description, function () {
-      t.assertions(selectOrder.selectOrder(t.orderID, t.orderBooks));
+      t.assertions(require('../../../src/trading/take-order/select-order')(t.orderID, t.orderBooks));
     });
   };
   test({
@@ -68,7 +68,7 @@ describe("selectOrder.selectOrderInOrderBookSide", function () {
   // 2 tests total
   var test = function (t) {
     it(t.description, function () {
-      t.assertions(selectOrder.selectOrderInOrderBookSide(t.orderID, t.orderBookSide));
+      t.assertions(require('../../../src/trading/take-order/select-order-in-order-book-side')(t.orderID, t.orderBookSide));
     });
   };
   test({
