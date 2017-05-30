@@ -3,10 +3,10 @@ import { assert } from 'chai';
 
 import { BUY, SELL } from 'modules/trade/constants/types';
 
-import calcProfits from 'utils/calc-order-profit-loss-percents';
+import calcProfits from 'modules/trade/helpers/calc-order-profit-loss-percents';
 
 
-describe('utils/calc-order-profit-loss-percents.js', () => {
+describe('modules/trade/helpers/calc-order-profit-loss-percents.js', () => {
   const orders = [
     {
       numShares: '10',

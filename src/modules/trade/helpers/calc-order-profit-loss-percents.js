@@ -19,15 +19,12 @@ BigNumber.config({ ERRORS: false });
  */
 
 export default function (numShares, limitPrice, side, minValue, maxValue, type) {
-  //  TODO prevent bignumber.js times() number type has more than 15 significant digits error (without using 4 try/catch blocks (see:
-  // https://github.com/MikeMcl/bignumber.js/issues/123)
   //  If minValue is less than zero, set minValue and maxValue to both be greater than zero (but same range) to prevent division by zero when determining percents below
   const max = type !== 'scalar' ? 1 : Math.abs(maxValue - minValue);
   const limit = type !== 'scalar' ? limitPrice : Math.abs(limitPrice - minValue);
 
   const potentialEthProfit = side === BUY ? new BigNumber(max).minus(limit).times(numShares).toString() : new BigNumber(limit).times(numShares).toString();
   const potentialEthLoss = side === BUY ? new BigNumber(limit).times(numShares).toString() : new BigNumber(numShares).times(max - limit).toString();
-  //  TODO prevent Inifity% when selling for 1 or buying for 0
   const potentialProfitPercent = side === BUY ? new BigNumber(max).div(limit).times(100).minus(100).toString() : new BigNumber(limit).div(max - limit).times(100).toString();
   const potentialLossPercent = side === BUY ? new BigNumber(100).toString() : new BigNumber(max - limit).div(limit).times(100).toString();
 
