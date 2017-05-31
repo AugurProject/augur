@@ -7,7 +7,7 @@ import { convertToToken, convertToEther } from 'modules/auth/actions/convert-eth
 
 import links from 'modules/link/selectors/links';
 
-import { selectLoginAccount } from 'modules/account/selectors/login-account';
+import { selectLoginAccount } from 'modules/auth/selectors/login-account';
 
 const mapStateToProps = state => ({
   loginAccount: selectLoginAccount(state),

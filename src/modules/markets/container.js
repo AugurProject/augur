@@ -4,7 +4,7 @@ import MarketsView from 'modules/markets/components/markets-view';
 import getMarkets from 'modules/markets/selectors/markets';
 import getFilterSort from 'modules/markets/selectors/filter-sort';
 import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination';
-import { selectLoginAccount } from 'modules/account/selectors/login-account';
+import { selectLoginAccount } from 'modules/auth/selectors/login-account';
 import { selectCreateMarketLink } from 'modules/link/selectors/links';
 import { selectMarketsHeader } from 'modules/markets/selectors/markets-header';
 import { selectFavoriteMarkets } from 'modules/markets/selectors/markets-favorite';
