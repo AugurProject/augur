@@ -12,5 +12,5 @@ module.exports = {
   cancel: require("./cancel"),
   shrinkScalarPrice: require("./shrink-scalar-price"),
   expandScalarPrice: require("./expand-scalar-price"),
-  adjustScalarSellPrice: require("./adjust-scalar-sell-price"),
+  adjustScalarSellPrice: require("./adjust-scalar-sell-price")
 };
