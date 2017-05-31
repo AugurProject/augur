@@ -5,7 +5,8 @@ import thunk from 'redux-thunk';
 import sinon from 'sinon';
 import BigNumber from 'bignumber.js';
 
-import { selectOutcomeLastPrice, createPeriodPLSelector, __RewireAPI__ as CoreStatsRewireAPI } from 'modules/account/selectors/core-stats';
+import { selectOutcomeLastPrice, createPeriodPLSelector, selectCoreStats, __RewireAPI__ as CoreStatsRewireAPI } from 'modules/account/selectors/core-stats';
+import { formatEther, formatRep, formatEtherTokens } from 'utils/format-number';
 
 import { ZERO } from 'modules/trade/constants/numbers';
 
@@ -198,6 +199,66 @@ describe('modules/account/selectors/core-stats', () => {
         this.clock.restore();
 
         assert.deepEqual(actual, expected, `didn't return the expected value`);
+      }
+    });
+  });
+
+  describe('selectCoreStats', () => {
+    test({
+      description: `should return the expected object`,
+      assertions: () => {
+        const loginAccount = {
+          ethTokens: formatEtherTokens(10),
+          eth: formatEther(10),
+          rep: formatRep(10)
+        };
+        const loginAccountPositions = {
+          summary: {
+            totalNet: formatEtherTokens(10)
+          }
+        };
+        const periodPL = new BigNumber('10');
+
+        const actual = selectCoreStats.resultFunc({}, {}, {}, loginAccount, loginAccountPositions, periodPL, periodPL);
+
+        const expected = [
+          {
+            totalEth: {
+              label: 'ETH Tokens',
+              title: 'Ether Tokens -- outcome trading currency',
+              value: { ...loginAccount.ethTokens, denomination: null }
+            },
+            totalRealEth: {
+              label: 'ETH',
+              title: 'Ether -- pays transaction gas fees',
+              value: { ...loginAccount.eth, denomination: null }
+            },
+            totalRep: {
+              label: 'REP',
+              title: 'Reputation -- event voting currency',
+              value: { ...loginAccount.rep, denomination: null }
+            }
+          },
+          {
+            totalPL: {
+              label: 'Total P/L',
+              title: 'Profit/Loss -- net of all trades',
+              value: loginAccountPositions.summary.totalNet
+            },
+            totalPLMonth: {
+              label: '30 Day P/L',
+              title: 'Profit/Loss -- net of all trades over the last 30 days',
+              value: formatEtherTokens(periodPL)
+            },
+            totalPLDay: {
+              label: '1 Day P/L',
+              title: 'Profit/Loss -- net of all trades over the last day',
+              value: formatEtherTokens(periodPL)
+            }
+          }
+        ];
+
+        assert.deepEqual(actual, expected, `didn't return the expected array`);
       }
     });
   });
