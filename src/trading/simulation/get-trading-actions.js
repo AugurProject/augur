@@ -102,6 +102,7 @@ function getTradingActions(p) {
       }
       buyActions.push(getBuyAction(etherToTrade, orderShares.minus(remainingOrderShares), totalTakerFeeEth, gasPrice));
       if (!remainingOrderShares.lte(PRECISION.zero) && !isMarketOrder) {
+        console.log('!remainingOrderShares <= Zero && !isMarketOrder');
         buyActions.push(getBidAction(abi.fix(remainingOrderShares), abi.fix(orderLimitPrice), adjustedFees.maker, gasPrice));
       }
       tradingActions = calculateTradeTotals(type, orderShares.toFixed(), orderLimitPrice && orderLimitPrice.toFixed(), buyActions);
@@ -154,7 +155,21 @@ function getTradingActions(p) {
       }
       if (remainingOrderShares.gt(PRECISION.zero) && !isMarketOrder) {
         // recursion
-        newTradeActions = getTradingActions(type, remainingOrderShares, orderLimitPrice, takerFee, makerFee, userAddress, remainingPositionShares, outcomeID, range, { buy: matchingSortedBids }, scalarMinMax);
+        newTradeActions = getTradingActions({
+        	type: type,
+        	orderShares: remainingOrderShares,
+        	orderLimitPrice: orderLimitPrice,
+        	takerFee: takerFee,
+        	makerFee: makerFee,
+        	userAddress: userAddress,
+        	userPositionShares: remainingPositionShares,
+        	outcomeID: outcomeID,
+        	range: range,
+        	marketOrderBook: {
+        		buy: matchingSortedBids
+        	},
+        	scalarMinMax: scalarMinMax
+        });
         if (newTradeActions.tradeActions) {
           sellActions = sellActions.concat(newTradeActions.tradeActions);
         } else {

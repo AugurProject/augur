@@ -856,6 +856,7 @@ describe("trading/simulation/calculateTradeTotals", function () {
   });
 });
 describe("getTradingActions", function () {
+  // 49 tests toal
   var testFields = [
     "action",
     "shares",
@@ -882,7 +883,7 @@ describe("getTradingActions", function () {
         makerFee: testCase.makerFee,
         userAddress: testCase.userAddress,
         userPositionShares: testCase.userPositionShares,
-        outcomeId: testCase.outcomeId,
+        outcomeID: testCase.outcomeID,
         range: testCase.range,
         marketOrderBook: testCase.marketOrderBook,
         scalarMinMax: testCase.scalarMinMax
@@ -892,18 +893,8 @@ describe("getTradingActions", function () {
   }
   var txOriginal;
   var calculateTradeTotals;
-  // before("getTradingActions", function () {
-  //   txOriginal = augur.store.getState().contractsAPI.functions;
-  //   calculateTradeTotals = augur.calculateTradeTotals;
-  //   augur.store.getState().contractsAPI.functions = new require("augur-contracts").Tx(constants.DEFAULT_NETWORK_ID).functions;
-  //   augur.calculateTradeTotals = function (type, numShares, limitPrice, tradeActions) {
-  //     return tradeActions;
-  //   };
-  // });
-  // after("getTradingActions", function () {
-  //   augur.store.getState().contractsAPI.functions = txOriginal;
-  // });
   describe("buy actions", function () {
+    // 15 tests total
     runTestCase({
       description: "no asks",
       type: "buy",
@@ -1134,7 +1125,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "0",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {},
@@ -1174,7 +1165,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "0",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {},
@@ -1214,7 +1205,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "0",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {},
@@ -1263,7 +1254,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "0",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {},
@@ -1303,7 +1294,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "0",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {},
@@ -1352,7 +1343,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "0",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {},
@@ -1408,7 +1399,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "0",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {},
@@ -1465,7 +1456,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "0",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {},
@@ -1507,6 +1498,7 @@ describe("getTradingActions", function () {
     });
   });
   describe("sell actions", function () {
+    // 34 tests total
     runTestCase({
       description: "no bids, no position",
       type: "sell",
@@ -1515,7 +1507,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "0",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {},
@@ -1538,7 +1530,6 @@ describe("getTradingActions", function () {
         testTradeActions(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "no bids, scalar event, limit price < 0, position exceeds order size",
       type: "sell",
@@ -1547,7 +1538,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "6",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "20",
       marketOrderBook: {
         buy: {},
@@ -1579,7 +1570,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "6",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "20",
       marketOrderBook: {
         buy: {},
@@ -1611,7 +1602,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "6",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "20",
       marketOrderBook: {
         buy: {},
@@ -1635,7 +1626,6 @@ describe("getTradingActions", function () {
         testTradeActions(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "bid with same shares and prices, no position",
       type: "sell",
@@ -1644,7 +1634,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "0",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {
@@ -1676,7 +1666,6 @@ describe("getTradingActions", function () {
         assert.deepEqual(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "bid with less amount and same price, position greater than remaining order shares",
       type: "sell",
@@ -1685,7 +1674,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "6",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {
@@ -1726,7 +1715,6 @@ describe("getTradingActions", function () {
         testTradeActions(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "bid with less amount and same price, position smaller than remaining order shares",
       type: "sell",
@@ -1735,7 +1723,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "4",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {
@@ -1785,7 +1773,6 @@ describe("getTradingActions", function () {
         testTradeActions(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "bid with less amount and same price, no position",
       type: "sell",
@@ -1794,7 +1781,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "0",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {
@@ -1835,7 +1822,6 @@ describe("getTradingActions", function () {
         assert.deepEqual(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "bid with same shares and higher price, no position",
       type: "sell",
@@ -1844,7 +1830,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "0",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {
@@ -1876,7 +1862,6 @@ describe("getTradingActions", function () {
         testTradeActions(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "bid with less shares and higher price, no position",
       type: "sell",
@@ -1885,7 +1870,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "0",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {
@@ -1926,7 +1911,6 @@ describe("getTradingActions", function () {
         testTradeActions(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "bids with less shares and higher prices, no position",
       type: "sell",
@@ -1935,7 +1919,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "0",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {
@@ -1984,7 +1968,6 @@ describe("getTradingActions", function () {
         testTradeActions(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "bids with same shares and higher prices, no position",
       type: "sell",
@@ -1993,7 +1976,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "0",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {
@@ -2041,7 +2024,6 @@ describe("getTradingActions", function () {
         assert.deepEqual(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "no limit price, bids with same shares, no position",
       type: "sell",
@@ -2050,7 +2032,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "0",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {
@@ -2086,7 +2068,6 @@ describe("getTradingActions", function () {
         assert.isUndefined(actions.tradeActions);
       }
     });
-
     runTestCase({
       description: "no bids, smaller position",
       type: "sell",
@@ -2095,7 +2076,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "2",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {},
@@ -2127,7 +2108,6 @@ describe("getTradingActions", function () {
         testTradeActions(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "bid with same shares and price, smaller position",
       type: "sell",
@@ -2136,7 +2116,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "2",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {
@@ -2177,7 +2157,6 @@ describe("getTradingActions", function () {
         assert.deepEqual(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "bid with less shares and same price, smaller position",
       type: "sell",
@@ -2186,7 +2165,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "2",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {
@@ -2227,7 +2206,6 @@ describe("getTradingActions", function () {
         testTradeActions(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "bid with same shares and higher price, smaller position",
       type: "sell",
@@ -2236,7 +2214,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "2",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {
@@ -2277,7 +2255,6 @@ describe("getTradingActions", function () {
         assert.deepEqual(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "bid with less shares and higher price, smaller position",
       type: "sell",
@@ -2286,7 +2263,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "2",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {
@@ -2327,7 +2304,6 @@ describe("getTradingActions", function () {
         testTradeActions(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "bids with less shares and higher prices, smaller position",
       type: "sell",
@@ -2336,7 +2312,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "2",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {
@@ -2394,7 +2370,6 @@ describe("getTradingActions", function () {
         testTradeActions(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "bids with same shares and higher prices, smaller position",
       type: "sell",
@@ -2403,7 +2378,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "2",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {
@@ -2460,7 +2435,6 @@ describe("getTradingActions", function () {
         testTradeActions(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "no limit price, bids with same shares, smaller position",
       type: "sell",
@@ -2469,7 +2443,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "2",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {
@@ -2517,7 +2491,6 @@ describe("getTradingActions", function () {
         testTradeActions(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "no bids, same position",
       type: "sell",
@@ -2526,7 +2499,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "5",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {},
@@ -2549,7 +2522,6 @@ describe("getTradingActions", function () {
         testTradeActions(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "bid with same shares and price, same position",
       type: "sell",
@@ -2558,7 +2530,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "5",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {
@@ -2590,7 +2562,6 @@ describe("getTradingActions", function () {
         testTradeActions(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "bid with less shares and same price, same position",
       type: "sell",
@@ -2599,7 +2570,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "5",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {
@@ -2640,7 +2611,6 @@ describe("getTradingActions", function () {
         testTradeActions(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "bid with same shares and higher price, same position",
       type: "sell",
@@ -2649,7 +2619,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "5",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {
@@ -2681,7 +2651,6 @@ describe("getTradingActions", function () {
         testTradeActions(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "bid with less shares and higher price, same position",
       type: "sell",
@@ -2690,7 +2659,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "5",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {
@@ -2731,7 +2700,6 @@ describe("getTradingActions", function () {
         testTradeActions(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "bids with less shares and higher prices, same position",
       type: "sell",
@@ -2740,7 +2708,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "5",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {
@@ -2789,7 +2757,6 @@ describe("getTradingActions", function () {
         testTradeActions(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "bids with same shares and higher prices, same position",
       type: "sell",
@@ -2798,7 +2765,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "5",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {
@@ -2846,7 +2813,6 @@ describe("getTradingActions", function () {
         testTradeActions(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "no limit price, bids with same shares, same position",
       type: "sell",
@@ -2855,7 +2821,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "5",
-      outcomeId: "outcomeasdf123",
+      outcomeID: "outcomeasdf123",
       range: "1",
       marketOrderBook: {
         buy: {
@@ -2903,7 +2869,6 @@ describe("getTradingActions", function () {
         testTradeActions(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "bid with same shares and prices, no position, scalar event",
       type: "sell",
@@ -2912,7 +2877,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "0",
-      outcomeId: "2",
+      outcomeID: "2",
       range: "5",
       marketOrderBook: {
         buy: {
@@ -2945,7 +2910,6 @@ describe("getTradingActions", function () {
         testTradeActions(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "bid with same shares and prices, equal size position, scalar event",
       type: "sell",
@@ -2954,7 +2918,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "5",
-      outcomeId: "2",
+      outcomeID: "2",
       range: "5",
       marketOrderBook: {
         buy: {
@@ -2987,7 +2951,6 @@ describe("getTradingActions", function () {
         testTradeActions(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "bid with same shares and prices, smaller position, scalar event",
       type: "sell",
@@ -2996,7 +2959,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "3",
-      outcomeId: "2",
+      outcomeID: "2",
       range: "5",
       marketOrderBook: {
         buy: {
@@ -3038,7 +3001,6 @@ describe("getTradingActions", function () {
         testTradeActions(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "bid with same shares and prices, smaller position, scalar event",
       type: "sell",
@@ -3047,7 +3009,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "3",
-      outcomeId: "2",
+      outcomeID: "2",
       range: "5",
       marketOrderBook: {
         buy: {
@@ -3085,11 +3047,10 @@ describe("getTradingActions", function () {
           avgPrice: "17.0576",
           noFeePrice: "17.1152"
         }];
-        assert.lengthOf(actions.tradeActions.tradeActions, expected.length);
-        testTradeActions(actions.tradeActions.tradeActions, expected);
+        assert.lengthOf(actions.tradeActions, expected.length);
+        testTradeActions(actions.tradeActions, expected);
       }
     });
-
     runTestCase({
       description: "bid with same shares and prices, larger position, scalar event",
       type: "sell",
@@ -3098,7 +3059,7 @@ describe("getTradingActions", function () {
       takerFee: "0.02",
       makerFee: "0.01",
       userPositionShares: "10",
-      outcomeId: "2",
+      outcomeID: "2",
       range: "5",
       marketOrderBook: {
         buy: {
