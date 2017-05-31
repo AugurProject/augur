@@ -12,8 +12,6 @@ var clearCallCounts = require("../../tools").clearCallCounts;
 describe("executeTrade.executeTrade", function () {
   // 9 tests total
   var finished;
-  var getParticipantSharesPurchased = augur.api.Markets.getParticipantSharesPurchased;
-  var getCashBalance = augur.api.Cash.balance;
   var callCounts = {
     getParticipantSharesPurchased: 0,
     getCashBalance: 0,
@@ -27,15 +25,20 @@ describe("executeTrade.executeTrade", function () {
   var test = function (t) {
     it(t.description, function (done) {
       finished = done;
-      augur.api.Markets.getParticipantSharesPurchased = t.getParticipantSharesPurchased;
-      augur.api.Cash.balance = t.balance;
       var executeTrade = proxyquire('../../../src/trading/take-order/execute-trade', {
-        './trade': t.trade
+        './trade': t.trade,
+        '../../api': function() {
+          return {
+          	Markets: {
+          		getParticipantSharesPurchased: t.getParticipantSharesPurchased
+          	},
+          	Cash: {
+          		balance: t.balance
+          	}
+          };
+        }
       });
-
       executeTrade({}, t.marketID, t.outcomeID, t.numShares, t.totalEthWithFee, t.tradingFees, t.tradeGroupID, t.address, t.getOrderBooks, t.getTradeIDs, t.tradeCommitmentCallback, t.assertions);
-      augur.api.Markets.getParticipantSharesPurchased = getParticipantSharesPurchased;
-      augur.api.Cash.balance = getCashBalance;
     });
   };
   test({

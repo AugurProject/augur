@@ -301,7 +301,6 @@ describe("executeTradingActions", function () {
 describe("placeTrade.placeTrade", function () {
   // 12 tests total
   var finished;
-  var getParticipantSharesPurchased = augur.api.Markets.getParticipantSharesPurchased;
   var callCounts = {
     placeBuy: 0,
     placeBid: 0,
@@ -317,7 +316,6 @@ describe("placeTrade.placeTrade", function () {
   afterEach(function () {
     // Clear the counts object after each test.
     clearCallCounts(callCounts);
-    augur.api.Markets.getParticipantSharesPurchased = getParticipantSharesPurchased;
   });
   var test = function (t) {
     it(t.description, function (done) {
@@ -332,10 +330,14 @@ describe("placeTrade.placeTrade", function () {
         '../make-order/place-ask': t.placeAsk,
         '../make-order/place-short-ask': t.placeShortAsk,
         '../make-order/place-ask-and-short-ask': t.placeAskAndShortAsk,
+        '../../api': function() {
+          return {
+          	Markets: {
+          		getParticipantSharesPurchased: t.getParticipantSharesPurchased
+          	}
+          };
+        }
       });
-
-      augur.api.Markets.getParticipantSharesPurchased = t.getParticipantSharesPurchased;
-
       placeTrade({}, t.market, t.outcomeID, t.tradeType, t.numShares, t.limitPrice, t.tradingFees, t.address, t.totalCost, t.getOrderBooks, t.doNotMakeOrders, t.tradeGroupID, t.tradeCommitmentCallback, t.tradeCommitLockCallback, t.assertions);
     });
   };

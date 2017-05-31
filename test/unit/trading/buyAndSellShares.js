@@ -16,19 +16,15 @@ describe('augur.cancel tests', function () {
   var test = function (t) {
     it(t.description, function (done) {
 			finished = done;
-
-			var apiCancel = augur.api.BuyAndSellShares.cancel;
 			var cancel = proxyquire('../../../src/trading/cancel', {
 				'../rpc-interface': {
 					getTransactionReceipt: t.receipt
+				},
+				'../api': function() {
+					return { BuyAndSellShares: { cancel: t.cancel } };
 				}
 			});
-
-			augur.api.BuyAndSellShares.cancel = t.cancel;
-
 			cancel(t.params);
-
-			augur.api.BuyAndSellShares.cancel = apiCancel;
     });
   };
   test({

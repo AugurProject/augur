@@ -18,14 +18,16 @@ describe("augur.create.createSingleEventMarket", function () {
             // for simplicity's sake, just return 10.
             return '10';
           }
+        },
+        '../api': function () {
+          return {
+            CreateMarket: {
+              createSingleEventMarket: t.assertions
+            }
+          };
         }
       });
-      var apiCreateSingleEventMarket = augur.api.CreateMarket.createSingleEventMarket;
-      augur.api.CreateMarket.createSingleEventMarket = t.assertions;
-
       createSingleEventMarket(t.params);
-
-      augur.api.CreateMarket.createSingleEventMarket = apiCreateSingleEventMarket;
     });
   };
   test({
@@ -225,14 +227,14 @@ describe("createMarket.createMarket", function () {
             // for simplicity's sake, just return 10.
             return '10';
           }
+        },
+        '../api': function () {
+          return {
+            CreateMarket: { createMarket: t.assertions }
+          };
         }
       });
-      var apiCreateMarket = augur.api.CreateMarket.createMarket;
-      augur.api.CreateMarket.createMarket = t.assertions;
-
       createMarket(t.params);
-
-      augur.api.CreateMarket.createMarket = apiCreateMarket;
     });
   };
 

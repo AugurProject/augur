@@ -22,37 +22,25 @@ describe("collectFees", function () {
             return '14327';
           }
         },
-        '../reporting/get-current-period-progress': t.getCurrentPeriodProgress
+        '../reporting/get-current-period-progress': t.getCurrentPeriodProgress,
+        '../api': function() {
+        	return {
+        		Branches: {
+        			getVotePeriod: function(params, cb) {
+        				// return the voting period as 98
+        				cb(98);
+        			}
+        		},
+            CollectFees: { collectFees: t.collectFees || noop },
+            ConsensusData: { getFeesCollected: t.getFeesCollected || noop },
+            ExpiringEvents: { getAfterRep: t.getAfterRep || noop },
+        	};
+        }
       });
-			// set mocks to a per test level version
-      augur.api.Branches.getVotePeriod = function (params, cb) {
-  			// return the voting period as 98
-        cb(98);
-      };
-      augur.api.ConsensusData.getFeesCollected = t.getFeesCollected || noop;
-      augur.api.ExpiringEvents.getAfterRep = t.getAfterRep || noop;
-      augur.api.CollectFees.collectFees = t.collectFees || noop;
 			// call collectFees
       collectFees(t.params);
     });
   };
-
-  beforeEach(function () {
-		// save normal versions of each function that will be mocked
-    getVotePeriod = augur.api.Branches.getVotePeriod;
-    getFeesCollected = augur.api.ConsensusData.getFeesCollected;
-    getAfterRep = augur.api.ExpiringEvents.getAfterRep;
-    apiCollectFees = augur.api.CollectFees.collectFees;
-  });
-
-  afterEach(function () {
-		// revert augur functions to the original functions
-    augur.api.Branches.getVotePeriod = getVotePeriod;
-    augur.api.ConsensusData.getFeesCollected = getFeesCollected;
-    augur.api.ExpiringEvents.getAfterRep = getAfterRep;
-    augur.api.CollectFees.collectFees = apiCollectFees;
-  });
-
   test({
     description: 'should fail if not in the 2nd half of reporting period',
     params: {

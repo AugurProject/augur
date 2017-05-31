@@ -210,36 +210,38 @@ describe("getReport", function () {
 // });
 describe("periodCatchUp", function () {
   var test = function (t) {
-    var getVotePeriod = augur.api.Branches.getVotePeriod;
-    var incrementPeriodAfterReporting = augur.api.Consensus.incrementPeriodAfterReporting;
-
-    after(function () {
-      augur.api.Branches.getVotePeriod = getVotePeriod;
-      augur.api.Consensus.incrementPeriodAfterReporting = incrementPeriodAfterReporting;
-    });
-
     it(t.description, function (done) {
       var sequence = [];
       var state = clone(t.state);
-
-      augur.api.Branches.getVotePeriod = function (branch, callback) {
-        sequence.push({method: "getVotePeriod", params: [branch.branch]});
-        callback(state.reportPeriod[branch.branch]);
-      };
-      augur.api.Consensus.incrementPeriodAfterReporting = function (o) {
-        sequence.push({
-          method: "incrementPeriodAfterReporting",
-          params: {
-            branch: o.branch
-          }
-        });
-        state.reportPeriod[o.branch] += 1;
-        o.onSent();
-        o[t.incrementPeriodResultFunction](t.incrementPeriodResultArgs);
-      };
       var periodCatchUp = proxyquire('../../../src/reporting/prepare-to-report/period-catch-up', {
         '../get-current-period': function(periodLength) {
           return state.currentPeriod[t.branchID];
+        },
+        '../../api': function() {
+        	return {
+        		Branches: {
+        			getVotePeriod: function(branch, callback) {
+        				sequence.push({
+        					method: "getVotePeriod",
+        					params: [branch.branch]
+        				});
+        				callback(state.reportPeriod[branch.branch]);
+        			}
+        		},
+        		Consensus: {
+        			incrementPeriodAfterReporting: function(o) {
+        				sequence.push({
+        					method: "incrementPeriodAfterReporting",
+        					params: {
+        						branch: o.branch
+        					}
+        				});
+        				state.reportPeriod[o.branch] += 1;
+        				o.onSent();
+        				o[t.incrementPeriodResultFunction](t.incrementPeriodResultArgs);
+        			}
+        		}
+        	};
         }
       });
 
@@ -1413,25 +1415,24 @@ describe("periodCatchUp", function () {
 describe("feePenaltyCatchUp-Unit", function () {
   // added these tests to be simple unit tests that simply make sure to hit every branch of this function.
   var finished;
-  var getPenalizedUpTo = augur.api.ConsensusData.getPenalizedUpTo;
-  var getFeesCollected = augur.api.ConsensusData.getFeesCollected;
-  var collectFees = augur.api.CollectFees.collectFees;
-  afterEach(function () {
-    augur.api.ConsensusData.getPenalizedUpTo = getPenalizedUpTo;
-    augur.api.ConsensusData.getFeesCollected = getFeesCollected;
-    augur.api.CollectFees.collectFees = collectFees;
-  });
   var test = function (t) {
     it(JSON.stringify(t), function (done) {
       finished = done;
       var feePenaltyCatchUp = proxyquire('../../../src/reporting/prepare-to-report/fee-penalty-catch-up', {
         './penalty-catch-up': t.penaltyCatchUp,
         '../get-current-period-progress': t.getCurrentPeriodProgress,
+        '../../api': function() {
+        	return {
+        		CollectFees: {
+        			collectFees: t.collectFees
+        		},
+        		ConsensusData: {
+        			getFeesCollected: t.getFeesCollected,
+        			getPenalizedUpTo: t.getPenalizedUpTo
+        		}
+        	};
+        }
       });
-      augur.api.ConsensusData.getPenalizedUpTo = t.getPenalizedUpTo;
-      augur.api.ConsensusData.getFeesCollected = t.getFeesCollected;
-      augur.api.CollectFees.collectFees = t.collectFees;
-
       feePenaltyCatchUp({}, t.branch, t.periodLength, t.periodToCheck, t.sender, t.callback);
     });
   };
@@ -1691,40 +1692,35 @@ describe("feePenaltyCatchUp-Unit", function () {
 });
 describe("penaltyCatchUp", function () {
   var finished;
-  var getPenalizedUpTo = augur.api.ConsensusData.getPenalizedUpTo;
-  var penalizationCatchup = augur.api.PenalizationCatchup.penalizationCatchup;
-  var getEvents = augur.api.ExpiringEvents.getEvents;
-  var penalizeWrong = augur.api.Consensus.penalizeWrong;
-  var getNumReportsEvent = augur.api.ExpiringEvents.getNumReportsEvent;
-  var getExpiration = augur.api.Events.getExpiration;
-  var moveEvent = augur.api.ExpiringEvents.moveEvent;
-  var getReport = augur.api.ExpiringEvents.getReport;
-  afterEach(function () {
-    augur.api.ConsensusData.getPenalizedUpTo = getPenalizedUpTo;
-    augur.api.PenalizationCatchup.penalizationCatchup = penalizationCatchup;
-    augur.api.ExpiringEvents.getEvents = getEvents;
-    augur.api.Consensus.penalizeWrong = penalizeWrong;
-    augur.api.ExpiringEvents.getNumReportsEvent = getNumReportsEvent;
-    augur.api.Events.getExpiration = getExpiration;
-    augur.api.ExpiringEvents.moveEvent = moveEvent;
-    augur.api.ExpiringEvents.getReport = getReport;
-  });
   var test = function (t) {
     it(JSON.stringify(t), function (done) {
       finished = done;
       var penaltyCatchUp = proxyquire('../../../src/reporting/prepare-to-report/penalty-catch-up', {
         './close-event-markets': t.closeEventMarkets,
-        '../get-current-period-progress': t.getCurrentPeriodProgress
+        '../get-current-period-progress': t.getCurrentPeriodProgress,
+        '../../api': function() {
+        	return {
+        		Consensus: {
+        			penalizeWrong: t.penalizeWrong
+        		},
+        		ConsensusData: {
+        			getPenalizedUpTo: t.getPenalizedUpTo
+        		},
+        		Events: {
+        			getExpiration: t.getExpiration
+        		},
+        		ExpiringEvents: {
+        			getEvents: t.getEvents,
+        			getNumReportsEvent: t.getNumReportsEvent,
+        			getReport: t.getReport,
+        			moveEvent: t.moveEvent
+        		},
+        		PenalizationCatchup: {
+        			penalizationCatchup: t.penalizationCatchup
+        		}
+        	};
+        }
       });
-      augur.api.ConsensusData.getPenalizedUpTo = t.getPenalizedUpTo;
-      augur.api.PenalizationCatchup.penalizationCatchup = t.penalizationCatchup;
-      augur.api.ExpiringEvents.getEvents = t.getEvents;
-      augur.api.Consensus.penalizeWrong = t.penalizeWrong;
-      augur.api.ExpiringEvents.getNumReportsEvent = t.getNumReportsEvent;
-      augur.api.Events.getExpiration = t.getExpiration;
-      augur.api.ExpiringEvents.moveEvent = t.moveEvent;
-      augur.api.ExpiringEvents.getReport = t.getReport;
-
       penaltyCatchUp({}, t.branch, t.periodLength, t.periodToCheck, t.sender, t.callback);
     });
   };

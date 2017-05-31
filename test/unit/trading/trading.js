@@ -35,10 +35,6 @@ describe("trade.checkGasLimit", function () {
     "0x16": {id: "0x16", type: "sell", owner: "0xdeadbeef"},
     "0x17": {id: "0x16", type: "sell", owner: "0x42"}
   }
-  var get_trade = augur.api.Trades.get_trade;
-  after(function () {
-    augur.api.Trades.get_trade = get_trade;
-  });
   var test = function (t) {
     it(JSON.stringify(t), function (done) {
       var checkGasLimit = proxyquire('../../../src/trading/check-gas-limit', {
@@ -46,11 +42,17 @@ describe("trade.checkGasLimit", function () {
           getCurrentBlock: function() {
             return { number: 1, gasLimit: t.gasLimit };
           }
+        },
+        '../api': function() {
+          return {
+          	Trades: {
+          		get_trade: function (p, cb) {
+                cb(mockTrades[p.id]);
+              }
+          	}
+          };
         }
       });
-      augur.api.Trades.get_trade = function (p, cb) {
-        cb(mockTrades[p.id]);
-      };
       checkGasLimit(t.trade_ids, t.sender, function (err, trade_ids) {
         assert.deepEqual(err, t.expected.error);
         assert.deepEqual(trade_ids, t.expected.trade_ids);
@@ -285,12 +287,6 @@ describe("trade.parseShortSellReceipt", function () {
 describe("trade.trade", function () {
   // 11 tests total
   var finished;
-  var apiTrade = augur.api.Trade.trade;
-  var commitTrade = augur.api.Trades.commitTrade;
-  after(function () {
-    augur.api.Trades.commitTrade = commitTrade;
-    augur.api.Trade.trade = apiTrade;
-  });
   var test = function (t) {
     it(JSON.stringify(t), function (done) {
       finished = done;
@@ -300,11 +296,12 @@ describe("trade.trade", function () {
           getTransactionReceipt: t.receipt,
           handleRPCError: t.handleRPCError || noop
         },
+        '../../api': function() {
+          return { Trade: { trade: t.trade }, Trades: { commitTrade: t.commitTrade } };
+        },
         '../check-gas-limit': t.checkGasLimit,
         './parse-trade-receipt': t.parseTradeReceipt,
       });
-      augur.api.Trades.commitTrade = t.commitTrade;
-      augur.api.Trade.trade = t.trade;
       trade(t.params);
     });
   };
@@ -876,12 +873,6 @@ describe("trade.trade", function () {
 describe("trade.short_sell", function () {
   // 11 tests total
   var finished;
-  var commitTrade = augur.api.Trades.commitTrade;
-  var apiShortSell = augur.api.Trade.short_sell;
-  after(function () {
-    augur.api.Trades.commitTrade = commitTrade;
-    augur.api.Trade.short_sell = apiShortSell;
-  });
   var test = function (t) {
     it(JSON.stringify(t), function (done) {
       finished = done;
@@ -891,12 +882,12 @@ describe("trade.short_sell", function () {
           getTransactionReceipt: t.receipt,
           handleRPCError: t.handleRPCError || noop
         },
+        '../../api': function() {
+          return { Trade: { short_sell: t.short_sell }, Trades: { commitTrade: t.commitTrade } };
+        },
         '../check-gas-limit': t.checkGasLimit,
         './parse-short-sell-receipt': t.parseShortSellReceipt,
       });
-      augur.api.Trades.commitTrade = t.commitTrade;
-      augur.api.Trade.short_sell = t.short_sell;
-
       short_sell(t.params);
     });
   };

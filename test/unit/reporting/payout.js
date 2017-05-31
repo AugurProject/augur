@@ -111,19 +111,19 @@ describe("augur.trading.payout.claimProceeds", function () {
 	};
   var test = function (t) {
     it(t.testDescription, function () {
-			var apiClaimProceeds = augur.api.CloseMarket.claimProceeds;
 			var claimProceeds = proxyquire('../../../src/trading/payout/claim-proceeds', {
 				'../../rpc-interface': {
 					getTransactionReceipt: getTransactionReceipt
+				},
+				'../../api': function () {
+					return { CloseMarket: { claimProceeds: mockClaimProceeds } };
 				}
 			});
 			Cash = t.receiptCash || [];
 			Shares = t.receiptShares || [];
 			CallReturn = t.callReturn || "1";
-			augur.api.CloseMarket.claimProceeds = mockClaimProceeds;
 
       claimProceeds(t.params);
-			augur.api.CloseMarket.claimProceeds = apiClaimProceeds;
     });
   };
 
@@ -234,8 +234,6 @@ describe("augur.trading.payout.claimProceeds", function () {
 
 describe("payout.claimMarketsProceeds", function () {
 	// 2 tests total
-  var claimProceeds = augur.api.CloseMarket.claimProceeds;
-  var getWinningOutcomes = augur.api.Markets.getWinningOutcomes;
   var finished;
   var callCounts = {
     getWinningOutcomes: 0,
@@ -243,15 +241,19 @@ describe("payout.claimMarketsProceeds", function () {
   };
   afterEach(function () {
     clearCallCounts(callCounts);
-    augur.api.CloseMarket.claimProceeds = claimProceeds;
-    augur.api.Markets.getWinningOutcomes = getWinningOutcomes;
   });
   var test = function (t) {
     it(t.testDescription, function (done) {
       finished = done;
-      augur.api.CloseMarket.claimProceeds = t.claimProceeds;
-      augur.api.Markets.getWinningOutcomes = t.getWinningOutcomes;
-      augur.trading.payout.claimMarketsProceeds({}, t.branch, t.markets, t.callback);
+			var claimMarketsProceeds = proxyquire('../../../src/trading/payout/claim-markets-proceeds', {
+				'../../api': function () {
+					return {
+						CloseMarket: { claimProceeds: t.claimProceeds },
+						Markets: { getWinningOutcomes: t.getWinningOutcomes }
+					};
+				}
+			});
+      claimMarketsProceeds({}, t.branch, t.markets, t.callback);
     });
   };
   test({

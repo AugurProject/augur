@@ -728,20 +728,18 @@ describe("parseAndDecryptReport", function () {
 
 describe("getAndDecryptReport", function () {
   var finished;
-  var getEncryptedReport = augur.api.ExpiringEvents.getEncryptedReport;
   var test = function (t) {
     it(JSON.stringify(t), function (done) {
       finished = done;
-
-      augur.api.ExpiringEvents.getEncryptedReport = t.getEncryptedReport;
-
       var getAndDecryptReport = proxyquire('../../../src/reporting/crypto/get-and-decrypt-report', {
-        './parse-and-decrypt-report': t.parseAndDecryptReport
+        './parse-and-decrypt-report': t.parseAndDecryptReport,
+        '../../api': function() {
+          return {
+            ExpiringEvents: { getEncryptedReport: t.getEncryptedReport }
+          };
+        }
       });
-
       getAndDecryptReport(t.params, t.callback);
-
-      augur.api.ExpiringEvents.getEncryptedReport = getEncryptedReport;
     });
   };
   test({
@@ -809,29 +807,29 @@ describe("getAndDecryptReport", function () {
 
 describe("submitReportHash", function () {
   var finished;
-  var apiSubmitReportHash = augur.api.MakeReports.submitReportHash;
-  var getRepRedistributionDone = augur.api.ConsensusData.getRepRedistributionDone;
-  var getReportHash = augur.api.ExpiringEvents.getReportHash;
   var submitReportHashCC = 0;
-
   var test = function (t) {
     it(JSON.stringify(t.params), function (done) {
       submitReportHashCC = 0;
       finished = done;
-
       var submitReportHash = proxyquire('../../../src/reporting/submit-report-hash', {
         './get-current-period-progress': t.getCurrentPeriodProgress,
-        './prepare-to-report': t.prepareToReport
+        './prepare-to-report': t.prepareToReport,
+        '../api': function() {
+        	return {
+        		ConsensusData: {
+        			getRepRedistributionDone: t.getRepRedistributionDone
+        		},
+        		ExpiringEvents: {
+        			getReportHash: t.getReportHash
+        		},
+        		MakeReports: {
+        			submitReportHash: t.submitReportHash
+        		}
+        	};
+        }
       });
-      augur.api.MakeReports.submitReportHash = t.submitReportHash;
-      augur.api.ConsensusData.getRepRedistributionDone = t.getRepRedistributionDone;
-      augur.api.ExpiringEvents.getReportHash = t.getReportHash;
-
       submitReportHash(t.params);
-
-      augur.api.MakeReports.submitReportHash = apiSubmitReportHash;
-      augur.api.ConsensusData.getRepRedistributionDone = getRepRedistributionDone;
-      augur.api.ExpiringEvents.getReportHash = getReportHash;
     });
   };
   test({
@@ -1050,16 +1048,15 @@ describe("submitReportHash", function () {
 
 describe("submitReport", function () {
   var finished;
-  var submitReport = augur.api.MakeReports.submitReport;
   var test = function (t) {
     it(JSON.stringify(t), function (done) {
       finished = done;
-
-      augur.api.MakeReports.submitReport = t.submitReport;
-
-      t.assertions(augur.reporting.submitReport(t.params));
-
-      augur.api.MakeReports.submitReport = submitReport;
+      var submitReport = proxyquire('../../../src/reporting/submit-report', {
+        '../api': function () {
+          return { MakeReports: { submitReport: t.submitReport } };
+        }
+      });
+      t.assertions(submitReport(t.params));
     });
   };
   test({
