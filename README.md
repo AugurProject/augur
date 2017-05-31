@@ -30,6 +30,7 @@ cd augur
 ### NPM
 ```
 npm install
+npm run link
 npm run build
 ```
 
