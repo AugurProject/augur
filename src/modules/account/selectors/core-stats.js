@@ -25,16 +25,20 @@ export const createPeriodPLSelector = period => createSelector(
   selectOutcomesDataState,
   (accountTrades, blockchain, outcomesData) => {
     if (!accountTrades || !blockchain) return null;
+
     const periodDate = new Date(Date.now() - (period*24*60*60*1000));
     const periodBlock = dateToBlock(periodDate, blockchain.currentBlockNumber);
+
     return Object.keys(accountTrades).reduce((p, marketID) => { // Iterate over marketIDs
       if (!outcomesData[marketID]) return p;
+
       const accumulatedPL = Object.keys(accountTrades[marketID]).reduce((p, outcomeID) => { // Iterate over outcomes
         const periodTrades = accountTrades[marketID][outcomeID].filter(trade => trade.blockNumber > periodBlock); // Filter out trades older than 30 days
         const lastPrice = selectOutcomeLastPrice(outcomesData[marketID], outcomeID);
         const { realized, unrealized } = augur.calculateProfitLoss(periodTrades, lastPrice);
         return p.plus(abi.bignum(realized).plus(abi.bignum(unrealized)));
       }, ZERO);
+
       return p.plus(accumulatedPL);
     }, ZERO);
   }
