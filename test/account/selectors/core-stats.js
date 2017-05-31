@@ -1,7 +1,5 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
 import sinon from 'sinon';
 import BigNumber from 'bignumber.js';
 
@@ -11,13 +9,7 @@ import { formatEther, formatRep, formatEtherTokens } from 'utils/format-number';
 import { ZERO } from 'modules/trade/constants/numbers';
 
 describe('modules/account/selectors/core-stats', () => {
-  const middlewares = [thunk];
-  const mockStore = configureMockStore(middlewares);
-
-  const test = t => it(t.description, () => {
-    const store = mockStore(t.state || {});
-    t.assertions(store);
-  });
+  const test = t => it(t.description, () => t.assertions());
 
   describe('selectOutcomeLastPrice', () => {
     test({
@@ -72,13 +64,12 @@ describe('modules/account/selectors/core-stats', () => {
 
     test({
       description: `should return null when 'accountTrades' is undefined`,
-      state: {
-        blockchain: {}
-      },
-      assertions: (store) => {
+      assertions: () => {
+        const blockchain = {};
+
         const selector = createPeriodPLSelector(1);
 
-        const actual = selector(store.getState());
+        const actual = selector.resultFunc(undefined, blockchain, undefined);
 
         const expected = null;
 
@@ -88,13 +79,12 @@ describe('modules/account/selectors/core-stats', () => {
 
     test({
       description: `should return null when 'blockchain' is undefined`,
-      state: {
-        accountTrades: {}
-      },
-      assertions: (store) => {
+      assertions: () => {
+        const accountTrades = {};
+
         const selector = createPeriodPLSelector(1);
 
-        const actual = selector(store.getState());
+        const actual = selector.resultFunc(accountTrades, undefined, undefined);
 
         const expected = null;
 
@@ -104,8 +94,10 @@ describe('modules/account/selectors/core-stats', () => {
 
     test({
       description: `should return 0 for a set period with no trades`,
-      state: {
-        accountTrades: {
+      assertions: () => {
+        this.clock = sinon.useFakeTimers(1485907200000);
+
+        const accountTrades = {
           '0xMarketID1': {
             1: [
               {
@@ -124,24 +116,21 @@ describe('modules/account/selectors/core-stats', () => {
               }
             ]
           }
-        },
-        blockchain: {
+        };
+
+        const blockchain = {
           currentBlockNumber: 100000
-        },
-        outcomesData: {
+        };
+
+        const outcomesData = {
           '0xMarketID1': {}
-        }
-      },
-      assertions: (store) => {
-        this.clock = sinon.useFakeTimers(1485907200000);
+        };
 
         const selector = createPeriodPLSelector(1);
 
-        const actual = selector(store.getState());
+        const actual = selector.resultFunc(accountTrades, blockchain, outcomesData);
 
         const expected = ZERO;
-
-        this.clock.restore();
 
         assert.deepEqual(actual, expected, `didn't return the expected value`);
       }
@@ -149,8 +138,10 @@ describe('modules/account/selectors/core-stats', () => {
 
     test({
       description: `should return the expected value for a set period with trades`,
-      state: {
-        accountTrades: {
+      assertions: () => {
+        this.clock = sinon.useFakeTimers(1485907200000);
+
+        const accountTrades = {
           '0xMarketID1': {
             1: [
               {
@@ -169,16 +160,15 @@ describe('modules/account/selectors/core-stats', () => {
               }
             ]
           }
-        },
-        blockchain: {
+        };
+
+        const blockchain = {
           currentBlockNumber: 100000
-        },
-        outcomesData: {
+        };
+
+        const outcomesData = {
           '0xMarketID1': {}
-        }
-      },
-      assertions: (store) => {
-        this.clock = sinon.useFakeTimers(1485907200000);
+        };
 
         CoreStatsRewireAPI.__Rewire__('selectOutcomeLastPrice', () => '0.2');
         CoreStatsRewireAPI.__Rewire__('augur', {
@@ -190,13 +180,12 @@ describe('modules/account/selectors/core-stats', () => {
 
         const selector = createPeriodPLSelector(1);
 
-        const actual = selector(store.getState());
+        const actual = selector.resultFunc(accountTrades, blockchain, outcomesData);
 
         const expected = new BigNumber('2');
 
         CoreStatsRewireAPI.__ResetDependency__('selectOutcomeLastPrice');
         CoreStatsRewireAPI.__ResetDependency__('augur');
-        this.clock.restore();
 
         assert.deepEqual(actual, expected, `didn't return the expected value`);
       }
