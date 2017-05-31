@@ -3,13 +3,28 @@ import { assert } from 'chai';
 import sinon from 'sinon';
 import BigNumber from 'bignumber.js';
 
-import { selectOutcomeLastPrice, createPeriodPLSelector, selectCoreStats, __RewireAPI__ as CoreStatsRewireAPI } from 'modules/account/selectors/core-stats';
+import coreStats, { selectOutcomeLastPrice, createPeriodPLSelector, selectCoreStats, __RewireAPI__ as CoreStatsRewireAPI } from 'modules/account/selectors/core-stats';
 import { formatEther, formatRep, formatEtherTokens } from 'utils/format-number';
 
 import { ZERO } from 'modules/trade/constants/numbers';
 
 describe('modules/account/selectors/core-stats', () => {
   const test = t => it(t.description, () => t.assertions());
+
+  describe('default', () => {
+    test({
+      description: `should call 'selectCoreStats'`,
+      assertions: () => {
+        const stubbedSelectCoreStats = sinon.stub();
+
+        CoreStatsRewireAPI.__Rewire__('selectCoreStats', stubbedSelectCoreStats);
+
+        coreStats();
+
+        assert(stubbedSelectCoreStats.calledOnce, `didn't call 'selectCoreStats' once as expected`);
+      }
+    });
+  });
 
   describe('selectOutcomeLastPrice', () => {
     test({
