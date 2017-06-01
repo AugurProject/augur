@@ -19,11 +19,6 @@ export function loadAccountTrades(options, callback = logError) {
     }
     if (!filter.market) dispatch(clearAccountTrades());
     async.parallel([
-      next => augur.getAccountTrades(account, filter, (err, trades) => {
-        if (err) return next(err);
-        dispatch(updateAccountTradesData(trades, filter.market));
-        next(null);
-      }),
       next => augur.logs.getAccountTrades({ account, filter }, (err, trades) => {
         if (err) return next(err);
         dispatch(updateAccountTradesData(trades, filter.market));

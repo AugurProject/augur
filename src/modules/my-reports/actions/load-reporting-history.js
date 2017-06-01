@@ -1,29 +1,18 @@
 import async from 'async';
 import { augur, constants } from 'services/augurjs';
 import { convertLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
-<<<<<<< HEAD
 import logError from 'utils/log-error';
 
-export function loadReportingHistory(callback = logError) {
-=======
-
-export function loadReportingHistory(options, cb) {
->>>>>>> master
+export function loadReportingHistory(options, callback = logError) {
   return (dispatch, getState) => {
     const { branch, loginAccount } = getState();
-<<<<<<< HEAD
-    const filter = { sender: loginAccount.address, branch: branch.id };
-    if (loginAccount.registerBlockNumber) {
-      filter.fromBlock = loginAccount.registerBlockNumber;
-=======
-    const params = {
+    const filter = {
       ...options,
       sender: loginAccount.address,
       branch: branch.id
     };
-    if (!params.fromBlock && loginAccount.registerBlockNumber) {
-      params.fromBlock = loginAccount.registerBlockNumber;
->>>>>>> master
+    if (!filter.fromBlock && loginAccount.registerBlockNumber) {
+      filter.fromBlock = loginAccount.registerBlockNumber;
     }
     async.eachLimit([
       'collectedFees',

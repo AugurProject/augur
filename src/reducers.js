@@ -59,13 +59,10 @@ import chatMessages from 'modules/chat/reducers/chat-messages';
 
 import marketCreatorFees from 'modules/my-markets/reducers/market-creator-fees';
 
-<<<<<<< HEAD
 import contractAddresses from 'modules/contracts/reducers/contract-addresses';
 import functionsAPI from 'modules/contracts/reducers/functions-api';
 import eventsAPI from 'modules/contracts/reducers/events-api';
-=======
 import notifications from 'modules/notifications/reducers/notifications';
->>>>>>> master
 
 export function createReducer() {
   return combineReducers({
