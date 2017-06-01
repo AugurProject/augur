@@ -11,8 +11,8 @@ BigNumber.config({ ERRORS: false });
  * @param minValue only relevant for scalar markets; all other markets min is created and set to 0
  * @param maxValue only relevant for scalar markets; all other markets max is created and set to 1
  * @returns object with the following properties
- *    potentialEthLoss:       number, maximum number of ether that can be lost according to the current numShares and limit price
  *    potentialEthProfit:     number, maximum number of ether that can be made according to the current numShares and limit price
+ *    potentialEthLoss:       number, maximum number of ether that can be lost according to the current numShares and limit price
  *    potentialProfitPercent: number, the maximum percentage profit that can be earned with current numShares and limit price,
  *                                    excluding first 100% (so a 2x is a 100% return and not a 200% return). For BUYs, loss is always 100% (exc. fees)
  *    potentialLossPercent:   number, the max percentage loss that can be lost with current numShares and limit price; for SELLs loss is always 100%
