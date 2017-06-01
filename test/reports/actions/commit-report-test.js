@@ -27,8 +27,8 @@ describe(`modules/reports/actions/commit-report.js`, () => {
       const action = proxyquire('../../../src/modules/reports/actions/commit-report.js', {
         '../../../services/augurjs': AugurJS,
         '../../../utils/bytes-to-hex': BytesToHex,
-        '../../reports/actions/next-report-page': NextReportPage,
-        '../../reports/actions/report-encryption': ReportEncryption
+        './next-report-page': NextReportPage,
+        './report-encryption': ReportEncryption
       });
       AugurJS.augur.reporting.format.fixReport = sinon.stub().returns('0xde0b6b3a7640000');
       AugurJS.augur.reporting.crypto.makeHash = sinon.stub().returns('0xdeadbeef');

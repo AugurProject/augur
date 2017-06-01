@@ -1,7 +1,7 @@
-import store from '../../../store';
-import { updateScalarMarketShareDenomination } from '../../market/actions/update-scalar-market-share-denomination';
+import store from 'src/store';
+import { updateScalarMarketShareDenomination } from 'modules/market/actions/update-scalar-market-share-denomination';
 
-import { SHARE, MILLI_SHARE, MICRO_SHARE } from '../../market/constants/share-denominations';
+import { SHARE, MILLI_SHARE, MICRO_SHARE } from 'modules/market/constants/share-denominations';
 
 export default function () {
   const { scalarMarketsShareDenomination } = store.getState();

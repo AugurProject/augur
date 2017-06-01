@@ -2,6 +2,7 @@ import React from 'react';
 
 import Dropdown from 'modules/common/components/dropdown';
 import MarketProperties from 'modules/market/components/market-properties';
+import Spinner from 'modules/common/components/spinner';
 
 import { SCALAR } from 'modules/markets/constants/market-types';
 
@@ -18,6 +19,9 @@ const MarketDataHeader = p => (
           options={p.shareDenominations}
           onChange={(denomination) => { p.updateSelectedShareDenomination(p.id, denomination); }}
         />
+      }
+      {p.isMarketLoading &&
+        <Spinner />
       }
     </div>
   </article>

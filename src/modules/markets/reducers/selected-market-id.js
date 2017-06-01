@@ -1,5 +1,5 @@
-import { UPDATE_URL } from '../../link/actions/update-url';
-import { abi } from '../../../services/augurjs';
+import { UPDATE_URL } from 'modules/link/actions/update-url';
+import { abi } from 'services/augurjs';
 
 export default function (selectedMarketID = null, action) {
   switch (action.type) {

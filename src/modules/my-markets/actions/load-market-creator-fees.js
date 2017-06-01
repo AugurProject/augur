@@ -1,6 +1,6 @@
-import { augur, abi } from '../../../services/augurjs';
+import { augur, abi } from 'services/augurjs';
 
-import { updateMarketCreatorFees } from '../../my-markets/actions/update-market-creator-fees';
+import { updateMarketCreatorFees } from 'modules/my-markets/actions/update-market-creator-fees';
 
 export function loadMarketCreatorFees(marketID) {
   return (dispatch) => {

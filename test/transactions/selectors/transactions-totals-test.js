@@ -14,7 +14,7 @@ describe(`modules/transactions/selectors/transactions-totals.js`, () => {
       selectTransactions: () => []
     };
     const selector = proxyquire('../../../src/modules/transactions/selectors/transactions-totals', {
-      '../../transactions/selectors/transactions': Transactions
+      './transactions': Transactions
     });
     actual = selector.selectTransactionsTotals({});
     expected = {
@@ -47,7 +47,7 @@ describe(`modules/transactions/selectors/transactions-totals.js`, () => {
       }]
     };
     const selector = proxyquire('../../../src/modules/transactions/selectors/transactions-totals', {
-      '../../transactions/selectors/transactions': Transactions
+      './transactions': Transactions
     });
     actual = selector.selectTransactionsTotals({});
     expected = {

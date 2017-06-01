@@ -26,7 +26,7 @@ describe('modules/my-markets/actions/load-market-creator-fees.js', () => {
   }));
 
   const action = proxyquire('../../../src/modules/my-markets/actions/load-market-creator-fees', {
-    '../../my-markets/actions/update-market-creator-fees': mockActions,
+    './update-market-creator-fees': mockActions,
     '../../../services/augurjs': mockAugurJS
   });
 

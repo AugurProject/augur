@@ -1,4 +1,4 @@
-import { updateURL } from '../../link/actions/update-url';
+import { updateURL } from 'modules/link/actions/update-url';
 
 export const TOGGLE_TAG = 'TOGGLE_TAG';
 

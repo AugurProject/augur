@@ -1,4 +1,4 @@
-import { isZero } from '../../../utils/math';
+import { isZero } from 'utils/math';
 
 export const anyAccountBalancesZero = balances => (
   (balances.ether !== undefined && isZero(balances.ether)) ||

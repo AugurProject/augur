@@ -1,6 +1,6 @@
-import { augur } from '../../../services/augurjs';
-import { updateTradeCommitment, updateTradeCommitLock } from '../../trade/actions/update-trade-commitment';
-import { clearTradeInProgress } from '../../trade/actions/update-trades-in-progress';
+import { augur } from 'services/augurjs';
+import { updateTradeCommitment, updateTradeCommitLock } from 'modules/trade/actions/update-trade-commitment';
+import { clearTradeInProgress } from 'modules/trade/actions/update-trades-in-progress';
 
 export const placeTrade = (marketID, outcomeID, trades, doNotMakeOrders, cb) => (dispatch, getState) => {
   if (!marketID) return null;

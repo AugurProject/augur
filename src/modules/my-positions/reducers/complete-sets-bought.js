@@ -1,6 +1,6 @@
-import { UPDATE_COMPLETE_SETS_BOUGHT } from '../../../modules/my-positions/actions/update-account-trades-data';
-import { CLEAR_ACCOUNT_TRADES } from '../../../modules/my-positions/actions/clear-account-trades';
-import { CLEAR_LOGIN_ACCOUNT } from '../../auth/actions/update-login-account';
+import { UPDATE_COMPLETE_SETS_BOUGHT } from 'modules/my-positions/actions/update-account-trades-data';
+import { CLEAR_ACCOUNT_TRADES } from 'modules/my-positions/actions/clear-account-trades';
+import { CLEAR_LOGIN_ACCOUNT } from 'modules/auth/actions/update-login-account';
 
 export default function (completeSetsBought = {}, action) {
   switch (action.type) {

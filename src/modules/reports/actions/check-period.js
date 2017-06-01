@@ -1,8 +1,8 @@
-import { augur } from '../../../services/augurjs';
-import { updateBranch } from '../../branch/actions/update-branch';
-import { loadReports } from '../../reports/actions/load-reports';
-import { clearOldReports } from '../../reports/actions/clear-old-reports';
-import { revealReports } from '../../reports/actions/reveal-reports';
+import { augur } from 'services/augurjs';
+import { updateBranch } from 'modules/branch/actions/update-branch';
+import { loadReports } from 'modules/reports/actions/load-reports';
+import { clearOldReports } from 'modules/reports/actions/clear-old-reports';
+import { revealReports } from 'modules/reports/actions/reveal-reports';
 
 const tracker = { reportsRevealed: false, notSoCurrentPeriod: 0 };
 

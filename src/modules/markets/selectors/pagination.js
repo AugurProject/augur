@@ -20,8 +20,7 @@ export const selectPagination = createSelector(
       numPerPage: pagination.numPerPage,
       numPages: Math.ceil(marketsTotals.numUnpaginated / pagination.numPerPage),
       startItemNum: ((pagination.selectedPageNum - 1) * pagination.numPerPage) + 1,
-      endItemNum: Math.min(pagination.selectedPageNum * pagination.numPerPage,
-        marketsTotals.numUnpaginated),
+      endItemNum: Math.min(pagination.selectedPageNum * pagination.numPerPage, marketsTotals.numUnpaginated),
       onUpdateSelectedPageNum: (pageNum, href) => store.dispatch(updateSelectedPageNum(pageNum, href))
     };
     if (marketsTotals.numUnpaginated > o.numPerPage) {

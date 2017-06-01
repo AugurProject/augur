@@ -18,11 +18,6 @@
     justify-content: center;
     margin: 0 1em;
 
-    @media @breakpoint-mobile {
-      flex-basis: 100%;
-      flex-wrap: wrap;
-    }
-
     &:first-of-type {
       justify-content: flex-start;
     }
@@ -32,8 +27,11 @@
     }
 
     @media @breakpoint-mobile {
-      &:first-child,
-      &:last-child {
+      flex-basis: 100%;
+      flex-wrap: wrap;
+
+      &:first-of-type,
+      &:last-of-type {
         justify-content: center;
       }
     }

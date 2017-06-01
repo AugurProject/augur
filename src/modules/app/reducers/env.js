@@ -1,4 +1,4 @@
-import { UPDATE_ENV } from '../../app/actions/update-env';
+import { UPDATE_ENV } from 'modules/app/actions/update-env';
 
 export default function (env = {}, action) {
   switch (action.type) {

@@ -1,6 +1,6 @@
-import { updateFavorites } from '../../../modules/markets/actions/update-favorites';
-import { updateScalarMarketShareDenomination } from '../../../modules/market/actions/update-scalar-market-share-denomination';
-import { updateReports } from '../../../modules/reports/actions/update-reports';
+import { updateFavorites } from 'modules/markets/actions/update-favorites';
+import { updateScalarMarketShareDenomination } from 'modules/market/actions/update-scalar-market-share-denomination';
+import { updateReports } from 'modules/reports/actions/update-reports';
 
 export const loadAccountDataFromLocalStorage = address => (dispatch, getState) => {
   const localStorageRef = typeof window !== 'undefined' && window.localStorage;

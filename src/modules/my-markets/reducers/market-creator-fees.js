@@ -1,4 +1,4 @@
-import { UPDATE_MARKET_CREATOR_FEES } from '../../my-markets/actions/update-market-creator-fees';
+import { UPDATE_MARKET_CREATOR_FEES } from 'modules/my-markets/actions/update-market-creator-fees';
 
 export default function (marketCreatorFees = {}, action) {
   switch (action.type) {

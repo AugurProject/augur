@@ -6,11 +6,13 @@ import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
-describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
+describe(`modules/transactions/actions/construct-relay-transaction.js`, function () { // eslint-disable-line func-names, prefer-arrow-callback
   proxyquire.noPreserveCache();
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
   const augur = new Augur();
+
+// <<<<<<< HEAD
   // save the default result for calling augur.trading.simulation.getTxGasEth
   const defaultTxGasEth = augur.abi.unfix(augur.abi.bignum(augur.rpc.constants.DEFAULT_GAS).times(augur.abi.bignum(augur.constants.DEFAULT_GASPRICE))).toFixed();
   const functionsAPI = augur.api;
@@ -51,6 +53,17 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
     Trade: '0x031d9d02520cc708ea3c865278508c9cdb92bd51',
     Trades: '0x448c01a2e1fd6c2ef133402c403d2f48c99993e7'
   };
+// =======
+
+  beforeEach(() => {
+    this.clock = sinon.useFakeTimers(1485907200000);
+  });
+
+  after(() => {
+    this.clock.restore();
+  });
+
+// >>>>>>> master
   const test = (t) => {
     it(t.description, () => {
       const store = mockStore(t.state);
@@ -94,8 +107,8 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
       const action = proxyquire('../../../src/modules/transactions/actions/construct-relay-transaction.js', {
         '../../../services/augurjs': AugurJS,
         '../../trade/actions/update-trade-commitment': UpdateTradeCommitment,
-        '../../transactions/actions/delete-transaction': DeleteTransaction,
-        '../../transactions/actions/construct-transaction': ConstructTransaction,
+        './delete-transaction': DeleteTransaction,
+        './construct-transaction': ConstructTransaction,
         '../../market/selectors/market': Market,
         '../../my-positions/selectors/winning-positions': WinningPositions
       });
@@ -120,6 +133,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
       store.clearActions();
     });
   };
+
   test({
     description: 'construct relayed buy transaction (sent)',
     params: {
@@ -184,8 +198,16 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
         address: '0x0000000000000000000000000000000000000b0b'
       },
       tradeCommitment: {},
+// <<<<<<< HEAD
       contractAddresses,
-      functionsAPI
+      functionsAPI,
+// =======
+      marketsData: {
+        '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2': {
+          description: 'test market'
+        }
+      }
+// >>>>>>> master
     },
     selectors: {
       marketFromEventID: {
@@ -196,7 +218,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
       }
     },
     assertions: (actions, relayTransaction) => {
-      const expected = {
+      const expectedRelayTransaction = {
         label: 'log_add_tx',
         trade: {
           type: 'buy',
@@ -214,12 +236,33 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
         },
         marketID: '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2',
         outcomeID: '2',
-        status: 'sent'
+        status: 'sent',
       };
-      assert.deepEqual(actions, [{ ...expected, type: 'CONSTRUCT_TRADING_TRANSACTION' }]);
-      assert.deepEqual(relayTransaction, expected);
+      const expected = [
+        {
+          data: {
+            notification: {
+              description: 'test market',
+              href: '/?page=transactions',
+              id: '0x5bde43fc683d39c9f449424760401b2de067c8bda09acbf4c61dc923c0c98878',
+              seen: false,
+              timestamp: 1485907200,
+              title: 'Bid 5 Shares - sent',
+            }
+          },
+          type: 'ADD_NOTIFICATION'
+        },
+        {
+          ...expectedRelayTransaction,
+          type: 'CONSTRUCT_TRADING_TRANSACTION'
+        }
+      ];
+
+      assert.deepEqual(actions, expected);
+      assert.deepEqual(relayTransaction, expectedRelayTransaction);
     }
   });
+
   test({
     description: 'construct relayed buy transaction (success)',
     params: {
@@ -298,8 +341,16 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
         address: '0x0000000000000000000000000000000000000b0b'
       },
       tradeCommitment: {},
+// <<<<<<< HEAD
       contractAddresses,
-      functionsAPI
+      functionsAPI,
+// =======
+      marketsData: {
+        '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2': {
+          description: 'test market'
+        }
+      }
+// >>>>>>> master
     },
     selectors: {
       marketFromEventID: {
@@ -310,7 +361,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
       }
     },
     assertions: (actions, relayTransaction) => {
-      const expected = {
+      const expectedRelayTransaction = {
         label: 'log_add_tx',
         trade: {
           type: 'buy',
@@ -330,10 +381,30 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
         outcomeID: '2',
         status: 'success'
       };
-      assert.deepEqual(actions, [{ ...expected, type: 'CONSTRUCT_TRADING_TRANSACTION' }]);
-      assert.deepEqual(relayTransaction, expected);
+      const expected = [
+        {
+          data: {
+            notification: {
+              description: 'test market',
+              href: '/?page=transactions',
+              id: '0x5bde43fc683d39c9f449424760401b2de067c8bda09acbf4c61dc923c0c98878',
+              seen: false,
+              timestamp: 1484208293,
+              title: 'Bid 5 Shares - success',
+            }
+          },
+          type: 'ADD_NOTIFICATION'
+        },
+        {
+          ...expectedRelayTransaction,
+          type: 'CONSTRUCT_TRADING_TRANSACTION'
+        }
+      ];
+      assert.deepEqual(actions, expected);
+      assert.deepEqual(relayTransaction, expectedRelayTransaction);
     }
   });
+
   test({
     description: 'construct relayed shortAsk transaction (sent)',
     params: {
@@ -400,8 +471,16 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
         address: '0x0000000000000000000000000000000000000b0b'
       },
       tradeCommitment: {},
+// <<<<<<< HEAD
       contractAddresses,
-      functionsAPI
+      functionsAPI,
+// =======
+      marketsData: {
+        '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2': {
+          description: 'test market'
+        }
+      }
+// >>>>>>> master
     },
     selectors: {
       marketFromEventID: {
@@ -412,7 +491,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
       }
     },
     assertions: (actions, relayTransaction) => {
-      const expected = {
+      const expectedRelayTransaction = {
         label: 'log_add_tx',
         trade: {
           type: 'sell',
@@ -433,10 +512,30 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
         outcomeID: '2',
         status: 'sent'
       };
-      assert.deepEqual(actions, [{ ...expected, type: 'CONSTRUCT_TRADING_TRANSACTION' }]);
-      assert.deepEqual(relayTransaction, expected);
+      const expected = [
+        {
+          data: {
+            notification: {
+              description: 'test market',
+              href: '/?page=transactions',
+              id: '0xe8109915cb0972d1aae971014ded4c744b7ad688704b0a973f626c42220a9ba4',
+              seen: false,
+              timestamp: 1485907200,
+              title: 'short ask 5 Shares - sent',
+            }
+          },
+          type: 'ADD_NOTIFICATION'
+        },
+        {
+          ...expectedRelayTransaction,
+          type: 'CONSTRUCT_TRADING_TRANSACTION'
+        }
+      ];
+      assert.deepEqual(actions, expected);
+      assert.deepEqual(relayTransaction, expectedRelayTransaction);
     }
   });
+
   test({
     description: 'construct relayed shortAsk transaction (success)',
     params: {
@@ -517,8 +616,16 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
         address: '0x0000000000000000000000000000000000000b0b'
       },
       tradeCommitment: {},
+// <<<<<<< HEAD
       contractAddresses,
-      functionsAPI
+      functionsAPI,
+// =======
+      marketsData: {
+        '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2': {
+          description: 'test market'
+        }
+      }
+// >>>>>>> master
     },
     selectors: {
       marketFromEventID: {
@@ -529,7 +636,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
       }
     },
     assertions: (actions, relayTransaction) => {
-      const expected = {
+      const expectedRelayTransaction = {
         label: 'log_add_tx',
         trade: {
           type: 'sell',
@@ -550,10 +657,30 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
         outcomeID: '2',
         status: 'success'
       };
-      assert.deepEqual(actions, [{ ...expected, type: 'CONSTRUCT_TRADING_TRANSACTION' }]);
-      assert.deepEqual(relayTransaction, expected);
+      const expected = [
+        {
+          data: {
+            notification: {
+              description: 'test market',
+              href: '/?page=transactions',
+              id: '0xe8109915cb0972d1aae971014ded4c744b7ad688704b0a973f626c42220a9ba4',
+              seen: false,
+              timestamp: 1484210643,
+              title: 'short ask 5 Shares - success',
+            }
+          },
+          type: 'ADD_NOTIFICATION'
+        },
+        {
+          ...expectedRelayTransaction,
+          type: 'CONSTRUCT_TRADING_TRANSACTION'
+        }
+      ];
+      assert.deepEqual(actions, expected);
+      assert.deepEqual(relayTransaction, expectedRelayTransaction);
     }
   });
+
   test({
     description: 'construct relayed sell transaction (sent)',
     params: {
@@ -619,8 +746,16 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
         address: '0x0000000000000000000000000000000000000b0b'
       },
       tradeCommitment: {},
+// <<<<<<< HEAD
       contractAddresses,
-      functionsAPI
+      functionsAPI,
+// =======
+      marketsData: {
+        '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2': {
+          description: 'test market'
+        }
+      }
+// >>>>>>> master
     },
     selectors: {
       marketFromEventID: {
@@ -631,7 +766,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
       }
     },
     assertions: (actions, relayTransaction) => {
-      const expected = {
+      const expectedRelayTransaction = {
         label: 'log_add_tx',
         trade: {
           type: 'sell',
@@ -651,10 +786,30 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
         outcomeID: '2',
         status: 'sent'
       };
-      assert.deepEqual(actions, [{ ...expected, type: 'CONSTRUCT_TRADING_TRANSACTION' }]);
-      assert.deepEqual(relayTransaction, expected);
+      const expected = [
+        {
+          data: {
+            notification: {
+              description: 'test market',
+              href: '/?page=transactions',
+              id: '0xe8109915cb0972d1aae971014ded4c744b7ad688704b0a973f626c42220a9ba4',
+              seen: false,
+              timestamp: 1485907200,
+              title: 'ask 5 Shares - sent',
+            }
+          },
+          type: 'ADD_NOTIFICATION'
+        },
+        {
+          ...expectedRelayTransaction,
+          type: 'CONSTRUCT_TRADING_TRANSACTION'
+        }
+      ];
+      assert.deepEqual(actions, expected);
+      assert.deepEqual(relayTransaction, expectedRelayTransaction);
     }
   });
+
   test({
     description: 'construct relayed sell transaction (success)',
     params: {
@@ -735,8 +890,16 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
         address: '0x0000000000000000000000000000000000000b0b'
       },
       tradeCommitment: {},
+// <<<<<<< HEAD
       contractAddresses,
-      functionsAPI
+      functionsAPI,
+// =======
+      marketsData: {
+        '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2': {
+          description: 'test market'
+        }
+      }
+// >>>>>>> master
     },
     selectors: {
       marketFromEventID: {
@@ -747,7 +910,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
       }
     },
     assertions: (actions, relayTransaction) => {
-      const expected = {
+      const expectedRelayTransaction = {
         label: 'log_add_tx',
         trade: {
           type: 'sell',
@@ -767,8 +930,27 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, () => {
         outcomeID: '2',
         status: 'success'
       };
-      assert.deepEqual(actions, [{ ...expected, type: 'CONSTRUCT_TRADING_TRANSACTION' }]);
-      assert.deepEqual(relayTransaction, expected);
+      const expected = [
+        {
+          data: {
+            notification: {
+              description: 'test market',
+              href: '/?page=transactions',
+              id: '0xe8109915cb0972d1aae971014ded4c744b7ad688704b0a973f626c42220a9ba4',
+              seen: false,
+              timestamp: 1484210643,
+              title: 'ask 5 Shares - success',
+            }
+          },
+          type: 'ADD_NOTIFICATION'
+        },
+        {
+          ...expectedRelayTransaction,
+          type: 'CONSTRUCT_TRADING_TRANSACTION'
+        }
+      ];
+      assert.deepEqual(actions, expected);
+      assert.deepEqual(relayTransaction, expectedRelayTransaction);
     }
   });
 });

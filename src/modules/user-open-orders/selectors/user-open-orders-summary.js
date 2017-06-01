@@ -1,6 +1,6 @@
 import memoize from 'memoizee';
-import store from '../../../store';
-import { formatNumber } from '../../../utils/format-number';
+import store from 'src/store';
+import { formatNumber } from 'utils/format-number';
 
 export default function (outcomes) {
   const { loginAccount } = store.getState();

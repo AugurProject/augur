@@ -1,17 +1,23 @@
 import { connect } from 'react-redux';
 import { selectTransactions } from 'modules/transactions/selectors/transactions';
-import { selectTransactionsTotals } from 'modules/transactions/selectors/transactions-totals';
 import { selectLoginAccount } from 'modules/account/selectors/login-account';
+import { loadAccountHistory } from 'modules/auth/actions/load-account-history';
 import TransactionsView from 'modules/transactions/components/transactions-view';
 
 const mapStateToProps = state => ({
   branch: state.branch,
-  loginAccount: selectLoginAccount(state),
   currentBlockNumber: state.blockchain.currentBlockNumber,
+  loginAccount: selectLoginAccount(state),
   transactions: selectTransactions(state),
-  transactionsTotals: selectTransactionsTotals(state)
+  transactionsLoading: state.transactionsLoading,
+  hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber
 });
 
-const Transactions = connect(mapStateToProps)(TransactionsView);
+const mapDispatchToProps = dispatch => ({
+  loadMoreTransactions: () => dispatch(loadAccountHistory()),
+  loadAllTransactions: () => dispatch(loadAccountHistory(true))
+});
+
+const Transactions = connect(mapStateToProps, mapDispatchToProps)(TransactionsView);
 
 export default Transactions;

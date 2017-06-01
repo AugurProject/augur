@@ -106,6 +106,7 @@ export function listenToUpdates() {
             }));
             dispatch(updateAssets());
             dispatch(loadMarketsInfo([msg.market]));
+            console.log('MSG -- ', msg);
           }
         }
       },

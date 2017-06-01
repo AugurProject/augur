@@ -68,7 +68,10 @@ export default class Routes extends Component {
       case TRANSACTIONS:
         import('modules/transactions/container').then((module) => {
           const TransactionsView = module.default;
-          this.setState({ viewComponent: <TransactionsView /> });
+          viewProps = {
+            isMobile: p.isMobile
+          };
+          this.setState({ viewComponent: <TransactionsView {...viewProps} /> });
         }).catch((err) => {
           console.error(`ERROR: Failed to load 'transactions' module -- `, err);
         });

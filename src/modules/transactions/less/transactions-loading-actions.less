@@ -1,0 +1,33 @@
+.transactions-loading-actions {
+  .transactions-load-buttons {
+    .border(true);
+
+    background-color: @color-white;
+    display: flex;
+    flex-wrap: none;
+    position: relative;
+
+    & > button {
+      padding: 1em 1.2em;
+    }
+
+    & > button:not(:last-of-type) {
+      .border(true, @border-right);
+    }
+  }
+
+  .transactions-loading-spinner {
+    min-width: 3em;
+    position: relative;
+
+    .transactions-loading-message {
+      margin-right: 2.2em;
+    }
+
+    .spinner-container {
+      position: absolute;
+      right: 1em;
+      top: 50%;
+    }
+  }
+}

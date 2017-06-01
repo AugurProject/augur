@@ -1,5 +1,5 @@
-import { augur } from '../../../services/augurjs';
-import { updateMarketTopic } from '../../markets/actions/update-markets-data';
+import { augur } from 'services/augurjs';
+import { updateMarketTopic } from 'modules/markets/actions/update-markets-data';
 
 export const UPDATE_TOPICS = 'UPDATE_TOPICS';
 export const CLEAR_TOPICS = 'CLEAR_TOPICS';

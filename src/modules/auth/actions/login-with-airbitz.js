@@ -1,7 +1,7 @@
 import secureRandom from 'secure-random';
-import { augur } from '../../../services/augurjs';
-import { AIRBITZ_WALLET_TYPE } from '../../auth/constants/auth-types';
-import { loadAccountData } from '../../auth/actions/load-account-data';
+import { augur } from 'services/augurjs';
+import { AIRBITZ_WALLET_TYPE } from 'modules/auth/constants/auth-types';
+import { loadAccountData } from 'modules/auth/actions/load-account-data';
 
 export const loginWithAirbitzEthereumWallet = (airbitzAccount, ethereumWallet, isNewAccount) => (dispatch) => {
   const masterPrivateKey = ethereumWallet.keys.ethereumKey;

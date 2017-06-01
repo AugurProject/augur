@@ -1,10 +1,10 @@
 import async from 'async';
-import { augur } from '../../../services/augurjs';
-import { updateAssets } from '../../auth/actions/update-assets';
-import { loadAccountTrades } from '../../my-positions/actions/load-account-trades';
-import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
-import { cancelOpenOrdersInClosedMarkets } from '../../user-open-orders/actions/cancel-open-orders-in-closed-markets';
-import selectWinningPositions from '../../my-positions/selectors/winning-positions';
+import { augur } from 'services/augurjs';
+import { updateAssets } from 'modules/auth/actions/update-assets';
+import { loadAccountTrades } from 'modules/my-positions/actions/load-account-trades';
+import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
+import { cancelOpenOrdersInClosedMarkets } from 'modules/user-open-orders/actions/cancel-open-orders-in-closed-markets';
+import selectWinningPositions from 'modules/my-positions/selectors/winning-positions';
 
 export const claimProceeds = () => (dispatch, getState) => {
   const { branch, loginAccount } = getState();
@@ -17,7 +17,7 @@ export const claimProceeds = () => (dispatch, getState) => {
         dispatch(updateAssets());
         async.each(claimedMarkets, (marketID, nextMarket) => (
           dispatch(loadMarketsInfo([marketID], () => (
-            dispatch(loadAccountTrades(marketID, () => nextMarket()))
+            dispatch(loadAccountTrades({ market: marketID }, () => nextMarket()))
           )))
         ), err => err && console.error(err));
       });

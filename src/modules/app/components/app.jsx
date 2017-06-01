@@ -22,6 +22,7 @@ export default class App extends Component {
     super(props);
 
     this.state = {
+      isMobile: false, // Determined via CSS media query, ref method `checkIfMobile` below
       isSideBarAllowed: false,
       isSideBarCollapsed: false,
       isSideBarPersistent: true,
@@ -94,14 +95,18 @@ export default class App extends Component {
   checkIfMobile() {
     // This method sets up the side bar's state + calls the method to attach the touch event handler for when a user is mobile
     // CSS breakpoint sets the value when a user is mobile
-    if (window.getComputedStyle(this.main).getPropertyValue('will-change') === 'contents') {
+    const isMobile = window.getComputedStyle(document.body).getPropertyValue('--is-mobile').indexOf('true') !== -1;
+
+    if (isMobile) {
       this.setState({
+        isMobile,
         isSideBarCollapsed: true,
         isSideBarPersistent: false
       });
       this.attachTouchHandler();
     } else {
       this.setState({
+        isMobile,
         isSideBarCollapsed: false,
         isSideBarPersistent: true
       });
@@ -165,7 +170,8 @@ export default class App extends Component {
       authLink: getValue(p, 'links.authLink'),
       accountLink: getValue(p, 'links.accountLink'),
       myPositionsLink: getValue(p, 'links.myPositionsLink'),
-      topicsLink: getValue(p, 'links.topicsLink')
+      topicsLink: getValue(p, 'links.topicsLink'),
+      notifications: p.notifications
     };
 
     const sideBarProps = {
@@ -229,6 +235,7 @@ export default class App extends Component {
                 </div>
                 <Routes
                   {...p}
+                  isMobile={s.isMobile}
                   setSidebarAllowed={this.setSidebarAllowed}
                   footerHeight={s.footerHeight}
                 />

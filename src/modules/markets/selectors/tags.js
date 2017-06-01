@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect';
 import store from 'src/store';
 import { selectSelectedTagsState } from 'src/select-state';
-import { selectFilteredMarkets } from '../../markets/selectors/markets-filtered';
-import { toggleTag } from '../../markets/actions/toggle-tag';
+import { selectFilteredMarkets } from 'modules/markets/selectors/markets-filtered';
+import { toggleTag } from 'modules/markets/actions/toggle-tag';
 
 export default function () {
   return selectTags(store.getState());

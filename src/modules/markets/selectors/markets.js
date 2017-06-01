@@ -1,10 +1,10 @@
 import { createSelector } from 'reselect';
 import store from 'src/store';
 import { selectPaginationSelectedPageNum, selectPaginationNumPerPage } from 'src/select-state';
-import { selectUnpaginatedMarkets } from '../../markets/selectors/markets-unpaginated';
-import { loadMarketsInfo } from '../../markets/actions/load-markets-info';
-import { MY_POSITIONS } from '../../app/constants/views';
-import { PENDING_REPORTS } from '../../markets/constants/markets-subset';
+import { selectUnpaginatedMarkets } from 'modules/markets/selectors/markets-unpaginated';
+import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
+import { MY_POSITIONS } from 'modules/app/constants/views';
+import { PENDING_REPORTS } from 'modules/markets/constants/markets-subset';
 
 export default function () {
   const { activeView, selectedMarketsHeader } = store.getState();

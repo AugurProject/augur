@@ -1,6 +1,6 @@
-import selectMyReports from '../../my-reports/selectors/my-reports';
-import { abi } from '../../../services/augurjs';
-import { ZERO } from '../../trade/constants/numbers';
+import selectMyReports from 'modules/my-reports/selectors/my-reports';
+import { abi } from 'services/augurjs';
+import { ZERO } from 'modules/trade/constants/numbers';
 
 export default function () {
   const reports = selectMyReports();

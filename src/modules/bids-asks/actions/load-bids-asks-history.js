@@ -3,10 +3,13 @@ import { augur, constants } from 'services/augurjs';
 import { updateAccountBidsAsksData, updateAccountCancelsData } from 'modules/my-positions/actions/update-account-trades-data';
 import logError from 'utils/log-error';
 
-export const loadBidsAsksHistory = (marketID, callback = logError) => (dispatch, getState) => {
+export const loadBidsAsksHistory = (options, callback = logError) => (dispatch, getState) => {
   const { loginAccount } = getState();
-  const filter = { market: marketID, sender: loginAccount.address };
-  if (loginAccount.registerBlockNumber) {
+  const filter = {
+    ...options,
+    sender: loginAccount.address
+  };
+  if (!filter.fromBlock && loginAccount.registerBlockNumber) {
     filter.fromBlock = loginAccount.registerBlockNumber;
   }
   async.parallelLimit([
@@ -15,14 +18,14 @@ export const loadBidsAsksHistory = (marketID, callback = logError) => (dispatch,
       filter,
       aux: { index: ['market', 'outcome'] }
     }, (logs) => {
-      dispatch(updateAccountBidsAsksData(logs, marketID));
+      dispatch(updateAccountBidsAsksData(logs, filter.market));
     }, next),
     next => augur.logs.getLogsChunked({
       label: 'log_cancel',
       filter,
       aux: { index: ['market', 'outcome'] }
     }, (logs) => {
-      dispatch(updateAccountCancelsData(logs, marketID));
+      dispatch(updateAccountCancelsData(logs, filter.market));
     }, next)
   ], constants.PARALLEL_LIMIT, callback);
 };

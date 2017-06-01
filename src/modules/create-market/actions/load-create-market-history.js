@@ -3,11 +3,15 @@ import { augur, constants } from 'services/augurjs';
 import { convertLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
 import logError from 'utils/log-error';
 
-export function loadCreateMarketHistory(marketID, callback = logError) {
+export function loadCreateMarketHistory(options, callback = logError) {
   return (dispatch, getState) => {
     const { branch, loginAccount } = getState();
-    const filter = { sender: loginAccount.address, branch: branch.id };
-    if (loginAccount.registerBlockNumber) {
+    const filter = {
+      ...options,
+      sender: loginAccount.address,
+      branch: branch.id
+    };
+    if (!filter.fromBlock && loginAccount.registerBlockNumber) {
       filter.fromBlock = loginAccount.registerBlockNumber;
     }
     async.eachLimit([

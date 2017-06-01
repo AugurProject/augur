@@ -3,11 +3,15 @@ import { augur, constants } from 'services/augurjs';
 import { convertLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
 import logError from 'utils/log-error';
 
-export function loadFundingHistory(callback = logError) {
+export function loadFundingHistory(options, callback = logError) {
   return (dispatch, getState) => {
     const { branch, loginAccount } = getState();
-    const params = { sender: loginAccount.address, branch: branch.id };
-    if (loginAccount.registerBlockNumber) {
+    const params = {
+      ...options,
+      sender: loginAccount.address,
+      branch: branch.id
+    };
+    if (!params.fromBlock && loginAccount.registerBlockNumber) {
       params.fromBlock = loginAccount.registerBlockNumber;
     }
     async.eachLimit([
@@ -28,11 +32,13 @@ export function loadFundingHistory(callback = logError) {
   };
 }
 
-export function loadTransferHistory(callback = logError) {
+export function loadTransferHistory(options, callback = logError) {
   return (dispatch, getState) => {
     const { loginAccount } = getState();
-    const params = {};
-    if (loginAccount.registerBlockNumber) {
+    const params = {
+      ...options
+    };
+    if (!params.fromBlock && loginAccount.registerBlockNumber) {
       params.fromBlock = loginAccount.registerBlockNumber;
     }
     async.eachLimit([

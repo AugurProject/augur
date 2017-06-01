@@ -1,9 +1,9 @@
-import { abi, augur, rpc } from '../../../services/augurjs';
-import { SUBMITTED, SUCCESS } from '../../transactions/constants/statuses';
-import { NO_RELAY } from '../../transactions/constants/no-relay';
-import { formatRealEther } from '../../../utils/format-number';
-import { updateTransactionsData } from '../../transactions/actions/update-transactions-data';
-import { constructRelayTransaction } from '../../transactions/actions/construct-relay-transaction';
+import { abi, augur, rpc } from 'services/augurjs';
+import { SUBMITTED, SUCCESS } from 'modules/transactions/constants/statuses';
+import { NO_RELAY } from 'modules/transactions/constants/no-relay';
+import { formatRealEther } from 'utils/format-number';
+import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data';
+import { constructRelayTransaction } from 'modules/transactions/actions/construct-relay-transaction';
 
 export const handleRelayTransaction = tx => (dispatch, getState) => {
   if (tx && tx.response && tx.data) {
@@ -40,6 +40,7 @@ export const handleRelayTransaction = tx => (dispatch, getState) => {
           }
           default: {
             if (transactionsData[hash]) {
+              dispatch(constructRelayTransaction(tx, status));
               dispatch(updateTransactionsData({
                 [hash]: { ...transactionsData[hash], gasFees: formatRealEther(gasFees) }
               }));

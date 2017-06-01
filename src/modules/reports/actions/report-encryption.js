@@ -1,4 +1,4 @@
-import { augur } from '../../../services/augurjs';
+import { augur } from 'services/augurjs';
 
 export const encryptReport = (report, salt) => (dispatch, getState) => {
   const encryptionKey = getState().loginAccount.derivedKey;

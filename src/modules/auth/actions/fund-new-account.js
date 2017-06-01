@@ -1,6 +1,6 @@
-import { augur, utils } from '../../../services/augurjs';
-import { loadRegisterBlockNumber } from '../../../modules/auth/actions/load-register-block-number';
-import { updateAssets } from '../../auth/actions/update-assets';
+import { augur, utils } from 'services/augurjs';
+import { loadRegisterBlockNumber } from 'modules/auth/actions/load-register-block-number';
+import { updateAssets } from 'modules/auth/actions/update-assets';
 
 export function fundNewAccount() {
   return (dispatch, getState) => {

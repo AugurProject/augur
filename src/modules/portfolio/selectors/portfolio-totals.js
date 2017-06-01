@@ -1,7 +1,7 @@
-import { formatEther } from '../../../utils/format-number';
-import selectMyPositionsSummary from '../../../modules/my-positions/selectors/my-positions-summary';
-import selectMyMarketsSummary from '../../../modules/my-markets/selectors/my-markets-summary';
-import { abi } from '../../../services/augurjs';
+import { formatEther } from 'utils/format-number';
+import selectMyPositionsSummary from 'modules/my-positions/selectors/my-positions-summary';
+import selectMyMarketsSummary from 'modules/my-markets/selectors/my-markets-summary';
+import { abi } from 'services/augurjs';
 
 export default function () {
   const positionsSummary = selectMyPositionsSummary();

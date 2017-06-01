@@ -1,9 +1,9 @@
 import { createSelector } from 'reselect';
 import store from 'src/store';
-import selectAllMarkets from '../../markets/selectors/markets-all';
-import { selectFilteredMarkets } from '../../markets/selectors/markets-filtered';
-import { selectUnpaginatedMarkets } from '../../markets/selectors/markets-unpaginated';
-import { selectFavoriteMarkets } from '../../markets/selectors/markets-favorite';
+import selectAllMarkets from 'modules/markets/selectors/markets-all';
+import { selectFilteredMarkets } from 'modules/markets/selectors/markets-filtered';
+import { selectUnpaginatedMarkets } from 'modules/markets/selectors/markets-unpaginated';
+import { selectFavoriteMarkets } from 'modules/markets/selectors/markets-favorite';
 
 export default function () {
   return selectMarketsTotals(store.getState());

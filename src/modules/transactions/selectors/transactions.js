@@ -1,8 +1,14 @@
 import { createSelector } from 'reselect';
+import BigNumber from 'bignumber.js';
 import store from 'src/store';
 import { selectTransactionsDataState } from 'src/select-state';
-import { formatShares, formatEther, formatRep } from '../../../utils/format-number';
-import { selectMarketLink } from '../../link/selectors/links';
+import { selectMarketLink } from 'modules/link/selectors/links';
+
+import { BUY } from 'modules/transactions/constants/types';
+import { PENDING, SUCCESS, FAILED, SUBMITTED, INTERRUPTED } from 'modules/transactions/constants/statuses';
+
+import getValue from 'utils/get-value';
+import { formatShares, formatEther, formatRep } from 'utils/format-number';
 
 export default function () {
   return selectTransactions(store.getState());
@@ -10,37 +16,77 @@ export default function () {
 
 export const selectTransactions = createSelector(
   selectTransactionsDataState,
-  transactionsData => Object.keys(transactionsData || {})
-    .sort((a, b) => {
-      const timestampA = transactionsData[a].timestamp;
-      const timestampB = transactionsData[b].timestamp;
-      if (timestampA && timestampA.timestamp && timestampB && timestampB.timestamp) {
-        return timestampB.timestamp - timestampA.timestamp;
-      } else if (timestampA && timestampA.timestamp) {
-        return 1;
-      } else if (timestampB && timestampB.timestamp) {
-        return -1;
-      }
-      return 0;
-    })
-    .map((id) => {
-      let marketLink = (transactionsData[id].data && transactionsData[id].data.marketLink) ? transactionsData[id].data.marketLink : null;
-      if (marketLink === null && transactionsData[id].data && (transactionsData[id].data.id || transactionsData[id].data.marketID) && (transactionsData[id].data.description || transactionsData[id].description)) {
-        marketLink = selectMarketLink({
-          id: transactionsData[id].data.id || transactionsData[id].data.marketID,
-          description: transactionsData[id].description
-        }, store.dispatch);
-      }
-      return {
-        ...transactionsData[id],
-        data: {
-          ...transactionsData[id].data,
-          marketLink
-        },
-        gas: transactionsData[id].gas && formatEther(transactionsData[id].gas),
-        ether: transactionsData[id].etherWithoutGas && formatEther(transactionsData[id].etherWithoutGas),
-        shares: transactionsData[id].sharesChange && formatShares(transactionsData[id].sharesChange),
-        rep: transactionsData[id].repChange && formatRep(transactionsData[id].repChange)
-      };
-    })
+  (transactionsData) => {
+    const tradeGroups = [];
+    const formattedTransactions = Object.keys(transactionsData || {})
+      .reduce((p, id) => {
+        const tradeGroupID = transactionsData[id].tradeGroupID;
+        if (tradeGroupID) {
+          if (tradeGroups.indexOf(tradeGroupID) === -1) {
+            tradeGroups.push(tradeGroupID);
+            const filteredTransactions = Object.keys(transactionsData).filter(id => transactionsData[id].tradeGroupID === tradeGroupID).map(id => transactionsData[id]);
+
+            if (filteredTransactions.length === 1) {
+              p.push(formatTransaction(filteredTransactions[0]));
+            } else {
+              p.push(formatGroupedTransactions(filteredTransactions));
+            }
+          }
+
+          return p;
+        }
+
+        p.push(formatTransaction(transactionsData[id]));
+        return p;
+      }, [])
+      .sort((a, b) => getValue(b, 'timestamp.timestamp') - getValue(a, 'timestamp.timestamp'));
+
+    return formattedTransactions;
+  }
 );
+
+export function formatTransaction(transaction) {
+  let marketLink = getValue(transaction, 'data.marketLink');
+  if (marketLink == null && transaction.data && (transaction.data.id || transaction.data.marketID) && (transaction.data.description || transaction.description)) {
+    marketLink = selectMarketLink({
+      id: transaction.data.id || transaction.data.marketID,
+      description: transaction.description
+    }, store.dispatch);
+  }
+
+  return {
+    ...transaction,
+    data: {
+      ...transaction.data,
+      marketLink
+    },
+    gas: transaction.gas && formatEther(transaction.gas),
+    ether: transaction.etherWithoutGas && formatEther(transaction.etherWithoutGas),
+    shares: transaction.sharesChange && formatShares(transaction.sharesChange),
+    rep: transaction.repChange && formatRep(transaction.repChange)
+  };
+}
+
+export function formatGroupedTransactions(transactions) {
+  const formattedTransactions = transactions.map(transaction => formatTransaction(transaction)).sort((a, b) => getValue(b, 'timestamp.timestamp') - getValue(a, 'timestamp.timestamp'));
+
+  const status = formattedTransactions.reduce((p, transaction) => {
+    if (p === FAILED || transaction.status === FAILED) return FAILED;
+    if (p === INTERRUPTED || transaction.status === INTERRUPTED) return INTERRUPTED;
+    if (p === PENDING || transaction.status === PENDING) return PENDING;
+    if (p === SUBMITTED || transaction.status === SUBMITTED) return SUBMITTED;
+    if (transaction.status === SUCCESS) return SUCCESS;
+
+    return p;
+  }, null);
+
+  const totalShares = formattedTransactions.reduce((p, transaction) => p.plus(new BigNumber(transaction.numShares.value)), new BigNumber(0));
+
+  return {
+    status,
+    message: `${formattedTransactions[0].type === BUY ? 'Buy' : 'Sell'} ${totalShares.toNumber()} shares of ${formattedTransactions[0].data.outcomeName}`,
+    description: formattedTransactions[0].description,
+    timestamp: formattedTransactions[formattedTransactions.length - 1].timestamp,
+    transactions: formattedTransactions
+  };
+}

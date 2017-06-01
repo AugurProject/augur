@@ -26,7 +26,7 @@ const ValueDenomination = p => (
     {p.formatted && !p.fullPrecision &&
       <span className="value">{p.formatted}</span>
     }
-    {p.denomination &&
+    {p.denomination && !p.hideDenomination &&
       <span className="denomination">{p.denomination}</span>
     }
     {p.postfix && !p.hidePostfix &&
@@ -49,7 +49,8 @@ ValueDenomination.propTypes = {
   hidePrefix: PropTypes.bool,
   hidePostfix: PropTypes.bool,
   prefix: PropTypes.string,
-  postfix: PropTypes.string
+  postfix: PropTypes.string,
+  hideDenomination: PropTypes.bool
 };
 
 export default ValueDenomination;

@@ -33,8 +33,8 @@ describe('modules/reports/actions/load-reports.js', () => {
       const action = proxyquire('../../../src/modules/reports/actions/load-reports', {
         '../../../services/augurjs': AugurJS,
         '../../markets/actions/load-markets-info': LoadMarketsInfo,
-        '../../reports/actions/load-report': LoadReport,
-        '../../reports/actions/load-report-descriptors': LoadReportDescriptors
+        './load-report': LoadReport,
+        './load-report-descriptors': LoadReportDescriptors
       });
       sinon.stub(AugurJS.augur.api.ReportingThreshold, 'getEventsToReportOn', (args, cb) => {
         cb(t.blockchain.eventsToReportOn[args.branch]);

@@ -1,9 +1,9 @@
 import async from 'async';
 import BigNumber from 'bignumber.js';
-import { augur } from '../../../services/augurjs';
-import { ZERO } from '../../trade/constants/numbers';
-import { updateSmallestPositions } from '../../my-positions/actions/update-account-trades-data';
-import selectLoginAccountPositions from '../../../modules/my-positions/selectors/login-account-positions';
+import { augur } from 'services/augurjs';
+import { ZERO } from 'modules/trade/constants/numbers';
+import { updateSmallestPositions } from 'modules/my-positions/actions/update-account-trades-data';
+import selectLoginAccountPositions from 'modules/my-positions/selectors/login-account-positions';
 
 BigNumber.config({ MODULO_MODE: BigNumber.EUCLID, ROUNDING_MODE: BigNumber.ROUND_HALF_DOWN });
 

@@ -12,7 +12,7 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
       const SelectLoginAccountPositions = () => t.selectors.loginAccountPositions;
       const selector = proxyquire('../../../src/modules/my-positions/selectors/winning-positions.js', {
         '../../../services/augurjs': AugurJS,
-        '../../my-positions/selectors/login-account-positions': SelectLoginAccountPositions
+        './login-account-positions': SelectLoginAccountPositions
       });
       sinon.stub(AugurJS.abi, 'bignum', n => new BigNumber(n, 10));
       t.assertions(selector.selectClosedMarketsWithWinningShares(t.state));

@@ -81,7 +81,11 @@ describe('modules/user-open-orders/selectors/positions-plus-asks', () => {
           '0xMARKETID': {}
         },
         orderBooks: {
-          '0xMARKETID': {}
+          '0xMARKETID': {
+            sell: [
+              {}
+            ]
+          }
         }
       },
       assertions: (store) => {

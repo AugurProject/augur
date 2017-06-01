@@ -4,9 +4,21 @@ import ReactTooltip from 'react-tooltip';
 import NullStateMessage from 'modules/common/components/null-state-message';
 import MyReport from 'modules/my-reports/components/my-report';
 import Link from 'modules/link/components/link';
+import TransactionsLoadingActions from 'modules/transactions/components/transactions-loading-actions';
 
 const MyReports = p => (
   <article className="my-reports">
+    <div className="view-header">
+      <div className="view-header-group" />
+      <div className="view-header-group">
+        <TransactionsLoadingActions
+          loadMoreTransactions={p.loadMoreTransactions}
+          loadAllTransactions={p.loadAllTransactions}
+          transactionsLoading={p.transactionsLoading}
+          hasAllTransactionsLoaded={p.hasAllTransactionsLoaded}
+        />
+      </div>
+    </div>
     {p.reports && p.reports.length ?
       <div>
         {p.reports.map(market => (

@@ -1,11 +1,11 @@
 import { createSelector } from 'reselect';
 import store from 'src/store';
 import { selectActiveViewState, selectSelectedMarketsHeaderState } from 'src/select-state';
-import selectAllMarkets from '../../markets/selectors/markets-all';
-import { selectFilteredMarkets } from '../../markets/selectors/markets-filtered';
-import { selectFavoriteMarkets } from '../../markets/selectors/markets-favorite';
-import { MY_POSITIONS } from '../../app/constants/views';
-import { FAVORITES, PENDING_REPORTS } from '../../markets/constants/markets-subset';
+import selectAllMarkets from 'modules/markets/selectors/markets-all';
+import { selectFilteredMarkets } from 'modules/markets/selectors/markets-filtered';
+import { selectFavoriteMarkets } from 'modules/markets/selectors/markets-favorite';
+import { MY_POSITIONS } from 'modules/app/constants/views';
+import { FAVORITES, PENDING_REPORTS } from 'modules/markets/constants/markets-subset';
 
 export default function () {
   return selectUnpaginatedMarkets(store.getState());

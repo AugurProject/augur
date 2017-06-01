@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 import zxcvbn from 'zxcvbn';
 import Input from 'modules/common/components/input';
+import Spinner from 'modules/common/components/spinner';
 
 import { REQUIRED_PASSWORD_STRENGTH } from 'modules/auth/constants/password-strength';
 
@@ -24,8 +25,10 @@ export default class AuthSignup extends Component {
       authError: false,
       errorMessage: null,
       // These prevent a flash on component mount
+      // TODO -- refactor to utilize CSSTransitionGroup -- will simplify this significantly
       isPasswordConfirmDisplayable: false,
       isPasswordsSuggestionDisplayable: false,
+      isGeneratingLoginIDDisplayable: false,
       isSignUpActionsDisplayable: false,
       isAuthErrorDisplayable: false
     };
@@ -40,24 +43,29 @@ export default class AuthSignup extends Component {
       this.state.password !== this.state.passwordConfirm &&
       nextState.password === nextState.passwordConfirm
     ) {
-      this.setState({ isGeneratingLoginID: true });
+      this.setState({
+        isGeneratingLoginIDDisplayable: true,
+        isGeneratingLoginID: true
+      }, () => {
+        setTimeout(() => {
+          this.props.register(this.state.password, (err, loginID) => {
+            if (err) {
+              this.setState({
+                authError: true,
+                errorMessage: err.message,
+                isAuthErrorDisplayable: true
+              });
+            } else {
+              this.username.value = loginID;
 
-      this.props.register(this.state.password, (err, loginID) => {
-        if (err) {
-          this.setState({
-            authError: true,
-            errorMessage: err.message,
-            isAuthErrorDisplayable: true
+              this.setState({
+                loginID,
+                isGeneratingLoginID: false,
+                isSignUpActionsDisplayable: true
+              });
+            }
           });
-        } else {
-          this.username.value = loginID;
-
-          this.setState({
-            loginID,
-            isGeneratingLoginID: false,
-            isSignUpActionsDisplayable: true
-          });
-        }
+        }, 500);
       });
     } else if (
       nextState.password !== nextState.passwordConfirm &&
@@ -200,6 +208,15 @@ export default class AuthSignup extends Component {
               </li>
             ))}
           </ul>
+        </div>
+        <div
+          className={classNames('auth-generating-login-id', {
+            animateInPartial: s.isGeneratingLoginID,
+            animateOutPartial: !s.isGeneratingLoginID && s.isGeneratingLoginIDDisplayable
+          })}
+        >
+          <span>Generating Login ID</span>
+          <Spinner />
         </div>
         <div
           className={classNames('auth-signup-actions', {

@@ -184,7 +184,7 @@ export default class CreateMarketFormOrderBook extends Component {
       const askSeries = getValue(this.props.orderBookSeries[this.state.selectedOutcome], `${ASK}`) || [];
       let width;
 
-      if (window.getComputedStyle(this.orderBookChart).getPropertyValue('will-change') === 'contents') {
+      if (window.getComputedStyle(this.orderBookChart).getPropertyValue('--adjust-width').indexOf('true') !== -1) {
         width = this.orderBookForm.clientWidth - 40; // 20px horizontal padding
       } else {
         width = this.orderBookPreview.clientWidth * 0.60;
@@ -466,7 +466,7 @@ export default class CreateMarketFormOrderBook extends Component {
             <aside>
               <h3>Initial Liquidity</h3>
               <h4>optional</h4>
-              <span>Use this form to add initial liquidty for your market.</span>
+              <span>Use this form to add initial liquidity for your market.</span>
             </aside>
             <div className="vertical-form-divider" />
             <form
@@ -574,10 +574,10 @@ export default class CreateMarketFormOrderBook extends Component {
                 />
                 <div className="order-book-preview-table">
                   <div className="order-book-preview-table-header">
-                    <span>Bid Q.</span>
+                    <span>Bid Qty</span>
                     <span>Bid</span>
                     <span>Ask</span>
-                    <span>Ask Q.</span>
+                    <span>Ask Qty</span>
                   </div>
                   <div className="order-book-preview-table-content">
                     <ul className="order-book-preview-table-bids">

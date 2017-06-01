@@ -9,6 +9,7 @@
 @color-green: #28e071;
 @color-purple: #952bd9;
 @color-orange: #fd940a;
+@color-yellow: #fffb3e;
 @color-transparent: transparent;
 
 //	Gradients
@@ -73,8 +74,13 @@
 
 @color-footer-background: #fafaff;
 @color-mask-background: fade(@color-black, 70%);
+@color-mask-elements-under-spinner: fade(@color-black, @amount-light);
 
 @color-airbitz-logo-background: #3b5998;
+
+@color-notification-flash: lighten(@color-yellow, @amount-light);
+
+@color-drop-shadow: rgba(0, 0, 0, 0.2);
 
 // 	Mixins
 .colorize {

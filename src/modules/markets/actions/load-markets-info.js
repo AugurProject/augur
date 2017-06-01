@@ -1,6 +1,6 @@
-import { augur } from '../../../services/augurjs';
-import { updateMarketsData, updateEventMarketsMap, updateMarketsLoadingStatus } from '../../markets/actions/update-markets-data';
-import { loadCreatedMarketInfo } from '../../my-markets/actions/load-created-market-info';
+import { augur } from 'services/augurjs';
+import { updateMarketsData, updateEventMarketsMap, updateMarketsLoadingStatus } from 'modules/markets/actions/update-markets-data';
+import { loadCreatedMarketInfo } from 'modules/my-markets/actions/load-created-market-info';
 
 const MARKETS_PER_BATCH = 10;
 

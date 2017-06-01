@@ -1,7 +1,7 @@
 import memoize from 'memoizee';
 import BigNumber from 'bignumber.js';
-import { ZERO } from '../../../trade/constants/numbers';
-import { augur, abi, constants } from '../../../../services/augurjs';
+import { ZERO } from 'modules/trade/constants/numbers';
+import { augur, abi, constants } from 'services/augurjs';
 
 /**
  * Orders should be sorted from best to worst (usually by price)

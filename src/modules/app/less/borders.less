@@ -15,18 +15,25 @@
 @border-normal: @color-border;
 @border-muted: @color-border-muted;
 @border-light: @color-border-light;
+@border-faded: fadeout(@color-border, @amount-extra-light);
+
+// Style
+@border-solid: solid;
+@border-dotted: dotted;
+@border-dashed: dashed;
+@border-double: double;
 
 //		Width
 @border-width-2: 2px;
 @border-width-3: 3px;
 
-.border(@side: false; @property: @border-all; @chroma: @border-default-chroma; @width: @border-default-width) {
+.border(@side: false; @property: @border-all; @chroma: @border-default-chroma; @width: @border-default-width; @style: @border-solid;) {
   & when (@side) {
     & when (@property = @border-all) {
-      border: @width solid @chroma;
+      border: @width @style @chroma;
     }
 
-    @{property}: @width solid @chroma;
+    @{property}: @width @style @chroma;
   }
 
   & when not (@side) {

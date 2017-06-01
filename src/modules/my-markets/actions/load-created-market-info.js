@@ -1,5 +1,5 @@
-import { loadFullMarket } from '../../market/actions/load-full-market';
-import { loadMarketCreatorFees } from '../../my-markets/actions/load-market-creator-fees';
+import { loadFullMarket } from 'modules/market/actions/load-full-market';
+import { loadMarketCreatorFees } from 'modules/my-markets/actions/load-market-creator-fees';
 
 export function loadCreatedMarketInfo(marketID) {
   return (dispatch, getState) => {

@@ -22,8 +22,8 @@ describe(`modules/auth/actions/load-register-block-number.js`, () => {
       const UpdateLoginAccount = { updateLoginAccount: () => {} };
       const action = proxyquire('../../../src/modules/auth/actions/load-register-block-number.js', {
         '../../../services/augurjs': AugurJS,
-        '../../../modules/auth/actions/load-account-history': LoadAccountHistory,
-        '../../../modules/auth/actions/update-login-account': UpdateLoginAccount
+        './load-account-history': LoadAccountHistory,
+        './update-login-account': UpdateLoginAccount
       });
 
       sinon.stub(AugurJS.augur.api.Register, 'register', (args) => {

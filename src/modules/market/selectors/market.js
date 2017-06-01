@@ -62,7 +62,7 @@ export default function () {
 export const selectSelectedMarket = state => selectMarket(state.selectedMarketID);
 
 export const selectMarket = (marketID) => {
-  const { marketsData, favorites, reports, outcomesData, netEffectiveTrades, accountTrades, tradesInProgress, priceHistory, orderBooks, branch, orderCancellation, smallestPositions, loginAccount } = store.getState();
+  const { marketsData, marketLoading, favorites, reports, outcomesData, netEffectiveTrades, accountTrades, tradesInProgress, priceHistory, orderBooks, branch, orderCancellation, smallestPositions, loginAccount } = store.getState();
   const accountPositions = selectAccountPositions();
 
   if (!marketID || !marketsData || !marketsData[marketID]) {
@@ -74,6 +74,7 @@ export const selectMarket = (marketID) => {
   return assembleMarket(
     marketID,
     marketsData[marketID],
+    marketLoading.indexOf(marketID) !== -1,
     priceHistory[marketID],
     isMarketDataOpen(marketsData[marketID]),
     isMarketDataExpired(marketsData[marketID], new Date().getTime()),
@@ -107,6 +108,7 @@ const assembledMarketsCache = {};
 export function assembleMarket(
     marketID,
     marketData,
+    isMarketLoading,
     marketPriceHistory,
     isOpen,
     isExpired,
@@ -132,6 +134,7 @@ export function assembleMarket(
     assembledMarketsCache[marketID] = memoize((
       marketID,
       marketData,
+      isMarketLoading,
       marketPriceHistory,
       isOpen,
       isExpired,
@@ -182,6 +185,8 @@ export function assembleMarket(
         default:
           break;
       }
+
+      market.isMarketLoading = isMarketLoading;
 
       market.endDate = (endDateYear >= 0 && endDateMonth >= 0 && endDateDay >= 0 && formatDate(new Date(endDateYear, endDateMonth, endDateDay))) || null;
       market.endDateLabel = (market.endDate < now) ? 'ended' : 'ends';

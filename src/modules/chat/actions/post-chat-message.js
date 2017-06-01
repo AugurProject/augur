@@ -1,4 +1,4 @@
-import { augur } from '../../../services/augurjs';
+import { augur } from 'services/augurjs';
 
 export function postChatMessage(roomName, message) {
   return (dispatch, getState) => {

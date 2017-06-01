@@ -1,6 +1,6 @@
 import memoize from 'memoizee';
 import BigNumber from 'bignumber.js';
-import { ZERO } from '../constants/numbers';
+import { ZERO } from 'modules/trade/constants/numbers';
 
 /**
  * Returns true if user has enough funds for trades, false otherwise

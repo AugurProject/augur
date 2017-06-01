@@ -11,6 +11,15 @@
 @animation-speed-fast: 300ms;
 @animation-speed-very-fast: 200ms;
 
+// For accessibility w/in JS
+body {
+  --animation-speed-very-fast: unit(@animation-speed-very-fast);
+  --animation-speed-slow: unit(@animation-speed-slow);
+  --animation-speed-normal: unit(@animation-speed-normal);
+  --animation-speed-fast: unit(@animation-speed-fast);
+  --animation-speed-very-fast: unit(@animation-speed-very-fast);
+}
+
 @animation-direction-up: 'up';
 @animation-direction-right: 'right';
 @animation-direction-down: 'down';
