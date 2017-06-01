@@ -6,7 +6,7 @@ import { BID, ASK } from 'modules/transactions/constants/types';
 
 describe('modules/market/selectors/helpers/generate-trade.js', () => {
   const { state } = mocks;
-  const { generateTrade } = require('../../../../src/modules/market/selectors/helpers/generate-trade');
+  const { generateTrade } = require('modules/trade/helpers/generate-trade');
   const trade = generateTrade(state.marketsData.testMarketID, state.outcomesData.testMarketID['1'], state.tradesInProgress.testMarketID, state.loginAccount, state.orderBooks.testMarketID);
 
   it('should generate trade object', () => {
