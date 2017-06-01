@@ -49,7 +49,7 @@ import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from 'modules/bi
 import getOrderBookSeries from 'modules/order-book/selectors/order-book-series';
 import getOutstandingShares from 'modules/market/selectors/helpers/get-outstanding-shares';
 
-import { generateTrade, generateTradeSummary } from 'modules/market/selectors/helpers/generate-trade';
+import { generateTrade, generateTradeSummary } from 'modules/trade/helpers/generate-trade';
 import hasUserEnoughFunds from 'modules/trade/helpers/has-user-enough-funds';
 import { generateOutcomePositionSummary, generateMarketsPositionsSummary } from 'modules/my-positions/selectors/my-positions-summary';
 
