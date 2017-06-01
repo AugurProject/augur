@@ -19,6 +19,8 @@ BigNumber.config({ ERRORS: false });
  */
 
 export default function (numShares, limitPrice, side, minValue, maxValue, type) {
+  if (numShares && limitPrice && side && minValue && maxValue && type) return null;
+
   //  If minValue is less than zero, set minValue and maxValue to both be greater than zero (but same range) to prevent division by zero when determining percents below
   const max = type === 'scalar' ? Math.abs(maxValue - minValue) : 1;
   const limit = type === 'scalar' ? Math.abs(limitPrice - minValue) : limitPrice;

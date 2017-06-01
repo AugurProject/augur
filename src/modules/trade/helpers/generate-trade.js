@@ -29,9 +29,7 @@ export const generateTrade = memoize((market, outcome, outcomeTradeInProgress, l
   const marketType = (market && market.type) || null;
   const minValue = (market && market.minValue) || null;
   const maxValue = (market && market.maxValue) || null;
-  const preOrderProfitLoss = ((numShares && limitPrice && side && minValue && maxValue && marketType) && (
-      calcOrderProfitLossPercents(numShares, limitPrice, side, minValue, maxValue, marketType)
-  )) || null;
+  const preOrderProfitLoss = calcOrderProfitLossPercents(numShares, limitPrice, side, minValue, maxValue, marketType);
 
   let maxNumShares;
   if (limitPrice != null) {
