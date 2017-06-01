@@ -26,7 +26,7 @@ export default function (numShares, limitPrice, side, minValue, maxValue, type) 
   const max = new BigNumber(type === SCALAR ? maxValue : 1);
   const min = new BigNumber(type === SCALAR ? minValue : 0);
   const limit = new BigNumber(limitPrice);
-  const totalCost = type === SCALAR ? min.minus(limit).abs() : limit.times(numShares);
+  const totalCost = type === SCALAR ? min.minus(limit).abs().times(numShares) : limit.times(numShares);
 
   const potentialEthProfit = side === BUY ?
     new BigNumber(max.minus(limit).abs()).times(numShares) :
