@@ -4,7 +4,9 @@ import mocks from 'test/mockStore';
 
 import { BID, ASK } from 'modules/transactions/constants/types';
 
-describe('modules/market/selectors/helpers/generate-trade.js', () => {
+import { formatEther, formatPercent } from 'utils/format-number';
+
+describe('modules/trade/helpers/generate-trade.js', () => {
   const { state } = mocks;
   const { generateTrade } = require('modules/trade/helpers/generate-trade');
   const trade = generateTrade(state.marketsData.testMarketID, state.outcomesData.testMarketID['1'], state.tradesInProgress.testMarketID, state.loginAccount, state.orderBooks.testMarketID);
@@ -22,6 +24,7 @@ describe('modules/market/selectors/helpers/generate-trade.js', () => {
         value: 0
       },
       limitPrice: '0.50',
+      numShares: 5000,
       maxNumShares: {
         denomination: ' shares',
         formatted: '0',
@@ -32,47 +35,10 @@ describe('modules/market/selectors/helpers/generate-trade.js', () => {
         roundedValue: 0,
         value: 0
       },
-      numShares: 5000,
-      potentialEthLoss: {
-        denomination: ' ETH',
-        formatted: '2,500.0000',
-        formattedValue: 2500,
-        full: '2,500.0000 ETH',
-        minimized: '2,500',
-        rounded: '2,500.0000',
-        roundedValue: 2500,
-        value: 2500
-      },
-      potentialEthProfit: {
-        denomination: ' ETH',
-        formatted: '2,500.0000',
-        formattedValue: 2500,
-        full: '2,500.0000 ETH',
-        minimized: '2,500',
-        rounded: '2,500.0000',
-        roundedValue: 2500,
-        value: 2500
-      },
-      potentialLossPercent: {
-        denomination: '%',
-        formatted: '100.0',
-        formattedValue: 100,
-        full: '100.0%',
-        minimized: '100',
-        rounded: '100',
-        roundedValue: 100,
-        value: 100
-      },
-      potentialProfitPercent: {
-        denomination: '%',
-        formatted: '100.0',
-        formattedValue: 100,
-        full: '100.0%',
-        minimized: '100',
-        rounded: '100',
-        roundedValue: 100,
-        value: 100
-      },
+      potentialEthProfit: formatEther(7500),
+      potentialEthLoss: formatEther(2500),
+      potentialProfitPercent: formatPercent(300),
+      potentialLossPercent: formatPercent(100),
       side: 'buy',
       totalCost: {
         denomination: ' ETH',
