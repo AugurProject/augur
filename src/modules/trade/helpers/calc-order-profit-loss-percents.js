@@ -20,8 +20,8 @@ BigNumber.config({ ERRORS: false });
 
 export default function (numShares, limitPrice, side, minValue, maxValue, type) {
   //  If minValue is less than zero, set minValue and maxValue to both be greater than zero (but same range) to prevent division by zero when determining percents below
-  const max = type !== 'scalar' ? 1 : Math.abs(maxValue - minValue);
-  const limit = type !== 'scalar' ? limitPrice : Math.abs(limitPrice - minValue);
+  const max = type === 'scalar' ? Math.abs(maxValue - minValue) : 1;
+  const limit = type === 'scalar' ? Math.abs(limitPrice - minValue) : limitPrice;
 
   const potentialEthProfit = side === BUY ?
     new BigNumber(max).minus(limit).times(numShares).toString() :
@@ -42,5 +42,4 @@ export default function (numShares, limitPrice, side, minValue, maxValue, type) 
     potentialProfitPercent,
     potentialLossPercent
   };
-
 }
