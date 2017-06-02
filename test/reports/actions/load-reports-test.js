@@ -15,8 +15,10 @@ describe('modules/reports/actions/load-reports.js', () => {
       const AugurJS = {
         augur: {
           accounts: t.state.augur.accounts,
-          getEventsToReportOn: () => {},
-          getMarkets: () => {}
+          api: {
+            ReportingThreshold: { getEventsToReportOn: () => {}, },
+            Events: { getMarkets: () => {} }
+          },
         }
       };
       const LoadMarketsInfo = {
@@ -34,11 +36,11 @@ describe('modules/reports/actions/load-reports.js', () => {
         './load-report': LoadReport,
         './load-report-descriptors': LoadReportDescriptors
       });
-      sinon.stub(AugurJS.augur, 'getEventsToReportOn', (branchID, period, account, index, cb) => {
-        cb(t.blockchain.eventsToReportOn[branchID]);
+      sinon.stub(AugurJS.augur.api.ReportingThreshold, 'getEventsToReportOn', (args, cb) => {
+        cb(t.blockchain.eventsToReportOn[args.branch]);
       });
-      sinon.stub(AugurJS.augur, 'getMarkets', (eventID, cb) => {
-        cb(t.blockchain.eventToMarkets[eventID]);
+      sinon.stub(AugurJS.augur.api.Events, 'getMarkets', (args, cb) => {
+        cb(t.blockchain.eventToMarkets[args.event]);
       });
       sinon.stub(LoadMarketsInfo, 'loadMarketsInfo', (marketIDs, cb) => (dispatch, getState) => {
         dispatch({ type: 'LOAD_MARKETS_INFO', marketIDs });
@@ -54,7 +56,7 @@ describe('modules/reports/actions/load-reports.js', () => {
       });
       store.dispatch(action.loadReports((e) => {
         assert.isNull(e);
-        console.log(JSON.stringify(store.getActions(), null, 4));
+        // console.log(JSON.stringify(store.getActions(), null, 4));
         t.assertions(store.getActions());
         store.clearActions();
         done();

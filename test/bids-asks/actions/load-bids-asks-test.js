@@ -1,14 +1,20 @@
 import { describe, it, beforeEach } from 'mocha';
+import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import mocks from 'test/mockStore';
 
 describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
   proxyquire.noPreserveCache().noCallThru();
-
   const getOrderBookChunkedStub = sinon.stub().yields({});
   const augurJsMock = {
-    augur: { getOrderBookChunked: getOrderBookChunkedStub }
+    augur: {
+      trading: {
+        orderBook: {
+          getOrderBookChunked: getOrderBookChunkedStub
+        }
+      }
+    }
   };
   const updateMarketOrderBookModule = {
     updateMarketOrderBook: mocks.actionCreator(),
@@ -23,7 +29,7 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
 
   beforeEach(() => {
     store.clearActions();
-    augurJsMock.augur.getOrderBookChunked.reset();
+    augurJsMock.augur.trading.orderBook.getOrderBookChunked.reset();
     updateMarketOrderBookModule.updateMarketOrderBook.reset();
     updateMarketOrderBookModule.clearMarketOrderBook.reset();
   });
@@ -31,7 +37,13 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
   describe('loadBidsAsks', () => {
     it(`should load orders for a market`, () => {
       store.dispatch(loadBidsAsksModule.loadBidsAsks('testMarketID', 0, null, {}, (orderBookChunk) => {}));
-      sinon.assert.calledOnce(augurJsMock.augur.getOrderBookChunked);
+      const expectedActions = [{
+        type: 'MOCK_ACTION'
+      }, {
+        type: 'MOCK_ACTION'
+      }];
+      assert.deepEqual(store.getActions(), expectedActions);
+      sinon.assert.calledOnce(augurJsMock.augur.trading.orderBook.getOrderBookChunked);
       sinon.assert.calledOnce(updateMarketOrderBookModule.updateMarketOrderBook);
       sinon.assert.calledOnce(updateMarketOrderBookModule.clearMarketOrderBook);
     });

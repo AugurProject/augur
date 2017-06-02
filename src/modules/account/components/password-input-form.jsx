@@ -1,8 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import encryptPrivateKeyWithPassword from 'modules/auth/actions/encrypt-privatekey-with-password';
 import generateDownloadAccountLink from 'modules/auth/actions/generate-download-account-link';
 
 export default class PasswordInputForm extends Component {
+
+  static propTypes = {
+    privateKey: PropTypes.array
+  }
 
   constructor(props) {
     super(props);
@@ -10,7 +14,8 @@ export default class PasswordInputForm extends Component {
       isReadyToDownload: false,
       downloadAccountDataString: undefined,
       downloadAccountFileName: undefined,
-      passwordInput: ''
+      passwordInput: '',
+      privateKey: props.privateKey
     };
     this.handleSubmitPasswordInput = this.handleSubmitPasswordInput.bind(this);
   }
@@ -19,6 +24,7 @@ export default class PasswordInputForm extends Component {
     e.preventDefault();
     encryptPrivateKeyWithPassword(
       this.state.passwordInput,
+      this.state.privateKey,
       keystore => this.setState({
         ...generateDownloadAccountLink(keystore.address, keystore),
         isReadyToDownload: true

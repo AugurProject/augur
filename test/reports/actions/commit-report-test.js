@@ -12,7 +12,15 @@ describe(`modules/reports/actions/commit-report.js`, () => {
   const test = (t) => {
     it(t.description, () => {
       const store = mockStore(t.state);
-      const AugurJS = { augur: { submitReportHash: () => {} } };
+      const AugurJS = {
+        augur: {
+          reporting: {
+            submitReportHash: () => {},
+            crypto: { makeHash: () => {} },
+            format: { fixReport: () => {} }
+          }
+        }
+      };
       const BytesToHex = {};
       const NextReportPage = {};
       const ReportEncryption = {};
@@ -22,10 +30,10 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         './next-report-page': NextReportPage,
         './report-encryption': ReportEncryption
       });
-      AugurJS.augur.fixReport = sinon.stub().returns('0xde0b6b3a7640000');
-      AugurJS.augur.makeHash = sinon.stub().returns('0xdeadbeef');
+      AugurJS.augur.reporting.format.fixReport = sinon.stub().returns('0xde0b6b3a7640000');
+      AugurJS.augur.reporting.crypto.makeHash = sinon.stub().returns('0xdeadbeef');
       ReportEncryption.encryptReport = sinon.stub().returns({ report: 0, salt: 0 });
-      sinon.stub(AugurJS.augur, 'submitReportHash', (o) => {
+      sinon.stub(AugurJS.augur.reporting, 'submitReportHash', (o) => {
         store.dispatch({ type: 'AUGURJS_SUBMIT_REPORT_HASH', params: JSON.parse(JSON.stringify(o)) });
         o.onSuccess({ hash: '0xdeadbeef', callReturn: '1' });
       });

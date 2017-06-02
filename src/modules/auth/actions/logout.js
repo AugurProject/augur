@@ -6,7 +6,6 @@ export function logout() {
     const localStorageRef = typeof window !== 'undefined' && window.localStorage;
     augur.accounts.logout();
     if (localStorageRef && localStorageRef.removeItem) {
-      localStorageRef.removeItem('account');
       localStorageRef.removeItem('airbitz.current_user');
       localStorageRef.removeItem('airbitz.users');
     }

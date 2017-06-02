@@ -256,10 +256,12 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
       assertions: (store) => {
         const mockAugur = {
           augur: {
-            getAdjustedPositions: () => {}
+            trading: {
+              positions: { getAdjustedPositions: () => {} }
+            }
           }
         };
-        sinon.stub(mockAugur.augur, 'getAdjustedPositions', (account, { market }, cb) => cb(true));
+        sinon.stub(mockAugur.augur.trading.positions, 'getAdjustedPositions', (args, cb) => cb(true));
 
         const action = proxyquire('../../../src/modules/my-positions/actions/update-account-trades-data', {
           '../../transactions/actions/convert-logs-to-transactions': mockConvertTradeLogsToTransactions,
@@ -300,10 +302,12 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
       assertions: (store) => {
         const mockAugur = {
           augur: {
-            getAdjustedPositions: () => {}
+            trading: {
+              positions: { getAdjustedPositions: () => {} }
+            }
           }
         };
-        sinon.stub(mockAugur.augur, 'getAdjustedPositions', (account, { market }, cb) => cb(null, {}));
+        sinon.stub(mockAugur.augur.trading.positions, 'getAdjustedPositions', (args, cb) => cb(null, {}));
 
         const action = proxyquire('../../../src/modules/my-positions/actions/update-account-trades-data', {
           '../../transactions/actions/convert-logs-to-transactions': mockConvertTradeLogsToTransactions,

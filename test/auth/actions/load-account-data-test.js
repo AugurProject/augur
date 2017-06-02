@@ -34,6 +34,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         './update-assets': UpdateAssets,
         './update-login-account': UpdateLoginAccount
       });
+
       DisplayTopicsPage.displayTopicsPage = sinon.stub().returns({
         type: 'DISPLAY_TOPICS_PAGE'
       });
@@ -177,19 +178,13 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         type: 'LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE'
       }, {
         type: 'UPDATE_LOGIN_ACCOUNT',
-        data: { address: '0xb0b' }
-      }, {
-        type: 'UPDATE_LOGIN_ACCOUNT',
-        data: { isUnlocked: true }
-      }, {
-        type: 'UPDATE_LOGIN_ACCOUNT',
-        data: { loginID: 'loginID' }
-      }, {
-        type: 'UPDATE_LOGIN_ACCOUNT',
-        data: { name: 'jack' }
-      }, {
-        type: 'UPDATE_LOGIN_ACCOUNT',
-        data: { airbitzAccount: { username: 'jack' } }
+        data: {
+          address: '0xb0b',
+          loginID: 'loginID',
+          name: 'jack',
+          isUnlocked: true,
+          airbitzAccount: { username: 'jack' }
+        }
       }, {
         type: 'DISPLAY_TOPICS_PAGE'
       }, {
@@ -215,10 +210,10 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
         type: 'LOAD_ACCOUNT_DATA_FROM_LOCAL_STORAGE'
       }, {
         type: 'UPDATE_LOGIN_ACCOUNT',
-        data: { address: '0xb0b' }
-      }, {
-        type: 'UPDATE_LOGIN_ACCOUNT',
-        data: { loginID: 'loginID' }
+        data: {
+          address: '0xb0b',
+          loginID: 'loginID'
+        }
       }, {
         type: 'DISPLAY_TOPICS_PAGE'
       }, {

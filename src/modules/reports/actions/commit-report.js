@@ -23,7 +23,7 @@ export const commitReport = (market, reportedOutcomeID, isUnethical, isIndetermi
   const branchID = branch.id;
   console.log(`committing to report ${reportedOutcomeID} on market ${market.id} event ${eventID} period ${branch.reportPeriod}...`);
   const salt = bytesToHex(secureRandom(32));
-  const fixedReport = augur.fixReport(reportedOutcomeID, market.minValue, market.maxValue, market.type, isIndeterminate);
+  const fixedReport = augur.reporting.format.fixReport(reportedOutcomeID, market.minValue, market.maxValue, market.type, isIndeterminate);
   const report = {
     eventID,
     marketID: market.id,
@@ -34,13 +34,13 @@ export const commitReport = (market, reportedOutcomeID, isUnethical, isIndetermi
     isUnethical,
     isIndeterminate,
     salt,
-    reportHash: augur.makeHash(salt, fixedReport, eventID, loginAccount.address),
+    reportHash: augur.reporting.crypto.makeHash(salt, fixedReport, eventID, loginAccount.address),
     isCommitted: false,
     isRevealed: false
   };
   const encrypted = encryptReport(fixedReport, salt);
   dispatch(updateReport(branchID, eventID, { ...report }));
-  augur.submitReportHash({
+  augur.reporting.submitReportHash({
     event: eventID,
     reportHash: report.reportHash,
     encryptedReport: encrypted.report,

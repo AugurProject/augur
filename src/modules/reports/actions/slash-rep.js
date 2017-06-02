@@ -2,7 +2,7 @@ import { augur } from 'services/augurjs';
 import { updateAssets } from 'modules/auth/actions/update-assets';
 
 export const slashRep = (market, salt, report, reporter, isIndeterminate, isUnethical) => (
-  dispatch => augur.slashRep({
+  dispatch => augur.reporting.slashRep({
     branch: market.branchID,
     salt,
     report,

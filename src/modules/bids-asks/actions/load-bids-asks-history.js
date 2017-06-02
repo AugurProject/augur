@@ -1,25 +1,31 @@
 import async from 'async';
 import { augur, constants } from 'services/augurjs';
 import { updateAccountBidsAsksData, updateAccountCancelsData } from 'modules/my-positions/actions/update-account-trades-data';
+import logError from 'utils/log-error';
 
-export function loadBidsAsksHistory(options, cb) {
-  return (dispatch, getState) => {
-    const callback = cb || (e => e && console.error('loadBidsAsksHistory:', e));
-    const { loginAccount } = getState();
-    const params = {
-      ...options,
-      sender: loginAccount.address
-    };
-    if (!params.fromBlock && loginAccount.registerBlockNumber) {
-      params.fromBlock = loginAccount.registerBlockNumber;
-    }
-    async.parallelLimit([
-      next => augur.getLogsChunked('log_add_tx', params, { index: ['market', 'outcome'] }, (logs) => {
-        dispatch(updateAccountBidsAsksData(logs, params.market));
-      }, next),
-      next => augur.getLogsChunked('log_cancel', params, { index: ['market', 'outcome'] }, (logs) => {
-        dispatch(updateAccountCancelsData(logs, params.market));
-      }, next)
-    ], constants.PARALLEL_LIMIT, callback);
+export const loadBidsAsksHistory = (options, callback = logError) => (dispatch, getState) => {
+  const { loginAccount } = getState();
+  const filter = {
+    ...options,
+    sender: loginAccount.address
   };
-}
+  if (!filter.fromBlock && loginAccount.registerBlockNumber) {
+    filter.fromBlock = loginAccount.registerBlockNumber;
+  }
+  async.parallelLimit([
+    next => augur.logs.getLogsChunked({
+      label: 'log_add_tx',
+      filter,
+      aux: { index: ['market', 'outcome'] }
+    }, (logs) => {
+      dispatch(updateAccountBidsAsksData(logs, filter.market));
+    }, next),
+    next => augur.logs.getLogsChunked({
+      label: 'log_cancel',
+      filter,
+      aux: { index: ['market', 'outcome'] }
+    }, (logs) => {
+      dispatch(updateAccountCancelsData(logs, filter.market));
+    }, next)
+  ], constants.PARALLEL_LIMIT, callback);
+};

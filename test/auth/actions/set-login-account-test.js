@@ -20,19 +20,12 @@ describe(`modules/auth/actions/set-login-account.js`, () => {
           from: t.state.augur.from
         }
       };
-      const LoadAccountData = { loadAccountData: () => {} };
       const UseUnlockedAccount = { useUnlockedAccount: () => {} };
       const action = proxyquire('../../../src/modules/auth/actions/set-login-account.js', {
         '../../../services/augurjs': AugurJS,
-        './load-account-data': LoadAccountData,
         './use-unlocked-account': UseUnlockedAccount
       });
-      sinon.stub(LoadAccountData, 'loadAccountData', account => (dispatch) => {
-        dispatch({ type: 'LOAD_FULL_ACCOUNT_DATA', account });
-      });
-      sinon.stub(UseUnlockedAccount, 'useUnlockedAccount', unlockedAddress => (dispatch) => {
-        dispatch({ type: 'USE_UNLOCKED_ACCOUNT', unlockedAddress });
-      });
+      sinon.stub(UseUnlockedAccount, 'useUnlockedAccount', account => ({ type: 'USE_UNLOCKED_ACCOUNT', account }));
       store.dispatch(action.setLoginAccount(t.params.autoLogin));
       t.assertions(store.getActions());
       store.clearActions();
@@ -49,7 +42,8 @@ describe(`modules/auth/actions/set-login-account.js`, () => {
           account: {}
         },
         from: null
-      }
+      },
+      coinbase: '0xb0b'
     },
     assertions: (actions) => {
       assert.deepEqual(actions, []);
@@ -69,13 +63,11 @@ describe(`modules/auth/actions/set-login-account.js`, () => {
           },
           from: null
         }
-      }
+      },
+      coinbase: '0xb0b'
     },
     assertions: (actions) => {
-      assert.deepEqual(actions, [{
-        type: 'LOAD_FULL_ACCOUNT_DATA',
-        account: { address: '0xb0b' }
-      }]);
+      assert.deepEqual(actions, []);
     }
   });
   test({
@@ -92,13 +84,11 @@ describe(`modules/auth/actions/set-login-account.js`, () => {
           },
           from: '0xd00d'
         }
-      }
+      },
+      coinbase: '0xb0b'
     },
     assertions: (actions) => {
-      assert.deepEqual(actions, [{
-        type: 'LOAD_FULL_ACCOUNT_DATA',
-        account: { address: '0xb0b' }
-      }]);
+      assert.deepEqual(actions, []);
     }
   });
   test({
@@ -113,11 +103,12 @@ describe(`modules/auth/actions/set-login-account.js`, () => {
         },
         from: '0xd00d'
       },
+      coinbase: '0xb0b'
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
         type: 'USE_UNLOCKED_ACCOUNT',
-        unlockedAddress: '0xd00d'
+        account: '0xb0b'
       }]);
     }
   });

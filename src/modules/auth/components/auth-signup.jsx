@@ -21,7 +21,6 @@ export default class AuthSignup extends Component {
       passwordSuggestions: [],
       isStrongPass: false,
       isGeneratingLoginID: false,
-      rememberMe: true,
       loginID: null,
       authError: false,
       errorMessage: null,
@@ -123,7 +122,7 @@ export default class AuthSignup extends Component {
           e.preventDefault();
           e.persist();
 
-          p.setupAndFundNewAccount(s.password, loginID, s.rememberMe, (err) => {
+          p.setupAndFundNewAccount(s.password, loginID, (err) => {
             if (err) {
               this.setState({
                 authError: true,
@@ -236,20 +235,6 @@ export default class AuthSignup extends Component {
             value={loginID}
             readOnly
           />
-          <label // eslint-disable-line jsx-a11y/no-static-element-interactions
-            className="auth-signup-remember-me"
-            htmlFor="remember_me_input"
-          >
-            Remember Me:
-            <input
-              id="remember_me_input"
-              type="checkbox"
-              checked={s.rememberMe}
-              onChange={(e) => {
-                this.setState({ rememberMe: e.target.checked });
-              }}
-            />
-          </label>
           <button
             className="submit"
             disabled={!s.loginID}

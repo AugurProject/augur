@@ -6,6 +6,7 @@ import { ModalContainer, ModalDialog } from 'react-modal-dialog';
 import Link from 'modules/link/components/link';
 import Input from 'modules/common/components/input';
 import PasswordInputForm from 'modules/account/components/password-input-form';
+import getValue from 'utils/get-value';
 
 const QRCode = require('qrcode.react');
 
@@ -341,7 +342,7 @@ export default class AccountPage extends Component {
                   {s.isShowingPasswordInputModal &&
                     <ModalContainer onClose={this.handleModalClose}>
                       <ModalDialog onClose={this.handleModalClose}>
-                        <PasswordInputForm />
+                        <PasswordInputForm privateKey={getValue(p, 'loginAccount.privateKey')} />
                       </ModalDialog>
                     </ModalContainer>
                   }

@@ -1,18 +1,18 @@
 import async from 'async';
 import { augur, constants } from 'services/augurjs';
 import { convertLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
+import logError from 'utils/log-error';
 
-export function loadReportingHistory(options, cb) {
+export function loadReportingHistory(options, callback = logError) {
   return (dispatch, getState) => {
-    const callback = cb || (e => e && console.error('loadReportingHistory:', e));
     const { branch, loginAccount } = getState();
-    const params = {
+    const filter = {
       ...options,
       sender: loginAccount.address,
       branch: branch.id
     };
-    if (!params.fromBlock && loginAccount.registerBlockNumber) {
-      params.fromBlock = loginAccount.registerBlockNumber;
+    if (!filter.fromBlock && loginAccount.registerBlockNumber) {
+      filter.fromBlock = loginAccount.registerBlockNumber;
     }
     async.eachLimit([
       'collectedFees',
@@ -22,13 +22,17 @@ export function loadReportingHistory(options, cb) {
       'submittedReportHash',
       'slashedRep'
     ], constants.PARALLEL_LIMIT, (label, nextLabel) => {
-      augur.getLogsChunked(label, params, null, (logs) => {
-        if (logs && logs.length) dispatch(convertLogsToTransactions(label, logs));
+      augur.logs.getLogsChunked({ label, filter, aux: null }, (logs) => {
+        if (Array.isArray(logs) && logs.length) dispatch(convertLogsToTransactions(label, logs));
       }, nextLabel);
     }, (err) => {
       if (err) return callback(err);
-      augur.getLogsChunked('slashedRep', { ...params, sender: null, reporter: loginAccount.address }, null, (logs) => {
-        if (logs && logs.length) dispatch(convertLogsToTransactions('slashedRep', logs));
+      augur.logs.getLogsChunked({
+        label: 'slashedRep',
+        filter: { ...filter, sender: null, reporter: loginAccount.address },
+        aux: null
+      }, (logs) => {
+        if (Array.isArray(logs) && logs.length) dispatch(convertLogsToTransactions('slashedRep', logs));
       }, callback);
     });
   };

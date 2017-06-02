@@ -25,18 +25,20 @@ describe('modules/my-positions/actions/load-account-trades.js', () => {
     const { loadAccountTrades, __RewireAPI__ } = require('modules/my-positions/actions/load-account-trades');
 
     const mockAugur = {
-      getAccountTrades: () => {},
-      getLogsChunked: () => {},
-      getBuyCompleteSetsLogs: () => {},
-      parseCompleteSetsLogs: sinon.stub().returns(true)
+      logs: {
+        getAccountTrades: () => {},
+        getLogsChunked: () => {},
+        getBuyCompleteSetsLogs: () => {},
+        parseCompleteSetsLogs: sinon.stub().returns(true)
+      }
     };
-    sinon.stub(mockAugur, 'getAccountTrades', (account, params, cb) => {
+    sinon.stub(mockAugur.logs, 'getAccountTrades', (filter, cb) => {
       cb(null, []);
     });
-    sinon.stub(mockAugur, 'getLogsChunked', (type, params, notUsed, cb) => {
+    sinon.stub(mockAugur.logs, 'getLogsChunked', (filter, cb) => {
       cb(['test']);
     });
-    sinon.stub(mockAugur, 'getBuyCompleteSetsLogs', (account, params, cb) => {
+    sinon.stub(mockAugur.logs, 'getBuyCompleteSetsLogs', (filter, cb) => {
       cb(null, {});
     });
 
@@ -73,10 +75,10 @@ describe('modules/my-positions/actions/load-account-trades.js', () => {
     }));
 
     beforeEach(() => {
-      mockAugur.getAccountTrades.reset();
-      mockAugur.getLogsChunked.reset();
-      mockAugur.getBuyCompleteSetsLogs.reset();
-      mockAugur.parseCompleteSetsLogs.reset();
+      mockAugur.logs.getAccountTrades.reset();
+      mockAugur.logs.getLogsChunked.reset();
+      mockAugur.logs.getBuyCompleteSetsLogs.reset();
+      mockAugur.logs.parseCompleteSetsLogs.reset();
     });
 
     test({
@@ -134,10 +136,10 @@ describe('modules/my-positions/actions/load-account-trades.js', () => {
         ];
 
         assert.deepEqual(actualActions, expectedActions, `Didn't dispatch the expected actions`);
-        assert.isTrue(mockAugur.getAccountTrades.calledOnce, `Didn't call 'getAccountTrades' once as expected`);
-        assert.isTrue(mockAugur.getLogsChunked.calledOnce, `Didn't call 'getLogsChunked' once as expected`);
-        assert.isTrue(mockAugur.getBuyCompleteSetsLogs.calledOnce, `Didn't call 'getBuyCompleteSetsLogs' once as expected`);
-        assert.isTrue(mockAugur.parseCompleteSetsLogs.calledOnce, `Didn't call 'parseCompleteSetsLogs' once as expected`);
+        assert.isTrue(mockAugur.logs.getAccountTrades.calledOnce, `Didn't call 'getAccountTrades' once as expected`);
+        assert.isTrue(mockAugur.logs.getLogsChunked.calledOnce, `Didn't call 'getLogsChunked' once as expected`);
+        assert.isTrue(mockAugur.logs.getBuyCompleteSetsLogs.calledOnce, `Didn't call 'getBuyCompleteSetsLogs' once as expected`);
+        assert.isTrue(mockAugur.logs.parseCompleteSetsLogs.calledOnce, `Didn't call 'parseCompleteSetsLogs' once as expected`);
       }
     });
 
@@ -179,10 +181,10 @@ describe('modules/my-positions/actions/load-account-trades.js', () => {
         ];
 
         assert.deepEqual(actualActions, expectedActions, `Didn't dispatch the expected actions`);
-        assert.isTrue(mockAugur.getAccountTrades.calledOnce, `Didn't call 'getAccountTrades' once as expected`);
-        assert.isTrue(mockAugur.getLogsChunked.calledOnce, `Didn't call 'getLogsChunked' once as expected`);
-        assert.isTrue(mockAugur.getBuyCompleteSetsLogs.calledOnce, `Didn't call 'getBuyCompleteSetsLogs' once as expected`);
-        assert.isTrue(mockAugur.parseCompleteSetsLogs.calledOnce, `Didn't call 'parseCompleteSetsLogs' once as expected`);
+        assert.isTrue(mockAugur.logs.getAccountTrades.calledOnce, `Didn't call 'getAccountTrades' once as expected`);
+        assert.isTrue(mockAugur.logs.getLogsChunked.calledOnce, `Didn't call 'getLogsChunked' once as expected`);
+        assert.isTrue(mockAugur.logs.getBuyCompleteSetsLogs.calledOnce, `Didn't call 'getBuyCompleteSetsLogs' once as expected`);
+        assert.isTrue(mockAugur.logs.parseCompleteSetsLogs.calledOnce, `Didn't call 'parseCompleteSetsLogs' once as expected`);
       }
     });
 
@@ -197,9 +199,9 @@ describe('modules/my-positions/actions/load-account-trades.js', () => {
       assertions: (store) => {
         const callback = sinon.stub();
 
-        mockAugur.getAccountTrades.restore();
+        mockAugur.logs.getAccountTrades.restore();
 
-        sinon.stub(mockAugur, 'getAccountTrades', (account, params, cb) => {
+        sinon.stub(mockAugur.logs, 'getAccountTrades', (filter, cb) => {
           cb(true);
         });
 
@@ -225,10 +227,10 @@ describe('modules/my-positions/actions/load-account-trades.js', () => {
         ];
 
         assert.deepEqual(actualActions, expectedActions, `Didn't dispatch the expected actions`);
-        assert.isTrue(mockAugur.getAccountTrades.calledOnce, `Didn't call 'getAccountTrades' once as expected`);
-        assert.isTrue(mockAugur.getLogsChunked.calledOnce, `Didn't call 'getLogsChunked' once as expected`);
-        assert.isTrue(mockAugur.getBuyCompleteSetsLogs.calledOnce, `Didn't call 'getBuyCompleteSetsLogs' once as expected`);
-        assert.isTrue(mockAugur.parseCompleteSetsLogs.calledOnce, `Didn't call 'parseCompleteSetsLogs' once as expected`);
+        assert.isTrue(mockAugur.logs.getAccountTrades.calledOnce, `Didn't call 'getAccountTrades' once as expected`);
+        assert.isTrue(mockAugur.logs.getLogsChunked.calledOnce, `Didn't call 'getLogsChunked' once as expected`);
+        assert.isTrue(mockAugur.logs.getBuyCompleteSetsLogs.calledOnce, `Didn't call 'getBuyCompleteSetsLogs' once as expected`);
+        assert.isTrue(mockAugur.logs.parseCompleteSetsLogs.calledOnce, `Didn't call 'parseCompleteSetsLogs' once as expected`);
         assert.isTrue(callback.calledOnce, `Didn't call the callback once as expected`);
       }
     });

@@ -60,12 +60,13 @@ export default class CreateMarketReview extends Component {
   calculateMarketCreationCosts() {
     const gasPrice = rpc.gasPrice || constants.DEFAULT_GASPRICE;
 
-    const gasCost = formatRealEtherEstimate(augur.getTxGasEth({ ...augur.api.functions.CreateMarket.createMarket }, gasPrice));
-    const creationFee = formatRealEtherEstimate(abi.unfix(augur.calculateRequiredMarketValue(gasPrice)));
+    // TODO augur.api.functions -> getState().functionsAPI
+    const gasCost = formatRealEtherEstimate(augur.trading.simulation.getTxGasEth({ ...augur.api.CreateMarket.createMarket }, gasPrice));
+    const creationFee = formatRealEtherEstimate(abi.unfix(augur.create.calculateRequiredMarketValue(gasPrice)));
 
     // Event Bond
-    const tradingFee = augur.calculateTradingFees(this.props.makerFee, this.props.takerFee).tradingFee;
-    const validityBond = augur.calculateValidityBond(tradingFee, this.props.branch.periodLength, this.props.branch.baseReporters, this.props.branch.numEventsCreatedInPast24Hours, this.props.branch.numEventsInReportPeriod);
+    const tradingFee = augur.trading.fees.calculateTradingFees(this.props.makerFee, this.props.takerFee).tradingFee;
+    const validityBond = augur.create.calculateValidityBond(tradingFee, this.props.branch.periodLength, this.props.branch.baseReporters, this.props.branch.numEventsCreatedInPast24Hours, this.props.branch.numEventsInReportPeriod);
     const eventBond = formatEtherEstimate(validityBond);
 
     this.setState({

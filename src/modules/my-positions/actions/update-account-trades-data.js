@@ -45,7 +45,10 @@ export function updateAccountTradesData(data, marketID) {
     const { loginAccount } = getState();
     const account = loginAccount.address;
     Object.keys(data).forEach((market) => {
-      augur.getAdjustedPositions(account, { market }, (err, positions) => {
+      augur.trading.positions.getAdjustedPositions({
+        account,
+        filter: { market }
+      }, (err, positions) => {
         if (err) return console.error('getAdjustedPositions error: ', err);
         dispatch(updateAccountPositionsData(positions, market));
         dispatch(loadBidsAsksHistory({ market }));

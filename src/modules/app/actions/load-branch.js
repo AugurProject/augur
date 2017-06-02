@@ -10,7 +10,7 @@ import { clearMarketsData } from 'modules/markets/actions/update-markets-data';
 
 export const loadBranch = branchID => (dispatch, getState) => {
   dispatch(clearMarketsData());
-  augur.loadBranch(branchID, (err, branch) => {
+  augur.reporting.loadBranch(branchID, (err, branch) => {
     if (err) return console.log('ERROR loadBranch', err);
     dispatch(updateBranch(branch));
     dispatch(updateBranch(getReportingCycle()));

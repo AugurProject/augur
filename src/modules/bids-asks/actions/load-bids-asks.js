@@ -1,9 +1,9 @@
 import { augur } from 'services/augurjs';
 import { SCALAR } from 'modules/markets/constants/market-types';
 import { clearMarketOrderBook, updateMarketOrderBook } from 'modules/bids-asks/actions/update-market-order-book';
+import logError from 'utils/log-error';
 
-export const loadBidsAsks = (marketID, cb) => (dispatch, getState) => {
-  const callback = cb || (e => e && console.error('loadBidsAsks:', e));
+export const loadBidsAsks = (marketID, callback = logError) => (dispatch, getState) => {
   const market = getState().marketsData[marketID];
   const scalarMinMax = {};
   if (market.type === SCALAR) {
@@ -11,7 +11,13 @@ export const loadBidsAsks = (marketID, cb) => (dispatch, getState) => {
     scalarMinMax.maxValue = market.maxValue;
   }
   let firstChunkLoaded;
-  augur.getOrderBookChunked(marketID, 0, null, scalarMinMax, null, (orderBookChunk) => {
+  augur.trading.orderBook.getOrderBookChunked({
+    marketID,
+    offset: 0,
+    numTradesToLoad: null,
+    scalarMinMax,
+    totalTrades: null
+  }, (orderBookChunk) => {
     console.log('order book chunk:', marketID, orderBookChunk);
     if (!firstChunkLoaded) {
       firstChunkLoaded = true;

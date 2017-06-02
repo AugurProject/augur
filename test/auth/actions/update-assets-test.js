@@ -9,10 +9,10 @@ describe(`modules/auth/actions/update-assets.js`, () => {
   proxyquire.noPreserveCache().noCallThru();
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
-  const fakeAugurJS = { augur: {} };
+  const fakeAugurJS = { augur: { assets: {} } };
   const thisTestState = Object.assign({}, testState);
   const store = mockStore(thisTestState);
-  fakeAugurJS.augur.loadAssets = (BRANCH_ID, loginID, cbEther, cbRep, cbRealEther) => {
+  fakeAugurJS.augur.assets.loadAssets = (data, cbEther, cbRep, cbRealEther) => {
     cbEther(null, 500);
     cbRep(null, 25);
     cbRealEther(null, 100);

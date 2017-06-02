@@ -14,7 +14,16 @@ describe(`modules/branch/actions/sync-branch.js`, () => {
     it(t.description, () => {
       const state = Object.assign({}, testState, t.state);
       const store = mockStore(state);
-      const AugurJS = { augur: {} };
+      const AugurJS = {
+        augur: {
+          api: {
+            ConsensusData: {},
+            Branches: {},
+            Events: {},
+            ExpiringEvents: {}
+          }
+        }
+      };
       const CheckPeriod = { checkPeriod: () => {} };
       const ClaimProceeds = {};
       const ReportingCycle = {};
@@ -28,13 +37,13 @@ describe(`modules/branch/actions/sync-branch.js`, () => {
         '../../auth/actions/update-assets': UpdateAssets,
         './update-branch': UpdateBranch
       });
-      AugurJS.augur.getVotePeriod = sinon.stub().yields(19);
-      AugurJS.augur.getVotePeriod.onCall(1).yields(15);
-      AugurJS.augur.getVotePeriod.onCall(2).yields(18);
-      AugurJS.augur.getPenalizedUpTo = sinon.stub().yields('10');
-      AugurJS.augur.getFeesCollected = sinon.stub().yields('1');
-      AugurJS.augur.getPast24 = sinon.stub().yields('2');
-      AugurJS.augur.getNumberEvents = sinon.stub().yields('6');
+      AugurJS.augur.api.Branches.getVotePeriod = sinon.stub().yields(19);
+      AugurJS.augur.api.Branches.getVotePeriod.onCall(1).yields(15);
+      AugurJS.augur.api.Branches.getVotePeriod.onCall(2).yields(18);
+      AugurJS.augur.api.ConsensusData.getPenalizedUpTo = sinon.stub().yields('10');
+      AugurJS.augur.api.ConsensusData.getFeesCollected = sinon.stub().yields('1');
+      AugurJS.augur.api.Events.getPast24 = sinon.stub().yields('2');
+      AugurJS.augur.api.ExpiringEvents.getNumberEvents = sinon.stub().yields('6');
       ClaimProceeds.claimProceeds = sinon.stub().returns({ type: 'CLAIM_PROCEEDS' });
       sinon.stub(CheckPeriod, 'checkPeriod', (unlock, cb) => (dispatch, getState) => {
         const reportPeriod = 19;

@@ -13,8 +13,8 @@ export const selectReportingCycle = createSelector(
   selectBranchPeriodLength,
   selectBlockchainCurrentBlockTimestamp,
   (periodLength, timestamp) => {
-    const currentPeriod = augur.getCurrentPeriod(periodLength, timestamp);
-    const currentPeriodProgress = augur.getCurrentPeriodProgress(periodLength, timestamp);
+    const currentPeriod = augur.reporting.getCurrentPeriod(periodLength, timestamp);
+    const currentPeriodProgress = augur.reporting.getCurrentPeriodProgress(periodLength, timestamp);
     const isReportRevealPhase = currentPeriodProgress > 50;
     const bnPeriodLength = abi.bignum(periodLength);
     const secondsRemaining = ONE.minus(abi.bignum(currentPeriodProgress).dividedBy(100)).times(bnPeriodLength);

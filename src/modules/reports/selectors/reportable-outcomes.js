@@ -40,7 +40,7 @@ export function selectOutcomeName(outcomeID, eventType, marketOutcomesData = {})
 }
 
 export function formatReportedOutcome(rawReportedOutcome, minValue, maxValue, eventType, marketOutcomesData = {}) {
-  const report = augur.unfixReport(rawReportedOutcome, minValue, maxValue, eventType);
+  const report = augur.reporting.format.unfixReport(rawReportedOutcome, minValue, maxValue, eventType);
   const outcomeName = report.isIndeterminate ? INDETERMINATE_OUTCOME_NAME : selectOutcomeName(report.report, eventType, marketOutcomesData || {});
   return outcomeName;
 }

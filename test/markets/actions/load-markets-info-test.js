@@ -13,7 +13,7 @@ describe(`modules/markets/actions/load-markets-info.js`, () => {
   const state = Object.assign({}, testState);
   const store = mockStore(state);
   const mockAugurJS = {
-    augur: { batchGetMarketInfo: () => {} }
+    augur: { markets: { batchGetMarketInfo: () => {} } }
   };
   const mockLoadFullMarket = {};
   const mockLoadMarketCreatorFees = {};
@@ -30,7 +30,7 @@ describe(`modules/markets/actions/load-markets-info.js`, () => {
     store.clearActions();
   });
 
-  sinon.stub(mockAugurJS.augur, `batchGetMarketInfo`, (marketIDs, account, cb) => {
+  sinon.stub(mockAugurJS.augur.markets, `batchGetMarketInfo`, (args, cb) => {
     cb({
       test123: {
         author: '0x0000000000000000000000000000000000000001',

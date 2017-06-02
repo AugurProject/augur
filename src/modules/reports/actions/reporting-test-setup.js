@@ -13,7 +13,7 @@ export const reportingTestSetup = branchID => (dispatch, getState) => {
   console.warn('Found reportingTest=true in env.json');
   console.info('*** STARTING REPORTING SETUP SEQUENCE ***');
   dispatch({ type: REPORTING_TEST_SETUP, data: { periodLength } });
-  AugurJS.reportingTestSetup(periodLength, branchID, (err, step, branchID) => {
+  AugurJS.reportingTestSetup(getState().loginAccount.address, periodLength, branchID, (err, step, branchID) => {
     if (err) return console.error('reportingTestSetup failed:', err);
     console.info('*** REPORTING SETUP STEP', step, 'COMPLETE***');
     if (branchID) return dispatch(loadBranch(branchID));

@@ -14,7 +14,7 @@ import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR } from 'm
 
 export function submitNewMarket(newMarket) {
   return (dispatch, getState) => {
-    const { branch } = getState();
+    const { branch, loginAccount } = getState();
 
     // General Properties
     const formattedNewMarket = {
@@ -51,8 +51,9 @@ export function submitNewMarket(newMarket) {
         formattedNewMarket.numOutcomes = 2;
     }
 
-    augur.createSingleEventMarket({
+    augur.create.createSingleEventMarket({
       ...formattedNewMarket,
+      _signer: loginAccount.privateKey,
       onSent: (res) => {
         console.log('createSingleEventMarket sent:', res);
 

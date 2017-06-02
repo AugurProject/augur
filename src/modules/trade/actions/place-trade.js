@@ -11,7 +11,8 @@ export const placeTrade = (marketID, outcomeID, trades, doNotMakeOrders, cb) => 
     console.error(`trade-in-progress not found for ${marketID} ${outcomeID}`);
     return dispatch(clearTradeInProgress(marketID));
   }
-  const tradeGroupID = augur.executeTradingActions(
+  const tradeGroupID = augur.trading.group.executeTradingActions(
+    { _signer: loginAccount.privateKey },
     market,
     outcomeID,
     loginAccount.address,

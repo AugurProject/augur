@@ -10,7 +10,7 @@ export function loadReport(branchID, period, eventID, marketID, callback) {
       console.error('loadReport failed:', branchID, marketID, market);
       return callback(null);
     }
-    augur.getReport(branchID, period, eventID, loginAccount.address, market.minValue, market.maxValue, market.type, (report) => {
+    augur.reporting.getReport(branchID, period, eventID, loginAccount.address, market.minValue, market.maxValue, market.type, (report) => {
       console.log('got report:', report);
       if (!report || !report.report || report.error) {
         return callback(report || 'getReport failed');
@@ -30,7 +30,12 @@ export function loadReport(branchID, period, eventID, marketID, callback) {
         }));
         return callback(null);
       }
-      augur.getReportHash(branchID, period, loginAccount.address, eventID, (reportHash) => {
+      augur.api.ExpiringEvents.getReportHash({
+        branch: branchID,
+        expDateIndex: period,
+        reporter: loginAccount.address,
+        event: eventID
+      }, (reportHash) => {
         if (!reportHash || reportHash.error || !parseInt(reportHash, 16)) {
           console.log('reportHash:', reportHash);
           dispatch(updateReport(branchID, eventID, {
@@ -45,11 +50,11 @@ export function loadReport(branchID, period, eventID, marketID, callback) {
           }));
           return callback(null);
         }
-        decryptReport(branchID, period, eventID, (err, decryptedReport) => {
+        dispatch(decryptReport(branchID, period, eventID, (err, decryptedReport) => {
           if (err) return callback(err);
           console.log('decryptedReport:', decryptedReport);
           if (decryptedReport.reportedOutcomeID) {
-            const { report, isIndeterminate } = augur.unfixReport(
+            const { report, isIndeterminate } = augur.reporting.format.unfixReport(
               decryptedReport.reportedOutcomeID,
               market.minValue,
               market.maxValue,
@@ -68,7 +73,7 @@ export function loadReport(branchID, period, eventID, marketID, callback) {
             isCommitted: true
           }));
           callback(null);
-        });
+        }));
       });
     });
   };
