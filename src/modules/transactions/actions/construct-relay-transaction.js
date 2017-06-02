@@ -228,8 +228,12 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
       let isEmptyTrade;
       let notification;
       if (status === 'success') {
-        const unmatchedCash = abi.unfix_signed(tx.response.callReturn[1]);
-        const unmatchedShares = abi.unfix(tx.response.callReturn[2]);
+        let unmatchedCash = ZERO;
+        let unmatchedShares = ZERO;
+        if (tx.response.callReturn && Array.isArray(tx.response.callReturn)) {
+          unmatchedCash = abi.unfix_signed(tx.response.callReturn[1]);
+          unmatchedShares = abi.unfix(tx.response.callReturn[2]);
+        }
         isEmptyTrade = unmatchedCash.eq(abi.unfix_signed(p.max_value)) && unmatchedShares.eq(abi.unfix(p.max_amount));
       }
       for (let i = 0; i < numTradeIDs; ++i) {
