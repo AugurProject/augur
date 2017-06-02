@@ -61,7 +61,7 @@ export default class CreateMarketReview extends Component {
     const gasPrice = rpc.gasPrice || constants.DEFAULT_GASPRICE;
 
     // TODO augur.api.functions -> getState().functionsAPI
-    const gasCost = formatRealEtherEstimate(augur.trading.simulation.getTxGasEth({ ...augur.api.functions.CreateMarket.createMarket }, gasPrice));
+    const gasCost = formatRealEtherEstimate(augur.trading.simulation.getTxGasEth({ ...augur.api.CreateMarket.createMarket }, gasPrice));
     const creationFee = formatRealEtherEstimate(abi.unfix(augur.create.calculateRequiredMarketValue(gasPrice)));
 
     // Event Bond
