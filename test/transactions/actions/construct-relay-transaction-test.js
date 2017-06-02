@@ -12,7 +12,6 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
   const mockStore = configureMockStore(middlewares);
   const augur = new Augur();
 
-// <<<<<<< HEAD
   // save the default result for calling augur.trading.simulation.getTxGasEth
   const defaultTxGasEth = augur.abi.unfix(augur.abi.bignum(augur.rpc.constants.DEFAULT_GAS).times(augur.abi.bignum(augur.constants.DEFAULT_GASPRICE))).toFixed();
   const functionsAPI = augur.api;
@@ -53,7 +52,6 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
     Trade: '0x031d9d02520cc708ea3c865278508c9cdb92bd51',
     Trades: '0x448c01a2e1fd6c2ef133402c403d2f48c99993e7'
   };
-// =======
 
   beforeEach(() => {
     this.clock = sinon.useFakeTimers(1485907200000);
@@ -63,7 +61,6 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
     this.clock.restore();
   });
 
-// >>>>>>> master
   const test = (t) => {
     it(t.description, () => {
       const store = mockStore(t.state);
@@ -198,16 +195,13 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
         address: '0x0000000000000000000000000000000000000b0b'
       },
       tradeCommitment: {},
-// <<<<<<< HEAD
       contractAddresses,
       functionsAPI,
-// =======
       marketsData: {
         '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2': {
           description: 'test market'
         }
       }
-// >>>>>>> master
     },
     selectors: {
       marketFromEventID: {
@@ -341,16 +335,13 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
         address: '0x0000000000000000000000000000000000000b0b'
       },
       tradeCommitment: {},
-// <<<<<<< HEAD
       contractAddresses,
       functionsAPI,
-// =======
       marketsData: {
         '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2': {
           description: 'test market'
         }
       }
-// >>>>>>> master
     },
     selectors: {
       marketFromEventID: {
@@ -471,16 +462,13 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
         address: '0x0000000000000000000000000000000000000b0b'
       },
       tradeCommitment: {},
-// <<<<<<< HEAD
       contractAddresses,
       functionsAPI,
-// =======
       marketsData: {
         '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2': {
           description: 'test market'
         }
       }
-// >>>>>>> master
     },
     selectors: {
       marketFromEventID: {
@@ -616,16 +604,13 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
         address: '0x0000000000000000000000000000000000000b0b'
       },
       tradeCommitment: {},
-// <<<<<<< HEAD
       contractAddresses,
       functionsAPI,
-// =======
       marketsData: {
         '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2': {
           description: 'test market'
         }
       }
-// >>>>>>> master
     },
     selectors: {
       marketFromEventID: {
@@ -746,16 +731,13 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
         address: '0x0000000000000000000000000000000000000b0b'
       },
       tradeCommitment: {},
-// <<<<<<< HEAD
       contractAddresses,
       functionsAPI,
-// =======
       marketsData: {
         '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2': {
           description: 'test market'
         }
       }
-// >>>>>>> master
     },
     selectors: {
       marketFromEventID: {
@@ -890,16 +872,13 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
         address: '0x0000000000000000000000000000000000000b0b'
       },
       tradeCommitment: {},
-// <<<<<<< HEAD
       contractAddresses,
       functionsAPI,
-// =======
       marketsData: {
         '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2': {
           description: 'test market'
         }
       }
-// >>>>>>> master
     },
     selectors: {
       marketFromEventID: {
