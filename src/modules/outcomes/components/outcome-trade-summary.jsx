@@ -8,10 +8,26 @@ const OutcomeTradeSummary = (p) => {
   const tradingFees = getValue(p, 'tradeOrder.tradingFees');
   const feePercent = getValue(p, 'tradeOrder.feePercent');
   const gasFees = getValue(p, 'tradeOrder.gasFees');
+  const potentialEthProfit = getValue(p, 'trade.potentialEthProfit');
+  const potentialProfitPercent = getValue(p, 'trade.potentialProfitPercent');
+  const potentialEthLoss = getValue(p, 'trade.potentialEthLoss');
+  const potentialLossPercent = getValue(p, 'trade.potentialLossPercent');
   const totalCost = getValue(p, 'trade.totalCost');
 
   return (
     <article className="outcome-trade-summary">
+      {potentialEthProfit && potentialProfitPercent &&
+        <div className="outcome-trade-summary-group">
+          <span>Potential Profit:</span>
+          <span><ValueDenomination formatted={potentialEthProfit.formatted} /> <span>ETH ({potentialProfitPercent.formatted}%)</span></span>
+        </div>
+      }
+      {potentialEthLoss && potentialLossPercent &&
+        <div className="outcome-trade-summary-group">
+          <span>Potential Loss:</span>
+          <span><ValueDenomination formatted={potentialEthLoss.formatted} /> <span>ETH ({potentialLossPercent.formatted}%)</span></span>
+        </div>
+      }
       {tradingFees && feePercent &&
         <div className="outcome-trade-summary-group">
           <span>Fees:</span>
