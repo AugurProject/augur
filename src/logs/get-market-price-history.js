@@ -6,7 +6,7 @@ var noop = require("../utils/noop");
 
 // { market, filter }
 function getMarketPriceHistory(p, callback) {
-  var filter = assign({}, p.filter, { market: p.market, fromBlock: p.fromBlock, toBlock: p.toBlock });
+  var filter = assign({}, p.filter, { market: p.market });
 
   var aux = { index: "outcome", mergedLogs: {} };
   getLogsChunked({ label: "log_fill_tx", filter: filter, aux: aux }, noop, function (err) {

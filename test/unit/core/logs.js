@@ -328,7 +328,10 @@ describe("logs.getMarketPriceHistory", function () {
     describe(t.description, function () {
       it("async", function (done) {
         proxyquire('../../../src/logs/get-market-price-history', {
-          './get-logs': t.getLogs
+          './get-logs-chunked': t.getLogs,
+          '../rpc-interface': {
+              getCurrentBlock: function() { return { number: 100 }; }
+        }
         })(t.params, t.assertions);
         done();
       });
