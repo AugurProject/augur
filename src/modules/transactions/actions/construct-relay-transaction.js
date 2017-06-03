@@ -21,8 +21,8 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
     inProgress: !tx.response.blockHash
   };
 
-  console.log('unpacked:', JSON.stringify(p, null, 2));
-  console.log('status:', status);
+  // console.log('unpacked:', JSON.stringify(p, null, 2));
+  // console.log('status:', status);
   const method = tx.data.method;
   const contracts = getState().contractAddresses;
   const contract = Object.keys(contracts).find(c => contracts[c] === tx.data.to);
