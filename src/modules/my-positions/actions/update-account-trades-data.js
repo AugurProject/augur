@@ -25,7 +25,7 @@ export function updateAccountBidsAsksData(data, marketID) {
     dispatch(updateOrders(data, true));
     const { loginAccount } = getState();
     const account = loginAccount.address;
-    augur.getAdjustedPositions(account, { market: marketID }, (err, positions) => {
+    augur.trading.positions.getAdjustedPositions(account, { market: marketID }, (err, positions) => {
       if (err) return console.error('getAdjustedPositions error: ', err);
       dispatch(updateAccountPositionsData(positions, marketID));
     });
