@@ -2205,7 +2205,7 @@ keythereum.constants.pbkdf2.c = ROUNDS;
 keythereum.constants.scrypt.n = ROUNDS;
 
 function Augur() {
-  this.version = "4.0.2";
+  this.version = "4.0.3";
   this.options = {
     debug: {
       tools: false, // if true, testing tools (test/tools.js) included
@@ -2948,7 +2948,7 @@ module.exports.parseTopicsInfo = require("./topics-info");
 module.exports.parseTradeInfo = require("./trade-info");
 module.exports.parseMarketInfo = require("./market-info");
 module.exports.parseBatchMarketInfo = require("./batch-market-info");
-module.exports.parseMarketsInfo = require("./markets-info");
+module.exports.parseGetMarketsInfo = require("./markets-info");
 module.exports.parseOrderBook = require("./order-book");
 module.exports.parsePositionInMarket = require("./position-in-market");
 module.exports.parseEventInfo = require("./event-info");
@@ -60153,7 +60153,7 @@ module.exports.parseTopicsInfo = require("./topics-info");
 module.exports.parseTradeInfo = require("./trade-info");
 module.exports.parseMarketInfo = require("./market-info");
 module.exports.parseBatchMarketInfo = require("./batch-market-info");
-module.exports.parseMarketsInfo = require("./markets-info");
+module.exports.parseGetMarketsInfo = require("./markets-info");
 module.exports.parseOrderBook = require("./order-book");
 module.exports.parsePositionInMarket = require("./position-in-market");
 module.exports.parseEventInfo = require("./event-info");
