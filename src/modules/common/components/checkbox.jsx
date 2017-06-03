@@ -1,11 +1,11 @@
 import React, { PropTypes } from 'react';
 import ReactTooltip from 'react-tooltip';
-import classnames from 'classnames';
+import classNames from 'classnames';
 
 const Checkbox = p => (
   <article className="checkbox-container">
     <button
-      className={classnames('checkbox unstyled', p.className, { checked: p.isChecked })}
+      className={classNames('checkbox unstyled', p.className, { checked: p.isChecked })}
       type="button"
       data-tip={p.title}
       onClick={p.onClick}
