@@ -1,6 +1,6 @@
 import React, { PropTypes, Component } from 'react';
 import ReactTooltip from 'react-tooltip';
-import classnames from 'classnames';
+import classNames from 'classnames';
 import { ModalContainer, ModalDialog } from 'react-modal-dialog';
 
 import Link from 'modules/link/components/link';
@@ -101,7 +101,7 @@ export default class AccountPage extends Component {
             <h2 className="heading">Credentials</h2>
             <table className="account-info">
               <tbody>
-                <tr className={classnames('account-info-item', { displayNone: p.loginAccount.isUnlocked })}>
+                <tr className={classNames('account-info-item', { displayNone: p.loginAccount.isUnlocked })}>
                   <th className="title">Account Name:</th>
                   <td className="item">
                     {s.editName &&
@@ -182,7 +182,7 @@ export default class AccountPage extends Component {
                     </button>
                   </td>
                 </tr>
-                <tr className={classnames('account-info-item', { displayNone: !p.loginAccount.loginID })}>
+                <tr className={classNames('account-info-item', { displayNone: !p.loginAccount.loginID })}>
                   <th className="title">Login ID:</th>
                   <td className="item">
                     {!s.showFullID &&
@@ -232,7 +232,7 @@ export default class AccountPage extends Component {
               </tbody>
             </table>
           </div>
-          <div className={classnames('account-section')}>
+          <div className={classNames('account-section')}>
             <div className="account-info-item">
               <h2 className="heading">Deposit & Purchase Funds</h2>
               <p>
@@ -257,7 +257,7 @@ export default class AccountPage extends Component {
               </div>
             </div>
           </div>
-          <div className={classnames('account-section')}>
+          <div className={classNames('account-section')}>
             <div className="account-info-item">
               <h2 className="heading">Transfer Funds</h2>
               <p>
@@ -268,7 +268,7 @@ export default class AccountPage extends Component {
                 <input
                   type="number"
                   step="0.1"
-                  className={classnames('auth-input')}
+                  className={classNames('auth-input')}
                   min="0.0"
                   name="sendAmount"
                   placeholder="Amount to transfer"
@@ -288,7 +288,7 @@ export default class AccountPage extends Component {
                 <span>To:</span>
                 <input
                   type="text"
-                  className={classnames('auth-input')}
+                  className={classNames('auth-input')}
                   name="recipientAddress"
                   placeholder="Recipient Address"
                   data-tip data-for="recipient-address-tooltip"
@@ -312,7 +312,7 @@ export default class AccountPage extends Component {
               </div>
             </div>
           </div>
-          <div className={classnames('account-section', { displayNone: p.loginAccount.isUnlocked || !p.loginAccount })}>
+          <div className={classNames('account-section', { displayNone: p.loginAccount.isUnlocked || !p.loginAccount })}>
             <div className="account-info-item">
               <h2 className="heading">Download Account Key File</h2>
               <p>
