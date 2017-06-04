@@ -996,9 +996,9 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               }
             ]
           },
-          type: 'Send Ether',
-          description: `Send Ether to ${abi.strip_0x(log._to)}`,
-          message: 'sent ETH'
+          type: 'Send Ether Tokens',
+          description: `Send Ether Tokens to ${abi.strip_0x(log._to)}`,
+          message: 'sent ETH Tokens'
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
@@ -1026,9 +1026,9 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               }
             ]
           },
-          type: 'Send Ether',
-          description: `Send Ether to ${abi.strip_0x(log._to)}`,
-          message: 'sending ETH'
+          type: 'Send Ether Tokens',
+          description: `Send Ether Tokens to ${abi.strip_0x(log._to)}`,
+          message: 'sending ETH Tokens'
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
@@ -1056,9 +1056,9 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               }
             ]
           },
-          type: 'Receive Ether',
-          description: `Receive Ether from ${abi.strip_0x(log._from)}`,
-          message: 'received ETH'
+          type: 'Receive Ether Tokens',
+          description: `Receive Ether Tokens from ${abi.strip_0x(log._from)}`,
+          message: 'received ETH Tokens'
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
@@ -1086,9 +1086,9 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               }
             ]
           },
-          type: 'Receive Ether',
-          description: `Receive Ether from ${abi.strip_0x(log._from)}`,
-          message: 'receiving ETH'
+          type: 'Receive Ether Tokens',
+          description: `Receive Ether Tokens from ${abi.strip_0x(log._from)}`,
+          message: 'receiving ETH Tokens'
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
@@ -3152,7 +3152,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           const expected = {
             '0xHASH': {
               type: BID,
-              message: 'bid 2 shares for 0.1009 ETH / share',
+              message: 'bid 2 shares for 0.1009 ETH Tokens / share',
               freeze: {
                 verb: 'froze',
                 noFeeCost: formatEtherTokens(0.2)
@@ -3181,7 +3181,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           const expected = {
             '0xHASH': {
               type: BID,
-              message: 'bidding 2 shares for 0.1009 ETH / share',
+              message: 'bidding 2 shares for 0.1009 ETH Tokens / share',
               freeze: {
                 verb: 'freezing',
                 noFeeCost: formatEtherTokens(0.2)
@@ -3210,7 +3210,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           const expected = {
             '0xHASH': {
               type: ASK,
-              message: 'ask 2 shares for 0.0991 ETH / share',
+              message: 'ask 2 shares for 0.0991 ETH Tokens / share',
               freeze: {
                 verb: 'froze',
                 noFeeCost: undefined
@@ -3239,7 +3239,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           const expected = {
             '0xHASH': {
               type: ASK,
-              message: 'asking 2 shares for 0.0991 ETH / share',
+              message: 'asking 2 shares for 0.0991 ETH Tokens / share',
               freeze: {
                 verb: 'freezing',
                 noFeeCost: undefined
@@ -3268,7 +3268,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           const expected = {
             '0xHASH': {
               type: SHORT_ASK,
-              message: 'short asking 2 shares for 0.0991 ETH / share',
+              message: 'short asking 2 shares for 0.0991 ETH Tokens / share',
               freeze: {
                 verb: 'freezing',
                 noFeeCost: formatEtherTokens(2)
@@ -3321,7 +3321,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
                 tradingFees: formatEtherTokens(0.0018)
               },
               feePercent: formatPercent(0.8919722497522299),
-              message: 'ask 2 shares for 0.0991 ETH / share'
+              message: 'ask 2 shares for 0.0991 ETH Tokens / share'
             }
           };
 
@@ -3348,7 +3348,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
                 tradingFees: formatEtherTokens(0.00095)
               },
               feePercent: formatPercent(0.4727544165215227),
-              message: 'ask 2 shares for 0.0995 ETH / share'
+              message: 'ask 2 shares for 0.0995 ETH Tokens / share'
             }
           };
 
@@ -3401,7 +3401,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
                 marketID,
                 marketLink: {}
               },
-              message: 'ask 2 shares for 0.0991 ETH / share',
+              message: 'ask 2 shares for 0.0991 ETH Tokens / share',
               numShares: formatShares(trade.amount),
               noFeePrice: formatEtherTokens(trade.price),
               freeze: {
@@ -3823,13 +3823,13 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
     });
 
     test({
-      description: `should dispatch the expected actions for label 'deposit'`,
+      description: `should dispatch the expected actions for label 'depositEther'`,
       assertions: (store) => {
-        __RewireAPI__.__set__('constructDepositTransaction', () => 'constructDepositTransaction');
+        __RewireAPI__.__set__('constructConvertEthToEthTokenTransaction', () => 'constructConvertEthToEthTokenTransaction');
 
-        const actual = store.dispatch(constructTransaction('deposit'));
+        const actual = store.dispatch(constructTransaction('depositEther'));
 
-        const expected = 'constructDepositTransaction';
+        const expected = 'constructConvertEthToEthTokenTransaction';
 
         assert.strictEqual(actual, expected, `Didn't call the expected method`);
       }
