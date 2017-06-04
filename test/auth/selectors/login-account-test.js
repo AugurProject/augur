@@ -196,10 +196,8 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           isUnlocked: true
         };
         const stubbedGenerateDownloadAccountLink = sinon.stub();
-        const stubbedOnAirBitzManageAccount = sinon.stub();
 
         LoginAccountRewireAPI.__Rewire__('generateDownloadAccountLink', stubbedGenerateDownloadAccountLink);
-        LoginAccountRewireAPI.__Rewire__('getABCUIContext', stubbedGetABCUIContext);
 
         const actual = selectLoginAccount.resultFunc(loginAccount);
 
