@@ -25,7 +25,7 @@ describe(`modules/auth/actions/update-assets.js`, () => {
     const expectedOutput = [{
       type: 'UPDATE_LOGIN_ACCOUNT',
       data: {
-        ether: 500
+        ethTokens: 500
       }
     }, {
       type: 'UPDATE_LOGIN_ACCOUNT',
@@ -35,7 +35,7 @@ describe(`modules/auth/actions/update-assets.js`, () => {
     }, {
       type: 'UPDATE_LOGIN_ACCOUNT',
       data: {
-        realEther: 100
+        eth: 100
       }
     }];
     store.dispatch(action.updateAssets());
