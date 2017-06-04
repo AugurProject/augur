@@ -162,7 +162,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
           etherWithoutGas: '2',
           sharesChange: '4',
           repChange: '5',
-          ether: formatEtherTokens(2),
+          ethTokens: formatEtherTokens(2),
           shares: formatShares(4),
           rep: formatRep(5)
         },
@@ -182,7 +182,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
           etherWithoutGas: '2',
           sharesChange: '4',
           repChange: '5',
-          ether: formatEtherTokens(2),
+          ethTokens: formatEtherTokens(2),
           shares: formatShares(4),
           rep: formatRep(5) },
         {
@@ -207,7 +207,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
               etherWithoutGas: '2',
               sharesChange: '4',
               repChange: '5',
-              ether: formatEtherTokens(2),
+              ethTokens: formatEtherTokens(2),
               shares: formatShares(4),
               rep: formatRep(5)
             },
@@ -227,7 +227,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
               etherWithoutGas: '2',
               sharesChange: '4',
               repChange: '5',
-              ether: formatEtherTokens(2),
+              ethTokens: formatEtherTokens(2),
               shares: formatShares(4),
               rep: formatRep(5)
             },
@@ -247,7 +247,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
               etherWithoutGas: '2',
               sharesChange: '4',
               repChange: '5',
-              ether: formatEtherTokens(2),
+              ethTokens: formatEtherTokens(2),
               shares: formatShares(4),
               rep: formatRep(5)
             }
@@ -268,7 +268,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
           etherWithoutGas: '2',
           sharesChange: '4',
           repChange: '5',
-          ether: formatEtherTokens(2),
+          ethTokens: formatEtherTokens(2),
           shares: formatShares(4),
           rep: formatRep(5)
         }
