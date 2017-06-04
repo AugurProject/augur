@@ -21,6 +21,8 @@ describe('modules/account/selectors/core-stats', () => {
 
         coreStats();
 
+        CoreStatsRewireAPI.__ResetDependency__('selectCoreStats');
+
         assert(stubbedSelectCoreStats.calledOnce, `didn't call 'selectCoreStats' once as expected`);
       }
     });

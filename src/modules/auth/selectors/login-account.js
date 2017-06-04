@@ -3,7 +3,7 @@ import { selectLoginAccountState } from 'src/select-state';
 import { augur } from 'services/augurjs';
 import { formatRep, formatEtherTokens, formatEther } from 'utils/format-number';
 import generateDownloadAccountLink from 'modules/auth/helpers/generate-download-account-link';
-import getABCUIContext from 'modules/auth/selectors/abc';
+// import getABCUIContext from 'modules/auth/selectors/abc';
 import store from 'src/store';
 
 export default function () {
@@ -16,13 +16,10 @@ export const selectLoginAccount = createSelector(
     const trimmedAddress = loginAccount.address ? `${loginAccount.address.substring(0, 4)}...${loginAccount.address.substring(loginAccount.address.length - 4)}` : null;
     const trimmedLoginID = loginAccount.loginID ? `${loginAccount.loginID.substring(0, 4)}...${loginAccount.loginID.substring(loginAccount.loginID.length - 4)}` : null;
     const linkText = loginAccount.isUnlocked ? trimmedAddress : loginAccount.name || trimmedLoginID;
-    if (loginAccount.airbitzAccount) {
-      loginAccount.onAirbitzManageAccount = () => (
-        getABCUIContext().openManageWindow(loginAccount.airbitzAccount, (err) => {
-          if (err) console.error('onAirbitzManageAccount:', err);
-        })
-      );
-    }
+    // if (loginAccount.airbitzAccount) {
+    //   console.log('here');
+    //   loginAccount.onAirbitzManageAccount = () => onAirbitzManageAccount(loginAccount);
+    // }
     return {
       ...loginAccount,
       ...generateDownloadAccountLink(loginAccount.address, augur.accounts.account.keystore, loginAccount.loginID),
@@ -35,3 +32,9 @@ export const selectLoginAccount = createSelector(
     };
   }
 );
+
+// export const onAirbitzManageAccount = loginAccount => (
+//   getABCUIContext().openManageWindow(loginAccount.airbitzAccount, (err) => {
+//     if (err) console.error('onAirbitzManageAccount:', err);
+//   })
+// );
