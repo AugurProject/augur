@@ -1,9 +1,9 @@
 import React from 'react';
-import classnames from 'classnames';
+import classNames from 'classnames';
 
 const Toggler = p => (
   <button
-    className={classnames('clickable', 'toggler', p.className)}
+    className={classNames('clickable', 'toggler', p.className)}
     onClick={(e) => {
       e.persist();
       p.onClick(findNextOption(p.selected, p.options), e);

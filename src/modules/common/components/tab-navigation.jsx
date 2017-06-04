@@ -2,7 +2,7 @@
 
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
-import classnames from 'classnames';
+import classNames from 'classnames';
 
 import Link from 'modules/link/components/link';
 import ValueDenomination from 'modules/common/components/value-denomination';
@@ -15,7 +15,7 @@ const TabNavigation = p => (
       return (
         <Link
           key={i}
-          className={classnames('nav-item', { active: navItem.page.indexOf(p.activeView) > -1 })}
+          className={classNames('nav-item', { active: navItem.page.indexOf(p.activeView) > -1 })}
           href={navItem.link.href}
           onClick={navItem.link.onClick}
         >
