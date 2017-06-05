@@ -1221,9 +1221,9 @@ bignumber.js@2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-2.3.0.tgz#597a02d791edc3d64f17850e21789e7a4095df66"
 
-bignumber.js@4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-4.0.1.tgz#1ffd30d349366e078bd6f7dc97907e6da9a71888"
+bignumber.js@4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-4.0.2.tgz#2d1dc37ee5968867ecea90b6da4d16e68608d21d"
 
 binary-extensions@^1.0.0:
   version "1.8.0"
