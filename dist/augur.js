@@ -749,6 +749,7 @@ function connect(connectOptions, callback) {
         if (connectOptions.http) options.httpAddresses.push(connectOptions.http);
         if (connectOptions.ws) options.wsAddresses.push(connectOptions.ws);
         if (connectOptions.ipc) options.ipcAddresses.push(connectOptions.ipc);
+        if (connectOptions.networkID) options.networkID = connectOptions.networkID;
         options.contracts = augurContracts;
         options.api = augurContracts.api;
         break;
@@ -2204,7 +2205,7 @@ keythereum.constants.pbkdf2.c = ROUNDS;
 keythereum.constants.scrypt.n = ROUNDS;
 
 function Augur() {
-  this.version = "4.0.1";
+  this.version = "4.0.3";
   this.options = {
     debug: {
       tools: false, // if true, testing tools (test/tools.js) included
@@ -2947,7 +2948,7 @@ module.exports.parseTopicsInfo = require("./topics-info");
 module.exports.parseTradeInfo = require("./trade-info");
 module.exports.parseMarketInfo = require("./market-info");
 module.exports.parseBatchMarketInfo = require("./batch-market-info");
-module.exports.parseMarketsInfo = require("./markets-info");
+module.exports.parseGetMarketsInfo = require("./markets-info");
 module.exports.parseOrderBook = require("./order-book");
 module.exports.parsePositionInMarket = require("./position-in-market");
 module.exports.parseEventInfo = require("./event-info");
@@ -60152,7 +60153,7 @@ module.exports.parseTopicsInfo = require("./topics-info");
 module.exports.parseTradeInfo = require("./trade-info");
 module.exports.parseMarketInfo = require("./market-info");
 module.exports.parseBatchMarketInfo = require("./batch-market-info");
-module.exports.parseMarketsInfo = require("./markets-info");
+module.exports.parseGetMarketsInfo = require("./markets-info");
 module.exports.parseOrderBook = require("./order-book");
 module.exports.parsePositionInMarket = require("./position-in-market");
 module.exports.parseEventInfo = require("./event-info");
@@ -62340,6 +62341,7 @@ function createEthrpcConfiguration(configuration) {
   ethrpcConfiguration.httpAddresses = configuration.httpAddresses;
   ethrpcConfiguration.wsAddresses = configuration.wsAddresses;
   ethrpcConfiguration.ipcAddresses = configuration.ipcAddresses;
+  ethrpcConfiguration.networkID = configuration.networkID;
   return ethrpcConfiguration;
 }
 
@@ -62545,59 +62547,63 @@ module.exports = syncConnect;
 
 },{"./create-ethrpc-configuration":480,"./set-block-number":482,"./set-coinbase":483,"./set-contracts":484,"./set-from":485,"./set-gas-price":486,"./set-network-id":487,"./setup-events-api":488,"./setup-functions-api":489}],491:[function(require,module,exports){
 arguments[4][241][0].apply(exports,arguments)
-},{"bignumber.js":492,"buffer":283,"dup":241,"ethereumjs-abi":520,"js-sha3":543}],492:[function(require,module,exports){
+},{"bignumber.js":494,"buffer":283,"dup":241,"ethereumjs-abi":492,"js-sha3":543}],492:[function(require,module,exports){
+arguments[4][322][0].apply(exports,arguments)
+},{"./lib/index.js":493,"dup":322}],493:[function(require,module,exports){
+arguments[4][323][0].apply(exports,arguments)
+},{"bn.js":496,"buffer":283,"dup":323,"ethereumjs-util":528}],494:[function(require,module,exports){
 arguments[4][247][0].apply(exports,arguments)
-},{"dup":247}],493:[function(require,module,exports){
+},{"dup":247}],495:[function(require,module,exports){
 arguments[4][248][0].apply(exports,arguments)
-},{"dup":248,"safe-buffer":578}],494:[function(require,module,exports){
+},{"dup":248,"safe-buffer":578}],496:[function(require,module,exports){
 arguments[4][249][0].apply(exports,arguments)
-},{"dup":249}],495:[function(require,module,exports){
+},{"dup":249}],497:[function(require,module,exports){
 arguments[4][250][0].apply(exports,arguments)
-},{"crypto":252,"dup":250}],496:[function(require,module,exports){
+},{"crypto":252,"dup":250}],498:[function(require,module,exports){
 arguments[4][251][0].apply(exports,arguments)
-},{"dup":251}],497:[function(require,module,exports){
+},{"dup":251}],499:[function(require,module,exports){
 arguments[4][272][0].apply(exports,arguments)
-},{"buffer":283,"dup":272,"js-sha3":543}],498:[function(require,module,exports){
+},{"buffer":283,"dup":272,"js-sha3":543}],500:[function(require,module,exports){
 arguments[4][285][0].apply(exports,arguments)
-},{"buffer":283,"dup":285,"inherits":541,"stream":407,"string_decoder":280}],499:[function(require,module,exports){
+},{"buffer":283,"dup":285,"inherits":541,"stream":407,"string_decoder":280}],501:[function(require,module,exports){
 arguments[4][286][0].apply(exports,arguments)
-},{"buffer":283,"dup":286}],500:[function(require,module,exports){
+},{"buffer":283,"dup":286}],502:[function(require,module,exports){
 arguments[4][289][0].apply(exports,arguments)
-},{"./md5":502,"buffer":283,"cipher-base":498,"dup":289,"inherits":541,"ripemd160":576,"sha.js":586}],501:[function(require,module,exports){
+},{"./md5":504,"buffer":283,"cipher-base":500,"dup":289,"inherits":541,"ripemd160":576,"sha.js":586}],503:[function(require,module,exports){
 arguments[4][290][0].apply(exports,arguments)
-},{"buffer":283,"dup":290}],502:[function(require,module,exports){
+},{"buffer":283,"dup":290}],504:[function(require,module,exports){
 arguments[4][291][0].apply(exports,arguments)
-},{"./make-hash":501,"dup":291}],503:[function(require,module,exports){
+},{"./make-hash":503,"dup":291}],505:[function(require,module,exports){
 arguments[4][305][0].apply(exports,arguments)
-},{"../package.json":518,"./elliptic/curve":506,"./elliptic/curves":509,"./elliptic/ec":510,"./elliptic/eddsa":513,"./elliptic/utils":517,"brorand":495,"dup":305}],504:[function(require,module,exports){
+},{"../package.json":520,"./elliptic/curve":508,"./elliptic/curves":511,"./elliptic/ec":512,"./elliptic/eddsa":515,"./elliptic/utils":519,"brorand":497,"dup":305}],506:[function(require,module,exports){
 arguments[4][306][0].apply(exports,arguments)
-},{"../../elliptic":503,"bn.js":494,"dup":306}],505:[function(require,module,exports){
+},{"../../elliptic":505,"bn.js":496,"dup":306}],507:[function(require,module,exports){
 arguments[4][307][0].apply(exports,arguments)
-},{"../../elliptic":503,"../curve":506,"bn.js":494,"dup":307,"inherits":541}],506:[function(require,module,exports){
+},{"../../elliptic":505,"../curve":508,"bn.js":496,"dup":307,"inherits":541}],508:[function(require,module,exports){
 arguments[4][308][0].apply(exports,arguments)
-},{"./base":504,"./edwards":505,"./mont":507,"./short":508,"dup":308}],507:[function(require,module,exports){
+},{"./base":506,"./edwards":507,"./mont":509,"./short":510,"dup":308}],509:[function(require,module,exports){
 arguments[4][309][0].apply(exports,arguments)
-},{"../../elliptic":503,"../curve":506,"bn.js":494,"dup":309,"inherits":541}],508:[function(require,module,exports){
+},{"../../elliptic":505,"../curve":508,"bn.js":496,"dup":309,"inherits":541}],510:[function(require,module,exports){
 arguments[4][310][0].apply(exports,arguments)
-},{"../../elliptic":503,"../curve":506,"bn.js":494,"dup":310,"inherits":541}],509:[function(require,module,exports){
+},{"../../elliptic":505,"../curve":508,"bn.js":496,"dup":310,"inherits":541}],511:[function(require,module,exports){
 arguments[4][311][0].apply(exports,arguments)
-},{"../elliptic":503,"./precomputed/secp256k1":516,"dup":311,"hash.js":531}],510:[function(require,module,exports){
+},{"../elliptic":505,"./precomputed/secp256k1":518,"dup":311,"hash.js":531}],512:[function(require,module,exports){
 arguments[4][312][0].apply(exports,arguments)
-},{"../../elliptic":503,"./key":511,"./signature":512,"bn.js":494,"dup":312,"hmac-drbg":537}],511:[function(require,module,exports){
+},{"../../elliptic":505,"./key":513,"./signature":514,"bn.js":496,"dup":312,"hmac-drbg":537}],513:[function(require,module,exports){
 arguments[4][313][0].apply(exports,arguments)
-},{"../../elliptic":503,"bn.js":494,"dup":313}],512:[function(require,module,exports){
+},{"../../elliptic":505,"bn.js":496,"dup":313}],514:[function(require,module,exports){
 arguments[4][314][0].apply(exports,arguments)
-},{"../../elliptic":503,"bn.js":494,"dup":314}],513:[function(require,module,exports){
+},{"../../elliptic":505,"bn.js":496,"dup":314}],515:[function(require,module,exports){
 arguments[4][315][0].apply(exports,arguments)
-},{"../../elliptic":503,"./key":514,"./signature":515,"dup":315,"hash.js":531}],514:[function(require,module,exports){
+},{"../../elliptic":505,"./key":516,"./signature":517,"dup":315,"hash.js":531}],516:[function(require,module,exports){
 arguments[4][316][0].apply(exports,arguments)
-},{"../../elliptic":503,"dup":316}],515:[function(require,module,exports){
+},{"../../elliptic":505,"dup":316}],517:[function(require,module,exports){
 arguments[4][317][0].apply(exports,arguments)
-},{"../../elliptic":503,"bn.js":494,"dup":317}],516:[function(require,module,exports){
+},{"../../elliptic":505,"bn.js":496,"dup":317}],518:[function(require,module,exports){
 arguments[4][318][0].apply(exports,arguments)
-},{"dup":318}],517:[function(require,module,exports){
+},{"dup":318}],519:[function(require,module,exports){
 arguments[4][319][0].apply(exports,arguments)
-},{"bn.js":494,"dup":319,"minimalistic-assert":565,"minimalistic-crypto-utils":566}],518:[function(require,module,exports){
+},{"bn.js":496,"dup":319,"minimalistic-assert":565,"minimalistic-crypto-utils":566}],520:[function(require,module,exports){
 module.exports={
   "_args": [
     [
@@ -62722,7 +62728,7 @@ module.exports={
   "version": "6.4.0"
 }
 
-},{}],519:[function(require,module,exports){
+},{}],521:[function(require,module,exports){
 module.exports={
   "genesisGasLimit": {
     "v": 5000,
@@ -62959,570 +62965,7 @@ module.exports={
   }
 }
 
-},{}],520:[function(require,module,exports){
-arguments[4][322][0].apply(exports,arguments)
-},{"./lib/index.js":521,"dup":322}],521:[function(require,module,exports){
-(function (Buffer){
-const utils = require('ethereumjs-util')
-const BN = require('bn.js')
-
-var ABI = function () {
-}
-
-// Convert from short to canonical names
-// FIXME: optimise or make this nicer?
-function elementaryName (name) {
-  if (name.startsWith('int[')) {
-    return 'int256' + name.slice(3)
-  } else if (name === 'int') {
-    return 'int256'
-  } else if (name.startsWith('uint[')) {
-    return 'uint256' + name.slice(4)
-  } else if (name === 'uint') {
-    return 'uint256'
-  } else if (name.startsWith('fixed[')) {
-    return 'fixed128x128' + name.slice(5)
-  } else if (name === 'fixed') {
-    return 'fixed128x128'
-  } else if (name.startsWith('ufixed[')) {
-    return 'ufixed128x128' + name.slice(6)
-  } else if (name === 'ufixed') {
-    return 'ufixed128x128'
-  }
-  return name
-}
-
-ABI.eventID = function (name, types) {
-  // FIXME: use node.js util.format?
-  var sig = name + '(' + types.map(elementaryName).join(',') + ')'
-  return utils.sha3(new Buffer(sig))
-}
-
-ABI.methodID = function (name, types) {
-  return ABI.eventID(name, types).slice(0, 4)
-}
-
-// Parse N from type<N>
-function parseTypeN (type) {
-  return parseInt(/^\D+(\d+)$/.exec(type)[1], 10)
-}
-
-// Parse N,M from type<N>x<M>
-function parseTypeNxM (type) {
-  var tmp = /^\D+(\d+)x(\d+)$/.exec(type)
-  return [ parseInt(tmp[1], 10), parseInt(tmp[2], 10) ]
-}
-
-// Parse N from type[<N>]
-function parseTypeArray (type) {
-  var tmp = /^\w+\[(\d*)\]$/.exec(type)[1]
-  if (tmp.length === 0) {
-    return 0
-  } else {
-    return parseInt(tmp, 10)
-  }
-}
-
-function parseNumber (arg) {
-  var type = typeof arg
-  if (type === 'string') {
-    if (utils.isHexPrefixed(arg)) {
-      return new BN(utils.stripHexPrefix(arg), 16)
-    } else {
-      return new BN(arg, 10)
-    }
-  } else if (type === 'number') {
-    return new BN(arg)
-  } else if (arg.toArray) {
-    // assume this is a BN for the moment, replace with BN.isBN soon
-    return arg
-  } else {
-    throw new Error('Argument is not a number')
-  }
-}
-
-// someMethod(bytes,uint)
-// someMethod(bytes,uint):(boolean)
-function parseSignature (sig) {
-  var tmp = /^(\w+)\((.+)\)$/.exec(sig)
-  if (tmp.length !== 3) {
-    throw new Error('Invalid method signature')
-  }
-
-  var args = /^(.+)\):\((.+)$/.exec(tmp[2])
-
-  if (args !== null && args.length === 3) {
-    return {
-      method: tmp[1],
-      args: args[1].split(','),
-      retargs: args[2].split(',')
-    }
-  } else {
-    return {
-      method: tmp[1],
-      args: tmp[2].split(',')
-    }
-  }
-}
-
-// Encodes a single item (can be dynamic array)
-// @returns: Buffer
-function encodeSingle (type, arg) {
-  var size, num, ret, i
-
-  if (type === 'address') {
-    return encodeSingle('uint160', parseNumber(arg))
-  } else if (type === 'bool') {
-    return encodeSingle('uint8', arg ? 1 : 0)
-  } else if (type === 'string') {
-    return encodeSingle('bytes', new Buffer(arg, 'utf8'))
-  } else if (type.match(/\w+\[\d+\]/)) {
-    // this part handles fixed-length arrays ([2])
-    // NOTE: we catch here all calls to arrays, that simplifies the rest
-    if (typeof arg.length === 'undefined') {
-      throw new Error('Not an array?')
-    }
-
-    size = parseTypeArray(type)
-    if ((size !== 0) && (arg.length > size)) {
-      throw new Error('Elements exceed array size: ' + size)
-    }
-
-    type = type.slice(0, type.indexOf('['))
-
-    ret = []
-    for (i in arg) {
-      ret.push(encodeSingle(type, arg[i]))
-    }
-
-    return Buffer.concat(ret)
-  } else if (type.match(/\w+\[\]/)) {
-    // this part handles variable length ([])
-    // NOTE: we catch here all calls to arrays, that simplifies the rest
-    if (typeof arg.length === 'undefined') {
-      throw new Error('Not an array?')
-    }
-
-    type = type.slice(0, type.indexOf('['))
-
-    ret = [ encodeSingle('uint256', arg.length) ]
-    for (i in arg) {
-      ret.push(encodeSingle(type, arg[i]))
-    }
-
-    return Buffer.concat(ret)
-  } else if (type === 'bytes') {
-    arg = new Buffer(arg)
-
-    ret = Buffer.concat([ encodeSingle('uint256', arg.length), arg ])
-
-    if ((arg.length % 32) !== 0) {
-      ret = Buffer.concat([ ret, utils.zeros(32 - (arg.length % 32)) ])
-    }
-
-    return ret
-  } else if (type.startsWith('bytes')) {
-    size = parseTypeN(type)
-    if (size < 1 || size > 32) {
-      throw new Error('Invalid bytes<N> width: ' + size)
-    }
-
-    return utils.setLengthRight(arg, 32)
-  } else if (type.startsWith('uint')) {
-    size = parseTypeN(type)
-    if ((size % 8) || (size < 8) || (size > 256)) {
-      throw new Error('Invalid uint<N> width: ' + size)
-    }
-
-    num = parseNumber(arg)
-    if (num.bitLength() > size) {
-      throw new Error('Supplied uint exceeds width: ' + size + ' vs ' + num.bitLength())
-    }
-
-    if (num < 0) {
-      throw new Error('Supplied uint is negative')
-    }
-
-    return num.toArrayLike(Buffer, 'be', 32)
-  } else if (type.startsWith('int')) {
-    size = parseTypeN(type)
-    if ((size % 8) || (size < 8) || (size > 256)) {
-      throw new Error('Invalid int<N> width: ' + size)
-    }
-
-    num = parseNumber(arg)
-    if (num.bitLength() > size) {
-      throw new Error('Supplied int exceeds width: ' + size + ' vs ' + num.bitLength())
-    }
-
-    return num.toTwos(256).toArrayLike(Buffer, 'be', 32)
-  } else if (type.startsWith('ufixed')) {
-    size = parseTypeNxM(type)
-
-    num = parseNumber(arg)
-
-    if (num < 0) {
-      throw new Error('Supplied ufixed is negative')
-    }
-
-    return encodeSingle('uint256', num.mul(new BN(2).pow(new BN(size[1]))))
-  } else if (type.startsWith('fixed')) {
-    size = parseTypeNxM(type)
-
-    return encodeSingle('int256', parseNumber(arg).mul(new BN(2).pow(new BN(size[1]))))
-  }
-
-  throw new Error('Unsupported or invalid type: ' + type)
-}
-
-// Decodes a single item (can be dynamic array)
-// @returns: array
-// FIXME: this method will need a lot of attention at checking limits and validation
-function decodeSingle (type, arg) {
-  var size, num, ret, i
-
-  if (type === 'address') {
-    return decodeSingle('uint160', arg)
-  } else if (type === 'bool') {
-    return decodeSingle('uint8', arg).toString() === new BN(1).toString()
-  } else if (type === 'string') {
-    return new Buffer(decodeSingle('bytes', arg), 'utf8').toString()
-  } else if (type.match(/\w+\[\d+\]/)) {
-    // this part handles fixed-length arrays ([2])
-    // NOTE: we catch here all calls to arrays, that simplifies the rest
-    size = parseTypeArray(type)
-    type = type.slice(0, type.indexOf('['))
-
-    ret = []
-    for (i = 0; i < size; i++) {
-      ret.push(decodeSingle(type, arg.slice(i * 32)))
-    }
-
-    return ret
-  } else if (type.match(/\w+\[\]/)) {
-    // this part handles variable length ([])
-    // NOTE: we catch here all calls to arrays, that simplifies the rest
-    type = type.slice(0, type.indexOf('['))
-    var count = decodeSingle('uint256', arg.slice(0, 32)).toNumber()
-
-    ret = []
-    for (i = 1; i < count + 1; i++) {
-      ret.push(decodeSingle(type, arg.slice(i * 32)))
-    }
-
-    return ret
-  } else if (type === 'bytes') {
-    size = decodeSingle('uint256', arg.slice(0, 32)).toNumber()
-    return arg.slice(32, 32 + size)
-  } else if (type.startsWith('bytes')) {
-    size = parseTypeN(type)
-    if (size < 1 || size > 32) {
-      throw new Error('Invalid bytes<N> width: ' + size)
-    }
-
-    return arg.slice(0, size)
-  } else if (type.startsWith('uint')) {
-    size = parseTypeN(type)
-    if ((size % 8) || (size < 8) || (size > 256)) {
-      throw new Error('Invalid uint<N> width: ' + size)
-    }
-
-    num = new BN(arg.slice(0, 32), 16, 'be')
-    if (num.bitLength() > size) {
-      throw new Error('Decoded int exceeds width: ' + size + ' vs ' + num.bitLength())
-    }
-
-    return num
-  } else if (type.startsWith('int')) {
-    size = parseTypeN(type)
-    if ((size % 8) || (size < 8) || (size > 256)) {
-      throw new Error('Invalid uint<N> width: ' + size)
-    }
-
-    num = new BN(arg.slice(0, 32), 16, 'be').fromTwos(256)
-    if (num.bitLength() > size) {
-      throw new Error('Decoded uint exceeds width: ' + size + ' vs ' + num.bitLength())
-    }
-
-    return num
-  } else if (type.startsWith('ufixed')) {
-    size = parseTypeNxM(type)
-    size = new BN(2).pow(new BN(size[1]))
-
-    num = decodeSingle('uint256', arg)
-    if (!num.mod(size).isZero()) {
-      throw new Error('Decimals not supported yet')
-    }
-
-    return num.div(size)
-  } else if (type.startsWith('fixed')) {
-    size = parseTypeNxM(type)
-    size = new BN(2).pow(new BN(size[1]))
-
-    num = decodeSingle('int256', arg)
-    if (!num.mod(size).isZero()) {
-      throw new Error('Decimals not supported yet')
-    }
-
-    return num.div(size)
-  }
-
-  throw new Error('Unsupported or invalid type: ' + type)
-}
-
-// Is a type dynamic?
-function isDynamic (type) {
-  // FIXME: handle all types? I don't think anything is missing now
-  return (type === 'string') || (type === 'bytes') || type.match(/\w+\[\]/)
-}
-
-// Encode a method/event with arguments
-// @types an array of string type names
-// @args  an array of the appropriate values
-ABI.rawEncode = function (types, values) {
-  var output = []
-  var data = []
-
-  var headLength = 32 * types.length
-
-  for (var i in types) {
-    var type = elementaryName(types[i])
-    var value = values[i]
-    var cur = encodeSingle(type, value)
-
-    // Use the head/tail method for storing dynamic data
-    if (isDynamic(type)) {
-      output.push(encodeSingle('uint256', headLength))
-      data.push(cur)
-      headLength += cur.length
-    } else {
-      output.push(cur)
-    }
-  }
-
-  return Buffer.concat(output.concat(data))
-}
-
-ABI.rawDecode = function (types, data) {
-  var ret = []
-
-  data = new Buffer(data)
-
-  var offset = 0
-  for (var i in types) {
-    var type = elementaryName(types[i])
-    var cur = data.slice(offset, offset + 32)
-
-    if (isDynamic(type)) {
-      var dataOffset = decodeSingle('uint256', cur).toNumber()
-      // We will read at least 32 bytes
-      if (dataOffset > (data.length - 32)) {
-        throw new Error('Invalid offset: ' + dataOffset)
-      }
-
-      cur = data.slice(dataOffset)
-    } else if (type.match(/\w+\[\d+\]/)) {
-      var count = parseTypeArray(type)
-      if (count > 1) {
-        cur = data.slice(offset, offset + (count * 32))
-        offset += (count - 1) * 32
-      }
-    }
-
-    ret.push(decodeSingle(type, cur))
-    offset += 32
-  }
-
-  return ret
-}
-
-ABI.simpleEncode = function (method) {
-  var args = Array.prototype.slice.call(arguments).slice(1)
-  var sig = parseSignature(method)
-
-  // FIXME: validate/convert arguments
-  if (args.length !== sig.args.length) {
-    throw new Error('Argument count mismatch')
-  }
-
-  return Buffer.concat([ ABI.methodID(sig.method, sig.args), ABI.rawEncode(sig.args, args) ])
-}
-
-ABI.simpleDecode = function (method, data) {
-  var sig = parseSignature(method)
-
-  // FIXME: validate/convert arguments
-  if (!sig.retargs) {
-    throw new Error('No return values in method')
-  }
-
-  return ABI.rawDecode(sig.retargs, data)
-}
-
-function stringify (type, value) {
-  if (type.startsWith('address') || type.startsWith('bytes')) {
-    return '0x' + value.toString('hex')
-  } else {
-    return value.toString()
-  }
-}
-
-ABI.stringify = function (types, values) {
-  var ret = []
-
-  for (var i in types) {
-    var type = types[i]
-    var value = values[i]
-
-    // if it is an array type, concat the items
-    if (/^[^\[]+\[.*\]$/.test(type)) {
-      value = value.map(function (item) {
-        return stringify(type, item)
-      }).join(', ')
-    } else {
-      value = stringify(type, value)
-    }
-
-    ret.push(value)
-  }
-
-  return ret
-}
-
-ABI.solidityPack = function (types, values) {
-  if (types.length !== values.length) {
-    throw new Error('Number of types are not matching the values')
-  }
-
-  var size, num
-  var ret = []
-
-  for (var i = 0; i < types.length; i++) {
-    var type = elementaryName(types[i])
-    var value = values[i]
-
-    if (type === 'bytes') {
-      ret.push(value)
-    } else if (type === 'string') {
-      ret.push(new Buffer(value, 'utf8'))
-    } else if (type === 'bool') {
-      ret.push(new Buffer(value ? '01' : '00', 'hex'))
-    } else if (type === 'address') {
-      ret.push(utils.setLengthLeft(value, 20))
-    } else if (type.startsWith('bytes')) {
-      size = parseTypeN(type)
-      if (size < 1 || size > 32) {
-        throw new Error('Invalid bytes<N> width: ' + size)
-      }
-
-      return utils.setLengthRight(value, size)
-    } else if (type.startsWith('uint')) {
-      size = parseTypeN(type)
-      if ((size % 8) || (size < 8) || (size > 256)) {
-        throw new Error('Invalid uint<N> width: ' + size)
-      }
-
-      num = parseNumber(value)
-      if (num.bitLength() > size) {
-        throw new Error('Supplied uint exceeds width: ' + size + ' vs ' + num.bitLength())
-      }
-
-      ret.push(num.toArrayLike(Buffer, 'be', size / 8))
-    } else if (type.startsWith('int')) {
-      size = parseTypeN(type)
-      if ((size % 8) || (size < 8) || (size > 256)) {
-        throw new Error('Invalid int<N> width: ' + size)
-      }
-
-      num = parseNumber(value)
-      if (num.bitLength() > size) {
-        throw new Error('Supplied int exceeds width: ' + size + ' vs ' + num.bitLength())
-      }
-
-      ret.push(num.toTwos(size).toArrayLike(Buffer, 'be', size / 8))
-    } else {
-      // FIXME: support all other types
-      throw new Error('Unsupported or invalid type: ' + type)
-    }
-  }
-
-  return Buffer.concat(ret)
-}
-
-ABI.soliditySHA3 = function (types, values) {
-  return utils.sha3(ABI.solidityPack(types, values))
-}
-
-ABI.soliditySHA256 = function (types, values) {
-  return utils.sha256(ABI.solidityPack(types, values))
-}
-
-ABI.solidityRIPEMD160 = function (types, values) {
-  return utils.ripemd160(ABI.solidityPack(types, values), true)
-}
-
-// Serpent's users are familiar with this encoding
-// - s: string
-// - b: bytes
-// - b<N>: bytes<N>
-// - i: int256
-// - a: int256[]
-
-function isNumeric (c) {
-  // FIXME: is this correct? Seems to work
-  return (c >= '0') && (c <= '9')
-}
-
-// For a "documentation" refer to https://github.com/ethereum/serpent/blob/develop/preprocess.cpp
-ABI.fromSerpent = function (sig) {
-  var ret = []
-  for (var i = 0; i < sig.length; i++) {
-    var type = sig[i]
-    if (type === 's') {
-      ret.push('bytes')
-    } else if (type === 'b') {
-      var tmp = 'bytes'
-      var j = i + 1
-      while ((j < sig.length) && isNumeric(sig[j])) {
-        tmp += sig[j] - '0'
-        j++
-      }
-      i = j - 1
-      ret.push(tmp)
-    } else if (type === 'i') {
-      ret.push('int256')
-    } else if (type === 'a') {
-      ret.push('int256[]')
-    } else {
-      throw new Error('Unsupported or invalid type: ' + type)
-    }
-  }
-  return ret
-}
-
-ABI.toSerpent = function (types) {
-  var ret = []
-  for (var i = 0; i < types.length; i++) {
-    var type = types[i]
-    if (type === 'bytes') {
-      ret.push('s')
-    } else if (type.startsWith('bytes')) {
-      ret.push('b' + parseTypeN(type))
-    } else if (type === 'int256') {
-      ret.push('i')
-    } else if (type === 'int256[]') {
-      ret.push('a')
-    } else {
-      throw new Error('Unsupported or invalid type: ' + type)
-    }
-  }
-  return ret.join('')
-}
-
-module.exports = ABI
-
-}).call(this,require("buffer").Buffer)
-},{"bn.js":494,"buffer":283,"ethereumjs-util":528}],522:[function(require,module,exports){
+},{}],522:[function(require,module,exports){
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -64416,7 +63859,7 @@ var Transaction = function () {
 module.exports = Transaction;
 
 }).call(this,require("buffer").Buffer)
-},{"buffer":283,"ethereum-common/params.json":519,"ethereumjs-util":527}],527:[function(require,module,exports){
+},{"buffer":283,"ethereum-common/params.json":521,"ethereumjs-util":527}],527:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -65087,9 +64530,9 @@ exports.defineProperties = function (self, fields, data) {
 };
 
 }).call(this,require("buffer").Buffer)
-},{"assert":239,"bn.js":494,"buffer":283,"create-hash":500,"ethjs-util":529,"keccak":544,"rlp":577,"secp256k1":579}],528:[function(require,module,exports){
+},{"assert":239,"bn.js":496,"buffer":283,"create-hash":502,"ethjs-util":529,"keccak":544,"rlp":577,"secp256k1":579}],528:[function(require,module,exports){
 arguments[4][324][0].apply(exports,arguments)
-},{"assert":239,"bn.js":494,"buffer":283,"create-hash":500,"dup":324,"keccakjs":550,"rlp":577,"secp256k1":579}],529:[function(require,module,exports){
+},{"assert":239,"bn.js":496,"buffer":283,"create-hash":502,"dup":324,"keccakjs":550,"rlp":577,"secp256k1":579}],529:[function(require,module,exports){
 (function (Buffer){
 'use strict';
 
@@ -70388,7 +69831,7 @@ arguments[4][347][0].apply(exports,arguments)
 arguments[4][348][0].apply(exports,arguments)
 },{"./keccak-state-unroll":548,"buffer":283,"dup":348}],550:[function(require,module,exports){
 arguments[4][349][0].apply(exports,arguments)
-},{"browserify-sha3":497,"dup":349}],551:[function(require,module,exports){
+},{"browserify-sha3":499,"dup":349}],551:[function(require,module,exports){
 arguments[4][352][0].apply(exports,arguments)
 },{"dup":352}],552:[function(require,module,exports){
 (function (global){
@@ -77003,9 +76446,9 @@ exports.isNumberInInterval = function (number, x, y, message) {
 }).call(this,{"isBuffer":require("../../../../augur.js/node_modules/is-buffer/index.js")})
 },{"../../../../augur.js/node_modules/is-buffer/index.js":340}],581:[function(require,module,exports){
 arguments[4][394][0].apply(exports,arguments)
-},{"bip66":493,"buffer":283,"dup":394}],582:[function(require,module,exports){
+},{"bip66":495,"buffer":283,"dup":394}],582:[function(require,module,exports){
 arguments[4][395][0].apply(exports,arguments)
-},{"../messages.json":584,"bn.js":494,"buffer":283,"create-hash":500,"dup":395,"elliptic":503}],583:[function(require,module,exports){
+},{"../messages.json":584,"bn.js":496,"buffer":283,"create-hash":502,"dup":395,"elliptic":505}],583:[function(require,module,exports){
 arguments[4][396][0].apply(exports,arguments)
 },{"./assert":580,"./der":581,"./messages.json":584,"dup":396}],584:[function(require,module,exports){
 arguments[4][397][0].apply(exports,arguments)
@@ -78453,6 +77896,12 @@ function connect(configuration, initialConnectCallback) {
       // ensure we can do basic JSON-RPC over this connection
       dispatch(net_version(null, function (networkID) {
         if (networkID instanceof Error || networkID.error) return initialConnectCallback(networkID);
+
+        // If configuration.networkID is provided, verify that we're actually on that network
+        if (configuration.networkID && parseInt(networkID, 10) !== parseInt(configuration.networkID, 10)) {
+          return initialConnectCallback(networkID);
+        }
+
         dispatch({ type: "SET_NETWORK_ID", networkID: networkID });
         createBlockAndLogStreamer({
           pollingIntervalMilliseconds: storedConfiguration.pollingIntervalMilliseconds,
@@ -78502,7 +77951,7 @@ module.exports = {
 
 };
 
-},{"bignumber.js":492}],621:[function(require,module,exports){
+},{"bignumber.js":494}],621:[function(require,module,exports){
 "use strict";
 
 var createStore = require("redux").createStore;
@@ -78795,7 +78244,7 @@ var convertResponseToReturnsType = function (returnsType, response) {
 
 module.exports = convertResponseToReturnsType;
 
-},{"augur-abi":491,"clone":499}],624:[function(require,module,exports){
+},{"augur-abi":491,"clone":501}],624:[function(require,module,exports){
 "use strict";
 
 var abi = require("augur-abi");
@@ -78883,7 +78332,7 @@ var parseEthereumResponse = function (origResponse, returns, callback) {
 
 module.exports = parseEthereumResponse;
 
-},{"../errors/codes":630,"../errors/rpc-error":633,"../utils/is-function":694,"../utils/is-object":698,"clone":499}],626:[function(require,module,exports){
+},{"../errors/codes":630,"../errors/rpc-error":633,"../utils/is-function":694,"../utils/is-object":698,"clone":501}],626:[function(require,module,exports){
 "use strict";
 
 var isFunction = require("../utils/is-function");
@@ -79019,7 +78468,7 @@ var packageRequest = function (payload) {
 
 module.exports = packageRequest;
 
-},{"../constants":620,"../errors/codes":630,"../errors/rpc-error":633,"augur-abi":491,"clone":499}],629:[function(require,module,exports){
+},{"../constants":620,"../errors/codes":630,"../errors/rpc-error":633,"augur-abi":491,"clone":501}],629:[function(require,module,exports){
 "use strict";
 
 var stripReturnsTypeAndInvocation = function (tx) {
@@ -79478,7 +78927,7 @@ var isNodeJs = require("./is-node-js");
 
 module.exports = isNodeJs ? require("request") : require("browser-request");
 
-},{"./is-node-js":636,"browser-request":496,"request":252}],638:[function(require,module,exports){
+},{"./is-node-js":636,"browser-request":498,"request":252}],638:[function(require,module,exports){
 "use strict";
 
 var syncRequest = require("sync-request");
@@ -79911,7 +79360,7 @@ module.exports = function (currentBlock, action) {
   }
 };
 
-},{"./initial-state":657,"clone":499}],653:[function(require,module,exports){
+},{"./initial-state":657,"clone":501}],653:[function(require,module,exports){
 "use strict";
 
 var assign = require("lodash.assign");
@@ -80023,6 +79472,7 @@ module.exports.configuration = {
   httpAddresses: [],
   wsAddresses: [],
   ipcAddresses: [],
+  networkID: null,
   connectionTimeout: 3000,
   pollingIntervalMilliseconds: 30000,
   blockRetention: 100
@@ -80572,7 +80022,7 @@ function callContractFunction(payload, callback, callbackWrapper, extraArgument)
 
 module.exports = callContractFunction;
 
-},{"../decode-response/convert-response-to-returns-type":623,"../decode-response/handle-rpc-error":624,"../errors/codes":630,"../errors/rpc-error":633,"../transact/call-or-send-transaction":671,"../utils/is-function":694,"clone":499}],671:[function(require,module,exports){
+},{"../decode-response/convert-response-to-returns-type":623,"../decode-response/handle-rpc-error":624,"../errors/codes":630,"../errors/rpc-error":633,"../transact/call-or-send-transaction":671,"../utils/is-function":694,"clone":501}],671:[function(require,module,exports){
 "use strict";
 
 var eth = require("../wrappers/eth");
@@ -80639,7 +80089,7 @@ function getLoggedReturnValue(txHash, callback) {
 
 module.exports = getLoggedReturnValue;
 
-},{"../errors/codes":630,"../wrappers/eth":710,"bignumber.js":492}],673:[function(require,module,exports){
+},{"../errors/codes":630,"../wrappers/eth":710,"bignumber.js":494}],673:[function(require,module,exports){
 "use strict";
 
 var updateTx = require("./update-tx");
@@ -80869,7 +80319,7 @@ function updateMinedTx(txHash) {
 
 module.exports = updateMinedTx;
 
-},{"../constants":620,"../decode-response/convert-response-to-returns-type":623,"../decode-response/handle-rpc-error":624,"../errors/codes":630,"../transact/call-contract-function":670,"../transact/get-logged-return-value":672,"../utils/is-function":694,"../wrappers/eth":710,"augur-abi":491,"bignumber.js":492}],677:[function(require,module,exports){
+},{"../constants":620,"../decode-response/convert-response-to-returns-type":623,"../decode-response/handle-rpc-error":624,"../errors/codes":630,"../transact/call-contract-function":670,"../transact/get-logged-return-value":672,"../utils/is-function":694,"../wrappers/eth":710,"augur-abi":491,"bignumber.js":494}],677:[function(require,module,exports){
 "use strict";
 
 var clone = require("clone");
@@ -80959,7 +80409,7 @@ function updatePendingTx(txHash) {
 
 module.exports = updatePendingTx;
 
-},{"../constants":620,"../errors/codes":630,"../transact/transact":675,"../transact/update-mined-tx":676,"../utils/is-function":694,"../wrappers/eth":710,"clone":499}],678:[function(require,module,exports){
+},{"../constants":620,"../errors/codes":630,"../transact/transact":675,"../transact/update-mined-tx":676,"../utils/is-function":694,"../wrappers/eth":710,"clone":501}],678:[function(require,module,exports){
 "use strict";
 
 var updateMinedTx = require("../transact/update-mined-tx");
@@ -81652,7 +81102,10 @@ function Transporter(configuration, messageHandler, syncOnly, debugLogging, call
 
   // initiate connections to all provided addresses, as each completes it will check to see if everything is done
   web3Transport = new Web3Transport(messageHandler, function (error) {
-    resultAggregator.web3Transports[0] = (error !== null) ? null : web3Transport;
+    // only use web3 transport if we're on mainnet (1) or public testnet (3)
+    var networkID = parseInt(configuration.networkID, 10);
+    var isMainnetOrPublicTestnet = !isNaN(networkID) && (networkID === 1 || networkID === 3);
+    resultAggregator.web3Transports[0] = (error !== null || !isMainnetOrPublicTestnet) ? null : web3Transport;
     checkIfComplete(this, resultAggregator, callback);
   }.bind(this));
   configuration.ipcAddresses.forEach(function (ipcAddress, index) {
@@ -82233,7 +81686,7 @@ function resendRawTransaction(transaction, privateKey, gasPrice, gasLimit, callb
 
 module.exports = resendRawTransaction;
 
-},{"../raw-transactions/sign-raw-transaction-with-key":646,"../wrappers/eth":710,"augur-abi":491,"clone":499}],719:[function(require,module,exports){
+},{"../raw-transactions/sign-raw-transaction-with-key":646,"../wrappers/eth":710,"augur-abi":491,"clone":501}],719:[function(require,module,exports){
 "use strict";
 
 var abi = require("augur-abi");
@@ -82251,7 +81704,7 @@ function resendTransaction(transaction, gasPrice, gasLimit, callback) {
 
 module.exports = resendTransaction;
 
-},{"../wrappers/eth":710,"augur-abi":491,"clone":499}],720:[function(require,module,exports){
+},{"../wrappers/eth":710,"augur-abi":491,"clone":501}],720:[function(require,module,exports){
 "use strict";
 
 var abi = require("augur-abi");

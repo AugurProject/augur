@@ -41,6 +41,7 @@ function connect(connectOptions, callback) {
         if (connectOptions.http) options.httpAddresses.push(connectOptions.http);
         if (connectOptions.ws) options.wsAddresses.push(connectOptions.ws);
         if (connectOptions.ipc) options.ipcAddresses.push(connectOptions.ipc);
+        if (connectOptions.networkID) options.networkID = connectOptions.networkID;
         options.contracts = augurContracts;
         options.api = augurContracts.api;
         break;
