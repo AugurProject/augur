@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import classnames from 'classnames';
+import classNames from 'classnames';
 import Checkbox from 'modules/common/components/checkbox';
 import OutcomeOptions from 'modules/reports/components/outcome-options';
 import { BINARY, SCALAR } from 'modules/markets/constants/market-types';
@@ -52,7 +52,7 @@ export default class ReportForm extends Component {
     const indeterminateValue = p.type === BINARY ? '1.5' : '0.5';
 
     return (
-      <article className={classnames('report-form', { reported: s.isReported })}>
+      <article className={classNames('report-form', { reported: s.isReported })}>
         <div className="outcome-options">
           <h4>{!s.isReported ? 'Report the outcome' : 'Outcome Reported'}</h4>
           {p.type === SCALAR &&
@@ -74,7 +74,7 @@ export default class ReportForm extends Component {
             If this question is subjective, vague, or did not have a clear answer on the end date above, you should report indeterminate.
           </span>
           <Checkbox
-            className={classnames('indeterminate-checkbox', { disabled: s.isReported })}
+            className={classNames('indeterminate-checkbox', { disabled: s.isReported })}
             text="Yes, this question is indeterminate"
             isChecked={!!s.isIndeterminate}
             onClick={(!s.isReported && (() => this.setState({
@@ -91,7 +91,7 @@ export default class ReportForm extends Component {
           </span>
 
           <Checkbox
-            className={classnames('unethical-checkbox', { disabled: s.isReported })}
+            className={classNames('unethical-checkbox', { disabled: s.isReported })}
             text="Yes, this question is unethical"
             isChecked={!!s.isUnethical}
             onClick={(!s.isReported && (() => this.setState({ isUnethical: !s.isUnethical }))) || undefined}

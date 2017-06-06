@@ -1,9 +1,9 @@
 // Provides collapsible wrapper (default is div)
 import React, { PropTypes } from 'react';
-import classnames from 'classnames';
+import classNames from 'classnames';
 
 const Collapse = p => (
-  <div className={classnames('collapse', { displayNone: !p.isOpen })} >
+  <div className={classNames('collapse', { displayNone: !p.isOpen })} >
     {p.children}
   </div>
 );

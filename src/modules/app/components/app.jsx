@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import classnames from 'classnames';
+import classNames from 'classnames';
 import Hammer from 'hammerjs';
 
 import Header from 'modules/app/components/header';
@@ -201,7 +201,7 @@ export default class App extends Component {
               {...navProps}
               updateHeaderHeight={this.updateHeaderHeight}
             />
-            <div className={classnames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
+            <div className={classNames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
               {s.isSideBarAllowed && !s.isSideBarCollapsed &&
                 <div className="core-stats-bumper" />
               }
@@ -225,7 +225,7 @@ export default class App extends Component {
                 {s.isSideBarAllowed && !s.isSideBarCollapsed &&
                   <div className="core-stats-bumper" />
                 }
-                <div className={classnames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
+                <div className={classNames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
                   {p.loginAccount && p.loginAccount.address &&
                     <CoreStats
                       activeView={p.activeView}

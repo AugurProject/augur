@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
-import classnames from 'classnames';
+import classNames from 'classnames';
 
 import Link from 'modules/link/components/link';
 import AugurLogoIcon from 'modules/common/components/augur-logo-icon';
@@ -83,7 +83,7 @@ export default class Nav extends Component {
             p.allMarketsLink.onClick();
             this.collapseFooter();
           }}
-          className={classnames('app-nav-link', { active: ((p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader == null) })}
+          className={classNames('app-nav-link', { active: ((p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader == null) })}
         >
           <i className="nav-icon fa fa-line-chart" />
           Markets
@@ -95,7 +95,7 @@ export default class Nav extends Component {
               p.favoritesLink.onClick();
               this.collapseFooter();
             }}
-            className={classnames('app-nav-link', { active: (p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader === FAVORITES })}
+            className={classNames('app-nav-link', { active: (p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader === FAVORITES })}
           >
             <i className="nav-icon fa fa-star" />
             <span className="nav-count">{p.numFavorites} </span>
@@ -109,7 +109,7 @@ export default class Nav extends Component {
               p.pendingReportsLink.onClick();
               this.collapseFooter();
             }}
-            className={classnames('app-nav-link', { active: (p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader === PENDING_REPORTS })}
+            className={classNames('app-nav-link', { active: (p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader === PENDING_REPORTS })}
           >
             <i className="nav-icon fa fa-copy" />
             <span className="nav-count">{p.numPendingReports} </span>
@@ -123,7 +123,7 @@ export default class Nav extends Component {
               p.myPositionsLink.onClick();
               this.collapseFooter();
             }}
-            className={classnames('app-nav-link', MY_POSITIONS, { active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activeView) > -1 })}
+            className={classNames('app-nav-link', MY_POSITIONS, { active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activeView) > -1 })}
           >
             <i className="nav-icon fa fa-money" />
             Portfolio
@@ -136,7 +136,7 @@ export default class Nav extends Component {
               p.transactionsLink.onClick();
               this.collapseFooter();
             }}
-            className={classnames('app-nav-link', TRANSACTIONS, { active: p.activeView === TRANSACTIONS })}
+            className={classNames('app-nav-link', TRANSACTIONS, { active: p.activeView === TRANSACTIONS })}
           >
             <i className="nav-icon fa fa-tasks" />
             Transactions
@@ -149,7 +149,7 @@ export default class Nav extends Component {
               p.accountLink.onClick();
               this.collapseFooter();
             }}
-            className={classnames('app-nav-link', ACCOUNT, { active: p.activeView === ACCOUNT })}
+            className={classNames('app-nav-link', ACCOUNT, { active: p.activeView === ACCOUNT })}
           >
             <i className="nav-icon fa fa-cog" />
             Account
@@ -162,7 +162,7 @@ export default class Nav extends Component {
               p.authLink.onClick();
               this.collapseFooter();
             }}
-            className={classnames('app-nav-link', AUTHENTICATION, { active: p.activeView === AUTHENTICATION })}
+            className={classNames('app-nav-link', AUTHENTICATION, { active: p.activeView === AUTHENTICATION })}
           >
             <div className="nav-icon-google-translate-fix">
               <i className="nav-icon">
