@@ -57,7 +57,7 @@ export default class Checkbox extends Component {
           type="button"
           onClick={p.onClick}
           data-tip={this.state.dataTip}
-          data-place="bottom"
+          data-place="right"
         >
           <span className="checkbox-box">
             {p.isChecked &&
