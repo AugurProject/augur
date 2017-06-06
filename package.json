@@ -1,6 +1,6 @@
 {
   "name": "augur.js",
-  "version": "4.0.3",
+  "version": "4.0.4",
   "description": "Augur JavaScript API",
   "author": "The Augur Developers <team@augur.net>",
   "license": "MIT",
@@ -23,8 +23,8 @@
     "browser-request": "0.3.3",
     "chalk": "1.1.1",
     "clone": "1.0.2",
-    "ethereumjs-connect": "4.1.0",
-    "ethrpc": "4.1.0",
+    "ethereumjs-connect": "4.1.2",
+    "ethrpc": "4.1.2",
     "immutable-delete": "1.0.1",
     "keythereum": "0.5.1",
     "lodash.assign": "4.2.0",

@@ -2205,7 +2205,7 @@ keythereum.constants.pbkdf2.c = ROUNDS;
 keythereum.constants.scrypt.n = ROUNDS;
 
 function Augur() {
-  this.version = "4.0.3";
+  this.version = "4.0.4";
   this.options = {
     debug: {
       tools: false, // if true, testing tools (test/tools.js) included
@@ -62356,7 +62356,7 @@ var setupFunctionsAPI = require("./setup-functions-api");
 var connect = require("./connect");
 
 module.exports = {
-  version: "4.0.7",
+  version: "4.1.2",
   setFrom: setFrom,
   setupEventsAPI: setupEventsAPI,
   setupFunctionsAPI: setupFunctionsAPI,
