@@ -3,10 +3,10 @@ import { assert } from 'chai';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 
-import footerReducer from 'modules/app/reducers/footer-height';
-import { UPDATE_FOOTER_HEIGHT } from 'modules/app/actions/update-footer-height';
+import headerReducer from 'modules/app/reducers/header-height';
+import { UPDATE_HEADER_HEIGHT } from 'modules/app/actions/update-header-height';
 
-describe('modules/app/reducers/footer-height', () => {
+describe('modules/app/reducers/header-height', () => {
   const mockStore = configureMockStore([thunk]);
 
   const test = t => it(t.description, () => {
@@ -18,7 +18,7 @@ describe('modules/app/reducers/footer-height', () => {
   test({
     description: `should return the default state`,
     assertions: () => {
-      const actual = footerReducer(undefined, {});
+      const actual = headerReducer(undefined, {});
 
       const expected = 0;
 
@@ -29,10 +29,10 @@ describe('modules/app/reducers/footer-height', () => {
   test({
     description: `should return the expected state`,
     assertions: () => {
-      const actual = footerReducer(undefined, {
-        type: UPDATE_FOOTER_HEIGHT,
+      const actual = headerReducer(undefined, {
+        type: UPDATE_HEADER_HEIGHT,
         data: {
-          footerHeight: 10
+          headerHeight: 10
         }
       });
 
@@ -45,10 +45,10 @@ describe('modules/app/reducers/footer-height', () => {
   test({
     description: `should return the updated state`,
     assertions: () => {
-      const actual = footerReducer(20, {
-        type: UPDATE_FOOTER_HEIGHT,
+      const actual = headerReducer(20, {
+        type: UPDATE_HEADER_HEIGHT,
         data: {
-          footerHeight: 10
+          headerHeight: 10
         }
       });
 
