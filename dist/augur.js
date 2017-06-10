@@ -2205,7 +2205,7 @@ keythereum.constants.pbkdf2.c = ROUNDS;
 keythereum.constants.scrypt.n = ROUNDS;
 
 function Augur() {
-  this.version = "4.0.4";
+  this.version = "4.0.6";
   this.options = {
     debug: {
       tools: false, // if true, testing tools (test/tools.js) included
@@ -2478,15 +2478,17 @@ module.exports = getLogs;
 "use strict";
 
 var assign = require("lodash.assign");
-var getLogs = require("./get-logs");
+var getLogsChunked = require("./get-logs-chunked");
+var noop = require("../utils/noop");
 
 // { market, filter }
 function getMarketPriceHistory(p, callback) {
   var filter = assign({}, p.filter, { market: p.market });
+
   var aux = { index: "outcome", mergedLogs: {} };
-  getLogs({ label: "log_fill_tx", filter: filter, aux: aux }, function (err) {
+  getLogsChunked({ label: "log_fill_tx", filter: filter, aux: aux }, noop, function (err) {
     if (err) return callback(err);
-    getLogs({ label: "log_short_fill_tx", filter: filter, aux: aux }, function (err) {
+    getLogsChunked({ label: "log_short_fill_tx", filter: filter, aux: aux }, noop, function (err) {
       if (err) return callback(err);
       callback(null, aux.mergedLogs);
     });
@@ -2494,7 +2496,7 @@ function getMarketPriceHistory(p, callback) {
 }
 
 module.exports = getMarketPriceHistory;
-},{"./get-logs":53,"lodash.assign":352}],55:[function(require,module,exports){
+},{"../utils/noop":215,"./get-logs-chunked":52,"lodash.assign":352}],55:[function(require,module,exports){
 "use strict";
 
 var getCompleteSetsLogs = require("./get-complete-sets-logs");
