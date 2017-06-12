@@ -17,6 +17,7 @@ describe('modules/auth/actions/transfer-funds.js', () => {
 
   afterEach(() => {
     transferFundsReqireAPI.__ResetDependency__('augur');
+    transferFundsReqireAPI.__ResetDependency__('updateAssets');
   });
 
   test({
