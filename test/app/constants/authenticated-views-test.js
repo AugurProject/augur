@@ -7,7 +7,7 @@ describe('modules/app/constants/authenticated-views.js', () => {
   const test = t => it(t.description, () => t.assertions());
 
   test({
-    description: `should return the expecte array`,
+    description: `should return the expected array`,
     assertions: () => {
       const expected = [
         'create-market',
@@ -18,7 +18,7 @@ describe('modules/app/constants/authenticated-views.js', () => {
         'my-reports'
       ];
 
-      assert.deepEqual(AUTHENTICATED_VIEWS, expected, `didn't return the expectedc array`);
+      assert.deepEqual(AUTHENTICATED_VIEWS, expected, `didn't return the expected array`);
     }
   });
 });
