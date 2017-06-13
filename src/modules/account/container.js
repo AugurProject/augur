@@ -8,12 +8,12 @@ import { convertToToken, convertToEther } from 'modules/auth/actions/convert-eth
 import links from 'modules/link/selectors/links';
 
 import { selectLoginAccount } from 'modules/auth/selectors/login-account';
-import { selectABCUIContext } from 'modules/auth/helpers/abc';
+import selectABCUIContext from 'modules/auth/helpers/abc';
 
 const mapStateToProps = state => ({
   loginAccount: selectLoginAccount(state),
   authLink: links().authLink,
-  manageAirbitzAccount: airbitzAccount => selectABCUIContext(state).openManageWindow(airbitzAccount, (err) => {
+  manageAirbitzAccount: airbitzAccount => selectABCUIContext.openManageWindow(airbitzAccount, (err) => {
     if (err) console.error('onAirbitzManageAccount:', err);
   })
 });
