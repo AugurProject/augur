@@ -17,6 +17,8 @@ import { logout } from 'modules/auth/actions/logout';
 import { loadFullLoginAccountMarkets } from 'modules/portfolio/actions/load-full-login-account-markets';
 import { updateSelectedMarketsHeader } from 'modules/markets/actions/update-selected-markets-header';
 
+import selectABCUIContext from 'modules/auth/helpers/abc';
+
 import {
   ACCOUNT,
   M,
@@ -97,7 +99,7 @@ export const selectAuthLink = memoize((authType, alsoLogout, dispatch) => {
 
 export const selectAirbitzLink = memoize((authType, dispatch) => ({
   onClick: () => {
-    require('../../../selectors').abc.openLoginWindow((result, airbitzAccount) => {
+    selectABCUIContext().openLoginWindow((result, airbitzAccount) => {
       if (airbitzAccount) {
         dispatch(loginWithAirbitz(airbitzAccount));
       } else {
@@ -109,10 +111,10 @@ export const selectAirbitzLink = memoize((authType, dispatch) => ({
 
 export const selectAirbitzOnLoad = memoize(dispatch => ({
   onLoad: () => {
-    const abcContext = require('../../../selectors').abc.abcContext;
+    const abcContext = selectABCUIContext().abcContext;
     const usernames = abcContext.listUsernames();
     if (usernames.length > 0) {
-      require('../../../selectors').abc.openLoginWindow((result, airbitzAccount) => {
+      selectABCUIContext().openLoginWindow((result, airbitzAccount) => {
         if (airbitzAccount) {
           dispatch(loginWithAirbitz(airbitzAccount));
         } else {
