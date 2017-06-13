@@ -2,15 +2,15 @@ import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import sinon from 'sinon';
 
-import { selectAggregateOrderBook, __RewireAPI__ as selectOrderBookRewireAPI } from 'modules/bids-asks/helpers/select-order-book';
+import { selectAggregateOrderBook, selectTopBid, __RewireAPI__ as selectOrderBookRewireAPI } from 'modules/bids-asks/helpers/select-order-book';
 
 describe('modules/bids-asks/helpers/select-order-book.js', () => {
-  const test = t => it(t.description, done => t.assertions(done));
+  const test = t => it(t.description, () => t.assertions());
 
   describe('selectAggregateOrderBook', () => {
     test({
       description: `should return the expected object when 'marketOrderBook' is null`,
-      assertions: (done) => {
+      assertions: () => {
         const actual = selectAggregateOrderBook('1', null, {});
 
         const expected = {
@@ -19,14 +19,12 @@ describe('modules/bids-asks/helpers/select-order-book.js', () => {
         };
 
         assert.deepEqual(actual, expected, `didn't return the expected object`);
-
-        done();
       }
     });
 
     test({
       description: `should return the expected object when 'marketOrderBook' is null`,
-      assertions: (done) => {
+      assertions: () => {
         const selectAggregatePricePoints = sinon.stub().returns(['test']);
         selectOrderBookRewireAPI.__Rewire__('selectAggregatePricePoints', selectAggregatePricePoints);
 
@@ -38,8 +36,75 @@ describe('modules/bids-asks/helpers/select-order-book.js', () => {
         };
 
         assert.deepEqual(actual, expected, `didn't return the expected object`);
+      }
+    });
+  });
 
-        done();
+  describe('selectTopBid', () => {
+    const marketOrderBook = {
+      bids: [
+        {
+          isOfCurrentUser: true,
+          price: '0.4'
+        },
+        {
+          price: '0.3'
+        },
+        {
+          price: '0.2'
+        },
+        {
+          price: '0.1'
+        },
+      ]
+    };
+
+    test({
+      description: `should return null when not bids exist and including current user`,
+      assertions: () => {
+        const actual = selectTopBid({ bids: [] });
+
+        const expected = null;
+
+        assert.strictEqual(actual, expected, `didn't return the expected top bid`);
+      }
+    });
+
+    test({
+      description: `should return null when not bids exist and excluding current user`,
+      assertions: () => {
+        const actual = selectTopBid({ bids: [] }, true);
+
+        const expected = null;
+
+        assert.strictEqual(actual, expected, `didn't return the expected top bid`);
+      }
+    });
+
+    test({
+      description: `should return the topBid, including current user`,
+      assertions: () => {
+        const actual = selectTopBid(marketOrderBook);
+
+        const expected = {
+          isOfCurrentUser: true,
+          price: '0.4'
+        };
+
+        assert.deepEqual(actual, expected, `didn't return the expected top bid`);
+      }
+    });
+
+    test({
+      description: `should return the topBid, excluding current user`,
+      assertions: () => {
+        const actual = selectTopBid(marketOrderBook, true);
+
+        const expected = {
+          price: '0.3'
+        };
+
+        assert.deepEqual(actual, expected, `didn't return the expected top bid`);
       }
     });
   });
