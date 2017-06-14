@@ -321,7 +321,7 @@ describe('modules/bids-asks/helpers/select-order-book.js', () => {
     });
   });
 
-  describe('selectAggregatePricePoints', () => {
+  describe('reduceSharesCountByPrice', () => {
     test({
       description: `should return the expected object when previous is empty`,
       assertions: (done) => {
@@ -330,6 +330,98 @@ describe('modules/bids-asks/helpers/select-order-book.js', () => {
           isOfCurrentUser: false,
           outcome: '1',
           price: '0.1',
+          amount: '1'
+        });
+
+        const expected = {
+          0.1: {
+            isOfCurrentUser: false,
+            shares: new BigNumber('1')
+          }
+        };
+
+        assert.deepEqual(actual, expected, `didn't return the expected object`);
+
+        done();
+      }
+    });
+
+    test({
+      description: `should return the expected object when a pervious order is passed in`,
+      assertions: (done) => {
+        const reduceSharesCountByPrice = selectOrderBookRewireAPI.__get__('reduceSharesCountByPrice');
+        const actual = reduceSharesCountByPrice({
+          0.1: {
+            isOfCurrentUser: false,
+            shares: new BigNumber('1')
+          }
+        }, {
+          isOfCurrentUser: true,
+          outcome: '1',
+          price: '0.1',
+          amount: '1'
+        });
+
+        const expected = {
+          0.1: {
+            isOfCurrentUser: true,
+            shares: new BigNumber('2')
+          }
+        };
+
+        assert.deepEqual(actual, expected, `didn't return the expected object`);
+
+        done();
+      }
+    });
+
+    test({
+      description: `should return the expected object when a pervious order at a different price passed in`,
+      assertions: (done) => {
+        const reduceSharesCountByPrice = selectOrderBookRewireAPI.__get__('reduceSharesCountByPrice');
+        const actual = reduceSharesCountByPrice({
+          0.1: {
+            isOfCurrentUser: false,
+            shares: new BigNumber('1')
+          }
+        }, {
+          isOfCurrentUser: false,
+          outcome: '1',
+          price: '0.2',
+          amount: '1'
+        });
+
+        const expected = {
+          0.1: {
+            isOfCurrentUser: false,
+            shares: new BigNumber('1')
+          },
+          0.2: {
+            isOfCurrentUser: false,
+            shares: new BigNumber('1')
+          }
+        };
+
+        assert.deepEqual(actual, expected, `didn't return the expected object`);
+
+        done();
+      }
+    });
+
+    test({
+      description: `should return the previous aggregated orders if new order is malformed`,
+      assertions: (done) => {
+        console.debug = () => {};
+
+        const reduceSharesCountByPrice = selectOrderBookRewireAPI.__get__('reduceSharesCountByPrice');
+        const actual = reduceSharesCountByPrice({
+          0.1: {
+            isOfCurrentUser: false,
+            shares: new BigNumber('1')
+          }
+        }, {
+          isOfCurrentUser: false,
+          outcome: '1',
           amount: '1'
         });
 
