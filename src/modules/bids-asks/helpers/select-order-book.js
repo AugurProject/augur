@@ -113,7 +113,7 @@ function reduceSharesCountByPrice(aggregateOrdersPerPrice, order) {
       };
     }
     aggregateOrdersPerPrice[key].shares = aggregateOrdersPerPrice[key].shares.plus(abi.bignum(order.amount));
-    aggregateOrdersPerPrice[key].isOfCurrentUser = aggregateOrdersPerPrice[key].isOfCurrentUser || order.isOfCurrentUser;
+    aggregateOrdersPerPrice[key].isOfCurrentUser = aggregateOrdersPerPrice[key].isOfCurrentUser || order.isOfCurrentUser; // TODO -- we need to segregate orders @ the same price that are of user
   } else {
     console.debug('reduceSharesCountByPrice:', order);
   }

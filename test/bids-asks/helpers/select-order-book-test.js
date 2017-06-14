@@ -1,16 +1,32 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import sinon from 'sinon';
+import thunk from 'redux-thunk';
+import configureMockStore from 'redux-mock-store';
+import BigNumber from 'bignumber.js';
 
-import { selectAggregateOrderBook, selectTopBid, __RewireAPI__ as selectOrderBookRewireAPI } from 'modules/bids-asks/helpers/select-order-book';
+import { selectAggregateOrderBook, selectTopBid, selectTopAsk, __RewireAPI__ as selectOrderBookRewireAPI } from 'modules/bids-asks/helpers/select-order-book';
+
+import { formatShares, formatEtherTokens } from 'utils/format-number';
+
+import { CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-status';
 
 describe('modules/bids-asks/helpers/select-order-book.js', () => {
-  const test = t => it(t.description, () => t.assertions());
+  const mockStore = configureMockStore([thunk]);
+  const test = t => it(t.description, (done) => {
+    const store = mockStore(t.state || {});
+    selectOrderBookRewireAPI.__Rewire__('store', store);
+    t.assertions(done, store);
+  });
+
+  afterEach(() => {
+    selectOrderBookRewireAPI.__ResetDependency__('store');
+  });
 
   describe('selectAggregateOrderBook', () => {
     test({
       description: `should return the expected object when 'marketOrderBook' is null`,
-      assertions: () => {
+      assertions: (done) => {
         const actual = selectAggregateOrderBook('1', null, {});
 
         const expected = {
@@ -19,12 +35,14 @@ describe('modules/bids-asks/helpers/select-order-book.js', () => {
         };
 
         assert.deepEqual(actual, expected, `didn't return the expected object`);
+
+        done();
       }
     });
 
     test({
       description: `should return the expected object when 'marketOrderBook' is null`,
-      assertions: () => {
+      assertions: (done) => {
         const selectAggregatePricePoints = sinon.stub().returns(['test']);
         selectOrderBookRewireAPI.__Rewire__('selectAggregatePricePoints', selectAggregatePricePoints);
 
@@ -36,6 +54,10 @@ describe('modules/bids-asks/helpers/select-order-book.js', () => {
         };
 
         assert.deepEqual(actual, expected, `didn't return the expected object`);
+
+        selectOrderBookRewireAPI.__ResetDependency__('selectAggregatePricePoints');
+
+        done();
       }
     });
   });
@@ -61,29 +83,33 @@ describe('modules/bids-asks/helpers/select-order-book.js', () => {
 
     test({
       description: `should return null when not bids exist and including current user`,
-      assertions: () => {
+      assertions: (done) => {
         const actual = selectTopBid({ bids: [] });
 
         const expected = null;
 
         assert.strictEqual(actual, expected, `didn't return the expected top bid`);
+
+        done();
       }
     });
 
     test({
       description: `should return null when not bids exist and excluding current user`,
-      assertions: () => {
+      assertions: (done) => {
         const actual = selectTopBid({ bids: [] }, true);
 
         const expected = null;
 
         assert.strictEqual(actual, expected, `didn't return the expected top bid`);
+
+        done();
       }
     });
 
     test({
       description: `should return the topBid, including current user`,
-      assertions: () => {
+      assertions: (done) => {
         const actual = selectTopBid(marketOrderBook);
 
         const expected = {
@@ -92,12 +118,14 @@ describe('modules/bids-asks/helpers/select-order-book.js', () => {
         };
 
         assert.deepEqual(actual, expected, `didn't return the expected top bid`);
+
+        done();
       }
     });
 
     test({
       description: `should return the topBid, excluding current user`,
-      assertions: () => {
+      assertions: (done) => {
         const actual = selectTopBid(marketOrderBook, true);
 
         const expected = {
@@ -105,6 +133,216 @@ describe('modules/bids-asks/helpers/select-order-book.js', () => {
         };
 
         assert.deepEqual(actual, expected, `didn't return the expected top bid`);
+
+        done();
+      }
+    });
+  });
+
+  describe('selectTopAsk', () => {
+    const marketOrderBook = {
+      asks: [
+        {
+          isOfCurrentUser: true,
+          price: '0.5'
+        },
+        {
+          price: '0.6'
+        },
+        {
+          price: '0.7'
+        },
+        {
+          price: '0.8'
+        },
+      ]
+    };
+
+    test({
+      description: `should return null when not asks exist and including current user`,
+      assertions: (done) => {
+        const actual = selectTopAsk({ asks: [] });
+
+        const expected = null;
+
+        assert.strictEqual(actual, expected, `didn't return the expected top bid`);
+
+        done();
+      }
+    });
+
+    test({
+      description: `should return null when not asks exist and excluding current user`,
+      assertions: (done) => {
+        const actual = selectTopAsk({ asks: [] }, true);
+
+        const expected = null;
+
+        assert.strictEqual(actual, expected, `didn't return the expected top bid`);
+
+        done();
+      }
+    });
+
+    test({
+      description: `should return the topAsk, including current user`,
+      assertions: (done) => {
+        const actual = selectTopAsk(marketOrderBook);
+
+        const expected = {
+          isOfCurrentUser: true,
+          price: '0.5'
+        };
+
+        assert.deepEqual(actual, expected, `didn't return the expected top bid`);
+
+        done();
+      }
+    });
+
+    test({
+      description: `should return the topAsk, excluding current user`,
+      assertions: (done) => {
+        const actual = selectTopAsk(marketOrderBook, true);
+
+        const expected = {
+          price: '0.6'
+        };
+
+        assert.deepEqual(actual, expected, `didn't return the expected top bid`);
+
+        done();
+      }
+    });
+  });
+
+  describe('selectAggregatePricePoints', () => {
+    test({
+      description: `should return an empty array when the orders array is null`,
+      assertions: (done) => {
+        const selectAggregatePricePoints = selectOrderBookRewireAPI.__get__('selectAggregatePricePoints');
+        const actual = selectAggregatePricePoints('1', null, {});
+
+        const expected = [];
+
+        assert.deepEqual(actual, expected, `didn't return the expected array`);
+
+        done();
+      }
+    });
+
+    test({
+      description: `should return an empty array when the orders array is null`,
+      assertions: (done) => {
+        const selectAggregatePricePoints = selectOrderBookRewireAPI.__get__('selectAggregatePricePoints');
+        const actual = selectAggregatePricePoints('1', undefined, {});
+
+        const expected = [];
+
+        assert.deepEqual(actual, expected, `didn't return the expected array`);
+
+        done();
+      }
+    });
+
+    test({
+      description: `should return an empty array when the orders array is null`,
+      state: {
+        loginAccount: {
+          address: '0xtest'
+        }
+      },
+      assertions: (done, store) => {
+        const selectAggregatePricePoints = selectOrderBookRewireAPI.__get__('selectAggregatePricePoints');
+
+        const orders = {
+          '0xorder1': {
+            outcome: '1',
+            price: '0.1',
+            amount: '1'
+          },
+          '0xorder2': {
+            outcome: '1',
+            price: '0.1',
+            amount: '1'
+          },
+          '0xorder3': {
+            outcome: '1',
+            price: '0.2',
+            amount: '1'
+          },
+          '0xorder4': {
+            outcome: '1',
+            price: '0.2',
+            amount: '1'
+          },
+          '0xorder5': {
+            owner: '0xtest',
+            outcome: '1',
+            price: '0.2',
+            amount: '1'
+          },
+          '0xorder6': {
+            outcome: '1',
+            price: '0.3',
+            amount: '1'
+          },
+          '0xorder7': {
+            outcome: '2',
+            price: '0.1',
+            amount: '1'
+          },
+        };
+
+        const actual = selectAggregatePricePoints('1', orders, { '0xorder5': CLOSE_DIALOG_CLOSING });
+
+        const expected = [
+          {
+            isOfCurrentUser: false,
+            shares: formatShares('2'),
+            price: formatEtherTokens('0.1')
+          },
+          {
+            isOfCurrentUser: true,
+            shares: formatShares('3'),
+            price: formatEtherTokens('0.2')
+          },
+          {
+            isOfCurrentUser: false,
+            shares: formatShares('1'),
+            price: formatEtherTokens('0.3')
+          }
+        ];
+
+        assert.deepEqual(actual, expected, `didn't return the expected array`);
+
+        done();
+      }
+    });
+  });
+
+  describe('selectAggregatePricePoints', () => {
+    test({
+      description: `should return the expected object when previous is empty`,
+      assertions: (done) => {
+        const reduceSharesCountByPrice = selectOrderBookRewireAPI.__get__('reduceSharesCountByPrice');
+        const actual = reduceSharesCountByPrice({}, {
+          isOfCurrentUser: false,
+          outcome: '1',
+          price: '0.1',
+          amount: '1'
+        });
+
+        const expected = {
+          0.1: {
+            isOfCurrentUser: false,
+            shares: new BigNumber('1')
+          }
+        };
+
+        assert.deepEqual(actual, expected, `didn't return the expected object`);
+
+        done();
       }
     });
   });
