@@ -2,7 +2,7 @@ import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import sinon from 'sinon';
 
-import loginAccount, { selectLoginAccount, __RewireAPI__ as LoginAccountRewireAPI } from 'modules/auth/selectors/login-account';
+import loginAccount, { selectLoginAccount, __RewireAPI__ as loginAccountRewireAPI } from 'modules/auth/selectors/login-account';
 
 import { formatRep, formatEther, formatEtherTokens } from 'utils/format-number';
 
@@ -15,11 +15,11 @@ describe(`modules/auth/selectors/login-account.js`, () => {
       assertions: (done) => {
         const stubbedSelectLoginAccount = sinon.stub();
 
-        LoginAccountRewireAPI.__Rewire__('selectLoginAccount', stubbedSelectLoginAccount);
+        loginAccountRewireAPI.__Rewire__('selectLoginAccount', stubbedSelectLoginAccount);
 
         loginAccount();
 
-        LoginAccountRewireAPI.__ResetDependency__('selectLoginAccount');
+        loginAccountRewireAPI.__ResetDependency__('selectLoginAccount');
 
         assert(stubbedSelectLoginAccount.calledOnce, `didn't call 'selectLoginAccount' once as expected`);
 
@@ -29,19 +29,37 @@ describe(`modules/auth/selectors/login-account.js`, () => {
   });
 
   describe('selectLoginAccount', function () { // eslint-disable-line func-names, prefer-arrow-callback
+    const stubbedGenerateDownloadAccountLink = sinon.stub();
+
+    before(() => {
+      loginAccountRewireAPI.__Rewire__('generateDownloadAccountLink', stubbedGenerateDownloadAccountLink);
+      loginAccountRewireAPI.__Rewire__('augur', {
+        accounts: {
+          account: {
+            keystore: ''
+          }
+        }
+      });
+    });
+
+    beforeEach(() => {
+      this.clock = sinon.useFakeTimers(1485907200000);
+    });
+
+    afterEach(() => {
+      stubbedGenerateDownloadAccountLink.reset();
+    });
+
     after(() => {
       this.clock.restore();
+      loginAccountRewireAPI.__ResetDependency__('generateDownloadAccountLink');
+      loginAccountRewireAPI.__ResetDependency__('augur');
     });
 
     test({
       description: `should return the expected object when user is unlogged`,
       assertions: (done) => {
-        this.clock = sinon.useFakeTimers(1485907200000);
-
         const loginAccount = {};
-        const stubbedGenerateDownloadAccountLink = sinon.stub();
-
-        LoginAccountRewireAPI.__Rewire__('generateDownloadAccountLink', stubbedGenerateDownloadAccountLink);
 
         const actual = selectLoginAccount.resultFunc(loginAccount);
 
@@ -57,8 +75,6 @@ describe(`modules/auth/selectors/login-account.js`, () => {
         assert.deepEqual(actual, expected, `didn't return the expected object`);
         assert(stubbedGenerateDownloadAccountLink.calledOnce, `didn't call 'generateDownloadAccountLink' once as expected`);
 
-        LoginAccountRewireAPI.__ResetDependency__('generateDownloadAccountLink');
-
         done();
       }
     });
@@ -66,8 +82,6 @@ describe(`modules/auth/selectors/login-account.js`, () => {
     test({
       description: `should return the expected object when user is logged via loginID with account locked`,
       assertions: (done) => {
-        this.clock = sinon.useFakeTimers(1485907200000);
-
         const loginAccount = {
           address: '0xAccountAddress',
           loginID: '123ThisIsALoginID',
@@ -75,9 +89,6 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           ethTokens: '11',
           rep: '12'
         };
-        const stubbedGenerateDownloadAccountLink = sinon.stub();
-
-        LoginAccountRewireAPI.__Rewire__('generateDownloadAccountLink', stubbedGenerateDownloadAccountLink);
 
         const actual = selectLoginAccount.resultFunc(loginAccount);
 
@@ -95,8 +106,6 @@ describe(`modules/auth/selectors/login-account.js`, () => {
         assert.deepEqual(actual, expected, `didn't return the expected object`);
         assert(stubbedGenerateDownloadAccountLink.calledOnce, `didn't call 'generateDownloadAccountLink' once as expected`);
 
-        LoginAccountRewireAPI.__ResetDependency__('generateDownloadAccountLink');
-
         done();
       }
     });
@@ -104,8 +113,6 @@ describe(`modules/auth/selectors/login-account.js`, () => {
     test({
       description: `should return the expected object when user is logged via loginID with account locked and name encoded`,
       assertions: (done) => {
-        this.clock = sinon.useFakeTimers(1485907200000);
-
         const loginAccount = {
           address: '0xAccountAddress',
           loginID: '123ThisIsALoginID',
@@ -114,9 +121,6 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           rep: '12',
           name: 'test-user'
         };
-        const stubbedGenerateDownloadAccountLink = sinon.stub();
-
-        LoginAccountRewireAPI.__Rewire__('generateDownloadAccountLink', stubbedGenerateDownloadAccountLink);
 
         const actual = selectLoginAccount.resultFunc(loginAccount);
 
@@ -135,8 +139,6 @@ describe(`modules/auth/selectors/login-account.js`, () => {
         assert.deepEqual(actual, expected, `didn't return the expected object`);
         assert(stubbedGenerateDownloadAccountLink.calledOnce, `didn't call 'generateDownloadAccountLink' once as expected`);
 
-        LoginAccountRewireAPI.__ResetDependency__('generateDownloadAccountLink');
-
         done();
       }
     });
@@ -144,8 +146,6 @@ describe(`modules/auth/selectors/login-account.js`, () => {
     test({
       description: `should return the expected object when user is logged via loginID with account UNlocked`,
       assertions: (done) => {
-        this.clock = sinon.useFakeTimers(1485907200000);
-
         const loginAccount = {
           address: '0xAccountAddress',
           loginID: '123ThisIsALoginID',
@@ -154,9 +154,6 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           rep: '12',
           isUnlocked: true
         };
-        const stubbedGenerateDownloadAccountLink = sinon.stub();
-
-        LoginAccountRewireAPI.__Rewire__('generateDownloadAccountLink', stubbedGenerateDownloadAccountLink);
 
         const actual = selectLoginAccount.resultFunc(loginAccount);
 
@@ -174,8 +171,6 @@ describe(`modules/auth/selectors/login-account.js`, () => {
 
         assert.deepEqual(actual, expected, `didn't return the expected object`);
         assert(stubbedGenerateDownloadAccountLink.calledOnce, `didn't call 'generateDownloadAccountLink' once as expected`);
-
-        LoginAccountRewireAPI.__ResetDependency__('generateDownloadAccountLink');
 
         done();
       }
@@ -184,8 +179,6 @@ describe(`modules/auth/selectors/login-account.js`, () => {
     test({
       description: `should return the expected object when user is logged via airbitz`,
       assertions: (done) => {
-        this.clock = sinon.useFakeTimers(1485907200000);
-
         const loginAccount = {
           airbitzAccount: {},
           address: '0xAccountAddress',
@@ -195,9 +188,6 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           rep: '12',
           isUnlocked: true
         };
-        const stubbedGenerateDownloadAccountLink = sinon.stub();
-
-        LoginAccountRewireAPI.__Rewire__('generateDownloadAccountLink', stubbedGenerateDownloadAccountLink);
 
         const actual = selectLoginAccount.resultFunc(loginAccount);
 
@@ -216,8 +206,6 @@ describe(`modules/auth/selectors/login-account.js`, () => {
 
         assert.deepEqual(actual, expected, `didn't return the expected object`);
         assert(stubbedGenerateDownloadAccountLink.calledOnce, `didn't call 'generateDownloadAccountLink' once as expected`);
-
-        LoginAccountRewireAPI.__ResetDependency__('generateDownloadAccountLink');
 
         done();
       }
