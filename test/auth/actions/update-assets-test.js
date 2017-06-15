@@ -62,7 +62,7 @@ describe('modules/auth/actions/update-assets.js', () => {
           assertions: (store, done) => {
             const ERR = `${asset}-failure`;
 
-            const loadAssets = (branch, address, ethTokensCB, repCB, ethCB) => {
+            const loadAssets = (options, ethTokensCB, repCB, ethCB) => {
               switch (asset) {
                 case ETH_TOKENS:
                   return ethTokensCB(ERR);
@@ -74,7 +74,11 @@ describe('modules/auth/actions/update-assets.js', () => {
                   return assert(false, `malformed callback test`);
               }
             };
-            updateAssetsRewireAPI.__Rewire__('augur', { loadAssets });
+            updateAssetsRewireAPI.__Rewire__('augur', {
+              assets: {
+                loadAssets
+              }
+            });
 
             const callbackStub = {
               callback: () => {}
@@ -93,7 +97,7 @@ describe('modules/auth/actions/update-assets.js', () => {
             loginAccount: {}
           },
           assertions: (store, done) => {
-            const loadAssets = (branch, address, ethTokensCB, repCB, ethCB) => {
+            const loadAssets = (options, ethTokensCB, repCB, ethCB) => {
               switch (asset) {
                 case ETH_TOKENS:
                   return ethTokensCB(null, '10');
@@ -105,7 +109,11 @@ describe('modules/auth/actions/update-assets.js', () => {
                   return assert(false, `malformed callback test`);
               }
             };
-            updateAssetsRewireAPI.__Rewire__('augur', { loadAssets });
+            updateAssetsRewireAPI.__Rewire__('augur', {
+              assets: {
+                loadAssets
+              }
+            });
 
             store.dispatch(updateAssets());
 
@@ -123,7 +131,7 @@ describe('modules/auth/actions/update-assets.js', () => {
             }
           },
           assertions: (store, done) => {
-            const loadAssets = (branch, address, ethTokensCB, repCB, ethCB) => {
+            const loadAssets = (options, ethTokensCB, repCB, ethCB) => {
               switch (asset) {
                 case ETH_TOKENS:
                   return ethTokensCB(null, '10');
@@ -135,7 +143,11 @@ describe('modules/auth/actions/update-assets.js', () => {
                   return assert(false, `malformed callback test`);
               }
             };
-            updateAssetsRewireAPI.__Rewire__('augur', { loadAssets });
+            updateAssetsRewireAPI.__Rewire__('augur', {
+              assets: {
+                loadAssets
+              }
+            });
 
             store.dispatch(updateAssets());
 
@@ -159,7 +171,7 @@ describe('modules/auth/actions/update-assets.js', () => {
             }
           },
           assertions: (store, done) => {
-            const loadAssets = (branch, address, ethTokensCB, repCB, ethCB) => {
+            const loadAssets = (options, ethTokensCB, repCB, ethCB) => {
               switch (asset) {
                 case ETH_TOKENS:
                   ethCB(null, '10');
@@ -180,7 +192,11 @@ describe('modules/auth/actions/update-assets.js', () => {
                   return assert(false, `malformed callback test`);
               }
             };
-            updateAssetsRewireAPI.__Rewire__('augur', { loadAssets });
+            updateAssetsRewireAPI.__Rewire__('augur', {
+              assets: {
+                loadAssets
+              }
+            });
 
             const callbackStub = {
               callback: () => {}
