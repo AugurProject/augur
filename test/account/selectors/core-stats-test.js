@@ -189,10 +189,14 @@ describe('modules/account/selectors/core-stats', () => {
 
         CoreStatsRewireAPI.__Rewire__('selectOutcomeLastPrice', () => '0.2');
         CoreStatsRewireAPI.__Rewire__('augur', {
-          calculateProfitLoss: () => ({
-            realized: '-1',
-            unrealized: '2'
-          })
+          trading: {
+            positions: {
+              calculateProfitLoss: () => ({
+                realized: '-1',
+                unrealized: '2'
+              })
+            }
+          }
         });
 
         const selector = createPeriodPLSelector(1);
