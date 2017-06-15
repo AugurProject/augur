@@ -53,7 +53,11 @@ describe('modules/auth/actions/transfer-funds.js', () => {
         send: sinon.stub()
       };
 
-      transferFundsReqireAPI.__Rewire__('augur', { Cash });
+      transferFundsReqireAPI.__Rewire__('augur', {
+        api: {
+          Cash
+        }
+      });
 
       store.dispatch(transferFunds(10, ETH_TOKEN, '0xtest2'));
 
@@ -73,7 +77,11 @@ describe('modules/auth/actions/transfer-funds.js', () => {
     assertions: (done, store) => {
       const sendEther = sinon.stub();
 
-      transferFundsReqireAPI.__Rewire__('augur', { sendEther });
+      transferFundsReqireAPI.__Rewire__('augur', {
+        api: {
+          sendEther
+        }
+      });
 
       store.dispatch(transferFunds(10, ETH, '0xtest2'));
 
@@ -96,7 +104,11 @@ describe('modules/auth/actions/transfer-funds.js', () => {
     assertions: (done, store) => {
       const sendReputation = sinon.stub();
 
-      transferFundsReqireAPI.__Rewire__('augur', { sendReputation });
+      transferFundsReqireAPI.__Rewire__('augur', {
+        api: {
+          sendReputation
+        }
+      });
 
       store.dispatch(transferFunds(10, REP, '0xtest2'));
 
@@ -115,8 +127,8 @@ describe('modules/auth/actions/transfer-funds.js', () => {
     },
     assertions: (done, store) => {
       const Cash = {
-        send: (to, amount, onSent, onSuccess) => {
-          onSuccess();
+        send: (options) => {
+          options.onSuccess();
         }
       };
 
@@ -124,7 +136,11 @@ describe('modules/auth/actions/transfer-funds.js', () => {
         type: 'updateAssets'
       });
 
-      transferFundsReqireAPI.__Rewire__('augur', { Cash });
+      transferFundsReqireAPI.__Rewire__('augur', {
+        api: {
+          Cash
+        }
+      });
       transferFundsReqireAPI.__Rewire__('updateAssets', updateAssets);
 
       store.dispatch(transferFunds(10, ETH_TOKEN, '0xtest2'));
