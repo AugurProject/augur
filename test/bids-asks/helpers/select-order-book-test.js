@@ -438,4 +438,46 @@ describe('modules/bids-asks/helpers/select-order-book.js', () => {
       }
     });
   });
+
+  describe('sortPricePointsByPriceAsc', () => {
+    test({
+      description: `should return the expected value`,
+      assertions: (done) => {
+        const sortPricePointsByPriceAsc = selectOrderBookRewireAPI.__get__('sortPricePointsByPriceAsc');
+
+        const actual = sortPricePointsByPriceAsc({
+          price: formatShares('1')
+        }, {
+          price: formatShares('2')
+        });
+
+        const expected = -1;
+
+        assert.strictEqual(actual, expected, `didn't return the expected number`);
+
+        done();
+      }
+    });
+  });
+
+  describe('sortPricePointsByPriceDesc', () => {
+    test({
+      description: `should return the expected value`,
+      assertions: (done) => {
+        const sortPricePointsByPriceDesc= selectOrderBookRewireAPI.__get__('sortPricePointsByPriceDesc');
+
+        const actual = sortPricePointsByPriceDesc({
+          price: formatShares('1')
+        }, {
+          price: formatShares('2')
+        });
+
+        const expected = 1;
+
+        assert.strictEqual(actual, expected, `didn't return the expected number`);
+
+        done();
+      }
+    });
+  });
 });
