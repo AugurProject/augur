@@ -1,5 +1,4 @@
 import { describe, it } from 'mocha';
-import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
@@ -12,8 +11,8 @@ describe(`modules/market/actions/load-price-history.js`, () => {
   const mockStore = configureMockStore(middlewares);
   const state = Object.assign({}, testState);
   const store = mockStore(state);
-  const mockAugurJS = { augur: {} };
-  mockAugurJS.augur.getMarketPriceHistory = sinon.stub();
+  const mockAugurJS = { augur: { logs: {} } };
+  mockAugurJS.augur.logs.getMarketPriceHistory = sinon.stub();
 
   const action = proxyquire('../../../src/modules/market/actions/load-price-history', {
     '../../../services/augurjs': mockAugurJS
@@ -21,6 +20,6 @@ describe(`modules/market/actions/load-price-history.js`, () => {
 
   it(`should call AugurJS getMarketPriceHistory`, () => {
     store.dispatch(action.loadPriceHistory('testMarketID'));
-    assert(mockAugurJS.augur.getMarketPriceHistory.calledOnce);
+    sinon.assert.calledOnce(mockAugurJS.augur.logs.getMarketPriceHistory);
   });
 });

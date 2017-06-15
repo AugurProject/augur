@@ -1,12 +1,12 @@
 import React, { PropTypes } from 'react';
 import ReactTooltip from 'react-tooltip';
-import classnames from 'classnames';
+import classNames from 'classnames';
 
 import EmDash from 'modules/common/components/em-dash';
 
 const ValueDenomination = p => (
   <span
-    className={classnames('value-denomination', p.className, {
+    className={classNames('value-denomination', p.className, {
       positive: p.formattedValue > 0,
       negative: p.formattedValue < 0
     })}

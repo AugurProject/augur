@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
-import classnames from 'classnames';
+import classNames from 'classnames';
 
 const ValueDate = p => (
-  <span className={classnames('value-date', p.className)}>
+  <span className={classNames('value-date', p.className)}>
     {p.formatted}
   </span>
 );

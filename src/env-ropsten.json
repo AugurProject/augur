@@ -1,6 +1,7 @@
 {
   "gethHttpURL": "http://127.0.0.1:8545",
   "gethWebsocketsURL": "ws://127.0.0.1:8546",
+  "networkID": 3,
   "hostedNodeFallback": true,
   "autoLogin": false,
   "loadZeroVolumeMarkets": true,
@@ -16,7 +17,6 @@
     "filters": false,
     "sync": false,
     "accounts": false,
-    "abi": false,
     "tools": false
   },
   "fundNewAccountFromAddress": {

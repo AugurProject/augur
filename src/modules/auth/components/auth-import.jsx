@@ -10,7 +10,6 @@ export default class AuthImport extends Component {
     this.state = {
       password: '',
       loginAccount: null,
-      rememberMe: true,
       authError: false,
       errorMessage: null,
       // These prevent a flash on component mount
@@ -47,7 +46,7 @@ export default class AuthImport extends Component {
           e.preventDefault();
 
           if (s.loginAccount && s.password) {
-            p.importAccountFromFile(s.password, s.rememberMe, s.loginAccount);
+            p.importAccountFromFile(s.password, s.loginAccount);
           }
         }}
       >
@@ -143,20 +142,6 @@ export default class AuthImport extends Component {
             animateOutPartial: (!s.loginAccount || !s.password) && s.isImportActionsDisplayable
           })}
         >
-          <label // eslint-disable-line jsx-a11y/no-static-element-interactions
-            className="auth-signup-remember-me"
-            htmlFor="remember_me_input"
-          >
-            Remember Me:
-            <input
-              id="remember_me_input"
-              type="checkbox"
-              checked={s.rememberMe}
-              onChange={(e) => {
-                this.setState({ rememberMe: e.target.checked });
-              }}
-            />
-          </label>
           <button
             className="submit"
             disabled={!s.loginAccount || !s.password}

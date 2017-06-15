@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import classNames from 'classnames';
 
 import MarketBasics from 'modules/market/components/market-basics';
 import MarketPreviewOutcomes from 'modules/market/components/market-preview-outcomes';
@@ -14,7 +14,7 @@ const MarketPreview = p => (
         <div className="market-link">
           <Link
             {...p.marketLink}
-            className={classnames('button', p.marketLink.className)}
+            className={classNames('button', p.marketLink.className)}
           >
             {p.marketLink.text}
           </Link>

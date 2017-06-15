@@ -12,22 +12,23 @@ import { addNotification } from 'modules/notifications/actions/update-notificati
 import { selectTransactionsLink } from 'modules/link/selectors/links';
 
 export const constructRelayTransaction = (tx, status) => (dispatch, getState) => {
-  const hash = tx.response.hash;
+  const hash = tx.hash;
   const p = {
     ...unpackTransactionParameters(tx),
     transactionHash: hash,
-    blockNumber: tx.response.blockNumber,
+    blockNumber: tx.response.blockNumber && parseInt(tx.response.blockNumber, 16),
     timestamp: tx.response.timestamp || parseInt(Date.now() / 1000, 10),
     inProgress: !tx.response.blockHash
   };
 
-  console.log('unpacked:', JSON.stringify(p, null, 2));
+  // console.log('unpacked:', JSON.stringify(p, null, 2));
+  // console.log('status:', status);
   const method = tx.data.method;
-  const contracts = augur.contracts;
+  const contracts = getState().contractAddresses;
   const contract = Object.keys(contracts).find(c => contracts[c] === tx.data.to);
   const gasPrice = rpc.gasPrice || augur.constants.DEFAULT_GASPRICE;
-  const gasFees = tx.response.gasFees ? tx.response.gasFees : augur.getTxGasEth({
-    ...augur.api.functions[contract][method]
+  const gasFees = tx.response.gasFees ? tx.response.gasFees : augur.trading.simulation.getTxGasEth({
+    ...getState().functionsAPI[contract][method]
   }, gasPrice).toFixed();
 
   const transactionsHref = selectTransactionsLink(dispatch).href;
@@ -78,7 +79,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
       }, abi.format_int256(p.market), p.outcome, status));
     }
     case 'cancel': {
-      const order = augur.selectOrder(p.trade_id, getState().orderBooks);
+      const order = augur.trading.takeOrder.selectOrder(p.trade_id, getState().orderBooks);
 
       if (tx.status === 'success') {
         const { transactionsData } = getState();
@@ -132,7 +133,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         } else {
           let price;
           if (market.type === SCALAR) {
-            price = abi.bignum(augur.shrinkScalarPrice(market.minValue, order.price));
+            price = abi.bignum(augur.trading.shrinkScalarPrice(market.minValue, order.price));
           } else {
             price = abi.bignum(order.price);
           }
@@ -191,7 +192,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         isEmptyTrade = unmatchedShares.eq(abi.bignum(p.max_amount));
       }
       if (isEmptyTrade) {
-        return dispatch(deleteTransaction(`${tx.response.hash}-${p.buyer_trade_id}`));
+        return dispatch(deleteTransaction(`${hash}-${p.buyer_trade_id}`));
       }
       if (status === 'submitted') {
         dispatch(deleteTransaction(`${transactionHash}-${p.buyer_trade_id}`));
@@ -229,15 +230,19 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
       let isEmptyTrade;
       let notification;
       if (status === 'success') {
-        const unmatchedCash = abi.unfix_signed(tx.response.callReturn[1]);
-        const unmatchedShares = abi.unfix(tx.response.callReturn[2]);
+        let unmatchedCash = ZERO;
+        let unmatchedShares = ZERO;
+        if (tx.response.callReturn && Array.isArray(tx.response.callReturn)) {
+          unmatchedCash = abi.unfix_signed(tx.response.callReturn[1]);
+          unmatchedShares = abi.unfix(tx.response.callReturn[2]);
+        }
         isEmptyTrade = unmatchedCash.eq(abi.unfix_signed(p.max_value)) && unmatchedShares.eq(abi.unfix(p.max_amount));
       }
       for (let i = 0; i < numTradeIDs; ++i) {
         const order = orders[i];
         let market = {};
         if (isEmptyTrade) {
-          dispatch(deleteTransaction(`${tx.response.hash}-${order.id}`));
+          dispatch(deleteTransaction(`${hash}-${order.id}`));
         } else {
           let amount;
           if (abi.bignum(remainingShares).gt(ZERO)) {
@@ -250,7 +255,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             market = marketsData[abi.format_int256(order.market)];
             let price;
             if (market.type === SCALAR) {
-              price = abi.bignum(augur.shrinkScalarPrice(market.minValue, order.price));
+              price = abi.bignum(augur.trading.shrinkScalarPrice(market.minValue, order.price));
             } else {
               price = abi.bignum(order.price);
             }
@@ -554,8 +559,8 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           const { baseReporters, numEventsCreatedInPast24Hours, numEventsInReportPeriod, periodLength } = getState().branch;
           transaction = dispatch(constructTransaction('marketCreated', {
             ...p,
-            eventBond: augur.calculateValidityBond(p.tradingFee, periodLength, baseReporters, numEventsCreatedInPast24Hours, numEventsInReportPeriod),
-            marketCreationFee: abi.unfix(augur.calculateRequiredMarketValue(gasPrice), 'string')
+            eventBond: augur.create.calculateValidityBond(p.tradingFee, periodLength, baseReporters, numEventsCreatedInPast24Hours, numEventsInReportPeriod),
+            marketCreationFee: abi.unfix(augur.create.calculateRequiredMarketValue(gasPrice), 'string')
           }));
           break;
         }

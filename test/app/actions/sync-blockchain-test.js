@@ -20,11 +20,14 @@ describe(`modules/app/actions/sync-blockchain.js`, function () { // eslint-disab
   const store = mockStore(state);
   const AugurJS = {
     rpc: {
+      getCurrentBlock: () => ({ number: 10000, timestamp: 4886718345 }),
       block: { number: 10000, timestamp: 4886718345 }
     }
   };
   const UpdateBlockchain = { updateBlockchain: () => {} };
+
   sinon.stub(UpdateBlockchain, 'updateBlockchain', data => ({ type: 'UPDATE_BLOCKCHAIN', data }));
+
   const action = proxyquire('../../../src/modules/app/actions/sync-blockchain.js', {
     '../../../services/augurjs': AugurJS,
     '../../app/actions/update-blockchain': UpdateBlockchain
@@ -41,8 +44,8 @@ describe(`modules/app/actions/sync-blockchain.js`, function () { // eslint-disab
     const out = [{
       type: 'UPDATE_BLOCKCHAIN',
       data: {
-        currentBlockNumber: 10000,
-        currentBlockTimestamp: 4886718345,
+        currentBlockNumber: 0x10000,
+        currentBlockTimestamp: 0x4886718345,
         currentBlockMillisSinceEpoch: 12345
       }
     }];

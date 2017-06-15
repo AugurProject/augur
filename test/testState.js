@@ -4,6 +4,7 @@ import env from 'src/env.json';
 
 import { formatNumber, formatShares } from 'utils/format-number';
 import { formatDate } from 'utils/format-date';
+import { BUY } from 'modules/trade/constants/types';
 
 const testState = {
   marketLoading: [],
@@ -48,6 +49,11 @@ const testState = {
     address: '0x0000000000000000000000000000000000000001',
     name: 'testTesterson',
     loginID: 'testSecureID',
+    privateKey: Buffer.from('0000000000000000000000000000000000000000000000000000000000000001', 'hex'),
+    derivedKey: Buffer.from('0000000000000000000000000000000000000000000000000000000000000002', 'hex'),
+    keystore: {
+      address: '0x0000000000000000000000000000000000000001'
+    },
     localNode: false,
     prettyAddress: '0xte...t123',
     linkText: 'testTesterson',
@@ -253,8 +259,10 @@ const testState = {
   tradesInProgress: {
     testMarketID: {
       numShares: 5000,
-      limitPrice: 100,
-      totalCost: 50
+      limitPrice: '0.50',
+      totalCost: '2500',
+      type: 'binary',
+      side: BUY
     }
   },
   tradeCommitLock: {},

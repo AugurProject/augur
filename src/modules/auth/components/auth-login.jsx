@@ -10,7 +10,6 @@ export default class AuthLogin extends Component {
     this.state = {
       loginID: '',
       password: '',
-      rememberMe: true,
       authError: false,
       errorMessage: null,
       // These prevent a flash on component mount
@@ -31,7 +30,7 @@ export default class AuthLogin extends Component {
           e.persist();
 
           if (s.loginID && s.password) {
-            p.submitLogin(s.loginID, s.password, s.rememberMe, (err) => {
+            p.submitLogin(s.loginID, s.password, (err) => {
               if (err) {
                 this.setState({
                   authError: true,
@@ -101,20 +100,6 @@ export default class AuthLogin extends Component {
             animateOutPartial: (!s.loginID || !s.password) && s.isLoginActionsDisplayable
           })}
         >
-          <label // eslint-disable-line jsx-a11y/no-static-element-interactions
-            className="auth-signup-remember-me"
-            htmlFor="remember_me_input"
-          >
-            Remember Me:
-            <input
-              id="remember_me_input"
-              type="checkbox"
-              checked={s.rememberMe}
-              onChange={(e) => {
-                this.setState({ rememberMe: e.target.checked });
-              }}
-            />
-          </label>
           <button
             className="submit"
             disabled={!s.loginID || !s.password}

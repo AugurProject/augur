@@ -21,12 +21,12 @@ describe('modules/reports/actions/check-period.js', () => {
     }
   });
   const store = mockStore(state);
-  const mockAugurJS = { augur: {} };
+  const mockAugurJS = { augur: { reporting: {} } };
   const mockLoadReports = { loadReports: () => {} };
   const mockRevealReports = {};
   mockAugurJS.augur.getCurrentPeriod = sinon.stub().returns(20);
   mockAugurJS.augur.getCurrentPeriodProgress = sinon.stub().returns(52);
-  mockAugurJS.augur.checkPeriod = sinon.stub().yields(null, 'TEST RESPONSE!');
+  mockAugurJS.augur.reporting.prepareToReport = sinon.stub().yields(null, 'TEST RESPONSE!');
   mockAugurJS.augur.penalizeWrong = sinon.stub().yields(null, 'TEST RESPONSE!');
   mockAugurJS.augur.incrementPeriodAfterReporting = sinon.stub().yields(null, 'TEST RESPONSE!');
   sinon.stub(mockLoadReports, 'loadReports', cb => (dispatch, getState) => {
@@ -57,7 +57,7 @@ describe('modules/reports/actions/check-period.js', () => {
 
   it('should check for increment period / penalize wrong', () => {
     store.dispatch(action.checkPeriod());
-    assert(mockAugurJS.augur.checkPeriod.calledOnce);
+    assert(mockAugurJS.augur.reporting.prepareToReport.calledOnce);
   });
 
 });

@@ -1,10 +1,9 @@
 import { augur } from 'services/augurjs';
 import { base58Decode } from 'utils/base-58';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
-import { savePersistentAccountToLocalStorage } from 'modules/auth/actions/save-persistent-account';
+import logError from 'utils/log-error';
 
-export const login = (loginID, password, rememberMe, cb) => (dispatch, getState) => {
-  const callback = cb || (e => e && console.error('login:', e));
+export const login = (loginID, password, callback = logError) => (dispatch, getState) => {
   const accountObject = base58Decode(loginID);
   if (!accountObject || !accountObject.keystore) {
     return callback({ code: 0, message: 'could not decode login ID' });
@@ -17,8 +16,7 @@ export const login = (loginID, password, rememberMe, cb) => (dispatch, getState)
     } else if (!account.address) {
       return callback(account);
     }
-    if (rememberMe) savePersistentAccountToLocalStorage({ ...account, loginID });
-    dispatch(loadAccountData({ loginID, address: account.address, name: accountObject.name }, true));
+    dispatch(loadAccountData({ ...account, loginID, name: accountObject.name }, true));
     callback(null);
   });
 };

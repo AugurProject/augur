@@ -402,34 +402,36 @@ asynckit@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
 
-augur-abi@1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/augur-abi/-/augur-abi-1.1.1.tgz#0c7315f978ed5833c05ddd0c07268077433b5674"
+augur-abi@1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/augur-abi/-/augur-abi-1.2.1.tgz#f099dc136a61cff196540cb830dc5128b8228493"
   dependencies:
     bignumber.js "2.3.0"
     ethereumjs-abi "0.6.2"
     js-sha3 "0.3.1"
 
-augur-contracts@2.11.3:
-  version "2.11.3"
-  resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-2.11.3.tgz#ddab85d287546d3d229eb7699abd87ed5b920386"
+augur-contracts@2.11.4:
+  version "2.11.4"
+  resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-2.11.4.tgz#0209c298480aa1a0b0974fb301491a6d2563dc71"
   dependencies:
     clone "1.0.2"
 
-augur.js@3.15.9:
-  version "3.15.9"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-3.15.9.tgz#62ac6f1bcf4e36e76cf1324d81f4cce99453250d"
+augur.js@4.0.3:
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.0.3.tgz#aca40ea7369c887bbee673877c25412cb6f9d324"
   dependencies:
     async "1.5.2"
-    augur-abi "1.1.1"
-    augur-contracts "2.11.3"
+    augur-abi "1.2.1"
+    augur-contracts "2.11.4"
     bignumber.js "2.3.0"
     browser-request "0.3.3"
     chalk "1.1.1"
     clone "1.0.2"
-    ethereumjs-connect "3.0.8"
-    ethrpc "3.1.4"
-    keythereum "0.4.6"
+    ethereumjs-connect "4.1.0"
+    ethrpc "4.1.0"
+    immutable-delete "1.0.1"
+    keythereum "0.5.1"
+    lodash.assign "4.2.0"
     request "2.74.0"
     uuid "3.0.0"
     uuid-parse "1.0.0"
@@ -1159,11 +1161,7 @@ babel-types@^6.18.0, babel-types@^6.19.0, babel-types@^6.23.0, babel-types@^6.24
     lodash "^4.2.0"
     to-fast-properties "^1.0.1"
 
-babylon@^6.11.0:
-  version "6.16.1"
-  resolved "https://registry.yarnpkg.com/babylon/-/babylon-6.16.1.tgz#30c5a22f481978a9e7f8cdfdf496b11d94b404d3"
-
-babylon@^6.13.0, babylon@^6.15.0, babylon@^6.17.0:
+babylon@^6.11.0, babylon@^6.13.0, babylon@^6.15.0, babylon@^6.17.0:
   version "6.17.0"
   resolved "https://registry.yarnpkg.com/babylon/-/babylon-6.17.0.tgz#37da948878488b9c4e3c4038893fa3314b3fc932"
 
@@ -1223,9 +1221,9 @@ bignumber.js@2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-2.3.0.tgz#597a02d791edc3d64f17850e21789e7a4095df66"
 
-bignumber.js@4.0.1:
-  version "4.0.1"
-  resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-4.0.1.tgz#1ffd30d349366e078bd6f7dc97907e6da9a71888"
+bignumber.js@4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-4.0.2.tgz#2d1dc37ee5968867ecea90b6da4d16e68608d21d"
 
 binary-extensions@^1.0.0:
   version "1.8.0"
@@ -2627,7 +2625,7 @@ elegant-spinner@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/elegant-spinner/-/elegant-spinner-1.0.1.tgz#db043521c95d7e303fd8f345bedc3349cfb0729e"
 
-elliptic@6.4.0, elliptic@^6.0.0, elliptic@^6.2.3, elliptic@^6.4.0:
+elliptic@^6.0.0, elliptic@^6.2.3, elliptic@^6.4.0:
   version "6.4.0"
   resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.4.0.tgz#cac9af8762c85836187003c8dfe193e5e2eae5df"
   dependencies:
@@ -3001,31 +2999,20 @@ ethereumjs-blockstream@2.0.4:
     source-map-support "0.4.14"
     uuid "3.0.1"
 
-ethereumjs-connect@3.0.8:
-  version "3.0.8"
-  resolved "https://registry.yarnpkg.com/ethereumjs-connect/-/ethereumjs-connect-3.0.8.tgz#4629adff0f8cf013af518f0fa3d6786a11bd9074"
+ethereumjs-connect@4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/ethereumjs-connect/-/ethereumjs-connect-4.1.0.tgz#0bf754477743355f220cb90971e54d6fcc3dbc2b"
   dependencies:
     async "1.5.2"
     clone "1.0.2"
-    ethrpc "3.1.4"
+    ethrpc "4.1.0"
 
-ethereumjs-tx@1.2.5:
-  version "1.2.5"
-  resolved "https://registry.yarnpkg.com/ethereumjs-tx/-/ethereumjs-tx-1.2.5.tgz#ed36d7ffeb97bc889c61eef1ab76f47a613d8286"
+ethereumjs-tx@1.3.1:
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/ethereumjs-tx/-/ethereumjs-tx-1.3.1.tgz#d6909abcfb37da6404fc18124d351eda20047dac"
   dependencies:
     ethereum-common "^0.0.18"
     ethereumjs-util "^5.0.0"
-
-ethereumjs-util@5.1.1, ethereumjs-util@^5.0.0:
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-5.1.1.tgz#122fb38dea747dc62b3aebfc365d1bd48be4b73e"
-  dependencies:
-    bn.js "^4.8.0"
-    create-hash "^1.1.2"
-    ethjs-util "^0.1.3"
-    keccak "^1.0.2"
-    rlp "^2.0.0"
-    secp256k1 "^3.0.1"
 
 ethereumjs-util@^4.3.0:
   version "4.5.0"
@@ -3037,6 +3024,17 @@ ethereumjs-util@^4.3.0:
     rlp "^2.0.0"
     secp256k1 "^3.0.1"
 
+ethereumjs-util@^5.0.0:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/ethereumjs-util/-/ethereumjs-util-5.1.1.tgz#122fb38dea747dc62b3aebfc365d1bd48be4b73e"
+  dependencies:
+    bn.js "^4.8.0"
+    create-hash "^1.1.2"
+    ethjs-util "^0.1.3"
+    keccak "^1.0.2"
+    rlp "^2.0.0"
+    secp256k1 "^3.0.1"
+
 ethjs-util@^0.1.3:
   version "0.1.4"
   resolved "https://registry.yarnpkg.com/ethjs-util/-/ethjs-util-0.1.4.tgz#1c8b6879257444ef4d3f3fbbac2ded12cd997d93"
@@ -3044,20 +3042,28 @@ ethjs-util@^0.1.3:
     is-hex-prefixed "1.0.0"
     strip-hex-prefix "1.0.0"
 
-ethrpc@3.1.4:
-  version "3.1.4"
-  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-3.1.4.tgz#c6a86cab42ee288e74bc94b9c1181ca5f1a5a719"
+ethrpc@4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-4.1.0.tgz#e6294896ab85d36ad473970690db2bc824908170"
   dependencies:
     async "1.5.2"
-    augur-abi "1.1.1"
+    augur-abi "1.2.1"
     bignumber.js "2.3.0"
     browser-request "0.3.3"
     clone "1.0.2"
     ethereumjs-blockstream "2.0.4"
-    ethereumjs-tx "1.2.5"
-    js-sha3 "0.3.1"
+    ethereumjs-tx "1.3.1"
+    immutable-delete "1.0.1"
+    keccak "1.2.0"
+    lodash.assign "4.2.0"
+    lodash.get "4.4.2"
+    lodash.set "4.3.2"
+    lodash.unset "4.5.2"
     oboe "2.1.3"
+    redux "3.6.0"
+    redux-thunk-subscribe "1.0.3"
     sync-request "2.0.1"
+    uuid "^3.0.1"
   optionalDependencies:
     request "2.67.0"
     websocket "1.0.23"
@@ -3985,6 +3991,10 @@ image-size@~0.5.0:
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/image-size/-/image-size-0.5.1.tgz#28eea8548a4b1443480ddddc1e083ae54652439f"
 
+immutable-delete@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/immutable-delete/-/immutable-delete-1.0.1.tgz#c8956079343b787435d9b5a08d50f654da002c9f"
+
 immutable@3.8.1, immutable@^3.7.4:
   version "3.8.1"
   resolved "https://registry.yarnpkg.com/immutable/-/immutable-3.8.1.tgz#200807f11ab0f72710ea485542de088075f68cd2"
@@ -4635,15 +4645,14 @@ keycode@^2.1.0:
   version "2.1.8"
   resolved "https://registry.yarnpkg.com/keycode/-/keycode-2.1.8.tgz#94d2b7098215eff0e8f9a8931d5a59076c4532fb"
 
-keythereum@0.4.6:
-  version "0.4.6"
-  resolved "https://registry.yarnpkg.com/keythereum/-/keythereum-0.4.6.tgz#0fdec7cf938ae39e5e3061b2f6e16677b766c5da"
+keythereum@0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/keythereum/-/keythereum-0.5.1.tgz#2d6a186a1cad5886ec6ba9378a214f651509f191"
   dependencies:
-    elliptic "6.4.0"
-    ethereumjs-util "5.1.1"
+    keccak "1.2.0"
+    secp256k1 "3.2.5"
     sjcl "1.0.6"
     uuid "3.0.0"
-    validator "4.0.2"
 
 keythereum@0.5.2:
   version "0.5.2"
@@ -4880,7 +4889,7 @@ lodash._shimkeys@~2.4.1:
   dependencies:
     lodash._objecttypes "~2.4.1"
 
-lodash.assign@^4.0.3, lodash.assign@^4.0.6:
+lodash.assign@4.2.0, lodash.assign@^4.0.3, lodash.assign@^4.0.6:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/lodash.assign/-/lodash.assign-4.2.0.tgz#0d99f3ccd7a6d261d19bdaeb9245005d285808e7"
 
@@ -4899,6 +4908,10 @@ lodash.create@3.1.1:
     lodash._baseassign "^3.0.0"
     lodash._basecreate "^3.0.0"
     lodash._isiterateecall "^3.0.0"
+
+lodash.get@4.4.2:
+  version "4.4.2"
+  resolved "https://registry.yarnpkg.com/lodash.get/-/lodash.get-4.4.2.tgz#2d177f652fa31e939b4438d5341499dfa3825e99"
 
 lodash.isarguments@2.4.x:
   version "2.4.1"
@@ -4950,9 +4963,17 @@ lodash.reduce@4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/lodash.reduce/-/lodash.reduce-4.6.0.tgz#f1ab6b839299ad48f784abbf476596f03b914d3b"
 
+lodash.set@4.3.2:
+  version "4.3.2"
+  resolved "https://registry.yarnpkg.com/lodash.set/-/lodash.set-4.3.2.tgz#d8757b1da807dde24816b0d6a84bea1a76230b23"
+
 lodash.uniq@^4.3.0:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
+
+lodash.unset@4.5.2:
+  version "4.5.2"
+  resolved "https://registry.yarnpkg.com/lodash.unset/-/lodash.unset-4.5.2.tgz#370d1d3e85b72a7e1b0cdf2d272121306f23e4ed"
 
 lodash.values@^2.4.1:
   version "2.4.1"
@@ -6738,6 +6759,10 @@ redux-mock-store@1.2.3:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/redux-mock-store/-/redux-mock-store-1.2.3.tgz#1b3ad299da91cb41ba30d68e3b6f024475fb9e1b"
 
+redux-thunk-subscribe@1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/redux-thunk-subscribe/-/redux-thunk-subscribe-1.0.3.tgz#2e00f82e71a35c07caaa7d206e3945d21e5929e6"
+
 redux-thunk@2.2.0:
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/redux-thunk/-/redux-thunk-2.2.0.tgz#e615a16e16b47a19a515766133d1e3e99b7852e5"
@@ -8081,7 +8106,7 @@ uuid@3.0.0, uuid@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.0.0.tgz#6728fc0459c450d796a99c31837569bdf672d728"
 
-uuid@3.0.1:
+uuid@3.0.1, uuid@^3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.0.1.tgz#6544bba2dfda8c1cf17e629a3a305e2bb1fee6c1"
 
@@ -8099,10 +8124,6 @@ validate-npm-package-license@^3.0.1:
   dependencies:
     spdx-correct "~1.0.0"
     spdx-expression-parse "~1.0.0"
-
-validator@4.0.2:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/validator/-/validator-4.0.2.tgz#70a1c2525ec4744e409971c1b298aa69a7534251"
 
 vary@~1.1.0:
   version "1.1.0"

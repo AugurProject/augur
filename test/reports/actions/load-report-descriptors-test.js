@@ -16,14 +16,14 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
       const AugurJS = {
         augur: {
           accounts: t.state.augur.accounts,
-          getEthicReport: () => {}
+          api: { ExpiringEvents: { getEthicReport: () => {} } }
         }
       };
       const action = proxyquire('../../../src/modules/reports/actions/load-report-descriptors', {
         '../../../services/augurjs': AugurJS
       });
-      sinon.stub(AugurJS.augur, 'getEthicReport', (branchID, period, eventID, address, cb) => {
-        cb(t.blockchain.ethicReports[branchID][eventID]);
+      sinon.stub(AugurJS.augur.api.ExpiringEvents, 'getEthicReport', (args, cb) => {
+        cb(t.blockchain.ethicReports[args.branch][args.event]);
       });
       store.dispatch(action.loadReportDescriptors((err) => {
         assert.isNull(err);

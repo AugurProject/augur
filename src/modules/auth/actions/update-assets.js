@@ -2,14 +2,17 @@ import { augur } from 'services/augurjs';
 import { BRANCH_ID } from 'modules/app/constants/network';
 import { updateLoginAccount } from 'modules/auth/actions/update-login-account';
 import { allAssetsLoaded } from 'modules/auth/selectors/balances';
+import logError from 'utils/log-error';
 
-export function updateAssets(cb) {
+export function updateAssets(callback = logError) {
   return (dispatch, getState) => {
-    const callback = cb || (e => e && console.log('updateAssets:', e));
     const { loginAccount, branch } = getState();
     const balances = { eth: undefined, ethTokens: undefined, rep: undefined };
     if (!loginAccount.address) return dispatch(updateLoginAccount(balances));
-    augur.loadAssets(branch.id || BRANCH_ID, loginAccount.address,
+    augur.assets.loadAssets({
+      branchID: branch.id || BRANCH_ID,
+      address: loginAccount.address
+    },
       (err, ethTokens) => {
         if (err) return callback(err);
         balances.ethTokens = ethTokens;

@@ -1,8 +1,8 @@
 import React, { PropTypes } from 'react';
-import classnames from 'classnames';
+import classNames from 'classnames';
 
 const ValueTimestamp = p => (
-  <span className={classnames('value-timestamp', p.className)}>
+  <span className={classNames('value-timestamp', p.className)}>
     {p.full}
   </span>
 );

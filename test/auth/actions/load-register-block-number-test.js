@@ -13,8 +13,8 @@ describe(`modules/auth/actions/load-register-block-number.js`, () => {
       const store = mockStore(t.state);
       const AugurJS = {
         augur: {
-          getRegisterBlockNumber: () => {},
-          Register: { register: () => {} },
+          accounts: { getRegisterBlockNumber: () => {} },
+          api: { Register: { register: () => {} } },
           utils: { noop: () => {} }
         }
       };
@@ -25,11 +25,12 @@ describe(`modules/auth/actions/load-register-block-number.js`, () => {
         './load-account-history': LoadAccountHistory,
         './update-login-account': UpdateLoginAccount
       });
-      sinon.stub(AugurJS.augur.Register, 'register', (onSent, onSuccess, onFailed) => {
+
+      sinon.stub(AugurJS.augur.api.Register, 'register', (args) => {
         store.dispatch({ type: 'AUGURJS_REGISTER_REGISTER' });
-        onSuccess({ blockNumber: t.blockchain.blockNumber });
+        args.onSuccess({ blockNumber: t.blockchain.blockNumber });
       });
-      sinon.stub(AugurJS.augur, 'getRegisterBlockNumber', (address, callback) => {
+      sinon.stub(AugurJS.augur.accounts, 'getRegisterBlockNumber', (address, callback) => {
         store.dispatch({ type: 'AUGURJS_GET_REGISTER_BLOCK_NUMBER' });
         if (!callback) return t.blockchain.registerBlockNumber;
         callback(null, t.blockchain.registerBlockNumber);

@@ -73,7 +73,7 @@ describe('modules/reports/actions/reveal-reports.js', () => {
   const mockUpdateAssets = { updateAssets: () => {} };
   const mockAugurJS = {
     augur: {
-      submitReport: () => {},
+      reporting: { submitReport: () => {}, },
       getTxGasEth: () => {},
       rpc: { gasPrice: 10 },
       tx: { MakeReports: { submitReport: {} } }
@@ -82,7 +82,7 @@ describe('modules/reports/actions/reveal-reports.js', () => {
 
   sinon.stub(mockUpdateAssets, 'updateAssets', () => ({ type: 'UPDATE_ASSETS' }));
   sinon.stub(mockAugurJS.augur, 'getTxGasEth', (tx, gasPrice) => 1);
-  sinon.stub(mockAugurJS.augur, 'submitReport', (o) => {
+  sinon.stub(mockAugurJS.augur.reporting, 'submitReport', (o) => {
     const message = 'revealed report: testOutcome 2';
     const hash = '0xdeadbeef';
     o.onSent({ status: 'submitted', hash, message });

@@ -8,11 +8,11 @@ import { constructRelayTransaction } from 'modules/transactions/actions/construc
 export const handleRelayTransaction = tx => (dispatch, getState) => {
   if (tx && tx.response && tx.data) {
     console.log('txRelay:', tx);
-    const hash = tx.response.hash;
+    const hash = tx.hash;
     const { loginAccount, transactionsData } = getState();
     if (tx.data.from === loginAccount.address) {
       const gasPrice = rpc.gasPrice || augur.constants.DEFAULT_GASPRICE;
-      const gasFees = tx.response.gasFees || augur.getTxGasEth({ ...tx.data }, gasPrice).toFixed();
+      const gasFees = tx.response.gasFees || augur.trading.simulation.getTxGasEth({ ...tx.data }, gasPrice).toFixed();
       if (hash) {
         switch (tx.data.method) {
           case 'commitTrade':
@@ -81,6 +81,6 @@ export const handleRelayTransaction = tx => (dispatch, getState) => {
 };
 
 export const registerTransactionRelay = () => (dispatch) => {
-  rpc.excludeFromTxRelay(NO_RELAY);
-  rpc.registerTxRelay(tx => dispatch(handleRelayTransaction(tx)));
+  rpc.excludeFromTransactionRelay(NO_RELAY);
+  rpc.registerTransactionRelay(transaction => dispatch(handleRelayTransaction(transaction)));
 };

@@ -14,8 +14,8 @@ export const addOrder = log => (dispatch, getState) => {
   const orderBook = { ...getState().orderBooks[log.market] };
   const market = getState().marketsData[log.market];
   if (market && orderBook) {
-    const order = augur.convertAddTxLogToOrder(log, market.type, market.minValue);
-    dispatch(replaceMarketOrderBook(log.market, augur.addOrder(order, orderBook)));
+    const order = augur.trading.orderBook.convertAddTxLogToOrder(log, market.type, market.minValue);
+    dispatch(replaceMarketOrderBook(log.market, augur.trading.orderBook.addOrder(order, orderBook)));
   }
 };
 
@@ -23,7 +23,7 @@ export const removeOrder = log => (dispatch, getState) => {
   const { orderBooks } = getState();
   const orderBook = orderBooks[log.market];
   if (orderBook && getState().marketsData[log.market]) {
-    dispatch(replaceMarketOrderBook(log.market, augur.removeOrder(log.tradeid, log.type, orderBook)));
+    dispatch(replaceMarketOrderBook(log.market, augur.trading.orderBook.removeOrder(log.tradeid, log.type, orderBook)));
   }
 };
 
@@ -33,7 +33,7 @@ export const fillOrder = log => (dispatch, getState) => {
   const market = marketsData[log.market];
   if (market) {
     const matchedType = log.type === 'buy' ? 'sell' : 'buy';
-    const updatedOrderBook = augur.fillOrder(log.tradeid, log.amount, matchedType, orderBook);
+    const updatedOrderBook = augur.trading.orderBook.fillOrder(log.tradeid, log.amount, matchedType, orderBook);
     if (augur.options.debug.trading) {
       console.debug('updatedOrderBook:', updatedOrderBook);
     }

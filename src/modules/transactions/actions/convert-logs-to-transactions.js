@@ -36,9 +36,9 @@ export function convertTradeLogsToTransactions(label, data, marketID) {
         return next();
       }
       console.log('getting market info for', marketID);
-      augur.getMarketInfo(marketID, (marketInfo) => {
+      augur.markets.getMarketInfo({ marketID }, (marketInfo) => {
         if (!marketInfo || marketInfo.error) {
-          if (marketInfo && marketInfo.error) console.error('augur.getMarketInfo:', marketInfo);
+          if (marketInfo && marketInfo.error) console.error('augur.markets.getMarketInfo:', marketInfo);
           return next(`[${label}] couldn't load market info for market ${marketID}: ${JSON.stringify(data)}`);
         }
         dispatch(updateMarketsData({ [marketID]: marketInfo }));

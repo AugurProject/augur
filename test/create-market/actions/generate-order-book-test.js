@@ -30,10 +30,10 @@ describe('modules/create-market/actions/generate-order-book.js', () => {
   };
 
   const stubbedAugurJS = {
-    augur: { generateOrderBook: () => {} },
+    augur: { create: { generateOrderBook: () => {} } },
     abi: { bignum: () => {} }
   };
-  sinon.stub(stubbedAugurJS.augur, 'generateOrderBook');
+  sinon.stub(stubbedAugurJS.augur.create, 'generateOrderBook');
   sinon.stub(stubbedAugurJS.abi, 'bignum', n => new BigNumber(n, 10));
 
   const action = proxyquire(

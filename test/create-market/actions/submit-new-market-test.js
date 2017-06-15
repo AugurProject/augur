@@ -23,6 +23,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
       branch: {
         id: '1010101'
       },
+      loginAccount: { privateKey: 'this is a private key' },
       newMarket: {
         description: 'test description',
         endDate: {
@@ -45,10 +46,10 @@ describe('modules/create-market/actions/submit-new-market', () => {
       const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market');
 
       const mockAugur = {
-        createSingleEventMarket: () => {}
+        create: { createSingleEventMarket: () => {} }
       };
       let formattedNewMarket = null;
-      sinon.stub(mockAugur, 'createSingleEventMarket', (createMarketObject) => {
+      sinon.stub(mockAugur.create, 'createSingleEventMarket', (createMarketObject) => {
         delete createMarketObject.onSent;
         delete createMarketObject.onSuccess;
         delete createMarketObject.onFailed;
@@ -61,6 +62,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
       store.dispatch(submitNewMarket(store.getState().newMarket));
 
       const expected = {
+        _signer: 'this is a private key',
         branch: '1010101',
         description: 'test description~|>one|two',
         expDate: 1234567890,
@@ -84,6 +86,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
       branch: {
         id: '1010101'
       },
+      loginAccount: { privateKey: 'this is a private key' },
       newMarket: {
         description: 'test description',
         endDate: {
@@ -102,10 +105,10 @@ describe('modules/create-market/actions/submit-new-market', () => {
       const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market');
 
       const mockAugur = {
-        createSingleEventMarket: () => {}
+        create: { createSingleEventMarket: () => {} }
       };
       let formattedNewMarket = null;
-      sinon.stub(mockAugur, 'createSingleEventMarket', (createMarketObject) => {
+      sinon.stub(mockAugur.create, 'createSingleEventMarket', (createMarketObject) => {
         delete createMarketObject.onSent;
         delete createMarketObject.onSuccess;
         delete createMarketObject.onFailed;
@@ -118,6 +121,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
       store.dispatch(submitNewMarket(store.getState().newMarket));
 
       const expected = {
+        _signer: 'this is a private key',
         branch: '1010101',
         description: 'test description',
         expDate: 1234567890,
@@ -141,6 +145,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
       branch: {
         id: '1010101'
       },
+      loginAccount: { privateKey: 'this is a private key' },
       newMarket: {
         description: 'test description',
         endDate: {
@@ -161,10 +166,10 @@ describe('modules/create-market/actions/submit-new-market', () => {
       const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market');
 
       const mockAugur = {
-        createSingleEventMarket: () => {}
+        create: { createSingleEventMarket: () => {} }
       };
       let formattedNewMarket = null;
-      sinon.stub(mockAugur, 'createSingleEventMarket', (createMarketObject) => {
+      sinon.stub(mockAugur.create, 'createSingleEventMarket', (createMarketObject) => {
         delete createMarketObject.onSent;
         delete createMarketObject.onSuccess;
         delete createMarketObject.onFailed;
@@ -177,6 +182,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
       store.dispatch(submitNewMarket(store.getState().newMarket));
 
       const expected = {
+        _signer: 'this is a private key',
         branch: '1010101',
         description: 'test description',
         expDate: 1234567890,
@@ -200,6 +206,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
       branch: {
         id: '1010101'
       },
+      loginAccount: { privateKey: 'this is a private key' },
       newMarket: {
         description: 'test description',
         endDate: {
@@ -227,8 +234,10 @@ describe('modules/create-market/actions/submit-new-market', () => {
       }));
 
       const mockAugur = {
-        createSingleEventMarket: (createSingleEventMarket) => {
-          createSingleEventMarket.onSent();
+        create: {
+          createSingleEventMarket: (createSingleEventMarket) => {
+            createSingleEventMarket.onSent();
+          }
         }
       };
       __RewireAPI__.__Rewire__('augur', mockAugur);
@@ -256,6 +265,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
       branch: {
         id: '1010101'
       },
+      loginAccount: { privateKey: 'this is a private key' },
       newMarket: {
         description: 'test description',
         endDate: {
@@ -278,8 +288,10 @@ describe('modules/create-market/actions/submit-new-market', () => {
       }));
 
       const mockAugur = {
-        createSingleEventMarket: (createSingleEventMarket) => {
-          createSingleEventMarket.onFailed({ message: null });
+        create: {
+          createSingleEventMarket: (createSingleEventMarket) => {
+            createSingleEventMarket.onFailed({ message: null });
+          }
         }
       };
       __RewireAPI__.__Rewire__('augur', mockAugur);
@@ -304,6 +316,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
       branch: {
         id: '1010101'
       },
+      loginAccount: { privateKey: 'this is a private key' },
       newMarket: {
         description: 'test description',
         endDate: {
@@ -323,8 +336,10 @@ describe('modules/create-market/actions/submit-new-market', () => {
       const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market');
 
       const mockAugur = {
-        createSingleEventMarket: (createSingleEventMarket) => {
-          createSingleEventMarket.onSuccess();
+        create: {
+          createSingleEventMarket: (createSingleEventMarket) => {
+            createSingleEventMarket.onSuccess();
+          }
         }
       };
       __RewireAPI__.__Rewire__('augur', mockAugur);
@@ -345,6 +360,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
       branch: {
         id: '1010101'
       },
+      loginAccount: { privateKey: 'this is a private key' },
       newMarket: {
         description: 'test description',
         endDate: {
@@ -451,8 +467,10 @@ describe('modules/create-market/actions/submit-new-market', () => {
       });
 
       const mockAugur = {
-        createSingleEventMarket: (createSingleEventMarket) => {
-          createSingleEventMarket.onSuccess({});
+        create: {
+          createSingleEventMarket: (createSingleEventMarket) => {
+            createSingleEventMarket.onSuccess({});
+          }
         }
       };
       __RewireAPI__.__Rewire__('augur', mockAugur);
@@ -570,6 +588,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
       branch: {
         id: '1010101'
       },
+      loginAccount: { privateKey: 'this is a private key' },
       newMarket: {
         description: 'test description',
         endDate: {
@@ -592,8 +611,10 @@ describe('modules/create-market/actions/submit-new-market', () => {
       }));
 
       const mockAugur = {
-        createSingleEventMarket: (createSingleEventMarket) => {
-          createSingleEventMarket.onFailed({ message: null });
+        create: {
+          createSingleEventMarket: (createSingleEventMarket) => {
+            createSingleEventMarket.onFailed({ message: null });
+          }
         }
       };
       __RewireAPI__.__Rewire__('augur', mockAugur);

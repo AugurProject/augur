@@ -39,7 +39,7 @@ export function revealReports(cb) {
           } else {
             type = BINARY;
           }
-          augur.submitReport({
+          augur.reporting.submitReport({
             event: eventID,
             report: report.reportedOutcomeID,
             salt: report.salt,

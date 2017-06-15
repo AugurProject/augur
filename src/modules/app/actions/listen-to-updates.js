@@ -14,7 +14,8 @@ import { updateAccountBidsAsksData, updateAccountCancelsData, updateAccountTrade
 
 export function listenToUpdates() {
   return (dispatch, getState) => {
-    augur.filters.listen({
+    const { contractAddresses, eventsAPI } = getState();
+    augur.filters.listen(contractAddresses, eventsAPI, {
 
       // block arrivals
       block: (blockHash) => {

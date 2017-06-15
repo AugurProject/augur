@@ -15,9 +15,11 @@ describe('modules/reports/actions/load-report.js', () => {
       const AugurJS = {
         augur: {
           accounts: t.state.augur.accounts,
-          getReport: () => {},
-          getReportHash: () => {},
-          unfixReport: () => {}
+          reporting: {
+            getReport: () => {},
+            format: { unfixReport: () => {} }
+          },
+          api: { ExpiringEvents: { getReportHash: () => {} } },
         }
       };
       const ReportEncryption = {
@@ -27,21 +29,21 @@ describe('modules/reports/actions/load-report.js', () => {
         '../../../services/augurjs': AugurJS,
         './report-encryption': ReportEncryption
       });
-      sinon.stub(AugurJS.augur, 'getReport', (branchID, period, eventID, address, minValue, maxValue, type, cb) => {
+      sinon.stub(AugurJS.augur.reporting, 'getReport', (branchID, period, eventID, address, minValue, maxValue, type, cb) => {
         cb({
           report: t.blockchain.reports[branchID][eventID],
           isIndeterminate: false
         });
       });
-      sinon.stub(AugurJS.augur, 'getReportHash', (branchID, period, account, eventID, cb) => {
-        cb(t.blockchain.reportHashes[branchID][eventID]);
+      sinon.stub(AugurJS.augur.api.ExpiringEvents, 'getReportHash', (args, cb) => {
+        cb(t.blockchain.reportHashes[args.branch][args.event]);
       });
-      sinon.stub(AugurJS.augur, 'unfixReport', (fixedReport, minValue, maxValue, type) => ({
+      sinon.stub(AugurJS.augur.reporting.format, 'unfixReport', (fixedReport, minValue, maxValue, type) => ({
         report: t.blockchain.encryptedReports[t.state.branch.id][t.eventID].reportedOutcomeID,
         isIndeterminate: false
       }));
       sinon.stub(ReportEncryption, 'decryptReport', (branchID, period, eventID, cb) => {
-        console.log('decryptReport:', branchID, period, eventID);
+        // console.log('decryptReport:', branchID, period, eventID);
         cb(null, {
           reportedOutcomeID: t.blockchain.encryptedReports[branchID][eventID].reportedOutcomeID,
           salt: t.blockchain.encryptedReports[branchID][eventID].salt,

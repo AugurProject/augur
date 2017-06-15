@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import classNames from 'classnames';
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
 import { BINARY_INDETERMINATE_OUTCOME_ID, CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID } from 'modules/markets/constants/market-outcomes';
 
@@ -29,7 +29,7 @@ const OutcomeOptions = p => (
           <span key={outcome.id}>
             {((p.type === BINARY && outcome.id !== BINARY_INDETERMINATE_OUTCOME_ID) || (p.type === CATEGORICAL && outcome.id !== CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID)) &&
               <label
-                className={classnames('outcome-option', { disabled: p.isReported || p.isIndeterminate })}
+                className={classNames('outcome-option', { disabled: p.isReported || p.isIndeterminate })}
                 htmlFor="outcome-option-radio"
               >
                 <input

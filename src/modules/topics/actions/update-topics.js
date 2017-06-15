@@ -14,9 +14,9 @@ export const updateMarketTopicPopularity = (marketID, amount) => (dispatch, getS
   if (market && market.topic !== undefined) {
     if (market.topic !== null) dispatch(updateTopicPopularity(market.topic, Number(amount)));
   } else {
-    augur.returnTags(marketID, (tags) => {
+    augur.api.Markets.returnTags({ market: marketID }, (tags) => {
       if (tags && tags.constructor === Array && tags.length && tags[0] !== null) {
-        const topic = augur.decodeTag(tags[0]);
+        const topic = augur.format.tag.decodeTag(tags[0]);
         dispatch(updateTopicPopularity(topic, Number(amount)));
         dispatch(updateMarketTopic(marketID, topic));
       }
