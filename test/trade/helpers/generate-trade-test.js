@@ -4,7 +4,7 @@ import mocks from 'test/mockStore';
 
 import { BID, ASK } from 'modules/transactions/constants/types';
 
-import { formatEther, formatPercent } from 'utils/format-number';
+import { formatEtherTokens, formatPercent } from 'utils/format-number';
 
 describe('modules/trade/helpers/generate-trade.js', () => {
   const { state } = mocks;
@@ -35,21 +35,12 @@ describe('modules/trade/helpers/generate-trade.js', () => {
         roundedValue: 0,
         value: 0
       },
-      potentialEthProfit: formatEther(7500),
-      potentialEthLoss: formatEther(2500),
+      potentialEthProfit: formatEtherTokens(7500),
+      potentialEthLoss: formatEtherTokens(2500),
       potentialProfitPercent: formatPercent(300),
       potentialLossPercent: formatPercent(100),
       side: 'buy',
-      totalCost: {
-        denomination: ' ETH Tokens',
-        formatted: '50.0000',
-        formattedValue: 50,
-        full: '50.0000 ETH Tokens',
-        minimized: '50',
-        rounded: '50.0000',
-        roundedValue: 50,
-        value: 50
-      },
+      totalCost: formatEtherTokens(2500),
       totalFee: {
         denomination: '',
         formatted: '',
