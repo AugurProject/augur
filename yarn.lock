@@ -416,9 +416,9 @@ augur-contracts@2.11.4:
   dependencies:
     clone "1.0.2"
 
-augur.js@4.0.3:
-  version "4.0.3"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.0.3.tgz#aca40ea7369c887bbee673877c25412cb6f9d324"
+augur.js@4.0.6:
+  version "4.0.6"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.0.6.tgz#2362b8a2aae17f0cc711a306ac4c0797b3f8e5b5"
   dependencies:
     async "1.5.2"
     augur-abi "1.2.1"
@@ -427,8 +427,8 @@ augur.js@4.0.3:
     browser-request "0.3.3"
     chalk "1.1.1"
     clone "1.0.2"
-    ethereumjs-connect "4.1.0"
-    ethrpc "4.1.0"
+    ethereumjs-connect "4.1.2"
+    ethrpc "4.1.2"
     immutable-delete "1.0.1"
     keythereum "0.5.1"
     lodash.assign "4.2.0"
@@ -3007,13 +3007,13 @@ ethereumjs-blockstream@2.0.4:
     source-map-support "0.4.14"
     uuid "3.0.1"
 
-ethereumjs-connect@4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/ethereumjs-connect/-/ethereumjs-connect-4.1.0.tgz#0bf754477743355f220cb90971e54d6fcc3dbc2b"
+ethereumjs-connect@4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/ethereumjs-connect/-/ethereumjs-connect-4.1.2.tgz#39bde9de8790609130e5bcdedfc7643b7a31bb88"
   dependencies:
     async "1.5.2"
     clone "1.0.2"
-    ethrpc "4.1.0"
+    ethrpc "4.1.2"
 
 ethereumjs-tx@1.3.1:
   version "1.3.1"
@@ -3050,9 +3050,9 @@ ethjs-util@^0.1.3:
     is-hex-prefixed "1.0.0"
     strip-hex-prefix "1.0.0"
 
-ethrpc@4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-4.1.0.tgz#e6294896ab85d36ad473970690db2bc824908170"
+ethrpc@4.1.2:
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-4.1.2.tgz#49a956c384d8866bd1af722f99a3173c19df25b6"
   dependencies:
     async "1.5.2"
     augur-abi "1.2.1"

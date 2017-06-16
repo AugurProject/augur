@@ -1,7 +1,7 @@
 {
-  "gethHttpURL": "https://eth3.augur.net",
-  "gethWebsocketsURL": "wss://ws.augur.net",
-  "networkID": 3,
+  "gethHttpURL": "https://eth9000.augur.net",
+  "gethWebsocketsURL": "wss://ws9000.augur.net",
+  "networkID": 9000,
   "hostedNodeFallback": false,
   "autoLogin": false,
   "loadZeroVolumeMarkets": true,
