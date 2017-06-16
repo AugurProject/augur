@@ -17,7 +17,7 @@ export default class MarketData extends Component {
     isReportTabVisible: PropTypes.bool,
     isSnitchTabVisible: PropTypes.bool,
     isPendingReport: PropTypes.bool
-  };
+  }
 
   constructor(props) {
     super(props);
