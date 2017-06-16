@@ -47,7 +47,7 @@ export function updateURL(url, title, branchID) {
       const topic = getValue(parsedURL, 'searchParams.topic');
 
       if (!topic && !hasLoadedMarkets) dispatch(loadMarkets(branchID || branch.id));
-      if (topic && !hasLoadedTopic[topic]) dispatch(loadMarketsByTopic(topic));
+      if (topic && !hasLoadedTopic[topic]) dispatch(loadMarketsByTopic(topic, branchID || branch.id));
     }
   };
 }
