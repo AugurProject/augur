@@ -12,8 +12,6 @@ import { augur } from 'services/augurjs';
 require('core-js/fn/array/find');
 require('core-js/fn/string/starts-with');
 
-console.log('progress -- ', process.env);
-
 // NOTE --  These are attached for convenience when built for development or debug
 if (process.env.NODE_ENV === 'development') {
   Object.defineProperty(window, 'state', { get: store.getState, enumerable: true });
