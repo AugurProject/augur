@@ -16,7 +16,7 @@ import getValue from 'utils/get-value';
 //          acquire the row height of the navs in the footer
 export default class Nav extends Component {
   static propTypes = {
-    isLogged: PropTypes.string,
+    isLogged: PropTypes.bool,
     updateIsFooterCollapsed: PropTypes.func,
     notifications: PropTypes.object
   }
