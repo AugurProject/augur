@@ -6,6 +6,8 @@ import generateDownloadAccountLink from 'modules/auth/helpers/generate-download-
 // import getABCUIContext from 'modules/auth/selectors/abc';
 import store from 'src/store';
 
+import getValue from 'utils/get-value';
+
 export default function () {
   return selectLoginAccount(store.getState());
 }
@@ -16,13 +18,15 @@ export const selectLoginAccount = createSelector(
     const trimmedAddress = loginAccount.address ? `${loginAccount.address.substring(0, 4)}...${loginAccount.address.substring(loginAccount.address.length - 4)}` : null;
     const trimmedLoginID = loginAccount.loginID ? `${loginAccount.loginID.substring(0, 4)}...${loginAccount.loginID.substring(loginAccount.loginID.length - 4)}` : null;
     const linkText = loginAccount.isUnlocked ? trimmedAddress : loginAccount.name || trimmedLoginID;
+    const keystore = getValue(augur, 'account.account.keystore');
     // if (loginAccount.airbitzAccount) {
     //   console.log('here');
     //   loginAccount.onAirbitzManageAccount = () => onAirbitzManageAccount(loginAccount);
     // }
+
     return {
       ...loginAccount,
-      ...generateDownloadAccountLink(loginAccount.address, augur.accounts.account.keystore, loginAccount.loginID),
+      ...generateDownloadAccountLink(loginAccount.address, keystore, loginAccount.loginID),
       trimmedLoginID,
       trimmedAddress,
       linkText,

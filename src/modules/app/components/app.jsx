@@ -17,15 +17,15 @@ import handleScrollTop from 'utils/scroll-top-on-change';
 import debounce from 'utils/debounce';
 
 export default class AppView extends Component {
-  static propTypes = {
-    url: PropTypes.string,
-    tags: PropTypes.array.isRequired,
-    coreStats: PropTypes.array.isRequired,
-    isMobile: PropTypes.bool.isRequired,
-    updateIsMobile: PropTypes.func.isRequired,
-    headerHeight: PropTypes.number.isRequired,
-    footerHeight: PropTypes.number.isRequired
-  };
+  // static propTypes = {
+  //   url: PropTypes.string,
+  //   tags: PropTypes.array.isRequired,
+  //   coreStats: PropTypes.array.isRequired,
+  //   isMobile: PropTypes.bool.isRequired,
+  //   updateIsMobile: PropTypes.func.isRequired,
+  //   headerHeight: PropTypes.number.isRequired,
+  //   footerHeight: PropTypes.number.isRequired
+  // };
 
   constructor(props) {
     super(props);
