@@ -179,7 +179,7 @@ export const selectMarketsLink = memoize((keywords, selectedFilterSort, selected
 
   return {
     href,
-    onClick: (allMarkets) => {
+    onClick: () => {
       dispatch(updateURL(href));
     }
   };

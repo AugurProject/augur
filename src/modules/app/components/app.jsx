@@ -15,6 +15,7 @@ import { CREATE_MARKET } from 'modules/app/constants/views';
 import shouldComponentUpdatePure from 'utils/should-component-update-pure';
 import handleScrollTop from 'utils/scroll-top-on-change';
 import debounce from 'utils/debounce';
+import getValue from 'utils/get-value';
 
 export default class AppView extends Component {
   // static propTypes = {
@@ -143,25 +144,26 @@ export default class AppView extends Component {
     const s = this.state;
 
     const navProps = {
-      activeView: p.activeView,
-      marketsLink: p.marketsLink,
-      allMarketsLink: p.allMarketsLink,
-      favortiesLink: p.favortiesLink,
-      pendingReportsLink: p.pendingReportsLink,
-      transactionsLink: p.transactionsLink,
-      authLink: p.authLink,
-      accountLink: p.accountLink,
-      myPositionsLink: p.myPositionsLink,
-      topicsLink: p.topicsLink,
-      logged: p.logged,
-      notifications: p.notifications,
-      marketsInfo: p.marketsInfo,
-      numFavorites: p.numFavorites,
-      numPendingReports: p.numPendingReports,
+      isLogged: p.isLogged,
       isSideBarAllowed: s.isSideBarAllowed,
       isSideBarCollapsed: s.isSideBarCollapsed,
       isSideBarPersistent: s.isSideBarPersistent,
-      toggleSideBar: () => { this.toggleSideBar(); }
+      toggleSideBar: () => { this.toggleSideBar(); },
+      activeView: p.activeView,
+      marketsInfo: p.marketsHeader,
+      portfolioTotals: getValue(p, 'portfolio.totals'),
+      numFavorites: getValue(p, 'marketsHeader.numFavorites'),
+      numPendingReports: getValue(p, 'marketsHeader.numPendingReports'),
+      marketsLink: getValue(p, 'links.marketsLink'),
+      allMarketsLink: getValue(p, 'links.allMarketsLink'),
+      favoritesLink: getValue(p, 'links.favoritesLink'),
+      pendingReportsLink: getValue(p, 'links.pendingReportsLink'),
+      transactionsLink: getValue(p, 'links.transactionsLink'),
+      authLink: getValue(p, 'links.authLink'),
+      accountLink: getValue(p, 'links.accountLink'),
+      myPositionsLink: getValue(p, 'links.myPositionsLink'),
+      topicsLink: getValue(p, 'links.topicsLink'),
+      notifications: p.notifications
     };
 
     const sideBarProps = {
@@ -191,11 +193,11 @@ export default class AppView extends Component {
                 {...navProps}
                 updateHeaderHeight={p.updateHeaderHeight}
               />
-              <div className={classNames('sub-header', { 'logged-out': !p.logged })} >
+              <div className={classNames('sub-header', { 'logged-out': !p.isLogged })} >
                 {s.isSideBarAllowed && !s.isSideBarCollapsed &&
                   <div className="core-stats-bumper" />
                 }
-                {p.logged &&
+                {p.isLogged &&
                   <CoreStats
                     activeView={p.activeView}
                     coreStats={p.coreStats}
@@ -215,8 +217,8 @@ export default class AppView extends Component {
                   {s.isSideBarAllowed && !s.isSideBarCollapsed &&
                     <div className="core-stats-bumper" />
                   }
-                  <div className={classNames('sub-header', { 'logged-out': !p.logged })} >
-                    {p.logged &&
+                  <div className={classNames('sub-header', { 'logged-out': !p.isLogged })} >
+                    {p.isLogged &&
                       <CoreStats
                         activeView={p.activeView}
                         coreStats={p.coreStats}
@@ -225,6 +227,7 @@ export default class AppView extends Component {
                   </div>
                   <Routes
                     activeView={p.activeView}
+                    isSideBarAllowed={s.isSideBarAllowed}
                     setSidebarAllowed={this.setSidebarAllowed}
                   />
                   {p.activeView !== CREATE_MARKET &&

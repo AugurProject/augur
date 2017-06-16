@@ -16,7 +16,7 @@ import getValue from 'utils/get-value';
 //          acquire the row height of the navs in the footer
 export default class Nav extends Component {
   static propTypes = {
-    logged: PropTypes.string,
+    isLogged: PropTypes.string,
     updateIsFooterCollapsed: PropTypes.func,
     notifications: PropTypes.object
   }
@@ -61,6 +61,8 @@ export default class Nav extends Component {
 
     const unseenCount = getValue(p, 'notifications.unseenCount');
 
+    // console.log(' -- ', p);
+
     return (
       <nav className={`app-nav ${p.className ? p.className : ''}`}>
         <div ref={p.navRef && p.navRef} />
@@ -88,7 +90,7 @@ export default class Nav extends Component {
           <i className="nav-icon fa fa-line-chart" />
           Markets
         </Link>
-        {p.logged && !!p.numFavorites &&
+        {p.isLogged && !!p.numFavorites &&
           <Link
             {...p.favoritesLink}
             onClick={() => {
@@ -102,7 +104,7 @@ export default class Nav extends Component {
             Favorites
           </Link>
         }
-        {p.logged && !!p.numPendingReports &&
+        {p.isLogged && !!p.numPendingReports &&
           <Link
             {...p.pendingReportsLink}
             onClick={() => {
@@ -116,7 +118,7 @@ export default class Nav extends Component {
             Pending Reports
           </Link>
         }
-        {p.logged &&
+        {p.isLogged &&
           <Link
             {...p.myPositionsLink}
             onClick={() => {
@@ -129,7 +131,7 @@ export default class Nav extends Component {
             Portfolio
           </Link>
         }
-        {p.logged &&
+        {p.isLogged &&
           <Link
             {...p.transactionsLink}
             onClick={() => {
@@ -142,7 +144,7 @@ export default class Nav extends Component {
             Transactions
           </Link>
         }
-        {p.logged &&
+        {p.isLogged &&
           <Link
             {...p.accountLink}
             onClick={() => {
@@ -155,7 +157,7 @@ export default class Nav extends Component {
             Account
           </Link>
         }
-        {!p.logged &&
+        {!p.isLogged &&
           <Link
             {...p.authLink}
             onClick={() => {
@@ -172,7 +174,7 @@ export default class Nav extends Component {
             Sign Up / Login
           </Link>
         }
-        {p.logged &&
+        {p.isLogged &&
           <div // eslint-disable-line jsx-a11y/no-static-element-interactions
             className="modal-link"
             onClick={(e) => {
@@ -208,10 +210,10 @@ export default class Nav extends Component {
               transitionEnterTimeout={animationSpeed}
               transitionLeaveTimeout={animationSpeed}
             >
-              {p.logged && s.isNotificationsVisible &&
+              {p.isLogged && s.isNotificationsVisible &&
                 <span id="notifications_arrow_up" />
               }
-              {p.logged && s.isNotificationsVisible &&
+              {p.isLogged && s.isNotificationsVisible &&
                 <NotificationsContainer
                   toggleNotifications={() => this.toggleNotifications()}
                 />

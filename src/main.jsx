@@ -55,12 +55,12 @@ store.subscribe(handleRender);
 
 if (module.hot) {
   module.hot.accept();
-  module.hot.accept('./modules/app/actions/init-augur');
-  module.hot.accept('./modules/link/actions/update-url');
-  module.hot.accept('./services/augurjs');
+  // module.hot.accept('./modules/app/actions/init-augur');
+  // module.hot.accept('./modules/link/actions/update-url');
+  // module.hot.accept('./services/augurjs');
 
   module.hot.accept('./modules/app/container', () => {
-    render();
+    handleRender();
   });
 }
 
@@ -70,6 +70,7 @@ function handleRender() {
   // NOTE --  These are attached for convenience when built for development or debug
   if (process.env.NODE_ENV === 'development') {
     const selectors = require('src/selectors-raw');
+
     window.App = App;
     window.selectors = selectors;
   }
