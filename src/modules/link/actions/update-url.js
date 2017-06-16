@@ -15,10 +15,14 @@ export const UPDATE_URL = 'UPDATE_URL';
 // Pass in: sets passed in title
 // Pass in `false`: skips setting title
 // null/undefined: sets respective default title
-export function updateURL(url, title) {
+export function updateURL(url, title, branchID) {
+  console.log('updateURL -- ', url, title);
+
   return (dispatch, getState) => {
     const parsedURL = parseURL(url);
     const { branch, hasLoadedMarkets, hasLoadedTopic, loginAccount, selectedMarketID, connection } = getState();
+
+    console.log('parseURL -- ', parsedURL, branch, connection);
 
     if (!loginAccount.address && authenticatedViews.indexOf(parsedURL.searchParams.page) !== -1) { //  Reroute the user if they are unauthenticated and attempting to traverse to authenticated views
       dispatch(updateURL(makeLocation({ page: AUTHENTICATION }).url));
@@ -42,12 +46,13 @@ export function updateURL(url, title) {
       dispatch(loadFullMarket(selectedMarketID));
     }
     //  Load respective markets (all or topic constrained)
-    if (parsedURL.searchParams.page === MARKETS && connection.isConnected && branch.id) {
+    if (parsedURL.searchParams.page === MARKETS && connection.isConnected && (branchID || branch.id)) {
       const parsedURL = parseURL(url);
       const topic = getValue(parsedURL, 'searchParams.topic');
 
       if (!topic && !hasLoadedMarkets) {
-        dispatch(loadMarkets(branch.id));
+        console.log('loadMarkets -- ', topic, hasLoadedMarkets, branch);
+        dispatch(loadMarkets(branchID || branch.id));
       }
 
       if (topic && !hasLoadedTopic[topic]) {

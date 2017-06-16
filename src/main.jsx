@@ -12,6 +12,8 @@ import { augur } from 'services/augurjs';
 require('core-js/fn/array/find');
 require('core-js/fn/string/starts-with');
 
+console.log('progress -- ', process.env);
+
 // NOTE --  These are attached for convenience when built for development or debug
 if (process.env.NODE_ENV === 'development') {
   Object.defineProperty(window, 'state', { get: store.getState, enumerable: true });
@@ -36,9 +38,7 @@ window.onpopstate = (e) => {
   store.dispatch(updateURL(window.location.pathname + window.location.search));
 };
 
-store.dispatch(initAugur(() => { // Dispatched again in case the user is authd and shouldn't be accessing specific view(s)
-  store.dispatch(updateURL(window.location.pathname + window.location.search));
-}));
+store.dispatch(initAugur());
 
 function render(App) {
   ReactDOM.render(
@@ -55,9 +55,10 @@ store.subscribe(handleRender);
 
 if (module.hot) {
   module.hot.accept();
-  // module.hot.accept('./modules/app/actions/init-augur');
-  // module.hot.accept('./modules/link/actions/update-url');
-  // module.hot.accept('./services/augurjs');
+  module.hot.accept('./modules/app/actions/init-augur');
+  module.hot.accept('./modules/link/actions/update-url');
+  module.hot.accept('./services/augurjs');
+  module.hot.accept('./store');
 
   module.hot.accept('./modules/app/container', () => {
     handleRender();
