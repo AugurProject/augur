@@ -11,7 +11,8 @@ const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+// const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+// NOTE -- removed uglify temporarily as the git link was broken + we don't currently use this lib
 
 const PATHS = {
   BUILD: path.resolve(__dirname, 'build'),
@@ -223,11 +224,11 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
       new ExtractTextPlugin({
         filename: '[name].css'
       }),
-      new UglifyJSPlugin({
-        comments: false,
-        dropConsole: true,
-        sourceMap: true
-      })
+      // new UglifyESPlugin({
+      //   comments: false,
+      //   dropConsole: true,
+      //   sourceMap: true
+      // })
     ]
   });
 }
