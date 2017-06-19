@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import OrderBookTable from 'modules/order-book/components/order-book-table';
 import OrderBookChart from 'modules/order-book/components/order-book-chart';

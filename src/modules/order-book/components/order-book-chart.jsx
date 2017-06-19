@@ -1,4 +1,5 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Highcharts from 'highcharts';
 import noData from 'highcharts/modules/no-data-to-display';
 

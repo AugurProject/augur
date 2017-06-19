@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Checkbox from 'modules/common/components/checkbox';
 import OutcomeOptions from 'modules/reports/components/outcome-options';
@@ -7,15 +8,15 @@ import { BINARY, SCALAR } from 'modules/markets/constants/market-types';
 export default class ReportForm extends Component {
   // TODO -- Prop Validations
   static propTypes = {
-    type: React.PropTypes.string,
-    minValue: React.PropTypes.string,
-    maxValue: React.PropTypes.string,
+    type: PropTypes.string,
+    minValue: PropTypes.string,
+    maxValue: PropTypes.string,
     // reportableOutcomes: React.PropTypes.array,
-    reportedOutcomeID: React.PropTypes.any,
-    isIndeterminate: React.PropTypes.bool,
-    isUnethical: React.PropTypes.bool,
-    isReported: React.PropTypes.bool,
-    onClickSubmit: React.PropTypes.func
+    reportedOutcomeID: PropTypes.any,
+    isIndeterminate: PropTypes.bool,
+    isUnethical: PropTypes.bool,
+    isReported: PropTypes.bool,
+    onClickSubmit: PropTypes.func
   };
 
   constructor(props) {

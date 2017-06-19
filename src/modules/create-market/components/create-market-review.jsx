@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { augur, abi, rpc, constants } from 'services/augurjs';
 import BigNumber from 'bignumber.js';
 

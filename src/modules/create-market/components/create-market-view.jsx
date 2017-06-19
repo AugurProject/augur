@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import CreateMarketMainTitle from 'modules/create-market/components/create-market-main-title';
 import CreateMarketPreview from 'modules/create-market/components/create-market-preview';

@@ -37,6 +37,7 @@
     "memoizee": "0.4.5",
     "moment": "2.18.1",
     "prerender-node": "2.7.1",
+    "prop-types": "^15.5.10",
     "qrcode.react": "0.7.1",
     "rc-progress": "2.1.2",
     "react": "15.6.1",

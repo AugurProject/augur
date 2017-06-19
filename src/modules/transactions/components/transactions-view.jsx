@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Transactions from 'modules/transactions/components/transactions';
 import Branch from 'modules/branch/components/branch';
 import Paginator from 'modules/common/components/paginator';

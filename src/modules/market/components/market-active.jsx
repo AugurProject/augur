@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import MarketData from 'modules/market/components/market-data';
 import MarketUserData from 'modules/market/components/market-user-data';

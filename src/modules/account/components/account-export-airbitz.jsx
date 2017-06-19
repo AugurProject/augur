@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import zxcvbn from 'zxcvbn';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';

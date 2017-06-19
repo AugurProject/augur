@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 
 // NOTE -- This stateless component is simply a responsive SVG of the Complete Augur Icon
 // To employ, just set the width or height on the containing element and this SVG will respond appropriately
