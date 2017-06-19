@@ -1,5 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
+
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
 import { BINARY_INDETERMINATE_OUTCOME_ID, CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID } from 'modules/markets/constants/market-outcomes';
 

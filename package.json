@@ -113,8 +113,6 @@
     "stylelint-config-standard": "16.0.0",
     "stylelint-no-browser-hacks": "1.0.2",
     "stylelint-order": "0.4.3",
-    "uglify-js": "git://github.com/mishoo/UglifyJS2#harmony",
-    "uglifyjs-webpack-plugin": "0.4.3",
     "watchify": "3.9.0",
     "webpack": "2.6.1",
     "webpack-dev-middleware": "1.10.2",
