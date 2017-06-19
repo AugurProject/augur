@@ -92,7 +92,7 @@ export default class Input extends Component {
 
   timeoutVisibleHiddenContent = () => {
     this.setState({ isHiddenContentVisible: false });
-  }
+  };
 
   render() {
     const { debounceMS, isClearable, isIncrementable, incrementAmount, updateValue, canToggleVisibility, shouldMatchValue, comparisonValue, isSearch, min, max, ...p } = this.props; // eslint-disable-line no-unused-vars
