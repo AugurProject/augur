@@ -155,7 +155,7 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
     entry: {
       main: [
         'react-hot-loader/patch',
-        'webpack-hot-middleware/client',
+        'webpack-hot-middleware/client?reload=true',
         `${PATHS.APP}/main`
       ]
     },

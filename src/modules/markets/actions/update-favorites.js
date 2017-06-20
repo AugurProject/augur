@@ -9,10 +9,10 @@ export function updateFavorites(favorites) {
 
 export function toggleFavorite(marketID) {
   const { favorites } = store.getState();
-  const { links } = require('../../../selectors');
+  const links = require('modules/link/selectors/links');
 
   if (Object.keys(favorites).length === 1 && favorites[marketID]) {
-    links.marketsLink.onClick();
+    links.default().marketsLink.onClick();
   }
 
   return { type: TOGGLE_FAVORITE, marketID };

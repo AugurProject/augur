@@ -36,8 +36,8 @@ export const selectPagination = createSelector(
 );
 
 export function makePaginationLink(page, o) {
-  const { links } = require('src/selectors');
-  const parsedMarketsURL = parseURL(links.marketsLink.href);
+  const links = require('modules/link/selectors/links');
+  const parsedMarketsURL = parseURL(links.default().marketsLink.href);
   parsedMarketsURL.searchParams.page = page;
   const href = makeLocation(parsedMarketsURL.searchParams).url;
   return {

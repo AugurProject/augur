@@ -5,7 +5,7 @@ import sinon from 'sinon';
 import * as mockStore from 'test/mockStore';
 import paginationAssertions from 'assertions/pagination';
 
-import { links } from 'src/selectors';
+import links from 'moduldes/link/selectors/links';
 
 import { PAGE_PARAM_NAME, SEARCH_PARAM_NAME, TAGS_PARAM_NAME } from 'modules/link/constants/param-names';
 
@@ -19,7 +19,7 @@ describe(`modules/markets/selectors/pagination.js`, () => {
     updateSelectedPageNum: () => {}
   };
   const mockSelectors = {
-    links,
+    links: links(),
     marketsTotals: {
       numUnpaginated: 100
     }

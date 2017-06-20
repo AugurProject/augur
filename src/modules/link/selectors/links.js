@@ -44,7 +44,7 @@ import { makeLocation } from 'utils/parse-url';
 
 export default function () {
   const { keywords, selectedFilterSort, selectedTags, selectedTopic, pagination, loginAccount, auth } = store.getState();
-  const { market } = require('../../../selectors');
+  const market = require('modules/market/selectors/market');
   return {
     authLink: selectAuthLink(auth.selectedAuthType, !!loginAccount.address, store.dispatch),
     createMarketLink: selectCreateMarketLink(store.dispatch),

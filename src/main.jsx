@@ -52,15 +52,15 @@ function render(App) {
 store.subscribe(handleRender);
 
 if (module.hot) {
-  module.hot.accept();
-  module.hot.accept('./modules/app/actions/init-augur');
-  module.hot.accept('./modules/link/actions/update-url');
-  module.hot.accept('./services/augurjs');
-  module.hot.accept('./store');
-
-  module.hot.accept('./modules/app/container', () => {
-    handleRender();
-  });
+  module.hot.accept(
+    [
+      './selectors-raw',
+      './modules/app/container',
+    ],
+    () => {
+      handleRender();
+    }
+  );
 }
 
 function handleRender() {
