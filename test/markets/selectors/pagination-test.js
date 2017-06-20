@@ -5,7 +5,7 @@ import sinon from 'sinon';
 import * as mockStore from 'test/mockStore';
 import paginationAssertions from 'assertions/pagination';
 
-import links from 'moduldes/link/selectors/links';
+import links from 'modules/link/selectors/links';
 
 import { PAGE_PARAM_NAME, SEARCH_PARAM_NAME, TAGS_PARAM_NAME } from 'modules/link/constants/param-names';
 

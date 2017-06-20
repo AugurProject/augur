@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Hammer from 'hammerjs';
 
@@ -18,15 +19,15 @@ import debounce from 'utils/debounce';
 import getValue from 'utils/get-value';
 
 export default class AppView extends Component {
-  // static propTypes = {
-  //   url: PropTypes.string,
-  //   tags: PropTypes.array.isRequired,
-  //   coreStats: PropTypes.array.isRequired,
-  //   isMobile: PropTypes.bool.isRequired,
-  //   updateIsMobile: PropTypes.func.isRequired,
-  //   headerHeight: PropTypes.number.isRequired,
-  //   footerHeight: PropTypes.number.isRequired
-  // };
+  static propTypes = {
+    url: PropTypes.string,
+    // tags: PropTypes.array.isRequired,
+    // coreStats: PropTypes.array.isRequired,
+    // isMobile: PropTypes.bool.isRequired,
+    updateIsMobile: PropTypes.func.isRequired,
+    // headerHeight: PropTypes.number.isRequired,
+    // footerHeight: PropTypes.number.isRequired
+  };
 
   constructor(props) {
     super(props);
