@@ -15,9 +15,6 @@ describe('modules/account/constants/account-nav-items.js', () => {
         [ACCOUNT_DEPOSIT]: {
           label: 'Deposit'
         },
-        [ACCOUNT_CONVERT]: {
-          label: 'Convert'
-        },
         [ACCOUNT_TRANSFER]: {
           label: 'Transfer'
         },

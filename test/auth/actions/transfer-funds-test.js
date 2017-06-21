@@ -42,32 +42,6 @@ describe('modules/auth/actions/transfer-funds.js', () => {
   });
 
   test({
-    description: `should call the 'Cash.send' method of augur when currency is ETH_TOKEN`,
-    state: {
-      loginAccount: {
-        address: '0xtest'
-      }
-    },
-    assertions: (done, store) => {
-      const Cash = {
-        send: sinon.stub()
-      };
-
-      transferFundsReqireAPI.__Rewire__('augur', {
-        api: {
-          Cash
-        }
-      });
-
-      store.dispatch(transferFunds(10, ETH_TOKEN, '0xtest2'));
-
-      assert(Cash.send.calledOnce, `didn't call 'Cash.send' once as expected`);
-
-      done();
-    }
-  });
-
-  test({
     description: `should call the 'sendEther' method of augur when currency is ETH`,
     state: {
       loginAccount: {
@@ -78,7 +52,7 @@ describe('modules/auth/actions/transfer-funds.js', () => {
       const sendEther = sinon.stub();
 
       transferFundsReqireAPI.__Rewire__('augur', {
-        api: {
+        assets: {
           sendEther
         }
       });
@@ -105,7 +79,7 @@ describe('modules/auth/actions/transfer-funds.js', () => {
       const sendReputation = sinon.stub();
 
       transferFundsReqireAPI.__Rewire__('augur', {
-        api: {
+        assets: {
           sendReputation
         }
       });
@@ -126,8 +100,8 @@ describe('modules/auth/actions/transfer-funds.js', () => {
       }
     },
     assertions: (done, store) => {
-      const Cash = {
-        send: (options) => {
+      const assets = {
+        sendEther: (options) => {
           options.onSuccess();
         }
       };
@@ -137,13 +111,11 @@ describe('modules/auth/actions/transfer-funds.js', () => {
       });
 
       transferFundsReqireAPI.__Rewire__('augur', {
-        api: {
-          Cash
-        }
+        assets
       });
       transferFundsReqireAPI.__Rewire__('updateAssets', updateAssets);
 
-      store.dispatch(transferFunds(10, ETH_TOKEN, '0xtest2'));
+      store.dispatch(transferFunds(10, ETH, '0xtest2'));
 
       assert(updateAssets.calledOnce, `didn't call 'updateAssets' once as expected`);
 

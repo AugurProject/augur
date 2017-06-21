@@ -196,15 +196,6 @@ describe('modules/app/constants/views', () => {
   });
 
   test({
-    description: `should return the expected value 'ACCOUNT_CONVERT'`,
-    assertions: () => {
-      const expected = 'convert-funds';
-
-      assert.strictEqual(views.ACCOUNT_CONVERT, expected, `didn't return the expected string`);
-    }
-  });
-
-  test({
     description: `should return the expected value 'ACCOUNT_TRANSFER'`,
     assertions: () => {
       const expected = 'transfer-funds';
