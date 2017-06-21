@@ -25,12 +25,6 @@ describe('modules/markets/actions/update-selected-filter-sort', () => {
     })
   });
 
-  // const { makePaginationLink } = proxyquire('../../../src/modules/markets/selectors/pagination', {
-  //   '../../link/selectors/links': proxyquire('../../../src/modules/link/selectors/links', {
-  //     '../../../store': store
-  //   })
-  // });
-
   beforeEach(() => {
     store.clearActions();
     // Mock the Window object
