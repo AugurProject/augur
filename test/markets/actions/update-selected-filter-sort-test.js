@@ -20,14 +20,16 @@ describe('modules/markets/actions/update-selected-filter-sort', () => {
 
   const action = proxyquire('../../../src/modules/markets/actions/update-selected-filter-sort', {
     '../../link/actions/update-url': mockUpdateURL,
-    '../../../selectors': proxyquire('../../../src/selectors', {
-      './selectors-raw': proxyquire('../../../src/selectors-raw', {
-        './modules/link/selectors/links': proxyquire('../../../src/modules/link/selectors/links', {
-          '../../../store': store
-        })
-      })
+    '../../link/selectors/links': proxyquire('../../../src/modules/link/selectors/links', {
+      '../../../store': store
     })
   });
+
+  // const { makePaginationLink } = proxyquire('../../../src/modules/markets/selectors/pagination', {
+  //   '../../link/selectors/links': proxyquire('../../../src/modules/link/selectors/links', {
+  //     '../../../store': store
+  //   })
+  // });
 
   beforeEach(() => {
     store.clearActions();
