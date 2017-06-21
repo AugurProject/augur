@@ -5,12 +5,10 @@ import BigNumber from 'bignumber.js';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
 import Input from 'modules/common/components/input';
-// import DropDown from 'modules/common/components/dropdown';
 import EtherLogo from 'modules/common/components/ether-logo';
-import EtherTokenLogo from 'modules/common/components/ether-token-logo';
 import AugurLogoIcon from 'modules/common/components/augur-logo-icon';
 
-import { ETH_TOKEN, ETH, REP } from 'modules/account/constants/asset-types';
+import { ETH, REP } from 'modules/account/constants/asset-types';
 
 import isAddress from 'modules/auth/helpers/is-address';
 

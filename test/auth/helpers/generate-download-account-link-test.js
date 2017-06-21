@@ -31,7 +31,7 @@ describe('modules/auth/helpers/generate-download-account-link.js', () => {
       sinon.stub(keythereum, 'generateKeystoreFilename', address => address);
       linkRewireAPI.__Rewire__('keythereum', keythereum);
 
-      const actual = generateDownloadAccountLink('0xtest', { keystore: 'object' }, '123loginid');
+      const actual = generateDownloadAccountLink('0xtest', { keystore: 'object' }, '123loginid', '123privatekey');
 
       const expected = {
         accountPrivateKey: '123privatekey',

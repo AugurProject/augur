@@ -1,7 +1,7 @@
 import { abi, augur } from 'services/augurjs';
 import { updateAssets } from 'modules/auth/actions/update-assets';
 
-import { ETH_TOKEN, ETH, REP } from 'modules/account/constants/asset-types';
+import { ETH, REP } from 'modules/account/constants/asset-types';
 
 export function transferFunds(amount, currency, toAddress) {
   return (dispatch, getState) => {

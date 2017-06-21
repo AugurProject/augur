@@ -3,11 +3,10 @@ import PropTypes from 'prop-types';
 import ComponentNav from 'modules/common/components/component-nav';
 
 import { ACCOUNT_NAV_ITEMS } from 'modules/account/constants/account-nav-items';
-import { ACCOUNT_DEPOSIT, ACCOUNT_CONVERT, ACCOUNT_TRANSFER, ACCOUNT_EXPORT } from 'modules/app/constants/views';
+import { ACCOUNT_DEPOSIT, ACCOUNT_TRANSFER, ACCOUNT_EXPORT } from 'modules/app/constants/views';
 
 import AccountDetails from 'modules/account/components/account-details';
 import AccountDeposit from 'modules/account/components/account-deposit';
-import AccountConvert from 'modules/account/components/account-convert';
 import AccountTransfer from 'modules/account/components/account-transfer';
 import AccountExport from 'modules/account/components/account-export';
 
