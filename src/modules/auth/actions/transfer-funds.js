@@ -15,18 +15,9 @@ export function transferFunds(amount, currency, toAddress) {
     };
     const onFailed = e => console.error('transfer', currency, 'failed:', e);
     switch (currency) {
-      case ETH_TOKEN:
-        return augur.api.Cash.send({
-          _signer: loginAccount.privateKey,
-          recver: to,
-          value: amount,
-          onSent,
-          onSuccess,
-          onFailed
-        });
       case ETH:
-        return augur.api.sendEther({
-          _signer: loginAccount.privateKey,
+        return augur.assets.sendEther({
+          signer: loginAccount.privateKey,
           to,
           value: amount,
           from: fromAddress,
@@ -35,7 +26,7 @@ export function transferFunds(amount, currency, toAddress) {
           onFailed
         });
       case REP:
-        return augur.api.sendReputation({
+        return augur.assets.sendReputation({
           _signer: loginAccount.privateKey,
           branch: branch.id,
           recver: to,

@@ -63,14 +63,6 @@ export default class AccountView extends Component {
               address={loginAccount.address}
             />
           }
-          {s.selectedNav === ACCOUNT_CONVERT &&
-            <AccountConvert
-              ethTokens={loginAccount.ethTokens}
-              eth={loginAccount.eth}
-              convertToToken={p.convertToToken}
-              convertToEther={p.convertToEther}
-            />
-          }
           {s.selectedNav === ACCOUNT_TRANSFER &&
             <AccountTransfer
               ethTokens={loginAccount.ethTokens}

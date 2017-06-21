@@ -67,10 +67,6 @@ export default class AccountTransfer extends Component {
     let upperBound;
     let selectedAssetLabel;
     switch (selectedAsset) {
-      case ETH_TOKEN:
-        upperBound = this.props.ethTokens.value;
-        selectedAssetLabel = 'ETH Tokens';
-        break;
       case REP:
         upperBound = this.props.rep.value;
         selectedAssetLabel = 'REP';
@@ -169,21 +165,13 @@ export default class AccountTransfer extends Component {
               </button>
               <button
                 type="button"
-                className={classNames('unstyled logo-button', { 'selected-asset': s.selectedAsset === ETH_TOKEN })}
-                onClick={() => this.updateSelectedAsset(ETH_TOKEN)}
-              >
-                <EtherTokenLogo />
-                <span>Ether Token</span>
-              </button>
-              <button
-                type="button"
                 className={classNames('unstyled logo-button', { 'selected-asset': s.selectedAsset === REP })}
                 onClick={() => this.updateSelectedAsset(REP)}
               >
                 <AugurLogoIcon
                   invert
                 />
-                <span>Augur REP</span>
+                <span>Reputation</span>
               </button>
             </div>
             <CSSTransitionGroup
@@ -261,11 +249,3 @@ export default class AccountTransfer extends Component {
 function sanitizeArg(arg) {
   return (arg == null || arg === '') ? '' : arg;
 }
-
-/*
-<DropDown
-  default={this.assetTypes[0].value}
-  options={this.assetTypes}
-  onChange={selectedAsset => this.updateSelectedAsset(selectedAsset)}
-/>
-*/

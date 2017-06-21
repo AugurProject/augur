@@ -2,7 +2,7 @@ import { augur } from 'services/augurjs';
 
 export function convertToToken(value) {
   return (dispatch) => {
-    augur.depositEther({
+    augur.api.Cash.depositEther({
       value,
       onSent: () => {},
       onSuccess: () => {},
@@ -16,7 +16,7 @@ export function convertToEther(amount) {
     const { loginAccount } = getState();
 
     if (loginAccount.address) {
-      augur.withdrawEther(
+      augur.api.Cash.withdrawEther(
         loginAccount.address,
         amount,
         () => {},

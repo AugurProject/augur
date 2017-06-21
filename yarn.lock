@@ -7465,7 +7465,7 @@ redux@3.6.0:
     loose-envify "^1.1.0"
     symbol-observable "^1.0.2"
 
-redux@3.7.0:
+redux@3.7.0, redux@^3.0.2:
   version "3.7.0"
   resolved "https://registry.yarnpkg.com/redux/-/redux-3.7.0.tgz#07a623cafd92eee8abe309d13d16538f6707926f"
   dependencies:
@@ -7474,7 +7474,7 @@ redux@3.7.0:
     loose-envify "^1.1.0"
     symbol-observable "^1.0.3"
 
-redux@^3.0.2, redux@~3.5.2:
+redux@~3.5.2:
   version "3.5.2"
   resolved "https://registry.yarnpkg.com/redux/-/redux-3.5.2.tgz#4533745e970b647ec26066a83aa30e9e26faf843"
   dependencies:
