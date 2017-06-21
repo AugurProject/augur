@@ -6,7 +6,7 @@ import configureMockStore from 'redux-mock-store';
 
 import { transferFunds, __RewireAPI__ as transferFundsReqireAPI } from 'modules/auth/actions/transfer-funds';
 
-import { ETH_TOKEN, ETH, REP } from 'modules/account/constants/asset-types';
+import { ETH, REP } from 'modules/account/constants/asset-types';
 
 describe('modules/auth/actions/transfer-funds.js', () => {
   const mockStore = configureMockStore([thunk]);

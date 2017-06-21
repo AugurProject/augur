@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 
-import { ETH_TOKEN, ETH, REP } from 'modules/account/constants/asset-types';
+import { ETH, REP } from 'modules/account/constants/asset-types';
 
 describe('modules/account/constants/asset-types.js', () => {
   const test = t => it(t.description, () => t.assertions());
