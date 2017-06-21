@@ -15,7 +15,8 @@ const mapStateToProps = state => ({
   authLink: links().authLink,
   manageAirbitzAccount: airbitzAccount => selectABCUIContext().openManageWindow(airbitzAccount, (err) => {
     if (err) console.error('onAirbitzManageAccount:', err);
-  })
+  }),
+  isMobile: state.isMobile
 });
 
 const mapDispatchToProps = dispatch => ({

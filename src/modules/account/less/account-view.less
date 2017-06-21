@@ -9,6 +9,7 @@
 
   .account-sub-view {
     display: flex;
+    flex-wrap: wrap;
     padding: 1em;
 
     aside {
@@ -16,6 +17,14 @@
 
       flex: 1;
       padding-right: 1em;
+
+      @media @breakpoint-mobile {
+        .border(false, @border-right);
+        .border(true, @border-bottom);
+
+        flex-basis: 100%;
+        padding: 0;
+      }
 
       .warning {
         .font-weight-normal();
@@ -36,6 +45,11 @@
       display: flex;
       flex: 3;
       justify-content: center;
+
+      @media @breakpoint-mobile {
+        flex-basis: 100%;
+        padding-top: 2em;
+      }
 
       canvas {
         .border(true, @border-all, @border-muted);

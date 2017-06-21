@@ -8,7 +8,8 @@ import fitText from 'utils/fit-text';
 
 export default class AccountDeposit extends Component {
   static propTypes = {
-    address: PropTypes.string.isRequired
+    address: PropTypes.string.isRequired,
+    isMobile: PropTypes.bool.isRequired
   }
 
   constructor(props) {
@@ -39,7 +40,10 @@ export default class AccountDeposit extends Component {
 
   setQRSize() {
     const width = getValue(this, 'depositData.clientWidth');
-    if (width) this.setState({ qrSize: width / 3 });
+    console.log('width -- ', width);
+    if (width) {
+      this.setState({ qrSize: this.props.isMobile ? width / 2 : width / 3 });
+    }
   }
 
   setAddressScale() {

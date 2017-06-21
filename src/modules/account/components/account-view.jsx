@@ -15,7 +15,8 @@ export default class AccountView extends Component {
   static propTypes = {
     loginAccount: PropTypes.object.isRequired,
     authLink: PropTypes.object.isRequired,
-    updateAccountName: PropTypes.func.isRequired
+    updateAccountName: PropTypes.func.isRequired,
+    isMobile: PropTypes.bool.isRequired
   };
 
   constructor(props) {
@@ -61,6 +62,7 @@ export default class AccountView extends Component {
           {s.selectedNav === ACCOUNT_DEPOSIT &&
             <AccountDeposit
               address={loginAccount.address}
+              isMobile={p.isMobile}
             />
           }
           {s.selectedNav === ACCOUNT_TRANSFER &&
