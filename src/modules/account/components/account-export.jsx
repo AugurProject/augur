@@ -10,12 +10,13 @@ import getValue from 'utils/get-value';
 
 export default class AccountExport extends Component {
   static propTypes = {
+    isMobile: PropTypes.bool.isRequired,
     privateKey: PropTypes.object.isRequired,
     downloadLoginIDDataString: PropTypes.string.isRequired,
     downloadLoginIDFileName: PropTypes.string.isRequired,
     downloadAccountDataString: PropTypes.string.isRequired,
     downloadAccountFileName: PropTypes.string.isRequired,
-    airbitzAccount: PropTypes.object
+    airbitzAccount: PropTypes.object,
   };
 
   constructor(props) {
@@ -41,7 +42,7 @@ export default class AccountExport extends Component {
 
   setQRSize() {
     const width = getValue(this, 'exportData.clientWidth');
-    if (width) this.setState({ qrSize: width / 3 });
+    if (width) this.setState({ qrSize: this.props.isMobile ? width / 1.2 : width / 3 });
   }
 
   render() {

@@ -82,6 +82,7 @@ export default class AccountView extends Component {
               downloadLoginIDFileName={loginAccount.downloadLoginIDFileName}
               downloadAccountDataString={loginAccount.downloadAccountDataString}
               downloadAccountFileName={loginAccount.downloadAccountFileName}
+              isMobile={p.isMobile}
             />
           }
         </article>
