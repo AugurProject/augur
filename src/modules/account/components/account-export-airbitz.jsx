@@ -21,7 +21,7 @@ export default class AccountExportAirbitz extends Component {
 
   constructor(props) {
     super(props);
-    
+
     this.state = {
       password: '',
       passwordConfirm: '',
