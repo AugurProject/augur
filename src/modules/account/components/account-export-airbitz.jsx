@@ -16,14 +16,12 @@ import { REQUIRED_PASSWORD_STRENGTH } from 'modules/auth/constants/password-stre
 export default class AccountExportAirbitz extends Component {
   static propTypes = {
     qrSize: PropTypes.number.isRequired,
-    privateKey: PropTypes.object.isRequired
+    privateKey: PropTypes.string.isRequired
   };
 
   constructor(props) {
     super(props);
-
-    console.log('props -- ', props);
-
+    
     this.state = {
       password: '',
       passwordConfirm: '',

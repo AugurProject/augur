@@ -11,7 +11,7 @@ import getValue from 'utils/get-value';
 export default class AccountExport extends Component {
   static propTypes = {
     isMobile: PropTypes.bool.isRequired,
-    privateKey: PropTypes.object.isRequired,
+    privateKey: PropTypes.string.isRequired,
     downloadLoginIDDataString: PropTypes.string.isRequired,
     downloadLoginIDFileName: PropTypes.string.isRequired,
     downloadAccountDataString: PropTypes.string.isRequired,
