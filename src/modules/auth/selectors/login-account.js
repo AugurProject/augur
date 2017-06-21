@@ -26,7 +26,7 @@ export const selectLoginAccount = createSelector(
 
     return {
       ...loginAccount,
-      ...generateDownloadAccountLink(loginAccount.address, keystore, loginAccount.loginID),
+      ...generateDownloadAccountLink(loginAccount.address, keystore, loginAccount.loginID, loginAccount.privateKey),
       trimmedLoginID,
       trimmedAddress,
       linkText,

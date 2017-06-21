@@ -10,8 +10,7 @@ import getValue from 'utils/get-value';
 
 export default class AccountExport extends Component {
   static propTypes = {
-    loginID: PropTypes.string.isRequired,
-    accountPrivateKey: PropTypes.string.isRequired,
+    privateKey: PropTypes.object.isRequired,
     downloadLoginIDDataString: PropTypes.string.isRequired,
     downloadLoginIDFileName: PropTypes.string.isRequired,
     downloadAccountDataString: PropTypes.string.isRequired,
@@ -64,7 +63,7 @@ export default class AccountExport extends Component {
           {!p.airbitzAccount &&
             <div className="account-export-account">
               <QRCode
-                value={p.accountPrivateKey}
+                value={p.privateKey}
                 size={s.qrSize}
               />
               <h4>or</h4>
@@ -87,7 +86,7 @@ export default class AccountExport extends Component {
           {p.airbitzAccount &&
             <AccountExportAirbitz
               qrSize={s.qrSize}
-              loginID={p.loginID}
+              privateKey={p.privateKey}
             />
           }
         </div>

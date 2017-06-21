@@ -1,11 +1,9 @@
 import keythereum from 'keythereum';
 import { augur } from 'services/augurjs';
 
-import getValue from 'utils/get-value';
-
-export default function (address, keystore, loginID) {
+export default function (address, keystore, loginID, privateKey) {
   return {
-    accountPrivateKey: augur.abi.bytes_to_hex(getValue(augur, 'accounts.account.privateKey') || ''),
+    accountPrivateKey: augur.abi.bytes_to_hex(privateKey || ''),
     downloadLoginIDDataString: `data:,${loginID}`,
     downloadLoginIDFileName: `augur-login-id--${address}`,
     downloadAccountDataString: `data:,${encodeURIComponent(JSON.stringify(keystore))}`,

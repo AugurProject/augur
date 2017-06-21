@@ -15,11 +15,14 @@ import { REQUIRED_PASSWORD_STRENGTH } from 'modules/auth/constants/password-stre
 
 export default class AccountExportAirbitz extends Component {
   static propTypes = {
-    qrSize: PropTypes.number.isRequired
+    qrSize: PropTypes.number.isRequired,
+    privateKey: PropTypes.object.isRequired
   };
 
   constructor(props) {
     super(props);
+
+    console.log('props -- ', props);
 
     this.state = {
       password: '',
@@ -96,13 +99,16 @@ export default class AccountExportAirbitz extends Component {
   }
 
   generateEncryptedKeyFile() {
+    console.log('generateEncryptedKeyFile -- ', this.state);
+
     encryptPrivateKeyWithPassword(
       this.state.password,
+      this.props.privateKey,
       (keystore) => {
         this.setState({
           generatingKeyFile: false,
           keyFileGenerated: true,
-          ...generateDownloadAccountLink(keystore.address, keystore, null)
+          ...generateDownloadAccountLink(keystore.address, keystore, null, this.props.privateKey)
         });
       }
     );

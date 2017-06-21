@@ -83,7 +83,7 @@ export default class AccountView extends Component {
             <AccountExport
               airbitzAccount={loginAccount.airbitzAccount}
               stringifiedKeystore={loginAccount.stringifiedKeystore}
-              accountPrivateKey={loginAccount.accountPrivateKey}
+              privateKey={loginAccount.privateKey}
               downloadLoginIDDataString={loginAccount.downloadLoginIDDataString}
               downloadLoginIDFileName={loginAccount.downloadLoginIDFileName}
               downloadAccountDataString={loginAccount.downloadAccountDataString}
