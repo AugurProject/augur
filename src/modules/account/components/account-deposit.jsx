@@ -40,7 +40,6 @@ export default class AccountDeposit extends Component {
 
   setQRSize() {
     const width = getValue(this, 'depositData.clientWidth');
-    console.log('width -- ', width);
     if (width) this.setState({ qrSize: this.props.isMobile ? width / 1.2 : width / 3 });
   }
 

@@ -18,7 +18,7 @@ export const selectLoginAccount = createSelector(
     const trimmedAddress = loginAccount.address ? `${loginAccount.address.substring(0, 4)}...${loginAccount.address.substring(loginAccount.address.length - 4)}` : null;
     const trimmedLoginID = loginAccount.loginID ? `${loginAccount.loginID.substring(0, 4)}...${loginAccount.loginID.substring(loginAccount.loginID.length - 4)}` : null;
     const linkText = loginAccount.isUnlocked ? trimmedAddress : loginAccount.name || trimmedLoginID;
-    const keystore = getValue(augur, 'account.account.keystore');
+    const keystore = loginAccount.keystore;
     // if (loginAccount.airbitzAccount) {
     //   console.log('here');
     //   loginAccount.onAirbitzManageAccount = () => onAirbitzManageAccount(loginAccount);
@@ -26,7 +26,7 @@ export const selectLoginAccount = createSelector(
 
     return {
       ...loginAccount,
-      ...generateDownloadAccountLink(loginAccount.address, keystore, loginAccount.loginID, loginAccount.privateKey),
+      ...generateDownloadAccountLink(loginAccount.address, keystore, loginAccount.loginID, getValue(loginAccount, 'privateKey.data') ? loginAccount.privateKey.data : loginAccount.privateKey),
       trimmedLoginID,
       trimmedAddress,
       linkText,
