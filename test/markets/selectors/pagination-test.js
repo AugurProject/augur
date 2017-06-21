@@ -19,7 +19,7 @@ describe(`modules/markets/selectors/pagination.js`, () => {
     updateSelectedPageNum: () => {}
   };
   const mockSelectors = {
-    links: links(),
+    links,
     marketsTotals: {
       numUnpaginated: 100
     }
@@ -40,12 +40,8 @@ describe(`modules/markets/selectors/pagination.js`, () => {
   });
 
   const { makePaginationLink } = proxyquire('../../../src/modules/markets/selectors/pagination', {
-    '../../../selectors': proxyquire('../../../src/selectors', {
-      './selectors-raw': proxyquire('../../../src/selectors-raw', {
-        './modules/link/selectors/links': proxyquire('../../../src/modules/link/selectors/links', {
-          '../../../store': store
-        })
-      })
+    '../../link/selectors/links': proxyquire('../../../src/modules/link/selectors/links', {
+      '../../../store': store
     })
   });
 
