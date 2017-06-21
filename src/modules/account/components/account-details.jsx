@@ -16,7 +16,7 @@ export default class AccountDetails extends Component {
     updateAccountName: PropTypes.func.isRequired,
     name: PropTypes.string,
     airbitzAccount: PropTypes.object,
-    onAirbitzManageAccount: PropTypes.func
+    manageAirbitzAccount: PropTypes.func
   };
 
   constructor(props) {
@@ -65,7 +65,7 @@ export default class AccountDetails extends Component {
             {p.airbitzAccount &&
               <button
                 className="unstyled airbitz-logo-container"
-                onClick={() => p.onAirbitzManageAccount()}
+                onClick={() => p.manageAirbitzAccount()}
               >
                 <AirbitzLogoIcon />
               </button>

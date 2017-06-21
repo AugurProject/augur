@@ -51,7 +51,7 @@ export default class AccountView extends Component {
             trimmedAddress={loginAccount.trimmedAddress}
             signOut={p.authLink}
             airbitzAccount={loginAccount.airbitzAccount}
-            onAirbitzManageAccount={loginAccount.onAirbitzManageAccount}
+            manageAirbitzAccount={p.manageAirbitzAccount}
           />
           <ComponentNav
             fullWidth
