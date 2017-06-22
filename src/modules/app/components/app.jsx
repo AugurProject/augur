@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Hammer from 'hammerjs';
 
@@ -14,23 +15,30 @@ import { CREATE_MARKET } from 'modules/app/constants/views';
 
 import shouldComponentUpdatePure from 'utils/should-component-update-pure';
 import handleScrollTop from 'utils/scroll-top-on-change';
-import getValue from 'utils/get-value';
 import debounce from 'utils/debounce';
+import getValue from 'utils/get-value';
 
-export default class App extends Component {
+export default class AppView extends Component {
+  static propTypes = {
+    url: PropTypes.string,
+    // tags: PropTypes.array.isRequired,
+    // coreStats: PropTypes.array.isRequired,
+    // isMobile: PropTypes.bool.isRequired,
+    updateIsMobile: PropTypes.func.isRequired,
+    // headerHeight: PropTypes.number.isRequired,
+    // footerHeight: PropTypes.number.isRequired
+  };
+
   constructor(props) {
     super(props);
 
     this.state = {
-      isMobile: false, // Determined via CSS media query, ref method `checkIfMobile` below
       isSideBarAllowed: false,
       isSideBarCollapsed: false,
       isSideBarPersistent: true,
       isChatCollapsed: true,
       doScrollTop: false,
       currentRoute: null,
-      headerHeight: 0,
-      footerHeight: 0,
       footerPush: 0,
       isFooterCollapsed: true
     };
@@ -43,8 +51,6 @@ export default class App extends Component {
     this.handleSwipeEvent = this.handleSwipeEvent.bind(this);
     this.handleWindowScroll = debounce(this.handleWindowScroll.bind(this));
     this.handleWindowResize = debounce(this.handleWindowResize.bind(this));
-    this.updateHeaderHeight = this.updateHeaderHeight.bind(this);
-    this.updateFooterHeight = this.updateFooterHeight.bind(this);
     this.updateIsFooterCollapsed = this.updateIsFooterCollapsed.bind(this);
     this.checkIfMobile = this.checkIfMobile.bind(this);
   }
@@ -68,15 +74,6 @@ export default class App extends Component {
     this.setState({ isSideBarCollapsed: !this.state.isSideBarCollapsed });
   }
 
-  //	Bounding Element Dimentions
-  //	NOTE -- used by mobile side-bar
-  updateHeaderHeight(headerHeight) {
-    this.setState({ headerHeight });
-  }
-  updateFooterHeight(footerHeight) {
-    this.setState({ footerHeight });
-  }
-
   //	Footer
   updateIsFooterCollapsed(isFooterCollapsed) {
     this.setState({ isFooterCollapsed });
@@ -97,16 +94,16 @@ export default class App extends Component {
     // CSS breakpoint sets the value when a user is mobile
     const isMobile = window.getComputedStyle(document.body).getPropertyValue('--is-mobile').indexOf('true') !== -1;
 
+    this.props.updateIsMobile(isMobile);
+
     if (isMobile) {
       this.setState({
-        isMobile,
         isSideBarCollapsed: true,
         isSideBarPersistent: false
       });
       this.attachTouchHandler();
     } else {
       this.setState({
-        isMobile,
         isSideBarCollapsed: false,
         isSideBarPersistent: true
       });
@@ -148,20 +145,16 @@ export default class App extends Component {
     const s = this.state;
 
     const navProps = {
-      logged: getValue(p, 'loginAccount.address'),
+      isLogged: p.isLogged,
       isSideBarAllowed: s.isSideBarAllowed,
       isSideBarCollapsed: s.isSideBarCollapsed,
       isSideBarPersistent: s.isSideBarPersistent,
       toggleSideBar: () => { this.toggleSideBar(); },
       activeView: p.activeView,
-      positionsSummary: p.positionsSummary,
-      transactionsTotals: p.transactionsTotals,
-      isTransactionsWorking: p.isTransactionsWorking,
       marketsInfo: p.marketsHeader,
       portfolioTotals: getValue(p, 'portfolio.totals'),
       numFavorites: getValue(p, 'marketsHeader.numFavorites'),
       numPendingReports: getValue(p, 'marketsHeader.numPendingReports'),
-      numTransactionsWorking: getValue(p, 'transactionsTotals.numWorking'),
       marketsLink: getValue(p, 'links.marketsLink'),
       allMarketsLink: getValue(p, 'links.allMarketsLink'),
       favoritesLink: getValue(p, 'links.favoritesLink'),
@@ -176,8 +169,8 @@ export default class App extends Component {
 
     const sideBarProps = {
       tags: p.tags,
-      headerHeight: s.headerHeight,
-      footerHeight: s.footerHeight
+      headerHeight: p.headerHeight,
+      footerHeight: p.footerHeight
     };
 
     // NOTE -- A few implementation details:
@@ -187,86 +180,81 @@ export default class App extends Component {
     return (
       <main id="main_responsive_state" ref={(main) => { this.main = main; }}>
         {p &&
-        <div id="app_container" >
-          {s.isSideBarAllowed && !s.isSideBarCollapsed &&
-            <SidebarMask
-              style={{
-                top: s.headerHeight,
-                bottom: s.footerHeight
-              }}
-            />
-          }
-          <div id="app_header">
-            <Header
-              {...navProps}
-              updateHeaderHeight={this.updateHeaderHeight}
-            />
-            <div className={classNames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
-              {s.isSideBarAllowed && !s.isSideBarCollapsed &&
-                <div className="core-stats-bumper" />
-              }
-              {p.loginAccount && p.loginAccount.address &&
-                <CoreStats
-                  activeView={p.activeView}
-                  coreStats={p.coreStats}
-                />
-              }
-            </div>
-          </div>
-          <div id="app_views" >
-            <Header {...navProps} />
-            <div id="app_view_container">
-              {s.isSideBarAllowed && !s.isSideBarCollapsed &&
-                <div id="side_bar" >
-                  <SideBar {...sideBarProps} />
-                </div>
-              }
-              <div id="app_view">
+          <div id="app_container" >
+            {s.isSideBarAllowed && !s.isSideBarCollapsed &&
+              <SidebarMask
+                style={{
+                  top: p.headerHeight,
+                  bottom: p.footerHeight
+                }}
+              />
+            }
+            <div id="app_header">
+              <Header
+                {...navProps}
+                updateHeaderHeight={p.updateHeaderHeight}
+              />
+              <div className={classNames('sub-header', { 'logged-out': !p.isLogged })} >
                 {s.isSideBarAllowed && !s.isSideBarCollapsed &&
                   <div className="core-stats-bumper" />
                 }
-                <div className={classNames('sub-header', (!p.loginAccount || !p.loginAccount.address) && 'logged-out')} >
-                  {p.loginAccount && p.loginAccount.address &&
-                    <CoreStats
-                      activeView={p.activeView}
-                      coreStats={p.coreStats}
-                    />
-                  }
-                </div>
-                <Routes
-                  {...p}
-                  isMobile={s.isMobile}
-                  setSidebarAllowed={this.setSidebarAllowed}
-                  footerHeight={s.footerHeight}
-                />
-                {p.activeView !== CREATE_MARKET &&
-                  <Footer {...navProps} />
+                {p.isLogged &&
+                  <CoreStats
+                    activeView={p.activeView}
+                    coreStats={p.coreStats}
+                  />
                 }
               </div>
             </div>
-          </div>
-          {!s.isChatCollapsed &&
-            <ChatView
-              {...p.chat.augur}
-              toggleChat={() => { this.toggleChat(); }}
+            <div id="app_views" >
+              <Header {...navProps} />
+              <div id="app_view_container">
+                {s.isSideBarAllowed && !s.isSideBarCollapsed &&
+                  <div id="side_bar" >
+                    <SideBar {...sideBarProps} />
+                  </div>
+                }
+                <div id="app_view">
+                  {s.isSideBarAllowed && !s.isSideBarCollapsed &&
+                    <div className="core-stats-bumper" />
+                  }
+                  <div className={classNames('sub-header', { 'logged-out': !p.isLogged })} >
+                    {p.isLogged &&
+                      <CoreStats
+                        activeView={p.activeView}
+                        coreStats={p.coreStats}
+                      />
+                    }
+                  </div>
+                  <Routes
+                    activeView={p.activeView}
+                    isSideBarAllowed={s.isSideBarAllowed}
+                    setSidebarAllowed={this.setSidebarAllowed}
+                  />
+                  {p.activeView !== CREATE_MARKET &&
+                    <Footer {...navProps} />
+                  }
+                </div>
+              </div>
+            </div>
+            {!s.isChatCollapsed &&
+              <ChatView
+                {...p.chat.augur}
+                toggleChat={() => { this.toggleChat(); }}
+              />
+            }
+            <button id="chat-button" onClick={() => { this.toggleChat(); }}>
+              Chat
+            </button>
+            <Footer
+              {...navProps}
+              isFooterCollapsed={s.isFooterCollapsed}
+              updateFooterHeight={p.updateFooterHeight}
+              updateIsFooterCollapsed={this.updateIsFooterCollapsed}
             />
-          }
-          <button id="chat-button" onClick={() => { this.toggleChat(); }}>
-            Chat
-          </button>
-          <Footer
-            {...navProps}
-            isFooterCollapsed={s.isFooterCollapsed}
-            updateFooterHeight={this.updateFooterHeight}
-            updateIsFooterCollapsed={this.updateIsFooterCollapsed}
-          />
-        </div>
+          </div>
         }
       </main>
     );
   }
 }
-
-App.propTypes = {
-  url: PropTypes.string
-};

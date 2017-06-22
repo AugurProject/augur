@@ -2,15 +2,16 @@
  * Fit Text to Containing Element's Width
  * @param container - The containing element with constraining width
  * @param target - The target element to fit to width constraint
+ * @param shouldScaleUp - Allow for the text to scale up even if the container width isn't exceeded
  */
-export default function fitText(container, target) {
+export default function fitText(container, target, shouldScaleUp) {
   if (container && target) {
     const containerWidth = container.clientWidth;
     const targetWidth = target.clientWidth;
 
     target.style.transform = null; // Reset
 
-    if (targetWidth > containerWidth) {
+    if (shouldScaleUp || targetWidth > containerWidth) {
       const newWidth = (containerWidth * targetWidth) / targetWidth;
       const newScale = newWidth / targetWidth;
 

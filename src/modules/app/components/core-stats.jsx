@@ -1,6 +1,7 @@
 /* eslint react/no-array-index-key: 0 */  // It's OK in this specific instance since the order NEVER changes
 
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import PortfolioNav from 'modules/portfolio/containers/portfolio-nav';

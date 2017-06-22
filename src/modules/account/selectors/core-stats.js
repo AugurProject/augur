@@ -3,9 +3,9 @@ import store from 'src/store';
 import { selectAccountTradesState, selectBlockchainState, selectOutcomesDataState } from 'src/select-state';
 import { augur, abi } from 'services/augurjs';
 import { dateToBlock } from 'utils/date-to-block-to-date';
-import { formatEther } from 'utils/format-number';
+import { formatEtherTokens } from 'utils/format-number';
 import { ZERO } from 'modules/trade/constants/numbers';
-import { selectLoginAccount } from 'modules/account/selectors/login-account';
+import { selectLoginAccount } from 'modules/auth/selectors/login-account';
 import selectLoginAccountPositions from 'modules/my-positions/selectors/login-account-positions';
 import getValue from 'utils/get-value';
 
@@ -25,16 +25,20 @@ export const createPeriodPLSelector = period => createSelector(
   selectOutcomesDataState,
   (accountTrades, blockchain, outcomesData) => {
     if (!accountTrades || !blockchain) return null;
+
     const periodDate = new Date(Date.now() - (period*24*60*60*1000));
     const periodBlock = dateToBlock(periodDate, blockchain.currentBlockNumber);
+
     return Object.keys(accountTrades).reduce((p, marketID) => { // Iterate over marketIDs
       if (!outcomesData[marketID]) return p;
+
       const accumulatedPL = Object.keys(accountTrades[marketID]).reduce((p, outcomeID) => { // Iterate over outcomes
         const periodTrades = accountTrades[marketID][outcomeID].filter(trade => trade.blockNumber > periodBlock); // Filter out trades older than 30 days
         const lastPrice = selectOutcomeLastPrice(outcomesData[marketID], outcomeID);
         const { realized, unrealized } = augur.trading.positions.calculateProfitLoss(periodTrades, lastPrice);
         return p.plus(abi.bignum(realized).plus(abi.bignum(unrealized)));
       }, ZERO);
+
       return p.plus(accumulatedPL);
     }, ZERO);
   }
@@ -52,14 +56,14 @@ export const selectCoreStats = createSelector(
     // Group 1
     {
       totalEth: {
-        label: 'ETH',
-        title: 'Ether -- outcome trading currency',
-        value: { ...loginAccount.ether, denomination: null }
+        label: 'ETH Tokens',
+        title: 'Ether Tokens -- outcome trading currency',
+        value: { ...loginAccount.ethTokens, denomination: null }
       },
       totalRealEth: {
-        label: 'Real ETH',
-        title: 'Real Ether -- pays transaction gas fees',
-        value: { ...loginAccount.realEther, denomination: null }
+        label: 'ETH',
+        title: 'Ether -- pays transaction gas fees',
+        value: { ...loginAccount.eth, denomination: null }
       },
       totalRep: {
         label: 'REP',
@@ -91,12 +95,12 @@ export const selectCoreStats = createSelector(
       totalPLMonth: {
         label: '30 Day P/L',
         title: 'Profit/Loss -- net of all trades over the last 30 days',
-        value: formatEther(totalPLMonth)
+        value: formatEtherTokens(totalPLMonth)
       },
       totalPLDay: {
         label: '1 Day P/L',
         title: 'Profit/Loss -- net of all trades over the last day',
-        value: formatEther(totalPLDay)
+        value: formatEtherTokens(totalPLDay)
       }
     }
   ]

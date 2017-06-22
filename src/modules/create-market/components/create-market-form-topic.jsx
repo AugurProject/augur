@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import Input from 'modules/common/components/input';
 import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications';

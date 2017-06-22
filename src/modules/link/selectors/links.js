@@ -1,3 +1,10 @@
+// NOTE --  I'm working on a way to refine the site view component linking to be more elegant that what we currently have below.
+//          Planning to do a rework during CH #2478, since pagination will be getting slightly reworked for markets at that point,
+//          leaving an opportune time to take a deeper look at these as well.
+//          Largest motivation being the relatively recent implementation of react-redux, which in large part removes the necessity for these.
+//          In the market link we've also conflated what would probably be better suited for the component with the ideal duties
+//          of the link selectors, which generally should just be to handle routing to the next view.
+
 import memoize from 'memoizee';
 
 import store from 'src/store';
@@ -10,7 +17,23 @@ import { logout } from 'modules/auth/actions/logout';
 import { loadFullLoginAccountMarkets } from 'modules/portfolio/actions/load-full-login-account-markets';
 import { updateSelectedMarketsHeader } from 'modules/markets/actions/update-selected-markets-header';
 
-import { ACCOUNT, M, MARKETS, CREATE_MARKET, MY_POSITIONS, MY_MARKETS, MY_REPORTS, TRANSACTIONS, AUTHENTICATION } from 'modules/app/constants/views';
+import selectABCUIContext from 'modules/auth/helpers/abc';
+
+import {
+  ACCOUNT,
+  M,
+  MARKETS,
+  CREATE_MARKET,
+  MY_POSITIONS,
+  MY_MARKETS,
+  MY_REPORTS,
+  TRANSACTIONS,
+  AUTHENTICATION,
+  // ACCOUNT_DETAILS,
+  // ACCOUNT_DEPOSIT,
+  // ACCOUNT_CONVERT,
+  // ACCOUNT_WITHDRAW
+} from 'modules/app/constants/views';
 import { FAVORITES, PENDING_REPORTS } from 'modules/markets/constants/markets-subset';
 
 import { SEARCH_PARAM_NAME, FILTER_SORT_TYPE_PARAM_NAME, FILTER_SORT_SORT_PARAM_NAME, FILTER_SORT_ISDESC_PARAM_NAME, PAGE_PARAM_NAME, TAGS_PARAM_NAME, TOPIC_PARAM_NAME, SUBSET_PARAM_NAME } from 'modules/link/constants/param-names';
@@ -21,7 +44,7 @@ import { makeLocation } from 'utils/parse-url';
 
 export default function () {
   const { keywords, selectedFilterSort, selectedTags, selectedTopic, pagination, loginAccount, auth } = store.getState();
-  const { market } = require('../../../selectors');
+  const market = require('modules/market/selectors/market');
   return {
     authLink: selectAuthLink(auth.selectedAuthType, !!loginAccount.address, store.dispatch),
     createMarketLink: selectCreateMarketLink(store.dispatch),
@@ -65,18 +88,18 @@ export const selectAuthLink = memoize((authType, alsoLogout, dispatch) => {
   return {
     href,
     onClick: () => {
+      dispatch(updateURL(href));
+
       if (alsoLogout) {
         dispatch(logout());
       }
-
-      dispatch(updateURL(href));
     }
   };
 }, { max: 1 });
 
 export const selectAirbitzLink = memoize((authType, dispatch) => ({
   onClick: () => {
-    require('../../../selectors').abc.openLoginWindow((result, airbitzAccount) => {
+    selectABCUIContext().openLoginWindow((result, airbitzAccount) => {
       if (airbitzAccount) {
         dispatch(loginWithAirbitz(airbitzAccount));
       } else {
@@ -88,10 +111,10 @@ export const selectAirbitzLink = memoize((authType, dispatch) => ({
 
 export const selectAirbitzOnLoad = memoize(dispatch => ({
   onLoad: () => {
-    const abcContext = require('../../../selectors').abc.abcContext;
+    const abcContext = selectABCUIContext().abcContext;
     const usernames = abcContext.listUsernames();
     if (usernames.length > 0) {
-      require('../../../selectors').abc.openLoginWindow((result, airbitzAccount) => {
+      selectABCUIContext().openLoginWindow((result, airbitzAccount) => {
         if (airbitzAccount) {
           dispatch(loginWithAirbitz(airbitzAccount));
         } else {
@@ -156,7 +179,7 @@ export const selectMarketsLink = memoize((keywords, selectedFilterSort, selected
 
   return {
     href,
-    onClick: (allMarkets) => {
+    onClick: () => {
       dispatch(updateURL(href));
     }
   };

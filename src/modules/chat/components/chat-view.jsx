@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 
 import ValueTimestamp from 'modules/common/components/value-timestamp';
@@ -6,7 +7,7 @@ import ValueTimestamp from 'modules/common/components/value-timestamp';
 export default class ChatView extends Component {
 
   static propTypes = {
-    onSubmitChatMessage: React.PropTypes.func
+    onSubmitChatMessage: PropTypes.func
   };
 
   componentWillUpdate() {

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
@@ -53,13 +54,13 @@ const OutcomeOptions = p => (
 );
 
 OutcomeOptions.propTypes = {
-  className: React.PropTypes.string,
-  type: React.PropTypes.string,
-  reportableOutcomes: React.PropTypes.array,
-  reportedOutcomeID: React.PropTypes.string,
-  isReported: React.PropTypes.bool,
-  isIndeterminate: React.PropTypes.bool,
-  onOutcomeChange: React.PropTypes.func
+  className: PropTypes.string,
+  type: PropTypes.string,
+  reportableOutcomes: PropTypes.array,
+  reportedOutcomeID: PropTypes.string,
+  isReported: PropTypes.bool,
+  isIndeterminate: PropTypes.bool,
+  onOutcomeChange: PropTypes.func
 };
 
 export default OutcomeOptions;

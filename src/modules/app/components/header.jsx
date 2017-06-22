@@ -1,6 +1,7 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
-import Nav from 'modules/app/components/nav';
+import Nav from 'modules/nav/container';
 
 import debounce from 'utils/debounce';
 

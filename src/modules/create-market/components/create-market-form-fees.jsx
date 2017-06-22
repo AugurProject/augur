@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import BigNumber from 'bignumber.js';
 
 import Input from 'modules/common/components/input';

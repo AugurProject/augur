@@ -6,6 +6,10 @@ import branch from 'modules/branch/reducers/branch';
 import connection from 'modules/app/reducers/connection';
 import url from 'modules/link/reducers/url';
 
+import isMobile from 'modules/app/reducers/is-mobile';
+import headerHeight from 'modules/app/reducers/header-height';
+import footerHeight from 'modules/app/reducers/footer-height';
+
 import auth from 'modules/auth/reducers/auth';
 import loginAccount from 'modules/auth/reducers/login-account';
 import activeView from 'modules/app/reducers/active-view';
@@ -71,6 +75,10 @@ export function createReducer() {
     branch,
     connection,
     url,
+
+    isMobile,
+    headerHeight,
+    footerHeight,
 
     auth,
     loginAccount,

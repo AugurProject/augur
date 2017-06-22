@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 
 import BinaryIcon from 'modules/common/components/binary-icon';
 import CategoricalIcon from 'modules/common/components/categorical-icon';

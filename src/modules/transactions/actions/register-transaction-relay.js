@@ -1,7 +1,7 @@
 import { abi, augur, rpc } from 'services/augurjs';
 import { SUBMITTED, SUCCESS } from 'modules/transactions/constants/statuses';
 import { NO_RELAY } from 'modules/transactions/constants/no-relay';
-import { formatRealEther } from 'utils/format-number';
+import { formatEther } from 'utils/format-number';
 import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data';
 import { constructRelayTransaction } from 'modules/transactions/actions/construct-relay-transaction';
 
@@ -27,7 +27,7 @@ export const handleRelayTransaction = tx => (dispatch, getState) => {
                   const id = Object.keys(relayTransaction[i])[0];
                   if (transactionsData[id]) {
                     dispatch(updateTransactionsData({
-                      [id]: { ...transactionsData[id], gasFees: formatRealEther(gasFees) }
+                      [id]: { ...transactionsData[id], gasFees: formatEther(gasFees) }
                     }));
                   }
                   if (!transactionsData[id] || transactionsData[id].status !== SUCCESS) {
@@ -42,7 +42,7 @@ export const handleRelayTransaction = tx => (dispatch, getState) => {
             if (transactionsData[hash]) {
               dispatch(constructRelayTransaction(tx, status));
               dispatch(updateTransactionsData({
-                [hash]: { ...transactionsData[hash], gasFees: formatRealEther(gasFees) }
+                [hash]: { ...transactionsData[hash], gasFees: formatEther(gasFees) }
               }));
             }
             if (!transactionsData[hash] || transactionsData[hash].status !== SUCCESS) {
@@ -66,7 +66,7 @@ export const handleRelayTransaction = tx => (dispatch, getState) => {
               const id = Object.keys(relayTransaction[i])[0];
               if (transactionsData[id]) {
                 dispatch(updateTransactionsData({
-                  [id]: { ...transactionsData[id], gasFees: formatRealEther(gasFees) }
+                  [id]: { ...transactionsData[id], gasFees: formatEther(gasFees) }
                 }));
               }
               if (!transactionsData[id] || transactionsData[id].status !== SUCCESS) {

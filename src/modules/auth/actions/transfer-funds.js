@@ -1,5 +1,10 @@
 import { abi, augur } from 'services/augurjs';
 import { updateAssets } from 'modules/auth/actions/update-assets';
+import { addNotification } from 'modules/notifications/actions/update-notifications';
+
+import trimString from 'utils/trim-string';
+
+import { ETH, REP } from 'modules/account/constants/asset-types';
 
 export function transferFunds(amount, currency, toAddress) {
   return (dispatch, getState) => {
@@ -13,27 +18,40 @@ export function transferFunds(amount, currency, toAddress) {
     };
     const onFailed = e => console.error('transfer', currency, 'failed:', e);
     switch (currency) {
-      case 'ETH':
-        return augur.api.Cash.send({
-          _signer: loginAccount.privateKey,
-          recver: to,
-          value: amount,
-          onSent,
-          onSuccess,
-          onFailed
-        });
-      case 'real ETH':
-        return augur.api.sendEther({
-          _signer: loginAccount.privateKey,
+      case ETH:
+        return augur.assets.sendEther({
+          signer: loginAccount.privateKey,
           to,
           value: amount,
           from: fromAddress,
-          onSent,
-          onSuccess,
-          onFailed
+          onSent: (tx) => {
+            dispatch(addNotification({
+              id: `onSent-${tx.hash}`,
+              title: `Transfer Ether -- Pending`,
+              description: `${amount} ETH -> ${trimString(to)}`,
+              timestamp: parseInt(Date.now() / 1000, 10),
+            }));
+          },
+          onSuccess: (tx) => {
+            dispatch(addNotification({
+              id: `onSent-${tx.hash}`,
+              title: `Transfer Ether -- Success`,
+              description: `${amount} ETH -> ${trimString(to)}`,
+              timestamp: parseInt(Date.now() / 1000, 10),
+            }));
+            dispatch(updateAssets);
+          },
+          onFailed: (tx) => {
+            dispatch(addNotification({
+              id: `onSent-${tx.hash}`,
+              title: `Transfer Ether -- Failed`,
+              description: `${amount} ETH -> ${trimString(to)}`,
+              timestamp: parseInt(Date.now() / 1000, 10),
+            }));
+          }
         });
-      case 'REP':
-        return augur.api.sendReputation({
+      case REP:
+        return augur.assets.sendReputation({
           _signer: loginAccount.privateKey,
           branch: branch.id,
           recver: to,

@@ -142,7 +142,7 @@ describe(`modules/auth/actions/load-account-data.js`, () => {
       }
     },
     blockchain: {
-      balances: { rep: '2', ether: '1', realEther: 0 }
+      balances: { rep: '2', ethTokens: '1', eth: 0 }
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{

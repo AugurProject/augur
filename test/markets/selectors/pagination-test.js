@@ -5,7 +5,7 @@ import sinon from 'sinon';
 import * as mockStore from 'test/mockStore';
 import paginationAssertions from 'assertions/pagination';
 
-import { links } from 'src/selectors';
+import links from 'modules/link/selectors/links';
 
 import { PAGE_PARAM_NAME, SEARCH_PARAM_NAME, TAGS_PARAM_NAME } from 'modules/link/constants/param-names';
 
@@ -40,12 +40,8 @@ describe(`modules/markets/selectors/pagination.js`, () => {
   });
 
   const { makePaginationLink } = proxyquire('../../../src/modules/markets/selectors/pagination', {
-    '../../../selectors': proxyquire('../../../src/selectors', {
-      './selectors-raw': proxyquire('../../../src/selectors-raw', {
-        './modules/link/selectors/links': proxyquire('../../../src/modules/link/selectors/links', {
-          '../../../store': store
-        })
-      })
+    '../../link/selectors/links': proxyquire('../../../src/modules/link/selectors/links', {
+      '../../../store': store
     })
   });
 

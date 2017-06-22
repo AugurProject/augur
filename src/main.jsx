@@ -1,75 +1,78 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom';
-import { AppContainer } from 'react-hot-loader'; // eslint-disable-line import/no-extraneous-dependencies
+import { AppContainer } from 'react-hot-loader';
 
-import App from 'modules/app/components/app';
 import { initAugur } from 'modules/app/actions/init-augur';
 import { updateURL } from 'modules/link/actions/update-url';
 
-import selectors from 'src/selectors';
-
 import store from 'src/store';
-
 import { augur } from 'services/augurjs';
 
 require('core-js/fn/array/find');
 require('core-js/fn/string/starts-with');
 
-Object.defineProperty(window, 'state', { get: store.getState, enumerable: true });
-window.selectors = selectors;
-window.App = App;
-window.augur = augur;
-console.log(`
-*******************************************
-           DEVELOPMENT MODE
-  window.state      -- all state data
-  window.selectors  -- component data
-  window.augur      -- Augur API methods
-*******************************************
-`);
+// NOTE --  These are attached for convenience when built for development or debug
+if (process.env.NODE_ENV === 'development') {
+  Object.defineProperty(window, 'state', { get: store.getState, enumerable: true });
+  window.augur = augur;
+
+  console.log(`
+  *******************************************
+             DEVELOPMENT MODE
+    window.state      -- raw state data
+    window.selectors  -- processed state data
+    window.augur      -- augur.js API methods
+  -------------------------------------------
+          ADDITIONAL INFORMATION
+    augur.js version: ${augur.version}
+  *******************************************
+  `);
+}
 
 store.dispatch(updateURL(window.location.pathname + window.location.search));
-store.dispatch(initAugur());
-
-const appElement = document.getElementById('app');
-
-function render(appElement, selectors) {
-  ReactDOM.render(
-    <Provider store={store}>
-      <AppContainer>
-        <App {...selectors} />
-      </AppContainer>
-    </Provider>,
-    appElement
-  );
-}
-// store.dispatch(MarketsActions.listenToMarkets());
-
-store.subscribe(handleRender);
 
 window.onpopstate = (e) => {
   store.dispatch(updateURL(window.location.pathname + window.location.search));
 };
 
+store.dispatch(initAugur());
+
+function render(App) {
+  ReactDOM.render(
+    <Provider store={store}>
+      <AppContainer>
+        <App />
+      </AppContainer>
+    </Provider>,
+    document.getElementById('app')
+  );
+}
+
+store.subscribe(handleRender);
+
 if (module.hot) {
-  module.hot.accept();
-
-  module.hot.accept('./modules/app/components/app', () => {
-    handleRender();
-  });
-
-  module.hot.accept('./modules/app/actions/init-augur');
-  module.hot.accept('./modules/link/actions/update-url');
-  module.hot.accept('./services/augurjs');
+  module.hot.accept(
+    [
+      './selectors-raw',
+      './modules/app/container',
+    ],
+    () => {
+      handleRender();
+    }
+  );
 }
 
 function handleRender() {
-  let currentSelectors;
+  const App = require('modules/app/container').default;
+
+  // NOTE --  These are attached for convenience when built for development or debug
   if (process.env.NODE_ENV === 'development') {
-    currentSelectors = require('./selectors');
-  } else {
-    currentSelectors = selectors;
+    const selectors = require('src/selectors-raw');
+
+    window.App = App;
+    window.selectors = selectors;
   }
-  render(appElement, currentSelectors);
+
+  render(App);
 }

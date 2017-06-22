@@ -8,7 +8,7 @@ import addCommas from 'utils/add-commas-to-number';
   Produces a formatted number object used for display and calculations
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-The main function is `formatNumber`, however there are top-level functions that wrap for common cases like `formatEther`, `formatShares`, etc.
+The main function is `formatNumber`, however there are top-level functions that wrap for common cases like `formatEtherTokens`, `formatShares`, etc.
 
 A formatted number generally has three parts: the sign (+ or -), the stylized number, and a denomination (Eth, Rep, %, etc.)
 
@@ -49,6 +49,22 @@ if 1.1 + 1.4 = 2.6. If perfect precision isn't necessary, consider adding them u
 
 */
 
+export function formatEtherTokens(num, opts) {
+  return formatNumber(
+    abi.number(num),
+    {
+      decimals: constants.PRECISION.decimals,
+      decimalsRounded: constants.PRECISION.decimals,
+      denomination: ' ETH Tokens',
+      positiveSign: false,
+      zeroStyled: false,
+      blankZero: false,
+      bigUnitPostfix: false,
+      ...opts
+    }
+  );
+}
+
 export function formatEther(num, opts) {
   return formatNumber(
     abi.number(num),
@@ -65,13 +81,13 @@ export function formatEther(num, opts) {
   );
 }
 
-export function formatRealEther(num, opts) {
+export function formatEtherTokensEstimate(num, opts) {
   return formatNumber(
     abi.number(num),
     {
       decimals: constants.PRECISION.decimals,
       decimalsRounded: constants.PRECISION.decimals,
-      denomination: ' real ETH',
+      denomination: ' ETH Tokens (estimated)',
       positiveSign: false,
       zeroStyled: false,
       blankZero: false,
@@ -88,22 +104,6 @@ export function formatEtherEstimate(num, opts) {
       decimals: constants.PRECISION.decimals,
       decimalsRounded: constants.PRECISION.decimals,
       denomination: ' ETH (estimated)',
-      positiveSign: false,
-      zeroStyled: false,
-      blankZero: false,
-      bigUnitPostfix: false,
-      ...opts
-    }
-  );
-}
-
-export function formatRealEtherEstimate(num, opts) {
-  return formatNumber(
-    abi.number(num),
-    {
-      decimals: constants.PRECISION.decimals,
-      decimalsRounded: constants.PRECISION.decimals,
-      denomination: ' real ETH (estimated)',
       positiveSign: false,
       zeroStyled: false,
       blankZero: false,

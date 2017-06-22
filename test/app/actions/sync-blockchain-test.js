@@ -1,4 +1,4 @@
-import { describe, it, afterEach } from 'mocha';
+import { describe, it, after } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
@@ -6,7 +6,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import testState from 'test/testState';
 
-describe(`modules/app/actions/sync-blockchain.js`, () => {
+describe(`modules/app/actions/sync-blockchain.js`, function () { // eslint-disable-line func-names, prefer-arrow-callback
   proxyquire.noPreserveCache().noCallThru();
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
@@ -33,13 +33,13 @@ describe(`modules/app/actions/sync-blockchain.js`, () => {
     '../../app/actions/update-blockchain': UpdateBlockchain
   });
 
-  global.Date.now = sinon.stub().returns(12345);
-
-  afterEach(() => {
+  after(() => {
     store.clearActions();
+    this.clock.restore();
   });
 
-  it('rpc.block set: should sync with blockchain using rpc.block.number', () => {
+  it('rpc.block set: should sync with blockchain using rpc.block.number', (done) => {
+    this.clock = sinon.useFakeTimers(12345);
     AugurJS.rpc.block = { number: 10000, timestamp: '0x123456789' };
     const out = [{
       type: 'UPDATE_BLOCKCHAIN',
@@ -51,5 +51,7 @@ describe(`modules/app/actions/sync-blockchain.js`, () => {
     }];
     store.dispatch(action.syncBlockchain());
     assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected actions`);
+
+    done();
   });
 });

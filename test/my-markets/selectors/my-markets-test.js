@@ -6,7 +6,7 @@ import proxyquire from 'proxyquire';
 import myMarketsAssertions from 'assertions/my-markets';
 import * as mockStore from 'test/mockStore';
 
-import { formatNumber, formatEther } from 'utils/format-number';
+import { formatNumber, formatEtherTokens } from 'utils/format-number';
 import { formatDate } from 'utils/format-date';
 
 import { abi } from 'services/augurjs';
@@ -56,7 +56,7 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
       description: 'test-market-1',
       endDate: formatDate(new Date('2017/12/12')),
       volume: formatNumber(100),
-      fees: formatEther(abi.bignum('10')),
+      fees: formatEtherTokens(abi.bignum('10')),
       numberOfTrades: formatNumber(8),
       averageTradeSize: formatNumber(15),
       openVolume: formatNumber(80)
@@ -72,7 +72,7 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
       description: 'test-market-2',
       endDate: formatDate(new Date('2017/12/12')),
       volume: formatNumber(100),
-      fees: formatEther(abi.bignum('11')),
+      fees: formatEtherTokens(abi.bignum('11')),
       numberOfTrades: formatNumber(8),
       averageTradeSize: formatNumber(15),
       openVolume: formatNumber(80)

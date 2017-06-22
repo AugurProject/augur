@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import AuthLogin from 'modules/auth/components/auth-login';
 import AuthSignup from 'modules/auth/components/auth-signup';
@@ -11,7 +12,13 @@ import { AUTH_SIGNUP, AUTH_LOGIN, AUTH_IMPORT } from 'modules/app/constants/view
 
 export default class AuthView extends Component {
   static propTypes = {
-    authAirbitz: PropTypes.object
+    authNavItems: PropTypes.object.isRequired,
+    register: PropTypes.func.isRequired,
+    setupAndFundNewAccount: PropTypes.func.isRequired,
+    submitLogin: PropTypes.func.isRequired,
+    importAccount: PropTypes.func.isRequired,
+    airbitzLoginLink: PropTypes.object.isRequired,
+    airbitzOnLoad: PropTypes.object.isRequired
   }
 
   constructor(props) {
@@ -29,7 +36,7 @@ export default class AuthView extends Component {
   }
 
   componentDidMount() {
-    this.props.authAirbitz.airbitzOnLoad.onLoad();
+    this.props.airbitzOnLoad.onLoad();
   }
 
   updateSelectedNav(selectedNav) {
@@ -71,7 +78,7 @@ export default class AuthView extends Component {
             <div className="default-auth">
               <button
                 className="auth-airbitz unstyled"
-                onClick={p.authAirbitz.airbitzLoginLink.onClick}
+                onClick={p.airbitzLoginLink.onClick}
               >
                 <div>
                   <AirbitzLogoIcon />
@@ -84,13 +91,21 @@ export default class AuthView extends Component {
             </div>
           }
           {s.selectedNav === AUTH_SIGNUP &&
-            <AuthSignup {...p.authSignup} />
+            <AuthSignup
+              register={p.register}
+              setupAndFundNewAccount={p.setupAndFundNewAccount}
+            />
           }
           {s.selectedNav === AUTH_LOGIN &&
-            <AuthLogin {...p.authLogin} />
+            <AuthLogin
+              submitLogin={p.submitLogin}
+              airbitzLogin={p.airbitzLogin}
+            />
           }
           {s.selectedNav === AUTH_IMPORT &&
-            <AuthImport {...p.authImport} />
+            <AuthImport
+              importAccountFromFile={p.importAccountFromFile}
+            />
           }
         </article>
       </section>

@@ -1,16 +1,24 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { ACCOUNT, CREATE_MARKET, TRANSACTIONS, M, MARKETS, MY_POSITIONS, MY_MARKETS, MY_REPORTS, AUTHENTICATION } from 'modules/app/constants/views';
 import { shouldComponentUpdateOnStateChangeOnly } from 'utils/should-component-update-pure';
 
 // NOTE --  the respective routes are imported within the switch statement so that
-//          webpack can properly code split the views
+//          webpack can properly code split the views into independently loadable chunks
 export default class Routes extends Component {
+  static propTypes = {
+    activeView: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string
+    ]).isRequired,
+    setSidebarAllowed: PropTypes.func.isRequired
+  }
+
   constructor(props) {
     super(props);
 
     this.state = {
-      viewProps: null,
-      viewComponent: null
+      currentView: null
     };
 
     this.shouldComponentUpdate = shouldComponentUpdateOnStateChangeOnly;
@@ -26,120 +34,61 @@ export default class Routes extends Component {
   }
 
   handleRouting(p) {
-    let viewProps;
-    let viewComponent;
-    let currentView = p.activeView;
-
+    let activeView = p.activeView;
     if (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10))) {
-      currentView = MARKETS;
+      activeView = MARKETS;
     }
 
-    p.setSidebarAllowed(false);
+    if (activeView === MARKETS) {
+      p.setSidebarAllowed(true);
+    } else {
+      p.setSidebarAllowed(false);
+    }
 
-    switch (currentView) {
+    // NOTE -- I personally hate the use of a 'magic comment' inside the import args, but it is what it is
+    switch (activeView) {
       case AUTHENTICATION:
-        viewProps = {
-          authLogin: p.authLogin,
-          authAirbitz: p.authAirbitz,
-          authSignup: p.authSignup,
-          authImport: p.authImport,
-          authNavItems: p.authNavItems
-        };
-        import('modules/auth/components/auth-view').then((module) => {
-          const AuthView = module.default;
-          viewComponent = <AuthView {...viewProps} />;
-          this.setState({ viewProps, viewComponent });
-        }).catch((err) => {
-          console.error(`ERROR: Failed to load 'auth' module -- `, err);
-        });
-        break;
+        return import(/* webpackChunkName: 'auth' */ 'modules/auth/container')
+          .then(module => this.setState({ currentView: <module.default /> }))
+          .catch(err => asyncModuleLoadError('auth', err));
       case ACCOUNT:
-        import('modules/account/container').then((module) => {
-          const AccountView = module.default;
-          viewProps = {
-            authLink: (p.links && p.links.authLink) || null
-          };
-          viewComponent = <AccountView {...viewProps} />;
-          this.setState({ viewProps, viewComponent });
-        }).catch((err) => {
-          console.error(`ERROR: Failed to load 'account' module -- `, err);
-        });
-        break;
+        return import(/* webpackChunkName: 'account' */ 'modules/account/container')
+          .then(module => this.setState({ currentView: <module.default /> }))
+          .catch(err => asyncModuleLoadError('account', err));
       case TRANSACTIONS:
-        import('modules/transactions/container').then((module) => {
-          const TransactionsView = module.default;
-          viewProps = {
-            isMobile: p.isMobile
-          };
-          this.setState({ viewComponent: <TransactionsView {...viewProps} /> });
-        }).catch((err) => {
-          console.error(`ERROR: Failed to load 'transactions' module -- `, err);
-        });
-        break;
+        return import(/* webpackChunkName: 'transactions' */ 'modules/transactions/container')
+          .then(module => this.setState({ currentView: <module.default /> }))
+          .catch(err => asyncModuleLoadError('transactions', err));
       case MY_POSITIONS:
       case MY_MARKETS:
-      case MY_REPORTS: {
-        import('modules/portfolio/containers/portfolio').then((module) => {
-          const PortfolioView = module.default;
-          viewProps = {}; // Global state props handled via react-redux in the portfolio container
-          viewComponent = <PortfolioView />;
-          this.setState({ viewProps, viewComponent });
-        }).catch((err) => {
-          console.error(`ERROR: Failed to load 'portfolio' module -- `, err);
-        });
-        break;
-      }
-      case CREATE_MARKET: {
-        import('modules/create-market/container').then((module) => {
-          const CreateMarketView = module.default;
-
-          viewProps = { // Global state props handled via react-redux in the create-market container
-            footerHeight: p.footerHeight
-          };
-
-          viewComponent = <CreateMarketView {...viewProps} />;
-
-          this.setState({ viewProps, viewComponent });
-        }).catch((err) => {
-          console.error(`ERROR: Failed to load 'create-market' module -- `, err);
-        });
-        break;
-      }
-      case M: {
-        import('modules/market/container').then((module) => {
-          const MarketView = module.default;
-          const viewProps = {
-            selectedOutcome: p.selectedOutcome,
-            marketReportingNavItems: p.marketReportingNavItems
-          };
-          this.setState({ viewProps, viewComponent: <MarketView {...viewProps} /> });
-        }).catch((err) => {
-          console.error(`ERROR: Failed to load 'market' module -- `, err);
-        });
-        break;
-      }
-      case MARKETS: {
-        import('modules/markets/container').then((module) => {
-          const MarketsView = module.default;
-          this.setState({ viewComponent: <MarketsView /> });
-        }).catch((err) => {
-          console.error(`ERROR: Failed to load 'markets' module -- `, err);
-        });
-        p.setSidebarAllowed(true);
-        break;
-      }
-      default: {
-        import('modules/topics/container').then((module) => {
-          const TopicsView = module.default;
-          this.setState({ viewComponent: <TopicsView /> });
-        }).catch((err) => {
-          console.error(`ERROR: Failed to load 'topics' module -- `, err);
-        });
-      }
+      case MY_REPORTS:
+        return import(/* webpackChunkName: 'portfolio' */ 'modules/portfolio/containers/portfolio')
+          .then(module => this.setState({ currentView: <module.default /> }))
+          .catch(err => asyncModuleLoadError('portfolio', err));
+      case CREATE_MARKET:
+        return import(/* webpackChunkName: 'create-market' */ 'modules/create-market/container')
+          .then(module => this.setState({ currentView: <module.default /> }))
+          .catch(err => asyncModuleLoadError('create-market', err));
+      case M:
+        return import(/* webpackChunkName: 'market' */ 'modules/market/container')
+          .then(module => this.setState({ currentView: <module.default /> }))
+          .catch(err => asyncModuleLoadError('market', err));
+      case MARKETS:
+        return import(/* webpackChunkName: 'markets' */ 'modules/markets/container')
+          .then(module => this.setState({ currentView: <module.default /> }))
+          .catch(err => asyncModuleLoadError('markets', err));
+      default:
+        return import(/* webpackChunkName: 'topics' */ 'modules/topics/container')
+          .then(module => this.setState({ currentView: <module.default /> }))
+          .catch(err => asyncModuleLoadError('topics', err));
     }
   }
 
   render() {
-    return this.state.viewComponent;
+    return this.state.currentView;
   }
+}
+
+function asyncModuleLoadError(module, err) {
+  console.error(`ERROR: Failed to load '${module}' module -- `, err);
 }

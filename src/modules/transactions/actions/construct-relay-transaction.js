@@ -35,6 +35,8 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
 
   const { loginAccount } = getState();
 
+  console.log('method -- ', method);
+
   switch (method) {
     case 'buy': {
       const { marketsData } = getState();
@@ -308,11 +310,37 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
       let transaction;
       let notification;
       switch (method) {
+        case 'withdrawEther': {
+          const amount = abi.is_hex(p.value) ? parseFloat(p.value, 10) : abi.unfix(p.value).toNumber();
+
+          notification = {
+            id: p.transactionHash,
+            title: `Convert ETH Token to ETH - ${tx.status}`,
+            description: `Converting ${amount.toLocaleString()} ETH Token${amount === 1 ? '' : 's'} to ETH`,
+            timestamp: p.timestamp,
+            href: transactionsHref
+          };
+          transaction = dispatch(constructTransaction('withdrawEther', { ...p, ...tx }));
+          break;
+        }
+        case 'depositEther': {
+          const amount = abi.is_hex(tx.data.value) ? parseFloat(tx.data.value, 10) : abi.unfix(tx.data.value).toNumber();
+
+          notification = {
+            id: p.transactionHash,
+            title: `Convert ETH to ETH Token - ${tx.status}`,
+            description: `Converting ${amount.toLocaleString()} ETH to ETH Token${amount === 1 ? '' : 's'}`,
+            timestamp: p.timestamp,
+            href: transactionsHref
+          };
+          transaction = dispatch(constructTransaction('depositEther', { ...p, ...tx }));
+          break;
+        }
         case 'fundNewAccount': {
           notification = {
             id: p.transactionHash,
             title: `Fund Account Request - ${tx.status}`,
-            description: 'Requesting testnet ETH & REP',
+            description: 'Requesting testnet ETH, ETH Tokens, and REP',
             timestamp: p.timestamp,
             href: transactionsHref
           };
@@ -451,8 +479,8 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         case 'send':
           notification = {
             id: p.transactionHash,
-            title: `Send Ether - ${tx.status}`,
-            description: `${abi.unfix(p.value, 'string')} ETH`,
+            title: `Send Ether Tokens - ${tx.status}`,
+            description: `${abi.unfix(p.value, 'string')} ETH Tokens`,
             timestamp: p.timestamp,
             href: transactionsHref
           };
@@ -466,8 +494,8 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         case 'sendEther':
           notification = {
             id: p.transactionHash,
-            title: `Send Real Ether - ${tx.status}`,
-            description: `${abi.unfix(p.value, 'string')} Real ETH`,
+            title: `Send Ether - ${tx.status}`,
+            description: `${abi.unfix(p.value, 'string')} ETH`,
             timestamp: p.timestamp,
             href: transactionsHref
           };

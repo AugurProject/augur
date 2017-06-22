@@ -14,6 +14,9 @@ const DEFAULT_STATE = [];
 // {string} title - action that occurred, truncated in UI
 // {string} description - additional details, truncated in UI
 // {object} timestamp - UTC epoch
+//
+// Optional Properties
+//
 // {string} href - link to more context
 //
 // The `seen` + `index` params get handled behind the scenes

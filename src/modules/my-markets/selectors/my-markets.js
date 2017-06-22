@@ -5,7 +5,7 @@ import { selectLoginAccountAddress, selectMarketTradesState, selectPriceHistoryS
 import selectAllMarkets from 'modules/markets/selectors/markets-all';
 import { abi } from 'services/augurjs';
 import { ZERO } from 'modules/trade/constants/numbers';
-import { formatNumber, formatEther } from 'utils/format-number';
+import { formatNumber, formatEtherTokens } from 'utils/format-number';
 import { selectMarketLink } from 'modules/link/selectors/links';
 
 export default function () {
@@ -30,7 +30,7 @@ export const selectLoginAccountMarkets = createSelector(
     if (!authorOwnedMarkets) return [];
     const markets = [];
     authorOwnedMarkets.forEach((market) => {
-      const fees = formatEther(marketCreatorFees[market.id] || 0);
+      const fees = formatEtherTokens(marketCreatorFees[market.id] || 0);
       const numberOfTrades = formatNumber(selectNumberOfTrades(marketTrades[market.id]));
       const averageTradeSize = formatNumber(selectAverageTradeSize(priceHistory[market.id]));
       const openVolume = formatNumber(selectOpenVolume(market));

@@ -1,7 +1,7 @@
 import { cancelOrder } from 'modules/bids-asks/actions/cancel-order';
 
 export const cancelOpenOrdersInClosedMarkets = () => (dispatch) => {
-  const { openOrders } = require('../../../selectors');
+  const openOrders = require('modules/user-open-orders/selectors/open-orders');
   if (openOrders && openOrders.length) {
     const numMarketsWithOpenOrders = openOrders.length;
     for (let i = 0; i < numMarketsWithOpenOrders; ++i) {
