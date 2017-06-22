@@ -18,6 +18,7 @@ describe('modules/auth/actions/transfer-funds.js', () => {
   afterEach(() => {
     transferFundsReqireAPI.__ResetDependency__('augur');
     transferFundsReqireAPI.__ResetDependency__('updateAssets');
+    transferFundsReqireAPI.__ResetDependency__('addNotification');
   });
 
   test({
@@ -93,7 +94,7 @@ describe('modules/auth/actions/transfer-funds.js', () => {
   });
 
   test({
-    description: `should dispatch the 'updateAssets' method from the 'onSuccess' callback`,
+    description: `should dispatch the 'updateAssets' and 'addNotification' method from the 'onSuccess' callback of 'sendEther`,
     state: {
       loginAccount: {
         address: '0xtest'
@@ -102,6 +103,46 @@ describe('modules/auth/actions/transfer-funds.js', () => {
     assertions: (done, store) => {
       const assets = {
         sendEther: (options) => {
+          options.onSuccess({ hash: '0xtest' });
+        }
+      };
+
+      const updateAssets = sinon.stub().returns({
+        type: 'updateAssets'
+      });
+
+      const addNotification = sinon.stub().returns({
+        type: 'addNotification'
+      });
+
+      transferFundsReqireAPI.__Rewire__('augur', {
+        assets
+      });
+      transferFundsReqireAPI.__Rewire__('updateAssets', updateAssets);
+      transferFundsReqireAPI.__Rewire__('addNotification', addNotification);
+
+      store.dispatch(transferFunds(10, ETH, '0xtest2'));
+
+      assert(addNotification.calledOnce, `didn't call 'addNotifications' once as expected`);
+      assert(updateAssets.calledOnce, `didn't call 'updateAssets' once as expected`);
+
+      done();
+    }
+  });
+
+  test({
+    description: `should dispatch the 'updateAssets' method from the 'onSuccess' callback of 'sendReputation`,
+    state: {
+      loginAccount: {
+        address: '0xtest'
+      },
+      branch: {
+        id: '0xbranch'
+      }
+    },
+    assertions: (done, store) => {
+      const assets = {
+        sendReputation: (options) => {
           options.onSuccess();
         }
       };
@@ -115,7 +156,7 @@ describe('modules/auth/actions/transfer-funds.js', () => {
       });
       transferFundsReqireAPI.__Rewire__('updateAssets', updateAssets);
 
-      store.dispatch(transferFunds(10, ETH, '0xtest2'));
+      store.dispatch(transferFunds(10, REP, '0xtest2'));
 
       assert(updateAssets.calledOnce, `didn't call 'updateAssets' once as expected`);
 

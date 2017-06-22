@@ -24,7 +24,7 @@ export function transferFunds(amount, currency, toAddress) {
           to,
           value: amount,
           from: fromAddress,
-          onSent: tx => {
+          onSent: (tx) => {
             dispatch(addNotification({
               id: `onSent-${tx.hash}`,
               title: `Transfer Ether -- Pending`,
@@ -32,21 +32,22 @@ export function transferFunds(amount, currency, toAddress) {
               timestamp: parseInt(Date.now() / 1000, 10),
             }));
           },
-          onSuccess: tx => {
+          onSuccess: (tx) => {
             dispatch(addNotification({
               id: `onSent-${tx.hash}`,
               title: `Transfer Ether -- Success`,
               description: `${amount} ETH -> ${trimString(to)}`,
               timestamp: parseInt(Date.now() / 1000, 10),
-          }));
+            }));
+            dispatch(updateAssets);
           },
-          onFailed: tx => {
+          onFailed: (tx) => {
             dispatch(addNotification({
               id: `onSent-${tx.hash}`,
               title: `Transfer Ether -- Failed`,
               description: `${amount} ETH -> ${trimString(to)}`,
               timestamp: parseInt(Date.now() / 1000, 10),
-          }));
+            }));
           }
         });
       case REP:
