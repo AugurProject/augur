@@ -88,11 +88,11 @@ export const selectAuthLink = memoize((authType, alsoLogout, dispatch) => {
   return {
     href,
     onClick: () => {
+      dispatch(updateURL(href));
+
       if (alsoLogout) {
         dispatch(logout());
       }
-
-      dispatch(updateURL(href));
     }
   };
 }, { max: 1 });

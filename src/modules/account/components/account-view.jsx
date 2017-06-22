@@ -40,39 +40,40 @@ export default class AccountView extends Component {
 
     return (
       <section id="account_view">
-        <article
-          className="account-content"
-        >
-          <AccountDetails
-            name={loginAccount.name}
-            updateAccountName={p.updateAccountName}
-            address={loginAccount.address}
-            trimmedAddress={loginAccount.trimmedAddress}
-            signOut={p.authLink}
-            airbitzAccount={loginAccount.airbitzAccount}
-            manageAirbitzAccount={p.manageAirbitzAccount}
-          />
-          <ComponentNav
-            fullWidth
-            navItems={ACCOUNT_NAV_ITEMS}
-            selectedNav={s.selectedNav}
-            updateSelectedNav={this.updateSelectedNav}
-          />
-          {s.selectedNav === ACCOUNT_DEPOSIT &&
+        {loginAccount.address &&
+          <article
+            className="account-content"
+          >
+            <AccountDetails
+              name={loginAccount.name}
+              updateAccountName={p.updateAccountName}
+              address={loginAccount.address}
+              trimmedAddress={loginAccount.trimmedAddress}
+              signOut={p.authLink}
+              airbitzAccount={loginAccount.airbitzAccount}
+              manageAirbitzAccount={p.manageAirbitzAccount}
+            />
+            <ComponentNav
+              fullWidth
+              navItems={ACCOUNT_NAV_ITEMS}
+              selectedNav={s.selectedNav}
+              updateSelectedNav={this.updateSelectedNav}
+            />
+            {s.selectedNav === ACCOUNT_DEPOSIT &&
             <AccountDeposit
               address={loginAccount.address}
               isMobile={p.isMobile}
             />
-          }
-          {s.selectedNav === ACCOUNT_TRANSFER &&
+            }
+            {s.selectedNav === ACCOUNT_TRANSFER &&
             <AccountTransfer
               ethTokens={loginAccount.ethTokens}
               eth={loginAccount.eth}
               rep={loginAccount.rep}
               transferFunds={p.transferFunds}
             />
-          }
-          {s.selectedNav === ACCOUNT_EXPORT &&
+            }
+            {s.selectedNav === ACCOUNT_EXPORT &&
             <AccountExport
               airbitzAccount={loginAccount.airbitzAccount}
               stringifiedKeystore={loginAccount.stringifiedKeystore}
@@ -83,8 +84,9 @@ export default class AccountView extends Component {
               downloadAccountFileName={loginAccount.downloadAccountFileName}
               isMobile={p.isMobile}
             />
-          }
-        </article>
+            }
+          </article>
+        }
       </section>
     );
   }
