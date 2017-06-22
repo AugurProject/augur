@@ -1,7 +1,6 @@
 import { abi, augur } from 'services/augurjs';
 import { updateAssets } from 'modules/auth/actions/update-assets';
 import { addNotification } from 'modules/notifications/actions/update-notifications';
-import { selectTransactionsLink } from 'modules/link/selectors/links';
 
 import trimString from 'utils/trim-string';
 
@@ -26,7 +25,6 @@ export function transferFunds(amount, currency, toAddress) {
           value: amount,
           from: fromAddress,
           onSent: tx => {
-            console.log('sent -- ', tx);
             dispatch(addNotification({
               id: `onSent-${tx.hash}`,
               title: `Transfer Ether -- Pending`,
@@ -35,8 +33,6 @@ export function transferFunds(amount, currency, toAddress) {
             }));
           },
           onSuccess: tx => {
-            console.log('success -- ', tx);
-
             dispatch(addNotification({
               id: `onSent-${tx.hash}`,
               title: `Transfer Ether -- Success`,
@@ -45,7 +41,6 @@ export function transferFunds(amount, currency, toAddress) {
           }));
           },
           onFailed: tx => {
-            console.log('failed -- ', tx);
             dispatch(addNotification({
               id: `onSent-${tx.hash}`,
               title: `Transfer Ether -- Failed`,
