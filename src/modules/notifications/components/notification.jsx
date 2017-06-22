@@ -90,11 +90,11 @@ export default class Notification extends Component {
         className={classNames('notification', { 'notification-unseen': !p.seen })}
       >
         <button
-          className={classNames('unstyled notification-details', { navigational: !!p.onClick })}
+          className={classNames('unstyled notification-details', { navigational: !!p.href })}
           onClick={(e) => {
             e.stopPropagation();
 
-            if (p.onClick) {
+            if (p.href && p.onClick) {
               p.onClick(p.href);
               p.toggleNotifications();
             }

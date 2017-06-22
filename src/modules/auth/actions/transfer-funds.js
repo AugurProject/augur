@@ -1,5 +1,9 @@
 import { abi, augur } from 'services/augurjs';
 import { updateAssets } from 'modules/auth/actions/update-assets';
+import { addNotification } from 'modules/notifications/actions/update-notifications';
+import { selectTransactionsLink } from 'modules/link/selectors/links';
+
+import trimString from 'utils/trim-string';
 
 import { ETH, REP } from 'modules/account/constants/asset-types';
 
@@ -21,9 +25,34 @@ export function transferFunds(amount, currency, toAddress) {
           to,
           value: amount,
           from: fromAddress,
-          onSent,
-          onSuccess,
-          onFailed
+          onSent: tx => {
+            console.log('sent -- ', tx);
+            dispatch(addNotification({
+              id: `onSent-${tx.hash}`,
+              title: `Transfer Ether -- Pending`,
+              description: `${amount} ETH -> ${trimString(to)}`,
+              timestamp: parseInt(Date.now() / 1000, 10),
+            }));
+          },
+          onSuccess: tx => {
+            console.log('success -- ', tx);
+
+            dispatch(addNotification({
+              id: `onSent-${tx.hash}`,
+              title: `Transfer Ether -- Success`,
+              description: `${amount} ETH -> ${trimString(to)}`,
+              timestamp: parseInt(Date.now() / 1000, 10),
+          }));
+          },
+          onFailed: tx => {
+            console.log('failed -- ', tx);
+            dispatch(addNotification({
+              id: `onSent-${tx.hash}`,
+              title: `Transfer Ether -- Failed`,
+              description: `${amount} ETH -> ${trimString(to)}`,
+              timestamp: parseInt(Date.now() / 1000, 10),
+          }));
+          }
         });
       case REP:
         return augur.assets.sendReputation({
