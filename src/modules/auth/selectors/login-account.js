@@ -21,7 +21,7 @@ export const selectLoginAccount = createSelector(
 
     return {
       ...loginAccount,
-      ...generateDownloadAccountLink(loginAccount.address, keystore, loginAccount.loginID, getValue(loginAccount, 'privateKey.data') ? loginAccount.privateKey.data : loginAccount.privateKey),
+      ...generateDownloadAccountLink(loginAccount.address, keystore, getValue(loginAccount, 'privateKey.data') ? loginAccount.privateKey.data : loginAccount.privateKey), // Ternary due to differences in the way data is stored between Airbitz + local -- TODO -- unify
       trimmedLoginID,
       trimmedAddress,
       linkText,

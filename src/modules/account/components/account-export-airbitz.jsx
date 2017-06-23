@@ -106,7 +106,7 @@ export default class AccountExportAirbitz extends Component {
         this.setState({
           generatingKeyFile: false,
           keyFileGenerated: true,
-          ...generateDownloadAccountLink(keystore.address, keystore, null, this.props.privateKey)
+          ...generateDownloadAccountLink(keystore.address, keystore, this.props.privateKey)
         });
       }
     );

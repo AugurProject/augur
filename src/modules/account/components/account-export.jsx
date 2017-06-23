@@ -12,8 +12,6 @@ export default class AccountExport extends Component {
   static propTypes = {
     isMobile: PropTypes.bool.isRequired,
     privateKey: PropTypes.string.isRequired,
-    downloadLoginIDDataString: PropTypes.string.isRequired,
-    downloadLoginIDFileName: PropTypes.string.isRequired,
     downloadAccountDataString: PropTypes.string.isRequired,
     downloadAccountFileName: PropTypes.string.isRequired,
     airbitzAccount: PropTypes.object,
@@ -74,13 +72,6 @@ export default class AccountExport extends Component {
                 download={p.downloadAccountFileName}
               >
                 Download Key File
-              </Link>
-              <Link
-                className="button"
-                href={p.downloadLoginIDDataString}
-                download={p.downloadLoginIDFileName}
-              >
-                Download Login ID
               </Link>
             </div>
           }
