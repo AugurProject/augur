@@ -135,8 +135,8 @@ export default class AccountTransfer extends Component {
     return (
       <article className="account-transfer account-sub-view">
         <aside>
-          <h3>Tranfer Funds</h3>
-          <p>Use this form to send your ETH Tokens, ETH, and REP to another address.</p>
+          <h3>Transfer Funds</h3>
+          <p>Use this form to send your ETH or REP to another address.</p>
         </aside>
         <div className="account-actions">
           <form

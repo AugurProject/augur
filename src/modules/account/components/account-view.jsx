@@ -45,7 +45,7 @@ export default class AccountView extends Component {
             className="account-content"
           >
             <AccountDetails
-              name={loginAccount.name}
+              name={loginAccount.accountName}
               updateAccountName={p.updateAccountName}
               address={loginAccount.address}
               trimmedAddress={loginAccount.trimmedAddress}
@@ -78,8 +78,6 @@ export default class AccountView extends Component {
               airbitzAccount={loginAccount.airbitzAccount}
               stringifiedKeystore={loginAccount.stringifiedKeystore}
               privateKey={loginAccount.accountPrivateKey}
-              downloadLoginIDDataString={loginAccount.downloadLoginIDDataString}
-              downloadLoginIDFileName={loginAccount.downloadLoginIDFileName}
               downloadAccountDataString={loginAccount.downloadAccountDataString}
               downloadAccountFileName={loginAccount.downloadAccountFileName}
               isMobile={p.isMobile}

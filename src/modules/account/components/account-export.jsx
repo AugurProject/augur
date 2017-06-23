@@ -12,8 +12,6 @@ export default class AccountExport extends Component {
   static propTypes = {
     isMobile: PropTypes.bool.isRequired,
     privateKey: PropTypes.string.isRequired,
-    downloadLoginIDDataString: PropTypes.string.isRequired,
-    downloadLoginIDFileName: PropTypes.string.isRequired,
     downloadAccountDataString: PropTypes.string.isRequired,
     downloadAccountFileName: PropTypes.string.isRequired,
     airbitzAccount: PropTypes.object,
@@ -53,7 +51,7 @@ export default class AccountExport extends Component {
       <article className="account-export account-sub-view">
         <aside>
           <h4>Export Key File</h4>
-          <p>Use either the QR code or download link save a copy of the key file for import into a wallet.</p>
+          <p>Use either the QR code or download link to save a copy of the key file for import into a wallet.</p>
           <p className="notice">NOTE: Augur does not store any user account information and therefore has no ability to restore or recover lost accounts.</p>
           <p className="warning">Do NOT share your downloaded account key file or QR code with anyone as your funds could be stolen.</p>
         </aside>
@@ -74,13 +72,6 @@ export default class AccountExport extends Component {
                 download={p.downloadAccountFileName}
               >
                 Download Key File
-              </Link>
-              <Link
-                className="button"
-                href={p.downloadLoginIDDataString}
-                download={p.downloadLoginIDFileName}
-              >
-                Download Login ID
               </Link>
             </div>
           }
