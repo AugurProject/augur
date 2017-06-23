@@ -4,7 +4,6 @@ import configureMockStore from 'redux-mock-store';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import thunk from 'redux-thunk';
-import { base58Encode } from '../../../src/utils/base-58';
 
 describe(`modules/auth/actions/update-login-account.js`, () => {
   proxyquire.noPreserveCache();
@@ -22,19 +21,6 @@ describe(`modules/auth/actions/update-login-account.js`, () => {
       store.clearActions();
     });
   };
-  test({
-    description: 'should fire a UPDATE_LOGIN_ACCOUNT action type with data when changing names',
-    state: { loginAccount: { address: '0xb0b', name: 'hello' } },
-    method: 'changeAccountName',
-    param: 'world',
-    assertions: (actions) => {
-      const output = [{
-        type: 'UPDATE_LOGIN_ACCOUNT',
-        data: { name: 'world', loginID: base58Encode({ address: '0xb0b', name: 'world' }) }
-      }];
-      assert.deepEqual(actions, output, `The action fired incorrectly`);
-    }
-  });
   test({
     description: 'should fire a UPDATE_LOGIN_ACCOUNT action type with data',
     state: {},

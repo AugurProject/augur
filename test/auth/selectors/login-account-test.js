@@ -60,13 +60,12 @@ describe(`modules/auth/selectors/login-account.js`, () => {
       description: `should return the expected object when user is unlogged`,
       assertions: (done) => {
         const loginAccount = {};
+        const accountName = null;
 
-        const actual = selectLoginAccount.resultFunc(loginAccount);
+        const actual = selectLoginAccount.resultFunc(loginAccount, accountName);
 
         const expected = {
-          trimmedLoginID: null,
-          trimmedAddress: null,
-          linkText: null,
+          accountName: null,
           rep: formatRep(undefined),
           eth: formatEther(undefined),
           ethTokens: formatEtherTokens(undefined)
@@ -89,15 +88,14 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           ethTokens: '11',
           rep: '12'
         };
+        const accountName = 'testing';
 
-        const actual = selectLoginAccount.resultFunc(loginAccount);
+        const actual = selectLoginAccount.resultFunc(loginAccount, accountName);
 
         const expected = {
           address: '0xAccountAddress',
           loginID: '123ThisIsALoginID',
-          trimmedLoginID: '123T...inID',
-          trimmedAddress: '0xAc...ress',
-          linkText: '123T...inID',
+          accountName: 'testing',
           rep: formatRep(12, { zeroStyled: false, decimalsRounded: 1 }),
           eth: formatEther(10, { zeroStyled: false, decimalsRounded: 2 }),
           ethTokens: formatEtherTokens(11, { zeroStyled: false, decimalsRounded: 2 })
@@ -119,18 +117,15 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           eth: '10',
           ethTokens: '11',
           rep: '12',
-          name: 'test-user'
         };
+        const accountName = 'testing';
 
-        const actual = selectLoginAccount.resultFunc(loginAccount);
+        const actual = selectLoginAccount.resultFunc(loginAccount, accountName);
 
         const expected = {
           address: '0xAccountAddress',
           loginID: '123ThisIsALoginID',
-          trimmedLoginID: '123T...inID',
-          trimmedAddress: '0xAc...ress',
-          linkText: 'test-user',
-          name: 'test-user',
+          accountName: 'testing',
           rep: formatRep(12, { zeroStyled: false, decimalsRounded: 1 }),
           eth: formatEther(10, { zeroStyled: false, decimalsRounded: 2 }),
           ethTokens: formatEtherTokens(11, { zeroStyled: false, decimalsRounded: 2 })
@@ -154,15 +149,14 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           rep: '12',
           isUnlocked: true
         };
+        const accountName = 'testing';
 
-        const actual = selectLoginAccount.resultFunc(loginAccount);
+        const actual = selectLoginAccount.resultFunc(loginAccount, accountName);
 
         const expected = {
           address: '0xAccountAddress',
           loginID: '123ThisIsALoginID',
-          trimmedLoginID: '123T...inID',
-          trimmedAddress: '0xAc...ress',
-          linkText: '0xAc...ress',
+          accountName: 'testing',
           isUnlocked: true,
           rep: formatRep(12, { zeroStyled: false, decimalsRounded: 1 }),
           eth: formatEther(10, { zeroStyled: false, decimalsRounded: 2 }),
@@ -188,16 +182,15 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           rep: '12',
           isUnlocked: true
         };
+        const accountName = 'testing';
 
-        const actual = selectLoginAccount.resultFunc(loginAccount);
+        const actual = selectLoginAccount.resultFunc(loginAccount, accountName);
 
         const expected = {
           airbitzAccount: {},
           address: '0xAccountAddress',
           loginID: '123ThisIsALoginID',
-          trimmedLoginID: '123T...inID',
-          trimmedAddress: '0xAc...ress',
-          linkText: '0xAc...ress',
+          accountName: 'testing',
           isUnlocked: true,
           rep: formatRep(12, { zeroStyled: false, decimalsRounded: 1 }),
           eth: formatEther(10, { zeroStyled: false, decimalsRounded: 2 }),
