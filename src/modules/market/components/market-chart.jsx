@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Highcharts from 'highcharts';
 import noData from 'highcharts/modules/no-data-to-display';
 
@@ -50,7 +51,7 @@ export default class MarketChart extends Component {
         enabled: true
       },
       tooltip: {
-        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y} ETH</b><br/>',
+        pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y} ETH Tokens</b><br/>',
         valueDecimals: 2
       },
       credits: {

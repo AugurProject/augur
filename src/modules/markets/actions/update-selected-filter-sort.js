@@ -6,7 +6,7 @@ export function updateSelectedFilterSort(selectedFilterSort) {
   return (dispatch, getState) => {
     dispatch({ type: UPDATE_SELECTED_FILTER_SORT, selectedFilterSort });
 
-    const { links } = require('../../../selectors');
-    dispatch(updateURL(links.marketsLink.href));
+    const links = require('modules/link/selectors/links');
+    dispatch(updateURL(links.default().marketsLink.href));
   };
 }

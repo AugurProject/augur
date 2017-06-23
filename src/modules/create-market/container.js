@@ -15,7 +15,8 @@ import getValue from 'utils/get-value';
 const mapStateToProps = state => ({
   branch: state.branch,
   availableEth: getValue(state, 'loginAccount.ether'),
-  newMarket: state.newMarket
+  newMarket: state.newMarket,
+  footerHeight: state.footerHeight
 });
 
 const mapDispatchToProps = dispatch => ({

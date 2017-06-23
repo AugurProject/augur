@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import MarketHeader from 'modules/market/components/market-header';
 import ComponentNav from 'modules/common/components/component-nav';

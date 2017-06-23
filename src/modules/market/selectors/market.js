@@ -21,7 +21,7 @@ This is true for all selectors, but especially important for this one.
 */
 
 import memoize from 'memoizee';
-import { formatShares, formatEther, formatPercent, formatNumber } from 'utils/format-number';
+import { formatShares, formatEtherTokens, formatPercent, formatNumber } from 'utils/format-number';
 import { formatDate } from 'utils/format-date';
 import { isMarketDataOpen, isMarketDataExpired } from 'utils/is-market-data-open';
 
@@ -229,7 +229,7 @@ export function assembleMarket(
           ...outcomeData,
           id: outcomeID,
           marketID,
-          lastPrice: formatEther(outcomeData.price || 0, { positiveSign: false })
+          lastPrice: formatEtherTokens(outcomeData.price || 0, { positiveSign: false })
         };
 
         if (market.isScalar) {

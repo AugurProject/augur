@@ -1,7 +1,8 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Hammer from 'hammerjs';
 
-import Nav from 'modules/app/components/nav';
+import Nav from 'modules/nav/container';
 
 import debounce from 'utils/debounce';
 
@@ -27,12 +28,12 @@ export default class Footer extends Component {
     this.attachTouchHandler();
   }
 
-  componentDidUpdate(pP, pS) {
-    if ((pP.logged !== this.props.logged) || (pP.isFooterCollapsed !== this.props.isFooterCollapsed)) {
+  componentDidUpdate(prevProps, prevState) {
+    if ((prevProps.isLogged !== this.props.isLogged) || (prevProps.isFooterCollapsed !== this.props.isFooterCollapsed)) {
       this.slideFooter();
     }
 
-    if (pS.footerHeight !== this.state.footerHeight && this.props.updateFooterHeight) {
+    if (prevState.footerHeight !== this.state.footerHeight && this.props.updateFooterHeight) {
       this.props.updateFooterHeight(this.state.footerHeight);
     }
   }
@@ -133,6 +134,6 @@ export default class Footer extends Component {
 Footer.propTypes = {
   updateFooterHeight: PropTypes.func,
   updateIsFooterCollapsed: PropTypes.func,
-  logged: PropTypes.string,
+  isLogged: PropTypes.bool,
   isFooterCollapsed: PropTypes.bool
 };

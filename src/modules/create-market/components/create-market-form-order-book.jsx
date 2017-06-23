@@ -1,6 +1,7 @@
 /* eslint react/no-array-index-key: 0 */  // due to potential for dup orders
 
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 import Highcharts from 'highcharts';

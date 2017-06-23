@@ -44,8 +44,8 @@ describe(`store.js`, () => {
 
     assert.isOk(state.auth, 'auth is not defined');
     assert.isObject(state.auth, 'auth is not an object');
-    assert.deepPropertyVal(state, 'auth.selectedAuthType', 'register', 'auth.selectedAuthType is not "register"');
-    assert.deepPropertyVal(state, 'auth.err', null, 'auth.err is not null');
+    assert.deepPropertyVal(state.auth, 'selectedAuthType', 'register', 'auth.selectedAuthType is not "register"');
+    assert.deepPropertyVal(state.auth, 'err', null, 'auth.err is not null');
 
     assert.isOk(state.loginAccount, 'loginAccount is not defined');
     assert.isObject(state.loginAccount, 'loginAccount is not an object');
@@ -76,9 +76,9 @@ describe(`store.js`, () => {
     assert.isOk(state.selectedFilterSort, 'selectedSort is not defined');
     assert.isObject(state.selectedFilterSort, 'selectedSort is not an Object');
     assert.isOk(state.selectedFilterSort.isDesc, 'selectedSort.isDesc is not true');
-    assert.deepPropertyVal(state, 'selectedFilterSort.type', 'open', `selectedFilterSort.type doesn't equal 'open'`);
-    assert.deepPropertyVal(state, 'selectedFilterSort.sort', 'volume', `sectectedFilterSort.sort doesn't equal 'volume'`);
-    assert.deepPropertyVal(state, 'selectedFilterSort.isDesc', true, `selectedFilterSort.isDesc doesn't equal 'true'`);
+    assert.deepPropertyVal(state.selectedFilterSort, 'type', 'open', `selectedFilterSort.type doesn't equal 'open'`);
+    assert.deepPropertyVal(state.selectedFilterSort, 'sort', 'volume', `sectectedFilterSort.sort doesn't equal 'volume'`);
+    assert.deepPropertyVal(state.selectedFilterSort, 'isDesc', true, `selectedFilterSort.isDesc doesn't equal 'true'`);
 
     assert.isOk(state.tradesInProgress, 'tradesInProgress is not defined');
     assert.isObject(state.tradesInProgress, 'tradesInProgress is not an object');

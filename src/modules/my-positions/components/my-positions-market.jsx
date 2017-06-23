@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import ComponentNav from 'modules/common/components/component-nav';
 import ValueDenomination from 'modules/common/components/value-denomination';

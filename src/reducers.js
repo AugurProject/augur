@@ -6,8 +6,13 @@ import branch from 'modules/branch/reducers/branch';
 import connection from 'modules/app/reducers/connection';
 import url from 'modules/link/reducers/url';
 
+import isMobile from 'modules/app/reducers/is-mobile';
+import headerHeight from 'modules/app/reducers/header-height';
+import footerHeight from 'modules/app/reducers/footer-height';
+
 import auth from 'modules/auth/reducers/auth';
 import loginAccount from 'modules/auth/reducers/login-account';
+import accountName from 'modules/account/reducers/account-name';
 import activeView from 'modules/app/reducers/active-view';
 
 import newMarket from 'modules/create-market/reducers/new-market';
@@ -72,8 +77,13 @@ export function createReducer() {
     connection,
     url,
 
+    isMobile,
+    headerHeight,
+    footerHeight,
+
     auth,
     loginAccount,
+    accountName,
     activeView,
 
     newMarket,

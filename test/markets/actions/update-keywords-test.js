@@ -19,12 +19,8 @@ describe(`modules/markets/actions/update-keywords.js`, () => {
 
   const action = proxyquire('../../../src/modules/markets/actions/update-keywords', {
     '../../link/actions/update-url': mockUpdateURL,
-    '../../../selectors': proxyquire('../../../src/selectors', {
-      './selectors-raw': proxyquire('../../../src/selectors-raw', {
-        './modules/link/selectors/links': proxyquire('../../../src/modules/link/selectors/links', {
-          '../../../store': store
-        })
-      })
+    '../../link/selectors/links': proxyquire('../../../src/modules/link/selectors/links', {
+      '../../../store': store
     })
   });
 

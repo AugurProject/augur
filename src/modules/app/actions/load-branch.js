@@ -5,8 +5,8 @@ import getReportingCycle from 'modules/branch/selectors/reporting-cycle';
 import { syncBlockchain } from 'modules/app/actions/sync-blockchain';
 import { listenToUpdates } from 'modules/app/actions/listen-to-updates';
 import { loadTopics } from 'modules/topics/actions/load-topics';
-import { loadFullMarket } from 'modules/market/actions/load-full-market';
 import { clearMarketsData } from 'modules/markets/actions/update-markets-data';
+import { updateURL } from 'modules/link/actions/update-url';
 
 export const loadBranch = branchID => (dispatch, getState) => {
   dispatch(clearMarketsData());
@@ -14,15 +14,12 @@ export const loadBranch = branchID => (dispatch, getState) => {
     if (err) return console.log('ERROR loadBranch', err);
     dispatch(updateBranch(branch));
     dispatch(updateBranch(getReportingCycle()));
-    const { selectedMarketID } = getState();
-    if (selectedMarketID !== null) {
-      dispatch(loadFullMarket(selectedMarketID));
-    }
-    dispatch(loadTopics(branchID));
     dispatch(syncBlockchain());
     dispatch(syncBranch((err) => {
       if (err) console.error('syncBranch:', err);
       dispatch(listenToUpdates());
     }));
+    dispatch(loadTopics(branchID));
+    dispatch(updateURL(window.location.pathname + window.location.search, null, branchID));
   });
 };

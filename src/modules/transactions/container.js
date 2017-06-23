@@ -1,8 +1,9 @@
 import { connect } from 'react-redux';
-import { selectTransactions } from 'modules/transactions/selectors/transactions';
-import { selectLoginAccount } from 'modules/account/selectors/login-account';
-import { loadAccountHistory } from 'modules/auth/actions/load-account-history';
 import TransactionsView from 'modules/transactions/components/transactions-view';
+
+import { selectTransactions } from 'modules/transactions/selectors/transactions';
+import { selectLoginAccount } from 'modules/auth/selectors/login-account';
+import { loadAccountHistory } from 'modules/auth/actions/load-account-history';
 
 const mapStateToProps = state => ({
   branch: state.branch,
@@ -10,7 +11,8 @@ const mapStateToProps = state => ({
   loginAccount: selectLoginAccount(state),
   transactions: selectTransactions(state),
   transactionsLoading: state.transactionsLoading,
-  hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber
+  hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber,
+  isMobile: state.isMobile
 });
 
 const mapDispatchToProps = dispatch => ({

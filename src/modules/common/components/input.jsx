@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 
@@ -7,7 +8,7 @@ import debounce from 'utils/debounce';
 export default class Input extends Component {
   // TODO -- Prop Validations
   static propTypes = {
-    // type: PropTypes.string,
+    type: PropTypes.string,
     // className: PropTypes.string,
     value: PropTypes.any,
     max: PropTypes.any,
@@ -15,11 +16,11 @@ export default class Input extends Component {
     // isMultiline: PropTypes.bool,
     isClearable: PropTypes.bool,
     debounceMS: PropTypes.number,
-    onChange: PropTypes.func,
+    onChange: PropTypes.func.isRequired,
+    updateValue: PropTypes.func,
     onBlur: PropTypes.func,
     isIncrementable: PropTypes.bool,
     incrementAmount: PropTypes.number,
-    updateValue: PropTypes.func,
     canToggleVisibility: PropTypes.bool,
     shouldMatchValue: PropTypes.bool,
     comparisonValue: PropTypes.string,
@@ -29,12 +30,12 @@ export default class Input extends Component {
   constructor(props) {
     super(props);
 
-    this.finalDebounceMS = this.props.debounceMS > 0 || this.props.debounceMS === 0 ? this.props.debounceMS : 500;
     this.state = {
       value: this.props.value || '',
       timeoutID: '',
       isHiddenContentVisible: false
     };
+
     this.handleOnChange = this.handleOnChange.bind(this);
     this.handleOnBlur = this.handleOnBlur.bind(this);
     this.handleClear = this.handleClear.bind(this);
@@ -60,24 +61,13 @@ export default class Input extends Component {
 
   handleOnChange = (e) => {
     const newValue = e.target.value;
-    if (this.finalDebounceMS) {
-      clearTimeout(this.state.timeoutID);
-      if (newValue !== this.props.value) {
-        this.setState({ timeoutID: setTimeout(() => this.props.onChange(newValue), this.finalDebounceMS) });
-      }
-    } else if (newValue !== this.props.value) {
-      this.props.onChange(newValue);
-    }
+
+    this.props.onChange(newValue);
     this.setState({ value: newValue });
   };
 
   handleOnBlur = () => {
-    if (this.finalDebounceMS) {
-      clearTimeout(this.state.timeoutID);
-      if (this.state.value !== this.props.value) {
-        this.props.onChange(this.state.value);
-      }
-    }
+    this.props.onChange(this.state.value);
     this.props.onBlur && this.props.onBlur();
   };
 

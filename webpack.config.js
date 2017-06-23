@@ -35,6 +35,7 @@ let config = {
   },
   output: {
     filename: '[name].[chunkhash].js',
+    chunkFilename: '[name].[chunkhash].js',
     path: PATHS.BUILD,
     publicPath: '/'
   },
@@ -154,7 +155,7 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
     entry: {
       main: [
         'react-hot-loader/patch',
-        'webpack-hot-middleware/client',
+        'webpack-hot-middleware/client?reload=true',
         `${PATHS.APP}/main`
       ]
     },

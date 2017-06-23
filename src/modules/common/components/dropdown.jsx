@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const Dropdown = p => (
   <div className="dropdown">
@@ -19,11 +20,10 @@ const Dropdown = p => (
   </div>
 );
 
-// TODO -- Prop Validations
-// Dropdown.propTypes = {
-// 	default: PropTypes.string,
-// 	options: PropTypes.array,
-// 	onChange: PropTypes.func
-// };
+Dropdown.propTypes = {
+  onChange: PropTypes.func.isRequired,
+  default: PropTypes.string.isRequired,
+  options: PropTypes.array.isRequired
+};
 
 export default Dropdown;

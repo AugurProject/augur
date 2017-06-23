@@ -1,6 +1,7 @@
 /* eslint jsx-a11y/no-static-element-interactions: 0 */  // Needed to address cross-browser handling of on-click events + resultant sizing
 
-import React, { PropTypes } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 
 import Datetime from 'react-datetime';
 

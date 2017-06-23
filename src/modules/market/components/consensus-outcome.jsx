@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import ReportEthics from 'modules/my-reports/components/report-ethics';
 import ValueDenomination from 'modules/common/components/value-denomination';
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
@@ -18,12 +19,12 @@ const ConsensusOutcome = p => (
 );
 
 ConsensusOutcome.propTypes = {
-  type: React.PropTypes.string,
-  isIndeterminate: React.PropTypes.bool,
-  isUnethical: React.PropTypes.bool,
-  outcomeName: React.PropTypes.string,
-  outcomeID: React.PropTypes.string,
-  percentCorrect: React.PropTypes.object
+  type: PropTypes.string,
+  isIndeterminate: PropTypes.bool,
+  isUnethical: PropTypes.bool,
+  outcomeName: PropTypes.string,
+  outcomeID: PropTypes.string,
+  percentCorrect: PropTypes.object
 };
 
 export default ConsensusOutcome;

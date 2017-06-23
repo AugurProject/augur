@@ -1,16 +1,26 @@
 import { connect } from 'react-redux';
-import { changeAccountName } from 'modules/auth/actions/update-login-account';
-import { transferFunds } from 'modules/auth/actions/transfer-funds';
-import { selectLoginAccount } from 'modules/account/selectors/login-account';
 import AccountView from 'modules/account/components/account-view';
 
+import { transferFunds } from 'modules/auth/actions/transfer-funds';
+import { updateAccountName } from 'modules/account/actions/update-account-name';
+
+import links from 'modules/link/selectors/links';
+
+import { selectLoginAccount } from 'modules/auth/selectors/login-account';
+import selectABCUIContext from 'modules/auth/helpers/abc';
+
 const mapStateToProps = state => ({
-  loginAccount: selectLoginAccount(state)
+  loginAccount: selectLoginAccount(state),
+  authLink: links().authLink,
+  manageAirbitzAccount: airbitzAccount => selectABCUIContext().openManageWindow(airbitzAccount, (err) => {
+    if (err) console.error('onAirbitzManageAccount:', err);
+  }),
+  isMobile: state.isMobile
 });
 
 const mapDispatchToProps = dispatch => ({
-  editName: name => dispatch(changeAccountName(name)),
-  transferFunds: (amount, currency, toAddress) => dispatch(transferFunds(amount, currency, toAddress))
+  updateAccountName: name => dispatch(updateAccountName(name)),
+  transferFunds: (amount, asset, to) => dispatch(transferFunds(amount, asset, to))
 });
 
 const Account = connect(mapStateToProps, mapDispatchToProps)(AccountView);

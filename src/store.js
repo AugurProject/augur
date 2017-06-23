@@ -27,7 +27,8 @@ const localStorageMiddleware = store => next => (action) => {
     windowRef.localStorage.setItem(state.loginAccount.address, JSON.stringify({
       scalarMarketsShareDenomination: state.scalarMarketsShareDenomination,
       favorites: state.favorites,
-      reports: state.reports
+      reports: state.reports,
+      accountName: state.accountName
     }));
   }
 };

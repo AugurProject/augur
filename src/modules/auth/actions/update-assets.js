@@ -7,32 +7,36 @@ import logError from 'utils/log-error';
 export function updateAssets(callback = logError) {
   return (dispatch, getState) => {
     const { loginAccount, branch } = getState();
-    const balances = { ether: undefined, realEther: undefined, rep: undefined };
+    const balances = { eth: undefined, ethTokens: undefined, rep: undefined };
     if (!loginAccount.address) return dispatch(updateLoginAccount(balances));
     augur.assets.loadAssets({
       branchID: branch.id || BRANCH_ID,
       address: loginAccount.address
-    }, (err, ether) => {
-      if (err) return callback(err);
-      balances.ether = ether;
-      if (!loginAccount.ether || loginAccount.ether !== ether) {
-        dispatch(updateLoginAccount({ ether }));
+    },
+      (err, ethTokens) => {
+        if (err) return callback(err);
+        balances.ethTokens = ethTokens;
+        if (!loginAccount.ethTokens || loginAccount.ethTokens !== ethTokens) {
+          dispatch(updateLoginAccount({ ethTokens }));
+        }
+        if (allAssetsLoaded(balances)) callback(null, balances);
+      },
+      (err, rep) => {
+        if (err) return callback(err);
+        balances.rep = rep;
+        if (!loginAccount.rep || loginAccount.rep !== rep) {
+          dispatch(updateLoginAccount({ rep }));
+        }
+        if (allAssetsLoaded(balances)) callback(null, balances);
+      },
+      (err, eth) => {
+        if (err) return callback(err);
+        balances.eth = eth;
+        if (!loginAccount.eth || loginAccount.eth !== eth) {
+          dispatch(updateLoginAccount({ eth }));
+        }
+        if (allAssetsLoaded(balances)) callback(null, balances);
       }
-      if (allAssetsLoaded(balances)) callback(null, balances);
-    }, (err, rep) => {
-      if (err) return callback(err);
-      balances.rep = rep;
-      if (!loginAccount.rep || loginAccount.rep !== rep) {
-        dispatch(updateLoginAccount({ rep }));
-      }
-      if (allAssetsLoaded(balances)) callback(null, balances);
-    }, (err, realEther) => {
-      if (err) return callback(err);
-      balances.realEther = realEther;
-      if (!loginAccount.realEther || loginAccount.realEther !== realEther) {
-        dispatch(updateLoginAccount({ realEther }));
-      }
-      if (allAssetsLoaded(balances)) callback(null, balances);
-    });
+    );
   };
 }

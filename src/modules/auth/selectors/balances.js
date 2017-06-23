@@ -1,17 +1,17 @@
 import { isZero } from 'utils/math';
 
 export const anyAccountBalancesZero = balances => (
-  (balances.ether !== undefined && isZero(balances.ether)) ||
-  (balances.realEther !== undefined && isZero(balances.realEther)) ||
+  (balances.ethTokens !== undefined && isZero(balances.ethTokens)) ||
+  (balances.eth !== undefined && isZero(balances.eth)) ||
   (balances.rep !== undefined && isZero(balances.rep))
 );
 
 export const allAccountBalancesZero = balances => (
-  (balances.ether !== undefined && isZero(balances.ether)) &&
-  (balances.realEther !== undefined && isZero(balances.realEther)) &&
+  (balances.ethTokens !== undefined && isZero(balances.ethTokens)) &&
+  (balances.eth !== undefined && isZero(balances.eth)) &&
   (balances.rep !== undefined && isZero(balances.rep))
 );
 
 export const allAssetsLoaded = assets => (
-    assets.ether !== undefined && assets.realEther !== undefined && assets.rep !== undefined
+    assets.ethTokens !== undefined && assets.eth !== undefined && assets.rep !== undefined
 );

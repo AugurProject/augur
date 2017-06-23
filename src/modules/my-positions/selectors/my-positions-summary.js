@@ -9,7 +9,7 @@ import { closePosition } from 'modules/my-positions/actions/close-position';
 import { ZERO } from 'modules/trade/constants/numbers';
 
 import { augur, abi } from 'services/augurjs';
-import { formatEther, formatShares, formatNumber } from 'utils/format-number';
+import { formatEtherTokens, formatShares, formatNumber } from 'utils/format-number';
 
 export default function () {
   const myPositions = selectMyPositions();
@@ -72,9 +72,9 @@ export const generatePositionsSummary = memoize((numPositions, qtyShares, meanTr
       zeroStyled: false
     }),
     qtyShares: formatShares(qtyShares),
-    purchasePrice: formatEther(meanTradePrice),
-    realizedNet: formatEther(realizedNet),
-    unrealizedNet: formatEther(unrealizedNet),
-    totalNet: formatEther(totalNet)
+    purchasePrice: formatEtherTokens(meanTradePrice),
+    realizedNet: formatEtherTokens(realizedNet),
+    unrealizedNet: formatEtherTokens(unrealizedNet),
+    totalNet: formatEtherTokens(totalNet)
   };
 }, { max: 20 });
