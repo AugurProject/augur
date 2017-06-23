@@ -108,29 +108,13 @@ export default class AccountDetails extends Component {
                 </span>
               </button>
             </div>
-            <button
-              className="unstyled account-details-address"
-              onClick={() => this.toggleFullAccountVisibility()}
-            >
-              <CSSTransitionGroup
-                component="div"
-                className="account-details-address-values"
-                transitionName="address"
-                transitionEnterTimeout={animationSpeed}
-                transitionLeaveTimeout={animationSpeed}
-              >
-                {s.fullAccountVisible &&
-                  <span>{p.address}</span>
-                }
-                {!s.fullAccountVisible &&
-                  <span>{p.trimmedAddress}</span>
-                }
-              </CSSTransitionGroup>
-            </button>
-            {p.airbitzAccount && p.onAirbitzManageAccount &&
+            <div className="account-details-address">
+              <span>{p.address}</span>
+            </div>
+            {p.airbitzAccount && p.manageAirbitzAccount &&
               <button
                 className="unstyled account-details-airbitz"
-                onClick={() => p.onAirbitzManageAccount()}
+                onClick={() => p.manageAirbitzAccount()}
               >
                 Manage Airbitz Account
               </button>
