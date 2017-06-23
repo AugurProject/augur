@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import AccountView from 'modules/account/components/account-view';
 
 import { transferFunds } from 'modules/auth/actions/transfer-funds';
-import { changeAccountName } from 'modules/auth/actions/update-login-account';
+import { updateAccountName } from 'modules/account/actions/update-account-name';
 
 import links from 'modules/link/selectors/links';
 
@@ -19,7 +19,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  updateAccountName: name => dispatch(changeAccountName(name)),
+  updateAccountName: name => dispatch(updateAccountName(name)),
   transferFunds: (amount, asset, to) => dispatch(transferFunds(amount, asset, to))
 });
 

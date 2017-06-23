@@ -11,7 +11,6 @@ import AirbitzLogoIcon from 'modules/common/components/airbitz-logo-icon';
 export default class AccountDetails extends Component {
   static propTypes = {
     address: PropTypes.string.isRequired,
-    trimmedAddress: PropTypes.string.isRequired,
     signOut: PropTypes.object.isRequired,
     updateAccountName: PropTypes.func.isRequired,
     name: PropTypes.string,

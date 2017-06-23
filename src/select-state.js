@@ -7,6 +7,7 @@ export const selectConnectionState = state => state.connection;
 export const selectUrlState = state => state.url;
 export const selectAuthState = state => state.auth;
 export const selectLoginAccountState = state => state.loginAccount;
+export const selectAccountNameState = state => state.accountName;
 export const selectActiveViewState = state => state.activeView;
 export const selectNewMarketState = state => state.newMarket;
 export const selectMarketsDataState = state => state.marketsData;

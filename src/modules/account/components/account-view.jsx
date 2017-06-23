@@ -45,7 +45,7 @@ export default class AccountView extends Component {
             className="account-content"
           >
             <AccountDetails
-              name={loginAccount.name}
+              name={loginAccount.accountName}
               updateAccountName={p.updateAccountName}
               address={loginAccount.address}
               trimmedAddress={loginAccount.trimmedAddress}
