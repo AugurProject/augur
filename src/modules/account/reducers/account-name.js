@@ -4,7 +4,7 @@ import { UPDATE_ACCOUNT_NAME } from 'modules/account/actions/update-account-name
 const DEFAULT_STATE = null;
 
 export default function (accountName = DEFAULT_STATE, action) {
-  switch(action.type) {
+  switch (action.type) {
     case UPDATE_ACCOUNT_NAME:
       return action.data.name;
     case CLEAR_LOGIN_ACCOUNT:
