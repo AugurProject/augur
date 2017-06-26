@@ -7,6 +7,7 @@ import { initAugur } from 'modules/app/actions/init-augur';
 import { updateURL } from 'modules/link/actions/update-url';
 
 import store from 'src/store';
+
 import { augur } from 'services/augurjs';
 
 require('core-js/fn/array/find');

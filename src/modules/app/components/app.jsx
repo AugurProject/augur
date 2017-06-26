@@ -21,6 +21,7 @@ import getValue from 'utils/get-value';
 export default class AppView extends Component {
   static propTypes = {
     url: PropTypes.string,
+    history: PropTypes.any,
     // tags: PropTypes.array.isRequired,
     // coreStats: PropTypes.array.isRequired,
     // isMobile: PropTypes.bool.isRequired,
@@ -226,11 +227,7 @@ export default class AppView extends Component {
                       />
                     }
                   </div>
-                  <Routes
-                    activeView={p.activeView}
-                    isSideBarAllowed={s.isSideBarAllowed}
-                    setSidebarAllowed={this.setSidebarAllowed}
-                  />
+                  <Routes history={p.history} />
                   {p.activeView !== CREATE_MARKET &&
                     <Footer {...navProps} />
                   }
@@ -258,3 +255,9 @@ export default class AppView extends Component {
     );
   }
 }
+
+{/*<Routes*/}
+  {/*activeView={p.activeView}*/}
+  {/*isSideBarAllowed={s.isSideBarAllowed}*/}
+  {/*setSidebarAllowed={this.setSidebarAllowed}*/}
+{/*/>*/}
