@@ -40,6 +40,12 @@ export default class InputList extends Component {
     }
   }
 
+  componentDidUpdate() {
+    if (this.props.list != this.state.list) {
+      this.setState({ list: this.fillMinElements(this.props.list, this.props.listMinElements) });
+    }
+  }
+
   clearWarnings() {
     this.setState({ warnings: [] });
   }
@@ -81,7 +87,7 @@ export default class InputList extends Component {
       list = list.slice();
       list.push('');
     }
-
+    
     return (
       <div className={classNames('input-list', p.className)}>
         {list.map((item, i) => (

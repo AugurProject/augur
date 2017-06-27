@@ -56,6 +56,10 @@ export default class CreateMarketFormDescription extends Component {
     ) {
       this.defaultFormToFocus.getElementsByTagName('input')[0].focus();
     }
+    if (this.props.makerFee != this.state.makerFee || this.props.takerFee != this.state.takerFee) {
+      // when clearMarket button is pressed and user navigates back here the state will still be the old fee values. this call makes sure to reset them if they don't line up with props passed.
+      this.setState({ makerFee: this.props.makerFee, takerFee: this.props.takerFee });
+    }
   }
 
   validateForm(takerFeeRaw, makerFeeRaw, init) {
