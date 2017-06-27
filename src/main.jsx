@@ -1,10 +1,13 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom';
+import { HashRouter, Link, Route } from 'react-router-dom';
 import { AppContainer } from 'react-hot-loader';
 
 import { initAugur } from 'modules/app/actions/init-augur';
 import { updateURL } from 'modules/link/actions/update-url';
+
+import Routes from 'src/routes';
 
 import store from 'src/store';
 
@@ -31,11 +34,11 @@ if (process.env.NODE_ENV === 'development') {
   `);
 }
 
-store.dispatch(updateURL(window.location.pathname + window.location.search));
-
-window.onpopstate = (e) => {
-  store.dispatch(updateURL(window.location.pathname + window.location.search));
-};
+// store.dispatch(updateURL(window.location.pathname + window.location.search));
+//
+// window.onpopstate = (e) => {
+//   store.dispatch(updateURL(window.location.pathname + window.location.search));
+// };
 
 store.dispatch(initAugur());
 
@@ -43,7 +46,9 @@ function render(App) {
   ReactDOM.render(
     <Provider store={store}>
       <AppContainer>
-        <App />
+        <HashRouter>
+          <Routes />
+        </HashRouter>
       </AppContainer>
     </Provider>,
     document.getElementById('app')

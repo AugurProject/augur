@@ -7,7 +7,7 @@ import Header from 'modules/app/components/header';
 import Footer from 'modules/app/components/footer';
 import SideBar from 'modules/app/components/side-bar';
 import CoreStats from 'modules/app/components/core-stats';
-import Routes from 'modules/app/components/routes';
+// import Routes from 'modules/app/components/routes';
 import ChatView from 'modules/chat/components/chat-view';
 import SidebarMask from 'modules/common/components/side-bar-mask';
 
@@ -22,6 +22,7 @@ export default class AppView extends Component {
   static propTypes = {
     url: PropTypes.string,
     history: PropTypes.any,
+    children: PropTypes.node,
     // tags: PropTypes.array.isRequired,
     // coreStats: PropTypes.array.isRequired,
     // isMobile: PropTypes.bool.isRequired,
@@ -227,7 +228,7 @@ export default class AppView extends Component {
                       />
                     }
                   </div>
-                  <Routes history={p.history} />
+                  {p.children}
                   {p.activeView !== CREATE_MARKET &&
                     <Footer {...navProps} />
                   }

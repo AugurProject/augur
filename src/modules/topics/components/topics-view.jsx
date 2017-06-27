@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
 import NullStateMessage from 'modules/common/components/null-state-message';
 import TopicRows from 'modules/topics/components/topic-rows';
 import Paginator from 'modules/common/components/paginator';
 import Input from 'modules/common/components/input';
-import Link from 'modules/link/components/link';
+// import Link from 'modules/link/components/link';
 import Branch from 'modules/branch/components/branch';
 
 export default class TopicsView extends Component {
@@ -182,6 +183,7 @@ export default class TopicsView extends Component {
     return (
       <section id="topics_view">
         <div id="topics_container">
+          <Link to="/markets">markets brah</Link>
           {!!p.loginAccount && !!p.loginAccount.rep && !!p.loginAccount.rep.value && !!p.branch.id &&
             <Branch {...p.branch} />
           }
@@ -194,15 +196,6 @@ export default class TopicsView extends Component {
                 onChange={keywords => this.setState({ keywords })}
               />
             </div>
-            {p.loginAccount && p.loginAccount.address &&
-              <Link
-                className="button imperative navigational"
-                disabled={!p.loginAccount.address}
-                {...p.createMarketLink}
-              >
-                + Create New Market
-              </Link>
-            }
           </div>
           {s.filteredTopics.length ?
             <div className="topics">
@@ -227,3 +220,14 @@ export default class TopicsView extends Component {
     );
   }
 }
+
+
+// {p.loginAccount && p.loginAccount.address &&
+//   <Link
+//     className="button imperative navigational"
+//     disabled={!p.loginAccount.address}
+//     {...p.createMarketLink}
+//   >
+//     + Create New Market
+//   </Link>
+// }

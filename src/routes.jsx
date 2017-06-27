@@ -1,14 +1,18 @@
 import React from 'react';
-import {
-  HashRouter,
-  Route
-} from 'react-router-dom';
+import { Route, Link } from 'react-router-dom';
 
 import asyncComponent from 'modules/app/helpers/async-component';
 
+import App from 'modules/app/components/app';
+
 const Topics = asyncComponent({
-  moduleName: 'topics',
+  moduleName: 'Topics',
   loader: () => import(/* webpackChunkName: 'topics' */ 'modules/topics/container')
+    .then(module => module.default)
+});
+const Markets = asyncComponent({
+  moduleName: 'Markets',
+  loader: () => import(/* webpackChunkName: 'markets' */ 'modules/markets/container')
     .then(module => module.default)
 });
 
@@ -118,10 +122,25 @@ const Topics = asyncComponent({
 
 // <Route path="/page1" component={Page1} />
 
+const test1 = () => (
+  <div>
+    <Link to="/markets">Markets</Link>
+    <span>TEST 1</span>
+  </div>
+);
+
+const test2 = () => (
+  <div>
+    <Link to="/">Topics</Link>
+    <span>TEST 2</span>
+  </div>
+);
+
 const Routes = () => (
-  <HashRouter >
-    <Route path="/" component={Topics} />
-  </HashRouter>
+  <App>
+    <Route exact path="/" component={test1} />
+    <Route path="/markets" component={test2} />
+  </App>
 );
 
 export default Routes;
