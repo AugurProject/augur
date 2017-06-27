@@ -4,7 +4,7 @@ var api = require("../api");
 
 // { marketIDs, account }
 function batchGetMarketInfo(p, callback) {
-  return api().CompositeGetters.batchGetMarketInfo({
+  return api().MarketInfo.batchGetMarketInfo({
     marketIDs: p.marketIDs,
     account: p.account || 0
   }, callback, { extraArgument: p.marketIDs.length });

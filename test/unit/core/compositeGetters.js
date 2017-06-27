@@ -9,12 +9,12 @@ var constants = require("../../../src/constants");
 // 61 tests total
 
 describe("augur.trading.orderBook.getOrderBookChunked", function () {
-  var getOrderBook = augur.api.CompositeGetters.getOrderBook;
+  var getOrderBook = augur.api.OrderBook.getOrderBook;
   var get_total_trades = augur.api.Markets.get_total_trades;
   var testState;
   var finished;
   afterEach(function () {
-    augur.api.CompositeGetters.getOrderBook = getOrderBook;
+    augur.api.OrderBook.getOrderBook = getOrderBook;
     augur.api.Markets.get_total_trades = get_total_trades;
     testState = undefined;
     finished = undefined;
@@ -23,7 +23,7 @@ describe("augur.trading.orderBook.getOrderBookChunked", function () {
     it(t.description, function (done) {
       testState = t.state;
       finished = done;
-      augur.api.CompositeGetters.getOrderBook = t.getOrderBook;
+      augur.api.OrderBook.getOrderBook = t.getOrderBook;
       augur.api.Markets.get_total_trades = t.get_total_trades;
       augur.trading.orderBook.getOrderBookChunked(t.params, t.assertions, t.callback);
     });
@@ -375,15 +375,15 @@ describe("augur.trading.orderBook.getOrderBookChunked", function () {
 describe('augur/src/markets/loadMarketsBatch', function () {
   // 4 tests total
   var assertionsCC = 0;
-  var getMarketsInfo = augur.api.CompositeGetters.getMarketsInfo;
+  var getMarketsInfo = augur.api.MarketsInfo.getMarketsInfo;
   var loadMarketsBatch = require('../../../src/markets/load-markets-batch');
   afterEach(function () {
-    augur.api.CompositeGetters.getMarketsInfo = getMarketsInfo;
+    augur.api.MarketsInfo.getMarketsInfo = getMarketsInfo;
   });
   var test = function (t) {
     assertionsCC = 0;
     it(t.description + " async", function(done) {
-      augur.api.CompositeGetters.getMarketsInfo = t.getMarketsInfo;
+      augur.api.MarketsInfo.getMarketsInfo = t.getMarketsInfo;
       var pause = constants.PAUSE_BETWEEN_MARKET_BATCHES;
       constants.PAUSE_BETWEEN_MARKET_BATCHES = 1;
       // if we pass in t.nextPass as true then use a mock, else set nextPass to undefined.
@@ -1141,17 +1141,17 @@ describe('augur.trading.getOrderBook', function () {
   // 3 tests total
   var test = function (t) {
     it(t.description, function () {
-      var getOrderBook = augur.api.CompositeGetters.getOrderBook;
+      var getOrderBook = augur.api.OrderBook.getOrderBook;
 
-      augur.api.CompositeGetters.getOrderBook = t.assertions;
+      augur.api.OrderBook.getOrderBook = t.assertions;
 
       augur.trading.orderBook.getOrderBook(t.params, t.callback);
 
-      augur.api.CompositeGetters.getOrderBook = getOrderBook;
+      augur.api.OrderBook.getOrderBook = getOrderBook;
     });
   };
   test({
-    description: 'should handle passing args to api.CompositeGetters.getOrderBook with just a market',
+    description: 'should handle passing args to api.OrderBook.getOrderBook with just a market',
     params: {
       market: '0x0a1'
     },
@@ -1167,7 +1167,7 @@ describe('augur.trading.getOrderBook', function () {
     }
   });
   test({
-    description: 'should handle passing args to api.CompositeGetters.getOrderBook with a market and scalarMinMax',
+    description: 'should handle passing args to api.OrderBook.getOrderBook with a market and scalarMinMax',
     params: {
       market: '0x0a1',
       scalarMinMax: { minValue: 10, maxValue: 100 }
@@ -1184,7 +1184,7 @@ describe('augur.trading.getOrderBook', function () {
     }
   });
   test({
-    description: 'should handle passing args to api.CompositeGetters.getOrderBook with a market, offset, and numTradesToLoad',
+    description: 'should handle passing args to api.OrderBook.getOrderBook with a market, offset, and numTradesToLoad',
     params: {
       market: '0x0a1',
       offset: 5,
@@ -1248,13 +1248,13 @@ describe('augur.markets.getMarketInfo', function () {
   // 2 tests total
   var test = function (t) {
     it(t.description, function () {
-      var getMarketInfo = augur.api.CompositeGetters.getMarketInfo;
+      var getMarketInfo = augur.api.MarketInfo.getMarketInfo;
       // we are going to pass our test assertions as our getMarketInfo contract function
-      augur.api.CompositeGetters.getMarketInfo = t.assertions;
+      augur.api.MarketInfo.getMarketInfo = t.assertions;
 
       augur.markets.getMarketInfo(t.params, t.callback);
 
-      augur.api.CompositeGetters.getMarketInfo = getMarketInfo;
+      augur.api.MarketInfo.getMarketInfo = getMarketInfo;
     });
   };
   test({
@@ -1357,12 +1357,12 @@ describe('augur.markets.batchGetMarketInfo', function () {
   // 2 tests total
   var test = function (t) {
     it(t.description, function () {
-      var batchGetMarketInfo = augur.api.CompositeGetters.batchGetMarketInfo;
-      augur.api.CompositeGetters.batchGetMarketInfo = t.assertions;
+      var batchGetMarketInfo = augur.api.MarketInfo.batchGetMarketInfo;
+      augur.api.MarketInfo.batchGetMarketInfo = t.assertions;
 
       augur.markets.batchGetMarketInfo(t.params, t.callback);
 
-      augur.api.CompositeGetters.batchGetMarketInfo = batchGetMarketInfo;
+      augur.api.MarketInfo.batchGetMarketInfo = batchGetMarketInfo;
     });
   };
   test({
@@ -1512,12 +1512,12 @@ describe('augur.parsers.getMarketsInfo', function () {
   // 2 tests total
   var test = function (t) {
     it(t.description + ' async', function () {
-      var getMarketsInfo = augur.api.CompositeGetters.getMarketsInfo;
-      augur.api.CompositeGetters.getMarketsInfo = t.assertions;
+      var getMarketsInfo = augur.api.MarketsInfo.getMarketsInfo;
+      augur.api.MarketsInfo.getMarketsInfo = t.assertions;
 
       augur.markets.getMarketsInfo(t.params, t.callback);
 
-      augur.api.CompositeGetters.getMarketsInfo = getMarketsInfo;
+      augur.api.MarketsInfo.getMarketsInfo = getMarketsInfo;
     });
   };
   test({

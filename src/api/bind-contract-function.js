@@ -32,13 +32,14 @@ function bindContractFunction(staticAPI) {
         }
         if (isObject(params[0].tx)) assign(tx, params[0].tx);
       }
-      if (isFunction(params[params.length - 1])) cb = params[1];
+      if (isFunction(params[params.length - 1])) cb = params.pop();
       if (tx.fixed && tx.fixed.length) {
         numFixed = tx.fixed.length;
         for (i = 0; i < numFixed; ++i) {
           tx.params[tx.fixed[i]] = abi.fix(tx.params[tx.fixed[i]], "hex");
         }
       }
+      console.log("eth_call:", tx);
       if (!tx.parser) {
         if (!isFunction(cb)) return rpcInterface.callContractFunction(tx);
         return rpcInterface.callContractFunction(tx, cb);
@@ -47,6 +48,7 @@ function bindContractFunction(staticAPI) {
       return rpcInterface.callContractFunction(tx, cb, parsers[tx.parser], extraArgument);
     }
     if (params && isObject(params[0])) {
+      console.log("params:", params);
       onSent = params[0].onSent;
       onSuccess = params[0].onSuccess;
       onFailed = params[0].onFailed;
@@ -65,6 +67,7 @@ function bindContractFunction(staticAPI) {
         tx.params[tx.fixed[i]] = abi.fix(tx.params[tx.fixed[i]], "hex");
       }
     }
+    console.log("eth_sendTransaction:", tx);
     if (!tx.parser) return rpcInterface.transact(tx, signer, onSent, onSuccess, onFailed);
     return rpcInterface.transact(tx, signer, onSent, compose(parsers[tx.parser], onSuccess, extraArgument), onFailed);
   };

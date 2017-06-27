@@ -5,7 +5,7 @@ var api = require("../api");
 // account is optional, if provided will return sharesPurchased
 // { marketID, account }
 function getMarketInfo(p, callback) {
-  return api().CompositeGetters.getMarketInfo({
+  return api().MarketInfo.getMarketInfo({
     marketID: p.marketID,
     account: p.account || 0
   }, callback);

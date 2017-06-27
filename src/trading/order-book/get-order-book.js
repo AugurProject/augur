@@ -5,7 +5,7 @@ var api = require("../../api");
 // scalarMinMax: null if not scalar; {minValue, maxValue} if scalar
 // { market, scalarMinMax }
 function getOrderBook(p, callback) {
-  return api().CompositeGetters.getOrderBook({
+  return api().OrderBook.getOrderBook({
     marketID: p.market,
     offset: p.offset || 0,
     numTradesToLoad: p.numTradesToLoad || 0
