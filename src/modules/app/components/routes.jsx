@@ -1,5 +1,5 @@
 import React from 'react';
-import { Route, Link } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 
 import App from 'modules/app/container';
 
@@ -15,6 +15,11 @@ const Topics = asyncComponent({
 const Markets = asyncComponent({
   moduleName: 'Markets',
   loader: () => import(/* webpackChunkName: 'markets' */ 'modules/markets/container')
+    .then(module => module.default)
+});
+const Authentication = asyncComponent({
+  moduleName: 'Authentication',
+  loader: () => import(/* webpackChunkName: 'authentication' */ 'modules/markets/container')
     .then(module => module.default)
 });
 
@@ -128,6 +133,7 @@ const Routes = () => (
   <App>
     <Route exact path={makePath(VIEWS.DEFAULT_VIEW)} component={Topics} />
     <Route path={makePath(VIEWS.MARKETS)} component={Markets} />
+    <Route path={makePath(VIEWS.AUTHENTICATION)} component={Authentication} />
   </App>
 );
 

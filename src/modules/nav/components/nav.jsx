@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Link, NavLink } from 'react-router-dom';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import classNames from 'classnames';
 
-import Link from 'modules/link/components/link';
+// import Link from 'modules/link/components/link';
 import AugurLogoIcon from 'modules/common/components/augur-logo-icon';
 import SideBarFilterIcon from 'modules/common/components/side-bar-filter-icon';
 import NotificationsContainer from 'modules/notifications/container';
 
-import { ACCOUNT, MARKETS, TRANSACTIONS, MY_POSITIONS, MY_MARKETS, MY_REPORTS, AUTHENTICATION } from 'modules/app/constants/views';
+import * as VIEWS from 'modules/app/constants/views';
 import { FAVORITES, PENDING_REPORTS } from 'modules/markets/constants/markets-subset';
 
 import getValue from 'utils/get-value';
@@ -76,24 +77,33 @@ export default class Nav extends Component {
           </button>
         }
         <div className="augur-brand">
-          <Link {...p.topicsLink} >
+          <Link to={VIEWS.TOPICS} >
             <AugurLogoIcon />
           </Link>
         </div>
-        <Link
-          {...p.allMarketsLink}
-          onClick={() => {
-            p.allMarketsLink.onClick();
-            this.collapseFooter();
+        <NavLink
+          to={`/${VIEWS.MARKETS}`}
+          activeClassName="active"
+          isActive={(match, location) => {
+            console.log('match -- ', match, location);
+
+            if (!match) return false;
+            return match !== null ||
+              (
+                !!parseInt(p.activeView, 10) &&
+                Number.isInteger(parseInt(p.activeView, 10)) &&
+                p.marketsInfo.selectedMarketsHeader == null
+              );
           }}
-          className={classNames('app-nav-link', { active: ((p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader == null) })}
+          className="app-nav-link"
+          onClick={() => this.collapseFooter()}
         >
           <i className="nav-icon fa fa-line-chart" />
           Markets
-        </Link>
+        </NavLink>
         {p.isLogged && !!p.numFavorites &&
           <Link
-            {...p.favoritesLink}
+            to={VIEWS.FAVORITES}
             onClick={() => {
               p.favoritesLink.onClick();
               this.collapseFooter();
@@ -107,7 +117,7 @@ export default class Nav extends Component {
         }
         {p.isLogged && !!p.numPendingReports &&
           <Link
-            {...p.pendingReportsLink}
+            to={VIEWS.MY_REPORTS}
             onClick={() => {
               p.pendingReportsLink.onClick();
               this.collapseFooter();
@@ -121,12 +131,12 @@ export default class Nav extends Component {
         }
         {p.isLogged &&
           <Link
-            {...p.myPositionsLink}
+            to={VIEWS.MY_POSITIONS}
             onClick={() => {
               p.myPositionsLink.onClick();
               this.collapseFooter();
             }}
-            className={classNames('app-nav-link', MY_POSITIONS, { active: [MY_POSITIONS, MY_MARKETS, MY_REPORTS].indexOf(p.activeView) !== -1 })}
+            className={classNames('app-nav-link')}
           >
             <i className="nav-icon fa fa-money" />
             Portfolio
@@ -134,12 +144,12 @@ export default class Nav extends Component {
         }
         {p.isLogged &&
           <Link
-            {...p.transactionsLink}
+            to={VIEWS.TRANSACTIONS}
             onClick={() => {
               p.transactionsLink.onClick();
               this.collapseFooter();
             }}
-            className={classNames('app-nav-link', TRANSACTIONS, { active: p.activeView === TRANSACTIONS })}
+            className={classNames('app-nav-link')}
           >
             <i className="nav-icon fa fa-tasks" />
             Transactions
@@ -147,12 +157,12 @@ export default class Nav extends Component {
         }
         {p.isLogged &&
           <Link
-            {...p.accountLink}
+            to={VIEWS.ACCOUNT}
             onClick={() => {
               p.accountLink.onClick();
               this.collapseFooter();
             }}
-            className={classNames('app-nav-link', ACCOUNT, { active: p.activeView === ACCOUNT })}
+            className={classNames('app-nav-link')}
           >
             <i className="nav-icon fa fa-cog" />
             Account
@@ -160,12 +170,12 @@ export default class Nav extends Component {
         }
         {!p.isLogged &&
           <Link
-            {...p.authLink}
+            to={VIEWS.AUTHENTICATION}
             onClick={() => {
               p.authLink.onClick();
               this.collapseFooter();
             }}
-            className={classNames('app-nav-link', AUTHENTICATION, { active: p.activeView === AUTHENTICATION })}
+            className={classNames('app-nav-link')}
           >
             <div className="nav-icon-google-translate-fix">
               <i className="nav-icon">

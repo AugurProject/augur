@@ -1,13 +1,13 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom';
-import { HashRouter, Link, Route } from 'react-router-dom';
+import { HashRouter } from 'react-router-dom';
 import { AppContainer } from 'react-hot-loader';
 
 import { initAugur } from 'modules/app/actions/init-augur';
 import { updateURL } from 'modules/link/actions/update-url';
 
-import Routes from 'src/routes';
+import Routes from 'modules/app/components/routes';
 
 import store from 'src/store';
 
