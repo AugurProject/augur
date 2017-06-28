@@ -14,7 +14,7 @@ import getValue from 'utils/get-value';
 
 const mapStateToProps = state => ({
   branch: state.branch,
-  availableEth: getValue(state, 'loginAccount.ether'),
+  availableEth: getValue(state, 'loginAccount.ethTokens'),
   newMarket: state.newMarket,
   footerHeight: state.footerHeight
 });
