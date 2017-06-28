@@ -150,18 +150,21 @@ export default class CreateMarketForm extends Component {
           updateValidity={this.updateValidity}
           updateNewMarket={p.updateNewMarket}
         />
-        <CreateMarketFormEndDate
-          className={classNames({
-            'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE),
-            'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE)
-          })}
-          currentStep={p.newMarket.currentStep}
-          isValid={p.newMarket.isValid}
-          endDate={p.newMarket.endDate}
-          updateFormHeight={this.updateFormHeight}
-          updateValidity={this.updateValidity}
-          updateNewMarket={p.updateNewMarket}
-        />
+        {
+          s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) &&
+            <CreateMarketFormEndDate
+              className={classNames({
+                'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE),
+                'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE)
+              })}
+              currentStep={p.newMarket.currentStep}
+              isValid={p.newMarket.isValid}
+              endDate={p.newMarket.endDate}
+              updateFormHeight={this.updateFormHeight}
+              updateValidity={this.updateValidity}
+              updateNewMarket={p.updateNewMarket}
+            />
+        }
         <CreateMarketFormDetails
           className={classNames({
             'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS),
