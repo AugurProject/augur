@@ -43,12 +43,6 @@ export default class InputList extends Component {
     }
   }
 
-  componentDidUpdate() {
-    // this.onUpdate(function callback() {
-
-    // });
-  }
-
   clearWarnings() {
     this.setState({ warnings: [] });
   }

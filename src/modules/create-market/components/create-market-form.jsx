@@ -144,7 +144,6 @@ export default class CreateMarketForm extends Component {
             'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE),
             'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_EXPIRY_SOURCE)
           })}
-          key={p.newMarket.endDate}
           currentStep={p.newMarket.currentStep}
           expirySourceType={p.newMarket.expirySourceType}
           expirySource={p.newMarket.expirySource}
@@ -152,18 +151,19 @@ export default class CreateMarketForm extends Component {
           updateNewMarket={p.updateNewMarket}
         />
         {
-          s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) && <CreateMarketFormEndDate
-            className={classNames({
-              'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE),
-              'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE)
-            })}
-            currentStep={p.newMarket.currentStep}
-            isValid={p.newMarket.isValid}
-            endDate={p.newMarket.endDate}
-            updateFormHeight={this.updateFormHeight}
-            updateValidity={this.updateValidity}
-            updateNewMarket={p.updateNewMarket}
-          />
+          s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) &&
+            <CreateMarketFormEndDate
+              className={classNames({
+                'display-form-part': s.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE),
+                'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE)
+              })}
+              currentStep={p.newMarket.currentStep}
+              isValid={p.newMarket.isValid}
+              endDate={p.newMarket.endDate}
+              updateFormHeight={this.updateFormHeight}
+              updateValidity={this.updateValidity}
+              updateNewMarket={p.updateNewMarket}
+            />
         }
         <CreateMarketFormDetails
           className={classNames({
