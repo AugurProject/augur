@@ -171,7 +171,7 @@ export default class OutcomeTrade extends Component {
               <Input
                 className={classNames({ 'input-error': !s.isSharesValueValid })}
                 placeholder={s.shareInputPlaceholder}
-                value={s.sharesDenominated}
+                value={s.sharesDenominated ? s.sharesDenominated : ''}
                 isIncrementable
                 incrementAmount={s.incrementAmount}
                 updateValue={(value) => {
@@ -185,7 +185,7 @@ export default class OutcomeTrade extends Component {
               <Input
                 className={classNames('trade-price-input', { 'input-error': !s.isLimitPriceValueValid })}
                 placeholder="Price"
-                value={trade.limitPrice}
+                value={trade.limitPrice ? trade.limitPrice : ''}
                 isIncrementable
                 incrementAmount={s.incrementAmount}
                 updateValue={(value) => {
