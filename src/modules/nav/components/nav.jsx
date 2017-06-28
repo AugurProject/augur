@@ -85,8 +85,6 @@ export default class Nav extends Component {
           to={`/${VIEWS.MARKETS}`}
           activeClassName="active"
           isActive={(match, location) => {
-            console.log('match -- ', match, location);
-
             if (!match) return false;
             return match !== null ||
               (
@@ -169,13 +167,11 @@ export default class Nav extends Component {
           </Link>
         }
         {!p.isLogged &&
-          <Link
-            to={VIEWS.AUTHENTICATION}
-            onClick={() => {
-              p.authLink.onClick();
-              this.collapseFooter();
-            }}
-            className={classNames('app-nav-link')}
+          <NavLink
+            to={`/${VIEWS.AUTHENTICATION}`}
+            activeClassName="active"
+            onClick={() => this.collapseFooter()}
+            className="app-nav-link"
           >
             <div className="nav-icon-google-translate-fix">
               <i className="nav-icon">
@@ -183,7 +179,7 @@ export default class Nav extends Component {
               </i>
             </div>
             Sign Up / Login
-          </Link>
+          </NavLink>
         }
         {p.isLogged &&
           <div // eslint-disable-line jsx-a11y/no-static-element-interactions
