@@ -405,8 +405,8 @@ export default class CreateMarketFormOrderBook extends Component {
     // Validate Quantity
     if (orderQuantity !== '' && orderPrice !== '' && orderPrice.times(orderQuantity).plus(this.props.initialLiquidityEth).greaterThan(new BigNumber(this.props.availableEth))) {
       // Done this way so both inputs are in err
-      errors.quantity.push('Issufficient funds');
-      errors.price.push('Issufficient funds');
+      errors.quantity.push('Insufficient funds');
+      errors.price.push('Insufficient funds');
     } else if (orderQuantity !== '' && orderQuantity.lessThanOrEqualTo(new BigNumber(0))) {
       errors.quantity.push('Quantity must be positive');
     } else if (orderPrice !== '') {
