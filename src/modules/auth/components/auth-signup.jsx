@@ -5,11 +5,16 @@ import zxcvbn from 'zxcvbn';
 import Input from 'modules/common/components/input';
 import Spinner from 'modules/common/components/spinner';
 
+import makePath from 'modules/app/helpers/make-path';
+import { DEFAULT_VIEW } from 'modules/app/constants/views';
+
 import { REQUIRED_PASSWORD_STRENGTH } from 'modules/auth/constants/password-strength';
 
 export default class AuthSignup extends Component {
   static propTypes = {
-    register: PropTypes.func
+    history: PropTypes.object.isRequired,
+    register: PropTypes.func.isRequired,
+    setupAndFundNewAccount: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -133,7 +138,7 @@ export default class AuthSignup extends Component {
             } else {
               e.target.style.display = 'none';
 
-              history.replaceState(null, null, 'Force Chrome to Prompt For Password Storage');
+              p.history.push(makePath(DEFAULT_VIEW));
             }
           });
         }}
