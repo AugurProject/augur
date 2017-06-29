@@ -9,11 +9,11 @@ import makePath from 'modules/app/helpers/make-path';
 
 import getValue from 'utils/get-value';
 
-const AuthenticatedRoute = ({ component: Component, ...props }) => (
+const AuthenticatedRoute = ({ component: Component, isLogged, ...rest }) => (
   <Route
-    {...props}
+    {...rest}
     render={props => (
-      props.isLogged ?
+      isLogged ?
         <Component {...props} /> :
         <Redirect to={makePath(AUTHENTICATION)} />
     )}
