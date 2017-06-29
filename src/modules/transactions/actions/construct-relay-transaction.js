@@ -1,6 +1,7 @@
 import { abi, augur, rpc } from 'services/augurjs';
 import { ZERO } from 'modules/trade/constants/numbers';
 import { SCALAR } from 'modules/markets/constants/market-types';
+import { BUY, SELL, CANCEL, SHORT_ASK, SHORT_SELL, TRADE, COMMIT_TRADE } from 'modules/transactions/constants/types';
 import { updateTradeCommitment } from 'modules/trade/actions/update-trade-commitment';
 import { deleteTransaction } from 'modules/transactions/actions/delete-transaction';
 import { constructBasicTransaction, constructTradingTransaction, constructTransaction, loadDataForReportingTransaction } from 'modules/transactions/actions/construct-transaction';
@@ -38,7 +39,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
   console.log('method -- ', method);
 
   switch (method) {
-    case 'buy': {
+    case BUY: {
       const { marketsData } = getState();
       const market = marketsData[abi.format_int256(p.market)];
       const amount = abi.unfix(p.amount, 'string');
@@ -50,16 +51,16 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         href: transactionsHref
       }));
       return dispatch(constructTradingTransaction('log_add_tx', {
-        type: 'buy',
+        type: BUY,
         ...p,
         amount,
         gasFees,
         price: abi.unfix_signed(p.price, 'string'),
       }, abi.format_int256(p.market), p.outcome, status));
     }
-    case 'shortAsk':
+    case SHORT_ASK:
       p.isShortAsk = true; // eslint-disable-line no-fallthrough
-    case 'sell': {
+    case SELL: {
       const { marketsData } = getState();
       const market = marketsData[abi.format_int256(p.market)];
       const amount = abi.unfix(p.amount, 'string');
@@ -71,14 +72,14 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         href: transactionsHref
       }));
       return dispatch(constructTradingTransaction('log_add_tx', {
-        type: 'sell',
+        type: SELL,
         ...p,
         price: abi.unfix_signed(p.price, 'string'),
         amount: abi.unfix(p.amount, 'string'),
         gasFees
       }, abi.format_int256(p.market), p.outcome, status));
     }
-    case 'cancel': {
+    case CANCEL: {
       const order = augur.trading.takeOrder.selectOrder(p.trade_id, getState().orderBooks);
 
       if (tx.status === 'success') {
@@ -112,7 +113,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         gasFees
       }, abi.format_int256(order.market), order.outcome, status));
     }
-    case 'commitTrade': {
+    case COMMIT_TRADE: {
       dispatch(updateTradeCommitment({ transactionHash: hash }));
       const { isShortSell, tradeHash, orders, tradingFees, maxValue, remainingShares, gasFees } = getState().tradeCommitment;
       const { marketsData } = getState();
@@ -156,7 +157,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
 
         dispatch(addNotification({
           id: p.transactionHash,
-          title: `Committing to ${order.type === 'buy' ? 'sell' : 'buy'} ${amount || ''} ${amount && 'Share'}${amount && parseFloat(amount, 10) === 1 ? '' : 's'} - ${status}`,
+          title: `Committing to ${order.type === BUY ? SELL : BUY} ${amount || ''} ${amount && 'Share'}${amount && parseFloat(amount, 10) === 1 ? '' : 's'} - ${status}`,
           description: market.description || '',
           timestamp: p.timestamp,
           href: transactionsHref
@@ -169,7 +170,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           amount,
           sender: tx.data.from,
           owner: order.owner,
-          type: order.type === 'buy' ? 'sell' : 'buy',
+          type: order.type === BUY ? SELL : BUY,
           tradeid: order.id,
           tradeHash,
           takerFee: tradingFees,
@@ -179,7 +180,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
       }
       return transactions;
     }
-    case 'short_sell': {
+    case SHORT_SELL: {
       const { transactionHash, orders, tradeHash, remainingShares, tradingFees, gasFees } = getState().tradeCommitment;
       const order = orders[0];
       let amount = remainingShares;
@@ -197,7 +198,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
       if (status === 'submitted') {
         dispatch(deleteTransaction(`${transactionHash}-${p.buyer_trade_id}`));
         dispatch(fillOrder({
-          type: 'buy',
+          type: BUY,
           market: order.market,
           tradeid: p.buyer_trade_id,
           sender: tx.data.from,
@@ -221,7 +222,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         isShortSell: true
       }, abi.format_int256(order.market), order.outcome, status))];
     }
-    case 'trade': {
+    case TRADE: {
       const { transactionHash, orders, tradeHash, tradingFees, maxValue, remainingShares, gasFees } = getState().tradeCommitment;
       const { marketsData } = getState();
       const numTradeIDs = p.trade_ids.length;
@@ -270,7 +271,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           if (status === 'submitted') {
             dispatch(deleteTransaction(`${transactionHash}-${order.id}`));
             dispatch(fillOrder({
-              type: order.type === 'buy' ? 'sell' : 'buy',
+              type: order.type === BUY ? SELL : BUY,
               tradeid: order.id,
               sender: tx.data.from,
               owner: order.owner,
@@ -283,7 +284,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
 
           notification = {
             id: p.transactionHash,
-            title: `${order.type === 'buy' ? 'sell' : 'buy'} ${amount || ''} ${amount && 'Share'}${amount && parseFloat(amount, 10) === 1 ? '' : 's'} - ${tx.status}`,
+            title: `${order.type === BUY ? SELL : BUY} ${amount || ''} ${amount && 'Share'}${amount && parseFloat(amount, 10) === 1 ? '' : 's'} - ${tx.status}`,
             description: market.description || '',
             timestamp: p.timestamp,
             href: transactionsHref
@@ -295,7 +296,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             amount,
             sender: tx.data.from,
             owner: order.owner,
-            type: order.type === 'buy' ? 'sell' : 'buy',
+            type: order.type === BUY ? SELL : BUY,
             tradeid: order.id,
             tradeHash,
             takerFee: tradingFees,

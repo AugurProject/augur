@@ -5,7 +5,7 @@ export const BID = 'bid';
 export const ASK = 'ask';
 
 export const SHORT_SELL = 'short_sell';
-export const SHORT_ASK = 'short_ask';
+export const SHORT_ASK = 'shortAsk';
 
 export const MATCH_BID = 'match_bid';
 export const MATCH_ASK = 'match_ask';
@@ -23,3 +23,6 @@ export const FUND_ACCOUNT = 'fund_account';
 export const TRANSFER_FUNDS = 'transfer_funds';
 
 export const CANCEL_ORDER = 'cancel_order';
+export const CANCEL = 'cancel';
+export const TRADE = 'trade';
+export const COMMIT_TRADE = 'commitTrade';
