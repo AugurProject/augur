@@ -131,7 +131,9 @@ export default class CreateMarketPreview extends Component {
         this.marketPreview.style.height = `${newHeight}px`;
       } else {
         setTimeout(() => {
-          this.marketPreview.style.height = `${newHeight}px`;
+          if (this.marketPreview) {
+            this.marketPreview.style.height = `${newHeight}px`;
+          }
         }, 1500);
       }
     }
@@ -173,7 +175,9 @@ export default class CreateMarketPreview extends Component {
   }
 
   shouldUpdateHeight(shouldUpdateHeight) {
-    this.setState({ shouldUpdateHeight });
+    if (this.marketPreview) {
+      this.setState({ shouldUpdateHeight });
+    }
   }
 
   render() {
