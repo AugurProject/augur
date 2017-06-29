@@ -3,6 +3,9 @@ import classNames from 'classnames';
 
 import Input from 'modules/common/components/input';
 
+import makePath from 'modules/app/helpers/make-path';
+import { TOPICS } from 'modules/app/constants/views';
+
 export default class AuthLogin extends Component {
   constructor(props) {
     super(props);
@@ -22,6 +25,8 @@ export default class AuthLogin extends Component {
     const p = this.props;
     const s = this.state;
 
+    console.log('p -- ', p);
+
     return (
       <form
         className="auth-login-form"
@@ -40,7 +45,7 @@ export default class AuthLogin extends Component {
               } else {
                 e.target.style.display = 'none';
 
-                history.replaceState(null, null, 'Force Chrome to Prompt For Password Storage');
+                p.history.push(makePath(TOPICS));
               }
             });
           }

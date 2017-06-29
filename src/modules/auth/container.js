@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import AuthView from 'modules/auth/components/auth-view';
 
 import { register, setupAndFundNewAccount } from 'modules/auth/actions/register';
@@ -22,6 +23,6 @@ const mapDispatchToProps = dispatch => ({
   airbitzOnLoad: selectAirbitzOnLoad(dispatch)
 });
 
-const Auth = connect(mapStateToProps, mapDispatchToProps)(AuthView);
+const Auth = withRouter(connect(mapStateToProps, mapDispatchToProps)(AuthView));
 
 export default Auth;

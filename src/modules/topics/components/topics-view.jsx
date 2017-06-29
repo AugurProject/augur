@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
 import NullStateMessage from 'modules/common/components/null-state-message';
@@ -183,7 +182,6 @@ export default class TopicsView extends Component {
     return (
       <section id="topics_view">
         <div id="topics_container">
-          <Link to="/markets">markets brah</Link>
           {!!p.loginAccount && !!p.loginAccount.rep && !!p.loginAccount.rep.value && !!p.branch.id &&
             <Branch {...p.branch} />
           }

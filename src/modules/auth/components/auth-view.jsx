@@ -98,6 +98,7 @@ export default class AuthView extends Component {
           }
           {s.selectedNav === AUTH_LOGIN &&
             <AuthLogin
+              history={p.history}
               submitLogin={p.submitLogin}
               airbitzLogin={p.airbitzLogin}
             />
