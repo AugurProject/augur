@@ -89,9 +89,9 @@ export default class CreateMarketPreview extends Component {
       }
     });
 
-    window.addEventListener('resize', () => {
-      this.shouldUpdateHeight(true);
-    });
+    this.shouldUpdateHeight(true);
+
+    window.addEventListener('resize', this.updatePreviewHeight);
   }
 
   componentWillReceiveProps(nextProps) {
