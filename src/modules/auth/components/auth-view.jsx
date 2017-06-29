@@ -107,7 +107,7 @@ export default class AuthView extends Component {
           {s.selectedNav === AUTH_IMPORT &&
             <AuthImport
               history={p.history}
-              importAccountFromFile={p.importAccountFromFile}
+              importAccount={p.importAccount}
             />
           }
         </article>
