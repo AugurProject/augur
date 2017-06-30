@@ -9,10 +9,12 @@ import AugurLogoIcon from 'modules/common/components/augur-logo-icon';
 import SideBarFilterIcon from 'modules/common/components/side-bar-filter-icon';
 import NotificationsContainer from 'modules/notifications/container';
 
+import getValue from 'utils/get-value';
+
+import makePath from 'modules/app/helpers/make-path';
+
 import * as VIEWS from 'modules/app/constants/views';
 import { FAVORITES, PENDING_REPORTS } from 'modules/markets/constants/markets-subset';
-
-import getValue from 'utils/get-value';
 
 // NOTE --  first child div is there to pass up a ref so that other methods can
 //          acquire the row height of the navs in the footer
@@ -63,8 +65,6 @@ export default class Nav extends Component {
 
     const unseenCount = getValue(p, 'notifications.unseenCount');
 
-    // console.log(' -- ', p);
-
     return (
       <nav className={`app-nav ${p.className ? p.className : ''}`}>
         <div ref={p.navRef && p.navRef} />
@@ -82,7 +82,7 @@ export default class Nav extends Component {
           </Link>
         </div>
         <NavLink
-          to={`/${VIEWS.MARKETS}`}
+          to={makePath(VIEWS.MARKETS)}
           activeClassName="active"
           isActive={(match, location) => {
             if (!match) return false;
@@ -142,7 +142,7 @@ export default class Nav extends Component {
         }
         {p.isLogged &&
           <Link
-            to={VIEWS.TRANSACTIONS}
+            to={makePath(VIEWS.TRANSACTIONS)}
             onClick={() => {
               p.transactionsLink.onClick();
               this.collapseFooter();
@@ -154,24 +154,22 @@ export default class Nav extends Component {
           </Link>
         }
         {p.isLogged &&
-          <Link
-            to={VIEWS.ACCOUNT}
-            onClick={() => {
-              p.accountLink.onClick();
-              this.collapseFooter();
-            }}
-            className={classNames('app-nav-link')}
+          <NavLink
+            to={makePath(VIEWS.ACCOUNT)}
+            activeClassName="active"
+            className="app-nav-link"
+            onClick={() => this.collapseFooter()}
           >
             <i className="nav-icon fa fa-cog" />
             Account
-          </Link>
+          </NavLink>
         }
         {!p.isLogged &&
           <NavLink
-            to={`/${VIEWS.AUTHENTICATION}`}
+            to={makePath(VIEWS.AUTHENTICATION)}
             activeClassName="active"
-            onClick={() => this.collapseFooter()}
             className="app-nav-link"
+            onClick={() => this.collapseFooter()}
           >
             <div className="nav-icon-google-translate-fix">
               <i className="nav-icon">
