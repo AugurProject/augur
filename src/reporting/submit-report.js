@@ -1,16 +1,22 @@
 "use strict";
 
-var assign = require("lodash.assign");
-var abi = require("augur-abi");
-var fixReport = require("./format/fix-report");
 var api = require("../api");
 
-// { event, salt, report, ethics, minValue, maxValue, type, isIndeterminate }
+// { marketID, payoutNumerators, amountToStake }
 function submitReport(p) {
-  return api().MakeReports.submitReport(assign({}, p, {
-    salt: abi.hex(p.salt),
-    report: fixReport(p.report, p.minValue, p.maxValue, p.type, p.isIndeterminate)
-  }));
+  api().Market.getReportingToken({
+    tx: { to: p.marketID },
+    payoutNumerators: p.payoutNumerators
+  }, function (reportingTokenAddress) {
+    api().ReportingToken.buy({
+      _signer: p._signer,
+      tx: { to: reportingTokenAddress, send: true },
+      amountToStake: p.amountToStake,
+      onSent: p.onSent,
+      onSuccess: p.onSuccess,
+      onFailed: p.onFailed
+    });
+  });
 }
 
 module.exports = submitReport;
