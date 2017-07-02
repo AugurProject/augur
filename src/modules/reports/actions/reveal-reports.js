@@ -40,6 +40,7 @@ export function revealReports(cb) {
             type = BINARY;
           }
           augur.reporting.submitReport({
+            _signer: getState().loginAccount.privateKey,
             event: eventID,
             report: report.reportedOutcomeID,
             salt: report.salt,
