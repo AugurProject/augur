@@ -31,12 +31,20 @@ const TransactionsLoadingActions = p => (
         <Spinner />
       </div>
     }
-    {!p.transactionsLoading && p.hasAllTransactionsLoaded &&
+    {!p.transactionsLoading && p.hasAllTransactionsLoaded && <div className="transactions-loaded">
       <span
         className="transactions-all-loaded-message"
       >
         All History Loaded
       </span>
+      <a
+        className={classNames('unstyled', { disabled: p.transactionsLoading })}
+        href={p.transactionsDataString}
+        download="exported-transactions.json"
+      >
+        <span>Export All Transactions</span>
+      </a>
+    </div>
     }
   </article>
 );
