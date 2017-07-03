@@ -67,6 +67,8 @@ module.exports = {
   ],
   CANCEL_GAS: {sell: 288060, buy: 230059},
 
+  DUST_THRESHOLD: new BigNumber(1, 10), // placeholder value
+
   // expected block interval
   SECONDS_PER_BLOCK: 12,
 

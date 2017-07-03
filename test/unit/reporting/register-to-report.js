@@ -46,14 +46,14 @@ describe("reporting/register-to-report", function () {
               assert.isFunction(payload.onSent);
               assert.isFunction(payload.onSuccess);
               assert.isFunction(payload.onFailed);
-              payload.onSuccess({ callReturn: "REGISTER_CALLRETURN" });
+              payload.onSuccess({ callReturn: "REGISTER" });
             }
           }
         }
       }
     },
     assertions: function (output) {
-      assert.deepEqual(output, { callReturn: "REGISTER_CALLRETURN" });
+      assert.deepEqual(output, { callReturn: "REGISTER" });
     }
   });
 });

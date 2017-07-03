@@ -46,14 +46,14 @@ describe("reporting/submit-report", function () {
               assert.isFunction(payload.onSent);
               assert.isFunction(payload.onSuccess);
               assert.isFunction(payload.onFailed);
-              payload.onSuccess({ callReturn: "REPORTING_TOKEN_BUY_CALLRETURN" });
+              payload.onSuccess({ callReturn: "REPORTING_TOKEN_BUY" });
             }
           }
         }
       }
     },
     assertions: function (output) {
-      assert.deepEqual(output, { callReturn: "REPORTING_TOKEN_BUY_CALLRETURN" });
+      assert.deepEqual(output, { callReturn: "REPORTING_TOKEN_BUY" });
     }
   });
 });
