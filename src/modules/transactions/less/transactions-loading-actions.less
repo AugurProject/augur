@@ -32,16 +32,17 @@
   }
 
   .transactions-loaded {
+    align-items: baseline;
     display: flex;
     flex-flow: row nowrap;
     position: relative;
-    align-items: baseline;
 
     & > a {
       .border(true);
+
       background-color: @color-white;
-      padding: 1em 1.2em;
       margin-left: 1em;
+      padding: 1em 1.2em;
     }
 
     & > a:not(:last-of-type) {

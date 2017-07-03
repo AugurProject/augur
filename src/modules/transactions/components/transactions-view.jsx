@@ -165,7 +165,7 @@ export default class TransactionsView extends Component {
               loadAllTransactions={p.loadAllTransactions}
               transactionsLoading={p.transactionsLoading}
               hasAllTransactionsLoaded={p.hasAllTransactionsLoaded}
-              transactionsDataString={"data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(p.transactions))}
+              transactionsDataString={'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(p.transactions))}
             />
           </div>
         </div>
