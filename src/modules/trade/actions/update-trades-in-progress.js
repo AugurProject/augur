@@ -121,7 +121,6 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
           });
         }
         const position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
-        // type, orderShares, orderLimitPrice, takerFee, makerFee, userAddress, userPositionShares, outcomeID, range, marketOrderBook, scalarMinMax
         const tradingActions = augur.trading.simulation.getTradingActions({
           type: newTradeDetails.side,
           orderShares: newTradeDetails.numShares,
@@ -133,24 +132,21 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
           outcomeID,
           range: market.cumulativeScale,
           marketOrderBook: (orderBooks && orderBooks[marketID]) || {},
-          scalarMinMax: (market.type === SCALAR) ? {
-            minValue: market.minValue,
-            maxValue: market.maxValue
-          } : null
+          scalarMinMax: (market.type === SCALAR) ? { minValue: market.minValue, maxValue: market.maxValue } : null
         });
         console.log('trading actions:', JSON.stringify(tradingActions, null, 2));
         dispatch({
           type: UPDATE_TRADE_IN_PROGRESS,
           data: { marketID, outcomeID, details: tradingActions }
         });
-        cb && cb(tradingActions);
+        if (cb) cb(tradingActions);
       });
     } else {
       dispatch({
         type: UPDATE_TRADE_IN_PROGRESS,
         data: { marketID, outcomeID, details: newTradeDetails }
       });
-      cb && cb();
+      if (cb) cb();
     }
   };
 }
