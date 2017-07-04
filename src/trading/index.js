@@ -10,7 +10,6 @@ module.exports = {
   simulation: require("./simulation"),
   takeOrder: require("./take-order"),
   cancel: require("./cancel"),
-  shrinkScalarPrice: require("./shrink-scalar-price"),
-  expandScalarPrice: require("./expand-scalar-price"),
-  adjustScalarSellPrice: require("./adjust-scalar-sell-price")
+  normalizePrice: require("./normalize-price"),
+  denormalizePrice: require("./denormalize-price")
 };

@@ -16,7 +16,7 @@ function migrateLosingTokens(p) {
             fromBlock: previousReportingWindowStartBlock,
             toBlock: previousReportingWindowEndBlock,
             market: p.marketID,
-            contract: augurContracts[rpcInterface.getNetworkID()].ReputationToken
+            address: augurContracts[rpcInterface.getNetworkID()].ReputationToken
           }
         }, function (err, transferLogs) {
           if (err) return p.onFailed(err);
