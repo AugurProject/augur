@@ -1,4 +1,4 @@
-import { augur } from 'services/augurjs';
+import { abi, augur } from 'services/augurjs';
 import { clearTradeInProgress } from 'modules/trade/actions/update-trades-in-progress';
 
 export const placeTrade = (marketID, outcomeID, tradeInProgress, doNotMakeOrders, cb) => (dispatch, getState) => {
