@@ -33,12 +33,14 @@ export default class TransactionsView extends Component {
       pageChanged: false,
       pagination: {},
       paginatedTransactions: [],
-      hasAttachedScrollListener: false
+      hasAttachedScrollListener: false,
+      exportTransactions: false
     };
 
     this.updatePagination = this.updatePagination.bind(this);
     this.paginateTransactions = this.paginateTransactions.bind(this);
     this.handleScroll = debounce(this.handleScroll.bind(this), 100);
+    this.toggleExportTransactions = this.toggleExportTransactions.bind(this);
   }
 
   componentWillMount() {
@@ -142,12 +144,17 @@ export default class TransactionsView extends Component {
     }
   }
 
+  toggleExportTransactions(exportTransactions) {
+    this.setState({ exportTransactions });
+  }
+
   render() {
     const p = this.props;
     const s = this.state;
 
     const hasRep = !!getValue(p, 'loginAccount.rep.value');
     const hasBranch = !!getValue(p, 'branch.id');
+    const transactionsDataString = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(p.transactions));
 
     return (
       <section id="transactions_view">
@@ -165,7 +172,9 @@ export default class TransactionsView extends Component {
               loadAllTransactions={p.loadAllTransactions}
               transactionsLoading={p.transactionsLoading}
               hasAllTransactionsLoaded={p.hasAllTransactionsLoaded}
-              transactionsDataString={'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(p.transactions))}
+              toggleExportTransactions={this.toggleExportTransactions}
+              exportTransactions={s.exportTransactions}
+              transactionsDataString={transactionsDataString}
             />
           </div>
         </div>
