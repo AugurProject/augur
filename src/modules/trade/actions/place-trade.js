@@ -10,12 +10,14 @@ export const placeTrade = (marketID, outcomeID, tradeInProgress, doNotMakeOrders
     return dispatch(clearTradeInProgress(marketID));
   }
   console.log('trade-in-progress:', tradeInProgress);
+  const limitPrice = augur.trading.normalizePrice(market.minValue, market.maxValue, tradeInProgress.limitPrice);
   const tradePayload = {
     _signer: loginAccount.privateKey,
     market: marketID,
     outcome: outcomeID,
     fxpAmount: abi.fix(tradeInProgress.numShares, 'hex'),
-    fxpLimitPrice: abi.fix(tradeInProgress.limitPrice, 'hex'),
+    fxpLimitPrice: abi.fix(limitPrice, 'hex'),
+    tradeGroupID: tradeInProgress.tradeGroupID,
     onSent: res => console.log('sent:', res),
     onSuccess: (res) => {
       console.log('success:', res);
