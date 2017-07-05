@@ -4,7 +4,6 @@ var abi = require("augur-abi");
 var rpc = require("../rpc-interface");
 var decodeTag = require("../format/tag/decode-tag");
 var unfixConsensusOutcome = require("../reporting/format/unfix-consensus-outcome");
-var calculateMakerTakerFees = require("../trading/fees/calculate-maker-taker-fees");
 
 var EVENTS_FIELDS = 9;
 var OUTCOMES_FIELDS = 3;
@@ -34,13 +33,12 @@ module.exports = function (rawInfo) {
   if (!numOutcomes || isNaN(numOutcomes)) return null;
   info = {};
   index = MINIMUM_MARKET_INFO_LENGTH + 1;
-  fees = calculateMakerTakerFees(rawInfo[4], rawInfo[1]);
   topic = decodeTag(rawInfo[12]);
   info = {
     id: abi.format_int256(rawInfo[0]),
     network: rpc.getNetworkID(),
-    makerFee: fees.maker,
-    takerFee: fees.taker,
+    makerFee: 0,
+    takerFee: 0,
     tradingFee: fees.trading,
     numOutcomes: numOutcomes,
     tradingPeriod: parseInt(rawInfo[3], 16),

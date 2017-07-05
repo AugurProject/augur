@@ -1,7 +1,6 @@
 "use strict";
 
 var abi = require("augur-abi");
-var calculateMakerTakerFees = require("../trading/fees/calculate-maker-taker-fees");
 var unfixConsensusOutcome = require("../reporting/format/unfix-consensus-outcome");
 var decodeTag = require("../format/tag/decode-tag");
 
@@ -17,7 +16,6 @@ module.exports = function (marketsArray, branch) {
     len = parseInt(marketsArray[totalLen], 16);
     shift = totalLen + 1;
     marketID = abi.format_int256(marketsArray[shift]);
-    fees = calculateMakerTakerFees(marketsArray[shift + 2], marketsArray[shift + 9]);
     minValue = abi.unfix_signed(marketsArray[shift + 11], "string");
     maxValue = abi.unfix_signed(marketsArray[shift + 12], "string");
     numOutcomes = parseInt(marketsArray[shift + 13], 16);
@@ -44,8 +42,8 @@ module.exports = function (marketsArray, branch) {
       branchID: branch,
       tradingPeriod: parseInt(marketsArray[shift + 1], 16),
       tradingFee: fees.trading,
-      makerFee: fees.maker,
-      takerFee: fees.taker,
+      makerFee: 0,
+      takerFee: 0,
       creationTime: parseInt(marketsArray[shift + 3], 16),
       volume: abi.unfix(marketsArray[shift + 4], "string"),
       topic: topic,

@@ -1,17 +1,18 @@
 "use strict";
 
-var buy = require("../../trading/make-order/buy");
-var sell = require("../../trading/make-order/sell");
+var abi = require("augur-abi");
+var api = require("../../api");
+var normalizePrice = require("../../trading/normalize-price");
 var noop = require("../../utils/noop");
 
-function generateOrder(type, market, outcome, amount, price, scalarMinMax, callback) {
-  var makeOrder = (type === "buy") ? buy : sell;
-  makeOrder({
-    amount: amount,
-    price: price,
+function generateOrder(type, market, outcome, amount, price, bounds, callback) {
+  api().MakeOrder.publicMakeOrder({
+    fxpAmount: abi.fix(amount, "hex"),
+    fxpPrice: normalizePrice(bounds.minValue, bounds.maxValue, price),
     market: market,
     outcome: outcome,
-    scalarMinMax: scalarMinMax,
+    betterOrderID: 0,
+    worseOrderID: 0,
     onSent: noop,
     onSuccess: function (res) {
       callback(null, {
