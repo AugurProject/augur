@@ -49,11 +49,6 @@ import selectedMarketID from 'modules/markets/reducers/selected-market-id';
 import selectedMarketsHeader from 'modules/markets/reducers/selected-markets-header';
 import selectedMarketsSubset from 'modules/markets/reducers/selectedMarketsSubset';
 import tradesInProgress from 'modules/trade/reducers/trades-in-progress';
-import tradeCommitLock from 'modules/trade/reducers/trade-commit-lock';
-import reportCommitLock from 'modules/reports/reducers/report-commit-lock';
-import tradeCommitment from 'modules/trade/reducers/trade-commitment';
-import sellCompleteSetsLock from 'modules/my-positions/reducers/sell-complete-sets-lock';
-import smallestPositions from 'modules/my-positions/reducers/smallest-positions';
 // import createMarketInProgress from 'modules/create-market/reducers/create-market-in-progress';
 import keywords from 'modules/markets/reducers/keywords';
 import selectedTags from 'modules/markets/reducers/selected-tags';
@@ -111,11 +106,6 @@ export function createReducer() {
     priceHistory,
 
     tradesInProgress,
-    tradeCommitLock,
-    reportCommitLock,
-    tradeCommitment,
-    sellCompleteSetsLock,
-    smallestPositions,
 
     orderBooks,
     orderCancellation,
