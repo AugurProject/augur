@@ -56,7 +56,7 @@ const Routes = p => (
       <Route exact path={makePath(VIEWS.DEFAULT_VIEW)} component={Topics} />
       <Route path={makePath(VIEWS.MARKETS)} component={Markets} />
       <Route path={makePath(VIEWS.M)} component={Market} />
-      <Route path={makePath(VIEWS.AUTHENTICATION)} component={Authentication} />
+      <Route path={makePath([VIEWS.AUTH_SIGNUP, VIEWS.AUTH_LOGIN, VIEWS.AUTH_IMPORT])} component={Authentication} />
       <AuthenticatedRoute path={makePath(VIEWS.ACCOUNT)} component={Account} />
       <AuthenticatedRoute path={makePath(VIEWS.TRANSACTIONS)} component={Transactions} />
       <AuthenticatedRoute path={makePath(VIEWS.MY_POSITIONS)} component={Portfolio} />

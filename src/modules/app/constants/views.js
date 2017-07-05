@@ -3,7 +3,7 @@
 // NOTE --  if a view is only accessible when logged in, be sure to add it
 //          to the `authenticated-views` array under app/constants
 
-// ALL VIEWS + SUB VIEWS
+// MAIN VIEWS
 export const M = 'market'; // TODO -- rename this to MARKET
 export const MARKETS = 'markets';
 export const FAVORITES = 'favorites';
@@ -12,10 +12,12 @@ export const CREATE_MARKET = 'create-market';
 export const TRANSACTIONS = 'transactions';
 export const ACCOUNT = 'account';
 export const AUTHENTICATION = 'authentication';
+export const PORTFOLIO = 'portfolio';
 export const TOPICS = 'topics';
 
 export const DEFAULT_VIEW = TOPICS;
 
+// SUB VIEWS
 //  Portfolio
 export const MY_POSITIONS = 'my-positions';
 export const MY_MARKETS = 'my-markets';

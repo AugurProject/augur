@@ -61,6 +61,8 @@ export default class Nav extends Component {
     const p = this.props;
     const s = this.state;
 
+    console.log('p -- ', p);
+
     const animationSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-fast'), 10);
 
     const unseenCount = getValue(p, 'notifications.unseenCount');
@@ -100,58 +102,50 @@ export default class Nav extends Component {
           Markets
         </NavLink>
         {p.isLogged && !!p.numFavorites &&
-          <Link
-            to={VIEWS.FAVORITES}
-            onClick={() => {
-              p.favoritesLink.onClick();
-              this.collapseFooter();
-            }}
-            className={classNames('app-nav-link', { active: (p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader === FAVORITES })}
+          <NavLink
+            to={makePath(VIEWS.FAVORITES)}
+            activeClassName="active"
+            onClick={() => this.collapseFooter()}
+            className="app-nav-link"
           >
             <i className="nav-icon fa fa-star" />
             <span className="nav-count">{p.numFavorites} </span>
             Favorites
-          </Link>
+          </NavLink>
         }
         {p.isLogged && !!p.numPendingReports &&
-          <Link
+          <NavLink
             to={VIEWS.MY_REPORTS}
-            onClick={() => {
-              p.pendingReportsLink.onClick();
-              this.collapseFooter();
-            }}
-            className={classNames('app-nav-link', { active: (p.activeView === MARKETS || (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10)))) && p.marketsInfo.selectedMarketsHeader === PENDING_REPORTS })}
+            activeClassName="active"
+            onClick={() => this.collapseFooter()}
+            className="app-nav-link"
           >
             <i className="nav-icon fa fa-copy" />
             <span className="nav-count">{p.numPendingReports} </span>
             Pending Reports
-          </Link>
+          </NavLink>
         }
         {p.isLogged &&
-          <Link
+          <NavLink
             to={VIEWS.MY_POSITIONS}
-            onClick={() => {
-              p.myPositionsLink.onClick();
-              this.collapseFooter();
-            }}
+            activeClassName="active"
+            onClick={() => this.collapseFooter()}
             className={classNames('app-nav-link')}
           >
             <i className="nav-icon fa fa-money" />
             Portfolio
-          </Link>
+          </NavLink>
         }
         {p.isLogged &&
-          <Link
+          <NavLink
             to={makePath(VIEWS.TRANSACTIONS)}
-            onClick={() => {
-              p.transactionsLink.onClick();
-              this.collapseFooter();
-            }}
+            activeClassName="active"
+            onClick={() => this.collapseFooter()}
             className={classNames('app-nav-link')}
           >
             <i className="nav-icon fa fa-tasks" />
             Transactions
-          </Link>
+          </NavLink>
         }
         {p.isLogged &&
           <NavLink
@@ -166,7 +160,9 @@ export default class Nav extends Component {
         }
         {!p.isLogged &&
           <NavLink
-            to={makePath(VIEWS.AUTHENTICATION)}
+            to={{
+              pathname: makePath(VIEWS.AUTHENTICATION)
+            }}
             activeClassName="active"
             className="app-nav-link"
             onClick={() => this.collapseFooter()}

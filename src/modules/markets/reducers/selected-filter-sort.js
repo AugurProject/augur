@@ -1,6 +1,6 @@
 import { UPDATE_URL } from 'modules/link/actions/update-url';
 import { FILTER_SORT_TYPE, FILTER_SORT_SORT, FILTER_SORT_ISDESC } from 'modules/markets/constants/filter-sort';
-import { FILTER_SORT_TYPE_PARAM_NAME, FILTER_SORT_SORT_PARAM_NAME, FILTER_SORT_ISDESC_PARAM_NAME } from 'modules/link/constants/param-names';
+import { FILTER_SORT_TYPE_PARAM_NAME, FILTER_SORT_SORT_PARAM_NAME, FILTER_SORT_ISDESC_PARAM_NAME } from 'modules/app/constants/param-names';
 import { UPDATE_SELECTED_FILTER_SORT } from 'modules/markets/actions/update-selected-filter-sort';
 import getFilterSort from 'modules/markets/selectors/filter-sort';
 

@@ -36,7 +36,7 @@ import {
 } from 'modules/app/constants/views';
 import { FAVORITES, PENDING_REPORTS } from 'modules/markets/constants/markets-subset';
 
-import { SEARCH_PARAM_NAME, FILTER_SORT_TYPE_PARAM_NAME, FILTER_SORT_SORT_PARAM_NAME, FILTER_SORT_ISDESC_PARAM_NAME, PAGE_PARAM_NAME, TAGS_PARAM_NAME, TOPIC_PARAM_NAME, SUBSET_PARAM_NAME } from 'modules/link/constants/param-names';
+import { SEARCH_PARAM_NAME, FILTER_SORT_TYPE_PARAM_NAME, FILTER_SORT_SORT_PARAM_NAME, FILTER_SORT_ISDESC_PARAM_NAME, PAGE_PARAM_NAME, TAGS_PARAM_NAME, TOPIC_PARAM_NAME, SUBSET_PARAM_NAME } from 'modules/app/constants/param-names';
 import { FILTER_SORT_TYPE, FILTER_SORT_SORT, FILTER_SORT_ISDESC } from 'modules/markets/constants/filter-sort';
 
 import { listWordsUnderLength } from 'utils/list-words-under-length';

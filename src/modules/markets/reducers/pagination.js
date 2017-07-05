@@ -3,7 +3,7 @@ import { UPDATE_SELECTED_FILTER_SORT } from 'modules/markets/actions/update-sele
 import { UPDATE_KEYWORDS } from 'modules/markets/actions/update-keywords';
 import { TOGGLE_TAG } from 'modules/markets/actions/toggle-tag';
 import { UPDATE_SELECTED_MARKETS_HEADER } from 'modules/markets/actions/update-selected-markets-header';
-import { PAGE_PARAM_NAME } from 'modules/link/constants/param-names';
+import { PAGE_PARAM_NAME } from 'modules/app/constants/param-names';
 import { DEFAULT_PAGE } from 'modules/markets/constants/pagination';
 
 import { UPDATE_URL } from 'modules/link/actions/update-url';

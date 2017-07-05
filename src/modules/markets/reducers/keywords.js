@@ -1,6 +1,6 @@
 import { UPDATE_KEYWORDS } from 'modules/markets/actions/update-keywords';
 import { UPDATE_URL } from 'modules/link/actions/update-url';
-import { SEARCH_PARAM_NAME } from 'modules/link/constants/param-names';
+import { SEARCH_PARAM_NAME } from 'modules/app/constants/param-names';
 
 export default function (keywords = '', action) {
   let params;

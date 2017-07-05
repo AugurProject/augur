@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import Nav from 'modules/nav/components/nav';
 
@@ -18,6 +19,6 @@ const mapStateToProps = state => ({
 //   clearNotifications: () => dispatch(clearNotifications())
 // });
 
-const NavContainer = connect(mapStateToProps)(Nav);
+const NavContainer = withRouter(connect(mapStateToProps)(Nav));
 
 export default NavContainer;
