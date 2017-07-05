@@ -11,14 +11,15 @@ import debounce from 'utils/debounce';
 
 export default class TransactionsView extends Component {
   static propTypes = {
-    branch: PropTypes.object,
-    currentBlockNumber: PropTypes.number,
-    loginAccount: PropTypes.object,
     transactions: PropTypes.array.isRequired,
     transactionsLoading: PropTypes.bool.isRequired,
     loadMoreTransactions: PropTypes.func.isRequired,
     loadAllTransactions: PropTypes.func.isRequired,
-    isMobile: PropTypes.bool.isRequired
+    hasAllTransactionsLoaded: PropTypes.bool.isRequired,
+    isMobile: PropTypes.bool.isRequired,
+    branch: PropTypes.object,
+    loginAccount: PropTypes.object,
+    currentBlockNumber: PropTypes.number
   };
 
   constructor(props) {
@@ -34,7 +35,8 @@ export default class TransactionsView extends Component {
       pagination: {},
       paginatedTransactions: [],
       hasAttachedScrollListener: false,
-      exportTransactions: false
+      exportTransactions: false,
+      transactionsDataString: 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.props.transactions))
     };
 
     this.updatePagination = this.updatePagination.bind(this);
@@ -68,6 +70,9 @@ export default class TransactionsView extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     this.manageScrollEventListener(this.props, this.state);
+    if (this.state.exportTransactions && !this.props.transactionsLoading && this.props.hasAllTransactionsLoaded) {
+      this.handleExportTransactions(this.props, this.state);
+    }
   }
 
   componentWillUnmount() {
@@ -86,6 +91,19 @@ export default class TransactionsView extends Component {
     if (documentHeight - currentScrollPosition < 200 && !this.props.transactionsLoading) {
       this.props.loadMoreTransactions();
     }
+  }
+
+  handleExportTransactions(p, s) {
+    const transactionsDataString = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(p.transactions));
+    const a = document.createElement('a');
+
+    a.setAttribute('href', transactionsDataString);
+    a.setAttribute('download', 'AugurTransactions.json');
+    a.click();
+    this.setState({
+      exportTransactions: false,
+      transactionsDataString
+    });
   }
 
   manageScrollEventListener(p, s) {
@@ -145,7 +163,11 @@ export default class TransactionsView extends Component {
   }
 
   toggleExportTransactions(exportTransactions) {
-    this.setState({ exportTransactions });
+    if (exportTransactions) {
+      this.setState({ exportTransactions });
+    } else {
+      this.handleExportTransactions(this.props, this.state);
+    }
   }
 
   render() {
@@ -154,7 +176,6 @@ export default class TransactionsView extends Component {
 
     const hasRep = !!getValue(p, 'loginAccount.rep.value');
     const hasBranch = !!getValue(p, 'branch.id');
-    const transactionsDataString = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(p.transactions));
 
     return (
       <section id="transactions_view">
@@ -173,8 +194,7 @@ export default class TransactionsView extends Component {
               transactionsLoading={p.transactionsLoading}
               hasAllTransactionsLoaded={p.hasAllTransactionsLoaded}
               toggleExportTransactions={this.toggleExportTransactions}
-              exportTransactions={s.exportTransactions}
-              transactionsDataString={transactionsDataString}
+              transactionsDataString={s.transactionsDataString}
             />
           </div>
         </div>

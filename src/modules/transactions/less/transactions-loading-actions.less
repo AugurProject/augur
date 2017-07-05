@@ -8,6 +8,7 @@
     position: relative;
 
     & > button {
+      cursor: pointer;
       padding: 1em 1.2em;
     }
 
@@ -37,15 +38,16 @@
     flex-flow: row nowrap;
     position: relative;
 
-    & > a {
+    & > button {
       .border(true);
 
       background-color: @color-white;
+      cursor: pointer;
       margin-left: 1em;
       padding: 1em 1.2em;
     }
 
-    & > a:not(:last-of-type) {
+    & > button:not(:last-of-type) {
       .border(true, @border-right);
     }
   }
