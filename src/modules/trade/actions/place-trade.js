@@ -15,21 +15,20 @@ export const placeTrade = (marketID, outcomeID, tradeInProgress, doNotMakeOrders
   const limitPrice = augur.trading.normalizePrice(market.minValue, market.maxValue, tradeInProgress.limitPrice);
   const tradePayload = {
     _signer: loginAccount.privateKey,
+    direction: tradeInProgress.side === BUY ? 1 : 2,
     market: marketID,
     outcome: outcomeID,
     fxpAmount: abi.fix(tradeInProgress.numShares, 'hex'),
     fxpPrice: abi.fix(limitPrice, 'hex'),
     tradeGroupID: tradeInProgress.tradeGroupID,
-    onSent: noop,
-    onSuccess: () => callback(null),
+    onSent: () => callback(null, tradeInProgress.tradeGroupID),
+    onSuccess: noop,
     onFailed: callback
   };
   if (doNotMakeOrders) {
-    augur.api.Trade.publicTakeBestOrder({ ...tradePayload, type: tradeInProgress.side });
-  } else if (tradeInProgress.side === BUY) {
-    augur.api.Trade.publicBuy(tradePayload);
-  } else if (tradeInProgress.side === SELL) {
-    augur.api.Trade.publicSell(tradePayload);
+    augur.api.Trade.publicTakeBestOrder(tradePayload);
+  } else {
+    augur.api.Trade.publicTrade(tradePayload);
   }
   dispatch(clearTradeInProgress(marketID));
 };

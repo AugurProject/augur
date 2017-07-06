@@ -49,8 +49,9 @@ describe(`modules/trade/actions/place-trade.js`, () => {
             publicTakeBestOrder: (p) => {
               assert.fail();
             },
-            publicBuy: (p) => {
+            publicTrade: (p) => {
               assert.strictEqual(p._signer.toString('utf8'), 'PRIVATE_KEY');
+              assert.strictEqual(p.direction, 1);
               assert.strictEqual(p.market, 'testBinaryMarketID');
               assert.strictEqual(p.outcome, '2');
               assert.strictEqual(p.fxpAmount, '0x8ac7230489e80000');
@@ -59,10 +60,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
               assert.isFunction(p.onSent);
               assert.isFunction(p.onSuccess);
               assert.isFunction(p.onFailed);
-              p.onSuccess({});
-            },
-            publicSell: (p) => {
-              assert.fail();
+              p.onSent({});
             }
           }
         }
@@ -89,11 +87,9 @@ describe(`modules/trade/actions/place-trade.js`, () => {
             publicTakeBestOrder: (p) => {
               assert.fail();
             },
-            publicBuy: (p) => {
-              assert.fail();
-            },
-            publicSell: (p) => {
+            publicTrade: (p) => {
               assert.strictEqual(p._signer.toString('utf8'), 'PRIVATE_KEY');
+              assert.strictEqual(p.direction, 2);
               assert.strictEqual(p.market, 'testBinaryMarketID');
               assert.strictEqual(p.outcome, '2');
               assert.strictEqual(p.fxpAmount, '0x8ac7230489e80000');
@@ -102,7 +98,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
               assert.isFunction(p.onSent);
               assert.isFunction(p.onSuccess);
               assert.isFunction(p.onFailed);
-              p.onSuccess({});
+              p.onSent({});
             }
           }
         }
@@ -128,6 +124,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
           Trade: {
             publicTakeBestOrder: (p) => {
               assert.strictEqual(p._signer.toString('utf8'), 'PRIVATE_KEY');
+              assert.strictEqual(p.direction, 2);
               assert.strictEqual(p.market, 'testBinaryMarketID');
               assert.strictEqual(p.outcome, '2');
               assert.strictEqual(p.fxpAmount, '0x8ac7230489e80000');
@@ -136,12 +133,9 @@ describe(`modules/trade/actions/place-trade.js`, () => {
               assert.isFunction(p.onSent);
               assert.isFunction(p.onSuccess);
               assert.isFunction(p.onFailed);
-              p.onSuccess({});
+              p.onSent({});
             },
-            publicBuy: (p) => {
-              assert.fail();
-            },
-            publicSell: (p) => {
+            publicTrade: (p) => {
               assert.fail();
             }
           }
