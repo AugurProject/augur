@@ -8,10 +8,11 @@ import ValueDenomination from 'modules/common/components/value-denomination';
 import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views';
 
 import debounce from 'utils/debounce';
+import makePath from 'modules/app/helpers/make-path';
 
 export default class PortfolioNavs extends Component {
   static propTypes = {
-    activeView: PropTypes.string.isRequired,
+    location: PropTypes.object.isRequired,
     portfolioNavItems: PropTypes.array.isRequired
   };
 
@@ -26,9 +27,9 @@ export default class PortfolioNavs extends Component {
   }
 
   componentDidMount() {
-    if (this.props.activeView === MY_POSITIONS ||
-      this.props.activeView === MY_MARKETS ||
-      this.props.activeView === MY_REPORTS
+    if (this.props.location.pathname === makePath(MY_POSITIONS) ||
+        this.props.location.pathname === makePath(MY_MARKETS) ||
+        this.props.location.pathname === makePath(MY_REPORTS)
     ) {
       this.updatePortfolioNavHeight();
     }
@@ -36,10 +37,10 @@ export default class PortfolioNavs extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (
-      this.props.activeView !== nextProps.activeView &&
-      (nextProps.activeView === MY_POSITIONS ||
-      nextProps.activeView === MY_MARKETS ||
-      nextProps.activeView === MY_REPORTS)
+      this.props.location.pathname !== nextProps.location.pathname &&
+      (nextProps.location.pathname === makePath(MY_POSITIONS) ||
+      nextProps.location.pathname === makePath(MY_MARKETS) ||
+      nextProps.location.pathname === makePath(MY_REPORTS))
     ) {
       this.updatePortfolioNavHeight();
     }
@@ -50,6 +51,8 @@ export default class PortfolioNavs extends Component {
   }
 
   updatePortfolioNavHeight() {
+    console.log('updatePortfolioNavHeight -- ', this.portfolioNav);
+
     if (this.portfolioNav) {
       const newHeight = this.portfolioNavContainer && this.portfolioNavContainer.clientHeight;
 
@@ -59,6 +62,8 @@ export default class PortfolioNavs extends Component {
 
   render() {
     const p = this.props;
+
+    console.log('p hyo -- ', p);
 
     return (
       <article
@@ -73,7 +78,7 @@ export default class PortfolioNavs extends Component {
             {(p.portfolioNavItems || []).map((navItem, i) => (
               <Link
                 key={navItem.label}
-                className={classNames('portfolio-nav-item', { 'active-nav-item': navItem.page === p.activeView })}
+                className={classNames('portfolio-nav-item', { 'active-nav-item': makePath(navItem.page) === p.location.pathname })}
                 href={navItem.link.href}
                 onClick={navItem.link.onClick}
               >

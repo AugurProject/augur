@@ -12,7 +12,6 @@ import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/view
 
 const PortfolioView = p => (
   <section id="portfolio_view" >
-    <span>TEST</span>
     <Route path={makePath(MY_POSITIONS)} component={MyPositions} />
     <Route path={makePath(MY_MARKETS)} component={MyMarkets} />
     <Route path={makePath(MY_REPORTS)} component={MyReports} />
@@ -24,14 +23,3 @@ PortfolioView.propTypes = {
 };
 
 export default PortfolioView;
-
-
-// {p.activeView === MY_POSITIONS &&
-//   <MyPositions />
-// }
-// {p.activeView === MY_MARKETS &&
-//   <MyMarkets />
-// }
-// {p.activeView === MY_REPORTS &&
-//   <MyReports />
-// }

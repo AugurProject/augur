@@ -1,4 +1,6 @@
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+
 import App from 'modules/app/components/app';
 
 import { selectNotificationsAndSeenCount } from 'modules/notifications/selectors/notifications';
@@ -16,7 +18,6 @@ import getValue from 'utils/get-value';
 
 const mapStateToProps = state => ({
   url: state.url,
-  activeView: state.activeView,
   loginAccount: state.loginAccount,
   marketsHeader: selectMarketsHeader(state),
   portfolio: portfolio(),
@@ -37,6 +38,6 @@ const mapDispatchToProps = dispatch => ({
   updateFooterHeight: footerHeight => dispatch(updateFooterHeight(footerHeight))
 });
 
-const AppContainer = connect(mapStateToProps, mapDispatchToProps)(App);
+const AppContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
 
 export default AppContainer;

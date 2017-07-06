@@ -7,6 +7,8 @@ import classNames from 'classnames';
 import PortfolioNav from 'modules/portfolio/containers/portfolio-nav';
 import ValueDenomination from 'modules/common/components/value-denomination';
 
+import makePath from 'modules/app/helpers/make-path';
+
 import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views';
 
 const CoreStats = p => (
@@ -40,13 +42,16 @@ const CoreStats = p => (
     ))}
     <PortfolioNav
       className={classNames('additional-stats', {
-        'display-additional-stats': p.activeView === MY_POSITIONS || p.activeView === MY_MARKETS || p.activeView === MY_REPORTS
+        'display-additional-stats': p.location.pathname === makePath(MY_POSITIONS) ||
+          p.location.pathname === makePath(MY_MARKETS) ||
+          p.location.pathname === makePath(MY_REPORTS)
       })}
     />
   </article>
 );
 
 CoreStats.propTypes = {
+  location: PropTypes.object.isRequired,
   coreStats: PropTypes.array
 };
 

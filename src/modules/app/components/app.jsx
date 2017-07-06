@@ -11,12 +11,13 @@ import CoreStats from 'modules/app/components/core-stats';
 import ChatView from 'modules/chat/components/chat-view';
 import SidebarMask from 'modules/common/components/side-bar-mask';
 
-import { CREATE_MARKET } from 'modules/app/constants/views';
-
+import makePath from 'modules/app/helpers/make-path';
 import shouldComponentUpdatePure from 'utils/should-component-update-pure';
 import handleScrollTop from 'utils/scroll-top-on-change';
 import debounce from 'utils/debounce';
 import getValue from 'utils/get-value';
+
+import { CREATE_MARKET } from 'modules/app/constants/views';
 
 export default class AppView extends Component {
   static propTypes = {
@@ -152,7 +153,6 @@ export default class AppView extends Component {
       isSideBarCollapsed: s.isSideBarCollapsed,
       isSideBarPersistent: s.isSideBarPersistent,
       toggleSideBar: () => { this.toggleSideBar(); },
-      activeView: p.activeView,
       marketsInfo: p.marketsHeader,
       portfolioTotals: getValue(p, 'portfolio.totals'),
       numFavorites: getValue(p, 'marketsHeader.numFavorites'),
@@ -202,8 +202,8 @@ export default class AppView extends Component {
                 }
                 {p.isLogged &&
                   <CoreStats
-                    activeView={p.activeView}
                     coreStats={p.coreStats}
+                    location={p.location}
                   />
                 }
               </div>
@@ -223,13 +223,13 @@ export default class AppView extends Component {
                   <div className={classNames('sub-header', { 'logged-out': !p.isLogged })} >
                     {p.isLogged &&
                       <CoreStats
-                        activeView={p.activeView}
                         coreStats={p.coreStats}
+                        location={p.location}
                       />
                     }
                   </div>
                   {p.children}
-                  {p.activeView !== CREATE_MARKET &&
+                  {p.location.pathname !== makePath(CREATE_MARKET) &&
                     <Footer {...navProps} />
                   }
                 </div>
