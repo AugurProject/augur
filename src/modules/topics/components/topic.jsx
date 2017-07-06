@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip';
 import classNames from 'classnames';
 
@@ -7,8 +8,11 @@ import TopicIcon from 'modules/topics/components/topic-icon';
 
 import debounce from 'utils/debounce';
 import fitText from 'utils/fit-text';
+import makePath from 'modules/app/helpers/make-path';
 
 import { TOPIC_VOLUME_INCREASED, TOPIC_VOLUME_DECREASED } from 'modules/topics/constants/topic-popularity-change';
+import { MARKETS } from 'modules/app/constants/views';
+import { TOPIC_PARAM_NAME } from 'modules/app/constants/param-names';
 
 export default class Topic extends Component {
   static propTypes = {
@@ -55,11 +59,14 @@ export default class Topic extends Component {
     const s = this.state;
 
     return (
-      <button
+      <Link
+        to={{
+          pathname: makePath(MARKETS),
+          search: `?${TOPIC_PARAM_NAME}=${p.topic}`
+        }}
         key={`${p.topic}-${p.popularity}`}
         ref={(topicNameContainer) => { this.topicNameContainer = topicNameContainer; }}
-        className={classNames('unstyled topic-button', { isHero: p.isHero, 'is-spacer-topic': p.isSpacer, 'search-result': p.isSearchResult })}
-        onClick={() => p.selectTopic(p.topic)}
+        className={classNames('unstyled button topic-button', { isHero: p.isHero, 'is-spacer-topic': p.isSpacer, 'search-result': p.isSearchResult })}
       >
         {!p.isSpacer &&
           <div className="topic-content">
@@ -89,7 +96,7 @@ export default class Topic extends Component {
         <ReactTooltip id="topic-volume-tooltip" type="light" effect="solid" place="top">
           <span className="tooltip-text">Total Market Volume</span>
         </ReactTooltip>
-      </button>
+      </Link>
     );
   }
 }

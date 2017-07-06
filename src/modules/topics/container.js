@@ -2,7 +2,7 @@ import { connect } from 'react-redux';
 import TopicsView from 'modules/topics/components/topics-view';
 
 import { selectLoginAccount } from 'modules/auth/selectors/login-account';
-import { selectTopicLink, selectCreateMarketLink } from 'modules/link/selectors/links';
+import { selectCreateMarketLink } from 'modules/link/selectors/links';
 import { selectTopics } from 'modules/topics/selectors/topics';
 
 const mapStateToProps = state => ({
@@ -12,7 +12,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  selectTopic: topic => selectTopicLink(topic, dispatch).onClick(),
   createMarketLink: selectCreateMarketLink(dispatch)
 });
 
