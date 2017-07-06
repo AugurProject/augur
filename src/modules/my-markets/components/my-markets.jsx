@@ -17,6 +17,7 @@ const MyMarkets = p => (
           transactionsLoading={p.transactionsLoading}
           hasAllTransactionsLoaded={p.hasAllTransactionsLoaded}
           triggerTransactionsExport={p.triggerTransactionsExport}
+          registerBlockNumber={p.registerBlockNumber}
         />
       </div>
     </div>

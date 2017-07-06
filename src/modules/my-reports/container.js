@@ -9,7 +9,8 @@ const mapStateToProps = state => ({
   branch: state.branch,
   reports: getMyReports(),
   transactionsLoading: state.transactionsLoading,
-  hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber
+  hasAllTransactionsLoaded: state.transactionsOldestLoadedBlock === state.loginAccount.registerBlockNumber,
+  registerBlockNumber: state.loginAccount.registerBlockNumber
 });
 
 const mapDispatchToProps = dispatch => ({
