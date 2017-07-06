@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
-import Link from 'modules/link/components/link';
 import ValueDenomination from 'modules/common/components/value-denomination';
 
 import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views';
@@ -51,8 +51,6 @@ export default class PortfolioNavs extends Component {
   }
 
   updatePortfolioNavHeight() {
-    console.log('updatePortfolioNavHeight -- ', this.portfolioNav);
-
     if (this.portfolioNav) {
       const newHeight = this.portfolioNavContainer && this.portfolioNavContainer.clientHeight;
 
@@ -62,8 +60,6 @@ export default class PortfolioNavs extends Component {
 
   render() {
     const p = this.props;
-
-    console.log('p hyo -- ', p);
 
     return (
       <article
@@ -77,10 +73,9 @@ export default class PortfolioNavs extends Component {
           <div className="portfolio-navs-content">
             {(p.portfolioNavItems || []).map((navItem, i) => (
               <Link
+                to={makePath(navItem.view)}
                 key={navItem.label}
-                className={classNames('portfolio-nav-item', { 'active-nav-item': makePath(navItem.page) === p.location.pathname })}
-                href={navItem.link.href}
-                onClick={navItem.link.onClick}
+                className={classNames('portfolio-nav-item', { 'active-nav-item': makePath(navItem.view) === p.location.pathname })}
               >
                 <span>{navItem.label}</span>
                 <div className="portfolio-nav-item-stats">
