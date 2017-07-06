@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import MyMarkets from 'modules/my-markets/components/my-markets';
 import getMyMarkets from 'modules/my-markets/selectors/my-markets';
 import { loadAccountHistory } from 'modules/auth/actions/load-account-history';
+import { triggerTransactionsExport } from 'modules/transactions/actions/trigger-transactions-export';
 
 const mapStateToProps = state => ({
   myMarkets: getMyMarkets(),
@@ -12,7 +13,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
   loadMoreTransactions: () => dispatch(loadAccountHistory()),
-  loadAllTransactions: () => dispatch(loadAccountHistory(true))
+  loadAllTransactions: () => dispatch(loadAccountHistory(true)),
+  triggerTransactionsExport: () => dispatch(triggerTransactionsExport()),
 });
 
 const MyMarketsContainer = connect(mapStateToProps, mapDispatchToProps)(MyMarkets);

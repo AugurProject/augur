@@ -9,6 +9,7 @@ import getClosePositionStatus from 'modules/my-positions/selectors/close-positio
 import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination';
 import getOrderCancellation from 'modules/bids-asks/selectors/order-cancellation';
 import { loadAccountHistory } from 'modules/auth/actions/load-account-history';
+import { triggerTransactionsExport } from 'modules/transactions/actions/trigger-transactions-export';
 
 const mapStateToProps = (state) => {
   const positions = getLoginAccountPositions();
@@ -27,7 +28,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = dispatch => ({
   loadMoreTransactions: () => dispatch(loadAccountHistory()),
-  loadAllTransactions: () => dispatch(loadAccountHistory(true))
+  loadAllTransactions: () => dispatch(loadAccountHistory(true)),
+  triggerTransactionsExport: () => dispatch(triggerTransactionsExport()),
 });
 
 const MyPositionsContainer = connect(mapStateToProps, mapDispatchToProps)(MyPositions);
