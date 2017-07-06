@@ -15,6 +15,7 @@ export default class TransactionsView extends Component {
     transactionsLoading: PropTypes.bool.isRequired,
     loadMoreTransactions: PropTypes.func.isRequired,
     loadAllTransactions: PropTypes.func.isRequired,
+    triggerTransactionsExport: PropTypes.func.isRequired,
     hasAllTransactionsLoaded: PropTypes.bool.isRequired,
     isMobile: PropTypes.bool.isRequired,
     branch: PropTypes.object,
@@ -35,14 +36,11 @@ export default class TransactionsView extends Component {
       pagination: {},
       paginatedTransactions: [],
       hasAttachedScrollListener: false,
-      exportTransactions: false,
-      transactionsDataString: 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.props.transactions))
     };
 
     this.updatePagination = this.updatePagination.bind(this);
     this.paginateTransactions = this.paginateTransactions.bind(this);
     this.handleScroll = debounce(this.handleScroll.bind(this), 100);
-    this.toggleExportTransactions = this.toggleExportTransactions.bind(this);
   }
 
   componentWillMount() {
@@ -70,9 +68,6 @@ export default class TransactionsView extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     this.manageScrollEventListener(this.props, this.state);
-    if (this.state.exportTransactions && !this.props.transactionsLoading && this.props.hasAllTransactionsLoaded) {
-      this.handleExportTransactions(this.props, this.state);
-    }
   }
 
   componentWillUnmount() {
@@ -91,19 +86,6 @@ export default class TransactionsView extends Component {
     if (documentHeight - currentScrollPosition < 200 && !this.props.transactionsLoading) {
       this.props.loadMoreTransactions();
     }
-  }
-
-  handleExportTransactions(p, s) {
-    const transactionsDataString = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(p.transactions));
-    const a = document.createElement('a');
-
-    a.setAttribute('href', transactionsDataString);
-    a.setAttribute('download', 'AugurTransactions.json');
-    a.click();
-    this.setState({
-      exportTransactions: false,
-      transactionsDataString
-    });
   }
 
   manageScrollEventListener(p, s) {
@@ -162,14 +144,6 @@ export default class TransactionsView extends Component {
     }
   }
 
-  toggleExportTransactions(exportTransactions) {
-    if (exportTransactions) {
-      this.setState({ exportTransactions });
-    } else {
-      this.handleExportTransactions(this.props, this.state);
-    }
-  }
-
   render() {
     const p = this.props;
     const s = this.state;
@@ -193,8 +167,7 @@ export default class TransactionsView extends Component {
               loadAllTransactions={p.loadAllTransactions}
               transactionsLoading={p.transactionsLoading}
               hasAllTransactionsLoaded={p.hasAllTransactionsLoaded}
-              toggleExportTransactions={this.toggleExportTransactions}
-              transactionsDataString={s.transactionsDataString}
+              triggerTransactionsExport={p.triggerTransactionsExport}
             />
           </div>
         </div>

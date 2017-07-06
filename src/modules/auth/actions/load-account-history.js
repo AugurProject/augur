@@ -8,9 +8,10 @@ import { loadReportingHistory } from 'modules/my-reports/actions/load-reporting-
 import { syncBranch } from 'modules/branch/actions/sync-branch';
 import { updateTransactionsOldestLoadedBlock } from 'modules/transactions/actions/update-transactions-oldest-loaded-block';
 import { updateTransactionsLoading } from 'modules/transactions/actions/update-transactions-loading';
+import { triggerTransactionsExport } from 'modules/transactions/actions/trigger-transactions-export';
 
 export const loadAccountHistory = loadAllHistory => (dispatch, getState) => {
-  const { transactionsOldestLoadedBlock, blockchain, loginAccount, transactionsData } = getState();
+  const { transactionsOldestLoadedBlock, blockchain, loginAccount, transactionsData, willExportTransactions } = getState();
   const initialTransactionCount = Object.keys(transactionsData || {}).length;
 
   // Adjust these to constrain the loading boundaries
@@ -41,7 +42,8 @@ export const loadAccountHistory = loadAllHistory => (dispatch, getState) => {
       initialTransactionCount,
       transactionSoftLimit,
       registerBlock,
-      blockChunkSize
+      blockChunkSize,
+      willExportTransactions
     };
 
     loadTransactions(dispatch, getState, options, constraints, loadMoreTransactions);
@@ -70,6 +72,9 @@ export function loadMoreTransactions(dispatch, getState, options, constraints) {
       loadTransactions(dispatch, getState, updatedOptions, constraints, loadMoreTransactions);
     } else {
       dispatch(updateTransactionsLoading(false));
+      if (constraints.willExportTransactions) {
+        dispatch(triggerTransactionsExport());
+      }
     }
 
     return;
@@ -77,6 +82,9 @@ export function loadMoreTransactions(dispatch, getState, options, constraints) {
 
   dispatch(updateTransactionsOldestLoadedBlock(constraints.registerBlock));
   dispatch(updateTransactionsLoading(false));
+  if (constraints.willExportTransactions) {
+    dispatch(triggerTransactionsExport());
+  }
 }
 
 function loadTransactions(dispatch, getState, options, constraints, cb) {

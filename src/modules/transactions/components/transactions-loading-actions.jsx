@@ -27,8 +27,7 @@ const TransactionsLoadingActions = p => (
           className={classNames('unstyled', { disabled: p.transactionsLoading })}
           onClick={() => {
             if (!p.transactionsLoading) {
-              p.loadAllTransactions();
-              p.toggleExportTransactions(true);
+              p.triggerTransactionsExport();
             }
           }}
         >
@@ -51,7 +50,7 @@ const TransactionsLoadingActions = p => (
       <button
         className={classNames('unstyled', { disabled: p.transactionsLoading })}
         onClick={() => {
-          p.toggleExportTransactions(false);
+          p.triggerTransactionsExport();
         }}
       >
         <span>Export All Transactions</span>
@@ -64,7 +63,7 @@ const TransactionsLoadingActions = p => (
 TransactionsLoadingActions.propTypes = {
   loadMoreTransactions: PropTypes.func.isRequired,
   loadAllTransactions: PropTypes.func.isRequired,
-  toggleExportTransactions: PropTypes.func.isRequired,
+  triggerTransactionsExport: PropTypes.func.isRequired,
   transactionsLoading: PropTypes.bool,
   hasAllTransactionsLoaded: PropTypes.bool
 };
