@@ -1,12 +1,9 @@
 import { loadAccountHistory } from 'modules/auth/actions/load-account-history';
 import { selectTransactions } from 'modules/transactions/selectors/transactions';
 
-export const UPDATE_WILL_EXPORT_TRANSACTIONS = 'UPDATE_WILL_EXPORT_TRANSACTIONS';
-
 export const triggerTransactionsExport = () => (dispatch, getState) => {
   const { transactionsLoading, transactionsOldestLoadedBlock, loginAccount } = getState();
   const loadedAllTransactions = transactionsOldestLoadedBlock === loginAccount.registerBlockNumber;
-  let willExportTransactions = false;
 
   if (!transactionsLoading && loadedAllTransactions) {
     // trigger download
@@ -18,19 +15,7 @@ export const triggerTransactionsExport = () => (dispatch, getState) => {
     a.setAttribute('download', 'AugurTransactions.json');
     a.click();
   } else {
-    // trigger load all transactions and set the state of willExportTransactions to true.
-    dispatch(loadAccountHistory(true));
-    willExportTransactions = true;
+    // trigger load all transactions and give it this function as a callback.
+    dispatch(loadAccountHistory(true, triggerTransactionsExport));
   }
-  // return the action to update willExportTransactions
-  dispatch(updateWillExportTransactions(willExportTransactions));
 };
-
-export function updateWillExportTransactions(willExportTransactions) {
-  return {
-    type: UPDATE_WILL_EXPORT_TRANSACTIONS,
-    data: {
-      willExportTransactions
-    }
-  };
-}

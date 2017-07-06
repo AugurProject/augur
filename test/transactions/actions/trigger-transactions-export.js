@@ -38,7 +38,7 @@ describe(`modules/transactions/actions/trigger-transactions-export.js`, () => {
       selectTransactions: state => state.transactions
     },
     loadAccountHistory: {
-      loadAccountHistory: loadAll => ({ type: 'LOAD_ACCOUNT_HISTORY', loadAll })
+      loadAccountHistory: (loadAll, cb) => ({ type: 'LOAD_ACCOUNT_HISTORY', loadAll })
     },
     document: {
       createElement: (type) => {
@@ -58,7 +58,7 @@ describe(`modules/transactions/actions/trigger-transactions-export.js`, () => {
         };
       }
     },
-    expectedOutput: [{ type: 'UPDATE_WILL_EXPORT_TRANSACTIONS', data: { willExportTransactions: false } }],
+    expectedOutput: [],
     assertions: (storeActions, expected) => {
       assert.deepEqual(storeActions, expected, 'Did not produce the expected actions');
     }
@@ -75,9 +75,13 @@ describe(`modules/transactions/actions/trigger-transactions-export.js`, () => {
       selectTransactions: state => state.transactions
     },
     loadAccountHistory: {
-      loadAccountHistory: loadAll => ({ type: 'LOAD_ACCOUNT_HISTORY', loadAll })
+      loadAccountHistory: (loadAll, cb) => {
+        assert.isTrue(loadAll, 'loadAll passed to loadAccountHistory should be true');
+        assert.isFunction(cb, 'cb passed to loadAccountHistory should be a function');
+        return { type: 'LOAD_ACCOUNT_HISTORY', loadAll };
+      }
     },
-    expectedOutput: [{ type: 'LOAD_ACCOUNT_HISTORY', loadAll: true }, { type: 'UPDATE_WILL_EXPORT_TRANSACTIONS', data: { willExportTransactions: true } }],
+    expectedOutput: [{ type: 'LOAD_ACCOUNT_HISTORY', loadAll: true }],
     assertions: (storeActions, expected) => {
       assert.deepEqual(storeActions, expected, 'Did not produce the expected actions');
     }
