@@ -9,7 +9,9 @@ import AirbitzLogoIcon from 'modules/common/components/airbitz-logo-icon';
 
 import ComponentNav from 'modules/common/components/component-nav';
 
-import { AUTH_SIGNUP, AUTH_LOGIN, AUTH_IMPORT } from 'modules/app/constants/views';
+import makePath from 'modules/app/helpers/make-path';
+
+import { SIGNUP, LOGIN, IMPORT } from 'modules/app/constants/views';
 
 export default class AuthView extends Component {
   static propTypes = {
@@ -26,7 +28,7 @@ export default class AuthView extends Component {
     super(props);
 
     this.state = {
-      selectedNav: AUTH_SIGNUP,
+      selectedNav: SIGNUP,
       selectedAuthMethod: null,
       selectedLoginIDMethod: null
     };
@@ -75,7 +77,7 @@ export default class AuthView extends Component {
             selectedNav={s.selectedNav}
             updateSelectedNav={this.updateSelectedNav}
           />
-          {s.selectedNav !== AUTH_IMPORT &&
+          {s.selectedNav !== IMPORT &&
             <div className="default-auth">
               <button
                 className="auth-airbitz unstyled"
@@ -84,28 +86,28 @@ export default class AuthView extends Component {
                 <div>
                   <AirbitzLogoIcon />
                   <span>
-                    {s.selectedNav === AUTH_SIGNUP ? 'Signup' : 'Login'} with Airbitz
+                    {s.selectedNav === SIGNUP ? 'Signup' : 'Login'} with Airbitz
                   </span>
                 </div>
               </button>
               <h4>or</h4>
             </div>
           }
-          {s.selectedNav === AUTH_SIGNUP &&
+          {s.selectedNav === SIGNUP &&
             <AuthSignup
               history={p.history}
               register={p.register}
               setupAndFundNewAccount={p.setupAndFundNewAccount}
             />
           }
-          {s.selectedNav === AUTH_LOGIN &&
+          {s.selectedNav === LOGIN &&
             <AuthLogin
               history={p.history}
               submitLogin={p.submitLogin}
               airbitzLogin={p.airbitzLogin}
             />
           }
-          {s.selectedNav === AUTH_IMPORT &&
+          {s.selectedNav === IMPORT &&
             <AuthImport
               history={p.history}
               importAccount={p.importAccount}

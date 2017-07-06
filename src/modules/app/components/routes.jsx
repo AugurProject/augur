@@ -50,23 +50,26 @@ const CreateMarket = asyncComponent({
     .then(module => module.default)
 });
 
+// TODO -- issue w/ regex matching, more verbose matching for now, ultimately clean up to utizlie some kind of more efficient matching
 const Routes = p => (
   <App>
     <Switch>
       <Route exact path={makePath(VIEWS.DEFAULT_VIEW)} component={Topics} />
       <Route path={makePath(VIEWS.MARKETS)} component={Markets} />
       <Route path={makePath(VIEWS.M)} component={Market} />
-      <Route path={makePath([VIEWS.AUTH_SIGNUP, VIEWS.AUTH_LOGIN, VIEWS.AUTH_IMPORT])} component={Authentication} />
-      <AuthenticatedRoute path={makePath(VIEWS.ACCOUNT)} component={Account} />
-      <AuthenticatedRoute path={makePath(VIEWS.TRANSACTIONS)} component={Transactions} />
+      <Route path={makePath(VIEWS.AUTHENTICATION)} component={Authentication} />
       <AuthenticatedRoute path={makePath(VIEWS.MY_POSITIONS)} component={Portfolio} />
       <AuthenticatedRoute path={makePath(VIEWS.MY_MARKETS)} component={Portfolio} />
       <AuthenticatedRoute path={makePath(VIEWS.MY_REPORTS)} component={Portfolio} />
+      <AuthenticatedRoute path={makePath(VIEWS.ACCOUNT)} component={Account} />
+      <AuthenticatedRoute path={makePath(VIEWS.TRANSACTIONS)} component={Transactions} />
       <AuthenticatedRoute path={makePath(VIEWS.CREATE_MARKET)} component={CreateMarket} />
       <Redirect to={makePath(VIEWS.TOPICS)} />
     </Switch>
   </App>
 );
+
+// <AuthenticatedRoute path={makePath([VIEWS.MY_POSITIONS, VIEWS.MY_MARKETS, VIEWS.MY_REPORTS], true)} component={Portfolio} />
 
 export default Routes;
 //

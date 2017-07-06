@@ -61,8 +61,6 @@ export default class Nav extends Component {
     const p = this.props;
     const s = this.state;
 
-    console.log('p -- ', p);
-
     const animationSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-fast'), 10);
 
     const unseenCount = getValue(p, 'notifications.unseenCount');
@@ -79,22 +77,13 @@ export default class Nav extends Component {
           </button>
         }
         <div className="augur-brand">
-          <Link to={VIEWS.TOPICS} >
+          <Link to={makePath(VIEWS.DEFAULT_VIEW)} >
             <AugurLogoIcon />
           </Link>
         </div>
         <NavLink
           to={makePath(VIEWS.MARKETS)}
           activeClassName="active"
-          isActive={(match, location) => {
-            if (!match) return false;
-            return match !== null ||
-              (
-                !!parseInt(p.activeView, 10) &&
-                Number.isInteger(parseInt(p.activeView, 10)) &&
-                p.marketsInfo.selectedMarketsHeader == null
-              );
-          }}
           className="app-nav-link"
           onClick={() => this.collapseFooter()}
         >
@@ -115,7 +104,7 @@ export default class Nav extends Component {
         }
         {p.isLogged && !!p.numPendingReports &&
           <NavLink
-            to={VIEWS.MY_REPORTS}
+            to={makePath(VIEWS.MY_REPORTS)}
             activeClassName="active"
             onClick={() => this.collapseFooter()}
             className="app-nav-link"
@@ -127,8 +116,13 @@ export default class Nav extends Component {
         }
         {p.isLogged &&
           <NavLink
-            to={VIEWS.MY_POSITIONS}
+            to={makePath(VIEWS.MY_POSITIONS)}
             activeClassName="active"
+            isActive={(match, location) => {
+              if (match) return true;
+
+              return [VIEWS.MY_MARKETS, VIEWS.MY_REPORTS].find(path => makePath(path) === location.pathname);
+            }}
             onClick={() => this.collapseFooter()}
             className={classNames('app-nav-link')}
           >
@@ -160,9 +154,7 @@ export default class Nav extends Component {
         }
         {!p.isLogged &&
           <NavLink
-            to={{
-              pathname: makePath(VIEWS.AUTHENTICATION)
-            }}
+            to={makePath(VIEWS.AUTHENTICATION)}
             activeClassName="active"
             className="app-nav-link"
             onClick={() => this.collapseFooter()}

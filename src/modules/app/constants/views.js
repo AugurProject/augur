@@ -39,6 +39,6 @@ export const ACCOUNT_TRANSFER = 'transfer-funds';
 export const ACCOUNT_EXPORT = 'export-account';
 
 // Authentication
-export const AUTH_LOGIN = 'login';
-export const AUTH_SIGNUP = 'sign-up';
-export const AUTH_IMPORT = 'import';
+export const SIGNUP = 'sign-up';
+export const LOGIN = 'login';
+export const IMPORT = 'import';
