@@ -70,7 +70,7 @@ import eventsAPI from 'modules/contracts/reducers/events-api';
 import notifications from 'modules/notifications/reducers/notifications';
 
 export function createReducer() {
-  return combineReducers({
+  return {
     env,
     blockchain,
     branch,
@@ -138,5 +138,5 @@ export function createReducer() {
     functionsAPI,
     eventsAPI,
     notifications
-  });
+  };
 }

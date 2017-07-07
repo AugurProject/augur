@@ -1,8 +1,7 @@
-import {
-  createStore,
-  applyMiddleware
-} from 'redux';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
+import history from 'src/history';
+import { routerReducer, routerMiddleware } from 'react-router-redux';
 
 import { createReducer } from './reducers';
 
@@ -32,17 +31,29 @@ const localStorageMiddleware = store => next => (action) => {
     }));
   }
 };
-let middleWare;
+
+// const history = createHistory();
+const routingMiddleware = routerMiddleware(history);
+
+let middleware;
 if (process.env.NODE_ENV !== 'production') {
-  middleWare = applyMiddleware(consoleLog, thunk, localStorageMiddleware);
+  middleware = applyMiddleware(routingMiddleware, consoleLog, thunk, localStorageMiddleware);
+  // middleware = applyMiddleware(consoleLog, thunk, localStorageMiddleware);
 } else {
-  middleWare = applyMiddleware(thunk, localStorageMiddleware);
+  middleware = applyMiddleware(routingMiddleware, thunk, localStorageMiddleware);
+  // middleware = applyMiddleware(thunk, localStorageMiddleware);
 }
 // middleware
-const store = createStore(createReducer(), middleWare);
+const store = createStore(
+  combineReducers({
+    ...createReducer(),
+    router: routerReducer
+  }), middleware);
 
+// TODO -- fix this
 if (module.hot) {
   module.hot.accept('./reducers', (changed) => {
+    console.log('hothot');
     const hotReducer = require('./reducers').createReducer;
     store.replaceReducer(hotReducer());
   });

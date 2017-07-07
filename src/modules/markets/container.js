@@ -1,4 +1,6 @@
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+
 import MarketsView from 'modules/markets/components/markets-view';
 
 import getMarkets from 'modules/markets/selectors/markets';
@@ -29,6 +31,6 @@ const mapDispatchToProps = dispatch => ({
   onChangeKeywords: keywords => dispatch(updateKeywords(keywords))
 });
 
-const Markets = connect(mapStateToProps, mapDispatchToProps)(MarketsView);
+const Markets = withRouter(connect(mapStateToProps, mapDispatchToProps)(MarketsView));
 
 export default Markets;
