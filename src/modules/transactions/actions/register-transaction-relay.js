@@ -9,15 +9,14 @@ export const handleRelayTransaction = tx => (dispatch, getState) => {
   if (tx && tx.response && tx.data) {
     console.log('txRelay:', tx);
     const hash = tx.hash;
+    if (!hash) return console.error('uncaught relayed transaction', tx);
     const { loginAccount, transactionsData } = getState();
     if (tx.data.from === loginAccount.address) {
       const gasPrice = rpc.gasPrice || augur.constants.DEFAULT_GASPRICE;
       const gasFees = tx.response.gasFees || augur.trading.simulation.getTxGasEth({ ...tx.data }, gasPrice).toFixed();
       if (hash) {
         switch (tx.data.method) {
-          case 'commitTrade':
-          case 'short_sell':
-          case 'trade': {
+          case 'publicTrade': {
             const status = tx.response.blockHash ? SUCCESS : SUBMITTED;
             const relayTransaction = dispatch(constructRelayTransaction(tx, status));
             if (relayTransaction) {
@@ -50,27 +49,6 @@ export const handleRelayTransaction = tx => (dispatch, getState) => {
               const relayTransaction = dispatch(constructRelayTransaction(tx, status));
               if (relayTransaction) {
                 dispatch(updateTransactionsData(relayTransaction));
-              }
-            }
-          }
-        }
-      } else {
-        console.debug('***UNCAUGHT RELAYED TRANSACTION:', tx);
-        tx.hash = Date.now().toString() + '-' + abi.unfork(augur.utils.sha256(JSON.stringify(tx)));
-        console.debug('assigned txid:', tx.hash);
-        const relayTransaction = dispatch(constructRelayTransaction(tx, status));
-        if (relayTransaction) {
-          const numTransactions = relayTransaction.length;
-          for (let i = 0; i < numTransactions; ++i) {
-            if (relayTransaction[i]) {
-              const id = Object.keys(relayTransaction[i])[0];
-              if (transactionsData[id]) {
-                dispatch(updateTransactionsData({
-                  [id]: { ...transactionsData[id], gasFees: formatEther(gasFees) }
-                }));
-              }
-              if (!transactionsData[id] || transactionsData[id].status !== SUCCESS) {
-                dispatch(updateTransactionsData(relayTransaction[i]));
               }
             }
           }
