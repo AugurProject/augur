@@ -15,38 +15,30 @@ augur.connect({
   ws: "ws://127.0.0.1:8546"
 }, function (connected) {
   if (!connected) return console.error("connect failed:", connected);
-  augur.api.Branches.initDefaultBranch({
-    onSent: function (res) {
-      console.log("initDefaultBranch sent:", res);
-    },
-    onSuccess: function (res) {
-      console.log("initDefaultBranch success:", res);
-      augur.rpc.personal.listAccounts([], function (accounts) {
-        if (!accounts || accounts.constructor !== Array || !accounts.length) {
-          return console.error("listAccounts error:", accounts);
-        }
-        async.eachSeries(accounts, function (account, nextAccount) {
-          augur.rpc.personal.unlockAccount([account, password], function (unlocked) {
-            if (unlocked && unlocked.error) return nextAccount();
-            augur.api.Faucets.fundNewAccount({
-              branch: augur.constants.DEFAULT_BRANCH_ID,
-              tx: { from: account },
-              onSent: function (res) {
-                console.log("fundNewAccount", account, "sent:", res);
-              },
-              onSuccess: function (res) {
-                console.log("fundNewAccount", account, "success:", res);
-                nextAccount();
-              },
-              onFailed: function (err) {
-                console.error("fundNewAccount", account, "failed:", err);
-                nextAccount();
-              }
-            });
+    augur.rpc.personal.listAccounts([], function (accounts) {
+      if (!accounts || accounts.constructor !== Array || !accounts.length) {
+        return console.error("listAccounts error:", accounts);
+      }
+      async.eachSeries(accounts, function (account, nextAccount) {
+        augur.rpc.personal.unlockAccount([account, password], function (unlocked) {
+          if (unlocked && unlocked.error) return nextAccount();
+          augur.api.Faucets.fundNewAccount({
+            branch: augur.constants.DEFAULT_BRANCH_ID,
+            tx: { from: account },
+            onSent: function (res) {
+              console.log("fundNewAccount", account, "sent:", res);
+            },
+            onSuccess: function (res) {
+              console.log("fundNewAccount", account, "success:", res);
+              nextAccount();
+            },
+            onFailed: function (err) {
+              console.error("fundNewAccount", account, "failed:", err);
+              nextAccount();
+            }
           });
-        }, process.exit);
-      });
-    },
-    onFailed: process.exit
+        });
+      }, process.exit);
+    });
   });
 });

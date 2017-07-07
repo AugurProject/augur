@@ -6,9 +6,9 @@ var calculateTradingFees = require("./calculate-trading-fees");
 var api = require("../../api");
 
 // { branch, market, takerFee, makerFee, onSent, onSuccess, onFailed }
-function updateTradingFee(p) {
+function decreaseTradingFee(p) {
   var fees = calculateTradingFees(p.makerFee, p.takerFee);
-  return api().CreateMarket.updateTradingFee(assign({}, p, {
+  return api().CreateMarket.decreaseTradingFee(assign({}, p, {
     tradingFee: abi.fix(fees.tradingFee, "hex"),
     makerFees: abi.fix(fees.makerProportionOfFee, "hex")
   }));
