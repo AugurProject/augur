@@ -9,7 +9,7 @@ import { syncBranch } from 'modules/branch/actions/sync-branch';
 import { updateTransactionsOldestLoadedBlock } from 'modules/transactions/actions/update-transactions-oldest-loaded-block';
 import { updateTransactionsLoading } from 'modules/transactions/actions/update-transactions-loading';
 
-export const loadAccountHistory = (loadAllHistory, triggerTransactionsExport = false) => (dispatch, getState) => {
+export const loadAccountHistory = (loadAllHistory, triggerTransactionsExport) => (dispatch, getState) => {
   const { transactionsOldestLoadedBlock, blockchain, loginAccount, transactionsData } = getState();
   const initialTransactionCount = Object.keys(transactionsData || {}).length;
 
@@ -81,9 +81,7 @@ export function loadMoreTransactions(dispatch, getState, options, constraints) {
 
   dispatch(updateTransactionsOldestLoadedBlock(constraints.registerBlock));
   dispatch(updateTransactionsLoading(false));
-  if (constraints.triggerTransactionsExport) {
-    dispatch(constraints.triggerTransactionsExport());
-  }
+  constraints.triggerTransactionsExport && dispatch(constraints.triggerTransactionsExport());
 }
 
 function loadTransactions(dispatch, getState, options, constraints, cb) {
