@@ -38,6 +38,9 @@ export default class InputList extends Component {
       this.setState({ warnings: nextProps.warnings });
       this.clearWarnings();
     }
+    if (nextProps.list !== this.state.list) {
+      this.setState({ list: this.fillMinElements(nextProps.list, nextProps.listMinElements) });
+    }
   }
 
   clearWarnings() {

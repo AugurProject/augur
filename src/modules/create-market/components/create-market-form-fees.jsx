@@ -48,6 +48,10 @@ export default class CreateMarketFormDescription extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.currentStep !== nextProps.currentStep && newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_FEES) nextProps.updateValidity(true, true);
+    if (nextProps.makerFee !== this.state.makerFee || nextProps.takerFee !== this.state.takerFee) {
+      // when clearMarket button is pressed and user navigates back here the state will still be the old fee values. this call makes sure to reset them if they don't line up with props passed.
+      this.setState({ makerFee: nextProps.makerFee, takerFee: nextProps.takerFee });
+    }
   }
 
   componentDidUpdate(prevProps) {

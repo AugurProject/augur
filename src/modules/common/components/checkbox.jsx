@@ -44,7 +44,7 @@ export default class Checkbox extends Component {
       } else {
         this.setState({
           isLabelTruncated: false,
-          dataTip: this.props.title
+          dataTip: this.props.title || ''
         });
       }
     }

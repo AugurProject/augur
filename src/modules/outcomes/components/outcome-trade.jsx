@@ -185,7 +185,7 @@ export default class OutcomeTrade extends Component {
               <Input
                 className={classNames('trade-price-input', { 'input-error': !s.isLimitPriceValueValid })}
                 placeholder="Price"
-                value={trade.limitPrice}
+                value={trade.limitPrice ? trade.limitPrice : ''}
                 isIncrementable
                 incrementAmount={s.incrementAmount}
                 updateValue={(value) => {
