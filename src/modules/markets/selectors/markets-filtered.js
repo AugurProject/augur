@@ -80,7 +80,7 @@ export const isMarketFiltersMatch = (market, keywords, selectedFilterSort, selec
   }
 
   function isDisplayable(market) {
-    if (!market.isMalFormed && !market.isRequiredToReportByAccount) {
+    if (!market.isMalFormed) {
       return true;
     }
   }

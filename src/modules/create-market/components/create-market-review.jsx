@@ -46,6 +46,10 @@ export default class CreateMarketReview extends Component {
     };
   }
 
+  componentWillMount() {
+    this.calculateMarketCreationCosts();
+  }
+
   componentWillReceiveProps(nextProps) {
     if (this.props.currentStep !== nextProps.currentStep &&
       newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_REVIEW
