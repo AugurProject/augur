@@ -1,10 +1,10 @@
-import { abi, augur } from 'services/augurjs';
+import { abi, augur, constants } from 'services/augurjs';
 import { BUY, SELL } from 'modules/trade/constants/types';
 import { clearTradeInProgress } from 'modules/trade/actions/update-trades-in-progress';
 import noop from 'utils/noop';
 import logError from 'utils/log-error';
 
-export const placeTrade = (marketID, outcomeID, tradeInProgress, doNotMakeOrders, callback = logError) => (dispatch, getState) => {
+export const placeTrade = (marketID, outcomeID, tradeInProgress, doNotMakeOrders, callback = logError, onComplete = logError) => (dispatch, getState) => {
   if (!marketID) return null;
   const { loginAccount, marketsData } = getState();
   const market = marketsData[marketID];
@@ -13,7 +13,7 @@ export const placeTrade = (marketID, outcomeID, tradeInProgress, doNotMakeOrders
     return dispatch(clearTradeInProgress(marketID));
   }
   const limitPrice = augur.trading.normalizePrice(market.minValue, market.maxValue, tradeInProgress.limitPrice);
-  const tradePayload = {
+  dispatch(tradeUntilAmountIsZero({
     _signer: loginAccount.privateKey,
     direction: tradeInProgress.side === BUY ? 1 : 2,
     market: marketID,
@@ -22,13 +22,37 @@ export const placeTrade = (marketID, outcomeID, tradeInProgress, doNotMakeOrders
     fxpPrice: abi.fix(limitPrice, 'hex'),
     tradeGroupID: tradeInProgress.tradeGroupID,
     onSent: () => callback(null, tradeInProgress.tradeGroupID),
-    onSuccess: noop,
     onFailed: callback
+  }, doNotMakeOrders, (err) => {
+    if (err) return callback(err);
+    onComplete(err);
+  }));
+  dispatch(clearTradeInProgress(marketID));
+};
+
+export const tradeUntilAmountIsZero = (tradePayload, doNotMakeOrders, callback = logError) => (dispatch, getState) => {
+  if (abi.unfix(tradePayload.fxpAmount).lte(constants.PRECISION.zero)) {
+    return callback(null);
+  }
+  const payload = {
+    ...tradePayload,
+    onSuccess: (res) => {
+      augur.trading.getTradeAmountRemaining({
+        transactionHash: res.hash,
+        tradeAmountRemainingEventSignature: getState().eventsAPI.TradeAmountRemaining.signature
+      }, (err, fxpTradeAmountRemaining) => {
+        if (err) return callback(err);
+        dispatch(tradeUntilAmountIsZero({
+          ...tradePayload,
+          fxpAmount: fxpTradeAmountRemaining,
+          onSent: noop
+        }, doNotMakeOrders, callback));
+      });
+    }
   };
   if (doNotMakeOrders) {
-    augur.api.Trade.publicTakeBestOrder(tradePayload);
+    augur.api.Trade.publicTakeBestOrder(payload);
   } else {
-    augur.api.Trade.publicTrade(tradePayload);
+    augur.api.Trade.publicTrade(payload);
   }
-  dispatch(clearTradeInProgress(marketID));
 };
