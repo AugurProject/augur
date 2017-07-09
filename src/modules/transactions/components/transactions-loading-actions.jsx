@@ -24,14 +24,14 @@ const TransactionsLoadingActions = p => (
           <span>Load All</span>
         </button>
         <button
-          className={classNames('unstyled', { disabled: !p.registerBlockNumber })}
+          className={classNames('unstyled', { disabled: !p.registerBlockNumber }, { hidden: !p.allowExport })}
           onClick={() => {
             if (!p.transactionsLoading) {
               p.triggerTransactionsExport();
             }
           }}
         >
-          <span>Export All Transactions</span>
+          <span>Export All</span>
         </button>
       </div>
     }
@@ -48,12 +48,12 @@ const TransactionsLoadingActions = p => (
         All History Loaded
       </span>
       <button
-        className={classNames('unstyled', { disabled: p.transactionsLoading })}
+        className={classNames('unstyled', { disabled: p.transactionsLoading }, { hidden: !p.allowExport })}
         onClick={() => {
           p.triggerTransactionsExport();
         }}
       >
-        <span>Export All Transactions</span>
+        <span>Export All</span>
       </button>
     </div>
     }
@@ -66,7 +66,8 @@ TransactionsLoadingActions.propTypes = {
   triggerTransactionsExport: PropTypes.func.isRequired,
   transactionsLoading: PropTypes.bool,
   hasAllTransactionsLoaded: PropTypes.bool,
-  registerBlockNumber: PropTypes.number
+  registerBlockNumber: PropTypes.number,
+  allowExport: PropTypes.bool,
 };
 
 export default TransactionsLoadingActions;
