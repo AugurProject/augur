@@ -1,6 +1,7 @@
 "use strict";
 
 var abi = require("augur-abi");
+var crypto = require("crypto");
 var ZERO = require("../../constants").ZERO;
 
 function calculateTradeTotals(type, numShares, limitPrice, tradeActions) {
@@ -10,7 +11,8 @@ function calculateTradeTotals(type, numShares, limitPrice, tradeActions) {
     limitPrice: limitPrice,
     side: type,
     totalFee: 0,
-    totalCost: 0
+    totalCost: 0,
+    tradeGroupID: "0x" + crypto.randomBytes(32).toString("hex")
   };
   numTradeActions = tradeActions.length;
   if (!numTradeActions) return tradeActionsTotals;
