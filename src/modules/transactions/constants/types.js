@@ -12,7 +12,7 @@ export const MATCH_ASK = 'match_ask';
 
 export const SELL_COMPLETE_SETS = 'sell_complete_sets';
 
-// export const CREATE_MARKET = 'create_market';
+export const CREATE_MARKET = 'create_market';
 export const COMMIT_REPORT = 'commit_report';
 export const REVEAL_REPORT = 'reveal_report';
 export const GENERATE_ORDER_BOOK = 'generate_order_book';
