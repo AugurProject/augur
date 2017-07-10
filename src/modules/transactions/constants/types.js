@@ -25,7 +25,7 @@ export const CANCEL_ORDER = 'cancel_order';
 export const CANCEL = 'cancel';
 export const TRADE = 'trade';
 export const COMMIT_TRADE = 'commitTrade';
-// TODO: all of the below needs to be checked accross the codebase to replace strings with constants
+
 export const LOG_FILL_TX = 'log_fill_tx';
 export const LOG_SHORT_FILL_TX = 'log_short_fill_tx';
 export const LOG_ADD_TX = 'log_add_tx';
