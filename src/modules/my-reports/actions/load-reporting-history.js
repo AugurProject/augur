@@ -1,6 +1,7 @@
 import async from 'async';
 import { augur, constants } from 'services/augurjs';
 import { convertLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
+import { COLLECTED_FEES, PENALIZATION_CAUGHT_UP, PENALIZE, SUBMITTED_REPORT, SUBMITTED_REPORT_HASH, SLASHED_REP } from 'modules/transactions/constants/types';
 import logError from 'utils/log-error';
 
 export function loadReportingHistory(options, callback = logError) {
@@ -15,12 +16,12 @@ export function loadReportingHistory(options, callback = logError) {
       filter.fromBlock = loginAccount.registerBlockNumber;
     }
     async.eachLimit([
-      'collectedFees',
-      'penalizationCaughtUp',
-      'penalize',
-      'submittedReport',
-      'submittedReportHash',
-      'slashedRep'
+      COLLECTED_FEES,
+      PENALIZATION_CAUGHT_UP,
+      PENALIZE,
+      SUBMITTED_REPORT,
+      SUBMITTED_REPORT_HASH,
+      SLASHED_REP
     ], constants.PARALLEL_LIMIT, (label, nextLabel) => {
       augur.logs.getLogsChunked({ label, filter, aux: null }, (logs) => {
         if (Array.isArray(logs) && logs.length) dispatch(convertLogsToTransactions(label, logs));
@@ -28,11 +29,11 @@ export function loadReportingHistory(options, callback = logError) {
     }, (err) => {
       if (err) return callback(err);
       augur.logs.getLogsChunked({
-        label: 'slashedRep',
+        label: SLASHED_REP,
         filter: { ...filter, sender: null, reporter: loginAccount.address },
         aux: null
       }, (logs) => {
-        if (Array.isArray(logs) && logs.length) dispatch(convertLogsToTransactions('slashedRep', logs));
+        if (Array.isArray(logs) && logs.length) dispatch(convertLogsToTransactions(SLASHED_REP, logs));
       }, callback);
     });
   };

@@ -1,6 +1,7 @@
 import { abi, augur, rpc } from 'services/augurjs';
 import { SUBMITTED, SUCCESS } from 'modules/transactions/constants/statuses';
 import { NO_RELAY } from 'modules/transactions/constants/no-relay';
+import { COMMIT_TRADE, SHORT_SELL, TRADE } from 'modules/transactions/constants/types';
 import { formatEther } from 'utils/format-number';
 import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data';
 import { constructRelayTransaction } from 'modules/transactions/actions/construct-relay-transaction';
@@ -15,9 +16,9 @@ export const handleRelayTransaction = tx => (dispatch, getState) => {
       const gasFees = tx.response.gasFees || augur.trading.simulation.getTxGasEth({ ...tx.data }, gasPrice).toFixed();
       if (hash) {
         switch (tx.data.method) {
-          case 'commitTrade':
-          case 'short_sell':
-          case 'trade': {
+          case COMMIT_TRADE:
+          case SHORT_SELL:
+          case TRADE: {
             const status = tx.response.blockHash ? SUCCESS : SUBMITTED;
             const relayTransaction = dispatch(constructRelayTransaction(tx, status));
             if (relayTransaction) {

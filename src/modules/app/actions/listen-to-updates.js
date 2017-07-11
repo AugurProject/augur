@@ -10,6 +10,7 @@ import { claimProceeds } from 'modules/my-positions/actions/claim-proceeds';
 import { convertLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
 import { updateMarketTopicPopularity } from 'modules/topics/actions/update-topics';
 import { SELL } from 'modules/outcomes/constants/trade-types';
+import * as TYPES from 'modules/transactions/constants/types';
 import { updateAccountBidsAsksData, updateAccountCancelsData, updateAccountTradesData } from 'modules/my-positions/actions/update-account-trades-data';
 
 export function listenToUpdates() {
@@ -28,7 +29,7 @@ export function listenToUpdates() {
         if (msg && msg.sender === getState().loginAccount.address) {
           console.log('collectedFees:', msg);
           dispatch(updateAssets());
-          dispatch(convertLogsToTransactions('collectedFees', [msg]));
+          dispatch(convertLogsToTransactions(TYPES.COLLECTED_FEES, [msg]));
         }
       },
 
@@ -36,7 +37,7 @@ export function listenToUpdates() {
         if (msg && msg.sender === getState().loginAccount.address) {
           console.log('payout:', msg);
           dispatch(updateAssets());
-          dispatch(convertLogsToTransactions('payout', [msg]));
+          dispatch(convertLogsToTransactions(TYPES.PAYOUT, [msg]));
         }
       },
 
@@ -44,7 +45,7 @@ export function listenToUpdates() {
         if (msg && msg.sender === getState().loginAccount.address) {
           console.log('penalizationCaughtUp:', msg);
           dispatch(updateAssets());
-          dispatch(convertLogsToTransactions('penalizationCaughtUp', [msg]));
+          dispatch(convertLogsToTransactions(TYPES.PENALIZATION_CAUGHT_UP, [msg]));
         }
       },
 
@@ -53,14 +54,14 @@ export function listenToUpdates() {
         if (msg && msg.sender === getState().loginAccount.address) {
           console.log('penalize:', msg);
           dispatch(updateAssets());
-          dispatch(convertLogsToTransactions('penalize', [msg]));
+          dispatch(convertLogsToTransactions(TYPES.PENALIZE, [msg]));
         }
       },
 
       registration: (msg) => {
         if (msg && msg.sender === getState().loginAccount.address) {
           console.log('registration:', msg);
-          dispatch(convertLogsToTransactions('registration', [msg]));
+          dispatch(convertLogsToTransactions(TYPES.REGISTRATION, [msg]));
         }
       },
 
@@ -68,7 +69,7 @@ export function listenToUpdates() {
         if (msg && msg.sender === getState().loginAccount.address) {
           console.log('submittedReport:', msg);
           dispatch(updateAssets());
-          dispatch(convertLogsToTransactions('submittedReport', [msg]));
+          dispatch(convertLogsToTransactions(TYPES.SUBMITTED_REPORT, [msg]));
         }
       },
 
@@ -76,7 +77,7 @@ export function listenToUpdates() {
         if (msg && msg.sender === getState().loginAccount.address) {
           console.log('submittedReportHash:', msg);
           dispatch(updateAssets());
-          dispatch(convertLogsToTransactions('submittedReportHash', [msg]));
+          dispatch(convertLogsToTransactions(TYPES.SUBMITTED_REPORT_HASH, [msg]));
         }
       },
 
@@ -85,7 +86,7 @@ export function listenToUpdates() {
         const { address } = getState().loginAccount;
         if (msg && (msg.sender === address || msg.reporter === address)) {
           dispatch(updateAssets());
-          dispatch(convertLogsToTransactions('slashedRep', [msg]));
+          dispatch(convertLogsToTransactions(TYPES.SLASHED_REP, [msg]));
         }
       },
 
@@ -196,7 +197,7 @@ export function listenToUpdates() {
           dispatch(loadMarketsInfo([msg.marketID]));
           if (msg.sender === getState().loginAccount.address) {
             dispatch(updateAssets());
-            dispatch(convertLogsToTransactions('marketCreated', [msg]));
+            dispatch(convertLogsToTransactions(TYPES.MARKET_CREATED, [msg]));
           }
         }
       },
@@ -207,7 +208,7 @@ export function listenToUpdates() {
         if (msg && msg.marketID) {
           dispatch(loadMarketsInfo([msg.marketID]));
           dispatch(updateAssets());
-          dispatch(convertLogsToTransactions('tradingFeeUpdated', [msg]));
+          dispatch(convertLogsToTransactions(TYPES.TRADING_FEE_UPDATED, [msg]));
         }
       },
 
@@ -215,7 +216,7 @@ export function listenToUpdates() {
         if (msg && msg.sender === getState().loginAccount.address) {
           console.log('deposit:', msg);
           dispatch(updateAssets());
-          dispatch(convertLogsToTransactions('depositEther', [msg]));
+          dispatch(convertLogsToTransactions(TYPES.DEPOSIT_ETHER, [msg]));
         }
       },
 
@@ -223,7 +224,7 @@ export function listenToUpdates() {
         if (msg && msg.sender === getState().loginAccount.address) {
           console.log('withdraw:', msg);
           dispatch(updateAssets());
-          dispatch(convertLogsToTransactions('withdrawEther', [msg]));
+          dispatch(convertLogsToTransactions(TYPES.WITHDRAW_ETHER, [msg]));
         }
       },
 
@@ -234,7 +235,7 @@ export function listenToUpdates() {
           const { address } = getState().loginAccount;
           if (msg._from === address || msg._to === address) {
             dispatch(updateAssets());
-            dispatch(convertLogsToTransactions('Transfer', [msg]));
+            dispatch(convertLogsToTransactions(TYPES.TRANSFER, [msg]));
           }
         }
       },
@@ -246,7 +247,7 @@ export function listenToUpdates() {
           const { address } = getState().loginAccount;
           if (msg._from === address || msg._to === address) {
             dispatch(updateAssets());
-            dispatch(convertLogsToTransactions('Transfer', [msg]));
+            dispatch(convertLogsToTransactions(TYPES.TRANSFER, [msg]));
           }
         }
       },
@@ -257,7 +258,7 @@ export function listenToUpdates() {
           const { address } = getState().loginAccount;
           if (msg._owner === address || msg._spender === address) {
             dispatch(updateAssets());
-            dispatch(convertLogsToTransactions('Approval', [msg]));
+            dispatch(convertLogsToTransactions(TYPES.APPROVAL, [msg]));
           }
         }
       },

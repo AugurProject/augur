@@ -15,6 +15,8 @@ const MyPositions = p => (
           loadAllTransactions={p.loadAllTransactions}
           transactionsLoading={p.transactionsLoading}
           hasAllTransactionsLoaded={p.hasAllTransactionsLoaded}
+          triggerTransactionsExport={p.triggerTransactionsExport}
+          registerBlockNumber={p.registerBlockNumber}
         />
       </div>
     </div>
@@ -41,7 +43,8 @@ MyPositions.propTypes = {
   isTradeCommitLocked: PropTypes.bool,
   closePositionStatus: PropTypes.object.isRequired,
   scalarShareDenomination: PropTypes.object.isRequired,
-  orderCancellation: PropTypes.object.isRequired
+  orderCancellation: PropTypes.object.isRequired,
+  registerBlockNumber: PropTypes.number
 };
 
 export default MyPositions;

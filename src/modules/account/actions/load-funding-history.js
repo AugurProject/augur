@@ -1,6 +1,7 @@
 import async from 'async';
 import { augur, constants } from 'services/augurjs';
 import { convertLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
+import { FUNDED_ACCOUNT, REGISTRATION, WITHDRAW, APPROVAL, TRANSFER, SENT_CASH } from 'modules/transactions/constants/types';
 import logError from 'utils/log-error';
 
 export function loadFundingHistory(options, callback = logError) {
@@ -15,15 +16,15 @@ export function loadFundingHistory(options, callback = logError) {
       params.fromBlock = loginAccount.registerBlockNumber;
     }
     async.eachLimit([
-      'fundedAccount',
-      'registration',
+      FUNDED_ACCOUNT,
+      REGISTRATION,
       'deposit',
-      'withdraw',
-      'Approval'
+      WITHDRAW,
+      APPROVAL
     ], constants.PARALLEL_LIMIT, (label, nextLabel) => {
       augur.logs.getLogsChunked({
         label,
-        filter: label === 'fundedAccount' ? { ...params, fromBlock: null } : params,
+        filter: label === FUNDED_ACCOUNT ? { ...params, fromBlock: null } : params,
         aux: null
       }, (logs) => {
         if (Array.isArray(logs) && logs.length) dispatch(convertLogsToTransactions(label, logs));
@@ -42,8 +43,8 @@ export function loadTransferHistory(options, callback = logError) {
       params.fromBlock = loginAccount.registerBlockNumber;
     }
     async.eachLimit([
-      'Transfer',
-      'sentCash'
+      TRANSFER,
+      SENT_CASH
     ], constants.PARALLEL_LIMIT, (label, nextLabel) => {
       augur.logs.getLogsChunked({
         label,

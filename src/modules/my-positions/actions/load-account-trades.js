@@ -4,6 +4,7 @@ import { updateAccountTradesData, updateCompleteSetsBought } from 'modules/my-po
 import { convertLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
 import { clearAccountTrades } from 'modules/my-positions/actions/clear-account-trades';
 import { sellCompleteSets } from 'modules/my-positions/actions/sell-complete-sets';
+import { PAYOUT } from 'modules/transactions/constants/types';
 import logError from 'utils/log-error';
 
 export function loadAccountTrades(options, callback = logError) {
@@ -25,11 +26,11 @@ export function loadAccountTrades(options, callback = logError) {
         next(null);
       }),
       next => augur.logs.getLogsChunked({
-        label: 'payout',
+        label: PAYOUT,
         filter: { fromBlock: filter.fromBlock, sender: account },
         aux: null
       }, (payouts) => {
-        if (payouts && payouts.length) dispatch(convertLogsToTransactions('payout', payouts));
+        if (payouts && payouts.length) dispatch(convertLogsToTransactions(PAYOUT, payouts));
       }, next),
       next => augur.logs.getBuyCompleteSetsLogs({ account, filter }, (err, completeSets) => {
         if (err) return next(err);
