@@ -17,6 +17,8 @@ const MyReports = p => (
           loadAllTransactions={p.loadAllTransactions}
           transactionsLoading={p.transactionsLoading}
           hasAllTransactionsLoaded={p.hasAllTransactionsLoaded}
+          triggerTransactionsExport={p.triggerTransactionsExport}
+          registerBlockNumber={p.registerBlockNumber}
         />
       </div>
     </div>
@@ -65,7 +67,8 @@ const MyReports = p => (
 
 MyReports.propTypes = {
   branch: PropTypes.object.isRequired,
-  reports: PropTypes.array.isRequired
+  reports: PropTypes.array.isRequired,
+  registerBlockNumber: PropTypes.number,
 };
 
 export default MyReports;

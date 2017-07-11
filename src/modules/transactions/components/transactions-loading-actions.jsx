@@ -8,7 +8,7 @@ const TransactionsLoadingActions = p => (
     {!p.transactionsLoading && !p.hasAllTransactionsLoaded &&
       <div className="transactions-load-buttons">
         <button
-          className={classNames('unstyled', { disabled: p.transactionsLoading })}
+          className={classNames('unstyled', { disabled: !p.registerBlockNumber })}
           onClick={() => {
             if (!p.transactionsLoading) p.loadMoreTransactions();
           }}
@@ -16,12 +16,22 @@ const TransactionsLoadingActions = p => (
           <span>Load More</span>
         </button>
         <button
-          className={classNames('unstyled', { disabled: p.transactionsLoading })}
+          className={classNames('unstyled', { disabled: !p.registerBlockNumber })}
           onClick={() => {
             if (!p.transactionsLoading) p.loadAllTransactions();
           }}
         >
           <span>Load All</span>
+        </button>
+        <button
+          className={classNames('unstyled', { disabled: !p.registerBlockNumber }, { hidden: !p.allowExport })}
+          onClick={() => {
+            if (!p.transactionsLoading) {
+              p.triggerTransactionsExport();
+            }
+          }}
+        >
+          <span>Export All</span>
         </button>
       </div>
     }
@@ -31,12 +41,21 @@ const TransactionsLoadingActions = p => (
         <Spinner />
       </div>
     }
-    {!p.transactionsLoading && p.hasAllTransactionsLoaded &&
+    {!p.transactionsLoading && p.hasAllTransactionsLoaded && <div className="transactions-loaded">
       <span
         className="transactions-all-loaded-message"
       >
         All History Loaded
       </span>
+      <button
+        className={classNames('unstyled', { disabled: p.transactionsLoading }, { hidden: !p.allowExport })}
+        onClick={() => {
+          p.triggerTransactionsExport();
+        }}
+      >
+        <span>Export All</span>
+      </button>
+    </div>
     }
   </article>
 );
@@ -44,8 +63,11 @@ const TransactionsLoadingActions = p => (
 TransactionsLoadingActions.propTypes = {
   loadMoreTransactions: PropTypes.func.isRequired,
   loadAllTransactions: PropTypes.func.isRequired,
+  triggerTransactionsExport: PropTypes.func.isRequired,
   transactionsLoading: PropTypes.bool,
-  hasAllTransactionsLoaded: PropTypes.bool
+  hasAllTransactionsLoaded: PropTypes.bool,
+  registerBlockNumber: PropTypes.number,
+  allowExport: PropTypes.bool,
 };
 
 export default TransactionsLoadingActions;

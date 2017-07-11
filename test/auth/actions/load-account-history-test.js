@@ -19,7 +19,8 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
     SYNC_BRANCH: 'SYNC_BRANCH',
     CLEAR_REPORTS: 'CLEAR_REPORTS',
     UPDATE_TRANSACTIONS_OLDEST_LOADED_BLOCK: 'UPDATE_TRANSACTIONS_OLDEST_LOADED_BLOCK',
-    UPDATE_TRANSACTIONS_LOADING: 'UPDATE_TRANSACTIONS_LOADING'
+    UPDATE_TRANSACTIONS_LOADING: 'UPDATE_TRANSACTIONS_LOADING',
+    TRIGGER_TRANSACTIONS_EXPORT: 'TRIGGER_TRANSACTIONS_EXPORT'
   };
 
   let transactionCount = 1;
@@ -124,6 +125,8 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
 
   const UpdateReports = {};
   UpdateReports.clearReports = sinon.stub().returns({ type: MOCK_ACTION_TYPES.CLEAR_REPORTS });
+
+  const triggerTransactionsExport = sinon.stub().returns({ type: MOCK_ACTION_TYPES.TRIGGER_TRANSACTIONS_EXPORT });
 
   const action = proxyquire('../../../src/modules/auth/actions/load-account-history.js', {
     '../../my-positions/actions/load-account-trades': LoadAccountTrades,
@@ -407,6 +410,32 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
           {
             type: MOCK_ACTION_TYPES.UPDATE_TRANSACTIONS_LOADING,
             isLoading: false
+          }
+        ];
+
+        assert.deepEqual(actions, expected, `Didn't dispatch the expected actions`);
+      }
+    });
+
+    test({
+      description: `should dispatch the expected actions when loadAllHistory is true and 'triggerTransactionsExport' was passed`,
+      constraints: {
+        loadAllHistory: true,
+        registerBlock: 1,
+        triggerTransactionsExport
+      },
+      assertions: (actions) => {
+        const expected = [
+          {
+            type: MOCK_ACTION_TYPES.UPDATE_TRANSACTIONS_OLDEST_LOADED_BLOCK,
+            block: 1
+          },
+          {
+            type: MOCK_ACTION_TYPES.UPDATE_TRANSACTIONS_LOADING,
+            isLoading: false
+          },
+          {
+            type: MOCK_ACTION_TYPES.TRIGGER_TRANSACTIONS_EXPORT
           }
         ];
 

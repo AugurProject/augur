@@ -11,14 +11,16 @@ import debounce from 'utils/debounce';
 
 export default class TransactionsView extends Component {
   static propTypes = {
-    branch: PropTypes.object,
-    currentBlockNumber: PropTypes.number,
-    loginAccount: PropTypes.object,
     transactions: PropTypes.array.isRequired,
     transactionsLoading: PropTypes.bool.isRequired,
     loadMoreTransactions: PropTypes.func.isRequired,
     loadAllTransactions: PropTypes.func.isRequired,
-    isMobile: PropTypes.bool.isRequired
+    triggerTransactionsExport: PropTypes.func.isRequired,
+    hasAllTransactionsLoaded: PropTypes.bool.isRequired,
+    isMobile: PropTypes.bool.isRequired,
+    branch: PropTypes.object,
+    loginAccount: PropTypes.object,
+    currentBlockNumber: PropTypes.number
   };
 
   constructor(props) {
@@ -33,7 +35,7 @@ export default class TransactionsView extends Component {
       pageChanged: false,
       pagination: {},
       paginatedTransactions: [],
-      hasAttachedScrollListener: false
+      hasAttachedScrollListener: false,
     };
 
     this.updatePagination = this.updatePagination.bind(this);
@@ -165,6 +167,9 @@ export default class TransactionsView extends Component {
               loadAllTransactions={p.loadAllTransactions}
               transactionsLoading={p.transactionsLoading}
               hasAllTransactionsLoaded={p.hasAllTransactionsLoaded}
+              triggerTransactionsExport={p.triggerTransactionsExport}
+              registerBlockNumber={p.loginAccount.registerBlockNumber}
+              allowExport
             />
           </div>
         </div>
