@@ -26,7 +26,7 @@ describe(`modules/auth/actions/set-login-account.js`, () => {
         './use-unlocked-account': UseUnlockedAccount
       });
       sinon.stub(UseUnlockedAccount, 'useUnlockedAccount', account => ({ type: 'USE_UNLOCKED_ACCOUNT', account }));
-      store.dispatch(action.setLoginAccount(t.params.autoLogin));
+      store.dispatch(action.setLoginAccount(t.params.autoLogin, t.params.account));
       t.assertions(store.getActions());
       store.clearActions();
     });
@@ -34,7 +34,8 @@ describe(`modules/auth/actions/set-login-account.js`, () => {
   test({
     description: 'no account available',
     params: {
-      autoLogin: false
+      autoLogin: false,
+      account: '0xtest'
     },
     state: {
       augur: {
@@ -42,8 +43,7 @@ describe(`modules/auth/actions/set-login-account.js`, () => {
           account: {}
         },
         from: null
-      },
-      coinbase: '0xb0b'
+      }
     },
     assertions: (actions) => {
       assert.deepEqual(actions, []);
@@ -52,7 +52,8 @@ describe(`modules/auth/actions/set-login-account.js`, () => {
   test({
     description: 'client-side account in augur.js, no from address',
     params: {
-      autoLogin: false
+      autoLogin: false,
+      account: '0xtest'
     },
     state: {
       augur: {
@@ -63,8 +64,7 @@ describe(`modules/auth/actions/set-login-account.js`, () => {
           },
           from: null
         }
-      },
-      coinbase: '0xb0b'
+      }
     },
     assertions: (actions) => {
       assert.deepEqual(actions, []);
@@ -73,7 +73,8 @@ describe(`modules/auth/actions/set-login-account.js`, () => {
   test({
     description: 'client-side account in augur.js, from address set',
     params: {
-      autoLogin: false
+      autoLogin: false,
+      account: '0xtest'
     },
     state: {
       augur: {
@@ -84,8 +85,7 @@ describe(`modules/auth/actions/set-login-account.js`, () => {
           },
           from: '0xd00d'
         }
-      },
-      coinbase: '0xb0b'
+      }
     },
     assertions: (actions) => {
       assert.deepEqual(actions, []);
@@ -94,7 +94,8 @@ describe(`modules/auth/actions/set-login-account.js`, () => {
   test({
     description: 'unlocked local account',
     params: {
-      autoLogin: true
+      autoLogin: true,
+      account: '0xtest'
     },
     state: {
       augur: {
@@ -102,13 +103,12 @@ describe(`modules/auth/actions/set-login-account.js`, () => {
           account: {}
         },
         from: '0xd00d'
-      },
-      coinbase: '0xb0b'
+      }
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
         type: 'USE_UNLOCKED_ACCOUNT',
-        account: '0xb0b'
+        account: '0xtest'
       }]);
     }
   });
