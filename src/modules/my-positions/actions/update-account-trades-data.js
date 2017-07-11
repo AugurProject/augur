@@ -2,6 +2,7 @@ import { augur } from 'services/augurjs';
 import { convertTradeLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
 import { updateOrders } from 'modules/my-orders/actions/update-orders';
 import { loadBidsAsksHistory } from 'modules/bids-asks/actions/load-bids-asks-history';
+import { LOG_ADD_TX, LOG_CANCEL, LOG_FILL_TX } from 'modules/transactions/constants/types';
 
 export const UPDATE_ACCOUNT_TRADES_DATA = 'UPDATE_ACCOUNT_TRADES_DATA';
 export const UPDATE_ACCOUNT_POSITIONS_DATA = 'UPDATE_ACCOUNT_POSITIONS_DATA';
@@ -21,7 +22,7 @@ export function updateSellCompleteSetsLock(marketID, isLocked) {
 
 export function updateAccountBidsAsksData(data, marketID) {
   return (dispatch, getState) => {
-    dispatch(convertTradeLogsToTransactions('log_add_tx', data, marketID));
+    dispatch(convertTradeLogsToTransactions(LOG_ADD_TX, data, marketID));
     dispatch(updateOrders(data, true));
     const { loginAccount } = getState();
     const account = loginAccount.address;
@@ -34,14 +35,14 @@ export function updateAccountBidsAsksData(data, marketID) {
 
 export function updateAccountCancelsData(data, marketID) {
   return (dispatch, getState) => {
-    dispatch(convertTradeLogsToTransactions('log_cancel', data, marketID));
+    dispatch(convertTradeLogsToTransactions(LOG_CANCEL, data, marketID));
     dispatch(updateOrders(data, false));
   };
 }
 
 export function updateAccountTradesData(data, marketID) {
   return (dispatch, getState) => {
-    dispatch(convertTradeLogsToTransactions('log_fill_tx', data, marketID));
+    dispatch(convertTradeLogsToTransactions(LOG_FILL_TX, data, marketID));
     const { loginAccount } = getState();
     const account = loginAccount.address;
     Object.keys(data).forEach((market) => {
