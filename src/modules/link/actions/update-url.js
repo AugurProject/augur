@@ -6,7 +6,7 @@ import { MARKETS, AUTHENTICATION, TOPICS } from 'modules/app/constants/views';
 import authenticatedViews from 'modules/app/constants/authenticated-views';
 
 import getValue from 'utils/get-value';
-import setTitle from 'utils/set-title';
+// import setTitle from 'utils/set-title';
 import { parseURL, makeLocation } from 'utils/parse-url';
 
 export const UPDATE_URL = 'UPDATE_URL';

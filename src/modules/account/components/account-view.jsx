@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Helmet } from 'react-helmet';
+
 import ComponentNav from 'modules/common/components/component-nav';
 
 import { ACCOUNT_NAV_ITEMS } from 'modules/account/constants/account-nav-items';
@@ -40,6 +42,10 @@ export default class AccountView extends Component {
 
     return (
       <section id="account_view">
+        <Helmet>
+          <title>Account</title>
+        </Helmet>
+
         {loginAccount.address &&
           <article
             className="account-content"

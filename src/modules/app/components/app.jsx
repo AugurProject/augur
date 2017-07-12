@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Hammer from 'hammerjs';
+import { Helmet } from 'react-helmet';
 
 import Header from 'modules/app/components/header';
 import Footer from 'modules/app/components/footer';
@@ -18,6 +19,7 @@ import debounce from 'utils/debounce';
 import getValue from 'utils/get-value';
 
 import { CREATE_MARKET } from 'modules/app/constants/views';
+import { DEFAULT as DEFAULT_TITLE } from 'modules/app/constants/view-titles';
 
 export default class AppView extends Component {
   static propTypes = {
@@ -181,6 +183,10 @@ export default class AppView extends Component {
     // The duplicated components are `visibility: hidden` so that page flow is preserved since the actual elements are pulled from page flow via `position: fixed`
     return (
       <main id="main_responsive_state" ref={(main) => { this.main = main; }}>
+        <Helmet
+          defaultTitle="Decentralized Prediction Markets Brah | Augur"
+          titleTemplate="%s | Augur"
+        />
         {p &&
           <div id="app_container" >
             {s.isSideBarAllowed && !s.isSideBarCollapsed &&

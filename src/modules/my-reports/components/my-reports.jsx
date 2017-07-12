@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
+import { Helmet } from 'react-helmet';
 
 import NullStateMessage from 'modules/common/components/null-state-message';
 import MyReport from 'modules/my-reports/components/my-report';
@@ -9,6 +10,9 @@ import TransactionsLoadingActions from 'modules/transactions/components/transact
 
 const MyReports = p => (
   <article className="my-reports">
+    <Helmet>
+      <title>My Reports</title>
+    </Helmet>
     <div className="view-header">
       <div className="view-header-group" />
       <div className="view-header-group">

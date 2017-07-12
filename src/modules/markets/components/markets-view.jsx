@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Helmet } from 'react-helmet';
 
 import MarketsHeaders from 'modules/markets/components/markets-headers';
 import MarketsList from 'modules/markets/components/markets-list';
@@ -7,6 +8,9 @@ import Branch from 'modules/branch/components/branch';
 
 const MarketsView = p => (
   <section id="markets_view">
+    <Helmet>
+      <title>Markets</title>
+    </Helmet>
     {!!p.loginAccount.rep && !!p.loginAccount.rep.value && !!p.branch.id &&
       <Branch {...p.branch} />
     }

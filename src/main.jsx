@@ -1,13 +1,10 @@
 import React from 'react';
 import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom';
-// import { HashRouter } from 'react-router-dom';
 import { AppContainer } from 'react-hot-loader';
 
 import { initAugur } from 'modules/app/actions/init-augur';
-// import { updateURL } from 'modules/link/actions/update-url';
 
-// import createHistory from 'history/createHashHistory';
 import history from 'src/history';
 
 import { ConnectedRouter } from 'react-router-redux';
@@ -18,8 +15,9 @@ import store from 'src/store';
 
 import { augur } from 'services/augurjs';
 
-// require('core-js/fn/array/find');
-// require('core-js/fn/string/starts-with');
+// Reason for these being here?
+require('core-js/fn/array/find');
+require('core-js/fn/string/starts-with');
 
 // NOTE --  These are attached for convenience when built for development or debug
 if (process.env.NODE_ENV === 'development') {
@@ -44,8 +42,6 @@ if (process.env.NODE_ENV === 'development') {
 // window.onpopstate = (e) => {
 //   store.dispatch(updateURL(window.location.pathname + window.location.search));
 // };
-
-// const history = createHistory();
 
 store.dispatch(initAugur());
 
@@ -77,13 +73,13 @@ if (module.hot) {
 }
 
 function handleRender() {
-  // const App = require('modules/app/container').default;
+  const App = require('modules/app/container').default;
 
   // NOTE --  These are attached for convenience when built for development or debug
   if (process.env.NODE_ENV === 'development') {
     const selectors = require('src/selectors-raw');
 
-    // window.App = App;
+    window.App = App;
     window.selectors = selectors;
   }
 

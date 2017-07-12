@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Route } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 
 import AuthLogin from 'modules/auth/components/auth-login';
 import AuthSignup from 'modules/auth/components/auth-signup';
@@ -70,6 +71,9 @@ export default class AuthView extends Component {
 
     return (
       <section id="auth_view">
+        <Helmet>
+          <title>Authentication</title>
+        </Helmet>
         <article className="auth-methods">
           <ComponentNav
             fullWidth

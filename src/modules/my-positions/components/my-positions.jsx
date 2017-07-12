@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Helmet } from 'react-helmet';
 
 import NullStateMessage from 'modules/common/components/null-state-message';
 import MyPositionsMarket from 'modules/my-positions/components/my-positions-market';
@@ -7,6 +8,9 @@ import TransactionsLoadingActions from 'modules/transactions/components/transact
 
 const MyPositions = p => (
   <article className="my-positions">
+    <Helmet>
+      <title>My Positions</title>
+    </Helmet>
     <div className="view-header">
       <div className="view-header-group" />
       <div className="view-header-group">

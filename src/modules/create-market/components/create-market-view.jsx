@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Helmet } from 'react-helmet';
 
 import CreateMarketMainTitle from 'modules/create-market/components/create-market-main-title';
 import CreateMarketPreview from 'modules/create-market/components/create-market-preview';
@@ -52,6 +53,9 @@ export default class CreateMarketView extends Component {
         id="create_market_view"
         style={{ marginBottom: s.buttonHeight + p.footerHeight }}
       >
+        <Helmet>
+          <title>Create Market</title>
+        </Helmet>
         <div className="create-market-container">
           <CreateMarketMainTitle
             type={p.newMarket.type}

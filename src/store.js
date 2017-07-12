@@ -38,10 +38,8 @@ const routingMiddleware = routerMiddleware(history);
 let middleware;
 if (process.env.NODE_ENV !== 'production') {
   middleware = applyMiddleware(routingMiddleware, consoleLog, thunk, localStorageMiddleware);
-  // middleware = applyMiddleware(consoleLog, thunk, localStorageMiddleware);
 } else {
   middleware = applyMiddleware(routingMiddleware, thunk, localStorageMiddleware);
-  // middleware = applyMiddleware(thunk, localStorageMiddleware);
 }
 // middleware
 const store = createStore(
@@ -53,7 +51,6 @@ const store = createStore(
 // TODO -- fix this
 if (module.hot) {
   module.hot.accept('./reducers', (changed) => {
-    console.log('hothot');
     const hotReducer = require('./reducers').createReducer;
     store.replaceReducer(hotReducer());
   });

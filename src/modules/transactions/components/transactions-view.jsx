@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Helmet } from 'react-helmet';
+
 import Transactions from 'modules/transactions/components/transactions';
 import Branch from 'modules/branch/components/branch';
 import Paginator from 'modules/common/components/paginator';
@@ -153,6 +155,10 @@ export default class TransactionsView extends Component {
 
     return (
       <section id="transactions_view">
+        <Helmet>
+          <title>Transactions</title>
+        </Helmet>
+
         {hasRep && hasBranch &&
           <Branch {...p.branch} />
         }

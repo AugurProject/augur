@@ -1,9 +1,11 @@
 import React from 'react';
+import { Helmet } from 'react-helmet'
 
 import MarketActive from 'modules/market/components/market-active';
 import MarketReported from 'modules/market/components/market-reported';
 import NullStateMessage from 'modules/common/components/null-state-message';
 
+import parseMarketTitle from 'modules/app/helpers/parse-market-title';
 import getValue from 'utils/get-value';
 
 const MarketView = (p) => {
@@ -15,6 +17,13 @@ const MarketView = (p) => {
   return (
     <section id="market_view">
       {!isAvailable && <NullStateMessage message={nullMessage} />}
+
+      {isAvailable &&
+        <Helmet>
+          <title>{parseMarketTitle(p.market.description)}</title>
+        </Helmet>
+      }
+
       {isAvailable && isOpen &&
         <MarketActive
           {...p}
@@ -23,6 +32,7 @@ const MarketView = (p) => {
           isPendingReport={getValue(p, 'market.isPendingReport')}
         />
       }
+
       {isAvailable && !isOpen && <MarketReported {...p} />}
     </section>
   );
