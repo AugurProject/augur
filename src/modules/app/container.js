@@ -14,6 +14,7 @@ import { updateFooterHeight } from 'modules/app/actions/update-footer-height';
 import getChatMessages from 'modules/chat/selectors/chat-messages';
 import links from 'modules/link/selectors/links';
 
+import pathToArray from 'modules/app/helpers/path-to-array';
 import getValue from 'utils/get-value';
 
 const mapStateToProps = state => ({
@@ -29,7 +30,8 @@ const mapStateToProps = state => ({
   isMobile: state.isMobile,
   headerHeight: state.headerHeight,
   footerHeight: state.footerHeight,
-  chat: getChatMessages()
+  chat: getChatMessages(),
+  currentPath: pathToArray(getValue(state, 'router.location.pathname'))
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -18,14 +18,14 @@ import handleScrollTop from 'utils/scroll-top-on-change';
 import debounce from 'utils/debounce';
 import getValue from 'utils/get-value';
 
-import { CREATE_MARKET } from 'modules/app/constants/views';
-import { DEFAULT as DEFAULT_TITLE } from 'modules/app/constants/view-titles';
+import { CREATE_MARKET, MARKETS } from 'modules/app/constants/views';
 
 export default class AppView extends Component {
   static propTypes = {
     url: PropTypes.string,
     history: PropTypes.any,
     children: PropTypes.node,
+    currentPath: PropTypes.array.isRequired,
     // tags: PropTypes.array.isRequired,
     // coreStats: PropTypes.array.isRequired,
     // isMobile: PropTypes.bool.isRequired,
@@ -67,14 +67,23 @@ export default class AppView extends Component {
     this.checkIfMobile();
   }
 
+  componentWillUpdate(nextProps) {
+    if (this.props.currentPath !== nextProps.currentPath) this.setSidebarAllowed(nextProps.currentPath);
+  }
+
   componentDidUpdate() {
     handleScrollTop(this.props.url);
   }
 
   // Sidebar
-  setSidebarAllowed(isSideBarAllowed) {
-    this.setState({ isSideBarAllowed });
+  setSidebarAllowed(currentPath) {
+    if (currentPath[0] === MARKETS) {
+      this.setState({ isSideBarAllowed: true });
+    } else {
+      this.setState({ isSideBarAllowed: false });
+    }
   }
+
   toggleSideBar() {
     this.setState({ isSideBarCollapsed: !this.state.isSideBarCollapsed });
   }
@@ -184,7 +193,7 @@ export default class AppView extends Component {
     return (
       <main id="main_responsive_state" ref={(main) => { this.main = main; }}>
         <Helmet
-          defaultTitle="Decentralized Prediction Markets Brah | Augur"
+          defaultTitle="Decentralized Prediction Markets | Augur"
           titleTemplate="%s | Augur"
         />
         {p &&
