@@ -4,14 +4,13 @@ import classNames from 'classnames';
 import Identicon from 'react-blockies';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
-import Link from 'modules/link/components/link';
 import Input from 'modules/common/components/input';
 import AirbitzLogoIcon from 'modules/common/components/airbitz-logo-icon';
 
 export default class AccountDetails extends Component {
   static propTypes = {
     address: PropTypes.string.isRequired,
-    signOut: PropTypes.object.isRequired,
+    signOut: PropTypes.func.isRequired,
     updateAccountName: PropTypes.func.isRequired,
     name: PropTypes.string,
     airbitzAccount: PropTypes.object,
@@ -120,7 +119,12 @@ export default class AccountDetails extends Component {
             }
           </div>
         </div>
-        <Link {...p.signOut} >Sign Out</Link>
+        <button
+          className="unstyled link"
+          onClick={p.signOut}
+        >
+          Sign Out
+        </button>
       </article>
     );
   }

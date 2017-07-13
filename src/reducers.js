@@ -10,7 +10,6 @@ import isMobile from 'modules/app/reducers/is-mobile';
 import headerHeight from 'modules/app/reducers/header-height';
 import footerHeight from 'modules/app/reducers/footer-height';
 
-import auth from 'modules/auth/reducers/auth';
 import loginAccount from 'modules/auth/reducers/login-account';
 import accountName from 'modules/account/reducers/account-name';
 import activeView from 'modules/app/reducers/active-view';
@@ -81,7 +80,6 @@ export function createReducer() {
     headerHeight,
     footerHeight,
 
-    auth,
     loginAccount,
     accountName,
     activeView,

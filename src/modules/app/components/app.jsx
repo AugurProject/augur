@@ -271,9 +271,3 @@ export default class AppView extends Component {
     );
   }
 }
-
-{/*<Routes*/}
-  {/*activeView={p.activeView}*/}
-  {/*isSideBarAllowed={s.isSideBarAllowed}*/}
-  {/*setSidebarAllowed={this.setSidebarAllowed}*/}
-{/*/>*/}

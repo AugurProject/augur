@@ -43,10 +43,10 @@ import { listWordsUnderLength } from 'utils/list-words-under-length';
 import { makeLocation } from 'utils/parse-url';
 
 export default function () {
-  const { keywords, selectedFilterSort, selectedTags, selectedTopic, pagination, loginAccount, auth } = store.getState();
+  const { keywords, selectedFilterSort, selectedTags, selectedTopic, pagination } = store.getState();
   const market = require('modules/market/selectors/market');
   return {
-    authLink: selectAuthLink(auth.selectedAuthType, !!loginAccount.address, store.dispatch),
+    // authLink: selectAuthLink(auth.selectedAuthType, !!loginAccount.address, store.dispatch),
     createMarketLink: selectCreateMarketLink(store.dispatch),
     marketsLink: selectMarketsLink(keywords, selectedFilterSort, selectedTags, pagination.selectedPageNum, null, selectedTopic, store.dispatch),
     allMarketsLink: selectMarketsLink(keywords, selectedFilterSort, selectedTags, pagination.selectedPageNum, null, null, store.dispatch),
