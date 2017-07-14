@@ -1,5 +1,5 @@
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+// import { withRouter } from 'react-router-dom';
 
 import MarketsView from 'modules/markets/components/markets-view';
 
@@ -23,7 +23,9 @@ const mapStateToProps = state => ({
   scalarShareDenomination: getScalarShareDenomination(),
   pagination: selectPagination(state),
   filterSort: getFilterSort(),
-  keywords: state.keywords
+  keywords: state.keywords,
+  hasLoadedMarkets: state.hasLoadedMarkets,
+  hasLoadedTopic: state.hasLoadedTopic
 });
 
 const mapDispatchToProps = dispatch => ({
@@ -31,6 +33,6 @@ const mapDispatchToProps = dispatch => ({
   onChangeKeywords: keywords => dispatch(updateKeywords(keywords))
 });
 
-const Markets = withRouter(connect(mapStateToProps, mapDispatchToProps)(MarketsView));
+const Markets = connect(mapStateToProps, mapDispatchToProps)(MarketsView);
 
 export default Markets;

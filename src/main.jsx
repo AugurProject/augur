@@ -5,9 +5,11 @@ import { AppContainer } from 'react-hot-loader';
 
 import { initAugur } from 'modules/app/actions/init-augur';
 
-import history from 'src/history';
+// import history from 'src/history';
 
-import { ConnectedRouter } from 'react-router-redux';
+// import { ConnectedRouter } from 'react-router-redux';
+
+import { HashRouter } from 'react-router-dom'
 
 import Routes from 'modules/app/components/routes';
 
@@ -49,9 +51,9 @@ function render(App) {
   ReactDOM.render(
     <Provider store={store}>
       <AppContainer>
-        <ConnectedRouter history={history} >
+        <HashRouter>
           <Routes />
-        </ConnectedRouter>
+        </HashRouter>
       </AppContainer>
     </Provider>,
     document.getElementById('app')
@@ -85,3 +87,7 @@ function handleRender() {
 
   render();
 }
+
+// <ConnectedRouter history={history} >
+//   <Routes />
+// </ConnectedRouter>

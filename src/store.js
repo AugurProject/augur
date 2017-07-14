@@ -1,7 +1,7 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
-import history from 'src/history';
-import { routerReducer, routerMiddleware } from 'react-router-redux';
+// import history from 'src/history';
+// import { routerReducer, routerMiddleware } from 'react-router-redux';
 
 import { createReducer } from './reducers';
 
@@ -33,19 +33,23 @@ const localStorageMiddleware = store => next => (action) => {
 };
 
 // const history = createHistory();
-const routingMiddleware = routerMiddleware(history);
+// const routingMiddleware = routerMiddleware(history);
 
 let middleware;
+// if (process.env.NODE_ENV !== 'production') {
+//   middleware = applyMiddleware(routingMiddleware, consoleLog, thunk, localStorageMiddleware);
+// } else {
+//   middleware = applyMiddleware(routingMiddleware, thunk, localStorageMiddleware);
+// }
 if (process.env.NODE_ENV !== 'production') {
-  middleware = applyMiddleware(routingMiddleware, consoleLog, thunk, localStorageMiddleware);
+  middleware = applyMiddleware(consoleLog, thunk, localStorageMiddleware);
 } else {
-  middleware = applyMiddleware(routingMiddleware, thunk, localStorageMiddleware);
+  middleware = applyMiddleware(thunk, localStorageMiddleware);
 }
 // middleware
 const store = createStore(
   combineReducers({
-    ...createReducer(),
-    router: routerReducer
+    ...createReducer()
   }), middleware);
 
 // TODO -- fix this

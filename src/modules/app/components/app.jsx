@@ -17,6 +17,7 @@ import shouldComponentUpdatePure from 'utils/should-component-update-pure';
 import handleScrollTop from 'utils/scroll-top-on-change';
 import debounce from 'utils/debounce';
 import getValue from 'utils/get-value';
+import pathToArray from 'modules/app/helpers/path-to-array';
 
 import { CREATE_MARKET, MARKETS } from 'modules/app/constants/views';
 
@@ -25,7 +26,7 @@ export default class AppView extends Component {
     url: PropTypes.string,
     history: PropTypes.any,
     children: PropTypes.node,
-    currentPath: PropTypes.array.isRequired,
+    location: PropTypes.object.isRequired,
     // tags: PropTypes.array.isRequired,
     // coreStats: PropTypes.array.isRequired,
     // isMobile: PropTypes.bool.isRequired,
@@ -68,7 +69,7 @@ export default class AppView extends Component {
   }
 
   componentWillUpdate(nextProps) {
-    if (this.props.currentPath !== nextProps.currentPath) this.setSidebarAllowed(nextProps.currentPath);
+    if (this.props.location !== nextProps.location) this.setSidebarAllowed(nextProps.location);
   }
 
   componentDidUpdate() {
@@ -76,8 +77,8 @@ export default class AppView extends Component {
   }
 
   // Sidebar
-  setSidebarAllowed(currentPath) {
-    if (currentPath[0] === MARKETS) {
+  setSidebarAllowed(location) {
+    if (pathToArray(location.pathname)[0] === MARKETS) {
       this.setState({ isSideBarAllowed: true });
     } else {
       this.setState({ isSideBarAllowed: false });

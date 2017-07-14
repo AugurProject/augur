@@ -1,6 +1,4 @@
-import memoize from 'memoizee';
-
-const pathToArray = memoize((stringPath) => {
+const pathToArray = (stringPath) => {
   let sanitizedPaths = [];
 
   if (stringPath == null) return sanitizedPaths;
@@ -13,6 +11,6 @@ const pathToArray = memoize((stringPath) => {
     []);
 
   return sanitizedPaths;
-});
+};
 
 export default pathToArray;
