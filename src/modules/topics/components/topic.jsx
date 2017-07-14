@@ -29,7 +29,7 @@ export default class Topic extends Component {
     this.handleFitText = debounce(this.handleFitText.bind(this));
   }
   componentDidMount() {
-    fitText(this.topicNameContainer, this.topicName);
+    fitText(this.topicNameContainer, this.topicName); // TODO -- Categories with spaces aren't resizing correctly
 
     window.addEventListener('resize', this.handleFitText);
   }
@@ -62,7 +62,7 @@ export default class Topic extends Component {
       <Link
         to={{
           pathname: makePath(MARKETS),
-          search: `?${TOPIC_PARAM_NAME}=${p.topic}`
+          search: `?${TOPIC_PARAM_NAME}=${encodeURIComponent(p.topic)}`
         }}
         key={`${p.topic}-${p.popularity}`}
         ref={(topicNameContainer) => { this.topicNameContainer = topicNameContainer; }}

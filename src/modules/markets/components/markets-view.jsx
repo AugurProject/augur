@@ -7,6 +7,9 @@ import MarketsList from 'modules/markets/components/markets-list';
 import Branch from 'modules/branch/components/branch';
 
 import getValue from 'utils/get-value';
+import parseSearch from 'modules/app/helpers/parse-search';
+
+import { TOPIC_PARAM_NAME } from 'modules/app/constants/param-names';
 
 export default class MarketsView extends Component {
   static propTypes = {
@@ -29,14 +32,18 @@ export default class MarketsView extends Component {
   }
 
   componentWillMount() {
-    console.log('wil -- ', this.props.location);
-    // Trigger load of markets
-    // Trigger load of markets specific to topic
+    console.log('wil -- ', this.props);
 
+    const searchParams = parseSearch(this.props.location.search);
+    console.log('searchParams -- ', searchParams);
 
-    // const searchParams = new URLSearchParams(this.props.location.search);
-    //
-    // console.log('searchParams -- ', searchParams.getAll());
+    if (searchParams.TOPIC_PARAM_NAME) {
+      if (!this.props.hasLoadedTopic[searchParams.TOPIC_PARAM_NAME]) {
+        // Load Markets By Topic
+      }
+    } else if (!this.props.hasLoadedMarkets) {
+      // Load Markets
+    }
   }
 
   render() {

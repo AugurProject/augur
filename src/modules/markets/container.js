@@ -12,6 +12,8 @@ import { selectMarketsHeader } from 'modules/markets/selectors/markets-header';
 import { selectFavoriteMarkets } from 'modules/markets/selectors/markets-favorite';
 import { selectPagination } from 'modules/markets/selectors/pagination';
 
+import { loadMarkets } from 'modules/markets/actions/load-markets';
+
 import { updateKeywords } from 'modules/markets/actions/update-keywords';
 
 const mapStateToProps = state => ({
@@ -33,6 +35,18 @@ const mapDispatchToProps = dispatch => ({
   onChangeKeywords: keywords => dispatch(updateKeywords(keywords))
 });
 
-const Markets = connect(mapStateToProps, mapDispatchToProps)(MarketsView);
+const mergeProps = (stateProps, dispatchProps, ownProps) => {
+  const { branch } = stateProps;
+  const { dispatch } = dispatchProps;
+
+  return {
+    ...stateProps,
+    ...dispatchProps,
+    ...ownProps,
+    loadMarkets: () => dispatch(loadMarkets(branch.id))
+  };
+};
+
+const Markets = connect(mapStateToProps, mapDispatchToProps, mergeProps)(MarketsView);
 
 export default Markets;
