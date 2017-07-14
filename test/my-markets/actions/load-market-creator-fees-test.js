@@ -12,10 +12,10 @@ describe('modules/my-markets/actions/load-market-creator-fees.js', () => {
   const { store } = mockStore.default;
 
   const mockAugurJS = {
-    augur: { api: { MarketCreator: {} } },
+    augur: { api: { CompositeGetters: {} } },
     abi
   };
-  mockAugurJS.augur.api.MarketCreator.getMarketCreatorFeesCollected = sinon.stub().yields('10');
+  mockAugurJS.augur.api.CompositeGetters.getMarketCreatorFeesCollected = sinon.stub().yields('10');
 
   const mockActions = {
     updateMarketCreatorFees: () => {}
@@ -42,7 +42,7 @@ describe('modules/my-markets/actions/load-market-creator-fees.js', () => {
       }
     }];
     store.dispatch(action.loadMarketCreatorFees('0x0000000000000000000000000000000000000001'));
-    sinon.assert.calledOnce(mockAugurJS.augur.api.MarketCreator.getMarketCreatorFeesCollected);
+    sinon.assert.calledOnce(mockAugurJS.augur.api.CompositeGetters.getMarketCreatorFeesCollected);
     sinon.assert.calledOnce(mockActions.updateMarketCreatorFees);
     assert.deepEqual(store.getActions(), out, `actions dispatched did not have the expected shape`);
   });
