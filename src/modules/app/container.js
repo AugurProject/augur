@@ -5,6 +5,8 @@ import { selectNotificationsAndSeenCount } from 'modules/notifications/selectors
 import { selectMarketsHeader } from 'modules/markets/selectors/markets-header';
 import { selectTags } from 'modules/markets/selectors/tags';
 import { selectCoreStats } from 'modules/account/selectors/core-stats';
+import { selectTopics } from 'modules/topics/selectors/topics';
+import { selectTopicLink } from 'modules/link/selectors/links'
 import portfolio from 'modules/portfolio/selectors/portfolio';
 import { updateIsMobile } from 'modules/app/actions/update-is-mobile';
 import { updateHeaderHeight } from 'modules/app/actions/update-header-height';
@@ -28,13 +30,15 @@ const mapStateToProps = state => ({
   isMobile: state.isMobile,
   headerHeight: state.headerHeight,
   footerHeight: state.footerHeight,
-  chat: getChatMessages()
+  chat: getChatMessages(),
+  topics: selectTopics(state)
 });
 
 const mapDispatchToProps = dispatch => ({
   updateIsMobile: isMobile => dispatch(updateIsMobile(isMobile)),
   updateHeaderHeight: headerHeight => dispatch(updateHeaderHeight(headerHeight)),
-  updateFooterHeight: footerHeight => dispatch(updateFooterHeight(footerHeight))
+  updateFooterHeight: footerHeight => dispatch(updateFooterHeight(footerHeight)),
+  selectTopic: topic => selectTopicLink(topic, dispatch).onClick()
 });
 
 const AppContainer = connect(mapStateToProps, mapDispatchToProps)(App);
