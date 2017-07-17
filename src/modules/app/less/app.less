@@ -1,5 +1,90 @@
-body {
-  @media @breakpoint-mobile {
-    --is-mobile: true;
-  }
+body, html, * {
+  box-sizing: border-box;
 }
+
+#root {
+  height: 100%;
+}
+
+.app-wrap {
+  display: grid;
+  /* sidebar width */
+  grid-template-columns: 72px auto;
+  height: 100%;
+}
+
+.main-wrap {
+  display: grid;
+  /* topbar height */
+  grid-template-rows: 40px auto;
+}
+
+.maincontent-row {
+  display: grid;
+  /* inner menubar width */
+  grid-template-columns: 110px auto;
+}
+
+.inner-menu-container {
+  position: relative;
+}
+
+ul.innermenubar {
+  background: #393350;
+  color: white;
+  list-style: none;
+  padding: 50px 0 0 10px;
+  margin: 0;
+  height: 100%;
+  position: relative;
+  z-index: 999;
+}
+
+ul.submenubar {
+  list-style: none;
+  padding: 50px 0 0 10px;
+  margin: 0;
+  background: red;
+  width: 110px;
+  height: 100%;
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+}
+
+ul li {
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.maincontent {
+  background: #1E1B31;
+  height: 100%;
+}
+
+.topbar {
+  background: #736E89;
+  height: 100%;
+}
+
+.side-wrap {
+  z-index: 9999;
+}
+
+.sidebar {
+  background: blue;
+  background: #412468;
+  height: 100%;
+  position: relative;
+}
+
+svg#paralellogo {
+  width: 100vw;
+  position: absolute;
+  top: 40px;
+  left: 0;
+  pointer-events: none;
+}
+
+

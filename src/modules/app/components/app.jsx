@@ -4,12 +4,19 @@ import classNames from 'classnames';
 import Hammer from 'hammerjs';
 import { Helmet } from 'react-helmet';
 
-import Header from 'modules/app/components/header';
+/*import Header from 'modules/app/components/header';
 import Footer from 'modules/app/components/footer';
 import SideBar from 'modules/app/components/side-bar';
 import CoreStats from 'modules/app/components/core-stats';
-// import Routes from 'modules/app/components/routes';
+import Routes from 'modules/app/components/routes';
 import SidebarMask from 'modules/common/components/side-bar-mask';
+*/
+import Routes from 'modules/app/components/routes';
+
+import TopBar from './new-top-bar';
+import InnerNav from './new-inner-nav';
+import SideNav from './new-side-nav';
+import MainContent from './main-content';
 
 import makePath from 'modules/app/helpers/make-path';
 import shouldComponentUpdatePure from 'utils/should-component-update-pure';
@@ -19,6 +26,8 @@ import getValue from 'utils/get-value';
 import parsePath from 'modules/app/helpers/parse-path';
 
 import { CREATE_MARKET, MARKETS, FAVORITES } from 'modules/app/constants/views';
+
+import { tween } from 'shifty';
 
 export default class AppView extends Component {
   static propTypes = {
@@ -46,7 +55,9 @@ export default class AppView extends Component {
       doScrollTop: false,
       currentRoute: null,
       footerPush: 0,
-      isFooterCollapsed: true
+      isFooterCollapsed: true,
+      mainMenu: { scalar: 0, open: false, locked: false },
+      subMenu: { scalar: 0, open: false, locked: false }
     };
 
     this.shouldComponentUpdate = shouldComponentUpdatePure;
@@ -152,6 +163,53 @@ export default class AppView extends Component {
     }
   }
 
+  toggleMenuTween(menuKey, forceOpen, cb) {
+    let nowOpen = !this.state[menuKey].open;
+    if (typeof(forceOpen) === 'boolean') nowOpen = forceOpen;
+
+    const setMenuState =  (newState) => this.setState({
+        [menuKey]: Object.assign({}, this.state[menuKey], newState)
+    });
+
+    const baseMenuState = { open: nowOpen, locked: true };
+    tween({
+      from: { value: this.state[menuKey].scalar },
+      to: { value: (nowOpen ? 1 : 0) },
+      duration: 500,
+      easing: "easeOutQuad",
+      step: (newState) => setMenuState(Object.assign({}, baseMenuState, { scalar: newState.value }))
+    }).then(
+      () => {
+        if (cb && typeof(cb) === 'function') cb();
+        setMenuState({ locked: false });
+      }
+    );
+  }
+
+  toggleMainMenu() {
+    if (!this.state.mainMenu.locked) {
+      if (this.state.mainMenu.open) this.toggleMenuTween('subMenu', false);
+      this.toggleMenuTween('mainMenu');
+    }
+  }
+
+  cycleSubMenu(menuSwitchCb) {
+    if (!this.state.subMenu.locked) {
+      const openNewMenu = () => {
+        const reopen = menuSwitchCb();
+        if (reopen) this.toggleMenuTween('subMenu', true);
+      };
+
+      if (this.state.subMenu.open) {
+        this.toggleMenuTween('subMenu', false, () => {
+          openNewMenu();
+        });
+      } else {
+        openNewMenu();
+      }
+    }
+  }
+
   render() {
     const p = this.props;
     const s = this.state;
@@ -169,11 +227,53 @@ export default class AppView extends Component {
       notifications: p.notifications
     };
 
+    const sideBarProps = {
+      tags: p.tags,
+      headerHeight: p.headerHeight,
+      footerHeight: p.footerHeight
+    };
+
+
+    const { mainMenu, subMenu } = this.state;
+
+    return (
+      <div className='app-wrap'>
+        <div className='side-wrap'>
+          <SideNav
+            onClick={() => this.toggleMainMenu()}
+            menuScalar={subMenu.scalar}
+          />
+        </div>
+        <div className='main-wrap'>
+          <div className='topbar-row'>
+            <TopBar />
+          </div>
+          <div
+            className='maincontent-row'
+            style={{ marginLeft: (-110 + (110 * mainMenu.scalar)) }}
+          >
+            <InnerNav
+              onCycleSubMenu={(menuSwitchCb) => this.cycleSubMenu(menuSwitchCb)}
+              subMenuOpen={subMenu.open}
+              subMenuScalar={subMenu.scalar}
+            />
+            <MainContent subMenuScalar={subMenu.scalar} >
+              <Routes
+                activeView={p.activeView}
+                isSideBarAllowed={s.isSideBarAllowed}
+                setSidebarAllowed={this.setSidebarAllowed}
+              />
+            </MainContent>
+          </div>
+        </div>
+      </div>
+    );
+
     // NOTE -- A few implementation details:
     // An attention has been paid to avoid JS manipulation of app layout
     // As a result, you'll notice that both the `Header` + `CortStats` + `Footer` components are duplicated -- this is for layout purposes only in order to better preserve responsiveness w/out manual calculations
     // The duplicated components are `visibility: hidden` so that page flow is preserved since the actual elements are pulled from page flow via `position: fixed`
-    return (
+    /*return (
       <main id="main_responsive_state" ref={(main) => { this.main = main; }}>
         <Helmet
           defaultTitle="Decentralized Prediction Markets | Augur"
@@ -249,6 +349,6 @@ export default class AppView extends Component {
           </div>
         }
       </main>
-    );
+    );*/
   }
 }
