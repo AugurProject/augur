@@ -44,7 +44,6 @@
         "asyncArrow": "ignore"
       }
     ],
-    "vars-on-top": 2,
     "no-empty": [
       2, {
         "allowEmptyCatch": true

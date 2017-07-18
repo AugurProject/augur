@@ -60,15 +60,14 @@ function simulateTrade(p) {
 
     // if no matching bids, then user is asking: no settlement fees
     if (!matchingSortedBids.length) {
-      ;
-      simulatedTrade = sumSimulatedResults(simulatedTrade, simulateMakeAskOrder(sharesToCover, price, range, shareBalances));
+      simulatedTrade = sumSimulatedResults(simulatedTrade, simulateMakeAskOrder(sharesToCover, price, maxPrice, new BigNumber(shareBalances[outcomeID - 1], 10)));
 
     // if there are matching bids, user is selling
     } else {
       var simulatedTakeBidOrder = simulateTakeBidOrder(sharesToCover, minPrice, maxPrice, range, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, matchingSortedBids, shareBalances);
       simulatedTrade = sumSimulatedResults(simulatedTrade, simulatedTakeBidOrder);
       if (simulatedTakeBidOrder.sharesToCover.gt(PRECISION.zero)) {
-        simulatedTrade = sumSimulatedResults(simulatedTrade, simulateMakeAskOrder(sharesToCover, price, range, shareBalances));
+        simulatedTrade = sumSimulatedResults(simulatedTrade, simulateMakeAskOrder(sharesToCover, price, maxPrice, shareBalances));
       }
     }
   }
