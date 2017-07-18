@@ -23,7 +23,7 @@ class InnerMenuBar extends Component {
   renderItemList() {
     return (
       <ul className='innermenubar'>
-        {this.props.menuData.map((item, idx) => <li onClick={() => this.chooseMenuItem(idx)}>{item.title}</li>)}
+        {this.props.menuData.map((item, idx) => <li onClick={() => this.chooseMenuItem(idx)}>{item.topic}</li>)}
       </ul>
     );
   }

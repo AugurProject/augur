@@ -16,9 +16,7 @@ import Routes from 'modules/app/components/routes';
 import TopBar from './new-top-bar';
 import InnerNav from './new-inner-nav';
 import SideNav from './new-side-nav';
-import MainContent from './main-content';
 
-import makePath from 'modules/app/helpers/make-path';
 import shouldComponentUpdatePure from 'utils/should-component-update-pure';
 import handleScrollTop from 'utils/scroll-top-on-change';
 import debounce from 'utils/debounce';
@@ -220,6 +218,7 @@ export default class AppView extends Component {
       isSideBarCollapsed: s.isSideBarCollapsed,
       isSideBarPersistent: s.isSideBarPersistent,
       toggleSideBar: () => { this.toggleSideBar(); },
+      activeView: p.activeView,
       marketsInfo: p.marketsHeader,
       portfolioTotals: getValue(p, 'portfolio.totals'),
       numFavorites: getValue(p, 'marketsHeader.numFavorites'),
@@ -227,10 +226,9 @@ export default class AppView extends Component {
       notifications: p.notifications
     };
 
-    const sideBarProps = {
-      tags: p.tags,
-      headerHeight: p.headerHeight,
-      footerHeight: p.footerHeight
+    const innerNavProps = {
+      topics: p.topics,
+      tags: p.tags
     };
 
 
@@ -256,14 +254,19 @@ export default class AppView extends Component {
               onCycleSubMenu={(menuSwitchCb) => this.cycleSubMenu(menuSwitchCb)}
               subMenuOpen={subMenu.open}
               subMenuScalar={subMenu.scalar}
+              menuData={p.topics}
             />
-            <MainContent subMenuScalar={subMenu.scalar} >
+            <div
+              className='maincontent'
+              style={{ paddingLeft: (-110 + (110 * subMenu.scalar)) }}
+            >
+              {/* TODO: remove sidebar-related stuff from Routes */}
               <Routes
                 activeView={p.activeView}
                 isSideBarAllowed={s.isSideBarAllowed}
                 setSidebarAllowed={this.setSidebarAllowed}
               />
-            </MainContent>
+            </div>
           </div>
         </div>
       </div>
