@@ -7,7 +7,7 @@ var ZERO = constants.ZERO;
 
 function simulateMakeAskOrder(numShares, price, maxPrice, outcomeID, shareBalances) {
   var numOutcomes = shareBalances.length;
-  if (!outcomeID || outcomeID > numOutcomes) throw new Error("Invalid outcome ID");
+  if (outcomeID <= 0 || outcomeID > numOutcomes) throw new Error("Invalid outcome ID");
   if (numShares.lte(PRECISION.zero)) throw new Error("Number of shares is too small");
   if (price.gt(maxPrice)) throw new Error("Price is above the maximum price");
   var gasFees = ZERO;

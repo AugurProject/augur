@@ -8,7 +8,7 @@ var ZERO = constants.ZERO;
 
 function simulateTakeAskOrder(sharesToCover, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, matchingSortedAsks, outcomeID, shareBalances) {
   var numOutcomes = shareBalances.length;
-  if (!outcomeID || outcomeID > numOutcomes) throw new Error("Invalid outcome ID");
+  if (outcomeID <= 0 || outcomeID > numOutcomes) throw new Error("Invalid outcome ID");
   if (sharesToCover.lte(PRECISION.zero)) throw new Error("Number of shares is too small");
   var settlementFees = ZERO;
   var gasFees = ZERO;

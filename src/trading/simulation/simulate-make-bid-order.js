@@ -7,7 +7,7 @@ var ZERO = constants.ZERO;
 
 function simulateMakeBidOrder(numShares, price, minPrice, outcomeID, shareBalances) {
   var numOutcomes = shareBalances.length;
-  if (!outcomeID || outcomeID > numOutcomes) throw new Error("Invalid outcome ID");
+  if (outcomeID <= 0 || outcomeID > numOutcomes) throw new Error("Invalid outcome ID");
   if (numShares.lte(PRECISION.zero)) throw new Error("Number of shares is too small");
   if (price.lt(minPrice)) throw new Error("Price is below the minimum price");
   var gasFees = ZERO;
