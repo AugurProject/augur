@@ -6,7 +6,10 @@ var constants = require("../../constants");
 var PRECISION = constants.PRECISION;
 var ZERO = constants.ZERO;
 
-function simulateTakeAskOrder(sharesToCover, minPrice, maxPrice, range, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, matchingSortedAsks, shareBalances) {
+function simulateTakeAskOrder(sharesToCover, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, matchingSortedAsks, outcomeID, shareBalances) {
+  var numOutcomes = shareBalances.length;
+  if (!outcomeID || outcomeID > numOutcomes) throw new Error("Invalid outcome ID");
+  if (sharesToCover.lte(PRECISION.zero)) throw new Error("Number of shares is too small");
   var settlementFees = ZERO;
   var gasFees = ZERO;
   var makerSharesDepleted = ZERO;
@@ -20,15 +23,17 @@ function simulateTakeAskOrder(sharesToCover, minPrice, maxPrice, range, marketCr
     var sharePriceShort = maxPrice.minus(orderDisplayPrice);
     var sharePriceLong = orderDisplayPrice.minus(minPrice);
     var takerSharesAvailable = takerDesiredShares;
-    shareBalances.forEach(function (shareBalance) {
-      takerSharesAvailable = BigNumber.min(new BigNumber(shareBalance, 10), takerSharesAvailable);
-    });
+    for (var i = 1; i <= numOutcomes; ++i) {
+      if (i !== outcomeID) {
+        takerSharesAvailable = BigNumber.min(shareBalances[i - 1], takerSharesAvailable);
+      }
+    }
     sharesToCover = sharesToCover.minus(takerDesiredShares);
 
     // complete sets sold if maker is closing a long, taker is closing a short
     if (makerSharesEscrowed.gt(PRECISION.zero) && takerSharesAvailable.gt(PRECISION.zero)) {
       var completeSets = BigNumber.min(makerSharesEscrowed, takerSharesAvailable);
-      settlementFees = settlementFees.plus(calculateSettlementFee(completeSets, marketCreatorFeeRate, range, shouldCollectReportingFees, reportingFeeRate, sharePriceLong));
+      settlementFees = settlementFees.plus(calculateSettlementFee(completeSets, marketCreatorFeeRate, maxPrice.minus(minPrice), shouldCollectReportingFees, reportingFeeRate, sharePriceLong));
       makerSharesDepleted = makerSharesDepleted.plus(completeSets);
       takerSharesDepleted = takerSharesDepleted.plus(completeSets);
       takerDesiredShares = takerDesiredShares.minus(completeSets);
@@ -62,12 +67,20 @@ function simulateTakeAskOrder(sharesToCover, minPrice, maxPrice, range, marketCr
       takerDesiredShares = ZERO;
     }
   });
+  if (takerSharesDepleted.gt(ZERO)) {
+    for (var i = 1; i <= numOutcomes; ++i) {
+      if (i !== outcomeID) {
+        shareBalances[i - 1] = shareBalances[i - 1].minus(takerSharesDepleted);
+      }
+    }
+  }
   return {
     sharesToCover: sharesToCover,
     settlementFees: settlementFees,
     gasFees: gasFees,
-    sharesDepleted: sharesEscrowed,
-    tokensDepleted: tokensEscrowed
+    otherSharesDepleted: sharesEscrowed,
+    tokensDepleted: tokensEscrowed,
+    shareBalances: shareBalances
   };
 }
 
