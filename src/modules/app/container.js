@@ -29,6 +29,9 @@ const mapStateToProps = state => ({
   footerHeight: state.footerHeight,
   markets: getAllMarkets(),
   marketsFilteredSorted: state.marketsFilteredSorted
+  chat: getChatMessages(),
+  topics: selectTopics(state),
+  selectedTopic: state.selectedTopic
 });
 
 const mapDispatchToProps = dispatch => ({

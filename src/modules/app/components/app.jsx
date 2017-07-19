@@ -228,9 +228,9 @@ export default class AppView extends Component {
 
     const innerNavProps = {
       topics: p.topics,
+      selectedTopic: p.selectedTopic,
       tags: p.tags
     };
-
 
     const { mainMenu, subMenu } = this.state;
 
@@ -238,7 +238,16 @@ export default class AppView extends Component {
       <div className='app-wrap'>
         <div className='side-wrap'>
           <SideNav
-            onClick={() => this.toggleMainMenu()}
+            menuData={[
+              {
+                title: 'Markets',
+                onClick: () => this.toggleMainMenu(),
+                onBlur: () => {} // should force menu close
+              },
+              { title: 'test' },
+              { title: 'test' },
+              { title: 'test' }
+            ]}
             menuScalar={subMenu.scalar}
           />
         </div>
@@ -254,7 +263,8 @@ export default class AppView extends Component {
               onCycleSubMenu={(menuSwitchCb) => this.cycleSubMenu(menuSwitchCb)}
               subMenuOpen={subMenu.open}
               subMenuScalar={subMenu.scalar}
-              menuData={p.topics}
+              onSelectTopic={p.selectTopic}
+              {...innerNavProps}
             />
             <div
               className='maincontent'
