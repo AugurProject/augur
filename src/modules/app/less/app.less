@@ -22,7 +22,7 @@ h1, h2, h3, h4, h5, h6 {
   height: 100vh;
   overflow: hidden;
   /* topbar height */
-  grid-template-rows: 40px auto;
+  grid-template-rows: 42px auto;
 }
 
 .maincontent-row {
@@ -34,35 +34,44 @@ h1, h2, h3, h4, h5, h6 {
 
 .inner-menu-container {
   position: relative;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
 
   ul {
     font-family: 'DINPro';
+    font-weight: @font-weight-light;
+    text-transform: uppercase;
+    list-style: none;
+    padding: 42px 0;
+    margin: 0;
   }
 
   ul li {
     cursor: pointer;
+    min-height: 26px;
     font-size: 12px;
-    margin-bottom: 10px;
+    line-height: 29px;
+    letter-spacing: 0.3px;
+    padding-left: 11px;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 
   ul.innermenubar {
-    background: #393350;
-    color: white;
-    list-style: none;
-    padding: 50px 0 0 10px;
-    margin: 0;
-    height: 100%;
+    background: #44415A;
+    color: #CDCAD8;
     position: relative;
     z-index: 999;
+
+    li.selected, li:hover {
+      background: #553580;
+    }
   }
 
   ul.submenubar {
-    list-style: none;
-    padding: 50px 0 0 10px;
-    margin: 0;
     background: #372E4B;
     width: 110px;
-    height: 100%;
     position: absolute;
     z-index: 9;
     top: 0;
@@ -72,7 +81,9 @@ h1, h2, h3, h4, h5, h6 {
 
 .maincontent {
   background: #1E1B31;
-  height: 100%;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .topbar {
@@ -89,13 +100,50 @@ h1, h2, h3, h4, h5, h6 {
   background: blue;
   background: #412468;
   height: 100%;
+  padding-top: 84px;
   position: relative;
+
+  ul.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    border: 1px solid #553580;
+    border-left: none;
+    border-right: none;
+    
+    li {
+      height: 64px;
+      border-bottom: 1px solid #553580;
+      position: relative;
+
+      &:hover {
+        background: #553580;
+        cursor: pointer;
+      }
+      
+      &:last-child { border: none; }
+
+      span {
+        position: absolute;
+        bottom: 13px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 8px;
+        font-family: 'DINPro';
+        color: white;
+        text-transform: uppercase;
+        font-weight: 100;
+        letter-spacing: 0.3px;
+      }
+    }
+  }
 }
 
 svg#paralellogo {
   width: 100vw;
   position: absolute;
-  top: 40px;
+  top: 0px;
   left: 0;
   pointer-events: none;
 }

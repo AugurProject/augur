@@ -11,11 +11,12 @@ class SideBar extends Component {
     this.sidebarWidth = sidebarWidth;
     this.topbarHeight = topbarHeight
 
+    // TODO: de-hardcode values, replace w/ CSS properties
     this.plgram = {
-      tl: [85 + sidebarWidth, 0],
-      tr: [222 + sidebarWidth, 0],
-      bl: [0 + sidebarWidth, topbarHeight],
-      br: [110 + sidebarWidth, topbarHeight]
+      tl: [85 + sidebarWidth, topbarHeight],
+      tr: [222 + sidebarWidth, topbarHeight],
+      bl: [0 + sidebarWidth, topbarHeight * 2],
+      br: [110 + sidebarWidth, topbarHeight * 2]
     };
 
     this.xOffsetMax = 110;
@@ -32,14 +33,26 @@ class SideBar extends Component {
 
   renderParalellogram() {
     const boundOffset = (point) => this.offsetPoint(point);
+    // TODO: encode this SVG data more efficiently?
+    // it's useful to have points as variables since they'll animate
     const shapes = [
       {
         color: "#412468",
         points: ([
           [this.sidebarWidth, 0],
+          [this.sidebarWidth + (85 * 2), 0],
           this.plgram['tl'],
           this.plgram['br'],
           this.plgram['bl']
+        ])
+      },
+      {
+        color: '#553580',
+        points: ([
+          [this.sidebarWidth + (85 * 2), 0],
+          this.plgram['tl'],
+          this.plgram['tr'],
+          [this.sidebarWidth + (85 * 2) + 130, 0],
         ])
       },
       {
@@ -77,12 +90,25 @@ class SideBar extends Component {
     });
   }
 
+  renderSidebarMenu() {
+    return (
+      <ul className='sidebar-menu'>
+        {this.props.menuData.map((item) => (
+          <li onClick={item.onClick}>
+            <span class='item-title'>{item.title}</span>
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
   render() {
     return (
-      <div onClick={this.props.onClick} className='sidebar'>
+      <div className='sidebar'>
         <svg id='paralellogo'>
           {this.renderParalellogram()}
         </svg>
+        {this.renderSidebarMenu()}
       </div>
     );
   }

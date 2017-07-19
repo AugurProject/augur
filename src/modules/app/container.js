@@ -31,7 +31,8 @@ const mapStateToProps = state => ({
   headerHeight: state.headerHeight,
   footerHeight: state.footerHeight,
   chat: getChatMessages(),
-  topics: selectTopics(state)
+  topics: selectTopics(state),
+  selectedTopic: state.selectedTopic
 });
 
 const mapDispatchToProps = dispatch => ({
