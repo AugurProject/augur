@@ -1,113 +1,70 @@
 import React, { Component } from 'react';
+import Origami from './origami-svg';
+import classNames from 'classnames';
 
 class SideBar extends Component {
+
   constructor() {
     super();
-
-    this.currentRAF = null;
-
-    const sidebarWidth = 72;
-    const topbarHeight = 42;
-    this.sidebarWidth = sidebarWidth;
-    this.topbarHeight = topbarHeight
-
-    // TODO: de-hardcode values, replace w/ CSS properties
-    this.plgram = {
-      tl: [85 + sidebarWidth, topbarHeight],
-      tr: [222 + sidebarWidth, topbarHeight],
-      bl: [0 + sidebarWidth, topbarHeight * 2],
-      br: [110 + sidebarWidth, topbarHeight * 2]
+    this.state = {
+      selectedItem: null,
+      itemKey: null
     };
-
-    this.xOffsetMax = 110;
   }
 
-  pointsToString(points) {
-    return points.map((point) => (point[0]  + ',' + point[1])).join(' ');
+  isCurrentItem(item) {
+    const selected = (this.state.selectedKey &&
+                      this.state.selectedKey === item.title);
+    return selected;
   }
 
-  offsetPoint(point) {
-    const currentXOffset = this.props.menuScalar * this.xOffsetMax;
-    return [point[0] + currentXOffset, point[1]];
-  }
-
-  renderParalellogram() {
-    const boundOffset = (point) => this.offsetPoint(point);
-    // TODO: encode this SVG data more efficiently?
-    // it's useful to have points as variables since they'll animate
-    const shapes = [
-      {
-        color: "#412468",
-        points: ([
-          [this.sidebarWidth, 0],
-          [this.sidebarWidth + (85 * 2), 0],
-          this.plgram['tl'],
-          this.plgram['br'],
-          this.plgram['bl']
-        ])
-      },
-      {
-        color: '#553580',
-        points: ([
-          [this.sidebarWidth + (85 * 2), 0],
-          this.plgram['tl'],
-          this.plgram['tr'],
-          [this.sidebarWidth + (85 * 2) + 130, 0],
-        ])
-      },
-      {
-        color: "#9592A4",
-        points: ([
-          this.plgram['tl'],
-          this.plgram['bl'],
-          this.plgram['br']
-        ]).map(boundOffset)
-      },
-      {
-        color: "#C5C3CD",
-        points: ([
-          this.plgram['tl'],
-          this.plgram['tr'],
-          this.plgram['br']
-        ]).map(boundOffset)
-      }
-    ];
-
-    if (this.props.menuScalar > 0) {
-      shapes.push({
-        color: "#5A4774",
-        points: [
-          this.plgram['tl'],
-          boundOffset(this.plgram['bl']),
-          boundOffset(this.plgram['tl']),
-        ]
-      });
+  itemClick(item) {
+    if (this.isCurrentItem(item)) return;
+    const clickCallback = item.onClick;
+    if (clickCallback && typeof clickCallback === 'function') {
+      clickCallback();
+    }
+    if (this.state.selectedItem &&
+        this.state.selectedItem.onBlur &&
+        typeof this.state.selectedItem.onBlur === 'function') {
+      this.state.selectedItem.onBlur();
     }
 
-    return shapes.map((shape) => {
-      const pointString = this.pointsToString(shape.points);
-      return (<polygon fill={shape.color} points={pointString} />);
-    });
+    // set title as key for equality check 
+    // because the state item de-syncs with
+    // this.props.menuData's instance
+    this.setState({ selectedItem: item, selectedKey: item.title });
   }
 
   renderSidebarMenu() {
     return (
-      <ul className='sidebar-menu'>
-        {this.props.menuData.map((item) => (
-          <li onClick={item.onClick}>
-            <span class='item-title'>{item.title}</span>
-          </li>
-        ))}
+      <ul className="sidebar-menu">
+        {this.props.menuData.map((item) => {
+          const iconName = `nav-${item.iconKey}`;
+          const selected = this.isCurrentItem(item);
+
+          return (
+            <li
+              className={classNames({ selected })}
+              onClick={() => this.itemClick(item)}
+            >
+              <img
+                alt={iconName}
+                className={iconName}
+                src={`../../assets/images/${iconName}.svg`}
+              />
+              <span className="item-title">{item.title}</span>
+            </li>
+          );
+        })}
       </ul>
     );
   }
 
   render() {
     return (
-      <div className='sidebar'>
-        <svg id='paralellogo'>
-          {this.renderParalellogram()}
-        </svg>
+      <div className="sidebar">
+        <Origami menuScalar={this.props.menuScalar} />
         {this.renderSidebarMenu()}
       </div>
     );

@@ -35,38 +35,39 @@ h1, h2, h3, h4, h5, h6 {
 .inner-menu-container {
   position: relative;
   height: 100vh;
-  overflow-x: hidden;
-  overflow-y: auto;
 
   ul {
     font-family: 'DINPro';
     font-weight: @font-weight-light;
     text-transform: uppercase;
     list-style: none;
+    height: 100%;
     padding: 42px 0;
     margin: 0;
-  }
+    overflow-x: hidden;
+    overflow-y: auto;
 
-  ul li {
-    cursor: pointer;
-    min-height: 26px;
-    font-size: 12px;
-    line-height: 29px;
-    letter-spacing: 0.3px;
-    padding-left: 11px;
-    text-overflow: ellipsis;
-    overflow: hidden;
-  }
-
-  ul.innermenubar {
-    background: #44415A;
-    color: #CDCAD8;
-    position: relative;
-    z-index: 999;
+    li {
+      cursor: pointer;
+      color: white;
+      min-height: 26px;
+      font-size: 12px;
+      line-height: 29px;
+      letter-spacing: 0.3px;
+      padding-left: 11px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
 
     li.selected, li:hover {
       background: #553580;
     }
+  }
+
+  ul.innermenubar {
+    background: #44415A;
+    position: relative;
+    z-index: 999;
   }
 
   ul.submenubar {
@@ -89,6 +90,27 @@ h1, h2, h3, h4, h5, h6 {
 .topbar {
   background: #736E89;
   height: 100%;
+  padding-left: 295px;
+
+  span.stat {
+    line-height: 42px;
+    font-family: 'DINPro';
+    font-weight: @font-weight-light;
+    font-size: 13px;
+    letter-spacing: 0.75px;
+    margin-right: 40px;
+    width: 110px;
+    display: inline-block;
+
+    span.stat-label {
+      color: rgba(255,255,255,0.25);
+      margin-right: 10px;
+    }
+
+    span.stat-value {
+      color: white;
+    }
+  }
 }
 
 .side-wrap {
@@ -113,8 +135,14 @@ h1, h2, h3, h4, h5, h6 {
     
     li {
       height: 64px;
+      padding-top: 8px;
       border-bottom: 1px solid #553580;
       position: relative;
+      text-align: center;
+
+      &.selected {
+        background: #553580;
+      }
 
       &:hover {
         background: #553580;
@@ -123,17 +151,26 @@ h1, h2, h3, h4, h5, h6 {
       
       &:last-child { border: none; }
 
+      img.nav-create {
+        margin-top: 2px;
+        transform: scale(0.85);
+      }
+
+      img.nav-portfolio {
+        transform: scale(0.95);
+      }
+
       span {
         position: absolute;
         bottom: 13px;
         left: 0;
         right: 0;
         text-align: center;
-        font-size: 8px;
+        font-size: 9px;
         font-family: 'DINPro';
         color: white;
         text-transform: uppercase;
-        font-weight: 100;
+        font-weight: @font-weight-light;
         letter-spacing: 0.3px;
       }
     }
