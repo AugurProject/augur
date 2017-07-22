@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-class InnerMenuBar extends Component {
+class InnerNav extends Component {
   static propTypes = {
     topics: PropTypes.array.isRequired,
     onSelectTopic: PropTypes.func.isRequired
@@ -10,7 +10,7 @@ class InnerMenuBar extends Component {
 
   renderTopicList() {
     return (
-      <ul className='innermenubar'>
+      <ul className="innermenubar">
         {this.props.topics.map((item) => {
           const clickSelect = () => this.props.onSelectTopic(item.topic);
           const isSelected = item.topic === this.props.selectedTopic;
@@ -28,12 +28,20 @@ class InnerMenuBar extends Component {
   }
 
   renderSubMenu() {
-    const menuIndex = this.state.currentMenuIndex;
     return (
-      <ul className='submenubar' style={{ left: (110 * this.props.subMenuScalar) }}>
-        {(menuIndex !== null) && this.props.menuData[menuIndex].children &&
-          this.props.menuData[menuIndex].children.map((item) => <li>{item.title}</li>)
+      <ul className="submenubar" style={{ left: (110 * this.props.subMenuScalar) }}>
+        {this.props.tags.length === 0 &&
+          <li>Loading . . .</li>
         }
+        {this.props.tags.length > 0 &&
+         this.props.tags.map((item) => (
+          <li
+            className={classNames({ selected: item.isSelected })}
+            onClick={item.onClick}
+          >
+            {item.name}
+          </li>
+        ))}
       </ul>
     );
   }
@@ -42,9 +50,10 @@ class InnerMenuBar extends Component {
     return (
       <div className='inner-menu-container'>
         {this.renderTopicList()}
+        {this.renderSubMenu()}
       </div>
     );
   }
 }
 
-export default InnerMenuBar;
+export default InnerNav;

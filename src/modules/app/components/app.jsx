@@ -54,8 +54,8 @@ export default class AppView extends Component {
       currentRoute: null,
       footerPush: 0,
       isFooterCollapsed: true,
-      mainMenu: { scalar: 0, open: false, locked: false },
-      subMenu: { scalar: 0, open: false, locked: false }
+      mainMenu: { scalar: 0, open: false, currentTween: null },
+      subMenu: { scalar: 0, open: false, currentTween: null }
     };
 
     this.shouldComponentUpdate = shouldComponentUpdatePure;
@@ -162,50 +162,39 @@ export default class AppView extends Component {
   }
 
   toggleMenuTween(menuKey, forceOpen, cb) {
+    if (this.state[menuKey].currentTween) this.state[menuKey].currentTween.stop();
+
     let nowOpen = !this.state[menuKey].open;
     if (typeof(forceOpen) === 'boolean') nowOpen = forceOpen;
 
-    const setMenuState =  (newState) => this.setState({
-        [menuKey]: Object.assign({}, this.state[menuKey], newState)
+    const setMenuState = (newState) => this.setState({
+      [menuKey]: Object.assign({}, this.state[menuKey], newState)
     });
 
-    const baseMenuState = { open: nowOpen, locked: true };
-    tween({
+    const baseMenuState = { open: nowOpen };
+    const currentTween = tween({
       from: { value: this.state[menuKey].scalar },
       to: { value: (nowOpen ? 1 : 0) },
       duration: 500,
-      easing: "easeOutQuad",
+      easing: 'easeOutQuad',
       step: (newState) => setMenuState(Object.assign({}, baseMenuState, { scalar: newState.value }))
     }).then(
       () => {
         if (cb && typeof(cb) === 'function') cb();
-        setMenuState({ locked: false });
+        setMenuState({ locked: false, currentTween: null });
       }
     );
+    setMenuState({ currentTween });
   }
 
   toggleMainMenu() {
-    if (!this.state.mainMenu.locked) {
-      if (this.state.mainMenu.open) this.toggleMenuTween('subMenu', false);
-      this.toggleMenuTween('mainMenu');
+    const { selectedTopic } = this.props;
+    if (!this.state.mainMenu.open) {
+      if (selectedTopic) this.toggleMenuTween('subMenu', true);
+    } else {
+      this.toggleMenuTween('subMenu', false);
     }
-  }
-
-  cycleSubMenu(menuSwitchCb) {
-    if (!this.state.subMenu.locked) {
-      const openNewMenu = () => {
-        const reopen = menuSwitchCb();
-        if (reopen) this.toggleMenuTween('subMenu', true);
-      };
-
-      if (this.state.subMenu.open) {
-        this.toggleMenuTween('subMenu', false, () => {
-          openNewMenu();
-        });
-      } else {
-        openNewMenu();
-      }
-    }
+    this.toggleMenuTween('mainMenu');
   }
 
   render() {
@@ -235,40 +224,63 @@ export default class AppView extends Component {
     const { mainMenu, subMenu } = this.state;
 
     return (
-      <div className='app-wrap'>
-        <div className='side-wrap'>
+      <div className="app-wrap">
+        <div className="side-wrap">
           <SideNav
+            menuScalar={subMenu.scalar}
             menuData={[
               {
                 title: 'Markets',
+                iconKey: 'markets',
                 onClick: () => this.toggleMainMenu(),
-                onBlur: () => {} // should force menu close
+                onBlur: () => this.toggleMainMenu()
               },
-              { title: 'test' },
-              { title: 'test' },
-              { title: 'test' }
+              {
+                title: 'Create',
+                iconKey: 'create',
+                onClick: () => {},
+                onBlur: () => {}
+              },
+              {
+                title: 'Portfolio',
+                iconKey: 'portfolio',
+                onClick: () => {},
+                onBlur: () => {}
+              },
+              {
+                title: 'Reporting',
+                iconKey: 'reporting',
+                onClick: () => {},
+                onBlur: () => {}
+              },
+              {
+                title: 'Account',
+                iconKey: 'account',
+                onClick: () => {},
+                onBlur: () => {}
+              },
             ]}
-            menuScalar={subMenu.scalar}
           />
         </div>
-        <div className='main-wrap'>
-          <div className='topbar-row'>
-            <TopBar />
+        <div className="main-wrap">
+          <div className="topbar-row">
+            <TopBar stats={p.coreStats} />
           </div>
           <div
-            className='maincontent-row'
+            className="maincontent-row"
             style={{ marginLeft: (-110 + (110 * mainMenu.scalar)) }}
           >
             <InnerNav
-              onCycleSubMenu={(menuSwitchCb) => this.cycleSubMenu(menuSwitchCb)}
-              subMenuOpen={subMenu.open}
               subMenuScalar={subMenu.scalar}
-              onSelectTopic={p.selectTopic}
+              onSelectTopic={(...args) => {
+                p.selectTopic(...args);
+                if (!subMenu.open) this.toggleMenuTween('subMenu', true);
+              }}
               {...innerNavProps}
             />
             <div
-              className='maincontent'
-              style={{ paddingLeft: (-110 + (110 * subMenu.scalar)) }}
+              className="maincontent"
+              style={{ paddingLeft: 110 * subMenu.scalar }}
             >
               {/* TODO: remove sidebar-related stuff from Routes */}
               <Routes
@@ -281,87 +293,5 @@ export default class AppView extends Component {
         </div>
       </div>
     );
-
-    // NOTE -- A few implementation details:
-    // An attention has been paid to avoid JS manipulation of app layout
-    // As a result, you'll notice that both the `Header` + `CortStats` + `Footer` components are duplicated -- this is for layout purposes only in order to better preserve responsiveness w/out manual calculations
-    // The duplicated components are `visibility: hidden` so that page flow is preserved since the actual elements are pulled from page flow via `position: fixed`
-    /*return (
-      <main id="main_responsive_state" ref={(main) => { this.main = main; }}>
-        <Helmet
-          defaultTitle="Decentralized Prediction Markets | Augur"
-          titleTemplate="%s | Augur"
-        />
-        {p &&
-          <div id="app_container" >
-            {s.isSideBarAllowed && !s.isSideBarCollapsed &&
-              <SidebarMask
-                style={{
-                  top: p.headerHeight,
-                  bottom: p.footerHeight
-                }}
-              />
-            }
-            <div id="app_header">
-              <Header
-                {...navProps}
-                updateHeaderHeight={p.updateHeaderHeight}
-              />
-              <div className={classNames('sub-header', { 'logged-out': !p.isLogged })} >
-                {s.isSideBarAllowed && !s.isSideBarCollapsed &&
-                  <div className="core-stats-bumper" />
-                }
-                {p.isLogged &&
-                  <CoreStats
-                    coreStats={p.coreStats}
-                    location={p.location}
-                  />
-                }
-              </div>
-            </div>
-            <div id="app_views" >
-              <Header {...navProps} />
-              <div id="app_view_container">
-                {s.isSideBarAllowed && !s.isSideBarCollapsed &&
-                  <div id="side_bar" >
-                    <SideBar
-                      markets={p.markets}
-                      marketsFilteredSorted={p.marketsFilteredSorted}
-                      headerHeight={p.headerHeight}
-                      footerHeight={p.footerHeight}
-                      location={p.location}
-                      history={p.history}
-                    />
-                  </div>
-                }
-                <div id="app_view">
-                  {s.isSideBarAllowed && !s.isSideBarCollapsed &&
-                    <div className="core-stats-bumper" />
-                  }
-                  <div className={classNames('sub-header', { 'logged-out': !p.isLogged })} >
-                    {p.isLogged &&
-                      <CoreStats
-                        coreStats={p.coreStats}
-                        location={p.location}
-                      />
-                    }
-                  </div>
-                  {p.children}
-                  {p.location.pathname !== makePath(CREATE_MARKET) &&
-                    <Footer {...navProps} />
-                  }
-                </div>
-              </div>
-            </div>
-            <Footer
-              {...navProps}
-              isFooterCollapsed={s.isFooterCollapsed}
-              updateFooterHeight={p.updateFooterHeight}
-              updateIsFooterCollapsed={this.updateIsFooterCollapsed}
-            />
-          </div>
-        }
-      </main>
-    );*/
   }
 }
