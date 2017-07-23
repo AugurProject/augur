@@ -154,7 +154,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
             'tradeGroupID'
           ],
           label: 'Bid',
-          method: 'buy',
+          name: 'buy',
           mutable: true,
           send: true,
           signature: [
@@ -280,7 +280,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
             'tradeGroupID'
           ],
           label: 'Bid',
-          method: 'buy',
+          name: 'buy',
           mutable: true,
           send: true,
           signature: [
@@ -420,7 +420,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
             'tradeGroupID'
           ],
           label: 'Short Ask',
-          method: 'shortAsk',
+          name: 'shortAsk',
           mutable: true,
           signature: [
             'int256',
@@ -548,7 +548,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
             'tradeGroupID'
           ],
           label: 'Short Ask',
-          method: 'shortAsk',
+          name: 'shortAsk',
           mutable: true,
           signature: [
             'int256',
@@ -689,7 +689,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
             'tradeGroupID'
           ],
           label: 'Ask',
-          method: 'sell',
+          name: 'sell',
           mutable: true,
           signature: [
             'int256',
@@ -816,7 +816,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
             'tradeGroupID'
           ],
           label: 'Ask',
-          method: 'sell',
+          name: 'sell',
           mutable: true,
           signature: [
             'int256',

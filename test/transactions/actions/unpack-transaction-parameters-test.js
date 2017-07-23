@@ -31,7 +31,7 @@ describe(`modules/transactions/actions/unpack-transaction-parameters.js`, () => 
             'tradeGroupID'
           ],
           label: 'Bid',
-          method: 'buy',
+          name: 'buy',
           mutable: true,
           send: true,
           signature: [
@@ -92,7 +92,7 @@ describe(`modules/transactions/actions/unpack-transaction-parameters.js`, () => 
             'tradeGroupID'
           ],
           label: 'Bid',
-          method: 'buy',
+          name: 'buy',
           mutable: true,
           send: true,
           signature: [
