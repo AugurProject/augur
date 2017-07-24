@@ -100,19 +100,19 @@ export default class MarketsView extends Component {
         {this.state.canDisplayBranchInfo &&
           <Branch {...p.branch} />
         }
+        <MarketsHeaders
+          loginAccount={p.loginAccount}
+          marketsHeader={p.marketsHeader}
+          filterSort={p.filterSort}
+          keywords={p.keywords}
+          onChangeKeywords={p.onChangeKeywords}
+        />
       </section>
     );
   }
 }
 
-// <MarketsHeaders
-//   createMarketLink={p.createMarketLink}
-//   loginAccount={p.loginAccount}
-//   marketsHeader={p.marketsHeader}
-//   filterSort={p.filterSort}
-//   keywords={p.keywords}
-//   onChangeKeywords={p.onChangeKeywords}
-// />
+
 // <MarketsList
 //   loginAccount={p.loginAccount}
 //   markets={p.markets}

@@ -1,8 +1,12 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import MarketsFilterSort from 'modules/markets/components/markets-filter-sort';
-import Link from 'modules/link/components/link';
 import EmDash from 'modules/common/components/em-dash';
+
+import makePath from 'modules/app/helpers/make-path';
+
+import { CREATE_MARKET } from 'modules/app/constants/views';
 
 const MarketsHeaders = p => (
   <article>
@@ -18,9 +22,9 @@ const MarketsHeaders = p => (
       <div className="view-header-group">
         {p.loginAccount && p.loginAccount.address &&
           <Link
+            to={makePath(CREATE_MARKET)}
             className="button imperative navigational"
             disabled={!p.loginAccount.address}
-            {...p.createMarketLink}
           >
             + Create New Market
           </Link>
@@ -37,7 +41,6 @@ const MarketsHeaders = p => (
 
 MarketsHeaders.propTypes = {
   className: PropTypes.string,
-  createMarketLink: PropTypes.object,
   loginAccount: PropTypes.object,
   marketsHeader: PropTypes.object,
   filterSort: PropTypes.object,

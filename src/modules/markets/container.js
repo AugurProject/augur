@@ -22,14 +22,14 @@ import getValue from 'utils/get-value';
 const mapStateToProps = state => ({
   loginAccount: selectLoginAccount(state),
   markets: getAllMarkets(),
-  // marketsHeader: selectMarketsHeader(state),
+  marketsHeader: selectMarketsHeader(state),
   // favoriteMarkets: selectFavoriteMarkets(state),
   branch: state.branch,
   canLoadMarkets: !!getValue(state, 'branch.id'),
-  // scalarShareDenomination: getScalarShareDenomination(),
+  scalarShareDenomination: getScalarShareDenomination(),
   // pagination: selectPagination(state),
-  // filterSort: getFilterSort(),
-  // keywords: state.keywords,
+  filterSort: getFilterSort(),
+  keywords: state.keywords,
   hasLoadedMarkets: state.hasLoadedMarkets,
   hasLoadedTopic: state.hasLoadedTopic
 });
