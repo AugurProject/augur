@@ -1,9 +1,9 @@
 import { connect } from 'react-redux';
-// import { withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 import MarketsView from 'modules/markets/components/markets-view';
 
-import getMarkets from 'modules/markets/selectors/markets';
+import getAllMarkets from 'modules/markets/selectors/markets-all';
 import getFilterSort from 'modules/markets/selectors/filter-sort';
 import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination';
 import { selectLoginAccount } from 'modules/auth/selectors/login-account';
@@ -13,40 +13,48 @@ import { selectFavoriteMarkets } from 'modules/markets/selectors/markets-favorit
 import { selectPagination } from 'modules/markets/selectors/pagination';
 
 import { loadMarkets } from 'modules/markets/actions/load-markets';
+import { loadMarketsByTopic } from 'modules/markets/actions/load-markets-by-topic';
 
 import { updateKeywords } from 'modules/markets/actions/update-keywords';
 
+import getValue from 'utils/get-value';
+
 const mapStateToProps = state => ({
   loginAccount: selectLoginAccount(state),
-  markets: getMarkets(),
-  marketsHeader: selectMarketsHeader(state),
-  favoriteMarkets: selectFavoriteMarkets(state),
+  markets: getAllMarkets(),
+  // marketsHeader: selectMarketsHeader(state),
+  // favoriteMarkets: selectFavoriteMarkets(state),
   branch: state.branch,
-  scalarShareDenomination: getScalarShareDenomination(),
-  pagination: selectPagination(state),
-  filterSort: getFilterSort(),
-  keywords: state.keywords,
+  canLoadMarkets: !!getValue(state, 'branch.id'),
+  // scalarShareDenomination: getScalarShareDenomination(),
+  // pagination: selectPagination(state),
+  // filterSort: getFilterSort(),
+  // keywords: state.keywords,
   hasLoadedMarkets: state.hasLoadedMarkets,
   hasLoadedTopic: state.hasLoadedTopic
 });
 
 const mapDispatchToProps = dispatch => ({
   createMarketLink: selectCreateMarketLink(dispatch),
-  onChangeKeywords: keywords => dispatch(updateKeywords(keywords))
+  onChangeKeywords: keywords => dispatch(updateKeywords(keywords)),
+  loadMarkets: branchID => dispatch(loadMarkets(branchID)),
+  loadMarketsByTopic: (topic, branchID) => dispatch(loadMarketsByTopic(topic, branchID))
 });
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
   const { branch } = stateProps;
-  const { dispatch } = dispatchProps;
+  const { loadMarkets, loadMarketsByTopic } = dispatchProps;
 
   return {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
-    loadMarkets: () => dispatch(loadMarkets(branch.id))
+    loadMarkets: () => loadMarkets(branch.id),
+    loadMarketsByTopic: topic => loadMarketsByTopic(topic, branch.id)
   };
 };
 
-const Markets = connect(mapStateToProps, mapDispatchToProps, mergeProps)(MarketsView);
+// const Markets = connect(mapStateToProps, mapDispatchToProps, mergeProps)(MarketsView);
+const Markets = withRouter(connect(mapStateToProps, mapDispatchToProps, mergeProps)(MarketsView));
 
 export default Markets;

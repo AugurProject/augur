@@ -3,13 +3,12 @@ import { updateHasLoadedMarkets } from 'modules/markets/actions/update-has-loade
 import { updateMarketsData } from 'modules/markets/actions/update-markets-data';
 import isObject from 'utils/is-object';
 
-const CHUNK_SIZE = 10;
-
 export const loadMarkets = branchID => (dispatch, getState) => {
+  console.log('loadMarkets -- ', branchID);
   dispatch(updateHasLoadedMarkets(true));
   augur.markets.loadMarkets({
     branchID,
-    chunkSize: CHUNK_SIZE,
+    chunkSize: 10,
     isDesc: true,
     loadZeroVolumeMarkets: getState().env.loadZeroVolumeMarkets
   }, (err, marketsData) => {
