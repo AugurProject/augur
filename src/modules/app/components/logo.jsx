@@ -1,8 +1,9 @@
 import React from 'react';
+import AugurLogoIcon from '../../common/components/augur-logo-icon';
 
 const Logo = (props) => (
   <div className="top-logo">
-    <img src="../../assets/images/Augur-Mark-Icon-White.svg" />
+		<AugurLogoIcon />
     <span className="logotext">
       Augur
     </span>
