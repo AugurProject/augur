@@ -177,7 +177,9 @@ export default class AppView extends Component {
       to: { value: (nowOpen ? 1 : 0) },
       duration: 500,
       easing: 'easeOutQuad',
-      step: (newState) => setMenuState(Object.assign({}, baseMenuState, { scalar: newState.value }))
+      step: (newState) => {
+        setMenuState(Object.assign({}, baseMenuState, { scalar: newState.value }));
+      }
     }).then(
       () => {
         if (cb && typeof(cb) === 'function') cb();
@@ -268,7 +270,7 @@ export default class AppView extends Component {
           </div>
           <div
             className="maincontent-row"
-            style={{ marginLeft: (-110 + (110 * mainMenu.scalar)) }}
+            style={{ marginLeft: (-110 + ((110 * mainMenu.scalar) | 0)) }}
           >
             <InnerNav
               subMenuScalar={subMenu.scalar}
@@ -280,7 +282,7 @@ export default class AppView extends Component {
             />
             <div
               className="maincontent"
-              style={{ paddingLeft: 110 * subMenu.scalar }}
+              style={{ marginLeft: (110 * subMenu.scalar) | 0 }}
             >
               {/* TODO: remove sidebar-related stuff from Routes */}
               <Routes
