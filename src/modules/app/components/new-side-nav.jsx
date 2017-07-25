@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Origami from './origami-svg';
+import Logo from './logo';
 import classNames from 'classnames';
 
 class SideBar extends Component {
@@ -65,6 +66,7 @@ class SideBar extends Component {
     return (
       <div className="sidebar">
         <Origami menuScalar={this.props.menuScalar} />
+        <Logo />
         {this.renderSidebarMenu()}
       </div>
     );

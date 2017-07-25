@@ -186,4 +186,29 @@ svg#paralellogo {
   pointer-events: none;
 }
 
+.top-logo {
+  position: absolute;
+  top: 21px;
+  left: 15px;
+  width: 120px;
 
+  &>* {
+    display: inline-block;
+  }
+
+  img {
+    height: 44px;
+  }
+
+  span.logotext {
+    color: white;
+    font-family: 'DINPro';
+    font-weight: @font-weight-light;
+    text-transform: uppercase;
+    vertical-align: top;
+    line-height: 44px;
+    font-size: 14px;
+    letter-spacing: 1.2px;
+    margin-left: 8px;
+  }
+}
