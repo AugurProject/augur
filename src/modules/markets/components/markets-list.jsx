@@ -30,6 +30,7 @@ export default class MarketsList extends Component {
     this.setState({ lowerBound, upperBound, boundedLength });
   }
 
+  // NOTE -- You'll notice the odd method used for rendering the previews, this is done for optimization reasons
   render() {
     const p = this.props;
     const s = this.state;
@@ -60,6 +61,7 @@ export default class MarketsList extends Component {
             itemsLength={marketsLength}
             itemsPerPage={10}
             location={p.location}
+            history={p.history}
             setSegment={this.setMarketsPaginated}
           />
         }

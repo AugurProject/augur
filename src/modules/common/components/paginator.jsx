@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import { Link, history } from 'react-router-dom';
 
 import parseQuery from 'modules/app/helpers/parse-query';
 import makeQuery from 'modules/app/helpers/make-query';
@@ -20,6 +20,7 @@ class Paginator extends Component {
     itemsLength: PropTypes.number.isRequired,
     itemsPerPage: PropTypes.number.isRequired,
     location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
     setSegment: PropTypes.func.isRequired
   }
 
@@ -39,10 +40,14 @@ class Paginator extends Component {
   }
 
   componentWillMount() {
+
+    console.log('history -- ', this.props.history);
+
     this.setCurrentSegment({
       itemsLength: this.props.itemsLength,
       itemsPerPage: this.props.itemsPerPage,
       location: this.props.location,
+      history: this.props.history,
       setSegment: this.props.setSegment
     });
   }
@@ -56,6 +61,7 @@ class Paginator extends Component {
         itemsLength: nextProps.itemsLength,
         itemsPerPage: nextProps.itemsPerPage,
         location: nextProps.location,
+        history: nextProps.history,
         setSegment: nextProps.setSegment
       });
     }
@@ -65,6 +71,19 @@ class Paginator extends Component {
     if (!options.itemsLength) return options.setSegment([]);
 
     const currentPage = parseInt(parseQuery(options.location.search)[PAGINATION_PARAM_NAME] || 1, 10);
+
+    // In case the set page has no results, reset pagination
+    if (currentPage !== 1 && currentPage * options.itemsPerPage > options.itemsLength) {
+      let updatedSearch = parseQuery(options.location.search);
+      delete updatedSearch[PAGINATION_PARAM_NAME];
+      updatedSearch = makeQuery(updatedSearch);
+
+      options.history.replace({
+        ...options.location,
+        search: updatedSearch
+      });
+      return;
+    }
 
     //  Segment Bounds
     //  NOTE -- Bounds are one based
@@ -87,7 +106,7 @@ class Paginator extends Component {
     //    Back
     let backQuery;
     if (currentPage === 1 || currentPage - 1 === 1) {
-      const queryParams = parseQuery(options.location.search);7
+      const queryParams = parseQuery(options.location.search);
       delete queryParams[PAGINATION_PARAM_NAME];
       backQuery = makeQuery(queryParams);
     } else {

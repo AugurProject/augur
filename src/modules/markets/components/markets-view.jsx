@@ -113,6 +113,7 @@ export default class MarketsView extends Component {
           loginAccount={p.loginAccount}
           markets={p.markets}
           location={p.location}
+          history={p.history}
           scalarShareDenomination={p.scalarShareDenomination}
         />
       </section>
