@@ -41,7 +41,7 @@ export default class MarketsList extends Component {
     return (
       <article className="markets-list">
         {marketsLength && s.boundedLength ?
-          [...Array(s.boundedLength)].map((_, i) => {
+          [...Array(s.boundedLength)].map((unused, i) => {
             const market = p.markets[(s.lowerBound - 1) + i];
             const selectedShareDenomination = getValue(p, `scalarShareDenomination.markets.${market.id}`);
 

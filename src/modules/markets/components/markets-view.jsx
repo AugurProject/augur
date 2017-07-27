@@ -92,7 +92,6 @@ export default class MarketsView extends Component {
 
   render() {
     const p = this.props;
-    // const s = this.state;
 
     return (
       <section id="markets_view">

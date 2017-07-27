@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link, history } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import parseQuery from 'modules/app/helpers/parse-query';
 import makeQuery from 'modules/app/helpers/make-query';
@@ -40,9 +40,6 @@ class Paginator extends Component {
   }
 
   componentWillMount() {
-
-    console.log('history -- ', this.props.history);
-
     this.setCurrentSegment({
       itemsLength: this.props.itemsLength,
       itemsPerPage: this.props.itemsPerPage,
