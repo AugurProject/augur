@@ -1,4 +1,4 @@
-const pathToArray = (stringPath) => {
+const parsePath = (stringPath) => {
   let sanitizedPaths = [];
 
   if (stringPath == null) return sanitizedPaths;
@@ -13,4 +13,4 @@ const pathToArray = (stringPath) => {
   return sanitizedPaths;
 };
 
-export default pathToArray;
+export default parsePath;

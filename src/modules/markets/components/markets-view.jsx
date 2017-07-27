@@ -7,35 +7,36 @@ import MarketsList from 'modules/markets/components/markets-list';
 import Branch from 'modules/branch/components/branch';
 
 import getValue from 'utils/get-value';
-import parseSearch from 'modules/app/helpers/parse-search';
+import parseQuery from 'modules/app/helpers/parse-query';
 
 import { TOPIC_PARAM_NAME } from 'modules/app/constants/param-names';
 
 export default class MarketsView extends Component {
   static propTypes = {
-    // filterSort: PropTypes.object,
-    // marketsHeader: PropTypes.object,
-    // markets: PropTypes.array,
-    // pagination: PropTypes.object,
-    // keywords: PropTypes.string,
-    // onChangeKeywords: PropTypes.func,
-    // branch: PropTypes.object,
-    loginAccount: PropTypes.object,
-    // scalarShareDenomination: PropTypes.object,
-    // location: PropTypes.object.isRequired,
+    markets: PropTypes.array.isRequired,
     canLoadMarkets: PropTypes.bool.isRequired,
     hasLoadedMarkets: PropTypes.bool.isRequired,
     hasLoadedTopic: PropTypes.object.isRequired,
     loadMarkets: PropTypes.func.isRequired,
     loadMarketsByTopic: PropTypes.func.isRequired,
-    location: PropTypes.object.isRequired
+    location: PropTypes.object.isRequired,
+    loginAccount: PropTypes.object.isRequired,
+    // filterSort: PropTypes.object,
+    // marketsHeader: PropTypes.object,
+    // pagination: PropTypes.object,
+    // keywords: PropTypes.string,
+    // onChangeKeywords: PropTypes.func,
+    // branch: PropTypes.object,
+    // scalarShareDenomination: PropTypes.object,
+    // location: PropTypes.object.isRequired,
   }
 
   constructor(props) {
     super(props);
 
     this.state = {
-      canDisplayBranchInfo: !!(getValue(props, 'loginAccount.rep.value') && getValue(props, 'branch.id'))
+      shouldDisplayBranchInfo: !!(getValue(props, 'loginAccount.rep.value') && getValue(props, 'branch.id')),
+      marketsFiltered: []
     };
   }
 
@@ -79,7 +80,7 @@ export default class MarketsView extends Component {
 
   loadMarkets(options) {
     if (options.canLoadMarkets) {
-      const topic = parseSearch(options.location.search)[TOPIC_PARAM_NAME];
+      const topic = parseQuery(options.location.search)[TOPIC_PARAM_NAME];
 
       if (topic && !this.props.hasLoadedTopic[topic]) {
         options.loadMarketsByTopic(topic);
@@ -91,31 +92,30 @@ export default class MarketsView extends Component {
 
   render() {
     const p = this.props;
+    // const s = this.state;
 
     return (
       <section id="markets_view">
         <Helmet>
           <title>Markets</title>
         </Helmet>
-        {this.state.canDisplayBranchInfo &&
+        {this.state.shouldDisplayBranchInfo &&
           <Branch {...p.branch} />
         }
         <MarketsHeaders
           loginAccount={p.loginAccount}
-          marketsHeader={p.marketsHeader}
+          location={p.location}
           filterSort={p.filterSort}
           keywords={p.keywords}
           onChangeKeywords={p.onChangeKeywords}
+        />
+        <MarketsList
+          loginAccount={p.loginAccount}
+          markets={p.markets}
+          location={p.location}
+          scalarShareDenomination={p.scalarShareDenomination}
         />
       </section>
     );
   }
 }
-
-
-// <MarketsList
-//   loginAccount={p.loginAccount}
-//   markets={p.markets}
-//   pagination={p.pagination}
-//   scalarShareDenomination={p.scalarShareDenomination}
-// />

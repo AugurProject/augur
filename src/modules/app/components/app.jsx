@@ -17,7 +17,7 @@ import shouldComponentUpdatePure from 'utils/should-component-update-pure';
 import handleScrollTop from 'utils/scroll-top-on-change';
 import debounce from 'utils/debounce';
 import getValue from 'utils/get-value';
-import pathToArray from 'modules/app/helpers/path-to-array';
+import parsePath from 'modules/app/helpers/parse-path';
 
 import { CREATE_MARKET, MARKETS } from 'modules/app/constants/views';
 
@@ -66,9 +66,10 @@ export default class AppView extends Component {
     window.addEventListener('resize', this.handleWindowResize);
 
     this.checkIfMobile();
+    this.setSidebarAllowed(this.props.location);
   }
 
-  componentWillUpdate(nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (this.props.location !== nextProps.location) this.setSidebarAllowed(nextProps.location);
   }
 
@@ -78,7 +79,7 @@ export default class AppView extends Component {
 
   // Sidebar
   setSidebarAllowed(location) {
-    if (pathToArray(location.pathname)[0] === MARKETS) {
+    if (parsePath(location.pathname)[0] === MARKETS) {
       this.setState({ isSideBarAllowed: true });
     } else {
       this.setState({ isSideBarAllowed: false });

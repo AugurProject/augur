@@ -1,7 +1,7 @@
 /**
   * Parses the raw query string into a formatted array
   * @param {string} searchString - The raw query param string
-  * @returns {array}
+  * @returns {object}
 */
 export default function parseSearch(searchString) {
   let pairSplit;
