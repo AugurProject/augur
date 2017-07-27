@@ -17,7 +17,7 @@ import { PAGINATION_PARAM_NAME } from 'modules/app/constants/param-names';
 
 class Paginator extends Component {
   static propTypes = {
-    items: PropTypes.array.isRequired,
+    itemsLength: PropTypes.number.isRequired,
     itemsPerPage: PropTypes.number.isRequired,
     location: PropTypes.object.isRequired,
     setSegment: PropTypes.func.isRequired
@@ -28,8 +28,8 @@ class Paginator extends Component {
 
     this.state = {
       currentPage: null,
-      upperBound: null,
       lowerBound: null,
+      upperBound: null,
       backQuery: null,
       forwardQuery: null,
       totalItems: null
@@ -40,7 +40,7 @@ class Paginator extends Component {
 
   componentWillMount() {
     this.setCurrentSegment({
-      items: this.props.items,
+      itemsLength: this.props.itemsLength,
       itemsPerPage: this.props.itemsPerPage,
       location: this.props.location,
       setSegment: this.props.setSegment
@@ -48,9 +48,12 @@ class Paginator extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.items !== nextProps.items) {
+    if (
+      this.props.itemsLength !== nextProps.itemsLength ||
+      this.props.location !== nextProps.location
+    ) {
       this.setCurrentSegment({
-        items: nextProps.items,
+        itemsLength: nextProps.itemsLength,
         itemsPerPage: nextProps.itemsPerPage,
         location: nextProps.location,
         setSegment: nextProps.setSegment
@@ -59,39 +62,32 @@ class Paginator extends Component {
   }
 
   setCurrentSegment(options) {
-    if (!options.items.length) return options.setSegment([]);
+    if (!options.itemsLength) return options.setSegment([]);
 
     const currentPage = parseInt(parseQuery(options.location.search)[PAGINATION_PARAM_NAME] || 1, 10);
 
-    // Segment Bounds
-    // NOTE -- Bounds are one based
-
-    // Scenarios:
-
-    // Full List is less than itemsPerPage
-    // Segment is less than length
-    // Segement is bounded by currentPage
-
-    //  Upper Bound
-    let upperBound;
-    if (options.items.length < options.itemsPerPage || currentPage * options.itemsPerPage > options.items.length) {
-      upperBound = options.items.length;
-    } else {
-      upperBound = currentPage * options.itemsPerPage;
-    }
-    //  Lower Bound
+    //  Segment Bounds
+    //  NOTE -- Bounds are one based
+    //    Lower Bound
     let lowerBound;
-    if (upperBound - options.itemsPerPage < 0) {
+    if (currentPage === 1) {
       lowerBound = 1;
     } else {
-      lowerBound = (upperBound - options.itemsPerPage) + 1;
+      lowerBound = ((currentPage - 1) * options.itemsPerPage) + 1;
+    }
+    //    Upper Bound
+    let upperBound;
+    if (options.itemsLength < options.itemsPerPage || currentPage * options.itemsPerPage > options.itemsLength) {
+      upperBound = options.itemsLength;
+    } else {
+      upperBound = currentPage * options.itemsPerPage;
     }
 
     //  Link Query Params
     //    Back
     let backQuery;
-    if (currentPage === 1) {
-      const queryParams = parseQuery(options.location.search);
+    if (currentPage === 1 || currentPage - 1 === 1) {
+      const queryParams = parseQuery(options.location.search);7
       delete queryParams[PAGINATION_PARAM_NAME];
       backQuery = makeQuery(queryParams);
     } else {
@@ -111,26 +107,24 @@ class Paginator extends Component {
       forwardQuery = makeQuery(queryParams);
     }
 
-    const marketsPaginated = options.items.slice(lowerBound - 1, upperBound);
-    const totalItems = options.items.length;
-
-    options.setSegment(marketsPaginated);
+    const totalItems = options.itemsLength;
+    const boundedLength = (upperBound - lowerBound) + 1;
 
     this.setState({
       currentPage,
-      upperBound,
       lowerBound,
+      upperBound,
       backQuery,
       forwardQuery,
       totalItems
     });
+
+    options.setSegment(lowerBound, upperBound, boundedLength);
   }
 
   render() {
     const p = this.props;
     const s = this.state;
-
-    console.log('currentPage -- ', s.currentPage);
 
     return (
       <article className="paginator">

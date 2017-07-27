@@ -18,26 +18,31 @@ export default class MarketsList extends Component {
     super(props);
 
     this.state = {
-      marketsPaginated: [] // Ultimately set by the paginator component's `setSegement` prop method
+      lowerBound: null,
+      upperBound: null,
+      boundedLength: null
     };
 
     this.setMarketsPaginated = this.setMarketsPaginated.bind(this);
   }
 
-  setMarketsPaginated(marketsPaginated) {
-    this.setState({ marketsPaginated });
+  setMarketsPaginated(lowerBound, upperBound, boundedLength) {
+    this.setState({ lowerBound, upperBound, boundedLength });
   }
 
   render() {
     const p = this.props;
     const s = this.state;
 
+    const marketsLength = p.markets.length;
+    const shareDenominations = getValue(p, 'scalarShareDenomination.denominations');
+
     return (
       <article className="markets-list">
-        {p.markets.length ?
-          s.marketsPaginated.map((market) => {
+        {marketsLength && s.boundedLength ?
+          [...Array(s.boundedLength)].map((_, i) => {
+            const market = p.markets[(s.lowerBound - 1) + i];
             const selectedShareDenomination = getValue(p, `scalarShareDenomination.markets.${market.id}`);
-            const shareDenominations = getValue(p, 'scalarShareDenomination.denominations');
 
             return (
               <MarketPreview
@@ -50,10 +55,10 @@ export default class MarketsList extends Component {
             );
           }) :
           <NullStateMessage message={'No Markets Available'} /> }
-        {p.markets &&
+        {!!marketsLength &&
           <Paginator
-            items={p.markets}
-            itemsPerPage={100}
+            itemsLength={marketsLength}
+            itemsPerPage={10}
             location={p.location}
             setSegment={this.setMarketsPaginated}
           />
