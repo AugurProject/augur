@@ -1,0 +1,118 @@
+.side-wrap {
+  height: 100vh;
+  z-index: 9999;
+}
+
+.mobileMenuNavButton {
+  background: none;
+  border: none;
+  height: 16px;
+  left: 16px;
+  outline: none;
+  padding: 0;
+  position: absolute;
+  top: 16px;
+  width: 16px;
+  z-index: 999;
+
+  img {
+    height: 100%;
+    width: 100%;
+  }
+}
+
+.sidebar {
+  background: @color-purple;
+  height: 100%;
+  padding-top: 84px;
+  position: relative;
+
+  ul.sidebar-menu {
+    border: 1px solid #553580;
+    border-left: none;
+    border-right: none;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    li {
+      border-bottom: 1px solid #553580;
+      height: 64px;
+      padding-top: 8px;
+      position: relative;
+      text-align: center;
+
+      &.selected {
+        background: @color-lightpurple;
+      }
+
+      &:hover {
+        background: @color-lightpurple;
+        cursor: pointer;
+      }
+
+      &:last-child { border: none; }
+
+      img.nav-create {
+        margin-top: 2px;
+        transform: scale(0.85);
+      }
+
+      img.nav-portfolio {
+        transform: scale(0.95);
+      }
+
+      span {
+        bottom: 13px;
+        color: @color-white;
+        font-family: 'DINPro';
+        font-size: 9px;
+        font-weight: @font-weight-light;
+        left: 0;
+        letter-spacing: 0.3px;
+        position: absolute;
+        right: 0;
+        text-align: center;
+        text-transform: uppercase;
+      }
+    }
+  }
+
+  @media @breakpoint-mobile {
+    left: -200px;
+    padding-top: 70px;
+    position: absolute;
+    transition: left 0.2s ease-in-out;
+    width: 200px;
+
+    &.mobileShow {
+      left: 0;
+    }
+
+    ul.sidebar-menu {
+      border: none;
+      padding-left: 16px;
+
+      li {
+        border: none;
+        height: 70px;
+        padding: 0;
+        text-align: left;
+
+        &:hover { background: none; }
+
+        img {
+          vertical-align: middle;
+          width: 30px;
+        }
+
+        span {
+          font-size: 14px;
+          line-height: 70px;
+          padding-left: 18px;
+          position: static;
+        }
+      }
+    }
+  }
+}

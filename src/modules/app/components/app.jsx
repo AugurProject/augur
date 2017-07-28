@@ -8,9 +8,9 @@ import debounce from 'utils/debounce';
 
 import { tween } from 'shifty';
 
-import TopBar from './new-top-bar';
-import InnerNav from './new-inner-nav';
-import SideNav from './new-side-nav';
+import TopBar from './top-bar';
+import InnerNav from './inner-nav';
+import SideNav from './side-nav';
 import Origami from './origami-svg';
 import Logo from './logo';
 
@@ -36,14 +36,6 @@ export default class AppView extends Component {
     super(props);
 
     this.state = {
-      isSideBarAllowed: false,
-      isSideBarCollapsed: false,
-      isSideBarPersistent: true,
-      isChatCollapsed: true,
-      doScrollTop: false,
-      currentRoute: null,
-      footerPush: 0,
-      isFooterCollapsed: true,
       mainMenu: { scalar: 0, open: false, currentTween: null },
       subMenu: { scalar: 0, open: false, currentTween: null },
       mobileMenuState: mobileMenuStates.CLOSED
@@ -70,18 +62,6 @@ export default class AppView extends Component {
     const isMobile = window.getComputedStyle(document.body).getPropertyValue('--is-mobile').indexOf('true') !== -1;
 
     this.props.updateIsMobile(isMobile);
-
-    if (isMobile) {
-      this.setState({
-        isSideBarCollapsed: true,
-        isSideBarPersistent: false
-      });
-    } else {
-      this.setState({
-        isSideBarCollapsed: false,
-        isSideBarPersistent: true
-      });
-    }
   }
 
   toggleMenuTween(menuKey, forceOpen, cb) {
@@ -114,6 +94,16 @@ export default class AppView extends Component {
     setMenuState({ currentTween });
   }
 
+  toggleMainMenu() {
+    const { selectedTopic } = this.props;
+    if (!this.state.mainMenu.open) {
+      if (selectedTopic) this.toggleMenuTween('subMenu', true);
+    } else {
+      this.toggleMenuTween('subMenu', false);
+    }
+    this.toggleMenuTween('mainMenu');
+  }
+
   mobileMenuButtonClick() {
     const menuState = this.state.mobileMenuState;
     switch (menuState) {
@@ -124,16 +114,6 @@ export default class AppView extends Component {
         this.setState({ mobileMenuState: menuState - 1 });
         break;
     }
-  }
-
-  toggleMainMenu() {
-    const { selectedTopic } = this.props;
-    if (!this.state.mainMenu.open) {
-      if (selectedTopic) this.toggleMenuTween('subMenu', true);
-    } else {
-      this.toggleMenuTween('subMenu', false);
-    }
-    this.toggleMenuTween('mainMenu');
   }
 
   renderMobileMenuButton() {

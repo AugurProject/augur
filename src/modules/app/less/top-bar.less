@@ -1,0 +1,47 @@
+.topbar {
+  background: @color-gray;
+  height: 100%;
+  padding-left: 295px;
+
+  span.stat {
+    display: inline-block;
+    font-family: 'DINPro';
+    font-size: 13px;
+    font-weight: @font-weight-light;
+    letter-spacing: 0.75px;
+    line-height: 42px;
+    margin-right: 40px;
+    width: 110px;
+
+    span.stat-label {
+      color: rgba(255, 255, 255, 0.25);
+      margin-right: 10px;
+    }
+
+    span.stat-value {
+      color: @color-white;
+    }
+  }
+
+  span.mobile-logotext {
+    display: none;
+  }
+
+  @media @breakpoint-mobile {
+    padding: 0;
+
+    span.stat { display: none; }
+
+    span.mobile-logotext {
+      color: @color-white;
+      display: block;
+      float: right;
+      font-family: 'DINPro';
+      font-weight: @font-weight-light;
+      letter-spacing: 1px;
+      line-height: 28px;
+      margin-right: 10px;
+      text-transform: uppercase;
+    }
+  }
+}
