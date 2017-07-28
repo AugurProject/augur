@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
+import PropTypes from 'prop-types';
 
-class SideBar extends Component {
+export default class SideBar extends Component {
+  static propTypes = {
+    isMobile: PropTypes.bool.isRequired,
+    menuData: PropTypes.object.isRequired,
+    mobileShow: PropTypes.bool.isRequired
+  };
 
   constructor() {
     super();
@@ -34,7 +40,7 @@ class SideBar extends Component {
     // mobile menu state works differently
     if (mobile) return;
 
-    // set title as key for equality check 
+    // set title as key for equality check
     // because the state item de-syncs with
     // this.props.menuData's instance
     this.setState({ selectedItem: item, selectedKey: item.title });
@@ -75,5 +81,3 @@ class SideBar extends Component {
     );
   }
 }
-
-export default SideBar;

@@ -1,6 +1,9 @@
+/* eslint react/no-array-index-key: 0 */  // It's OK in this specific instance since the order NEVER changes
+// comment lifted from old core-stats.js
 import React from 'react';
+import PropTypes from 'prop-types';
 
-const TopBar = (props) => (
+const TopBar = props => (
   <div className="topbar">
     <div className="stats">
       <span className="stat-eth stat">
@@ -21,6 +24,7 @@ const TopBar = (props) => (
 );
 
 TopBar.propTypes = {
+  stats: PropTypes.array.isRequired
 };
 
 export default TopBar;

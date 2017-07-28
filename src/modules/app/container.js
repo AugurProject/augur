@@ -7,12 +7,11 @@ import { selectNotificationsAndSeenCount } from 'modules/notifications/selectors
 import { selectMarketsHeader } from 'modules/markets/selectors/markets-header';
 import { selectCoreStats } from 'modules/account/selectors/core-stats';
 import { selectTopics } from 'modules/topics/selectors/topics';
-import { selectTopicLink } from 'modules/link/selectors/links'
+import links, { selectTopicLink } from 'modules/link/selectors/links';
 import portfolio from 'modules/portfolio/selectors/portfolio';
 import { updateIsMobile } from 'modules/app/actions/update-is-mobile';
 import { updateHeaderHeight } from 'modules/app/actions/update-header-height';
 import { updateFooterHeight } from 'modules/app/actions/update-footer-height';
-import getAllMarkets from 'modules/markets/selectors/markets-all';
 
 import getValue from 'utils/get-value';
 

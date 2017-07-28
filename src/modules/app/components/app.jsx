@@ -3,31 +3,18 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Hammer from 'hammerjs';
 import { Helmet } from 'react-helmet';
+import Routes from 'modules/app/components/routes';
 
-/*import Header from 'modules/app/components/header';
-import Footer from 'modules/app/components/footer';
-import SideBar from 'modules/app/components/side-bar';
-import CoreStats from 'modules/app/components/core-stats';
-import Routes from 'modules/app/components/routes';
-import SidebarMask from 'modules/common/components/side-bar-mask';
-*/
-import Routes from 'modules/app/components/routes';
+import shouldComponentUpdatePure from 'utils/should-component-update-pure';
+import debounce from 'utils/debounce';
+
+import { tween } from 'shifty';
 
 import TopBar from './new-top-bar';
 import InnerNav from './new-inner-nav';
 import SideNav from './new-side-nav';
 import Origami from './origami-svg';
 import Logo from './logo';
-
-import shouldComponentUpdatePure from 'utils/should-component-update-pure';
-import handleScrollTop from 'utils/scroll-top-on-change';
-import debounce from 'utils/debounce';
-import getValue from 'utils/get-value';
-import parsePath from 'modules/app/helpers/parse-path';
-
-import { CREATE_MARKET, MARKETS, FAVORITES } from 'modules/app/constants/views';
-
-import { tween } from 'shifty';
 
 export const mobileMenuStates = {
   CLOSED: 0,
@@ -42,7 +29,8 @@ export default class AppView extends Component {
     tags: PropTypes.array.isRequired,
     coreStats: PropTypes.array.isRequired,
     isMobile: PropTypes.bool.isRequired,
-    updateIsMobile: PropTypes.func.isRequired
+    updateIsMobile: PropTypes.func.isRequired,
+    selectedTopic: PropTypes.string
   };
 
   constructor(props) {
@@ -105,11 +93,13 @@ export default class AppView extends Component {
     if (this.state[menuKey].currentTween) this.state[menuKey].currentTween.stop();
 
     let nowOpen = !this.state[menuKey].open;
-    if (typeof(forceOpen) === 'boolean') nowOpen = forceOpen;
+    if ((typeof forceOpen) === 'boolean') nowOpen = forceOpen;
 
-    const setMenuState = (newState) => this.setState({
-      [menuKey]: Object.assign({}, this.state[menuKey], newState)
-    });
+    const setMenuState = (newState) => {
+      this.setState({
+        [menuKey]: Object.assign({}, this.state[menuKey], newState)
+      });
+    };
 
     const baseMenuState = { open: nowOpen };
     const currentTween = tween({
@@ -122,7 +112,7 @@ export default class AppView extends Component {
       }
     }).then(
       () => {
-        if (cb && typeof(cb) === 'function') cb();
+        if (cb && (typeof cb) === 'function') cb();
         setMenuState({ locked: false, currentTween: null });
       }
     );
@@ -151,24 +141,29 @@ export default class AppView extends Component {
     this.toggleMenuTween('mainMenu');
   }
 
+  renderMobileMenuButton() {
+    const menuState = this.state.mobileMenuState;
+
+    let iconKey = '';
+    if (menuState === mobileMenuStates.CLOSED) iconKey = 'mobile_nav_hamburger';
+    else if (menuState === mobileMenuStates.SIDEBAR_OPEN) iconKey = 'mobile_nav_close';
+    else if (menuState >= mobileMenuStates.TOPICS_OPEN) iconKey = 'mobile_nav_back';
+
+    const iconSVGURL = `../../assets/images/${iconKey}.svg`;
+
+    return (
+      <button
+        className="mobileMenuNavButton"
+        onClick={() => this.mobileMenuButtonClick()}
+      >
+        <img alt={iconKey} src={iconSVGURL} />
+      </button>
+    );
+  }
+
   render() {
     const p = this.props;
     const s = this.state;
-    console.log(s.mobileMenuState);
-
-    const navProps = {
-      isLogged: p.isLogged,
-      isSideBarAllowed: s.isSideBarAllowed,
-      isSideBarCollapsed: s.isSideBarCollapsed,
-      isSideBarPersistent: s.isSideBarPersistent,
-      toggleSideBar: () => { this.toggleSideBar(); },
-      activeView: p.activeView,
-      marketsInfo: p.marketsHeader,
-      portfolioTotals: getValue(p, 'portfolio.totals'),
-      numFavorites: getValue(p, 'marketsHeader.numFavorites'),
-      numPendingReports: getValue(p, 'marketsHeader.numPendingReports'),
-      notifications: p.notifications
-    };
 
     const innerNavProps = {
       topics: p.topics,
@@ -182,8 +177,8 @@ export default class AppView extends Component {
     let tagsMargin;
 
     if (!p.isMobile) {
-      marketsMargin = (-110 + (110 * mainMenu.scalar)) | 0;
-      tagsMargin = (110 * subMenu.scalar) | 0;
+      marketsMargin = -110 + (110 * mainMenu.scalar);
+      tagsMargin = 110 * subMenu.scalar;
     }
 
     return (
@@ -194,10 +189,7 @@ export default class AppView extends Component {
             menuScalar={mainMenu.scalar}
           />
           <Logo />
-          <div
-            style = {{ position: "absolute", width: 20, height: 20, background: "white", zIndex: 9999 }}
-            onClick={() => this.mobileMenuButtonClick()}
-          />
+          {this.renderMobileMenuButton()}
           <SideNav
             isMobile={p.isMobile}
             mobileShow={s.mobileMenuState === mobileMenuStates.SIDEBAR_OPEN}
@@ -210,7 +202,7 @@ export default class AppView extends Component {
                   if (p.isMobile) {
                     this.setState({ mobileMenuState: mobileMenuStates.TOPICS_OPEN });
                   } else {
-                    this.toggleMainMenu()
+                    this.toggleMainMenu();
                   }
                 },
                 onBlur: () => this.toggleMainMenu()
@@ -260,7 +252,7 @@ export default class AppView extends Component {
               onSelectTopic={(...args) => {
                 p.selectTopic(...args);
                 if (!p.isMobile && !subMenu.open) this.toggleMenuTween('subMenu', true);
-                if(p.isMobile) this.setState({ mobileMenuState: mobileMenuStates.TAGS_OPEN });
+                if (p.isMobile) this.setState({ mobileMenuState: mobileMenuStates.TAGS_OPEN });
               }}
               {...innerNavProps}
             />
