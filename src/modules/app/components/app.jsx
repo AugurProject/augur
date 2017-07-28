@@ -16,6 +16,8 @@ import Routes from 'modules/app/components/routes';
 import TopBar from './new-top-bar';
 import InnerNav from './new-inner-nav';
 import SideNav from './new-side-nav';
+import Origami from './origami-svg';
+import Logo from './logo';
 
 import shouldComponentUpdatePure from 'utils/should-component-update-pure';
 import handleScrollTop from 'utils/scroll-top-on-change';
@@ -27,20 +29,20 @@ import { CREATE_MARKET, MARKETS, FAVORITES } from 'modules/app/constants/views';
 
 import { tween } from 'shifty';
 
+export const mobileMenuStates = {
+  CLOSED: 0,
+  SIDEBAR_OPEN: 1,
+  TOPICS_OPEN: 2,
+  TAGS_OPEN: 3
+};
+
 export default class AppView extends Component {
   static propTypes = {
     url: PropTypes.string,
-    children: PropTypes.node,
-    location: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired,
-    markets: PropTypes.array.isRequired,
-    marketsFilteredSorted: PropTypes.array.isRequired,
-    // tags: PropTypes.array.isRequired,
-    // coreStats: PropTypes.array.isRequired,
-    // isMobile: PropTypes.bool.isRequired,
-    updateIsMobile: PropTypes.func.isRequired,
-    // headerHeight: PropTypes.number.isRequired,
-    // footerHeight: PropTypes.number.isRequired
+    tags: PropTypes.array.isRequired,
+    coreStats: PropTypes.array.isRequired,
+    isMobile: PropTypes.bool.isRequired,
+    updateIsMobile: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -55,22 +57,16 @@ export default class AppView extends Component {
       footerPush: 0,
       isFooterCollapsed: true,
       mainMenu: { scalar: 0, open: false, currentTween: null },
-      subMenu: { scalar: 0, open: false, currentTween: null }
+      subMenu: { scalar: 0, open: false, currentTween: null },
+      mobileMenuState: mobileMenuStates.CLOSED
     };
 
     this.shouldComponentUpdate = shouldComponentUpdatePure;
 
-    this.setSidebarAllowed = this.setSidebarAllowed.bind(this);
-    this.attachTouchHandler = this.attachTouchHandler.bind(this);
-    this.handleSwipeEvent = this.handleSwipeEvent.bind(this);
-    this.handleWindowScroll = debounce(this.handleWindowScroll.bind(this));
     this.handleWindowResize = debounce(this.handleWindowResize.bind(this));
-    this.updateIsFooterCollapsed = this.updateIsFooterCollapsed.bind(this);
     this.checkIfMobile = this.checkIfMobile.bind(this);
   }
-
   componentDidMount() {
-    window.addEventListener('scroll', this.handleWindowScroll);
     window.addEventListener('resize', this.handleWindowResize);
 
     this.checkIfMobile();
@@ -79,36 +75,6 @@ export default class AppView extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.location !== nextProps.location) this.setSidebarAllowed(nextProps.location);
-  }
-
-  componentDidUpdate() {
-    handleScrollTop(this.props.url);
-  }
-
-  // Sidebar
-  setSidebarAllowed(location) {
-    const path = parsePath(location.pathname)[0];
-
-    if (path === MARKETS || path === FAVORITES) {
-      this.setState({ isSideBarAllowed: true });
-    } else {
-      this.setState({ isSideBarAllowed: false });
-    }
-  }
-
-  toggleSideBar() {
-    this.setState({ isSideBarCollapsed: !this.state.isSideBarCollapsed });
-  }
-
-  //	Footer
-  updateIsFooterCollapsed(isFooterCollapsed) {
-    this.setState({ isFooterCollapsed });
-  }
-
-  handleWindowScroll() {
-    if (!this.state.isFooterCollapsed) {
-      this.updateIsFooterCollapsed(true);
-    }
   }
 
   handleWindowResize() {
@@ -127,37 +93,11 @@ export default class AppView extends Component {
         isSideBarCollapsed: true,
         isSideBarPersistent: false
       });
-      this.attachTouchHandler();
     } else {
       this.setState({
         isSideBarCollapsed: false,
         isSideBarPersistent: true
       });
-    }
-  }
-
-  // Touch Events
-  attachTouchHandler() {
-    delete Hammer.defaults.cssProps.userSelect; // Allows for text selection
-
-    const options = {
-      dragLockToAxis: true,
-      dragBlockHorizontal: true,
-      preventDefault: true
-    };
-
-    const hammer = new Hammer(this.main, options);
-
-    hammer.on('swipe', (e) => { this.handleSwipeEvent(e); });
-  }
-
-  handleSwipeEvent(swipe) {
-    if (this.state.isSideBarAllowed && !this.state.isSideBarPersistent) {
-      if (swipe.deltaX > 0) {
-        this.setState({ isSideBarCollapsed: false });
-      } else {
-        this.setState({ isSideBarCollapsed: true });
-      }
     }
   }
 
@@ -189,6 +129,18 @@ export default class AppView extends Component {
     setMenuState({ currentTween });
   }
 
+  mobileMenuButtonClick() {
+    const menuState = this.state.mobileMenuState;
+    switch (menuState) {
+      case mobileMenuStates.CLOSED:
+        this.setState({ mobileMenuState: mobileMenuStates.SIDEBAR_OPEN });
+        break;
+      default:
+        this.setState({ mobileMenuState: menuState - 1 });
+        break;
+    }
+  }
+
   toggleMainMenu() {
     const { selectedTopic } = this.props;
     if (!this.state.mainMenu.open) {
@@ -202,6 +154,7 @@ export default class AppView extends Component {
   render() {
     const p = this.props;
     const s = this.state;
+    console.log(s.mobileMenuState);
 
     const navProps = {
       isLogged: p.isLogged,
@@ -225,16 +178,41 @@ export default class AppView extends Component {
 
     const { mainMenu, subMenu } = this.state;
 
+    let marketsMargin;
+    let tagsMargin;
+
+    if (!p.isMobile) {
+      marketsMargin = (-110 + (110 * mainMenu.scalar)) | 0;
+      tagsMargin = (110 * subMenu.scalar) | 0;
+    }
+
     return (
       <div className="app-wrap">
         <div className="side-wrap">
+          <Origami
+            isMobile={p.isMobile}
+            menuScalar={mainMenu.scalar}
+          />
+          <Logo />
+          <div
+            style = {{ position: "absolute", width: 20, height: 20, background: "white", zIndex: 9999 }}
+            onClick={() => this.mobileMenuButtonClick()}
+          />
           <SideNav
+            isMobile={p.isMobile}
+            mobileShow={s.mobileMenuState === mobileMenuStates.SIDEBAR_OPEN}
             menuScalar={subMenu.scalar}
             menuData={[
               {
                 title: 'Markets',
                 iconKey: 'markets',
-                onClick: () => this.toggleMainMenu(),
+                onClick: () => {
+                  if (p.isMobile) {
+                    this.setState({ mobileMenuState: mobileMenuStates.TOPICS_OPEN });
+                  } else {
+                    this.toggleMainMenu()
+                  }
+                },
                 onBlur: () => this.toggleMainMenu()
               },
               {
@@ -266,29 +244,32 @@ export default class AppView extends Component {
         </div>
         <div className="main-wrap">
           <div className="topbar-row">
-            <TopBar stats={p.coreStats} />
+            <TopBar
+              isMobile={p.isMobile}
+              stats={p.coreStats}
+            />
           </div>
           <div
             className="maincontent-row"
-            style={{ marginLeft: (-110 + ((110 * mainMenu.scalar) | 0)) }}
+            style={{ marginLeft: marketsMargin }}
           >
             <InnerNav
+              isMobile={p.isMobile}
+              mobileMenuState={s.mobileMenuState}
               subMenuScalar={subMenu.scalar}
               onSelectTopic={(...args) => {
                 p.selectTopic(...args);
-                if (!subMenu.open) this.toggleMenuTween('subMenu', true);
+                if (!p.isMobile && !subMenu.open) this.toggleMenuTween('subMenu', true);
+                if(p.isMobile) this.setState({ mobileMenuState: mobileMenuStates.TAGS_OPEN });
               }}
               {...innerNavProps}
             />
             <div
               className="maincontent"
-              style={{ marginLeft: (110 * subMenu.scalar) | 0 }}
+              style={{ marginLeft: tagsMargin }}
             >
-              {/* TODO: remove sidebar-related stuff from Routes */}
               <Routes
                 activeView={p.activeView}
-                isSideBarAllowed={s.isSideBarAllowed}
-                setSidebarAllowed={this.setSidebarAllowed}
               />
             </div>
           </div>

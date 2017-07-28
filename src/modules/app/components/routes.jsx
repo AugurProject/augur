@@ -2,6 +2,15 @@ import React from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 
 import App from 'modules/app/container';
+// NOTE --  the respective routes are imported within the switch statement so that
+//          webpack can properly code split the views into independently loadable chunks
+export default class Routes extends Component {
+  static propTypes = {
+    activeView: PropTypes.oneOfType([
+      PropTypes.number,
+      PropTypes.string
+    ]).isRequired
+  }
 
 import loadAsyncComponent from 'modules/common/components/async-component';
 import AuthenticatedRoute from 'modules/auth/components/authenticated-route';

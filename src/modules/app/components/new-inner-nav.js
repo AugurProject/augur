@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { mobileMenuStates } from './app';
 
 class InnerNav extends Component {
   static propTypes = {
     topics: PropTypes.array.isRequired,
-    onSelectTopic: PropTypes.func.isRequired
+    tags: PropTypes.array.isRequired,
+    isMobile: PropTypes.bool.isRequired,
+    mobileMenuState: PropTypes.number.isRequired,
+    selectedTopic: PropTypes.string.isRequired,
+    onSelectTopic: PropTypes.func.isRequired,
+    subMenuScalar: PropTypes.number.isRequired
   };
 
   renderTopicList() {
@@ -28,13 +34,22 @@ class InnerNav extends Component {
   }
 
   renderSubMenu() {
+    const showTags = this.props.mobileMenuState === mobileMenuStates.TAGS_OPEN;
+    let animatedStyle;
+    if (!this.props.isMobile) {
+      animatedStyle = { left: (110 * this.props.subMenuScalar) };
+    }
+
     return (
-      <ul className="submenubar" style={{ left: (110 * this.props.subMenuScalar) }}>
+      <ul
+        className={classNames({ submenubar: true, mobileShow: showTags })}
+        style={animatedStyle}
+      >
         {this.props.tags.length === 0 &&
           <li>Loading . . .</li>
         }
         {this.props.tags.length > 0 &&
-         this.props.tags.map((item) => (
+        this.props.tags.map((item) => (
           <li
             className={classNames({ selected: item.isSelected })}
             onClick={item.onClick}
@@ -47,8 +62,9 @@ class InnerNav extends Component {
   }
 
   render() {
+    const showTopics = this.props.mobileMenuState >= mobileMenuStates.TOPICS_OPEN;
     return (
-      <div className='inner-menu-container'>
+      <div className={classNames({ innerMenuContainer: true, mobileShow: showTopics })}>
         {this.renderTopicList()}
         {this.renderSubMenu()}
       </div>

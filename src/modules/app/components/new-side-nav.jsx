@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import Origami from './origami-svg';
-import Logo from './logo';
 import classNames from 'classnames';
 
 class SideBar extends Component {
@@ -20,7 +18,8 @@ class SideBar extends Component {
   }
 
   itemClick(item) {
-    if (this.isCurrentItem(item)) return;
+    const mobile = this.props.isMobile;
+    if (!mobile && this.isCurrentItem(item)) return;
     const clickCallback = item.onClick;
     if (clickCallback && typeof clickCallback === 'function') {
       clickCallback();
@@ -31,6 +30,10 @@ class SideBar extends Component {
       this.state.selectedItem.onBlur();
     }
 
+    // don't modify selected item if mobile
+    // mobile menu state works differently
+    if (mobile) return;
+
     // set title as key for equality check 
     // because the state item de-syncs with
     // this.props.menuData's instance
@@ -38,11 +41,13 @@ class SideBar extends Component {
   }
 
   renderSidebarMenu() {
+    const mobile = this.props.isMobile;
+
     return (
       <ul className="sidebar-menu">
         {this.props.menuData.map((item) => {
           const iconName = `nav-${item.iconKey}`;
-          const selected = this.isCurrentItem(item);
+          const selected = !mobile && this.isCurrentItem(item);
 
           return (
             <li
@@ -64,9 +69,7 @@ class SideBar extends Component {
 
   render() {
     return (
-      <div className="sidebar">
-        <Origami menuScalar={this.props.menuScalar} />
-        <Logo />
+      <div className={classNames({ sidebar: true, mobileShow: this.props.mobileShow })}>
         {this.renderSidebarMenu()}
       </div>
     );
