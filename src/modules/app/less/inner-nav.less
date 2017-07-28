@@ -1,0 +1,82 @@
+.innerMenuContainer {
+  height: 100vh;
+  position: relative;
+
+  ul {
+    font-family: 'DINPro';
+    font-weight: @font-weight-light;
+    height: 100%;
+    list-style: none;
+    margin: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 42px 0;
+    text-transform: uppercase;
+
+    li {
+      color: @color-white;
+      cursor: pointer;
+      font-size: 12px;
+      letter-spacing: 0.3px;
+      line-height: 29px;
+      min-height: 26px;
+      overflow: hidden;
+      padding-left: 11px;
+      text-overflow: ellipsis;
+    }
+
+    li.selected,
+    li:hover {
+      background: @color-lightpurple;
+    }
+  }
+
+  ul.innermenubar {
+    background: @color-darkgray;
+    position: relative;
+    z-index: 999;
+  }
+
+  ul.submenubar {
+    background: @color-darkpurple;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 110px;
+    z-index: 9;
+  }
+
+  @media @breakpoint-mobile {
+    left: -200px;
+    overflow-x: hidden;
+    transition: left 0.2s ease-in-out;
+    width: 200px;
+
+    &.mobileShow {
+      left: 0;
+    }
+
+    ul.innermenubar,
+    ul.submenubar {
+      width: 100%;
+    }
+
+    ul.submenubar {
+      left: 200px;
+      transition: left 0.2s ease-in-out;
+      z-index: 999;
+
+      &.mobileShow {
+        left: 0;
+      }
+    }
+
+    ul li {
+      font-size: 14px;
+      line-height: 55px;
+      padding-left: 50px;
+
+      &:hover { background: none; }
+    }
+  }
+}

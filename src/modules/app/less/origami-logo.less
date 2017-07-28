@@ -1,0 +1,40 @@
+svg#paralellogo {
+  left: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  width: 100vw;
+  z-index: 999;
+}
+
+.top-logo {
+  left: 15px;
+  position: absolute;
+  top: 21px;
+  width: 120px;
+  z-index: 999;
+
+  & > * {
+    display: inline-block;
+  }
+
+  svg.augur-logo-icon {
+    height: 44px;
+  }
+
+  span.logotext {
+    color: white;
+    font-family: 'DINPro';
+    font-size: 14px;
+    font-weight: @font-weight-light;
+    letter-spacing: 1.2px;
+    line-height: 44px;
+    margin-left: 8px;
+    text-transform: uppercase;
+    vertical-align: top;
+  }
+
+  @media @breakpoint-mobile {
+    display: none;
+  }
+}
