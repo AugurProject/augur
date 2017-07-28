@@ -1,16 +1,12 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import Hammer from 'hammerjs';
 
-/*import Header from 'modules/app/components/header';
-import Footer from 'modules/app/components/footer';
-import SideBar from 'modules/app/components/side-bar';
-import CoreStats from 'modules/app/components/core-stats';
-import ChatView from 'modules/chat/components/chat-view';
-import SidebarMask from 'modules/common/components/side-bar-mask';
-*/
 import Routes from 'modules/app/components/routes';
+
+import shouldComponentUpdatePure from 'utils/should-component-update-pure';
+import debounce from 'utils/debounce';
+
+import { tween } from 'shifty';
 
 import TopBar from './new-top-bar';
 import InnerNav from './new-inner-nav';
@@ -18,14 +14,6 @@ import SideNav from './new-side-nav';
 import Origami from './origami-svg';
 import Logo from './logo';
 
-//import { CREATE_MARKET } from 'modules/app/constants/views';
-
-import shouldComponentUpdatePure from 'utils/should-component-update-pure';
-import handleScrollTop from 'utils/scroll-top-on-change';
-import debounce from 'utils/debounce';
-import getValue from 'utils/get-value';
-
-import { tween } from 'shifty';
 
 export const mobileMenuStates = {
   CLOSED: 0,
@@ -40,7 +28,8 @@ export default class AppView extends Component {
     tags: PropTypes.array.isRequired,
     coreStats: PropTypes.array.isRequired,
     isMobile: PropTypes.bool.isRequired,
-    updateIsMobile: PropTypes.func.isRequired
+    updateIsMobile: PropTypes.func.isRequired,
+    selectedTopic: PropTypes.string
   };
 
   constructor(props) {
@@ -99,11 +88,13 @@ export default class AppView extends Component {
     if (this.state[menuKey].currentTween) this.state[menuKey].currentTween.stop();
 
     let nowOpen = !this.state[menuKey].open;
-    if (typeof(forceOpen) === 'boolean') nowOpen = forceOpen;
+    if ((typeof forceOpen) === 'boolean') nowOpen = forceOpen;
 
-    const setMenuState = (newState) => this.setState({
-      [menuKey]: Object.assign({}, this.state[menuKey], newState)
-    });
+    const setMenuState = (newState) => {
+      this.setState({
+        [menuKey]: Object.assign({}, this.state[menuKey], newState)
+      });
+    };
 
     const baseMenuState = { open: nowOpen };
     const currentTween = tween({
@@ -116,7 +107,7 @@ export default class AppView extends Component {
       }
     }).then(
       () => {
-        if (cb && typeof(cb) === 'function') cb();
+        if (cb && (typeof cb) === 'function') cb();
         setMenuState({ locked: false, currentTween: null });
       }
     );
@@ -145,29 +136,29 @@ export default class AppView extends Component {
     this.toggleMenuTween('mainMenu');
   }
 
+  renderMobileMenuButton() {
+    const menuState = this.state.mobileMenuState;
+
+    let iconKey = '';
+    if (menuState === mobileMenuStates.CLOSED) iconKey = 'mobile_nav_hamburger';
+    else if (menuState === mobileMenuStates.SIDEBAR_OPEN) iconKey = 'mobile_nav_close';
+    else if (menuState >= mobileMenuStates.TOPICS_OPEN) iconKey = 'mobile_nav_back';
+
+    const iconSVGURL = `../../assets/images/${iconKey}.svg`;
+
+    return (
+      <button
+        className="mobileMenuNavButton"
+        onClick={() => this.mobileMenuButtonClick()}
+      >
+        <img alt={iconKey} src={iconSVGURL} />
+      </button>
+    );
+  }
+
   render() {
     const p = this.props;
     const s = this.state;
-    console.log(s.mobileMenuState);
-
-    const navProps = {
-      isLogged: p.isLogged,
-      activeView: p.activeView,
-      marketsInfo: p.marketsHeader,
-      portfolioTotals: getValue(p, 'portfolio.totals'),
-      numFavorites: getValue(p, 'marketsHeader.numFavorites'),
-      numPendingReports: getValue(p, 'marketsHeader.numPendingReports'),
-      marketsLink: getValue(p, 'links.marketsLink'),
-      allMarketsLink: getValue(p, 'links.allMarketsLink'),
-      favoritesLink: getValue(p, 'links.favoritesLink'),
-      pendingReportsLink: getValue(p, 'links.pendingReportsLink'),
-      transactionsLink: getValue(p, 'links.transactionsLink'),
-      authLink: getValue(p, 'links.authLink'),
-      accountLink: getValue(p, 'links.accountLink'),
-      myPositionsLink: getValue(p, 'links.myPositionsLink'),
-      topicsLink: getValue(p, 'links.topicsLink'),
-      notifications: p.notifications
-    };
 
     const innerNavProps = {
       topics: p.topics,
@@ -181,8 +172,8 @@ export default class AppView extends Component {
     let tagsMargin;
 
     if (!p.isMobile) {
-      marketsMargin = (-110 + (110 * mainMenu.scalar)) | 0;
-      tagsMargin = (110 * subMenu.scalar) | 0;
+      marketsMargin = -110 + (110 * mainMenu.scalar);
+      tagsMargin = 110 * subMenu.scalar;
     }
 
     return (
@@ -193,10 +184,7 @@ export default class AppView extends Component {
             menuScalar={mainMenu.scalar}
           />
           <Logo />
-          <div
-            style = {{ position: "absolute", width: 20, height: 20, background: "white", zIndex: 9999 }}
-            onClick={() => this.mobileMenuButtonClick()}
-          />
+          {this.renderMobileMenuButton()}
           <SideNav
             isMobile={p.isMobile}
             mobileShow={s.mobileMenuState === mobileMenuStates.SIDEBAR_OPEN}
@@ -209,7 +197,7 @@ export default class AppView extends Component {
                   if (p.isMobile) {
                     this.setState({ mobileMenuState: mobileMenuStates.TOPICS_OPEN });
                   } else {
-                    this.toggleMainMenu()
+                    this.toggleMainMenu();
                   }
                 },
                 onBlur: () => this.toggleMainMenu()
@@ -243,7 +231,7 @@ export default class AppView extends Component {
         </div>
         <div className="main-wrap">
           <div className="topbar-row">
-            <TopBar 
+            <TopBar
               isMobile={p.isMobile}
               stats={p.coreStats}
             />
@@ -259,7 +247,7 @@ export default class AppView extends Component {
               onSelectTopic={(...args) => {
                 p.selectTopic(...args);
                 if (!p.isMobile && !subMenu.open) this.toggleMenuTween('subMenu', true);
-                if(p.isMobile) this.setState({ mobileMenuState: mobileMenuStates.TAGS_OPEN });
+                if (p.isMobile) this.setState({ mobileMenuState: mobileMenuStates.TAGS_OPEN });
               }}
               {...innerNavProps}
             />

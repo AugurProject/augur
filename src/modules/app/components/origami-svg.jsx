@@ -1,16 +1,21 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
-class Origami extends Component {
+export default class Origami extends Component {
+  static propTypes = {
+    isMobile: PropTypes.bool.isRequired,
+    menuScalar: PropTypes.number.isRequired
+  };
+
   componentWillMount() {
     this.currentRAF = null;
 
     const sidebarWidth = 72;
     const topbarHeight = 42;
-    const mobileTopbarHeight = 30;
+    const mobileTopbarHeight = 24;
 
     this.sidebarWidth = sidebarWidth;
-    this.topbarHeight = topbarHeight
-
+    this.topbarHeight = topbarHeight;
 
     // TODO: de-hardcode values, replace w/ CSS properties
     this.plgram = {
@@ -20,75 +25,67 @@ class Origami extends Component {
       br: [110 + sidebarWidth, topbarHeight * 2]
     };
 
-    this.mobilePlgram = { 
-      tl: [120, mobileTopbarHeight],
-      tr: [225, mobileTopbarHeight],
-      bl: [78, mobileTopbarHeight + 25],
-      br: [143, mobileTopbarHeight + 25]
+    this.mobilePlgram = {
+      tl: [94, mobileTopbarHeight],
+      tr: [200, mobileTopbarHeight],
+      bl: [60, mobileTopbarHeight + 20],
+      br: [110, mobileTopbarHeight + 20]
     };
 
     this.xOffsetMax = 110;
   }
 
-  pointsToString(points) {
-    return points.map((point) => (point[0]  + ',' + point[1])).join(' ');
-  }
-
-  offsetPoint(point) {
-    const currentXOffset = this.props.menuScalar * this.xOffsetMax;
-    return [point[0] + currentXOffset, point[1]];
-  }
 
   getDesktopShapes() {
-    const boundOffset = (point) => this.offsetPoint(point);
+    const boundOffset = point => this.offsetPoint(point);
 
     // TODO: encode this SVG data more efficiently?
     // it's useful to have points as variables since they'll animate
     const shapes = [
       {
-        color: "#412468",
+        color: '#412468',
         points: ([
           [this.sidebarWidth, 0],
           [this.sidebarWidth + (85 * 2), 0],
-          this.plgram['tl'],
-          this.plgram['br'],
-          this.plgram['bl']
+          this.plgram.tl,
+          this.plgram.br,
+          this.plgram.bl
         ])
       },
       {
         color: '#553580',
         points: ([
           [this.sidebarWidth + (85 * 2), 0],
-          this.plgram['tl'],
-          this.plgram['tr'],
+          this.plgram.tl,
+          this.plgram.tr,
           [this.sidebarWidth + (85 * 2) + 130, 0],
         ])
       },
       {
-        color: "#9592A4",
+        color: '#9592A4',
         points: ([
-          this.plgram['tl'],
-          this.plgram['bl'],
-          this.plgram['br']
+          this.plgram.tl,
+          this.plgram.bl,
+          this.plgram.br
         ]).map(boundOffset)
       },
       {
-        color: "#C5C3CD",
+        color: '#C5C3CD',
         points: ([
-          this.plgram['tl'],
-          this.plgram['tr'],
-          this.plgram['br']
+          this.plgram.tl,
+          this.plgram.tr,
+          this.plgram.br
         ]).map(boundOffset)
       }
     ];
 
     if (this.props.menuScalar > 0) {
       shapes.push({
-        color: "#5A4774",
+        color: '#5A4774',
         points: [
-          this.plgram['tl'],
-          boundOffset(this.plgram['bl']),
-          boundOffset(this.plgram['tl']),
+          this.plgram.tl,
+          boundOffset(this.plgram.bl),
+          boundOffset(this.plgram.tl),
         ]
       });
     }
@@ -105,47 +102,52 @@ class Origami extends Component {
           [190, 0],
           this.mobilePlgram.tl,
           this.mobilePlgram.bl,
-          [0, 100]
+          [0, 60]
         ])
       },
       {
         color: '#553580',
         points: ([
-          [190, 0],
+          [147, 0],
           this.mobilePlgram.tl,
           this.mobilePlgram.tr,
-          [330, 0],
+          [257, 0],
         ])
       },
       {
         color: '#9592A4',
         points: ([
-          this.mobilePlgram['tl'],
-          this.mobilePlgram['bl'],
-          this.mobilePlgram['br']
+          this.mobilePlgram.tl,
+          this.mobilePlgram.bl,
+          this.mobilePlgram.br
         ])
       },
       {
         color: '#C5C3CD',
         points: ([
-          this.mobilePlgram["tl"],
-          this.mobilePlgram["tr"],
-          this.mobilePlgram["br"]
+          this.mobilePlgram.tl,
+          this.mobilePlgram.tr,
+          this.mobilePlgram.br
         ])
       }
     ];
 
-     return shapes;
+    return shapes;
+  }
+
+  offsetPoint(point) {
+    const currentXOffset = this.props.menuScalar * this.xOffsetMax;
+    return [point[0] + currentXOffset, point[1]];
   }
 
   render() {
     let shapes;
-    
+
     if (this.props.isMobile) shapes = this.getMobileShapes();
     else shapes = this.getDesktopShapes();
 
     const polygons = shapes.map((shape) => {
-      const pointString = this.pointsToString(shape.points);
+      const pointString = shape.points.map(point => (point[0] + ',' + point[1])).join(' ');
       return (<polygon fill={shape.color} points={pointString} />);
     });
 
@@ -153,4 +155,3 @@ class Origami extends Component {
   }
 }
 
-export default Origami;

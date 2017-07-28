@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 // NOTE -- This stateless component is simply a responsive SVG of the Complete Augur Icon
 // To employ, just set the width or height on the containing element and this SVG will respond appropriately
 const AugurLogoIcon = p => (
-  <svg 
+  <svg
     className={`augur-logo-icon ${p.className}`}
     viewBox="0 0 1500 1500"
   >

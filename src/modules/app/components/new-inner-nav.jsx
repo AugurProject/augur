@@ -49,7 +49,7 @@ class InnerNav extends Component {
           <li>Loading . . .</li>
         }
         {this.props.tags.length > 0 &&
-        this.props.tags.map((item) => (
+        this.props.tags.map(item => (
           <li
             className={classNames({ selected: item.isSelected })}
             onClick={item.onClick}

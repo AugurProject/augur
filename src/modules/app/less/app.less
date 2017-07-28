@@ -1,14 +1,21 @@
-body, html, * {
+body,
+html,
+* {
   box-sizing: border-box;
 }
 
 body {
-	@media @breakpoint-mobile {
-		--is-mobile: true;
-	}
+  @media @breakpoint-mobile {
+    --is-mobile: true;
+  }
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   font-family: 'DINPro';
 }
 
@@ -18,122 +25,131 @@ h1, h2, h3, h4, h5, h6 {
 
 .app-wrap {
   display: grid;
+
   /* sidebar width */
   grid-template-columns: 72px auto;
   height: 100%;
 
-	@media @breakpoint-mobile {
-    /* disable sidebar mobile grid width */
+  @media @breakpoint-mobile {
+    /*
+    disable sidebar mobile grid width */
     grid-template-columns: 0 auto;
   }
 }
 
 .main-wrap {
   display: grid;
-  height: 100vh;
-  overflow: hidden;
+
   /* topbar height */
   grid-template-rows: 42px auto;
+  height: 100vh;
+  overflow: hidden;
 
-	@media @breakpoint-mobile {
+  @media @breakpoint-mobile {
     /* topbar mobile height */
-    grid-template-rows: 30px auto;
+    grid-template-rows: 24px auto;
   }
 }
 
 .maincontent-row {
   display: grid;
-  overflow: hidden;
+
   /* inner menubar width */
   grid-template-columns: 110px auto;
+  overflow: hidden;
 
-	@media @breakpoint-mobile {
-    /* disable inner menubar mobile grid width */
+  @media @breakpoint-mobile {
+    /*
+    disable inner menubar mobile grid width */
     grid-template-columns: 0 auto;
   }
 }
 
 .innerMenuContainer {
-  position: relative;
   height: 100vh;
+  position: relative;
 
   ul {
     font-family: 'DINPro';
     font-weight: @font-weight-light;
-    text-transform: uppercase;
-    list-style: none;
     height: 100%;
-    padding: 42px 0;
+    list-style: none;
     margin: 0;
     overflow-x: hidden;
     overflow-y: auto;
+    padding: 42px 0;
+    text-transform: uppercase;
 
     li {
-      cursor: pointer;
       color: white;
-      min-height: 26px;
+      cursor: pointer;
       font-size: 12px;
-      line-height: 29px;
       letter-spacing: 0.3px;
+      line-height: 29px;
+      min-height: 26px;
+      overflow: hidden;
       padding-left: 11px;
       text-overflow: ellipsis;
-      overflow: hidden;
     }
 
-    li.selected, li:hover {
+    li.selected,
+    li:hover {
       background: #553580;
     }
   }
 
   ul.innermenubar {
-    background: #44415A;
+    background: #44415a;
     position: relative;
     z-index: 999;
   }
 
   ul.submenubar {
-    background: #372E4B;
-    width: 110px;
-    position: absolute;
-    z-index: 9;
-    top: 0;
+    background: #372e4b;
     left: 0;
+    position: absolute;
+    top: 0;
+    width: 110px;
+    z-index: 9;
   }
 
-	@media @breakpoint-mobile {
-    left: -225px;
-    width: 225px;
+  @media @breakpoint-mobile {
+    left: -200px;
     overflow-x: hidden;
     transition: left 0.2s ease-in-out;
+    width: 200px;
 
     &.mobileShow {
-      left: 0px;
+      left: 0;
     }
 
-    ul.innermenubar, ul.submenubar {
+    ul.innermenubar,
+    ul.submenubar {
       width: 100%;
     }
-    
+
     ul.submenubar {
-      left: 225px;
-      z-index: 999;
+      left: 200px;
       transition: left 0.2s ease-in-out;
+      z-index: 999;
 
       &.mobileShow {
-        left: 0px;
+        left: 0;
       }
     }
-    
+
     ul li {
-      line-height: 55px;
       font-size: 14px;
+      line-height: 55px;
       padding-left: 50px;
+
+      &:hover { background: none; }
     }
   }
 }
 
 .maincontent {
-  background: #1E1B31;
+  background: #1e1b31;
   height: 100vh;
   overflow-x: hidden;
   overflow-y: auto;
@@ -141,22 +157,22 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .topbar {
-  background: #736E89;
+  background: #736e89;
   height: 100%;
   padding-left: 295px;
 
   span.stat {
-    line-height: 42px;
+    display: inline-block;
     font-family: 'DINPro';
-    font-weight: @font-weight-light;
     font-size: 13px;
+    font-weight: @font-weight-light;
     letter-spacing: 0.75px;
+    line-height: 42px;
     margin-right: 40px;
     width: 110px;
-    display: inline-block;
 
     span.stat-label {
-      color: rgba(255,255,255,0.25);
+      color: rgba(255, 255, 255, 0.25);
       margin-right: 10px;
     }
 
@@ -169,20 +185,21 @@ h1, h2, h3, h4, h5, h6 {
     display: none;
   }
 
-	@media @breakpoint-mobile {
+  @media @breakpoint-mobile {
     padding: 0;
 
     span.stat { display: none; }
 
     span.mobile-logotext {
+      color: white;
       display: block;
       float: right;
-      margin-right: 14px;
       font-family: 'DINPro';
       font-weight: @font-weight-light;
-      line-height: 30px;
+      letter-spacing: 1px;
+      line-height: 28px;
+      margin-right: 10px;
       text-transform: uppercase;
-      color: white;
     }
   }
 }
@@ -192,25 +209,42 @@ h1, h2, h3, h4, h5, h6 {
   z-index: 9999;
 }
 
+.mobileMenuNavButton {
+  background: none;
+  border: none;
+  height: 16px;
+  left: 16px;
+  outline: none;
+  padding: 0;
+  position: absolute;
+  top: 16px;
+  width: 16px;
+  z-index: 999;
+
+  img {
+    height: 100%;
+    width: 100%;
+  }
+}
+
 .sidebar {
-  background: blue;
   background: #412468;
   height: 100%;
   padding-top: 84px;
   position: relative;
 
   ul.sidebar-menu {
-    list-style: none;
-    padding: 0;
-    margin: 0;
     border: 1px solid #553580;
     border-left: none;
     border-right: none;
-    
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
     li {
+      border-bottom: 1px solid #553580;
       height: 64px;
       padding-top: 8px;
-      border-bottom: 1px solid #553580;
       position: relative;
       text-align: center;
 
@@ -222,7 +256,7 @@ h1, h2, h3, h4, h5, h6 {
         background: #553580;
         cursor: pointer;
       }
-      
+
       &:last-child { border: none; }
 
       img.nav-create {
@@ -235,52 +269,54 @@ h1, h2, h3, h4, h5, h6 {
       }
 
       span {
-        position: absolute;
         bottom: 13px;
+        color: white;
+        font-family: 'DINPro';
+        font-size: 9px;
+        font-weight: @font-weight-light;
         left: 0;
+        letter-spacing: 0.3px;
+        position: absolute;
         right: 0;
         text-align: center;
-        font-size: 9px;
-        font-family: 'DINPro';
-        color: white;
         text-transform: uppercase;
-        font-weight: @font-weight-light;
-        letter-spacing: 0.3px;
       }
     }
   }
 
-	@media @breakpoint-mobile {
-    position: absolute;
-    width: 225px;
-    left: -225px;
+  @media @breakpoint-mobile {
+    left: -200px;
     padding-top: 70px;
+    position: absolute;
     transition: left 0.2s ease-in-out;
-    
+    width: 200px;
+
     &.mobileShow {
-      left: 0px;
+      left: 0;
     }
 
     ul.sidebar-menu {
-      padding-left: 20px;
       border: none;
+      padding-left: 16px;
 
       li {
         border: none;
-        text-align: left;
         height: 70px;
         padding: 0;
+        text-align: left;
+
+        &:hover { background: none; }
 
         img {
-          width: 30px;
           vertical-align: middle;
+          width: 30px;
         }
-        
+
         span {
-          position: static;
-          line-height: 50px;
           font-size: 14px;
+          line-height: 70px;
           padding-left: 18px;
+          position: static;
         }
       }
     }
@@ -288,22 +324,22 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 svg#paralellogo {
-  width: 100vw;
-  position: absolute;
-  top: 0px;
   left: 0;
   pointer-events: none;
+  position: absolute;
+  top: 0;
+  width: 100vw;
   z-index: 999;
 }
 
 .top-logo {
+  left: 15px;
   position: absolute;
   top: 21px;
-  left: 15px;
   width: 120px;
   z-index: 999;
 
-  &>* {
+  & > * {
     display: inline-block;
   }
 
@@ -314,16 +350,16 @@ svg#paralellogo {
   span.logotext {
     color: white;
     font-family: 'DINPro';
+    font-size: 14px;
     font-weight: @font-weight-light;
+    letter-spacing: 1.2px;
+    line-height: 44px;
+    margin-left: 8px;
     text-transform: uppercase;
     vertical-align: top;
-    line-height: 44px;
-    font-size: 14px;
-    letter-spacing: 1.2px;
-    margin-left: 8px;
   }
 
-	@media @breakpoint-mobile {
+  @media @breakpoint-mobile {
     display: none;
   }
 }
