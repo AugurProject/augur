@@ -35,7 +35,7 @@ const TopicRows = (p) => {
           >
             {rows[rowIndex].map((topic, topicIndex) => (
               <Topic
-                key={topic === null ? `${JSON.stringify(row)}${rowIndex}${topicIndex}` : topic}
+                key={topic !== null && p.topics && p.topics[topic] ? JSON.stringify(p.topics[topic]) : `${JSON.stringify(row)}${rowIndex}${topicIndex}`}
                 isSpacer={topic === null}
                 isHero={p.hasHeroRow && rowIndex === 0}
                 topic={topic !== null && p.topics && p.topics[topic] ? p.topics[topic].topic : ''}
