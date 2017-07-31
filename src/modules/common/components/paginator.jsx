@@ -7,14 +7,6 @@ import makeQuery from 'modules/app/helpers/make-query';
 
 import { PAGINATION_PARAM_NAME } from 'modules/app/constants/param-names';
 
-// TODO -- refactored reusable structure
-// Props:
-//  items
-//  Items Per Page
-//  Location (full obj)
-//  update method (setSegment)
-//  Hero Size (optional) - TODO
-
 class Paginator extends Component {
   static propTypes = {
     itemsLength: PropTypes.number.isRequired,
@@ -113,7 +105,7 @@ class Paginator extends Component {
     } else if (direction === 1) {
       lowerBound = options.lastUpperBound + 1;
     } else {
-      lowerBound = (options.lastLowerBound - options.itemsPerPage) + 1;
+      lowerBound = (options.lastLowerBound - options.itemsPerPage);
     }
 
     // In case initial page is out of bounds (direct navigation)
@@ -144,7 +136,7 @@ class Paginator extends Component {
     } else if (direction === 0) {
       upperBound = options.lastUpperBound;
     } else if (direction === 1) {
-      upperBound = options.lastUpperBound + options.itemsPerPage + 1;
+      upperBound = options.lastUpperBound + options.itemsPerPage;
     } else {
       upperBound = options.lastLowerBound - 1;
     }
