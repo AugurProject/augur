@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
 import NullStateMessage from 'modules/common/components/null-state-message';
@@ -11,8 +12,10 @@ import Branch from 'modules/branch/components/branch';
 
 import parseQuery from 'modules/app/helpers/parse-query';
 import makeQuery from 'modules/app/helpers/make-query';
+import makePath from 'modules/app/helpers/make-path';
 
 import { PAGINATION_PARAM_NAME } from 'modules/app/constants/param-names';
+import { CREATE_MARKET } from 'modules/app/constants/views';
 
 export default class TopicsView extends Component {
   static propTypes = {
@@ -222,7 +225,7 @@ export default class TopicsView extends Component {
                 topicsPerRow={this.topicsConfig.topicsPerRow}
                 hasHeroRow={s.currentPage === 1}
                 topicsPerHeroRow={this.topicsConfig.topicsPerHeroRow}
-                selectTopic={p.selectTopic}
+
                 isSearchResult={!!s.keywords}
                 fontAwesomeClasses={s.fontAwesomeClasses}
                 icoFontClasses={s.icoFontClasses}
@@ -244,17 +247,3 @@ export default class TopicsView extends Component {
     );
   }
 }
-
-// <div className="topics">
-//   <TopicRows
-//     topics={s.paginatedTopics}
-//     topicsPerRow={s.topicsPerRow}
-//     hasHeroRow={s.currentPage === 1}
-//     topicsPerHeroRow={s.topicsPerHeroRow}
-//     selectTopic={p.selectTopic}
-//     isSearchResult={!!s.keywords}
-//     fontAwesomeClasses={s.fontAwesomeClasses}
-//     icoFontClasses={s.icoFontClasses}
-//   />
-// </div> :
-// <NullStateMessage message={'No Topics Available'} />
