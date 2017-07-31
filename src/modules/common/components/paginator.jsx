@@ -99,7 +99,7 @@ class Paginator extends Component {
     //      Lower Bound
     let lowerBound;
     // If no last, do a simple check against itemsPerPage
-    if (options.lastLowerBound !== null) {
+    if (options.lastLowerBound === null) {
       if (currentPage === 1) {
         lowerBound = 1;
       } else {
@@ -132,7 +132,7 @@ class Paginator extends Component {
     //      Upper Bound
     let upperBound;
     // If no last, do a simple check against itemsPerPage
-    if (options.lastUpperBound !== null) {
+    if (options.lastUpperBound === null) {
       if (options.itemsLength < options.itemsPerPage || currentPage * options.itemsPerPage > options.itemsLength) {
         upperBound = options.itemsLength;
       } else {
