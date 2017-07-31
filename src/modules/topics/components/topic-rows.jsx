@@ -1,3 +1,5 @@
+/* eslint react/no-array-index-key: 0 */  // Trying to accomodate the data structure
+
 import React from 'react';
 import classNames from 'classnames';
 
@@ -33,11 +35,11 @@ const TopicRows = (p) => {
           >
             {rows[rowIndex].map((topic, topicIndex) => (
               <Topic
-                key={topic === null ? Math.random() : topic}
+                key={topic === null ? `${JSON.stringify(row)}${rowIndex}${topicIndex}` : topic}
                 isSpacer={topic === null}
                 isHero={p.hasHeroRow && rowIndex === 0}
-                topic={topic && p.topics && p.topics[topic] ? p.topics[topic].topic : ''}
-                popularity={topic && p.topics && p.topics[topic] ? p.topics[topic].popularity : 0}
+                topic={topic !== null && p.topics && p.topics[topic] ? p.topics[topic].topic : ''}
+                popularity={topic !== null && p.topics && p.topics[topic] ? p.topics[topic].popularity : 0}
                 hasKeywords={p.hasKeywords}
                 fontAwesomeClasses={p.fontAwesomeClasses}
                 icoFontClasses={p.icoFontClasses}
