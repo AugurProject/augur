@@ -7,7 +7,6 @@ import NullStateMessage from 'modules/common/components/null-state-message';
 import TopicRows from 'modules/topics/components/topic-rows';
 import Paginator from 'modules/common/components/paginator';
 import Input from 'modules/common/components/input';
-// import Link from 'modules/link/components/link';
 import Branch from 'modules/branch/components/branch';
 
 import parseQuery from 'modules/app/helpers/parse-query';
@@ -73,12 +72,6 @@ export default class TopicsView extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (this.props.topics !== nextProps.topics) {
-      this.setState({
-        filteredTopics: nextProps.topics,
-        topicsLength: nextProps.topics.length
-      });
-    }
     if (
       this.state.currentPage !== nextState.currentPage ||
       this.state.keywords !== nextState.keywords
@@ -86,14 +79,15 @@ export default class TopicsView extends Component {
       this.setItemsPerPage(nextState.currentPage, !!nextState.keywords);
     }
     if (
+      this.props.topics !== nextProps.topics ||
       this.state.keywords !== nextState.keywords ||
       this.state.itemsPerPage !== nextState.itemsPerPage
     ) {
       this.filterByKeywords({
-        topics: nextProps.topics,
         location: nextProps.location,
         history: nextProps.history,
         keywords: nextState.keywords,
+        topics: nextProps.topics,
         filteredTopics: nextState.filteredTopics
       });
     }
@@ -125,6 +119,11 @@ export default class TopicsView extends Component {
     }
 
     if (filteredTopics !== options.filteredTopics) {
+      this.setState({
+        filteredTopics,
+        topicsLength: filteredTopics.length
+      });
+
       // Reset pagination
       let updatedSearch = parseQuery(options.location.search);
       delete updatedSearch[PAGINATION_PARAM_NAME];
@@ -133,10 +132,6 @@ export default class TopicsView extends Component {
       options.history.replace({
         ...options.location,
         search: updatedSearch
-      });
-
-      this.setState({
-        filteredTopics
       });
     }
   }
