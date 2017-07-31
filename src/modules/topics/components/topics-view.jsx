@@ -205,6 +205,15 @@ export default class TopicsView extends Component {
                 onChange={keywords => this.setState({ keywords })}
               />
             </div>
+            {p.loginAccount && p.loginAccount.address &&
+              <Link
+                to={makePath(CREATE_MARKET)}
+                className="button imperative navigational"
+                disabled={!p.loginAccount.address}
+              >
+                + Create New Market
+              </Link>
+            }
           </div>
           {s.topicsLength && s.boundedLength ?
             <div className="topics">
@@ -249,14 +258,3 @@ export default class TopicsView extends Component {
 //   />
 // </div> :
 // <NullStateMessage message={'No Topics Available'} />
-
-
-// {p.loginAccount && p.loginAccount.address &&
-//   <Link
-//     className="button imperative navigational"
-//     disabled={!p.loginAccount.address}
-//     {...p.createMarketLink}
-//   >
-//     + Create New Market
-//   </Link>
-// }

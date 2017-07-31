@@ -46,7 +46,6 @@ class Paginator extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('nextPRops -- ', nextProps.itemsPerPage);
     if (
       this.props.itemsLength !== nextProps.itemsLength ||
       this.props.itemsPerPage !== nextProps.itemsPerPage ||
