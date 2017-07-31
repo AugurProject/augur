@@ -9,6 +9,11 @@ import Input from 'modules/common/components/input';
 // import Link from 'modules/link/components/link';
 import Branch from 'modules/branch/components/branch';
 
+import parseQuery from 'modules/app/helpers/parse-query';
+import makeQuery from 'modules/app/helpers/make-query';
+
+import { PAGINATION_PARAM_NAME } from 'modules/app/constants/param-names';
+
 export default class TopicsView extends Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
@@ -22,114 +27,115 @@ export default class TopicsView extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      keywords: '',
-      currentPage: 1,
-      lowerIndex: 0,
-      upperIndex: 4,
-      // Adjust these to change topic layout
+    // Adjust these to change topic layout
+    this.topicsConfig = {
       numberOfRows: 3,
       topicsPerHeroRow: 2,
       topicsPerRow: 4,
-      // ---
+    };
+
+    this.state = {
+      keywords: '',
+      lowerBound: null,
+      upperBound: null,
+      boundedLength: null,
+      currentPage: null,
+      itemsPerPage: 0,
       filteredTopics: props.topics || [],
+      topicsLength: props.topics.length || 0,
       paginatedTopics: [],
       pagination: {},
       fontAwesomeClasses: [],
       icoFontClasses: []
     };
 
-    this.updatePagination = this.updatePagination.bind(this);
+    this.setCurrentPage = this.setCurrentPage.bind(this);
+    this.setItemsPerPage = this.setItemsPerPage.bind(this);
     this.filterByKeywords = this.filterByKeywords.bind(this);
-    this.paginateFilteredTopics = this.paginateFilteredTopics.bind(this);
+    this.setSegment = this.setSegment.bind(this);
     this.filterOutIconClassesFromStylesheets = this.filterOutIconClassesFromStylesheets.bind(this);
   }
 
   componentWillMount() {
-    this.updatePagination(this.props, this.state);
+    this.setCurrentPage(this.props.location);
+    this.setItemsPerPage(this.state.currentPage, !!this.state.keywords);
   }
 
   componentDidMount() {
     this.filterOutIconClassesFromStylesheets();
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    if (this.props.topics !== nextProps.topics) {
-      this.setState({ filteredTopics: nextProps.topics });
-    }
-    if (this.state.keywords !== nextState.keywords) {
-      this.filterByKeywords(nextProps.topics, nextState);
-    }
-    if (
-      this.state.filteredTopics !== nextState.filteredTopics ||
-      this.state.currentPage !== nextState.currentPage
-    ) {
-      this.updatePagination(nextProps, nextState);
-    }
+  componentWillReceiveProps(nextProps) {
+    if (this.props.location !== nextProps.location) this.setCurrentPage(nextProps.location);
   }
 
-  filterByKeywords(topics, s) {
-    let filteredTopics = topics;
-
-    // Filter Based on Keywords
-    if (s.keywords) {
-      filteredTopics = (topics || []).filter(topic => topic.topic.toLowerCase().indexOf(s.keywords.toLowerCase()) >= 0);
-    }
-
-    if (filteredTopics !== s.filteredTopics) {
+  componentWillUpdate(nextProps, nextState) {
+    if (this.props.topics !== nextProps.topics) {
       this.setState({
-        currentPage: 1, // Reset pagination
-        filteredTopics
+        filteredTopics: nextProps.topics,
+        topicsLength: nextProps.topics.length
+      });
+    }
+    if (
+      this.state.currentPage !== nextState.currentPage ||
+      this.state.keywords !== nextState.keywords
+    ) {
+      this.setItemsPerPage(nextState.currentPage, !!nextState.keywords);
+    }
+    if (
+      this.state.keywords !== nextState.keywords ||
+      this.state.itemsPerPage !== nextState.itemsPerPage
+    ) {
+      this.filterByKeywords({
+        topics: nextProps.topics,
+        location: nextProps.location,
+        history: nextProps.history,
+        keywords: nextState.keywords,
+        filteredTopics: nextState.filteredTopics
       });
     }
   }
 
-  paginateFilteredTopics(s) {
-    // Filter Based on Pagination
-    const paginatedTopics = s.filteredTopics.slice(s.lowerIndex, s.upperIndex === s.filteredTopics.length - 1 ? undefined : s.upperIndex + 1);
+  setCurrentPage(location) {
+    const currentPage = parseInt(parseQuery(location.search)[PAGINATION_PARAM_NAME] || 1, 10);
 
-    if (paginatedTopics !== s.paginatedTopics) {
-      this.setState({ paginatedTopics });
-    }
+    this.setState({ currentPage });
   }
 
-  updatePagination(p, s) {
-    const range = s.currentPage === 1 && !s.keywords ? (((s.numberOfRows - 1) * s.topicsPerRow) + s.topicsPerHeroRow) - 1 : (s.numberOfRows * s.topicsPerRow) - 1;
-    const keywordsLowerBump = (s.keywords && s.currentPage === 2) ? 1 : 0;
-    const lowerBump = s.currentPage < 3 ? keywordsLowerBump : (s.currentPage - 2);
-    const lowerIndex = ((s.currentPage - 1) * range) + lowerBump;
-    const upperIndex = s.filteredTopics.length - 1 >= lowerIndex + range ?
-      lowerIndex + range :
-      s.filteredTopics.length - 1;
+  setItemsPerPage(currentPage, hasKeywords) {
+    let itemsPerPage;
+    if ((currentPage === null || currentPage === 1) && !hasKeywords) {
+      itemsPerPage = ((this.topicsConfig.numberOfRows - 1) * this.topicsConfig.topicsPerRow) + this.topicsConfig.topicsPerHeroRow;
+    } else {
+      itemsPerPage = this.topicsConfig.numberOfRows * this.topicsConfig.topicsPerRow;
+    }
 
-    this.setState({
-      lowerIndex,
-      upperIndex,
-      pagination: {
-        ...s.pagination,
-        startItemNum: lowerIndex + 1,
-        endItemNum: upperIndex + 1,
-        numUnpaginated: s.filteredTopics.length,
-        previousPageNum: s.currentPage > 1 ? s.currentPage - 1 : null,
-        previousPageLink: {
-          onClick: () => {
-            if (s.currentPage > 1) {
-              this.setState({ currentPage: s.currentPage - 1 });
-            }
-          }
-        },
-        nextPageNum: upperIndex < s.filteredTopics.length - 1 ? s.currentPage + 1 : null,
-        nextPageLink: {
-          onClick: () => {
-            if (upperIndex < s.filteredTopics.length - 1) {
-              this.setState({ currentPage: s.currentPage + 1 });
-            }
-          }
-        }
-      }
-    }, () => {
-      this.paginateFilteredTopics(this.state);
-    });
+    this.setState({ itemsPerPage });
+  }
+
+  filterByKeywords(options) {
+    let filteredTopics = options.topics;
+
+    // Filter Based on Keywords
+    if (options.keywords) {
+      filteredTopics = (options.topics || []).filter(topic => topic.topic.toLowerCase().indexOf(options.keywords.toLowerCase()) >= 0);
+    }
+
+    if (filteredTopics !== options.filteredTopics) {
+      // Reset pagination
+      let updatedSearch = parseQuery(options.location.search);
+      delete updatedSearch[PAGINATION_PARAM_NAME];
+      updatedSearch = makeQuery(updatedSearch);
+
+      options.history.replace({
+        ...options.location,
+        search: updatedSearch
+      });
+
+      this.setState({
+        filteredTopics
+      });
+    }
   }
 
   filterOutIconClassesFromStylesheets() {
@@ -184,8 +190,6 @@ export default class TopicsView extends Component {
     const p = this.props;
     const s = this.state;
 
-    const topicsLength = s.filteredTopics.length;
-
     return (
       <section id="topics_view">
         <div id="topics_container">
@@ -202,13 +206,13 @@ export default class TopicsView extends Component {
               />
             </div>
           </div>
-          {topicsLength ?
+          {s.topicsLength && s.boundedLength ?
             <div className="topics">
               <TopicRows
-                topics={s.paginatedTopics}
-                topicsPerRow={s.topicsPerRow}
+                topics={s.filteredTopics}
+                topicsPerRow={this.topicsConfig.topicsPerRow}
                 hasHeroRow={s.currentPage === 1}
-                topicsPerHeroRow={s.topicsPerHeroRow}
+                topicsPerHeroRow={this.topicsConfig.topicsPerHeroRow}
                 selectTopic={p.selectTopic}
                 isSearchResult={!!s.keywords}
                 fontAwesomeClasses={s.fontAwesomeClasses}
@@ -217,9 +221,9 @@ export default class TopicsView extends Component {
             </div> :
             <NullStateMessage message={'No Topics Available'} />
           }
-          {!!topicsLength &&
+          {!!s.topicsLength &&
             <Paginator
-              itemsLength={topicsLength}
+              itemsLength={s.topicsLength}
               itemsPerPage={s.itemsPerPage}
               location={p.location}
               history={p.history}
@@ -231,6 +235,20 @@ export default class TopicsView extends Component {
     );
   }
 }
+
+// <div className="topics">
+//   <TopicRows
+//     topics={s.paginatedTopics}
+//     topicsPerRow={s.topicsPerRow}
+//     hasHeroRow={s.currentPage === 1}
+//     topicsPerHeroRow={s.topicsPerHeroRow}
+//     selectTopic={p.selectTopic}
+//     isSearchResult={!!s.keywords}
+//     fontAwesomeClasses={s.fontAwesomeClasses}
+//     icoFontClasses={s.icoFontClasses}
+//   />
+// </div> :
+// <NullStateMessage message={'No Topics Available'} />
 
 
 // {p.loginAccount && p.loginAccount.address &&

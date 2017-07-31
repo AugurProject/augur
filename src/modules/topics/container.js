@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import TopicsView from 'modules/topics/components/topics-view';
 
 import { selectLoginAccount } from 'modules/auth/selectors/login-account';
@@ -15,6 +16,6 @@ const mapDispatchToProps = dispatch => ({
   createMarketLink: selectCreateMarketLink(dispatch)
 });
 
-const Topics = connect(mapStateToProps, mapDispatchToProps)(TopicsView);
+const Topics = withRouter(connect(mapStateToProps, mapDispatchToProps)(TopicsView));
 
 export default Topics;

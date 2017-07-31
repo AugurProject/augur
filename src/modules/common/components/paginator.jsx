@@ -46,8 +46,10 @@ class Paginator extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    console.log('nextPRops -- ', nextProps.itemsPerPage);
     if (
       this.props.itemsLength !== nextProps.itemsLength ||
+      this.props.itemsPerPage !== nextProps.itemsPerPage ||
       this.props.location !== nextProps.location
     ) {
       this.setCurrentSegment({
@@ -145,7 +147,7 @@ class Paginator extends Component {
     //      Lower Bound
     if (lowerBound <= 0) lowerBound = 1;
     //      Upper Bound
-    if (upperBound - lowerBound < options.itemsPerPage) {
+    if (upperBound - lowerBound !== options.itemsPerPage) {
       upperBound = (lowerBound - 1) + options.itemsPerPage;
     }
     if (upperBound > options.itemsLength) {
