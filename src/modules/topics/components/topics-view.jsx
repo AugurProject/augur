@@ -222,11 +222,13 @@ export default class TopicsView extends Component {
             <div className="topics">
               <TopicRows
                 topics={s.filteredTopics}
+                numberOfRows={this.topicsConfig.numberOfRows}
                 topicsPerRow={this.topicsConfig.topicsPerRow}
-                hasHeroRow={s.currentPage === 1}
                 topicsPerHeroRow={this.topicsConfig.topicsPerHeroRow}
-
-                isSearchResult={!!s.keywords}
+                hasHeroRow={s.currentPage === 1}
+                lowerBound={s.lowerBound}
+                boundedLength={s.boundedLength}
+                hasKeywords={!!s.keywords}
                 fontAwesomeClasses={s.fontAwesomeClasses}
                 icoFontClasses={s.icoFontClasses}
               />
