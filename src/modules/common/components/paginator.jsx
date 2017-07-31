@@ -29,6 +29,7 @@ class Paginator extends Component {
 
     this.state = {
       currentPage: null,
+      lastPage: null,
       lowerBound: null,
       upperBound: null,
       backQuery: null,
@@ -41,6 +42,9 @@ class Paginator extends Component {
 
   componentWillMount() {
     this.setCurrentSegment({
+      lastPage: this.state.currentPage,
+      lastLowerBound: this.state.lowerBound,
+      lastUpperBound: this.state.upperBound,
       itemsLength: this.props.itemsLength,
       itemsPerPage: this.props.itemsPerPage,
       location: this.props.location,
@@ -55,6 +59,9 @@ class Paginator extends Component {
       this.props.location !== nextProps.location
     ) {
       this.setCurrentSegment({
+        lastPage: this.state.currentPage,
+        lastLowerBound: this.state.lowerBound,
+        lastUpperBound: this.state.upperBound,
         itemsLength: nextProps.itemsLength,
         itemsPerPage: nextProps.itemsPerPage,
         location: nextProps.location,
@@ -68,9 +75,49 @@ class Paginator extends Component {
     if (!options.itemsLength) return options.setSegment([]);
 
     const currentPage = parseInt(parseQuery(options.location.search)[PAGINATION_PARAM_NAME] || 1, 10);
+    const lastPage = Math.ceil(options.itemsLength / options.itemsPerPage);
 
-    // In case the set page has no results, reset pagination
-    if (currentPage !== 1 && currentPage * options.itemsPerPage > options.itemsLength) {
+    // Pagination Direction
+    // NOTE --  By deriving pagination direction, we can accomodate pages of results with varying length
+    //          Example: First page has a 'hero' row of results
+    //  -1 === Moving Down
+    //  0 === No Movement
+    //  1 === Moving Up
+    let direction;
+    if (options.lastPage === currentPage || options.lastPage == null) {
+      direction = 0;
+    } else if (options.lastPage < currentPage) {
+      direction = 1;
+    } else {
+      direction = -1;
+    }
+
+    //  Segment Bounds (Blech, first round reasoning through)
+    //  NOTE -- Bounds are one based
+    //          Bounds are established thusly to accomodate deep linking + asymetric page lengths
+    //    Rough Bounds Establishment
+    //      Lower Bound
+    let lowerBound;
+    // If no last, do a simple check against itemsPerPage
+    if (options.lastLowerBound !== null) {
+      if (currentPage === 1) {
+        lowerBound = 1;
+      } else {
+        lowerBound = ((currentPage - 1) * options.itemsPerPage) + 1;
+      }
+    // If last, derive from previous bounds
+    } else if (currentPage === 1) {
+      lowerBound = 1;
+    } else if (direction === 0) {
+      lowerBound = options.lastLowerBound;
+    } else if (direction === 1) {
+      lowerBound = options.lastUpperBound + 1;
+    } else {
+      lowerBound = (options.lastLowerBound - options.itemsPerPage) + 1;
+    }
+
+    // In case initial page is out of bounds (direct navigation)
+    if (options.lastPage === null && currentPage !== 1 && lowerBound > options.itemsLength) {
       let updatedSearch = parseQuery(options.location.search);
       delete updatedSearch[PAGINATION_PARAM_NAME];
       updatedSearch = makeQuery(updatedSearch);
@@ -82,21 +129,35 @@ class Paginator extends Component {
       return;
     }
 
-    //  Segment Bounds
-    //  NOTE -- Bounds are one based
-    //    Lower Bound
-    let lowerBound;
-    if (currentPage === 1) {
-      lowerBound = 1;
-    } else {
-      lowerBound = ((currentPage - 1) * options.itemsPerPage) + 1;
-    }
-    //    Upper Bound
+    //      Upper Bound
     let upperBound;
-    if (options.itemsLength < options.itemsPerPage || currentPage * options.itemsPerPage > options.itemsLength) {
+    // If no last, do a simple check against itemsPerPage
+    if (options.lastUpperBound !== null) {
+      if (options.itemsLength < options.itemsPerPage || currentPage * options.itemsPerPage > options.itemsLength) {
+        upperBound = options.itemsLength;
+      } else {
+        upperBound = currentPage * options.itemsPerPage;
+      }
+    // If last, derive from previous bounds
+    } else if (options.itemsLength < options.itemsPerPage || currentPage * options.itemsPerPage > options.itemsLength) {
       upperBound = options.itemsLength;
+    } else if (direction === 0) {
+      upperBound = options.lastUpperBound;
+    } else if (direction === 1) {
+      upperBound = options.lastUpperBound + options.itemsPerPage + 1;
     } else {
-      upperBound = currentPage * options.itemsPerPage;
+      upperBound = options.lastLowerBound - 1;
+    }
+
+    //    Precise Bounds Establishment (refinment of bounds)
+    //      Lower Bound
+    if (lowerBound <= 0) lowerBound = 1;
+    //      Upper Bound
+    if (upperBound - lowerBound < options.itemsPerPage) {
+      upperBound = (lowerBound - 1) + options.itemsPerPage;
+    }
+    if (upperBound > options.itemsLength) {
+      upperBound = options.itemsLength;
     }
 
     //  Link Query Params
@@ -132,7 +193,8 @@ class Paginator extends Component {
       upperBound,
       backQuery,
       forwardQuery,
-      totalItems
+      totalItems,
+      lastPage
     });
 
     options.setSegment(lowerBound, upperBound, boundedLength);
@@ -166,7 +228,7 @@ class Paginator extends Component {
           </div>
 
           <div className="paginator-forward">
-            {s.currentPage * p.itemsPerPage < s.totalItems &&
+            {s.currentPage !== s.lastPage &&
               <Link
                 className="button"
                 to={{

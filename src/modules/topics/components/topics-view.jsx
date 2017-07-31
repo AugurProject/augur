@@ -11,6 +11,8 @@ import Branch from 'modules/branch/components/branch';
 
 export default class TopicsView extends Component {
   static propTypes = {
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
     topics: PropTypes.array,
     branch: PropTypes.object,
     loginAccount: PropTypes.object,
@@ -21,7 +23,6 @@ export default class TopicsView extends Component {
     super(props);
 
     this.state = {
-      nullMessage: 'No Topics Available',
       keywords: '',
       currentPage: 1,
       lowerIndex: 0,
@@ -175,9 +176,15 @@ export default class TopicsView extends Component {
     this.setState({ fontAwesomeClasses, icoFontClasses });
   }
 
+  setSegment(lowerBound, upperBound, boundedLength) {
+    this.setState({ lowerBound, upperBound, boundedLength });
+  }
+
   render() {
     const p = this.props;
     const s = this.state;
+
+    const topicsLength = s.filteredTopics.length;
 
     return (
       <section id="topics_view">
@@ -195,7 +202,7 @@ export default class TopicsView extends Component {
               />
             </div>
           </div>
-          {s.filteredTopics.length ?
+          {topicsLength ?
             <div className="topics">
               <TopicRows
                 topics={s.paginatedTopics}
@@ -208,10 +215,16 @@ export default class TopicsView extends Component {
                 icoFontClasses={s.icoFontClasses}
               />
             </div> :
-            <NullStateMessage message={s.nullMessage} />
+            <NullStateMessage message={'No Topics Available'} />
           }
-          {!!s.filteredTopics.length &&
-            <Paginator {...s.pagination} />
+          {!!topicsLength &&
+            <Paginator
+              itemsLength={topicsLength}
+              itemsPerPage={s.itemsPerPage}
+              location={p.location}
+              history={p.history}
+              setSegment={this.setSegment}
+            />
           }
         </div>
       </section>

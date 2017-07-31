@@ -23,10 +23,10 @@ export default class MarketsList extends Component {
       boundedLength: null
     };
 
-    this.setMarketsPaginated = this.setMarketsPaginated.bind(this);
+    this.setSegment = this.setSegment.bind(this);
   }
 
-  setMarketsPaginated(lowerBound, upperBound, boundedLength) {
+  setSegment(lowerBound, upperBound, boundedLength) {
     this.setState({ lowerBound, upperBound, boundedLength });
   }
 
@@ -62,7 +62,7 @@ export default class MarketsList extends Component {
             itemsPerPage={10}
             location={p.location}
             history={p.history}
-            setSegment={this.setMarketsPaginated}
+            setSegment={this.setSegment}
           />
         }
       </article>
