@@ -1,5 +1,3 @@
-import { combineReducers } from 'redux';
-
 import env from 'modules/app/reducers/env';
 import blockchain from 'modules/app/reducers/blockchain';
 import branch from 'modules/branch/reducers/branch';
@@ -44,7 +42,7 @@ import topics from 'modules/topics/reducers/topics-data';
 import hasLoadedTopic from 'modules/topics/reducers/has-loaded-topic';
 import selectedTopic from 'modules/topics/reducers/selected-topic';
 
-import selectedMarketID from 'modules/markets/reducers/selected-market-id';
+import selectedMarketID from 'modules/market/reducers/selected-market-id';
 import selectedMarketsHeader from 'modules/markets/reducers/selected-markets-header';
 import selectedMarketsSubset from 'modules/markets/reducers/selectedMarketsSubset';
 import tradesInProgress from 'modules/trade/reducers/trades-in-progress';

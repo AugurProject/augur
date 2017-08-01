@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import MarketView from 'modules/market/components/market-view';
 
 import { selectTradeCommitLockIsLocked } from 'src/select-state';
@@ -8,6 +9,9 @@ import { selectClosePositionStatus } from 'modules/my-positions/selectors/close-
 import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination';
 import getOrderCancellation from 'modules/bids-asks/selectors/order-cancellation';
 
+import { loadFullMarket } from 'modules/market/actions/load-full-market';
+import { updateSelectedMarketID, clearSelectedMarketID } from 'modules/market/actions/update-selected-market-id';
+
 import { MARKET_USER_DATA_NAV_ITEMS } from 'modules/market/constants/market-user-data-nav-items';
 import { MARKET_DATA_NAV_ITEMS } from 'modules/market/constants/market-data-nav-items';
 import { OUTCOME_TRADE_NAV_ITEMS } from 'modules/outcomes/constants/outcome-trade-nav-items';
@@ -15,6 +19,7 @@ import { OUTCOME_TRADE_NAV_ITEMS } from 'modules/outcomes/constants/outcome-trad
 import getValue from 'utils/get-value';
 
 const mapStateToProps = state => ({
+  isConnected: state.connection.isConnected,
   logged: getValue(state, 'loginAccount.address'),
   market: selectSelectedMarket(state),
   orderCancellation: getOrderCancellation(),
@@ -28,6 +33,12 @@ const mapStateToProps = state => ({
   branch: state.branch,
 });
 
-const Market = connect(mapStateToProps)(MarketView);
+const mapDispatchToProps = dispatch => ({
+  loadFullMarket: marketId => dispatch(loadFullMarket(marketId)),
+  updateSelectedMarketID: marketId => dispatch(updateSelectedMarketID(marketId)),
+  clearSelectedMarketID: () => dispatch(clearSelectedMarketID())
+});
+
+const Market = withRouter(connect(mapStateToProps, mapDispatchToProps)(MarketView));
 
 export default Market;
