@@ -46,16 +46,6 @@ export default class MarketView extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    // console.log(this.state.marketId !== nextState.marketId);
-    //
-    // if (
-    //   this.state.marketId !== nextState.marketId &&
-    //   nextState.marketId !== null
-    // ) {
-    //   console.log('set here');
-    //   this.props.updateSelectedMarketID(nextState.marketId);
-    // }
-
     if (
       this.props.isConnected !== nextProps.isConnected &&
       nextProps.isConnected &&
@@ -73,8 +63,6 @@ export default class MarketView extends Component {
   render() {
     const p = this.props;
     const s = this.state;
-
-    console.log('Makret -- ', p.market);
 
     return (
       <section id="market_view">

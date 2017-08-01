@@ -59,10 +59,7 @@ export default function () {
   return selectSelectedMarket(store.getState());
 }
 
-export const selectSelectedMarket = (state) => {
-  console.log('selectSelectedMarket -- ', state.selectedMarketID);
-  return selectMarket(state.selectedMarketID);
-};
+export const selectSelectedMarket = state => selectMarket(state.selectedMarketID);
 
 export const selectMarket = (marketID) => {
   const { marketsData, marketLoading, favorites, reports, outcomesData, netEffectiveTrades, accountTrades, tradesInProgress, priceHistory, orderBooks, branch, orderCancellation, smallestPositions, loginAccount } = store.getState();
