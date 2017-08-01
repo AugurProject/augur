@@ -1,6 +1,6 @@
 /**
   * Returns a formatted query string
-  * @param {object} query - The array of query params
+  * @param {object} query - Object with query param key:value pairs
   * @returns {string}
 */
 export default function makeQuery(query) {

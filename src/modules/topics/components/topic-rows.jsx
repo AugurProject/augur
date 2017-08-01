@@ -53,6 +53,3 @@ const TopicRows = (p) => {
 };
 
 export default TopicRows;
-
-// topic={topic === null ? '' : p.topics[topic].topic}
-// popularity={topic === null ? 0 : p.topics[topic].popularity}

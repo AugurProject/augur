@@ -4,7 +4,7 @@
 //          to the `authenticated-views` array under app/constants
 
 // MAIN VIEWS
-export const M = 'market'; // TODO -- rename this to MARKET
+export const MARKET = 'market';
 export const MARKETS = 'markets';
 export const FAVORITES = 'favorites';
 export const WATCHLIST = 'watch-list';

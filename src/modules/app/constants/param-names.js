@@ -6,3 +6,5 @@ export const PAGINATION_PARAM_NAME = 'page';
 export const TAGS_PARAM_NAME = 'tags';
 export const TOPIC_PARAM_NAME = 'topic';
 export const SUBSET_PARAM_NAME = 'subset';
+export const MARKET_ID_PARAM_NAME = 'id';
+export const MAKRET_DESCRIPTION_PARAM_NAME = 'description';

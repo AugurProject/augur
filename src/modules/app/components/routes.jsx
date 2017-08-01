@@ -56,7 +56,7 @@ const Routes = p => (
     <Switch>
       <Route exact path={makePath(VIEWS.DEFAULT_VIEW)} component={Topics} />
       <Route path={makePath(VIEWS.MARKETS)} component={Markets} />
-      <Route path={makePath(VIEWS.M)} component={Market} />
+      <Route path={makePath(VIEWS.MARKET)} component={Market} />
       <Route path={makePath(VIEWS.AUTHENTICATION)} component={Authentication} />
       <AuthenticatedRoute path={makePath(VIEWS.MY_POSITIONS)} component={Portfolio} />
       <AuthenticatedRoute path={makePath(VIEWS.MY_MARKETS)} component={Portfolio} />

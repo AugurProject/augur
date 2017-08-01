@@ -110,6 +110,10 @@ export default class TopicsView extends Component {
     this.setState({ itemsPerPage });
   }
 
+  setSegment(lowerBound, upperBound, boundedLength) {
+    this.setState({ lowerBound, upperBound, boundedLength });
+  }
+
   filterByKeywords(options) {
     let filteredTopics = options.topics;
 
@@ -178,10 +182,6 @@ export default class TopicsView extends Component {
     }
 
     this.setState({ fontAwesomeClasses, icoFontClasses });
-  }
-
-  setSegment(lowerBound, upperBound, boundedLength) {
-    this.setState({ lowerBound, upperBound, boundedLength });
   }
 
   render() {
