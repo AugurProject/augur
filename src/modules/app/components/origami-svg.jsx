@@ -37,7 +37,10 @@ export default class Origami extends Component {
 
 
   getDesktopShapes() {
-    const boundOffset = point => this.offsetPoint(point);
+    const mainXOffset = this.props.menuScalar * this.xOffsetMax;
+    const secondaryXOffset = this.props.menuScalar * -27;
+    const applyMainOffset = point => this.offsetPoint(point, [mainXOffset, 0]);
+    const applySecondaryOffset = point => this.offsetPoint(point, [secondaryXOffset, 0]);
 
     // TODO: encode this SVG data more efficiently?
     // it's useful to have points as variables since they'll animate
@@ -57,8 +60,8 @@ export default class Origami extends Component {
         points: ([
           [this.sidebarWidth + (85 * 2), 0],
           this.plgram.tl,
-          this.plgram.tr,
-          [this.sidebarWidth + (85 * 2) + 130, 0],
+          applySecondaryOffset(this.plgram.tr),
+          applySecondaryOffset([this.sidebarWidth + (85 * 2) + 130, 0]),
         ])
       },
       {
@@ -67,7 +70,7 @@ export default class Origami extends Component {
           this.plgram.tl,
           this.plgram.bl,
           this.plgram.br
-        ]).map(boundOffset)
+        ]).map(applyMainOffset)
       },
       {
         color: '#C5C3CD',
@@ -75,7 +78,7 @@ export default class Origami extends Component {
           this.plgram.tl,
           this.plgram.tr,
           this.plgram.br
-        ]).map(boundOffset)
+        ]).map(applyMainOffset)
       }
     ];
 
@@ -84,8 +87,8 @@ export default class Origami extends Component {
         color: '#5A4774',
         points: [
           this.plgram.tl,
-          boundOffset(this.plgram.bl),
-          boundOffset(this.plgram.tl),
+          applyMainOffset(this.plgram.bl),
+          applyMainOffset(this.plgram.tl),
         ]
       });
     }
@@ -135,9 +138,8 @@ export default class Origami extends Component {
     return shapes;
   }
 
-  offsetPoint(point) {
-    const currentXOffset = this.props.menuScalar * this.xOffsetMax;
-    return [point[0] + currentXOffset, point[1]];
+  offsetPoint(point, offsetPoint) {
+    return [point[0] + offsetPoint[0], point[1] + offsetPoint[1]];
   }
 
   render() {

@@ -10,23 +10,33 @@ import debounce from 'utils/debounce';
 
 import { tween } from 'shifty';
 
-import TopBar from './top-bar';
-import InnerNav from './inner-nav';
-import SideNav from './side-nav';
-import Origami from './origami-svg';
-import Logo from './logo';
+import TopBar from 'modules/app/components/top-bar';
+import InnerNav from 'modules/app/components/inner-nav';
+import SideNav from 'modules/app/components/side-nav';
+import Origami from 'modules/app/components/origami-svg';
+import Logo from 'modules/app/components/logo';
+
+import MobileNavHamburgerIcon from 'modules/common/components/mobile-nav-hamburger-icon';
+import MobileNavCloseIcon from 'modules/common/components/mobile-nav-close-icon';
+import MobileNavBackIcon from 'modules/common/components/mobile-nav-back-icon';
+
+import NavAccountIcon from 'modules/common/components/nav-account-icon';
+import NavCreateIcon from 'modules/common/components/nav-create-icon';
+import NavMarketsIcon from 'modules/common/components/nav-markets-icon';
+import NavPortfolioIcon from 'modules/common/components/nav-portfolio-icon';
+import NavReportingIcon from 'modules/common/components/nav-reporting-icon';
 
 export const mobileMenuStates = {
   CLOSED: 0,
   SIDEBAR_OPEN: 1,
-  TOPICS_OPEN: 2,
-  TAGS_OPEN: 3
+  CATEGORIES_OPEN: 2,
+  KEYWORDS_OPEN: 3
 };
 
 export default class AppView extends Component {
   static propTypes = {
     url: PropTypes.string,
-    tags: PropTypes.array.isRequired,
+    keywords: PropTypes.array.isRequired,
     coreStats: PropTypes.array.isRequired,
     isMobile: PropTypes.bool.isRequired,
     updateIsMobile: PropTypes.func.isRequired,
@@ -125,19 +135,17 @@ export default class AppView extends Component {
   renderMobileMenuButton() {
     const menuState = this.state.mobileMenuState;
 
-    let iconKey = '';
-    if (menuState === mobileMenuStates.CLOSED) iconKey = 'mobile_nav_hamburger';
-    else if (menuState === mobileMenuStates.SIDEBAR_OPEN) iconKey = 'mobile_nav_close';
-    else if (menuState >= mobileMenuStates.TOPICS_OPEN) iconKey = 'mobile_nav_back';
-
-    const iconSVGURL = `../../assets/images/${iconKey}.svg`;
+    let icon = null;
+    if (menuState === mobileMenuStates.CLOSED) icon = <MobileNavHamburgerIcon />;
+    else if (menuState === mobileMenuStates.SIDEBAR_OPEN) icon = <MobileNavCloseIcon />;
+    else if (menuState >= mobileMenuStates.CATEGORIES_OPEN) icon = <MobileNavBackIcon />;
 
     return (
       <button
-        className="mobileMenuNavButton"
+        className="mobile-menu-nav-button"
         onClick={() => this.mobileMenuButtonClick()}
       >
-        <img alt={iconKey} src={iconSVGURL} />
+        {icon}
       </button>
     );
   }
@@ -147,24 +155,24 @@ export default class AppView extends Component {
     const s = this.state;
 
     const innerNavProps = {
-      topics: p.topics,
-      selectedTopic: p.selectedTopic,
-      tags: p.tags
+      categories: p.categories,
+      selectedCategory: p.selectedCategory,
+      keywords: p.keywords
     };
 
     const { mainMenu, subMenu } = this.state;
 
-    let marketsMargin;
-    let tagsMargin;
+    let categoriesMargin;
+    let keywordsMargin;
 
     if (!p.isMobile) {
-      marketsMargin = -110 + (110 * mainMenu.scalar);
-      tagsMargin = 110 * subMenu.scalar;
+      categoriesMargin = -110 + (110 * mainMenu.scalar);
+      keywordsMargin = 110 * subMenu.scalar;
     }
 
     return (
-      <div className="app-wrap">
-        <div className="side-wrap">
+      <main className="app-wrap">
+        <section className="side-wrap">
           <Origami
             isMobile={p.isMobile}
             menuScalar={mainMenu.scalar}
@@ -178,7 +186,7 @@ export default class AppView extends Component {
             menuData={[
               {
                 title: 'Markets',
-                iconKey: 'markets',
+                icon: NavMarketsIcon,
                 onClick: () => {
                   if (p.isMobile) {
                     this.setState({ mobileMenuState: mobileMenuStates.TOPICS_OPEN });
@@ -190,64 +198,68 @@ export default class AppView extends Component {
               },
               {
                 title: 'Create',
-                iconKey: 'create',
+                iconName: 'nav-create-icon',
+                icon: NavCreateIcon,
                 onClick: () => {},
                 onBlur: () => {}
               },
               {
                 title: 'Portfolio',
-                iconKey: 'portfolio',
+                iconName: 'nav-portfolio-icon',
+                icon: NavPortfolioIcon,
                 onClick: () => {},
                 onBlur: () => {}
               },
               {
                 title: 'Reporting',
-                iconKey: 'reporting',
+                iconName: 'nav-reporting-icon',
+                icon: NavReportingIcon,
                 onClick: () => {},
                 onBlur: () => {}
               },
               {
                 title: 'Account',
-                iconKey: 'account',
+                iconName: 'nav-account-icon',
+                icon: NavAccountIcon,
                 onClick: () => {},
                 onBlur: () => {}
               },
             ]}
           />
-        </div>
-        <div className="main-wrap">
-          <div className="topbar-row">
+        </section>
+        <section className="main-wrap">
+          <section className="topbar-row">
             <TopBar
               isMobile={p.isMobile}
               stats={p.coreStats}
             />
-          </div>
-          <div
+          </section>
+          <section
             className="maincontent-row"
-            style={{ marginLeft: marketsMargin }}
+            style={{ marginLeft: categoriesMargin }}
           >
             <InnerNav
               isMobile={p.isMobile}
               mobileMenuState={s.mobileMenuState}
               subMenuScalar={subMenu.scalar}
-              onSelectTopic={(...args) => {
-                p.selectTopic(...args);
+              onSelectCategory={(...args) => {
+                p.selectCategory(...args);
                 if (!p.isMobile && !subMenu.open) this.toggleMenuTween('subMenu', true);
-                if (p.isMobile) this.setState({ mobileMenuState: mobileMenuStates.TAGS_OPEN });
+                if (p.isMobile) this.setState({ mobileMenuState: mobileMenuStates.KEYWORDS_OPEN });
               }}
               {...innerNavProps}
             />
-            <div
+            <section
               className="maincontent"
-              style={{ marginLeft: tagsMargin }}
+              style={{ marginLeft: keywordsMargin }}
             >
               <Routes
                 activeView={p.activeView}
               />
-            </div>
-          </div>
-        </div>
-      </div>
+            </section>
+          </section>
+        </section>
+      </main>
     );
   }
 }

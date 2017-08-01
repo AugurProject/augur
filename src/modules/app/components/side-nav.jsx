@@ -52,7 +52,7 @@ export default class SideBar extends Component {
     return (
       <ul className="sidebar-menu">
         {this.props.menuData.map((item) => {
-          const iconName = `nav-${item.iconKey}`;
+          const Icon = item.icon;
           const selected = !mobile && this.isCurrentItem(item);
 
           return (
@@ -60,11 +60,7 @@ export default class SideBar extends Component {
               className={classNames({ selected })}
               onClick={() => this.itemClick(item)}
             >
-              <img
-                alt={iconName}
-                className={iconName}
-                src={`../../assets/images/${iconName}.svg`}
-              />
+              <Icon />
               <span className="item-title">{item.title}</span>
             </li>
           );

@@ -21,6 +21,7 @@ const mapStateToProps = state => ({
   marketsHeader: selectMarketsHeader(state),
   portfolio: portfolio(),
   notifications: selectNotificationsAndSeenCount(state),
+  keywords: selectTags(state),
   coreStats: selectCoreStats(state),
   isLogged: !!getValue(state, 'loginAccount.address'),
   isMobile: state.isMobile,
@@ -29,15 +30,15 @@ const mapStateToProps = state => ({
   markets: getAllMarkets(),
   marketsFilteredSorted: state.marketsFilteredSorted
   chat: getChatMessages(),
-  topics: selectTopics(state),
-  selectedTopic: state.selectedTopic
+  categories: selectTopics(state),
+  selectedCategory: state.selectedTopic
 });
 
 const mapDispatchToProps = dispatch => ({
   updateIsMobile: isMobile => dispatch(updateIsMobile(isMobile)),
   updateHeaderHeight: headerHeight => dispatch(updateHeaderHeight(headerHeight)),
   updateFooterHeight: footerHeight => dispatch(updateFooterHeight(footerHeight)),
-  selectTopic: topic => selectTopicLink(topic, dispatch).onClick()
+  selectCategory: topic => selectTopicLink(topic, dispatch).onClick()
 });
 
 const AppContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
