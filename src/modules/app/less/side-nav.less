@@ -3,9 +3,10 @@
   z-index: 9999;
 }
 
-.mobileMenuNavButton {
+.mobile-menu-nav-button {
   background: none;
   border: none;
+  display: none;
   height: 16px;
   left: 16px;
   outline: none;
@@ -15,9 +16,13 @@
   width: 16px;
   z-index: 999;
 
-  img {
+  svg {
     height: 100%;
     width: 100%;
+  }
+
+  @media @breakpoint-mobile {
+    display: block;
   }
 }
 
@@ -53,15 +58,6 @@
 
       &:last-child { border: none; }
 
-      img.nav-create {
-        margin-top: 2px;
-        transform: scale(0.85);
-      }
-
-      img.nav-portfolio {
-        transform: scale(0.95);
-      }
-
       span {
         bottom: 13px;
         color: @color-white;
@@ -74,6 +70,20 @@
         right: 0;
         text-align: center;
         text-transform: uppercase;
+      }
+
+      svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      svg.nav-create-icon {
+        margin-top: 2px;
+        transform: scale(0.85);
+      }
+
+      svg.nav-portfolio-icon {
+        transform: scale(0.95);
       }
     }
   }
@@ -101,7 +111,7 @@
 
         &:hover { background: none; }
 
-        img {
+        svg {
           vertical-align: middle;
           width: 30px;
         }

@@ -1,4 +1,4 @@
-.innerMenuContainer {
+.inner-menu-container {
   height: 100vh;
   position: relative;
 
@@ -56,6 +56,14 @@
       left: 0;
     }
 
+    ul li {
+      font-size: 14px;
+      line-height: 55px;
+      padding-left: 50px;
+
+      &:hover { background: none; }
+    }
+
     ul.innermenubar,
     ul.submenubar {
       width: 100%;
@@ -69,14 +77,6 @@
       &.mobileShow {
         left: 0;
       }
-    }
-
-    ul li {
-      font-size: 14px;
-      line-height: 55px;
-      padding-left: 50px;
-
-      &:hover { background: none; }
     }
   }
 }
