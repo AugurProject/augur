@@ -55,10 +55,21 @@ export default class AppView extends Component {
     this.handleWindowResize = debounce(this.handleWindowResize.bind(this));
     this.checkIfMobile = this.checkIfMobile.bind(this);
   }
+
   componentDidMount() {
     window.addEventListener('resize', this.handleWindowResize);
 
     this.checkIfMobile();
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (this.props.isMobile !== newProps.isMobile) {
+      this.setState({
+        mobileMenuState: mobileMenuStates.CLOSED,
+        mainMenu: { scalar: 0, open: false },
+        subMenu: { scalar: 0, open: false }
+      });
+    }
   }
 
   handleWindowResize() {
@@ -182,7 +193,7 @@ export default class AppView extends Component {
                 icon: NavMarketsIcon,
                 onClick: () => {
                   if (p.isMobile) {
-                    this.setState({ mobileMenuState: mobileMenuStates.TOPICS_OPEN });
+                    this.setState({ mobileMenuState: mobileMenuStates.CATEGORIES_OPEN });
                   } else {
                     this.toggleMainMenu();
                   }

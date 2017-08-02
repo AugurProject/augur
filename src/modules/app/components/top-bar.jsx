@@ -4,8 +4,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const TopBar = props => (
-  <div className="topbar">
-    <div className="stats">
+  <header className="topbar">
+    <section className="stats">
       <span className="stat-eth stat">
         <span className="stat-label">ETH</span>
         <span className="stat-value">
@@ -18,9 +18,9 @@ const TopBar = props => (
           {props.stats[0].totalRep.value.formatted}
         </span>
       </span>
-    </div>
+    </section>
     <span className="mobile-logotext">Augur</span>
-  </div>
+  </header>
 );
 
 TopBar.propTypes = {
