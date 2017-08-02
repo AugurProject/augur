@@ -21,6 +21,7 @@ import getValue from 'utils/get-value';
 
 const mapStateToProps = state => ({
   isLogged: state.isLogged,
+  loginAccount: state.loginAccount,
   markets: getAllMarkets(),
   // marketsHeader: selectMarketsHeader(state),
   // favoriteMarkets: selectFavoriteMarkets(state),

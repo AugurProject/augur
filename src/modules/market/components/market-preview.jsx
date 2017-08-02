@@ -68,7 +68,7 @@ const MarketPreview = (p) => {
 };
 
 MarketPreview.propTypes = {
-  isLogged: PropTypes.bool.isLogged
+  isLogged: PropTypes.bool.isRequired
 };
 
 // MarketPreview.propTypes = {

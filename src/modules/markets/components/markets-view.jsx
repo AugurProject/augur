@@ -40,6 +40,8 @@ export default class MarketsView extends Component {
       shouldDisplayBranchInfo: !!(getValue(props, 'loginAccount.rep.value') && getValue(props, 'branch.id')),
       marketsFiltered: []
     };
+
+    this.updateMarketsFiltered = this.updateMarketsFiltered.bind(this);
   }
 
   componentWillMount() {
@@ -80,7 +82,7 @@ export default class MarketsView extends Component {
     }
   }
 
-  setFilteredItems(marketsFiltered) {
+  updateMarketsFiltered(marketsFiltered) {
     this.setState({ marketsFiltered });
   }
 
@@ -112,6 +114,8 @@ export default class MarketsView extends Component {
           isLogged={p.isLogged}
           location={p.location}
           history={p.history}
+          markets={p.markets}
+          updateFilteredItems={this.updateMarketsFiltered}
         />
         <MarketsList
           isLogged={p.isLogged}

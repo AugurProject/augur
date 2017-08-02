@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import MarketsFilterSort from 'modules/markets/components/markets-filter-sort';
-import FiltersView from 'modules/filters/components/filters-view';
+import FilterSortView from 'modules/filter-sort/components/filter-sort-view';
 import classNames from 'classnames';
 
 import makePath from 'modules/app/helpers/make-path';
@@ -18,9 +17,7 @@ export default class MarketsHeader extends Component {
     isLogged: PropTypes.bool.isRequired,
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
-    filterSort: PropTypes.object.isRequired,
-    keywords: PropTypes.string.isRequired,
-    onChangeKeywords: PropTypes.func.isRequired,
+    updateFilteredItems: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -87,9 +84,11 @@ export default class MarketsHeader extends Component {
             }
           </div>
         </div>
-        <FiltersView
+        <FilterSortView
+          items={p.markets}
           location={p.location}
           history={p.history}
+          updateFilteredItems={p.updateFilteredItems}
         />
       </article>
     );
