@@ -148,9 +148,9 @@ export default class Origami extends Component {
     if (this.props.isMobile) shapes = this.getMobileShapes();
     else shapes = this.getDesktopShapes();
 
-    const polygons = shapes.map((shape) => {
+    const polygons = shapes.map((shape, index) => {
       const pointString = shape.points.map(point => (point[0] + ',' + point[1])).join(' ');
-      return (<polygon fill={shape.color} points={pointString} />);
+      return (<polygon fill={shape.color} points={pointString} key={index} />);
     });
 
     return (<svg id="paralellogo">{polygons}</svg>);

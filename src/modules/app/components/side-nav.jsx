@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 export default class SideBar extends Component {
   static propTypes = {
     isMobile: PropTypes.bool.isRequired,
-    menuData: PropTypes.object.isRequired,
+    menuData: PropTypes.array.isRequired,
     mobileShow: PropTypes.bool.isRequired
   };
 
@@ -13,8 +13,15 @@ export default class SideBar extends Component {
     super();
     this.state = {
       selectedItem: null,
-      itemKey: null
+      selectedKey: null
     };
+  }
+
+  componentWillReceiveProps(newProps) {
+    if (this.props.isMobile !== newProps.isMobile) {
+      console.log('wut wupt');
+      this.setState({ selectedItem: null, selectedKey: null });
+    }
   }
 
   isCurrentItem(item) {
@@ -51,7 +58,7 @@ export default class SideBar extends Component {
 
     return (
       <ul className="sidebar-menu">
-        {this.props.menuData.map((item) => {
+        {this.props.menuData.map((item, index) => {
           const Icon = item.icon;
           const selected = !mobile && this.isCurrentItem(item);
 
@@ -59,6 +66,7 @@ export default class SideBar extends Component {
             <li
               className={classNames({ selected })}
               onClick={() => this.itemClick(item)}
+              key={index}
             >
               <Icon />
               <span className="item-title">{item.title}</span>
@@ -71,9 +79,9 @@ export default class SideBar extends Component {
 
   render() {
     return (
-      <div className={classNames({ sidebar: true, mobileShow: this.props.mobileShow })}>
+      <aside className={classNames({ sidebar: true, mobileShow: this.props.mobileShow })}>
         {this.renderSidebarMenu()}
-      </div>
+      </aside>
     );
   }
 }

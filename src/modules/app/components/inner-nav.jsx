@@ -17,13 +17,14 @@ class InnerNav extends Component {
   renderTopicList() {
     return (
       <ul className="innermenubar">
-        {this.props.categories.map((item) => {
+        {this.props.categories.map((item, index) => {
           const clickSelect = () => this.props.onSelectCategory(item.topic);
           const isSelected = item.topic === this.props.selectedCategory;
           return (
             <li
               className={classNames({ selected: isSelected })}
               onClick={clickSelect}
+              key={index}
             >
               {item.topic}
             </li>
@@ -49,10 +50,11 @@ class InnerNav extends Component {
           <li>Loading . . .</li>
         }
         {this.props.keywords.length > 0 &&
-        this.props.keywords.map(item => (
+        this.props.keywords.map((item, index) => (
           <li
             className={classNames({ selected: item.isSelected })}
             onClick={item.onClick}
+            key={index}
           >
             {item.name}
           </li>
@@ -64,10 +66,10 @@ class InnerNav extends Component {
   render() {
     const showCategories = this.props.mobileMenuState >= mobileMenuStates.CATEGORIES_OPEN;
     return (
-      <div className={classNames({ [`inner-menu-container`]: true, mobileShow: showCategories })}>
+      <aside className={classNames({ [`inner-menu-container`]: true, mobileShow: showCategories })}>
         {this.renderTopicList()}
         {this.renderSubMenu()}
-      </div>
+      </aside>
     );
   }
 }
