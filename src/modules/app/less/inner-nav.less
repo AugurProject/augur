@@ -3,8 +3,8 @@
   position: relative;
 
   ul {
-    font-family: 'DINPro';
-    font-weight: @font-weight-light;
+    .font-family-dinpro();
+    .font-weight-light();
     height: 100%;
     list-style: none;
     margin: 0;
@@ -16,7 +16,7 @@
     li {
       color: @color-white;
       cursor: pointer;
-      font-size: 12px;
+      .font-size-normal();
       letter-spacing: 0.3px;
       line-height: 29px;
       min-height: 26px;
@@ -57,7 +57,7 @@
     }
 
     ul li {
-      font-size: 14px;
+      .font-size-large();
       line-height: 55px;
       padding-left: 50px;
 
