@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
@@ -64,6 +65,10 @@ const MarketPreview = (p) => {
       <MarketPreviewOutcomes outcomes={p.outcomes} />
     </article>
   );
+};
+
+MarketPreview.propTypes = {
+  isLogged: PropTypes.bool.isLogged
 };
 
 // MarketPreview.propTypes = {

@@ -1,6 +1,7 @@
 /* eslint react/no-array-index-key: 0 */  // It's OK in this specific instance as order remains the same
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
@@ -33,7 +34,7 @@ const MarketBasics = p => (
         </ul>
       </div>
       <div className="market-basics-header-actions">
-        {p.loginAccount && p.loginAccount.address && p.onClickToggleFavorite &&
+        {p.isLogged && p.onClickToggleFavorite &&
           <button
             className={classNames('button unstyled favorite-button', { on: p.isFavorite })}
             onClick={p.onClickToggleFavorite}
@@ -68,5 +69,9 @@ const MarketBasics = p => (
     <MarketProperties {...p} />
   </article>
 );
+
+MarketBasics.propTypes = {
+  isLogged: PropTypes.bool.isRequired
+};
 
 export default MarketBasics;

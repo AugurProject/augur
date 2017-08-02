@@ -20,7 +20,7 @@ import { updateKeywords } from 'modules/markets/actions/update-keywords';
 import getValue from 'utils/get-value';
 
 const mapStateToProps = state => ({
-  loginAccount: selectLoginAccount(state),
+  isLogged: state.isLogged,
   markets: getAllMarkets(),
   // marketsHeader: selectMarketsHeader(state),
   // favoriteMarkets: selectFavoriteMarkets(state),

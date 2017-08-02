@@ -15,12 +15,12 @@ import { TOPIC_PARAM_NAME } from 'modules/app/constants/param-names';
 
 export default class MarketsHeader extends Component {
   static propTypes = {
+    isLogged: PropTypes.bool.isRequired,
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     filterSort: PropTypes.object.isRequired,
     keywords: PropTypes.string.isRequired,
     onChangeKeywords: PropTypes.func.isRequired,
-    loginAccount: PropTypes.object
   }
 
   constructor(props) {
@@ -76,11 +76,11 @@ export default class MarketsHeader extends Component {
             </h2>
           </div>
           <div className="view-header-group">
-            {p.loginAccount && p.loginAccount.address &&
+            {p.isLogged &&
               <Link
                 to={makePath(CREATE_MARKET)}
                 className="button imperative navigational"
-                disabled={!p.loginAccount.address}
+                disabled={!p.isLogged}
               >
                 + Create New Market
               </Link>

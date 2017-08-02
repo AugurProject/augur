@@ -8,7 +8,7 @@ import getValue from 'utils/get-value';
 
 export default class MarketsList extends Component {
   static propTypes = {
-    loginAccount: PropTypes.object.isRequired,
+    isLogged: PropTypes.bool.isRequired,
     markets: PropTypes.array.isRequired,
     location: PropTypes.object.isRequired,
     scalarShareDenomination: PropTypes.object.isRequired
@@ -48,7 +48,7 @@ export default class MarketsList extends Component {
             return (
               <MarketPreview
                 key={market.id}
-                loginAccount={p.loginAccount}
+                isLogged={p.isLogged}
                 {...market}
                 selectedShareDenomination={selectedShareDenomination}
                 shareDenominations={shareDenominations}

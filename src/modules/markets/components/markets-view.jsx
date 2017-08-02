@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 
-import MarketsHeaders from 'modules/markets/components/markets-headers';
+import MarketsHeader from 'modules/markets/components/markets-header';
 import MarketsList from 'modules/markets/components/markets-list';
 import Branch from 'modules/branch/components/branch';
 
@@ -13,6 +13,8 @@ import { TOPIC_PARAM_NAME } from 'modules/app/constants/param-names';
 
 export default class MarketsView extends Component {
   static propTypes = {
+    isLogged: PropTypes.bool.isRequired,
+    loginAccount: PropTypes.object.isRequired,
     markets: PropTypes.array.isRequired,
     canLoadMarkets: PropTypes.bool.isRequired,
     hasLoadedMarkets: PropTypes.bool.isRequired,
@@ -20,7 +22,7 @@ export default class MarketsView extends Component {
     loadMarkets: PropTypes.func.isRequired,
     loadMarketsByTopic: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
-    loginAccount: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
     // filterSort: PropTypes.object,
     // marketsHeader: PropTypes.object,
     // pagination: PropTypes.object,
@@ -78,13 +80,17 @@ export default class MarketsView extends Component {
     }
   }
 
+  setFilteredItems(marketsFiltered) {
+    this.setState({ marketsFiltered });
+  }
+
   loadMarkets(options) {
     if (options.canLoadMarkets) {
       const topic = parseQuery(options.location.search)[TOPIC_PARAM_NAME];
 
       if (topic && !this.props.hasLoadedTopic[topic]) {
         options.loadMarketsByTopic(topic);
-      } else if (!this.props.hasLoadedMarkets) {
+      } else if (!topic && !this.props.hasLoadedMarkets) {
         options.loadMarkets();
       }
     }
@@ -92,6 +98,7 @@ export default class MarketsView extends Component {
 
   render() {
     const p = this.props;
+    const s = this.state;
 
     return (
       <section id="markets_view">
@@ -101,16 +108,15 @@ export default class MarketsView extends Component {
         {this.state.shouldDisplayBranchInfo &&
           <Branch {...p.branch} />
         }
-        <MarketsHeaders
-          loginAccount={p.loginAccount}
+        <MarketsHeader
+          isLogged={p.isLogged}
           location={p.location}
-          filterSort={p.filterSort}
-          keywords={p.keywords}
-          onChangeKeywords={p.onChangeKeywords}
+          history={p.history}
         />
         <MarketsList
-          loginAccount={p.loginAccount}
+          isLogged={p.isLogged}
           markets={p.markets}
+          marketsFiltered={s.marketsFiltered}
           location={p.location}
           history={p.history}
           scalarShareDenomination={p.scalarShareDenomination}
