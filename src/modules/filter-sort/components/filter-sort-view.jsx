@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-// TODO -- refactored reusable structure
-//  props:
-//    Full List
-//    Location (full obj)
-//    History
-//    {...filter types desired (bools)}
-//    update method
+import FilterSearch from 'modules/filter-sort/components/filter-search';
+
+import getValue from 'utils/get-value';
 
 export default class FilterSortView extends Component {
   static propTypes = {
@@ -35,10 +31,12 @@ export default class FilterSortView extends Component {
 
     return (
       <article>
-        {p.filterByKeyword &&
-          <FilterKeywords
+        {!!getValue(p, 'filterBySearch.length') &&
+          <FilterSearch
+            location={p.location}
+            history={p.history}
             items={p.items}
-            keys={p.filterByKeyword}
+            keys={p.filterBySearch}
           />
         }
       </article>

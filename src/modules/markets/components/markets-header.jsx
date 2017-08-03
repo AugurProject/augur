@@ -28,6 +28,12 @@ export default class MarketsHeader extends Component {
       capitalizeTitle: false
     };
 
+    this.searchKeys = [
+      'description',
+      ['outcomes', 'name'],
+      ['tags', 'name']
+    ];
+
     this.setHeaderTitle = this.setHeaderTitle.bind(this);
   }
 
@@ -37,7 +43,6 @@ export default class MarketsHeader extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.props.location !== nextProps.location) this.setHeaderTitle(nextProps.location);
-    // console.log('props -- ', nextProps);
   }
 
   setHeaderTitle(location) {
@@ -89,15 +94,9 @@ export default class MarketsHeader extends Component {
           location={p.location}
           history={p.history}
           updateFilteredItems={p.updateFilteredItems}
+          filterBySearch={this.searchKeys}
         />
       </article>
     );
   }
 }
-
-
-// <MarketsFilterSort
-//   keywords={p.keywords}
-//   onChangeKeywords={p.onChangeKeywords}
-//   {...p.filterSort}
-// />
