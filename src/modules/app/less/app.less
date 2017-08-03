@@ -56,15 +56,16 @@ h6 {
 
   /* inner menubar width */
   grid-template-columns: 110px auto;
+  margin-left: -100px;
   overflow: hidden;
 
   @media @breakpoint-mobile {
     /*
     disable inner menubar mobile grid width */
     grid-template-columns: 0 auto;
+    margin-left: 0;
   }
 }
-
 
 .maincontent {
   background: @color-almostblack;

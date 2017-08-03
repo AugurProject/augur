@@ -4,7 +4,7 @@ svg#paralellogo {
   position: absolute;
   top: 0;
   width: 100vw;
-  z-index: 999;
+  z-index: @mask;
 }
 
 .top-logo {
@@ -12,7 +12,7 @@ svg#paralellogo {
   position: absolute;
   top: 21px;
   width: 120px;
-  z-index: 999;
+  z-index: @mask-above;
 
   & > * {
     display: inline-block;
@@ -23,10 +23,11 @@ svg#paralellogo {
   }
 
   span.logotext {
-    color: white;
     .font-family-dinpro();
     .font-size-large();
     .font-weight-light();
+
+    color: white;
     letter-spacing: 1.2px;
     line-height: 44px;
     margin-left: 8px;

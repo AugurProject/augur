@@ -1,6 +1,6 @@
 .side-wrap {
   height: 100vh;
-  z-index: 9999;
+  z-index: @mask-above;
 }
 
 .mobile-menu-nav-button {
@@ -14,7 +14,7 @@
   position: absolute;
   top: 16px;
   width: 16px;
-  z-index: 999;
+  z-index: @mask-above;
 
   svg {
     height: 100%;
@@ -59,11 +59,12 @@
       &:last-child { border: none; }
 
       span {
-        bottom: 13px;
-        color: @color-white;
         .font-family-dinpro();
         .font-size-small();
         .font-weight-light();
+
+        bottom: 13px;
+        color: @color-white;
         left: 0;
         letter-spacing: 0.3px;
         position: absolute;
@@ -73,8 +74,8 @@
       }
 
       svg {
-        width: 24px;
         height: 24px;
+        width: 24px;
       }
 
       svg.nav-create-icon {
@@ -118,6 +119,7 @@
 
         span {
           .font-size-large();
+
           line-height: 70px;
           padding-left: 18px;
           position: static;

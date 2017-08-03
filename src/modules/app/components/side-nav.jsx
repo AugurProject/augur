@@ -19,7 +19,6 @@ export default class SideBar extends Component {
 
   componentWillReceiveProps(newProps) {
     if (this.props.isMobile !== newProps.isMobile) {
-      console.log('wut wupt');
       this.setState({ selectedItem: null, selectedKey: null });
     }
   }
@@ -66,7 +65,7 @@ export default class SideBar extends Component {
             <li
               className={classNames({ selected })}
               onClick={() => this.itemClick(item)}
-              key={index}
+              key={item.title}
             >
               <Icon />
               <span className="item-title">{item.title}</span>

@@ -5,6 +5,7 @@
   ul {
     .font-family-dinpro();
     .font-weight-light();
+
     height: 100%;
     list-style: none;
     margin: 0;
@@ -14,9 +15,10 @@
     text-transform: uppercase;
 
     li {
+      .font-size-normal();
+
       color: @color-white;
       cursor: pointer;
-      .font-size-normal();
       letter-spacing: 0.3px;
       line-height: 29px;
       min-height: 26px;
@@ -34,7 +36,7 @@
   ul.innermenubar {
     background: @color-darkgray;
     position: relative;
-    z-index: 999;
+    z-index: @mask;
   }
 
   ul.submenubar {
@@ -43,7 +45,7 @@
     position: absolute;
     top: 0;
     width: 110px;
-    z-index: 9;
+    z-index: @above-all-content;
   }
 
   @media @breakpoint-mobile {
@@ -58,6 +60,7 @@
 
     ul li {
       .font-size-large();
+
       line-height: 55px;
       padding-left: 50px;
 
@@ -78,7 +81,7 @@
     ul.submenubar {
       left: 200px;
       transition: left 0.2s ease-in-out;
-      z-index: 999;
+      z-index: @mask;
 
       &.mobileShow {
         left: 0;
