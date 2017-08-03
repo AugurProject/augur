@@ -40,7 +40,7 @@ export default class AppView extends Component {
     coreStats: PropTypes.array.isRequired,
     isMobile: PropTypes.bool.isRequired,
     updateIsMobile: PropTypes.func.isRequired,
-    selectedTopic: PropTypes.string
+    selectedCategory: PropTypes.string
   };
 
   constructor(props) {
@@ -54,7 +54,7 @@ export default class AppView extends Component {
 
     this.shouldComponentUpdate = shouldComponentUpdatePure;
 
-    this.handleWindowResize = debounce(this.handleWindowResize.bind(this));
+    this.handleWindowResize = debounce(this.handleWindowResize.bind(this), 25);
     this.checkIfMobile = this.checkIfMobile.bind(this);
   }
 
@@ -122,9 +122,9 @@ export default class AppView extends Component {
   }
 
   toggleMainMenu() {
-    const { selectedTopic } = this.props;
+    const { selectedCategory } = this.props;
     if (!this.state.mainMenu.open) {
-      if (selectedTopic) this.toggleMenuTween('subMenu', true);
+      if (selectedCategory) this.toggleMenuTween('subMenu', true);
     } else {
       this.toggleMenuTween('subMenu', false);
     }
@@ -175,10 +175,14 @@ export default class AppView extends Component {
 
     let categoriesMargin;
     let keywordsMargin;
+    let origamiScalar = 0;
 
     if (!p.isMobile) {
       categoriesMargin = -110 + (110 * mainMenu.scalar);
       keywordsMargin = 110 * subMenu.scalar;
+
+      // ensure origami fold-out moves perfectly with submenu
+      origamiScalar = Math.max(0, (subMenu.scalar + mainMenu.scalar) - 1);
     }
 
     return (
@@ -186,7 +190,7 @@ export default class AppView extends Component {
         <section className="side-wrap">
           <Origami
             isMobile={p.isMobile}
-            menuScalar={mainMenu.scalar}
+            menuScalar={origamiScalar}
           />
           <Logo />
           {this.renderMobileMenuButton()}

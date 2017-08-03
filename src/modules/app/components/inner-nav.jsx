@@ -24,7 +24,7 @@ class InnerNav extends Component {
             <li
               className={classNames({ selected: isSelected })}
               onClick={clickSelect}
-              key={index}
+              key={item.topic}
             >
               {item.topic}
             </li>
@@ -54,7 +54,7 @@ class InnerNav extends Component {
           <li
             className={classNames({ selected: item.isSelected })}
             onClick={item.onClick}
-            key={index}
+            key={item.name}
           >
             {item.name}
           </li>

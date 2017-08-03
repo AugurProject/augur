@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+const offsetPoint = (point, offsetPoint) => (
+  [point[0] + offsetPoint[0], point[1] + offsetPoint[1]]
+);
+
 export default class Origami extends Component {
   static propTypes = {
     isMobile: PropTypes.bool.isRequired,
@@ -39,8 +43,8 @@ export default class Origami extends Component {
   getDesktopShapes() {
     const mainXOffset = this.props.menuScalar * this.xOffsetMax;
     const secondaryXOffset = this.props.menuScalar * -27;
-    const applyMainOffset = point => this.offsetPoint(point, [mainXOffset, 0]);
-    const applySecondaryOffset = point => this.offsetPoint(point, [secondaryXOffset, 0]);
+    const applyMainOffset = point => offsetPoint(point, [mainXOffset, 0]);
+    const applySecondaryOffset = point => offsetPoint(point, [secondaryXOffset, 0]);
 
     // TODO: encode this SVG data more efficiently?
     // it's useful to have points as variables since they'll animate
@@ -138,9 +142,6 @@ export default class Origami extends Component {
     return shapes;
   }
 
-  offsetPoint(point, offsetPoint) {
-    return [point[0] + offsetPoint[0], point[1] + offsetPoint[1]];
-  }
 
   render() {
     let shapes;
@@ -150,7 +151,7 @@ export default class Origami extends Component {
 
     const polygons = shapes.map((shape, index) => {
       const pointString = shape.points.map(point => (point[0] + ',' + point[1])).join(' ');
-      return (<polygon fill={shape.color} points={pointString} key={index} />);
+      return (<polygon fill={shape.color} points={pointString} key={`${shape.color}`} />);
     });
 
     return (<svg id="paralellogo">{polygons}</svg>);
