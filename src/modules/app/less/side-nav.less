@@ -40,12 +40,15 @@
     margin: 0;
     padding: 0;
 
-    li {
+    li button {
+      background: none;
       border-bottom: 1px solid #553580;
       height: 64px;
-      padding-top: 8px;
+      margin: 0;
+      padding: 0;
       position: relative;
       text-align: center;
+      width: 100%;
 
       &.selected {
         background: @color-lightpurple;
@@ -75,16 +78,17 @@
 
       svg {
         height: 24px;
+        transform: translateY(-8px);
         width: 24px;
       }
 
       svg.nav-create-icon {
         margin-top: 2px;
-        transform: scale(0.85);
+        transform: scale(0.85), translateY(-8px);
       }
 
       svg.nav-portfolio-icon {
-        transform: scale(0.95);
+        transform: scale(0.95), translateY(-8px);
       }
     }
   }

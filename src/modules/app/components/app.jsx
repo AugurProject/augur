@@ -49,6 +49,7 @@ export default class AppView extends Component {
     this.state = {
       mainMenu: { scalar: 0, open: false, currentTween: null },
       subMenu: { scalar: 0, open: false, currentTween: null },
+      keywordState: { loaded: false, openOnLoad: false },
       mobileMenuState: mobileMenuStates.CLOSED
     };
 
@@ -77,6 +78,27 @@ export default class AppView extends Component {
         subMenu: { scalar: 0, open: false }
       });
     }
+
+    if (this.props.keywords.length === 0 &&
+        newProps.keywords.length > 0) {
+      if (this.state.keywordState.openOnLoad) {
+        if (this.props.isMobile) {
+          this.setState({ mobileMenuState: mobileMenuStates.KEYWORDS_OPEN });
+        } else {
+          this.toggleMenuTween('subMenu', true);
+        }
+      }
+      this.setState({ keywordState: { loaded: true, openOnLoad: false } });
+    }
+
+    if (this.props.keywords.length > 0 &&
+        newProps.keywords.length === 0) {
+      if (!this.props.isMobile) {
+        this.toggleMenuTween('subMenu', false);
+      }
+      this.setState({ keywordState: { loaded: false, openOnLoad: true } });
+    }
+
   }
 
   handleWindowResize() {
@@ -123,8 +145,8 @@ export default class AppView extends Component {
 
   toggleMainMenu() {
     const { selectedCategory } = this.props;
-    if (!this.state.mainMenu.open) {
-      if (selectedCategory) this.toggleMenuTween('subMenu', true);
+    if (!this.state.mainMenu.open && selectedCategory && this.state.keywordState.loaded) {
+      this.toggleMenuTween('subMenu', true);
     } else {
       this.toggleMenuTween('subMenu', false);
     }
@@ -259,8 +281,8 @@ export default class AppView extends Component {
               subMenuScalar={subMenu.scalar}
               onSelectCategory={(...args) => {
                 p.selectCategory(...args);
-                if (!p.isMobile && !subMenu.open) this.toggleMenuTween('subMenu', true);
-                if (p.isMobile) this.setState({ mobileMenuState: mobileMenuStates.KEYWORDS_OPEN });
+                const { loaded } = this.state.keywordState;
+                this.setState({ keywordState: { openOnLoad: true, loaded } });
               }}
               {...innerNavProps}
             />

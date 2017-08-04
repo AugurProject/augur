@@ -23,10 +23,11 @@ class InnerNav extends Component {
           return (
             <li
               className={classNames({ selected: isSelected })}
-              onClick={clickSelect}
               key={item.topic}
             >
-              {item.topic}
+              <button onClick={clickSelect}>
+                {item.topic}
+              </button>
             </li>
           );
         })}
@@ -53,10 +54,11 @@ class InnerNav extends Component {
         this.props.keywords.map((item, index) => (
           <li
             className={classNames({ selected: item.isSelected })}
-            onClick={item.onClick}
             key={item.name}
           >
-            {item.name}
+            <button onClick={item.onClick}>
+              {item.name}
+            </button>
           </li>
         ))}
       </ul>
