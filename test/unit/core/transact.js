@@ -41,7 +41,7 @@ describe("Transact", function () {
   //     description: "fire with no defined this.accounts.account, this.from, this.coinbase, tx.from",
   //     tx: {
   //       inputs: ['branch', 'recver', 'value'],
-  //       method: 'sendReputation',
+  //       name: 'sendReputation',
   //       returns: 'unfix',
   //       send: true,
   //       signature: ['int256', 'int256', 'int256'],
@@ -61,7 +61,7 @@ describe("Transact", function () {
   //     description: "fire with no defined this.accounts.account, this.from, this.coinbase, but a tx.from passed in",
   //     tx: {
   //       inputs: ['branch', 'recver', 'value'],
-  //       method: 'sendReputation',
+  //       name: 'sendReputation',
   //       returns: 'unfix',
   //       send: true,
   //       signature: ['int256', 'int256', 'int256'],
@@ -82,7 +82,7 @@ describe("Transact", function () {
   //     description: "fire with no defined this.accounts.account, this.from, tx.from but this.coinbase is defined",
   //     tx: {
   //       inputs: ['branch', 'recver', 'value'],
-  //       method: 'sendReputation',
+  //       name: 'sendReputation',
   //       returns: 'unfix',
   //       send: true,
   //       signature: ['int256', 'int256', 'int256'],
@@ -106,7 +106,7 @@ describe("Transact", function () {
   //     description: "fire with no defined this.accounts.account, tx.from, this.coinbase but this.from is defined",
   //     tx: {
   //       inputs: ['branch', 'recver', 'value'],
-  //       method: 'sendReputation',
+  //       name: 'sendReputation',
   //       returns: 'unfix',
   //       send: true,
   //       signature: ['int256', 'int256', 'int256'],
@@ -130,7 +130,7 @@ describe("Transact", function () {
   //     description: "fire with no defined this.from, tx.from, this.coinbase but this.accounts.account is defined",
   //     tx: {
   //       inputs: ['branch', 'recver', 'value'],
-  //       method: 'sendReputation',
+  //       name: 'sendReputation',
   //       returns: 'unfix',
   //       send: true,
   //       signature: ['int256', 'int256', 'int256'],
@@ -154,7 +154,7 @@ describe("Transact", function () {
   //     description: "fire with defined this.from, tx.from, this.coinbase, and this.accounts.account is defined",
   //     tx: {
   //       inputs: ['branch', 'recver', 'value'],
-  //       method: 'sendReputation',
+  //       name: 'sendReputation',
   //       returns: 'unfix',
   //       send: true,
   //       signature: ['int256', 'int256', 'int256'],
@@ -183,7 +183,7 @@ describe("Transact", function () {
   //     description: "fire with defined this.from, tx.from, this.coinbase, but  this.accounts.account is undefined",
   //     tx: {
   //       inputs: ['branch', 'recver', 'value'],
-  //       method: 'sendReputation',
+  //       name: 'sendReputation',
   //       returns: 'unfix',
   //       send: true,
   //       signature: ['int256', 'int256', 'int256'],
@@ -210,7 +210,7 @@ describe("Transact", function () {
   //     description: "fire with defined this.from and this.coinbase but  this.accounts.account and tx.from is undefined",
   //     tx: {
   //       inputs: ['branch', 'recver', 'value'],
-  //       method: 'sendReputation',
+  //       name: 'sendReputation',
   //       returns: 'unfix',
   //       send: true,
   //       signature: ['int256', 'int256', 'int256'],
@@ -262,7 +262,7 @@ describe("Transact", function () {
   //     description: "transact with no defined this.accounts.account, this.from, this.coinbase, tx.from",
   //     tx: {
   //       inputs: ['branch', 'recver', 'value'],
-  //       method: 'sendReputation',
+  //       name: 'sendReputation',
   //       returns: 'unfix',
   //       send: true,
   //       signature: ['int256', 'int256', 'int256'],
@@ -282,7 +282,7 @@ describe("Transact", function () {
   //     description: "transact with no defined this.accounts.account, this.from, this.coinbase, but a tx.from passed in",
   //     tx: {
   //       inputs: ['branch', 'recver', 'value'],
-  //       method: 'sendReputation',
+  //       name: 'sendReputation',
   //       returns: 'unfix',
   //       send: true,
   //       signature: ['int256', 'int256', 'int256'],
@@ -303,7 +303,7 @@ describe("Transact", function () {
   //     description: "transact with no defined this.accounts.account, this.from, tx.from but this.coinbase is defined",
   //     tx: {
   //       inputs: ['branch', 'recver', 'value'],
-  //       method: 'sendReputation',
+  //       name: 'sendReputation',
   //       returns: 'unfix',
   //       send: true,
   //       signature: ['int256', 'int256', 'int256'],
@@ -327,7 +327,7 @@ describe("Transact", function () {
   //     description: "transact with no defined this.accounts.account, tx.from, this.coinbase but this.from is defined",
   //     tx: {
   //       inputs: ['branch', 'recver', 'value'],
-  //       method: 'sendReputation',
+  //       name: 'sendReputation',
   //       returns: 'unfix',
   //       send: true,
   //       signature: ['int256', 'int256', 'int256'],
@@ -351,7 +351,7 @@ describe("Transact", function () {
   //     description: "transact with no defined this.from, tx.from, this.coinbase but this.accounts.account is defined",
   //     tx: {
   //       inputs: ['branch', 'recver', 'value'],
-  //       method: 'sendReputation',
+  //       name: 'sendReputation',
   //       returns: 'unfix',
   //       send: true,
   //       signature: ['int256', 'int256', 'int256'],
@@ -378,7 +378,7 @@ describe("Transact", function () {
   //     description: "transact with defined this.from, tx.from, this.coinbase, and this.accounts.account is defined",
   //     tx: {
   //       inputs: ['branch', 'recver', 'value'],
-  //       method: 'sendReputation',
+  //       name: 'sendReputation',
   //       returns: 'unfix',
   //       send: true,
   //       signature: ['int256', 'int256', 'int256'],
@@ -410,7 +410,7 @@ describe("Transact", function () {
   //     description: "transact with defined this.from, tx.from, this.coinbase, but  this.accounts.account is undefined",
   //     tx: {
   //       inputs: ['branch', 'recver', 'value'],
-  //       method: 'sendReputation',
+  //       name: 'sendReputation',
   //       returns: 'unfix',
   //       send: true,
   //       signature: ['int256', 'int256', 'int256'],
@@ -437,7 +437,7 @@ describe("Transact", function () {
   //     description: "transact with defined this.from and this.coinbase but  this.accounts.account and tx.from is undefined",
   //     tx: {
   //       inputs: ['branch', 'recver', 'value'],
-  //       method: 'sendReputation',
+  //       name: 'sendReputation',
   //       returns: 'unfix',
   //       send: true,
   //       signature: ['int256', 'int256', 'int256'],

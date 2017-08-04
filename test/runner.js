@@ -125,14 +125,14 @@ run = {
         if (!testCase.asyncOnly) {
           test.eth_call({
             contract: contract,
-            method: method,
+            name: method,
             params: params,
             fixed: fixed,
             ether: ether
           }, function () {
             test.eth_call({
               contract: contract,
-              method: method,
+              name: method,
               params: params,
               fixed: fixed,
               ether: ether,
@@ -142,7 +142,7 @@ run = {
         } else {
           test.eth_call({
             contract: contract,
-            method: method,
+            name: method,
             params: params,
             fixed: fixed,
             ether: ether,
@@ -179,7 +179,7 @@ run = {
         tests = {positional: null, object: null, complete: null};
         test.eth_sendTransaction.positional({
           contract: contract,
-          method: method,
+          name: method,
           params: params,
           fixed: fixed,
           ether: ether
@@ -192,7 +192,7 @@ run = {
         });
         test.eth_sendTransaction.object({
           contract: contract,
-          method: method,
+          name: method,
           params: params,
           fixed: fixed,
           ether: ether

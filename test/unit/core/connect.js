@@ -30,7 +30,7 @@ describe('connect.bindContractFunction', function () {
   test({
     description: 'Should handle binding a method and then handling the method correctly when the method required inputs and has no callback. no parser, not fixed, send false',
     contract: 'Cash',
-    method: 'balance',
+    name: 'balance',
     callMethod: function (method) {
       // ({ address }, callback)
       method({
@@ -41,7 +41,7 @@ describe('connect.bindContractFunction', function () {
       assert.deepEqual(tx, {
       	inputs: ['address'],
       	label: 'Balance',
-      	method: 'balance',
+      	name: 'balance',
       	returns: 'unfix',
       	signature: ['int256'],
       	params: ['0xa1']
@@ -58,7 +58,7 @@ describe('connect.bindContractFunction', function () {
   test({
     description: 'Should handle binding a method and then handling the method correctly when the method required inputs and has callback. no parser, not fixed, send false',
     contract: 'Cash',
-    method: 'balance',
+    name: 'balance',
     callMethod: function (method) {
       // (address, callback)
       method({ address: '0xa1' }, noop);
@@ -67,7 +67,7 @@ describe('connect.bindContractFunction', function () {
       assert.deepEqual(tx, {
       	inputs: ['address'],
       	label: 'Balance',
-      	method: 'balance',
+      	name: 'balance',
       	returns: 'unfix',
       	signature: ['int256'],
       	params: ['0xa1']
@@ -84,7 +84,7 @@ describe('connect.bindContractFunction', function () {
   test({
     description: 'Should handle binding a method and then handling the method correctly when the method has inputs, without callback. method transaction has a parser, not fixed, send false',
     contract: 'Topics',
-    method: 'getTopicsInfo',
+    name: 'getTopicsInfo',
     callMethod: function (method) {
       // ({ branch, offset, numTopicsToLoad }, cb)
       method({ branch: '1010101', offset: 0, numTopicsToLoad: 1 }, undefined);
@@ -92,7 +92,7 @@ describe('connect.bindContractFunction', function () {
     callContractFunction: function (tx, cb, parsers, extraArgs) {
       assert.deepEqual(tx, { inputs: [ 'branch', 'offset', 'numTopicsToLoad' ],
         label: 'Get Topics Info',
-        method: 'getTopicsInfo',
+        name: 'getTopicsInfo',
         parser: 'parseTopicsInfo',
         returns: 'int256[]',
         signature: [ 'int256', 'int256', 'int256' ],
@@ -116,7 +116,7 @@ describe('connect.bindContractFunction', function () {
   test({
     description: 'Should handle binding a method and then handling the method correctly when the method has inputs, with callback. method transaction has a parser, not fixed, send false',
     contract: 'Topics',
-    method: 'getTopicsInfo',
+    name: 'getTopicsInfo',
     callMethod: function (method) {
       // ({ branch, offset, numTopicsToLoad }, cb)
       method({ branch: '1010101', offset: 0, numTopicsToLoad: 1 }, noop);
@@ -124,7 +124,7 @@ describe('connect.bindContractFunction', function () {
     callContractFunction: function (tx, cb, parsers, extraArgs) {
       assert.deepEqual(tx, { inputs: [ 'branch', 'offset', 'numTopicsToLoad' ],
         label: 'Get Topics Info',
-        method: 'getTopicsInfo',
+        name: 'getTopicsInfo',
         parser: 'parseTopicsInfo',
         returns: 'int256[]',
         signature: [ 'int256', 'int256', 'int256' ],
@@ -148,7 +148,7 @@ describe('connect.bindContractFunction', function () {
   test({
     description: 'Should handle binding a method and then handling the method correctly when the method has inputs, without callback. method transaction without a parser, fixed, send false',
     contract: 'Topics',
-    method: 'updateTopicPopularity',
+    name: 'updateTopicPopularity',
     callMethod: function (method) {
       // (branch, topic, fxpAmount, cb)
       method({ branch: '1010101', topic: 'politics', fxpAmount: '10000000000000000'}, undefined);
@@ -158,7 +158,7 @@ describe('connect.bindContractFunction', function () {
         fixed: [ 2 ],
         inputs: [ 'branch', 'topic', 'fxpAmount' ],
         label: 'Update Topic Popularity',
-        method: 'updateTopicPopularity',
+        name: 'updateTopicPopularity',
         returns: 'number',
         send: true,
         signature: [ 'int256', 'int256', 'int256' ],
@@ -177,7 +177,7 @@ describe('connect.bindContractFunction', function () {
   test({
     description: 'Should handle binding a method and then handling the method correctly when the method has inputs, with callbacks. method transaction without a parser, fixed, send false, signer and all one arg.',
     contract: 'Topics',
-    method: 'updateTopicPopularity',
+    name: 'updateTopicPopularity',
     callMethod: function (method) {
       // (branch, topic, fxpAmount, cb)
       method({branch: '1010101', topic: 'politics', fxpAmount: '10000000000000000', _signer: '0xdeadbeef', onSent: noop, onSuccess: noop, onFailed: noop });
@@ -190,7 +190,7 @@ describe('connect.bindContractFunction', function () {
         fixed: [ 2 ],
         inputs: [ 'branch', 'topic', 'fxpAmount' ],
         label: 'Update Topic Popularity',
-        method: 'updateTopicPopularity',
+        name: 'updateTopicPopularity',
         returns: 'number',
         send: true,
         signature: [ 'int256', 'int256', 'int256' ],
@@ -205,7 +205,7 @@ describe('connect.bindContractFunction', function () {
   test({
     description: 'Should handle binding a method and then handling the method correctly when the method required inputs and has no callback. no parser, fixed tx, send true',
     contract: 'Cash',
-    method: 'addCash',
+    name: 'addCash',
     callMethod: function (method) {
       // (ID, amount, callback)
       method({ ID: '0xa1', amount: '10000000000000000', _signer: '0xdeadbeef' }, undefined);
@@ -219,7 +219,7 @@ describe('connect.bindContractFunction', function () {
         fixed: [ 1 ],
         inputs: [ 'ID', 'amount' ],
         label: 'Add Cash',
-        method: 'addCash',
+        name: 'addCash',
         returns: 'number',
         send: true,
         signature: [ 'int256', 'int256' ],
@@ -234,7 +234,7 @@ describe('connect.bindContractFunction', function () {
   test({
     description: 'Should handle binding a method and then handling the method correctly when the method required inputs and has all callbacks. no parser, fixed tx, send true',
     contract: 'Cash',
-    method: 'addCash',
+    name: 'addCash',
     callMethod: function (method) {
       // (ID, amount, onSent, onSuccess, onFailed)
       method({ ID: '0xa1', amount: '10000000000000000', onSent: noop, onSuccess: noop, onFailed: noop });
@@ -248,7 +248,7 @@ describe('connect.bindContractFunction', function () {
         fixed: [ 1 ],
         inputs: [ 'ID', 'amount' ],
         label: 'Add Cash',
-        method: 'addCash',
+        name: 'addCash',
         returns: 'number',
         send: true,
         signature: [ 'int256', 'int256' ],
@@ -263,7 +263,7 @@ describe('connect.bindContractFunction', function () {
   test({
     description: 'Should handle binding a method and then handling the method correctly when the method passed no args and is a method where send is true',
     contract: 'Cash',
-    method: 'addCash',
+    name: 'addCash',
     callMethod: function (method) {
       // (ID, amount, callback)
       method();
@@ -277,7 +277,7 @@ describe('connect.bindContractFunction', function () {
         fixed: [ 1 ],
         inputs: [ 'ID', 'amount' ],
         label: 'Add Cash',
-        method: 'addCash',
+        name: 'addCash',
         returns: 'number',
         send: true,
         signature: [ 'int256', 'int256' ],
@@ -291,7 +291,7 @@ describe('connect.bindContractFunction', function () {
   test({
     description: 'Should handle binding a method and then handling the method correctly when the method passed no args and is a method where send is false',
     contract: 'Cash',
-    method: 'balance',
+    name: 'balance',
     callMethod: function (method) {
       // (account, callback)
       method();
@@ -300,7 +300,7 @@ describe('connect.bindContractFunction', function () {
       assert.deepEqual(tx, {
         inputs: [ 'address' ],
         label: 'Balance',
-        method: 'balance',
+        name: 'balance',
         returns: 'unfix',
         signature: [ 'int256' ],
       });
@@ -316,7 +316,7 @@ describe('connect.bindContractFunction', function () {
   test({
     description: 'Should handle binding a method and then handling the method correctly send is false, args are present, not fixed, no parser',
     contract: 'MakeReports',
-    method: 'makeHash',
+    name: 'makeHash',
     callMethod: function (method) {
       // (account, callback)
       method({ salt: '1337', report: '1', eventID: '0xe1', sender: '0xf1', callback: noop });
@@ -325,7 +325,7 @@ describe('connect.bindContractFunction', function () {
       assert.deepEqual(tx, {
         inputs: [ 'salt', 'report', 'eventID', 'sender' ],
         label: 'Make Hash',
-        method: 'makeHash',
+        name: 'makeHash',
         params: [ '1337', '1', '0xe1', '0xf1' ],
         returns: 'int256',
         signature: [ 'int256', 'int256', 'int256', 'int256' ],
@@ -342,7 +342,7 @@ describe('connect.bindContractFunction', function () {
   test({
     description: 'Should handle binding a method and then handling the method correctly send is false, args are present, fixed, no parser',
     contract: 'MakeReports',
-    method: 'validateReport',
+    name: 'validateReport',
     callMethod: function (method) {
       // (account, callback)
       method({ eventID: '0xe1', branch: '0xb1', votePeriod: '1000', report: '1', forkedOverEthicality: '0', forkedOverThisEvent: '0', roundTwo: '1001', balance: '1000', callback: noop });
@@ -352,7 +352,7 @@ describe('connect.bindContractFunction', function () {
         fixed: [ 3, 7 ],
         inputs: [ 'eventID', 'branch', 'votePeriod', 'report', 'forkedOverEthicality', 'forkedOverThisEvent', 'roundTwo', 'balance' ],
         label: 'Validate Report',
-        method: 'validateReport',
+        name: 'validateReport',
         params: [ '0xe1', '0xb1', '1000', '0xde0b6b3a7640000', '0', '0', '1001', '0x3635c9adc5dea00000' ],
         returns: 'number',
         signature: [ 'int256', 'int256', 'int256', 'int256', 'int256', 'int256', 'int256', 'int256' ],
@@ -369,14 +369,14 @@ describe('connect.bindContractFunction', function () {
   test({
     description: 'Should handle binding a method and then handling the method correctly send is true, parser',
     contract: 'FakeContract',
-    method: 'fakeMethod',
+    name: 'fakeMethod',
     prepare: function() {
       // because no functions currently exist where send is true and we require a parser, we are going to make a fake function to do this so we can unit test.
       Contracts.api.functions.FakeContract = {
         fakeMethod: {
           inputs: [ 'branch' ],
           label: 'Fake Method',
-          method: 'fakeMethod',
+          name: 'fakeMethod',
           parser: 'parseFakeStuff',
           returns: 'number',
           send: true,
@@ -397,7 +397,7 @@ describe('connect.bindContractFunction', function () {
       assert.deepEqual(tx, {
         inputs: [ 'branch' ],
         label: 'Fake Method',
-        method: 'fakeMethod',
+        name: 'fakeMethod',
         params: [ '0xb1' ],
         parser: 'parseFakeStuff',
         returns: 'number',
@@ -445,7 +445,7 @@ describe.skip('connect.bindContractAPI', function () {
             'amount'
           ],
           label: 'test function one',
-          method: "testFunction1",
+          name: "testFunction1",
           returns: 'int256',
           signature: [
             'int256',
@@ -458,7 +458,7 @@ describe.skip('connect.bindContractAPI', function () {
             'event'
           ],
           label: 'test function two',
-          method: "testFunction2",
+          name: "testFunction2",
           returns: 'int256',
           signature: [
             'int256',
@@ -473,7 +473,7 @@ describe.skip('connect.bindContractAPI', function () {
             'amount'
           ],
           label: 'test function three',
-          method: "testFunction3",
+          name: "testFunction3",
           returns: 'int256',
           signature: [
             'int256',
@@ -486,7 +486,7 @@ describe.skip('connect.bindContractAPI', function () {
             'event'
           ],
           label: 'test function four',
-          method: "testFunction4",
+          name: "testFunction4",
           returns: 'int256',
           signature: [
             'int256',
@@ -501,14 +501,14 @@ describe.skip('connect.bindContractAPI', function () {
       		testFunction1: {
       			inputs: ['event', 'amount'],
       			label: 'test function one',
-      			method: 'testFunction1',
+      			name: 'testFunction1',
       			returns: 'int256',
       			signature: ['int256', 'int256']
       		},
       		testFunction2: {
       			inputs: ['market', 'event'],
       			label: 'test function two',
-      			method: 'testFunction2',
+      			name: 'testFunction2',
       			returns: 'int256',
       			signature: ['int256', 'int256']
       		}
@@ -517,14 +517,14 @@ describe.skip('connect.bindContractAPI', function () {
       		testFunction3: {
       			inputs: ['event', 'amount'],
       			label: 'test function three',
-      			method: 'testFunction3',
+      			name: 'testFunction3',
       			returns: 'int256',
       			signature: ['int256', 'int256']
       		},
       		testFunction4: {
       			inputs: ['market', 'event'],
       			label: 'test function four',
-      			method: 'testFunction4',
+      			name: 'testFunction4',
       			returns: 'int256',
       			signature: ['int256', 'int256']
       		}
@@ -548,7 +548,7 @@ describe.skip('connect.bindContractAPI', function () {
   							'amount'
   						],
   						label: 'test function one',
-  						method: "testFunction1",
+  						name: "testFunction1",
   						returns: 'int256',
   						signature: [
   							'int256',
@@ -561,7 +561,7 @@ describe.skip('connect.bindContractAPI', function () {
   							'event'
   						],
   						label: 'test function two',
-  						method: "testFunction2",
+  						name: "testFunction2",
   						returns: 'int256',
   						signature: [
   							'int256',
@@ -584,14 +584,14 @@ describe.skip('connect.bindContractAPI', function () {
       		testFunction1: {
       			inputs: ['event', 'amount'],
       			label: 'test function one',
-      			method: 'testFunction1',
+      			name: 'testFunction1',
       			returns: 'int256',
       			signature: ['int256', 'int256']
       		},
       		testFunction2: {
       			inputs: ['market', 'event'],
       			label: 'test function two',
-      			method: 'testFunction2',
+      			name: 'testFunction2',
       			returns: 'int256',
       			signature: ['int256', 'int256']
       		}
