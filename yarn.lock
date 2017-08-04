@@ -522,7 +522,7 @@ augur-contracts@2.11.4:
   dependencies:
     clone "1.0.2"
 
-augur.js@4.0.6:
+augur.js@4.1.0:
   version "4.0.6"
   resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.0.6.tgz#2362b8a2aae17f0cc711a306ac4c0797b3f8e5b5"
   dependencies:
@@ -4224,7 +4224,7 @@ hide-powered-by@1.0.0:
   resolved "https://registry.yarnpkg.com/hide-powered-by/-/hide-powered-by-1.0.0.tgz#4a85ad65881f62857fc70af7174a1184dccce32b"
 
 highcharts@5.0.12, highcharts@^5.0.0:
-  version v5.0.12
+  version "5.0.12"
   resolved "https://registry.yarnpkg.com/highcharts/-/highcharts-5.0.12.tgz#f73b970fe5c7f04100220b64aa7bd7fb019d11e2"
 
 history@^2.1.2:
@@ -5119,9 +5119,9 @@ keythereum@0.5.1:
     sjcl "1.0.6"
     uuid "3.0.0"
 
-keythereum@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/keythereum/-/keythereum-1.0.0.tgz#4ebe7f59b4b5e600349ca8db45a308abd7f7115a"
+keythereum@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/keythereum/-/keythereum-1.0.2.tgz#612ba41cde254b17dd7737e75237ae6ee5162992"
   dependencies:
     keccak "1.2.0"
     secp256k1 "3.2.5"
