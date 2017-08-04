@@ -1,7 +1,12 @@
 import { abi, augur, rpc } from 'services/augurjs';
 import { ZERO } from 'modules/trade/constants/numbers';
 import { SCALAR } from 'modules/markets/constants/market-types';
+<<<<<<< HEAD
 import { BUY, SELL } from 'modules/trade/constants/types';
+=======
+import * as TYPES from 'modules/transactions/constants/types';
+import * as STATUSES from 'modules/transactions/constants/statuses';
+>>>>>>> origin
 import { updateTradeCommitment } from 'modules/trade/actions/update-trade-commitment';
 import { deleteTransaction } from 'modules/transactions/actions/delete-transaction';
 import { constructBasicTransaction, constructTradingTransaction, constructTransaction, loadDataForReportingTransaction } from 'modules/transactions/actions/construct-transaction';
@@ -38,7 +43,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
   console.log('method -- ', method);
 
   switch (method) {
-    // case 'buy': {
+    // case TYPES.BUY: {
     //   const { marketsData } = getState();
     //   const market = marketsData[abi.format_int256(p.market)];
     //   const amount = abi.unfix(p.amount, 'string');
@@ -49,15 +54,15 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
     //     timestamp: p.timestamp,
     //     href: transactionsHref
     //   }));
-    //   return dispatch(constructTradingTransaction('log_add_tx', {
-    //     type: BUY,
+    //   return dispatch(constructTradingTransaction(TYPES.LOG_ADD_TX, {
+    //     type: TYPES.BUY,
     //     ...p,
     //     amount,
     //     gasFees,
     //     price: abi.unfix_signed(p.price, 'string'),
     //   }, abi.format_int256(p.market), p.outcome, status));
     // }
-    // case 'sell': {
+    // case TYPES.SELL: {
     //   const { marketsData } = getState();
     //   const market = marketsData[abi.format_int256(p.market)];
     //   const amount = abi.unfix(p.amount, 'string');
@@ -68,18 +73,18 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
     //     timestamp: p.timestamp,
     //     href: transactionsHref
     //   }));
-    //   return dispatch(constructTradingTransaction('log_add_tx', {
-    //     type: SELL,
+    //   return dispatch(constructTradingTransaction(TYPES.LOG_ADD_TX, {
+    //     type: TYPES.SELL,
     //     ...p,
     //     price: abi.unfix_signed(p.price, 'string'),
     //     amount: abi.unfix(p.amount, 'string'),
     //     gasFees
     //   }, abi.format_int256(p.market), p.outcome, status));
     // }
-    case 'cancel': {
+    case TYPES.CANCEL: {
       const order = augur.trading.takeOrder.selectOrder(p.trade_id, getState().orderBooks);
 
-      if (tx.status === 'success') {
+      if (tx.status === STATUSES.SUCCESS) {
         const { transactionsData } = getState();
         const cancelledOrder = transactionsData[p.transactionHash];
 
@@ -104,103 +109,129 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         timestamp: p.timestamp,
         href: transactionsHref
       }));
-      return dispatch(constructTradingTransaction('log_cancel', {
+      return dispatch(constructTradingTransaction(TYPES.LOG_CANCEL, {
         ...p,
         ...order,
         gasFees
       }, abi.format_int256(order.market), order.outcome, status));
     }
     case 'publicTrade': {
-      // const { transactionHash, orders, tradeHash, tradingFees, maxValue, remainingShares, gasFees } = getState().tradeCommitment;
-      // const { marketsData } = getState();
-      // const numTradeIDs = p.trade_ids.length;
-      // const transactions = new Array(numTradeIDs);
-      // let remainingEth = abi.bignum(maxValue);
-      // let isEmptyTrade;
-      // let notification;
-      // if (status === 'success') {
-      //   let unmatchedCash = ZERO;
-      //   let unmatchedShares = ZERO;
-      //   if (tx.response.callReturn && Array.isArray(tx.response.callReturn)) {
-      //     unmatchedCash = abi.unfix_signed(tx.response.callReturn[1]);
-      //     unmatchedShares = abi.unfix(tx.response.callReturn[2]);
-      //   }
-      //   isEmptyTrade = unmatchedCash.eq(abi.unfix_signed(p.max_value)) && unmatchedShares.eq(abi.unfix(p.max_amount));
-      // }
-      // for (let i = 0; i < numTradeIDs; ++i) {
-      //   const order = orders[i];
-      //   let market = {};
-      //   if (isEmptyTrade) {
-      //     dispatch(deleteTransaction(`${hash}-${order.id}`));
-      //   } else {
-      //     let amount;
-      //     if (abi.bignum(remainingShares).gt(ZERO)) {
-      //       if (abi.bignum(remainingShares).gt(abi.bignum(order.amount))) {
-      //         amount = order.amount;
-      //       } else {
-      //         amount = remainingShares;
-      //       }
-      //     } else {
-      //       market = marketsData[abi.format_int256(order.market)];
-      //       let price;
-      //       if (market.type === SCALAR) {
-      //         price = abi.bignum(augur.trading.shrinkScalarPrice(market.minValue, order.price));
-      //       } else {
-      //         price = abi.bignum(order.price);
-      //       }
-      //       amount = remainingEth.minus(abi.bignum(tradingFees)).dividedBy(price);
-      //       if (amount.gt(abi.bignum(order.amount))) {
-      //         amount = order.amount;
-      //       } else {
-      //         amount = amount.toFixed();
-      //       }
-      //       remainingEth = remainingEth.minus(abi.bignum(amount).times(price));
-      //     }
-      //     if (status === 'submitted') {
-      //       dispatch(deleteTransaction(`${transactionHash}-${order.id}`));
-      //       dispatch(fillOrder({
-      //         type: order.type === 'buy' ? 'sell' : 'buy',
-      //         tradeid: order.id,
-      //         sender: tx.data.from,
-      //         owner: order.owner,
-      //         market: order.market,
-      //         amount,
-      //         price: order.price,
-      //         outcome: parseInt(order.outcome, 10)
-      //       }));
-      //     }
+      const { transactionHash, orders, tradeHash, tradingFees, maxValue, remainingShares, gasFees } = getState().tradeCommitment;
+      const { marketsData } = getState();
+      const numTradeIDs = p.trade_ids.length;
+      const transactions = new Array(numTradeIDs);
+      let remainingEth = abi.bignum(maxValue);
+      let isEmptyTrade;
+      let notification;
+      if (status === STATUSES.SUCCESS) {
+        let unmatchedCash = ZERO;
+        let unmatchedShares = ZERO;
+        if (tx.response.callReturn && Array.isArray(tx.response.callReturn)) {
+          unmatchedCash = abi.unfix_signed(tx.response.callReturn[1]);
+          unmatchedShares = abi.unfix(tx.response.callReturn[2]);
+        }
+        isEmptyTrade = unmatchedCash.eq(abi.unfix_signed(p.max_value)) && unmatchedShares.eq(abi.unfix(p.max_amount));
+      }
+      for (let i = 0; i < numTradeIDs; ++i) {
+        const order = orders[i];
+        let market = {};
+        if (isEmptyTrade) {
+          dispatch(deleteTransaction(`${hash}-${order.id}`));
+        } else {
+          let amount;
+          if (abi.bignum(remainingShares).gt(ZERO)) {
+            if (abi.bignum(remainingShares).gt(abi.bignum(order.amount))) {
+              amount = order.amount;
+            } else {
+              amount = remainingShares;
+            }
+          } else {
+            market = marketsData[abi.format_int256(order.market)];
+            let price;
+            if (market.type === SCALAR) {
+              price = abi.bignum(augur.trading.shrinkScalarPrice(market.minValue, order.price));
+            } else {
+              price = abi.bignum(order.price);
+            }
+            amount = remainingEth.minus(abi.bignum(tradingFees)).dividedBy(price);
+            if (amount.gt(abi.bignum(order.amount))) {
+              amount = order.amount;
+            } else {
+              amount = amount.toFixed();
+            }
+            remainingEth = remainingEth.minus(abi.bignum(amount).times(price));
+          }
+          if (status === STATUSES.SUBMITTED) {
+            dispatch(deleteTransaction(`${transactionHash}-${order.id}`));
+            dispatch(fillOrder({
+              type: order.type === TYPES.BUY ? TYPES.SELL : TYPES.BUY,
+              tradeid: order.id,
+              sender: tx.data.from,
+              owner: order.owner,
+              market: order.market,
+              amount,
+              price: order.price,
+              outcome: parseInt(order.outcome, 10)
+            }));
+          }
 
-      //     notification = {
-      //       id: p.transactionHash,
-      //       title: `${order.type === 'buy' ? 'sell' : 'buy'} ${amount || ''} ${amount && 'Share'}${amount && parseFloat(amount, 10) === 1 ? '' : 's'} - ${tx.status}`,
-      //       description: market.description || '',
-      //       timestamp: p.timestamp,
-      //       href: transactionsHref
-      //     };
-      //     transactions[i] = dispatch(constructTradingTransaction('log_fill_tx', {
-      //       ...p,
-      //       price: order.price,
-      //       outcome: parseInt(order.outcome, 10),
-      //       amount,
-      //       sender: tx.data.from,
-      //       owner: order.owner,
-      //       type: order.type === 'buy' ? 'sell' : 'buy',
-      //       tradeid: order.id,
-      //       tradeHash,
-      //       takerFee: tradingFees,
-      //       gasFees
-      //     }, abi.format_int256(order.market), order.outcome, status));
-      //   }
-      // }
-      // dispatch(addNotification(notification));
-      // return transactions;
+          notification = {
+            id: p.transactionHash,
+            title: `${order.type === TYPES.BUY ? TYPES.SELL : TYPES.BUY} ${amount || ''} ${amount && 'Share'}${amount && parseFloat(amount, 10) === 1 ? '' : 's'} - ${tx.status}`,
+            description: market.description || '',
+            timestamp: p.timestamp,
+            href: transactionsHref
+          };
+          transactions[i] = dispatch(constructTradingTransaction(TYPES.LOG_FILL_TX, {
+            ...p,
+            price: order.price,
+            outcome: parseInt(order.outcome, 10),
+            amount,
+            sender: tx.data.from,
+            owner: order.owner,
+            type: order.type === TYPES.BUY ? TYPES.SELL : TYPES.BUY,
+            tradeid: order.id,
+            tradeHash,
+            takerFee: tradingFees,
+            gasFees
+          }, abi.format_int256(order.market), order.outcome, status));
+        }
+      }
+      dispatch(addNotification(notification));
+      return transactions;
     }
     default: {
       let transaction;
       let notification;
       switch (method) {
+        case TYPES.WITHDRAW_ETHER: {
+          const amount = abi.is_hex(p.value) ? parseFloat(p.value, 10) : abi.unfix(p.value).toNumber();
+
+          notification = {
+            id: p.transactionHash,
+            title: `Convert ETH Token to ETH - ${tx.status}`,
+            description: `Converting ${amount.toLocaleString()} ETH Token${amount === 1 ? '' : 's'} to ETH`,
+            timestamp: p.timestamp,
+            href: transactionsHref
+          };
+          transaction = dispatch(constructTransaction(TYPES.WITHDRAW_ETHER, { ...p, ...tx }));
+          break;
+        }
+        case TYPES.DEPOSIT_ETHER: {
+          const amount = abi.is_hex(tx.data.value) ? parseFloat(tx.data.value, 10) : abi.unfix(tx.data.value).toNumber();
+
+          notification = {
+            id: p.transactionHash,
+            title: `Convert ETH to ETH Token - ${tx.status}`,
+            description: `Converting ${amount.toLocaleString()} ETH to ETH Token${amount === 1 ? '' : 's'}`,
+            timestamp: p.timestamp,
+            href: transactionsHref
+          };
+          transaction = dispatch(constructTransaction(TYPES.DEPOSIT_ETHER, { ...p, ...tx }));
+          break;
+        }
         case 'submitReport': {
-          const additionalInfo = dispatch(loadDataForReportingTransaction('submittedReportHash', { ...p }));
+          const additionalInfo = dispatch(loadDataForReportingTransaction(TYPES.SUBMITTED_REPORT_HASH, { ...p }));
           notification = {
             id: p.transactionHash,
             title: `Reveal Report - ${tx.status}`,
@@ -208,67 +239,67 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             timestamp: p.timestamp,
             href: transactionsHref
           };
-          transaction = dispatch(constructTransaction('submittedReport', {
+          transaction = dispatch(constructTransaction(TYPES.SUBMITTED_REPORT, {
             ...p, // { event, report, salt }
             ethics: parseInt(p.ethics, 16)
           }));
           break;
         }
-        // case 'penalizeWrong': {
-        //   const { eventsWithSubmittedReport } = getState();
-        //   if (!parseInt(p.event, 16) || !eventsWithSubmittedReport || !eventsWithSubmittedReport[p.event]) {
-        //     return null;
-        //   }
-        //   const market = selectMarketFromEventID(p.event);
-        //   if (!market) return null;
+        case 'penalizeWrong': {
+          const { eventsWithSubmittedReport } = getState();
+          if (!parseInt(p.event, 16) || !eventsWithSubmittedReport || !eventsWithSubmittedReport[p.event]) {
+            return null;
+          }
+          const market = selectMarketFromEventID(p.event);
+          if (!market) return null;
 
-        //   notification = {
-        //     id: p.transactionHash,
-        //     title: `Wrong Report Penalty - ${tx.status}`,
-        //     description: `${p.repchange} REP`,
-        //     timestamp: p.timestamp,
-        //     href: transactionsHref
-        //   };
-        //   transaction = dispatch(constructTransaction('penalize', {
-        //     ...p, // { event }
-        //     reportValue: eventsWithSubmittedReport[p.event].accountReport,
-        //     outcome: market.reportedOutcome
-        //   }));
-        //   break;
-        // }
-        // case 'penalizationCatchup': {
-        //   const { lastPeriodPenalized, reportPeriod } = getState().branch;
-        //   notification = {
-        //     id: p.transactionHash,
-        //     title: `Missed Reports Penalty - ${tx.status}`,
-        //     description: `${p.repLost} REP`,
-        //     timestamp: p.timestamp,
-        //     href: transactionsHref
-        //   };
-        //   transaction = dispatch(constructTransaction('penalizationCaughtUp', {
-        //     ...p,
-        //     penalizedFrom: lastPeriodPenalized,
-        //     penalizedUpTo: reportPeriod
-        //   }));
-        //   break;
-        // }
-        // case 'collectFees': {
-        //   const { branch, loginAccount } = getState();
-        //   notification = {
-        //     id: p.transactionHash,
-        //     title: `Reporting Payout - ${tx.status}`,
-        //     description: `${p.repGain} REP`,
-        //     timestamp: p.timestamp,
-        //     href: transactionsHref
-        //   };
-        //   transaction = dispatch(constructTransaction('collectedFees', {
-        //     ...p,
-        //     initialRepBalance: loginAccount.rep,
-        //     notReportingBond: abi.unfix(tx.data.value, 'string'),
-        //     period: branch.lastPeriodPenalized
-        //   }));
-        //   break;
-        // }
+          notification = {
+            id: p.transactionHash,
+            title: `Wrong Report Penalty - ${tx.status}`,
+            description: `${p.repchange} REP`,
+            timestamp: p.timestamp,
+            href: transactionsHref
+          };
+          transaction = dispatch(constructTransaction(TYPES.PENALIZE, {
+            ...p, // { event }
+            reportValue: eventsWithSubmittedReport[p.event].accountReport,
+            outcome: market.reportedOutcome
+          }));
+          break;
+        }
+        case 'penalizationCatchup': {
+          const { lastPeriodPenalized, reportPeriod } = getState().branch;
+          notification = {
+            id: p.transactionHash,
+            title: `Missed Reports Penalty - ${tx.status}`,
+            description: `${p.repLost} REP`,
+            timestamp: p.timestamp,
+            href: transactionsHref
+          };
+          transaction = dispatch(constructTransaction(TYPES.PENALIZATION_CAUGHT_UP, {
+            ...p,
+            penalizedFrom: lastPeriodPenalized,
+            penalizedUpTo: reportPeriod
+          }));
+          break;
+        }
+        case 'collectFees': {
+          const { branch, loginAccount } = getState();
+          notification = {
+            id: p.transactionHash,
+            title: `Reporting Payout - ${tx.status}`,
+            description: `${p.repGain} REP`,
+            timestamp: p.timestamp,
+            href: transactionsHref
+          };
+          transaction = dispatch(constructTransaction(TYPES.COLLECTED_FEES, {
+            ...p,
+            initialRepBalance: loginAccount.rep,
+            notReportingBond: abi.unfix(tx.data.value, 'string'),
+            period: branch.lastPeriodPenalized
+          }));
+          break;
+        }
         case 'claimProceeds': {
           const { outcomesData, transactionsData } = getState();
 
@@ -287,7 +318,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             timestamp: p.timestamp,
             href: transactionsHref
           };
-          transaction = dispatch(constructTransaction('payout', { ...p, shares }));
+          transaction = dispatch(constructTransaction(TYPES.PAYOUT, { ...p, shares }));
           break;
         }
         case 'send':
@@ -298,7 +329,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             timestamp: p.timestamp,
             href: transactionsHref
           };
-          transaction = dispatch(constructTransaction('sentCash', {
+          transaction = dispatch(constructTransaction(TYPES.SENT_CASH, {
             ...p,
             _from: abi.format_address(p.from),
             _to: abi.format_address(p.recver),
@@ -313,7 +344,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             timestamp: p.timestamp,
             href: transactionsHref
           };
-          transaction = dispatch(constructTransaction('sentEther', {
+          transaction = dispatch(constructTransaction(TYPES.SENT_ETHER, {
             ...p,
             _from: abi.format_address(p.from),
             _to: abi.format_address(p.to),
@@ -329,7 +360,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             timestamp: p.timestamp,
             href: transactionsHref
           };
-          transaction = dispatch(constructTransaction('Transfer', {
+          transaction = dispatch(constructTransaction(TYPES.TRANSFER, {
             ...p,
             _from: abi.format_address(tx.data.from),
             _to: abi.format_address(p.recver),
@@ -343,7 +374,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             description: abi.format_address(p.spender),
             timestamp: p.timestamp
           };
-          transaction = dispatch(constructTransaction('Approval', {
+          transaction = dispatch(constructTransaction(TYPES.APPROVAL, {
             ...p,
             _spender: abi.format_address(p.spender)
           }));
@@ -356,7 +387,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             timestamp: p.timestamp,
             href: transactionsHref
           };
-          transaction = dispatch(constructTransaction('registration', {
+          transaction = dispatch(constructTransaction(TYPES.REGISTRATION, {
             ...p,
             sender: abi.format_address(tx.data.from)
           }));
@@ -370,7 +401,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             href: transactionsHref
           };
           const { baseReporters, numEventsCreatedInPast24Hours, numEventsInReportPeriod, periodLength } = getState().branch;
-          transaction = dispatch(constructTransaction('marketCreated', {
+          transaction = dispatch(constructTransaction(TYPES.MARKET_CREATED, {
             ...p,
             eventBond: augur.create.calculateValidityBond(p.tradingFee, periodLength, baseReporters, numEventsCreatedInPast24Hours, numEventsInReportPeriod),
             marketCreationFee: abi.unfix(augur.create.calculateRequiredMarketValue(gasPrice), 'string')

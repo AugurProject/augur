@@ -1,7 +1,7 @@
 import { abi, augur, constants } from 'services/augurjs';
 import { ZERO } from 'modules/trade/constants/numbers';
 import { BINARY, SCALAR } from 'modules/markets/constants/market-types';
-import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, MATCH_BID, MATCH_ASK, COMMIT_REPORT, REVEAL_REPORT, CANCEL_ORDER } from 'modules/transactions/constants/types';
+import * as TYPES from 'modules/transactions/constants/types';
 import { formatEtherTokens, formatPercent, formatEther, formatRep, formatShares } from 'utils/format-number';
 import { formatDate } from 'utils/format-date';
 import { selectMarketLink } from 'modules/link/selectors/links';
@@ -178,7 +178,7 @@ export function constructTransferTransaction(log, address) {
 
 export function constructMarketCreatedTransaction(log, description, dispatch) {
   const transaction = { data: {} };
-  transaction.type = CREATE_MARKET;
+  transaction.type = TYPES.CREATE_MARKET;
   transaction.description = description.split('~|>')[0];
   transaction.marketCreationFee = formatEtherTokens(log.marketCreationFee);
   transaction.data.marketLink = selectMarketLink({ id: log.marketID, description: transaction.description }, dispatch);
@@ -272,9 +272,45 @@ export function constructPayoutTransaction(log, market, dispatch) {
 //   return transaction;
 // }
 
+// export function constructSubmittedReportHashTransaction(log, marketID, market, outcomes, decryptionKey, dispatch) {
+//   const transaction = { data: {} };
+//   transaction.type = TYPES.COMMIT_REPORT;
+//   transaction.description = market.description;
+//   transaction.data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
+//   transaction.data.marketID = marketID || null;
+//   transaction.data.market = market;
+//   const isUnethical = !log.ethics || abi.bignum(log.ethics).eq(constants.ZERO);
+//   transaction.data.isUnethical = isUnethical;
+//   const action = log.inProgress ? 'committing' : 'committed';
+//   transaction.message = `${action} to report`;
+//   if (decryptionKey) {
+//     const formattedReport = formatReportedOutcome(augur.reporting.crypto.parseAndDecryptReport([
+//       log.encryptedReport,
+//       log.encryptedSalt
+//     ], { derivedKey: decryptionKey }).report, market.minValue, market.maxValue, market.type, outcomes);
+//     transaction.data.reportedOutcomeID = formattedReport;
+//     transaction.data.outcome = { name: formattedReport };
+//     transaction.message = `${transaction.message}: ${formattedReport}`;
+//   }
+//   if (!log.inProgress) {
+//     dispatch(updateEventsWithAccountReportData({
+//       [market.eventID]: {
+//         marketID,
+//         branch: market.branchID,
+//         period: market.tradingPeriod,
+//         description: market.description,
+//         expirationDate: new Date(market.endDate * 1000),
+//         isUnethical,
+//         isCommitted: true
+//       }
+//     }));
+//   }
+//   return transaction;
+// }
+
 export function constructSubmittedReportTransaction(log, marketID, market, outcomes, dispatch) {
   const transaction = { data: {} };
-  transaction.type = REVEAL_REPORT;
+  transaction.type = TYPES.REVEAL_REPORT;
   transaction.description = market.description;
   transaction.data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
   transaction.data.marketID = marketID || null;
@@ -297,6 +333,41 @@ export function constructSubmittedReportTransaction(log, marketID, market, outco
   return transaction;
 }
 
+// export function constructSlashedRepTransaction(log, market, outcomes, address, dispatch) {
+//   const transaction = { data: {} };
+//   console.log('constructSlashedRepTransaction:', log, market, outcomes, address);
+//   transaction.description = market.description;
+//   transaction.data.marketLink = selectMarketLink({ id: market.id, description: market.description }, dispatch);
+//   transaction.data.marketID = market.id ? market.id : null;
+//   transaction.data.market = market;
+//   if (log.sender === address) {
+//     transaction.type = 'Snitch Reward';
+//     if (log.repSlashed) {
+//       const slasherRepGained = abi.bignum(log.repSlashed).dividedBy(2).toFixed();
+//       transaction.data.balances = [{
+//         change: formatRep(slasherRepGained, { positiveSign: true }),
+//         balance: formatRep(log.slasherBalance)
+//       }];
+//     }
+//     if (log.inProgress) {
+//       transaction.message = `fining ${abi.strip_0x(log.reporter)}`;
+//     } else {
+//       transaction.message = `fined ${abi.strip_0x(log.reporter)} ${formatRep(log.repSlashed).full}`;
+//     }
+//   } else {
+//     transaction.type = 'Pay Collusion Fine';
+//     if (log.repSlashed) {
+//       transaction.data.balances = [{
+//         change: formatRep(abi.bignum(log.repSlashed).neg(), { positiveSign: true }),
+//         balance: formatRep(0)
+//       }];
+//     }
+//     transaction.message = `fined by ${abi.strip_0x(log.sender)}`;
+//   }
+//   console.log('slashed rep transaction:', transaction);
+//   return transaction;
+// }
+
 // export const constructLogFillTxTransaction = (trade, marketID, marketType, minValue, description, outcomeID, outcomeName, status) => (dispatch, getState) => {
 //   console.log('constructLogFillTransaction:', trade);
 //   if (!trade.amount || !trade.price || (!trade.makerFee && !trade.takerFee)) return null;
@@ -316,15 +387,15 @@ export function constructSubmittedReportTransaction(log, marketID, market, outco
 //   let formattedTotalCost;
 //   let formattedTotalReturn;
 //   if (trade.maker) {
-//     type = trade.type === SELL ? MATCH_BID : MATCH_ASK;
-//     perfectType = trade.type === SELL ? 'bought' : 'sold';
-//     formattedTotalCost = trade.type === SELL ? formatEtherTokens(totalCost) : undefined;
-//     formattedTotalReturn = trade.type === BUY ? formatEtherTokens(totalReturn) : undefined;
+//     type = trade.type === TYPES.SELL ? TYPES.MATCH_BID : TYPES.MATCH_ASK;
+//     perfectType = trade.type === TYPES.SELL ? 'bought' : 'sold';
+//     formattedTotalCost = trade.type === TYPES.SELL ? formatEtherTokens(totalCost) : undefined;
+//     formattedTotalReturn = trade.type === TYPES.BUY ? formatEtherTokens(totalReturn) : undefined;
 //   } else {
-//     type = trade.type === BUY ? BUY : SELL;
-//     perfectType = trade.type === BUY ? 'bought' : 'sold';
-//     formattedTotalCost = trade.type === BUY ? formatEtherTokens(totalCost) : undefined;
-//     formattedTotalReturn = trade.type === SELL ? formatEtherTokens(totalReturn) : undefined;
+//     type = trade.type === TYPES.BUY ? TYPES.BUY : TYPES.SELL;
+//     perfectType = trade.type === TYPES.BUY ? 'bought' : 'sold';
+//     formattedTotalCost = trade.type === TYPES.BUY ? formatEtherTokens(totalCost) : undefined;
+//     formattedTotalReturn = trade.type === TYPES.SELL ? formatEtherTokens(totalReturn) : undefined;
 //   }
 //   const action = trade.inProgress ? type : perfectType;
 //   const transaction = {
@@ -341,7 +412,7 @@ export function constructSubmittedReportTransaction(log, marketID, market, outco
 //         marketID,
 //         marketLink: selectMarketLink({ id: marketID, description }, dispatch),
 //       },
-//       message: `${action} ${shares.full} for ${formatEtherTokens(trade.type === BUY ? totalCostPerShare : totalReturnPerShare).full} / share`,
+//       message: `${action} ${shares.full} for ${formatEtherTokens(trade.type === TYPES.BUY ? totalCostPerShare : totalReturnPerShare).full} / share`,
 //       numShares: shares,
 //       noFeePrice: price,
 //       avgPrice: price,
@@ -357,17 +428,57 @@ export function constructSubmittedReportTransaction(log, marketID, market, outco
 //   return transaction;
 // };
 
+// export const constructLogShortFillTxTransaction = (trade, marketID, marketType, maxValue, description, outcomeID, outcomeName, status) => (dispatch, getState) => {
+//   const transactionID = `${trade.transactionHash}-${trade.tradeid}`;
+//   const price = formatEtherTokens(trade.price);
+//   const shares = formatShares(trade.amount);
+//   const bnPrice = abi.bignum(trade.price);
+//   const tradingFees = abi.bignum(trade.takerFee);
+//   const bnShares = abi.bignum(trade.amount);
+//   const totalCost = marketType === SCALAR ?
+//     abi.bignum(maxValue).times(bnShares).minus(bnPrice.times(bnShares).plus(tradingFees)) :
+//     bnShares.minus(bnPrice.times(bnShares).plus(tradingFees));
+//   const totalCostPerShare = totalCost.dividedBy(bnShares);
+//   const action = trade.inProgress ? 'short selling' : 'short sold';
+//   const transaction = {
+//     [transactionID]: {
+//       type: TYPES.SHORT_SELL,
+//       hash: trade.transactionHash,
+//       status,
+//       description,
+//       data: {
+//         marketType,
+//         outcomeName: outcomeName || outcomeID,
+//         outcomeID,
+//         marketID,
+//         marketLink: selectMarketLink({ id: marketID, description }, dispatch)
+//       },
+//       message: `${action} ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
+//       numShares: shares,
+//       noFeePrice: price,
+//       avgPrice: formatEtherTokens(totalCost.minus(bnShares).dividedBy(bnShares).abs()),
+//       timestamp: formatDate(new Date(trade.timestamp * 1000)),
+//       tradingFees: formatEtherTokens(tradingFees),
+//       feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
+//       totalCost: formatEtherTokens(totalCost),
+//       gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
+//       blockNumber: trade.blockNumber
+//     }
+//   };
+//   return transaction;
+// };
+
 // export const constructLogAddTxTransaction = (trade, marketID, marketType, description, outcomeID, outcomeName, market, status) => (dispatch, getState) => {
 //   let type;
 //   let action;
-//   if (trade.type === BUY) {
-//     type = BID;
+//   if (trade.type === TYPES.BUY) {
+//     type = TYPES.BID;
 //     action = trade.inProgress ? 'bidding' : 'bid';
 //   } else if (trade.isShortAsk) {
-//     type = SHORT_ASK;
+//     type = TYPES.SHORT_ASK;
 //     action = trade.inProgress ? 'short asking' : 'short ask';
 //   } else {
-//     type = ASK;
+//     type = TYPES.ASK;
 //     action = trade.inProgress ? 'asking' : 'ask';
 //   }
 //   const price = formatEtherTokens(trade.price);
@@ -411,20 +522,20 @@ export function constructSubmittedReportTransaction(log, marketID, market, outco
 //         marketID,
 //         marketLink: selectMarketLink({ id: marketID, description }, dispatch)
 //       },
-//       message: `${action} ${shares.full} for ${formatEtherTokens(abi.unfix(trade.type === BUY ? totalCostPerShare : totalReturnPerShare)).full} / share`,
+//       message: `${action} ${shares.full} for ${formatEtherTokens(abi.unfix(trade.type === TYPES.BUY ? totalCostPerShare : totalReturnPerShare)).full} / share`,
 //       numShares: shares,
 //       noFeePrice: formatEtherTokens(rawPrice),
 //       freeze: {
 //         verb: trade.inProgress ? 'freezing' : 'froze',
-//         noFeeCost: type === ASK ? undefined : formatEtherTokens(abi.unfix(noFeeCost)),
+//         noFeeCost: type === TYPES.ASK ? undefined : formatEtherTokens(abi.unfix(noFeeCost)),
 //         tradingFees: formatEtherTokens(abi.unfix(tradingFees))
 //       },
 //       avgPrice: price,
 //       timestamp: formatDate(new Date(trade.timestamp * 1000)),
 //       hash: trade.transactionHash,
 //       feePercent: formatPercent(abi.unfix(tradingFees.dividedBy(totalCost).times(constants.ONE).floor()).times(100)),
-//       totalCost: type === BID ? formatEtherTokens(abi.unfix(totalCost)) : undefined,
-//       totalReturn: type === ASK ? formatEtherTokens(abi.unfix(totalReturn)) : undefined,
+//       totalCost: type === TYPES.BID ? formatEtherTokens(abi.unfix(totalCost)) : undefined,
+//       totalReturn: type === TYPES.ASK ? formatEtherTokens(abi.unfix(totalReturn)) : undefined,
 //       gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
 //       blockNumber: trade.blockNumber,
 //       tradeID: trade.tradeid
@@ -438,7 +549,7 @@ export const constructLogCancelTransaction = (trade, marketID, marketType, descr
   const action = trade.inProgress ? 'canceling' : 'canceled';
   return {
     [trade.transactionHash]: {
-      type: CANCEL_ORDER,
+      type: TYPES.CANCEL_ORDER,
       status,
       description,
       data: {
@@ -477,16 +588,16 @@ export const constructTradingTransaction = (label, trade, marketID, outcomeID, s
     outcomeName = (marketOutcomesData ? marketOutcomesData[outcomeID] : {}).name;
   }
   switch (label) {
-    case 'log_fill_tx': {
+    case TYPES.LOG_FILL_TX: {
       return dispatch(constructLogFillTxTransaction(trade, marketID, marketType, market.minValue, description, outcomeID, outcomeName, status));
     }
-    case 'log_short_fill_tx': {
+    case TYPES.LOG_SHORT_FILL_TX: {
       return dispatch(constructLogShortFillTxTransaction(trade, marketID, marketType, market.maxValue, description, outcomeID, outcomeName, status));
     }
-    case 'log_add_tx': {
+    case TYPES.LOG_ADD_TX: {
       return dispatch(constructLogAddTxTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, market, status));
     }
-    case 'log_cancel': {
+    case TYPES.LOG_CANCEL: {
       return dispatch(constructLogCancelTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, status));
     }
     default:
@@ -496,9 +607,9 @@ export const constructTradingTransaction = (label, trade, marketID, outcomeID, s
 
 export const constructMarketTransaction = (label, log, market) => (dispatch, getState) => {
   switch (label) {
-    case 'payout':
+    case TYPES.PAYOUT:
       return constructPayoutTransaction(log, market, dispatch);
-    case 'tradingFeeUpdated':
+    case TYPES.TRADING_FEE_UPDATED:
       return constructTradingFeeUpdatedTransaction(log, market, dispatch);
     default:
       return null;
@@ -508,13 +619,13 @@ export const constructMarketTransaction = (label, log, market) => (dispatch, get
 export const constructReportingTransaction = (label, log, marketID, market, outcomes) => (dispatch, getState) => {
   const { address, derivedKey } = getState().loginAccount;
   switch (label) {
-    case 'penalize':
+    case TYPES.PENALIZE:
       return constructPenalizeTransaction(log, marketID, market, outcomes, dispatch);
-    case 'submittedReport':
+    case TYPES.SUBMITTED_REPORT:
       return constructSubmittedReportTransaction(log, marketID, market, outcomes, dispatch);
-    case 'submittedReportHash':
+    case TYPES.SUBMITTED_REPORT_HASH:
       return constructSubmittedReportHashTransaction(log, marketID, market, outcomes, derivedKey, dispatch);
-    case 'slashedRep':
+    case TYPES.SLASHED_REP:
       return constructSlashedRepTransaction(log, market, outcomes, address, dispatch);
     default:
       return null;
@@ -523,47 +634,47 @@ export const constructReportingTransaction = (label, log, marketID, market, outc
 
 export const constructTransaction = (label, log, isRetry, callback) => (dispatch, getState) => {
   switch (label) {
-    case 'Approval':
+    case TYPES.APPROVAL:
       return constructApprovalTransaction(log);
-    case 'collectedFees':
+    case TYPES.COLLECTED_FEES:
       return constructCollectedFeesTransaction(log);
-    case 'withdrawEther':
+    case TYPES.WITHDRAW_ETHER:
       return constructConvertEthTokenToEthTransaction(log);
-    case 'depositEther':
+    case TYPES.DEPOSIT_ETHER:
       return constructConvertEthToEthTokenTransaction(log);
-    case 'fundedAccount':
+    case TYPES.FUNDED_ACCOUNT:
       return constructFundedAccountTransaction(log);
-    case 'penalizationCaughtUp':
+    case TYPES.PENALIZATION_CAUGHT_UP:
       return constructPenalizationCaughtUpTransaction(log);
-    case 'registration':
+    case TYPES.REGISTRATION:
       return constructRegistrationTransaction(log);
-    case 'withdraw':
+    case TYPES.WITHDRAW:
       return constructWithdrawTransaction(log);
-    case 'sentCash':
+    case TYPES.SENT_CASH:
       if (getState().transactionsData[log.transactionHash]) return null;
       return constructSentCashTransaction(log, getState().loginAccount.address);
-    case 'sentEther':
+    case TYPES.SENT_ETHER:
       if (getState().transactionsData[log.transactionHash]) return null;
       return constructSentEtherTransaction(log, getState().loginAccount.address);
-    case 'Transfer':
+    case TYPES.TRANSFER:
       if (getState().transactionsData[log.transactionHash]) return null;
       return constructTransferTransaction(log, getState().loginAccount.address);
-    case 'marketCreated': {
+    case TYPES.MARKET_CREATED: {
       if (log.description) return constructMarketCreatedTransaction(log, log.description, dispatch);
       const market = dispatch(loadDataForMarketTransaction(label, log, isRetry, callback));
       if (!market || !market.description) break;
       return constructMarketCreatedTransaction(log, market.description, dispatch);
     }
-    case 'payout':
-    case 'tradingFeeUpdated': {
+    case TYPES.PAYOUT:
+    case TYPES.TRADING_FEE_UPDATED: {
       const market = dispatch(loadDataForMarketTransaction(label, log, isRetry, callback));
       if (!market || !market.description) break;
       return dispatch(constructMarketTransaction(label, log, market));
     }
-    case 'penalize':
-    case 'slashedRep':
-    case 'submittedReport':
-    case 'submittedReportHash': {
+    case TYPES.PENALIZE:
+    case TYPES.SLASHED_REP:
+    case TYPES.SUBMITTED_REPORT:
+    case TYPES.SUBMITTED_REPORT_HASH: {
       const aux = dispatch(loadDataForReportingTransaction(label, log, isRetry, callback));
       if (!aux) break;
       return dispatch(constructReportingTransaction(label, log, aux.marketID, aux.market, aux.outcomes));

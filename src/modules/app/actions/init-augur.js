@@ -34,7 +34,7 @@ export function initAugur(cb) {
           dispatch(updateEventsAPI(vitals.api.events));
           dispatch(registerTransactionRelay());
           dispatch(loadChatMessages('augur'));
-          dispatch(setLoginAccount(env.autoLogin));
+          dispatch(setLoginAccount(env.autoLogin, vitals.coinbase));
           if (env.reportingTest) {
 
             // 127.0.0.1 only: configure for follow-on (multi-user) reporting testing
