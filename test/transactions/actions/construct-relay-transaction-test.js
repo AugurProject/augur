@@ -97,13 +97,9 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
         selectMarketFromEventID: () => {}
       };
       AugurJS.augur.trading.takeOrder.selectOrder = sinon.stub().returns(t.selectors.order);
-      const UpdateTradeCommitment = {
-        updateTradeCommitment: () => {}
-      };
       const WinningPositions = sinon.stub().returns(t.selectors.winningPositions);
       const action = proxyquire('../../../src/modules/transactions/actions/construct-relay-transaction.js', {
         '../../../services/augurjs': AugurJS,
-        '../../trade/actions/update-trade-commitment': UpdateTradeCommitment,
         './delete-transaction': DeleteTransaction,
         './construct-transaction': ConstructTransaction,
         '../../market/selectors/market': Market,
@@ -121,9 +117,6 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
           dispatch({ type: 'CONSTRUCT_TRANSACTION', label, log });
           return { label, log };
         }
-      ));
-      sinon.stub(UpdateTradeCommitment, 'updateTradeCommitment', tradeCommitment => dispatch => (
-        dispatch({ type: 'UPDATE_TRADE_COMMITMENT', tradeCommitment })
       ));
       const relayTransaction = store.dispatch(action.constructRelayTransaction(t.params.tx, t.params.status));
       t.assertions(store.getActions(), relayTransaction);

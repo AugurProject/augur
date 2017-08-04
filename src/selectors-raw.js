@@ -22,7 +22,6 @@ import transactions from 'modules/transactions/selectors/transactions';
 import transactionsTotals from 'modules/transactions/selectors/transactions-totals';
 import isTransactionsWorking from 'modules/transactions/selectors/is-transactions-working';
 import tradesInProgress from 'modules/trade/selectors/trade-in-progress';
-import tradeCommitLock from 'modules/trade/selectors/trade-commit-lock';
 import coreStats from 'modules/account/selectors/core-stats';
 import chat from 'modules/chat/selectors/chat-messages';
 import { MARKET_DATA_NAV_ITEMS } from 'modules/market/constants/market-data-nav-items';
@@ -57,7 +56,6 @@ const selectors = {
   notifications,
   isTransactionsWorking,
   tradesInProgress,
-  tradeCommitLock,
   coreStats,
   chat,
   marketDataNavItems: () => MARKET_DATA_NAV_ITEMS,

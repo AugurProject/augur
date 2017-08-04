@@ -3,7 +3,6 @@ import { ZERO } from 'modules/trade/constants/numbers';
 import { SCALAR } from 'modules/markets/constants/market-types';
 import * as TYPES from 'modules/transactions/constants/types';
 import * as STATUSES from 'modules/transactions/constants/statuses';
-import { updateTradeCommitment } from 'modules/trade/actions/update-trade-commitment';
 import { deleteTransaction } from 'modules/transactions/actions/delete-transaction';
 import { constructBasicTransaction, constructTradingTransaction, constructTransaction, loadDataForReportingTransaction } from 'modules/transactions/actions/construct-transaction';
 import { fillOrder } from 'modules/bids-asks/actions/update-market-order-book';
@@ -33,8 +32,6 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
   }, gasPrice).toFixed();
 
   const transactionsHref = selectTransactionsLink(dispatch).href;
-
-  const { loginAccount } = getState();
 
   console.log('method -- ', method);
 

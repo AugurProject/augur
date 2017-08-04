@@ -9,7 +9,6 @@ import BigNumber from 'bignumber.js';
 import { getBestFill } from 'modules/my-positions/actions/close-position';
 
 import { BUY, SELL } from 'modules/trade/constants/types';
-import { UPDATE_TRADE_COMMIT_LOCK } from 'modules/trade/actions/update-trade-commitment';
 
 describe('modules/my-positions/actions/close-position.js', () => {
   proxyquire.noPreserveCache().noCallThru();
@@ -110,15 +109,7 @@ describe('modules/my-positions/actions/close-position.js', () => {
 
         const expected = [
           {
-            type: UPDATE_TRADE_COMMIT_LOCK,
-            isLocked: true
-          },
-          {
             type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP
-          },
-          {
-            type: UPDATE_TRADE_COMMIT_LOCK,
-            isLocked: false
           },
           {
             type: MOCK_ACTION_TYPES.CLEAR_CLOSE_POSITION_OUTCOME
@@ -193,15 +184,7 @@ describe('modules/my-positions/actions/close-position.js', () => {
 
         const expected = [
           {
-            type: UPDATE_TRADE_COMMIT_LOCK,
-            isLocked: true
-          },
-          {
             type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP
-          },
-          {
-            type: UPDATE_TRADE_COMMIT_LOCK,
-            isLocked: false
           },
           {
             type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP
@@ -264,10 +247,6 @@ describe('modules/my-positions/actions/close-position.js', () => {
         const actual = store.getActions();
 
         const expected = [
-          {
-            type: UPDATE_TRADE_COMMIT_LOCK,
-            isLocked: true
-          },
           {
             type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP
           },

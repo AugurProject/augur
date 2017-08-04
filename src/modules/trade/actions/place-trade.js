@@ -1,5 +1,5 @@
 import { abi, augur, constants } from 'services/augurjs';
-import { BUY, SELL } from 'modules/trade/constants/types';
+import { BUY } from 'modules/trade/constants/types';
 import { clearTradeInProgress } from 'modules/trade/actions/update-trades-in-progress';
 import noop from 'utils/noop';
 import logError from 'utils/log-error';

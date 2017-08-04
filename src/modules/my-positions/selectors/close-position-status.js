@@ -5,7 +5,6 @@ import { clearClosePositionOutcome } from 'modules/my-positions/actions/clear-cl
 
 import { CLOSE_DIALOG_CLOSING, CLOSE_DIALOG_NO_ORDERS, CLOSE_DIALOG_FAILED, CLOSE_DIALOG_PARTIALLY_FAILED, CLOSE_DIALOG_SUCCESS } from 'modules/market/constants/close-dialog-status';
 import { SUCCESS, FAILED } from 'modules/transactions/constants/statuses';
-import { UPDATE_TRADE_COMMIT_LOCK } from 'modules/trade/actions/update-trade-commitment';
 
 export default function () {
   return selectClosePositionStatus(store.getState());
@@ -93,11 +92,5 @@ export const selectClosePositionStatus = createSelector(
 // This will ultimately clear the outcome status and allow for the
 // user to try again if an action is available
 function delayClearTradeGroupIDs(marketID, outcomeID) {
-  setTimeout(() => {
-    store.dispatch({
-      type: UPDATE_TRADE_COMMIT_LOCK,
-      isLocked: false
-    });
-    store.dispatch(clearClosePositionOutcome(marketID, outcomeID));
-  }, 3000);
+  setTimeout(() => store.dispatch(clearClosePositionOutcome(marketID, outcomeID)), 3000);
 }

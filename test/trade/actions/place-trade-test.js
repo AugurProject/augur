@@ -1,10 +1,10 @@
 import Augur from 'augur.js';
-import { describe, it, beforeEach, afterEach } from 'mocha';
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mocks from 'test/mockStore';
-import { tradeTestState, tradeConstOrderBooks } from 'test/trade/constants';
+import { tradeTestState } from 'test/trade/constants';
 import noop from 'utils/noop';
 
 describe(`modules/trade/actions/place-trade.js`, () => {
