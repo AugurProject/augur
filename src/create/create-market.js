@@ -8,7 +8,19 @@ var calculateRequiredMarketValue = require("../create/calculate-required-market-
 var calculateTradingFees = require("../trading/fees/calculate-trading-fees");
 var encodeTagArray = require("../format/tag/encode-tag-array");
 
-// { branch, takerFee, event, tags, makerFee, extraInfo, onSent, onSuccess, onFailed }
+// new: { branch, endTime, numOutcomes, feePerEthInWei, denominationToken, automatedReporterAddress, topic, minValue, maxValue }
+// # TODO: we need to update this signature (and all of the places that call it) to allow the creator (UI) to pass in a number of other things which will all be logged here
+// # TODO: log short description
+// # TODO: log long description
+// # TODO: log min display price
+// # TODO: log max display price
+// # TODO: log tags (up to 0-2)
+// # TODO: log outcome labels (same number as numOutcomes)
+// # TODO: log type (scalar, binary, categorical)
+
+// createMarket(branch, endTime, numOutcomes, feePerEthInAttoeth, denominationToken, automatedReporterAddress, topic, minDisplayPrice, maxDisplayPrice, type, shortDescription: str, longDescription: str, tags: arr, outcomeLabels: arr)
+
+// old: { branch, takerFee, event, tags, makerFee, extraInfo, onSent, onSuccess, onFailed }
 function createMarket(p) {
   var formattedTags = encodeTagArray(p.tags);
   var fees = calculateTradingFees(p.makerFee, p.takerFee);
