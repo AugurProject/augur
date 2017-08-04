@@ -1,12 +1,8 @@
 import { abi, augur, rpc } from 'services/augurjs';
 import { ZERO } from 'modules/trade/constants/numbers';
 import { SCALAR } from 'modules/markets/constants/market-types';
-<<<<<<< HEAD
-import { BUY, SELL } from 'modules/trade/constants/types';
-=======
 import * as TYPES from 'modules/transactions/constants/types';
 import * as STATUSES from 'modules/transactions/constants/statuses';
->>>>>>> origin
 import { updateTradeCommitment } from 'modules/trade/actions/update-trade-commitment';
 import { deleteTransaction } from 'modules/transactions/actions/delete-transaction';
 import { constructBasicTransaction, constructTradingTransaction, constructTransaction, loadDataForReportingTransaction } from 'modules/transactions/actions/construct-transaction';
