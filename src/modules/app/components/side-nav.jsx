@@ -64,11 +64,12 @@ export default class SideBar extends Component {
           return (
             <li
               className={classNames({ selected })}
-              onClick={() => this.itemClick(item)}
               key={item.title}
             >
-              <Icon />
-              <span className="item-title">{item.title}</span>
+              <button onClick={() => this.itemClick(item)}>
+                <Icon />
+                <span className="item-title">{item.title}</span>
+              </button>
             </li>
           );
         })}
