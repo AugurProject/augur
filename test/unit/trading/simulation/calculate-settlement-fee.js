@@ -18,7 +18,7 @@ describe("trading/simulation/calculate-settlement-fee", function () {
     });
   };
   test({
-    description: "2 complete sets, 1% reporting fee, no market creator fee",
+    description: "2 complete sets, share price 0.6, 1% reporting fee, no market creator fee",
     params: {
       completeSets: new BigNumber("2", 10),
       marketCreatorFeeRate: new BigNumber("0", 10),
@@ -32,7 +32,7 @@ describe("trading/simulation/calculate-settlement-fee", function () {
     }
   });
   test({
-    description: "2 complete sets, 1% reporting fee, 1.5% market creator fee",
+    description: "2 complete sets, share price 0.6, 1% reporting fee, 1.5% market creator fee",
     params: {
       completeSets: new BigNumber("2", 10),
       marketCreatorFeeRate: new BigNumber("0.015", 10),
@@ -46,7 +46,7 @@ describe("trading/simulation/calculate-settlement-fee", function () {
     }
   });
   test({
-    description: "2 complete sets, 1% reporting fee, 1.5% market creator fee, do not collect reporting fees",
+    description: "2 complete sets, share price 0.6, 1% reporting fee, 1.5% market creator fee, do not collect reporting fees",
     params: {
       completeSets: new BigNumber("2", 10),
       marketCreatorFeeRate: new BigNumber("0.015", 10),
@@ -60,17 +60,45 @@ describe("trading/simulation/calculate-settlement-fee", function () {
     }
   });
   test({
-    description: "2 complete sets, 1% reporting fee, 1.5% market creator fee, range 3",
+    description: "2 complete sets, share price 1.5, 1% reporting fee, no market creator fee, range 3",
     params: {
       completeSets: new BigNumber("2", 10),
-      marketCreatorFeeRate: new BigNumber("0.015", 10),
+      marketCreatorFeeRate: new BigNumber("0", 10),
       range: new BigNumber("3", 10),
       shouldCollectReportingFees: 1,
       reportingFeeRate: new BigNumber("0.01", 10),
-      sharePrice: new BigNumber("0.6", 10)
+      sharePrice: new BigNumber("1.5", 10)
     },
     assertions: function (output) {
-      assert.deepEqual(output, new BigNumber("0.012", 10));
+      assert.deepEqual(output, new BigNumber("0.03", 10));
+    }
+  });
+  test({
+    description: "2 complete sets, share price 0, 1% reporting fee, no market creator fee, range 3",
+    params: {
+      completeSets: new BigNumber("2", 10),
+      marketCreatorFeeRate: new BigNumber("0", 10),
+      range: new BigNumber("3", 10),
+      shouldCollectReportingFees: 1,
+      reportingFeeRate: new BigNumber("0.01", 10),
+      sharePrice: new BigNumber("0", 10)
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, new BigNumber("0.06", 10));
+    }
+  });
+  test({
+    description: "2 complete sets, share price 3, 1% reporting fee, no market creator fee, range 3",
+    params: {
+      completeSets: new BigNumber("2", 10),
+      marketCreatorFeeRate: new BigNumber("0", 10),
+      range: new BigNumber("3", 10),
+      shouldCollectReportingFees: 1,
+      reportingFeeRate: new BigNumber("0.01", 10),
+      sharePrice: new BigNumber("3", 10)
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, new BigNumber("0", 10));
     }
   });
 });
