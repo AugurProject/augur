@@ -13,7 +13,6 @@ function simulateMakeAskOrder(numShares, price, maxPrice, outcomeID, shareBalanc
   var gasFees = ZERO;
   var tokensEscrowed = ZERO;
   var sharesEscrowed = ZERO;
-  var numShares = numShares;
   if (shareBalances[outcomeID - 1].gt(ZERO)) {
     sharesEscrowed = BigNumber.min(shareBalances[outcomeID - 1], numShares);
     numShares = numShares.minus(sharesEscrowed);

@@ -13,32 +13,30 @@ augur.connect({
   http: "http://127.0.0.1:8545",
   ipc: process.env.GETH_IPC,
   ws: "ws://127.0.0.1:8546"
-}, function (connected) {
-  if (!connected) return console.error("connect failed:", connected);
-    augur.rpc.personal.listAccounts([], function (accounts) {
-      if (!accounts || accounts.constructor !== Array || !accounts.length) {
-        return console.error("listAccounts error:", accounts);
-      }
-      async.eachSeries(accounts, function (account, nextAccount) {
-        augur.rpc.personal.unlockAccount([account, password], function (unlocked) {
-          if (unlocked && unlocked.error) return nextAccount();
-          augur.api.Faucets.fundNewAccount({
-            branch: augur.constants.DEFAULT_BRANCH_ID,
-            tx: { from: account },
-            onSent: function (res) {
-              console.log("fundNewAccount", account, "sent:", res);
-            },
-            onSuccess: function (res) {
-              console.log("fundNewAccount", account, "success:", res);
-              nextAccount();
-            },
-            onFailed: function (err) {
-              console.error("fundNewAccount", account, "failed:", err);
-              nextAccount();
-            }
-          });
+}, function () {
+  augur.rpc.personal.listAccounts([], function (accounts) {
+    if (!accounts || accounts.constructor !== Array || !accounts.length) {
+      return console.error("listAccounts error:", accounts);
+    }
+    async.eachSeries(accounts, function (account, nextAccount) {
+      augur.rpc.personal.unlockAccount([account, password], function (unlocked) {
+        if (unlocked && unlocked.error) return nextAccount();
+        augur.api.Faucets.fundNewAccount({
+          branch: augur.constants.DEFAULT_BRANCH_ID,
+          tx: { from: account },
+          onSent: function (res) {
+            console.log("fundNewAccount", account, "sent:", res);
+          },
+          onSuccess: function (res) {
+            console.log("fundNewAccount", account, "success:", res);
+            nextAccount();
+          },
+          onFailed: function (err) {
+            console.error("fundNewAccount", account, "failed:", err);
+            nextAccount();
+          }
         });
-      }, process.exit);
-    });
+      });
+    }, process.exit);
   });
 });

@@ -1,5 +1,6 @@
 "use strict";
 
+var filterByPriceAndOutcomeAndUserSortByPrice = require("./filter-by-price-and-outcome-and-user-sort-by-price");
 var simulateMakeAskOrder = require("./simulate-make-ask-order");
 var simulateTakeBidOrder = require("./simulate-take-bid-order");
 var sumSimulatedResults = require("./sum-simulated-results");
@@ -7,7 +8,7 @@ var constants = require("../../constants");
 var PRECISION = constants.PRECISION;
 var ZERO = constants.ZERO;
 
-function simulateSell(outcomeID, shareBalances, tokenBalance, userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, shouldCollectReportingFees, buyOrderBook) {
+function simulateSell(outcomeID, sharesToCover, shareBalances, tokenBalance, userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, buyOrderBook) {
   var simulatedSell = {
     settlementFees: ZERO,
     gasFees: ZERO,

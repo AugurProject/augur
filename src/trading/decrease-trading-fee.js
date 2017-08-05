@@ -14,4 +14,4 @@ function decreaseTradingFee(p) {
   }));
 }
 
-module.exports = updateTradingFee;
+module.exports = decreaseTradingFee;

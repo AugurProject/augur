@@ -8,7 +8,7 @@ var constants = require("../../constants");
 var PRECISION = constants.PRECISION;
 var ZERO = constants.ZERO;
 
-function simulateBuy(outcomeID, shareBalances, tokenBalance, userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, shouldCollectReportingFees, sellOrderBook) {
+function simulateBuy(outcomeID, sharesToCover, shareBalances, tokenBalance, userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, sellOrderBook) {
   var simulatedBuy = {
     settlementFees: ZERO,
     gasFees: ZERO,

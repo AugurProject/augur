@@ -14,14 +14,15 @@ function simulateTrade(p) {
   var outcomeID = parseInt(p.outcomeID, 10);
   var sharesToCover = new BigNumber(p.shares, 10);
   var price = new BigNumber(p.price, 10);
+  var tokenBalance = new BigNumber(p.tokenBalance, 10);
   var minPrice = new BigNumber(p.minPrice, 10);
   var maxPrice = new BigNumber(p.maxPrice, 10);
   var marketCreatorFeeRate = new BigNumber(p.marketCreatorFeeRate, 10);
   var reportingFeeRate = new BigNumber(p.reportingFeeRate, 10);
   var shareBalances = p.shareBalances.map(function (shareBalance) { return new BigNumber(shareBalance, 10); });
   var simulatedTrade = (p.type === "buy") ?
-    simulateBuy(outcomeID, shareBalances, tokenBalance, userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, p.shouldCollectReportingFees, marketOrderBook.sell) :
-    simulateSell(outcomeID, shareBalances, tokenBalance, userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, p.shouldCollectReportingFees, marketOrderBook.buy);
+    simulateBuy(outcomeID, sharesToCover, shareBalances, tokenBalance, p.userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, p.shouldCollectReportingFees, p.marketOrderBook.sell) :
+    simulateSell(outcomeID, sharesToCover, shareBalances, tokenBalance, p.userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, p.shouldCollectReportingFees, p.marketOrderBook.buy);
   return {
     settlementFees: simulatedTrade.settlementFees.toFixed(),
     gasFees: simulatedTrade.gasFees.toFixed(),

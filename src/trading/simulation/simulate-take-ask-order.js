@@ -60,8 +60,8 @@ function simulateTakeAskOrder(sharesToCover, minPrice, maxPrice, marketCreatorFe
 
     // maker is opening a short, taker is opening a long
     if (takerDesiredShares.gt(PRECISION.zero)) {
-      takerPortionOfCompleteSetCost = takerDesiredShares.times(sharePriceLong);
-      makerPortionOfCompleteSetCost = takerDesiredShares.times(sharePriceShort);
+      var takerPortionOfCompleteSetCost = takerDesiredShares.times(sharePriceLong);
+      var makerPortionOfCompleteSetCost = takerDesiredShares.times(sharePriceShort);
       makerTokensDepleted = makerTokensDepleted.plus(makerPortionOfCompleteSetCost);
       takerTokensDepleted = takerTokensDepleted.plus(takerPortionOfCompleteSetCost);
       takerDesiredShares = ZERO;
@@ -78,8 +78,8 @@ function simulateTakeAskOrder(sharesToCover, minPrice, maxPrice, marketCreatorFe
     sharesToCover: sharesToCover,
     settlementFees: settlementFees,
     gasFees: gasFees,
-    otherSharesDepleted: sharesEscrowed,
-    tokensDepleted: tokensEscrowed,
+    otherSharesDepleted: takerSharesDepleted,
+    tokensDepleted: takerTokensDepleted,
     shareBalances: shareBalances
   };
 }

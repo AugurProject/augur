@@ -22,7 +22,7 @@ function simulateMakeBidOrder(numShares, price, minPrice, outcomeID, shareBalanc
   sharesEscrowed = BigNumber.min(sharesEscrowed, numShares);
   if (sharesEscrowed.gt(ZERO)) {
     numShares = numShares.minus(sharesEscrowed);
-    for (var i = 1; i <= numOutcomes; ++i) {
+    for (i = 1; i <= numOutcomes; ++i) {
       if (i !== outcomeID) {
         shareBalances[i - 1] = shareBalances[i - 1].minus(sharesEscrowed);
       }

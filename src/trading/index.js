@@ -8,6 +8,6 @@ module.exports = {
   // cancel: require("./cancel"),
   normalizePrice: require("./normalize-price"),
   denormalizePrice: require("./denormalize-price"),
-  getTradeAmountRemaining: require("./get-trade-amount-remaining"),
+  getTradeAmountRemaining: require("./get-trade-amount-remaining")
   // decreaseTradingFee: require("./decrease-trading-fee")
 };

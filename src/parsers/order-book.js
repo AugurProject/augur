@@ -1,6 +1,5 @@
 "use strict";
 
-var BigNumber = require("bignumber.js");
 var parseTradeInfo = require("./trade-info");
 var denormalizePrice = require("../trading/denormalize-price");
 
@@ -17,7 +16,7 @@ module.exports = function (orderArray, scalarMinMax) {
         order.fullPrecisionPrice = denormalizePrice(scalarMinMax.minValue, scalarMinMax.maxValue, order.fullPrecisionPrice);
       } else {
         order.fullPrecisionPrice = order.price;
-      }      
+      }
       orderBook[order.type][order.id] = order;
     }
   }
