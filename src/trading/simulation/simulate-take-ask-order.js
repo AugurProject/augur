@@ -3,6 +3,7 @@
 var BigNumber = require("bignumber.js");
 var calculateNearlyCompleteSets = require("./calculate-nearly-complete-sets");
 var calculateSettlementFee = require("./calculate-settlement-fee");
+var depleteOtherShareBalances = require("./deplete-other-share-balances");
 var constants = require("../../constants");
 var PRECISION = constants.PRECISION;
 var ZERO = constants.ZERO;
