@@ -1,6 +1,7 @@
 "use strict";
 
 var BigNumber = require("bignumber.js");
+var calculateNearlyCompleteSets = require("./calculate-nearly-complete-sets");
 var calculateSettlementFee = require("./calculate-settlement-fee");
 var constants = require("../../constants");
 var PRECISION = constants.PRECISION;
@@ -22,12 +23,7 @@ function simulateTakeAskOrder(sharesToCover, minPrice, maxPrice, marketCreatorFe
     var orderDisplayPrice = new BigNumber(matchingAsk.fullPrecisionPrice, 10);
     var sharePriceShort = maxPrice.minus(orderDisplayPrice);
     var sharePriceLong = orderDisplayPrice.minus(minPrice);
-    var takerSharesAvailable = takerDesiredShares;
-    for (var i = 1; i <= numOutcomes; ++i) {
-      if (i !== outcomeID) {
-        takerSharesAvailable = BigNumber.min(shareBalances[i - 1], takerSharesAvailable);
-      }
-    }
+    var takerSharesAvailable = calculateNearlyCompleteSets(outcomeID, takerDesiredShares, shareBalances);
     sharesToCover = sharesToCover.minus(takerDesiredShares);
 
     // complete sets sold if maker is closing a long, taker is closing a short
@@ -68,11 +64,7 @@ function simulateTakeAskOrder(sharesToCover, minPrice, maxPrice, marketCreatorFe
     }
   });
   if (takerSharesDepleted.gt(ZERO)) {
-    for (var i = 1; i <= numOutcomes; ++i) {
-      if (i !== outcomeID) {
-        shareBalances[i - 1] = shareBalances[i - 1].minus(takerSharesDepleted);
-      }
-    }
+    shareBalances = depleteOtherShareBalances(outcomeID, takerSharesDepleted, shareBalances);
   }
   return {
     sharesToCover: sharesToCover,
