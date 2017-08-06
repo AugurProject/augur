@@ -41,6 +41,7 @@ function simulateTakeBidOrder(sharesToCover, minPrice, maxPrice, marketCreatorFe
       var tokensRequiredToCoverTaker = makerSharesEscrowed.times(sharePriceShort);
       makerSharesDepleted = makerSharesDepleted.plus(makerSharesEscrowed);
       takerTokensDepleted = takerTokensDepleted.plus(tokensRequiredToCoverTaker);
+      takerDesiredSharesForThisOrder = takerDesiredSharesForThisOrder.minus(makerSharesEscrowed);
       makerSharesEscrowed = ZERO;
     }
 
