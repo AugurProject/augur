@@ -3,6 +3,8 @@
 var assert = require("chai").assert;
 var BigNumber = require("bignumber.js");
 var simulateMakeBidOrder = require("../../../../src/trading/simulation/simulate-make-bid-order");
+var constants = require("../../../../src/constants");
+var ZERO = constants.ZERO;
 
 describe("trading/simulation/simulate-make-bid-order", function () {
   var test = function (t) {
@@ -21,16 +23,16 @@ describe("trading/simulation/simulate-make-bid-order", function () {
     params: {
       numShares: new BigNumber("2", 10),
       price: new BigNumber("0.6", 10),
-      minPrice: new BigNumber("0", 10),
+      minPrice: ZERO,
       outcomeID: 1,
-      shareBalances: [new BigNumber("0", 10), new BigNumber("0", 10)]
+      shareBalances: [ZERO, ZERO]
     },
     assertions: function (output) {
       assert.deepEqual(output, {
-        gasFees: new BigNumber("0", 10),
-        otherSharesDepleted: new BigNumber("0", 10),
+        gasFees: ZERO,
+        otherSharesDepleted: ZERO,
         tokensDepleted: new BigNumber("1.2", 10),
-        shareBalances: [new BigNumber("0", 10), new BigNumber("0", 10)]
+        shareBalances: [ZERO, ZERO]
       });
     }
   });
@@ -41,14 +43,14 @@ describe("trading/simulation/simulate-make-bid-order", function () {
       price: new BigNumber("7.6", 10),
       minPrice: new BigNumber("7", 10),
       outcomeID: 1,
-      shareBalances: [new BigNumber("0", 10), new BigNumber("0", 10)]
+      shareBalances: [ZERO, ZERO]
     },
     assertions: function (output) {
       assert.deepEqual(output, {
-        gasFees: new BigNumber("0", 10),
-        otherSharesDepleted: new BigNumber("0", 10),
+        gasFees: ZERO,
+        otherSharesDepleted: ZERO,
         tokensDepleted: new BigNumber("1.2", 10),
-        shareBalances: [new BigNumber("0", 10), new BigNumber("0", 10)]
+        shareBalances: [ZERO, ZERO]
       });
     }
   });
@@ -59,14 +61,14 @@ describe("trading/simulation/simulate-make-bid-order", function () {
       price: new BigNumber("7.6", 10),
       minPrice: new BigNumber("7", 10),
       outcomeID: 1,
-      shareBalances: [new BigNumber("3", 10), new BigNumber("0", 10)]
+      shareBalances: [new BigNumber("3", 10), ZERO]
     },
     assertions: function (output) {
       assert.deepEqual(output, {
-        gasFees: new BigNumber("0", 10),
-        otherSharesDepleted: new BigNumber("0", 10),
+        gasFees: ZERO,
+        otherSharesDepleted: ZERO,
         tokensDepleted: new BigNumber("1.2", 10),
-        shareBalances: [new BigNumber("3", 10), new BigNumber("0", 10)]
+        shareBalances: [new BigNumber("3", 10), ZERO]
       });
     }
   });
@@ -81,9 +83,9 @@ describe("trading/simulation/simulate-make-bid-order", function () {
     },
     assertions: function (output) {
       assert.deepEqual(output, {
-        gasFees: new BigNumber("0", 10),
+        gasFees: ZERO,
         otherSharesDepleted: new BigNumber("2", 10),
-        tokensDepleted: new BigNumber("0", 10),
+        tokensDepleted: ZERO,
         shareBalances: [new BigNumber("3", 10), new BigNumber("2", 10)]
       });
     }
@@ -99,9 +101,9 @@ describe("trading/simulation/simulate-make-bid-order", function () {
     },
     assertions: function (output) {
       assert.deepEqual(output, {
-        gasFees: new BigNumber("0", 10),
+        gasFees: ZERO,
         otherSharesDepleted: new BigNumber("2", 10),
-        tokensDepleted: new BigNumber("0", 10),
+        tokensDepleted: ZERO,
         shareBalances: [new BigNumber("1", 10), new BigNumber("1", 10)]
       });
     }
@@ -117,10 +119,10 @@ describe("trading/simulation/simulate-make-bid-order", function () {
     },
     assertions: function (output) {
       assert.deepEqual(output, {
-        gasFees: new BigNumber("0", 10),
+        gasFees: ZERO,
         otherSharesDepleted: new BigNumber("1.2", 10),
         tokensDepleted: new BigNumber("0.48", 10),
-        shareBalances: [new BigNumber("1.8", 10), new BigNumber("1", 10), new BigNumber("2.8", 10), new BigNumber("0", 10)]
+        shareBalances: [new BigNumber("1.8", 10), new BigNumber("1", 10), new BigNumber("2.8", 10), ZERO]
       });
     }
   });
@@ -135,17 +137,17 @@ describe("trading/simulation/simulate-make-bid-order", function () {
     },
     assertions: function (output) {
       assert.deepEqual(output, {
-        gasFees: new BigNumber("0", 10),
+        gasFees: ZERO,
         otherSharesDepleted: new BigNumber("1.2", 10),
         tokensDepleted: new BigNumber("0.84", 10),
-        shareBalances: [new BigNumber("3.1", 10), new BigNumber("0", 10)]
+        shareBalances: [new BigNumber("3.1", 10), ZERO]
       });
     }
   });
   test({
     description: "[3, 1] shares held, 7 minimum price, bid 0 shares of outcome 1 @ 7.6",
     params: {
-      numShares: new BigNumber("0", 10),
+      numShares: ZERO,
       price: new BigNumber("7.6", 10),
       minPrice: new BigNumber("7", 10),
       outcomeID: 1,

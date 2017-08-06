@@ -28,11 +28,11 @@ function filterByPriceAndOutcomeAndUserSortByPrice(orders, traderOrderType, limi
     return orders[orderID];
   }).filter(function (order) {
     var isMatchingPrice;
-    if (!order || !order.price) return false;
+    if (!order || !order.fullPrecisionPrice) return false;
     if (isMarketOrder) {
       isMatchingPrice = true;
     } else {
-      isMatchingPrice = traderOrderType === "buy" ? new BigNumber(order.price, 10).lte(limitPrice) : new BigNumber(order.price, 10).gte(limitPrice);
+      isMatchingPrice = traderOrderType === "buy" ? new BigNumber(order.fullPrecisionPrice, 10).lte(limitPrice) : new BigNumber(order.fullPrecisionPrice, 10).gte(limitPrice);
     }
     return order.outcome === outcomeID && order.owner !== userAddress && isMatchingPrice;
   });

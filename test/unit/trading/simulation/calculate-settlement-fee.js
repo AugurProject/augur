@@ -4,6 +4,8 @@ var abi = require("augur-abi");
 var assert = require("chai").assert;
 var BigNumber = require("bignumber.js");
 var calculateSettlementFee = require("../../../../src/trading/simulation/calculate-settlement-fee");
+var constants = require("../../../../src/constants");
+var ZERO = constants.ZERO;
 
 describe("trading/simulation/calculate-settlement-fee", function () {
   var test = function (t) {
@@ -21,7 +23,7 @@ describe("trading/simulation/calculate-settlement-fee", function () {
     description: "2 complete sets, share price 0.6, 1% reporting fee, no market creator fee",
     params: {
       completeSets: new BigNumber("2", 10),
-      marketCreatorFeeRate: new BigNumber("0", 10),
+      marketCreatorFeeRate: ZERO,
       range: new BigNumber("1", 10),
       shouldCollectReportingFees: 1,
       reportingFeeRate: new BigNumber("0.01", 10),
@@ -63,7 +65,7 @@ describe("trading/simulation/calculate-settlement-fee", function () {
     description: "2 complete sets, share price 1.5, 1% reporting fee, no market creator fee, range 3",
     params: {
       completeSets: new BigNumber("2", 10),
-      marketCreatorFeeRate: new BigNumber("0", 10),
+      marketCreatorFeeRate: ZERO,
       range: new BigNumber("3", 10),
       shouldCollectReportingFees: 1,
       reportingFeeRate: new BigNumber("0.01", 10),
@@ -77,11 +79,11 @@ describe("trading/simulation/calculate-settlement-fee", function () {
     description: "2 complete sets, share price 0, 1% reporting fee, no market creator fee, range 3",
     params: {
       completeSets: new BigNumber("2", 10),
-      marketCreatorFeeRate: new BigNumber("0", 10),
+      marketCreatorFeeRate: ZERO,
       range: new BigNumber("3", 10),
       shouldCollectReportingFees: 1,
       reportingFeeRate: new BigNumber("0.01", 10),
-      sharePrice: new BigNumber("0", 10)
+      sharePrice: ZERO
     },
     assertions: function (output) {
       assert.deepEqual(output, new BigNumber("0.06", 10));
@@ -91,14 +93,14 @@ describe("trading/simulation/calculate-settlement-fee", function () {
     description: "2 complete sets, share price 3, 1% reporting fee, no market creator fee, range 3",
     params: {
       completeSets: new BigNumber("2", 10),
-      marketCreatorFeeRate: new BigNumber("0", 10),
+      marketCreatorFeeRate: ZERO,
       range: new BigNumber("3", 10),
       shouldCollectReportingFees: 1,
       reportingFeeRate: new BigNumber("0.01", 10),
       sharePrice: new BigNumber("3", 10)
     },
     assertions: function (output) {
-      assert.deepEqual(output, new BigNumber("0", 10));
+      assert.deepEqual(output, ZERO);
     }
   });
 });
