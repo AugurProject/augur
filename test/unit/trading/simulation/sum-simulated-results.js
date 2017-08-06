@@ -35,6 +35,7 @@ describe("trading/simulation/sum-simulated-results", function () {
     },
     assertions: function (output) {
       assert.deepEqual(output, {
+        sharesToCover: ZERO,
         settlementFees: ZERO,
         gasFees: ZERO,
         sharesDepleted: ZERO,
@@ -67,6 +68,7 @@ describe("trading/simulation/sum-simulated-results", function () {
     },
     assertions: function (output) {
       assert.deepEqual(output, {
+        sharesToCover: new BigNumber("1", 10),
         settlementFees: new BigNumber("3", 10),
         gasFees: new BigNumber("4", 10),
         sharesDepleted: new BigNumber("5", 10),

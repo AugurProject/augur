@@ -3,11 +3,11 @@
 var BigNumber = require("bignumber.js");
 
 function compareBuyOrdersByPrice(order1, order2) {
-  return order1.price - order2.price;
+  return order1.fullPrecisionPrice - order2.fullPrecisionPrice;
 }
 
 function compareSellOrdersByPrice(order1, order2) {
-  return order2.price - order1.price;
+  return order2.fullPrecisionPrice - order1.fullPrecisionPrice;
 }
 
 /**
