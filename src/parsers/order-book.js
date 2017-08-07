@@ -1,24 +1,17 @@
 "use strict";
 
-var parseTradeInfo = require("./trade-info");
-var denormalizePrice = require("../trading/denormalize-price");
+var parseOrder = require("./order");
 
-module.exports = function (orderArray, scalarMinMax) {
-  var order, numOrders, orderBook, i;
-  if (!orderArray || orderArray.error) return orderArray;
-  numOrders = orderArray.length / 8;
-  orderBook = { buy: {}, sell: {} };
-  for (i = 0; i < numOrders; ++i) {
-    order = parseTradeInfo(orderArray.slice(8*i, 8*(i + 1)));
-    if (order) {
-      order.price = denormalizePrice(scalarMinMax.minValue, scalarMinMax.maxValue, order.price);
-      if (order.fullPrecisionPrice) {
-        order.fullPrecisionPrice = denormalizePrice(scalarMinMax.minValue, scalarMinMax.maxValue, order.fullPrecisionPrice);
-      } else {
-        order.fullPrecisionPrice = order.price;
-      }
-      orderBook[order.type][order.id] = order;
-    }
+module.exports = function (type, minPrice, maxPrice, orderBookArray) {
+  if (!Array.isArray(orderBookArray) || orderBookArray.error) {
+    return orderBookArray;
+  }
+  var numOrders = orderBookArray.length / 9;
+  var orderBook = {};
+  for (var i = 0; i < numOrders; ++i) {
+    var orderArray = orderBookArray.slice(9*i, 9*(i + 1));
+    var order = parseOrder(type, minPrice, maxPrice, orderArray.slice(1));
+    if (order != null) orderBook[orderArray[0]] = order;
   }
   return orderBook;
 };
