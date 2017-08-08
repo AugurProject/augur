@@ -66,7 +66,7 @@ export default class FilterSortView extends Component {
     const p = this.props;
 
     return (
-      <article>
+      <article className="filter-sort">
         {!!getValue(p, 'filterBySearch') &&
           <FilterSearch
             location={p.location}

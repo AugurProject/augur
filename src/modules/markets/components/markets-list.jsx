@@ -35,25 +35,31 @@ export default class MarketsList extends Component {
     const p = this.props;
     const s = this.state;
 
-    const marketsLength = p.markets.length;
+    const marketsLength = p.marketsFiltered.length;
+    console.log('marketsLength -- ', marketsLength);
     const shareDenominations = getValue(p, 'scalarShareDenomination.denominations');
 
     return (
       <article className="markets-list">
         {marketsLength && s.boundedLength ?
           [...Array(s.boundedLength)].map((unused, i) => {
-            const market = p.markets[(s.lowerBound - 1) + i];
-            const selectedShareDenomination = getValue(p, `scalarShareDenomination.markets.${market.id}`);
+            const item = p.marketsFiltered[(s.lowerBound - 1) + i];
+            const market = p.markets[item];
+            const selectedShareDenomination = market ? getValue(p, `scalarShareDenomination.markets.${market.id}`) : null;
 
-            return (
-              <MarketPreview
-                key={market.id}
-                isLogged={p.isLogged}
-                {...market}
-                selectedShareDenomination={selectedShareDenomination}
-                shareDenominations={shareDenominations}
-              />
-            );
+            if (market && market.id) {
+              return (
+                <MarketPreview
+                  key={market.id}
+                  isLogged={p.isLogged}
+                  {...market}
+                  selectedShareDenomination={selectedShareDenomination}
+                  shareDenominations={shareDenominations}
+                />
+              );
+            }
+
+            return null;
           }) :
           <NullStateMessage message={'No Markets Available'} /> }
         {!!marketsLength &&
