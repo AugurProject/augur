@@ -4,7 +4,7 @@ import selectAllMarkets from 'modules/markets/selectors/markets-all';
 
 import { FILTER_TYPE_OPEN, FILTER_TYPE_CLOSED, FILTER_TYPE_REPORTING } from 'modules/markets/constants/filter-sort';
 
-import { cleanKeywordsArray } from 'utils/clean-keywords';
+// import { cleanKeywordsArray } from 'utils/clean-keywords';
 import { isMarketDataOpen } from 'utils/is-market-data-open';
 import { createBigCacheSelector } from 'utils/big-cache-selector';
 
@@ -41,7 +41,8 @@ export const isMarketFiltersMatch = (market, keywords, selectedFilterSort, selec
     isDisplayable(market);
 
   function isMatchKeywords(market, keys) {
-    const keywordsArray = cleanKeywordsArray(keys);
+    // const keywordsArray = cleanKeywordsArray(keys);
+    const keywordsArray = []; // PLACEHOLDER
     if (!keywordsArray.length) {
       return true;
     }

@@ -19,15 +19,28 @@ export default class FilterSortView extends Component {
     super(props);
 
     this.state = {
-
+      searchItems: null
     };
   }
 
   // Filters First
   // Sorts Second
 
+  componentWillMount() {
+    // TODO -- call aggregate update method
+  }
+
+  componentWillReceiveProps(nextProps) {
+    // TODO -- conditionally call aggregate udpate method
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    // TODO -- conditionally call aggregate update method
+  }
+
   render() {
     const p = this.props;
+    const s = this.state;
 
     return (
       <article>
@@ -37,6 +50,7 @@ export default class FilterSortView extends Component {
             history={p.history}
             items={p.items}
             keys={p.filterBySearch}
+            updateFilter={searchItems => this.setState({ searchItems })}
           />
         }
       </article>
