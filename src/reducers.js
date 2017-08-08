@@ -22,6 +22,7 @@ import outcomesData from 'modules/markets/reducers/outcomes-data';
 import eventMarketsMap from 'modules/markets/reducers/event-markets-map';
 import favorites from 'modules/markets/reducers/favorites';
 import pagination from 'modules/markets/reducers/pagination';
+import marketsFilteredSorted from 'modules/markets/reducers/markets-filtered-sorted';
 
 import reports from 'modules/reports/reducers/reports';
 import eventsWithAccountReport from 'modules/my-reports/reducers/events-with-account-report';
@@ -93,6 +94,7 @@ export function createReducer() {
     eventMarketsMap,
     favorites,
     pagination,
+    marketsFilteredSorted,
 
     reports,
     eventsWithAccountReport,

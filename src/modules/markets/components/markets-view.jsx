@@ -23,6 +23,7 @@ export default class MarketsView extends Component {
     loadMarketsByTopic: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
+    updateMarketsFilteredSorted: PropTypes.func.isRequired
     // filterSort: PropTypes.object,
     // marketsHeader: PropTypes.object,
     // pagination: PropTypes.object,
@@ -40,8 +41,6 @@ export default class MarketsView extends Component {
       shouldDisplayBranchInfo: !!(getValue(props, 'loginAccount.rep.value') && getValue(props, 'branch.id')),
       marketsFiltered: []
     };
-
-    this.updateMarketsFiltered = this.updateMarketsFiltered.bind(this);
   }
 
   componentWillMount() {
@@ -82,8 +81,12 @@ export default class MarketsView extends Component {
     }
   }
 
-  updateMarketsFiltered(marketsFiltered) {
-    this.setState({ marketsFiltered });
+  componentWillUpdate(nextProps, nextState) {
+    if (this.state.marketsFiltered !== nextState.marketsFiltered) {
+      // TODO -- update global state for tags (categories) display
+      // console.log('changed!');
+      // this.props.updateMarketsFilteredSorted(nextState.marketsFiltered);
+    }
   }
 
   loadMarkets(options) {
@@ -115,7 +118,7 @@ export default class MarketsView extends Component {
           location={p.location}
           history={p.history}
           markets={p.markets}
-          updateFilteredItems={this.updateMarketsFiltered}
+          updateFilteredItems={marketsFiltered => this.setState({ marketsFiltered })}
         />
         <MarketsList
           isLogged={p.isLogged}
