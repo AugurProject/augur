@@ -35,22 +35,23 @@ export default class FilterSearch extends Component {
     this.onChangeSearch(search);
   }
 
-  onChangeSearch(search, debounce) {
+  componentWillReceiveProps(nextProps) {
+    if (this.props.items !== nextProps.items) this.onChangeSearch(this.state.search, nextProps.items);
+  }
+
+  onChangeSearch(search, items, debounce) {
     this.setState({ search });
 
-    if (debounce) return this.debouncedOnChangeSearch(search);
+    if (debounce) return this.debouncedOnChangeSearch(search, items);
 
     if (search && search.length) {
-      this.filterBySearch(search);
+      this.filterBySearch(search, items);
     } else {
       this.props.updateFilter(null);
     }
   }
 
-  filterBySearch(search) {
-    // If ANY match is found, the item is included in the returned array
-    // Iterate over each 'keys' sub array and accumulate matching results
-
+  filterBySearch(search, items) { // If ANY match is found, the item is included in the returned array
     const searchArray = cleanKeywordsArray(decodeURIComponent(search));
 
     const checkStringMatch = (value, search) => value.toLowerCase().indexOf(search) !== -1;
@@ -69,7 +70,7 @@ export default class FilterSearch extends Component {
       return false; // Just in case
     };
 
-    const matchedItems = this.props.items.reduce((p, item, i) => {
+    const matchedItems = items.reduce((p, item, i) => {
       const matchedSearch = searchArray.some(search =>
         this.props.keys.some((key) => {
           if (typeof key === 'string') return checkStringMatch((item[key] || ''), search);
@@ -89,6 +90,7 @@ export default class FilterSearch extends Component {
   }
 
   render() {
+    const p = this.props;
     const s = this.state;
 
     return (
@@ -98,7 +100,7 @@ export default class FilterSearch extends Component {
           isClearable
           placeholder="Search"
           value={s.search}
-          onChange={value => this.onChangeSearch(value, true)}
+          onChange={value => this.onChangeSearch(value, p.items, true)}
         />
       </article>
     );

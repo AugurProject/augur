@@ -39,6 +39,7 @@ export default class FilterSortView extends Component {
 
     if (this.state.searchItems !== nextState.searchItems) {
       console.log(nextState.searchItems);
+      this.setState({ searchItems: nextState.searchItems });
     }
   }
 
