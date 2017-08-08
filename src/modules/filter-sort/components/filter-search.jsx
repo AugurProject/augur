@@ -86,6 +86,8 @@ export default class FilterSearch extends Component {
       return p;
     }, []);
 
+    console.log('matched -- ', matchedItems);
+
     this.props.updateFilter(matchedItems);
   }
 

@@ -19,28 +19,47 @@ export default class FilterSortView extends Component {
     super(props);
 
     this.state = {
-      searchItems: null
+      filters: {
+        searchItems: null,
+      },
+      sorts: {
+        marketParameter: null
+      },
+      combinedFiltered: null
     };
   }
 
-  // Filters First
-  // Sorts Second
-
   componentWillMount() {
-    // TODO -- call aggregate update method
-  }
-
-  componentWillReceiveProps(nextProps) {
-    // TODO -- conditionally call aggregate udpate method
+    this.updateCombinedFilters(this.state.filters, this.props.items);
   }
 
   componentWillUpdate(nextProps, nextState) {
-    // TODO -- conditionally call aggregate update method
-
-    if (this.state.searchItems !== nextState.searchItems) {
-      console.log(nextState.searchItems);
-      this.setState({ searchItems: nextState.searchItems });
+    if (this.state.filters !== nextState.filters) {
+      this.updateCombinedFilters(nextState.filters, nextProps.items);
     }
+
+    if (
+      this.state.sorts !== nextState.sorts ||
+      this.state.combinedFiltered !== nextState.combinedFiltered
+    ) {
+      this.updateSortedFiltered(nextState.sorts, nextState.combinedFiltered);
+    }
+  }
+
+  updateCombinedFilters(filters, items) {
+    const combinedFiltered = Object.keys(filters).reduce((p, filterType) => {
+      if (filters[filterType] === null) return p;
+      if (filters[filterType].length === 0) {
+        return [];
+      }
+      return filters[filterType].filter(item => p.includes(item));
+    }, items.map((_, i) => i));
+
+    this.setState({ combinedFiltered });
+  }
+
+  updateSortedFiltered(sorts, combinedFiltered) { // If we want to accomodate more than one sorting mechanism across a filtered list, we'll need to re-architect things a bit
+    this.props.updateFilteredItems(sorts.marketParameter !== null ? sorts.marketParameter : combinedFiltered);
   }
 
   render() {
@@ -54,7 +73,7 @@ export default class FilterSortView extends Component {
             history={p.history}
             items={p.items}
             keys={p.filterBySearch}
-            updateFilter={searchItems => this.setState({ searchItems })}
+            updateFilter={searchItems => this.setState({ filters: { searchItems } })}
           />
         }
       </article>
