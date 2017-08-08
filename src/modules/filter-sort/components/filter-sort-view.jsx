@@ -11,7 +11,7 @@ export default class FilterSortView extends Component {
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     updateFilteredItems: PropTypes.func.isRequired,
-    // Below are the optionsal filters available
+    searchPlaceholder: PropTypes.string,
     filterByKeyword: PropTypes.array
   }
 
@@ -36,15 +36,18 @@ export default class FilterSortView extends Component {
 
   componentWillUpdate(nextProps, nextState) {
     // TODO -- conditionally call aggregate update method
+
+    if (this.state.searchItems !== nextState.searchItems) {
+      console.log(nextState.searchItems);
+    }
   }
 
   render() {
     const p = this.props;
-    const s = this.state;
 
     return (
       <article>
-        {!!getValue(p, 'filterBySearch.length') &&
+        {!!getValue(p, 'filterBySearch') &&
           <FilterSearch
             location={p.location}
             history={p.history}

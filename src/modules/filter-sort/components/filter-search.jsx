@@ -22,7 +22,7 @@ export default class FilterSearch extends Component {
     super(props);
 
     this.state = {
-      keywords: ''
+      search: ''
     };
 
     this.onChangeSearch = this.onChangeSearch.bind(this);
@@ -36,9 +36,11 @@ export default class FilterSearch extends Component {
   }
 
   onChangeSearch(search, debounce) {
+    this.setState({ search });
+
     if (debounce) return this.debouncedOnChangeSearch(search);
 
-    if (search.length) {
+    if (search && search.length) {
       this.filterBySearch(search);
     } else {
       this.props.updateFilter(null);
@@ -51,36 +53,26 @@ export default class FilterSearch extends Component {
 
     const searchArray = cleanKeywordsArray(decodeURIComponent(search));
 
-    console.log('searchArray -- ', searchArray);
-
-    // Iterate over:
-    //    Each item
-    //      Each search
-    //        Each key
-
-    const checkStringMatch = (value, search) => value.toLowerCase().indexOf(search) !== 0;
+    const checkStringMatch = (value, search) => value.toLowerCase().indexOf(search) !== -1;
 
     const checkArrayMatch = (item, keys, search) => { // Accomodates n-1 key's value of either array or object && final key of type string or array
-      const parentValue = getValue(item, keys.reduce((p, key, i) => i + 1 !== keys.length && `${p}.${key}`, ''));
-      if (parentValue !== null && typeof parentValue === 'object') {
-        return parentValue[keys[keys.length - 1]].toLowerCase().indexOf(search) !== 0;
-      } else if (parentValue.isArray()) {
-        return parentValue.some(value => value[keys[keys.length - 1]].toLowerCase().indexOf(search) !== 0);
+      const parentValue = getValue(item, keys.reduce((p, key, i) => i + 1 !== keys.length ? `${p}${i !== 0 ? '.' : ''}${key}` : p, '')); // eslint-disable-line no-confusing-arrow
+
+      if (parentValue === null) return false;
+
+      if (Array.isArray(parentValue) && parentValue.length) {
+        return parentValue.some(value => value[keys[keys.length - 1]].toLowerCase().indexOf(search) !== -1);
+      } else if (typeof parentValue === 'object' && Object.keys(parentValue).length) {
+        return parentValue[keys[keys.length - 1]].toLowerCase().indexOf(search) !== -1;
       }
 
-      return false; // Issue with traversal
+      return false; // Just in case
     };
 
     const matchedItems = this.props.items.reduce((p, item, i) => {
       const matchedSearch = searchArray.some(search =>
         this.props.keys.some((key) => {
-          // Check if key is string or array
-
-          // Traverse down full array of keys
-
-          if (typeof key === 'string') {
-            return checkStringMatch((item.key || ''), search);
-          }
+          if (typeof key === 'string') return checkStringMatch((item[key] || ''), search);
 
           return checkArrayMatch(item, key, search);
         }
@@ -94,18 +86,6 @@ export default class FilterSearch extends Component {
     }, []);
 
     this.props.updateFilter(matchedItems);
-
-    // function isMatchKeywords(market, keys) {
-    //   const keywordsArray = cleanKeywordsArray(keys);
-    //   if (!keywordsArray.length) {
-    //     return true;
-    //   }
-    //   return keywordsArray.every(keyword => (
-    //     market.description.toLowerCase().indexOf(keyword) >= 0 ||
-    //     market.outcomes.some(outcome => outcome.name && outcome.name.indexOf(keyword) >= 0) ||
-    //     market.tags.some(tag => tag.name.indexOf(keyword) >= 0)
-    //   ));
-    // }
   }
 
   render() {
@@ -116,8 +96,8 @@ export default class FilterSearch extends Component {
         <Input
           isSearch
           isClearable
-          placeholder="Search Markets"
-          value={s.keywords}
+          placeholder="Search"
+          value={s.search}
           onChange={value => this.onChangeSearch(value, true)}
         />
       </article>
