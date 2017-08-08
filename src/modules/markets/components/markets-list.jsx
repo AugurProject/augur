@@ -36,7 +36,6 @@ export default class MarketsList extends Component {
     const s = this.state;
 
     const marketsLength = p.marketsFiltered.length;
-    console.log('marketsLength -- ', marketsLength);
     const shareDenominations = getValue(p, 'scalarShareDenomination.denominations');
 
     return (
