@@ -8,14 +8,15 @@ import getValue from 'utils/get-value';
 
 import { SEARCH_PARAM_NAME } from 'modules/app/constants/param-names';
 
-// NOTE --  Currently the searchKeys can accomodate target string, object, and arrays.
+// NOTE --  Currently the searchKeys can accomodate target's of type string and array
 export default class FilterSearch extends Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     items: PropTypes.array.isRequired,  // Raw items to filter against, assumes array of objects
     keys: PropTypes.array.isRequired,    // Keys w/in each item's object to apply filter
-    updateFilter: PropTypes.func.isRequired
+    updateFilter: PropTypes.func.isRequired,
+    searchPlaceholder: PropTypes.string
   }
 
   constructor(props) {
@@ -56,7 +57,7 @@ export default class FilterSearch extends Component {
 
     const checkStringMatch = (value, search) => value.toLowerCase().indexOf(search) !== -1;
 
-    const checkArrayMatch = (item, keys, search) => { // Accomodates n-1 key's value of either array or object && final key of type string or array
+    const checkArrayMatch = (item, keys, search) => { // Accomodates n-1 key's value of either array or object && final key's value of type string or array
       const parentValue = getValue(item, keys.reduce((p, key, i) => i + 1 !== keys.length ? `${p}${i !== 0 ? '.' : ''}${key}` : p, '')); // eslint-disable-line no-confusing-arrow
 
       if (parentValue === null) return false;
@@ -87,6 +88,8 @@ export default class FilterSearch extends Component {
     }, []);
 
     this.props.updateFilter(matchedItems);
+
+    // TODO -- update location
   }
 
   render() {
@@ -94,11 +97,11 @@ export default class FilterSearch extends Component {
     const s = this.state;
 
     return (
-      <article className="search-input" >
+      <article className="filter-search-input" >
         <Input
           isSearch
           isClearable
-          placeholder="Search"
+          placeholder={p.searchPlaceholder || 'Search'}
           value={s.search}
           onChange={value => this.onChangeSearch(value, p.items, true)}
         />

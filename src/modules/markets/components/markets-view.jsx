@@ -116,7 +116,6 @@ export default class MarketsView extends Component {
         <MarketsHeader
           isLogged={p.isLogged}
           location={p.location}
-          history={p.history}
           markets={p.markets}
           updateFilteredItems={marketsFiltered => this.setState({ marketsFiltered })}
         />

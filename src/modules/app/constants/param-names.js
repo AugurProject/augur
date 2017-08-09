@@ -1,5 +1,5 @@
 export const SEARCH_PARAM_NAME = 'search';
-export const FILTER_SORT_TYPE_PARAM_NAME = 'type';
+export const FILTER_MARKET_STATE_PARAM_NAME = 'market-state';
 export const FILTER_SORT_SORT_PARAM_NAME = 'sort';
 export const FILTER_SORT_ISDESC_PARAM_NAME = 'desc';
 export const PAGINATION_PARAM_NAME = 'page';
