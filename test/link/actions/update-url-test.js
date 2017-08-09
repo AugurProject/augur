@@ -4,7 +4,6 @@ import proxyquire from 'proxyquire';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import sinon from 'sinon';
-import testState from 'test/testState';
 import * as mockStore from 'test/mockStore';
 
 describe(`modules/link/actions/update-url.js`, () => {
