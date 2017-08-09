@@ -214,6 +214,7 @@ export function constructMarketCreatedTransaction(log, description, dispatch) {
   const transaction = { data: {} };
   transaction.type = TYPES.CREATE_MARKET;
   transaction.description = description.split('~|>')[0];
+  transaction.topic = log.topic;
   transaction.marketCreationFee = formatEtherTokens(log.marketCreationFee);
   transaction.data.marketLink = selectMarketLink({ id: log.marketID, description: transaction.description }, dispatch);
   transaction.data.marketID = log.marketID ? log.marketID : null;
