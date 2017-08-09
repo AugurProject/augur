@@ -3,8 +3,8 @@
 var parseOrder = require("./order");
 
 module.exports = function (type, minPrice, maxPrice, orderBookArray) {
-  if (!Array.isArray(orderBookArray) || orderBookArray.error) {
-    return orderBookArray;
+  if (!Array.isArray(orderBookArray) || !orderBookArray.length || orderBookArray.error) {
+    return null;
   }
   var numOrders = orderBookArray.length / 9;
   var orderBook = {};
