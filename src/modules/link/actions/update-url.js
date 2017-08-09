@@ -2,9 +2,10 @@ import { loadFullMarket } from 'modules/market/actions/load-full-market';
 import { loadMarkets } from 'modules/markets/actions/load-markets';
 import { loadMarketsByTopic } from 'modules/markets/actions/load-markets-by-topic';
 
-import { MARKETS, AUTHENTICATION, TOPICS } from 'modules/app/constants/views';
+import { MARKETS, M, AUTHENTICATION, TOPICS } from 'modules/app/constants/views';
 import authenticatedViews from 'modules/app/constants/authenticated-views';
 
+import { abi } from 'services/augurjs';
 import getValue from 'utils/get-value';
 import setTitle from 'utils/set-title';
 import { parseURL, makeLocation } from 'utils/parse-url';
@@ -18,7 +19,7 @@ export const UPDATE_URL = 'UPDATE_URL';
 export function updateURL(url, title, branchID) {
   return (dispatch, getState) => {
     const parsedURL = parseURL(url);
-    const { branch, hasLoadedMarkets, hasLoadedTopic, loginAccount, selectedMarketID, connection } = getState();
+    const { branch, hasLoadedMarkets, hasLoadedTopic, loginAccount, connection } = getState();
 
     if (!loginAccount.address && authenticatedViews.indexOf(parsedURL.searchParams.page) !== -1) { //  Reroute the user if they are unauthenticated and attempting to traverse to authenticated views
       dispatch(updateURL(makeLocation({ page: AUTHENTICATION }).url));
@@ -38,9 +39,10 @@ export function updateURL(url, title, branchID) {
 
     // Handle additional actions related to route changes
     //  Load full market data for selected market
-    if (selectedMarketID) {
-      dispatch(loadFullMarket(selectedMarketID));
+    if (parsedURL.searchParams.page === M && connection.isConnected && (branchID || branch.id)) {
+      dispatch(loadFullMarket(abi.format_int256(parsedURL.searchParams.m.split('_').pop())));
     }
+
     //  Load respective markets (all or topic constrained)
     if (parsedURL.searchParams.page === MARKETS && connection.isConnected && (branchID || branch.id)) {
       const parsedURL = parseURL(url);
