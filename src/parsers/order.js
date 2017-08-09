@@ -24,19 +24,19 @@ module.exports = function (type, minPrice, maxPrice, order) {
   if (amount === null) return null;
 
   var fullPrecisionPrice = denormalizePrice(minPrice, maxPrice, abi.unfix_signed(order[1]));
-  var price = roundToPrecision(fullPrecisionPrice, constants.PRECISION.zero, round, roundingMode);
+  var price = roundToPrecision(new BigNumber(fullPrecisionPrice, 10), constants.PRECISION.zero, round, roundingMode);
   if (price === null) return null;
 
   return {
     amount: amount,
     fullPrecisionAmount: fullPrecisionAmount.toFixed(),
     price: price,
-    fullPrecisionPrice: fullPrecisionPrice.toFixed(),
+    fullPrecisionPrice: fullPrecisionPrice,
     owner: abi.format_address(order[2]),
     tokensEscrowed: abi.unfix(order[3], "string"),
     sharesEscrowed: abi.unfix(order[4], "string"),
     betterOrderId: abi.format_int256(order[5]),
     worseOrderId: abi.format_int256(order[6]),
-    gasPrice: abi.unfix(order[7], "string")
+    gasPrice: abi.string(order[7])
   };
 };
