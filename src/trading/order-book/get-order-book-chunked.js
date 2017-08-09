@@ -7,32 +7,29 @@ var isFunction = require("../../utils/is-function");
 var noop = require("../../utils/noop");
 var GETTER_CHUNK_SIZE = require("../../constants").GETTER_CHUNK_SIZE;
 
-// { marketID, offset, numTradesToLoad, scalarMinMax, totalTrades }
+// { _type, _market, _outcome, _startingOrderId, _numOrdersToLoad, minPrice, maxPrice }
 function getOrderBookChunked(p, onChunkReceived, onComplete) {
   if (!isFunction(onChunkReceived)) onChunkReceived = noop;
-  if (!p.totalTrades) {
-    return api().Markets.get_total_trades({ market_id: p.marketID }, function (totalTrades) {
-      if (!totalTrades || totalTrades.error || !parseInt(totalTrades, 10)) {
-        return onComplete(totalTrades);
-      }
-      getOrderBookChunked(assign({}, p, {
-        numTradesToLoad: Math.min(parseInt(totalTrades, 10), GETTER_CHUNK_SIZE),
-        totalTrades: totalTrades
-      }), onChunkReceived, onComplete);
-    });
-  }
   getOrderBook({
-    market: p.marketID,
-    offset: p.offset,
-    numTradesToLoad: p.numTradesToLoad || p.totalTrades,
-    scalarMinMax: p.scalarMinMax
-  }, function (orderBookChunk) {
+    _type: p_type,
+    _market: p._market,
+    _outcome: p._outcome,
+    _startingOrderId: p._startingOrderId,
+    _numOrdersToLoad: p._numOrdersToLoad || GETTER_CHUNK_SIZE,
+    minValue: p.minValue,
+    maxValue: p.maxValue
+  }, function (orderBookChunk, lastOrderId) {
     if (!orderBookChunk || orderBookChunk.error) return onComplete(orderBookChunk);
     onChunkReceived(orderBookChunk);
-    if (p.offset + p.numTradesToLoad < p.totalTrades) {
-      return getOrderBookChunked(assign({}, p, { offset: p.offset + p.numTradesToLoad }), onChunkReceived, onComplete);
-    }
-    onComplete(null);
+    api().Orders.getWorseOrderId({
+      _orderId: lastOrderId,
+      _type: p._type,
+      _market: p_market,
+      _outcome: p._outcome
+    }, function (worseOrderId) {
+      if (!parseInt(worseOrderId, 16)) return onComplete(null);
+      getOrderBookChunked(assign({}, p, { _startingOrderId: p._startingOrderId }), onChunkReceived, onComplete);
+    });
   });
 }
 
