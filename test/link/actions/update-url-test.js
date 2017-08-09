@@ -1,6 +1,8 @@
 import { describe, it, beforeEach, afterEach, after } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
 import sinon from 'sinon';
 import * as mockStore from 'test/mockStore';
 
@@ -75,11 +77,47 @@ describe(`modules/link/actions/update-url.js`, () => {
         },
         url: '/?search=example'
       }
-    }, {
-      type: 'UPDATE_URL',
-      value: 'loadFullMarket has been called, this is a stub.'
     }];
 
     assert.deepEqual(store.getActions(), out, `Didn't parse the url correctly`);
+  });
+
+  it(`should dispatch 'loadFullMarket' when url is a market`, () => {
+    const middlewares = [thunk];
+    const mockStore = configureMockStore(middlewares);
+    const customState = {
+      loginAccount: {
+        address: '0xtest'
+      },
+      connection: {
+        isConnected: true
+      },
+      branch: {
+        id: '12345'
+      }
+    };
+
+    const store = mockStore(customState);
+
+    store.dispatch(action.updateURL('?page=m&m=testing_0xtest'));
+
+    const out = [
+      {
+        type: 'UPDATE_URL',
+        parsedURL: {
+          searchParams: {
+            m: 'testing_0xtest',
+            page: 'm'
+          },
+          url: '/?page=m&m=testing_0xtest'
+        }
+      },
+      {
+        type: 'UPDATE_URL',
+        value: 'loadFullMarket has been called, this is a stub.'
+      }
+    ];
+
+    assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected actions`);
   });
 });
