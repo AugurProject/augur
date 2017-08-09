@@ -11,7 +11,7 @@ var GETTER_CHUNK_SIZE = require("../../constants").GETTER_CHUNK_SIZE;
 function getOrderBookChunked(p, onChunkReceived, onComplete) {
   if (!isFunction(onChunkReceived)) onChunkReceived = noop;
   getOrderBook({
-    _type: p_type,
+    _type: p._type,
     _market: p._market,
     _outcome: p._outcome,
     _startingOrderId: p._startingOrderId,
@@ -24,7 +24,7 @@ function getOrderBookChunked(p, onChunkReceived, onComplete) {
     api().Orders.getWorseOrderId({
       _orderId: lastOrderId,
       _type: p._type,
-      _market: p_market,
+      _market: p._market,
       _outcome: p._outcome
     }, function (worseOrderId) {
       if (!parseInt(worseOrderId, 16)) return onComplete(null);
