@@ -28,7 +28,7 @@ export default class FilterSortView extends Component {
         marketStateItems: null
       },
       sorts: {
-        marketParam: null
+        marketParamItems: null
       },
       combinedFiltered: null
     };
@@ -63,11 +63,12 @@ export default class FilterSortView extends Component {
   }
 
   updateSortedFiltered(sorts, combinedFiltered) { // If we want to accomodate more than one sorting mechanism across a filtered list, we'll need to re-architect things a bit
-    this.props.updateFilteredItems(sorts.marketParam !== null ? sorts.marketParameter : combinedFiltered);
+    this.props.updateFilteredItems(sorts.marketParamItems !== null ? sorts.marketParameter : combinedFiltered);
   }
 
   render() {
     const p = this.props;
+    const s = this.state;
 
     return (
       <article className="filter-sort">
@@ -77,11 +78,16 @@ export default class FilterSortView extends Component {
             history={p.history}
             items={p.items}
             currentReportingPeriod={p.currentReportingPeriod}
-            updateFilter={marketStateItems => this.setState({ filters: { ...this.state.filters, marketStateItems } })}
+            updateFilter={marketStateItems => this.setState({ filters: { ...s.filters, marketStateItems } })}
           />
         }
         {!!p.sortByMarketParam &&
-          <SortMarketParam />
+          <SortMarketParam
+            location={p.location}
+            history={p.history}
+            items={p.items}
+            updateSort={marketParamItems => this.setState({ sorts: { ...s.sorts, marketParamItems } })}
+          />
         }
         {!!p.filterBySearch &&
           <FilterSearch
@@ -90,7 +96,7 @@ export default class FilterSortView extends Component {
             items={p.items}
             keys={p.filterBySearch}
             searchPlaceholder={p.searchPlaceholder}
-            updateFilter={searchItems => this.setState({ filters: { ...this.state.filters, searchItems } })}
+            updateFilter={searchItems => this.setState({ filters: { ...s.filters, searchItems } })}
           />
         }
       </article>

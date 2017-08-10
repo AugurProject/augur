@@ -8,7 +8,6 @@ import makeQuery from 'modules/app/helpers/make-query';
 import { isMarketDataOpen } from 'utils/is-market-data-open';
 
 import { FILTER_MARKET_STATE_PARAM_NAME } from 'modules/app/constants/param-names';
-import { FILTER_MARKET_STATE_OPEN, FILTER_MARKET_STATE_REPORTING, FILTER_MARKET_STATE_CLOSED } from 'modules/filter-sort/constants/filter-sort';
 
 export default class FilterMarketState extends Component {
   static propTypes = {
@@ -25,15 +24,15 @@ export default class FilterMarketState extends Component {
     this.marketStateOptions = [
       {
         label: 'Open',
-        value: FILTER_MARKET_STATE_OPEN
+        value: 'open'
       },
       {
         label: 'Reporting',
-        value: FILTER_MARKET_STATE_REPORTING
+        value: 'reporting'
       },
       {
         label: 'Closed',
-        value: FILTER_MARKET_STATE_CLOSED
+        value: 'closed'
       }
     ];
 
@@ -69,13 +68,13 @@ export default class FilterMarketState extends Component {
   filterByMarketState(selectedMarketState, currentReportingPeriod, items, location) {
     const matchedItems = items.reduce((p, market, i) => {
       switch (selectedMarketState) {
-        case FILTER_MARKET_STATE_OPEN:
+        case 'open':
           if (isMarketDataOpen(market)) return [...p, i];
           break;
-        case FILTER_MARKET_STATE_REPORTING:
+        case 'reporting':
           if (market.tradingPeriod === currentReportingPeriod) return [...p, i];
           break;
-        case FILTER_MARKET_STATE_CLOSED:
+        case 'closed':
           if (!isMarketDataOpen(market)) return [...p, i];
           break;
         default:
