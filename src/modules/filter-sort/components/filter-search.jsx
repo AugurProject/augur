@@ -6,7 +6,7 @@ import parseQuery from 'modules/app/helpers/parse-query';
 import debounce from 'utils/debounce';
 import getValue from 'utils/get-value';
 
-import { SEARCH_PARAM_NAME } from 'modules/app/constants/param-names';
+import { FILTER_SEARCH_PARAM } from 'modules/app/constants/param-names';
 
 // NOTE --  Currently the searchKeys can accomodate target's of type string and array
 export default class FilterSearch extends Component {
@@ -32,7 +32,7 @@ export default class FilterSearch extends Component {
   }
 
   componentWillMount() {
-    const search = parseQuery(this.props.location.search)[SEARCH_PARAM_NAME];
+    const search = parseQuery(this.props.location.search)[FILTER_SEARCH_PARAM];
     this.onChangeSearch(search);
   }
 

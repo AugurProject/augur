@@ -1,8 +1,13 @@
-export const SEARCH_PARAM_NAME = 'search';
-export const FILTER_MARKET_STATE_PARAM_NAME = 'market-state';
-export const FILTER_SORT_SORT_PARAM_NAME = 'sort';
-export const FILTER_SORT_ISDESC_PARAM_NAME = 'desc';
+// Filter + Sort Params
+export const FILTER_SEARCH_PARAM = 'search';
+export const FILTER_MARKET_STATE_PARAM = 'market-state';
+export const SORT_MARKET_PARAM = 'market-sort-param';
+export const SORT_MARKET_ORDER_PARAM = 'market-sort-order';
+
+// Pagination
 export const PAGINATION_PARAM_NAME = 'page';
+
+// Unorg'd
 export const TAGS_PARAM_NAME = 'tags';
 export const TOPIC_PARAM_NAME = 'topic';
 export const SUBSET_PARAM_NAME = 'subset';

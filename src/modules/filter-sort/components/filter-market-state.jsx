@@ -7,7 +7,7 @@ import parseQuery from 'modules/app/helpers/parse-query';
 import makeQuery from 'modules/app/helpers/make-query';
 import { isMarketDataOpen } from 'utils/is-market-data-open';
 
-import { FILTER_MARKET_STATE_PARAM_NAME } from 'modules/app/constants/param-names';
+import { FILTER_MARKET_STATE_PARAM } from 'modules/app/constants/param-names';
 
 export default class FilterMarketState extends Component {
   static propTypes = {
@@ -47,8 +47,7 @@ export default class FilterMarketState extends Component {
   }
 
   componentWillMount() {
-    const selectedMarketState = parseQuery(this.props.location.search)[FILTER_MARKET_STATE_PARAM_NAME];
-    console.log('selectedMarketState -- ', selectedMarketState);
+    const selectedMarketState = parseQuery(this.props.location.search)[FILTER_MARKET_STATE_PARAM];
     if (selectedMarketState) this.setState({ selectedMarketState });
   }
 
@@ -91,9 +90,9 @@ export default class FilterMarketState extends Component {
     let updatedSearch = parseQuery(location.search);
 
     if (selectedMarketState === this.defaultMarketState) {
-      delete updatedSearch[FILTER_MARKET_STATE_PARAM_NAME];
+      delete updatedSearch[FILTER_MARKET_STATE_PARAM];
     } else {
-      updatedSearch[FILTER_MARKET_STATE_PARAM_NAME] = selectedMarketState;
+      updatedSearch[FILTER_MARKET_STATE_PARAM] = selectedMarketState;
     }
 
     updatedSearch = makeQuery(updatedSearch);

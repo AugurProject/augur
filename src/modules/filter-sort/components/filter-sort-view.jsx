@@ -86,6 +86,7 @@ export default class FilterSortView extends Component {
             location={p.location}
             history={p.history}
             items={p.items}
+            combinedFiltered={s.combinedFiltered}
             updateSort={marketParamItems => this.setState({ sorts: { ...s.sorts, marketParamItems } })}
           />
         }
