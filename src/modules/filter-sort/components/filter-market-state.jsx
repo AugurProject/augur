@@ -49,6 +49,7 @@ export default class FilterMarketState extends Component {
 
   componentWillMount() {
     const selectedMarketState = parseQuery(this.props.location.search)[FILTER_MARKET_STATE_PARAM_NAME];
+    console.log('selectedMarketState -- ', selectedMarketState);
     if (selectedMarketState) this.setState({ selectedMarketState });
   }
 
@@ -108,7 +109,7 @@ export default class FilterMarketState extends Component {
     return (
       <article className="filter-market-state">
         <Dropdown
-          default={this.marketStateOptions[0].value}
+          default={this.state.selectedMarketState}
           options={this.marketStateOptions}
           onChange={selectedMarketState => this.setState({ selectedMarketState })}
         />
