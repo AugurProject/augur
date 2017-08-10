@@ -53,10 +53,9 @@ export default class FilterSortView extends Component {
 
   updateCombinedFilters(filters, items) {
     const combinedFiltered = Object.keys(filters).reduce((p, filterType) => {
+      if (p.length === 0 || (filters[filterType] !== null && filters[filterType].length === 0)) return [];
       if (filters[filterType] === null) return p;
-      if (filters[filterType].length === 0) {
-        return [];
-      }
+
       return filters[filterType].filter(item => p.includes(item));
     }, items.map((_, i) => i));
 
@@ -78,7 +77,7 @@ export default class FilterSortView extends Component {
             history={p.history}
             items={p.items}
             currentReportingPeriod={p.currentReportingPeriod}
-            updateFilter={marketStateItems => this.setState({ filters: { marketStateItems } })}
+            updateFilter={marketStateItems => this.setState({ filters: { ...this.state.filters, marketStateItems } })}
           />
         }
         {!!p.filterBySearch &&
@@ -88,7 +87,7 @@ export default class FilterSortView extends Component {
             items={p.items}
             keys={p.filterBySearch}
             searchPlaceholder={p.searchPlaceholder}
-            updateFilter={searchItems => this.setState({ filters: { searchItems } })}
+            updateFilter={searchItems => this.setState({ filters: { ...this.state.filters, searchItems } })}
           />
         }
       </article>
