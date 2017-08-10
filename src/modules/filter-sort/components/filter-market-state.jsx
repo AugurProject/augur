@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import Dropdown from 'modules/common/components/dropdown';
 
 import parseQuery from 'modules/app/helpers/parse-query';
+import makeQuery from 'modules/app/helpers/make-query';
 import { isMarketDataOpen } from 'utils/is-market-data-open';
 
 import { FILTER_MARKET_STATE_PARAM_NAME } from 'modules/app/constants/param-names';
@@ -36,11 +37,14 @@ export default class FilterMarketState extends Component {
       }
     ];
 
+    this.defaultMarketState = this.marketStateOptions[0].value;
+
     this.state = {
-      selectedMarketState: this.marketStateOptions[0].value
+      selectedMarketState: this.defaultMarketState
     };
 
     this.filterByMarketState = this.filterByMarketState.bind(this);
+    this.updateQuery = this.updateQuery.bind(this);
   }
 
   componentWillMount() {
@@ -53,14 +57,15 @@ export default class FilterMarketState extends Component {
       this.state.selectedMarketState !== nextState.selectedMarketState ||
       this.props.items !== nextProps.items
     ) {
-      this.filterByMarketState(nextState.selectedMarketState, nextProps.currentReportingPeriod, nextProps.items);
+      this.filterByMarketState(nextState.selectedMarketState, nextProps.currentReportingPeriod, nextProps.items, nextProps.location);
+    }
+
+    if (this.state.selectedMarketState !== nextState.selectedMarketState) {
+      this.updateQuery(nextState.selectedMarketState, nextProps.location);
     }
   }
 
-  filterByMarketState(selectedMarketState, currentReportingPeriod, items) {
-    // TODO -- filter + update all the things
-    console.log('heyo!  -- ', selectedMarketState, items);
-
+  filterByMarketState(selectedMarketState, currentReportingPeriod, items, location) {
     const matchedItems = items.reduce((p, market, i) => {
       switch (selectedMarketState) {
         case FILTER_MARKET_STATE_OPEN:
@@ -82,8 +87,23 @@ export default class FilterMarketState extends Component {
     console.log('matchedItems -- ', matchedItems);
 
     this.props.updateFilter(matchedItems);
+  }
 
-    // TOOD -- update location
+  updateQuery(selectedMarketState, location) {
+    let updatedSearch = parseQuery(location.search);
+
+    if (selectedMarketState === this.defaultMarketState) {
+      delete updatedSearch[FILTER_MARKET_STATE_PARAM_NAME];
+    } else {
+      updatedSearch[FILTER_MARKET_STATE_PARAM_NAME] = selectedMarketState;
+    }
+
+    updatedSearch = makeQuery(updatedSearch);
+
+    this.props.history.push({
+      ...location,
+      search: updatedSearch
+    });
   }
 
   render() {
