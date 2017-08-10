@@ -10,25 +10,27 @@ var GETTER_CHUNK_SIZE = require("../../constants").GETTER_CHUNK_SIZE;
 // { _type, _market, _outcome, _startingOrderId, _numOrdersToLoad, minPrice, maxPrice }
 function getOrderBookChunked(p, onChunkReceived, onComplete) {
   if (!isFunction(onChunkReceived)) onChunkReceived = noop;
+  if (!p.orderBook) p.orderBook = {};
   getOrderBook({
     _type: p._type,
     _market: p._market,
     _outcome: p._outcome,
     _startingOrderId: p._startingOrderId,
     _numOrdersToLoad: p._numOrdersToLoad || GETTER_CHUNK_SIZE,
-    minValue: p.minValue,
-    maxValue: p.maxValue
+    minPrice: p.minPrice,
+    maxPrice: p.maxPrice
   }, function (orderBookChunk, lastOrderId) {
     if (!orderBookChunk || orderBookChunk.error) return onComplete(orderBookChunk);
     onChunkReceived(orderBookChunk);
+    assign(p.orderBook, orderBookChunk);
     api().Orders.getWorseOrderId({
       _orderId: lastOrderId,
       _type: p._type,
       _market: p._market,
       _outcome: p._outcome
     }, function (worseOrderId) {
-      if (!parseInt(worseOrderId, 16)) return onComplete(null);
-      getOrderBookChunked(assign({}, p, { _startingOrderId: p._startingOrderId }), onChunkReceived, onComplete);
+      if (!parseInt(worseOrderId, 16)) return onComplete(p.orderBook);
+      getOrderBookChunked(assign({}, p, { _startingOrderId: worseOrderId }), onChunkReceived, onComplete);
     });
   });
 }

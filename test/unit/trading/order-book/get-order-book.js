@@ -13,7 +13,7 @@ describe("trading/order-book/get-order-book", function () {
         "../../api": function () {
           return {
             OrderBook: {
-              getOrderBook: t.stub.getOrderBook
+              getOrderBook: t.stub.api.OrderBook.getOrderBook
             }
           }
         }
@@ -33,35 +33,39 @@ describe("trading/order-book/get-order-book", function () {
       maxPrice: "1"
     },
     stub: {
-      getOrderBook: function (p, callback) {
-        assert.deepEqual(p, {
-          _type: 2,
-          _market: "MARKET_ID",
-          _outcome: "OUTCOME_ID",
-          _startingOrderId: "0xa",
-          _numOrdersToLoad: 10,
-        });
-        callback([
-          "0x1",                       // orderId
-          abi.fix("1.1111111", "hex"), // amount
-          abi.fix("0.7777777", "hex"), // price
-          "0xb0b",                     // owner
-          abi.fix("0.8641974", "hex"), // tokensEscrowed
-          abi.fix("0", "hex"),         // sharesEscrowed
-          "0xa",                       // betterOrderId
-          "0xb",                       // worseOrderId
-          "0x4a817c800",               // gasPrice
+      api: {
+        OrderBook: {
+          getOrderBook: function (p, callback) {
+            assert.deepEqual(p, {
+              _type: 2,
+              _market: "MARKET_ID",
+              _outcome: "OUTCOME_ID",
+              _startingOrderId: "0xa",
+              _numOrdersToLoad: 10,
+            });
+            callback([
+              "0x1",                       // orderId
+              abi.fix("1.1111111", "hex"), // amount
+              abi.fix("0.7777777", "hex"), // price
+              "0xb0b",                     // owner
+              abi.fix("0.8641974", "hex"), // tokensEscrowed
+              abi.fix("0", "hex"),         // sharesEscrowed
+              "0xa",                       // betterOrderId
+              "0xb",                       // worseOrderId
+              "0x4a817c800",               // gasPrice
 
-          "0xf",                       // orderId
-          abi.fix("1.1111111", "hex"), // amount
-          abi.fix("0.7777777", "hex"), // price
-          "0xb0b",                     // owner
-          abi.fix("0.8641974", "hex"), // tokensEscrowed
-          abi.fix("0", "hex"),         // sharesEscrowed
-          "0xa",                       // betterOrderId
-          "0xb",                       // worseOrderId
-          "0x4a817c801"                // gasPrice
-        ]);
+              "0xf",                       // orderId
+              abi.fix("1.1111111", "hex"), // amount
+              abi.fix("0.7777777", "hex"), // price
+              "0xb0b",                     // owner
+              abi.fix("0.8641974", "hex"), // tokensEscrowed
+              abi.fix("0", "hex"),         // sharesEscrowed
+              "0xa",                       // betterOrderId
+              "0xb",                       // worseOrderId
+              "0x4a817c801"                // gasPrice
+            ]);
+          }
+        }
       }
     },
     assertions: function (output) {
