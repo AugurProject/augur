@@ -63,7 +63,7 @@ export default class FilterSortView extends Component {
   }
 
   updateSortedFiltered(sorts, combinedFiltered) { // If we want to accomodate more than one sorting mechanism across a filtered list, we'll need to re-architect things a bit
-    this.props.updateFilteredItems(sorts.marketParamItems !== null ? sorts.marketParameter : combinedFiltered);
+    this.props.updateFilteredItems(sorts.marketParamItems !== null ? sorts.marketParamItems : combinedFiltered);
   }
 
   render() {

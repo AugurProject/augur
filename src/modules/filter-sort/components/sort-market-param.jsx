@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Dropdown from 'modules/common/components/dropdown';
 
 import parseQuery from 'modules/app/helpers/parse-query';
-// import makeQuery from 'modules/app/helpers/make-query';
+import makeQuery from 'modules/app/helpers/make-query';
 import getValue from 'utils/get-value';
 
 import { SORT_MARKET_PARAM, SORT_MARKET_ORDER_PARAM } from 'modules/app/constants/param-names';
@@ -75,18 +75,15 @@ export default class SortMarketParam extends Component {
     }
 
     if (
-      this.state.selectedMarketState !== nextState.selectedMarketState ||
+      this.state.selectedMarketParam !== nextState.selectedMarketParam ||
       this.state.selectedSort !== nextState.selectedSort
     ) {
-      this.updateQuery(nextState.selectedMarketState, nextState.selectedSort, nextProps.location);
+      this.updateQuery(nextState.selectedMarketParam, nextState.selectedSort, nextProps.location);
     }
   }
 
   sortByMarketParam(selectedMarketParam, selectedSort, items, combinedFiltered, location) {
     const sortedItems = combinedFiltered.sort((a, b) => {
-      // console.log('a value -- ', items[a][selectedMarketParam]);
-      // console.log('b value -- ', items[b][selectedMarketParam]);
-
       switch (selectedMarketParam) {
         case 'creationTime':
         case 'endDate': {
@@ -110,24 +107,30 @@ export default class SortMarketParam extends Component {
       }
     });
 
-    console.log('sortedItems -- ', sortedItems);
+    this.props.updateSort(sortedItems);
   }
 
-  updateQuery(selectedMarketState, selectedSort, location) {
-    //   let updatedSearch = parseQuery(location.search);
-    //
-    //   if (selectedMarketState === this.defaultMarketState) {
-    //     delete updatedSearch[FILTER_MARKET_STATE_PARAM_NAME];
-    //   } else {
-    //     updatedSearch[FILTER_MARKET_STATE_PARAM_NAME] = selectedMarketState;
-    //   }
-    //
-    //   updatedSearch = makeQuery(updatedSearch);
-    //
-    //   this.props.history.push({
-    //     ...location,
-    //     search: updatedSearch
-    //   });
+  updateQuery(selectedMarketParam, selectedSort, location) {
+    let updatedSearch = parseQuery(location.search);
+
+    if (selectedMarketParam === this.defaultMarketParam) {
+      delete updatedSearch[SORT_MARKET_PARAM];
+    } else {
+      updatedSearch[SORT_MARKET_PARAM] = selectedMarketParam;
+    }
+
+    if (selectedSort === this.defaultSort) {
+      delete updatedSearch[SORT_MARKET_ORDER_PARAM];
+    } else {
+      updatedSearch[SORT_MARKET_ORDER_PARAM] = selectedSort;
+    }
+
+    updatedSearch = makeQuery(updatedSearch);
+
+    this.props.history.push({
+      ...location,
+      search: updatedSearch
+    });
   }
 
   render() {
@@ -151,30 +154,3 @@ export default class SortMarketParam extends Component {
     );
   }
 }
-
-// export const SELECT_SORT_OPTIONS = [
-//   {
-//     label: 'Volume',
-//     value: 'volume'
-//   },
-//   {
-//     label: 'Newest',
-//     value: 'creationTime'
-//   },
-//   {
-//     label: 'Expiration',
-//     value: 'endDate'
-//   },
-//   {
-//     label: 'Taker Fee',
-//     value: 'takerFeePercent'
-//   },
-//   {
-//     label: 'Maker Fee',
-//     value: 'makerFeePercent'
-//   }
-// ];
-//
-// export const SELECT_ORDER_OPTIONS = {
-//   isDesc: true
-// };
