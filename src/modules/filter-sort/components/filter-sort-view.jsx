@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import FilterMarketState from 'modules/filter-sort/components/filter-market-state';
+import SortMarketParam from 'modules/filter-sort/components/sort-market-param';
 import FilterSearch from 'modules/filter-sort/components/filter-search';
-
-import getValue from 'utils/get-value';
 
 export default class FilterSortView extends Component {
   static propTypes = {
@@ -14,9 +13,10 @@ export default class FilterSortView extends Component {
     updateFilteredItems: PropTypes.func.isRequired,
     // Optional Filters + Sorts
     filterByMarketState: PropTypes.bool,
+    sortByMarketParam: PropTypes.bool,
     currentReportingPeriod: PropTypes.number,
     searchPlaceholder: PropTypes.string,
-    filterByKeyword: PropTypes.array,
+    filterByKeyword: PropTypes.array
   }
 
   constructor(props) {
@@ -28,7 +28,7 @@ export default class FilterSortView extends Component {
         marketStateItems: null
       },
       sorts: {
-        marketParameter: null
+        marketParam: null
       },
       combinedFiltered: null
     };
@@ -63,7 +63,7 @@ export default class FilterSortView extends Component {
   }
 
   updateSortedFiltered(sorts, combinedFiltered) { // If we want to accomodate more than one sorting mechanism across a filtered list, we'll need to re-architect things a bit
-    this.props.updateFilteredItems(sorts.marketParameter !== null ? sorts.marketParameter : combinedFiltered);
+    this.props.updateFilteredItems(sorts.marketParam !== null ? sorts.marketParameter : combinedFiltered);
   }
 
   render() {
@@ -71,7 +71,7 @@ export default class FilterSortView extends Component {
 
     return (
       <article className="filter-sort">
-        {!!p.filterByMarketState &&
+        {!!p.filterByMarketState && !!p.currentReportingPeriod &&
           <FilterMarketState
             location={p.location}
             history={p.history}
@@ -79,6 +79,9 @@ export default class FilterSortView extends Component {
             currentReportingPeriod={p.currentReportingPeriod}
             updateFilter={marketStateItems => this.setState({ filters: { ...this.state.filters, marketStateItems } })}
           />
+        }
+        {!!p.sortByMarketParam &&
+          <SortMarketParam />
         }
         {!!p.filterBySearch &&
           <FilterSearch

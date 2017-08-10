@@ -94,6 +94,7 @@ export default class MarketsHeader extends Component {
           searchPlaceholder="Search Markets"
           filterBySearch={this.searchKeys}
           filterByMarketState
+          sortByMarketParam
         />
       </article>
     );
