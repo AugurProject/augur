@@ -5,6 +5,7 @@ import Input from 'modules/common/components/input';
 import parseQuery from 'modules/app/helpers/parse-query';
 import debounce from 'utils/debounce';
 import getValue from 'utils/get-value';
+import isEqual from 'lodash/isEqual';
 
 import { FILTER_SEARCH_PARAM } from 'modules/app/constants/param-names';
 
@@ -37,7 +38,7 @@ export default class FilterSearch extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.items !== nextProps.items) this.onChangeSearch(this.state.search, nextProps.items);
+    if (!isEqual(this.props.items, nextProps.items)) this.onChangeSearch(this.state.search, nextProps.items);
   }
 
   onChangeSearch(search, items, debounce) {

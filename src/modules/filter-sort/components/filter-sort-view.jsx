@@ -5,6 +5,8 @@ import FilterMarketState from 'modules/filter-sort/components/filter-market-stat
 import SortMarketParam from 'modules/filter-sort/components/sort-market-param';
 import FilterSearch from 'modules/filter-sort/components/filter-search';
 
+import isEqual from 'lodash/isEqual';
+
 export default class FilterSortView extends Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
@@ -23,52 +25,70 @@ export default class FilterSortView extends Component {
     super(props);
 
     this.state = {
-      filters: {
-        searchItems: null,
-        marketStateItems: null
-      },
-      sorts: {
-        marketParamItems: null
-      },
+      // Filters
+      searchItems: null,
+      marketStateItems: null,
+      // Sorts
+      marketParamItems: null,
+      // Aggregated
       combinedFiltered: null
     };
   }
 
   componentWillMount() {
-    this.updateCombinedFilters(this.state.filters, this.props.items);
+    this.updateCombinedFilters({
+      filters: {
+        searchItems: this.state.searchItems,
+        marketStateItems: this.state.marketStateItems
+      },
+      items: this.props.items
+    });
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (this.state.filters !== nextState.filters) {
-      this.updateCombinedFilters(nextState.filters, nextProps.items);
+    if (
+      !isEqual(this.state.searchItems, nextState.searchItems) ||
+      !isEqual(this.state.marketStateItems, nextState.marketStateItems)
+    ) {
+      this.updateCombinedFilters({
+        filters: {
+          searchItems: nextState.searchItems,
+          marketStateItems: nextState.marketStateItems
+        },
+        items: nextProps.items
+      });
     }
 
     if (
-      this.state.sorts !== nextState.sorts ||
-      this.state.combinedFiltered !== nextState.combinedFiltered
+      !isEqual(this.state.marketParamItems, nextState.marketParamItems) ||
+      !isEqual(this.state.combinedFiltered, nextState.combinedFiltered)
     ) {
-      this.updateSortedFiltered(nextState.sorts, nextState.combinedFiltered);
+      this.updateSortedFiltered({
+        sorts: {
+          marketParamItems: nextState.marketParamItems
+        },
+        combinedFiltered: nextState.combinedFiltered
+      });
     }
   }
 
-  updateCombinedFilters(filters, items) {
-    const combinedFiltered = Object.keys(filters).reduce((p, filterType) => {
-      if (p.length === 0 || (filters[filterType] !== null && filters[filterType].length === 0)) return [];
-      if (filters[filterType] === null) return p;
+  updateCombinedFilters(options) {
+    const combinedFiltered = Object.keys(options.filters).reduce((p, filterType) => {
+      if (p.length === 0 || (options.filters[filterType] !== null && options.filters[filterType].length === 0)) return [];
+      if (options.filters[filterType] === null) return p;
 
-      return filters[filterType].filter(item => p.includes(item));
-    }, items.map((_, i) => i));
+      return options.filters[filterType].filter(item => p.includes(item));
+    }, options.items.map((_, i) => i));
 
     this.setState({ combinedFiltered });
   }
 
-  updateSortedFiltered(sorts, combinedFiltered) { // If we want to accomodate more than one sorting mechanism across a filtered list, we'll need to re-architect things a bit
-    this.props.updateFilteredItems(sorts.marketParamItems !== null ? sorts.marketParamItems : combinedFiltered);
+  updateSortedFiltered(options) { // If we want to accomodate more than one sorting mechanism across a filtered list, we'll need to re-architect things a bit
+    this.props.updateFilteredItems(options.sorts.marketParamItems !== null ? options.sorts.marketParamItems : options.combinedFiltered);
   }
 
   render() {
     const p = this.props;
-    const s = this.state;
 
     return (
       <article className="filter-sort">
@@ -78,7 +98,7 @@ export default class FilterSortView extends Component {
             history={p.history}
             items={p.items}
             currentReportingPeriod={p.currentReportingPeriod}
-            updateFilter={marketStateItems => this.setState({ filters: { ...s.filters, marketStateItems } })}
+            updateFilter={marketStateItems => this.setState({ marketStateItems })}
           />
         }
         {!!p.sortByMarketParam &&
@@ -86,8 +106,8 @@ export default class FilterSortView extends Component {
             location={p.location}
             history={p.history}
             items={p.items}
-            combinedFiltered={s.combinedFiltered}
-            updateSort={marketParamItems => this.setState({ sorts: { ...s.sorts, marketParamItems } })}
+            combinedFiltered={this.state.combinedFiltered}
+            updateSort={marketParamItems => this.setState({ marketParamItems })}
           />
         }
         {!!p.filterBySearch &&
@@ -97,7 +117,7 @@ export default class FilterSortView extends Component {
             items={p.items}
             keys={p.filterBySearch}
             searchPlaceholder={p.searchPlaceholder}
-            updateFilter={searchItems => this.setState({ filters: { ...s.filters, searchItems } })}
+            updateFilter={searchItems => this.setState({ searchItems })}
           />
         }
       </article>

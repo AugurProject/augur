@@ -6,6 +6,7 @@ import Dropdown from 'modules/common/components/dropdown';
 import parseQuery from 'modules/app/helpers/parse-query';
 import makeQuery from 'modules/app/helpers/make-query';
 import { isMarketDataOpen } from 'utils/is-market-data-open';
+import isEqual from 'lodash/isEqual';
 
 import { FILTER_MARKET_STATE_PARAM } from 'modules/app/constants/param-names';
 
@@ -49,12 +50,13 @@ export default class FilterMarketState extends Component {
   componentWillMount() {
     const selectedMarketState = parseQuery(this.props.location.search)[FILTER_MARKET_STATE_PARAM];
     if (selectedMarketState) this.setState({ selectedMarketState });
+    this.filterByMarketState(selectedMarketState || this.state.selectedMarketState, this.props.currentReportingPeriod, this.props.items, this.props.location);
   }
 
   componentWillUpdate(nextProps, nextState) {
     if (
       this.state.selectedMarketState !== nextState.selectedMarketState ||
-      this.props.items !== nextProps.items
+      !isEqual(this.props.items, nextProps.items)
     ) {
       this.filterByMarketState(nextState.selectedMarketState, nextProps.currentReportingPeriod, nextProps.items, nextProps.location);
     }
@@ -82,6 +84,8 @@ export default class FilterMarketState extends Component {
 
       return p;
     }, []);
+
+    console.log('matched -- ', matchedItems);
 
     this.props.updateFilter(matchedItems);
   }

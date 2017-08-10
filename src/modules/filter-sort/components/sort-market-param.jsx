@@ -6,6 +6,7 @@ import Dropdown from 'modules/common/components/dropdown';
 import parseQuery from 'modules/app/helpers/parse-query';
 import makeQuery from 'modules/app/helpers/make-query';
 import getValue from 'utils/get-value';
+import isEqual from 'lodash/isEqual';
 
 import { SORT_MARKET_PARAM, SORT_MARKET_ORDER_PARAM } from 'modules/app/constants/param-names';
 
@@ -68,8 +69,8 @@ export default class SortMarketParam extends Component {
     if (
       this.state.selectedMarketParam !== nextState.selectedMarketParam ||
       this.state.selectedSort !== nextState.selectedSort ||
-      this.props.items !== nextProps.items ||
-      this.props.combinedFiltered !== nextProps.combinedFiltered
+      !isEqual(this.props.items, nextProps.items) ||
+      !isEqual(this.props.combinedFiltered, nextProps.combinedFiltered)
     ) {
       this.sortByMarketParam(nextState.selectedMarketParam, nextState.selectedSort, nextProps.items, nextProps.combinedFiltered, nextProps.location);
     }
