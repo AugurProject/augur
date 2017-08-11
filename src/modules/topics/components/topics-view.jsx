@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 
 import NullStateMessage from 'modules/common/components/null-state-message';
@@ -19,6 +20,7 @@ export default class TopicsView extends Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
+    isLogged: PropTypes.bool.isRequired,
     topics: PropTypes.array,
     branch: PropTypes.object,
     loginAccount: PropTypes.object,
@@ -165,12 +167,14 @@ export default class TopicsView extends Component {
             <Branch {...p.branch} />
           }
           <div className="topics-header">
-            <FilterSort
-              items={p.topics}
-              updateFilteredItems={this.updateFilteredItems}
-              searchPlaceholder="Search Topics"
-              filterBySearch={this.searchKeys}
-            />
+            <div className={classNames('topics-search', { 'only-search': !p.isLogged })}>
+              <FilterSort
+                items={p.topics}
+                updateFilteredItems={this.updateFilteredItems}
+                searchPlaceholder="Search Topics"
+                filterBySearch={this.searchKeys}
+              />
+            </div>
             {p.loginAccount && p.loginAccount.address &&
               <Link
                 to={makePath(CREATE_MARKET)}
