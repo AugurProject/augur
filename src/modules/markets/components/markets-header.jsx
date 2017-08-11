@@ -70,7 +70,7 @@ export default class MarketsHeader extends Component {
 
     return (
       <article>
-        <div className="view-header">
+        <div className="view-header markets-header">
           <div className="view-header-group">
             <h2 className={classNames({ capitalized: s.capitalizeTitle })}>
               {s.headerTitle}

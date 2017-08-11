@@ -138,7 +138,7 @@ export default class SortMarketParam extends Component {
     const s = this.state;
 
     return (
-      <article className="market-sort-param">
+      <article className="market-sort-param companion-fields">
         <Dropdown
           className="companion-field"
           default={s.selectedMarketParam}

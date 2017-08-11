@@ -118,7 +118,7 @@ export default class FilterSearch extends Component {
     const s = this.state;
 
     return (
-      <article className="filter-search-input" >
+      <article className="filter-search" >
         <Input
           isSearch
           isClearable

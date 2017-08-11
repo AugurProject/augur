@@ -91,35 +91,39 @@ export default class FilterSortView extends Component {
     const p = this.props;
 
     return (
-      <article className="filter-sort">
-        {!!p.filterByMarketState && !!p.currentReportingPeriod &&
-          <FilterMarketState
-            location={p.location}
-            history={p.history}
-            items={p.items}
-            currentReportingPeriod={p.currentReportingPeriod}
-            updateFilter={marketStateItems => this.setState({ marketStateItems })}
-          />
-        }
-        {!!p.sortByMarketParam &&
-          <SortMarketParam
-            location={p.location}
-            history={p.history}
-            items={p.items}
-            combinedFiltered={this.state.combinedFiltered}
-            updateSort={marketParamItems => this.setState({ marketParamItems })}
-          />
-        }
-        {!!p.filterBySearch &&
-          <FilterSearch
-            location={p.location}
-            history={p.history}
-            items={p.items}
-            keys={p.filterBySearch}
-            searchPlaceholder={p.searchPlaceholder}
-            updateFilter={searchItems => this.setState({ searchItems })}
-          />
-        }
+      <article className="view-header filter-sort">
+        <div className="view-header-group">
+          {!!p.filterByMarketState && !!p.currentReportingPeriod &&
+            <FilterMarketState
+              location={p.location}
+              history={p.history}
+              items={p.items}
+              currentReportingPeriod={p.currentReportingPeriod}
+              updateFilter={marketStateItems => this.setState({ marketStateItems })}
+            />
+          }
+          {!!p.sortByMarketParam &&
+            <SortMarketParam
+              location={p.location}
+              history={p.history}
+              items={p.items}
+              combinedFiltered={this.state.combinedFiltered}
+              updateSort={marketParamItems => this.setState({ marketParamItems })}
+            />
+          }
+        </div>
+        <div className="view-header-group">
+          {!!p.filterBySearch &&
+            <FilterSearch
+              location={p.location}
+              history={p.history}
+              items={p.items}
+              keys={p.filterBySearch}
+              searchPlaceholder={p.searchPlaceholder}
+              updateFilter={searchItems => this.setState({ searchItems })}
+            />
+          }
+        </div>
       </article>
     );
   }
