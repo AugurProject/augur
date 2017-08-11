@@ -48,7 +48,8 @@ export default class FilterSortView extends Component {
   componentWillUpdate(nextProps, nextState) {
     if (
       !isEqual(this.state.searchItems, nextState.searchItems) ||
-      !isEqual(this.state.marketStateItems, nextState.marketStateItems)
+      !isEqual(this.state.marketStateItems, nextState.marketStateItems) ||
+      !isEqual(this.props.items, nextProps.items)
     ) {
       this.updateCombinedFilters({
         filters: {

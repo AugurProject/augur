@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import classNames from 'classnames';
 
 import NullStateMessage from 'modules/common/components/null-state-message';
 import TopicRows from 'modules/topics/components/topic-rows';
 import Paginator from 'modules/common/components/paginator';
-import Input from 'modules/common/components/input';
 import Branch from 'modules/branch/components/branch';
+import FilterSort from 'modules/filter-sort/container';
 
 import parseQuery from 'modules/app/helpers/parse-query';
-import makeQuery from 'modules/app/helpers/make-query';
 import makePath from 'modules/app/helpers/make-path';
+import getValue from 'utils/get-value';
 
 import { PAGINATION_PARAM_NAME } from 'modules/app/constants/param-names';
 import { CREATE_MARKET } from 'modules/app/constants/views';
@@ -36,8 +35,9 @@ export default class TopicsView extends Component {
       topicsPerRow: 4,
     };
 
+    this.searchKeys = ['topic'];
+
     this.state = {
-      keywords: '',
       lowerBound: null,
       upperBound: null,
       boundedLength: null,
@@ -53,9 +53,9 @@ export default class TopicsView extends Component {
 
     this.setCurrentPage = this.setCurrentPage.bind(this);
     this.setItemsPerPage = this.setItemsPerPage.bind(this);
-    this.filterByKeywords = this.filterByKeywords.bind(this);
     this.setSegment = this.setSegment.bind(this);
     this.filterOutIconClassesFromStylesheets = this.filterOutIconClassesFromStylesheets.bind(this);
+    this.updateFilteredItems = this.updateFilteredItems.bind(this);
   }
 
   componentWillMount() {
@@ -74,22 +74,9 @@ export default class TopicsView extends Component {
   componentWillUpdate(nextProps, nextState) {
     if (
       this.state.currentPage !== nextState.currentPage ||
-      this.state.keywords !== nextState.keywords
+      this.state.hasKeywords !== nextState.hasKeywords
     ) {
-      this.setItemsPerPage(nextState.currentPage, !!nextState.keywords);
-    }
-    if (
-      this.props.topics !== nextProps.topics ||
-      this.state.keywords !== nextState.keywords ||
-      this.state.itemsPerPage !== nextState.itemsPerPage
-    ) {
-      this.filterByKeywords({
-        location: nextProps.location,
-        history: nextProps.history,
-        keywords: nextState.keywords,
-        topics: nextProps.topics,
-        filteredTopics: nextState.filteredTopics
-      });
+      this.setItemsPerPage(nextState.currentPage, nextState.hasKeywords);
     }
   }
 
@@ -112,32 +99,6 @@ export default class TopicsView extends Component {
 
   setSegment(lowerBound, upperBound, boundedLength) {
     this.setState({ lowerBound, upperBound, boundedLength });
-  }
-
-  filterByKeywords(options) {
-    let filteredTopics = options.topics;
-
-    // Filter Based on Keywords
-    if (options.keywords) {
-      filteredTopics = (options.topics || []).filter(topic => topic.topic.toLowerCase().indexOf(options.keywords.toLowerCase()) >= 0);
-    }
-
-    if (filteredTopics !== options.filteredTopics) {
-      this.setState({
-        filteredTopics,
-        topicsLength: filteredTopics.length
-      });
-
-      // Reset pagination
-      let updatedSearch = parseQuery(options.location.search);
-      delete updatedSearch[PAGINATION_PARAM_NAME];
-      updatedSearch = makeQuery(updatedSearch);
-
-      options.history.replace({
-        ...options.location,
-        search: updatedSearch
-      });
-    }
   }
 
   filterOutIconClassesFromStylesheets() {
@@ -184,6 +145,14 @@ export default class TopicsView extends Component {
     this.setState({ fontAwesomeClasses, icoFontClasses });
   }
 
+  updateFilteredItems(filteredTopics) {
+    this.setState({
+      filteredTopics,
+      filteredTopicsLength: filteredTopics.length,
+      hasKeywords: filteredTopics.length !== getValue(this.props, 'topics.length') // Inferred
+    });
+  }
+
   render() {
     const p = this.props;
     const s = this.state;
@@ -195,14 +164,12 @@ export default class TopicsView extends Component {
             <Branch {...p.branch} />
           }
           <div className="topics-header">
-            <div className={classNames('topics-search', { 'only-search': !p.loginAccount || !p.loginAccount.address })}>
-              <Input
-                isSearch
-                isClearable
-                placeholder="Search Topics"
-                onChange={keywords => this.setState({ keywords })}
-              />
-            </div>
+            <FilterSort
+              items={p.topics}
+              updateFilteredItems={this.updateFilteredItems}
+              searchPlaceholder="Search Topics"
+              filterBySearch={this.searchKeys}
+            />
             {p.loginAccount && p.loginAccount.address &&
               <Link
                 to={makePath(CREATE_MARKET)}
@@ -213,26 +180,27 @@ export default class TopicsView extends Component {
               </Link>
             }
           </div>
-          {s.topicsLength && s.boundedLength ?
+          {s.filteredTopicsLength && s.boundedLength ?
             <div className="topics">
               <TopicRows
-                topics={s.filteredTopics}
+                topics={p.topics}
+                filteredTopics={s.filteredTopics}
                 numberOfRows={this.topicsConfig.numberOfRows}
                 topicsPerRow={this.topicsConfig.topicsPerRow}
                 topicsPerHeroRow={this.topicsConfig.topicsPerHeroRow}
                 hasHeroRow={s.currentPage === 1}
                 lowerBound={s.lowerBound}
                 boundedLength={s.boundedLength}
-                hasKeywords={!!s.keywords}
+                hasKeywords={s.hasKeywords}
                 fontAwesomeClasses={s.fontAwesomeClasses}
                 icoFontClasses={s.icoFontClasses}
               />
             </div> :
             <NullStateMessage message={'No Topics Available'} />
           }
-          {!!s.topicsLength &&
+          {!!s.filteredTopicsLength &&
             <Paginator
-              itemsLength={s.topicsLength}
+              itemsLength={s.filteredTopicsLength}
               itemsPerPage={s.itemsPerPage}
               location={p.location}
               history={p.history}

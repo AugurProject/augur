@@ -16,7 +16,7 @@ const TopicRows = (p) => {
 
     for (let item = 0; item < rowBound; item++) {
       if (offset < p.boundedLength) {
-        rows[row].push((p.lowerBound - 1) + offset);
+        rows[row].push(p.filteredTopics[(p.lowerBound - 1) + offset]);
       } else {
         rows[row].push(null);
       }
