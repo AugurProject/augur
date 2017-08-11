@@ -35,7 +35,7 @@ export default class FilterSearch extends Component {
 
   componentWillMount() {
     const search = parseQuery(this.props.location.search)[FILTER_SEARCH_PARAM];
-    this.onChangeSearch(search);
+    this.onChangeSearch(search, this.props.items);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -51,7 +51,7 @@ export default class FilterSearch extends Component {
 
     if (debounce) return this.debouncedOnChangeSearch(search, items);
 
-    if (search && search.length) {
+    if (search && search.length && items && items.length) {
       this.filterBySearch(search, items);
     } else {
       this.props.updateFilter(null);

@@ -109,8 +109,8 @@ class Paginator extends Component {
       lowerBound = (options.lastLowerBound - options.itemsPerPage);
     }
 
-    // In case initial page is out of bounds (direct navigation)
-    if (options.lastPage === null && currentPage !== 1 && lowerBound > options.itemsLength) {
+    // In case page is out of bounds, redirect
+    if (currentPage !== 1 && lowerBound > options.itemsLength) {
       let updatedSearch = parseQuery(options.location.search);
       delete updatedSearch[PAGINATION_PARAM_NAME];
       updatedSearch = makeQuery(updatedSearch);

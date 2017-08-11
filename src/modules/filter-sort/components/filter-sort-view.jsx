@@ -36,6 +36,8 @@ export default class FilterSortView extends Component {
   }
 
   componentWillMount() {
+    this.props.updateFilteredItems(this.props.items.map((_, i) => i)); // Initialize List
+
     this.updateCombinedFilters({
       filters: {
         searchItems: this.state.searchItems,
@@ -48,8 +50,7 @@ export default class FilterSortView extends Component {
   componentWillUpdate(nextProps, nextState) {
     if (
       !isEqual(this.state.searchItems, nextState.searchItems) ||
-      !isEqual(this.state.marketStateItems, nextState.marketStateItems) ||
-      !isEqual(this.props.items, nextProps.items)
+      !isEqual(this.state.marketStateItems, nextState.marketStateItems)
     ) {
       this.updateCombinedFilters({
         filters: {

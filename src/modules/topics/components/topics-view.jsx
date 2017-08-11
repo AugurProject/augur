@@ -43,8 +43,9 @@ export default class TopicsView extends Component {
       boundedLength: null,
       currentPage: null,
       itemsPerPage: 0,
-      filteredTopics: props.topics || [],
-      topicsLength: props.topics.length || 0,
+      filteredTopics: [],
+      filteredTopicsLength: 0,
+      hasKeywords: false,
       paginatedTopics: [],
       pagination: {},
       fontAwesomeClasses: [],
@@ -60,7 +61,7 @@ export default class TopicsView extends Component {
 
   componentWillMount() {
     this.setCurrentPage(this.props.location);
-    this.setItemsPerPage(this.state.currentPage, !!this.state.keywords);
+    this.setItemsPerPage(this.state.currentPage, this.state.hasKeywords);
   }
 
   componentDidMount() {

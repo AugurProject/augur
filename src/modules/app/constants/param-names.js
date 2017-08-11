@@ -1,5 +1,5 @@
 // Filter + Sort Params
-export const FILTER_SEARCH_PARAM = 'search';
+export const FILTER_SEARCH_PARAM = 'keywords';
 export const FILTER_MARKET_STATE_PARAM = 'market-state';
 export const SORT_MARKET_PARAM = 'market-sort-param';
 export const SORT_MARKET_ORDER_PARAM = 'market-sort-order';
