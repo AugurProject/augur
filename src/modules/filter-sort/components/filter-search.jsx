@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Input from 'modules/common/components/input';
 
 import parseQuery from 'modules/app/helpers/parse-query';
+import makeQuery from 'modules/app/helpers/make-query';
 import debounce from 'utils/debounce';
 import getValue from 'utils/get-value';
 import isEqual from 'lodash/isEqual';
@@ -39,6 +40,10 @@ export default class FilterSearch extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (!isEqual(this.props.items, nextProps.items)) this.onChangeSearch(this.state.search, nextProps.items);
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (this.state.search !== nextState.search) this.updateQuery(nextState.search, nextProps.location);
   }
 
   onChangeSearch(search, items, debounce) {
@@ -89,8 +94,23 @@ export default class FilterSearch extends Component {
     }, []);
 
     this.props.updateFilter(matchedItems);
+  }
 
-    // TODO -- update location
+  updateQuery(search, location) {
+    let updatedSearch = parseQuery(location.search);
+
+    if (search === '') {
+      delete updatedSearch[FILTER_SEARCH_PARAM];
+    } else {
+      updatedSearch[FILTER_SEARCH_PARAM] = search;
+    }
+
+    updatedSearch = makeQuery(updatedSearch);
+
+    this.props.history.push({
+      ...location,
+      search: updatedSearch
+    });
   }
 
   render() {
