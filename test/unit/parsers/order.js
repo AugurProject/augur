@@ -37,6 +37,18 @@ describe("parsers/order", function () {
     }
   });
   test({
+    description: "zero order array",
+    params: {
+      type: 1,
+      minPrice: "0",
+      maxPrice: "1",
+      order: ["0x0", "0x0", "0x0", "0x0", "0x0", "0x0", "0x0", "0x0"]
+    },
+    assertions: function (output) {
+      assert.isNull(output);
+    }
+  });
+  test({
     description: "buy order",
     params: {
       type: 1,

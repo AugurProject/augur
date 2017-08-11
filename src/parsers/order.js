@@ -7,7 +7,7 @@ var roundToPrecision = require("../utils/round-to-precision");
 var constants = require("../constants");
 
 module.exports = function (type, minPrice, maxPrice, order) {
-  if (!Array.isArray(order) || !order.length) return null;
+  if (!Array.isArray(order) || !order.length || !parseInt(order[0], 16)) return null;
 
   // 1: buy, 2: sell
   var round, roundingMode;
