@@ -9,13 +9,26 @@ var rpcInterface = require("../rpc-interface");
 var POLL_INTERVAL = 6000; // poll for updates every 6 seconds
 
 function joinRoom(roomName, onMessages) {
-  if (!whisper.getWhisperID()) whisper.setWhisperID(rpcInterface.shh.newIdentity());
+  if (!whisper.getWhisperID()) {
+    var whisperID = rpcInterface.shh.newIdentity();
+    if (!whisperID || whisperID.error) {
+      console.error(whisperID);
+      whisper.setIsAvailable(false);
+      return onMessages(false);
+    }
+    whisper.setIsAvailable(true);
+    whisper.setWhisperID(whisperID);
+  }
   if (!whisper.getFilter(roomName)) {
     whisper.setFilter(roomName, rpcInterface.shh.newFilter({
       topics: [abi.prefix_hex(abi.encode_hex(roomName))]
     }), setInterval(function () {
       getNewMessages(roomName, function (err, messages) {
-        if (err) return console.error(err);
+        if (err) {
+          console.error(err);
+          whisper.setIsAvailable(false);
+          return onMessages(false);
+        }
         onMessages(messages);
       });
     }, POLL_INTERVAL));
