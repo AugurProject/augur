@@ -9,7 +9,7 @@ export function updateChatMessages(roomName, messages) {
 export function loadChatMessages(roomName) {
   return (dispatch, getState) => {
     augur.chat.joinRoom(roomName, (messages) => {
-      dispatch(updateChatMessages(roomName, messages));
+      if (messages !== false) dispatch(updateChatMessages(roomName, messages));
     });
   };
 }

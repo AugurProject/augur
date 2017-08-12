@@ -522,7 +522,7 @@ augur-contracts@2.11.4:
   dependencies:
     clone "1.0.2"
 
-augur.js@4.1.0:
+augur.js@4.0.6:
   version "4.0.6"
   resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.0.6.tgz#2362b8a2aae17f0cc711a306ac4c0797b3f8e5b5"
   dependencies:
