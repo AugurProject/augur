@@ -1,0 +1,219 @@
+[{
+  "constant": false,
+  "type": "function",
+  "name": "allowance(address,address)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "ownerAddress"
+  }, {
+    "type": "address",
+    "name": "spenderAddress"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "approve(address,int256)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "spenderAddress"
+  }, {
+    "type": "int256",
+    "name": "attotokens"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "assertReputationTokenIsLegit(address)",
+  "outputs": [],
+  "inputs": [{
+    "type": "address",
+    "name": "shadyToken"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "balanceOf(address)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "address"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getBranch()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getTopMigrationDestination()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "initialize(address)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "branch"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "migrateFromLegacyRepContract(address)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "branch"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "migrateIn(address,int256)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "reporter"
+  }, {
+    "type": "int256",
+    "name": "attotokens"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "migrateOut(address,address,int256)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "destinationReputationToken"
+  }, {
+    "type": "address",
+    "name": "reporter"
+  }, {
+    "type": "int256",
+    "name": "attotokens"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "safeDeductAllowance(address,address,int256)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "holder"
+  }, {
+    "type": "address",
+    "name": "spender"
+  }, {
+    "type": "int256",
+    "name": "attotokens"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "totalSupply()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "transfer(address,int256)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "destinationAddress"
+  }, {
+    "type": "int256",
+    "name": "attotokens"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "transferFrom(address,address,int256)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "sourceAddress"
+  }, {
+    "type": "address",
+    "name": "destinationAddress"
+  }, {
+    "type": "int256",
+    "name": "attotokens"
+  }]
+}, {
+  "inputs": [{
+    "indexed": true,
+    "type": "address",
+    "name": "owner"
+  }, {
+    "indexed": true,
+    "type": "address",
+    "name": "spender"
+  }, {
+    "indexed": false,
+    "type": "int256",
+    "name": "attotokens"
+  }],
+  "type": "event",
+  "name": "Approval(address,address,int256)"
+}, {
+  "inputs": [{
+    "indexed": true,
+    "type": "address",
+    "name": "from"
+  }, {
+    "indexed": true,
+    "type": "address",
+    "name": "to"
+  }, {
+    "indexed": false,
+    "type": "int256",
+    "name": "attotokens"
+  }],
+  "type": "event",
+  "name": "Transfer(address,address,int256)"
+}]

@@ -1,0 +1,328 @@
+[{
+  "constant": false,
+  "type": "function",
+  "name": "createNewMarket(int256,int256,int256,int256,address,address,int256,int256,address,int256)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "int256",
+    "name": "endTime"
+  }, {
+    "type": "int256",
+    "name": "numOutcomes"
+  }, {
+    "type": "int256",
+    "name": "payoutDenominator"
+  }, {
+    "type": "int256",
+    "name": "feePerEthInWei"
+  }, {
+    "type": "address",
+    "name": "denominationToken"
+  }, {
+    "type": "address",
+    "name": "creator"
+  }, {
+    "type": "int256",
+    "name": "minDisplayPrice"
+  }, {
+    "type": "int256",
+    "name": "maxDisplayPrice"
+  }, {
+    "type": "address",
+    "name": "automatedReporterAddress"
+  }, {
+    "type": "int256",
+    "name": "topic"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getBranch()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getDisputeEndTime()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getDisputeStartTime()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getEndTime()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getMaxReportsPerLimitedReporterMarket()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getRegistrationToken()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getReportingEndTime()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getReportingStartTime()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getReportsByReporter(address)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "reporter"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getReputationToken()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getRequiredReportsPerReporterForlimitedReporterMarkets()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getStartTime()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getTargetReportsPerLimitedReporterMarket()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getTargetReportsPerReporter()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "initialize(address,int256)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "branch"
+  }, {
+    "type": "int256",
+    "name": "reportingWindowId"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "isActive()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "isContainerForMarket(address)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "shadyMarket"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "isContainerForRegistrationToken(address)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "shadyRegistrationToken"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "isDisputeActive()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "isDoneReporting(address)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "reporter"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "isReportingActive()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "migrateMarketInFromNibling()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "migrateMarketInFromSibling()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "noteReport(address,address,int256)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "market"
+  }, {
+    "type": "address",
+    "name": "reporter"
+  }, {
+    "type": "int256",
+    "name": "payoutDistributionHash"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "privateAddMarket(address)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "market"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "privateNoteReport(address,address)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "market"
+  }, {
+    "type": "address",
+    "name": "reporter"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "removeMarket()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "updateMarketPhase()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}]

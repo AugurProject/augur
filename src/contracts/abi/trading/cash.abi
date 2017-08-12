@@ -1,0 +1,300 @@
+[{
+  "constant": false,
+  "type": "function",
+  "name": "allowance(address,address)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "owner"
+  }, {
+    "type": "address",
+    "name": "spender"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "approve(address,int256)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "spender"
+  }, {
+    "type": "int256",
+    "name": "value"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "balanceOf(address)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "address"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "depositEther(address)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "sender"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getDecimals()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getInitiated()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getName()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getSymbol()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "initialize(address)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "controller"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "publicDepositEther()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "publicWithdrawEther(address,int256)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "to"
+  }, {
+    "type": "int256",
+    "name": "value"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "setController(address)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "newController"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "suicideFunds(address)",
+  "outputs": [],
+  "inputs": [{
+    "type": "address",
+    "name": "to"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "totalSupply()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "transfer(address,int256)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "to"
+  }, {
+    "type": "int256",
+    "name": "value"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "transferFrom(address,address,int256)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "from"
+  }, {
+    "type": "address",
+    "name": "to"
+  }, {
+    "type": "int256",
+    "name": "value"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "withdrawEther(address,address,int256)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "sender"
+  }, {
+    "type": "address",
+    "name": "to"
+  }, {
+    "type": "int256",
+    "name": "value"
+  }]
+}, {
+  "inputs": [{
+    "indexed": true,
+    "type": "address",
+    "name": "owner"
+  }, {
+    "indexed": true,
+    "type": "address",
+    "name": "spender"
+  }, {
+    "indexed": false,
+    "type": "int256",
+    "name": "value"
+  }],
+  "type": "event",
+  "name": "Approval(address,address,int256)"
+}, {
+  "inputs": [{
+    "indexed": true,
+    "type": "address",
+    "name": "sender"
+  }, {
+    "indexed": false,
+    "type": "int256",
+    "name": "value"
+  }, {
+    "indexed": false,
+    "type": "int256",
+    "name": "balance"
+  }, {
+    "indexed": false,
+    "type": "int256",
+    "name": "timestamp"
+  }],
+  "type": "event",
+  "name": "DepositEther(address,int256,int256,int256)"
+}, {
+  "inputs": [{
+    "indexed": true,
+    "type": "address",
+    "name": "sender"
+  }, {
+    "indexed": false,
+    "type": "int256",
+    "name": "value"
+  }, {
+    "indexed": false,
+    "type": "int256",
+    "name": "balance"
+  }, {
+    "indexed": false,
+    "type": "int256",
+    "name": "timestamp"
+  }],
+  "type": "event",
+  "name": "InitiateWithdrawEther(address,int256,int256,int256)"
+}, {
+  "inputs": [{
+    "indexed": true,
+    "type": "address",
+    "name": "from"
+  }, {
+    "indexed": true,
+    "type": "address",
+    "name": "to"
+  }, {
+    "indexed": false,
+    "type": "int256",
+    "name": "value"
+  }],
+  "type": "event",
+  "name": "Transfer(address,address,int256)"
+}, {
+  "inputs": [{
+    "indexed": true,
+    "type": "address",
+    "name": "sender"
+  }, {
+    "indexed": false,
+    "type": "int256",
+    "name": "value"
+  }, {
+    "indexed": false,
+    "type": "int256",
+    "name": "balance"
+  }, {
+    "indexed": false,
+    "type": "int256",
+    "name": "timestamp"
+  }],
+  "type": "event",
+  "name": "WithdrawEther(address,int256,int256,int256)"
+}]

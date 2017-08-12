@@ -1,0 +1,121 @@
+[{
+  "constant": false,
+  "type": "function",
+  "name": "add(int256,int256)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "int256",
+    "name": "key"
+  }, {
+    "type": "int256",
+    "name": "value"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "addOrUpdate(int256,int256)",
+  "outputs": [],
+  "inputs": [{
+    "type": "int256",
+    "name": "key"
+  }, {
+    "type": "int256",
+    "name": "value"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "contains(int256)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "int256",
+    "name": "key"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "count()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getByKey(int256)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "int256",
+    "name": "key"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getByKeyOrZero(int256)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "int256",
+    "name": "key"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getByOffset(int256)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "int256",
+    "name": "offset"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "initialize(address)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "owner"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "remove(int256)",
+  "outputs": [],
+  "inputs": [{
+    "type": "int256",
+    "name": "key"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "update(int256,int256)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "int256",
+    "name": "key"
+  }, {
+    "type": "int256",
+    "name": "value"
+  }]
+}]

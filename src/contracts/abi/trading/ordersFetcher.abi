@@ -1,0 +1,136 @@
+[{
+  "constant": false,
+  "type": "function",
+  "name": "ascendOrderList(int256,address,int256,int256,address)",
+  "outputs": [{
+    "type": "int256[]",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "int256",
+    "name": "type"
+  }, {
+    "type": "address",
+    "name": "market"
+  }, {
+    "type": "int256",
+    "name": "outcome"
+  }, {
+    "type": "int256",
+    "name": "fxpPrice"
+  }, {
+    "type": "address",
+    "name": "lowestOrderID"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "descendOrderList(int256,address,int256,int256,address)",
+  "outputs": [{
+    "type": "int256[]",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "int256",
+    "name": "type"
+  }, {
+    "type": "address",
+    "name": "market"
+  }, {
+    "type": "int256",
+    "name": "outcome"
+  }, {
+    "type": "int256",
+    "name": "fxpPrice"
+  }, {
+    "type": "address",
+    "name": "highestOrderID"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "findBoundingOrders(int256,address,int256,int256,address,address,address,address)",
+  "outputs": [{
+    "type": "int256[]",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "int256",
+    "name": "type"
+  }, {
+    "type": "address",
+    "name": "market"
+  }, {
+    "type": "int256",
+    "name": "outcome"
+  }, {
+    "type": "int256",
+    "name": "fxpPrice"
+  }, {
+    "type": "address",
+    "name": "bestOrderID"
+  }, {
+    "type": "address",
+    "name": "worstOrderID"
+  }, {
+    "type": "address",
+    "name": "betterOrderID"
+  }, {
+    "type": "address",
+    "name": "worseOrderID"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getOrder(address,int256,address,int256)",
+  "outputs": [{
+    "type": "int256[]",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "orderID"
+  }, {
+    "type": "int256",
+    "name": "type"
+  }, {
+    "type": "address",
+    "name": "market"
+  }, {
+    "type": "int256",
+    "name": "outcome"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getOrderIDs(int256,address,int256,address,int256)",
+  "outputs": [{
+    "type": "int256[]",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "int256",
+    "name": "type"
+  }, {
+    "type": "address",
+    "name": "market"
+  }, {
+    "type": "int256",
+    "name": "outcome"
+  }, {
+    "type": "address",
+    "name": "startingOrderID"
+  }, {
+    "type": "int256",
+    "name": "numOrdersToLoad"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "initialize(address)",
+  "outputs": [],
+  "inputs": [{
+    "type": "address",
+    "name": "controller"
+  }]
+}]

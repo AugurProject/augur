@@ -1,0 +1,22 @@
+[{
+  "constant": false,
+  "type": "function",
+  "name": "createTopics(address)",
+  "outputs": [{
+    "type": "int256[]",
+    "name": "unknown_out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "controller"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getLastTopics()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}]

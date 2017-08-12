@@ -1,0 +1,91 @@
+[{
+  "constant": false,
+  "type": "function",
+  "name": "count()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getPopularity(int256)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "int256",
+    "name": "topic"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getPopularityByOffset(int256)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "int256",
+    "name": "offset"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getTopicByOffset(int256)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "int256",
+    "name": "offset"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "initialize()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "setController(address)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "newController"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "suicideFunds(address)",
+  "outputs": [],
+  "inputs": [{
+    "type": "address",
+    "name": "to"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "updatePopularity(int256,int256)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "int256",
+    "name": "topic"
+  }, {
+    "type": "int256",
+    "name": "fxpAmount"
+  }]
+}]

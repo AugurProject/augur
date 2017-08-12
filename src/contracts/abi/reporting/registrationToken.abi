@@ -1,0 +1,183 @@
+[{
+  "constant": false,
+  "type": "function",
+  "name": "allowance(address,address)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "ownerAddress"
+  }, {
+    "type": "address",
+    "name": "spenderAddress"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "approve(address,int256)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "spenderAddress"
+  }, {
+    "type": "int256",
+    "name": "attotokens"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "balanceOf(address)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "address"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getBranch()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getPeakSupply()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getReportingWindow()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getReputationToken()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "initialize(address)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "reportingWindow"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "redeem()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "register()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "totalSupply()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "transfer(address,int256)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "destinationAddress"
+  }, {
+    "type": "int256",
+    "name": "attotokens"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "transferFrom(address,address,int256)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "sourceAddress"
+  }, {
+    "type": "address",
+    "name": "destinationAddress"
+  }, {
+    "type": "int256",
+    "name": "attotokens"
+  }]
+}, {
+  "inputs": [{
+    "indexed": true,
+    "type": "address",
+    "name": "owner"
+  }, {
+    "indexed": true,
+    "type": "address",
+    "name": "spender"
+  }, {
+    "indexed": false,
+    "type": "int256",
+    "name": "attotokens"
+  }],
+  "type": "event",
+  "name": "Approval(address,address,int256)"
+}, {
+  "inputs": [{
+    "indexed": true,
+    "type": "address",
+    "name": "from"
+  }, {
+    "indexed": true,
+    "type": "address",
+    "name": "to"
+  }, {
+    "indexed": false,
+    "type": "int256",
+    "name": "attotokens"
+  }],
+  "type": "event",
+  "name": "Transfer(address,address,int256)"
+}]
