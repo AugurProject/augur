@@ -1,7 +1,7 @@
 "use strict";
 
 var assert = require("chai").assert;
-var contracts = require("augur-contracts");
+var contracts = require("../../../src/contracts");
 var constants = require("../../../src/constants");
 var tools = require("../../tools");
 var augur = tools.setup(require("../../../src"));

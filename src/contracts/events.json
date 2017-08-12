@@ -1,0 +1,667 @@
+{
+  "Approval": {
+    "contract": "ConvertRep", 
+    "inputs": [
+      {
+        "indexed": true, 
+        "name": "owner", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": true, 
+        "name": "spender", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": true, 
+        "name": "branch", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "value", 
+        "type": "int256"
+      }
+    ], 
+    "name": "Approval(int256,int256,int256,int256)", 
+    "signature": "0x844a26ab2838326c73b20040c15d8ec743025cbae630958deca3bcfd84b294c7"
+  }, 
+  "CancelOrder": {
+    "contract": "Orders", 
+    "inputs": [
+      {
+        "indexed": true, 
+        "name": "market", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": true, 
+        "name": "sender", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "fxpPrice", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "fxpAmount", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "orderID", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "outcome", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "type", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "cashRefund", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "sharesRefund", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "timestamp", 
+        "type": "int256"
+      }
+    ], 
+    "name": "CancelOrder(int256,int256,int256,int256,int256,int256,int256,int256,int256,int256)", 
+    "signature": "0xdf3127e20eda11f7a6797616b2793068dd0b81bdab4b90bd6dfa28f1aeebc167"
+  }, 
+  "CompleteSets": {
+    "contract": "Orders", 
+    "inputs": [
+      {
+        "indexed": true, 
+        "name": "sender", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": true, 
+        "name": "market", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": true, 
+        "name": "type", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "fxpAmount", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "numOutcomes", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "fxpFee", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "timestamp", 
+        "type": "int256"
+      }
+    ], 
+    "name": "CompleteSets(int256,int256,int256,int256,int256,int256,int256)", 
+    "signature": "0x945db29610eb8098cf5a5e91661ae60f068296cfd6efb2d45f4913184025d79a"
+  }, 
+  "DecreaseTradingFee": {
+    "contract": "DecreaseTradingFee", 
+    "inputs": [
+      {
+        "indexed": true, 
+        "name": "sender", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": true, 
+        "name": "branch", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": true, 
+        "name": "marketID", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "fxpTradingFee", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "timestamp", 
+        "type": "int256"
+      }
+    ], 
+    "name": "DecreaseTradingFee(int256,int256,int256,int256,int256)", 
+    "signature": "0x46eea5a4826e795cf346d1a194e1972b3a864edca600dad62f4f4d6198e360b9"
+  }, 
+  "DepositEther": {
+    "contract": "Cash", 
+    "inputs": [
+      {
+        "indexed": true, 
+        "name": "sender", 
+        "type": "address"
+      }, 
+      {
+        "indexed": false, 
+        "name": "value", 
+        "type": "uint256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "balance", 
+        "type": "uint256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "timestamp", 
+        "type": "uint256"
+      }
+    ], 
+    "name": "DepositEther(address,uint256,uint256,uint256)", 
+    "signature": "0xf5bb9b68d45c1515ef5533fbb44eb07ba49a7ac722cd3362f1dfd3de4ed077bc"
+  }, 
+  "InitiateWithdrawEther": {
+    "contract": "Cash", 
+    "inputs": [
+      {
+        "indexed": true, 
+        "name": "sender", 
+        "type": "address"
+      }, 
+      {
+        "indexed": false, 
+        "name": "value", 
+        "type": "uint256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "balance", 
+        "type": "uint256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "timestamp", 
+        "type": "uint256"
+      }
+    ], 
+    "name": "InitiateWithdrawEther(address,uint256,uint256,uint256)", 
+    "signature": "0x0e385aa5ed1b972c3fa3b2b49900ac67638c6525baf513d0ba6542b58e0db332"
+  }, 
+  "MakeOrder": {
+    "contract": "Orders", 
+    "inputs": [
+      {
+        "indexed": true, 
+        "name": "market", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": true, 
+        "name": "sender", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "type", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "fxpPrice", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "fxpAmount", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "outcome", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "orderID", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "fxpMoneyEscrowed", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "fxpSharesEscrowed", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "timestamp", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "tradeGroupID", 
+        "type": "int256"
+      }
+    ], 
+    "name": "MakeOrder(int256,int256,int256,int256,int256,int256,int256,int256,int256,int256,int256)", 
+    "signature": "0x5010789abe4a086a3c2036fe15a2c2c69e70639bdf136aafd37c403c0a2a0843"
+  }, 
+  "TakeAskOrder": {
+    "contract": "Orders", 
+    "inputs": [
+      {
+        "indexed": true, 
+        "name": "market", 
+        "type": "address"
+      }, 
+      {
+        "indexed": true, 
+        "name": "sender", 
+        "type": "address"
+      }, 
+      {
+        "indexed": true, 
+        "name": "owner", 
+        "type": "address"
+      }, 
+      {
+        "indexed": false, 
+        "name": "type", 
+        "type": "uint256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "fxpPrice", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "fxpAmount", 
+        "type": "uint256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "timestamp", 
+        "type": "uint256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "orderID", 
+        "type": "address"
+      }, 
+      {
+        "indexed": false, 
+        "name": "outcome", 
+        "type": "uint256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "fxpAskerSharesFilled", 
+        "type": "uint256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "fxpAskerMoneyFilled", 
+        "type": "uint256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "fxpBidderMoneyFilled", 
+        "type": "uint256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "tradeGroupID", 
+        "type": "int256"
+      }
+    ], 
+    "name": "TakeAskOrder(address,address,address,uint256,int256,uint256,uint256,address,uint256,uint256,uint256,uint256,int256)", 
+    "signature": "0xc44cc35373f23ec79daff6d0c78e3eb5d29be96c6f33721deae3380e4e618da0"
+  }, 
+  "TakeBidOrder": {
+    "contract": "Orders", 
+    "inputs": [
+      {
+        "indexed": true, 
+        "name": "market", 
+        "type": "address"
+      }, 
+      {
+        "indexed": true, 
+        "name": "sender", 
+        "type": "address"
+      }, 
+      {
+        "indexed": true, 
+        "name": "owner", 
+        "type": "address"
+      }, 
+      {
+        "indexed": false, 
+        "name": "type", 
+        "type": "uint256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "fxpPrice", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "fxpAmount", 
+        "type": "uint256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "timestamp", 
+        "type": "uint256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "orderID", 
+        "type": "address"
+      }, 
+      {
+        "indexed": false, 
+        "name": "outcome", 
+        "type": "uint256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "fxpAskerSharesFilled", 
+        "type": "uint256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "fxpAskerMoneyFilled", 
+        "type": "uint256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "fxpBidderSharesFilled", 
+        "type": "uint256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "fxpBidderMoneyFilled", 
+        "type": "uint256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "tradeGroupID", 
+        "type": "int256"
+      }
+    ], 
+    "name": "TakeBidOrder(address,address,address,uint256,int256,uint256,uint256,address,uint256,uint256,uint256,uint256,uint256,int256)", 
+    "signature": "0xc1d21982370eefc118bbfb8fcbd4651abcb0de42b724be8e76af49149deabf74"
+  }, 
+  "TradeAmountRemaining": {
+    "contract": "Trade", 
+    "inputs": [
+      {
+        "indexed": false, 
+        "name": "fxpAmountRemaining", 
+        "type": "int256"
+      }
+    ], 
+    "name": "TradeAmountRemaining(int256)", 
+    "signature": "0x51dcbf6e1d259b385ff6b1b19df7f8178baaa7ddbf98148f59cede127b410707"
+  }, 
+  "Transfer": {
+    "contract": "ConvertRep", 
+    "inputs": [
+      {
+        "indexed": true, 
+        "name": "from", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": true, 
+        "name": "to", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "value", 
+        "type": "int256"
+      }
+    ], 
+    "name": "Transfer(int256,int256,int256)", 
+    "signature": "0x5bdd5df26f7d33d24539edbbf5e44bf2601c0af9d82b0c250be38177dc9214ac"
+  }, 
+  "WithdrawEther": {
+    "contract": "Cash", 
+    "inputs": [
+      {
+        "indexed": true, 
+        "name": "sender", 
+        "type": "address"
+      }, 
+      {
+        "indexed": false, 
+        "name": "value", 
+        "type": "uint256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "balance", 
+        "type": "uint256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "timestamp", 
+        "type": "uint256"
+      }
+    ], 
+    "name": "WithdrawEther(address,uint256,uint256,uint256)", 
+    "signature": "0xac4836aed5bf8aef8b1d757440371ca62b17940cfd5035ee639ddc0de08a7b60"
+  }, 
+  "closeMarketLogReturn": {
+    "contract": "CloseMarket", 
+    "inputs": [
+      {
+        "indexed": false, 
+        "name": "returnValue", 
+        "type": "int256"
+      }
+    ], 
+    "name": "closeMarketLogReturn(int256)", 
+    "signature": "0xe6a13f8c01cf0b57d59c7b99a6c035e45fc4e7bc132aacc0d1d0abd63c8acb2d"
+  }, 
+  "consensusLogReturn": {
+    "contract": "Consensus", 
+    "inputs": [
+      {
+        "indexed": false, 
+        "name": "returnValue", 
+        "type": "int256"
+      }
+    ], 
+    "name": "consensusLogReturn(int256)", 
+    "signature": "0xdf8df177539ff33fe95181e4520f7ab1f73c5ade00e1a44bb39d23a8c6c8d1b4"
+  }, 
+  "fundedAccount": {
+    "contract": "ClaimInitialRep", 
+    "inputs": [
+      {
+        "indexed": true, 
+        "name": "branch", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": true, 
+        "name": "sender", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "cashBalance", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "repBalance", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "timestamp", 
+        "type": "int256"
+      }
+    ], 
+    "name": "fundedAccount(int256,int256,int256,int256,int256)", 
+    "signature": "0x07c5737424a500b7f375ea2f9cda4c334584aab65715af51cf56c5ec805e6d6c"
+  }, 
+  "logOutcome": {
+    "contract": "Events", 
+    "inputs": [
+      {
+        "indexed": true, 
+        "name": "event", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "outcome", 
+        "type": "int256"
+      }
+    ], 
+    "name": "logOutcome(int256,int256)", 
+    "signature": "0x1374fde3ddd8b0d23ab6da9b59a3ce24d61d0415543f99514f6f83a9084788e9"
+  }, 
+  "makeReportsLogReturn": {
+    "contract": "MakeReports", 
+    "inputs": [
+      {
+        "indexed": false, 
+        "name": "returnValue", 
+        "type": "int256"
+      }
+    ], 
+    "name": "makeReportsLogReturn(int256)", 
+    "signature": "0x7c9b9fadbf53400f2d317941955e7bc9cfe45d78ce2b076b73aeef8036bb4ec1"
+  }, 
+  "marketCreated": {
+    "contract": "CreateMarket", 
+    "inputs": [
+      {
+        "indexed": true, 
+        "name": "sender", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": true, 
+        "name": "marketID", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": true, 
+        "name": "topic", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "branch", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "fxpMarketCreationFee", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "timestamp", 
+        "type": "int256"
+      }
+    ], 
+    "name": "marketCreated(int256,int256,int256,int256,int256,int256)", 
+    "signature": "0xf955703eba6620a1c715687505574e8646d92751b9c78652ea8281f4eba1e4f5"
+  }, 
+  "penalize": {
+    "contract": "Consensus", 
+    "inputs": [
+      {
+        "indexed": true, 
+        "name": "user", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "outcome", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "oldrep", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "repchange", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "newafterrep", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "p", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "reportValue", 
+        "type": "int256"
+      }
+    ], 
+    "name": "penalize(int256,int256,int256,int256,int256,int256,int256)", 
+    "signature": "0x6995f42d98799c0eb89e06640c75123c28e99a5c0762fa1b5c3f0264f87a24c9"
+  }, 
+  "registration": {
+    "contract": "Register", 
+    "inputs": [
+      {
+        "indexed": true, 
+        "name": "sender", 
+        "type": "int256"
+      }, 
+      {
+        "indexed": false, 
+        "name": "timestamp", 
+        "type": "int256"
+      }
+    ], 
+    "name": "registration(int256,int256)", 
+    "signature": "0x31e3e4f99e5fc8a326d15b01b056f9f5b70a531faa5f94914ed66b156df47211"
+  }
+}

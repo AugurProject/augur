@@ -4,7 +4,7 @@
 
 var assert = require("chai").assert;
 var abi = require("augur-abi");
-var api = new require("augur-contracts").Tx();
+var api = require("../../../../src/contracts");
 var parseLogMessage = require("../../../../src/filters/parse-message/parse-log-message");
 
 describe("filters/parse-message/parse-log-message", function () {

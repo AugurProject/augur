@@ -6,7 +6,7 @@ var noop = require("../../../src/utils/noop");
 var proxyquire = require('proxyquire');
 var augur = new (require('../../../src/'))();
 var clearCallCounts = require("../../tools").clearCallCounts;
-var eventsAPI = require("augur-contracts").api.events;
+var eventsAPI = require("../../../src/contracts").api.events;
 // 11 tests total
 
 // describe("payout.closeMarket", function () {

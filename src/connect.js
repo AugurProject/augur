@@ -1,8 +1,8 @@
 "use strict";
 
-var augurContracts = require("augur-contracts");
 var connector = require("ethereumjs-connect");
 var ethrpc = require("ethrpc");
+var augurContracts = require("./contracts");
 var api = require("./api");
 var rpcInterface = require("./rpc-interface");
 var isFunction = require("./utils/is-function");

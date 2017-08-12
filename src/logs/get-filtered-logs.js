@@ -1,6 +1,6 @@
 "use strict";
 
-var eventsAPI = require("augur-contracts").api.events;
+var eventsAPI = require("../contracts").api.events;
 var parametrizeFilter = require("./parametrize-filter");
 var rpcInterface = require("../rpc-interface");
 var isFunction = require("../utils/is-function");

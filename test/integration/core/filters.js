@@ -10,7 +10,6 @@ var async = require("async");
 var locks = require("locks");
 var assert = require("chai").assert;
 var abi = require("augur-abi");
-var api = new require("augur-contracts").Tx();
 var tools = require("../../tools");
 var constants = require("../../../src/constants");
 var augurpath = "../../../src/index";

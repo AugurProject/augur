@@ -1,7 +1,7 @@
 "use strict";
 
 var abi = require("augur-abi");
-var augurContracts = require("augur-contracts");
+var augurContracts = require("../contracts");
 var eventsAPI = augurContracts.api.events;
 var rpcInterface = require("../rpc-interface");
 

@@ -6,7 +6,7 @@
 
 var assert = require("chai").assert;
 var async = require("async");
-var contracts = require("augur-contracts");
+var contracts = require("../../../src/contracts");
 var augur = new (require("../../../src"))();
 var constants = require("../../../src/constants");
 var runner = require("../../runner");

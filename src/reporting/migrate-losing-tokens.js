@@ -1,6 +1,6 @@
 "use strict";
 
-var augurContracts = require("augur-contracts");
+var augurContracts = require("../contracts");
 var api = require("../api");
 var rpcInterface = require("../rpc-interface");
 var getLogs = require("../logs/get-logs");

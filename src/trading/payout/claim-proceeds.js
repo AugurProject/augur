@@ -1,7 +1,7 @@
 "use strict";
 
 var assign = require("lodash.assign");
-var eventsAPI = require("augur-contracts").api.events;
+var eventsAPI = require("../../contracts").api.events;
 var rpcInterface = require("../../rpc-interface");
 var api = require("../../api");
 var parseLogMessage = require("../../filters/parse-message/parse-log-message");

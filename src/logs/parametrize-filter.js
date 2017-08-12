@@ -1,7 +1,7 @@
 "use strict";
 
-var augurContracts = require("augur-contracts");
 var buildTopicsList = require("./build-topics-list");
+var augurContracts = require("../contracts");
 var rpcInterface = require("../rpc-interface");
 var constants = require("../constants");
 

@@ -2,7 +2,7 @@
 
 var assign =require("lodash.assign");
 var abi = require("augur-abi");
-var eventsAPI = require("augur-contracts").api.events;
+var eventsAPI = require("../contracts").api.events;
 var api = require("../api");
 var compose = require("../utils/compose");
 var rpcInterface = require("../rpc-interface");

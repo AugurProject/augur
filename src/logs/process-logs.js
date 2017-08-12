@@ -1,7 +1,7 @@
 "use strict";
 
-var eventsAPI = require("augur-contracts").api.events;
 var insertIndexedLog = require("./insert-indexed-log");
+var eventsAPI = require("../contracts").api.events;
 var parseLogMessage = require("../filters/parse-message/parse-log-message");
 
 // warning: mutates processedLogs, if passed

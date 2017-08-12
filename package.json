@@ -12,13 +12,12 @@
     "lint": "eslint gulpfile.js src scripts/new-contracts.js test/*.js",
     "coverage-save": "istanbul cover ./node_modules/mocha/bin/_mocha test/unit/",
     "coverage": "istanbul cover ./node_modules/mocha/bin/_mocha test/unit/ --report lcovonly -- -R min && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
-    "link": "npm link augur-contracts && npm link ethrpc && npm link ethereumjs-connect && npm link keythereum && npm link augur-abi",
+    "link": "npm link ethrpc && npm link ethereumjs-connect && npm link keythereum && npm link augur-abi",
     "build": "babel ./node_modules/uuid-parse --source-root ./node_modules/uuid-parse -d ./node_modules/uuid-parse && babel ./src --source-root ./src -d ./build && browserify ./exports.js > ./dist/augur.js && uglifyjs ./dist/augur.js > ./dist/augur.min.js"
   },
   "dependencies": {
     "async": "1.5.2",
     "augur-abi": "1.3.0",
-    "augur-contracts": "3.0.0",
     "bignumber.js": "2.3.0",
     "browser-request": "0.3.3",
     "chalk": "1.1.1",

@@ -5,9 +5,9 @@
 var assert = require("chai").assert;
 var async = require("async");
 var clone = require("clone");
-var contracts = require("augur-contracts");
 var random = require("./random");
 var tools = require("./tools");
+var contracts = require("../src/contracts");
 var noop = require("../src/utils/noop");
 var constants = require("../src/constants");
 var augur = new (require("../src"))();
