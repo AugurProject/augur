@@ -57,7 +57,7 @@
   "type": "function",
   "name": "derivePayoutDistributionHash(int256[])",
   "outputs": [{
-    "type": "int256",
+    "type": "bytes32",
     "name": "out"
   }],
   "inputs": [{
@@ -94,6 +94,33 @@
 }, {
   "constant": false,
   "type": "function",
+  "name": "fundDisputeBondWithReputation(address,address,uint256)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "bondHolder"
+  }, {
+    "type": "address",
+    "name": "disputeBondToken"
+  }, {
+    "type": "uint256",
+    "name": "bondAmount"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getAllReportersDisputeBondToken()",
+  "outputs": [{
+    "type": "address",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
   "name": "getAutomatedReportDisputeDueTimestamp()",
   "outputs": [{
     "type": "int256",
@@ -112,9 +139,18 @@
 }, {
   "constant": false,
   "type": "function",
+  "name": "getAutomatedReporterDisputeBondToken()",
+  "outputs": [{
+    "type": "address",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
   "name": "getBranch()",
   "outputs": [{
-    "type": "int256",
+    "type": "address",
     "name": "out"
   }],
   "inputs": []
@@ -132,7 +168,7 @@
   "type": "function",
   "name": "getCreator()",
   "outputs": [{
-    "type": "int256",
+    "type": "address",
     "name": "out"
   }],
   "inputs": []
@@ -141,16 +177,7 @@
   "type": "function",
   "name": "getDenominationToken()",
   "outputs": [{
-    "type": "int256",
-    "name": "out"
-  }],
-  "inputs": []
-}, {
-  "constant": false,
-  "type": "function",
-  "name": "getDesiredDisputeRewardPot()",
-  "outputs": [{
-    "type": "int256",
+    "type": "address",
     "name": "out"
   }],
   "inputs": []
@@ -168,7 +195,7 @@
   "type": "function",
   "name": "getFinalPayoutDistributionHash()",
   "outputs": [{
-    "type": "int256",
+    "type": "bytes32",
     "name": "out"
   }],
   "inputs": []
@@ -177,7 +204,7 @@
   "type": "function",
   "name": "getFinalWinningReportingToken()",
   "outputs": [{
-    "type": "int256",
+    "type": "address",
     "name": "out"
   }],
   "inputs": []
@@ -187,6 +214,15 @@
   "name": "getFinalizationTime()",
   "outputs": [{
     "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "getLimitedReportersDisputeBondToken()",
+  "outputs": [{
+    "type": "address",
     "name": "out"
   }],
   "inputs": []
@@ -240,7 +276,7 @@
   "type": "function",
   "name": "getRegistrationToken()",
   "outputs": [{
-    "type": "int256",
+    "type": "address",
     "name": "out"
   }],
   "inputs": []
@@ -249,7 +285,7 @@
   "type": "function",
   "name": "getReportingToken(int256[])",
   "outputs": [{
-    "type": "int256",
+    "type": "address",
     "name": "out"
   }],
   "inputs": [{
@@ -259,13 +295,13 @@
 }, {
   "constant": false,
   "type": "function",
-  "name": "getReportingTokenOrZeroByPayoutDistributionHash(int256)",
+  "name": "getReportingTokenOrZeroByPayoutDistributionHash(bytes32)",
   "outputs": [{
     "type": "int256",
     "name": "out"
   }],
   "inputs": [{
-    "type": "int256",
+    "type": "bytes32",
     "name": "payoutDistributionHash"
   }]
 }, {
@@ -273,7 +309,7 @@
   "type": "function",
   "name": "getReportingWindow()",
   "outputs": [{
-    "type": "int256",
+    "type": "address",
     "name": "out"
   }],
   "inputs": []
@@ -282,7 +318,7 @@
   "type": "function",
   "name": "getReputationToken()",
   "outputs": [{
-    "type": "int256",
+    "type": "address",
     "name": "out"
   }],
   "inputs": []
@@ -291,7 +327,7 @@
   "type": "function",
   "name": "getShareToken(int256)",
   "outputs": [{
-    "type": "int256",
+    "type": "address",
     "name": "out"
   }],
   "inputs": [{
@@ -303,7 +339,7 @@
   "type": "function",
   "name": "getTentativeWinningPayoutDistributionHash()",
   "outputs": [{
-    "type": "int256",
+    "type": "bytes32",
     "name": "out"
   }],
   "inputs": []
@@ -319,7 +355,16 @@
 }, {
   "constant": false,
   "type": "function",
-  "name": "initialize(address,int256,int256,int256,int256,address,address,int256,int256,address,int256)",
+  "name": "getTypeName()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "initialize(address,uint256,uint256,uint256,int256,address,address,int256,int256,address,int256)",
   "outputs": [{
     "type": "int256",
     "name": "out"
@@ -328,13 +373,13 @@
     "type": "address",
     "name": "reportingWindow"
   }, {
-    "type": "int256",
+    "type": "uint256",
     "name": "endTime"
   }, {
-    "type": "int256",
+    "type": "uint256",
     "name": "numOutcomes"
   }, {
-    "type": "int256",
+    "type": "uint256",
     "name": "payoutDenominator"
   }, {
     "type": "int256",
@@ -357,6 +402,18 @@
   }, {
     "type": "int256",
     "name": "topic"
+  }]
+}, {
+  "constant": false,
+  "type": "function",
+  "name": "isContainerForDisputeBondToken(address)",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": [{
+    "type": "address",
+    "name": "shadyBondToken"
   }]
 }, {
   "constant": false,
@@ -457,7 +514,7 @@
 }, {
   "constant": false,
   "type": "function",
-  "name": "isInLimitedDisutePhase()",
+  "name": "isInLimitedDisputePhase()",
   "outputs": [{
     "type": "int256",
     "name": "out"
@@ -502,14 +559,20 @@
 }, {
   "constant": false,
   "type": "function",
-  "name": "privateRewardBondHolders()",
-  "outputs": [],
+  "name": "shouldCollectReportingFees()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
   "inputs": []
 }, {
   "constant": false,
   "type": "function",
-  "name": "shouldCollectReportingFees()",
-  "outputs": [],
+  "name": "transferIncorrectDisputeBondsToWinningReportingToken()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
   "inputs": []
 }, {
   "constant": false,
@@ -559,20 +622,23 @@
 }, {
   "constant": false,
   "type": "function",
-  "name": "updateTentativeWinningPayoutDistributionHash(int256)",
+  "name": "updateTentativeWinningPayoutDistributionHash(bytes32)",
   "outputs": [{
     "type": "int256",
     "name": "out"
   }],
   "inputs": [{
-    "type": "int256",
+    "type": "bytes32",
     "name": "payoutDistributionHash"
   }]
 }, {
   "constant": false,
   "type": "function",
   "name": "validatePayoutNumerators(int256[])",
-  "outputs": [],
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
   "inputs": [{
     "type": "int256[]",
     "name": "payoutNumerators"

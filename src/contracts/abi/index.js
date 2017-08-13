@@ -1,0 +1,32 @@
+"use strict";
+
+module.exports = {
+  LegacyRepContract: require("./LegacyRepContract.abi"),
+  MarketCreation: require("./extensions/MarketCreation.abi"),
+  MarketFeeCalculator: require("./extensions/MarketFeeCalculator.abi"),
+  MarketFetcher: require("./extensions/MarketFetcher.abi"),
+  OrderBook: require("./extensions/OrderBook.abi"),
+  Register: require("./extensions/Register.abi"),
+  ReputationFaucet: require("./extensions/ReputationFaucet.abi"),
+  Branch: require("./reporting/Branch.abi"),
+  Market: require("./reporting/Market.abi"),
+  RegistrationToken: require("./reporting/RegistrationToken.abi"),
+  RepEscapeHatch: require("./reporting/RepEscapeHatch.abi"),
+  ReportingToken: require("./reporting/ReportingToken.abi"),
+  ReportingWindow: require("./reporting/ReportingWindow.abi"),
+  ReputationToken: require("./reporting/ReputationToken.abi"),
+  CancelOrder: require("./trading/CancelOrder.abi"),
+  Cash: require("./trading/Cash.abi"),
+  ClaimProceeds: require("./trading/ClaimProceeds.abi"),
+  CompleteSets: require("./trading/CompleteSets.abi"),
+  MakeOrder: require("./trading/MakeOrder.abi"),
+  OrdersFetcher: require("./trading/OrdersFetcher.abi"),
+  Orders: require("./trading/Orders.abi"),
+  ShareToken: require("./trading/ShareToken.abi"),
+  TakeAskOrder: require("./trading/TakeAskOrder.abi"),
+  TakeBidOrder: require("./trading/TakeBidOrder.abi"),
+  TakeOrder: require("./trading/TakeOrder.abi"),
+  Topics: require("./trading/Topics.abi"),
+  Trade: require("./trading/Trade.abi"),
+  TradingEscapeHatch: require("./trading/TradingEscapeHatch.abi")
+};

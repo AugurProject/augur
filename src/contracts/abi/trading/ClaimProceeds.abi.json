@@ -17,7 +17,10 @@
   "constant": false,
   "type": "function",
   "name": "initialize(address)",
-  "outputs": [],
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
   "inputs": [{
     "type": "address",
     "name": "controller"

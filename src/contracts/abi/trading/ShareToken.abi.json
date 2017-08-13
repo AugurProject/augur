@@ -16,7 +16,7 @@
 }, {
   "constant": false,
   "type": "function",
-  "name": "approve(address,int256)",
+  "name": "approve(address,uint256)",
   "outputs": [{
     "type": "int256",
     "name": "out"
@@ -25,7 +25,7 @@
     "type": "address",
     "name": "spender"
   }, {
-    "type": "int256",
+    "type": "uint256",
     "name": "value"
   }]
 }, {
@@ -118,6 +118,15 @@
 }, {
   "constant": false,
   "type": "function",
+  "name": "getTypeName()",
+  "outputs": [{
+    "type": "int256",
+    "name": "out"
+  }],
+  "inputs": []
+}, {
+  "constant": false,
+  "type": "function",
   "name": "initialize(address,int256)",
   "outputs": [{
     "type": "int256",
@@ -172,7 +181,7 @@
 }, {
   "constant": false,
   "type": "function",
-  "name": "transfer(address,int256)",
+  "name": "transfer(address,uint256)",
   "outputs": [{
     "type": "int256",
     "name": "out"
@@ -181,13 +190,13 @@
     "type": "address",
     "name": "to"
   }, {
-    "type": "int256",
+    "type": "uint256",
     "name": "value"
   }]
 }, {
   "constant": false,
   "type": "function",
-  "name": "transferFrom(address,address,int256)",
+  "name": "transferFrom(address,address,uint256)",
   "outputs": [{
     "type": "int256",
     "name": "out"
@@ -199,7 +208,7 @@
     "type": "address",
     "name": "to"
   }, {
-    "type": "int256",
+    "type": "uint256",
     "name": "value"
   }]
 }, {
