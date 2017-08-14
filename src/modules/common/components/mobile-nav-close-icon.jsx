@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 const MobileNavCloseIcon = p => (
   <svg
     viewBox="0 0 16 14"
-    className={`mobile-nav-close-icon ${p.className}`}
+    className={classNames('mobile-nav-close-icon', { [p.className]: p.className })}
   >
     <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round">
       <g id="Nav/Header-Close" transform="translate(-16.000000, -17.000000)" stroke="#F6F6F8">
