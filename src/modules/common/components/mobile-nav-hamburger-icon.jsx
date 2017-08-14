@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames';
 
 const MobileNavHamburgerIcon = p => (
   <svg
     viewBox="0 0 16 12"
-    className={`mobile-nav-hamburger-icon ${p.className}`}
+    className={classNames('mobile-nav-hamburger-icon', { [p.className]: p.className })}
   >
     <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round">
       <g id="Nav/Header" transform="translate(-16.000000, -18.000000)" stroke="#FFFFFF">

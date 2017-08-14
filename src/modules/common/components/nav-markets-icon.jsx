@@ -5,7 +5,7 @@ import classNames from 'classnames';
 const NavMarketsIcon = p => (
   <svg
     viewBox="0 0 24 24"
-    className={classNames({ [`nav-markets-icon`]: 'nav-markets-icon', [p.className]: p.className })}
+    className={classNames('nav-markets-icon', { [p.className]: p.className })}
   >
     <g id="Symbols" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" strokeLinecap="round" strokeLinejoin="round">
       <g id="Icon/Markets" stroke="#FFFFFF">
