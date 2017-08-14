@@ -21,8 +21,8 @@ export default class AuthView extends Component {
     setupAndFundNewAccount: PropTypes.func.isRequired,
     submitLogin: PropTypes.func.isRequired,
     importAccount: PropTypes.func.isRequired,
-    airbitzLoginLink: PropTypes.object.isRequired,
-    airbitzOnLoad: PropTypes.object.isRequired
+    airbitzLoginLink: PropTypes.func.isRequired,
+    airbitzOnLoad: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -40,7 +40,7 @@ export default class AuthView extends Component {
   }
 
   componentDidMount() {
-    this.props.airbitzOnLoad.onLoad();
+    this.props.airbitzOnLoad();
   }
 
   updateSelectedNav(selectedNav) {
@@ -85,7 +85,7 @@ export default class AuthView extends Component {
             <div className="default-auth">
               <button
                 className="auth-airbitz unstyled"
-                onClick={p.airbitzLoginLink.onClick}
+                onClick={p.airbitzLoginLink}
               >
                 <div>
                   <AirbitzLogoIcon />

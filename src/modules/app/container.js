@@ -12,7 +12,6 @@ import { updateIsMobile } from 'modules/app/actions/update-is-mobile';
 import { updateHeaderHeight } from 'modules/app/actions/update-header-height';
 import { updateFooterHeight } from 'modules/app/actions/update-footer-height';
 import getChatMessages from 'modules/chat/selectors/chat-messages';
-import links from 'modules/link/selectors/links';
 
 import getValue from 'utils/get-value';
 
@@ -21,7 +20,6 @@ const mapStateToProps = state => ({
   loginAccount: state.loginAccount,
   marketsHeader: selectMarketsHeader(state),
   portfolio: portfolio(),
-  links: links(),
   notifications: selectNotificationsAndSeenCount(state),
   tags: selectTags(state),
   coreStats: selectCoreStats(state),
