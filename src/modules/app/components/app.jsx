@@ -72,6 +72,7 @@ export default class AppView extends Component {
       });
     }
 
+    // TODO: promise-ize instead of comparing states
     if (this.props.keywords.length === 0 &&
         newProps.keywords.length > 0) {
       if (this.state.keywordState.openOnLoad) {
@@ -211,6 +212,7 @@ export default class AppView extends Component {
           {this.renderMobileMenuButton()}
           <SideNav
             isMobile={p.isMobile}
+            isLogged={p.isLogged}
             mobileShow={s.mobileMenuState === mobileMenuStates.SIDEBAR_OPEN}
             menuScalar={subMenu.scalar}
             menuData={[
@@ -231,21 +233,24 @@ export default class AppView extends Component {
                 iconName: 'nav-create-icon',
                 icon: NavCreateIcon,
                 onClick: () => {},
-                onBlur: () => {}
+                onBlur: () => {},
+                requireLogin: true
               },
               {
                 title: 'Portfolio',
                 iconName: 'nav-portfolio-icon',
                 icon: NavPortfolioIcon,
                 onClick: () => {},
-                onBlur: () => {}
+                onBlur: () => {},
+                requireLogin: true
               },
               {
                 title: 'Reporting',
                 iconName: 'nav-reporting-icon',
                 icon: NavReportingIcon,
                 onClick: () => {},
-                onBlur: () => {}
+                onBlur: () => {},
+                requireLogin: true
               },
               {
                 title: 'Account',
