@@ -20,7 +20,7 @@ import getValue from 'utils/get-value';
 
 const mapStateToProps = state => ({
   isConnected: state.connection.isConnected,
-  logged: getValue(state, 'loginAccount.address'),
+  isLogged: !!getValue(state, 'loginAccount.address'),
   market: selectSelectedMarket(state),
   orderCancellation: getOrderCancellation(),
   numPendingReports: selectMarketsTotals(state).numPendingReports,
@@ -30,7 +30,7 @@ const mapStateToProps = state => ({
   marketDataNavItems: MARKET_DATA_NAV_ITEMS,
   marketUserDataNavItems: MARKET_USER_DATA_NAV_ITEMS,
   outcomeTradeNavItems: OUTCOME_TRADE_NAV_ITEMS,
-  branch: state.branch,
+  branch: state.branch
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -160,28 +160,28 @@ export default class MarketActive extends Component {
             selectedShareDenomination={selectedShareDenomination}
           />
         </div>
-        {p.logged &&
-        <div className="market-group">
-          <MarketUserData
-            {...p}
-            marketType={marketType}
-            navItems={p.marketUserDataNavItems}
-            selectedShareDenomination={selectedShareDenomination}
-          />
-          <OutcomeTrade
-            marketType={marketType}
-            selectedOutcome={s.selectedOutcome}
-            tradeSummary={tradeSummary}
-            submitTrade={(id) => { submitTrade(id); }}
-            selectedTradeSide={s.selectedTradeSide}
-            selectedShareDenomination={selectedShareDenomination}
-            updateSelectedTradeSide={this.updateSelectedTradeSide}
-            outcomeTradeNavItems={p.outcomeTradeNavItems}
-            minLimitPrice={minValue}
-            maxLimitPrice={maxValue}
-            isTradeCommitLocked={p.isTradeCommitLocked}
-          />
-        </div>
+        {p.isLogged &&
+          <div className="market-group">
+            <MarketUserData
+              {...p}
+              marketType={marketType}
+              navItems={p.marketUserDataNavItems}
+              selectedShareDenomination={selectedShareDenomination}
+            />
+            <OutcomeTrade
+              marketType={marketType}
+              selectedOutcome={s.selectedOutcome}
+              tradeSummary={tradeSummary}
+              submitTrade={(id) => { submitTrade(id); }}
+              selectedTradeSide={s.selectedTradeSide}
+              selectedShareDenomination={selectedShareDenomination}
+              updateSelectedTradeSide={this.updateSelectedTradeSide}
+              outcomeTradeNavItems={p.outcomeTradeNavItems}
+              minLimitPrice={minValue}
+              maxLimitPrice={maxValue}
+              isTradeCommitLocked={p.isTradeCommitLocked}
+            />
+          </div>
         }
       </article>
     );
