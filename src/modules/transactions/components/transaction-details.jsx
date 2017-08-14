@@ -19,6 +19,12 @@ const TransactionDetails = (p) => {
 
     return (
       <div className="transaction-details-content">
+        {!!p.topic &&
+          <div className="transaction-detail">
+            <span className="transaction-detail-title">Topic: </span>
+            <span className="transaction-status">{p.topic}</span>
+          </div>
+        }
         {!!tradingFees &&
           <div className="transaction-detail">
             <ValueDenomination

@@ -1322,7 +1322,8 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           inProgress: false,
           marketCreationFee: '10',
           marketID: '0xMARKETID',
-          eventBond: '10'
+          eventBond: '10',
+          topic: 'Testing'
         };
         const description = 'test description~|>one|two|three';
 
@@ -1335,6 +1336,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           },
           type: CREATE_MARKET,
           description: 'test description',
+          topic: 'Testing',
           marketCreationFee: formatEtherTokens(log.marketCreationFee),
           bond: {
             label: 'event validity',
@@ -1354,7 +1356,8 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           inProgress: true,
           marketCreationFee: '10',
           marketID: '0xMARKETID',
-          eventBond: '10'
+          eventBond: '10',
+          topic: 'Testing'
         };
         const description = 'test description~|>one|two|three';
 
@@ -1367,6 +1370,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           },
           type: CREATE_MARKET,
           description: 'test description',
+          topic: 'Testing',
           marketCreationFee: formatEtherTokens(log.marketCreationFee),
           bond: {
             label: 'event validity',

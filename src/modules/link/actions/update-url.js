@@ -2,9 +2,10 @@ import { loadFullMarket } from 'modules/market/actions/load-full-market';
 import { loadMarkets } from 'modules/markets/actions/load-markets';
 import { loadMarketsByTopic } from 'modules/markets/actions/load-markets-by-topic';
 
-import { MARKETS, AUTHENTICATION, TOPICS } from 'modules/app/constants/views';
+import { MARKETS, M, AUTHENTICATION, TOPICS } from 'modules/app/constants/views';
 import authenticatedViews from 'modules/app/constants/authenticated-views';
 
+import { abi } from 'services/augurjs';
 import getValue from 'utils/get-value';
 // import setTitle from 'utils/set-title';
 import { parseURL, makeLocation } from 'utils/parse-url';
