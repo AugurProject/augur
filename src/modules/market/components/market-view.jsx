@@ -38,6 +38,8 @@ export default class MarketView extends Component {
 
     this.props.updateSelectedMarketID(marketId);
     this.setState({ marketId });
+
+    if (this.props.isConnected && getValue(this.props, 'branch.id') && marketId) this.props.loadFullMarket(marketId);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -47,11 +49,15 @@ export default class MarketView extends Component {
 
   componentWillUpdate(nextProps, nextState) {
     if (
-      this.props.isConnected !== nextProps.isConnected &&
+      (
+        this.props.isConnected !== nextProps.isConnected ||
+        getValue(this.props, 'branch.id') !== getValue(nextProps, 'branch.id') ||
+        this.state.marketId !== nextState.marketId
+      ) &&
       nextProps.isConnected &&
+      getValue(nextProps, 'branch.id') !== null &&
       nextState.marketId !== null
     ) {
-      console.log('load market now');
       this.props.loadFullMarket(nextState.marketId);
     }
   }
