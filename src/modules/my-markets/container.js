@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import MyMarkets from 'modules/my-markets/components/my-markets';
 import getMyMarkets from 'modules/my-markets/selectors/my-markets';
@@ -18,6 +19,6 @@ const mapDispatchToProps = dispatch => ({
   triggerTransactionsExport: () => dispatch(triggerTransactionsExport()),
 });
 
-const MyMarketsContainer = connect(mapStateToProps, mapDispatchToProps)(MyMarkets);
+const MyMarketsContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(MyMarkets));
 
 export default MyMarketsContainer;

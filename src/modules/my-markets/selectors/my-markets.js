@@ -36,6 +36,7 @@ export const selectLoginAccountMarkets = createSelector(
       const openVolume = formatNumber(selectOpenVolume(market));
       const marketLink = selectMarketLink(market, store.dispatch);
       markets.push({
+        ...market,
         id: market.id,
         description: market.description,
         endDate: market.endDate,

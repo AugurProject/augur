@@ -55,19 +55,17 @@ export default class MyPositions extends Component {
             />
           </div>
         </div>
-        <div className="view-header">
-          <FilterSort
-            locaiton={p.location}
-            history={p.history}
-            items={p.markets}
-            updateFilteredItems={filteredMarkets => this.setState({ filteredMarkets })}
-            searchPlaceholder="Search Portfolio Markets"
-            searchKeys={this.searchKeys}
-            filterBySearch
-            filterByMarketState
-            sortByMarketParam
-          />
-        </div>
+        <FilterSort
+          locaiton={p.location}
+          history={p.history}
+          items={p.markets}
+          updateFilteredItems={filteredMarkets => this.setState({ filteredMarkets })}
+          searchPlaceholder="Search Traded Markets"
+          searchKeys={this.searchKeys}
+          filterBySearch
+          filterByMarketState
+          sortByMarketParam
+        />
         {s.filteredMarkets && s.filteredMarkets.length ?
           s.filteredMarkets.map(marketIndex => (
             <MyPositionsMarket
