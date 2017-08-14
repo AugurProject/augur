@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import { submitNewMarket } from 'modules/create-market/actions/submit-new-market';
 import {
   addValidationToNewMarket,
@@ -26,9 +27,9 @@ const mapDispatchToProps = dispatch => ({
   removeOrderFromNewMarket: data => dispatch(removeOrderFromNewMarket(data)),
   updateNewMarket: data => dispatch(updateNewMarket(data)),
   clearNewMarket: () => dispatch(clearNewMarket()),
-  submitNewMarket: data => dispatch(submitNewMarket(data))
+  submitNewMarket: (data, history) => dispatch(submitNewMarket(data, history))
 });
 
-const CreateMarket = connect(mapStateToProps, mapDispatchToProps)(CreateMarketView);
+const CreateMarket = withRouter(connect(mapStateToProps, mapDispatchToProps)(CreateMarketView));
 
 export default CreateMarket;

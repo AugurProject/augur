@@ -14,7 +14,8 @@ export default class CreateMarketView extends Component {
     newMarket: PropTypes.object.isRequired,
     updateNewMarket: PropTypes.func.isRequired,
     addValidationToNewMarket: PropTypes.func.isRequired,
-    removeValidationFromNewMarket: PropTypes.func.isRequired
+    removeValidationFromNewMarket: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired
   }
 
   constructor(props) {
@@ -90,6 +91,7 @@ export default class CreateMarketView extends Component {
             newMarket={p.newMarket}
             updateNewMarket={p.updateNewMarket}
             submitNewMarket={p.submitNewMarket}
+            history={p.history}
             updateButtonHeight={buttonHeight => this.setState({ buttonHeight })}
             updateValidations={this.updateValidations}
           />
