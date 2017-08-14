@@ -36,7 +36,7 @@ export default function () {
       const isUnethical = eventsWithAccountReport[eventID].isUnethical;
 
       return {
-        ...marketsData[marketID], // TODO -- clean up this object
+        ...marketsData[marketID] || {}, // TODO -- clean up this object
         eventID,
         marketID,
         marketLink,

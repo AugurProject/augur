@@ -69,9 +69,9 @@ export default class FilterSearch extends Component {
       if (parentValue === null) return false;
 
       if (Array.isArray(parentValue) && parentValue.length) {
-        return parentValue.some(value => value[keys[keys.length - 1]].toLowerCase().indexOf(search) !== -1);
+        return parentValue.some(value => (value[keys[keys.length - 1]] || '').toLowerCase().indexOf(search) !== -1);
       } else if (typeof parentValue === 'object' && Object.keys(parentValue).length) {
-        return parentValue[keys[keys.length - 1]].toLowerCase().indexOf(search) !== -1;
+        return (parentValue[keys[keys.length - 1]] || '').toLowerCase().indexOf(search) !== -1;
       }
 
       return false; // Just in case
