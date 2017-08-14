@@ -172,7 +172,8 @@ export default class TopicsView extends Component {
                 items={p.topics}
                 updateFilteredItems={this.updateFilteredItems}
                 searchPlaceholder="Search Topics"
-                filterBySearch={this.searchKeys}
+                searchKeys={this.searchKeys}
+                filterBySearch
               />
             </div>
             {p.loginAccount && p.loginAccount.address &&

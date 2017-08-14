@@ -13,12 +13,13 @@ export default class FilterSortView extends Component {
     history: PropTypes.object.isRequired,
     items: PropTypes.array.isRequired,
     updateFilteredItems: PropTypes.func.isRequired,
+    currentReportingPeriod: PropTypes.number,
     // Optional Filters + Sorts
     filterByMarketState: PropTypes.bool,
     sortByMarketParam: PropTypes.bool,
-    currentReportingPeriod: PropTypes.number,
     searchPlaceholder: PropTypes.string,
-    filterByKeyword: PropTypes.array
+    searchKeys: PropTypes.array,
+    filterBySearch: PropTypes.bool
   }
 
   constructor(props) {
@@ -123,7 +124,7 @@ export default class FilterSortView extends Component {
               location={p.location}
               history={p.history}
               items={p.items}
-              keys={p.filterBySearch}
+              keys={p.searchKeys}
               searchPlaceholder={p.searchPlaceholder}
               updateFilter={searchItems => this.setState({ searchItems })}
             />

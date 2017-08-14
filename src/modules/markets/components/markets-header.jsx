@@ -92,7 +92,8 @@ export default class MarketsHeader extends Component {
           items={p.markets}
           updateFilteredItems={p.updateFilteredItems}
           searchPlaceholder="Search Markets"
-          filterBySearch={this.searchKeys}
+          searchKeys={this.searchKeys}
+          filterBySearch
           filterByMarketState
           sortByMarketParam
         />
