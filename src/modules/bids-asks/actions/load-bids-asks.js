@@ -4,7 +4,8 @@ import { clearMarketOrderBook, updateMarketOrderBook } from 'modules/bids-asks/a
 import logError from 'utils/log-error';
 
 export const loadBidsAsks = (marketID, callback = logError) => (dispatch, getState) => {
-  const market = getState().marketsData[marketID];
+  const { marketsData } = getState();
+  const market = marketsData[marketID];
   const scalarMinMax = {};
   if (market.type === SCALAR) {
     scalarMinMax.minValue = market.minValue;
