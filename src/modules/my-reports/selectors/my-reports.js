@@ -6,7 +6,7 @@ import store from 'src/store';
 import { selectMarketLink } from 'modules/link/selectors/links';
 
 export default function () {
-  const { eventsWithAccountReport } = store.getState();
+  const { eventsWithAccountReport, marketsData } = store.getState();
 
   if (!eventsWithAccountReport) {
     return [];
@@ -36,6 +36,7 @@ export default function () {
       const isUnethical = eventsWithAccountReport[eventID].isUnethical;
 
       return {
+        ...marketsData[marketID], // TODO -- clean up this object
         eventID,
         marketID,
         marketLink,
