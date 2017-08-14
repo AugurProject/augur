@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 export default class SideBar extends Component {
   static propTypes = {
     isMobile: PropTypes.bool.isRequired,
+    isLogged: PropTypes.bool,
     menuData: PropTypes.array.isRequired,
     mobileShow: PropTypes.bool.isRequired
   };
@@ -54,10 +55,13 @@ export default class SideBar extends Component {
 
   renderSidebarMenu() {
     const mobile = this.props.isMobile;
+    const logged = this.props.isLogged;
+
+    const accessFilteredMenu = this.props.menuData.filter(item => !(item.requireLogin && !logged));
 
     return (
       <ul className="sidebar-menu">
-        {this.props.menuData.map((item, index) => {
+        {accessFilteredMenu.map((item, index) => {
           const Icon = item.icon;
           const selected = !mobile && this.isCurrentItem(item);
 
