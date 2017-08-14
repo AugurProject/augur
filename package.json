@@ -56,6 +56,7 @@
     "reselect": "3.0.1",
     "secure-random": "1.1.1",
     "shelljs": "0.7.8",
+    "shifty": "^2.1.0",
     "zxcvbn": "4.4.2"
   },
   "devDependencies": {

@@ -29,7 +29,11 @@ export const selectTags = createSelector(
       }
     });
 
-    const tags = Object.keys(tagCounts)
+    const tagCountsKeys = Object.keys(tagCounts);
+    const lowercaseKeys = tagCountsKeys.map(tag => tag.toLowerCase());
+    const tags = tagCountsKeys
+      // unique tags only
+      .filter((tag, index) => lowercaseKeys.indexOf(tag.toLowerCase()) === index)
       .filter(tag => tagCounts[tag] > 0 || !!selectedTags[tag])
       .sort((a, b) => (tagCounts[b] - tagCounts[a]) || (a < b ? -1 : 1))
       .slice(0, 50)

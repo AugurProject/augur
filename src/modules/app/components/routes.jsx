@@ -10,8 +10,7 @@ export default class Routes extends Component {
     activeView: PropTypes.oneOfType([
       PropTypes.number,
       PropTypes.string
-    ]).isRequired,
-    setSidebarAllowed: PropTypes.func.isRequired
+    ]).isRequired
   }
 
   constructor(props) {
@@ -37,12 +36,6 @@ export default class Routes extends Component {
     let activeView = p.activeView;
     if (!!parseInt(p.activeView, 10) && Number.isInteger(parseInt(p.activeView, 10))) {
       activeView = MARKETS;
-    }
-
-    if (activeView === MARKETS) {
-      p.setSidebarAllowed(true);
-    } else {
-      p.setSidebarAllowed(false);
     }
 
     // NOTE -- I personally hate the use of a 'magic comment' inside the import args, but it is what it is
