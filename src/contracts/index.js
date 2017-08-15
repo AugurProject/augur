@@ -1,10 +1,6 @@
 "use strict";
 
 var contracts = require("./contracts");
-
-contracts.api = {
-  events: require("./events"),
-  functions: require("./functions")
-};
+contracts.api = require("./generate-abi-map")();
 
 module.exports = contracts;
