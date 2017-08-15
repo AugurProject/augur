@@ -22,10 +22,6 @@ describe("contracts/generate-abi-map", function () {
           "constant": false,
           "type": "function",
           "name": "allowance(address,address)",
-          "outputs": [{
-            "type": "uint256",
-            "name": "out"
-          }],
           "inputs": [{
             "type": "address",
             "name": "owner"
@@ -106,7 +102,7 @@ describe("contracts/generate-abi-map", function () {
             allowance: {
               constant: false,
               name: "allowance(address,address)",
-              returns: "uint256",
+              returns: "null",
               inputs: ["owner", "spender"],
               signature: ["address", "address"]
             },
