@@ -14,11 +14,13 @@ function generateAbiMap() {
         var inputs = [];
         var signature = [];
         var fixed = [];
-        functionOrEvent.inputs.forEach(function (input, index) {
-          inputs.push(input.name);
-          signature.push(input.type);
-          if (input.name.slice(0, 3) === "fxp") fixed.push(index);
-        });
+        if (functionOrEvent.inputs) {
+          functionOrEvent.inputs.forEach(function (input, index) {
+            inputs.push(input.name);
+            signature.push(input.type);
+            if (input.name.slice(0, 3) === "fxp") fixed.push(index);
+          });
+        }
         var output = functionOrEvent.outputs[0];
         if (!functions[contractName]) functions[contractName] = {};
         functions[contractName][shortName] = {
@@ -27,7 +29,7 @@ function generateAbiMap() {
           inputs: inputs,
           signature: signature,
           fixed: fixed,
-          returns: (output.name === "fxp") ? "unfix" : output.type
+          returns: (output) ? ((output.name === "fxp") ? "unfix" : output.type) : "null"
         };
       } else if (functionOrEvent.type === "event") {
         events[shortName] = {
