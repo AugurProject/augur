@@ -6,7 +6,7 @@ import MarketsView from 'modules/markets/components/markets-view';
 import getAllMarkets from 'modules/markets/selectors/markets-all';
 import getFilterSort from 'modules/markets/selectors/filter-sort';
 import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination';
-import { updateMarketsFilteredSorted } from 'modules/markets/actions/update-markets-filtered-sorted';
+import { updateMarketsFilteredSorted, clearMarketsFilteredSorted } from 'modules/markets/actions/update-markets-filtered-sorted';
 
 import { selectLoginAccount } from 'modules/auth/selectors/login-account';
 import { selectCreateMarketLink } from 'modules/link/selectors/links';
@@ -42,7 +42,8 @@ const mapDispatchToProps = dispatch => ({
   onChangeKeywords: keywords => dispatch(updateKeywords(keywords)),
   loadMarkets: branchID => dispatch(loadMarkets(branchID)),
   loadMarketsByTopic: (topic, branchID) => dispatch(loadMarketsByTopic(topic, branchID)),
-  updateMarketsFilteredSorted: marketsFiltered => dispatch(updateMarketsFilteredSorted(marketsFiltered))
+  updateMarketsFilteredSorted: filteredMarkets => dispatch(updateMarketsFilteredSorted(filteredMarkets)),
+  clearMarketsFilteredSorted: () => dispatch(clearMarketsFilteredSorted())
 });
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {

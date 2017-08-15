@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import FilterTags from 'modules/filter-sort/components/filter-tags';
 import FilterMarketState from 'modules/filter-sort/components/filter-market-state';
 import SortMarketParam from 'modules/filter-sort/components/sort-market-param';
 import FilterSearch from 'modules/filter-sort/components/filter-search';
@@ -14,9 +15,15 @@ export default class FilterSortView extends Component {
     items: PropTypes.array.isRequired,
     updateFilteredItems: PropTypes.func.isRequired,
     currentReportingPeriod: PropTypes.number,
-    // Optional Filters + Sorts
+    //  Optional Filters + Sorts
+    //    Market Tags
+    filterByTags: PropTypes.bool,
+    tagSelectionVisible: PropTypes.bool,
+    //    Market State
     filterByMarketState: PropTypes.bool,
+    //    Market Sort
     sortByMarketParam: PropTypes.bool,
+    //    Search
     searchPlaceholder: PropTypes.string,
     searchKeys: PropTypes.array,
     filterBySearch: PropTypes.bool
@@ -29,6 +36,7 @@ export default class FilterSortView extends Component {
       // Filters
       searchItems: null,
       marketStateItems: null,
+      marketTagItems: null,
       // Sorts
       marketParamItems: null,
       // Aggregated
@@ -42,7 +50,8 @@ export default class FilterSortView extends Component {
     this.updateCombinedFilters({
       filters: {
         searchItems: this.state.searchItems,
-        marketStateItems: this.state.marketStateItems
+        marketStateItems: this.state.marketStateItems,
+        marketTagItems: this.state.marketTagItems
       },
       items: this.props.items
     });
@@ -52,12 +61,14 @@ export default class FilterSortView extends Component {
     if (
       !isEqual(this.state.searchItems, nextState.searchItems) ||
       !isEqual(this.state.marketStateItems, nextState.marketStateItems) ||
+      !isEqual(this.state.marketTagItems, nextState.marketTagItems) ||
       !isEqual(this.props.items, nextProps.items)
     ) {
       this.updateCombinedFilters({
         filters: {
           searchItems: nextState.searchItems,
-          marketStateItems: nextState.marketStateItems
+          marketStateItems: nextState.marketStateItems,
+          marketTagItems: this.state.marketTagItems
         },
         items: nextProps.items
       });
@@ -96,6 +107,13 @@ export default class FilterSortView extends Component {
 
     return (
       <article className="view-header filter-sort">
+        {!!p.filterByTags &&
+          <FilterTags
+            tagSelectionVisible={p.tagSelectionVisible}
+            items={p.items}
+            updateFilter={marketTagItems => this.setState({ marketTagItems })}
+          />
+        }
         {((!!p.filterByMarketState && !!p.currentReportingPeriod) || !!p.sortByMarketParam) &&
           <div className="view-header-group">
             {!!p.filterByMarketState && !!p.currentReportingPeriod &&

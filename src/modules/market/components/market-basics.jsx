@@ -50,7 +50,7 @@ const MarketBasics = p => (
       </div>
     </div>
 
-    {p.marketLink ?
+    {p.id && p.formattedDescription ?
       <Link
         to={{
           pathname: makePath(MARKET),

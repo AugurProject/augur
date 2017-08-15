@@ -12,6 +12,8 @@ import { updateIsMobile } from 'modules/app/actions/update-is-mobile';
 import { updateHeaderHeight } from 'modules/app/actions/update-header-height';
 import { updateFooterHeight } from 'modules/app/actions/update-footer-height';
 import getChatMessages from 'modules/chat/selectors/chat-messages';
+import { toggleTag } from 'modules/markets/actions/toggle-tag';
+import getAllMarkets from 'modules/markets/selectors/markets-all';
 
 import getValue from 'utils/get-value';
 
@@ -27,13 +29,15 @@ const mapStateToProps = state => ({
   isMobile: state.isMobile,
   headerHeight: state.headerHeight,
   footerHeight: state.footerHeight,
-  chat: getChatMessages()
+  chat: getChatMessages(),
+  markets: getAllMarkets()
 });
 
 const mapDispatchToProps = dispatch => ({
   updateIsMobile: isMobile => dispatch(updateIsMobile(isMobile)),
   updateHeaderHeight: headerHeight => dispatch(updateHeaderHeight(headerHeight)),
-  updateFooterHeight: footerHeight => dispatch(updateFooterHeight(footerHeight))
+  updateFooterHeight: footerHeight => dispatch(updateFooterHeight(footerHeight)),
+  toggleTag: (tag, location, history) => dispatch(toggleTag(tag, location, history))
 });
 
 const AppContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

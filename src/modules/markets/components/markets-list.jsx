@@ -10,6 +10,7 @@ export default class MarketsList extends Component {
   static propTypes = {
     isLogged: PropTypes.bool.isRequired,
     markets: PropTypes.array.isRequired,
+    filteredMarkets: PropTypes.array.isRequired,
     location: PropTypes.object.isRequired,
     scalarShareDenomination: PropTypes.object.isRequired
   }
@@ -35,14 +36,14 @@ export default class MarketsList extends Component {
     const p = this.props;
     const s = this.state;
 
-    const marketsLength = p.marketsFiltered.length;
+    const marketsLength = p.filteredMarkets.length;
     const shareDenominations = getValue(p, 'scalarShareDenomination.denominations');
 
     return (
       <article className="markets-list">
         {marketsLength && s.boundedLength ?
           [...Array(s.boundedLength)].map((unused, i) => {
-            const item = p.marketsFiltered[(s.lowerBound - 1) + i];
+            const item = p.filteredMarkets[(s.lowerBound - 1) + i];
             const market = p.markets[item];
             const selectedShareDenomination = market ? getValue(p, `scalarShareDenomination.markets.${market.id}`) : null;
 

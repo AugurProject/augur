@@ -34,7 +34,6 @@ import { toggleFavorite } from 'modules/markets/actions/update-favorites';
 import { placeTrade } from 'modules/trade/actions/place-trade';
 import { commitReport } from 'modules/reports/actions/commit-report';
 import { slashRep } from 'modules/reports/actions/slash-rep';
-import { toggleTag } from 'modules/markets/actions/toggle-tag';
 
 import store from 'src/store';
 
@@ -274,13 +273,7 @@ export function assembleMarket(
         return outcome;
       }).sort((a, b) => (b.lastPrice.value - a.lastPrice.value) || (a.name < b.name ? -1 : 1));
 
-      market.tags = (market.tags || []).map((tag) => {
-        const obj = {
-          name: tag && tag.toString(),
-          onClick: () => dispatch(toggleTag(tag))
-        };
-        return obj;
-      }).filter(tag => !!tag.name);
+      market.tags = (market.tags || []).filter(tag => !!tag);
 
       market.outstandingShares = formatNumber(getOutstandingShares(marketOutcomesData || {}));
 

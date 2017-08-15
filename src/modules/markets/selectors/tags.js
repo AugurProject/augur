@@ -1,24 +1,27 @@
 import { createSelector } from 'reselect';
 import store from 'src/store';
 import { selectSelectedTagsState } from 'src/select-state';
-import { selectFilteredMarkets } from 'modules/markets/selectors/markets-filtered';
-import { toggleTag } from 'modules/markets/actions/toggle-tag';
+import getAllMarkets from 'modules/markets/selectors/markets-all';
 
 export default function () {
   return selectTags(store.getState());
 }
 
 export const selectTags = createSelector(
-  selectFilteredMarkets,
+  getAllMarkets,
   selectSelectedTagsState,
   (markets, selectedTags) => {
     const tagCounts = {};
 
+    // console.log('selectedTags -- ', selectedTags);
+
+    // console.log('markets -- ', markets);
+
     // count matches for each filter and tag
     markets.forEach((market) => {
       market.tags.forEach((tag) => {
-        tagCounts[tag.name] = tagCounts[tag.name] || 0;
-        tagCounts[tag.name] += 1;
+        tagCounts[tag] = tagCounts[tag] || 0;
+        tagCounts[tag] += 1;
       });
     });
 
@@ -29,17 +32,19 @@ export const selectTags = createSelector(
       }
     });
 
+    // console.log('tag counts -- ', tagCounts);
+
     const tags = Object.keys(tagCounts)
       .filter(tag => tagCounts[tag] > 0 || !!selectedTags[tag])
       .sort((a, b) => (tagCounts[b] - tagCounts[a]) || (a < b ? -1 : 1))
       .slice(0, 50)
       .map((tag) => {
+        // console.log('mapped tag -- ', tag);
         const obj = {
           name: tag,
           value: tag,
           numMatched: tagCounts[tag],
-          isSelected: !!selectedTags[tag],
-          onClick: () => store.dispatch(toggleTag(tag))
+          isSelected: !!selectedTags[tag]
         };
         return obj;
       });

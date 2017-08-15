@@ -24,9 +24,11 @@ import { CREATE_MARKET, MARKETS } from 'modules/app/constants/views';
 export default class AppView extends Component {
   static propTypes = {
     url: PropTypes.string,
-    history: PropTypes.any,
     children: PropTypes.node,
     location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
+    toggleTag: PropTypes.func.isRequired,
+    markets: PropTypes.array.isRequired,
     // tags: PropTypes.array.isRequired,
     // coreStats: PropTypes.array.isRequired,
     // isMobile: PropTypes.bool.isRequired,
@@ -182,12 +184,6 @@ export default class AppView extends Component {
       notifications: p.notifications
     };
 
-    const sideBarProps = {
-      tags: p.tags,
-      headerHeight: p.headerHeight,
-      footerHeight: p.footerHeight
-    };
-
     // NOTE -- A few implementation details:
     // An attention has been paid to avoid JS manipulation of app layout
     // As a result, you'll notice that both the `Header` + `CortStats` + `Footer` components are duplicated -- this is for layout purposes only in order to better preserve responsiveness w/out manual calculations
@@ -230,7 +226,14 @@ export default class AppView extends Component {
               <div id="app_view_container">
                 {s.isSideBarAllowed && !s.isSideBarCollapsed &&
                   <div id="side_bar" >
-                    <SideBar {...sideBarProps} />
+                    <SideBar
+                      markets={p.markets}
+                      headerHeight={p.headerHeight}
+                      footerHeight={p.footerHeight}
+                      location={p.location}
+                      history={p.history}
+                      toggleTag={p.toggleTag}
+                    />
                   </div>
                 }
                 <div id="app_view">

@@ -8,6 +8,7 @@ import Branch from 'modules/branch/components/branch';
 
 import getValue from 'utils/get-value';
 import parseQuery from 'modules/app/helpers/parse-query';
+import isEqual from 'lodash/isEqual';
 
 import { TOPIC_PARAM_NAME } from 'modules/app/constants/param-names';
 
@@ -23,7 +24,8 @@ export default class MarketsView extends Component {
     loadMarketsByTopic: PropTypes.func.isRequired,
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
-    updateMarketsFilteredSorted: PropTypes.func.isRequired
+    updateMarketsFilteredSorted: PropTypes.func.isRequired,
+    clearMarketsFilteredSorted: PropTypes.func.isRequired
     // filterSort: PropTypes.object,
     // marketsHeader: PropTypes.object,
     // pagination: PropTypes.object,
@@ -39,7 +41,7 @@ export default class MarketsView extends Component {
 
     this.state = {
       shouldDisplayBranchInfo: !!(getValue(props, 'loginAccount.rep.value') && getValue(props, 'branch.id')),
-      marketsFiltered: []
+      filteredMarkets: []
     };
   }
 
@@ -82,11 +84,15 @@ export default class MarketsView extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (this.state.marketsFiltered !== nextState.marketsFiltered) {
+    if (!isEqual(this.state.filteredMarkets, nextState.filteredMarkets)) {
       // TODO -- update global state for tags (categories) display
-      // console.log('changed!');
-      // this.props.updateMarketsFilteredSorted(nextState.marketsFiltered);
+      console.log('changed!');
+      this.props.updateMarketsFilteredSorted(nextState.filteredMarkets);
     }
+  }
+
+  componentWillUnmount() {
+    this.props.clearMarketsFilteredSorted();
   }
 
   loadMarkets(options) {
@@ -117,12 +123,12 @@ export default class MarketsView extends Component {
           isLogged={p.isLogged}
           location={p.location}
           markets={p.markets}
-          updateFilteredItems={marketsFiltered => this.setState({ marketsFiltered })}
+          updateFilteredItems={filteredMarkets => this.setState({ filteredMarkets })}
         />
         <MarketsList
           isLogged={p.isLogged}
           markets={p.markets}
-          marketsFiltered={s.marketsFiltered}
+          filteredMarkets={s.filteredMarkets}
           location={p.location}
           history={p.history}
           scalarShareDenomination={p.scalarShareDenomination}
