@@ -2,7 +2,7 @@
 
 var abi = require("augur-abi");
 var augurContracts = require("../contracts");
-var eventsAPI = augurContracts.api.events;
+var eventsABI = augurContracts.abi.events;
 var rpcInterface = require("../rpc-interface");
 var LOG_TYPE_CODES = require("../constants").LOG_TYPE_CODES;
 
@@ -20,7 +20,7 @@ function getCompleteSetsLogs(p, callback) {
       augurContracts[rpcInterface.getNetworkID()].BuyAndSellShares :
       augurContracts[rpcInterface.getNetworkID()].CompleteSets,
     topics: [
-      eventsAPI.completeSets_logReturn.signature,
+      eventsABI.completeSets_logReturn.signature,
       abi.format_int256(p.account),
       market,
       typeCode

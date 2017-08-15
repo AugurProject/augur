@@ -1,13 +1,12 @@
 "use strict";
 
-var contractAbis = require("./abi");
 var keccak256 = require("../utils/keccak256");
 
-function generateAbiMap() {
+function generateAbiMap(abi) {
   var functions = {};
   var events = {};
-  Object.keys(contractAbis).forEach(function (contractName) {
-    var functionsAndEventsArray = contractAbis[contractName];
+  Object.keys(abi).forEach(function (contractName) {
+    var functionsAndEventsArray = abi[contractName];
     functionsAndEventsArray.forEach(function (functionOrEvent) {
       var shortName = functionOrEvent.name.split("(")[0];
       if (functionOrEvent.type === "function") {

@@ -6,7 +6,7 @@ var noop = require("../../../src/utils/noop");
 var proxyquire = require('proxyquire');
 var augur = new (require('../../../src/'))();
 var clearCallCounts = require("../../tools").clearCallCounts;
-var eventsAPI = require("../../../src/contracts").api.events;
+var eventsABI = require("../../../src/contracts").abi.events;
 // 11 tests total
 
 // describe("payout.closeMarket", function () {
@@ -87,7 +87,7 @@ describe("augur.trading.payout.claimProceeds", function () {
 		var logs = [];
 		for (var i = 0, numLogs = Cash.length; i < numLogs; i++) {
 			logs.push({
-				topics: [eventsAPI.payout.signature, '0xdeadbeef', '9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd'],
+				topics: [eventsABI.payout.signature, '0xdeadbeef', '9f595f4dd870f4fac5a0c2ce46a947e1664649083bd16ae57c78aa0e502c4dbd'],
 				blockNumber: '1000000000',
 				transactionHash: hash,
 				removed: false,

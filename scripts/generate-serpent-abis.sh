@@ -9,7 +9,7 @@ do
   if [ $filename = "legacyRepContract.se" ]
   then
     filename="${filename%.*}"
-    abipath=$AUGURJS/src/contracts/abi/"${filename^}".abi.json
+    abipath=$AUGUR_CONTRACTS/"${filename^}".abi.json
     echo $abipath
     serpent mk_full_signature $file | js-beautify --indent-size 2 > $abipath
   fi
@@ -22,7 +22,7 @@ do
   if [ $foldername = "extensions" ] || [ $foldername = "reporting" ] || [ $foldername = "trading" ]
   then
     filename="${filename%.*}"
-    abipath=$AUGURJS/src/contracts/abi/$foldername/"${filename^}".abi.json
+    abipath=$AUGUR_CONTRACTS/$foldername/"${filename^}".abi.json
     echo $abipath
     serpent mk_full_signature $file | js-beautify --indent-size 2 > $abipath
   fi

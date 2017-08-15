@@ -24,7 +24,7 @@ describe('connect.bindContractFunction', function () {
         // in case of further setup, which is just the final test right now...
         if (t.prepare) t.prepare();
 
-        t.callMethod(bindContractFunction(Contracts.api.functions[t.contract][t.method]));
+        t.callMethod(bindContractFunction(Contracts.abi.functions[t.contract][t.method]));
     });
   };
   test({
@@ -372,7 +372,7 @@ describe('connect.bindContractFunction', function () {
     name: 'fakeMethod',
     prepare: function() {
       // because no functions currently exist where send is true and we require a parser, we are going to make a fake function to do this so we can unit test.
-      Contracts.api.functions.FakeContract = {
+      Contracts.abi.functions.FakeContract = {
         fakeMethod: {
           inputs: [ 'branch' ],
           label: 'Fake Method',
@@ -387,7 +387,7 @@ describe('connect.bindContractFunction', function () {
     callMethod: function (method) {
       method({ branch: '0xb1', callback: noop });
       // clean up the fakeContract and it's fakeMethod
-      delete Contracts.api.functions.fakeContract;
+      delete Contracts.abi.functions.fakeContract;
     },
     callContractFunction: function (tx, cb, parsers, extraArgs) {
       // Shouldn't get hit in this case

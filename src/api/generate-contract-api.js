@@ -2,11 +2,11 @@
 
 var bindContractFunction = require("./bind-contract-function");
 
-function generateContractAPI(functionsAPI) {
-  return Object.keys(functionsAPI).reduce(function (p, contractName) {
+function generateContractAPI(functionsABI) {
+  return Object.keys(functionsABI).reduce(function (p, contractName) {
     p[contractName] = {};
-    Object.keys(functionsAPI[contractName]).map(function (functionName) {
-      p[contractName][functionName] = bindContractFunction(functionsAPI[contractName][functionName]);
+    Object.keys(functionsABI[contractName]).map(function (functionName) {
+      p[contractName][functionName] = bindContractFunction(functionsABI[contractName][functionName]);
     });
     return p;
   }, {});

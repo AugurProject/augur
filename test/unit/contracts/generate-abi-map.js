@@ -3,20 +3,17 @@
 "use strict";
 
 var assert = require("chai").assert;
-var proxyquire = require("proxyquire").noPreserveCache().noCallThru();
+var generateAbiMap = require("../../../src/contracts/generate-abi-map");
 
 describe("contracts/generate-abi-map", function () {
   var test = function (t) {
     it(t.description, function () {
-      var generateAbiMap = proxyquire("../../../src/contracts/generate-abi-map", {
-        "./abi": t.mock.abi
-      });
-      t.assertions(generateAbiMap());
+      t.assertions(generateAbiMap(t.params.abi));
     });
   };
   test({
     description: "convert standard JSON ABI to custom map",
-    mock: {
+    params: {
       abi: {
         Contract1: [{
           "constant": false,

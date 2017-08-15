@@ -2,7 +2,7 @@
 
 var abi = require("augur-abi");
 var augurContracts = require("../contracts");
-var eventsAPI = augurContracts.api.events;
+var eventsABI = augurContracts.abi.events;
 var rpcInterface = require("../rpc-interface");
 
 // { account, filter }
@@ -11,7 +11,7 @@ function getShortSellLogs(p, callback) {
   p.filter = p.filter || {};
   if (p.account != null) {
     topics = [
-      eventsAPI.log_short_fill_tx.signature,
+      eventsABI.log_short_fill_tx.signature,
       p.filter.market ? abi.format_int256(p.filter.market) : null,
       null,
       null

@@ -1,6 +1,8 @@
 "use strict";
 
-var contracts = require("./contracts");
-contracts.api = require("./generate-abi-map")();
+var contracts = require("augur-contracts");
+var generateAbiMap = require("./generate-abi-map");
+
+contracts.abi = generateAbiMap(contracts.abi);
 
 module.exports = contracts;

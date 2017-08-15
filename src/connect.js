@@ -22,8 +22,8 @@ var DEFAULT_NETWORK_ID = require("./constants").DEFAULT_NETWORK_ID;
 function connect(connectOptions, callback) {
   var vitals, options = {
       rpc: ethrpc,
-      contracts: immutableDelete(contracts, "api"),
-      api: contracts.api,
+      contracts: immutableDelete(contracts, "abi"),
+      abi: contracts.abi,
       httpAddresses: [],
       wsAddresses: [],
       ipcAddresses: []
@@ -41,14 +41,14 @@ function connect(connectOptions, callback) {
     vitals = connector.connect(options);
     if (vitals instanceof Error) throw vitals;
     vitals.contracts = vitals.contracts || contracts[DEFAULT_NETWORK_ID];
-    this.api = api.generateContractAPI(vitals.api.functions);
+    this.api = api.generateContractAPI(vitals.abi.functions);
     rpcInterface.createRpcInterface(vitals.rpc);
     return vitals;
   }
   connector.connect(options, function (err, vitals) {
     if (err) return callback(err);
     vitals.contracts = vitals.contracts || contracts[DEFAULT_NETWORK_ID];
-    this.api = api.generateContractAPI(vitals.api.functions);
+    this.api = api.generateContractAPI(vitals.abi.functions);
     this.rpc = rpcInterface.createRpcInterface(vitals.rpc);
     callback(vitals);
   }.bind(this));
