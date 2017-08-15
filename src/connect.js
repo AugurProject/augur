@@ -7,7 +7,7 @@ var contracts = require("./contracts");
 var api = require("./api");
 var rpcInterface = require("./rpc-interface");
 var isFunction = require("./utils/is-function");
-var isObject = require("../utils/is-object");
+var isObject = require("./utils/is-object");
 var DEFAULT_NETWORK_ID = require("./constants").DEFAULT_NETWORK_ID;
 
 /**
