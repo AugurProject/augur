@@ -98,7 +98,7 @@ describe("trading/order-book/get-order-book", function () {
     }
   });
   test({
-    description: "one live orders, one filled order",
+    description: "one live order, one filled order",
     params: {
       _type: 2,
       _market: "MARKET_ID",
