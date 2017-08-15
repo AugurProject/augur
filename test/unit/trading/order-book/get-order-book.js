@@ -4,7 +4,7 @@
 
 var assert = require("chai").assert;
 var abi = require("augur-abi");
-var proxyquire = require("proxyquire");
+var proxyquire = require("proxyquire").noPreserveCache().noCallThru();
 
 describe("trading/order-book/get-order-book", function () {
   var test = function (t) {

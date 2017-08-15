@@ -23,14 +23,15 @@ function generateAbiMap() {
         }
         var output = functionOrEvent.outputs[0];
         if (!functions[contractName]) functions[contractName] = {};
-        functions[contractName][shortName] = {
+        var functionAbiMap = {
           constant: functionOrEvent.constant,
           name: functionOrEvent.name,
-          inputs: inputs,
-          signature: signature,
-          fixed: fixed,
           returns: (output) ? ((output.name === "fxp") ? "unfix" : output.type) : "null"
         };
+        if (inputs.length) functionAbiMap.inputs = inputs;
+        if (signature.length) functionAbiMap.signature = signature;
+        if (fixed.length) functionAbiMap.fixed = fixed;
+        functions[contractName][shortName] = functionAbiMap;
       } else if (functionOrEvent.type === "event") {
         events[shortName] = {
           contract: contractName,
