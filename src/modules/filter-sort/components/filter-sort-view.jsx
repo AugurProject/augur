@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import isEqual from 'lodash/isEqual';
 
 import FilterTags from 'modules/filter-sort/components/filter-tags';
 import FilterMarketState from 'modules/filter-sort/components/filter-market-state';
 import SortMarketParam from 'modules/filter-sort/components/sort-market-param';
 import FilterSearch from 'modules/filter-sort/components/filter-search';
 
-import isEqual from 'lodash/isEqual';
+import filterByTags from 'modules/filter-sort/helpers/filter-by-tags';
 
 export default class FilterSortView extends Component {
   static propTypes = {
@@ -18,7 +19,6 @@ export default class FilterSortView extends Component {
     //  Optional Filters + Sorts
     //    Market Tags
     filterByTags: PropTypes.bool,
-    tagSelectionVisible: PropTypes.bool,
     //    Market State
     filterByMarketState: PropTypes.bool,
     //    Market Sort
@@ -55,6 +55,18 @@ export default class FilterSortView extends Component {
       },
       items: this.props.items
     });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (
+      nextProps.filterByTags &&
+      (
+        !isEqual(this.props.items, nextProps.items) ||
+        !isEqual(this.props.location.search, nextProps.location.search)
+      )
+    ) {
+      this.setState({ marketTagItems: filterByTags(nextProps.location, nextProps.items) });
+    }
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -107,13 +119,6 @@ export default class FilterSortView extends Component {
 
     return (
       <article className="view-header filter-sort">
-        {!!p.filterByTags &&
-          <FilterTags
-            tagSelectionVisible={p.tagSelectionVisible}
-            items={p.items}
-            updateFilter={marketTagItems => this.setState({ marketTagItems })}
-          />
-        }
         {((!!p.filterByMarketState && !!p.currentReportingPeriod) || !!p.sortByMarketParam) &&
           <div className="view-header-group">
             {!!p.filterByMarketState && !!p.currentReportingPeriod &&

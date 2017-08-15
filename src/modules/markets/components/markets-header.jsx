@@ -96,6 +96,7 @@ export default class MarketsHeader extends Component {
           filterBySearch
           filterByMarketState
           sortByMarketParam
+          filterByTags
         />
       </article>
     );

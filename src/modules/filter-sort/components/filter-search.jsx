@@ -4,6 +4,7 @@ import Input from 'modules/common/components/input';
 
 import parseQuery from 'modules/app/helpers/parse-query';
 import makeQuery from 'modules/app/helpers/make-query';
+import parseStringToArray from 'modules/app/helpers/parse-string-to-array';
 import debounce from 'utils/debounce';
 import getValue from 'utils/get-value';
 import isEqual from 'lodash/isEqual';
@@ -59,7 +60,7 @@ export default class FilterSearch extends Component {
   }
 
   filterBySearch(search, items) { // If ANY match is found, the item is included in the returned array
-    const searchArray = cleanKeywordsArray(decodeURIComponent(search));
+    const searchArray = parseStringToArray(decodeURIComponent(search));
 
     const checkStringMatch = (value, search) => value.toLowerCase().indexOf(search) !== -1;
 
@@ -129,14 +130,4 @@ export default class FilterSearch extends Component {
       </article>
     );
   }
-}
-
-
-function cleanKeywords(keywords) {
-  return (keywords || '').replace(/\s+/g, ' ').trim();
-}
-
-function cleanKeywordsArray(keywords) {
-  const CleanKeywords = cleanKeywords(keywords).toLowerCase();
-  return CleanKeywords ? CleanKeywords.split(' ').sort() : [];
 }

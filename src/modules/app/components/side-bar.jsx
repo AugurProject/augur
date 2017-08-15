@@ -4,7 +4,13 @@ import PropTypes from 'prop-types';
 // import Checkbox from 'modules/common/components/checkbox';
 // import NullStateMessage from 'modules/common/components/null-state-message';
 
-import FilterSort from 'modules/filter-sort/container';
+// This is a funky special case for how filtering works, normally this would directly employ the filter-sort components
+
+// NOTE --
+// Take in filteredMarkets + markets
+
+// From that data, re-calc the tags + counts
+// Toggling tags will directly update the query params, which will trigger an update to the filters
 
 export default class SideBar extends Component {
   static propTypes = {

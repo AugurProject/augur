@@ -84,11 +84,7 @@ export default class MarketsView extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (!isEqual(this.state.filteredMarkets, nextState.filteredMarkets)) {
-      // TODO -- update global state for tags (categories) display
-      console.log('changed!');
-      this.props.updateMarketsFilteredSorted(nextState.filteredMarkets);
-    }
+    if (!isEqual(this.state.filteredMarkets, nextState.filteredMarkets)) this.props.updateMarketsFilteredSorted(nextState.filteredMarkets);
   }
 
   componentWillUnmount() {
