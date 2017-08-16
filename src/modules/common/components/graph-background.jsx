@@ -22,9 +22,8 @@ const detectWebGL= () => {
 class GraphBG extends Component {
 
   componentDidMount() {
-    if (detectWebGL()) {
-      this.p5Renderer = new P5(p => this.sketch(p), this.refs.canvascontainer);
-    }
+    this.hasWebGL = detectWebGL();
+    this.p5Renderer = new P5(p => this.sketch(p), this.refs.canvascontainer);
   }
 
   shouldComponentUpdate() {
@@ -45,7 +44,7 @@ class GraphBG extends Component {
     p.ortho(-width / pixelRatio,
             width / pixelRatio,
             height / pixelRatio,
-            -height / pixelRatio, -1, 1000);
+            -height / pixelRatio, -1, 10000);
   }
 
   setupScene() {
@@ -61,6 +60,10 @@ class GraphBG extends Component {
         x: (Math.cos(rads) * dist),
         y: (Math.sin(rads) * dist)
       };
+      if (!this.hasWebGL) {
+        origin.x += this.screenMid.x;
+        origin.y += this.screenMid.y;
+      }
       this.circles.push({ origin, x: origin.x, y: origin.y, distScalar, angle, links: 0 });
     }
 
@@ -100,6 +103,11 @@ class GraphBG extends Component {
       const dist = circle.distScalar * Math.min(this.screenMid.x, this.screenMid.y);
       circle.origin.x = (Math.cos(rads) * dist);
       circle.origin.y = (Math.sin(rads) * dist);
+
+      if (!this.hasWebGL) {
+        circle.origin.x += this.screenMid.x;
+        circle.origin.y += this.screenMid.y;
+      }
     });
   }
 
@@ -117,10 +125,14 @@ class GraphBG extends Component {
       circle.y = y + wobY;
 
       const circleSize = (this.dotSize + (circle.links * 0.8));
-      p.push();
-      p.translate(x + wobX, y + wobY, 0);
-      p.sphere(circleSize, 4, 5);
-      p.pop();
+      if (this.hasWebGL) {
+        p.push();
+        p.translate(circle.x, circle.y, 0);
+        p.sphere(circleSize, 4, 5);
+        p.pop();
+      } else {
+        p.ellipse(circle.x, circle.y, circleSize);
+      }
     });
 
     p.stroke('#534C65');
@@ -128,17 +140,21 @@ class GraphBG extends Component {
       const line = this.lines[linekey];
       const circleA = this.circles[line.circleIndices[0]];
       const circleB = this.circles[line.circleIndices[1]];
-      // TODO: figure out why p5 line() function not working
-      // with hardware-accel graphics
-      p.push();
-      p.beginShape(P5.prototype.LINES);
-      p.translate(circleA.x, circleA.y, 0);
-      p.vertex(0, 0, 0);
-      p.vertex((circleB.x - circleA.x),
-               (circleB.y - circleA.y),
-               0);
-      p.endShape();
-      p.pop();
+      if (this.hasWebGL) {
+        // TODO: figure out why p5 line() function not working
+        // with hardware-accel graphics
+        p.push();
+        p.beginShape(P5.prototype.LINES);
+        p.translate(circleA.x, circleA.y, 0);
+        p.vertex(0, 0, 0);
+        p.vertex((circleB.x - circleA.x),
+                 (circleB.y - circleA.y),
+                 0);
+        p.endShape();
+        p.pop();
+      } else {
+        p.line(circleA.x, circleA.y, circleB.x, circleB.y);
+      }
     });
   }
 
@@ -150,6 +166,7 @@ class GraphBG extends Component {
 
     this.setupScreen(p, width, height);
     this.readjustScene();
+    if (!this.hasWebGL) this.drawScene(p);
   }
 
   sketch(p) {
@@ -158,7 +175,11 @@ class GraphBG extends Component {
       const width = offsetWidth;
       const height = offsetHeight;
 
-      p.createCanvas(width, height, P5.prototype.WEBGL);
+      if (this.hasWebGL) {
+        p.createCanvas(width, height, P5.prototype.WEBGL);
+      } else {
+        p.createCanvas(width, height);
+      }
       this.setupScreen(p, width, height);
 
       this.circles = [];
@@ -168,10 +189,17 @@ class GraphBG extends Component {
 
       this.setupScene();
 
-      window.addEventListener('resize', debounce(() => this.handleWindowResize(p), 25));
+      if (!this.hasWebGL) {
+        p.noLoop();
+        this.drawScene(p);
+      }
+
+      window.addEventListener('resize', debounce(() => this.handleWindowResize(p), 50));
     };
 
-    p.draw = () => this.drawScene(p);
+    if (this.hasWebGL) {
+      p.draw = () => this.drawScene(p);
+    }
   }
 
   render() {
