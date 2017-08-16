@@ -32,19 +32,22 @@ export default class GraphBG extends Component {
 
   setupScreen(p, width, height) {
     this.idealScreen = 1440;
-    this.screenScale = Math.max(width, height) / 1440;
+    this.screenScale = Math.max(width, height) / this.idealScreen;
     this.screenMid = {
       x: width / 2,
       y: height / 2
     };
 
     p.resizeCanvas(width, height, true);
-    p.perspective(); // forces P5 to acknowledge next ortho() call
-    const pixelRatio = window.devicePixelRatio ? window.devicePixelRatio : 1;
-    p.ortho(-width / pixelRatio,
-            width / pixelRatio,
-            height / pixelRatio,
-            -height / pixelRatio, -1, 10000);
+
+    if (this.hasWebGL) {
+      p.perspective(); // forces P5 to acknowledge next ortho() call
+      const pixelRatio = window.devicePixelRatio ? window.devicePixelRatio : 1;
+      p.ortho(-width / pixelRatio,
+              width / pixelRatio,
+              height / pixelRatio,
+              -height / pixelRatio, -1, 10000);
+    }
   }
 
   setupScene() {
@@ -112,11 +115,11 @@ export default class GraphBG extends Component {
   }
 
   drawScene(p) {
-    p.background('#231A3A');
+    p.background(35, 26, 58);
     const scaledTime = p.millis() / 2500;
 
     p.noStroke();
-    p.fill('#534C65');
+    p.fill(83, 76, 101);
     this.circles.forEach((circle) => {
       const { x, y } = circle.origin;
       const wobX = Math.sin(scaledTime + x) * 10;
@@ -135,7 +138,7 @@ export default class GraphBG extends Component {
       }
     });
 
-    p.stroke('#534C65');
+    p.stroke(83, 76, 101);
     Object.keys(this.lines).forEach((linekey) => {
       const line = this.lines[linekey];
       const circleA = this.circles[line.circleIndices[0]];
