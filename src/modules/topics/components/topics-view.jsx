@@ -16,6 +16,8 @@ import getValue from 'utils/get-value';
 import { PAGINATION_PARAM_NAME } from 'modules/app/constants/param-names';
 import { CREATE_MARKET } from 'modules/app/constants/views';
 
+import GraphBG from 'modules/common/components/graph-background';
+
 export default class TopicsView extends Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
@@ -161,6 +163,7 @@ export default class TopicsView extends Component {
 
     return (
       <section id="topics_view">
+        <GraphBG />
         <div id="topics_container">
           {!!p.loginAccount && !!p.loginAccount.rep && !!p.loginAccount.rep.value && !!p.branch.id &&
             <Branch {...p.branch} />

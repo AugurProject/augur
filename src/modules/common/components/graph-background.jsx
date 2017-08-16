@@ -1,0 +1,184 @@
+import React, { Component } from 'react';
+
+import P5 from 'p5';
+import debounce from 'utils/debounce';
+
+const pythagoreanDistance = (pointA, pointB) => (
+  Math.sqrt(((pointA.x - pointB.x) ** 2) + ((pointA.y - pointB.y) ** 2))
+);
+
+const withinRange = (val, rangeA, rangeB) => (
+  (val > rangeA && val < rangeB)
+);
+
+const detectWebGL= () => {
+  const canvas = document.createElement('canvas');
+  const gl = canvas.getContext('webgl')
+    || canvas.getContext('experimental-webgl');
+
+  return gl;
+};
+
+class GraphBG extends Component {
+
+  componentDidMount() {
+    if (detectWebGL()) {
+      this.p5Renderer = new P5(p => this.sketch(p), this.refs.canvascontainer);
+    }
+  }
+
+  shouldComponentUpdate() {
+    return false;
+  }
+
+  setupScreen(p, width, height) {
+    this.idealScreen = 1440;
+    this.screenScale = Math.max(width, height) / 1440;
+    this.screenMid = {
+      x: width / 2,
+      y: height / 2
+    };
+
+    p.resizeCanvas(width, height, true);
+    p.perspective(); // forces P5 to acknowledge next ortho() call
+    const pixelRatio = window.devicePixelRatio ? window.devicePixelRatio : 1;
+    p.ortho(-width / pixelRatio,
+            width / pixelRatio,
+            height / pixelRatio,
+            -height / pixelRatio, -1, 1000);
+  }
+
+  setupScene() {
+    this.circles = [];
+    this.lines = [];
+
+    for (let i = 0; i < this.circleCount; i++) {
+      const angle = Math.random() * 360;
+      const rads = angle * (Math.PI / 180);
+      const distScalar = 1 - ((i / this.circleCount) ** 2.2);
+      const dist = distScalar * Math.min(this.screenMid.x, this.screenMid.y);
+      const origin = {
+        x: (Math.cos(rads) * dist),
+        y: (Math.sin(rads) * dist)
+      };
+      this.circles.push({ origin, x: origin.x, y: origin.y, distScalar, angle, links: 0 });
+    }
+
+    this.circles.forEach((circleA, ai) => {
+      this.circles.forEach((circleB, bi) => {
+        if (circleA === circleB) return;
+        const linekey = [ai, bi].sort().join('_');
+        if (this.lines[linekey]) return;
+
+        const pDist = pythagoreanDistance(circleA.origin, circleB.origin);
+        const centerDist = Math.abs(circleA.distScalar - circleB.distScalar);
+
+        const localLink = pDist < (110 * this.screenScale);
+        const minCenterDist = 0;
+        const maxCenterDist = 0.35;
+        const angleRange = 15;
+        const tierLink = withinRange(centerDist,
+                                     minCenterDist,
+                                     maxCenterDist);
+        const angLink = withinRange(circleA.angle,
+                                    (circleB.angle - angleRange) % 360,
+                                    (circleB.angle + angleRange) % 360);
+
+        if (localLink || (tierLink && angLink)) {
+          const linekey = [ai, bi].sort().join('_');
+          this.lines[linekey] = { circleIndices: [ai, bi] };
+          this.circles[ai].links += 1;
+          this.circles[bi].links += 1;
+        }
+      });
+    });
+  }
+
+  readjustScene() {
+    this.circles.forEach((circle) => {
+      const rads = circle.angle * (Math.PI / 180);
+      const dist = circle.distScalar * Math.min(this.screenMid.x, this.screenMid.y);
+      circle.origin.x = (Math.cos(rads) * dist);
+      circle.origin.y = (Math.sin(rads) * dist);
+    });
+  }
+
+  drawScene(p) {
+    p.background('#231A3A');
+    const scaledTime = p.millis() / 2500;
+
+    p.noStroke();
+    p.fill('#534C65');
+    this.circles.forEach((circle) => {
+      const { x, y } = circle.origin;
+      const wobX = Math.sin(scaledTime + x) * 10;
+      const wobY = Math.cos(scaledTime + y) * 10;
+      circle.x = x + wobX;
+      circle.y = y + wobY;
+
+      const circleSize = (this.dotSize + (circle.links * 0.8));
+      p.push();
+      p.translate(x + wobX, y + wobY, 0);
+      p.sphere(circleSize, 4, 5);
+      p.pop();
+    });
+
+    p.stroke('#534C65');
+    Object.keys(this.lines).forEach((linekey) => {
+      const line = this.lines[linekey];
+      const circleA = this.circles[line.circleIndices[0]];
+      const circleB = this.circles[line.circleIndices[1]];
+      // TODO: figure out why p5 line() function not working
+      // with hardware-accel graphics
+      p.push();
+      p.beginShape(P5.prototype.LINES);
+      p.translate(circleA.x, circleA.y, 0);
+      p.vertex(0, 0, 0);
+      p.vertex((circleB.x - circleA.x),
+               (circleB.y - circleA.y),
+               0);
+      p.endShape();
+      p.pop();
+    });
+  }
+
+
+  handleWindowResize(p) {
+    const { offsetWidth, offsetHeight } = this.refs.canvascontainer;
+    const width = offsetWidth;
+    const height = offsetHeight;
+
+    this.setupScreen(p, width, height);
+    this.readjustScene();
+  }
+
+  sketch(p) {
+    p.setup = () => {
+      const { offsetWidth, offsetHeight } = this.refs.canvascontainer;
+      const width = offsetWidth;
+      const height = offsetHeight;
+
+      p.createCanvas(width, height, P5.prototype.WEBGL);
+      this.setupScreen(p, width, height);
+
+      this.circles = [];
+      this.lines = [];
+      this.circleCount = 100;
+      this.dotSize = 3;
+
+      this.setupScene();
+
+      window.addEventListener('resize', debounce(() => this.handleWindowResize(p), 25));
+    };
+
+    p.draw = () => this.drawScene(p);
+  }
+
+  render() {
+    return (
+      <div ref="canvascontainer" id="canvas_container" />
+    );
+  }
+}
+
+export default GraphBG;
