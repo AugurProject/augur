@@ -9,6 +9,8 @@ import Input from 'modules/common/components/input';
 import Link from 'modules/link/components/link';
 import Branch from 'modules/branch/components/branch';
 
+import GraphBG from 'modules/common/components/graph-background';
+
 export default class TopicsView extends Component {
   static propTypes = {
     topics: PropTypes.array,
@@ -181,6 +183,7 @@ export default class TopicsView extends Component {
 
     return (
       <section id="topics_view">
+        <GraphBG />
         <div id="topics_container">
           {!!p.loginAccount && !!p.loginAccount.rep && !!p.loginAccount.rep.value && !!p.branch.id &&
             <Branch {...p.branch} />
