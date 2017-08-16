@@ -19,7 +19,7 @@ const detectWebGL= () => {
   return gl;
 };
 
-class GraphBG extends Component {
+export default class GraphBG extends Component {
 
   componentDidMount() {
     this.hasWebGL = detectWebGL();
@@ -208,5 +208,3 @@ class GraphBG extends Component {
     );
   }
 }
-
-export default GraphBG;
