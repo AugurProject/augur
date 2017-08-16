@@ -79,7 +79,7 @@ export default class FilterSortView extends Component {
         filters: {
           searchItems: nextState.searchItems,
           marketStateItems: nextState.marketStateItems,
-          marketTagItems: this.state.marketTagItems
+          marketTagItems: nextState.marketTagItems
         },
         items: nextProps.items
       });
