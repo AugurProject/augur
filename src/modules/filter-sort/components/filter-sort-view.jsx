@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import isEqual from 'lodash/isEqual';
 
-import FilterTags from 'modules/filter-sort/components/filter-tags';
 import FilterMarketState from 'modules/filter-sort/components/filter-market-state';
 import SortMarketParam from 'modules/filter-sort/components/sort-market-param';
 import FilterSearch from 'modules/filter-sort/components/filter-search';

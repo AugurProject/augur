@@ -29,6 +29,7 @@ export default class AppView extends Component {
     history: PropTypes.object.isRequired,
     toggleTag: PropTypes.func.isRequired,
     markets: PropTypes.array.isRequired,
+    marketsFilteredSorted: PropTypes.array.isRequired,
     // tags: PropTypes.array.isRequired,
     // coreStats: PropTypes.array.isRequired,
     // isMobile: PropTypes.bool.isRequired,
@@ -228,11 +229,11 @@ export default class AppView extends Component {
                   <div id="side_bar" >
                     <SideBar
                       markets={p.markets}
+                      marketsFilteredSorted={p.marketsFilteredSorted}
                       headerHeight={p.headerHeight}
                       footerHeight={p.footerHeight}
                       location={p.location}
                       history={p.history}
-                      toggleTag={p.toggleTag}
                     />
                   </div>
                 }

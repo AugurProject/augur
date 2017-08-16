@@ -1,6 +1,6 @@
-export default function parseStringToArray(words) {
-  const cleanWords = cleanString(words).toLowerCase();
-  return cleanWords ? cleanWords.split(' ') : [];
+export default function parseStringToArray(words, delimiter) {
+  const cleanWords = cleanString(words);
+  return cleanWords ? cleanWords.split(delimiter || ' ') : [];
 }
 
 function cleanString(words) {
