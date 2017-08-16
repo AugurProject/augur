@@ -10,7 +10,6 @@ import pagination from 'modules/markets/selectors/pagination';
 import markets from 'modules/markets/selectors/markets';
 import allMarkets from 'modules/markets/selectors/markets-all';
 import favoriteMarkets from 'modules/markets/selectors/markets-favorite';
-import filteredMarkets from 'modules/markets/selectors/markets-filtered';
 import unpaginatedMarkets from 'modules/markets/selectors/markets-unpaginated';
 import orderCancellation from 'modules/bids-asks/selectors/order-cancellation';
 import market from 'modules/market/selectors/market';
@@ -43,7 +42,6 @@ const selectors = {
   markets,
   allMarkets,
   favoriteMarkets,
-  filteredMarkets,
   unpaginatedMarkets,
   orderCancellation,
   market,

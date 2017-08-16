@@ -75,6 +75,8 @@ export default class MyPositions extends Component {
               isTradeCommitLocked={p.isTradeCommitLocked}
               scalarShareDenomination={p.scalarShareDenomination}
               orderCancellation={p.orderCancellation}
+              location={p.location}
+              history={p.history}
             />
           )) :
           <NullStateMessage

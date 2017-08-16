@@ -54,6 +54,8 @@ import { generateOutcomePositionSummary, generateMarketsPositionsSummary } from 
 
 import { selectReportableOutcomes } from 'modules/reports/selectors/reportable-outcomes';
 
+import { listWordsUnderLength } from 'utils/list-words-under-length';
+
 export default function () {
   return selectSelectedMarket(store.getState());
 }
@@ -160,6 +162,7 @@ export function assembleMarket(
       const market = {
         ...marketData,
         description: marketData.description || '',
+        formattedDescription: listWordsUnderLength(marketData.description || '', 100).map(word => encodeURIComponent(word.toLowerCase())).join('_'),
         id: marketID
       };
 

@@ -9,16 +9,12 @@ import MarketPreviewOutcomes from 'modules/market/components/market-preview-outc
 import makePath from 'modules/app/helpers/make-path';
 import makeQuery from 'modules/app/helpers/make-query';
 
-import { listWordsUnderLength } from 'utils/list-words-under-length';
-
 import { MARKET } from 'modules/app/constants/views';
-import { MARKET_ID_PARAM_NAME, MAKRET_DESCRIPTION_PARAM_NAME } from 'modules/app/constants/param-names';
+import { MARKET_ID_PARAM_NAME, MARKET_DESCRIPTION_PARAM_NAME } from 'modules/app/constants/param-names';
 
 const MarketPreview = (p) => {
   let buttonText;
   let buttonClass;
-
-  const formattedDescription = listWordsUnderLength(p.description, 100).map(word => encodeURIComponent(word.toLowerCase())).join('_');
 
   if (p.isReported) {
     buttonText = 'Reported';
@@ -42,16 +38,16 @@ const MarketPreview = (p) => {
       <div className="market-preview-details">
         <MarketBasics
           {...p}
-          formattedDescription={formattedDescription}
+          formattedDescription={p.formattedDescription}
         />
 
-        {!!p.id && formattedDescription &&
+        {!!p.id && p.formattedDescription &&
           <div className="market-link">
             <Link
               to={{
                 pathname: makePath(MARKET),
                 search: makeQuery({
-                  [MAKRET_DESCRIPTION_PARAM_NAME]: formattedDescription,
+                  [MARKET_DESCRIPTION_PARAM_NAME]: p.formattedDescription,
                   [MARKET_ID_PARAM_NAME]: p.id
                 })
               }}

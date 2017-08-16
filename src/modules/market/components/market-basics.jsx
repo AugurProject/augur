@@ -11,7 +11,7 @@ import makePath from 'modules/app/helpers/make-path';
 import makeQuery from 'modules/app/helpers/make-query';
 
 import { MARKET } from 'modules/app/constants/views';
-import { MARKET_ID_PARAM_NAME, MAKRET_DESCRIPTION_PARAM_NAME } from 'modules/app/constants/param-names';
+import { MARKET_ID_PARAM_NAME, MARKET_DESCRIPTION_PARAM_NAME } from 'modules/app/constants/param-names';
 
 const MarketBasics = p => (
   <article className="market-basics">
@@ -55,7 +55,7 @@ const MarketBasics = p => (
         to={{
           pathname: makePath(MARKET),
           search: makeQuery({
-            [MAKRET_DESCRIPTION_PARAM_NAME]: p.formattedDescription,
+            [MARKET_DESCRIPTION_PARAM_NAME]: p.formattedDescription,
             [MARKET_ID_PARAM_NAME]: p.id
           })
         }}
