@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
 import debounce from 'utils/debounce';
@@ -16,7 +17,10 @@ export default class Notification extends Component {
     notificationsBounds: PropTypes.object.isRequired,
     updateNotificationsBoundingBox: PropTypes.func.isRequired,
     checkSeen: PropTypes.bool.isRequired,
-    href: PropTypes.string
+    linkPath: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.object
+    ])
   };
 
   constructor(props) {
@@ -89,20 +93,17 @@ export default class Notification extends Component {
         }}
         className={classNames('notification', { 'notification-unseen': !p.seen })}
       >
-        <button
-          className={classNames('unstyled notification-details', { navigational: !!p.href })}
+        <Link
+          className={classNames('unstyled notification-details', { navigational: !!p.linkPath })}
+          to={p.linkPath}
           onClick={(e) => {
             e.stopPropagation();
-
-            if (p.href && p.onClick) {
-              p.onClick(p.href);
-              p.toggleNotifications();
-            }
+            if (p.linkPath && p.onClick) p.toggleNotifications();
           }}
         >
           <span className="notification-title">{p.title}</span>
           <span className="notification-description">{p.description}</span>
-        </button>
+        </Link>
         <button
           className="unstyled notification-remove"
           onClick={(e) => {
