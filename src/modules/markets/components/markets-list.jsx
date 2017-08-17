@@ -31,6 +31,14 @@ export default class MarketsList extends Component {
     this.setState({ lowerBound, boundedLength });
   }
 
+  // TODO -- handle loading additional market info
+  // const marketIDsMissingInfo = markets
+  //   .filter(market => !market.isLoadedMarketInfo && !market.isLoading)
+  //   .map(market => market.id);
+  // if (marketIDsMissingInfo.length) {
+  //   store.dispatch(loadMarketsInfo(marketIDsMissingInfo));
+  // }
+
   // NOTE -- You'll notice the odd method used for rendering the previews, this is done for optimization reasons
   render() {
     const p = this.props;

@@ -12,13 +12,6 @@ const mapStateToProps = state => ({
   notifications: selectNotificationsAndSeenCount(state)
 });
 
-// const mapDispatchToProps = dispatch => ({
-//   onClick: href => dispatch(updateURL(href)),
-//   updateNotification: (index, notification) => dispatch(updateNotification(index, notification)),
-//   removeNotification: index => dispatch(removeNotification(index)),
-//   clearNotifications: () => dispatch(clearNotifications())
-// });
-
 const NavContainer = withRouter(connect(mapStateToProps)(Nav));
 
 export default NavContainer;

@@ -13,7 +13,6 @@ import getValue from 'utils/get-value';
 import makePath from 'modules/app/helpers/make-path';
 
 import * as VIEWS from 'modules/app/constants/views';
-import { FAVORITES, PENDING_REPORTS } from 'modules/markets/constants/markets-subset';
 
 // NOTE --  first child div is there to pass up a ref so that other methods can
 //          acquire the row height of the navs in the footer

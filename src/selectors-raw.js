@@ -4,9 +4,7 @@ import loginAccount from 'modules/auth/selectors/login-account';
 import topics from 'modules/topics/selectors/topics';
 import marketsHeader from 'modules/markets/selectors/markets-header';
 import marketsTotals from 'modules/markets/selectors/markets-totals';
-import markets from 'modules/markets/selectors/markets';
 import allMarkets from 'modules/markets/selectors/markets-all';
-import unpaginatedMarkets from 'modules/markets/selectors/markets-unpaginated';
 import orderCancellation from 'modules/bids-asks/selectors/order-cancellation';
 import market from 'modules/market/selectors/market';
 import portfolio from 'modules/portfolio/selectors/portfolio';
@@ -30,9 +28,7 @@ const selectors = {
   loginAccount,
   marketsHeader,
   marketsTotals,
-  markets,
   allMarkets,
-  unpaginatedMarkets,
   orderCancellation,
   market,
   topics,
