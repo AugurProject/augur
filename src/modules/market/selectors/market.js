@@ -38,7 +38,6 @@ import { slashRep } from 'modules/reports/actions/slash-rep';
 import store from 'src/store';
 
 import selectAccountPositions from 'modules/user-open-orders/selectors/positions-plus-asks';
-import { selectMarketLink } from 'modules/link/selectors/links';
 import selectUserOpenOrders from 'modules/user-open-orders/selectors/user-open-orders';
 import selectUserOpenOrdersSummary from 'modules/user-open-orders/selectors/user-open-orders-summary';
 
@@ -210,7 +209,6 @@ export function assembleMarket(
       market.isReportTabVisible = market.isRequiredToReportByAccount && !isReportRevealPhase;
       market.isSnitchTabVisible = market.tradingPeriod === reportPeriod;
 
-      market.marketLink = selectMarketLink(market, dispatch);
       market.onClickToggleFavorite = () => dispatch(toggleFavorite(marketID));
       market.onSubmitPlaceTrade = outcomeID => dispatch(placeTrade(marketID, outcomeID, marketTradeInProgress));
 

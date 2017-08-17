@@ -27,7 +27,6 @@ export default class AppView extends Component {
     children: PropTypes.node,
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
-    toggleTag: PropTypes.func.isRequired,
     markets: PropTypes.array.isRequired,
     marketsFilteredSorted: PropTypes.array.isRequired,
     // tags: PropTypes.array.isRequired,

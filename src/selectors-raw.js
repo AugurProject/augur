@@ -13,7 +13,6 @@ import favoriteMarkets from 'modules/markets/selectors/markets-favorite';
 import unpaginatedMarkets from 'modules/markets/selectors/markets-unpaginated';
 import orderCancellation from 'modules/bids-asks/selectors/order-cancellation';
 import market from 'modules/market/selectors/market';
-import tags from 'modules/markets/selectors/tags';
 import filterSort from 'modules/markets/selectors/filter-sort';
 import portfolio from 'modules/portfolio/selectors/portfolio';
 import loginAccountPositions from 'modules/my-positions/selectors/login-account-positions';
@@ -46,7 +45,6 @@ const selectors = {
   orderCancellation,
   market,
   topics,
-  tags,
   filterSort,
   portfolio,
   loginAccountPositions,

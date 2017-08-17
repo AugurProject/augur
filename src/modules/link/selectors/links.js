@@ -43,15 +43,15 @@ import { listWordsUnderLength } from 'utils/list-words-under-length';
 import { makeLocation } from 'utils/parse-url';
 
 export default function () {
-  const { keywords, selectedFilterSort, selectedTags, selectedTopic, pagination } = store.getState();
+  const { keywords, selectedFilterSort, selectedTopic, pagination } = store.getState();
   const market = require('modules/market/selectors/market');
   return {
     // authLink: selectAuthLink(auth.selectedAuthType, !!loginAccount.address, store.dispatch),
     createMarketLink: selectCreateMarketLink(store.dispatch),
-    marketsLink: selectMarketsLink(keywords, selectedFilterSort, selectedTags, pagination.selectedPageNum, null, selectedTopic, store.dispatch),
-    allMarketsLink: selectMarketsLink(keywords, selectedFilterSort, selectedTags, pagination.selectedPageNum, null, null, store.dispatch),
-    favoritesLink: selectMarketsLink(keywords, selectedFilterSort, selectedTags, pagination.selectedPageNum, FAVORITES, null, store.dispatch),
-    pendingReportsLink: selectMarketsLink(keywords, selectedFilterSort, selectedTags, pagination.selectedPageNum, PENDING_REPORTS, null, store.dispatch),
+    marketsLink: selectMarketsLink(keywords, selectedFilterSort, pagination.selectedPageNum, null, selectedTopic, store.dispatch),
+    allMarketsLink: selectMarketsLink(keywords, selectedFilterSort, pagination.selectedPageNum, null, null, store.dispatch),
+    favoritesLink: selectMarketsLink(keywords, selectedFilterSort, pagination.selectedPageNum, FAVORITES, null, store.dispatch),
+    pendingReportsLink: selectMarketsLink(keywords, selectedFilterSort, pagination.selectedPageNum, PENDING_REPORTS, null, store.dispatch),
     transactionsLink: selectTransactionsLink(store.dispatch),
     marketLink: selectMarketLink(market, store.dispatch),
     previousLink: selectPreviousLink(store.dispatch),
@@ -125,7 +125,7 @@ export const selectAirbitzOnLoad = memoize(dispatch => ({
   }
 }), { max: 1 });
 
-export const selectMarketsLink = memoize((keywords, selectedFilterSort, selectedTags, selectedPageNum, subSet, selectedTopic, dispatch) => {
+export const selectMarketsLink = memoize((keywords, selectedFilterSort, selectedPageNum, subSet, selectedTopic, dispatch) => {
   const params = {};
 
   // page
@@ -150,12 +150,6 @@ export const selectMarketsLink = memoize((keywords, selectedFilterSort, selected
   // pagination
   if (selectedPageNum > 1) {
     params[PAGINATION_PARAM_NAME] = selectedPageNum;
-  }
-
-  // tags
-  const tagsParams = Object.keys(selectedTags).filter(tag => !!selectedTags[tag]).join(',');
-  if (tagsParams.length) {
-    params[TAGS_PARAM_NAME] = tagsParams;
   }
 
   // Topic

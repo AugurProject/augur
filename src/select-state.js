@@ -26,7 +26,6 @@ export const selectKeywordsState = state => state.keywords;
 export const selectTopicsState = state => state.topics;
 export const selectHasLoadedTopicState = state => state.hasLoadedTopic;
 export const selectSelectedTopicState = state => state.selectedTopic;
-export const selectSelectedTagsState = state => state.selectedTags;
 export const selectSelectedFilterSortState = state => state.selectedFilterSort;
 export const selectPriceHistoryState = state => state.priceHistory;
 export const selectTradesInProgressState = state => state.tradesInProgress;
