@@ -53,30 +53,3 @@ Transactions.propTypes = {
 };
 
 export default Transactions;
-
-// {p.transactions.map((transaction, i) => (
-//   transaction.transactions && transaction.transactions.length > 1 ?
-//     <TransactionGroup
-//       key={transaction.transactions[0].hash}
-//       currentBlockNumber={p.currentBlockNumber}
-//       {...transaction}
-//     /> :
-//     <Transaction
-//       key={transaction.hash}
-//       currentBlockNumber={p.currentBlockNumber}
-//       {...transaction}
-//     />
-// ))}
-
-
-// transaction.transactions && transaction.transactions.length > 1 ?
-//   <TransactionGroup
-//     key={transaction.transactions[0].hash}
-//     currentBlockNumber={p.currentBlockNumber}
-//     {...transaction}
-//   /> :
-//   <Transaction
-//     key={transaction.hash}
-//     currentBlockNumber={p.currentBlockNumber}
-//     {...transaction}
-//   />
