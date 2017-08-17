@@ -30,7 +30,6 @@ import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-ty
 import { BINARY_INDETERMINATE_OUTCOME_ID, CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from 'modules/markets/constants/market-outcomes';
 import { abi } from 'services/augurjs';
 
-import { toggleFavorite } from 'modules/markets/actions/update-favorites';
 import { placeTrade } from 'modules/trade/actions/place-trade';
 import { commitReport } from 'modules/reports/actions/commit-report';
 import { slashRep } from 'modules/reports/actions/slash-rep';

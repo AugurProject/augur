@@ -1,8 +1,6 @@
 import { createSelector } from 'reselect';
 import store from 'src/store';
 import selectAllMarkets from 'modules/markets/selectors/markets-all';
-import { selectUnpaginatedMarkets } from 'modules/markets/selectors/markets-unpaginated';
-import { selectFavoriteMarkets } from 'modules/markets/selectors/markets-favorite';
 
 export default function () {
   return selectMarketsTotals(store.getState());
@@ -10,9 +8,7 @@ export default function () {
 
 export const selectMarketsTotals = createSelector(
   selectAllMarkets,
-  selectUnpaginatedMarkets,
-  selectFavoriteMarkets,
-  (allMarkets, unpaginatedMarkets, favoriteMarkets) => {
+  (allMarkets) => {
     const totals = allMarkets.reduce((p, market) => {
       p.numAll += 1;
       if (market.isPendingReport) {
@@ -20,8 +16,8 @@ export const selectMarketsTotals = createSelector(
       }
       return p;
     }, { numAll: 0, numFavorites: 0, numPendingReports: 0, numUnpaginated: 0, numFiltered: 0 });
-    totals.numUnpaginated = unpaginatedMarkets.length;
-    totals.numFavorites = favoriteMarkets.length;
+    totals.numUnpaginated = allMarkets.length;
+    // totals.numFavorites = favoriteMarkets.length;
     return totals;
   }
 );

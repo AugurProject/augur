@@ -21,7 +21,6 @@ import hasLoadedMarkets from 'modules/markets/reducers/has-loaded-markets';
 import outcomesData from 'modules/markets/reducers/outcomes-data';
 import eventMarketsMap from 'modules/markets/reducers/event-markets-map';
 import favorites from 'modules/markets/reducers/favorites';
-import pagination from 'modules/markets/reducers/pagination';
 import marketsFilteredSorted from 'modules/markets/reducers/markets-filtered-sorted';
 
 import reports from 'modules/reports/reducers/reports';
@@ -54,8 +53,6 @@ import tradeCommitment from 'modules/trade/reducers/trade-commitment';
 import sellCompleteSetsLock from 'modules/my-positions/reducers/sell-complete-sets-lock';
 import smallestPositions from 'modules/my-positions/reducers/smallest-positions';
 // import createMarketInProgress from 'modules/create-market/reducers/create-market-in-progress';
-import keywords from 'modules/markets/reducers/keywords';
-import selectedFilterSort from 'modules/markets/reducers/selected-filter-sort';
 import priceHistory from 'modules/markets/reducers/price-history';
 
 import chatMessages from 'modules/chat/reducers/chat-messages';
@@ -92,7 +89,6 @@ export function createReducer() {
     outcomesData,
     eventMarketsMap,
     favorites,
-    pagination,
     marketsFilteredSorted,
 
     reports,
@@ -101,11 +97,9 @@ export function createReducer() {
     selectedMarketID,
     selectedMarketsSubset,
     selectedMarketsHeader,
-    keywords,
     topics,
     hasLoadedTopic,
     selectedTopic,
-    selectedFilterSort,
     priceHistory,
 
     tradesInProgress,

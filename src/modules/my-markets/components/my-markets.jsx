@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
 import NullStateMessage from 'modules/common/components/null-state-message';
 import MyMarket from 'modules/my-markets/components/my-market';
-import Link from 'modules/link/components/link';
 import TransactionsLoadingActions from 'modules/transactions/components/transactions-loading-actions';
 import FilterSort from 'modules/filter-sort/container';
+
+import makePath from 'modules/app/helpers/make-path';
+import makeQuery from 'modules/app/helpers/make-query';
+import getValue from 'utils/get-value';
+
+import { MARKET } from 'modules/app/constants/views';
+import { MARKET_DESCRIPTION_PARAM_NAME, MARKET_ID_PARAM_NAME } from 'modules/app/constants/param-names';
 
 export default class MyMarkets extends Component {
   static propTypes = {
@@ -73,9 +80,17 @@ export default class MyMarkets extends Component {
                   className="my-market-overview portfolio-market-overview"
                 >
                   <Link
-                    {...p.myMarkets[marketIndex].marketLink}
+                    to={{
+                      pathname: makePath(MARKET),
+                      search: makeQuery({
+                        [MARKET_DESCRIPTION_PARAM_NAME]: getValue(p, `myMarkets[${marketIndex}].formattedDescription`),
+                        [MARKET_ID_PARAM_NAME]: getValue(p, `myMarkets[${marketIndex}].id`)
+                      })
+                    }}
                   >
-                    <span>{p.myMarkets[marketIndex].description}</span>
+                    <span>
+                      {getValue(p, `myMarkets[${marketIndex}].description`)}
+                    </span>
                   </Link>
                 </div>
                 <MyMarket

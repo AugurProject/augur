@@ -10,7 +10,6 @@ import {
   selectAccountTradesState,
   selectTradesInProgressState,
   selectBranchState,
-  selectSelectedFilterSortState,
   selectPriceHistoryState,
   selectOrderBooksState,
   selectOrderCancellationState,
@@ -37,7 +36,6 @@ export const selectMarkets = createSelector(
   selectAccountTradesState,
   selectTradesInProgressState,
   selectBranchState,
-  selectSelectedFilterSortState,
   selectPriceHistoryState,
   selectOrderBooksState,
   selectOrderCancellationState,
@@ -78,36 +76,6 @@ export const selectMarkets = createSelector(
         loginAccount,
         store.dispatch
       );
-    }).sort((a, b) => {
-      const aVal = cleanSortVal(a[selectedFilterSort.sort]);
-      const bVal = cleanSortVal(b[selectedFilterSort.sort]);
-
-      if (bVal < aVal) {
-        return selectedFilterSort.isDesc ? -1 : 1;
-      } else if (bVal > aVal) {
-        return selectedFilterSort.isDesc ? 1 : -1;
-      }
-      return a.id < b.id ? -1 : 1;
     });
   }
 );
-
-function cleanSortVal(val) {
-  // if a falsy simple value return it to sort as-is
-  if (!val) {
-    return val;
-  }
-
-  // if this is a formatted number object, with a `value` prop, use that for sorting
-  if (val.value || val.value === 0) {
-    return val.value;
-  }
-
-  // if the val is a string, lowercase it
-  if (val.toLowerCase) {
-    return val.toLowerCase();
-  }
-
-  // otherwise the val is probably a number, either way return it as-is
-  return val;
-}

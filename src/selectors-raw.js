@@ -6,14 +6,11 @@ import links from 'modules/link/selectors/links';
 import topics from 'modules/topics/selectors/topics';
 import marketsHeader from 'modules/markets/selectors/markets-header';
 import marketsTotals from 'modules/markets/selectors/markets-totals';
-import pagination from 'modules/markets/selectors/pagination';
 import markets from 'modules/markets/selectors/markets';
 import allMarkets from 'modules/markets/selectors/markets-all';
-import favoriteMarkets from 'modules/markets/selectors/markets-favorite';
 import unpaginatedMarkets from 'modules/markets/selectors/markets-unpaginated';
 import orderCancellation from 'modules/bids-asks/selectors/order-cancellation';
 import market from 'modules/market/selectors/market';
-import filterSort from 'modules/markets/selectors/filter-sort';
 import portfolio from 'modules/portfolio/selectors/portfolio';
 import loginAccountPositions from 'modules/my-positions/selectors/login-account-positions';
 import transactions from 'modules/transactions/selectors/transactions';
@@ -37,15 +34,12 @@ const selectors = {
   links,
   marketsHeader,
   marketsTotals,
-  pagination,
   markets,
   allMarkets,
-  favoriteMarkets,
   unpaginatedMarkets,
   orderCancellation,
   market,
   topics,
-  filterSort,
   portfolio,
   loginAccountPositions,
   transactions,
