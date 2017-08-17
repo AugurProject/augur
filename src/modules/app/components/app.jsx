@@ -19,7 +19,7 @@ import debounce from 'utils/debounce';
 import getValue from 'utils/get-value';
 import parsePath from 'modules/app/helpers/parse-path';
 
-import { CREATE_MARKET, MARKETS } from 'modules/app/constants/views';
+import { CREATE_MARKET, MARKETS, FAVORITES } from 'modules/app/constants/views';
 
 export default class AppView extends Component {
   static propTypes = {
@@ -81,7 +81,9 @@ export default class AppView extends Component {
 
   // Sidebar
   setSidebarAllowed(location) {
-    if (parsePath(location.pathname)[0] === MARKETS) {
+    const path = parsePath(location.pathname)[0];
+
+    if (path === MARKETS || path === FAVORITES) {
       this.setState({ isSideBarAllowed: true });
     } else {
       this.setState({ isSideBarAllowed: false });

@@ -60,8 +60,6 @@ export default class FilterSortView extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // console.log('filterByMarketFavorites -- ', nextProps.filterByMarketFavorites);
-
     if (
       nextProps.filterByTags &&
       (
@@ -117,7 +115,6 @@ export default class FilterSortView extends Component {
 
   updateCombinedFilters(options) {
     const combinedFiltered = Object.keys(options.filters).reduce((p, filterType) => {
-      console.log('options.filters[filterType] -- ', filterType, options.filters);
       if (p.length === 0 || (options.filters[filterType] !== null && options.filters[filterType].length === 0)) return [];
       if (options.filters[filterType] === null) return p;
 
