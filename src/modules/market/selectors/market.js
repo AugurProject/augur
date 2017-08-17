@@ -256,7 +256,7 @@ export function assembleMarket(
           outcome.lastPricePercent = formatPercent(100 / market.numOutcomes, { positiveSign: false });
         }
 
-        outcome.trade = generateTrade(market, outcome, outcomeTradeInProgress, loginAccount, orderBooks || {});
+        outcome.trade = generateTrade(market, outcome, outcomeTradeInProgress, orderBooks || {});
 
         const orderBook = selectAggregateOrderBook(outcome.id, orderBooks, orderCancellation);
         outcome.orderBook = orderBook;

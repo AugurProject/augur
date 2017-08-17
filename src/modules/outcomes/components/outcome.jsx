@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */ // Allowed in this case due to desired functionality + component structure
+
 import React from 'react';
 import classNames from 'classnames';
 
@@ -27,7 +29,7 @@ const Outcome = (p) => {
 
   return (
     <article className={classNames('outcome', { selected: selectedOutcomeID === p.outcome.id })}>
-      <button
+      <a
         className={classNames('unstlyed outcome-row-full', { selected: selectedOutcomeID === p.outcome.id })}
         onClick={() => { p.updateSelectedOutcome(p.outcome); }}
       >
@@ -68,8 +70,8 @@ const Outcome = (p) => {
           <ValueDenomination formatted={topAskShares} />
         </button>
         <ValueDenomination formatted={lastPrice} />
-      </button>
-      <button
+      </a>
+      <a
         className={classNames('unstlyed outcome-row-condensed', { selected: selectedOutcomeID === p.outcome.id })}
         onClick={() => { p.updateSelectedOutcome(p.outcome); }}
       >
@@ -106,7 +108,7 @@ const Outcome = (p) => {
             </span>
           </button>
         </span>
-      </button>
+      </a>
       <OutcomeTrade
         marketType={p.marketType}
         selectedOutcome={p.selectedOutcome}

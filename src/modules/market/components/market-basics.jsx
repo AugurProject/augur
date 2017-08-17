@@ -72,7 +72,7 @@ const MarketBasics = p => (
 
 MarketBasics.propTypes = {
   isLogged: PropTypes.bool.isRequired,
-  toggleFavorite: PropTypes.func.isRequired
+  toggleFavorite: PropTypes.func
 };
 
 export default MarketBasics;
