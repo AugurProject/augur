@@ -9,7 +9,7 @@ import makePath from 'modules/app/helpers/make-path';
 import parseQuery from 'modules/app/helpers/parse-query';
 import parsePath from 'modules/app/helpers/parse-path';
 
-import { CREATE_MARKET, MARKETS } from 'modules/app/constants/views';
+import { CREATE_MARKET, MARKETS, FAVORITES } from 'modules/app/constants/views';
 import { TOPIC_PARAM_NAME } from 'modules/app/constants/param-names';
 
 export default class MarketsHeader extends Component {
@@ -24,7 +24,8 @@ export default class MarketsHeader extends Component {
 
     this.state = {
       headerTitle: null,
-      capitalizeTitle: false
+      capitalizeTitle: false,
+      filterByMarketFavorites: false
     };
 
     this.searchKeys = [
@@ -34,14 +35,19 @@ export default class MarketsHeader extends Component {
     ];
 
     this.setHeaderTitle = this.setHeaderTitle.bind(this);
+    this.setPathDependentFilters = this.setPathDependentFilters.bind(this);
   }
 
   componentWillMount() {
     this.setHeaderTitle(this.props.location);
+    this.setPathDependentFilters(this.props.location);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.location !== nextProps.location) this.setHeaderTitle(nextProps.location);
+    if (this.props.location !== nextProps.location) {
+      this.setHeaderTitle(nextProps.location);
+      this.setPathDependentFilters(nextProps.location);
+    }
   }
 
   setHeaderTitle(location) {
@@ -62,6 +68,13 @@ export default class MarketsHeader extends Component {
         });
       }
     }
+  }
+
+  setPathDependentFilters(location) {
+    const path = parsePath(location.pathname);
+
+    const filterByMarketFavorites = path[0] === FAVORITES;
+    this.setState({ filterByMarketFavorites });
   }
 
   render() {
@@ -91,6 +104,7 @@ export default class MarketsHeader extends Component {
         <FilterSort
           items={p.markets}
           updateFilteredItems={p.updateFilteredItems}
+          filterByMarketFavorites={s.filterByMarketFavorites}
           searchPlaceholder="Search Markets"
           searchKeys={this.searchKeys}
           filterBySearch
