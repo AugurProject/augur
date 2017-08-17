@@ -23,8 +23,7 @@ export default class TopicsView extends Component {
     isLogged: PropTypes.bool.isRequired,
     topics: PropTypes.array,
     branch: PropTypes.object,
-    loginAccount: PropTypes.object,
-    createMarketLink: PropTypes.object
+    loginAccount: PropTypes.object
   }
 
   constructor(props) {

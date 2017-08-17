@@ -1,8 +1,6 @@
 // NOTE -- no longer used, leaving temporarily for historical ref
 
-// import abc from 'modules/auth/selectors/abc';
 import loginAccount from 'modules/auth/selectors/login-account';
-import links from 'modules/link/selectors/links';
 import topics from 'modules/topics/selectors/topics';
 import marketsHeader from 'modules/markets/selectors/markets-header';
 import marketsTotals from 'modules/markets/selectors/markets-totals';
@@ -29,9 +27,7 @@ import openOrders from 'modules/user-open-orders/selectors/open-orders';
 import notifications from 'modules/notifications/selectors/notifications';
 
 const selectors = {
-  // abc,
   loginAccount,
-  links,
   marketsHeader,
   marketsTotals,
   markets,

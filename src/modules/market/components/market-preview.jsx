@@ -79,7 +79,6 @@ MarketPreview.propTypes = {
 //   tradingFeePercent: PropTypes.object,
 //   volume: PropTypes.object,
 //   tags: PropTypes.array,
-//   marketLink: PropTypes.object,
 //   onClickToggleFavorite: PropTypes.func
 // };
 

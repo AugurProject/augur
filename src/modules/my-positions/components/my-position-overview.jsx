@@ -25,8 +25,7 @@ const PositionsMarketOverview = p => (
 );
 
 PositionsMarketOverview.propTypes = {
-  description: PropTypes.string.isRequired,
-  marketLink: PropTypes.object.isRequired
+  description: PropTypes.string.isRequired
 };
 
 export default PositionsMarketOverview;
