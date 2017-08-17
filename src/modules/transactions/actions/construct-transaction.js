@@ -4,7 +4,6 @@ import { BINARY, SCALAR } from 'modules/markets/constants/market-types';
 import * as TYPES from 'modules/transactions/constants/types';
 import { formatEtherTokens, formatPercent, formatEther, formatRep, formatShares } from 'utils/format-number';
 import { formatDate } from 'utils/format-date';
-import { selectMarketLink } from 'modules/link/selectors/links';
 import { formatReportedOutcome } from 'modules/reports/selectors/reportable-outcomes';
 import { loadMarketThenRetryConversion, lookupEventMarketsThenRetryConversion } from 'modules/transactions/actions/retry-conversion';
 import { selectMarketIDFromEventID } from 'modules/market/selectors/market';
@@ -216,7 +215,6 @@ export function constructMarketCreatedTransaction(log, description, dispatch) {
   transaction.description = description.split('~|>')[0];
   transaction.topic = log.topic;
   transaction.marketCreationFee = formatEtherTokens(log.marketCreationFee);
-  transaction.data.marketLink = selectMarketLink({ id: log.marketID, description: transaction.description }, dispatch);
   transaction.data.marketID = log.marketID ? log.marketID : null;
   transaction.bond = { label: 'event validity', value: formatEtherTokens(log.eventBond) };
   const action = log.inProgress ? 'creating' : 'created';
@@ -236,7 +234,6 @@ export function constructPayoutTransaction(log, market, dispatch) {
     }];
   }
   transaction.data.shares = log.shares;
-  transaction.data.marketLink = selectMarketLink({ id: log.market, description: market.description }, dispatch);
   transaction.data.marketID = log.market ? log.market : null;
   const action = log.inProgress ? 'closing out' : 'closed out';
   transaction.message = `${action} ${formatShares(log.shares).full}`;
@@ -246,7 +243,6 @@ export function constructPayoutTransaction(log, market, dispatch) {
 export function constructTradingFeeUpdatedTransaction(log, market, dispatch) {
   const transaction = { data: {} };
   transaction.description = market.description;
-  transaction.data.marketLink = selectMarketLink({ id: log.marketID, description: market.description }, dispatch);
   transaction.data.marketID = log.marketID ? log.marketID : null;
   transaction.message = `updated trading fee: ${formatPercent(abi.bignum(log.tradingFee).times(100)).full}`;
   return transaction;
@@ -260,7 +256,6 @@ export function constructPenalizeTransaction(log, marketID, market, outcomes, di
   console.log('formattedReport:', formattedReport);
   console.log('formattedOutcome:', formattedOutcome);
   transaction.description = market.description;
-  transaction.data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
   transaction.data.marketID = marketID || null;
   if (log.repchange) {
     let repPenalty;
@@ -311,7 +306,6 @@ export function constructSubmittedReportHashTransaction(log, marketID, market, o
   const transaction = { data: {} };
   transaction.type = TYPES.COMMIT_REPORT;
   transaction.description = market.description;
-  transaction.data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
   transaction.data.marketID = marketID || null;
   transaction.data.market = market;
   const isUnethical = !log.ethics || abi.bignum(log.ethics).eq(constants.ZERO);
@@ -347,7 +341,6 @@ export function constructSubmittedReportTransaction(log, marketID, market, outco
   const transaction = { data: {} };
   transaction.type = TYPES.REVEAL_REPORT;
   transaction.description = market.description;
-  transaction.data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
   transaction.data.marketID = marketID || null;
   transaction.data.market = market;
   const isUnethical = !log.ethics || abi.bignum(log.ethics).eq(constants.ZERO);
@@ -372,7 +365,6 @@ export function constructSlashedRepTransaction(log, market, outcomes, address, d
   const transaction = { data: {} };
   console.log('constructSlashedRepTransaction:', log, market, outcomes, address);
   transaction.description = market.description;
-  transaction.data.marketLink = selectMarketLink({ id: market.id, description: market.description }, dispatch);
   transaction.data.marketID = market.id ? market.id : null;
   transaction.data.market = market;
   if (log.sender === address) {
@@ -444,8 +436,7 @@ export const constructLogFillTxTransaction = (trade, marketID, marketType, minVa
         marketType,
         outcomeName: outcomeName || outcomeID,
         outcomeID,
-        marketID,
-        marketLink: selectMarketLink({ id: marketID, description }, dispatch),
+        marketID
       },
       message: `${action} ${shares.full} for ${formatEtherTokens(trade.type === TYPES.BUY ? totalCostPerShare : totalReturnPerShare).full} / share`,
       numShares: shares,
@@ -485,8 +476,7 @@ export const constructLogShortFillTxTransaction = (trade, marketID, marketType, 
         marketType,
         outcomeName: outcomeName || outcomeID,
         outcomeID,
-        marketID,
-        marketLink: selectMarketLink({ id: marketID, description }, dispatch)
+        marketID
       },
       message: `${action} ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
       numShares: shares,
@@ -554,8 +544,7 @@ export const constructLogAddTxTransaction = (trade, marketID, marketType, descri
         marketType,
         outcomeName: outcomeName || outcomeID,
         outcomeID,
-        marketID,
-        marketLink: selectMarketLink({ id: marketID, description }, dispatch)
+        marketID
       },
       message: `${action} ${shares.full} for ${formatEtherTokens(abi.unfix(trade.type === TYPES.BUY ? totalCostPerShare : totalReturnPerShare)).full} / share`,
       numShares: shares,
@@ -592,8 +581,7 @@ export const constructLogCancelTransaction = (trade, marketID, marketType, descr
         marketType,
         outcome: { name: outcomeName || outcomeID },
         outcomeID,
-        marketID,
-        marketLink: selectMarketLink({ id: marketID, description }, dispatch)
+        marketID
       },
       message: `${action} order to ${trade.type} ${shares.full} for ${price.full} each`,
       numShares: shares,
