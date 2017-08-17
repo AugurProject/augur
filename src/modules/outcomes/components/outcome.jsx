@@ -1,7 +1,6 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import Link from 'modules/link/components/link';
 import ValueDenomination from 'modules/common/components/value-denomination';
 import OutcomeTrade from 'modules/outcomes/components/outcome-trade';
 
@@ -28,8 +27,8 @@ const Outcome = (p) => {
 
   return (
     <article className={classNames('outcome', { selected: selectedOutcomeID === p.outcome.id })}>
-      <Link
-        className={classNames('outcome-row-full', { selected: selectedOutcomeID === p.outcome.id })}
+      <button
+        className={classNames('unstlyed outcome-row-full', { selected: selectedOutcomeID === p.outcome.id })}
         onClick={() => { p.updateSelectedOutcome(p.outcome); }}
       >
         {p.marketType === SCALAR ?
@@ -69,9 +68,9 @@ const Outcome = (p) => {
           <ValueDenomination formatted={topAskShares} />
         </button>
         <ValueDenomination formatted={lastPrice} />
-      </Link>
-      <Link
-        className={classNames('outcome-row-condensed', { selected: selectedOutcomeID === p.outcome.id })}
+      </button>
+      <button
+        className={classNames('unstlyed outcome-row-condensed', { selected: selectedOutcomeID === p.outcome.id })}
         onClick={() => { p.updateSelectedOutcome(p.outcome); }}
       >
         {p.marketType === SCALAR ?
@@ -107,7 +106,7 @@ const Outcome = (p) => {
             </span>
           </button>
         </span>
-      </Link>
+      </button>
       <OutcomeTrade
         marketType={p.marketType}
         selectedOutcome={p.selectedOutcome}
