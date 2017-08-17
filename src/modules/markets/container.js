@@ -8,11 +8,8 @@ import getFilterSort from 'modules/markets/selectors/filter-sort';
 import getScalarShareDenomination from 'modules/market/selectors/scalar-share-denomination';
 import { updateMarketsFilteredSorted, clearMarketsFilteredSorted } from 'modules/markets/actions/update-markets-filtered-sorted';
 
-import { selectLoginAccount } from 'modules/auth/selectors/login-account';
 import { selectCreateMarketLink } from 'modules/link/selectors/links';
-import { selectMarketsHeader } from 'modules/markets/selectors/markets-header';
-import { selectFavoriteMarkets } from 'modules/markets/selectors/markets-favorite';
-import { selectPagination } from 'modules/markets/selectors/pagination';
+import { toggleFavorite } from 'modules/markets/actions/update-favorites';
 
 import { loadMarkets } from 'modules/markets/actions/load-markets';
 import { loadMarketsByTopic } from 'modules/markets/actions/load-markets-by-topic';
@@ -43,7 +40,8 @@ const mapDispatchToProps = dispatch => ({
   loadMarkets: branchID => dispatch(loadMarkets(branchID)),
   loadMarketsByTopic: (topic, branchID) => dispatch(loadMarketsByTopic(topic, branchID)),
   updateMarketsFilteredSorted: filteredMarkets => dispatch(updateMarketsFilteredSorted(filteredMarkets)),
-  clearMarketsFilteredSorted: () => dispatch(clearMarketsFilteredSorted())
+  clearMarketsFilteredSorted: () => dispatch(clearMarketsFilteredSorted()),
+  toggleFavorite: marketID => dispatch(toggleFavorite(marketID))
 });
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {

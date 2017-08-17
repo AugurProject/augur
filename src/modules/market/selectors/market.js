@@ -209,7 +209,6 @@ export function assembleMarket(
       market.isReportTabVisible = market.isRequiredToReportByAccount && !isReportRevealPhase;
       market.isSnitchTabVisible = market.tradingPeriod === reportPeriod;
 
-      market.onClickToggleFavorite = () => dispatch(toggleFavorite(marketID));
       market.onSubmitPlaceTrade = outcomeID => dispatch(placeTrade(marketID, outcomeID, marketTradeInProgress));
 
       market.report = {

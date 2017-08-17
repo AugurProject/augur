@@ -11,6 +11,7 @@ import getOrderCancellation from 'modules/bids-asks/selectors/order-cancellation
 
 import { loadFullMarket } from 'modules/market/actions/load-full-market';
 import { updateSelectedMarketID, clearSelectedMarketID } from 'modules/market/actions/update-selected-market-id';
+import { toggleFavorite } from 'modules/markets/actions/update-favorites';
 
 import { MARKET_USER_DATA_NAV_ITEMS } from 'modules/market/constants/market-user-data-nav-items';
 import { MARKET_DATA_NAV_ITEMS } from 'modules/market/constants/market-data-nav-items';
@@ -36,7 +37,8 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   loadFullMarket: marketId => dispatch(loadFullMarket(marketId)),
   updateSelectedMarketID: marketId => dispatch(updateSelectedMarketID(marketId)),
-  clearSelectedMarketID: () => dispatch(clearSelectedMarketID())
+  clearSelectedMarketID: () => dispatch(clearSelectedMarketID()),
+  toggleFavorite: marketID => dispatch(toggleFavorite(marketID))
 });
 
 const Market = withRouter(connect(mapStateToProps, mapDispatchToProps)(MarketView));

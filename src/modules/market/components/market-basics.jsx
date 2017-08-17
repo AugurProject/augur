@@ -34,10 +34,10 @@ const MarketBasics = p => (
         </ul>
       </div>
       <div className="market-basics-header-actions">
-        {p.isLogged && p.onClickToggleFavorite &&
+        {p.isLogged && p.toggleFavorite &&
           <button
             className={classNames('button unstyled favorite-button', { on: p.isFavorite })}
-            onClick={p.onClickToggleFavorite}
+            onClick={() => p.toggleFavorite(p.id)}
           >
             <i
               className={classNames('fa', {
@@ -71,7 +71,8 @@ const MarketBasics = p => (
 );
 
 MarketBasics.propTypes = {
-  isLogged: PropTypes.bool.isRequired
+  isLogged: PropTypes.bool.isRequired,
+  toggleFavorite: PropTypes.func.isRequired
 };
 
 export default MarketBasics;

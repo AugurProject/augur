@@ -38,7 +38,7 @@ const MarketPreview = (p) => {
       <div className="market-preview-details">
         <MarketBasics
           {...p}
-          formattedDescription={p.formattedDescription}
+          toggleFavorite={p.toggleFavorite}
         />
 
         {!!p.id && p.formattedDescription &&
@@ -64,7 +64,8 @@ const MarketPreview = (p) => {
 };
 
 MarketPreview.propTypes = {
-  isLogged: PropTypes.bool.isRequired
+  isLogged: PropTypes.bool.isRequired,
+  toggleFavorite: PropTypes.func.isRequired
 };
 
 // MarketPreview.propTypes = {

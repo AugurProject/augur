@@ -12,7 +12,8 @@ export default class MarketsList extends Component {
     markets: PropTypes.array.isRequired,
     filteredMarkets: PropTypes.array.isRequired,
     location: PropTypes.object.isRequired,
-    scalarShareDenomination: PropTypes.object.isRequired
+    scalarShareDenomination: PropTypes.object.isRequired,
+    toggleFavorite: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -50,11 +51,12 @@ export default class MarketsList extends Component {
             if (market && market.id) {
               return (
                 <MarketPreview
+                  {...market}
                   key={market.id}
                   isLogged={p.isLogged}
-                  {...market}
                   selectedShareDenomination={selectedShareDenomination}
                   shareDenominations={shareDenominations}
+                  toggleFavorite={p.toggleFavorite}
                 />
               );
             }

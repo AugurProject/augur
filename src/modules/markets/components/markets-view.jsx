@@ -25,7 +25,8 @@ export default class MarketsView extends Component {
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     updateMarketsFilteredSorted: PropTypes.func.isRequired,
-    clearMarketsFilteredSorted: PropTypes.func.isRequired
+    clearMarketsFilteredSorted: PropTypes.func.isRequired,
+    toggleFavorite: PropTypes.func.isRequired
     // filterSort: PropTypes.object,
     // marketsHeader: PropTypes.object,
     // pagination: PropTypes.object,
@@ -128,6 +129,7 @@ export default class MarketsView extends Component {
           location={p.location}
           history={p.history}
           scalarShareDenomination={p.scalarShareDenomination}
+          toggleFavorite={p.toggleFavorite}
         />
       </section>
     );
