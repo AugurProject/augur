@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import { Route } from 'react-router-dom';
 
 import MyPositions from 'modules/my-positions/container';
@@ -17,9 +16,5 @@ const PortfolioView = p => (
     <Route path={makePath(MY_REPORTS)} component={MyReports} />
   </section>
 );
-
-PortfolioView.propTypes = {
-  activeView: PropTypes.string.isRequired
-};
 
 export default PortfolioView;

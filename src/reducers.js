@@ -2,7 +2,6 @@ import env from 'modules/app/reducers/env';
 import blockchain from 'modules/app/reducers/blockchain';
 import branch from 'modules/branch/reducers/branch';
 import connection from 'modules/app/reducers/connection';
-import url from 'modules/link/reducers/url';
 
 import isMobile from 'modules/app/reducers/is-mobile';
 import headerHeight from 'modules/app/reducers/header-height';
@@ -11,7 +10,6 @@ import footerHeight from 'modules/app/reducers/footer-height';
 import loginAccount from 'modules/auth/reducers/login-account';
 import isLogged from 'modules/auth/reducers/is-logged';
 import accountName from 'modules/account/reducers/account-name';
-import activeView from 'modules/app/reducers/active-view';
 
 import newMarket from 'modules/create-market/reducers/new-market';
 
@@ -41,11 +39,8 @@ import closePositionTradeGroups from 'modules/my-positions/reducers/close-positi
 
 import topics from 'modules/topics/reducers/topics-data';
 import hasLoadedTopic from 'modules/topics/reducers/has-loaded-topic';
-import selectedTopic from 'modules/topics/reducers/selected-topic';
 
 import selectedMarketID from 'modules/market/reducers/selected-market-id';
-import selectedMarketsHeader from 'modules/markets/reducers/selected-markets-header';
-import selectedMarketsSubset from 'modules/markets/reducers/selectedMarketsSubset';
 import tradesInProgress from 'modules/trade/reducers/trades-in-progress';
 import tradeCommitLock from 'modules/trade/reducers/trade-commit-lock';
 import reportCommitLock from 'modules/reports/reducers/report-commit-lock';
@@ -70,7 +65,6 @@ export function createReducer() {
     blockchain,
     branch,
     connection,
-    url,
 
     isMobile,
     headerHeight,
@@ -79,7 +73,6 @@ export function createReducer() {
     loginAccount,
     isLogged,
     accountName,
-    activeView,
 
     newMarket,
 
@@ -95,11 +88,8 @@ export function createReducer() {
     eventsWithAccountReport,
 
     selectedMarketID,
-    selectedMarketsSubset,
-    selectedMarketsHeader,
     topics,
     hasLoadedTopic,
-    selectedTopic,
     priceHistory,
 
     tradesInProgress,
