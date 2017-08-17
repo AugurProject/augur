@@ -29,24 +29,16 @@ export default class TransactionsView extends Component {
     super(props);
 
     this.state = {
-      transactionsPerPage: 20, // -- Update this value to change pagination size
-      nullMessage: 'No Transaction Data',
-      lowerIndex: null,
-      upperIndex: null,
-      currentPage: 1,
+      lowerBound: null,
+      boundedLength: null,
       pageChanged: false,
-      pagination: {},
-      paginatedTransactions: [],
       hasAttachedScrollListener: false,
     };
 
-    this.updatePagination = this.updatePagination.bind(this);
-    this.paginateTransactions = this.paginateTransactions.bind(this);
+    // this.updatePagination = this.updatePagination.bind(this);
+    // this.paginateTransactions = this.paginateTransactions.bind(this);
     this.handleScroll = debounce(this.handleScroll.bind(this), 100);
-  }
-
-  componentWillMount() {
-    this.updatePagination(this.props, this.state);
+    this.setSegment = this.setSegment.bind(this);
   }
 
   componentDidMount() {
@@ -54,14 +46,8 @@ export default class TransactionsView extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (
-      this.props.transactions !== nextProps.transactions ||
-      this.state.currentPage !== nextState.currentPage
-    ) {
-      this.updatePagination(nextProps, nextState, this.state.currentPage !== nextState.currentPage);
-    }
-
-    // This is to prevent the CSSTransitionGroup from transitioning transactions on pagination
+    // These are to prevent the CSSTransitionGroup from transitioning transactions on pagination
+    if (this.state.lowerBound !== nextState.lowerBound) this.setState({ pageChanged: true }); // Inferred page change
     if (this.state.pageChanged !== nextState.pageChanged) this.setState({ pageChanged: false });
 
     if (!nextState.hasAttachedScrollListener && nextProps.isMobile) this.setState({ hasAttachedScrollListener: true });
@@ -74,6 +60,10 @@ export default class TransactionsView extends Component {
 
   componentWillUnmount() {
     if (this.state.hasAttachedScrollListener) window.removeEventListener('scroll', this.handleScroll);
+  }
+
+  setSegment(lowerBound, upperBound, boundedLength) {
+    this.setState({ lowerBound, upperBound, boundedLength });
   }
 
   handleScroll() {
@@ -100,51 +90,51 @@ export default class TransactionsView extends Component {
     }
   }
 
-  updatePagination(p, s, pageChanged = false) {
-    const itemsPerPage = s.transactionsPerPage - 1; // Convert to zero index
-    const lowerIndex = (s.currentPage - 1) * s.transactionsPerPage;
-    const upperIndex = (p.transactions.length - 1) > lowerIndex + itemsPerPage ?
-      lowerIndex + itemsPerPage :
-      p.transactions.length - 1;
+  // updatePagination(p, s, pageChanged = false) {
+  //   const itemsPerPage = s.transactionsPerPage - 1; // Convert to zero index
+  //   const lowerIndex = (s.currentPage - 1) * s.transactionsPerPage;
+  //   const upperIndex = (p.transactions.length - 1) > lowerIndex + itemsPerPage ?
+  //     lowerIndex + itemsPerPage :
+  //     p.transactions.length - 1;
+  //
+  //   this.setState({
+  //     lowerIndex,
+  //     upperIndex,
+  //     pagination: {
+  //       numUnpaginated: p.transactions.length,
+  //       startItemNum: lowerIndex + 1,
+  //       endItemNum: upperIndex + 1,
+  //       previousPageLink: s.currentPage > 1 ?
+  //       {
+  //         onClick: () => {
+  //           if (s.currentPage > 1) this.setState({ currentPage: s.currentPage - 1 });
+  //         }
+  //       } :
+  //       null,
+  //       nextPageLink: s.currentPage < Math.ceil(p.transactions.length / s.transactionsPerPage) ?
+  //       {
+  //         onClick: () => {
+  //           if (upperIndex < p.transactions.length - 1) this.setState({ currentPage: s.currentPage + 1 });
+  //         }
+  //       } :
+  //       null
+  //     }
+  //   }, () => {
+  //     this.paginateTransactions(this.props, this.state, pageChanged);
+  //   });
+  // }
 
-    this.setState({
-      lowerIndex,
-      upperIndex,
-      pagination: {
-        numUnpaginated: p.transactions.length,
-        startItemNum: lowerIndex + 1,
-        endItemNum: upperIndex + 1,
-        previousPageLink: s.currentPage > 1 ?
-        {
-          onClick: () => {
-            if (s.currentPage > 1) this.setState({ currentPage: s.currentPage - 1 });
-          }
-        } :
-        null,
-        nextPageLink: s.currentPage < Math.ceil(p.transactions.length / s.transactionsPerPage) ?
-        {
-          onClick: () => {
-            if (upperIndex < p.transactions.length - 1) this.setState({ currentPage: s.currentPage + 1 });
-          }
-        } :
-        null
-      }
-    }, () => {
-      this.paginateTransactions(this.props, this.state, pageChanged);
-    });
-  }
-
-  paginateTransactions(p, s, pageChanged) {
-    // Filter Based on Pagination
-    const paginatedTransactions = p.transactions.slice(s.lowerIndex, s.upperIndex + 1);
-
-    if (paginatedTransactions !== s.paginatedTransactions) {
-      this.setState({
-        paginatedTransactions,
-        pageChanged
-      });
-    }
-  }
+  // paginateTransactions(p, s, pageChanged) {
+  //   // Filter Based on Pagination
+  //   const paginatedTransactions = p.transactions.slice(s.lowerIndex, s.upperIndex + 1);
+  //
+  //   if (paginatedTransactions !== s.paginatedTransactions) {
+  //     this.setState({
+  //       paginatedTransactions,
+  //       pageChanged
+  //     });
+  //   }
+  // }
 
   render() {
     const p = this.props;
@@ -152,6 +142,7 @@ export default class TransactionsView extends Component {
 
     const hasRep = !!getValue(p, 'loginAccount.rep.value');
     const hasBranch = !!getValue(p, 'branch.id');
+    const transactionsLength = p.transactions.length;
 
     return (
       <section id="transactions_view">
@@ -181,13 +172,21 @@ export default class TransactionsView extends Component {
         </div>
 
         <Transactions
-          transactions={p.isMobile ? p.transactions : s.paginatedTransactions}
+          transactions={p.transactions}
           currentBlockNumber={p.currentBlockNumber}
+          lowerBound={s.lowerBound}
+          boundedLength={s.boundedLength}
           pageChanged={s.pageChanged}
         />
 
-        {!!p.transactions.length && !p.isMobile &&
-          <Paginator {...s.pagination} />
+        {!!transactionsLength && !p.isMobile &&
+          <Paginator
+            itemsLength={p.transactions.length}
+            itemsPerPage={20}
+            location={p.location}
+            history={p.history}
+            setSegment={this.setSegment}
+          />
         }
 
         {p.isMobile &&

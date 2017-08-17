@@ -10,26 +10,32 @@ const Transactions = (p) => {
 
   return (
     <article className="transactions">
-      {p.transactions.length ?
+      {p.boundedLength && p.transactions.length ?
         <CSSTransitionGroup
           transitionName="transaction"
           transitionEnter={!p.pageChanged}
           transitionEnterTimeout={animationSpeed}
           transitionLeave={false}
         >
-          {p.transactions.map((transaction, i) => (
-            transaction.transactions && transaction.transactions.length > 1 ?
-              <TransactionGroup
-                key={transaction.transactions[0].hash}
-                currentBlockNumber={p.currentBlockNumber}
-                {...transaction}
-              /> :
-              <Transaction
-                key={transaction.hash}
-                currentBlockNumber={p.currentBlockNumber}
-                {...transaction}
-              />
-          ))}
+          {[...Array(p.boundedLength)].map((unused, i) => {
+            const transaction = p.transactions[(p.lowerBound - 1) + i];
+
+            console.log('transaction -- ', transaction, p.transactions, i, p.lowerBound, (p.lowerBound - 1) + i);
+
+            return (
+              transaction.transactions && transaction.transactions.length > 1 ?
+                <TransactionGroup
+                  key={transaction.transactions[0].hash}
+                  currentBlockNumber={p.currentBlockNumber}
+                  {...transaction}
+                /> :
+                <Transaction
+                  key={transaction.hash}
+                  currentBlockNumber={p.currentBlockNumber}
+                  {...transaction}
+                />
+            );
+          })}
         </CSSTransitionGroup> :
         <NullStateMessage
           message="No Transaction Data"
@@ -40,6 +46,8 @@ const Transactions = (p) => {
 };
 
 Transactions.propTypes = {
+  lowerBound: PropTypes.any,
+  boundedLength: PropTypes.any,
   pageChanged: PropTypes.bool.isRequired,
   className: PropTypes.string,
   transactions: PropTypes.array,
@@ -47,3 +55,30 @@ Transactions.propTypes = {
 };
 
 export default Transactions;
+
+// {p.transactions.map((transaction, i) => (
+//   transaction.transactions && transaction.transactions.length > 1 ?
+//     <TransactionGroup
+//       key={transaction.transactions[0].hash}
+//       currentBlockNumber={p.currentBlockNumber}
+//       {...transaction}
+//     /> :
+//     <Transaction
+//       key={transaction.hash}
+//       currentBlockNumber={p.currentBlockNumber}
+//       {...transaction}
+//     />
+// ))}
+
+
+// transaction.transactions && transaction.transactions.length > 1 ?
+//   <TransactionGroup
+//     key={transaction.transactions[0].hash}
+//     currentBlockNumber={p.currentBlockNumber}
+//     {...transaction}
+//   /> :
+//   <Transaction
+//     key={transaction.hash}
+//     currentBlockNumber={p.currentBlockNumber}
+//     {...transaction}
+//   />

@@ -21,7 +21,6 @@ export default class MarketsList extends Component {
 
     this.state = {
       lowerBound: null,
-      upperBound: null,
       boundedLength: null
     };
 
@@ -29,7 +28,7 @@ export default class MarketsList extends Component {
   }
 
   setSegment(lowerBound, upperBound, boundedLength) {
-    this.setState({ lowerBound, upperBound, boundedLength });
+    this.setState({ lowerBound, boundedLength });
   }
 
   // NOTE -- You'll notice the odd method used for rendering the previews, this is done for optimization reasons
