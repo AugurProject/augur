@@ -12,7 +12,10 @@ function generateAbiMap(abi) {
       if (functionOrEvent.type === "function") {
         var functionAbiMap = {
           constant: functionOrEvent.constant,
-          name: functionOrEvent.name
+          name: functionOrEvent.name,
+          label: shortName.replace(/([A-Z])/g, " $1").replace(/^./, function (letter) {
+            return letter.toUpperCase();
+          })
         };
         var inputs = [];
         var signature = [];
