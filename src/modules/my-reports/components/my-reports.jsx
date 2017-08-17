@@ -1,16 +1,25 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import ReactTooltip from 'react-tooltip';
 import { Helmet } from 'react-helmet';
 
 import NullStateMessage from 'modules/common/components/null-state-message';
 import MyReport from 'modules/my-reports/components/my-report';
-import Link from 'modules/link/components/link';
 import TransactionsLoadingActions from 'modules/transactions/components/transactions-loading-actions';
 import FilterSort from 'modules/filter-sort/container';
 
+import makePath from 'modules/app/helpers/make-path';
+import makeQuery from 'modules/app/helpers/make-query';
+import getValue from 'utils/get-value';
+
+import { MARKET } from 'modules/app/constants/views';
+import { MARKET_DESCRIPTION_PARAM_NAME, MARKET_ID_PARAM_NAME } from 'modules/app/constants/param-names';
+
 export default class MyReports extends Component {
   static propTypes = {
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
     branch: PropTypes.object.isRequired,
     reports: PropTypes.array.isRequired,
     registerBlockNumber: PropTypes.number,
@@ -74,10 +83,16 @@ export default class MyReports extends Component {
                   className="portfolio-market-overview"
                 >
                   <Link
-                    {...p.reports[marketIndex].marketLink}
+                    to={{
+                      pathname: makePath(MARKET),
+                      search: makeQuery({
+                        [MARKET_DESCRIPTION_PARAM_NAME]: getValue(p, `reports[${marketIndex}].formattedDescription`),
+                        [MARKET_ID_PARAM_NAME]: getValue(p, `reports[${marketIndex}].id`)
+                      })
+                    }}
                   >
                     <span className="description">
-                      {p.reports[marketIndex].description}
+                      {getValue(p, `reports[${marketIndex}].description`)}
                     </span>
                   </Link>
                   {p.reports[marketIndex].isChallenged &&

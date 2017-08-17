@@ -1,7 +1,6 @@
 import selectMyPositionsSummary from 'modules/my-positions/selectors/my-positions-summary';
 import selectMyMarketsSummary from 'modules/my-markets/selectors/my-markets-summary';
 import selectMyReportsSummary from 'modules/my-reports/selectors/my-reports-summary';
-import selectLinks from 'modules/link/selectors/links';
 
 import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views';
 import { formatNumber, formatEtherTokens, formatRep } from 'utils/format-number';

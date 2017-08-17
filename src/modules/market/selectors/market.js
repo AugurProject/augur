@@ -212,7 +212,7 @@ export function assembleMarket(
 
       market.report = {
         ...marketReport,
-        onSubmitReport: (reportedOutcomeID, isUnethical, isIndeterminate) => dispatch(commitReport(market, reportedOutcomeID, isUnethical, isIndeterminate))
+        onSubmitReport: (reportedOutcomeID, isUnethical, isIndeterminate, history) => dispatch(commitReport(market, reportedOutcomeID, isUnethical, isIndeterminate, history))
       };
 
       market.outcomes = [];

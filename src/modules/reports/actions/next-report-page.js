@@ -1,21 +1,30 @@
 import { selectMarketFromEventID } from 'modules/market/selectors/market';
-import { selectMarketLink } from 'modules/link/selectors/links';
 
-export function nextReportPage() {
+import makePath from 'modules/app/helpers/make-path';
+import makeQuery from 'modules/app/helpers/make-query';
+
+import { MARKETS, MARKET } from 'modules/app/constants/views';
+import { MARKET_DESCRIPTION_PARAM_NAME, MARKET_ID_PARAM_NAME } from 'modules/app/constants/param-names';
+
+export function nextReportPage(history) {
   return (dispatch, getState) => {
-    const links = require('modules/link/selectors/links');
-    const marketsLink = links.default().marketsLink;
     const { branch, reports } = getState();
     const branchReports = reports[branch.id];
-    if (!branchReports) return marketsLink.onClick();
+    if (!branchReports) return history.push(makePath(MARKETS));
     const nextPendingReportEventID = Reflect.ownKeys(branchReports).find(
       eventID => !branchReports[eventID].reportHash
     );
-    if (!nextPendingReportEventID) return marketsLink.onClick();
+    if (!nextPendingReportEventID) return history.push(makePath(MARKETS));
     const nextPendingReportMarket = selectMarketFromEventID(nextPendingReportEventID);
-    if (!nextPendingReportMarket || !nextPendingReportMarket.id) {
-      return marketsLink.onClick();
-    }
-    selectMarketLink(nextPendingReportMarket, dispatch).onClick();
+    if (!nextPendingReportMarket || !nextPendingReportMarket.id) return history.push(makePath(MARKETS));
+
+    // Go To Next Report
+    history.push({
+      pathname: makePath(MARKET),
+      search: makeQuery({
+        [MARKET_DESCRIPTION_PARAM_NAME]: nextPendingReportMarket.formattedDescription,
+        [MARKET_ID_PARAM_NAME]: nextPendingReportMarket.id
+      })
+    });
   };
 }

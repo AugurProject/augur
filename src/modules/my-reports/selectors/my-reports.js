@@ -3,7 +3,6 @@ import { formatDate } from 'utils/format-date';
 import { abi } from 'services/augurjs';
 import { TWO } from 'modules/trade/constants/numbers';
 import store from 'src/store';
-import { selectMarketLink } from 'modules/link/selectors/links';
 
 export default function () {
   const { eventsWithAccountReport, marketsData } = store.getState();
@@ -19,7 +18,7 @@ export default function () {
       const isFinal = eventsWithAccountReport[eventID].isFinal || null;
       const marketID = eventsWithAccountReport[eventID].marketID || null;
       const description = eventsWithAccountReport[eventID].description || null;
-      const marketLink = (marketID && description && selectMarketLink({ id: marketID, description }, store.dispatch)) || null;
+      const formattedDescription = eventsWithAccountReport[eventID].formattedDescription || null;
       const outcome = eventsWithAccountReport[eventID].marketOutcome || null;
       const outcomePercentage = (eventsWithAccountReport[eventID].proportionCorrect && formatPercent(abi.bignum(eventsWithAccountReport[eventID].proportionCorrect).times(100))) || null;
       const reported = eventsWithAccountReport[eventID].accountReport || null;
@@ -39,8 +38,8 @@ export default function () {
         ...marketsData[marketID] || {}, // TODO -- clean up this object
         eventID,
         marketID,
-        marketLink,
         description,
+        formattedDescription,
         outcome,
         outcomePercentage,
         reported,
