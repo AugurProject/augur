@@ -20,8 +20,6 @@ const Transactions = (p) => {
           {[...Array(p.boundedLength)].map((unused, i) => {
             const transaction = p.transactions[(p.lowerBound - 1) + i];
 
-            console.log('transaction -- ', transaction, p.transactions, i, p.lowerBound, (p.lowerBound - 1) + i);
-
             return (
               transaction.transactions && transaction.transactions.length > 1 ?
                 <TransactionGroup

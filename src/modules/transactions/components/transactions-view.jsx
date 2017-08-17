@@ -35,8 +35,6 @@ export default class TransactionsView extends Component {
       hasAttachedScrollListener: false,
     };
 
-    // this.updatePagination = this.updatePagination.bind(this);
-    // this.paginateTransactions = this.paginateTransactions.bind(this);
     this.handleScroll = debounce(this.handleScroll.bind(this), 100);
     this.setSegment = this.setSegment.bind(this);
   }
@@ -47,7 +45,6 @@ export default class TransactionsView extends Component {
 
   componentWillUpdate(nextProps, nextState) {
     // These are to prevent the CSSTransitionGroup from transitioning transactions on pagination
-    if (this.state.lowerBound !== nextState.lowerBound) this.setState({ pageChanged: true }); // Inferred page change
     if (this.state.pageChanged !== nextState.pageChanged) this.setState({ pageChanged: false });
 
     if (!nextState.hasAttachedScrollListener && nextProps.isMobile) this.setState({ hasAttachedScrollListener: true });
@@ -63,7 +60,7 @@ export default class TransactionsView extends Component {
   }
 
   setSegment(lowerBound, upperBound, boundedLength) {
-    this.setState({ lowerBound, upperBound, boundedLength });
+    this.setState({ lowerBound, boundedLength, pageChanged: this.state.lowerBound !== lowerBound });
   }
 
   handleScroll() {
@@ -89,52 +86,6 @@ export default class TransactionsView extends Component {
       this.setState({ hasAttachedScrollListener: false });
     }
   }
-
-  // updatePagination(p, s, pageChanged = false) {
-  //   const itemsPerPage = s.transactionsPerPage - 1; // Convert to zero index
-  //   const lowerIndex = (s.currentPage - 1) * s.transactionsPerPage;
-  //   const upperIndex = (p.transactions.length - 1) > lowerIndex + itemsPerPage ?
-  //     lowerIndex + itemsPerPage :
-  //     p.transactions.length - 1;
-  //
-  //   this.setState({
-  //     lowerIndex,
-  //     upperIndex,
-  //     pagination: {
-  //       numUnpaginated: p.transactions.length,
-  //       startItemNum: lowerIndex + 1,
-  //       endItemNum: upperIndex + 1,
-  //       previousPageLink: s.currentPage > 1 ?
-  //       {
-  //         onClick: () => {
-  //           if (s.currentPage > 1) this.setState({ currentPage: s.currentPage - 1 });
-  //         }
-  //       } :
-  //       null,
-  //       nextPageLink: s.currentPage < Math.ceil(p.transactions.length / s.transactionsPerPage) ?
-  //       {
-  //         onClick: () => {
-  //           if (upperIndex < p.transactions.length - 1) this.setState({ currentPage: s.currentPage + 1 });
-  //         }
-  //       } :
-  //       null
-  //     }
-  //   }, () => {
-  //     this.paginateTransactions(this.props, this.state, pageChanged);
-  //   });
-  // }
-
-  // paginateTransactions(p, s, pageChanged) {
-  //   // Filter Based on Pagination
-  //   const paginatedTransactions = p.transactions.slice(s.lowerIndex, s.upperIndex + 1);
-  //
-  //   if (paginatedTransactions !== s.paginatedTransactions) {
-  //     this.setState({
-  //       paginatedTransactions,
-  //       pageChanged
-  //     });
-  //   }
-  // }
 
   render() {
     const p = this.props;
