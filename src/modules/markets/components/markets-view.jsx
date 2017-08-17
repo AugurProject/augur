@@ -10,6 +10,8 @@ import getValue from 'utils/get-value';
 import parseQuery from 'modules/app/helpers/parse-query';
 import isEqual from 'lodash/isEqual';
 
+import debounce from 'utils/debounce';
+
 import { TOPIC_PARAM_NAME } from 'modules/app/constants/param-names';
 
 export default class MarketsView extends Component {
@@ -26,7 +28,8 @@ export default class MarketsView extends Component {
     history: PropTypes.object.isRequired,
     updateMarketsFilteredSorted: PropTypes.func.isRequired,
     clearMarketsFilteredSorted: PropTypes.func.isRequired,
-    toggleFavorite: PropTypes.func.isRequired
+    toggleFavorite: PropTypes.func.isRequired,
+    loadMarketsInfo: PropTypes.func.isRequired
     // filterSort: PropTypes.object,
     // marketsHeader: PropTypes.object,
     // pagination: PropTypes.object,
@@ -130,6 +133,7 @@ export default class MarketsView extends Component {
           history={p.history}
           scalarShareDenomination={p.scalarShareDenomination}
           toggleFavorite={p.toggleFavorite}
+          loadMarketsInfo={p.loadMarketsInfo}
         />
       </section>
     );

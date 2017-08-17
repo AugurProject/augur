@@ -5,6 +5,9 @@ import Paginator from 'modules/common/components/paginator';
 import NullStateMessage from 'modules/common/components/null-state-message';
 
 import getValue from 'utils/get-value';
+import isEqual from 'lodash/isEqual';
+
+import debounce from 'utils/debounce';
 
 export default class MarketsList extends Component {
   static propTypes = {
@@ -13,7 +16,8 @@ export default class MarketsList extends Component {
     filteredMarkets: PropTypes.array.isRequired,
     location: PropTypes.object.isRequired,
     scalarShareDenomination: PropTypes.object.isRequired,
-    toggleFavorite: PropTypes.func.isRequired
+    toggleFavorite: PropTypes.func.isRequired,
+    loadMarketsInfo: PropTypes.func.isRequired
   }
 
   constructor(props) {
@@ -21,23 +25,46 @@ export default class MarketsList extends Component {
 
     this.state = {
       lowerBound: null,
-      boundedLength: null
+      boundedLength: null,
+      marketIDsMissingInfo: [] // This is ONLY the currently displayed markets that are missing info
     };
 
     this.setSegment = this.setSegment.bind(this);
+    this.setMarketIDsMissingInfo = this.setMarketIDsMissingInfo.bind(this);
+    this.loadMarketsInfo = debounce(this.loadMarketsInfo.bind(this));
+  }
+
+  componentWillUpdate(nextProps, nextState) {
+    if (
+      this.state.lowerBound !== nextState.lowerBound ||
+      this.state.boundedLength !== nextState.boundedLength ||
+      !isEqual(this.props.markets, nextProps.markets)
+    ) {
+      this.setMarketIDsMissingInfo(nextProps.markets, nextState.lowerBound, nextState.boundedLength);
+    }
+
+    if (!isEqual(this.state.marketIDsMissingInfo, nextState.marketIDsMissingInfo)) this.loadMarketsInfo(nextState.marketIDsMissingInfo);
   }
 
   setSegment(lowerBound, upperBound, boundedLength) {
     this.setState({ lowerBound, boundedLength });
   }
 
-  // TODO -- handle loading additional market info
-  // const marketIDsMissingInfo = markets
-  //   .filter(market => !market.isLoadedMarketInfo && !market.isLoading)
-  //   .map(market => market.id);
-  // if (marketIDsMissingInfo.length) {
-  //   store.dispatch(loadMarketsInfo(marketIDsMissingInfo));
-  // }
+  setMarketIDsMissingInfo(markets, lowerBound, boundedLength) {
+    const marketIDsMissingInfo = [];
+    if (markets.length && boundedLength) {
+      [...Array(boundedLength)].forEach((unused, i) => {
+        const market = markets[(lowerBound - 1) + i];
+        if (!market.isLoadedMarketInfo && !market.isMarketLoading) marketIDsMissingInfo.push(market.id);
+      });
+    }
+
+    this.setState({ marketIDsMissingInfo });
+  }
+
+  loadMarketsInfo(marketIDs) {
+    this.props.loadMarketsInfo(marketIDs);
+  }
 
   // NOTE -- You'll notice the odd method used for rendering the previews, this is done for optimization reasons
   render() {
