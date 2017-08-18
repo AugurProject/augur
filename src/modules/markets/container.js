@@ -19,12 +19,9 @@ const mapStateToProps = state => ({
   isLogged: state.isLogged,
   loginAccount: state.loginAccount,
   markets: getAllMarkets(),
-  // marketsHeader: selectMarketsHeader(state),
-  // favoriteMarkets: selectFavoriteMarkets(state),
   branch: state.branch,
   canLoadMarkets: !!getValue(state, 'branch.id'),
   scalarShareDenomination: getScalarShareDenomination(),
-  // pagination: selectPagination(state),
   hasLoadedMarkets: state.hasLoadedMarkets,
   hasLoadedTopic: state.hasLoadedTopic
 });
@@ -51,7 +48,6 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
   };
 };
 
-// const Markets = connect(mapStateToProps, mapDispatchToProps, mergeProps)(MarketsView);
 const Markets = withRouter(connect(mapStateToProps, mapDispatchToProps, mergeProps)(MarketsView));
 
 export default Markets;

@@ -38,9 +38,9 @@ export default class MarketsList extends Component {
     if (
       this.state.lowerBound !== nextState.lowerBound ||
       this.state.boundedLength !== nextState.boundedLength ||
-      !isEqual(this.props.markets, nextProps.markets)
+      !isEqual(this.props.filteredMarkets, nextProps.filteredMarkets)
     ) {
-      this.setMarketIDsMissingInfo(nextProps.markets, nextState.lowerBound, nextState.boundedLength);
+      this.setMarketIDsMissingInfo(nextProps.markets, nextProps.filteredMarkets, nextState.lowerBound, nextState.boundedLength);
     }
 
     if (!isEqual(this.state.marketIDsMissingInfo, nextState.marketIDsMissingInfo)) this.loadMarketsInfo(nextState.marketIDsMissingInfo);
@@ -50,11 +50,12 @@ export default class MarketsList extends Component {
     this.setState({ lowerBound, boundedLength });
   }
 
-  setMarketIDsMissingInfo(markets, lowerBound, boundedLength) {
+  setMarketIDsMissingInfo(markets, filteredMarkets, lowerBound, boundedLength) {
     const marketIDsMissingInfo = [];
-    if (markets.length && boundedLength) {
+    if (filteredMarkets.length && boundedLength) {
       [...Array(boundedLength)].forEach((unused, i) => {
-        const market = markets[(lowerBound - 1) + i];
+        const item = filteredMarkets[(lowerBound - 1) + i];
+        const market = markets[item];
         if (!market.isLoadedMarketInfo && !market.isMarketLoading) marketIDsMissingInfo.push(market.id);
       });
     }
@@ -86,7 +87,7 @@ export default class MarketsList extends Component {
               return (
                 <MarketPreview
                   {...market}
-                  key={market.id}
+                  key={`${market.id} - ${market.outcomes}`}
                   isLogged={p.isLogged}
                   selectedShareDenomination={selectedShareDenomination}
                   shareDenominations={shareDenominations}
