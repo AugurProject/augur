@@ -24,6 +24,7 @@ export const loadOneOutcomeBidsOrAsks = (marketID, outcome, orderType, callback 
     augur.trading.orderBook.getOrderBookChunked({
       _type: orderType,
       _market: marketID,
+      _outcome: outcome,
       _startingOrderId: bestOrderId,
       _numOrdersToLoad: null,
       minPrice: market.minPrice,
