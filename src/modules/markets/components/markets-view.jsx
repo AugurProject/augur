@@ -10,8 +10,10 @@ import getValue from 'utils/get-value';
 import parseQuery from 'modules/app/helpers/parse-query';
 import isEqual from 'lodash/isEqual';
 
-import debounce from 'utils/debounce';
+import parsePath from 'modules/app/helpers/parse-path';
+import makePath from 'modules/app/helpers/make-path';
 
+import { FAVORITES, MARKETS } from 'modules/app/constants/views';
 import { TOPIC_PARAM_NAME } from 'modules/app/constants/param-names';
 
 export default class MarketsView extends Component {
@@ -47,6 +49,8 @@ export default class MarketsView extends Component {
       shouldDisplayBranchInfo: !!(getValue(props, 'loginAccount.rep.value') && getValue(props, 'branch.id')),
       filteredMarkets: []
     };
+
+    this.checkFavoriteMarketsCount = this.checkFavoriteMarketsCount.bind(this);
   }
 
   componentWillMount() {
@@ -88,7 +92,10 @@ export default class MarketsView extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
-    if (!isEqual(this.state.filteredMarkets, nextState.filteredMarkets)) this.props.updateMarketsFilteredSorted(nextState.filteredMarkets);
+    if (!isEqual(this.state.filteredMarkets, nextState.filteredMarkets)) {
+      this.props.updateMarketsFilteredSorted(nextState.filteredMarkets);
+      this.checkFavoriteMarketsCount(nextState.filteredMarkets, nextProps.location, nextProps.history);
+    }
   }
 
   componentWillUnmount() {
@@ -104,6 +111,14 @@ export default class MarketsView extends Component {
       } else if (!topic && !this.props.hasLoadedMarkets) {
         options.loadMarkets();
       }
+    }
+  }
+
+  checkFavoriteMarketsCount(filteredMarkets, location, history) {
+    const path = parsePath(location.pathname)[0];
+
+    if (path === FAVORITES && !filteredMarkets.length) {
+      history.push(makePath(MARKETS));
     }
   }
 
