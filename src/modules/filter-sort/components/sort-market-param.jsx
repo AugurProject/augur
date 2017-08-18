@@ -61,7 +61,7 @@ export default class SortMarketParam extends Component {
     if (selectedMarketParam) this.setState({ selectedMarketParam });
 
     const selectedSort = queryParams[SORT_MARKET_ORDER_PARAM];
-    if (selectedSort) this.setState({ selectedSort });
+    if (selectedSort) this.setState({ selectedSort: selectedSort !== 'false' });
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -136,6 +136,8 @@ export default class SortMarketParam extends Component {
 
   render() {
     const s = this.state;
+
+    console.log('selectedSort -- ', s.selectedSort);
 
     return (
       <article className="market-sort-param companion-fields">
