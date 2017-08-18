@@ -5,8 +5,6 @@ import { loadPriceHistory } from 'modules/market/actions/load-price-history';
 import { addMarketLoading, removeMarketLoading } from 'modules/market/actions/update-market-loading';
 
 export const loadFullMarket = marketID => (dispatch, getState) => {
-  console.log('loadFullMarket -- ', marketID);
-
   dispatch(addMarketLoading(marketID));
 
   // TODO -- improve conditional statement, leaving more verbose loading for now
