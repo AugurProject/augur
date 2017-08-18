@@ -56,7 +56,7 @@ export default class MarketsList extends Component {
       [...Array(boundedLength)].forEach((unused, i) => {
         const item = filteredMarkets[(lowerBound - 1) + i];
         const market = markets[item];
-        if (!market.isLoadedMarketInfo && !market.isMarketLoading) marketIDsMissingInfo.push(market.id);
+        if (market && !market.isLoadedMarketInfo && !market.isMarketLoading) marketIDsMissingInfo.push(market.id);
       });
     }
 
