@@ -66,7 +66,7 @@ export default class AccountExport extends Component {
               />
               <h4>or</h4>
               <a
-                className="button"
+                className="link button"
                 href={p.downloadAccountDataString}
                 download={p.downloadAccountFileName}
               >
