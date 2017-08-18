@@ -7,7 +7,7 @@ import configureMockStore from 'redux-mock-store';
 describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
   proxyquire.noPreserveCache();
   const test = t => it(t.description, (done) => {
-    const store = configureMockStore([thunk])(Object.assign({}, t.mock.state));
+    const store = configureMockStore([thunk])({ ...t.mock.state });
     const action = proxyquire('../../../src/modules/bids-asks/actions/load-bids-asks', {
       '../../../services/augurjs': t.stub.augurjs,
       './update-market-order-book': t.stub.updateMarketOrderBook

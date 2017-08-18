@@ -4,6 +4,9 @@ import { updateIsFirstOrderBookChunkLoaded } from 'modules/bids-asks/actions/upd
 import logError from 'utils/log-error';
 
 export const loadBidsAsks = (marketID, callback = logError) => (dispatch, getState) => {
+  if (marketID == null) {
+    return callback(`must specify market ID: ${marketID}`);
+  }
   const market = getState().marketsData[marketID];
   dispatch(updateIsFirstOrderBookChunkLoaded(marketID, false));
   const outcomes = Array.from(new Array(market.numOutcomes), (_, i) => i + 1);

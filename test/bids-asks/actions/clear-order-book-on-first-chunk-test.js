@@ -6,7 +6,7 @@ import { clearOrderBookOnFirstChunk } from 'modules/bids-asks/actions/clear-orde
 
 describe(`modules/bids-asks/actions/clear-order-book-on-first-chunk.js`, () => {
   const test = t => it(t.description, () => {
-    const store = configureMockStore([thunk])(Object.assign({}, t.mock.state));
+    const store = configureMockStore([thunk])({ ...t.mock.state });
     store.dispatch(clearOrderBookOnFirstChunk(t.params.marketID));
     t.assertions(store.getActions());
     store.clearActions();
