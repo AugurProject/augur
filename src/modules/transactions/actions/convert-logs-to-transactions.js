@@ -59,7 +59,8 @@ export const convertLogToTransaction = (label, log, status, isRetry, cb) => (dis
     const transactionData = getState().transactionsData[hash];
     const gasFees = (transactionData && transactionData.gasFees) ? transactionData.gasFees.value : null;
     if (log.removed) {
-      // TODO rollback
+      // TODO rollback: use augur.trading.orderBook.removeOrder for targeted order removal (if order exists/is live)
+      //                or just reload orders and trades (brute-force) for this market
       console.debug('!!! log removed:', log);
     }
     const transaction = dispatch(constructTransaction(label, log, isRetry, callback));
