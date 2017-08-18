@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link, NavLink } from 'react-router-dom';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
-import classNames from 'classnames';
 
 import AugurLogoIcon from 'modules/common/components/augur-logo-icon';
 import SideBarFilterIcon from 'modules/common/components/side-bar-filter-icon';
@@ -82,7 +81,7 @@ export default class Nav extends Component {
         <NavLink
           to={makePath(VIEWS.MARKETS)}
           activeClassName="active"
-          className="app-nav-link"
+          className="link app-nav-link"
           onClick={() => this.collapseFooter()}
         >
           <i className="nav-icon fa fa-line-chart" />
@@ -93,7 +92,7 @@ export default class Nav extends Component {
             to={makePath(VIEWS.FAVORITES)}
             activeClassName="active"
             onClick={() => this.collapseFooter()}
-            className="app-nav-link"
+            className="link app-nav-link"
           >
             <i className="nav-icon fa fa-star" />
             <span className="nav-count">{p.numFavorites} </span>
@@ -105,7 +104,7 @@ export default class Nav extends Component {
             to={makePath(VIEWS.MY_REPORTS)}
             activeClassName="active"
             onClick={() => this.collapseFooter()}
-            className="app-nav-link"
+            className="link app-nav-link"
           >
             <i className="nav-icon fa fa-copy" />
             <span className="nav-count">{p.numPendingReports} </span>
@@ -122,7 +121,7 @@ export default class Nav extends Component {
               return [VIEWS.MY_MARKETS, VIEWS.MY_REPORTS].find(path => makePath(path) === location.pathname);
             }}
             onClick={() => this.collapseFooter()}
-            className={classNames('app-nav-link')}
+            className={'link app-nav-link'}
           >
             <i className="nav-icon fa fa-money" />
             Portfolio
@@ -133,7 +132,7 @@ export default class Nav extends Component {
             to={makePath(VIEWS.TRANSACTIONS)}
             activeClassName="active"
             onClick={() => this.collapseFooter()}
-            className={classNames('app-nav-link')}
+            className={'link app-nav-link'}
           >
             <i className="nav-icon fa fa-tasks" />
             Transactions
@@ -143,7 +142,7 @@ export default class Nav extends Component {
           <NavLink
             to={makePath(VIEWS.ACCOUNT)}
             activeClassName="active"
-            className="app-nav-link"
+            className={'link app-nav-link'}
             onClick={() => this.collapseFooter()}
           >
             <i className="nav-icon fa fa-cog" />
@@ -154,7 +153,7 @@ export default class Nav extends Component {
           <NavLink
             to={makePath(VIEWS.AUTHENTICATION)}
             activeClassName="active"
-            className="app-nav-link"
+            className={'link app-nav-link'}
             onClick={() => this.collapseFooter()}
           >
             <div className="nav-icon-google-translate-fix">
