@@ -1,51 +1,92 @@
-import { describe, it, beforeEach } from 'mocha';
+import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
-import sinon from 'sinon';
-import mocks from 'test/mockStore';
+import thunk from 'redux-thunk';
+import configureMockStore from 'redux-mock-store';
 
 describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
-  proxyquire.noPreserveCache().noCallThru();
-  const getOrderBookChunkedStub = sinon.stub().yields({});
-  const augurJsMock = {
-    augur: {
-      trading: {
-        orderBook: {
-          getOrderBookChunked: getOrderBookChunkedStub
+  proxyquire.noPreserveCache();
+  const test = t => it(t.description, (done) => {
+    const store = configureMockStore([thunk])(Object.assign({}, t.mock.state));
+    const action = proxyquire('../../../src/modules/bids-asks/actions/load-bids-asks', {
+      '../../../services/augurjs': t.stub.augurjs,
+      './update-market-order-book': t.stub.updateMarketOrderBook
+    });
+    store.dispatch(action.loadBidsAsks('MARKET_ID', (err) => {
+      t.assertions(err, store.getActions());
+      store.clearActions();
+    }));
+  });
+  test({
+    description: 'one order',
+    params: {
+      marketID: 'MARKET_ID'
+    },
+    mock: {
+      state: {
+        marketsData: {
+          MARKET_ID: {
+            minPrice: '0',
+            maxPrice: '1',
+            numOutcomes: 3
+          }
+        },
+        orderBooks: {}
+      },
+      blockchain: {
+        orderBooks: {
+          MARKET_ID: {
+            3: {
+              2: {
+                ORDER_0: {
+                  amount: '1.1111',
+                  fullPrecisionAmount: '1.1111111',
+                  price: '0.7778',
+                  fullPrecisionPrice: '0.7777777',
+                  owner: '0x0000000000000000000000000000000000000b0b',
+                  tokensEscrowed: '0.8641974',
+                  sharesEscrowed: '0',
+                  betterOrderId: '0x0000000000000000000000000000000000000000000000000000000000000000',
+                  worseOrderId: '0x0000000000000000000000000000000000000000000000000000000000000000',
+                  gasPrice: '20000000000'
+                }
+              }
+            }
+          }
         }
       }
+    },
+    stub: {
+      augurjs: {
+        augur: {
+          api: {
+            Orders: {
+              getBestOrderId: (p, callback) => {
+                callback('ORDER_0');
+              }
+            }
+          },
+          trading: {
+            orderBook: {
+              getOrderBookChunked: (p, onChunkReceived, onComplete) => {
+
+              }
+            }
+          }
+        }
+      },
+      updateMarketOrderBook: {
+        clearMarketOrderBook: marketID => (dispatch) => {
+          assert.strictEqual(marketID, 'MARKET_ID');
+        },
+        updateMarketOrderBook: (marketID, orderBookChunk) => (dispatch) => {
+          assert.strictEqual(marketID, 'MARKET_ID');
+
+        }
+      }
+    },
+    assertions: (err, actions) => {
+      assert.isNull(err);
     }
-  };
-  const updateMarketOrderBookModule = {
-    updateMarketOrderBook: mocks.actionCreator(),
-    clearMarketOrderBook: mocks.actionCreator()
-  };
-  const store = mocks.store;
-  const loadBidsAsksModule = proxyquire('../../../src/modules/bids-asks/actions/load-bids-asks', {
-    '../../../services/augurjs': augurJsMock,
-    './update-market-order-book': updateMarketOrderBookModule,
-    '../../../store': store
-  });
-
-  beforeEach(() => {
-    store.clearActions();
-    augurJsMock.augur.trading.orderBook.getOrderBookChunked.reset();
-    updateMarketOrderBookModule.updateMarketOrderBook.reset();
-    updateMarketOrderBookModule.clearMarketOrderBook.reset();
-  });
-
-  describe('loadBidsAsks', () => {
-    it(`should load orders for a market`, () => {
-      store.dispatch(loadBidsAsksModule.loadBidsAsks('testMarketID', 0, null, {}, (orderBookChunk) => {}));
-      const expectedActions = [{
-        type: 'MOCK_ACTION'
-      }, {
-        type: 'MOCK_ACTION'
-      }];
-      assert.deepEqual(store.getActions(), expectedActions);
-      sinon.assert.calledOnce(augurJsMock.augur.trading.orderBook.getOrderBookChunked);
-      sinon.assert.calledOnce(updateMarketOrderBookModule.updateMarketOrderBook);
-      sinon.assert.calledOnce(updateMarketOrderBookModule.clearMarketOrderBook);
-    });
   });
 });
