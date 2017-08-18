@@ -5,11 +5,7 @@ import { AppContainer } from 'react-hot-loader';
 
 import { initAugur } from 'modules/app/actions/init-augur';
 
-// import history from 'src/history';
-
-// import { ConnectedRouter } from 'react-router-redux';
-
-import { HashRouter } from 'react-router-dom'
+import { HashRouter } from 'react-router-dom';
 
 import Routes from 'modules/app/components/routes';
 
@@ -17,7 +13,6 @@ import store from 'src/store';
 
 import { augur } from 'services/augurjs';
 
-// Reason for these being here?
 require('core-js/fn/array/find');
 require('core-js/fn/string/starts-with');
 
@@ -38,12 +33,6 @@ if (process.env.NODE_ENV === 'development') {
   *******************************************
   `);
 }
-
-// store.dispatch(updateURL(window.location.pathname + window.location.search));
-//
-// window.onpopstate = (e) => {
-//   store.dispatch(updateURL(window.location.pathname + window.location.search));
-// };
 
 store.dispatch(initAugur());
 
@@ -87,7 +76,3 @@ function handleRender() {
 
   render();
 }
-
-// <ConnectedRouter history={history} >
-//   <Routes />
-// </ConnectedRouter>

@@ -9,18 +9,16 @@ import makePath from 'modules/app/helpers/make-path';
 
 import getValue from 'utils/get-value';
 
-const AuthenticatedRoute = ({ component: Component, isLogged, ...rest }) => {
-  return (
-    <Route
-      {...rest}
-      render={props => (
-        isLogged ?
-          <Component {...props} /> :
-          <Redirect to={makePath(AUTHENTICATION)} />
-      )}
-    />
-  );
-};
+const AuthenticatedRoute = ({ component: Component, isLogged, ...rest }) => (
+  <Route
+    {...rest}
+    render={props => (
+      isLogged ?
+        <Component {...props} /> :
+        <Redirect to={makePath(AUTHENTICATION)} />
+    )}
+  />
+);
 
 AuthenticatedRoute.propTypes = {
   component: PropTypes.any, // TODO

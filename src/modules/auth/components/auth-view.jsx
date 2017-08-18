@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Route } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 
 import AuthLogin from 'modules/auth/components/auth-login';
@@ -9,8 +8,6 @@ import AuthImport from 'modules/auth/components/auth-import';
 import AirbitzLogoIcon from 'modules/common/components/airbitz-logo-icon';
 
 import ComponentNav from 'modules/common/components/component-nav';
-
-import makePath from 'modules/app/helpers/make-path';
 
 import { SIGNUP, LOGIN, IMPORT } from 'modules/app/constants/views';
 
