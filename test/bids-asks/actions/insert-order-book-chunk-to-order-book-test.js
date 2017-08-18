@@ -19,9 +19,9 @@ describe(`modules/bids-asks/actions/insert-order-book-chunk-to-order-book.js`, (
     description: 'insert order book chunk',
     params: {
       marketID: 'MARKET_0',
-      orderBookChunk: [{
-        id: 'ORDER_0'
-      }]
+      orderBookChunk: {
+        ORDER_0: { id: 'ORDER_0' }
+      }
     },
     stub: {
       ClearOrderBookOnFirstChunk: {
@@ -38,9 +38,9 @@ describe(`modules/bids-asks/actions/insert-order-book-chunk-to-order-book.js`, (
       }, {
         type: 'UPDATE_MARKET_ORDER_BOOK',
         marketID: 'MARKET_0',
-        marketOrderBook: [{
-          id: 'ORDER_0'
-        }]
+        marketOrderBook: {
+          ORDER_0: { id: 'ORDER_0' }
+        }
       }]);
     }
   });
