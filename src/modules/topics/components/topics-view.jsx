@@ -178,7 +178,7 @@ export default class TopicsView extends Component {
             {p.loginAccount && p.loginAccount.address &&
               <Link
                 to={makePath(CREATE_MARKET)}
-                className="button imperative navigational"
+                className="link button imperative navigational"
                 disabled={!p.loginAccount.address}
               >
                 + Create New Market
