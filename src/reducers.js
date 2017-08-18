@@ -29,6 +29,7 @@ import reports from 'modules/reports/reducers/reports';
 import eventsWithAccountReport from 'modules/my-reports/reducers/events-with-account-report';
 
 import orderBooks from 'modules/bids-asks/reducers/order-books';
+import isFirstOrderBookChunkLoaded from 'modules/bids-asks/reducers/is-first-order-book-chunk-loaded';
 import orderCancellation from 'modules/bids-asks/reducers/order-cancellation';
 import marketTrades from 'modules/portfolio/reducers/market-trades';
 import accountTrades from 'modules/my-positions/reducers/account-trades';
@@ -108,6 +109,7 @@ export function createReducer() {
     tradesInProgress,
 
     orderBooks,
+    isFirstOrderBookChunkLoaded,
     orderCancellation,
     marketTrades,
     accountTrades,
