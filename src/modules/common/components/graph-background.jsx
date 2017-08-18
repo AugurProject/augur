@@ -118,7 +118,6 @@ export default class GraphBG extends Component {
     p.background(35, 26, 58);
     const scaledTime = p.millis() / 2500;
 
-    p.noStroke();
     p.fill(83, 76, 101);
     this.circles.forEach((circle) => {
       const { x, y } = circle.origin;
@@ -138,7 +137,6 @@ export default class GraphBG extends Component {
       }
     });
 
-    p.stroke(83, 76, 101);
     Object.keys(this.lines).forEach((linekey) => {
       const line = this.lines[linekey];
       const circleA = this.circles[line.circleIndices[0]];
@@ -153,6 +151,8 @@ export default class GraphBG extends Component {
         p.vertex((circleB.x - circleA.x),
                  (circleB.y - circleA.y),
                  0);
+        p.fill(83, 76, 101); // prevent P5 spamming shader uniform warnings
+        p.stroke(83, 76, 101);
         p.endShape();
         p.pop();
       } else {
