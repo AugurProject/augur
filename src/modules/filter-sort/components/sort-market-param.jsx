@@ -84,7 +84,7 @@ export default class SortMarketParam extends Component {
   }
 
   sortByMarketParam(selectedMarketParam, selectedSort, items, combinedFiltered, location) {
-    const sortedItems = combinedFiltered.sort((a, b) => {
+    const sortedItems = combinedFiltered.slice().sort((a, b) => {
       switch (selectedMarketParam) {
         case 'creationTime':
         case 'endDate': {
@@ -136,8 +136,6 @@ export default class SortMarketParam extends Component {
 
   render() {
     const s = this.state;
-
-    console.log('selectedSort -- ', s.selectedSort);
 
     return (
       <article className="market-sort-param companion-fields">
