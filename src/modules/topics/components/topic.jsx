@@ -29,7 +29,7 @@ export default class Topic extends Component {
     this.handleFitText = debounce(this.handleFitText.bind(this));
   }
   componentDidMount() {
-    fitText(this.topicNameContainer, this.topicName); // TODO -- Categories with spaces aren't resizing correctly
+    fitText(this.topicNameContainer, this.topicName);
 
     window.addEventListener('resize', this.handleFitText);
   }
@@ -65,11 +65,13 @@ export default class Topic extends Component {
           search: `?${TOPIC_PARAM_NAME}=${encodeURIComponent(p.topic)}`
         }}
         key={`${p.topic}-${p.popularity}`}
-        ref={(topicNameContainer) => { this.topicNameContainer = topicNameContainer; }}
         className={classNames('unstyled button topic-button', { isHero: p.isHero, 'is-spacer-topic': p.isSpacer, 'search-result': p.isSearchResult })}
       >
         {!p.isSpacer &&
-          <div className="topic-content">
+          <div
+            className="topic-content"
+            ref={(topicNameContainer) => { this.topicNameContainer = topicNameContainer; }}
+          >
             <TopicIcon
               topic={p.topic}
               fontAwesomeClasses={p.fontAwesomeClasses}
