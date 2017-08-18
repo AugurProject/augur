@@ -237,7 +237,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
           data: {
             notification: {
               description: 'test market',
-              href: '/?page=transactions',
+              linkPath: '/transactions',
               id: '0x5bde43fc683d39c9f449424760401b2de067c8bda09acbf4c61dc923c0c98878',
               seen: false,
               timestamp: 1485907200,
@@ -377,7 +377,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
           data: {
             notification: {
               description: 'test market',
-              href: '/?page=transactions',
+              linkPath: '/transactions',
               id: '0x5bde43fc683d39c9f449424760401b2de067c8bda09acbf4c61dc923c0c98878',
               seen: false,
               timestamp: 1484208293,
@@ -505,7 +505,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
           data: {
             notification: {
               description: 'test market',
-              href: '/?page=transactions',
+              linkPath: '/transactions',
               id: '0xe8109915cb0972d1aae971014ded4c744b7ad688704b0a973f626c42220a9ba4',
               seen: false,
               timestamp: 1485907200,
@@ -647,7 +647,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
           data: {
             notification: {
               description: 'test market',
-              href: '/?page=transactions',
+              linkPath: '/transactions',
               id: '0xe8109915cb0972d1aae971014ded4c744b7ad688704b0a973f626c42220a9ba4',
               seen: false,
               timestamp: 1484210643,
@@ -773,7 +773,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
           data: {
             notification: {
               description: 'test market',
-              href: '/?page=transactions',
+              linkPath: '/transactions',
               id: '0xe8109915cb0972d1aae971014ded4c744b7ad688704b0a973f626c42220a9ba4',
               seen: false,
               timestamp: 1485907200,
@@ -914,7 +914,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
           data: {
             notification: {
               description: 'test market',
-              href: '/?page=transactions',
+              linkPath: '/transactions',
               id: '0xe8109915cb0972d1aae971014ded4c744b7ad688704b0a973f626c42220a9ba4',
               seen: false,
               timestamp: 1484210643,

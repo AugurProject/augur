@@ -42,18 +42,9 @@ describe(`store.js`, () => {
     assert.isObject(state.branch, 'branch is not an object');
     assert.deepEqual(state.branch, {}, 'branch is not an empty object');
 
-    assert.isOk(state.auth, 'auth is not defined');
-    assert.isObject(state.auth, 'auth is not an object');
-    assert.deepPropertyVal(state.auth, 'selectedAuthType', 'register', 'auth.selectedAuthType is not "register"');
-    assert.deepPropertyVal(state.auth, 'err', null, 'auth.err is not null');
-
     assert.isOk(state.loginAccount, 'loginAccount is not defined');
     assert.isObject(state.loginAccount, 'loginAccount is not an object');
     assert.deepEqual(state.loginAccount, {}, 'loginAccount is not an empty object');
-
-    assert.isOk(state.activeView, 'activeView is not defined');
-    assert.isString(state.activeView, 'activeView is not a string');
-    assert.deepEqual(state.activeView, 'topics', 'activeView is not "markets"');
 
     assert.isOk(state.marketsData, 'marketsData is not defined');
     assert.isObject(state.marketsData, 'marketsData is not an object');

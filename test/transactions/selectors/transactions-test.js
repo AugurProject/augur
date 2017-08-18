@@ -136,13 +136,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
       }
     },
     assertions: (store) => {
-      const MockLinks = {
-        selectMarketLink: () => 'selectMarketLink'
-      };
-
-      const transactions = proxyquire('../../../src/modules/transactions/selectors/transactions', {
-        '../../link/selectors/links': MockLinks
-      });
+      const transactions = require('../../../src/modules/transactions/selectors/transactions');
 
       const actual = transactions.selectTransactions(store.getState());
 
@@ -150,8 +144,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
         {
           data: {
             id: '0xMARKETID',
-            outcomeName: 'test outcome',
-            marketLink: 'selectMarketLink'
+            outcomeName: 'test outcome'
           },
           status: PENDING,
           id: '0xTRANS2',
@@ -169,8 +162,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
         {
           data: {
             id: '0xMARKETID',
-            outcomeName: 'test outcome',
-            marketLink: 'selectMarketLink'
+            outcomeName: 'test outcome'
           },
           status: SUBMITTED,
           id: '0xTRANS1',
@@ -194,8 +186,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
             {
               data: {
                 id: '0xMARKETID',
-                outcomeName: 'test outcome',
-                marketLink: 'selectMarketLink'
+                outcomeName: 'test outcome'
               },
               status: FAILED,
               id: '0xTRANS4',
@@ -214,8 +205,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
             {
               data: {
                 id: '0xMARKETID',
-                outcomeName: 'test outcome',
-                marketLink: 'selectMarketLink'
+                outcomeName: 'test outcome'
               },
               status: SUBMITTED,
               id: '0xTRANS5',
@@ -235,7 +225,6 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
               data: {
                 id: '0xMARKETID',
                 outcomeName: 'test outcome',
-                marketLink: 'selectMarketLink',
                 description: 'test description'
               },
               status: SUCCESS,
@@ -256,8 +245,7 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
         {
           data: {
             id: '0xMARKETID',
-            outcomeName: 'test outcome',
-            marketLink: 'selectMarketLink'
+            outcomeName: 'test outcome'
           },
           status: INTERRUPTED,
           id: '0xTRANS0',

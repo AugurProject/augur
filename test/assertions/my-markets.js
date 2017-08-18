@@ -2,7 +2,6 @@ import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import assertFormattedNumber from 'assertions/common/formatted-number';
 import assertFormattedDate from 'assertions/common/formatted-date';
-import assertMarketLink from 'assertions/common/market-link';
 
 export default function (myMarkets) {
   describe(`myMarkets' shape`, () => {
@@ -18,11 +17,6 @@ export function assertMyMarkets(market) {
     it('id', () => {
       assert.isDefined(market.id);
       assert.isString(market.id);
-    });
-
-    it('marketLink', () => {
-      assert.isDefined(market.marketLink);
-      assertMarketLink(market.marketLink, `myMarkets' marketLink`);
     });
 
     it('description', () => {
