@@ -5,7 +5,6 @@ import configureMockStore from 'redux-mock-store';
 import { clearOrderBookOnFirstChunk } from 'modules/bids-asks/actions/clear-order-book-on-first-chunk';
 
 describe(`modules/bids-asks/actions/clear-order-book-on-first-chunk.js`, () => {
-  proxyquire.noPreserveCache();
   const test = t => it(t.description, () => {
     const store = configureMockStore([thunk])(Object.assign({}, t.mock.state));
     store.dispatch(clearOrderBookOnFirstChunk(t.params.marketID));
