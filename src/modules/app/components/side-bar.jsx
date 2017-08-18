@@ -9,6 +9,8 @@ import parseQuery from 'modules/app/helpers/parse-query';
 import parseStringToArray from 'modules/app/helpers/parse-string-to-array';
 import makeQuery from 'modules/app/helpers/make-query';
 
+import orderBy from 'lodash/orderBy';
+
 import { TAGS_PARAM_NAME } from 'modules/app/constants/param-names';
 
 // import Checkbox from 'modules/common/components/checkbox';
@@ -115,9 +117,9 @@ export default class SideBar extends Component {
       }
     });
 
-    const filteredTags = Object.keys(tagCounts)
-      .filter(tag => tagCounts[tag] > 0 || selectedTags.indexOf(tag) !== -1)
-      .sort((a, b) => (tagCounts[b] - tagCounts[a]) || (a < b ? -1 : 1))
+    let filteredTags = Object.keys(tagCounts).filter(tag => tagCounts[tag] > 0 || selectedTags.indexOf(tag) !== -1);
+
+    filteredTags = orderBy(filteredTags, [tag => selectedTags.indexOf(tag) !== -1, tag => tagCounts[tag], tag => tag.toLowerCase()], ['desc', 'desc', 'asc']) // Sorts by selected -> count -> alphabetical
       .slice(0, 50)
       .map((tag) => {
         const obj = {
