@@ -7,7 +7,7 @@ export const loadBidsAsks = (marketID, callback = logError) => (dispatch, getSta
   const market = getState().marketsData[marketID];
   dispatch(updateIsFirstOrderBookChunkLoaded(marketID, false));
   const outcomes = Array.from(new Array(market.numOutcomes), (_, i) => i + 1);
-  async.forEachOfSeries(outcomes, (outcome, nextOutcome) => {
+  async.eachSeries(outcomes, (outcome, nextOutcome) => {
     dispatch(loadOneOutcomeBidsAsks(marketID, outcome, nextOutcome));
   }, (err) => {
     console.log('got all outcomes for market', marketID, err);
