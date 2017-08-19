@@ -17,7 +17,7 @@ describe('modules/my-orders/actions/update-orders.js', () => {
     LOAD_MARKETS_INFO: 'LOAD_MARKETS_INFO'
   };
 
-  const mockUpdateMarketOrderBook = {
+  const mockUpdateOrderBook = {
     addOrder: sinon.stub().returns({
       type: MOCK_ACTION_TYPES.ADD_ORDER
     }),
@@ -30,14 +30,13 @@ describe('modules/my-orders/actions/update-orders.js', () => {
   };
   sinon.stub(mockLoadMarketsInfo, 'loadMarketsInfo', (market, cb) => {
     cb();
-
     return {
       type: MOCK_ACTION_TYPES.LOAD_MARKETS_INFO
     };
   });
 
   const action = proxyquire('../../../src/modules/my-orders/actions/update-orders', {
-    '../../bids-asks/actions/update-market-order-book': mockUpdateMarketOrderBook,
+    '../../bids-asks/actions/update-order-book': mockUpdateOrderBook,
     '../../markets/actions/load-markets-info': mockLoadMarketsInfo
   });
 

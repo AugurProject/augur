@@ -1,16 +1,14 @@
 import async from 'async';
+import { BUY, SELL } from 'modules/bids-asks/constants/bids-asks-types';
 import loadOneOutcomeBidsOrAsks from 'modules/bids-asks/actions/load-one-outcome-bids-or-asks';
 import logError from 'utils/log-error';
-
-const BID = 1;
-const ASK = 2;
 
 const loadOneOutcomeBidsAsks = (marketID, outcome, callback = logError) => (dispatch) => {
   if (marketID == null || outcome == null) {
     return callback(`must specify market ID and outcome: ${marketID} ${outcome}`);
   }
-  async.eachSeries([BID, ASK], (orderType, nextOrderType) => {
-    dispatch(loadOneOutcomeBidsOrAsks(marketID, outcome, orderType, nextOrderType));
+  async.eachSeries([BUY, SELL], (orderTypeLabel, nextOrderTypeLabel) => {
+    dispatch(loadOneOutcomeBidsOrAsks(marketID, outcome, orderTypeLabel, nextOrderTypeLabel));
   }, callback);
 };
 

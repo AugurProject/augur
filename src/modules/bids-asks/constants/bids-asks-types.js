@@ -1,2 +1,2 @@
-export const BID = 'buy';
-export const ASK = 'sell';
+export const BUY = 'buy';
+export const SELL = 'sell';

@@ -4,7 +4,6 @@ import calcOrderProfitLossPercents from 'modules/trade/helpers/calc-order-profit
 import { augur, abi } from 'services/augurjs';
 import { calculateMaxPossibleShares } from 'modules/market/selectors/helpers/calculate-max-possible-shares';
 import { BUY, SELL } from 'modules/trade/constants/types';
-import { BID, ASK } from 'modules/bids-asks/constants/bids-asks-types';
 import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types';
 import { ZERO } from 'modules/trade/constants/numbers';
 import * as TRANSACTIONS_TYPES from 'modules/transactions/constants/types';
@@ -34,7 +33,7 @@ export const generateTrade = memoize((market, outcome, outcomeTradeInProgress, l
   let maxNumShares;
   if (limitPrice != null) {
     const orders = augur.trading.simulation.filterByPriceAndOutcomeAndUserSortByPrice(
-      orderBooks[side === BUY ? ASK : BID],
+      orderBooks[side === BUY ? SELL : BUY],
       side,
       limitPrice,
       outcome.id,

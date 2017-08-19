@@ -1,9 +1,9 @@
-import { updateMarketOrderBook } from 'modules/bids-asks/actions/update-market-order-book';
+import { updateOrderBook } from 'modules/bids-asks/actions/update-order-book';
 import clearOrderBookOnFirstChunk from 'modules/bids-asks/actions/clear-order-book-on-first-chunk';
 
-const insertOrderBookChunkToOrderBook = (marketID, orderBookChunk) => (dispatch) => {
-  dispatch(clearOrderBookOnFirstChunk(marketID));
-  dispatch(updateMarketOrderBook(marketID, orderBookChunk));
+const insertOrderBookChunkToOrderBook = (marketID, outcome, orderTypeLabel, orderBookChunk) => (dispatch) => {
+  dispatch(clearOrderBookOnFirstChunk(marketID, outcome, orderTypeLabel));
+  dispatch(updateOrderBook(marketID, outcome, orderTypeLabel, orderBookChunk));
 };
 
 export default insertOrderBookChunkToOrderBook;

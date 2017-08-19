@@ -3,7 +3,6 @@ import { UPDATE_ORDER_STATUS } from 'modules/bids-asks/actions/update-order-stat
 /**
  * @param {Object} orderCancellation
  * @param {Object} action
- * @return {{}} key: orderID, value: String
  */
 export default function (orderCancellation = {}, action) {
   switch (action.type) {

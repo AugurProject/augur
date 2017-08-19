@@ -17,7 +17,7 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
         '../../bids-asks/actions/cancel-order': CancelOrder,
         '../selectors/open-orders': openOrders
       });
-      sinon.stub(CancelOrder, 'cancelOrder', (orderID, marketID, type) => (dispatch, getState) => {
+      sinon.stub(CancelOrder, 'default', (orderID, marketID, type) => (dispatch, getState) => {
         dispatch({ type: 'CANCEL_ORDER', params: { orderID, marketID, type } });
       });
       store.dispatch(action.cancelOpenOrdersInClosedMarkets());

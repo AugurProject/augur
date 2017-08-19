@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import { UPDATE_IS_FIRST_ORDER_BOOK_CHUNK_LOADED } from 'modules/bids-asks/actions/update-market-order-book';
+import { UPDATE_IS_FIRST_ORDER_BOOK_CHUNK_LOADED } from 'modules/bids-asks/actions/update-order-book';
 import reducer from 'modules/bids-asks/reducers/is-first-order-book-chunk-loaded';
 
 describe(`modules/bids-asks/reducers/is-first-order-book-chunk-loaded.js`, () => {
@@ -11,18 +11,20 @@ describe(`modules/bids-asks/reducers/is-first-order-book-chunk-loaded.js`, () =>
     description: 'Should set isFirstOrderBookChunkLoaded to false',
     params: {
       isFirstOrderBookLoaded: {
-        MARKET_1: false
+        MARKET_1: { 1: { buy: false } }
       },
       action: {
         type: UPDATE_IS_FIRST_ORDER_BOOK_CHUNK_LOADED,
         marketID: 'MARKET_0',
+        outcome: 3,
+        orderTypeLabel: 'buy',
         isLoaded: false
       }
     },
     assertions: (output) => {
       assert.deepEqual(output, {
-        MARKET_0: false,
-        MARKET_1: false
+        MARKET_0: { 3: { buy: false } },
+        MARKET_1: { 1: { buy: false } }
       });
     }
   });
@@ -30,19 +32,21 @@ describe(`modules/bids-asks/reducers/is-first-order-book-chunk-loaded.js`, () =>
     description: 'Should change isFirstOrderBookChunkLoaded to true',
     params: {
       isFirstOrderBookLoaded: {
-        MARKET_0: false,
-        MARKET_1: false
+        MARKET_0: { 3: { buy: false } },
+        MARKET_1: { 1: { buy: false } }
       },
       action: {
         type: UPDATE_IS_FIRST_ORDER_BOOK_CHUNK_LOADED,
         marketID: 'MARKET_0',
+        outcome: 3,
+        orderTypeLabel: 'buy',
         isLoaded: true
       }
     },
     assertions: (output) => {
       assert.deepEqual(output, {
-        MARKET_0: true,
-        MARKET_1: false
+        MARKET_0: { 3: { buy: true } },
+        MARKET_1: { 1: { buy: false } }
       });
     }
   });

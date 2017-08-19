@@ -7,19 +7,21 @@ import clearOrderBookOnFirstChunk from 'modules/bids-asks/actions/clear-order-bo
 describe(`modules/bids-asks/actions/clear-order-book-on-first-chunk.js`, () => {
   const test = t => it(t.description, () => {
     const store = configureMockStore([thunk])({ ...t.mock.state });
-    store.dispatch(clearOrderBookOnFirstChunk(t.params.marketID));
+    store.dispatch(clearOrderBookOnFirstChunk(t.params.marketID, t.params.outcome, t.params.orderTypeLabel));
     t.assertions(store.getActions());
     store.clearActions();
   });
   test({
     description: 'first order book chunk not yet loaded: clear order book',
     params: {
-      marketID: 'MARKET_0'
+      marketID: 'MARKET_0',
+      outcome: 2,
+      orderTypeLabel: 'buy'
     },
     mock: {
       state: {
         isFirstOrderBookChunkLoaded: {
-          MARKET_0: false
+          MARKET_0: { 2: { buy: false } }
         }
       }
     },
@@ -27,23 +29,29 @@ describe(`modules/bids-asks/actions/clear-order-book-on-first-chunk.js`, () => {
       assert.deepEqual(actions, [{
         type: 'UPDATE_IS_FIRST_ORDER_BOOK_CHUNK_LOADED',
         marketID: 'MARKET_0',
+        outcome: 2,
+        orderTypeLabel: 'buy',
         isLoaded: true
       }, {
-        type: 'CLEAR_MARKET_ORDER_BOOK',
-        marketID: 'MARKET_0'
+        type: 'CLEAR_ORDER_BOOK',
+        marketID: 'MARKET_0',
+        outcome: 2,
+        orderTypeLabel: 'buy'
       }]);
     }
   });
   test({
     description: 'first order book chunk already loaded: do not clear order book',
     params: {
-      marketID: 'MARKET_0'
+      marketID: 'MARKET_0',
+      outcome: 2,
+      orderTypeLabel: 'buy'
     },
     mock: {
       state: {
         isFirstOrderBookChunkLoaded: {
-          MARKET_0: true,
-          MARKET_1: false
+          MARKET_0: { 2: { buy: true } },
+          MARKET_1: { 1: { buy: false } }
         }
       }
     },

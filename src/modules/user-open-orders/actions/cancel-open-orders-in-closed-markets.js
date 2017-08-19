@@ -1,4 +1,4 @@
-import { cancelOrder } from 'modules/bids-asks/actions/cancel-order';
+import cancelOrder from 'modules/bids-asks/actions/cancel-order';
 
 export const cancelOpenOrdersInClosedMarkets = () => (dispatch) => {
   const openOrders = require('modules/user-open-orders/selectors/open-orders');

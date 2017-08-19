@@ -1,5 +1,5 @@
 import store from 'src/store';
-import { cancelOrder } from 'modules/bids-asks/actions/cancel-order';
+import cancelOrder from 'modules/bids-asks/actions/cancel-order';
 
 export default () => {
   const { orderCancellation } = store.getState();

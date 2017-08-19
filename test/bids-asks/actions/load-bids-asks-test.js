@@ -102,10 +102,6 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
     assertions: (err, actions) => {
       assert.isNull(err);
       assert.deepEqual(actions, [{
-        type: 'UPDATE_IS_FIRST_ORDER_BOOK_CHUNK_LOADED',
-        marketID: 'MARKET_0',
-        isLoaded: false
-      }, {
         type: 'LOAD_ONE_OUTCOME_BIDS_ASKS',
         marketID: 'MARKET_0',
         outcome: 1
@@ -139,10 +135,6 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
     assertions: (err, actions) => {
       assert.isNull(err);
       assert.deepEqual(actions, [{
-        type: 'UPDATE_IS_FIRST_ORDER_BOOK_CHUNK_LOADED',
-        marketID: 'MARKET_0',
-        isLoaded: false
-      }, {
         type: 'LOAD_ONE_OUTCOME_BIDS_ASKS',
         marketID: 'MARKET_0',
         outcome: 1
@@ -180,10 +172,6 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
     assertions: (err, actions) => {
       assert.strictEqual(err, 'ERROR_MESSAGE');
       assert.deepEqual(actions, [{
-        type: 'UPDATE_IS_FIRST_ORDER_BOOK_CHUNK_LOADED',
-        marketID: 'MARKET_0',
-        isLoaded: false
-      }, {
         type: 'LOAD_ONE_OUTCOME_BIDS_ASKS',
         marketID: 'MARKET_0',
         outcome: 1

@@ -52,7 +52,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     loadMarketsInfo: sinon.stub().returns({ type: 'LOAD_MARKETS_INFO' })
   };
 
-  const UpdateMarketOrderBook = {
+  const UpdateOrderBook = {
     addOrder: sinon.stub().returns({ type: 'ADD_ORDER' }),
     fillOrder: sinon.stub().returns({ type: 'FILL_ORDER' }),
     removeOrder: sinon.stub().returns({ type: 'REMOVE_ORDER' })
@@ -80,7 +80,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
     '../../auth/actions/update-assets': UpdateAssets,
     '../../markets/actions/update-outcome-price': OutcomePrice,
     '../../markets/actions/load-markets-info': LoadMarketsInfo,
-    '../../bids-asks/actions/update-market-order-book': UpdateMarketOrderBook,
+    '../../bids-asks/actions/update-order-book': UpdateOrderBook,
     '../../topics/actions/update-topics': UpdateTopics,
     '../../transactions/actions/convert-logs-to-transactions': ConverLogsToTransactions,
     '../../my-positions/actions/update-account-trades-data': UpdateAccountTradesData

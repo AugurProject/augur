@@ -57,12 +57,12 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-asks.js`, () => {
     },
     stub: {
       loadOneOutcomeBidsOrAsks: {
-        default: (marketID, outcome, orderType, callback) => (dispatch) => {
+        default: (marketID, outcome, orderTypeLabel, callback) => (dispatch) => {
           dispatch({
             type: 'LOAD_ONE_OUTCOME_BIDS_OR_ASKS',
             marketID,
             outcome,
-            orderType
+            orderTypeLabel
           });
           callback(null);
         }
@@ -74,12 +74,12 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-asks.js`, () => {
         type: 'LOAD_ONE_OUTCOME_BIDS_OR_ASKS',
         marketID: 'MARKET_0',
         outcome: 3,
-        orderType: 1
+        orderTypeLabel: 'buy'
       }, {
         type: 'LOAD_ONE_OUTCOME_BIDS_OR_ASKS',
         marketID: 'MARKET_0',
         outcome: 3,
-        orderType: 2
+        orderTypeLabel: 'sell'
       }]);
     }
   });
@@ -91,12 +91,12 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-asks.js`, () => {
     },
     stub: {
       loadOneOutcomeBidsOrAsks: {
-        default: (marketID, outcome, orderType, callback) => (dispatch) => {
+        default: (marketID, outcome, orderTypeLabel, callback) => (dispatch) => {
           dispatch({
             type: 'LOAD_ONE_OUTCOME_BIDS_OR_ASKS',
             marketID,
             outcome,
-            orderType
+            orderTypeLabel
           });
           callback('ERROR_MESSAGE');
         }
@@ -108,7 +108,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-asks.js`, () => {
         type: 'LOAD_ONE_OUTCOME_BIDS_OR_ASKS',
         marketID: 'MARKET_0',
         outcome: 3,
-        orderType: 1
+        orderTypeLabel: 'buy'
       }]);
     }
   });

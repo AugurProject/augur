@@ -34,7 +34,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
       '../../../store': store
     }).default;
 
-    const marketOrderBook = {
+    const orderBook = {
       buy: {
         order1: {
           id: 'order1',
@@ -55,7 +55,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
       }
     };
 
-    assert.lengthOf(selectUserOpenOrders('1', marketOrderBook), 0);
+    assert.lengthOf(selectUserOpenOrders('1', orderBook), 0);
   });
 
   it(`should return no user open orders if there are no orders`, () => {
@@ -63,7 +63,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
   });
 
   it(`should return empty user open orders if there are no matching orders`, () => {
-    const nonMatchingMarketOrderBook = {
+    const nonMatchingOrderBook = {
       buy: {
         order1: {
           id: 'order1',
@@ -104,11 +104,11 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
         }
       }
     };
-    assert.lengthOf(selectUserOpenOrders('1', nonMatchingMarketOrderBook), 0);
+    assert.lengthOf(selectUserOpenOrders('1', nonMatchingOrderBook), 0);
   });
 
   it(`should return user open orders for logged-in user who has orders`, () => {
-    const marketOrderBook = {
+    const orderBook = {
       buy: {
         order2: {
           id: 'order2',
@@ -204,7 +204,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
       }
     };
 
-    const userOpenOrders = selectUserOpenOrders('1', marketOrderBook);
+    const userOpenOrders = selectUserOpenOrders('1', orderBook);
     assert.lengthOf(userOpenOrders, 7);
     assert.deepEqual(userOpenOrders, [{
       id: 'order10',
