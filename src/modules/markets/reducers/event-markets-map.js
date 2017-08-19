@@ -1,5 +1,7 @@
 import { CLEAR_MARKETS_DATA, UPDATE_EVENT_MARKETS_MAP } from 'modules/markets/actions/update-markets-data';
 
+// TODO - fix linting error
+
 export default function (eventMarketsMap = {}, action) {
   switch (action.type) {
     case UPDATE_EVENT_MARKETS_MAP: {
@@ -7,7 +9,7 @@ export default function (eventMarketsMap = {}, action) {
         const isUnique = {};
         return {
           ...eventMarketsMap,
-          [action.eventID]: (eventMarketsMap[action.eventID].concat(action.marketIDs)).filter(el => (
+          [action.eventID]: (eventMarketsMap[action.eventID].concat(action.marketIDs)).filter(el => ( // eslint-disable-line
             isUnique.hasOwnProperty(el) ? false : (isUnique[el] = true))
           )
         };
