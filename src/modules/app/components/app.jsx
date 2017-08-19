@@ -35,8 +35,8 @@ export const mobileMenuStates = {
 
 export default class AppView extends Component {
   static propTypes = {
+    location: PropTypes.object.isRequired,
     url: PropTypes.string,
-    keywords: PropTypes.array.isRequired,
     coreStats: PropTypes.array.isRequired,
     isMobile: PropTypes.bool.isRequired,
     updateIsMobile: PropTypes.func.isRequired,
@@ -63,15 +63,10 @@ export default class AppView extends Component {
     window.addEventListener('resize', this.handleWindowResize);
 
     this.checkIfMobile();
-    this.setSidebarAllowed(this.props.location);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.location !== nextProps.location) this.setSidebarAllowed(nextProps.location);
-  }
-
-  componentWillReceiveProps(newProps) {
-    if (this.props.isMobile !== newProps.isMobile) {
+    if (this.props.isMobile !== nextProps.isMobile) {
       this.setState({
         mobileMenuState: mobileMenuStates.CLOSED,
         mainMenu: { scalar: 0, open: false },
@@ -80,25 +75,25 @@ export default class AppView extends Component {
     }
 
     // TODO: promise-ize instead of comparing states
-    if (this.props.keywords.length === 0 &&
-        newProps.keywords.length > 0) {
-      if (this.state.keywordState.openOnLoad) {
-        if (this.props.isMobile) {
-          this.setState({ mobileMenuState: mobileMenuStates.KEYWORDS_OPEN });
-        } else {
-          this.toggleMenuTween('subMenu', true);
-        }
-      }
-      this.setState({ keywordState: { loaded: true, openOnLoad: false } });
-    }
-
-    if (this.props.keywords.length > 0 &&
-        newProps.keywords.length === 0) {
-      if (!this.props.isMobile) {
-        this.toggleMenuTween('subMenu', false);
-      }
-      this.setState({ keywordState: { loaded: false, openOnLoad: true } });
-    }
+    // if (this.props.keywords.length === 0 &&
+    //     newProps.keywords.length > 0) {
+    //   if (this.state.keywordState.openOnLoad) {
+    //     if (this.props.isMobile) {
+    //       this.setState({ mobileMenuState: mobileMenuStates.KEYWORDS_OPEN });
+    //     } else {
+    //       this.toggleMenuTween('subMenu', true);
+    //     }
+    //   }
+    //   this.setState({ keywordState: { loaded: true, openOnLoad: false } });
+    // }
+    //
+    // if (this.props.keywords.length > 0 &&
+    //     newProps.keywords.length === 0) {
+    //   if (!this.props.isMobile) {
+    //     this.toggleMenuTween('subMenu', false);
+    //   }
+    //   this.setState({ keywordState: { loaded: false, openOnLoad: true } });
+    // }
 
   }
 
@@ -146,7 +141,8 @@ export default class AppView extends Component {
 
   toggleMainMenu() {
     const { selectedCategory } = this.props;
-    if (!this.state.mainMenu.open && selectedCategory && this.state.keywordState.loaded) {
+    // if (!this.state.mainMenu.open && selectedCategory && this.state.keywordState.loaded) {
+    if (!this.state.mainMenu.open && selectedCategory) {
       this.toggleMenuTween('subMenu', true);
     } else {
       this.toggleMenuTween('subMenu', false);
@@ -191,7 +187,7 @@ export default class AppView extends Component {
     const innerNavProps = {
       categories: p.categories,
       selectedCategory: p.selectedCategory,
-      keywords: p.keywords
+      // keywords: p.keywords
     };
 
     const { mainMenu, subMenu } = this.state;
@@ -210,98 +206,100 @@ export default class AppView extends Component {
 
     return (
       <main className="app-wrap">
-        <section className="side-wrap">
-          <Origami
-            isMobile={p.isMobile}
-            menuScalar={origamiScalar}
-          />
-          <Logo />
-          {this.renderMobileMenuButton()}
-          <SideNav
-            isMobile={p.isMobile}
-            isLogged={p.isLogged}
-            mobileShow={s.mobileMenuState === mobileMenuStates.SIDEBAR_OPEN}
-            menuScalar={subMenu.scalar}
-            menuData={[
-              {
-                title: 'Markets',
-                icon: NavMarketsIcon,
-                onClick: () => {
-                  if (p.isMobile) {
-                    this.setState({ mobileMenuState: mobileMenuStates.CATEGORIES_OPEN });
-                  } else {
-                    this.toggleMainMenu();
-                  }
-                },
-                onBlur: () => this.toggleMainMenu()
-              },
-              {
-                title: 'Create',
-                iconName: 'nav-create-icon',
-                icon: NavCreateIcon,
-                onClick: () => {},
-                onBlur: () => {},
-                requireLogin: true
-              },
-              {
-                title: 'Portfolio',
-                iconName: 'nav-portfolio-icon',
-                icon: NavPortfolioIcon,
-                onClick: () => {},
-                onBlur: () => {},
-                requireLogin: true
-              },
-              {
-                title: 'Reporting',
-                iconName: 'nav-reporting-icon',
-                icon: NavReportingIcon,
-                onClick: () => {},
-                onBlur: () => {},
-                requireLogin: true
-              },
-              {
-                title: 'Account',
-                iconName: 'nav-account-icon',
-                icon: NavAccountIcon,
-                onClick: () => {},
-                onBlur: () => {}
-              },
-            ]}
-          />
-        </section>
-        <section className="main-wrap">
-          <section className="topbar-row">
-            <TopBar
-              isMobile={p.isMobile}
-              stats={p.coreStats}
-            />
-          </section>
-          <section
-            className="maincontent-row"
-            style={{ marginLeft: categoriesMargin }}
-          >
-            <InnerNav
-              isMobile={p.isMobile}
-              mobileMenuState={s.mobileMenuState}
-              subMenuScalar={subMenu.scalar}
-              onSelectCategory={(...args) => {
-                p.selectCategory(...args);
-                const { loaded } = this.state.keywordState;
-                this.setState({ keywordState: { openOnLoad: true, loaded } });
-              }}
-              {...innerNavProps}
-            />
-            <section
-              className="maincontent"
-              style={{ marginLeft: keywordsMargin }}
-            >
-              <Routes
-                activeView={p.activeView}
-              />
-            </section>
-          </section>
-        </section>
+        <span>Augur!</span>
       </main>
     );
   }
 }
+
+// <section className="side-wrap">
+//   <Origami
+//     isMobile={p.isMobile}
+//     menuScalar={origamiScalar}
+//   />
+//   <Logo />
+//   {this.renderMobileMenuButton()}
+//   <SideNav
+//     isMobile={p.isMobile}
+//     isLogged={p.isLogged}
+//     mobileShow={s.mobileMenuState === mobileMenuStates.SIDEBAR_OPEN}
+//     menuScalar={subMenu.scalar}
+//     menuData={[
+//       {
+//         title: 'Markets',
+//         icon: NavMarketsIcon,
+//         onClick: () => {
+//           if (p.isMobile) {
+//             this.setState({ mobileMenuState: mobileMenuStates.CATEGORIES_OPEN });
+//           } else {
+//             this.toggleMainMenu();
+//           }
+//         },
+//         onBlur: () => this.toggleMainMenu()
+//       },
+//       {
+//         title: 'Create',
+//         iconName: 'nav-create-icon',
+//         icon: NavCreateIcon,
+//         onClick: () => {},
+//         onBlur: () => {},
+//         requireLogin: true
+//       },
+//       {
+//         title: 'Portfolio',
+//         iconName: 'nav-portfolio-icon',
+//         icon: NavPortfolioIcon,
+//         onClick: () => {},
+//         onBlur: () => {},
+//         requireLogin: true
+//       },
+//       {
+//         title: 'Reporting',
+//         iconName: 'nav-reporting-icon',
+//         icon: NavReportingIcon,
+//         onClick: () => {},
+//         onBlur: () => {},
+//         requireLogin: true
+//       },
+//       {
+//         title: 'Account',
+//         iconName: 'nav-account-icon',
+//         icon: NavAccountIcon,
+//         onClick: () => {},
+//         onBlur: () => {}
+//       },
+//     ]}
+//   />
+// </section>
+// <section className="main-wrap">
+//   <section className="topbar-row">
+//     <TopBar
+//       isMobile={p.isMobile}
+//       stats={p.coreStats}
+//     />
+//   </section>
+//   <section
+//     className="maincontent-row"
+//     style={{ marginLeft: categoriesMargin }}
+//   >
+//     <InnerNav
+//       isMobile={p.isMobile}
+//       mobileMenuState={s.mobileMenuState}
+//       subMenuScalar={subMenu.scalar}
+//       onSelectCategory={(...args) => {
+//         p.selectCategory(...args);
+//         const { loaded } = this.state.keywordState;
+//         this.setState({ keywordState: { openOnLoad: true, loaded } });
+//       }}
+//       {...innerNavProps}
+//     />
+//     <section
+//       className="maincontent"
+//       style={{ marginLeft: keywordsMargin }}
+//     >
+//       <Routes
+//         activeView={p.activeView}
+//       />
+//     </section>
+//   </section>
+// </section>

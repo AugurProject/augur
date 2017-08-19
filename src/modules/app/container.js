@@ -7,7 +7,6 @@ import { selectNotificationsAndSeenCount } from 'modules/notifications/selectors
 import { selectMarketsHeader } from 'modules/markets/selectors/markets-header';
 import { selectCoreStats } from 'modules/account/selectors/core-stats';
 import { selectTopics } from 'modules/topics/selectors/topics';
-import links, { selectTopicLink } from 'modules/link/selectors/links';
 import portfolio from 'modules/portfolio/selectors/portfolio';
 import { updateIsMobile } from 'modules/app/actions/update-is-mobile';
 import { updateHeaderHeight } from 'modules/app/actions/update-header-height';
@@ -29,7 +28,6 @@ const mapStateToProps = state => ({
   footerHeight: state.footerHeight,
   markets: getAllMarkets(),
   marketsFilteredSorted: state.marketsFilteredSorted
-  chat: getChatMessages(),
   categories: selectTopics(state),
   selectedCategory: state.selectedTopic
 });
@@ -37,8 +35,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = dispatch => ({
   updateIsMobile: isMobile => dispatch(updateIsMobile(isMobile)),
   updateHeaderHeight: headerHeight => dispatch(updateHeaderHeight(headerHeight)),
-  updateFooterHeight: footerHeight => dispatch(updateFooterHeight(footerHeight)),
-  selectCategory: topic => selectTopicLink(topic, dispatch).onClick()
+  updateFooterHeight: footerHeight => dispatch(updateFooterHeight(footerHeight))
 });
 
 const AppContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

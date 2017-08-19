@@ -6,7 +6,6 @@ import { mobileMenuStates } from 'modules/app/components/app';
 class InnerNav extends Component {
   static propTypes = {
     categories: PropTypes.array.isRequired,
-    keywords: PropTypes.array.isRequired,
     isMobile: PropTypes.bool.isRequired,
     mobileMenuState: PropTypes.number.isRequired,
     selectedCategory: PropTypes.string,
@@ -47,20 +46,7 @@ class InnerNav extends Component {
         className={classNames({ submenubar: true, mobileShow: showKeywords })}
         style={animatedStyle}
       >
-        {this.props.keywords.length === 0 &&
-          <li>Loading . . .</li>
-        }
-        {this.props.keywords.length > 0 &&
-        this.props.keywords.map((item, index) => (
-          <li
-            className={classNames({ selected: item.isSelected })}
-            key={item.name}
-          >
-            <button onClick={item.onClick}>
-              {item.name}
-            </button>
-          </li>
-        ))}
+        <li>Yup</li>
       </ul>
     );
   }
@@ -77,3 +63,18 @@ class InnerNav extends Component {
 }
 
 export default InnerNav;
+
+// {this.props.keywords.length === 0 &&
+//   <li>Loading . . .</li>
+// }
+// {this.props.keywords.length > 0 &&
+// this.props.keywords.map((item, index) => (
+//   <li
+//     className={classNames({ selected: item.isSelected })}
+//     key={item.name}
+//   >
+//     <button onClick={item.onClick}>
+//       {item.name}
+//     </button>
+//   </li>
+// ))}
