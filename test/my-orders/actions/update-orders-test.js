@@ -63,7 +63,7 @@ describe('modules/my-orders/actions/update-orders.js', () => {
             '0xMARKETID': {
               1: [
                 {
-                  tradeid: '0xTRADEID1'
+                  orderId: '0xORDERID'
                 }
               ]
             }
@@ -91,7 +91,7 @@ describe('modules/my-orders/actions/update-orders.js', () => {
         },
         transactionsData: {
           '0xTRANSACTIONID1': {
-            tradeID: '0xTRADEID1',
+            tradeID: '0xORDERID',
             type: CANCEL_ORDER
           }
         }
@@ -102,7 +102,7 @@ describe('modules/my-orders/actions/update-orders.js', () => {
             '0xMARKETID': {
               1: [
                 {
-                  tradeid: '0xTRADEID1',
+                  orderId: '0xORDERID',
                 }
               ]
             }
@@ -136,7 +136,7 @@ describe('modules/my-orders/actions/update-orders.js', () => {
             '0xMARKETID': {
               1: [
                 {
-                  tradeid: '0xTRADEID1'
+                  orderId: '0xORDERID'
                 }
               ]
             }
@@ -164,7 +164,7 @@ describe('modules/my-orders/actions/update-orders.js', () => {
         },
         transactionsData: {
           '0xTRANSACTIONID1': {
-            tradeID: '0xTRADEID1',
+            tradeID: '0xORDERID',
             type: CANCEL_ORDER
           }
         }
@@ -175,7 +175,7 @@ describe('modules/my-orders/actions/update-orders.js', () => {
             '0xMARKETID': {
               1: [
                 {
-                  tradeid: '0xTRADEID1',
+                  orderId: '0xORDERID',
                 }
               ]
             }
@@ -207,7 +207,7 @@ describe('modules/my-orders/actions/update-orders.js', () => {
             '0xMARKETID': {
               1: [
                 {
-                  tradeid: '0xTRADEID1'
+                  orderId: '0xORDERID'
                 }
               ]
             }
@@ -236,7 +236,7 @@ describe('modules/my-orders/actions/update-orders.js', () => {
         marketsData: {},
         transactionsData: {
           '0xTRANSACTIONID1': {
-            tradeID: '0xTRADEID1',
+            tradeID: '0xORDERID',
             type: CANCEL_ORDER
           }
         }
@@ -247,7 +247,7 @@ describe('modules/my-orders/actions/update-orders.js', () => {
             '0xMARKETID': {
               1: [
                 {
-                  tradeid: '0xTRADEID1'
+                  orderId: '0xORDERID'
                 }
               ]
             }
@@ -282,7 +282,7 @@ describe('modules/my-orders/actions/update-orders.js', () => {
             '0xMARKETID': {
               1: [
                 {
-                  tradeid: '0xTRADEID1'
+                  orderId: '0xORDERID'
                 }
               ]
             }
@@ -311,7 +311,7 @@ describe('modules/my-orders/actions/update-orders.js', () => {
         marketsData: {},
         transactionsData: {
           '0xTRANSACTIONID1': {
-            tradeID: '0xTRADEID1',
+            tradeID: '0xORDERID',
             type: CANCEL_ORDER
           }
         }
@@ -322,7 +322,7 @@ describe('modules/my-orders/actions/update-orders.js', () => {
             '0xMARKETID': {
               1: [
                 {
-                  tradeid: '0xTRADEID1'
+                  orderId: '0xORDERID'
                 }
               ]
             }

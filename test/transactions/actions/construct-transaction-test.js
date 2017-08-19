@@ -2308,7 +2308,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
       assertions: (store) => {
         const trade = {
           transactionHash: '0xHASH',
-          tradeid: '0xTRADEID',
+          orderId: '0xORDERID',
           tradeGroupID: '0xTRADEGROUPID',
           price: '0.1',
           amount: '2',
@@ -2338,7 +2338,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status));
 
         const expected = {
-          '0xHASH-0xTRADEID': {
+          '0xHASH-0xORDERID': {
             type: MATCH_ASK,
             hash: trade.transactionHash,
             tradeGroupID: trade.tradeGroupID,
@@ -2374,7 +2374,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
       assertions: (store) => {
         const trade = {
           transactionHash: '0xHASH',
-          tradeid: '0xTRADEID',
+          orderId: '0xORDERID',
           tradeGroupID: '0xTRADEGROUPID',
           price: '0.1',
           amount: '2',
@@ -2405,7 +2405,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status));
 
         const expected = {
-          '0xHASH-0xTRADEID': {
+          '0xHASH-0xORDERID': {
             type: MATCH_ASK,
             hash: trade.transactionHash,
             tradeGroupID: trade.tradeGroupID,
@@ -2441,7 +2441,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
       assertions: (store) => {
         const trade = {
           transactionHash: '0xHASH',
-          tradeid: '0xTRADEID',
+          orderId: '0xORDERID',
           tradeGroupID: '0xTRADEGROUPID',
           price: '0.1',
           amount: '2',
@@ -2471,7 +2471,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status));
 
         const expected = {
-          '0xHASH-0xTRADEID': {
+          '0xHASH-0xORDERID': {
             type: MATCH_BID,
             hash: trade.transactionHash,
             tradeGroupID: trade.tradeGroupID,
@@ -2507,7 +2507,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
       assertions: (store) => {
         const trade = {
           transactionHash: '0xHASH',
-          tradeid: '0xTRADEID',
+          orderId: '0xORDERID',
           tradeGroupID: '0xTRADEGROUPID',
           price: '0.1',
           amount: '2',
@@ -2538,7 +2538,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status));
 
         const expected = {
-          '0xHASH-0xTRADEID': {
+          '0xHASH-0xORDERID': {
             type: MATCH_BID,
             hash: trade.transactionHash,
             tradeGroupID: trade.tradeGroupID,
@@ -2574,7 +2574,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
       assertions: (store) => {
         const trade = {
           transactionHash: '0xHASH',
-          tradeid: '0xTRADEID',
+          orderId: '0xORDERID',
           tradeGroupID: '0xTRADEGROUPID',
           price: '0.1',
           amount: '2',
@@ -2603,7 +2603,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status));
 
         const expected = {
-          '0xHASH-0xTRADEID': {
+          '0xHASH-0xORDERID': {
             type: BUY,
             hash: trade.transactionHash,
             tradeGroupID: trade.tradeGroupID,
@@ -2639,7 +2639,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
       assertions: (store) => {
         const trade = {
           transactionHash: '0xHASH',
-          tradeid: '0xTRADEID',
+          orderId: '0xORDERID',
           tradeGroupID: '0xTRADEGROUPID',
           price: '0.1',
           amount: '2',
@@ -2669,7 +2669,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status));
 
         const expected = {
-          '0xHASH-0xTRADEID': {
+          '0xHASH-0xORDERID': {
             type: BUY,
             hash: trade.transactionHash,
             tradeGroupID: trade.tradeGroupID,
@@ -2705,7 +2705,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
       assertions: (store) => {
         const trade = {
           transactionHash: '0xHASH',
-          tradeid: '0xTRADEID',
+          orderId: '0xORDERID',
           tradeGroupID: '0xTRADEGROUPID',
           price: '0.1',
           amount: '2',
@@ -2735,7 +2735,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status));
 
         const expected = {
-          '0xHASH-0xTRADEID': {
+          '0xHASH-0xORDERID': {
             type: SELL,
             hash: trade.transactionHash,
             tradeGroupID: trade.tradeGroupID,
@@ -2771,7 +2771,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
       assertions: (store) => {
         const trade = {
           transactionHash: '0xHASH',
-          tradeid: '0xTRADEID',
+          orderId: '0xORDERID',
           tradeGroupID: '0xTRADEGROUPID',
           price: '0.1',
           amount: '2',
@@ -2802,7 +2802,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status));
 
         const expected = {
-          '0xHASH-0xTRADEID': {
+          '0xHASH-0xORDERID': {
             type: SELL,
             hash: trade.transactionHash,
             tradeGroupID: trade.tradeGroupID,
@@ -2838,7 +2838,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
       assertions: (store) => {
         const trade = {
           transactionHash: '0xHASH',
-          tradeid: '0xTRADEID',
+          orderId: '0xORDERID',
           tradeGroupID: '0xTRADEGROUPID',
           price: '0.1',
           amount: '2',
@@ -2869,7 +2869,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const actual = store.dispatch(action.constructLogFillTxTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status));
 
         const expected = {
-          '0xHASH-0xTRADEID': {
+          '0xHASH-0xORDERID': {
             type: SELL,
             hash: trade.transactionHash,
             tradeGroupID: trade.tradeGroupID,
@@ -2919,7 +2919,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
       assertions: (store) => {
         const trade = {
           transactionHash: '0xHASH',
-          tradeid: '0xTRADEID',
+          orderId: '0xORDERID',
           tradeGroupID: '0xTRADEGROUPID',
           price: '0.1',
           amount: '2',
@@ -2948,7 +2948,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const actual = store.dispatch(action.constructLogShortFillTxTransaction(trade, marketID, marketType, maxValue, description, outcomeID, null, status));
 
         const expected = {
-          '0xHASH-0xTRADEID': {
+          '0xHASH-0xORDERID': {
             type: SHORT_SELL,
             hash: trade.transactionHash,
             status,
@@ -2982,7 +2982,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
       assertions: (store) => {
         const trade = {
           transactionHash: '0xHASH',
-          tradeid: '0xTRADEID',
+          orderId: '0xORDERID',
           tradeGroupID: '0xTRADEGROUPID',
           price: '0.1',
           amount: '2',
@@ -3012,7 +3012,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const actual = store.dispatch(action.constructLogShortFillTxTransaction(trade, marketID, marketType, maxValue, description, outcomeID, null, status));
 
         const expected = {
-          '0xHASH-0xTRADEID': {
+          '0xHASH-0xORDERID': {
             type: SHORT_SELL,
             hash: trade.transactionHash,
             status,
@@ -3046,7 +3046,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
       assertions: (store) => {
         const trade = {
           transactionHash: '0xHASH',
-          tradeid: '0xTRADEID',
+          orderId: '0xORDERID',
           tradeGroupID: '0xTRADEGROUPID',
           price: '0.1',
           amount: '2',
@@ -3076,7 +3076,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const actual = store.dispatch(action.constructLogShortFillTxTransaction(trade, marketID, marketType, maxValue, description, outcomeID, null, status));
 
         const expected = {
-          '0xHASH-0xTRADEID': {
+          '0xHASH-0xORDERID': {
             type: SHORT_SELL,
             hash: trade.transactionHash,
             status,
@@ -3122,7 +3122,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
     describe('related conditionals: trade type, isShortAsk, and inProgress', () => {
       let trade = {
         transactionHash: '0xHASH',
-        tradeid: '0xTRADEID',
+        orderId: '0xORDERID',
         tradeGroupID: '0xTRADEGROUPID',
         price: '0.1',
         amount: '2',
@@ -3294,7 +3294,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
     describe('conditionals: market type', () => {
       const trade = {
         transactionHash: '0xHASH',
-        tradeid: '0xTRADEID',
+        orderId: '0xORDERID',
         tradeGroupID: '0xTRADEGROUPID',
         price: '0.1',
         amount: '2',
@@ -3368,7 +3368,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
     describe('general calculations', () => {
       const trade = {
         transactionHash: '0xHASH',
-        tradeid: '0xTRADEID',
+        orderId: '0xORDERID',
         tradeGroupID: '0xTRADEGROUPID',
         price: '0.1',
         amount: '2',
@@ -3425,7 +3425,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               totalReturn: formatEtherTokens(0.1982),
               gasFees: formatEther(trade.gasFees),
               blockNumber: trade.blockNumber,
-              tradeID: trade.tradeid
+              tradeID: trade.orderId
             }
           };
 
@@ -3445,7 +3445,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
     let trade = {
       transactionHash: '0xHASH',
-      tradeid: '0xTRADEID',
+      orderId: '0xORDERID',
       tradeGroupID: '0xTRADEGROUPID',
       price: '0.1',
       amount: '2',
@@ -3504,7 +3504,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
             totalReturn: formatEtherTokens(trade.cashRefund),
             gasFees: formatEther(trade.gasFees),
             blockNumber: trade.blockNumber,
-            tradeID: trade.tradeid
+            tradeID: trade.orderId
           }
         };
 
@@ -3552,7 +3552,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
             totalReturn: null,
             gasFees: formatEther(trade.gasFees),
             blockNumber: trade.blockNumber,
-            tradeID: trade.tradeid
+            tradeID: trade.orderId
           }
         };
 
