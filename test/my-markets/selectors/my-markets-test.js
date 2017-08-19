@@ -2,7 +2,6 @@ import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 
-import myMarketsAssertions from 'assertions/my-markets';
 import * as mockStore from 'test/mockStore';
 
 import { formatNumber, formatEtherTokens, formatShares } from 'utils/format-number';
@@ -28,7 +27,7 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
     '../../markets/selectors/markets-all': MarketsAll
   });
 
-  let actual = proxiedSelector.default();
+  const actual = proxiedSelector.default();
 
   const expected = [
     {
