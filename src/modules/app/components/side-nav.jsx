@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+
+import makePath from 'modules/app/helpers/make-path';
 
 export default class SideBar extends Component {
   static propTypes = {
@@ -70,10 +73,12 @@ export default class SideBar extends Component {
               className={classNames({ selected })}
               key={item.title}
             >
-              <button onClick={() => this.itemClick(item)}>
+              <Link
+                to={makePath(item.route)}
+              >
                 <Icon />
                 <span className="item-title">{item.title}</span>
-              </button>
+              </Link>
             </li>
           );
         })}
