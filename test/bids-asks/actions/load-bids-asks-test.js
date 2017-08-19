@@ -4,90 +4,190 @@ import proxyquire from 'proxyquire';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 
+const marketsData = { MARKET_0: { numOutcomes: 3 } };
+
 describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
   proxyquire.noPreserveCache();
   const test = t => it(t.description, (done) => {
     const store = configureMockStore([thunk])({ ...t.mock.state });
     const loadBidsAsks = proxyquire('../../../src/modules/bids-asks/actions/load-bids-asks', {
-      '../../../services/augurjs': t.stub.augurjs,
-      './update-market-order-book': t.stub.updateMarketOrderBook
+      './load-one-outcome-bids-asks': t.stub.loadOneOutcomeBidsAsks
     }).default;
-    store.dispatch(loadBidsAsks('MARKET_ID', (err) => {
+    store.dispatch(loadBidsAsks(t.params.marketID, (err) => {
       t.assertions(err, store.getActions());
       store.clearActions();
       done();
     }));
   });
   test({
-    description: 'one order',
+    description: 'short-circuit if market ID not provided',
     params: {
-      marketID: 'MARKET_ID'
+      marketID: undefined
+    },
+    mock: {
+      state: { marketsData }
+    },
+    stub: {
+      loadOneOutcomeBidsAsks: {
+        default: () => () => assert.fail()
+      }
+    },
+    assertions: (err, actions) => {
+      assert.strictEqual(err, 'must specify market ID: undefined');
+      assert.deepEqual(actions, []);
+    }
+  });
+  test({
+    description: 'short-circuit if market data not found',
+    params: {
+      marketID: 'MARKET_0'
+    },
+    mock: {
+      state: { marketsData: {} }
+    },
+    stub: {
+      loadOneOutcomeBidsAsks: {
+        default: () => () => assert.fail()
+      }
+    },
+    assertions: (err, actions) => {
+      assert.strictEqual(err, 'market MARKET_0 data not found');
+      assert.deepEqual(actions, []);
+    }
+  });
+  test({
+    description: 'short-circuit if market numOutcomes not found',
+    params: {
+      marketID: 'MARKET_0'
+    },
+    mock: {
+      state: {
+        marketsData: { MARKET_0: { numOutcomes: undefined } }
+      }
+    },
+    stub: {
+      loadOneOutcomeBidsAsks: {
+        default: () => () => assert.fail()
+      }
+    },
+    assertions: (err, actions) => {
+      assert.strictEqual(err, 'market MARKET_0 numOutcomes not found');
+      assert.deepEqual(actions, []);
+    }
+  });
+  test({
+    description: 'market with 2 outcomes',
+    params: {
+      marketID: 'MARKET_0'
     },
     mock: {
       state: {
         marketsData: {
-          MARKET_ID: {
-            minPrice: '0',
-            maxPrice: '1',
-            numOutcomes: 3
-          }
-        },
-        orderBooks: {}
-      },
-      blockchain: {
-        orderBooks: {
-          MARKET_ID: {
-            3: {
-              2: {
-                ORDER_0: {
-                  amount: '1.1111',
-                  fullPrecisionAmount: '1.1111111',
-                  price: '0.7778',
-                  fullPrecisionPrice: '0.7777777',
-                  owner: '0x0000000000000000000000000000000000000b0b',
-                  tokensEscrowed: '0.8641974',
-                  sharesEscrowed: '0',
-                  betterOrderId: '0x0000000000000000000000000000000000000000000000000000000000000000',
-                  worseOrderId: '0x0000000000000000000000000000000000000000000000000000000000000000',
-                  gasPrice: '20000000000'
-                }
-              }
-            }
-          }
+          MARKET_0: { numOutcomes: 2 }
         }
       }
     },
     stub: {
-      augurjs: {
-        augur: {
-          api: {
-            Orders: {
-              getBestOrderId: (p, callback) => {
-                callback('ORDER_0');
-              }
-            }
-          },
-          trading: {
-            orderBook: {
-              getOrderBookChunked: (p, onChunkReceived, onComplete) => {
-
-              }
-            }
-          }
-        }
-      },
-      updateMarketOrderBook: {
-        clearMarketOrderBook: marketID => (dispatch) => {
-          assert.strictEqual(marketID, 'MARKET_ID');
-        },
-        updateMarketOrderBook: (marketID, orderBookChunk) => (dispatch) => {
-          assert.strictEqual(marketID, 'MARKET_ID');
-
+      loadOneOutcomeBidsAsks: {
+        default: (marketID, outcome, callback) => (dispatch) => {
+          dispatch({
+            type: 'LOAD_ONE_OUTCOME_BIDS_ASKS',
+            marketID,
+            outcome
+          });
+          callback(null);
         }
       }
     },
     assertions: (err, actions) => {
       assert.isNull(err);
+      assert.deepEqual(actions, [{
+        type: 'UPDATE_IS_FIRST_ORDER_BOOK_CHUNK_LOADED',
+        marketID: 'MARKET_0',
+        isLoaded: false
+      }, {
+        type: 'LOAD_ONE_OUTCOME_BIDS_ASKS',
+        marketID: 'MARKET_0',
+        outcome: 1
+      }, {
+        type: 'LOAD_ONE_OUTCOME_BIDS_ASKS',
+        marketID: 'MARKET_0',
+        outcome: 2
+      }]);
+    }
+  });
+  test({
+    description: 'market with 3 outcomes',
+    params: {
+      marketID: 'MARKET_0'
+    },
+    mock: {
+      state: { marketsData }
+    },
+    stub: {
+      loadOneOutcomeBidsAsks: {
+        default: (marketID, outcome, callback) => (dispatch) => {
+          dispatch({
+            type: 'LOAD_ONE_OUTCOME_BIDS_ASKS',
+            marketID,
+            outcome
+          });
+          callback(null);
+        }
+      }
+    },
+    assertions: (err, actions) => {
+      assert.isNull(err);
+      assert.deepEqual(actions, [{
+        type: 'UPDATE_IS_FIRST_ORDER_BOOK_CHUNK_LOADED',
+        marketID: 'MARKET_0',
+        isLoaded: false
+      }, {
+        type: 'LOAD_ONE_OUTCOME_BIDS_ASKS',
+        marketID: 'MARKET_0',
+        outcome: 1
+      }, {
+        type: 'LOAD_ONE_OUTCOME_BIDS_ASKS',
+        marketID: 'MARKET_0',
+        outcome: 2
+      }, {
+        type: 'LOAD_ONE_OUTCOME_BIDS_ASKS',
+        marketID: 'MARKET_0',
+        outcome: 3
+      }]);
+    }
+  });
+  test({
+    description: 'propagate loadOneOutcomeBidsAsks error',
+    params: {
+      marketID: 'MARKET_0'
+    },
+    mock: {
+      state: { marketsData }
+    },
+    stub: {
+      loadOneOutcomeBidsAsks: {
+        default: (marketID, outcome, callback) => (dispatch) => {
+          dispatch({
+            type: 'LOAD_ONE_OUTCOME_BIDS_ASKS',
+            marketID,
+            outcome
+          });
+          callback('ERROR_MESSAGE');
+        }
+      }
+    },
+    assertions: (err, actions) => {
+      assert.strictEqual(err, 'ERROR_MESSAGE');
+      assert.deepEqual(actions, [{
+        type: 'UPDATE_IS_FIRST_ORDER_BOOK_CHUNK_LOADED',
+        marketID: 'MARKET_0',
+        isLoaded: false
+      }, {
+        type: 'LOAD_ONE_OUTCOME_BIDS_ASKS',
+        marketID: 'MARKET_0',
+        outcome: 1
+      }]);
     }
   });
 });

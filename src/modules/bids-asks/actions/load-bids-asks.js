@@ -8,14 +8,17 @@ const loadBidsAsks = (marketID, callback = logError) => (dispatch, getState) => 
     return callback(`must specify market ID: ${marketID}`);
   }
   const market = getState().marketsData[marketID];
+  if (!market) {
+    return callback(`market ${marketID} data not found`);
+  }
+  if (market.numOutcomes == null) {
+    return callback(`market ${marketID} numOutcomes not found`);
+  }
   dispatch(updateIsFirstOrderBookChunkLoaded(marketID, false));
   const outcomes = Array.from(new Array(market.numOutcomes), (_, i) => i + 1);
   async.eachSeries(outcomes, (outcome, nextOutcome) => {
     dispatch(loadOneOutcomeBidsAsks(marketID, outcome, nextOutcome));
-  }, (err) => {
-    console.log('got all outcomes for market', marketID, err);
-    callback(err);
-  });
+  }, callback);
 };
 
 export default loadBidsAsks;
