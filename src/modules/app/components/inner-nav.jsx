@@ -9,7 +9,7 @@ class InnerNav extends Component {
     keywords: PropTypes.array.isRequired,
     isMobile: PropTypes.bool.isRequired,
     mobileMenuState: PropTypes.number.isRequired,
-    selectedCategory: PropTypes.string.isRequired,
+    selectedCategory: PropTypes.string,
     onSelectCategory: PropTypes.func.isRequired,
     subMenuScalar: PropTypes.number.isRequired
   };
