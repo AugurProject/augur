@@ -1,5 +1,76 @@
+body,
+html,
+* {
+  box-sizing: border-box;
+}
+
 body {
   @media @breakpoint-mobile {
     --is-mobile: true;
   }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'DINPro';
+}
+
+#root {
+  height: 100%;
+}
+
+.app-wrap {
+  display: grid;
+
+  /* sidebar width */
+  grid-template-columns: 72px auto;
+  height: 100%;
+
+  @media @breakpoint-mobile {
+    /*
+    disable sidebar mobile grid width */
+    grid-template-columns: 0 auto;
+  }
+}
+
+.main-wrap {
+  display: grid;
+
+  /* topbar height */
+  grid-template-rows: 42px auto;
+  height: 100vh;
+  overflow: hidden;
+
+  @media @breakpoint-mobile {
+    /* topbar mobile height */
+    grid-template-rows: 24px auto;
+  }
+}
+
+.maincontent-row {
+  display: grid;
+
+  /* inner menubar width */
+  grid-template-columns: 110px auto;
+  margin-left: -100px;
+  overflow: hidden;
+
+  @media @breakpoint-mobile {
+    /*
+    disable inner menubar mobile grid width */
+    grid-template-columns: 0 auto;
+    margin-left: 0;
+  }
+}
+
+.maincontent {
+  background: @color-almostblack;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  transform: translateZ(0); /* use gpu */
 }

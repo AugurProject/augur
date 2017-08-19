@@ -23,7 +23,7 @@ if (process.env.NODE_ENV === 'development') {
 
   console.log(`
   *******************************************
-             DEVELOPMENT MODE
+          DEVELOPMENT MODE (v3)
     window.state      -- raw state data
     window.selectors  -- processed state data
     window.augur      -- augur.js API methods
