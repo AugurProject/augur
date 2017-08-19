@@ -22,8 +22,14 @@ describe(`modules/auth/actions/login.js`, () => {
   AugurJS.augur.accounts.login = sinon.stub().yields({ address: '0x812e463089332df61e96b8ce663a66e61aadecd3', loginID });
   LoadAccountData.loadAccountData = sinon.stub().returns({ type: 'LOAD_FULL_ACCOUNT_DATA' });
 
+  const updateIsLoggedStub = {
+    updateIsLogged: () => {}
+  };
+  sinon.stub(updateIsLoggedStub, 'updateIsLogged', () => ({ type: 'update-is-logged' }));
+
   const action = proxyquire('../../../src/modules/auth/actions/login', {
     '../../../services/augurjs': AugurJS,
+    './update-is-logged': updateIsLoggedStub,
     './load-account-data': LoadAccountData
   });
 
@@ -34,6 +40,7 @@ describe(`modules/auth/actions/login.js`, () => {
   it(`should attempt to login an account given user/pass`, () => {
     store.dispatch(action.login(loginID, 'password'));
     const expectedOutput = [
+      { type: 'update-is-logged' },
       { type: 'LOAD_FULL_ACCOUNT_DATA' }
     ];
     assert.deepEqual(store.getActions(), expectedOutput, `didn't login to the account correcty`);
