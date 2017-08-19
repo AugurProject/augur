@@ -4293,7 +4293,7 @@ hide-powered-by@1.0.0:
   resolved "https://registry.yarnpkg.com/hide-powered-by/-/hide-powered-by-1.0.0.tgz#4a85ad65881f62857fc70af7174a1184dccce32b"
 
 highcharts@5.0.12, highcharts@^5.0.0:
-  version v5.0.12
+  version "5.0.12"
   resolved "https://registry.yarnpkg.com/highcharts/-/highcharts-5.0.12.tgz#f73b970fe5c7f04100220b64aa7bd7fb019d11e2"
 
 history@^2.1.2:
@@ -6369,7 +6369,7 @@ p-timeout@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/p-timeout/-/p-timeout-1.1.1.tgz#d28e9fdf96e328886fbff078f886ad158c53bf6d"
 
-p5@^0.5.11:
+p5@0.5.11:
   version "0.5.11"
   resolved "https://registry.yarnpkg.com/p5/-/p5-0.5.11.tgz#44f7c73abe768eba493e88abf1b911f6429c97f3"
   dependencies:
@@ -8094,7 +8094,7 @@ shelljs@0.7.8, shelljs@^0.7.5:
     interpret "^1.0.0"
     rechoir "^0.6.2"
 
-shifty@^2.1.0:
+shifty@2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/shifty/-/shifty-2.1.0.tgz#571c5be8bf3c2c38fb959bdd7d3149406bd303f2"
   dependencies:
