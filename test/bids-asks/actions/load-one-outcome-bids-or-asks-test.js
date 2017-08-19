@@ -4,8 +4,9 @@ import proxyquire from 'proxyquire';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 
-const ORDER_1 = { amount: '1' };
-const ORDER_2 = { amount: '1.2' };
+const order1 = { amount: '1' };
+const order2 = { amount: '1.2' };
+const marketsData = { MARKET_0: { minPrice: '0', maxPrice: '1' } };
 
 describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
   proxyquire.noPreserveCache();
@@ -13,13 +14,225 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
     const store = configureMockStore([thunk])({ ...t.mock.state });
     const loadOneOutcomeBidsOrAsks = proxyquire('../../../src/modules/bids-asks/actions/load-one-outcome-bids-or-asks', {
       '../../../services/augurjs': t.stub.augurjs,
-      './insert-order-book-chunk-to-order-book': t.stub.InsertOrderBookChunkToOrderBook
+      './insert-order-book-chunk-to-order-book': t.stub.insertOrderBookChunkToOrderBook
     }).default;
     store.dispatch(loadOneOutcomeBidsOrAsks(t.params.marketID, t.params.outcome, t.params.orderType, (err) => {
       t.assertions(err, store.getActions());
       store.clearActions();
       done();
     }));
+  });
+  test({
+    description: 'short-circuit if market ID not provided',
+    params: {
+      marketID: undefined,
+      outcome: 3,
+      orderType: 2
+    },
+    mock: {
+      state: { marketsData }
+    },
+    stub: {
+      augurjs: {
+        augur: {
+          api: {
+            Orders: {
+              getBestOrderId: () => assert.fail()
+            }
+          },
+          trading: {
+            orderBook: {
+              getOrderBookChunked: () => assert.fail()
+            }
+          }
+        }
+      },
+      insertOrderBookChunkToOrderBook: {
+        default: () => () => assert.fail()
+      }
+    },
+    assertions: (err, actions) => {
+      assert.strictEqual(err, 'must specify market ID, outcome, and order type: undefined 3 2');
+      assert.deepEqual(actions, []);
+    }
+  });
+  test({
+    description: 'short-circuit if outcome not provided',
+    params: {
+      marketID: 'MARKET_0',
+      outcome: undefined,
+      orderType: 2
+    },
+    mock: {
+      state: { marketsData }
+    },
+    stub: {
+      augurjs: {
+        augur: {
+          api: {
+            Orders: {
+              getBestOrderId: () => assert.fail()
+            }
+          },
+          trading: {
+            orderBook: {
+              getOrderBookChunked: () => assert.fail()
+            }
+          }
+        }
+      },
+      insertOrderBookChunkToOrderBook: {
+        default: () => () => assert.fail()
+      }
+    },
+    assertions: (err, actions) => {
+      assert.strictEqual(err, 'must specify market ID, outcome, and order type: MARKET_0 undefined 2');
+      assert.deepEqual(actions, []);
+    }
+  });
+  test({
+    description: 'short-circuit if orderType not provided',
+    params: {
+      marketID: 'MARKET_0',
+      outcome: 3,
+      orderType: undefined
+    },
+    mock: {
+      state: { marketsData }
+    },
+    stub: {
+      augurjs: {
+        augur: {
+          api: {
+            Orders: {
+              getBestOrderId: () => assert.fail()
+            }
+          },
+          trading: {
+            orderBook: {
+              getOrderBookChunked: () => assert.fail()
+            }
+          }
+        }
+      },
+      insertOrderBookChunkToOrderBook: {
+        default: () => () => assert.fail()
+      }
+    },
+    assertions: (err, actions) => {
+      assert.strictEqual(err, 'must specify market ID, outcome, and order type: MARKET_0 3 undefined');
+      assert.deepEqual(actions, []);
+    }
+  });
+  test({
+    description: 'short-circuit if market data not found',
+    params: {
+      marketID: 'MARKET_0',
+      outcome: 3,
+      orderType: 2
+    },
+    mock: {
+      state: { marketsData: {} }
+    },
+    stub: {
+      augurjs: {
+        augur: {
+          api: {
+            Orders: {
+              getBestOrderId: () => assert.fail()
+            }
+          },
+          trading: {
+            orderBook: {
+              getOrderBookChunked: () => assert.fail()
+            }
+          }
+        }
+      },
+      insertOrderBookChunkToOrderBook: {
+        default: () => () => assert.fail()
+      }
+    },
+    assertions: (err, actions) => {
+      assert.strictEqual(err, 'market MARKET_0 data not found');
+      assert.deepEqual(actions, []);
+    }
+  });
+  test({
+    description: 'short-circuit if market minPrice not found',
+    params: {
+      marketID: 'MARKET_0',
+      outcome: 3,
+      orderType: 2
+    },
+    mock: {
+      state: {
+        marketsData: {
+          MARKET_0: { minPrice: undefined, maxPrice: '1' }
+        }
+      }
+    },
+    stub: {
+      augurjs: {
+        augur: {
+          api: {
+            Orders: {
+              getBestOrderId: () => assert.fail()
+            }
+          },
+          trading: {
+            orderBook: {
+              getOrderBookChunked: () => assert.fail()
+            }
+          }
+        }
+      },
+      insertOrderBookChunkToOrderBook: {
+        default: () => () => assert.fail()
+      }
+    },
+    assertions: (err, actions) => {
+      assert.strictEqual(err, 'minPrice and maxPrice not found for market MARKET_0: undefined 1');
+      assert.deepEqual(actions, []);
+    }
+  });
+  test({
+    description: 'short-circuit if market maxPrice not found',
+    params: {
+      marketID: 'MARKET_0',
+      outcome: 3,
+      orderType: 2
+    },
+    mock: {
+      state: {
+        marketsData: {
+          MARKET_0: { minPrice: '0', maxPrice: null }
+        }
+      }
+    },
+    stub: {
+      augurjs: {
+        augur: {
+          api: {
+            Orders: {
+              getBestOrderId: () => assert.fail()
+            }
+          },
+          trading: {
+            orderBook: {
+              getOrderBookChunked: () => assert.fail()
+            }
+          }
+        }
+      },
+      insertOrderBookChunkToOrderBook: {
+        default: () => () => assert.fail()
+      }
+    },
+    assertions: (err, actions) => {
+      assert.strictEqual(err, 'minPrice and maxPrice not found for market MARKET_0: 0 null');
+      assert.deepEqual(actions, []);
+    }
   });
   test({
     description: 'best order ID not found',
@@ -29,14 +242,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
       orderType: 2
     },
     mock: {
-      state: {
-        marketsData: {
-          MARKET_0: {
-            minPrice: '0',
-            maxPrice: '1'
-          }
-        }
-      }
+      state: { marketsData }
     },
     stub: {
       augurjs: {
@@ -60,7 +266,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
           }
         }
       },
-      InsertOrderBookChunkToOrderBook: {
+      insertOrderBookChunkToOrderBook: {
         default: (marketID, orderBookChunk) => dispatch => dispatch({
           type: 'INSERT_ORDER_BOOK_CHUNK_TO_ORDER_BOOK',
           marketID,
@@ -81,14 +287,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
       orderType: 2
     },
     mock: {
-      state: {
-        marketsData: {
-          MARKET_0: {
-            minPrice: '0',
-            maxPrice: '1'
-          }
-        }
-      }
+      state: { marketsData }
     },
     stub: {
       augurjs: {
@@ -107,7 +306,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
           },
           trading: {
             orderBook: {
-              getOrderBookChunked: (p, callback) => {
+              getOrderBookChunked: (p, onChunkReceived, onComplete) => {
                 assert.deepEqual(p, {
                   _type: 2,
                   _market: 'MARKET_0',
@@ -117,13 +316,14 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
                   minPrice: '0',
                   maxPrice: '1'
                 });
-                callback({});
+                onChunkReceived({});
+                onComplete({});
               }
             }
           }
         }
       },
-      InsertOrderBookChunkToOrderBook: {
+      insertOrderBookChunkToOrderBook: {
         default: (marketID, orderBookChunk) => dispatch => dispatch({
           type: 'INSERT_ORDER_BOOK_CHUNK_TO_ORDER_BOOK',
           marketID,
@@ -148,14 +348,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
       orderType: 2
     },
     mock: {
-      state: {
-        marketsData: {
-          MARKET_0: {
-            minPrice: '0',
-            maxPrice: '1'
-          }
-        }
-      }
+      state: { marketsData }
     },
     stub: {
       augurjs: {
@@ -174,7 +367,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
           },
           trading: {
             orderBook: {
-              getOrderBookChunked: (p, callback) => {
+              getOrderBookChunked: (p, onChunkReceived, onComplete) => {
                 assert.deepEqual(p, {
                   _type: 2,
                   _market: 'MARKET_0',
@@ -184,13 +377,14 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
                   minPrice: '0',
                   maxPrice: '1'
                 });
-                callback({ '0x1': ORDER_1, '0x2': ORDER_2 });
+                onChunkReceived({ '0x1': order1, '0x2': order2 });
+                onComplete({ '0x1': order1, '0x2': order2 });
               }
             }
           }
         }
       },
-      InsertOrderBookChunkToOrderBook: {
+      insertOrderBookChunkToOrderBook: {
         default: (marketID, orderBookChunk) => dispatch => dispatch({
           type: 'INSERT_ORDER_BOOK_CHUNK_TO_ORDER_BOOK',
           marketID,
@@ -203,7 +397,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
       assert.deepEqual(actions, [{
         type: 'INSERT_ORDER_BOOK_CHUNK_TO_ORDER_BOOK',
         marketID: 'MARKET_0',
-        orderBookChunk: { '0x1': ORDER_1, '0x2': ORDER_2 }
+        orderBookChunk: { '0x1': order1, '0x2': order2 }
       }]);
     }
   });

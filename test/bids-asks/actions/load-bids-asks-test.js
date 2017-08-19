@@ -8,11 +8,11 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
   proxyquire.noPreserveCache();
   const test = t => it(t.description, (done) => {
     const store = configureMockStore([thunk])({ ...t.mock.state });
-    const action = proxyquire('../../../src/modules/bids-asks/actions/load-bids-asks', {
+    const loadBidsAsks = proxyquire('../../../src/modules/bids-asks/actions/load-bids-asks', {
       '../../../services/augurjs': t.stub.augurjs,
       './update-market-order-book': t.stub.updateMarketOrderBook
-    });
-    store.dispatch(action.loadBidsAsks('MARKET_ID', (err) => {
+    }).default;
+    store.dispatch(loadBidsAsks('MARKET_ID', (err) => {
       t.assertions(err, store.getActions());
       store.clearActions();
       done();

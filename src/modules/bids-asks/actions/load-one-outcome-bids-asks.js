@@ -11,10 +11,7 @@ const loadOneOutcomeBidsAsks = (marketID, outcome, callback = logError) => (disp
   }
   async.eachSeries([BID, ASK], (orderType, nextOrderType) => {
     dispatch(loadOneOutcomeBidsOrAsks(marketID, outcome, orderType, nextOrderType));
-  }, (err) => {
-    console.log('bid and ask complete for this outcome', outcome, err);
-    callback(err);
-  });
+  }, callback);
 };
 
 export default loadOneOutcomeBidsAsks;

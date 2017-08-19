@@ -8,10 +8,10 @@ const loadOneOutcomeBidsOrAsks = (marketID, outcome, orderType, callback = logEr
   }
   const market = getState().marketsData[marketID];
   if (!market) {
-    return callback(`market ${marketID} data not available`);
+    return callback(`market ${marketID} data not found`);
   }
   if (market.minPrice == null || market.maxPrice == null) {
-    return callback(`minPrice and maxPrice not found for market ${marketID}`);
+    return callback(`minPrice and maxPrice not found for market ${marketID}: ${market.minPrice} ${market.maxPrice}`);
   }
   augur.api.Orders.getBestOrderId({
     _type: orderType,
@@ -30,7 +30,6 @@ const loadOneOutcomeBidsOrAsks = (marketID, outcome, orderType, callback = logEr
       minPrice: market.minPrice,
       maxPrice: market.maxPrice
     }, orderBookChunk => dispatch(insertOrderBookChunkToOrderBook(marketID, orderBookChunk)), (orderBook) => {
-      console.log('order book loaded for outcome', outcome, 'type', orderType);
       if (!orderBook || orderBook.error) {
         return callback(`outcome order book not loaded for market ${marketID}: ${JSON.stringify(orderBook)}`);
       }
