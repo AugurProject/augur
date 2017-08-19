@@ -83,4 +83,33 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-asks.js`, () => {
       }]);
     }
   });
+  test({
+    description: 'propagate loadOneOutcomeBidsOrAsks error',
+    params: {
+      marketID: 'MARKET_0',
+      outcome: 3
+    },
+    stub: {
+      loadOneOutcomeBidsOrAsks: {
+        default: (marketID, outcome, orderType, callback) => (dispatch) => {
+          dispatch({
+            type: 'LOAD_ONE_OUTCOME_BIDS_OR_ASKS',
+            marketID,
+            outcome,
+            orderType
+          });
+          callback('ERROR_MESSAGE');
+        }
+      }
+    },
+    assertions: (err, actions) => {
+      assert.strictEqual(err, 'ERROR_MESSAGE');
+      assert.deepEqual(actions, [{
+        type: 'LOAD_ONE_OUTCOME_BIDS_OR_ASKS',
+        marketID: 'MARKET_0',
+        outcome: 3,
+        orderType: 1
+      }]);
+    }
+  });
 });
