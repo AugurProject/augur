@@ -49,8 +49,6 @@ export default class MarketsView extends Component {
       shouldDisplayBranchInfo: !!(getValue(props, 'loginAccount.rep.value') && getValue(props, 'branch.id')),
       filteredMarkets: []
     };
-
-    this.checkFavoriteMarketsCount = this.checkFavoriteMarketsCount.bind(this);
   }
 
   componentWillMount() {

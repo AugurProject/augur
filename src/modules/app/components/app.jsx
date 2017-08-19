@@ -32,7 +32,6 @@ export const mobileMenuStates = {
 export default class AppView extends Component {
   static propTypes = {
     url: PropTypes.string,
-    keywords: PropTypes.array.isRequired,
     coreStats: PropTypes.array.isRequired,
     isMobile: PropTypes.bool.isRequired,
     updateIsMobile: PropTypes.func.isRequired,
@@ -71,25 +70,25 @@ export default class AppView extends Component {
     }
 
     // TODO: promise-ize instead of comparing states
-    if (this.props.keywords.length === 0 &&
-        newProps.keywords.length > 0) {
-      if (this.state.keywordState.openOnLoad) {
-        if (this.props.isMobile) {
-          this.setState({ mobileMenuState: mobileMenuStates.KEYWORDS_OPEN });
-        } else {
-          this.toggleMenuTween('subMenu', true);
-        }
-      }
-      this.setState({ keywordState: { loaded: true, openOnLoad: false } });
-    }
+    // if (this.props.keywords.length === 0 &&
+    //     newProps.keywords.length > 0) {
+    //   if (this.state.keywordState.openOnLoad) {
+    //     if (this.props.isMobile) {
+    //       this.setState({ mobileMenuState: mobileMenuStates.KEYWORDS_OPEN });
+    //     } else {
+    //       this.toggleMenuTween('subMenu', true);
+    //     }
+    //   }
+    //   this.setState({ keywordState: { loaded: true, openOnLoad: false } });
+    // }
 
-    if (this.props.keywords.length > 0 &&
-        newProps.keywords.length === 0) {
-      if (!this.props.isMobile) {
-        this.toggleMenuTween('subMenu', false);
-      }
-      this.setState({ keywordState: { loaded: false, openOnLoad: true } });
-    }
+    // if (this.props.keywords.length > 0 &&
+    //     newProps.keywords.length === 0) {
+    //   if (!this.props.isMobile) {
+    //     this.toggleMenuTween('subMenu', false);
+    //   }
+    //   this.setState({ keywordState: { loaded: false, openOnLoad: true } });
+    // }
 
   }
 
