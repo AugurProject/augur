@@ -20,9 +20,10 @@ import NavAccountIcon from 'modules/common/components/nav-account-icon';
 import NavCreateIcon from 'modules/common/components/nav-create-icon';
 import NavMarketsIcon from 'modules/common/components/nav-markets-icon';
 import NavPortfolioIcon from 'modules/common/components/nav-portfolio-icon';
-import NavReportingIcon from 'modules/common/components/nav-reporting-icon';
 
-export const mobileMenuStates = {
+import { MARKETS, ACCOUNT, MY_POSITIONS, CREATE_MARKET } from 'modules/app/constants/views';
+
+export const mobileMenuStates = { // TODO -- move to a constants file
   CLOSED: 0,
   SIDEBAR_OPEN: 1,
   CATEGORIES_OPEN: 2,
@@ -47,6 +48,34 @@ export default class AppView extends Component {
       keywordState: { loaded: false, openOnLoad: false },
       mobileMenuState: mobileMenuStates.CLOSED
     };
+
+    this.sideNavMenuData = [
+      {
+        title: 'Markets',
+        icon: NavMarketsIcon,
+        route: MARKETS
+      },
+      {
+        title: 'Account',
+        iconName: 'nav-account-icon',
+        icon: NavAccountIcon,
+        route: ACCOUNT
+      },
+      {
+        title: 'Create',
+        iconName: 'nav-create-icon',
+        icon: NavCreateIcon,
+        route: CREATE_MARKET,
+        requireLogin: true
+      },
+      {
+        title: 'Portfolio',
+        iconName: 'nav-portfolio-icon',
+        icon: NavPortfolioIcon,
+        route: MY_POSITIONS,
+        requireLogin: true
+      }
+    ];
 
     this.shouldComponentUpdate = shouldComponentUpdatePure;
 
@@ -212,51 +241,7 @@ export default class AppView extends Component {
             isLogged={p.isLogged}
             mobileShow={s.mobileMenuState === mobileMenuStates.SIDEBAR_OPEN}
             menuScalar={subMenu.scalar}
-            menuData={[
-              {
-                title: 'Markets',
-                icon: NavMarketsIcon,
-                onClick: () => {
-                  if (p.isMobile) {
-                    this.setState({ mobileMenuState: mobileMenuStates.CATEGORIES_OPEN });
-                  } else {
-                    this.toggleMainMenu();
-                  }
-                },
-                onBlur: () => this.toggleMainMenu()
-              },
-              {
-                title: 'Create',
-                iconName: 'nav-create-icon',
-                icon: NavCreateIcon,
-                onClick: () => {},
-                onBlur: () => {},
-                requireLogin: true
-              },
-              {
-                title: 'Portfolio',
-                iconName: 'nav-portfolio-icon',
-                icon: NavPortfolioIcon,
-                onClick: () => {},
-                onBlur: () => {},
-                requireLogin: true
-              },
-              {
-                title: 'Reporting',
-                iconName: 'nav-reporting-icon',
-                icon: NavReportingIcon,
-                onClick: () => {},
-                onBlur: () => {},
-                requireLogin: true
-              },
-              {
-                title: 'Account',
-                iconName: 'nav-account-icon',
-                icon: NavAccountIcon,
-                onClick: () => {},
-                onBlur: () => {}
-              },
-            ]}
+            menuData={this.sideNavMenuData}
           />
         </section>
         <section className="main-wrap">
