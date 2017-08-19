@@ -8,10 +8,10 @@ describe(`modules/bids-asks/actions/insert-order-book-chunk-to-order-book.js`, (
   proxyquire.noPreserveCache();
   const test = t => it(t.description, () => {
     const store = configureMockStore([thunk])({});
-    const action = proxyquire('../../../src/modules/bids-asks/actions/insert-order-book-chunk-to-order-book', {
+    const insertOrderBookChunkToOrderBook = proxyquire('../../../src/modules/bids-asks/actions/insert-order-book-chunk-to-order-book', {
       './clear-order-book-on-first-chunk': t.stub.ClearOrderBookOnFirstChunk
-    });
-    store.dispatch(action.insertOrderBookChunkToOrderBook(t.params.marketID, t.params.orderBookChunk));
+    }).default;
+    store.dispatch(insertOrderBookChunkToOrderBook(t.params.marketID, t.params.orderBookChunk));
     t.assertions(store.getActions());
     store.clearActions();
   });
@@ -20,12 +20,12 @@ describe(`modules/bids-asks/actions/insert-order-book-chunk-to-order-book.js`, (
     params: {
       marketID: 'MARKET_0',
       orderBookChunk: {
-        ORDER_0: { id: 'ORDER_0' }
+        '0x1': { amount: '1' }
       }
     },
     stub: {
       ClearOrderBookOnFirstChunk: {
-        clearOrderBookOnFirstChunk: marketID => dispatch => dispatch({
+        default: marketID => dispatch => dispatch({
           type: 'CLEAR_ORDER_BOOK_ON_FIRST_CHUNK',
           marketID
         })
@@ -39,7 +39,7 @@ describe(`modules/bids-asks/actions/insert-order-book-chunk-to-order-book.js`, (
         type: 'UPDATE_MARKET_ORDER_BOOK',
         marketID: 'MARKET_0',
         marketOrderBook: {
-          ORDER_0: { id: 'ORDER_0' }
+          '0x1': { amount: '1' }
         }
       }]);
     }

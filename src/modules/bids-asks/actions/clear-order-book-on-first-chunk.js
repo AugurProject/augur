@@ -1,6 +1,6 @@
 import { clearMarketOrderBook, updateIsFirstOrderBookChunkLoaded } from 'modules/bids-asks/actions/update-market-order-book';
 
-export const clearOrderBookOnFirstChunk = marketID => (dispatch, getState) => {
+const clearOrderBookOnFirstChunk = marketID => (dispatch, getState) => {
   const { isFirstOrderBookChunkLoaded } = getState();
   if (!isFirstOrderBookChunkLoaded[marketID]) {
     console.log('first chunk, clearing order book of', marketID);
@@ -8,3 +8,5 @@ export const clearOrderBookOnFirstChunk = marketID => (dispatch, getState) => {
     dispatch(clearMarketOrderBook(marketID));
   }
 };
+
+export default clearOrderBookOnFirstChunk;

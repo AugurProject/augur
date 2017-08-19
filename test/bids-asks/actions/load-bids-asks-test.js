@@ -15,6 +15,7 @@ describe(`modules/bids-asks/actions/load-bids-asks.js`, () => {
     store.dispatch(action.loadBidsAsks('MARKET_ID', (err) => {
       t.assertions(err, store.getActions());
       store.clearActions();
+      done();
     }));
   });
   test({

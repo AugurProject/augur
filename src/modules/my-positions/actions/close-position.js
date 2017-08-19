@@ -5,7 +5,7 @@ import { addClosePositionTradeGroup } from 'modules/my-positions/actions/add-clo
 import { clearClosePositionOutcome } from 'modules/my-positions/actions/clear-close-position-outcome';
 import selectAllMarkets from 'modules/markets/selectors/markets-all';
 
-import { loadBidsAsks } from 'modules/bids-asks/actions/load-bids-asks';
+import loadBidsAsks from 'modules/bids-asks/actions/load-bids-asks';
 
 import { BUY, SELL } from 'modules/trade/constants/types';
 import { CLOSE_DIALOG_FAILED, CLOSE_DIALOG_NO_ORDERS } from 'modules/market/constants/close-dialog-status';

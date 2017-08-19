@@ -1,5 +1,5 @@
 import { augur } from 'services/augurjs';
-import { loadBidsAsks } from 'modules/bids-asks/actions/load-bids-asks';
+import loadBidsAsks from 'modules/bids-asks/actions/load-bids-asks';
 import { loadAccountTrades } from 'modules/my-positions/actions/load-account-trades';
 import { updateSellCompleteSetsLock } from 'modules/my-positions/actions/update-account-trades-data';
 

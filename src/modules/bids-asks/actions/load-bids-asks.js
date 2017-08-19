@@ -1,9 +1,9 @@
 import async from 'async';
-import { loadOneOutcomeBidsAsks } from 'modules/bids-asks/actions/load-one-outcome-bids-asks';
 import { updateIsFirstOrderBookChunkLoaded } from 'modules/bids-asks/actions/update-market-order-book';
+import loadOneOutcomeBidsAsks from 'modules/bids-asks/actions/load-one-outcome-bids-asks';
 import logError from 'utils/log-error';
 
-export const loadBidsAsks = (marketID, callback = logError) => (dispatch, getState) => {
+const loadBidsAsks = (marketID, callback = logError) => (dispatch, getState) => {
   if (marketID == null) {
     return callback(`must specify market ID: ${marketID}`);
   }
@@ -17,3 +17,5 @@ export const loadBidsAsks = (marketID, callback = logError) => (dispatch, getSta
     callback(err);
   });
 };
+
+export default loadBidsAsks;

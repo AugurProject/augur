@@ -1,8 +1,8 @@
 import { augur } from 'services/augurjs';
-import { insertOrderBookChunkToOrderBook } from 'modules/bids-asks/actions/insert-order-book-chunk-to-order-book';
+import insertOrderBookChunkToOrderBook from 'modules/bids-asks/actions/insert-order-book-chunk-to-order-book';
 import logError from 'utils/log-error';
 
-export const loadOneOutcomeBidsOrAsks = (marketID, outcome, orderType, callback = logError) => (dispatch, getState) => {
+const loadOneOutcomeBidsOrAsks = (marketID, outcome, orderType, callback = logError) => (dispatch, getState) => {
   if (marketID == null || outcome == null || orderType == null) {
     return callback(`must specify market ID, outcome, and order type: ${marketID} ${outcome} ${orderType}`);
   }
@@ -18,8 +18,8 @@ export const loadOneOutcomeBidsOrAsks = (marketID, outcome, orderType, callback 
     _market: marketID,
     _outcome: outcome
   }, (bestOrderId) => {
-    if (!bestOrderId || bestOrderId.error) {
-      return callback(bestOrderId || `best order ID not found for market ${marketID}`);
+    if (!bestOrderId || !parseInt(bestOrderId, 16) || bestOrderId.error) {
+      return callback(`best order ID not found for market ${marketID}: ${JSON.stringify(bestOrderId)}`);
     }
     augur.trading.orderBook.getOrderBookChunked({
       _type: orderType,
@@ -32,9 +32,11 @@ export const loadOneOutcomeBidsOrAsks = (marketID, outcome, orderType, callback 
     }, orderBookChunk => dispatch(insertOrderBookChunkToOrderBook(marketID, orderBookChunk)), (orderBook) => {
       console.log('order book loaded for outcome', outcome, 'type', orderType);
       if (!orderBook || orderBook.error) {
-        return callback(orderBook || `outcome order book not loaded for market ${marketID}`);
+        return callback(`outcome order book not loaded for market ${marketID}: ${JSON.stringify(orderBook)}`);
       }
       callback(null);
     });
   });
 };
+
+export default loadOneOutcomeBidsOrAsks;
