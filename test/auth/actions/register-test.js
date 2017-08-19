@@ -25,8 +25,14 @@ describe(`modules/auth/actions/register.js`, () => {
   const loadAccountDataTestString = 'loadAccountData() called.';
   sinon.stub(loadAccountDataStub, 'loadAccountData', account => ({ type: loadAccountDataTestString }));
 
+  const updateIsLoggedStub = {
+    updateIsLogged: () => {}
+  };
+  sinon.stub(updateIsLoggedStub, 'updateIsLogged', () => ({ type: 'update-is-logged' }));
+
   const action = proxyquire('../../../src/modules/auth/actions/register', {
     '../../../services/augurjs': fakeAugurJS,
+    './update-is-logged': updateIsLoggedStub,
     './load-account-data': loadAccountDataStub
   });
 
@@ -40,6 +46,7 @@ describe(`modules/auth/actions/register.js`, () => {
 
   it(`should register a new account`, () => {
     const expectedOutput = [
+      { type: 'update-is-logged' },
       { type: loadAccountDataTestString }
     ];
     store.dispatch(action.register('password', fakeCallback));

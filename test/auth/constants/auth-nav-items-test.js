@@ -2,6 +2,7 @@ import { describe, it } from 'mocha';
 import { assert } from 'chai';
 
 import { AUTH_NAV_ITEMS } from 'modules/auth/constants/auth-nav-items';
+import { SIGNUP, LOGIN, IMPORT } from 'modules/app/constants/views';
 
 describe('modules/auth/constants/auth-nav-items.js', () => {
   const test = t => it(t.description, () => t.assertions());
@@ -10,13 +11,13 @@ describe('modules/auth/constants/auth-nav-items.js', () => {
     description: `should return the expected object`,
     assertions: () => {
       const expected = {
-        AUTH_SIGNUP: {
+        [SIGNUP]: {
           label: 'Sign Up'
         },
-        AUTH_LOGIN: {
+        [LOGIN]: {
           label: 'Login'
         },
-        AUTH_IMPORT: {
+        [IMPORT]: {
           label: 'Import'
         }
       };

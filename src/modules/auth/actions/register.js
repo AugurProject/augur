@@ -12,7 +12,6 @@ export const register = (password, callback = logError) => dispatch => (
       return callback({ code: account.error, message: account.message });
     }
     dispatch(updateIsLogged(true));
-    console.log('here');
     callback(null, base58Encode(account));
   })
 );
