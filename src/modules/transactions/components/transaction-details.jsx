@@ -126,12 +126,13 @@ const TransactionDetails = (p) => {
   return (
     <article className="transaction-details">
       {p.hash ?
-        <Link
+        <a
           to={`https://testnet.etherscan.io/tx/${p.hash}`}
           target="_blank"
+          rel="noopener noreferrer"
         >
           <TransactionDetails {...p} />
-        </Link> :
+        </a> :
         <TransactionDetails {...p} />
       }
     </article>
