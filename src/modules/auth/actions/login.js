@@ -1,7 +1,7 @@
 import { augur } from 'services/augurjs';
 import { base58Decode } from 'utils/base-58';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
-import { updateIsLogged } from 'modules/auth/actions/update-is-logged';
+import { updateIsLoggedIn } from 'modules/auth/actions/update-is-logged-in';
 import logError from 'utils/log-error';
 
 export const login = (loginID, password, callback = logError) => (dispatch, getState) => {
@@ -17,7 +17,7 @@ export const login = (loginID, password, callback = logError) => (dispatch, getS
     } else if (!account.address) {
       return callback(account);
     }
-    dispatch(updateIsLogged(true));
+    dispatch(updateIsLoggedIn(true));
     dispatch(loadAccountData({ ...account, loginID, name: accountObject.name }, true));
     callback(null);
   });
