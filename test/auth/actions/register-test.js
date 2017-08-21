@@ -26,13 +26,13 @@ describe(`modules/auth/actions/register.js`, () => {
   sinon.stub(loadAccountDataStub, 'loadAccountData', account => ({ type: loadAccountDataTestString }));
 
   const updateIsLoggedStub = {
-    updateIsLogged: () => {}
+    updateIsLoggedIn: () => {}
   };
-  sinon.stub(updateIsLoggedStub, 'updateIsLogged', () => ({ type: 'update-is-logged' }));
+  sinon.stub(updateIsLoggedStub, 'updateIsLoggedIn', () => ({ type: 'update-is-logged' }));
 
   const action = proxyquire('../../../src/modules/auth/actions/register', {
     '../../../services/augurjs': fakeAugurJS,
-    './update-is-logged': updateIsLoggedStub,
+    './update-is-logged-in': updateIsLoggedStub,
     './load-account-data': loadAccountDataStub
   });
 

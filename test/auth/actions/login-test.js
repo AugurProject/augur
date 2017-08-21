@@ -23,13 +23,13 @@ describe(`modules/auth/actions/login.js`, () => {
   LoadAccountData.loadAccountData = sinon.stub().returns({ type: 'LOAD_FULL_ACCOUNT_DATA' });
 
   const updateIsLoggedStub = {
-    updateIsLogged: () => {}
+    updateIsLoggedIn: () => {}
   };
-  sinon.stub(updateIsLoggedStub, 'updateIsLogged', () => ({ type: 'update-is-logged' }));
+  sinon.stub(updateIsLoggedStub, 'updateIsLoggedIn', () => ({ type: 'update-is-logged' }));
 
   const action = proxyquire('../../../src/modules/auth/actions/login', {
     '../../../services/augurjs': AugurJS,
-    './update-is-logged': updateIsLoggedStub,
+    './update-is-logged-in': updateIsLoggedStub,
     './load-account-data': LoadAccountData
   });
 
