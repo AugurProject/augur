@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import isEqual from 'lodash/isEqual';
+import orderBy from 'lodash/orderBy';
 
 import Checkbox from 'modules/common/components/checkbox';
 import NullStateMessage from 'modules/common/components/null-state-message';
@@ -8,8 +9,6 @@ import NullStateMessage from 'modules/common/components/null-state-message';
 import parseQuery from 'modules/app/helpers/parse-query';
 import parseStringToArray from 'modules/app/helpers/parse-string-to-array';
 import makeQuery from 'modules/app/helpers/make-query';
-
-import orderBy from 'lodash/orderBy';
 
 import { TAGS_PARAM_NAME } from 'modules/app/constants/param-names';
 
