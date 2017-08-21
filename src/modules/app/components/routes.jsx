@@ -3,48 +3,48 @@ import { Route, Switch, Redirect } from 'react-router-dom';
 
 import App from 'modules/app/container';
 
-import asyncComponent from 'modules/common/components/async-component';
+import loadAsyncComponent from 'modules/common/components/async-component';
 import AuthenticatedRoute from 'modules/auth/components/authenticated-route';
 import makePath from 'modules/app/helpers/make-path';
 
 import * as VIEWS from 'modules/app/constants/views';
 
-const Topics = asyncComponent({
+const Topics = loadAsyncComponent({
   moduleName: 'Topics',
   loader: () => import(/* webpackChunkName: 'topics' */ 'modules/topics/container')
     .then(module => module.default)
 });
-const Markets = asyncComponent({
+const Markets = loadAsyncComponent({
   moduleName: 'Markets',
   loader: () => import(/* webpackChunkName: 'markets' */ 'modules/markets/container')
     .then(module => module.default)
 });
-const Authentication = asyncComponent({
+const Authentication = loadAsyncComponent({
   moduleName: 'Authentication',
   loader: () => import(/* webpackChunkName: 'auth' */ 'modules/auth/container')
     .then(module => module.default)
 });
-const Account = asyncComponent({
+const Account = loadAsyncComponent({
   moduleName: 'Account',
   loader: () => import(/* webpackChunkName: 'account' */ 'modules/account/container')
     .then(module => module.default)
 });
-const Transactions = asyncComponent({
+const Transactions = loadAsyncComponent({
   moduleName: 'Transactions',
   loader: () => import(/* webpackChunkName: 'transactions' */ 'modules/transactions/container')
     .then(module => module.default)
 });
-const Market = asyncComponent({
+const Market = loadAsyncComponent({
   moduleName: 'Market',
   loader: () => import(/* webpackChunkName: 'market' */ 'modules/market/container')
     .then(module => module.default)
 });
-const Portfolio = asyncComponent({
+const Portfolio = loadAsyncComponent({
   moduleName: 'Portfolio',
   loader: () => import(/* webpackChunkName: 'portfolio' */ 'modules/portfolio/containers/portfolio')
     .then(module => module.default)
 });
-const CreateMarket = asyncComponent({
+const CreateMarket = loadAsyncComponent({
   moduleName: 'CreateMarket',
   loader: () => import(/* webpackChunkName: 'create-market' */ 'modules/create-market/container')
     .then(module => module.default)
