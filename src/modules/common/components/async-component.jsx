@@ -14,10 +14,10 @@ export default options => (
     }
 
     componentWillMount() {
-      this.loadAsyncComponent(options.loader, options.props);
+      this.loadAsyncComponent(options.loader);
     }
 
-    loadAsyncComponent(loader, props) {
+    loadAsyncComponent(loader) {
       loader()
         .then((Component) => {
           this.setState({ Component });
