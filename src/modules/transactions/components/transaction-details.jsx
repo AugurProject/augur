@@ -1,6 +1,5 @@
 import React from 'react';
 import ValueDenomination from 'modules/common/components/value-denomination';
-import { Link } from 'react-router-dom';
 
 import { SUCCESS } from 'modules/transactions/constants/statuses';
 
