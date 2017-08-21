@@ -36,7 +36,7 @@ if (process.env.NODE_ENV === 'development') {
 
 store.dispatch(initAugur());
 
-function render(App) {
+function render() {
   ReactDOM.render(
     <Provider store={store}>
       <AppContainer>
