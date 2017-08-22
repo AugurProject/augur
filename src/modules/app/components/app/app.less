@@ -1,3 +1,5 @@
+@import '../../less/global.less';
+
 body,
 html,
 * {
@@ -23,7 +25,7 @@ h6 {
   height: 100%;
 }
 
-.app-wrap {
+.App {
   display: grid;
 
   /* sidebar width */
@@ -31,13 +33,12 @@ h6 {
   height: 100%;
 
   @media @breakpoint-mobile {
-    /*
-    disable sidebar mobile grid width */
+    /* disable sidebar mobile grid width */
     grid-template-columns: 0 auto;
   }
 }
 
-.main-wrap {
+.Main {
   display: grid;
 
   /* topbar height */
@@ -51,7 +52,7 @@ h6 {
   }
 }
 
-.maincontent-row {
+.Main__wrap {
   display: grid;
 
   /* inner menubar width */
@@ -67,10 +68,40 @@ h6 {
   }
 }
 
-.maincontent {
+.Main__content {
   background: @color-almostblack;
   height: 100vh;
   overflow-x: hidden;
   overflow-y: auto;
   transform: translateZ(0); /* use gpu */
+}
+
+.SideBar {
+  position: relative;
+  height: 100vh;
+  background: @color-purple;
+  z-index: @mask-above;
+}
+
+.SideBar__mobile-bars {
+  background: none;
+  border: none;
+  display: none;
+  height: 16px;
+  left: 16px;
+  outline: none;
+  padding: 0;
+  position: absolute;
+  top: 16px;
+  width: 16px;
+  z-index: @mask-above;
+
+  svg {
+    height: 100%;
+    width: 100%;
+  }
+
+  @media @breakpoint-mobile {
+    display: block;
+  }
 }

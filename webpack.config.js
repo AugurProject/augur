@@ -168,7 +168,8 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
             {
               loader: 'css-loader',
               options: {
-                modules: true
+                modules: true,
+                localIdentName: '[name]_[local]_[hash:base64:3]',
               }
             },
             'postcss-loader',
@@ -198,7 +199,8 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
             {
               loader: 'css-loader',
               options: {
-                modules: true
+                modules: true,
+                localIdentName: '[name]_[local]_[hash:base64:3]',
               }
             },
             'postcss-loader',
