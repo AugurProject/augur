@@ -1,3 +1,30 @@
+.MarketBasics__header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.MarketBasics__tags {
+
+  > li {
+    display: inline-block;
+    text-transform: uppercase;
+
+    &:before {
+      content: "/";
+      margin: 0 5px;
+    }
+
+    &:first-child {
+
+      &:before {
+        display: none;
+      }
+    }
+  }
+}
+
+/*
+
 .market-basics {
   display: flex;
   flex-direction: column;
@@ -50,3 +77,5 @@
     margin: 1em 0 2em 1em;
   }
 }
+
+*/

@@ -14,26 +14,37 @@ import { MARKET } from 'modules/app/constants/views';
 import { MARKET_ID_PARAM_NAME, MARKET_DESCRIPTION_PARAM_NAME } from 'modules/app/constants/param-names';
 
 const MarketBasics = p => (
-  <article className="market-basics">
-    <div className="market-basics-header">
-      <div className="market-basics-header-tags">
-        <ul className="tags">
-          {(p.tags || []).map((tag, i) => (
-            <li
-              key={i}
-              className={classNames('tag pointer', { link: !!tag.name })}
-            >
-              <button
-                className="unstyled"
-                onClick={tag.onClick && tag.onClick}
-              >
-                {tag.name ? tag.name : tag}
-              </button>
-            </li>
-          ))}
-        </ul>
+  <article className="MarketBasics">
+    <div className="MarketBasics__header">
+      <ul className="MarketBasics__tags">
+        <li>Tags</li>
+        {(p.tags || []).map((tag, i) => (
+          <li key={i}>
+            {tag.name ? tag.name : tag}
+          </li>
+        ))}
+      </ul>
+
+      <span>{ p.isOpen ? (p.isResported ? 'reported' : 'open') : 'closed' }</span>
+    </div>
+
+    <h1>{ p.description }</h1>
+
+    <div class="MarketBasics__meta">
+      <dl>
+        <dt>Volume</dt>
+        <dd>84K Shares</dd>
+        <dt>Fee</dt>
+        <dd>2.8%</dd>
+        <dt>Expires</dt>
+        <dd>June 9, 2017, 7:00 AM</dd>
+      </dl>
+      <div>
+
       </div>
-      <div className="market-basics-header-actions">
+    </div>
+
+      {/* <div className="market-basics-header-actions">
         {p.isLogged && p.toggleFavorite &&
           <button
             className={classNames('button unstyled favorite-button', { on: p.isFavorite })}
@@ -47,9 +58,9 @@ const MarketBasics = p => (
             />
           </button>
         }
-      </div>
-    </div>
-
+      </div> */}
+    
+{/*}
     {p.id && p.formattedDescription ?
       <Link
         to={{
@@ -66,7 +77,7 @@ const MarketBasics = p => (
       <span className="market-description">{p.description}</span>
     }
 
-    <MarketProperties {...p} />
+    <MarketProperties {...p} /> */}
   </article>
 );
 
