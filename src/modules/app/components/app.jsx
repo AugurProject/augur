@@ -174,15 +174,6 @@ export default class AppView extends Component {
       portfolioTotals: getValue(p, 'portfolio.totals'),
       numFavorites: getValue(p, 'marketsHeader.numFavorites'),
       numPendingReports: getValue(p, 'marketsHeader.numPendingReports'),
-      marketsLink: getValue(p, 'links.marketsLink'),
-      allMarketsLink: getValue(p, 'links.allMarketsLink'),
-      favoritesLink: getValue(p, 'links.favoritesLink'),
-      pendingReportsLink: getValue(p, 'links.pendingReportsLink'),
-      transactionsLink: getValue(p, 'links.transactionsLink'),
-      authLink: getValue(p, 'links.authLink'),
-      accountLink: getValue(p, 'links.accountLink'),
-      myPositionsLink: getValue(p, 'links.myPositionsLink'),
-      topicsLink: getValue(p, 'links.topicsLink'),
       notifications: p.notifications
     };
 
