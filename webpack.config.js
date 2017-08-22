@@ -165,7 +165,12 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
           test: /\.less/,
           use: [
             'style-loader',
-            'css-loader',
+            {
+              loader: 'css-loader',
+              options: {
+                modules: true
+              }
+            },
             'postcss-loader',
             'less-loader'
           ]
