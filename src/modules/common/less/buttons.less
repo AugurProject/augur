@@ -9,30 +9,12 @@
   cursor: default;
   padding: 1em 1.5em;
 
-  // Types
-  &.unstyled {
-
-    .font-defaults();
-
-    background-color: transparent;
-    color: inherit;
-    cursor: default;
-    padding: 0;
-  }
-
-  &.button-text-only {
-    background-color: transparent;
-    color: inherit;
-    cursor: default;
-  }
-
   &.disabled {
     background-color: @color-gray;
   }
 
   &.imperative {
     background-color: @color-red;
-    color: @color-text-light; // shouldn't need this, should inherit from .button -- TODO: resolve styles further up
   }
 
   &.navigational {
@@ -42,6 +24,20 @@
   &:visited {
     color: @color-text-light;
   }
+}
+
+.button--text-only {
+  &:extend(.button);
+
+  background-color: transparent;
+  color: inherit;
+  cursor: default;
+}
+
+.button--purple {
+  &:extend(.button);
+  background-color: @color-purple-dark;
+  color: @color-white;
 }
 
 // OLD -- ref only, to be removed
