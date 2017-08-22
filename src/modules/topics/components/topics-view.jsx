@@ -18,6 +18,8 @@ import { CREATE_MARKET } from 'modules/app/constants/views';
 
 import GraphBG from 'modules/common/components/graph-background';
 
+import Topic from 'modules/topics/components/topic';
+
 export default class TopicsView extends Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
@@ -157,54 +159,59 @@ export default class TopicsView extends Component {
     });
   }
 
+  renderTopics() {
+    const p = this.props;
+    const s = this.state;
+    const topics = [];
+
+    for (let i = (s.lowerBound - 1); i < s.boundedLength; i++) {
+      const topicIndex = i;
+      const topic = p.topics ? p.topics[i] : null;
+      topics.push(
+        <div className="topic-wrap">
+          <Topic
+            key={topic !== null ? JSON.stringify(topic) : `${JSON.stringify(topic)}${topicIndex}`}
+            topic={topic !== null ? topic.topic : ''}
+            popularity={topic !== null ? topic.popularity : 0}
+            hasKeywords={p.hasKeywords}
+          />
+        </div>
+      );
+    }
+    return topics;
+  }
+
   render() {
     const p = this.props;
     const s = this.state;
 
     return (
       <section id="topics_view">
+        <div style={{ display: 'none' }}>
+          {/* TODO: figure out why this component is necessary for
+              pagination state and remove that depdendency */}
+          <FilterSort
+            items={p.topics}
+            updateFilteredItems={this.updateFilteredItems}
+            searchPlaceholder="Search Topics"
+            searchKeys={this.searchKeys}
+            filterBySearch
+          />
+        </div>
         <GraphBG />
         <div id="topics_container">
-          {!!p.loginAccount && !!p.loginAccount.rep && !!p.loginAccount.rep.value && !!p.branch.id &&
+          {/*!!p.loginAccount && !!p.loginAccount.rep && !!p.loginAccount.rep.value && !!p.branch.id &&
             <Branch {...p.branch} />
-          }
-          <div className="topics-header">
-            <div className={classNames('topics-search', { 'only-search': !p.isLogged })}>
-              <FilterSort
-                items={p.topics}
-                updateFilteredItems={this.updateFilteredItems}
-                searchPlaceholder="Search Topics"
-                searchKeys={this.searchKeys}
-                filterBySearch
-              />
-            </div>
-            {p.loginAccount && p.loginAccount.address &&
-              <Link
-                to={makePath(CREATE_MARKET)}
-                className="link button imperative navigational"
-                disabled={!p.loginAccount.address}
-              >
-                + Create New Market
-              </Link>
-            }
+          */}
+          <div id="topics_heading">
+            <h3>Bet on...</h3>
+            <h2>Stocks</h2>
+            <div className="separator-bar" />
           </div>
-          {s.filteredTopicsLength && s.boundedLength ?
+          {(p.topics.length && s.boundedLength) &&
             <div className="topics">
-              <TopicRows
-                topics={p.topics}
-                filteredTopics={s.filteredTopics}
-                numberOfRows={this.topicsConfig.numberOfRows}
-                topicsPerRow={this.topicsConfig.topicsPerRow}
-                topicsPerHeroRow={this.topicsConfig.topicsPerHeroRow}
-                hasHeroRow={s.currentPage === 1}
-                lowerBound={s.lowerBound}
-                boundedLength={s.boundedLength}
-                hasKeywords={s.hasKeywords}
-                fontAwesomeClasses={s.fontAwesomeClasses}
-                icoFontClasses={s.icoFontClasses}
-              />
-            </div> :
-            <NullStateMessage message={'No Topics Available'} />
+              {this.renderTopics()}
+            </div>
           }
           {!!s.filteredTopicsLength &&
             <Paginator

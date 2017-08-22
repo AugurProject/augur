@@ -11,12 +11,16 @@
 @font-weight-semibold: 500;
 @font-weight-bold: 600;
 // 		Employed Sizes
-@font-size-small: 0.56rem;
-@font-size-normal: 0.75rem;
-@font-size-medium: 0.81rem;
-@font-size-large: 0.87rem;
-@font-size-extra-large: 1.8rem;
-@font-size-massive: 2.2rem;
+// 		Base is 16px
+@font-size-small: 0.56rem; // 8.96px
+@font-size-normal: 0.75rem; // 12px
+@font-size-medium: 0.81rem; // 12.96px
+@font-size-large: 0.87rem; // 13.92px
+@font-size-extra-large: 1.125rem; // 18px
+@font-size-xx-large: 1.8rem; // 28.8px
+@font-size-massive: 1.875rem; // 30px
+@font-size-more-massive: 2.2rem; // 35.2px
+@font-size-most-massive: 2.43rem; // 39px
 
 //  MIXINS
 .font-defaults {
@@ -74,8 +78,20 @@
   font-size: @font-size-extra-large;
 }
 
+.font-size-xx-large {
+  font-size: @font-size-xx-large;
+}
+
 .font-size-massive {
   font-size: @font-size-massive;
+}
+
+.font-size-more-massive {
+  font-size: @font-size-more-massive;
+}
+
+.font-size-most-massive {
+  font-size: @font-size-most-massive;
 }
 
 //    Colors
