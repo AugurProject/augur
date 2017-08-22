@@ -40,7 +40,7 @@ const MarketPreview = (p) => {
           {...p}
           toggleFavorite={p.toggleFavorite}
         />
-
+{/*}
         {!!p.id && p.formattedDescription &&
           <div className="market-link">
             <Link
@@ -57,8 +57,9 @@ const MarketPreview = (p) => {
             </Link>
           </div>
         }
+      */}
       </div>
-      <MarketPreviewOutcomes outcomes={p.outcomes} />
+      {/* <MarketPreviewOutcomes outcomes={p.outcomes} /> */}
     </article>
   );
 };
