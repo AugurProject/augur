@@ -21,7 +21,6 @@ function bindContractFunction(functionAbi) {
         if (isObject(params[0].tx)) assign(payload, params[0].tx);
       }
       if (isFunction(params[params.length - 1])) callback = params.pop();
-      console.log("eth_call:", payload);
       if (!isFunction(callback)) return rpcInterface.callContractFunction(payload);
       return rpcInterface.callContractFunction(payload, callback);
     }
@@ -34,7 +33,6 @@ function bindContractFunction(functionAbi) {
       if (isObject(params[0].tx)) assign(payload, params[0].tx);
       signer = params[0]._signer;
     }
-    console.log("eth_sendTransaction:", payload);
     rpcInterface.transact(payload, signer, onSent, onSuccess, onFailed);
   };
 }

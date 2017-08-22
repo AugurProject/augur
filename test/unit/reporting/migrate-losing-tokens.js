@@ -7,53 +7,82 @@ var noop = require("../../../src/utils/noop");
 
 describe("reporting/migrate-losing-tokens", function () {
   var test = function (t) {
-    it(t.description, function () {
+    it(t.description, function (done) {
       var migrateLosingTokens = proxyquire("../../../src/reporting/migrate-losing-tokens", {
-        "../api": t.mock.api
+        "../api": t.mock.api,
+        "../logs/get-logs": t.mock.getLogs
       });
       migrateLosingTokens(assign(t.params, {
         onSent: noop,
-        onSuccess: t.assertions,
-        onFailed: t.assertions
+        onSuccess: function (output) {
+          t.assertions(output);
+          done();
+        },
+        onFailed: function (err) {
+          t.assertions(err);
+          done();
+        }
       }));
     });
   };
   test({
-    description: "submit report [0, 1]",
+    description: "migrate losing tokens",
     params: {
       _signer: Buffer.from("PRIVATE_KEY", "utf8"),
-      marketID: "MARKET_CONTRACT_ADDRESS",
-      payoutNumerators: [0, 1],
-      amountToStake: 100
+      branchID: "BRANCH_CONTRACT_ADDRESS",
+      marketID: "MARKET_CONTRACT_ADDRESS"
     },
     mock: {
       api: function () {
         return {
-          Market: {
-            getReportingToken: function (payload, callback) {
-              assert.deepEqual(payload, {
-                tx: { to: "MARKET_CONTRACT_ADDRESS" },
-                payoutNumerators: [0, 1]
-              });
-              callback("REPORTING_TOKEN_CONTRACT_ADDRESS");
+          Branch: {
+            getPreviousReportingWindow: function (payload, callback) {
+              assert.deepEqual(payload, { tx: { to: "BRANCH_CONTRACT_ADDRESS" } });
+              callback("PREVIOUS_REPORTING_WINDOW_CONTRACT_ADDRESS");
+            },
+            getReputationToken: function (payload, callback) {
+              assert.deepEqual(payload, { tx: { to: "BRANCH_CONTRACT_ADDRESS" } });
+              callback("REPUTATION_TOKEN_CONTRACT_ADDRESS")
             }
           },
           ReportingToken: {
-            buy: function (payload) {
+            migrateLosingTokens: function (payload) {
+              assert.strictEqual(payload.tx.to, "REPORTING_TOKEN_CONTRACT_ADDRESS");
+              if (!payload.tx.send) return callback("0x1");
               assert.strictEqual(payload._signer.toString("utf8"), "PRIVATE_KEY");
-              assert.deepEqual(payload.tx, { to: "REPORTING_TOKEN_CONTRACT_ADDRESS", send: true });
-              assert.strictEqual(payload.amountToStake, 100);
               assert.isFunction(payload.onSent);
               assert.isFunction(payload.onSuccess);
               assert.isFunction(payload.onFailed);
-              payload.onSuccess({ callReturn: "REPORTING_TOKEN_BUY_CALLRETURN" });
+              payload.onSuccess({ callReturn: "MIGRATE_LOSING_TOKENS_CALLRETURN" });
+            }
+          },
+          ReportingWindow: {
+            getStartBlock: function (payload, callback) {
+              assert.deepEqual(payload, { tx: { to: "PREVIOUS_REPORTING_WINDOW_CONTRACT_ADDRESS" } });
+              callback("PREVIOUS_REPORTING_WINDOW_START_BLOCK");
+            },
+            getEndBlock: function (payload, callback) {
+              assert.deepEqual(payload, { tx: { to: "PREVIOUS_REPORTING_WINDOW_CONTRACT_ADDRESS" } });
+              callback("PREVIOUS_REPORTING_WINDOW_END_BLOCK");
             }
           }
         }
+      },
+      getLogs: function (p, callback) {
+        assert.deepEqual(p, {
+          label: "Transfer",
+          filter: {
+            fromBlock: "PREVIOUS_REPORTING_WINDOW_START_BLOCK",
+            toBlock: "PREVIOUS_REPORTING_WINDOW_END_BLOCK",
+            market: "MARKET_CONTRACT_ADDRESS",
+            address: "REPUTATION_TOKEN_CONTRACT_ADDRESS"
+          }
+        });
+        callback(null, [{ to: "REPORTING_TOKEN_CONTRACT_ADDRESS" }])
       }
     },
     assertions: function (output) {
-      assert.deepEqual(output, { callReturn: "REPORTING_TOKEN_BUY_CALLRETURN" });
+      assert.deepEqual(output, { callReturn: "MIGRATE_LOSING_TOKENS_CALLRETURN" });
     }
   });
 });

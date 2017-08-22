@@ -1,14 +1,20 @@
 "use strict";
 
+var assign = require("lodash.assign");
 var api = require("../api");
+var getLoggedMarketInfo = require("./get-logged-market-info");
+var parseMarketInfo = require("../parsers/market-info");
 
-// account is optional, if provided will return sharesPurchased
-// { marketID, account }
+// { marketID }
 function getMarketInfo(p, callback) {
-  return api().MarketInfo.getMarketInfo({
-    marketID: p.marketID,
-    account: p.account || 0
-  }, callback);
+  api().MarketFetcher.getMarketInfo(p, function (marketInfoArray) {
+    if (!marketInfoArray) return callback("market info not found");
+    if (marketInfoArray.error) return callback(marketInfoArray);
+    var marketInfo = parseMarketInfo(marketInfoArray);
+    getLoggedMarketInfo(assign({}, p, { creationBlock: marketInfo.creationBlock }), function (loggedMarketInfo) {
+      callback(assign(marketInfo, loggedMarketInfo));
+    });
+  });
 }
 
 module.exports = getMarketInfo;

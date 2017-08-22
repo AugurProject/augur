@@ -2,6 +2,5 @@
 
 module.exports = {
   filterByPriceAndOutcomeAndUserSortByPrice: require("./filter-by-price-and-outcome-and-user-sort-by-price"),
-  simulateTrade: require("./simulate-trade"),
-  getTxGasEth: require("./get-tx-gas-eth")
+  simulateTrade: require("./simulate-trade")
 };

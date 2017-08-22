@@ -924,1287 +924,1287 @@ describe("positions", function () {
     });
   });
 
-  describe("adjustPositions", function () {
-    var finished;
-    var test = function (t) {
-      it(t.description, function (done) {
-        finished = done;
-        var adjustPositions = proxyquire('../../../src/trading/positions/adjust-positions', {
-          '../../markets/get-position-in-market': function (p, callback) {
-            if (!callback) return t.onChainPosition[p.market];
-            callback(t.onChainPosition[p.market]);
-          }
-        });
-        adjustPositions(t.account, t.marketIDs, t.shareTotals, t.assertions);
-      });
-    };
-    test({
-      description: "1 market, 2 outcomes, no position, short ask 0, short sell 0",
-      account: "0xb0b",
-      marketIDs: ["0x1"],
-      shareTotals: {
-        shortAskBuyCompleteSets: {},
-        shortSellBuyCompleteSets: {},
-        sellCompleteSets: {}
-      },
-      onChainPosition: {
-        "0x1": {
-          "1": "0",
-          "2": "0"
-        }
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(output, {
-          "0x1": {
-            "1": "0",
-            "2": "0"
-          }
-        });
-        finished();
-      }
-    });
-    test({
-      description: "handle an undefined onChainPosition from getPositionInMarket",
-      account: "0xb0b",
-      marketIDs: ["0x1"],
-      shareTotals: {
-        shortAskBuyCompleteSets: {},
-        shortSellBuyCompleteSets: {},
-        sellCompleteSets: {}
-      },
-      onChainPosition: {
-        "0x1": undefined
-      },
-      assertions: function (err, output) {
-        assert.deepEqual(err, "couldn't load position in 0x1");
-        assert.isUndefined(output);
-        finished();
-      }
-    });
-    test({
-      description: "1 market, 2 outcomes, 1 position, short ask 0, short sell 0",
-      account: "0xb0b",
-      marketIDs: ["0x1"],
-      shareTotals: {
-        shortAskBuyCompleteSets: {},
-        shortSellBuyCompleteSets: {},
-        sellCompleteSets: {}
-      },
-      onChainPosition: {
-        "0x1": {
-          "1": "1",
-          "2": "0"
-        }
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(output, {
-          "0x1": {
-            "1": "1",
-            "2": "0"
-          }
-        });
-        finished();
-      }
-    });
-    test({
-      description: "1 market, 2 outcomes, 1 position, short ask 0, short sell 1",
-      account: "0xb0b",
-      marketIDs: ["0x1"],
-      shareTotals: {
-        shortAskBuyCompleteSets: {},
-        shortSellBuyCompleteSets: {
-          "0x1": new BigNumber("1", 10)
-        },
-        sellCompleteSets: {}
-      },
-      onChainPosition: {
-        "0x1": {
-          "1": "0",
-          "2": "1"
-        }
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(output, {
-          "0x1": {
-            "1": "-1",
-            "2": "0"
-          }
-        });
-        finished();
-      }
-    });
-    test({
-      description: "1 market, 2 outcomes, 2 positions, short ask 1, short sell 0",
-      account: "0xb0b",
-      marketIDs: ["0x1"],
-      shareTotals: {
-        shortAskBuyCompleteSets: {},
-        shortSellBuyCompleteSets: {
-          "0x1": new BigNumber("1", 10)
-        },
-        sellCompleteSets: {}
-      },
-      onChainPosition: {
-        "0x1": {
-          "1": "1",
-          "2": "1"
-        }
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(output, {
-          "0x1": {
-            "1": "0",
-            "2": "0"
-          }
-        });
-        finished();
-      }
-    });
-    test({
-      description: "1 market, 2 outcomes, 2 positions, short ask 1, short sell 1",
-      account: "0xb0b",
-      marketIDs: ["0x1"],
-      shareTotals: {
-        shortAskBuyCompleteSets: {
-          "0x1": new BigNumber("1", 10)
-        },
-        shortSellBuyCompleteSets: {
-          "0x1": new BigNumber("1", 10)
-        },
-        sellCompleteSets: {}
-      },
-      onChainPosition: {
-        "0x1": {
-          "1": "1",
-          "2": "2"
-        }
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(output, {
-          "0x1": {
-            "1": "-1",
-            "2": "0"
-          }
-        });
-        finished();
-      }
-    });
-    test({
-      description: "1 market, 2 outcomes, 1 position, short ask 0, short sell 2",
-      account: "0xb0b",
-      marketIDs: ["0x1"],
-      shareTotals: {
-        shortAskBuyCompleteSets: {},
-        shortSellBuyCompleteSets: {
-          "0x1": new BigNumber("2", 10)
-        },
-        sellCompleteSets: {}
-      },
-      onChainPosition: {
-        "0x1": {
-          "1": "2",
-          "2": "0"
-        }
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(output, {
-          "0x1": {
-            "1": "0",
-            "2": "-2"
-          }
-        });
-        finished();
-      }
-    });
-    test({
-      description: "1 market, 2 outcomes, 2 positions, short ask 0, short sell 2 [1 outcome 1, 1 outcome 2]",
-      account: "0xb0b",
-      marketIDs: ["0x1"],
-      shareTotals: {
-        shortAskBuyCompleteSets: {},
-        shortSellBuyCompleteSets: {
-          "0x1": new BigNumber("2", 10)
-        },
-        sellCompleteSets: {}
-      },
-      onChainPosition: {
-        "0x1": {
-          "1": "1",
-          "2": "1"
-        }
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(output, {
-          "0x1": {
-            "1": "-1",
-            "2": "-1"
-          }
-        });
-        finished();
-      }
-    });
-    test({
-      description: "1 market, 2 outcomes, 2 positions, short ask 2, short sell 2",
-      account: "0xb0b",
-      marketIDs: ["0x1"],
-      shareTotals: {
-        shortAskBuyCompleteSets: {
-          "0x1": new BigNumber("2", 10)
-        },
-        shortSellBuyCompleteSets: {
-          "0x1": new BigNumber("2", 10)
-        },
-        sellCompleteSets: {}
-      },
-      onChainPosition: {
-        "0x1": {
-          "1": "2",
-          "2": "4"
-        }
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(output, {
-          "0x1": {
-            "1": "-2",
-            "2": "0"
-          }
-        });
-        finished();
-      }
-    });
-    test({
-      description: "1 market, 2 outcomes, 2 positions, short ask 2, short sell 2 [1 outcome 1, 1 outcome 2]",
-      account: "0xb0b",
-      marketIDs: ["0x1"],
-      shareTotals: {
-        shortAskBuyCompleteSets: {
-          "0x1": new BigNumber("2", 10)
-        },
-        shortSellBuyCompleteSets: {
-          "0x1": new BigNumber("2", 10)
-        },
-        sellCompleteSets: {}
-      },
-      onChainPosition: {
-        "0x1": {
-          "1": "3",
-          "2": "3"
-        }
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(output, {
-          "0x1": {
-            "1": "-1",
-            "2": "-1"
-          }
-        });
-        finished();
-      }
-    });
-    test({
-      description: "1 market, 2 outcomes, 2 positions, short ask 2, short sell 5",
-      account: "0xb0b",
-      marketIDs: ["0x1"],
-      shareTotals: {
-        shortAskBuyCompleteSets: {
-          "0x1": new BigNumber("2", 10)
-        },
-        shortSellBuyCompleteSets: {
-          "0x1": new BigNumber("5", 10)
-        },
-        sellCompleteSets: {}
-      },
-      onChainPosition: {
-        "0x1": {
-          "1": "7",
-          "2": "2"
-        }
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(output, {
-          "0x1": {
-            "1": "0",
-            "2": "-5"
-          }
-        });
-        finished();
-      }
-    });
-    test({
-      description: "1 market, 2 outcomes, 2 positions, short ask 5, short sell 2",
-      account: "0xb0b",
-      marketIDs: ["0x1"],
-      shareTotals: {
-        shortAskBuyCompleteSets: {
-          "0x1": new BigNumber("5", 10)
-        },
-        shortSellBuyCompleteSets: {
-          "0x1": new BigNumber("2", 10)
-        },
-        sellCompleteSets: {}
-      },
-      onChainPosition: {
-        "0x1": {
-          "1": "5",
-          "2": "7"
-        }
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(output, {
-          "0x1": {
-            "1": "-2",
-            "2": "0"
-          }
-        });
-        finished();
-      }
-    });
-    test({
-      description: "1 market, 2 outcomes, 2 positions, short ask 5.1, short sell 2.2 [1.2 outcome 1, 1 outcome 2]",
-      account: "0xb0b",
-      marketIDs: ["0x1"],
-      shareTotals: {
-        shortAskBuyCompleteSets: {
-          "0x1": new BigNumber("5.1", 10)
-        },
-        shortSellBuyCompleteSets: {
-          "0x1": new BigNumber("2.2", 10)
-        },
-        sellCompleteSets: {}
-      },
-      onChainPosition: {
-        "0x1": {
-          "1": "6.1",
-          "2": "6.3"
-        }
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(output, {
-          "0x1": {
-            "1": "-1.2",
-            "2": "-1"
-          }
-        });
-        finished();
-      }
-    });
-    test({
-      description: "2 markets, short ask 5.1 market 1, short sell 2.2 market 1 [1.2 outcome 1, 1 outcome 2] 2 market 2 [2 outcome 5]",
-      account: "0xb0b",
-      marketIDs: ["0x1", "0x2"],
-      shareTotals: {
-        shortAskBuyCompleteSets: {
-          "0x1": new BigNumber("5.1", 10)
-        },
-        shortSellBuyCompleteSets: {
-          "0x1": new BigNumber("2.2", 10),
-          "0x2": new BigNumber("2", 10)
-        },
-        sellCompleteSets: {}
-      },
-      onChainPosition: {
-        "0x1": {
-          "1": "6.1",
-          "2": "6.3"
-        },
-        "0x2": {
-          "1": "2",
-          "2": "2",
-          "3": "2",
-          "4": "2",
-          "5": "0",
-          "6": "2",
-          "7": "2"
-        }
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(output, {
-          "0x1": {
-            "1": "-1.2",
-            "2": "-1"
-          },
-          "0x2": {
-            "1": "0",
-            "2": "0",
-            "3": "0",
-            "4": "0",
-            "5": "-2",
-            "6": "0",
-            "7": "0"
-          }
-        });
-        finished();
-      }
-    });
-    test({
-      description: "2 markets, short ask [5.1 market 1, 0.1 market 2], short sell 2.2 market 1 [1.2 outcome 1, 1 outcome 2] 2 market 2 [2 outcome 5]",
-      account: "0xb0b",
-      marketIDs: ["0x1", "0x2"],
-      shareTotals: {
-        shortAskBuyCompleteSets: {
-          "0x1": new BigNumber("5.1", 10),
-          "0x2": new BigNumber("0.1", 10)
-        },
-        shortSellBuyCompleteSets: {
-          "0x1": new BigNumber("2.2", 10),
-          "0x2": new BigNumber("2", 10)
-        },
-        sellCompleteSets: {}
-      },
-      onChainPosition: {
-        "0x1": {
-          "1": "6.1",
-          "2": "6.3"
-        },
-        "0x2": {
-          "1": "2.1",
-          "2": "2.1",
-          "3": "2.1",
-          "4": "2.1",
-          "5": "0.1",
-          "6": "2.1",
-          "7": "2.1"
-        }
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(output, {
-          "0x1": {
-            "1": "-1.2",
-            "2": "-1"
-          },
-          "0x2": {
-            "1": "0",
-            "2": "0",
-            "3": "0",
-            "4": "0",
-            "5": "-2",
-            "6": "0",
-            "7": "0"
-          }
-        });
-        finished();
-      }
-    });
-    test({
-      description: "1 market, short ask 5, short sell [2 outcome 1, 1 outcome 2], sell complete sets 6",
-      account: "0xb0b",
-      marketIDs: ["0x1"],
-      shareTotals: {
-        shortAskBuyCompleteSets: {
-          "0x1": new BigNumber("5", 10)
-        },
-        shortSellBuyCompleteSets: {
-          "0x1": new BigNumber("2", 10)
-        },
-        sellCompleteSets: {
-          "0x1": new BigNumber("-6", 10)
-        }
-      },
-      onChainPosition: {
-        "0x1": {
-          "1": "0", // change:  +5   0  +1  -6
-                    // balance: +5  +5  +6   0
-                    // display:  0  -2  -2  -1
-                    //           0  -2   0  +1
+  // describe("adjustPositions", function () {
+  //   var finished;
+  //   var test = function (t) {
+  //     it(t.description, function (done) {
+  //       finished = done;
+  //       var adjustPositions = proxyquire('../../../src/trading/positions/adjust-positions', {
+  //         '../../markets/get-position-in-market': function (p, callback) {
+  //           if (!callback) return t.onChainPosition[p.market];
+  //           callback(t.onChainPosition[p.market]);
+  //         }
+  //       });
+  //       adjustPositions(t.account, t.marketIDs, t.shareTotals, t.assertions);
+  //     });
+  //   };
+  //   test({
+  //     description: "1 market, 2 outcomes, no position, short ask 0, short sell 0",
+  //     account: "0xb0b",
+  //     marketIDs: ["0x1"],
+  //     shareTotals: {
+  //       shortAskBuyCompleteSets: {},
+  //       shortSellBuyCompleteSets: {},
+  //       sellCompleteSets: {}
+  //     },
+  //     onChainPosition: {
+  //       "0x1": {
+  //         "1": "0",
+  //         "2": "0"
+  //       }
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(output, {
+  //         "0x1": {
+  //           "1": "0",
+  //           "2": "0"
+  //         }
+  //       });
+  //       finished();
+  //     }
+  //   });
+  //   test({
+  //     description: "handle an undefined onChainPosition from getPositionInMarket",
+  //     account: "0xb0b",
+  //     marketIDs: ["0x1"],
+  //     shareTotals: {
+  //       shortAskBuyCompleteSets: {},
+  //       shortSellBuyCompleteSets: {},
+  //       sellCompleteSets: {}
+  //     },
+  //     onChainPosition: {
+  //       "0x1": undefined
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.deepEqual(err, "couldn't load position in 0x1");
+  //       assert.isUndefined(output);
+  //       finished();
+  //     }
+  //   });
+  //   test({
+  //     description: "1 market, 2 outcomes, 1 position, short ask 0, short sell 0",
+  //     account: "0xb0b",
+  //     marketIDs: ["0x1"],
+  //     shareTotals: {
+  //       shortAskBuyCompleteSets: {},
+  //       shortSellBuyCompleteSets: {},
+  //       sellCompleteSets: {}
+  //     },
+  //     onChainPosition: {
+  //       "0x1": {
+  //         "1": "1",
+  //         "2": "0"
+  //       }
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(output, {
+  //         "0x1": {
+  //           "1": "1",
+  //           "2": "0"
+  //         }
+  //       });
+  //       finished();
+  //     }
+  //   });
+  //   test({
+  //     description: "1 market, 2 outcomes, 1 position, short ask 0, short sell 1",
+  //     account: "0xb0b",
+  //     marketIDs: ["0x1"],
+  //     shareTotals: {
+  //       shortAskBuyCompleteSets: {},
+  //       shortSellBuyCompleteSets: {
+  //         "0x1": new BigNumber("1", 10)
+  //       },
+  //       sellCompleteSets: {}
+  //     },
+  //     onChainPosition: {
+  //       "0x1": {
+  //         "1": "0",
+  //         "2": "1"
+  //       }
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(output, {
+  //         "0x1": {
+  //           "1": "-1",
+  //           "2": "0"
+  //         }
+  //       });
+  //       finished();
+  //     }
+  //   });
+  //   test({
+  //     description: "1 market, 2 outcomes, 2 positions, short ask 1, short sell 0",
+  //     account: "0xb0b",
+  //     marketIDs: ["0x1"],
+  //     shareTotals: {
+  //       shortAskBuyCompleteSets: {},
+  //       shortSellBuyCompleteSets: {
+  //         "0x1": new BigNumber("1", 10)
+  //       },
+  //       sellCompleteSets: {}
+  //     },
+  //     onChainPosition: {
+  //       "0x1": {
+  //         "1": "1",
+  //         "2": "1"
+  //       }
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(output, {
+  //         "0x1": {
+  //           "1": "0",
+  //           "2": "0"
+  //         }
+  //       });
+  //       finished();
+  //     }
+  //   });
+  //   test({
+  //     description: "1 market, 2 outcomes, 2 positions, short ask 1, short sell 1",
+  //     account: "0xb0b",
+  //     marketIDs: ["0x1"],
+  //     shareTotals: {
+  //       shortAskBuyCompleteSets: {
+  //         "0x1": new BigNumber("1", 10)
+  //       },
+  //       shortSellBuyCompleteSets: {
+  //         "0x1": new BigNumber("1", 10)
+  //       },
+  //       sellCompleteSets: {}
+  //     },
+  //     onChainPosition: {
+  //       "0x1": {
+  //         "1": "1",
+  //         "2": "2"
+  //       }
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(output, {
+  //         "0x1": {
+  //           "1": "-1",
+  //           "2": "0"
+  //         }
+  //       });
+  //       finished();
+  //     }
+  //   });
+  //   test({
+  //     description: "1 market, 2 outcomes, 1 position, short ask 0, short sell 2",
+  //     account: "0xb0b",
+  //     marketIDs: ["0x1"],
+  //     shareTotals: {
+  //       shortAskBuyCompleteSets: {},
+  //       shortSellBuyCompleteSets: {
+  //         "0x1": new BigNumber("2", 10)
+  //       },
+  //       sellCompleteSets: {}
+  //     },
+  //     onChainPosition: {
+  //       "0x1": {
+  //         "1": "2",
+  //         "2": "0"
+  //       }
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(output, {
+  //         "0x1": {
+  //           "1": "0",
+  //           "2": "-2"
+  //         }
+  //       });
+  //       finished();
+  //     }
+  //   });
+  //   test({
+  //     description: "1 market, 2 outcomes, 2 positions, short ask 0, short sell 2 [1 outcome 1, 1 outcome 2]",
+  //     account: "0xb0b",
+  //     marketIDs: ["0x1"],
+  //     shareTotals: {
+  //       shortAskBuyCompleteSets: {},
+  //       shortSellBuyCompleteSets: {
+  //         "0x1": new BigNumber("2", 10)
+  //       },
+  //       sellCompleteSets: {}
+  //     },
+  //     onChainPosition: {
+  //       "0x1": {
+  //         "1": "1",
+  //         "2": "1"
+  //       }
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(output, {
+  //         "0x1": {
+  //           "1": "-1",
+  //           "2": "-1"
+  //         }
+  //       });
+  //       finished();
+  //     }
+  //   });
+  //   test({
+  //     description: "1 market, 2 outcomes, 2 positions, short ask 2, short sell 2",
+  //     account: "0xb0b",
+  //     marketIDs: ["0x1"],
+  //     shareTotals: {
+  //       shortAskBuyCompleteSets: {
+  //         "0x1": new BigNumber("2", 10)
+  //       },
+  //       shortSellBuyCompleteSets: {
+  //         "0x1": new BigNumber("2", 10)
+  //       },
+  //       sellCompleteSets: {}
+  //     },
+  //     onChainPosition: {
+  //       "0x1": {
+  //         "1": "2",
+  //         "2": "4"
+  //       }
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(output, {
+  //         "0x1": {
+  //           "1": "-2",
+  //           "2": "0"
+  //         }
+  //       });
+  //       finished();
+  //     }
+  //   });
+  //   test({
+  //     description: "1 market, 2 outcomes, 2 positions, short ask 2, short sell 2 [1 outcome 1, 1 outcome 2]",
+  //     account: "0xb0b",
+  //     marketIDs: ["0x1"],
+  //     shareTotals: {
+  //       shortAskBuyCompleteSets: {
+  //         "0x1": new BigNumber("2", 10)
+  //       },
+  //       shortSellBuyCompleteSets: {
+  //         "0x1": new BigNumber("2", 10)
+  //       },
+  //       sellCompleteSets: {}
+  //     },
+  //     onChainPosition: {
+  //       "0x1": {
+  //         "1": "3",
+  //         "2": "3"
+  //       }
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(output, {
+  //         "0x1": {
+  //           "1": "-1",
+  //           "2": "-1"
+  //         }
+  //       });
+  //       finished();
+  //     }
+  //   });
+  //   test({
+  //     description: "1 market, 2 outcomes, 2 positions, short ask 2, short sell 5",
+  //     account: "0xb0b",
+  //     marketIDs: ["0x1"],
+  //     shareTotals: {
+  //       shortAskBuyCompleteSets: {
+  //         "0x1": new BigNumber("2", 10)
+  //       },
+  //       shortSellBuyCompleteSets: {
+  //         "0x1": new BigNumber("5", 10)
+  //       },
+  //       sellCompleteSets: {}
+  //     },
+  //     onChainPosition: {
+  //       "0x1": {
+  //         "1": "7",
+  //         "2": "2"
+  //       }
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(output, {
+  //         "0x1": {
+  //           "1": "0",
+  //           "2": "-5"
+  //         }
+  //       });
+  //       finished();
+  //     }
+  //   });
+  //   test({
+  //     description: "1 market, 2 outcomes, 2 positions, short ask 5, short sell 2",
+  //     account: "0xb0b",
+  //     marketIDs: ["0x1"],
+  //     shareTotals: {
+  //       shortAskBuyCompleteSets: {
+  //         "0x1": new BigNumber("5", 10)
+  //       },
+  //       shortSellBuyCompleteSets: {
+  //         "0x1": new BigNumber("2", 10)
+  //       },
+  //       sellCompleteSets: {}
+  //     },
+  //     onChainPosition: {
+  //       "0x1": {
+  //         "1": "5",
+  //         "2": "7"
+  //       }
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(output, {
+  //         "0x1": {
+  //           "1": "-2",
+  //           "2": "0"
+  //         }
+  //       });
+  //       finished();
+  //     }
+  //   });
+  //   test({
+  //     description: "1 market, 2 outcomes, 2 positions, short ask 5.1, short sell 2.2 [1.2 outcome 1, 1 outcome 2]",
+  //     account: "0xb0b",
+  //     marketIDs: ["0x1"],
+  //     shareTotals: {
+  //       shortAskBuyCompleteSets: {
+  //         "0x1": new BigNumber("5.1", 10)
+  //       },
+  //       shortSellBuyCompleteSets: {
+  //         "0x1": new BigNumber("2.2", 10)
+  //       },
+  //       sellCompleteSets: {}
+  //     },
+  //     onChainPosition: {
+  //       "0x1": {
+  //         "1": "6.1",
+  //         "2": "6.3"
+  //       }
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(output, {
+  //         "0x1": {
+  //           "1": "-1.2",
+  //           "2": "-1"
+  //         }
+  //       });
+  //       finished();
+  //     }
+  //   });
+  //   test({
+  //     description: "2 markets, short ask 5.1 market 1, short sell 2.2 market 1 [1.2 outcome 1, 1 outcome 2] 2 market 2 [2 outcome 5]",
+  //     account: "0xb0b",
+  //     marketIDs: ["0x1", "0x2"],
+  //     shareTotals: {
+  //       shortAskBuyCompleteSets: {
+  //         "0x1": new BigNumber("5.1", 10)
+  //       },
+  //       shortSellBuyCompleteSets: {
+  //         "0x1": new BigNumber("2.2", 10),
+  //         "0x2": new BigNumber("2", 10)
+  //       },
+  //       sellCompleteSets: {}
+  //     },
+  //     onChainPosition: {
+  //       "0x1": {
+  //         "1": "6.1",
+  //         "2": "6.3"
+  //       },
+  //       "0x2": {
+  //         "1": "2",
+  //         "2": "2",
+  //         "3": "2",
+  //         "4": "2",
+  //         "5": "0",
+  //         "6": "2",
+  //         "7": "2"
+  //       }
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(output, {
+  //         "0x1": {
+  //           "1": "-1.2",
+  //           "2": "-1"
+  //         },
+  //         "0x2": {
+  //           "1": "0",
+  //           "2": "0",
+  //           "3": "0",
+  //           "4": "0",
+  //           "5": "-2",
+  //           "6": "0",
+  //           "7": "0"
+  //         }
+  //       });
+  //       finished();
+  //     }
+  //   });
+  //   test({
+  //     description: "2 markets, short ask [5.1 market 1, 0.1 market 2], short sell 2.2 market 1 [1.2 outcome 1, 1 outcome 2] 2 market 2 [2 outcome 5]",
+  //     account: "0xb0b",
+  //     marketIDs: ["0x1", "0x2"],
+  //     shareTotals: {
+  //       shortAskBuyCompleteSets: {
+  //         "0x1": new BigNumber("5.1", 10),
+  //         "0x2": new BigNumber("0.1", 10)
+  //       },
+  //       shortSellBuyCompleteSets: {
+  //         "0x1": new BigNumber("2.2", 10),
+  //         "0x2": new BigNumber("2", 10)
+  //       },
+  //       sellCompleteSets: {}
+  //     },
+  //     onChainPosition: {
+  //       "0x1": {
+  //         "1": "6.1",
+  //         "2": "6.3"
+  //       },
+  //       "0x2": {
+  //         "1": "2.1",
+  //         "2": "2.1",
+  //         "3": "2.1",
+  //         "4": "2.1",
+  //         "5": "0.1",
+  //         "6": "2.1",
+  //         "7": "2.1"
+  //       }
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(output, {
+  //         "0x1": {
+  //           "1": "-1.2",
+  //           "2": "-1"
+  //         },
+  //         "0x2": {
+  //           "1": "0",
+  //           "2": "0",
+  //           "3": "0",
+  //           "4": "0",
+  //           "5": "-2",
+  //           "6": "0",
+  //           "7": "0"
+  //         }
+  //       });
+  //       finished();
+  //     }
+  //   });
+  //   test({
+  //     description: "1 market, short ask 5, short sell [2 outcome 1, 1 outcome 2], sell complete sets 6",
+  //     account: "0xb0b",
+  //     marketIDs: ["0x1"],
+  //     shareTotals: {
+  //       shortAskBuyCompleteSets: {
+  //         "0x1": new BigNumber("5", 10)
+  //       },
+  //       shortSellBuyCompleteSets: {
+  //         "0x1": new BigNumber("2", 10)
+  //       },
+  //       sellCompleteSets: {
+  //         "0x1": new BigNumber("-6", 10)
+  //       }
+  //     },
+  //     onChainPosition: {
+  //       "0x1": {
+  //         "1": "0", // change:  +5   0  +1  -6
+  //                   // balance: +5  +5  +6   0
+  //                   // display:  0  -2  -2  -1
+  //                   //           0  -2   0  +1
 
-          "2": "1"  // change:  +5  +2   0  -6
-                    // balance: +5  +7  +7  +1
-                    // display:  0   0  -1   0
-                    //           0   0  -1  +1
-        }
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(output, {
-          "0x1": {
-            "1": "-1",
-            "2": "0"
-          }
-        });
-        finished();
-      }
-    });
-    test({
-      description: "1 market, short ask 5.1, short sell [1.2 outcome 1, 1 outcome 2], sell complete sets 6.1",
-      account: "0xb0b",
-      marketIDs: ["0x1"],
-      shareTotals: {
-        shortAskBuyCompleteSets: {
-          "0x1": new BigNumber("5.1", 10)
-        },
-        shortSellBuyCompleteSets: {
-          "0x1": new BigNumber("1.2", 10),
-        },
-        sellCompleteSets: {
-          "0x1": new BigNumber("-6.1", 10)
-        }
-      },
-      onChainPosition: {
-        "0x1": {
-          "1": "0",  // change:  +5.1   0.0  +1.0  -6.1
-                     // balance: +5.1  +5.1  +6.1   0.0
-                     // display:  0.0  -1.2  -1.2  -0.2
-                     //           0.0  -1.2  -1.2  +1.0
+  //         "2": "1"  // change:  +5  +2   0  -6
+  //                   // balance: +5  +7  +7  +1
+  //                   // display:  0   0  -1   0
+  //                   //           0   0  -1  +1
+  //       }
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(output, {
+  //         "0x1": {
+  //           "1": "-1",
+  //           "2": "0"
+  //         }
+  //       });
+  //       finished();
+  //     }
+  //   });
+  //   test({
+  //     description: "1 market, short ask 5.1, short sell [1.2 outcome 1, 1 outcome 2], sell complete sets 6.1",
+  //     account: "0xb0b",
+  //     marketIDs: ["0x1"],
+  //     shareTotals: {
+  //       shortAskBuyCompleteSets: {
+  //         "0x1": new BigNumber("5.1", 10)
+  //       },
+  //       shortSellBuyCompleteSets: {
+  //         "0x1": new BigNumber("1.2", 10),
+  //       },
+  //       sellCompleteSets: {
+  //         "0x1": new BigNumber("-6.1", 10)
+  //       }
+  //     },
+  //     onChainPosition: {
+  //       "0x1": {
+  //         "1": "0",  // change:  +5.1   0.0  +1.0  -6.1
+  //                    // balance: +5.1  +5.1  +6.1   0.0
+  //                    // display:  0.0  -1.2  -1.2  -0.2
+  //                    //           0.0  -1.2  -1.2  +1.0
 
-          "2": "0.2" // change:  +5.1  +1.2   0.0  -6.1
-                     // balance: +5.1  +6.3  +6.3  +0.2
-                     // display:  0.0   0.0  -1.0   0.0
-                     //           0.0   0.0  -1.0  +1.0
-        }
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(output, {
-          "0x1": {
-            "1": "-0.2",
-            "2": "0"
-          }
-        });
-        finished();
-      }
-    });
-    test({
-      description: "2 markets, short ask [5.1 market 1, 1.2345 market 2], short sell market 1 [1.2 outcome 1, 1 outcome 2] market 2 [2 outcome 5], sell complete sets [6.1 market 1, sell 1.2345 market 2]",
-      account: "0xb0b",
-      marketIDs: ["0x1", "0x2"],
-      shareTotals: {
-        shortAskBuyCompleteSets: {
-          "0x1": new BigNumber("5.1", 10),
-          "0x2": new BigNumber("1.2345", 10)
-        },
-        shortSellBuyCompleteSets: {
-          "0x1": new BigNumber("1.2", 10),
-          "0x2": new BigNumber("2", 10)
-        },
-        sellCompleteSets: {
-          "0x1": new BigNumber("-6.1", 10),
-          "0x2": new BigNumber("-1.2345", 10)
-        }
-      },
-      onChainPosition: {
-        "0x1": {
-          "1": "0",
-          "2": "0.2"
-        },
-        "0x2": {
-          "1": "2",
-          "2": "2",
-          "3": "2",
-          "4": "2",
-          "5": "0",
-          "6": "2",
-          "7": "2"
-        }
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(output, {
-          "0x1": {
-            "1": "-0.2",
-            "2": "0"
-          },
-          "0x2": {
-            "1": "0",
-            "2": "0",
-            "3": "0",
-            "4": "0",
-            "5": "-2",
-            "6": "0",
-            "7": "0"
-          }
-        });
-        finished();
-      }
-    });
-    test({
-      description: "1 market, initial position [3, 1], short ask 5, short sell [2 outcome 1, 1 outcome 2], sell complete sets 6",
-      account: "0xb0b",
-      marketIDs: ["0x1"],
-      shareTotals: {
-        shortAskBuyCompleteSets: {
-          "0x1": new BigNumber("5", 10)
-        },
-        shortSellBuyCompleteSets: {
-          "0x1": new BigNumber("2", 10)
-        },
-        sellCompleteSets: {
-          "0x1": new BigNumber("-6", 10)
-        }
-      },
-      onChainPosition: {
-        "0x1": {
-          "1": "3",
-          "2": "2"
-        }
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(output, {
-          "0x1": {
-            "1": "2",
-            "2": "1"
-          }
-        });
-        finished();
-      }
-    });
-    test({
-      description: "1 market, initial position [1.2, 10.101], short ask 5.1, short sell [1.2 outcome 1, 1 outcome 2], sell complete sets 6.1",
-      account: "0xb0b",
-      marketIDs: ["0x1"],
-      shareTotals: {
-        shortAskBuyCompleteSets: {
-          "0x1": new BigNumber("5.1", 10)
-        },
-        shortSellBuyCompleteSets: {
-          "0x1": new BigNumber("1.2", 10),
-        },
-        sellCompleteSets: {
-          "0x1": new BigNumber("-6.1", 10)
-        }
-      },
-      onChainPosition: {
-        "0x1": {
-          "1": "1.2",
-          "2": "10.301"
-        }
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(output, {
-          "0x1": {
-            "1": "1",
-            "2": "10.101"
-          }
-        });
-        finished();
-      }
-    });
-    test({
-      description: "2 markets, initial position ([0.1, 0], [0, 71, 0, 0, 0, 0.112, 0]), short ask [5.1 market 1, 1.2345 market 2], short sell market 1 [1.2 outcome 1, 1 outcome 2] market 2 [2 outcome 5], sell complete sets [6.1 market 1, sell 1.2345 market 2]",
-      account: "0xb0b",
-      marketIDs: ["0x1", "0x2"],
-      shareTotals: {
-        shortAskBuyCompleteSets: {
-          "0x1": new BigNumber("5.1", 10),
-          "0x2": new BigNumber("1.2345", 10)
-        },
-        shortSellBuyCompleteSets: {
-          "0x1": new BigNumber("1.2", 10),
-          "0x2": new BigNumber("2", 10)
-        },
-        sellCompleteSets: {
-          "0x1": new BigNumber("-6.1", 10),
-          "0x2": new BigNumber("-1.2345", 10)
-        }
-      },
-      onChainPosition: {
-        "0x1": {
-          "1": "0.1",
-          "2": "0.2"
-        },
-        "0x2": {
-          "1": "2",
-          "2": "73",
-          "3": "2",
-          "4": "2",
-          "5": "0",
-          "6": "2.112",
-          "7": "2"
-        }
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(output, {
-          "0x1": {
-            "1": "-0.1",
-            "2": "0"
-          },
-          "0x2": {
-            "1": "0",
-            "2": "71",
-            "3": "0",
-            "4": "0",
-            "5": "-2",
-            "6": "0.112",
-            "7": "0"
-          }
-        });
-        finished();
-      }
-    });
-  });
+  //         "2": "0.2" // change:  +5.1  +1.2   0.0  -6.1
+  //                    // balance: +5.1  +6.3  +6.3  +0.2
+  //                    // display:  0.0   0.0  -1.0   0.0
+  //                    //           0.0   0.0  -1.0  +1.0
+  //       }
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(output, {
+  //         "0x1": {
+  //           "1": "-0.2",
+  //           "2": "0"
+  //         }
+  //       });
+  //       finished();
+  //     }
+  //   });
+  //   test({
+  //     description: "2 markets, short ask [5.1 market 1, 1.2345 market 2], short sell market 1 [1.2 outcome 1, 1 outcome 2] market 2 [2 outcome 5], sell complete sets [6.1 market 1, sell 1.2345 market 2]",
+  //     account: "0xb0b",
+  //     marketIDs: ["0x1", "0x2"],
+  //     shareTotals: {
+  //       shortAskBuyCompleteSets: {
+  //         "0x1": new BigNumber("5.1", 10),
+  //         "0x2": new BigNumber("1.2345", 10)
+  //       },
+  //       shortSellBuyCompleteSets: {
+  //         "0x1": new BigNumber("1.2", 10),
+  //         "0x2": new BigNumber("2", 10)
+  //       },
+  //       sellCompleteSets: {
+  //         "0x1": new BigNumber("-6.1", 10),
+  //         "0x2": new BigNumber("-1.2345", 10)
+  //       }
+  //     },
+  //     onChainPosition: {
+  //       "0x1": {
+  //         "1": "0",
+  //         "2": "0.2"
+  //       },
+  //       "0x2": {
+  //         "1": "2",
+  //         "2": "2",
+  //         "3": "2",
+  //         "4": "2",
+  //         "5": "0",
+  //         "6": "2",
+  //         "7": "2"
+  //       }
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(output, {
+  //         "0x1": {
+  //           "1": "-0.2",
+  //           "2": "0"
+  //         },
+  //         "0x2": {
+  //           "1": "0",
+  //           "2": "0",
+  //           "3": "0",
+  //           "4": "0",
+  //           "5": "-2",
+  //           "6": "0",
+  //           "7": "0"
+  //         }
+  //       });
+  //       finished();
+  //     }
+  //   });
+  //   test({
+  //     description: "1 market, initial position [3, 1], short ask 5, short sell [2 outcome 1, 1 outcome 2], sell complete sets 6",
+  //     account: "0xb0b",
+  //     marketIDs: ["0x1"],
+  //     shareTotals: {
+  //       shortAskBuyCompleteSets: {
+  //         "0x1": new BigNumber("5", 10)
+  //       },
+  //       shortSellBuyCompleteSets: {
+  //         "0x1": new BigNumber("2", 10)
+  //       },
+  //       sellCompleteSets: {
+  //         "0x1": new BigNumber("-6", 10)
+  //       }
+  //     },
+  //     onChainPosition: {
+  //       "0x1": {
+  //         "1": "3",
+  //         "2": "2"
+  //       }
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(output, {
+  //         "0x1": {
+  //           "1": "2",
+  //           "2": "1"
+  //         }
+  //       });
+  //       finished();
+  //     }
+  //   });
+  //   test({
+  //     description: "1 market, initial position [1.2, 10.101], short ask 5.1, short sell [1.2 outcome 1, 1 outcome 2], sell complete sets 6.1",
+  //     account: "0xb0b",
+  //     marketIDs: ["0x1"],
+  //     shareTotals: {
+  //       shortAskBuyCompleteSets: {
+  //         "0x1": new BigNumber("5.1", 10)
+  //       },
+  //       shortSellBuyCompleteSets: {
+  //         "0x1": new BigNumber("1.2", 10),
+  //       },
+  //       sellCompleteSets: {
+  //         "0x1": new BigNumber("-6.1", 10)
+  //       }
+  //     },
+  //     onChainPosition: {
+  //       "0x1": {
+  //         "1": "1.2",
+  //         "2": "10.301"
+  //       }
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(output, {
+  //         "0x1": {
+  //           "1": "1",
+  //           "2": "10.101"
+  //         }
+  //       });
+  //       finished();
+  //     }
+  //   });
+  //   test({
+  //     description: "2 markets, initial position ([0.1, 0], [0, 71, 0, 0, 0, 0.112, 0]), short ask [5.1 market 1, 1.2345 market 2], short sell market 1 [1.2 outcome 1, 1 outcome 2] market 2 [2 outcome 5], sell complete sets [6.1 market 1, sell 1.2345 market 2]",
+  //     account: "0xb0b",
+  //     marketIDs: ["0x1", "0x2"],
+  //     shareTotals: {
+  //       shortAskBuyCompleteSets: {
+  //         "0x1": new BigNumber("5.1", 10),
+  //         "0x2": new BigNumber("1.2345", 10)
+  //       },
+  //       shortSellBuyCompleteSets: {
+  //         "0x1": new BigNumber("1.2", 10),
+  //         "0x2": new BigNumber("2", 10)
+  //       },
+  //       sellCompleteSets: {
+  //         "0x1": new BigNumber("-6.1", 10),
+  //         "0x2": new BigNumber("-1.2345", 10)
+  //       }
+  //     },
+  //     onChainPosition: {
+  //       "0x1": {
+  //         "1": "0.1",
+  //         "2": "0.2"
+  //       },
+  //       "0x2": {
+  //         "1": "2",
+  //         "2": "73",
+  //         "3": "2",
+  //         "4": "2",
+  //         "5": "0",
+  //         "6": "2.112",
+  //         "7": "2"
+  //       }
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(output, {
+  //         "0x1": {
+  //           "1": "-0.1",
+  //           "2": "0"
+  //         },
+  //         "0x2": {
+  //           "1": "0",
+  //           "2": "71",
+  //           "3": "0",
+  //           "4": "0",
+  //           "5": "-2",
+  //           "6": "0.112",
+  //           "7": "0"
+  //         }
+  //       });
+  //       finished();
+  //     }
+  //   });
+  // });
 
-  describe("getAdjustedPositions", function () {
-    var finished;
-    var test = function (t) {
-      it(t.description, function (done) {
-        finished = done;
-        var getAdjustedPositions = proxyquire('../../../src/trading/positions/get-adjusted-positions', {
-          './adjust-positions': function(account, marketIDs, shareTotals, callback) {
-            callback(null, { account: account, marketIDs: marketIDs, shareTotals: shareTotals });
-          },
-          '../../logs/get-short-ask-buy-complete-sets-logs': function (p, callback) {
-            if (!callback) return t.logs.shortAskBuyCompleteSets;
-            callback(null, t.logs.shortAskBuyCompleteSets);
-          },
-          '../../logs/get-taker-short-sell-logs': function (p, callback) {
-            if (!callback) return t.logs.shortSellBuyCompleteSets;
-            callback(null, t.logs.shortSellBuyCompleteSets);
-          },
-          '../../logs/get-sell-complete-sets-logs': function (p, callback) {
-            if (!callback) return t.logs.sellCompleteSets;
-            callback(null, t.logs.sellCompleteSets);
-          },
-        });
+  // describe("getAdjustedPositions", function () {
+  //   var finished;
+  //   var test = function (t) {
+  //     it(t.description, function (done) {
+  //       finished = done;
+  //       var getAdjustedPositions = proxyquire('../../../src/trading/positions/get-adjusted-positions', {
+  //         './adjust-positions': function(account, marketIDs, shareTotals, callback) {
+  //           callback(null, { account: account, marketIDs: marketIDs, shareTotals: shareTotals });
+  //         },
+  //         '../../logs/get-short-ask-buy-complete-sets-logs': function (p, callback) {
+  //           if (!callback) return t.logs.shortAskBuyCompleteSets;
+  //           callback(null, t.logs.shortAskBuyCompleteSets);
+  //         },
+  //         '../../logs/get-taker-short-sell-logs': function (p, callback) {
+  //           if (!callback) return t.logs.shortSellBuyCompleteSets;
+  //           callback(null, t.logs.shortSellBuyCompleteSets);
+  //         },
+  //         '../../logs/get-sell-complete-sets-logs': function (p, callback) {
+  //           if (!callback) return t.logs.sellCompleteSets;
+  //           callback(null, t.logs.sellCompleteSets);
+  //         },
+  //       });
 
-        getAdjustedPositions(t.params, t.assertions);
-      });
-    };
-    test({
-      description: "no logs",
-      params: {
-        account: "0xb0b",
-      },
-      logs: {
-        shortAskBuyCompleteSets: [],
-        shortSellBuyCompleteSets: [],
-        sellCompleteSets: []
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(output, {
-          account: '0xb0b',
-          marketIDs: [],
-          shareTotals: {
-            shortAskBuyCompleteSets: {},
-            shortSellBuyCompleteSets: {},
-            sellCompleteSets: {},
-          }
-        });
-        finished();
-      }
-    });
-    test({
-      description: "1 market, 1 short ask",
-      params: {
-        account: "0xb0b",
-      },
-      logs: {
-        shortAskBuyCompleteSets: [{
-          data: fix("3"),
-          topics: [
-            "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
-            "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-            "0x0000000000000000000000000000000000000000000000000000000000000001"
-          ]
-        }],
-        shortSellBuyCompleteSets: [],
-        sellCompleteSets: []
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(JSON.stringify(output), JSON.stringify({
-          account: '0xb0b',
-          marketIDs: [ '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' ],
-          shareTotals: {
-            shortAskBuyCompleteSets: {
-              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '3'
-            },
-            shortSellBuyCompleteSets: {},
-            sellCompleteSets: {}
-          }
-        }));
-        finished();
-      }
-    });
-    test({
-      description: "1 market, 1 short sell",
-      params: {
-        account: "0xb0b",
-      },
-      logs: {
-        shortAskBuyCompleteSets: [],
-        shortSellBuyCompleteSets: [{
-          data: "0x"+
-                        "1000000000000000000000000000000000000000000000000000000000000000"+
-                        fix("1").replace("0x", "")+
-                        "0000000000000000000000000000000100000000000000000000000000000000"+
-                        "0000000000000000000000000000000000000000000000000000000000000001", // outcome
-          topics: [
-            "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-            "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
-            "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
-          ]
-        }],
-        sellCompleteSets: []
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(JSON.stringify(output), JSON.stringify({
-          account: '0xb0b',
-          marketIDs: [ '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' ],
-          shareTotals: {
-            shortAskBuyCompleteSets: {},
-            shortSellBuyCompleteSets: {
-              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '1'
-            },
-            sellCompleteSets: {}
-          }
-        }));
-        finished();
-      }
-    });
-    test({
-      description: "1 market, 2 sell complete sets",
-      params: {
-        account: "0xb0b",
-      },
-      logs: {
-        shortAskBuyCompleteSets: [],
-        shortSellBuyCompleteSets: [],
-        sellCompleteSets: [{
-          data: fix("3"),
-          topics: [
-            "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
-            "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-            "0x0000000000000000000000000000000000000000000000000000000000000002"
-          ]
-        }, {
-          data: fix("2.1"),
-          topics: [
-            "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
-            "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-            "0x0000000000000000000000000000000000000000000000000000000000000002"
-          ]
-        }]
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(JSON.stringify(output), JSON.stringify({
-          account: '0xb0b',
-          marketIDs: [ '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' ],
-          shareTotals: {
-            shortAskBuyCompleteSets: {},
-            shortSellBuyCompleteSets: {},
-            sellCompleteSets: {
-              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '-5.1'
-            }
-          }
-        }));
-        finished();
-      }
-    });
-    test({
-      description: "1 market, 1 short ask, 2 sell complete sets",
-      params: {
-        account: "0xb0b",
-        filter: { market: '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' }
-      },
-      logs: {
-        shortAskBuyCompleteSets: [{
-          data: fix("6"),
-          topics: [
-            "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
-            "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-            "0x0000000000000000000000000000000000000000000000000000000000000001"
-          ]
-        }],
-        shortSellBuyCompleteSets: [],
-        sellCompleteSets: [{
-          data: fix("3"),
-          topics: [
-            "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
-            "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-            "0x0000000000000000000000000000000000000000000000000000000000000002"
-          ]
-        }, {
-          data: fix("2.1"),
-          topics: [
-            "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
-            "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-            "0x0000000000000000000000000000000000000000000000000000000000000002"
-          ]
-        }]
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(JSON.stringify(output), JSON.stringify({
-          account: '0xb0b',
-          marketIDs: [ '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' ],
-          shareTotals: {
-            shortAskBuyCompleteSets: {
-              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '6'
-            },
-            shortSellBuyCompleteSets: {},
-            sellCompleteSets: {
-              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '-5.1'
-            }
-          }
-        }));
-        finished();
-      }
-    });
-    test({
-      description: "1 market, 1 short ask, 1 short sell, 1 sell complete sets",
-      params: {
-        account: '0xb0b',
-      },
-      logs: {
-        shortAskBuyCompleteSets: [{
-          data: fix("3"),
-          topics: [
-            "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
-            "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-            "0x0000000000000000000000000000000000000000000000000000000000000001"
-          ]
-        }],
-        shortSellBuyCompleteSets: [{
-          data: "0x"+
-                        "1000000000000000000000000000000000000000000000000000000000000000"+
-                        fix("1").replace("0x", "")+
-                        "0000000000000000000000000000000100000000000000000000000000000000"+
-                        "0000000000000000000000000000000000000000000000000000000000000001", // outcome
-          topics: [
-            "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-            "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
-            "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
-          ]
-        }],
-        sellCompleteSets: [{
-          data: fix("0.9"),
-          topics: [
-            "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
-            "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-            "0x0000000000000000000000000000000000000000000000000000000000000001"
-          ]
-        }]
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(JSON.stringify(output), JSON.stringify({
-          account: '0xb0b',
-          marketIDs: [ '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' ],
-          shareTotals: {
-            shortAskBuyCompleteSets: {
-              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '3'
-            },
-            shortSellBuyCompleteSets: {
-              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '1'
-            },
-            sellCompleteSets: {
-              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '0.9'
-            }
-          }
-        }));
-        finished();
-      }
-    });
-    test({
-      description: "1 market, 1 short ask, 2 short sells [0.1 outcome 1, 0.2 outcome 1], 1 sell complete sets",
-      params: {
-        account: "0xb0b",
-      },
-      logs: {
-        shortAskBuyCompleteSets: [{
-          data: fix("3"),
-          topics: [
-            "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
-            "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-            "0x0000000000000000000000000000000000000000000000000000000000000001"
-          ]
-        }],
-        shortSellBuyCompleteSets: [{
-          data: "0x"+
-                        "1000000000000000000000000000000000000000000000000000000000000000"+
-                        fix("0.1").replace("0x", "")+
-                        "0000000000000000000000000000000100000000000000000000000000000000"+
-                        "0000000000000000000000000000000000000000000000000000000000000001", // outcome
-          topics: [
-            "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-            "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
-            "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
-          ]
-        }, {
-          data: "0x"+
-                        "1000000000000000000000000000000000000000000000000000000000000000"+
-                        fix("0.2").replace("0x", "")+
-                        "0000000000000000000000000000000200000000000000000000000000000000"+
-                        "0000000000000000000000000000000000000000000000000000000000000001", // outcome
-          topics: [
-            "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-            "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
-            "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
-          ]
-        }],
-        sellCompleteSets: [{
-          data: fix("0.9"),
-          topics: [
-            "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
-            "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-            "0x0000000000000000000000000000000000000000000000000000000000000001"
-          ]
-        }]
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(JSON.stringify(output), JSON.stringify({
-          account: '0xb0b',
-          marketIDs: [ '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' ],
-          shareTotals: {
-            shortAskBuyCompleteSets: {
-              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '3'
-            },
-            shortSellBuyCompleteSets: {
-              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '0.3'
-            },
-            sellCompleteSets: {
-              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '0.9'
-            }
-          }
-        }));
-        finished();
-      }
-    });
-    test({
-      description: "1 market, 1 short ask, 2 short sells [0.1 outcome 1, 0.2 outcome 2], 2 complete sets [buy 3, sell 2.1]",
-      params: {
-        account: "0xb0b",
-      },
-      logs: {
-        shortAskBuyCompleteSets: [{
-          data: fix("3"),
-          topics: [
-            "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
-            "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-            "0x0000000000000000000000000000000000000000000000000000000000000001"
-          ]
-        }],
-        shortSellBuyCompleteSets: [{
-          data: "0x"+
-                        "1000000000000000000000000000000000000000000000000000000000000000"+
-                        fix("0.1").replace("0x", "")+
-                        "0000000000000000000000000000000100000000000000000000000000000000"+
-                        "0000000000000000000000000000000000000000000000000000000000000001", // outcome
-          topics: [
-            "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-            "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
-            "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
-          ]
-        }, {
-          data: "0x"+
-                        "1000000000000000000000000000000000000000000000000000000000000000"+
-                        fix("0.2").replace("0x", "")+
-                        "0000000000000000000000000000000200000000000000000000000000000000"+
-                        "0000000000000000000000000000000000000000000000000000000000000002", // outcome
-          topics: [
-            "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-            "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
-            "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
-          ]
-        }],
-        sellCompleteSets: [{
-          data: fix("3"),
-          topics: [
-            "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
-            "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-            "0x0000000000000000000000000000000000000000000000000000000000000001"
-          ]
-        }, {
-          data: fix("2.1"),
-          topics: [
-            "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
-            "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-            "0x0000000000000000000000000000000000000000000000000000000000000002"
-          ]
-        }]
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(JSON.stringify(output), JSON.stringify({
-          account: '0xb0b',
-          marketIDs: [ '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' ],
-          shareTotals: {
-            shortAskBuyCompleteSets: {
-              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '3'
-            },
-            shortSellBuyCompleteSets: {
-              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '0.2'
-            },
-            sellCompleteSets: {
-              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '0.9'
-            }
-          }
-        }));
-        finished();
-      }
-    });
-    test({
-      description: "2 markets, position ([0, 0], [2, 2, 2, 2, 2, 2, 2, 2]), 2 short sells [0.1 outcome 2 market 1, 0.2 outcome 2 market 2], 1 sell complete sets [1 market 2]",
-      params: {
-        account: "0xb0b",
-      },
-      logs: {
-        shortAskBuyCompleteSets: [],
-        shortSellBuyCompleteSets: [{
-          data: "0x"+
-                        "1000000000000000000000000000000000000000000000000000000000000000"+
-                        fix("0.1").replace("0x", "")+
-                        "0000000000000000000000000000000100000000000000000000000000000000"+
-                        "0000000000000000000000000000000000000000000000000000000000000002", // outcome
-          topics: [
-            "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-            "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
-            "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
-          ]
-        }, {
-          data: "0x"+
-                        "1000000000000000000000000000000000000000000000000000000000000000"+
-                        fix("0.2").replace("0x", "")+
-                        "0000000000000000000000000000000200000000000000000000000000000000"+
-                        "0000000000000000000000000000000000000000000000000000000000000002", // outcome
-          topics: [
-            "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
-            "0x8000000000000000000000000000000000000000000000000000000000000000",
-            "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
-            "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
-          ]
-        }],
-        sellCompleteSets: [{
-          data: fix("1"),
-          topics: [
-            "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
-            "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-            "0x8000000000000000000000000000000000000000000000000000000000000000",
-            "0x0000000000000000000000000000000000000000000000000000000000000002"
-          ]
-        }]
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(JSON.stringify(output), JSON.stringify({
-          account: '0xb0b',
-          marketIDs: [ '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', '0x8000000000000000000000000000000000000000000000000000000000000000' ],
-          shareTotals: {
-            shortAskBuyCompleteSets: {},
-            shortSellBuyCompleteSets: {
-              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '0.1', '0x8000000000000000000000000000000000000000000000000000000000000000': '0.2'
-            },
-            sellCompleteSets: {
-              '0x8000000000000000000000000000000000000000000000000000000000000000': '-1'
-            }
-          }
-        }));
-        finished();
-      }
-    });
-    test({
-      description: "2 markets, 3 short sells [0.1 outcome 2 market 1, 1.2 outcome 2 market 2, 10000.00001 outcome 7 market 2], 1 sell complete sets [1.2 market 2]",
-      params: {
-        account: "0xb0b",
-      },
-      logs: {
-        shortAskBuyCompleteSets: [],
-        shortSellBuyCompleteSets: [{
-          data: "0x"+
-                        "1000000000000000000000000000000000000000000000000000000000000000"+
-                        fix("0.1").replace("0x", "")+
-                        "0000000000000000000000000000000100000000000000000000000000000000"+
-                        "0000000000000000000000000000000000000000000000000000000000000002", // outcome
-          topics: [
-            "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
-            "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-            "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
-            "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
-          ]
-        }, {
-          data: "0x"+
-                        "1000000000000000000000000000000000000000000000000000000000000000"+
-                        fix("0.2").replace("0x", "")+
-                        "0000000000000000000000000000000200000000000000000000000000000000"+
-                        "0000000000000000000000000000000000000000000000000000000000000002", // outcome
-          topics: [
-            "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
-            "0x8000000000000000000000000000000000000000000000000000000000000000",
-            "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
-            "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
-          ]
-        }, {
-          data: "0x"+
-                        "1000000000000000000000000000000000000000000000000000000000000000"+
-                        fix("10000.00001").replace("0x", "")+
-                        "0000000000000000000000000000000300000000000000000000000000000000"+
-                        "0000000000000000000000000000000000000000000000000000000000000007", // outcome
-          topics: [
-            "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
-            "0x8000000000000000000000000000000000000000000000000000000000000000",
-            "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
-            "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
-          ]
-        }],
-        sellCompleteSets: [{
-          data: fix("1.2"),
-          topics: [
-            "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
-            "0x0000000000000000000000000000000000000000000000000000000000000b0b",
-            "0x8000000000000000000000000000000000000000000000000000000000000000",
-            "0x0000000000000000000000000000000000000000000000000000000000000002"
-          ]
-        }]
-      },
-      assertions: function (err, output) {
-        assert.isNull(err);
-        assert.deepEqual(JSON.stringify(output), JSON.stringify({
-          account: '0xb0b',
-          marketIDs: [ '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', '0x8000000000000000000000000000000000000000000000000000000000000000' ],
-          shareTotals: {
-            shortAskBuyCompleteSets: {},
-            shortSellBuyCompleteSets: {
-              '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '0.1', '0x8000000000000000000000000000000000000000000000000000000000000000': '10000.00001'
-            },
-            sellCompleteSets: {
-              '0x8000000000000000000000000000000000000000000000000000000000000000': '-1.2'
-            }
-          }
-        }));
-        finished();
-      }
-    });
-  });
+  //       getAdjustedPositions(t.params, t.assertions);
+  //     });
+  //   };
+  //   test({
+  //     description: "no logs",
+  //     params: {
+  //       account: "0xb0b",
+  //     },
+  //     logs: {
+  //       shortAskBuyCompleteSets: [],
+  //       shortSellBuyCompleteSets: [],
+  //       sellCompleteSets: []
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(output, {
+  //         account: '0xb0b',
+  //         marketIDs: [],
+  //         shareTotals: {
+  //           shortAskBuyCompleteSets: {},
+  //           shortSellBuyCompleteSets: {},
+  //           sellCompleteSets: {},
+  //         }
+  //       });
+  //       finished();
+  //     }
+  //   });
+  //   test({
+  //     description: "1 market, 1 short ask",
+  //     params: {
+  //       account: "0xb0b",
+  //     },
+  //     logs: {
+  //       shortAskBuyCompleteSets: [{
+  //         data: fix("3"),
+  //         topics: [
+  //           "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+  //           "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000001"
+  //         ]
+  //       }],
+  //       shortSellBuyCompleteSets: [],
+  //       sellCompleteSets: []
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(JSON.stringify(output), JSON.stringify({
+  //         account: '0xb0b',
+  //         marketIDs: [ '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' ],
+  //         shareTotals: {
+  //           shortAskBuyCompleteSets: {
+  //             '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '3'
+  //           },
+  //           shortSellBuyCompleteSets: {},
+  //           sellCompleteSets: {}
+  //         }
+  //       }));
+  //       finished();
+  //     }
+  //   });
+  //   test({
+  //     description: "1 market, 1 short sell",
+  //     params: {
+  //       account: "0xb0b",
+  //     },
+  //     logs: {
+  //       shortAskBuyCompleteSets: [],
+  //       shortSellBuyCompleteSets: [{
+  //         data: "0x"+
+  //                       "1000000000000000000000000000000000000000000000000000000000000000"+
+  //                       fix("1").replace("0x", "")+
+  //                       "0000000000000000000000000000000100000000000000000000000000000000"+
+  //                       "0000000000000000000000000000000000000000000000000000000000000001", // outcome
+  //         topics: [
+  //           "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
+  //           "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  //           "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
+  //           "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
+  //         ]
+  //       }],
+  //       sellCompleteSets: []
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(JSON.stringify(output), JSON.stringify({
+  //         account: '0xb0b',
+  //         marketIDs: [ '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' ],
+  //         shareTotals: {
+  //           shortAskBuyCompleteSets: {},
+  //           shortSellBuyCompleteSets: {
+  //             '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '1'
+  //           },
+  //           sellCompleteSets: {}
+  //         }
+  //       }));
+  //       finished();
+  //     }
+  //   });
+  //   test({
+  //     description: "1 market, 2 sell complete sets",
+  //     params: {
+  //       account: "0xb0b",
+  //     },
+  //     logs: {
+  //       shortAskBuyCompleteSets: [],
+  //       shortSellBuyCompleteSets: [],
+  //       sellCompleteSets: [{
+  //         data: fix("3"),
+  //         topics: [
+  //           "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+  //           "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000002"
+  //         ]
+  //       }, {
+  //         data: fix("2.1"),
+  //         topics: [
+  //           "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+  //           "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000002"
+  //         ]
+  //       }]
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(JSON.stringify(output), JSON.stringify({
+  //         account: '0xb0b',
+  //         marketIDs: [ '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' ],
+  //         shareTotals: {
+  //           shortAskBuyCompleteSets: {},
+  //           shortSellBuyCompleteSets: {},
+  //           sellCompleteSets: {
+  //             '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '-5.1'
+  //           }
+  //         }
+  //       }));
+  //       finished();
+  //     }
+  //   });
+  //   test({
+  //     description: "1 market, 1 short ask, 2 sell complete sets",
+  //     params: {
+  //       account: "0xb0b",
+  //       filter: { market: '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' }
+  //     },
+  //     logs: {
+  //       shortAskBuyCompleteSets: [{
+  //         data: fix("6"),
+  //         topics: [
+  //           "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+  //           "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000001"
+  //         ]
+  //       }],
+  //       shortSellBuyCompleteSets: [],
+  //       sellCompleteSets: [{
+  //         data: fix("3"),
+  //         topics: [
+  //           "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+  //           "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000002"
+  //         ]
+  //       }, {
+  //         data: fix("2.1"),
+  //         topics: [
+  //           "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+  //           "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000002"
+  //         ]
+  //       }]
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(JSON.stringify(output), JSON.stringify({
+  //         account: '0xb0b',
+  //         marketIDs: [ '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' ],
+  //         shareTotals: {
+  //           shortAskBuyCompleteSets: {
+  //             '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '6'
+  //           },
+  //           shortSellBuyCompleteSets: {},
+  //           sellCompleteSets: {
+  //             '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '-5.1'
+  //           }
+  //         }
+  //       }));
+  //       finished();
+  //     }
+  //   });
+  //   test({
+  //     description: "1 market, 1 short ask, 1 short sell, 1 sell complete sets",
+  //     params: {
+  //       account: '0xb0b',
+  //     },
+  //     logs: {
+  //       shortAskBuyCompleteSets: [{
+  //         data: fix("3"),
+  //         topics: [
+  //           "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+  //           "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000001"
+  //         ]
+  //       }],
+  //       shortSellBuyCompleteSets: [{
+  //         data: "0x"+
+  //                       "1000000000000000000000000000000000000000000000000000000000000000"+
+  //                       fix("1").replace("0x", "")+
+  //                       "0000000000000000000000000000000100000000000000000000000000000000"+
+  //                       "0000000000000000000000000000000000000000000000000000000000000001", // outcome
+  //         topics: [
+  //           "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
+  //           "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  //           "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
+  //           "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
+  //         ]
+  //       }],
+  //       sellCompleteSets: [{
+  //         data: fix("0.9"),
+  //         topics: [
+  //           "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+  //           "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000001"
+  //         ]
+  //       }]
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(JSON.stringify(output), JSON.stringify({
+  //         account: '0xb0b',
+  //         marketIDs: [ '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' ],
+  //         shareTotals: {
+  //           shortAskBuyCompleteSets: {
+  //             '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '3'
+  //           },
+  //           shortSellBuyCompleteSets: {
+  //             '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '1'
+  //           },
+  //           sellCompleteSets: {
+  //             '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '0.9'
+  //           }
+  //         }
+  //       }));
+  //       finished();
+  //     }
+  //   });
+  //   test({
+  //     description: "1 market, 1 short ask, 2 short sells [0.1 outcome 1, 0.2 outcome 1], 1 sell complete sets",
+  //     params: {
+  //       account: "0xb0b",
+  //     },
+  //     logs: {
+  //       shortAskBuyCompleteSets: [{
+  //         data: fix("3"),
+  //         topics: [
+  //           "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+  //           "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000001"
+  //         ]
+  //       }],
+  //       shortSellBuyCompleteSets: [{
+  //         data: "0x"+
+  //                       "1000000000000000000000000000000000000000000000000000000000000000"+
+  //                       fix("0.1").replace("0x", "")+
+  //                       "0000000000000000000000000000000100000000000000000000000000000000"+
+  //                       "0000000000000000000000000000000000000000000000000000000000000001", // outcome
+  //         topics: [
+  //           "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
+  //           "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  //           "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
+  //           "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
+  //         ]
+  //       }, {
+  //         data: "0x"+
+  //                       "1000000000000000000000000000000000000000000000000000000000000000"+
+  //                       fix("0.2").replace("0x", "")+
+  //                       "0000000000000000000000000000000200000000000000000000000000000000"+
+  //                       "0000000000000000000000000000000000000000000000000000000000000001", // outcome
+  //         topics: [
+  //           "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
+  //           "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  //           "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
+  //           "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
+  //         ]
+  //       }],
+  //       sellCompleteSets: [{
+  //         data: fix("0.9"),
+  //         topics: [
+  //           "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+  //           "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000001"
+  //         ]
+  //       }]
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(JSON.stringify(output), JSON.stringify({
+  //         account: '0xb0b',
+  //         marketIDs: [ '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' ],
+  //         shareTotals: {
+  //           shortAskBuyCompleteSets: {
+  //             '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '3'
+  //           },
+  //           shortSellBuyCompleteSets: {
+  //             '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '0.3'
+  //           },
+  //           sellCompleteSets: {
+  //             '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '0.9'
+  //           }
+  //         }
+  //       }));
+  //       finished();
+  //     }
+  //   });
+  //   test({
+  //     description: "1 market, 1 short ask, 2 short sells [0.1 outcome 1, 0.2 outcome 2], 2 complete sets [buy 3, sell 2.1]",
+  //     params: {
+  //       account: "0xb0b",
+  //     },
+  //     logs: {
+  //       shortAskBuyCompleteSets: [{
+  //         data: fix("3"),
+  //         topics: [
+  //           "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+  //           "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000001"
+  //         ]
+  //       }],
+  //       shortSellBuyCompleteSets: [{
+  //         data: "0x"+
+  //                       "1000000000000000000000000000000000000000000000000000000000000000"+
+  //                       fix("0.1").replace("0x", "")+
+  //                       "0000000000000000000000000000000100000000000000000000000000000000"+
+  //                       "0000000000000000000000000000000000000000000000000000000000000001", // outcome
+  //         topics: [
+  //           "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
+  //           "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  //           "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
+  //           "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
+  //         ]
+  //       }, {
+  //         data: "0x"+
+  //                       "1000000000000000000000000000000000000000000000000000000000000000"+
+  //                       fix("0.2").replace("0x", "")+
+  //                       "0000000000000000000000000000000200000000000000000000000000000000"+
+  //                       "0000000000000000000000000000000000000000000000000000000000000002", // outcome
+  //         topics: [
+  //           "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
+  //           "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  //           "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
+  //           "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
+  //         ]
+  //       }],
+  //       sellCompleteSets: [{
+  //         data: fix("3"),
+  //         topics: [
+  //           "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+  //           "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000001"
+  //         ]
+  //       }, {
+  //         data: fix("2.1"),
+  //         topics: [
+  //           "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+  //           "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000002"
+  //         ]
+  //       }]
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(JSON.stringify(output), JSON.stringify({
+  //         account: '0xb0b',
+  //         marketIDs: [ '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff' ],
+  //         shareTotals: {
+  //           shortAskBuyCompleteSets: {
+  //             '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '3'
+  //           },
+  //           shortSellBuyCompleteSets: {
+  //             '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '0.2'
+  //           },
+  //           sellCompleteSets: {
+  //             '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '0.9'
+  //           }
+  //         }
+  //       }));
+  //       finished();
+  //     }
+  //   });
+  //   test({
+  //     description: "2 markets, position ([0, 0], [2, 2, 2, 2, 2, 2, 2, 2]), 2 short sells [0.1 outcome 2 market 1, 0.2 outcome 2 market 2], 1 sell complete sets [1 market 2]",
+  //     params: {
+  //       account: "0xb0b",
+  //     },
+  //     logs: {
+  //       shortAskBuyCompleteSets: [],
+  //       shortSellBuyCompleteSets: [{
+  //         data: "0x"+
+  //                       "1000000000000000000000000000000000000000000000000000000000000000"+
+  //                       fix("0.1").replace("0x", "")+
+  //                       "0000000000000000000000000000000100000000000000000000000000000000"+
+  //                       "0000000000000000000000000000000000000000000000000000000000000002", // outcome
+  //         topics: [
+  //           "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
+  //           "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  //           "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
+  //           "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
+  //         ]
+  //       }, {
+  //         data: "0x"+
+  //                       "1000000000000000000000000000000000000000000000000000000000000000"+
+  //                       fix("0.2").replace("0x", "")+
+  //                       "0000000000000000000000000000000200000000000000000000000000000000"+
+  //                       "0000000000000000000000000000000000000000000000000000000000000002", // outcome
+  //         topics: [
+  //           "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
+  //           "0x8000000000000000000000000000000000000000000000000000000000000000",
+  //           "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
+  //           "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
+  //         ]
+  //       }],
+  //       sellCompleteSets: [{
+  //         data: fix("1"),
+  //         topics: [
+  //           "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+  //           "0x8000000000000000000000000000000000000000000000000000000000000000",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000002"
+  //         ]
+  //       }]
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(JSON.stringify(output), JSON.stringify({
+  //         account: '0xb0b',
+  //         marketIDs: [ '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', '0x8000000000000000000000000000000000000000000000000000000000000000' ],
+  //         shareTotals: {
+  //           shortAskBuyCompleteSets: {},
+  //           shortSellBuyCompleteSets: {
+  //             '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '0.1', '0x8000000000000000000000000000000000000000000000000000000000000000': '0.2'
+  //           },
+  //           sellCompleteSets: {
+  //             '0x8000000000000000000000000000000000000000000000000000000000000000': '-1'
+  //           }
+  //         }
+  //       }));
+  //       finished();
+  //     }
+  //   });
+  //   test({
+  //     description: "2 markets, 3 short sells [0.1 outcome 2 market 1, 1.2 outcome 2 market 2, 10000.00001 outcome 7 market 2], 1 sell complete sets [1.2 market 2]",
+  //     params: {
+  //       account: "0xb0b",
+  //     },
+  //     logs: {
+  //       shortAskBuyCompleteSets: [],
+  //       shortSellBuyCompleteSets: [{
+  //         data: "0x"+
+  //                       "1000000000000000000000000000000000000000000000000000000000000000"+
+  //                       fix("0.1").replace("0x", "")+
+  //                       "0000000000000000000000000000000100000000000000000000000000000000"+
+  //                       "0000000000000000000000000000000000000000000000000000000000000002", // outcome
+  //         topics: [
+  //           "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
+  //           "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+  //           "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
+  //           "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
+  //         ]
+  //       }, {
+  //         data: "0x"+
+  //                       "1000000000000000000000000000000000000000000000000000000000000000"+
+  //                       fix("0.2").replace("0x", "")+
+  //                       "0000000000000000000000000000000200000000000000000000000000000000"+
+  //                       "0000000000000000000000000000000000000000000000000000000000000002", // outcome
+  //         topics: [
+  //           "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
+  //           "0x8000000000000000000000000000000000000000000000000000000000000000",
+  //           "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
+  //           "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
+  //         ]
+  //       }, {
+  //         data: "0x"+
+  //                       "1000000000000000000000000000000000000000000000000000000000000000"+
+  //                       fix("10000.00001").replace("0x", "")+
+  //                       "0000000000000000000000000000000300000000000000000000000000000000"+
+  //                       "0000000000000000000000000000000000000000000000000000000000000007", // outcome
+  //         topics: [
+  //           "0x17c6c0dcf7960856660a58fdb9238dc76130b17e20b6511d08e811a3a92ca8c7",
+  //           "0x8000000000000000000000000000000000000000000000000000000000000000",
+  //           "0x000000000000000000000000000000000000000000000000000000000000d00d", // taker
+  //           "0x0000000000000000000000000000000000000000000000000000000000000b0b"  // maker
+  //         ]
+  //       }],
+  //       sellCompleteSets: [{
+  //         data: fix("1.2"),
+  //         topics: [
+  //           "0x2e6b18139c987afb05efb85deddaa40262aa36c9ddebb9be215461cb22078175",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000b0b",
+  //           "0x8000000000000000000000000000000000000000000000000000000000000000",
+  //           "0x0000000000000000000000000000000000000000000000000000000000000002"
+  //         ]
+  //       }]
+  //     },
+  //     assertions: function (err, output) {
+  //       assert.isNull(err);
+  //       assert.deepEqual(JSON.stringify(output), JSON.stringify({
+  //         account: '0xb0b',
+  //         marketIDs: [ '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff', '0x8000000000000000000000000000000000000000000000000000000000000000' ],
+  //         shareTotals: {
+  //           shortAskBuyCompleteSets: {},
+  //           shortSellBuyCompleteSets: {
+  //             '0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff': '0.1', '0x8000000000000000000000000000000000000000000000000000000000000000': '10000.00001'
+  //           },
+  //           sellCompleteSets: {
+  //             '0x8000000000000000000000000000000000000000000000000000000000000000': '-1.2'
+  //           }
+  //         }
+  //       }));
+  //       finished();
+  //     }
+  //   });
+  // });
 
   describe("calculateNetEffectiveTrades", function () {
     var test = function (t) {

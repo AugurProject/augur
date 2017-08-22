@@ -1,5 +1,18 @@
 "use strict";
 
+/** Type definition for Order.
+ * @typedef {Object} Order
+ * @property {string} amount Rounded number of shares to trade, as a base-10 string.
+ * @property {string} fullPrecisionAmount Full-precision (un-rounded) number of shares to trade, as a base-10 string.
+ * @property {string} price Rounded display price, as a base-10 string.
+ * @property {string} fullPrecisionPrice Full-precision (un-rounded) display price, as a base-10 string.
+ * @property {string} sharesEscrowed Number of the order maker's shares held in escrow, as a base-10 string.
+ * @property {string} tokensEscrowed Number of the order maker's tokens held in escrow, as a base-10 string.
+ * @property {string} owner The order maker's Ethereum address, as a hexadecimal string.
+ * @property {string} betterOrderId ID of the order one step closer to the order book's head, as a hexadecimal string.
+ * @property {string} worseOrderId ID of the order one step closer to the order book's tail, as a hexadecimal string.
+ */
+
 var api = require("../../api");
 var parseOrder = require("../../parsers/order");
 

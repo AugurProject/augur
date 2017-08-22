@@ -1,35 +1,58 @@
 "use strict";
 
-var augurContracts = require("../contracts");
+var async = require("async");
 var api = require("../api");
-var rpcInterface = require("../rpc-interface");
 var getLogs = require("../logs/get-logs");
 
 // { branchID, marketID }
 function migrateLosingTokens(p) {
-  api().Branch.getPreviousReportingWindow({ tx: { to: p.branchID } }, function (previousReportingWindowAddress) {
-    api().ReportingWindow.getStartBlock({ tx: { to: previousReportingWindowAddress } }, function (previousReportingWindowStartBlock) {
-      api().ReportingWindow.getEndBlock({ tx: { to: previousReportingWindowAddress } }, function (previousReportingWindowEndBlock) {
-        getLogs({
-          label: "Transfer",
-          filter: {
-            fromBlock: previousReportingWindowStartBlock,
-            toBlock: previousReportingWindowEndBlock,
-            market: p.marketID,
-            address: augurContracts[rpcInterface.getNetworkID()].ReputationToken
-          }
-        }, function (err, transferLogs) {
-          if (err) return p.onFailed(err);
-          if (!Array.isArray(transferLogs) || !transferLogs.length) return p.onSuccess(null);
-          transferLogs.forEach(function (transferLog) {
-            var reportingTokenContractAddress = transferLog.to;
-            api().ReportingToken.migrateLosingTokens({
-              _signer: p._signer,
-              tx: { to: reportingTokenContractAddress, send: true },
-              onSent: p.onSent,
-              onSuccess: p.onSuccess,
-              onFailed: p.onFailed
-            });
+  var branchPayload = { tx: { to: p.branchID } };
+  async.parallel({
+    reputationToken: function (next) {
+      api().Branch.getReputationToken(branchPayload, function (reputationTokenAddress) {
+        next(null, reputationTokenAddress);
+      });
+    },
+    previousReportingWindow: function (next) {
+      api().Branch.getPreviousReportingWindow(branchPayload, function (previousReportingWindowAddress) {
+        next(null, previousReportingWindowAddress);
+      });
+    }
+  }, function (err, contractAddresses) {
+    if (err) return p.onFailed(err);
+    var previousReportingWindowPayload = { tx: { to: contractAddresses.previousReportingWindow } };
+    async.parallel({
+      previousReportingWindowStartBlock: function (next) {
+        api().ReportingWindow.getStartBlock(previousReportingWindowPayload, function (previousReportingWindowStartBlock) {
+          next(null, previousReportingWindowStartBlock);
+        });
+      },
+      previousReportingWindowEndBlock: function (next) {
+        api().ReportingWindow.getEndBlock(previousReportingWindowPayload, function (previousReportingWindowEndBlock) {
+          next(null, previousReportingWindowEndBlock);
+        });
+      }
+    }, function (err, bounds) {
+      if (err) return p.onFailed(err);
+      getLogs({
+        label: "Transfer",
+        filter: {
+          fromBlock: bounds.previousReportingWindowStartBlock,
+          toBlock: bounds.previousReportingWindowEndBlock,
+          market: p.marketID,
+          address: contractAddresses.reputationToken
+        }
+      }, function (err, transferLogs) {
+        if (err) return p.onFailed(err);
+        if (!Array.isArray(transferLogs) || !transferLogs.length) return p.onSuccess(null);
+        transferLogs.forEach(function (transferLog) {
+          var reportingTokenAddress = transferLog.to;
+          api().ReportingToken.migrateLosingTokens({
+            _signer: p._signer,
+            tx: { to: reportingTokenAddress, send: true },
+            onSent: p.onSent,
+            onSuccess: p.onSuccess,
+            onFailed: p.onFailed
           });
         });
       });

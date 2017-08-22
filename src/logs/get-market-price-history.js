@@ -7,14 +7,10 @@ var noop = require("../utils/noop");
 // { market, filter }
 function getMarketPriceHistory(p, callback) {
   var filter = assign({}, p.filter, { market: p.market });
-
   var aux = { index: "outcome", mergedLogs: {} };
-  getLogsChunked({ label: "log_fill_tx", filter: filter, aux: aux }, noop, function (err) {
+  getLogsChunked({ label: "TakeOrder", filter: filter, aux: aux }, noop, function (err) {
     if (err) return callback(err);
-    getLogsChunked({ label: "log_short_fill_tx", filter: filter, aux: aux }, noop, function (err) {
-      if (err) return callback(err);
-      callback(null, aux.mergedLogs);
-    });
+    callback(null, aux.mergedLogs);
   });
 }
 

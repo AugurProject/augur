@@ -13,8 +13,12 @@ npm install augur.js
 ## Usage
 
 ```javascript
-var augur = require("augur.js");
-augur.connect({ http: "https://eth9000.augur.net", ws: "wss://ws9000.augur.net" });
+var Augur = require("augur.js");
+var augur = new Augur();
+
+augur.connect({ http: "https://eth9000.augur.net", ws: "wss://ws9000.augur.net" }, () => {
+  // do stuff
+});
 ```
 
 ## Documentation

@@ -3,21 +3,20 @@
 var abi = require("augur-abi");
 var parseMarketInfo = require("./market-info");
 
-module.exports = function (marketsArray, numMarkets) {
-  var len, shift, rawInfo, info, marketID, marketsInfo, totalLen, i;
-  if (!Array.isArray(marketsArray) || !marketsArray.length) {
-    return marketsArray;
+module.exports = function (batchMarketInfoArray, numMarkets) {
+  if (!Array.isArray(batchMarketInfoArray) || !batchMarketInfoArray.length) {
+    return batchMarketInfoArray;
   }
-  marketsInfo = {};
-  totalLen = 0;
-  for (i = 0; i < numMarkets; ++i) {
-    len = parseInt(marketsArray[totalLen], 16);
-    shift = totalLen + 1;
-    rawInfo = marketsArray.slice(shift, shift + len - 1);
-    marketID = abi.format_int256(marketsArray[shift]);
-    info = parseMarketInfo(rawInfo);
-    if (info && info.numOutcomes) marketsInfo[marketID] = info;
+  var batchMarketInfo = {};
+  var totalLen = 0;
+  for (var i = 0; i < numMarkets; ++i) {
+    var len = parseInt(batchMarketInfoArray[totalLen], 16);
+    var shift = totalLen + 1;
+    var marketInfoArray = batchMarketInfoArray.slice(shift, shift + len - 1);
+    var marketID = abi.format_int256(batchMarketInfoArray[shift]);
+    var marketInfo = parseMarketInfo(marketInfoArray);
+    if (marketInfo && marketInfo.numOutcomes) batchMarketInfo[marketID] = marketInfo;
     totalLen += len;
   }
-  return marketsInfo;
+  return batchMarketInfo;
 };
