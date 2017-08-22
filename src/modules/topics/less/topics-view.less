@@ -5,7 +5,73 @@
   width: 100%;
 }
 
+#topics_heading {
+  margin: 85px 0 90px;
+
+  h2, h3 {
+    .font-color-light();
+    margin: 0;
+    text-align: center;
+    text-transform: uppercase;
+    margin-bottom: 25px;
+  }
+  h2 {
+    .font-size-most-massive();
+    .font-weight-normal();
+    letter-spacing: 2.3px;
+  }
+
+  h3 {
+    .font-size-massive();
+    .font-weight-semibold();
+    letter-spacing: 2.25px;
+  }
+
+  .separator-bar {
+    background: @color-offwhite;
+    height: 4px;
+    margin: 0 auto;
+    width: 70px;
+  }
+}
+
 #topics_container {
   position: relative;
   z-index: @above-all-content;
+}
+
+.topic-wrap {
+  .font-color-light();
+  .font-family-dinpro();
+  display: inline-block;
+  width: 33.33%;
+  margin-top: 128px;
+  text-align: center;
+
+  &:nth-child(1),
+  &:nth-child(2),
+  &:nth-child(3) {
+    margin: 0;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  .topic-name {
+    .font-size-most-massive();
+    text-transform: uppercase;
+  }
+
+  .separator-bar {
+    background: @color-very-lightpurple;
+    width: 194px;
+    margin: 16px auto 24px;
+    height: 1px;
+  }
+
+  .topic-popularity {
+    .font-size-extra-large();
+    .font-weight-light();
+  }
 }

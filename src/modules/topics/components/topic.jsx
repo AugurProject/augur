@@ -72,11 +72,12 @@ export default class Topic extends Component {
             className="topic-content"
             ref={(topicNameContainer) => { this.topicNameContainer = topicNameContainer; }}
           >
-            <TopicIcon
-              topic={p.topic}
-              fontAwesomeClasses={p.fontAwesomeClasses}
-              icoFontClasses={p.icoFontClasses}
-            />
+            <div className="topic-name" >
+              <span ref={(topicName) => { this.topicName = topicName; }}>
+                {p.topic.toUpperCase()}
+              </span>
+            </div>
+            <div className="separator-bar" />
             <div className="topic-popularity">
               <span
                 className={classNames({
@@ -88,16 +89,8 @@ export default class Topic extends Component {
                 {Math.floor(p.popularity).toLocaleString()}
               </span>
             </div>
-            <div className="topic-name" >
-              <span ref={(topicName) => { this.topicName = topicName; }}>
-                {p.topic.toUpperCase()}
-              </span>
-            </div>
           </div>
         }
-        <ReactTooltip id="topic-volume-tooltip" type="light" effect="solid" place="top">
-          <span className="tooltip-text">Total Market Volume</span>
-        </ReactTooltip>
       </Link>
     );
   }
