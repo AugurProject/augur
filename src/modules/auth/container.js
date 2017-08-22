@@ -20,20 +20,20 @@ const mapDispatchToProps = dispatch => ({
   setupAndFundNewAccount: (pass, id, remember, cb) => dispatch(setupAndFundNewAccount(pass, id, remember, cb)),
   submitLogin: (id, pass, remember, cb) => dispatch(login(id, pass, remember, cb)),
   importAccount: (pass, remember, keystore) => dispatch(importAccount(pass, remember, keystore)),
-  airbitzLoginLink: () => selectABCUIContext().openLoginWindow((result, airbitzAccount) => {
+  airbitzLoginLink: history => selectABCUIContext().openLoginWindow((result, airbitzAccount) => {
     if (airbitzAccount) {
-      dispatch(loginWithAirbitz(airbitzAccount));
+      dispatch(loginWithAirbitz(airbitzAccount, history));
     } else {
       console.log('error registering in: ' + result);
     }
   }),
-  airbitzOnLoad: () => {
+  airbitzOnLoad: (history) => {
     const abcContext = selectABCUIContext().abcContext;
     const usernames = abcContext.listUsernames();
     if (usernames.length > 0) {
       selectABCUIContext().openLoginWindow((result, airbitzAccount) => {
         if (airbitzAccount) {
-          dispatch(loginWithAirbitz(airbitzAccount));
+          dispatch(loginWithAirbitz(airbitzAccount, history));
         } else {
           console.log('error registering in: ' + result);
         }

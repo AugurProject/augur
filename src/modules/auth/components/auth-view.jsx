@@ -13,6 +13,7 @@ import { SIGNUP, LOGIN, IMPORT } from 'modules/app/constants/views';
 
 export default class AuthView extends Component {
   static propTypes = {
+    history: PropTypes.object.isRequired,
     authNavItems: PropTypes.object.isRequired,
     register: PropTypes.func.isRequired,
     setupAndFundNewAccount: PropTypes.func.isRequired,
@@ -37,7 +38,7 @@ export default class AuthView extends Component {
   }
 
   componentDidMount() {
-    this.props.airbitzOnLoad();
+    this.props.airbitzOnLoad(this.props.history);
   }
 
   updateSelectedNav(selectedNav) {
@@ -82,7 +83,7 @@ export default class AuthView extends Component {
             <div className="default-auth">
               <button
                 className="auth-airbitz unstyled"
-                onClick={p.airbitzLoginLink}
+                onClick={() => p.airbitzLoginLink(p.history)}
               >
                 <div>
                   <AirbitzLogoIcon />
@@ -105,7 +106,6 @@ export default class AuthView extends Component {
             <AuthLogin
               history={p.history}
               submitLogin={p.submitLogin}
-              airbitzLogin={p.airbitzLogin}
             />
           }
           {s.selectedNav === IMPORT &&
