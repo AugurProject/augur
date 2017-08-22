@@ -41,3 +41,6 @@ build/Release
 
 # webpack build stats
 stats.json
+
+# those pesky macs
+.DS_Store
