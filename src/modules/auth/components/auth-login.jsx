@@ -3,6 +3,9 @@ import classNames from 'classnames';
 
 import Input from 'modules/common/components/input';
 
+import makePath from 'modules/app/helpers/make-path';
+import { DEFAULT_VIEW } from 'modules/app/constants/views';
+
 export default class AuthLogin extends Component {
   constructor(props) {
     super(props);
@@ -40,7 +43,7 @@ export default class AuthLogin extends Component {
               } else {
                 e.target.style.display = 'none';
 
-                history.replaceState(null, null, 'Force Chrome to Prompt For Password Storage');
+                p.history.push(makePath(DEFAULT_VIEW));
               }
             });
           }

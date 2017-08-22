@@ -5,14 +5,15 @@ import { invalidateMarketCreation, clearNewMarket } from 'modules/create-market/
 import { updateTradesInProgress } from 'modules/trade/actions/update-trades-in-progress';
 import { placeTrade } from 'modules/trade/actions/place-trade';
 
-import { selectTransactionsLink } from 'modules/link/selectors/links';
+import makePath from 'modules/app/helpers/make-path';
 
 import { BID } from 'modules/transactions/constants/types';
 import { BUY, SELL } from 'modules/trade/constants/types';
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
 import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR } from 'modules/markets/constants/market-outcomes';
+import { TRANSACTIONS } from 'modules/app/constants/views';
 
-export function submitNewMarket(newMarket) {
+export function submitNewMarket(newMarket, history) {
   return (dispatch, getState) => {
     const { branch, loginAccount } = getState();
 
@@ -55,9 +56,7 @@ export function submitNewMarket(newMarket) {
       ...formattedNewMarket,
       _signer: loginAccount.privateKey,
       onSent: (res) => {
-        console.log('createSingleEventMarket sent:', res);
-
-        selectTransactionsLink(dispatch).onClick();
+        history.push(makePath(TRANSACTIONS));
         dispatch(clearNewMarket());
       },
       onSuccess: (res) => {

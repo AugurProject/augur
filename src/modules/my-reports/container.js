@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import MyReports from 'modules/my-reports/components/my-reports';
 import getMyReports from 'modules/my-reports/selectors/my-reports';
@@ -19,6 +20,6 @@ const mapDispatchToProps = dispatch => ({
   triggerTransactionsExport: () => dispatch(triggerTransactionsExport()),
 });
 
-const MyReportsContainer = connect(mapStateToProps, mapDispatchToProps)(MyReports);
+const MyReportsContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(MyReports));
 
 export default MyReportsContainer;

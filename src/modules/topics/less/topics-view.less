@@ -22,16 +22,22 @@
         display: flex;
         flex: 1;
 
+        .view-header {
+          flex: none;
+          flex-basis: 50%;
+          padding: 0;
+
+          @media @breakpoint-1 {
+            flex-basis: 100%;
+          }
+
+          .view-header-group {
+            margin: 0;
+          }
+        }
+
         &.only-search {
           justify-content: center;
-
-          .input {
-            flex-basis: 50%;
-
-            @media @breakpoint-1 {
-              flex-basis: 100%;
-            }
-          }
         }
 
         .input {

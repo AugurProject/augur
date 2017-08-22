@@ -9,7 +9,6 @@ import encryptPrivateKeyWithPassword from 'modules/auth/helpers/encrypt-privatek
 import generateDownloadAccountLink from 'modules/auth/helpers/generate-download-account-link';
 import Input from 'modules/common/components/input';
 import Spinner from 'modules/common/components/spinner';
-import Link from 'modules/link/components/link';
 
 import { REQUIRED_PASSWORD_STRENGTH } from 'modules/auth/constants/password-strength';
 
@@ -97,8 +96,6 @@ export default class AccountExportAirbitz extends Component {
   }
 
   generateEncryptedKeyFile() {
-    console.log('generateEncryptedKeyFile -- ', this.state);
-
     encryptPrivateKeyWithPassword(
       this.state.password,
       this.props.privateKey,
@@ -222,13 +219,13 @@ export default class AccountExportAirbitz extends Component {
                 size={p.qrSize}
               />
               <h4>or</h4>
-              <Link
+              <a
                 className="button"
                 href={s.downloadAccountDataString}
                 download={s.downloadAccountFileName}
               >
                 Download Key File
-              </Link>
+              </a>
             </div>
           }
         </CSSTransitionGroup>

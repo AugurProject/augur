@@ -69,28 +69,17 @@ describe('modules/portfolio/selectors/nav-items', () => {
     }
   ));
 
-  const stubbedLinks = sinon.stub(selectors, 'selectLinks', () => stubbedSelectors.links);
-
   const proxiedSelector = proxyquire('../../../src/modules/portfolio/selectors/portfolio-nav-items', {
     '../../my-positions/selectors/my-positions-summary': stubbedMyPositionsSummary,
     '../../my-markets/selectors/my-markets-summary': stubbedMyMarketsSummary,
     '../../my-reports/selectors/my-reports-summary': stubbedMyReportsSummary,
-    '../../link/selectors/links': stubbedLinks,
     '../../../selectors': stubbedSelectors
   });
 
   const expected = [
     {
       label: 'Positions',
-      link: {
-        label: 'test',
-        link: {
-          href: 'test',
-          onClick: 'fake function'
-        },
-        page: 'test'
-      },
-      page: MY_POSITIONS,
+      view: MY_POSITIONS,
       leadingTitle: 'Total Number of Positions',
       leadingValue: formatNumber(10, { denomination: 'positions' }),
       leadingValueNull: 'No Positions',
@@ -100,15 +89,7 @@ describe('modules/portfolio/selectors/nav-items', () => {
     },
     {
       label: 'Markets',
-      link: {
-        label: 'test',
-        link: {
-          href: 'test',
-          onClick: 'fake function'
-        },
-        page: 'test'
-      },
-      page: MY_MARKETS,
+      view: MY_MARKETS,
       leadingTitle: 'Total Markets',
       leadingValue: formatNumber(30, { denomination: 'Markets' }),
       leadingValueNull: 'No Markets',
@@ -118,15 +99,7 @@ describe('modules/portfolio/selectors/nav-items', () => {
     },
     {
       label: 'Reports',
-      link: {
-        label: 'test',
-        link: {
-          href: 'test',
-          onClick: 'fake function'
-        },
-        page: 'test'
-      },
-      page: MY_REPORTS,
+      view: MY_REPORTS,
       leadingTitle: 'Total Reports',
       leadingValue: formatNumber(10, { denomination: 'Reports' }),
       leadingValueNull: 'No Reports',

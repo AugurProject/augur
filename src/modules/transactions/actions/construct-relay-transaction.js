@@ -11,7 +11,10 @@ import unpackTransactionParameters from 'modules/transactions/actions/unpack-tra
 import { selectMarketFromEventID } from 'modules/market/selectors/market';
 import selectWinningPositions from 'modules/my-positions/selectors/winning-positions';
 import { addNotification } from 'modules/notifications/actions/update-notifications';
-import { selectTransactionsLink } from 'modules/link/selectors/links';
+
+import makePath from 'modules/app/helpers/make-path';
+
+import { TRANSACTIONS } from 'modules/app/constants/views';
 
 export const constructRelayTransaction = (tx, status) => (dispatch, getState) => {
   const hash = tx.hash;
@@ -33,8 +36,6 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
     ...getState().functionsAPI[contract][method]
   }, gasPrice).toFixed();
 
-  const transactionsHref = selectTransactionsLink(dispatch).href;
-
   const { loginAccount } = getState();
 
   console.log('method -- ', method);
@@ -49,7 +50,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         title: `Bid ${amount || ''} ${amount && 'Share'}${amount && parseFloat(amount, 10) === 1 ? '' : 's'} - ${status || tx.status}`,
         description: market.description || '',
         timestamp: p.timestamp,
-        href: transactionsHref
+        linkPath: makePath(TRANSACTIONS)
       }));
       return dispatch(constructTradingTransaction(TYPES.LOG_ADD_TX, {
         type: TYPES.BUY,
@@ -70,7 +71,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         title: `${p.isShortAsk ? 'short ask' : 'ask'} ${amount || ''} ${amount && 'Share'}${amount && parseFloat(amount, 10) === 1 ? '' : 's'} - ${status || tx.status}`,
         description: market.description || '',
         timestamp: p.timestamp,
-        href: transactionsHref
+        linkPath: makePath(TRANSACTIONS)
       }));
       return dispatch(constructTradingTransaction(TYPES.LOG_ADD_TX, {
         type: TYPES.SELL,
@@ -92,7 +93,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           title: `Cancel ${cancelledOrder.numShares.formatted} Share${cancelledOrder.numShares.value === 1 ? '' : 's'} - success`,
           description: cancelledOrder.description,
           timestamp: p.timestamp,
-          href: transactionsHref
+          linkPath: makePath(TRANSACTIONS)
         }));
       }
 
@@ -106,7 +107,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
         title: `Cancel ${amount || ''} ${amount && 'Share'}${amount && parseFloat(amount, 10) === 1 ? '' : 's'} - ${status || tx.status}`,
         description: market.description || '',
         timestamp: p.timestamp,
-        href: transactionsHref
+        linkPath: makePath(TRANSACTIONS)
       }));
       return dispatch(constructTradingTransaction(TYPES.LOG_CANCEL, {
         ...p,
@@ -161,7 +162,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
           title: `Committing to ${order.type === TYPES.BUY ? TYPES.SELL : TYPES.BUY} ${amount || ''} ${amount && 'Share'}${amount && parseFloat(amount, 10) === 1 ? '' : 's'} - ${status}`,
           description: market.description || '',
           timestamp: p.timestamp,
-          href: transactionsHref
+          linkPath: makePath(TRANSACTIONS)
         }));
         transactions[i] = dispatch(constructTradingTransaction(label, {
           ...p,
@@ -288,7 +289,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             title: `${order.type === TYPES.BUY ? TYPES.SELL : TYPES.BUY} ${amount || ''} ${amount && 'Share'}${amount && parseFloat(amount, 10) === 1 ? '' : 's'} - ${tx.status}`,
             description: market.description || '',
             timestamp: p.timestamp,
-            href: transactionsHref
+            linkPath: makePath(TRANSACTIONS)
           };
           transactions[i] = dispatch(constructTradingTransaction(TYPES.LOG_FILL_TX, {
             ...p,
@@ -320,7 +321,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             title: `Convert ETH Token to ETH - ${tx.status}`,
             description: `Converting ${amount.toLocaleString()} ETH Token${amount === 1 ? '' : 's'} to ETH`,
             timestamp: p.timestamp,
-            href: transactionsHref
+            linkPath: makePath(TRANSACTIONS)
           };
           transaction = dispatch(constructTransaction(TYPES.WITHDRAW_ETHER, { ...p, ...tx }));
           break;
@@ -333,7 +334,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             title: `Convert ETH to ETH Token - ${tx.status}`,
             description: `Converting ${amount.toLocaleString()} ETH to ETH Token${amount === 1 ? '' : 's'}`,
             timestamp: p.timestamp,
-            href: transactionsHref
+            linkPath: makePath(TRANSACTIONS)
           };
           transaction = dispatch(constructTransaction(TYPES.DEPOSIT_ETHER, { ...p, ...tx }));
           break;
@@ -344,7 +345,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             title: `Fund Account Request - ${tx.status}`,
             description: 'Requesting testnet ETH, ETH Tokens, and REP',
             timestamp: p.timestamp,
-            href: transactionsHref
+            linkPath: makePath(TRANSACTIONS)
           };
           transaction = dispatch(constructTransaction(TYPES.FUNDED_ACCOUNT, p));
           break;
@@ -356,7 +357,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
               title: `Snitch Reward - ${tx.status}`,
               description: p.reporter,
               timestamp: p.timestamp,
-              href: transactionsHref
+              linkPath: makePath(TRANSACTIONS)
             };
           } else {
             notification = {
@@ -364,7 +365,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
               title: `Pay Collusion Fine - ${tx.status}`,
               description: abi.strip_0x(tx.data.from),
               timestamp: p.timestamp,
-              href: transactionsHref
+              linkPath: makePath(TRANSACTIONS)
             };
           }
           transaction = dispatch(constructTransaction(TYPES.SLASHED_REP, {
@@ -379,7 +380,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             title: `Reveal Report - ${tx.status}`,
             description: additionalInfo.market.description || '',
             timestamp: p.timestamp,
-            href: transactionsHref
+            linkPath: makePath(TRANSACTIONS)
           };
           transaction = dispatch(constructTransaction(TYPES.SUBMITTED_REPORT, {
             ...p, // { event, report, salt }
@@ -394,7 +395,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             title: `Commit Report - ${tx.status}`,
             description: additionalInfo.market.description || '',
             timestamp: p.timestamp,
-            href: transactionsHref
+            linkPath: makePath(TRANSACTIONS)
           };
           transaction = dispatch(constructTransaction(TYPES.SUBMITTED_REPORT_HASH, {
             ...p, // { event, encryptedReport, encryptedSalt }
@@ -415,7 +416,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             title: `Wrong Report Penalty - ${tx.status}`,
             description: `${p.repchange} REP`,
             timestamp: p.timestamp,
-            href: transactionsHref
+            linkPath: makePath(TRANSACTIONS)
           };
           transaction = dispatch(constructTransaction(TYPES.PENALIZE, {
             ...p, // { event }
@@ -431,7 +432,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             title: `Missed Reports Penalty - ${tx.status}`,
             description: `${p.repLost} REP`,
             timestamp: p.timestamp,
-            href: transactionsHref
+            linkPath: makePath(TRANSACTIONS)
           };
           transaction = dispatch(constructTransaction(TYPES.PENALIZATION_CAUGHT_UP, {
             ...p,
@@ -447,7 +448,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             title: `Reporting Payout - ${tx.status}`,
             description: `${p.repGain} REP`,
             timestamp: p.timestamp,
-            href: transactionsHref
+            linkPath: makePath(TRANSACTIONS)
           };
           transaction = dispatch(constructTransaction(TYPES.COLLECTED_FEES, {
             ...p,
@@ -473,7 +474,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             title: `Claim Trading Payout - ${tx.status}`,
             description: `${shares} Shares`,
             timestamp: p.timestamp,
-            href: transactionsHref
+            linkPath: makePath(TRANSACTIONS)
           };
           transaction = dispatch(constructTransaction(TYPES.PAYOUT, { ...p, shares }));
           break;
@@ -484,7 +485,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             title: `Send Ether Tokens - ${tx.status}`,
             description: `${abi.unfix(p.value, 'string')} ETH Tokens`,
             timestamp: p.timestamp,
-            href: transactionsHref
+            linkPath: makePath(TRANSACTIONS)
           };
           transaction = dispatch(constructTransaction(TYPES.SENT_CASH, {
             ...p,
@@ -499,7 +500,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             title: `Send Ether - ${tx.status}`,
             description: `${abi.unfix(p.value, 'string')} ETH`,
             timestamp: p.timestamp,
-            href: transactionsHref
+            linkPath: makePath(TRANSACTIONS)
           };
           transaction = dispatch(constructTransaction(TYPES.SENT_ETHER, {
             ...p,
@@ -515,7 +516,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             title: `Transfer Reputation - ${tx.status}`,
             description: `${abi.unfix(p.value, 'string')} REP`,
             timestamp: p.timestamp,
-            href: transactionsHref
+            linkPath: makePath(TRANSACTIONS)
           };
           transaction = dispatch(constructTransaction(TYPES.TRANSFER, {
             ...p,
@@ -542,7 +543,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             title: `Registration - ${tx.status}`,
             description: 'Logging account registration',
             timestamp: p.timestamp,
-            href: transactionsHref
+            linkPath: makePath(TRANSACTIONS)
           };
           transaction = dispatch(constructTransaction(TYPES.REGISTRATION, {
             ...p,
@@ -556,7 +557,7 @@ export const constructRelayTransaction = (tx, status) => (dispatch, getState) =>
             title: `Create Market - ${tx.status}`,
             description: p.description,
             timestamp: p.timestamp,
-            href: transactionsHref
+            linkPath: makePath(TRANSACTIONS)
           };
           const { baseReporters, numEventsCreatedInPast24Hours, numEventsInReportPeriod, periodLength } = getState().branch;
           transaction = dispatch(constructTransaction(TYPES.MARKET_CREATED, {

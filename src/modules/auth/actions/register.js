@@ -1,6 +1,7 @@
 import { augur } from 'services/augurjs';
 import { base58Decode, base58Encode } from 'utils/base-58';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
+import { updateIsLoggedIn } from 'modules/auth/actions/update-is-logged-in';
 import logError from 'utils/log-error';
 
 export const register = (password, callback = logError) => dispatch => (
@@ -10,6 +11,7 @@ export const register = (password, callback = logError) => dispatch => (
     } else if (account.error) {
       return callback({ code: account.error, message: account.message });
     }
+    dispatch(updateIsLoggedIn(true));
     callback(null, base58Encode(account));
   })
 );

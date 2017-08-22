@@ -224,11 +224,10 @@ describe('modules/create-market/actions/submit-new-market', () => {
     assertions: (store) => {
       const { submitNewMarket, __RewireAPI__ } = require('modules/create-market/actions/submit-new-market');
 
-      const onClick = sinon.stub();
-      const mockSelectTransactionsLink = sinon.stub().returns({
-        onClick
-      });
-      __RewireAPI__.__Rewire__('selectTransactionsLink', mockSelectTransactionsLink);
+      const push = sinon.stub();
+      const history = {
+        push
+      };
       __RewireAPI__.__Rewire__('clearNewMarket', () => ({
         type: 'createNewMarket'
       }));
@@ -242,10 +241,9 @@ describe('modules/create-market/actions/submit-new-market', () => {
       };
       __RewireAPI__.__Rewire__('augur', mockAugur);
 
-      store.dispatch(submitNewMarket(store.getState().newMarket));
+      store.dispatch(submitNewMarket(store.getState().newMarket, history));
 
-      assert.isTrue(mockSelectTransactionsLink.calledOnce, `Didn't call 'selectTransactionsLink' once as expected`);
-      assert.isTrue(onClick.calledOnce, `Didn't call 'selectTransactionsLink's 'onClick' method once as expected`);
+      assert.isTrue(push.calledOnce, `didn't push a new path to history`);
 
       const actual = store.getActions();
 

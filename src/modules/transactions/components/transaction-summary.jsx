@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import classNames from 'classnames';
-import Link from 'modules/link/components/link';
 import ValueDenomination from 'modules/common/components/value-denomination';
 import ValueTimestamp from 'modules/common/components/value-timestamp';
 import ReportEthics from 'modules/my-reports/components/report-ethics';
@@ -10,12 +10,25 @@ import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, MATCH_BID, M
 import { FUND_ACCOUNT } from 'modules/auth/constants/auth-types';
 import { SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types';
 
+import makePath from 'modules/app/helpers/make-path';
+import makeQuery from 'modules/app/helpers/make-query';
+
 import getValue from 'utils/get-value';
+
+import { MARKET } from 'modules/app/constants/views';
+import { MARKET_ID_PARAM_NAME } from 'modules/app/constants/param-names';
 
 const TransactionSummary = p => (
   <article className={classNames('transaction-summary', p.isGroupedTransaction && 'transaction-grouped')}>
-    {p.data.marketLink ?
-      <Link {...p.data.marketLink}>
+    {p.data.marketID ?
+      <Link
+        to={{
+          pathname: makePath(MARKET),
+          search: makeQuery({
+            [MARKET_ID_PARAM_NAME]: p.data.marketID
+          })
+        }}
+      >
         <TransactionSummaryContent {...p} />
       </Link> :
       <TransactionSummaryContent {...p} />

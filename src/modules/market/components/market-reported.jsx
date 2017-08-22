@@ -7,7 +7,10 @@ const MarketReported = p => (
   <article className="market-reported">
     <div className="market-group">
       <article className="market-reported-details">
-        <MarketBasics {...p.market} />
+        <MarketBasics
+          {...p.market}
+          isLogged={p.isLogged}
+        />
         <MarketDetails key="market-info" {...p.market} />
       </article>
     </div>

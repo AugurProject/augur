@@ -14,6 +14,7 @@ import { MARKET_DATA_NAV_OUTCOMES, MARKET_DATA_ORDERS, MARKET_DATA_NAV_CHARTS, M
 
 export default class MarketData extends Component {
   static propTypes = {
+    history: PropTypes.object.isRequired,
     marketDataNavItems: PropTypes.object,
     isReportTabVisible: PropTypes.bool,
     isSnitchTabVisible: PropTypes.bool,
@@ -125,6 +126,7 @@ export default class MarketData extends Component {
           <ReportForm
             {...p.market}
             branch={p.branch}
+            history={p.history}
             isReported={p.market.isReported || p.market.isReportSubmitted}
             onClickSubmit={p.market.report.onSubmitReport}
           />

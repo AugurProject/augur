@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Helmet } from 'react-helmet';
+
 import ComponentNav from 'modules/common/components/component-nav';
 
 import { ACCOUNT_NAV_ITEMS } from 'modules/account/constants/account-nav-items';
@@ -13,7 +15,7 @@ import AccountExport from 'modules/account/components/account-export';
 export default class AccountView extends Component {
   static propTypes = {
     loginAccount: PropTypes.object.isRequired,
-    authLink: PropTypes.object.isRequired,
+    signOut: PropTypes.func.isRequired,
     updateAccountName: PropTypes.func.isRequired,
     isMobile: PropTypes.bool.isRequired
   };
@@ -40,6 +42,10 @@ export default class AccountView extends Component {
 
     return (
       <section id="account_view">
+        <Helmet>
+          <title>Account</title>
+        </Helmet>
+
         {loginAccount.address &&
           <article
             className="account-content"
@@ -49,7 +55,7 @@ export default class AccountView extends Component {
               updateAccountName={p.updateAccountName}
               address={loginAccount.address}
               trimmedAddress={loginAccount.trimmedAddress}
-              signOut={p.authLink}
+              signOut={p.signOut}
               airbitzAccount={loginAccount.airbitzAccount}
               manageAirbitzAccount={p.manageAirbitzAccount}
             />

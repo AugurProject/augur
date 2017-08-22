@@ -1,7 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import assertFormattedNumber from 'assertions/common/formatted-number';
-import assertMarketLink from 'assertions/common/market-link';
 
 export default function (positionsMarkets) {
   assert.isDefined(positionsMarkets, `positionsMarkets isn't defined`);
@@ -16,12 +15,6 @@ function assertPositionMarket(positionMarket) {
       assert.isDefined(positionMarket.id, `'positionMarket.id' is not defined`);
       assert.isString(positionMarket.id, `'positionMarket.id' isn't a string`);
     });
-
-    it('marketLink', () => {
-      assert.isDefined(positionMarket.marketLink, `'positionMarket.marketLink' is not defined`);
-      assertMarketLink(positionMarket.marketLink, 'positionMarket.marketLink');
-    });
-
 
     it('description', () => {
       assert.isDefined(positionMarket.description, `'positionMarket.description' is not defined`);

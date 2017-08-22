@@ -6,7 +6,6 @@ import { syncBlockchain } from 'modules/app/actions/sync-blockchain';
 import { listenToUpdates } from 'modules/app/actions/listen-to-updates';
 import { loadTopics } from 'modules/topics/actions/load-topics';
 import { clearMarketsData } from 'modules/markets/actions/update-markets-data';
-import { updateURL } from 'modules/link/actions/update-url';
 
 export const loadBranch = branchID => (dispatch, getState) => {
   dispatch(clearMarketsData());
@@ -20,6 +19,5 @@ export const loadBranch = branchID => (dispatch, getState) => {
       dispatch(listenToUpdates());
     }));
     dispatch(loadTopics(branchID));
-    dispatch(updateURL(window.location.pathname + window.location.search, null, branchID));
   });
 };

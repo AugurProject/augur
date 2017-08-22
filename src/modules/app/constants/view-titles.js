@@ -1,4 +1,5 @@
 export const DEFAULT = 'Decentralized Prediction Markets';
+
 export const CREATE_MARKET = 'Create Market';
 export const POSITIONS = 'Positions';
 export const MARKET = 'Market';

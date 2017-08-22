@@ -32,19 +32,21 @@ describe(`modules/my-positions/selectors/my-positions.js`, () => {
     test({
       description: `should return the expected array`,
       assertions: () => {
-        const mockMarketsAll = () => (
-          [
-            {
-              id: '0xMARKETID1'
-            },
-            {
-              id: '0xMARKETID2'
-            },
-            {
-              id: '0xMARKETID3'
-            }
-          ]
-        );
+        const mockMarketsAll = {
+          selectMarkets: () => (
+            [
+              {
+                id: '0xMARKETID1'
+              },
+              {
+                id: '0xMARKETID2'
+              },
+              {
+                id: '0xMARKETID3'
+              }
+            ]
+          )
+        };
         const mockSelectState = {
           selectAccountPositionsState: () => (
             {

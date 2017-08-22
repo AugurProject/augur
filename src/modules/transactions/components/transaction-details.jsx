@@ -1,6 +1,5 @@
 import React from 'react';
 import ValueDenomination from 'modules/common/components/value-denomination';
-import Link from 'modules/link/components/link';
 
 import { SUCCESS } from 'modules/transactions/constants/statuses';
 
@@ -126,9 +125,13 @@ const TransactionDetails = (p) => {
   return (
     <article className="transaction-details">
       {p.hash ?
-        <Link href={`https://testnet.etherscan.io/tx/${p.hash}`} target="_blank">
+        <a
+          to={`https://testnet.etherscan.io/tx/${p.hash}`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <TransactionDetails {...p} />
-        </Link> :
+        </a> :
         <TransactionDetails {...p} />
       }
     </article>

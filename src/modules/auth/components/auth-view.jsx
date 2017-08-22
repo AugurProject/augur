@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Helmet } from 'react-helmet';
 
 import AuthLogin from 'modules/auth/components/auth-login';
 import AuthSignup from 'modules/auth/components/auth-signup';
@@ -8,7 +9,7 @@ import AirbitzLogoIcon from 'modules/common/components/airbitz-logo-icon';
 
 import ComponentNav from 'modules/common/components/component-nav';
 
-import { AUTH_SIGNUP, AUTH_LOGIN, AUTH_IMPORT } from 'modules/app/constants/views';
+import { SIGNUP, LOGIN, IMPORT } from 'modules/app/constants/views';
 
 export default class AuthView extends Component {
   static propTypes = {
@@ -17,15 +18,15 @@ export default class AuthView extends Component {
     setupAndFundNewAccount: PropTypes.func.isRequired,
     submitLogin: PropTypes.func.isRequired,
     importAccount: PropTypes.func.isRequired,
-    airbitzLoginLink: PropTypes.object.isRequired,
-    airbitzOnLoad: PropTypes.object.isRequired
+    airbitzLoginLink: PropTypes.func.isRequired,
+    airbitzOnLoad: PropTypes.func.isRequired
   }
 
   constructor(props) {
     super(props);
 
     this.state = {
-      selectedNav: AUTH_SIGNUP,
+      selectedNav: SIGNUP,
       selectedAuthMethod: null,
       selectedLoginIDMethod: null
     };
@@ -36,7 +37,7 @@ export default class AuthView extends Component {
   }
 
   componentDidMount() {
-    this.props.airbitzOnLoad.onLoad();
+    this.props.airbitzOnLoad();
   }
 
   updateSelectedNav(selectedNav) {
@@ -67,6 +68,9 @@ export default class AuthView extends Component {
 
     return (
       <section id="auth_view">
+        <Helmet>
+          <title>Authentication</title>
+        </Helmet>
         <article className="auth-methods">
           <ComponentNav
             fullWidth
@@ -74,37 +78,40 @@ export default class AuthView extends Component {
             selectedNav={s.selectedNav}
             updateSelectedNav={this.updateSelectedNav}
           />
-          {s.selectedNav !== AUTH_IMPORT &&
+          {s.selectedNav !== IMPORT &&
             <div className="default-auth">
               <button
                 className="auth-airbitz unstyled"
-                onClick={p.airbitzLoginLink.onClick}
+                onClick={p.airbitzLoginLink}
               >
                 <div>
                   <AirbitzLogoIcon />
                   <span>
-                    {s.selectedNav === AUTH_SIGNUP ? 'Signup' : 'Login'} with Airbitz
+                    {s.selectedNav === SIGNUP ? 'Signup' : 'Login'} with Airbitz
                   </span>
                 </div>
               </button>
               <h4>or</h4>
             </div>
           }
-          {s.selectedNav === AUTH_SIGNUP &&
+          {s.selectedNav === SIGNUP &&
             <AuthSignup
+              history={p.history}
               register={p.register}
               setupAndFundNewAccount={p.setupAndFundNewAccount}
             />
           }
-          {s.selectedNav === AUTH_LOGIN &&
+          {s.selectedNav === LOGIN &&
             <AuthLogin
+              history={p.history}
               submitLogin={p.submitLogin}
               airbitzLogin={p.airbitzLogin}
             />
           }
-          {s.selectedNav === AUTH_IMPORT &&
+          {s.selectedNav === IMPORT &&
             <AuthImport
-              importAccountFromFile={p.importAccountFromFile}
+              history={p.history}
+              importAccount={p.importAccount}
             />
           }
         </article>

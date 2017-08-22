@@ -18,9 +18,9 @@ describe('modules/app/constants/views', () => {
   test({
     description: `should return the expected value 'M'`,
     assertions: () => {
-      const expected = 'm';
+      const expected = 'market';
 
-      assert.strictEqual(views.M, expected, `didn't return the expected string`);
+      assert.strictEqual(views.MARKET, expected, `didn't return the expected string`);
     }
   });
 
@@ -81,9 +81,9 @@ describe('modules/app/constants/views', () => {
   test({
     description: `should return the expected value 'AUTH_LOGIN'`,
     assertions: () => {
-      const expected = 'AUTH_LOGIN';
+      const expected = 'authentication';
 
-      assert.strictEqual(views.AUTH_LOGIN, expected, `didn't return the expected string`);
+      assert.strictEqual(views.AUTHENTICATION, expected, `didn't return the expected string`);
     }
   });
 

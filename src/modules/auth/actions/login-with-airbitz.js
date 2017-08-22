@@ -2,6 +2,7 @@ import secureRandom from 'secure-random';
 import { augur } from 'services/augurjs';
 import { AIRBITZ_WALLET_TYPE } from 'modules/auth/constants/auth-types';
 import { loadAccountData } from 'modules/auth/actions/load-account-data';
+import { updateIsLoggedIn } from 'modules/auth/actions/update-is-logged-in';
 
 export const loginWithAirbitzEthereumWallet = (airbitzAccount, ethereumWallet, isNewAccount) => (dispatch) => {
   const masterPrivateKey = ethereumWallet.keys.ethereumKey;
@@ -9,6 +10,7 @@ export const loginWithAirbitzEthereumWallet = (airbitzAccount, ethereumWallet, i
     if (!account || !account.address || account.error) {
       return console.error(account);
     }
+    dispatch(updateIsLoggedIn(true));
     dispatch(loadAccountData({ ...account, name: airbitzAccount.username, airbitzAccount }, true));
   });
 };

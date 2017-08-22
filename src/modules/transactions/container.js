@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import TransactionsView from 'modules/transactions/components/transactions-view';
 
 import { selectTransactions } from 'modules/transactions/selectors/transactions';
@@ -22,6 +23,6 @@ const mapDispatchToProps = dispatch => ({
   triggerTransactionsExport: () => dispatch(triggerTransactionsExport()),
 });
 
-const Transactions = connect(mapStateToProps, mapDispatchToProps)(TransactionsView);
+const Transactions = withRouter(connect(mapStateToProps, mapDispatchToProps)(TransactionsView));
 
 export default Transactions;

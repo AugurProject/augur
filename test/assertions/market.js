@@ -2,7 +2,6 @@ import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import assertFormattedNumber from 'assertions/common/formatted-number';
 import assertFormattedDate from 'assertions/common/formatted-date';
-import assertMarketLink from 'assertions/common/market-link';
 import assertReportableOutcomes from 'assertions/reportable-outcomes';
 
 export default function (market) {
@@ -86,11 +85,6 @@ export default function (market) {
     it('market.isPendingReport', () => {
       assert.isDefined(market.isPendingReport);
       assert.isBoolean(market.isPendingReport);
-    });
-
-    it('market.marketLink', () => {
-      assert.isDefined(market.marketLink);
-      assertMarketLink(market.marketLink, 'market.marketLink');
     });
 
     const tags = market.tags;

@@ -14,8 +14,7 @@ export default class NotificationsView extends Component {
     updateNotification: PropTypes.func.isRequired,
     removeNotification: PropTypes.func.isRequired,
     clearNotifications: PropTypes.func.isRequired,
-    toggleNotifications: PropTypes.func.isRequired,
-    onClick: PropTypes.func
+    toggleNotifications: PropTypes.func.isRequired
   };
 
   constructor(props) {
@@ -94,7 +93,6 @@ export default class NotificationsView extends Component {
                 <Notification
                   key={`${notification.id}-${notification.title}`}
                   removeNotification={() => p.removeNotification(i)}
-                  onClick={p.onClick}
                   toggleNotifications={p.toggleNotifications}
                   updateNotification={p.updateNotification}
                   notificationsBounds={s.notificationsBounds}

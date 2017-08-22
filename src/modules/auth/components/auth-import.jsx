@@ -3,6 +3,9 @@ import classNames from 'classnames';
 
 import Input from 'modules/common/components/input';
 
+import makePath from 'modules/app/helpers/make-path';
+import { DEFAULT_VIEW } from 'modules/app/constants/views';
+
 export default class AuthImport extends Component {
   constructor(props) {
     super(props);
@@ -27,6 +30,10 @@ export default class AuthImport extends Component {
     window.addEventListener('error', this.handleRecoverError);
   }
 
+  componentWillUnmount() {
+    window.removeEventListener('error', this.handleRecoverError);
+  }
+
   handleRecoverError(err) {
     this.setState({
       authError: true,
@@ -46,7 +53,17 @@ export default class AuthImport extends Component {
           e.preventDefault();
 
           if (s.loginAccount && s.password) {
-            p.importAccountFromFile(s.password, s.loginAccount);
+            p.importAccount(s.password, s.loginAccount, (err) => {
+              if (err) {
+                return this.setState({
+                  authError: true,
+                  errorMessage: 'Account Import Failed',
+                  isAuthErrorDisplayable: true
+                });
+              }
+
+              p.history.push(makePath(DEFAULT_VIEW));
+            });
           }
         }}
       >

@@ -2,7 +2,6 @@ import { createSelector } from 'reselect';
 import BigNumber from 'bignumber.js';
 import store from 'src/store';
 import { selectTransactionsDataState } from 'src/select-state';
-import { selectMarketLink } from 'modules/link/selectors/links';
 
 import { BUY } from 'modules/transactions/constants/types';
 import { PENDING, SUCCESS, FAILED, SUBMITTED, INTERRUPTED } from 'modules/transactions/constants/statuses';
@@ -46,20 +45,9 @@ export const selectTransactions = createSelector(
 );
 
 export function formatTransaction(transaction) {
-  let marketLink = getValue(transaction, 'data.marketLink');
-  if (marketLink == null && transaction.data && (transaction.data.id || transaction.data.marketID) && (transaction.data.description || transaction.description)) {
-    marketLink = selectMarketLink({
-      id: transaction.data.id || transaction.data.marketID,
-      description: transaction.description
-    }, store.dispatch);
-  }
-
   return {
     ...transaction,
-    data: {
-      ...transaction.data,
-      marketLink
-    },
+    data: transaction.data,
     gas: transaction.gas && formatEther(transaction.gas),
     ethTokens: transaction.etherWithoutGas && formatEtherTokens(transaction.etherWithoutGas),
     shares: transaction.sharesChange && formatShares(transaction.sharesChange),
