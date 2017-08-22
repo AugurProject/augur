@@ -117,7 +117,7 @@ export default class Input extends Component {
         {isClearable && !p.isMultiline && !!s.value &&
           <button
             type="button"
-            className="button-text-only"
+            className="button--text-only"
             onClick={this.handleClear}
           >
             <i className="fa fa-close" />
@@ -127,7 +127,7 @@ export default class Input extends Component {
         {canToggleVisibility && s.value &&
           <button
             type="button"
-            className="button-text-only"
+            className="button--text-only"
             onClick={this.handleToggleVisibility}
             tabIndex="-1"
           >
