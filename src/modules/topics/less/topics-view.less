@@ -55,12 +55,21 @@
   }
 
   a {
+    display: block;
     text-decoration: none;
+  }
+
+  a.button {
+    cursor: pointer;
   }
 
   .topic-name {
     .font-size-most-massive();
+    overflow: hidden;
+    text-overflow: ellipsis;
     text-transform: uppercase;
+    white-space: nowrap;
+    width: 100%;
   }
 
   .separator-bar {
@@ -74,4 +83,20 @@
     .font-size-extra-large();
     .font-weight-light();
   }
+  @media @breakpoint-small-desktop {
+    width: 50%;
+
+    &:nth-child(3) {
+      margin-top: 120px;
+    }
+  }
+  @media @breakpoint-mobile {
+    width: 100%;
+
+    &:nth-child(2) {
+      margin-top: 120px;
+    }
+  }
 }
+
+

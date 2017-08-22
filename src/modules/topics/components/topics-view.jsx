@@ -200,9 +200,6 @@ export default class TopicsView extends Component {
         </div>
         <GraphBG />
         <div id="topics_container">
-          {/*!!p.loginAccount && !!p.loginAccount.rep && !!p.loginAccount.rep.value && !!p.branch.id &&
-            <Branch {...p.branch} />
-          */}
           <div id="topics_heading">
             <h3>Bet on...</h3>
             <h2>Stocks</h2>
