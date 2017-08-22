@@ -30,17 +30,24 @@ const MarketBasics = p => (
 
     <h1>{ p.description }</h1>
 
-    <div class="MarketBasics__meta">
-      <dl>
-        <dt>Volume</dt>
-        <dd>84K Shares</dd>
-        <dt>Fee</dt>
-        <dd>2.8%</dd>
-        <dt>Expires</dt>
-        <dd>June 9, 2017, 7:00 AM</dd>
-      </dl>
+    <div className="MarketBasics__footer">
+      <ul className="MarketBasics__meta">
+        <li>
+          <span>Volume</span>
+          <span>84K Shares</span>
+        </li>
+        <li>
+          <span>Fee</span>
+          <span>2.8%</span>
+        </li>
+        <li>
+          <span>Expires</span>
+          <span>June 9, 2017, 7:00 AM</span>
+        </li>
+      </ul>
       <div>
-
+        <span>star</span>
+        <button className="button--purple">Trade</button>
       </div>
     </div>
 

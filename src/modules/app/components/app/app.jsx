@@ -6,11 +6,11 @@ import debounce from 'utils/debounce';
 
 import { tween } from 'shifty';
 
-import TopBar from 'modules/app/components/top-bar';
-import InnerNav from 'modules/app/components/inner-nav';
-import SideNav from 'modules/app/components/side-nav';
-import Origami from 'modules/app/components/origami-svg';
-import Logo from 'modules/app/components/logo';
+import TopBar from 'modules/app/components/top-bar/top-bar';
+import InnerNav from 'modules/app/components/inner-nav/inner-nav';
+import SideNav from 'modules/app/components/side-nav/side-nav';
+import Origami from 'modules/app/components/origami-svg/origami-svg';
+import Logo from 'modules/app/components/logo/logo';
 
 import MobileNavHamburgerIcon from 'modules/common/components/mobile-nav-hamburger-icon';
 import MobileNavCloseIcon from 'modules/common/components/mobile-nav-close-icon';
@@ -20,6 +20,8 @@ import NavAccountIcon from 'modules/common/components/nav-account-icon';
 import NavCreateIcon from 'modules/common/components/nav-create-icon';
 import NavMarketsIcon from 'modules/common/components/nav-markets-icon';
 import NavPortfolioIcon from 'modules/common/components/nav-portfolio-icon';
+
+import s_app from 'modules/app/components/app/app.less';
 
 import { MARKETS, ACCOUNT, MY_POSITIONS, CREATE_MARKET } from 'modules/app/constants/views';
 
@@ -195,7 +197,7 @@ export default class AppView extends Component {
 
     return (
       <button
-        className="mobile-menu-nav-button"
+        className={s_app['SideBar__mobile-bars']}
         onClick={() => this.mobileMenuButtonClick()}
       >
         {icon}
@@ -228,8 +230,8 @@ export default class AppView extends Component {
     }
 
     return (
-      <main className="app-wrap">
-        <section className="side-wrap">
+      <main className={s_app['App']}>
+        <section className={s_app['SideBar']}>
           <Origami
             isMobile={p.isMobile}
             menuScalar={origamiScalar}
@@ -244,15 +246,15 @@ export default class AppView extends Component {
             menuData={this.sideNavMenuData}
           />
         </section>
-        <section className="main-wrap">
-          <section className="topbar-row">
+        <section className={s_app['Main']}>
+          <section>
             <TopBar
               isMobile={p.isMobile}
               stats={p.coreStats}
             />
           </section>
           <section
-            className="maincontent-row"
+            className={s_app['Main__wrap']}
             style={{ marginLeft: categoriesMargin }}
           >
             <InnerNav
@@ -267,7 +269,7 @@ export default class AppView extends Component {
               {...innerNavProps}
             />
             <section
-              className="maincontent"
+              className={s_app['Main__content']}
               style={{ marginLeft: keywordsMargin }}
             >
               {p.children}

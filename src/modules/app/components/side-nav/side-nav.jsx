@@ -5,7 +5,9 @@ import PropTypes from 'prop-types';
 
 import makePath from 'modules/app/helpers/make-path';
 
-export default class SideBar extends Component {
+import s_sidenav from 'modules/app/components/side-nav/side-nav.less';
+
+export default class SideNav extends Component {
   static propTypes = {
     isMobile: PropTypes.bool.isRequired,
     isLogged: PropTypes.bool,
@@ -63,14 +65,14 @@ export default class SideBar extends Component {
     const accessFilteredMenu = this.props.menuData.filter(item => !(item.requireLogin && !logged));
 
     return (
-      <ul className="sidebar-menu">
+      <ul className={s_sidenav['SideNav__nav']}>
         {accessFilteredMenu.map((item, index) => {
           const Icon = item.icon;
           const selected = !mobile && this.isCurrentItem(item);
 
           return (
             <li
-              className={classNames({ selected })}
+              className={classNames({ [`${s_sidenav['selected']}`] : selected })}
               key={item.title}
             >
               <Link
@@ -88,7 +90,7 @@ export default class SideBar extends Component {
 
   render() {
     return (
-      <aside className={classNames({ sidebar: true, mobileShow: this.props.mobileShow })}>
+      <aside className={classNames(s_sidenav['SideNav'], { mobileShow: this.props.mobileShow })}>
         {this.renderSidebarMenu()}
       </aside>
     );
