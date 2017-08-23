@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import MarketPreview from 'modules/market/components/market-preview';
+import MarketPreview from 'modules/market/components/market-preview/market-preview';
 import Paginator from 'modules/common/components/paginator';
 import NullStateMessage from 'modules/common/components/null-state-message';
 
