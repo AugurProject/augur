@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-import s_orig from 'modules/app/components/origami-svg/origami-svg.less';
+import s_orig from 'modules/app/components/origami-svg/styles';
 
 const offsetPoint = (point, offsetPoint) => (
   [point[0] + offsetPoint[0], point[1] + offsetPoint[1]]

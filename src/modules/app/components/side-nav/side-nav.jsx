@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import makePath from 'modules/app/helpers/make-path';
 
-import s_sidenav from 'modules/app/components/side-nav/side-nav.less';
+import s_sidenav from 'modules/app/components/side-nav/styles';
 
 export default class SideNav extends Component {
   static propTypes = {
