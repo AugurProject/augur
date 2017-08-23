@@ -58,6 +58,16 @@ export default class Topic extends Component {
     const p = this.props;
     const s = this.state;
 
+    const flooredPop = Math.floor(p.popularity);
+    let popString = ' SHARES';
+    if (flooredPop > 1000) {
+      const thousands = flooredPop / 1000;
+      const truncatedThousands = thousands.toString().split('').slice(0, 3).join('');
+      popString = truncatedThousands + 'K ' + popString;
+    } else {
+      popString = flooredPop + popString;
+    }
+
     return (
       <Link
         to={{
@@ -65,7 +75,7 @@ export default class Topic extends Component {
           search: `?${TOPIC_PARAM_NAME}=${encodeURIComponent(p.topic)}`
         }}
         key={`${p.topic}-${p.popularity}`}
-        className={classNames('unstyled button topic-button', { isHero: p.isHero, 'is-spacer-topic': p.isSpacer, 'search-result': p.isSearchResult })}
+        className="unstyled button topic-button"
       >
         {!p.isSpacer &&
           <div
@@ -86,7 +96,7 @@ export default class Topic extends Component {
                 })}
                 data-tip data-for="topic-volume-tooltip"
               >
-                {Math.floor(p.popularity).toLocaleString()}
+                {popString}
               </span>
             </div>
           </div>
