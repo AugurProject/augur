@@ -8,7 +8,7 @@ import { tween } from 'shifty';
 
 import TopBar from 'modules/app/components/top-bar/top-bar';
 import InnerNav from 'modules/app/components/inner-nav/inner-nav';
-import SideNav from 'modules/app/components/side-nav/side-nav';
+import SideNav from 'modules/app/components/side-nav';
 import Origami from 'modules/app/components/origami-svg/origami-svg';
 import Logo from 'modules/app/components/logo/logo';
 
