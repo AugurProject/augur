@@ -4,10 +4,11 @@ import classNames from 'classnames';
 import { Link } from 'react-router-dom';
 
 import NullStateMessage from 'modules/common/components/null-state-message';
-import TopicRows from 'modules/topics/components/topic-rows';
+import TopicList from 'modules/topics/components/topic-list';
 import Paginator from 'modules/common/components/paginator';
 import Branch from 'modules/branch/components/branch';
 import FilterSort from 'modules/filter-sort/container';
+import GraphBG from 'modules/common/components/graph-background';
 
 import parseQuery from 'modules/app/helpers/parse-query';
 import makePath from 'modules/app/helpers/make-path';
@@ -16,9 +17,7 @@ import getValue from 'utils/get-value';
 import { PAGINATION_PARAM_NAME } from 'modules/app/constants/param-names';
 import { CREATE_MARKET } from 'modules/app/constants/views';
 
-import GraphBG from 'modules/common/components/graph-background';
-
-import Topic from 'modules/topics/components/topic';
+import { tween } from 'shifty';
 
 export default class TopicsView extends Component {
   static propTypes = {
@@ -54,7 +53,10 @@ export default class TopicsView extends Component {
       paginatedTopics: [],
       pagination: {},
       fontAwesomeClasses: [],
-      icoFontClasses: []
+      icoFontClasses: [],
+      topicsPerPage: 9,
+      heroTopicIndex: null,
+      heroTopicOpacity: 0
     };
 
     this.setCurrentPage = this.setCurrentPage.bind(this);
@@ -71,10 +73,16 @@ export default class TopicsView extends Component {
 
   componentDidMount() {
     this.filterOutIconClassesFromStylesheets();
+    if (this.props.topics.length > 0) {
+      this.startCategoryCarousel();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.location !== nextProps.location) this.setCurrentPage(nextProps.location);
+    if (this.props.topics.length === 0 && nextProps.topics.length > 0) {
+      this.startCategoryCarousel();
+    }
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -84,6 +92,34 @@ export default class TopicsView extends Component {
     ) {
       this.setItemsPerPage(nextState.currentPage, nextState.hasKeywords);
     }
+  }
+
+  startCategoryCarousel() {
+    this.setState({ heroTopicIndex: 0 });
+
+    const doCarouselTween = (from, to, cb) => tween({
+      from: { value: from },
+      to: { value: to },
+      duration: 500,
+      easing: 'easeOutQuad',
+      step: (stepObj) => {
+        this.setState({ heroTopicOpacity: stepObj.value });
+      }
+    }).then(cb);
+
+    const waitThenChange = () => {
+      window.setTimeout(() => {
+        doCarouselTween(1, 0, () => {
+          const s = this.state;
+          const p = this.props;
+          const nextIndex = (s.heroTopicIndex + 1) % p.topics.length;
+          this.setState({ heroTopicIndex: nextIndex });
+          doCarouselTween(0, 1, waitThenChange);
+        });
+      }, 5000);
+    };
+
+    doCarouselTween(0, 1, waitThenChange);
   }
 
   setCurrentPage(location) {
@@ -159,61 +195,35 @@ export default class TopicsView extends Component {
     });
   }
 
-  renderTopics() {
-    const p = this.props;
-    const s = this.state;
-    const topics = [];
-
-    for (let i = (s.lowerBound - 1); i < s.boundedLength; i++) {
-      const topicIndex = i;
-      const topic = p.topics ? p.topics[i] : null;
-      topics.push(
-        <div className="topic-wrap">
-          <Topic
-            key={topic !== null ? JSON.stringify(topic) : `${JSON.stringify(topic)}${topicIndex}`}
-            topic={topic !== null ? topic.topic : ''}
-            popularity={topic !== null ? topic.popularity : 0}
-            hasKeywords={p.hasKeywords}
-          />
-        </div>
-      );
-    }
-    return topics;
-  }
-
   render() {
     const p = this.props;
     const s = this.state;
 
+    const heroTopic = p.topics[s.heroTopicIndex];
+
     return (
       <section id="topics_view">
-        <div style={{ display: 'none' }}>
-          {/* TODO: figure out why this component is necessary for
-              pagination state and remove that depdendency */}
-          <FilterSort
-            items={p.topics}
-            updateFilteredItems={this.updateFilteredItems}
-            searchPlaceholder="Search Topics"
-            searchKeys={this.searchKeys}
-            filterBySearch
-          />
-        </div>
         <GraphBG />
         <div id="topics_container">
           <div id="topics_heading">
             <h3>Bet on...</h3>
-            <h2>Stocks</h2>
+            <h2 style={{ opacity: s.heroTopicOpacity }}>
+              {heroTopic ? heroTopic.topic : "..."}
+            </h2>
+            }
             <div className="separator-bar" />
           </div>
-          {(p.topics.length && s.boundedLength) &&
-            <div className="topics">
-              {this.renderTopics()}
-            </div>
+          {(p.topics && p.topics.length && s.boundedLength) &&
+            <TopicList
+              topics={p.topics}
+              lowerBound={s.lowerBound}
+              boundedLength={s.boundedLength}
+            />
           }
-          {!!s.filteredTopicsLength &&
+          {(!!p.topics && !!p.topics.length) &&
             <Paginator
-              itemsLength={s.filteredTopicsLength}
-              itemsPerPage={s.itemsPerPage}
+              itemsLength={p.topics.length}
+              itemsPerPage={s.topicsPerPage}
               location={p.location}
               history={p.history}
               setSegment={this.setSegment}
