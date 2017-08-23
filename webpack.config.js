@@ -49,8 +49,12 @@ let config = {
       '.json'
     ],
     alias: {
+      src: PATHS.APP,
+      node: PATHS.NODE_MODULES, // strongly discouraged from using, strongly...
+      assets: path.resolve(PATHS.APP, 'assets'),
       modules: path.resolve(PATHS.APP, 'modules'),
-      utils: path.resolve(PATHS.APP, 'utils')
+      utils: path.resolve(PATHS.APP, 'utils'),
+      services: path.resolve(PATHS.APP, 'services')
     },
     symlinks: false
   },
