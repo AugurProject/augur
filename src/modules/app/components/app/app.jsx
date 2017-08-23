@@ -8,7 +8,7 @@ import { tween } from 'shifty';
 
 import TopBar from 'modules/app/components/top-bar/top-bar';
 import InnerNav from 'modules/app/components/inner-nav/inner-nav';
-import SideNav from 'modules/app/components/side-nav';
+import SideNav from 'modules/app/components/side-nav/side-nav';
 import Origami from 'modules/app/components/origami-svg/origami-svg';
 import Logo from 'modules/app/components/logo/logo';
 
@@ -21,7 +21,7 @@ import NavCreateIcon from 'modules/common/components/nav-create-icon';
 import NavMarketsIcon from 'modules/common/components/nav-markets-icon';
 import NavPortfolioIcon from 'modules/common/components/nav-portfolio-icon';
 
-import s_app from 'modules/app/components/app/app.less';
+import s_app from 'modules/app/components/app/styles';
 
 import { MARKETS, ACCOUNT, MY_POSITIONS, CREATE_MARKET } from 'modules/app/constants/views';
 

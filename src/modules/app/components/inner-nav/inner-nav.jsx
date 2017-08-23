@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { mobileMenuStates } from 'modules/app/components/app/app';
 
-import s_innernav from 'modules/app/components/inner-nav/inner-nav.less';
+import s_innernav from 'modules/app/components/inner-nav/styles';
 
 class InnerNav extends Component {
   static propTypes = {
