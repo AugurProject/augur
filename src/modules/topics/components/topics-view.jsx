@@ -15,7 +15,9 @@ import makePath from 'modules/app/helpers/make-path';
 import getValue from 'utils/get-value';
 
 import { PAGINATION_PARAM_NAME } from 'modules/app/constants/param-names';
+import { TOPIC_PARAM_NAME } from 'modules/app/constants/param-names';
 import { CREATE_MARKET } from 'modules/app/constants/views';
+import { MARKETS } from 'modules/app/constants/views';
 
 import { tween } from 'shifty';
 
@@ -94,6 +96,27 @@ export default class TopicsView extends Component {
     }
   }
 
+  setCurrentPage(location) {
+    const currentPage = parseInt(parseQuery(location.search)[PAGINATION_PARAM_NAME] || 1, 10);
+
+    this.setState({ currentPage });
+  }
+
+  setItemsPerPage(currentPage, hasKeywords) {
+    let itemsPerPage;
+    if ((currentPage === null || currentPage === 1) && !hasKeywords) {
+      itemsPerPage = ((this.topicsConfig.numberOfRows - 1) * this.topicsConfig.topicsPerRow) + this.topicsConfig.topicsPerHeroRow;
+    } else {
+      itemsPerPage = this.topicsConfig.numberOfRows * this.topicsConfig.topicsPerRow;
+    }
+
+    this.setState({ itemsPerPage });
+  }
+
+  setSegment(lowerBound, upperBound, boundedLength) {
+    this.setState({ lowerBound, upperBound, boundedLength });
+  }
+
   startCategoryCarousel() {
     this.setState({ heroTopicIndex: 0 });
 
@@ -120,27 +143,6 @@ export default class TopicsView extends Component {
     };
 
     doCarouselTween(0, 1, waitThenChange);
-  }
-
-  setCurrentPage(location) {
-    const currentPage = parseInt(parseQuery(location.search)[PAGINATION_PARAM_NAME] || 1, 10);
-
-    this.setState({ currentPage });
-  }
-
-  setItemsPerPage(currentPage, hasKeywords) {
-    let itemsPerPage;
-    if ((currentPage === null || currentPage === 1) && !hasKeywords) {
-      itemsPerPage = ((this.topicsConfig.numberOfRows - 1) * this.topicsConfig.topicsPerRow) + this.topicsConfig.topicsPerHeroRow;
-    } else {
-      itemsPerPage = this.topicsConfig.numberOfRows * this.topicsConfig.topicsPerRow;
-    }
-
-    this.setState({ itemsPerPage });
-  }
-
-  setSegment(lowerBound, upperBound, boundedLength) {
-    this.setState({ lowerBound, upperBound, boundedLength });
   }
 
   filterOutIconClassesFromStylesheets() {
@@ -208,9 +210,18 @@ export default class TopicsView extends Component {
           <div id="topics_heading">
             <h3>Bet on...</h3>
             <h2 style={{ opacity: s.heroTopicOpacity }}>
-              {heroTopic ? heroTopic.topic : "..."}
+              {heroTopic &&
+                <Link
+                  to={{
+                    pathname: makePath(MARKETS),
+                    search: `?${TOPIC_PARAM_NAME}=${encodeURIComponent(heroTopic.topic)}`
+                  }}
+                >
+                  {heroTopic.topic}
+                </Link>
+              }
+              {!heroTopic && '...'}
             </h2>
-            }
             <div className="separator-bar" />
           </div>
           {(p.topics && p.topics.length && s.boundedLength) &&
