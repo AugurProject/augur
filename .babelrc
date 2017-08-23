@@ -2,24 +2,24 @@
   "env": {
     "test": {
       "presets": ["es2015", "stage-0", "react"],
-      "plugins": ["rewire"]
+      "plugins": [
+        "rewire",
+        ["module-resolver", {
+          "root": ["./src", "./test"],
+          "alias": {
+            "src": "./src",
+            "test": "./test",
+            "assets": "assets",
+            "modules": "modules",
+            "utils": "utils",
+            "services": "services"
+          },
+          "extensions": [".js", ".jsx"]
+        }]
+      ]
     }
   },
   "presets": [["es2015", {"modules": false}], "stage-0", "react"],
-  "plugins": [
-    "react-hot-loader/babel",
-    ["module-resolver", {
-      "root": ["./src", "./test"],
-      "alias": {
-        "src": "./src",
-        "test": "./test",
-        "assets": "assets",
-        "modules": "modules",
-        "utils": "utils",
-        "services": "services"
-      },
-      "extensions": [".js", ".jsx"]
-    }]
-  ],
+  "plugins": ["react-hot-loader/babel"],
   "compact": false
 }
