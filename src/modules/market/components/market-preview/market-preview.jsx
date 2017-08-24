@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
-import MarketBasics from 'modules/market/components/market-basics';
+import MarketBasics from 'modules/market/components/market-basics/market-basics';
 import MarketPreviewOutcomes from 'modules/market/components/market-preview-outcomes';
 
 import makePath from 'modules/app/helpers/make-path';
@@ -11,6 +11,8 @@ import makeQuery from 'modules/app/helpers/make-query';
 
 import { MARKET } from 'modules/app/constants/views';
 import { MARKET_ID_PARAM_NAME, MARKET_DESCRIPTION_PARAM_NAME } from 'modules/app/constants/param-names';
+
+import s_marketpreview from 'styles';
 
 const MarketPreview = (p) => {
   let buttonText;
@@ -34,8 +36,8 @@ const MarketPreview = (p) => {
   }
 
   return (
-    <article className="market-preview">
-      <div className="market-preview-details">
+    <article className={s_marketpreview['MarketPreview']}>
+      <div className={s_marketpreview['MarketPreview__details']}>
         <MarketBasics
           {...p}
           toggleFavorite={p.toggleFavorite}

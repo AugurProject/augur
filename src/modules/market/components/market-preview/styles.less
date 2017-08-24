@@ -1,7 +1,6 @@
-@import 'assets/styles/shared.less';
+@import '~assets/styles/shared.less';
 
-.market-preview {
-
+.MarketPreview {
   .border(true);
 
   background-color: @color-white;
@@ -9,32 +8,31 @@
   flex: 1;
   margin: 2em 0;
   padding: 2em;
+}
 
-  .market-preview-details {
+.MarketPreview__details {
+  display: flex;
+  flex: 4;
+  flex-direction: column;
+  padding-right: 2em;
+
+  .market-link {
     display: flex;
-    flex: 4;
-    flex-direction: column;
-    padding-right: 2em;
 
-    .market-link {
-      display: flex;
-
-      .button.trade {
-        cursor: pointer;
-      }
+    .button.trade {
+      cursor: pointer;
     }
   }
+}
 
-  .market-preview-outcomes {
+.MarketPreview__outcomes {
+  .border(true, @border-left);
 
-    .border(true, @border-left);
+  display: flex;
+  flex: 1;
+  padding-left: 2em;
 
-    display: flex;
-    flex: 1;
-    padding-left: 2em;
-
-    .outcome .outcome-price {
-      color: @color-blue;
-    }
+  .outcome .outcome-price {
+    color: @color-blue;
   }
 }
