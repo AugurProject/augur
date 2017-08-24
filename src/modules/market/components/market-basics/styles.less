@@ -4,21 +4,17 @@
 }
 
 .MarketBasics__tags {
-
   > li {
     display: inline-block;
     text-transform: uppercase;
 
-    &:before {
+    &::before {
       content: "/";
       margin: 0 5px;
     }
 
-    &:first-child {
-
-      &:before {
-        display: none;
-      }
+    &:first-child::before {
+      display: none;
     }
   }
 }
@@ -29,7 +25,6 @@
 }
 
 .MarketBasics__meta {
-
   > li {
     display: inline-block;
     margin-left: 1.25em;
