@@ -74,6 +74,10 @@ h6 {
   overflow-x: hidden;
   overflow-y: auto;
   transform: translateZ(0); /* use gpu */
+
+  @media @breakpoint-mobile {
+    height: calc(~"100vh - 24px");
+  }
 }
 
 .SideBar {
