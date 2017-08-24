@@ -25,7 +25,7 @@ const lintSource = new Promise((resolve, reject) => {
 });
 
 const lintTests = new Promise((resolve, reject) => {
-  shell.exec(`eslint --ext .js ${testPath}`, (code) => {
+  shell.exec(`NODE_ENV=test eslint --ext .js ${testPath}`, (code) => {
     if (code !== 0) {
       reject(new Error());
       shell.exit(code);

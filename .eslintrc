@@ -51,8 +51,8 @@
   },
   "settings": {
     "import/resolver": {
-      "babel-module": {
-        "extensions": [".js", ".jsx"]
+      "webpack": {
+        "extensions": [".js", ".jsx", ".less"]
       }
     }
   }
