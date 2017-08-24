@@ -3366,7 +3366,7 @@ eslint-import-resolver-node@^0.2.0:
     object-assign "^4.0.1"
     resolve "^1.1.6"
 
-eslint-import-resolver-webpack@^0.8.3:
+eslint-import-resolver-webpack@0.8.3:
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/eslint-import-resolver-webpack/-/eslint-import-resolver-webpack-0.8.3.tgz#ad61e28df378a474459d953f246fd43f92675385"
   dependencies:
@@ -3381,16 +3381,6 @@ eslint-import-resolver-webpack@^0.8.3:
     node-libs-browser "^1.0.0"
     resolve "^1.2.0"
     semver "^5.3.0"
-
-eslint-loader@^1.9.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/eslint-loader/-/eslint-loader-1.9.0.tgz#7e1be9feddca328d3dcfaef1ad49d5beffe83a13"
-  dependencies:
-    loader-fs-cache "^1.0.0"
-    loader-utils "^1.0.2"
-    object-assign "^4.0.1"
-    object-hash "^1.1.4"
-    rimraf "^2.6.1"
 
 eslint-module-utils@^2.0.0:
   version "2.1.1"
@@ -5802,13 +5792,6 @@ load-json-file@^2.0.0:
     pify "^2.0.0"
     strip-bom "^3.0.0"
 
-loader-fs-cache@^1.0.0:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/loader-fs-cache/-/loader-fs-cache-1.0.1.tgz#56e0bf08bd9708b26a765b68509840c8dec9fdbc"
-  dependencies:
-    find-cache-dir "^0.1.1"
-    mkdirp "0.5.1"
-
 loader-runner@^2.3.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/loader-runner/-/loader-runner-2.3.0.tgz#f482aea82d543e07921700d5a46ef26fdac6b8a2"
@@ -6697,10 +6680,6 @@ object-assign@^3.0.0:
 object-component@0.0.3:
   version "0.0.3"
   resolved "https://registry.yarnpkg.com/object-component/-/object-component-0.0.3.tgz#f0c69aa50efc95b866c186f400a33769cb2f1291"
-
-object-hash@^1.1.4:
-  version "1.1.8"
-  resolved "https://registry.yarnpkg.com/object-hash/-/object-hash-1.1.8.tgz#28a659cf987d96a4dabe7860289f3b5326c4a03c"
 
 object-inspect@~0.4.0:
   version "0.4.0"

@@ -24,8 +24,8 @@ const lintSource = new Promise((resolve, reject) => {
   });
 });
 
-const lintTests = new Promise((resolve, reject) => {
-  shell.exec(`NODE_ENV=test eslint --ext .js ${testPath}`, (code) => {
+const lintStyles = new Promise((resolve, reject) => {
+  shell.exec(`stylelint '${srcPath}/**/*.less'`, (code) => {
     if (code !== 0) {
       reject(new Error());
       shell.exit(code);
@@ -35,8 +35,9 @@ const lintTests = new Promise((resolve, reject) => {
   });
 });
 
-const lintStyles = new Promise((resolve, reject) => {
-  shell.exec(`stylelint '${srcPath}/**/*.less'`, (code) => {
+const lintTests = new Promise((resolve, reject) => {
+  process.env.NODE_ENV = 'test';
+  shell.exec(`eslint --ext .js ${testPath}`, (code) => {
     if (code !== 0) {
       reject(new Error());
       shell.exit(code);
@@ -52,15 +53,14 @@ const tasks = new Listr([
     task: () => lintSource
   },
   {
-    title: 'Linting Tests',
-    task: () => lintTests
-  },
-  {
     title: 'Linting Styles',
     task: () => lintStyles
   },
+  {
+    title: 'Linting Tests',
+    task: () => lintTests
+  },
 ], {
-  concurrent: true,
   renderer: 'verbose'
 });
 
