@@ -7,7 +7,6 @@ import classNames from 'classnames';
 import TopicIcon from 'modules/topics/components/topic-icon';
 
 import debounce from 'utils/debounce';
-import fitText from 'utils/fit-text';
 import makePath from 'modules/app/helpers/make-path';
 
 import { TOPIC_VOLUME_INCREASED, TOPIC_VOLUME_DECREASED } from 'modules/topics/constants/topic-popularity-change';
@@ -25,13 +24,6 @@ export default class Topic extends Component {
     this.state = {
       popularityChange: null
     };
-
-    this.handleFitText = debounce(this.handleFitText.bind(this));
-  }
-  componentDidMount() {
-    fitText(this.topicNameContainer, this.topicName);
-
-    window.addEventListener('resize', this.handleFitText);
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -40,18 +32,6 @@ export default class Topic extends Component {
 
       this.setState({ popularityChange });
     }
-  }
-
-  componentDidUpdate() {
-    fitText(this.topicNameContainer, this.topicName);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.handleFitText);
-  }
-
-  handleFitText() {
-    fitText(this.topicNameContainer, this.topicName);
   }
 
   render() {
@@ -77,30 +57,28 @@ export default class Topic extends Component {
         key={`${p.topic}-${p.popularity}`}
         className="unstyled button topic-button"
       >
-        {!p.isSpacer &&
-          <div
-            className="topic-content"
-            ref={(topicNameContainer) => { this.topicNameContainer = topicNameContainer; }}
-          >
-            <div className="topic-name" >
-              <span ref={(topicName) => { this.topicName = topicName; }}>
-                {p.topic.toUpperCase()}
-              </span>
-            </div>
-            <div className="separator-bar" />
-            <div className="topic-popularity">
-              <span
-                className={classNames({
-                  'bounce-up-and-flash': s.popularityChange === TOPIC_VOLUME_INCREASED,
-                  'bounce-down-and-flash': s.popularityChange === TOPIC_VOLUME_DECREASED
-                })}
-                data-tip data-for="topic-volume-tooltip"
-              >
-                {popString}
-              </span>
-            </div>
+        <div
+          className="topic-content"
+          ref={(topicNameContainer) => { this.topicNameContainer = topicNameContainer; }}
+        >
+          <div className="topic-name" >
+            <span ref={(topicName) => { this.topicName = topicName; }}>
+              {p.topic.toUpperCase()}
+            </span>
           </div>
-        }
+          <div className="separator-bar" />
+          <div className="topic-popularity">
+            <span
+              className={classNames({
+                'bounce-up-and-flash': s.popularityChange === TOPIC_VOLUME_INCREASED,
+                'bounce-down-and-flash': s.popularityChange === TOPIC_VOLUME_DECREASED
+              })}
+              data-tip data-for="topic-volume-tooltip"
+            >
+              {popString}
+            </span>
+          </div>
+        </div>
       </Link>
     );
   }
