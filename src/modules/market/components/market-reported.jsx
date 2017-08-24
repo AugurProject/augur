@@ -1,6 +1,6 @@
 import React from 'react';
 
-import MarketBasics from 'modules/market/components/market-basics';
+import MarketBasics from 'modules/market/components/market-basics/market-basics';
 import MarketDetails from 'modules/market/components/market-details';
 
 const MarketReported = p => (

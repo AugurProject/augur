@@ -13,10 +13,12 @@ import makeQuery from 'modules/app/helpers/make-query';
 import { MARKET } from 'modules/app/constants/views';
 import { MARKET_ID_PARAM_NAME, MARKET_DESCRIPTION_PARAM_NAME } from 'modules/app/constants/param-names';
 
+import s_marketbasics from 'styles';
+
 const MarketBasics = p => (
-  <article className="MarketBasics">
-    <div className="MarketBasics__header">
-      <ul className="MarketBasics__tags">
+  <article className={s_marketbasics['MarketBasics']}>
+    <div className={s_marketbasics['MarketBasics__header']}>
+      <ul className={s_marketbasics['MarketBasics__tags']}>
         <li>Tags</li>
         {(p.tags || []).map((tag, i) => (
           <li key={i}>
@@ -30,8 +32,8 @@ const MarketBasics = p => (
 
     <h1>{ p.description }</h1>
 
-    <div className="MarketBasics__footer">
-      <ul className="MarketBasics__meta">
+    <div className={s_marketbasics['MarketBasics__footer']}>
+      <ul className={s_marketbasics['MarketBasics__meta']}>
         <li>
           <span>Volume</span>
           <span>84K Shares</span>
