@@ -8,23 +8,28 @@
 #topics_heading {
   margin: 85px 0 90px;
 
-  h2, h3 {
+  h2,
+  h3 {
     .font-color-light();
+
     margin: 0;
+    margin-bottom: 25px;
     text-align: center;
     text-transform: uppercase;
-    margin-bottom: 25px;
   }
+
   h2 {
     .font-size-most-massive();
     .font-weight-normal();
+
     letter-spacing: 2.3px;
 
     a,
     a:hover,
     a:active,
-    a:visited,{
+    a:visited {
       .font-color-light();
+
       text-decoration: none;
     }
   }
@@ -32,6 +37,7 @@
   h3 {
     .font-size-massive();
     .font-weight-semibold();
+
     letter-spacing: 2.25px;
   }
 
@@ -51,10 +57,11 @@
 .topic-wrap {
   .font-color-light();
   .font-family-dinpro();
+
   display: inline-block;
-  width: 33.33%;
   margin-top: 128px;
   text-align: center;
+  width: 33.33%;
 
   &:nth-child(1),
   &:nth-child(2),
@@ -73,6 +80,7 @@
 
   .topic-name {
     .font-size-most-massive();
+
     overflow: hidden;
     text-overflow: ellipsis;
     text-transform: uppercase;
@@ -82,15 +90,16 @@
 
   .separator-bar {
     background: @color-very-lightpurple;
-    width: 194px;
-    margin: 16px auto 24px;
     height: 1px;
+    margin: 16px auto 24px;
+    width: 194px;
   }
 
   .topic-popularity {
     .font-size-extra-large();
     .font-weight-light();
   }
+
   @media @breakpoint-small-desktop {
     width: 50%;
 
@@ -98,6 +107,7 @@
       margin-top: 120px;
     }
   }
+
   @media @breakpoint-mobile {
     width: 100%;
 
@@ -106,5 +116,3 @@
     }
   }
 }
-
-

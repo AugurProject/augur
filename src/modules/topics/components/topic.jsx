@@ -1,12 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import ReactTooltip from 'react-tooltip';
 import classNames from 'classnames';
 
-import TopicIcon from 'modules/topics/components/topic-icon';
-
-import debounce from 'utils/debounce';
 import makePath from 'modules/app/helpers/make-path';
 
 import { TOPIC_VOLUME_INCREASED, TOPIC_VOLUME_DECREASED } from 'modules/topics/constants/topic-popularity-change';

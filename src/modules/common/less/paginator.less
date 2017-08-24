@@ -1,5 +1,6 @@
 .paginator {
   .font-size-large();
+
   height: 50px;
   margin-top: 40px;
 
@@ -14,33 +15,41 @@
     .font-color-light();
     .font-family-dinpro();
     .font-size-extra-large();
+
     flex: 1;
     height: 100%;
-    justify-content: center;
   }
 
   .paginator-location {
-    display: flex;
     align-items: center;
+    display: flex;
+    justify-content: center;
   }
 
   .button {
     background: none;
-    display: block;
+    display: flex;
     height: 100%;
     padding: 0;
+    text-decoration: none;
+
     i {
       .font-size-extra-large();
-      vertical-align: middle;
     }
   }
 
   .paginator-back .button {
+    align-items: center;
+    display: flex;
+    justify-content: flex-start;
     padding-left: 20px;
     text-align: left;
   }
 
   .paginator-forward .button {
+    align-items: center;
+    display: flex;
+    justify-content: flex-end;
     padding-right: 20px;
     text-align: right;
   }

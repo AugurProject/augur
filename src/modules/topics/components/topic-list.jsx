@@ -2,14 +2,13 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames';
 
 import Topic from 'modules/topics/components/topic';
 
 const TopicList = (p) => {
   const topics = [];
 
-  for (let i = (p.lowerBound - 1); i < p.boundedLength; i++) {
+  for (let i = (p.lowerBound - 1); i < p.upperBound; i++) {
     const topicIndex = i;
     const topic = p.topics ? p.topics[i] : null;
 
