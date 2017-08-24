@@ -49,17 +49,17 @@ const lintTests = new Promise((resolve, reject) => {
 
 const tasks = new Listr([
   {
+    title: 'Linting Tests',
+    task: () => lintTests
+  },
+  {
     title: 'Linting Source',
     task: () => lintSource
   },
   {
     title: 'Linting Styles',
     task: () => lintStyles
-  },
-  {
-    title: 'Linting Tests',
-    task: () => lintTests
-  },
+  }
 ], {
   renderer: 'verbose'
 });
