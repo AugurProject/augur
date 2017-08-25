@@ -3,7 +3,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Styles from 'modules/app/components/top-bar/styles';
+import Styles from 'modules/app/components/top-bar/top-bar.styles';
 
 const TopBar = props => (
   <header className={Styles.TopBar}>
