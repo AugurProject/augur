@@ -1,43 +1,10 @@
 @import '~assets/styles/shared.less';
 
-.paralellogo {
+.Logo {
   left: 0;
   pointer-events: none;
   position: absolute;
   top: 0;
   width: 100vw;
   z-index: @mask;
-}
-
-.top-logo {
-  left: 15px;
-  position: absolute;
-  top: 21px;
-  width: 120px;
-  z-index: @mask-above;
-
-  & > * {
-    display: inline-block;
-  }
-
-  svg.augur-logo-icon {
-    height: 44px;
-  }
-
-  span.logotext {
-    .font-family-dinpro();
-    .font-size-large();
-    .font-weight-light();
-
-    color: white;
-    letter-spacing: 1.2px;
-    line-height: 44px;
-    margin-left: 8px;
-    text-transform: uppercase;
-    vertical-align: top;
-  }
-
-  @media @breakpoint-mobile {
-    display: none;
-  }
 }

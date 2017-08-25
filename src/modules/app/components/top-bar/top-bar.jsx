@@ -3,25 +3,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import s_topbar from 'modules/app/components/top-bar/styles';
+import Styles from 'modules/app/components/top-bar/styles.less';
 
 const TopBar = props => (
-  <header className={s_topbar['TopBar']}>
+  <header className={Styles.TopBar}>
     <section>
-      <span className={s_topbar['TopBar__stat']}>
-        <span className={s_topbar['TopBar__stat-label']}>ETH</span>
-        <span className={s_topbar['TopBar__stat-value']}>
+      <span className={Styles.TopBar__stat}>
+        <span className={Styles['TopBar__stat-label']}>ETH</span>
+        <span className={Styles['TopBar__stat-value']}>
           {props.stats[0].totalRealEth.value.formatted}
         </span>
       </span>
-      <span className={s_topbar['TopBar__stat']}>
-        <span className={s_topbar['TopBar__stat-label']}>REP</span>
-        <span className={s_topbar['TopBar__stat-value']}>
+      <span className={Styles.TopBar__stat}>
+        <span className={Styles['TopBar__stat-label']}>REP</span>
+        <span className={Styles['TopBar__stat-value']}>
           {props.stats[0].totalRep.value.formatted}
         </span>
       </span>
     </section>
-    <span className={s_topbar['TopBar__logo-text']}>Augur</span>
+    <span className={Styles['TopBar__logo-text']}>Augur</span>
   </header>
 );
 

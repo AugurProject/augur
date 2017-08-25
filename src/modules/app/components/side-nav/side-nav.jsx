@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import makePath from 'modules/app/helpers/make-path';
 
-import s_sidenav from 'modules/app/components/side-nav/styles';
+import Styles from 'modules/app/components/side-nav/styles.less';
 
 export default class SideNav extends Component {
   static propTypes = {
@@ -65,14 +65,14 @@ export default class SideNav extends Component {
     const accessFilteredMenu = this.props.menuData.filter(item => !(item.requireLogin && !logged));
 
     return (
-      <ul className={s_sidenav['SideNav__nav']}>
+      <ul className={Styles.SideNav__nav}>
         {accessFilteredMenu.map((item, index) => {
           const Icon = item.icon;
           const selected = !mobile && this.isCurrentItem(item);
 
           return (
             <li
-              className={classNames({ [`${s_sidenav['selected']}`] : selected })}
+              className={classNames({ [`${Styles.selected}`]: selected })}
               key={item.title}
             >
               <Link
@@ -90,7 +90,7 @@ export default class SideNav extends Component {
 
   render() {
     return (
-      <aside className={classNames(s_sidenav['SideNav'], { mobileShow: this.props.mobileShow })}>
+      <aside className={classNames(Styles.SideNav, { [`${Styles.mobileShow}`]: this.props.mobileShow })}>
         {this.renderSidebarMenu()}
       </aside>
     );

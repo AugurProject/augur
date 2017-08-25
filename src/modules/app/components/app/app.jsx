@@ -21,7 +21,7 @@ import NavCreateIcon from 'modules/common/components/nav-create-icon';
 import NavMarketsIcon from 'modules/common/components/nav-markets-icon';
 import NavPortfolioIcon from 'modules/common/components/nav-portfolio-icon';
 
-import s_app from 'modules/app/components/app/styles';
+import Styles from 'modules/app/components/app/styles.less';
 
 import { MARKETS, ACCOUNT, MY_POSITIONS, CREATE_MARKET } from 'modules/app/constants/views';
 
@@ -197,7 +197,7 @@ export default class AppView extends Component {
 
     return (
       <button
-        className={s_app['SideBar__mobile-bars']}
+        className={Styles['SideBar__mobile-bars']}
         onClick={() => this.mobileMenuButtonClick()}
       >
         {icon}
@@ -230,8 +230,8 @@ export default class AppView extends Component {
     }
 
     return (
-      <main className={s_app['App']}>
-        <section className={s_app['SideBar']}>
+      <main className={Styles.App}>
+        <section className={Styles.SideBar}>
           <Origami
             isMobile={p.isMobile}
             menuScalar={origamiScalar}
@@ -246,7 +246,7 @@ export default class AppView extends Component {
             menuData={this.sideNavMenuData}
           />
         </section>
-        <section className={s_app['Main']}>
+        <section className={Styles.Main}>
           <section>
             <TopBar
               isMobile={p.isMobile}
@@ -254,7 +254,7 @@ export default class AppView extends Component {
             />
           </section>
           <section
-            className={s_app['Main__wrap']}
+            className={Styles.Main__wrap}
             style={{ marginLeft: categoriesMargin }}
           >
             <InnerNav
@@ -269,7 +269,7 @@ export default class AppView extends Component {
               {...innerNavProps}
             />
             <section
-              className={s_app['Main__content']}
+              className={Styles.Main__content}
               style={{ marginLeft: keywordsMargin }}
             >
               {p.children}

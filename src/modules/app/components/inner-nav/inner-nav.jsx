@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { mobileMenuStates } from 'modules/app/components/app/app';
 
-import s_innernav from 'modules/app/components/inner-nav/styles';
+import Styles from 'modules/app/components/inner-nav/styles.less';
 
 class InnerNav extends Component {
   static propTypes = {
@@ -17,13 +17,13 @@ class InnerNav extends Component {
 
   renderTopicList() {
     return (
-      <ul className={s_innernav['InnerNav__bar']}>
+      <ul className={Styles.InnerNav__bar}>
         {this.props.categories.map((item, index) => {
           const clickSelect = () => this.props.onSelectCategory(item.topic);
           const isSelected = item.topic === this.props.selectedCategory;
           return (
             <li
-              className={classNames({ [`${s_innernav['selected']}`] : isSelected })}
+              className={classNames({ [`${Styles.selected}`]: isSelected })}
               key={item.topic}
             >
               <button onClick={clickSelect}>
@@ -45,7 +45,7 @@ class InnerNav extends Component {
 
     return (
       <ul
-        className={classNames(s_innernav['InnerNav__submenu'], { [`${s_innernav['mobileShow']}`]: showKeywords })}
+        className={classNames(Styles.InnerNav__submenu, { [`${Styles.mobileShow}`]: showKeywords })}
         style={animatedStyle}
       >
         <li>Yup</li>
@@ -56,7 +56,7 @@ class InnerNav extends Component {
   render() {
     const showCategories = this.props.mobileMenuState >= mobileMenuStates.CATEGORIES_OPEN;
     return (
-      <aside className={classNames(s_innernav['InnerNav'], { [`${s_innernav['mobileShow']}`]: showCategories })}>
+      <aside className={classNames(Styles.InnerNav, { [`${Styles.mobileShow}`]: showCategories })}>
         {this.renderTopicList()}
         {this.renderSubMenu()}
       </aside>

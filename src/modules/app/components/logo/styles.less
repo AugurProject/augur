@@ -1,0 +1,31 @@
+@import '~assets/styles/shared.less';
+
+.Logo {
+  margin: 15px 0 20px 15px;
+  position: relative;
+  width: 120px;
+  z-index: @mask-above;
+
+  > * {
+    display: inline-block;
+  }
+}
+
+.Logo__text {
+  .font-family-dinpro();
+  .font-size-large();
+  .font-weight-light();
+
+  color: white;
+  letter-spacing: 1.2px;
+  line-height: 44px;
+  margin-left: 8px;
+  text-transform: uppercase;
+  vertical-align: top;
+}
+
+@media @breakpoint-mobile {
+  .Logo {
+    display: none;
+  }
+}
