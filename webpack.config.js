@@ -17,7 +17,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const PATHS = {
   BUILD: path.resolve(__dirname, 'build'),
   APP: path.resolve(__dirname, 'src'),
-  NODE_MODULES: path.resolve(__dirname, 'node_modules')
+  TEST: path.resolve(__dirname, 'test'),
 };
 
 // COMMON CONFIG
@@ -49,8 +49,13 @@ let config = {
       '.json'
     ],
     alias: {
+      src: PATHS.APP,
+      test: PATHS.TEST,
+      assets: path.resolve(PATHS.APP, 'assets'),
       modules: path.resolve(PATHS.APP, 'modules'),
-      utils: path.resolve(PATHS.APP, 'utils')
+      utils: path.resolve(PATHS.APP, 'utils'),
+      services: path.resolve(PATHS.APP, 'services'),
+      assertions: path.resolve(PATHS.TEST, 'assertions'),
     },
     symlinks: false
   },
@@ -165,7 +170,13 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
           test: /\.less/,
           use: [
             'style-loader',
-            'css-loader',
+            {
+              loader: 'css-loader',
+              options: {
+                modules: true,
+                localIdentName: '[name]_[local]_[hash:base64:3]',
+              }
+            },
             'postcss-loader',
             'less-loader'
           ]
@@ -190,7 +201,13 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
           test: /\.less/,
           use: [
             'style-loader',
-            'css-loader',
+            {
+              loader: 'css-loader',
+              options: {
+                modules: true,
+                localIdentName: '[name]_[local]_[hash:base64:3]',
+              }
+            },
             'postcss-loader',
             'less-loader'
           ]
@@ -211,7 +228,12 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
           test: /\.less/,
           use: ExtractTextPlugin.extract({
             use: [
-              'css-loader',
+              {
+                loader: 'css-loader',
+                options: {
+                  modules: true
+                }
+              },
               'postcss-loader',
               'less-loader'
             ],

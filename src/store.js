@@ -3,7 +3,7 @@ import thunk from 'redux-thunk';
 // import history from 'src/history';
 // import { routerReducer, routerMiddleware } from 'react-router-redux';
 
-import { createReducer } from './reducers';
+import { createReducer } from 'src/reducers';
 
 const windowRef = typeof window === 'undefined' ? {} : window;
 // console log middleware
@@ -55,7 +55,7 @@ const store = createStore(
 // TODO -- fix this
 if (module.hot) {
   module.hot.accept('./reducers', (changed) => {
-    const hotReducer = require('./reducers').createReducer;
+    const hotReducer = require('src/reducers').createReducer;
     store.replaceReducer(hotReducer());
   });
 }

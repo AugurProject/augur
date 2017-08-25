@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import Styles from 'modules/app/components/origami-svg/origami-svg.styles';
+
 const offsetPoint = (point, offsetPoint) => (
   [point[0] + offsetPoint[0], point[1] + offsetPoint[1]]
 );
@@ -154,7 +156,6 @@ export default class Origami extends Component {
       return (<polygon fill={shape.color} points={pointString} key={`${shape.color}`} />);
     });
 
-    return (<svg id="paralellogo">{polygons}</svg>);
+    return (<svg className={Styles.Logo}>{polygons}</svg>);
   }
 }
-

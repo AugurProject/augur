@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
-import App from 'modules/app/components/app';
+import App from 'modules/app/components/app/app';
 
 import { selectNotificationsAndSeenCount } from 'modules/notifications/selectors/notifications';
 import { selectMarketsHeader } from 'modules/markets/selectors/markets-header';

@@ -1,6 +1,6 @@
 // Generic starting test state.
 // Goal: To help keep these unit tests as DRY as possible.
-import env from 'src/env.json';
+import env from 'src/env';
 
 import { formatNumber, formatShares } from 'utils/format-number';
 import { formatDate } from 'utils/format-date';

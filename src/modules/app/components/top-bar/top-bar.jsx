@@ -3,23 +3,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import Styles from 'modules/app/components/top-bar/top-bar.styles';
+
 const TopBar = props => (
-  <header className="topbar">
-    <section className="stats">
-      <span className="stat-eth stat">
-        <span className="stat-label">ETH</span>
-        <span className="stat-value">
+  <header className={Styles.TopBar}>
+    <section>
+      <span className={Styles.TopBar__stat}>
+        <span className={Styles['TopBar__stat-label']}>ETH</span>
+        <span className={Styles['TopBar__stat-value']}>
           {props.stats[0].totalRealEth.value.formatted}
         </span>
       </span>
-      <span className="stat-rep stat">
-        <span className="stat-label">REP</span>
-        <span className="stat-value">
+      <span className={Styles.TopBar__stat}>
+        <span className={Styles['TopBar__stat-label']}>REP</span>
+        <span className={Styles['TopBar__stat-value']}>
           {props.stats[0].totalRep.value.formatted}
         </span>
       </span>
     </section>
-    <span className="mobile-logotext">Augur</span>
+    <span className={Styles['TopBar__logo-text']}>Augur</span>
   </header>
 );
 
