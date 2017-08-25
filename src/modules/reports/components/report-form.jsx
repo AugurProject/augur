@@ -8,6 +8,7 @@ import { BINARY, SCALAR } from 'modules/markets/constants/market-types';
 export default class ReportForm extends Component {
   // TODO -- Prop Validations
   static propTypes = {
+    history: PropTypes.object.isRequired,
     type: PropTypes.string,
     minValue: PropTypes.string,
     maxValue: PropTypes.string,
@@ -43,7 +44,7 @@ export default class ReportForm extends Component {
   handleOutcomeChange = e => this.setState({ reportedOutcomeID: e.target.value });
 
   handleSubmit() {
-    this.props.onClickSubmit(this.state.reportedOutcomeID, this.state.isUnethical, this.state.isIndeterminate);
+    this.props.onClickSubmit(this.state.reportedOutcomeID, this.state.isUnethical, this.state.isIndeterminate, this.props.history);
     this.setState({ reportedOutcomeID: '', isIndeterminate: undefined, isUnethical: undefined, isReported: false });
   }
 

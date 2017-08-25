@@ -30,16 +30,13 @@ import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-ty
 import { BINARY_INDETERMINATE_OUTCOME_ID, CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from 'modules/markets/constants/market-outcomes';
 import { abi } from 'services/augurjs';
 
-import { toggleFavorite } from 'modules/markets/actions/update-favorites';
 import { placeTrade } from 'modules/trade/actions/place-trade';
 import { commitReport } from 'modules/reports/actions/commit-report';
 import { slashRep } from 'modules/reports/actions/slash-rep';
-import { toggleTag } from 'modules/markets/actions/toggle-tag';
 
 import store from 'src/store';
 
 import selectAccountPositions from 'modules/user-open-orders/selectors/positions-plus-asks';
-import { selectMarketLink } from 'modules/link/selectors/links';
 import selectUserOpenOrders from 'modules/user-open-orders/selectors/user-open-orders';
 import selectUserOpenOrdersSummary from 'modules/user-open-orders/selectors/user-open-orders-summary';
 
@@ -54,6 +51,8 @@ import hasUserEnoughFunds from 'modules/trade/helpers/has-user-enough-funds';
 import { generateOutcomePositionSummary, generateMarketsPositionsSummary } from 'modules/my-positions/selectors/my-positions-summary';
 
 import { selectReportableOutcomes } from 'modules/reports/selectors/reportable-outcomes';
+
+import { listWordsUnderLength } from 'utils/list-words-under-length';
 
 export default function () {
   return selectSelectedMarket(store.getState());
@@ -161,6 +160,7 @@ export function assembleMarket(
       const market = {
         ...marketData,
         description: marketData.description || '',
+        formattedDescription: listWordsUnderLength(marketData.description || '', 100).map(word => encodeURIComponent(word.toLowerCase())).join('_'),
         id: marketID
       };
 
@@ -208,13 +208,11 @@ export function assembleMarket(
       market.isReportTabVisible = market.isRequiredToReportByAccount && !isReportRevealPhase;
       market.isSnitchTabVisible = market.tradingPeriod === reportPeriod;
 
-      market.marketLink = selectMarketLink(market, dispatch);
-      market.onClickToggleFavorite = () => dispatch(toggleFavorite(marketID));
       market.onSubmitPlaceTrade = outcomeID => dispatch(placeTrade(marketID, outcomeID, marketTradeInProgress[outcomeID]));
 
       market.report = {
         ...marketReport,
-        onSubmitReport: (reportedOutcomeID, isUnethical, isIndeterminate) => dispatch(commitReport(market, reportedOutcomeID, isUnethical, isIndeterminate))
+        onSubmitReport: (reportedOutcomeID, isUnethical, isIndeterminate, history) => dispatch(commitReport(market, reportedOutcomeID, isUnethical, isIndeterminate, history))
       };
 
       market.outcomes = [];
@@ -258,7 +256,7 @@ export function assembleMarket(
           outcome.lastPricePercent = formatPercent(100 / market.numOutcomes, { positiveSign: false });
         }
 
-        outcome.trade = generateTrade(market, outcome, outcomeTradeInProgress, loginAccount, orderBooks || {});
+        outcome.trade = generateTrade(market, outcome, outcomeTradeInProgress, orderBooks || {});
 
         const orderBook = selectAggregateOrderBook(outcome.id, orderBooks, orderCancellation);
         outcome.orderBook = orderBook;
@@ -274,13 +272,7 @@ export function assembleMarket(
         return outcome;
       }).sort((a, b) => (b.lastPrice.value - a.lastPrice.value) || (a.name < b.name ? -1 : 1));
 
-      market.tags = (market.tags || []).map((tag) => {
-        const obj = {
-          name: tag && tag.toString(),
-          onClick: () => dispatch(toggleTag(tag))
-        };
-        return obj;
-      }).filter(tag => !!tag.name);
+      market.tags = (market.tags || []).filter(tag => !!tag);
 
       market.outstandingShares = formatNumber(getOutstandingShares(marketOutcomesData || {}));
 

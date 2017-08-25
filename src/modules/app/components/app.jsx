@@ -2,25 +2,33 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import Hammer from 'hammerjs';
+import { Helmet } from 'react-helmet';
 
 import Header from 'modules/app/components/header';
 import Footer from 'modules/app/components/footer';
 import SideBar from 'modules/app/components/side-bar';
 import CoreStats from 'modules/app/components/core-stats';
-import Routes from 'modules/app/components/routes';
+// import Routes from 'modules/app/components/routes';
 import ChatView from 'modules/chat/components/chat-view';
 import SidebarMask from 'modules/common/components/side-bar-mask';
 
-import { CREATE_MARKET } from 'modules/app/constants/views';
-
+import makePath from 'modules/app/helpers/make-path';
 import shouldComponentUpdatePure from 'utils/should-component-update-pure';
 import handleScrollTop from 'utils/scroll-top-on-change';
 import debounce from 'utils/debounce';
 import getValue from 'utils/get-value';
+import parsePath from 'modules/app/helpers/parse-path';
+
+import { CREATE_MARKET, MARKETS, FAVORITES } from 'modules/app/constants/views';
 
 export default class AppView extends Component {
   static propTypes = {
     url: PropTypes.string,
+    children: PropTypes.node,
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
+    markets: PropTypes.array.isRequired,
+    marketsFilteredSorted: PropTypes.array.isRequired,
     // tags: PropTypes.array.isRequired,
     // coreStats: PropTypes.array.isRequired,
     // isMobile: PropTypes.bool.isRequired,
@@ -60,6 +68,11 @@ export default class AppView extends Component {
     window.addEventListener('resize', this.handleWindowResize);
 
     this.checkIfMobile();
+    this.setSidebarAllowed(this.props.location);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.location !== nextProps.location) this.setSidebarAllowed(nextProps.location);
   }
 
   componentDidUpdate() {
@@ -67,9 +80,16 @@ export default class AppView extends Component {
   }
 
   // Sidebar
-  setSidebarAllowed(isSideBarAllowed) {
-    this.setState({ isSideBarAllowed });
+  setSidebarAllowed(location) {
+    const path = parsePath(location.pathname)[0];
+
+    if (path === MARKETS || path === FAVORITES) {
+      this.setState({ isSideBarAllowed: true });
+    } else {
+      this.setState({ isSideBarAllowed: false });
+    }
   }
+
   toggleSideBar() {
     this.setState({ isSideBarCollapsed: !this.state.isSideBarCollapsed });
   }
@@ -150,27 +170,11 @@ export default class AppView extends Component {
       isSideBarCollapsed: s.isSideBarCollapsed,
       isSideBarPersistent: s.isSideBarPersistent,
       toggleSideBar: () => { this.toggleSideBar(); },
-      activeView: p.activeView,
       marketsInfo: p.marketsHeader,
       portfolioTotals: getValue(p, 'portfolio.totals'),
       numFavorites: getValue(p, 'marketsHeader.numFavorites'),
       numPendingReports: getValue(p, 'marketsHeader.numPendingReports'),
-      marketsLink: getValue(p, 'links.marketsLink'),
-      allMarketsLink: getValue(p, 'links.allMarketsLink'),
-      favoritesLink: getValue(p, 'links.favoritesLink'),
-      pendingReportsLink: getValue(p, 'links.pendingReportsLink'),
-      transactionsLink: getValue(p, 'links.transactionsLink'),
-      authLink: getValue(p, 'links.authLink'),
-      accountLink: getValue(p, 'links.accountLink'),
-      myPositionsLink: getValue(p, 'links.myPositionsLink'),
-      topicsLink: getValue(p, 'links.topicsLink'),
       notifications: p.notifications
-    };
-
-    const sideBarProps = {
-      tags: p.tags,
-      headerHeight: p.headerHeight,
-      footerHeight: p.footerHeight
     };
 
     // NOTE -- A few implementation details:
@@ -179,6 +183,10 @@ export default class AppView extends Component {
     // The duplicated components are `visibility: hidden` so that page flow is preserved since the actual elements are pulled from page flow via `position: fixed`
     return (
       <main id="main_responsive_state" ref={(main) => { this.main = main; }}>
+        <Helmet
+          defaultTitle="Decentralized Prediction Markets | Augur"
+          titleTemplate="%s | Augur"
+        />
         {p &&
           <div id="app_container" >
             {s.isSideBarAllowed && !s.isSideBarCollapsed &&
@@ -200,8 +208,8 @@ export default class AppView extends Component {
                 }
                 {p.isLogged &&
                   <CoreStats
-                    activeView={p.activeView}
                     coreStats={p.coreStats}
+                    location={p.location}
                   />
                 }
               </div>
@@ -211,7 +219,14 @@ export default class AppView extends Component {
               <div id="app_view_container">
                 {s.isSideBarAllowed && !s.isSideBarCollapsed &&
                   <div id="side_bar" >
-                    <SideBar {...sideBarProps} />
+                    <SideBar
+                      markets={p.markets}
+                      marketsFilteredSorted={p.marketsFilteredSorted}
+                      headerHeight={p.headerHeight}
+                      footerHeight={p.footerHeight}
+                      location={p.location}
+                      history={p.history}
+                    />
                   </div>
                 }
                 <div id="app_view">
@@ -221,17 +236,13 @@ export default class AppView extends Component {
                   <div className={classNames('sub-header', { 'logged-out': !p.isLogged })} >
                     {p.isLogged &&
                       <CoreStats
-                        activeView={p.activeView}
                         coreStats={p.coreStats}
+                        location={p.location}
                       />
                     }
                   </div>
-                  <Routes
-                    activeView={p.activeView}
-                    isSideBarAllowed={s.isSideBarAllowed}
-                    setSidebarAllowed={this.setSidebarAllowed}
-                  />
-                  {p.activeView !== CREATE_MARKET &&
+                  {p.children}
+                  {p.location.pathname !== makePath(CREATE_MARKET) &&
                     <Footer {...navProps} />
                   }
                 </div>

@@ -15,9 +15,9 @@ import getValue from 'utils/get-value';
 export default class OrderBook extends Component {
   static propTypes = {
     selectedShareDenomination: PropTypes.string,
-    outcome: PropTypes.object.isRequired,
     selectedTradeSide: PropTypes.object.isRequired,
     updateTradeFromSelectedOrder: PropTypes.func.isRequired,
+    outcome: PropTypes.object
   };
 
   constructor(props) {
@@ -46,30 +46,34 @@ export default class OrderBook extends Component {
 
     return (
       <article className="order-book">
-        {p.marketType !== SCALAR ?
-          <h3>Order Book {name &&
-            <span><EmDash /> {name}</span>
-          }</h3> :
-          <h3>Order Book</h3>
-        }
-        <ComponentNav
-          fullWidth
-          navItems={this.navItems}
-          selectedNav={s.selectedNav}
-          updateSelectedNav={selectedNav => this.setState({ selectedNav })}
-        />
-        {s.selectedNav === ORDER_BOOK_TABLE &&
-          <OrderBookTable
-            outcome={p.outcome}
-            selectedTradeSide={p.selectedTradeSide}
-            updateTradeFromSelectedOrder={p.updateTradeFromSelectedOrder}
-            selectedShareDenomination={p.selectedShareDenomination}
-          />
-        }
-        {s.selectedNav === ORDER_BOOK_CHART &&
-          <OrderBookChart
-            orderBookSeries={orderBookSeries}
-          />
+        {p.outcome &&
+          <div>
+            {p.marketType !== SCALAR ?
+              <h3>Order Book {name &&
+                <span><EmDash /> {name}</span>
+              }</h3> :
+              <h3>Order Book</h3>
+            }
+            <ComponentNav
+              fullWidth
+              navItems={this.navItems}
+              selectedNav={s.selectedNav}
+              updateSelectedNav={selectedNav => this.setState({ selectedNav })}
+            />
+            {s.selectedNav === ORDER_BOOK_TABLE &&
+              <OrderBookTable
+                outcome={p.outcome}
+                selectedTradeSide={p.selectedTradeSide}
+                updateTradeFromSelectedOrder={p.updateTradeFromSelectedOrder}
+                selectedShareDenomination={p.selectedShareDenomination}
+              />
+            }
+            {s.selectedNav === ORDER_BOOK_CHART &&
+              <OrderBookChart
+                orderBookSeries={orderBookSeries}
+              />
+            }
+          </div>
         }
       </article>
     );

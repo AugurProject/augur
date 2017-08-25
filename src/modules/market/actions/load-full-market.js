@@ -7,12 +7,16 @@ import { addMarketLoading, removeMarketLoading } from 'modules/market/actions/up
 export const loadFullMarket = marketID => (dispatch, getState) => {
   dispatch(addMarketLoading(marketID));
 
+  // TODO -- improve conditional statement, leaving more verbose loading for now
+
   // if the basic data is already loaded, just load the details
-  if (getState().marketsData[marketID]) {
-    return dispatch(loadMarketDetails(marketID));
-  }
+  // if (getState().marketsData[marketID]) {
+  //   console.log('info present, load details');
+  //   return dispatch(loadMarketDetails(marketID));
+  // }
 
   // if the basic data hasn't loaded yet, load it first
+  // console.log('info not present -- load everything');
   dispatch(loadMarketsInfo([marketID], () => dispatch(loadMarketDetails(marketID))));
 };
 

@@ -19,7 +19,9 @@ export default class MyPositionsMarket extends Component {
     isTradeCommitLocked: PropTypes.bool,
     closePositionStatus: PropTypes.object.isRequired,
     scalarShareDenomination: PropTypes.object.isRequired,
-    orderCancellation: PropTypes.object.isRequired
+    orderCancellation: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired
   }
 
   constructor(props) {
@@ -45,7 +47,6 @@ export default class MyPositionsMarket extends Component {
 
     const myPositionOutcomes = getValue(p, 'market.myPositionOutcomes');
     const myPositionsSummary = getValue(p, 'market.myPositionsSummary');
-    const marketLink = getValue(p, 'market.marketLink');
 
     const userOpenOrdersCount = getValue(p, 'market.userOpenOrdersSummary.openOrdersCount.value');
     const outcomes = getValue(p, 'market.outcomes');
@@ -55,8 +56,9 @@ export default class MyPositionsMarket extends Component {
         className="my-positions-market portfolio-market"
       >
         <MyPositionOverview
+          id={p.market.id}
           description={p.market.description}
-          marketLink={marketLink}
+          formattedDescription={p.market.formattedDescription}
         />
         <ComponentNav
           navItems={this.navItems}

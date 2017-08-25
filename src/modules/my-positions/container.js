@@ -1,4 +1,5 @@
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import memoize from 'memoizee';
 
 import MyPositions from 'modules/my-positions/components/my-positions';
@@ -33,8 +34,8 @@ const mapDispatchToProps = dispatch => ({
   triggerTransactionsExport: () => dispatch(triggerTransactionsExport()),
 });
 
-const MyPositionsContainer = connect(mapStateToProps, mapDispatchToProps)(MyPositions);
-
 const getPositionsMarkets = memoize((positions, openOrders) => Array.from(new Set([...positions.markets, ...openOrders])), { max: 1 });
+
+const MyPositionsContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(MyPositions));
 
 export default MyPositionsContainer;

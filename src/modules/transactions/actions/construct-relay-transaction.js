@@ -1,7 +1,10 @@
 import { constructBasicTransaction } from 'modules/transactions/actions/construct-transaction';
 import unpackTransactionParameters from 'modules/transactions/actions/unpack-transaction-parameters';
 import { addNotification } from 'modules/notifications/actions/update-notifications';
-import { selectTransactionsLink } from 'modules/link/selectors/links';
+
+import makePath from 'modules/app/helpers/make-path';
+
+import { TRANSACTIONS } from 'modules/app/constants/views';
 
 export const constructRelayTransaction = tx => (dispatch, getState) => {
   const hash = tx.hash;
@@ -17,7 +20,7 @@ export const constructRelayTransaction = tx => (dispatch, getState) => {
     blockNumber,
     title: `${unpackedParams.type} - ${status}`,
     description: unpackedParams.description || '',
-    href: selectTransactionsLink(dispatch).href
+    linkPath: makePath(TRANSACTIONS)
   }));
   return {
     [hash]: dispatch(constructBasicTransaction(hash, status, blockNumber, timestamp, tx.response.gasFees))

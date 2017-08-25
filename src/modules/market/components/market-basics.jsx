@@ -1,10 +1,17 @@
 /* eslint react/no-array-index-key: 0 */  // It's OK in this specific instance as order remains the same
 
 import React from 'react';
+import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
 import MarketProperties from 'modules/market/components/market-properties';
-import Link from 'modules/link/components/link';
+
+import makePath from 'modules/app/helpers/make-path';
+import makeQuery from 'modules/app/helpers/make-query';
+
+import { MARKET } from 'modules/app/constants/views';
+import { MARKET_ID_PARAM_NAME, MARKET_DESCRIPTION_PARAM_NAME } from 'modules/app/constants/param-names';
 
 const MarketBasics = p => (
   <article className="market-basics">
@@ -27,10 +34,10 @@ const MarketBasics = p => (
         </ul>
       </div>
       <div className="market-basics-header-actions">
-        {p.loginAccount && p.loginAccount.address && p.onClickToggleFavorite &&
+        {p.isLogged && p.toggleFavorite &&
           <button
             className={classNames('button unstyled favorite-button', { on: p.isFavorite })}
-            onClick={p.onClickToggleFavorite}
+            onClick={() => p.toggleFavorite(p.id)}
           >
             <i
               className={classNames('fa', {
@@ -43,10 +50,15 @@ const MarketBasics = p => (
       </div>
     </div>
 
-    {p.marketLink ?
+    {p.id && p.formattedDescription ?
       <Link
-        {...p.marketLink}
-        onClick={p.marketLink.onClick}
+        to={{
+          pathname: makePath(MARKET),
+          search: makeQuery({
+            [MARKET_DESCRIPTION_PARAM_NAME]: p.formattedDescription,
+            [MARKET_ID_PARAM_NAME]: p.id
+          })
+        }}
         className="market-description"
       >
         {p.description}
@@ -57,5 +69,10 @@ const MarketBasics = p => (
     <MarketProperties {...p} />
   </article>
 );
+
+MarketBasics.propTypes = {
+  isLogged: PropTypes.bool.isRequired,
+  toggleFavorite: PropTypes.func
+};
 
 export default MarketBasics;

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import QRCode from 'qrcode.react';
 
-import Link from 'modules/link/components/link';
 import AccountExportAirbitz from 'modules/account/components/account-export-airbitz';
 
 import debounce from 'utils/debounce';
@@ -66,13 +65,13 @@ export default class AccountExport extends Component {
                 size={s.qrSize}
               />
               <h4>or</h4>
-              <Link
-                className="button"
+              <a
+                className="link button"
                 href={p.downloadAccountDataString}
                 download={p.downloadAccountFileName}
               >
                 Download Key File
-              </Link>
+              </a>
             </div>
           }
           {p.airbitzAccount &&

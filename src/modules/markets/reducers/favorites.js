@@ -1,7 +1,9 @@
 import { UPDATE_FAVORITES, TOGGLE_FAVORITE } from 'modules/markets/actions/update-favorites';
 import { CLEAR_LOGIN_ACCOUNT } from 'modules/auth/actions/update-login-account';
 
-export default function (favorites = {}, action) {
+const DEFAULT_STATE = {};
+
+export default function (favorites = DEFAULT_STATE, action) {
   let newFavorites;
 
   switch (action.type) {
@@ -23,7 +25,7 @@ export default function (favorites = {}, action) {
       return newFavorites;
 
     case CLEAR_LOGIN_ACCOUNT:
-      return {};
+      return DEFAULT_STATE;
 
     default:
       return favorites;

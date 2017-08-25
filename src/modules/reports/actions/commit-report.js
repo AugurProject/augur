@@ -10,7 +10,7 @@ export const UPDATE_REPORT_COMMIT_LOCK = 'UPDATE_REPORT_COMMIT_LOCK';
 
 export const updateReportCommitLock = (eventID, isLocked) => ({ type: UPDATE_REPORT_COMMIT_LOCK, eventID, isLocked });
 
-export const commitReport = (market, reportedOutcomeID, isUnethical, isIndeterminate) => (dispatch, getState) => {
+export const commitReport = (market, reportedOutcomeID, isUnethical, isIndeterminate, history) => (dispatch, getState) => {
   const { branch, loginAccount, reportCommitLock } = getState();
   if (!loginAccount.address || !market || !reportedOutcomeID) {
     return console.error('commitReport failed:', loginAccount.address, market, reportedOutcomeID);
@@ -67,5 +67,5 @@ export const commitReport = (market, reportedOutcomeID, isUnethical, isIndetermi
       }));
     }
   });
-  dispatch(nextReportPage());
+  dispatch(nextReportPage(history));
 };

@@ -4,7 +4,6 @@ import { BINARY, SCALAR } from 'modules/markets/constants/market-types';
 import * as TYPES from 'modules/transactions/constants/types';
 import { formatEtherTokens, formatPercent, formatEther, formatRep, formatShares } from 'utils/format-number';
 import { formatDate } from 'utils/format-date';
-import { selectMarketLink } from 'modules/link/selectors/links';
 import { formatReportedOutcome } from 'modules/reports/selectors/reportable-outcomes';
 import { loadMarketThenRetryConversion, lookupEventMarketsThenRetryConversion } from 'modules/transactions/actions/retry-conversion';
 import { selectMarketIDFromEventID } from 'modules/market/selectors/market';
@@ -129,7 +128,6 @@ export function constructCreateMarketTransaction(log, description, dispatch) {
   transaction.description = description.split('~|>')[0];
   transaction.topic = log.topic;
   transaction.marketCreationFee = formatEtherTokens(log.marketCreationFee);
-  transaction.data.marketLink = selectMarketLink({ id: log.marketID, description: transaction.description }, dispatch);
   transaction.data.marketID = log.marketID ? log.marketID : null;
   transaction.bond = { label: 'event validity', value: formatEtherTokens(log.eventBond) };
   const action = log.inProgress ? 'creating' : 'created';
@@ -149,7 +147,6 @@ export function constructPayoutTransaction(log, market, dispatch) {
     }];
   }
   transaction.data.shares = log.shares;
-  transaction.data.marketLink = selectMarketLink({ id: log.market, description: market.description }, dispatch);
   transaction.data.marketID = log.market ? log.market : null;
   const action = log.inProgress ? 'closing out' : 'closed out';
   transaction.message = `${action} ${formatShares(log.shares).full}`;
@@ -159,72 +156,69 @@ export function constructPayoutTransaction(log, market, dispatch) {
 export function constructDecreaseTradingFeeTransaction(log, market, dispatch) {
   const transaction = { data: {} };
   transaction.description = market.description;
-  transaction.data.marketLink = selectMarketLink({ id: log.marketID, description: market.description }, dispatch);
   transaction.data.marketID = log.marketID ? log.marketID : null;
   transaction.message = `updated trading fee: ${formatPercent(abi.bignum(log.tradingFee).times(100)).full}`;
   return transaction;
 }
 
-// export function constructPenalizeTransaction(log, marketID, market, outcomes, dispatch) {
-//   const transaction = { data: {} };
-//   transaction.type = 'Compare Report To Consensus';
-//   const formattedReport = formatReportedOutcome(log.reportValue, market.minValue, market.maxValue, market.type, outcomes);
-//   const formattedOutcome = formatReportedOutcome(log.outcome, market.minValue, market.maxValue, market.type, outcomes);
-//   console.log('formattedReport:', formattedReport);
-//   console.log('formattedOutcome:', formattedOutcome);
-//   transaction.description = market.description;
-//   transaction.data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
-//   transaction.data.marketID = marketID || null;
-//   if (log.repchange) {
-//     let repPenalty;
-//     let repBalance;
-//     const repChange = abi.bignum(log.repchange);
-//     if (repChange.lt(constants.ZERO)) {
-//       repPenalty = repChange;
-//       repBalance = abi.bignum(log.oldrep).plus(abi.bignum(log.repchange)).toFixed();
-//     } else {
-//       repPenalty = constants.ZERO;
-//       repBalance = log.oldrep;
-//     }
-//     transaction.data.balances = [{
-//       change: formatRep(repPenalty, { positiveSign: true }),
-//       balance: formatRep(repBalance)
-//     }];
-//     if (!log.inProgress) {
-//       dispatch(updateEventsWithAccountReportData({
-//         [market.eventID]: {
-//           repEarned: repPenalty,
-//           repBalance
-//         }
-//       }));
-//     }
-//   }
-//   if (log.inProgress) {
-//     transaction.message = 'comparing report to consensus';
-//   } else if (log.reportValue === log.outcome) {
-//     transaction.message = `✔ report ${formattedReport} matches consensus`;
-//   } else {
-//     transaction.message = `✘ report ${formattedReport} does not match consensus ${formattedOutcome}`;
-//   }
-//   if (!log.inProgress) {
-//     dispatch(updateEventsWithAccountReportData({
-//       [market.eventID]: {
-//         marketOutcome: formattedOutcome,
-//         proportionCorrect: market.proportionCorrect,
-//         isIndeterminate: market.isIndeterminate,
-//         isChallenged: false,
-//         isChallengeable: false
-//       }
-//     }));
-//   }
-//   return transaction;
-// }
+export function constructPenalizeTransaction(log, marketID, market, outcomes, dispatch) {
+  const transaction = { data: {} };
+  transaction.type = 'Compare Report To Consensus';
+  const formattedReport = formatReportedOutcome(log.reportValue, market.minValue, market.maxValue, market.type, outcomes);
+  const formattedOutcome = formatReportedOutcome(log.outcome, market.minValue, market.maxValue, market.type, outcomes);
+  console.log('formattedReport:', formattedReport);
+  console.log('formattedOutcome:', formattedOutcome);
+  transaction.description = market.description;
+  transaction.data.marketID = marketID || null;
+  if (log.repchange) {
+    let repPenalty;
+    let repBalance;
+    const repChange = abi.bignum(log.repchange);
+    if (repChange.lt(constants.ZERO)) {
+      repPenalty = repChange;
+      repBalance = abi.bignum(log.oldrep).plus(abi.bignum(log.repchange)).toFixed();
+    } else {
+      repPenalty = constants.ZERO;
+      repBalance = log.oldrep;
+    }
+    transaction.data.balances = [{
+      change: formatRep(repPenalty, { positiveSign: true }),
+      balance: formatRep(repBalance)
+    }];
+    if (!log.inProgress) {
+      dispatch(updateEventsWithAccountReportData({
+        [market.eventID]: {
+          repEarned: repPenalty,
+          repBalance
+        }
+      }));
+    }
+  }
+  if (log.inProgress) {
+    transaction.message = 'comparing report to consensus';
+  } else if (log.reportValue === log.outcome) {
+    transaction.message = `✔ report ${formattedReport} matches consensus`;
+  } else {
+    transaction.message = `✘ report ${formattedReport} does not match consensus ${formattedOutcome}`;
+  }
+  if (!log.inProgress) {
+    dispatch(updateEventsWithAccountReportData({
+      [market.eventID]: {
+        marketOutcome: formattedOutcome,
+        proportionCorrect: market.proportionCorrect,
+        isIndeterminate: market.isIndeterminate,
+        isChallenged: false,
+        isChallengeable: false
+      }
+    }));
+  }
+  return transaction;
+}
 
 export function constructSubmitReportTransaction(log, marketID, market, outcomes, dispatch) {
   const transaction = { data: {} };
   transaction.type = TYPES.REVEAL_REPORT;
   transaction.description = market.description;
-  transaction.data.marketLink = selectMarketLink({ id: marketID, description: market.description }, dispatch);
   transaction.data.marketID = marketID || null;
   transaction.data.market = market;
   const isUnethical = !log.ethics || abi.bignum(log.ethics).eq(constants.ZERO);
@@ -394,8 +388,7 @@ export const constructCancelOrderTransaction = (trade, marketID, marketType, des
         marketType,
         outcome: { name: outcomeName || outcomeID },
         outcomeID,
-        marketID,
-        marketLink: selectMarketLink({ id: marketID, description }, dispatch)
+        marketID
       },
       message: `${action} order to ${trade.type} ${shares.full} for ${price.full} each`,
       numShares: shares,

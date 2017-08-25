@@ -53,6 +53,8 @@ export default class Checkbox extends Component {
   render() {
     const p = this.props;
 
+    // console.log('p -- ', p);
+
     return (
       <article className="checkbox-container">
         <button

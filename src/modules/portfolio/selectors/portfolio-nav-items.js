@@ -1,7 +1,6 @@
 import selectMyPositionsSummary from 'modules/my-positions/selectors/my-positions-summary';
 import selectMyMarketsSummary from 'modules/my-markets/selectors/my-markets-summary';
 import selectMyReportsSummary from 'modules/my-reports/selectors/my-reports-summary';
-import selectLinks from 'modules/link/selectors/links';
 
 import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views';
 import { formatNumber, formatEtherTokens, formatRep } from 'utils/format-number';
@@ -11,15 +10,13 @@ export default function () {
 }
 
 export const selectPortfolioNavItems = () => {
-  const links = selectLinks();
   const positionsSummary = selectMyPositionsSummary();
   const marketsSummary = selectMyMarketsSummary();
   const reportsSummary = selectMyReportsSummary();
   return [
     {
       label: 'Positions',
-      link: links.myPositionsLink,
-      page: MY_POSITIONS,
+      view: MY_POSITIONS,
       leadingTitle: 'Total Number of Positions',
       leadingValue: (positionsSummary && positionsSummary.numPositions) || 0,
       leadingValueNull: 'No Positions',
@@ -29,8 +26,7 @@ export const selectPortfolioNavItems = () => {
     },
     {
       label: 'Markets',
-      link: links.myMarketsLink,
-      page: MY_MARKETS,
+      view: MY_MARKETS,
       leadingTitle: 'Total Markets',
       leadingValue: formatNumber(((marketsSummary && marketsSummary.numMarkets) || 0), { denomination: 'Markets' }),
       leadingValueNull: 'No Markets',
@@ -40,8 +36,7 @@ export const selectPortfolioNavItems = () => {
     },
     {
       label: 'Reports',
-      link: links.myReportsLink,
-      page: MY_REPORTS,
+      view: MY_REPORTS,
       leadingTitle: 'Total Reports',
       leadingValue: formatNumber((reportsSummary && reportsSummary.numReports), { denomination: 'Reports' }),
       leadingValueNull: 'No Reports',

@@ -1306,12 +1306,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
   });
 
   describe('constructMarketCreatedTransaction', () => {
-    const mockLinks = {
-      selectMarketLink: sinon.stub().returns({})
-    };
-    const action = proxyquire('../../../src/modules/transactions/actions/construct-transaction', {
-      '../../link/selectors/links': mockLinks
-    });
+    const action = require('../../../src/modules/transactions/actions/construct-transaction');
 
     const test = t => it(t.description, () => t.assertions());
 
@@ -1331,8 +1326,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const expected = {
           data: {
-            marketID: log.marketID,
-            marketLink: {},
+            marketID: log.marketID
           },
           type: CREATE_MARKET,
           description: 'test description',
@@ -1365,8 +1359,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const expected = {
           data: {
-            marketID: log.marketID,
-            marketLink: {},
+            marketID: log.marketID
           },
           type: CREATE_MARKET,
           description: 'test description',
@@ -1385,12 +1378,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
   });
 
   describe('constructPayoutTransaction', () => {
-    const mockLinks = {
-      selectMarketLink: sinon.stub().returns({})
-    };
-    const action = proxyquire('../../../src/modules/transactions/actions/construct-transaction', {
-      '../../link/selectors/links': mockLinks
-    });
+    const action = require('../../../src/modules/transactions/actions/construct-transaction');
 
     const test = t => it(t.description, () => t.assertions());
 
@@ -1410,7 +1398,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const expected = {
           data: {
             shares: '10',
-            marketLink: {},
             marketID: null
           },
           type: 'Claim Trading Payout',
@@ -1439,7 +1426,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const expected = {
           data: {
             shares: '10',
-            marketLink: {},
             marketID: '0xMARKETID'
           },
           type: 'Claim Trading Payout',
@@ -1470,7 +1456,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         const expected = {
           data: {
             shares: '10',
-            marketLink: {},
             marketID: '0xMARKETID',
             balances: [
               {
@@ -1490,12 +1475,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
   });
 
   describe('constructTradingFeeUpdatedTransaction', () => {
-    const mockLinks = {
-      selectMarketLink: sinon.stub().returns({})
-    };
-    const action = proxyquire('../../../src/modules/transactions/actions/construct-transaction', {
-      '../../link/selectors/links': mockLinks
-    });
+    const action = require('../../../src/modules/transactions/actions/construct-transaction');
 
     const test = t => it(t.description, () => t.assertions());
 
@@ -1513,8 +1493,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const expected = {
           data: {
-            marketID: null,
-            marketLink: {}
+            marketID: null
           },
           description: 'test description',
           message: `updated trading fee: ${formatPercent(abi.bignum(log.tradingFee).times(100)).full}`
@@ -1539,8 +1518,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const expected = {
           data: {
-            marketID: '0xMARKETID',
-            marketLink: {}
+            marketID: '0xMARKETID'
           },
           description: 'test description',
           message: `updated trading fee: ${formatPercent(abi.bignum(log.tradingFee).times(100)).full}`
@@ -1552,10 +1530,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
   });
 
   describe('constructPenalizeTransaction', () => {
-    const mockLinks = {
-      selectMarketLink: sinon.stub().returns({})
-    };
-
     const mockReportableOutcomes = {
       formatReportedOutcome: sinon.stub().returns('formatted reported outcome')
     };
@@ -1567,7 +1541,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
     };
 
     const action = proxyquire('../../../src/modules/transactions/actions/construct-transaction', {
-      '../../link/selectors/links': mockLinks,
       '../../reports/selectors/reportable-outcomes': mockReportableOutcomes,
       '../../my-reports/actions/update-events-with-account-report-data': mockUpdateEventsWithAccountReportData
     });
@@ -1595,7 +1568,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const expectedResult = {
           data: {
-            marketLink: {},
             marketID
           },
           type: 'Compare Report To Consensus',
@@ -1635,7 +1607,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const expectedResult = {
           data: {
-            marketLink: {},
             marketID,
             balances: [
               {
@@ -1684,7 +1655,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const expectedResult = {
           data: {
-            marketLink: {},
             marketID,
             balances: [
               {
@@ -1733,7 +1703,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const expectedResult = {
           data: {
-            marketLink: {},
             marketID,
             balances: [
               {
@@ -1783,7 +1752,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const expectedResult = {
           data: {
-            marketLink: {},
             marketID,
             balances: [
               {
@@ -1823,10 +1791,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
       }
     };
 
-    const mockLinks = {
-      selectMarketLink: sinon.stub().returns({})
-    };
-
     const mockReportableOutcomes = {
       formatReportedOutcome: sinon.stub().returns('formatted reported outcome')
     };
@@ -1839,7 +1803,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
     const action = proxyquire('../../../src/modules/transactions/actions/construct-transaction', {
       '../../../services/augurjs': mockAugur,
-      '../../link/selectors/links': mockLinks,
       '../../reports/selectors/reportable-outcomes': mockReportableOutcomes,
       '../../my-reports/actions/update-events-with-account-report-data': mockUpdateEventsWithAccountReportData
     });
@@ -1870,7 +1833,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const expectedResult = {
           data: {
-            marketLink: {},
             marketID,
             market,
             isUnethical: true
@@ -1900,7 +1862,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const expectedResult = {
           data: {
-            marketLink: {},
             marketID,
             market,
             isUnethical: false
@@ -1930,7 +1891,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const expectedResult = {
           data: {
-            marketLink: {},
             marketID,
             market,
             isUnethical: false,
@@ -1964,7 +1924,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const expectedResult = {
           data: {
-            marketLink: {},
             marketID,
             market,
             isUnethical: false,
@@ -1994,10 +1953,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
   });
 
   describe('constructSubmittedReportTransaction', () => {
-    const mockLinks = {
-      selectMarketLink: sinon.stub().returns({})
-    };
-
     const mockReportableOutcomes = {
       formatReportedOutcome: sinon.stub().returns('formatted reported outcome')
     };
@@ -2009,7 +1964,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
     };
 
     const action = proxyquire('../../../src/modules/transactions/actions/construct-transaction', {
-      '../../link/selectors/links': mockLinks,
       '../../reports/selectors/reportable-outcomes': mockReportableOutcomes,
       '../../my-reports/actions/update-events-with-account-report-data': mockUpdateEventsWithAccountReportData
     });
@@ -2034,7 +1988,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const expectedResult = {
           data: {
-            marketLink: {},
             marketID,
             market,
             isUnethical: true,
@@ -2068,7 +2021,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const expectedResult = {
           data: {
-            marketLink: {},
             marketID,
             market,
             isUnethical: false,
@@ -2101,7 +2053,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const expectedResult = {
           data: {
-            marketLink: {},
             marketID,
             market,
             isUnethical: false,
@@ -2131,12 +2082,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
   });
 
   describe('constructSlashedRepTransaction', () => {
-    const mockLinks = {
-      selectMarketLink: sinon.stub().returns({})
-    };
-    const action = proxyquire('../../../src/modules/transactions/actions/construct-transaction', {
-      '../../link/selectors/links': mockLinks
-    });
+    const action = require('../../../src/modules/transactions/actions/construct-transaction');
 
     const test = t => it(t.description, () => t.assertions());
 
@@ -2156,7 +2102,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const expected = {
           data: {
-            marketLink: {},
             marketID: '0xMARKETID',
             market
           },
@@ -2186,7 +2131,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const expected = {
           data: {
-            marketLink: {},
             marketID: '0xMARKETID',
             market
           },
@@ -2218,7 +2162,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const expected = {
           data: {
-            marketLink: {},
             marketID: '0xMARKETID',
             market,
             balances: [
@@ -2257,7 +2200,6 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const expected = {
           data: {
-            marketLink: {},
             marketID: '0xMARKETID',
             market,
             balances: [
@@ -2278,12 +2220,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
   });
 
   describe('constructLogFillTxTransaction', () => {
-    const mockLinks = {
-      selectMarketLink: sinon.stub().returns({})
-    };
-    const action = proxyquire('../../../src/modules/transactions/actions/construct-transaction', {
-      '../../link/selectors/links': mockLinks
-    });
+    const action = require('../../../src/modules/transactions/actions/construct-transaction');
 
     const test = t => it(t.description, () => {
       const store = mockStore();
@@ -2348,8 +2285,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               marketType,
               outcomeName: outcomeID,
               outcomeID,
-              marketID,
-              marketLink: {}
+              marketID
             },
             message: `sold ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
             numShares: shares,
@@ -2415,8 +2351,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               marketType,
               outcomeName: outcomeID,
               outcomeID,
-              marketID,
-              marketLink: {}
+              marketID
             },
             message: `${MATCH_ASK} ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
             numShares: shares,
@@ -2481,8 +2416,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               marketType,
               outcomeName: outcomeID,
               outcomeID,
-              marketID,
-              marketLink: {}
+              marketID
             },
             message: `bought ${shares.full} for ${formatEtherTokens(totalReturnPerShare).full} / share`,
             numShares: shares,
@@ -2548,8 +2482,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               marketType,
               outcomeName: outcomeID,
               outcomeID,
-              marketID,
-              marketLink: {}
+              marketID
             },
             message: `${MATCH_BID} ${shares.full} for ${formatEtherTokens(totalReturnPerShare).full} / share`,
             numShares: shares,
@@ -2613,8 +2546,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               marketType,
               outcomeName: outcomeID,
               outcomeID,
-              marketID,
-              marketLink: {}
+              marketID
             },
             message: `bought ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
             numShares: shares,
@@ -2679,8 +2611,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               marketType,
               outcomeName: outcomeID,
               outcomeID,
-              marketID,
-              marketLink: {}
+              marketID
             },
             message: `${BUY} ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
             numShares: shares,
@@ -2745,8 +2676,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               marketType,
               outcomeName: outcomeID,
               outcomeID,
-              marketID,
-              marketLink: {}
+              marketID
             },
             message: `sold ${shares.full} for ${formatEtherTokens(totalReturnPerShare).full} / share`,
             numShares: shares,
@@ -2812,8 +2742,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               marketType,
               outcomeName: outcomeID,
               outcomeID,
-              marketID,
-              marketLink: {}
+              marketID
             },
             message: `${SELL} ${shares.full} for ${formatEtherTokens(totalReturnPerShare).full} / share`,
             numShares: shares,
@@ -2879,8 +2808,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               marketType,
               outcomeName: outcomeID,
               outcomeID,
-              marketID,
-              marketLink: {}
+              marketID
             },
             message: `${SELL} ${shares.full} for ${formatEtherTokens(totalReturnPerShare).full} / share`,
             numShares: shares,
@@ -2902,12 +2830,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
   });
 
   describe('constructLogFillTxTransaction', () => {
-    const mockLinks = {
-      selectMarketLink: sinon.stub().returns({})
-    };
-    const action = proxyquire('../../../src/modules/transactions/actions/construct-transaction', {
-      '../../link/selectors/links': mockLinks
-    });
+    const action = require('../../../src/modules/transactions/actions/construct-transaction');
 
     const test = t => it(t.description, () => {
       const store = mockStore();
@@ -2957,8 +2880,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               marketType,
               outcomeName: outcomeID,
               outcomeID,
-              marketID,
-              marketLink: {}
+              marketID
             },
             message: `short sold ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
             numShares: shares,
@@ -3021,8 +2943,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               marketType,
               outcomeName: outcomeID,
               outcomeID,
-              marketID,
-              marketLink: {}
+              marketID
             },
             message: `short selling ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
             numShares: shares,
@@ -3085,8 +3006,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
               marketType,
               outcomeName: outcomeID,
               outcomeID,
-              marketID,
-              marketLink: {}
+              marketID
             },
             message: `short selling ${shares.full} for ${formatEtherTokens(totalCostPerShare).full} / share`,
             numShares: shares,
@@ -3107,12 +3027,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
   });
 
   describe('constructLogFillTxTransaction', () => {
-    const mockLinks = {
-      selectMarketLink: sinon.stub().returns({})
-    };
-    const action = proxyquire('../../../src/modules/transactions/actions/construct-transaction', {
-      '../../link/selectors/links': mockLinks
-    });
+    const action = require('../../../src/modules/transactions/actions/construct-transaction');
 
     const test = t => it(t.description, () => {
       const store = mockStore();
@@ -3406,8 +3321,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
                 marketType,
                 outcomeName: outcomeID,
                 outcomeID,
-                marketID,
-                marketLink: {}
+                marketID
               },
               message: 'ask 2 shares for 0.0991 ETH Tokens / share',
               numShares: formatShares(trade.amount),
@@ -3436,12 +3350,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
   });
 
   describe('constructLogCancelTransaction', () => {
-    const mockLinks = {
-      selectMarketLink: sinon.stub().returns({})
-    };
-    const action = proxyquire('../../../src/modules/transactions/actions/construct-transaction', {
-      '../../link/selectors/links': mockLinks
-    });
+    const action = require('../../../src/modules/transactions/actions/construct-transaction');
 
     let trade = {
       transactionHash: '0xHASH',
@@ -3492,8 +3401,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
                 name: outcomeID
               },
               outcomeID,
-              marketID,
-              marketLink: {}
+              marketID
             },
             message: `canceled order to ${trade.type} ${shares.full} for ${price.full} each`,
             numShares: shares,
@@ -3540,8 +3448,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
                 name: outcomeID
               },
               outcomeID,
-              marketID,
-              marketLink: {}
+              marketID
             },
             message: `canceling order to ${trade.type} ${shares.full} for ${price.full} each`,
             numShares: shares,

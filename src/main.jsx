@@ -4,9 +4,13 @@ import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 
 import { initAugur } from 'modules/app/actions/init-augur';
-import { updateURL } from 'modules/link/actions/update-url';
+
+import { HashRouter } from 'react-router-dom';
+
+import Routes from 'modules/app/components/routes';
 
 import store from 'src/store';
+
 import { augur } from 'services/augurjs';
 
 require('core-js/fn/array/find');
@@ -30,26 +34,22 @@ if (process.env.NODE_ENV === 'development') {
   `);
 }
 
-store.dispatch(updateURL(window.location.pathname + window.location.search));
-
-window.onpopstate = (e) => {
-  store.dispatch(updateURL(window.location.pathname + window.location.search));
-};
-
 store.dispatch(initAugur());
 
-function render(App) {
+function render() {
   ReactDOM.render(
     <Provider store={store}>
       <AppContainer>
-        <App />
+        <HashRouter>
+          <Routes />
+        </HashRouter>
       </AppContainer>
     </Provider>,
     document.getElementById('app')
   );
 }
 
-store.subscribe(handleRender);
+handleRender();
 
 if (module.hot) {
   module.hot.accept(
@@ -74,5 +74,5 @@ function handleRender() {
     window.selectors = selectors;
   }
 
-  render(App);
+  render();
 }

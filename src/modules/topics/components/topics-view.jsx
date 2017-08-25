@@ -1,134 +1,106 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
+import { Link } from 'react-router-dom';
 
 import NullStateMessage from 'modules/common/components/null-state-message';
 import TopicRows from 'modules/topics/components/topic-rows';
 import Paginator from 'modules/common/components/paginator';
-import Input from 'modules/common/components/input';
-import Link from 'modules/link/components/link';
 import Branch from 'modules/branch/components/branch';
+import FilterSort from 'modules/filter-sort/container';
+
+import parseQuery from 'modules/app/helpers/parse-query';
+import makePath from 'modules/app/helpers/make-path';
+import getValue from 'utils/get-value';
+
+import { PAGINATION_PARAM_NAME } from 'modules/app/constants/param-names';
+import { CREATE_MARKET } from 'modules/app/constants/views';
 
 export default class TopicsView extends Component {
   static propTypes = {
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
+    isLogged: PropTypes.bool.isRequired,
     topics: PropTypes.array,
     branch: PropTypes.object,
-    loginAccount: PropTypes.object,
-    createMarketLink: PropTypes.object
+    loginAccount: PropTypes.object
   }
 
   constructor(props) {
     super(props);
 
-    this.state = {
-      nullMessage: 'No Topics Available',
-      keywords: '',
-      currentPage: 1,
-      lowerIndex: 0,
-      upperIndex: 4,
-      // Adjust these to change topic layout
+    // Adjust these to change topic layout
+    this.topicsConfig = {
       numberOfRows: 3,
       topicsPerHeroRow: 2,
       topicsPerRow: 4,
-      // ---
-      filteredTopics: props.topics || [],
+    };
+
+    this.searchKeys = ['topic'];
+
+    this.state = {
+      lowerBound: null,
+      upperBound: null,
+      boundedLength: null,
+      currentPage: null,
+      itemsPerPage: 0,
+      filteredTopics: [],
+      filteredTopicsLength: 0,
+      hasKeywords: false,
       paginatedTopics: [],
       pagination: {},
       fontAwesomeClasses: [],
       icoFontClasses: []
     };
 
-    this.updatePagination = this.updatePagination.bind(this);
-    this.filterByKeywords = this.filterByKeywords.bind(this);
-    this.paginateFilteredTopics = this.paginateFilteredTopics.bind(this);
+    this.setCurrentPage = this.setCurrentPage.bind(this);
+    this.setItemsPerPage = this.setItemsPerPage.bind(this);
+    this.setSegment = this.setSegment.bind(this);
     this.filterOutIconClassesFromStylesheets = this.filterOutIconClassesFromStylesheets.bind(this);
+    this.updateFilteredItems = this.updateFilteredItems.bind(this);
   }
 
   componentWillMount() {
-    this.updatePagination(this.props, this.state);
+    this.setCurrentPage(this.props.location);
+    this.setItemsPerPage(this.state.currentPage, this.state.hasKeywords);
   }
 
   componentDidMount() {
     this.filterOutIconClassesFromStylesheets();
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (this.props.location !== nextProps.location) this.setCurrentPage(nextProps.location);
+  }
+
   componentWillUpdate(nextProps, nextState) {
-    if (this.props.topics !== nextProps.topics) {
-      this.setState({ filteredTopics: nextProps.topics });
-    }
-    if (this.state.keywords !== nextState.keywords) {
-      this.filterByKeywords(nextProps.topics, nextState);
-    }
     if (
-      this.state.filteredTopics !== nextState.filteredTopics ||
-      this.state.currentPage !== nextState.currentPage
+      this.state.currentPage !== nextState.currentPage ||
+      this.state.hasKeywords !== nextState.hasKeywords
     ) {
-      this.updatePagination(nextProps, nextState);
+      this.setItemsPerPage(nextState.currentPage, nextState.hasKeywords);
     }
   }
 
-  filterByKeywords(topics, s) {
-    let filteredTopics = topics;
+  setCurrentPage(location) {
+    const currentPage = parseInt(parseQuery(location.search)[PAGINATION_PARAM_NAME] || 1, 10);
 
-    // Filter Based on Keywords
-    if (s.keywords) {
-      filteredTopics = (topics || []).filter(topic => topic.topic.toLowerCase().indexOf(s.keywords.toLowerCase()) >= 0);
-    }
-
-    if (filteredTopics !== s.filteredTopics) {
-      this.setState({
-        currentPage: 1, // Reset pagination
-        filteredTopics
-      });
-    }
+    this.setState({ currentPage });
   }
 
-  paginateFilteredTopics(s) {
-    // Filter Based on Pagination
-    const paginatedTopics = s.filteredTopics.slice(s.lowerIndex, s.upperIndex === s.filteredTopics.length - 1 ? undefined : s.upperIndex + 1);
-
-    if (paginatedTopics !== s.paginatedTopics) {
-      this.setState({ paginatedTopics });
+  setItemsPerPage(currentPage, hasKeywords) {
+    let itemsPerPage;
+    if ((currentPage === null || currentPage === 1) && !hasKeywords) {
+      itemsPerPage = ((this.topicsConfig.numberOfRows - 1) * this.topicsConfig.topicsPerRow) + this.topicsConfig.topicsPerHeroRow;
+    } else {
+      itemsPerPage = this.topicsConfig.numberOfRows * this.topicsConfig.topicsPerRow;
     }
+
+    this.setState({ itemsPerPage });
   }
 
-  updatePagination(p, s) {
-    const range = s.currentPage === 1 && !s.keywords ? (((s.numberOfRows - 1) * s.topicsPerRow) + s.topicsPerHeroRow) - 1 : (s.numberOfRows * s.topicsPerRow) - 1;
-    const keywordsLowerBump = (s.keywords && s.currentPage === 2) ? 1 : 0;
-    const lowerBump = s.currentPage < 3 ? keywordsLowerBump : (s.currentPage - 2);
-    const lowerIndex = ((s.currentPage - 1) * range) + lowerBump;
-    const upperIndex = s.filteredTopics.length - 1 >= lowerIndex + range ?
-      lowerIndex + range :
-      s.filteredTopics.length - 1;
-
-    this.setState({
-      lowerIndex,
-      upperIndex,
-      pagination: {
-        ...s.pagination,
-        startItemNum: lowerIndex + 1,
-        endItemNum: upperIndex + 1,
-        numUnpaginated: s.filteredTopics.length,
-        previousPageNum: s.currentPage > 1 ? s.currentPage - 1 : null,
-        previousPageLink: {
-          onClick: () => {
-            if (s.currentPage > 1) {
-              this.setState({ currentPage: s.currentPage - 1 });
-            }
-          }
-        },
-        nextPageNum: upperIndex < s.filteredTopics.length - 1 ? s.currentPage + 1 : null,
-        nextPageLink: {
-          onClick: () => {
-            if (upperIndex < s.filteredTopics.length - 1) {
-              this.setState({ currentPage: s.currentPage + 1 });
-            }
-          }
-        }
-      }
-    }, () => {
-      this.paginateFilteredTopics(this.state);
-    });
+  setSegment(lowerBound, upperBound, boundedLength) {
+    this.setState({ lowerBound, upperBound, boundedLength });
   }
 
   filterOutIconClassesFromStylesheets() {
@@ -175,6 +147,14 @@ export default class TopicsView extends Component {
     this.setState({ fontAwesomeClasses, icoFontClasses });
   }
 
+  updateFilteredItems(filteredTopics) {
+    this.setState({
+      filteredTopics,
+      filteredTopicsLength: filteredTopics.length,
+      hasKeywords: filteredTopics.length !== getValue(this.props, 'topics.length') // Inferred
+    });
+  }
+
   render() {
     const p = this.props;
     const s = this.state;
@@ -186,41 +166,51 @@ export default class TopicsView extends Component {
             <Branch {...p.branch} />
           }
           <div className="topics-header">
-            <div className={classNames('topics-search', { 'only-search': !p.loginAccount || !p.loginAccount.address })}>
-              <Input
-                isSearch
-                isClearable
-                placeholder="Search Topics"
-                onChange={keywords => this.setState({ keywords })}
+            <div className={classNames('topics-search', { 'only-search': !p.isLogged })}>
+              <FilterSort
+                items={p.topics}
+                updateFilteredItems={this.updateFilteredItems}
+                searchPlaceholder="Search Topics"
+                searchKeys={this.searchKeys}
+                filterBySearch
               />
             </div>
             {p.loginAccount && p.loginAccount.address &&
               <Link
-                className="button imperative navigational"
+                to={makePath(CREATE_MARKET)}
+                className="link button imperative navigational"
                 disabled={!p.loginAccount.address}
-                {...p.createMarketLink}
               >
                 + Create New Market
               </Link>
             }
           </div>
-          {s.filteredTopics.length ?
+          {s.filteredTopicsLength && s.boundedLength ?
             <div className="topics">
               <TopicRows
-                topics={s.paginatedTopics}
-                topicsPerRow={s.topicsPerRow}
+                topics={p.topics}
+                filteredTopics={s.filteredTopics}
+                numberOfRows={this.topicsConfig.numberOfRows}
+                topicsPerRow={this.topicsConfig.topicsPerRow}
+                topicsPerHeroRow={this.topicsConfig.topicsPerHeroRow}
                 hasHeroRow={s.currentPage === 1}
-                topicsPerHeroRow={s.topicsPerHeroRow}
-                selectTopic={p.selectTopic}
-                isSearchResult={!!s.keywords}
+                lowerBound={s.lowerBound}
+                boundedLength={s.boundedLength}
+                hasKeywords={s.hasKeywords}
                 fontAwesomeClasses={s.fontAwesomeClasses}
                 icoFontClasses={s.icoFontClasses}
               />
             </div> :
-            <NullStateMessage message={s.nullMessage} />
+            <NullStateMessage message={'No Topics Available'} />
           }
-          {!!s.filteredTopics.length &&
-            <Paginator {...s.pagination} />
+          {!!s.filteredTopicsLength &&
+            <Paginator
+              itemsLength={s.filteredTopicsLength}
+              itemsPerPage={s.itemsPerPage}
+              location={p.location}
+              history={p.history}
+              setSegment={this.setSegment}
+            />
           }
         </div>
       </section>

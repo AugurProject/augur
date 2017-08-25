@@ -18,7 +18,9 @@ import store from 'src/store';
  * @param {Object} loginAccount
  * @param {Object} orderBooks Orders for market
  */
-export const generateTrade = memoize((market, outcome, outcomeTradeInProgress, loginAccount, orderBooks) => {
+export const generateTrade = memoize((market, outcome, outcomeTradeInProgress, orderBooks) => {
+  const { loginAccount } = store.getState();
+
   const side = (outcomeTradeInProgress && outcomeTradeInProgress.side) || BUY;
   const numShares = (outcomeTradeInProgress && outcomeTradeInProgress.numShares) || null;
   const limitPrice = (outcomeTradeInProgress && outcomeTradeInProgress.limitPrice) || null;

@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
-import Link from 'modules/link/components/link';
 import ValueDenomination from 'modules/common/components/value-denomination';
 
 import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views';
 
 import debounce from 'utils/debounce';
+import makePath from 'modules/app/helpers/make-path';
 
 export default class PortfolioNavs extends Component {
   static propTypes = {
-    activeView: PropTypes.string.isRequired,
+    location: PropTypes.object.isRequired,
     portfolioNavItems: PropTypes.array.isRequired
   };
 
@@ -26,9 +27,9 @@ export default class PortfolioNavs extends Component {
   }
 
   componentDidMount() {
-    if (this.props.activeView === MY_POSITIONS ||
-      this.props.activeView === MY_MARKETS ||
-      this.props.activeView === MY_REPORTS
+    if (this.props.location.pathname === makePath(MY_POSITIONS) ||
+        this.props.location.pathname === makePath(MY_MARKETS) ||
+        this.props.location.pathname === makePath(MY_REPORTS)
     ) {
       this.updatePortfolioNavHeight();
     }
@@ -36,10 +37,10 @@ export default class PortfolioNavs extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (
-      this.props.activeView !== nextProps.activeView &&
-      (nextProps.activeView === MY_POSITIONS ||
-      nextProps.activeView === MY_MARKETS ||
-      nextProps.activeView === MY_REPORTS)
+      this.props.location.pathname !== nextProps.location.pathname &&
+      (nextProps.location.pathname === makePath(MY_POSITIONS) ||
+      nextProps.location.pathname === makePath(MY_MARKETS) ||
+      nextProps.location.pathname === makePath(MY_REPORTS))
     ) {
       this.updatePortfolioNavHeight();
     }
@@ -72,10 +73,9 @@ export default class PortfolioNavs extends Component {
           <div className="portfolio-navs-content">
             {(p.portfolioNavItems || []).map((navItem, i) => (
               <Link
+                to={makePath(navItem.view)}
                 key={navItem.label}
-                className={classNames('portfolio-nav-item', { 'active-nav-item': navItem.page === p.activeView })}
-                href={navItem.link.href}
-                onClick={navItem.link.onClick}
+                className={classNames('portfolio-nav-item', { 'active-nav-item': makePath(navItem.view) === p.location.pathname })}
               >
                 <span>{navItem.label}</span>
                 <div className="portfolio-nav-item-stats">

@@ -1,19 +1,15 @@
-import { combineReducers } from 'redux';
-
 import env from 'modules/app/reducers/env';
 import blockchain from 'modules/app/reducers/blockchain';
 import branch from 'modules/branch/reducers/branch';
 import connection from 'modules/app/reducers/connection';
-import url from 'modules/link/reducers/url';
 
 import isMobile from 'modules/app/reducers/is-mobile';
 import headerHeight from 'modules/app/reducers/header-height';
 import footerHeight from 'modules/app/reducers/footer-height';
 
-import auth from 'modules/auth/reducers/auth';
 import loginAccount from 'modules/auth/reducers/login-account';
+import isLoggedIn from 'modules/auth/reducers/is-logged-in';
 import accountName from 'modules/account/reducers/account-name';
-import activeView from 'modules/app/reducers/active-view';
 
 import newMarket from 'modules/create-market/reducers/new-market';
 
@@ -23,7 +19,7 @@ import hasLoadedMarkets from 'modules/markets/reducers/has-loaded-markets';
 import outcomesData from 'modules/markets/reducers/outcomes-data';
 import eventMarketsMap from 'modules/markets/reducers/event-markets-map';
 import favorites from 'modules/markets/reducers/favorites';
-import pagination from 'modules/markets/reducers/pagination';
+import marketsFilteredSorted from 'modules/markets/reducers/markets-filtered-sorted';
 
 import reports from 'modules/reports/reducers/reports';
 import eventsWithAccountReport from 'modules/my-reports/reducers/events-with-account-report';
@@ -43,16 +39,10 @@ import closePositionTradeGroups from 'modules/my-positions/reducers/close-positi
 
 import topics from 'modules/topics/reducers/topics-data';
 import hasLoadedTopic from 'modules/topics/reducers/has-loaded-topic';
-import selectedTopic from 'modules/topics/reducers/selected-topic';
 
-import selectedMarketID from 'modules/markets/reducers/selected-market-id';
-import selectedMarketsHeader from 'modules/markets/reducers/selected-markets-header';
-import selectedMarketsSubset from 'modules/markets/reducers/selectedMarketsSubset';
+import selectedMarketID from 'modules/market/reducers/selected-market-id';
 import tradesInProgress from 'modules/trade/reducers/trades-in-progress';
 // import createMarketInProgress from 'modules/create-market/reducers/create-market-in-progress';
-import keywords from 'modules/markets/reducers/keywords';
-import selectedTags from 'modules/markets/reducers/selected-tags';
-import selectedFilterSort from 'modules/markets/reducers/selected-filter-sort';
 import priceHistory from 'modules/markets/reducers/price-history';
 
 import chatMessages from 'modules/chat/reducers/chat-messages';
@@ -65,21 +55,19 @@ import eventsAPI from 'modules/contracts/reducers/events-api';
 import notifications from 'modules/notifications/reducers/notifications';
 
 export function createReducer() {
-  return combineReducers({
+  return {
     env,
     blockchain,
     branch,
     connection,
-    url,
 
     isMobile,
     headerHeight,
     footerHeight,
 
-    auth,
     loginAccount,
+    isLoggedIn,
     accountName,
-    activeView,
 
     newMarket,
 
@@ -89,20 +77,14 @@ export function createReducer() {
     outcomesData,
     eventMarketsMap,
     favorites,
-    pagination,
+    marketsFilteredSorted,
 
     reports,
     eventsWithAccountReport,
 
     selectedMarketID,
-    selectedMarketsSubset,
-    selectedMarketsHeader,
-    keywords,
     topics,
     hasLoadedTopic,
-    selectedTopic,
-    selectedTags,
-    selectedFilterSort,
     priceHistory,
 
     tradesInProgress,
@@ -128,5 +110,5 @@ export function createReducer() {
     functionsAPI,
     eventsAPI,
     notifications
-  });
+  };
 }
