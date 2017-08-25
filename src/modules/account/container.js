@@ -10,9 +10,13 @@ import selectABCUIContext from 'modules/auth/helpers/abc';
 
 const mapStateToProps = state => ({
   loginAccount: selectLoginAccount(state),
-  manageAirbitzAccount: airbitzAccount => selectABCUIContext().openManageWindow(airbitzAccount, (err) => {
-    if (err) console.error('onAirbitzManageAccount:', err);
-  }),
+  manageAirbitzAccount: () => {
+    const airbitzAccount = selectLoginAccount(state).airbitzAccount;
+
+    return selectABCUIContext().openManageWindow(airbitzAccount, (err) => {
+      if (err) console.error('onAirbitzManageAccount:', err);
+    });
+  },
   isMobile: state.isMobile
 });
 
