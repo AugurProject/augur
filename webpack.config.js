@@ -16,7 +16,8 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const PATHS = {
   BUILD: path.resolve(__dirname, 'build'),
-  APP: path.resolve(__dirname, 'src')
+  APP: path.resolve(__dirname, 'src'),
+  TEST: path.resolve(__dirname, 'test'),
 };
 
 // COMMON CONFIG
@@ -52,7 +53,9 @@ let config = {
       assets: path.resolve(PATHS.APP, 'assets'),
       modules: path.resolve(PATHS.APP, 'modules'),
       utils: path.resolve(PATHS.APP, 'utils'),
-      services: path.resolve(PATHS.APP, 'services')
+      services: path.resolve(PATHS.APP, 'services'),
+      assertions: path.resolve(PATHS.TEST, 'assertions'),
+      test: PATHS.TEST,
     },
     symlinks: false
   },
