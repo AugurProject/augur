@@ -10,7 +10,10 @@ const testPath = path.resolve(__dirname, '../test');
 process.env.FORCE_COLOR = true;
 
 shell.echo(colors.title(`
-== Running Augur Linting ==
+== Running Augur Linting${process.argv[2] === 'fix' ? ' -- Fix Enabled' : '' } ==
+${process.argv[2] === 'fix' ? `
+${colors.notice('NOTE')}	${colors.dim(`| "With great power comes great responsibility" - Uncle Ben.
+	| Since you've enabled auto-fix, please review all automatic changes before commiting.`)}` : ''}
 `));
 
 const lintSource = new Promise((resolve, reject) => {
