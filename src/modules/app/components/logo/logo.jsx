@@ -1,10 +1,12 @@
 import React from 'react';
-import AugurLogoIcon from 'modules/common/components/augur-logo-icon';
+import AugurLogoIcon from 'modules/common/components/augur-logo-icon/augur-logo-icon';
+
+import Styles from 'modules/app/components/logo/styles.less';
 
 const Logo = props => (
-  <section className="top-logo">
+  <section className={Styles.Logo}>
     <AugurLogoIcon />
-    <span className="logotext">
+    <span className={Styles.Logo__text}>
       Augur
     </span>
   </section>

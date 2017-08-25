@@ -2,23 +2,23 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import classNames from 'classnames';
+// import { Link } from 'react-router-dom';
+// import classNames from 'classnames';
 
-import MarketProperties from 'modules/market/components/market-properties';
+// import MarketProperties from 'modules/market/components/market-properties';
 
-import makePath from 'modules/app/helpers/make-path';
-import makeQuery from 'modules/app/helpers/make-query';
+// import makePath from 'modules/app/helpers/make-path';
+// import makeQuery from 'modules/app/helpers/make-query';
 
-import { MARKET } from 'modules/app/constants/views';
-import { MARKET_ID_PARAM_NAME, MARKET_DESCRIPTION_PARAM_NAME } from 'modules/app/constants/param-names';
+// import { MARKET } from 'modules/app/constants/views';
+// import { MARKET_ID_PARAM_NAME, MARKET_DESCRIPTION_PARAM_NAME } from 'modules/app/constants/param-names';
 
-import s_marketbasics from 'styles';
+import Styles from 'modules/market/components/market-basics/styles.less';
 
 const MarketBasics = p => (
-  <article className={s_marketbasics['MarketBasics']}>
-    <div className={s_marketbasics['MarketBasics__header']}>
-      <ul className={s_marketbasics['MarketBasics__tags']}>
+  <article className={Styles.MarketBasics}>
+    <div className={Styles.MarketBasics__header}>
+      <ul className={Styles.MarketBasics__tags}>
         <li>Tags</li>
         {(p.tags || []).map((tag, i) => (
           <li key={i}>
@@ -27,13 +27,13 @@ const MarketBasics = p => (
         ))}
       </ul>
 
-      <span>{ p.isOpen ? (p.isResported ? 'reported' : 'open') : 'closed' }</span>
+      <span>{/* p.isOpen ? (p.isResported ? 'reported' : 'open') : 'closed' */}</span>
     </div>
 
     <h1>{ p.description }</h1>
 
-    <div className={s_marketbasics['MarketBasics__footer']}>
-      <ul className={s_marketbasics['MarketBasics__meta']}>
+    <div className={Styles.MarketBasics__footer}>
+      <ul className={Styles.MarketBasics__meta}>
         <li>
           <span>Volume</span>
           <span>84K Shares</span>
@@ -53,23 +53,23 @@ const MarketBasics = p => (
       </div>
     </div>
 
-      {/* <div className="market-basics-header-actions">
-        {p.isLogged && p.toggleFavorite &&
-          <button
-            className={classNames('button unstyled favorite-button', { on: p.isFavorite })}
-            onClick={() => p.toggleFavorite(p.id)}
-          >
-            <i
-              className={classNames('fa', {
-                'fa-star': p.isFavorite,
-                'fa-star-o': !p.isFavorite
-              })}
-            />
-          </button>
-        }
-      </div> */}
-    
-{/*}
+    {/* <div className="market-basics-header-actions">
+      {p.isLogged && p.toggleFavorite &&
+        <button
+          className={classNames('button unstyled favorite-button', { on: p.isFavorite })}
+          onClick={() => p.toggleFavorite(p.id)}
+        >
+          <i
+            className={classNames('fa', {
+              'fa-star': p.isFavorite,
+              'fa-star-o': !p.isFavorite
+            })}
+          />
+        </button>
+      }
+    </div> */}
+
+    {/*
     {p.id && p.formattedDescription ?
       <Link
         to={{

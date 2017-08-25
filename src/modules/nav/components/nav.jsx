@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link, NavLink } from 'react-router-dom';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
-import AugurLogoIcon from 'modules/common/components/augur-logo-icon';
+import AugurLogoIcon from 'modules/common/components/augur-logo-icon/augur-logo-icon';
 import SideBarFilterIcon from 'modules/common/components/side-bar-filter-icon';
 import NotificationsContainer from 'modules/notifications/container';
 

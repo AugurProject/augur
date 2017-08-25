@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import AugurLogoIcon from 'modules/common/components/augur-logo-icon';
+import AugurLogoIcon from 'modules/common/components/augur-logo-icon/augur-logo-icon';
 
 import iconTopics from 'modules/topics/constants/icon-topics';
 

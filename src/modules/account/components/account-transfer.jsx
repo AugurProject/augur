@@ -6,7 +6,7 @@ import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 
 import Input from 'modules/common/components/input';
 import EtherLogo from 'modules/common/components/ether-logo';
-import AugurLogoIcon from 'modules/common/components/augur-logo-icon';
+import AugurLogoIcon from 'modules/common/components/augur-logo-icon/augur-logo-icon';
 
 import { ETH, REP } from 'modules/account/constants/asset-types';
 
