@@ -1,20 +1,28 @@
+@import '~assets/styles/shared.less';
+
 .MarketBasics__header {
   display: flex;
   justify-content: space-between;
 }
 
 .MarketBasics__tags {
+  &:extend(.caps--medium);
+
   > li {
     display: inline-block;
     text-transform: uppercase;
 
     &::before {
       content: "/";
-      margin: 0 5px;
+      margin: 0 4px;
     }
 
-    &:first-child::before {
-      display: none;
+    &:first-child {
+      color: @color-lightgray;
+
+      &::before {
+        display: none;
+      }
     }
   }
 }
