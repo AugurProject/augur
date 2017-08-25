@@ -21,6 +21,40 @@
 @font-size-most-massive: 2.43rem; // 39px
 
 //  MIXINS
+.caps {
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.caps--extra-small {
+  &:extend(.caps);
+
+  font-size: 0.625rem;
+  line-height: 0.625rem;
+}
+
+.caps--small {
+  &:extend(.caps);
+
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 0.75rem;
+}
+
+.caps--medium {
+  &:extend(.caps);
+
+  font-size: 0.875rem;
+  line-height: 0.875rem;
+}
+
+.caps--large {
+  &:extend(.caps);
+
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.125rem;
+}
 
 //		Sizes
 .font-size-small {
