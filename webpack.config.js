@@ -15,6 +15,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 // NOTE -- removed uglify temporarily as the git link was broken + we don't currently use this lib
 
 const PATHS = {
+  NODE_MODULES: path.resolve(__dirname, 'node_modules'),
   BUILD: path.resolve(__dirname, 'build'),
   APP: path.resolve(__dirname, 'src'),
   TEST: path.resolve(__dirname, 'test'),
@@ -44,18 +45,20 @@ let config = {
     extensions: [
       '.html',
       '.less',
+      '.css',
       '.js',
       '.jsx',
       '.json'
     ],
     alias: {
+      node_modules: PATHS.NODE_MODULES,
       src: PATHS.APP,
+      test: PATHS.TEST,
       assets: path.resolve(PATHS.APP, 'assets'),
       modules: path.resolve(PATHS.APP, 'modules'),
       utils: path.resolve(PATHS.APP, 'utils'),
       services: path.resolve(PATHS.APP, 'services'),
       assertions: path.resolve(PATHS.TEST, 'assertions'),
-      test: PATHS.TEST,
     },
     symlinks: false
   },
@@ -69,7 +72,7 @@ let config = {
         loader: 'null'
       },
       {
-        test: /\.less|.jsx?/,
+        test: /\.less/,
         enforce: 'pre',
         loader: 'import-glob'
       },
@@ -167,7 +170,7 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
     module: {
       rules: [
         {
-          test: /\.less/,
+          test: /\.less|\.css/,
           use: [
             'style-loader',
             {
@@ -198,7 +201,7 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
     module: {
       rules: [
         {
-          test: /\.less/,
+          test: /\.less|\.css/,
           use: [
             'style-loader',
             {
@@ -225,7 +228,7 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
     module: {
       rules: [
         {
-          test: /\.less/,
+          test: /\.less|\.css/,
           use: ExtractTextPlugin.extract({
             use: [
               {
