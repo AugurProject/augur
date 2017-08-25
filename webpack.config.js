@@ -15,7 +15,6 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 // NOTE -- removed uglify temporarily as the git link was broken + we don't currently use this lib
 
 const PATHS = {
-  NODE_MODULES: path.resolve(__dirname, 'node_modules'),
   BUILD: path.resolve(__dirname, 'build'),
   APP: path.resolve(__dirname, 'src'),
   TEST: path.resolve(__dirname, 'test'),
@@ -45,13 +44,11 @@ let config = {
     extensions: [
       '.html',
       '.less',
-      '.css',
       '.js',
       '.jsx',
       '.json'
     ],
     alias: {
-      node_modules: PATHS.NODE_MODULES,
       src: PATHS.APP,
       test: PATHS.TEST,
       assets: path.resolve(PATHS.APP, 'assets'),
@@ -170,7 +167,7 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
     module: {
       rules: [
         {
-          test: /\.less|\.css/,
+          test: /\.less/,
           use: [
             'style-loader',
             {
@@ -201,7 +198,7 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
     module: {
       rules: [
         {
-          test: /\.less|\.css/,
+          test: /\.less/,
           use: [
             'style-loader',
             {
@@ -228,7 +225,7 @@ if (!process.env.DEBUG_BUILD && process.env.NODE_ENV === 'development') {
     module: {
       rules: [
         {
-          test: /\.less|\.css/,
+          test: /\.less/,
           use: ExtractTextPlugin.extract({
             use: [
               {
