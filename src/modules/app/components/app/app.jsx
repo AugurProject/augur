@@ -21,7 +21,7 @@ import NavCreateIcon from 'modules/common/components/nav-create-icon';
 import NavMarketsIcon from 'modules/common/components/nav-markets-icon';
 import NavPortfolioIcon from 'modules/common/components/nav-portfolio-icon';
 
-import Styles from 'modules/app/components/app/styles.less';
+import Styles from 'modules/app/components/app/app.styles';
 
 import { MARKETS, ACCOUNT, MY_POSITIONS, CREATE_MARKET } from 'modules/app/constants/views';
 

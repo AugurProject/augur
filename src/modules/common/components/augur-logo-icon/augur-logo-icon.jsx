@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 
-import Styles from 'modules/common/components/augur-logo-icon/styles.less';
+import Styles from 'modules/common/components/augur-logo-icon/styles';
 
 // NOTE -- This stateless component is simply a responsive SVG of the Complete Augur Icon
 // To employ, just set the width or height on the containing element and this SVG will respond appropriately

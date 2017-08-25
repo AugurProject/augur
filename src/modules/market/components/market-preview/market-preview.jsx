@@ -12,7 +12,7 @@ import MarketBasics from 'modules/market/components/market-basics/market-basics'
 // import { MARKET } from 'modules/app/constants/views';
 // import { MARKET_ID_PARAM_NAME, MARKET_DESCRIPTION_PARAM_NAME } from 'modules/app/constants/param-names';
 
-import Styles from 'modules/market/components/market-preview/styles.less';
+import Styles from 'modules/market/components/market-preview/styles';
 
 const MarketPreview = p => (
   // let buttonText;
