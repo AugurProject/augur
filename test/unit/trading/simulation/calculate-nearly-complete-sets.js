@@ -7,13 +7,13 @@ var calculateNearlyCompleteSets = require("../../../../src/trading/simulation/ca
 describe("trading/simulation/calculate-nearly-complete-sets", function () {
   var test = function (t) {
     it(t.description, function () {
-      t.assertions(calculateNearlyCompleteSets(t.params.outcomeID, t.params.desiredShares, t.params.shareBalances));
+      t.assertions(calculateNearlyCompleteSets(t.params.outcome, t.params.desiredShares, t.params.shareBalances));
     });
   };
   test({
     description: "Two outcomes, 1 desired share, exclude outcome 2",
     params: {
-      outcomeID: 2,
+      outcome: 2,
       desiredShares: new BigNumber("1", 10),
       shareBalances: [new BigNumber("3", 10), new BigNumber("3", 10)]
     },
@@ -24,7 +24,7 @@ describe("trading/simulation/calculate-nearly-complete-sets", function () {
   test({
     description: "Two outcomes, 10 desired shares, exclude outcome 2",
     params: {
-      outcomeID: 2,
+      outcome: 2,
       desiredShares: new BigNumber("10", 10),
       shareBalances: [new BigNumber("4", 10), new BigNumber("3", 10)]
     },
@@ -35,7 +35,7 @@ describe("trading/simulation/calculate-nearly-complete-sets", function () {
   test({
     description: "Five outcomes, 10 desired shares, exclude outcome 1",
     params: {
-      outcomeID: 1,
+      outcome: 1,
       desiredShares: new BigNumber("2", 10),
       shareBalances: [
         new BigNumber("4", 10),

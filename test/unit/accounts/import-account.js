@@ -4,11 +4,11 @@
 
 var assert = require("chai").assert;
 var errors = require("ethrpc").errors;
-var keys = require("keythereum");
+var keythereum = require("keythereum");
 var abi = require("augur-abi");
-var errors = require("ethrpc").errors;
-var constants = require("../../../src/constants");
+var proxyquire = require("proxyquire").noPreserveCache();
 var noop = require("../../../src/utils/noop");
+var constants = require("../../../src/constants");
 var importAccount = require("../../../src/accounts/import-account");
 
 var keystore = {
@@ -34,85 +34,96 @@ var keystore = {
 };
 
 describe("accounts/import-account", function () {
-  var recover = keys.recover;
-  var deriveKey = keys.deriveKey;
-  afterEach(function () {
-    keys.recover = recover;
-    keys.deriveKey = deriveKey;
-  });
   var test = function (t) {
     it(t.description, function (done) {
-      keys.recover = t.recover || recover;
-      keys.deriveKey = t.deriveKey || deriveKey;
-      if (t.params.cb) {
-        importAccount(t.params.password, t.params.keystore, function (account) {
-          t.assertions(account);
-          done();
-        });
-      } else {
-        var output = importAccount(t.params.password, t.params.keystore);
-        t.assertions(output);
+      var importAccount = proxyquire("../../../src/accounts/import-account", {
+        keythereum: Object.assign({}, keythereum, t.mock.keythereum)
+      });
+      importAccount(t.params, function (importedAccount) {
+        t.assertions(importedAccount);
         done();
-      }
+      });
     });
   };
   test({
-    description: "Should handle importing an account",
+    description: "Import an account",
     params: {
       password: "foobar",
-      keystore: keystore,
-      cb: noop
+      keystore: keystore
     },
-    assertions: function (account) {
-      var expected = {
+    mock: {
+      keythereum: {}
+    },
+    assertions: function (importedAccount) {
+      var expectedAccount = {
         privateKey: Buffer.from("14a447d8d4c69714f8750e1688feb98857925e1fec6dee7c75f0079d10519d25", "hex"),
         derivedKey: Buffer.from("6149823a44b50a20e7d5a6d7e60798c576f330888a3c6bc0113da5b687662586", "hex"),
         address: "0x289d485d9771714cce91d3393d764e1311907acc",
         keystore: keystore
       };
-      assert.deepEqual(account, expected);
+      console.log("importedAccount:", importedAccount);
+      console.log("expectedAccount:", expectedAccount);
+      assert.deepEqual(importedAccount, expectedAccount);
     }
   });
   test({
-    description: "Should handle no cb and blank password by returning an error",
+    description: "Should handle an empty string password by returning an error",
     params: {
-      password: "",
-      keystore: keystore
+      p: {
+        password: "",
+        keystore: keystore
+      },
+      callback: noop
     },
-    assertions: function (account) {
-      assert.deepEqual(account, errors.BAD_CREDENTIALS);
+    mock: {
+      keythereum: {
+        recover: function (passord, keystore, callback) {
+          assert.fail();
+        }
+      }
+    },
+    assertions: function (importedAccount) {
+      assert.deepEqual(importedAccount, errors.BAD_CREDENTIALS);
     }
   });
   test({
     description: "Should handle an issue recovering the privateKey by returning an error",
     params: {
       password: "foobar",
-      keystore: keystore,
-      cb: noop
+      keystore: keystore
     },
-    recover: function (password, keystore, cb) {
-      cb({error: "Uh-Oh!"});
+    mock: {
+      keythereum: {
+        recover: function (passord, keystore, callback) {
+          callback({ error: "Uh-oh!" });
+        }
+      }
     },
-    assertions: function (account) {
-      assert.deepEqual(account, errors.BAD_CREDENTIALS);
+    assertions: function (importedAccount) {
+      assert.deepEqual(importedAccount, errors.BAD_CREDENTIALS);
     }
   });
   test({
     description: "Should handle an issue with derivedKey by returning an error",
     params: {
       password: "foobar",
-      keystore: keystore,
-      cb: noop
+      keystore: keystore
     },
-    recover: function (password, keystore, cb) {
-      // don't call the real recover as it calls deriveKey within and we don't want to call our mock early, we want to test a conditional failure later in import-account.
-      cb('somePrivateKey');
+    mock: {
+      keythereum: {
+        recover: function (passord, keystore, callback) {
+          // don't call the real recover as it calls deriveKey within and we don't
+          // want to call our mock early, we want to test a conditional failure
+          // later in import-account.
+          callback("A_PRIVATE_KEY");
+        },
+        deriveKey: function (password, salt, cipher, callback) {
+          callback({ error: "Uh-Oh!" });
+        }
+      }
     },
-    deriveKey: function (password, salt, cipher, cb) {
-      cb({error: "Uh-Oh!"});
-    },
-    assertions: function (account) {
-      assert.deepEqual(account, errors.BAD_CREDENTIALS);
+    assertions: function (importAccount) {
+      assert.deepEqual(importAccount, errors.BAD_CREDENTIALS);
     }
   });
 });

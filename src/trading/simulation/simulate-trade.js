@@ -2,8 +2,8 @@
 
 /** Type definition for SingleOutcomeOrderBook.
  * @typedef {Object} SingleOutcomeOrderBook
- * @property {SingleOutcomeOrderBookSide} buy Buy orders (bids) indexed by order ID.
- * @property {SingleOutcomeOrderBookSide} sell Sell orders (asks) indexed by order ID.
+ * @property {require("../order-book/get-order-book").SingleOutcomeOrderBookSide} buy Buy orders (bids) indexed by order ID.
+ * @property {require("../order-book/get-order-book").SingleOutcomeOrderBookSide} sell Sell orders (asks) indexed by order ID.
  */
 
 /** Type definition for OrderBook.
@@ -38,7 +38,7 @@ var simulateSell = require("./simulate-sell");
  * Note: simulateTrade automatically normalizes share prices, so "display prices" can be directly passed in
  * for minPrice, maxPrice, and price.
  * @param {Object} p Trade simulation parameters.
- * @param {string} p.type Order type ("buy" or "sell").
+ * @param {number} p.orderType Order type (1 for "buy", 2 for "sell").
  * @param {number} p.outcome Outcome ID to trade, must be an integer value on [1, 8].
  * @param {string[]} p.shareBalances Number of shares the user owns of each outcome in ascending order, as an array of base-10 strings.
  * @param {string} p.tokenBalance Number of tokens (e.g., wrapped ether) the user owns, as a base-10 string.
@@ -52,7 +52,7 @@ var simulateSell = require("./simulate-sell");
  * @return {SimulatedTrade} Projected fees paid, shares and tokens spent, and final balances after the trade is complete.
  */
 function simulateTrade(p) {
-  if (p.type !== "buy" && p.type !== "sell") throw new Error("Order type must be 'buy' or 'sell'");
+  if (p.orderType !== 1 && p.orderType !== 2) throw new Error("Order type must be 1 (buy) or 2 (sell)");
   var sharesToCover = new BigNumber(p.shares, 10);
   var price = new BigNumber(p.price, 10);
   var tokenBalance = new BigNumber(p.tokenBalance, 10);
@@ -62,7 +62,7 @@ function simulateTrade(p) {
   var reportingFeeRate = new BigNumber(p.reportingFeeRate, 10);
   var shouldCollectReportingFees = p.shouldCollectReportingFees === false ? 0 : 1;
   var shareBalances = p.shareBalances.map(function (shareBalance) { return new BigNumber(shareBalance, 10); });
-  var simulatedTrade = p.type === "buy" ?
+  var simulatedTrade = p.orderType === 1 ?
     simulateBuy(p.outcome, sharesToCover, shareBalances, tokenBalance, p.userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, p.orderBook.sell) :
     simulateSell(p.outcome, sharesToCover, shareBalances, tokenBalance, p.userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, p.orderBook.buy);
   return {

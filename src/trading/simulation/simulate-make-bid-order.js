@@ -5,9 +5,9 @@ var constants = require("../../constants");
 var PRECISION = constants.PRECISION;
 var ZERO = constants.ZERO;
 
-function simulateMakeBidOrder(numShares, price, minPrice, outcomeID, shareBalances) {
+function simulateMakeBidOrder(numShares, price, minPrice, outcome, shareBalances) {
   var numOutcomes = shareBalances.length;
-  if (outcomeID <= 0 || outcomeID > numOutcomes) throw new Error("Invalid outcome ID");
+  if (outcome <= 0 || outcome > numOutcomes) throw new Error("Invalid outcome ID");
   if (numShares.lte(PRECISION.zero)) throw new Error("Number of shares is too small");
   if (price.lt(minPrice)) throw new Error("Price is below the minimum price");
   var gasFees = ZERO;
@@ -15,7 +15,7 @@ function simulateMakeBidOrder(numShares, price, minPrice, outcomeID, shareBalanc
   var tokensEscrowed = ZERO;
   var sharesEscrowed = new BigNumber(2, 10).toPower(254);
   for (var i = 1; i <= numOutcomes; ++i) {
-    if (i !== outcomeID) {
+    if (i !== outcome) {
       sharesEscrowed = BigNumber.min(shareBalances[i - 1], sharesEscrowed);
     }
   }
@@ -23,7 +23,7 @@ function simulateMakeBidOrder(numShares, price, minPrice, outcomeID, shareBalanc
   if (sharesEscrowed.gt(ZERO)) {
     numShares = numShares.minus(sharesEscrowed);
     for (i = 1; i <= numOutcomes; ++i) {
-      if (i !== outcomeID) {
+      if (i !== outcome) {
         shareBalances[i - 1] = shareBalances[i - 1].minus(sharesEscrowed);
       }
     }

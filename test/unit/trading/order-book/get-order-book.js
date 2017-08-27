@@ -161,4 +161,28 @@ describe("trading/order-book/get-order-book", function () {
       });
     }
   });
+  test({
+    description: "missing minPrice and maxPrice values",
+    params: {
+      _type: 2,
+      _market: "MARKET_ID",
+      _outcome: "OUTCOME_ID",
+      _startingOrderId: "0xa",
+      _numOrdersToLoad: 10,
+      minPrice: undefined,
+      maxPrice: undefined
+    },
+    stub: {
+      api: {
+        OrderBook: {
+          getOrderBook: function (p, callback) {
+            assert.fail();
+          }
+        }
+      }
+    },
+    assertions: function (output) {
+      assert.strictEqual(output.error, "Must specify minPrice and maxPrice");
+    }
+  });
 });

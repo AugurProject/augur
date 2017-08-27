@@ -2,7 +2,7 @@
 
 /** Type definition for SingleOutcomeOrderBookSide.
  * @typedef {Object} SingleOutcomeOrderBookSide
- * @property {Order} Buy (bid) or sell (ask) orders, indexed by order ID.
+ * @property {require("./get-order").Order} Buy (bid) or sell (ask) orders, indexed by order ID.
  */
 
 var api = require("../../api");
@@ -24,6 +24,9 @@ var parseOrderBook = require("../../parsers/order-book");
  * @return {SingleOutcomeOrderBookSide} One side of the order book (buy or sell) for this market and outcome.
  */
 function getOrderBook(p, callback) {
+  if (p.minPrice == null || p.maxPrice == null) {
+    return callback({ error: "Must specify minPrice and maxPrice" });
+  }
   api().OrderBook.getOrderBook({
     _type: p._type,
     _market: p._market,

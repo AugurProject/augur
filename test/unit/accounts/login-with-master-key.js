@@ -13,14 +13,14 @@ var privateKey = "10000000000000000000000000000000000000000000000000000000000000
 describe("accounts/login-with-master-key", function () {
   var test = function (t) {
     it(t.description, function () {
-      loginWithMasterKey(t.privateKey, function (account) {
-        t.assertions(account);
-      });
+      t.assertions(loginWithMasterKey(t.params));
     });
   };
   test({
     description: "Should handle logging into an account using a privateKey buffer",
-    privateKey: Buffer.from(privateKey, "hex"),
+    params: {
+      privateKey: Buffer.from(privateKey, "hex")
+    },
     assertions: function (account) {
       assert.deepEqual(account, {
         address: abi.format_address(keys.privateKeyToAddress(privateKey)),
@@ -31,7 +31,9 @@ describe("accounts/login-with-master-key", function () {
   });
   test({
     description: "Should handle logging into an account using a privateKey hex string",
-    privateKey: privateKey,
+    params: {
+      privateKey: privateKey
+    },
     assertions: function (account) {
       assert.deepEqual(account, {
         address: abi.format_address(keys.privateKeyToAddress(privateKey)),

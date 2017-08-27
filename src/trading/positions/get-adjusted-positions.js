@@ -4,34 +4,59 @@ var async = require("async");
 var adjustPositions = require("./adjust-positions");
 var calculateShareTotals = require("./calculate-share-totals");
 var findUniqueMarketIDs = require("./find-unique-market-ids");
-var getShortAskBuyCompleteSetsLogs = require("../../logs/get-short-ask-buy-complete-sets-logs");
-var getTakerShortSellLogs = require("../../logs/get-taker-short-sell-logs");
-var getSellCompleteSetsLogs = require("../../logs/get-sell-complete-sets-logs");
+var getLogs = require("../../logs/get-logs");
 
 /**
- * @param {string} account Ethereum account address.
- * @param {Object=} filter eth_getLogs parameters (optional).
- * @param {function=} callback Callback function (optional).
- * @return {Object} Adjusted positions keyed by marketID.
+ * @param {Object} p Parameters object.
+ * @param {string} p.account Ethereum account address, as a hexadecimal string.
+ * @param {string} p.market Market instance contract address, as a hexadecimal string.
+ * @param {string} p.marketCreationBlockNumber Block number in which this market was created, as a base-10 string.
+ * @param {function=} callback Callback function.
+ * @return {Object} Adjusted positions keyed by market ID.
  */
-// { account, filter }
 function getAdjustedPositions(p, callback) {
-  p.filter = p.filter || {};
+  // TODO these log lookups add lots of overhead; instead of looking up here,
+  //      should be chunked, pre-fetched, stored, then passed in from the UI.
   async.parallel({
-    shortAskBuyCompleteSets: function (done) {
-      getShortAskBuyCompleteSetsLogs(p, done);
+    // MakeAskOrder events where the maker does not own shares of the outcome they're selling
+    shortAskBuyCompleteSets: function (next) {
+      getLogs({
+        label: "MakeAskOrder",
+        filter: {
+          fromBlock: p.marketCreationBlockNumber,
+          sender: p.account,
+          market: p.market,
+          isShort: true
+        }
+      }, next);
     },
-    shortSellBuyCompleteSets: function (done) {
-      getTakerShortSellLogs(p, done);
+    // TakeBidOrder events where the taker does not own shares of the outcome they're selling
+    shortSellBuyCompleteSets: function (next) {
+      getLogs({
+        label: "TakeBidOrder",
+        filter: {
+          fromBlock: p.marketCreationBlockNumber,
+          sender: p.account,
+          market: p.market,
+          isShort: true
+        }
+      }, next);
     },
-    sellCompleteSets: function (done) {
-      getSellCompleteSetsLogs(p, done);
+    // All SellCompleteSets events for this account on this market
+    sellCompleteSets: function (next) {
+      getLogs({
+        label: "SellCompleteSets",
+        filter: {
+          fromBlock: p.marketCreationBlockNumber,
+          sender: p.account,
+          market: p.market
+        }
+      }, next);
     }
   }, function (err, logs) {
-    var shareTotals, marketIDs;
     if (err) return callback(err);
-    shareTotals = calculateShareTotals(logs);
-    marketIDs = p.filter.market ? [p.filter.market] : findUniqueMarketIDs(shareTotals);
+    var shareTotals = calculateShareTotals(logs);
+    var marketIDs = p.market ? [p.market] : findUniqueMarketIDs(shareTotals);
     adjustPositions(p.account, marketIDs, shareTotals, callback);
   });
 }

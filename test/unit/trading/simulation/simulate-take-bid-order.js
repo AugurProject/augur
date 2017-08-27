@@ -9,7 +9,7 @@ describe("trading/simulation/simulate-take-bid-order", function () {
     it(t.description, function () {
       var output;
       try {
-        output = simulateTakeBidOrder(t.params.sharesToCover, t.params.minPrice, t.params.maxPrice, t.params.marketCreatorFeeRate, t.params.reportingFeeRate, t.params.shouldCollectReportingFees, t.params.matchingSortedBids, t.params.outcomeID, t.params.shareBalances);
+        output = simulateTakeBidOrder(t.params.sharesToCover, t.params.minPrice, t.params.maxPrice, t.params.marketCreatorFeeRate, t.params.reportingFeeRate, t.params.shouldCollectReportingFees, t.params.matchingSortedBids, t.params.outcome, t.params.shareBalances);
       } catch (exc) {
         output = exc;
       }
@@ -30,7 +30,7 @@ describe("trading/simulation/simulate-take-bid-order", function () {
         fullPrecisionPrice: "0.7",
         sharesEscrowed: "2"
       }],
-      outcomeID: 1,
+      outcome: 1,
       shareBalances: [new BigNumber("5", 10), new BigNumber("0", 10)]
     },
     assertions: function (output) {
@@ -58,7 +58,7 @@ describe("trading/simulation/simulate-take-bid-order", function () {
         fullPrecisionPrice: "0.7",
         sharesEscrowed: "2"
       }],
-      outcomeID: 1,
+      outcome: 1,
       shareBalances: [new BigNumber("0", 10), new BigNumber("0", 10)]
     },
     assertions: function (output) {
@@ -86,7 +86,7 @@ describe("trading/simulation/simulate-take-bid-order", function () {
         fullPrecisionPrice: "0.7",
         sharesEscrowed: "0"
       }],
-      outcomeID: 1,
+      outcome: 1,
       shareBalances: [new BigNumber("5", 10), new BigNumber("2", 10)]
     },
     assertions: function (output) {
@@ -114,7 +114,7 @@ describe("trading/simulation/simulate-take-bid-order", function () {
         fullPrecisionPrice: "0.7",
         sharesEscrowed: "0"
       }],
-      outcomeID: 1,
+      outcome: 1,
       shareBalances: [new BigNumber("0", 10), new BigNumber("0", 10)]
     },
     assertions: function (output) {

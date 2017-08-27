@@ -8,7 +8,7 @@ var constants = require("../../constants");
 var PRECISION = constants.PRECISION;
 var ZERO = constants.ZERO;
 
-function simulateBuy(outcomeID, sharesToCover, shareBalances, tokenBalance, userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, sellOrderBook) {
+function simulateBuy(outcome, sharesToCover, shareBalances, tokenBalance, userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, sellOrderBook) {
   var simulatedBuy = {
     settlementFees: ZERO,
     gasFees: ZERO,
@@ -17,18 +17,18 @@ function simulateBuy(outcomeID, sharesToCover, shareBalances, tokenBalance, user
     tokensDepleted: ZERO,
     shareBalances: shareBalances
   };
-  var matchingSortedAsks = filterByPriceAndOutcomeAndUserSortByPrice(sellOrderBook, "buy", price, outcomeID, userAddress);
+  var matchingSortedAsks = filterByPriceAndOutcomeAndUserSortByPrice(sellOrderBook, 1, price, userAddress);
 
   // if no matching asks, then user is bidding: no settlement fees
   if (!matchingSortedAsks.length) {
-    simulatedBuy = sumSimulatedResults(simulatedBuy, simulateMakeBidOrder(sharesToCover, price, minPrice, outcomeID, shareBalances));
+    simulatedBuy = sumSimulatedResults(simulatedBuy, simulateMakeBidOrder(sharesToCover, price, minPrice, outcome, shareBalances));
 
   // if there are matching asks, user is buying
   } else {
-    var simulatedTakeAskOrder = simulateTakeAskOrder(sharesToCover, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, matchingSortedAsks, outcomeID, shareBalances);
+    var simulatedTakeAskOrder = simulateTakeAskOrder(sharesToCover, minPrice, maxPrice, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, matchingSortedAsks, outcome, shareBalances);
     simulatedBuy = sumSimulatedResults(simulatedBuy, simulatedTakeAskOrder);
     if (simulatedTakeAskOrder.sharesToCover.gt(PRECISION.zero)) {
-      simulatedBuy = sumSimulatedResults(simulatedBuy, simulateMakeBidOrder(simulatedTakeAskOrder.sharesToCover, price, minPrice, outcomeID, shareBalances));
+      simulatedBuy = sumSimulatedResults(simulatedBuy, simulateMakeBidOrder(simulatedTakeAskOrder.sharesToCover, price, minPrice, outcome, shareBalances));
     }
   }
 

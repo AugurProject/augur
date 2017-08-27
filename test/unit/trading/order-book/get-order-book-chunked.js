@@ -4,7 +4,7 @@
 
 var assert = require("chai").assert;
 var abi = require("augur-abi");
-var proxyquire = require("proxyquire");
+var proxyquire = require("proxyquire").noPreserveCache();
 
 var callcount = 0;
 
@@ -120,31 +120,31 @@ describe("trading/order-book/get-order-book-chunked", function () {
     },
     assertions: function (output) {
       assert.deepEqual(output, {
-          "0x1": {
-            amount: "1.1111",
-            fullPrecisionAmount: "1.1111111",
-            price: "0.7778",
-            fullPrecisionPrice: "0.7777777",
-            owner: "0x0000000000000000000000000000000000000b0b",
-            tokensEscrowed: "0.8641974",
-            sharesEscrowed: "0",
-            betterOrderId: "0x000000000000000000000000000000000000000000000000000000000000000a",
-            worseOrderId: "0x000000000000000000000000000000000000000000000000000000000000000b",
-            gasPrice: "20000000000"
-          },
-          "0xf": {
-            amount: "1.1111",
-            fullPrecisionAmount: "1.1111111",
-            price: "0.7778",
-            fullPrecisionPrice: "0.7777777",
-            owner: "0x0000000000000000000000000000000000000b0b",
-            tokensEscrowed: "0.8641974",
-            sharesEscrowed: "0",
-            betterOrderId: "0x000000000000000000000000000000000000000000000000000000000000000a",
-            worseOrderId: "0x000000000000000000000000000000000000000000000000000000000000000b",
-            gasPrice: "20000000001"
-          }
-        });
+        "0x1": {
+          amount: "1.1111",
+          fullPrecisionAmount: "1.1111111",
+          price: "0.7778",
+          fullPrecisionPrice: "0.7777777",
+          owner: "0x0000000000000000000000000000000000000b0b",
+          tokensEscrowed: "0.8641974",
+          sharesEscrowed: "0",
+          betterOrderId: "0x000000000000000000000000000000000000000000000000000000000000000a",
+          worseOrderId: "0x000000000000000000000000000000000000000000000000000000000000000b",
+          gasPrice: "20000000000"
+        },
+        "0xf": {
+          amount: "1.1111",
+          fullPrecisionAmount: "1.1111111",
+          price: "0.7778",
+          fullPrecisionPrice: "0.7777777",
+          owner: "0x0000000000000000000000000000000000000b0b",
+          tokensEscrowed: "0.8641974",
+          sharesEscrowed: "0",
+          betterOrderId: "0x000000000000000000000000000000000000000000000000000000000000000a",
+          worseOrderId: "0x000000000000000000000000000000000000000000000000000000000000000b",
+          gasPrice: "20000000001"
+        }
+      });
     }
   });
   test({
@@ -278,31 +278,63 @@ describe("trading/order-book/get-order-book-chunked", function () {
     },
     assertions: function (output) {
       assert.deepEqual(output, {
-          "0x1": {
-            amount: "1.1111",
-            fullPrecisionAmount: "1.1111111",
-            price: "0.7778",
-            fullPrecisionPrice: "0.7777777",
-            owner: "0x0000000000000000000000000000000000000b0b",
-            tokensEscrowed: "0.8641974",
-            sharesEscrowed: "0",
-            betterOrderId: "0x000000000000000000000000000000000000000000000000000000000000000a",
-            worseOrderId: "0x000000000000000000000000000000000000000000000000000000000000000b",
-            gasPrice: "20000000000"
-          },
-          "0xf": {
-            amount: "1.1111",
-            fullPrecisionAmount: "1.1111111",
-            price: "0.7778",
-            fullPrecisionPrice: "0.7777777",
-            owner: "0x0000000000000000000000000000000000000b0b",
-            tokensEscrowed: "0.8641974",
-            sharesEscrowed: "0",
-            betterOrderId: "0x000000000000000000000000000000000000000000000000000000000000000a",
-            worseOrderId: "0x000000000000000000000000000000000000000000000000000000000000000b",
-            gasPrice: "20000000001"
+        "0x1": {
+          amount: "1.1111",
+          fullPrecisionAmount: "1.1111111",
+          price: "0.7778",
+          fullPrecisionPrice: "0.7777777",
+          owner: "0x0000000000000000000000000000000000000b0b",
+          tokensEscrowed: "0.8641974",
+          sharesEscrowed: "0",
+          betterOrderId: "0x000000000000000000000000000000000000000000000000000000000000000a",
+          worseOrderId: "0x000000000000000000000000000000000000000000000000000000000000000b",
+          gasPrice: "20000000000"
+        },
+        "0xf": {
+          amount: "1.1111",
+          fullPrecisionAmount: "1.1111111",
+          price: "0.7778",
+          fullPrecisionPrice: "0.7777777",
+          owner: "0x0000000000000000000000000000000000000b0b",
+          tokensEscrowed: "0.8641974",
+          sharesEscrowed: "0",
+          betterOrderId: "0x000000000000000000000000000000000000000000000000000000000000000a",
+          worseOrderId: "0x000000000000000000000000000000000000000000000000000000000000000b",
+          gasPrice: "20000000001"
+        }
+      });
+    }
+  });
+  test({
+    description: "missing minPrice and maxPrice values",
+    params: {
+      p: {
+        _type: 2,
+        _market: "MARKET_ID",
+        _outcome: "OUTCOME_ID",
+        _startingOrderId: "0xa",
+        _numOrdersToLoad: 10,
+        minPrice: undefined,
+        maxPrice: undefined
+      },
+      onChunkReceived: function (orderBookChunk) {
+        assert.fail();
+      }
+    },
+    stub: {
+      getOrderBook: function (p, callback) {
+        assert.fail();
+      },
+      api: {
+        Orders: {
+          getWorseOrderId: function (p, callback) {
+            assert.fail();
           }
-        });
+        }
+      }
+    },
+    assertions: function (output) {
+      assert.strictEqual(output.error, "Must specify minPrice and maxPrice");
     }
   });
 });

@@ -2,7 +2,7 @@
 
 var assert = require("chai").assert;
 var assign = require("lodash.assign");
-var proxyquire = require("proxyquire");
+var proxyquire = require("proxyquire").noPreserveCache();
 var noop = require("../../../src/utils/noop");
 
 describe("reporting/redeem", function () {

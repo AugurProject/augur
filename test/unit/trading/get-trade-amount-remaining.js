@@ -1,7 +1,7 @@
 "use strict";
 
 var assert = require("chai").assert;
-var proxyquire = require("proxyquire");
+var proxyquire = require("proxyquire").noPreserveCache();
 var noop = require("../../../src/utils/noop");
 
 describe("trading/get-trade-amount-remaining", function () {

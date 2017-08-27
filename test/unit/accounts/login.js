@@ -44,16 +44,10 @@ describe("accounts/login", function () {
       keys.deriveKey = t.deriveKey || deriveKey;
       keys.getMAC = t.getMAC || getMAC;
       keys.decrypt = t.decrypt || decrypt;
-      if (t.params.cb) {
-        login(t.params.keystore, t.params.password, function (account) {
-          t.assertions(account);
-          done();
-        });
-      } else {
-        var account = login(t.params.keystore, t.params.password);
+      login({ keystore: t.params.keystore, password: t.params.password }, function (account) {
         t.assertions(account);
         done();
-      }
+      });
     });
   };
   test({
@@ -62,17 +56,6 @@ describe("accounts/login", function () {
       keystore: keystore,
       password: "",
       cb: noop
-    },
-    assertions: function (account) {
-      assert.deepEqual(account, errors.BAD_CREDENTIALS);
-    }
-  });
-  test({
-    description: "Should return an error on undefined password, no callback",
-    params: {
-      keystore: keystore,
-      password: undefined,
-      cb: undefined
     },
     assertions: function (account) {
       assert.deepEqual(account, errors.BAD_CREDENTIALS);

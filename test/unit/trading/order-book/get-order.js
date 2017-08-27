@@ -4,7 +4,7 @@
 
 var assert = require("chai").assert;
 var abi = require("augur-abi");
-var proxyquire = require("proxyquire");
+var proxyquire = require("proxyquire").noPreserveCache();
 
 describe("trading/order-book/get-order", function () {
   var test = function (t) {
@@ -119,7 +119,7 @@ describe("trading/order-book/get-order", function () {
       }
     },
     assertions: function (output) {
-      assert.strictEqual(output.message, "Must specify minPrice and maxPrice");
+      assert.strictEqual(output.error, "Must specify minPrice and maxPrice");
     }
   });
   test({
@@ -142,7 +142,7 @@ describe("trading/order-book/get-order", function () {
       }
     },
     assertions: function (output) {
-      assert.strictEqual(output.message, "Must specify minPrice and maxPrice");
+      assert.strictEqual(output.error, "Must specify minPrice and maxPrice");
     }
   });
   test({
@@ -165,7 +165,7 @@ describe("trading/order-book/get-order", function () {
       }
     },
     assertions: function (output) {
-      assert.strictEqual(output.message, "Must specify minPrice and maxPrice");
+      assert.strictEqual(output.error, "Must specify minPrice and maxPrice");
     }
   });
 });
