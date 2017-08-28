@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
-import Styles from 'modules/topics/components/topic/topic.styles'
+import Styles from 'modules/topics/components/topic/topic.styles';
 
 import makePath from 'modules/app/helpers/make-path';
 
