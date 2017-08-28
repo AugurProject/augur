@@ -16,12 +16,12 @@
   margin-right: 1rem;
 
   > i {
-    &:extend(.fa);
-    &:extend(.fa-star);
+    &:extend(.fa all);
+    &:extend(.fa-star-o all);
+  }
 
-    &.favorite {
-      &:extend(.fa-star-o);
-    }
+  &.favorite > i {
+    &:extend(.fa-star);
   }
 }
 
