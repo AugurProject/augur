@@ -1,0 +1,22 @@
+@import '~assets/styles/shared.less';
+
+.AuthLogin__id {
+  z-index: 40;
+}
+
+.AuthLogin__password {
+  border-top: 0;
+  z-index: 30;
+
+  input[disabled] {
+    background-color: @color-gray-light;
+  }
+}
+
+.AuthLogin__actions {
+  display: flex;
+  flex-direction: column;
+  height: 0;
+  opacity: 0;
+  z-index: 20;
+}
