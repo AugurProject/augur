@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom'
 // import NullStateMessage from 'modules/common/components/null-state-message'
 import TopicList from 'modules/topics/components/topic-list/topic-list'
 import Paginator from 'modules/common/components/paginator'
-import GraphBG from 'modules/common/components/graph-background'
+import GraphBG from 'modules/common/components/graph-background/graph-background'
 
 import parseQuery from 'modules/app/helpers/parse-query'
 import makePath from 'modules/app/helpers/make-path'

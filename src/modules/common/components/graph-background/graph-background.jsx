@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import P5 from 'p5';
 import debounce from 'utils/debounce';
 
+import Styles from 'modules/common/components/graph-background/graph-background.styles';
+
 const pythagoreanDistance = (pointA, pointB) => (
   Math.sqrt(((pointA.x - pointB.x) ** 2) + ((pointA.y - pointB.y) ** 2))
 );
@@ -209,7 +211,7 @@ export default class GraphBG extends Component {
 
   render() {
     return (
-      <div ref="canvascontainer" id="canvas_container" />
+      <div ref="canvascontainer" className={Styles.CanvasContainer} />
     );
   }
 }
