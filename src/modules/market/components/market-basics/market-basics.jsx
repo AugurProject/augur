@@ -51,18 +51,19 @@ const MarketBasics = p => (
       </ul>
       <div>
         { p.isLogged && p.toggleFavorite &&
-          <span className={Styles.MarketBasics__favorite}>
-            <i
-              className={classNames({ ['${Styles.favorite}']: p.isFavorite })}
-              onClick={() => p.toggleFavorite(p.id)}
-            />
-          </span>
+          <button
+            className={classNames(Styles.MarketBasics__favorite, { [`${Styles.favorite}`]: p.isFavorite })}
+            onClick={() => p.toggleFavorite(p.id)}
+          >
+            <i />
+          </button>
         }
         <button className={Styles['button--purple']}>Trade</button>
       </div>
     </div>
 
-    {/*<div className="market-basics-header-actions">
+    {/*
+    <div className="market-basics-header-actions">
       {p.isLogged && p.toggleFavorite &&
         <button
           className={classNames('button unstyled favorite-button', { on: p.isFavorite })}
@@ -76,7 +77,7 @@ const MarketBasics = p => (
           />
         </button>
       }
-    </div>*/}
+    </div */}
 
     {/*
     {p.id && p.formattedDescription ?
