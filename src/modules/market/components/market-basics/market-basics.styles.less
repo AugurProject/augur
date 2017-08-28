@@ -14,6 +14,15 @@
   cursor: pointer;
   font-size: 1.2rem;
   margin-right: 1rem;
+
+  > i {
+    &:extend(.fa);
+    &:extend(.fa-star);
+
+    &.favorite {
+      &:extend(.fa-star-o);
+    }
+  }
 }
 
 .MarketBasics__footer {

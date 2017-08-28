@@ -14,7 +14,6 @@ import classNames from 'classnames';
 // import { MARKET_ID_PARAM_NAME, MARKET_DESCRIPTION_PARAM_NAME } from 'modules/app/constants/param-names';
 
 import Styles from 'modules/market/components/market-basics/market-basics.styles';
-import FontAwesome from 'assets/styles/font-awesome'
 
 const MarketBasics = p => (
   <article className={Styles.MarketBasics}>
@@ -51,19 +50,19 @@ const MarketBasics = p => (
         </li>
       </ul>
       <div>
-        { p.isLogged && p.toggleFavorite && 
+        { p.isLogged && p.toggleFavorite &&
           <span className={Styles.MarketBasics__favorite}>
-            <i 
-              className={classNames(FontAwesome.fa, p.isFavorite ? FontAwesome['fa-star'] : FontAwesome['fa-star-o'])}
-              onClick={() => p.toggleFavorite(p.id) }
-            ></i>
+            <i
+              className={classNames({ ['${Styles.favorite}']: p.isFavorite })}
+              onClick={() => p.toggleFavorite(p.id)}
+            />
           </span>
         }
         <button className={Styles['button--purple']}>Trade</button>
       </div>
     </div>
 
-    <div className="market-basics-header-actions">
+    {/*<div className="market-basics-header-actions">
       {p.isLogged && p.toggleFavorite &&
         <button
           className={classNames('button unstyled favorite-button', { on: p.isFavorite })}
@@ -77,7 +76,7 @@ const MarketBasics = p => (
           />
         </button>
       }
-    </div>
+    </div>*/}
 
     {/*
     {p.id && p.formattedDescription ?
