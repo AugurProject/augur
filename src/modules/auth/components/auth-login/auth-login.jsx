@@ -6,6 +6,8 @@ import Input from 'modules/common/components/input';
 import makePath from 'modules/app/helpers/make-path';
 import { DEFAULT_VIEW } from 'modules/app/constants/views';
 
+import Styles from 'modules/auth/components/auth-login/auth-login.styles';
+
 export default class AuthLogin extends Component {
   constructor(props) {
     super(props);
@@ -27,7 +29,7 @@ export default class AuthLogin extends Component {
 
     return (
       <form
-        className="auth-login-form"
+        className="AuthLogin"
         onSubmit={(e) => {
           e.preventDefault();
           e.persist();
@@ -51,7 +53,7 @@ export default class AuthLogin extends Component {
       >
         <span className="soft-header">Login with a Login ID</span>
         <Input
-          className={classNames('auth-login-login-id', { 'input-error': s.authError })}
+          className={classNames(Styles.AuthLogin__id, { 'input-error': s.authError })}
           name="username"
           type="text"
           placeholder="Login ID"
@@ -69,7 +71,7 @@ export default class AuthLogin extends Component {
           }}
         />
         <Input
-          className={classNames('auth-login-password', { 'input-error': s.authError })}
+          className={classNames(Styles.AuthLogin__password, { 'input-error': s.authError })}
           name="password"
           type="password"
           placeholder="Password"
@@ -98,7 +100,7 @@ export default class AuthLogin extends Component {
           </span>
         </div>
         <div
-          className={classNames('auth-login-actions', {
+          className={classNames(Styles.AuthLogin__actions, {
             animateInPartial: s.loginID && s.password,
             animateOutPartial: (!s.loginID || !s.password) && s.isLoginActionsDisplayable
           })}

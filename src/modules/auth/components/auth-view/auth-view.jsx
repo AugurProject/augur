@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Helmet } from 'react-helmet';
 
-import AuthLogin from 'modules/auth/components/auth-login';
+import AuthLogin from 'modules/auth/components/auth-login/auth-login';
 import AuthSignup from 'modules/auth/components/auth-signup';
 import AuthImport from 'modules/auth/components/auth-import';
 import AirbitzLogoIcon from 'modules/common/components/airbitz-logo-icon';
@@ -10,6 +10,8 @@ import AirbitzLogoIcon from 'modules/common/components/airbitz-logo-icon';
 import ComponentNav from 'modules/common/components/component-nav';
 
 import { SIGNUP, LOGIN, IMPORT } from 'modules/app/constants/views';
+
+import Styles from 'modules/auth/components/auth-view/auth-view.styles';
 
 export default class AuthView extends Component {
   static propTypes = {
@@ -68,11 +70,11 @@ export default class AuthView extends Component {
     const s = this.state;
 
     return (
-      <section id="auth_view">
+      <section className={Styles.AuthView}>
         <Helmet>
           <title>Authentication</title>
         </Helmet>
-        <article className="auth-methods">
+        <article className={Styles.AuthView__methods}>
           <ComponentNav
             fullWidth
             navItems={p.authNavItems}
@@ -80,10 +82,10 @@ export default class AuthView extends Component {
             updateSelectedNav={this.updateSelectedNav}
           />
           {s.selectedNav !== IMPORT &&
-            <div className="default-auth">
+            <div className={Styles.AuthView__default}>
               <button
-                className="auth-airbitz unstyled"
-                onClick={() => p.airbitzLoginLink(p.history)}
+                className={Styles.AuthView__airbitz}
+                onClick={p.airbitzLoginLink}
               >
                 <div>
                   <AirbitzLogoIcon />

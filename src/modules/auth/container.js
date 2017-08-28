@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import AuthView from 'modules/auth/components/auth-view';
+import AuthView from 'modules/auth/components/auth-view/auth-view';
 
 import { register, setupAndFundNewAccount } from 'modules/auth/actions/register';
 import { login } from 'modules/auth/actions/login';
