@@ -1,8 +1,44 @@
 @import '~assets/styles/shared.less';
 
+.MarketBasics__content {
+  padding: 1.5rem 2em 1.875rem;
+}
+
 .MarketBasics__header {
   display: flex;
   justify-content: space-between;
+}
+
+.MarketBasics__footer {
+  border-top: 1px solid #dfdfdf;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+}
+
+.MarketBasics__meta {
+  > li {
+    display: inline-block;
+    margin-left: 1.25em;
+
+    &:first-child {
+      margin-left: 0;
+    }
+
+    > span {
+      &:extend(.caps--medium);
+
+      color: @color-purple;
+      display: block;
+
+      &:first-child {
+        &:extend(.caps--small);
+
+        color: @color-lightgray;
+        margin-bottom: 0.625rem;
+      }
+    }
+  }
 }
 
 .MarketBasics__tags {
@@ -25,26 +61,6 @@
       &::before {
         display: none;
       }
-    }
-  }
-}
-
-.MarketBasics__footer {
-  display: flex;
-  justify-content: space-between;
-}
-
-.MarketBasics__meta {
-  > li {
-    display: inline-block;
-    margin-left: 1.25em;
-
-    &:first-child {
-      margin-left: 0;
-    }
-
-    > span {
-      display: block;
     }
   }
 }

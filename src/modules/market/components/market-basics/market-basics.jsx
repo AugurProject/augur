@@ -17,34 +17,36 @@ import Styles from 'modules/market/components/market-basics/market-basics.styles
 
 const MarketBasics = p => (
   <article className={Styles.MarketBasics}>
-    <div className={Styles.MarketBasics__header}>
-      <ul className={Styles.MarketBasics__tags}>
-        <li>Tags</li>
-        {(p.tags || []).map((tag, i) => (
-          <li key={i}>
-            {tag.name ? tag.name : tag}
-          </li>
-        ))}
-      </ul>
+    <div className={Styles.MarketBasics__content}>
+      <div className={Styles.MarketBasics__header}>
+        <ul className={Styles.MarketBasics__tags}>
+          <li>Tags</li>
+          {(p.tags || []).map((tag, i) => (
+            <li key={i}>
+              {tag.name ? tag.name : tag}
+            </li>
+          ))}
+        </ul>
 
-      <span>{/* p.isOpen ? (p.isResported ? 'reported' : 'open') : 'closed' */}</span>
+        <span>{/* p.isOpen ? (p.isResported ? 'reported' : 'open') : 'closed' */}</span>
+      </div>
+
+      <h1>{ p.description }</h1>
     </div>
-
-    <h1>{ p.description }</h1>
 
     <div className={Styles.MarketBasics__footer}>
       <ul className={Styles.MarketBasics__meta}>
         <li>
           <span>Volume</span>
-          <span>84K Shares</span>
+          <span>{ p.volume.rounded }{ p.volume.denomination }</span>
         </li>
         <li>
           <span>Fee</span>
-          <span>2.8%</span>
+          <span>{ p.makerFeePercent.full }</span>
         </li>
         <li>
           <span>Expires</span>
-          <span>June 9, 2017, 7:00 AM</span>
+          <span>{ p.endDate.formatted }</span>
         </li>
       </ul>
       <div>
