@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
+import Styles from 'modules/topics/components/topic/topic.styles'
+
 import makePath from 'modules/app/helpers/make-path';
 
 import { TOPIC_VOLUME_INCREASED, TOPIC_VOLUME_DECREASED } from 'modules/topics/constants/topic-popularity-change';
@@ -51,19 +53,18 @@ export default class Topic extends Component {
           search: `?${TOPIC_PARAM_NAME}=${encodeURIComponent(p.topic)}`
         }}
         key={`${p.topic}-${p.popularity}`}
-        className="unstyled button topic-button"
+        className={Styles.Topic__link}
       >
         <div
-          className="topic-content"
           ref={(topicNameContainer) => { this.topicNameContainer = topicNameContainer; }}
         >
-          <div className="topic-name" >
+          <div className={Styles.Topic__name} >
             <span ref={(topicName) => { this.topicName = topicName; }}>
               {p.topic.toUpperCase()}
             </span>
           </div>
-          <div className="separator-bar" />
-          <div className="topic-popularity">
+          <div className={Styles.Topic__separator} />
+          <div className={Styles.Topic__popularity} >
             <span
               className={classNames({
                 'bounce-up-and-flash': s.popularityChange === TOPIC_VOLUME_INCREASED,

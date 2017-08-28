@@ -1,15 +1,17 @@
-#topics_view {
+@import '~assets/styles/shared';
+
+.Topics {
   height: 100%;
   overflow-y: auto;
   position: relative;
   width: 100%;
 }
 
-#topics_heading {
+.Topics__heading {
   margin: 85px 0 90px;
 
-  h2,
-  h3 {
+  > h2,
+  > h3 {
     .font-color-light();
 
     margin: 0;
@@ -18,43 +20,43 @@
     text-transform: uppercase;
   }
 
-  h2 {
+  > h2 {
     .font-size-most-massive();
     .font-weight-normal();
 
     letter-spacing: 2.3px;
 
-    a,
-    a:hover,
-    a:active,
-    a:visited {
+    > a,
+    > a:hover,
+    > a:active,
+    > a:visited {
       .font-color-light();
 
       text-decoration: none;
     }
   }
 
-  h3 {
+  > h3 {
     .font-size-massive();
     .font-weight-semibold();
 
     letter-spacing: 2.25px;
   }
 
-  .separator-bar {
-    background: @color-offwhite;
-    height: 4px;
-    margin: 0 auto;
-    width: 70px;
-  }
+}
+.Topics__separator {
+  background: @color-offwhite;
+  height: 4px;
+  margin: 0 auto;
+  width: 70px;
 }
 
-#topics_container {
+.Topics__container {
   position: relative;
   z-index: @above-all-content;
 }
 
-.topic-wrap {
+.Topic__wrap {
   .font-color-light();
   .font-family-dinpro();
 

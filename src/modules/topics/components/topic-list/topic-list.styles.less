@@ -1,0 +1,44 @@
+@import '~assets/styles/shared';
+
+.TopicList__topicwrap {
+  .font-color-light();
+  .font-family-dinpro();
+
+  display: inline-block;
+  margin-top: 128px;
+  text-align: center;
+  width: 33.33%;
+
+  &:nth-child(1),
+  &:nth-child(2),
+  &:nth-child(3) {
+    margin: 0;
+  }
+
+  > a {
+    display: block;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+}
+
+@media @breakpoint-small-desktop {
+  .TopicList__topicwrap {
+    width: 50%;
+
+    &:nth-child(3) {
+      margin-top: 120px;
+    }
+  }
+}
+
+@media @breakpoint-mobile {
+  .TopicList__topicwrap {
+    width: 100%;
+
+    &:nth-child(2) {
+      margin-top: 120px;
+    }
+  }
+}

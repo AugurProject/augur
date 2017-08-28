@@ -3,7 +3,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import Topic from 'modules/topics/components/topic';
+import Topic from 'modules/topics/components/topic/topic';
+
+import Styles from 'modules/topics/components/topic-list/topic-list.styles';
 
 const TopicList = (p) => {
   const topics = [];
@@ -14,7 +16,7 @@ const TopicList = (p) => {
 
     topics.push(
       <div
-        className="topic-wrap"
+        className={Styles.TopicList__topicwrap}
         key={topic !== null ? JSON.stringify(topic) : `${JSON.stringify(topic)}${topicIndex}`}
       >
         <Topic
@@ -26,7 +28,7 @@ const TopicList = (p) => {
   }
 
   return (
-    <div className="topics">
+    <div>
       {topics}
     </div>
   );
