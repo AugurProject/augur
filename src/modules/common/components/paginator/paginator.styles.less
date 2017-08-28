@@ -1,0 +1,58 @@
+@import '~assets/styles/shared.less';
+
+.Paginator {
+  .font-size-large();
+
+  height: 50px;
+  margin-top: 40px;
+}
+
+.Paginator__controls {
+  display: flex;
+  height: 100%;
+}
+
+.Paginator__back,
+.Paginator__location,
+.Paginator__forward {
+  .font-color-light();
+  .font-family-dinpro();
+  .font-size-extra-large();
+
+  flex: 1;
+  height: 100%;
+}
+
+.Paginator__location {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+
+.Paginator__button {
+  background: none;
+  display: flex;
+  height: 100%;
+  padding: 0;
+  text-decoration: none;
+
+  i {
+    .font-size-extra-large();
+  }
+}
+
+.Paginator_back .Paginator__button {
+  align-items: center;
+  display: flex;
+  justify-content: flex-start;
+  padding-left: 20px;
+  text-align: left;
+}
+
+.Paginator_forward .Paginator__button {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 20px;
+  text-align: right;
+}

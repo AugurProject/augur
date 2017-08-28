@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet';
 
 import Transactions from 'modules/transactions/components/transactions';
 import Branch from 'modules/branch/components/branch';
-import Paginator from 'modules/common/components/paginator';
+import Paginator from 'modules/common/components/paginator/paginator';
 import Spinner from 'modules/common/components/spinner';
 import TransactionsLoadingActions from 'modules/transactions/components/transactions-loading-actions';
 
