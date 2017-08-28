@@ -20,8 +20,11 @@
     &:extend(.fa-star-o all);
   }
 
-  &.favorite > i {
-    &:extend(.fa-star);
+  &.favorite > i,
+  &:hover > i {
+    &:extend(.fa-star all);
+
+    color: @purple--lighter;
   }
 }
 
