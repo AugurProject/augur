@@ -3,7 +3,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 // import { Link } from 'react-router-dom';
-// import classNames from 'classnames';
+import classNames from 'classnames';
 
 // import MarketProperties from 'modules/market/components/market-properties';
 
@@ -14,6 +14,7 @@ import PropTypes from 'prop-types';
 // import { MARKET_ID_PARAM_NAME, MARKET_DESCRIPTION_PARAM_NAME } from 'modules/app/constants/param-names';
 
 import Styles from 'modules/market/components/market-basics/market-basics.styles';
+import FontAwesome from 'assets/styles/font-awesome'
 
 const MarketBasics = p => (
   <article className={Styles.MarketBasics}>
@@ -42,7 +43,7 @@ const MarketBasics = p => (
         </li>
         <li>
           <span>Fee</span>
-          <span>{ p.makerFeePercent.full }</span>
+          <span>{ p.takerFeePercent.full }</span>
         </li>
         <li>
           <span>Expires</span>
@@ -50,12 +51,19 @@ const MarketBasics = p => (
         </li>
       </ul>
       <div>
-        <span>star</span>
-        <button className="button--purple">Trade</button>
+        { p.isLogged && p.toggleFavorite && 
+          <span className={Styles.MarketBasics__favorite}>
+            <i 
+              className={classNames(FontAwesome.fa, p.isFavorite ? FontAwesome['fa-star'] : FontAwesome['fa-star-o'])}
+              onClick={() => p.toggleFavorite(p.id) }
+            ></i>
+          </span>
+        }
+        <button className={Styles['button--purple']}>Trade</button>
       </div>
     </div>
 
-    {/* <div className="market-basics-header-actions">
+    <div className="market-basics-header-actions">
       {p.isLogged && p.toggleFavorite &&
         <button
           className={classNames('button unstyled favorite-button', { on: p.isFavorite })}
@@ -69,7 +77,7 @@ const MarketBasics = p => (
           />
         </button>
       }
-    </div> */}
+    </div>
 
     {/*
     {p.id && p.formattedDescription ?
