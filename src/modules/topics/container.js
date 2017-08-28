@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import TopicsView from 'modules/topics/components/topics-view';
+import TopicsView from 'modules/topics/components/topics-view/topics-view';
 
 import { selectLoginAccount } from 'modules/auth/selectors/login-account';
 import { selectTopics } from 'modules/topics/selectors/topics';
