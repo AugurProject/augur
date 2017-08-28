@@ -3,10 +3,13 @@
   .font-size-normal();
 
   background-color: @color-blue;
+  border-radius: 3px;
   color: @color-text-light;
   cursor: default;
   font-weight: 400;
-  padding: 1em 1.5em;
+  letter-spacing: 0.3px;
+  padding: 0.5rem 0.5rem 0.67rem;
+  transition: background-color 0.15s ease;
 
   &.disabled {
     background-color: @color-gray;
@@ -36,8 +39,18 @@
 .button--purple {
   &:extend(.button);
 
-  background-color: @color-purple-dark;
+  background-color: @color-purple;
   color: @color-white;
+  cursor: pointer;
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.5rem;
+  min-width: 9.75rem;
+  text-transform: uppercase;
+
+  &:hover {
+    background-color: @color-lightpurple;
+  }
 }
 
 // OLD -- ref only, to be removed

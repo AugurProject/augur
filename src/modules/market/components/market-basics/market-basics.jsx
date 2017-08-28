@@ -58,7 +58,7 @@ const MarketBasics = p => (
             <i />
           </button>
         }
-        <button className={Styles['button--purple']}>Trade</button>
+        <button className={Styles.MarketBasics__trade}>Trade</button>
       </div>
     </div>
 
