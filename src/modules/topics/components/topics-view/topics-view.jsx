@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 // TODO: implement null state for topics list (needs design)
 // import NullStateMessage from 'modules/common/components/null-state-message';
 import TopicList from 'modules/topics/components/topic-list/topic-list';
-import Paginator from 'modules/common/components/paginator';
+import Paginator from 'modules/common/components/paginator/paginator';
 import GraphBG from 'modules/common/components/graph-background/graph-background';
 
 import parseQuery from 'modules/app/helpers/parse-query';
