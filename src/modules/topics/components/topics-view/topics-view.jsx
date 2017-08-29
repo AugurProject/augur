@@ -127,7 +127,7 @@ export default class TopicsView extends Component {
             <TopicList
               topics={p.topics}
               lowerBound={s.lowerBound}
-              upperBound={s.upperBound}
+              boundedLength={s.boundedLength}
             />
           }
           {(p.topics && p.topics.length) &&
