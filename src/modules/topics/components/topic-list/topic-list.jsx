@@ -1,5 +1,3 @@
-/* eslint react/no-array-index-key: 0 */  // Trying to accomodate the data structure
-
 import React from 'react';
 import PropTypes from 'prop-types';
 
