@@ -45,23 +45,6 @@ const MarketBasics = (p) => {
       </div>
 
       {/*
-      <div className="market-basics-header-actions">
-        {p.isLogged && p.toggleFavorite &&
-          <button
-            className={classNames('button unstyled favorite-button', { on: p.isFavorite })}
-            onClick={() => p.toggleFavorite(p.id)}
-          >
-            <i
-              className={classNames('fa', {
-                'fa-star': p.isFavorite,
-                'fa-star-o': !p.isFavorite
-              })}
-            />
-          </button>
-        }
-      </div */}
-
-      {/*
       {p.id && p.formattedDescription ?
         <Link
           to={{
