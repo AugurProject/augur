@@ -35,7 +35,6 @@ export default class TopicsView extends Component {
       lowerBound: null,
       upperBound: null,
       boundedLength: null,
-      currentPage: null,
       itemsPerPage: 9,
       filteredTopics: [],
       filteredTopicsLength: 0,
@@ -48,12 +47,7 @@ export default class TopicsView extends Component {
       heroTopicOpacity: 0
     };
 
-    this.setCurrentPage = this.setCurrentPage.bind(this);
     this.setSegment = this.setSegment.bind(this);
-  }
-
-  componentWillMount() {
-    this.setCurrentPage(this.props.location);
   }
 
   componentDidMount() {
@@ -63,16 +57,9 @@ export default class TopicsView extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.location !== nextProps.location) this.setCurrentPage(nextProps.location);
     if (this.props.topics.length === 0 && nextProps.topics.length > 0) {
       this.startCategoryCarousel();
     }
-  }
-
-  setCurrentPage(location) {
-    const currentPage = parseInt(parseQuery(location.search)[PAGINATION_PARAM_NAME] || 1, 10);
-
-    this.setState({ currentPage });
   }
 
   setSegment(lowerBound, upperBound, boundedLength) {
