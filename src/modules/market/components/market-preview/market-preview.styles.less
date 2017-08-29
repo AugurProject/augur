@@ -4,8 +4,6 @@
   .border(true);
 
   background-color: @color-white;
-  display: flex;
-  flex: 1;
   margin: 2em 0;
 }
 
@@ -13,14 +11,14 @@
   display: flex;
   flex: 4;
   flex-direction: column;
+}
 
-  .market-link {
-    display: flex;
-
-    .button.trade {
-      cursor: pointer;
-    }
-  }
+.MarketPreview__footer {
+  align-items: center;
+  border-top: 1px solid #dfdfdf;
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 2rem;
 }
 
 .MarketPreview__outcomes {
