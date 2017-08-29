@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 // import classNames from 'classnames';
 
 import MarketBasics from 'modules/market/components/market-basics/market-basics';
+import MarketProperties from 'modules/market/components/market-properties/market-properties';
 // import MarketPreviewOutcomes from 'modules/market/components/market-preview-outcomes';
 
 // import makePath from 'modules/app/helpers/make-path';
@@ -36,11 +37,13 @@ const MarketPreview = p => (
   // }
 
   <article className={Styles.MarketPreview}>
-    <div className={Styles.MarketPreview__details}>
       <MarketBasics
         {...p}
         toggleFavorite={p.toggleFavorite}
       />
+      <div className={Styles.MarketPreview__footer}>
+        <MarketProperties {...p} />
+      </div>
       {/*
       {!!p.id && p.formattedDescription &&
         <div className="market-link">
@@ -59,7 +62,6 @@ const MarketPreview = p => (
         </div>
       }
     */}
-    </div>
     {/* <MarketPreviewOutcomes outcomes={p.outcomes} /> */}
   </article>
 );

@@ -7,8 +7,6 @@ import classNames from 'classnames';
 
 import SVG from 'modules/common/components/svg/svg';
 
-// import MarketProperties from 'modules/market/components/market-properties';
-
 // import makePath from 'modules/app/helpers/make-path';
 // import makeQuery from 'modules/app/helpers/make-query';
 
@@ -45,37 +43,6 @@ const MarketBasics = (p) => {
         </div>
 
         <h1>{ p.description }</h1>
-
-        <div className={Styles.MarketBasics__outcomes}>
-        </div>
-      </div>
-
-      <div className={Styles.MarketBasics__footer}>
-        <ul className={Styles.MarketBasics__meta}>
-          <li>
-            <span>Volume</span>
-            <span>{ setShareDenomination(p.volume.value, p.volume.denomination) }</span>
-          </li>
-          <li>
-            <span>Fee</span>
-            <span>{ p.takerFeePercent.full }</span>
-          </li>
-          <li>
-            <span>Expires</span>
-            <span>{ p.endDate.formatted }</span>
-          </li>
-        </ul>
-        <div>
-          { p.isLogged && p.toggleFavorite &&
-            <button
-              className={classNames(Styles.MarketBasics__favorite, { [`${Styles.favorite}`]: p.isFavorite })}
-              onClick={() => p.toggleFavorite(p.id)}
-            >
-              <i />
-            </button>
-          }
-          <button className={Styles.MarketBasics__trade}>Trade</button>
-        </div>
       </div>
 
       {/*
@@ -111,8 +78,7 @@ const MarketBasics = (p) => {
         </Link> :
         <span className="market-description">{p.description}</span>
       }
-
-      <MarketProperties {...p} /> */}
+      */}
     </article>
   );
 };
