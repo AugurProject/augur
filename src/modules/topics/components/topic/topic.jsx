@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import Styles from 'modules/topics/components/topic/topic.styles';
 
 import makePath from 'modules/app/helpers/make-path';
+import makeQuery from 'modules/app/helpers/make-query';
 
 import { TOPIC_VOLUME_INCREASED, TOPIC_VOLUME_DECREASED } from 'modules/topics/constants/topic-popularity-change';
 import { MARKETS } from 'modules/app/constants/views';
@@ -50,9 +51,10 @@ export default class Topic extends Component {
       <Link
         to={{
           pathname: makePath(MARKETS),
-          search: `?${TOPIC_PARAM_NAME}=${encodeURIComponent(p.topic)}`
+          search: makeQuery({
+            [TOPIC_PARAM_NAME]: p.topic
+          })
         }}
-        key={`${p.topic}-${p.popularity}`}
         className={Styles.Topic__link}
       >
         <div
