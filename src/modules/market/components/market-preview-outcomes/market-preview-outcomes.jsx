@@ -1,11 +1,10 @@
 import React from 'react';
-import ReactTooltip from 'react-tooltip';
-import ValueDenomination from 'modules/common/components/value-denomination/value-denomination';
+// import ValueDenomination from 'modules/common/components/value-denomination/value-denomination';
 
 import Styles from 'modules/market/components/market-preview-outcomes/market-preview-outcomes.styles';
 
 const MarketOutcomes = p => (
-  <div className="MarketPreviewOutcomes">
+  <div className={Styles.MarketPreviewOutcomes}>
     {/* {(p.outcomes || []).map((outcome, i) => (
       <div
         key={outcome.id}
