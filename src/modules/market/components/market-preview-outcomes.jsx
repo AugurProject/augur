@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactTooltip from 'react-tooltip';
-import ValueDenomination from 'modules/common/components/value-denomination';
+import ValueDenomination from 'modules/common/components/value-denomination/value-denomination';
 
 const MarketOutcomes = p => (
   <div className="market-preview-outcomes">

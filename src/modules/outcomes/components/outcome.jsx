@@ -3,7 +3,7 @@
 import React from 'react';
 import classNames from 'classnames';
 
-import ValueDenomination from 'modules/common/components/value-denomination';
+import ValueDenomination from 'modules/common/components/value-denomination/value-denomination';
 import OutcomeTrade from 'modules/outcomes/components/outcome-trade';
 
 import { BUY, SELL } from 'modules/transactions/constants/types';

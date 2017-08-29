@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
-import ValueDenomination from 'modules/common/components/value-denomination';
+import ValueDenomination from 'modules/common/components/value-denomination/value-denomination';
 import ValueTimestamp from 'modules/common/components/value-timestamp';
 
 import { CREATE_MARKET, BUY, SELL, BID, ASK, MATCH_BID, MATCH_ASK, SUBMIT_REPORT, CANCEL_ORDER, SELL_COMPLETE_SETS } from 'modules/transactions/constants/types';

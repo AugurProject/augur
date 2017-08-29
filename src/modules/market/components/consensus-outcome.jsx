@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ValueDenomination from 'modules/common/components/value-denomination';
+import ReportEthics from 'modules/my-reports/components/report-ethics';
+import ValueDenomination from 'modules/common/components/value-denomination/value-denomination';
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
 
 const ConsensusOutcome = p => (

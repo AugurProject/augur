@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 
-import ValueDenomination from 'modules/common/components/value-denomination';
+import ValueDenomination from 'modules/common/components/value-denomination/value-denomination';
 import ValueDate from 'modules/common/components/value-date';
 import EmDash from 'modules/common/components/em-dash';
 
