@@ -29,7 +29,7 @@ h6 {
   display: grid;
 
   /* sidebar width */
-  grid-template-columns: 72px auto;
+  grid-template-columns: 4.5rem auto;
   height: 100%;
 
   @media @breakpoint-mobile {
@@ -42,13 +42,13 @@ h6 {
   display: grid;
 
   /* topbar height */
-  grid-template-rows: 42px auto;
+  grid-template-rows: 2.625rem auto;
   height: 100vh;
   overflow: hidden;
 
   @media @breakpoint-mobile {
     /* topbar mobile height */
-    grid-template-rows: 24px auto;
+    grid-template-rows: 1.5rem auto;
   }
 }
 
@@ -56,7 +56,7 @@ h6 {
   display: grid;
 
   /* inner menubar width */
-  grid-template-columns: 110px auto;
+  grid-template-columns: 6.875rem auto;
   margin-left: -100px;
   overflow: hidden;
 
@@ -70,13 +70,13 @@ h6 {
 
 .Main__content {
   background: @color-almostblack;
-  height: calc(~"100vh - 42px");
+  height: calc(~"100vh - 2.625rem");
   overflow-x: hidden;
   overflow-y: auto;
   transform: translateZ(0); /* use gpu */
 
   @media @breakpoint-mobile {
-    height: calc(~"100vh - 24px");
+    height: calc(~"100vh - 1.5rem");
   }
 }
 
