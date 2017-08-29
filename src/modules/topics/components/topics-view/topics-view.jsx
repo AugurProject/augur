@@ -8,12 +8,12 @@ import TopicList from 'modules/topics/components/topic-list/topic-list';
 import Paginator from 'modules/common/components/paginator/paginator';
 import GraphBG from 'modules/common/components/graph-background/graph-background';
 
-import parseQuery from 'modules/app/helpers/parse-query';
 import makePath from 'modules/app/helpers/make-path';
+import makeQuery from 'modules/app/helpers/make-query';
 
 import Styles from 'modules/topics/components/topics-view/topics-view.styles';
 
-import { PAGINATION_PARAM_NAME, TOPIC_PARAM_NAME } from 'modules/app/constants/param-names';
+import { TOPIC_PARAM_NAME } from 'modules/app/constants/param-names';
 import { MARKETS } from 'modules/app/constants/views';
 
 import { tween } from 'shifty';
@@ -111,7 +111,9 @@ export default class TopicsView extends Component {
                 <Link
                   to={{
                     pathname: makePath(MARKETS),
-                    search: `?${TOPIC_PARAM_NAME}=${encodeURIComponent(heroTopic.topic)}`
+                    search: makeQuery({
+                      [TOPIC_PARAM_NAME]: heroTopic.topic
+                    })
                   }}
                 >
                   {heroTopic.topic}
