@@ -2,7 +2,7 @@
   <symbol id="market-status--open" viewBox="0 0 24 24">
     <g fill="none" fill-rule="evenodd"><g id="Markets/Card/Binary" stroke="#9B8BF5"><g id="Icon/Open"><circle id="Oval-5" cx="12" cy="12" r="4"/><circle id="Oval-5" cx="12" cy="12" r="11"/></g></g></g>
   </symbol>
-  <symbol id="market-status--reporting" viewBox="0 0 24 24">
+  <symbol id="market-status--reported" viewBox="0 0 24 24">
     <g id="Symbols" fill="none" fill-rule="evenodd"><g id="Markets/Card/Multi" stroke="#412468"><g id="Icon/Reporting"><g id="Group" transform="translate(1 1)"><path id="Page-1" stroke-linecap="round" stroke-linejoin="round" d="M5 11.43l4.708 3.44L17 7"/><circle id="Oval-2" cx="11" cy="11" r="11"/></g></g></g></g>
   </symbol>
   <symbol id="market-status--closed" viewBox="0 0 24 24">
