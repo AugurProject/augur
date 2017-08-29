@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
-import classNames from 'classnames';
 
 import EmDash from 'modules/common/components/em-dash';
 

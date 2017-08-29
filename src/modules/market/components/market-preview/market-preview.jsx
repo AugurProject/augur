@@ -37,14 +37,14 @@ const MarketPreview = p => (
   // }
 
   <article className={Styles.MarketPreview}>
-      <MarketBasics
-        {...p}
-        toggleFavorite={p.toggleFavorite}
-      />
-      <div className={Styles.MarketPreview__footer}>
-        <MarketProperties {...p} />
-      </div>
-      {/*
+    <MarketBasics
+      {...p}
+      toggleFavorite={p.toggleFavorite}
+    />
+    <div className={Styles.MarketPreview__footer}>
+      <MarketProperties {...p} />
+    </div>
+    {/*
       {!!p.id && p.formattedDescription &&
         <div className="market-link">
           <Link
