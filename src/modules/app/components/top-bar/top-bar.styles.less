@@ -3,23 +3,22 @@
 .TopBar {
   background: @color-gray;
   height: 100%;
-  padding-left: 295px;
+  padding-left: 18.4rem;
 }
 
 .TopBar__stat {
   .font-size-medium();
 
   display: inline-block;
-  font-weight: 300;
-  letter-spacing: 0.75px;
-  line-height: 42px;
-  margin-right: 40px;
-  width: 110px;
+  letter-spacing: 0.05em;
+  line-height: 2.6rem;
+  margin-right: 2.5rem;
+  width: 6.8rem;
 }
 
 .TopBar__stat-label {
   color: rgba(255, 255, 255, 0.25);
-  margin-right: 10px;
+  margin-right: 0.62rem;
 }
 
 .TopBar__stat-value {
@@ -31,7 +30,9 @@
 }
 
 @media @breakpoint-mobile {
-  padding: 0;
+  .TopBar {
+    padding: 0;
+  }
 
   .TopBar__stat { display: none; }
 
@@ -39,10 +40,9 @@
     color: @color-white;
     display: block;
     float: right;
-    font-weight: 300;
-    letter-spacing: 1px;
-    line-height: 28px;
-    margin-right: 10px;
+    letter-spacing: 0.0625em;
+    line-height: 1.5rem;
+    margin-right: 0.625rem;
     text-transform: uppercase;
   }
 }

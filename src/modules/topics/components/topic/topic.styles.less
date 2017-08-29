@@ -20,9 +20,8 @@
 
 .Topic__separator {
   background: @color-very-lightpurple;
-  height: 1px;
-  margin: 16px auto 24px;
-  width: 194px;
+  height: 0.0625rem;
+  margin: 1rem 7vw 1.5rem;
 }
 
 .Topic__popularity {
@@ -30,3 +29,20 @@
   .font-weight-light();
 }
 
+@media @breakpoint-small-desktop {
+  .Topic__separator {
+    margin: 1rem 14vw 1.5rem;
+  }
+}
+
+@media @breakpoint-mobile {
+  .Topic__separator {
+    margin: 1rem 28.5vw 1.5rem;
+  }
+}
+
+@media @breakpoint-small-mobile {
+  .Topic__name {
+    .font-size-massive();
+  }
+}
