@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import MarketBasics from 'modules/market/components/market-basics/market-basics';
 import MarketProperties from 'modules/market/components/market-properties/market-properties';
-// import MarketPreviewOutcomes from 'modules/market/components/market-preview-outcomes';
+import MarketPreviewOutcomes from 'modules/market/components/market-preview-outcomes/market-preview-outcomes';
 
 // import makePath from 'modules/app/helpers/make-path';
 // import makeQuery from 'modules/app/helpers/make-query';
@@ -21,10 +21,10 @@ const MarketPreview = p => (
       {...p}
       toggleFavorite={p.toggleFavorite}
     />
+    <MarketPreviewOutcomes outcomes={p.outcomes} />
     <div className={Styles.MarketPreview__footer}>
       <MarketProperties {...p} />
     </div>
-    {/* <MarketPreviewOutcomes outcomes={p.outcomes} /> */}
   </article>
 );
 
