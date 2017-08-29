@@ -10,10 +10,9 @@ const SVG = ({ className, role, title, id, onClick, disabled }) => (
     role={role || 'img'}
     title={title}
     disabled={disabled}
-    dangerouslySetInnerHTML={{
-      __html: `<title>${title}</title><use xlink:href='${spritemap}#${id}' />`
-    }}
-  />
+  >
+    <title>${title}</title><use href={`${spritemap}#${id}`} />
+  </svg>
 );
 
 SVG.propTypes = {
