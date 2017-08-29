@@ -26,7 +26,6 @@
 
   > li {
     display: inline-block;
-    text-transform: uppercase;
 
     &::before {
       content: "/";
@@ -39,6 +38,10 @@
       &::before {
         display: none;
       }
+    }
+
+    > button {
+      text-transform: uppercase;
     }
   }
 }

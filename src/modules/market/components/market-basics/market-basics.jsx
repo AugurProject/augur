@@ -31,7 +31,9 @@ const MarketBasics = (p) => {
             <li>Tags</li>
             {(p.tags || []).map((tag, i) => (
               <li key={i}>
-                {tag.name ? tag.name : tag}
+                <button onClick={tag.onClick && tag.onClick}>
+                  {tag.name ? tag.name : tag}
+                </button>
               </li>
             ))}
           </ul>
