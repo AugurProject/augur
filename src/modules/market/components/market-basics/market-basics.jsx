@@ -45,6 +45,9 @@ const MarketBasics = (p) => {
         </div>
 
         <h1>{ p.description }</h1>
+
+        <div className={Styles.MarketBasics__outcomes}>
+        </div>
       </div>
 
       <div className={Styles.MarketBasics__footer}>
