@@ -16,26 +16,6 @@ import MarketProperties from 'modules/market/components/market-properties/market
 import Styles from 'modules/market/components/market-preview/market-preview.styles';
 
 const MarketPreview = p => (
-  // let buttonText;
-  // let buttonClass;
-
-  // if (p.isReported) {
-  //   buttonText = 'Reported';
-  //   buttonClass = 'reported';
-  // } else if (p.isMissedReport) {
-  //   buttonText = 'Missed Report';
-  //   buttonClass = 'missed-report';
-  // } else if (p.isPendingReport) {
-  //   buttonText = 'Report';
-  //   buttonClass = 'report';
-  // } else if (!p.isOpen) {
-  //   buttonText = 'View';
-  //   buttonClass = 'view';
-  // } else {
-  //   buttonText = 'Trade';
-  //   buttonClass = 'trade';
-  // }
-
   <article className={Styles.MarketPreview}>
     <MarketBasics
       {...p}
@@ -44,24 +24,6 @@ const MarketPreview = p => (
     <div className={Styles.MarketPreview__footer}>
       <MarketProperties {...p} />
     </div>
-    {/*
-      {!!p.id && p.formattedDescription &&
-        <div className="market-link">
-          <Link
-            to={{
-              pathname: makePath(MARKET),
-              search: makeQuery({
-                [MARKET_DESCRIPTION_PARAM_NAME]: p.formattedDescription,
-                [MARKET_ID_PARAM_NAME]: p.id
-              })
-            }}
-            className={classNames('button', buttonClass)}
-          >
-            {buttonText}
-          </Link>
-        </div>
-      }
-    */}
     {/* <MarketPreviewOutcomes outcomes={p.outcomes} /> */}
   </article>
 );
