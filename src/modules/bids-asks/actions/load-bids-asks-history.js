@@ -1,7 +1,7 @@
 // import { augur } from 'services/augurjs';
 // import { parallel } from 'async';
 // import { updateAccountBidsAsksData, updateAccountCancelsData } from 'modules/my-positions/actions/update-account-trades-data';
-import logError from 'utils/log-error';
+import logError from 'utils/log-error'
 
 export const loadBidsAsksHistory = (options, callback = logError) => (dispatch, getState) => {
   // const { branch, loginAccount } = getState();
@@ -22,4 +22,4 @@ export const loadBidsAsksHistory = (options, callback = logError) => (dispatch, 
   //     next(null, cancelOrderHistory);
   //   })
   // ], callback);
-};
+}

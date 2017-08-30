@@ -1,9 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import ReactTooltip from 'react-tooltip';
-import { Line } from 'rc-progress';
+import React from 'react'
+import PropTypes from 'prop-types'
+import ReactTooltip from 'react-tooltip'
+import { Line } from 'rc-progress'
 
-import Bullet from 'modules/common/components/bullet';
+import Bullet from 'modules/common/components/bullet'
 
 const Branch = p => (
   <article className="branch-info">
@@ -35,7 +35,7 @@ const Branch = p => (
       </span>
     </ReactTooltip>
   </article>
-);
+)
 
 Branch.propTypes = {
   className: PropTypes.string,
@@ -44,6 +44,6 @@ Branch.propTypes = {
   reportingPeriodDurationInSeconds: PropTypes.number,
   reportingCycleTimeRemaining: PropTypes.string,
   currentReportingPeriodPercentComplete: PropTypes.number
-};
+}
 
-export default Branch;
+export default Branch

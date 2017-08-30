@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import classNames from 'classnames';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
+import classNames from 'classnames'
 
-import ValueDenomination from 'modules/common/components/value-denomination/value-denomination';
+import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 
-import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views';
+import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views'
 
-import debounce from 'utils/debounce';
-import makePath from 'modules/app/helpers/make-path';
+import debounce from 'utils/debounce'
+import makePath from 'modules/app/helpers/make-path'
 
 export default class PortfolioNavs extends Component {
   static propTypes = {
@@ -17,13 +17,13 @@ export default class PortfolioNavs extends Component {
   };
 
   constructor(props) {
-    super(props);
+    super(props)
 
-    this.updatePortfolioNavHeight = debounce(this.updatePortfolioNavHeight.bind(this));
+    this.updatePortfolioNavHeight = debounce(this.updatePortfolioNavHeight.bind(this))
   }
 
   componentWillMount() {
-    window.addEventListener('resize', this.updatePortfolioNavHeight);
+    window.addEventListener('resize', this.updatePortfolioNavHeight)
   }
 
   componentDidMount() {
@@ -31,7 +31,7 @@ export default class PortfolioNavs extends Component {
         this.props.location.pathname === makePath(MY_MARKETS) ||
         this.props.location.pathname === makePath(MY_REPORTS)
     ) {
-      this.updatePortfolioNavHeight();
+      this.updatePortfolioNavHeight()
     }
   }
 
@@ -42,32 +42,32 @@ export default class PortfolioNavs extends Component {
       nextProps.location.pathname === makePath(MY_MARKETS) ||
       nextProps.location.pathname === makePath(MY_REPORTS))
     ) {
-      this.updatePortfolioNavHeight();
+      this.updatePortfolioNavHeight()
     }
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.updatePortfolioNavHeight);
+    window.removeEventListener('resize', this.updatePortfolioNavHeight)
   }
 
   updatePortfolioNavHeight() {
     if (this.portfolioNav) {
-      const newHeight = this.portfolioNavContainer && this.portfolioNavContainer.clientHeight;
+      const newHeight = this.portfolioNavContainer && this.portfolioNavContainer.clientHeight
 
-      this.portfolioNav.style.height = `${newHeight}px`;
+      this.portfolioNav.style.height = `${newHeight}px`
     }
   }
 
   render() {
-    const p = this.props;
+    const p = this.props
 
     return (
       <article
-        ref={(portfolioNav) => { this.portfolioNav = portfolioNav; }}
+        ref={(portfolioNav) => { this.portfolioNav = portfolioNav }}
         className={classNames('portfolio-navs', p.className)}
       >
         <div
-          ref={(portfolioNavContainer) => { this.portfolioNavContainer = portfolioNavContainer; }}
+          ref={(portfolioNavContainer) => { this.portfolioNavContainer = portfolioNavContainer }}
           className="portfolio-navs-container"
         >
           <div className="portfolio-navs-content">
@@ -97,6 +97,6 @@ export default class PortfolioNavs extends Component {
           </div>
         </div>
       </article>
-    );
+    )
   }
 }

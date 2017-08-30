@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import Spinner from 'modules/common/components/spinner';
+import React from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
+import Spinner from 'modules/common/components/spinner'
 
 const TransactionsLoadingActions = p => (
   <article className="transactions-loading-actions">
@@ -10,7 +10,7 @@ const TransactionsLoadingActions = p => (
         <button
           className={classNames('unstyled', { disabled: true })}
           onClick={() => {
-            if (!p.transactionsLoading) p.loadMoreTransactions();
+            if (!p.transactionsLoading) p.loadMoreTransactions()
           }}
         >
           <span>Load More</span>
@@ -18,7 +18,7 @@ const TransactionsLoadingActions = p => (
         <button
           className={classNames('unstyled', { disabled: true })}
           onClick={() => {
-            if (!p.transactionsLoading) p.loadAllTransactions();
+            if (!p.transactionsLoading) p.loadAllTransactions()
           }}
         >
           <span>Load All</span>
@@ -27,7 +27,7 @@ const TransactionsLoadingActions = p => (
           className={classNames('unstyled', { disabled: true }, { hidden: !p.allowExport })}
           onClick={() => {
             if (!p.transactionsLoading) {
-              p.triggerTransactionsExport();
+              p.triggerTransactionsExport()
             }
           }}
         >
@@ -50,7 +50,7 @@ const TransactionsLoadingActions = p => (
       <button
         className={classNames('unstyled', { disabled: p.transactionsLoading }, { hidden: !p.allowExport })}
         onClick={() => {
-          p.triggerTransactionsExport();
+          p.triggerTransactionsExport()
         }}
       >
         <span>Export All</span>
@@ -58,7 +58,7 @@ const TransactionsLoadingActions = p => (
     </div>
     }
   </article>
-);
+)
 
 TransactionsLoadingActions.propTypes = {
   loadMoreTransactions: PropTypes.func.isRequired,
@@ -67,6 +67,6 @@ TransactionsLoadingActions.propTypes = {
   transactionsLoading: PropTypes.bool,
   hasAllTransactionsLoaded: PropTypes.bool,
   allowExport: PropTypes.bool,
-};
+}
 
-export default TransactionsLoadingActions;
+export default TransactionsLoadingActions

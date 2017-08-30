@@ -1,18 +1,18 @@
-import selectMyPositionsSummary from 'modules/my-positions/selectors/my-positions-summary';
-import selectMyMarketsSummary from 'modules/my-markets/selectors/my-markets-summary';
-import selectMyReportsSummary from 'modules/my-reports/selectors/my-reports-summary';
+import selectMyPositionsSummary from 'modules/my-positions/selectors/my-positions-summary'
+import selectMyMarketsSummary from 'modules/my-markets/selectors/my-markets-summary'
+import selectMyReportsSummary from 'modules/my-reports/selectors/my-reports-summary'
 
-import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views';
-import { formatNumber, formatEtherTokens, formatRep } from 'utils/format-number';
+import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views'
+import { formatNumber, formatEtherTokens, formatRep } from 'utils/format-number'
 
 export default function () {
-  return selectPortfolioNavItems();
+  return selectPortfolioNavItems()
 }
 
 export const selectPortfolioNavItems = () => {
-  const positionsSummary = selectMyPositionsSummary();
-  const marketsSummary = selectMyMarketsSummary();
-  const reportsSummary = selectMyReportsSummary();
+  const positionsSummary = selectMyPositionsSummary()
+  const marketsSummary = selectMyMarketsSummary()
+  const reportsSummary = selectMyReportsSummary()
   return [
     {
       label: 'Positions',
@@ -44,5 +44,5 @@ export const selectPortfolioNavItems = () => {
       trailingValue: formatRep((reportsSummary && reportsSummary.netRep)),
       trailingValueNull: 'No Gain/Loss'
     }
-  ];
-};
+  ]
+}

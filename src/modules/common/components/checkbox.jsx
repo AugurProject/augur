@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import classnames from 'classnames';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import classnames from 'classnames'
 
-import debounce from 'utils/debounce';
+import debounce from 'utils/debounce'
 
 export default class Checkbox extends Component {
   static propTypes = {
@@ -17,21 +17,21 @@ export default class Checkbox extends Component {
   }
 
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       isLabelTruncated: false,
       dataTip: this.props.title || this.props.text
-    };
-    this.isLabelTruncated = debounce(this.isLabelTruncated.bind(this), 100);
+    }
+    this.isLabelTruncated = debounce(this.isLabelTruncated.bind(this), 100)
   }
 
   componentDidMount() {
-    this.isLabelTruncated();
-    window.addEventListener('resize', this.isLabelTruncated);
+    this.isLabelTruncated()
+    window.addEventListener('resize', this.isLabelTruncated)
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.isLabelTruncated);
+    window.removeEventListener('resize', this.isLabelTruncated)
   }
 
   isLabelTruncated() {
@@ -40,18 +40,18 @@ export default class Checkbox extends Component {
         this.setState({
           isLabelTruncated: true,
           dataTip: this.props.title || this.props.text
-        });
+        })
       } else {
         this.setState({
           isLabelTruncated: false,
           dataTip: this.props.title || ''
-        });
+        })
       }
     }
   }
 
   render() {
-    const p = this.props;
+    const p = this.props
 
     // console.log('p -- ', p);
 
@@ -69,7 +69,7 @@ export default class Checkbox extends Component {
               <i className="fa fa-check" />
             }
           </span>
-          <span className="checkbox-label" tabIndex={p.tabIndex} ref={(label) => { this.labelText = label; }}>
+          <span className="checkbox-label" tabIndex={p.tabIndex} ref={(label) => { this.labelText = label }}>
             {p.text}
           </span>
           {p.text2 != null &&
@@ -79,7 +79,7 @@ export default class Checkbox extends Component {
           }
         </button>
       </article>
-    );
+    )
   }
 
 }
@@ -92,4 +92,4 @@ Checkbox.propTypes = {
   isChecked: PropTypes.bool,
   tabIndex: PropTypes.number,
   onClick: PropTypes.func
-};
+}

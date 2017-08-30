@@ -1,39 +1,39 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
-import proxyquire from 'proxyquire';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
+import proxyquire from 'proxyquire'
+import configureMockStore from 'redux-mock-store'
+import thunk from 'redux-thunk'
 
-import { SUCCESS, FAILED, PENDING, SUBMITTED, INTERRUPTED } from 'modules/transactions/constants/statuses';
+import { SUCCESS, FAILED, PENDING, SUBMITTED, INTERRUPTED } from 'modules/transactions/constants/statuses'
 
-import { formatShares, formatEther, formatEtherTokens, formatRep } from 'utils/format-number';
-import { formatDate } from 'utils/format-date';
+import { formatShares, formatEther, formatEtherTokens, formatRep } from 'utils/format-number'
+import { formatDate } from 'utils/format-date'
 
 describe(`modules/transactions/selectors/transactions.js`, () => {
-  proxyquire.noPreserveCache().noCallThru();
+  proxyquire.noPreserveCache().noCallThru()
 
-  const middlewares = [thunk];
-  const mockStore = configureMockStore(middlewares);
+  const middlewares = [thunk]
+  const mockStore = configureMockStore(middlewares)
 
   const test = t => it(t.description, () => {
-    const store = mockStore(t.state);
-    t.assertions(store);
-  });
+    const store = mockStore(t.state)
+    t.assertions(store)
+  })
 
   test({
     description: `should call the expected method`,
     assertions: () => {
-      const transactions = require('modules/transactions/selectors/transactions');
+      const transactions = require('modules/transactions/selectors/transactions')
 
-      transactions.__RewireAPI__.__Rewire__('selectTransactions', () => 'selectTransactions');
+      transactions.__RewireAPI__.__Rewire__('selectTransactions', () => 'selectTransactions')
 
-      const actual = transactions.default();
+      const actual = transactions.default()
 
-      const expected = 'selectTransactions';
+      const expected = 'selectTransactions'
 
-      assert.strictEqual(actual, expected, `Didn't call the expected method`);
+      assert.strictEqual(actual, expected, `Didn't call the expected method`)
     }
-  });
+  })
 
   test({
     description: `should return the expected array`,
@@ -136,9 +136,9 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
       }
     },
     assertions: (store) => {
-      const transactions = require('../../../src/modules/transactions/selectors/transactions');
+      const transactions = require('../../../src/modules/transactions/selectors/transactions')
 
-      const actual = transactions.selectTransactions(store.getState());
+      const actual = transactions.selectTransactions(store.getState())
 
       const expected = [
         {
@@ -260,9 +260,9 @@ describe(`modules/transactions/selectors/transactions.js`, () => {
           shares: formatShares(4),
           rep: formatRep(5)
         }
-      ];
+      ]
 
-      assert.deepEqual(actual, expected, `Didn't return the expected object`);
+      assert.deepEqual(actual, expected, `Didn't return the expected object`)
     }
-  });
-});
+  })
+})

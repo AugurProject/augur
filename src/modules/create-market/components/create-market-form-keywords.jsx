@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
-import InputList from 'modules/common/components/input-list';
+import InputList from 'modules/common/components/input-list'
 
-import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
-import { NEW_MARKET_KEYWORDS } from 'modules/create-market/constants/new-market-creation-steps';
-import { KEYWORDS_MAX_NUM, TAGS_MAX_LENGTH } from 'modules/create-market/constants/new-market-constraints';
+import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
+import { NEW_MARKET_KEYWORDS } from 'modules/create-market/constants/new-market-creation-steps'
+import { KEYWORDS_MAX_NUM, TAGS_MAX_LENGTH } from 'modules/create-market/constants/new-market-constraints'
 
 export default class CreateMarketFormKeywords extends Component {
   static propTypes = {
@@ -19,14 +19,14 @@ export default class CreateMarketFormKeywords extends Component {
   }
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       errors: [],
       warnings: []
-    };
+    }
 
-    this.validateForm = this.validateForm.bind(this);
+    this.validateForm = this.validateForm.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -35,9 +35,9 @@ export default class CreateMarketFormKeywords extends Component {
       newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_KEYWORDS
     ) {
       if (nextProps.validations.indexOf(NEW_MARKET_KEYWORDS) === -1) {
-        nextProps.updateValidity(true, true);
+        nextProps.updateValidity(true, true)
       } else {
-        nextProps.updateValidity(true);
+        nextProps.updateValidity(true)
       }
     }
   }
@@ -46,41 +46,41 @@ export default class CreateMarketFormKeywords extends Component {
     if (prevProps.currentStep !== this.props.currentStep &&
       this.props.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_KEYWORDS)
     ) {
-      this.defaultFormToFocus.getElementsByTagName('input')[0].focus();
+      this.defaultFormToFocus.getElementsByTagName('input')[0].focus()
     }
   }
 
   validateForm(keywords) {
-    const errors = Array(keywords.length);
-    errors.fill('');
+    const errors = Array(keywords.length)
+    errors.fill('')
 
-    const warnings = Array(keywords.length);
-    warnings.fill('');
+    const warnings = Array(keywords.length)
+    warnings.fill('')
 
     keywords.forEach((keyword, i) => {
       if (keyword === this.props.topic) {
-        errors[i] = 'Keyword identical to topic';
+        errors[i] = 'Keyword identical to topic'
       } else if (keywords.indexOf(keyword) > -1 && keywords.indexOf(keyword) !== i) {
-        errors[i] = 'Keyword must be unique';
+        errors[i] = 'Keyword must be unique'
       } else if (keyword.length === TAGS_MAX_LENGTH) {
-        warnings[i] = `Keyword max length is: ${TAGS_MAX_LENGTH}`;
+        warnings[i] = `Keyword max length is: ${TAGS_MAX_LENGTH}`
       }
-    });
+    })
 
     if (errors.find(error => error.length)) {
-      this.props.updateValidity(false);
+      this.props.updateValidity(false)
     } else {
-      this.props.updateValidity(true);
+      this.props.updateValidity(true)
     }
 
-    this.setState({ errors, warnings });
+    this.setState({ errors, warnings })
 
-    this.props.updateNewMarket({ keywords });
+    this.props.updateNewMarket({ keywords })
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
     return (
       <article className={`create-market-form-part ${p.className || ''}`}>
@@ -93,7 +93,7 @@ export default class CreateMarketFormKeywords extends Component {
             </aside>
             <div className="vertical-form-divider" />
             <form
-              ref={(defaultFormToFocus) => { this.defaultFormToFocus = defaultFormToFocus; }}
+              ref={(defaultFormToFocus) => { this.defaultFormToFocus = defaultFormToFocus }}
               onSubmit={e => e.preventDefault()}
             >
               <InputList
@@ -108,6 +108,6 @@ export default class CreateMarketFormKeywords extends Component {
           </div>
         </div>
       </article>
-    );
+    )
   }
 }

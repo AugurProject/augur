@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import classNames from 'classnames';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
+import classNames from 'classnames'
 
-import debounce from 'utils/debounce';
+import debounce from 'utils/debounce'
 
 export default class Notification extends Component {
   static propTypes = {
@@ -24,72 +24,72 @@ export default class Notification extends Component {
   };
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       notificationBounds: {}
-    };
+    }
 
-    this.updateNotificationBoundingBox = debounce(this.updateNotificationBoundingBox.bind(this), 100);
-    this.hasNotificationBeenSeen = this.hasNotificationBeenSeen.bind(this);
+    this.updateNotificationBoundingBox = debounce(this.updateNotificationBoundingBox.bind(this), 100)
+    this.hasNotificationBeenSeen = this.hasNotificationBeenSeen.bind(this)
   }
 
   componentDidMount() {
-    this.updateNotificationBoundingBox();
+    this.updateNotificationBoundingBox()
 
-    window.addEventListener('scroll', this.updateNotificationBoundingBox);
+    window.addEventListener('scroll', this.updateNotificationBoundingBox)
   }
 
   componentWillUpdate(nextProps, nextState) {
     if (this.state.notificationBounds !== nextState.notificationBounds) {
-      this.props.updateNotificationsBoundingBox();
+      this.props.updateNotificationsBoundingBox()
     }
 
     if (
       this.props.notificationsBounds !== nextProps.notificationsBounds ||
       this.state.notificationBounds !== nextState.notificationBounds
     ) {
-      this.hasNotificationBeenSeen(nextProps.notificationsBounds, nextState.notificationBounds);
+      this.hasNotificationBeenSeen(nextProps.notificationsBounds, nextState.notificationBounds)
     }
 
     if (this.props.checkSeen !== nextProps.checkSeen && nextProps.checkSeen) {
-      this.updateNotificationBoundingBox();
+      this.updateNotificationBoundingBox()
     }
 
   }
 
   componentWillUnmount() {
-    window.removeEventListener('scroll', this.updateNotificationBoundingBox);
+    window.removeEventListener('scroll', this.updateNotificationBoundingBox)
   }
 
   updateNotificationBoundingBox() {
-    if (this.notification) this.setState({ notificationBounds: this.notification.getBoundingClientRect() });
+    if (this.notification) this.setState({ notificationBounds: this.notification.getBoundingClientRect() })
   }
 
   hasNotificationBeenSeen(notificationsBounds, notificationBounds) {
     if (!this.seen && notificationsBounds.top && notificationsBounds.bottom && notificationBounds.top && notificationBounds.bottom) {
-      const topBound = notificationsBounds.top;
-      const bottomBound = notificationsBounds.bottom;
-      const notificationMidpoint = (notificationBounds.top + notificationBounds.bottom) / 2;
+      const topBound = notificationsBounds.top
+      const bottomBound = notificationsBounds.bottom
+      const notificationMidpoint = (notificationBounds.top + notificationBounds.bottom) / 2
 
       if (
         notificationMidpoint >= topBound &&
         notificationMidpoint <= bottomBound
       ) {
         setTimeout(() => {
-          this.props.updateNotification(this.props.index, { seen: true });
-        }, 1000);
+          this.props.updateNotification(this.props.index, { seen: true })
+        }, 1000)
       }
     }
   }
 
   render() {
-    const p = this.props;
+    const p = this.props
 
     return (
       <article
         ref={(notification) => {
-          this.notification = notification;
+          this.notification = notification
         }}
         className={classNames('notification', { 'notification-unseen': !p.seen })}
       >
@@ -97,8 +97,8 @@ export default class Notification extends Component {
           className={classNames('unstyled notification-details', { navigational: !!p.linkPath })}
           to={p.linkPath}
           onClick={(e) => {
-            e.stopPropagation();
-            if (p.linkPath && p.onClick) p.toggleNotifications();
+            e.stopPropagation()
+            if (p.linkPath && p.onClick) p.toggleNotifications()
           }}
         >
           <span className="notification-title">{p.title}</span>
@@ -107,13 +107,13 @@ export default class Notification extends Component {
         <button
           className="unstyled notification-remove"
           onClick={(e) => {
-            e.stopPropagation();
-            p.removeNotification(p.notificationIndex);
+            e.stopPropagation()
+            p.removeNotification(p.notificationIndex)
           }}
         >
           <i className="fa fa-close" />
         </button>
       </article>
-    );
+    )
   }
 }

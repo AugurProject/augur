@@ -1,4 +1,4 @@
-import { BUY, SELL } from 'modules/transactions/constants/types';
+import { BUY, SELL } from 'modules/transactions/constants/types'
 
 export const OUTCOME_TRADE_NAV_ITEMS = {
   [BUY]: {
@@ -7,4 +7,4 @@ export const OUTCOME_TRADE_NAV_ITEMS = {
   [SELL]: {
     label: SELL
   }
-};
+}

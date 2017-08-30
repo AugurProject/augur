@@ -1,12 +1,12 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
-import { UPDATE_ORDER_BOOK, updateOrderBook } from 'modules/bids-asks/actions/update-order-book';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
+import { UPDATE_ORDER_BOOK, updateOrderBook } from 'modules/bids-asks/actions/update-order-book'
 
 describe(`modules/bids-asks/actions/update-order-book.js`, () => {
   it(`should fire the UPDATE_ORDER_BOOK action with data`, () => {
-    const marketID = 'MARKET_1';
-    const outcome = 3;
-    const orderTypeLabel = 'buy';
+    const marketID = 'MARKET_1'
+    const outcome = 3
+    const orderTypeLabel = 'buy'
     const orderBook = {
       '0x1': {
         amount: '1.1111',
@@ -32,14 +32,14 @@ describe(`modules/bids-asks/actions/update-order-book.js`, () => {
         worseOrderId: '0x000000000000000000000000000000000000000000000000000000000000000b',
         gasPrice: '20000000001'
       }
-    };
+    }
     const expectedOutput = {
       type: UPDATE_ORDER_BOOK,
       marketID,
       outcome,
       orderTypeLabel,
       orderBook
-    };
-    assert.deepEqual(updateOrderBook(marketID, outcome, orderTypeLabel, orderBook), expectedOutput, `Updating order book didn't return the correct action!`);
-  });
-});
+    }
+    assert.deepEqual(updateOrderBook(marketID, outcome, orderTypeLabel, orderBook), expectedOutput, `Updating order book didn't return the correct action!`)
+  })
+})

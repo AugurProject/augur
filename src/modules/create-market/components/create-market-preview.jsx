@@ -1,13 +1,13 @@
 /* eslint react/no-array-index-key: 0 */  // due to potential for dup orders
 
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import BigNumber from 'bignumber.js';
-import Highcharts from 'highcharts';
-import classNames from 'classnames';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import BigNumber from 'bignumber.js'
+import Highcharts from 'highcharts'
+import classNames from 'classnames'
 
-import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC } from 'modules/create-market/constants/new-market-constraints';
-import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
+import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC } from 'modules/create-market/constants/new-market-constraints'
+import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
 import {
   NEW_MARKET_DESCRIPTION,
   NEW_MARKET_OUTCOMES,
@@ -19,12 +19,12 @@ import {
   NEW_MARKET_FEES,
   NEW_MARKET_ORDER_BOOK,
   NEW_MARKET_REVIEW
-} from 'modules/create-market/constants/new-market-creation-steps';
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
-import { BUY, SELL } from 'modules/transactions/constants/types';
+} from 'modules/create-market/constants/new-market-creation-steps'
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
+import { BUY, SELL } from 'modules/transactions/constants/types'
 
-import getValue from 'utils/get-value';
-import debounce from 'utils/debounce';
+import getValue from 'utils/get-value'
+import debounce from 'utils/debounce'
 
 
 // NOTE --  Discrete component due to vastly different functionality as compared to `market-preview.jsx`
@@ -35,22 +35,22 @@ export default class CreateMarketPreview extends Component {
   };
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       previousStep: null,
       initialLiquidity: null,
       selectedOutcome: props.newMarket.outcomes[0],
       shouldUpdateHeight: false
-    };
+    }
 
-    this.shouldUpdateHeight = debounce(this.shouldUpdateHeight.bind(this));
-    this.updatePreviewHeight = debounce(this.updatePreviewHeight.bind(this));
-    this.updateChart = debounce(this.updateChart.bind(this));
+    this.shouldUpdateHeight = debounce(this.shouldUpdateHeight.bind(this))
+    this.updatePreviewHeight = debounce(this.updatePreviewHeight.bind(this))
+    this.updateChart = debounce(this.updateChart.bind(this))
   }
 
   componentDidMount() {
-    this.updatePreviewHeight(this.props.newMarket.currentStep);
+    this.updatePreviewHeight(this.props.newMarket.currentStep)
 
     this.orderBookPreviewChart = new Highcharts.Chart('order_book_preview_chart_preview', {
       chart: {
@@ -87,68 +87,68 @@ export default class CreateMarketPreview extends Component {
       credits: {
         enabled: false
       }
-    });
+    })
 
-    this.shouldUpdateHeight(true);
+    this.shouldUpdateHeight(true)
 
-    window.addEventListener('resize', this.updatePreviewHeight);
+    window.addEventListener('resize', this.updatePreviewHeight)
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep) this.setState({ previousStep: this.props.newMarket.currentStep });
+    if (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep) this.setState({ previousStep: this.props.newMarket.currentStep })
 
     if (this.props.newMarket !== nextProps.newMarket) {
-      this.updatePreviewHeight(nextProps.newMarket.currentStep);
+      this.updatePreviewHeight(nextProps.newMarket.currentStep)
     }
 
-    if (this.props.newMarket.orderBook !== nextProps.newMarket.orderBook) this.updateMarketLiquidity(nextProps.newMarket.orderBook);
-    if (this.props.newMarket.outcomes !== nextProps.newMarket.outcomes) this.setState({ selectedOutcome: nextProps.newMarket.outcomes[0] });
-    if (this.props.newMarket.orderBookSeries !== nextProps.newMarket.orderBookSeries) this.updateChart();
+    if (this.props.newMarket.orderBook !== nextProps.newMarket.orderBook) this.updateMarketLiquidity(nextProps.newMarket.orderBook)
+    if (this.props.newMarket.outcomes !== nextProps.newMarket.outcomes) this.setState({ selectedOutcome: nextProps.newMarket.outcomes[0] })
+    if (this.props.newMarket.orderBookSeries !== nextProps.newMarket.orderBookSeries) this.updateChart()
   }
 
   componentDidUpdate(prevProps, prevState) {
     if (this.state.shouldUpdateHeight && prevState.shouldUpdateHeight !== this.state.shouldUpdateHeight) {
-      this.updatePreviewHeight(this.props.newMarket.currentStep);
-      this.updateChart();
-      this.shouldUpdateHeight(false);
+      this.updatePreviewHeight(this.props.newMarket.currentStep)
+      this.updateChart()
+      this.shouldUpdateHeight(false)
     }
 
     if (prevState.selectedOutcome !== this.state.selectedOutcome) {
-      this.updateChart();
+      this.updateChart()
     }
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.updatePreviewHeight);
+    window.removeEventListener('resize', this.updatePreviewHeight)
   }
 
   updatePreviewHeight(step) {
     if (this.marketPreview) {
-      let newHeight = 0;
-      if (step) newHeight = this.marketPreview.getElementsByClassName('create-market-preview-content')[0].clientHeight + 13; // + value to accomodate padding + borders
+      let newHeight = 0
+      if (step) newHeight = this.marketPreview.getElementsByClassName('create-market-preview-content')[0].clientHeight + 13 // + value to accomodate padding + borders
 
       if (step === 0) {
-        this.marketPreview.style.height = `${newHeight}px`;
+        this.marketPreview.style.height = `${newHeight}px`
       } else {
         setTimeout(() => {
           if (this.marketPreview) {
-            this.marketPreview.style.height = `${newHeight}px`;
+            this.marketPreview.style.height = `${newHeight}px`
           }
-        }, 1500);
+        }, 1500)
       }
     }
   }
 
   updateChart() {
-    const bidSeries = getValue(this.props.newMarket.orderBookSeries[this.state.selectedOutcome], `${BUY}`) || [];
-    const askSeries = getValue(this.props.newMarket.orderBookSeries[this.state.selectedOutcome], `${SELL}`) || [];
-    let width;
+    const bidSeries = getValue(this.props.newMarket.orderBookSeries[this.state.selectedOutcome], `${BUY}`) || []
+    const askSeries = getValue(this.props.newMarket.orderBookSeries[this.state.selectedOutcome], `${SELL}`) || []
+    let width
 
     if (this.orderBookChart) {
       if (window.getComputedStyle(this.orderBookChart).getPropertyValue('--adjust-width').indexOf('true') !== -1) {
-        width = this.orderBookPreview.clientWidth - 40; // 20px horizontal padding
+        width = this.orderBookPreview.clientWidth - 40 // 20px horizontal padding
       } else {
-        width = this.orderBookPreview.clientWidth * 0.60;
+        width = this.orderBookPreview.clientWidth * 0.60
       }
 
       this.orderBookPreviewChart.update({
@@ -159,38 +159,38 @@ export default class CreateMarketPreview extends Component {
           width,
           height: 300
         }
-      }, false);
+      }, false)
 
-      this.orderBookPreviewChart.series[0].setData(bidSeries, false);
-      this.orderBookPreviewChart.series[1].setData(askSeries, false);
+      this.orderBookPreviewChart.series[0].setData(bidSeries, false)
+      this.orderBookPreviewChart.series[1].setData(askSeries, false)
 
-      this.orderBookPreviewChart.redraw();
+      this.orderBookPreviewChart.redraw()
     }
   }
 
   updateMarketLiquidity(orderBook) {
-    const initialLiquidity = Object.keys(orderBook).reduce((p, outcome) => p.plus(orderBook[outcome].reduce((p, order) => p.plus(order.quantity.times(order.price)), new BigNumber(0))), new BigNumber(0)).toNumber().toLocaleString();
+    const initialLiquidity = Object.keys(orderBook).reduce((p, outcome) => p.plus(orderBook[outcome].reduce((p, order) => p.plus(order.quantity.times(order.price)), new BigNumber(0))), new BigNumber(0)).toNumber().toLocaleString()
 
-    this.setState({ initialLiquidity });
+    this.setState({ initialLiquidity })
   }
 
   shouldUpdateHeight(shouldUpdateHeight) {
     if (this.marketPreview) {
-      this.setState({ shouldUpdateHeight });
+      this.setState({ shouldUpdateHeight })
     }
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
-    const newMarket = this.props.newMarket;
+    const p = this.props
+    const s = this.state
+    const newMarket = this.props.newMarket
 
-    const bids = getValue(newMarket.orderBookSorted[s.selectedOutcome], `${BUY}`);
-    const asks = getValue(newMarket.orderBookSorted[s.selectedOutcome], `${SELL}`);
+    const bids = getValue(newMarket.orderBookSorted[s.selectedOutcome], `${BUY}`)
+    const asks = getValue(newMarket.orderBookSorted[s.selectedOutcome], `${SELL}`)
 
     return (
       <article
-        ref={(marketPreview) => { this.marketPreview = marketPreview; }}
+        ref={(marketPreview) => { this.marketPreview = marketPreview }}
         className={classNames('create-market-preview', {
           'preview-is-visible': newMarket.currentStep > 0,
           'preview-is-hidden': newMarket.currentStep === 0
@@ -396,7 +396,7 @@ export default class CreateMarketPreview extends Component {
               </div>
             }
             <div
-              ref={(initialLiquidityPreview) => { this.initialLiquidityPreview = initialLiquidityPreview; }}
+              ref={(initialLiquidityPreview) => { this.initialLiquidityPreview = initialLiquidityPreview }}
               className={classNames('create-market-initial-liquidity', {
                 'reveal-initial-liquidity': newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_REVIEW && s.initialLiquidity && s.initialLiquidity !== '0',
                 'hide-initial-liquidity': newMarketCreationOrder[newMarket.currentStep] !== NEW_MARKET_REVIEW || !s.initialLiquidity || s.initialLiquidity === '0',
@@ -416,7 +416,7 @@ export default class CreateMarketPreview extends Component {
                         <button
                           className="unstyled"
                           onClick={() => {
-                            this.setState({ selectedOutcome: outcome });
+                            this.setState({ selectedOutcome: outcome })
                           }}
                         >
                           <span>{outcome}</span>
@@ -427,11 +427,11 @@ export default class CreateMarketPreview extends Component {
                 </div>
               }
               <div
-                ref={(orderBookPreview) => { this.orderBookPreview = orderBookPreview; }}
+                ref={(orderBookPreview) => { this.orderBookPreview = orderBookPreview }}
                 className="create-market-initial-liquidity-preview order-book-preview"
               >
                 <div
-                  ref={(orderBookChart) => { this.orderBookChart = orderBookChart; }}
+                  ref={(orderBookChart) => { this.orderBookChart = orderBookChart }}
                   id="order_book_preview_chart_preview"
                 />
                 <div className="order-book-preview-table">
@@ -483,6 +483,6 @@ export default class CreateMarketPreview extends Component {
           </div>
         </div>
       </article>
-    );
+    )
   }
 }

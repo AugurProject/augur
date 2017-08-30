@@ -1,6 +1,6 @@
-import { UPDATE_TRANSACTIONS_DATA } from 'modules/transactions/actions/update-transactions-data';
-import { DELETE_TRANSACTION } from 'modules/transactions/actions/delete-transaction';
-import { CLEAR_LOGIN_ACCOUNT } from 'modules/auth/actions/update-login-account';
+import { UPDATE_TRANSACTIONS_DATA } from 'modules/transactions/actions/update-transactions-data'
+import { DELETE_TRANSACTION } from 'modules/transactions/actions/delete-transaction'
+import { CLEAR_LOGIN_ACCOUNT } from 'modules/auth/actions/update-login-account'
 
 export default function (transactionsData = {}, action) {
   switch (action.type) {
@@ -10,22 +10,22 @@ export default function (transactionsData = {}, action) {
           ...transactionsData[transactionID],
           ...action.transactionsData[transactionID],
           id: transactionID
-        };
-        return p;
-      }, { ...transactionsData });
+        }
+        return p
+      }, { ...transactionsData })
 
     case DELETE_TRANSACTION:
       return Object.keys(transactionsData).reduce((p, transactionID) => {
         if (action.transactionID !== transactionID) {
-          p[transactionID] = transactionsData[transactionID];
+          p[transactionID] = transactionsData[transactionID]
         }
-        return p;
-      }, {});
+        return p
+      }, {})
 
     case CLEAR_LOGIN_ACCOUNT:
-      return {};
+      return {}
 
     default:
-      return transactionsData;
+      return transactionsData
   }
 }

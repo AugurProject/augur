@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Helmet } from 'react-helmet';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { Helmet } from 'react-helmet'
 
-import ComponentNav from 'modules/common/components/component-nav';
+import ComponentNav from 'modules/common/components/component-nav'
 
-import { ACCOUNT_NAV_ITEMS } from 'modules/account/constants/account-nav-items';
-import { ACCOUNT_DEPOSIT, ACCOUNT_TRANSFER, ACCOUNT_EXPORT } from 'modules/app/constants/views';
+import { ACCOUNT_NAV_ITEMS } from 'modules/account/constants/account-nav-items'
+import { ACCOUNT_DEPOSIT, ACCOUNT_TRANSFER, ACCOUNT_EXPORT } from 'modules/app/constants/views'
 
-import AccountDetails from 'modules/account/components/account-details';
-import AccountDeposit from 'modules/account/components/account-deposit';
-import AccountTransfer from 'modules/account/components/account-transfer';
-import AccountExport from 'modules/account/components/account-export';
+import AccountDetails from 'modules/account/components/account-details'
+import AccountDeposit from 'modules/account/components/account-deposit'
+import AccountTransfer from 'modules/account/components/account-transfer'
+import AccountExport from 'modules/account/components/account-export'
 
 export default class AccountView extends Component {
   static propTypes = {
@@ -21,24 +21,24 @@ export default class AccountView extends Component {
   };
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       selectedNav: ACCOUNT_DEPOSIT
-    };
+    }
 
-    this.updateSelectedNav = this.updateSelectedNav.bind(this);
+    this.updateSelectedNav = this.updateSelectedNav.bind(this)
   }
 
   updateSelectedNav(selectedNav) {
-    this.setState({ selectedNav });
+    this.setState({ selectedNav })
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
-    const loginAccount = p.loginAccount;
+    const loginAccount = p.loginAccount
 
     return (
       <section id="account_view">
@@ -92,6 +92,6 @@ export default class AccountView extends Component {
           </article>
         }
       </section>
-    );
+    )
   }
 }

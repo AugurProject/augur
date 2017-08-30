@@ -1,21 +1,21 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import classNames from 'classnames';
-import ValueDenomination from 'modules/common/components/value-denomination/value-denomination';
-import ValueTimestamp from 'modules/common/components/value-timestamp';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
+import classNames from 'classnames'
+import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
+import ValueTimestamp from 'modules/common/components/value-timestamp'
 
-import { CREATE_MARKET, BUY, SELL, BID, ASK, MATCH_BID, MATCH_ASK, SUBMIT_REPORT, CANCEL_ORDER, SELL_COMPLETE_SETS } from 'modules/transactions/constants/types';
-import { FUND_ACCOUNT } from 'modules/auth/constants/auth-types';
-import { SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types';
+import { CREATE_MARKET, BUY, SELL, BID, ASK, MATCH_BID, MATCH_ASK, SUBMIT_REPORT, CANCEL_ORDER, SELL_COMPLETE_SETS } from 'modules/transactions/constants/types'
+import { FUND_ACCOUNT } from 'modules/auth/constants/auth-types'
+import { SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types'
 
-import makePath from 'modules/app/helpers/make-path';
-import makeQuery from 'modules/app/helpers/make-query';
+import makePath from 'modules/app/helpers/make-path'
+import makeQuery from 'modules/app/helpers/make-query'
 
-import getValue from 'utils/get-value';
+import getValue from 'utils/get-value'
 
-import { MARKET } from 'modules/app/constants/views';
-import { MARKET_ID_PARAM_NAME } from 'modules/app/constants/param-names';
+import { MARKET } from 'modules/app/constants/views'
+import { MARKET_ID_PARAM_NAME } from 'modules/app/constants/param-names'
 
 const TransactionSummary = p => (
   <article className={classNames('transaction-summary', p.isGroupedTransaction && 'transaction-grouped')}>
@@ -33,7 +33,7 @@ const TransactionSummary = p => (
       <TransactionSummaryContent {...p} />
     }
   </article>
-);
+)
 
 const TransactionSummaryContent = p => (
   <div className="transaction-summary-content">
@@ -49,37 +49,37 @@ const TransactionSummaryContent = p => (
       {...p.timestamp}
     />
   </div>
-);
+)
 
 function transactionAction(transaction) {
   const action = () => {
     switch (transaction.type) {
       case BUY:
-        return 'Buy ';
+        return 'Buy '
       case BID:
-        return 'Bid ';
+        return 'Bid '
       case SELL:
-        return 'Sell ';
+        return 'Sell '
       case ASK:
-        return 'Ask ';
+        return 'Ask '
       case MATCH_BID:
-        return 'Bid Filled ';
+        return 'Bid Filled '
       case MATCH_ASK:
-        return 'Ask Filled ';
+        return 'Ask Filled '
       case CANCEL_ORDER:
-        return 'Cancel Order ';
+        return 'Cancel Order '
       case SELL_COMPLETE_SETS:
-        return `Redeem ${transaction.numShares.formatted} Complete Sets `;
+        return `Redeem ${transaction.numShares.formatted} Complete Sets `
       case CREATE_MARKET:
-        return 'Create Market ';
+        return 'Create Market '
       case SUBMIT_REPORT:
-        return 'Submit Report ';
+        return 'Submit Report '
       default:
-        return transaction.type;
+        return transaction.type
     }
-  };
+  }
 
-  return <span className="transaction-action-type">{action()}</span>;
+  return <span className="transaction-action-type">{action()}</span>
 }
 
 function transactionActionDetails(transaction) {
@@ -104,7 +104,7 @@ function transactionActionDetails(transaction) {
           <span className="at"> @ </span>
           <ValueDenomination className="noFeePrice" {...transaction.noFeePrice} />
         </div>
-      );
+      )
     }
     case CANCEL_ORDER: {
       return (
@@ -115,14 +115,14 @@ function transactionActionDetails(transaction) {
           <span className="short-word"> of </span>
           <span className="outcome-name">{transaction.data.outcome.name && transaction.data.outcome.name.substring(0, 35) + ((transaction.data.outcome.name.length > 35 && '...') || '')}</span>
         </div>
-      );
+      )
     }
     case SUBMIT_REPORT: {
-      const type = getValue(transaction, 'data.market.type');
-      const outcomeName = getValue(transaction, 'data.outcome.name');
+      const type = getValue(transaction, 'data.market.type')
+      const outcomeName = getValue(transaction, 'data.outcome.name')
       const reportedOutcome = (transaction.data.isScalar || type === SCALAR) ?
         transaction.data.reportedOutcomeID :
-        outcomeName && `${outcomeName.substring(0, 35)}${outcomeName.length > 35 && '...'}`;
+        outcomeName && `${outcomeName.substring(0, 35)}${outcomeName.length > 35 && '...'}`
 
       return (
         <div className="transaction-trade-action-report-details">
@@ -130,24 +130,24 @@ function transactionActionDetails(transaction) {
             <span className="transaction-reported-outcome">{reportedOutcome}</span>
           }
         </div>
-      );
+      )
     }
     default:
-      break;
+      break
   }
 }
 
 function transactionDescription(transaction) {
   switch (transaction.type) {
     case FUND_ACCOUNT:
-      return 'Request testnet Ether and Reputation';
+      return 'Request testnet Ether and Reputation'
     default:
-      return transaction.description;
+      return transaction.description
   }
 }
 
 TransactionSummary.propTypes = {
   type: PropTypes.string.isRequired
-};
+}
 
-export default TransactionSummary;
+export default TransactionSummary

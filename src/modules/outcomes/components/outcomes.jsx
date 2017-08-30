@@ -1,8 +1,8 @@
-import React from 'react';
+import React from 'react'
 
-import Outcome from 'modules/outcomes/components/outcome';
+import Outcome from 'modules/outcomes/components/outcome'
 
-import { SCALAR } from 'modules/markets/constants/market-types';
+import { SCALAR } from 'modules/markets/constants/market-types'
 
 const Outcomes = p => (
   <article className="outcomes" >
@@ -42,6 +42,6 @@ const Outcomes = p => (
       ))}
     </div>
   </article>
-);
+)
 
-export default Outcomes;
+export default Outcomes

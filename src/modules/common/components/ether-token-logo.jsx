@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 // NOTE -- To employ, just set the width or height on the containing element and this SVG will respond appropriately
 const EtherTokenLogo = () => (
@@ -21,6 +21,6 @@ const EtherTokenLogo = () => (
     <polygon className="ether-token-st2" points="634.4,945 634.4,1269 1030.6,711 " />
     <polygon className="ether-token-st3" points="634.4,891 1030.4,657 634.4,477 " />
   </svg>
-);
+)
 
-export default EtherTokenLogo;
+export default EtherTokenLogo

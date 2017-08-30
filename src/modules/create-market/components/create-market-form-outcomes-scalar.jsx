@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import BigNumber from 'bignumber.js';
-import speedomatic from 'speedomatic';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import BigNumber from 'bignumber.js'
+import speedomatic from 'speedomatic'
 
-import Input from 'modules/common/components/input';
-import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications';
+import Input from 'modules/common/components/input'
+import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications'
 
-import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
-import { NEW_MARKET_OUTCOMES } from 'modules/create-market/constants/new-market-creation-steps';
+import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
+import { NEW_MARKET_OUTCOMES } from 'modules/create-market/constants/new-market-creation-steps'
 
 export default class CreateMarketFormOutcomesScalar extends Component {
   static propTypes = {
@@ -25,7 +25,7 @@ export default class CreateMarketFormOutcomesScalar extends Component {
   };
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       errors: {
@@ -36,20 +36,20 @@ export default class CreateMarketFormOutcomesScalar extends Component {
       scalarMax: speedomatic.unfix(speedomatic.constants.SERPINT_MAX).round(18, BigNumber.ROUND_DOWN),
       scalarSmallNum: '',
       scalarBigNum: ''
-    };
+    }
 
-    this.validateForm = this.validateForm.bind(this);
+    this.validateForm = this.validateForm.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.currentStep !== nextProps.currentStep && newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_OUTCOMES) this.validateForm(nextProps.scalarSmallNum, nextProps.scalarBigNum);
+    if (this.props.currentStep !== nextProps.currentStep && newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_OUTCOMES) this.validateForm(nextProps.scalarSmallNum, nextProps.scalarBigNum)
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.currentStep !== this.props.currentStep &&
       this.props.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_OUTCOMES)
     ) {
-      this.defaultFormToFocus.getElementsByTagName('input')[0].focus();
+      this.defaultFormToFocus.getElementsByTagName('input')[0].focus()
     }
   }
 
@@ -57,69 +57,69 @@ export default class CreateMarketFormOutcomesScalar extends Component {
     const errors = {
       small: [],
       big: []
-    };
+    }
 
     const sanitizeValue = (value, type) => {
       if (value == null) {
         if (type === 'big') {
-          return this.props.scalarBigNum;
+          return this.props.scalarBigNum
         }
-        return this.props.scalarSmallNum;
+        return this.props.scalarSmallNum
       } else if (!(value instanceof BigNumber) && value !== '') {
-        return new BigNumber(value);
+        return new BigNumber(value)
       }
 
-      return value;
-    };
+      return value
+    }
 
-    const scalarSmallNum = sanitizeValue(scalarSmallNumRaw);
-    const scalarBigNum = sanitizeValue(scalarBigNumRaw, 'big');
-    const outcomes = new Array(2);
+    const scalarSmallNum = sanitizeValue(scalarSmallNumRaw)
+    const scalarBigNum = sanitizeValue(scalarBigNumRaw, 'big')
+    const outcomes = new Array(2)
 
     if (scalarBigNumRaw == null && scalarSmallNum !== '') {
       if (scalarBigNum !== '' && scalarSmallNum.greaterThanOrEqualTo(scalarBigNum)) {
-        errors.small.push(`Must be smaller than maximum value of: ${scalarBigNum}`);
+        errors.small.push(`Must be smaller than maximum value of: ${scalarBigNum}`)
       } else if (scalarSmallNum.lessThan(this.state.scalarMin)) {
-        errors.small.push(`Must be greater than: ${this.state.scalarMin.toNumber()}`);
+        errors.small.push(`Must be greater than: ${this.state.scalarMin.toNumber()}`)
       }
     } else if (scalarBigNum !== '') {
       if (scalarSmallNum !== '' && scalarBigNum.lessThanOrEqualTo(scalarSmallNum)) {
-        errors.big.push(`Must be greater than minimum value of: ${scalarSmallNum}`);
+        errors.big.push(`Must be greater than minimum value of: ${scalarSmallNum}`)
       } else if (scalarBigNum.greaterThan(this.state.scalarMax)) {
-        errors.big.push(`Must be less than: ${this.state.scalarMax.toNumber()}`);
+        errors.big.push(`Must be less than: ${this.state.scalarMax.toNumber()}`)
       }
     }
 
     // Handle outcomes
     if (errors.small.length) {
-      outcomes[0] = '';
+      outcomes[0] = ''
     } else {
-      outcomes[0] = `${scalarSmallNum}`;
+      outcomes[0] = `${scalarSmallNum}`
     }
 
     if (errors.big.length) {
-      outcomes[1] = '';
+      outcomes[1] = ''
     } else {
-      outcomes[1] = `${scalarBigNum}`;
+      outcomes[1] = `${scalarBigNum}`
     }
 
     if (errors.small.length || errors.big.length || scalarSmallNum === '' || scalarBigNum === '') {
-      this.props.updateValidity(false);
+      this.props.updateValidity(false)
     } else {
-      this.props.updateValidity(true);
+      this.props.updateValidity(true)
     }
 
-    this.setState({ errors });
+    this.setState({ errors })
 
-    this.props.updateNewMarket({ scalarSmallNum, scalarBigNum, outcomes });
+    this.props.updateNewMarket({ scalarSmallNum, scalarBigNum, outcomes })
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
-    const maxSmall = p.scalarBigNum === '' ? undefined : p.scalarBigNum;
-    const minBig = p.scalarSmallNum === '' ? undefined : p.scalarSmallNum;
+    const maxSmall = p.scalarBigNum === '' ? undefined : p.scalarBigNum
+    const minBig = p.scalarSmallNum === '' ? undefined : p.scalarSmallNum
 
     return (
       <article className="create-market-form-part-content">
@@ -130,7 +130,7 @@ export default class CreateMarketFormOutcomesScalar extends Component {
           </aside>
           <div className="vertical-form-divider" />
           <form
-            ref={(defaultFormToFocus) => { this.defaultFormToFocus = defaultFormToFocus; }}
+            ref={(defaultFormToFocus) => { this.defaultFormToFocus = defaultFormToFocus }}
             onSubmit={e => e.preventDefault()}
           >
             <Input
@@ -173,6 +173,6 @@ export default class CreateMarketFormOutcomesScalar extends Component {
           </form>
         </div>
       </article>
-    );
+    )
   }
 }

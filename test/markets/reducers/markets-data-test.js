@@ -1,12 +1,12 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
-import reducer from 'modules/markets/reducers/markets-data';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
+import reducer from 'modules/markets/reducers/markets-data'
 
 describe(`modules/markets/reducers/markets-data.js`, () => {
   describe('UPDATE_MARKET_TOPIC', () => {
     const test = t => it(t.description, () => {
-      t.assertions(reducer(t.marketsData, t.action));
-    });
+      t.assertions(reducer(t.marketsData, t.action))
+    })
     test({
       description: 'no market ID = no change to markets data',
       marketsData: {
@@ -34,9 +34,9 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
             id: '0xa2',
             topic: 'regular potables'
           }
-        });
+        })
       }
-    });
+    })
     test({
       description: 'set market topic',
       marketsData: {
@@ -64,9 +64,9 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
             id: '0xa2',
             topic: 'regular potables'
           }
-        });
+        })
       }
-    });
+    })
     test({
       description: 'unset market topic',
       marketsData: {
@@ -94,9 +94,9 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
             id: '0xa2',
             topic: 'regular potables'
           }
-        });
+        })
       }
-    });
+    })
     test({
       description: 'update market topic',
       marketsData: {
@@ -124,14 +124,14 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
             id: '0xa2',
             topic: 'regular potables'
           }
-        });
+        })
       }
-    });
-  });
+    })
+  })
   describe('UPDATE_MARKETS_LOADING_STATUS', () => {
     const test = t => it(t.description, () => {
-      t.assertions(reducer(t.marketsData, t.action));
-    });
+      t.assertions(reducer(t.marketsData, t.action))
+    })
     test({
       description: 'no market IDs = no change to markets data',
       marketsData: {
@@ -159,9 +159,9 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
             id: '0xa2',
             isLoading: false
           }
-        });
+        })
       }
-    });
+    })
     test({
       description: 'update loading status from undefined to true for 1 market ID',
       marketsData: {
@@ -181,9 +181,9 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
             id: '0xa1',
             isLoading: true
           }
-        });
+        })
       }
-    });
+    })
     test({
       description: 'update loading status from false to true for 1 market ID',
       marketsData: {
@@ -203,9 +203,9 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
             id: '0xa1',
             isLoading: true
           }
-        });
+        })
       }
-    });
+    })
     test({
       description: 'update loading status from true to true for 1 market ID',
       marketsData: {
@@ -225,9 +225,9 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
             id: '0xa1',
             isLoading: true
           }
-        });
+        })
       }
-    });
+    })
     test({
       description: 'update loading status from true to false for 1 market ID',
       marketsData: {
@@ -247,9 +247,9 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
             id: '0xa1',
             isLoading: false
           }
-        });
+        })
       }
-    });
+    })
     test({
       description: 'update loading status to true for 1 out of 2 market IDs',
       marketsData: {
@@ -277,9 +277,9 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
             id: '0xa2',
             isLoading: false
           }
-        });
+        })
       }
-    });
+    })
     test({
       description: 'update loading status to false for 1 out of 2 market IDs',
       marketsData: {
@@ -307,9 +307,9 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
             id: '0xa2',
             isLoading: false
           }
-        });
+        })
       }
-    });
+    })
 
     test({
       description: 'update loading status to true for 2 out of 3 market IDs',
@@ -346,9 +346,9 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
             id: '0xa3',
             isLoading: true
           }
-        });
+        })
       }
-    });
+    })
     test({
       description: 'update loading status to false for 2 out of 3 market IDs',
       marketsData: {
@@ -384,10 +384,10 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
             id: '0xa3',
             isLoading: false
           }
-        });
+        })
       }
-    });
-  });
+    })
+  })
   describe('UPDATE_MARKETS_DATA', () => {
     it('should update markets data', () => {
       const marketsData = {
@@ -398,7 +398,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
             example: 'test'
           }
         }
-      };
+      }
       const marketsData2 = {
         '0x131d98e878803e113e2accc457ad57f5b97a87910be31d60e931c08ca4d5ef1': {
           id: 1,
@@ -414,7 +414,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
             example: 'test'
           }
         }
-      };
+      }
       const curMarketsData1 = {
         '0x0131d98e878803e113e2accc457ad57f5b97a87910be31d60e931c08ca4d5ef1': {
           id: 1,
@@ -424,7 +424,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
             test: 'example'
           }
         }
-      };
+      }
       const curMarketsData2 = {
         '0x0131d98e878803e113e2accc457ad57f5b97a87910be31d60e931c08ca4d5ef1': {
           id: 1,
@@ -441,7 +441,7 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
             example: 'test2'
           }
         }
-      };
+      }
       const expectedOutput = {
         '0x0131d98e878803e113e2accc457ad57f5b97a87910be31d60e931c08ca4d5ef1': {
           id: 1,
@@ -459,18 +459,18 @@ describe(`modules/markets/reducers/markets-data.js`, () => {
             example: 'test'
           }
         }
-      };
+      }
       const action = {
         type: 'UPDATE_MARKETS_DATA',
         marketsData
-      };
+      }
       const action2 = {
         type: 'UPDATE_MARKETS_DATA',
         marketsData: marketsData2
-      };
-      assert.deepEqual(reducer(curMarketsData1, action), expectedOutput, `didn't add a new market to markets data`);
-      assert.deepEqual(reducer(curMarketsData2, action), expectedOutput, `didn't update a market in markets data`);
-      assert.deepEqual(reducer(undefined, action2), expectedOutput, `didn't get the correct output when marketsData is empty`);
-    });
-  });
-});
+      }
+      assert.deepEqual(reducer(curMarketsData1, action), expectedOutput, `didn't add a new market to markets data`)
+      assert.deepEqual(reducer(curMarketsData2, action), expectedOutput, `didn't update a market in markets data`)
+      assert.deepEqual(reducer(undefined, action2), expectedOutput, `didn't get the correct output when marketsData is empty`)
+    })
+  })
+})

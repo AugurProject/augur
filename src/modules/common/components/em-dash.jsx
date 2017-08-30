@@ -1,5 +1,5 @@
-import React from 'react';
+import React from 'react'
 
-const EmDash = () => <span>—</span>;
+const EmDash = () => <span>—</span>
 
-export default EmDash;
+export default EmDash

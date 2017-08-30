@@ -1,10 +1,10 @@
-import React from 'react';
+import React from 'react'
 
-import Dropdown from 'modules/common/components/dropdown';
-import MarketProperties from 'modules/market/components/market-properties/market-properties';
-import Spinner from 'modules/common/components/spinner';
+import Dropdown from 'modules/common/components/dropdown'
+import MarketProperties from 'modules/market/components/market-properties/market-properties'
+import Spinner from 'modules/common/components/spinner'
 
-import { SCALAR } from 'modules/markets/constants/market-types';
+import { SCALAR } from 'modules/markets/constants/market-types'
 
 const MarketDataHeader = p => (
   <article className="market-header">
@@ -17,7 +17,7 @@ const MarketDataHeader = p => (
         <Dropdown
           default={p.selectedShareDenomination}
           options={p.shareDenominations}
-          onChange={(denomination) => { p.updateSelectedShareDenomination(p.id, denomination); }}
+          onChange={(denomination) => { p.updateSelectedShareDenomination(p.id, denomination) }}
         />
       }
       {p.isMarketLoading &&
@@ -25,6 +25,6 @@ const MarketDataHeader = p => (
       }
     </div>
   </article>
-);
+)
 
-export default MarketDataHeader;
+export default MarketDataHeader

@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Link, NavLink } from 'react-router-dom';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { Link, NavLink } from 'react-router-dom'
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
 
-import AugurLogoIcon from 'modules/common/components/augur-logo-icon/augur-logo-icon';
-import SideBarFilterIcon from 'modules/common/components/side-bar-filter-icon';
-import NotificationsContainer from 'modules/notifications/container';
+import AugurLogoIcon from 'modules/common/components/augur-logo-icon/augur-logo-icon'
+import SideBarFilterIcon from 'modules/common/components/side-bar-filter-icon'
+import NotificationsContainer from 'modules/notifications/container'
 
-import getValue from 'utils/get-value';
+import getValue from 'utils/get-value'
 
-import makePath from 'modules/app/helpers/make-path';
+import makePath from 'modules/app/helpers/make-path'
 
-import * as VIEWS from 'modules/app/constants/views';
+import * as VIEWS from 'modules/app/constants/views'
 
 // NOTE --  first child div is there to pass up a ref so that other methods can
 //          acquire the row height of the navs in the footer
@@ -23,44 +23,44 @@ export default class Nav extends Component {
   }
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       isNotificationsVisible: false
-    };
+    }
 
-    this.collapseFooter = this.collapseFooter.bind(this);
-    this.handleWindowOnClick = this.handleWindowOnClick.bind(this);
+    this.collapseFooter = this.collapseFooter.bind(this)
+    this.handleWindowOnClick = this.handleWindowOnClick.bind(this)
   }
 
   componentDidMount() {
-    window.addEventListener('click', this.handleWindowOnClick);
+    window.addEventListener('click', this.handleWindowOnClick)
   }
 
   collapseFooter() {
     if (this.props.updateIsFooterCollapsed) {
-      this.props.updateIsFooterCollapsed(true);
+      this.props.updateIsFooterCollapsed(true)
     }
   }
 
   handleWindowOnClick() {
     // Can generalize this later if more nav modals are needed
     if (this.state.isNotificationsVisible) {
-      this.setState({ isNotificationsVisible: false });
+      this.setState({ isNotificationsVisible: false })
     }
   }
 
   toggleNotifications() {
-    this.setState({ isNotificationsVisible: !this.state.isNotificationsVisible });
+    this.setState({ isNotificationsVisible: !this.state.isNotificationsVisible })
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
-    const animationSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-fast'), 10);
+    const animationSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-fast'), 10)
 
-    const unseenCount = getValue(p, 'notifications.unseenCount');
+    const unseenCount = getValue(p, 'notifications.unseenCount')
 
     return (
       <nav className={`app-nav ${p.className ? p.className : ''}`}>
@@ -116,9 +116,9 @@ export default class Nav extends Component {
             to={makePath(VIEWS.MY_POSITIONS)}
             activeClassName="active"
             isActive={(match, location) => {
-              if (match) return true;
+              if (match) return true
 
-              return [VIEWS.MY_MARKETS, VIEWS.MY_REPORTS].find(path => makePath(path) === location.pathname);
+              return [VIEWS.MY_MARKETS, VIEWS.MY_REPORTS].find(path => makePath(path) === location.pathname)
             }}
             onClick={() => this.collapseFooter()}
             className={'link app-nav-link'}
@@ -168,16 +168,16 @@ export default class Nav extends Component {
           <div // eslint-disable-line jsx-a11y/no-static-element-interactions
             className="modal-link"
             onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
+              e.preventDefault()
+              e.stopPropagation()
             }}
           >
             <button
-              ref={(notificationIcon) => { this.notificationIcon = notificationIcon; }}
+              ref={(notificationIcon) => { this.notificationIcon = notificationIcon }}
               className="unstyled button-notifications app-nav-link"
               onClick={(e) => {
-                e.stopPropagation();
-                this.toggleNotifications();
+                e.stopPropagation()
+                this.toggleNotifications()
               }}
             >
               {s.isNotificationsVisible ?
@@ -212,6 +212,6 @@ export default class Nav extends Component {
           </div>
         }
       </nav>
-    );
+    )
   }
 }

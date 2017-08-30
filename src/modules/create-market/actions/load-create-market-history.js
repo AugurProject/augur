@@ -1,7 +1,7 @@
 // import loadDataFromAugurNode from 'modules/app/actions/load-data-from-augur-node';
 // import { convertLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
 // import { CREATE_MARKET } from 'modules/transactions/constants/types';
-import logError from 'utils/log-error';
+import logError from 'utils/log-error'
 
 export function loadCreateMarketHistory(options, callback = logError) {
   return (dispatch, getState) => {
@@ -19,5 +19,5 @@ export function loadCreateMarketHistory(options, callback = logError) {
     //   }
     //   callback(null, createMarketHistory);
     // });
-  };
+  }
 }

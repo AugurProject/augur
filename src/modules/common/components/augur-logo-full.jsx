@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 // NOTE -- This stateless component is simply a responsive SVG of the Complete Augur Logo
 // To employ, just set the width or height on the containing element and this SVG will respond appropriately
@@ -27,6 +27,6 @@ const AugurLogoFull = () => (
       <rect className="full-cls-4" x="193.7" y="59.96" width="297.49" height="112" />
     </g>
   </svg>
-);
+)
 
-export default AugurLogoFull;
+export default AugurLogoFull

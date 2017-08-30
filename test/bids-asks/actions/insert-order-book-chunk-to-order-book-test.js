@@ -1,20 +1,20 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
-import proxyquire from 'proxyquire';
-import thunk from 'redux-thunk';
-import configureMockStore from 'redux-mock-store';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
+import proxyquire from 'proxyquire'
+import thunk from 'redux-thunk'
+import configureMockStore from 'redux-mock-store'
 
 describe(`modules/bids-asks/actions/insert-order-book-chunk-to-order-book.js`, () => {
-  proxyquire.noPreserveCache();
+  proxyquire.noPreserveCache()
   const test = t => it(t.description, () => {
-    const store = configureMockStore([thunk])({});
+    const store = configureMockStore([thunk])({})
     const insertOrderBookChunkToOrderBook = proxyquire('../../../src/modules/bids-asks/actions/insert-order-book-chunk-to-order-book', {
       './clear-order-book-on-first-chunk': t.stub.clearOrderBookOnFirstChunk
-    }).default;
-    store.dispatch(insertOrderBookChunkToOrderBook(t.params.marketID, t.params.outcome, t.params.orderTypeLabel, t.params.orderBookChunk));
-    t.assertions(store.getActions());
-    store.clearActions();
-  });
+    }).default
+    store.dispatch(insertOrderBookChunkToOrderBook(t.params.marketID, t.params.outcome, t.params.orderTypeLabel, t.params.orderBookChunk))
+    t.assertions(store.getActions())
+    store.clearActions()
+  })
   test({
     description: 'insert order book chunk',
     params: {
@@ -49,7 +49,7 @@ describe(`modules/bids-asks/actions/insert-order-book-chunk-to-order-book.js`, (
         orderBook: {
           '0x1': { amount: '1' }
         }
-      }]);
+      }])
     }
-  });
-});
+  })
+})

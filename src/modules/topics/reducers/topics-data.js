@@ -1,4 +1,4 @@
-import { UPDATE_TOPICS, CLEAR_TOPICS, UPDATE_TOPIC_POPULARITY } from 'modules/topics/actions/update-topics';
+import { UPDATE_TOPICS, CLEAR_TOPICS, UPDATE_TOPIC_POPULARITY } from 'modules/topics/actions/update-topics'
 
 export default function (topics = {}, action) {
   switch (action.type) {
@@ -6,15 +6,15 @@ export default function (topics = {}, action) {
       return {
         ...topics,
         ...action.topics
-      };
+      }
     case UPDATE_TOPIC_POPULARITY:
       return {
         ...topics,
         [action.topic]: !topics[action.topic] ? action.amount : topics[action.topic] + action.amount
-      };
+      }
     case CLEAR_TOPICS:
-      return {};
+      return {}
     default:
-      return topics;
+      return topics
   }
 }

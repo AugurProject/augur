@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
-import MarketHeader from 'modules/market/components/market-header';
-import ComponentNav from 'modules/common/components/component-nav';
-import Outcomes from 'modules/outcomes/components/outcomes';
-import OrderBook from 'modules/order-book/components/order-book';
-import MarketChart from 'modules/market/components/market-chart';
-import MarketDetails from 'modules/market/components/market-details';
-import ReportForm from 'modules/reports/components/report-form';
+import MarketHeader from 'modules/market/components/market-header'
+import ComponentNav from 'modules/common/components/component-nav'
+import Outcomes from 'modules/outcomes/components/outcomes'
+import OrderBook from 'modules/order-book/components/order-book'
+import MarketChart from 'modules/market/components/market-chart'
+import MarketDetails from 'modules/market/components/market-details'
+import ReportForm from 'modules/reports/components/report-form'
 
-import { MARKET_DATA_NAV_OUTCOMES, MARKET_DATA_ORDERS, MARKET_DATA_NAV_CHARTS, MARKET_DATA_NAV_DETAILS, MARKET_DATA_NAV_REPORT } from 'modules/app/constants/views';
+import { MARKET_DATA_NAV_OUTCOMES, MARKET_DATA_ORDERS, MARKET_DATA_NAV_CHARTS, MARKET_DATA_NAV_DETAILS, MARKET_DATA_NAV_REPORT } from 'modules/app/constants/views'
 
 export default class MarketData extends Component {
   static propTypes = {
@@ -21,24 +21,24 @@ export default class MarketData extends Component {
   }
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       marketDataNavItems: props.marketDataNavItems,
       selectedNav: props.isPendingReport ? MARKET_DATA_NAV_REPORT : MARKET_DATA_NAV_OUTCOMES
-    };
+    }
 
-    this.updateSelectedNav = this.updateSelectedNav.bind(this);
-    this.setMarketDataNavItems = this.setMarketDataNavItems.bind(this);
+    this.updateSelectedNav = this.updateSelectedNav.bind(this)
+    this.setMarketDataNavItems = this.setMarketDataNavItems.bind(this)
   }
 
   componentWillMount() {
-    this.setMarketDataNavItems();
+    this.setMarketDataNavItems()
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.isReportTabVisible !== nextProps.isReportTabVisible || this.props.isSnitchTabVisible !== nextProps.isSnitchTabVisible) {
-      this.setMarketDataNavItems();
+      this.setMarketDataNavItems()
     }
   }
 
@@ -46,29 +46,29 @@ export default class MarketData extends Component {
     if (!this.props.isReportTabVisible) {
       let marketDataNavItems = Object.keys(this.props.marketDataNavItems).reduce((prev, nav) => {
         if (this.props.marketDataNavItems[nav].isReportTabVisible !== true) {
-          prev[nav] = this.props.marketDataNavItems[nav];
+          prev[nav] = this.props.marketDataNavItems[nav]
         }
-        return prev;
-      }, {});
+        return prev
+      }, {})
       if (!this.props.isSnitchTabVisible) {
         marketDataNavItems = Object.keys(marketDataNavItems).reduce((prev, nav) => {
           if (marketDataNavItems[nav].isSnitchTabVisible !== true) {
-            prev[nav] = marketDataNavItems[nav];
+            prev[nav] = marketDataNavItems[nav]
           }
-          return prev;
-        }, {});
+          return prev
+        }, {})
       }
-      this.setState({ marketDataNavItems });
+      this.setState({ marketDataNavItems })
     }
   }
 
   updateSelectedNav(selectedNav) {
-    this.setState({ selectedNav });
+    this.setState({ selectedNav })
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
     return (
       <article className="market-data">
@@ -130,6 +130,6 @@ export default class MarketData extends Component {
           />
         }
       </article>
-    );
+    )
   }
 }

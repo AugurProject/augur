@@ -1,4 +1,4 @@
-import { REGISTER_TO_REPORT } from 'modules/reports/actions/register-to-report';
+import { REGISTER_TO_REPORT } from 'modules/reports/actions/register-to-report'
 
 export default function (registeredToReport = {}, action) {
   switch (action.type) {
@@ -6,8 +6,8 @@ export default function (registeredToReport = {}, action) {
       return {
         ...registeredToReport,
         [action.reportingWindow]: true
-      };
+      }
     default:
-      return registeredToReport;
+      return registeredToReport
   }
 }

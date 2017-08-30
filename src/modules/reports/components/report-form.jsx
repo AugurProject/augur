@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import Checkbox from 'modules/common/components/checkbox';
-import OutcomeOptions from 'modules/reports/components/outcome-options';
-import { BINARY, SCALAR } from 'modules/markets/constants/market-types';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
+import Checkbox from 'modules/common/components/checkbox'
+import OutcomeOptions from 'modules/reports/components/outcome-options'
+import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
 
 export default class ReportForm extends Component {
   // TODO -- Prop Validations
@@ -21,7 +21,7 @@ export default class ReportForm extends Component {
   };
 
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       type: props.type,
       minPrice: props.minPrice,
@@ -30,14 +30,14 @@ export default class ReportForm extends Component {
       amountToStake: props.amountToStake,
       isIndeterminate: props.isIndeterminate,
       isReported: props.isReported
-    };
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleOutcomeChange = this.handleOutcomeChange.bind(this);
+    }
+    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleOutcomeChange = this.handleOutcomeChange.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.isReported !== this.state.isReported) {
-      this.setState({ isReported: nextProps.isReported });
+      this.setState({ isReported: nextProps.isReported })
     }
   }
 
@@ -45,14 +45,14 @@ export default class ReportForm extends Component {
 
   handleSubmit() {
     // TODO add amount to stake to form
-    this.props.onClickSubmit(this.state.reportedOutcomeID, this.state.amountToStake, this.state.isIndeterminate, this.props.history);
-    this.setState({ reportedOutcomeID: '', isIndeterminate: undefined, isReported: false });
+    this.props.onClickSubmit(this.state.reportedOutcomeID, this.state.amountToStake, this.state.isIndeterminate, this.props.history)
+    this.setState({ reportedOutcomeID: '', isIndeterminate: undefined, isReported: false })
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
-    const indeterminateValue = p.type === BINARY ? '1.5' : '0.5';
+    const p = this.props
+    const s = this.state
+    const indeterminateValue = p.type === BINARY ? '1.5' : '0.5'
 
     return (
       <article className={classNames('report-form', { reported: s.isReported })}>
@@ -107,6 +107,6 @@ export default class ReportForm extends Component {
           }
         </div>
       </article>
-    );
+    )
   }
 }

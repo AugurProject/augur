@@ -1,16 +1,16 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
-import thunk from 'redux-thunk';
-import configureMockStore from 'redux-mock-store';
-import clearOrderBookOnFirstChunk from 'modules/bids-asks/actions/clear-order-book-on-first-chunk';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
+import thunk from 'redux-thunk'
+import configureMockStore from 'redux-mock-store'
+import clearOrderBookOnFirstChunk from 'modules/bids-asks/actions/clear-order-book-on-first-chunk'
 
 describe(`modules/bids-asks/actions/clear-order-book-on-first-chunk.js`, () => {
   const test = t => it(t.description, () => {
-    const store = configureMockStore([thunk])({ ...t.mock.state });
-    store.dispatch(clearOrderBookOnFirstChunk(t.params.marketID, t.params.outcome, t.params.orderTypeLabel));
-    t.assertions(store.getActions());
-    store.clearActions();
-  });
+    const store = configureMockStore([thunk])({ ...t.mock.state })
+    store.dispatch(clearOrderBookOnFirstChunk(t.params.marketID, t.params.outcome, t.params.orderTypeLabel))
+    t.assertions(store.getActions())
+    store.clearActions()
+  })
   test({
     description: 'first order book chunk not yet loaded: clear order book',
     params: {
@@ -37,9 +37,9 @@ describe(`modules/bids-asks/actions/clear-order-book-on-first-chunk.js`, () => {
         marketID: 'MARKET_0',
         outcome: 2,
         orderTypeLabel: 'buy'
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: 'first order book chunk already loaded: do not clear order book',
     params: {
@@ -56,7 +56,7 @@ describe(`modules/bids-asks/actions/clear-order-book-on-first-chunk.js`, () => {
       }
     },
     assertions: (actions) => {
-      assert.deepEqual(actions, []);
+      assert.deepEqual(actions, [])
     }
-  });
-});
+  })
+})

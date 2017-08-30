@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import React from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
 
 const MobileNavBackIcon = p => (
   <svg
@@ -15,10 +15,10 @@ const MobileNavBackIcon = p => (
       </g>
     </g>
   </svg>
-);
+)
 
-export default MobileNavBackIcon;
+export default MobileNavBackIcon
 
 MobileNavBackIcon.propTypes = {
   className: PropTypes.string
-};
+}

@@ -1,5 +1,5 @@
-import React from 'react';
-import OrderBook from 'modules/bids-asks/components/order-book';
+import React from 'react'
+import OrderBook from 'modules/bids-asks/components/order-book'
 
 const BidsAsks = p => (
   <div className="bids-asks">
@@ -16,11 +16,11 @@ const BidsAsks = p => (
       )
     }
   </div>
-);
+)
 
 // TODO -- Prop Validations
 // BidsAsks.propTypes = {
 // 	market: PropTypes.object
 // };
 
-export default BidsAsks;
+export default BidsAsks

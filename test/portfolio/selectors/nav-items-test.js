@@ -1,17 +1,17 @@
-import { describe, it, before } from 'mocha';
-import { assert } from 'chai';
+import { describe, it, before } from 'mocha'
+import { assert } from 'chai'
 
-import sinon from 'sinon';
-import proxyquire from 'proxyquire';
+import sinon from 'sinon'
+import proxyquire from 'proxyquire'
 
-import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views';
+import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views'
 
-import { formatNumber, formatEtherTokens, formatRep } from 'utils/format-number';
+import { formatNumber, formatEtherTokens, formatRep } from 'utils/format-number'
 
 describe('modules/portfolio/selectors/nav-items', () => {
-  proxyquire.noPreserveCache().noCallThru();
+  proxyquire.noPreserveCache().noCallThru()
 
-  let actual;
+  let actual
 
   const stubbedSelectors = {
     links: {
@@ -40,41 +40,41 @@ describe('modules/portfolio/selectors/nav-items', () => {
         page: 'test'
       }
     }
-  };
+  }
 
   const selectors = {
     selectMyPositionsSummary: () => {},
     selectMyMarketsSummary: () => {},
     selectMyReportsSummary: () => {},
     selectLinks: () => {}
-  };
+  }
 
   const stubbedMyPositionsSummary = sinon.stub(selectors, 'selectMyPositionsSummary', () => (
     {
       numPositions: formatNumber(10, { denomination: 'positions' }),
       totalNet: formatEtherTokens(2)
     }
-  ));
+  ))
   const stubbedMyMarketsSummary = sinon.stub(selectors, 'selectMyMarketsSummary', () => (
     {
       numMarkets: 30,
       totalValue: 10
     }
-  ));
+  ))
 
   const stubbedMyReportsSummary = sinon.stub(selectors, 'selectMyReportsSummary', () => (
     {
       numReports: 10,
       netRep: 5
     }
-  ));
+  ))
 
   const proxiedSelector = proxyquire('../../../src/modules/portfolio/selectors/portfolio-nav-items', {
     '../../my-positions/selectors/my-positions-summary': stubbedMyPositionsSummary,
     '../../my-markets/selectors/my-markets-summary': stubbedMyMarketsSummary,
     '../../my-reports/selectors/my-reports-summary': stubbedMyReportsSummary,
     '../../../selectors': stubbedSelectors
-  });
+  })
 
   const expected = [
     {
@@ -107,25 +107,25 @@ describe('modules/portfolio/selectors/nav-items', () => {
       trailingValue: formatRep(5, { denomination: ' REP' }),
       trailingValueNull: 'No Gain/Loss'
     }
-  ];
+  ]
 
   before(() => {
-    actual = proxiedSelector.default();
-  });
+    actual = proxiedSelector.default()
+  })
 
   it(`should call 'selectMyPositionsSummary' once`, () => {
-    assert(stubbedMyPositionsSummary.calledOnce, `Didn't call 'selectMyPositionsSummary' once as expected`);
-  });
+    assert(stubbedMyPositionsSummary.calledOnce, `Didn't call 'selectMyPositionsSummary' once as expected`)
+  })
 
   it(`should call 'selectMyMarketsSummary' once`, () => {
-    assert(stubbedMyMarketsSummary.calledOnce, `Didn't call 'selectMyMarketsSummary' once as expected`);
-  });
+    assert(stubbedMyMarketsSummary.calledOnce, `Didn't call 'selectMyMarketsSummary' once as expected`)
+  })
 
   it(`should call 'selectMyReportsSummary' once`, () => {
-    assert(stubbedMyReportsSummary.calledOnce, `Didn't call 'selectMyReportsSummary' once as expected`);
-  });
+    assert(stubbedMyReportsSummary.calledOnce, `Didn't call 'selectMyReportsSummary' once as expected`)
+  })
 
   it('should return the expected array', () => {
-    assert.deepEqual(expected, actual, `Didn't return the expected array`);
-  });
-});
+    assert.deepEqual(expected, actual, `Didn't return the expected array`)
+  })
+})

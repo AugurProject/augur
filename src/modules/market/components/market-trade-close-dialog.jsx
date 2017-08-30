@@ -1,18 +1,18 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
 
-import Spinner from 'modules/common/components/spinner';
-import EmDash from 'modules/common/components/em-dash';
+import Spinner from 'modules/common/components/spinner'
+import EmDash from 'modules/common/components/em-dash'
 
-import { POSITION, ORDER } from 'modules/market/constants/trade-close-type';
+import { POSITION, ORDER } from 'modules/market/constants/trade-close-type'
 import {
   CLOSE_DIALOG_CLOSING,
   CLOSE_DIALOG_NO_ORDERS,
   CLOSE_DIALOG_FAILED,
   CLOSE_DIALOG_PARTIALLY_FAILED,
   CLOSE_DIALOG_SUCCESS
-} from 'modules/market/constants/close-dialog-status';
+} from 'modules/market/constants/close-dialog-status'
 
 export default class MarketTradeCloseDialog extends Component {
   static propTypes = {
@@ -20,14 +20,14 @@ export default class MarketTradeCloseDialog extends Component {
   };
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       isConfirming: false,
       status: props.status
-    };
+    }
 
-    this.renderCloseDialogContent = this.renderCloseDialogContent.bind(this);
+    this.renderCloseDialogContent = this.renderCloseDialogContent.bind(this)
   }
 
   renderCloseDialogContent(
@@ -44,7 +44,7 @@ export default class MarketTradeCloseDialog extends Component {
   ) {
     // Position -- No Available Actions
     if (closeType === POSITION && !status && (!parseFloat(quantityOfShares, 10) || !isClosable)) {
-      return <EmDash />;
+      return <EmDash />
     }
 
     if (isConfirming) {
@@ -53,7 +53,7 @@ export default class MarketTradeCloseDialog extends Component {
           <button
             className="unstyled confirming-no"
             onClick={() => {
-              this.setState({ isConfirming: false });
+              this.setState({ isConfirming: false })
             }}
           >
             No
@@ -62,49 +62,49 @@ export default class MarketTradeCloseDialog extends Component {
             className="unstyled confirming-yes"
             onClick={(event) => {
               if (closeType === POSITION) {
-                closePosition(marketID, orderID);
+                closePosition(marketID, orderID)
               } else if (closeType === ORDER) {
-                cancelOrder(orderID, marketID, orderType);
+                cancelOrder(orderID, marketID, orderType)
               }
-              this.setState({ isConfirming: false });
+              this.setState({ isConfirming: false })
             }}
           >
             Yes
           </button>
         </div>
-      );
+      )
     }
 
     switch (status) {
       case CLOSE_DIALOG_CLOSING:
-        return <Spinner />;
+        return <Spinner />
       case CLOSE_DIALOG_NO_ORDERS:
-        return <span>no orders</span>;
+        return <span>no orders</span>
       case CLOSE_DIALOG_FAILED:
-        return <span>failed</span>;
+        return <span>failed</span>
       case CLOSE_DIALOG_PARTIALLY_FAILED:
-        return <span>partially failed</span>;
+        return <span>partially failed</span>
       case CLOSE_DIALOG_SUCCESS:
-        return <span>success</span>;
+        return <span>success</span>
       default:
         return (
           <button
             className="unstyled close-order-button"
             onClick={() => {
-              this.setState({ isConfirming: true });
+              this.setState({ isConfirming: true })
             }}
           >
             <span>∅</span>
           </button>
-        );
+        )
     }
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
-    const orderID = p.closeType === POSITION ? p.outcomeID : p.orderID;
+    const orderID = p.closeType === POSITION ? p.outcomeID : p.orderID
 
     return (
       <article
@@ -136,6 +136,6 @@ export default class MarketTradeCloseDialog extends Component {
           )
         }
       </article>
-    );
+    )
   }
 }

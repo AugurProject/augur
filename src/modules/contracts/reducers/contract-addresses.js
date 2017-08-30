@@ -1,4 +1,4 @@
-import { UPDATE_CONTRACT_ADDRESSES } from 'modules/contracts/actions/update-contract-addresses';
+import { UPDATE_CONTRACT_ADDRESSES } from 'modules/contracts/actions/update-contract-addresses'
 
 export default function (contractAddresses = {}, action) {
   switch (action.type) {
@@ -6,8 +6,8 @@ export default function (contractAddresses = {}, action) {
       return {
         ...contractAddresses,
         ...action.contractAddresses
-      };
+      }
     default:
-      return contractAddresses;
+      return contractAddresses
   }
 }

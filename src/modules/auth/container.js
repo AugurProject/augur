@@ -1,19 +1,19 @@
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import AuthView from 'modules/auth/components/auth-view/auth-view';
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
+import AuthView from 'modules/auth/components/auth-view/auth-view'
 
-import { register, setupAndFundNewAccount } from 'modules/auth/actions/register';
-import { login } from 'modules/auth/actions/login';
-import { importAccount } from 'modules/auth/actions/import-account';
+import { register, setupAndFundNewAccount } from 'modules/auth/actions/register'
+import { login } from 'modules/auth/actions/login'
+import { importAccount } from 'modules/auth/actions/import-account'
 
-import { loginWithAirbitz } from 'modules/auth/actions/login-with-airbitz';
-import selectABCUIContext from 'modules/auth/helpers/abc';
+import { loginWithAirbitz } from 'modules/auth/actions/login-with-airbitz'
+import selectABCUIContext from 'modules/auth/helpers/abc'
 
-import { AUTH_NAV_ITEMS } from 'modules/auth/constants/auth-nav-items';
+import { AUTH_NAV_ITEMS } from 'modules/auth/constants/auth-nav-items'
 
 const mapStateToProps = state => ({
   authNavItems: AUTH_NAV_ITEMS
-});
+})
 
 const mapDispatchToProps = dispatch => ({
   register: (pass, cb) => dispatch(register(pass, cb)),
@@ -22,26 +22,26 @@ const mapDispatchToProps = dispatch => ({
   importAccount: (pass, remember, keystore) => dispatch(importAccount(pass, remember, keystore)),
   airbitzLoginLink: history => selectABCUIContext().openLoginWindow((result, airbitzAccount) => {
     if (airbitzAccount) {
-      dispatch(loginWithAirbitz(airbitzAccount, history));
+      dispatch(loginWithAirbitz(airbitzAccount, history))
     } else {
-      console.log('error registering in: ' + result);
+      console.log('error registering in: ' + result)
     }
   }),
   airbitzOnLoad: (history) => {
-    const abcContext = selectABCUIContext().abcContext;
-    const usernames = abcContext.listUsernames();
+    const abcContext = selectABCUIContext().abcContext
+    const usernames = abcContext.listUsernames()
     if (usernames.length > 0) {
       selectABCUIContext().openLoginWindow((result, airbitzAccount) => {
         if (airbitzAccount) {
-          dispatch(loginWithAirbitz(airbitzAccount, history));
+          dispatch(loginWithAirbitz(airbitzAccount, history))
         } else {
-          console.log('error registering in: ' + result);
+          console.log('error registering in: ' + result)
         }
-      });
+      })
     }
   }
-});
+})
 
-const Auth = withRouter(connect(mapStateToProps, mapDispatchToProps)(AuthView));
+const Auth = withRouter(connect(mapStateToProps, mapDispatchToProps)(AuthView))
 
-export default Auth;
+export default Auth

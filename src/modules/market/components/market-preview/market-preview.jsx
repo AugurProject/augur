@@ -1,11 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 // import { Link } from 'react-router-dom';
 // import classNames from 'classnames';
 
-import MarketBasics from 'modules/market/components/market-basics/market-basics';
-import MarketProperties from 'modules/market/components/market-properties/market-properties';
-import MarketPreviewOutcomes from 'modules/market/components/market-preview-outcomes/market-preview-outcomes';
+import MarketBasics from 'modules/market/components/market-basics/market-basics'
+import MarketProperties from 'modules/market/components/market-properties/market-properties'
+import MarketPreviewOutcomes from 'modules/market/components/market-preview-outcomes/market-preview-outcomes'
 
 // import makePath from 'modules/app/helpers/make-path';
 // import makeQuery from 'modules/app/helpers/make-query';
@@ -13,7 +13,7 @@ import MarketPreviewOutcomes from 'modules/market/components/market-preview-outc
 // import { MARKET } from 'modules/app/constants/views';
 // import { MARKET_ID_PARAM_NAME, MARKET_DESCRIPTION_PARAM_NAME } from 'modules/app/constants/param-names';
 
-import Styles from 'modules/market/components/market-preview/market-preview.styles';
+import Styles from 'modules/market/components/market-preview/market-preview.styles'
 
 const MarketPreview = p => (
   <article className={Styles.MarketPreview}>
@@ -26,12 +26,12 @@ const MarketPreview = p => (
       <MarketProperties {...p} />
     </div>
   </article>
-);
+)
 
 MarketPreview.propTypes = {
   isLogged: PropTypes.bool.isRequired,
   toggleFavorite: PropTypes.func.isRequired
-};
+}
 
 // MarketPreview.propTypes = {
 //   className: PropTypes.string,
@@ -47,4 +47,4 @@ MarketPreview.propTypes = {
 //   onClickToggleFavorite: PropTypes.func
 // };
 
-export default MarketPreview;
+export default MarketPreview

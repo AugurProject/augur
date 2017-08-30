@@ -1,62 +1,62 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
-import MarketData from 'modules/market/components/market-data';
-import MarketUserData from 'modules/market/components/market-user-data';
-import OrderBook from 'modules/order-book/components/order-book';
-import OutcomeTrade from 'modules/outcomes/components/outcome-trade';
+import MarketData from 'modules/market/components/market-data'
+import MarketUserData from 'modules/market/components/market-user-data'
+import OrderBook from 'modules/order-book/components/order-book'
+import OutcomeTrade from 'modules/outcomes/components/outcome-trade'
 
-import { SHARE, MILLI_SHARE, MICRO_SHARE } from 'modules/market/constants/share-denominations';
-import { PRICE } from 'modules/order-book/constants/order-book-value-types';
-import { BUY, SELL } from 'modules/transactions/constants/types';
-import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types';
-import { SCALAR } from 'modules/markets/constants/market-types';
+import { SHARE, MILLI_SHARE, MICRO_SHARE } from 'modules/market/constants/share-denominations'
+import { PRICE } from 'modules/order-book/constants/order-book-value-types'
+import { BUY, SELL } from 'modules/transactions/constants/types'
+import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types'
+import { SCALAR } from 'modules/markets/constants/market-types'
 
-import getValue from 'utils/get-value';
+import getValue from 'utils/get-value'
 
 export default class MarketActive extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
-    const defaultSelectedOutcome = getValue(this.props, 'market.outcomes');
+    const defaultSelectedOutcome = getValue(this.props, 'market.outcomes')
 
     this.state = {
       selectedOutcome: defaultSelectedOutcome && defaultSelectedOutcome[0],
       selectedTradeSide: {}
-    };
+    }
 
-    this.updateSelectedOutcome = this.updateSelectedOutcome.bind(this);
-    this.updateSelectedTradeSide = this.updateSelectedTradeSide.bind(this);
-    this.determineDefaultShareDenomination = this.determineDefaultShareDenomination.bind(this);
-    this.updateTradeFromSelectedOrder = this.updateTradeFromSelectedOrder.bind(this);
+    this.updateSelectedOutcome = this.updateSelectedOutcome.bind(this)
+    this.updateSelectedTradeSide = this.updateSelectedTradeSide.bind(this)
+    this.determineDefaultShareDenomination = this.determineDefaultShareDenomination.bind(this)
+    this.updateTradeFromSelectedOrder = this.updateTradeFromSelectedOrder.bind(this)
   }
 
   componentWillMount() {
-    const marketType = getValue(this.props, 'market.type');
+    const marketType = getValue(this.props, 'market.type')
 
     if (marketType === SCALAR) {
-      this.determineDefaultShareDenomination();
+      this.determineDefaultShareDenomination()
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    const selectedOutcomeID = getValue(this.state, 'selectedOutcome.id');
-    const nextPropsOutcome = nextProps.market.outcomes.find(outcome => outcome.id === selectedOutcomeID);
+    const selectedOutcomeID = getValue(this.state, 'selectedOutcome.id')
+    const nextPropsOutcome = nextProps.market.outcomes.find(outcome => outcome.id === selectedOutcomeID)
 
     if (JSON.stringify(nextPropsOutcome) !== JSON.stringify(this.state.selectedOutcome)) {
-      this.setState({ selectedOutcome: nextPropsOutcome });
+      this.setState({ selectedOutcome: nextPropsOutcome })
     }
 
     if (!selectedOutcomeID) {
-      const availableDefaultOutcome = getValue(nextProps, 'market.outcomes');
+      const availableDefaultOutcome = getValue(nextProps, 'market.outcomes')
       if (availableDefaultOutcome && availableDefaultOutcome[0]) {
-        this.setState({ selectedOutcome: availableDefaultOutcome[0] });
+        this.setState({ selectedOutcome: availableDefaultOutcome[0] })
       }
     }
   }
 
   updateSelectedOutcome(selectedOutcome) {
-    this.setState({ selectedOutcome });
+    this.setState({ selectedOutcome })
   }
 
   updateSelectedTradeSide(selectedTradeSide, id) {
@@ -65,70 +65,70 @@ export default class MarketActive extends Component {
         ...this.state.selectedTradeSide,
         [id]: selectedTradeSide
       }
-    });
+    })
   }
 
   updateTradeFromSelectedOrder(outcomeID, orderIndex, side, orderValueType) {
-    const outcomes = getValue(this.props, 'market.outcomes');
+    const outcomes = getValue(this.props, 'market.outcomes')
 
     if (outcomes) {
-      const outcome = outcomes.find(outcome => outcome.id === outcomeID);
-      const orderBookSide = getValue(outcome, `orderBook.${side === BUY ? BIDS : ASKS}`);
-      const order = (orderBookSide && orderBookSide[orderIndex]) || null;
-      const price = getValue(order, 'price.value') || '';
-      const trade = outcome.trade;
-      const tradeSide = side === BUY ? SELL : BUY;
+      const outcome = outcomes.find(outcome => outcome.id === outcomeID)
+      const orderBookSide = getValue(outcome, `orderBook.${side === BUY ? BIDS : ASKS}`)
+      const order = (orderBookSide && orderBookSide[orderIndex]) || null
+      const price = getValue(order, 'price.value') || ''
+      const trade = outcome.trade
+      const tradeSide = side === BUY ? SELL : BUY
 
       if (orderValueType === PRICE) {
-        trade.updateTradeOrder(0, null, tradeSide); // Clear Shares
+        trade.updateTradeOrder(0, null, tradeSide) // Clear Shares
         if (price === '') {
-          trade.updateTradeOrder(null, price, tradeSide);
-          trade.updateTradeOrder(null, null, tradeSide);
+          trade.updateTradeOrder(null, price, tradeSide)
+          trade.updateTradeOrder(null, null, tradeSide)
         } else {
-          trade.updateTradeOrder(null, price, tradeSide);
+          trade.updateTradeOrder(null, price, tradeSide)
         }
       } else {
-        const shares = trade.totalSharesUpToOrder(orderIndex, side);
+        const shares = trade.totalSharesUpToOrder(orderIndex, side)
 
-        trade.updateTradeOrder(shares, price, tradeSide);
+        trade.updateTradeOrder(shares, price, tradeSide)
       }
 
-      this.updateSelectedTradeSide(tradeSide, outcomeID);
+      this.updateSelectedTradeSide(tradeSide, outcomeID)
     }
   }
 
   // NOTE -- only called if a market is of type SCALAR from `componentWillMount`
   determineDefaultShareDenomination() {
-    const marketID = getValue(this.props, 'market.id');
-    const shareDenomination = getValue(this.props, `scalarShareDenomination.markets.${marketID}`);
+    const marketID = getValue(this.props, 'market.id')
+    const shareDenomination = getValue(this.props, `scalarShareDenomination.markets.${marketID}`)
 
     if (!shareDenomination) {
-      const maxPrice = getValue(this.props, 'market.maxPrice');
+      const maxPrice = getValue(this.props, 'market.maxPrice')
 
       if (maxPrice >= 10000000) {
-        this.props.scalarShareDenomination.updateSelectedShareDenomination(marketID, MICRO_SHARE);
+        this.props.scalarShareDenomination.updateSelectedShareDenomination(marketID, MICRO_SHARE)
       } else if (maxPrice >= 10000) {
-        this.props.scalarShareDenomination.updateSelectedShareDenomination(marketID, MILLI_SHARE);
+        this.props.scalarShareDenomination.updateSelectedShareDenomination(marketID, MILLI_SHARE)
       } else {
-        this.props.scalarShareDenomination.updateSelectedShareDenomination(marketID, SHARE);
+        this.props.scalarShareDenomination.updateSelectedShareDenomination(marketID, SHARE)
       }
     }
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
-    const marketID = getValue(p, 'market.id');
-    const tradeSummary = getValue(p, 'market.tradeSummary');
-    const submitTrade = getValue(p, 'market.onSubmitPlaceTrade');
-    const marketType = getValue(p, 'market.type');
-    const minPrice = getValue(p, 'market.minPrice');
-    const maxPrice = getValue(p, 'market.maxPrice');
+    const marketID = getValue(p, 'market.id')
+    const tradeSummary = getValue(p, 'market.tradeSummary')
+    const submitTrade = getValue(p, 'market.onSubmitPlaceTrade')
+    const marketType = getValue(p, 'market.type')
+    const minPrice = getValue(p, 'market.minPrice')
+    const maxPrice = getValue(p, 'market.maxPrice')
 
-    const selectedShareDenomination = getValue(p, `scalarShareDenomination.markets.${marketID}`);
-    const shareDenominations = getValue(p, 'scalarShareDenomination.denominations');
-    const updateSelectedShareDenomination = getValue(p, 'scalarShareDenomination.updateSelectedShareDenomination');
+    const selectedShareDenomination = getValue(p, `scalarShareDenomination.markets.${marketID}`)
+    const shareDenominations = getValue(p, 'scalarShareDenomination.denominations')
+    const updateSelectedShareDenomination = getValue(p, 'scalarShareDenomination.updateSelectedShareDenomination')
 
     return (
       <article className="market-active">
@@ -143,7 +143,7 @@ export default class MarketActive extends Component {
             shareDenominations={shareDenominations}
             updateSelectedShareDenomination={updateSelectedShareDenomination}
             tradeSummary={tradeSummary}
-            submitTrade={(id) => { submitTrade(id); }}
+            submitTrade={(id) => { submitTrade(id) }}
             selectedTradeSide={s.selectedTradeSide}
             updateSelectedTradeSide={this.updateSelectedTradeSide}
             updateTradeFromSelectedOrder={this.updateTradeFromSelectedOrder}
@@ -171,7 +171,7 @@ export default class MarketActive extends Component {
               marketType={marketType}
               selectedOutcome={s.selectedOutcome}
               tradeSummary={tradeSummary}
-              submitTrade={(id) => { submitTrade(id); }}
+              submitTrade={(id) => { submitTrade(id) }}
               selectedTradeSide={s.selectedTradeSide}
               selectedShareDenomination={selectedShareDenomination}
               updateSelectedTradeSide={this.updateSelectedTradeSide}
@@ -182,7 +182,7 @@ export default class MarketActive extends Component {
           </div>
         }
       </article>
-    );
+    )
   }
 }
 
@@ -193,4 +193,4 @@ MarketActive.propTypes = {
   scalarShareDenomination: PropTypes.shape({
     updateSelectedShareDenomination: PropTypes.func
   })
-};
+}

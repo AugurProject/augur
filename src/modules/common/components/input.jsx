@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import BigNumber from 'bignumber.js';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
+import BigNumber from 'bignumber.js'
 
-import debounce from 'utils/debounce';
+import debounce from 'utils/debounce'
 
 export default class Input extends Component {
   // TODO -- Prop Validations
@@ -28,65 +28,65 @@ export default class Input extends Component {
   };
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       value: this.props.value || '',
       timeoutID: '',
       isHiddenContentVisible: false
-    };
+    }
 
-    this.handleOnChange = this.handleOnChange.bind(this);
-    this.handleOnBlur = this.handleOnBlur.bind(this);
-    this.handleClear = this.handleClear.bind(this);
-    this.handleToggleVisibility = this.handleToggleVisibility.bind(this);
-    this.timeoutVisibleHiddenContent = debounce(this.timeoutVisibleHiddenContent.bind(this), 1200);
+    this.handleOnChange = this.handleOnChange.bind(this)
+    this.handleOnBlur = this.handleOnBlur.bind(this)
+    this.handleClear = this.handleClear.bind(this)
+    this.handleToggleVisibility = this.handleToggleVisibility.bind(this)
+    this.timeoutVisibleHiddenContent = debounce(this.timeoutVisibleHiddenContent.bind(this), 1200)
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.value !== nextProps.value) {
-      this.setState({ value: nextProps.value });
+      this.setState({ value: nextProps.value })
     }
   }
 
   componentWillUpdate(nextProps, nextState) {
     if (nextProps.canToggleVisibility && !nextState.value && nextState.isHiddenContentVisible) {
-      this.setState({ isHiddenContentVisible: false });
+      this.setState({ isHiddenContentVisible: false })
     }
 
     if (this.state.isHiddenContentVisible !== nextState.isHiddenContentVisible && nextState.isHiddenContentVisible) {
-      this.timeoutVisibleHiddenContent();
+      this.timeoutVisibleHiddenContent()
     }
   }
 
   handleOnChange = (e) => {
-    const newValue = e.target.value;
+    const newValue = e.target.value
 
-    this.props.onChange(newValue);
-    this.setState({ value: newValue });
+    this.props.onChange(newValue)
+    this.setState({ value: newValue })
   };
 
   handleOnBlur = () => {
-    this.props.onChange(this.state.value);
-    this.props.onBlur && this.props.onBlur();
+    this.props.onChange(this.state.value)
+    this.props.onBlur && this.props.onBlur()
   };
 
   handleClear = () => {
-    this.setState({ value: '' });
-    this.props.onChange('');
+    this.setState({ value: '' })
+    this.props.onChange('')
   };
 
   handleToggleVisibility = () => {
-    this.setState({ isHiddenContentVisible: !this.state.isHiddenContentVisible });
+    this.setState({ isHiddenContentVisible: !this.state.isHiddenContentVisible })
   };
 
   timeoutVisibleHiddenContent = () => {
-    this.setState({ isHiddenContentVisible: false });
+    this.setState({ isHiddenContentVisible: false })
   };
 
   render() {
-    const { debounceMS, isClearable, isIncrementable, incrementAmount, updateValue, canToggleVisibility, shouldMatchValue, comparisonValue, isSearch, min, max, ...p } = this.props; // eslint-disable-line no-unused-vars
-    const s = this.state;
+    const { debounceMS, isClearable, isIncrementable, incrementAmount, updateValue, canToggleVisibility, shouldMatchValue, comparisonValue, isSearch, min, max, ...p } = this.props // eslint-disable-line no-unused-vars
+    const s = this.state
 
     return (
       <div className={classNames('input', p.className, { 'is-incrementable': isIncrementable, 'can-toggle-visibility': canToggleVisibility })} >
@@ -154,26 +154,26 @@ export default class Input extends Component {
               tabIndex="-1"
               className="increment-value unstyled"
               onClick={(e) => {
-                e.currentTarget.blur();
+                e.currentTarget.blur()
 
                 if ((!isNaN(parseFloat(s.value)) && isFinite(s.value)) || !s.value) {
-                  const bnMax = sanitizeBound(max);
-                  const bnMin = sanitizeBound(min);
+                  const bnMax = sanitizeBound(max)
+                  const bnMin = sanitizeBound(min)
 
-                  let newValue = new BigNumber(s.value || 0);
+                  let newValue = new BigNumber(s.value || 0)
 
                   if (bnMax !== null && newValue.greaterThan(bnMax)) {
-                    newValue = bnMax;
+                    newValue = bnMax
                   } else if (bnMin !== null && newValue.lessThan(bnMin)) {
-                    newValue = bnMin.plus(new BigNumber(incrementAmount));
+                    newValue = bnMin.plus(new BigNumber(incrementAmount))
                   } else {
-                    newValue = newValue.plus(new BigNumber(incrementAmount));
+                    newValue = newValue.plus(new BigNumber(incrementAmount))
                     if (bnMax !== null && newValue.greaterThan(bnMax)) {
-                      newValue = bnMax;
+                      newValue = bnMax
                     }
                   }
 
-                  updateValue(newValue);
+                  updateValue(newValue)
                 }
               }}
             >
@@ -184,26 +184,26 @@ export default class Input extends Component {
               tabIndex="-1"
               className="decrement-value unstyled"
               onClick={(e) => {
-                e.currentTarget.blur();
+                e.currentTarget.blur()
 
                 if ((!isNaN(parseFloat(s.value)) && isFinite(s.value)) || !s.value) {
-                  const bnMax = sanitizeBound(max);
-                  const bnMin = sanitizeBound(min);
+                  const bnMax = sanitizeBound(max)
+                  const bnMin = sanitizeBound(min)
 
-                  let newValue = new BigNumber(s.value || 0);
+                  let newValue = new BigNumber(s.value || 0)
 
                   if (bnMax !== null && newValue.greaterThan(bnMax)) {
-                    newValue = bnMax.minus(new BigNumber(incrementAmount));
+                    newValue = bnMax.minus(new BigNumber(incrementAmount))
                   } else if (bnMin !== null && newValue.lessThan(bnMin)) {
-                    newValue = bnMin;
+                    newValue = bnMin
                   } else {
-                    newValue = newValue.minus(new BigNumber(incrementAmount));
+                    newValue = newValue.minus(new BigNumber(incrementAmount))
                     if (bnMin !== null && newValue.lessThan(bnMin)) {
-                      newValue = bnMin;
+                      newValue = bnMin
                     }
                   }
 
-                  updateValue(newValue);
+                  updateValue(newValue)
                 }
               }}
             >
@@ -212,16 +212,16 @@ export default class Input extends Component {
           </div>
         }
       </div>
-    );
+    )
   }
 }
 
 function sanitizeBound(value) {
   if (value == null) {
-    return null;
+    return null
   } else if (!(value instanceof BigNumber)) {
-    return new BigNumber(value);
+    return new BigNumber(value)
   }
 
-  return value;
+  return value
 }

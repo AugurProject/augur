@@ -1,15 +1,15 @@
 /* eslint react/no-array-index-key: 0 */  // It's OK in this specific instance since the order NEVER changes
 
-import React from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import React from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
 
-import PortfolioNav from 'modules/portfolio/containers/portfolio-nav';
-import ValueDenomination from 'modules/common/components/value-denomination/value-denomination';
+import PortfolioNav from 'modules/portfolio/containers/portfolio-nav'
+import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 
-import makePath from 'modules/app/helpers/make-path';
+import makePath from 'modules/app/helpers/make-path'
 
-import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views';
+import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views'
 
 const CoreStats = p => (
   <article className="core-stats" >
@@ -48,11 +48,11 @@ const CoreStats = p => (
       })}
     />
   </article>
-);
+)
 
 CoreStats.propTypes = {
   location: PropTypes.object.isRequired,
   coreStats: PropTypes.array
-};
+}
 
-export default CoreStats;
+export default CoreStats

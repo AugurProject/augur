@@ -1,37 +1,37 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */ // Allowed in this case due to desired functionality + component structure
 
-import React from 'react';
-import classNames from 'classnames';
+import React from 'react'
+import classNames from 'classnames'
 
-import ValueDenomination from 'modules/common/components/value-denomination/value-denomination';
-import OutcomeTrade from 'modules/outcomes/components/outcome-trade';
+import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
+import OutcomeTrade from 'modules/outcomes/components/outcome-trade'
 
-import { BUY, SELL } from 'modules/transactions/constants/types';
-import { PRICE, SHARE } from 'modules/order-book/constants/order-book-value-types';
-import { SCALAR } from 'modules/markets/constants/market-types';
+import { BUY, SELL } from 'modules/transactions/constants/types'
+import { PRICE, SHARE } from 'modules/order-book/constants/order-book-value-types'
+import { SCALAR } from 'modules/markets/constants/market-types'
 
-import getValue from 'utils/get-value';
-import setShareDenomination from 'utils/set-share-denomination';
+import getValue from 'utils/get-value'
+import setShareDenomination from 'utils/set-share-denomination'
 
 const Outcome = (p) => {
-  const selectedOutcomeID = getValue(p, 'selectedOutcome.id');
+  const selectedOutcomeID = getValue(p, 'selectedOutcome.id')
 
-  const outcomeName = getValue(p, 'outcome.name');
+  const outcomeName = getValue(p, 'outcome.name')
 
-  const topBidShares = setShareDenomination(getValue(p, 'outcome.topBid.shares.formatted'), p.selectedShareDenomination);
-  const topAskShares = setShareDenomination(getValue(p, 'outcome.topAsk.shares.formatted'), p.selectedShareDenomination);
+  const topBidShares = setShareDenomination(getValue(p, 'outcome.topBid.shares.formatted'), p.selectedShareDenomination)
+  const topAskShares = setShareDenomination(getValue(p, 'outcome.topAsk.shares.formatted'), p.selectedShareDenomination)
 
-  const topBidPrice = getValue(p, 'outcome.topBid.price.formatted');
-  const topAskPrice = getValue(p, 'outcome.topAsk.price.formatted');
+  const topBidPrice = getValue(p, 'outcome.topBid.price.formatted')
+  const topAskPrice = getValue(p, 'outcome.topAsk.price.formatted')
 
-  const lastPrice = getValue(p, 'outcome.lastPrice.formatted');
-  const lastPricePercent = getValue(p, 'outcome.lastPricePercent.rounded');
+  const lastPrice = getValue(p, 'outcome.lastPrice.formatted')
+  const lastPricePercent = getValue(p, 'outcome.lastPricePercent.rounded')
 
   return (
     <article className={classNames('outcome', { selected: selectedOutcomeID === p.outcome.id })}>
       <a
         className={classNames('unstlyed outcome-row-full', { selected: selectedOutcomeID === p.outcome.id })}
-        onClick={() => { p.updateSelectedOutcome(p.outcome); }}
+        onClick={() => { p.updateSelectedOutcome(p.outcome) }}
       >
         {p.marketType === SCALAR ?
           <ValueDenomination formatted={lastPricePercent} /> :
@@ -40,7 +40,7 @@ const Outcome = (p) => {
         <button
           className="unstyled"
           onClick={() => {
-            p.updateTradeFromSelectedOrder(p.outcome.id, 0, BUY, SHARE);
+            p.updateTradeFromSelectedOrder(p.outcome.id, 0, BUY, SHARE)
           }}
         >
           <ValueDenomination formatted={topBidShares} />
@@ -48,7 +48,7 @@ const Outcome = (p) => {
         <button
           className="unstyled"
           onClick={() => {
-            p.updateTradeFromSelectedOrder(p.outcome.id, 0, BUY, PRICE);
+            p.updateTradeFromSelectedOrder(p.outcome.id, 0, BUY, PRICE)
           }}
         >
           <ValueDenomination className="emphasized" formatted={topBidPrice} />
@@ -56,7 +56,7 @@ const Outcome = (p) => {
         <button
           className="unstyled"
           onClick={() => {
-            p.updateTradeFromSelectedOrder(p.outcome.id, 0, SELL, PRICE);
+            p.updateTradeFromSelectedOrder(p.outcome.id, 0, SELL, PRICE)
           }}
         >
           <ValueDenomination className="emphasized" formatted={topAskPrice} />
@@ -64,7 +64,7 @@ const Outcome = (p) => {
         <button
           className="unstyled"
           onClick={() => {
-            p.updateTradeFromSelectedOrder(p.outcome.id, 0, SELL, SHARE);
+            p.updateTradeFromSelectedOrder(p.outcome.id, 0, SELL, SHARE)
           }}
         >
           <ValueDenomination formatted={topAskShares} />
@@ -73,7 +73,7 @@ const Outcome = (p) => {
       </a>
       <a
         className={classNames('unstlyed outcome-row-condensed', { selected: selectedOutcomeID === p.outcome.id })}
-        onClick={() => { p.updateSelectedOutcome(p.outcome); }}
+        onClick={() => { p.updateSelectedOutcome(p.outcome) }}
       >
         {p.marketType === SCALAR ?
           <ValueDenomination formatted={lastPricePercent} /> :
@@ -86,7 +86,7 @@ const Outcome = (p) => {
           <button
             className="unstyled"
             onClick={() => {
-              p.updateTradeFromSelectedOrder(p.outcome.id, 0, BUY, SHARE);
+              p.updateTradeFromSelectedOrder(p.outcome.id, 0, BUY, SHARE)
             }}
           >
             <span className="outcome-best-container">
@@ -99,7 +99,7 @@ const Outcome = (p) => {
           <button
             className="unstyled"
             onClick={() => {
-              p.updateTradeFromSelectedOrder(p.outcome.id, 0, SELL, SHARE);
+              p.updateTradeFromSelectedOrder(p.outcome.id, 0, SELL, SHARE)
             }}
           >
             <span className="outcome-best-container">
@@ -122,7 +122,7 @@ const Outcome = (p) => {
         maxLimitPrice={p.maxLimitPrice}
       />
     </article>
-  );
-};
+  )
+}
 
-export default Outcome;
+export default Outcome

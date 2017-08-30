@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import QRCode from 'qrcode.react';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import QRCode from 'qrcode.react'
 
-import AccountExportAirbitz from 'modules/account/components/account-export-airbitz';
+import AccountExportAirbitz from 'modules/account/components/account-export-airbitz'
 
-import debounce from 'utils/debounce';
-import getValue from 'utils/get-value';
+import debounce from 'utils/debounce'
+import getValue from 'utils/get-value'
 
 export default class AccountExport extends Component {
   static propTypes = {
@@ -17,34 +17,34 @@ export default class AccountExport extends Component {
   };
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       qrSize: 0
-    };
+    }
 
-    this.setQRSize = this.setQRSize.bind(this);
-    this.debouncedSetQRSize = debounce(this.setQRSize.bind(this));
+    this.setQRSize = this.setQRSize.bind(this)
+    this.debouncedSetQRSize = debounce(this.setQRSize.bind(this))
   }
 
   componentDidMount() {
-    this.setQRSize();
+    this.setQRSize()
 
-    window.addEventListener('resize', this.debouncedSetQRSize);
+    window.addEventListener('resize', this.debouncedSetQRSize)
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.debouncedSetQRSize);
+    window.removeEventListener('resize', this.debouncedSetQRSize)
   }
 
   setQRSize() {
-    const width = getValue(this, 'exportData.clientWidth');
-    if (width) this.setState({ qrSize: this.props.isMobile ? width / 1.2 : width / 3 });
+    const width = getValue(this, 'exportData.clientWidth')
+    if (width) this.setState({ qrSize: this.props.isMobile ? width / 1.2 : width / 3 })
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
     return (
       <article className="account-export account-sub-view">
@@ -55,7 +55,7 @@ export default class AccountExport extends Component {
           <p className="warning">Do NOT share your downloaded account key file or QR code with anyone as your funds could be stolen.</p>
         </aside>
         <div
-          ref={(exportData) => { this.exportData = exportData; }}
+          ref={(exportData) => { this.exportData = exportData }}
           className="account-export-data"
         >
           {!p.airbitzAccount &&
@@ -82,6 +82,6 @@ export default class AccountExport extends Component {
           }
         </div>
       </article>
-    );
+    )
   }
 }

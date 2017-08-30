@@ -1,11 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import BigNumber from 'bignumber.js';
+import React from 'react'
+import PropTypes from 'prop-types'
+import BigNumber from 'bignumber.js'
 
-import CreateMarketFormOutcomesCategorical from 'modules/create-market/components/create-market-form-outcomes-categorical';
-import CreateMarketFormOutcomesScalar from 'modules/create-market/components/create-market-form-outcomes-scalar';
+import CreateMarketFormOutcomesCategorical from 'modules/create-market/components/create-market-form-outcomes-categorical'
+import CreateMarketFormOutcomesScalar from 'modules/create-market/components/create-market-form-outcomes-scalar'
 
-import { CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
+import { CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
 
 const CreateMarketFormOutcomes = p => (
@@ -28,7 +28,7 @@ const CreateMarketFormOutcomes = p => (
       />
     }
   </article>
-);
+)
 
 CreateMarketFormOutcomes.propTypes = {
   type: PropTypes.string.isRequired,
@@ -44,6 +44,6 @@ CreateMarketFormOutcomes.propTypes = {
   currentStep: PropTypes.number.isRequired,
   updateValidity: PropTypes.func.isRequired,
   updateNewMarket: PropTypes.func.isRequired
-};
+}
 
-export default CreateMarketFormOutcomes;
+export default CreateMarketFormOutcomes

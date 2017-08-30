@@ -1,15 +1,15 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
-import proxyquire from 'proxyquire';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
+import proxyquire from 'proxyquire'
 
 describe(`modules/transactions/actions/unpack-transaction-parameters.js`, () => {
-  proxyquire.noPreserveCache().noCallThru();
+  proxyquire.noPreserveCache().noCallThru()
   const test = (t) => {
     it(t.description, () => {
-      const action = proxyquire('../../../src/modules/transactions/actions/unpack-transaction-parameters.js', {});
-      t.assertions(action.default(t.params.tx));
-    });
-  };
+      const action = proxyquire('../../../src/modules/transactions/actions/unpack-transaction-parameters.js', {})
+      t.assertions(action.default(t.params.tx))
+    })
+  }
   test({
     description: 'unpack sent transaction parameters (buy)',
     params: {
@@ -68,9 +68,9 @@ describe(`modules/transactions/actions/unpack-transaction-parameters.js`, () => 
         outcome: '2',
         minimumTradeSize: '0x2386f26fc10000',
         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-      });
+      })
     }
-  });
+  })
   test({
     description: 'unpack successful transaction parameters (buy)',
     params: {
@@ -143,7 +143,7 @@ describe(`modules/transactions/actions/unpack-transaction-parameters.js`, () => 
         outcome: '2',
         minimumTradeSize: '0x2386f26fc10000',
         tradeGroupID: '0x00000000000000000000000000000000f26324c70bfc4d83a68fd9e01c9fb036'
-      });
+      })
     }
-  });
-});
+  })
+})

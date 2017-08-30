@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
-import Dropdown from 'modules/common/components/dropdown';
+import Dropdown from 'modules/common/components/dropdown'
 
-import parseQuery from 'modules/app/helpers/parse-query';
-import makeQuery from 'modules/app/helpers/make-query';
-import getValue from 'utils/get-value';
-import isEqual from 'lodash/isEqual';
+import parseQuery from 'modules/app/helpers/parse-query'
+import makeQuery from 'modules/app/helpers/make-query'
+import getValue from 'utils/get-value'
+import isEqual from 'lodash/isEqual'
 
-import { SORT_MARKET_PARAM, SORT_MARKET_ORDER_PARAM } from 'modules/app/constants/param-names';
+import { SORT_MARKET_PARAM, SORT_MARKET_ORDER_PARAM } from 'modules/app/constants/param-names'
 
 export default class SortMarketParam extends Component {
   static propTypes = {
@@ -20,10 +20,10 @@ export default class SortMarketParam extends Component {
   }
 
   constructor(props) {
-    super(props);
+    super(props)
 
-    this.defaultMarketParam = 'volume';
-    this.defaultSort = true; // true = descending, false = ascending
+    this.defaultMarketParam = 'volume'
+    this.defaultSort = true // true = descending, false = ascending
 
     this.marketSortParams = [
       {
@@ -42,22 +42,22 @@ export default class SortMarketParam extends Component {
         label: 'Settlement Fee',
         value: 'settlementFeePercent'
       }
-    ];
+    ]
 
     this.state = {
       selectedMarketParam: this.defaultMarketParam,
       selectedSort: this.defaultSort
-    };
+    }
   }
 
   componentWillMount() {
-    const queryParams = parseQuery(this.props.location.search);
+    const queryParams = parseQuery(this.props.location.search)
 
-    const selectedMarketParam = queryParams[SORT_MARKET_PARAM];
-    if (selectedMarketParam) this.setState({ selectedMarketParam });
+    const selectedMarketParam = queryParams[SORT_MARKET_PARAM]
+    if (selectedMarketParam) this.setState({ selectedMarketParam })
 
-    const selectedSort = queryParams[SORT_MARKET_ORDER_PARAM];
-    if (selectedSort) this.setState({ selectedSort: selectedSort !== 'false' });
+    const selectedSort = queryParams[SORT_MARKET_ORDER_PARAM]
+    if (selectedSort) this.setState({ selectedSort: selectedSort !== 'false' })
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -68,14 +68,14 @@ export default class SortMarketParam extends Component {
       !isEqual(this.props.items, nextProps.items) ||
       !isEqual(this.props.combinedFiltered, nextProps.combinedFiltered)
     ) {
-      this.sortByMarketParam(nextState.selectedMarketParam, nextState.selectedSort, nextProps.items, nextProps.combinedFiltered, nextProps.location);
+      this.sortByMarketParam(nextState.selectedMarketParam, nextState.selectedSort, nextProps.items, nextProps.combinedFiltered, nextProps.location)
     }
 
     if (
       this.state.selectedMarketParam !== nextState.selectedMarketParam ||
       this.state.selectedSort !== nextState.selectedSort
     ) {
-      this.updateQuery(nextState.selectedMarketParam, nextState.selectedSort, nextProps.location);
+      this.updateQuery(nextState.selectedMarketParam, nextState.selectedSort, nextProps.location)
     }
   }
 
@@ -85,53 +85,53 @@ export default class SortMarketParam extends Component {
         case 'creationTime':
         case 'endDate': {
           if (selectedSort) {
-            return getValue(items, `${b}.${selectedMarketParam}.timestamp`) - getValue(items, `${a}.${selectedMarketParam}.timestamp`);
+            return getValue(items, `${b}.${selectedMarketParam}.timestamp`) - getValue(items, `${a}.${selectedMarketParam}.timestamp`)
           }
 
-          return getValue(items, `${a}.${selectedMarketParam}.timestamp`) - getValue(items, `${b}.${selectedMarketParam}.timestamp`);
+          return getValue(items, `${a}.${selectedMarketParam}.timestamp`) - getValue(items, `${b}.${selectedMarketParam}.timestamp`)
         }
         case 'volume':
         case 'settlementFeePercent':
         case 'makerFeePercent': {
           if (selectedSort) {
-            return getValue(items, `${b}.${selectedMarketParam}.value`) - getValue(items, `${a}.${selectedMarketParam}.value`);
+            return getValue(items, `${b}.${selectedMarketParam}.value`) - getValue(items, `${a}.${selectedMarketParam}.value`)
           }
 
-          return getValue(items, `${a}.${selectedMarketParam}.value`) - getValue(items, `${b}.${selectedMarketParam}.value`);
+          return getValue(items, `${a}.${selectedMarketParam}.value`) - getValue(items, `${b}.${selectedMarketParam}.value`)
         }
         default:
-          return 0; // No sorting
+          return 0 // No sorting
       }
-    });
+    })
 
-    this.props.updateSort(sortedItems);
+    this.props.updateSort(sortedItems)
   }
 
   updateQuery(selectedMarketParam, selectedSort, location) {
-    let updatedSearch = parseQuery(location.search);
+    let updatedSearch = parseQuery(location.search)
 
     if (selectedMarketParam === this.defaultMarketParam) {
-      delete updatedSearch[SORT_MARKET_PARAM];
+      delete updatedSearch[SORT_MARKET_PARAM]
     } else {
-      updatedSearch[SORT_MARKET_PARAM] = selectedMarketParam;
+      updatedSearch[SORT_MARKET_PARAM] = selectedMarketParam
     }
 
     if (selectedSort === this.defaultSort) {
-      delete updatedSearch[SORT_MARKET_ORDER_PARAM];
+      delete updatedSearch[SORT_MARKET_ORDER_PARAM]
     } else {
-      updatedSearch[SORT_MARKET_ORDER_PARAM] = selectedSort;
+      updatedSearch[SORT_MARKET_ORDER_PARAM] = selectedSort
     }
 
-    updatedSearch = makeQuery(updatedSearch);
+    updatedSearch = makeQuery(updatedSearch)
 
     this.props.history.push({
       ...location,
       search: updatedSearch
-    });
+    })
   }
 
   render() {
-    const s = this.state;
+    const s = this.state
 
     return (
       <article className="market-sort-param companion-fields">
@@ -148,6 +148,6 @@ export default class SortMarketParam extends Component {
           {s.selectedSort ? <i className="fa fa-sort-amount-desc" /> : <i className="fa fa-sort-amount-asc" />}
         </button>
       </article>
-    );
+    )
   }
 }

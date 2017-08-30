@@ -1,6 +1,6 @@
-import React from 'react';
+import React from 'react'
 
-import MarketOpenOrdersRow from 'modules/market/components/market-open-orders-row';
+import MarketOpenOrdersRow from 'modules/market/components/market-open-orders-row'
 
 const MarketOpenOrdersGroup = p => (
   <article className="market-open-orders-group">
@@ -21,6 +21,6 @@ const MarketOpenOrdersGroup = p => (
       />
     ))}
   </article>
-);
+)
 
-export default MarketOpenOrdersGroup;
+export default MarketOpenOrdersGroup

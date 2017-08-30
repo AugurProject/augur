@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
-import classNames from 'classnames';
-import TransactionDetails from 'modules/transactions/components/transaction-details';
-import TransactionSummary from 'modules/transactions/components/transaction-summary';
-import Spinner from 'modules/common/components/spinner';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
+import classNames from 'classnames'
+import TransactionDetails from 'modules/transactions/components/transaction-details'
+import TransactionSummary from 'modules/transactions/components/transaction-summary'
+import Spinner from 'modules/common/components/spinner'
 
-import { SUBMITTED, PENDING, COMMITTING } from 'modules/transactions/constants/statuses';
+import { SUBMITTED, PENDING, COMMITTING } from 'modules/transactions/constants/statuses'
 
 export default class Transaction extends Component {
   static propTypes = {
@@ -15,19 +15,19 @@ export default class Transaction extends Component {
   }
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       isFullTransactionVisible: false
-    };
+    }
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
-    const animationInSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-fast'), 10);
-    const animationOutSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-normal'), 10);
+    const animationInSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-fast'), 10)
+    const animationOutSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-normal'), 10)
 
     return (
       <article className={classNames('transaction', p.status)}>
@@ -66,6 +66,6 @@ export default class Transaction extends Component {
           </CSSTransitionGroup>
         </div>
       </article>
-    );
+    )
   }
 }

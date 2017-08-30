@@ -1,4 +1,4 @@
-import { UPDATE_HAS_LOADED_TOPIC } from 'modules/topics/actions/update-has-loaded-topic';
+import { UPDATE_HAS_LOADED_TOPIC } from 'modules/topics/actions/update-has-loaded-topic'
 
 export default function (hasLoadedTopic = {}, action) {
   switch (action.type) {
@@ -6,8 +6,8 @@ export default function (hasLoadedTopic = {}, action) {
       return ({
         ...hasLoadedTopic,
         ...action.hasLoadedTopic
-      });
+      })
     default:
-      return hasLoadedTopic;
+      return hasLoadedTopic
   }
 }

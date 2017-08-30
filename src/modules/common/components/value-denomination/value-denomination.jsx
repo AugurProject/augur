@@ -1,10 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import ReactTooltip from 'react-tooltip';
+import React from 'react'
+import PropTypes from 'prop-types'
+import ReactTooltip from 'react-tooltip'
 
-import EmDash from 'modules/common/components/em-dash';
+import EmDash from 'modules/common/components/em-dash'
 
-import Styles from 'modules/common/components/value-denomination/value-denomination.styles';
+import Styles from 'modules/common/components/value-denomination/value-denomination.styles'
 
 const ValueDenomination = p => (
   <span
@@ -35,7 +35,7 @@ const ValueDenomination = p => (
     }
     <ReactTooltip type="light" effect="solid" place="top" />
   </span>
-);
+)
 
 ValueDenomination.propTypes = {
   className: PropTypes.string,
@@ -49,6 +49,6 @@ ValueDenomination.propTypes = {
   prefix: PropTypes.string,
   postfix: PropTypes.string,
   hideDenomination: PropTypes.bool
-};
+}
 
-export default ValueDenomination;
+export default ValueDenomination

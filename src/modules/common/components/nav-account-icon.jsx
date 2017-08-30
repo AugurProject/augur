@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import React from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
 
 const NavAccountIcon = p => (
   <svg
@@ -18,10 +18,10 @@ const NavAccountIcon = p => (
       </g>
     </g>
   </svg>
-);
+)
 
-export default NavAccountIcon;
+export default NavAccountIcon
 
 NavAccountIcon.propTypes = {
   className: PropTypes.string
-};
+}

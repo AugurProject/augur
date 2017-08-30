@@ -1,12 +1,12 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
-import Transaction from 'modules/transactions/components/transaction';
-import TransactionGroup from 'modules/transactions/components/transaction-group';
-import NullStateMessage from 'modules/common/components/null-state-message';
+import React from 'react'
+import PropTypes from 'prop-types'
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
+import Transaction from 'modules/transactions/components/transaction'
+import TransactionGroup from 'modules/transactions/components/transaction-group'
+import NullStateMessage from 'modules/common/components/null-state-message'
 
 const Transactions = (p) => {
-  const animationSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-very-slow'), 10);
+  const animationSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-very-slow'), 10)
 
   return (
     <article className="transactions">
@@ -18,7 +18,7 @@ const Transactions = (p) => {
           transitionLeave={false}
         >
           {[...Array(p.boundedLength)].map((unused, i) => {
-            const transaction = p.transactions[(p.lowerBound - 1) + i];
+            const transaction = p.transactions[(p.lowerBound - 1) + i]
 
             return (
               transaction.transactions && transaction.transactions.length > 1 ?
@@ -32,7 +32,7 @@ const Transactions = (p) => {
                   currentBlockNumber={p.currentBlockNumber}
                   {...transaction}
                 />
-            );
+            )
           })}
         </CSSTransitionGroup> :
         <NullStateMessage
@@ -40,8 +40,8 @@ const Transactions = (p) => {
         />
       }
     </article>
-  );
-};
+  )
+}
 
 Transactions.propTypes = {
   lowerBound: PropTypes.any,
@@ -50,6 +50,6 @@ Transactions.propTypes = {
   className: PropTypes.string,
   transactions: PropTypes.array,
   currentBlockNumber: PropTypes.number
-};
+}
 
-export default Transactions;
+export default Transactions

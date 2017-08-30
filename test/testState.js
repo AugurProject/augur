@@ -1,10 +1,10 @@
 // Generic starting test state.
 // Goal: To help keep these unit tests as DRY as possible.
-import env from 'src/env';
+import env from 'src/env'
 
-import { formatNumber, formatShares } from 'utils/format-number';
-import { formatDate } from 'utils/format-date';
-import { BUY } from 'modules/transactions/constants/types';
+import { formatNumber, formatShares } from 'utils/format-number'
+import { formatDate } from 'utils/format-date'
+import { BUY } from 'modules/transactions/constants/types'
 
 const testState = {
   marketLoading: [],
@@ -382,6 +382,6 @@ const testState = {
       author: '0xtest456'
     }
   ]
-};
+}
 
-export default testState;
+export default testState

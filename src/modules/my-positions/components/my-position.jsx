@@ -1,26 +1,26 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import ValueDenomination from 'modules/common/components/value-denomination/value-denomination';
-import MarketTradeCloseDialog from 'modules/market/components/market-trade-close-dialog';
+import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
+import MarketTradeCloseDialog from 'modules/market/components/market-trade-close-dialog'
 
-import { SCALAR } from 'modules/markets/constants/market-types';
-import { POSITION } from 'modules/market/constants/trade-close-type';
+import { SCALAR } from 'modules/markets/constants/market-types'
+import { POSITION } from 'modules/market/constants/trade-close-type'
 
-import getValue from 'utils/get-value';
-import setShareDenomination from 'utils/set-share-denomination';
+import getValue from 'utils/get-value'
+import setShareDenomination from 'utils/set-share-denomination'
 
 const MyPosition = (p) => {
-  const marketID = getValue(p, 'marketID');
-  const outcomeID = getValue(p, 'id');
+  const marketID = getValue(p, 'marketID')
+  const outcomeID = getValue(p, 'id')
 
-  const selectedShareDenomination = getValue(p, `scalarShareDenomination.markets.${marketID}`);
-  const quantityOfShares = setShareDenomination(getValue(p, 'position.qtyShares.formatted'), selectedShareDenomination);
+  const selectedShareDenomination = getValue(p, `scalarShareDenomination.markets.${marketID}`)
+  const quantityOfShares = setShareDenomination(getValue(p, 'position.qtyShares.formatted'), selectedShareDenomination)
 
-  const isClosable = getValue(p, 'position.isClosable');
-  const closePosition = getValue(p, 'position.closePosition');
+  const isClosable = getValue(p, 'position.isClosable')
+  const closePosition = getValue(p, 'position.closePosition')
 
-  const status = getValue(p, `closePositionStatus.${marketID}.${outcomeID}`);
+  const status = getValue(p, `closePositionStatus.${marketID}.${outcomeID}`)
 
   return (
     <div className="my-position portfolio-detail">
@@ -73,8 +73,8 @@ const MyPosition = (p) => {
         />
       </div>
     </div>
-  );
-};
+  )
+}
 
 MyPosition.propTypes = {
   marketID: PropTypes.string.isRequired,
@@ -90,6 +90,6 @@ MyPosition.propTypes = {
   realizedNet: PropTypes.object.isRequired,
   unrealizedNet: PropTypes.object.isRequired,
   totalNet: PropTypes.object.isRequired
-};
+}
 
-export default MyPosition;
+export default MyPosition

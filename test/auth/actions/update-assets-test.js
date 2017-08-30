@@ -1,54 +1,53 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
-import sinon from 'sinon';
-import thunk from 'redux-thunk';
-import configureMockStore from 'redux-mock-store';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
+import sinon from 'sinon'
+import thunk from 'redux-thunk'
+import configureMockStore from 'redux-mock-store'
 
-import { updateAssets, __RewireAPI__ as updateAssetsRewireAPI } from 'modules/auth/actions/update-assets';
+import { updateAssets, __RewireAPI__ as updateAssetsRewireAPI } from 'modules/auth/actions/update-assets'
 
-const ETH_TOKENS = 'ethTokens';
-const ETH = 'eth';
-const REP = 'rep';
+const ETH_TOKENS = 'ethTokens'
+const ETH = 'eth'
+const REP = 'rep'
 
 describe('modules/auth/actions/update-assets.js', () => {
-  const mockStore = configureMockStore([thunk]);
+  const mockStore = configureMockStore([thunk])
 
   const updateLoginAccount = sinon.stub().returns({
     type: 'updateLoginAccount'
-  });
-  updateAssetsRewireAPI.__Rewire__('updateLoginAccount', updateLoginAccount);
+  })
+  updateAssetsRewireAPI.__Rewire__('updateLoginAccount', updateLoginAccount)
 
   const test = t => it(t.description, (done) => {
-    const store = mockStore(t.state || {});
+    const store = mockStore(t.state || {})
 
-    t.assertions(store, done);
-  });
+    t.assertions(store, done)
+  })
 
   afterEach(() => {
-    updateLoginAccount.reset();
-  });
+    updateLoginAccount.reset()
+  })
 
   test({
     description: `should dispatch 'updateLoginAccount' if a user is unlogged`,
     state: {
-      loginAccount: {},
-      branch: { id: 'blah' }
+      loginAccount: {}
     },
     assertions: (store, done) => {
-      store.dispatch(updateAssets());
+      store.dispatch(updateAssets())
 
-      assert(updateLoginAccount.calledOnce, `didn't call 'updateLoginAccount' once as expected`);
+      assert(updateLoginAccount, `didn't call 'updateLoginAccount' once as expected`)
 
-      done();
+      done()
     }
-  });
+  })
 
   describe('loadAssets callbacks', () => {
     const callbackTests = (asset) => {
       describe(`${asset}`, () => {
         afterEach(() => {
-          updateAssetsRewireAPI.__ResetDependency__('augur');
-        });
+          updateAssetsRewireAPI.__ResetDependency__('augur')
+        })
 
         test({
           description: `should call the callback with the expected error`,
@@ -58,180 +57,169 @@ describe('modules/auth/actions/update-assets.js', () => {
             },
             branch: {
               id: '0xbranch'
-            },
-            address: '0xtest'
+            }
           },
           assertions: (store, done) => {
-            const ERR = `${asset}-failure`;
+            const ERR = `${asset}-failure`
 
             const loadAssets = (options, ethTokensCB, repCB, ethCB) => {
               switch (asset) {
                 case ETH_TOKENS:
-                  return ethTokensCB(ERR);
+                  return ethTokensCB(ERR)
                 case ETH:
-                  return ethCB(ERR);
+                  return ethCB(ERR)
                 case REP:
-                  return repCB(ERR);
+                  return repCB(ERR)
                 default:
-                  return assert(false, `malformed callback test`);
+                  return assert(false, `malformed callback test`)
               }
-            };
+            }
             updateAssetsRewireAPI.__Rewire__('augur', {
               assets: {
                 loadAssets
-              },
-              rpc: {
-                getBalance: (value, callback) => {
-                  callback('1000');
-                }
-              },
-              api: {
-                Cash: {
-                  balanceOf: (value, callback) => {
-                    callback(ERR, '10000');
-                  }
-                },
-                Branch: {
-                  getReputationToken: (value, callback) => {
-                    callback(ERR, '10000');
-                  }
-                },
-                ReputationToken: {
-                  balanceOf: (value, callback) => {
-                    callback(ERR, '10000');
-                  }
-                }
               }
-            });
+            })
 
             const callbackStub = {
-              callback: () => { }
-            };
-            sinon.stub(callbackStub, 'callback', err => assert(err, ERR, `didn't call the callback with the expected error`));
+              callback: () => {}
+            }
+            sinon.stub(callbackStub, 'callback', err => assert(err, ERR, `didn't call the callback with the expected error`))
 
-            store.dispatch(updateAssets(callbackStub.callback));
+            store.dispatch(updateAssets(callbackStub.callback))
 
-            done();
+            done()
           }
-        });
+        })
 
         test({
           description: `should dispatch 'updateLoginAccount' if value is not present`,
           state: {
-            loginAccount: {},
-            branch: {
-              id: 'myId'
-            }
+            loginAccount: {}
           },
           assertions: (store, done) => {
+            const loadAssets = (options, ethTokensCB, repCB, ethCB) => {
+              switch (asset) {
+                case ETH_TOKENS:
+                  return ethTokensCB(null, '10')
+                case ETH:
+                  return ethCB(null, '10')
+                case REP:
+                  return repCB(null, '10')
+                default:
+                  return assert(false, `malformed callback test`)
+              }
+            }
             updateAssetsRewireAPI.__Rewire__('augur', {
+              assets: {
+                loadAssets
+              }
+            })
 
-            });
+            store.dispatch(updateAssets())
 
-            store.dispatch(updateAssets());
+            assert(updateLoginAccount.calledOnce, `didn't call 'updateLoginAccount' once as expected`)
 
-            assert(updateLoginAccount.calledOnce, `didn't call 'updateLoginAccount' once as expected`);
-
-            done();
+            done()
           }
-        });
+        })
 
         test({
           description: `should dispatch 'updateLoginAccount' if value is present but doesn't equal updated value`,
           state: {
             loginAccount: {
               [`${asset}`]: '11'
-            },
-            branch: {
-              id: 'myId'
             }
           },
           assertions: (store, done) => {
+            const loadAssets = (options, ethTokensCB, repCB, ethCB) => {
+              switch (asset) {
+                case ETH_TOKENS:
+                  return ethTokensCB(null, '10')
+                case ETH:
+                  return ethCB(null, '10')
+                case REP:
+                  return repCB(null, '10')
+                default:
+                  return assert(false, `malformed callback test`)
+              }
+            }
             updateAssetsRewireAPI.__Rewire__('augur', {
+              assets: {
+                loadAssets
+              }
+            })
 
-            });
+            store.dispatch(updateAssets())
 
-            store.dispatch(updateAssets());
+            assert(updateLoginAccount.calledOnce, `didn't call 'updateLoginAccount' once as expected`)
 
-            assert(updateLoginAccount.calledOnce, `didn't call 'updateLoginAccount' once as expected`);
-
-            done();
+            done()
           }
-        });
+        })
 
         test({
           description: `should call the callback with the balances once all have loaded`,
           state: {
             loginAccount: {
               address: '0xtest',
-              ethTokens: '10',
-              eth: '10',
-              rep: '10'
+              [ETH_TOKENS]: '10',
+              [ETH]: '10',
+              [REP]: '10'
             },
             branch: {
               id: '0xbranch'
             }
           },
           assertions: (store, done) => {
-            const allAssetsLoaded = sinon.stub();
-            allAssetsLoaded.onFirstCall().returns(false)
-              .onSecondCall().returns(false)
-              .onThirdCall().returns(true);
-            const speedomatic =
-              {
-                unfix: (value, str) => { }
-              };
-            sinon.stub(speedomatic, 'unfix').returnsArg(0);
-            updateAssetsRewireAPI.__Rewire__('allAssetsLoaded', allAssetsLoaded);
-            updateAssetsRewireAPI.__Rewire__('speedomatic', speedomatic);
-            const testValue = {
-              eth: 10,
-              rep: 20,
-              ethTokens: 30
-            };
-            updateAssetsRewireAPI.__Rewire__('augur', {
-              api: {
-                Cash: {
-                  balanceOf: (value, callback) => {
-                    callback(null, testValue.ethTokens);
-                  }
-                },
-                Branch: {
-                  getReputationToken: (value, callback) => {
-                    callback(null, '0xtestx0');
-                  }
-                },
-                ReputationToken: {
-                  balanceOf: (value, callback) => {
-                    callback(testValue.rep);
-                  }
-                }
-              },
-              rpc: {
-                getBalance: (value, callback) => {
-                  callback(testValue.eth);
-                }
+            const loadAssets = (options, ethTokensCB, repCB, ethCB) => {
+              switch (asset) {
+                case ETH_TOKENS:
+                  ethCB(null, '10')
+                  repCB(null, '10')
+                  ethTokensCB(null, '11')
+                  break
+                case ETH:
+                  ethTokensCB(null, '10')
+                  repCB(null, '10')
+                  ethCB(null, '11')
+                  break
+                case REP:
+                  ethTokensCB(null, '10')
+                  ethCB(null, '10')
+                  repCB(null, '11')
+                  break
+                default:
+                  return assert(false, `malformed callback test`)
               }
-            });
+            }
+            updateAssetsRewireAPI.__Rewire__('augur', {
+              assets: {
+                loadAssets
+              }
+            })
 
             const callbackStub = {
-              callback: () => { }
-            };
+              callback: () => {}
+            }
             sinon.stub(callbackStub, 'callback', (err, balances) => {
-              assert.isNull(err, `didn't call the callback with the expected error`);
-              assert.deepEqual(balances, testValue, `didn't call the callback with the expected balances`);
-            });
+              assert.isNull(err, `didn't call the callback with the expected error`)
+              assert(balances, {
+                [ETH_TOKENS]: asset === ETH_TOKENS ? '11' : '10',
+                [ETH]: asset === ETH ? '11' : '10',
+                [REP]: asset === REP ? '11' : '10',
+              }, `didn't call the callback with the expected balances`)
+            })
 
-            store.dispatch(updateAssets(callbackStub.callback));
+            store.dispatch(updateAssets(callbackStub.callback))
 
-            done();
+            done()
           }
-        });
-      });
-    };
+        })
+      })
+    }
 
-    callbackTests(ETH_TOKENS);
-    callbackTests(ETH);
-    callbackTests(REP);
-  });
-});
+    callbackTests(ETH_TOKENS)
+    callbackTests(ETH)
+    callbackTests(REP)
+  })
+})

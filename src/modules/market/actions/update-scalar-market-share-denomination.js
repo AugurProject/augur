@@ -1,4 +1,4 @@
-export const UPDATE_SCALAR_MARKET_SHARE_DENOMINATION = 'UPDATE_SCALAR_MAKRET_SHARE_DENOMINATION';
+export const UPDATE_SCALAR_MARKET_SHARE_DENOMINATION = 'UPDATE_SCALAR_MAKRET_SHARE_DENOMINATION'
 
 export function updateScalarMarketShareDenomination(marketID, denomination) {
   return {
@@ -7,5 +7,5 @@ export function updateScalarMarketShareDenomination(marketID, denomination) {
       marketID,
       denomination
     }
-  };
+  }
 }

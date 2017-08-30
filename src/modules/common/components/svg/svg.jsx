@@ -1,7 +1,7 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-const spritemap = 'assets/images/spritemap.svg';
+const spritemap = 'assets/images/spritemap.svg'
 
 const SVG = ({ className, role, title, id, onClick, disabled }) => (
   <svg
@@ -13,7 +13,7 @@ const SVG = ({ className, role, title, id, onClick, disabled }) => (
   >
     <title>${title}</title><use href={`${spritemap}#${id}`} />
   </svg>
-);
+)
 
 SVG.propTypes = {
   id: PropTypes.string.isRequired,
@@ -22,6 +22,6 @@ SVG.propTypes = {
   title: PropTypes.string,
   role: PropTypes.string,
   onClick: PropTypes.func,
-};
+}
 
-export default SVG;
+export default SVG

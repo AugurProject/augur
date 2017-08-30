@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
 
-import Input from 'modules/common/components/input';
+import Input from 'modules/common/components/input'
 
-import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
-import { NEW_MARKET_EXPIRY_SOURCE } from 'modules/create-market/constants/new-market-creation-steps';
-import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC } from 'modules/create-market/constants/new-market-constraints';
+import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
+import { NEW_MARKET_EXPIRY_SOURCE } from 'modules/create-market/constants/new-market-creation-steps'
+import { EXPIRY_SOURCE_GENERIC, EXPIRY_SOURCE_SPECIFIC } from 'modules/create-market/constants/new-market-constraints'
 
 export default class CreateMarketFormExpirySource extends Component {
   static propTypes = {
@@ -18,30 +18,30 @@ export default class CreateMarketFormExpirySource extends Component {
   }
 
   constructor(props) {
-    super(props);
+    super(props)
 
-    this.validateForm = this.validateForm.bind(this);
+    this.validateForm = this.validateForm.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.currentStep !== nextProps.currentStep && nextProps.currentStep === newMarketCreationOrder.indexOf[NEW_MARKET_EXPIRY_SOURCE]) this.validateForm(nextProps.expirySourceType, nextProps.expirySource);
+    if (this.props.currentStep !== nextProps.currentStep && nextProps.currentStep === newMarketCreationOrder.indexOf[NEW_MARKET_EXPIRY_SOURCE]) this.validateForm(nextProps.expirySourceType, nextProps.expirySource)
   }
 
   validateForm(expirySourceType, expirySource = '') {
     if (expirySourceType === EXPIRY_SOURCE_SPECIFIC && expirySource === '') {
-      this.props.updateValidity(false);
+      this.props.updateValidity(false)
     } else {
-      this.props.updateValidity(true);
+      this.props.updateValidity(true)
     }
 
     this.props.updateNewMarket({
       expirySourceType,
       expirySource
-    });
+    })
   }
 
   render() {
-    const p = this.props;
+    const p = this.props
 
     return (
       <article className={`create-market-form-part create-market-form-part-expiry-source ${p.className || ''}`}>
@@ -60,7 +60,7 @@ export default class CreateMarketFormExpirySource extends Component {
                   type="radio"
                   checked={p.expirySourceType === EXPIRY_SOURCE_GENERIC}
                   onChange={() => {
-                    this.validateForm(EXPIRY_SOURCE_GENERIC);
+                    this.validateForm(EXPIRY_SOURCE_GENERIC)
                   }}
                 />
                 Outcome will be covered by local, national or international news media.
@@ -72,7 +72,7 @@ export default class CreateMarketFormExpirySource extends Component {
                   type="radio"
                   checked={p.expirySourceType === EXPIRY_SOURCE_SPECIFIC}
                   onChange={() => {
-                    this.validateForm(EXPIRY_SOURCE_SPECIFIC);
+                    this.validateForm(EXPIRY_SOURCE_SPECIFIC)
                   }}
                 />
                 Outcome will be detailed on a specific publicly available website:
@@ -83,13 +83,13 @@ export default class CreateMarketFormExpirySource extends Component {
                 debounceMS={0}
                 value={p.expirySource}
                 onChange={(expirySource) => {
-                  this.validateForm(EXPIRY_SOURCE_SPECIFIC, expirySource);
+                  this.validateForm(EXPIRY_SOURCE_SPECIFIC, expirySource)
                 }}
               />
             </form>
           </div>
         </div>
       </article>
-    );
+    )
   }
 }

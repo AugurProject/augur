@@ -1,5 +1,5 @@
-export { BINARY, SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types';
-export { BUY, SELL } from 'modules/transactions/constants/types';
+export { BINARY, SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types'
+export { BUY, SELL } from 'modules/transactions/constants/types'
 
 export const tradeTestState = {
   loginAccount: {
@@ -184,4 +184,4 @@ export const tradeTestState = {
       }
     }
   },
-};
+}

@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
-import OrderBookTable from 'modules/order-book/components/order-book-table';
-import OrderBookChart from 'modules/order-book/components/order-book-chart';
+import OrderBookTable from 'modules/order-book/components/order-book-table'
+import OrderBookChart from 'modules/order-book/components/order-book-chart'
 
-import EmDash from 'modules/common/components/em-dash';
-import ComponentNav from 'modules/common/components/component-nav';
+import EmDash from 'modules/common/components/em-dash'
+import ComponentNav from 'modules/common/components/component-nav'
 
-import { SCALAR } from 'modules/markets/constants/market-types';
-import { ORDER_BOOK_TABLE, ORDER_BOOK_CHART } from 'modules/order-book/constants/order-book-internal-views';
+import { SCALAR } from 'modules/markets/constants/market-types'
+import { ORDER_BOOK_TABLE, ORDER_BOOK_CHART } from 'modules/order-book/constants/order-book-internal-views'
 
-import getValue from 'utils/get-value';
+import getValue from 'utils/get-value'
 
 export default class OrderBook extends Component {
   static propTypes = {
@@ -21,7 +21,7 @@ export default class OrderBook extends Component {
   };
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.navItems = {
       [ORDER_BOOK_TABLE]: {
@@ -30,19 +30,19 @@ export default class OrderBook extends Component {
       [ORDER_BOOK_CHART]: {
         label: 'Chart'
       }
-    };
+    }
 
     this.state = {
       selectedNav: ORDER_BOOK_TABLE
-    };
+    }
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
-    const name = getValue(p, 'outcome.name');
-    const orderBookSeries = getValue(p, 'outcome.orderBookSeries');
+    const name = getValue(p, 'outcome.name')
+    const orderBookSeries = getValue(p, 'outcome.orderBookSeries')
 
     return (
       <article className="order-book">
@@ -76,6 +76,6 @@ export default class OrderBook extends Component {
           </div>
         }
       </article>
-    );
+    )
   }
 }

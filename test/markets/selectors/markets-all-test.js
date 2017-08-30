@@ -1,19 +1,19 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
-import proxyquire from 'proxyquire';
-import sinon from 'sinon';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import testState from 'test/testState';
-import marketsAssertions from 'assertions/markets';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
+import proxyquire from 'proxyquire'
+import sinon from 'sinon'
+import configureMockStore from 'redux-mock-store'
+import thunk from 'redux-thunk'
+import testState from 'test/testState'
+import marketsAssertions from 'assertions/markets'
 
 // TODO -- should be refactored to use local state in requiring test
-let allMarkets; // eslint-disable-line import/no-mutable-exports
+let allMarkets // eslint-disable-line import/no-mutable-exports
 
 describe(`modules/markets/selectors/markets-all.js`, () => {
-  proxyquire.noPreserveCache().noCallThru();
-  const middlewares = [thunk];
-  const mockStore = configureMockStore(middlewares);
+  proxyquire.noPreserveCache().noCallThru()
+  const middlewares = [thunk]
+  const mockStore = configureMockStore(middlewares)
   const state = Object.assign({}, testState, {
     marketsData: {
       test: {
@@ -80,28 +80,28 @@ describe(`modules/markets/selectors/markets-all.js`, () => {
       test2: {},
       test3: {}
     }
-  });
-  const store = mockStore(state);
+  })
+  const store = mockStore(state)
   const mockMarket = {
     assembleMarket: () => {},
     selectMarketReport: () => {}
-  };
-  sinon.stub(mockMarket, 'assembleMarket', (marketID, market, priceHistory, isMarketOpen, isMarketExpired, favorite, outcomes, reports, accountTrades, tradesInProgress, endYear, endMonth, endDate, isBlockchainReportPhase, marketOrderBook, orderCancellation, loginAccount, dispatch) => market);
-  sinon.stub(mockMarket, 'selectMarketReport', (marketID, branchReports) => ({}));
+  }
+  sinon.stub(mockMarket, 'assembleMarket', (marketID, market, priceHistory, isMarketOpen, isMarketExpired, favorite, outcomes, reports, accountTrades, tradesInProgress, endYear, endMonth, endDate, isBlockchainReportPhase, marketOrderBook, orderCancellation, loginAccount, dispatch) => market)
+  sinon.stub(mockMarket, 'selectMarketReport', (marketID, branchReports) => ({}))
 
   const selector = proxyquire('../../../src/modules/markets/selectors/markets-all.js', {
     '../../market/selectors/market': mockMarket,
     '../../../store': store
-  });
+  })
 
-  allMarkets = selector.default;
+  allMarkets = selector.default
 
   it(`should return the correct selectedMarket function`, () => {
-    const actual = selector.default();
+    const actual = selector.default()
 
-    marketsAssertions(actual);
-    assert(mockMarket.assembleMarket.calledThrice, `assembleMarket wasn't called 3 times as expected`);
-  });
-});
+    marketsAssertions(actual)
+    assert(mockMarket.assembleMarket.calledThrice, `assembleMarket wasn't called 3 times as expected`)
+  })
+})
 
-export default allMarkets;
+export default allMarkets

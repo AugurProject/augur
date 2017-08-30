@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
-import ComponentNav from 'modules/common/components/component-nav';
-import ValueDenomination from 'modules/common/components/value-denomination/value-denomination';
-import NullStateMessage from 'modules/common/components/null-state-message';
+import ComponentNav from 'modules/common/components/component-nav'
+import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
+import NullStateMessage from 'modules/common/components/null-state-message'
 
-import MyPosition from 'modules/my-positions/components/my-position';
-import MyPositionOverview from 'modules/my-positions/components/my-position-overview';
-import MyOrders from 'modules/my-orders/container';
+import MyPosition from 'modules/my-positions/components/my-position'
+import MyPositionOverview from 'modules/my-positions/components/my-position-overview'
+import MyOrders from 'modules/my-orders/container'
 
-import { POSITIONS_POSITIONS, POSITIONS_ORDERS } from 'modules/my-positions/constants/internal-views';
+import { POSITIONS_POSITIONS, POSITIONS_ORDERS } from 'modules/my-positions/constants/internal-views'
 
-import getValue from 'utils/get-value';
+import getValue from 'utils/get-value'
 
 export default class MyPositionsMarket extends Component {
   static propTypes = {
@@ -24,7 +24,7 @@ export default class MyPositionsMarket extends Component {
   }
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.navItems = {
       [POSITIONS_POSITIONS]: {
@@ -33,22 +33,22 @@ export default class MyPositionsMarket extends Component {
       [POSITIONS_ORDERS]: {
         label: 'Orders'
       }
-    };
+    }
 
     this.state = {
       selectedNav: POSITIONS_POSITIONS
-    };
+    }
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
-    const myPositionOutcomes = getValue(p, 'market.myPositionOutcomes');
-    const myPositionsSummary = getValue(p, 'market.myPositionsSummary');
+    const myPositionOutcomes = getValue(p, 'market.myPositionOutcomes')
+    const myPositionsSummary = getValue(p, 'market.myPositionsSummary')
 
-    const userOpenOrdersCount = getValue(p, 'market.userOpenOrdersSummary.openOrdersCount.value');
-    const outcomes = getValue(p, 'market.outcomes');
+    const userOpenOrdersCount = getValue(p, 'market.userOpenOrdersSummary.openOrdersCount.value')
+    const outcomes = getValue(p, 'market.outcomes')
 
     return (
       <article
@@ -115,6 +115,6 @@ export default class MyPositionsMarket extends Component {
           </div>
         }
       </article>
-    );
+    )
   }
 }

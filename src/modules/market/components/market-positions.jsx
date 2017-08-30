@@ -1,15 +1,15 @@
-import React from 'react';
+import React from 'react'
 
-import MarketPositionsRow from 'modules/market/components/market-positions-row';
-import NullStateMessage from 'modules/common/components/null-state-message';
+import MarketPositionsRow from 'modules/market/components/market-positions-row'
+import NullStateMessage from 'modules/common/components/null-state-message'
 
-import { SCALAR } from 'modules/markets/constants/market-types';
+import { SCALAR } from 'modules/markets/constants/market-types'
 
-import getValue from 'utils/get-value';
+import getValue from 'utils/get-value'
 
 const MarketPositions = (p) => {
-  const outcomePositions = getValue(p, 'market.myPositionOutcomes');
-  const nullMessage = 'No Current Positions';
+  const outcomePositions = getValue(p, 'market.myPositionOutcomes')
+  const nullMessage = 'No Current Positions'
 
   return (
     <article className="market-positions">
@@ -40,7 +40,7 @@ const MarketPositions = (p) => {
         </div>
       }
     </article>
-  );
-};
+  )
+}
 
-export default MarketPositions;
+export default MarketPositions

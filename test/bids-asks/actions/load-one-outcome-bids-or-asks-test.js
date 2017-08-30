@@ -1,27 +1,27 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
-import proxyquire from 'proxyquire';
-import thunk from 'redux-thunk';
-import configureMockStore from 'redux-mock-store';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
+import proxyquire from 'proxyquire'
+import thunk from 'redux-thunk'
+import configureMockStore from 'redux-mock-store'
 
-const order1 = { amount: '1' };
-const order2 = { amount: '1.2' };
-const marketsData = { MARKET_0: { minPrice: '0', maxPrice: '1' } };
+const order1 = { amount: '1' }
+const order2 = { amount: '1.2' }
+const marketsData = { MARKET_0: { minPrice: '0', maxPrice: '1' } }
 
 describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
-  proxyquire.noPreserveCache();
+  proxyquire.noPreserveCache()
   const test = t => it(t.description, (done) => {
-    const store = configureMockStore([thunk])({ ...t.mock.state });
+    const store = configureMockStore([thunk])({ ...t.mock.state })
     const loadOneOutcomeBidsOrAsks = proxyquire('../../../src/modules/bids-asks/actions/load-one-outcome-bids-or-asks', {
       '../../../services/augurjs': t.stub.augurjs,
       './insert-order-book-chunk-to-order-book': t.stub.insertOrderBookChunkToOrderBook
-    }).default;
+    }).default
     store.dispatch(loadOneOutcomeBidsOrAsks(t.params.marketID, t.params.outcome, t.params.orderTypeLabel, (err) => {
-      t.assertions(err, store.getActions());
-      store.clearActions();
-      done();
-    }));
-  });
+      t.assertions(err, store.getActions())
+      store.clearActions()
+      done()
+    }))
+  })
   test({
     description: 'short-circuit if market ID not provided',
     params: {
@@ -52,10 +52,10 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
       }
     },
     assertions: (err, actions) => {
-      assert.strictEqual(err, 'must specify market ID, outcome, and order type: undefined 3 sell');
-      assert.deepEqual(actions, []);
+      assert.strictEqual(err, 'must specify market ID, outcome, and order type: undefined 3 sell')
+      assert.deepEqual(actions, [])
     }
-  });
+  })
   test({
     description: 'short-circuit if outcome not provided',
     params: {
@@ -86,10 +86,10 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
       }
     },
     assertions: (err, actions) => {
-      assert.strictEqual(err, 'must specify market ID, outcome, and order type: MARKET_0 undefined sell');
-      assert.deepEqual(actions, []);
+      assert.strictEqual(err, 'must specify market ID, outcome, and order type: MARKET_0 undefined sell')
+      assert.deepEqual(actions, [])
     }
-  });
+  })
   test({
     description: 'short-circuit if orderType not provided',
     params: {
@@ -120,10 +120,10 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
       }
     },
     assertions: (err, actions) => {
-      assert.strictEqual(err, 'must specify market ID, outcome, and order type: MARKET_0 3 undefined');
-      assert.deepEqual(actions, []);
+      assert.strictEqual(err, 'must specify market ID, outcome, and order type: MARKET_0 3 undefined')
+      assert.deepEqual(actions, [])
     }
-  });
+  })
   test({
     description: 'short-circuit if market data not found',
     params: {
@@ -154,10 +154,10 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
       }
     },
     assertions: (err, actions) => {
-      assert.strictEqual(err, 'market MARKET_0 data not found');
-      assert.deepEqual(actions, []);
+      assert.strictEqual(err, 'market MARKET_0 data not found')
+      assert.deepEqual(actions, [])
     }
-  });
+  })
   test({
     description: 'short-circuit if market minPrice not found',
     params: {
@@ -192,10 +192,10 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
       }
     },
     assertions: (err, actions) => {
-      assert.strictEqual(err, 'minPrice and maxPrice not found for market MARKET_0: undefined 1');
-      assert.deepEqual(actions, []);
+      assert.strictEqual(err, 'minPrice and maxPrice not found for market MARKET_0: undefined 1')
+      assert.deepEqual(actions, [])
     }
-  });
+  })
   test({
     description: 'short-circuit if market maxPrice not found',
     params: {
@@ -230,10 +230,10 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
       }
     },
     assertions: (err, actions) => {
-      assert.strictEqual(err, 'minPrice and maxPrice not found for market MARKET_0: 0 null');
-      assert.deepEqual(actions, []);
+      assert.strictEqual(err, 'minPrice and maxPrice not found for market MARKET_0: 0 null')
+      assert.deepEqual(actions, [])
     }
-  });
+  })
   test({
     description: 'best order ID not found',
     params: {
@@ -254,8 +254,8 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
                   _orderType: 1,
                   _market: 'MARKET_0',
                   _outcome: 3
-                });
-                callback(null, '0x0');
+                })
+                callback(null, '0x0')
               }
             }
           },
@@ -277,10 +277,10 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
       }
     },
     assertions: (err, actions) => {
-      assert.strictEqual(err, 'best order ID not found for market MARKET_0: "0x0"');
-      assert.deepEqual(actions, []);
+      assert.strictEqual(err, 'best order ID not found for market MARKET_0: "0x0"')
+      assert.deepEqual(actions, [])
     }
-  });
+  })
   test({
     description: 'no orders found',
     params: {
@@ -301,8 +301,8 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
                   _orderType: 1,
                   _market: 'MARKET_0',
                   _outcome: 3
-                });
-                callback(null, '999999999999999');
+                })
+                callback(null, '999999999999999')
               }
             }
           },
@@ -317,9 +317,9 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
                   _numOrdersToLoad: null,
                   minPrice: '0',
                   maxPrice: '1'
-                });
-                onChunkReceived({});
-                onComplete(null, {});
+                })
+                onChunkReceived({})
+                onComplete(null, {})
               }
             }
           }
@@ -336,7 +336,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
       }
     },
     assertions: (err, actions) => {
-      assert.isNull(err);
+      assert.isNull(err)
       assert.deepEqual(actions, [{
         type: 'UPDATE_IS_FIRST_ORDER_BOOK_CHUNK_LOADED',
         marketID: 'MARKET_0',
@@ -349,9 +349,9 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
         outcome: 3,
         orderTypeLabel: 'sell',
         orderBookChunk: {}
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: 'load two orders',
     params: {
@@ -372,8 +372,8 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
                   _orderType: 1,
                   _market: 'MARKET_0',
                   _outcome: 3
-                });
-                callback(null, '0x1');
+                })
+                callback(null, '0x1')
               }
             }
           },
@@ -388,9 +388,9 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
                   _numOrdersToLoad: null,
                   minPrice: '0',
                   maxPrice: '1'
-                });
-                onChunkReceived({ '0x1': order1, '0x2': order2 });
-                onComplete(null, { '0x1': order1, '0x2': order2 });
+                })
+                onChunkReceived({ '0x1': order1, '0x2': order2 })
+                onComplete(null, { '0x1': order1, '0x2': order2 })
               }
             }
           }
@@ -407,7 +407,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
       }
     },
     assertions: (err, actions) => {
-      assert.isNull(err);
+      assert.isNull(err)
       assert.deepEqual(actions, [{
         type: 'UPDATE_IS_FIRST_ORDER_BOOK_CHUNK_LOADED',
         marketID: 'MARKET_0',
@@ -420,7 +420,7 @@ describe(`modules/bids-asks/actions/load-one-outcome-bids-or-asks.js`, () => {
         outcome: 3,
         orderTypeLabel: 'sell',
         orderBookChunk: { '0x1': order1, '0x2': order2 }
-      }]);
+      }])
     }
-  });
-});
+  })
+})

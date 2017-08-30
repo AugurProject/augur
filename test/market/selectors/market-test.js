@@ -1,22 +1,22 @@
-import { describe, it, beforeEach, afterEach } from 'mocha';
-import proxyquire from 'proxyquire';
-import sinon from 'sinon';
+import { describe, it, beforeEach, afterEach } from 'mocha'
+import proxyquire from 'proxyquire'
+import sinon from 'sinon'
 
-import * as mockStore from 'test/mockStore';
-import marketAssertions from 'assertions/market';
+import * as mockStore from 'test/mockStore'
+import marketAssertions from 'assertions/market'
 
 describe(`modules/market/selectors/market.js`, () => {
-  proxyquire.noPreserveCache().noCallThru();
-  const { store } = mockStore.default;
+  proxyquire.noPreserveCache().noCallThru()
+  const { store } = mockStore.default
 
-  const { loginAccount } = store.getState();
-  const stubbedSelectors = { loginAccount };
+  const { loginAccount } = store.getState()
+  const stubbedSelectors = { loginAccount }
 
-  const stubbedSpeedomatic = { bignum: n => n };
   const stubbedAugurJS = {
-    getMarketCreatorFeesCollected: () => {}
-  };
-  sinon.stub(stubbedAugurJS, 'getMarketCreatorFeesCollected', () => 10);
+    getMarketCreatorFeesCollected: () => {},
+    abi: { bignum: n => n }
+  }
+  sinon.stub(stubbedAugurJS, 'getMarketCreatorFeesCollected', () => 10)
 
   const selector = proxyquire('../../../src/modules/market/selectors/market.js', {
     '../../../store': store,
@@ -25,22 +25,21 @@ describe(`modules/market/selectors/market.js`, () => {
       '../../../store': store
     }),
     '../../../modules/my-markets/selectors/my-markets': proxyquire('../../../src/modules/my-markets/selectors/my-markets', {
-      speedomatic: stubbedSpeedomatic,
       '../../../services/augurjs': stubbedAugurJS,
       '../../../selectors': stubbedSelectors
     })
-  });
+  })
 
   beforeEach(() => {
-    store.clearActions();
-  });
+    store.clearActions()
+  })
 
   afterEach(() => {
-    store.clearActions();
-  });
+    store.clearActions()
+  })
 
   it(`should return the expected values to components`, () => {
-    const actual = selector.default();
-    marketAssertions(actual);
-  });
-});
+    const actual = selector.default()
+    marketAssertions(actual)
+  })
+})

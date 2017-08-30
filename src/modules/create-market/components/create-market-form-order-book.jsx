@@ -1,24 +1,24 @@
 /* eslint react/no-array-index-key: 0 */  // due to potential for dup orders
 
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import BigNumber from 'bignumber.js';
-import Highcharts from 'highcharts';
-import noData from 'highcharts/modules/no-data-to-display';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
+import BigNumber from 'bignumber.js'
+import Highcharts from 'highcharts'
+import noData from 'highcharts/modules/no-data-to-display'
 // import { augur, constants } from 'services/augurjs';
 
-import ComponentNav from 'modules/common/components/component-nav';
-import Input from 'modules/common/components/input';
-import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications';
+import ComponentNav from 'modules/common/components/component-nav'
+import Input from 'modules/common/components/input'
+import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications'
 
-import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
-import { NEW_MARKET_ORDER_BOOK } from 'modules/create-market/constants/new-market-creation-steps';
-import { BUY, SELL } from 'modules/transactions/constants/types';
-import { CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
+import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
+import { NEW_MARKET_ORDER_BOOK } from 'modules/create-market/constants/new-market-creation-steps'
+import { BUY, SELL } from 'modules/transactions/constants/types'
+import { CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
-import getValue from 'utils/get-value';
-import debounce from 'utils/debounce';
+import getValue from 'utils/get-value'
+import debounce from 'utils/debounce'
 
 export default class CreateMarketFormOrderBook extends Component {
   static propTypes = {
@@ -52,7 +52,7 @@ export default class CreateMarketFormOrderBook extends Component {
   };
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.navItems = {
       [BUY]: {
@@ -61,7 +61,7 @@ export default class CreateMarketFormOrderBook extends Component {
       [SELL]: {
         label: 'Ask'
       }
-    };
+    }
 
     this.state = {
       errors: {
@@ -77,22 +77,22 @@ export default class CreateMarketFormOrderBook extends Component {
       priceFocused: false,
       minPrice: new BigNumber(0),
       maxPrice: new BigNumber(1)
-    };
+    }
 
-    this.handleAutoFocus = this.handleAutoFocus.bind(this);
-    this.updateChart = debounce(this.updateChart.bind(this));
-    this.updatePriceBounds = this.updatePriceBounds.bind(this);
-    this.handleAddOrder = this.handleAddOrder.bind(this);
-    this.handleAddOrderViaEnter = this.handleAddOrderViaEnter.bind(this);
-    this.handleRemoveOrder = this.handleRemoveOrder.bind(this);
-    this.updateSeries = this.updateSeries.bind(this);
-    this.sortOrderBook = this.sortOrderBook.bind(this);
-    this.updateInitialLiquidityCosts = this.updateInitialLiquidityCosts.bind(this);
-    this.validateForm = this.validateForm.bind(this);
+    this.handleAutoFocus = this.handleAutoFocus.bind(this)
+    this.updateChart = debounce(this.updateChart.bind(this))
+    this.updatePriceBounds = this.updatePriceBounds.bind(this)
+    this.handleAddOrder = this.handleAddOrder.bind(this)
+    this.handleAddOrderViaEnter = this.handleAddOrderViaEnter.bind(this)
+    this.handleRemoveOrder = this.handleRemoveOrder.bind(this)
+    this.updateSeries = this.updateSeries.bind(this)
+    this.sortOrderBook = this.sortOrderBook.bind(this)
+    this.updateInitialLiquidityCosts = this.updateInitialLiquidityCosts.bind(this)
+    this.validateForm = this.validateForm.bind(this)
   }
 
   componentDidMount() {
-    noData(Highcharts);
+    noData(Highcharts)
 
     this.orderBookPreviewChart = new Highcharts.Chart('order_book_preview_chart_form', {
       chart: {
@@ -129,18 +129,18 @@ export default class CreateMarketFormOrderBook extends Component {
       credits: {
         enabled: false
       }
-    });
+    })
 
-    window.addEventListener('resize', this.updateChart);
-    window.addEventListener('keypress', this.handleAddOrderViaEnter);
+    window.addEventListener('resize', this.updateChart)
+    window.addEventListener('keypress', this.handleAddOrderViaEnter)
   }
 
   componentWillReceiveProps(nextProps) {
-    if (newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_ORDER_BOOK && !nextProps.isValid) nextProps.updateValidity(true, true);
+    if (newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_ORDER_BOOK && !nextProps.isValid) nextProps.updateValidity(true, true)
 
-    if (this.props.outcomes !== nextProps.outcomes) this.setState({ selectedOutcome: nextProps.outcomes[0] });
-    if (this.props.orderBook !== nextProps.orderBook) this.sortOrderBook(nextProps.orderBook);
-    if (this.props.orderBookSorted !== nextProps.orderBookSorted) this.updateSeries(nextProps.orderBookSorted);
+    if (this.props.outcomes !== nextProps.outcomes) this.setState({ selectedOutcome: nextProps.outcomes[0] })
+    if (this.props.orderBook !== nextProps.orderBook) this.sortOrderBook(nextProps.orderBook)
+    if (this.props.orderBookSorted !== nextProps.orderBookSorted) this.updateSeries(nextProps.orderBookSorted)
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -152,7 +152,7 @@ export default class CreateMarketFormOrderBook extends Component {
       this.state.selectedNav !== nextState.selectedNav ||
       this.state.selectedOutcome !== nextState.selectedOutcome
     ) {
-      this.updatePriceBounds(nextProps.type, nextState.selectedOutcome, nextState.selectedNav, nextProps.orderBookSorted, nextProps.scalarSmallNum, nextProps.scalarBigNum);
+      this.updatePriceBounds(nextProps.type, nextState.selectedOutcome, nextState.selectedNav, nextProps.orderBookSorted, nextProps.scalarSmallNum, nextProps.scalarBigNum)
     }
   }
 
@@ -161,30 +161,30 @@ export default class CreateMarketFormOrderBook extends Component {
       prevProps.orderBookSeries !== this.props.orderBookSeries ||
       prevState.selectedOutcome !== this.state.selectedOutcome
     ) {
-      this.updateChart();
+      this.updateChart()
     }
 
     if (prevProps.currentStep !== this.props.currentStep &&
       this.props.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_ORDER_BOOK)
     ) {
-      this.handleAutoFocus();
+      this.handleAutoFocus()
     }
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.updateChart);
+    window.removeEventListener('resize', this.updateChart)
   }
 
   updateChart() {
     if (this.orderBookChart) {
-      const bidSeries = getValue(this.props.orderBookSeries[this.state.selectedOutcome], `${BUY}`) || [];
-      const askSeries = getValue(this.props.orderBookSeries[this.state.selectedOutcome], `${SELL}`) || [];
-      let width;
+      const bidSeries = getValue(this.props.orderBookSeries[this.state.selectedOutcome], `${BUY}`) || []
+      const askSeries = getValue(this.props.orderBookSeries[this.state.selectedOutcome], `${SELL}`) || []
+      let width
 
       if (window.getComputedStyle(this.orderBookChart).getPropertyValue('--adjust-width').indexOf('true') !== -1) {
-        width = this.orderBookForm.clientWidth - 40; // 20px horizontal padding
+        width = this.orderBookForm.clientWidth - 40 // 20px horizontal padding
       } else {
-        width = this.orderBookPreview.clientWidth * 0.60;
+        width = this.orderBookPreview.clientWidth * 0.60
       }
 
       this.orderBookPreviewChart.update({
@@ -195,70 +195,70 @@ export default class CreateMarketFormOrderBook extends Component {
           width,
           height: 400
         }
-      }, false);
+      }, false)
 
-      this.orderBookPreviewChart.series[0].setData(bidSeries, false);
-      this.orderBookPreviewChart.series[1].setData(askSeries, false);
+      this.orderBookPreviewChart.series[0].setData(bidSeries, false)
+      this.orderBookPreviewChart.series[1].setData(askSeries, false)
 
-      this.orderBookPreviewChart.redraw();
+      this.orderBookPreviewChart.redraw()
     }
   }
 
   updatePriceBounds(type, selectedOutcome, selectedSide, orderBook, scalarSmallNum, scalarBigNum) {
-    const oppositeSide = selectedSide === BUY ? SELL : BUY;
-    const ZERO = new BigNumber(0);
-    const ONE = new BigNumber(1);
-    const precision = new BigNumber(10**-8);
-    let minPrice;
-    let maxPrice;
+    const oppositeSide = selectedSide === BUY ? SELL : BUY
+    const ZERO = new BigNumber(0)
+    const ONE = new BigNumber(1)
+    const precision = new BigNumber(10**-8)
+    let minPrice
+    let maxPrice
 
     if (selectedOutcome != null) {
       if (type === SCALAR) {
         if (selectedSide === BUY) {
           // Minimum Price
-          minPrice = scalarSmallNum;
+          minPrice = scalarSmallNum
 
           // Maximum Price
           if (orderBook[selectedOutcome] && orderBook[selectedOutcome][oppositeSide] && orderBook[selectedOutcome][oppositeSide].length) {
-            maxPrice = orderBook[selectedOutcome][oppositeSide][0].price.minus(precision);
+            maxPrice = orderBook[selectedOutcome][oppositeSide][0].price.minus(precision)
           } else {
-            maxPrice = scalarBigNum;
+            maxPrice = scalarBigNum
           }
         } else {
           // Minimum Price
           if (orderBook[selectedOutcome] && orderBook[selectedOutcome][oppositeSide] && orderBook[selectedOutcome][oppositeSide].length) {
-            minPrice = orderBook[selectedOutcome][oppositeSide][0].price.plus(precision);
+            minPrice = orderBook[selectedOutcome][oppositeSide][0].price.plus(precision)
           } else {
-            minPrice = scalarSmallNum;
+            minPrice = scalarSmallNum
           }
 
           // Maximum Price
-          maxPrice = scalarBigNum;
+          maxPrice = scalarBigNum
         }
       } else if (selectedSide === BUY) {
         // Minimum Price
-        minPrice = ZERO;
+        minPrice = ZERO
 
         // Maximum Price
         if (orderBook[selectedOutcome] && orderBook[selectedOutcome][oppositeSide] && orderBook[selectedOutcome][oppositeSide].length) {
-          maxPrice = orderBook[selectedOutcome][oppositeSide][0].price.minus(precision);
+          maxPrice = orderBook[selectedOutcome][oppositeSide][0].price.minus(precision)
         } else {
-          maxPrice = ONE;
+          maxPrice = ONE
         }
       } else {
         // Minimum Price
         if (orderBook[selectedOutcome] && orderBook[selectedOutcome][oppositeSide] && orderBook[selectedOutcome][oppositeSide].length) {
-          minPrice = orderBook[selectedOutcome][oppositeSide][0].price.plus(precision);
+          minPrice = orderBook[selectedOutcome][oppositeSide][0].price.plus(precision)
         } else {
-          minPrice = ZERO;
+          minPrice = ZERO
         }
 
         // Maximum Price
-        maxPrice = ONE;
+        maxPrice = ONE
       }
     }
 
-    this.setState({ minPrice, maxPrice });
+    this.setState({ minPrice, maxPrice })
   }
 
   handleAddOrder() {
@@ -267,91 +267,91 @@ export default class CreateMarketFormOrderBook extends Component {
       type: this.state.selectedNav,
       price: this.state.orderPrice,
       quantity: this.state.orderQuantity
-    });
+    })
 
-    this.updateInitialLiquidityCosts({ type: this.state.selectedNav, price: this.state.orderPrice, quantity: this.state.orderQuantity });
+    this.updateInitialLiquidityCosts({ type: this.state.selectedNav, price: this.state.orderPrice, quantity: this.state.orderQuantity })
 
     // Clear Inputs + Reset Form
     this.setState({ orderPrice: '', orderQuantity: '' }, () => {
-      this.validateForm();
-      this.handleAutoFocus();
-      this.props.updateValidity(true);
-    });
+      this.validateForm()
+      this.handleAutoFocus()
+      this.props.updateValidity(true)
+    })
   }
 
   handleAddOrderViaEnter(e) {
-    if (this.state.isOrderValid && e.keyCode === 13) this.handleAddOrder();
+    if (this.state.isOrderValid && e.keyCode === 13) this.handleAddOrder()
   }
 
   handleAutoFocus() {
-    this.defaultFormToFocus.getElementsByTagName('input')[0].focus();
+    this.defaultFormToFocus.getElementsByTagName('input')[0].focus()
   }
 
   handleRemoveOrder(type, orderToRemove, i) {
-    const orderToRemoveIndex = this.props.orderBook[this.state.selectedOutcome].findIndex(order => orderToRemove.price === order.price && orderToRemove.quantity === order.quantity);
+    const orderToRemoveIndex = this.props.orderBook[this.state.selectedOutcome].findIndex(order => orderToRemove.price === order.price && orderToRemove.quantity === order.quantity)
 
-    this.props.removeOrderFromNewMarket({ outcome: this.state.selectedOutcome, index: orderToRemoveIndex });
+    this.props.removeOrderFromNewMarket({ outcome: this.state.selectedOutcome, index: orderToRemoveIndex })
 
-    this.updateInitialLiquidityCosts(this.props.orderBook[this.state.selectedOutcome][orderToRemoveIndex], true);
+    this.updateInitialLiquidityCosts(this.props.orderBook[this.state.selectedOutcome][orderToRemoveIndex], true)
   }
 
   sortOrderBook(orderBook) {
     const orderBookSorted = Object.keys(orderBook).reduce((p, outcome) => {
-      if (p[outcome] == null) p[outcome] = {};
+      if (p[outcome] == null) p[outcome] = {}
 
       // Filter Orders By Type
       orderBook[outcome].forEach((order) => {
-        if (p[outcome][order.type] == null) p[outcome][order.type] = [];
-        p[outcome][order.type].push({ price: order.price, quantity: order.quantity });
-      });
+        if (p[outcome][order.type] == null) p[outcome][order.type] = []
+        p[outcome][order.type].push({ price: order.price, quantity: order.quantity })
+      })
 
       // Sort Order By Price
       Object.keys(p[outcome]).forEach((type) => {
-        if (type === BUY) p[outcome][type] = p[outcome][type].sort((a, b) => b.price - a.price);
-        if (type === SELL) p[outcome][type] = p[outcome][type].sort((a, b) => a.price - b.price);
-      });
+        if (type === BUY) p[outcome][type] = p[outcome][type].sort((a, b) => b.price - a.price)
+        if (type === SELL) p[outcome][type] = p[outcome][type].sort((a, b) => a.price - b.price)
+      })
 
-      return p;
-    }, {});
+      return p
+    }, {})
 
-    this.props.updateNewMarket({ orderBookSorted });
+    this.props.updateNewMarket({ orderBookSorted })
   }
 
   updateSeries(orderBook) {
     const orderBookSeries = Object.keys(orderBook).reduce((p, outcome) => {
-      if (p[outcome] == null) p[outcome] = {};
+      if (p[outcome] == null) p[outcome] = {}
 
       Object.keys(orderBook[outcome]).forEach((type) => {
-        if (p[outcome][type] == null) p[outcome][type] = [];
+        if (p[outcome][type] == null) p[outcome][type] = []
 
-        let totalQuantity = new BigNumber(0);
+        let totalQuantity = new BigNumber(0)
 
         orderBook[outcome][type].forEach((order) => {
-          const matchedPriceIndex = p[outcome][type].findIndex(existing => existing[0] === order.price.toNumber());
+          const matchedPriceIndex = p[outcome][type].findIndex(existing => existing[0] === order.price.toNumber())
 
-          totalQuantity = totalQuantity.plus(order.quantity);
+          totalQuantity = totalQuantity.plus(order.quantity)
 
           if (matchedPriceIndex > -1) {
-            p[outcome][type][matchedPriceIndex][1] = totalQuantity.toNumber();
+            p[outcome][type][matchedPriceIndex][1] = totalQuantity.toNumber()
           } else {
-            p[outcome][type].push([order.price.toNumber(), totalQuantity.toNumber()]);
+            p[outcome][type].push([order.price.toNumber(), totalQuantity.toNumber()])
           }
-        });
+        })
 
-        p[outcome][type].sort((a, b) => a[0] - b[0]);
-      });
+        p[outcome][type].sort((a, b) => a[0] - b[0])
+      })
 
-      return p;
-    }, {});
+      return p
+    }, {})
 
-    this.props.updateNewMarket({ orderBookSeries });
+    this.props.updateNewMarket({ orderBookSeries })
   }
 
   updateInitialLiquidityCosts(order, shouldReduce) {
-    let initialLiquidityEth;
-    let initialLiquidityGas;
-    let initialLiquidityFees;
-    let action;
+    let initialLiquidityEth
+    let initialLiquidityGas
+    let initialLiquidityFees
+    let action
 
     // TODO replace getBidAction/getShortAskAction w/ new simulation
     if (order.type === BUY) {
@@ -361,77 +361,77 @@ export default class CreateMarketFormOrderBook extends Component {
     }
 
     if (shouldReduce) {
-      initialLiquidityEth = this.props.initialLiquidityEth.minus(order.price.times(order.quantity));
-      initialLiquidityGas = this.props.initialLiquidityGas.minus(new BigNumber(action.gasEth));
-      initialLiquidityFees = this.props.initialLiquidityFees.minus(new BigNumber(action.feeEth));
+      initialLiquidityEth = this.props.initialLiquidityEth.minus(order.price.times(order.quantity))
+      initialLiquidityGas = this.props.initialLiquidityGas.minus(new BigNumber(action.gasEth))
+      initialLiquidityFees = this.props.initialLiquidityFees.minus(new BigNumber(action.feeEth))
     } else {
-      initialLiquidityEth = this.props.initialLiquidityEth.plus(order.quantity.times(order.price));
-      initialLiquidityGas = this.props.initialLiquidityGas.plus(new BigNumber(action.gasEth));
-      initialLiquidityFees = this.props.initialLiquidityFees.plus(new BigNumber(action.feeEth));
+      initialLiquidityEth = this.props.initialLiquidityEth.plus(order.quantity.times(order.price))
+      initialLiquidityGas = this.props.initialLiquidityGas.plus(new BigNumber(action.gasEth))
+      initialLiquidityFees = this.props.initialLiquidityFees.plus(new BigNumber(action.feeEth))
     }
 
-    this.props.updateNewMarket({ initialLiquidityEth, initialLiquidityGas, initialLiquidityFees });
+    this.props.updateNewMarket({ initialLiquidityEth, initialLiquidityGas, initialLiquidityFees })
   }
 
   validateForm(orderQuantityRaw, orderPriceRaw) {
     const sanitizeValue = (value, type) => {
       if (value == null) {
         if (type === 'quantity') {
-          return this.state.orderQuantity;
+          return this.state.orderQuantity
         }
-        return this.state.orderPrice;
+        return this.state.orderPrice
       } else if (!(value instanceof BigNumber) && value !== '') {
-        return new BigNumber(value);
+        return new BigNumber(value)
       }
 
-      return value;
-    };
+      return value
+    }
 
-    const orderQuantity = sanitizeValue(orderQuantityRaw, 'quantity');
-    const orderPrice = sanitizeValue(orderPriceRaw);
+    const orderQuantity = sanitizeValue(orderQuantityRaw, 'quantity')
+    const orderPrice = sanitizeValue(orderPriceRaw)
 
     const errors = {
       quantity: [],
       price: []
-    };
-    let isOrderValid;
+    }
+    let isOrderValid
 
     // Validate Quantity
     if (orderQuantity !== '' && orderPrice !== '' && orderPrice.times(orderQuantity).plus(this.props.initialLiquidityEth).greaterThan(new BigNumber(this.props.availableEth))) {
       // Done this way so both inputs are in err
-      errors.quantity.push('Insufficient funds');
-      errors.price.push('Insufficient funds');
+      errors.quantity.push('Insufficient funds')
+      errors.price.push('Insufficient funds')
     } else if (orderQuantity !== '' && orderQuantity.lessThanOrEqualTo(new BigNumber(0))) {
-      errors.quantity.push('Quantity must be positive');
+      errors.quantity.push('Quantity must be positive')
     } else if (orderPrice !== '') {
-      const bids = getValue(this.props.orderBookSorted[this.state.selectedOutcome], `${BUY}`);
-      const asks = getValue(this.props.orderBookSorted[this.state.selectedOutcome], `${SELL}`);
+      const bids = getValue(this.props.orderBookSorted[this.state.selectedOutcome], `${BUY}`)
+      const asks = getValue(this.props.orderBookSorted[this.state.selectedOutcome], `${SELL}`)
 
       if (this.props.type !== SCALAR) {
         if (this.state.selectedNav === BUY && asks && asks.length && orderPrice.greaterThanOrEqualTo(asks[0].price)) {
-          errors.price.push(`Price must be less than best ask price of: ${asks[0].price.toNumber()}`);
+          errors.price.push(`Price must be less than best ask price of: ${asks[0].price.toNumber()}`)
         } else if (this.state.selectedNav === SELL && bids && bids.length && orderPrice.lessThanOrEqualTo(bids[0].price)) {
-          errors.price.push(`Price must be greater than best bid price of: ${bids[0].price.toNumber()}`);
+          errors.price.push(`Price must be greater than best bid price of: ${bids[0].price.toNumber()}`)
         } else if (orderPrice.greaterThan(this.state.maxPrice)) {
-          errors.price.push('Price cannot exceed 1');
+          errors.price.push('Price cannot exceed 1')
         } else if (orderPrice.lessThan(this.state.minPrice)) {
-          errors.price.push('Price cannot be below 0');
+          errors.price.push('Price cannot be below 0')
         }
       } else if (this.state.selectedNav === BUY && asks && asks.length && orderPrice.greaterThanOrEqualTo(asks[0].price)) {
-        errors.price.push(`Price must be less than best ask price of: ${asks[0].price.toNumber()}`);
+        errors.price.push(`Price must be less than best ask price of: ${asks[0].price.toNumber()}`)
       } else if (this.state.selectedNav === SELL && bids && bids.length && orderPrice.lessThanOrEqualTo(bids[0].price)) {
-        errors.price.push(`Price must be greater than best bid price of: ${bids[0].price.toNumber()}`);
+        errors.price.push(`Price must be greater than best bid price of: ${bids[0].price.toNumber()}`)
       } else if (orderPrice.greaterThan(this.state.maxPrice)) {
-        errors.price.push(`Price cannot exceed ${this.state.maxPrice.toNumber()}`);
+        errors.price.push(`Price cannot exceed ${this.state.maxPrice.toNumber()}`)
       } else if (orderPrice.lessThan(this.state.minPrice)) {
-        errors.price.push(`Price cannot be below ${this.state.minPrice.toNumber()}`);
+        errors.price.push(`Price cannot be below ${this.state.minPrice.toNumber()}`)
       }
     }
 
     if (orderQuantity === '' || orderPrice === '' || errors.quantity.length || errors.price.length) {
-      isOrderValid = false;
+      isOrderValid = false
     } else {
-      isOrderValid = true;
+      isOrderValid = true
     }
 
     this.setState({
@@ -439,21 +439,21 @@ export default class CreateMarketFormOrderBook extends Component {
       isOrderValid,
       orderQuantity,
       orderPrice
-    });
+    })
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
-    const errors = Array.from(new Set([...s.errors.quantity, ...s.errors.price]));
+    const errors = Array.from(new Set([...s.errors.quantity, ...s.errors.price]))
 
-    const bids = getValue(p.orderBookSorted[s.selectedOutcome], `${BUY}`);
-    const asks = getValue(p.orderBookSorted[s.selectedOutcome], `${SELL}`);
+    const bids = getValue(p.orderBookSorted[s.selectedOutcome], `${BUY}`)
+    const asks = getValue(p.orderBookSorted[s.selectedOutcome], `${SELL}`)
 
     return (
       <article
-        ref={(orderBookForm) => { this.orderBookForm = orderBookForm; }}
+        ref={(orderBookForm) => { this.orderBookForm = orderBookForm }}
         className={`create-market-form-part create-market-form-order-book ${p.className || ''}`}
       >
         <div className="create-market-form-part-content">
@@ -482,7 +482,7 @@ export default class CreateMarketFormOrderBook extends Component {
                           <button
                             className="unstyled"
                             onClick={() => {
-                              this.setState({ selectedOutcome: outcome });
+                              this.setState({ selectedOutcome: outcome })
                             }}
                           >
                             <span>{outcome}</span>
@@ -500,9 +500,9 @@ export default class CreateMarketFormOrderBook extends Component {
                   <div
                     className="order-book-entry"
                     onSubmit={(e) => {
-                      e.preventDefault();
+                      e.preventDefault()
 
-                      this.handleAddOrder();
+                      this.handleAddOrder()
                     }}
                   >
                     <ComponentNav
@@ -512,7 +512,7 @@ export default class CreateMarketFormOrderBook extends Component {
                       updateSelectedNav={selectedNav => this.setState({ selectedNav })}
                     />
                     <div
-                      ref={(defaultFormToFocus) => { this.defaultFormToFocus = defaultFormToFocus; }}
+                      ref={(defaultFormToFocus) => { this.defaultFormToFocus = defaultFormToFocus }}
                       className="order-book-entry-inputs"
                     >
                       <Input
@@ -560,11 +560,11 @@ export default class CreateMarketFormOrderBook extends Component {
                 </div>
               </div>
               <div
-                ref={(orderBookPreview) => { this.orderBookPreview = orderBookPreview; }}
+                ref={(orderBookPreview) => { this.orderBookPreview = orderBookPreview }}
                 className="order-book-preview"
               >
                 <div
-                  ref={(orderBookChart) => { this.orderBookChart = orderBookChart; }}
+                  ref={(orderBookChart) => { this.orderBookChart = orderBookChart }}
                   id="order_book_preview_chart_form"
                 />
                 <div className="order-book-preview-table">
@@ -584,11 +584,11 @@ export default class CreateMarketFormOrderBook extends Component {
                             <button
                               className="unstyled table-cells"
                               onClick={(e) => {
-                                const target = e.currentTarget;
-                                target.classList.add('display-order-removal-button');
+                                const target = e.currentTarget
+                                target.classList.add('display-order-removal-button')
                                 setTimeout(() => {
-                                  target.classList.remove('display-order-removal-button');
-                                }, 2000);
+                                  target.classList.remove('display-order-removal-button')
+                                }, 2000)
                               }}
                             >
                               <span>
@@ -618,11 +618,11 @@ export default class CreateMarketFormOrderBook extends Component {
                             <button
                               className="unstyled table-cells"
                               onClick={(e) => {
-                                const target = e.currentTarget;
-                                target.classList.add('display-order-removal-button');
+                                const target = e.currentTarget
+                                target.classList.add('display-order-removal-button')
                                 setTimeout(() => {
-                                  target.classList.remove('display-order-removal-button');
-                                }, 2000);
+                                  target.classList.remove('display-order-removal-button')
+                                }, 2000)
                               }}
                             >
                               <span>
@@ -650,6 +650,6 @@ export default class CreateMarketFormOrderBook extends Component {
           </div>
         </div>
       </article>
-    );
+    )
   }
 }

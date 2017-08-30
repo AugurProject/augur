@@ -1,7 +1,7 @@
-import React from 'react';
-import AugurLogoIcon from 'modules/common/components/augur-logo-icon/augur-logo-icon';
+import React from 'react'
+import AugurLogoIcon from 'modules/common/components/augur-logo-icon/augur-logo-icon'
 
-import Styles from 'modules/app/components/logo/logo.styles';
+import Styles from 'modules/app/components/logo/logo.styles'
 
 const Logo = props => (
   <section className={Styles.Logo}>
@@ -10,6 +10,6 @@ const Logo = props => (
       Augur
     </span>
   </section>
-);
+)
 
-export default Logo;
+export default Logo

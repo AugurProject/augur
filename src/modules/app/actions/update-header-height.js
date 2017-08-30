@@ -1,4 +1,4 @@
-export const UPDATE_HEADER_HEIGHT = 'UPDATE_HEADER_HEIGHT';
+export const UPDATE_HEADER_HEIGHT = 'UPDATE_HEADER_HEIGHT'
 
 export function updateHeaderHeight(headerHeight) {
   return {
@@ -6,5 +6,5 @@ export function updateHeaderHeight(headerHeight) {
     data: {
       headerHeight
     }
-  };
+  }
 }

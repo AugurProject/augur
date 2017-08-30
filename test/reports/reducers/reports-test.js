@@ -1,18 +1,18 @@
-import { describe, it, afterEach } from 'mocha';
-import { assert } from 'chai';
-import { UPDATE_REPORTS, CLEAR_REPORTS } from 'modules/reports/actions/update-reports';
-import testState from 'test/testState';
-import reducer from 'modules/reports/reducers/reports';
+import { describe, it, afterEach } from 'mocha'
+import { assert } from 'chai'
+import { UPDATE_REPORTS, CLEAR_REPORTS } from 'modules/reports/actions/update-reports'
+import testState from 'test/testState'
+import reducer from 'modules/reports/reducers/reports'
 
 describe(`modules/reports/reducers/reports.js`, () => {
-  let action;
-  let test;
-  const testStateReports = Object.assign({}, testState.reports[testState.branch.id]);
-  const state = Object.assign({}, testState);
+  let action
+  let test
+  const testStateReports = Object.assign({}, testState.reports[testState.branch.id])
+  const state = Object.assign({}, testState)
 
   afterEach(() => {
-    testState.reports[testState.branch.id] = Object.assign({}, testStateReports);
-  });
+    testState.reports[testState.branch.id] = Object.assign({}, testStateReports)
+  })
 
   describe(`UPDATE_REPORTS`, () => {
     it('should update reports', () => {
@@ -34,7 +34,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
             }
           }
         }
-      };
+      }
       const out = {
         [testState.branch.id]: {
           test: {
@@ -56,11 +56,11 @@ describe(`modules/reports/reducers/reports.js`, () => {
             isIndeterminate: false
           }
         }
-      };
-      test = reducer(state.reports, action);
-      assert.deepEqual(test, out, `Didn't update report information`);
-    });
-  });
+      }
+      test = reducer(state.reports, action)
+      assert.deepEqual(test, out, `Didn't update report information`)
+    })
+  })
 
   describe('UPDATE_REPORT', () => {
     const test = t => it(t.description, () => t.assertions(reducer(t.state.reports, {
@@ -68,7 +68,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
       branchID: t.params.branchID,
       marketID: t.params.marketID,
       report: t.params.report
-    })));
+    })))
     test({
       description: 'no report data',
       params: {
@@ -105,9 +105,9 @@ describe(`modules/reports/reducers/reports.js`, () => {
               marketID: '0xe3'
             }
           }
-        });
+        })
       }
-    });
+    })
     test({
       description: 'insert new report',
       params: {
@@ -147,9 +147,9 @@ describe(`modules/reports/reducers/reports.js`, () => {
               period: 7
             }
           }
-        });
+        })
       }
-    });
+    })
     test({
       description: 'update existing report',
       params: {
@@ -187,9 +187,9 @@ describe(`modules/reports/reducers/reports.js`, () => {
               reportedOutcomeID: '2'
             }
           }
-        });
+        })
       }
-    });
+    })
     test({
       description: 'insert first report on branch',
       params: {
@@ -210,17 +210,17 @@ describe(`modules/reports/reducers/reports.js`, () => {
               period: 7
             }
           }
-        });
+        })
       }
-    });
-  });
+    })
+  })
 
   describe('CLEAR_OLD_REPORTS', () => {
     const test = t => it(t.description, () => t.assertions(reducer(t.state.reports, {
       type: 'CLEAR_OLD_REPORTS',
       branchID: t.state.branch.id,
       currentReportingWindowAddress: t.state.branch.currentReportingWindowAddress
-    })));
+    })))
     test({
       description: 'one old and one current report',
       state: {
@@ -261,9 +261,9 @@ describe(`modules/reports/reducers/reports.js`, () => {
               isIndeterminate: false
             }
           }
-        });
+        })
       }
-    });
+    })
     test({
       description: 'one old and one current report, both uncommitted',
       state: {
@@ -304,9 +304,9 @@ describe(`modules/reports/reducers/reports.js`, () => {
               isIndeterminate: false
             }
           }
-        });
+        })
       }
-    });
+    })
     test({
       description: 'one old and one current report, old report committed',
       state: {
@@ -347,9 +347,9 @@ describe(`modules/reports/reducers/reports.js`, () => {
               isIndeterminate: false
             }
           }
-        });
+        })
       }
-    });
+    })
     test({
       description: 'one old and one current report, old report committed and revealed',
       state: {
@@ -390,9 +390,9 @@ describe(`modules/reports/reducers/reports.js`, () => {
               isIndeterminate: false
             }
           }
-        });
+        })
       }
-    });
+    })
     test({
       description: 'two old reports',
       state: {
@@ -424,9 +424,9 @@ describe(`modules/reports/reducers/reports.js`, () => {
       assertions: (reduced) => {
         assert.deepEqual(reduced, {
           '0xb1': {}
-        });
+        })
       }
-    });
+    })
     test({
       description: 'two current reports',
       state: {
@@ -475,9 +475,9 @@ describe(`modules/reports/reducers/reports.js`, () => {
               isIndeterminate: false
             }
           }
-        });
+        })
       }
-    });
+    })
     test({
       description: 'two current reports and two old reports',
       state: {
@@ -542,9 +542,9 @@ describe(`modules/reports/reducers/reports.js`, () => {
               isIndeterminate: false
             }
           }
-        });
+        })
       }
-    });
+    })
     test({
       description: 'two current reports and two old reports on branch 1, one current report and three old reports on branch 2',
       state: {
@@ -677,16 +677,16 @@ describe(`modules/reports/reducers/reports.js`, () => {
               isIndeterminate: false
             }
           }
-        });
+        })
       }
-    });
-  });
+    })
+  })
 
   describe(`CLEAR_REPORTS`, () => {
     it('should clear all reports', () => {
       action = {
         type: CLEAR_REPORTS
-      };
+      }
       const fakeState = {
         [testState.branch.id]: {
           test: {
@@ -702,9 +702,9 @@ describe(`modules/reports/reducers/reports.js`, () => {
             isIndeterminate: false
           }
         }
-      };
-      test = reducer(fakeState, action);
-      assert.deepEqual(test, {}, `Didn't clear reports correctly`);
-    });
-  });
-});
+      }
+      test = reducer(fakeState, action)
+      assert.deepEqual(test, {}, `Didn't clear reports correctly`)
+    })
+  })
+})

@@ -1,10 +1,10 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
 
-import * as formatNumber from 'utils/format-number';
+import * as formatNumber from 'utils/format-number'
 
 describe('utils/format-number.js', () => {
-  const	num = 1000.100;
+  const	num = 1000.100
   const utils = [
     {
       func: 'formatEtherTokens',
@@ -119,7 +119,7 @@ describe('utils/format-number.js', () => {
         full: '1,000.10 REP'
       }
     }
-  ];
+  ]
 
   utils.forEach((currentUtil) => {
     describe(`${currentUtil.func}`, () => {
@@ -128,10 +128,10 @@ describe('utils/format-number.js', () => {
           formatNumber[`${currentUtil.func}`](currentUtil.num || num),
           currentUtil.out,
           'returned formatted number is not correctly formatted'
-        );
-      });
-    });
-  });
+        )
+      })
+    })
+  })
 
   describe('formatNone', () => {
     it('should return a properly formatted `none` number object', () => {
@@ -144,9 +144,9 @@ describe('utils/format-number.js', () => {
         minimized: '-',
         denomination: '',
         full: '-'
-      };
+      }
 
-      assert.deepEqual(formatNumber.formatNone(), out, 'returned `none` formatted number object was not correct formatted');
-    });
-  });
-});
+      assert.deepEqual(formatNumber.formatNone(), out, 'returned `none` formatted number object was not correct formatted')
+    })
+  })
+})

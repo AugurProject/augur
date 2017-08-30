@@ -1,15 +1,15 @@
-import memoize from 'memoizee';
-import BigNumber from 'bignumber.js';
-import speedomatic from 'speedomatic';
+import memoize from 'memoizee'
+import BigNumber from 'bignumber.js'
+import speedomatic from 'speedomatic'
 
-import store from 'src/store';
+import store from 'src/store'
 
-import { isOrderOfUser } from 'modules/bids-asks/helpers/is-order-of-user';
+import { isOrderOfUser } from 'modules/bids-asks/helpers/is-order-of-user'
 
-import { BUY, SELL } from 'modules/transactions/constants/types';
-import { CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-status';
+import { BUY, SELL } from 'modules/transactions/constants/types'
+import { CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-status'
 
-import { formatNone, formatEtherTokens, formatShares } from 'utils/format-number';
+import { formatNone, formatEtherTokens, formatShares } from 'utils/format-number'
 
 /**
  *
@@ -19,9 +19,9 @@ import { formatNone, formatEtherTokens, formatShares } from 'utils/format-number
  * @return {Array}
  */
 export default function (outcomeId, marketOrderBook) {
-  const { loginAccount, orderCancellation } = store.getState();
+  const { loginAccount, orderCancellation } = store.getState()
 
-  return selectUserOpenOrders(outcomeId, loginAccount, marketOrderBook, orderCancellation);
+  return selectUserOpenOrders(outcomeId, loginAccount, marketOrderBook, orderCancellation)
 }
 
 /**
@@ -34,18 +34,18 @@ export default function (outcomeId, marketOrderBook) {
  * @return {Array}
  */
 const selectUserOpenOrders = memoize((outcomeID, loginAccount, marketOrderBook, orderCancellation) => {
-  const isUserLoggedIn = loginAccount.address != null;
+  const isUserLoggedIn = loginAccount.address != null
 
   if (!isUserLoggedIn || marketOrderBook == null) {
-    return [];
+    return []
   }
 
-  const userBids = marketOrderBook.buy == null ? [] : getUserOpenOrders(marketOrderBook.buy, BUY, outcomeID, loginAccount.address, orderCancellation);
+  const userBids = marketOrderBook.buy == null ? [] : getUserOpenOrders(marketOrderBook.buy, BUY, outcomeID, loginAccount.address, orderCancellation)
 
-  const userAsks = marketOrderBook.sell == null ? [] : getUserOpenOrders(marketOrderBook.sell, SELL, outcomeID, loginAccount.address, orderCancellation);
+  const userAsks = marketOrderBook.sell == null ? [] : getUserOpenOrders(marketOrderBook.sell, SELL, outcomeID, loginAccount.address, orderCancellation)
 
-  return userAsks.concat(userBids);
-}, { max: 10 });
+  return userAsks.concat(userBids)
+}, { max: 10 })
 
 /**
  * Returns user's order for specified outcome sorted by price
@@ -73,5 +73,5 @@ function getUserOpenOrders(orders, orderType, outcomeID, userID, orderCancellati
         matchedShares: formatNone(),
         unmatchedShares: formatShares(order.amount)
       }
-    ));
+    ))
 }

@@ -1,7 +1,7 @@
-import React from 'react';
+import React from 'react'
 
-import MarketBasics from 'modules/market/components/market-basics/market-basics';
-import MarketDetails from 'modules/market/components/market-details';
+import MarketBasics from 'modules/market/components/market-basics/market-basics'
+import MarketDetails from 'modules/market/components/market-details'
 
 const MarketReported = p => (
   <article className="market-reported">
@@ -15,6 +15,6 @@ const MarketReported = p => (
       </article>
     </div>
   </article>
-);
+)
 
-export default MarketReported;
+export default MarketReported

@@ -1,11 +1,11 @@
 /* eslint react/no-array-index-key: 0 */  // It's OK in this specific instance as potentially two items have itentical values
 
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import Input from 'modules/common/components/input';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
+import Input from 'modules/common/components/input'
 
-import debounce from 'utils/debounce';
+import debounce from 'utils/debounce'
 
 export default class InputList extends Component {
   // TODO -- Prop Validations
@@ -21,68 +21,68 @@ export default class InputList extends Component {
   };
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       list: this.fillMinElements(this.props.list, this.props.listMinElements),
       warnings: []
-    };
+    }
 
-    this.clearWarnings = debounce(this.clearWarnings.bind(this), 3000);
-    this.handleChange = this.handleChange.bind(this);
-    this.fillMinElements = this.fillMinElements.bind(this);
+    this.clearWarnings = debounce(this.clearWarnings.bind(this), 3000)
+    this.handleChange = this.handleChange.bind(this)
+    this.fillMinElements = this.fillMinElements.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.warnings && this.props.warnings !== nextProps.warnings) {
-      this.setState({ warnings: nextProps.warnings });
-      this.clearWarnings();
+      this.setState({ warnings: nextProps.warnings })
+      this.clearWarnings()
     }
     if (nextProps.list !== this.state.list) {
-      this.setState({ list: this.fillMinElements(nextProps.list, nextProps.listMinElements) });
+      this.setState({ list: this.fillMinElements(nextProps.list, nextProps.listMinElements) })
     }
   }
 
   clearWarnings() {
-    this.setState({ warnings: [] });
+    this.setState({ warnings: [] })
   }
 
   handleChange = (i, val) => {
-    const newList = (this.state.list || []).slice();
+    const newList = (this.state.list || []).slice()
 
     if ((!val || !val.length) && (!this.props.listMinElements || (i >= this.props.listMinElements - 1))) {
-      newList.splice(i, 1);
+      newList.splice(i, 1)
     } else {
-      newList[i] = val;
+      newList[i] = val
     }
 
-    this.props.onChange(newList);
+    this.props.onChange(newList)
 
-    this.setState({ list: newList });
+    this.setState({ list: newList })
   };
 
   fillMinElements = (list = [], minElements) => {
-    let len;
-    let i;
-    let newList = list;
+    let len
+    let i
+    let newList = list
     if (minElements && list.length < minElements) {
-      newList = newList.slice();
-      len = minElements - newList.length - 1;
+      newList = newList.slice()
+      len = minElements - newList.length - 1
       for (i = 0; i < len; i++) {
-        newList.push('');
+        newList.push('')
       }
     }
-    return newList;
+    return newList
   };
 
   render() {
-    const p = this.props;
-    const s = this.state;
-    let list = s.list;
+    const p = this.props
+    const s = this.state
+    let list = s.list
 
     if (!p.listMaxElements || list.length < p.listMaxElements) {
-      list = list.slice();
-      list.push('');
+      list = list.slice()
+      list.push('')
     }
 
     return (
@@ -112,6 +112,6 @@ export default class InputList extends Component {
           </div>
         ))}
       </div>
-    );
+    )
   }
 }

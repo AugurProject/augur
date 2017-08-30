@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Helmet } from 'react-helmet';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { Helmet } from 'react-helmet'
 
-import Transactions from 'modules/transactions/components/transactions';
-import Branch from 'modules/branch/components/branch';
-import Paginator from 'modules/common/components/paginator/paginator';
-import Spinner from 'modules/common/components/spinner';
-import TransactionsLoadingActions from 'modules/transactions/components/transactions-loading-actions';
+import Transactions from 'modules/transactions/components/transactions'
+import Branch from 'modules/branch/components/branch'
+import Paginator from 'modules/common/components/paginator/paginator'
+import Spinner from 'modules/common/components/spinner'
+import TransactionsLoadingActions from 'modules/transactions/components/transactions-loading-actions'
 
-import getValue from 'utils/get-value';
-import debounce from 'utils/debounce';
+import getValue from 'utils/get-value'
+import debounce from 'utils/debounce'
 
 export default class TransactionsView extends Component {
   static propTypes = {
@@ -26,74 +26,74 @@ export default class TransactionsView extends Component {
   };
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       lowerBound: null,
       boundedLength: null,
       pageChanged: false,
       hasAttachedScrollListener: false,
-    };
+    }
 
-    this.handleScroll = debounce(this.handleScroll.bind(this), 100);
-    this.setSegment = this.setSegment.bind(this);
+    this.handleScroll = debounce(this.handleScroll.bind(this), 100)
+    this.setSegment = this.setSegment.bind(this)
   }
 
   componentDidMount() {
-    this.manageScrollEventListener(this.props, this.state);
+    this.manageScrollEventListener(this.props, this.state)
   }
 
   componentWillUpdate(nextProps, nextState) {
     // These are to prevent the CSSTransitionGroup from transitioning transactions on pagination
-    if (this.state.pageChanged !== nextState.pageChanged) this.setState({ pageChanged: false });
+    if (this.state.pageChanged !== nextState.pageChanged) this.setState({ pageChanged: false })
 
-    if (!nextState.hasAttachedScrollListener && nextProps.isMobile) this.setState({ hasAttachedScrollListener: true });
-    if (nextState.hasAttachedScrollListener && !nextProps.isMobile) this.setState({ hasAttachedScrollListener: false });
+    if (!nextState.hasAttachedScrollListener && nextProps.isMobile) this.setState({ hasAttachedScrollListener: true })
+    if (nextState.hasAttachedScrollListener && !nextProps.isMobile) this.setState({ hasAttachedScrollListener: false })
   }
 
   componentDidUpdate(prevProps, prevState) {
-    this.manageScrollEventListener(this.props, this.state);
+    this.manageScrollEventListener(this.props, this.state)
   }
 
   componentWillUnmount() {
-    if (this.state.hasAttachedScrollListener) window.removeEventListener('scroll', this.handleScroll);
+    if (this.state.hasAttachedScrollListener) window.removeEventListener('scroll', this.handleScroll)
   }
 
   setSegment(lowerBound, upperBound, boundedLength) {
-    this.setState({ lowerBound, boundedLength, pageChanged: this.state.lowerBound !== lowerBound });
+    this.setState({ lowerBound, boundedLength, pageChanged: this.state.lowerBound !== lowerBound })
   }
 
   handleScroll() {
-    const D = document;
+    const D = document
     const documentHeight = Math.max(
         D.body.scrollHeight, D.documentElement.scrollHeight,
         D.body.offsetHeight, D.documentElement.offsetHeight,
         D.body.clientHeight, D.documentElement.clientHeight
-    ); // Cross Browser Compatibility
-    const currentScrollPosition = (document.documentElement.scrollTop || document.body.scrollTop) + window.innerHeight;
+    ) // Cross Browser Compatibility
+    const currentScrollPosition = (document.documentElement.scrollTop || document.body.scrollTop) + window.innerHeight
 
     if (documentHeight - currentScrollPosition < 200 && !this.props.transactionsLoading) {
-      this.props.loadMoreTransactions();
+      this.props.loadMoreTransactions()
     }
   }
 
   manageScrollEventListener(p, s) {
     if (p.isMobile && !s.hasAttachedScrollListener) {
-      window.addEventListener('scroll', this.handleScroll);
-      this.setState({ hasAttachedScrollListener: true });
+      window.addEventListener('scroll', this.handleScroll)
+      this.setState({ hasAttachedScrollListener: true })
     } else if (!p.isMobile && s.hasAttachedScrollListener) {
-      window.removeEventListener('scroll', this.handleScroll);
-      this.setState({ hasAttachedScrollListener: false });
+      window.removeEventListener('scroll', this.handleScroll)
+      this.setState({ hasAttachedScrollListener: false })
     }
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
-    const hasRep = !!getValue(p, 'loginAccount.rep.value');
-    const hasBranch = !!getValue(p, 'branch.id');
-    const transactionsLength = p.transactions.length;
+    const hasRep = !!getValue(p, 'loginAccount.rep.value')
+    const hasBranch = !!getValue(p, 'branch.id')
+    const transactionsLength = p.transactions.length
 
     return (
       <section id="transactions_view">
@@ -156,6 +156,6 @@ export default class TransactionsView extends Component {
           </div>
         }
       </section>
-    );
+    )
   }
 }

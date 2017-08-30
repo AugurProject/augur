@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Helmet } from 'react-helmet';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { Helmet } from 'react-helmet'
 
-import NullStateMessage from 'modules/common/components/null-state-message';
-import MyPositionsMarket from 'modules/my-positions/components/my-positions-market';
-import TransactionsLoadingActions from 'modules/transactions/components/transactions-loading-actions';
-import FilterSort from 'modules/filter-sort/container';
+import NullStateMessage from 'modules/common/components/null-state-message'
+import MyPositionsMarket from 'modules/my-positions/components/my-positions-market'
+import TransactionsLoadingActions from 'modules/transactions/components/transactions-loading-actions'
+import FilterSort from 'modules/filter-sort/container'
 
 export default class MyPositions extends Component {
   static propTypes = {
@@ -18,22 +18,22 @@ export default class MyPositions extends Component {
   }
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.searchKeys = [
       'description',
       ['outcomes', 'name'],
       ['tags', 'name']
-    ];
+    ]
 
     this.state = {
       filteredMarkets: []
-    };
+    }
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
     return (
       <article className="my-positions">
@@ -80,6 +80,6 @@ export default class MyPositions extends Component {
           />
         }
       </article>
-    );
+    )
   }
 }

@@ -1,24 +1,23 @@
-import { describe, it } from 'mocha';
-import BigNumber from 'bignumber.js';
-import { assert } from 'chai';
-import proxyquire from 'proxyquire';
-import sinon from 'sinon';
-import { SCALAR } from '../../../src/modules/markets/constants/market-types';
+import { describe, it } from 'mocha'
+import BigNumber from 'bignumber.js'
+import { assert } from 'chai'
+import proxyquire from 'proxyquire'
+import sinon from 'sinon'
 
 describe(`modules/my-positions/selectors/winning-positions.js`, () => {
-  proxyquire.noPreserveCache().noCallThru();
+  proxyquire.noPreserveCache().noCallThru()
   const test = (t) => {
     it(t.description, () => {
-      const Speedomatic = { bignum: () => {} };
-      const SelectLoginAccountPositions = () => t.selectors.loginAccountPositions;
+      const AugurJS = { abi: { bignum: () => {} } }
+      const SelectLoginAccountPositions = () => t.selectors.loginAccountPositions
       const selector = proxyquire('../../../src/modules/my-positions/selectors/winning-positions.js', {
-        speedomatic: Speedomatic,
+        '../../../services/augurjs': AugurJS,
         './login-account-positions': SelectLoginAccountPositions
-      });
-      sinon.stub(Speedomatic, 'bignum', n => new BigNumber(n, 10));
-      t.assertions(selector.selectClosedMarketsWithWinningShares(t.state));
-    });
-  };
+      })
+      sinon.stub(AugurJS.abi, 'bignum', n => new BigNumber(n, 10))
+      t.assertions(selector.selectClosedMarketsWithWinningShares(t.state))
+    })
+  }
   test({
     description: 'no positions',
     state: {
@@ -30,9 +29,9 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
       }
     },
     assertions: (selection) => {
-      assert.deepEqual(selection, []);
+      assert.deepEqual(selection, [])
     }
-  });
+  })
   test({
     description: '1 position in closed market',
     state: {
@@ -52,7 +51,8 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           description: 'test market 1',
           consensus: {
             outcomeID: '2',
-            isIndeterminate: false
+            isIndeterminate: false,
+            isUnethical: false
           }
         }]
       }
@@ -62,9 +62,9 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
         id: '0xa1',
         description: 'test market 1',
         shares: '1'
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: '1 position in closed indeterminate market',
     state: {
@@ -87,7 +87,8 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           description: 'test market 1',
           consensus: {
             outcomeID: '2',
-            isIndeterminate: true
+            isIndeterminate: true,
+            isUnethical: false
           }
         }]
       }
@@ -97,9 +98,9 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
         id: '0xa1',
         description: 'test market 1',
         shares: '3'
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: '1 position in closed unethical market',
     state: {
@@ -120,10 +121,10 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           id: '0xa1',
           isOpen: false,
           description: 'test market 1',
-          type: SCALAR,
           consensus: {
             outcomeID: '0.5',
-            isIndeterminate: false
+            isIndeterminate: false,
+            isUnethical: true
           }
         }]
       }
@@ -133,9 +134,9 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
         id: '0xa1',
         description: 'test market 1',
         shares: '3'
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: '1 position in closed indeterminate and unethical market',
     state: {
@@ -158,7 +159,8 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           description: 'test market 1',
           consensus: {
             outcomeID: '0.5',
-            isIndeterminate: true
+            isIndeterminate: true,
+            isUnethical: true
           }
         }]
       }
@@ -168,9 +170,9 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
         id: '0xa1',
         description: 'test market 1',
         shares: '3'
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: '1 position in closed scalar market',
     state: {
@@ -194,7 +196,8 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           description: 'test market 1',
           consensus: {
             outcomeID: '1.23456',
-            isIndeterminate: false
+            isIndeterminate: false,
+            isUnethical: false
           }
         }]
       }
@@ -204,9 +207,9 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
         id: '0xa1',
         description: 'test market 1',
         shares: '3'
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: '1 position in closed scalar indeterminate market',
     state: {
@@ -230,7 +233,8 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           description: 'test market 1',
           consensus: {
             outcomeID: '1.23456',
-            isIndeterminate: true
+            isIndeterminate: true,
+            isUnethical: false
           }
         }]
       }
@@ -240,9 +244,9 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
         id: '0xa1',
         description: 'test market 1',
         shares: '3'
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: '1 position in closed scalar unethical market',
     state: {
@@ -266,7 +270,8 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           description: 'test market 1',
           consensus: {
             outcomeID: '1.23456',
-            isIndeterminate: false
+            isIndeterminate: false,
+            isUnethical: true
           }
         }]
       }
@@ -276,9 +281,9 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
         id: '0xa1',
         description: 'test market 1',
         shares: '3'
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: '1 position in open market',
     state: {
@@ -294,9 +299,9 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
       }
     },
     assertions: (selection) => {
-      assert.deepEqual(selection, []);
+      assert.deepEqual(selection, [])
     }
-  });
+  })
   test({
     description: '1 position in open market, 1 position in closed market',
     state: {
@@ -325,7 +330,8 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           description: 'test market 2',
           consensus: {
             outcomeID: '2',
-            isIndeterminate: false
+            isIndeterminate: false,
+            isUnethical: false
           }
         }]
       }
@@ -335,9 +341,9 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
         id: '0xa2',
         description: 'test market 2',
         shares: '1'
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: '1 position in open market, 2 positions in closed markets',
     state: {
@@ -371,7 +377,8 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           description: 'test market 2',
           consensus: {
             outcomeID: '2',
-            isIndeterminate: false
+            isIndeterminate: false,
+            isUnethical: false
           }
         }, {
           id: '0xa3',
@@ -379,7 +386,8 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           description: 'test market 3',
           consensus: {
             outcomeID: '2',
-            isIndeterminate: false
+            isIndeterminate: false,
+            isUnethical: false
           }
         }]
       }
@@ -393,9 +401,9 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
         id: '0xa3',
         description: 'test market 3',
         shares: '1'
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: '2 position in open markets, 1 position in closed market',
     state: {
@@ -433,7 +441,8 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
           description: 'test market 3',
           consensus: {
             outcomeID: '2',
-            isIndeterminate: false
+            isIndeterminate: false,
+            isUnethical: false
           }
         }]
       }
@@ -443,7 +452,7 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
         id: '0xa3',
         description: 'test market 3',
         shares: '1'
-      }]);
+      }])
     }
-  });
-});
+  })
+})

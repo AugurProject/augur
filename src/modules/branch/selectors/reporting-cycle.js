@@ -1,25 +1,25 @@
-import BigNumber from 'bignumber.js';
-import { createSelector } from 'reselect';
-import moment from 'moment';
-import store from 'src/store';
-import { selectBlockchainCurrentBlockTimestamp, selectBranchReportingPeriodDurationInSeconds } from 'src/select-state';
-import { augur } from 'services/augurjs';
-import { ONE } from 'modules/trade/constants/numbers';
+import BigNumber from 'bignumber.js'
+import { createSelector } from 'reselect'
+import moment from 'moment'
+import store from 'src/store'
+import { selectBlockchainCurrentBlockTimestamp, selectBranchReportingPeriodDurationInSeconds } from 'src/select-state'
+import { augur } from 'services/augurjs'
+import { ONE } from 'modules/trade/constants/numbers'
 
 export default function () {
-  return selectReportingCycle(store.getState());
+  return selectReportingCycle(store.getState())
 }
 
 export const selectReportingCycle = createSelector(
   selectBranchReportingPeriodDurationInSeconds,
   selectBlockchainCurrentBlockTimestamp,
   (reportingPeriodDurationInSeconds, timestamp) => {
-    const currentReportingPeriodPercentComplete = augur.reporting.getCurrentPeriodProgress(reportingPeriodDurationInSeconds, timestamp);
-    const bnReportingPeriodDurationInSeconds = new BigNumber(reportingPeriodDurationInSeconds, 10);
-    const secondsRemaining = ONE.minus(new BigNumber(currentReportingPeriodPercentComplete, 10).dividedBy(100)).times(bnReportingPeriodDurationInSeconds);
+    const currentReportingPeriodPercentComplete = augur.reporting.getCurrentPeriodProgress(reportingPeriodDurationInSeconds, timestamp)
+    const bnReportingPeriodDurationInSeconds = new BigNumber(reportingPeriodDurationInSeconds, 10)
+    const secondsRemaining = ONE.minus(new BigNumber(currentReportingPeriodPercentComplete, 10).dividedBy(100)).times(bnReportingPeriodDurationInSeconds)
     return {
       currentReportingPeriodPercentComplete,
       reportingCycleTimeRemaining: moment.duration(secondsRemaining.toNumber(), 'seconds').humanize(true)
-    };
+    }
   }
-);
+)

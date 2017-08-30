@@ -1,18 +1,18 @@
-import React from 'react';
+import React from 'react'
 
-import ValueDenomination from 'modules/common/components/value-denomination/value-denomination';
+import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 
-import getValue from 'utils/get-value';
+import getValue from 'utils/get-value'
 
 const OutcomeTradeSummary = (p) => {
-  const tradingFees = getValue(p, 'tradeOrder.tradingFees');
-  const feePercent = getValue(p, 'tradeOrder.feePercent');
-  const gasFees = getValue(p, 'tradeOrder.gasFees');
-  const potentialEthProfit = getValue(p, 'trade.potentialEthProfit');
-  const potentialProfitPercent = getValue(p, 'trade.potentialProfitPercent');
-  const potentialEthLoss = getValue(p, 'trade.potentialEthLoss');
-  const potentialLossPercent = getValue(p, 'trade.potentialLossPercent');
-  const totalCost = getValue(p, 'trade.totalCost');
+  const tradingFees = getValue(p, 'tradeOrder.tradingFees')
+  const feePercent = getValue(p, 'tradeOrder.feePercent')
+  const gasFees = getValue(p, 'tradeOrder.gasFees')
+  const potentialEthProfit = getValue(p, 'trade.potentialEthProfit')
+  const potentialProfitPercent = getValue(p, 'trade.potentialProfitPercent')
+  const potentialEthLoss = getValue(p, 'trade.potentialEthLoss')
+  const potentialLossPercent = getValue(p, 'trade.potentialLossPercent')
+  const totalCost = getValue(p, 'trade.totalCost')
 
   return (
     <article className="outcome-trade-summary">
@@ -47,7 +47,7 @@ const OutcomeTradeSummary = (p) => {
         </div>
       }
     </article>
-  );
-};
+  )
+}
 
-export default OutcomeTradeSummary;
+export default OutcomeTradeSummary

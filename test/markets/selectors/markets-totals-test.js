@@ -1,16 +1,16 @@
-import { describe, it, beforeEach, afterEach } from 'mocha';
-import proxyquire from 'proxyquire';
-import sinon from 'sinon';
-import * as mockStore from 'test/mockStore';
-import marketsTotalsAssertions from 'assertions/markets-totals';
+import { describe, it, beforeEach, afterEach } from 'mocha'
+import proxyquire from 'proxyquire'
+import sinon from 'sinon'
+import * as mockStore from 'test/mockStore'
+import marketsTotalsAssertions from 'assertions/markets-totals'
 
 describe(`modules/markets/selectors/markets-totals.js`, () => {
-  proxyquire.noPreserveCache().noCallThru();
-  const { store } = mockStore.default;
+  proxyquire.noPreserveCache().noCallThru()
+  const { store } = mockStore.default
 
   const mockPositions = {
     selectPositionsSummary: () => {}
-  };
+  }
   const mockSelectors = {
     allMarkets: [{
       id: 'test1',
@@ -148,26 +148,26 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
     filteredMarkets: '7length',
     unpaginatedMarkets: 'testing',
     favoriteMarkets: 'test'
-  };
+  }
 
-  const AllMarkets = () => mockSelectors.allMarkets;
+  const AllMarkets = () => mockSelectors.allMarkets
 
   const FilteredMarkets = {
     selectFilteredMarkets: () => mockSelectors.filteredMarkets
-  };
+  }
   const UnpaginatedMarkets = {
     selectUnpaginatedMarkets: () => mockSelectors.unpaginatedMarkets
-  };
+  }
   const FavoriteMarkets = {
     selectFavoriteMarkets: () => mockSelectors.favoriteMarkets
-  };
+  }
 
   sinon.stub(mockPositions, 'selectPositionsSummary', (numPositions, qtyShares, totalValue, totalCost) => ({
     numPositions,
     qtyShares,
     totalValue,
     totalCost
-  }));
+  }))
 
   const selector = proxyquire('../../../src/modules/markets/selectors/markets-totals.js', {
     '../../../store': store,
@@ -175,18 +175,18 @@ describe(`modules/markets/selectors/markets-totals.js`, () => {
     '../../markets/selectors/markets-filtered': FilteredMarkets,
     '../../markets/selectors/markets-unpaginated': UnpaginatedMarkets,
     '../../markets/selectors/markets-favorite': FavoriteMarkets,
-  });
+  })
 
   beforeEach(() => {
-    store.clearActions();
-  });
+    store.clearActions()
+  })
 
   afterEach(() => {
-    store.clearActions();
-  });
+    store.clearActions()
+  })
 
   it(`should return the market totals for selected market`, () => {
-    const actual = selector.default();
-    marketsTotalsAssertions(actual);
-  });
-});
+    const actual = selector.default()
+    marketsTotalsAssertions(actual)
+  })
+})

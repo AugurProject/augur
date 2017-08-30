@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
 export default class OutcomeTradeAction extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       isConfirming: false
-    };
+    }
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
     return (
       <div className="outcome-trade-action" >
@@ -20,7 +20,7 @@ export default class OutcomeTradeAction extends Component {
             className="trade-action"
             disabled={p.disabled}
             onClick={() => {
-              this.setState({ isConfirming: true });
+              this.setState({ isConfirming: true })
             }}
           >
             Place Trade
@@ -33,14 +33,14 @@ export default class OutcomeTradeAction extends Component {
               <button
                 className="cancel"
                 onClick={() => {
-                  this.setState({ isConfirming: false });
+                  this.setState({ isConfirming: false })
                 }}
               >
                 Cancel
               </button>
               <button
                 onClick={() => {
-                  p.submitTrade(p.selectedID);
+                  p.submitTrade(p.selectedID)
                 }}
               >
                 Yes
@@ -49,6 +49,6 @@ export default class OutcomeTradeAction extends Component {
           </div>
         }
       </div>
-    );
+    )
   }
 }

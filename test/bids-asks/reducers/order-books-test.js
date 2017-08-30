@@ -1,15 +1,15 @@
-import { describe, it, beforeEach } from 'mocha';
-import { assert } from 'chai';
-import testState from 'test/testState';
-import { UPDATE_ORDER_BOOK } from 'modules/bids-asks/actions/update-order-book';
-import reducer from 'modules/bids-asks/reducers/order-books';
+import { describe, it, beforeEach } from 'mocha'
+import { assert } from 'chai'
+import testState from 'test/testState'
+import { UPDATE_ORDER_BOOK } from 'modules/bids-asks/actions/update-order-book'
+import reducer from 'modules/bids-asks/reducers/order-books'
 
 describe(`modules/bids-asks/reducers/order-books.js`, () => {
-  let thisTestState;
+  let thisTestState
 
   beforeEach(() => {
-    thisTestState = Object.assign({}, testState);
-  });
+    thisTestState = Object.assign({}, testState)
+  })
 
   it(`Should set market order book`, () => {
     const action = {
@@ -39,7 +39,7 @@ describe(`modules/bids-asks/reducers/order-books.js`, () => {
           type: 'buy'
         }
       }
-    };
+    }
     const expectedOutput = {
       ...thisTestState.orderBooks,
       partyRockMarket: {
@@ -68,8 +68,8 @@ describe(`modules/bids-asks/reducers/order-books.js`, () => {
           }
         }
       }
-    };
+    }
 
-    assert.deepEqual(reducer(thisTestState.orderBooks, action), expectedOutput, `Didn't properly set market order book`);
-  });
-});
+    assert.deepEqual(reducer(thisTestState.orderBooks, action), expectedOutput, `Didn't properly set market order book`)
+  })
+})

@@ -1,118 +1,118 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
-import sinon from 'sinon';
-import BigNumber from 'bignumber.js';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
+import sinon from 'sinon'
+import BigNumber from 'bignumber.js'
 
-import coreStats, { selectOutcomeLastPrice, createPeriodPLSelector, selectCoreStats, __RewireAPI__ as CoreStatsRewireAPI } from 'modules/account/selectors/core-stats';
-import { formatEther, formatRep, formatEtherTokens } from 'utils/format-number';
+import coreStats, { selectOutcomeLastPrice, createPeriodPLSelector, selectCoreStats, __RewireAPI__ as CoreStatsRewireAPI } from 'modules/account/selectors/core-stats'
+import { formatEther, formatRep, formatEtherTokens } from 'utils/format-number'
 
-import { ZERO } from 'modules/trade/constants/numbers';
+import { ZERO } from 'modules/trade/constants/numbers'
 
 describe('modules/account/selectors/core-stats', () => {
-  const test = t => it(t.description, () => t.assertions());
+  const test = t => it(t.description, () => t.assertions())
 
   describe('default', () => {
     test({
       description: `should call 'selectCoreStats'`,
       assertions: () => {
-        const stubbedSelectCoreStats = sinon.stub();
+        const stubbedSelectCoreStats = sinon.stub()
 
-        CoreStatsRewireAPI.__Rewire__('selectCoreStats', stubbedSelectCoreStats);
+        CoreStatsRewireAPI.__Rewire__('selectCoreStats', stubbedSelectCoreStats)
 
-        coreStats();
+        coreStats()
 
-        CoreStatsRewireAPI.__ResetDependency__('selectCoreStats');
+        CoreStatsRewireAPI.__ResetDependency__('selectCoreStats')
 
-        assert(stubbedSelectCoreStats.calledOnce, `didn't call 'selectCoreStats' once as expected`);
+        assert(stubbedSelectCoreStats.calledOnce, `didn't call 'selectCoreStats' once as expected`)
       }
-    });
-  });
+    })
+  })
 
   describe('selectOutcomeLastPrice', () => {
     test({
       description: `should return null when 'marketOutcomeData' is undefined`,
       assertions: () => {
-        const actual = selectOutcomeLastPrice(undefined, 1);
+        const actual = selectOutcomeLastPrice(undefined, 1)
 
-        const expected = null;
+        const expected = null
 
-        assert.strictEqual(actual, expected, `didn't return null as expected`);
+        assert.strictEqual(actual, expected, `didn't return null as expected`)
       }
-    });
+    })
 
     test({
       description: `should return null when 'outcomeID' is undefined`,
       assertions: () => {
-        const actual = selectOutcomeLastPrice({}, undefined);
+        const actual = selectOutcomeLastPrice({}, undefined)
 
-        const expected = null;
+        const expected = null
 
-        assert.strictEqual(actual, expected, `didn't return null as expected`);
+        assert.strictEqual(actual, expected, `didn't return null as expected`)
       }
-    });
+    })
 
     test({
       description: `should return the expected price`,
       assertions: () => {
-        const actual = selectOutcomeLastPrice({ 1: { price: '0.1' } }, 1);
+        const actual = selectOutcomeLastPrice({ 1: { price: '0.1' } }, 1)
 
-        const expected = '0.1';
+        const expected = '0.1'
 
-        assert.strictEqual(actual, expected, `didn't return the expected price`);
+        assert.strictEqual(actual, expected, `didn't return the expected price`)
       }
-    });
+    })
 
     test({
       description: `should return the expected price`,
       assertions: () => {
-        const actual = selectOutcomeLastPrice({ 2: { price: '0.1' } }, 1);
+        const actual = selectOutcomeLastPrice({ 2: { price: '0.1' } }, 1)
 
-        const expected = undefined;
+        const expected = undefined
 
-        assert.strictEqual(actual, expected, `didn't return the expected price`);
+        assert.strictEqual(actual, expected, `didn't return the expected price`)
       }
-    });
-  });
+    })
+  })
 
   describe('createPeriodPLSelector', function () { // eslint-disable-line func-names, prefer-arrow-callback
     after(() => {
-      this.clock.restore();
-    });
+      this.clock.restore()
+    })
 
     test({
       description: `should return null when 'accountTrades' is undefined`,
       assertions: () => {
-        const blockchain = {};
+        const blockchain = {}
 
-        const selector = createPeriodPLSelector(1);
+        const selector = createPeriodPLSelector(1)
 
-        const actual = selector.resultFunc(undefined, blockchain, undefined);
+        const actual = selector.resultFunc(undefined, blockchain, undefined)
 
-        const expected = null;
+        const expected = null
 
-        assert.strictEqual(actual, expected, `didn't return null as expected`);
+        assert.strictEqual(actual, expected, `didn't return null as expected`)
       }
-    });
+    })
 
     test({
       description: `should return null when 'blockchain' is undefined`,
       assertions: () => {
-        const accountTrades = {};
+        const accountTrades = {}
 
-        const selector = createPeriodPLSelector(1);
+        const selector = createPeriodPLSelector(1)
 
-        const actual = selector.resultFunc(accountTrades, undefined, undefined);
+        const actual = selector.resultFunc(accountTrades, undefined, undefined)
 
-        const expected = null;
+        const expected = null
 
-        assert.strictEqual(actual, expected, `didn't return null as expected`);
+        assert.strictEqual(actual, expected, `didn't return null as expected`)
       }
-    });
+    })
 
     test({
       description: `should return 0 for a set period with no trades`,
       assertions: () => {
-        this.clock = sinon.useFakeTimers(1485907200000);
+        this.clock = sinon.useFakeTimers(1485907200000)
 
         const accountTrades = {
           '0xMarketID1': {
@@ -133,30 +133,30 @@ describe('modules/account/selectors/core-stats', () => {
               }
             ]
           }
-        };
+        }
 
         const blockchain = {
           currentBlockNumber: 100000
-        };
+        }
 
         const outcomesData = {
           '0xMarketID1': {}
-        };
+        }
 
-        const selector = createPeriodPLSelector(1);
+        const selector = createPeriodPLSelector(1)
 
-        const actual = selector.resultFunc(accountTrades, blockchain, outcomesData);
+        const actual = selector.resultFunc(accountTrades, blockchain, outcomesData)
 
-        const expected = ZERO;
+        const expected = ZERO
 
-        assert.deepEqual(actual, expected, `didn't return the expected value`);
+        assert.deepEqual(actual, expected, `didn't return the expected value`)
       }
-    });
+    })
 
     test({
       description: `should return the expected value for a set period with trades`,
       assertions: () => {
-        this.clock = sinon.useFakeTimers(1485907200000);
+        this.clock = sinon.useFakeTimers(1485907200000)
 
         const accountTrades = {
           '0xMarketID1': {
@@ -177,17 +177,17 @@ describe('modules/account/selectors/core-stats', () => {
               }
             ]
           }
-        };
+        }
 
         const blockchain = {
           currentBlockNumber: 100000
-        };
+        }
 
         const outcomesData = {
           '0xMarketID1': {}
-        };
+        }
 
-        CoreStatsRewireAPI.__Rewire__('selectOutcomeLastPrice', () => '0.2');
+        CoreStatsRewireAPI.__Rewire__('selectOutcomeLastPrice', () => '0.2')
         CoreStatsRewireAPI.__Rewire__('augur', {
           trading: {
             calculateProfitLoss: () => ({
@@ -195,21 +195,21 @@ describe('modules/account/selectors/core-stats', () => {
               unrealized: '2'
             })
           }
-        });
+        })
 
-        const selector = createPeriodPLSelector(1);
+        const selector = createPeriodPLSelector(1)
 
-        const actual = selector.resultFunc(accountTrades, blockchain, outcomesData);
+        const actual = selector.resultFunc(accountTrades, blockchain, outcomesData)
 
-        const expected = new BigNumber('2');
+        const expected = new BigNumber('2')
 
-        CoreStatsRewireAPI.__ResetDependency__('selectOutcomeLastPrice');
-        CoreStatsRewireAPI.__ResetDependency__('augur');
+        CoreStatsRewireAPI.__ResetDependency__('selectOutcomeLastPrice')
+        CoreStatsRewireAPI.__ResetDependency__('augur')
 
-        assert.deepEqual(actual, expected, `didn't return the expected value`);
+        assert.deepEqual(actual, expected, `didn't return the expected value`)
       }
-    });
-  });
+    })
+  })
 
   describe('selectCoreStats', () => {
     test({
@@ -219,15 +219,15 @@ describe('modules/account/selectors/core-stats', () => {
           ethTokens: formatEtherTokens(10),
           eth: formatEther(10),
           rep: formatRep(10)
-        };
+        }
         const loginAccountPositions = {
           summary: {
             totalNet: formatEtherTokens(10)
           }
-        };
-        const periodPL = new BigNumber('10');
+        }
+        const periodPL = new BigNumber('10')
 
-        const actual = selectCoreStats.resultFunc({}, {}, {}, loginAccount, loginAccountPositions, periodPL, periodPL);
+        const actual = selectCoreStats.resultFunc({}, {}, {}, loginAccount, loginAccountPositions, periodPL, periodPL)
 
         const expected = [
           {
@@ -264,10 +264,10 @@ describe('modules/account/selectors/core-stats', () => {
               value: formatEtherTokens(periodPL)
             }
           }
-        ];
+        ]
 
-        assert.deepEqual(actual, expected, `didn't return the expected array`);
+        assert.deepEqual(actual, expected, `didn't return the expected array`)
       }
-    });
-  });
-});
+    })
+  })
+})

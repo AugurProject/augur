@@ -1,32 +1,32 @@
-import { each } from 'async';
-import { augur } from 'services/augurjs';
-import { updateAssets } from 'modules/auth/actions/update-assets';
-import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info';
-import cancelOpenOrdersInClosedMarkets from 'modules/user-open-orders/actions/cancel-open-orders-in-closed-markets';
-import selectWinningPositions from 'modules/my-positions/selectors/winning-positions';
-import noop from 'utils/noop';
-import logError from 'utils/log-error';
+import { each } from 'async'
+import { augur } from 'services/augurjs'
+import { updateAssets } from 'modules/auth/actions/update-assets'
+import { loadMarketsInfo } from 'modules/markets/actions/load-markets-info'
+import cancelOpenOrdersInClosedMarkets from 'modules/user-open-orders/actions/cancel-open-orders-in-closed-markets'
+import selectWinningPositions from 'modules/my-positions/selectors/winning-positions'
+import noop from 'utils/noop'
+import logError from 'utils/log-error'
 
 const claimProceeds = (callback = logError) => (dispatch, getState) => {
-  const { loginAccount } = getState();
-  if (!loginAccount.address) return callback(null);
-  const winningPositions = selectWinningPositions();
+  const { loginAccount } = getState()
+  if (!loginAccount.address) return callback(null)
+  const winningPositions = selectWinningPositions()
   if (winningPositions.length) {
-    console.log('finalized markets with winning shares:', winningPositions);
+    console.log('finalized markets with winning shares:', winningPositions)
     augur.trading.claimMarketsProceeds({
       _signer: loginAccount.privateKey,
       markets: winningPositions.map(winningPosition => winningPosition.id),
       onSent: noop,
       onSuccess: (claimedMarkets) => {
-        dispatch(updateAssets());
+        dispatch(updateAssets())
         each(claimedMarkets, (marketID, nextMarketID) => {
-          dispatch(loadMarketsInfo([marketID], nextMarketID));
-        }, err => callback(err));
+          dispatch(loadMarketsInfo([marketID], nextMarketID))
+        }, err => callback(err))
       },
       onFailed: err => callback(err)
-    });
+    })
   }
-  dispatch(cancelOpenOrdersInClosedMarkets());
-};
+  dispatch(cancelOpenOrdersInClosedMarkets())
+}
 
-export default claimProceeds;
+export default claimProceeds

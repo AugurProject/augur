@@ -1,20 +1,20 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
 
-import CreateMarketFormType from 'modules/create-market/components/create-market-form-type';
-import CreateMarketFormDescription from 'modules/create-market/components/create-market-form-description';
-import CreateMarketFormOutcomes from 'modules/create-market/components/create-market-form-outcomes';
-import CreateMarketFormExpirySource from 'modules/create-market/components/create-market-form-expiry-source';
-import CreateMarketFormEndDate from 'modules/create-market/components/create-market-form-end-date';
-import CreateMarketFormDetails from 'modules/create-market/components/create-market-form-details';
-import CreateMarketFormTopic from 'modules/create-market/components/create-market-form-topic';
-import CreateMarketFormKeywords from 'modules/create-market/components/create-market-form-keywords';
-import CreateMarketFormFees from 'modules/create-market/components/create-market-form-fees';
-import CreateMarketFormOrderBook from 'modules/create-market/components/create-market-form-order-book';
-import CreateMarketReview from 'modules/create-market/components/create-market-review';
+import CreateMarketFormType from 'modules/create-market/components/create-market-form-type'
+import CreateMarketFormDescription from 'modules/create-market/components/create-market-form-description'
+import CreateMarketFormOutcomes from 'modules/create-market/components/create-market-form-outcomes'
+import CreateMarketFormExpirySource from 'modules/create-market/components/create-market-form-expiry-source'
+import CreateMarketFormEndDate from 'modules/create-market/components/create-market-form-end-date'
+import CreateMarketFormDetails from 'modules/create-market/components/create-market-form-details'
+import CreateMarketFormTopic from 'modules/create-market/components/create-market-form-topic'
+import CreateMarketFormKeywords from 'modules/create-market/components/create-market-form-keywords'
+import CreateMarketFormFees from 'modules/create-market/components/create-market-form-fees'
+import CreateMarketFormOrderBook from 'modules/create-market/components/create-market-form-order-book'
+import CreateMarketReview from 'modules/create-market/components/create-market-review'
 
-import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
+import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
 import {
   NEW_MARKET_TYPE,
   NEW_MARKET_DESCRIPTION,
@@ -27,9 +27,9 @@ import {
   NEW_MARKET_FEES,
   NEW_MARKET_ORDER_BOOK,
   NEW_MARKET_REVIEW
-} from 'modules/create-market/constants/new-market-creation-steps';
+} from 'modules/create-market/constants/new-market-creation-steps'
 
-import debounce from 'utils/debounce';
+import debounce from 'utils/debounce'
 
 export default class CreateMarketForm extends Component {
   static propTypes = {
@@ -38,21 +38,21 @@ export default class CreateMarketForm extends Component {
   }
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       lastStep: props.newMarket.currentStep,
       currentStep: props.newMarket.currentStep
-    };
+    }
 
-    this.updateFormHeight = debounce(this.updateFormHeight.bind(this));
-    this.updateValidity = this.updateValidity.bind(this);
+    this.updateFormHeight = debounce(this.updateFormHeight.bind(this))
+    this.updateValidity = this.updateValidity.bind(this)
   }
 
   componentDidMount() {
-    this.updateFormHeight();
+    this.updateFormHeight()
 
-    window.addEventListener('resize', this.updateFormHeight);
+    window.addEventListener('resize', this.updateFormHeight)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -61,46 +61,46 @@ export default class CreateMarketForm extends Component {
         lastStep: this.props.newMarket.currentStep,
         currentStep: nextProps.newMarket.currentStep
       }, () => {
-        this.updateFormHeight();
-      });
+        this.updateFormHeight()
+      })
     }
 
     if (this.props.newMarket !== nextProps.newMarket) {
-      this.updateFormHeight();
+      this.updateFormHeight()
     }
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.updateFormHeight);
+    window.removeEventListener('resize', this.updateFormHeight)
   }
 
   updateFormHeight() {
     if (this.createMarketForm) {
-      let newHeight = 0;
+      let newHeight = 0
 
       if (this.state.currentStep === 0) { // Initial form height
-        newHeight = this.createMarketForm.children[0].clientHeight;
-        this.createMarketForm.style.height = `${newHeight}px`;
+        newHeight = this.createMarketForm.children[0].clientHeight
+        this.createMarketForm.style.height = `${newHeight}px`
       } else {
-        newHeight = this.createMarketForm.getElementsByClassName('display-form-part')[0].clientHeight;
+        newHeight = this.createMarketForm.getElementsByClassName('display-form-part')[0].clientHeight
       }
 
-      this.createMarketForm.style.height = `${newHeight}px`;
+      this.createMarketForm.style.height = `${newHeight}px`
     }
   }
 
   updateValidity(isValid, holdForUserAction = false) {
     // holdForUserAction will prevent the state from adding the form part to the validated forms array until both the form is valid + the user selects 'next'
-    this.props.updateNewMarket({ isValid, holdForUserAction });
+    this.props.updateNewMarket({ isValid, holdForUserAction })
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
     return (
       <article
-        ref={(createMarketForm) => { this.createMarketForm = createMarketForm; }}
+        ref={(createMarketForm) => { this.createMarketForm = createMarketForm }}
         className={classNames('create-market-form', {
           'no-preview': s.currentStep === 0
         })}
@@ -253,6 +253,6 @@ export default class CreateMarketForm extends Component {
           initialLiquidityFees={p.newMarket.initialLiquidityFees}
         />
       </article>
-    );
+    )
   }
 }

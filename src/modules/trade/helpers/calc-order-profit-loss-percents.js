@@ -1,8 +1,8 @@
-import BigNumber from 'bignumber.js';
-import { BUY } from 'modules/transactions/constants/types';
-import { SCALAR } from 'modules/markets/constants/market-types';
+import BigNumber from 'bignumber.js'
+import { BUY } from 'modules/transactions/constants/types'
+import { SCALAR } from 'modules/markets/constants/market-types'
 
-BigNumber.config({ ERRORS: false });
+BigNumber.config({ ERRORS: false })
 
 /**
  *
@@ -21,28 +21,28 @@ BigNumber.config({ ERRORS: false });
  */
 
 export default function (numShares, limitPrice, side, minPrice, maxPrice, type) {
-  if (!numShares || !limitPrice || !side || !minPrice || !maxPrice || !type) return null;
+  if (!numShares || !limitPrice || !side || !minPrice || !maxPrice || !type) return null
 
-  const max = new BigNumber(type === SCALAR ? maxPrice : 1);
-  const min = new BigNumber(type === SCALAR ? minPrice : 0);
-  const limit = new BigNumber(limitPrice);
-  const totalCost = type === SCALAR ? min.minus(limit).abs().times(numShares) : limit.times(numShares);
+  const max = new BigNumber(type === SCALAR ? maxPrice : 1)
+  const min = new BigNumber(type === SCALAR ? minPrice : 0)
+  const limit = new BigNumber(limitPrice)
+  const totalCost = type === SCALAR ? min.minus(limit).abs().times(numShares) : limit.times(numShares)
 
   const potentialEthProfit = side === BUY ?
     new BigNumber(max.minus(limit).abs()).times(numShares) :
-    new BigNumber(limit.minus(min).abs()).times(numShares);
+    new BigNumber(limit.minus(min).abs()).times(numShares)
 
   const potentialEthLoss = side === BUY ?
     new BigNumber(limit.minus(min).abs()).times(numShares) :
-    new BigNumber(max.minus(limit).abs()).times(numShares);
+    new BigNumber(max.minus(limit).abs()).times(numShares)
 
-  const potentialProfitPercent = potentialEthProfit.div(totalCost).times(100);
-  const potentialLossPercent = potentialEthLoss.div(totalCost).times(100);
+  const potentialProfitPercent = potentialEthProfit.div(totalCost).times(100)
+  const potentialLossPercent = potentialEthLoss.div(totalCost).times(100)
 
   return {
     potentialEthProfit,
     potentialEthLoss,
     potentialProfitPercent,
     potentialLossPercent
-  };
+  }
 }

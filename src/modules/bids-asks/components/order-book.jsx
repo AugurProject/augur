@@ -1,5 +1,5 @@
-import React from 'react';
-import ValueDenomination from 'modules/common/components/value-denomination/value-denomination';
+import React from 'react'
+import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 
 const OrderBook = p => (
   <div className="order-book">
@@ -11,9 +11,9 @@ const OrderBook = p => (
               <ValueDenomination className="shares clickable" {...bid.shares} />
               <ValueDenomination className="price clickable" {...bid.price} />
             </article>
-          );
+          )
         }
-        return null;
+        return null
       })}
       {!p.bids.length &&
         <article className="bid-ask ask">
@@ -30,9 +30,9 @@ const OrderBook = p => (
               <ValueDenomination className="price clickable" {...ask.price} />
               <ValueDenomination className="shares clickable" {...ask.shares} />
             </article>
-          );
+          )
         }
-        return null;
+        return null
       })}
       {!p.asks.length &&
         <article className="bid-ask ask">
@@ -42,7 +42,7 @@ const OrderBook = p => (
       }
     </div>
   </div>
-);
+)
 
 // TODO -- Prop Validations
 // OrderBook.propTypes = {
@@ -51,4 +51,4 @@ const OrderBook = p => (
 // 	asks: PropTypes.array
 // };
 
-export default OrderBook;
+export default OrderBook

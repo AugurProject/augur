@@ -1,5 +1,5 @@
-import { UPDATE_TRADE_IN_PROGRESS, CLEAR_TRADE_IN_PROGRESS } from 'modules/trade/actions/update-trades-in-progress';
-import { CLEAR_LOGIN_ACCOUNT } from 'modules/auth/actions/update-login-account';
+import { UPDATE_TRADE_IN_PROGRESS, CLEAR_TRADE_IN_PROGRESS } from 'modules/trade/actions/update-trades-in-progress'
+import { CLEAR_LOGIN_ACCOUNT } from 'modules/auth/actions/update-login-account'
 
 export default function (tradesInProgress = {}, action) {
   switch (action.type) {
@@ -12,18 +12,18 @@ export default function (tradesInProgress = {}, action) {
             ...action.data.details
           }
         }
-      };
+      }
 
     case CLEAR_TRADE_IN_PROGRESS:
       return {
         ...tradesInProgress,
         [action.marketID]: {}
-      };
+      }
 
     case CLEAR_LOGIN_ACCOUNT:
-      return {};
+      return {}
 
     default:
-      return tradesInProgress;
+      return tradesInProgress
   }
 }

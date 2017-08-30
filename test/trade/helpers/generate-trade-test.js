@@ -1,15 +1,15 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
-import mocks from 'test/mockStore';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
+import mocks from 'test/mockStore'
 
 // import { BUY, SELL } from 'modules/transactions/constants/types';
 
-import { formatEtherTokens, formatPercent } from 'utils/format-number';
+import { formatEtherTokens, formatPercent } from 'utils/format-number'
 
 describe('modules/trade/helpers/generate-trade.js', () => {
-  const { state } = mocks;
-  const { generateTrade } = require('modules/trade/helpers/generate-trade');
-  const trade = generateTrade(state.marketsData.testMarketID, state.outcomesData.testMarketID['1'], state.tradesInProgress.testMarketID, state.orderBooks.testMarketID);
+  const { state } = mocks
+  const { generateTrade } = require('modules/trade/helpers/generate-trade')
+  const trade = generateTrade(state.marketsData.testMarketID, state.outcomesData.testMarketID['1'], state.tradesInProgress.testMarketID, state.orderBooks.testMarketID)
 
   it('should generate trade object', () => {
     assert.deepEqual(trade, {
@@ -77,9 +77,9 @@ describe('modules/trade/helpers/generate-trade.js', () => {
       totalSharesUpToOrder: trade.totalSharesUpToOrder,
       updateTradeOrder: trade.updateTradeOrder, // self reference for function
     }
-    );
-    assert.isFunction(trade.updateTradeOrder);
-  });
+    )
+    assert.isFunction(trade.updateTradeOrder)
+  })
 
   // FIXME
   // it('should return the expected share total for a deeply selected bid', () => {
@@ -90,4 +90,4 @@ describe('modules/trade/helpers/generate-trade.js', () => {
   // it('should return the expected share total for a deeply selected ask', () => {
   //   assert.strictEqual(trade.totalSharesUpToOrder(1, SELL), 40, `total returned from 'totalSharesUpToOrder' for deep ask order was not the expected value`);
   // });
-});
+})

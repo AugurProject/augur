@@ -1,11 +1,11 @@
 /* eslint react/no-array-index-key: 0 */  // It's OK in this specific instance as order remains the same
 
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 // import { Link } from 'react-router-dom';
 // import classNames from 'classnames';
 
-import SVG from 'modules/common/components/svg/svg';
+import SVG from 'modules/common/components/svg/svg'
 
 // import makePath from 'modules/app/helpers/make-path';
 // import makeQuery from 'modules/app/helpers/make-query';
@@ -13,14 +13,14 @@ import SVG from 'modules/common/components/svg/svg';
 // import { MARKET } from 'modules/app/constants/views';
 // import { MARKET_ID_PARAM_NAME, MARKET_DESCRIPTION_PARAM_NAME } from 'modules/app/constants/param-names';
 
-import Styles from 'modules/market/components/market-basics/market-basics.styles';
+import Styles from 'modules/market/components/market-basics/market-basics.styles'
 
 const MarketBasics = (p) => {
 
   // set market status
-  let marketStatus = p.isOpen ? 'open' : 'closed';
+  let marketStatus = p.isOpen ? 'open' : 'closed'
   if (marketStatus === 'open' && p.isResported) {
-    marketStatus = 'reported';
+    marketStatus = 'reported'
   }
 
   return (
@@ -64,12 +64,12 @@ const MarketBasics = (p) => {
       }
       */}
     </article>
-  );
-};
+  )
+}
 
 MarketBasics.propTypes = {
   isLogged: PropTypes.bool.isRequired,
   toggleFavorite: PropTypes.func
-};
+}
 
-export default MarketBasics;
+export default MarketBasics

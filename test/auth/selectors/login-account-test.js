@@ -1,82 +1,82 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
-import sinon from 'sinon';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
+import sinon from 'sinon'
 
-import loginAccount, { selectLoginAccount, __RewireAPI__ as loginAccountRewireAPI } from 'modules/auth/selectors/login-account';
+import loginAccount, { selectLoginAccount, __RewireAPI__ as loginAccountRewireAPI } from 'modules/auth/selectors/login-account'
 
-import { formatRep, formatEther, formatEtherTokens } from 'utils/format-number';
+import { formatRep, formatEther, formatEtherTokens } from 'utils/format-number'
 
 describe(`modules/auth/selectors/login-account.js`, () => {
-  const test = t => it(t.description, done => t.assertions(done));
+  const test = t => it(t.description, done => t.assertions(done))
 
   describe('default', () => {
     test({
       description: `should call 'selectLoginAccount'`,
       assertions: (done) => {
-        const stubbedSelectLoginAccount = sinon.stub();
+        const stubbedSelectLoginAccount = sinon.stub()
 
-        loginAccountRewireAPI.__Rewire__('selectLoginAccount', stubbedSelectLoginAccount);
+        loginAccountRewireAPI.__Rewire__('selectLoginAccount', stubbedSelectLoginAccount)
 
-        loginAccount();
+        loginAccount()
 
-        loginAccountRewireAPI.__ResetDependency__('selectLoginAccount');
+        loginAccountRewireAPI.__ResetDependency__('selectLoginAccount')
 
-        assert(stubbedSelectLoginAccount.calledOnce, `didn't call 'selectLoginAccount' once as expected`);
+        assert(stubbedSelectLoginAccount.calledOnce, `didn't call 'selectLoginAccount' once as expected`)
 
-        done();
+        done()
       }
-    });
-  });
+    })
+  })
 
   describe('selectLoginAccount', function () { // eslint-disable-line func-names, prefer-arrow-callback
-    const stubbedGenerateDownloadAccountLink = sinon.stub();
+    const stubbedGenerateDownloadAccountLink = sinon.stub()
 
     before(() => {
-      loginAccountRewireAPI.__Rewire__('generateDownloadAccountLink', stubbedGenerateDownloadAccountLink);
+      loginAccountRewireAPI.__Rewire__('generateDownloadAccountLink', stubbedGenerateDownloadAccountLink)
       loginAccountRewireAPI.__Rewire__('augur', {
         accounts: {
           account: {
             keystore: ''
           }
         }
-      });
-    });
+      })
+    })
 
     beforeEach(() => {
-      this.clock = sinon.useFakeTimers(1485907200000);
-    });
+      this.clock = sinon.useFakeTimers(1485907200000)
+    })
 
     afterEach(() => {
-      stubbedGenerateDownloadAccountLink.reset();
-    });
+      stubbedGenerateDownloadAccountLink.reset()
+    })
 
     after(() => {
-      this.clock.restore();
-      loginAccountRewireAPI.__ResetDependency__('generateDownloadAccountLink');
-      loginAccountRewireAPI.__ResetDependency__('augur');
-    });
+      this.clock.restore()
+      loginAccountRewireAPI.__ResetDependency__('generateDownloadAccountLink')
+      loginAccountRewireAPI.__ResetDependency__('augur')
+    })
 
     test({
       description: `should return the expected object when user is unlogged`,
       assertions: (done) => {
-        const loginAccount = {};
-        const accountName = null;
+        const loginAccount = {}
+        const accountName = null
 
-        const actual = selectLoginAccount.resultFunc(loginAccount, accountName);
+        const actual = selectLoginAccount.resultFunc(loginAccount, accountName)
 
         const expected = {
           accountName: null,
           rep: formatRep(undefined),
           eth: formatEther(undefined),
           ethTokens: formatEtherTokens(undefined)
-        };
+        }
 
-        assert.deepEqual(actual, expected, `didn't return the expected object`);
-        assert(stubbedGenerateDownloadAccountLink.calledOnce, `didn't call 'generateDownloadAccountLink' once as expected`);
+        assert.deepEqual(actual, expected, `didn't return the expected object`)
+        assert(stubbedGenerateDownloadAccountLink.calledOnce, `didn't call 'generateDownloadAccountLink' once as expected`)
 
-        done();
+        done()
       }
-    });
+    })
 
     test({
       description: `should return the expected object when user is logged via loginID with account locked`,
@@ -87,10 +87,10 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           eth: '10',
           ethTokens: '11',
           rep: '12'
-        };
-        const accountName = 'testing';
+        }
+        const accountName = 'testing'
 
-        const actual = selectLoginAccount.resultFunc(loginAccount, accountName);
+        const actual = selectLoginAccount.resultFunc(loginAccount, accountName)
 
         const expected = {
           address: '0xAccountAddress',
@@ -99,14 +99,14 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           rep: formatRep(12, { zeroStyled: false, decimalsRounded: 1 }),
           eth: formatEther(10, { zeroStyled: false, decimalsRounded: 2 }),
           ethTokens: formatEtherTokens(11, { zeroStyled: false, decimalsRounded: 2 })
-        };
+        }
 
-        assert.deepEqual(actual, expected, `didn't return the expected object`);
-        assert(stubbedGenerateDownloadAccountLink.calledOnce, `didn't call 'generateDownloadAccountLink' once as expected`);
+        assert.deepEqual(actual, expected, `didn't return the expected object`)
+        assert(stubbedGenerateDownloadAccountLink.calledOnce, `didn't call 'generateDownloadAccountLink' once as expected`)
 
-        done();
+        done()
       }
-    });
+    })
 
     test({
       description: `should return the expected object when user is logged via loginID with account locked and name encoded`,
@@ -117,10 +117,10 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           eth: '10',
           ethTokens: '11',
           rep: '12',
-        };
-        const accountName = 'testing';
+        }
+        const accountName = 'testing'
 
-        const actual = selectLoginAccount.resultFunc(loginAccount, accountName);
+        const actual = selectLoginAccount.resultFunc(loginAccount, accountName)
 
         const expected = {
           address: '0xAccountAddress',
@@ -129,14 +129,14 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           rep: formatRep(12, { zeroStyled: false, decimalsRounded: 1 }),
           eth: formatEther(10, { zeroStyled: false, decimalsRounded: 2 }),
           ethTokens: formatEtherTokens(11, { zeroStyled: false, decimalsRounded: 2 })
-        };
+        }
 
-        assert.deepEqual(actual, expected, `didn't return the expected object`);
-        assert(stubbedGenerateDownloadAccountLink.calledOnce, `didn't call 'generateDownloadAccountLink' once as expected`);
+        assert.deepEqual(actual, expected, `didn't return the expected object`)
+        assert(stubbedGenerateDownloadAccountLink.calledOnce, `didn't call 'generateDownloadAccountLink' once as expected`)
 
-        done();
+        done()
       }
-    });
+    })
 
     test({
       description: `should return the expected object when user is logged via loginID with account UNlocked`,
@@ -148,10 +148,10 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           ethTokens: '11',
           rep: '12',
           isUnlocked: true
-        };
-        const accountName = 'testing';
+        }
+        const accountName = 'testing'
 
-        const actual = selectLoginAccount.resultFunc(loginAccount, accountName);
+        const actual = selectLoginAccount.resultFunc(loginAccount, accountName)
 
         const expected = {
           address: '0xAccountAddress',
@@ -161,14 +161,14 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           rep: formatRep(12, { zeroStyled: false, decimalsRounded: 1 }),
           eth: formatEther(10, { zeroStyled: false, decimalsRounded: 2 }),
           ethTokens: formatEtherTokens(11, { zeroStyled: false, decimalsRounded: 2 })
-        };
+        }
 
-        assert.deepEqual(actual, expected, `didn't return the expected object`);
-        assert(stubbedGenerateDownloadAccountLink.calledOnce, `didn't call 'generateDownloadAccountLink' once as expected`);
+        assert.deepEqual(actual, expected, `didn't return the expected object`)
+        assert(stubbedGenerateDownloadAccountLink.calledOnce, `didn't call 'generateDownloadAccountLink' once as expected`)
 
-        done();
+        done()
       }
-    });
+    })
 
     test({
       description: `should return the expected object when user is logged via airbitz`,
@@ -181,10 +181,10 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           ethTokens: '11',
           rep: '12',
           isUnlocked: true
-        };
-        const accountName = 'testing';
+        }
+        const accountName = 'testing'
 
-        const actual = selectLoginAccount.resultFunc(loginAccount, accountName);
+        const actual = selectLoginAccount.resultFunc(loginAccount, accountName)
 
         const expected = {
           airbitzAccount: {},
@@ -195,13 +195,13 @@ describe(`modules/auth/selectors/login-account.js`, () => {
           rep: formatRep(12, { zeroStyled: false, decimalsRounded: 1 }),
           eth: formatEther(10, { zeroStyled: false, decimalsRounded: 2 }),
           ethTokens: formatEtherTokens(11, { zeroStyled: false, decimalsRounded: 2 })
-        };
+        }
 
-        assert.deepEqual(actual, expected, `didn't return the expected object`);
-        assert(stubbedGenerateDownloadAccountLink.calledOnce, `didn't call 'generateDownloadAccountLink' once as expected`);
+        assert.deepEqual(actual, expected, `didn't return the expected object`)
+        assert(stubbedGenerateDownloadAccountLink.calledOnce, `didn't call 'generateDownloadAccountLink' once as expected`)
 
-        done();
+        done()
       }
-    });
-  });
-});
+    })
+  })
+})

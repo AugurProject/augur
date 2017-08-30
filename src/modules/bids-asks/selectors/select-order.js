@@ -1,8 +1,8 @@
-import memoize from 'memoizee';
-import selectOrderBook from 'modules/bids-asks/selectors/select-order-book';
+import memoize from 'memoizee'
+import selectOrderBook from 'modules/bids-asks/selectors/select-order-book'
 
 export default function (orderID, marketID, outcome, orderTypeLabel, orderBooks) {
-  return getOrder(orderID, marketID, outcome, orderTypeLabel, orderBooks);
+  return getOrder(orderID, marketID, outcome, orderTypeLabel, orderBooks)
 }
 
 /**
@@ -14,7 +14,7 @@ export default function (orderID, marketID, outcome, orderTypeLabel, orderBooks)
  * @return {Object|null}
  */
 const getOrder = memoize((orderID, marketID, outcome, orderTypeLabel, orderBooks) => {
-  const orderBook = selectOrderBook(marketID, outcome, orderTypeLabel, orderBooks);
-  if (orderBook == null) return null;
-  return orderBook[orderID] || null;
-}, { max: 1 });
+  const orderBook = selectOrderBook(marketID, outcome, orderTypeLabel, orderBooks)
+  if (orderBook == null) return null
+  return orderBook[orderID] || null
+}, { max: 1 })

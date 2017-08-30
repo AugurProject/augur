@@ -1,5 +1,5 @@
-import { createSelector } from 'reselect';
-import store from 'src/store';
+import { createSelector } from 'reselect'
+import store from 'src/store'
 import {
   selectMarketsDataState,
   selectMarketLoadingState,
@@ -14,14 +14,14 @@ import {
   selectOrderCancellationState,
   selectSmallestPositionsState,
   selectLoginAccountState
-} from 'src/select-state';
-import selectAccountPositions from 'modules/user-open-orders/selectors/positions-plus-asks';
-import { assembleMarket, selectMarketReport } from 'modules/market/selectors/market';
+} from 'src/select-state'
+import selectAccountPositions from 'modules/user-open-orders/selectors/positions-plus-asks'
+import { assembleMarket, selectMarketReport } from 'modules/market/selectors/market'
 
-import { isMarketDataOpen, isMarketDataExpired } from 'utils/is-market-data-open';
+import { isMarketDataOpen, isMarketDataExpired } from 'utils/is-market-data-open'
 
 export default function () {
-  return selectMarkets(store.getState());
+  return selectMarkets(store.getState())
 }
 
 export const selectMarkets = createSelector(
@@ -40,10 +40,10 @@ export const selectMarkets = createSelector(
   selectSmallestPositionsState,
   selectLoginAccountState,
   (marketsData, marketLoading, favorites, reports, outcomesData, accountPositions, accountTrades, tradesInProgress, branch, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, loginAccount) => {
-    if (!marketsData) return [];
+    if (!marketsData) return []
     return Object.keys(marketsData).map((marketID) => {
-      if (!marketID || !marketsData[marketID]) return {};
-      const endDate = new Date((marketsData[marketID].endDate * 1000) || 0);
+      if (!marketID || !marketsData[marketID]) return {}
+      const endDate = new Date((marketsData[marketID].endDate * 1000) || 0)
 
       return assembleMarket(
         marketID,
@@ -71,7 +71,7 @@ export const selectMarkets = createSelector(
         (smallestPositions || {})[marketID],
         loginAccount,
         store.dispatch
-      );
-    });
+      )
+    })
   }
-);
+)

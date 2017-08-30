@@ -1,16 +1,16 @@
-import React from 'react';
+import React from 'react'
 
-import ValueDenomination from 'modules/common/components/value-denomination/value-denomination';
-import MarketTradeCloseDialog from 'modules/market/components/market-trade-close-dialog';
+import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
+import MarketTradeCloseDialog from 'modules/market/components/market-trade-close-dialog'
 
-import { SCALAR } from 'modules/markets/constants/market-types';
-import { ORDER } from 'modules/market/constants/trade-close-type';
+import { SCALAR } from 'modules/markets/constants/market-types'
+import { ORDER } from 'modules/market/constants/trade-close-type'
 
-import getValue from 'utils/get-value';
-import setShareDenomination from 'utils/set-share-denomination';
+import getValue from 'utils/get-value'
+import setShareDenomination from 'utils/set-share-denomination'
 
 const MarketOpenOrdersRow = (p) => {
-  const unmatchedShares = setShareDenomination(getValue(p, 'unmatchedShares.formatted'), p.selectedShareDenomination);
+  const unmatchedShares = setShareDenomination(getValue(p, 'unmatchedShares.formatted'), p.selectedShareDenomination)
 
   return (
     <article className={`market-open-orders-row not-selectable ${p.isFirst ? 'isFirst' : ''}`} >
@@ -35,7 +35,7 @@ const MarketOpenOrdersRow = (p) => {
         cancelOrder={p.cancelOrder}
       />
     </article>
-  );
-};
+  )
+}
 
-export default MarketOpenOrdersRow;
+export default MarketOpenOrdersRow

@@ -1,5 +1,5 @@
-export const UPDATE_CONNECTION_STATUS = 'UPDATE_CONNECTION_STATUS';
-export const UPDATE_AUGUR_NODE_CONNECTION_STATUS = 'UPDATE_AUGUR_NODE_CONNECTION_STATUS';
+export const UPDATE_CONNECTION_STATUS = 'UPDATE_CONNECTION_STATUS'
+export const UPDATE_AUGUR_NODE_CONNECTION_STATUS = 'UPDATE_AUGUR_NODE_CONNECTION_STATUS'
 
 /**
  * @param {Boolean} isConnected
@@ -9,7 +9,7 @@ export function updateConnectionStatus(isConnected) {
   return {
     type: UPDATE_CONNECTION_STATUS,
     isConnected
-  };
+  }
 }
 
 /**
@@ -20,5 +20,5 @@ export function updateAugurNodeConnectionStatus(isConnected) {
   return {
     type: UPDATE_AUGUR_NODE_CONNECTION_STATUS,
     isConnected
-  };
+  }
 }

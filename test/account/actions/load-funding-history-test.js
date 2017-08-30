@@ -1,5 +1,5 @@
-import { describe } from 'mocha';
+import { describe } from 'mocha'
 
 describe('loadFundingHistory', () => {
 
-});
+})

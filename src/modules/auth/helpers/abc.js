@@ -1,4 +1,4 @@
-import { makeABCUIContext } from 'airbitz-core-js-ui';
+import { makeABCUIContext } from 'airbitz-core-js-ui'
 
 // NOTE -- I have a strong suspicion we can refactor this out to be clearer/cleaner, leaving for now
 
@@ -7,6 +7,6 @@ const selectABCUIContext = () => makeABCUIContext({
   appId: 'net.augur.app',
   vendorName: 'Augur',
   vendorImageUrl: 'https://airbitz.co/go/wp-content/uploads/2016/08/augur_logo_100.png'
-});
+})
 
-export default selectABCUIContext;
+export default selectABCUIContext

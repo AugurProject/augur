@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import Identicon from 'react-blockies';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
+import Identicon from 'react-blockies'
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
 
-import Input from 'modules/common/components/input';
-import AirbitzLogoIcon from 'modules/common/components/airbitz-logo-icon';
+import Input from 'modules/common/components/input'
+import AirbitzLogoIcon from 'modules/common/components/airbitz-logo-icon'
 
 export default class AccountDetails extends Component {
   static propTypes = {
@@ -18,35 +18,35 @@ export default class AccountDetails extends Component {
   };
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       nameInputVisible: false,
       fullAccountVisible: false
-    };
+    }
 
-    this.toggleNameInputVisibility = this.toggleNameInputVisibility.bind(this);
-    this.toggleFullAccountVisibility = this.toggleFullAccountVisibility.bind(this);
+    this.toggleNameInputVisibility = this.toggleNameInputVisibility.bind(this)
+    this.toggleFullAccountVisibility = this.toggleFullAccountVisibility.bind(this)
   }
 
   toggleNameInputVisibility() {
-    this.setState({ nameInputVisible: !this.state.nameInputVisible });
+    this.setState({ nameInputVisible: !this.state.nameInputVisible })
   }
 
   toggleFullAccountVisibility() {
-    this.setState({ fullAccountVisible: !this.state.fullAccountVisible });
+    this.setState({ fullAccountVisible: !this.state.fullAccountVisible })
   }
 
   updateAccountName(name) {
-    if (this.props.name !== name) this.props.updateAccountName(name);
+    if (this.props.name !== name) this.props.updateAccountName(name)
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
-    const nameInputPlaceholder = 'Set Account Name';
-    const animationSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-very-fast'), 10);
+    const nameInputPlaceholder = 'Set Account Name'
+    const animationSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-very-fast'), 10)
 
     return (
       <article className="account-details">
@@ -93,7 +93,7 @@ export default class AccountDetails extends Component {
               <button
                 className="unstyled"
                 onClick={() => {
-                  if (!s.nameInputVisible && !p.airbitzAccount) this.toggleNameInputVisibility();
+                  if (!s.nameInputVisible && !p.airbitzAccount) this.toggleNameInputVisibility()
                 }}
               >
                 <span
@@ -126,6 +126,6 @@ export default class AccountDetails extends Component {
           Log Out
         </button>
       </article>
-    );
+    )
   }
 }

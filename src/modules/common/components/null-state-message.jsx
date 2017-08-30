@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 const NullStateMessage = p => (
   <article className="null-state-message">
@@ -7,6 +7,6 @@ const NullStateMessage = p => (
       <span>{p.message}</span>
     }
   </article>
-);
+)
 
-export default NullStateMessage;
+export default NullStateMessage
