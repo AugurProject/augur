@@ -35,7 +35,7 @@ function copyBuild() {
 }
 
 function cleanup() {
-  const cleanup = spawn('ssh', [`${SSH_USER_HOST}`, "cd; sudo cp -R TMP-DEV-COPY/build/* /var/www/dev.augur.net; rm -rf TMP-DEV-COPY"]);
+  const cleanup = spawn('ssh', [`${SSH_USER_HOST}`, "cd; sudo cp -R TMP-DEV-COPY/build/* /var/www/dev.augur.net; rm -rf TMP-DEV-COPY; sudo service nginx restart"]);
 
   cleanup.stdout.on('data', data => console.log(`cleanup out -- ${data}`));
   cleanup.stderr.on('data', data => console.log(`cleanup err -- ${data}`));
