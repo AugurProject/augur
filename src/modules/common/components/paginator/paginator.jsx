@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
+import Styles from 'modules/common/components/paginator/paginator.styles';
+
 import parseQuery from 'modules/app/helpers/parse-query';
 import makeQuery from 'modules/app/helpers/make-query';
 
@@ -197,38 +199,42 @@ class Paginator extends Component {
     const p = this.props;
     const s = this.state;
 
+    console.log('Styles -- ', Styles);
+
     return (
-      <article className="paginator">
-        <div className="paginator-controls">
-          <div className="paginator-back">
+      <article className={Styles.Paginator}>
+        <div className={Styles.Paginator__controls}>
+          <div className={Styles.Paginator__back}>
             {s.currentPage !== 1 &&
               <Link
-                className="button"
+                className={Styles.Paginator__button}
                 to={{
                   ...p.location,
                   search: s.backQuery
                 }}
               >
+                {/* TODO: icofont with the new LESS structure -- coming in Serena's feature branch */}
                 <i className="fa fa-angle-left" />
               </Link>
             }
           </div>
 
-          <div className="paginator-location">
+          <div className={Styles.Paginator__location}>
             <span>
               {s.lowerBound}{!!s.upperBound && s.upperBound > 1 && ` - ${s.upperBound}`} <strong>of</strong> {s.totalItems}
             </span>
           </div>
 
-          <div className="paginator-forward">
+          <div className={Styles.Paginator__forward}>
             {s.currentPage !== s.lastPage &&
               <Link
-                className="button"
+                className={Styles.Paginator__button}
                 to={{
                   ...p.location,
                   search: s.forwardQuery
                 }}
               >
+                {/* TODO: icofont with the new LESS structure -- coming in Serena's feature branch */}
                 <i className="fa fa-angle-right" />
               </Link>
             }

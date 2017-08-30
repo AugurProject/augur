@@ -1,0 +1,48 @@
+@import '~assets/styles/shared';
+
+.Topic__name {
+  .font-size-most-massive();
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.Topic__link {
+  .font-color-light();
+
+  cursor: pointer;
+  display: block;
+  text-decoration: none;
+}
+
+.Topic__separator {
+  background: @color-very-lightpurple;
+  height: 0.0625rem;
+  margin: 1rem 7vw 1.5rem;
+}
+
+.Topic__popularity {
+  .font-size-extra-large();
+  .font-weight-light();
+}
+
+@media @breakpoint-small-desktop {
+  .Topic__separator {
+    margin: 1rem 14vw 1.5rem;
+  }
+}
+
+@media @breakpoint-mobile {
+  .Topic__separator {
+    margin: 1rem 28.5vw 1.5rem;
+  }
+}
+
+@media @breakpoint-small-mobile {
+  .Topic__name {
+    .font-size-massive();
+  }
+}
