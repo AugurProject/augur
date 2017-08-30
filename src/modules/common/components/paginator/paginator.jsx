@@ -199,8 +199,6 @@ class Paginator extends Component {
     const p = this.props;
     const s = this.state;
 
-    console.log('Styles -- ', Styles);
-
     return (
       <article className={Styles.Paginator}>
         <div className={Styles.Paginator__controls}>
