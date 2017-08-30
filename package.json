@@ -19,7 +19,9 @@
     "lint": "node scripts/lint.js",
     "test": "node scripts/test.js",
     "___": "",
-    "link": "npm link augur.js && npm link keythereum"
+    "link": "npm link augur.js && npm link keythereum",
+    "----": "",
+    "deploy-dev": "node scripts/deploy-dev.js"
   },
   "dependencies": {
     "airbitz-core-js-ui": "0.1.3",
