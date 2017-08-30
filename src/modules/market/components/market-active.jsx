@@ -8,8 +8,7 @@ import OutcomeTrade from 'modules/outcomes/components/outcome-trade';
 
 import { SHARE, MILLI_SHARE, MICRO_SHARE } from 'modules/market/constants/share-denominations';
 import { PRICE } from 'modules/order-book/constants/order-book-value-types';
-import { BUY, SELL } from 'modules/outcomes/constants/trade-types';
-import { BID } from 'modules/transactions/constants/types';
+import { BID, BUY, SELL } from 'modules/transactions/constants/types';
 import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types';
 import { SCALAR } from 'modules/markets/constants/market-types';
 

@@ -8,8 +8,7 @@ import NullStateMessage from 'modules/common/components/null-state-message';
 import getValue from 'utils/get-value';
 import setShareDenomination from 'utils/set-share-denomination';
 
-import { BUY, SELL } from 'modules/outcomes/constants/trade-types';
-import { BID, ASK } from 'modules/transactions/constants/types';
+import { BID, ASK, BUY, SELL } from 'modules/transactions/constants/types';
 import { PRICE, SHARE } from 'modules/order-book/constants/order-book-value-types';
 
 const OrderBookRowSide = (p) => {
