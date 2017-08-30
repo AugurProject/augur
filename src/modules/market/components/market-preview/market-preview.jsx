@@ -1,9 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 // import { Link } from 'react-router-dom';
 // import classNames from 'classnames';
 
-import MarketBasics from 'modules/market/components/market-basics/market-basics';
+import MarketBasics from 'modules/market/components/market-basics/market-basics'
 // import MarketPreviewOutcomes from 'modules/market/components/market-preview-outcomes';
 
 // import makePath from 'modules/app/helpers/make-path';
@@ -12,7 +12,7 @@ import MarketBasics from 'modules/market/components/market-basics/market-basics'
 // import { MARKET } from 'modules/app/constants/views';
 // import { MARKET_ID_PARAM_NAME, MARKET_DESCRIPTION_PARAM_NAME } from 'modules/app/constants/param-names';
 
-import Styles from 'modules/market/components/market-preview/market-preview.styles';
+import Styles from 'modules/market/components/market-preview/market-preview.styles'
 
 const MarketPreview = p => (
   // let buttonText;
@@ -62,12 +62,12 @@ const MarketPreview = p => (
     </div>
     {/* <MarketPreviewOutcomes outcomes={p.outcomes} /> */}
   </article>
-);
+)
 
 MarketPreview.propTypes = {
   isLogged: PropTypes.bool.isRequired,
   toggleFavorite: PropTypes.func.isRequired
-};
+}
 
 // MarketPreview.propTypes = {
 //   className: PropTypes.string,
@@ -83,4 +83,4 @@ MarketPreview.propTypes = {
 //   onClickToggleFavorite: PropTypes.func
 // };
 
-export default MarketPreview;
+export default MarketPreview

@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
-import Dropdown from 'modules/common/components/dropdown';
+import Dropdown from 'modules/common/components/dropdown'
 
-import parseQuery from 'modules/app/helpers/parse-query';
-import makeQuery from 'modules/app/helpers/make-query';
-import { isMarketDataOpen } from 'utils/is-market-data-open';
-import isEqual from 'lodash/isEqual';
+import parseQuery from 'modules/app/helpers/parse-query'
+import makeQuery from 'modules/app/helpers/make-query'
+import { isMarketDataOpen } from 'utils/is-market-data-open'
+import isEqual from 'lodash/isEqual'
 
-import { FILTER_MARKET_STATE_PARAM } from 'modules/app/constants/param-names';
+import { FILTER_MARKET_STATE_PARAM } from 'modules/app/constants/param-names'
 
 export default class FilterMarketState extends Component {
   static propTypes = {
@@ -20,7 +20,7 @@ export default class FilterMarketState extends Component {
   }
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.marketStateOptions = [
       {
@@ -35,22 +35,22 @@ export default class FilterMarketState extends Component {
         label: 'Closed',
         value: 'closed'
       }
-    ];
+    ]
 
-    this.defaultMarketState = this.marketStateOptions[0].value;
+    this.defaultMarketState = this.marketStateOptions[0].value
 
     this.state = {
       selectedMarketState: this.defaultMarketState
-    };
+    }
 
-    this.filterByMarketState = this.filterByMarketState.bind(this);
-    this.updateQuery = this.updateQuery.bind(this);
+    this.filterByMarketState = this.filterByMarketState.bind(this)
+    this.updateQuery = this.updateQuery.bind(this)
   }
 
   componentWillMount() {
-    const selectedMarketState = parseQuery(this.props.location.search)[FILTER_MARKET_STATE_PARAM];
-    if (selectedMarketState) this.setState({ selectedMarketState });
-    this.filterByMarketState(selectedMarketState || this.state.selectedMarketState, this.props.currentReportingPeriod, this.props.items, this.props.location);
+    const selectedMarketState = parseQuery(this.props.location.search)[FILTER_MARKET_STATE_PARAM]
+    if (selectedMarketState) this.setState({ selectedMarketState })
+    this.filterByMarketState(selectedMarketState || this.state.selectedMarketState, this.props.currentReportingPeriod, this.props.items, this.props.location)
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -58,11 +58,11 @@ export default class FilterMarketState extends Component {
       this.state.selectedMarketState !== nextState.selectedMarketState ||
       !isEqual(this.props.items, nextProps.items)
     ) {
-      this.filterByMarketState(nextState.selectedMarketState, nextProps.currentReportingPeriod, nextProps.items, nextProps.location);
+      this.filterByMarketState(nextState.selectedMarketState, nextProps.currentReportingPeriod, nextProps.items, nextProps.location)
     }
 
     if (this.state.selectedMarketState !== nextState.selectedMarketState) {
-      this.updateQuery(nextState.selectedMarketState, nextProps.location);
+      this.updateQuery(nextState.selectedMarketState, nextProps.location)
     }
   }
 
@@ -70,39 +70,39 @@ export default class FilterMarketState extends Component {
     const matchedItems = items.reduce((p, market, i) => {
       switch (selectedMarketState) {
         case 'open':
-          if (isMarketDataOpen(market)) return [...p, i];
-          break;
+          if (isMarketDataOpen(market)) return [...p, i]
+          break
         case 'reporting':
-          if (market.tradingPeriod === currentReportingPeriod) return [...p, i];
-          break;
+          if (market.tradingPeriod === currentReportingPeriod) return [...p, i]
+          break
         case 'closed':
-          if (!isMarketDataOpen(market)) return [...p, i];
-          break;
+          if (!isMarketDataOpen(market)) return [...p, i]
+          break
         default:
-          return p;
+          return p
       }
 
-      return p;
-    }, []);
+      return p
+    }, [])
 
-    this.props.updateFilter(matchedItems);
+    this.props.updateFilter(matchedItems)
   }
 
   updateQuery(selectedMarketState, location) {
-    let updatedSearch = parseQuery(location.search);
+    let updatedSearch = parseQuery(location.search)
 
     if (selectedMarketState === this.defaultMarketState) {
-      delete updatedSearch[FILTER_MARKET_STATE_PARAM];
+      delete updatedSearch[FILTER_MARKET_STATE_PARAM]
     } else {
-      updatedSearch[FILTER_MARKET_STATE_PARAM] = selectedMarketState;
+      updatedSearch[FILTER_MARKET_STATE_PARAM] = selectedMarketState
     }
 
-    updatedSearch = makeQuery(updatedSearch);
+    updatedSearch = makeQuery(updatedSearch)
 
     this.props.history.push({
       ...location,
       search: updatedSearch
-    });
+    })
   }
 
   render() {
@@ -114,6 +114,6 @@ export default class FilterMarketState extends Component {
           onChange={selectedMarketState => this.setState({ selectedMarketState })}
         />
       </article>
-    );
+    )
   }
 }

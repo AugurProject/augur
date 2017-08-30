@@ -1,16 +1,16 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
-import proxyquire from 'proxyquire';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import { formatEtherTokens, formatShares, formatNone } from 'utils/format-number';
-import { CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-status';
-import { abi } from 'services/augurjs';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
+import proxyquire from 'proxyquire'
+import configureMockStore from 'redux-mock-store'
+import thunk from 'redux-thunk'
+import { formatEtherTokens, formatShares, formatNone } from 'utils/format-number'
+import { CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-status'
+import { abi } from 'services/augurjs'
 
 describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
-  proxyquire.noPreserveCache().noCallThru();
-  const middlewares = [thunk];
-  const mockStore = configureMockStore(middlewares);
+  proxyquire.noPreserveCache().noCallThru()
+  const middlewares = [thunk]
+  const mockStore = configureMockStore(middlewares)
 
   const state = {
     loginAccount: {
@@ -19,20 +19,20 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
     orderCancellation: {
       order8: CLOSE_DIALOG_CLOSING
     }
-  };
-  const store = mockStore(state);
+  }
+  const store = mockStore(state)
   const selectUserOpenOrders = proxyquire('../../../src/modules/user-open-orders/selectors/user-open-orders', {
     '../../../store': store
-  }).default;
+  }).default
 
   it(`should return no user open orders for not logged-in user`, () => {
     const state = {
       loginAccount: {}
-    };
-    const store = mockStore(state);
+    }
+    const store = mockStore(state)
     const selectUserOpenOrders = proxyquire('../../../src/modules/user-open-orders/selectors/user-open-orders', {
       '../../../store': store
-    }).default;
+    }).default
 
     const marketOrderBook = {
       buy: {
@@ -53,14 +53,14 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
           outcome: '1'
         }
       }
-    };
+    }
 
-    assert.lengthOf(selectUserOpenOrders('1', marketOrderBook), 0);
-  });
+    assert.lengthOf(selectUserOpenOrders('1', marketOrderBook), 0)
+  })
 
   it(`should return no user open orders if there are no orders`, () => {
-    assert.lengthOf(selectUserOpenOrders('1', {}), 0);
-  });
+    assert.lengthOf(selectUserOpenOrders('1', {}), 0)
+  })
 
   it(`should return empty user open orders if there are no matching orders`, () => {
     const nonMatchingMarketOrderBook = {
@@ -103,9 +103,9 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
           outcome: '1'
         }
       }
-    };
-    assert.lengthOf(selectUserOpenOrders('1', nonMatchingMarketOrderBook), 0);
-  });
+    }
+    assert.lengthOf(selectUserOpenOrders('1', nonMatchingMarketOrderBook), 0)
+  })
 
   it(`should return user open orders for logged-in user who has orders`, () => {
     const marketOrderBook = {
@@ -202,10 +202,10 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
         }
 
       }
-    };
+    }
 
-    const userOpenOrders = selectUserOpenOrders('1', marketOrderBook);
-    assert.lengthOf(userOpenOrders, 7);
+    const userOpenOrders = selectUserOpenOrders('1', marketOrderBook)
+    assert.lengthOf(userOpenOrders, 7)
     assert.deepEqual(userOpenOrders, [{
       id: 'order10',
       avgPrice: formatEtherTokens('100'),
@@ -262,6 +262,6 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
       matchedShares: formatNone(),
       originalShares: formatNone(),
       unmatchedShares: formatShares('1')
-    }]);
-  });
-});
+    }])
+  })
+})

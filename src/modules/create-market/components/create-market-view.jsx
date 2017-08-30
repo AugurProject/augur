@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Helmet } from 'react-helmet';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { Helmet } from 'react-helmet'
 
-import CreateMarketMainTitle from 'modules/create-market/components/create-market-main-title';
-import CreateMarketPreview from 'modules/create-market/components/create-market-preview';
-import CreateMarketForm from 'modules/create-market/components/create-market-form';
-import CreateMarketFormButtons from 'modules/create-market/components/create-market-form-buttons';
+import CreateMarketMainTitle from 'modules/create-market/components/create-market-main-title'
+import CreateMarketPreview from 'modules/create-market/components/create-market-preview'
+import CreateMarketForm from 'modules/create-market/components/create-market-form'
+import CreateMarketFormButtons from 'modules/create-market/components/create-market-form-buttons'
 
-import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
+import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
 
 export default class CreateMarketView extends Component {
   static propTypes = {
@@ -19,13 +19,13 @@ export default class CreateMarketView extends Component {
   }
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       buttonHeight: 0
-    };
+    }
 
-    this.updateValidations = this.updateValidations.bind(this);
+    this.updateValidations = this.updateValidations.bind(this)
   }
 
   componentWillReceiveProps(nextProps) {
@@ -33,21 +33,21 @@ export default class CreateMarketView extends Component {
       (this.props.newMarket.currentStep !== nextProps.newMarket.currentStep && nextProps.newMarket.isValid) ||
       (this.props.newMarket.holdForUserAction !== nextProps.newMarket.holdForUserAction)
     ) {
-      this.updateValidations(nextProps.newMarket.isValid, nextProps.newMarket.currentStep, nextProps.newMarket.holdForUserAction);
+      this.updateValidations(nextProps.newMarket.isValid, nextProps.newMarket.currentStep, nextProps.newMarket.holdForUserAction)
     }
   }
 
   updateValidations(isValid, currentStep, isHolding = false) {
     if (isValid && !isHolding) {
-      this.props.addValidationToNewMarket(newMarketCreationOrder[currentStep]);
+      this.props.addValidationToNewMarket(newMarketCreationOrder[currentStep])
     } else {
-      this.props.removeValidationFromNewMarket(newMarketCreationOrder[currentStep]);
+      this.props.removeValidationFromNewMarket(newMarketCreationOrder[currentStep])
     }
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
     return (
       <section
@@ -97,10 +97,10 @@ export default class CreateMarketView extends Component {
           />
         </div>
       </section>
-    );
+    )
   }
 }
 
 CreateMarketView.propTypes = {
 
-};
+}

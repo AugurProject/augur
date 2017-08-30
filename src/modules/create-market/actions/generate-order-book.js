@@ -1,10 +1,10 @@
-import { augur } from 'services/augurjs';
-import { loadBidsAsks } from 'modules/bids-asks/actions/load-bids-asks';
-import { loadAccountTrades } from 'modules/my-positions/actions/load-account-trades';
-import { updateSellCompleteSetsLock } from 'modules/my-positions/actions/update-account-trades-data';
+import { augur } from 'services/augurjs'
+import { loadBidsAsks } from 'modules/bids-asks/actions/load-bids-asks'
+import { loadAccountTrades } from 'modules/my-positions/actions/load-account-trades'
+import { updateSellCompleteSetsLock } from 'modules/my-positions/actions/update-account-trades-data'
 
 export const submitGenerateOrderBook = market => (dispatch, getState) => {
-  dispatch(updateSellCompleteSetsLock(market.id, true));
+  dispatch(updateSellCompleteSetsLock(market.id, true))
   augur.create.generateOrderBook({
     _signer: getState().loginAccount.privateKey,
     market: market.id,
@@ -31,10 +31,10 @@ export const submitGenerateOrderBook = market => (dispatch, getState) => {
       r.buyPrice || r.sellPrice
       } ETH Tokens created.`, r),
     onSuccess: (r) => {
-      console.log('generateOrderBook onSuccess:', r);
-      dispatch(loadBidsAsks(market.id));
-      dispatch(loadAccountTrades({ market: market.id }, () => dispatch(updateSellCompleteSetsLock(market.id, false))));
+      console.log('generateOrderBook onSuccess:', r)
+      dispatch(loadBidsAsks(market.id))
+      dispatch(loadAccountTrades({ market: market.id }, () => dispatch(updateSellCompleteSetsLock(market.id, false))))
     },
     onFailed: e => console.error('generateOrderBook onFailed:', e)
-  });
-};
+  })
+}

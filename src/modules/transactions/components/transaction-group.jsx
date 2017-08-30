@@ -1,11 +1,11 @@
-import React from 'react';
-import classNames from 'classnames';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import React from 'react'
+import classNames from 'classnames'
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
 
-import Transaction from 'modules/transactions/components/transaction';
+import Transaction from 'modules/transactions/components/transaction'
 
 const TransactionGroup = (p) => {
-  const animationInSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-very-slow'), 10);
+  const animationInSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-very-slow'), 10)
 
   return (
     <article className={classNames('transaction-group', p.status)} >
@@ -28,7 +28,7 @@ const TransactionGroup = (p) => {
         ))}
       </CSSTransitionGroup>
     </article>
-  );
-};
+  )
+}
 
-export default TransactionGroup;
+export default TransactionGroup

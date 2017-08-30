@@ -1,15 +1,15 @@
-import { describe, it, beforeEach } from 'mocha';
-import { assert } from 'chai';
-import proxyquire from 'proxyquire';
-import sinon from 'sinon';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import testState from 'test/testState';
+import { describe, it, beforeEach } from 'mocha'
+import { assert } from 'chai'
+import proxyquire from 'proxyquire'
+import sinon from 'sinon'
+import configureMockStore from 'redux-mock-store'
+import thunk from 'redux-thunk'
+import testState from 'test/testState'
 
 describe('modules/reports/actions/reveal-reports.js', () => {
-  proxyquire.noPreserveCache().noCallThru();
-  const middlewares = [thunk];
-  const mockStore = configureMockStore(middlewares);
+  proxyquire.noPreserveCache().noCallThru()
+  const middlewares = [thunk]
+  const mockStore = configureMockStore(middlewares)
   const reports = {
     [testState.branch.id]: {
       test1: {
@@ -58,7 +58,7 @@ describe('modules/reports/actions/reveal-reports.js', () => {
         isScalar: false
       }
     }
-  };
+  }
   const state = Object.assign({}, testState, {
     loginAccount: {
       ...testState.loginAccount,
@@ -67,10 +67,10 @@ describe('modules/reports/actions/reveal-reports.js', () => {
       realEther: 100
     },
     reports
-  });
-  const store = mockStore(state);
+  })
+  const store = mockStore(state)
 
-  const mockUpdateAssets = { updateAssets: () => {} };
+  const mockUpdateAssets = { updateAssets: () => {} }
   const mockAugurJS = {
     augur: {
       reporting: { submitReport: () => {}, },
@@ -78,25 +78,25 @@ describe('modules/reports/actions/reveal-reports.js', () => {
       rpc: { gasPrice: 10 },
       tx: { MakeReports: { submitReport: {} } }
     }
-  };
+  }
 
-  sinon.stub(mockUpdateAssets, 'updateAssets', () => ({ type: 'UPDATE_ASSETS' }));
-  sinon.stub(mockAugurJS.augur, 'getTxGasEth', (tx, gasPrice) => 1);
+  sinon.stub(mockUpdateAssets, 'updateAssets', () => ({ type: 'UPDATE_ASSETS' }))
+  sinon.stub(mockAugurJS.augur, 'getTxGasEth', (tx, gasPrice) => 1)
   sinon.stub(mockAugurJS.augur.reporting, 'submitReport', (o) => {
-    const message = 'revealed report: testOutcome 2';
-    const hash = '0xdeadbeef';
-    o.onSent({ status: 'submitted', hash, message });
-    o.onSuccess({ status: 'success', hash, message, gasFees: 1, timestamp: 100 });
-  });
+    const message = 'revealed report: testOutcome 2'
+    const hash = '0xdeadbeef'
+    o.onSent({ status: 'submitted', hash, message })
+    o.onSuccess({ status: 'success', hash, message, gasFees: 1, timestamp: 100 })
+  })
 
   const action = proxyquire('../../../src/modules/reports/actions/reveal-reports.js', {
     '../../auth/actions/update-assets': mockUpdateAssets,
     '../../../services/augurjs': mockAugurJS
-  });
+  })
 
   beforeEach(() => {
-    store.clearActions();
-  });
+    store.clearActions()
+  })
 
   it('should reveal reports', () => {
     const out = [{
@@ -172,8 +172,8 @@ describe('modules/reports/actions/reveal-reports.js', () => {
         }
       },
       type: 'UPDATE_REPORTS'
-    }];
-    store.dispatch(action.revealReports());
-    assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects`);
-  });
-});
+    }]
+    store.dispatch(action.revealReports())
+    assert.deepEqual(store.getActions(), out, `Didn't dispatch the expected action objects`)
+  })
+})

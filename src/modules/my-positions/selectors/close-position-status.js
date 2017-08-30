@@ -1,14 +1,14 @@
-import { createSelector } from 'reselect';
-import store from 'src/store';
-import { selectClosePositionTradeGroupsState, selectTransactionsDataState } from 'src/select-state';
-import { clearClosePositionOutcome } from 'modules/my-positions/actions/clear-close-position-outcome';
+import { createSelector } from 'reselect'
+import store from 'src/store'
+import { selectClosePositionTradeGroupsState, selectTransactionsDataState } from 'src/select-state'
+import { clearClosePositionOutcome } from 'modules/my-positions/actions/clear-close-position-outcome'
 
-import { CLOSE_DIALOG_CLOSING, CLOSE_DIALOG_NO_ORDERS, CLOSE_DIALOG_FAILED, CLOSE_DIALOG_PARTIALLY_FAILED, CLOSE_DIALOG_SUCCESS } from 'modules/market/constants/close-dialog-status';
-import { SUCCESS, FAILED } from 'modules/transactions/constants/statuses';
-import { UPDATE_TRADE_COMMIT_LOCK } from 'modules/trade/actions/update-trade-commitment';
+import { CLOSE_DIALOG_CLOSING, CLOSE_DIALOG_NO_ORDERS, CLOSE_DIALOG_FAILED, CLOSE_DIALOG_PARTIALLY_FAILED, CLOSE_DIALOG_SUCCESS } from 'modules/market/constants/close-dialog-status'
+import { SUCCESS, FAILED } from 'modules/transactions/constants/statuses'
+import { UPDATE_TRADE_COMMIT_LOCK } from 'modules/trade/actions/update-trade-commitment'
 
 export default function () {
-  return selectClosePositionStatus(store.getState());
+  return selectClosePositionStatus(store.getState())
 }
 
 export const selectClosePositionStatus = createSelector(
@@ -18,76 +18,76 @@ export const selectClosePositionStatus = createSelector(
     const statuses = Object.keys(closePositionTradeGroups).reduce((p, marketID) => {
       const outcomeStatuses = Object.keys(closePositionTradeGroups[marketID]).reduce((p, outcomeID) => {
         const closePositionTransactionIDs = closePositionTradeGroups[marketID][outcomeID].reduce((p, tradeGroupID) => {
-          const transactionIDs = Object.keys(transactionsData).filter(transactionID => transactionsData[transactionID].tradeGroupID === tradeGroupID);
+          const transactionIDs = Object.keys(transactionsData).filter(transactionID => transactionsData[transactionID].tradeGroupID === tradeGroupID)
 
           if (transactionIDs.length !== 0) {
-            return [...p, ...transactionIDs];
+            return [...p, ...transactionIDs]
           }
 
-          return p;
-        }, []);
+          return p
+        }, [])
 
         // closing failed further up in the call chain to close position
         if (closePositionTradeGroups[marketID][outcomeID][0] === CLOSE_DIALOG_FAILED) {
-          delayClearTradeGroupIDs(marketID, outcomeID);
+          delayClearTradeGroupIDs(marketID, outcomeID)
 
-          return { ...p, [outcomeID]: CLOSE_DIALOG_FAILED };
+          return { ...p, [outcomeID]: CLOSE_DIALOG_FAILED }
         }
 
         // no orders are available within the outcome's order book
         if (closePositionTradeGroups[marketID][outcomeID][0] === CLOSE_DIALOG_NO_ORDERS) {
-          delayClearTradeGroupIDs(marketID, outcomeID);
+          delayClearTradeGroupIDs(marketID, outcomeID)
 
-          return { ...p, [outcomeID]: CLOSE_DIALOG_NO_ORDERS };
+          return { ...p, [outcomeID]: CLOSE_DIALOG_NO_ORDERS }
         }
 
         // Short Circuit until transactionsData is updated with the tradeGroupID
         if (closePositionTransactionIDs.length === 0 && closePositionTradeGroups[marketID][outcomeID]) {
-          return { ...p, [outcomeID]: CLOSE_DIALOG_CLOSING };
+          return { ...p, [outcomeID]: CLOSE_DIALOG_CLOSING }
         }
 
-        const numberOfFailedTransactions = closePositionTransactionIDs.filter(transactionID => transactionsData[transactionID].status === FAILED).length;
+        const numberOfFailedTransactions = closePositionTransactionIDs.filter(transactionID => transactionsData[transactionID].status === FAILED).length
 
         // Close Position Completely Failed
         if (numberOfFailedTransactions === closePositionTransactionIDs.length) {
-          delayClearTradeGroupIDs(marketID, outcomeID);
+          delayClearTradeGroupIDs(marketID, outcomeID)
 
-          return { ...p, [outcomeID]: CLOSE_DIALOG_FAILED };
+          return { ...p, [outcomeID]: CLOSE_DIALOG_FAILED }
         }
 
         // Close Position Completely Succeeded
-        const numberOfSuccessfulTransactions = closePositionTransactionIDs.filter(transactionID => transactionsData[transactionID].status === SUCCESS).length;
+        const numberOfSuccessfulTransactions = closePositionTransactionIDs.filter(transactionID => transactionsData[transactionID].status === SUCCESS).length
 
         if (numberOfSuccessfulTransactions === closePositionTransactionIDs.length) {
-          delayClearTradeGroupIDs(marketID, outcomeID);
+          delayClearTradeGroupIDs(marketID, outcomeID)
 
-          return { ...p, [outcomeID]: CLOSE_DIALOG_SUCCESS };
+          return { ...p, [outcomeID]: CLOSE_DIALOG_SUCCESS }
         }
 
         // Close Position Partially Failed
         if (numberOfFailedTransactions && numberOfFailedTransactions !== closePositionTransactionIDs.length && numberOfSuccessfulTransactions === 0) {
 
-          return { ...p, [outcomeID]: CLOSE_DIALOG_PARTIALLY_FAILED };
+          return { ...p, [outcomeID]: CLOSE_DIALOG_PARTIALLY_FAILED }
         } else if (numberOfFailedTransactions && numberOfFailedTransactions + numberOfSuccessfulTransactions === closePositionTransactionIDs.length) {
-          delayClearTradeGroupIDs(marketID, outcomeID);
+          delayClearTradeGroupIDs(marketID, outcomeID)
 
-          return { ...p, [outcomeID]: CLOSE_DIALOG_PARTIALLY_FAILED };
+          return { ...p, [outcomeID]: CLOSE_DIALOG_PARTIALLY_FAILED }
         }
 
         // Close Position In-Process without Failures
-        return { ...p, [outcomeID]: CLOSE_DIALOG_CLOSING };
-      }, {});
+        return { ...p, [outcomeID]: CLOSE_DIALOG_CLOSING }
+      }, {})
 
       if (Object.keys(outcomeStatuses).length !== 0) {
-        return { ...p, [marketID]: outcomeStatuses };
+        return { ...p, [marketID]: outcomeStatuses }
       }
 
-      return p;
-    }, {});
+      return p
+    }, {})
 
-    return statuses;
+    return statuses
   }
-);
+)
 
 // waits, then clears tradeIDs from closePositionTradeGroups
 // This will ultimately clear the outcome status and allow for the
@@ -97,7 +97,7 @@ function delayClearTradeGroupIDs(marketID, outcomeID) {
     store.dispatch({
       type: UPDATE_TRADE_COMMIT_LOCK,
       isLocked: false
-    });
-    store.dispatch(clearClosePositionOutcome(marketID, outcomeID));
-  }, 3000);
+    })
+    store.dispatch(clearClosePositionOutcome(marketID, outcomeID))
+  }, 3000)
 }

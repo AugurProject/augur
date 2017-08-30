@@ -1,4 +1,4 @@
-import { UPDATE_MARKET_ORDER_BOOK, REPLACE_MARKET_ORDER_BOOK, CLEAR_MARKET_ORDER_BOOK } from 'modules/bids-asks/actions/update-market-order-book';
+import { UPDATE_MARKET_ORDER_BOOK, REPLACE_MARKET_ORDER_BOOK, CLEAR_MARKET_ORDER_BOOK } from 'modules/bids-asks/actions/update-market-order-book'
 
 /**
  * @param {Object} orderBooks
@@ -8,7 +8,7 @@ import { UPDATE_MARKET_ORDER_BOOK, REPLACE_MARKET_ORDER_BOOK, CLEAR_MARKET_ORDER
 export default function (orderBooks = {}, action) {
   switch (action.type) {
     case UPDATE_MARKET_ORDER_BOOK: {
-      const orderBook = orderBooks[action.marketID] || {};
+      const orderBook = orderBooks[action.marketID] || {}
       return {
         ...orderBooks,
         [action.marketID]: {
@@ -19,19 +19,19 @@ export default function (orderBooks = {}, action) {
             ? { ...orderBook.sell, ...action.marketOrderBook.sell }
             : action.marketOrderBook.sell
         }
-      };
+      }
     }
     case REPLACE_MARKET_ORDER_BOOK:
       return {
         ...orderBooks,
         [action.marketID]: action.marketOrderBook
-      };
+      }
     case CLEAR_MARKET_ORDER_BOOK:
       return {
         ...orderBooks,
         [action.marketID]: { buy: {}, sell: {} }
-      };
+      }
     default:
-      return orderBooks;
+      return orderBooks
   }
 }

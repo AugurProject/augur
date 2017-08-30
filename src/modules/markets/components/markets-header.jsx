@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types';
-import FilterSort from 'modules/filter-sort/container';
-import classNames from 'classnames';
+import React, { Component } from 'react'
+import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
+import FilterSort from 'modules/filter-sort/container'
+import classNames from 'classnames'
 
-import makePath from 'modules/app/helpers/make-path';
+import makePath from 'modules/app/helpers/make-path'
 
-import parseQuery from 'modules/app/helpers/parse-query';
-import parsePath from 'modules/app/helpers/parse-path';
+import parseQuery from 'modules/app/helpers/parse-query'
+import parsePath from 'modules/app/helpers/parse-path'
 
-import { CREATE_MARKET, MARKETS, FAVORITES } from 'modules/app/constants/views';
-import { TOPIC_PARAM_NAME } from 'modules/app/constants/param-names';
+import { CREATE_MARKET, MARKETS, FAVORITES } from 'modules/app/constants/views'
+import { TOPIC_PARAM_NAME } from 'modules/app/constants/param-names'
 
 export default class MarketsHeader extends Component {
   static propTypes = {
@@ -20,66 +20,66 @@ export default class MarketsHeader extends Component {
   }
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       headerTitle: null,
       capitalizeTitle: false,
       filterByMarketFavorites: false
-    };
+    }
 
     this.searchKeys = [
       'description',
       ['outcomes', 'name'],
       ['tags', 'name']
-    ];
+    ]
 
-    this.setHeaderTitle = this.setHeaderTitle.bind(this);
-    this.setPathDependentFilters = this.setPathDependentFilters.bind(this);
+    this.setHeaderTitle = this.setHeaderTitle.bind(this)
+    this.setPathDependentFilters = this.setPathDependentFilters.bind(this)
   }
 
   componentWillMount() {
-    this.setHeaderTitle(this.props.location);
-    this.setPathDependentFilters(this.props.location);
+    this.setHeaderTitle(this.props.location)
+    this.setPathDependentFilters(this.props.location)
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.location !== nextProps.location) {
-      this.setHeaderTitle(nextProps.location);
-      this.setPathDependentFilters(nextProps.location);
+      this.setHeaderTitle(nextProps.location)
+      this.setPathDependentFilters(nextProps.location)
     }
   }
 
   setHeaderTitle(location) {
-    const searchParams = parseQuery(location.search);
+    const searchParams = parseQuery(location.search)
 
     if (searchParams[TOPIC_PARAM_NAME]) {
       this.setState({
         headerTitle: searchParams[TOPIC_PARAM_NAME],
         capitalizeTitle: false
-      });
+      })
     } else {
-      const path = parsePath(location.pathname);
+      const path = parsePath(location.pathname)
 
       if (path[0] === MARKETS) {
         this.setState({
           headerTitle: path[0],
           capitalizeTitle: true
-        });
+        })
       }
     }
   }
 
   setPathDependentFilters(location) {
-    const path = parsePath(location.pathname)[0];
+    const path = parsePath(location.pathname)[0]
 
-    const filterByMarketFavorites = path === FAVORITES;
-    this.setState({ filterByMarketFavorites });
+    const filterByMarketFavorites = path === FAVORITES
+    this.setState({ filterByMarketFavorites })
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
     return (
       <article>
@@ -113,6 +113,6 @@ export default class MarketsHeader extends Component {
           filterByTags
         />
       </article>
-    );
+    )
   }
 }

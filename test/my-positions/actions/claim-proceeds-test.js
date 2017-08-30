@@ -1,54 +1,54 @@
-import { describe, it } from 'mocha';
-import BigNumber from 'bignumber.js';
-import { assert } from 'chai';
-import proxyquire from 'proxyquire';
-import sinon from 'sinon';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { describe, it } from 'mocha'
+import BigNumber from 'bignumber.js'
+import { assert } from 'chai'
+import proxyquire from 'proxyquire'
+import sinon from 'sinon'
+import configureMockStore from 'redux-mock-store'
+import thunk from 'redux-thunk'
 
 describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
-  proxyquire.noPreserveCache().noCallThru();
-  const middlewares = [thunk];
-  const mockStore = configureMockStore(middlewares);
+  proxyquire.noPreserveCache().noCallThru()
+  const middlewares = [thunk]
+  const mockStore = configureMockStore(middlewares)
   const test = (t) => {
     it(t.description, () => {
-      const store = mockStore(t.state);
+      const store = mockStore(t.state)
       const AugurJS = {
         augur: {
           trading: { payout: { claimMarketsProceeds: () => {} } }
         },
         abi: { bignum: () => {} }
-      };
-      const LoadAccountTrades = { loadAccountTrades: () => {} };
-      const LoadMarketsInfo = { loadMarketsInfo: () => {} };
-      const UpdateAssets = {};
-      const WinningPositions = sinon.stub().returns(t.selectors.winningPositions);
+      }
+      const LoadAccountTrades = { loadAccountTrades: () => {} }
+      const LoadMarketsInfo = { loadMarketsInfo: () => {} }
+      const UpdateAssets = {}
+      const WinningPositions = sinon.stub().returns(t.selectors.winningPositions)
       const action = proxyquire('../../../src/modules/my-positions/actions/claim-proceeds.js', {
         '../../../services/augurjs': AugurJS,
         './load-account-trades': LoadAccountTrades,
         '../../markets/actions/load-markets-info': LoadMarketsInfo,
         '../../auth/actions/update-assets': UpdateAssets,
         '../selectors/winning-positions': WinningPositions
-      });
-      sinon.stub(AugurJS.abi, 'bignum', n => new BigNumber(n, 10));
+      })
+      sinon.stub(AugurJS.abi, 'bignum', n => new BigNumber(n, 10))
       sinon.stub(AugurJS.augur.trading.payout, 'claimMarketsProceeds', (branchID, markets, cb) => {
-        store.dispatch({ type: 'CLAIM_MARKETS_PROCEEDS', markets });
-        cb(null, markets.map(market => market.id));
-      });
+        store.dispatch({ type: 'CLAIM_MARKETS_PROCEEDS', markets })
+        cb(null, markets.map(market => market.id))
+      })
       sinon.stub(LoadAccountTrades, 'loadAccountTrades', (options, cb) => (dispatch, getState) => {
-        dispatch({ type: 'LOAD_ACCOUNT_TRADES', ...options });
-        cb(null);
-      });
+        dispatch({ type: 'LOAD_ACCOUNT_TRADES', ...options })
+        cb(null)
+      })
       sinon.stub(LoadMarketsInfo, 'loadMarketsInfo', (marketIDs, cb) => (dispatch, getState) => {
-        dispatch({ type: 'LOAD_MARKETS_INFO', marketIDs });
-        cb(null);
-      });
-      UpdateAssets.updateAssets = sinon.stub().returns({ type: 'UPDATE_ASSETS' });
-      store.dispatch(action.claimProceeds());
-      t.assertions(store.getActions());
-      store.clearActions();
-    });
-  };
+        dispatch({ type: 'LOAD_MARKETS_INFO', marketIDs })
+        cb(null)
+      })
+      UpdateAssets.updateAssets = sinon.stub().returns({ type: 'UPDATE_ASSETS' })
+      store.dispatch(action.claimProceeds())
+      t.assertions(store.getActions())
+      store.clearActions()
+    })
+  }
 
   test({
     description: 'no positions',
@@ -66,9 +66,9 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
       winningPositions: []
     },
     assertions: (actions) => {
-      assert.deepEqual(actions, []);
+      assert.deepEqual(actions, [])
     }
-  });
+  })
 
   test({
     description: '1 position in closed market',
@@ -111,9 +111,9 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
       }, {
         type: 'LOAD_ACCOUNT_TRADES',
         market: '0xa1',
-      }]);
+      }])
     }
-  });
+  })
 
   test({
     description: '1 position in open market',
@@ -137,9 +137,9 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
       winningPositions: []
     },
     assertions: (actions) => {
-      assert.deepEqual(actions, []);
+      assert.deepEqual(actions, [])
     }
-  });
+  })
 
   test({
     description: '1 position in open market, 1 position in closed market',
@@ -187,9 +187,9 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
       }, {
         type: 'LOAD_ACCOUNT_TRADES',
         market: '0xa2',
-      }]);
+      }])
     }
-  });
+  })
 
   test({
     description: '1 position in open market, 2 positions in closed markets',
@@ -256,9 +256,9 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
       }, {
         type: 'LOAD_ACCOUNT_TRADES',
         market: '0xa3',
-      }]);
+      }])
     }
-  });
+  })
 
   test({
     description: '2 position in open markets, 1 position in closed market',
@@ -311,7 +311,7 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
       }, {
         type: 'LOAD_ACCOUNT_TRADES',
         market: '0xa3',
-      }]);
+      }])
     }
-  });
-});
+  })
+})

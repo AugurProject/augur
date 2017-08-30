@@ -1,4 +1,4 @@
-export const UPDATE_FOOTER_HEIGHT = 'UPDATE_FOOTER_HEIGHT';
+export const UPDATE_FOOTER_HEIGHT = 'UPDATE_FOOTER_HEIGHT'
 
 export function updateFooterHeight(footerHeight) {
   return {
@@ -6,5 +6,5 @@ export function updateFooterHeight(footerHeight) {
     data: {
       footerHeight
     }
-  };
+  }
 }

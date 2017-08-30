@@ -1,9 +1,9 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import React from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
 
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
-import { BINARY_INDETERMINATE_OUTCOME_ID, CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID } from 'modules/markets/constants/market-outcomes';
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
+import { BINARY_INDETERMINATE_OUTCOME_ID, CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID } from 'modules/markets/constants/market-outcomes'
 
 const OutcomeOptions = p => (
   <article className="outcome-options">
@@ -51,7 +51,7 @@ const OutcomeOptions = p => (
       </div>
     }
   </article>
-);
+)
 
 OutcomeOptions.propTypes = {
   className: PropTypes.string,
@@ -61,6 +61,6 @@ OutcomeOptions.propTypes = {
   isReported: PropTypes.bool,
   isIndeterminate: PropTypes.bool,
   onOutcomeChange: PropTypes.func
-};
+}
 
-export default OutcomeOptions;
+export default OutcomeOptions

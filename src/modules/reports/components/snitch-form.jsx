@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
-import Checkbox from 'modules/common/components/checkbox';
-import OutcomeOptions from 'modules/reports/components/outcome-options';
+import React, { Component } from 'react'
+import Checkbox from 'modules/common/components/checkbox'
+import OutcomeOptions from 'modules/reports/components/outcome-options'
 
 export default class SnitchForm extends Component {
   // TODO -- Prop Validations
   static propTypes = {};
 
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       reporter: '',
       report: '',
@@ -15,12 +15,12 @@ export default class SnitchForm extends Component {
       isIndeterminate: false,
       isUnethical: false,
       isReported: false
-    };
+    }
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
     return (
       <article className="snitch-form">
         <p className="snitch-message">
@@ -85,6 +85,6 @@ export default class SnitchForm extends Component {
           </button>
         </div>
       </article>
-    );
+    )
   }
 }

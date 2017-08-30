@@ -1,17 +1,17 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
-import proxyquire from 'proxyquire';
-import sinon from 'sinon';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
+import proxyquire from 'proxyquire'
+import sinon from 'sinon'
+import configureMockStore from 'redux-mock-store'
+import thunk from 'redux-thunk'
 
 describe('modules/reports/actions/load-report.js', () => {
-  proxyquire.noPreserveCache().noCallThru();
-  const middlewares = [thunk];
-  const mockStore = configureMockStore(middlewares);
+  proxyquire.noPreserveCache().noCallThru()
+  const middlewares = [thunk]
+  const mockStore = configureMockStore(middlewares)
   const test = (t) => {
     it(t.description, (done) => {
-      const store = mockStore(t.state);
+      const store = mockStore(t.state)
       const AugurJS = {
         augur: {
           accounts: t.state.augur.accounts,
@@ -21,43 +21,43 @@ describe('modules/reports/actions/load-report.js', () => {
           },
           api: { ExpiringEvents: { getReportHash: () => {} } },
         }
-      };
+      }
       const ReportEncryption = {
         decryptReport: () => {}
-      };
+      }
       const action = proxyquire('../../../src/modules/reports/actions/load-report', {
         '../../../services/augurjs': AugurJS,
         './report-encryption': ReportEncryption
-      });
+      })
       sinon.stub(AugurJS.augur.reporting, 'getReport', (branchID, period, eventID, address, minValue, maxValue, type, cb) => {
         cb({
           report: t.blockchain.reports[branchID][eventID],
           isIndeterminate: false
-        });
-      });
+        })
+      })
       sinon.stub(AugurJS.augur.api.ExpiringEvents, 'getReportHash', (args, cb) => {
-        cb(t.blockchain.reportHashes[args.branch][args.event]);
-      });
+        cb(t.blockchain.reportHashes[args.branch][args.event])
+      })
       sinon.stub(AugurJS.augur.reporting.format, 'unfixReport', (fixedReport, minValue, maxValue, type) => ({
         report: t.blockchain.encryptedReports[t.state.branch.id][t.eventID].reportedOutcomeID,
         isIndeterminate: false
-      }));
+      }))
       sinon.stub(ReportEncryption, 'decryptReport', (branchID, period, eventID, cb) => {
         // console.log('decryptReport:', branchID, period, eventID);
         cb(null, {
           reportedOutcomeID: t.blockchain.encryptedReports[branchID][eventID].reportedOutcomeID,
           salt: t.blockchain.encryptedReports[branchID][eventID].salt,
           isUnethical: t.blockchain.encryptedReports[branchID][eventID].isUnethical
-        });
-      });
+        })
+      })
       store.dispatch(action.loadReport(t.state.branch.id, t.state.branch.reportPeriod, t.eventID, t.marketID, (err) => {
-        assert.isNull(err);
-        t.assertions(store.getActions());
-        store.clearActions();
-        done();
-      }));
-    });
-  };
+        assert.isNull(err)
+        t.assertions(store.getActions())
+        store.clearActions()
+        done()
+      }))
+    })
+  }
   test({
     description: 'report hash: no, encrypted reports: no, revealed reports: no',
     eventID: '0xe1',
@@ -145,9 +145,9 @@ describe('modules/reports/actions/load-report.js', () => {
           isRevealed: false,
           isCommitted: false
         }
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: 'report hash: no, encrypted reports: no, revealed reports: no, non-empty reports state',
     eventID: '0xe1',
@@ -242,9 +242,9 @@ describe('modules/reports/actions/load-report.js', () => {
           isRevealed: false,
           isCommitted: false
         }
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: 'report hash: yes, encrypted reports: no, revealed reports: no',
     eventID: '0xe1',
@@ -325,9 +325,9 @@ describe('modules/reports/actions/load-report.js', () => {
           isRevealed: false,
           isCommitted: true
         }
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: 'report hash: yes, encrypted reports: no, revealed reports: no, non-empty reports state',
     eventID: '0xe1',
@@ -422,9 +422,9 @@ describe('modules/reports/actions/load-report.js', () => {
           isRevealed: false,
           isCommitted: true
         }
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: 'report hash: yes, encrypted reports: yes, revealed reports: no',
     eventID: '0xe1',
@@ -506,9 +506,9 @@ describe('modules/reports/actions/load-report.js', () => {
           isRevealed: false,
           isCommitted: true
         }
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: 'report hash: yes, encrypted reports: yes, revealed reports: yes',
     eventID: '0xe1',
@@ -590,9 +590,9 @@ describe('modules/reports/actions/load-report.js', () => {
           isRevealed: true,
           isCommitted: true
         }
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: 'report hash: yes, encrypted reports: no, revealed reports: yes',
     eventID: '0xe1',
@@ -674,9 +674,9 @@ describe('modules/reports/actions/load-report.js', () => {
           isRevealed: true,
           isCommitted: true
         }
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: 'report hash: no, encrypted reports: no, revealed reports: yes',
     eventID: '0xe1',
@@ -758,7 +758,7 @@ describe('modules/reports/actions/load-report.js', () => {
           isRevealed: true,
           isCommitted: true
         }
-      }]);
+      }])
     }
-  });
-});
+  })
+})

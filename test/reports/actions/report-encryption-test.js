@@ -1,13 +1,13 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
-import Augur from 'augur.js';
-import proxyquire from 'proxyquire';
-import sinon from 'sinon';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
+import Augur from 'augur.js'
+import proxyquire from 'proxyquire'
+import sinon from 'sinon'
 
 // These tests won't be needed in the new reporting system, simply going to skip them for now
 describe.skip(`modules/reports/actions/report-encryption.js`, () => {
-  proxyquire.noPreserveCache().noCallThru();
-  const augur = new Augur();
+  proxyquire.noPreserveCache().noCallThru()
+  const augur = new Augur()
   describe('encryptReport', () => {
     const test = t => it(t.description, () => {
       const AugurJS = {
@@ -17,13 +17,13 @@ describe.skip(`modules/reports/actions/report-encryption.js`, () => {
           },
           reporting: { crypto: { encryptReport: () => {} } }
         }
-      };
+      }
       const action = proxyquire('../../../src/modules/reports/actions/report-encryption.js', {
         '../../../services/augurjs': AugurJS
-      });
-      sinon.stub(AugurJS.augur.reporting.crypto, 'encryptReport', (plaintext, encryptionKey, salt) => `${plaintext}-${encryptionKey.toString('hex')}-${salt}`);
-      t.assertions(action.encryptReport(t.params.report, t.params.salt));
-    });
+      })
+      sinon.stub(AugurJS.augur.reporting.crypto, 'encryptReport', (plaintext, encryptionKey, salt) => `${plaintext}-${encryptionKey.toString('hex')}-${salt}`)
+      t.assertions(action.encryptReport(t.params.report, t.params.salt))
+    })
     test({
       description: 'no account',
       params: {
@@ -41,9 +41,9 @@ describe.skip(`modules/reports/actions/report-encryption.js`, () => {
         assert.deepEqual(encrypted, {
           report: 0,
           salt: 0
-        });
+        })
       }
-    });
+    })
     test({
       description: 'account without derived key',
       params: {
@@ -63,9 +63,9 @@ describe.skip(`modules/reports/actions/report-encryption.js`, () => {
         assert.deepEqual(encrypted, {
           report: 0,
           salt: 0
-        });
+        })
       }
-    });
+    })
     test({
       description: 'account with derived key',
       params: {
@@ -86,10 +86,10 @@ describe.skip(`modules/reports/actions/report-encryption.js`, () => {
         assert.deepEqual(encrypted, {
           report: `${augur.abi.fix('1', 'hex')}-123456-0x1337`,
           salt: '0x1337-123456-undefined'
-        });
+        })
       }
-    });
-  });
+    })
+  })
   describe('decryptReport', () => {
     const test = t => it(t.description, (done) => {
       const AugurJS = {
@@ -99,18 +99,18 @@ describe.skip(`modules/reports/actions/report-encryption.js`, () => {
           },
           getAndDecryptReport: () => {}
         }
-      };
+      }
       const action = proxyquire('../../../src/modules/reports/actions/report-encryption.js', {
         '../../../services/augurjs': AugurJS
-      });
+      })
       sinon.stub(AugurJS.augur, 'getAndDecryptReport', (branchID, period, address, eventID, secret, callback) => {
-        callback(t.blockchain.encryptedReports[eventID]);
-      });
+        callback(t.blockchain.encryptedReports[eventID])
+      })
       action.decryptReport(t.params.branchID, t.params.period, t.params.eventID, (err, decryptedReport) => {
-        t.assertions(err, decryptedReport);
-        done();
-      });
-    });
+        t.assertions(err, decryptedReport)
+        done()
+      })
+    })
     test({
       description: 'no account',
       params: {
@@ -126,10 +126,10 @@ describe.skip(`modules/reports/actions/report-encryption.js`, () => {
         }
       },
       assertions: (err, decryptedReport) => {
-        assert.isNull(err);
-        assert.isUndefined(decryptedReport);
+        assert.isNull(err)
+        assert.isUndefined(decryptedReport)
       }
-    });
+    })
     test({
       description: 'account with address, without derivedKey',
       params: {
@@ -147,10 +147,10 @@ describe.skip(`modules/reports/actions/report-encryption.js`, () => {
         }
       },
       assertions: (err, decryptedReport) => {
-        assert.isNull(err);
-        assert.isUndefined(decryptedReport);
+        assert.isNull(err)
+        assert.isUndefined(decryptedReport)
       }
-    });
+    })
     test({
       description: 'account with address and derivedKey, no on-chain stored report',
       params: {
@@ -182,10 +182,10 @@ describe.skip(`modules/reports/actions/report-encryption.js`, () => {
           report: null,
           salt: null,
           ethics: null
-        });
-        assert.isUndefined(decryptedReport);
+        })
+        assert.isUndefined(decryptedReport)
       }
-    });
+    })
     test({
       description: 'account with address and derivedKey, on-chain stored report',
       params: {
@@ -213,13 +213,13 @@ describe.skip(`modules/reports/actions/report-encryption.js`, () => {
         }
       },
       assertions: (err, decryptedReport) => {
-        assert.isNull(err);
+        assert.isNull(err)
         assert.deepEqual(decryptedReport, {
           reportedOutcomeID: augur.abi.fix('1', 'hex'),
           salt: '0x1337',
           isUnethical: false
-        });
+        })
       }
-    });
-  });
-});
+    })
+  })
+})

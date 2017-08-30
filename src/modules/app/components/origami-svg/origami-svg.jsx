@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
-import Styles from 'modules/app/components/origami-svg/origami-svg.styles';
+import Styles from 'modules/app/components/origami-svg/origami-svg.styles'
 
 const offsetPoint = (point, offsetPoint) => (
   [point[0] + offsetPoint[0], point[1] + offsetPoint[1]]
-);
+)
 
 export default class Origami extends Component {
   static propTypes = {
@@ -14,14 +14,14 @@ export default class Origami extends Component {
   };
 
   componentWillMount() {
-    this.currentRAF = null;
+    this.currentRAF = null
 
-    const sidebarWidth = 72;
-    const topbarHeight = 42;
-    const mobileTopbarHeight = 24;
+    const sidebarWidth = 72
+    const topbarHeight = 42
+    const mobileTopbarHeight = 24
 
-    this.sidebarWidth = sidebarWidth;
-    this.topbarHeight = topbarHeight;
+    this.sidebarWidth = sidebarWidth
+    this.topbarHeight = topbarHeight
 
     // TODO: de-hardcode values, replace w/ CSS properties
     this.plgram = {
@@ -29,24 +29,24 @@ export default class Origami extends Component {
       tr: [222 + sidebarWidth, topbarHeight],
       bl: [0 + sidebarWidth, topbarHeight * 2],
       br: [110 + sidebarWidth, topbarHeight * 2]
-    };
+    }
 
     this.mobilePlgram = {
       tl: [94, mobileTopbarHeight],
       tr: [200, mobileTopbarHeight],
       bl: [60, mobileTopbarHeight + 20],
       br: [110, mobileTopbarHeight + 20]
-    };
+    }
 
-    this.xOffsetMax = 110;
+    this.xOffsetMax = 110
   }
 
 
   getDesktopShapes() {
-    const mainXOffset = this.props.menuScalar * this.xOffsetMax;
-    const secondaryXOffset = this.props.menuScalar * -27;
-    const applyMainOffset = point => offsetPoint(point, [mainXOffset, 0]);
-    const applySecondaryOffset = point => offsetPoint(point, [secondaryXOffset, 0]);
+    const mainXOffset = this.props.menuScalar * this.xOffsetMax
+    const secondaryXOffset = this.props.menuScalar * -27
+    const applyMainOffset = point => offsetPoint(point, [mainXOffset, 0])
+    const applySecondaryOffset = point => offsetPoint(point, [secondaryXOffset, 0])
 
     // TODO: encode this SVG data more efficiently?
     // it's useful to have points as variables since they'll animate
@@ -86,7 +86,7 @@ export default class Origami extends Component {
           this.plgram.br
         ]).map(applyMainOffset)
       }
-    ];
+    ]
 
     if (this.props.menuScalar > 0) {
       shapes.push({
@@ -96,10 +96,10 @@ export default class Origami extends Component {
           applyMainOffset(this.plgram.bl),
           applyMainOffset(this.plgram.tl),
         ]
-      });
+      })
     }
 
-    return shapes;
+    return shapes
   }
 
   getMobileShapes() {
@@ -139,23 +139,23 @@ export default class Origami extends Component {
           this.mobilePlgram.br
         ])
       }
-    ];
+    ]
 
-    return shapes;
+    return shapes
   }
 
 
   render() {
-    let shapes;
+    let shapes
 
-    if (this.props.isMobile) shapes = this.getMobileShapes();
-    else shapes = this.getDesktopShapes();
+    if (this.props.isMobile) shapes = this.getMobileShapes()
+    else shapes = this.getDesktopShapes()
 
     const polygons = shapes.map((shape, index) => {
-      const pointString = shape.points.map(point => (point[0] + ',' + point[1])).join(' ');
-      return (<polygon fill={shape.color} points={pointString} key={`${shape.color}`} />);
-    });
+      const pointString = shape.points.map(point => (point[0] + ',' + point[1])).join(' ')
+      return (<polygon fill={shape.color} points={pointString} key={`${shape.color}`} />)
+    })
 
-    return (<svg className={Styles.Logo}>{polygons}</svg>);
+    return (<svg className={Styles.Logo}>{polygons}</svg>)
   }
 }

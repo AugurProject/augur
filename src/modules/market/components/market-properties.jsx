@@ -1,17 +1,17 @@
-import React from 'react';
-import ReactTooltip from 'react-tooltip';
+import React from 'react'
+import ReactTooltip from 'react-tooltip'
 
-import ValueDate from 'modules/common/components/value-date';
-import ValueDenomination from 'modules/common/components/value-denomination';
+import ValueDate from 'modules/common/components/value-date'
+import ValueDenomination from 'modules/common/components/value-denomination'
 
-import getValue from 'utils/get-value';
-import setShareDenomination from 'utils/set-share-denomination';
-import shareDenominationLabel from 'utils/share-denomination-label';
+import getValue from 'utils/get-value'
+import setShareDenomination from 'utils/set-share-denomination'
+import shareDenominationLabel from 'utils/share-denomination-label'
 
 const MarketProperties = (p) => {
-  const shareVolumeRounded = setShareDenomination(getValue(p, 'volume.rounded'), p.selectedShareDenomination);
-  const shareVolumeFormatted = getValue(p, 'volume.formatted');
-  const shareDenomination = shareDenominationLabel(p.selectedShareDenomination, p.shareDenominations);
+  const shareVolumeRounded = setShareDenomination(getValue(p, 'volume.rounded'), p.selectedShareDenomination)
+  const shareVolumeFormatted = getValue(p, 'volume.formatted')
+  const shareDenomination = shareDenominationLabel(p.selectedShareDenomination, p.shareDenominations)
 
   return (
     <ul className="market-properties">
@@ -127,7 +127,7 @@ const MarketProperties = (p) => {
         </li>
       }
     </ul>
-  );
-};
+  )
+}
 
-export default MarketProperties;
+export default MarketProperties

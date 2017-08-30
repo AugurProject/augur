@@ -1,8 +1,8 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import ReportEthics from 'modules/my-reports/components/report-ethics';
-import ValueDenomination from 'modules/common/components/value-denomination';
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
+import React from 'react'
+import PropTypes from 'prop-types'
+import ReportEthics from 'modules/my-reports/components/report-ethics'
+import ValueDenomination from 'modules/common/components/value-denomination'
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
 const ConsensusOutcome = p => (
   <article className="consensus-outcome">
@@ -16,7 +16,7 @@ const ConsensusOutcome = p => (
     {!p.isIndeterminate && p.type === SCALAR && p.outcomeID}
     <ReportEthics isUnethical={p.isUnethical} />
   </article>
-);
+)
 
 ConsensusOutcome.propTypes = {
   type: PropTypes.string,
@@ -25,6 +25,6 @@ ConsensusOutcome.propTypes = {
   outcomeName: PropTypes.string,
   outcomeID: PropTypes.string,
   percentCorrect: PropTypes.object
-};
+}
 
-export default ConsensusOutcome;
+export default ConsensusOutcome

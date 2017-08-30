@@ -1,20 +1,20 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
-import proxyquire from 'proxyquire';
-import BigNumber from 'bignumber.js';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
+import proxyquire from 'proxyquire'
+import BigNumber from 'bignumber.js'
 
 describe(`modules/branch/selectors/reporting-cycle.js`, () => {
-  proxyquire.noPreserveCache();
+  proxyquire.noPreserveCache()
   const test = t => it(t.description, () => {
     const AugurJS = {
       augur: t.stub.augur,
       abi: { bignum: n => new BigNumber(n, 10) }
-    };
+    }
     const selector = proxyquire('../../../src/modules/branch/selectors/reporting-cycle.js', {
       '../../../services/augurjs': AugurJS
-    });
-    t.assertions(selector.selectReportingCycle(t.state));
-  });
+    })
+    t.assertions(selector.selectReportingCycle(t.state))
+  })
   test({
     description: 'Reporting cycle is in commit phase (0%)',
     state: {
@@ -40,9 +40,9 @@ describe(`modules/branch/selectors/reporting-cycle.js`, () => {
         isReportRevealPhase: false,
         phaseLabel: 'Commit',
         phaseTimeRemaining: 'in a minute'
-      });
+      })
     }
-  });
+  })
   test({
     description: 'Reporting cycle is in commit phase (10%)',
     state: {
@@ -68,9 +68,9 @@ describe(`modules/branch/selectors/reporting-cycle.js`, () => {
         isReportRevealPhase: false,
         phaseLabel: 'Commit',
         phaseTimeRemaining: 'in a few seconds'
-      });
+      })
     }
-  });
+  })
   test({
     description: 'Reporting cycle is in commit phase (50%)',
     state: {
@@ -96,9 +96,9 @@ describe(`modules/branch/selectors/reporting-cycle.js`, () => {
         isReportRevealPhase: false,
         phaseLabel: 'Commit',
         phaseTimeRemaining: 'in a few seconds'
-      });
+      })
     }
-  });
+  })
   test({
     description: 'Reporting cycle is in reveal phase (51%)',
     state: {
@@ -124,9 +124,9 @@ describe(`modules/branch/selectors/reporting-cycle.js`, () => {
         isReportRevealPhase: true,
         phaseLabel: 'Reveal',
         phaseTimeRemaining: 'in a minute'
-      });
+      })
     }
-  });
+  })
   test({
     description: 'Reporting cycle is in reveal phase (99%)',
     state: {
@@ -152,7 +152,7 @@ describe(`modules/branch/selectors/reporting-cycle.js`, () => {
         isReportRevealPhase: true,
         phaseLabel: 'Reveal',
         phaseTimeRemaining: 'in a few seconds'
-      });
+      })
     }
-  });
-});
+  })
+})

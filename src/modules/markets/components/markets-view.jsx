@@ -1,20 +1,20 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Helmet } from 'react-helmet';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { Helmet } from 'react-helmet'
 
-import MarketsHeader from 'modules/markets/components/markets-header';
-import MarketsList from 'modules/markets/components/markets-list';
-import Branch from 'modules/branch/components/branch';
+import MarketsHeader from 'modules/markets/components/markets-header'
+import MarketsList from 'modules/markets/components/markets-list'
+import Branch from 'modules/branch/components/branch'
 
-import getValue from 'utils/get-value';
-import parseQuery from 'modules/app/helpers/parse-query';
-import isEqual from 'lodash/isEqual';
+import getValue from 'utils/get-value'
+import parseQuery from 'modules/app/helpers/parse-query'
+import isEqual from 'lodash/isEqual'
 
-import parsePath from 'modules/app/helpers/parse-path';
-import makePath from 'modules/app/helpers/make-path';
+import parsePath from 'modules/app/helpers/parse-path'
+import makePath from 'modules/app/helpers/make-path'
 
-import { FAVORITES, MARKETS } from 'modules/app/constants/views';
-import { TOPIC_PARAM_NAME } from 'modules/app/constants/param-names';
+import { FAVORITES, MARKETS } from 'modules/app/constants/views'
+import { TOPIC_PARAM_NAME } from 'modules/app/constants/param-names'
 
 export default class MarketsView extends Component {
   static propTypes = {
@@ -43,12 +43,12 @@ export default class MarketsView extends Component {
   }
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       shouldDisplayBranchInfo: !!(getValue(props, 'loginAccount.rep.value') && getValue(props, 'branch.id')),
       filteredMarkets: []
-    };
+    }
   }
 
   componentWillMount() {
@@ -59,7 +59,7 @@ export default class MarketsView extends Component {
       hasLoadedMarkets: this.props.hasLoadedMarkets,
       loadMarkets: this.props.loadMarkets,
       loadMarketsByTopic: this.props.loadMarketsByTopic
-    });
+    })
   }
 
   componentWillReceiveProps(nextProps) {
@@ -76,7 +76,7 @@ export default class MarketsView extends Component {
         hasLoadedMarkets: nextProps.hasLoadedMarkets,
         loadMarkets: nextProps.loadMarkets,
         loadMarketsByTopic: nextProps.loadMarketsByTopic
-      });
+      })
     }
 
     if (
@@ -85,36 +85,36 @@ export default class MarketsView extends Component {
     ) {
       this.setState({
         canDisplayBranchInfo: !!(getValue(nextProps, 'loginAccount.rep.value') && getValue(nextProps, 'branch.id'))
-      });
+      })
     }
   }
 
   componentWillUpdate(nextProps, nextState) {
     if (!isEqual(this.state.filteredMarkets, nextState.filteredMarkets)) {
-      this.props.updateMarketsFilteredSorted(nextState.filteredMarkets);
-      checkFavoriteMarketsCount(nextState.filteredMarkets, nextProps.location, nextProps.history);
+      this.props.updateMarketsFilteredSorted(nextState.filteredMarkets)
+      checkFavoriteMarketsCount(nextState.filteredMarkets, nextProps.location, nextProps.history)
     }
   }
 
   componentWillUnmount() {
-    this.props.clearMarketsFilteredSorted();
+    this.props.clearMarketsFilteredSorted()
   }
 
   loadMarkets(options) {
     if (options.canLoadMarkets) {
-      const topic = parseQuery(options.location.search)[TOPIC_PARAM_NAME];
+      const topic = parseQuery(options.location.search)[TOPIC_PARAM_NAME]
 
       if (topic && !this.props.hasLoadedTopic[topic]) {
-        options.loadMarketsByTopic(topic);
+        options.loadMarketsByTopic(topic)
       } else if (!topic && !this.props.hasLoadedMarkets) {
-        options.loadMarkets();
+        options.loadMarkets()
       }
     }
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
     return (
       <section id="markets_view">
@@ -141,14 +141,14 @@ export default class MarketsView extends Component {
           loadMarketsInfo={p.loadMarketsInfo}
         />
       </section>
-    );
+    )
   }
 }
 
 function checkFavoriteMarketsCount(filteredMarkets, location, history) {
-  const path = parsePath(location.pathname)[0];
+  const path = parsePath(location.pathname)[0]
 
   if (path === FAVORITES && !filteredMarkets.length) {
-    history.push(makePath(MARKETS));
+    history.push(makePath(MARKETS))
   }
 }

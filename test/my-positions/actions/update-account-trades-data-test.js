@@ -1,9 +1,9 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
-import proxyquire from 'proxyquire';
-import sinon from 'sinon';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
+import proxyquire from 'proxyquire'
+import sinon from 'sinon'
+import configureMockStore from 'redux-mock-store'
+import thunk from 'redux-thunk'
 
 import {
   UPDATE_SMALLEST_POSITIONS,
@@ -17,62 +17,62 @@ import {
   updateAccountPositionsData,
   updateNetEffectiveTradesData,
   updateCompleteSetsBought
-} from 'modules/my-positions/actions/update-account-trades-data';
+} from 'modules/my-positions/actions/update-account-trades-data'
 
 describe('modules/my-positions/actions/update-account-trades-data.js', () => {
-  proxyquire.noPreserveCache().noCallThru();
+  proxyquire.noPreserveCache().noCallThru()
 
-  const middlewares = [thunk];
-  const mockStore = configureMockStore(middlewares);
+  const middlewares = [thunk]
+  const mockStore = configureMockStore(middlewares)
 
   const MOCK_ACTION_TYPES = {
     CONVERT_TRADE_LOGS_TO_TRANSACTIONS: 'CONVERT_TRADE_LOGS_TO_TRANSACTIONS',
     UPDATE_ORDERS: 'UPDATE_ORDERS',
     LOAD_BIDS_ASKS_HISTORY: 'LOAD_BIDS_ASKS_HISTORY'
-  };
+  }
 
   const mockConvertTradeLogsToTransactions = {
     convertTradeLogsToTransactions: () => {}
-  };
+  }
   sinon.stub(mockConvertTradeLogsToTransactions, 'convertTradeLogsToTransactions', (logType, data, marketID) => ({
     type: MOCK_ACTION_TYPES.CONVERT_TRADE_LOGS_TO_TRANSACTIONS,
     logType,
     data,
     marketID
-  }));
+  }))
   const mockUpdateOrders = {
     updateOrders: () => {}
-  };
+  }
   sinon.stub(mockUpdateOrders, 'updateOrders', (data, isAddition) => ({
     type: MOCK_ACTION_TYPES.UPDATE_ORDERS,
     data,
     isAddition
-  }));
+  }))
 
   const mockLoadBidsAsksHistory = {
     loadBidsAsksHistory: () => {}
-  };
+  }
   sinon.stub(mockLoadBidsAsksHistory, 'loadBidsAsksHistory', market => ({
     type: MOCK_ACTION_TYPES.LOAD_BIDS_ASKS_HISTORY,
     data: { ...market }
-  }));
+  }))
 
 
   const test = (t) => {
     it(t.description, () => {
-      const store = mockStore(t.state || {});
+      const store = mockStore(t.state || {})
 
-      t.assertions(store);
-    });
-  };
+      t.assertions(store)
+    })
+  }
 
   describe('updateSmallestPositions', () => {
     test({
       description: `should return the expected action`,
       assertions: (store) => {
-        store.dispatch(updateSmallestPositions('0xMARKETID', '0'));
+        store.dispatch(updateSmallestPositions('0xMARKETID', '0'))
 
-        const actual = store.getActions();
+        const actual = store.getActions()
 
         const expected = [
           {
@@ -80,20 +80,20 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
             marketID: '0xMARKETID',
             smallestPosition: '0'
           }
-        ];
+        ]
 
-        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`);
+        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`)
       }
-    });
-  });
+    })
+  })
 
   describe('updateSellCompleteSetsLock', () => {
     test({
       description: `should return the expected action`,
       assertions: (store) => {
-        store.dispatch(updateSellCompleteSetsLock('0xMARKETID', true));
+        store.dispatch(updateSellCompleteSetsLock('0xMARKETID', true))
 
-        const actual = store.getActions();
+        const actual = store.getActions()
 
         const expected = [
           {
@@ -101,12 +101,12 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
             marketID: '0xMARKETID',
             isLocked: true
           }
-        ];
+        ]
 
-        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`);
+        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`)
       }
-    });
-  });
+    })
+  })
 
   describe('updateAccountBidsAsksData', () => {
     test({
@@ -125,18 +125,18 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
               }
             }
           }
-        };
-        sinon.stub(mockAugur.augur.trading.positions, 'getAdjustedPositions', ({ account, filter: { market } }, cb) => cb(true));
+        }
+        sinon.stub(mockAugur.augur.trading.positions, 'getAdjustedPositions', ({ account, filter: { market } }, cb) => cb(true))
 
         const action = proxyquire('../../../src/modules/my-positions/actions/update-account-trades-data', {
           '../../transactions/actions/convert-logs-to-transactions': mockConvertTradeLogsToTransactions,
           '../../my-orders/actions/update-orders': mockUpdateOrders,
           '../../../services/augurjs': mockAugur
-        });
+        })
 
-        store.dispatch(action.updateAccountBidsAsksData({ '0xMARKETID': {} }, '0xMARKETID'));
+        store.dispatch(action.updateAccountBidsAsksData({ '0xMARKETID': {} }, '0xMARKETID'))
 
-        const actual = store.getActions();
+        const actual = store.getActions()
 
         const expected = [
           {
@@ -154,11 +154,11 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
             },
             isAddition: true
           }
-        ];
+        ]
 
-        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`);
+        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`)
       }
-    });
+    })
 
     test({
       description: `should dispatch the expected actions WITHOUT getAdjustedPositions returning an error`,
@@ -176,18 +176,18 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
               }
             }
           }
-        };
-        sinon.stub(mockAugur.augur.trading.positions, 'getAdjustedPositions', ({ account, filter: { market } }, cb) => cb(null, {}));
+        }
+        sinon.stub(mockAugur.augur.trading.positions, 'getAdjustedPositions', ({ account, filter: { market } }, cb) => cb(null, {}))
 
         const action = proxyquire('../../../src/modules/my-positions/actions/update-account-trades-data', {
           '../../transactions/actions/convert-logs-to-transactions': mockConvertTradeLogsToTransactions,
           '../../my-orders/actions/update-orders': mockUpdateOrders,
           '../../../services/augurjs': mockAugur
-        });
+        })
 
-        store.dispatch(action.updateAccountBidsAsksData({ '0xMARKETID': {} }, '0xMARKETID'));
+        store.dispatch(action.updateAccountBidsAsksData({ '0xMARKETID': {} }, '0xMARKETID'))
 
-        const actual = store.getActions();
+        const actual = store.getActions()
 
         const expected = [
           {
@@ -210,12 +210,12 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
             data: {},
             marketID: '0xMARKETID'
           },
-        ];
+        ]
 
-        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`);
+        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`)
       }
-    });
-  });
+    })
+  })
 
   describe('updateAccountCancelsData', () => {
     test({
@@ -224,11 +224,11 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
         const action = proxyquire('../../../src/modules/my-positions/actions/update-account-trades-data', {
           '../../transactions/actions/convert-logs-to-transactions': mockConvertTradeLogsToTransactions,
           '../../my-orders/actions/update-orders': mockUpdateOrders
-        });
+        })
 
-        store.dispatch(action.updateAccountCancelsData({ '0xMARKETID': {} }, '0xMARKETID'));
+        store.dispatch(action.updateAccountCancelsData({ '0xMARKETID': {} }, '0xMARKETID'))
 
-        const actual = store.getActions();
+        const actual = store.getActions()
 
         const expected = [
           {
@@ -246,12 +246,12 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
             },
             isAddition: false
           }
-        ];
+        ]
 
-        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`);
+        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`)
       }
-    });
-  });
+    })
+  })
 
   describe('updateAccountTradesData', () => {
     test({
@@ -268,17 +268,17 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
               positions: { getAdjustedPositions: () => {} }
             }
           }
-        };
-        sinon.stub(mockAugur.augur.trading.positions, 'getAdjustedPositions', (args, cb) => cb(true));
+        }
+        sinon.stub(mockAugur.augur.trading.positions, 'getAdjustedPositions', (args, cb) => cb(true))
 
         const action = proxyquire('../../../src/modules/my-positions/actions/update-account-trades-data', {
           '../../transactions/actions/convert-logs-to-transactions': mockConvertTradeLogsToTransactions,
           '../../../services/augurjs': mockAugur
-        });
+        })
 
-        store.dispatch(action.updateAccountTradesData({ '0xMARKETID': {} }, '0xMARKETID'));
+        store.dispatch(action.updateAccountTradesData({ '0xMARKETID': {} }, '0xMARKETID'))
 
-        const actual = store.getActions();
+        const actual = store.getActions()
 
         const expected = [
           {
@@ -294,11 +294,11 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
             market: '0xMARKETID',
             data: {}
           }
-        ];
+        ]
 
-        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`);
+        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`)
       }
-    });
+    })
 
     test({
       description: `should return the expected actions WITH getAdjustedPositions returning NO error`,
@@ -314,18 +314,18 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
               positions: { getAdjustedPositions: () => {} }
             }
           }
-        };
-        sinon.stub(mockAugur.augur.trading.positions, 'getAdjustedPositions', (args, cb) => cb(null, {}));
+        }
+        sinon.stub(mockAugur.augur.trading.positions, 'getAdjustedPositions', (args, cb) => cb(null, {}))
 
         const action = proxyquire('../../../src/modules/my-positions/actions/update-account-trades-data', {
           '../../transactions/actions/convert-logs-to-transactions': mockConvertTradeLogsToTransactions,
           '../../bids-asks/actions/load-bids-asks-history': mockLoadBidsAsksHistory,
           '../../../services/augurjs': mockAugur
-        });
+        })
 
-        store.dispatch(action.updateAccountTradesData({ '0xMARKETID': {} }, '0xMARKETID'));
+        store.dispatch(action.updateAccountTradesData({ '0xMARKETID': {} }, '0xMARKETID'))
 
-        const actual = store.getActions();
+        const actual = store.getActions()
 
         const expected = [
           {
@@ -352,20 +352,20 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
             market: '0xMARKETID',
             data: {}
           }
-        ];
+        ]
 
-        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`);
+        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`)
       }
-    });
-  });
+    })
+  })
 
   describe('updateAccountPositionsData', () => {
     test({
       description: `should return the expected action`,
       assertions: (store) => {
-        store.dispatch(updateAccountPositionsData({ '0xMARKETID': {} }, '0xMARKETID'));
+        store.dispatch(updateAccountPositionsData({ '0xMARKETID': {} }, '0xMARKETID'))
 
-        const actual = store.getActions();
+        const actual = store.getActions()
 
         const expected = [
           {
@@ -375,20 +375,20 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
             },
             marketID: '0xMARKETID'
           }
-        ];
+        ]
 
-        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`);
+        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`)
       }
-    });
-  });
+    })
+  })
 
   describe('updateNetEffectiveTradesData', () => {
     test({
       description: `should return the expected action`,
       assertions: (store) => {
-        store.dispatch(updateNetEffectiveTradesData({ '0xMARKETID': {} }, '0xMARKETID'));
+        store.dispatch(updateNetEffectiveTradesData({ '0xMARKETID': {} }, '0xMARKETID'))
 
-        const actual = store.getActions();
+        const actual = store.getActions()
 
         const expected = [
           {
@@ -398,20 +398,20 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
             },
             marketID: '0xMARKETID'
           }
-        ];
+        ]
 
-        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`);
+        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`)
       }
-    });
-  });
+    })
+  })
 
   describe('updateCompleteSetsBought', () => {
     test({
       description: `should return the expected action`,
       assertions: (store) => {
-        store.dispatch(updateCompleteSetsBought({ '0xMARKETID': {} }, '0xMARKETID'));
+        store.dispatch(updateCompleteSetsBought({ '0xMARKETID': {} }, '0xMARKETID'))
 
-        const actual = store.getActions();
+        const actual = store.getActions()
 
         const expected = [
           {
@@ -421,10 +421,10 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
             },
             marketID: '0xMARKETID'
           }
-        ];
+        ]
 
-        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`);
+        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`)
       }
-    });
-  });
-});
+    })
+  })
+})

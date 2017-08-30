@@ -1,4 +1,4 @@
-import { UPDATE_MARKET_PRICE_HISTORY } from 'modules/market/actions/update-market-price-history';
+import { UPDATE_MARKET_PRICE_HISTORY } from 'modules/market/actions/update-market-price-history'
 
 export default function (priceHistory = {}, action) {
   switch (action.type) {
@@ -6,9 +6,9 @@ export default function (priceHistory = {}, action) {
       return {
         ...priceHistory,
         [action.marketID]: action.priceHistory
-      };
+      }
 
     default:
-      return priceHistory;
+      return priceHistory
   }
 }

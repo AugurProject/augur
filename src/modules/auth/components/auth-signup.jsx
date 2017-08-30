@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import zxcvbn from 'zxcvbn';
-import Input from 'modules/common/components/input';
-import Spinner from 'modules/common/components/spinner';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
+import zxcvbn from 'zxcvbn'
+import Input from 'modules/common/components/input'
+import Spinner from 'modules/common/components/spinner'
 
-import makePath from 'modules/app/helpers/make-path';
-import { DEFAULT_VIEW } from 'modules/app/constants/views';
+import makePath from 'modules/app/helpers/make-path'
+import { DEFAULT_VIEW } from 'modules/app/constants/views'
 
-import { REQUIRED_PASSWORD_STRENGTH } from 'modules/auth/constants/password-strength';
+import { REQUIRED_PASSWORD_STRENGTH } from 'modules/auth/constants/password-strength'
 
 export default class AuthSignup extends Component {
   static propTypes = {
@@ -18,7 +18,7 @@ export default class AuthSignup extends Component {
   };
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       password: '',
@@ -37,7 +37,7 @@ export default class AuthSignup extends Component {
       isGeneratingLoginIDDisplayable: false,
       isSignUpActionsDisplayable: false,
       isAuthErrorDisplayable: false
-    };
+    }
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -60,73 +60,73 @@ export default class AuthSignup extends Component {
                 authError: true,
                 errorMessage: err.message,
                 isAuthErrorDisplayable: true
-              });
+              })
             } else {
-              this.username.value = loginID;
+              this.username.value = loginID
 
               this.setState({
                 loginID,
                 isGeneratingLoginID: false,
                 isSignUpActionsDisplayable: true
-              });
+              })
             }
-          });
-        }, 500);
-      });
+          })
+        }, 500)
+      })
     } else if (
       nextState.password !== nextState.passwordConfirm &&
       this.state.loginID
     ) { // if a login account exists, clear it
-      this.username.value = '';
+      this.username.value = ''
 
       this.setState({
         loginID: null,
         isGeneratingLoginID: false
-      });
+      })
     }
 
     // passwordConfirm
     if (this.state.passwordConfirm && !nextState.isStrongPass) {
-      this.setState({ passwordConfirm: '' });
+      this.setState({ passwordConfirm: '' })
     }
   }
 
   scorePassword = (password) => {
-    const scoreResult = zxcvbn(password);
-    const passwordSuggestions = scoreResult.feedback.suggestions;
-    const currentScore = scoreResult.score;
+    const scoreResult = zxcvbn(password)
+    const passwordSuggestions = scoreResult.feedback.suggestions
+    const currentScore = scoreResult.score
 
     this.setState({
       currentScore,
       passwordSuggestions
-    });
+    })
 
     if (passwordSuggestions.length && !this.state.isPasswordsSuggestionDisplayable) {
-      this.setState({ isPasswordsSuggestionDisplayable: true });
+      this.setState({ isPasswordsSuggestionDisplayable: true })
     }
 
     if (currentScore >= REQUIRED_PASSWORD_STRENGTH) {
       this.setState({
         isStrongPass: true,
         isPasswordConfirmDisplayable: true
-      });
+      })
     } else if (this.state.isStrongPass === true) {
-      this.setState({ isStrongPass: false });
+      this.setState({ isStrongPass: false })
     }
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
-    const loginID = s.loginID || '';
+    const loginID = s.loginID || ''
 
     return (
       <form
         className="auth-signup-form"
         onSubmit={(e) => {
-          e.preventDefault();
-          e.persist();
+          e.preventDefault()
+          e.persist()
 
           p.setupAndFundNewAccount(s.password, loginID, (err) => {
             if (err) {
@@ -134,19 +134,19 @@ export default class AuthSignup extends Component {
                 authError: true,
                 errorMessage: err.message,
                 isAuthErrorDisplayable: true
-              });
+              })
             } else {
-              e.target.style.display = 'none';
+              e.target.style.display = 'none'
 
-              p.history.push(makePath(DEFAULT_VIEW));
+              p.history.push(makePath(DEFAULT_VIEW))
             }
-          });
+          })
         }}
       >
         <span className="soft-header">Sign up with a Login ID</span>
         <input
           name="username"
-          ref={(username) => { this.username = username; }}
+          ref={(username) => { this.username = username }}
           readOnly
           tabIndex="-1"
         />
@@ -159,13 +159,13 @@ export default class AuthSignup extends Component {
           placeholder="Password"
           value={s.password}
           onChange={(password) => {
-            this.setState({ password });
+            this.setState({ password })
 
             if (this.state.authError) {
-              this.setState({ authError: false });
+              this.setState({ authError: false })
             }
 
-            this.scorePassword(password);
+            this.scorePassword(password)
           }}
         />
         <Input
@@ -182,10 +182,10 @@ export default class AuthSignup extends Component {
           placeholder="Confirm Password"
           value={s.passwordConfirm}
           onChange={(passwordConfirm) => {
-            this.setState({ passwordConfirm });
+            this.setState({ passwordConfirm })
 
             if (this.state.authError) {
-              this.setState({ authError: false });
+              this.setState({ authError: false })
             }
           }}
         />
@@ -250,6 +250,6 @@ export default class AuthSignup extends Component {
           </button>
         </div>
       </form>
-    );
+    )
   }
 }

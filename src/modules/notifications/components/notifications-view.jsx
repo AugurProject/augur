@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
 
-import NullStateMessage from 'modules/common/components/null-state-message';
-import Notification from 'modules/notifications/components/notification';
+import NullStateMessage from 'modules/common/components/null-state-message'
+import Notification from 'modules/notifications/components/notification'
 
-import getValue from 'utils/get-value';
-import debounce from 'utils/debounce';
+import getValue from 'utils/get-value'
+import debounce from 'utils/debounce'
 
 export default class NotificationsView extends Component {
   static propTypes = {
@@ -18,45 +18,45 @@ export default class NotificationsView extends Component {
   };
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       notificationsBounds: {},
       checkSeen: false
-    };
+    }
 
-    this.updateNotificationsBoundingBox = this.updateNotificationsBoundingBox.bind(this);
-    this.setCheckSeen = debounce(this.setCheckSeen.bind(this), 100);
+    this.updateNotificationsBoundingBox = this.updateNotificationsBoundingBox.bind(this)
+    this.setCheckSeen = debounce(this.setCheckSeen.bind(this), 100)
   }
 
   componentDidMount() {
-    this.updateNotificationsBoundingBox();
+    this.updateNotificationsBoundingBox()
 
-    this.notifications && this.notifications.addEventListener('scroll', () => { this.setCheckSeen(true); });
+    this.notifications && this.notifications.addEventListener('scroll', () => { this.setCheckSeen(true) })
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.state.checkSeen && prevState.checkSeen !== this.state.checkSeen) this.setCheckSeen(false);
+    if (this.state.checkSeen && prevState.checkSeen !== this.state.checkSeen) this.setCheckSeen(false)
   }
 
   componentWillUnmount() {
-    this.notifications && this.notifications.removeEventListener('scroll', this.setCheckSeen);
+    this.notifications && this.notifications.removeEventListener('scroll', this.setCheckSeen)
   }
 
   setCheckSeen(checkSeen) {
-    this.setState({ checkSeen });
+    this.setState({ checkSeen })
   }
 
   updateNotificationsBoundingBox() {
-    if (this.notifications) this.setState({ notificationsBounds: this.notifications.getBoundingClientRect() });
+    if (this.notifications) this.setState({ notificationsBounds: this.notifications.getBoundingClientRect() })
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
-    const notifications = getValue(p, 'notifications.notifications');
-    const animationSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-normal'), 10);
+    const notifications = getValue(p, 'notifications.notifications')
+    const animationSpeed = parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-normal'), 10)
 
     return (
       <section id="notifications_view">
@@ -66,8 +66,8 @@ export default class NotificationsView extends Component {
             <button
               className="unstyled notifications-button-clear"
               onClick={(e) => {
-                e.stopPropagation();
-                p.clearNotifications();
+                e.stopPropagation()
+                p.clearNotifications()
               }}
             >
               clear all
@@ -77,7 +77,7 @@ export default class NotificationsView extends Component {
         {notifications && notifications.length ?
           <div
             ref={(notifications) => {
-              this.notifications = notifications;
+              this.notifications = notifications
             }}
             className="notifications"
           >
@@ -106,6 +106,6 @@ export default class NotificationsView extends Component {
           <NullStateMessage message="No Notifications" />
         }
       </section>
-    );
+    )
   }
 }

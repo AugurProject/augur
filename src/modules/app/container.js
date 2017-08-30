@@ -1,20 +1,20 @@
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 
-import App from 'modules/app/components/app/app';
+import App from 'modules/app/components/app/app'
 
-import { selectNotificationsAndSeenCount } from 'modules/notifications/selectors/notifications';
-import { selectMarketsHeader } from 'modules/markets/selectors/markets-header';
-import { selectCoreStats } from 'modules/account/selectors/core-stats';
-import { selectTopics } from 'modules/topics/selectors/topics';
-import portfolio from 'modules/portfolio/selectors/portfolio';
-import { updateIsMobile } from 'modules/app/actions/update-is-mobile';
-import { updateHeaderHeight } from 'modules/app/actions/update-header-height';
-import { updateFooterHeight } from 'modules/app/actions/update-footer-height';
-import getChatMessages from 'modules/chat/selectors/chat-messages';
-import getAllMarkets from 'modules/markets/selectors/markets-all';
+import { selectNotificationsAndSeenCount } from 'modules/notifications/selectors/notifications'
+import { selectMarketsHeader } from 'modules/markets/selectors/markets-header'
+import { selectCoreStats } from 'modules/account/selectors/core-stats'
+import { selectTopics } from 'modules/topics/selectors/topics'
+import portfolio from 'modules/portfolio/selectors/portfolio'
+import { updateIsMobile } from 'modules/app/actions/update-is-mobile'
+import { updateHeaderHeight } from 'modules/app/actions/update-header-height'
+import { updateFooterHeight } from 'modules/app/actions/update-footer-height'
+import getChatMessages from 'modules/chat/selectors/chat-messages'
+import getAllMarkets from 'modules/markets/selectors/markets-all'
 
-import getValue from 'utils/get-value';
+import getValue from 'utils/get-value'
 
 const mapStateToProps = state => ({
   url: state.url,
@@ -32,14 +32,14 @@ const mapStateToProps = state => ({
   marketsFilteredSorted: state.marketsFilteredSorted,
   categories: selectTopics(state),
   selectedCategory: state.selectedTopic
-});
+})
 
 const mapDispatchToProps = dispatch => ({
   updateIsMobile: isMobile => dispatch(updateIsMobile(isMobile)),
   updateHeaderHeight: headerHeight => dispatch(updateHeaderHeight(headerHeight)),
   updateFooterHeight: footerHeight => dispatch(updateFooterHeight(footerHeight))
-});
+})
 
-const AppContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(App));
+const AppContainer = withRouter(connect(mapStateToProps, mapDispatchToProps)(App))
 
-export default AppContainer;
+export default AppContainer

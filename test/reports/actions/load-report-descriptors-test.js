@@ -1,38 +1,38 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
-import proxyquire from 'proxyquire';
-import sinon from 'sinon';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
+import proxyquire from 'proxyquire'
+import sinon from 'sinon'
+import configureMockStore from 'redux-mock-store'
+import thunk from 'redux-thunk'
 
 describe('modules/reports/actions/load-report-descriptors.js', () => {
-  proxyquire.noPreserveCache().noCallThru();
-  const middlewares = [thunk];
-  const mockStore = configureMockStore(middlewares);
+  proxyquire.noPreserveCache().noCallThru()
+  const middlewares = [thunk]
+  const mockStore = configureMockStore(middlewares)
 
   const test = (t) => {
     it(t.description, (done) => {
-      const store = mockStore(t.state);
+      const store = mockStore(t.state)
       const AugurJS = {
         augur: {
           accounts: t.state.augur.accounts,
           api: { ExpiringEvents: { getEthicReport: () => {} } }
         }
-      };
+      }
       const action = proxyquire('../../../src/modules/reports/actions/load-report-descriptors', {
         '../../../services/augurjs': AugurJS
-      });
+      })
       sinon.stub(AugurJS.augur.api.ExpiringEvents, 'getEthicReport', (args, cb) => {
-        cb(t.blockchain.ethicReports[args.branch][args.event]);
-      });
+        cb(t.blockchain.ethicReports[args.branch][args.event])
+      })
       store.dispatch(action.loadReportDescriptors((err) => {
-        assert.isNull(err);
-        t.assertions(store.getActions());
-        store.clearActions();
-        done();
-      }));
-    });
-  };
+        assert.isNull(err)
+        t.assertions(store.getActions())
+        store.clearActions()
+        done()
+      }))
+    })
+  }
   test({
     description: 'binary market, not indeterminate, not unethical',
     eventID: '0xe1',
@@ -115,9 +115,9 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
             }
           }
         }
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: 'categorical market, not indeterminate, not unethical',
     eventID: '0xe1',
@@ -200,9 +200,9 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
             }
           }
         }
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: 'scalar market, not indeterminate, unethical',
     eventID: '0xe1',
@@ -284,9 +284,9 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
             }
           }
         }
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: 'categorical market, indeterminate, not unethical',
     eventID: '0xe1',
@@ -368,9 +368,9 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
             }
           }
         }
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: 'scalar market, indeterminate, not unethical',
     eventID: '0xe1',
@@ -454,9 +454,9 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
             }
           }
         }
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: 'categorical market, not indeterminate, unethical',
     eventID: '0xe1',
@@ -540,9 +540,9 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
             }
           }
         }
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: 'scalar market, not indeterminate, unethical',
     eventID: '0xe1',
@@ -626,7 +626,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
             }
           }
         }
-      }]);
+      }])
     }
-  });
-});
+  })
+})

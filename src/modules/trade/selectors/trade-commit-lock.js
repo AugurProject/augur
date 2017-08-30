@@ -1,5 +1,5 @@
-import store from 'src/store';
+import store from 'src/store'
 
 export default function () {
-  return store.getState().tradeCommitLock;
+  return store.getState().tradeCommitLock
 }

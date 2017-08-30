@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import isEqual from 'lodash/isEqual';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import isEqual from 'lodash/isEqual'
 
-import FilterMarketState from 'modules/filter-sort/components/filter-market-state';
-import SortMarketParam from 'modules/filter-sort/components/sort-market-param';
-import FilterSearch from 'modules/filter-sort/components/filter-search';
+import FilterMarketState from 'modules/filter-sort/components/filter-market-state'
+import SortMarketParam from 'modules/filter-sort/components/sort-market-param'
+import FilterSearch from 'modules/filter-sort/components/filter-search'
 
-import filterByMarketFavorites from 'modules/filter-sort/helpers/filter-by-market-favorites';
-import filterByTags from 'modules/filter-sort/helpers/filter-by-tags';
+import filterByMarketFavorites from 'modules/filter-sort/helpers/filter-by-market-favorites'
+import filterByTags from 'modules/filter-sort/helpers/filter-by-tags'
 
 export default class FilterSortView extends Component {
   static propTypes = {
@@ -27,7 +27,7 @@ export default class FilterSortView extends Component {
   }
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       // Filters
@@ -39,11 +39,11 @@ export default class FilterSortView extends Component {
       marketParamItems: null,
       // Aggregated
       combinedFiltered: null
-    };
+    }
   }
 
   componentWillMount() {
-    this.props.updateFilteredItems(this.props.items.map((_, i) => i)); // Initialize List
+    this.props.updateFilteredItems(this.props.items.map((_, i) => i)) // Initialize List
 
     this.updateCombinedFilters({
       filters: {
@@ -53,10 +53,10 @@ export default class FilterSortView extends Component {
         marketFavoriteItems: this.state.marketFavoriteItems
       },
       items: this.props.items
-    });
+    })
 
-    if (this.props.filterByTags) this.setState({ marketTagItems: filterByTags(this.props.location, this.props.items) });
-    if (this.props.filterByMarketFavorites) this.setState({ marketFavoriteItems: filterByMarketFavorites(this.props.items) });
+    if (this.props.filterByTags) this.setState({ marketTagItems: filterByTags(this.props.location, this.props.items) })
+    if (this.props.filterByMarketFavorites) this.setState({ marketFavoriteItems: filterByMarketFavorites(this.props.items) })
   }
 
   componentWillReceiveProps(nextProps) {
@@ -67,7 +67,7 @@ export default class FilterSortView extends Component {
         !isEqual(this.props.location.search, nextProps.location.search)
       )
     ) {
-      this.setState({ marketTagItems: filterByTags(nextProps.location, nextProps.items) });
+      this.setState({ marketTagItems: filterByTags(nextProps.location, nextProps.items) })
     }
 
     if (
@@ -77,7 +77,7 @@ export default class FilterSortView extends Component {
         !isEqual(this.props.location.search, nextProps.location.search)
       )
     ) {
-      this.setState({ marketFavoriteItems: filterByMarketFavorites(nextProps.items) });
+      this.setState({ marketFavoriteItems: filterByMarketFavorites(nextProps.items) })
     }
   }
 
@@ -97,7 +97,7 @@ export default class FilterSortView extends Component {
           marketFavoriteItems: nextState.marketFavoriteItems
         },
         items: nextProps.items
-      });
+      })
     }
 
     if (
@@ -109,27 +109,27 @@ export default class FilterSortView extends Component {
           marketParamItems: nextState.marketParamItems
         },
         combinedFiltered: nextState.combinedFiltered
-      });
+      })
     }
   }
 
   updateCombinedFilters(options) {
     const combinedFiltered = Object.keys(options.filters).reduce((p, filterType) => {
-      if (p.length === 0 || (options.filters[filterType] !== null && options.filters[filterType].length === 0)) return [];
-      if (options.filters[filterType] === null) return p;
+      if (p.length === 0 || (options.filters[filterType] !== null && options.filters[filterType].length === 0)) return []
+      if (options.filters[filterType] === null) return p
 
-      return options.filters[filterType].filter(item => p.includes(item));
-    }, options.items.map((_, i) => i));
+      return options.filters[filterType].filter(item => p.includes(item))
+    }, options.items.map((_, i) => i))
 
-    this.setState({ combinedFiltered });
+    this.setState({ combinedFiltered })
   }
 
   updateSortedFiltered(options) { // If we want to accomodate more than one sorting mechanism across a filtered list, we'll need to re-architect things a bit
-    this.props.updateFilteredItems(options.sorts.marketParamItems !== null ? options.sorts.marketParamItems : options.combinedFiltered);
+    this.props.updateFilteredItems(options.sorts.marketParamItems !== null ? options.sorts.marketParamItems : options.combinedFiltered)
   }
 
   render() {
-    const p = this.props;
+    const p = this.props
 
     return (
       <article className="view-header filter-sort">
@@ -168,6 +168,6 @@ export default class FilterSortView extends Component {
           }
         </div>
       </article>
-    );
+    )
   }
 }

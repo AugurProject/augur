@@ -1,16 +1,16 @@
-import store from 'src/store';
-import { updateScalarMarketShareDenomination } from 'modules/market/actions/update-scalar-market-share-denomination';
+import store from 'src/store'
+import { updateScalarMarketShareDenomination } from 'modules/market/actions/update-scalar-market-share-denomination'
 
-import { SHARE, MILLI_SHARE, MICRO_SHARE } from 'modules/market/constants/share-denominations';
+import { SHARE, MILLI_SHARE, MICRO_SHARE } from 'modules/market/constants/share-denominations'
 
 export default function () {
-  const { scalarMarketsShareDenomination } = store.getState();
+  const { scalarMarketsShareDenomination } = store.getState()
 
   return {
     denominations,
     markets: scalarMarketsShareDenomination,
     updateSelectedShareDenomination: selectShareDenomination
-  };
+  }
 }
 
 const denominations = [
@@ -26,8 +26,8 @@ const denominations = [
     label: 'μShares',
     value: MICRO_SHARE
   }
-];
+]
 
 function selectShareDenomination(marketID, denomination) {
-  store.dispatch(updateScalarMarketShareDenomination(marketID, denomination));
+  store.dispatch(updateScalarMarketShareDenomination(marketID, denomination))
 }

@@ -1,4 +1,4 @@
-export const UPDATE_IS_LOGGED = 'UPDATE_IS_LOGGED';
+export const UPDATE_IS_LOGGED = 'UPDATE_IS_LOGGED'
 
 export const updateIsLogged = isLogged => (
   {
@@ -7,4 +7,4 @@ export const updateIsLogged = isLogged => (
       isLogged
     }
   }
-);
+)

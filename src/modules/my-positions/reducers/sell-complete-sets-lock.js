@@ -1,4 +1,4 @@
-import { UPDATE_SELL_COMPLETE_SETS_LOCK } from 'modules/my-positions/actions/update-account-trades-data';
+import { UPDATE_SELL_COMPLETE_SETS_LOCK } from 'modules/my-positions/actions/update-account-trades-data'
 
 export default function (sellCompleteSetsLock = {}, action) {
   switch (action.type) {
@@ -6,8 +6,8 @@ export default function (sellCompleteSetsLock = {}, action) {
       return {
         ...sellCompleteSetsLock,
         [action.marketID]: action.isLocked
-      };
+      }
     default:
-      return sellCompleteSetsLock;
+      return sellCompleteSetsLock
   }
 }

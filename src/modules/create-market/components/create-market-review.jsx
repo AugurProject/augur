@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { augur, abi, rpc, constants } from 'services/augurjs';
-import BigNumber from 'bignumber.js';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { augur, abi, rpc, constants } from 'services/augurjs'
+import BigNumber from 'bignumber.js'
 
-import { formatEtherEstimate, formatEtherTokensEstimate } from 'utils/format-number';
-import getValue from 'utils/get-value';
+import { formatEtherEstimate, formatEtherTokensEstimate } from 'utils/format-number'
+import getValue from 'utils/get-value'
 
-import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
-import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications';
-import { NEW_MARKET_REVIEW } from 'modules/create-market/constants/new-market-creation-steps';
+import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
+import CreateMarketFormInputNotifications from 'modules/create-market/components/create-market-form-input-notifications'
+import { NEW_MARKET_REVIEW } from 'modules/create-market/constants/new-market-creation-steps'
 
 export default class CreateMarketReview extends Component {
   static propTypes = {
@@ -30,7 +30,7 @@ export default class CreateMarketReview extends Component {
   };
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       creationFee: null,
@@ -43,54 +43,54 @@ export default class CreateMarketReview extends Component {
       formattedInitialLiquidityEth: formatEtherTokensEstimate(this.props.initialLiquidityEth),
       formattedInitialLiquidityGas: formatEtherEstimate(this.props.initialLiquidityGas),
       formattedInitialLiquidityFees: formatEtherTokensEstimate(this.props.initialLiquidityFees)
-    };
+    }
   }
 
   componentWillMount() {
-    this.calculateMarketCreationCosts();
+    this.calculateMarketCreationCosts()
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.props.currentStep !== nextProps.currentStep &&
       newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_REVIEW
     ) {
-      this.calculateMarketCreationCosts();
+      this.calculateMarketCreationCosts()
     }
 
-    if (this.props.initialLiquidityEth !== nextProps.initialLiquidityEth) this.setState({ formattedInitialLiquidityEth: formatEtherTokensEstimate(nextProps.initialLiquidityEth) });
-    if (this.props.initialLiquidityGas !== nextProps.initialLiquidityGas) this.setState({ formattedInitialLiquidityGas: formatEtherEstimate(nextProps.initialLiquidityGas) });
-    if (this.props.initialLiquidityFees !== nextProps.initialLiquidityFees) this.setState({ formattedInitialLiquidityFees: formatEtherTokensEstimate(nextProps.initialLiquidityFees) });
+    if (this.props.initialLiquidityEth !== nextProps.initialLiquidityEth) this.setState({ formattedInitialLiquidityEth: formatEtherTokensEstimate(nextProps.initialLiquidityEth) })
+    if (this.props.initialLiquidityGas !== nextProps.initialLiquidityGas) this.setState({ formattedInitialLiquidityGas: formatEtherEstimate(nextProps.initialLiquidityGas) })
+    if (this.props.initialLiquidityFees !== nextProps.initialLiquidityFees) this.setState({ formattedInitialLiquidityFees: formatEtherTokensEstimate(nextProps.initialLiquidityFees) })
   }
 
   calculateMarketCreationCosts() {
-    const gasPrice = rpc.gasPrice || constants.DEFAULT_GASPRICE;
+    const gasPrice = rpc.gasPrice || constants.DEFAULT_GASPRICE
 
     // TODO augur.api.functions -> getState().functionsAPI
-    const gasCost = formatEtherEstimate(augur.trading.simulation.getTxGasEth({ ...augur.api.CreateMarket.createMarket }, gasPrice));
-    const creationFee = formatEtherEstimate(abi.unfix(augur.create.calculateRequiredMarketValue(gasPrice)));
+    const gasCost = formatEtherEstimate(augur.trading.simulation.getTxGasEth({ ...augur.api.CreateMarket.createMarket }, gasPrice))
+    const creationFee = formatEtherEstimate(abi.unfix(augur.create.calculateRequiredMarketValue(gasPrice)))
 
     // Event Bond
-    const tradingFee = augur.trading.fees.calculateTradingFees(this.props.makerFee, this.props.takerFee).tradingFee;
-    const validityBond = augur.create.calculateValidityBond(tradingFee, this.props.branch.periodLength, this.props.branch.baseReporters, this.props.branch.numEventsCreatedInPast24Hours, this.props.branch.numEventsInReportPeriod);
-    const eventBond = formatEtherEstimate(validityBond);
+    const tradingFee = augur.trading.fees.calculateTradingFees(this.props.makerFee, this.props.takerFee).tradingFee
+    const validityBond = augur.create.calculateValidityBond(tradingFee, this.props.branch.periodLength, this.props.branch.baseReporters, this.props.branch.numEventsCreatedInPast24Hours, this.props.branch.numEventsInReportPeriod)
+    const eventBond = formatEtherEstimate(validityBond)
 
     this.setState({
       gasCost,
       creationFee,
       eventBond
-    });
+    })
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
-    const creationFee = getValue(s, 'creationFee.formatted');
-    const eventBond = getValue(s, 'eventBond.formatted');
-    const gasCost = getValue(s, 'gasCost.formatted');
-    const liquidityEth = getValue(s, 'formattedInitialLiquidityEth.formatted');
-    const liquidityGas = getValue(s, 'formattedInitialLiquidityGas.formatted');
-    const liquidityFees = getValue(s, 'formattedInitialLiquidityFees.formatted');
+    const creationFee = getValue(s, 'creationFee.formatted')
+    const eventBond = getValue(s, 'eventBond.formatted')
+    const gasCost = getValue(s, 'gasCost.formatted')
+    const liquidityEth = getValue(s, 'formattedInitialLiquidityEth.formatted')
+    const liquidityGas = getValue(s, 'formattedInitialLiquidityGas.formatted')
+    const liquidityFees = getValue(s, 'formattedInitialLiquidityFees.formatted')
 
     return (
       <article className={`create-market-form-part create-market-form-review ${p.className || ''}`}>
@@ -175,6 +175,6 @@ export default class CreateMarketReview extends Component {
           }
         </div>
       </article>
-    );
+    )
   }
 }

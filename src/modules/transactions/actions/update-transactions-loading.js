@@ -1,4 +1,4 @@
-export const UPDATE_TRANSACTIONS_LOADING = 'UPDATE_TRANSACTIONS_LOADING';
+export const UPDATE_TRANSACTIONS_LOADING = 'UPDATE_TRANSACTIONS_LOADING'
 
 export function updateTransactionsLoading(isLoading) {
   return {
@@ -6,5 +6,5 @@ export function updateTransactionsLoading(isLoading) {
     data: {
       isLoading
     }
-  };
+  }
 }

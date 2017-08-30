@@ -1,39 +1,39 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
-import MarketOpenOrdersGroup from 'modules/market/components/market-open-orders-group';
-import NullStateMessage from 'modules/common/components/null-state-message';
+import MarketOpenOrdersGroup from 'modules/market/components/market-open-orders-group'
+import NullStateMessage from 'modules/common/components/null-state-message'
 
-import { SCALAR } from 'modules/markets/constants/market-types';
+import { SCALAR } from 'modules/markets/constants/market-types'
 
-import getValue from 'utils/get-value';
+import getValue from 'utils/get-value'
 
 export default class MarketOpenOrders extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       nullMessage: 'No Current Open Orders',
       hasOrders: false
-    };
+    }
 
-    this.updateHasOrders = this.updateHasOrders.bind(this);
+    this.updateHasOrders = this.updateHasOrders.bind(this)
   }
 
   componentWillMount() {
-    this.updateHasOrders(this.props);
+    this.updateHasOrders(this.props)
   }
 
   componentWillReceiveProps(nextProps) {
-    this.updateHasOrders(nextProps);
+    this.updateHasOrders(nextProps)
   }
 
   updateHasOrders(props) {
-    this.setState({ hasOrders: !!(props.outcomes || []).find(outcome => outcome.userOpenOrders && outcome.userOpenOrders.length) });
+    this.setState({ hasOrders: !!(props.outcomes || []).find(outcome => outcome.userOpenOrders && outcome.userOpenOrders.length) })
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
     return (
       <article className="market-open-orders">
@@ -49,7 +49,7 @@ export default class MarketOpenOrders extends Component {
             </div>
             <div className="market-content-scrollable" >
               {(p.outcomes || []).map((outcome, index) => {
-                const lastPricePercent = getValue(outcome, 'lastPricePercent.rounded');
+                const lastPricePercent = getValue(outcome, 'lastPricePercent.rounded')
 
                 return (
                   <MarketOpenOrdersGroup
@@ -62,12 +62,12 @@ export default class MarketOpenOrders extends Component {
                     orderCancellation={p.orderCancellation}
                     selectedShareDenomination={p.selectedShareDenomination}
                   />
-                );
+                )
               })}
             </div>
           </div>
         }
       </article>
-    );
+    )
   }
 }

@@ -62,7 +62,7 @@ const fontAwesomeIcons = {
   'fa-compress': ['debates', 'arguments', 'conflicts', 'fights', 'war', 'wars', 'fighting', 'calexit'],
   'fa-flag-o': ['France', 'USA', 'United States', 'UK', 'United Kingdom', 'Spain', 'Portugal', 'China', 'Russia', 'Australia', 'Canada', 'New Zealand', 'Japan'],
   'fa-smile-o': ['happy', 'pleasure']
-};
+}
 
 const icofontIcons = {
   'icofont-people': ['elections', 'politics'],
@@ -75,11 +75,11 @@ const icofontIcons = {
   'icofont-rugby': ['rugby', 'football', 'american football'],
   'icofont-baseball': ['baseball'],
   'icofont-motor-bike': ['motorcycles', 'motorcycling', 'bikers']
-};
+}
 
 const iconTopics = {
   ...fontAwesomeIcons,
   ...icofontIcons
-};
+}
 
-export default iconTopics;
+export default iconTopics

@@ -1,4 +1,4 @@
-import { UPDATE_BLOCKCHAIN } from 'modules/app/actions/update-blockchain';
+import { UPDATE_BLOCKCHAIN } from 'modules/app/actions/update-blockchain'
 
 export default function (blockchain = {}, action) {
   switch (action.type) {
@@ -6,9 +6,9 @@ export default function (blockchain = {}, action) {
       return {
         ...blockchain,
         ...action.data
-      };
+      }
 
     default:
-      return blockchain;
+      return blockchain
   }
 }

@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import classNames from 'classnames';
+import React, { Component } from 'react'
+import classNames from 'classnames'
 
-import Input from 'modules/common/components/input';
+import Input from 'modules/common/components/input'
 
-import makePath from 'modules/app/helpers/make-path';
-import { DEFAULT_VIEW } from 'modules/app/constants/views';
+import makePath from 'modules/app/helpers/make-path'
+import { DEFAULT_VIEW } from 'modules/app/constants/views'
 
 export default class AuthLogin extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       loginID: '',
@@ -18,19 +18,19 @@ export default class AuthLogin extends Component {
       // These prevent a flash on component mount
       isAuthErrorDisplayable: false,
       isLoginActionsDisplayable: false
-    };
+    }
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
     return (
       <form
         className="auth-login-form"
         onSubmit={(e) => {
-          e.preventDefault();
-          e.persist();
+          e.preventDefault()
+          e.persist()
 
           if (s.loginID && s.password) {
             p.submitLogin(s.loginID, s.password, (err) => {
@@ -39,13 +39,13 @@ export default class AuthLogin extends Component {
                   authError: true,
                   errorMessage: err.message,
                   isAuthErrorDisplayable: true
-                });
+                })
               } else {
-                e.target.style.display = 'none';
+                e.target.style.display = 'none'
 
-                p.history.push(makePath(DEFAULT_VIEW));
+                p.history.push(makePath(DEFAULT_VIEW))
               }
-            });
+            })
           }
         }}
       >
@@ -57,14 +57,14 @@ export default class AuthLogin extends Component {
           placeholder="Login ID"
           autoFocus
           onChange={(loginID) => {
-            this.setState({ loginID });
+            this.setState({ loginID })
 
             if (!loginID) {
-              this.setState({ password: '' });
+              this.setState({ password: '' })
             }
 
             if (this.state.authError) {
-              this.setState({ authError: false });
+              this.setState({ authError: false })
             }
           }}
         />
@@ -76,14 +76,14 @@ export default class AuthLogin extends Component {
           canToggleVisibility
           value={s.password}
           onChange={(password) => {
-            this.setState({ password });
+            this.setState({ password })
 
             if (this.state.loginID && this.state.password && !this.state.isLoginActionsDisplayable) {
-              this.setState({ isLoginActionsDisplayable: true });
+              this.setState({ isLoginActionsDisplayable: true })
             }
 
             if (this.state.authError) {
-              this.setState({ authError: false });
+              this.setState({ authError: false })
             }
           }}
         />
@@ -112,6 +112,6 @@ export default class AuthLogin extends Component {
           </button>
         </div>
       </form>
-    );
+    )
   }
 }

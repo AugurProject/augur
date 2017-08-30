@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
 
-import Input from 'modules/common/components/input';
-import EtherLogo from 'modules/common/components/ether-logo';
-import EtherTokenLogo from 'modules/common/components/ether-token-logo';
+import Input from 'modules/common/components/input'
+import EtherLogo from 'modules/common/components/ether-logo'
+import EtherTokenLogo from 'modules/common/components/ether-token-logo'
 
 export default class AccountConvert extends Component {
   static propTypes = {
@@ -15,10 +15,10 @@ export default class AccountConvert extends Component {
   };
 
   constructor(props) {
-    super(props);
+    super(props)
 
-    this.TO_ETHER = 'TO_ETHER';
-    this.TO_TOKEN = 'TO_TOKEN';
+    this.TO_ETHER = 'TO_ETHER'
+    this.TO_TOKEN = 'TO_TOKEN'
 
     this.state = {
       direction: this.TO_TOKEN,
@@ -26,55 +26,55 @@ export default class AccountConvert extends Component {
       amount: '',
       isValid: null,
       isAmountValid: null
-    };
+    }
 
-    this.setDirection = this.setDirection.bind(this);
-    this.validateAmount = this.validateAmount.bind(this);
-    this.convert = this.convert.bind(this);
+    this.setDirection = this.setDirection.bind(this)
+    this.validateAmount = this.validateAmount.bind(this)
+    this.convert = this.convert.bind(this)
   }
 
   setDirection(direction) {
     this.setState({
       direction,
       upperBound: direction === this.TO_TOKEN ? this.props.eth.value : this.props.ethTokens.value
-    });
+    })
   }
 
   validateAmount(amount) {
-    const sanitizedAmount = (amount == null || amount === '') ? '' : amount;
+    const sanitizedAmount = (amount == null || amount === '') ? '' : amount
 
     if (isNaN(parseFloat(sanitizedAmount)) || !isFinite(sanitizedAmount) || (sanitizedAmount > this.state.upperBound || sanitizedAmount <= 0)) {
       this.setState({
         amount: sanitizedAmount,
         isAmountValid: false,
         isValid: false,
-      });
-      return;
+      })
+      return
     }
 
     this.setState({
       amount: sanitizedAmount,
       isValid: true,
       isAmountValid: true
-    });
+    })
   }
 
   convert() {
     if (this.state.direction === this.TO_TOKEN) {
-      this.props.convertToToken(this.state.amount);
+      this.props.convertToToken(this.state.amount)
     } else {
-      this.props.convertToEther(this.state.amount);
+      this.props.convertToEther(this.state.amount)
     }
 
     this.setState({ // Reset form, leaving direction in place
       amount: '',
       isValid: false
-    });
+    })
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
     return (
       <article className="account-convert account-sub-view">
@@ -85,10 +85,10 @@ export default class AccountConvert extends Component {
         <div className="account-actions">
           <form
             onSubmit={(e) => {
-              e.preventDefault();
+              e.preventDefault()
 
               if (s.isValid) {
-                this.convert();
+                this.convert()
               }
             }}
           >
@@ -143,6 +143,6 @@ export default class AccountConvert extends Component {
           </form>
         </div>
       </article>
-    );
+    )
   }
 }

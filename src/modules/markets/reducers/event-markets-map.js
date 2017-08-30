@@ -1,4 +1,4 @@
-import { CLEAR_MARKETS_DATA, UPDATE_EVENT_MARKETS_MAP } from 'modules/markets/actions/update-markets-data';
+import { CLEAR_MARKETS_DATA, UPDATE_EVENT_MARKETS_MAP } from 'modules/markets/actions/update-markets-data'
 
 // TODO - fix linting error
 
@@ -6,22 +6,22 @@ export default function (eventMarketsMap = {}, action) {
   switch (action.type) {
     case UPDATE_EVENT_MARKETS_MAP: {
       if (eventMarketsMap[action.eventID]) {
-        const isUnique = {};
+        const isUnique = {}
         return {
           ...eventMarketsMap,
           [action.eventID]: (eventMarketsMap[action.eventID].concat(action.marketIDs)).filter(el => ( // eslint-disable-line
             isUnique.hasOwnProperty(el) ? false : (isUnique[el] = true))
           )
-        };
+        }
       }
       return {
         ...eventMarketsMap,
         [action.eventID]: action.marketIDs
-      };
+      }
     }
     case CLEAR_MARKETS_DATA:
-      return {};
+      return {}
     default:
-      return eventMarketsMap;
+      return eventMarketsMap
   }
 }

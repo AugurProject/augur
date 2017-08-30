@@ -1,21 +1,21 @@
 /* eslint jsx-a11y/no-static-element-interactions: 0 */  // Needed to address cross-browser handling of on-click events + resultant sizing
 
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import Datetime from 'react-datetime';
+import Datetime from 'react-datetime'
 
-import { formatDate } from 'utils/format-date';
+import { formatDate } from 'utils/format-date'
 
-import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
-import { NEW_MARKET_END_DATE } from 'modules/create-market/constants/new-market-creation-steps';
+import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
+import { NEW_MARKET_END_DATE } from 'modules/create-market/constants/new-market-creation-steps'
 
 const CreateMarketFormEndDate = (p) => {
-  if (p.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) && Object.keys(p.endDate).length && !p.isValid) p.updateValidity(true);
+  if (p.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_END_DATE) && Object.keys(p.endDate).length && !p.isValid) p.updateValidity(true)
 
-  const yesterday = Datetime.moment().subtract(1, 'day');
-  const valid = current => current.isAfter(yesterday);
-  const defaultValue = Object.keys(p.endDate).length ? p.endDate : '';
+  const yesterday = Datetime.moment().subtract(1, 'day')
+  const valid = current => current.isAfter(yesterday)
+  const defaultValue = Object.keys(p.endDate).length ? p.endDate : ''
 
   return (
     <article className={`create-market-form-part create-market-form-part-end-date ${p.className || ''}`}>
@@ -38,16 +38,16 @@ const CreateMarketFormEndDate = (p) => {
               defaultValue={defaultValue}
               inputProps={{ placeholder: 'YYYY/MM/DD hh:mm:ss a' }}
               onChange={(date) => {
-                p.updateNewMarket({ endDate: formatDate(new Date(date)) });
-                p.updateValidity(true);
+                p.updateNewMarket({ endDate: formatDate(new Date(date)) })
+                p.updateValidity(true)
               }}
             />
           </form>
         </div>
       </div>
     </article>
-  );
-};
+  )
+}
 
 CreateMarketFormEndDate.propTypes = {
   currentStep: PropTypes.number.isRequired,
@@ -56,6 +56,6 @@ CreateMarketFormEndDate.propTypes = {
   updateFormHeight: PropTypes.func.isRequired,
   updateValidity: PropTypes.func.isRequired,
   updateNewMarket: PropTypes.func.isRequired
-};
+}
 
-export default CreateMarketFormEndDate;
+export default CreateMarketFormEndDate

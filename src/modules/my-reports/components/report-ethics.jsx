@@ -1,5 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
 const ReportEthics = p => (
   <span>
@@ -10,10 +10,10 @@ const ReportEthics = p => (
       />
     }
   </span>
-);
+)
 
 ReportEthics.propTypes = {
   isUnethical: PropTypes.bool
-};
+}
 
-export default ReportEthics;
+export default ReportEthics

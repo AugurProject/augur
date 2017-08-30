@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Helmet } from 'react-helmet';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { Helmet } from 'react-helmet'
 
-import AuthLogin from 'modules/auth/components/auth-login';
-import AuthSignup from 'modules/auth/components/auth-signup';
-import AuthImport from 'modules/auth/components/auth-import';
-import AirbitzLogoIcon from 'modules/common/components/airbitz-logo-icon';
+import AuthLogin from 'modules/auth/components/auth-login'
+import AuthSignup from 'modules/auth/components/auth-signup'
+import AuthImport from 'modules/auth/components/auth-import'
+import AirbitzLogoIcon from 'modules/common/components/airbitz-logo-icon'
 
-import ComponentNav from 'modules/common/components/component-nav';
+import ComponentNav from 'modules/common/components/component-nav'
 
-import { SIGNUP, LOGIN, IMPORT } from 'modules/app/constants/views';
+import { SIGNUP, LOGIN, IMPORT } from 'modules/app/constants/views'
 
 export default class AuthView extends Component {
   static propTypes = {
@@ -23,48 +23,48 @@ export default class AuthView extends Component {
   }
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       selectedNav: SIGNUP,
       selectedAuthMethod: null,
       selectedLoginIDMethod: null
-    };
+    }
 
-    this.updateSelectedNav = this.updateSelectedNav.bind(this);
-    this.updateSelectedAuthMethod = this.updateSelectedAuthMethod.bind(this);
-    this.updateSelectedLoginIDMethod = this.updateSelectedLoginIDMethod.bind(this);
+    this.updateSelectedNav = this.updateSelectedNav.bind(this)
+    this.updateSelectedAuthMethod = this.updateSelectedAuthMethod.bind(this)
+    this.updateSelectedLoginIDMethod = this.updateSelectedLoginIDMethod.bind(this)
   }
 
   componentDidMount() {
-    this.props.airbitzOnLoad();
+    this.props.airbitzOnLoad()
   }
 
   updateSelectedNav(selectedNav) {
-    this.setState({ selectedNav });
+    this.setState({ selectedNav })
   }
 
   updateSelectedAuthMethod(selectedAuthMethod) {
-    this.setState({ selectedLoginIDMethod: null });
+    this.setState({ selectedLoginIDMethod: null })
 
     if (this.state.selectedAuthMethod !== null && this.state.selectedAuthMethod === selectedAuthMethod) {
-      this.setState({ selectedAuthMethod: null });
+      this.setState({ selectedAuthMethod: null })
     } else {
-      this.setState({ selectedAuthMethod });
+      this.setState({ selectedAuthMethod })
     }
   }
 
   updateSelectedLoginIDMethod(selectedLoginIDMethod) {
     if (this.state.selectedLoginIDMethod !== null && this.state.selectedLoginIDMethod === selectedLoginIDMethod) {
-      this.setState({ selectedLoginIDMethod: null });
+      this.setState({ selectedLoginIDMethod: null })
     } else {
-      this.setState({ selectedLoginIDMethod });
+      this.setState({ selectedLoginIDMethod })
     }
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
     return (
       <section id="auth_view">
@@ -116,6 +116,6 @@ export default class AuthView extends Component {
           }
         </article>
       </section>
-    );
+    )
   }
 }

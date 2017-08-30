@@ -1,24 +1,24 @@
-import { describe, it, beforeEach, afterEach } from 'mocha';
-import { assert } from 'chai';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import testState from 'test/testState';
-import * as action from 'modules/reports/actions/update-reports';
+import { describe, it, beforeEach, afterEach } from 'mocha'
+import { assert } from 'chai'
+import configureMockStore from 'redux-mock-store'
+import thunk from 'redux-thunk'
+import testState from 'test/testState'
+import * as action from 'modules/reports/actions/update-reports'
 
 describe(`modules/reports/actions/update-reports.js`, () => {
-  const middlewares = [thunk];
-  const mockStore = configureMockStore(middlewares);
-  let out;
-  const state = Object.assign({}, testState);
-  const store = mockStore(state);
+  const middlewares = [thunk]
+  const mockStore = configureMockStore(middlewares)
+  let out
+  const state = Object.assign({}, testState)
+  const store = mockStore(state)
 
   beforeEach(() => {
-    store.clearActions();
-  });
+    store.clearActions()
+  })
 
   afterEach(() => {
-    store.clearActions();
-  });
+    store.clearActions()
+  })
 
   it(`should load reports given marketdata`, () => {
     out = [{
@@ -33,7 +33,7 @@ describe(`modules/reports/actions/update-reports.js`, () => {
           data: 'example'
         }
       }
-    }];
+    }]
 
     const test = {
       test: {
@@ -44,19 +44,19 @@ describe(`modules/reports/actions/update-reports.js`, () => {
         _id: 'test2',
         data: 'example'
       }
-    };
+    }
 
-    store.dispatch(action.updateReports(test));
+    store.dispatch(action.updateReports(test))
 
-    assert.deepEqual(store.getActions(), out, `Didn't dispatch the UPDATE_REPORTS action`);
-  });
+    assert.deepEqual(store.getActions(), out, `Didn't dispatch the UPDATE_REPORTS action`)
+  })
 
   it(`should return a clear reports action`, () => {
     out = [{
       type: 'CLEAR_REPORTS'
-    }];
-    store.dispatch(action.clearReports());
-    assert.deepEqual(store.getActions(), out, `Didn't dispatch a CLEAR REPORTS action`);
-  });
+    }]
+    store.dispatch(action.clearReports())
+    assert.deepEqual(store.getActions(), out, `Didn't dispatch a CLEAR REPORTS action`)
+  })
 
-});
+})

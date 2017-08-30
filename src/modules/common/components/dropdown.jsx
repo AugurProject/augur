@@ -1,10 +1,10 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
 const Dropdown = p => (
   <div className="dropdown">
     <select
-      onChange={(event) => { p.onChange(event.target.value); }}
+      onChange={(event) => { p.onChange(event.target.value) }}
       defaultValue={p.default}
     >
       {p.options.map(option => (
@@ -18,12 +18,12 @@ const Dropdown = p => (
     </select>
     <i className="fa fa-angle-down" />
   </div>
-);
+)
 
 Dropdown.propTypes = {
   onChange: PropTypes.func.isRequired,
   default: PropTypes.string.isRequired,
   options: PropTypes.array.isRequired
-};
+}
 
-export default Dropdown;
+export default Dropdown

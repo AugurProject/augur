@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import { mobileMenuStates } from 'modules/app/components/app/app';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
+import { mobileMenuStates } from 'modules/app/components/app/app'
 
-import Styles from 'modules/app/components/inner-nav/inner-nav.styles';
+import Styles from 'modules/app/components/inner-nav/inner-nav.styles'
 
 class InnerNav extends Component {
   static propTypes = {
@@ -19,8 +19,8 @@ class InnerNav extends Component {
     return (
       <ul className={Styles.InnerNav__bar}>
         {this.props.categories.map((item, index) => {
-          const clickSelect = () => this.props.onSelectCategory(item.topic);
-          const isSelected = item.topic === this.props.selectedCategory;
+          const clickSelect = () => this.props.onSelectCategory(item.topic)
+          const isSelected = item.topic === this.props.selectedCategory
           return (
             <li
               className={classNames({ [`${Styles.selected}`]: isSelected })}
@@ -30,17 +30,17 @@ class InnerNav extends Component {
                 {item.topic}
               </button>
             </li>
-          );
+          )
         })}
       </ul>
-    );
+    )
   }
 
   renderSubMenu() {
-    const showKeywords = this.props.mobileMenuState === mobileMenuStates.KEYWORDS_OPEN;
-    let animatedStyle;
+    const showKeywords = this.props.mobileMenuState === mobileMenuStates.KEYWORDS_OPEN
+    let animatedStyle
     if (!this.props.isMobile) {
-      animatedStyle = { left: (110 * this.props.subMenuScalar) };
+      animatedStyle = { left: (110 * this.props.subMenuScalar) }
     }
 
     return (
@@ -50,21 +50,21 @@ class InnerNav extends Component {
       >
         <li>Yup</li>
       </ul>
-    );
+    )
   }
 
   render() {
-    const showCategories = this.props.mobileMenuState >= mobileMenuStates.CATEGORIES_OPEN;
+    const showCategories = this.props.mobileMenuState >= mobileMenuStates.CATEGORIES_OPEN
     return (
       <aside className={classNames(Styles.InnerNav, { [`${Styles.mobileShow}`]: showCategories })}>
         {this.renderTopicList()}
         {this.renderSubMenu()}
       </aside>
-    );
+    )
   }
 }
 
-export default InnerNav;
+export default InnerNav
 
 // {this.props.keywords.length === 0 &&
 //   <li>Loading . . .</li>

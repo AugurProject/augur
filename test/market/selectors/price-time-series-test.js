@@ -1,20 +1,20 @@
-import { describe, it, beforeEach, afterEach } from 'mocha';
-import { assert } from 'chai';
-import proxyquire from 'proxyquire';
-import * as mockStore from 'test/mockStore';
+import { describe, it, beforeEach, afterEach } from 'mocha'
+import { assert } from 'chai'
+import proxyquire from 'proxyquire'
+import * as mockStore from 'test/mockStore'
 
 describe(`modules/market/selectors/price-time-series.js`, () => {
-  proxyquire.noPreserveCache().noCallThru();
-  const { store } = mockStore.default;
+  proxyquire.noPreserveCache().noCallThru()
+  const { store } = mockStore.default
   const selector = proxyquire('../../../src/modules/market/selectors/price-time-series.js', {
     '../../../store': store
-  });
+  })
   beforeEach(() => {
-    store.clearActions();
-  });
+    store.clearActions()
+  })
   afterEach(() => {
-    store.clearActions();
-  });
+    store.clearActions()
+  })
   it(`should select Price Time Series in correct order`, () => {
     const priceHistory = {
       2: [
@@ -37,7 +37,7 @@ describe(`modules/market/selectors/price-time-series.js`, () => {
           timestamp: 1483228799
         }
       ]
-    };
+    }
     const outcomes = [
       {
         id: '2',
@@ -51,8 +51,8 @@ describe(`modules/market/selectors/price-time-series.js`, () => {
         id: '1',
         name: 'outcome1'
       }
-    ];
-    const actual = selector.selectPriceTimeSeries(outcomes, priceHistory);
+    ]
+    const actual = selector.selectPriceTimeSeries(outcomes, priceHistory)
     const expected = [
       {
         id: '1',
@@ -75,7 +75,7 @@ describe(`modules/market/selectors/price-time-series.js`, () => {
         name: 'outcome3',
         data: []
       }
-    ];
-    assert.deepEqual(actual, expected, `Didn't produce the expected output`);
-  });
-});
+    ]
+    assert.deepEqual(actual, expected, `Didn't produce the expected output`)
+  })
+})

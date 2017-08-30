@@ -1,7 +1,7 @@
 /* eslint react/no-array-index-key: 0 */  // It's OK in this specific instance as order remains the same
 
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 // import { Link } from 'react-router-dom';
 // import classNames from 'classnames';
 
@@ -13,7 +13,7 @@ import PropTypes from 'prop-types';
 // import { MARKET } from 'modules/app/constants/views';
 // import { MARKET_ID_PARAM_NAME, MARKET_DESCRIPTION_PARAM_NAME } from 'modules/app/constants/param-names';
 
-import Styles from 'modules/market/components/market-basics/market-basics.styles';
+import Styles from 'modules/market/components/market-basics/market-basics.styles'
 
 const MarketBasics = p => (
   <article className={Styles.MarketBasics}>
@@ -88,11 +88,11 @@ const MarketBasics = p => (
 
     <MarketProperties {...p} /> */}
   </article>
-);
+)
 
 MarketBasics.propTypes = {
   isLogged: PropTypes.bool.isRequired,
   toggleFavorite: PropTypes.func
-};
+}
 
-export default MarketBasics;
+export default MarketBasics

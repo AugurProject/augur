@@ -1,12 +1,12 @@
-import { it } from 'mocha';
-import { assert } from 'chai';
+import { it } from 'mocha'
+import { assert } from 'chai'
 
 export default function (tradeCommitLock) {
-  assert.isDefined(tradeCommitLock, 'tradeCommitLock is not defined');
-  assert.isObject(tradeCommitLock, 'tradeCommitLock is not an object');
+  assert.isDefined(tradeCommitLock, 'tradeCommitLock is not defined')
+  assert.isObject(tradeCommitLock, 'tradeCommitLock is not an object')
 
   it('isLocked', () => {
-    assert.isDefined(tradeCommitLock.isLocked, `'tradeCommitLock.isLocked' is not defined`);
-    assert.isBoolean(tradeCommitLock.isLocked, `'tradeCommitLock.isLocked' is not a boolean`);
-  });
+    assert.isDefined(tradeCommitLock.isLocked, `'tradeCommitLock.isLocked' is not defined`)
+    assert.isBoolean(tradeCommitLock.isLocked, `'tradeCommitLock.isLocked' is not a boolean`)
+  })
 }

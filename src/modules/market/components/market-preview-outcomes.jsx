@@ -1,6 +1,6 @@
-import React from 'react';
-import ReactTooltip from 'react-tooltip';
-import ValueDenomination from 'modules/common/components/value-denomination';
+import React from 'react'
+import ReactTooltip from 'react-tooltip'
+import ValueDenomination from 'modules/common/components/value-denomination'
 
 const MarketOutcomes = p => (
   <div className="market-preview-outcomes">
@@ -44,11 +44,11 @@ const MarketOutcomes = p => (
       </div>
     ))}
   </div>
-);
+)
 
 // TODO -- Prop Validations
 // MarketOutcomes.propTypes = {
 //  outcomes: React.PropTypes.array
 // };
 
-export default MarketOutcomes;
+export default MarketOutcomes

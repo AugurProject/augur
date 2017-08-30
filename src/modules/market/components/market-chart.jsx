@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import Highcharts from 'highcharts';
-import noData from 'highcharts/modules/no-data-to-display';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import Highcharts from 'highcharts'
+import noData from 'highcharts/modules/no-data-to-display'
 
-import debounce from 'utils/debounce';
+import debounce from 'utils/debounce'
 
 export default class MarketChart extends Component {
   static propTypes = {
@@ -11,19 +11,19 @@ export default class MarketChart extends Component {
   };
 
   constructor(props) {
-    super(props);
+    super(props)
 
-    this.updateChart = debounce(this.updateChart.bind(this));
+    this.updateChart = debounce(this.updateChart.bind(this))
   }
 
   componentDidMount() {
-    noData(Highcharts);
+    noData(Highcharts)
 
     Highcharts.setOptions({
       lang: {
         thousandsSep: ','
       }
-    });
+    })
 
     this.marketPriceChart = new Highcharts.Chart('market_price_history_chart', {
       title: {
@@ -57,19 +57,19 @@ export default class MarketChart extends Component {
       credits: {
         enabled: false
       }
-    });
+    })
 
-    window.addEventListener('resize', this.updateChart);
+    window.addEventListener('resize', this.updateChart)
 
-    this.updateChart();
+    this.updateChart()
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.series !== this.props.series) this.updateChart();
+    if (prevProps.series !== this.props.series) this.updateChart()
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.updateChart);
+    window.removeEventListener('resize', this.updateChart)
   }
 
   updateChart() {
@@ -79,13 +79,13 @@ export default class MarketChart extends Component {
           type: 'line',
           name: series.name,
           data: series.data
-        }, false);
+        }, false)
       } else {
-        this.marketPriceChart.series[i].setData(series.data, false);
+        this.marketPriceChart.series[i].setData(series.data, false)
       }
-    });
+    })
 
-    this.marketPriceChart.redraw();
+    this.marketPriceChart.redraw()
   }
 
   render() {
@@ -95,6 +95,6 @@ export default class MarketChart extends Component {
           id="market_price_history_chart"
         />
       </article>
-    );
+    )
   }
 }
