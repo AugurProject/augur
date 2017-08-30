@@ -199,6 +199,8 @@ class Paginator extends Component {
     const p = this.props;
     const s = this.state;
 
+    console.log('Styles -- ', Styles);
+
     return (
       <article className={Styles.Paginator}>
         <div className={Styles.Paginator__controls}>
@@ -211,7 +213,7 @@ class Paginator extends Component {
                   search: s.backQuery
                 }}
               >
-                {/* TODO: icofont with the new LESS structure */}
+                {/* TODO: icofont with the new LESS structure -- coming in Serena's feature branch */}
                 <i className="fa fa-angle-left" />
               </Link>
             }
@@ -232,7 +234,7 @@ class Paginator extends Component {
                   search: s.forwardQuery
                 }}
               >
-                {/* TODO: icofont with the new LESS structure */}
+                {/* TODO: icofont with the new LESS structure -- coming in Serena's feature branch */}
                 <i className="fa fa-angle-right" />
               </Link>
             }
