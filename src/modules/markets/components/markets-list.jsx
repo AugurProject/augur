@@ -1,16 +1,24 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+
 import MarketPreview from 'modules/market/components/market-preview/market-preview';
 import Paginator from 'modules/common/components/paginator/paginator';
 import NullStateMessage from 'modules/common/components/null-state-message';
+
+import parseQuery from 'modules/app/helpers/parse-query';
+import parseStringToArray from 'modules/app/helpers/parse-string-to-array';
+import makeQuery from 'modules/app/helpers/make-query';
 
 import getValue from 'utils/get-value';
 import isEqual from 'lodash/isEqual';
 
 import debounce from 'utils/debounce';
 
+import { TAGS_PARAM_NAME } from 'modules/app/constants/param-names';
+
 export default class MarketsList extends Component {
   static propTypes = {
+    history: PropTypes.object.isRequired,
     isLogged: PropTypes.bool.isRequired,
     markets: PropTypes.array.isRequired,
     filteredMarkets: PropTypes.array.isRequired,
@@ -32,6 +40,7 @@ export default class MarketsList extends Component {
     this.setSegment = this.setSegment.bind(this);
     this.setMarketIDsMissingInfo = this.setMarketIDsMissingInfo.bind(this);
     this.loadMarketsInfo = debounce(this.loadMarketsInfo.bind(this));
+    this.toggleTag = this.toggleTag.bind(this);
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -67,6 +76,41 @@ export default class MarketsList extends Component {
     this.props.loadMarketsInfo(marketIDs);
   }
 
+  toggleTag(tag) {
+    let searchParams = parseQuery(this.props.location.search);
+
+    if (searchParams[TAGS_PARAM_NAME] == null || !searchParams[TAGS_PARAM_NAME].length) {
+      searchParams[TAGS_PARAM_NAME] = [encodeURIComponent(tag)];
+      searchParams = makeQuery(searchParams);
+
+      return this.props.history.push({
+        ...this.props.location,
+        search: searchParams
+      });
+    }
+
+    const tags = parseStringToArray(decodeURIComponent(searchParams[TAGS_PARAM_NAME]), '+');
+
+    if (tags.indexOf(tag) !== -1) { // Remove Tag
+      tags.splice(tags.indexOf(tag), 1);
+    } else { // add tag
+      tags.push(tag);
+    }
+
+    if (tags.length) {
+      searchParams[TAGS_PARAM_NAME] = tags.join('+');
+    } else {
+      delete searchParams[TAGS_PARAM_NAME];
+    }
+
+    searchParams = makeQuery(searchParams);
+
+    this.props.history.push({
+      ...this.props.location,
+      search: searchParams
+    });
+  }
+
   // NOTE -- You'll notice the odd method used for rendering the previews, this is done for optimization reasons
   render() {
     const p = this.props;
@@ -92,6 +136,7 @@ export default class MarketsList extends Component {
                   selectedShareDenomination={selectedShareDenomination}
                   shareDenominations={shareDenominations}
                   toggleFavorite={p.toggleFavorite}
+                  toggleTag={this.toggleTag}
                 />
               );
             }
