@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
+import { Link } from 'react-router-dom'
 
 import shouldComponentUpdatePure from 'utils/should-component-update-pure'
 import debounce from 'utils/debounce'
@@ -22,9 +23,12 @@ import NavCreateIcon from 'modules/common/components/nav-create-icon'
 import NavMarketsIcon from 'modules/common/components/nav-markets-icon'
 import NavPortfolioIcon from 'modules/common/components/nav-portfolio-icon'
 
+import makePath from 'modules/routes/helpers/make-path'
+
+import { MARKETS, ACCOUNT, MY_POSITIONS, CREATE_MARKET, TOPICS } from 'modules/routes/constants/views'
+
 import Styles from 'modules/app/components/app/app.styles'
 
-import { MARKETS, ACCOUNT, MY_POSITIONS, CREATE_MARKET } from 'modules/routes/constants/views'
 
 export const mobileMenuStates = { // TODO -- move to a constants file
   CLOSED: 0,
@@ -241,7 +245,9 @@ export default class AppView extends Component {
             isMobile={p.isMobile}
             menuScalar={origamiScalar}
           />
-          <Logo />
+          <Link to={makePath(TOPICS)}>
+            <Logo />
+          </Link>
           {this.renderMobileMenuButton()}
           <SideNav
             isMobile={p.isMobile}
