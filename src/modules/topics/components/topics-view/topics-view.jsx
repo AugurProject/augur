@@ -48,6 +48,8 @@ export default class TopicsView extends Component {
     };
 
     this.setSegment = this.setSegment.bind(this);
+    this.startCategoryCarousel = this.startCategoryCarousel.bind(this);
+    this.stopCategoryCarousel = this.stopCategoryCarousel.bind(this);
   }
 
   componentDidMount() {
@@ -60,6 +62,10 @@ export default class TopicsView extends Component {
     if (this.props.topics.length === 0 && nextProps.topics.length > 0) {
       this.startCategoryCarousel();
     }
+  }
+
+  componentWillUnmount() {
+    this.stopCategoryCarousel();
   }
 
   setSegment(lowerBound, upperBound, boundedLength) {
@@ -80,7 +86,7 @@ export default class TopicsView extends Component {
     }).then(cb);
 
     const waitThenChange = () => {
-      window.setTimeout(() => {
+      this.carouselTimeout = setTimeout(() => {
         doCarouselTween(1, 0, () => {
           const s = this.state;
           const p = this.props;
@@ -92,6 +98,13 @@ export default class TopicsView extends Component {
     };
 
     doCarouselTween(0, 1, waitThenChange);
+  }
+
+  stopCategoryCarousel() {
+    if (this.carouselTimeout) {
+      clearTimeout(this.carouselTimeout);
+      this.carouselTimeout = null;
+    }
   }
 
   render() {
