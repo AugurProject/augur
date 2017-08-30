@@ -4,5 +4,5 @@
   * @returns {string}
 */
 export default function makeQuery(query) {
-  return Object.keys(query).reduce((p, paramKey, i) => `${i === 0 ? '?' : ''}${p}${i === 0 ? '' : '&'}${paramKey}=${query[paramKey]}`, '');
+  return Object.keys(query).reduce((p, paramKey, i) => `${i === 0 ? '?' : ''}${p}${i === 0 ? '' : '&'}${paramKey}=${encodeURIComponent(query[paramKey])}`, '');
 }
