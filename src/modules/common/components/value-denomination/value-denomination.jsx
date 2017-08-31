@@ -1,11 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import ReactTooltip from 'react-tooltip'
-import classNames from 'classnames'
 
 import EmDash from 'modules/common/components/em-dash'
 
-import Styles from 'modules/common/components/value-denomination/value-denomination.styles';
+import Styles from 'modules/common/components/value-denomination/value-denomination.styles'
 
 const ValueDenomination = p => (
   <span

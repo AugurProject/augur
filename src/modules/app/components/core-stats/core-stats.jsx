@@ -4,8 +4,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
-import PortfolioNav from 'modules/portfolio/containers/portfolio-nav';
-import ValueDenomination from 'modules/common/components/value-denomination/value-denomination';
+import PortfolioNav from 'modules/portfolio/containers/portfolio-nav'
+import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 
 import makePath from 'modules/app/helpers/make-path'
 

@@ -2,16 +2,16 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Helmet } from 'react-helmet'
 
-import AuthLogin from 'modules/auth/components/auth-login/auth-login';
-import AuthSignup from 'modules/auth/components/auth-signup';
-import AuthImport from 'modules/auth/components/auth-import';
-import AirbitzLogoIcon from 'modules/common/components/airbitz-logo-icon';
+import AuthLogin from 'modules/auth/components/auth-login/auth-login'
+import AuthSignup from 'modules/auth/components/auth-signup'
+import AuthImport from 'modules/auth/components/auth-import'
+import AirbitzLogoIcon from 'modules/common/components/airbitz-logo-icon'
 
 import ComponentNav from 'modules/common/components/component-nav'
 
 import { SIGNUP, LOGIN, IMPORT } from 'modules/app/constants/views'
 
-import Styles from 'modules/auth/components/auth-view/auth-view.styles';
+import Styles from 'modules/auth/components/auth-view/auth-view.styles'
 
 export default class AuthView extends Component {
   static propTypes = {

@@ -3,8 +3,8 @@
 import React from 'react'
 import classNames from 'classnames'
 
-import ValueDenomination from 'modules/common/components/value-denomination/value-denomination';
-import OutcomeTrade from 'modules/outcomes/components/outcome-trade';
+import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
+import OutcomeTrade from 'modules/outcomes/components/outcome-trade'
 
 import { BID, ASK } from 'modules/transactions/constants/types'
 import { PRICE, SHARE } from 'modules/order-book/constants/order-book-value-types'

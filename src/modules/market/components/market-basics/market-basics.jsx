@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 // import { Link } from 'react-router-dom';
 // import classNames from 'classnames';
 
-import SVG from 'modules/common/components/svg/svg';
+import SVG from 'modules/common/components/svg/svg'
 
 // import makePath from 'modules/app/helpers/make-path';
 // import makeQuery from 'modules/app/helpers/make-query';
@@ -18,9 +18,9 @@ import Styles from 'modules/market/components/market-basics/market-basics.styles
 const MarketBasics = (p) => {
 
   // set market status
-  let marketStatus = p.isOpen ? 'open' : 'closed';
+  let marketStatus = p.isOpen ? 'open' : 'closed'
   if (marketStatus === 'open' && p.isResported) {
-    marketStatus = 'reported';
+    marketStatus = 'reported'
   }
 
   return (
@@ -64,8 +64,8 @@ const MarketBasics = (p) => {
       }
       */}
     </article>
-  );
-};
+  )
+}
 
 MarketBasics.propTypes = {
   isLogged: PropTypes.bool.isRequired,

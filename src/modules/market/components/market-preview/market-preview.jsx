@@ -3,9 +3,9 @@ import PropTypes from 'prop-types'
 // import { Link } from 'react-router-dom';
 // import classNames from 'classnames';
 
-import MarketBasics from 'modules/market/components/market-basics/market-basics';
-import MarketProperties from 'modules/market/components/market-properties/market-properties';
-import MarketPreviewOutcomes from 'modules/market/components/market-preview-outcomes/market-preview-outcomes';
+import MarketBasics from 'modules/market/components/market-basics/market-basics'
+import MarketProperties from 'modules/market/components/market-properties/market-properties'
+import MarketPreviewOutcomes from 'modules/market/components/market-preview-outcomes/market-preview-outcomes'
 
 // import makePath from 'modules/app/helpers/make-path';
 // import makeQuery from 'modules/app/helpers/make-query';

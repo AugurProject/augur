@@ -6,7 +6,7 @@ import Input from 'modules/common/components/input'
 import makePath from 'modules/app/helpers/make-path'
 import { DEFAULT_VIEW } from 'modules/app/constants/views'
 
-import Styles from 'modules/auth/components/auth-login/auth-login.styles';
+import Styles from 'modules/auth/components/auth-login/auth-login.styles'
 
 export default class AuthLogin extends Component {
   constructor(props) {

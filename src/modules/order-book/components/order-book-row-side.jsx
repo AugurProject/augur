@@ -2,8 +2,8 @@ import React from 'react'
 import classNames from 'classnames'
 import ReactTooltip from 'react-tooltip'
 
-import ValueDenomination from 'modules/common/components/value-denomination/value-denomination';
-import NullStateMessage from 'modules/common/components/null-state-message';
+import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
+import NullStateMessage from 'modules/common/components/null-state-message'
 
 import getValue from 'utils/get-value'
 import setShareDenomination from 'utils/set-share-denomination'

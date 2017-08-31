@@ -1,37 +1,37 @@
-import React from 'react';
-import classNames from 'classnames';
-import { Link } from 'react-router-dom';
+import React from 'react'
+import classNames from 'classnames'
+import { Link } from 'react-router-dom'
 
-import ValueDenomination from 'modules/common/components/value-denomination/value-denomination';
+import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 
-import makePath from 'modules/app/helpers/make-path';
-import makeQuery from 'modules/app/helpers/make-query';
+import makePath from 'modules/app/helpers/make-path'
+import makeQuery from 'modules/app/helpers/make-query'
 
-import { MARKET } from 'modules/app/constants/views';
-import { MARKET_ID_PARAM_NAME, MARKET_DESCRIPTION_PARAM_NAME } from 'modules/app/constants/param-names';
+import { MARKET } from 'modules/app/constants/views'
+import { MARKET_ID_PARAM_NAME, MARKET_DESCRIPTION_PARAM_NAME } from 'modules/app/constants/param-names'
 
-import getValue from 'utils/get-value';
-import setShareDenomination from 'utils/set-share-denomination';
-import shareDenominationLabel from 'utils/share-denomination-label';
+import getValue from 'utils/get-value'
+import setShareDenomination from 'utils/set-share-denomination'
+import shareDenominationLabel from 'utils/share-denomination-label'
 
-import Styles from 'modules/market/components/market-properties/market-properties.styles';
+import Styles from 'modules/market/components/market-properties/market-properties.styles'
 
 const MarketProperties = (p) => {
-  const shareVolumeRounded = setShareDenomination(getValue(p, 'volume.rounded'), p.selectedShareDenomination);
-  const shareDenomination = shareDenominationLabel(p.selectedShareDenomination, p.shareDenominations);
+  const shareVolumeRounded = setShareDenomination(getValue(p, 'volume.rounded'), p.selectedShareDenomination)
+  const shareDenomination = shareDenominationLabel(p.selectedShareDenomination, p.shareDenominations)
 
-  let buttonText;
+  let buttonText
 
   if (p.isReported) {
-    buttonText = 'Reported';
+    buttonText = 'Reported'
   } else if (p.isMissedReport) {
-    buttonText = 'Missed Report';
+    buttonText = 'Missed Report'
   } else if (p.isPendingReport) {
-    buttonText = 'Report';
+    buttonText = 'Report'
   } else if (!p.isOpen) {
-    buttonText = 'View';
+    buttonText = 'View'
   } else {
-    buttonText = 'Trade';
+    buttonText = 'Trade'
   }
 
   return (
@@ -75,7 +75,7 @@ const MarketProperties = (p) => {
         }
       </div>
     </article>
-  );
-};
+  )
+}
 
-export default MarketProperties;
+export default MarketProperties

@@ -1,7 +1,7 @@
-import React from 'react';
+import React from 'react'
 // import ValueDenomination from 'modules/common/components/value-denomination/value-denomination';
 
-import Styles from 'modules/market/components/market-preview-outcomes/market-preview-outcomes.styles';
+import Styles from 'modules/market/components/market-preview-outcomes/market-preview-outcomes.styles'
 
 const MarketOutcomes = p => (
   <div className={Styles.MarketPreviewOutcomes}>
