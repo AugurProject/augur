@@ -11,8 +11,8 @@ export default function (tag, location, history) {
     searchParams[TAGS_PARAM_NAME] = tag
     searchParams = makeQuery(searchParams)
 
-    return this.props.history.push({
-      ...this.props.location,
+    return history.push({
+      ...location,
       search: searchParams
     })
   }
@@ -33,8 +33,8 @@ export default function (tag, location, history) {
 
   searchParams = makeQuery(searchParams)
 
-  this.props.history.push({
-    ...this.props.location,
+  history.push({
+    ...location,
     search: searchParams
   })
 }
