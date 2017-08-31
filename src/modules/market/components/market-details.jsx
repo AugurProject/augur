@@ -9,8 +9,8 @@ import ConsensusOutcome from 'modules/market/components/consensus-outcome';
 import EmDash from 'modules/common/components/em-dash';
 
 const MarketDetails = (p) => {
-  const outstandingShares = setShareDenomination(getValue(p, 'outstandingShares.formatted'), p.selectedShareDenomination);
-  const shareDenomination = shareDenominationLabel(p.selectedShareDenomination, p.shareDenominations);
+  const outstandingShares = setShareDenomination(getValue(p, 'outstandingShares.formatted'), p.selectedShareDenomination)
+  const shareDenomination = shareDenominationLabel(p.selectedShareDenomination, p.shareDenominations)
 
   return (
     <div className="market-details market-content-scrollable">
@@ -82,8 +82,8 @@ const MarketDetails = (p) => {
         </div>
       }
     </div>
-  );
-};
+  )
+}
 
 MarketDetails.propTypes = {
   author: PropTypes.string,
@@ -96,17 +96,17 @@ MarketDetails.propTypes = {
   maxValue: PropTypes.string,
   reportedOutcome: PropTypes.string,
   consensus: PropTypes.object
-};
+}
 
-export default MarketDetails;
+export default MarketDetails
 
 function getResolutionNode(resolutionSource) {
-  let resolutionText;
+  let resolutionText
   if (resolutionSource === 'generic') {
-    resolutionText = 'Covered by local, national or international news media';
+    resolutionText = 'Covered by local, national or international news media'
   } else {
-    resolutionText = (<a href={resolutionSource}>{resolutionSource}</a>);
+    resolutionText = (<a href={resolutionSource}>{resolutionSource}</a>)
   }
 
-  return (<span className="property-value">{resolutionText}</span>);
+  return (<span className="property-value">{resolutionText}</span>)
 }

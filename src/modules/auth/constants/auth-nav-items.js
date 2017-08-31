@@ -1,4 +1,4 @@
-import { SIGNUP, LOGIN, IMPORT } from 'modules/app/constants/views';
+import { SIGNUP, LOGIN, IMPORT } from 'modules/app/constants/views'
 
 export const AUTH_NAV_ITEMS = {
   [SIGNUP]: {
@@ -10,4 +10,4 @@ export const AUTH_NAV_ITEMS = {
   [IMPORT]: {
     label: 'Import'
   }
-};
+}

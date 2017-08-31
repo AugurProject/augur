@@ -1,4 +1,4 @@
-import { UPDATE_BRANCH } from 'modules/branch/actions/update-branch';
+import { UPDATE_BRANCH } from 'modules/branch/actions/update-branch'
 
 export default function (branch = {}, action) {
   switch (action.type) {
@@ -6,9 +6,9 @@ export default function (branch = {}, action) {
       return {
         ...branch,
         ...action.branch
-      };
+      }
 
     default:
-      return branch;
+      return branch
   }
 }

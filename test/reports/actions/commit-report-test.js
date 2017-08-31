@@ -1,17 +1,17 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
-import proxyquire from 'proxyquire';
-import sinon from 'sinon';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
+import proxyquire from 'proxyquire'
+import sinon from 'sinon'
+import configureMockStore from 'redux-mock-store'
+import thunk from 'redux-thunk'
 
 describe(`modules/reports/actions/commit-report.js`, () => {
-  proxyquire.noPreserveCache().noCallThru();
-  const middlewares = [thunk];
-  const mockStore = configureMockStore(middlewares);
+  proxyquire.noPreserveCache().noCallThru()
+  const middlewares = [thunk]
+  const mockStore = configureMockStore(middlewares)
   const test = (t) => {
     it(t.description, () => {
-      const store = mockStore(t.state);
+      const store = mockStore(t.state)
       const AugurJS = {
         augur: {
           reporting: {
@@ -20,30 +20,30 @@ describe(`modules/reports/actions/commit-report.js`, () => {
             format: { fixReport: () => {} }
           }
         }
-      };
-      const BytesToHex = {};
-      const NextReportPage = {};
-      const ReportEncryption = {};
+      }
+      const BytesToHex = {}
+      const NextReportPage = {}
+      const ReportEncryption = {}
       const action = proxyquire('../../../src/modules/reports/actions/commit-report.js', {
         '../../../services/augurjs': AugurJS,
         '../../../utils/bytes-to-hex': BytesToHex,
         './next-report-page': NextReportPage,
         './report-encryption': ReportEncryption
-      });
-      AugurJS.augur.reporting.format.fixReport = sinon.stub().returns('0xde0b6b3a7640000');
-      AugurJS.augur.reporting.crypto.makeHash = sinon.stub().returns('0xdeadbeef');
-      ReportEncryption.encryptReport = sinon.stub().returns({ report: 0, salt: 0 });
+      })
+      AugurJS.augur.reporting.format.fixReport = sinon.stub().returns('0xde0b6b3a7640000')
+      AugurJS.augur.reporting.crypto.makeHash = sinon.stub().returns('0xdeadbeef')
+      ReportEncryption.encryptReport = sinon.stub().returns({ report: 0, salt: 0 })
       sinon.stub(AugurJS.augur.reporting, 'submitReportHash', (o) => {
-        store.dispatch({ type: 'AUGURJS_SUBMIT_REPORT_HASH', params: JSON.parse(JSON.stringify(o)) });
-        o.onSuccess({ hash: '0xdeadbeef', callReturn: '1' });
-      });
-      BytesToHex.bytesToHex = sinon.stub().returns('0x1337');
-      NextReportPage.nextReportPage = sinon.stub().returns({ type: 'NEXT_REPORT_PAGE' });
-      store.dispatch(action.commitReport(t.params.market, t.params.reportedOutcomeID, t.params.isUnethical, t.params.isIndeterminate));
-      t.assertions(store.getActions());
-      store.clearActions();
-    });
-  };
+        store.dispatch({ type: 'AUGURJS_SUBMIT_REPORT_HASH', params: JSON.parse(JSON.stringify(o)) })
+        o.onSuccess({ hash: '0xdeadbeef', callReturn: '1' })
+      })
+      BytesToHex.bytesToHex = sinon.stub().returns('0x1337')
+      NextReportPage.nextReportPage = sinon.stub().returns({ type: 'NEXT_REPORT_PAGE' })
+      store.dispatch(action.commitReport(t.params.market, t.params.reportedOutcomeID, t.params.isUnethical, t.params.isIndeterminate))
+      t.assertions(store.getActions())
+      store.clearActions()
+    })
+  }
   test({
     description: 'commit to report outcome 1 for binary event',
     params: {
@@ -115,9 +115,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         }
       }, {
         type: 'NEXT_REPORT_PAGE'
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: 'commit to report outcome 2 for binary event',
     params: {
@@ -189,9 +189,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         }
       }, {
         type: 'NEXT_REPORT_PAGE'
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: 'commit to report outcome 5 for categorical event',
     params: {
@@ -263,9 +263,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         }
       }, {
         type: 'NEXT_REPORT_PAGE'
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: 'commit to report outcome 1.2345 for scalar event',
     params: {
@@ -337,9 +337,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         }
       }, {
         type: 'NEXT_REPORT_PAGE'
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: 'commit to report unethical outcome 1.2345 for scalar event',
     params: {
@@ -411,9 +411,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         }
       }, {
         type: 'NEXT_REPORT_PAGE'
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: 'commit to report indeterminate for binary event',
     params: {
@@ -485,9 +485,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         }
       }, {
         type: 'NEXT_REPORT_PAGE'
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: 'commit to report indeterminate for categorical event',
     params: {
@@ -559,9 +559,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         }
       }, {
         type: 'NEXT_REPORT_PAGE'
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: 'commit to report indeterminate for scalar event',
     params: {
@@ -633,9 +633,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         }
       }, {
         type: 'NEXT_REPORT_PAGE'
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: 'commit to report unethical and indeterminate for binary event',
     params: {
@@ -707,9 +707,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         }
       }, {
         type: 'NEXT_REPORT_PAGE'
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: 'commit to report unethical and indeterminate for categorical event',
     params: {
@@ -781,9 +781,9 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         }
       }, {
         type: 'NEXT_REPORT_PAGE'
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: 'commit to report unethical and indeterminate for scalar event',
     params: {
@@ -855,7 +855,7 @@ describe(`modules/reports/actions/commit-report.js`, () => {
         }
       }, {
         type: 'NEXT_REPORT_PAGE'
-      }]);
+      }])
     }
-  });
-});
+  })
+})

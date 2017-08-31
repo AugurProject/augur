@@ -1,4 +1,4 @@
-export const ADD_CLOSE_POSITION_TRADE_GROUP = 'ADD_CLOSE_POSITION_TRADE_GROUP_ID';
+export const ADD_CLOSE_POSITION_TRADE_GROUP = 'ADD_CLOSE_POSITION_TRADE_GROUP_ID'
 
 export function addClosePositionTradeGroup(marketID, outcomeID, tradeGroupID) {
   return {
@@ -6,5 +6,5 @@ export function addClosePositionTradeGroup(marketID, outcomeID, tradeGroupID) {
     marketID,
     outcomeID,
     tradeGroupID
-  };
+  }
 }

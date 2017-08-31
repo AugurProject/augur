@@ -1,9 +1,9 @@
-import { assert } from 'chai';
-import { abi } from 'services/augurjs';
+import { assert } from 'chai'
+import { abi } from 'services/augurjs'
 
-export { BINARY, SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types';
-export { BUY, SELL } from 'modules/trade/constants/types';
-export { BID, ASK } from 'modules/bids-asks/constants/bids-asks-types';
+export { BINARY, SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types'
+export { BUY, SELL } from 'modules/trade/constants/types'
+export { BID, ASK } from 'modules/bids-asks/constants/bids-asks-types'
 
 export const tradeTestState = {
   loginAccount: {
@@ -194,7 +194,7 @@ export const tradeTestState = {
       }
     }
   },
-};
+}
 
 export const tradeConstOrderBooks = {
   testBinaryMarketID: {
@@ -463,106 +463,106 @@ export const tradeConstOrderBooks = {
       }
     }
   }
-};
+}
 // lifted directly from augur.js with a slight change to use abi.bignum instead of BigNumber
 const filterByPriceAndOutcomeAndUserSortByPrice = (orders, traderOrderType, limitPrice, outcomeId, userAddress) => {
-  if (!orders) return [];
-  const isMarketOrder = limitPrice === null || limitPrice === undefined;
+  if (!orders) return []
+  const isMarketOrder = limitPrice === null || limitPrice === undefined
   return Object.keys(orders)
 		.map(orderId => orders[orderId])
 		.filter((order) => {
-  let isMatchingPrice;
+  let isMatchingPrice
   if (isMarketOrder) {
-    isMatchingPrice = true;
+    isMatchingPrice = true
   } else {
-    isMatchingPrice = traderOrderType === 'buy' ? new abi.bignum(order.price, 10).lte(limitPrice) : new abi.bignum(order.price, 10).gte(limitPrice); // eslint-disable-line new-cap
+    isMatchingPrice = traderOrderType === 'buy' ? new abi.bignum(order.price, 10).lte(limitPrice) : new abi.bignum(order.price, 10).gte(limitPrice) // eslint-disable-line new-cap
   }
-  return order.outcome === outcomeId && order.owner !== userAddress && isMatchingPrice;
+  return order.outcome === outcomeId && order.owner !== userAddress && isMatchingPrice
 })
-		.sort((order1, order2) => (traderOrderType === 'buy' ? order1.price - order2.price : order2.price - order1.price));
-};
+		.sort((order1, order2) => (traderOrderType === 'buy' ? order1.price - order2.price : order2.price - order1.price))
+}
 
 // direct copy of calculate-trade-ids helper function but without calling augur.js
 export const stubCalculateBuyTradeIDs = (marketID, outcomeID, limitPrice, orderBooks, takerAddress) => {
-  const orders = (orderBooks[marketID] && orderBooks[marketID].sell) || {};
-  return filterByPriceAndOutcomeAndUserSortByPrice(orders, 'buy', limitPrice, outcomeID, takerAddress).map(order => order.id);
-};
+  const orders = (orderBooks[marketID] && orderBooks[marketID].sell) || {}
+  return filterByPriceAndOutcomeAndUserSortByPrice(orders, 'buy', limitPrice, outcomeID, takerAddress).map(order => order.id)
+}
 
 // direct copy of calculate-trade-ids helper function but without calling augur.js
 export const stubCalculateSellTradeIDs = (marketID, outcomeID, limitPrice, orderBooks, takerAddress) => {
-  const orders = (orderBooks[marketID] && orderBooks[marketID].buy) || {};
-  return filterByPriceAndOutcomeAndUserSortByPrice(orders, 'sell', limitPrice, outcomeID, takerAddress).map(order => order.id);
-};
+  const orders = (orderBooks[marketID] && orderBooks[marketID].buy) || {}
+  return filterByPriceAndOutcomeAndUserSortByPrice(orders, 'sell', limitPrice, outcomeID, takerAddress).map(order => order.id)
+}
 
 export const stubLoadAccountTrades = (marketID, cb) => {
-  assert.isString(marketID, `didn't pass a marketID as a string to loadAccountTrades`);
+  assert.isString(marketID, `didn't pass a marketID as a string to loadAccountTrades`)
 	// originally some of my tests returned the order books but it turns out this isn't required, left this here just incase...
 	// cb(undefined, store.getState().orderBooks[marketID]);
-  cb();
-  return { type: 'LOAD_ACCOUNT_TRADES', marketID };
-};
+  cb()
+  return { type: 'LOAD_ACCOUNT_TRADES', marketID }
+}
 
 export const updateTradesInProgressActionShapeAssertion = (UpdateTradesInProgressAction) => {
-  const Data = UpdateTradesInProgressAction.data;
-  const tradeDetails = Data.details;
-  const action = tradeDetails.tradeActions[0];
+  const Data = UpdateTradesInProgressAction.data
+  const tradeDetails = Data.details
+  const action = tradeDetails.tradeActions[0]
 
-  assert.isDefined(UpdateTradesInProgressAction.type, `UpdateTradesInProgressAction.type isn't defined`);
-  assert.isString(UpdateTradesInProgressAction.type, `UpdateTradesInProgressAction.type isn't a String`);
-  assert.isDefined(UpdateTradesInProgressAction.data, `UpdateTradesInProgressAction.data isn't defined`);
-  assert.isObject(UpdateTradesInProgressAction.data, `UpdateTradesInProgressAction.data isn't a Object`);
+  assert.isDefined(UpdateTradesInProgressAction.type, `UpdateTradesInProgressAction.type isn't defined`)
+  assert.isString(UpdateTradesInProgressAction.type, `UpdateTradesInProgressAction.type isn't a String`)
+  assert.isDefined(UpdateTradesInProgressAction.data, `UpdateTradesInProgressAction.data isn't defined`)
+  assert.isObject(UpdateTradesInProgressAction.data, `UpdateTradesInProgressAction.data isn't a Object`)
 
-  assert.isDefined(Data.marketID, `UpdateTradesInProgressAction.data.marketID isn't defined`);
-  assert.isString(Data.marketID, `UpdateTradesInProgressAction.data.marketID isn't a String`);
-  assert.isDefined(Data.outcomeID, `UpdateTradesInProgressAction.data.outcomeID isn't defined`);
-  assert.isString(Data.outcomeID, `UpdateTradesInProgressAction.data.outcomeID isn't a String`);
-  assert.isDefined(Data.details, `UpdateTradesInProgressAction.data.details isn't defined`);
-  assert.isObject(Data.details, `UpdateTradesInProgressAction.data.details isn't a Object`);
+  assert.isDefined(Data.marketID, `UpdateTradesInProgressAction.data.marketID isn't defined`)
+  assert.isString(Data.marketID, `UpdateTradesInProgressAction.data.marketID isn't a String`)
+  assert.isDefined(Data.outcomeID, `UpdateTradesInProgressAction.data.outcomeID isn't defined`)
+  assert.isString(Data.outcomeID, `UpdateTradesInProgressAction.data.outcomeID isn't a String`)
+  assert.isDefined(Data.details, `UpdateTradesInProgressAction.data.details isn't defined`)
+  assert.isObject(Data.details, `UpdateTradesInProgressAction.data.details isn't a Object`)
 
-  assert.isDefined(tradeDetails.side, `tradeDetails.side isn't defined`);
-  assert.isString(tradeDetails.side, `tradeDetails.side isn't a string`);
-  assert.isDefined(tradeDetails.numShares, `tradeDetails.numShares isn't defined`);
-  assert.isString(tradeDetails.numShares, `tradeDetails.numShares isn't a string`);
-  assert.isDefined(tradeDetails.limitPrice, `tradeDetails.limitPrice isn't defined`);
-  assert.isString(tradeDetails.limitPrice, `tradeDetails.limitPrice isn't a string`);
-  assert.isDefined(tradeDetails.totalFee, `tradeDetails.totalFee isn't defined`);
-  assert.isString(tradeDetails.totalFee, `tradeDetails.totalFee isn't a string`);
-  assert.isDefined(tradeDetails.totalCost, `tradeDetails.totalCost isn't defined`);
-  assert.isString(tradeDetails.totalCost, `tradeDetails.totalCost isn't a string`);
-  assert.isDefined(tradeDetails.tradingFeesEth, `tradeDetails.tradingFeesEth isn't defined`);
-  assert.isString(tradeDetails.tradingFeesEth, `tradeDetails.tradingFeesEth isn't a string`);
-  assert.isDefined(tradeDetails.gasFeesRealEth, `tradeDetails.gasFeesRealEth isn't defined`);
-  assert.isString(tradeDetails.gasFeesRealEth, `tradeDetails.gasFeesRealEth isn't a string`);
-  assert.isDefined(tradeDetails.feePercent, `tradeDetails.feePercent isn't defined`);
-  assert.isString(tradeDetails.feePercent, `tradeDetails.feePercent isn't a string`);
+  assert.isDefined(tradeDetails.side, `tradeDetails.side isn't defined`)
+  assert.isString(tradeDetails.side, `tradeDetails.side isn't a string`)
+  assert.isDefined(tradeDetails.numShares, `tradeDetails.numShares isn't defined`)
+  assert.isString(tradeDetails.numShares, `tradeDetails.numShares isn't a string`)
+  assert.isDefined(tradeDetails.limitPrice, `tradeDetails.limitPrice isn't defined`)
+  assert.isString(tradeDetails.limitPrice, `tradeDetails.limitPrice isn't a string`)
+  assert.isDefined(tradeDetails.totalFee, `tradeDetails.totalFee isn't defined`)
+  assert.isString(tradeDetails.totalFee, `tradeDetails.totalFee isn't a string`)
+  assert.isDefined(tradeDetails.totalCost, `tradeDetails.totalCost isn't defined`)
+  assert.isString(tradeDetails.totalCost, `tradeDetails.totalCost isn't a string`)
+  assert.isDefined(tradeDetails.tradingFeesEth, `tradeDetails.tradingFeesEth isn't defined`)
+  assert.isString(tradeDetails.tradingFeesEth, `tradeDetails.tradingFeesEth isn't a string`)
+  assert.isDefined(tradeDetails.gasFeesRealEth, `tradeDetails.gasFeesRealEth isn't defined`)
+  assert.isString(tradeDetails.gasFeesRealEth, `tradeDetails.gasFeesRealEth isn't a string`)
+  assert.isDefined(tradeDetails.feePercent, `tradeDetails.feePercent isn't defined`)
+  assert.isString(tradeDetails.feePercent, `tradeDetails.feePercent isn't a string`)
 
-  assert.isDefined(tradeDetails.tradeActions, `tradeDetails.tradeActions isn't defined`);
-  assert.isArray(tradeDetails.tradeActions, `tradeDetails.tradeActions isn't an array`);
+  assert.isDefined(tradeDetails.tradeActions, `tradeDetails.tradeActions isn't defined`)
+  assert.isArray(tradeDetails.tradeActions, `tradeDetails.tradeActions isn't an array`)
 
-  assert.isDefined(action, `tradeDetails.tradeActions[0] isn't defined`);
-  assert.isObject(action, `tradeDetails.tradeActions[0] isn't an object`);
+  assert.isDefined(action, `tradeDetails.tradeActions[0] isn't defined`)
+  assert.isObject(action, `tradeDetails.tradeActions[0] isn't an object`)
 
-  assert.isDefined(action.action, `tradeDetails.tradeActions[0].action isn't defined`);
-  assert.isString(action.action, `tradeDetails.tradeActions[0].action isn't a string`);
+  assert.isDefined(action.action, `tradeDetails.tradeActions[0].action isn't defined`)
+  assert.isString(action.action, `tradeDetails.tradeActions[0].action isn't a string`)
 
-  assert.isDefined(action.shares, `tradeDetails.tradeActions[0].shares isn't defined`);
-  assert.isString(action.shares, `tradeDetails.tradeActions[0].shares isn't a string`);
+  assert.isDefined(action.shares, `tradeDetails.tradeActions[0].shares isn't defined`)
+  assert.isString(action.shares, `tradeDetails.tradeActions[0].shares isn't a string`)
 
-  assert.isDefined(action.gasEth, `tradeDetails.tradeActions[0].gasEth isn't defined`);
-  assert.isString(action.gasEth, `tradeDetails.tradeActions[0].gasEth isn't a string`);
+  assert.isDefined(action.gasEth, `tradeDetails.tradeActions[0].gasEth isn't defined`)
+  assert.isString(action.gasEth, `tradeDetails.tradeActions[0].gasEth isn't a string`)
 
-  assert.isDefined(action.feeEth, `tradeDetails.tradeActions[0].feeEth isn't defined`);
-  assert.isString(action.feeEth, `tradeDetails.tradeActions[0].feeEth isn't a string`);
+  assert.isDefined(action.feeEth, `tradeDetails.tradeActions[0].feeEth isn't defined`)
+  assert.isString(action.feeEth, `tradeDetails.tradeActions[0].feeEth isn't a string`)
 
-  assert.isDefined(action.feePercent, `tradeDetails.tradeActions[0].feePercent isn't defined`);
-  assert.isString(action.feePercent, `tradeDetails.tradeActions[0].feePercent isn't a string`);
+  assert.isDefined(action.feePercent, `tradeDetails.tradeActions[0].feePercent isn't defined`)
+  assert.isString(action.feePercent, `tradeDetails.tradeActions[0].feePercent isn't a string`)
 
-  assert.isDefined(action.costEth, `tradeDetails.tradeActions[0].costEth isn't defined`);
-  assert.isString(action.costEth, `tradeDetails.tradeActions[0].costEth isn't a string`);
+  assert.isDefined(action.costEth, `tradeDetails.tradeActions[0].costEth isn't defined`)
+  assert.isString(action.costEth, `tradeDetails.tradeActions[0].costEth isn't a string`)
 
-  assert.isDefined(action.avgPrice, `tradeDetails.tradeActions[0].avgPrice isn't defined`);
-  assert.isString(action.avgPrice, `tradeDetails.tradeActions[0].avgPrice isn't a string`);
+  assert.isDefined(action.avgPrice, `tradeDetails.tradeActions[0].avgPrice isn't defined`)
+  assert.isString(action.avgPrice, `tradeDetails.tradeActions[0].avgPrice isn't a string`)
 
-  assert.isDefined(action.noFeePrice, `tradeDetails.tradeActions[0].noFeePrice isn't defined`);
-  assert.isString(action.noFeePrice, `tradeDetails.tradeActions[0].noFeePrice isn't a string`);
-};
+  assert.isDefined(action.noFeePrice, `tradeDetails.tradeActions[0].noFeePrice isn't defined`)
+  assert.isString(action.noFeePrice, `tradeDetails.tradeActions[0].noFeePrice isn't a string`)
+}

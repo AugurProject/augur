@@ -1,22 +1,22 @@
-import { abi, augur } from 'services/augurjs';
-import { updateAssets } from 'modules/auth/actions/update-assets';
-import { addNotification } from 'modules/notifications/actions/update-notifications';
+import { abi, augur } from 'services/augurjs'
+import { updateAssets } from 'modules/auth/actions/update-assets'
+import { addNotification } from 'modules/notifications/actions/update-notifications'
 
-import trimString from 'utils/trim-string';
+import trimString from 'utils/trim-string'
 
-import { ETH, REP } from 'modules/account/constants/asset-types';
+import { ETH, REP } from 'modules/account/constants/asset-types'
 
 export function transferFunds(amount, currency, toAddress) {
   return (dispatch, getState) => {
-    const { branch, loginAccount } = getState();
-    const fromAddress = loginAccount.address;
-    const to = abi.format_address(toAddress);
-    const onSent = r => console.log('transfer', currency, 'sent:', r);
+    const { branch, loginAccount } = getState()
+    const fromAddress = loginAccount.address
+    const to = abi.format_address(toAddress)
+    const onSent = r => console.log('transfer', currency, 'sent:', r)
     const onSuccess = (r) => {
-      dispatch(updateAssets());
-      console.log('transfer', currency, 'success:', r);
-    };
-    const onFailed = e => console.error('transfer', currency, 'failed:', e);
+      dispatch(updateAssets())
+      console.log('transfer', currency, 'success:', r)
+    }
+    const onFailed = e => console.error('transfer', currency, 'failed:', e)
     switch (currency) {
       case ETH:
         return augur.assets.sendEther({
@@ -30,7 +30,7 @@ export function transferFunds(amount, currency, toAddress) {
               title: `Transfer Ether -- Pending`,
               description: `${amount} ETH -> ${trimString(to)}`,
               timestamp: parseInt(Date.now() / 1000, 10),
-            }));
+            }))
           },
           onSuccess: (tx) => {
             dispatch(addNotification({
@@ -38,8 +38,8 @@ export function transferFunds(amount, currency, toAddress) {
               title: `Transfer Ether -- Success`,
               description: `${amount} ETH -> ${trimString(to)}`,
               timestamp: parseInt(Date.now() / 1000, 10),
-            }));
-            dispatch(updateAssets);
+            }))
+            dispatch(updateAssets)
           },
           onFailed: (tx) => {
             dispatch(addNotification({
@@ -47,9 +47,9 @@ export function transferFunds(amount, currency, toAddress) {
               title: `Transfer Ether -- Failed`,
               description: `${amount} ETH -> ${trimString(to)}`,
               timestamp: parseInt(Date.now() / 1000, 10),
-            }));
+            }))
           }
-        });
+        })
       case REP:
         return augur.assets.sendReputation({
           _signer: loginAccount.privateKey,
@@ -59,9 +59,9 @@ export function transferFunds(amount, currency, toAddress) {
           onSent,
           onSuccess,
           onFailed
-        });
+        })
       default:
-        console.error('transferFunds: unknown currency', currency);
+        console.error('transferFunds: unknown currency', currency)
     }
-  };
+  }
 }

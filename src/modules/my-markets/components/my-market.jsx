@@ -43,7 +43,7 @@ const Market = p => (
       </div>
     </div>
   </article>
-);
+)
 
 Market.propTypes = {
   endDate: PropTypes.object.isRequired,
@@ -52,6 +52,6 @@ Market.propTypes = {
   volume: PropTypes.object.isRequired,
   numberOfTrades: PropTypes.object.isRequired,
   averageTradeSize: PropTypes.object.isRequired
-};
+}
 
-export default Market;
+export default Market

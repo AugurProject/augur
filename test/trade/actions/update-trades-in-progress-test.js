@@ -1,20 +1,20 @@
-import { describe, it, beforeEach, afterEach } from 'mocha';
-import { assert } from 'chai';
-import proxyquire from 'proxyquire';
-import sinon from 'sinon';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import testState from 'test/testState';
-import { augur } from 'services/augurjs';
-import { BUY, SELL, updateTradesInProgressActionShapeAssertion, tradeTestState } from 'test/trade/constants';
+import { describe, it, beforeEach, afterEach } from 'mocha'
+import { assert } from 'chai'
+import proxyquire from 'proxyquire'
+import sinon from 'sinon'
+import configureMockStore from 'redux-mock-store'
+import thunk from 'redux-thunk'
+import testState from 'test/testState'
+import { augur } from 'services/augurjs'
+import { BUY, SELL, updateTradesInProgressActionShapeAssertion, tradeTestState } from 'test/trade/constants'
 
 describe('modules/trade/actions/update-trades-in-progress.js', () => {
   describe('should update a trade in progress for a binary market', () => {
-    proxyquire.noPreserveCache();
-    const middlewares = [thunk];
-    const mockStore = configureMockStore(middlewares);
-    const state = Object.assign({}, testState, tradeTestState);
-    const store = mockStore(state);
+    proxyquire.noPreserveCache()
+    const middlewares = [thunk]
+    const mockStore = configureMockStore(middlewares)
+    const state = Object.assign({}, testState, tradeTestState)
+    const store = mockStore(state)
     const mockAugurJS = {
       augur: {
         trading: {
@@ -25,33 +25,33 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
         api: { Markets: { getParticipantSharesPurchased: () => {} } },
         rpc: { gasPrice: 20000000000 }
       }
-    };
-    mockAugurJS.augur.api.Markets.getParticipantSharesPurchased = sinon.stub().yields('0');
-    const mockSelectMarket = {};
-    mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData.testBinaryMarketID);
+    }
+    mockAugurJS.augur.api.Markets.getParticipantSharesPurchased = sinon.stub().yields('0')
+    const mockSelectMarket = {}
+    mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData.testBinaryMarketID)
 
     const action = proxyquire('../../../src/modules/trade/actions/update-trades-in-progress', {
       '../../../store': store,
       '../../../services/augurjs': mockAugurJS,
       '../../market/selectors/market': mockSelectMarket
-    });
+    })
 
     beforeEach(() => {
-      store.clearActions();
-      augur.rpc.gasPrice = 20000000000;
-    });
+      store.clearActions()
+      augur.rpc.gasPrice = 20000000000
+    })
 
     afterEach(() => {
-      store.clearActions();
-    });
+      store.clearActions()
+    })
 
     it('should pass shape tests for buying 10 shares of YES at the default limitPrice', () => {
-      store.dispatch(action.updateTradesInProgress('testBinaryMarketID', '2', BUY, '10.0', undefined, undefined));
-      updateTradesInProgressActionShapeAssertion(store.getActions()[0]);
-    });
+      store.dispatch(action.updateTradesInProgress('testBinaryMarketID', '2', BUY, '10.0', undefined, undefined))
+      updateTradesInProgressActionShapeAssertion(store.getActions()[0])
+    })
 
     it('should pass calculation tests for buying 10 shares of YES at the default limitPrice', () => {
-      store.dispatch(action.updateTradesInProgress('testBinaryMarketID', '2', BUY, '10.0', undefined, undefined));
+      store.dispatch(action.updateTradesInProgress('testBinaryMarketID', '2', BUY, '10.0', undefined, undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
@@ -78,16 +78,16 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             feePercent: '0.2'
           }
         }
-      }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`);
-    });
+      }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`)
+    })
 
     it('should pass shape tests for Selling 10 shares of YES at the default limitPrice', () => {
-      store.dispatch(action.updateTradesInProgress('testBinaryMarketID', '2', SELL, '10.0', undefined, undefined));
-      updateTradesInProgressActionShapeAssertion(store.getActions()[0]);
-    });
+      store.dispatch(action.updateTradesInProgress('testBinaryMarketID', '2', SELL, '10.0', undefined, undefined))
+      updateTradesInProgressActionShapeAssertion(store.getActions()[0])
+    })
 
     it('should pass calculation tests for selling 10 shares of YES at the default limitPrice', () => {
-      store.dispatch(action.updateTradesInProgress('testBinaryMarketID', '2', SELL, '10.0', undefined, undefined));
+      store.dispatch(action.updateTradesInProgress('testBinaryMarketID', '2', SELL, '10.0', undefined, undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
@@ -114,11 +114,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             feePercent: '0.099800399201596806'
           }
         }
-      }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`);
-    });
+      }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`)
+    })
 
     it('should reset the tradeDetails object if 0 shares are passed in as a buy', () => {
-      store.dispatch(action.updateTradesInProgress('testBinaryMarketID', '2', BUY, '0', undefined, undefined));
+      store.dispatch(action.updateTradesInProgress('testBinaryMarketID', '2', BUY, '0', undefined, undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
@@ -132,11 +132,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             totalCost: 0
           }
         }
-      }, `Didn't clear the tradeDetails object`);
-    });
+      }, `Didn't clear the tradeDetails object`)
+    })
 
     it('should handle the tradeDetails object if no shares are passed in as a buy but a limitPrice is set.', () => {
-      store.dispatch(action.updateTradesInProgress('testBinaryMarketID', '2', BUY, undefined, '0.5', undefined));
+      store.dispatch(action.updateTradesInProgress('testBinaryMarketID', '2', BUY, undefined, '0.5', undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
@@ -150,8 +150,8 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             totalCost: 0
           }
         }
-      }, `Didn't return the correct tradeDetails object based on input`);
-    });
+      }, `Didn't return the correct tradeDetails object based on input`)
+    })
 
     it('should handle the tradeDetails object if no shares are passed in as a buy but a limitPrice is changed when a tradesInProgress is defined for an outcome.', () => {
 			// set the current Trade in Progress for BUY to a 10 share .5 limit buy order
@@ -178,8 +178,8 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             feePercent: '0.2'
           }
         }
-      };
-      store.dispatch(action.updateTradesInProgress('testBinaryMarketID', '2', BUY, undefined, '0.15', undefined));
+      }
+      store.dispatch(action.updateTradesInProgress('testBinaryMarketID', '2', BUY, undefined, '0.15', undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
@@ -206,12 +206,12 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             feePercent: '0.102'
           }
         }
-      }, `Didn't update the tradeDetails object to the new calcs given new limit`);
-    });
+      }, `Didn't update the tradeDetails object to the new calcs given new limit`)
+    })
 
     it('should handle clearing out a trade in progress if limitPrice is set to 0 on a trade ready to be placed', () => {
 			// marketID, outcomeID, side, numShares, limitPrice, maxCost
-      store.dispatch(action.updateTradesInProgress('testBinaryMarketID', '2', BUY, undefined, '0', undefined));
+      store.dispatch(action.updateTradesInProgress('testBinaryMarketID', '2', BUY, undefined, '0', undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
@@ -238,11 +238,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             feePercent: 'NaN'
           }
         }
-      }, "Didn't produce the expected tradeDetails object");
-    });
+      }, "Didn't produce the expected tradeDetails object")
+    })
 
     it('should handle the tradeDetails object if limitPrice is unchanged but share number changes', () => {
-      store.dispatch(action.updateTradesInProgress('testBinaryMarketID', '2', BUY, '25', undefined, undefined));
+      store.dispatch(action.updateTradesInProgress('testBinaryMarketID', '2', BUY, '25', undefined, undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
@@ -269,11 +269,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             feePercent: '0.2'
           }
         }
-      }, "Didn't produce the expected tradeDetails object");
-    });
+      }, "Didn't produce the expected tradeDetails object")
+    })
 
     it('should handle the tradeDetails object if limitPrice is unchanged but share number changes to negative (should default to the positive version of the numShares: -25 becomes 25.)', () => {
-      store.dispatch(action.updateTradesInProgress('testBinaryMarketID', '2', BUY, '-25', undefined, undefined));
+      store.dispatch(action.updateTradesInProgress('testBinaryMarketID', '2', BUY, '-25', undefined, undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
@@ -300,16 +300,16 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             feePercent: '0.2'
           }
         }
-      }, "Didn't produce the expected tradeDetails object");
-    });
-  });
+      }, "Didn't produce the expected tradeDetails object")
+    })
+  })
 
   describe('should update a trade in progress for a categorical market', () => {
-    proxyquire.noPreserveCache();
-    const middlewares = [thunk];
-    const mockStore = configureMockStore(middlewares);
-    const state = Object.assign({}, testState, tradeTestState);
-    const store = mockStore(state);
+    proxyquire.noPreserveCache()
+    const middlewares = [thunk]
+    const mockStore = configureMockStore(middlewares)
+    const state = Object.assign({}, testState, tradeTestState)
+    const store = mockStore(state)
     const mockAugurJS = {
       augur: {
         trading: {
@@ -320,32 +320,32 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
         api: { Markets: { getParticipantSharesPurchased: () => {} } },
         rpc: { gasPrice: 20000000000 }
       }
-    };
-    mockAugurJS.augur.api.Markets.getParticipantSharesPurchased = sinon.stub().yields('0');
-    const mockSelectMarket = {};
-    mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData.testCategoricalMarketID);
+    }
+    mockAugurJS.augur.api.Markets.getParticipantSharesPurchased = sinon.stub().yields('0')
+    const mockSelectMarket = {}
+    mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData.testCategoricalMarketID)
 
     const action = proxyquire('../../../src/modules/trade/actions/update-trades-in-progress', {
       '../../../store': store,
       '../../../services/augurjs': mockAugurJS,
       '../../market/selectors/market': mockSelectMarket
-    });
+    })
 
     beforeEach(() => {
-      store.clearActions();
-    });
+      store.clearActions()
+    })
 
     afterEach(() => {
-      store.clearActions();
-    });
+      store.clearActions()
+    })
 
     it('should pass shape tests for buying 10 shares of Outcome 1 at the default limitPrice', () => {
-      store.dispatch(action.updateTradesInProgress('testCategoricalMarketID', '1', BUY, '10.0', undefined, undefined));
-      updateTradesInProgressActionShapeAssertion(store.getActions()[0]);
-    });
+      store.dispatch(action.updateTradesInProgress('testCategoricalMarketID', '1', BUY, '10.0', undefined, undefined))
+      updateTradesInProgressActionShapeAssertion(store.getActions()[0])
+    })
 
     it('should pass calculation tests for buying 10 shares of Outcome 1 at the default limitPrice', () => {
-      store.dispatch(action.updateTradesInProgress('testCategoricalMarketID', '1', BUY, '10.0', undefined, undefined));
+      store.dispatch(action.updateTradesInProgress('testCategoricalMarketID', '1', BUY, '10.0', undefined, undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
@@ -372,16 +372,16 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             feePercent: '0.0999999999999999'
           }
         }
-      }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`);
-    });
+      }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`)
+    })
 
     it('should pass shape tests for Selling 10 shares of Outcome1 at the default limitPrice', () => {
-      store.dispatch(action.updateTradesInProgress('testCategoricalMarketID', '1', SELL, '10.0', undefined, undefined));
-      updateTradesInProgressActionShapeAssertion(store.getActions()[0]);
-    });
+      store.dispatch(action.updateTradesInProgress('testCategoricalMarketID', '1', SELL, '10.0', undefined, undefined))
+      updateTradesInProgressActionShapeAssertion(store.getActions()[0])
+    })
 
     it('should pass calculation tests for selling 10 shares of Outcome1 at the default limitPrice', () => {
-      store.dispatch(action.updateTradesInProgress('testCategoricalMarketID', '1', SELL, '10.0', undefined, undefined));
+      store.dispatch(action.updateTradesInProgress('testCategoricalMarketID', '1', SELL, '10.0', undefined, undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
@@ -408,11 +408,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             feePercent: '0.0499500499500499'
           }
         }
-      }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`);
-    });
+      }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`)
+    })
 
     it('should reset the tradeDetails object if 0 shares are passed in as a buy', () => {
-      store.dispatch(action.updateTradesInProgress('testCategoricalMarketID', '1', BUY, '0', undefined, undefined));
+      store.dispatch(action.updateTradesInProgress('testCategoricalMarketID', '1', BUY, '0', undefined, undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
@@ -426,11 +426,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             totalCost: 0
           }
         }
-      }, `Didn't clear the tradeDetails object`);
-    });
+      }, `Didn't clear the tradeDetails object`)
+    })
 
     it('should handle the tradeDetails object if no shares are passed in as a buy but a limitPrice is set.', () => {
-      store.dispatch(action.updateTradesInProgress('testCategoricalMarketID', '1', BUY, undefined, '0.5', undefined));
+      store.dispatch(action.updateTradesInProgress('testCategoricalMarketID', '1', BUY, undefined, '0.5', undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
@@ -444,8 +444,8 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             totalCost: 0
           }
         }
-      }, `Didn't return the correct tradeDetails object based on input`);
-    });
+      }, `Didn't return the correct tradeDetails object based on input`)
+    })
 
     it('should handle the tradeDetails object if no shares are passed in as a buy but a limitPrice is changed when a tradesInProgress is defined for an outcome.', () => {
 			// set the current Trade in Progress for BUY to a 10 share .5 limit buy order
@@ -474,8 +474,8 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             feePercent: '0.099800399201596707'
           }
         }
-      };
-      store.dispatch(action.updateTradesInProgress('testCategoricalMarketID', '1', BUY, undefined, '0.15', undefined));
+      }
+      store.dispatch(action.updateTradesInProgress('testCategoricalMarketID', '1', BUY, undefined, '0.15', undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
@@ -502,11 +502,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             feePercent: '0.050999999999999867'
           }
         }
-      }, `Didn't update the tradeDetails object to the new calcs given new limit`);
-    });
+      }, `Didn't update the tradeDetails object to the new calcs given new limit`)
+    })
 
     it('should handle clearing out a trade in progress if limitPrice is set to 0 on a trade ready to be placed', () => {
-      store.dispatch(action.updateTradesInProgress('testCategoricalMarketID', '1', BUY, undefined, '0', undefined));
+      store.dispatch(action.updateTradesInProgress('testCategoricalMarketID', '1', BUY, undefined, '0', undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
@@ -533,11 +533,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             feePercent: 'NaN'
           }
         }
-      }, "Didn't produce the expected tradeDetails object");
-    });
+      }, "Didn't produce the expected tradeDetails object")
+    })
 
     it('should handle the tradeDetails object if limitPrice is unchanged but share number changes', () => {
-      store.dispatch(action.updateTradesInProgress('testCategoricalMarketID', '1', BUY, '25', undefined, undefined));
+      store.dispatch(action.updateTradesInProgress('testCategoricalMarketID', '1', BUY, '25', undefined, undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
@@ -564,11 +564,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             feePercent: '0.099999999999999896'
           }
         }
-      }, "Didn't produce the expected tradeDetails object");
-    });
+      }, "Didn't produce the expected tradeDetails object")
+    })
 
     it('should handle the tradeDetails object if limitPrice is unchanged but share number changes to negative (should default to the positive version of the numShares: -25 becomes 25.)', () => {
-      store.dispatch(action.updateTradesInProgress('testCategoricalMarketID', '1', BUY, '-25', undefined, undefined));
+      store.dispatch(action.updateTradesInProgress('testCategoricalMarketID', '1', BUY, '-25', undefined, undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
@@ -595,16 +595,16 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             feePercent: '0.099999999999999896'
           }
         }
-      }, "Didn't produce the expected tradeDetails object");
-    });
-  });
+      }, "Didn't produce the expected tradeDetails object")
+    })
+  })
 
   describe('should update a trade in progress for a scalar market', () => {
-    proxyquire.noPreserveCache();
-    const middlewares = [thunk];
-    const mockStore = configureMockStore(middlewares);
-    const state = Object.assign({}, testState, tradeTestState);
-    const store = mockStore(state);
+    proxyquire.noPreserveCache()
+    const middlewares = [thunk]
+    const mockStore = configureMockStore(middlewares)
+    const state = Object.assign({}, testState, tradeTestState)
+    const store = mockStore(state)
     const mockAugurJS = {
       augur: {
         trading: {
@@ -615,32 +615,32 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
         api: { Markets: { getParticipantSharesPurchased: () => {} } },
         rpc: { gasPrice: 20000000000 }
       }
-    };
-    mockAugurJS.augur.api.Markets.getParticipantSharesPurchased = sinon.stub().yields('0');
-    const mockSelectMarket = {};
-    mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData.testScalarMarketID);
+    }
+    mockAugurJS.augur.api.Markets.getParticipantSharesPurchased = sinon.stub().yields('0')
+    const mockSelectMarket = {}
+    mockSelectMarket.selectMarket = sinon.stub().returns(state.marketsData.testScalarMarketID)
 
     const action = proxyquire('../../../src/modules/trade/actions/update-trades-in-progress', {
       '../../../store': store,
       '../../../services/augurjs': mockAugurJS,
       '../../market/selectors/market': mockSelectMarket
-    });
+    })
 
     beforeEach(() => {
-      store.clearActions();
-    });
+      store.clearActions()
+    })
 
     afterEach(() => {
-      store.clearActions();
-    });
+      store.clearActions()
+    })
 
     it('should pass shape tests for buying 10 shares of outcome1 at the default limitPrice', () => {
-      store.dispatch(action.updateTradesInProgress('testScalarMarketID', '1', BUY, '10.0', undefined, undefined));
-      updateTradesInProgressActionShapeAssertion(store.getActions()[0]);
-    });
+      store.dispatch(action.updateTradesInProgress('testScalarMarketID', '1', BUY, '10.0', undefined, undefined))
+      updateTradesInProgressActionShapeAssertion(store.getActions()[0])
+    })
 
     it('should pass calculation tests for buying 10 shares of outcome1 at the default limitPrice', () => {
-      store.dispatch(action.updateTradesInProgress('testScalarMarketID', '1', BUY, '10.0', undefined, undefined));
+      store.dispatch(action.updateTradesInProgress('testScalarMarketID', '1', BUY, '10.0', undefined, undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
@@ -669,16 +669,16 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             feePercent: '1'
           }
         }
-      }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`);
-    });
+      }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`)
+    })
 
     it('should pass shape tests for Selling 10 shares of outcome1 at the default limitPrice', () => {
-      store.dispatch(action.updateTradesInProgress('testScalarMarketID', '1', SELL, '10.0', undefined, undefined));
-      updateTradesInProgressActionShapeAssertion(store.getActions()[0]);
-    });
+      store.dispatch(action.updateTradesInProgress('testScalarMarketID', '1', SELL, '10.0', undefined, undefined))
+      updateTradesInProgressActionShapeAssertion(store.getActions()[0])
+    })
 
     it('should pass calculation tests for selling 10 shares of outcome1 at the default limitPrice', () => {
-      store.dispatch(action.updateTradesInProgress('testScalarMarketID', '1', SELL, '10.0', undefined, undefined));
+      store.dispatch(action.updateTradesInProgress('testScalarMarketID', '1', SELL, '10.0', undefined, undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
@@ -707,11 +707,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             feePercent: '28.260869565217391304'
           }
         }
-      }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`);
-    });
+      }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`)
+    })
 
     it('should reset the tradeDetails object if 0 shares are passed in as a buy', () => {
-      store.dispatch(action.updateTradesInProgress('testScalarMarketID', '1', BUY, '0', undefined, undefined));
+      store.dispatch(action.updateTradesInProgress('testScalarMarketID', '1', BUY, '0', undefined, undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
@@ -725,11 +725,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             totalCost: 0
           }
         }
-      }, `Didn't clear the tradeDetails object`);
-    });
+      }, `Didn't clear the tradeDetails object`)
+    })
 
     it('should handle the tradeDetails object if no shares are passed in as a buy but a limitPrice is set.', () => {
-      store.dispatch(action.updateTradesInProgress('testScalarMarketID', '1', BUY, undefined, '65', undefined));
+      store.dispatch(action.updateTradesInProgress('testScalarMarketID', '1', BUY, undefined, '65', undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
@@ -743,8 +743,8 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             totalCost: 0
           }
         }
-      }, `Didn't clear the tradeDetails object`);
-    });
+      }, `Didn't clear the tradeDetails object`)
+    })
 
     it('should handle the tradeDetails object if no shares are passed in as a buy but a limitPrice is changed when a tradesInProgress is defined for an outcome.', () => {
 			// set the current Trade in Progress for BUY to a 10 share .5 limit buy order
@@ -773,8 +773,8 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             feePercent: '0.9763313609467455'
           }
         }
-      };
-      store.dispatch(action.updateTradesInProgress('testScalarMarketID', '1', BUY, undefined, '70', undefined));
+      }
+      store.dispatch(action.updateTradesInProgress('testScalarMarketID', '1', BUY, undefined, '70', undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
@@ -801,11 +801,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             feePercent: '0.9467455621301775'
           }
         }
-      }, `Didn't update the tradeDetails object to the new calcs given new limit`);
-    });
+      }, `Didn't update the tradeDetails object to the new calcs given new limit`)
+    })
 
     it('should handle a trade in progress if limitPrice is set to 0 on a scalar market where 0 should be valid', () => {
-      store.dispatch(action.updateTradesInProgress('testScalarMarketID', '1', BUY, undefined, '0', undefined));
+      store.dispatch(action.updateTradesInProgress('testScalarMarketID', '1', BUY, undefined, '0', undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
@@ -834,11 +834,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             feePercent: '0.2840236686390532'
           }
         }
-      }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`);
-    });
+      }, `The tradeDetails dispatched didn't correctly calculate the trade as expected.`)
+    })
 
     it('should handle the tradeDetails object if limitPrice is unchanged but share number changes', () => {
-      store.dispatch(action.updateTradesInProgress('testScalarMarketID', '1', BUY, '25', undefined, undefined));
+      store.dispatch(action.updateTradesInProgress('testScalarMarketID', '1', BUY, '25', undefined, undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
@@ -865,11 +865,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             feePercent: '1'
           }
         }
-      }, `Didn't update the tradeDetails object to the new calcs given new limit`);
-    });
+      }, `Didn't update the tradeDetails object to the new calcs given new limit`)
+    })
 
     it('should handle the tradeDetails object if limitPrice is unchanged but share number changes to negative (should default to the positive version of the numShares: -25 becomes 25.)', () => {
-      store.dispatch(action.updateTradesInProgress('testScalarMarketID', '1', BUY, '-25', undefined, undefined));
+      store.dispatch(action.updateTradesInProgress('testScalarMarketID', '1', BUY, '-25', undefined, undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
@@ -896,11 +896,11 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             feePercent: '1'
           }
         }
-      }, `Didn't update the tradeDetails object to the new calcs given new limit`);
-    });
+      }, `Didn't update the tradeDetails object to the new calcs given new limit`)
+    })
 
     it('should handle the tradeDetails object if limitPrice is negative but valid for this scalar market', () => {
-      store.dispatch(action.updateTradesInProgress('testScalarMarketID', '1', BUY, undefined, '-5', undefined));
+      store.dispatch(action.updateTradesInProgress('testScalarMarketID', '1', BUY, undefined, '-5', undefined))
       assert.deepEqual(store.getActions()[0], {
         type: 'UPDATE_TRADE_IN_PROGRESS',
         data: {
@@ -927,7 +927,7 @@ describe('modules/trade/actions/update-trades-in-progress.js', () => {
             feePercent: '0.1479289940828402'
           }
         }
-      }, `Didn't update the tradeDetails object to the new calcs given new limit`);
-    });
-  });
-});
+      }, `Didn't update the tradeDetails object to the new calcs given new limit`)
+    })
+  })
+})

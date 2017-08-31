@@ -1,17 +1,17 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
-import proxyquire from 'proxyquire';
-import sinon from 'sinon';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
+import proxyquire from 'proxyquire'
+import sinon from 'sinon'
+import configureMockStore from 'redux-mock-store'
+import thunk from 'redux-thunk'
 
 describe('modules/reports/actions/load-reports.js', () => {
-  proxyquire.noPreserveCache().noCallThru();
-  const middlewares = [thunk];
-  const mockStore = configureMockStore(middlewares);
+  proxyquire.noPreserveCache().noCallThru()
+  const middlewares = [thunk]
+  const mockStore = configureMockStore(middlewares)
   const test = (t) => {
     it(t.description, (done) => {
-      const store = mockStore(t.state);
+      const store = mockStore(t.state)
       const AugurJS = {
         augur: {
           accounts: t.state.augur.accounts,
@@ -20,49 +20,49 @@ describe('modules/reports/actions/load-reports.js', () => {
             Events: { getMarkets: () => {} }
           },
         }
-      };
+      }
       const LoadMarketsInfo = {
         loadMarketsInfo: () => {}
-      };
+      }
       const LoadReport = {
         loadReport: () => {}
-      };
+      }
       const LoadReportDescriptors = {
         loadReportDescriptors: () => {}
-      };
+      }
       const action = proxyquire('../../../src/modules/reports/actions/load-reports', {
         '../../../services/augurjs': AugurJS,
         '../../markets/actions/load-markets-info': LoadMarketsInfo,
         './load-report': LoadReport,
         './load-report-descriptors': LoadReportDescriptors
-      });
+      })
       sinon.stub(AugurJS.augur.api.ReportingThreshold, 'getEventsToReportOn', (args, cb) => {
-        cb(t.blockchain.eventsToReportOn[args.branch]);
-      });
+        cb(t.blockchain.eventsToReportOn[args.branch])
+      })
       sinon.stub(AugurJS.augur.api.Events, 'getMarkets', (args, cb) => {
-        cb(t.blockchain.eventToMarkets[args.event]);
-      });
+        cb(t.blockchain.eventToMarkets[args.event])
+      })
       sinon.stub(LoadMarketsInfo, 'loadMarketsInfo', (marketIDs, cb) => (dispatch, getState) => {
-        dispatch({ type: 'LOAD_MARKETS_INFO', marketIDs });
-        if (cb) cb();
-      });
+        dispatch({ type: 'LOAD_MARKETS_INFO', marketIDs })
+        if (cb) cb()
+      })
       sinon.stub(LoadReport, 'loadReport', (branchID, period, eventID, marketID, cb) => (dispatch, getState) => {
-        dispatch({ type: 'LOAD_REPORT' });
-        cb(null);
-      });
+        dispatch({ type: 'LOAD_REPORT' })
+        cb(null)
+      })
       sinon.stub(LoadReportDescriptors, 'loadReportDescriptors', cb => (dispatch, getState) => {
-        dispatch({ type: 'LOAD_REPORT_DESCRIPTORS' });
-        cb(null);
-      });
+        dispatch({ type: 'LOAD_REPORT_DESCRIPTORS' })
+        cb(null)
+      })
       store.dispatch(action.loadReports((e) => {
-        assert.isNull(e);
+        assert.isNull(e)
         // console.log(JSON.stringify(store.getActions(), null, 4));
-        t.assertions(store.getActions());
-        store.clearActions();
-        done();
-      }));
-    });
-  };
+        t.assertions(store.getActions())
+        store.clearActions()
+        done()
+      }))
+    })
+  }
   test({
     description: 'no events to report on',
     blockchain: {
@@ -98,12 +98,12 @@ describe('modules/reports/actions/load-reports.js', () => {
       reports: {}
     },
     assertions: (actions) => {
-      assert.isArray(actions);
+      assert.isArray(actions)
       assert.deepEqual(actions, [{
         type: 'LOAD_REPORT_DESCRIPTORS'
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: 'one event to report on',
     blockchain: {
@@ -154,9 +154,9 @@ describe('modules/reports/actions/load-reports.js', () => {
         type: 'LOAD_REPORT'
       }, {
         type: 'LOAD_REPORT_DESCRIPTORS'
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: 'two events to report on',
     blockchain: {
@@ -218,9 +218,9 @@ describe('modules/reports/actions/load-reports.js', () => {
         type: 'LOAD_REPORT'
       }, {
         type: 'LOAD_REPORT_DESCRIPTORS'
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: 'two events to report on, one already revealed',
     blockchain: {
@@ -288,9 +288,9 @@ describe('modules/reports/actions/load-reports.js', () => {
         type: 'LOAD_REPORT'
       }, {
         type: 'LOAD_REPORT_DESCRIPTORS'
-      }]);
+      }])
     }
-  });
+  })
   test({
     description: 'two events to report on current branch, one event elsewhere',
     blockchain: {
@@ -356,7 +356,7 @@ describe('modules/reports/actions/load-reports.js', () => {
         type: 'LOAD_REPORT'
       }, {
         type: 'LOAD_REPORT_DESCRIPTORS'
-      }]);
+      }])
     }
-  });
-});
+  })
+})

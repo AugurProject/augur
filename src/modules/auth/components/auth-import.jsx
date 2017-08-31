@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import classNames from 'classnames';
+import React, { Component } from 'react'
+import classNames from 'classnames'
 
-import Input from 'modules/common/components/input';
+import Input from 'modules/common/components/input'
 
-import makePath from 'modules/app/helpers/make-path';
-import { DEFAULT_VIEW } from 'modules/app/constants/views';
+import makePath from 'modules/app/helpers/make-path'
+import { DEFAULT_VIEW } from 'modules/app/constants/views'
 
 export default class AuthImport extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       password: '',
@@ -19,19 +19,19 @@ export default class AuthImport extends Component {
       isPasswordDisplayable: false,
       isAuthErrorDisplayable: false,
       isImportActionsDisplayable: false
-    };
+    }
 
-    this.handleRecoverError = this.handleRecoverError.bind(this);
+    this.handleRecoverError = this.handleRecoverError.bind(this)
   }
 
   componentDidMount() {
     // NOTE --  keythereum (as of implementation) simply throws when a private key
     //          is unable to be recovered, so this error is handled thusly
-    window.addEventListener('error', this.handleRecoverError);
+    window.addEventListener('error', this.handleRecoverError)
   }
 
   componentWillUnmount() {
-    window.removeEventListener('error', this.handleRecoverError);
+    window.removeEventListener('error', this.handleRecoverError)
   }
 
   handleRecoverError(err) {
@@ -39,18 +39,18 @@ export default class AuthImport extends Component {
       authError: true,
       errorMessage: 'Unable to recover account from file',
       isAuthErrorDisplayable: true
-    });
+    })
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
     return (
       <form
         className="auth-import-form"
         onSubmit={(e) => {
-          e.preventDefault();
+          e.preventDefault()
 
           if (s.loginAccount && s.password) {
             p.importAccount(s.password, s.loginAccount, (err) => {
@@ -59,11 +59,11 @@ export default class AuthImport extends Component {
                   authError: true,
                   errorMessage: 'Account Import Failed',
                   isAuthErrorDisplayable: true
-                });
+                })
               }
 
-              p.history.push(makePath(DEFAULT_VIEW));
-            });
+              p.history.push(makePath(DEFAULT_VIEW))
+            })
           }
         }}
       >
@@ -83,23 +83,23 @@ export default class AuthImport extends Component {
                   isAuthErrorDisplayable: true,
                   password: '',
                   loginAccount: null
-                });
+                })
               }
-              const fileReader = new FileReader();
+              const fileReader = new FileReader()
 
-              fileReader.readAsText(e.target.files[0]);
+              fileReader.readAsText(e.target.files[0])
 
               fileReader.onload = (e) => {
                 try {
-                  const loginAccount = JSON.parse(e.target.result);
+                  const loginAccount = JSON.parse(e.target.result)
                   this.setState({
                     loginAccount,
                     password: '',
                     authError: false
-                  });
+                  })
 
                   if (!this.state.isPasswordDisplayable) {
-                    this.setState({ isPasswordDisplayable: true });
+                    this.setState({ isPasswordDisplayable: true })
                   }
                 } catch (err) {
                   this.setState({
@@ -108,15 +108,15 @@ export default class AuthImport extends Component {
                     isAuthErrorDisplayable: true,
                     password: '',
                     loginAccount: null
-                  });
+                  })
                 }
-              };
+              }
             } else {
               this.setState({
                 loginAccount: null,
                 password: '',
                 authError: false
-              });
+              })
             }
           }}
         />
@@ -136,10 +136,10 @@ export default class AuthImport extends Component {
             this.setState({
               password,
               authError: false
-            });
+            })
 
             if (!this.state.isImportActionsDisplayable) {
-              this.setState({ isImportActionsDisplayable: true });
+              this.setState({ isImportActionsDisplayable: true })
             }
           }}
         />
@@ -168,6 +168,6 @@ export default class AuthImport extends Component {
           </button>
         </div>
       </form>
-    );
+    )
   }
 }

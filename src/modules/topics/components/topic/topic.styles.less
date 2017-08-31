@@ -1,0 +1,32 @@
+@import '~assets/styles/shared';
+
+.Topic__name {
+  .font-size-most-massive();
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.Topic__link {
+  .font-color-light();
+
+  cursor: pointer;
+  display: block;
+  text-decoration: none;
+}
+
+.Topic__separator {
+  background: @color-very-lightpurple;
+  height: 0.0625rem;
+  margin: 1rem auto 1.5rem;
+  width: 12.125rem;
+}
+
+.Topic__popularity {
+  .font-size-extra-large();
+
+  font-weight: 300;
+}

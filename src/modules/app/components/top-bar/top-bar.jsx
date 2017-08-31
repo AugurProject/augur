@@ -1,9 +1,9 @@
 /* eslint react/no-array-index-key: 0 */  // It's OK in this specific instance since the order NEVER changes
 // comment lifted from old core-stats.js
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import Styles from 'modules/app/components/top-bar/top-bar.styles';
+import Styles from 'modules/app/components/top-bar/top-bar.styles'
 
 const TopBar = props => (
   <header className={Styles.TopBar}>
@@ -23,10 +23,10 @@ const TopBar = props => (
     </section>
     <span className={Styles['TopBar__logo-text']}>Augur</span>
   </header>
-);
+)
 
 TopBar.propTypes = {
   stats: PropTypes.array.isRequired
-};
+}
 
-export default TopBar;
+export default TopBar

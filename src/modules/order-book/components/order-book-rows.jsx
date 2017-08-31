@@ -1,8 +1,8 @@
-import React from 'react';
+import React from 'react'
 
-import OrderBookRowSide from 'modules/order-book/components/order-book-row-side';
+import OrderBookRowSide from 'modules/order-book/components/order-book-row-side'
 
-import { BID } from 'modules/transactions/constants/types';
+import { BID } from 'modules/transactions/constants/types'
 
 const OrderBookRows = p => (
   <article className="order-book-rows">
@@ -24,6 +24,6 @@ const OrderBookRows = p => (
       updateTradeFromSelectedOrder={p.updateTradeFromSelectedOrder}
     />
   </article>
-);
+)
 
-export default OrderBookRows;
+export default OrderBookRows

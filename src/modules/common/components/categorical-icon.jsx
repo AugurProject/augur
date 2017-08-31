@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 // NOTE -- To employ, just set the width or height on the containing element and this SVG will respond appropriately
 const CategoricalIcon = () => (
@@ -13,6 +13,6 @@ const CategoricalIcon = () => (
       <rect x="140.91" y="283.44" width="220.28" height="46.61" rx="23.31" ry="23.31" />
     </g>
   </svg>
-);
+)
 
-export default CategoricalIcon;
+export default CategoricalIcon

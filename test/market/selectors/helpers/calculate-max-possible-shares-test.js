@@ -1,8 +1,8 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
 
 describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', () => {
-  const { calculateMaxPossibleShares } = require('../../../../src/modules/market/selectors/helpers/calculate-max-possible-shares');
+  const { calculateMaxPossibleShares } = require('../../../../src/modules/market/selectors/helpers/calculate-max-possible-shares')
 
   const testCases = [
     {
@@ -297,10 +297,10 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
       ],
       result: '60'
     }
-  ];
+  ]
   testCases.forEach((test) => {
     it(`calculateMaxPossibleShares(${JSON.stringify(test)})`, () => {
-      assert.strictEqual(calculateMaxPossibleShares(test.loginAccount, test.orders, test.makerFee, test.takerFee, test.cumulativeScale, {}, null), test.result);
-    });
-  });
-});
+      assert.strictEqual(calculateMaxPossibleShares(test.loginAccount, test.orders, test.makerFee, test.takerFee, test.cumulativeScale, {}, null), test.result)
+    })
+  })
+})

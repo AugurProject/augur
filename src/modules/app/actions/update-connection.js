@@ -1,4 +1,4 @@
-export const UPDATE_CONNECTION_STATUS = 'UPDATE_CONNECTION_STATUS';
+export const UPDATE_CONNECTION_STATUS = 'UPDATE_CONNECTION_STATUS'
 
 /**
  * @param {Boolean} isConnected
@@ -8,5 +8,5 @@ export function updateConnectionStatus(isConnected) {
   return {
     type: UPDATE_CONNECTION_STATUS,
     isConnected
-  };
+  }
 }

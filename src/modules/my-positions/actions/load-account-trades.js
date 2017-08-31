@@ -1,45 +1,45 @@
-import async from 'async';
-import { augur } from 'services/augurjs';
-import { updateAccountTradesData, updateCompleteSetsBought } from 'modules/my-positions/actions/update-account-trades-data';
-import { convertLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
-import { clearAccountTrades } from 'modules/my-positions/actions/clear-account-trades';
-import { sellCompleteSets } from 'modules/my-positions/actions/sell-complete-sets';
-import { PAYOUT } from 'modules/transactions/constants/types';
-import logError from 'utils/log-error';
+import async from 'async'
+import { augur } from 'services/augurjs'
+import { updateAccountTradesData, updateCompleteSetsBought } from 'modules/my-positions/actions/update-account-trades-data'
+import { convertLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions'
+import { clearAccountTrades } from 'modules/my-positions/actions/clear-account-trades'
+import { sellCompleteSets } from 'modules/my-positions/actions/sell-complete-sets'
+import { PAYOUT } from 'modules/transactions/constants/types'
+import logError from 'utils/log-error'
 
 export function loadAccountTrades(options, callback = logError) {
   return (dispatch, getState) => {
-    const { loginAccount } = getState();
-    const account = loginAccount.address;
-    if (!account) return callback();
+    const { loginAccount } = getState()
+    const account = loginAccount.address
+    if (!account) return callback()
     const filter = {
       ...(options || {})
-    };
-    if (!filter.fromBlock && loginAccount.registerBlockNumber) {
-      filter.fromBlock = loginAccount.registerBlockNumber;
     }
-    if (!filter.market) dispatch(clearAccountTrades());
+    if (!filter.fromBlock && loginAccount.registerBlockNumber) {
+      filter.fromBlock = loginAccount.registerBlockNumber
+    }
+    if (!filter.market) dispatch(clearAccountTrades())
     async.parallel([
       next => augur.logs.getAccountTrades({ account, filter }, (err, trades) => {
-        if (err) return next(err);
-        dispatch(updateAccountTradesData(trades, filter.market));
-        next(null);
+        if (err) return next(err)
+        dispatch(updateAccountTradesData(trades, filter.market))
+        next(null)
       }),
       next => augur.logs.getLogsChunked({
         label: PAYOUT,
         filter: { fromBlock: filter.fromBlock, sender: account },
         aux: null
       }, (payouts) => {
-        if (payouts && payouts.length) dispatch(convertLogsToTransactions(PAYOUT, payouts));
+        if (payouts && payouts.length) dispatch(convertLogsToTransactions(PAYOUT, payouts))
       }, next),
       next => augur.logs.getBuyCompleteSetsLogs({ account, filter }, (err, completeSets) => {
-        if (err) return next(err);
-        dispatch(updateCompleteSetsBought(augur.logs.parseCompleteSetsLogs(completeSets), filter.market));
-        next(null);
+        if (err) return next(err)
+        dispatch(updateCompleteSetsBought(augur.logs.parseCompleteSetsLogs(completeSets), filter.market))
+        next(null)
       })
     ], (err) => {
-      if (err) return callback(err);
-      dispatch(sellCompleteSets(filter.market, callback));
-    });
-  };
+      if (err) return callback(err)
+      dispatch(sellCompleteSets(filter.market, callback))
+    })
+  }
 }

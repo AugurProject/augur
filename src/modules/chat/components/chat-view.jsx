@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import ReactTooltip from 'react-tooltip';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import ReactTooltip from 'react-tooltip'
 
-import ValueTimestamp from 'modules/common/components/value-timestamp';
+import ValueTimestamp from 'modules/common/components/value-timestamp'
 
 export default class ChatView extends Component {
 
@@ -11,52 +11,52 @@ export default class ChatView extends Component {
   };
 
   componentWillUpdate() {
-    const node = this.refs.chatbox;
-    this.shouldScrollBottom = node.scrollTop + node.offsetHeight === node.scrollHeight;
+    const node = this.refs.chatbox
+    this.shouldScrollBottom = node.scrollTop + node.offsetHeight === node.scrollHeight
   }
 
   componentDidUpdate() {
     if (this.shouldScrollBottom) {
-      const node = this.refs.chatbox;
-      node.scrollTop = node.scrollHeight;
+      const node = this.refs.chatbox
+      node.scrollTop = node.scrollHeight
     }
   }
 
   onSubmitChatMessage = (e) => {
-    e.preventDefault();
-    const chatMessage = this.refs.chatMessageInput.value;
+    e.preventDefault()
+    const chatMessage = this.refs.chatMessageInput.value
     if (chatMessage && chatMessage.trim() !== '') {
-      this.props.onSubmitChatMessage('augur', encodeURIComponent(chatMessage.trim()));
+      this.props.onSubmitChatMessage('augur', encodeURIComponent(chatMessage.trim()))
     }
-    this.refs.chatMessageForm.reset();
+    this.refs.chatMessageForm.reset()
   }
 
   render() {
-    const p = this.props;
-    let messageCount = 0;
+    const p = this.props
+    let messageCount = 0
     const chatMessages = (
       <ul>
         <li>Welcome to Augur!</li>
         {p.messages &&
           p.messages.map((payload) => {
-            const key = `${payload.address}_${payload.timestamp.full}_${messageCount}`;
-            let displayName;
-            let tooltipID;
+            const key = `${payload.address}_${payload.timestamp.full}_${messageCount}`
+            let displayName
+            let tooltipID
             if (payload.name === '') {
-              displayName = payload.address;
+              displayName = payload.address
             } else if (payload.name === 'Anonymous Coward') {
-              displayName = payload.name;
+              displayName = payload.name
             } else {
-              displayName = payload.name;
-              tooltipID = `${key}-address-tooltip`;
+              displayName = payload.name
+              tooltipID = `${key}-address-tooltip`
             }
-            messageCount += 1;
+            messageCount += 1
             if (!tooltipID) {
               return (
                 <li key={key}>
                   <span>{displayName}</span> [<small><ValueTimestamp {...payload.timestamp} /></small>]: {decodeURIComponent(payload.message)}
                 </li>
-              );
+              )
             }
             return (
               <li key={key}>
@@ -65,11 +65,11 @@ export default class ChatView extends Component {
                   <span className="tooltip-text">{payload.address}</span>
                 </ReactTooltip>
               </li>
-            );
+            )
           })
         }
       </ul>
-    );
+    )
     return (
       <article className="chat">
         <button
@@ -103,6 +103,6 @@ export default class ChatView extends Component {
           <span className="tooltip-text">Close chat window</span>
         </ReactTooltip>
       </article>
-    );
+    )
   }
 }

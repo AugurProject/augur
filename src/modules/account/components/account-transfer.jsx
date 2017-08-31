@@ -1,16 +1,16 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import classNames from 'classnames';
-import BigNumber from 'bignumber.js';
-import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import classNames from 'classnames'
+import BigNumber from 'bignumber.js'
+import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup'
 
-import Input from 'modules/common/components/input';
-import EtherLogo from 'modules/common/components/ether-logo';
-import AugurLogoIcon from 'modules/common/components/augur-logo-icon/augur-logo-icon';
+import Input from 'modules/common/components/input'
+import EtherLogo from 'modules/common/components/ether-logo'
+import AugurLogoIcon from 'modules/common/components/augur-logo-icon/augur-logo-icon'
 
-import { ETH, REP } from 'modules/account/constants/asset-types';
+import { ETH, REP } from 'modules/account/constants/asset-types'
 
-import isAddress from 'modules/auth/helpers/is-address';
+import isAddress from 'modules/auth/helpers/is-address'
 
 export default class AccountTransfer extends Component {
   static propTypes = {
@@ -21,7 +21,7 @@ export default class AccountTransfer extends Component {
   }
 
   constructor(props) {
-    super(props);
+    super(props)
 
     this.DEFAULT_STATE = {
       animationSpeed: 0,
@@ -33,19 +33,19 @@ export default class AccountTransfer extends Component {
       isValid: null,
       isAmountValid: null,
       isAddressValid: null
-    };
+    }
 
-    this.state = this.DEFAULT_STATE;
+    this.state = this.DEFAULT_STATE
 
-    this.setAnimationSpeed = this.setAnimationSpeed.bind(this);
-    this.updateSelectedAsset = this.updateSelectedAsset.bind(this);
-    this.validateAmount = this.validateAmount.bind(this);
-    this.validateAddress = this.validateAddress.bind(this);
-    this.validateForm = this.validateForm.bind(this);
+    this.setAnimationSpeed = this.setAnimationSpeed.bind(this)
+    this.updateSelectedAsset = this.updateSelectedAsset.bind(this)
+    this.validateAmount = this.validateAmount.bind(this)
+    this.validateAddress = this.validateAddress.bind(this)
+    this.validateForm = this.validateForm.bind(this)
   }
 
   componentDidMount() {
-    this.setAnimationSpeed();
+    this.setAnimationSpeed()
   }
 
   componentWillUpdate(nextProps, nextState) {
@@ -53,84 +53,84 @@ export default class AccountTransfer extends Component {
       this.state.isAmountValid !== nextState.isAmountValid ||
       this.state.isAddressValid !== nextState.isAddressValid
     ) {
-      this.validateForm(nextState.isAmountValid, nextState.isAddressValid);
+      this.validateForm(nextState.isAmountValid, nextState.isAddressValid)
     }
   }
 
   setAnimationSpeed() {
-    this.setState({ animationSpeed: parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-very-fast'), 10) });
+    this.setState({ animationSpeed: parseInt(window.getComputedStyle(document.body).getPropertyValue('--animation-speed-very-fast'), 10) })
   }
 
   updateSelectedAsset(selectedAsset) {
-    let upperBound;
-    let selectedAssetLabel;
+    let upperBound
+    let selectedAssetLabel
     switch (selectedAsset) {
       case REP:
-        upperBound = this.props.rep.value;
-        selectedAssetLabel = 'REP';
-        break;
+        upperBound = this.props.rep.value
+        selectedAssetLabel = 'REP'
+        break
       case ETH:
       default:
-        upperBound = this.props.eth.value;
-        selectedAssetLabel = 'ETH';
+        upperBound = this.props.eth.value
+        selectedAssetLabel = 'ETH'
     }
 
     this.setState({
       selectedAsset,
       upperBound,
       selectedAssetLabel
-    });
+    })
   }
 
   validateAmount(amount) {
-    const sanitizedAmount = sanitizeArg(amount);
+    const sanitizedAmount = sanitizeArg(amount)
 
     if (isNaN(parseFloat(sanitizedAmount)) || !isFinite(sanitizedAmount) || (sanitizedAmount > this.state.upperBound || sanitizedAmount <= 0)) {
       this.setState({
         amount: sanitizedAmount,
         isAmountValid: false
-      });
-      return;
+      })
+      return
     }
 
     this.setState({
       amount: sanitizedAmount,
       isAmountValid: true
-    });
+    })
   }
 
   validateAddress(address) {
-    const sanitizedAddress = sanitizeArg(address);
+    const sanitizedAddress = sanitizeArg(address)
 
     if (!isAddress(sanitizedAddress)) {
       this.setState({
         address: sanitizedAddress,
         isAddressValid: false
-      });
-      return;
+      })
+      return
     }
 
     this.setState({
       address: sanitizedAddress,
       isAddressValid: true
-    });
+    })
   }
 
   validateForm(isAmountValid, isAddressValid) {
     if (isAmountValid && isAddressValid) {
       this.setState({
         isValid: true
-      });
+      })
     } else {
       this.setState({
         isValid: false
-      });
+      })
     }
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
     return (
       <article className="account-transfer account-sub-view">
@@ -141,14 +141,14 @@ export default class AccountTransfer extends Component {
         <div className="account-actions">
           <form
             onSubmit={(e) => {
-              e.preventDefault();
+              e.preventDefault()
 
-              console.log('submit transfer');
+              console.log('submit transfer')
 
               if (s.isValid) {
-                const stringedAmount = s.amount instanceof BigNumber ? s.amount.toString() : s.amount;
-                p.transferFunds(stringedAmount, s.selectedAsset, s.address);
-                this.setState(this.DEFAULT_STATE);
+                const stringedAmount = s.amount instanceof BigNumber ? s.amount.toString() : s.amount
+                p.transferFunds(stringedAmount, s.selectedAsset, s.address)
+                this.setState(this.DEFAULT_STATE)
               }
             }}
           >
@@ -240,10 +240,10 @@ export default class AccountTransfer extends Component {
           </form>
         </div>
       </article>
-    );
+    )
   }
 }
 
 function sanitizeArg(arg) {
-  return (arg == null || arg === '') ? '' : arg;
+  return (arg == null || arg === '') ? '' : arg
 }

@@ -16,7 +16,7 @@ const ConsensusOutcome = p => (
     {!p.isIndeterminate && p.type === SCALAR && p.outcomeID}
     <ReportEthics isUnethical={p.isUnethical} />
   </article>
-);
+)
 
 ConsensusOutcome.propTypes = {
   type: PropTypes.string,
@@ -25,6 +25,6 @@ ConsensusOutcome.propTypes = {
   outcomeName: PropTypes.string,
   outcomeID: PropTypes.string,
   percentCorrect: PropTypes.object
-};
+}
 
-export default ConsensusOutcome;
+export default ConsensusOutcome

@@ -1,5 +1,5 @@
-import { SHARE, MILLI_SHARE, MICRO_SHARE } from 'modules/market/constants/share-denominations';
-import addCommas from 'utils/add-commas-to-number';
+import { SHARE, MILLI_SHARE, MICRO_SHARE } from 'modules/market/constants/share-denominations'
+import addCommas from 'utils/add-commas-to-number'
 
 // This helper method is very specific in scope
 // It takes in the formatted shares in string format and returns a string denominated as specified
@@ -7,111 +7,111 @@ import addCommas from 'utils/add-commas-to-number';
 // values, just string manipulation for presentation
 function setShareDenomination(value, denomination) {
   if (value == null) {
-    return value;
+    return value
   }
 
   switch (denomination) {
     case (MICRO_SHARE):
-      return formatValue(value, 4);
+      return formatValue(value, 4)
     case (MILLI_SHARE):
-      return formatValue(value, 1);
+      return formatValue(value, 1)
     default:
     case (SHARE):
-      return value;
+      return value
   }
 }
 
 // The value is assumed to *always* be in 'SHARES' denomination
 function formatValue(value, amount) {
-  let valueArray = value.split('');
+  let valueArray = value.split('')
 
   // remove dot + determine 0 pad amount
-  const dotIndex = valueArray.indexOf('.');
-  let zeroPadAmount = amount;
+  const dotIndex = valueArray.indexOf('.')
+  let zeroPadAmount = amount
   if (dotIndex !== -1) {
-    valueArray.splice(dotIndex, 1);
+    valueArray.splice(dotIndex, 1)
   } else {
-    zeroPadAmount += 2;
+    zeroPadAmount += 2
   }
 
   // Strip leading 0's OR returns original value if no values are positive
-  let firstPositiveValue = -1;
+  let firstPositiveValue = -1
   valueArray.some((value, i) => {
     if (parseInt(value, 10)) {
-      firstPositiveValue = i;
-      return true;
+      firstPositiveValue = i
+      return true
     }
 
-    return false;
-  });
+    return false
+  })
   if (firstPositiveValue !== -1) {
-    valueArray.splice(0, firstPositiveValue);
+    valueArray.splice(0, firstPositiveValue)
   } else {
-    return value; // Returns original value
+    return value // Returns original value
   }
 
   // Strip Commas (added back in at the end)
   valueArray.forEach((value, i) => {
     if (value === ',') {
-      valueArray.splice(i, 1);
+      valueArray.splice(i, 1)
     }
-  });
+  })
 
   // Handle postFixed denominations (part of the format-number method)
-  valueArray = handlePostfixedUnit(valueArray, zeroPadAmount);
+  valueArray = handlePostfixedUnit(valueArray, zeroPadAmount)
 
-  return addCommas(valueArray.join('')); // return joined string w/ comma separating thousands
+  return addCommas(valueArray.join('')) // return joined string w/ comma separating thousands
 }
 
 function handlePostfixedUnit(valueArray, zeroPadAmount) {
-  const step = zeroPadAmount < 4;
-  const gtTrillion = '> 1T'.split('');
-  let newValueArray = valueArray;
+  const step = zeroPadAmount < 4
+  const gtTrillion = '> 1T'.split('')
+  let newValueArray = valueArray
 
   switch (valueArray[newValueArray.length - 1]) {
   // Handle existing > 10000 values
     case ('K'): {
-      newValueArray[newValueArray.length - 1] = step ? 'M' : 'B';
-      return newValueArray;
+      newValueArray[newValueArray.length - 1] = step ? 'M' : 'B'
+      return newValueArray
     }
     case ('M'): {
       if (step) {
-        newValueArray[newValueArray.length - 1] = 'B';
+        newValueArray[newValueArray.length - 1] = 'B'
       } else {
-        newValueArray = gtTrillion;
+        newValueArray = gtTrillion
       }
-      return newValueArray;
+      return newValueArray
     }
     case ('B'):
     case ('T'): {
-      newValueArray = gtTrillion;
-      return newValueArray;
+      newValueArray = gtTrillion
+      return newValueArray
     }
 
   // Handle values that become greater than 10000
     default: {
       // Append 0's
       for (let i = 0; i < zeroPadAmount; i++) {
-        newValueArray.push('0');
+        newValueArray.push('0')
       }
 
       // Mirrors logic present in format-number
       if (newValueArray.length >= 13) {
-        newValueArray = gtTrillion;
+        newValueArray = gtTrillion
       } else if (newValueArray.length >= 11) {
-        newValueArray.splice(newValueArray.length - 9);
-        newValueArray.push('B');
+        newValueArray.splice(newValueArray.length - 9)
+        newValueArray.push('B')
       } else if (newValueArray.length >= 8) {
-        newValueArray.splice(newValueArray.length - 6);
-        newValueArray.push('M');
+        newValueArray.splice(newValueArray.length - 6)
+        newValueArray.push('M')
       } else if (newValueArray.length >= 5) {
-        newValueArray.splice(newValueArray.length - 3);
-        newValueArray.push('K');
+        newValueArray.splice(newValueArray.length - 3)
+        newValueArray.push('K')
       }
 
-      return newValueArray;
+      return newValueArray
     }
   }
 }
 
-export default setShareDenomination;
+export default setShareDenomination

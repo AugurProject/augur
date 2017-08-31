@@ -1,4 +1,4 @@
-export const UPDATE_IS_MOBILE = 'UPDATE_IS_MOBILE';
+export const UPDATE_IS_MOBILE = 'UPDATE_IS_MOBILE'
 
 export function updateIsMobile(isMobile) {
   return {
@@ -6,5 +6,5 @@ export function updateIsMobile(isMobile) {
     data: {
       isMobile
     }
-  };
+  }
 }

@@ -45,11 +45,11 @@ const MarketOutcomes = p => (
       </div>
     ))} */}
   </div>
-);
+)
 
 // TODO -- Prop Validations
 // MarketOutcomes.propTypes = {
 //  outcomes: React.PropTypes.array
 // };
 
-export default MarketOutcomes;
+export default MarketOutcomes

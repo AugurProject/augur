@@ -1,13 +1,13 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
-import configureMockStore from 'redux-mock-store';
-import proxyquire from 'proxyquire';
-import sinon from 'sinon';
-import thunk from 'redux-thunk';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
+import configureMockStore from 'redux-mock-store'
+import proxyquire from 'proxyquire'
+import sinon from 'sinon'
+import thunk from 'redux-thunk'
 
 describe(`modules/auth/actions/load-account-history.js`, () => {
-  proxyquire.noPreserveCache();
-  const mockStore = configureMockStore([thunk]);
+  proxyquire.noPreserveCache()
+  const mockStore = configureMockStore([thunk])
 
   const MOCK_ACTION_TYPES = {
     LOAD_ACCOUNT_TRADES: 'LOAD_ACCOUNT_TRADES',
@@ -21,112 +21,112 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
     UPDATE_TRANSACTIONS_OLDEST_LOADED_BLOCK: 'UPDATE_TRANSACTIONS_OLDEST_LOADED_BLOCK',
     UPDATE_TRANSACTIONS_LOADING: 'UPDATE_TRANSACTIONS_LOADING',
     TRIGGER_TRANSACTIONS_EXPORT: 'TRIGGER_TRANSACTIONS_EXPORT'
-  };
+  }
 
-  let transactionCount = 1;
+  let transactionCount = 1
 
   const generateSoftLimitTransactionsData = () => {
-    const limit = transactionCount + 40;
-    let transactionsData = {};
+    const limit = transactionCount + 40
+    let transactionsData = {}
     for (let i = transactionCount; i < limit; i++) {
       transactionsData = {
         ...transactionsData,
         [i]: {}
-      };
-      transactionCount = i;
+      }
+      transactionCount = i
     }
 
-    transactionCount += 1;
+    transactionCount += 1
 
-    return transactionsData;
-  };
+    return transactionsData
+  }
 
   const LoadAccountTrades = {
     loadAccountTrades: () => {}
-  };
+  }
   sinon.stub(LoadAccountTrades, 'loadAccountTrades', (options, cb) => {
-    cb();
+    cb()
     return {
       type: MOCK_ACTION_TYPES.LOAD_ACCOUNT_TRADES,
       options
-    };
-  });
+    }
+  })
 
   const LoadBidsAsksHistory = {
     loadBidsAsksHistory: () => {}
-  };
+  }
   sinon.stub(LoadBidsAsksHistory, 'loadBidsAsksHistory', (options, cb) => {
-    cb();
+    cb()
     return {
       type: MOCK_ACTION_TYPES.LOAD_BIDS_ASKS_HISTORY,
       options
-    };
-  });
+    }
+  })
 
   const LoadCreateMarketHistory = {
     loadCreateMarketHistory: () => {}
-  };
+  }
   sinon.stub(LoadCreateMarketHistory, 'loadCreateMarketHistory', (options, cb) => {
-    cb();
+    cb()
     return {
       type: MOCK_ACTION_TYPES.LOAD_CREATE_MARKET_HISTORY,
       options
-    };
-  });
+    }
+  })
 
   const LoadFundingHistory = {
     loadFundingHistory: () => {},
     loadTransferHistory: () => {}
-  };
+  }
   sinon.stub(LoadFundingHistory, 'loadFundingHistory', (options, cb) => {
-    cb();
+    cb()
     return {
       type: MOCK_ACTION_TYPES.LOAD_FUNDING_HISTORY,
       options
-    };
-  });
+    }
+  })
   sinon.stub(LoadFundingHistory, 'loadTransferHistory', (options, cb) => {
-    cb();
+    cb()
     return {
       type: MOCK_ACTION_TYPES.LOAD_TRANSFER_HISTORY,
       options
-    };
-  });
+    }
+  })
 
   const LoadReportingHistory = {
     loadReportingHistory: () => {}
-  };
+  }
   sinon.stub(LoadReportingHistory, 'loadReportingHistory', (options, cb) => {
-    cb();
+    cb()
     return {
       type: MOCK_ACTION_TYPES.LOAD_REPORTING_HISTORY,
       options
-    };
-  });
+    }
+  })
 
   const UpdateTransactionsOldestLoadedBlock = {
     updateTransactionsOldestLoadedBlock: () => {}
-  };
+  }
   sinon.stub(UpdateTransactionsOldestLoadedBlock, 'updateTransactionsOldestLoadedBlock', block => ({
     type: MOCK_ACTION_TYPES.UPDATE_TRANSACTIONS_OLDEST_LOADED_BLOCK,
     block
-  }));
+  }))
 
   const UpdateTransactionsLoading = {
     updateTransactionsLoading: () => {}
-  };
+  }
   sinon.stub(UpdateTransactionsLoading, 'updateTransactionsLoading', isLoading => ({
     type: MOCK_ACTION_TYPES.UPDATE_TRANSACTIONS_LOADING,
     isLoading
-  }));
+  }))
 
-  const SyncBranch = {};
-  SyncBranch.syncBranch = sinon.stub().returns({ type: MOCK_ACTION_TYPES.SYNC_BRANCH });
+  const SyncBranch = {}
+  SyncBranch.syncBranch = sinon.stub().returns({ type: MOCK_ACTION_TYPES.SYNC_BRANCH })
 
-  const UpdateReports = {};
-  UpdateReports.clearReports = sinon.stub().returns({ type: MOCK_ACTION_TYPES.CLEAR_REPORTS });
+  const UpdateReports = {}
+  UpdateReports.clearReports = sinon.stub().returns({ type: MOCK_ACTION_TYPES.CLEAR_REPORTS })
 
-  const triggerTransactionsExport = sinon.stub().returns({ type: MOCK_ACTION_TYPES.TRIGGER_TRANSACTIONS_EXPORT });
+  const triggerTransactionsExport = sinon.stub().returns({ type: MOCK_ACTION_TYPES.TRIGGER_TRANSACTIONS_EXPORT })
 
   const action = proxyquire('../../../src/modules/auth/actions/load-account-history.js', {
     '../../my-positions/actions/load-account-trades': LoadAccountTrades,
@@ -138,16 +138,16 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
     '../../reports/actions/update-reports': UpdateReports,
     '../../transactions/actions/update-transactions-oldest-loaded-block': UpdateTransactionsOldestLoadedBlock,
     '../../transactions/actions/update-transactions-loading': UpdateTransactionsLoading
-  });
+  })
 
   const test = (t) => {
     it(t.description, () => {
-      const store = mockStore(t.state);
+      const store = mockStore(t.state)
 
-      store.dispatch(action.loadAccountHistory(t.loadAllHistory));
-      t.assertions(store.getActions());
-    });
-  };
+      store.dispatch(action.loadAccountHistory(t.loadAllHistory))
+      t.assertions(store.getActions())
+    })
+  }
 
   test({
     description: `should do nothing if registerBlock is null`,
@@ -156,10 +156,10 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
       loginAccount: {}
     },
     assertions: (actions) => {
-      const expected = [];
-      assert.deepEqual(actions, expected, `Didn't dispatch the expected actions`);
+      const expected = []
+      assert.deepEqual(actions, expected, `Didn't dispatch the expected actions`)
     }
-  });
+  })
 
   test({
     description: `shouldn't load transactions if oldestLoadedBlock is null`,
@@ -176,10 +176,10 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
         {
           type: MOCK_ACTION_TYPES.SYNC_BRANCH
         }
-      ];
-      assert.deepEqual(actions, expected, `Didn't dispatch the expected actions`);
+      ]
+      assert.deepEqual(actions, expected, `Didn't dispatch the expected actions`)
     }
-  });
+  })
 
   test({
     description: `shouldn't load transactions if oldestLoadedBlock === registerBlock`,
@@ -190,10 +190,10 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
       }
     },
     assertions: (actions) => {
-      const expected = [];
-      assert.deepEqual(actions, expected, `Didn't dispatch the expected actions`);
+      const expected = []
+      assert.deepEqual(actions, expected, `Didn't dispatch the expected actions`)
     }
-  });
+  })
 
   test({
     description: `should load all transactions back to registerBlock if 'loadAllHistory' is passed in as true`,
@@ -250,10 +250,10 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
           type: MOCK_ACTION_TYPES.LOAD_REPORTING_HISTORY,
           options: {}
         }
-      ];
-      assert.deepEqual(actions, expected, `Didn't dispatch the expected actions`);
+      ]
+      assert.deepEqual(actions, expected, `Didn't dispatch the expected actions`)
     }
-  });
+  })
 
   test({
     description: `should load more transactions until register block`,
@@ -379,21 +379,21 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
             fromBlock: 4240
           }
         }
-      ];
+      ]
 
-      assert.deepEqual(actions, expected, `Didn't dispatch the expected actions`);
+      assert.deepEqual(actions, expected, `Didn't dispatch the expected actions`)
     }
-  });
+  })
 
   describe('loadMoreTransactions', () => {
     const test = (t) => {
       it(t.description, () => {
-        const store = mockStore(t.state);
+        const store = mockStore(t.state)
 
-        action.loadMoreTransactions(store.dispatch, store.getState, t.options, t.constraints);
-        t.assertions(store.getActions());
-      });
-    };
+        action.loadMoreTransactions(store.dispatch, store.getState, t.options, t.constraints)
+        t.assertions(store.getActions())
+      })
+    }
 
     test({
       description: `should dispatch the expected actions when loadAllHistory is true`,
@@ -411,11 +411,11 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
             type: MOCK_ACTION_TYPES.UPDATE_TRANSACTIONS_LOADING,
             isLoading: false
           }
-        ];
+        ]
 
-        assert.deepEqual(actions, expected, `Didn't dispatch the expected actions`);
+        assert.deepEqual(actions, expected, `Didn't dispatch the expected actions`)
       }
-    });
+    })
 
     test({
       description: `should dispatch the expected actions when loadAllHistory is true and 'triggerTransactionsExport' was passed`,
@@ -437,11 +437,11 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
           {
             type: MOCK_ACTION_TYPES.TRIGGER_TRANSACTIONS_EXPORT
           }
-        ];
+        ]
 
-        assert.deepEqual(actions, expected, `Didn't dispatch the expected actions`);
+        assert.deepEqual(actions, expected, `Didn't dispatch the expected actions`)
       }
-    });
+    })
 
     test({
       description: `should dispatch the expected actions when the soft limit of transactions was loaded AND fromBlock === registerBlock`,
@@ -471,11 +471,11 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
             type: MOCK_ACTION_TYPES.UPDATE_TRANSACTIONS_LOADING,
             isLoading: false
           }
-        ];
+        ]
 
-        assert.deepEqual(actions, expected, `Didn't dispatch the expected actions`);
+        assert.deepEqual(actions, expected, `Didn't dispatch the expected actions`)
       }
-    });
+    })
 
     test({
       description: `should dispatch the expected actions when soft limit not reached AND initial fromBlock !== registerBlock`,
@@ -553,10 +553,10 @@ describe(`modules/auth/actions/load-account-history.js`, () => {
               toBlock: 999
             }
           }
-        ];
+        ]
 
-        assert.deepEqual(actions, expected, `Didn't dispatch the expected actions`);
+        assert.deepEqual(actions, expected, `Didn't dispatch the expected actions`)
       }
-    });
-  });
-});
+    })
+  })
+})

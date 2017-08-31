@@ -1,10 +1,10 @@
-import { UPDATE_TRADE_COMMIT_LOCK } from 'modules/trade/actions/update-trade-commitment';
+import { UPDATE_TRADE_COMMIT_LOCK } from 'modules/trade/actions/update-trade-commitment'
 
 export default function (tradeCommitLock = {}, action) {
   switch (action.type) {
     case UPDATE_TRADE_COMMIT_LOCK:
-      return { ...tradeCommitLock, isLocked: action.isLocked };
+      return { ...tradeCommitLock, isLocked: action.isLocked }
     default:
-      return tradeCommitLock;
+      return tradeCommitLock
   }
 }

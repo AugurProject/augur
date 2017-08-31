@@ -1,6 +1,6 @@
-export const SHARE = 'share';
-export const MILLI_SHARE = 'milli-share';
-export const MICRO_SHARE = 'micro-share';
+export const SHARE = 'share'
+export const MILLI_SHARE = 'milli-share'
+export const MICRO_SHARE = 'micro-share'
 
 export const DENOMINATIONS = [
   {
@@ -15,4 +15,4 @@ export const DENOMINATIONS = [
     label: 'μShares',
     value: MICRO_SHARE
   }
-];
+]

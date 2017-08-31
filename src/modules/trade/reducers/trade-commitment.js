@@ -1,17 +1,17 @@
-import { UPDATE_TRADE_COMMITMENT } from 'modules/trade/actions/update-trade-commitment';
+import { UPDATE_TRADE_COMMITMENT } from 'modules/trade/actions/update-trade-commitment'
 
 export default function (tradeCommitment = {}, action) {
   switch (action.type) {
     case UPDATE_TRADE_COMMITMENT: {
       if (action.tradeCommitment.tradeHash) {
-        return action.tradeCommitment;
+        return action.tradeCommitment
       }
       return {
         ...tradeCommitment,
         ...action.tradeCommitment
-      };
+      }
     }
     default:
-      return tradeCommitment;
+      return tradeCommitment
   }
 }

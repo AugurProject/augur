@@ -1,5 +1,5 @@
-import { UPDATE_MARKET_TRADES_DATA } from 'modules/portfolio/actions/update-market-trades-data';
-import { CLEAR_LOGIN_ACCOUNT } from 'modules/auth/actions/update-login-account';
+import { UPDATE_MARKET_TRADES_DATA } from 'modules/portfolio/actions/update-market-trades-data'
+import { CLEAR_LOGIN_ACCOUNT } from 'modules/auth/actions/update-login-account'
 
 export default function (marketTrades = {}, action) {
   switch (action.type) {
@@ -7,10 +7,10 @@ export default function (marketTrades = {}, action) {
       return {
         ...marketTrades,
         ...action.data
-      };
+      }
     case CLEAR_LOGIN_ACCOUNT:
-      return {};
+      return {}
     default:
-      return marketTrades;
+      return marketTrades
   }
 }

@@ -1,4 +1,4 @@
-import { UPDATE_ORDER_STATUS } from 'modules/bids-asks/actions/update-order-status';
+import { UPDATE_ORDER_STATUS } from 'modules/bids-asks/actions/update-order-status'
 
 /**
  * @param {Object} orderCancellation
@@ -11,8 +11,8 @@ export default function (orderCancellation = {}, action) {
       return {
         ...orderCancellation,
         [action.orderID]: action.status
-      };
+      }
     default:
-      return orderCancellation;
+      return orderCancellation
   }
 }

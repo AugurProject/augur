@@ -1,6 +1,6 @@
 // import { describe, it } from 'mocha';
 // import { assert } from 'chai';
-import proxyquire from 'proxyquire';
+import proxyquire from 'proxyquire'
 // import sinon from 'sinon';
 // import configureMockStore from 'redux-mock-store';
 // import thunk from 'redux-thunk';
@@ -8,7 +8,7 @@ import proxyquire from 'proxyquire';
 // TODO -- fix up
 
 describe(`modules/reports/actions/next-report-page.js`, () => {
-  proxyquire.noPreserveCache().noCallThru();
+  proxyquire.noPreserveCache().noCallThru()
   // const middlewares = [thunk];
   // const mockStore = configureMockStore(middlewares);
 
@@ -434,4 +434,4 @@ describe(`modules/reports/actions/next-report-page.js`, () => {
   //     }]);
   //   }
   // });
-});
+})

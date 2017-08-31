@@ -1,48 +1,48 @@
-import { createSelector } from 'reselect';
-import BigNumber from 'bignumber.js';
-import store from 'src/store';
-import { selectTransactionsDataState } from 'src/select-state';
+import { createSelector } from 'reselect'
+import BigNumber from 'bignumber.js'
+import store from 'src/store'
+import { selectTransactionsDataState } from 'src/select-state'
 
-import { BUY } from 'modules/transactions/constants/types';
-import { PENDING, SUCCESS, FAILED, SUBMITTED, INTERRUPTED } from 'modules/transactions/constants/statuses';
+import { BUY } from 'modules/transactions/constants/types'
+import { PENDING, SUCCESS, FAILED, SUBMITTED, INTERRUPTED } from 'modules/transactions/constants/statuses'
 
-import getValue from 'utils/get-value';
-import { formatShares, formatEtherTokens, formatEther, formatRep } from 'utils/format-number';
+import getValue from 'utils/get-value'
+import { formatShares, formatEtherTokens, formatEther, formatRep } from 'utils/format-number'
 
 export default function () {
-  return selectTransactions(store.getState());
+  return selectTransactions(store.getState())
 }
 
 export const selectTransactions = createSelector(
   selectTransactionsDataState,
   (transactionsData) => {
-    const tradeGroups = [];
+    const tradeGroups = []
     const formattedTransactions = Object.keys(transactionsData || {})
       .reduce((p, id) => {
-        const tradeGroupID = transactionsData[id].tradeGroupID;
+        const tradeGroupID = transactionsData[id].tradeGroupID
         if (tradeGroupID) {
           if (tradeGroups.indexOf(tradeGroupID) === -1) {
-            tradeGroups.push(tradeGroupID);
-            const filteredTransactions = Object.keys(transactionsData).filter(id => transactionsData[id].tradeGroupID === tradeGroupID).map(id => transactionsData[id]);
+            tradeGroups.push(tradeGroupID)
+            const filteredTransactions = Object.keys(transactionsData).filter(id => transactionsData[id].tradeGroupID === tradeGroupID).map(id => transactionsData[id])
 
             if (filteredTransactions.length === 1) {
-              p.push(formatTransaction(filteredTransactions[0]));
+              p.push(formatTransaction(filteredTransactions[0]))
             } else {
-              p.push(formatGroupedTransactions(filteredTransactions));
+              p.push(formatGroupedTransactions(filteredTransactions))
             }
           }
 
-          return p;
+          return p
         }
 
-        p.push(formatTransaction(transactionsData[id]));
-        return p;
+        p.push(formatTransaction(transactionsData[id]))
+        return p
       }, [])
-      .sort((a, b) => getValue(b, 'timestamp.timestamp') - getValue(a, 'timestamp.timestamp'));
+      .sort((a, b) => getValue(b, 'timestamp.timestamp') - getValue(a, 'timestamp.timestamp'))
 
-    return formattedTransactions;
+    return formattedTransactions
   }
-);
+)
 
 export function formatTransaction(transaction) {
   return {
@@ -52,23 +52,23 @@ export function formatTransaction(transaction) {
     ethTokens: transaction.etherWithoutGas && formatEtherTokens(transaction.etherWithoutGas),
     shares: transaction.sharesChange && formatShares(transaction.sharesChange),
     rep: transaction.repChange && formatRep(transaction.repChange)
-  };
+  }
 }
 
 export function formatGroupedTransactions(transactions) {
-  const formattedTransactions = transactions.map(transaction => formatTransaction(transaction)).sort((a, b) => getValue(b, 'timestamp.timestamp') - getValue(a, 'timestamp.timestamp'));
+  const formattedTransactions = transactions.map(transaction => formatTransaction(transaction)).sort((a, b) => getValue(b, 'timestamp.timestamp') - getValue(a, 'timestamp.timestamp'))
 
   const status = formattedTransactions.reduce((p, transaction) => {
-    if (p === FAILED || transaction.status === FAILED) return FAILED;
-    if (p === INTERRUPTED || transaction.status === INTERRUPTED) return INTERRUPTED;
-    if (p === PENDING || transaction.status === PENDING) return PENDING;
-    if (p === SUBMITTED || transaction.status === SUBMITTED) return SUBMITTED;
-    if (transaction.status === SUCCESS) return SUCCESS;
+    if (p === FAILED || transaction.status === FAILED) return FAILED
+    if (p === INTERRUPTED || transaction.status === INTERRUPTED) return INTERRUPTED
+    if (p === PENDING || transaction.status === PENDING) return PENDING
+    if (p === SUBMITTED || transaction.status === SUBMITTED) return SUBMITTED
+    if (transaction.status === SUCCESS) return SUCCESS
 
-    return p;
-  }, null);
+    return p
+  }, null)
 
-  const totalShares = formattedTransactions.reduce((p, transaction) => p.plus(new BigNumber(transaction.numShares.value)), new BigNumber(0));
+  const totalShares = formattedTransactions.reduce((p, transaction) => p.plus(new BigNumber(transaction.numShares.value)), new BigNumber(0))
 
   return {
     status,
@@ -76,5 +76,5 @@ export function formatGroupedTransactions(transactions) {
     description: formattedTransactions[0].description,
     timestamp: formattedTransactions[formattedTransactions.length - 1].timestamp,
     transactions: formattedTransactions
-  };
+  }
 }

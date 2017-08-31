@@ -4,5 +4,5 @@
  * @return {boolean}
  */
 export default function (loginAccount) {
-  return loginAccount.address != null;
+  return loginAccount.address != null
 }

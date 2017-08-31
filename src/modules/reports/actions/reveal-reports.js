@@ -1,43 +1,43 @@
-import async from 'async';
-import { augur } from 'services/augurjs';
-import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
-import { updateAssets } from 'modules/auth/actions/update-assets';
-import { updateReports } from 'modules/reports/actions/update-reports';
+import async from 'async'
+import { augur } from 'services/augurjs'
+import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
+import { updateAssets } from 'modules/auth/actions/update-assets'
+import { updateReports } from 'modules/reports/actions/update-reports'
 
-const revealReportLock = {};
+const revealReportLock = {}
 
 export function revealReports(cb) {
   return (dispatch, getState) => {
-    const callback = cb || (e => e && console.error('revealReports:', e));
-    const { branch, loginAccount, reports } = getState();
+    const callback = cb || (e => e && console.error('revealReports:', e))
+    const { branch, loginAccount, reports } = getState()
     // Make sure that:
     //  - branch is in the second half of its reporting period
     //  - user is logged in and has Rep
     //  - that this user has committed reports to reveal
     if (branch.isReportRevealPhase && loginAccount.rep && reports) {
-      const branchReports = reports[branch.id];
-      if (!branchReports) return callback(null);
+      const branchReports = reports[branch.id]
+      if (!branchReports) return callback(null)
       const revealableReports = Object.keys(branchReports)
         .filter(eventID => branchReports[eventID].reportHash &&
         branchReports[eventID].reportHash.length && !branchReports[eventID].isRevealed && branchReports[eventID].period === branch.reportPeriod)
         .map((eventID) => {
-          const obj = { ...branchReports[eventID], eventID };
-          return obj;
-        });
-      console.log('revealableReports:', revealableReports);
+          const obj = { ...branchReports[eventID], eventID }
+          return obj
+        })
+      console.log('revealableReports:', revealableReports)
       if (revealableReports && revealableReports.length && loginAccount.address) {
         async.eachSeries(revealableReports, (report, nextReport) => {
-          const eventID = report.eventID;
-          console.log('revealReportLock:', eventID, revealReportLock[eventID]);
-          if (revealReportLock[eventID]) return nextReport();
-          revealReportLock[eventID] = true;
-          let type;
+          const eventID = report.eventID
+          console.log('revealReportLock:', eventID, revealReportLock[eventID])
+          if (revealReportLock[eventID]) return nextReport()
+          revealReportLock[eventID] = true
+          let type
           if (report.isScalar) {
-            type = SCALAR;
+            type = SCALAR
           } else if (report.isCategorical) {
-            type = CATEGORICAL;
+            type = CATEGORICAL
           } else {
-            type = BINARY;
+            type = BINARY
           }
           augur.reporting.submitReport({
             event: eventID,
@@ -50,20 +50,20 @@ export function revealReports(cb) {
             isIndeterminate: report.isIndeterminate,
             onSent: r => console.log('submitReport sent:', r),
             onSuccess: (r) => {
-              console.log('submitReport success:', r);
-              dispatch(updateAssets());
-              revealReportLock[eventID] = false;
+              console.log('submitReport success:', r)
+              dispatch(updateAssets())
+              revealReportLock[eventID] = false
               dispatch(updateReports({
                 [branch.id]: {
                   [eventID]: { ...report, isRevealed: true }
                 }
-              }));
-              nextReport();
+              }))
+              nextReport()
             },
             onFailed: e => nextReport(e)
-          });
-        }, e => callback(e));
+          })
+        }, e => callback(e))
       }
     }
-  };
+  }
 }

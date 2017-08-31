@@ -1,16 +1,16 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
-import configureMockStore from 'redux-mock-store';
-import proxyquire from 'proxyquire';
-import sinon from 'sinon';
-import thunk from 'redux-thunk';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
+import configureMockStore from 'redux-mock-store'
+import proxyquire from 'proxyquire'
+import sinon from 'sinon'
+import thunk from 'redux-thunk'
 
 describe(`modules/auth/actions/set-login-account.js`, () => {
-  proxyquire.noPreserveCache();
-  const mockStore = configureMockStore([thunk]);
+  proxyquire.noPreserveCache()
+  const mockStore = configureMockStore([thunk])
   const test = (t) => {
     it(t.description, () => {
-      const store = mockStore(t.state);
+      const store = mockStore(t.state)
       const AugurJS = {
         augur: {
           accounts: {
@@ -19,18 +19,18 @@ describe(`modules/auth/actions/set-login-account.js`, () => {
           },
           from: t.state.augur.from
         }
-      };
-      const UseUnlockedAccount = { useUnlockedAccount: () => {} };
+      }
+      const UseUnlockedAccount = { useUnlockedAccount: () => {} }
       const action = proxyquire('../../../src/modules/auth/actions/set-login-account.js', {
         '../../../services/augurjs': AugurJS,
         './use-unlocked-account': UseUnlockedAccount
-      });
-      sinon.stub(UseUnlockedAccount, 'useUnlockedAccount', account => ({ type: 'USE_UNLOCKED_ACCOUNT', account }));
-      store.dispatch(action.setLoginAccount(t.params.autoLogin, t.params.account));
-      t.assertions(store.getActions());
-      store.clearActions();
-    });
-  };
+      })
+      sinon.stub(UseUnlockedAccount, 'useUnlockedAccount', account => ({ type: 'USE_UNLOCKED_ACCOUNT', account }))
+      store.dispatch(action.setLoginAccount(t.params.autoLogin, t.params.account))
+      t.assertions(store.getActions())
+      store.clearActions()
+    })
+  }
   test({
     description: 'no account available',
     params: {
@@ -46,9 +46,9 @@ describe(`modules/auth/actions/set-login-account.js`, () => {
       }
     },
     assertions: (actions) => {
-      assert.deepEqual(actions, []);
+      assert.deepEqual(actions, [])
     }
-  });
+  })
   test({
     description: 'client-side account in augur.js, no from address',
     params: {
@@ -67,9 +67,9 @@ describe(`modules/auth/actions/set-login-account.js`, () => {
       }
     },
     assertions: (actions) => {
-      assert.deepEqual(actions, []);
+      assert.deepEqual(actions, [])
     }
-  });
+  })
   test({
     description: 'client-side account in augur.js, from address set',
     params: {
@@ -88,9 +88,9 @@ describe(`modules/auth/actions/set-login-account.js`, () => {
       }
     },
     assertions: (actions) => {
-      assert.deepEqual(actions, []);
+      assert.deepEqual(actions, [])
     }
-  });
+  })
   test({
     description: 'unlocked local account',
     params: {
@@ -109,7 +109,7 @@ describe(`modules/auth/actions/set-login-account.js`, () => {
       assert.deepEqual(actions, [{
         type: 'USE_UNLOCKED_ACCOUNT',
         account: '0xtest'
-      }]);
+      }])
     }
-  });
-});
+  })
+})

@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
-import Input from 'modules/common/components/input';
+import Input from 'modules/common/components/input'
 
-import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order';
-import { NEW_MARKET_DETAILS } from 'modules/create-market/constants/new-market-creation-steps';
+import newMarketCreationOrder from 'modules/create-market/constants/new-market-creation-order'
+import { NEW_MARKET_DETAILS } from 'modules/create-market/constants/new-market-creation-steps'
 
 export default class CreateMarketFormDetails extends Component {
   static propTypes = {
@@ -21,25 +21,25 @@ export default class CreateMarketFormDetails extends Component {
       newMarketCreationOrder[nextProps.currentStep] === NEW_MARKET_DETAILS
     ) {
       if (nextProps.validations.indexOf(NEW_MARKET_DETAILS) === -1) {
-        nextProps.updateValidity(true, true);
+        nextProps.updateValidity(true, true)
       } else {
-        nextProps.updateValidity(true);
+        nextProps.updateValidity(true)
       }
     }
 
-    if (this.props.detailsText !== nextProps.detailsText) nextProps.updateValidity(true);
+    if (this.props.detailsText !== nextProps.detailsText) nextProps.updateValidity(true)
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.currentStep !== this.props.currentStep &&
       this.props.currentStep === newMarketCreationOrder.indexOf(NEW_MARKET_DETAILS)
     ) {
-      this.defaultFormToFocus.getElementsByTagName('input')[0].focus();
+      this.defaultFormToFocus.getElementsByTagName('input')[0].focus()
     }
   }
 
   render() {
-    const p = this.props;
+    const p = this.props
 
     return (
       <article className={`create-market-form-part ${p.className || ''}`}>
@@ -52,7 +52,7 @@ export default class CreateMarketFormDetails extends Component {
             </aside>
             <div className="vertical-form-divider" />
             <form
-              ref={(defaultFormToFocus) => { this.defaultFormToFocus = defaultFormToFocus; }}
+              ref={(defaultFormToFocus) => { this.defaultFormToFocus = defaultFormToFocus }}
               onSubmit={e => e.preventDefault()}
             >
               <Input
@@ -64,6 +64,6 @@ export default class CreateMarketFormDetails extends Component {
           </div>
         </div>
       </article>
-    );
+    )
   }
 }

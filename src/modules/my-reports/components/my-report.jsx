@@ -1,6 +1,6 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import ReactTooltip from 'react-tooltip';
+import React from 'react'
+import PropTypes from 'prop-types'
+import ReactTooltip from 'react-tooltip'
 
 import ValueDenomination from 'modules/common/components/value-denomination/value-denomination';
 import ValueDate from 'modules/common/components/value-date';
@@ -98,7 +98,7 @@ const MyReport = p => (
     </div>
     <ReactTooltip type="light" effect="solid" place="top" />
   </article>
-);
+)
 
 MyReport.propTypes = {
   outcome: PropTypes.string,
@@ -112,6 +112,6 @@ MyReport.propTypes = {
   isUnethical: PropTypes.bool,
   branch: PropTypes.object.isRequired,
   endDate: PropTypes.object.isRequired
-};
+}
 
-export default MyReport;
+export default MyReport

@@ -1,20 +1,20 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
-import Augur from 'augur.js';
-import proxyquire from 'proxyquire';
-import sinon from 'sinon';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
+import Augur from 'augur.js'
+import proxyquire from 'proxyquire'
+import sinon from 'sinon'
+import configureMockStore from 'redux-mock-store'
+import thunk from 'redux-thunk'
 
 describe(`modules/transactions/actions/construct-relay-transaction.js`, function () { // eslint-disable-line func-names, prefer-arrow-callback
-  proxyquire.noPreserveCache();
-  const middlewares = [thunk];
-  const mockStore = configureMockStore(middlewares);
-  const augur = new Augur();
+  proxyquire.noPreserveCache()
+  const middlewares = [thunk]
+  const mockStore = configureMockStore(middlewares)
+  const augur = new Augur()
 
   // save the default result for calling augur.trading.simulation.getTxGasEth
-  const defaultTxGasEth = augur.abi.unfix(augur.abi.bignum(augur.rpc.constants.DEFAULT_GAS).times(augur.abi.bignum(augur.constants.DEFAULT_GASPRICE))).toFixed();
-  const functionsAPI = augur.api;
+  const defaultTxGasEth = augur.abi.unfix(augur.abi.bignum(augur.rpc.constants.DEFAULT_GAS).times(augur.abi.bignum(augur.constants.DEFAULT_GASPRICE))).toFixed()
+  const functionsAPI = augur.api
   const contractAddresses = {
     Backstops: '0x708fdfe18bf28afe861a69e95419d183ace003eb',
     Branches: '0x482c57abdce592b39434e3f619ffc3db62ab6d01',
@@ -51,19 +51,19 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
     SlashRep: '0x5069d883e31429c6dd1325d961f443007747c7a2',
     Trade: '0x031d9d02520cc708ea3c865278508c9cdb92bd51',
     Trades: '0x448c01a2e1fd6c2ef133402c403d2f48c99993e7'
-  };
+  }
 
   beforeEach(() => {
-    this.clock = sinon.useFakeTimers(1485907200000);
-  });
+    this.clock = sinon.useFakeTimers(1485907200000)
+  })
 
   after(() => {
-    this.clock.restore();
-  });
+    this.clock.restore()
+  })
 
   const test = (t) => {
     it(t.description, () => {
-      const store = mockStore(t.state);
+      const store = mockStore(t.state)
       const AugurJS = {
         abi: {
           bignum: (n, type) => augur.abi.bignum(n, type),
@@ -85,22 +85,22 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
         rpc: {
           gasPrice: 20000000000
         }
-      };
+      }
       const ConstructTransaction = {
         constructTradingTransaction: () => {},
         constructTransaction: () => {}
-      };
+      }
       const DeleteTransaction = {
         deleteTransaction: () => {}
-      };
+      }
       const Market = {
         selectMarketFromEventID: () => {}
-      };
-      AugurJS.augur.trading.takeOrder.selectOrder = sinon.stub().returns(t.selectors.order);
+      }
+      AugurJS.augur.trading.takeOrder.selectOrder = sinon.stub().returns(t.selectors.order)
       const UpdateTradeCommitment = {
         updateTradeCommitment: () => {}
-      };
-      const WinningPositions = sinon.stub().returns(t.selectors.winningPositions);
+      }
+      const WinningPositions = sinon.stub().returns(t.selectors.winningPositions)
       const action = proxyquire('../../../src/modules/transactions/actions/construct-relay-transaction.js', {
         '../../../services/augurjs': AugurJS,
         '../../trade/actions/update-trade-commitment': UpdateTradeCommitment,
@@ -108,28 +108,28 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
         './construct-transaction': ConstructTransaction,
         '../../market/selectors/market': Market,
         '../../my-positions/selectors/winning-positions': WinningPositions
-      });
-      sinon.stub(Market, 'selectMarketFromEventID', eventID => t.selectors.marketFromEventID[eventID]);
+      })
+      sinon.stub(Market, 'selectMarketFromEventID', eventID => t.selectors.marketFromEventID[eventID])
       sinon.stub(ConstructTransaction, 'constructTradingTransaction', (label, trade, marketID, outcomeID, status) => (
         (dispatch) => {
-          dispatch({ type: 'CONSTRUCT_TRADING_TRANSACTION', label, trade, marketID, outcomeID, status });
-          return { label, trade, marketID, outcomeID, status };
+          dispatch({ type: 'CONSTRUCT_TRADING_TRANSACTION', label, trade, marketID, outcomeID, status })
+          return { label, trade, marketID, outcomeID, status }
         }
-      ));
+      ))
       sinon.stub(ConstructTransaction, 'constructTransaction', (label, log) => (
         (dispatch) => {
-          dispatch({ type: 'CONSTRUCT_TRANSACTION', label, log });
-          return { label, log };
+          dispatch({ type: 'CONSTRUCT_TRANSACTION', label, log })
+          return { label, log }
         }
-      ));
+      ))
       sinon.stub(UpdateTradeCommitment, 'updateTradeCommitment', tradeCommitment => dispatch => (
         dispatch({ type: 'UPDATE_TRADE_COMMITMENT', tradeCommitment })
-      ));
-      const relayTransaction = store.dispatch(action.constructRelayTransaction(t.params.tx, t.params.status));
-      t.assertions(store.getActions(), relayTransaction);
-      store.clearActions();
-    });
-  };
+      ))
+      const relayTransaction = store.dispatch(action.constructRelayTransaction(t.params.tx, t.params.status))
+      t.assertions(store.getActions(), relayTransaction)
+      store.clearActions()
+    })
+  }
 
   test({
     description: 'construct relayed buy transaction (sent)',
@@ -231,7 +231,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
         marketID: '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2',
         outcomeID: '2',
         status: 'sent',
-      };
+      }
       const expected = [
         {
           data: {
@@ -250,12 +250,12 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
           ...expectedRelayTransaction,
           type: 'CONSTRUCT_TRADING_TRANSACTION'
         }
-      ];
+      ]
 
-      assert.deepEqual(actions, expected);
-      assert.deepEqual(relayTransaction, expectedRelayTransaction);
+      assert.deepEqual(actions, expected)
+      assert.deepEqual(relayTransaction, expectedRelayTransaction)
     }
-  });
+  })
 
   test({
     description: 'construct relayed buy transaction (success)',
@@ -371,7 +371,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
         marketID: '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2',
         outcomeID: '2',
         status: 'success'
-      };
+      }
       const expected = [
         {
           data: {
@@ -390,11 +390,11 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
           ...expectedRelayTransaction,
           type: 'CONSTRUCT_TRADING_TRANSACTION'
         }
-      ];
-      assert.deepEqual(actions, expected);
-      assert.deepEqual(relayTransaction, expectedRelayTransaction);
+      ]
+      assert.deepEqual(actions, expected)
+      assert.deepEqual(relayTransaction, expectedRelayTransaction)
     }
-  });
+  })
 
   test({
     description: 'construct relayed shortAsk transaction (sent)',
@@ -499,7 +499,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
         marketID: '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2',
         outcomeID: '2',
         status: 'sent'
-      };
+      }
       const expected = [
         {
           data: {
@@ -518,11 +518,11 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
           ...expectedRelayTransaction,
           type: 'CONSTRUCT_TRADING_TRANSACTION'
         }
-      ];
-      assert.deepEqual(actions, expected);
-      assert.deepEqual(relayTransaction, expectedRelayTransaction);
+      ]
+      assert.deepEqual(actions, expected)
+      assert.deepEqual(relayTransaction, expectedRelayTransaction)
     }
-  });
+  })
 
   test({
     description: 'construct relayed shortAsk transaction (success)',
@@ -641,7 +641,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
         marketID: '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2',
         outcomeID: '2',
         status: 'success'
-      };
+      }
       const expected = [
         {
           data: {
@@ -660,11 +660,11 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
           ...expectedRelayTransaction,
           type: 'CONSTRUCT_TRADING_TRANSACTION'
         }
-      ];
-      assert.deepEqual(actions, expected);
-      assert.deepEqual(relayTransaction, expectedRelayTransaction);
+      ]
+      assert.deepEqual(actions, expected)
+      assert.deepEqual(relayTransaction, expectedRelayTransaction)
     }
-  });
+  })
 
   test({
     description: 'construct relayed sell transaction (sent)',
@@ -767,7 +767,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
         marketID: '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2',
         outcomeID: '2',
         status: 'sent'
-      };
+      }
       const expected = [
         {
           data: {
@@ -786,11 +786,11 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
           ...expectedRelayTransaction,
           type: 'CONSTRUCT_TRADING_TRANSACTION'
         }
-      ];
-      assert.deepEqual(actions, expected);
-      assert.deepEqual(relayTransaction, expectedRelayTransaction);
+      ]
+      assert.deepEqual(actions, expected)
+      assert.deepEqual(relayTransaction, expectedRelayTransaction)
     }
-  });
+  })
 
   test({
     description: 'construct relayed sell transaction (success)',
@@ -908,7 +908,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
         marketID: '0xf7f7c43852ae0a73fe2a668b1a74a111848abeeff1797789f5b900e59eab25a2',
         outcomeID: '2',
         status: 'success'
-      };
+      }
       const expected = [
         {
           data: {
@@ -927,9 +927,9 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
           ...expectedRelayTransaction,
           type: 'CONSTRUCT_TRADING_TRANSACTION'
         }
-      ];
-      assert.deepEqual(actions, expected);
-      assert.deepEqual(relayTransaction, expectedRelayTransaction);
+      ]
+      assert.deepEqual(actions, expected)
+      assert.deepEqual(relayTransaction, expectedRelayTransaction)
     }
-  });
-});
+  })
+})

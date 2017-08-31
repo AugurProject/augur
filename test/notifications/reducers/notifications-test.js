@@ -1,30 +1,30 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
 
 import {
   ADD_NOTIFICATION,
   REMOVE_NOTIFICATION,
   UPDATE_NOTIFICATION,
   CLEAR_NOTIFICATIONS
-} from 'modules/notifications/actions/update-notifications';
+} from 'modules/notifications/actions/update-notifications'
 
-import notifications from 'modules/notifications/reducers/notifications';
+import notifications from 'modules/notifications/reducers/notifications'
 
 describe('modules/notifications/reducers/notifications', () => {
   const test = (t) => {
     it(t.description, () => {
-      t.assertions();
-    });
-  };
+      t.assertions()
+    })
+  }
 
   test({
     description: `should return the default state`,
     assertions: () => {
-      const actual = notifications(undefined, {});
-      const expected = [];
-      assert.deepEqual(actual, expected, `Didn't return the expected array`);
+      const actual = notifications(undefined, {})
+      const expected = []
+      assert.deepEqual(actual, expected, `Didn't return the expected array`)
     }
-  });
+  })
 
   test({
     description: `should return the expected array for type ADD_NOTIFICATION`,
@@ -36,15 +36,15 @@ describe('modules/notifications/reducers/notifications', () => {
             id: '0xTEST'
           }
         }
-      });
+      })
       const expected = [
         {
           id: '0xTEST'
         }
-      ];
-      assert.deepEqual(actual, expected, `Didn't return the expected array`);
+      ]
+      assert.deepEqual(actual, expected, `Didn't return the expected array`)
     }
-  });
+  })
 
   test({
     description: `should return the expected array for type REMOVE_NOTIFICATION`,
@@ -57,13 +57,13 @@ describe('modules/notifications/reducers/notifications', () => {
         ], {
           type: REMOVE_NOTIFICATION,
           data: 0
-        });
+        })
 
-      const expected = [];
+      const expected = []
 
-      assert.deepEqual(actual, expected, `Didn't return the expected array`);
+      assert.deepEqual(actual, expected, `Didn't return the expected array`)
     }
-  });
+  })
 
   test({
     description: `should return the expected array for type UPDATE_NOTIFICATION`,
@@ -85,7 +85,7 @@ describe('modules/notifications/reducers/notifications', () => {
               testing: 'new object'
             }
           }
-        });
+        })
 
       const expected = [
         {
@@ -95,11 +95,11 @@ describe('modules/notifications/reducers/notifications', () => {
           id: '0xTest1',
           testing: 'new object'
         }
-      ];
+      ]
 
-      assert.deepEqual(actual, expected, `Didn't return the expected array`);
+      assert.deepEqual(actual, expected, `Didn't return the expected array`)
     }
-  });
+  })
 
   test({
     description: `should return the expected array for type CLEAR_NOTIFICATIONS`,
@@ -111,11 +111,11 @@ describe('modules/notifications/reducers/notifications', () => {
           }
         ], {
           type: CLEAR_NOTIFICATIONS
-        });
+        })
 
-      const expected = [];
+      const expected = []
 
-      assert.deepEqual(actual, expected, `Didn't return the expected array`);
+      assert.deepEqual(actual, expected, `Didn't return the expected array`)
     }
-  });
-});
+  })
+})

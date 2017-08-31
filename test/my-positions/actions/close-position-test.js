@@ -1,47 +1,47 @@
-import { describe, it } from 'mocha';
-import { assert } from 'chai';
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
-import proxyquire from 'proxyquire';
-import sinon from 'sinon';
-import BigNumber from 'bignumber.js';
+import { describe, it } from 'mocha'
+import { assert } from 'chai'
+import configureMockStore from 'redux-mock-store'
+import thunk from 'redux-thunk'
+import proxyquire from 'proxyquire'
+import sinon from 'sinon'
+import BigNumber from 'bignumber.js'
 
-import { getBestFill } from 'modules/my-positions/actions/close-position';
+import { getBestFill } from 'modules/my-positions/actions/close-position'
 
-import { BUY, SELL } from 'modules/trade/constants/types';
-import { UPDATE_TRADE_COMMIT_LOCK } from 'modules/trade/actions/update-trade-commitment';
+import { BUY, SELL } from 'modules/trade/constants/types'
+import { UPDATE_TRADE_COMMIT_LOCK } from 'modules/trade/actions/update-trade-commitment'
 
 describe('modules/my-positions/actions/close-position.js', () => {
-  proxyquire.noPreserveCache().noCallThru();
+  proxyquire.noPreserveCache().noCallThru()
 
-  const middlewares = [thunk];
-  const mockStore = configureMockStore(middlewares);
+  const middlewares = [thunk]
+  const mockStore = configureMockStore(middlewares)
 
   const MOCK_ACTION_TYPES = {
     CLEAR_CLOSE_POSITION_OUTCOME: 'CLEAR_CLOSE_POSITION_OUTCOME',
     ADD_CLOSE_POSITION_TRADE_GROUP: 'ADD_CLOSE_POSITION_TRADE_GROUP'
-  };
+  }
 
   describe('closePosition', () => {
     const mockUpdateTradesInProgress = {
       updateTradesInProgress: () => {}
-    };
-    sinon.stub(mockUpdateTradesInProgress, 'updateTradesInProgress', (marketID, outcomeID, side, numShares, limitPrice, maxCost, cb) => (dispatch, getState) => cb());
+    }
+    sinon.stub(mockUpdateTradesInProgress, 'updateTradesInProgress', (marketID, outcomeID, side, numShares, limitPrice, maxCost, cb) => (dispatch, getState) => cb())
     const mockClearClosePositionOutcome = {
       clearClosePositionOutcome: sinon.stub().returns({ type: MOCK_ACTION_TYPES.CLEAR_CLOSE_POSITION_OUTCOME })
-    };
+    }
     const mockPlaceTrade = {
       placeTrade: () => {}
-    };
+    }
     const mockAddClosePositionTradeGroup = {
       addClosePositionTradeGroup: sinon.stub().returns({
         type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP
       })
-    };
+    }
     const mockLoadBidsAsks = {
       loadBidsAsks: () => {}
-    };
-    sinon.stub(mockLoadBidsAsks, 'loadBidsAsks', (marketID, cb) => dispatch => cb());
+    }
+    sinon.stub(mockLoadBidsAsks, 'loadBidsAsks', (marketID, cb) => dispatch => cb())
     const mockMarkets = sinon.stub().returns([
       {
         id: '0xMARKETID',
@@ -56,7 +56,7 @@ describe('modules/my-positions/actions/close-position.js', () => {
           }
         ]
       }
-    ]);
+    ])
 
     const action = proxyquire('../../../src/modules/my-positions/actions/close-position.js', {
       '../../trade/actions/update-trades-in-progress': mockUpdateTradesInProgress,
@@ -65,27 +65,27 @@ describe('modules/my-positions/actions/close-position.js', () => {
       './clear-close-position-outcome': mockClearClosePositionOutcome,
       '../../bids-asks/actions/load-bids-asks': mockLoadBidsAsks,
       '../../markets/selectors/markets-all': mockMarkets
-    });
+    })
 
     afterEach(() => {
-      mockPlaceTrade.placeTrade.restore();
-    });
+      mockPlaceTrade.placeTrade.restore()
+    })
 
     const test = (t) => {
       it(t.description, () => {
-        const store = mockStore(t.state || {});
+        const store = mockStore(t.state || {})
 
         sinon.stub(mockPlaceTrade, 'placeTrade', (marketID, outcomeID, tradesInProgress, doNotMakeOrders, cb) => (dispatch, getState) => {
           if (t.placeTradeFails) {
-            cb(true);
+            cb(true)
           } else {
-            cb(null, t.tradeGroupID);
+            cb(null, t.tradeGroupID)
           }
-        });
+        })
 
-        t.assertions(store);
-      });
-    };
+        t.assertions(store)
+      })
+    }
 
     test({
       description: `should dispatch the expected actions WITHOUT available orders`,
@@ -103,10 +103,10 @@ describe('modules/my-positions/actions/close-position.js', () => {
         }
       },
       assertions: (store) => {
-        const { marketID, outcomeID } = store.getState();
-        store.dispatch(action.closePosition(marketID, outcomeID));
+        const { marketID, outcomeID } = store.getState()
+        store.dispatch(action.closePosition(marketID, outcomeID))
 
-        const actual = store.getActions();
+        const actual = store.getActions()
 
         const expected = [
           {
@@ -126,11 +126,11 @@ describe('modules/my-positions/actions/close-position.js', () => {
           {
             type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP
           }
-        ];
+        ]
 
-        assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
+        assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`)
       }
-    });
+    })
 
     test({
       description: `should dispatch the expected actions WITH available orders AND placeTrade fails`,
@@ -186,10 +186,10 @@ describe('modules/my-positions/actions/close-position.js', () => {
       },
       placeTradeFails: true,
       assertions: (store) => {
-        const { marketID, outcomeID } = store.getState();
-        store.dispatch(action.closePosition(marketID, outcomeID));
+        const { marketID, outcomeID } = store.getState()
+        store.dispatch(action.closePosition(marketID, outcomeID))
 
-        const actual = store.getActions();
+        const actual = store.getActions()
 
         const expected = [
           {
@@ -206,11 +206,11 @@ describe('modules/my-positions/actions/close-position.js', () => {
           {
             type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP
           }
-        ];
+        ]
 
-        assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
+        assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`)
       }
-    });
+    })
 
     test({
       description: `should dispatch the expected actions WITH available orders AND placeTrade succeeds`,
@@ -258,10 +258,10 @@ describe('modules/my-positions/actions/close-position.js', () => {
         }
       },
       assertions: (store) => {
-        const { marketID, outcomeID } = store.getState();
-        store.dispatch(action.closePosition(marketID, outcomeID));
+        const { marketID, outcomeID } = store.getState()
+        store.dispatch(action.closePosition(marketID, outcomeID))
 
-        const actual = store.getActions();
+        const actual = store.getActions()
 
         const expected = [
           {
@@ -274,21 +274,21 @@ describe('modules/my-positions/actions/close-position.js', () => {
           {
             type: MOCK_ACTION_TYPES.ADD_CLOSE_POSITION_TRADE_GROUP
           }
-        ];
+        ]
 
-        assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`);
+        assert.deepEqual(actual, expected, `Didn't dispatch the expected actions`)
       }
-    });
-  });
+    })
+  })
 
   describe('getBestFill', () => {
     const test = (t) => {
       it(t.description, () => {
-        const bestFill = getBestFill(t.state.orderBook, t.arguments.side, t.arguments.shares, t.arguments.marketID, t.arguments.outcomeID, t.arguments.userAddress);
+        const bestFill = getBestFill(t.state.orderBook, t.arguments.side, t.arguments.shares, t.arguments.marketID, t.arguments.outcomeID, t.arguments.userAddress)
 
-        t.assertions(bestFill);
-      });
-    };
+        t.assertions(bestFill)
+      })
+    }
 
     test({
       description: `-1 share position, empty order book`,
@@ -306,9 +306,9 @@ describe('modules/my-positions/actions/close-position.js', () => {
         assert.deepEqual(bestFill, {
           amountOfShares: new BigNumber(0),
           price: new BigNumber(0)
-        });
+        })
       }
-    });
+    })
 
     test({
       description: `1 share position, empty order book`,
@@ -326,9 +326,9 @@ describe('modules/my-positions/actions/close-position.js', () => {
         assert.deepEqual(bestFill, {
           amountOfShares: new BigNumber(0),
           price: new BigNumber(0)
-        });
+        })
       }
-    });
+    })
 
     test({
       description: `10 shares position, sufficent order book depth to fully close`,
@@ -365,9 +365,9 @@ describe('modules/my-positions/actions/close-position.js', () => {
         assert.deepEqual(bestFill, {
           amountOfShares: new BigNumber(10),
           price: new BigNumber(0.11)
-        });
+        })
       }
-    });
+    })
 
     test({
       description: `10 shares position, sufficent order book depth for a partial close`,
@@ -404,9 +404,9 @@ describe('modules/my-positions/actions/close-position.js', () => {
         assert.deepEqual(bestFill, {
           amountOfShares: new BigNumber(3),
           price: new BigNumber(0.10)
-        });
+        })
       }
-    });
+    })
 
     test({
       description: `-10 shares position, sufficent order book depth to fully close`,
@@ -443,9 +443,9 @@ describe('modules/my-positions/actions/close-position.js', () => {
         assert.deepEqual(bestFill, {
           amountOfShares: new BigNumber(10),
           price: new BigNumber(0.2)
-        });
+        })
       }
-    });
+    })
 
     test({
       description: `-10 shares position, sufficent order book depth for a partial close`,
@@ -482,8 +482,8 @@ describe('modules/my-positions/actions/close-position.js', () => {
         assert.deepEqual(bestFill, {
           amountOfShares: new BigNumber(3),
           price: new BigNumber(0.11)
-        });
+        })
       }
-    });
-  });
-});
+    })
+  })
+})

@@ -1,33 +1,33 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
-import ComponentNav from 'modules/common/components/component-nav';
-import MarketPositions from 'modules/market/components/market-positions';
-import MarketOpenOrders from 'modules/market/components/market-open-orders';
+import ComponentNav from 'modules/common/components/component-nav'
+import MarketPositions from 'modules/market/components/market-positions'
+import MarketOpenOrders from 'modules/market/components/market-open-orders'
 
-import { MARKET_USER_DATA_NAV_POSITIONS, MARKET_USER_DATA_NAV_OPEN_ORDERS } from 'modules/app/constants/views';
+import { MARKET_USER_DATA_NAV_POSITIONS, MARKET_USER_DATA_NAV_OPEN_ORDERS } from 'modules/app/constants/views'
 
-import getValue from 'utils/get-value';
+import getValue from 'utils/get-value'
 
 export default class MarketUserData extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
       selectedNav: MARKET_USER_DATA_NAV_POSITIONS
-    };
+    }
 
-    this.updateSelectedNav = this.updateSelectedNav.bind(this);
+    this.updateSelectedNav = this.updateSelectedNav.bind(this)
   }
 
   updateSelectedNav(selectedNav) {
-    this.setState({ selectedNav });
+    this.setState({ selectedNav })
   }
 
   render() {
-    const p = this.props;
-    const s = this.state;
+    const p = this.props
+    const s = this.state
 
-    const outcomes = getValue(p, 'market.outcomes');
+    const outcomes = getValue(p, 'market.outcomes')
 
     return (
       <article className="market-user-data">
@@ -53,6 +53,6 @@ export default class MarketUserData extends Component {
           />
         }
       </article>
-    );
+    )
   }
 }

@@ -1,17 +1,17 @@
-import Augur from 'augur.js';
-import { describe, it, beforeEach, afterEach } from 'mocha';
-import { assert } from 'chai';
-import proxyquire from 'proxyquire';
-import sinon from 'sinon';
-import * as mocks from 'test/mockStore';
-import { BUY, tradeTestState, tradeConstOrderBooks } from 'test/trade/constants';
+import Augur from 'augur.js'
+import { describe, it, beforeEach, afterEach } from 'mocha'
+import { assert } from 'chai'
+import proxyquire from 'proxyquire'
+import sinon from 'sinon'
+import * as mocks from 'test/mockStore'
+import { BUY, tradeTestState, tradeConstOrderBooks } from 'test/trade/constants'
 
 describe(`modules/trade/actions/place-trade.js`, () => {
-  proxyquire.noPreserveCache();
-  const augur = new Augur();
-  const { state, mockStore } = mocks.default;
-  const testState = Object.assign({}, state, tradeTestState);
-  testState.orderBooks = tradeConstOrderBooks;
+  proxyquire.noPreserveCache()
+  const augur = new Augur()
+  const { state, mockStore } = mocks.default
+  const testState = Object.assign({}, state, tradeTestState)
+  testState.orderBooks = tradeConstOrderBooks
   testState.tradesInProgress = {
     testBinaryMarketID: {
       2: {
@@ -35,13 +35,13 @@ describe(`modules/trade/actions/place-trade.js`, () => {
         feePercent: '0.199203187250996016'
       }
     }
-  };
+  }
   testState.loginAccount = {
     address: '0xb0b',
     privateKey: 'this is a private key'
-  };
-  const store = mockStore(testState);
-  const SelectMarket = { selectMarket: () => {} };
+  }
+  const store = mockStore(testState)
+  const SelectMarket = { selectMarket: () => {} }
   const AugurJS = {
     abi: {
       bignum: () => {},
@@ -52,30 +52,30 @@ describe(`modules/trade/actions/place-trade.js`, () => {
         group: { executeTradingActions: () => {} }
       }
     }
-  };
-  sinon.stub(SelectMarket, 'selectMarket', marketID => store.getState().marketsData[marketID]);
-  sinon.stub(AugurJS.abi, 'bignum', n => augur.abi.bignum(n));
-  sinon.stub(AugurJS.abi, 'format_int256', n => augur.abi.format_int256(n));
+  }
+  sinon.stub(SelectMarket, 'selectMarket', marketID => store.getState().marketsData[marketID])
+  sinon.stub(AugurJS.abi, 'bignum', n => augur.abi.bignum(n))
+  sinon.stub(AugurJS.abi, 'format_int256', n => augur.abi.format_int256(n))
   sinon.stub(AugurJS.augur.trading.group, 'executeTradingActions', (market, outcomeID, address, getOrderBooks, doNotMakeOrders, tradesInProgress, tradeCommitmentCallback, tradeCommitLockCallback, callback) => {
     store.dispatch({
       type: 'AUGURJS_EXECUTE_TRADING_ACTIONS',
       params: [market, outcomeID, address, doNotMakeOrders, tradesInProgress]
-    });
-    callback(null);
-  });
+    })
+    callback(null)
+  })
 
   const action = proxyquire('../../../src/modules/trade/actions/place-trade.js', {
     '../../../services/augurjs': AugurJS,
     '../../market/selectors/market': SelectMarket
-  });
+  })
 
   beforeEach(() => {
-    store.clearActions();
-  });
+    store.clearActions()
+  })
 
   afterEach(() => {
-    store.clearActions();
-  });
+    store.clearActions()
+  })
 
   it('should place a BUY trade for a binary market', () => {
     const tradeToExecute = {
@@ -99,9 +99,9 @@ describe(`modules/trade/actions/place-trade.js`, () => {
         gasFeesRealEth: '0.01450404',
         feePercent: '0.199203187250996016'
       }
-    };
+    }
 
-    store.dispatch(action.placeTrade('testBinaryMarketID', '2', tradeToExecute));
+    store.dispatch(action.placeTrade('testBinaryMarketID', '2', tradeToExecute))
     // console.log(JSON.stringify(store.getActions(), null, 2));
     assert.deepEqual(store.getActions(), [{
       type: 'AUGURJS_EXECUTE_TRADING_ACTIONS',
@@ -138,29 +138,29 @@ describe(`modules/trade/actions/place-trade.js`, () => {
     }, { type: 'UPDATE_TRADE_COMMIT_LOCK', isLocked: null }, {
       type: 'CLEAR_TRADE_IN_PROGRESS',
       marketID: 'testBinaryMarketID'
-    }]);
-    assert.isFunction(store.getActions()[0].params[3], 'expected the 4th param in the AUGURJS_EXECUTE_TRADING_ACTIONS action to be a function');
-  });
+    }])
+    assert.isFunction(store.getActions()[0].params[3], 'expected the 4th param in the AUGURJS_EXECUTE_TRADING_ACTIONS action to be a function')
+  })
 
   it('should handle a null/undefined outcomeID', () => {
-    store.dispatch(action.placeTrade('testBinaryMarketID', null));
+    store.dispatch(action.placeTrade('testBinaryMarketID', null))
     assert.deepEqual(store.getActions(), [{
       type: 'CLEAR_TRADE_IN_PROGRESS',
       marketID: 'testBinaryMarketID'
-    }], `Didn't produce the expected actions for passing a null outcomeID to place-trade`);
-    store.clearActions();
-    store.dispatch(action.placeTrade('testBinaryMarketID', undefined));
+    }], `Didn't produce the expected actions for passing a null outcomeID to place-trade`)
+    store.clearActions()
+    store.dispatch(action.placeTrade('testBinaryMarketID', undefined))
     assert.deepEqual(store.getActions(), [{
       type: 'CLEAR_TRADE_IN_PROGRESS',
       marketID: 'testBinaryMarketID'
-    }], `Didn't produce the expected actions for passing a undefined outcomeID to place-trade`);
-  });
+    }], `Didn't produce the expected actions for passing a undefined outcomeID to place-trade`)
+  })
 
   it('should handle a null/undefined marketID', () => {
-    store.dispatch(action.placeTrade(null, '1'));
-    assert.deepEqual(store.getActions(), [], `Didn't fail out as expected for passing a null marketID to place-trade`);
-    store.clearActions();
-    store.dispatch(action.placeTrade(undefined, '1'));
-    assert.deepEqual(store.getActions(), [], `Didn't fail out as expected for passing a undefined marketID to place-trade`);
-  });
-});
+    store.dispatch(action.placeTrade(null, '1'))
+    assert.deepEqual(store.getActions(), [], `Didn't fail out as expected for passing a null marketID to place-trade`)
+    store.clearActions()
+    store.dispatch(action.placeTrade(undefined, '1'))
+    assert.deepEqual(store.getActions(), [], `Didn't fail out as expected for passing a undefined marketID to place-trade`)
+  })
+})

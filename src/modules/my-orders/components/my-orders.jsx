@@ -1,11 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import MarketOpenOrdersGroup from 'modules/market/components/market-open-orders-group';
+import MarketOpenOrdersGroup from 'modules/market/components/market-open-orders-group'
 
-import { SCALAR } from 'modules/markets/constants/market-types';
+import { SCALAR } from 'modules/markets/constants/market-types'
 
-import getValue from 'utils/get-value';
+import getValue from 'utils/get-value'
 
 const MyOrders = p => (
   <article className="my-orders market-open-orders">
@@ -17,7 +17,7 @@ const MyOrders = p => (
       <span>Action</span>
     </div>
     {(p.outcomes || []).map((outcome, index) => {
-      const lastPricePercent = getValue(outcome, 'lastPricePercent.rounded');
+      const lastPricePercent = getValue(outcome, 'lastPricePercent.rounded')
 
       return (
         <MarketOpenOrdersGroup
@@ -30,15 +30,15 @@ const MyOrders = p => (
           orderCancellation={p.orderCancellation}
           selectedShareDenomination={p.selectedShareDenomination}
         />
-      );
+      )
     })}
   </article>
-);
+)
 
 MyOrders.propTypes = {
   outcomes: PropTypes.array.isRequired,
   marketType: PropTypes.string.isRequired,
   orderCancellation: PropTypes.object.isRequired
-};
+}
 
-export default MyOrders;
+export default MyOrders
