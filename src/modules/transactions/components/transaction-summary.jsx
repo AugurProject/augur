@@ -59,12 +59,8 @@ function transactionAction(transaction) {
         return 'Fund Account ';
       case BUY:
         return 'Buy ';
-      case BID:
-        return 'Bid ';
       case SELL:
         return 'Sell ';
-      case ASK:
-        return 'Ask ';
       case SHORT_SELL:
         return 'Short Sell ';
       case SHORT_ASK:
@@ -95,9 +91,7 @@ function transactionAction(transaction) {
 function transactionActionDetails(transaction) {
   switch (transaction.type) {
     case BUY:
-    case BID:
     case SELL:
-    case ASK:
     case SHORT_SELL:
     case SHORT_ASK:
     case MATCH_BID:
