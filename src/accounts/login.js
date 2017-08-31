@@ -1,10 +1,5 @@
 "use strict";
 
-/** Type definition for CipherParams.
- * @typedef {Object} CipherParams
- * @property {string} iv Initialization vector used for this account, as a hexadecimal string.
- */
-
 /** Type definition for Pbkdf2Params.
  * @typedef {Object} Pbkdf2Params
  * @property {number} dklen Key length in bytes (usually 32).
@@ -24,18 +19,19 @@
 
 /** Type definition for KeystoreCrypto.
  * @typedef {Object} KeystoreCrypto
- * @property {string} cipher
- * @property {string} ciphertext
- * @property {CipherParams} cipherparams
- * @property {string} kdf
- * @property {ScryptParams|Pbkdf2Params} kdfparams
- * @property {string} mac
+ * @property {string} cipher The symmetric cipher used to encrypt this account's private key (usually aes-128-ctr).
+ * @property {string} ciphertext This account's encrypted private key, as a hexadecimal string.
+ * @property {Object} cipherparams Object containing the initialization vector for this account.
+ * @property {string} cipherparams.iv Initialization vector used for this account, as a hexadecimal string.
+ * @property {string} kdf Key derivation function name (usually scrypt; pbkdf2 is also supported).
+ * @property {ScryptParams|Pbkdf2Params} kdfparams Key derivation function parameters.
+ * @property {string} mac Message authentication code, as a hexadecimal string.
  */
 
 /** Type definition for Keystore.
  * @typedef {Object} Keystore
  * @property {string} address This account's Ethereum address, as a hexadecimal string.
- * @property {KeystoreCrypto} crypto Encryption parameters for this account's private key.
+ * @property {KeystoreCrypto} crypto Parameters used to encrypt this account's private key.
  * @property {string} id This account's UUID.
  * @property {number} version Keystore version number (usually 3).
  */
@@ -47,6 +43,7 @@ var errors = require("../rpc-interface").errors;
 /**
  * @param {Object} p Parameters object.
  * @param {string} p.password Password for the account being imported.
+ * @param {string} p.address Ethereum address for this account, as a hexadecimal string.
  * @param {Keystore} p.keystore Keystore object containing this account's encryption parameters.
  * @param {function} callback Called after the account has been successfully generated.
  * @return {require("./register").Account} Logged-in account object.
@@ -54,6 +51,7 @@ var errors = require("../rpc-interface").errors;
 function login(p, callback) {
   var password = p.password;
   var keystore = p.keystore;
+  var address = p.address;
   if (!keystore || password == null || password === "") return callback(errors.BAD_CREDENTIALS);
   var keystoreCrypto = keystore.crypto || keystore.Crypto;
 
@@ -61,7 +59,7 @@ function login(p, callback) {
   keythereum.deriveKey(password, keystoreCrypto.kdfparams.salt, {
     kdf: keystoreCrypto.kdf,
     kdfparams: keystoreCrypto.kdfparams,
-    cipher: keystoreCrypto.kdf
+    cipher: keystoreCrypto.cipher
   }, function (derivedKey) {
     if (!derivedKey || derivedKey.error) return callback(errors.BAD_CREDENTIALS);
 
@@ -75,7 +73,7 @@ function login(p, callback) {
     try {
       callback({
         privateKey: keythereum.decrypt(storedKey, derivedKey.slice(0, 16), keystoreCrypto.cipherparams.iv),
-        address: abi.format_address(keystore.address),
+        address: abi.format_address(address),
         keystore: keystore,
         derivedKey: derivedKey
       });
