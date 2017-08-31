@@ -2,17 +2,10 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
-// import { Link } from 'react-router-dom';
-// import classNames from 'classnames';
 
 import SVG from 'modules/common/components/svg/svg'
 
 import toggleTag from 'modules/app/helpers/toggle-tag'
-// import makePath from 'modules/app/helpers/make-path';
-// import makeQuery from 'modules/app/helpers/make-query';
-
-// import { MARKET } from 'modules/app/constants/views';
-// import { MARKET_ID_PARAM_NAME, MARKET_DESCRIPTION_PARAM_NAME } from 'modules/app/constants/param-names';
 
 import Styles from 'modules/market/components/market-basics/market-basics.styles'
 
@@ -46,24 +39,6 @@ const MarketBasics = (p) => {
 
         <h1>{ p.description }</h1>
       </div>
-
-      {/*
-      {p.id && p.formattedDescription ?
-        <Link
-          to={{
-            pathname: makePath(MARKET),
-            search: makeQuery({
-              [MARKET_DESCRIPTION_PARAM_NAME]: p.formattedDescription,
-              [MARKET_ID_PARAM_NAME]: p.id
-            })
-          }}
-          className="market-description"
-        >
-          {p.description}
-        </Link> :
-        <span className="market-description">{p.description}</span>
-      }
-      */}
     </article>
   )
 }
