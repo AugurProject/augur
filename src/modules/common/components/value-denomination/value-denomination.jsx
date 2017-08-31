@@ -2,8 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import ReactTooltip from 'react-tooltip'
 
-import EmDash from 'modules/common/components/em-dash'
-
 import Styles from 'modules/common/components/value-denomination/value-denomination.styles'
 
 const ValueDenomination = p => (
@@ -31,7 +29,7 @@ const ValueDenomination = p => (
       <span className={Styles.ValueDenomimntion__postfix}>{p.postfix}</span>
     }
     {!p.value && p.value !== 0 && !p.formatted && p.formatted !== '0' && // null/undefined state handler
-      <span><EmDash /></span>
+      <span>&mdash;</span>
     }
     <ReactTooltip type="light" effect="solid" place="top" />
   </span>

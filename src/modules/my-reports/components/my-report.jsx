@@ -4,7 +4,6 @@ import ReactTooltip from 'react-tooltip'
 
 import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 import ValueDate from 'modules/common/components/value-date'
-import EmDash from 'modules/common/components/em-dash'
 import ReportEthics from 'modules/my-reports/components/report-ethics'
 
 const MyReport = p => (
@@ -22,7 +21,7 @@ const MyReport = p => (
             <span>{p.outcome}</span>
           }
           {!p.outcome &&
-            <EmDash />
+            <span>&mdash;</span>
           }
         </span>
       </div>
@@ -34,16 +33,16 @@ const MyReport = p => (
               className="report-committed"
               data-tip="You have successfully committed to this report. Remember to login to reveal the report!"
             >
-              {p.reported || <EmDash />}
+              {p.reported || <span>&mdash;</span>}
             </span>
           }
           {!!p.isRevealed &&
             <span className="report-revealed">
-              {p.reported || <EmDash />}
+              {p.reported || <span>&mdash;</span>}
             </span>
           }
           {!p.isRevealed && !p.isCommitted &&
-            <span>{p.reported || <EmDash />}</span>
+            <span>{p.reported || <span>&mdash;</span>}</span>
           }
           {!!p.outcome && p.isReportEqual &&
             <i
@@ -69,7 +68,7 @@ const MyReport = p => (
             >
               {p.period}
             </span> :
-            <EmDash />
+            <span>&mdash;</span>
           }
         </span>
       </div>
