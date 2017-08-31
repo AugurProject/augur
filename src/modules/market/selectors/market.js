@@ -61,7 +61,7 @@ export default function () {
 export const selectSelectedMarket = state => selectMarket(state.selectedMarketID);
 
 export const selectMarket = (marketID) => {
-  const { marketsData, marketLoading, favorites, reports, outcomesData, netEffectiveTrades, accountTrades, tradesInProgress, priceHistory, orderBooks, branch, orderCancellation, smallestPositions, loginAccount } = store.getState();
+  const { marketsData, marketLoading, favorites, reports, outcomesData, accountTrades, tradesInProgress, priceHistory, orderBooks, branch, orderCancellation, smallestPositions, loginAccount } = store.getState();
   const accountPositions = selectAccountPositions();
 
   if (!marketID || !marketsData || !marketsData[marketID]) {
@@ -83,7 +83,6 @@ export const selectMarket = (marketID) => {
 
     selectMarketReport(marketID, reports[branch.id || BRANCH_ID]),
     (accountPositions || {})[marketID],
-    (netEffectiveTrades || {})[marketID],
     (accountTrades || {})[marketID],
     tradesInProgress[marketID],
 

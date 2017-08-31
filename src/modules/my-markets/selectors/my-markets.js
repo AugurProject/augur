@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import memoize from 'memoizee';
 import store from 'src/store';
-import { selectLoginAccountAddress, selectMarketTradesState, selectPriceHistoryState, selectMarketCreatorFeesState } from 'src/select-state';
+import { selectLoginAccountAddress, selectPriceHistoryState, selectMarketCreatorFeesState } from 'src/select-state';
 import selectAllMarkets from 'modules/markets/selectors/markets-all';
 import { abi } from 'services/augurjs';
 import { ZERO } from 'modules/trade/constants/numbers';
@@ -22,15 +22,14 @@ export const selectAuthorOwnedMarkets = createSelector(
 
 export const selectLoginAccountMarkets = createSelector(
   selectAuthorOwnedMarkets,
-  selectMarketTradesState,
   selectPriceHistoryState,
   selectMarketCreatorFeesState,
-  (authorOwnedMarkets, marketTrades, priceHistory, marketCreatorFees) => {
+  (authorOwnedMarkets, priceHistory, marketCreatorFees) => {
     if (!authorOwnedMarkets) return [];
     const markets = [];
     authorOwnedMarkets.forEach((market) => {
       const fees = formatEtherTokens(marketCreatorFees[market.id] || 0);
-      const numberOfTrades = formatNumber(selectNumberOfTrades(marketTrades[market.id]));
+      const numberOfTrades = formatNumber(selectNumberOfTrades(priceHistory[market.id]));
       const averageTradeSize = formatNumber(selectAverageTradeSize(priceHistory[market.id]));
       const openVolume = formatNumber(selectOpenVolume(market));
       markets.push({

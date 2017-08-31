@@ -6,7 +6,6 @@ import {
   selectFavoritesState,
   selectReportsState,
   selectOutcomesDataState,
-  selectNetEffectiveTradesState,
   selectAccountTradesState,
   selectTradesInProgressState,
   selectBranchState,
@@ -32,7 +31,6 @@ export const selectMarkets = createSelector(
   selectReportsState,
   selectOutcomesDataState,
   selectAccountPositions,
-  selectNetEffectiveTradesState,
   selectAccountTradesState,
   selectTradesInProgressState,
   selectBranchState,
@@ -41,7 +39,7 @@ export const selectMarkets = createSelector(
   selectOrderCancellationState,
   selectSmallestPositionsState,
   selectLoginAccountState,
-  (marketsData, marketLoading, favorites, reports, outcomesData, accountPositions, netEffectiveTrades, accountTrades, tradesInProgress, branch, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, loginAccount) => {
+  (marketsData, marketLoading, favorites, reports, outcomesData, accountPositions, accountTrades, tradesInProgress, branch, selectedFilterSort, priceHistory, orderBooks, orderCancellation, smallestPositions, loginAccount) => {
     if (!marketsData) return [];
     return Object.keys(marketsData).map((marketID) => {
       if (!marketID || !marketsData[marketID]) return {};
@@ -60,7 +58,6 @@ export const selectMarkets = createSelector(
 
         selectMarketReport(marketID, reports[marketsData[marketID].branchID]),
         (accountPositions || {})[marketID],
-        (netEffectiveTrades || {})[marketID],
         (accountTrades || {})[marketID],
         tradesInProgress[marketID],
 
