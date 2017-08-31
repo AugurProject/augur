@@ -1,8 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import EmDash from 'modules/common/components/em-dash'
-
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 
 const CreateMarketMainTitle = (p) => {
@@ -52,7 +50,7 @@ const CreateMarketMainTitle = (p) => {
         onClick={() => p.updateNewMarket({ currentStep: 0 })}
       >
         <h1 className={`preview-title ${previewTitleClass()}`}>
-          Market Preview <EmDash /> {marketType()}
+          Market Preview &mdash; {marketType()}
         </h1>
       </button>
       <button

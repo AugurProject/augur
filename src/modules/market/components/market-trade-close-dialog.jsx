@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
 import Spinner from 'modules/common/components/spinner'
-import EmDash from 'modules/common/components/em-dash'
 
 import { POSITION, ORDER } from 'modules/market/constants/trade-close-type'
 import {
@@ -44,7 +43,7 @@ export default class MarketTradeCloseDialog extends Component {
   ) {
     // Position -- No Available Actions
     if (closeType === POSITION && !status && (!parseFloat(quantityOfShares, 10) || !isClosable)) {
-      return <EmDash />
+      return <span>&mdash;</span>
     }
 
     if (isConfirming) {

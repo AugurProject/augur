@@ -6,7 +6,6 @@ import Input from 'modules/common/components/input'
 import OutcomeTradeSummary from 'modules/outcomes/components/outcome-trade-summary'
 import OutcomeTradeAction from 'modules/outcomes/components/outcome-trade-action'
 import ComponentNav from 'modules/common/components/component-nav'
-import EmDash from 'modules/common/components/em-dash'
 
 import { SHARE, MICRO_SHARE, MILLI_SHARE } from 'modules/market/constants/share-denominations'
 import { BUY } from 'modules/transactions/constants/types'
@@ -150,7 +149,7 @@ export default class OutcomeTrade extends Component {
       <article className="outcome-trade market-content-scrollable">
         {p.marketType !== SCALAR ?
           <h3>Create Order {name &&
-            <span><EmDash /> {name}</span>
+            <span>&mdash; {name}</span>
           }</h3> :
           <h3>Create Order</h3>
         }
