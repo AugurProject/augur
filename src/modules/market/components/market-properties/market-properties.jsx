@@ -1,14 +1,8 @@
 import React from 'react'
 import classNames from 'classnames'
-import { Link } from 'react-router-dom'
 
+import MarketLink from 'modules/market/components/market-link/market-link'
 import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
-
-import makePath from 'modules/app/helpers/make-path'
-import makeQuery from 'modules/app/helpers/make-query'
-
-import { MARKET } from 'modules/app/constants/views'
-import { MARKET_ID_PARAM_NAME, MARKET_DESCRIPTION_PARAM_NAME } from 'modules/app/constants/param-names'
 
 import getValue from 'utils/get-value'
 import setShareDenomination from 'utils/set-share-denomination'
@@ -64,20 +58,13 @@ const MarketProperties = (p) => {
             <i />
           </button>
         }
-        { !!p.id && p.formattedDescription &&
-          <Link
-            className={Styles.MarketProperties__trade}
-            to={{
-              pathname: makePath(MARKET),
-              search: makeQuery({
-                [MARKET_DESCRIPTION_PARAM_NAME]: p.formattedDescription,
-                [MARKET_ID_PARAM_NAME]: p.id
-              })
-            }}
-          >
-            { buttonText }
-          </Link>
-        }
+        <MarketLink
+          className={Styles.MarketProperties__trade}
+          id={p.id}
+          formattedDescription={p.formattedDescription}
+        >
+          { buttonText }
+        </MarketLink>
       </div>
     </article>
   )
