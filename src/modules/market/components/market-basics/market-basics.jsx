@@ -3,7 +3,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-// import SVG from 'modules/common/components/svg/svg'
+import MarketLink from 'modules/market/components/market-link/market-link'
 import { MarketStatusOpen, MarketStatusReported, MarketStatusClosed } from 'modules/common/components/spritemap/spritemap'
 
 import toggleTag from 'modules/app/helpers/toggle-tag'
@@ -45,7 +45,14 @@ const MarketBasics = (p) => {
           </span>
         </div>
 
-        <h1>{ p.description }</h1>
+        <h1 className={Styles.MarketBasics__description}>
+          <MarketLink
+            id={p.id}
+            formattedDescription={p.formattedDescription}
+          >
+            { p.description }
+          </MarketLink>
+        </h1>
       </div>
     </article>
   )
