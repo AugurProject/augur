@@ -497,13 +497,13 @@ export const constructLogAddTxTransaction = (trade, marketID, marketType, descri
   let type;
   let action;
   if (trade.type === TYPES.BUY) {
-    type = TYPES.BID;
+    type = TYPES.BUY;
     action = trade.inProgress ? 'bidding' : 'bid';
   } else if (trade.isShortAsk) {
     type = TYPES.SHORT_ASK;
     action = trade.inProgress ? 'short asking' : 'short ask';
   } else {
-    type = TYPES.ASK;
+    type = TYPES.SELL;
     action = trade.inProgress ? 'asking' : 'ask';
   }
   const price = formatEtherTokens(trade.price);
@@ -551,15 +551,15 @@ export const constructLogAddTxTransaction = (trade, marketID, marketType, descri
       noFeePrice: formatEtherTokens(rawPrice),
       freeze: {
         verb: trade.inProgress ? 'freezing' : 'froze',
-        noFeeCost: type === TYPES.ASK ? undefined : formatEtherTokens(abi.unfix(noFeeCost)),
+        noFeeCost: type === TYPES.SELL ? undefined : formatEtherTokens(abi.unfix(noFeeCost)),
         tradingFees: formatEtherTokens(abi.unfix(tradingFees))
       },
       avgPrice: price,
       timestamp: formatDate(new Date(trade.timestamp * 1000)),
       hash: trade.transactionHash,
       feePercent: formatPercent(abi.unfix(tradingFees.dividedBy(totalCost).times(constants.ONE).floor()).times(100)),
-      totalCost: type === TYPES.BID ? formatEtherTokens(abi.unfix(totalCost)) : undefined,
-      totalReturn: type === TYPES.ASK ? formatEtherTokens(abi.unfix(totalReturn)) : undefined,
+      totalCost: type === TYPES.BUY ? formatEtherTokens(abi.unfix(totalCost)) : undefined,
+      totalReturn: type === TYPES.SELL ? formatEtherTokens(abi.unfix(totalReturn)) : undefined,
       gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
       blockNumber: trade.blockNumber,
       tradeID: trade.tradeid

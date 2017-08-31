@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { augur, abi, constants } from 'services/augurjs';
-import { BUY, SELL } from 'modules/trade/constants/types';
+import { BUY, SELL } from 'modules/transactions/constants/types';
 import { TWO } from 'modules/trade/constants/numbers';
 import { SCALAR } from 'modules/markets/constants/market-types';
 

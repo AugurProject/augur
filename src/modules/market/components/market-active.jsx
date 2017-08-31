@@ -8,7 +8,7 @@ import OutcomeTrade from 'modules/outcomes/components/outcome-trade';
 
 import { SHARE, MILLI_SHARE, MICRO_SHARE } from 'modules/market/constants/share-denominations';
 import { PRICE } from 'modules/order-book/constants/order-book-value-types';
-import { BID, BUY, SELL } from 'modules/transactions/constants/types';
+import { BUY, SELL } from 'modules/transactions/constants/types';
 import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types';
 import { SCALAR } from 'modules/markets/constants/market-types';
 
@@ -73,11 +73,11 @@ export default class MarketActive extends Component {
 
     if (outcomes) {
       const outcome = outcomes.find(outcome => outcome.id === outcomeID);
-      const orderBookSide = getValue(outcome, `orderBook.${side === BID ? BIDS : ASKS}`);
+      const orderBookSide = getValue(outcome, `orderBook.${side === BUY ? BIDS : ASKS}`);
       const order = (orderBookSide && orderBookSide[orderIndex]) || null;
       const price = getValue(order, 'price.value') || '';
       const trade = outcome.trade;
-      const tradeSide = side === BID ? SELL : BUY;
+      const tradeSide = side === BUY ? SELL : BUY;
 
       if (orderValueType === PRICE) {
         trade.updateTradeOrder(0, null, tradeSide); // Clear Shares
