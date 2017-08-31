@@ -22,16 +22,21 @@ const MarketProperties = (p) => {
 
   let buttonText
 
-  if (p.isReported) {
-    buttonText = 'Reported'
-  } else if (p.isMissedReport) {
-    buttonText = 'Missed Report'
-  } else if (p.isPendingReport) {
-    buttonText = 'Report'
-  } else if (!p.isOpen) {
-    buttonText = 'View'
-  } else {
-    buttonText = 'Trade'
+  switch (true) {
+    case p.isReported:
+      buttonText = 'Reported'
+      break
+    case p.isMissedReport:
+      buttonText = 'Missed Report'
+      break
+    case p.isPendingReport:
+      buttonText = 'Report'
+      break
+    case !p.isOpen:
+      buttonText = 'View'
+      break
+    default:
+      buttonText = 'Trade'
   }
 
   return (
