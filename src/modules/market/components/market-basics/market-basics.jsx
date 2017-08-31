@@ -7,6 +7,7 @@ import PropTypes from 'prop-types'
 
 import SVG from 'modules/common/components/svg/svg'
 
+import toggleTag from 'modules/app/helpers/toggle-tag'
 // import makePath from 'modules/app/helpers/make-path';
 // import makeQuery from 'modules/app/helpers/make-query';
 
@@ -31,8 +32,8 @@ const MarketBasics = (p) => {
             <li>Tags</li>
             {(p.tags || []).map((tag, i) => (
               <li key={i}>
-                <button onClick={() => p.toggleTag(tag.name ? tag.name : tag)}>
-                  {tag.name ? tag.name : tag}
+                <button onClick={() => toggleTag(tag, p.location, p.history)}>
+                  {tag}
                 </button>
               </li>
             ))}
@@ -68,6 +69,8 @@ const MarketBasics = (p) => {
 }
 
 MarketBasics.propTypes = {
+  history: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired,
   isLogged: PropTypes.bool.isRequired,
   toggleFavorite: PropTypes.func
 }
