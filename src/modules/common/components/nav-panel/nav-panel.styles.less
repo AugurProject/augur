@@ -1,0 +1,51 @@
+@import '~assets/styles/shared.less';
+
+.NavPanel {
+  display: grid;
+  grid-template-columns: 15rem auto;
+  height: 100%;
+}
+
+.NavPanel__controls {
+  background: red;
+  display: grid;
+  grid-template-rows: auto;
+}
+
+.NavPanel__control {
+  .font-family-dinpro();
+  .font-size-extra-large();
+  .font-weight-light();
+
+  background: @color-purple;
+  border: none;
+  border-bottom: 1px solid @color-grayish-purple;
+  color: @color-white;
+  outline: none;
+  padding-left: 2rem;
+  text-align: left;
+
+  &:hover {
+    background: @color-grayish-purple;
+    cursor: pointer;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.NavPanel__control--active {
+  background: @color-grayish-purple;
+}
+
+.NavPanel__icon {
+  margin-right: 1.5rem;
+  max-height: 2.25rem;
+  max-width: 2.25rem;
+  vertical-align: middle;
+}
+
+.NavPanel__content {
+  background: @color-white;
+}

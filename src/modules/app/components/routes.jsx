@@ -48,6 +48,11 @@ const CreateMarket = asyncComponent({
   loader: () => import(/* webpackChunkName: 'create-market' */ 'modules/create-market/container')
     .then(module => module.default)
 })
+const StyleSandbox = asyncComponent({
+  moduleName: 'StyleSandbox',
+  loader: () => import(/* webpackChunkName: 'topics' */ 'modules/style-sandbox/components/style-sandbox/style-sandbox')
+    .then(module => module.default)
+})
 
 const Routes = p => (
   <App>
@@ -56,6 +61,7 @@ const Routes = p => (
       <Route path={makePath(VIEWS.MARKETS)} component={Markets} />
       <Route path={makePath(VIEWS.MARKET)} component={Market} />
       <Route path={makePath(VIEWS.AUTHENTICATION)} component={Authentication} />
+      <Route path={makePath(VIEWS.STYLE_SANDBOX)} component={StyleSandbox} />
       <AuthenticatedRoute path={makePath(VIEWS.FAVORITES)} component={Markets} />
       <AuthenticatedRoute path={makePath(VIEWS.MY_POSITIONS)} component={Portfolio} />
       <AuthenticatedRoute path={makePath(VIEWS.MY_MARKETS)} component={Portfolio} />

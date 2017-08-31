@@ -42,3 +42,6 @@ export const ACCOUNT_EXPORT = 'export-account'
 export const SIGNUP = 'sign-up'
 export const LOGIN = 'login'
 export const IMPORT = 'import'
+
+// Dev only
+export const STYLE_SANDBOX = 'style-sandbox'
