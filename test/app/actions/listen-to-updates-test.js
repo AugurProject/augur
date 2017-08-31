@@ -16,7 +16,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
   const AugurJS = {
     augur: {
       filters: {
-        listen: () => {}
+        startListeners: () => {}
       },
       CompositeGetters: {
         getPositionInMarket: sinon.stub.yields(['0x0', '0x1'])
@@ -91,7 +91,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
   });
 
   afterEach(() => {
-    AugurJS.augur.filters.listen.restore();
+    AugurJS.augur.filters.startListeners.restore();
   });
 
   const test = (t) => {
@@ -103,7 +103,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
   test({
     description: 'should dispatch expected actions from block callback',
     assertions: (store) => {
-      sinon.stub(AugurJS.augur.filters, 'listen', (contractAddresses, eventsAPI, cb) => {
+      sinon.stub(AugurJS.augur.filters, 'startListeners', (contractAddresses, eventsAPI, cb) => {
         cb.block('blockhash');
       });
 

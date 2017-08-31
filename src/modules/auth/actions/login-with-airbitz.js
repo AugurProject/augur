@@ -9,15 +9,13 @@ import makePath from 'modules/app/helpers/make-path';
 import { DEFAULT_VIEW } from 'modules/app/constants/views';
 
 export const loginWithAirbitzEthereumWallet = (airbitzAccount, ethereumWallet, history) => (dispatch) => {
-  const masterPrivateKey = ethereumWallet.keys.ethereumKey;
-  augur.accounts.loginWithMasterKey(masterPrivateKey, (account) => {
-    if (!account || !account.address || account.error) {
-      return console.error(account);
-    }
-    dispatch(updateIsLoggedIn(true));
-    dispatch(loadAccountData({ ...account, name: airbitzAccount.username, airbitzAccount }, true));
-    history.push(makePath(DEFAULT_VIEW));
-  });
+  const account = augur.accounts.loginWithMasterKey({ privateKey: ethereumWallet.keys.ethereumKey });
+  if (!account || !account.address) {
+    return console.error(account);
+  }
+  dispatch(updateIsLoggedIn(true));
+  dispatch(loadAccountData({ ...account, name: airbitzAccount.username, airbitzAccount }, true));
+  history.push(makePath(DEFAULT_VIEW));
 };
 
 // Create an ethereum wallet if one doesn't exist
