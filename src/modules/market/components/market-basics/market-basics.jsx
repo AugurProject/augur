@@ -3,7 +3,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import SVG from 'modules/common/components/svg/svg'
+// import SVG from 'modules/common/components/svg/svg'
+import { MarketStatusOpen, MarketStatusReported, MarketStatusClosed } from 'modules/common/components/spritemap/spritemap'
 
 import toggleTag from 'modules/app/helpers/toggle-tag'
 
@@ -11,10 +12,17 @@ import Styles from 'modules/market/components/market-basics/market-basics.styles
 
 const MarketBasics = (p) => {
 
-  // set market status
-  let marketStatus = p.isOpen ? 'open' : 'closed'
-  if (marketStatus === 'open' && p.isResported) {
-    marketStatus = 'reported'
+  let marketStatusIcon
+
+  switch (true) {
+    case p.isOpen && p.isReported:
+      marketStatusIcon = MarketStatusReported
+      break
+    case p.isOpen:
+      marketStatusIcon = MarketStatusOpen
+      break
+    default:
+      marketStatusIcon = MarketStatusClosed
   }
 
   return (
@@ -33,7 +41,7 @@ const MarketBasics = (p) => {
           </ul>
 
           <span className={Styles.MarketBasics__status}>
-            <SVG id={`market-status--${marketStatus}`} />
+            { marketStatusIcon }
           </span>
         </div>
 
