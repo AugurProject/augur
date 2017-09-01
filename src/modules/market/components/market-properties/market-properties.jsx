@@ -52,7 +52,7 @@ const MarketProperties = (p) => {
       <div>
         { p.isLogged && p.toggleFavorite &&
           <button
-            className={classNames(Styles.MarketProperties__favorite, { [`${Styles.favorite}`]: p.isFavorite })}
+            className={classNames(Styles.MarketProperties__favorite, { [Styles.favorite]: p.isFavorite })}
             onClick={() => p.toggleFavorite(p.id)}
           >
             <i />
