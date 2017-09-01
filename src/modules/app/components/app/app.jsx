@@ -114,20 +114,23 @@ export default class AppView extends Component {
       })
     }
 
+    const lastPath = parsePath(this.props.location.pathname)[0]
     const nextPath = parsePath(nextProps.location.pathname)[0]
 
-    if (nextPath === MARKETS) {
+    if (lastPath !== MARKETS && nextPath === MARKETS) {
       if (this.props.isMobile) {
         this.setState({ mobileMenuState: mobileMenuStates.KEYWORDS_OPEN })
       } else {
+        this.toggleMenuTween(MAIN_MENU, true)
         this.toggleMenuTween(SUB_MENU, true)
       }
 
       this.setState({ keywordState: { loaded: true, openOnLoad: false } })
     }
 
-    if (nextPath !== MARKETS) {
+    if (lastPath === MARKETS && nextPath !== MARKETS) {
       if (!this.props.isMobile) {
+        this.toggleMenuTween(MAIN_MENU, false)
         this.toggleMenuTween(SUB_MENU, false)
       }
       this.setState({ keywordState: { loaded: false, openOnLoad: true } })
