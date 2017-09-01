@@ -8,13 +8,17 @@ import Styles from 'modules/app/components/inner-nav/inner-nav.styles'
 export default class InnerNav extends Component {
   static propTypes = {
     categories: PropTypes.array.isRequired,
+    markets: PropTypes.array.isRequired,
+    marketsFilteredSorted: PropTypes.array.isRequired,
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
     isMobile: PropTypes.bool.isRequired,
     mobileMenuState: PropTypes.number.isRequired,
     selectedCategory: PropTypes.string,
     subMenuScalar: PropTypes.number.isRequired
   };
 
-  renderTopicList() {
+  renderCategoriesList() {
     return (
       <ul className={Styles.InnerNav__bar}>
         {this.props.categories.map((item, index) => {
@@ -55,14 +59,13 @@ export default class InnerNav extends Component {
   render() {
     const showCategories = this.props.mobileMenuState >= mobileMenuStates.CATEGORIES_OPEN
     return (
-      <aside className={classNames(Styles.InnerNav, { [`${Styles.mobileShow}`]: showCategories })}>
-        {this.renderTopicList()}
+      <aside className={classNames(Styles.InnerNav, { [Styles.mobileShow]: showCategories })}>
+        {this.renderCategoriesList()}
+        {this.renderSubMenu()}
       </aside>
     )
   }
 }
-
-// {this.renderSubMenu()}
 
 // {this.props.keywords.length === 0 &&
 //   <li>Loading . . .</li>
