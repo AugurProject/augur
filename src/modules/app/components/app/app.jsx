@@ -40,6 +40,8 @@ export const mobileMenuStates = {
 const SUB_MENU = 'subMenu'
 const MAIN_MENU = 'mainMenu'
 
+// TODO -- this component needs to be broken up and also restructured
+
 // get toggle working again (dummy data)
 // integrate real data
 
