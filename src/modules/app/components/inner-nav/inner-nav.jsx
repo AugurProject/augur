@@ -60,6 +60,7 @@ export default class InnerNav extends Component {
     const showCategories = this.props.mobileMenuState >= mobileMenuStates.CATEGORIES_OPEN
     return (
       <aside className={classNames(Styles.InnerNav, { [Styles.mobileShow]: showCategories })}>
+        {this.renderSubMenu()}
         {this.renderCategoriesList()}
       </aside>
     )
