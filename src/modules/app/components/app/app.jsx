@@ -23,6 +23,7 @@ import NavCreateIcon from 'modules/common/components/nav-create-icon'
 import NavMarketsIcon from 'modules/common/components/nav-markets-icon'
 import NavPortfolioIcon from 'modules/common/components/nav-portfolio-icon'
 
+import parsePath from 'modules/routes/helpers/parse-path'
 import makePath from 'modules/routes/helpers/make-path'
 
 import { MARKETS, ACCOUNT, MY_POSITIONS, CREATE_MARKET, CATEGORIES } from 'modules/routes/constants/views'
@@ -43,11 +44,13 @@ export const mobileMenuStates = {
 
 export default class AppView extends Component {
   static propTypes = {
-    url: PropTypes.string,
+    location: PropTypes.object.isRequired,
+    history: PropTypes.object.isRequired,
     coreStats: PropTypes.array.isRequired,
     isMobile: PropTypes.bool.isRequired,
     updateIsMobile: PropTypes.func.isRequired,
-    selectedCategory: PropTypes.string
+    selectedCategory: PropTypes.string,
+    url: PropTypes.string
   }
 
   constructor(props) {
@@ -56,9 +59,7 @@ export default class AppView extends Component {
     this.state = {
       mainMenu: { scalar: 0, open: false, currentTween: null },
       subMenu: { scalar: 0, open: false, currentTween: null },
-      keywordState: { loaded: false, openOnLoad: false },
-      mobileMenuState: mobileMenuStates.CLOSED,
-      keywords: []
+      mobileMenuState: mobileMenuStates.CLOSED
     }
 
     this.sideNavMenuData = [
@@ -109,23 +110,32 @@ export default class AppView extends Component {
         subMenu: { scalar: 0, open: false }
       })
     }
-  }
 
-  componentWillUpdate(nextProps, nextState) {
-    if (this.state.keywords.length === 0 &&
-        nextState.keywords.length > 0) {
-      if (this.state.keywordState.openOnLoad) {
-        if (this.props.isMobile) {
-          this.setState({ mobileMenuState: mobileMenuStates.KEYWORDS_OPEN })
-        } else {
-          this.toggleMenuTween('subMenu', true)
-        }
+    const prevPath = parsePath(this.props.location.pathname)[0]
+    const nextPath = parsePath(nextProps.location.pathname)[0]
+
+    console.log(prevPath, nextPath, MARKETS)
+
+    if (
+      prevPath !== MARKETS &&
+      nextPath === MARKETS
+    ) {
+      console.log('nav to')
+
+      if (this.props.isMobile) {
+        this.setState({ mobileMenuState: mobileMenuStates.KEYWORDS_OPEN })
+      } else {
+        this.toggleMenuTween('subMenu', true)
       }
+
       this.setState({ keywordState: { loaded: true, openOnLoad: false } })
     }
 
-    if (this.state.keywords.length > 0 &&
-        nextState.keywords.length === 0) {
+    if (
+      prevPath === MARKETS &&
+      nextPath !== MARKETS
+    ) {
+      console.log('nav away');
       if (!this.props.isMobile) {
         this.toggleMenuTween('subMenu', false)
       }
@@ -236,6 +246,8 @@ export default class AppView extends Component {
       origamiScalar = Math.max(0, (subMenu.scalar + mainMenu.scalar) - 1)
     }
 
+    console.log('state -- ', s)
+
     return (
       <main className={Styles.App}>
         <Helmet
@@ -274,6 +286,7 @@ export default class AppView extends Component {
               isMobile={p.isMobile}
               mobileMenuState={s.mobileMenuState}
               subMenuScalar={subMenu.scalar}
+              categories={p.categories}
               markets={p.markets}
               marketsFilteredSorted={p.marketsFilteredSorted}
               location={p.location}

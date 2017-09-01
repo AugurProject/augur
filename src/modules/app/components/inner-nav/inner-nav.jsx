@@ -11,7 +11,6 @@ export default class InnerNav extends Component {
     isMobile: PropTypes.bool.isRequired,
     mobileMenuState: PropTypes.number.isRequired,
     selectedCategory: PropTypes.string,
-    onSelectCategory: PropTypes.func.isRequired,
     subMenuScalar: PropTypes.number.isRequired
   };
 
@@ -19,14 +18,14 @@ export default class InnerNav extends Component {
     return (
       <ul className={Styles.InnerNav__bar}>
         {this.props.categories.map((item, index) => {
-          const clickSelect = () => this.props.onSelectCategory(item.topic)
+          // const clickSelect = () => this.props.onSelectCategory(item.topic)
           const isSelected = item.topic === this.props.selectedCategory
           return (
             <li
               className={classNames({ [`${Styles.selected}`]: isSelected })}
               key={item.topic}
             >
-              <button onClick={clickSelect}>
+              <button>
                 {item.topic}
               </button>
             </li>
