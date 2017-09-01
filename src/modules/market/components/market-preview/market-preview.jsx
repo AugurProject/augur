@@ -22,18 +22,18 @@ MarketPreview.propTypes = {
   toggleFavorite: PropTypes.func.isRequired
 }
 
-// MarketPreview.propTypes = {
-//   className: PropTypes.string,
-//   description: PropTypes.string,
-//   outcomes: PropTypes.array,
-//   isOpen: PropTypes.bool,
-//   isFavorite: PropTypes.bool,
-//   isPendingReport: PropTypes.bool,
-//   endDate: PropTypes.object,
-//   tradingFeePercent: PropTypes.object,
-//   volume: PropTypes.object,
-//   tags: PropTypes.array,
-//   onClickToggleFavorite: PropTypes.func
-// };
+MarketPreview.propTypes = {
+  className: PropTypes.string,
+  description: PropTypes.string,
+  outcomes: PropTypes.array,
+  isOpen: PropTypes.bool,
+  isFavorite: PropTypes.bool,
+  isPendingReport: PropTypes.bool,
+  endDate: PropTypes.object,
+  tradingFeePercent: PropTypes.object,
+  volume: PropTypes.object,
+  tags: PropTypes.array,
+  onClickToggleFavorite: PropTypes.func
+};
 
 export default MarketPreview
