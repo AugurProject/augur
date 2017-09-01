@@ -9,10 +9,7 @@ import Styles from 'modules/market/components/market-preview/market-preview.styl
 
 const MarketPreview = p => (
   <article className={Styles.MarketPreview}>
-    <MarketBasics
-      {...p}
-      toggleFavorite={p.toggleFavorite}
-    />
+    <MarketBasics {...p} />
     <MarketPreviewOutcomes outcomes={p.outcomes} />
     <div className={Styles.MarketPreview__footer}>
       <MarketProperties {...p} />
