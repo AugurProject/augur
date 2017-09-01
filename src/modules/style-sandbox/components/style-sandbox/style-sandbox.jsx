@@ -1,32 +1,41 @@
-import React from 'react';
+import React from 'react'
 
-import Styles from 'modules/style-sandbox/components/style-sandbox/style-sandbox.styles';
+import Styles from 'modules/style-sandbox/components/style-sandbox/style-sandbox.styles'
 
-import NavPanel from 'modules/common/components/nav-panel/nav-panel';
-import AccIcon from 'modules/common/components/nav-account-icon';
+import NavPanel from 'modules/common/components/nav-panel/nav-panel'
+import AccIcon from 'modules/common/components/nav-account-icon'
 
-const StyleSandbox = (p) => {
-  const navPanelProps = {
-    flipNav: true,
-    items: [
-      { title: 'hello1', iconComponent: AccIcon, onClick: () => alert('one click') },
-      { title: 'hello2', iconComponent: AccIcon, active: true },
-      { title: 'hello3', iconComponent: AccIcon },
-      { title: 'hello4', iconComponent: AccIcon },
-      { title: 'hello5', iconComponent: AccIcon },
-      { title: 'hello6', iconComponent: AccIcon }
-    ]
-  };
+export default class StyleSandbox extends React.Component {
+  constructor() {
+    super()
+    this.state = {
+      flipNav: true
+    }
+  }
 
-  return (
-    <div className={Styles.StyleSandbox}>
-      <div className={Styles['StyleSandbox__nav-panel-wrap']}>
-        <NavPanel {...navPanelProps}>
-          Placeholder - content will come when appropriate component is available
-        </NavPanel>
+  render() {
+    const navPanelProps = {
+      flipped: this.state.flipNav,
+      items: [
+        { title: 'hello1', iconComponent: AccIcon, onClick: () => alert('one click') },
+        { title: 'hello2', iconComponent: AccIcon, active: true },
+        { title: 'hello3', iconComponent: AccIcon },
+        { title: 'hello4', iconComponent: AccIcon },
+        { title: 'hello5', iconComponent: AccIcon },
+        { title: 'hello6', iconComponent: AccIcon }
+      ]
+    }
+
+    return (
+      <div className={Styles.StyleSandbox}>
+        <div className={Styles['StyleSandbox__nav-panel-wrap']}>
+          <NavPanel {...navPanelProps}>
+            Placeholder - content will come when appropriate component is available
+            <br />
+            <button onClick={() => this.setState({ flipNav: !this.state.flipNav })}>Flip Nav</button>
+          </NavPanel>
+        </div>
       </div>
-    </div>
-  );
-};
-
-export default StyleSandbox;
+    )
+  }
+}

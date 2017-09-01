@@ -1,14 +1,20 @@
-import React from 'react';
+import React from 'react'
+import PropTypes from 'prop-types'
 
-import classNames from 'classnames';
-import Styles from 'modules/common/components/nav-panel/nav-panel.styles';
+import classNames from 'classnames'
+import Styles from 'modules/common/components/nav-panel/nav-panel.styles'
 
 
 const NavPanel = p => (
-  <div className={Styles.NavPanel}>
+  <div
+    className={classNames({
+      [Styles.NavPanel]: true,
+      [Styles['NavPanel--flipped']]: p.flipped
+    })}
+  >
     <aside className={Styles.NavPanel__controls}>
       {p.items && p.items.map((item, ind) => {
-        const Icon = item.iconComponent;
+        const Icon = item.iconComponent
         return (
           <button
             className={classNames(
@@ -22,13 +28,22 @@ const NavPanel = p => (
             <Icon className={Styles.NavPanel__icon} />
             {item.title}
           </button>
-        );
+        )
       })}
     </aside>
     <div className={Styles.NavPanel__content}>
       {p.children}
     </div>
   </div>
-);
+)
 
-export default NavPanel;
+NavPanel.propTypes = {
+  flipped: PropTypes.bool,
+  items: PropTypes.array.isRequired
+}
+
+NavPanel.defaultProps = {
+  flipped: true
+}
+
+export default NavPanel
