@@ -25,7 +25,7 @@ const MarketLink = p => (
           {p.children}
         </Link>
       :
-        <span>{p.children}</span>
+        p.children
     }
   </span>
 )
