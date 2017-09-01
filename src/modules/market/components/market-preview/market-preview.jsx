@@ -34,6 +34,6 @@ MarketPreview.propTypes = {
   volume: PropTypes.object,
   tags: PropTypes.array,
   onClickToggleFavorite: PropTypes.func
-};
+}
 
 export default MarketPreview
