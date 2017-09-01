@@ -25,17 +25,21 @@ import NavPortfolioIcon from 'modules/common/components/nav-portfolio-icon'
 
 import makePath from 'modules/routes/helpers/make-path'
 
-import { MARKETS, ACCOUNT, MY_POSITIONS, CREATE_MARKET, TOPICS } from 'modules/routes/constants/views'
+import { MARKETS, ACCOUNT, MY_POSITIONS, CREATE_MARKET, CATEGORIES } from 'modules/routes/constants/views'
 
 import Styles from 'modules/app/components/app/app.styles'
 
-
-export const mobileMenuStates = { // TODO -- move to a constants file
+export const mobileMenuStates = {
   CLOSED: 0,
   SIDEBAR_OPEN: 1,
   CATEGORIES_OPEN: 2,
   KEYWORDS_OPEN: 3
 }
+
+// TODO -- this component needs to be broken up and also possibly restructured (TBD)
+
+// get toggle working again (dummy data)
+// integrate real data
 
 export default class AppView extends Component {
   static propTypes = {
@@ -44,7 +48,7 @@ export default class AppView extends Component {
     isMobile: PropTypes.bool.isRequired,
     updateIsMobile: PropTypes.func.isRequired,
     selectedCategory: PropTypes.string
-  };
+  }
 
   constructor(props) {
     super(props)
@@ -53,7 +57,8 @@ export default class AppView extends Component {
       mainMenu: { scalar: 0, open: false, currentTween: null },
       subMenu: { scalar: 0, open: false, currentTween: null },
       keywordState: { loaded: false, openOnLoad: false },
-      mobileMenuState: mobileMenuStates.CLOSED
+      mobileMenuState: mobileMenuStates.CLOSED,
+      keywords: []
     }
 
     this.sideNavMenuData = [
@@ -86,53 +91,53 @@ export default class AppView extends Component {
 
     this.shouldComponentUpdate = shouldComponentUpdatePure
 
-    this.handleWindowResize = debounce(this.handleWindowResize.bind(this), 25)
-    this.checkIfMobile = this.checkIfMobile.bind(this)
+    this.handleWindowResize = debounce(this.handleWindowResize.bind(this))
+    this.checkIsMobile = this.checkIsMobile.bind(this)
   }
 
   componentDidMount() {
     window.addEventListener('resize', this.handleWindowResize)
 
-    this.checkIfMobile()
+    this.checkIsMobile()
   }
 
-  componentWillReceiveProps(newProps) {
-    if (this.props.isMobile !== newProps.isMobile) {
+  componentWillReceiveProps(nextProps) {
+    if (this.props.isMobile !== nextProps.isMobile) {
       this.setState({
         mobileMenuState: mobileMenuStates.CLOSED,
         mainMenu: { scalar: 0, open: false },
         subMenu: { scalar: 0, open: false }
       })
     }
+  }
 
-    // TODO: promise-ize instead of comparing states
-    // if (this.props.keywords.length === 0 &&
-    //     newProps.keywords.length > 0) {
-    //   if (this.state.keywordState.openOnLoad) {
-    //     if (this.props.isMobile) {
-    //       this.setState({ mobileMenuState: mobileMenuStates.KEYWORDS_OPEN });
-    //     } else {
-    //       this.toggleMenuTween('subMenu', true);
-    //     }
-    //   }
-    //   this.setState({ keywordState: { loaded: true, openOnLoad: false } });
-    // }
+  componentWillUpdate(nextProps, nextState) {
+    if (this.state.keywords.length === 0 &&
+        nextState.keywords.length > 0) {
+      if (this.state.keywordState.openOnLoad) {
+        if (this.props.isMobile) {
+          this.setState({ mobileMenuState: mobileMenuStates.KEYWORDS_OPEN })
+        } else {
+          this.toggleMenuTween('subMenu', true)
+        }
+      }
+      this.setState({ keywordState: { loaded: true, openOnLoad: false } })
+    }
 
-    // if (this.props.keywords.length > 0 &&
-    //     newProps.keywords.length === 0) {
-    //   if (!this.props.isMobile) {
-    //     this.toggleMenuTween('subMenu', false);
-    //   }
-    //   this.setState({ keywordState: { loaded: false, openOnLoad: true } });
-    // }
-
+    if (this.state.keywords.length > 0 &&
+        nextState.keywords.length === 0) {
+      if (!this.props.isMobile) {
+        this.toggleMenuTween('subMenu', false)
+      }
+      this.setState({ keywordState: { loaded: false, openOnLoad: true } })
+    }
   }
 
   handleWindowResize() {
-    this.checkIfMobile()
+    this.checkIsMobile()
   }
 
-  checkIfMobile() {
+  checkIsMobile() {
     // This method sets up the side bar's state + calls the method to attach the touch event handler for when a user is mobile
     // CSS breakpoint sets the value when a user is mobile
     const isMobile = window.getComputedStyle(document.body).getPropertyValue('--is-mobile').indexOf('true') !== -1
@@ -148,7 +153,10 @@ export default class AppView extends Component {
 
     const setMenuState = (newState) => {
       this.setState({
-        [menuKey]: Object.assign({}, this.state[menuKey], newState)
+        [menuKey]: {
+          ...this.state[menuKey],
+          ...newState
+        }
       })
     }
 
@@ -214,12 +222,6 @@ export default class AppView extends Component {
     const p = this.props
     const s = this.state
 
-    const innerNavProps = {
-      categories: p.categories,
-      selectedCategory: p.selectedCategory,
-      keywords: p.keywords
-    }
-
     const { mainMenu, subMenu } = this.state
 
     let categoriesMargin
@@ -245,7 +247,7 @@ export default class AppView extends Component {
             isMobile={p.isMobile}
             menuScalar={origamiScalar}
           />
-          <Link to={makePath(TOPICS)}>
+          <Link to={makePath(CATEGORIES)}>
             <Logo />
           </Link>
           {this.renderMobileMenuButton()}
@@ -272,18 +274,19 @@ export default class AppView extends Component {
               isMobile={p.isMobile}
               mobileMenuState={s.mobileMenuState}
               subMenuScalar={subMenu.scalar}
-              onSelectCategory={(...args) => {
-                p.selectCategory(...args)
-                const { loaded } = this.state.keywordState
-                this.setState({ keywordState: { openOnLoad: true, loaded } })
-              }}
-              {...innerNavProps}
+              markets={p.markets}
+              marketsFilteredSorted={p.marketsFilteredSorted}
+              location={p.location}
+              history={p.history}
             />
             <section
               className={Styles.Main__content}
               style={{ marginLeft: keywordsMargin }}
             >
               {p.children}
+              <button
+                onClick={() => this.setState({ keywords: ['heyo', 'test'] })}
+              >keywords</button>
             </section>
           </section>
         </section>
