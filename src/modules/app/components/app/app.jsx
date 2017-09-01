@@ -40,8 +40,6 @@ export const mobileMenuStates = {
 const SUB_MENU = 'subMenu'
 const MAIN_MENU = 'mainMenu'
 
-// TODO -- this component needs to be broken up and also possibly restructured (TBD)
-
 // get toggle working again (dummy data)
 // integrate real data
 
@@ -114,14 +112,9 @@ export default class AppView extends Component {
       })
     }
 
-    const prevPath = parsePath(this.props.location.pathname)[0]
     const nextPath = parsePath(nextProps.location.pathname)[0]
 
-    console.log(prevPath, nextPath, MARKETS)
-
     if (nextPath === MARKETS) {
-      console.log('nav to')
-
       if (this.props.isMobile) {
         this.setState({ mobileMenuState: mobileMenuStates.KEYWORDS_OPEN })
       } else {
@@ -132,7 +125,6 @@ export default class AppView extends Component {
     }
 
     if (nextPath !== MARKETS) {
-      console.log('nav away')
       if (!this.props.isMobile) {
         this.toggleMenuTween(SUB_MENU, false)
       }
@@ -296,9 +288,6 @@ export default class AppView extends Component {
               style={{ marginLeft: keywordsMargin }}
             >
               {p.children}
-              <button
-                onClick={() => this.setState({ keywords: ['heyo', 'test'] })}
-              >keywords</button>
             </section>
           </section>
         </section>

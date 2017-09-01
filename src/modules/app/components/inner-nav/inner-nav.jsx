@@ -61,11 +61,12 @@ export default class InnerNav extends Component {
     return (
       <aside className={classNames(Styles.InnerNav, { [Styles.mobileShow]: showCategories })}>
         {this.renderCategoriesList()}
-        {this.renderSubMenu()}
       </aside>
     )
   }
 }
+
+// {this.renderSubMenu()}
 
 // {this.props.keywords.length === 0 &&
 //   <li>Loading . . .</li>
