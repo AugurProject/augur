@@ -37,6 +37,9 @@ export const mobileMenuStates = {
   KEYWORDS_OPEN: 3
 }
 
+const SUB_MENU = 'subMenu'
+const MAIN_MENU = 'mainMenu'
+
 // TODO -- this component needs to be broken up and also possibly restructured (TBD)
 
 // get toggle working again (dummy data)
@@ -116,28 +119,22 @@ export default class AppView extends Component {
 
     console.log(prevPath, nextPath, MARKETS)
 
-    if (
-      prevPath !== MARKETS &&
-      nextPath === MARKETS
-    ) {
+    if (nextPath === MARKETS) {
       console.log('nav to')
 
       if (this.props.isMobile) {
         this.setState({ mobileMenuState: mobileMenuStates.KEYWORDS_OPEN })
       } else {
-        this.toggleMenuTween('subMenu', true)
+        this.toggleMenuTween(SUB_MENU, true)
       }
 
       this.setState({ keywordState: { loaded: true, openOnLoad: false } })
     }
 
-    if (
-      prevPath === MARKETS &&
-      nextPath !== MARKETS
-    ) {
-      console.log('nav away');
+    if (nextPath !== MARKETS) {
+      console.log('nav away')
       if (!this.props.isMobile) {
-        this.toggleMenuTween('subMenu', false)
+        this.toggleMenuTween(SUB_MENU, false)
       }
       this.setState({ keywordState: { loaded: false, openOnLoad: true } })
     }
@@ -156,7 +153,9 @@ export default class AppView extends Component {
   }
 
   toggleMenuTween(menuKey, forceOpen, cb) {
-    if (this.state[menuKey].currentTween) this.state[menuKey].currentTween.stop()
+    // console.log('this.state -- ', menuKey, this.state[menuKey])
+
+    if (getValue(this.state[menuKey], 'currentTween.stop')) this.state[menuKey].currentTween.stop()
 
     let nowOpen = !this.state[menuKey].open
     if ((typeof forceOpen) === 'boolean') nowOpen = forceOpen
@@ -191,11 +190,11 @@ export default class AppView extends Component {
   toggleMainMenu() {
     const { selectedCategory } = this.props
     if (!this.state.mainMenu.open && selectedCategory && this.state.keywordState.loaded) {
-      this.toggleMenuTween('subMenu', true)
+      this.toggleMenuTween(SUB_MENU, true)
     } else {
-      this.toggleMenuTween('subMenu', false)
+      this.toggleMenuTween(SUB_MENU, false)
     }
-    this.toggleMenuTween('mainMenu')
+    this.toggleMenuTween(MAIN_MENU)
   }
 
   mobileMenuButtonClick() {
@@ -246,7 +245,7 @@ export default class AppView extends Component {
       origamiScalar = Math.max(0, (subMenu.scalar + mainMenu.scalar) - 1)
     }
 
-    console.log('state -- ', s)
+    // console.log('state -- ', s)
 
     return (
       <main className={Styles.App}>
