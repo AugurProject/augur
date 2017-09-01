@@ -5,7 +5,7 @@ import { mobileMenuStates } from 'modules/app/components/app/app'
 
 import Styles from 'modules/app/components/inner-nav/inner-nav.styles'
 
-class InnerNav extends Component {
+export default class InnerNav extends Component {
   static propTypes = {
     categories: PropTypes.array.isRequired,
     isMobile: PropTypes.bool.isRequired,
@@ -58,13 +58,12 @@ class InnerNav extends Component {
     return (
       <aside className={classNames(Styles.InnerNav, { [`${Styles.mobileShow}`]: showCategories })}>
         {this.renderTopicList()}
-        {this.renderSubMenu()}
       </aside>
     )
   }
 }
 
-export default InnerNav
+// {this.renderSubMenu()}
 
 // {this.props.keywords.length === 0 &&
 //   <li>Loading . . .</li>

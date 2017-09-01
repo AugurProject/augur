@@ -1,5 +1,3 @@
-/* eslint-disable indent */
-
 // NOTE --  if a view is only accessible when logged in, be sure to add it
 //          to the `authenticated-views` array under app/constants
 
@@ -13,9 +11,9 @@ export const TRANSACTIONS = 'transactions'
 export const ACCOUNT = 'account'
 export const AUTHENTICATION = 'authentication'
 export const PORTFOLIO = 'portfolio'
-export const TOPICS = 'topics'
+export const CATEGORIES = 'categories'
 
-export const DEFAULT_VIEW = TOPICS
+export const DEFAULT_VIEW = CATEGORIES
 
 // SUB VIEWS
 //  Portfolio

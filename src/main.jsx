@@ -55,7 +55,7 @@ if (module.hot) {
   module.hot.accept(
     [
       './selectors-raw',
-      './modules/app/container',
+      './modules/app/containers/app',
     ],
     () => {
       handleRender()
@@ -64,7 +64,7 @@ if (module.hot) {
 }
 
 function handleRender() {
-  const App = require('modules/app/container').default
+  const App = require('modules/app/containers/app').default
 
   // NOTE --  These are attached for convenience when built for development or debug
   if (process.env.NODE_ENV === 'development') {
