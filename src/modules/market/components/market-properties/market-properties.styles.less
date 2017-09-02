@@ -6,6 +6,11 @@
   justify-content: space-between;
 }
 
+.MarketProperties__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
 .MarketProperties__favorite {
   color: @color-lightgray;
   cursor: pointer;
@@ -53,4 +58,21 @@
 
 .MarketProperties__trade {
   &:extend(.button--purple all);
+}
+
+@media @breakpoint-tablet {
+  .MarketProperties {
+    display: block;
+  }
+
+  .MarketProperties__actions {
+    margin-top: 1.5rem;
+  }
+}
+
+@media @breakpoint-small-mobile {
+  .MarketProperties__meta {
+    display: flex;
+    justify-content: space-between;
+  }
 }
