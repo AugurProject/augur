@@ -49,7 +49,7 @@ const MarketProperties = (p) => {
           <span>{ p.endDate.formatted }</span>
         </li>
       </ul>
-      <div>
+      <div className={Styles.MarketProperties__actions}>
         { p.isLogged && p.toggleFavorite &&
           <button
             className={classNames(Styles.MarketProperties__favorite, { [Styles.favorite]: p.isFavorite })}
