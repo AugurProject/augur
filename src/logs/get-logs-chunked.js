@@ -1,7 +1,7 @@
 "use strict";
 
 var assign = require("lodash.assign");
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 var async = require("async");
 var clone = require("clone");
 var chunkBlocks = require("./chunk-blocks");
@@ -19,7 +19,7 @@ function getLogsChunked(p, onChunkReceived, onComplete) {
   if (!p.filter.toBlock) {
     p.filter.toBlock = parseInt(rpcInterface.getCurrentBlock().number, 16);
   }
-  async.eachSeries(chunkBlocks(abi.number(p.filter.fromBlock), abi.number(p.filter.toBlock)), function (chunk, nextChunk) {
+  async.eachSeries(chunkBlocks(speedomatic.encodeNumberAsJSNumber(p.filter.fromBlock), speedomatic.encodeNumberAsJSNumber(p.filter.toBlock)), function (chunk, nextChunk) {
     var filterChunk = clone(p.filter);
     filterChunk.fromBlock = chunk.fromBlock;
     filterChunk.toBlock = chunk.toBlock;

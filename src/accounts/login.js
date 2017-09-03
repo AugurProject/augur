@@ -36,7 +36,7 @@
  * @property {number} version Keystore version number (usually 3).
  */
 
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 var keythereum = require("keythereum");
 var errors = require("../rpc-interface").errors;
 
@@ -73,7 +73,7 @@ function login(p, callback) {
     try {
       callback({
         privateKey: keythereum.decrypt(storedKey, derivedKey.slice(0, 16), keystoreCrypto.cipherparams.iv),
-        address: abi.format_address(address),
+        address: speedomatic.formatEthereumAddress(address),
         keystore: keystore,
         derivedKey: derivedKey
       });

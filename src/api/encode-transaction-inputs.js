@@ -1,6 +1,6 @@
 "use strict";
 
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 var transactionInputEncoders = require("./transaction-input-encoders");
 
 function encodeTransactionInputs(p, inputs, signature, fixedPointIndex) {
@@ -13,7 +13,7 @@ function encodeTransactionInputs(p, inputs, signature, fixedPointIndex) {
   if (Array.isArray(fixedPointIndex) && fixedPointIndex.length) {
     var numFixed = fixedPointIndex.length;
     for (i = 0; i < numFixed; ++i) {
-      encodedTransactionInputs[fixedPointIndex[i]] = abi.format_int256(abi.fix(encodedTransactionInputs[fixedPointIndex[i]], "hex"));
+      encodedTransactionInputs[fixedPointIndex[i]] = speedomatic.formatInt256(speedomatic.fix(encodedTransactionInputs[fixedPointIndex[i]], "hex"));
     }
   }
   return encodedTransactionInputs;

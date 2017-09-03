@@ -1,6 +1,6 @@
 "use strict";
 
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 var isIndeterminateReport = require("./is-indeterminate-report");
 var isSpecialValueReport = require("./is-special-value-report");
 
@@ -11,7 +11,7 @@ function unfixReport(rawReport, minValue, maxValue, type) {
     return { report: indeterminateReport, isIndeterminate: true };
   }
   if (type === "binary") {
-    return { report: abi.unfix(rawReport, "string"), isIndeterminate: false };
+    return { report: speedomatic.unfix(rawReport, "string"), isIndeterminate: false };
   }
   if (type === "scalar") {
     specialValueReport = isSpecialValueReport(rawReport);
@@ -20,8 +20,8 @@ function unfixReport(rawReport, minValue, maxValue, type) {
     }
   }
   // x = (max - min)*y + min
-  bnMinValue = abi.bignum(minValue);
-  report = abi.unfix(rawReport).times(abi.bignum(maxValue).minus(bnMinValue)).plus(bnMinValue);
+  bnMinValue = speedomatic.bignum(minValue);
+  report = speedomatic.unfix(rawReport).times(speedomatic.bignum(maxValue).minus(bnMinValue)).plus(bnMinValue);
   if (type === "categorical") report = report.round();
   return { report: report.toFixed(), isIndeterminate: false };
 }

@@ -1,11 +1,11 @@
 "use strict";
 
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 
 module.exports.fix = function (n) {
-  return abi.format_int256(abi.fix(n, "hex"));
+  return speedomatic.formatInt256(speedomatic.fix(n, "hex"));
 };
 
 module.exports.stripFix = function (n) {
-  return abi.strip_0x(abi.format_int256(abi.fix(n, "hex")));
+  return speedomatic.strip0xPrefix(speedomatic.formatInt256(speedomatic.fix(n, "hex")));
 };

@@ -5,7 +5,7 @@
 var assert = require("chai").assert;
 var errors = require("ethrpc").errors;
 var keys = require("keythereum");
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 var constants = require("../../../src/constants");
 var register = require("../../../src/accounts/register");
 

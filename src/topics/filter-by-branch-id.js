@@ -1,11 +1,11 @@
 "use strict";
 
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 
 function filterByBranchID(branchID, logs) {
   if (branchID) {
     logs = logs.filter(function (log) {
-      return log.branch === abi.format_int256(branchID);
+      return log.branch === speedomatic.formatInt256(branchID);
     });
   }
   return logs.map(function (log) { return log.marketID; });

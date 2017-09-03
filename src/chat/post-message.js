@@ -1,6 +1,6 @@
 "use strict";
 
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 var whisper = require("./whisper");
 var rpcInterface = require("../rpc-interface");
 
@@ -13,8 +13,8 @@ function postMessage(roomName, message, senderAddress, senderName, callback) {
   };
   rpcInterface.shh.post({
     from: whisper.getWhisperID(),
-    topics: [abi.prefix_hex(abi.encode_hex(roomName))],
-    payload: abi.prefix_hex(abi.encode_hex(JSON.stringify(payload))),
+    topics: [speedomatic.prefixHex(speedomatic.abiEncodeBytes(roomName))],
+    payload: speedomatic.prefixHex(speedomatic.abiEncodeBytes(JSON.stringify(payload))),
     priority: "0x64",
     ttl: "0x93a80"
   }, function (posted) {

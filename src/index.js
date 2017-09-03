@@ -32,7 +32,7 @@ function Augur() {
     },
     loadZeroVolumeMarkets: true
   };
-  this.abi = require("augur-abi");
+  this.speedomatic = require("speedomatic");
   this.accounts = require("./accounts");
   this.api = require("./api")();
   this.generateContractAPI = require("./api").generateContractAPI;

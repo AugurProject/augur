@@ -1,6 +1,6 @@
 "use strict";
 
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 var unfixConsensusOutcome = require("../reporting/format/unfix-consensus-outcome");
 var decodeTag = require("../format/tag/decode-tag");
 
@@ -12,13 +12,13 @@ module.exports = function (marketsInfoArray, branch) {
   for (var i = 0; i < numMarkets; ++i) {
     var len = parseInt(marketsInfoArray[totalLen], 16);
     var shift = totalLen + 1;
-    var marketID = abi.format_int256(marketsInfoArray[shift]);
-    var minPrice = abi.unfix_signed(marketsInfoArray[shift + 11], "string");
-    var maxPrice = abi.unfix_signed(marketsInfoArray[shift + 12], "string");
+    var marketID = speedomatic.formatInt256(marketsInfoArray[shift]);
+    var minPrice = speedomatic.unfixSigned(marketsInfoArray[shift + 11], "string");
+    var maxPrice = speedomatic.unfixSigned(marketsInfoArray[shift + 12], "string");
     var numOutcomes = parseInt(marketsInfoArray[shift + 13], 16);
-    var consensusOutcomeID = abi.hex(marketsInfoArray[shift + 14], true);
+    var consensusOutcomeID = speedomatic.hex(marketsInfoArray[shift + 14], true);
     var consensus;
-    if (!abi.unfix(consensusOutcomeID, "number")) {
+    if (!speedomatic.unfix(consensusOutcomeID, "number")) {
       consensus = null;
     } else {
       var unfixed = unfixConsensusOutcome(consensusOutcomeID, minPrice, maxPrice);
@@ -31,7 +31,7 @@ module.exports = function (marketsInfoArray, branch) {
     marketsInfo[marketID] = {
       id: marketID,
       branchID: branch,
-      volume: abi.unfix(marketsInfoArray[shift + 4], "string"),
+      volume: speedomatic.unfix(marketsInfoArray[shift + 4], "string"),
       topic: topic,
       minPrice: minPrice,
       maxPrice: maxPrice,

@@ -8,7 +8,7 @@
  * @property {buffer} derivedKey The secret key (derived from the password) used to encrypt this account's private key.
  */
 
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 var keythereum = require("keythereum");
 var uuid = require("uuid");
 var errors = require("../rpc-interface").errors;
@@ -35,7 +35,7 @@ function register(p, callback) {
 
       // encrypt private key using derived key and IV, then
       // store encrypted key & IV, indexed by handle
-      var address = abi.format_address(keythereum.privateKeyToAddress(plain.privateKey));
+      var address = speedomatic.formatEthereumAddress(keythereum.privateKeyToAddress(plain.privateKey));
       var kdfparams = {
         dklen: keythereum.constants[KDF].dklen,
         salt: plain.salt.toString("hex")

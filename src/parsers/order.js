@@ -1,6 +1,6 @@
 "use strict";
 
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 var BigNumber = require("bignumber.js");
 var denormalizePrice = require("../trading/denormalize-price");
 var roundToPrecision = require("../utils/round-to-precision");
@@ -19,11 +19,11 @@ module.exports = function (type, minPrice, maxPrice, order) {
     roundingMode = BigNumber.ROUND_UP;
   }
 
-  var fullPrecisionAmount = abi.unfix(order[0]);
+  var fullPrecisionAmount = speedomatic.unfix(order[0]);
   var amount = roundToPrecision(fullPrecisionAmount, constants.MINIMUM_TRADE_SIZE);
   if (amount === null) return null;
 
-  var fullPrecisionPrice = denormalizePrice(minPrice, maxPrice, abi.unfix_signed(order[1]));
+  var fullPrecisionPrice = denormalizePrice(minPrice, maxPrice, speedomatic.unfixSigned(order[1]));
   var price = roundToPrecision(new BigNumber(fullPrecisionPrice, 10), constants.PRECISION.zero, round, roundingMode);
   if (price === null) return null;
 
@@ -32,11 +32,11 @@ module.exports = function (type, minPrice, maxPrice, order) {
     fullPrecisionAmount: fullPrecisionAmount.toFixed(),
     price: price,
     fullPrecisionPrice: fullPrecisionPrice,
-    owner: abi.format_address(order[2]),
-    tokensEscrowed: abi.unfix(order[3], "string"),
-    sharesEscrowed: abi.unfix(order[4], "string"),
-    betterOrderId: abi.format_int256(order[5]),
-    worseOrderId: abi.format_int256(order[6]),
-    gasPrice: abi.string(order[7])
+    owner: speedomatic.formatEthereumAddress(order[2]),
+    tokensEscrowed: speedomatic.unfix(order[3], "string"),
+    sharesEscrowed: speedomatic.unfix(order[4], "string"),
+    betterOrderId: speedomatic.formatInt256(order[5]),
+    worseOrderId: speedomatic.formatInt256(order[6]),
+    gasPrice: speedomatic.encodeNumberAsBase10String(order[7])
   };
 };

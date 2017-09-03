@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 global.BigNumber = require("bignumber.js");
-global.abi = require("augur-abi");
+global.speedomatic = require("speedomatic");
 global.chalk = require("chalk");
 global.constants = require("./src/constants");
 global.Augur = require("./src");
@@ -23,7 +23,7 @@ global.Augur = require("./src");
     //       global.balances = {
     //         cash: cashBalance,
     //         reputation: repBalance,
-    //         ether: abi.unfix(ethBalance, "string")
+    //         ether: speedomatic.unfix(ethBalance, "string")
     //       };
     //       console.log(chalk.cyan("Balances:"));
     //       console.log("Cash:       " + chalk.green(balances.cash));

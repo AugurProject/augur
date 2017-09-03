@@ -2,10 +2,10 @@
 
 var uuid = require("uuid");
 var uuidParse = require("uuid-parse");
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 
 function generateTradeGroupID() {
-  return abi.format_int256(Buffer.from(uuidParse.parse(uuid.v4())).toString("hex"));
+  return speedomatic.formatInt256(Buffer.from(uuidParse.parse(uuid.v4())).toString("hex"));
 }
 
 module.exports = generateTradeGroupID;

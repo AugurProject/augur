@@ -1,8 +1,8 @@
 "use strict";
 
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 
 module.exports = function (markets) {
   if (!Array.isArray(markets)) return markets;
-  return markets.map(abi.format_int256);
+  return markets.map(speedomatic.formatInt256);
 };

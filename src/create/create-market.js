@@ -1,7 +1,7 @@
 "use strict";
 
 var assign = require("lodash.assign");
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 var rpcInterface = require("../rpc-interface");
 var api = require("../api");
 var calculateRequiredMarketValue = require("../create/calculate-required-market-value");
@@ -11,8 +11,8 @@ var encodeTag = require("../format/tag/encode-tag");
 function createMarket(p) {
   api().ReportingWindow.createNewMarket(assign({}, p, {
     // TODO replace with 'fixed' in abi map
-    _minDisplayPrice: abi.fix(p._minDisplayPrice, "hex"),
-    _maxDisplayPrice: abi.fix(p._maxDisplayPrice, "hex"),
+    _minDisplayPrice: speedomatic.fix(p._minDisplayPrice, "hex"),
+    _maxDisplayPrice: speedomatic.fix(p._maxDisplayPrice, "hex"),
     _topic: encodeTag(p._topic),
     tx: { value: calculateRequiredMarketValue(rpcInterface.getGasPrice()) }
   }));

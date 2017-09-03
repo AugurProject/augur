@@ -1,16 +1,16 @@
 "use strict";
 
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 
 function isSpecialValueConsensusOutcome(fxpConsensusOutcome, minValue, maxValue) {
   var bnFxpConsensusOutcome, meanValue;
-  bnFxpConsensusOutcome = abi.bignum(fxpConsensusOutcome);
+  bnFxpConsensusOutcome = speedomatic.bignum(fxpConsensusOutcome);
   if (bnFxpConsensusOutcome.eq(1)) {
     return "0";
   }
-  meanValue = abi.fix(maxValue).plus(abi.fix(minValue)).dividedBy(2);
+  meanValue = speedomatic.fix(maxValue).plus(speedomatic.fix(minValue)).dividedBy(2);
   if (bnFxpConsensusOutcome.eq(meanValue.plus(1))) {
-    return abi.unfix(meanValue, "string");
+    return speedomatic.unfix(meanValue, "string");
   }
   return false;
 }

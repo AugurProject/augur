@@ -1,7 +1,7 @@
 "use strict";
 
 var assert = require("chai").assert;
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 var serialize = require("../../../src/utils/serialize");
 
 describe("utils/serialize", function () {

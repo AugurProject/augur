@@ -3,7 +3,7 @@
 "use strict";
 
 var assert = require("chai").assert;
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 var proxyquire = require("proxyquire").noPreserveCache();
 
 var callcount = 0;

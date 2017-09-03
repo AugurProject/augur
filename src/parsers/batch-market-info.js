@@ -1,6 +1,6 @@
 "use strict";
 
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 var parseMarketInfo = require("./market-info");
 
 module.exports = function (batchMarketInfoArray, numMarkets) {
@@ -13,7 +13,7 @@ module.exports = function (batchMarketInfoArray, numMarkets) {
     var len = parseInt(batchMarketInfoArray[totalLen], 16);
     var shift = totalLen + 1;
     var marketInfoArray = batchMarketInfoArray.slice(shift, shift + len - 1);
-    var marketID = abi.format_int256(batchMarketInfoArray[shift]);
+    var marketID = speedomatic.formatInt256(batchMarketInfoArray[shift]);
     var marketInfo = parseMarketInfo(marketInfoArray);
     if (marketInfo && marketInfo.numOutcomes) batchMarketInfo[marketID] = marketInfo;
     totalLen += len;

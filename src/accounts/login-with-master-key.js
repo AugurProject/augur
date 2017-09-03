@@ -7,7 +7,7 @@
  * @property {buffer} derivedKey The secret key (derived from the password) used to encrypt this account's private key.
  */
 
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 var keythereum = require("keythereum");
 var sha256 = require("../utils/sha256");
 
@@ -21,9 +21,9 @@ function loginWithMasterKey(p) {
   if (!p.privateKey) throw new Error("Private key is required");
   var privateKeyBuf = (Buffer.isBuffer(p.privateKey)) ? p.privateKey : Buffer.from(p.privateKey, "hex");
   return {
-    address: abi.format_address(keythereum.privateKeyToAddress(privateKeyBuf)),
+    address: speedomatic.formatEthereumAddress(keythereum.privateKeyToAddress(privateKeyBuf)),
     privateKey: privateKeyBuf,
-    derivedKey: Buffer.from(abi.unfork(sha256(privateKeyBuf)), "hex")
+    derivedKey: Buffer.from(speedomatic.unfork(sha256(privateKeyBuf)), "hex")
   };
 }
 

@@ -3,7 +3,7 @@
 "use strict";
 
 var assert = require("chai").assert;
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 var parseOrderBook = require("../../../src/parsers/order-book");
 
 describe("parsers/order-book", function () {
@@ -44,11 +44,11 @@ describe("parsers/order-book", function () {
       maxPrice: "1",
       orderBookArray: [
         "0x1",                       // orderId
-        abi.fix("1.1111111", "hex"), // amount
-        abi.fix("0.7777777", "hex"), // price
+        speedomatic.fix("1.1111111", "hex"), // amount
+        speedomatic.fix("0.7777777", "hex"), // price
         "0xb0b",                     // owner
-        abi.fix("0.8641974", "hex"), // tokensEscrowed
-        abi.fix("0", "hex"),         // sharesEscrowed
+        speedomatic.fix("0.8641974", "hex"), // tokensEscrowed
+        speedomatic.fix("0", "hex"),         // sharesEscrowed
         "0xa",                       // betterOrderId
         "0xb",                       // worseOrderId
         "0x4a817c800"                // gasPrice
@@ -79,21 +79,21 @@ describe("parsers/order-book", function () {
       maxPrice: "1",
       orderBookArray: [
         "0x1",                       // orderId
-        abi.fix("1.1111111", "hex"), // amount
-        abi.fix("0.7777777", "hex"), // price
+        speedomatic.fix("1.1111111", "hex"), // amount
+        speedomatic.fix("0.7777777", "hex"), // price
         "0xb0b",                     // owner
-        abi.fix("0.8641974", "hex"), // tokensEscrowed
-        abi.fix("0", "hex"),         // sharesEscrowed
+        speedomatic.fix("0.8641974", "hex"), // tokensEscrowed
+        speedomatic.fix("0", "hex"),         // sharesEscrowed
         "0xa",                       // betterOrderId
         "0xb",                       // worseOrderId
         "0x4a817c800",               // gasPrice
 
         "0xf",                       // orderId
-        abi.fix("1.1111111", "hex"), // amount
-        abi.fix("0.7777777", "hex"), // price
+        speedomatic.fix("1.1111111", "hex"), // amount
+        speedomatic.fix("0.7777777", "hex"), // price
         "0xb0b",                     // owner
-        abi.fix("0.8641974", "hex"), // tokensEscrowed
-        abi.fix("0", "hex"),         // sharesEscrowed
+        speedomatic.fix("0.8641974", "hex"), // tokensEscrowed
+        speedomatic.fix("0", "hex"),         // sharesEscrowed
         "0xa",                       // betterOrderId
         "0xb",                       // worseOrderId
         "0x4a817c801"                // gasPrice

@@ -1,6 +1,6 @@
 "use strict";
 
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 
 /**
  * @param {string} typeCode Type code (buy=1, sell=2); integer 32-byte hex.
@@ -9,7 +9,7 @@ var abi = require("augur-abi");
  * @return {BigNumber} Modified number of shares.
  */
 function modifyPosition(typeCode, position, numShares) {
-  var unfixedNumShares = abi.unfix(numShares);
+  var unfixedNumShares = speedomatic.unfix(numShares);
   var newPosition;
   switch (parseInt(typeCode, 16)) {
     case 1: // buy

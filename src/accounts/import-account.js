@@ -1,6 +1,6 @@
 "use strict";
 
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 var keythereum = require("keythereum");
 var errors = require("../rpc-interface").errors;
 
@@ -30,7 +30,7 @@ function importAccount(p, callback) {
       }
       callback({
         privateKey: privateKey,
-        address: abi.format_address(p.address),
+        address: speedomatic.formatEthereumAddress(p.address),
         keystore: p.keystore,
         derivedKey: derivedKey
       });

@@ -1,6 +1,6 @@
 "use strict";
 
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 var assert = require("chai").assert;
 var BigNumber = require("bignumber.js");
 var calculateSettlementFee = require("../../../../src/trading/simulation/calculate-settlement-fee");

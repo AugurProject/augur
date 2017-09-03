@@ -3,7 +3,7 @@
 "use strict";
 
 var assert = require("chai").assert;
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 var keys = require("keythereum");
 var sha256 = require("../../../src/utils/sha256");
 var loginWithMasterKey = require("../../../src/accounts/login-with-master-key");
@@ -23,9 +23,9 @@ describe("accounts/login-with-master-key", function () {
     },
     assertions: function (account) {
       assert.deepEqual(account, {
-        address: abi.format_address(keys.privateKeyToAddress(privateKey)),
+        address: speedomatic.formatEthereumAddress(keys.privateKeyToAddress(privateKey)),
         privateKey: Buffer.from(privateKey, "hex"),
-        derivedKey: Buffer.from(abi.unfork(sha256(Buffer.from(privateKey, "hex"))), "hex")
+        derivedKey: Buffer.from(speedomatic.unfork(sha256(Buffer.from(privateKey, "hex"))), "hex")
       });
     }
   });
@@ -36,9 +36,9 @@ describe("accounts/login-with-master-key", function () {
     },
     assertions: function (account) {
       assert.deepEqual(account, {
-        address: abi.format_address(keys.privateKeyToAddress(privateKey)),
+        address: speedomatic.formatEthereumAddress(keys.privateKeyToAddress(privateKey)),
         privateKey: Buffer.from(privateKey, "hex"),
-        derivedKey: Buffer.from(abi.unfork(sha256(Buffer.from(privateKey, "hex"))), "hex")
+        derivedKey: Buffer.from(speedomatic.unfork(sha256(Buffer.from(privateKey, "hex"))), "hex")
       });
     }
   });

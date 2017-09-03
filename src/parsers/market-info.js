@@ -1,6 +1,6 @@
 "use strict";
 
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 var rpc = require("../rpc-interface");
 var decodeTag = require("../format/tag/decode-tag");
 var unfixConsensusOutcome = require("../reporting/format/unfix-consensus-outcome");
@@ -19,16 +19,16 @@ module.exports = function (marketInfoArray) {
   var index = 11;
   var topic = decodeTag(marketInfoArray[12]);
   marketInfo = {
-    id: abi.format_int256(marketInfoArray[0]),
+    id: speedomatic.formatInt256(marketInfoArray[0]),
     network: rpc.getNetworkID(),
     numOutcomes: numOutcomes,
     branchID: marketInfoArray[5],
     creationBlock: parseInt(marketInfoArray[8], 16),
-    volume: abi.unfix(marketInfoArray[9], "string"),
-    author: abi.format_address(marketInfoArray[11]),
+    volume: speedomatic.unfix(marketInfoArray[9], "string"),
+    author: speedomatic.formatEthereumAddress(marketInfoArray[11]),
     topic: topic,
-    minPrice: abi.unfix_signed(marketInfoArray[index + 3], "string"),
-    maxPrice: abi.unfix_signed(marketInfoArray[index + 4], "string")
+    minPrice: speedomatic.unfixSigned(marketInfoArray[index + 3], "string"),
+    maxPrice: speedomatic.unfixSigned(marketInfoArray[index + 4], "string")
   };
   if (parseInt(marketInfoArray[index + 2], 16) !== 0) {
     var fxpConsensusOutcome = marketInfoArray[index + 2];

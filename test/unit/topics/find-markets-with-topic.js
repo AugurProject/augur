@@ -1,7 +1,7 @@
 "use strict";
 
 var assert = require("chai").assert;
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 var proxyquire = require("proxyquire").noPreserveCache();
 var encodeTag = require("../../../src/format/tag/encode-tag");
 
@@ -35,7 +35,7 @@ describe("topics/find-markets-with-topic", function () {
         assert.strictEqual(branch, "0xb1");
         var output = [];
         for (var i = 0; i < logs.length; i++) {
-          if (logs[i].branch === abi.format_int256("0xb1")) {
+          if (logs[i].branch === speedomatic.formatInt256("0xb1")) {
             output.push(logs[i].marketID);
           }
         }
@@ -75,7 +75,7 @@ describe("topics/find-markets-with-topic", function () {
         assert.strictEqual(branch, "0xb1");
         var output = [];
         for (var i = 0; i < logs.length; i++) {
-          if (logs[i].branch === abi.format_int256("0xb1")) {
+          if (logs[i].branch === speedomatic.formatInt256("0xb1")) {
             output.push(logs[i].marketID);
           }
         }
@@ -128,7 +128,7 @@ describe("topics/find-markets-with-topic", function () {
         assert.strictEqual(branch, "0xb1");
         var output = [];
         for (var i = 0; i < logs.length; i++) {
-          if (logs[i].branch === abi.format_int256("0xb1")) {
+          if (logs[i].branch === speedomatic.formatInt256("0xb1")) {
             output.push(logs[i].marketID);
           }
         }
@@ -162,7 +162,7 @@ describe("topics/find-markets-with-topic", function () {
         if (logs && logs.error) return logs;
 
         for (var i = 0; i < logs.length; i++) {
-          if (logs[i].branch === abi.format_int256("0xb1")) {
+          if (logs[i].branch === speedomatic.formatInt256("0xb1")) {
             output.push(logs[i].marketID);
           }
         }

@@ -1,7 +1,9 @@
+/* eslint-env mocha */
+
 "use strict";
 
 var assert = require("chai").assert;
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 var proxyquire = require("proxyquire").noPreserveCache();
 
 describe("topics/get-topics-info", function () {
@@ -32,9 +34,9 @@ describe("topics/get-topics-info", function () {
               assert.oneOf(p.offset, [1, 0]);
               assert.oneOf(p.numTopicsToLoad, [3, 0]);
               return callback([
-                abi.short_string_to_int256("Politics"),
-                abi.short_string_to_int256("Sports"),
-                abi.short_string_to_int256("Food")
+                speedomatic.abiEncodeShortStringAsInt256("Politics"),
+                speedomatic.abiEncodeShortStringAsInt256("Sports"),
+                speedomatic.abiEncodeShortStringAsInt256("Food")
               ]);
             }
           }

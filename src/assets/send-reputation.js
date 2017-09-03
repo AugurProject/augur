@@ -1,7 +1,7 @@
 "use strict";
 
 var assign = require("lodash.assign");
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 var api = require("../api");
 var compose = require("../utils/compose");
 
@@ -11,7 +11,7 @@ var compose = require("../utils/compose");
 // { branch, recver, value, onSent, onSuccess, onFailed }
 function sendReputation(p) {
   api().SendReputation.sendReputation(assign({}, p, {
-    value: abi.fix(p.value, "hex"),
+    value: speedomatic.fix(p.value, "hex"),
     onSuccess: compose(function (result, callback) {
       if (!result || !result.callReturn || parseInt(result.callReturn, 16)) {
         return callback(result);
@@ -23,7 +23,7 @@ function sendReputation(p) {
         if (!repBalance || repBalance.error) {
           return p.onFailed(repBalance);
         }
-        if (abi.bignum(repBalance).lt(abi.bignum(p.value))) {
+        if (speedomatic.bignum(repBalance).lt(speedomatic.bignum(p.value))) {
           return p.onFailed({ error: "0", message: "not enough reputation" });
         }
         api().ConsensusData.getRepRedistributionDone({

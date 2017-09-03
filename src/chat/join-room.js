@@ -1,6 +1,6 @@
 "use strict";
 
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 var getNewMessages = require("./get-new-messages");
 var parseMessages = require("./parse-messages");
 var whisper = require("./whisper");
@@ -21,7 +21,7 @@ function joinRoom(roomName, onMessages) {
   }
   if (!whisper.getFilter(roomName)) {
     whisper.setFilter(roomName, rpcInterface.shh.newFilter({
-      topics: [abi.prefix_hex(abi.encode_hex(roomName))]
+      topics: [speedomatic.prefixHex(speedomatic.abiEncodeBytes(roomName))]
     }), setInterval(function () {
       getNewMessages(roomName, function (err, messages) {
         if (err) {

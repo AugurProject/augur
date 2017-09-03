@@ -1,6 +1,6 @@
 "use strict";
 
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 
 var parseAllLogsMessage = function (message, onMessage) {
   var i, len;
@@ -11,7 +11,7 @@ var parseAllLogsMessage = function (message, onMessage) {
       for (i = 0, len = message.length; i < len; ++i) {
         if (message[i]) {
           if (message[i].constructor === Object && message[i].data) {
-            message[i].data = abi.unroll_array(message[i].data);
+            message[i].data = speedomatic.unrollArray(message[i].data);
           }
           onMessage(message[i]);
         }
