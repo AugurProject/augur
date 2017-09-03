@@ -3,7 +3,7 @@ import speedomatic from 'speedomatic';
 import { ZERO } from 'modules/trade/constants/numbers';
 import { BINARY, SCALAR } from 'modules/markets/constants/market-types';
 import * as TYPES from 'modules/transactions/constants/types';
-import { formatEtherTokens, formatPercent, formatEther, formatRep, formatShares } from 'utils/format-number';
+import { formatEtherTokens, formatEther, formatRep, formatShares } from 'utils/format-number';
 import { formatDate } from 'utils/format-date';
 import { formatReportedOutcome } from 'modules/reports/selectors/reportable-outcomes';
 import { loadMarketThenRetryConversion, lookupEventMarketsThenRetryConversion } from 'modules/transactions/actions/retry-conversion';
