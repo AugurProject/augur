@@ -154,14 +154,6 @@ export function constructPayoutTransaction(log, market, dispatch) {
   return transaction;
 }
 
-export function constructDecreaseTradingFeeTransaction(log, market, dispatch) {
-  const transaction = { data: {} };
-  transaction.description = market.description;
-  transaction.data.marketID = log.marketID ? log.marketID : null;
-  transaction.message = `updated trading fee: ${formatPercent(speedomatic.bignum(log.tradingFee).times(100)).full}`;
-  return transaction;
-}
-
 export function constructPenalizeTransaction(log, marketID, market, outcomes, dispatch) {
   const transaction = { data: {} };
   transaction.type = 'Compare Report To Consensus';
@@ -437,8 +429,6 @@ export const constructMarketTransaction = (label, log, market) => (dispatch, get
   switch (label) {
     case TYPES.PAYOUT:
       return constructPayoutTransaction(log, market, dispatch);
-    case TYPES.DECREASE_TRADING_FEE:
-      return constructDecreaseTradingFeeTransaction(log, market, dispatch);
     default:
       return null;
   }
@@ -459,8 +449,7 @@ export const constructTransaction = (label, log, isRetry, callback) => (dispatch
       if (!market || !market.description) break;
       return constructCreateMarketTransaction(log, market.description, dispatch);
     }
-    case TYPES.PAYOUT:
-    case TYPES.DECREASE_TRADING_FEE: {
+    case TYPES.PAYOUT: {
       const market = dispatch(loadDataForMarketTransaction(label, log, isRetry, callback));
       if (!market || !market.description) break;
       return dispatch(constructMarketTransaction(label, log, market));
