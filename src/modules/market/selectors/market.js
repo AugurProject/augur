@@ -28,7 +28,7 @@ import { isMarketDataOpen, isMarketDataExpired } from 'utils/is-market-data-open
 import { BRANCH_ID } from 'modules/app/constants/network';
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
 import { BINARY_INDETERMINATE_OUTCOME_ID, CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID, INDETERMINATE_OUTCOME_NAME } from 'modules/markets/constants/market-outcomes';
-import { abi } from 'services/augurjs';
+import speedomatic from 'speedomatic';
 
 import { placeTrade } from 'modules/trade/actions/place-trade';
 import { commitReport } from 'modules/reports/actions/commit-report';
@@ -240,7 +240,7 @@ export function assembleMarket(
               zeroStyled: true
             });
           } else {
-            const midPoint = (abi.bignum(market.minValue).plus(abi.bignum(market.maxValue))).dividedBy(2);
+            const midPoint = (speedomatic.bignum(market.minValue).plus(speedomatic.bignum(market.maxValue))).dividedBy(2);
             outcome.lastPricePercent = formatNumber(midPoint, {
               decimals: 2,
               decimalsRounded: 1,
@@ -305,7 +305,7 @@ export function assembleMarket(
           if (marketOutcome) market.consensus.outcomeName = marketOutcome.name;
         }
         if (market.consensus.proportionCorrect) {
-          market.consensus.percentCorrect = formatPercent(abi.bignum(market.consensus.proportionCorrect).times(100));
+          market.consensus.percentCorrect = formatPercent(speedomatic.bignum(market.consensus.proportionCorrect).times(100));
         }
       } else {
         market.consensus = null;

@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { abi } from 'services/augurjs';
+import speedomatic from 'speedomatic';
 
 export { BINARY, SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types';
 export { BUY, SELL } from 'modules/trade/constants/types';
@@ -464,7 +464,7 @@ export const tradeConstOrderBooks = {
     }
   }
 };
-// lifted directly from augur.js with a slight change to use abi.bignum instead of BigNumber
+// lifted directly from augur.js with a slight change to use speedomatic.bignum instead of BigNumber
 const filterByPriceAndOutcomeAndUserSortByPrice = (orders, traderOrderType, limitPrice, outcomeId, userAddress) => {
   if (!orders) return [];
   const isMarketOrder = limitPrice === null || limitPrice === undefined;
@@ -475,7 +475,7 @@ const filterByPriceAndOutcomeAndUserSortByPrice = (orders, traderOrderType, limi
   if (isMarketOrder) {
     isMatchingPrice = true;
   } else {
-    isMatchingPrice = traderOrderType === 'buy' ? new abi.bignum(order.price, 10).lte(limitPrice) : new abi.bignum(order.price, 10).gte(limitPrice); // eslint-disable-line new-cap
+    isMatchingPrice = traderOrderType === 'buy' ? new speedomatic.bignum(order.price, 10).lte(limitPrice) : new speedomatic.bignum(order.price, 10).gte(limitPrice); // eslint-disable-line new-cap
   }
   return order.outcome === outcomeId && order.owner !== userAddress && isMatchingPrice;
 })

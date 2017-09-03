@@ -8,7 +8,8 @@ import { closePosition } from 'modules/my-positions/actions/close-position';
 
 import { ZERO } from 'modules/trade/constants/numbers';
 
-import { augur, abi } from 'services/augurjs';
+import { augur } from 'services/augurjs';
+import speedomatic from 'speedomatic';
 import { formatEtherTokens, formatShares, formatNumber } from 'utils/format-number';
 
 export default function () {
@@ -48,9 +49,9 @@ export const generateMarketsPositionsSummary = memoize((markets) => {
       if (!outcome || !outcome.position || !outcome.position.numPositions || !outcome.position.numPositions.value) {
         return;
       }
-      qtyShares = qtyShares.plus(abi.bignum(outcome.position.qtyShares.value));
-      totalRealizedNet = totalRealizedNet.plus(abi.bignum(outcome.position.realizedNet.value));
-      totalUnrealizedNet = totalUnrealizedNet.plus(abi.bignum(outcome.position.unrealizedNet.value));
+      qtyShares = qtyShares.plus(speedomatic.bignum(outcome.position.qtyShares.value));
+      totalRealizedNet = totalRealizedNet.plus(speedomatic.bignum(outcome.position.realizedNet.value));
+      totalUnrealizedNet = totalUnrealizedNet.plus(speedomatic.bignum(outcome.position.unrealizedNet.value));
       positionOutcomes.push(outcome);
     });
   });
@@ -62,7 +63,7 @@ export const generateMarketsPositionsSummary = memoize((markets) => {
 }, { max: 50 });
 
 export const generatePositionsSummary = memoize((numPositions, qtyShares, meanTradePrice, realizedNet, unrealizedNet) => {
-  const totalNet = abi.bignum(realizedNet).plus(abi.bignum(unrealizedNet));
+  const totalNet = speedomatic.bignum(realizedNet).plus(speedomatic.bignum(unrealizedNet));
   return {
     numPositions: formatNumber(numPositions, {
       decimals: 0,

@@ -1,7 +1,8 @@
 import memoize from 'memoizee';
 import { formatPercent, formatEtherTokens, formatShares, formatEther } from 'utils/format-number';
 import calcOrderProfitLossPercents from 'modules/trade/helpers/calc-order-profit-loss-percents';
-import { augur, abi } from 'services/augurjs';
+import { augur } from 'services/augurjs';
+import speedomatic from 'speedomatic';
 import { calculateMaxPossibleShares } from 'modules/market/selectors/helpers/calculate-max-possible-shares';
 import { BUY, SELL } from 'modules/trade/constants/types';
 import { BIDS, ASKS } from 'modules/order-book/constants/order-book-order-types';
@@ -96,7 +97,7 @@ export const generateTradeSummary = memoize((tradeOrders) => {
 
       // total gas
       if (tradeOrder.data && tradeOrder.data.gasFees && tradeOrder.data.gasFees.value) {
-        p.totalGas = p.totalGas.plus(abi.bignum(tradeOrder.data.gasFees.value));
+        p.totalGas = p.totalGas.plus(speedomatic.bignum(tradeOrder.data.gasFees.value));
       }
 
       // trade order
@@ -123,11 +124,11 @@ export const generateTradeOrders = memoize((market, outcome, outcomeTradeInProgr
   const outcomeName = outcome.name;
   const description = market.description;
   return tradeActions.map((tradeAction) => {
-    const numShares = abi.bignum(tradeAction.shares);
-    const costEth = abi.bignum(tradeAction.costEth).abs();
+    const numShares = speedomatic.bignum(tradeAction.shares);
+    const costEth = speedomatic.bignum(tradeAction.costEth).abs();
     const avgPrice = tradeAction.action === 'SHORT_SELL' ?
       costEth.minus(numShares).dividedBy(numShares) :
-      abi.bignum(costEth).dividedBy(abi.bignum(numShares));
+      speedomatic.bignum(costEth).dividedBy(speedomatic.bignum(numShares));
     const noFeePrice = market.type === 'scalar' ? outcomeTradeInProgress.limitPrice : tradeAction.noFeePrice;
     return {
       type: TRANSACTIONS_TYPES[tradeAction.action],

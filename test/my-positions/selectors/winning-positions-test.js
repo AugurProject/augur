@@ -8,13 +8,13 @@ describe(`modules/my-positions/selectors/winning-positions.js`, () => {
   proxyquire.noPreserveCache().noCallThru();
   const test = (t) => {
     it(t.description, () => {
-      const AugurJS = { abi: { bignum: () => {} } };
+      const Speedomatic = { bignum: () => {} };
       const SelectLoginAccountPositions = () => t.selectors.loginAccountPositions;
       const selector = proxyquire('../../../src/modules/my-positions/selectors/winning-positions.js', {
-        '../../../services/augurjs': AugurJS,
+        speedomatic: Speedomatic,
         './login-account-positions': SelectLoginAccountPositions
       });
-      sinon.stub(AugurJS.abi, 'bignum', n => new BigNumber(n, 10));
+      sinon.stub(Speedomatic, 'bignum', n => new BigNumber(n, 10));
       t.assertions(selector.selectClosedMarketsWithWinningShares(t.state));
     });
   };

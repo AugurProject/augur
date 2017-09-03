@@ -1,6 +1,6 @@
 import memoize from 'memoizee';
 import BigNumber from 'bignumber.js';
-import { abi } from 'services/augurjs';
+import speedomatic from 'speedomatic';
 
 import store from 'src/store';
 
@@ -66,7 +66,7 @@ function getUserOpenOrders(orders, orderType, outcomeID, userID, orderCancellati
     .map(order => (
       {
         id: order.id,
-        marketID: abi.format_int256(order.market),
+        marketID: speedomatic.formatInt256(order.market),
         type: orderType,
         originalShares: formatNone(),
         avgPrice: formatEtherTokens(order.price),

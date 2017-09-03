@@ -19,10 +19,8 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
   };
   const updateOrderStatus = actionCreator();
   const cancelOrder = proxyquire('../../../src/modules/bids-asks/actions/cancel-order', {
-    '../../../services/augurjs': {
-      augur,
-      abi: { bignum: sinon.stub().returns(new BigNumber('1', 10)) },
-    },
+    speedomatic: { bignum: sinon.stub().returns(new BigNumber('1', 10)) },
+    '../../../services/augurjs': { augur },
     '../../bids-asks/actions/update-order-status': { updateOrderStatus }
   }).default;
 

@@ -1,6 +1,7 @@
 import BigNumber from 'bignumber.js';
 
-import { abi, constants } from 'services/augurjs';
+import { constants } from 'services/augurjs';
+import speedomatic from 'speedomatic';
 import { ZERO, TEN } from 'modules/trade/constants/numbers';
 import addCommas from 'utils/add-commas-to-number';
 
@@ -51,7 +52,7 @@ if 1.1 + 1.4 = 2.6. If perfect precision isn't necessary, consider adding them u
 
 export function formatEtherTokens(num, opts) {
   return formatNumber(
-    abi.number(num),
+    speedomatic.encodeNumberAsJSNumber(num),
     {
       decimals: constants.PRECISION.decimals,
       decimalsRounded: constants.PRECISION.decimals,
@@ -67,7 +68,7 @@ export function formatEtherTokens(num, opts) {
 
 export function formatEther(num, opts) {
   return formatNumber(
-    abi.number(num),
+    speedomatic.encodeNumberAsJSNumber(num),
     {
       decimals: constants.PRECISION.decimals,
       decimalsRounded: constants.PRECISION.decimals,
@@ -83,7 +84,7 @@ export function formatEther(num, opts) {
 
 export function formatEtherTokensEstimate(num, opts) {
   return formatNumber(
-    abi.number(num),
+    speedomatic.encodeNumberAsJSNumber(num),
     {
       decimals: constants.PRECISION.decimals,
       decimalsRounded: constants.PRECISION.decimals,
@@ -99,7 +100,7 @@ export function formatEtherTokensEstimate(num, opts) {
 
 export function formatEtherEstimate(num, opts) {
   return formatNumber(
-    abi.number(num),
+    speedomatic.encodeNumberAsJSNumber(num),
     {
       decimals: constants.PRECISION.decimals,
       decimalsRounded: constants.PRECISION.decimals,
@@ -115,7 +116,7 @@ export function formatEtherEstimate(num, opts) {
 
 export function formatPercent(num, opts) {
   return formatNumber(
-    abi.number(num),
+    speedomatic.encodeNumberAsJSNumber(num),
     {
       decimals: 1,
       decimalsRounded: 0,
@@ -131,11 +132,11 @@ export function formatPercent(num, opts) {
 
 export function formatShares(num, opts) {
   const formattedShares = formatNumber(
-    abi.number(num),
+    speedomatic.encodeNumberAsJSNumber(num),
     {
       decimals: 2,
       decimalsRounded: 2,
-      denomination: ` share${abi.number(num) !== 1 ? 's' : ''}`,
+      denomination: ` share${speedomatic.encodeNumberAsJSNumber(num) !== 1 ? 's' : ''}`,
       minimized: true,
       zeroStyled: false,
       blankZero: false,
@@ -154,7 +155,7 @@ export function formatShares(num, opts) {
 
 export function formatRep(num, opts) {
   return formatNumber(
-    abi.number(num),
+    speedomatic.encodeNumberAsJSNumber(num),
     {
       decimals: 2,
       decimalsRounded: 0,
@@ -223,15 +224,15 @@ export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, deno
   roundDown = !!roundDown;
   zeroStyled = zeroStyled !== false;
   blankZero = blankZero !== false;
-  value = abi.bignum(num) || ZERO;
+  value = speedomatic.bignum(num) || ZERO;
 
   if (value.eq(ZERO)) {
     if (zeroStyled) return formatNone();
     if (blankZero) return formatBlank();
   }
 
-  const decimalsValue = TEN.toPower(abi.bignum(decimals));
-  const decimalsRoundedValue = TEN.toPower(abi.bignum(decimalsRounded));
+  const decimalsValue = TEN.toPower(speedomatic.bignum(decimals));
+  const decimalsRoundedValue = TEN.toPower(speedomatic.bignum(decimalsRounded));
 
   let round;
   let roundingMode;
@@ -270,15 +271,15 @@ export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, deno
     o.formatted = (bigUnitPostfix)
       ? addBigUnitPostfix(value, o.formattedValue)
       : addCommas(o.formattedValue);
-    if (bigUnitPostfix && value.gt(abi.bignum('10000'))) {
+    if (bigUnitPostfix && value.gt(speedomatic.bignum('10000'))) {
       o.fullPrecision = value.toFixed();
     }
     o.roundedValue = value.times(decimalsRoundedValue)[round]().dividedBy(decimalsRoundedValue);
     o.rounded = (bigUnitPostfix)
       ? addBigUnitPostfix(value, o.roundedValue.toFixed(decimalsRounded))
       : addCommas(o.roundedValue.toFixed(decimalsRounded));
-    o.minimized = addCommas(abi.string(o.formattedValue));
-    o.formattedValue = abi.number(o.formattedValue);
+    o.minimized = addCommas(speedomatic.encodeNumberAsBase10String(o.formattedValue));
+    o.formattedValue = speedomatic.encodeNumberAsJSNumber(o.formattedValue);
     o.roundedValue = o.roundedValue.toNumber();
   }
 
@@ -304,14 +305,14 @@ export function formatNumber(num, opts = { decimals: 0, decimalsRounded: 0, deno
 
 function addBigUnitPostfix(value, formattedValue) {
   let postfixed;
-  if (value.gt(abi.bignum('1000000000000'))) {
+  if (value.gt(speedomatic.bignum('1000000000000'))) {
     postfixed = '> 1T';
-  } else if (value.gt(abi.bignum('10000000000'))) {
-    postfixed = value.dividedBy(abi.bignum('1000000000')).toFixed(0) + 'B';
-  } else if (value.gt(abi.bignum('10000000'))) {
-    postfixed = value.dividedBy(abi.bignum('1000000')).toFixed(0) + 'M';
-  } else if (value.gt(abi.bignum('10000'))) {
-    postfixed = value.dividedBy(abi.bignum('1000')).toFixed(0) + 'K';
+  } else if (value.gt(speedomatic.bignum('10000000000'))) {
+    postfixed = value.dividedBy(speedomatic.bignum('1000000000')).toFixed(0) + 'B';
+  } else if (value.gt(speedomatic.bignum('10000000'))) {
+    postfixed = value.dividedBy(speedomatic.bignum('1000000')).toFixed(0) + 'M';
+  } else if (value.gt(speedomatic.bignum('10000'))) {
+    postfixed = value.dividedBy(speedomatic.bignum('1000')).toFixed(0) + 'K';
   } else {
     postfixed = addCommas(formattedValue);
   }

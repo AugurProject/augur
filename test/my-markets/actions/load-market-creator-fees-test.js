@@ -5,7 +5,7 @@ import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import * as mockStore from 'test/mockStore';
 
-import { abi } from 'services/augurjs';
+import speedomatic from 'speedomatic';
 
 describe('modules/my-markets/actions/load-market-creator-fees.js', () => {
   proxyquire.noPreserveCache().noCallThru();
@@ -13,7 +13,7 @@ describe('modules/my-markets/actions/load-market-creator-fees.js', () => {
 
   const mockAugurJS = {
     augur: { api: { CompositeGetters: {} } },
-    abi
+    speedomatic
   };
   mockAugurJS.augur.api.CompositeGetters.getMarketCreatorFeesCollected = sinon.stub().yields('10');
 
@@ -38,7 +38,7 @@ describe('modules/my-markets/actions/load-market-creator-fees.js', () => {
     const out = [{
       type: 'TESTING',
       data: {
-        '0x0000000000000000000000000000000000000001': abi.bignum('10')
+        '0x0000000000000000000000000000000000000001': speedomatic.bignum('10')
       }
     }];
     store.dispatch(action.loadMarketCreatorFees('0x0000000000000000000000000000000000000001'));

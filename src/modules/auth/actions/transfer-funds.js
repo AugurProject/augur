@@ -1,4 +1,5 @@
-import { abi, augur } from 'services/augurjs';
+import speedomatic from 'speedomatic';
+import { augur } from 'services/augurjs';
 import { updateAssets } from 'modules/auth/actions/update-assets';
 import { addNotification } from 'modules/notifications/actions/update-notifications';
 
@@ -10,7 +11,7 @@ export function transferFunds(amount, currency, toAddress) {
   return (dispatch, getState) => {
     const { branch, loginAccount } = getState();
     const fromAddress = loginAccount.address;
-    const to = abi.format_address(toAddress);
+    const to = speedomatic.formatEthereumAddress(toAddress);
     const onSent = r => console.log('transfer', currency, 'sent:', r);
     const onSuccess = (r) => {
       dispatch(updateAssets());

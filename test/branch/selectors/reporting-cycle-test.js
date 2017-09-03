@@ -6,11 +6,12 @@ import BigNumber from 'bignumber.js';
 describe(`modules/branch/selectors/reporting-cycle.js`, () => {
   proxyquire.noPreserveCache();
   const test = t => it(t.description, () => {
+    const Speedomatic = { bignum: n => new BigNumber(n, 10) };
     const AugurJS = {
-      augur: t.stub.augur,
-      abi: { bignum: n => new BigNumber(n, 10) }
+      augur: t.stub.augur
     };
     const selector = proxyquire('../../../src/modules/branch/selectors/reporting-cycle.js', {
+      speedomatic: Speedomatic,
       '../../../services/augurjs': AugurJS
     });
     t.assertions(selector.selectReportingCycle(t.state));

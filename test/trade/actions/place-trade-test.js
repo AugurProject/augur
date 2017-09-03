@@ -1,4 +1,5 @@
 import Augur from 'augur.js';
+import speedomatic from 'speedomatic';
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
@@ -20,11 +21,11 @@ describe(`modules/trade/actions/place-trade.js`, () => {
     testState.loginAccount = { privateKey: Buffer.from('PRIVATE_KEY', 'utf8') };
     const store = mockStore(testState);
     const SelectMarket = { selectMarket: () => {} };
+    const Speedomatic = {
+      fix: (n, enc) => speedomatic.fix(n, enc),
+      unfix: (n, enc) => speedomatic.unfix(n, enc)
+    };
     const AugurJS = {
-      abi: {
-        fix: (n, enc) => augur.abi.fix(n, enc),
-        unfix: (n, enc) => augur.abi.unfix(n, enc)
-      },
       augur: {
         api: t.mock.augur.api,
         constants: augur.constants,
@@ -33,6 +34,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
     };
     sinon.stub(SelectMarket, 'selectMarket', marketID => store.getState().marketsData[marketID]);
     const action = proxyquire('../../../src/modules/trade/actions/place-trade.js', {
+      speedomatic: Speedomatic,
       '../../../services/augurjs': AugurJS,
       '../../market/selectors/market': SelectMarket
     });

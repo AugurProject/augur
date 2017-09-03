@@ -7,15 +7,15 @@ import * as mockStore from 'test/mockStore';
 import { formatNumber, formatEtherTokens, formatShares } from 'utils/format-number';
 import { formatDate } from 'utils/format-date';
 
-import { abi } from 'services/augurjs';
+import speedomatic from 'speedomatic';
 
 describe('modules/portfolio/selectors/login-account-markets', () => {
   proxyquire.noPreserveCache().noCallThru();
 
   const { store, state } = mockStore.default;
   state.marketCreatorFees = {
-    '0xMARKET1': abi.bignum('10'),
-    '0xMARKET2': abi.bignum('11')
+    '0xMARKET1': speedomatic.bignum('10'),
+    '0xMARKET2': speedomatic.bignum('11')
   };
 
   const { allMarkets } = store.getState();
@@ -36,7 +36,7 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
       description: 'test-market-1',
       endDate: formatDate(new Date('2017/12/12')),
       volume: formatNumber(100),
-      fees: formatEtherTokens(abi.bignum('10')),
+      fees: formatEtherTokens(speedomatic.bignum('10')),
       numberOfTrades: formatNumber(8),
       averageTradeSize: formatNumber(15),
       openVolume: formatNumber(80),
@@ -89,7 +89,7 @@ describe('modules/portfolio/selectors/login-account-markets', () => {
       description: 'test-market-2',
       endDate: formatDate(new Date('2017/12/12')),
       volume: formatNumber(100),
-      fees: formatEtherTokens(abi.bignum('11')),
+      fees: formatEtherTokens(speedomatic.bignum('11')),
       numberOfTrades: formatNumber(8),
       averageTradeSize: formatNumber(15),
       openVolume: formatNumber(80),

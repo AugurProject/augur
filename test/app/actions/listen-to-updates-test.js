@@ -13,6 +13,10 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
   const mockStore = configureMockStore(middlewares);
   const state = testState;
   const store = mockStore(state);
+  const Speedomatic = {
+    encodeNumberAsJSNumber: sinon.stub().returns([0, 1]),
+    bignum: () => {}
+  };
   const AugurJS = {
     augur: {
       filters: {
@@ -21,10 +25,6 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
       CompositeGetters: {
         getPositionInMarket: sinon.stub.yields(['0x0', '0x1'])
       }
-    },
-    abi: {
-      number: sinon.stub().returns([0, 1]),
-      bignum: () => {}
     }
   };
 
@@ -73,6 +73,7 @@ describe(`modules/app/actions/listen-to-updates.js`, () => {
   };
 
   const action = proxyquire('../../../src/modules/app/actions/listen-to-updates.js', {
+    speedomatic: Speedomatic,
     '../../../services/augurjs': AugurJS,
     '../../branch/actions/sync-branch': SyncBranch,
     '../../branch/actions/update-branch': UpdateBranch,

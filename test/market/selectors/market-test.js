@@ -12,9 +12,9 @@ describe(`modules/market/selectors/market.js`, () => {
   const { loginAccount } = store.getState();
   const stubbedSelectors = { loginAccount };
 
+  const stubbedSpeedomatic = { bignum: n => n };
   const stubbedAugurJS = {
-    getMarketCreatorFeesCollected: () => {},
-    abi: { bignum: n => n }
+    getMarketCreatorFeesCollected: () => {}
   };
   sinon.stub(stubbedAugurJS, 'getMarketCreatorFeesCollected', () => 10);
 
@@ -25,6 +25,7 @@ describe(`modules/market/selectors/market.js`, () => {
       '../../../store': store
     }),
     '../../../modules/my-markets/selectors/my-markets': proxyquire('../../../src/modules/my-markets/selectors/my-markets', {
+      speedomatic: stubbedSpeedomatic,
       '../../../services/augurjs': stubbedAugurJS,
       '../../../selectors': stubbedSelectors
     })

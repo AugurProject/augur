@@ -1,4 +1,5 @@
-import { augur, abi } from 'services/augurjs';
+import speedomatic from 'speedomatic';
+import { augur } from 'services/augurjs';
 import { updateAssets } from 'modules/auth/actions/update-assets';
 import { syncBlockchain } from 'modules/app/actions/sync-blockchain';
 import { syncBranch } from 'modules/branch/actions/sync-branch';
@@ -53,7 +54,7 @@ export function listenToUpdates() {
         TakeOrder: (msg) => {
           console.log('TakeOrder:', msg);
           if (msg && msg.market && msg.price && msg.outcome != null) {
-            dispatch(updateOutcomePrice(msg.market, msg.outcome, abi.bignum(msg.price)));
+            dispatch(updateOutcomePrice(msg.market, msg.outcome, speedomatic.bignum(msg.price)));
             dispatch(updateMarketTopicPopularity(msg.market, msg.amount));
             const { address } = getState().loginAccount;
             if (msg.sender !== address) dispatch(fillOrder(msg));
@@ -159,7 +160,7 @@ export function listenToUpdates() {
             if (branch.id === msg.branch) {
               dispatch(loadMarketsInfo([msg.market], () => {
                 const { volume } = getState().marketsData[msg.market];
-                dispatch(updateMarketTopicPopularity(msg.market, abi.bignum(volume).neg().toNumber()));
+                dispatch(updateMarketTopicPopularity(msg.market, speedomatic.bignum(volume).neg().toNumber()));
                 if (loginAccount.address) dispatch(claimProceeds());
               }));
             }

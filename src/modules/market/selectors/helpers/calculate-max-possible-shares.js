@@ -1,7 +1,8 @@
 import memoize from 'memoizee';
 import BigNumber from 'bignumber.js';
 import { ZERO } from 'modules/trade/constants/numbers';
-import { augur, abi, constants } from 'services/augurjs';
+import { augur, constants } from 'services/augurjs';
+import speedomatic from 'speedomatic';
 
 /**
  * Orders should be sorted from best to worst (usually by price)
@@ -50,20 +51,20 @@ export const calculateMaxPossibleShares = memoize((loginAccount, orders, makerFe
       maxPossibleShares = maxPossibleShares.plus(orderAmount);
       runningCost = updatedRunningCost;
     } else {
-      const remainingEther = abi.fix(userEther.minus(runningCost));
+      const remainingEther = speedomatic.fix(userEther.minus(runningCost));
       let remainingShares;
-      const feePerShare = abi.fix(orderCost.fee.abs())
-        .dividedBy(abi.fix(orderAmount))
+      const feePerShare = speedomatic.fix(orderCost.fee.abs())
+        .dividedBy(speedomatic.fix(orderAmount))
         .times(constants.ONE)
         .floor();
       if (order.type === 'buy') {
-        remainingShares = abi.unfix(
+        remainingShares = speedomatic.unfix(
           remainingEther.dividedBy(feePerShare)
             .times(constants.ONE)
             .floor());
       } else {
-        remainingShares = abi.unfix(
-          remainingEther.dividedBy(feePerShare.plus(abi.fix(fullPrecisionPrice)))
+        remainingShares = speedomatic.unfix(
+          remainingEther.dividedBy(feePerShare.plus(speedomatic.fix(fullPrecisionPrice)))
             .times(constants.ONE)
             .floor());
       }

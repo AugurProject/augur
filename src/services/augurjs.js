@@ -109,8 +109,5 @@ export const reportingTestSetup = (sender, periodLen, branchID, callback = logEr
 
 export const augur = new Augur();
 export const rpc = augur.rpc;
-export const abi = augur.abi;
-export const accounts = augur.accounts;
-export const cash = augur.Cash;
 export const constants = augur.constants;
 export const utils = augur.utils;

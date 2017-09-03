@@ -2,7 +2,8 @@ import { createSelector } from 'reselect';
 import moment from 'moment';
 import store from 'src/store';
 import { selectBlockchainCurrentBlockTimestamp, selectBranchPeriodLength } from 'src/select-state';
-import { augur, abi } from 'services/augurjs';
+import { augur } from 'services/augurjs';
+import speedomatic from 'speedomatic';
 import { ONE } from 'modules/trade/constants/numbers';
 
 export default function () {
@@ -16,8 +17,8 @@ export const selectReportingCycle = createSelector(
     const currentPeriod = augur.reporting.getCurrentPeriod(periodLength, timestamp);
     const currentPeriodProgress = augur.reporting.getCurrentPeriodProgress(periodLength, timestamp);
     const isReportRevealPhase = currentPeriodProgress > 50;
-    const bnPeriodLength = abi.bignum(periodLength);
-    const secondsRemaining = ONE.minus(abi.bignum(currentPeriodProgress).dividedBy(100)).times(bnPeriodLength);
+    const bnPeriodLength = speedomatic.bignum(periodLength);
+    const secondsRemaining = ONE.minus(speedomatic.bignum(currentPeriodProgress).dividedBy(100)).times(bnPeriodLength);
     let phaseLabel;
     let phaseTimeRemaining;
     if (isReportRevealPhase) {

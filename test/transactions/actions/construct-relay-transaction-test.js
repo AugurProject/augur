@@ -1,5 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
+import speedomatic from 'speedomatic';
 import Augur from 'augur.js';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
@@ -13,7 +14,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
   const augur = new Augur();
 
   // save the default result for calling augur.trading.simulation.getTxGasEth
-  const defaultTxGasEth = augur.abi.unfix(augur.abi.bignum(augur.rpc.constants.DEFAULT_GAS).times(augur.abi.bignum(augur.constants.DEFAULT_GASPRICE))).toFixed();
+  const defaultTxGasEth = speedomatic.unfix(speedomatic.bignum(augur.rpc.constants.DEFAULT_GAS).times(speedomatic.bignum(augur.constants.DEFAULT_GASPRICE))).toFixed();
   const functionsAPI = augur.api;
   const contractAddresses = {
     Backstops: '0x708fdfe18bf28afe861a69e95419d183ace003eb',
@@ -64,13 +65,13 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
   const test = (t) => {
     it(t.description, () => {
       const store = mockStore(t.state);
+      const Speedomatic = {
+        bignum: (n, type) => speedomatic.bignum(n, type),
+        formatInt256: n => speedomatic.formatInt256(n),
+        unfix: (n, type) => speedomatic.unfix(n, type),
+        unfixSigned: (n, type) => speedomatic.unfixSigned(n, type)
+      };
       const AugurJS = {
-        abi: {
-          bignum: (n, type) => augur.abi.bignum(n, type),
-          format_int256: n => augur.abi.format_int256(n),
-          unfix: (n, type) => augur.abi.unfix(n, type),
-          unfix_signed: (n, type) => augur.abi.unfix_signed(n, type)
-        },
         augur: {
           api: augur.api,
           create: {
@@ -99,6 +100,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
       AugurJS.augur.trading.takeOrder.selectOrder = sinon.stub().returns(t.selectors.order);
       const WinningPositions = sinon.stub().returns(t.selectors.winningPositions);
       const action = proxyquire('../../../src/modules/transactions/actions/construct-relay-transaction.js', {
+        speedomatic: Speedomatic,
         '../../../services/augurjs': AugurJS,
         './delete-transaction': DeleteTransaction,
         './construct-transaction': ConstructTransaction,
@@ -134,7 +136,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
         hash: '0x5bde43fc683d39c9f449424760401b2de067c8bda09acbf4c61dc923c0c98878',
         data: {
           events: [
-            'log_add_tx',
+            'MakeOrder',
             'sentCash'
           ],
           gas: 725202,
@@ -206,7 +208,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
     },
     assertions: (actions, relayTransaction) => {
       const expectedRelayTransaction = {
-        label: 'log_add_tx',
+        label: 'MakeOrder',
         trade: {
           type: 'buy',
           amount: '5',
@@ -260,7 +262,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
         hash: '0x5bde43fc683d39c9f449424760401b2de067c8bda09acbf4c61dc923c0c98878',
         data: {
           events: [
-            'log_add_tx',
+            'MakeOrder',
             'sentCash'
           ],
           gas: 725202,
@@ -346,7 +348,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
     },
     assertions: (actions, relayTransaction) => {
       const expectedRelayTransaction = {
-        label: 'log_add_tx',
+        label: 'MakeOrder',
         trade: {
           type: 'buy',
           amount: '5',
@@ -401,7 +403,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
           events: [
             'completeSets_logReturn',
             'sentCash',
-            'log_add_tx'
+            'MakeOrder'
           ],
           gas: 1500000,
           inputs: [
@@ -473,7 +475,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
     },
     assertions: (actions, relayTransaction) => {
       const expectedRelayTransaction = {
-        label: 'log_add_tx',
+        label: 'MakeOrder',
         trade: {
           type: 'sell',
           amount: '5',
@@ -529,7 +531,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
           events: [
             'completeSets_logReturn',
             'sentCash',
-            'log_add_tx'
+            'MakeOrder'
           ],
           gas: 1500000,
           inputs: [
@@ -615,7 +617,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
     },
     assertions: (actions, relayTransaction) => {
       const expectedRelayTransaction = {
-        label: 'log_add_tx',
+        label: 'MakeOrder',
         trade: {
           type: 'sell',
           amount: '5',
@@ -670,7 +672,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
         data: {
           events: [
             'sentCash',
-            'log_add_tx'
+            'MakeOrder'
           ],
           gas: 1500000,
           inputs: [
@@ -742,7 +744,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
     },
     assertions: (actions, relayTransaction) => {
       const expectedRelayTransaction = {
-        label: 'log_add_tx',
+        label: 'MakeOrder',
         trade: {
           type: 'sell',
           amount: '5',
@@ -797,7 +799,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
         data: {
           events: [
             'sentCash',
-            'log_add_tx'
+            'MakeOrder'
           ],
           gas: 1500000,
           inputs: [
@@ -883,7 +885,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
     },
     assertions: (actions, relayTransaction) => {
       const expectedRelayTransaction = {
-        label: 'log_add_tx',
+        label: 'MakeOrder',
         trade: {
           type: 'sell',
           amount: '5',

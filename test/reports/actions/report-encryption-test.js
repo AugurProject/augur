@@ -1,13 +1,12 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import Augur from 'augur.js';
+import speedomatic from 'speedomatic';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 
 // These tests won't be needed in the new reporting system, simply going to skip them for now
 describe.skip(`modules/reports/actions/report-encryption.js`, () => {
   proxyquire.noPreserveCache().noCallThru();
-  const augur = new Augur();
   describe('encryptReport', () => {
     const test = t => it(t.description, () => {
       const AugurJS = {
@@ -27,7 +26,7 @@ describe.skip(`modules/reports/actions/report-encryption.js`, () => {
     test({
       description: 'no account',
       params: {
-        report: augur.abi.fix('1', 'hex'),
+        report: speedomatic.fix('1', 'hex'),
         salt: '0x1337'
       },
       state: {
@@ -47,7 +46,7 @@ describe.skip(`modules/reports/actions/report-encryption.js`, () => {
     test({
       description: 'account without derived key',
       params: {
-        report: augur.abi.fix('1', 'hex'),
+        report: speedomatic.fix('1', 'hex'),
         salt: '0x1337'
       },
       state: {
@@ -69,7 +68,7 @@ describe.skip(`modules/reports/actions/report-encryption.js`, () => {
     test({
       description: 'account with derived key',
       params: {
-        report: augur.abi.fix('1', 'hex'),
+        report: speedomatic.fix('1', 'hex'),
         salt: '0x1337'
       },
       state: {
@@ -84,7 +83,7 @@ describe.skip(`modules/reports/actions/report-encryption.js`, () => {
       },
       assertions: (encrypted) => {
         assert.deepEqual(encrypted, {
-          report: `${augur.abi.fix('1', 'hex')}-123456-0x1337`,
+          report: `${speedomatic.fix('1', 'hex')}-123456-0x1337`,
           salt: '0x1337-123456-undefined'
         });
       }
@@ -206,7 +205,7 @@ describe.skip(`modules/reports/actions/report-encryption.js`, () => {
       blockchain: {
         encryptedReports: {
           '0xe1': {
-            report: augur.abi.fix('1', 'hex'),
+            report: speedomatic.fix('1', 'hex'),
             salt: '0x1337',
             ethics: '0x1'
           }
@@ -215,7 +214,7 @@ describe.skip(`modules/reports/actions/report-encryption.js`, () => {
       assertions: (err, decryptedReport) => {
         assert.isNull(err);
         assert.deepEqual(decryptedReport, {
-          reportedOutcomeID: augur.abi.fix('1', 'hex'),
+          reportedOutcomeID: speedomatic.fix('1', 'hex'),
           salt: '0x1337',
           isUnethical: false
         });

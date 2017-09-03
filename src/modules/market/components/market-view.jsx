@@ -9,7 +9,7 @@ import NullStateMessage from 'modules/common/components/null-state-message';
 import parseMarketTitle from 'modules/app/helpers/parse-market-title';
 import parseQuery from 'modules/app/helpers/parse-query';
 import getValue from 'utils/get-value';
-import { abi } from 'services/augurjs';
+import speedomatic from 'speedomatic';
 
 import { MARKET_ID_PARAM_NAME } from 'modules/app/constants/param-names';
 
@@ -34,7 +34,7 @@ export default class MarketView extends Component {
   }
 
   componentWillMount() {
-    const marketId = abi.format_int256(parseQuery(this.props.location.search)[MARKET_ID_PARAM_NAME]);
+    const marketId = speedomatic.formatInt256(parseQuery(this.props.location.search)[MARKET_ID_PARAM_NAME]);
 
     this.props.updateSelectedMarketID(marketId);
     this.setState({ marketId });

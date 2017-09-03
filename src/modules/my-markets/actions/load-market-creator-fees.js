@@ -1,4 +1,5 @@
-import { augur, abi } from 'services/augurjs';
+import { augur } from 'services/augurjs';
+import speedomatic from 'speedomatic';
 
 import { updateMarketCreatorFees } from 'modules/my-markets/actions/update-market-creator-fees';
 
@@ -7,7 +8,7 @@ export function loadMarketCreatorFees(marketID) {
     augur.api.CompositeGetters.getMarketCreatorFeesCollected({ market: marketID }, (fees) => {
       if (fees) {
         const marketFees = {};
-        marketFees[marketID] = abi.bignum(fees);
+        marketFees[marketID] = speedomatic.bignum(fees);
         dispatch(updateMarketCreatorFees(marketFees));
       }
     });

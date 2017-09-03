@@ -5,7 +5,7 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { formatEtherTokens, formatShares, formatNone } from 'utils/format-number';
 import { CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-status';
-import { abi } from 'services/augurjs';
+import speedomatic from 'speedomatic';
 
 describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
   proxyquire.noPreserveCache().noCallThru();
@@ -209,7 +209,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
     assert.deepEqual(userOpenOrders, [{
       id: 'order10',
       avgPrice: formatEtherTokens('100'),
-      marketID: abi.format_int256('testMarketId'),
+      marketID: speedomatic.formatInt256('testMarketId'),
       type: 'sell',
       matchedShares: formatNone(),
       originalShares: formatNone(),
@@ -217,7 +217,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
     }, {
       id: 'order9',
       avgPrice: formatEtherTokens('90'),
-      marketID: abi.format_int256('testMarketId'),
+      marketID: speedomatic.formatInt256('testMarketId'),
       type: 'sell',
       matchedShares: formatNone(),
       originalShares: formatNone(),
@@ -225,7 +225,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
     }, {
       id: 'order7',
       avgPrice: formatEtherTokens('70'),
-      marketID: abi.format_int256('testMarketId'),
+      marketID: speedomatic.formatInt256('testMarketId'),
       type: 'sell',
       matchedShares: formatNone(),
       originalShares: formatNone(),
@@ -233,7 +233,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
     }, {
       id: 'order6',
       avgPrice: formatEtherTokens('60'),
-      marketID: abi.format_int256('testMarketId'),
+      marketID: speedomatic.formatInt256('testMarketId'),
       type: 'buy',
       matchedShares: formatNone(),
       originalShares: formatNone(),
@@ -241,7 +241,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
     }, {
       id: 'order5',
       avgPrice: formatEtherTokens('50'),
-      marketID: abi.format_int256('testMarketId'),
+      marketID: speedomatic.formatInt256('testMarketId'),
       type: 'buy',
       matchedShares: formatNone(),
       originalShares: formatNone(),
@@ -249,7 +249,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
     }, {
       id: 'order2',
       avgPrice: formatEtherTokens('20'),
-      marketID: abi.format_int256('testMarketId'),
+      marketID: speedomatic.formatInt256('testMarketId'),
       type: 'buy',
       matchedShares: formatNone(),
       originalShares: formatNone(),
@@ -257,7 +257,7 @@ describe(`modules/user-open-orders/selectors/user-open-orders.js`, () => {
     }, {
       id: 'order1',
       avgPrice: formatEtherTokens('10'),
-      marketID: abi.format_int256('testMarketId'),
+      marketID: speedomatic.formatInt256('testMarketId'),
       type: 'buy',
       matchedShares: formatNone(),
       originalShares: formatNone(),

@@ -1,4 +1,4 @@
-import { augur, connect } from 'services/augurjs';
+import { augur } from 'services/augurjs';
 import { BRANCH_ID } from 'modules/app/constants/network';
 import { updateEnv } from 'modules/app/actions/update-env';
 import { updateConnectionStatus } from 'modules/app/actions/update-connection';
@@ -25,7 +25,7 @@ export function initAugur(cb) {
       if (xhttp.readyState === 4 && xhttp.status === 200) {
         const env = JSON.parse(xhttp.responseText);
         dispatch(updateEnv(env));
-        connect(env, (err, vitals) => {
+        augur.connect(env, (err, vitals) => {
           if (err) return console.error('connect failure:', err);
           dispatch(updateConnectionStatus(true));
           dispatch(updateContractAddresses(vitals.contracts));

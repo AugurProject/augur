@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js';
-import { augur, abi, constants } from 'services/augurjs';
+import { augur, constants } from 'services/augurjs';
+import speedomatic from 'speedomatic';
 import { BUY, SELL } from 'modules/trade/constants/types';
 import { TWO } from 'modules/trade/constants/numbers';
 import { SCALAR } from 'modules/markets/constants/market-types';
@@ -57,8 +58,8 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
     // find top order to default limit price to
     const marketOrderBook = selectAggregateOrderBook(outcomeID, orderBooks[marketID], orderCancellation);
     const defaultPrice = market.type === SCALAR ?
-      abi.bignum(market.maxValue)
-        .plus(abi.bignum(market.minValue))
+      speedomatic.bignum(market.maxValue)
+        .plus(speedomatic.bignum(market.minValue))
         .dividedBy(TWO)
         .toFixed() :
       '0.5';
@@ -66,8 +67,8 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
       ((selectTopAsk(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice :
       ((selectTopBid(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice;
 
-    const bignumShares = abi.bignum(numShares);
-    const bignumLimit = abi.bignum(limitPrice);
+    const bignumShares = speedomatic.bignum(numShares);
+    const bignumLimit = speedomatic.bignum(limitPrice);
     // clean num shares
     const cleanNumShares = numShares && bignumShares.toFixed() === '0' ? '0' : (numShares && bignumShares.abs().toFixed()) || outcomeTradeInProgress.numShares || '0';
 
@@ -120,7 +121,7 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
             data: { marketID, outcomeID, details: newTradeDetails }
           });
         }
-        const position = abi.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
+        const position = speedomatic.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
         const tradingActions = augur.trading.simulation.getTradingActions({
           type: newTradeDetails.side,
           orderShares: newTradeDetails.numShares,

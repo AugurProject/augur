@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { augur, abi, rpc, constants } from 'services/augurjs';
+import { augur, constants } from 'services/augurjs';
+import speedomatic from 'speedomatic';
 import BigNumber from 'bignumber.js';
 
 import { formatEtherEstimate, formatEtherTokensEstimate } from 'utils/format-number';
@@ -63,11 +64,11 @@ export default class CreateMarketReview extends Component {
   }
 
   calculateMarketCreationCosts() {
-    const gasPrice = rpc.gasPrice || constants.DEFAULT_GASPRICE;
+    const gasPrice = augur.rpc.gasPrice || constants.DEFAULT_GASPRICE;
 
     // TODO augur.api.functions -> getState().functionsAPI
     const gasCost = formatEtherEstimate(augur.trading.simulation.getTxGasEth({ ...augur.api.CreateMarket.createMarket }, gasPrice));
-    const creationFee = formatEtherEstimate(abi.unfix(augur.create.calculateRequiredMarketValue(gasPrice)));
+    const creationFee = formatEtherEstimate(speedomatic.unfix(augur.create.calculateRequiredMarketValue(gasPrice)));
 
     // Event Bond
     const tradingFee = augur.trading.fees.calculateTradingFees(this.props.makerFee, this.props.takerFee).tradingFee;

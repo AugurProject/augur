@@ -1,4 +1,5 @@
-import { abi, augur, constants } from 'services/augurjs';
+import speedomatic from 'speedomatic';
+import { augur, constants } from 'services/augurjs';
 import { BUY } from 'modules/trade/constants/types';
 import { clearTradeInProgress } from 'modules/trade/actions/update-trades-in-progress';
 import noop from 'utils/noop';
@@ -18,8 +19,8 @@ export const placeTrade = (marketID, outcomeID, tradeInProgress, doNotMakeOrders
     direction: tradeInProgress.side === BUY ? 1 : 2,
     market: marketID,
     outcome: outcomeID,
-    fxpAmount: abi.fix(tradeInProgress.numShares, 'hex'),
-    fxpPrice: abi.fix(limitPrice, 'hex'),
+    fxpAmount: speedomatic.fix(tradeInProgress.numShares, 'hex'),
+    fxpPrice: speedomatic.fix(limitPrice, 'hex'),
     tradeGroupID: tradeInProgress.tradeGroupID,
     onSent: () => callback(null, tradeInProgress.tradeGroupID),
     onFailed: callback
@@ -31,7 +32,7 @@ export const placeTrade = (marketID, outcomeID, tradeInProgress, doNotMakeOrders
 };
 
 export const tradeUntilAmountIsZero = (tradePayload, doNotMakeOrders, callback = logError) => (dispatch, getState) => {
-  if (abi.unfix(tradePayload.fxpAmount).lte(constants.PRECISION.zero)) {
+  if (speedomatic.unfix(tradePayload.fxpAmount).lte(constants.PRECISION.zero)) {
     return callback(null);
   }
   const payload = {

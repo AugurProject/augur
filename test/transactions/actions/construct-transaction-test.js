@@ -6,7 +6,8 @@ import proxyquire from 'proxyquire';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 
-import { abi, augur, constants } from 'services/augurjs';
+import { augur, constants } from 'services/augurjs';
+import speedomatic from 'speedomatic';
 
 import { formatEther, formatEtherTokens, formatRep, formatPercent, formatShares } from 'utils/format-number';
 import { formatDate } from 'utils/format-date';
@@ -455,8 +456,8 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const actual = constructCollectedFeesTransaction(log);
 
-        const repGain = abi.bignum(log.repGain);
-        const initialRepBalance = abi.bignum(log.newRepBalance).minus(repGain).toFixed();
+        const repGain = speedomatic.bignum(log.repGain);
+        const initialRepBalance = speedomatic.bignum(log.newRepBalance).minus(repGain).toFixed();
 
         const expected = {
           data: {},
@@ -547,8 +548,8 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const actual = constructCollectedFeesTransaction(log);
 
-        const totalReportingRep = abi.bignum(log.totalReportingRep);
-        const percentRep = formatPercent(abi.bignum(log.initialRepBalance).dividedBy(totalReportingRep).times(100), { decimals: 0 });
+        const totalReportingRep = speedomatic.bignum(log.totalReportingRep);
+        const percentRep = formatPercent(speedomatic.bignum(log.initialRepBalance).dividedBy(totalReportingRep).times(100), { decimals: 0 });
 
         const expected = {
           data: {},
@@ -582,10 +583,10 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const actual = constructCollectedFeesTransaction(log);
 
-        const repGain = abi.bignum(log.repGain);
+        const repGain = speedomatic.bignum(log.repGain);
 
-        const totalReportingRep = abi.bignum(log.totalReportingRep);
-        const percentRep = formatPercent(abi.bignum(log.initialRepBalance).dividedBy(totalReportingRep).times(100), { decimals: 0 });
+        const totalReportingRep = speedomatic.bignum(log.totalReportingRep);
+        const percentRep = formatPercent(speedomatic.bignum(log.initialRepBalance).dividedBy(totalReportingRep).times(100), { decimals: 0 });
 
         const expected = {
           data: {
@@ -630,10 +631,10 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const actual = constructCollectedFeesTransaction(log);
 
-        const repGain = abi.bignum(log.repGain);
+        const repGain = speedomatic.bignum(log.repGain);
 
-        const totalReportingRep = abi.bignum(log.totalReportingRep);
-        const percentRep = formatPercent(abi.bignum(log.initialRepBalance).dividedBy(totalReportingRep).times(100), { decimals: 0 });
+        const totalReportingRep = speedomatic.bignum(log.totalReportingRep);
+        const percentRep = formatPercent(speedomatic.bignum(log.initialRepBalance).dividedBy(totalReportingRep).times(100), { decimals: 0 });
 
         const expected = {
           data: {
@@ -928,12 +929,12 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           data: {
             balances: [
               {
-                change: formatEther(abi.bignum(log._value).neg(), { positiveSign: true })
+                change: formatEther(speedomatic.bignum(log._value).neg(), { positiveSign: true })
               }
             ]
           },
           type: 'Send Ether',
-          description: `Send Ether to ${abi.strip_0x(log._to)}`,
+          description: `Send Ether to ${speedomatic.strip0xPrefix(log._to)}`,
           message: `sent ETH`
         };
 
@@ -958,12 +959,12 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           data: {
             balances: [
               {
-                change: formatEther(abi.bignum(log._value).neg(), { positiveSign: true })
+                change: formatEther(speedomatic.bignum(log._value).neg(), { positiveSign: true })
               }
             ]
           },
           type: 'Send Ether',
-          description: `Send Ether to ${abi.strip_0x(log._to)}`,
+          description: `Send Ether to ${speedomatic.strip0xPrefix(log._to)}`,
           message: `sending ETH`
         };
 
@@ -992,12 +993,12 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           data: {
             balances: [
               {
-                change: formatEtherTokens(abi.bignum(log._value).neg(), { positiveSign: true })
+                change: formatEtherTokens(speedomatic.bignum(log._value).neg(), { positiveSign: true })
               }
             ]
           },
           type: 'Send Ether Tokens',
-          description: `Send Ether Tokens to ${abi.strip_0x(log._to)}`,
+          description: `Send Ether Tokens to ${speedomatic.strip0xPrefix(log._to)}`,
           message: 'sent ETH Tokens'
         };
 
@@ -1022,12 +1023,12 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           data: {
             balances: [
               {
-                change: formatEtherTokens(abi.bignum(log._value).neg(), { positiveSign: true })
+                change: formatEtherTokens(speedomatic.bignum(log._value).neg(), { positiveSign: true })
               }
             ]
           },
           type: 'Send Ether Tokens',
-          description: `Send Ether Tokens to ${abi.strip_0x(log._to)}`,
+          description: `Send Ether Tokens to ${speedomatic.strip0xPrefix(log._to)}`,
           message: 'sending ETH Tokens'
         };
 
@@ -1052,12 +1053,12 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           data: {
             balances: [
               {
-                change: formatEtherTokens(abi.bignum(log._value), { positiveSign: true })
+                change: formatEtherTokens(speedomatic.bignum(log._value), { positiveSign: true })
               }
             ]
           },
           type: 'Receive Ether Tokens',
-          description: `Receive Ether Tokens from ${abi.strip_0x(log._from)}`,
+          description: `Receive Ether Tokens from ${speedomatic.strip0xPrefix(log._from)}`,
           message: 'received ETH Tokens'
         };
 
@@ -1082,12 +1083,12 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           data: {
             balances: [
               {
-                change: formatEtherTokens(abi.bignum(log._value), { positiveSign: true })
+                change: formatEtherTokens(speedomatic.bignum(log._value), { positiveSign: true })
               }
             ]
           },
           type: 'Receive Ether Tokens',
-          description: `Receive Ether Tokens from ${abi.strip_0x(log._from)}`,
+          description: `Receive Ether Tokens from ${speedomatic.strip0xPrefix(log._from)}`,
           message: 'receiving ETH Tokens'
         };
 
@@ -1116,12 +1117,12 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           data: {
             balances: [
               {
-                change: formatRep(abi.bignum(log._value).neg(), { positiveSign: true })
+                change: formatRep(speedomatic.bignum(log._value).neg(), { positiveSign: true })
               }
             ]
           },
           type: 'Send Reputation',
-          description: `Send Reputation to ${abi.strip_0x(log._to)}`,
+          description: `Send Reputation to ${speedomatic.strip0xPrefix(log._to)}`,
           message: 'sent REP'
         };
 
@@ -1146,12 +1147,12 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           data: {
             balances: [
               {
-                change: formatRep(abi.bignum(log._value).neg(), { positiveSign: true })
+                change: formatRep(speedomatic.bignum(log._value).neg(), { positiveSign: true })
               }
             ]
           },
           type: 'Send Reputation',
-          description: `Send Reputation to ${abi.strip_0x(log._to)}`,
+          description: `Send Reputation to ${speedomatic.strip0xPrefix(log._to)}`,
           message: 'sending REP'
         };
 
@@ -1176,12 +1177,12 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           data: {
             balances: [
               {
-                change: formatRep(abi.bignum(log._value), { positiveSign: true })
+                change: formatRep(speedomatic.bignum(log._value), { positiveSign: true })
               }
             ]
           },
           type: 'Receive Reputation',
-          description: `Receive Reputation from ${abi.strip_0x(log._from)}`,
+          description: `Receive Reputation from ${speedomatic.strip0xPrefix(log._from)}`,
           message: 'received REP'
         };
 
@@ -1206,12 +1207,12 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           data: {
             balances: [
               {
-                change: formatRep(abi.bignum(log._value), { positiveSign: true })
+                change: formatRep(speedomatic.bignum(log._value), { positiveSign: true })
               }
             ]
           },
           type: 'Receive Reputation',
-          description: `Receive Reputation from ${abi.strip_0x(log._from)}`,
+          description: `Receive Reputation from ${speedomatic.strip0xPrefix(log._from)}`,
           message: 'receiving REP'
         };
 
@@ -1496,7 +1497,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
             marketID: null
           },
           description: 'test description',
-          message: `updated trading fee: ${formatPercent(abi.bignum(log.tradingFee).times(100)).full}`
+          message: `updated trading fee: ${formatPercent(speedomatic.bignum(log.tradingFee).times(100)).full}`
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
@@ -1521,7 +1522,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
             marketID: '0xMARKETID'
           },
           description: 'test description',
-          message: `updated trading fee: ${formatPercent(abi.bignum(log.tradingFee).times(100)).full}`
+          message: `updated trading fee: ${formatPercent(speedomatic.bignum(log.tradingFee).times(100)).full}`
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
@@ -1610,7 +1611,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
             marketID,
             balances: [
               {
-                change: formatRep(abi.bignum(log.repchange), { positiveSign: true }),
+                change: formatRep(speedomatic.bignum(log.repchange), { positiveSign: true }),
                 balance: formatRep(2)
               }
             ]
@@ -2107,7 +2108,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           },
           description: market.description,
           type: 'Pay Collusion Fine',
-          message: `fined by ${abi.strip_0x(log.sender)}`
+          message: `fined by ${speedomatic.strip0xPrefix(log.sender)}`
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
@@ -2136,7 +2137,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           },
           description: market.description,
           type: 'Snitch Reward',
-          message: `fined ${abi.strip_0x(log.reporter)} ${formatRep(log.repSlashed).full}`
+          message: `fined ${speedomatic.strip0xPrefix(log.reporter)} ${formatRep(log.repSlashed).full}`
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
@@ -2173,7 +2174,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           },
           description: market.description,
           type: 'Snitch Reward',
-          message: `fined ${abi.strip_0x(log.reporter)} ${formatRep(log.repSlashed).full}`
+          message: `fined ${speedomatic.strip0xPrefix(log.reporter)} ${formatRep(log.repSlashed).full}`
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
@@ -2211,7 +2212,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           },
           description: market.description,
           type: 'Snitch Reward',
-          message: `fining ${abi.strip_0x(log.reporter)}`
+          message: `fining ${speedomatic.strip0xPrefix(log.reporter)}`
         };
 
         assert.deepEqual(actual, expected, `Didn't return the expected object`);
@@ -2265,9 +2266,9 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
-        const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
-        const bnShares = abi.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? abi.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
+        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.takerFee);
+        const bnShares = speedomatic.bignum(trade.amount);
+        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : speedomatic.bignum(trade.price);
         const totalCost = bnPrice.times(bnShares).plus(tradingFees);
         const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
         const totalCostPerShare = totalCost.dividedBy(bnShares);
@@ -2296,7 +2297,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
             feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
             totalCost: undefined,
             totalReturn: formatEtherTokens(totalReturn),
-            gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
+            gasFees: trade.gasFees && speedomatic.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
             blockNumber: trade.blockNumber
           }
         };
@@ -2331,9 +2332,9 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
-        const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
-        const bnShares = abi.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? abi.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
+        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.takerFee);
+        const bnShares = speedomatic.bignum(trade.amount);
+        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : speedomatic.bignum(trade.price);
         const totalCost = bnPrice.times(bnShares).plus(tradingFees);
         const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
         const totalCostPerShare = totalCost.dividedBy(bnShares);
@@ -2362,7 +2363,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
             feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
             totalCost: undefined,
             totalReturn: formatEtherTokens(totalReturn),
-            gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
+            gasFees: trade.gasFees && speedomatic.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
             blockNumber: trade.blockNumber
           }
         };
@@ -2396,9 +2397,9 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
-        const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
-        const bnShares = abi.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? abi.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
+        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.takerFee);
+        const bnShares = speedomatic.bignum(trade.amount);
+        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : speedomatic.bignum(trade.price);
         const totalCost = bnPrice.times(bnShares).plus(tradingFees);
         const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
         const totalReturnPerShare = totalReturn.dividedBy(bnShares);
@@ -2462,9 +2463,9 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
-        const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
-        const bnShares = abi.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? abi.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
+        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.takerFee);
+        const bnShares = speedomatic.bignum(trade.amount);
+        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : speedomatic.bignum(trade.price);
         const totalCost = bnPrice.times(bnShares).plus(tradingFees);
         const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
         const totalReturnPerShare = totalReturn.dividedBy(bnShares);
@@ -2493,7 +2494,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
             feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
             totalCost: formatEtherTokens(totalCost),
             totalReturn: undefined,
-            gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
+            gasFees: trade.gasFees && speedomatic.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
             blockNumber: trade.blockNumber
           }
         };
@@ -2527,9 +2528,9 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
-        const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
-        const bnShares = abi.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? abi.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
+        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.takerFee);
+        const bnShares = speedomatic.bignum(trade.amount);
+        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : speedomatic.bignum(trade.price);
         const totalCost = bnPrice.times(bnShares).plus(tradingFees);
         const totalCostPerShare = totalCost.dividedBy(bnShares);
 
@@ -2557,7 +2558,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
             feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
             totalCost: formatEtherTokens(totalCost),
             totalReturn: undefined,
-            gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
+            gasFees: trade.gasFees && speedomatic.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
             blockNumber: trade.blockNumber
           }
         };
@@ -2592,9 +2593,9 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
-        const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
-        const bnShares = abi.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? abi.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
+        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.takerFee);
+        const bnShares = speedomatic.bignum(trade.amount);
+        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : speedomatic.bignum(trade.price);
         const totalCost = bnPrice.times(bnShares).plus(tradingFees);
         const totalCostPerShare = totalCost.dividedBy(bnShares);
 
@@ -2656,9 +2657,9 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
-        const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
-        const bnShares = abi.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? abi.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
+        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.takerFee);
+        const bnShares = speedomatic.bignum(trade.amount);
+        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : speedomatic.bignum(trade.price);
         const totalCost = bnPrice.times(bnShares).plus(tradingFees);
         const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
         const totalReturnPerShare = totalReturn.dividedBy(bnShares);
@@ -2722,9 +2723,9 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
-        const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
-        const bnShares = abi.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? abi.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
+        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.takerFee);
+        const bnShares = speedomatic.bignum(trade.amount);
+        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : speedomatic.bignum(trade.price);
         const totalCost = bnPrice.times(bnShares).plus(tradingFees);
         const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
         const totalReturnPerShare = totalReturn.dividedBy(bnShares);
@@ -2788,9 +2789,9 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
-        const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
-        const bnShares = abi.bignum(trade.amount);
-        const bnPrice = abi.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price));
+        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.takerFee);
+        const bnShares = speedomatic.bignum(trade.amount);
+        const bnPrice = speedomatic.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price));
         const totalCost = bnPrice.times(bnShares).plus(tradingFees);
         const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
         const totalReturnPerShare = totalReturn.dividedBy(bnShares);
@@ -2862,9 +2863,9 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
-        const bnPrice = abi.bignum(trade.price);
-        const tradingFees = abi.bignum(trade.takerFee);
-        const bnShares = abi.bignum(trade.amount);
+        const bnPrice = speedomatic.bignum(trade.price);
+        const tradingFees = speedomatic.bignum(trade.takerFee);
+        const bnShares = speedomatic.bignum(trade.amount);
         const totalCost = bnShares.minus(bnPrice.times(bnShares).plus(tradingFees));
         const totalCostPerShare = totalCost.dividedBy(bnShares);
 
@@ -2925,9 +2926,9 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
-        const bnPrice = abi.bignum(trade.price);
-        const tradingFees = abi.bignum(trade.takerFee);
-        const bnShares = abi.bignum(trade.amount);
+        const bnPrice = speedomatic.bignum(trade.price);
+        const tradingFees = speedomatic.bignum(trade.takerFee);
+        const bnShares = speedomatic.bignum(trade.amount);
         const totalCost = bnShares.minus(bnPrice.times(bnShares).plus(tradingFees));
         const totalCostPerShare = totalCost.dividedBy(bnShares);
 
@@ -2988,10 +2989,10 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
         const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
-        const bnPrice = abi.bignum(trade.price);
-        const tradingFees = abi.bignum(trade.takerFee);
-        const bnShares = abi.bignum(trade.amount);
-        const totalCost = abi.bignum(maxValue).times(bnShares).minus(bnPrice.times(bnShares).plus(tradingFees));
+        const bnPrice = speedomatic.bignum(trade.price);
+        const tradingFees = speedomatic.bignum(trade.takerFee);
+        const bnShares = speedomatic.bignum(trade.amount);
+        const totalCost = speedomatic.bignum(maxValue).times(bnShares).minus(bnPrice.times(bnShares).plus(tradingFees));
         const totalCostPerShare = totalCost.dividedBy(bnShares);
 
         const actual = store.dispatch(action.constructLogShortFillTxTransaction(trade, marketID, marketType, maxValue, description, outcomeID, null, status));

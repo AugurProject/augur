@@ -1,7 +1,7 @@
 import { createSelector } from 'reselect';
 import store from 'src/store';
 import { selectOutcomesDataState } from 'src/select-state';
-import { abi } from 'services/augurjs';
+import speedomatic from 'speedomatic';
 import selectLoginAccountPositions from 'modules/my-positions/selectors/login-account-positions';
 import { ZERO } from 'modules/trade/constants/numbers';
 import { SCALAR } from 'modules/markets/constants/market-types';
@@ -44,7 +44,7 @@ export const selectTotalSharesInMarket = (market, marketOutcomesData) => {
   const numOutcomes = outcomeIDs.length;
   let totalShares = ZERO;
   for (let j = 0; j < numOutcomes; ++j) {
-    const bnSharesPurchased = abi.bignum(marketOutcomesData[outcomeIDs[j]].sharesPurchased);
+    const bnSharesPurchased = speedomatic.bignum(marketOutcomesData[outcomeIDs[j]].sharesPurchased);
     if (bnSharesPurchased.gt(ZERO)) {
       totalShares = totalShares.plus(bnSharesPurchased);
     }
@@ -56,7 +56,7 @@ export const selectWinningSharesInMarket = (market, marketOutcomesData) => {
   if (market.consensus && market.consensus.outcomeID) {
     const outcomeData = marketOutcomesData[market.consensus.outcomeID];
     if (outcomeData && outcomeData.sharesPurchased) {
-      const sharesPurchased = abi.bignum(outcomeData.sharesPurchased);
+      const sharesPurchased = speedomatic.bignum(outcomeData.sharesPurchased);
       return sharesPurchased.gt(ZERO) ? sharesPurchased : null;
     }
   }

@@ -13,11 +13,11 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
   const test = (t) => {
     it(t.description, () => {
       const store = mockStore(t.state);
+      const Speedomatic = { bignum: () => {} };
       const AugurJS = {
         augur: {
           trading: { payout: { claimMarketsProceeds: () => {} } }
-        },
-        abi: { bignum: () => {} }
+        }
       };
       const LoadAccountTrades = { loadAccountTrades: () => {} };
       const LoadMarketsInfo = { loadMarketsInfo: () => {} };
@@ -30,7 +30,7 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
         '../../auth/actions/update-assets': UpdateAssets,
         '../selectors/winning-positions': WinningPositions
       });
-      sinon.stub(AugurJS.abi, 'bignum', n => new BigNumber(n, 10));
+      sinon.stub(Speedomatic, 'bignum', n => new BigNumber(n, 10));
       sinon.stub(AugurJS.augur.trading.payout, 'claimMarketsProceeds', (branchID, markets, cb) => {
         store.dispatch({ type: 'CLAIM_MARKETS_PROCEEDS', markets });
         cb(null, markets.map(market => market.id));

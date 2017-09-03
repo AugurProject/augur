@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 import Highcharts from 'highcharts';
 import noData from 'highcharts/modules/no-data-to-display';
-import { augur, rpc, constants } from 'services/augurjs';
+import { augur, constants } from 'services/augurjs';
 
 import ComponentNav from 'modules/common/components/component-nav';
 import Input from 'modules/common/components/input';
@@ -352,7 +352,7 @@ export default class CreateMarketFormOrderBook extends Component {
   }
 
   updateInitialLiquidityCosts(order, shouldReduce) {
-    const gasPrice = rpc.gasPrice || constants.DEFAULT_GASPRICE;
+    const gasPrice = augur.rpc.gasPrice || constants.DEFAULT_GASPRICE;
     const makerFee = this.props.makerFee instanceof BigNumber ? this.props.makerFee : new BigNumber(this.props.makerFee);
 
     let initialLiquidityEth;

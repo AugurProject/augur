@@ -1,4 +1,5 @@
-import { abi, constants } from 'services/augurjs';
+import { constants } from 'services/augurjs';
+import speedomatic from 'speedomatic';
 import { ZERO } from 'modules/trade/constants/numbers';
 import { BINARY, SCALAR } from 'modules/markets/constants/market-types';
 import * as TYPES from 'modules/transactions/constants/types';
@@ -65,15 +66,15 @@ export function constructApprovalTransaction(log) {
 
 // export function constructCollectedFeesTransaction(log) {
 //   const transaction = { data: {} };
-//   const repGain = abi.bignum(log.repGain);
-//   const initialRepBalance = log.initialRepBalance !== undefined ? log.initialRepBalance : abi.bignum(log.newRepBalance).minus(repGain).toFixed();
+//   const repGain = speedomatic.bignum(log.repGain);
+//   const initialRepBalance = log.initialRepBalance !== undefined ? log.initialRepBalance : speedomatic.bignum(log.newRepBalance).minus(repGain).toFixed();
 //   const action = log.inProgress ? 'reporting' : 'reported';
 //   transaction.message = `${action} with ${formatRep(initialRepBalance).full}`;
 //   transaction.type = `Reporting Payment`;
 //   if (log.totalReportingRep) {
-//     const totalReportingRep = abi.bignum(log.totalReportingRep);
+//     const totalReportingRep = speedomatic.bignum(log.totalReportingRep);
 //     if (!totalReportingRep.eq(constants.ZERO)) {
-//       const percentRep = formatPercent(abi.bignum(initialRepBalance).dividedBy(totalReportingRep).times(100), { decimals: 0 });
+//       const percentRep = formatPercent(speedomatic.bignum(initialRepBalance).dividedBy(totalReportingRep).times(100), { decimals: 0 });
 //       transaction.message = `${transaction.message} (${percentRep.full})`;
 //     }
 //   }
@@ -105,14 +106,14 @@ export function constructTransferTransaction(log, address) {
   let action;
   if (log._from === address) {
     transaction.type = 'Send Reputation';
-    transaction.description = `Send Reputation to ${abi.strip_0x(log._to)}`;
+    transaction.description = `Send Reputation to ${speedomatic.strip0xPrefix(log._to)}`;
     transaction.data.balances = [{
-      change: formatRep(abi.bignum(log._value).neg(), { positiveSign: true })
+      change: formatRep(speedomatic.bignum(log._value).neg(), { positiveSign: true })
     }];
     action = log.inProgress ? 'sending' : 'sent';
   } else if (log._to === address) {
     transaction.type = 'Receive Reputation';
-    transaction.description = `Receive Reputation from ${abi.strip_0x(log._from)}`;
+    transaction.description = `Receive Reputation from ${speedomatic.strip0xPrefix(log._from)}`;
     transaction.data.balances = [{
       change: formatRep(log._value, { positiveSign: true })
     }];
@@ -157,7 +158,7 @@ export function constructDecreaseTradingFeeTransaction(log, market, dispatch) {
   const transaction = { data: {} };
   transaction.description = market.description;
   transaction.data.marketID = log.marketID ? log.marketID : null;
-  transaction.message = `updated trading fee: ${formatPercent(abi.bignum(log.tradingFee).times(100)).full}`;
+  transaction.message = `updated trading fee: ${formatPercent(speedomatic.bignum(log.tradingFee).times(100)).full}`;
   return transaction;
 }
 
@@ -173,10 +174,10 @@ export function constructPenalizeTransaction(log, marketID, market, outcomes, di
   if (log.repchange) {
     let repPenalty;
     let repBalance;
-    const repChange = abi.bignum(log.repchange);
+    const repChange = speedomatic.bignum(log.repchange);
     if (repChange.lt(constants.ZERO)) {
       repPenalty = repChange;
-      repBalance = abi.bignum(log.oldrep).plus(abi.bignum(log.repchange)).toFixed();
+      repBalance = speedomatic.bignum(log.oldrep).plus(speedomatic.bignum(log.repchange)).toFixed();
     } else {
       repPenalty = constants.ZERO;
       repBalance = log.oldrep;
@@ -221,7 +222,7 @@ export function constructSubmitReportTransaction(log, marketID, market, outcomes
   transaction.description = market.description;
   transaction.data.marketID = marketID || null;
   transaction.data.market = market;
-  const isUnethical = !log.ethics || abi.bignum(log.ethics).eq(constants.ZERO);
+  const isUnethical = !log.ethics || speedomatic.bignum(log.ethics).eq(constants.ZERO);
   transaction.data.isUnethical = isUnethical;
   const formattedReport = formatReportedOutcome(log.report, market.minValue, market.maxValue, market.type, outcomes);
   transaction.data.reportedOutcomeID = formattedReport;
@@ -246,9 +247,9 @@ export const constructTakeOrderTransaction = (trade, marketID, marketType, minVa
 //   const tradeGroupID = trade.tradeGroupID;
 //   const price = formatEtherTokens(trade.price);
 //   const shares = formatShares(trade.amount);
-//   const tradingFees = trade.maker ? abi.bignum(trade.makerFee) : abi.bignum(trade.takerFee);
-//   const bnShares = abi.bignum(trade.amount);
-//   const bnPrice = marketType === SCALAR ? abi.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : abi.bignum(trade.price);
+//   const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.takerFee);
+//   const bnShares = speedomatic.bignum(trade.amount);
+//   const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : speedomatic.bignum(trade.price);
 //   const totalCost = bnPrice.times(bnShares).plus(tradingFees);
 //   const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
 //   const totalCostPerShare = totalCost.dividedBy(bnShares);
@@ -292,7 +293,7 @@ export const constructTakeOrderTransaction = (trade, marketID, marketType, minVa
 //       feePercent: formatPercent(tradingFees.dividedBy(totalCost).times(100)),
 //       totalCost: formattedTotalCost,
 //       totalReturn: formattedTotalReturn,
-//       gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
+//       gasFees: trade.gasFees && speedomatic.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
 //       blockNumber: trade.blockNumber
 //     }
 //   };
@@ -316,14 +317,14 @@ export const constructMakeOrderTransaction = (trade, marketID, marketType, descr
 //   const shares = formatShares(trade.amount);
 //   const makerFee = market.makerFee;
 //   const takerFee = market.takerFee;
-//   const maxValue = abi.bignum(market.maxValue);
-//   const minValue = abi.bignum(market.minValue);
+//   const maxValue = speedomatic.bignum(market.maxValue);
+//   const minValue = speedomatic.bignum(market.minValue);
 //   const fees = augur.trading.fees.calculateFxpTradingFees(makerFee, takerFee);
 //   const rawPrice = marketType === SCALAR ? augur.trading.expandScalarPrice(minValue, trade.price) : trade.price;
-//   const range = marketType === SCALAR ? abi.fix(maxValue.minus(minValue)) : constants.ONE;
-//   const adjustedFees = augur.trading.fees.calculateFxpMakerTakerFees(augur.trading.fees.calculateFxpAdjustedTradingFee(fees.tradingFee, abi.fix(trade.price), range), fees.makerProportionOfFee, false, true);
-//   const fxpShares = abi.fix(trade.amount);
-//   const fxpPrice = abi.fix(trade.price);
+//   const range = marketType === SCALAR ? speedomatic.fix(maxValue.minus(minValue)) : constants.ONE;
+//   const adjustedFees = augur.trading.fees.calculateFxpMakerTakerFees(augur.trading.fees.calculateFxpAdjustedTradingFee(fees.tradingFee, speedomatic.fix(trade.price), range), fees.makerProportionOfFee, false, true);
+//   const fxpShares = speedomatic.fix(trade.amount);
+//   const fxpPrice = speedomatic.fix(trade.price);
 //   const tradingFees = adjustedFees.maker.times(fxpShares).dividedBy(constants.ONE)
 //     .floor()
 //     .times(fxpPrice)
@@ -353,21 +354,21 @@ export const constructMakeOrderTransaction = (trade, marketID, marketType, descr
 //         marketID,
 //         marketLink: selectMarketLink({ id: marketID, description }, dispatch)
 //       },
-//       message: `${action} ${shares.full} for ${formatEtherTokens(abi.unfix(trade.type === TYPES.BUY ? totalCostPerShare : totalReturnPerShare)).full} / share`,
+//       message: `${action} ${shares.full} for ${formatEtherTokens(speedomatic.unfix(trade.type === TYPES.BUY ? totalCostPerShare : totalReturnPerShare)).full} / share`,
 //       numShares: shares,
 //       noFeePrice: formatEtherTokens(rawPrice),
 //       freeze: {
 //         verb: trade.inProgress ? 'freezing' : 'froze',
-//         noFeeCost: type === TYPES.ASK ? undefined : formatEtherTokens(abi.unfix(noFeeCost)),
-//         tradingFees: formatEtherTokens(abi.unfix(tradingFees))
+//         noFeeCost: type === TYPES.ASK ? undefined : formatEtherTokens(speedomatic.unfix(noFeeCost)),
+//         tradingFees: formatEtherTokens(speedomatic.unfix(tradingFees))
 //       },
 //       avgPrice: price,
 //       timestamp: formatDate(new Date(trade.timestamp * 1000)),
 //       hash: trade.transactionHash,
-//       feePercent: formatPercent(abi.unfix(tradingFees.dividedBy(totalCost).times(constants.ONE).floor()).times(100)),
-//       totalCost: type === TYPES.BID ? formatEtherTokens(abi.unfix(totalCost)) : undefined,
-//       totalReturn: type === TYPES.ASK ? formatEtherTokens(abi.unfix(totalReturn)) : undefined,
-//       gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
+//       feePercent: formatPercent(speedomatic.unfix(tradingFees.dividedBy(totalCost).times(constants.ONE).floor()).times(100)),
+//       totalCost: type === TYPES.BID ? formatEtherTokens(speedomatic.unfix(totalCost)) : undefined,
+//       totalReturn: type === TYPES.ASK ? formatEtherTokens(speedomatic.unfix(totalReturn)) : undefined,
+//       gasFees: trade.gasFees && speedomatic.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
 //       blockNumber: trade.blockNumber,
 //       tradeID: trade.tradeid
 //     }
@@ -397,7 +398,7 @@ export const constructCancelOrderTransaction = (trade, marketID, marketType, des
       timestamp: formatDate(new Date(trade.timestamp * 1000)),
       hash: trade.transactionHash,
       totalReturn: trade.inProgress ? null : formatEtherTokens(trade.cashRefund),
-      gasFees: trade.gasFees && abi.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
+      gasFees: trade.gasFees && speedomatic.bignum(trade.gasFees).gt(ZERO) ? formatEther(trade.gasFees) : null,
       blockNumber: trade.blockNumber,
       tradeID: trade.tradeid
     }
