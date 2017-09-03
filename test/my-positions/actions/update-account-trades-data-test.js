@@ -7,15 +7,11 @@ import thunk from 'redux-thunk';
 
 import {
   UPDATE_SMALLEST_POSITIONS,
-  UPDATE_SELL_COMPLETE_SETS_LOCK,
   UPDATE_ACCOUNT_TRADES_DATA,
   UPDATE_ACCOUNT_POSITIONS_DATA,
-  UPDATE_NET_EFFECTIVE_TRADES_DATA,
   UPDATE_COMPLETE_SETS_BOUGHT,
   updateSmallestPositions,
-  updateSellCompleteSetsLock,
   updateAccountPositionsData,
-  updateNetEffectiveTradesData,
   updateCompleteSetsBought
 } from 'modules/my-positions/actions/update-account-trades-data';
 
@@ -87,30 +83,9 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
     });
   });
 
-  describe('updateSellCompleteSetsLock', () => {
-    test({
-      description: `should return the expected action`,
-      assertions: (store) => {
-        store.dispatch(updateSellCompleteSetsLock('0xMARKETID', true));
-
-        const actual = store.getActions();
-
-        const expected = [
-          {
-            type: UPDATE_SELL_COMPLETE_SETS_LOCK,
-            marketID: '0xMARKETID',
-            isLocked: true
-          }
-        ];
-
-        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`);
-      }
-    });
-  });
-
   describe('updateAccountBidsAsksData', () => {
     test({
-      description: `should dispatch the expected actions WITH getAdjustedPositions returning an error`,
+      description: `should dispatch the expected actions WITH getPositionInMarket returning an error`,
       state: {
         loginAccount: {
           address: '0xUSERID'
@@ -119,14 +94,14 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
       assertions: (store) => {
         const mockAugur = {
           augur: {
-            trading: {
-              positions: {
-                getAdjustedPositions: () => {}
+            api: {
+              MarketFetcher: {
+                getPositionInMarket: () => {}
               }
             }
           }
         };
-        sinon.stub(mockAugur.augur.trading.positions, 'getAdjustedPositions', ({ account, filter: { market } }, cb) => cb(true));
+        sinon.stub(mockAugur.augur.api.MarketFetcher, 'getPositionInMarket', ({ _account: account, _market: market }, callback) => callback({ error: 'ERROR_MESSAGE' }));
 
         const action = proxyquire('../../../src/modules/my-positions/actions/update-account-trades-data', {
           '../../transactions/actions/convert-logs-to-transactions': mockConvertTradeLogsToTransactions,
@@ -141,7 +116,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
         const expected = [
           {
             type: MOCK_ACTION_TYPES.CONVERT_TRADE_LOGS_TO_TRANSACTIONS,
-            logType: 'log_add_tx',
+            logType: 'MakeOrder',
             data: {
               '0xMARKETID': {}
             },
@@ -161,7 +136,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
     });
 
     test({
-      description: `should dispatch the expected actions WITHOUT getAdjustedPositions returning an error`,
+      description: `should dispatch the expected actions WITHOUT getPositionInMarket returning an error`,
       state: {
         loginAccount: {
           address: '0xUSERID'
@@ -170,14 +145,14 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
       assertions: (store) => {
         const mockAugur = {
           augur: {
-            trading: {
-              positions: {
-                getAdjustedPositions: () => {}
+            api: {
+              MarketFetcher: {
+                getPositionInMarket: () => {}
               }
             }
           }
         };
-        sinon.stub(mockAugur.augur.trading.positions, 'getAdjustedPositions', ({ account, filter: { market } }, cb) => cb(null, {}));
+        sinon.stub(mockAugur.augur.api.MarketFetcher, 'getPositionInMarket', ({ _account: account, _market: market }, callback) => callback({}));
 
         const action = proxyquire('../../../src/modules/my-positions/actions/update-account-trades-data', {
           '../../transactions/actions/convert-logs-to-transactions': mockConvertTradeLogsToTransactions,
@@ -192,7 +167,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
         const expected = [
           {
             type: MOCK_ACTION_TYPES.CONVERT_TRADE_LOGS_TO_TRANSACTIONS,
-            logType: 'log_add_tx',
+            logType: 'MakeOrder',
             data: {
               '0xMARKETID': {}
             },
@@ -255,7 +230,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
 
   describe('updateAccountTradesData', () => {
     test({
-      description: `should return the expected actions WITH getAdjustedPositions returning an error`,
+      description: `should return the expected actions WITH getPositionInMarket returning an error`,
       state: {
         loginAccount: {
           address: '0xUSERID'
@@ -264,12 +239,14 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
       assertions: (store) => {
         const mockAugur = {
           augur: {
-            trading: {
-              positions: { getAdjustedPositions: () => {} }
+            api: {
+              MarketFetcher: {
+                getPositionInMarket: () => {}
+              }
             }
           }
         };
-        sinon.stub(mockAugur.augur.trading.positions, 'getAdjustedPositions', (args, cb) => cb(true));
+        sinon.stub(mockAugur.augur.api.MarketFetcher, 'getPositionInMarket', ({ _account: account, _market: market }, callback) => callback({ error: 'ERROR_MESSAGE' }));
 
         const action = proxyquire('../../../src/modules/my-positions/actions/update-account-trades-data', {
           '../../transactions/actions/convert-logs-to-transactions': mockConvertTradeLogsToTransactions,
@@ -283,7 +260,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
         const expected = [
           {
             type: MOCK_ACTION_TYPES.CONVERT_TRADE_LOGS_TO_TRANSACTIONS,
-            logType: 'log_fill_tx',
+            logType: 'TakeOrder',
             data: {
               '0xMARKETID': {}
             },
@@ -301,7 +278,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
     });
 
     test({
-      description: `should return the expected actions WITH getAdjustedPositions returning NO error`,
+      description: `should return the expected actions WITH getPositionInMarket returning NO error`,
       state: {
         loginAccount: {
           address: '0xUSERID'
@@ -310,12 +287,14 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
       assertions: (store) => {
         const mockAugur = {
           augur: {
-            trading: {
-              positions: { getAdjustedPositions: () => {} }
+            api: {
+              MarketFetcher: {
+                getPositionInMarket: () => {}
+              }
             }
           }
         };
-        sinon.stub(mockAugur.augur.trading.positions, 'getAdjustedPositions', (args, cb) => cb(null, {}));
+        sinon.stub(mockAugur.augur.api.MarketFetcher, 'getPositionInMarket', ({ _account: account, _market: market }, callback) => callback({}));
 
         const action = proxyquire('../../../src/modules/my-positions/actions/update-account-trades-data', {
           '../../transactions/actions/convert-logs-to-transactions': mockConvertTradeLogsToTransactions,
@@ -330,7 +309,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
         const expected = [
           {
             type: MOCK_ACTION_TYPES.CONVERT_TRADE_LOGS_TO_TRANSACTIONS,
-            logType: 'log_fill_tx',
+            logType: 'TakeOrder',
             data: {
               '0xMARKETID': {}
             },
@@ -370,29 +349,6 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
         const expected = [
           {
             type: UPDATE_ACCOUNT_POSITIONS_DATA,
-            data: {
-              '0xMARKETID': {}
-            },
-            marketID: '0xMARKETID'
-          }
-        ];
-
-        assert.deepEqual(actual, expected, `Didn't dispatch the expect action`);
-      }
-    });
-  });
-
-  describe('updateNetEffectiveTradesData', () => {
-    test({
-      description: `should return the expected action`,
-      assertions: (store) => {
-        store.dispatch(updateNetEffectiveTradesData({ '0xMARKETID': {} }, '0xMARKETID'));
-
-        const actual = store.getActions();
-
-        const expected = [
-          {
-            type: UPDATE_NET_EFFECTIVE_TRADES_DATA,
             data: {
               '0xMARKETID': {}
             },

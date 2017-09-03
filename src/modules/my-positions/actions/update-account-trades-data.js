@@ -1,74 +1,64 @@
+import async from 'async';
 import { augur } from 'services/augurjs';
 import { convertTradeLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
 import { updateOrders } from 'modules/my-orders/actions/update-orders';
 import { loadBidsAsksHistory } from 'modules/bids-asks/actions/load-bids-asks-history';
-import { LOG_ADD_TX, LOG_CANCEL, LOG_FILL_TX } from 'modules/transactions/constants/types';
+import { MAKE_ORDER, CANCEL_ORDER, TAKE_ORDER } from 'modules/transactions/constants/types';
+import logError from 'utils/log-error';
 
 export const UPDATE_ACCOUNT_TRADES_DATA = 'UPDATE_ACCOUNT_TRADES_DATA';
 export const UPDATE_ACCOUNT_POSITIONS_DATA = 'UPDATE_ACCOUNT_POSITIONS_DATA';
 export const UPDATE_COMPLETE_SETS_BOUGHT = 'UPDATE_COMPLETE_SETS_BOUGHT';
-export const UPDATE_NET_EFFECTIVE_TRADES_DATA = 'UPDATE_NET_EFFECTIVE_TRADES_DATA';
-export const UPDATE_SELL_COMPLETE_SETS_LOCK = 'UPDATE_SELL_COMPLETE_SETS_LOCK';
 export const UPDATE_SMALLEST_POSITIONS = 'UPDATE_SMALLEST_POSITIONS';
-export const UPDATE_ORDERS_TRANSACTION_LOG = 'UPDATE_ORDERS_TRANSACTION_LOG';
 
 export function updateSmallestPositions(marketID, smallestPosition) {
   return { type: UPDATE_SMALLEST_POSITIONS, marketID, smallestPosition };
 }
 
-export function updateSellCompleteSetsLock(marketID, isLocked) {
-  return { type: UPDATE_SELL_COMPLETE_SETS_LOCK, marketID, isLocked };
-}
-
-export function updateAccountBidsAsksData(data, marketID) {
+export function updateAccountBidsAsksData(data, marketID, callback = logError) {
   return (dispatch, getState) => {
-    dispatch(convertTradeLogsToTransactions(LOG_ADD_TX, data, marketID));
-    dispatch(updateOrders(data, true));
     const { loginAccount } = getState();
-    const account = loginAccount.address;
-    augur.trading.positions.getAdjustedPositions({ account, filter: { market: marketID } }, (err, positions) => {
-      if (err) return console.error('getAdjustedPositions error: ', err);
-      dispatch(updateAccountPositionsData(positions, marketID));
+    dispatch(convertTradeLogsToTransactions(MAKE_ORDER, data, marketID));
+    dispatch(updateOrders(data, true));
+    augur.api.MarketFetcher.getPositionInMarket({ _account: loginAccount.address, _market: marketID }, (positionInMarket) => {
+      if (!positionInMarket) return callback(`position in market ${marketID} not found`);
+      if (positionInMarket.error) return callback(positionInMarket);
+      dispatch(updateAccountPositionsData(positionInMarket, marketID));
+      callback(null, positionInMarket);
     });
   };
 }
 
 export function updateAccountCancelsData(data, marketID) {
   return (dispatch, getState) => {
-    dispatch(convertTradeLogsToTransactions(LOG_CANCEL, data, marketID));
+    dispatch(convertTradeLogsToTransactions(CANCEL_ORDER, data, marketID));
     dispatch(updateOrders(data, false));
   };
 }
 
-export function updateAccountTradesData(data, marketID) {
+export function updateAccountTradesData(data, marketID, callback = logError) {
   return (dispatch, getState) => {
-    dispatch(convertTradeLogsToTransactions(LOG_FILL_TX, data, marketID));
+    dispatch(convertTradeLogsToTransactions(TAKE_ORDER, data, marketID));
     const { loginAccount } = getState();
     const account = loginAccount.address;
-    Object.keys(data).forEach((market) => {
-      augur.trading.positions.getAdjustedPositions({
-        account,
-        filter: { market }
-      }, (err, positions) => {
-        if (err) return console.error('getAdjustedPositions error: ', err);
-        dispatch(updateAccountPositionsData(positions, market));
+    async.eachSeries(data, (market, nextMarket) => {
+      dispatch({ type: UPDATE_ACCOUNT_TRADES_DATA, market, data: data[market] });
+      augur.api.MarketFetcher.getPositionInMarket({
+        _account: account,
+        _market: market
+      }, (positionInMarket) => {
+        if (!positionInMarket) return nextMarket(`position in market ${market} not found`);
+        if (positionInMarket.error) return nextMarket(positionInMarket);
+        dispatch(updateAccountPositionsData(positionInMarket, market));
         dispatch(loadBidsAsksHistory({ market }));
+        nextMarket(null);
       });
-      dispatch({
-        type: UPDATE_ACCOUNT_TRADES_DATA,
-        market,
-        data: data[market]
-      });
-    });
+    }, callback);
   };
 }
 
 export function updateAccountPositionsData(data, marketID) {
   return { type: UPDATE_ACCOUNT_POSITIONS_DATA, data, marketID };
-}
-
-export function updateNetEffectiveTradesData(data, marketID) {
-  return { type: UPDATE_NET_EFFECTIVE_TRADES_DATA, data, marketID };
 }
 
 export function updateCompleteSetsBought(data, marketID) {
