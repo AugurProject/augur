@@ -3,10 +3,10 @@
 var assert = require("chai").assert;
 var ZERO = require("../../../../src/constants").ZERO;
 
-describe("trading/positions/calculate-unrealized-pl", function () {
+describe("trading/profit-loss/calculate-unrealized-pl", function () {
   var test = function (t) {
     it(JSON.stringify(t), function () {
-      t.assertions(require("../../../../src/trading/positions/calculate-unrealized-pl")(t.position, t.meanOpenPrice, t.lastTradePrice));
+      t.assertions(require("../../../../src/trading/profit-loss/calculate-unrealized-pl")(t.position, t.meanOpenPrice, t.lastTradePrice));
     });
   };
   test({

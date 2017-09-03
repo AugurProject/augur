@@ -2,10 +2,10 @@
 
 var assert = require("chai").assert;
 
-describe("trading/positions/calculate-profit-loss", function () {
+describe("trading/profit-loss/calculate-profit-loss", function () {
   var test = function (t) {
     it(t.description, function () {
-      t.assertions(require("../../../../src/trading/positions/calculate-profit-loss")({ trades: t.trades, lastPrice: t.lastPrice }));
+      t.assertions(require("../../../../src/trading/profit-loss/calculate-profit-loss")({ trades: t.trades, lastPrice: t.lastPrice }));
     });
   };
   test({
