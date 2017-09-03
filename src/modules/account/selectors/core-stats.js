@@ -36,7 +36,7 @@ export const createPeriodPLSelector = period => createSelector(
       const accumulatedPL = Object.keys(accountTrades[marketID]).reduce((p, outcomeID) => { // Iterate over outcomes
         const periodTrades = accountTrades[marketID][outcomeID].filter(trade => trade.blockNumber > periodBlock); // Filter out trades older than 30 days
         const lastPrice = selectOutcomeLastPrice(outcomesData[marketID], outcomeID);
-        const { realized, unrealized } = augur.trading.positions.calculateProfitLoss({ trades: periodTrades, lastPrice });
+        const { realized, unrealized } = augur.trading.calculateProfitLoss({ trades: periodTrades, lastPrice });
         return p.plus(new BigNumber(realized, 10).plus(new BigNumber(unrealized, 10)));
       }, ZERO);
 

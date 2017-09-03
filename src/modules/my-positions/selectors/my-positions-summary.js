@@ -1,5 +1,6 @@
 import memoize from 'memoizee';
 import BigNumber from 'bignumber.js';
+import speedomatic from 'speedomatic';
 
 import store from 'src/store';
 
@@ -9,7 +10,6 @@ import { closePosition } from 'modules/my-positions/actions/close-position';
 import { ZERO } from 'modules/trade/constants/numbers';
 
 import { augur } from 'services/augurjs';
-import speedomatic from 'speedomatic';
 import { formatEtherTokens, formatShares, formatNumber } from 'utils/format-number';
 
 export default function () {
@@ -23,7 +23,7 @@ export const generateOutcomePositionSummary = memoize((adjustedPosition, outcome
   }
 
   const trades = outcomeAccountTrades ? outcomeAccountTrades.slice() : [];
-  const { realized, unrealized, meanOpenPrice } = augur.trading.positions.calculateProfitLoss({ trades, lastPrice });
+  const { realized, unrealized, meanOpenPrice } = augur.trading.calculateProfitLoss({ trades, lastPrice });
   const position = adjustedPosition || '0';
   const isClosable = !!new BigNumber(position || '0').toNumber(); // Based on position, can we attempt to close this position
 
