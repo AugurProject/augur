@@ -26,7 +26,7 @@ import {
   constructFundedAccountTransaction
 } from 'modules/transactions/actions/construct-transaction';
 
-import { CREATE_MARKET, COMMIT_REPORT, REVEAL_REPORT, BUY, SELL, MATCH_BID, MATCH_ASK, SHORT_SELL, SHORT_ASK, CANCEL_ORDER } from 'modules/transactions/constants/types';
+import { CREATE_MARKET, COMMIT_REPORT, REVEAL_REPORT, BUY, SELL, MATCH_BID, MATCH_ASK, SHORT_SELL, BID, ASK, SHORT_ASK, CANCEL_ORDER } from 'modules/transactions/constants/types';
 import { BINARY, SCALAR } from 'modules/markets/constants/market-types';
 import { ZERO } from 'modules/trade/constants/numbers';
 
@@ -3074,7 +3074,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
           const expected = {
             '0xHASH': {
-              type: BUY,
+              type: BID,
               message: 'bid 2 shares for 0.1009 ETH Tokens / share',
               freeze: {
                 verb: 'froze',
@@ -3103,7 +3103,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
           const expected = {
             '0xHASH': {
-              type: BUY,
+              type: BID,
               message: 'bidding 2 shares for 0.1009 ETH Tokens / share',
               freeze: {
                 verb: 'freezing',
@@ -3132,7 +3132,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
           const expected = {
             '0xHASH': {
-              type: SELL,
+              type: ASK,
               message: 'ask 2 shares for 0.0991 ETH Tokens / share',
               freeze: {
                 verb: 'froze',
@@ -3161,7 +3161,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
           const expected = {
             '0xHASH': {
-              type: SELL,
+              type: ASK,
               message: 'asking 2 shares for 0.0991 ETH Tokens / share',
               freeze: {
                 verb: 'freezing',
@@ -3314,7 +3314,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
 
           const expected = {
             '0xHASH': {
-              type: SELL,
+              type: ASK,
               status,
               description,
               data: {
