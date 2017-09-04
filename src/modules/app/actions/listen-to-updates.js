@@ -9,7 +9,6 @@ import { updateOutcomePrice } from 'modules/markets/actions/update-outcome-price
 import { claimProceeds } from 'modules/my-positions/actions/claim-proceeds';
 import { convertLogsToTransactions } from 'modules/transactions/actions/convert-logs-to-transactions';
 import { updateMarketTopicPopularity } from 'modules/topics/actions/update-topics';
-import { SELL } from 'modules/outcomes/constants/trade-types';
 import * as TYPES from 'modules/transactions/constants/types';
 import { updateAccountBidsAsksData, updateAccountCancelsData, updateAccountTradesData } from 'modules/my-positions/actions/update-account-trades-data';
 
@@ -120,7 +119,7 @@ export function listenToUpdates() {
           dispatch(updateMarketTopicPopularity(msg.market, msg.amount));
 
           const { address } = getState().loginAccount;
-          if (msg.sender !== address) dispatch(fillOrder({ ...msg, type: SELL }));
+          if (msg.sender !== address) dispatch(fillOrder({ ...msg, type: TYPES.SELL }));
 
           // if the user is either the maker or taker, add it to the transaction display
           if (msg.sender === address || msg.owner === address) {
@@ -185,7 +184,7 @@ export function listenToUpdates() {
         if (msg) {
           console.log('completeSets_logReturn:', msg);
           let amount = new BigNumber(msg.amount, 10).times(msg.numOutcomes);
-          if (msg.type === SELL) amount = amount.neg();
+          if (msg.type === TYPES.SELL) amount = amount.neg();
           dispatch(updateMarketTopicPopularity(msg.market, amount.toFixed()));
         }
       },

@@ -4,7 +4,7 @@ import env from 'src/env.json';
 
 import { formatNumber, formatShares } from 'utils/format-number';
 import { formatDate } from 'utils/format-date';
-import { BUY } from 'modules/trade/constants/types';
+import { BUY } from 'modules/transactions/constants/types';
 
 const testState = {
   marketLoading: [],

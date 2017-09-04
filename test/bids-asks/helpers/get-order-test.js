@@ -1,17 +1,17 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import { BID } from 'modules/bids-asks/constants/bids-asks-types';
+import { BUY } from 'modules/transactions/constants/types';
 
 describe('modules/bids-asks/helpers/get-order.js', () => {
   const getOrder = require('../../../src/modules/bids-asks/helpers/get-order').default;
   it(`shouldn't return order if it's not there`, () => {
-    assert.isNull(getOrder('orderID', 'marketID', BID, {}));
-    assert.isNull(getOrder('orderID', 'marketID', BID, { sell: {} }));
-    assert.isNull(getOrder('orderID', 'marketID', BID, { buy: {} }));
+    assert.isNull(getOrder('orderID', 'marketID', BUY, {}));
+    assert.isNull(getOrder('orderID', 'marketID', BUY, { sell: {} }));
+    assert.isNull(getOrder('orderID', 'marketID', BUY, { buy: {} }));
   });
 
   it(`should return order if it's there`, () => {
-    const order = getOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'testMarketID', BID, {
+    const order = getOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'testMarketID', BUY, {
       testMarketID: {
         buy: {
           '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3': {

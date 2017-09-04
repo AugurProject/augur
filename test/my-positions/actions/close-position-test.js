@@ -8,7 +8,7 @@ import BigNumber from 'bignumber.js';
 
 import { getBestFill } from 'modules/my-positions/actions/close-position';
 
-import { BUY, SELL } from 'modules/trade/constants/types';
+import { BUY, SELL } from 'modules/transactions/constants/types';
 import { UPDATE_TRADE_COMMIT_LOCK } from 'modules/trade/actions/update-trade-commitment';
 
 describe('modules/my-positions/actions/close-position.js', () => {

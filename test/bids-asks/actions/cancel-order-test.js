@@ -4,8 +4,7 @@ import BigNumber from 'bignumber.js';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import mocks from 'test/mockStore';
-import { CANCEL_ORDER } from 'modules/transactions/constants/types';
-import { BID, ASK } from 'modules/bids-asks/constants/bids-asks-types';
+import { CANCEL_ORDER, BUY, SELL } from 'modules/transactions/constants/types';
 
 describe('modules/bids-asks/actions/cancel-order.js', () => {
   proxyquire.noPreserveCache().noCallThru();
@@ -34,7 +33,7 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
         data: {
           order: {
             id: '0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3',
-            type: BID
+            type: BUY
           },
           market: { id: 'testMarketID' },
           outcome: {}
@@ -51,9 +50,9 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
 
   describe('cancelOrder', () => {
     it(`shouldn't dispatch if order doesn't exist`, () => {
-      store.dispatch(cancelOrderModule.cancelOrder('nonExistingOrderID', 'testMarketID', BID));
-      store.dispatch(cancelOrderModule.cancelOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'nonExistingMarketID', BID));
-      store.dispatch(cancelOrderModule.cancelOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'testMarketID', ASK));
+      store.dispatch(cancelOrderModule.cancelOrder('nonExistingOrderID', 'testMarketID', BUY));
+      store.dispatch(cancelOrderModule.cancelOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'nonExistingMarketID', BUY));
+      store.dispatch(cancelOrderModule.cancelOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'testMarketID', SELL));
 
       assert.deepEqual(store.getActions(), []);
     });
