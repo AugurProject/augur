@@ -6,8 +6,8 @@
  * @property {require("../order-book/get-order-book").SingleOutcomeOrderBookSide} sell Sell orders (asks) indexed by order ID.
  */
 
-/** Type definition for OrderBook.
- * @typedef {Object} OrderBook
+/** Type definition for MarketOrderBook.
+ * @typedef {Object} MarketOrderBook
  * @property {SingleOutcomeOrderBook|undefined} 1 Full order book (buy and sell) for outcome 1 of this market.
  * @property {SingleOutcomeOrderBook|undefined} 2 Full order book (buy and sell) for outcome 2 of this market.
  * @property {SingleOutcomeOrderBook|undefined} 3 Full order book (buy and sell) for outcome 3 of this market.
@@ -47,7 +47,7 @@ var simulateSell = require("./simulate-sell");
  * @param {string} p.maxPrice This market's maximum possible price, as a base-10 string.
  * @param {string} p.price Limit price for this order (i.e. the worst price the user will accept), as a base-10 string.
  * @param {string} p.marketCreatorFeeRate The fee rate charged by the market creator (e.g., pass in "0.01" if the fee is 1%), as a base-10 string.
- * @param {OrderBook} p.orderBook The full order book (buy and sell) for this market and outcome.
+ * @param {MarketOrderBook} p.marketOrderBook The full order book (buy and sell) for this market and outcome.
  * @param {boolean=} p.shouldCollectReportingFees False if reporting fees are not collected; this is rare and only occurs in disowned markets (default: true).
  * @return {SimulatedTrade} Projected fees paid, shares and tokens spent, and final balances after the trade is complete.
  */
@@ -63,8 +63,8 @@ function simulateTrade(p) {
   var shouldCollectReportingFees = p.shouldCollectReportingFees === false ? 0 : 1;
   var shareBalances = p.shareBalances.map(function (shareBalance) { return new BigNumber(shareBalance, 10); });
   var simulatedTrade = p.orderType === 1 ?
-    simulateBuy(p.outcome, sharesToCover, shareBalances, tokenBalance, p.userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, p.orderBook.sell) :
-    simulateSell(p.outcome, sharesToCover, shareBalances, tokenBalance, p.userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, p.orderBook.buy);
+    simulateBuy(p.outcome, sharesToCover, shareBalances, tokenBalance, p.userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, p.marketOrderBook.sell) :
+    simulateSell(p.outcome, sharesToCover, shareBalances, tokenBalance, p.userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, p.marketOrderBook.buy);
   return {
     settlementFees: simulatedTrade.settlementFees.toFixed(),
     gasFees: simulatedTrade.gasFees.toFixed(),

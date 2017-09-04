@@ -28,7 +28,7 @@ describe("trading/simulation/simulate-trade", function () {
       marketCreatorFeeRate: "0",
       reportingFeeRate: "0.01",
       shouldCollectReportingFees: 1,
-      orderBook: {
+      marketOrderBook: {
         buy: {
           BID_0: {
             amount: "2",
@@ -73,7 +73,7 @@ describe("trading/simulation/simulate-trade", function () {
       marketCreatorFeeRate: "0",
       reportingFeeRate: "0.01",
       shouldCollectReportingFees: 1,
-      orderBook: {
+      marketOrderBook: {
         buy: {
           BID_0: {
             amount: "2",
@@ -118,7 +118,7 @@ describe("trading/simulation/simulate-trade", function () {
       marketCreatorFeeRate: "0",
       reportingFeeRate: "0.01",
       shouldCollectReportingFees: 1,
-      orderBook: {
+      marketOrderBook: {
         buy: {
           BID_0: {
             amount: "2",
@@ -156,7 +156,7 @@ describe("trading/simulation/simulate-trade", function () {
       marketCreatorFeeRate: "0",
       reportingFeeRate: "0.01",
       shouldCollectReportingFees: 1,
-      orderBook: {
+      marketOrderBook: {
         buy: {
           BID_0: {
             amount: "2",

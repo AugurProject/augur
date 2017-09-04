@@ -6,12 +6,19 @@ var denormalizePrice = require("../trading/denormalize-price");
 var roundToPrecision = require("../utils/round-to-precision");
 var constants = require("../constants");
 
-module.exports = function (type, minPrice, maxPrice, order) {
+/**
+ * @param {number} orderType Order type (1 for "buy", 2 for "sell").
+ * @param {string} minPrice This market's minimum possible price, as a base-10 string.
+ * @param {string} maxPrice This market's maximum possible price, as a base-10 string.
+ * @param {string[]} order Raw order info received from the contract, as an array of base-10 strings.
+ * @return {require("../trading/order-book/get-order").Order} Parsed order object.
+ */
+module.exports = function (orderType, minPrice, maxPrice, order) {
   if (!Array.isArray(order) || !order.length || !parseInt(order[0], 16)) return null;
 
   // 1: buy, 2: sell
   var round, roundingMode;
-  if (parseInt(type, 10) === 1) {
+  if (parseInt(orderType, 10) === 1) {
     round = "floor";
     roundingMode = BigNumber.ROUND_DOWN;
   } else {

@@ -40,7 +40,7 @@ function Augur() {
   this.chat = require("./chat");
   this.connect = require("./connect").bind(this);
   this.constants = require("./constants");
-  // this.create = require("./create");
+  this.create = require("./create");
   this.filters = require("./filters");
   this.format = require("./format");
   this.logs = require("./logs");

@@ -16,6 +16,17 @@ function insertIndexedLog(processedLogs, parsed, index) {
         processedLogs[parsed[index[0]]][parsed[index[1]]] = [];
       }
       processedLogs[parsed[index[0]]][parsed[index[1]]].push(parsed);
+    } else if (index.length === 3) {
+      if (!processedLogs[parsed[index[0]]]) {
+        processedLogs[parsed[index[0]]] = {};
+      }
+      if (!processedLogs[parsed[index[0]]][parsed[index[1]]]) {
+        processedLogs[parsed[index[0]]][parsed[index[1]]] = {};
+      }
+      if (!processedLogs[parsed[index[0]]][parsed[index[1]]][parsed[index[2]]]) {
+        processedLogs[parsed[index[0]]][parsed[index[1]]][parsed[index[2]]] = [];
+      }
+      processedLogs[parsed[index[0]]][parsed[index[1]]][parsed[index[2]]].push(parsed);
     }
   } else {
     if (!processedLogs[parsed[index]]) processedLogs[parsed[index]] = [];

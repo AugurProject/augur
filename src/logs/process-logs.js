@@ -1,7 +1,7 @@
 "use strict";
 
 var insertIndexedLog = require("./insert-indexed-log");
-var eventsABI = require("../contracts").abi.events;
+var eventsAbi = require("../contracts").abi.events;
 var parseLogMessage = require("../filters/parse-message/parse-log-message");
 
 // warning: mutates processedLogs, if passed
@@ -10,7 +10,7 @@ function processLogs(label, index, logs, extraField, processedLogs) {
   if (!processedLogs) processedLogs = (index) ? {} : [];
   for (i = 0, numLogs = logs.length; i < numLogs; ++i) {
     if (!logs[i].removed) {
-      parsed = parseLogMessage(label, logs[i], eventsABI[label].inputs);
+      parsed = parseLogMessage(label, logs[i], eventsAbi[label].inputs);
       if (extraField && extraField.name) {
         parsed[extraField.name] = extraField.value;
       }

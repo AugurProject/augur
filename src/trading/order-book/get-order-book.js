@@ -20,7 +20,7 @@ var parseOrderBook = require("../../parsers/order-book");
  * @param {number=} p._numOrdersToLoad Number of orders to load, as a whole number (default: 0 / load all orders).
  * @param {string} p.minPrice This market's minimum possible price, as a base-10 string.
  * @param {string} p.maxPrice This market's maximum possible price, as a base-10 string.
- * @param {function=} callback Called when the requested order book for this market/outcome/type has been received and parsed (default: noop).
+ * @param {function} callback Called when the requested order book for this market/outcome/type has been received and parsed.
  * @return {SingleOutcomeOrderBookSide} One side of the order book (buy or sell) for this market and outcome.
  */
 function getOrderBook(p, callback) {
