@@ -1,6 +1,6 @@
-@import (less) '_type_font-face';
 @import (less) '_typ_font-awesome.css';
 @import (less) '_typ_icofont.css';
+@import '_type_font-face';
 
 // TYPOGRAPHY
 // site-wide typographic rules + values
@@ -50,40 +50,21 @@ h1 {
   font-weight: 500;
   line-height: 1.125rem;
 }
-<<<<<<< HEAD
-
-//		Sizes
-.font-size-small {
-  font-size: @font-size-small;
-}
-
-.font-size-normal {
-  font-size: @font-size-normal;
-}
-
-.font-size-medium {
-  font-size: @font-size-medium;
-}
-
-.font-size-large {
-  font-size: @font-size-large;
-}
-
-.font-size-extra-large {
-  font-size: @font-size-extra-large;
-}
-
-.font-size-xx-large {
-  font-size: @font-size-xx-large;
-}
-
-.font-size-massive {
-  font-size: @font-size-massive;
-}
-
-//    Formatting
-.capitalized {
-  text-transform: capitalize;
-}
 =======
->>>>>>> Removing font-size and font-color variables and mixins.
+
+.caps--extra-large {
+  &:extend(.caps);
+
+  font-size: 1.875rem; // 30px
+  font-weight: 500;
+  line-height: 1.875rem;
+}
+
+.caps--massive {
+  &:extend(.caps);
+
+  font-size: 2.43rem; // 39px;
+  font-weight: 500;
+  line-height: 2.43rem;
+}
+>>>>>>> re-inclusion of some breaking styles
