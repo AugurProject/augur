@@ -1,12 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import ValueDenomination from 'modules/common/components/value-denomination'
+import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 import ValueDate from 'modules/common/components/value-date'
 import getValue from 'utils/get-value'
 import setShareDenomination from 'utils/set-share-denomination'
 import shareDenominationLabel from 'utils/share-denomination-label'
 import ConsensusOutcome from 'modules/market/components/consensus-outcome'
-import EmDash from 'modules/common/components/em-dash'
 
 const MarketDetails = (p) => {
   const outstandingShares = setShareDenomination(getValue(p, 'outstandingShares.formatted'), p.selectedShareDenomination)
@@ -19,7 +18,7 @@ const MarketDetails = (p) => {
           <span className="property-label">consensus</span>
           <span className="property-value">
             {!p.consensus &&
-              <EmDash />
+              <span>&mdash;</span>
             }
             {!!p.consensus &&
               <ConsensusOutcome

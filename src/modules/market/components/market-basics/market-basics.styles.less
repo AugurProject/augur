@@ -1,97 +1,58 @@
+@import '~assets/styles/shared.less';
+
+.MarketBasics__content {
+  padding: 1.5rem 2em 1.875rem;
+}
+
+.MarketBasics__description {
+  position: relative;
+}
+
 .MarketBasics__header {
   display: flex;
   justify-content: space-between;
 }
 
+.MarketBasics__status {
+  height: 1.5rem;
+  width: 1.5rem;
+
+  > svg {
+    height: 100%;
+    width: 100%;
+  }
+}
+
 .MarketBasics__tags {
+  &:extend(.caps--medium);
+
+  margin-bottom: 1.625rem;
+
   > li {
     display: inline-block;
-    text-transform: uppercase;
 
     &::before {
       content: "/";
-      margin: 0 5px;
+      margin: 0 4px;
     }
-
-    &:first-child::before {
-      display: none;
-    }
-  }
-}
-
-.MarketBasics__footer {
-  display: flex;
-  justify-content: space-between;
-}
-
-.MarketBasics__meta {
-  > li {
-    display: inline-block;
-    margin-left: 1.25em;
 
     &:first-child {
-      margin-left: 0;
-    }
+      color: @color-lightgray;
 
-    > span {
-      display: block;
-    }
-  }
-}
-
-/*
-
-.market-basics {
-  display: flex;
-  flex-direction: column;
-  margin: 0 0 2em;
-
-  .market-basics-header {
-    display: flex;
-    flex-direction: row;
-
-    .market-basics-header-tags {
-      flex: 4;
-
-      .tags {
-        color: @color-blue;
-        display: flex;
-        flex: 1;
-        flex-direction: row;
-
-        .tag {
-          &:not(:last-of-type)::after {
-
-            .fa();
-
-            content: '';
-            cursor: default;
-            padding: 0 0.5em;
-          }
-        }
+      &::before {
+        display: none;
       }
     }
 
-    .market-basics-header-actions {
-      display: flex;
-      flex: 1;
-      justify-content: flex-end;
+    > button {
+      text-transform: uppercase;
     }
   }
-
-  .market-description {
-
-    .font-size-large();
-    .font-weight-normal();
-
-    padding: 0.4em 0;
-  }
 }
 
-.market-reported-details {
-  .market-basics {
-    margin: 1em 0 2em 1em;
+@media @breakpoint-tablet {
+  .MarketBasics__content {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 }
-
-*/

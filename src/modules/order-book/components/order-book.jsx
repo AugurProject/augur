@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import OrderBookTable from 'modules/order-book/components/order-book-table'
 import OrderBookChart from 'modules/order-book/components/order-book-chart'
 
-import EmDash from 'modules/common/components/em-dash'
 import ComponentNav from 'modules/common/components/component-nav'
 
 import { SCALAR } from 'modules/markets/constants/market-types'
@@ -50,7 +49,7 @@ export default class OrderBook extends Component {
           <div>
             {p.marketType !== SCALAR ?
               <h3>Order Book {name &&
-                <span><EmDash /> {name}</span>
+                <span>&mdash; {name}</span>
               }</h3> :
               <h3>Order Book</h3>
             }

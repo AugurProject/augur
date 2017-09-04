@@ -2,95 +2,65 @@
 
 import React from 'react'
 import PropTypes from 'prop-types'
-// import { Link } from 'react-router-dom';
-// import classNames from 'classnames';
 
-// import MarketProperties from 'modules/market/components/market-properties';
+import MarketLink from 'modules/market/components/market-link/market-link'
+import { MarketStatusOpen, MarketStatusReported, MarketStatusClosed } from 'modules/common/components/spritemap/spritemap'
 
-// import makePath from 'modules/app/helpers/make-path';
-// import makeQuery from 'modules/app/helpers/make-query';
-
-// import { MARKET } from 'modules/app/constants/views';
-// import { MARKET_ID_PARAM_NAME, MARKET_DESCRIPTION_PARAM_NAME } from 'modules/app/constants/param-names';
+import toggleTag from 'modules/app/helpers/toggle-tag'
 
 import Styles from 'modules/market/components/market-basics/market-basics.styles'
 
-const MarketBasics = p => (
-  <article className={Styles.MarketBasics}>
-    <div className={Styles.MarketBasics__header}>
-      <ul className={Styles.MarketBasics__tags}>
-        <li>Tags</li>
-        {(p.tags || []).map((tag, i) => (
-          <li key={i}>
-            {tag.name ? tag.name : tag}
-          </li>
-        ))}
-      </ul>
+const MarketBasics = (p) => {
 
-      <span>{/* p.isOpen ? (p.isResported ? 'reported' : 'open') : 'closed' */}</span>
-    </div>
+  let marketStatusIcon
 
-    <h1>{ p.description }</h1>
+  switch (true) {
+    case p.isOpen && p.isReported:
+      marketStatusIcon = MarketStatusReported
+      break
+    case p.isOpen:
+      marketStatusIcon = MarketStatusOpen
+      break
+    default:
+      marketStatusIcon = MarketStatusClosed
+  }
 
-    <div className={Styles.MarketBasics__footer}>
-      <ul className={Styles.MarketBasics__meta}>
-        <li>
-          <span>Volume</span>
-          <span>84K Shares</span>
-        </li>
-        <li>
-          <span>Fee</span>
-          <span>2.8%</span>
-        </li>
-        <li>
-          <span>Expires</span>
-          <span>June 9, 2017, 7:00 AM</span>
-        </li>
-      </ul>
-      <div>
-        <span>star</span>
-        <button className="button--purple">Trade</button>
+  return (
+    <article className={Styles.MarketBasics}>
+      <div className={Styles.MarketBasics__content}>
+        <div className={Styles.MarketBasics__header}>
+          <ul className={Styles.MarketBasics__tags}>
+            <li>Tags</li>
+            {(p.tags || []).map((tag, i) => (
+              <li key={i}>
+                <button onClick={() => toggleTag(tag, p.location, p.history)}>
+                  {tag}
+                </button>
+              </li>
+            ))}
+          </ul>
+
+          <span className={Styles.MarketBasics__status}>
+            { marketStatusIcon }
+          </span>
+        </div>
+
+        <h1 className={Styles.MarketBasics__description}>
+          <MarketLink
+            id={p.id}
+            formattedDescription={p.formattedDescription}
+          >
+            { p.description }
+          </MarketLink>
+        </h1>
       </div>
-    </div>
-
-    {/* <div className="market-basics-header-actions">
-      {p.isLogged && p.toggleFavorite &&
-        <button
-          className={classNames('button unstyled favorite-button', { on: p.isFavorite })}
-          onClick={() => p.toggleFavorite(p.id)}
-        >
-          <i
-            className={classNames('fa', {
-              'fa-star': p.isFavorite,
-              'fa-star-o': !p.isFavorite
-            })}
-          />
-        </button>
-      }
-    </div> */}
-
-    {/*
-    {p.id && p.formattedDescription ?
-      <Link
-        to={{
-          pathname: makePath(MARKET),
-          search: makeQuery({
-            [MARKET_DESCRIPTION_PARAM_NAME]: p.formattedDescription,
-            [MARKET_ID_PARAM_NAME]: p.id
-          })
-        }}
-        className="market-description"
-      >
-        {p.description}
-      </Link> :
-      <span className="market-description">{p.description}</span>
-    }
-
-    <MarketProperties {...p} /> */}
-  </article>
-)
+    </article>
+  )
+}
 
 MarketBasics.propTypes = {
+  history: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired,
   isLogged: PropTypes.bool.isRequired,
   toggleFavorite: PropTypes.func
 }

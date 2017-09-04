@@ -1,0 +1,54 @@
+.button {
+  .border();
+
+  align-items: center;
+  background-color: @color-blue;
+  border-radius: 3px;
+  color: @color-text-light;
+  display: flex;
+  font-size: 1.125rem;
+  font-weight: 500;
+  justify-content: center;
+  letter-spacing: 0.3px;
+  line-height: 1.125rem;
+  min-height: 2.5rem;
+  min-width: 9.75rem;
+  padding: 0 0.4em 0.166em;
+  text-transform: uppercase;
+  transition: background-color 0.15s ease;
+
+  &.disabled {
+    background-color: @color-gray;
+  }
+
+  &.imperative {
+    background-color: @color-red;
+  }
+
+  &.navigational {
+    cursor: pointer;
+  }
+
+  &:visited {
+    color: @color-text-light;
+  }
+}
+
+.button--text-only {
+  &:extend(.button);
+
+  background-color: transparent;
+  color: inherit;
+  cursor: default;
+}
+
+.button--purple {
+  &:extend(.button);
+
+  background-color: @color-purple;
+  color: @color-white;
+
+  &:hover {
+    background-color: @color-lightpurple;
+  }
+}

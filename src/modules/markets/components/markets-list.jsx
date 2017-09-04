@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+
 import MarketPreview from 'modules/market/components/market-preview/market-preview'
 import Paginator from 'modules/common/components/paginator/paginator'
 import NullStateMessage from 'modules/common/components/null-state-message'
@@ -11,6 +12,7 @@ import debounce from 'utils/debounce'
 
 export default class MarketsList extends Component {
   static propTypes = {
+    history: PropTypes.object.isRequired,
     isLogged: PropTypes.bool.isRequired,
     markets: PropTypes.array.isRequired,
     filteredMarkets: PropTypes.array.isRequired,
@@ -92,6 +94,8 @@ export default class MarketsList extends Component {
                   selectedShareDenomination={selectedShareDenomination}
                   shareDenominations={shareDenominations}
                   toggleFavorite={p.toggleFavorite}
+                  location={p.location}
+                  history={p.history}
                 />
               )
             }

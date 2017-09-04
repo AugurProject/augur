@@ -4,25 +4,18 @@
   .border(true);
 
   background-color: @color-white;
-  display: flex;
-  flex: 1;
   margin: 2em 0;
-  padding: 2em;
 }
 
 .MarketPreview__details {
   display: flex;
   flex: 4;
   flex-direction: column;
-  padding-right: 2em;
+}
 
-  .market-link {
-    display: flex;
-
-    .button.trade {
-      cursor: pointer;
-    }
-  }
+.MarketPreview__footer {
+  border-top: 1px solid @color-lightest-gray;
+  padding: 1rem 2rem;
 }
 
 .MarketPreview__outcomes {
@@ -34,5 +27,12 @@
 
   .outcome .outcome-price {
     color: @color-blue;
+  }
+}
+
+@media @breakpoint-tablet {
+  .MarketPreview__footer {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 }
