@@ -1,6 +1,7 @@
 @import '~assets/styles/shared';
 
 .Topics {
+  color: @color-white;
   height: 100%;
   overflow-y: auto;
   position: relative;
@@ -24,7 +25,8 @@
   }
 
   > h2 {
-    font-weight: 400;
+    .caps--massive();
+
     letter-spacing: 0.058em;
 
     > a,
@@ -36,7 +38,8 @@
   }
 
   > h3 {
-    font-weight: 500;
+    .caps--extra-large();
+
     letter-spacing: 0.075em;
   }
 }

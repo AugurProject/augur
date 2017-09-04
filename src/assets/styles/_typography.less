@@ -1,6 +1,6 @@
-@import (less) '_type_font-face';
 @import (less) '_typ_font-awesome.css';
 @import (less) '_typ_icofont.css';
+@import '_type_font-face';
 
 // TYPOGRAPHY
 // site-wide typographic rules + values
@@ -49,4 +49,20 @@ h1 {
   font-size: 1.125rem; // 18px
   font-weight: 500;
   line-height: 1.125rem;
+}
+
+.caps--extra-large {
+  &:extend(.caps);
+
+  font-size: 1.875rem; // 30px
+  font-weight: 500;
+  line-height: 1.875rem;
+}
+
+.caps--massive {
+  &:extend(.caps);
+
+  font-size: 2.43rem; // 39px;
+  font-weight: 500;
+  line-height: 2.43rem;
 }
