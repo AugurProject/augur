@@ -1,7 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
 import proxyquire from 'proxyquire';
-import sinon from 'sinon';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
@@ -13,18 +12,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
   const test = (t) => {
     it(t.description, (done) => {
       const store = mockStore(t.state);
-      const AugurJS = {
-        augur: {
-          accounts: t.state.augur.accounts,
-          api: { ExpiringEvents: { getEthicReport: () => {} } }
-        }
-      };
-      const action = proxyquire('../../../src/modules/reports/actions/load-report-descriptors', {
-        '../../../services/augurjs': AugurJS
-      });
-      sinon.stub(AugurJS.augur.api.ExpiringEvents, 'getEthicReport', (args, cb) => {
-        cb(t.blockchain.ethicReports[args.branch][args.event]);
-      });
+      const action = proxyquire('../../../src/modules/reports/actions/load-report-descriptors', {});
       store.dispatch(action.loadReportDescriptors((err) => {
         assert.isNull(err);
         t.assertions(store.getActions());
@@ -34,16 +22,9 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
     });
   };
   test({
-    description: 'binary market, not indeterminate, not unethical',
+    description: 'binary market, not indeterminate',
     eventID: '0xe1',
     marketID: '0xa1',
-    blockchain: {
-      ethicReports: {
-        '0xb1': {
-          '0xe1': '1'
-        }
-      }
-    },
     state: {
       branch: {
         id: '0xb1',
@@ -51,16 +32,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
         periodLength: 200,
         currentPeriod: 8,
         reportPeriod: 7,
-        currentPeriodProgress: 10,
-        isReportRevealPhase: false
-      },
-      augur: {
-        accounts: {
-          account: {
-            address: '0x0000000000000000000000000000000000000b0b',
-            derivedKey: new Buffer('42', 'hex')
-          }
-        }
+        currentPeriodProgress: 10
       },
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b',
@@ -81,13 +53,9 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
             eventID: '0xe1',
             period: 7,
             marketID: '0xa1',
-            reportHash: null,
             reportedOutcomeID: '1',
-            salt: null,
             isIndeterminate: false,
-            isUnethical: false,
-            isRevealed: false,
-            isCommitted: false
+            isSubmitted: false
           }
         }
       }
@@ -101,17 +69,13 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
               eventID: '0xe1',
               period: 7,
               marketID: '0xa1',
-              reportHash: null,
               reportedOutcomeID: '1',
-              salt: null,
               minValue: '1',
               maxValue: '2',
               isCategorical: false,
               isScalar: false,
-              isUnethical: false,
               isIndeterminate: false,
-              isRevealed: false,
-              isCommitted: false
+              isSubmitted: false
             }
           }
         }
@@ -119,16 +83,9 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
     }
   });
   test({
-    description: 'categorical market, not indeterminate, not unethical',
+    description: 'categorical market, not indeterminate',
     eventID: '0xe1',
     marketID: '0xa1',
-    blockchain: {
-      ethicReports: {
-        '0xb1': {
-          '0xe1': '1'
-        }
-      }
-    },
     state: {
       branch: {
         id: '0xb1',
@@ -136,16 +93,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
         periodLength: 200,
         currentPeriod: 8,
         reportPeriod: 7,
-        currentPeriodProgress: 10,
-        isReportRevealPhase: false
-      },
-      augur: {
-        accounts: {
-          account: {
-            address: '0x0000000000000000000000000000000000000b0b',
-            derivedKey: new Buffer('42', 'hex')
-          }
-        }
+        currentPeriodProgress: 10
       },
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b',
@@ -166,13 +114,9 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
             eventID: '0xe1',
             period: 7,
             marketID: '0xa1',
-            reportHash: null,
             reportedOutcomeID: '1',
-            salt: null,
             isIndeterminate: false,
-            isUnethical: false,
-            isRevealed: false,
-            isCommitted: false
+            isSubmitted: false
           }
         }
       }
@@ -186,17 +130,13 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
               eventID: '0xe1',
               period: 7,
               marketID: '0xa1',
-              reportHash: null,
               reportedOutcomeID: '1',
-              salt: null,
               minValue: '1',
               maxValue: '5',
               isCategorical: true,
               isScalar: false,
-              isUnethical: false,
               isIndeterminate: false,
-              isRevealed: false,
-              isCommitted: false
+              isSubmitted: false
             }
           }
         }
@@ -204,16 +144,9 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
     }
   });
   test({
-    description: 'scalar market, not indeterminate, unethical',
+    description: 'categorical market, indeterminate',
     eventID: '0xe1',
     marketID: '0xa1',
-    blockchain: {
-      ethicReports: {
-        '0xb1': {
-          '0xe1': '0'
-        }
-      }
-    },
     state: {
       branch: {
         id: '0xb1',
@@ -221,100 +154,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
         periodLength: 200,
         currentPeriod: 8,
         reportPeriod: 7,
-        currentPeriodProgress: 10,
-        isReportRevealPhase: false
-      },
-      augur: {
-        accounts: {
-          account: {
-            address: '0x0000000000000000000000000000000000000b0b',
-            derivedKey: new Buffer('42', 'hex')
-          }
-        }
-      },
-      loginAccount: {
-        address: '0x0000000000000000000000000000000000000b0b',
-        ether: '10000',
-        realEther: '2.5',
-        rep: '47'
-      },
-      marketsData: {
-        '0xa1': {
-          type: 'scalar',
-          minValue: '5',
-          maxValue: '20'
-        }
-      },
-      reports: {
-        '0xb1': {
-          '0xe1': {
-            eventID: '0xe1',
-            period: 7,
-            marketID: '0xa1',
-            reportHash: null,
-            reportedOutcomeID: '1.2345',
-            salt: null,
-            isUnethical: false,
-            isRevealed: false,
-            isCommitted: false
-          }
-        }
-      }
-    },
-    assertions: (actions) => {
-      assert.deepEqual(actions, [{
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              period: 7,
-              marketID: '0xa1',
-              reportHash: null,
-              reportedOutcomeID: '1.2345',
-              salt: null,
-              minValue: '5',
-              maxValue: '20',
-              isCategorical: false,
-              isScalar: true,
-              isUnethical: true,
-              isIndeterminate: false,
-              isRevealed: false,
-              isCommitted: false
-            }
-          }
-        }
-      }]);
-    }
-  });
-  test({
-    description: 'categorical market, indeterminate, not unethical',
-    eventID: '0xe1',
-    marketID: '0xa1',
-    blockchain: {
-      ethicReports: {
-        '0xb1': {
-          '0xe1': '1'
-        }
-      }
-    },
-    state: {
-      branch: {
-        id: '0xb1',
-        description: 'Branch 1',
-        periodLength: 200,
-        currentPeriod: 8,
-        reportPeriod: 7,
-        currentPeriodProgress: 10,
-        isReportRevealPhase: false
-      },
-      augur: {
-        accounts: {
-          account: {
-            address: '0x0000000000000000000000000000000000000b0b',
-            derivedKey: new Buffer('42', 'hex')
-          }
-        }
+        currentPeriodProgress: 10
       },
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b',
@@ -335,12 +175,8 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
             eventID: '0xe1',
             period: 7,
             marketID: '0xa1',
-            reportHash: null,
             reportedOutcomeID: '0.5',
-            salt: null,
-            isUnethical: false,
-            isRevealed: false,
-            isCommitted: false
+            isSubmitted: false
           }
         }
       }
@@ -354,17 +190,13 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
               eventID: '0xe1',
               period: 7,
               marketID: '0xa1',
-              reportHash: null,
               reportedOutcomeID: '0.5',
-              salt: null,
               minValue: '1',
               maxValue: '5',
               isCategorical: true,
               isScalar: false,
-              isUnethical: false,
               isIndeterminate: true,
-              isRevealed: false,
-              isCommitted: false
+              isSubmitted: false
             }
           }
         }
@@ -372,16 +204,9 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
     }
   });
   test({
-    description: 'scalar market, indeterminate, not unethical',
+    description: 'scalar market, indeterminate',
     eventID: '0xe1',
     marketID: '0xa1',
-    blockchain: {
-      ethicReports: {
-        '0xb1': {
-          '0xe1': '1'
-        }
-      }
-    },
     state: {
       branch: {
         id: '0xb1',
@@ -389,16 +214,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
         periodLength: 200,
         currentPeriod: 8,
         reportPeriod: 7,
-        currentPeriodProgress: 10,
-        isReportRevealPhase: false
-      },
-      augur: {
-        accounts: {
-          account: {
-            address: '0x0000000000000000000000000000000000000b0b',
-            derivedKey: new Buffer('42', 'hex')
-          }
-        }
+        currentPeriodProgress: 10
       },
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b',
@@ -419,12 +235,7 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
             eventID: '0xe1',
             period: 7,
             marketID: '0xa1',
-            reportHash: null,
             reportedOutcomeID: '1.500000000000000001',
-            salt: null,
-            isUnethical: false,
-            isRevealed: false,
-            isCommitted: false,
             isSubmitted: false
           }
         }
@@ -439,189 +250,12 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
               eventID: '0xe1',
               period: 7,
               marketID: '0xa1',
-              reportHash: null,
               reportedOutcomeID: '1.500000000000000001',
-              salt: null,
               minValue: '5',
               maxValue: '20',
               isCategorical: false,
               isScalar: true,
-              isUnethical: false,
               isIndeterminate: false,
-              isRevealed: false,
-              isCommitted: false,
-              isSubmitted: false
-            }
-          }
-        }
-      }]);
-    }
-  });
-  test({
-    description: 'categorical market, not indeterminate, unethical',
-    eventID: '0xe1',
-    marketID: '0xa1',
-    blockchain: {
-      ethicReports: {
-        '0xb1': {
-          '0xe1': '0'
-        }
-      }
-    },
-    state: {
-      branch: {
-        id: '0xb1',
-        description: 'Branch 1',
-        periodLength: 200,
-        currentPeriod: 8,
-        reportPeriod: 7,
-        currentPeriodProgress: 10,
-        isReportRevealPhase: false
-      },
-      augur: {
-        accounts: {
-          account: {
-            address: '0x0000000000000000000000000000000000000b0b',
-            derivedKey: new Buffer('42', 'hex')
-          }
-        }
-      },
-      loginAccount: {
-        address: '0x0000000000000000000000000000000000000b0b',
-        ether: '10000',
-        realEther: '2.5',
-        rep: '47'
-      },
-      marketsData: {
-        '0xa1': {
-          type: 'categorical',
-          minValue: '1',
-          maxValue: '5'
-        }
-      },
-      reports: {
-        '0xb1': {
-          '0xe1': {
-            eventID: '0xe1',
-            period: 7,
-            marketID: '0xa1',
-            reportHash: null,
-            reportedOutcomeID: '3',
-            salt: null,
-            isUnethical: false,
-            isRevealed: false,
-            isCommitted: false,
-            isSubmitted: false
-          }
-        }
-      }
-    },
-    assertions: (actions) => {
-      assert.deepEqual(actions, [{
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              period: 7,
-              marketID: '0xa1',
-              reportHash: null,
-              reportedOutcomeID: '3',
-              salt: null,
-              minValue: '1',
-              maxValue: '5',
-              isCategorical: true,
-              isScalar: false,
-              isUnethical: true,
-              isIndeterminate: false,
-              isRevealed: false,
-              isCommitted: false,
-              isSubmitted: false
-            }
-          }
-        }
-      }]);
-    }
-  });
-  test({
-    description: 'scalar market, not indeterminate, unethical',
-    eventID: '0xe1',
-    marketID: '0xa1',
-    blockchain: {
-      ethicReports: {
-        '0xb1': {
-          '0xe1': '0'
-        }
-      }
-    },
-    state: {
-      branch: {
-        id: '0xb1',
-        description: 'Branch 1',
-        periodLength: 200,
-        currentPeriod: 8,
-        reportPeriod: 7,
-        currentPeriodProgress: 10,
-        isReportRevealPhase: false
-      },
-      augur: {
-        accounts: {
-          account: {
-            address: '0x0000000000000000000000000000000000000b0b',
-            derivedKey: new Buffer('42', 'hex')
-          }
-        }
-      },
-      loginAccount: {
-        address: '0x0000000000000000000000000000000000000b0b',
-        ether: '10000',
-        realEther: '2.5',
-        rep: '47'
-      },
-      marketsData: {
-        '0xa1': {
-          type: 'scalar',
-          minValue: '5',
-          maxValue: '20'
-        }
-      },
-      reports: {
-        '0xb1': {
-          '0xe1': {
-            eventID: '0xe1',
-            period: 7,
-            marketID: '0xa1',
-            reportHash: null,
-            reportedOutcomeID: '1.2345',
-            salt: null,
-            isUnethical: false,
-            isRevealed: false,
-            isCommitted: false,
-            isSubmitted: false
-          }
-        }
-      }
-    },
-    assertions: (actions) => {
-      assert.deepEqual(actions, [{
-        type: 'UPDATE_REPORTS',
-        reports: {
-          '0xb1': {
-            '0xe1': {
-              eventID: '0xe1',
-              period: 7,
-              marketID: '0xa1',
-              reportHash: null,
-              reportedOutcomeID: '1.2345',
-              salt: null,
-              minValue: '5',
-              maxValue: '20',
-              isCategorical: false,
-              isScalar: true,
-              isUnethical: true,
-              isIndeterminate: false,
-              isRevealed: false,
-              isCommitted: false,
               isSubmitted: false
             }
           }

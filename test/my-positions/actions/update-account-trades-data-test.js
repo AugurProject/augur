@@ -208,7 +208,7 @@ describe('modules/my-positions/actions/update-account-trades-data.js', () => {
         const expected = [
           {
             type: MOCK_ACTION_TYPES.CONVERT_TRADE_LOGS_TO_TRANSACTIONS,
-            logType: 'log_cancel',
+            logType: 'CancelOrder',
             data: {
               '0xMARKETID': {}
             },

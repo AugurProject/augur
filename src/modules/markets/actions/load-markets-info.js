@@ -1,5 +1,5 @@
 import { augur } from 'services/augurjs';
-import { updateMarketsData, updateEventMarketsMap, updateMarketsLoadingStatus } from 'modules/markets/actions/update-markets-data';
+import { updateMarketsData, updateMarketsLoadingStatus } from 'modules/markets/actions/update-markets-data';
 import { loadCreatedMarketInfo } from 'modules/my-markets/actions/load-created-market-info';
 
 const MARKETS_PER_BATCH = 10;
@@ -33,7 +33,6 @@ export const loadMarketsInfo = (marketIDs, cb) => (dispatch, getState) => {
         if (marketInfoIDs.length) {
           dispatch(updateMarketsData(branchMarketsData));
           marketInfoIDs.forEach((marketID) => {
-            dispatch(updateEventMarketsMap(branchMarketsData[marketID].eventID, [marketID]));
             dispatch(loadCreatedMarketInfo(marketID));
           });
           dispatch(updateMarketsLoadingStatus(marketInfoIDs, false));

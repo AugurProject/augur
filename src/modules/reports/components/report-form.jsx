@@ -15,7 +15,6 @@ export default class ReportForm extends Component {
     // reportableOutcomes: React.PropTypes.array,
     reportedOutcomeID: PropTypes.any,
     isIndeterminate: PropTypes.bool,
-    isUnethical: PropTypes.bool,
     isReported: PropTypes.bool,
     onClickSubmit: PropTypes.func
   };
@@ -28,7 +27,6 @@ export default class ReportForm extends Component {
       maxValue: props.maxValue,
       reportedOutcomeID: props.reportedOutcomeID,
       isIndeterminate: props.isIndeterminate,
-      isUnethical: props.isUnethical,
       isReported: props.isReported
     };
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -44,8 +42,8 @@ export default class ReportForm extends Component {
   handleOutcomeChange = e => this.setState({ reportedOutcomeID: e.target.value });
 
   handleSubmit() {
-    this.props.onClickSubmit(this.state.reportedOutcomeID, this.state.isUnethical, this.state.isIndeterminate, this.props.history);
-    this.setState({ reportedOutcomeID: '', isIndeterminate: undefined, isUnethical: undefined, isReported: false });
+    this.props.onClickSubmit(this.state.reportedOutcomeID, this.state.isIndeterminate, this.props.history);
+    this.setState({ reportedOutcomeID: '', isIndeterminate: undefined, isReported: false });
   }
 
   render() {
@@ -83,20 +81,6 @@ export default class ReportForm extends Component {
               isIndeterminate: !s.isIndeterminate,
               reportedOutcomeID: indeterminateValue
             }))) || undefined}
-          />
-        </div>
-
-        <div className="unethical">
-          <h4>Is this question unethical?</h4>
-          <span className="unethical-message">
-            The consensus answer to this question will be over-ridden if the question is reported as unethical by 60% (or more) of those reporting this market.
-          </span>
-
-          <Checkbox
-            className={classNames('unethical-checkbox', { disabled: s.isReported })}
-            text="Yes, this question is unethical"
-            isChecked={!!s.isUnethical}
-            onClick={(!s.isReported && (() => this.setState({ isUnethical: !s.isUnethical }))) || undefined}
           />
         </div>
 

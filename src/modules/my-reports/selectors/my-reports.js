@@ -29,10 +29,7 @@ export default function () {
       const isChallenged = eventsWithAccountReport[eventID].isChallenged || null;
       const isChallengeable = isFinal != null && isChallenged != null && !isFinal && !isChallenged;
       const period = eventsWithAccountReport[eventID].period || null;
-      const reportHash = eventsWithAccountReport[eventID].reportHash || null;
-      const isCommitted = eventsWithAccountReport[eventID].isCommitted;
-      const isRevealed = eventsWithAccountReport[eventID].isRevealed;
-      const isUnethical = eventsWithAccountReport[eventID].isUnethical;
+      const isSubmitted = eventsWithAccountReport[eventID].isSubmitted;
 
       return {
         ...marketsData[marketID] || {}, // TODO -- clean up this object
@@ -50,10 +47,7 @@ export default function () {
         isChallenged,
         isChallengeable,
         period,
-        reportHash,
-        isCommitted,
-        isRevealed,
-        isUnethical
+        isSubmitted
       };
     })
     .sort((a, b) => {

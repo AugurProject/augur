@@ -12,7 +12,6 @@ export default class MyPositions extends Component {
     location: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     markets: PropTypes.array.isRequired,
-    isTradeCommitLocked: PropTypes.bool,
     closePositionStatus: PropTypes.object.isRequired,
     scalarShareDenomination: PropTypes.object.isRequired,
     orderCancellation: PropTypes.object.isRequired,
@@ -72,7 +71,6 @@ export default class MyPositions extends Component {
               key={p.markets[marketIndex].id}
               market={p.markets[marketIndex]}
               closePositionStatus={p.closePositionStatus}
-              isTradeCommitLocked={p.isTradeCommitLocked}
               scalarShareDenomination={p.scalarShareDenomination}
               orderCancellation={p.orderCancellation}
               location={p.location}

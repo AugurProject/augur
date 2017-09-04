@@ -2,9 +2,8 @@ import { augur } from 'services/augurjs';
 import { updateBranch } from 'modules/branch/actions/update-branch';
 import { loadReports } from 'modules/reports/actions/load-reports';
 import { clearOldReports } from 'modules/reports/actions/clear-old-reports';
-import { revealReports } from 'modules/reports/actions/reveal-reports';
 
-const tracker = { reportsRevealed: false, notSoCurrentPeriod: 0 };
+const tracker = { notSoCurrentPeriod: 0 };
 
 export function checkPeriod(unlock, cb) {
   return (dispatch, getState) => {
@@ -16,7 +15,6 @@ export function checkPeriod(unlock, cb) {
     }
     const currentPeriod = augur.getCurrentPeriod(branch.periodLength);
     if (unlock || currentPeriod > tracker.notSoCurrentPeriod) {
-      tracker.reportsRevealed = false;
       tracker.notSoCurrentPeriod = currentPeriod;
       dispatch(clearOldReports());
     }
@@ -25,19 +23,7 @@ export function checkPeriod(unlock, cb) {
       if (err) return callback(err);
       dispatch(updateBranch({ reportPeriod }));
       dispatch(clearOldReports());
-      dispatch(loadReports((err) => {
-        if (err) return callback(err);
-        if (branch.isReportRevealPhase) {
-          if (!tracker.reportsRevealed) {
-            tracker.reportsRevealed = true;
-            dispatch(revealReports((err) => {
-              console.log('revealReports complete:', err);
-              if (err) tracker.reportsRevealed = false;
-            }));
-          }
-        }
-        callback(null);
-      }));
+      dispatch(loadReports(callback));
     });
   };
 }

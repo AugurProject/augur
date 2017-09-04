@@ -120,7 +120,6 @@ const Outcome = (p) => {
         outcomeTradeNavItems={p.outcomeTradeNavItems}
         minLimitPrice={p.minLimitPrice}
         maxLimitPrice={p.maxLimitPrice}
-        isTradeCommitLocked={p.isTradeCommitLocked}
       />
     </article>
   );

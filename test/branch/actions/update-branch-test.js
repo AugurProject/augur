@@ -16,7 +16,6 @@ describe(`modules/branch/actions/update-branch.js`, () => {
     store.dispatch(action.updateBranch({
       currentPeriod: 20,
       currentPeriodProgress: 52,
-      isReportRevealPhase: true,
       reportPeriod: 18,
       periodLength: 900
     }));
@@ -25,7 +24,6 @@ describe(`modules/branch/actions/update-branch.js`, () => {
       branch: {
         currentPeriod: 20,
         currentPeriodProgress: 52,
-        isReportRevealPhase: true,
         reportPeriod: 18,
         periodLength: 900
       }

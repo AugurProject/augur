@@ -25,7 +25,6 @@ const MarketDetails = (p) => {
               <ConsensusOutcome
                 type={p.type}
                 isIndeterminate={getValue(p, 'consensus.isIndeterminate')}
-                isUnethical={getValue(p, 'consensus.isUnethical')}
                 outcomeName={getValue(p, 'consensus.outcomeName')}
                 outcomeID={getValue(p, 'consensus.outcomeID')}
                 percentCorrect={getValue(p, 'consensus.percentCorrect')}

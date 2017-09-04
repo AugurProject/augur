@@ -70,7 +70,6 @@ const MyPosition = (p) => {
           closePosition={closePosition}
           isClosable={isClosable}
           status={status}
-          isTradeCommitLocked={p.isTradeCommitLocked}
         />
       </div>
     </div>

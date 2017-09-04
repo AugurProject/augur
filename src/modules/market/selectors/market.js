@@ -31,8 +31,7 @@ import { BINARY_INDETERMINATE_OUTCOME_ID, CATEGORICAL_SCALAR_INDETERMINATE_OUTCO
 import speedomatic from 'speedomatic';
 
 import { placeTrade } from 'modules/trade/actions/place-trade';
-import { commitReport } from 'modules/reports/actions/commit-report';
-import { slashRep } from 'modules/reports/actions/slash-rep';
+import { submitReport } from 'modules/reports/actions/submit-report';
 
 import store from 'src/store';
 
@@ -91,7 +90,6 @@ export const selectMarket = (marketID) => {
     endDate.getMonth(),
     endDate.getDate(),
 
-    branch && branch.isReportRevealPhase,
     branch && branch.reportPeriod,
 
     orderBooks[marketID],
@@ -119,7 +117,6 @@ export function assembleMarket(
     endDateYear,
     endDateMonth,
     endDateDay,
-    isReportRevealPhase,
     reportPeriod,
     orderBooks,
     orderCancellation,
@@ -144,7 +141,6 @@ export function assembleMarket(
       endDateYear,
       endDateMonth,
       endDateDay,
-      isReportRevealPhase,
       reportPeriod,
       orderBooks,
       orderCancellation,
@@ -198,18 +194,17 @@ export function assembleMarket(
       market.volume = formatShares(marketData.volume, { positiveSign: false });
 
       market.isRequiredToReportByAccount = !!marketReport; // was the user chosen to report on this market
-      market.isPendingReport = market.isRequiredToReportByAccount && !marketReport.reportHash && !isReportRevealPhase; // account is required to report on this unreported market during reporting phase
+      market.isPendingReport = market.isRequiredToReportByAccount && !marketReport.reportHash; // account is required to report on this unreported market during reporting phase
       market.isReportSubmitted = market.isRequiredToReportByAccount && !!marketReport.reportHash; // the user submitted a report that is not yet confirmed (reportHash === true)
       market.isReported = market.isReportSubmitted && !!marketReport.reportHash.length; // the user fully reported on this market (reportHash === [string])
-      market.isMissedReport = market.isRequiredToReportByAccount && !market.isReported && !market.isReportSubmitted && isReportRevealPhase; // the user submitted a report that is not yet confirmed
-      market.isReportTabVisible = market.isRequiredToReportByAccount && !isReportRevealPhase;
+      market.isReportTabVisible = market.isRequiredToReportByAccount;
       market.isSnitchTabVisible = market.tradingPeriod === reportPeriod;
 
       market.onSubmitPlaceTrade = outcomeID => dispatch(placeTrade(marketID, outcomeID, marketTradeInProgress[outcomeID]));
 
       market.report = {
         ...marketReport,
-        onSubmitReport: (reportedOutcomeID, isUnethical, isIndeterminate, history) => dispatch(commitReport(market, reportedOutcomeID, isUnethical, isIndeterminate, history))
+        onSubmitReport: (reportedOutcomeID, isIndeterminate, history) => dispatch(submitReport(market, reportedOutcomeID, isIndeterminate, history))
       };
 
       market.outcomes = [];
@@ -278,7 +273,6 @@ export function assembleMarket(
       market.reportableOutcomes = selectReportableOutcomes(market.type, market.outcomes);
       const indeterminateOutcomeID = market.type === BINARY ? BINARY_INDETERMINATE_OUTCOME_ID : CATEGORICAL_SCALAR_INDETERMINATE_OUTCOME_ID;
       market.reportableOutcomes.push({ id: indeterminateOutcomeID, name: INDETERMINATE_OUTCOME_NAME });
-      market.onSubmitSlashRep = (salt, report, address, isIndeterminate, isUnethical) => dispatch(slashRep(market, salt, report, address, isIndeterminate, isUnethical));
 
       market.userOpenOrdersSummary = selectUserOpenOrdersSummary(market.outcomes);
 
@@ -333,11 +327,3 @@ export const selectScalarMinimum = (market) => {
   if (market && market.type === SCALAR) scalarMinimum.minValue = market.minValue;
   return scalarMinimum;
 };
-
-export const selectMarketIDFromEventID = (eventID) => {
-  const marketIDs = store.getState().eventMarketsMap[eventID];
-  if (marketIDs && marketIDs.length) return marketIDs[0];
-  return null;
-};
-
-export const selectMarketFromEventID = eventID => selectMarket(selectMarketIDFromEventID(eventID));

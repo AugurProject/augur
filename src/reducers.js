@@ -17,7 +17,6 @@ import marketsData from 'modules/markets/reducers/markets-data';
 import marketLoading from 'modules/market/reducers/market-loading';
 import hasLoadedMarkets from 'modules/markets/reducers/has-loaded-markets';
 import outcomesData from 'modules/markets/reducers/outcomes-data';
-import eventMarketsMap from 'modules/markets/reducers/event-markets-map';
 import favorites from 'modules/markets/reducers/favorites';
 import marketsFilteredSorted from 'modules/markets/reducers/markets-filtered-sorted';
 
@@ -30,7 +29,6 @@ import orderCancellation from 'modules/bids-asks/reducers/order-cancellation';
 import accountTrades from 'modules/my-positions/reducers/account-trades';
 import accountPositions from 'modules/my-positions/reducers/account-positions';
 import completeSetsBought from 'modules/my-positions/reducers/complete-sets-bought';
-import netEffectiveTrades from 'modules/my-positions/reducers/net-effective-trades';
 import transactionsData from 'modules/transactions/reducers/transactions-data';
 import transactionsOldestLoadedBlock from 'modules/transactions/reducers/transactions-oldest-loaded-block';
 import transactionsLoading from 'modules/transactions/reducers/transactions-loading';
@@ -75,7 +73,6 @@ export function createReducer() {
     marketLoading,
     hasLoadedMarkets,
     outcomesData,
-    eventMarketsMap,
     favorites,
     marketsFilteredSorted,
 
@@ -95,7 +92,6 @@ export function createReducer() {
     accountTrades,
     accountPositions,
     completeSetsBought,
-    netEffectiveTrades,
     transactionsData,
     transactionsOldestLoadedBlock,
     transactionsLoading,

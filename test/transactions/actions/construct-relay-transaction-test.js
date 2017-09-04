@@ -94,9 +94,6 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
       const DeleteTransaction = {
         deleteTransaction: () => {}
       };
-      const Market = {
-        selectMarketFromEventID: () => {}
-      };
       AugurJS.augur.trading.takeOrder.selectOrder = sinon.stub().returns(t.selectors.order);
       const WinningPositions = sinon.stub().returns(t.selectors.winningPositions);
       const action = proxyquire('../../../src/modules/transactions/actions/construct-relay-transaction.js', {
@@ -104,10 +101,8 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
         '../../../services/augurjs': AugurJS,
         './delete-transaction': DeleteTransaction,
         './construct-transaction': ConstructTransaction,
-        '../../market/selectors/market': Market,
         '../../my-positions/selectors/winning-positions': WinningPositions
       });
-      sinon.stub(Market, 'selectMarketFromEventID', eventID => t.selectors.marketFromEventID[eventID]);
       sinon.stub(ConstructTransaction, 'constructTradingTransaction', (label, trade, marketID, outcomeID, status) => (
         (dispatch) => {
           dispatch({ type: 'CONSTRUCT_TRADING_TRANSACTION', label, trade, marketID, outcomeID, status });
@@ -189,7 +184,6 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b'
       },
-      tradeCommitment: {},
       contractAddresses,
       functionsAPI,
       marketsData: {
@@ -329,7 +323,6 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b'
       },
-      tradeCommitment: {},
       contractAddresses,
       functionsAPI,
       marketsData: {
@@ -456,7 +449,6 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b'
       },
-      tradeCommitment: {},
       contractAddresses,
       functionsAPI,
       marketsData: {
@@ -598,7 +590,6 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b'
       },
-      tradeCommitment: {},
       contractAddresses,
       functionsAPI,
       marketsData: {
@@ -725,7 +716,6 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b'
       },
-      tradeCommitment: {},
       contractAddresses,
       functionsAPI,
       marketsData: {
@@ -866,7 +856,6 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
       loginAccount: {
         address: '0x0000000000000000000000000000000000000b0b'
       },
-      tradeCommitment: {},
       contractAddresses,
       functionsAPI,
       marketsData: {

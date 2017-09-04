@@ -24,17 +24,13 @@ describe(`modules/reports/reducers/reports.js`, () => {
               eventID: 'test',
               example: 'example',
               isScalar: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isRevealed: false
+              isIndeterminate: false
             },
             example: {
               eventID: 'example',
               test: 'test',
               isScalar: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isRevealed: false
+              isIndeterminate: false
             }
           }
         }
@@ -45,24 +41,18 @@ describe(`modules/reports/reducers/reports.js`, () => {
             eventID: 'test',
             example: 'example',
             isScalar: false,
-            isIndeterminate: false,
-            isUnethical: false,
-            isRevealed: false
+            isIndeterminate: false
           },
           example: {
             eventID: 'example',
             test: 'test',
             isScalar: false,
-            isIndeterminate: false,
-            isUnethical: false,
-            isRevealed: false
+            isIndeterminate: false
           },
           testEventID: {
             eventID: 'testEventID',
             isScalar: false,
-            isIndeterminate: false,
-            isUnethical: false,
-            isRevealed: false
+            isIndeterminate: false
           }
         }
       };
@@ -243,29 +233,19 @@ describe(`modules/reports/reducers/reports.js`, () => {
               eventID: '0xe1',
               period: 6,
               marketID: '0xa1',
-              reportHash: '0xdeadbeef',
               reportedOutcomeID: '2',
-              salt: '0x1337',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: false,
-              isRevealed: false
+              isIndeterminate: false
             },
             '0xe2': {
               eventID: '0xe2',
               period: 7,
               marketID: '0xa2',
-              reportHash: '0xdeadbeef',
               reportedOutcomeID: '2',
-              salt: '0x1337',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: false,
-              isRevealed: false
+              isIndeterminate: false
             }
           }
         }
@@ -277,15 +257,10 @@ describe(`modules/reports/reducers/reports.js`, () => {
               eventID: '0xe2',
               period: 7,
               marketID: '0xa2',
-              reportHash: '0xdeadbeef',
               reportedOutcomeID: '2',
-              salt: '0x1337',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: false,
-              isRevealed: false
+              isIndeterminate: false
             }
           }
         });
@@ -304,29 +279,19 @@ describe(`modules/reports/reducers/reports.js`, () => {
               eventID: '0xe1',
               period: 6,
               marketID: '0xa1',
-              reportHash: null,
               reportedOutcomeID: null,
-              salt: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: false,
-              isRevealed: false
+              isIndeterminate: false
             },
             '0xe2': {
               eventID: '0xe2',
               period: 7,
               marketID: '0xa2',
-              reportHash: null,
               reportedOutcomeID: null,
-              salt: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: false,
-              isRevealed: false
+              isIndeterminate: false
             }
           }
         }
@@ -338,15 +303,10 @@ describe(`modules/reports/reducers/reports.js`, () => {
               eventID: '0xe2',
               period: 7,
               marketID: '0xa2',
-              reportHash: null,
               reportedOutcomeID: null,
-              salt: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: false,
-              isRevealed: false
+              isIndeterminate: false
             }
           }
         });
@@ -365,29 +325,19 @@ describe(`modules/reports/reducers/reports.js`, () => {
               eventID: '0xe1',
               period: 6,
               marketID: '0xa1',
-              reportHash: '0xdeadbeef',
               reportedOutcomeID: '2',
-              salt: '0x1337',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: true,
-              isRevealed: false
+              isIndeterminate: false
             },
             '0xe2': {
               eventID: '0xe2',
               period: 7,
               marketID: '0xa2',
-              reportHash: null,
               reportedOutcomeID: null,
-              salt: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: false,
-              isRevealed: false
+              isIndeterminate: false
             }
           }
         }
@@ -399,15 +349,10 @@ describe(`modules/reports/reducers/reports.js`, () => {
               eventID: '0xe2',
               period: 7,
               marketID: '0xa2',
-              reportHash: null,
               reportedOutcomeID: null,
-              salt: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: false,
-              isRevealed: false
+              isIndeterminate: false
             }
           }
         });
@@ -426,29 +371,19 @@ describe(`modules/reports/reducers/reports.js`, () => {
               eventID: '0xe1',
               period: 6,
               marketID: '0xa1',
-              reportHash: '0xdeadbeef',
               reportedOutcomeID: '2',
-              salt: '0x1337',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: true,
-              isRevealed: true
+              isIndeterminate: false
             },
             '0xe2': {
               eventID: '0xe2',
               period: 7,
               marketID: '0xa2',
-              reportHash: null,
               reportedOutcomeID: null,
-              salt: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: false,
-              isRevealed: false
+              isIndeterminate: false
             }
           }
         }
@@ -460,15 +395,10 @@ describe(`modules/reports/reducers/reports.js`, () => {
               eventID: '0xe2',
               period: 7,
               marketID: '0xa2',
-              reportHash: null,
               reportedOutcomeID: null,
-              salt: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: false,
-              isRevealed: false
+              isIndeterminate: false
             }
           }
         });
@@ -487,29 +417,19 @@ describe(`modules/reports/reducers/reports.js`, () => {
               eventID: '0xe1',
               period: 6,
               marketID: '0xa1',
-              reportHash: '0xdeadbeef',
               reportedOutcomeID: '2',
-              salt: '0x1337',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: true,
-              isRevealed: true
+              isIndeterminate: false
             },
             '0xe2': {
               eventID: '0xe2',
               period: 6,
               marketID: '0xa2',
-              reportHash: null,
               reportedOutcomeID: null,
-              salt: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: false,
-              isRevealed: false
+              isIndeterminate: false
             }
           }
         }
@@ -533,29 +453,19 @@ describe(`modules/reports/reducers/reports.js`, () => {
               eventID: '0xe1',
               period: 7,
               marketID: '0xa1',
-              reportHash: '0xdeadbeef',
               reportedOutcomeID: '2',
-              salt: '0x1337',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: true,
-              isRevealed: true
+              isIndeterminate: false
             },
             '0xe2': {
               eventID: '0xe2',
               period: 7,
               marketID: '0xa2',
-              reportHash: null,
               reportedOutcomeID: null,
-              salt: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: false,
-              isRevealed: false
+              isIndeterminate: false
             }
           }
         }
@@ -567,29 +477,19 @@ describe(`modules/reports/reducers/reports.js`, () => {
               eventID: '0xe1',
               period: 7,
               marketID: '0xa1',
-              reportHash: '0xdeadbeef',
               reportedOutcomeID: '2',
-              salt: '0x1337',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: true,
-              isRevealed: true
+              isIndeterminate: false
             },
             '0xe2': {
               eventID: '0xe2',
               period: 7,
               marketID: '0xa2',
-              reportHash: null,
               reportedOutcomeID: null,
-              salt: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: false,
-              isRevealed: false
+              isIndeterminate: false
             }
           }
         });
@@ -608,57 +508,37 @@ describe(`modules/reports/reducers/reports.js`, () => {
               eventID: '0xe1',
               period: 6,
               marketID: '0xa1',
-              reportHash: '0xdeadbeef',
               reportedOutcomeID: '2',
-              salt: '0x1337',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: true,
-              isRevealed: true
+              isIndeterminate: false
             },
             '0xe2': {
               eventID: '0xe2',
               period: 6,
               marketID: '0xa2',
-              reportHash: null,
               reportedOutcomeID: null,
-              salt: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: false,
-              isRevealed: false
+              isIndeterminate: false
             },
             '0xe3': {
               eventID: '0xe3',
               period: 7,
               marketID: '0xa3',
-              reportHash: '0xdeadbeef',
               reportedOutcomeID: '2',
-              salt: '0x1337',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: true,
-              isRevealed: true
+              isIndeterminate: false
             },
             '0xe4': {
               eventID: '0xe4',
               period: 7,
               marketID: '0xa4',
-              reportHash: null,
               reportedOutcomeID: null,
-              salt: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: false,
-              isRevealed: false
+              isIndeterminate: false
             }
           }
         }
@@ -670,29 +550,19 @@ describe(`modules/reports/reducers/reports.js`, () => {
               eventID: '0xe3',
               period: 7,
               marketID: '0xa3',
-              reportHash: '0xdeadbeef',
               reportedOutcomeID: '2',
-              salt: '0x1337',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: true,
-              isRevealed: true
+              isIndeterminate: false
             },
             '0xe4': {
               eventID: '0xe4',
               period: 7,
               marketID: '0xa4',
-              reportHash: null,
               reportedOutcomeID: null,
-              salt: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: false,
-              isRevealed: false
+              isIndeterminate: false
             }
           }
         });
@@ -711,57 +581,37 @@ describe(`modules/reports/reducers/reports.js`, () => {
               eventID: '0xe1',
               period: 6,
               marketID: '0xa1',
-              reportHash: '0xdeadbeef',
               reportedOutcomeID: '2',
-              salt: '0x1337',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: true,
-              isRevealed: true
+              isIndeterminate: false
             },
             '0xe2': {
               eventID: '0xe2',
               period: 6,
               marketID: '0xa2',
-              reportHash: null,
               reportedOutcomeID: null,
-              salt: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: false,
-              isRevealed: false
+              isIndeterminate: false
             },
             '0xe3': {
               eventID: '0xe3',
               period: 7,
               marketID: '0xa3',
-              reportHash: '0xdeadbeef',
               reportedOutcomeID: '2',
-              salt: '0x1337',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: true,
-              isRevealed: true
+              isIndeterminate: false
             },
             '0xe4': {
               eventID: '0xe4',
               period: 7,
               marketID: '0xa4',
-              reportHash: null,
               reportedOutcomeID: null,
-              salt: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: false,
-              isRevealed: false
+              isIndeterminate: false
             }
           },
           '0xb2': {
@@ -769,57 +619,37 @@ describe(`modules/reports/reducers/reports.js`, () => {
               eventID: '0xe5',
               period: 6,
               marketID: '0xa5',
-              reportHash: '0xdeadbeef',
               reportedOutcomeID: '2',
-              salt: '0x1337',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: true,
-              isRevealed: true
+              isIndeterminate: false
             },
             '0xe6': {
               eventID: '0xe6',
               period: 6,
               marketID: '0xa6',
-              reportHash: null,
               reportedOutcomeID: null,
-              salt: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: false,
-              isRevealed: false
+              isIndeterminate: false
             },
             '0xe7': {
               eventID: '0xe7',
               period: 6,
               marketID: '0xa7',
-              reportHash: '0xdeadbeef',
               reportedOutcomeID: '2',
-              salt: '0x1337',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: true,
-              isRevealed: true
+              isIndeterminate: false
             },
             '0xe8': {
               eventID: '0xe8',
               period: 7,
               marketID: '0xa8',
-              reportHash: null,
               reportedOutcomeID: null,
-              salt: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: false,
-              isRevealed: false
+              isIndeterminate: false
             }
           }
         }
@@ -831,29 +661,19 @@ describe(`modules/reports/reducers/reports.js`, () => {
               eventID: '0xe3',
               period: 7,
               marketID: '0xa3',
-              reportHash: '0xdeadbeef',
               reportedOutcomeID: '2',
-              salt: '0x1337',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: true,
-              isRevealed: true
+              isIndeterminate: false
             },
             '0xe4': {
               eventID: '0xe4',
               period: 7,
               marketID: '0xa4',
-              reportHash: null,
               reportedOutcomeID: null,
-              salt: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: false,
-              isRevealed: false
+              isIndeterminate: false
             }
           },
           '0xb2': {
@@ -861,57 +681,37 @@ describe(`modules/reports/reducers/reports.js`, () => {
               eventID: '0xe5',
               period: 6,
               marketID: '0xa5',
-              reportHash: '0xdeadbeef',
               reportedOutcomeID: '2',
-              salt: '0x1337',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: true,
-              isRevealed: true
+              isIndeterminate: false
             },
             '0xe6': {
               eventID: '0xe6',
               period: 6,
               marketID: '0xa6',
-              reportHash: null,
               reportedOutcomeID: null,
-              salt: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: false,
-              isRevealed: false
+              isIndeterminate: false
             },
             '0xe7': {
               eventID: '0xe7',
               period: 6,
               marketID: '0xa7',
-              reportHash: '0xdeadbeef',
               reportedOutcomeID: '2',
-              salt: '0x1337',
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: true,
-              isRevealed: true
+              isIndeterminate: false
             },
             '0xe8': {
               eventID: '0xe8',
               period: 7,
               marketID: '0xa8',
-              reportHash: null,
               reportedOutcomeID: null,
-              salt: null,
               isScalar: false,
               isCategorical: false,
-              isIndeterminate: false,
-              isUnethical: false,
-              isCommitted: false,
-              isRevealed: false
+              isIndeterminate: false
             }
           }
         });
@@ -930,17 +730,13 @@ describe(`modules/reports/reducers/reports.js`, () => {
             eventID: 'test',
             example: 'example',
             isScalar: false,
-            isIndeterminate: false,
-            isUnethical: false,
-            isRevealed: false
+            isIndeterminate: false
           },
           example: {
             eventID: 'example',
             test: 'test',
             isScalar: false,
-            isIndeterminate: false,
-            isUnethical: false,
-            isRevealed: false
+            isIndeterminate: false
           }
         }
       };

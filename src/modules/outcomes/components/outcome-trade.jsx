@@ -219,14 +219,7 @@ export default class OutcomeTrade extends Component {
             hasFunds={hasFunds}
             selectedID={selectedID}
             submitTrade={p.submitTrade}
-            disabled={p.isTradeCommitLocked}
           />
-        }
-        {tradeOrder && s.isSharesValueValid && s.isLimitPriceValueValid && p.isTradeCommitLocked &&
-          <div className="trade-in-progress-notice">
-            <span>Trade Currently In-Progress</span>
-            <span>You may trade once your previous trade has completed</span>
-          </div>
         }
       </article>
     );

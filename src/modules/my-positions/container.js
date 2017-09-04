@@ -18,7 +18,6 @@ const mapStateToProps = (state) => {
 
   return {
     markets: getPositionsMarkets(positions, openOrders),
-    isTradeCommitLocked: state.tradeCommitLock.isLocked,
     closePositionStatus: getClosePositionStatus(),
     scalarShareDenomination: getScalarShareDenomination(),
     orderCancellation: getOrderCancellation(),

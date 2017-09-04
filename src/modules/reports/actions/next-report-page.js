@@ -1,4 +1,4 @@
-import { selectMarketFromEventID } from 'modules/market/selectors/market';
+import { selectMarket } from 'modules/market/selectors/market';
 
 import makePath from 'modules/app/helpers/make-path';
 import makeQuery from 'modules/app/helpers/make-query';
@@ -11,11 +11,9 @@ export function nextReportPage(history) {
     const { branch, reports } = getState();
     const branchReports = reports[branch.id];
     if (!branchReports) return history.push(makePath(MARKETS));
-    const nextPendingReportEventID = Reflect.ownKeys(branchReports).find(
+    const nextPendingReportMarket = selectMarket(Reflect.ownKeys(branchReports).find(
       eventID => !branchReports[eventID].reportHash
-    );
-    if (!nextPendingReportEventID) return history.push(makePath(MARKETS));
-    const nextPendingReportMarket = selectMarketFromEventID(nextPendingReportEventID);
+    ));
     if (!nextPendingReportMarket || !nextPendingReportMarket.id) return history.push(makePath(MARKETS));
 
     // Go To Next Report

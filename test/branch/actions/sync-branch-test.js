@@ -67,7 +67,6 @@ describe(`modules/branch/actions/sync-branch.js`, () => {
       branch: {
         currentPeriod: 20,
         currentPeriodProgress: 52,
-        isReportRevealPhase: true,
         reportPeriod: 18,
         periodLength: 900
       }
@@ -75,10 +74,7 @@ describe(`modules/branch/actions/sync-branch.js`, () => {
     selectors: {
       reportingCycle: {
         currentPeriod: 20,
-        currentPeriodProgress: 52,
-        isReportRevealPhase: true,
-        phaseLabel: 'Reveal',
-        phaseTimeRemaining: 'in 7 minutes'
+        currentPeriodProgress: 52
       }
     },
     assertions: (actions) => {
@@ -86,10 +82,7 @@ describe(`modules/branch/actions/sync-branch.js`, () => {
         type: 'UPDATE_BRANCH',
         branch: {
           currentPeriod: 20,
-          currentPeriodProgress: 52,
-          isReportRevealPhase: true,
-          phaseLabel: 'Reveal',
-          phaseTimeRemaining: 'in 7 minutes'
+          currentPeriodProgress: 52
         }
       }, {
         type: 'MOCK_CB_CALLED'
@@ -102,7 +95,6 @@ describe(`modules/branch/actions/sync-branch.js`, () => {
       branch: {
         currentPeriod: 20,
         currentPeriodProgress: 52,
-        isReportRevealPhase: true,
         reportPeriod: 18,
         periodLength: 900
       }
@@ -110,10 +102,7 @@ describe(`modules/branch/actions/sync-branch.js`, () => {
     selectors: {
       reportingCycle: {
         currentPeriod: 20,
-        currentPeriodProgress: 42,
-        isReportRevealPhase: false,
-        phaseLabel: 'Commit',
-        phaseTimeRemaining: 'in a minute'
+        currentPeriodProgress: 42
       }
     },
     assertions: (actions) => {
@@ -121,10 +110,7 @@ describe(`modules/branch/actions/sync-branch.js`, () => {
         type: 'UPDATE_BRANCH',
         branch: {
           currentPeriod: 20,
-          currentPeriodProgress: 42,
-          isReportRevealPhase: false,
-          phaseLabel: 'Commit',
-          phaseTimeRemaining: 'in a minute'
+          currentPeriodProgress: 42
         }
       }, {
         type: 'UPDATE_BRANCH',
@@ -156,7 +142,6 @@ describe(`modules/branch/actions/sync-branch.js`, () => {
       branch: {
         currentPeriod: 20,
         currentPeriodProgress: 49,
-        isReportRevealPhase: false,
         reportPeriod: 18,
         periodLength: 900
       }
@@ -164,10 +149,7 @@ describe(`modules/branch/actions/sync-branch.js`, () => {
     selectors: {
       reportingCycle: {
         currentPeriod: 20,
-        currentPeriodProgress: 52,
-        isReportRevealPhase: true,
-        phaseLabel: 'Reveal',
-        phaseTimeRemaining: 'in 7 minutes'
+        currentPeriodProgress: 52
       }
     },
     assertions: (actions) => {
@@ -175,10 +157,7 @@ describe(`modules/branch/actions/sync-branch.js`, () => {
         type: 'UPDATE_BRANCH',
         branch: {
           currentPeriod: 20,
-          currentPeriodProgress: 52,
-          isReportRevealPhase: true,
-          phaseLabel: 'Reveal',
-          phaseTimeRemaining: 'in 7 minutes'
+          currentPeriodProgress: 52
         }
       }, {
         type: 'UPDATE_BRANCH',

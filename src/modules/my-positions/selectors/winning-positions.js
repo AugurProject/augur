@@ -22,7 +22,7 @@ export const selectClosedMarketsWithWinningShares = createSelector(
       if (!market.isOpen) {
         const marketID = market.id;
         const isSelectTotalShares = market.type === SCALAR ||
-          (market.consensus && (market.consensus.isIndeterminate || market.consensus.isUnethical));
+          (market.consensus && market.consensus.isIndeterminate);
         const winningShares = isSelectTotalShares ?
           selectTotalSharesInMarket(market, outcomesData[marketID]) :
           selectWinningSharesInMarket(market, outcomesData[marketID]);

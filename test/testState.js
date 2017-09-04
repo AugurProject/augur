@@ -30,7 +30,6 @@ const testState = {
     description: 'root branch',
     periodLength: 4000,
     currentPeriod: 20,
-    isReportRevealPhase: true,
     reportPeriod: 19,
     currentPeriodProgress: 52,
     baseReporters: 6,
@@ -242,8 +241,7 @@ const testState = {
         eventID: 'testEventID',
         isScalar: false,
         isIndeterminate: false,
-        isUnethical: false,
-        isRevealed: false
+        isSubmitted: false
       }
     }
   },

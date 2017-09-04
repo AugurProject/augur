@@ -5,7 +5,6 @@ import ReactTooltip from 'react-tooltip';
 import ValueDenomination from 'modules/common/components/value-denomination';
 import ValueDate from 'modules/common/components/value-date';
 import EmDash from 'modules/common/components/em-dash';
-import ReportEthics from 'modules/my-reports/components/report-ethics';
 
 const MyReport = p => (
   <article
@@ -29,20 +28,12 @@ const MyReport = p => (
       <div className="portfolio-pair">
         <span className="report-main-group-title">reported: </span>
         <span className="report-main-group-title-outcome">
-          {!!p.isCommitted && !p.isRevealed &&
-            <span
-              className="report-committed"
-              data-tip="You have successfully committed to this report. Remember to login to reveal the report!"
-            >
-              {p.reported || <EmDash />}
-            </span>
-          }
-          {!!p.isRevealed &&
+          {!!p.isSubmitted &&
             <span className="report-revealed">
               {p.reported || <EmDash />}
             </span>
           }
-          {!p.isRevealed && !p.isCommitted &&
+          {!p.isSubmitted &&
             <span>{p.reported || <EmDash />}</span>
           }
           {!!p.outcome && p.isReportEqual &&
@@ -57,7 +48,6 @@ const MyReport = p => (
               data-tip="Your report does not match the consensus outcome"
             />
           }
-          <ReportEthics isUnethical={p.isUnethical} />
         </span>
       </div>
       <div className="portfolio-pair">
@@ -106,10 +96,8 @@ MyReport.propTypes = {
   reported: PropTypes.string,
   repEarned: PropTypes.object,
   period: PropTypes.number,
-  isCommitted: PropTypes.bool,
-  isRevealed: PropTypes.bool,
+  isSubmitted: PropTypes.bool,
   isReportEqual: PropTypes.bool,
-  isUnethical: PropTypes.bool,
   branch: PropTypes.object.isRequired,
   endDate: PropTypes.object.isRequired
 };

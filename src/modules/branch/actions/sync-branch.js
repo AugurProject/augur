@@ -47,9 +47,8 @@ export const syncBranch = cb => (dispatch, getState) => {
   const { branch, loginAccount } = getState();
   if (!branch.periodLength) return callback(null);
   const reportingCycleInfo = getReportingCycle();
-  const isChangedReportPhase = reportingCycleInfo.isReportRevealPhase !== branch.isReportRevealPhase;
   dispatch(updateBranch({ ...reportingCycleInfo }));
-  if (branch.reportPeriod && (!loginAccount.address || !isChangedReportPhase)) {
+  if (branch.reportPeriod && !loginAccount.address) {
     return callback(null);
   }
   console.log('syncing branch...');

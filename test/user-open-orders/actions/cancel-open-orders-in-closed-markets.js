@@ -11,7 +11,7 @@ describe(`modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.
   const test = (t) => {
     it(t.description, () => {
       const store = mockStore(t.state);
-      const CancelOrder = { cancelOrder: () => {} };
+      const CancelOrder = { default: () => {} };
       const openOrders = t.openOrders;
       const action = proxyquire('../../../src/modules/user-open-orders/actions/cancel-open-orders-in-closed-markets.js', {
         '../../bids-asks/actions/cancel-order': CancelOrder,

@@ -6,8 +6,7 @@ import * as TYPES from 'modules/transactions/constants/types';
 import { formatEtherTokens, formatEther, formatRep, formatShares } from 'utils/format-number';
 import { formatDate } from 'utils/format-date';
 import { formatReportedOutcome } from 'modules/reports/selectors/reportable-outcomes';
-import { loadMarketThenRetryConversion, lookupEventMarketsThenRetryConversion } from 'modules/transactions/actions/retry-conversion';
-import { selectMarketIDFromEventID } from 'modules/market/selectors/market';
+import { loadMarketThenRetryConversion } from 'modules/transactions/actions/retry-conversion';
 import { updateEventsWithAccountReportData } from 'modules/my-reports/actions/update-events-with-account-report-data';
 
 export function loadDataForMarketTransaction(label, log, isRetry, callback) {
@@ -25,12 +24,7 @@ export function loadDataForMarketTransaction(label, log, isRetry, callback) {
 export function loadDataForReportingTransaction(label, log, isRetry, callback) {
   return (dispatch, getState) => {
     const { marketsData, outcomesData } = getState();
-    const eventID = log.event || log.eventID;
-    const marketID = selectMarketIDFromEventID(eventID);
-    if (!marketID) {
-      if (isRetry) return callback(log);
-      return dispatch(lookupEventMarketsThenRetryConversion(eventID, label, log, callback));
-    }
+    const marketID = log.market || log.marketID;
     const market = marketsData[marketID];
     if (!market || !market.description) {
       if (isRetry) return callback(log);
@@ -210,12 +204,10 @@ export function constructPenalizeTransaction(log, marketID, market, outcomes, di
 
 export function constructSubmitReportTransaction(log, marketID, market, outcomes, dispatch) {
   const transaction = { data: {} };
-  transaction.type = TYPES.REVEAL_REPORT;
+  transaction.type = TYPES.SUBMIT_REPORT;
   transaction.description = market.description;
   transaction.data.marketID = marketID || null;
   transaction.data.market = market;
-  const isUnethical = !log.ethics || speedomatic.bignum(log.ethics).eq(constants.ZERO);
-  transaction.data.isUnethical = isUnethical;
   const formattedReport = formatReportedOutcome(log.report, market.minValue, market.maxValue, market.type, outcomes);
   transaction.data.reportedOutcomeID = formattedReport;
   transaction.data.outcome = { name: formattedReport };
@@ -225,7 +217,7 @@ export function constructSubmitReportTransaction(log, marketID, market, outcomes
     dispatch(updateEventsWithAccountReportData({
       [market.eventID]: {
         accountReport: formattedReport,
-        isRevealed: true
+        isSubmitted: true
       }
     }));
   }

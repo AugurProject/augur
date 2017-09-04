@@ -13,7 +13,7 @@ const Branch = p => (
       strokeColor="#5c2634"
     />
     <span className="reporting-cycle-info">
-      Reporting Cycle {p.reportPeriod} <Bullet /> {Math.round(p.currentPeriodProgress)}% complete <Bullet /> {p.phaseLabel} phase ends {p.phaseTimeRemaining}
+      Reporting Cycle {p.reportPeriod} <Bullet /> {Math.round(p.currentPeriodProgress)}% complete <Bullet /> cycle ends {p.reportingCycleTimeRemaining}
     </span>
     <span
       data-tip
@@ -42,8 +42,7 @@ Branch.propTypes = {
   description: PropTypes.string,
   id: PropTypes.string,
   periodLength: PropTypes.number,
-  phaseLabel: PropTypes.string,
-  phaseTimeRemaining: PropTypes.string,
+  reportingCycleTimeRemaining: PropTypes.string,
   currentPeriodProgress: PropTypes.number
 };
 

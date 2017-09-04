@@ -11,10 +11,6 @@ describe('modules/reports/actions/check-period.js', () => {
   const middlewares = [thunk];
   const mockStore = configureMockStore(middlewares);
   const state = Object.assign({}, testState, {
-    blockchain: {
-      ...testState.blockchain,
-      isReportRevealPhase: false
-    },
     loginAccount: {
       ...testState.loginAccount,
       rep: 100
@@ -23,11 +19,9 @@ describe('modules/reports/actions/check-period.js', () => {
   const store = mockStore(state);
   const mockAugurJS = { augur: { reporting: {} } };
   const mockLoadReports = { loadReports: () => {} };
-  const mockRevealReports = {};
   mockAugurJS.augur.getCurrentPeriod = sinon.stub().returns(20);
   mockAugurJS.augur.getCurrentPeriodProgress = sinon.stub().returns(52);
   mockAugurJS.augur.reporting.prepareToReport = sinon.stub().yields(null, 'TEST RESPONSE!');
-  mockAugurJS.augur.penalizeWrong = sinon.stub().yields(null, 'TEST RESPONSE!');
   mockAugurJS.augur.incrementPeriodAfterReporting = sinon.stub().yields(null, 'TEST RESPONSE!');
   sinon.stub(mockLoadReports, 'loadReports', cb => (dispatch, getState) => {
     dispatch({
@@ -36,15 +30,10 @@ describe('modules/reports/actions/check-period.js', () => {
     });
     cb(null);
   });
-  mockRevealReports.revealReports = sinon.stub().returns({
-    type: 'UPDATE_REPORTS',
-    reports: { '0xf69b5': { '0xdeadbeef': { reportedOutcomeID: 1, isRevealed: true } } }
-  });
 
   const action = proxyquire('../../../src/modules/reports/actions/check-period.js', {
     '../../../services/augurjs': mockAugurJS,
-    './load-reports': mockLoadReports,
-    './reveal-reports': mockRevealReports
+    './load-reports': mockLoadReports
   });
 
   beforeEach(() => {
