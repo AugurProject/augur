@@ -551,7 +551,7 @@ export const constructLogAddTxTransaction = (trade, marketID, marketType, descri
       noFeePrice: formatEtherTokens(rawPrice),
       freeze: {
         verb: trade.inProgress ? 'freezing' : 'froze',
-        noFeeCost: type === TYPES.SELL ? undefined : formatEtherTokens(abi.unfix(noFeeCost)),
+        noFeeCost: type === TYPES.ASK ? undefined : formatEtherTokens(abi.unfix(noFeeCost)),
         tradingFees: formatEtherTokens(abi.unfix(tradingFees))
       },
       avgPrice: price,
