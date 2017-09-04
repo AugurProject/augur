@@ -1,6 +1,9 @@
 export const BUY = 'buy';
 export const SELL = 'sell';
 
+export const BID = 'bid';
+export const ASK = 'ask';
+
 export const SHORT_SELL = 'short_sell';
 export const SHORT_ASK = 'shortAsk';
 

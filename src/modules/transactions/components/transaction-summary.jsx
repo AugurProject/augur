@@ -6,7 +6,7 @@ import ValueDenomination from 'modules/common/components/value-denomination';
 import ValueTimestamp from 'modules/common/components/value-timestamp';
 import ReportEthics from 'modules/my-reports/components/report-ethics';
 
-import { CREATE_MARKET, BUY, SELL, SHORT_SELL, SHORT_ASK, MATCH_BID, MATCH_ASK, COMMIT_REPORT, REVEAL_REPORT, GENERATE_ORDER_BOOK, CANCEL_ORDER, SELL_COMPLETE_SETS } from 'modules/transactions/constants/types';
+import { CREATE_MARKET, BUY, SELL, BID, ASK, SHORT_SELL, SHORT_ASK, MATCH_BID, MATCH_ASK, COMMIT_REPORT, REVEAL_REPORT, GENERATE_ORDER_BOOK, CANCEL_ORDER, SELL_COMPLETE_SETS } from 'modules/transactions/constants/types';
 import { FUND_ACCOUNT } from 'modules/auth/constants/auth-types';
 import { SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types';
 
@@ -59,8 +59,12 @@ function transactionAction(transaction) {
         return 'Fund Account ';
       case BUY:
         return 'Buy ';
+      case BID:
+        return 'Bid ';
       case SELL:
         return 'Sell ';
+      case ASK:
+        return 'Ask ';
       case SHORT_SELL:
         return 'Short Sell ';
       case SHORT_ASK:
@@ -91,7 +95,9 @@ function transactionAction(transaction) {
 function transactionActionDetails(transaction) {
   switch (transaction.type) {
     case BUY:
+    case BID:
     case SELL:
+    case ASK:
     case SHORT_SELL:
     case SHORT_ASK:
     case MATCH_BID:
