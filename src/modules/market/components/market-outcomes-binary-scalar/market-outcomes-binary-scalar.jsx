@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import Styles from 'modules/market/components/market-preview-outcomes/market-preview-outcomes.styles'
+import Styles from 'modules/market/components/market-outcomes-binary-scalar/market-outcomes-binary-scalar.styles'
 
 const MarketOutcomes = (p) => {
   const calculatePosition = () => {
