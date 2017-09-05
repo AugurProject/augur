@@ -3,6 +3,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import MarketPreviewOutcomes from 'modules/market/components/market-preview-outcomes/market-preview-outcomes'
 import MarketLink from 'modules/market/components/market-link/market-link'
 import { MarketStatusOpen, MarketStatusReported, MarketStatusClosed } from 'modules/common/components/spritemap/spritemap'
 
@@ -53,6 +54,8 @@ const MarketBasics = (p) => {
             { p.description }
           </MarketLink>
         </h1>
+
+        <MarketPreviewOutcomes outcomes={p.outcomes} />
       </div>
     </article>
   )
