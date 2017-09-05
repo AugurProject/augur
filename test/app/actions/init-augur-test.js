@@ -15,7 +15,6 @@ describe(`modules/app/actions/init-augur.js`, () => {
     }
   };
   const mockSetLoginAccount = {};
-  const mockReportingTestSetup = {};
   const mockRegisterTransactionRelay = {};
   const mockLoadChatMessages = { loadChatMessages: () => {} };
   const mockLoadBranch = { loadBranch: () => {} };
@@ -37,9 +36,6 @@ describe(`modules/app/actions/init-augur.js`, () => {
   sinon.stub(mockAugurJS.augur, 'loadBranch', (branchID, cb) => {
     cb(null, 'testBranch');
   });
-  mockReportingTestSetup.reportingTestSetup = sinon.stub().returns({
-    type: 'REPORTING_TEST_SETUP'
-  });
   mockRegisterTransactionRelay.registerTransactionRelay = sinon.stub().returns({
     type: 'REGISTER_TRANSACTION_RELAY'
   });
@@ -47,7 +43,6 @@ describe(`modules/app/actions/init-augur.js`, () => {
   const action = proxyquire('../../../src/modules/app/actions/init-augur.js', {
     '../../../services/augurjs': mockAugurJS,
     '../../auth/actions/set-login-account': mockSetLoginAccount,
-    '../../reports/actions/reporting-test-setup': mockReportingTestSetup,
     '../../transactions/actions/register-transaction-relay': mockRegisterTransactionRelay,
     '../../chat/actions/load-chat-messages': mockLoadChatMessages,
     './load-branch': mockLoadBranch,
