@@ -9,7 +9,12 @@ export const loadTopics = (branchID, callback = logError) => (dispatch, getState
     dispatch(loadTopicsFromAugurNode(branchID, callback));
   }
   let firstChunkLoaded;
-  augur.topics.getTopicsInfoChunked(branchID, 0, null, null, (topicsInfoChunk) => {
+  augur.topics.getTopicsInfoChunked({
+    branch: branchID,
+    offset: 0,
+    numTopicsToLoad: null,
+    totalTopics: null
+  }, (topicsInfoChunk) => {
     console.log('topics info chunk:', topicsInfoChunk);
     if (!firstChunkLoaded) {
       firstChunkLoaded = true;
