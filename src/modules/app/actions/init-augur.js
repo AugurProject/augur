@@ -29,8 +29,8 @@ export function initAugur(cb) {
           if (err) return console.error('connect failure:', err);
           dispatch(updateConnectionStatus(true));
           dispatch(updateContractAddresses(vitals.contracts));
-          dispatch(updateFunctionsAPI(vitals.api.functions));
-          dispatch(updateEventsAPI(vitals.api.events));
+          dispatch(updateFunctionsAPI(vitals.abi.functions));
+          dispatch(updateEventsAPI(vitals.abi.events));
           dispatch(registerTransactionRelay());
           dispatch(loadChatMessages('augur'));
           dispatch(setLoginAccount(env.autoLogin, vitals.coinbase));
