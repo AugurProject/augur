@@ -42,7 +42,7 @@ const MarketBasics = (p) => {
           </ul>
 
           <span className={Styles.MarketBasics__status}>
-            { marketStatusIcon }
+            {marketStatusIcon}
           </span>
         </div>
 
@@ -51,11 +51,13 @@ const MarketBasics = (p) => {
             id={p.id}
             formattedDescription={p.formattedDescription}
           >
-            { p.description }
+            {p.description}
           </MarketLink>
         </h1>
 
-        <MarketPreviewOutcomes outcomes={p.outcomes} />
+        {(p.type === 'binary' || p.type === 'scalar') &&
+          <MarketPreviewOutcomes outcomes={p.outcomes} min={p.minValue} max={p.maxValue} type={p.type} />
+        }
       </div>
     </article>
   )

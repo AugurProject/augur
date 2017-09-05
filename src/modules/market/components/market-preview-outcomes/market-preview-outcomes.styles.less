@@ -6,11 +6,12 @@
 }
 
 .MarketOutcomes__current {
-  bottom: 0;
   font-size: 1.5rem;
   left: 50%;
   line-height: 1.5rem;
+  padding-top: 1.1rem;
   position: absolute;
+  top: 0;
   transform: translate(-50%, 0);
 }
 
@@ -18,20 +19,16 @@
   position: absolute;
 }
 
-.MarketOutcomes__current-value {
-  position: relative;
-
-  &::before {
-    background-color: @color-purple;
-    bottom: 100%;
-    content: "";
-    height: 0.9375rem;
-    left: 0;
-    margin: auto;
-    position: absolute;
-    right: 0;
-    width: 1px;
-  }
+.MarketOutcomes__current-value::before {
+  background-color: @color-purple;
+  content: "";
+  height: 0.9375rem;
+  left: 0;
+  margin: auto;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 1px;
 }
 
 .MarketOutcomes__max,
