@@ -5,12 +5,12 @@ import { mobileMenuStates } from 'modules/app/components/app/app'
 
 import Styles from 'modules/app/components/inner-nav/inner-nav.styles'
 
-import _, { isEqual } from 'lodash';
-import parseQuery from 'modules/app/helpers/parse-query';
-import parseStringToArray from 'modules/app/helpers/parse-string-to-array';
-import makeQuery from 'modules/app/helpers/make-query';
+import _, { isEqual } from 'lodash'
+import parseQuery from 'modules/app/helpers/parse-query'
+import parseStringToArray from 'modules/app/helpers/parse-string-to-array'
+import makeQuery from 'modules/app/helpers/make-query'
 
-import { TAGS_PARAM_NAME } from 'modules/app/constants/param-names';
+import { TAGS_PARAM_NAME } from 'modules/app/constants/param-names'
 
 export default class InnerNav extends Component {
   static propTypes = {
@@ -23,13 +23,13 @@ export default class InnerNav extends Component {
     mobileMenuState: PropTypes.number.isRequired,
     selectedCategory: PropTypes.string,
     subMenuScalar: PropTypes.number.isRequired
-  };
+  }
 
   constructor() {
-    super();
+    super()
     this.state = {
       filteredKeywords: []
-    };
+    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -38,65 +38,65 @@ export default class InnerNav extends Component {
       !isEqual(this.props.marketsFilteredSorted, nextProps.marketsFilteredSorted) ||
       !isEqual(this.props.location.search, nextProps.location.search)
     ) {
-      this.updateFilteredKeywords(nextProps.markets, nextProps.marketsFilteredSorted, nextProps.location);
+      this.updateFilteredKeywords(nextProps.markets, nextProps.marketsFilteredSorted, nextProps.location)
     }
   }
 
   updateFilteredKeywords(markets, marketsFilteredSorted, location) {
     // make sure all selected tags are displayed, even if markets haven't loaded yet
-    const selectedKeywords = parseStringToArray(decodeURIComponent(parseQuery(location.search)[TAGS_PARAM_NAME] || ''), '+');
+    const selectedKeywords = parseStringToArray(decodeURIComponent(parseQuery(location.search)[TAGS_PARAM_NAME] || ''), '+')
 
     const filteredKeywords = _(marketsFilteredSorted)
-    .map(index => markets[index] ? markets[index].tags : null)
+    .map(index => (markets[index] ? markets[index].tags : null))
     .flatten()
     .filter(keyword => Boolean(keyword))
     .concat(selectedKeywords)
     .uniq()
-    .slice(0,50)
+    .slice(0, 50)
     .map(keyword => ({
       name: keyword,
       isSelected: (selectedKeywords || []).indexOf(keyword) !== -1
     }))
-    .value();
+    .value()
 
-    console.log(filteredKeywords);
+    console.log(filteredKeywords)
 
-    this.setState({ filteredKeywords });
+    this.setState({ filteredKeywords })
   }
 
   toggleKeyword(keyword) {
-    let searchParams = parseQuery(this.props.location.search);
+    let searchParams = parseQuery(this.props.location.search)
 
     if (searchParams[TAGS_PARAM_NAME] == null || !searchParams[TAGS_PARAM_NAME].length) {
-      searchParams[TAGS_PARAM_NAME] = [encodeURIComponent(keyword)];
-      searchParams = makeQuery(searchParams);
+      searchParams[TAGS_PARAM_NAME] = [encodeURIComponent(keyword)]
+      searchParams = makeQuery(searchParams)
 
       return this.props.history.push({
         ...this.props.location,
         search: searchParams
-      });
+      })
     }
 
-    const keywords = parseStringToArray(decodeURIComponent(searchParams[TAGS_PARAM_NAME]), '+');
+    const keywords = parseStringToArray(decodeURIComponent(searchParams[TAGS_PARAM_NAME]), '+')
 
     if (keywords.indexOf(keyword) !== -1) { // Remove Tag
-      keywords.splice(keywords.indexOf(keyword), 1);
+      keywords.splice(keywords.indexOf(keyword), 1)
     } else { // add tag
-      keywords.push(keyword);
+      keywords.push(keyword)
     }
 
     if (keywords.length) {
-      searchParams[TAGS_PARAM_NAME] = keywords.join('+');
+      searchParams[TAGS_PARAM_NAME] = keywords.join('+')
     } else {
-      delete searchParams[TAGS_PARAM_NAME];
+      delete searchParams[TAGS_PARAM_NAME]
     }
 
-    searchParams = makeQuery(searchParams);
+    searchParams = makeQuery(searchParams)
 
     this.props.history.push({
       ...this.props.location,
       search: searchParams
-    });
+    })
   }
 
   renderCategoriesList() {
@@ -107,8 +107,9 @@ export default class InnerNav extends Component {
           const isSelected = item.topic === this.props.selectedCategory
           return (
             <li
-              className={classNames({ [Styles['InnerNav__menu-item']]: true,
-                                      [Styles['InnerNav__menu-item--selected']]: isSelected })}
+              className={classNames({
+                [Styles['InnerNav__menu-item']]: true,
+                [Styles['InnerNav__menu-item--selected']]: isSelected })}
               key={item.topic}
             >
               <button>
@@ -130,15 +131,17 @@ export default class InnerNav extends Component {
 
     return (
       <ul
-        className={classNames({ [Styles.InnerNav__menu]: true,
-                                [Styles['InnerNav__menu--submenu']]: true,
-                                [Styles['InnerNav__menu--submenu--mobileshow']]: showKeywords })}
+        className={classNames({
+          [Styles.InnerNav__menu]: true,
+          [Styles['InnerNav__menu--submenu']]: true,
+          [Styles['InnerNav__menu--submenu--mobileshow']]: showKeywords })}
         style={animatedStyle}
       >
         {this.state.filteredKeywords.map((item, index) => (
           <li
-            className={classNames({ [Styles['InnerNav__menu-item']]: true,
-                                    [Styles['InnerNav__menu-item--selected']]: item.isSelected })}
+            className={classNames({
+              [Styles['InnerNav__menu-item']]: true,
+              [Styles['InnerNav__menu-item--selected']]: item.isSelected })}
             key={item.name}
           >
             <button onClick={() => this.toggleKeyword(item.name)}>
