@@ -36,8 +36,7 @@ let config = {
   output: {
     filename: '[name].[chunkhash].js',
     chunkFilename: '[name].[chunkhash].js',
-    path: PATHS.BUILD,
-    publicPath: '/'
+    path: PATHS.BUILD
   },
   resolve: {
     modules: ['node_modules', PATHS.APP],
@@ -88,6 +87,10 @@ let config = {
       {
         test: /\.json/,
         loader: 'json'
+      },
+      {
+        test: /\.(woff|woff2)/,
+        loader: 'file'
       }
     ]
   },

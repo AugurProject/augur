@@ -37,7 +37,7 @@ export function initAugur(callback = logError) {
         }
       }
     }
-    xhttp.open('GET', '/config/env.json', true)
+    xhttp.open('GET', 'config/env.json', true)
     xhttp.send()
   }
 }

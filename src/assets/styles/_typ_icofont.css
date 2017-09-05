@@ -10,7 +10,7 @@
 
 @font-face {
     font-family: 'icofont';
-    src: url('/assets/fonts/icofont.woff?v=1.0.0-beta') format('woff');
+    src: url('../fonts/icofont.woff?v=1.0.0-beta') format('woff');
     font-weight: normal;
     font-style: normal;
 }
