@@ -3,7 +3,7 @@ import { clearTopics, updateTopics } from 'modules/topics/actions/update-topics'
 import isObject from 'utils/is-object';
 import logError from 'utils/log-error';
 
-export const loadTopicsFromAugurNode = (branchID, callback = logError) => (dispatch, getState) => {
+const loadTopicsFromAugurNode = (branchID, callback = logError) => (dispatch, getState) => {
   const { env } = getState();
   const xhttp = new XMLHttpRequest();
   xhttp.onreadystatechange = () => {
@@ -22,3 +22,5 @@ export const loadTopicsFromAugurNode = (branchID, callback = logError) => (dispa
   xhttp.open('GET', `${env.augurNodeURL}/getTopicsInfo?&branchID=${branchID}&sort=most_popular`, true);
   xhttp.send();
 };
+
+export default loadTopicsFromAugurNode;
