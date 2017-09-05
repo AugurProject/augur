@@ -5,9 +5,9 @@ var abiMap = require("../contracts").abi;
 var getLogs = require("../logs/get-logs");
 var parseLogMessage = require("../filters/parse-message/parse-log-message");
 
-// { marketID, creationBlock }
+// { market, creationBlock }
 function getLoggedMarketInfo(p, callback) {
-  api().Market.getReportingWindow({ tx: { to: p.marketID } }, function (reportingWindowAddress) {
+  api().Market.getReportingWindow({ tx: { to: p.market } }, function (reportingWindowAddress) {
     if (!reportingWindowAddress) return callback({ error: "reporting window address not found" });
     if (reportingWindowAddress.error) return callback(reportingWindowAddress);
     var label = "CreateMarket";
@@ -16,7 +16,7 @@ function getLoggedMarketInfo(p, callback) {
       filter: {
         fromBlock: p.creationBlock,
         toBlock: p.creationBlock,
-        market: p.marketID,
+        market: p.market,
         address: reportingWindowAddress
       }
     }, function (err, marketCreationLogs) {
