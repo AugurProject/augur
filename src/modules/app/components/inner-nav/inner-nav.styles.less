@@ -20,6 +20,7 @@
     background: @color-lightpurple;
   }
 
+  a,
   button {
     .font-family-dinpro();
     .font-weight-light();
@@ -29,6 +30,7 @@
     border: none;
     color: @color-white;
     cursor: pointer;
+    display: block;
     letter-spacing: 0.3px;
     line-height: 29px;
     margin: 0;
@@ -37,10 +39,15 @@
     overflow: hidden;
     padding: 0 5px 0 11px;
     text-align: inherit;
+    text-decoration: none;
     text-overflow: ellipsis;
     text-transform: uppercase;
     white-space: nowrap;
     width: 100%;
+
+    &:hover {
+      text-decoration: none;
+    }
   }
 }
 

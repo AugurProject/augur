@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 import { mobileMenuStates } from 'modules/app/components/app/app'
 
@@ -9,8 +10,12 @@ import _, { isEqual } from 'lodash'
 import parseQuery from 'modules/app/helpers/parse-query'
 import parseStringToArray from 'modules/app/helpers/parse-string-to-array'
 import makeQuery from 'modules/app/helpers/make-query'
+import makePath from 'modules/app/helpers/make-path'
 
-import { TAGS_PARAM_NAME } from 'modules/app/constants/param-names'
+import { TOPIC_PARAM_NAME, TAGS_PARAM_NAME } from 'modules/app/constants/param-names'
+import { MARKETS } from 'modules/app/constants/views'
+
+import MenuItem from 'modules/app/components/inner-nav/menu-item'
 
 export default class InnerNav extends Component {
   static propTypes = {
@@ -21,7 +26,6 @@ export default class InnerNav extends Component {
     history: PropTypes.object.isRequired,
     isMobile: PropTypes.bool.isRequired,
     mobileMenuState: PropTypes.number.isRequired,
-    selectedCategory: PropTypes.string,
     subMenuScalar: PropTypes.number.isRequired
   }
 
@@ -58,8 +62,6 @@ export default class InnerNav extends Component {
       isSelected: (selectedKeywords || []).indexOf(keyword) !== -1
     }))
     .value()
-
-    console.log(filteredKeywords)
 
     this.setState({ filteredKeywords })
   }
@@ -100,22 +102,35 @@ export default class InnerNav extends Component {
   }
 
   renderCategoriesList() {
+    const searchParams = parseQuery(this.props.location.search)
+    const selectedCategory = searchParams[TOPIC_PARAM_NAME]
+
     return (
       <ul className={classNames(Styles.InnerNav__menu, Styles['InnerNav__menu--main'])}>
+        <MenuItem isSelected={(!selectedCategory || selectedCategory === '')}>
+          <Link to={{ pathname: makePath(MARKETS) }}>
+            All Markets
+          </Link>
+        </MenuItem>
+
         {this.props.categories.map((item, index) => {
-          // const clickSelect = () => this.props.onSelectCategory(item.topic)
-          const isSelected = item.topic === this.props.selectedCategory
+          const isSelected = item.topic === selectedCategory
           return (
-            <li
-              className={classNames({
-                [Styles['InnerNav__menu-item']]: true,
-                [Styles['InnerNav__menu-item--selected']]: isSelected })}
+            <MenuItem
+              isSelected={isSelected}
               key={item.topic}
             >
-              <button>
+              <Link
+                to={{
+                  pathname: makePath(MARKETS),
+                  search: makeQuery({
+                    [TOPIC_PARAM_NAME]: item.topic
+                  })
+                }}
+              >
                 {item.topic}
-              </button>
-            </li>
+              </Link>
+            </MenuItem>
           )
         })}
       </ul>
@@ -138,16 +153,14 @@ export default class InnerNav extends Component {
         style={animatedStyle}
       >
         {this.state.filteredKeywords.map((item, index) => (
-          <li
-            className={classNames({
-              [Styles['InnerNav__menu-item']]: true,
-              [Styles['InnerNav__menu-item--selected']]: item.isSelected })}
+          <MenuItem
+            isSelected={item.isSelected}
             key={item.name}
           >
             <button onClick={() => this.toggleKeyword(item.name)}>
               {item.name}
             </button>
-          </li>
+          </MenuItem>
         ))}
       </ul>
     )
@@ -163,20 +176,3 @@ export default class InnerNav extends Component {
     )
   }
 }
-
-// {this.renderSubMenu()}
-
-// {this.props.keywords.length === 0 &&
-//   <li>Loading . . .</li>
-// }
-// {this.props.keywords.length > 0 &&
-// this.props.keywords.map((item, index) => (
-//   <li
-//     className={classNames({ selected: item.isSelected })}
-//     key={item.name}
-//   >
-//     <button onClick={item.onClick}>
-//       {item.name}
-//     </button>
-//   </li>
-// ))}
