@@ -37,7 +37,6 @@ function Augur() {
   this.api = require("./api")();
   this.generateContractAPI = require("./api").generateContractAPI;
   this.assets = require("./assets");
-  this.chat = require("./chat");
   this.connect = require("./connect").bind(this);
   this.constants = require("./constants");
   this.create = require("./create");
