@@ -14,7 +14,6 @@ import transactionsTotals from 'modules/transactions/selectors/transactions-tota
 import isTransactionsWorking from 'modules/transactions/selectors/is-transactions-working';
 import tradesInProgress from 'modules/trade/selectors/trade-in-progress';
 import coreStats from 'modules/account/selectors/core-stats';
-import chat from 'modules/chat/selectors/chat-messages';
 import { MARKET_DATA_NAV_ITEMS } from 'modules/market/constants/market-data-nav-items';
 import { MARKET_USER_DATA_NAV_ITEMS } from 'modules/market/constants/market-user-data-nav-items';
 import scalarShareDenomination from 'modules/market/selectors/scalar-share-denomination';
@@ -39,7 +38,6 @@ const selectors = {
   isTransactionsWorking,
   tradesInProgress,
   coreStats,
-  chat,
   marketDataNavItems: () => MARKET_DATA_NAV_ITEMS,
   marketUserDataNavItems: () => MARKET_USER_DATA_NAV_ITEMS,
   scalarShareDenomination,

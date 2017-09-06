@@ -9,7 +9,6 @@ import Footer from 'modules/app/components/footer';
 import SideBar from 'modules/app/components/side-bar';
 import CoreStats from 'modules/app/components/core-stats';
 // import Routes from 'modules/app/components/routes';
-import ChatView from 'modules/chat/components/chat-view';
 import SidebarMask from 'modules/common/components/side-bar-mask';
 
 import makePath from 'modules/app/helpers/make-path';
@@ -44,7 +43,6 @@ export default class AppView extends Component {
       isSideBarAllowed: false,
       isSideBarCollapsed: false,
       isSideBarPersistent: true,
-      isChatCollapsed: true,
       doScrollTop: false,
       currentRoute: null,
       footerPush: 0,
@@ -53,7 +51,6 @@ export default class AppView extends Component {
 
     this.shouldComponentUpdate = shouldComponentUpdatePure;
 
-    this.toggleChat = this.toggleChat.bind(this);
     this.setSidebarAllowed = this.setSidebarAllowed.bind(this);
     this.attachTouchHandler = this.attachTouchHandler.bind(this);
     this.handleSwipeEvent = this.handleSwipeEvent.bind(this);
@@ -128,11 +125,6 @@ export default class AppView extends Component {
         isSideBarPersistent: true
       });
     }
-  }
-
-  // Chat
-  toggleChat() {
-    this.setState({ isChatCollapsed: !this.state.isChatCollapsed });
   }
 
   // Touch Events
@@ -248,15 +240,6 @@ export default class AppView extends Component {
                 </div>
               </div>
             </div>
-            {!s.isChatCollapsed &&
-              <ChatView
-                {...p.chat.augur}
-                toggleChat={() => { this.toggleChat(); }}
-              />
-            }
-            <button id="chat-button" onClick={() => { this.toggleChat(); }}>
-              Chat
-            </button>
             <Footer
               {...navProps}
               isFooterCollapsed={s.isFooterCollapsed}

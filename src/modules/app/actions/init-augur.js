@@ -4,7 +4,6 @@ import { updateEnv } from 'modules/app/actions/update-env';
 import { updateConnectionStatus, updateAugurNodeConnectionStatus } from 'modules/app/actions/update-connection';
 import { updateContractAddresses } from 'modules/contracts/actions/update-contract-addresses';
 import { updateFunctionsAPI, updateEventsAPI } from 'modules/contracts/actions/update-contract-api';
-import { loadChatMessages } from 'modules/chat/actions/load-chat-messages';
 import { setLoginAccount } from 'modules/auth/actions/set-login-account';
 import { loadBranch } from 'modules/app/actions/load-branch';
 import { registerTransactionRelay } from 'modules/transactions/actions/register-transaction-relay';
@@ -32,7 +31,6 @@ export function initAugur(callback = logError) {
             dispatch(updateAugurNodeConnectionStatus(true));
           }
           dispatch(registerTransactionRelay());
-          dispatch(loadChatMessages('augur'));
           dispatch(setLoginAccount(env.autoLogin, vitals.coinbase));
           dispatch(loadBranch(env.branchID || BRANCH_ID));
           callback();

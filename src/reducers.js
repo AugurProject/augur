@@ -43,8 +43,6 @@ import tradesInProgress from 'modules/trade/reducers/trades-in-progress';
 // import createMarketInProgress from 'modules/create-market/reducers/create-market-in-progress';
 import priceHistory from 'modules/markets/reducers/price-history';
 
-import chatMessages from 'modules/chat/reducers/chat-messages';
-
 import marketCreatorFees from 'modules/my-markets/reducers/market-creator-fees';
 
 import contractAddresses from 'modules/contracts/reducers/contract-addresses';
@@ -97,8 +95,6 @@ export function createReducer() {
     transactionsLoading,
     scalarMarketsShareDenomination,
     closePositionTradeGroups,
-
-    chatMessages,
 
     marketCreatorFees,
 
