@@ -51,7 +51,7 @@ const CreateMarket = asyncComponent({
 })
 const StyleSandbox = asyncComponent({
   moduleName: 'StyleSandbox',
-  loader: () => import(/* webpackChunkName: 'topics' */ 'modules/style-sandbox/components/style-sandbox/style-sandbox')
+  loader: () => import(/* webpackChunkName: 'style-sandbox' */ 'modules/style-sandbox/components/style-sandbox/style-sandbox')
     .then(module => module.default)
 })
 
