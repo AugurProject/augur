@@ -1,3 +1,4 @@
+import speedomatic from 'speedomatic';
 import { augur } from 'services/augurjs';
 import { BRANCH_ID } from 'modules/app/constants/network';
 import { updateLoginAccount } from 'modules/auth/actions/update-login-account';
@@ -7,36 +8,41 @@ import logError from 'utils/log-error';
 export function updateAssets(callback = logError) {
   return (dispatch, getState) => {
     const { loginAccount, branch } = getState();
+    const branchID = branch.id || BRANCH_ID;
     const balances = { eth: undefined, ethTokens: undefined, rep: undefined };
     if (!loginAccount.address) return dispatch(updateLoginAccount(balances));
-    augur.assets.loadAssets({
-      branchID: branch.id || BRANCH_ID,
-      address: loginAccount.address
-    },
-      (err, ethTokens) => {
-        if (err) return callback(err);
-        balances.ethTokens = ethTokens;
-        if (!loginAccount.ethTokens || loginAccount.ethTokens !== ethTokens) {
-          dispatch(updateLoginAccount({ ethTokens }));
-        }
-        if (allAssetsLoaded(balances)) callback(null, balances);
-      },
-      (err, rep) => {
-        if (err) return callback(err);
-        balances.rep = rep;
-        if (!loginAccount.rep || loginAccount.rep !== rep) {
-          dispatch(updateLoginAccount({ rep }));
-        }
-        if (allAssetsLoaded(balances)) callback(null, balances);
-      },
-      (err, eth) => {
-        if (err) return callback(err);
-        balances.eth = eth;
-        if (!loginAccount.eth || loginAccount.eth !== eth) {
-          dispatch(updateLoginAccount({ eth }));
-        }
-        if (allAssetsLoaded(balances)) callback(null, balances);
+    augur.api.Cash.balanceOf({ address: loginAccount.address }, (attoEthTokensBalance) => {
+      if (!attoEthTokensBalance || attoEthTokensBalance.error) return callback(attoEthTokensBalance);
+      const ethTokensBalance = speedomatic.unfix(attoEthTokensBalance, 'string');
+      balances.ethTokens = ethTokensBalance;
+      if (!loginAccount.ethTokens || loginAccount.ethTokens !== ethTokensBalance) {
+        dispatch(updateLoginAccount({ ethTokens: ethTokensBalance }));
       }
-    );
+      if (allAssetsLoaded(balances)) callback(null, balances);
+    });
+    augur.api.Branch.getReputationToken({ tx: { to: branchID } }, (reputationTokenAddress) => {
+      if (!reputationTokenAddress || reputationTokenAddress.error) return callback(reputationTokenAddress);
+      augur.api.ReputationToken.balanceOf({
+        tx: { to: reputationTokenAddress },
+        address: loginAccount.address
+      }, (attoRepBalance) => {
+        if (!attoRepBalance || attoRepBalance.error) return callback(attoRepBalance);
+        const repBalance = speedomatic.unfix(attoRepBalance, 'string');
+        balances.rep = repBalance;
+        if (!loginAccount.rep || loginAccount.rep !== repBalance) {
+          dispatch(updateLoginAccount({ rep: repBalance }));
+        }
+        if (allAssetsLoaded(balances)) callback(null, balances);
+      });
+    });
+    augur.rpc.getBalance(loginAccount.address, (attoEthBalance) => {
+      if (!attoEthBalance || attoEthBalance.error) return callback(attoEthBalance);
+      const ethBalance = speedomatic.unfix(attoEthBalance, 'string');
+      balances.eth = ethBalance;
+      if (!loginAccount.eth || loginAccount.eth !== ethBalance) {
+        dispatch(updateLoginAccount({ eth: ethBalance }));
+      }
+      if (allAssetsLoaded(balances)) callback(null, balances);
+    });
   };
 }
