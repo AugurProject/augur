@@ -24,7 +24,7 @@ var encodeTag = require("../format/tag/encode-tag");
  * @param {function} p.onSuccess Called if/when the createNewMarket transaction is sealed and confirmed.
  * @param {function} p.onFailed Called if/when the createNewMarket transaction fails.
  */
-function createMarket(p) {
+function createNewMarket(p) {
   api().Branch.getReportingWindowByTimestamp({
     tx: { to: p.branchID },
     _timestamp: p._endTime
@@ -44,4 +44,4 @@ function createMarket(p) {
   });
 }
 
-module.exports = createMarket;
+module.exports = createNewMarket;

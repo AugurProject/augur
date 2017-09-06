@@ -1,7 +1,6 @@
 "use strict";
 
 module.exports = {
-  compose: require("./compose"),
   isFunction: require("./is-function"),
   isObject: require("./is-object"),
   listContracts: require("./list-contracts"),
