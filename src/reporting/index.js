@@ -1,7 +1,6 @@
 "use strict";
 
 module.exports = {
-  format: require("./format"),
   getCurrentPeriod: require("./get-current-period"),
   getCurrentPeriodProgress: require("./get-current-period-progress"),
   getReport: require("./get-report"),
