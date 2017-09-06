@@ -15,6 +15,7 @@ var encodeTag = require("../format/tag/encode-tag");
  * @param {string} p._denominationToken Ethereum address of the token used as this market's currency.
  * @param {string} p._automatedReporterAddress Ethereum address of this market's automated reporter.
  * @param {string} p._topic The topic (category) to which this market belongs, as a UTF8 string.
+ * @param {buffer|function=} p._signer Can be the plaintext private key as a Buffer or the signing function to use.
  * @param {function} p.onSent Called if/when the transaction is broadcast to the network.
  * @param {function} p.onSuccess Called if/when the transaction is sealed and confirmed.
  * @param {function} p.onFailed Called if/when the transaction fails.

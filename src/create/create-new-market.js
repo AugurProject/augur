@@ -20,6 +20,7 @@ var encodeTag = require("../format/tag/encode-tag");
  * @param {string} p._maxDisplayPrice Maximum display (non-normalized) price for this market, as a base-10 string.
  * @param {string} p._automatedReporterAddress Ethereum address of this market's automated reporter.
  * @param {string} p._topic The topic (category) to which this market belongs, as a UTF8 string.
+ * @param {buffer|function=} p._signer Can be the plaintext private key as a Buffer or the signing function to use.
  * @param {function} p.onSent Called if/when the createNewMarket transaction is broadcast to the network.
  * @param {function} p.onSuccess Called if/when the createNewMarket transaction is sealed and confirmed.
  * @param {function} p.onFailed Called if/when the createNewMarket transaction fails.
