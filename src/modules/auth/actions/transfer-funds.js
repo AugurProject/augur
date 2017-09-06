@@ -21,9 +21,9 @@ export function transferFunds(amount, currency, toAddress) {
     switch (currency) {
       case ETH:
         return augur.assets.sendEther({
-          signer: loginAccount.privateKey,
+          _signer: loginAccount.privateKey,
           to,
-          value: amount,
+          etherToSend: amount,
           from: fromAddress,
           onSent: (tx) => {
             dispatch(addNotification({
@@ -54,9 +54,9 @@ export function transferFunds(amount, currency, toAddress) {
       case REP:
         return augur.assets.sendReputation({
           _signer: loginAccount.privateKey,
-          branch: branch.id,
-          recver: to,
-          value: amount,
+          branchID: branch.id,
+          reputationToSend: amount,
+          _to: to,
           onSent,
           onSuccess,
           onFailed
