@@ -14,7 +14,7 @@ const NavPanel = (p) => {
   const toggleNavId = (id) => {
     const searchParams = makeQuery({
       ...(parseQuery(p.location.search)),
-      [NAVPANEL_ID_PARAM_NAME]: encodeURIComponent(id)
+      [NAVPANEL_ID_PARAM_NAME]: id
     })
 
     p.history.push({
