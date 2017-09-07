@@ -128,6 +128,10 @@ let config = {
       {
         from: path.resolve(PATHS.APP, 'sitemap.xml'),
         to: PATHS.BUILD
+      },
+      {
+        from: path.resolve(PATHS.APP, 'loaderio-e6f0536ecc4759035b4106efb3b1f225.txt'),
+        to: PATHS.BUILD
       }
     ]),
     new webpack.optimize.CommonsChunkPlugin({
