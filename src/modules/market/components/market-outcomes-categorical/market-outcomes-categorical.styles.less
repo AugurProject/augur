@@ -1,20 +1,39 @@
 @import '~assets/styles/shared.less';
 
 .MarketOutcomesCategorical__outcomes {
-  display: flex;
-  justify-content: space-between;
+  display: table;
 }
 
 .MarketOutcomesCategorical__outcome {
-  > span {
-    display: inline-block;
-    vertical-align: middle;
+  border-left: 5vw solid transparent;
+  border-top: 0.75rem solid transparent;
+  display: table-cell;
+
+  &:first-child {
+    border-left: 0;
   }
 }
 
 .MarketOutcomesCategorical__outcome-name {
+  display: inline-block;
   max-width: 9.5rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
+.MarketOutcomesCategorical__outcome-row {
+  display: table-row;
+
+  &:first-child > .MarketOutcomesCategorical__outcome {
+    border-top: 0;
+  }
+}
+
+.MarketOutcomesCategorical__outcome-value {
+  &:extend(.number--large);
+
+  float: right;
+  margin-left: 1.75rem;
+}
+
