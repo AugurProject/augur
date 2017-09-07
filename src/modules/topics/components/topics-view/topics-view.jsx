@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
+import { Helmet } from 'react-helmet'
 
 // TODO: implement null state for topics list (needs design)
 // import NullStateMessage from 'modules/common/components/null-state-message';
@@ -115,6 +116,9 @@ export default class TopicsView extends Component {
 
     return (
       <section className={Styles.Topics}>
+        <Helmet>
+          <title>Categories</title>
+        </Helmet>
         <GraphBG />
         <div className={Styles.Topics__container}>
           <div className={Styles.TopicsHeading}>
