@@ -24,8 +24,8 @@ export default class StyleSandbox extends React.Component {
       flipped: this.state.flipNav,
       history: this.props.history,
       items: [
-        { title: 'hello1', iconComponent: AccIcon, onClick: () => alert('one click') },
-        { title: 'hello2', iconComponent: AccIcon, active: true },
+        { title: 'hello1', iconComponent: AccIcon },
+        { title: 'hello2', iconComponent: AccIcon },
         { title: 'hello3', iconComponent: AccIcon },
         { title: 'hello4', iconComponent: AccIcon },
         { title: 'hello5', iconComponent: AccIcon },
