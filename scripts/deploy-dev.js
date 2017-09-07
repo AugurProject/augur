@@ -23,7 +23,9 @@ function deployDev() {
       "echo '-- ADDING BUILD TO IPFS --';",
       "export NEW_BUILD_HASH=$(/home/augur/go/bin/ipfs add -r build/ | tail -n 1 | awk '{print $2}');",
       "echo '-- PUBLISHING BUILD --';",
-      "/home/augur/go/bin/ipfs name publish --key=augur-dev $NEW_BUILD_HASH"
+      "/home/augur/go/bin/ipfs name publish --key=augur-dev $NEW_BUILD_HASH;",
+      "echo '-- UPDATE HASH FOR IPFS REPUBLISH CRON JOB --';",
+      "echo $NEW_BUILD_HASH > ~/ipfs-deploy/NEW_BUILD_HASH;"
     ]
   )
 
