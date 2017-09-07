@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { Helmet } from 'react-helmet'
 
 import shouldComponentUpdatePure from 'utils/should-component-update-pure'
 import debounce from 'utils/debounce'
@@ -231,6 +232,10 @@ export default class AppView extends Component {
 
     return (
       <main className={Styles.App}>
+        <Helmet
+            defaultTitle="Decentralized Prediction Markets | Augur"
+            titleTemplate="%s | Augur"
+        />
         <section className={Styles.SideBar}>
           <Origami
             isMobile={p.isMobile}
