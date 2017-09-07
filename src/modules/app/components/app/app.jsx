@@ -233,8 +233,8 @@ export default class AppView extends Component {
     return (
       <main className={Styles.App}>
         <Helmet
-            defaultTitle="Decentralized Prediction Markets | Augur"
-            titleTemplate="%s | Augur"
+          defaultTitle="Decentralized Prediction Markets | Augur"
+          titleTemplate="%s | Augur"
         />
         <section className={Styles.SideBar}>
           <Origami
