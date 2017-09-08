@@ -19,6 +19,7 @@
 .AuthView__header {
   .caps();
 
+  align-self: center;
   color: @color-white;
   text-align: center;
 
@@ -30,9 +31,13 @@
 .AuthView__actions {
   align-items: center;
   display: flex;
-  flex: 1;
 }
 
 .AuthView__button {
   &:extend(.button);
+}
+
+.AuthView__spacer {
+  display: flex;
+  flex: 1;
 }

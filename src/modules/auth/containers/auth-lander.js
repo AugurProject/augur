@@ -1,6 +1,5 @@
 import { connect } from 'react-redux'
-import { withRouter } from 'react-router-dom'
-import AuthView from 'modules/auth/components/auth-view/auth-view'
+import AuthLander from 'modules/auth/components/auth-lander/auth-lander'
 
 // import { register, setupAndFundNewAccount } from 'modules/auth/actions/register'
 // import { login } from 'modules/auth/actions/login'
@@ -49,6 +48,6 @@ const mapStateToProps = state => ({
   isMobile: state.isMobile
 })
 
-const Auth = connect(mapStateToProps)(AuthView)
+const Auth = connect(mapStateToProps)(AuthLander)
 
 export default Auth
