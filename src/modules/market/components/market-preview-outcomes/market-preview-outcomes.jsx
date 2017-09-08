@@ -1,55 +1,52 @@
 import React from 'react'
-// import ValueDenomination from 'modules/common/components/value-denomination/value-denomination';
+import PropTypes from 'prop-types'
+
+import { BINARY } from 'modules/markets/constants/market-types'
+
+import getValue from 'utils/get-value'
 
 import Styles from 'modules/market/components/market-preview-outcomes/market-preview-outcomes.styles'
 
-const MarketOutcomes = p => (
-  <div className={Styles.MarketPreviewOutcomes}>
-    {/* {(p.outcomes || []).map((outcome, i) => (
-      <div
-        key={outcome.id}
-        className="outcome"
-      >
-        {!!outcome.lastPricePercent &&
-          <ValueDenomination
-            className="outcome-price"
-            {...outcome.lastPricePercent}
-            formatted={outcome.lastPricePercent.rounded}
-            formattedValue={outcome.lastPricePercent.roundedValue}
-          />
-        }
-        <span
-          data-tip
-          data-for={`outcome-name-tooltip-${outcome.marketID}-${outcome.id}`}
-          data-event="click focus"
-          className="outcome-name"
-        >
-          {outcome.name}
-        </span>
-        <ReactTooltip
-          id={`outcome-name-tooltip-${outcome.marketID}-${outcome.id}`}
-          type="dark"
-          effect="float"
-          place="top"
-          globalEventOff="click"
-        >
-          <span
-            data-tip
-            data-for={`outcome-name-tooltip-${outcome.marketID}-${outcome.id}`}
-            data-event="click focus"
-            className="tooltip-text"
-          >
-            {outcome.name}
-          </span>
-        </ReactTooltip>
-      </div>
-    ))} */}
-  </div>
-)
+const MarketOutcomes = (p) => {
+  const calculatePosition = () => {
+    const lastPrice = getValue(p.outcomes[0], 'lastPricePercent.full')
 
-// TODO -- Prop Validations
-// MarketOutcomes.propTypes = {
-//  outcomes: React.PropTypes.array
-// };
+    if (p.type === BINARY) {
+      return lastPrice
+    }
+
+    return `${(lastPrice / (p.max - p.min)) * 100}%`
+  }
+
+  const currentValuePosition = {
+    left: calculatePosition()
+  }
+
+  const minValue = p.min && p.type !== BINARY ? p.min : '0%'
+  const maxValue = p.min && p.type !== BINARY ? p.max : '100%'
+
+  return (
+    <div className={Styles.MarketOutcomes}>
+      <div className={Styles.MarketOutcomes__range} />
+      <span className={Styles.MarketOutcomes__min}>{minValue}</span>
+      <span className={Styles.MarketOutcomes__max}>{maxValue}</span>
+      <span className={Styles.MarketOutcomes__current} style={currentValuePosition}>
+        <span className={Styles['MarketOutcomes__current-value']}>
+          {getValue(p.outcomes[0], 'lastPricePercent.formatted')}
+        </span>
+        <span className={Styles['MarketOutcomes__current-denomination']}>
+          {getValue(p.outcomes[0], 'lastPricePercent.denomination')}
+        </span>
+      </span>
+    </div>
+  )
+}
+
+MarketOutcomes.propTypes = {
+  outcomes: PropTypes.array.isRequired,
+  max: PropTypes.string,
+  min: PropTypes.string,
+  type: PropTypes.string
+}
 
 export default MarketOutcomes

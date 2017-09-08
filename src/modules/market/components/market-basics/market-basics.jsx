@@ -3,10 +3,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import MarketPreviewOutcomes from 'modules/market/components/market-preview-outcomes/market-preview-outcomes'
 import MarketLink from 'modules/market/components/market-link/market-link'
 import { MarketStatusOpen, MarketStatusReported, MarketStatusClosed } from 'modules/common/components/spritemap/spritemap'
 
 import toggleTag from 'modules/app/helpers/toggle-tag'
+
+import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
 
 import Styles from 'modules/market/components/market-basics/market-basics.styles'
 
@@ -41,7 +44,7 @@ const MarketBasics = (p) => {
           </ul>
 
           <span className={Styles.MarketBasics__status}>
-            { marketStatusIcon }
+            {marketStatusIcon}
           </span>
         </div>
 
@@ -50,9 +53,13 @@ const MarketBasics = (p) => {
             id={p.id}
             formattedDescription={p.formattedDescription}
           >
-            { p.description }
+            {p.description}
           </MarketLink>
         </h1>
+
+        {(p.type === BINARY || p.type === SCALAR) &&
+          <MarketPreviewOutcomes outcomes={p.outcomes} min={p.minValue} max={p.maxValue} type={p.type} />
+        }
       </div>
     </article>
   )
