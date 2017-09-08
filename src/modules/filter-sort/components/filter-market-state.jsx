@@ -3,12 +3,12 @@ import PropTypes from 'prop-types'
 
 import Dropdown from 'modules/common/components/dropdown'
 
-import parseQuery from 'modules/app/helpers/parse-query'
-import makeQuery from 'modules/app/helpers/make-query'
+import parseQuery from 'modules/routes/helpers/parse-query'
+import makeQuery from 'modules/routes/helpers/make-query'
 import { isMarketDataOpen } from 'utils/is-market-data-open'
 import isEqual from 'lodash/isEqual'
 
-import { FILTER_MARKET_STATE_PARAM } from 'modules/app/constants/param-names'
+import { FILTER_MARKET_STATE_PARAM } from 'modules/routes/constants/param-names'
 
 export default class FilterMarketState extends Component {
   static propTypes = {

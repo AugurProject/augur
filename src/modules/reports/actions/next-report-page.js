@@ -1,10 +1,10 @@
 import { selectMarket } from 'modules/market/selectors/market'
 
-import makePath from 'modules/app/helpers/make-path'
-import makeQuery from 'modules/app/helpers/make-query'
+import makePath from 'modules/routes/helpers/make-path'
+import makeQuery from 'modules/routes/helpers/make-query'
 
-import { MARKETS, MARKET } from 'modules/app/constants/views'
-import { MARKET_DESCRIPTION_PARAM_NAME, MARKET_ID_PARAM_NAME } from 'modules/app/constants/param-names'
+import { MARKETS, MARKET } from 'modules/routes/constants/views'
+import { MARKET_DESCRIPTION_PARAM_NAME, MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names'
 
 export function nextReportPage(history) {
   return (dispatch, getState) => {

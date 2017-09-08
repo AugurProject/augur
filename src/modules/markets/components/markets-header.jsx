@@ -4,13 +4,13 @@ import PropTypes from 'prop-types'
 import FilterSort from 'modules/filter-sort/container'
 import classNames from 'classnames'
 
-import makePath from 'modules/app/helpers/make-path'
+import makePath from 'modules/routes/helpers/make-path'
 
-import parseQuery from 'modules/app/helpers/parse-query'
-import parsePath from 'modules/app/helpers/parse-path'
+import parseQuery from 'modules/routes/helpers/parse-query'
+import parsePath from 'modules/routes/helpers/parse-path'
 
-import { CREATE_MARKET, MARKETS, FAVORITES } from 'modules/app/constants/views'
-import { TOPIC_PARAM_NAME } from 'modules/app/constants/param-names'
+import { CREATE_MARKET, MARKETS, FAVORITES } from 'modules/routes/constants/views'
+import { TOPIC_PARAM_NAME } from 'modules/routes/constants/param-names'
 
 export default class MarketsHeader extends Component {
   static propTypes = {

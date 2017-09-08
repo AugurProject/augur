@@ -6,12 +6,12 @@ import MarketActive from 'modules/market/components/market-active'
 import MarketReported from 'modules/market/components/market-reported'
 import NullStateMessage from 'modules/common/components/null-state-message'
 
-import parseMarketTitle from 'modules/app/helpers/parse-market-title'
-import parseQuery from 'modules/app/helpers/parse-query'
+import parseMarketTitle from 'modules/market/helpers/parse-market-title'
+import parseQuery from 'modules/routes/helpers/parse-query'
 import getValue from 'utils/get-value'
 import speedomatic from 'speedomatic'
 
-import { MARKET_ID_PARAM_NAME } from 'modules/app/constants/param-names'
+import { MARKET_ID_PARAM_NAME } from 'modules/routes/constants/param-names'
 
 export default class MarketView extends Component {
   static propTypes = {

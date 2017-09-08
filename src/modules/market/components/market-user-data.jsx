@@ -4,7 +4,7 @@ import ComponentNav from 'modules/common/components/component-nav'
 import MarketPositions from 'modules/market/components/market-positions'
 import MarketOpenOrders from 'modules/market/components/market-open-orders'
 
-import { MARKET_USER_DATA_NAV_POSITIONS, MARKET_USER_DATA_NAV_OPEN_ORDERS } from 'modules/app/constants/views'
+import { MARKET_USER_DATA_NAV_POSITIONS, MARKET_USER_DATA_NAV_OPEN_ORDERS } from 'modules/routes/constants/views'
 
 import getValue from 'utils/get-value'
 

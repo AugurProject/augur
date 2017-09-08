@@ -9,7 +9,7 @@ import MarketChart from 'modules/market/components/market-chart'
 import MarketDetails from 'modules/market/components/market-details'
 import ReportForm from 'modules/reports/components/report-form'
 
-import { MARKET_DATA_NAV_OUTCOMES, MARKET_DATA_ORDERS, MARKET_DATA_NAV_CHARTS, MARKET_DATA_NAV_DETAILS, MARKET_DATA_NAV_REPORT } from 'modules/app/constants/views'
+import { MARKET_DATA_NAV_OUTCOMES, MARKET_DATA_ORDERS, MARKET_DATA_NAV_CHARTS, MARKET_DATA_NAV_DETAILS, MARKET_DATA_NAV_REPORT } from 'modules/routes/constants/views'
 
 export default class MarketData extends Component {
   static propTypes = {

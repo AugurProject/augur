@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import classNames from 'classnames'
 import PropTypes from 'prop-types'
 
-import makePath from 'modules/app/helpers/make-path'
+import makePath from 'modules/routes/helpers/make-path'
 
 import Styles from 'modules/app/components/side-nav/side-nav.styles'
 

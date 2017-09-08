@@ -3,10 +3,10 @@ import { Route, Switch, Redirect } from 'react-router-dom'
 
 import App from 'modules/app/container'
 import asyncComponent from 'modules/common/components/async-component'
-import AuthenticatedRoute from 'modules/auth/components/authenticated-route'
-import makePath from 'modules/app/helpers/make-path'
+import AuthenticatedRoute from 'modules/routes/components/authenticated-route/authenticated-route'
+import makePath from 'modules/routes/helpers/make-path'
 
-import * as VIEWS from 'modules/app/constants/views'
+import * as VIEWS from 'modules/routes/constants/views'
 
 const Topics = asyncComponent({
   moduleName: 'Topics',

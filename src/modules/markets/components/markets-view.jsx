@@ -7,14 +7,14 @@ import MarketsList from 'modules/markets/components/markets-list'
 import Branch from 'modules/branch/components/branch'
 
 import getValue from 'utils/get-value'
-import parseQuery from 'modules/app/helpers/parse-query'
+import parseQuery from 'modules/routes/helpers/parse-query'
 import isEqual from 'lodash/isEqual'
 
-import parsePath from 'modules/app/helpers/parse-path'
-import makePath from 'modules/app/helpers/make-path'
+import parsePath from 'modules/routes/helpers/parse-path'
+import makePath from 'modules/routes/helpers/make-path'
 
-import { FAVORITES, MARKETS } from 'modules/app/constants/views'
-import { TOPIC_PARAM_NAME } from 'modules/app/constants/param-names'
+import { FAVORITES, MARKETS } from 'modules/routes/constants/views'
+import { TOPIC_PARAM_NAME } from 'modules/routes/constants/param-names'
 
 export default class MarketsView extends Component {
   static propTypes = {

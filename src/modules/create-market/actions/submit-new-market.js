@@ -5,11 +5,11 @@ import { invalidateMarketCreation, clearNewMarket } from 'modules/create-market/
 import { updateTradesInProgress } from 'modules/trade/actions/update-trades-in-progress'
 import { placeTrade } from 'modules/trade/actions/place-trade'
 
-import makePath from 'modules/app/helpers/make-path'
+import makePath from 'modules/routes/helpers/make-path'
 
 import { BUY, SELL } from 'modules/transactions/constants/types'
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
-import { TRANSACTIONS } from 'modules/app/constants/views'
+import { TRANSACTIONS } from 'modules/routes/constants/views'
 
 export function submitNewMarket(newMarket, history) {
   return (dispatch, getState) => {

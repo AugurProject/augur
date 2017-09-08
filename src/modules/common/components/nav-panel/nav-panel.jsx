@@ -4,9 +4,9 @@ import PropTypes from 'prop-types'
 import classNames from 'classnames'
 import Styles from 'modules/common/components/nav-panel/nav-panel.styles'
 
-import parseQuery from 'modules/app/helpers/parse-query'
-import makeQuery from 'modules/app/helpers/make-query'
-import { NAVPANEL_ID_PARAM_NAME } from 'modules/app/constants/param-names'
+import parseQuery from 'modules/routes/helpers/parse-query'
+import makeQuery from 'modules/routes/helpers/make-query'
+import { NAVPANEL_ID_PARAM_NAME } from 'modules/routes/constants/param-names'
 
 const NavPanel = (p) => {
   const selectedNavId = decodeURIComponent(parseQuery(p.location.search)[NAVPANEL_ID_PARAM_NAME] || '')

@@ -2,9 +2,9 @@ import { constructBasicTransaction } from 'modules/transactions/actions/construc
 import unpackTransactionParameters from 'modules/transactions/actions/unpack-transaction-parameters'
 import { addNotification } from 'modules/notifications/actions/update-notifications'
 
-import makePath from 'modules/app/helpers/make-path'
+import makePath from 'modules/routes/helpers/make-path'
 
-import { TRANSACTIONS } from 'modules/app/constants/views'
+import { TRANSACTIONS } from 'modules/routes/constants/views'
 
 export const constructRelayTransaction = tx => (dispatch, getState) => {
   const hash = tx.hash
