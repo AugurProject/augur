@@ -10,6 +10,8 @@ import { MarketStatusOpen, MarketStatusReported, MarketStatusClosed } from 'modu
 
 import toggleTag from 'modules/app/helpers/toggle-tag'
 
+import { BINARY, SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types'
+
 import Styles from 'modules/market/components/market-basics/market-basics.styles'
 
 const MarketBasics = (p) => {
@@ -56,11 +58,11 @@ const MarketBasics = (p) => {
           </MarketLink>
         </h1>
 
-        {(p.type === 'binary' || p.type === 'scalar') &&
+        {(p.type === BINARY || p.type === SCALAR) &&
           <MarketOutcomesBinaryScalar outcomes={p.outcomes} min={p.minValue} max={p.maxValue} type={p.type} />
         }
 
-        {p.type === 'categorical' &&
+        {p.type === CATEGORICAL &&
           <MarketOutcomesCategorical outcomes={p.outcomes} />
         }
       </div>

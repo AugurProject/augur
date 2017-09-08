@@ -1,13 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+import { BINARY } from 'modules/markets/constants/market-types'
+
+import getValue from 'utils/get-value'
+
 import Styles from 'modules/market/components/market-outcomes-binary-scalar/market-outcomes-binary-scalar.styles'
 
 const MarketOutcomes = (p) => {
   const calculatePosition = () => {
-    const lastPrice = p.outcomes[0] && p.outcomes[0].lastPricePercent.full
+    const lastPrice = getValue(p.outcomes[0], 'lastPricePercent.full')
 
-    if (p.type === 'binary') {
+    if (p.type === BINARY) {
       return lastPrice
     }
 
@@ -18,8 +22,8 @@ const MarketOutcomes = (p) => {
     left: calculatePosition()
   }
 
-  const minValue = p.min && p.type !== 'binary' ? p.min : '0%'
-  const maxValue = p.min && p.type !== 'binary' ? p.max : '100%'
+  const minValue = p.min && p.type !== BINARY ? p.min : '0%'
+  const maxValue = p.min && p.type !== BINARY ? p.max : '100%'
 
   return (
     <div className={Styles.MarketOutcomes}>
@@ -28,10 +32,10 @@ const MarketOutcomes = (p) => {
       <span className={Styles.MarketOutcomes__max}>{maxValue}</span>
       <span className={Styles.MarketOutcomes__current} style={currentValuePosition}>
         <span className={Styles['MarketOutcomes__current-value']}>
-          {p.outcomes[0] && p.outcomes[0].lastPricePercent.formatted}
+          {getValue(p.outcomes[0], 'lastPricePercent.formatted')}
         </span>
         <span className={Styles['MarketOutcomes__current-denomination']}>
-          {p.outcomes[0] && p.outcomes[0].lastPricePercent.denomination}
+          {getValue(p.outcomes[0], 'lastPricePercent.denomination')}
         </span>
       </span>
     </div>
