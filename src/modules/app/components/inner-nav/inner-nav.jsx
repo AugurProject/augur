@@ -37,10 +37,11 @@ export default class InnerNav extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
+    const searchChanged = !isEqual(this.props.location.search, nextProps.location.search)
     if (
       !isEqual(this.props.markets, nextProps.markets) ||
       !isEqual(this.props.marketsFilteredSorted, nextProps.marketsFilteredSorted) ||
-      !isEqual(this.props.location.search, nextProps.location.search)
+      searchChanged
     ) {
       this.updateFilteredKeywords(nextProps.markets, nextProps.marketsFilteredSorted, nextProps.location)
     }
@@ -49,8 +50,13 @@ export default class InnerNav extends Component {
   updateFilteredKeywords(markets, marketsFilteredSorted, location) {
     // make sure all selected tags are displayed, even if markets haven't loaded yet
     const selectedKeywords = parseStringToArray(decodeURIComponent(parseQuery(location.search)[TAGS_PARAM_NAME] || ''), '+')
+    const selectedCategory = parseQuery(location.search)[TOPIC_PARAM_NAME]
+
+    let catFilteredMarkets = markets
+    if (selectedCategory) catFilteredMarkets = _.filter(markets, market => market.topic === selectedCategory)
 
     const filteredKeywords = _(marketsFilteredSorted)
+    .intersection(catFilteredMarkets)
     .map(index => (markets[index] ? markets[index].tags : null))
     .flatten()
     .filter(keyword => Boolean(keyword))

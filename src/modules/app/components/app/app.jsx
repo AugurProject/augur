@@ -7,6 +7,7 @@ import shouldComponentUpdatePure from 'utils/should-component-update-pure'
 import debounce from 'utils/debounce'
 
 import { tween } from 'shifty'
+import _ from 'lodash'
 
 import TopBar from 'modules/app/components/top-bar/top-bar'
 import InnerNav from 'modules/app/components/inner-nav/inner-nav'
@@ -25,8 +26,12 @@ import NavPortfolioIcon from 'modules/common/components/nav-portfolio-icon'
 
 import parsePath from 'modules/routes/helpers/parse-path'
 import makePath from 'modules/routes/helpers/make-path'
+import parseQuery from 'modules/routes/helpers/parse-query'
+
+import getValue from 'utils/get-value'
 
 import { MARKETS, ACCOUNT, MY_POSITIONS, CREATE_MARKET, CATEGORIES } from 'modules/routes/constants/views'
+import { TOPIC_PARAM_NAME } from 'modules/routes/constants/param-names'
 
 import Styles from 'modules/app/components/app/app.styles'
 
@@ -99,6 +104,22 @@ export default class AppView extends Component {
     this.checkIsMobile = this.checkIsMobile.bind(this)
   }
 
+  componentWillMount() {
+    const currentPath = parsePath(this.props.location.pathname)[0]
+    const selectedCategory = parseQuery(this.props.location.search)[TOPIC_PARAM_NAME]
+
+    if (currentPath === MARKETS) {
+      if (this.props.isMobile && !selectedCategory) {
+        this.setState({ mobileMenuState: mobileMenuStates.CATEGORIES_OPEN })
+      } else if (this.props.isMobile && selectedCategory) {
+        this.setState({ mobileMenuState: mobileMenuStates.KEYWORDS_OPEN })
+      } else {
+        this.toggleMenuTween(MAIN_MENU, true)
+        if (selectedCategory) this.toggleMenuTween(SUB_MENU, true)
+      }
+    }
+  }
+
   componentDidMount() {
     window.addEventListener('resize', this.handleWindowResize)
 
@@ -114,26 +135,41 @@ export default class AppView extends Component {
       })
     }
 
-    const lastPath = parsePath(this.props.location.pathname)[0]
-    const nextPath = parsePath(nextProps.location.pathname)[0]
+    if (!_.isEqual(this.props.location, nextProps.location)) {
+      const lastPath = parsePath(this.props.location.pathname)[0]
+      const nextPath = parsePath(nextProps.location.pathname)[0]
 
-    if (lastPath !== MARKETS && nextPath === MARKETS) {
-      if (this.props.isMobile) {
-        this.setState({ mobileMenuState: mobileMenuStates.KEYWORDS_OPEN })
-      } else {
-        this.toggleMenuTween(MAIN_MENU, true)
-        this.toggleMenuTween(SUB_MENU, true)
+      const selectedCategory = parseQuery(nextProps.location.search)[TOPIC_PARAM_NAME]
+
+      // navigate to markets page
+      if (lastPath !== MARKETS && nextPath === MARKETS) {
+        if (this.props.isMobile && !selectedCategory) {
+          this.setState({ mobileMenuState: mobileMenuStates.CATEGORIES_OPEN })
+        } else if (this.props.isMobile && selectedCategory) {
+          this.setState({ mobileMenuState: mobileMenuStates.KEYWORDS_OPEN })
+        } else {
+          this.toggleMenuTween(MAIN_MENU, true)
+        }
+        this.setState({ keywordState: { loaded: true, openOnLoad: false } })
       }
 
-      this.setState({ keywordState: { loaded: true, openOnLoad: false } })
-    }
-
-    if (lastPath === MARKETS && nextPath !== MARKETS) {
-      if (!this.props.isMobile) {
-        this.toggleMenuTween(MAIN_MENU, false)
-        this.toggleMenuTween(SUB_MENU, false)
+      // on markets page, new category selected
+      if (nextPath === MARKETS && selectedCategory) {
+        if (this.props.isMobile) {
+          this.setState({ mobileMenuState: mobileMenuStates.KEYWORDS_OPEN })
+        } else {
+          this.toggleMenuTween(SUB_MENU, true)
+        }
       }
-      this.setState({ keywordState: { loaded: false, openOnLoad: true } })
+
+      // navigate away from markets page
+      if (lastPath === MARKETS && nextPath !== MARKETS) {
+        if (!this.props.isMobile) {
+          this.toggleMenuTween(MAIN_MENU, false)
+          this.toggleMenuTween(SUB_MENU, false)
+        }
+        this.setState({ keywordState: { loaded: false, openOnLoad: true } })
+      }
     }
   }
 
