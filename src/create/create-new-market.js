@@ -20,6 +20,7 @@ var encodeTag = require("../format/tag/encode-tag");
  * @param {string} p._maxDisplayPrice Maximum display (non-normalized) price for this market, as a base-10 string.
  * @param {string} p._automatedReporterAddress Ethereum address of this market's automated reporter.
  * @param {string} p._topic The topic (category) to which this market belongs, as a UTF8 string.
+ * @param {Object=} p._extraInfo Extra info which will be converted to JSON and logged to the chain in the CreateMarket event.
  * @param {buffer|function=} p._signer Can be the plaintext private key as a Buffer or the signing function to use.
  * @param {function} p.onSent Called if/when the createNewMarket transaction is broadcast to the network.
  * @param {function} p.onSuccess Called if/when the createNewMarket transaction is sealed and confirmed.
@@ -40,7 +41,8 @@ function createNewMarket(p) {
       // TODO replace with 'fixed' in abi map
       _minDisplayPrice: speedomatic.fix(p._minDisplayPrice, "hex"),
       _maxDisplayPrice: speedomatic.fix(p._maxDisplayPrice, "hex"),
-      _topic: encodeTag(p._topic)
+      _topic: encodeTag(p._topic),
+      _extraInfo: p._extraInfo ? JSON.stringify(p._extraInfo) : ""
     }));
   });
 }

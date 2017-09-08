@@ -21,11 +21,11 @@ describe("formatLogMessage", function () {
       value: speedomatic.fix("10")
     },
     assertions: function (msg) {
-      assert.strictEqual(JSON.stringify(msg), JSON.stringify({
+      assert.deepEqual(msg, {
         _owner: "0x0000000000000000000000000000000000000001",
         _spender: "0x0000000000000000000000000000000000000002",
         value: "10"
-      }));
+      });
     }
   });
   test({
@@ -34,9 +34,9 @@ describe("formatLogMessage", function () {
       value: speedomatic.fix("100")
     },
     assertions: function (msg) {
-      assert.strictEqual(JSON.stringify(msg), JSON.stringify({
+      assert.deepEqual(msg, {
         value: "100"
-      }));
+      });
     }
   });
   test({
@@ -45,9 +45,9 @@ describe("formatLogMessage", function () {
       outcome: speedomatic.hex("1")
     },
     assertions: function (msg) {
-      assert.strictEqual(JSON.stringify(msg), JSON.stringify({
+      assert.deepEqual(msg, {
         outcome: 1
-      }));
+      });
     }
   });
   test({
@@ -56,9 +56,9 @@ describe("formatLogMessage", function () {
       outcome: speedomatic.hex("2")
     },
     assertions: function (msg) {
-      assert.strictEqual(JSON.stringify(msg), JSON.stringify({
+      assert.deepEqual(msg, {
         outcome: 2
-      }));
+      });
     }
   });
   test({
@@ -68,10 +68,10 @@ describe("formatLogMessage", function () {
       cashRefund: speedomatic.fix("100.5034")
     },
     assertions: function (msg) {
-      assert.strictEqual(JSON.stringify(msg), JSON.stringify({
+      assert.deepEqual(msg, {
         outcome: 2,
         cashRefund: "100.5034"
-      }));
+      });
     }
   });
   test({
@@ -82,26 +82,44 @@ describe("formatLogMessage", function () {
       type: "2"
     },
     assertions: function (msg) {
-      assert.strictEqual(JSON.stringify(msg), JSON.stringify({
+      assert.deepEqual(msg, {
         owner: "0x0000000000000000000000000000000000000001",
         outcome: 1,
         type: "sell"
-      }));
+      });
     }
   });
   test({
     label: "CreateMarket",
     msg: {
+      branch: "0xb",
+      market: "0xa",
+      creator: "0xb0b",
       marketCreationFee: speedomatic.fix("1500"),
-      eventBond: speedomatic.fix("1000"),
-      topic: encodeTag("testing")
+      extraInfo: JSON.stringify({
+        marketType: "categorical",
+        shortDescription: "Will this market be the One Market?",
+        longDescription: "One Market to rule them all, One Market to bind them, One Market to bring them all, and in the darkness bind them.",
+        outcomeNames: ["Yes", "Strong Yes", "Emphatic Yes"],
+        tags: ["Ancient evil", "Large flaming eyes"],
+        creationTimestamp: 1234567890
+      })
     },
     assertions: function (msg) {
-      assert.strictEqual(JSON.stringify(msg), JSON.stringify({
+      assert.deepEqual(msg, {
+        branch: "0x000000000000000000000000000000000000000b",
+        market: "0x000000000000000000000000000000000000000a",
+        creator: "0x0000000000000000000000000000000000000b0b",
         marketCreationFee: "1500",
-        eventBond: "1000",
-        topic: "testing"
-      }));
+        extraInfo: {
+          marketType: "categorical",
+          shortDescription: "Will this market be the One Market?",
+          longDescription: "One Market to rule them all, One Market to bind them, One Market to bring them all, and in the darkness bind them.",
+          outcomeNames: ["Yes", "Strong Yes", "Emphatic Yes"],
+          tags: ["Ancient evil", "Large flaming eyes"],
+          creationTimestamp: 1234567890
+        }
+      });
     }
   });
   test({
@@ -112,11 +130,11 @@ describe("formatLogMessage", function () {
       _value: speedomatic.fix("312"),
     },
     assertions: function (msg) {
-      assert.strictEqual(JSON.stringify(msg), JSON.stringify({
+      assert.deepEqual(msg, {
         _from: "0x0000000000000000000000000000000000000003",
         _to: "0x0000000000000000000000000000000000000004",
         _value: "312",
-      }));
+      });
     }
   });
   test({
@@ -126,10 +144,10 @@ describe("formatLogMessage", function () {
       value: speedomatic.fix("153.25")
     },
     assertions: function (msg) {
-      assert.strictEqual(JSON.stringify(msg), JSON.stringify({
+      assert.deepEqual(msg, {
         to: "0x0000000000000000000000000000000000000001",
         value: "153.25"
-      }));
+      });
     }
   });
   test({
@@ -141,12 +159,12 @@ describe("formatLogMessage", function () {
       type: "1"
     },
     assertions: function (msg) {
-      assert.strictEqual(JSON.stringify(msg), JSON.stringify({
+      assert.deepEqual(msg, {
         sender: "0x0000000000000000000000000000000000000001",
         amount: "10",
         price: "5",
         type: "buy"
-      }));
+      });
     }
   });
 });

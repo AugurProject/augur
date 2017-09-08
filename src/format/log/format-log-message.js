@@ -2,7 +2,6 @@
 
 var speedomatic = require("speedomatic");
 var clone = require("clone");
-var decodeTag = require("../tag/decode-tag");
 var formatCommonFields = require("./format-common-fields");
 
 var formatLogMessage = function (label, msg) {
@@ -12,7 +11,7 @@ var formatLogMessage = function (label, msg) {
       fmt = clone(msg);
       fmt._owner = speedomatic.formatEthereumAddress(msg._owner);
       fmt._spender = speedomatic.formatEthereumAddress(msg._spender);
-      fmt.value = speedomatic.unfix(msg.value);
+      fmt.value = speedomatic.unfix(msg.value, "string");
       return fmt;
     case "Deposit":
       fmt = formatCommonFields(msg);
@@ -34,15 +33,21 @@ var formatLogMessage = function (label, msg) {
       return fmt;
     case "CreateMarket":
       fmt = formatCommonFields(msg);
+      fmt.branch = speedomatic.formatEthereumAddress(msg.branch);
+      fmt.market = speedomatic.formatEthereumAddress(msg.market);
+      fmt.creator = speedomatic.formatEthereumAddress(msg.creator);
+      try {
+        fmt.extraInfo = JSON.parse(msg.extraInfo);
+      } catch (exc) {
+        if (exc.constructor !== SyntaxError) throw exc;
+      }
       fmt.marketCreationFee = speedomatic.unfix(msg.marketCreationFee, "string");
-      fmt.eventBond = speedomatic.unfix(msg.eventBond, "string");
-      fmt.topic = decodeTag(msg.topic);
       return fmt;
     case "Transfer":
       fmt = clone(msg);
       fmt._from = speedomatic.formatEthereumAddress(msg._from);
       fmt._to = speedomatic.formatEthereumAddress(msg._to);
-      fmt._value = speedomatic.unfix(msg._value);
+      fmt._value = speedomatic.unfix(msg._value, "string");
       return fmt;
     case "SubmitReport":
       fmt = formatCommonFields(msg);
