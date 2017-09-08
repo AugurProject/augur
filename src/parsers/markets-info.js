@@ -1,7 +1,6 @@
 "use strict";
 
 var speedomatic = require("speedomatic");
-var unfixConsensusOutcome = require("../reporting/format/unfix-consensus-outcome");
 var decodeTag = require("../format/tag/decode-tag");
 
 module.exports = function (marketsInfoArray, branch) {
@@ -21,10 +20,9 @@ module.exports = function (marketsInfoArray, branch) {
     if (!speedomatic.unfix(consensusOutcomeID, "number")) {
       consensus = null;
     } else {
-      var unfixed = unfixConsensusOutcome(consensusOutcomeID, minPrice, maxPrice);
       consensus = {
-        outcomeID: unfixed.outcomeID,
-        isIndeterminate: unfixed.isIndeterminate
+        outcomeID: consensusOutcomeID,
+        isIndeterminate: null // FIXME
       };
     }
     var topic = decodeTag(marketsInfoArray[shift + 5]);

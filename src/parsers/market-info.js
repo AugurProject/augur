@@ -3,7 +3,6 @@
 var speedomatic = require("speedomatic");
 var rpc = require("../rpc-interface");
 var decodeTag = require("../format/tag/decode-tag");
-var unfixConsensusOutcome = require("../reporting/format/unfix-consensus-outcome");
 
 // marketInfo[0] = marketID
 // marketInfo[2] = numOutcomes
@@ -32,10 +31,9 @@ module.exports = function (marketInfoArray) {
   };
   if (parseInt(marketInfoArray[index + 2], 16) !== 0) {
     var fxpConsensusOutcome = marketInfoArray[index + 2];
-    var unfixed = unfixConsensusOutcome(fxpConsensusOutcome, marketInfo.minPrice, marketInfo.maxPrice, marketInfo.type);
     marketInfo.consensus = {
-      outcomeID: unfixed.outcomeID,
-      isIndeterminate: unfixed.isIndeterminate
+      outcomeID: fxpConsensusOutcome,
+      isIndeterminate: null // FIXME
     };
   } else {
     marketInfo.consensus = null;

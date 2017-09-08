@@ -3,7 +3,6 @@
 module.exports = {
   getCurrentPeriod: require("./get-current-period"),
   getCurrentPeriodProgress: require("./get-current-period-progress"),
-  getReport: require("./get-report"),
   loadBranch: require("./load-branch"),
   registerToReport: require("./register-to-report"),
   submitReport: require("./submit-report"),
