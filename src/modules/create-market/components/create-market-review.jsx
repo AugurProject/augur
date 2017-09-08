@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { augur, constants } from 'services/augurjs';
-import speedomatic from 'speedomatic';
+import { augur } from 'services/augurjs';
 import BigNumber from 'bignumber.js';
 
 import { formatEtherEstimate, formatEtherTokensEstimate } from 'utils/format-number';
@@ -16,6 +15,7 @@ export default class CreateMarketReview extends Component {
     isValid: PropTypes.bool.isRequired,
     creationError: PropTypes.string.isRequired,
     branch: PropTypes.object.isRequired,
+    endDate: PropTypes.object.isRequired,
     currentStep: PropTypes.number.isRequired,
     initialLiquidityEth: PropTypes.instanceOf(BigNumber).isRequired,
     initialLiquidityGas: PropTypes.instanceOf(BigNumber).isRequired,
@@ -64,21 +64,17 @@ export default class CreateMarketReview extends Component {
   }
 
   calculateMarketCreationCosts() {
-    const gasPrice = augur.rpc.gasPrice || constants.DEFAULT_GASPRICE;
-
-    // TODO augur.api.functions -> getState().functionsAPI
-    const gasCost = formatEtherEstimate(augur.trading.simulation.getTxGasEth({ ...augur.api.CreateMarket.createMarket }, gasPrice));
-    const creationFee = formatEtherEstimate(speedomatic.unfix(augur.create.calculateRequiredMarketValue(gasPrice)));
-
-    // Event Bond
-    const tradingFee = augur.trading.fees.calculateTradingFees(this.props.makerFee, this.props.takerFee).tradingFee;
-    const validityBond = augur.create.calculateValidityBond(tradingFee, this.props.branch.periodLength, this.props.branch.baseReporters, this.props.branch.numEventsCreatedInPast24Hours, this.props.branch.numEventsInReportPeriod);
-    const eventBond = formatEtherEstimate(validityBond);
-
-    this.setState({
-      gasCost,
-      creationFee,
-      eventBond
+    const self = this;
+    augur.create.getMarketCreationCostBreakdown({
+      branchID: this.props.branch.id,
+      _endTime: this.props.endDate.timestamp / 1000
+    }, (err, marketCreationCostBreakdown) => {
+      if (err) return console.error(err);
+      self.setState({
+        gasCost: formatEtherEstimate(0), // FIXME real gas cost lookup
+        creationFee: formatEtherEstimate(marketCreationCostBreakdown.targetReporterGasCosts),
+        eventBond: formatEtherEstimate(marketCreationCostBreakdown.validityBond)
+      });
     });
   }
 
@@ -120,7 +116,7 @@ export default class CreateMarketReview extends Component {
                   </span>
                   <span>
                     {eventBond}
-                    <span className="cost-denomination">{eventBond && 'ETH Tokens'}</span>
+                    <span className="cost-denomination">{eventBond && 'ETH'}</span>
                   </span>
                 </li>
                 <li>

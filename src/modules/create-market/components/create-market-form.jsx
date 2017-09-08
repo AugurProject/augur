@@ -243,6 +243,7 @@ export default class CreateMarketForm extends Component {
           })}
           isValid={p.newMarket.isValid}
           creationError={p.newMarket.creationError}
+          endDate={p.newMarket.endDate}
           branch={p.branch}
           currentStep={p.newMarket.currentStep}
           takerFee={p.newMarket.takerFee}
