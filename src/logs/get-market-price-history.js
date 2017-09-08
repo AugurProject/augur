@@ -17,7 +17,7 @@
  */
 
 var getLogsChunked = require("./get-logs-chunked");
-var isFunction = require("../../utils/is-function");
+var isFunction = require("../utils/is-function");
 var noop = require("../utils/noop");
 
 /**
@@ -33,10 +33,14 @@ var noop = require("../utils/noop");
 function getMarketPriceHistory(p, onChunkReceived, onComplete) {
   if (!isFunction(onChunkReceived)) onChunkReceived = noop;
   if (!isFunction(onComplete)) onComplete = noop;
-  var aux = { index: "outcome", mergedLogs: {} };
-  getLogsChunked({ label: "TakeOrder", filter: p, aux: aux }, onChunkReceived, function (err) {
+  getLogsChunked({ label: "TakeOrder", filter: p }, onChunkReceived, function (err, logs) {
     if (err) return onComplete(err);
-    onComplete(null, aux.mergedLogs);
+    var mergedLogs = {};
+    logs.forEach(function (log) {
+      if (!mergedLogs[log.outcome]) mergedLogs[log.outcome] = [];
+      mergedLogs[log.outcome].push({ price: log.price, timestamp: log.timestamp });
+    });
+    onComplete(null, mergedLogs);
   });
 }
 

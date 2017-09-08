@@ -27,7 +27,7 @@ function getAccountOrderBook(p, onChunkReceived, onComplete) {
   var aux = { index: ["market", "outcome", "orderType"], mergedLogs: {} };
   getLogsChunked({ label: "MakeOrder", filter: p, aux: aux }, onChunkReceived, function (err) {
     if (err) return onComplete(err);
-    onComplete(aux.mergedLogs);
+    onComplete(null, aux.mergedLogs);
   });
 }
 

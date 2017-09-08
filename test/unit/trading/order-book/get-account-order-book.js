@@ -66,8 +66,8 @@ describe("trading/order-book/get-account-order-book", function () {
       var getAccountOrderBook = proxyquire("../../../../src/trading/order-book/get-account-order-book", {
         "../../logs/get-logs-chunked": t.stub.getLogsChunked
       });
-      getAccountOrderBook(t.params.p, t.params.onChunkReceived, function (orderBook) {
-        t.assertions(orderBook);
+      getAccountOrderBook(t.params.p, t.params.onChunkReceived, function (err, orderBook) {
+        t.assertions(err, orderBook);
         done();
       });
     });
@@ -110,10 +110,11 @@ describe("trading/order-book/get-account-order-book", function () {
           insertIndexedLog(p.aux.mergedLogs, mockMakeOrderLog, p.aux.index);
         });
         onChunkReceived(p.aux.mergedLogs);
-        onComplete(p.aux.mergedLogs);
+        onComplete(null, p.aux.mergedLogs);
       }
     },
-    assertions: function (orderBook) {
+    assertions: function (err, orderBook) {
+      assert.isNull(err);
       assert.deepEqual(orderBook, mockOrderBook);
     }
   });
