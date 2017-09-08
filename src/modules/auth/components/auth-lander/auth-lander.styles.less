@@ -21,6 +21,8 @@
 
   align-self: center;
   color: @color-white;
+  letter-spacing: 0.075em;
+  line-height: calc(@font-size-normal ~"*" 2.5);
   text-align: center;
 
   @media @breakpoint-mobile {
@@ -34,7 +36,10 @@
 }
 
 .AuthView__button {
-  &:extend(.button);
+  &:extend(.button--white);
+  &:extend(.caps--extra-large);
+
+  margin: 0 calc(@font-size-extra-large ~"*" 1.5);
 }
 
 .AuthView__spacer {
