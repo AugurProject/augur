@@ -25,7 +25,8 @@ export const loadFullMarket = marketID => (dispatch, getState) => {
 export const loadMarketDetails = marketID => dispatch => (
   dispatch(loadBidsAsks(marketID, () => (
     dispatch(loadAccountTrades({ market: marketID }, () => (
-      dispatch(loadPriceHistory(marketID, () => {
+      dispatch(loadPriceHistory(marketID, (err) => {
+        if (err) console.error(err);
         dispatch(removeMarketLoading(marketID));
       }))
     )))
