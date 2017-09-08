@@ -36,6 +36,26 @@ export default function AuthLander(p) {
           </Link>
         </div>
         <div className={Styles.AuthView__spacer} />
+        <div className={Styles.AuthView__footer}>
+          <a
+            href="https://augur.net/terms.txt"
+            target="blank"
+          >
+            Terms & Conditions
+          </a>
+          <a
+            href="http://terms.augur.net/"
+            target="blank"
+          >
+            Privacy Policy
+          </a>
+          <a
+            href="https://augur.net/license.txt"
+            target="blank"
+          >
+            Licensing Agreement
+          </a>
+        </div>
       </div>
     </section>
   )
