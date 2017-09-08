@@ -23,6 +23,16 @@ const AuthLander = asyncComponent({
   loader: () => import(/* webpackChunkName: 'auth' */ 'modules/auth/containers/auth-lander')
     .then(module => module.default)
 })
+const Signup = asyncComponent({
+  moduleName: 'Signup',
+  loader: () => import(/* webpackChunkName: 'signup' */ 'modules/auth/containers/auth-signup')
+    .then(module => module.default)
+})
+const Login = asyncComponent({
+  moduleName: 'Login',
+  loader: () => import(/* webpackChunkName: 'login' */ 'modules/auth/containers/auth-login')
+    .then(module => module.default)
+})
 const Account = asyncComponent({
   moduleName: 'Account',
   loader: () => import(/* webpackChunkName: 'account' */ 'modules/account/container')
@@ -61,6 +71,8 @@ const Routes = p => (
       <Route path={makePath(VIEWS.MARKETS)} component={Markets} />
       <Route path={makePath(VIEWS.MARKET)} component={Market} />
       <Route path={makePath(VIEWS.AUTHENTICATION)} component={AuthLander} />
+      <Route path={makePath(VIEWS.SIGNUP)} component={Signup} />
+      <Route path={makePath(VIEWS.LOGIN)} component={Login} />
       <Route path={makePath(VIEWS.STYLE_SANDBOX)} component={StyleSandbox} />
       <AuthenticatedRoute path={makePath(VIEWS.FAVORITES)} component={Markets} />
       <AuthenticatedRoute path={makePath(VIEWS.MY_POSITIONS)} component={Portfolio} />
