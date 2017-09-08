@@ -48,6 +48,4 @@ const mapStateToProps = state => ({
   isMobile: state.isMobile
 })
 
-const Auth = connect(mapStateToProps)(AuthLander)
-
-export default Auth
+export default connect(mapStateToProps)(AuthLander)

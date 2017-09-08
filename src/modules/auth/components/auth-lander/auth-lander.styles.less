@@ -46,3 +46,17 @@
   display: flex;
   flex: 1;
 }
+
+.AuthView__footer {
+  color: @color-text-light;
+  font-size: @font-size-large;
+
+  a::after {
+    content: "|";
+    padding: 0.5em;
+  }
+
+  a:last-child::after {
+    content: "";
+  }
+}
