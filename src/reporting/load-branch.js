@@ -1,6 +1,6 @@
 "use strict";
 
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 var api = require("../api");
 
 function finishLoadBranch(branch, callback) {
@@ -10,7 +10,7 @@ function finishLoadBranch(branch, callback) {
 }
 
 function loadBranch(branchID, callback) {
-  var branch = { id: abi.hex(branchID) };
+  var branch = { id: speedomatic.hex(branchID) };
   api().Branches.getPeriodLength({ branch: branchID }, function (periodLength) {
     if (!periodLength || periodLength.error) return callback(periodLength);
     branch.periodLength = periodLength;

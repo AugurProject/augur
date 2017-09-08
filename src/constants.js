@@ -1,7 +1,3 @@
-/**
- * augur.js constants
- */
-
 "use strict";
 
 var BigNumber = require("bignumber.js");
@@ -37,9 +33,6 @@ module.exports = {
   GETTER_CHUNK_SIZE: 100,
   BLOCKS_PER_CHUNK: 500,
 
-  // milliseconds to wait between getMarketsInfo batches
-  PAUSE_BETWEEN_MARKET_BATCHES: 50,
-
   GET_LOGS_DEFAULT_FROM_BLOCK: "0x1",
   GET_LOGS_DEFAULT_TO_BLOCK: "latest",
 
@@ -67,6 +60,8 @@ module.exports = {
   ],
   CANCEL_GAS: {sell: 288060, buy: 230059},
 
+  DUST_THRESHOLD: new BigNumber(1, 10), // placeholder value
+
   // expected block interval
   SECONDS_PER_BLOCK: 12,
 
@@ -76,11 +71,6 @@ module.exports = {
   // KDF: "scrypt",
   // ROUNDS: 4096,
   KEYSIZE: 32,
-  IVSIZE: 16,
+  IVSIZE: 16
 
-  // cipher used to encrypt/decrypt reports
-  REPORT_CIPHER: "aes-256-ctr",
-
-  // Morden testnet faucet endpoint
-  FAUCET: "https://faucet.augur.net/faucet/"
 };

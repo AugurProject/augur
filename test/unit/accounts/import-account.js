@@ -1,118 +1,170 @@
 /* eslint-env mocha */
 
+/**
+ * Test vectors: https://github.com/ethereum/wiki/wiki/Web3-Secret-Storage-Definition
+ * Address: 008aeeda4d805471df9b2a5b0f38a0c3bcba786b
+ * Password: testpassword
+ * Private key: 7a28b5ba57c53603b0b07b56bba752f7784bf506fa95edc395f5cf6c7514fe9d
+ * Derived keys:
+ *  - PBKDF2: f06d69cdc7da0faffb1008270bca38f5e31891a3a773950e6d0fea48a7188551
+ *  - scrypt: fac192ceb5fd772906bea3e118a69e8bbb5cc24229e20d8766fd298291bba6bd
+ */
+
 "use strict";
 
 var assert = require("chai").assert;
 var errors = require("ethrpc").errors;
-var keys = require("keythereum");
-var abi = require("augur-abi");
-var errors = require("ethrpc").errors;
-var constants = require("../../../src/constants");
-var noop = require("../../../src/utils/noop");
-var importAccount = require("../../../src/accounts/import-account");
+var keythereum = require("keythereum");
+var proxyquire = require("proxyquire").noPreserveCache();
 
-var keystore = {
-  address: "289d485d9771714cce91d3393d764e1311907acc",
+var scryptKeystore = {
   crypto: {
     cipher: "aes-128-ctr",
-    ciphertext: "faf32ca89d286b107f5e6d842802e05263c49b78d46eac74e6109e9a963378ab",
     cipherparams: {
-      iv: "558833eec4a665a8c55608d7d503407d"
+      iv: "83dbcc02d8ccb40e466191a123791e0e"
     },
+    ciphertext: "d172bf743a674da9cdad04534d56926ef8358534d458fffccd4e6ad2fbde479c",
     kdf: "scrypt",
     kdfparams: {
       dklen: 32,
-      n: 8,
-      p: 16,
-      r: 8,
-      salt: "d571fff447ffb24314f9513f5160246f09997b857ac71348b73e785aab40dc04"
+      n: 262144,
+      r: 1,
+      p: 8,
+      salt: "ab0c7876052600dd703518d6fc3fe8984592145b591fc8fb5c6d43190334ba19"
     },
-    mac: "21edb85ff7d0dab1767b9bf498f2c3cb7be7609490756bd32300bb213b59effe"
+    mac: "2103ac29920d71da29f15d75b4a16dbe95cfd7ff8faea1056c33131d846e3097"
   },
-  id: "3279afcf-55ba-43ff-8997-02dcc46a6525",
+  id: "3198bc9c-6672-5ab3-d995-4942343ae5b6",
+  version: 3
+};
+var pbkdf2Keystore = {
+  crypto: {
+    cipher: "aes-128-ctr",
+    cipherparams: {
+      iv: "6087dab2f9fdbbfaddc31a909735c1e6"
+    },
+    ciphertext: "5318b4d5bcd28de64ee5559e671353e16f075ecae9f99c7a79a38af5f869aa46",
+    kdf: "pbkdf2",
+    kdfparams: {
+      c: 262144,
+      dklen: 32,
+      prf: "hmac-sha256",
+      salt: "ae3cd4e7013836a3df6bd7241b12db061dbe2c6785853cce422d148a624ce0bd"
+    },
+    mac: "517ead924a9d0dc3124507e3393d175ce3ff7c1e96529c6c555ce9e51205e9b2"
+  },
+  id: "3198bc9c-6672-5ab3-d995-4942343ae5b6",
   version: 3
 };
 
 describe("accounts/import-account", function () {
-  var recover = keys.recover;
-  var deriveKey = keys.deriveKey;
-  afterEach(function () {
-    keys.recover = recover;
-    keys.deriveKey = deriveKey;
-  });
   var test = function (t) {
     it(t.description, function (done) {
-      keys.recover = t.recover || recover;
-      keys.deriveKey = t.deriveKey || deriveKey;
-      if (t.params.cb) {
-        importAccount(t.params.password, t.params.keystore, function (account) {
-          t.assertions(account);
-          done();
-        });
-      } else {
-        var output = importAccount(t.params.password, t.params.keystore);
-        t.assertions(output);
+      this.timeout(60000);
+      var importAccount = proxyquire("../../../src/accounts/import-account", {
+        keythereum: Object.assign({}, keythereum, t.mock.keythereum)
+      });
+      importAccount(t.params, function (importedAccount) {
+        t.assertions(importedAccount);
         done();
-      }
+      });
     });
   };
   test({
-    description: "Should handle importing an account",
+    description: "Import an account with scrypt-derived secret key",
     params: {
-      password: "foobar",
-      keystore: keystore,
-      cb: noop
+      password: "testpassword",
+      address: "0x008aeeda4d805471df9b2a5b0f38a0c3bcba786b",
+      keystore: scryptKeystore
     },
-    assertions: function (account) {
-      var expected = {
-        privateKey: Buffer.from("14a447d8d4c69714f8750e1688feb98857925e1fec6dee7c75f0079d10519d25", "hex"),
-        derivedKey: Buffer.from("6149823a44b50a20e7d5a6d7e60798c576f330888a3c6bc0113da5b687662586", "hex"),
-        address: "0x289d485d9771714cce91d3393d764e1311907acc",
-        keystore: keystore
-      };
-      assert.deepEqual(account, expected);
+    mock: {
+      keythereum: {}
+    },
+    assertions: function (importedAccount) {
+      assert.deepEqual(importedAccount, {
+        privateKey: Buffer.from("7a28b5ba57c53603b0b07b56bba752f7784bf506fa95edc395f5cf6c7514fe9d", "hex"),
+        derivedKey: Buffer.from("fac192ceb5fd772906bea3e118a69e8bbb5cc24229e20d8766fd298291bba6bd", "hex"),
+        address: "0x008aeeda4d805471df9b2a5b0f38a0c3bcba786b",
+        keystore: scryptKeystore
+      });
     }
   });
   test({
-    description: "Should handle no cb and blank password by returning an error",
+    description: "Import an account with PBKDF2-derived secret key",
     params: {
-      password: "",
-      keystore: keystore
+      password: "testpassword",
+      address: "0x008aeeda4d805471df9b2a5b0f38a0c3bcba786b",
+      keystore: pbkdf2Keystore
     },
-    assertions: function (account) {
-      assert.deepEqual(account, errors.BAD_CREDENTIALS);
+    mock: {
+      keythereum: {}
+    },
+    assertions: function (importedAccount) {
+      assert.deepEqual(importedAccount, {
+        privateKey: Buffer.from("7a28b5ba57c53603b0b07b56bba752f7784bf506fa95edc395f5cf6c7514fe9d", "hex"),
+        derivedKey: Buffer.from("f06d69cdc7da0faffb1008270bca38f5e31891a3a773950e6d0fea48a7188551", "hex"),
+        address: "0x008aeeda4d805471df9b2a5b0f38a0c3bcba786b",
+        keystore: pbkdf2Keystore
+      });
+    }
+  });
+  test({
+    description: "Should handle an empty string password by returning an error",
+    params: {
+      p: {
+        password: "",
+        keystore: scryptKeystore
+      }
+    },
+    mock: {
+      keythereum: {
+        recover: function () {
+          assert.fail();
+        }
+      }
+    },
+    assertions: function (importedAccount) {
+      assert.deepEqual(importedAccount, errors.BAD_CREDENTIALS);
     }
   });
   test({
     description: "Should handle an issue recovering the privateKey by returning an error",
     params: {
       password: "foobar",
-      keystore: keystore,
-      cb: noop
+      keystore: scryptKeystore
     },
-    recover: function (password, keystore, cb) {
-      cb({error: "Uh-Oh!"});
+    mock: {
+      keythereum: {
+        recover: function (password, keystore, callback) {
+          callback({ error: "Uh-oh!" });
+        }
+      }
     },
-    assertions: function (account) {
-      assert.deepEqual(account, errors.BAD_CREDENTIALS);
+    assertions: function (importedAccount) {
+      assert.deepEqual(importedAccount, errors.BAD_CREDENTIALS);
     }
   });
   test({
     description: "Should handle an issue with derivedKey by returning an error",
     params: {
       password: "foobar",
-      keystore: keystore,
-      cb: noop
+      keystore: scryptKeystore
     },
-    recover: function (password, keystore, cb) {
-      // don't call the real recover as it calls deriveKey within and we don't want to call our mock early, we want to test a conditional failure later in import-account.
-      cb('somePrivateKey');
+    mock: {
+      keythereum: {
+        recover: function (password, keystore, callback) {
+          // don't call the real recover as it calls deriveKey within and we don't
+          // want to call our mock early, we want to test a conditional failure
+          // later in import-account.
+          callback("A_PRIVATE_KEY");
+        },
+        deriveKey: function (password, salt, cipher, callback) {
+          callback({ error: "Uh-Oh!" });
+        }
+      }
     },
-    deriveKey: function (password, salt, cipher, cb) {
-      cb({error: "Uh-Oh!"});
-    },
-    assertions: function (account) {
-      assert.deepEqual(account, errors.BAD_CREDENTIALS);
+    assertions: function (importAccount) {
+      assert.deepEqual(importAccount, errors.BAD_CREDENTIALS);
     }
   });
 });

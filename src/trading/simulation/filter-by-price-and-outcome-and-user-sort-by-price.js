@@ -1,43 +1,33 @@
 "use strict";
 
 var BigNumber = require("bignumber.js");
-
-function compareBuyOrdersByPrice(order1, order2) {
-  return order1.price - order2.price;
-}
-
-function compareSellOrdersByPrice(order1, order2) {
-  return order2.price - order1.price;
-}
+var compareOrdersByPrice = require("./compare-orders-by-price");
 
 /**
- * Bids are sorted descendingly, asks are sorted ascendingly
- *
- * @param {Array} orders Bids or asks
- * @param {String} traderOrderType What trader want to do (buy or sell)
- * @param {BigNumber=} limitPrice When buying it's max price to buy at, when selling it min price to sell at. If it's null order is considered to be market order
- * @param {String} outcomeID
- * @param {String} userAddress
- * @return {Array.<Object>}
+ * Bids are sorted descendingly, asks are sorted ascendingly.
+ * @param {require("./simulate-trade").OrderBook} orderBook Bids or asks
+ * @param {number} orderType Order type (1 for "buy", 2 for "sell").
+ * @param {string} price Limit price for this order (i.e. the worst price the user will accept), as a base-10 string.
+ * @param {string} userAddress The user's Ethereum address, as a hexadecimal string.
+ * @return {require("./simulate-trade").OrderBook} Filtered and sorted orders.
  */
-function filterByPriceAndOutcomeAndUserSortByPrice(orders, traderOrderType, limitPrice, outcomeID, userAddress) {
+function filterByPriceAndOutcomeAndUserSortByPrice(orderBook, orderType, price, userAddress) {
   var isMarketOrder, filteredOrders;
-  if (!orders) return [];
-  isMarketOrder = limitPrice == null;
-  filteredOrders = Object.keys(orders).map(function (orderID) {
-    return orders[orderID];
+  if (!orderBook) return [];
+  isMarketOrder = price == null;
+  filteredOrders = Object.keys(orderBook).map(function (orderId) {
+    return orderBook[orderId];
   }).filter(function (order) {
     var isMatchingPrice;
-    if (!order || !order.price) return false;
+    if (!order || !order.fullPrecisionPrice) return false;
     if (isMarketOrder) {
       isMatchingPrice = true;
     } else {
-      isMatchingPrice = traderOrderType === "buy" ? new BigNumber(order.price, 10).lte(limitPrice) : new BigNumber(order.price, 10).gte(limitPrice);
+      isMatchingPrice = orderType === 1 ? new BigNumber(order.fullPrecisionPrice, 10).lte(price) : new BigNumber(order.fullPrecisionPrice, 10).gte(price);
     }
-    return order.outcome === outcomeID && order.owner !== userAddress && isMatchingPrice;
+    return order.owner !== userAddress && isMatchingPrice;
   });
-  if (traderOrderType === "buy") return filteredOrders.sort(compareBuyOrdersByPrice);
-  return filteredOrders.sort(compareSellOrdersByPrice);
+  return filteredOrders.sort(compareOrdersByPrice[orderType]);
 }
 
 module.exports = filterByPriceAndOutcomeAndUserSortByPrice;

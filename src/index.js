@@ -18,7 +18,7 @@ keythereum.constants.pbkdf2.c = ROUNDS;
 keythereum.constants.scrypt.n = ROUNDS;
 
 function Augur() {
-  this.version = "4.0.6";
+  this.version = "4.1.0";
   this.options = {
     debug: {
       tools: false,       // if true, testing tools (test/tools.js) included
@@ -32,13 +32,11 @@ function Augur() {
     },
     loadZeroVolumeMarkets: true
   };
-  this.abi = require("augur-abi");
+  this.speedomatic = require("speedomatic");
   this.accounts = require("./accounts");
   this.api = require("./api")();
   this.generateContractAPI = require("./api").generateContractAPI;
   this.assets = require("./assets");
-  this.beta = require("./beta");
-  this.chat = require("./chat");
   this.connect = require("./connect").bind(this);
   this.constants = require("./constants");
   this.create = require("./create");

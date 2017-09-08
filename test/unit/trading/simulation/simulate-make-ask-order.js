@@ -1,0 +1,165 @@
+/* eslint-env mocha */
+
+"use strict";
+
+var assert = require("chai").assert;
+var BigNumber = require("bignumber.js");
+var simulateMakeAskOrder = require("../../../../src/trading/simulation/simulate-make-ask-order");
+var constants = require("../../../../src/constants");
+var ZERO = constants.ZERO;
+
+describe("trading/simulation/simulate-make-ask-order", function () {
+  var test = function (t) {
+    it(t.description, function () {
+      var output;
+      try {
+        output = simulateMakeAskOrder(t.params.numShares, t.params.price, t.params.maxPrice, t.params.outcome, t.params.shareBalances);
+      } catch (exc) {
+        output = exc;
+      }
+      t.assertions(output);
+    });
+  };
+  test({
+    description: "[0, 0] shares held, 1 maximum price, ask 2 shares of outcome 1 @ 0.6",
+    params: {
+      numShares: new BigNumber("2", 10),
+      price: new BigNumber("0.6", 10),
+      maxPrice: new BigNumber("1", 10),
+      outcome: 1,
+      shareBalances: [ZERO, ZERO]
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, {
+        gasFees: ZERO,
+        sharesDepleted: ZERO,
+        tokensDepleted: new BigNumber("0.8", 10),
+        shareBalances: [ZERO, ZERO]
+      });
+    }
+  });
+  test({
+    description: "[0, 4] shares held, 5 maximum price, ask 2 shares of outcome 1 @ 0.6",
+    params: {
+      numShares: new BigNumber("2", 10),
+      price: new BigNumber("0.6", 10),
+      maxPrice: new BigNumber("5", 10),
+      outcome: 1,
+      shareBalances: [ZERO, new BigNumber("4", 10)]
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, {
+        gasFees: ZERO,
+        sharesDepleted: ZERO,
+        tokensDepleted: new BigNumber("8.8", 10),
+        shareBalances: [ZERO, new BigNumber("4", 10)]
+      });
+    }
+  });
+  test({
+    description: "[3, 0] shares held, 5 maximum price, ask 2 shares of outcome 1 @ 0.6",
+    params: {
+      numShares: new BigNumber("2", 10),
+      price: new BigNumber("0.6", 10),
+      maxPrice: new BigNumber("5", 10),
+      outcome: 1,
+      shareBalances: [new BigNumber("3", 10), ZERO]
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, {
+        gasFees: ZERO,
+        sharesDepleted: new BigNumber("2", 10),
+        tokensDepleted: ZERO,
+        shareBalances: [new BigNumber("1", 10), ZERO]
+      });
+    }
+  });
+  test({
+    description: "[1, 0] shares held, 5 maximum price, ask 2 shares of outcome 1 @ 0.6",
+    params: {
+      numShares: new BigNumber("2", 10),
+      price: new BigNumber("0.6", 10),
+      maxPrice: new BigNumber("5", 10),
+      outcome: 1,
+      shareBalances: [new BigNumber("1", 10), ZERO]
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, {
+        gasFees: ZERO,
+        sharesDepleted: new BigNumber("1", 10),
+        tokensDepleted: new BigNumber("4.4", 10),
+        shareBalances: [ZERO, ZERO]
+      });
+    }
+  });
+  test({
+    description: "[1.2, 3.3] shares held, -2.1 maximum price, ask 1.9 shares of outcome 1 @ -2.6",
+    params: {
+      numShares: new BigNumber("1.9", 10),
+      price: new BigNumber("-2.6", 10),
+      maxPrice: new BigNumber("-2.1", 10),
+      outcome: 1,
+      shareBalances: [new BigNumber("1.2", 10), new BigNumber("3.3", 10)]
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, {
+        gasFees: ZERO,
+        sharesDepleted: new BigNumber("1.2", 10),
+        tokensDepleted: new BigNumber("0.35", 10),
+        shareBalances: [ZERO, new BigNumber("3.3", 10)]
+      });
+    }
+  });
+  test({
+    description: "[1, 0] shares held, 5 maximum price, ask 0 shares of outcome 1 @ 0.6",
+    params: {
+      numShares: ZERO,
+      price: new BigNumber("0.6", 10),
+      maxPrice: new BigNumber("5", 10),
+      outcome: 1,
+      shareBalances: [new BigNumber("1", 10), ZERO]
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, new Error("Number of shares is too small"));
+    }
+  });
+  test({
+    description: "[1, 0] shares held, 5 maximum price, ask 2 shares of outcome 1 @ 5.1",
+    params: {
+      numShares: new BigNumber("2", 10),
+      price: new BigNumber("5.1", 10),
+      maxPrice: new BigNumber("5", 10),
+      outcome: 1,
+      shareBalances: [new BigNumber("1", 10), ZERO]
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, new Error("Price is above the maximum price"));
+    }
+  });
+  test({
+    description: "[3, 1] shares held, 7 minimum price, ask 2 shares of outcome 0 @ 6",
+    params: {
+      numShares: new BigNumber("2", 10),
+      price: new BigNumber("6", 10),
+      minPrice: new BigNumber("7", 10),
+      outcome: 0,
+      shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)]
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, new Error("Invalid outcome ID"));
+    }
+  });
+  test({
+    description: "[3, 1] shares held, 7 minimum price, ask 2 shares of outcome 3 @ 6",
+    params: {
+      numShares: new BigNumber("2", 10),
+      price: new BigNumber("6", 10),
+      minPrice: new BigNumber("7", 10),
+      outcome: 3,
+      shareBalances: [new BigNumber("3", 10), new BigNumber("1", 10)]
+    },
+    assertions: function (output) {
+      assert.deepEqual(output, new Error("Invalid outcome ID"));
+    }
+  });
+});

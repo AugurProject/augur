@@ -1,12 +1,9 @@
 "use strict";
 
 module.exports = {
-  generateOrderBook: require("./generate-order-book"),
-  calculateRequiredMarketValue: require("./calculate-required-market-value"),
-  calculateValidityBond: require("./calculate-validity-bond"),
-  createBranch: require("./create-branch"),
-  createEvent: require("./create-event"),
-  createMarket: require("./create-market"),
-  createSingleEventMarket: require("./create-single-event-market"),
-  createSubbranch: require("./create-subbranch")
+  createCategoricalMarket: require("./create-categorical-market"),
+  createScalarMarket: require("./create-scalar-market"),
+  createNewMarket: require("./create-new-market"),
+  getMarketCreationCost: require("./get-market-creation-cost"),
+  getMarketCreationCostBreakdown: require("./get-market-creation-cost-breakdown")
 };

@@ -1,46 +1,29 @@
 "use strict";
 
 var assign = require("lodash.assign");
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 var api = require("../api");
-var compose = require("../utils/compose");
 
-// if callReturn is 0, but account has sufficient Reputation and Rep
-// redistribution is done, then re-invoke sendReputation
-// (penalizationCatchup is being called)
-// { branch, recver, value, onSent, onSuccess, onFailed }
+/**
+ * @param {Object} p Parameters object.
+ * @param {string} p.branchID The branch of Reputation to use.
+ * @param {string} p.reputationToSend Amount of Reputation to send, as a base-10 string.
+ * @param {string} p._to Ethereum address of the recipient, as a hexadecimal string.
+ * @param {buffer|function=} p._signer Can be the plaintext private key as a Buffer or the signing function to use.
+ * @param {function} p.onSent Called if/when the transaction is broadcast to the network.
+ * @param {function} p.onSuccess Called if/when the transaction is sealed and confirmed.
+ * @param {function} p.onFailed Called if/when the transaction fails.
+ */
 function sendReputation(p) {
-  api().SendReputation.sendReputation(assign({}, p, {
-    value: abi.fix(p.value, "hex"),
-    onSuccess: compose(function (result, callback) {
-      if (!result || !result.callReturn || parseInt(result.callReturn, 16)) {
-        return callback(result);
-      }
-      api().Reporting.getRepBalance({
-        branch: p.branch,
-        address: result.from
-      }, function (repBalance) {
-        if (!repBalance || repBalance.error) {
-          return p.onFailed(repBalance);
-        }
-        if (abi.bignum(repBalance).lt(abi.bignum(p.value))) {
-          return p.onFailed({ error: "0", message: "not enough reputation" });
-        }
-        api().ConsensusData.getRepRedistributionDone({
-          branch: p.branch,
-          reporter: result.from
-        }, function (repRedistributionDone) {
-          if (!repRedistributionDone || !parseInt(repRedistributionDone, 16)) {
-            return p.onFailed({
-              error: "-3",
-              message: "cannot send reputation until redistribution is complete"
-            });
-          }
-          sendReputation(p);
-        });
-      });
-    }, p.onSuccess)
-  }));
+  api().Branch.getReputationToken({ tx: { to: p.branchID } }, function (reputationTokenAddress) {
+    if (!reputationTokenAddress) return p.onFailed("Reputation token address not found for branch " + p.branchID);
+    if (reputationTokenAddress.error) return p.onFailed(reputationTokenAddress);
+    api().ReputationToken.transfer(assign({}, p, {
+      tx: { to: reputationTokenAddress },
+      _to: p._to,
+      _value: speedomatic.fix(p.reputationToSend, "hex")
+    }));
+  });
 }
 
 module.exports = sendReputation;

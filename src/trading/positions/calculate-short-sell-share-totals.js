@@ -1,6 +1,6 @@
 "use strict";
 
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 var BigNumber = require("bignumber.js");
 var ZERO = require("../../constants").ZERO;
 
@@ -18,11 +18,11 @@ function calculateShortSellShareTotals(logs) {
   for (i = 0, numLogs = logs.length; i < numLogs; ++i) {
     if (logs[i] && logs[i].data && logs[i].data !== "0x") {
       marketID = logs[i].topics[1];
-      logData = abi.unroll_array(logs[i].data);
+      logData = speedomatic.unrollArray(logs[i].data);
       if (!sharesOutcomes[marketID]) sharesOutcomes[marketID] = {};
       outcomeID = parseInt(logData[3], 16).toString();
       if (!sharesOutcomes[marketID][outcomeID]) sharesOutcomes[marketID][outcomeID] = ZERO;
-      sharesOutcomes[marketID][outcomeID] = sharesOutcomes[marketID][outcomeID].plus(abi.unfix(logData[1]));
+      sharesOutcomes[marketID][outcomeID] = sharesOutcomes[marketID][outcomeID].plus(speedomatic.unfix(logData[1]));
       shareTotals[marketID] = BigNumber.max(sharesOutcomes[marketID][outcomeID], shareTotals[marketID] || ZERO);
     }
   }

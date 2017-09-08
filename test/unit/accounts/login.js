@@ -1,59 +1,53 @@
 /* eslint-env mocha */
 
+/**
+ * Test vectors: https://github.com/ethereum/wiki/wiki/Web3-Secret-Storage-Definition
+ * Address: 008aeeda4d805471df9b2a5b0f38a0c3bcba786b
+ * Password: testpassword
+ * Private key: 7a28b5ba57c53603b0b07b56bba752f7784bf506fa95edc395f5cf6c7514fe9d
+ * Derived keys:
+ *  - PBKDF2: f06d69cdc7da0faffb1008270bca38f5e31891a3a773950e6d0fea48a7188551
+ *  - scrypt: fac192ceb5fd772906bea3e118a69e8bbb5cc24229e20d8766fd298291bba6bd
+ */
+
 "use strict";
 
 var assert = require("chai").assert;
-var keys = require("keythereum");
+var keythereum = require("keythereum");
 var errors = require("ethrpc").errors;
-var noop = require("../../../src/utils/noop");
-var login = require("../../../src/accounts/login");
+var proxyquire = require("proxyquire").noPreserveCache();
 
 var keystore = {
-  address: "289d485d9771714cce91d3393d764e1311907acc",
   crypto: {
     cipher: "aes-128-ctr",
-    ciphertext: "faf32ca89d286b107f5e6d842802e05263c49b78d46eac74e6109e9a963378ab",
     cipherparams: {
-      iv: "558833eec4a665a8c55608d7d503407d"
+      iv: "6087dab2f9fdbbfaddc31a909735c1e6"
     },
-    kdf: "scrypt",
+    ciphertext: "5318b4d5bcd28de64ee5559e671353e16f075ecae9f99c7a79a38af5f869aa46",
+    kdf: "pbkdf2",
     kdfparams: {
+      c: 262144,
       dklen: 32,
-      n: 8,
-      p: 16,
-      r: 8,
-      salt: "d571fff447ffb24314f9513f5160246f09997b857ac71348b73e785aab40dc04"
+      prf: "hmac-sha256",
+      salt: "ae3cd4e7013836a3df6bd7241b12db061dbe2c6785853cce422d148a624ce0bd"
     },
-    mac: "21edb85ff7d0dab1767b9bf498f2c3cb7be7609490756bd32300bb213b59effe"
+    mac: "517ead924a9d0dc3124507e3393d175ce3ff7c1e96529c6c555ce9e51205e9b2"
   },
-  id: "3279afcf-55ba-43ff-8997-02dcc46a6525",
+  id: "3198bc9c-6672-5ab3-d995-4942343ae5b6",
   version: 3
 };
 
 describe("accounts/login", function () {
-  var deriveKey = keys.deriveKey;
-  var getMAC = keys.getMAC;
-  var decrypt = keys.decrypt;
-  afterEach(function () {
-    keys.deriveKey = deriveKey;
-    keys.getMAC = getMAC;
-    keys.decrypt = decrypt;
-  });
   var test = function (t) {
     it(t.description, function (done) {
-      keys.deriveKey = t.deriveKey || deriveKey;
-      keys.getMAC = t.getMAC || getMAC;
-      keys.decrypt = t.decrypt || decrypt;
-      if (t.params.cb) {
-        login(t.params.keystore, t.params.password, function (account) {
-          t.assertions(account);
-          done();
-        });
-      } else {
-        var account = login(t.params.keystore, t.params.password);
+      this.timeout(60000);
+      var login = proxyquire("../../../src/accounts/login", {
+        keythereum: Object.assign({}, keythereum, t.mock.keythereum)
+      });
+      login(t.params, function (account) {
         t.assertions(account);
         done();
-      }
+      });
     });
   };
   test({
@@ -61,18 +55,10 @@ describe("accounts/login", function () {
     params: {
       keystore: keystore,
       password: "",
-      cb: noop
+      address: "0x008aeeda4d805471df9b2a5b0f38a0c3bcba786b"
     },
-    assertions: function (account) {
-      assert.deepEqual(account, errors.BAD_CREDENTIALS);
-    }
-  });
-  test({
-    description: "Should return an error on undefined password, no callback",
-    params: {
-      keystore: keystore,
-      password: undefined,
-      cb: undefined
+    mock: {
+      keythereum: {}
     },
     assertions: function (account) {
       assert.deepEqual(account, errors.BAD_CREDENTIALS);
@@ -82,8 +68,11 @@ describe("accounts/login", function () {
     description: "Should return an error on undefined loginID",
     params: {
       keystore: undefined,
-      password: "foobar",
-      cb: noop
+      password: "testpassword",
+      address: "0x008aeeda4d805471df9b2a5b0f38a0c3bcba786b"
+    },
+    mock: {
+      keythereum: {}
     },
     assertions: function (account) {
       assert.deepEqual(account, errors.BAD_CREDENTIALS);
@@ -93,25 +82,33 @@ describe("accounts/login", function () {
     description: "Should return an error if keys.deriveKey returns an error object",
     params: {
       keystore: keystore,
-      password: "foobar",
-      cb: noop
+      password: "testpassword",
+      address: "0x008aeeda4d805471df9b2a5b0f38a0c3bcba786b"
     },
-    deriveKey: function (password, salt, options, cb) {
-      cb({error: "DeriveKey failed!"});
+    mock: {
+      keythereum: {
+        deriveKey: function (password, salt, options, cb) {
+          cb({error: "DeriveKey failed!"});
+        }
+      }
     },
     assertions: function (account) {
       assert.deepEqual(account, errors.BAD_CREDENTIALS);
     }
   });
   test({
-    description: "Should return an error if keys.getMAC does not match the ketstore.crypto.mac value",
+    description: "Should return an error if keys.getMAC does not match the keystore.crypto.mac value",
     params: {
       keystore: keystore,
-      password: "foobar",
-      cb: noop
+      password: "testpassword",
+      address: "0x008aeeda4d805471df9b2a5b0f38a0c3bcba786b"
     },
-    getMAC: function (derivedKey, storedKey) {
-      return "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
+    mock: {
+      keythereum: {
+        getMAC: function () {
+          return "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
+        }
+      }
     },
     assertions: function (account) {
       assert.deepEqual(account, errors.BAD_CREDENTIALS);
@@ -121,14 +118,18 @@ describe("accounts/login", function () {
     description: "Should return an error if we fail to generate the privateKey and derivedKey will return a hex string instead of buffer",
     params: {
       keystore: keystore,
-      password: "foobar",
-      cb: noop
+      password: "testpassword",
+      address: "0x008aeeda4d805471df9b2a5b0f38a0c3bcba786b"
     },
-    deriveKey: function (password, salt, options, cb) {
-      cb("6149823a44b50a20e7d5a6d7e60798c576f330888a3c6bc0113da5b687662586");
-    },
-    decrypt: function (ciphertext, key, iv, algo) {
-      throw new Error("Uh-Oh!");
+    mock: {
+      keythereum: {
+        deriveKey: function (password, salt, options, cb) {
+          cb("6149823a44b50a20e7d5a6d7e60798c576f330888a3c6bc0113da5b687662586");
+        },
+        decrypt: function () {
+          throw new Error("Uh-Oh!");
+        }
+      }
     },
     assertions: function (account) {
       var expected = errors.BAD_CREDENTIALS;
@@ -140,13 +141,16 @@ describe("accounts/login", function () {
     description: "Should successfully login if given a valid keystore and password",
     params: {
       keystore: keystore,
-      password: "foobar",
-      cb: noop
+      password: "testpassword",
+      address: "0x008aeeda4d805471df9b2a5b0f38a0c3bcba786b"
+    },
+    mock: {
+      keythereum: {}
     },
     assertions: function (account) {
-      assert.strictEqual(account.address, "0x289d485d9771714cce91d3393d764e1311907acc");
-      assert.deepEqual(account.privateKey, Buffer.from("14a447d8d4c69714f8750e1688feb98857925e1fec6dee7c75f0079d10519d25", "hex"));
-      assert.deepEqual(account.derivedKey, Buffer.from("8eb07bbcf844b11128fe6cb9556e3ce26ef781a19ef661fef8daa100953d3a53", "hex"));
+      assert.strictEqual(account.address, "0x008aeeda4d805471df9b2a5b0f38a0c3bcba786b");
+      assert.deepEqual(account.privateKey, Buffer.from("7a28b5ba57c53603b0b07b56bba752f7784bf506fa95edc395f5cf6c7514fe9d", "hex"));
+      assert.deepEqual(account.derivedKey, Buffer.from("f06d69cdc7da0faffb1008270bca38f5e31891a3a773950e6d0fea48a7188551", "hex"));
       assert.deepEqual(account.keystore, keystore);
     }
   });

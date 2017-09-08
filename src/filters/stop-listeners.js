@@ -3,6 +3,10 @@
 var rpcInterface = require("../rpc-interface");
 var subscriptions = require("./subscriptions");
 
+/**
+ * Removes all active listeners for events emitted by the Ethereum blockchain.
+ * @return {boolean} True if listeners were successfully stopped; false otherwise.
+ */
 function stopListeners() {
   var token, blockStream = rpcInterface.getBlockStream();
   if (!blockStream) return false;

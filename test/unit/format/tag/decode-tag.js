@@ -3,7 +3,7 @@
 "use strict";
 
 var assert = require("chai").assert;
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 var decodeTag = require("../../../../src/format/tag/decode-tag");
 
 describe("format/tag/decode-tag", function () {
@@ -49,7 +49,7 @@ describe("format/tag/decode-tag", function () {
     }
   });
   test({
-    tag: abi.short_string_to_int256("This is my tag!"),
+    tag: speedomatic.abiEncodeShortStringAsInt256("This is my tag!"),
     assertions: function (tag) {
       assert.deepEqual(tag, "This is my tag!");
     }

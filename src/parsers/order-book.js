@@ -1,22 +1,17 @@
 "use strict";
 
-var BigNumber = require("bignumber.js");
-var parseTradeInfo = require("./trade-info");
-var adjustScalarOrder = require("../trading/order-book/adjust-scalar-order");
+var parseOrder = require("./order");
 
-module.exports = function (orderArray, scalarMinMax) {
-  var minValue, order, isScalar, numOrders, orderBook, i;
-  if (!orderArray || orderArray.error) return orderArray;
-  isScalar = scalarMinMax && scalarMinMax.minValue !== undefined && scalarMinMax.maxValue !== undefined;
-  if (isScalar) minValue = new BigNumber(scalarMinMax.minValue, 10);
-  numOrders = orderArray.length / 8;
-  orderBook = { buy: {}, sell: {} };
-  for (i = 0; i < numOrders; ++i) {
-    order = parseTradeInfo(orderArray.slice(8*i, 8*(i + 1)));
-    if (order) {
-      if (isScalar) order = adjustScalarOrder(order, minValue);
-      orderBook[order.type][order.id] = order;
-    }
+module.exports = function (type, minPrice, maxPrice, orderBookArray) {
+  if (!Array.isArray(orderBookArray) || !orderBookArray.length || orderBookArray.error) {
+    return null;
+  }
+  var numOrders = orderBookArray.length / 9;
+  var orderBook = {};
+  for (var i = 0; i < numOrders; ++i) {
+    var orderArray = orderBookArray.slice(9*i, 9*(i + 1));
+    var order = parseOrder(type, minPrice, maxPrice, orderArray.slice(1));
+    if (order != null) orderBook[orderArray[0]] = order;
   }
   return orderBook;
 };

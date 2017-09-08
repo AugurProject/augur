@@ -1,10 +1,11 @@
 "use strict";
 
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
+var createKeccakHash = require("keccak/js");
 var serialize = require("./serialize");
 
-var sha3 = function (hashable) {
-  return abi.prefix_hex(abi.sha3(serialize(hashable)));
-};
+function sha3(hashable) {
+  return speedomatic.hex(createKeccakHash("keccak256").update(Buffer.from(serialize(hashable), "hex")).digest());
+}
 
 module.exports = sha3;

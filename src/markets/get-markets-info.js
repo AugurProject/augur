@@ -1,17 +1,15 @@
 "use strict";
 
 var api = require("../api");
-var DEFAULT_BRANCH_ID = require("../constants").DEFAULT_BRANCH_ID;
+var parseBatchMarketInfo = require("../parsers/batch-market-info");
 
-// { branch, offset, numMarketsToLoad, volumeMin, volumeMax, callback }
+// { marketIDs }
 function getMarketsInfo(p, callback) {
-  return api().CompositeGetters.getMarketsInfo({
-    branch: p.branch || DEFAULT_BRANCH_ID,
-    offset: p.offset || 0,
-    numMarketsToLoad: p.numMarketsToLoad || 0,
-    volumeMin: p.volumeMin || 0,
-    volumeMax: p.volumeMax || 0
-  }, callback, { extraArgument: p.branch });
+  api().MarketFetcher.batchGetMarketInfo(p, function (marketInfoArray) {
+    if (!marketInfoArray) return callback({ error: "market info not found" });
+    if (marketInfoArray.error) return callback(marketInfoArray);
+    callback(parseBatchMarketInfo(marketInfoArray, p.marketIDs.length));
+  });
 }
 
 module.exports = getMarketsInfo;

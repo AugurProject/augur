@@ -2,7 +2,7 @@
 
 var async = require("async");
 var decreasePosition = require("./decrease-position");
-var getPositionInMarket = require("../../markets/get-position-in-market");
+var api = require("../../api");
 var ZERO = require("../../constants").ZERO;
 
 /**
@@ -25,19 +25,17 @@ var ZERO = require("../../constants").ZERO;
 function adjustPositions(account, marketIDs, shareTotals, callback) {
   var adjustedPositions = {};
   async.eachSeries(marketIDs, function (marketID, nextMarket) {
-    getPositionInMarket({ market: marketID, account: account }, function (onChainPosition) {
-      var shortAskBuyCompleteSetsShareTotal, shortSellBuyCompleteSetsShareTotal, sellCompleteSetsShareTotal;
+    api().MarketFetcher.getPositionInMarket({ _market: marketID, _account: account }, function (onChainPosition) {
       if (!onChainPosition) return nextMarket("couldn't load position in " + marketID);
       if (onChainPosition.error) return nextMarket(onChainPosition);
-      shortAskBuyCompleteSetsShareTotal = shareTotals.shortAskBuyCompleteSets[marketID] || ZERO;
-      shortSellBuyCompleteSetsShareTotal = shareTotals.shortSellBuyCompleteSets[marketID] || ZERO;
-      sellCompleteSetsShareTotal = shareTotals.sellCompleteSets[marketID] || ZERO;
+      var shortAskBuyCompleteSetsShareTotal = shareTotals.shortAskBuyCompleteSets[marketID] || ZERO;
+      var shortSellBuyCompleteSetsShareTotal = shareTotals.shortSellBuyCompleteSets[marketID] || ZERO;
+      var sellCompleteSetsShareTotal = shareTotals.sellCompleteSets[marketID] || ZERO;
       if (sellCompleteSetsShareTotal.abs().gt(shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal))) {
         sellCompleteSetsShareTotal = shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).neg();
       }
-      adjustedPositions[marketID] = decreasePosition(
-        onChainPosition,
-        shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).plus(sellCompleteSetsShareTotal));
+      var sumCompleteSetsShareTotal = shortAskBuyCompleteSetsShareTotal.plus(shortSellBuyCompleteSetsShareTotal).plus(sellCompleteSetsShareTotal);
+      adjustedPositions[marketID] = decreasePosition(onChainPosition, sumCompleteSetsShareTotal);
       nextMarket();
     });
   }, function (err) {

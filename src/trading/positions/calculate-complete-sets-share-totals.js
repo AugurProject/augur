@@ -1,6 +1,6 @@
 "use strict";
 
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 var modifyPosition = require("./modify-position");
 var ZERO = require("../../constants").ZERO;
 
@@ -18,7 +18,7 @@ function calculateCompleteSetsShareTotals(logs) {
     if (logs[i] && logs[i].data && logs[i].data !== "0x") {
       marketID = logs[i].topics[2];
       if (!shareTotals[marketID]) shareTotals[marketID] = ZERO;
-      logData = abi.unroll_array(logs[i].data);
+      logData = speedomatic.unrollArray(logs[i].data);
       if (logData && logData.length) {
         shareTotals[marketID] = modifyPosition(logs[i].topics[3], shareTotals[marketID], logData[0]);
       }

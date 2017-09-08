@@ -1,6 +1,6 @@
 "use strict";
 
-var eventsAPI = require("augur-contracts").api.events;
+var eventsABI = require("../contracts").abi.events;
 var parametrizeFilter = require("./parametrize-filter");
 var rpcInterface = require("../rpc-interface");
 var isFunction = require("../utils/is-function");
@@ -11,7 +11,7 @@ function getFilteredLogs(label, filterParams, callback) {
     callback = filterParams;
     filterParams = null;
   }
-  filter = parametrizeFilter(eventsAPI[label], filterParams || {});
+  filter = parametrizeFilter(eventsABI[label], filterParams || {});
   if (!isFunction(callback)) return rpcInterface.getLogs(filter);
   rpcInterface.getLogs(filter, function (logs) {
     if (logs && logs.error) return callback(logs, null);

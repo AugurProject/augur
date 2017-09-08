@@ -1,7 +1,7 @@
 "use strict";
 
 var assign = require("lodash.assign");
-var eventsAPI = require("augur-contracts").api.events;
+var eventsABI = require("../../contracts").abi.events;
 var rpcInterface = require("../../rpc-interface");
 var api = require("../../api");
 var parseLogMessage = require("../../filters/parse-message/parse-log-message");
@@ -15,8 +15,8 @@ function claimProceeds(p) {
         var logs, sig, i, numLogs, inputs;
         if (receipt && Array.isArray(receipt.logs) && receipt.logs.length) {
           logs = receipt.logs;
-          sig = eventsAPI.payout.signature;
-          inputs = eventsAPI.payout.inputs;
+          sig = eventsABI.payout.signature;
+          inputs = eventsABI.payout.inputs;
           for (i = 0, numLogs = logs.length; i < numLogs; ++i) {
             if (logs[i].topics[0] === sig) {
               res.callReturn = parseLogMessage("payout", logs[i], inputs);

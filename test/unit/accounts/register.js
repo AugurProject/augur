@@ -5,7 +5,6 @@
 var assert = require("chai").assert;
 var errors = require("ethrpc").errors;
 var keys = require("keythereum");
-var abi = require("augur-abi");
 var constants = require("../../../src/constants");
 var register = require("../../../src/accounts/register");
 
@@ -18,7 +17,7 @@ describe("accounts/register", function () {
       keys.create = t.create || create;
       keys.deriveKey = t.deriveKey || deriveKey;
       constants.KDF = t.KDF || KDF;
-      register(t.password, function (result) {
+      register(t.params, function (result) {
         t.assertions(result);
         keys.create = create;
         keys.deriveKey = deriveKey;
@@ -29,21 +28,27 @@ describe("accounts/register", function () {
   };
   test({
     description: "should return an error if the password is < 6 characters long",
-    password: "pass",
+    params: {
+      password: "pass"
+    },
     assertions: function (result) {
       assert.deepEqual(result, errors.PASSWORD_TOO_SHORT);
     }
   });
   test({
     description: "should return an error if the password is undefined",
-    password: undefined,
+    params: {
+      password: undefined
+    },
     assertions: function (result) {
       assert.deepEqual(result, errors.PASSWORD_TOO_SHORT);
     }
   });
   test({
     description: "should return an error if there is an issue creating the private key",
-    password: "somevalidpassword",
+    params: {
+      password: "somevalidpassword"
+    },
     create: function (params, cb) {
       cb({error: 999, message: "Uh-Oh!"});
     },
@@ -53,7 +58,9 @@ describe("accounts/register", function () {
   });
   test({
     description: "should return an error if there is an issue deriving the secret key",
-    password: "somevalidpassword",
+    params: {
+      password: "somevalidpassword"
+    },
     deriveKey: function (password, salt, options, cb) {
       cb({ error: 999, message: "Uh-Oh!" });
     },
@@ -63,7 +70,9 @@ describe("accounts/register", function () {
   });
   test({
     description: "should register an account given a valid password - account 1",
-    password: "testpassword1",
+    params: {
+      password: "testpassword1"
+    },
     assertions: function (result) {
       assert.isString(result.address);
       assert.isObject(result.keystore);
@@ -73,7 +82,9 @@ describe("accounts/register", function () {
   });
   test({
     description: "should register an account given a valid password - account 2",
-    password: "testpassword2",
+    params: {
+      password: "testpassword2"
+    },
     assertions: function (result) {
       assert.isString(result.address);
       assert.isObject(result.keystore);
@@ -83,7 +94,9 @@ describe("accounts/register", function () {
   });
   test({
     description: "should register an account given a valid password, should handle pbkdf2 KDF",
-    password: "thisisavalidpassword",
+    params: {
+      password: "thisisavalidpassword"
+    },
     KDF: "pbkdf2",
     assertions: function (result) {
       assert.isString(result.address);
@@ -94,7 +107,9 @@ describe("accounts/register", function () {
   });
   test({
     description: "should register an account given a valid password, should handle scrypt KDF",
-    password: "thisisavalidpassword",
+    params: {
+      password: "thisisavalidpassword"
+    },
     KDF: "scrypt",
     assertions: function (result) {
       assert.isString(result.address);

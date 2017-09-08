@@ -1,3 +1,5 @@
+/* eslint-env mocha */
+
 "use strict";
 
 var assert = require("chai").assert;
@@ -48,15 +50,15 @@ describe("utils/sha256", function () {
   test({
     hashable: ["0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b", "0x0f69b5", "0x041e"],
     digest: "-0x1aca611fbe5cba1f22bed65740bcf56c5c74f7312d99a546b16b5c5448532406"
-  });    
+  });
   test({
     hashable: [
       0,
       "0xf69b5",
       1898028,
-      "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1",
+      "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1"
     ],
-    digest: "-0x810d6e81e51b35a4ee7c236a382c013b4ee60e6366d349a160ec67db7b873a",
+    digest: "-0x810d6e81e51b35a4ee7c236a382c013b4ee60e6366d349a160ec67db7b873a"
   });
   test({
     hashable: ["0x7400000000000000000000000000000000000000000000000000000000000000"],
@@ -78,7 +80,7 @@ describe("utils/sha256", function () {
     hashable: [
       0,
       "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1",
-      "0x3078313230303030303030303030303030303030",
+      "0x3078313230303030303030303030303030303030"
     ],
     digest: "-0x3d4fbdd679ca32da847bff591cd22eac3386430c18cbef74c71b2419d23cbc8c"
   });

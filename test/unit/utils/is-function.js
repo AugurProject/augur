@@ -46,7 +46,7 @@ describe("utils/is-function", function () {
   });
   test({
     label: "'5'",
-    input: '5',
+    input: "5",
     expected: false
   });
   test({

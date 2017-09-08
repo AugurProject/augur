@@ -1,6 +1,6 @@
 "use strict";
 
-var abi = require("augur-abi");
+var speedomatic = require("speedomatic");
 
 module.exports = function (positionInMarket) {
   var numOutcomes, position, i;
@@ -8,7 +8,7 @@ module.exports = function (positionInMarket) {
   numOutcomes = positionInMarket.length;
   position = {};
   for (i = 0; i < numOutcomes; ++i) {
-    position[i + 1] = abi.unfix(abi.hex(positionInMarket[i], true), "string");
+    position[i + 1] = speedomatic.unfix(speedomatic.hex(positionInMarket[i], true), "string");
   }
   return position;
 };

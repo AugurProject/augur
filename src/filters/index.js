@@ -1,6 +1,6 @@
 "use strict";
 
 module.exports = {
-  listen: require("./start-listeners"),
-  ignore: require("./stop-listeners")
+  startListeners: require("./start-listeners"),
+  stopListeners: require("./stop-listeners")
 };
