@@ -9,13 +9,13 @@ import TopicList from 'modules/topics/components/topic-list/topic-list'
 import Paginator from 'modules/common/components/paginator/paginator'
 import GraphBG from 'modules/common/components/graph-background/graph-background'
 
-import makePath from 'modules/app/helpers/make-path'
-import makeQuery from 'modules/app/helpers/make-query'
+import makePath from 'modules/routes/helpers/make-path'
+import makeQuery from 'modules/routes/helpers/make-query'
 
 import Styles from 'modules/topics/components/topics-view/topics-view.styles'
 
-import { TOPIC_PARAM_NAME } from 'modules/app/constants/param-names'
-import { MARKETS } from 'modules/app/constants/views'
+import { TOPIC_PARAM_NAME } from 'modules/routes/constants/param-names'
+import { MARKETS } from 'modules/routes/constants/views'
 
 import { tween } from 'shifty'
 

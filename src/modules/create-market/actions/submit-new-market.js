@@ -5,13 +5,13 @@ import { invalidateMarketCreation, clearNewMarket } from 'modules/create-market/
 import { updateTradesInProgress } from 'modules/trade/actions/update-trades-in-progress'
 import { placeTrade } from 'modules/trade/actions/place-trade'
 
-import makePath from 'modules/app/helpers/make-path'
+import makePath from 'modules/routes/helpers/make-path'
 
 import { BID } from 'modules/transactions/constants/types'
 import { BUY, SELL } from 'modules/trade/constants/types'
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types'
 import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR } from 'modules/markets/constants/market-outcomes'
-import { TRANSACTIONS } from 'modules/app/constants/views'
+import { TRANSACTIONS } from 'modules/routes/constants/views'
 
 export function submitNewMarket(newMarket, history) {
   return (dispatch, getState) => {

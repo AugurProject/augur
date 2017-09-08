@@ -3,11 +3,11 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Route, Redirect } from 'react-router-dom'
 
-import { AUTHENTICATION } from 'modules/app/constants/views'
-
-import makePath from 'modules/app/helpers/make-path'
+import makePath from 'modules/routes/helpers/make-path'
 
 import getValue from 'utils/get-value'
+
+import { AUTHENTICATION } from 'modules/routes/constants/views'
 
 const AuthenticatedRoute = ({ component: Component, isLogged, ...rest }) => (
   <Route

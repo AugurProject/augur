@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import MarketLink from 'modules/market/components/market-link/market-link'
 import { MarketStatusOpen, MarketStatusReported, MarketStatusClosed } from 'modules/common/components/spritemap/spritemap'
 
-import toggleTag from 'modules/app/helpers/toggle-tag'
+import toggleTag from 'utils/toggle-tag'
 
 import Styles from 'modules/market/components/market-basics/market-basics.styles'
 

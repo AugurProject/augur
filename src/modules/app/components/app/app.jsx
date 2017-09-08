@@ -24,7 +24,7 @@ import NavPortfolioIcon from 'modules/common/components/nav-portfolio-icon'
 
 import Styles from 'modules/app/components/app/app.styles'
 
-import { MARKETS, ACCOUNT, MY_POSITIONS, CREATE_MARKET } from 'modules/app/constants/views'
+import { MARKETS, ACCOUNT, MY_POSITIONS, CREATE_MARKET } from 'modules/routes/constants/views'
 
 export const mobileMenuStates = { // TODO -- move to a constants file
   CLOSED: 0,

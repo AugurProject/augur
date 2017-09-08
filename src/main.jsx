@@ -7,7 +7,7 @@ import { initAugur } from 'modules/app/actions/init-augur'
 
 import { HashRouter } from 'react-router-dom'
 
-import Routes from 'src/routes'
+import Routes from 'modules/routes/components/routes/routes'
 
 import store from 'src/store'
 
