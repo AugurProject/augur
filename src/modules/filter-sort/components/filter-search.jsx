@@ -2,14 +2,14 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Input from 'modules/common/components/input'
 
-import parseQuery from 'modules/app/helpers/parse-query'
-import makeQuery from 'modules/app/helpers/make-query'
-import parseStringToArray from 'modules/app/helpers/parse-string-to-array'
+import parseQuery from 'modules/routes/helpers/parse-query'
+import makeQuery from 'modules/routes/helpers/make-query'
+import parseStringToArray from 'modules/routes/helpers/parse-string-to-array'
 import debounce from 'utils/debounce'
 import getValue from 'utils/get-value'
 import isEqual from 'lodash/isEqual'
 
-import { FILTER_SEARCH_PARAM } from 'modules/app/constants/param-names'
+import { FILTER_SEARCH_PARAM } from 'modules/routes/constants/param-names'
 
 // NOTE --  Currently the searchKeys can accomodate target's of type string and array
 export default class FilterSearch extends Component {

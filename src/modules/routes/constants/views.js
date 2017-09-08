@@ -23,7 +23,7 @@ export const MY_POSITIONS = 'my-positions'
 export const MY_MARKETS = 'my-markets'
 export const MY_REPORTS = 'my-reports'
 
-//  Market
+//  Market (TODO -- These should be params, not routes)
 export const MARKET_DATA_NAV_OUTCOMES = 'outcomes'
 export const MARKET_DATA_ORDERS = 'orders'
 export const MARKET_DATA_NAV_CHARTS = 'charts'
@@ -41,7 +41,6 @@ export const ACCOUNT_EXPORT = 'export-account'
 // Authentication
 export const SIGNUP = 'sign-up'
 export const LOGIN = 'login'
-export const IMPORT = 'import'
 
 // Dev only
 export const STYLE_SANDBOX = 'style-sandbox'

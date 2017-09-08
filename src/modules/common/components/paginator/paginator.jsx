@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom'
 
 import Styles from 'modules/common/components/paginator/paginator.styles'
 
-import parseQuery from 'modules/app/helpers/parse-query'
-import makeQuery from 'modules/app/helpers/make-query'
+import parseQuery from 'modules/routes/helpers/parse-query'
+import makeQuery from 'modules/routes/helpers/make-query'
 
-import { PAGINATION_PARAM_NAME } from 'modules/app/constants/param-names'
+import { PAGINATION_PARAM_NAME } from 'modules/routes/constants/param-names'
 
 class Paginator extends Component {
   static propTypes = {

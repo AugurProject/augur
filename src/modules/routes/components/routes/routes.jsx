@@ -4,10 +4,10 @@ import { Route, Switch, Redirect } from 'react-router-dom'
 import App from 'modules/app/container'
 
 import asyncComponent from 'modules/common/components/async-component'
-import AuthenticatedRoute from 'modules/auth/components/authenticated-route'
-import makePath from 'modules/app/helpers/make-path'
+import AuthenticatedRoute from 'modules/routes/components/authenticated-route/authenticated-route'
+import makePath from 'modules/routes/helpers/make-path'
 
-import * as VIEWS from 'modules/app/constants/views'
+import * as VIEWS from 'modules/routes/constants/views'
 
 const Topics = asyncComponent({
   moduleName: 'Topics',
@@ -19,9 +19,19 @@ const Markets = asyncComponent({
   loader: () => import(/* webpackChunkName: 'markets' */ 'modules/markets/container')
     .then(module => module.default)
 })
-const Authentication = asyncComponent({
-  moduleName: 'Authentication',
-  loader: () => import(/* webpackChunkName: 'auth' */ 'modules/auth/container')
+const AuthLander = asyncComponent({
+  moduleName: 'AuthLander',
+  loader: () => import(/* webpackChunkName: 'auth' */ 'modules/auth/containers/auth-lander')
+    .then(module => module.default)
+})
+const Signup = asyncComponent({
+  moduleName: 'Signup',
+  loader: () => import(/* webpackChunkName: 'signup' */ 'modules/auth/containers/auth-signup')
+    .then(module => module.default)
+})
+const Login = asyncComponent({
+  moduleName: 'Login',
+  loader: () => import(/* webpackChunkName: 'login' */ 'modules/auth/containers/auth-login')
     .then(module => module.default)
 })
 const Account = asyncComponent({
@@ -61,7 +71,9 @@ const Routes = p => (
       <Route exact path={makePath(VIEWS.DEFAULT_VIEW)} component={Topics} />
       <Route path={makePath(VIEWS.MARKETS)} component={Markets} />
       <Route path={makePath(VIEWS.MARKET)} component={Market} />
-      <Route path={makePath(VIEWS.AUTHENTICATION)} component={Authentication} />
+      <Route path={makePath(VIEWS.AUTHENTICATION)} component={AuthLander} />
+      <Route path={makePath(VIEWS.SIGNUP)} component={Signup} />
+      <Route path={makePath(VIEWS.LOGIN)} component={Login} />
       <Route path={makePath(VIEWS.STYLE_SANDBOX)} component={StyleSandbox} />
       <AuthenticatedRoute path={makePath(VIEWS.FAVORITES)} component={Markets} />
       <AuthenticatedRoute path={makePath(VIEWS.MY_POSITIONS)} component={Portfolio} />
