@@ -14,13 +14,13 @@ describe("format/tag/encode-tag-array", function () {
   test({
     tags: undefined,
     assertions: function (tags) {
-      assert.deepEqual(tags, [ "0x0", "0x0", "0x0" ]);
+      assert.deepEqual(tags, ["0x0", "0x0", "0x0"]);
     }
   });
   test({
     tags: "",
     assertions: function (tags) {
-      assert.deepEqual(tags, [ "0x0", "0x0", "0x0" ]);
+      assert.deepEqual(tags, ["0x0", "0x0", "0x0"]);
     }
   });
   test({

@@ -5,7 +5,6 @@
 var assert = require("chai").assert;
 var errors = require("ethrpc").errors;
 var keys = require("keythereum");
-var speedomatic = require("speedomatic");
 var constants = require("../../../src/constants");
 var register = require("../../../src/accounts/register");
 
@@ -39,7 +38,7 @@ describe("accounts/register", function () {
   test({
     description: "should return an error if the password is undefined",
     params: {
-      password: undefined,
+      password: undefined
     },
     assertions: function (result) {
       assert.deepEqual(result, errors.PASSWORD_TOO_SHORT);

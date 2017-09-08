@@ -4,7 +4,6 @@
 
 var assert = require("chai").assert;
 var speedomatic = require("speedomatic");
-var encodeTag = require("../../../../src/format/tag/encode-tag");
 var formatLogMessage = require("../../../../src/format/log/format-log-message");
 
 describe("formatLogMessage", function () {
@@ -127,13 +126,13 @@ describe("formatLogMessage", function () {
     msg: {
       _from: "3",
       _to: "4",
-      _value: speedomatic.fix("312"),
+      _value: speedomatic.fix("312")
     },
     assertions: function (msg) {
       assert.deepEqual(msg, {
         _from: "0x0000000000000000000000000000000000000003",
         _to: "0x0000000000000000000000000000000000000004",
-        _value: "312",
+        _value: "312"
       });
     }
   });

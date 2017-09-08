@@ -1,3 +1,5 @@
+/* eslint-env mocha */
+
 "use strict";
 
 var assert = require("chai").assert;
@@ -13,7 +15,7 @@ describe("parsers/topics", function () {
     description: "parse 1 topic",
     topicsInfo: [
       "0x7265706f7274696e670000000000000000000000000000000000000000000000",
-      "0x000000000000000000000000000000000000000000000125d19c239bf9300000",
+      "0x000000000000000000000000000000000000000000000125d19c239bf9300000"
     ],
     assertions: function (output) {
       assert.deepEqual(output, { reporting: 5420 });
@@ -78,7 +80,7 @@ describe("parsers/topics", function () {
         space: 170,
         Calexit: 170,
         weather: 170,
-        temperature: 170,
+        temperature: 170
       });
     }
   });

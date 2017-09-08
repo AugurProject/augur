@@ -3,7 +3,6 @@
 "use strict";
 
 var assert = require("chai").assert;
-var proxyquire = require("proxyquire").noPreserveCache();
 var subscriptions = require("../../../src/filters/subscriptions");
 var addFilter = require("../../../src/filters/add-filter");
 
@@ -22,16 +21,16 @@ describe("filters/add-filter", function () {
       blockStream: {
         subscribeToOnBlockAdded: function (callback) {
           callback({ number: "0x42" });
-        },
+        }
       },
       label: "block",
       eventAPI: undefined,
       contracts: undefined,
-      addSubscription: function (id, token, callback) {
+      addSubscription: function () {
         assert.fail();
       }
     },
-    assertions: function (message, subscriptions) {
+    assertions: function (message) {
       assert.strictEqual(message, "0x42");
     }
   });
@@ -87,7 +86,7 @@ describe("filters/add-filter", function () {
         removed: false
       });
       assert.isObject(subscriptions.allLogs);
-      assert.strictEqual(subscriptions.allLogs.token, "add-log-filter-token")
+      assert.strictEqual(subscriptions.allLogs.token, "add-log-filter-token");
       assert.isFunction(subscriptions.allLogs.callback);
     }
   });

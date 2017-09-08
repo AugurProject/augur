@@ -1,6 +1,7 @@
+/* eslint-env mocha */
+
 "use strict";
 
-var speedomatic = require("speedomatic");
 var assert = require("chai").assert;
 var BigNumber = require("bignumber.js");
 var calculateSettlementFee = require("../../../../src/trading/simulation/calculate-settlement-fee");

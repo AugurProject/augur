@@ -1,3 +1,5 @@
+/* eslint-env mocha */
+
 "use strict";
 
 var assert = require("chai").assert;
@@ -41,13 +43,13 @@ describe("utils/sha3", function () {
   test({
     hashable: ["0x05ae1d0ca6206c6168b42efcd1fbe0ed144e821b", "0x0f69b5", "0x041e"],
     digest: speedomatic.unfork("0x74d1c32fb4ba921c884e82504171fcc503c4488680dcd68f61af2e4732daa191", true)
-  });    
+  });
   test({
     hashable: [
       0,
       "0xf69b5",
       1898028,
-      "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1",
+      "0x82a978b3f5962a5b0957d9ee9eef472ee55b42f1"
     ],
     digest: speedomatic.unfork("-0xec24e44d7005689c9e1ccbfecfcedb2665abe2940e585659600fcb896574dc7", true)
   });

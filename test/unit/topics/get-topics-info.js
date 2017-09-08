@@ -23,7 +23,7 @@ describe("topics/get-topics-info", function () {
     params: {
       branch: "0xdad12f",
       offset: 1,
-      numTopicsToLoad: 3,
+      numTopicsToLoad: 3
     },
     mock: {
       api: function () {

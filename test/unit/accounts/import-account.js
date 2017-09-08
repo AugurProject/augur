@@ -15,10 +15,7 @@
 var assert = require("chai").assert;
 var errors = require("ethrpc").errors;
 var keythereum = require("keythereum");
-var speedomatic = require("speedomatic");
 var proxyquire = require("proxyquire").noPreserveCache();
-var noop = require("../../../src/utils/noop");
-var constants = require("../../../src/constants");
 
 var scryptKeystore = {
   crypto: {
@@ -121,7 +118,7 @@ describe("accounts/import-account", function () {
     },
     mock: {
       keythereum: {
-        recover: function (passord, keystore, callback) {
+        recover: function () {
           assert.fail();
         }
       }
@@ -138,7 +135,7 @@ describe("accounts/import-account", function () {
     },
     mock: {
       keythereum: {
-        recover: function (passord, keystore, callback) {
+        recover: function (password, keystore, callback) {
           callback({ error: "Uh-oh!" });
         }
       }
@@ -155,7 +152,7 @@ describe("accounts/import-account", function () {
     },
     mock: {
       keythereum: {
-        recover: function (passord, keystore, callback) {
+        recover: function (password, keystore, callback) {
           // don't call the real recover as it calls deriveKey within and we don't
           // want to call our mock early, we want to test a conditional failure
           // later in import-account.

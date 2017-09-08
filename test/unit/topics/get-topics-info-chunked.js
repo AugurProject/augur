@@ -1,3 +1,5 @@
+/* eslint-env mocha */
+
 "use strict";
 
 var assert = require("chai").assert;
@@ -31,7 +33,7 @@ describe("topics/get-topics-info-chunked", function () {
         numTopicsToLoad: null,
         totalTopics: null
       },
-      callback: function (topicsInfo) {}
+      callback: function () {}
     },
     mock: {
       getNumTopicsInBranch: function (p, callback) {
@@ -56,7 +58,7 @@ describe("topics/get-topics-info-chunked", function () {
           space: 170,
           Calexit: 170,
           weather: 170,
-          temperature: 170,
+          temperature: 170
         });
       }
     },
@@ -79,7 +81,7 @@ describe("topics/get-topics-info-chunked", function () {
         space: 170,
         Calexit: 170,
         weather: 170,
-        temperature: 170,
+        temperature: 170
       });
     }
   });
@@ -104,7 +106,7 @@ describe("topics/get-topics-info-chunked", function () {
         callback({ error: 999, message: "Uh-Oh!" });
       }
     },
-    assertions: function (output) {
+    assertions: function () {
       assert.fail();
     }
   });
@@ -117,7 +119,7 @@ describe("topics/get-topics-info-chunked", function () {
         numTopicsToLoad: 10,
         totalTopics: 18
       },
-      callback: function (topicsInfo) {}
+      callback: function () {}
     },
     mock: {
       getNumTopicsInBranch: function (p, callback) {
@@ -142,7 +144,7 @@ describe("topics/get-topics-info-chunked", function () {
           space: 170,
           Calexit: 170,
           weather: 170,
-          temperature: 170,
+          temperature: 170
         });
       }
     },
@@ -165,7 +167,7 @@ describe("topics/get-topics-info-chunked", function () {
         space: 170,
         Calexit: 170,
         weather: 170,
-        temperature: 170,
+        temperature: 170
       });
     }
   });
@@ -186,11 +188,11 @@ describe("topics/get-topics-info-chunked", function () {
       getNumTopicsInBranch: function (p, callback) {
         callback({ error: 999, message: "Uh-Oh!" });
       },
-      getTopicsInfo: function (p, callback) {
+      getTopicsInfo: function () {
         assert.fail();
       }
     },
-    assertions: function (output) {
+    assertions: function () {
       assert.fail();
     }
   });

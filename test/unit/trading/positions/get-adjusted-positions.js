@@ -1,7 +1,8 @@
+/* eslint-env mocha */
+
 "use strict";
 
 var assert = require("chai").assert;
-var BigNumber = require("bignumber.js");
 var proxyquire = require("proxyquire").noPreserveCache();
 var fix = require("./utils").fix;
 
@@ -37,7 +38,7 @@ describe("trading/positions/get-adjusted-positions", function () {
   test({
     description: "no logs",
     params: {
-      account: "0xb0b",
+      account: "0xb0b"
     },
     logs: {
       shortAskBuyCompleteSets: [],
@@ -52,7 +53,7 @@ describe("trading/positions/get-adjusted-positions", function () {
         shareTotals: {
           shortAskBuyCompleteSets: {},
           shortSellBuyCompleteSets: {},
-          sellCompleteSets: {},
+          sellCompleteSets: {}
         }
       });
     }
@@ -60,7 +61,7 @@ describe("trading/positions/get-adjusted-positions", function () {
   test({
     description: "1 market, 1 short ask",
     params: {
-      account: "0xb0b",
+      account: "0xb0b"
     },
     logs: {
       shortAskBuyCompleteSets: [{
@@ -79,7 +80,7 @@ describe("trading/positions/get-adjusted-positions", function () {
       assert.isNull(err);
       assert.strictEqual(JSON.stringify(output), JSON.stringify({
         account: "0xb0b",
-        marketIDs: [ "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" ],
+        marketIDs: ["0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"],
         shareTotals: {
           shortAskBuyCompleteSets: {
             "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": "3"
@@ -93,7 +94,7 @@ describe("trading/positions/get-adjusted-positions", function () {
   test({
     description: "1 market, 1 short sell",
     params: {
-      account: "0xb0b",
+      account: "0xb0b"
     },
     logs: {
       shortAskBuyCompleteSets: [],
@@ -116,7 +117,7 @@ describe("trading/positions/get-adjusted-positions", function () {
       assert.isNull(err);
       assert.strictEqual(JSON.stringify(output), JSON.stringify({
         account: "0xb0b",
-        marketIDs: [ "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" ],
+        marketIDs: ["0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"],
         shareTotals: {
           shortAskBuyCompleteSets: {},
           shortSellBuyCompleteSets: {
@@ -130,7 +131,7 @@ describe("trading/positions/get-adjusted-positions", function () {
   test({
     description: "1 market, 2 sell complete sets",
     params: {
-      account: "0xb0b",
+      account: "0xb0b"
     },
     logs: {
       shortAskBuyCompleteSets: [],
@@ -157,7 +158,7 @@ describe("trading/positions/get-adjusted-positions", function () {
       assert.isNull(err);
       assert.strictEqual(JSON.stringify(output), JSON.stringify({
         account: "0xb0b",
-        marketIDs: [ "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" ],
+        marketIDs: ["0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"],
         shareTotals: {
           shortAskBuyCompleteSets: {},
           shortSellBuyCompleteSets: {},
@@ -207,7 +208,7 @@ describe("trading/positions/get-adjusted-positions", function () {
       assert.isNull(err);
       assert.strictEqual(JSON.stringify(output), JSON.stringify({
         account: "0xb0b",
-        marketIDs: [ "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" ],
+        marketIDs: ["0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"],
         shareTotals: {
           shortAskBuyCompleteSets: {
             "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": "6"
@@ -223,7 +224,7 @@ describe("trading/positions/get-adjusted-positions", function () {
   test({
     description: "1 market, 1 short ask, 1 short sell, 1 sell complete sets",
     params: {
-      account: "0xb0b",
+      account: "0xb0b"
     },
     logs: {
       shortAskBuyCompleteSets: [{
@@ -262,7 +263,7 @@ describe("trading/positions/get-adjusted-positions", function () {
       assert.isNull(err);
       assert.strictEqual(JSON.stringify(output), JSON.stringify({
         account: "0xb0b",
-        marketIDs: [ "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" ],
+        marketIDs: ["0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"],
         shareTotals: {
           shortAskBuyCompleteSets: {
             "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": "3"
@@ -280,7 +281,7 @@ describe("trading/positions/get-adjusted-positions", function () {
   test({
     description: "1 market, 1 short ask, 2 short sells [0.1 outcome 1, 0.2 outcome 1], 1 sell complete sets",
     params: {
-      account: "0xb0b",
+      account: "0xb0b"
     },
     logs: {
       shortAskBuyCompleteSets: [{
@@ -331,7 +332,7 @@ describe("trading/positions/get-adjusted-positions", function () {
       assert.isNull(err);
       assert.strictEqual(JSON.stringify(output), JSON.stringify({
         account: "0xb0b",
-        marketIDs: [ "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" ],
+        marketIDs: ["0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"],
         shareTotals: {
           shortAskBuyCompleteSets: {
             "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": "3"
@@ -349,7 +350,7 @@ describe("trading/positions/get-adjusted-positions", function () {
   test({
     description: "1 market, 1 short ask, 2 short sells [0.1 outcome 1, 0.2 outcome 2], 2 complete sets [buy 3, sell 2.1]",
     params: {
-      account: "0xb0b",
+      account: "0xb0b"
     },
     logs: {
       shortAskBuyCompleteSets: [{
@@ -408,7 +409,7 @@ describe("trading/positions/get-adjusted-positions", function () {
       assert.isNull(err);
       assert.strictEqual(JSON.stringify(output), JSON.stringify({
         account: "0xb0b",
-        marketIDs: [ "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" ],
+        marketIDs: ["0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"],
         shareTotals: {
           shortAskBuyCompleteSets: {
             "0x7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff": "3"
@@ -426,7 +427,7 @@ describe("trading/positions/get-adjusted-positions", function () {
   test({
     description: "2 markets, position ([0, 0], [2, 2, 2, 2, 2, 2, 2, 2]), 2 short sells [0.1 outcome 2 market 1, 0.2 outcome 2 market 2], 1 sell complete sets [1 market 2]",
     params: {
-      account: "0xb0b",
+      account: "0xb0b"
     },
     logs: {
       shortAskBuyCompleteSets: [],
@@ -489,7 +490,7 @@ describe("trading/positions/get-adjusted-positions", function () {
   test({
     description: "2 markets, 3 short sells [0.1 outcome 2 market 1, 1.2 outcome 2 market 2, 10000.00001 outcome 7 market 2], 1 sell complete sets [1.2 market 2]",
     params: {
-      account: "0xb0b",
+      account: "0xb0b"
     },
     logs: {
       shortAskBuyCompleteSets: [],

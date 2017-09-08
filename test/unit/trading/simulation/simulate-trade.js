@@ -1,3 +1,5 @@
+/* eslint-env mocha */
+
 "use strict";
 
 var assert = require("chai").assert;
@@ -45,7 +47,7 @@ describe("trading/simulation/simulate-trade", function () {
             owner: "OWNER_ADDRESS"
           }
         }
-      }      
+      }
     },
     assertions: function (output) {
       assert.deepEqual(output, {
@@ -90,7 +92,7 @@ describe("trading/simulation/simulate-trade", function () {
             owner: "OWNER_ADDRESS"
           }
         }
-      }      
+      }
     },
     assertions: function (output) {
       assert.deepEqual(output, {

@@ -125,7 +125,7 @@ describe("contracts/generate-abi-map", function () {
             }
           }
         }
-      })
+      });
     }
   });
 });

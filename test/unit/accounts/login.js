@@ -105,7 +105,7 @@ describe("accounts/login", function () {
     },
     mock: {
       keythereum: {
-        getMAC: function (derivedKey, storedKey) {
+        getMAC: function () {
           return "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef";
         }
       }
@@ -126,7 +126,7 @@ describe("accounts/login", function () {
         deriveKey: function (password, salt, options, cb) {
           cb("6149823a44b50a20e7d5a6d7e60798c576f330888a3c6bc0113da5b687662586");
         },
-        decrypt: function (ciphertext, key, iv, algo) {
+        decrypt: function () {
           throw new Error("Uh-Oh!");
         }
       }

@@ -1,3 +1,5 @@
+/* eslint-env mocha */
+
 "use strict";
 
 var assert = require("chai").assert;
@@ -518,7 +520,7 @@ describe("trading/positions/adjust-positions", function () {
         "0x1": new BigNumber("5.1", 10)
       },
       shortSellBuyCompleteSets: {
-        "0x1": new BigNumber("1.2", 10),
+        "0x1": new BigNumber("1.2", 10)
       },
       sellCompleteSets: {
         "0x1": new BigNumber("-6.1", 10)
@@ -639,7 +641,7 @@ describe("trading/positions/adjust-positions", function () {
         "0x1": new BigNumber("5.1", 10)
       },
       shortSellBuyCompleteSets: {
-        "0x1": new BigNumber("1.2", 10),
+        "0x1": new BigNumber("1.2", 10)
       },
       sellCompleteSets: {
         "0x1": new BigNumber("-6.1", 10)

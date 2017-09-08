@@ -3,7 +3,6 @@
 "use strict";
 
 var assert = require("chai").assert;
-var speedomatic = require("speedomatic");
 var proxyquire = require("proxyquire").noPreserveCache();
 
 var callcount = 0;
@@ -19,7 +18,7 @@ describe("trading/order-book/get-order-book-chunked", function () {
             Orders: {
               getWorseOrderId: t.stub.api.Orders.getWorseOrderId
             }
-          }
+          };
         }
       });
       getOrderBookChunked(t.params.p, t.params.onChunkReceived, t.assertions);
@@ -317,17 +316,17 @@ describe("trading/order-book/get-order-book-chunked", function () {
         minPrice: undefined,
         maxPrice: undefined
       },
-      onChunkReceived: function (orderBookChunk) {
+      onChunkReceived: function () {
         assert.fail();
       }
     },
     stub: {
-      getOrderBook: function (p, callback) {
+      getOrderBook: function () {
         assert.fail();
       },
       api: {
         Orders: {
-          getWorseOrderId: function (p, callback) {
+          getWorseOrderId: function () {
             assert.fail();
           }
         }

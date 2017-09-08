@@ -1,8 +1,9 @@
+/* eslint-env mocha */
+
 "use strict";
 
 var assert = require("chai").assert;
 var proxyquire = require("proxyquire").noPreserveCache();
-var noop = require("../../../src/utils/noop");
 
 describe("trading/get-trade-amount-remaining", function () {
   var test = function (t) {

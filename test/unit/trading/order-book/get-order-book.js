@@ -15,7 +15,7 @@ describe("trading/order-book/get-order-book", function () {
             OrderBook: {
               getOrderBook: t.stub.api.OrderBook.getOrderBook
             }
-          }
+          };
         }
       });
       getOrderBook(t.params, t.assertions);
@@ -41,7 +41,7 @@ describe("trading/order-book/get-order-book", function () {
               _market: "MARKET_ID",
               _outcome: "OUTCOME_ID",
               _startingOrderId: "0xa",
-              _numOrdersToLoad: 10,
+              _numOrdersToLoad: 10
             });
             callback([
               "0x1",                       // orderId
@@ -117,7 +117,7 @@ describe("trading/order-book/get-order-book", function () {
               _market: "MARKET_ID",
               _outcome: "OUTCOME_ID",
               _startingOrderId: "0xa",
-              _numOrdersToLoad: 10,
+              _numOrdersToLoad: 10
             });
             callback([
               "0x1",                       // orderId
@@ -175,7 +175,7 @@ describe("trading/order-book/get-order-book", function () {
     stub: {
       api: {
         OrderBook: {
-          getOrderBook: function (p, callback) {
+          getOrderBook: function () {
             assert.fail();
           }
         }

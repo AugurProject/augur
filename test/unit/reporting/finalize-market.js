@@ -1,3 +1,5 @@
+/* eslint-env mocha */
+
 "use strict";
 
 var assert = require("chai").assert;
@@ -32,11 +34,11 @@ describe("reporting/finalize-market", function () {
               assert.deepEqual(payload, { tx: { to: "MARKET_CONTRACT_ADDRESS" } });
               callback("0x1");
             },
-            tryFinalize: function (payload, callback) {
+            tryFinalize: function () {
               assert.fail();
             }
           }
-        }
+        };
       }
     },
     assertions: function (output) {
@@ -62,7 +64,7 @@ describe("reporting/finalize-market", function () {
               callback("0x0");
             }
           }
-        }
+        };
       }
     },
     assertions: function (output) {
@@ -93,7 +95,7 @@ describe("reporting/finalize-market", function () {
               payload.onSuccess({ callReturn: "TRY_FINALIZE" });
             }
           }
-        }
+        };
       }
     },
     assertions: function (output) {

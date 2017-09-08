@@ -3,7 +3,6 @@
 "use strict";
 
 var assert = require("chai").assert;
-var speedomatic = require("speedomatic");
 var abiMap = require("../../../../src/contracts").abi;
 var parseLogMessage = require("../../../../src/filters/parse-message/parse-log-message");
 

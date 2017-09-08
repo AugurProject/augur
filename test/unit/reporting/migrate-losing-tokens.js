@@ -1,3 +1,5 @@
+/* eslint-env mocha */
+
 "use strict";
 
 var assert = require("chai").assert;
@@ -42,13 +44,13 @@ describe("reporting/migrate-losing-tokens", function () {
             },
             getReputationToken: function (payload, callback) {
               assert.deepEqual(payload, { tx: { to: "BRANCH_CONTRACT_ADDRESS" } });
-              callback("REPUTATION_TOKEN_CONTRACT_ADDRESS")
+              callback("REPUTATION_TOKEN_CONTRACT_ADDRESS");
             }
           },
           ReportingToken: {
             migrateLosingTokens: function (payload) {
               assert.strictEqual(payload.tx.to, "REPORTING_TOKEN_CONTRACT_ADDRESS");
-              if (!payload.tx.send) return callback("0x1");
+              if (!payload.tx.send) return payload.onFailed("0x1");
               assert.strictEqual(payload._signer.toString("utf8"), "PRIVATE_KEY");
               assert.isFunction(payload.onSent);
               assert.isFunction(payload.onSuccess);
@@ -66,7 +68,7 @@ describe("reporting/migrate-losing-tokens", function () {
               callback("PREVIOUS_REPORTING_WINDOW_END_BLOCK");
             }
           }
-        }
+        };
       },
       getLogs: function (p, callback) {
         assert.deepEqual(p, {
@@ -78,7 +80,7 @@ describe("reporting/migrate-losing-tokens", function () {
             address: "REPUTATION_TOKEN_CONTRACT_ADDRESS"
           }
         });
-        callback(null, [{ to: "REPORTING_TOKEN_CONTRACT_ADDRESS" }])
+        callback(null, [{ to: "REPORTING_TOKEN_CONTRACT_ADDRESS" }]);
       }
     },
     assertions: function (output) {

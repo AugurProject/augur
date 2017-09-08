@@ -1,3 +1,5 @@
+/* eslint-env mocha */
+
 "use strict";
 
 var assert = require("chai").assert;
@@ -68,10 +70,10 @@ describe("reporting/redeem", function () {
               assert.deepEqual(payload, { tx: { to: "REPORTING_TOKEN_CONTRACT_ADDRESS" } });
               callback("BRANCH_CONTRACT_ADDRESS");
             },
-            redeemDisavowedTokens: function (payload) {
+            redeemDisavowedTokens: function () {
               assert.fail();
             },
-            redeemForkedTokens: function (payload) {
+            redeemForkedTokens: function () {
               assert.fail();
             },
             redeemWinningTokens: function (payload) {
@@ -84,7 +86,7 @@ describe("reporting/redeem", function () {
               payload.onSuccess({ callReturn: "REDEEM_WINNING_TOKENS" });
             }
           }
-        }
+        };
       },
       finalizeMarket: function (p) {
         p.onSuccess(true);
@@ -126,7 +128,7 @@ describe("reporting/redeem", function () {
               });
               callback("0x1");
             },
-            getFinalWinningReportingToken: function (payload, callback) {
+            getFinalWinningReportingToken: function () {
               assert.fail();
             }
           },
@@ -142,7 +144,7 @@ describe("reporting/redeem", function () {
               assert.deepEqual(payload, { tx: { to: "REPORTING_TOKEN_CONTRACT_ADDRESS" } });
               callback("BRANCH_CONTRACT_ADDRESS");
             },
-            redeemDisavowedTokens: function (payload) {
+            redeemDisavowedTokens: function () {
               assert.fail();
             },
             redeemForkedTokens: function (payload) {
@@ -154,11 +156,11 @@ describe("reporting/redeem", function () {
               assert.isFunction(payload.onFailed);
               payload.onSuccess({ callReturn: "REDEEM_FORKED_TOKENS" });
             },
-            redeemWinningTokens: function (payload) {
+            redeemWinningTokens: function () {
               assert.fail();
             }
           }
-        }
+        };
       },
       finalizeMarket: function (p) {
         p.onSuccess(true);
@@ -180,7 +182,7 @@ describe("reporting/redeem", function () {
       api: function () {
         return {
           Branch: {
-            getForkingMarket: function (payload, callback) {
+            getForkingMarket: function () {
               assert.fail();
             }
           },
@@ -199,7 +201,7 @@ describe("reporting/redeem", function () {
               });
               callback("0x0");
             },
-            getFinalWinningReportingToken: function (payload, callback) {
+            getFinalWinningReportingToken: function () {
               assert.fail();
             }
           },
@@ -211,7 +213,7 @@ describe("reporting/redeem", function () {
               });
               callback("0x10");
             },
-            getBranch: function (payload, callback) {
+            getBranch: function () {
               assert.fail();
             },
             redeemDisavowedTokens: function (payload) {
@@ -223,16 +225,16 @@ describe("reporting/redeem", function () {
               assert.isFunction(payload.onFailed);
               payload.onSuccess({ callReturn: "REDEEM_DISAVOWED_TOKENS" });
             },
-            redeemForkedTokens: function (payload) {
+            redeemForkedTokens: function () {
               assert.fail();
             },
-            redeemWinningTokens: function (payload) {
+            redeemWinningTokens: function () {
               assert.fail();
             }
           }
-        }
+        };
       },
-      finalizeMarket: function (p) {
+      finalizeMarket: function () {
         assert.fail();
       }
     },

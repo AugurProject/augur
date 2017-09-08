@@ -15,7 +15,7 @@ describe("trading/order-book/get-order", function () {
             OrdersFetcher: {
               getOrder: t.stub.api.OrdersFetcher.getOrder
             }
-          }
+          };
         }
       });
       getOrder(t.params, t.assertions);
@@ -112,7 +112,7 @@ describe("trading/order-book/get-order", function () {
     stub: {
       api: {
         OrdersFetcher: {
-          getOrder: function (p, callback) {
+          getOrder: function () {
             assert.fail();
           }
         }
@@ -135,7 +135,7 @@ describe("trading/order-book/get-order", function () {
     stub: {
       api: {
         OrdersFetcher: {
-          getOrder: function (p, callback) {
+          getOrder: function () {
             assert.fail();
           }
         }
@@ -158,7 +158,7 @@ describe("trading/order-book/get-order", function () {
     stub: {
       api: {
         OrdersFetcher: {
-          getOrder: function (p, callback) {
+          getOrder: function () {
             assert.fail();
           }
         }

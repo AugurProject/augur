@@ -1,3 +1,5 @@
+/* eslint-env mocha */
+
 "use strict";
 
 var assert = require("chai").assert;
@@ -49,7 +51,7 @@ describe("reporting/register-to-report", function () {
               payload.onSuccess({ callReturn: "REGISTER" });
             }
           }
-        }
+        };
       }
     },
     assertions: function (output) {
