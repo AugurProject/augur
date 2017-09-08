@@ -1,7 +1,17 @@
 @import '~assets/styles/shared.less';
 
+.MarketOutcomesCategorical {
+  height: 1.5rem;
+  overflow: hidden;
+}
+
 .MarketOutcomesCategorical__outcomes {
   display: table;
+}
+
+.MarketOutcomesCategorical__outcomes-container {
+  display: inline-block;
+  position: relative;
 }
 
 .MarketOutcomesCategorical__outcome {
@@ -15,11 +25,12 @@
 }
 
 .MarketOutcomesCategorical__outcome-name {
-  display: inline-block;
+  line-height: 1.3rem;
   max-width: 9.5rem;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  vertical-align: middle;
 }
 
 .MarketOutcomesCategorical__outcome-row {
@@ -35,4 +46,16 @@
 
   float: right;
   margin-left: 1.75rem;
+  vertical-align: middle;
+}
+
+.MarketOutcomesCategorical__show-more {
+  &:extend(.caps--medium);
+
+  color: @color-lightgray;
+  cursor: pointer;
+  position: absolute;
+  right: -3.5rem;
+  top: .3rem;
+  transform: translateX(100%);
 }
