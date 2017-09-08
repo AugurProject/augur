@@ -8,9 +8,9 @@ import makePath from 'modules/routes/helpers/make-path'
 
 import { SIGNUP, LOGIN } from 'modules/routes/constants/views'
 
-import Styles from 'modules/auth/components/auth-view/auth-view.styles'
+import Styles from 'modules/auth/components/auth-lander/auth-lander.styles'
 
-export default function AuthView(p) {
+export default function AuthLander(p) {
   return (
     <section className={Styles.AuthView}>
       <Helmet>

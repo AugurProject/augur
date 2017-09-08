@@ -18,9 +18,9 @@ const Markets = asyncComponent({
   loader: () => import(/* webpackChunkName: 'markets' */ 'modules/markets/container')
     .then(module => module.default)
 })
-const Authentication = asyncComponent({
-  moduleName: 'Authentication',
-  loader: () => import(/* webpackChunkName: 'auth' */ 'modules/auth/containers/auth-view')
+const AuthLander = asyncComponent({
+  moduleName: 'AuthLander',
+  loader: () => import(/* webpackChunkName: 'auth' */ 'modules/auth/containers/auth-lander')
     .then(module => module.default)
 })
 const Account = asyncComponent({
@@ -60,7 +60,7 @@ const Routes = p => (
       <Route exact path={makePath(VIEWS.DEFAULT_VIEW)} component={Topics} />
       <Route path={makePath(VIEWS.MARKETS)} component={Markets} />
       <Route path={makePath(VIEWS.MARKET)} component={Market} />
-      <Route path={makePath(VIEWS.AUTHENTICATION)} component={Authentication} />
+      <Route path={makePath(VIEWS.AUTHENTICATION)} component={AuthLander} />
       <Route path={makePath(VIEWS.STYLE_SANDBOX)} component={StyleSandbox} />
       <AuthenticatedRoute path={makePath(VIEWS.FAVORITES)} component={Markets} />
       <AuthenticatedRoute path={makePath(VIEWS.MY_POSITIONS)} component={Portfolio} />
