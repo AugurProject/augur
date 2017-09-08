@@ -2,7 +2,6 @@
   .border();
 
   align-items: center;
-  background-color: @color-blue;
   border-radius: 3px;
   color: @color-text-light;
   display: flex;
@@ -47,6 +46,18 @@
 
   background-color: @color-purple;
   color: @color-white;
+
+  &:hover {
+    background-color: @color-lightpurple;
+  }
+}
+
+.button--white {
+  &:extend(.button);
+
+  background-color: @color-offwhite;
+  color: @color-text-dark;
+  padding: 1.5em 2em;
 
   &:hover {
     background-color: @color-lightpurple;
