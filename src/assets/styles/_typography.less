@@ -15,8 +15,17 @@ h1 {
 //  VARS
 @din-pro: 'DINPro', sans-serif;
 
+//    Font Sizes (based on 16px base)
+@font-size-extra-small: 0.625rem; // 10px
+@font-size-small: 0.75rem; // 12px
+@font-size-medium: 0.875rem; // 14px
+@font-size-large: 1.125rem; // 18px
+@font-size-extra-large: 1.875rem; // 30px
+@font-size-massive: 2.43rem; // 39px
+
 //  MIXINS
 .caps {
+  font-weight: 500;
   letter-spacing: 0.3px;
   text-transform: uppercase;
 }
@@ -24,48 +33,44 @@ h1 {
 .caps--extra-small {
   &:extend(.caps);
 
-  font-size: 0.625rem; // 10px
-  line-height: 0.625rem;
+  font-size: @font-size-extra-small;
+  line-height: @font-size-extra-small;
 }
 
 .caps--small {
   &:extend(.caps);
 
-  font-size: 0.75rem; // 12px
-  font-weight: 500;
-  line-height: 0.75rem;
+  font-size: @font-size-small;
+  line-height: @font-size-small;
 }
 
 .caps--medium {
   &:extend(.caps);
 
-  font-size: 0.875rem; // 14px
-  line-height: 0.875rem;
+  font-size: @font-size-medium;
+  line-height: @font-size-medium;
 }
 
 .caps--large {
   &:extend(.caps);
 
-  font-size: 1.125rem; // 18px
-  font-weight: 500;
-  line-height: 1.125rem;
+  font-size: @font-size-large;
+  line-height: @font-size-large;
 }
 =======
 
 .caps--extra-large {
   &:extend(.caps);
 
-  font-size: 1.875rem; // 30px
-  font-weight: 500;
-  line-height: 1.875rem;
+  font-size: @font-size-extra-large;
+  line-height: @font-size-extra-large;
 }
 
 .caps--massive {
   &:extend(.caps);
 
-  font-size: 2.43rem; // 39px;
-  font-weight: 500;
-  line-height: 2.43rem;
+  font-size: @font-size-massive;
+  line-height: @font-size-massive;
 }
 
 .number--large {
