@@ -20,7 +20,7 @@ const Markets = asyncComponent({
 })
 const Authentication = asyncComponent({
   moduleName: 'Authentication',
-  loader: () => import(/* webpackChunkName: 'auth' */ 'modules/auth/container')
+  loader: () => import(/* webpackChunkName: 'auth' */ 'modules/auth/containers/auth-view')
     .then(module => module.default)
 })
 const Account = asyncComponent({
