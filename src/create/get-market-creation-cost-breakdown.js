@@ -22,8 +22,8 @@ function getMarketCreationCostBreakdown(p, callback) {
     tx: { to: p.branchID },
     _timestamp: p._endTime
   }, function (reportingWindowAddress) {
-    if (!reportingWindowAddress) return next({ error: "getReportingWindowByTimestamp failed" });
-    if (reportingWindowAddress.error) return next(reportingWindowAddress);
+    if (!reportingWindowAddress) return callback({ error: "getReportingWindowByTimestamp failed" });
+    if (reportingWindowAddress.error) return callback(reportingWindowAddress);
     async.parallel({
       targetReporterGasCosts: function (next) {
         api().MarketFeeCalculator.getTargetReporterGasCosts(function (targetReporterGasCosts) {

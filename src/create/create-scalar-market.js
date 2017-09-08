@@ -2,9 +2,8 @@
 
 var assign = require("lodash.assign");
 var speedomatic = require("speedomatic");
+var getMarketCreationCost = require("./get-market-creation-cost");
 var api = require("../api");
-var rpcInterface = require("../rpc-interface");
-var calculateRequiredMarketValue = require("../create/calculate-required-market-value");
 var encodeTag = require("../format/tag/encode-tag");
 
 /**
@@ -24,16 +23,16 @@ var encodeTag = require("../format/tag/encode-tag");
  * @param {function} p.onFailed Called if/when the transaction fails.
  */
 function createScalarMarket(p) {
-  api().MarketCreation.createScalarMarket(assign({}, p, {
-    tx: {
-      value: calculateRequiredMarketValue(rpcInterface.getGasPrice())
-    },
-    // TODO replace with 'fixed' in abi map
-    _minDisplayPrice: speedomatic.fix(p._minDisplayPrice, "hex"),
-    _maxDisplayPrice: speedomatic.fix(p._maxDisplayPrice, "hex"),
-    _topic: encodeTag(p._topic),
-    _extraInfo: p._extraInfo ? JSON.stringify(p._extraInfo) : ""
-  }));
+  getMarketCreationCost({ branchID: p._branch, _endTime: p._endTime }, function (err, marketCreationCost) {
+    if (err) return p.onFailed(err);
+    api().MarketCreation.createScalarMarket(assign({}, p, {
+      tx: { value: marketCreationCost },
+      _minDisplayPrice: speedomatic.fix(p._minDisplayPrice, "hex"),
+      _maxDisplayPrice: speedomatic.fix(p._maxDisplayPrice, "hex"),
+      _topic: encodeTag(p._topic),
+      _extraInfo: p._extraInfo ? JSON.stringify(p._extraInfo) : ""
+    }));
+  });
 }
 
 module.exports = createScalarMarket;

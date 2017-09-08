@@ -3,8 +3,6 @@
 var assign = require("lodash.assign");
 var speedomatic = require("speedomatic");
 var api = require("../api");
-var rpcInterface = require("../rpc-interface");
-var calculateRequiredMarketValue = require("../create/calculate-required-market-value");
 var encodeTag = require("../format/tag/encode-tag");
 
 /**
@@ -31,19 +29,22 @@ function createNewMarket(p) {
     tx: { to: p.branchID },
     _timestamp: p._endTime
   }, function (reportingWindowAddress) {
-    if (!reportingWindowAddress) return p.onFailed("Reporting window address not found");
+    if (!reportingWindowAddress) return p.onFailed({ error: "getReportingWindowByTimestamp failed" });
     if (reportingWindowAddress.error) return p.onFailed(reportingWindowAddress);
-    api().ReportingWindow.createNewMarket(assign({}, p, {
-      tx: {
-        to: reportingWindowAddress,
-        value: calculateRequiredMarketValue(rpcInterface.getGasPrice())
-      },
-      // TODO replace with 'fixed' in abi map
-      _minDisplayPrice: speedomatic.fix(p._minDisplayPrice, "hex"),
-      _maxDisplayPrice: speedomatic.fix(p._maxDisplayPrice, "hex"),
-      _topic: encodeTag(p._topic),
-      _extraInfo: p._extraInfo ? JSON.stringify(p._extraInfo) : ""
-    }));
+    api().MarketFeeCalculator.getMarketCreationCost({ _reportingWindow: reportingWindowAddress }, function (marketCreationCost) {
+      if (!marketCreationCost) return p.onFailed({ error: "getMarketCreationCost failed" });
+      if (marketCreationCost.error) return p.onFailed(marketCreationCost);
+      api().ReportingWindow.createNewMarket(assign({}, p, {
+        tx: {
+          to: reportingWindowAddress,
+          value: marketCreationCost
+        },
+        _minDisplayPrice: speedomatic.fix(p._minDisplayPrice, "hex"),
+        _maxDisplayPrice: speedomatic.fix(p._maxDisplayPrice, "hex"),
+        _topic: encodeTag(p._topic),
+        _extraInfo: p._extraInfo ? JSON.stringify(p._extraInfo) : ""
+      }));
+    });
   });
 }
 

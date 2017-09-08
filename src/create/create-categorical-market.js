@@ -1,9 +1,8 @@
 "use strict";
 
 var assign = require("lodash.assign");
+var getMarketCreationCost = require("./get-market-creation-cost");
 var api = require("../api");
-var rpcInterface = require("../rpc-interface");
-var calculateRequiredMarketValue = require("../create/calculate-required-market-value");
 var encodeTag = require("../format/tag/encode-tag");
 
 /**
@@ -22,13 +21,14 @@ var encodeTag = require("../format/tag/encode-tag");
  * @param {function} p.onFailed Called if/when the transaction fails.
  */
 function createCategoricalMarket(p) {
-  api().MarketCreation.createCategoricalMarket(assign({}, p, {
-    tx: {
-      value: calculateRequiredMarketValue(rpcInterface.getGasPrice())
-    },
-    _topic: encodeTag(p._topic),
-    _extraInfo: p._extraInfo ? JSON.stringify(p._extraInfo) : ""
-  }));
+  getMarketCreationCost({ branchID: p._branch, _endTime: p._endTime }, function (err, marketCreationCost) {
+    if (err) return p.onFailed(err);
+    api().MarketCreation.createCategoricalMarket(assign({}, p, {
+      tx: { value: marketCreationCost },
+      _topic: encodeTag(p._topic),
+      _extraInfo: p._extraInfo ? JSON.stringify(p._extraInfo) : ""
+    }));
+  });
 }
 
 module.exports = createCategoricalMarket;
