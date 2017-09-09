@@ -2,7 +2,7 @@ import selectMyPositionsSummary from 'modules/my-positions/selectors/my-position
 import selectMyMarketsSummary from 'modules/my-markets/selectors/my-markets-summary'
 import selectMyReportsSummary from 'modules/my-reports/selectors/my-reports-summary'
 
-import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views'
+import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/routes/constants/views'
 import { formatNumber, formatEtherTokens, formatRep } from 'utils/format-number'
 
 export default function () {

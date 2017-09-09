@@ -7,9 +7,9 @@ import classNames from 'classnames'
 import PortfolioNav from 'modules/portfolio/containers/portfolio-nav'
 import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 
-import makePath from 'modules/app/helpers/make-path'
+import makePath from 'modules/routes/helpers/make-path'
 
-import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views'
+import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/routes/constants/views'
 
 const CoreStats = p => (
   <article className="core-stats" >

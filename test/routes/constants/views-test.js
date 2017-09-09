@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha'
 import { assert } from 'chai'
 
-import * as views from 'modules/app/constants/views'
+import * as views from 'modules/routes/constants/views'
 
 describe('modules/app/constants/views', () => {
   const test = t => it(t.description, () => t.assertions())

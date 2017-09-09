@@ -2,7 +2,7 @@ import { describe, it } from 'mocha'
 import { assert } from 'chai'
 
 import { AUTH_NAV_ITEMS } from 'modules/auth/constants/auth-nav-items'
-import { SIGNUP, LOGIN, IMPORT } from 'modules/app/constants/views'
+import { SIGNUP, LOGIN, IMPORT } from 'modules/routes/constants/views'
 
 describe('modules/auth/constants/auth-nav-items.js', () => {
   const test = t => it(t.description, () => t.assertions())
