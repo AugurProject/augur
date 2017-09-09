@@ -1,8 +1,7 @@
 import speedomatic from 'speedomatic';
-import { augur, constants } from 'services/augurjs';
+import { augur } from 'services/augurjs';
 import { BUY } from 'modules/transactions/constants/types';
 import { clearTradeInProgress } from 'modules/trade/actions/update-trades-in-progress';
-import noop from 'utils/noop';
 import logError from 'utils/log-error';
 
 export const placeTrade = (marketID, outcomeID, tradeInProgress, doNotMakeOrders, callback = logError, onComplete = logError) => (dispatch, getState) => {
