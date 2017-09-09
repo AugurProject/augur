@@ -7,13 +7,13 @@ import { mobileMenuStates } from 'modules/app/components/app/app'
 import Styles from 'modules/app/components/inner-nav/inner-nav.styles'
 
 import _, { isEqual } from 'lodash'
-import parseQuery from 'modules/app/helpers/parse-query'
-import parseStringToArray from 'modules/app/helpers/parse-string-to-array'
-import makeQuery from 'modules/app/helpers/make-query'
-import makePath from 'modules/app/helpers/make-path'
+import parseQuery from 'modules/routes/helpers/parse-query'
+import parseStringToArray from 'modules/routes/helpers/parse-string-to-array'
+import makeQuery from 'modules/routes/helpers/make-query'
+import makePath from 'modules/routes/helpers/make-path'
 
-import { TOPIC_PARAM_NAME, TAGS_PARAM_NAME } from 'modules/app/constants/param-names'
-import { MARKETS } from 'modules/app/constants/views'
+import { TOPIC_PARAM_NAME, TAGS_PARAM_NAME } from 'modules/routes/constants/param-names'
+import { MARKETS } from 'modules/routes/constants/views'
 
 import MenuItem from 'modules/app/components/inner-nav/menu-item'
 
