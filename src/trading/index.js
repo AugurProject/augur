@@ -8,6 +8,5 @@ module.exports = {
   calculateProfitLoss: require("./profit-loss"),
   normalizePrice: require("./normalize-price"),
   denormalizePrice: require("./denormalize-price"),
-  getTradeAmountRemaining: require("./get-trade-amount-remaining"),
   tradeUntilAmountIsZero: require("./trade-until-amount-is-zero")
 };

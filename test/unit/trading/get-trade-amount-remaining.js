@@ -3,7 +3,7 @@
 "use strict";
 
 var assert = require("chai").assert;
-var proxyquire = require("proxyquire").noPreserveCache();
+var proxyquire = require("proxyquire").noPreserveCache().noCallThru();
 
 describe("trading/get-trade-amount-remaining", function () {
   var test = function (t) {
@@ -12,7 +12,7 @@ describe("trading/get-trade-amount-remaining", function () {
         "../contracts": t.mock.contracts,
         "../rpc-interface": t.mock.rpcInterface
       });
-      getTradeAmountRemaining(t.params, function (err, tradeAmountRemaining) {
+      getTradeAmountRemaining(t.params.transactionHash, function (err, tradeAmountRemaining) {
         t.assertions(err, tradeAmountRemaining);
         done();
       });

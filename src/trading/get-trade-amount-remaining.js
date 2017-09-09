@@ -3,9 +3,8 @@
 var eventsAbi = require("../contracts").abi.events;
 var rpcInterface = require("../rpc-interface");
 
-// { transactionHash, tradeAmountRemainingEventSignature }
-function getTradeAmountRemaining(p, callback) {
-  rpcInterface.getTransactionReceipt(p.transactionHash, function (transactionReceipt) {
+function getTradeAmountRemaining(transactionHash, callback) {
+  rpcInterface.getTransactionReceipt(transactionHash, function (transactionReceipt) {
     var hasTradeAmountRemainingLog = false;
     if (!transactionReceipt || !Array.isArray(transactionReceipt.logs) || !transactionReceipt.logs.length) {
       return callback("logs not found");
