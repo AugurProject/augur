@@ -9,6 +9,7 @@ describe("trading/get-trade-amount-remaining", function () {
   var test = function (t) {
     it(t.description, function (done) {
       var getTradeAmountRemaining = proxyquire("../../../src/trading/get-trade-amount-remaining", {
+        "../contracts": t.mock.contracts,
         "../rpc-interface": t.mock.rpcInterface
       });
       getTradeAmountRemaining(t.params, function (err, tradeAmountRemaining) {
@@ -20,10 +21,18 @@ describe("trading/get-trade-amount-remaining", function () {
   test({
     description: "get trade amount remaining using transaction hash",
     params: {
-      transactionHash: "TRANSACTION_HASH",
-      tradeAmountRemainingEventSignature: "TRADE_AMOUNT_REMAINING_SIGNATURE"
+      transactionHash: "TRANSACTION_HASH"
     },
     mock: {
+      contracts: {
+        abi: {
+          events: {
+            TradeAmountRemaining: {
+              signature: "TRADE_AMOUNT_REMAINING_SIGNATURE"
+            }
+          }
+        }
+      },
       rpcInterface: {
         getTransactionReceipt: function (transactionHash, callback) {
           callback({
@@ -45,10 +54,18 @@ describe("trading/get-trade-amount-remaining", function () {
   test({
     description: "logs not present in receipt",
     params: {
-      transactionHash: "TRANSACTION_HASH",
-      tradeAmountRemainingEventSignature: "TRADE_AMOUNT_REMAINING_SIGNATURE"
+      transactionHash: "TRANSACTION_HASH"
     },
     mock: {
+      contracts: {
+        abi: {
+          events: {
+            TradeAmountRemaining: {
+              signature: "TRADE_AMOUNT_REMAINING_SIGNATURE"
+            }
+          }
+        }
+      },
       rpcInterface: {
         getTransactionReceipt: function (transactionHash, callback) {
           callback({});
@@ -63,10 +80,18 @@ describe("trading/get-trade-amount-remaining", function () {
   test({
     description: "trade amount remaining log not present",
     params: {
-      transactionHash: "TRANSACTION_HASH",
-      tradeAmountRemainingEventSignature: "TRADE_AMOUNT_REMAINING_SIGNATURE"
+      transactionHash: "TRANSACTION_HASH"
     },
     mock: {
+      contracts: {
+        abi: {
+          events: {
+            TradeAmountRemaining: {
+              signature: "TRADE_AMOUNT_REMAINING_SIGNATURE"
+            }
+          }
+        }
+      },
       rpcInterface: {
         getTransactionReceipt: function (transactionHash, callback) {
           callback({
