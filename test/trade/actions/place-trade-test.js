@@ -76,7 +76,7 @@ describe(`modules/trade/actions/place-trade.js`, () => {
           }
         },
         trading: {
-          normalizePrice: (minValue, maxValue, price) => price,
+          normalizePrice: (p) => p.price,
           getTradeAmountRemaining: (p, callback) => {
             callback(null, '0x0');
           }

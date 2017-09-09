@@ -1,4 +1,3 @@
-import speedomatic from 'speedomatic';
 import { augur } from 'services/augurjs';
 import { BUY } from 'modules/transactions/constants/types';
 import { clearTradeInProgress } from 'modules/trade/actions/update-trades-in-progress';
@@ -12,14 +11,18 @@ export const placeTrade = (marketID, outcomeID, tradeInProgress, doNotMakeOrders
     console.error(`trade-in-progress not found for market ${marketID} outcome ${outcomeID}`);
     return dispatch(clearTradeInProgress(marketID));
   }
-  const limitPrice = augur.trading.normalizePrice(market.minValue, market.maxValue, tradeInProgress.limitPrice);
+  const limitPrice = augur.trading.normalizePrice({
+    minPrice: market.minPrice,
+    maxPrice: market.maxPrice,
+    displayPrice: tradeInProgress.limitPrice
+  });
   dispatch(augur.trading.tradeUntilAmountIsZero({
     _signer: loginAccount.privateKey,
     _direction: tradeInProgress.side === BUY ? 1 : 2,
     _market: marketID,
     _outcome: outcomeID,
-    _fxpAmount: speedomatic.fix(tradeInProgress.numShares, 'hex'),
-    _fxpPrice: speedomatic.fix(limitPrice, 'hex'),
+    _fxpAmount: tradeInProgress.numShares,
+    _fxpPrice: limitPrice,
     _tradeGroupID: tradeInProgress.tradeGroupID,
     doNotMakeOrders,
     onSent: () => callback(null, tradeInProgress.tradeGroupID),
