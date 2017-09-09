@@ -2,16 +2,25 @@
 
 var BigNumber = require("bignumber.js");
 
-// normalizedPrice = (displayPrice - minValue)/(maxValue - minValue)
-// Inputs are BigNumbers or base10 (JS numbers or strings).
-function normalizePrice(minValue, maxValue, displayPrice) {
-  if (minValue.constructor !== BigNumber) minValue = new BigNumber(minValue, 10);
-  if (maxValue.constructor !== BigNumber) maxValue = new BigNumber(maxValue, 10);
-  if (displayPrice.constructor !== BigNumber) displayPrice = new BigNumber(displayPrice, 10);
-  if (minValue.gt(maxValue)) throw new Error("Minimum value larger than maximum value");
-  if (displayPrice.lt(minValue)) throw new Error("Price is below the minimum value");
-  if (displayPrice.gt(maxValue)) throw new Error("Price is above the maximum value");
-  return displayPrice.minus(minValue).dividedBy(maxValue.minus(minValue)).toFixed();
+/**
+ * Rescale a price to lie on [0, 1]: normalizedPrice = (price - minPrice) / (maxPrice - minPrice)
+ * @param {Object} p Parameters object.
+ * @param {BigNumber|string} p.minPrice This market's minimum possible price, as a BigNumber or base-10 string.
+ * @param {BigNumber|string} p.maxPrice This market's maximum possible price, as a BigNumber or base-10 string.
+ * @param {BigNumber|string} p.price The price to be normalized, as a BigNumber or base-10 string.
+ * @return {string} Price rescaled to [0, 1], as a base-10 string.
+ */
+function normalizePrice(p) {
+  var minPrice = p.minPrice;
+  var maxPrice = p.maxPrice;
+  var price = p.price;
+  if (minPrice.constructor !== BigNumber) minPrice = new BigNumber(minPrice, 10);
+  if (maxPrice.constructor !== BigNumber) maxPrice = new BigNumber(maxPrice, 10);
+  if (price.constructor !== BigNumber) price = new BigNumber(price, 10);
+  if (minPrice.gt(maxPrice)) throw new Error("Minimum value larger than maximum value");
+  if (price.lt(minPrice)) throw new Error("Price is below the minimum value");
+  if (price.gt(maxPrice)) throw new Error("Price is above the maximum value");
+  return price.minus(minPrice).dividedBy(maxPrice.minus(minPrice)).toFixed();
 }
 
 module.exports = normalizePrice;

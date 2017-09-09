@@ -30,7 +30,7 @@ module.exports = function (orderType, minPrice, maxPrice, order) {
   var amount = roundToPrecision(fullPrecisionAmount, constants.MINIMUM_TRADE_SIZE);
   if (amount === null) return null;
 
-  var fullPrecisionPrice = denormalizePrice(minPrice, maxPrice, speedomatic.unfixSigned(order[1]));
+  var fullPrecisionPrice = denormalizePrice({ minPrice: minPrice, maxPrice: maxPrice, normalizedPrice: speedomatic.unfixSigned(order[1]) });
   var price = roundToPrecision(new BigNumber(fullPrecisionPrice, 10), constants.PRECISION.zero, round, roundingMode);
   if (price === null) return null;
 

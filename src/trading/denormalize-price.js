@@ -2,16 +2,25 @@
 
 var BigNumber = require("bignumber.js");
 
-// displayPrice = normalizedPrice*(maxValue - minValue) + minValue
-// Inputs are BigNumbers or base10 (JS numbers or strings).
-function denormalizePrice(minValue, maxValue, normalizedPrice) {
-  if (minValue.constructor !== BigNumber) minValue = new BigNumber(minValue, 10);
-  if (maxValue.constructor !== BigNumber) maxValue = new BigNumber(maxValue, 10);
+/**
+ * Rescale a price to its display range [minPrice, maxPrice]: displayPrice = normalizedPrice*(maxPrice - minPrice) + minPrice
+ * @param {Object} p Parameters object.
+ * @param {BigNumber|string} p.minPrice This market's minimum possible price, as a BigNumber or base-10 string.
+ * @param {BigNumber|string} p.maxPrice This market's maximum possible price, as a BigNumber or base-10 string.
+ * @param {BigNumber|string} p.normalizedPrice The price to be denormalized, as a BigNumber or base-10 string.
+ * @return {string} Price rescaled to [minPrice, maxPrice], as a base-10 string.
+ */
+function denormalizePrice(p) {
+  var minPrice = p.minPrice;
+  var maxPrice = p.maxPrice;
+  var normalizedPrice = p.normalizedPrice;
+  if (minPrice.constructor !== BigNumber) minPrice = new BigNumber(minPrice, 10);
+  if (maxPrice.constructor !== BigNumber) maxPrice = new BigNumber(maxPrice, 10);
   if (normalizedPrice.constructor !== BigNumber) normalizedPrice = new BigNumber(normalizedPrice, 10);
-  if (minValue.gt(maxValue)) throw new Error("Minimum value larger than maximum value");
+  if (minPrice.gt(maxPrice)) throw new Error("Minimum value larger than maximum value");
   if (normalizedPrice.lt(0)) throw new Error("Normalized price is below 0");
   if (normalizedPrice.gt(1)) throw new Error("Normalized price is above 1");
-  return normalizedPrice.times(maxValue.minus(minValue)).plus(minValue).toFixed();
+  return normalizedPrice.times(maxPrice.minus(minPrice)).plus(minPrice).toFixed();
 }
 
 module.exports = denormalizePrice;
