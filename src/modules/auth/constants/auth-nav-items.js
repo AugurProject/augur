@@ -1,4 +1,4 @@
-import { SIGNUP, LOGIN, IMPORT } from 'modules/app/constants/views'
+import { SIGNUP, LOGIN, IMPORT } from 'modules/routes/constants/views'
 
 export const AUTH_NAV_ITEMS = {
   [SIGNUP]: {

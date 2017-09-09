@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha'
 import { assert } from 'chai'
 
-import AUTHENTICATED_VIEWS from 'modules/app/constants/authenticated-views'
+import AUTHENTICATED_VIEWS from 'modules/routes/constants/authenticated-views'
 
 describe('modules/app/constants/authenticated-views.js', () => {
   const test = t => it(t.description, () => t.assertions())

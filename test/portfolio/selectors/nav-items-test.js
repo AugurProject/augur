@@ -4,7 +4,7 @@ import { assert } from 'chai'
 import sinon from 'sinon'
 import proxyquire from 'proxyquire'
 
-import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views'
+import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/routes/constants/views'
 
 import { formatNumber, formatEtherTokens, formatRep } from 'utils/format-number'
 
