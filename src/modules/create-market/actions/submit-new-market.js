@@ -7,8 +7,7 @@ import { placeTrade } from 'modules/trade/actions/place-trade';
 
 import makePath from 'modules/app/helpers/make-path';
 
-import { BID } from 'modules/transactions/constants/types';
-import { BUY, SELL } from 'modules/trade/constants/types';
+import { BUY, SELL } from 'modules/transactions/constants/types';
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
 import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR } from 'modules/markets/constants/market-outcomes';
 import { TRANSACTIONS } from 'modules/app/constants/views';
@@ -65,7 +64,7 @@ export function submitNewMarket(newMarket, history) {
             eachLimit(newMarket.orderBook[outcome], constants.PARALLEL_LIMIT, (order, orderCB) => {
               const outcomeID = newMarket.type === CATEGORICAL ? index + 1 : 2; // NOTE -- Both Scalar + Binary only trade against one outcome, that of outcomeID 2
 
-              dispatch(updateTradesInProgress(res.callReturn, outcomeID, order.type === BID ? BUY : SELL, order.quantity, order.price, null, (tradingActions) => {
+              dispatch(updateTradesInProgress(res.callReturn, outcomeID, order.type === BUY ? BUY : SELL, order.quantity, order.price, null, (tradingActions) => {
                 const tradeToExecute = {
                   [outcomeID]: tradingActions
                 };

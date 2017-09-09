@@ -21,7 +21,7 @@ import {
   NEW_MARKET_REVIEW
 } from 'modules/create-market/constants/new-market-creation-steps';
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
-import { BID, ASK } from 'modules/transactions/constants/types';
+import { BUY, SELL } from 'modules/transactions/constants/types';
 
 import getValue from 'utils/get-value';
 import debounce from 'utils/debounce';
@@ -140,8 +140,8 @@ export default class CreateMarketPreview extends Component {
   }
 
   updateChart() {
-    const bidSeries = getValue(this.props.newMarket.orderBookSeries[this.state.selectedOutcome], `${BID}`) || [];
-    const askSeries = getValue(this.props.newMarket.orderBookSeries[this.state.selectedOutcome], `${ASK}`) || [];
+    const bidSeries = getValue(this.props.newMarket.orderBookSeries[this.state.selectedOutcome], `${BUY}`) || [];
+    const askSeries = getValue(this.props.newMarket.orderBookSeries[this.state.selectedOutcome], `${SELL}`) || [];
     let width;
 
     if (this.orderBookChart) {
@@ -185,8 +185,8 @@ export default class CreateMarketPreview extends Component {
     const s = this.state;
     const newMarket = this.props.newMarket;
 
-    const bids = getValue(newMarket.orderBookSorted[s.selectedOutcome], `${BID}`);
-    const asks = getValue(newMarket.orderBookSorted[s.selectedOutcome], `${ASK}`);
+    const bids = getValue(newMarket.orderBookSorted[s.selectedOutcome], `${BUY}`);
+    const asks = getValue(newMarket.orderBookSorted[s.selectedOutcome], `${SELL}`);
 
     return (
       <article

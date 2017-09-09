@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { BUY } from 'modules/trade/constants/types';
+import { BUY } from 'modules/transactions/constants/types';
 import { SCALAR } from 'modules/markets/constants/market-types';
 
 BigNumber.config({ ERRORS: false });

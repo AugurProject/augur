@@ -5,7 +5,7 @@ import sinon from 'sinon';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 
-import { BID, ASK } from 'modules/transactions/constants/types';
+import { BUY, SELL } from 'modules/transactions/constants/types';
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
 
 describe('modules/create-market/actions/submit-new-market', () => {
@@ -378,64 +378,64 @@ describe('modules/create-market/actions/submit-new-market', () => {
         orderBook: {
           one: [
             {
-              type: BID,
+              type: BUY,
               price: new BigNumber('0.1'),
               quantity: new BigNumber('1')
             },
             {
-              type: ASK,
+              type: SELL,
               price: new BigNumber('0.6'),
               quantity: new BigNumber('1')
             },
             {
-              type: BID,
+              type: BUY,
               price: new BigNumber('0.2'),
               quantity: new BigNumber('1')
             },
             {
-              type: ASK,
+              type: SELL,
               price: new BigNumber('0.7'),
               quantity: new BigNumber('1')
             },
             {
-              type: BID,
+              type: BUY,
               price: new BigNumber('0.3'),
               quantity: new BigNumber('1')
             },
             {
-              type: ASK,
+              type: SELL,
               price: new BigNumber('0.8'),
               quantity: new BigNumber('1')
             }
           ],
           two: [
             {
-              type: BID,
+              type: BUY,
               price: new BigNumber('0.1'),
               quantity: new BigNumber('1')
             },
             {
-              type: ASK,
+              type: SELL,
               price: new BigNumber('0.6'),
               quantity: new BigNumber('1')
             },
             {
-              type: BID,
+              type: BUY,
               price: new BigNumber('0.2'),
               quantity: new BigNumber('1')
             },
             {
-              type: ASK,
+              type: SELL,
               price: new BigNumber('0.7'),
               quantity: new BigNumber('1')
             },
             {
-              type: BID,
+              type: BUY,
               price: new BigNumber('0.3'),
               quantity: new BigNumber('1')
             },
             {
-              type: ASK,
+              type: SELL,
               price: new BigNumber('0.8'),
               quantity: new BigNumber('1')
             }

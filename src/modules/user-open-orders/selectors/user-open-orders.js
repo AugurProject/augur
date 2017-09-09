@@ -6,7 +6,7 @@ import store from 'src/store';
 
 import { isOrderOfUser } from 'modules/bids-asks/helpers/is-order-of-user';
 
-import { BUY, SELL } from 'modules/bids-asks/constants/bids-asks-types';
+import { BUY, SELL } from 'modules/transactions/constants/types';
 import { CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-status';
 
 import { formatNone, formatEtherTokens, formatShares } from 'utils/format-number';

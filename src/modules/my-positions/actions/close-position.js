@@ -7,7 +7,7 @@ import selectAllMarkets from 'modules/markets/selectors/markets-all';
 
 import loadBidsAsks from 'modules/bids-asks/actions/load-bids-asks';
 
-import { BUY, SELL } from 'modules/trade/constants/types';
+import { BUY, SELL } from 'modules/transactions/constants/types';
 import { CLOSE_DIALOG_FAILED, CLOSE_DIALOG_NO_ORDERS } from 'modules/market/constants/close-dialog-status';
 import { ZERO } from 'modules/trade/constants/numbers';
 

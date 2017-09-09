@@ -2,8 +2,7 @@ import { assert } from 'chai';
 import speedomatic from 'speedomatic';
 
 export { BINARY, SCALAR, CATEGORICAL } from 'modules/markets/constants/market-types';
-export { BUY, SELL } from 'modules/trade/constants/types';
-export { BID, ASK } from 'modules/bids-asks/constants/bids-asks-types';
+export { BUY, SELL } from 'modules/transactions/constants/types';
 
 export const tradeTestState = {
   loginAccount: {

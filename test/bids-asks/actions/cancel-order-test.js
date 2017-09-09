@@ -4,8 +4,7 @@ import BigNumber from 'bignumber.js';
 import proxyquire from 'proxyquire';
 import sinon from 'sinon';
 import mocks from 'test/mockStore';
-import { CANCEL_ORDER } from 'modules/transactions/constants/types';
-import { BUY, SELL } from 'modules/bids-asks/constants/bids-asks-types';
+import { CANCEL_ORDER, BUY, SELL } from 'modules/transactions/constants/types';
 
 describe('modules/bids-asks/actions/cancel-order.js', () => {
   proxyquire.noPreserveCache().noCallThru();
@@ -52,7 +51,6 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
       store.dispatch(cancelOrder('nonExistingOrderID', 'testMarketID', 2, BUY));
       store.dispatch(cancelOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'nonExistingMarketID', 2, BUY));
       store.dispatch(cancelOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'testMarketID', 2, SELL));
-
       assert.deepEqual(store.getActions(), []);
     });
   });

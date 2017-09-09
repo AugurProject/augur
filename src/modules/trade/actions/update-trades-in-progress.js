@@ -1,7 +1,7 @@
 import BigNumber from 'bignumber.js';
-import { augur, constants } from 'services/augurjs';
 import speedomatic from 'speedomatic';
-import { BUY, SELL } from 'modules/trade/constants/types';
+import { augur, constants } from 'services/augurjs';
+import { BUY, SELL } from 'modules/transactions/constants/types';
 import { TWO } from 'modules/trade/constants/numbers';
 import { SCALAR } from 'modules/markets/constants/market-types';
 
