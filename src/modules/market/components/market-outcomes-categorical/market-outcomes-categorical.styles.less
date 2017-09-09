@@ -3,6 +3,16 @@
 .MarketOutcomesCategorical {
   height: 1.5rem;
   overflow: hidden;
+  transition: height .3s ease;
+}
+
+.MarketOutcomesCategorical__inner-table {
+  display: table;
+  width: 100%;
+}
+
+.MarketOutcomesCategorical__inner-tr {
+  display: table-row;
 }
 
 .MarketOutcomesCategorical__outcomes {
@@ -25,6 +35,7 @@
 }
 
 .MarketOutcomesCategorical__outcome-name {
+  display: table-cell;
   line-height: 1.3rem;
   max-width: 9.5rem;
   overflow: hidden;
@@ -44,8 +55,8 @@
 .MarketOutcomesCategorical__outcome-value {
   &:extend(.number--large);
 
-  float: right;
-  margin-left: 1.75rem;
+  display: table-cell;
+  /* margin-left: 1.75rem; */
   vertical-align: middle;
 }
 
