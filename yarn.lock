@@ -518,37 +518,28 @@ asynckit@^0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
 
-augur-abi@1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/augur-abi/-/augur-abi-1.2.1.tgz#f099dc136a61cff196540cb830dc5128b8228493"
-  dependencies:
-    bignumber.js "2.3.0"
-    ethereumjs-abi "0.6.2"
-    js-sha3 "0.3.1"
+augur-contracts@3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-3.0.1.tgz#fa648d8353593e4dcc55d1b3d2e346143d312734"
 
-augur-contracts@2.11.4:
-  version "2.11.4"
-  resolved "https://registry.yarnpkg.com/augur-contracts/-/augur-contracts-2.11.4.tgz#0209c298480aa1a0b0974fb301491a6d2563dc71"
-  dependencies:
-    clone "1.0.2"
-
-augur.js@4.0.6:
-  version "4.0.6"
-  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.0.6.tgz#2362b8a2aae17f0cc711a306ac4c0797b3f8e5b5"
+augur.js@4.1.0:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/augur.js/-/augur.js-4.1.0.tgz#5e038f40496635caae6dfc781ddfe2ee4080ee4e"
   dependencies:
     async "1.5.2"
-    augur-abi "1.2.1"
-    augur-contracts "2.11.4"
+    augur-contracts "3.0.1"
     bignumber.js "2.3.0"
     browser-request "0.3.3"
     chalk "1.1.1"
     clone "1.0.2"
-    ethereumjs-connect "4.1.2"
-    ethrpc "4.1.2"
+    ethereumjs-connect "4.2.2"
+    ethrpc "4.2.3"
     immutable-delete "1.0.1"
-    keythereum "0.5.1"
+    keccak "1.2.0"
+    keythereum "1.0.2"
     lodash.assign "4.2.0"
     request "2.74.0"
+    speedomatic "2.0.0"
     uuid "3.0.0"
     uuid-parse "1.0.0"
   optionalDependencies:
@@ -3242,13 +3233,6 @@ ethereum-common@^0.0.18:
   version "0.0.18"
   resolved "https://registry.yarnpkg.com/ethereum-common/-/ethereum-common-0.0.18.tgz#2fdc3576f232903358976eb39da783213ff9523f"
 
-ethereumjs-abi@0.6.2:
-  version "0.6.2"
-  resolved "https://registry.yarnpkg.com/ethereumjs-abi/-/ethereumjs-abi-0.6.2.tgz#9ffa54403d9255540c6cc9a8ff7d32705c1f3373"
-  dependencies:
-    bn.js "^4.10.0"
-    ethereumjs-util "^4.3.0"
-
 ethereumjs-abi@0.6.4:
   version "0.6.4"
   resolved "https://registry.yarnpkg.com/ethereumjs-abi/-/ethereumjs-abi-0.6.4.tgz#9ba1bb056492d00c27279f6eccd4d58275912c1a"
@@ -3266,13 +3250,13 @@ ethereumjs-blockstream@2.0.4:
     source-map-support "0.4.14"
     uuid "3.0.1"
 
-ethereumjs-connect@4.1.2:
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/ethereumjs-connect/-/ethereumjs-connect-4.1.2.tgz#39bde9de8790609130e5bcdedfc7643b7a31bb88"
+ethereumjs-connect@4.2.2:
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/ethereumjs-connect/-/ethereumjs-connect-4.2.2.tgz#455aafe7533fd8dc1fc02b92b8e62c59c2be8b7a"
   dependencies:
     async "1.5.2"
     clone "1.0.2"
-    ethrpc "4.1.2"
+    ethrpc "4.2.3"
 
 ethereumjs-tx@1.3.1:
   version "1.3.1"
@@ -3311,15 +3295,15 @@ ethjs-util@^0.1.3:
     is-hex-prefixed "1.0.0"
     strip-hex-prefix "1.0.0"
 
-ethrpc@4.1.2:
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-4.1.2.tgz#49a956c384d8866bd1af722f99a3173c19df25b6"
+ethrpc@4.2.3:
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/ethrpc/-/ethrpc-4.2.3.tgz#c71a0e7f71a47032723c4d3b6d34e34405bb05d3"
   dependencies:
     async "1.5.2"
-    augur-abi "1.2.1"
     bignumber.js "2.3.0"
     browser-request "0.3.3"
     clone "1.0.2"
+    ethereumjs-abi "0.6.4"
     ethereumjs-blockstream "2.0.4"
     ethereumjs-tx "1.3.1"
     immutable-delete "1.0.1"
@@ -3331,6 +3315,7 @@ ethrpc@4.1.2:
     oboe "2.1.3"
     redux "3.6.0"
     redux-thunk-subscribe "1.0.3"
+    speedomatic "2.0.0"
     sync-request "2.0.1"
     uuid "^3.0.1"
   optionalDependencies:
@@ -4976,7 +4961,7 @@ js-base64@^2.1.9:
   version "2.1.9"
   resolved "https://registry.yarnpkg.com/js-base64/-/js-base64-2.1.9.tgz#f0e80ae039a4bd654b5f281fc93f04a914a7fcce"
 
-js-sha3@0.3.1, js-sha3@^0.3.1:
+js-sha3@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/js-sha3/-/js-sha3-0.3.1.tgz#86122802142f0828502a0d1dee1d95e253bb0243"
 
@@ -5155,15 +5140,6 @@ keccakjs@^0.2.0:
 keycode@^2.1.0:
   version "2.1.9"
   resolved "https://registry.yarnpkg.com/keycode/-/keycode-2.1.9.tgz#964a23c54e4889405b4861a5c9f0480d45141dfa"
-
-keythereum@0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/keythereum/-/keythereum-0.5.1.tgz#2d6a186a1cad5886ec6ba9378a214f651509f191"
-  dependencies:
-    keccak "1.2.0"
-    secp256k1 "3.2.5"
-    sjcl "1.0.6"
-    uuid "3.0.0"
 
 keythereum@1.0.2:
   version "1.0.2"
