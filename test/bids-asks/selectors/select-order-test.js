@@ -1,6 +1,6 @@
 import { describe, it } from 'mocha';
 import { assert } from 'chai';
-import { BUY } from 'modules/bids-asks/constants/bids-asks-types';
+import { BUY } from 'modules/transactions/constants/types';
 
 describe('modules/bids-asks/selectors/select-order.js', () => {
   const selectOrder = require('../../../src/modules/bids-asks/selectors/select-order').default;

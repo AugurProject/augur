@@ -18,3 +18,5 @@ export const REGISTER_ACCOUNT = 'register_account';
 export const TRANSFER_FUNDS = 'transfer_funds';
 export const SENT_CASH = 'sentCash';
 export const SENT_ETHER = 'sentEther';
+export const BUY = 'buy';
+export const SELL = 'sell';

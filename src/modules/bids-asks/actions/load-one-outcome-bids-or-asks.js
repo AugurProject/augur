@@ -1,5 +1,5 @@
 import { augur } from 'services/augurjs';
-import { BUY } from 'modules/bids-asks/constants/bids-asks-types';
+import { BUY } from 'modules/transactions/constants/types';
 import { updateIsFirstOrderBookChunkLoaded } from 'modules/bids-asks/actions/update-order-book';
 import insertOrderBookChunkToOrderBook from 'modules/bids-asks/actions/insert-order-book-chunk-to-order-book';
 import logError from 'utils/log-error';

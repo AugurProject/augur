@@ -1,5 +1,5 @@
 import { augur } from 'services/augurjs';
-import { BUY } from 'modules/bids-asks/constants/bids-asks-types';
+import { BUY } from 'modules/transactions/constants/types';
 import { CLOSE_DIALOG_CLOSING, CLOSE_DIALOG_FAILED } from 'modules/market/constants/close-dialog-status';
 import { updateOrderStatus } from 'modules/bids-asks/actions/update-order-status';
 import selectOrder from 'modules/bids-asks/selectors/select-order';

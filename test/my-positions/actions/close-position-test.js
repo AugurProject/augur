@@ -8,7 +8,7 @@ import BigNumber from 'bignumber.js';
 
 import { getBestFill } from 'modules/my-positions/actions/close-position';
 
-import { BUY, SELL } from 'modules/trade/constants/types';
+import { BUY, SELL } from 'modules/transactions/constants/types';
 
 describe('modules/my-positions/actions/close-position.js', () => {
   proxyquire.noPreserveCache().noCallThru();

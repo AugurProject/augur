@@ -3,7 +3,7 @@ import { assert } from 'chai';
 import proxyquire from 'proxyquire';
 import mocks from 'test/mockStore';
 import { CLOSE_DIALOG_CLOSING } from 'modules/market/constants/close-dialog-status';
-import { BUY } from 'modules/bids-asks/constants/bids-asks-types';
+import { BUY } from 'modules/transactions/constants/types';
 import { updateOrderStatus } from 'modules/bids-asks/actions/update-order-status';
 
 describe('modules/bids-asks/actions/update-order-status.js', () => {
