@@ -20,7 +20,7 @@ export const placeTrade = (marketID, outcomeID, tradeInProgress, doNotMakeOrders
     _signer: loginAccount.privateKey,
     _direction: tradeInProgress.side === BUY ? 1 : 2,
     _market: marketID,
-    _outcome: outcomeID,
+    _outcome: parseInt(outcomeID, 10),
     _fxpAmount: tradeInProgress.numShares,
     _fxpPrice: limitPrice,
     _tradeGroupID: tradeInProgress.tradeGroupID,
