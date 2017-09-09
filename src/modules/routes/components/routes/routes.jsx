@@ -1,14 +1,15 @@
 import React from 'react'
 import { Route, Switch, Redirect } from 'react-router-dom'
 
-import App from 'modules/app/container'
+import App from 'modules/app/containers/app'
+
 import asyncComponent from 'modules/common/components/async-component'
 import AuthenticatedRoute from 'modules/routes/components/authenticated-route/authenticated-route'
 import makePath from 'modules/routes/helpers/make-path'
 
 import * as VIEWS from 'modules/routes/constants/views'
 
-const Topics = asyncComponent({
+const CATEGORIES = asyncComponent({
   moduleName: 'Topics',
   loader: () => import(/* webpackChunkName: 'topics' */ 'modules/topics/container')
     .then(module => module.default)
@@ -67,7 +68,7 @@ const StyleSandbox = asyncComponent({
 const Routes = p => (
   <App>
     <Switch>
-      <Route exact path={makePath(VIEWS.DEFAULT_VIEW)} component={Topics} />
+      <Route exact path={makePath(VIEWS.DEFAULT_VIEW)} component={CATEGORIES} />
       <Route path={makePath(VIEWS.MARKETS)} component={Markets} />
       <Route path={makePath(VIEWS.MARKET)} component={Market} />
       <Route path={makePath(VIEWS.AUTHENTICATION)} component={AuthLander} />
