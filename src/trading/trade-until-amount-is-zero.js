@@ -14,7 +14,7 @@ var constants = require("../constants");
  * @param {string} p._market Market in which to trade, as a hex string.
  * @param {number} p._outcome Outcome ID to trade, must be an integer value on [1, 8].
  * @param {string} p._fxpAmount Number of shares to trade, as a base-10 string.
- * @param {string} p._fxpPrice Limit price for this trade, as a base-10 string.
+ * @param {string} p._fxpPrice Normalized limit price for this trade, as a base-10 string.
  * @param {string=} p._tradeGroupID ID logged with each trade transaction (can be used to group trades client-side), as a hex string.
  * @param {boolean=} p.doNotMakeOrders If set to true, this trade will only take existing orders off the book, not create new ones (default: false).
  * @param {buffer|function=} p._signer Can be the plaintext private key as a Buffer or the signing function to use.
