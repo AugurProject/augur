@@ -14,46 +14,20 @@ export const placeTrade = (marketID, outcomeID, tradeInProgress, doNotMakeOrders
     return dispatch(clearTradeInProgress(marketID));
   }
   const limitPrice = augur.trading.normalizePrice(market.minValue, market.maxValue, tradeInProgress.limitPrice);
-  dispatch(tradeUntilAmountIsZero({
+  dispatch(augur.trading.tradeUntilAmountIsZero({
     _signer: loginAccount.privateKey,
-    direction: tradeInProgress.side === BUY ? 1 : 2,
-    market: marketID,
-    outcome: outcomeID,
-    fxpAmount: speedomatic.fix(tradeInProgress.numShares, 'hex'),
-    fxpPrice: speedomatic.fix(limitPrice, 'hex'),
-    tradeGroupID: tradeInProgress.tradeGroupID,
+    _direction: tradeInProgress.side === BUY ? 1 : 2,
+    _market: marketID,
+    _outcome: outcomeID,
+    _fxpAmount: speedomatic.fix(tradeInProgress.numShares, 'hex'),
+    _fxpPrice: speedomatic.fix(limitPrice, 'hex'),
+    _tradeGroupID: tradeInProgress.tradeGroupID,
+    doNotMakeOrders,
     onSent: () => callback(null, tradeInProgress.tradeGroupID),
     onFailed: callback
-  }, doNotMakeOrders, (err) => {
+  }, (err) => {
     if (err) return callback(err);
     onComplete(err);
   }));
   dispatch(clearTradeInProgress(marketID));
-};
-
-export const tradeUntilAmountIsZero = (tradePayload, doNotMakeOrders, callback = logError) => (dispatch, getState) => {
-  if (speedomatic.unfix(tradePayload.fxpAmount).lte(constants.PRECISION.zero)) {
-    return callback(null);
-  }
-  const payload = {
-    ...tradePayload,
-    onSuccess: (res) => {
-      augur.trading.getTradeAmountRemaining({
-        transactionHash: res.hash,
-        tradeAmountRemainingEventSignature: getState().eventsAPI.TradeAmountRemaining.signature
-      }, (err, fxpTradeAmountRemaining) => {
-        if (err) return callback(err);
-        dispatch(tradeUntilAmountIsZero({
-          ...tradePayload,
-          fxpAmount: fxpTradeAmountRemaining,
-          onSent: noop
-        }, doNotMakeOrders, callback));
-      });
-    }
-  };
-  if (doNotMakeOrders) {
-    augur.api.Trade.publicTakeBestOrder(payload);
-  } else {
-    augur.api.Trade.publicTrade(payload);
-  }
 };
