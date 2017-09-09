@@ -10,7 +10,6 @@ export const REGISTRATION = 'Registration';
 export const TRANSFER = 'Transfer';
 export const PAYOUT = 'Payout';
 export const SUBMIT_REPORT = 'SubmitReport';
-export const DECREASE_TRADING_FEE = 'DecreaseTradingFee';
 
 // Other
 export const WITHDRAW_ETHER = 'withdraw_ether';
