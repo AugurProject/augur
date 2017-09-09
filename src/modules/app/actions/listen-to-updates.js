@@ -110,7 +110,7 @@ export function listenToUpdates() {
             dispatch(loadMarketsInfo([msg.marketID]));
             if (msg.sender === getState().loginAccount.address) {
               dispatch(updateAssets());
-              dispatch(convertLogsToTransactions(TYPES.MARKET_CREATED, [msg]));
+              dispatch(convertLogsToTransactions(TYPES.CREATE_MARKET, [msg]));
             }
           }
         },

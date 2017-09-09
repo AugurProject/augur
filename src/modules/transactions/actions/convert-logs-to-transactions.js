@@ -1,6 +1,5 @@
 import async from 'async';
 import { augur } from 'services/augurjs';
-import { LOG_SHORT_FILL_TX } from 'modules/transactions/constants/types';
 import { SUCCESS } from 'modules/transactions/constants/statuses';
 import { updateTransactionsData } from 'modules/transactions/actions/update-transactions-data';
 import { updateMarketsData } from 'modules/markets/actions/update-markets-data';
@@ -12,15 +11,13 @@ export function convertTradeLogToTransaction(label, data, marketID) {
     console.log(data);
     const outcomeIDs = Object.keys(data[marketID]);
     const numOutcomes = outcomeIDs.length;
-    const { address } = getState().loginAccount;
     for (let j = 0; j < numOutcomes; ++j) {
       const outcomeID = outcomeIDs[j];
       const numTrades = data[marketID][outcomeID].length;
       if (numTrades) {
         for (let k = 0; k < numTrades; ++k) {
           const trade = data[marketID][outcomeID][k];
-          const tradeLabel = trade.isShortSell && trade.sender === address ? LOG_SHORT_FILL_TX : label;
-          const transaction = dispatch(constructTradingTransaction(tradeLabel, trade, marketID, outcomeID, SUCCESS));
+          const transaction = dispatch(constructTradingTransaction(label, trade, marketID, outcomeID, SUCCESS));
           if (transaction) dispatch(updateTransactionsData(transaction));
         }
       }
