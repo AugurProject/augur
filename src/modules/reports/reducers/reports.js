@@ -32,7 +32,7 @@ export default function (reports = {}, action) {
       return {
         ...reports,
         [action.branchID]: Object.keys(branchReports).reduce((p, eventID) => {
-          if (branchReports[eventID].period >= action.reportPeriod) {
+          if (branchReports[eventID].period >= action.currentReportingWindowAddress) {
             p[eventID] = branchReports[eventID];
           }
           return p;

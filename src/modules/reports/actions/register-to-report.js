@@ -11,7 +11,7 @@ export const registerToReport = (callback = logError) => (dispatch, getState) =>
     _signer: loginAccount.privateKey,
     onSent: noop,
     onSuccess: (r) => {
-      dispatch({ type: REGISTER_TO_REPORT, reportingWindow: branch.reportPeriod + 1 });
+      dispatch({ type: REGISTER_TO_REPORT, reportingWindow: branch.nextReportingWindowAddress });
       callback(null, r.callReturn);
     },
     onFailed: callback

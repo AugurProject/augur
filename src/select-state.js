@@ -44,14 +44,14 @@ export const selectBlockchainCurrentBlockTimestamp = createSelector(
   blockchain => blockchain.currentBlockTimestamp
 );
 
-export const selectBranchPeriodLength = createSelector(
+export const selectBranchReportingPeriodDurationInSeconds = createSelector(
   selectBranchState,
-  branch => branch.periodLength
+  branch => branch.reportingPeriodDurationInSeconds
 );
 
 export const selectBranchReportPeriod = createSelector(
   selectBranchState,
-  branch => branch.reportPeriod
+  branch => branch.currentReportingWindowAddress
 );
 
 export const selectLoginAccountAddress = createSelector(

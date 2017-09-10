@@ -9,10 +9,7 @@ describe(`modules/app/actions/init-augur.js`, () => {
   const { store } = mocks;
 
   const mockAugurJS = {
-    connect: () => {},
-    augur: {
-      loadBranch: () => {}
-    }
+    connect: () => {}
   };
   const mockSetLoginAccount = {};
   const mockRegisterTransactionRelay = {};
@@ -32,9 +29,6 @@ describe(`modules/app/actions/init-augur.js`, () => {
   });
   mockLoadChatMessages.loadChatMessages = sinon.stub().returns({
     type: 'LOAD_CHAT_MESSAGES'
-  });
-  sinon.stub(mockAugurJS.augur, 'loadBranch', (branchID, cb) => {
-    cb(null, 'testBranch');
   });
   mockRegisterTransactionRelay.registerTransactionRelay = sinon.stub().returns({
     type: 'REGISTER_TRANSACTION_RELAY'

@@ -9,11 +9,11 @@ export const submitReport = (market, reportedOutcomeID, isIndeterminate, history
     return console.error('submitReport failed:', loginAccount.address, market, reportedOutcomeID);
   }
   const branchID = branch.id;
-  console.log(`committing to report ${reportedOutcomeID} on market ${market.id} period ${branch.reportPeriod}...`);
+  console.log(`submit report ${reportedOutcomeID} on market ${market.id} period ${branch.currentReportingWindowAddress}...`);
   const fixedReport = augur.reporting.format.fixReport(reportedOutcomeID, market.minPrice, market.maxPrice, market.type, isIndeterminate);
   const report = {
     marketID: market.id,
-    period: branch.reportPeriod,
+    period: branch.currentReportingWindowAddress,
     reportedOutcomeID,
     isCategorical: market.type === CATEGORICAL,
     isScalar: market.type === SCALAR,
@@ -26,8 +26,8 @@ export const submitReport = (market, reportedOutcomeID, isIndeterminate, history
     market: market.id,
     report: fixedReport,
     branch: branchID,
-    period: branch.reportPeriod,
-    periodLength: branch.periodLength,
+    period: branch.currentReportingWindowAddress,
+    reportingPeriodDurationInSeconds: branch.reportingPeriodDurationInSeconds,
     onSent: () => {},
     onSuccess: (r) => {
       dispatch(updateReport(branchID, market.id, {

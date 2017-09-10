@@ -65,7 +65,7 @@ export const selectMarkets = createSelector(
         endDate.getFullYear(),
         endDate.getMonth(),
         endDate.getDate(),
-        branch && branch.reportPeriod,
+        branch && branch.currentReportingWindowAddress,
         orderBooks[marketID],
         orderCancellation,
         (smallestPositions || {})[marketID],

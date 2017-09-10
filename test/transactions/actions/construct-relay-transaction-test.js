@@ -176,7 +176,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
     state: {
       branch: {
         id: '0xb1',
-        reportPeriod: 7,
+        currentReportingWindowAddress: 7,
         baseReporters: 6,
         numEventsCreatedInPast24Hours: 10,
         numEventsInReportPeriod: 3
@@ -315,7 +315,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
     state: {
       branch: {
         id: '0xb1',
-        reportPeriod: 7,
+        currentReportingWindowAddress: 7,
         baseReporters: 6,
         numEventsCreatedInPast24Hours: 10,
         numEventsInReportPeriod: 3
@@ -441,7 +441,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
     state: {
       branch: {
         id: '0xb1',
-        reportPeriod: 7,
+        currentReportingWindowAddress: 7,
         baseReporters: 6,
         numEventsCreatedInPast24Hours: 10,
         numEventsInReportPeriod: 3
@@ -582,7 +582,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
     state: {
       branch: {
         id: '0xb1',
-        reportPeriod: 7,
+        currentReportingWindowAddress: 7,
         baseReporters: 6,
         numEventsCreatedInPast24Hours: 10,
         numEventsInReportPeriod: 3
@@ -708,7 +708,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
     state: {
       branch: {
         id: '0xb1',
-        reportPeriod: 7,
+        currentReportingWindowAddress: 7,
         baseReporters: 6,
         numEventsCreatedInPast24Hours: 10,
         numEventsInReportPeriod: 3
@@ -848,7 +848,7 @@ describe(`modules/transactions/actions/construct-relay-transaction.js`, function
     state: {
       branch: {
         id: '0xb1',
-        reportPeriod: 7,
+        currentReportingWindowAddress: 7,
         baseReporters: 6,
         numEventsCreatedInPast24Hours: 10,
         numEventsInReportPeriod: 3

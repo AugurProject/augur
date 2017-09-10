@@ -5,6 +5,6 @@ export const clearOldReports = () => (dispatch, getState) => {
   dispatch({
     type: CLEAR_OLD_REPORTS,
     branchID: branch.id,
-    reportPeriod: branch.reportPeriod
+    currentReportingWindowAddress: branch.currentReportingWindowAddress
   });
 };

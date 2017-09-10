@@ -28,13 +28,9 @@ const testState = {
   branch: {
     id: '0xf69b5',
     description: 'root branch',
-    periodLength: 4000,
-    currentPeriod: 20,
-    reportPeriod: 19,
-    currentPeriodProgress: 52,
-    baseReporters: 6,
-    numEventsCreatedInPast24Hours: 4,
-    numEventsInReportPeriod: 3
+    reportingPeriodDurationInSeconds: 4000,
+    currentReportingWindowAddress: 19,
+    currentReportingPeriodPercentComplete: 52
   },
   connection: {
     isConnected: true

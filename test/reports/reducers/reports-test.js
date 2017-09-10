@@ -218,14 +218,14 @@ describe(`modules/reports/reducers/reports.js`, () => {
     const test = t => it(t.description, () => t.assertions(reducer(t.state.reports, {
       type: 'CLEAR_OLD_REPORTS',
       branchID: t.state.branch.id,
-      reportPeriod: t.state.branch.reportPeriod
+      currentReportingWindowAddress: t.state.branch.currentReportingWindowAddress
     })));
     test({
       description: 'one old and one current report',
       state: {
         branch: {
           id: '0xb1',
-          reportPeriod: 7
+          currentReportingWindowAddress: 7
         },
         reports: {
           '0xb1': {
@@ -271,7 +271,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
       state: {
         branch: {
           id: '0xb1',
-          reportPeriod: 7
+          currentReportingWindowAddress: 7
         },
         reports: {
           '0xb1': {
@@ -317,7 +317,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
       state: {
         branch: {
           id: '0xb1',
-          reportPeriod: 7
+          currentReportingWindowAddress: 7
         },
         reports: {
           '0xb1': {
@@ -363,7 +363,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
       state: {
         branch: {
           id: '0xb1',
-          reportPeriod: 7
+          currentReportingWindowAddress: 7
         },
         reports: {
           '0xb1': {
@@ -409,7 +409,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
       state: {
         branch: {
           id: '0xb1',
-          reportPeriod: 7
+          currentReportingWindowAddress: 7
         },
         reports: {
           '0xb1': {
@@ -445,7 +445,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
       state: {
         branch: {
           id: '0xb1',
-          reportPeriod: 7
+          currentReportingWindowAddress: 7
         },
         reports: {
           '0xb1': {
@@ -500,7 +500,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
       state: {
         branch: {
           id: '0xb1',
-          reportPeriod: 7
+          currentReportingWindowAddress: 7
         },
         reports: {
           '0xb1': {
@@ -573,7 +573,7 @@ describe(`modules/reports/reducers/reports.js`, () => {
       state: {
         branch: {
           id: '0xb1',
-          reportPeriod: 7
+          currentReportingWindowAddress: 7
         },
         reports: {
           '0xb1': {

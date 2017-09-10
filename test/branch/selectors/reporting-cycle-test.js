@@ -20,21 +20,19 @@ describe(`modules/branch/selectors/reporting-cycle.js`, () => {
         currentBlockTimestamp: 123456789
       },
       branch: {
-        periodLength: 100
+        reportingPeriodDurationInSeconds: 100
       }
     },
     stub: {
       augur: {
         reporting: {
-          getCurrentPeriod: (periodLength, timestamp) => 42,
-          getCurrentPeriodProgress: (periodLength, timestamp) => 51
+          getCurrentPeriodProgress: (reportingPeriodDurationInSeconds, timestamp) => 51
         }
       }
     },
     assertions: (reportingCycle) => {
       assert.deepEqual(reportingCycle, {
-        currentPeriod: 42,
-        currentPeriodProgress: 51,
+        currentReportingPeriodPercentComplete: 51,
         reportingCycleTimeRemaining: 'in a minute'
       });
     }

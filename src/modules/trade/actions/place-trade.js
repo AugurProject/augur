@@ -11,14 +11,10 @@ export const placeTrade = (marketID, outcomeID, tradeInProgress, doNotMakeOrders
     console.error(`trade-in-progress not found for market ${marketID} outcome ${outcomeID}`);
     return dispatch(clearTradeInProgress(marketID));
   }
-  const limitPrice = augur.trading.normalizePrice({
-    minPrice: market.minPrice,
-    maxPrice: market.maxPrice,
-    displayPrice: tradeInProgress.limitPrice
-  });
+  const limitPrice = augur.trading.normalizePrice({ minPrice: market.minPrice, maxPrice: market.maxPrice, displayPrice: tradeInProgress.limitPrice });
   dispatch(augur.trading.tradeUntilAmountIsZero({
     _signer: loginAccount.privateKey,
-    _direction: tradeInProgress.side === BUY ? 1 : 2,
+    _direction: tradeInProgress.side === BUY ? 0 : 1,
     _market: marketID,
     _outcome: parseInt(outcomeID, 10),
     _fxpAmount: tradeInProgress.numShares,

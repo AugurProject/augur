@@ -11,7 +11,7 @@ describe(`modules/branch/reducers/branch.js`, () => {
       type: UPDATE_BRANCH,
       branch: {
         description: 'testing!',
-        periodLength: '12345'
+        reportingPeriodDurationInSeconds: '12345'
       }
     };
     const expectedOutput = Object.assign({}, thisTestState.branch, action.branch);

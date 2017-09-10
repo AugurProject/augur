@@ -22,14 +22,14 @@ describe(`modules/reports/actions/clear-old-reports.js`, () => {
     state: {
       branch: {
         id: '0xb1',
-        reportPeriod: 7
+        currentReportingWindowAddress: 7
       }
     },
     assertions: (actions) => {
       assert.deepEqual(actions, [{
         type: 'CLEAR_OLD_REPORTS',
         branchID: '0xb1',
-        reportPeriod: 7
+        currentReportingWindowAddress: 7
       }]);
     }
   });

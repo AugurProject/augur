@@ -55,7 +55,7 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
     state: {
       branch: {
         id: '0xb1',
-        reportPeriod: 7
+        currentReportingWindowAddress: 7
       },
       loginAccount: {
         address: '0xb0b'
@@ -75,7 +75,7 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
     state: {
       branch: {
         id: '0xb1',
-        reportPeriod: 7
+        currentReportingWindowAddress: 7
       },
       loginAccount: {
         address: '0xb0b'
@@ -120,7 +120,7 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
     state: {
       branch: {
         id: '0xb1',
-        reportPeriod: 7
+        currentReportingWindowAddress: 7
       },
       loginAccount: {
         address: '0xb0b'
@@ -146,7 +146,7 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
     state: {
       branch: {
         id: '0xb1',
-        reportPeriod: 7
+        currentReportingWindowAddress: 7
       },
       loginAccount: {
         address: '0xb0b'
@@ -196,7 +196,7 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
     state: {
       branch: {
         id: '0xb1',
-        reportPeriod: 7
+        currentReportingWindowAddress: 7
       },
       loginAccount: {
         address: '0xb0b'
@@ -265,7 +265,7 @@ describe(`modules/my-positions/actions/claim-proceeds.js`, () => {
     state: {
       branch: {
         id: '0xb1',
-        reportPeriod: 7
+        currentReportingWindowAddress: 7
       },
       loginAccount: {
         address: '0xb0b'

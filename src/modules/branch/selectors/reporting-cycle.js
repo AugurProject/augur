@@ -2,7 +2,7 @@ import BigNumber from 'bignumber.js';
 import { createSelector } from 'reselect';
 import moment from 'moment';
 import store from 'src/store';
-import { selectBlockchainCurrentBlockTimestamp, selectBranchPeriodLength } from 'src/select-state';
+import { selectBlockchainCurrentBlockTimestamp, selectBranchReportingPeriodDurationInSeconds } from 'src/select-state';
 import { augur } from 'services/augurjs';
 import { ONE } from 'modules/trade/constants/numbers';
 
@@ -11,16 +11,14 @@ export default function () {
 }
 
 export const selectReportingCycle = createSelector(
-  selectBranchPeriodLength,
+  selectBranchReportingPeriodDurationInSeconds,
   selectBlockchainCurrentBlockTimestamp,
-  (periodLength, timestamp) => {
-    const currentPeriod = augur.reporting.getCurrentPeriod(periodLength, timestamp);
-    const currentPeriodProgress = augur.reporting.getCurrentPeriodProgress(periodLength, timestamp);
-    const bnPeriodLength = new BigNumber(periodLength, 10);
-    const secondsRemaining = ONE.minus(new BigNumber(currentPeriodProgress, 10).dividedBy(100)).times(bnPeriodLength);
+  (reportingPeriodDurationInSeconds, timestamp) => {
+    const currentReportingPeriodPercentComplete = augur.reporting.getCurrentPeriodProgress(reportingPeriodDurationInSeconds, timestamp);
+    const bnReportingPeriodDurationInSeconds = new BigNumber(reportingPeriodDurationInSeconds, 10);
+    const secondsRemaining = ONE.minus(new BigNumber(currentReportingPeriodPercentComplete, 10).dividedBy(100)).times(bnReportingPeriodDurationInSeconds);
     return {
-      currentPeriod,
-      currentPeriodProgress,
+      currentReportingPeriodPercentComplete,
       reportingCycleTimeRemaining: moment.duration(secondsRemaining, 'seconds').humanize(true)
     };
   }

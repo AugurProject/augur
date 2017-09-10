@@ -54,9 +54,7 @@ const MyReport = p => (
         <span className="report-main-group-title">cycle: </span>
         <span className="report-main-group-title-outcome">
           {p.period ?
-            <span
-              data-tip={`${p.branch.currentPeriod - p.period} reporting cycles ago`}
-            >
+            <span>
               {p.period}
             </span> :
             <EmDash />

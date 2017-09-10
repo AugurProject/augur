@@ -14,18 +14,16 @@ describe(`modules/branch/actions/update-branch.js`, () => {
   const action = proxyquire('../../../src/modules/branch/actions/update-branch.js', {});
   it('should dispatch UPDATE_BRANCH action', () => {
     store.dispatch(action.updateBranch({
-      currentPeriod: 20,
-      currentPeriodProgress: 52,
-      reportPeriod: 18,
-      periodLength: 900
+      currentReportingPeriodPercentComplete: 52,
+      currentReportingWindowAddress: 18,
+      reportingPeriodDurationInSeconds: 900
     }));
     assert.deepEqual(store.getActions(), [{
       type: 'UPDATE_BRANCH',
       branch: {
-        currentPeriod: 20,
-        currentPeriodProgress: 52,
-        reportPeriod: 18,
-        periodLength: 900
+        currentReportingPeriodPercentComplete: 52,
+        currentReportingWindowAddress: 18,
+        reportingPeriodDurationInSeconds: 900
       }
     }]);
     store.clearActions();

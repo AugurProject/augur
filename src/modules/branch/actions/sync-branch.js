@@ -1,3 +1,4 @@
+import async from 'async';
 import { augur } from 'services/augurjs';
 import getReportingCycle from 'modules/branch/selectors/reporting-cycle';
 import { updateBranch } from 'modules/branch/actions/update-branch';
@@ -6,23 +7,44 @@ import { claimProceeds } from 'modules/my-positions/actions/claim-proceeds';
 import logError from 'utils/log-error';
 
 // Synchronize front-end branch state with blockchain branch state.
-export const syncBranch = (callback = logError) => (dispatch, getState) => {
+const syncBranch = (callback = logError) => (dispatch, getState) => {
   const { branch, loginAccount } = getState();
-  if (!branch.periodLength) return callback(null);
-  const reportingCycleInfo = getReportingCycle();
-  dispatch(updateBranch({ ...reportingCycleInfo }));
-  if (branch.reportPeriod && !loginAccount.address) {
+  if (!branch.reportingPeriodDurationInSeconds) return callback(null);
+  dispatch(updateBranch(getReportingCycle()));
+  if (branch.currentReportingWindowAddress && !loginAccount.address) {
     return callback(null);
   }
   console.log('syncing branch...');
-  augur.api.Branches.getVotePeriod({ branch: branch.id }, (err, period) => {
+  const branchPayload = { tx: { to: branch.id } };
+  async.parallel({
+    currentReportingWindowAddress: (next) => {
+      augur.api.Branch.getCurrentReportingWindow(branchPayload, (err, currentReportingWindowAddress) => {
+        if (err) return next(err);
+        next(null, currentReportingWindowAddress);
+      });
+    },
+    nextReportingWindowAddress: (next) => {
+      augur.api.Branch.getNextReportingWindow(branchPayload, (err, nextReportingWindowAddress) => {
+        if (err) return next(err);
+        next(null, nextReportingWindowAddress);
+      });
+    }
+  }, (err, branchReportingWindowData) => {
     if (err) return callback(err);
-    const reportPeriod = parseInt(period, 10);
-    dispatch(updateBranch({ reportPeriod }));
-    if (!loginAccount.address) return callback(null);
-    dispatch(updateAssets((err, balances) => {
+    dispatch(updateBranch(branchReportingWindowData));
+    const reportingWindowPayload = { tx: { to: branchReportingWindowData.currentReportingWindowAddress } };
+    // TODO skip if not registered
+    augur.api.ReportingWindow.getLimitedReporterMarkets(reportingWindowPayload, (err, limitedReporterMarkets) => {
       if (err) return callback(err);
-      dispatch(claimProceeds());
-    }));
+      dispatch(updateBranch({ limitedReporterMarkets }));
+      if (!loginAccount.address) return callback(null);
+      dispatch(updateAssets((err, balances) => {
+        if (err) return callback(err);
+        dispatch(claimProceeds());
+        callback(null);
+      }));
+    });
   });
 };
+
+export default syncBranch;
