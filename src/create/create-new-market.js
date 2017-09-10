@@ -1,6 +1,7 @@
 "use strict";
 
 var assign = require("lodash.assign");
+var immutableDelete = require("immutable-delete");
 var speedomatic = require("speedomatic");
 var api = require("../api");
 var encodeTag = require("../format/tag/encode-tag");
@@ -11,7 +12,7 @@ var encodeTag = require("../format/tag/encode-tag");
  * @param {number} p._endTime Market expiration timestamp, in seconds.
  * @param {number} p._numOutcomes Number of outcomes this market has, as an integer on [2, 8].
  * @param {string} p._payoutDenominator Reports are the relative amounts to pay out to holders of shares of each outcome.  Payout denominator is used to round off the reported values, i.e. it determines the outcome resolution "tick size".  It should be set to the number of outcomes for non-scalar markets; for scalar markets, it must be a multiple of 2.  Must be a base-10 string.
- * @param {string} p._feePerEthInWei Fee that goes to the market creator, as a base-10 string.
+ * @param {string} p.settlementFee Fee that goes to the market creator, as a base-10 string.
  * @param {string} p._denominationToken Ethereum address of the token used as this market's currency.
  * @param {string} p._creator Ethereum address of the account that is creating this market.
  * @param {string} p._minDisplayPrice Minimum display (non-normalized) price for this market, as a base-10 string.
@@ -34,11 +35,12 @@ function createNewMarket(p) {
     api().MarketFeeCalculator.getMarketCreationCost({ _reportingWindow: reportingWindowAddress }, function (marketCreationCost) {
       if (!marketCreationCost) return p.onFailed({ error: "getMarketCreationCost failed" });
       if (marketCreationCost.error) return p.onFailed(marketCreationCost);
-      api().ReportingWindow.createNewMarket(assign({}, p, {
+      api().ReportingWindow.createNewMarket(assign({}, immutableDelete(p, "settlementFee"), {
         tx: {
           to: reportingWindowAddress,
           value: marketCreationCost
         },
+        _feePerEthInWei: speedomatic.fix(p.settlementFee, "hex"),
         _minDisplayPrice: speedomatic.fix(p._minDisplayPrice, "hex"),
         _maxDisplayPrice: speedomatic.fix(p._maxDisplayPrice, "hex"),
         _topic: encodeTag(p._topic),

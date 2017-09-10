@@ -38,7 +38,7 @@ var simulateSell = require("./simulate-sell");
  * Note: simulateTrade automatically normalizes share prices, so "display prices" can be directly passed in
  * for minPrice, maxPrice, and price.
  * @param {Object} p Trade simulation parameters.
- * @param {number} p.orderType Order type (1 for "buy", 2 for "sell").
+ * @param {number} p.orderType Order type (0 for "buy", 1 for "sell").
  * @param {number} p.outcome Outcome ID to trade, must be an integer value on [1, 8].
  * @param {string[]} p.shareBalances Number of shares the user owns of each outcome in ascending order, as an array of base-10 strings.
  * @param {string} p.tokenBalance Number of tokens (e.g., wrapped ether) the user owns, as a base-10 string.
@@ -46,6 +46,7 @@ var simulateSell = require("./simulate-sell");
  * @param {string} p.minPrice This market's minimum possible price, as a base-10 string.
  * @param {string} p.maxPrice This market's maximum possible price, as a base-10 string.
  * @param {string} p.price Limit price for this order (i.e. the worst price the user will accept), as a base-10 string.
+ * @param {string} p.shares Number of shares to trade, as a base-10 string.
  * @param {string} p.marketCreatorFeeRate The fee rate charged by the market creator (e.g., pass in "0.01" if the fee is 1%), as a base-10 string.
  * @param {MarketOrderBook} p.marketOrderBook The full order book (buy and sell) for this market and outcome.
  * @param {boolean=} p.shouldCollectReportingFees False if reporting fees are not collected; this is rare and only occurs in disowned markets (default: true).
@@ -62,7 +63,7 @@ function simulateTrade(p) {
   var reportingFeeRate = new BigNumber(p.reportingFeeRate, 10);
   var shouldCollectReportingFees = p.shouldCollectReportingFees === false ? 0 : 1;
   var shareBalances = p.shareBalances.map(function (shareBalance) { return new BigNumber(shareBalance, 10); });
-  var simulatedTrade = p.orderType === 1 ?
+  var simulatedTrade = p.orderType === 0 ?
     simulateBuy(p.outcome, sharesToCover, shareBalances, tokenBalance, p.userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, p.marketOrderBook.sell) :
     simulateSell(p.outcome, sharesToCover, shareBalances, tokenBalance, p.userAddress, minPrice, maxPrice, price, marketCreatorFeeRate, reportingFeeRate, shouldCollectReportingFees, p.marketOrderBook.buy);
   return {

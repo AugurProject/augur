@@ -6,7 +6,7 @@ var compareOrdersByPrice = require("./compare-orders-by-price");
 /**
  * Bids are sorted descendingly, asks are sorted ascendingly.
  * @param {require("./simulate-trade").OrderBook} orderBook Bids or asks
- * @param {number} orderType Order type (1 for "buy", 2 for "sell").
+ * @param {number} orderType Order type (0 for "buy", 1 for "sell").
  * @param {string} price Limit price for this order (i.e. the worst price the user will accept), as a base-10 string.
  * @param {string} userAddress The user's Ethereum address, as a hexadecimal string.
  * @return {require("./simulate-trade").OrderBook} Filtered and sorted orders.
@@ -23,7 +23,7 @@ function filterByPriceAndOutcomeAndUserSortByPrice(orderBook, orderType, price, 
     if (isMarketOrder) {
       isMatchingPrice = true;
     } else {
-      isMatchingPrice = orderType === 1 ? new BigNumber(order.fullPrecisionPrice, 10).lte(price) : new BigNumber(order.fullPrecisionPrice, 10).gte(price);
+      isMatchingPrice = orderType === 0 ? new BigNumber(order.fullPrecisionPrice, 10).lte(price) : new BigNumber(order.fullPrecisionPrice, 10).gte(price);
     }
     return order.owner !== userAddress && isMatchingPrice;
   });

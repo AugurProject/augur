@@ -10,7 +10,7 @@ var constants = require("../constants");
 
 /**
  * @param {Object} p Parameters object.
- * @param {number} p._direction Order type (1 for "buy", 2 for "sell").
+ * @param {number} p._direction Order type (0 for "buy", 1 for "sell").
  * @param {string} p._market Market in which to trade, as a hex string.
  * @param {number} p._outcome Outcome ID to trade, must be an integer value on [1, 8].
  * @param {string} p._fxpAmount Number of shares to trade, as a base-10 string.

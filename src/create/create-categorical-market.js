@@ -10,7 +10,7 @@ var encodeTag = require("../format/tag/encode-tag");
  * @param {string} p._branch Branch on which to create this market.
  * @param {number} p._endTime Market expiration timestamp, in seconds.
  * @param {number} p._numOutcomes Number of outcomes this market has, as an integer on [2, 8].
- * @param {string} p._feePerEthInWei Fee that goes to the market creator, as a base-10 string.
+ * @param {string} p._feePerEthInWei Fee that goes to the market creator, as a hexadecimal string.
  * @param {string} p._denominationToken Ethereum address of the token used as this market's currency.
  * @param {string} p._automatedReporterAddress Ethereum address of this market's automated reporter.
  * @param {string} p._topic The topic (category) to which this market belongs, as a UTF8 string.

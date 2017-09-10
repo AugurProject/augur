@@ -7,7 +7,7 @@ var roundToPrecision = require("../utils/round-to-precision");
 var constants = require("../constants");
 
 /**
- * @param {number} orderType Order type (1 for "buy", 2 for "sell").
+ * @param {number} orderType Order type (0 for "buy", 1 for "sell").
  * @param {string} minPrice This market's minimum possible price, as a base-10 string.
  * @param {string} maxPrice This market's maximum possible price, as a base-10 string.
  * @param {string[]} order Raw order info received from the contract, as an array of base-10 strings.

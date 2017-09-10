@@ -13,7 +13,7 @@ var parseOrderBook = require("../../parsers/order-book");
  * Note: getOrderBook generally should be used only to fetch a small chunk of orders. To fetch entire order books, typically
  * getOrderBookChunked should be used instead!
  * @param {Object} p Parameters object.
- * @param {number} p._type Order type (1 for "buy", 2 for "sell").
+ * @param {number} p._type Order type (0 for "buy", 1 for "sell").
  * @param {string} p._market Ethereum address of this market's contract instance, as a hexadecimal string.
  * @param {number} p._outcome Outcome ID to look up the order book for, must be an integer value on [1, 8].
  * @param {string=} p._startingOrderId The order ID from which to start walking towards the order book's tail, as a hexadecimal string (default: 0x0 / start from the best order).
