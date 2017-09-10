@@ -1,7 +1,6 @@
 "use strict";
 
 module.exports = {
-  getCurrentPeriod: require("./get-current-period"),
   getCurrentPeriodProgress: require("./get-current-period-progress"),
   registerToReport: require("./register-to-report"),
   submitReport: require("./submit-report"),
