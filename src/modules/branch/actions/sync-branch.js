@@ -5,45 +5,10 @@ import { updateBranch } from 'modules/branch/actions/update-branch';
 import { checkPeriod } from 'modules/reports/actions/check-period';
 import { updateAssets } from 'modules/auth/actions/update-assets';
 import { claimProceeds } from 'modules/my-positions/actions/claim-proceeds';
-
-let checkPeriodLock = false;
-
-export const syncReporterData = cb => (dispatch, getState) => {
-  const callback = cb || (e => e && console.log('syncReporterData:', e));
-  const { branch, loginAccount } = getState();
-  augur.api.ConsensusData.getPenalizedUpTo({
-    branch: branch.id,
-    sender: loginAccount.address
-  }, (penalizedUpTo) => {
-    if (!penalizedUpTo || penalizedUpTo.error) {
-      return callback(penalizedUpTo || 'could not look up last period penalized');
-    }
-    dispatch(updateBranch({ lastPeriodPenalized: parseInt(penalizedUpTo, 10) }));
-    augur.api.ConsensusData.getFeesCollected({
-      branch: branch.id,
-      address: loginAccount.address,
-      period: penalizedUpTo
-    }, (feesCollected) => {
-      if (!feesCollected || feesCollected.error) {
-        return callback(feesCollected || 'could not look up fees collected');
-      }
-      dispatch(updateBranch({ feesCollected: feesCollected === '1' }));
-
-      // check if period needs to be incremented / penalizeWrong needs to be called
-      if (!checkPeriodLock) {
-        checkPeriodLock = true;
-        dispatch(checkPeriod(true, (e) => {
-          checkPeriodLock = false;
-          callback(e);
-        }));
-      }
-    });
-  });
-};
+import logError from 'utils/log-error';
 
 // Synchronize front-end branch state with blockchain branch state.
-export const syncBranch = cb => (dispatch, getState) => {
-  const callback = cb || (e => e && console.log('syncBranch:', e));
+export const syncBranch = (callback = logError) => (dispatch, getState) => {
   const { branch, loginAccount } = getState();
   if (!branch.periodLength) return callback(null);
   const reportingCycleInfo = getReportingCycle();
@@ -52,33 +17,16 @@ export const syncBranch = cb => (dispatch, getState) => {
     return callback(null);
   }
   console.log('syncing branch...');
-  augur.api.Branches.getVotePeriod({ branch: branch.id }, (period) => {
-    if (!period || period.error) {
-      return callback(period || 'could not look up report period');
-    }
+  augur.api.Branches.getVotePeriod({ branch: branch.id }, (err, period) => {
+    if (err) return callback(err);
     const reportPeriod = parseInt(period, 10);
     dispatch(updateBranch({ reportPeriod }));
-    augur.api.Events.getPast24({ period }, (past24) => {
-      if (!past24 || past24.error) {
-        return callback(past24 || 'could not look up past 24');
-      }
-      dispatch(updateBranch({ numEventsCreatedInPast24Hours: parseInt(past24, 10) }));
-      augur.api.ExpiringEvents.getNumberEvents({
-        branch: branch.id,
-        expDateIndex: period
-      }, (numberEvents) => {
-        if (!numberEvents || numberEvents.error) {
-          return callback(numberEvents || 'could not look up number of events');
-        }
-        dispatch(updateBranch({ numEventsInReportPeriod: parseInt(numberEvents, 10) }));
-        if (!loginAccount.address) return callback(null);
-        dispatch(updateAssets((err, balances) => {
-          if (err) return callback(err);
-          dispatch(claimProceeds());
-          if (!balances.rep || isZero(balances.rep)) return callback(null);
-          dispatch(syncReporterData(callback));
-        }));
-      });
-    });
+    if (!loginAccount.address) return callback(null);
+    dispatch(updateAssets((err, balances) => {
+      if (err) return callback(err);
+      dispatch(claimProceeds());
+      if (!balances.rep || isZero(balances.rep)) return callback(null);
+      dispatch(syncReporterData(callback));
+    }));
   });
 };

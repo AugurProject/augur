@@ -20,9 +20,8 @@ export function updateAccountBidsAsksData(data, marketID, callback = logError) {
     const { loginAccount } = getState();
     dispatch(convertTradeLogsToTransactions(MAKE_ORDER, data, marketID));
     dispatch(updateOrders(data, true));
-    augur.api.MarketFetcher.getPositionInMarket({ _account: loginAccount.address, _market: marketID }, (positionInMarket) => {
-      if (!positionInMarket) return callback(`position in market ${marketID} not found`);
-      if (positionInMarket.error) return callback(positionInMarket);
+    augur.api.MarketFetcher.getPositionInMarket({ _account: loginAccount.address, _market: marketID }, (err, positionInMarket) => {
+      if (err) return callback(err);
       dispatch(updateAccountPositionsData(positionInMarket, marketID));
       callback(null, positionInMarket);
     });
@@ -46,9 +45,8 @@ export function updateAccountTradesData(data, marketID, callback = logError) {
       augur.api.MarketFetcher.getPositionInMarket({
         _account: account,
         _market: market
-      }, (positionInMarket) => {
-        if (!positionInMarket) return nextMarket(`position in market ${market} not found`);
-        if (positionInMarket.error) return nextMarket(positionInMarket);
+      }, (err, positionInMarket) => {
+        if (err) return nextMarket(err);
         dispatch(updateAccountPositionsData(positionInMarket, market));
         dispatch(loadBidsAsksHistory({ market }));
         nextMarket(null);

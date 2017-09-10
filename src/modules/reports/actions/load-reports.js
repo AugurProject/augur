@@ -21,7 +21,7 @@ export function loadReports(cb) {
     //   period,
     //   sender: account,
     //   start: 0
-    // }, (eventsToReportOn) => {
+    // }, (err, eventsToReportOn) => {
     //   console.log('eventsToReportOn:', eventsToReportOn);
     //   async.eachSeries(eventsToReportOn, (eventID, nextEvent) => {
     //     if (!eventID || !parseInt(eventID, 16)) return nextEvent();
@@ -33,7 +33,7 @@ export function loadReports(cb) {
     //     if (marketID) {
     //       return dispatch(loadReport(branchID, period, eventID, marketID, nextEvent));
     //     }
-    //     augur.api.Events.getMarkets({ event: eventID }, (markets) => {
+    //     augur.api.Events.getMarkets({ event: eventID }, (err, markets) => {
     //       dispatch(updateEventMarketsMap(eventID, markets));
     //       const marketID = markets[0];
     //       dispatch(loadMarketsInfo([marketID], () => {

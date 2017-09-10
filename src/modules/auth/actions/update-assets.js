@@ -11,8 +11,8 @@ export function updateAssets(callback = logError) {
     const branchID = branch.id || BRANCH_ID;
     const balances = { eth: undefined, ethTokens: undefined, rep: undefined };
     if (!loginAccount.address) return dispatch(updateLoginAccount(balances));
-    augur.api.Cash.balanceOf({ _owner: loginAccount.address }, (attoEthTokensBalance) => {
-      if (!attoEthTokensBalance || attoEthTokensBalance.error) return callback(attoEthTokensBalance);
+    augur.api.Cash.balanceOf({ _owner: loginAccount.address }, (err, attoEthTokensBalance) => {
+      if (err) return callback(err);
       const ethTokensBalance = speedomatic.unfix(attoEthTokensBalance, 'string');
       balances.ethTokens = ethTokensBalance;
       if (!loginAccount.ethTokens || loginAccount.ethTokens !== ethTokensBalance) {
@@ -20,8 +20,8 @@ export function updateAssets(callback = logError) {
       }
       if (allAssetsLoaded(balances)) callback(null, balances);
     });
-    augur.api.Branch.getReputationToken({ tx: { to: branchID } }, (reputationTokenAddress) => {
-      if (!reputationTokenAddress || reputationTokenAddress.error) return callback(reputationTokenAddress);
+    augur.api.Branch.getReputationToken({ tx: { to: branchID } }, (err, reputationTokenAddress) => {
+      if (err) return callback(err);
       augur.api.ReputationToken.balanceOf({
         tx: { to: reputationTokenAddress },
         _owner: loginAccount.address

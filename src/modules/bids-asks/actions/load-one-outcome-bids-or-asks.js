@@ -16,26 +16,26 @@ const loadOneOutcomeBidsOrAsks = (marketID, outcome, orderTypeLabel, callback = 
   if (market.minPrice == null || market.maxPrice == null) {
     return callback(`minPrice and maxPrice not found for market ${marketID}: ${market.minPrice} ${market.maxPrice}`);
   }
-  const orderType = (orderTypeLabel === BUY) ? 1: 2;
+  const orderType = (orderTypeLabel === BUY) ? 0 : 1;
   augur.api.Orders.getBestOrderId({
-    _type: orderType,
+    _orderType: orderType,
     _market: marketID,
     _outcome: outcome
-  }, (bestOrderId) => {
-    if (!bestOrderId || !parseInt(bestOrderId, 16) || bestOrderId.error) {
+  }, (err, bestOrderId) => {
+    if (err || !parseInt(bestOrderId, 16)) {
       return callback(`best order ID not found for market ${marketID}: ${JSON.stringify(bestOrderId)}`);
     }
     dispatch(updateIsFirstOrderBookChunkLoaded(marketID, outcome, orderTypeLabel, false));
     augur.trading.orderBook.getOrderBookChunked({
-      _type: orderType,
+      _orderType: orderType,
       _market: marketID,
       _outcome: outcome,
       _startingOrderId: bestOrderId,
       _numOrdersToLoad: null,
       minPrice: market.minPrice,
       maxPrice: market.maxPrice
-    }, orderBookChunk => dispatch(insertOrderBookChunkToOrderBook(marketID, outcome, orderTypeLabel, orderBookChunk)), (orderBook) => {
-      if (!orderBook || orderBook.error) {
+    }, orderBookChunk => dispatch(insertOrderBookChunkToOrderBook(marketID, outcome, orderTypeLabel, orderBookChunk)), (err, orderBook) => {
+      if (err) {
         return callback(`outcome order book not loaded for market ${marketID}: ${JSON.stringify(orderBook)}`);
       }
       callback(null);

@@ -1,6 +1,7 @@
-import { augur, utils } from 'services/augurjs';
+import { augur } from 'services/augurjs';
 import { loadRegisterBlockNumber } from 'modules/auth/actions/load-register-block-number';
 import { updateAssets } from 'modules/auth/actions/update-assets';
+import noop from 'utils/noop';
 
 export function fundNewAccount() {
   return (dispatch, getState) => {
@@ -14,7 +15,7 @@ export function fundNewAccount() {
         amount,
         registeredAddress: loginAccount.address,
         branch: branch.id,
-        onSent: utils.noop,
+        onSent: noop,
         onSuccess: () => {
           dispatch(updateAssets());
           dispatch(loadRegisterBlockNumber());
@@ -26,7 +27,7 @@ export function fundNewAccount() {
         _signer: loginAccount.privateKey,
         registeredAddress: loginAccount.address,
         branch: branch.id,
-        onSent: utils.noop,
+        onSent: noop,
         onSuccess: () => {
           dispatch(updateAssets());
           dispatch(loadRegisterBlockNumber());
