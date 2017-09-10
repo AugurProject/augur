@@ -32,7 +32,7 @@ describe("reporting/migrate-losing-tokens", function () {
     params: {
       _signer: Buffer.from("PRIVATE_KEY", "utf8"),
       branchID: "BRANCH_CONTRACT_ADDRESS",
-      marketID: "MARKET_CONTRACT_ADDRESS"
+      market: "MARKET_CONTRACT_ADDRESS"
     },
     mock: {
       api: function () {
@@ -50,7 +50,6 @@ describe("reporting/migrate-losing-tokens", function () {
           ReportingToken: {
             migrateLosingTokens: function (payload) {
               assert.strictEqual(payload.tx.to, "REPORTING_TOKEN_CONTRACT_ADDRESS");
-              if (!payload.tx.send) return payload.onFailed("0x1");
               assert.strictEqual(payload._signer.toString("utf8"), "PRIVATE_KEY");
               assert.isFunction(payload.onSent);
               assert.isFunction(payload.onSuccess);

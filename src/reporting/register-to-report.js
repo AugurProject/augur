@@ -2,13 +2,20 @@
 
 var api = require("../api");
 
-// { branchID }
+/**
+ * @param {Object} p Parameters object.
+ * @param {string} p.branchID Branch on which to register to report.
+ * @param {buffer|function=} p._signer Can be the plaintext private key as a Buffer or the signing function to use.
+ * @param {function} p.onSent Called if/when the transaction is broadcast to the network.
+ * @param {function} p.onSuccess Called if/when the transaction completes successfully.
+ * @param {function} p.onFailed Called if/when the transaction fails.
+ */
 function registerToReport(p) {
   api().Branch.getNextReportingWindow({ tx: { to: p.branchID } }, function (nextReportingWindowAddress) {
     api().ReportingWindow.getRegistrationToken({ tx: { to: nextReportingWindowAddress } }, function (registrationTokenAddress) {
       api().RegistrationToken.register({
         _signer: p._signer,
-        tx: { to: registrationTokenAddress, send: true },
+        tx: { to: registrationTokenAddress },
         onSent: p.onSent,
         onSuccess: p.onSuccess,
         onFailed: p.onFailed

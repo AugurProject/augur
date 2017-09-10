@@ -24,9 +24,9 @@ describe("reporting/submit-report", function () {
     description: "submit report [0, 1]",
     params: {
       _signer: Buffer.from("PRIVATE_KEY", "utf8"),
-      marketID: "MARKET_CONTRACT_ADDRESS",
-      payoutNumerators: [0, 1],
-      amountToStake: 100
+      market: "MARKET_CONTRACT_ADDRESS",
+      _payoutNumerators: [0, 1],
+      _amountToStake: 100
     },
     mock: {
       api: function () {
@@ -35,7 +35,7 @@ describe("reporting/submit-report", function () {
             getReportingToken: function (payload, callback) {
               assert.deepEqual(payload, {
                 tx: { to: "MARKET_CONTRACT_ADDRESS" },
-                payoutNumerators: [0, 1]
+                _payoutNumerators: [0, 1]
               });
               callback("REPORTING_TOKEN_CONTRACT_ADDRESS");
             }
@@ -43,8 +43,8 @@ describe("reporting/submit-report", function () {
           ReportingToken: {
             buy: function (payload) {
               assert.strictEqual(payload._signer.toString("utf8"), "PRIVATE_KEY");
-              assert.deepEqual(payload.tx, { to: "REPORTING_TOKEN_CONTRACT_ADDRESS", send: true });
-              assert.strictEqual(payload.amountToStake, 100);
+              assert.deepEqual(payload.tx, { to: "REPORTING_TOKEN_CONTRACT_ADDRESS" });
+              assert.strictEqual(payload._amountToStake, "0x56bc75e2d63100000");
               assert.isFunction(payload.onSent);
               assert.isFunction(payload.onSuccess);
               assert.isFunction(payload.onFailed);

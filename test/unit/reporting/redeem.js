@@ -25,9 +25,9 @@ describe("reporting/redeem", function () {
     description: "redeem winning reporting token",
     params: {
       _signer: Buffer.from("PRIVATE_KEY", "utf8"),
-      marketID: "MARKET_CONTRACT_ADDRESS",
-      payoutNumerators: [0, 1],
-      reporter: "REPORTER_ADDRESS"
+      market: "MARKET_CONTRACT_ADDRESS",
+      _payoutNumerators: [0, 1],
+      _reporter: "REPORTER_ADDRESS"
     },
     mock: {
       api: function () {
@@ -42,7 +42,7 @@ describe("reporting/redeem", function () {
             getReportingToken: function (payload, callback) {
               assert.deepEqual(payload, {
                 tx: { to: "MARKET_CONTRACT_ADDRESS" },
-                payoutNumerators: [0, 1]
+                _payoutNumerators: [0, 1]
               });
               callback("REPORTING_TOKEN_CONTRACT_ADDRESS");
             },
@@ -78,8 +78,8 @@ describe("reporting/redeem", function () {
             },
             redeemWinningTokens: function (payload) {
               assert.strictEqual(payload._signer.toString("utf8"), "PRIVATE_KEY");
-              assert.deepEqual(payload.tx, { to: "REPORTING_TOKEN_CONTRACT_ADDRESS", send: true });
-              assert.strictEqual(payload.reporter, "REPORTER_ADDRESS");
+              assert.deepEqual(payload.tx, { to: "REPORTING_TOKEN_CONTRACT_ADDRESS" });
+              assert.strictEqual(payload._reporter, "REPORTER_ADDRESS");
               assert.isFunction(payload.onSent);
               assert.isFunction(payload.onSuccess);
               assert.isFunction(payload.onFailed);
@@ -100,9 +100,9 @@ describe("reporting/redeem", function () {
     description: "redeem reporting token for forked market",
     params: {
       _signer: Buffer.from("PRIVATE_KEY", "utf8"),
-      marketID: "MARKET_CONTRACT_ADDRESS",
-      payoutNumerators: [0, 1],
-      reporter: "REPORTER_ADDRESS"
+      market: "MARKET_CONTRACT_ADDRESS",
+      _payoutNumerators: [0, 1],
+      _reporter: "REPORTER_ADDRESS"
     },
     mock: {
       api: function () {
@@ -117,7 +117,7 @@ describe("reporting/redeem", function () {
             getReportingToken: function (payload, callback) {
               assert.deepEqual(payload, {
                 tx: { to: "MARKET_CONTRACT_ADDRESS" },
-                payoutNumerators: [0, 1]
+                _payoutNumerators: [0, 1]
               });
               callback("REPORTING_TOKEN_CONTRACT_ADDRESS");
             },
@@ -149,8 +149,8 @@ describe("reporting/redeem", function () {
             },
             redeemForkedTokens: function (payload) {
               assert.strictEqual(payload._signer.toString("utf8"), "PRIVATE_KEY");
-              assert.deepEqual(payload.tx, { to: "REPORTING_TOKEN_CONTRACT_ADDRESS", send: true });
-              assert.strictEqual(payload.reporter, "REPORTER_ADDRESS");
+              assert.deepEqual(payload.tx, { to: "REPORTING_TOKEN_CONTRACT_ADDRESS" });
+              assert.strictEqual(payload._reporter, "REPORTER_ADDRESS");
               assert.isFunction(payload.onSent);
               assert.isFunction(payload.onSuccess);
               assert.isFunction(payload.onFailed);
@@ -174,9 +174,9 @@ describe("reporting/redeem", function () {
     description: "redeem reporting token for disavowed market",
     params: {
       _signer: Buffer.from("PRIVATE_KEY", "utf8"),
-      marketID: "MARKET_CONTRACT_ADDRESS",
-      payoutNumerators: [0, 1],
-      reporter: "REPORTER_ADDRESS"
+      market: "MARKET_CONTRACT_ADDRESS",
+      _payoutNumerators: [0, 1],
+      _reporter: "REPORTER_ADDRESS"
     },
     mock: {
       api: function () {
@@ -190,7 +190,7 @@ describe("reporting/redeem", function () {
             getReportingToken: function (payload, callback) {
               assert.deepEqual(payload, {
                 tx: { to: "MARKET_CONTRACT_ADDRESS" },
-                payoutNumerators: [0, 1]
+                _payoutNumerators: [0, 1]
               });
               callback("REPORTING_TOKEN_CONTRACT_ADDRESS");
             },
@@ -218,8 +218,8 @@ describe("reporting/redeem", function () {
             },
             redeemDisavowedTokens: function (payload) {
               assert.strictEqual(payload._signer.toString("utf8"), "PRIVATE_KEY");
-              assert.deepEqual(payload.tx, { to: "REPORTING_TOKEN_CONTRACT_ADDRESS", send: true });
-              assert.strictEqual(payload.reporter, "REPORTER_ADDRESS");
+              assert.deepEqual(payload.tx, { to: "REPORTING_TOKEN_CONTRACT_ADDRESS" });
+              assert.strictEqual(payload._reporter, "REPORTER_ADDRESS");
               assert.isFunction(payload.onSent);
               assert.isFunction(payload.onSuccess);
               assert.isFunction(payload.onFailed);

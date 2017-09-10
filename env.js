@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 
-global.BigNumber = require("bignumber.js");
-global.speedomatic = require("speedomatic");
 global.chalk = require("chalk");
 global.constants = require("./src/constants");
 global.Augur = require("./src");
+
 (global.reload = function () {
   global.branch = constants.DEFAULT_BRANCH_ID;
   global.augur = new Augur();
@@ -13,7 +12,6 @@ global.Augur = require("./src");
     http: "http://127.0.0.1:8545",
     ws: "ws://127.0.0.1:8546"
   }, function (vitals) {
-    global.log = console.log;
     global.rpc = vitals.rpc;
     console.log(chalk.cyan("Network"), chalk.green(rpc.getNetworkID()));
     var account = augur.rpc.getCoinbase();

@@ -24,7 +24,7 @@ describe("reporting/finalize-market", function () {
     description: "market already finalized",
     params: {
       _signer: Buffer.from("PRIVATE_KEY", "utf8"),
-      marketID: "MARKET_CONTRACT_ADDRESS"
+      market: "MARKET_CONTRACT_ADDRESS"
     },
     mock: {
       api: function () {
@@ -32,7 +32,7 @@ describe("reporting/finalize-market", function () {
           Market: {
             isFinalized: function (payload, callback) {
               assert.deepEqual(payload, { tx: { to: "MARKET_CONTRACT_ADDRESS" } });
-              callback("0x1");
+              callback(null, "0x1");
             },
             tryFinalize: function () {
               assert.fail();
@@ -49,7 +49,7 @@ describe("reporting/finalize-market", function () {
     description: "market is not ready to finalize",
     params: {
       _signer: Buffer.from("PRIVATE_KEY", "utf8"),
-      marketID: "MARKET_CONTRACT_ADDRESS"
+      market: "MARKET_CONTRACT_ADDRESS"
     },
     mock: {
       api: function () {
@@ -57,11 +57,11 @@ describe("reporting/finalize-market", function () {
           Market: {
             isFinalized: function (payload, callback) {
               assert.deepEqual(payload, { tx: { to: "MARKET_CONTRACT_ADDRESS" } });
-              callback("0x0");
+              callback(null, "0x0");
             },
             tryFinalize: function (payload, callback) {
               assert.deepEqual(payload.tx, { to: "MARKET_CONTRACT_ADDRESS", send: false });
-              callback("0x0");
+              callback(null, "0x0");
             }
           }
         };
@@ -75,7 +75,7 @@ describe("reporting/finalize-market", function () {
     description: "finalize market",
     params: {
       _signer: Buffer.from("PRIVATE_KEY", "utf8"),
-      marketID: "MARKET_CONTRACT_ADDRESS"
+      market: "MARKET_CONTRACT_ADDRESS"
     },
     mock: {
       api: function () {
@@ -83,11 +83,11 @@ describe("reporting/finalize-market", function () {
           Market: {
             isFinalized: function (payload, callback) {
               assert.deepEqual(payload, { tx: { to: "MARKET_CONTRACT_ADDRESS" } });
-              callback("0x0");
+              callback(null, "0x0");
             },
             tryFinalize: function (payload, callback) {
               assert.strictEqual(payload.tx.to, "MARKET_CONTRACT_ADDRESS");
-              if (!payload.tx.send) return callback("0x1");
+              if (payload.tx.send === false) return callback(null, "0x1");
               assert.strictEqual(payload._signer.toString("utf8"), "PRIVATE_KEY");
               assert.isFunction(payload.onSent);
               assert.isFunction(payload.onSuccess);

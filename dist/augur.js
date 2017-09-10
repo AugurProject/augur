@@ -297,11 +297,11 @@ function bindContractFunction(functionAbi) {
   return function () {
     var payload = assign({}, functionAbi);
     if (!arguments || !arguments.length) {
-      if (!payload.send) return rpcInterface.callContractFunction(payload);
+      if (payload.constant) return rpcInterface.callContractFunction(payload);
       return rpcInterface.transact(payload);
     }
     var params = Array.prototype.slice.call(arguments);
-    if (!payload.send) {
+    if (payload.constant || params[0] && params[0].tx && params[0].tx.send === false) {
       var callback;
       if (params && isObject(params[0])) {
         payload.params = encodeTransactionInputs(params, payload.inputs, payload.signature, payload.fixed);
@@ -1319,7 +1319,7 @@ keythereum.constants.pbkdf2.c = ROUNDS;
 keythereum.constants.scrypt.n = ROUNDS;
 
 function Augur() {
-  this.version = "4.1.1";
+  this.version = "4.1.2";
   this.options = {
     debug: {
       broadcast: false, // broadcast debug logging in ethrpc
@@ -1881,15 +1881,24 @@ module.exports = function (orderType, minPrice, maxPrice, order) {
 
 var api = require("../api");
 
-// { marketID }
+/**
+ * @param {Object} p Parameters object.
+ * @param {string} p.market Address of the market to finalize, as a hex string.
+ * @param {buffer|function=} p._signer Can be the plaintext private key as a Buffer or the signing function to use.
+ * @param {function} p.onSent Called if/when the transaction is broadcast to the network.
+ * @param {function} p.onSuccess Called if/when the transaction is sealed and confirmed.
+ * @param {function} p.onFailed Called if/when the transaction fails.
+ */
 function finalizeMarket(p) {
-  api().Market.isFinalized({ tx: { to: p.marketID } }, function (isFinalized) {
+  api().Market.isFinalized({ tx: { to: p.market } }, function (err, isFinalized) {
+    if (err) return p.onFailed(err);
     if (parseInt(isFinalized, 16) === 1) return p.onSuccess(true);
-    api().Market.tryFinalize({ tx: { to: p.marketID, send: false } }, function (readyToFinalize) {
+    api().Market.tryFinalize({ tx: { to: p.market, send: false } }, function (err, readyToFinalize) {
+      if (err) return p.onFailed(err);
       if (parseInt(readyToFinalize, 16) !== 1) return p.onSuccess(false);
       api().Market.tryFinalize({
         _signer: p._signer,
-        tx: { to: p.marketID, send: true },
+        tx: { to: p.market },
         onSent: p.onSent,
         onSuccess: p.onSuccess,
         onFailed: p.onFailed
@@ -1969,7 +1978,15 @@ var async = require("async");
 var api = require("../api");
 var getLogs = require("../logs/get-logs");
 
-// { branchID, marketID }
+/**
+ * @param {Object} p Parameters object.
+ * @param {string} p.branchID Branch on which to register to report.
+ * @param {string} p.market Address of the market to redeem Reporting tokens from, as a hex string.
+ * @param {buffer|function=} p._signer Can be the plaintext private key as a Buffer or the signing function to use.
+ * @param {function} p.onSent Called if/when the transaction is broadcast to the network.
+ * @param {function} p.onSuccess Called if/when the transaction is sealed and confirmed.
+ * @param {function} p.onFailed Called if/when the transaction fails.
+ */
 function migrateLosingTokens(p) {
   var branchPayload = { tx: { to: p.branchID } };
   async.parallel({
@@ -2004,7 +2021,7 @@ function migrateLosingTokens(p) {
         filter: {
           fromBlock: bounds.previousReportingWindowStartBlock,
           toBlock: bounds.previousReportingWindowEndBlock,
-          market: p.marketID,
+          market: p.market,
           address: contractAddresses.reputationToken
         }
       }, function (err, transferLogs) {
@@ -2014,7 +2031,7 @@ function migrateLosingTokens(p) {
           var reportingTokenAddress = transferLog.to;
           api().ReportingToken.migrateLosingTokens({
             _signer: p._signer,
-            tx: { to: reportingTokenAddress, send: true },
+            tx: { to: reportingTokenAddress },
             onSent: p.onSent,
             onSuccess: p.onSuccess,
             onFailed: p.onFailed
@@ -2035,15 +2052,23 @@ var api = require("../api");
 var constants = require("../constants");
 var noop = require("../utils/noop");
 
-// { marketID, payoutNumerators, reporter }
+/**
+ * @param {Object} p Parameters object.
+ * @param {string} p.market Address of the market to redeem Reporting tokens from, as a hex string.
+ * @param {string[]} p._payoutNumerators Relative payout amounts to traders holding shares of each outcome, as an array of base-10 strings.
+ * @param {buffer|function=} p._signer Can be the plaintext private key as a Buffer or the signing function to use.
+ * @param {function} p.onSent Called if/when the transaction is broadcast to the network.
+ * @param {function} p.onSuccess Called if/when the transaction is sealed and confirmed.
+ * @param {function} p.onFailed Called if/when the transaction fails.
+ */
 function redeem(p) {
   api().Market.getReportingToken({
-    tx: { to: p.marketID },
-    payoutNumerators: p.payoutNumerators
+    tx: { to: p.market },
+    _payoutNumerators: p._payoutNumerators
   }, function (reportingTokenContractAddress) {
     api().ReportingToken.balanceOf({
       tx: { to: reportingTokenContractAddress },
-      address: p.reporter
+      address: p._reporter
     }, function (reportingTokenBalance) {
       if (new BigNumber(reportingTokenBalance, 16).lt(constants.DUST_THRESHOLD)) {
         // TODO calculate DUST_THRESHOLD
@@ -2054,13 +2079,13 @@ function redeem(p) {
       // window forks, causing your market to move branches).  Note: disavowed can be redeemed any time (regardless of
       // reporting window, market finalization, etc.)
       api().Market.isContainerForReportingToken({
-        tx: { to: p.marketID },
+        tx: { to: p.market },
         reportingToken: reportingTokenContractAddress
       }, function (isContainerForReportingToken) {
         var redeemPayload = {
           _signer: p._signer,
-          tx: { to: reportingTokenContractAddress, send: true },
-          reporter: p.reporter,
+          tx: { to: reportingTokenContractAddress },
+          _reporter: p._reporter,
           onSent: p.onSent,
           onSuccess: p.onSuccess,
           onFailed: p.onFailed
@@ -2071,7 +2096,7 @@ function redeem(p) {
         } else {
           finalizeMarket({
             _signer: p.signer,
-            marketID: p.marketID,
+            market: p.market,
             onSent: noop,
             onSuccess: function onSuccess(isFinalized) {
               if (isFinalized === false) return p.onFailed("Market not yet finalized");
@@ -2080,12 +2105,12 @@ function redeem(p) {
                 // On any token contract attached to a market that ended in a fork.
                 // (Note: forked and winning both require the market to be finalized.)
                 api().Branch.getForkingMarket({ tx: { to: branchContractAddress } }, function (forkingMarket) {
-                  if (forkingMarket === p.marketID) {
+                  if (forkingMarket === p.market) {
                     api().ReportingToken.redeemForkedTokens(redeemPayload);
                   } else {
 
                     // Redeem winning reporting tokens.
-                    api().Market.getFinalWinningReportingToken({ tx: { to: p.marketID } }, function (finalWinningReportingToken) {
+                    api().Market.getFinalWinningReportingToken({ tx: { to: p.market } }, function (finalWinningReportingToken) {
                       if (finalWinningReportingToken !== reportingTokenContractAddress) {
                         return p.onFailed("No winning tokens to redeem");
                       }
@@ -2109,13 +2134,20 @@ module.exports = redeem;
 
 var api = require("../api");
 
-// { branchID }
+/**
+ * @param {Object} p Parameters object.
+ * @param {string} p.branchID Branch on which to register to report.
+ * @param {buffer|function=} p._signer Can be the plaintext private key as a Buffer or the signing function to use.
+ * @param {function} p.onSent Called if/when the transaction is broadcast to the network.
+ * @param {function} p.onSuccess Called if/when the transaction completes successfully.
+ * @param {function} p.onFailed Called if/when the transaction fails.
+ */
 function registerToReport(p) {
   api().Branch.getNextReportingWindow({ tx: { to: p.branchID } }, function (nextReportingWindowAddress) {
     api().ReportingWindow.getRegistrationToken({ tx: { to: nextReportingWindowAddress } }, function (registrationTokenAddress) {
       api().RegistrationToken.register({
         _signer: p._signer,
-        tx: { to: registrationTokenAddress, send: true },
+        tx: { to: registrationTokenAddress },
         onSent: p.onSent,
         onSuccess: p.onSuccess,
         onFailed: p.onFailed
@@ -2128,18 +2160,28 @@ module.exports = registerToReport;
 },{"../api":11}],72:[function(require,module,exports){
 "use strict";
 
+var speedomatic = require("speedomatic");
 var api = require("../api");
 
-// { marketID, payoutNumerators, amountToStake }
+/**
+ * @param {Object} p Parameters object.
+ * @param {string} p.market Address of the market to finalize, as a hex string.
+ * @param {string[]} p._payoutNumerators Relative payout amounts to traders holding shares of each outcome, as an array of base-10 strings.
+ * @param {string} p._amountToStake Amount of Reporting tokens to stake on this report, as a base-10 string.
+ * @param {buffer|function=} p._signer Can be the plaintext private key as a Buffer or the signing function to use.
+ * @param {function} p.onSent Called if/when the transaction is broadcast to the network.
+ * @param {function} p.onSuccess Called if/when the transaction is sealed and confirmed.
+ * @param {function} p.onFailed Called if/when the transaction fails.
+ */
 function submitReport(p) {
   api().Market.getReportingToken({
-    tx: { to: p.marketID },
-    payoutNumerators: p.payoutNumerators
+    tx: { to: p.market },
+    _payoutNumerators: p._payoutNumerators
   }, function (reportingTokenAddress) {
     api().ReportingToken.buy({
       _signer: p._signer,
-      tx: { to: reportingTokenAddress, send: true },
-      amountToStake: p.amountToStake,
+      tx: { to: reportingTokenAddress },
+      _amountToStake: speedomatic.fix(p._amountToStake, "hex"),
       onSent: p.onSent,
       onSuccess: p.onSuccess,
       onFailed: p.onFailed
@@ -2148,7 +2190,7 @@ function submitReport(p) {
 }
 
 module.exports = submitReport;
-},{"../api":11}],73:[function(require,module,exports){
+},{"../api":11,"speedomatic":545}],73:[function(require,module,exports){
 "use strict";
 
 var createRpcInterface = function createRpcInterface(ethrpc) {

@@ -44,7 +44,7 @@ describe("reporting/register-to-report", function () {
           RegistrationToken: {
             register: function (payload) {
               assert.strictEqual(payload._signer.toString("utf8"), "PRIVATE_KEY");
-              assert.deepEqual(payload.tx, { to: "REGISTRATION_TOKEN_CONTRACT_ADDRESS", send: true });
+              assert.deepEqual(payload.tx, { to: "REGISTRATION_TOKEN_CONTRACT_ADDRESS" });
               assert.isFunction(payload.onSent);
               assert.isFunction(payload.onSuccess);
               assert.isFunction(payload.onFailed);
