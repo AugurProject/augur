@@ -31,15 +31,16 @@ var parseOrder = require("../../parsers/order");
  */
 function getOrder(p, callback) {
   if (p.minPrice == null || p.maxPrice == null) {
-    return callback({ error: "Must specify minPrice and maxPrice" });
+    return callback("Must specify minPrice and maxPrice");
   }
   api().OrdersFetcher.getOrder({
     _orderId: p._orderId,
     _type: p._type,
     _market: p._market,
     _outcome: p._outcome
-  }, function (order) {
-    callback(parseOrder(p._type, p.minPrice, p.maxPrice, order));
+  }, function (err, order) {
+    if (err) return callback(err);
+    callback(null, parseOrder(p._type, p.minPrice, p.maxPrice, order));
   });
 }
 

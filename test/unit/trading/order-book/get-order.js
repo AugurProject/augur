@@ -41,7 +41,7 @@ describe("trading/order-book/get-order", function () {
               _outcome: "OUTCOME_ID",
               _orderId: "0xa"
             });
-            callback([
+            callback(null, [
               speedomatic.fix("1.1111111", "hex"), // amount
               speedomatic.fix("0.7777777", "hex"), // price
               "0xb0b",                     // owner
@@ -55,7 +55,8 @@ describe("trading/order-book/get-order", function () {
         }
       }
     },
-    assertions: function (output) {
+    assertions: function (err, output) {
+      assert.isNull(err);
       assert.deepEqual(output, {
         amount: "1.1111",
         fullPrecisionAmount: "1.1111111",
@@ -90,13 +91,13 @@ describe("trading/order-book/get-order", function () {
               _outcome: "OUTCOME_ID",
               _orderId: "0xa"
             });
-            callback(["0x0", "0x0", "0x0", "0x0", "0x0", "0x0", "0x0", "0x0"]);
+            callback(null, ["0x0", "0x0", "0x0", "0x0", "0x0", "0x0", "0x0", "0x0"]);
           }
         }
       }
     },
-    assertions: function (output) {
-      assert.isNull(output);
+    assertions: function (err) {
+      assert.isNull(err);
     }
   });
   test({
@@ -118,8 +119,8 @@ describe("trading/order-book/get-order", function () {
         }
       }
     },
-    assertions: function (output) {
-      assert.strictEqual(output.error, "Must specify minPrice and maxPrice");
+    assertions: function (err) {
+      assert.strictEqual(err, "Must specify minPrice and maxPrice");
     }
   });
   test({
@@ -141,8 +142,8 @@ describe("trading/order-book/get-order", function () {
         }
       }
     },
-    assertions: function (output) {
-      assert.strictEqual(output.error, "Must specify minPrice and maxPrice");
+    assertions: function (err) {
+      assert.strictEqual(err, "Must specify minPrice and maxPrice");
     }
   });
   test({
@@ -164,8 +165,8 @@ describe("trading/order-book/get-order", function () {
         }
       }
     },
-    assertions: function (output) {
-      assert.strictEqual(output.error, "Must specify minPrice and maxPrice");
+    assertions: function (err) {
+      assert.strictEqual(err, "Must specify minPrice and maxPrice");
     }
   });
 });

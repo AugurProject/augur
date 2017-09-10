@@ -37,7 +37,7 @@ describe("reporting/submit-report", function () {
                 tx: { to: "MARKET_CONTRACT_ADDRESS" },
                 _payoutNumerators: [0, 1]
               });
-              callback("REPORTING_TOKEN_CONTRACT_ADDRESS");
+              callback(null, "REPORTING_TOKEN_CONTRACT_ADDRESS");
             }
           },
           ReportingToken: {

@@ -32,16 +32,16 @@ describe("create/get-market-creation-cost-breakdown", function () {
                 tx: { to: "BRANCH_ADDRESS" },
                 _timestamp: 1234567890
               });
-              callback("REPORTING_WINDOW_ADDRESS");
+              callback(null, "REPORTING_WINDOW_ADDRESS");
             }
           },
           MarketFeeCalculator: {
             getTargetReporterGasCosts: function (callback) {
-              callback("0x10a741a462780000");
+              callback(null, "0x10a741a462780000");
             },
             getValidityBond: function (p, callback) {
               assert.deepEqual(p, { _reportingWindow: "REPORTING_WINDOW_ADDRESS" });
-              callback("0x29a2241af62c0000");
+              callback(null, "0x29a2241af62c0000");
             }
           }
         };

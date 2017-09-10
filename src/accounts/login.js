@@ -71,7 +71,7 @@ function login(p, callback) {
 
     // decrypt stored private key using secret key
     try {
-      callback({
+      callback(null, {
         privateKey: keythereum.decrypt(storedKey, derivedKey.slice(0, 16), keystoreCrypto.cipherparams.iv),
         address: speedomatic.formatEthereumAddress(address),
         keystore: keystore,

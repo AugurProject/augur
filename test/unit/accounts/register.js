@@ -17,8 +17,12 @@ describe("accounts/register", function () {
       keys.create = t.create || create;
       keys.deriveKey = t.deriveKey || deriveKey;
       constants.KDF = t.KDF || KDF;
-      register(t.params, function (result) {
-        t.assertions(result);
+      register(t.params, function (err, result) {
+        if (err) {
+          t.assertions(err);
+        } else {
+          t.assertions(result);
+        }
         keys.create = create;
         keys.deriveKey = deriveKey;
         constants.KDF = KDF;

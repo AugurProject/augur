@@ -29,12 +29,10 @@ function createNewMarket(p) {
   api().Branch.getReportingWindowByTimestamp({
     tx: { to: p.branchID },
     _timestamp: p._endTime
-  }, function (reportingWindowAddress) {
-    if (!reportingWindowAddress) return p.onFailed({ error: "getReportingWindowByTimestamp failed" });
-    if (reportingWindowAddress.error) return p.onFailed(reportingWindowAddress);
-    api().MarketFeeCalculator.getMarketCreationCost({ _reportingWindow: reportingWindowAddress }, function (marketCreationCost) {
-      if (!marketCreationCost) return p.onFailed({ error: "getMarketCreationCost failed" });
-      if (marketCreationCost.error) return p.onFailed(marketCreationCost);
+  }, function (err, reportingWindowAddress) {
+    if (err) return p.onFailed(err);
+    api().MarketFeeCalculator.getMarketCreationCost({ _reportingWindow: reportingWindowAddress }, function (err, marketCreationCost) {
+      if (err) return p.onFailed(err);
       api().ReportingWindow.createNewMarket(assign({}, immutableDelete(p, "settlementFee"), {
         tx: {
           to: reportingWindowAddress,

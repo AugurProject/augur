@@ -35,7 +35,7 @@ describe("reporting/redeem", function () {
           Branch: {
             getForkingMarket: function (payload, callback) {
               assert.deepEqual(payload, { tx: { to: "BRANCH_CONTRACT_ADDRESS" } });
-              callback("FORKING_MARKET_CONTRACT_ADDRESS");
+              callback(null, "FORKING_MARKET_CONTRACT_ADDRESS");
             }
           },
           Market: {
@@ -44,18 +44,18 @@ describe("reporting/redeem", function () {
                 tx: { to: "MARKET_CONTRACT_ADDRESS" },
                 _payoutNumerators: [0, 1]
               });
-              callback("REPORTING_TOKEN_CONTRACT_ADDRESS");
+              callback(null, "REPORTING_TOKEN_CONTRACT_ADDRESS");
             },
             isContainerForReportingToken: function (payload, callback) {
               assert.deepEqual(payload, {
                 tx: { to: "MARKET_CONTRACT_ADDRESS" },
                 reportingToken: "REPORTING_TOKEN_CONTRACT_ADDRESS"
               });
-              callback("0x1");
+              callback(null, "0x1");
             },
             getFinalWinningReportingToken: function (payload, callback) {
               assert.deepEqual(payload, { tx: { to: "MARKET_CONTRACT_ADDRESS" } });
-              callback("REPORTING_TOKEN_CONTRACT_ADDRESS");
+              callback(null, "REPORTING_TOKEN_CONTRACT_ADDRESS");
             }
           },
           ReportingToken: {
@@ -64,11 +64,11 @@ describe("reporting/redeem", function () {
                 tx: { to: "REPORTING_TOKEN_CONTRACT_ADDRESS" },
                 address: "REPORTER_ADDRESS"
               });
-              callback("0x10");
+              callback(null, "0x10");
             },
             getBranch: function (payload, callback) {
               assert.deepEqual(payload, { tx: { to: "REPORTING_TOKEN_CONTRACT_ADDRESS" } });
-              callback("BRANCH_CONTRACT_ADDRESS");
+              callback(null, "BRANCH_CONTRACT_ADDRESS");
             },
             redeemDisavowedTokens: function () {
               assert.fail();
@@ -110,7 +110,7 @@ describe("reporting/redeem", function () {
           Branch: {
             getForkingMarket: function (payload, callback) {
               assert.deepEqual(payload, { tx: { to: "BRANCH_CONTRACT_ADDRESS" } });
-              callback("MARKET_CONTRACT_ADDRESS");
+              callback(null, "MARKET_CONTRACT_ADDRESS");
             }
           },
           Market: {
@@ -119,14 +119,14 @@ describe("reporting/redeem", function () {
                 tx: { to: "MARKET_CONTRACT_ADDRESS" },
                 _payoutNumerators: [0, 1]
               });
-              callback("REPORTING_TOKEN_CONTRACT_ADDRESS");
+              callback(null, "REPORTING_TOKEN_CONTRACT_ADDRESS");
             },
             isContainerForReportingToken: function (payload, callback) {
               assert.deepEqual(payload, {
                 tx: { to: "MARKET_CONTRACT_ADDRESS" },
                 reportingToken: "REPORTING_TOKEN_CONTRACT_ADDRESS"
               });
-              callback("0x1");
+              callback(null, "0x1");
             },
             getFinalWinningReportingToken: function () {
               assert.fail();
@@ -138,11 +138,11 @@ describe("reporting/redeem", function () {
                 tx: { to: "REPORTING_TOKEN_CONTRACT_ADDRESS" },
                 address: "REPORTER_ADDRESS"
               });
-              callback("0x10");
+              callback(null, "0x10");
             },
             getBranch: function (payload, callback) {
               assert.deepEqual(payload, { tx: { to: "REPORTING_TOKEN_CONTRACT_ADDRESS" } });
-              callback("BRANCH_CONTRACT_ADDRESS");
+              callback(null, "BRANCH_CONTRACT_ADDRESS");
             },
             redeemDisavowedTokens: function () {
               assert.fail();
@@ -192,14 +192,14 @@ describe("reporting/redeem", function () {
                 tx: { to: "MARKET_CONTRACT_ADDRESS" },
                 _payoutNumerators: [0, 1]
               });
-              callback("REPORTING_TOKEN_CONTRACT_ADDRESS");
+              callback(null, "REPORTING_TOKEN_CONTRACT_ADDRESS");
             },
             isContainerForReportingToken: function (payload, callback) {
               assert.deepEqual(payload, {
                 tx: { to: "MARKET_CONTRACT_ADDRESS" },
                 reportingToken: "REPORTING_TOKEN_CONTRACT_ADDRESS"
               });
-              callback("0x0");
+              callback(null, "0x0");
             },
             getFinalWinningReportingToken: function () {
               assert.fail();
@@ -211,7 +211,7 @@ describe("reporting/redeem", function () {
                 tx: { to: "REPORTING_TOKEN_CONTRACT_ADDRESS" },
                 address: "REPORTER_ADDRESS"
               });
-              callback("0x10");
+              callback(null, "0x10");
             },
             getBranch: function () {
               assert.fail();

@@ -7,9 +7,8 @@ var parseLogMessage = require("../filters/parse-message/parse-log-message");
 
 // { market, creationBlock }
 function getLoggedMarketInfo(p, callback) {
-  api().Market.getReportingWindow({ tx: { to: p.market } }, function (reportingWindowAddress) {
-    if (!reportingWindowAddress) return callback({ error: "reporting window address not found" });
-    if (reportingWindowAddress.error) return callback(reportingWindowAddress);
+  api().Market.getReportingWindow({ tx: { to: p.market } }, function (err, reportingWindowAddress) {
+    if (err) return callback(err);
     var label = "CreateMarket";
     getLogs({
       label: label,
@@ -22,7 +21,7 @@ function getLoggedMarketInfo(p, callback) {
     }, function (err, marketCreationLogs) {
       if (err) return callback(err);
       if (!Array.isArray(marketCreationLogs) || !marketCreationLogs.length) return callback(null);
-      callback(parseLogMessage(label, marketCreationLogs[0], abiMap.events[label].inputs));
+      callback(null, parseLogMessage(label, marketCreationLogs[0], abiMap.events[label].inputs));
     });
   });
 }

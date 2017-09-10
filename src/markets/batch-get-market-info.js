@@ -8,22 +8,20 @@ var parseBatchMarketInfo = require("../parsers/batch-market-info");
 
 // { marketIDs }
 function batchGetMarketInfo(p, callback) {
-  api().MarketFetcher.batchGetMarketInfo(p, function (marketInfoArray) {
-    if (!marketInfoArray) return callback({ error: "market info not found" });
-    if (marketInfoArray.error) return callback(marketInfoArray);
+  api().MarketFetcher.batchGetMarketInfo(p, function (err, marketInfoArray) {
+    if (err) return callback(err);
     var batchMarketInfo = parseBatchMarketInfo(marketInfoArray, p.marketIDs.length);
     async.eachSeries(p.marketIDs, function (marketID, nextMarketID) {
       var marketInfo = batchMarketInfo[marketID];
       if (!marketInfo) return callback({ error: "market info not found for " + marketID });
-      getLoggedMarketInfo(assign({ creationBlock: marketInfo.creationBlock }, p), function (loggedMarketInfo) {
-        if (!loggedMarketInfo) return nextMarketID({ error: "logged market info not found for " + marketID });
-        if (loggedMarketInfo.error) return nextMarketID(loggedMarketInfo);
+      getLoggedMarketInfo(assign({ creationBlock: marketInfo.creationBlock }, p), function (err, loggedMarketInfo) {
+        if (err) return nextMarketID(err);
         batchMarketInfo[marketID] = assign(marketInfo, loggedMarketInfo);
         nextMarketID();
       });
     }, function (err) {
       if (err) return callback(err);
-      callback(batchMarketInfo);
+      callback(null, batchMarketInfo);
     });
   });
 }

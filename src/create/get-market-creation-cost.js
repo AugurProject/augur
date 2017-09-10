@@ -14,12 +14,10 @@ function getMarketCreationCost(p, callback) {
   api().Branch.getReportingWindowByTimestamp({
     tx: { to: p.branchID },
     _timestamp: p._endTime
-  }, function (reportingWindowAddress) {
-    if (!reportingWindowAddress) return callback({ error: "getReportingWindowByTimestamp failed" });
-    if (reportingWindowAddress.error) return callback(reportingWindowAddress);
-    api().MarketFeeCalculator.getMarketCreationCost({ _reportingWindow: reportingWindowAddress }, function (marketCreationCost) {
-      if (!marketCreationCost) return callback({ error: "getMarketCreationCost failed" });
-      if (marketCreationCost.error) return callback(marketCreationCost);
+  }, function (err, reportingWindowAddress) {
+    if (err) return callback(err);
+    api().MarketFeeCalculator.getMarketCreationCost({ _reportingWindow: reportingWindowAddress }, function (err, marketCreationCost) {
+      if (err) return callback(err);
       callback(null, speedomatic.unfix(marketCreationCost, "string"));
     });
   });

@@ -17,12 +17,14 @@ function migrateLosingTokens(p) {
   var branchPayload = { tx: { to: p.branchID } };
   async.parallel({
     reputationToken: function (next) {
-      api().Branch.getReputationToken(branchPayload, function (reputationTokenAddress) {
+      api().Branch.getReputationToken(branchPayload, function (err, reputationTokenAddress) {
+        if (err) return next(err);
         next(null, reputationTokenAddress);
       });
     },
     previousReportingWindow: function (next) {
-      api().Branch.getPreviousReportingWindow(branchPayload, function (previousReportingWindowAddress) {
+      api().Branch.getPreviousReportingWindow(branchPayload, function (err, previousReportingWindowAddress) {
+        if (err) return next(err);
         next(null, previousReportingWindowAddress);
       });
     }
@@ -31,12 +33,14 @@ function migrateLosingTokens(p) {
     var previousReportingWindowPayload = { tx: { to: contractAddresses.previousReportingWindow } };
     async.parallel({
       previousReportingWindowStartBlock: function (next) {
-        api().ReportingWindow.getStartBlock(previousReportingWindowPayload, function (previousReportingWindowStartBlock) {
+        api().ReportingWindow.getStartBlock(previousReportingWindowPayload, function (err, previousReportingWindowStartBlock) {
+          if (err) return next(err);
           next(null, previousReportingWindowStartBlock);
         });
       },
       previousReportingWindowEndBlock: function (next) {
-        api().ReportingWindow.getEndBlock(previousReportingWindowPayload, function (previousReportingWindowEndBlock) {
+        api().ReportingWindow.getEndBlock(previousReportingWindowPayload, function (err, previousReportingWindowEndBlock) {
+          if (err) return next(err);
           next(null, previousReportingWindowEndBlock);
         });
       }

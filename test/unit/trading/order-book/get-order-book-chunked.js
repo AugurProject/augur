@@ -76,7 +76,7 @@ describe("trading/order-book/get-order-book-chunked", function () {
           minPrice: "0",
           maxPrice: "1"
         });
-        callback({
+        callback(null, {
           "0x1": {
             amount: "1.1111",
             fullPrecisionAmount: "1.1111111",
@@ -112,12 +112,13 @@ describe("trading/order-book/get-order-book-chunked", function () {
               _market: "MARKET_ID",
               _outcome: "OUTCOME_ID"
             });
-            callback("0x0");
+            callback(null, "0x0");
           }
         }
       }
     },
-    assertions: function (output) {
+    assertions: function (err, output) {
+      assert.isNull(err);
       assert.deepEqual(output, {
         "0x1": {
           amount: "1.1111",
@@ -207,7 +208,7 @@ describe("trading/order-book/get-order-book-chunked", function () {
             minPrice: "0",
             maxPrice: "1"
           });
-          callback({
+          callback(null, {
             "0x1": {
               amount: "1.1111",
               fullPrecisionAmount: "1.1111111",
@@ -231,7 +232,7 @@ describe("trading/order-book/get-order-book-chunked", function () {
             minPrice: "0",
             maxPrice: "1"
           });
-          callback({
+          callback(null, {
             "0xf": {
               amount: "1.1111",
               fullPrecisionAmount: "1.1111111",
@@ -259,7 +260,7 @@ describe("trading/order-book/get-order-book-chunked", function () {
                 _market: "MARKET_ID",
                 _outcome: "OUTCOME_ID"
               });
-              callback("0xf");
+              callback(null, "0xf");
             } else if (callcount === 2) {
               assert.deepEqual(p, {
                 _orderId: "0xf",
@@ -267,7 +268,7 @@ describe("trading/order-book/get-order-book-chunked", function () {
                 _market: "MARKET_ID",
                 _outcome: "OUTCOME_ID"
               });
-              callback("0x0");
+              callback(null, "0x0");
             } else {
               assert.fail();
             }
@@ -275,7 +276,8 @@ describe("trading/order-book/get-order-book-chunked", function () {
         }
       }
     },
-    assertions: function (output) {
+    assertions: function (err, output) {
+      assert.isNull(err);
       assert.deepEqual(output, {
         "0x1": {
           amount: "1.1111",
@@ -332,8 +334,9 @@ describe("trading/order-book/get-order-book-chunked", function () {
         }
       }
     },
-    assertions: function (output) {
-      assert.strictEqual(output.error, "Must specify minPrice and maxPrice");
+    assertions: function (err, output) {
+      assert.strictEqual(err, "Must specify minPrice and maxPrice");
+      assert.isUndefined(output);
     }
   });
 });

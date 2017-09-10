@@ -25,7 +25,7 @@ var parseOrderBook = require("../../parsers/order-book");
  */
 function getOrderBook(p, callback) {
   if (p.minPrice == null || p.maxPrice == null) {
-    return callback({ error: "Must specify minPrice and maxPrice" });
+    return callback("Must specify minPrice and maxPrice");
   }
   api().OrderBook.getOrderBook({
     _type: p._type,
@@ -33,8 +33,9 @@ function getOrderBook(p, callback) {
     _outcome: p._outcome,
     _startingOrderId: p._startingOrderId || "0x0",
     _numOrdersToLoad: p._numOrdersToLoad || 0
-  }, function (orderBook) {
-    callback(parseOrderBook(p._type, p.minPrice, p.maxPrice, orderBook), orderBook[orderBook.length - 10]);
+  }, function (err, orderBook) {
+    if (err) return callback(err);
+    callback(null, parseOrderBook(p._type, p.minPrice, p.maxPrice, orderBook), orderBook[orderBook.length - 10]);
   });
 }
 

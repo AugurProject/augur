@@ -32,13 +32,13 @@ describe("create/get-market-creation-cost", function () {
                 tx: { to: "BRANCH_ADDRESS" },
                 _timestamp: 1234567890
               });
-              callback("REPORTING_WINDOW_ADDRESS");
+              callback(null, "REPORTING_WINDOW_ADDRESS");
             }
           },
           MarketFeeCalculator: {
             getMarketCreationCost: function (p, callback) {
               assert.deepEqual(p, { _reportingWindow: "REPORTING_WINDOW_ADDRESS" });
-              callback("0x3a4965bf58a40000");
+              callback(null, "0x3a4965bf58a40000");
             }
           }
         };

@@ -63,7 +63,7 @@ function register(p, callback) {
       };
 
       // while logged in, account object is set
-      callback({
+      callback(null, {
         privateKey: plain.privateKey,
         address: address,
         keystore: keystore,

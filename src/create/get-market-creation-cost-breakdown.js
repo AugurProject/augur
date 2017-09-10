@@ -21,21 +21,18 @@ function getMarketCreationCostBreakdown(p, callback) {
   api().Branch.getReportingWindowByTimestamp({
     tx: { to: p.branchID },
     _timestamp: p._endTime
-  }, function (reportingWindowAddress) {
-    if (!reportingWindowAddress) return callback({ error: "getReportingWindowByTimestamp failed" });
-    if (reportingWindowAddress.error) return callback(reportingWindowAddress);
+  }, function (err, reportingWindowAddress) {
+    if (err) return callback(err);
     async.parallel({
       targetReporterGasCosts: function (next) {
-        api().MarketFeeCalculator.getTargetReporterGasCosts(function (targetReporterGasCosts) {
-          if (!targetReporterGasCosts) return next({ error: "getTargetReporterGasCosts failed" });
-          if (targetReporterGasCosts.error) return next(targetReporterGasCosts);
+        api().MarketFeeCalculator.getTargetReporterGasCosts(function (err, targetReporterGasCosts) {
+          if (err) return next(err);
           next(null, speedomatic.unfix(targetReporterGasCosts, "string"));
         });
       },
       validityBond: function (next) {
-        api().MarketFeeCalculator.getValidityBond({ _reportingWindow: reportingWindowAddress }, function (validityBond) {
-          if (!validityBond) return next({ error: "getValidityBond failed" });
-          if (validityBond.error) return next(validityBond);
+        api().MarketFeeCalculator.getValidityBond({ _reportingWindow: reportingWindowAddress }, function (err, validityBond) {
+          if (err) return next(err);
           next(null, speedomatic.unfix(validityBond, "string"));
         });
       }

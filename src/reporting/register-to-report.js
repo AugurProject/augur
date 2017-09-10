@@ -11,8 +11,10 @@ var api = require("../api");
  * @param {function} p.onFailed Called if/when the transaction fails.
  */
 function registerToReport(p) {
-  api().Branch.getNextReportingWindow({ tx: { to: p.branchID } }, function (nextReportingWindowAddress) {
-    api().ReportingWindow.getRegistrationToken({ tx: { to: nextReportingWindowAddress } }, function (registrationTokenAddress) {
+  api().Branch.getNextReportingWindow({ tx: { to: p.branchID } }, function (err, nextReportingWindowAddress) {
+    if (err) return p.onFailed(err);
+    api().ReportingWindow.getRegistrationToken({ tx: { to: nextReportingWindowAddress } }, function (err, registrationTokenAddress) {
+      if (err) return p.onFailed(err);
       api().RegistrationToken.register({
         _signer: p._signer,
         tx: { to: registrationTokenAddress },

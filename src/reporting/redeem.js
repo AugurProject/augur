@@ -19,11 +19,13 @@ function redeem(p) {
   api().Market.getReportingToken({
     tx: { to: p.market },
     _payoutNumerators: p._payoutNumerators
-  }, function (reportingTokenContractAddress) {
+  }, function (err, reportingTokenContractAddress) {
+    if (err) return p.onFailed(err);
     api().ReportingToken.balanceOf({
       tx: { to: reportingTokenContractAddress },
       address: p._reporter
-    }, function (reportingTokenBalance) {
+    }, function (err, reportingTokenBalance) {
+      if (err) return p.onFailed(err);
       if (new BigNumber(reportingTokenBalance, 16).lt(constants.DUST_THRESHOLD)) { // TODO calculate DUST_THRESHOLD
         return p.onFailed("Gas cost to redeem reporting tokens is greater than the value of the tokens");
       }
@@ -34,7 +36,8 @@ function redeem(p) {
       api().Market.isContainerForReportingToken({
         tx: { to: p.market },
         reportingToken: reportingTokenContractAddress
-      }, function (isContainerForReportingToken) {
+      }, function (err, isContainerForReportingToken) {
+        if (err) return p.onFailed(err);
         var redeemPayload = {
           _signer: p._signer,
           tx: { to: reportingTokenContractAddress },
@@ -52,17 +55,20 @@ function redeem(p) {
             onSent: noop,
             onSuccess: function (isFinalized) {
               if (isFinalized === false) return p.onFailed("Market not yet finalized");
-              api().ReportingToken.getBranch({ tx: { to: reportingTokenContractAddress } }, function (branchContractAddress) {
+              api().ReportingToken.getBranch({ tx: { to: reportingTokenContractAddress } }, function (err, branchContractAddress) {
+                if (err) return p.onFailed(err);
 
                 // On any token contract attached to a market that ended in a fork.
                 // (Note: forked and winning both require the market to be finalized.)
-                api().Branch.getForkingMarket({ tx: { to: branchContractAddress } }, function (forkingMarket) {
+                api().Branch.getForkingMarket({ tx: { to: branchContractAddress } }, function (err, forkingMarket) {
+                  if (err) return p.onFailed(err);
                   if (forkingMarket === p.market) {
                     api().ReportingToken.redeemForkedTokens(redeemPayload);
                   } else {
 
                     // Redeem winning reporting tokens.
-                    api().Market.getFinalWinningReportingToken({ tx: { to: p.market } }, function (finalWinningReportingToken) {
+                    api().Market.getFinalWinningReportingToken({ tx: { to: p.market } }, function (err, finalWinningReportingToken) {
+                      if (err) return p.onFailed(err);
                       if (finalWinningReportingToken !== reportingTokenContractAddress) {
                         return p.onFailed("No winning tokens to redeem");
                       }

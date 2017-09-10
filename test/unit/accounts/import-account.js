@@ -64,8 +64,12 @@ describe("accounts/import-account", function () {
       var importAccount = proxyquire("../../../src/accounts/import-account", {
         keythereum: Object.assign({}, keythereum, t.mock.keythereum)
       });
-      importAccount(t.params, function (importedAccount) {
-        t.assertions(importedAccount);
+      importAccount(t.params, function (err, importedAccount) {
+        if (err) {
+          t.assertions(err);
+        } else {
+          t.assertions(importedAccount);
+        }
         done();
       });
     });

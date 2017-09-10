@@ -24,7 +24,7 @@ function getOrderBookChunked(p, onChunkReceived, onComplete) {
   if (!isFunction(onChunkReceived)) onChunkReceived = noop;
   if (!isFunction(onComplete)) onComplete = noop;
   if (p.minPrice == null || p.maxPrice == null) {
-    return onComplete({ error: "Must specify minPrice and maxPrice" });
+    return onComplete("Must specify minPrice and maxPrice");
   }
   if (!p.orderBook) p.orderBook = {};
   getOrderBook({
@@ -35,8 +35,8 @@ function getOrderBookChunked(p, onChunkReceived, onComplete) {
     _numOrdersToLoad: p._numOrdersToLoad || GETTER_CHUNK_SIZE,
     minPrice: p.minPrice,
     maxPrice: p.maxPrice
-  }, function (orderBookChunk, lastOrderId) {
-    if (!orderBookChunk || orderBookChunk.error) return onComplete(orderBookChunk);
+  }, function (err, orderBookChunk, lastOrderId) {
+    if (err) return onComplete(err);
     onChunkReceived(orderBookChunk);
     assign(p.orderBook, orderBookChunk);
     api().Orders.getWorseOrderId({
@@ -44,8 +44,9 @@ function getOrderBookChunked(p, onChunkReceived, onComplete) {
       _type: p._type,
       _market: p._market,
       _outcome: p._outcome
-    }, function (worseOrderId) {
-      if (!parseInt(worseOrderId, 16)) return onComplete(p.orderBook);
+    }, function (err, worseOrderId) {
+      if (err) return onComplete(err);
+      if (!parseInt(worseOrderId, 16)) return onComplete(null, p.orderBook);
       getOrderBookChunked(assign({}, p, { _startingOrderId: worseOrderId }), onChunkReceived, onComplete);
     });
   });

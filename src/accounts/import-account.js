@@ -28,7 +28,7 @@ function importAccount(p, callback) {
       if (keythereum.getMAC(derivedKey, storedKey) !== keystoreCrypto.mac.toString("hex")) {
         return callback(errors.BAD_CREDENTIALS);
       }
-      callback({
+      callback(null, {
         privateKey: privateKey,
         address: speedomatic.formatEthereumAddress(p.address),
         keystore: p.keystore,

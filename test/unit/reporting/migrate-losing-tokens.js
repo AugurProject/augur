@@ -40,11 +40,11 @@ describe("reporting/migrate-losing-tokens", function () {
           Branch: {
             getPreviousReportingWindow: function (payload, callback) {
               assert.deepEqual(payload, { tx: { to: "BRANCH_CONTRACT_ADDRESS" } });
-              callback("PREVIOUS_REPORTING_WINDOW_CONTRACT_ADDRESS");
+              callback(null, "PREVIOUS_REPORTING_WINDOW_CONTRACT_ADDRESS");
             },
             getReputationToken: function (payload, callback) {
               assert.deepEqual(payload, { tx: { to: "BRANCH_CONTRACT_ADDRESS" } });
-              callback("REPUTATION_TOKEN_CONTRACT_ADDRESS");
+              callback(null, "REPUTATION_TOKEN_CONTRACT_ADDRESS");
             }
           },
           ReportingToken: {
@@ -60,11 +60,11 @@ describe("reporting/migrate-losing-tokens", function () {
           ReportingWindow: {
             getStartBlock: function (payload, callback) {
               assert.deepEqual(payload, { tx: { to: "PREVIOUS_REPORTING_WINDOW_CONTRACT_ADDRESS" } });
-              callback("PREVIOUS_REPORTING_WINDOW_START_BLOCK");
+              callback(null, "PREVIOUS_REPORTING_WINDOW_START_BLOCK");
             },
             getEndBlock: function (payload, callback) {
               assert.deepEqual(payload, { tx: { to: "PREVIOUS_REPORTING_WINDOW_CONTRACT_ADDRESS" } });
-              callback("PREVIOUS_REPORTING_WINDOW_END_BLOCK");
+              callback(null, "PREVIOUS_REPORTING_WINDOW_END_BLOCK");
             }
           }
         };

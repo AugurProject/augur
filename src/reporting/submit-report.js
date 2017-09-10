@@ -17,7 +17,8 @@ function submitReport(p) {
   api().Market.getReportingToken({
     tx: { to: p.market },
     _payoutNumerators: p._payoutNumerators
-  }, function (reportingTokenAddress) {
+  }, function (err, reportingTokenAddress) {
+    if (err) return p.onFailed(err);
     api().ReportingToken.buy({
       _signer: p._signer,
       tx: { to: reportingTokenAddress },

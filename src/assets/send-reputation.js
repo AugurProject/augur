@@ -15,9 +15,8 @@ var api = require("../api");
  * @param {function} p.onFailed Called if/when the transaction fails.
  */
 function sendReputation(p) {
-  api().Branch.getReputationToken({ tx: { to: p.branchID } }, function (reputationTokenAddress) {
-    if (!reputationTokenAddress) return p.onFailed("Reputation token address not found for branch " + p.branchID);
-    if (reputationTokenAddress.error) return p.onFailed(reputationTokenAddress);
+  api().Branch.getReputationToken({ tx: { to: p.branchID } }, function (err, reputationTokenAddress) {
+    if (err) return p.onFailed(err);
     api().ReputationToken.transfer(assign({}, p, {
       tx: { to: reputationTokenAddress },
       _to: p._to,

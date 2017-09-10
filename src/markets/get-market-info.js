@@ -11,12 +11,12 @@ var parseMarketInfo = require("../parsers/market-info");
  * @return {Object} Market info object, merges the outputs of parseMarketInfo and getLoggedMarketInfo.
  */
 function getMarketInfo(p, callback) {
-  api().MarketFetcher.getMarketInfo(p, function (marketInfoArray) {
-    if (!marketInfoArray) return callback("market info not found");
-    if (marketInfoArray.error) return callback(marketInfoArray);
+  api().MarketFetcher.getMarketInfo(p, function (err, marketInfoArray) {
+    if (err) return callback(err);
     var marketInfo = parseMarketInfo(marketInfoArray);
-    getLoggedMarketInfo({ market: p._market, creationBlock: marketInfo.creationBlock }, function (loggedMarketInfo) {
-      callback(assign(marketInfo, loggedMarketInfo));
+    getLoggedMarketInfo({ market: p._market, creationBlock: marketInfo.creationBlock }, function (err, loggedMarketInfo) {
+      if (err) return callback(err);
+      callback(null, assign(marketInfo, loggedMarketInfo));
     });
   });
 }

@@ -22,7 +22,11 @@ function bindContractFunction(functionAbi) {
       }
       if (isFunction(params[params.length - 1])) callback = params.pop();
       if (!isFunction(callback)) return rpcInterface.callContractFunction(payload);
-      return rpcInterface.callContractFunction(payload, callback);
+      return rpcInterface.callContractFunction(payload, function (response) {
+        if (!response) return callback("No response");
+        if (response.error) return callback(response.error);
+        callback(null, response);
+      });
     }
     var onSent, onSuccess, onFailed, signer;
     if (params && isObject(params[0])) {

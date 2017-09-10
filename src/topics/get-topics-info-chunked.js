@@ -12,7 +12,8 @@ function getTopicsInfoChunked(p, onChunkReceived, onComplete) {
   if (!isFunction(onChunkReceived)) onChunkReceived = noop;
   if (!isFunction(onComplete)) onComplete = noop;
   if (!p.totalTopics) {
-    api().Topics.getNumTopicsInBranch({ branch: p.branch }, function (totalTopics) {
+    api().Topics.getNumTopicsInBranch({ branch: p.branch }, function (err, totalTopics) {
+      if (err) return onComplete(err);
       if (!totalTopics || totalTopics.error || !parseInt(totalTopics, 10)) {
         return onComplete(totalTopics);
       }
@@ -23,11 +24,11 @@ function getTopicsInfoChunked(p, onChunkReceived, onComplete) {
     });
   } else {
     getTopicsInfo({
-      branch: p.branch,
-      offset: p.offset,
-      numTopicsToLoad: p.numTopicsToLoad || p.totalTopics
-    }, function (topicsInfoChunk) {
-      if (!topicsInfoChunk || topicsInfoChunk.error) return onComplete(topicsInfoChunk);
+      _branch: p.branch,
+      _offset: p.offset,
+      _numTopicsToLoad: p.numTopicsToLoad || p.totalTopics
+    }, function (err, topicsInfoChunk) {
+      if (err) return onComplete(err);
       onChunkReceived(topicsInfoChunk);
       if (p.offset + p.numTopicsToLoad < p.totalTopics) {
         getTopicsInfoChunked(assign({}, p, { offset: p.offset + p.numTopicsToLoad }), onChunkReceived, onComplete);

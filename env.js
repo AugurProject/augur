@@ -15,8 +15,8 @@ global.Augur = require("./src");
     global.rpc = vitals.rpc;
     console.log(chalk.cyan("Network"), chalk.green(rpc.getNetworkID()));
     var account = augur.rpc.getCoinbase();
-    // augur.api.Cash.balanceOf({ address: account }, function (cashBalance) {
-    //   augur.api.Reporting.getRepBalance({ branch: global.branch, address: account }, function (repBalance) {
+    // augur.api.Cash.balanceOf({ address: account }, function (err, cashBalance) {
+    //   augur.api.Reporting.getRepBalance({ branch: global.branch, address: account }, function (err, repBalance) {
     //     augur.rpc.eth.getBalance([account, "latest"], function (ethBalance) {
     //       global.balances = {
     //         cash: cashBalance,

@@ -44,8 +44,12 @@ describe("accounts/login", function () {
       var login = proxyquire("../../../src/accounts/login", {
         keythereum: Object.assign({}, keythereum, t.mock.keythereum)
       });
-      login(t.params, function (account) {
-        t.assertions(account);
+      login(t.params, function (err, account) {
+        if (err) {
+          t.assertions(err);
+        } else {
+          t.assertions(account);
+        }
         done();
       });
     });

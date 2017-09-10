@@ -32,13 +32,13 @@ describe("reporting/register-to-report", function () {
           Branch: {
             getNextReportingWindow: function (payload, callback) {
               assert.deepEqual(payload, { tx: { to: "BRANCH_CONTRACT_ADDRESS" } });
-              callback("REPORTING_WINDOW_CONTRACT_ADDRESS");
+              callback(null, "REPORTING_WINDOW_CONTRACT_ADDRESS");
             }
           },
           ReportingWindow: {
             getRegistrationToken: function (payload, callback) {
               assert.deepEqual(payload, { tx: { to: "REPORTING_WINDOW_CONTRACT_ADDRESS" } });
-              callback("REGISTRATION_TOKEN_CONTRACT_ADDRESS");
+              callback(null, "REGISTRATION_TOKEN_CONTRACT_ADDRESS");
             }
           },
           RegistrationToken: {

@@ -43,7 +43,7 @@ describe("trading/order-book/get-order-book", function () {
               _startingOrderId: "0xa",
               _numOrdersToLoad: 10
             });
-            callback([
+            callback(null, [
               "0x1",                       // orderId
               speedomatic.fix("1.1111111", "hex"), // amount
               speedomatic.fix("0.7777777", "hex"), // price
@@ -68,7 +68,8 @@ describe("trading/order-book/get-order-book", function () {
         }
       }
     },
-    assertions: function (output) {
+    assertions: function (err, output) {
+      assert.isNull(err);
       assert.deepEqual(output, {
         "0x1": {
           amount: "1.1111",
@@ -119,7 +120,7 @@ describe("trading/order-book/get-order-book", function () {
               _startingOrderId: "0xa",
               _numOrdersToLoad: 10
             });
-            callback([
+            callback(null, [
               "0x1",                       // orderId
               speedomatic.fix("1.1111111", "hex"), // amount
               speedomatic.fix("0.7777777", "hex"), // price
@@ -144,7 +145,8 @@ describe("trading/order-book/get-order-book", function () {
         }
       }
     },
-    assertions: function (output) {
+    assertions: function (err, output) {
+      assert.isNull(err);
       assert.deepEqual(output, {
         "0x1": {
           amount: "1.1111",
@@ -181,8 +183,9 @@ describe("trading/order-book/get-order-book", function () {
         }
       }
     },
-    assertions: function (output) {
-      assert.strictEqual(output.error, "Must specify minPrice and maxPrice");
+    assertions: function (err, output) {
+      assert.strictEqual(err, "Must specify minPrice and maxPrice");
+      assert.isUndefined(output);
     }
   });
 });
