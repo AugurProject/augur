@@ -10,11 +10,11 @@ function bindContractFunction(functionAbi) {
   return function () {
     var payload = assign({}, functionAbi);
     if (!arguments || !arguments.length) {
-      if (!payload.send) return rpcInterface.callContractFunction(payload);
+      if (payload.constant) return rpcInterface.callContractFunction(payload);
       return rpcInterface.transact(payload);
     }
     var params = Array.prototype.slice.call(arguments);
-    if (!payload.send) {
+    if (payload.constant || (params[0] && params[0].tx && params[0].tx.send === false)) {
       var callback;
       if (params && isObject(params[0])) {
         payload.params = encodeTransactionInputs(params, payload.inputs, payload.signature, payload.fixed);
