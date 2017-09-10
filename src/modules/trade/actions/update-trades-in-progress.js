@@ -1,18 +1,18 @@
 import BigNumber from 'bignumber.js';
-import speedomatic from 'speedomatic';
-import { augur, constants } from 'services/augurjs';
+import { augur } from 'services/augurjs';
 import { BUY, SELL } from 'modules/transactions/constants/types';
 import { TWO } from 'modules/trade/constants/numbers';
 import { SCALAR } from 'modules/markets/constants/market-types';
 
 import { selectAggregateOrderBook, selectTopBid, selectTopAsk } from 'modules/bids-asks/helpers/select-order-book';
 import { selectMarket } from 'modules/market/selectors/market';
+import logError from 'utils/log-error';
 
 export const UPDATE_TRADE_IN_PROGRESS = 'UPDATE_TRADE_IN_PROGRESS';
 export const CLEAR_TRADE_IN_PROGRESS = 'CLEAR_TRADE_IN_PROGRESS';
 
 // Updates user's trade. Only defined (i.e. !== null) parameters are updated
-export function updateTradesInProgress(marketID, outcomeID, side, numShares, limitPrice, maxCost, cb) {
+export function updateTradesInProgress(marketID, outcomeID, side, numShares, limitPrice, maxCost, callback = logError) {
   return (dispatch, getState) => {
     const { tradesInProgress, marketsData, loginAccount, orderBooks, orderCancellation } = getState();
     const outcomeTradeInProgress = (tradesInProgress && tradesInProgress[marketID] && tradesInProgress[marketID][outcomeID]) || {};
@@ -58,8 +58,8 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
     // find top order to default limit price to
     const marketOrderBook = selectAggregateOrderBook(outcomeID, orderBooks[marketID], orderCancellation);
     const defaultPrice = market.type === SCALAR ?
-      speedomatic.bignum(market.maxValue)
-        .plus(speedomatic.bignum(market.minValue))
+      new BigNumber(market.maxPrice, 10)
+        .plus(new BigNumber(market.minPrice, 10))
         .dividedBy(TWO)
         .toFixed() :
       '0.5';
@@ -67,8 +67,8 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
       ((selectTopAsk(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice :
       ((selectTopBid(marketOrderBook, true) || {}).price || {}).formattedValue || defaultPrice;
 
-    const bignumShares = speedomatic.bignum(numShares);
-    const bignumLimit = speedomatic.bignum(limitPrice);
+    const bignumShares = new BigNumber(numShares, 10);
+    const bignumLimit = new BigNumber(limitPrice, 10);
     // clean num shares
     const cleanNumShares = numShares && bignumShares.toFixed() === '0' ? '0' : (numShares && bignumShares.abs().toFixed()) || outcomeTradeInProgress.numShares || '0';
 
@@ -109,45 +109,35 @@ export function updateTradesInProgress(marketID, outcomeID, side, numShares, lim
     // trade actions
     if (newTradeDetails.side && newTradeDetails.numShares && loginAccount.address) {
       const market = selectMarket(marketID);
-      augur.api.Markets.getParticipantSharesPurchased({
-        market: marketID,
-        trader: loginAccount.address,
-        outcome: outcomeID
-      }, (sharesPurchased) => {
-        if (!sharesPurchased || sharesPurchased.error) {
-          console.error('getParticipantSharesPurchased:', sharesPurchased);
-          return dispatch({
-            type: UPDATE_TRADE_IN_PROGRESS,
-            data: { marketID, outcomeID, details: newTradeDetails }
-          });
-        }
-        const position = speedomatic.bignum(sharesPurchased).round(constants.PRECISION.decimals, BigNumber.ROUND_DOWN);
-        const tradingActions = augur.trading.simulation.getTradingActions({
-          type: newTradeDetails.side,
-          orderShares: newTradeDetails.numShares,
-          orderLimitPrice: newTradeDetails.limitPrice,
-          takerFee: (market && market.takerFee) || 0,
-          makerFee: (market && market.makerFee) || 0,
+      augur.api.MarketFetcher.getPositionInMarket({ _market: marketID, _account: loginAccount.address }, (err, positionInMarket) => {
+        if (err) return dispatch({ type: UPDATE_TRADE_IN_PROGRESS, data: { marketID, outcomeID, details: newTradeDetails } });
+        const simulatedTrade = augur.trading.simulation.simulateTrade({
+          orderType: newTradeDetails.side === BUY ? 0 : 1,
+          outcome: parseInt(outcomeID, 10),
+          shareBalances: positionInMarket.map(position => new BigNumber(position, 16).toFixed()),
+          tokenBalance: loginAccount.ethTokens.toString(),
           userAddress: loginAccount.address,
-          userPositionShares: position && position.toFixed(),
-          outcomeID,
-          range: market.cumulativeScale,
+          minPrice: market.minPrice,
+          maxPrice: market.maxPrice,
+          price: newTradeDetails.limitPrice,
+          shares: newTradeDetails.numShares,
+          marketCreatorFeeRate: market.settlementFee,
           marketOrderBook: (orderBooks && orderBooks[marketID]) || {},
-          scalarMinMax: (market.type === SCALAR) ? { minValue: market.minValue, maxValue: market.maxValue } : null
+          shouldCollectReportingFees: !market.isDisowned
         });
-        console.log('trading actions:', JSON.stringify(tradingActions, null, 2));
+        console.log('simulated trade:', JSON.stringify(simulatedTrade, null, 2));
         dispatch({
           type: UPDATE_TRADE_IN_PROGRESS,
-          data: { marketID, outcomeID, details: tradingActions }
+          data: { marketID, outcomeID, details: simulatedTrade }
         });
-        if (cb) cb(tradingActions);
+        callback(null, { ...newTradeDetails, ...simulatedTrade });
       });
     } else {
       dispatch({
         type: UPDATE_TRADE_IN_PROGRESS,
         data: { marketID, outcomeID, details: newTradeDetails }
       });
-      if (cb) cb();
+      callback(null);
     }
   };
 }

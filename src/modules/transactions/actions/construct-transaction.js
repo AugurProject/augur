@@ -151,8 +151,8 @@ export function constructPayoutTransaction(log, market, dispatch) {
 export function constructPenalizeTransaction(log, marketID, market, outcomes, dispatch) {
   const transaction = { data: {} };
   transaction.type = 'Compare Report To Consensus';
-  const formattedReport = formatReportedOutcome(log.reportValue, market.minValue, market.maxValue, market.type, outcomes);
-  const formattedOutcome = formatReportedOutcome(log.outcome, market.minValue, market.maxValue, market.type, outcomes);
+  const formattedReport = formatReportedOutcome(log.reportValue, market.minPrice, market.maxPrice, market.type, outcomes);
+  const formattedOutcome = formatReportedOutcome(log.outcome, market.minPrice, market.maxPrice, market.type, outcomes);
   console.log('formattedReport:', formattedReport);
   console.log('formattedOutcome:', formattedOutcome);
   transaction.description = market.description;
@@ -208,11 +208,11 @@ export function constructSubmitReportTransaction(log, marketID, market, outcomes
   transaction.description = market.description;
   transaction.data.marketID = marketID || null;
   transaction.data.market = market;
-  const formattedReport = formatReportedOutcome(log.report, market.minValue, market.maxValue, market.type, outcomes);
+  const formattedReport = formatReportedOutcome(log.report, market.minPrice, market.maxPrice, market.type, outcomes);
   transaction.data.reportedOutcomeID = formattedReport;
   transaction.data.outcome = { name: formattedReport };
   const action = log.inProgress ? 'revealing' : 'revealed';
-  transaction.message = `${action} report: ${formatReportedOutcome(log.report, market.minValue, market.maxValue, market.type, outcomes)}`;
+  transaction.message = `${action} report: ${formatReportedOutcome(log.report, market.minPrice, market.maxPrice, market.type, outcomes)}`;
   if (!log.inProgress) {
     dispatch(updateEventsWithAccountReportData({
       [market.eventID]: {
@@ -224,16 +224,16 @@ export function constructSubmitReportTransaction(log, marketID, market, outcomes
   return transaction;
 }
 
-export const constructTakeOrderTransaction = (trade, marketID, marketType, minValue, description, outcomeID, outcomeName, status) => (dispatch, getState) => {
+export const constructTakeOrderTransaction = (trade, marketID, marketType, minPrice, description, outcomeID, outcomeName, status) => (dispatch, getState) => {
 //   console.log('constructLogFillTransaction:', trade);
-//   if (!trade.amount || !trade.price || (!trade.makerFee && !trade.takerFee)) return null;
+//   if (!trade.amount || !trade.price || (!trade.makerFee && !trade.settlementFee)) return null;
 //   const transactionID = `${trade.transactionHash}-${trade.tradeid}`;
 //   const tradeGroupID = trade.tradeGroupID;
 //   const price = formatEtherTokens(trade.price);
 //   const shares = formatShares(trade.amount);
-//   const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.takerFee);
+//   const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.settlementFee);
 //   const bnShares = speedomatic.bignum(trade.amount);
-//   const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : speedomatic.bignum(trade.price);
+//   const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minPrice, trade.price)) : speedomatic.bignum(trade.price);
 //   const totalCost = bnPrice.times(bnShares).plus(tradingFees);
 //   const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
 //   const totalCostPerShare = totalCost.dividedBy(bnShares);
@@ -300,12 +300,12 @@ export const constructMakeOrderTransaction = (trade, marketID, marketType, descr
 //   const price = formatEtherTokens(trade.price);
 //   const shares = formatShares(trade.amount);
 //   const makerFee = market.makerFee;
-//   const takerFee = market.takerFee;
-//   const maxValue = speedomatic.bignum(market.maxValue);
-//   const minValue = speedomatic.bignum(market.minValue);
-//   const fees = augur.trading.fees.calculateFxpTradingFees(makerFee, takerFee);
-//   const rawPrice = marketType === SCALAR ? augur.trading.expandScalarPrice(minValue, trade.price) : trade.price;
-//   const range = marketType === SCALAR ? speedomatic.fix(maxValue.minus(minValue)) : constants.ONE;
+//   const settlementFee = market.settlementFee;
+//   const maxPrice = speedomatic.bignum(market.maxPrice);
+//   const minPrice = speedomatic.bignum(market.minPrice);
+//   const fees = augur.trading.fees.calculateFxpTradingFees(makerFee, settlementFee);
+//   const rawPrice = marketType === SCALAR ? augur.trading.expandScalarPrice(minPrice, trade.price) : trade.price;
+//   const range = marketType === SCALAR ? speedomatic.fix(maxPrice.minus(minPrice)) : constants.ONE;
 //   const adjustedFees = augur.trading.fees.calculateFxpMakerTakerFees(augur.trading.fees.calculateFxpAdjustedTradingFee(fees.tradingFee, speedomatic.fix(trade.price), range), fees.makerProportionOfFee, false, true);
 //   const fxpShares = speedomatic.fix(trade.amount);
 //   const fxpPrice = speedomatic.fix(trade.price);
@@ -404,7 +404,7 @@ export const constructTradingTransaction = (label, trade, marketID, outcomeID, s
   }
   switch (label) {
     case TYPES.TAKE_ORDER: {
-      return dispatch(constructTakeOrderTransaction(trade, marketID, marketType, market.minValue, description, outcomeID, outcomeName, status));
+      return dispatch(constructTakeOrderTransaction(trade, marketID, marketType, market.minPrice, description, outcomeID, outcomeName, status));
     }
     case TYPES.MAKE_ORDER: {
       return dispatch(constructMakeOrderTransaction(trade, marketID, marketType, description, outcomeID, outcomeName, market, status));

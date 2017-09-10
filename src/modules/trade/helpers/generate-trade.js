@@ -28,9 +28,9 @@ export const generateTrade = memoize((market, outcome, outcomeTradeInProgress, o
   const gasFeesRealEth = (outcomeTradeInProgress && outcomeTradeInProgress.gasFeesRealEth) || 0;
   const totalCost = (outcomeTradeInProgress && outcomeTradeInProgress.totalCost) || 0;
   const marketType = (market && market.type) || null;
-  const minValue = (market && market.minValue) || null;
-  const maxValue = (market && market.maxValue) || null;
-  const preOrderProfitLoss = calcOrderProfitLossPercents(numShares, limitPrice, side, minValue, maxValue, marketType);
+  const minPrice = (market && market.minPrice) || null;
+  const maxPrice = (market && market.maxPrice) || null;
+  const preOrderProfitLoss = calcOrderProfitLossPercents(numShares, limitPrice, side, minPrice, maxPrice, marketType);
 
   let maxNumShares;
   if (limitPrice != null) {
@@ -45,10 +45,10 @@ export const generateTrade = memoize((market, outcome, outcomeTradeInProgress, o
       loginAccount,
       orders,
       market.makerFee,
-      market.takerFee,
+      market.settlementFee,
       market.cumulativeScale,
       outcomeTradeInProgress,
-      market.type === 'scalar' ? market.minValue : null)
+      market.type === 'scalar' ? market.minPrice : null)
     );
   } else {
     maxNumShares = formatShares(0);

@@ -62,9 +62,9 @@ export default function (market) {
       assertFormattedNumber(market.outstandingShares, 'market.outstandingShares');
     });
 
-    it('market.takerFeePercent', () => {
-      assert.isDefined(market.takerFeePercent);
-      assertFormattedNumber(market.takerFeePercent, 'market.takerFeePercent');
+    it('market.settlementFeePercent', () => {
+      assert.isDefined(market.settlementFeePercent);
+      assertFormattedNumber(market.settlementFeePercent, 'market.settlementFeePercent');
     });
 
     it('market.makerFeePercent', () => {

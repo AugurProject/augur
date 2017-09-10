@@ -1418,21 +1418,21 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         };
         const marketID = '0xMARKETID';
         const marketType = BINARY;
-        const minValue = '0';
+        const minPrice = '0';
         const description = 'test description';
         const outcomeID = '1';
         const status = 'testing';
 
         const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
-        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.takerFee);
+        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.settlementFee);
         const bnShares = speedomatic.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : speedomatic.bignum(trade.price);
+        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minPrice, trade.price)) : speedomatic.bignum(trade.price);
         const totalCost = bnPrice.times(bnShares).plus(tradingFees);
         const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
         const totalCostPerShare = totalCost.dividedBy(bnShares);
 
-        const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status));
+        const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minPrice, description, outcomeID, null, status));
 
         const expected = {
           '0xHASH-0xORDERID': {
@@ -1484,21 +1484,21 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         };
         const marketID = '0xMARKETID';
         const marketType = BINARY;
-        const minValue = '0';
+        const minPrice = '0';
         const description = 'test description';
         const outcomeID = '1';
         const status = 'testing';
 
         const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
-        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.takerFee);
+        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.settlementFee);
         const bnShares = speedomatic.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : speedomatic.bignum(trade.price);
+        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minPrice, trade.price)) : speedomatic.bignum(trade.price);
         const totalCost = bnPrice.times(bnShares).plus(tradingFees);
         const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
         const totalCostPerShare = totalCost.dividedBy(bnShares);
 
-        const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status));
+        const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minPrice, description, outcomeID, null, status));
 
         const expected = {
           '0xHASH-0xORDERID': {
@@ -1549,21 +1549,21 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         };
         const marketID = '0xMARKETID';
         const marketType = BINARY;
-        const minValue = '0';
+        const minPrice = '0';
         const description = 'test description';
         const outcomeID = '1';
         const status = 'testing';
 
         const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
-        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.takerFee);
+        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.settlementFee);
         const bnShares = speedomatic.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : speedomatic.bignum(trade.price);
+        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minPrice, trade.price)) : speedomatic.bignum(trade.price);
         const totalCost = bnPrice.times(bnShares).plus(tradingFees);
         const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
         const totalReturnPerShare = totalReturn.dividedBy(bnShares);
 
-        const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status));
+        const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minPrice, description, outcomeID, null, status));
 
         const expected = {
           '0xHASH-0xORDERID': {
@@ -1615,21 +1615,21 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         };
         const marketID = '0xMARKETID';
         const marketType = BINARY;
-        const minValue = '0';
+        const minPrice = '0';
         const description = 'test description';
         const outcomeID = '1';
         const status = 'testing';
 
         const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
-        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.takerFee);
+        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.settlementFee);
         const bnShares = speedomatic.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : speedomatic.bignum(trade.price);
+        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minPrice, trade.price)) : speedomatic.bignum(trade.price);
         const totalCost = bnPrice.times(bnShares).plus(tradingFees);
         const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
         const totalReturnPerShare = totalReturn.dividedBy(bnShares);
 
-        const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status));
+        const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minPrice, description, outcomeID, null, status));
 
         const expected = {
           '0xHASH-0xORDERID': {
@@ -1672,7 +1672,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           price: '0.1',
           amount: '2',
           maker: false,
-          takerFee: '0.01',
+          settlementFee: '0.01',
           type: BUY,
           timestamp: 1491843278,
           blockNumber: 123456,
@@ -1680,20 +1680,20 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         };
         const marketID = '0xMARKETID';
         const marketType = BINARY;
-        const minValue = '0';
+        const minPrice = '0';
         const description = 'test description';
         const outcomeID = '1';
         const status = 'testing';
 
         const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
-        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.takerFee);
+        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.settlementFee);
         const bnShares = speedomatic.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : speedomatic.bignum(trade.price);
+        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minPrice, trade.price)) : speedomatic.bignum(trade.price);
         const totalCost = bnPrice.times(bnShares).plus(tradingFees);
         const totalCostPerShare = totalCost.dividedBy(bnShares);
 
-        const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status));
+        const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minPrice, description, outcomeID, null, status));
 
         const expected = {
           '0xHASH-0xORDERID': {
@@ -1736,7 +1736,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           price: '0.1',
           amount: '2',
           maker: false,
-          takerFee: '0.01',
+          settlementFee: '0.01',
           type: BUY,
           timestamp: 1491843278,
           blockNumber: 123456,
@@ -1745,20 +1745,20 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         };
         const marketID = '0xMARKETID';
         const marketType = BINARY;
-        const minValue = '0';
+        const minPrice = '0';
         const description = 'test description';
         const outcomeID = '1';
         const status = 'testing';
 
         const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
-        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.takerFee);
+        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.settlementFee);
         const bnShares = speedomatic.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : speedomatic.bignum(trade.price);
+        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minPrice, trade.price)) : speedomatic.bignum(trade.price);
         const totalCost = bnPrice.times(bnShares).plus(tradingFees);
         const totalCostPerShare = totalCost.dividedBy(bnShares);
 
-        const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status));
+        const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minPrice, description, outcomeID, null, status));
 
         const expected = {
           '0xHASH-0xORDERID': {
@@ -1801,7 +1801,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           price: '0.1',
           amount: '2',
           maker: false,
-          takerFee: '0.01',
+          settlementFee: '0.01',
           type: SELL,
           timestamp: 1491843278,
           blockNumber: 123456,
@@ -1809,21 +1809,21 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         };
         const marketID = '0xMARKETID';
         const marketType = BINARY;
-        const minValue = '0';
+        const minPrice = '0';
         const description = 'test description';
         const outcomeID = '1';
         const status = 'testing';
 
         const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
-        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.takerFee);
+        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.settlementFee);
         const bnShares = speedomatic.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : speedomatic.bignum(trade.price);
+        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minPrice, trade.price)) : speedomatic.bignum(trade.price);
         const totalCost = bnPrice.times(bnShares).plus(tradingFees);
         const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
         const totalReturnPerShare = totalReturn.dividedBy(bnShares);
 
-        const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status));
+        const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minPrice, description, outcomeID, null, status));
 
         const expected = {
           '0xHASH-0xORDERID': {
@@ -1866,7 +1866,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           price: '0.1',
           amount: '2',
           maker: false,
-          takerFee: '0.01',
+          settlementFee: '0.01',
           type: SELL,
           timestamp: 1491843278,
           blockNumber: 123456,
@@ -1875,21 +1875,21 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         };
         const marketID = '0xMARKETID';
         const marketType = BINARY;
-        const minValue = '0';
+        const minPrice = '0';
         const description = 'test description';
         const outcomeID = '1';
         const status = 'testing';
 
         const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
-        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.takerFee);
+        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.settlementFee);
         const bnShares = speedomatic.bignum(trade.amount);
-        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price)) : speedomatic.bignum(trade.price);
+        const bnPrice = marketType === SCALAR ? speedomatic.bignum(augur.trading.shrinkScalarPrice(minPrice, trade.price)) : speedomatic.bignum(trade.price);
         const totalCost = bnPrice.times(bnShares).plus(tradingFees);
         const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
         const totalReturnPerShare = totalReturn.dividedBy(bnShares);
 
-        const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status));
+        const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minPrice, description, outcomeID, null, status));
 
         const expected = {
           '0xHASH-0xORDERID': {
@@ -1932,7 +1932,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           price: '0.1',
           amount: '2',
           maker: false,
-          takerFee: '0.01',
+          settlementFee: '0.01',
           type: SELL,
           timestamp: 1491843278,
           blockNumber: 123456,
@@ -1941,21 +1941,21 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         };
         const marketID = '0xMARKETID';
         const marketType = SCALAR;
-        const minValue = '0';
+        const minPrice = '0';
         const description = 'test description';
         const outcomeID = '1';
         const status = 'testing';
 
         const price = formatEtherTokens(trade.price);
         const shares = formatShares(trade.amount);
-        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.takerFee);
+        const tradingFees = trade.maker ? speedomatic.bignum(trade.makerFee) : speedomatic.bignum(trade.settlementFee);
         const bnShares = speedomatic.bignum(trade.amount);
-        const bnPrice = speedomatic.bignum(augur.trading.shrinkScalarPrice(minValue, trade.price));
+        const bnPrice = speedomatic.bignum(augur.trading.shrinkScalarPrice(minPrice, trade.price));
         const totalCost = bnPrice.times(bnShares).plus(tradingFees);
         const totalReturn = bnPrice.times(bnShares).minus(tradingFees);
         const totalReturnPerShare = totalReturn.dividedBy(bnShares);
 
-        const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minValue, description, outcomeID, null, status));
+        const actual = store.dispatch(action.constructTakeOrderTransaction(trade, marketID, marketType, minPrice, description, outcomeID, null, status));
 
         const expected = {
           '0xHASH-0xORDERID': {
@@ -2005,7 +2005,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         price: '0.1',
         amount: '2',
         maker: false,
-        takerFee: '0.01',
+        settlementFee: '0.01',
         type: SELL,
         timestamp: 1491843278,
         blockNumber: 123456,
@@ -2017,9 +2017,9 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
       const outcomeID = '1';
       const market = {
         makerFee: '0.025',
-        takerFee: '0.05',
-        minValue: '0',
-        maxValue: '1'
+        settlementFee: '0.05',
+        minPrice: '0',
+        maxPrice: '1'
       };
       const status = 'testing';
 
@@ -2148,7 +2148,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         price: '0.1',
         amount: '2',
         maker: false,
-        takerFee: '0.01',
+        settlementFee: '0.01',
         type: SELL,
         timestamp: 1491843278,
         blockNumber: 123456,
@@ -2160,9 +2160,9 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
       const outcomeID = '1';
       let market = {
         makerFee: '0.025',
-        takerFee: '0.05',
-        minValue: '0',
-        maxValue: '1'
+        settlementFee: '0.05',
+        minPrice: '0',
+        maxPrice: '1'
       };
       const status = 'testing';
 
@@ -2192,8 +2192,8 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
           marketType = SCALAR;
           market = {
             ...market,
-            minValue: -1,
-            maxValue: 1
+            minPrice: -1,
+            maxPrice: 1
           };
 
           const actual = store.dispatch(action.constructMakeOrderTransaction(trade, marketID, marketType, description, outcomeID, null, market, status));
@@ -2222,7 +2222,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
         price: '0.1',
         amount: '2',
         maker: false,
-        takerFee: '0.01',
+        settlementFee: '0.01',
         type: SELL,
         timestamp: 1491843278,
         blockNumber: 123456,
@@ -2235,9 +2235,9 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
       const outcomeID = '1';
       const market = {
         makerFee: '0.025',
-        takerFee: '0.05',
-        minValue: '0',
-        maxValue: '1'
+        settlementFee: '0.05',
+        minPrice: '0',
+        maxPrice: '1'
       };
       const status = 'testing';
 
@@ -2293,7 +2293,7 @@ describe('modules/transactions/actions/contruct-transaction.js', () => {
       price: '0.1',
       amount: '2',
       maker: false,
-      takerFee: '0.01',
+      settlementFee: '0.01',
       type: SELL,
       timestamp: 1491843278,
       blockNumber: 123456,

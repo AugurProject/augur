@@ -30,7 +30,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
           timestamp: 1234567890000
         },
         expirySource: '',
-        takerFee: 2,
+        settlementFee: 2,
         makerFee: 1,
         detailsText: '',
         topic: 'test topic',
@@ -67,12 +67,12 @@ describe('modules/create-market/actions/submit-new-market', () => {
         description: 'test description~|>one|two',
         expDate: 1234567890,
         resolution: '',
-        takerFee: 0.02,
+        settlementFee: 0.02,
         makerFee: 0.01,
         extraInfo: '',
         tags: ['test topic'],
-        minValue: 1,
-        maxValue: 2,
+        minPrice: 1,
+        maxPrice: 2,
         numOutcomes: 2
       };
 
@@ -93,7 +93,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
           timestamp: 1234567890000
         },
         expirySource: '',
-        takerFee: 2,
+        settlementFee: 2,
         makerFee: 1,
         detailsText: '',
         topic: 'test topic',
@@ -126,12 +126,12 @@ describe('modules/create-market/actions/submit-new-market', () => {
         description: 'test description',
         expDate: 1234567890,
         resolution: '',
-        takerFee: 0.02,
+        settlementFee: 0.02,
         makerFee: 0.01,
         extraInfo: '',
         tags: ['test topic'],
-        minValue: 1,
-        maxValue: 2,
+        minPrice: 1,
+        maxPrice: 2,
         numOutcomes: 2
       };
 
@@ -152,7 +152,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
           timestamp: 1234567890000
         },
         expirySource: '',
-        takerFee: 2,
+        settlementFee: 2,
         makerFee: 1,
         detailsText: '',
         topic: 'test topic',
@@ -187,12 +187,12 @@ describe('modules/create-market/actions/submit-new-market', () => {
         description: 'test description',
         expDate: 1234567890,
         resolution: '',
-        takerFee: 0.02,
+        settlementFee: 0.02,
         makerFee: 0.01,
         extraInfo: '',
         tags: ['test topic'],
-        minValue: '-10',
-        maxValue: '10',
+        minPrice: '-10',
+        maxPrice: '10',
         numOutcomes: 2
       };
 
@@ -213,7 +213,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
           timestamp: 1234567890000
         },
         expirySource: '',
-        takerFee: 2,
+        settlementFee: 2,
         makerFee: 1,
         detailsText: '',
         topic: 'test topic',
@@ -270,7 +270,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
           timestamp: 1234567890000
         },
         expirySource: '',
-        takerFee: 2,
+        settlementFee: 2,
         makerFee: 1,
         detailsText: '',
         topic: 'test topic',
@@ -321,7 +321,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
           timestamp: 1234567890000
         },
         expirySource: '',
-        takerFee: 2,
+        settlementFee: 2,
         makerFee: 1,
         detailsText: '',
         topic: 'test topic',
@@ -365,7 +365,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
           timestamp: 1234567890000
         },
         expirySource: '',
-        takerFee: 2,
+        settlementFee: 2,
         makerFee: 1,
         detailsText: '',
         topic: 'test topic',
@@ -593,7 +593,7 @@ describe('modules/create-market/actions/submit-new-market', () => {
           timestamp: 1234567890000
         },
         expirySource: '',
-        takerFee: 2,
+        settlementFee: 2,
         makerFee: 1,
         detailsText: '',
         topic: 'test topic',

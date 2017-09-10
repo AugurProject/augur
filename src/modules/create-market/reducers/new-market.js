@@ -7,7 +7,7 @@ import {
   CLEAR_NEW_MARKET
 } from 'modules/create-market/actions/update-new-market';
 
-import { TAKER_FEE_DEFAULT, MAKER_FEE_DEFAULT } from 'modules/create-market/constants/new-market-constraints';
+import { SETTLEMENT_FEE_DEFAULT } from 'modules/create-market/constants/new-market-constraints';
 
 import BigNumber from 'bignumber.js';
 
@@ -27,8 +27,7 @@ const DEFAULT_STATE = {
   detailsText: '',
   topic: '',
   keywords: [],
-  takerFee: TAKER_FEE_DEFAULT,
-  makerFee: MAKER_FEE_DEFAULT,
+  settlementFee: SETTLEMENT_FEE_DEFAULT,
   orderBook: {}, // for submit orders
   orderBookSorted: {}, // for order book table
   orderBookSeries: {}, // for order book chart

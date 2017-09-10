@@ -20,7 +20,7 @@ export default class CreateMarketReview extends Component {
     initialLiquidityEth: PropTypes.instanceOf(BigNumber).isRequired,
     initialLiquidityGas: PropTypes.instanceOf(BigNumber).isRequired,
     initialLiquidityFees: PropTypes.instanceOf(BigNumber).isRequired,
-    takerFee: PropTypes.oneOfType([
+    settlementFee: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.number
     ]).isRequired,

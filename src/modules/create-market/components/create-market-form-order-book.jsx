@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 import Highcharts from 'highcharts';
 import noData from 'highcharts/modules/no-data-to-display';
-import { augur, constants } from 'services/augurjs';
+// import { augur, constants } from 'services/augurjs';
 
 import ComponentNav from 'modules/common/components/component-nav';
 import Input from 'modules/common/components/input';
@@ -36,10 +36,6 @@ export default class CreateMarketFormOrderBook extends Component {
     scalarBigNum: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.instanceOf(BigNumber)
-    ]).isRequired,
-    makerFee: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.number
     ]).isRequired,
     initialLiquidityEth: PropTypes.instanceOf(BigNumber).isRequired,
     initialLiquidityGas: PropTypes.instanceOf(BigNumber).isRequired,
@@ -352,18 +348,16 @@ export default class CreateMarketFormOrderBook extends Component {
   }
 
   updateInitialLiquidityCosts(order, shouldReduce) {
-    const gasPrice = augur.rpc.gasPrice || constants.DEFAULT_GASPRICE;
-    const makerFee = this.props.makerFee instanceof BigNumber ? this.props.makerFee : new BigNumber(this.props.makerFee);
-
     let initialLiquidityEth;
     let initialLiquidityGas;
     let initialLiquidityFees;
     let action;
 
+    // TODO replace getBidAction/getShortAskAction w/ new simulation
     if (order.type === BUY) {
-      action = augur.trading.simulation.getBidAction(order.quantity, order.price, makerFee, gasPrice);
+      // action = augur.trading.simulation.getBidAction(order.quantity, order.price, makerFee, gasPrice);
     } else {
-      action = augur.trading.simulation.getShortAskAction(order.quantity, order.price, makerFee, gasPrice);
+      // action = augur.trading.simulation.getShortAskAction(order.quantity, order.price, makerFee, gasPrice);
     }
 
     if (shouldReduce) {

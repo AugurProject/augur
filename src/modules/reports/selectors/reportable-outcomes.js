@@ -39,8 +39,8 @@ export function selectOutcomeName(outcomeID, eventType, marketOutcomesData = {})
   return outcomeName;
 }
 
-export function formatReportedOutcome(rawReportedOutcome, minValue, maxValue, eventType, marketOutcomesData = {}) {
-  const report = augur.reporting.format.unfixReport(rawReportedOutcome, minValue, maxValue, eventType);
+export function formatReportedOutcome(rawReportedOutcome, minPrice, maxPrice, eventType, marketOutcomesData = {}) {
+  const report = augur.reporting.format.unfixReport(rawReportedOutcome, minPrice, maxPrice, eventType);
   const outcomeName = report.isIndeterminate ? INDETERMINATE_OUTCOME_NAME : selectOutcomeName(report.report, eventType, marketOutcomesData || {});
   return outcomeName;
 }

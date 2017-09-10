@@ -8,7 +8,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
     {
       loginAccount: {},
       makerFee: '0.001000000000000000006', // from real market
-      takerFee: '0.019999999999999999994',
+      settlementFee: '0.019999999999999999994',
       cumulativeScale: '1',
       orders: [],
       result: null
@@ -16,7 +16,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
     {
       loginAccount: { address: 'address', ether: 0 },
       makerFee: '0.001000000000000000006',
-      takerFee: '0.019999999999999999994',
+      settlementFee: '0.019999999999999999994',
       cumulativeScale: '1',
       orders: [
         {
@@ -47,7 +47,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
     {
       loginAccount: { address: 'address', ether: 5 },
       makerFee: '0.001000000000000000006',
-      takerFee: '0.019999999999999999994',
+      settlementFee: '0.019999999999999999994',
       cumulativeScale: '1',
       orders: [
         {
@@ -89,7 +89,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
     {
       loginAccount: { address: 'address', ether: 9 },
       makerFee: '0.001000000000000000006',
-      takerFee: '0.019999999999999999994',
+      settlementFee: '0.019999999999999999994',
       cumulativeScale: '1',
       orders: [
         {
@@ -131,7 +131,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
     {
       loginAccount: { address: 'address', ether: '0.001' },
       makerFee: '0.01',
-      takerFee: '0.02',
+      settlementFee: '0.02',
       cumulativeScale: '1',
       orders: [
         {
@@ -174,7 +174,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
     {
       loginAccount: { address: 'address', ether: 5 },
       makerFee: '0.001000000000000000006',
-      takerFee: '0.019999999999999999994',
+      settlementFee: '0.019999999999999999994',
       cumulativeScale: '1',
       orders: [
         {
@@ -216,7 +216,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
     {
       loginAccount: { address: 'address', ether: 9 },
       makerFee: '0.001000000000000000006',
-      takerFee: '0.019999999999999999994',
+      settlementFee: '0.019999999999999999994',
       cumulativeScale: '1',
       orders: [
         {
@@ -258,7 +258,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
     {
       loginAccount: { address: 'address', ether: 100 },
       makerFee: '0.001000000000000000006',
-      takerFee: '0.019999999999999999994',
+      settlementFee: '0.019999999999999999994',
       cumulativeScale: '1',
       orders: [
         {
@@ -300,7 +300,7 @@ describe('modules/market/selectors/helpers/calculate-max-possible-shares.js', ()
   ];
   testCases.forEach((test) => {
     it(`calculateMaxPossibleShares(${JSON.stringify(test)})`, () => {
-      assert.strictEqual(calculateMaxPossibleShares(test.loginAccount, test.orders, test.makerFee, test.takerFee, test.cumulativeScale, {}, null), test.result);
+      assert.strictEqual(calculateMaxPossibleShares(test.loginAccount, test.orders, test.makerFee, test.settlementFee, test.cumulativeScale, {}, null), test.result);
     });
   });
 });

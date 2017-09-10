@@ -9,7 +9,7 @@ export function loadReport(branchID, period, eventID, marketID, callback) {
       console.error('loadReport failed:', branchID, marketID, market);
       return callback(null);
     }
-    augur.reporting.getReport(branchID, period, eventID, loginAccount.address, market.minValue, market.maxValue, market.type, (report) => {
+    augur.reporting.getReport(branchID, period, eventID, loginAccount.address, market.minPrice, market.maxPrice, market.type, (report) => {
       console.log('got report:', report);
       if (!report || !report.report || report.error) {
         return callback(report || 'getReport failed');

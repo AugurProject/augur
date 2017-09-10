@@ -66,7 +66,7 @@ const MarketProperties = (p) => {
           data-event="click focus"
         >
           <span className="property-label">Taker Fee:</span>
-          <ValueDenomination className="property-value" {...p.takerFeePercent} />
+          <ValueDenomination className="property-value" {...p.settlementFeePercent} />
         </a>
         <ReactTooltip
           id={`${p.id}-taker-fee-tooltip`}
@@ -76,7 +76,7 @@ const MarketProperties = (p) => {
           globalEventOff="click"
         >
           <span className="tooltip-text">
-            {p.takerFeePercent.full} fee for taking bids or asks from the books
+            {p.settlementFeePercent.full} fee for taking bids or asks from the books
           </span>
         </ReactTooltip>
       </li>

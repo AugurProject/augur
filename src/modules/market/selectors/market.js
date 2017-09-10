@@ -189,7 +189,7 @@ export function assembleMarket(
       // market.isExpired = isExpired;
       market.isFavorite = isFavorite;
 
-      market.takerFeePercent = formatPercent(marketData.takerFee * 100, { positiveSign: false });
+      market.settlementFeePercent = formatPercent(marketData.settlementFee * 100, { positiveSign: false });
       market.makerFeePercent = formatPercent(marketData.makerFee * 100, { positiveSign: false });
       market.volume = formatShares(marketData.volume, { positiveSign: false });
 
@@ -233,7 +233,7 @@ export function assembleMarket(
               zeroStyled: true
             });
           } else {
-            const midPoint = (speedomatic.bignum(market.minValue).plus(speedomatic.bignum(market.maxValue))).dividedBy(2);
+            const midPoint = (speedomatic.bignum(market.minPrice).plus(speedomatic.bignum(market.maxPrice))).dividedBy(2);
             outcome.lastPricePercent = formatNumber(midPoint, {
               decimals: 2,
               decimalsRounded: 1,
@@ -324,6 +324,6 @@ export const selectMarketReport = (marketID, branchReports) => {
 
 export const selectScalarMinimum = (market) => {
   const scalarMinimum = {};
-  if (market && market.type === SCALAR) scalarMinimum.minValue = market.minValue;
+  if (market && market.type === SCALAR) scalarMinimum.minPrice = market.minPrice;
   return scalarMinimum;
 };

@@ -40,7 +40,7 @@ export default class SortMarketParam extends Component {
       },
       {
         label: 'Taker Fee',
-        value: 'takerFeePercent'
+        value: 'settlementFeePercent'
       },
       {
         label: 'Maker Fee',
@@ -95,7 +95,7 @@ export default class SortMarketParam extends Component {
           return getValue(items, `${a}.${selectedMarketParam}.timestamp`) - getValue(items, `${b}.${selectedMarketParam}.timestamp`);
         }
         case 'volume':
-        case 'takerFeePercent':
+        case 'settlementFeePercent':
         case 'makerFeePercent': {
           if (selectedSort) {
             return getValue(items, `${b}.${selectedMarketParam}.value`) - getValue(items, `${a}.${selectedMarketParam}.value`);

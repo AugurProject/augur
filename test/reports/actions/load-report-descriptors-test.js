@@ -43,8 +43,8 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
       marketsData: {
         '0xa1': {
           type: 'binary',
-          minValue: '1',
-          maxValue: '2'
+          minPrice: '1',
+          maxPrice: '2'
         }
       },
       reports: {
@@ -70,8 +70,8 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
               period: 7,
               marketID: '0xa1',
               reportedOutcomeID: '1',
-              minValue: '1',
-              maxValue: '2',
+              minPrice: '1',
+              maxPrice: '2',
               isCategorical: false,
               isScalar: false,
               isIndeterminate: false,
@@ -104,8 +104,8 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
       marketsData: {
         '0xa1': {
           type: 'categorical',
-          minValue: '1',
-          maxValue: '5'
+          minPrice: '1',
+          maxPrice: '5'
         }
       },
       reports: {
@@ -131,8 +131,8 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
               period: 7,
               marketID: '0xa1',
               reportedOutcomeID: '1',
-              minValue: '1',
-              maxValue: '5',
+              minPrice: '1',
+              maxPrice: '5',
               isCategorical: true,
               isScalar: false,
               isIndeterminate: false,
@@ -165,8 +165,8 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
       marketsData: {
         '0xa1': {
           type: 'categorical',
-          minValue: '1',
-          maxValue: '5'
+          minPrice: '1',
+          maxPrice: '5'
         }
       },
       reports: {
@@ -191,8 +191,8 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
               period: 7,
               marketID: '0xa1',
               reportedOutcomeID: '0.5',
-              minValue: '1',
-              maxValue: '5',
+              minPrice: '1',
+              maxPrice: '5',
               isCategorical: true,
               isScalar: false,
               isIndeterminate: true,
@@ -225,8 +225,8 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
       marketsData: {
         '0xa1': {
           type: 'scalar',
-          minValue: '5',
-          maxValue: '20'
+          minPrice: '5',
+          maxPrice: '20'
         }
       },
       reports: {
@@ -251,8 +251,8 @@ describe('modules/reports/actions/load-report-descriptors.js', () => {
               period: 7,
               marketID: '0xa1',
               reportedOutcomeID: '1.500000000000000001',
-              minValue: '5',
-              maxValue: '20',
+              minPrice: '5',
+              maxPrice: '20',
               isCategorical: false,
               isScalar: true,
               isIndeterminate: false,

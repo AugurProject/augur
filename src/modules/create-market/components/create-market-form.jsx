@@ -207,7 +207,7 @@ export default class CreateMarketForm extends Component {
             'hide-form-part': s.currentStep !== newMarketCreationOrder.indexOf(NEW_MARKET_FEES) && s.lastStep === newMarketCreationOrder.indexOf(NEW_MARKET_FEES)
           })}
           currentStep={p.newMarket.currentStep}
-          takerFee={p.newMarket.takerFee}
+          settlementFee={p.newMarket.settlementFee}
           makerFee={p.newMarket.makerFee}
           updateValidity={this.updateValidity}
           updateNewMarket={p.updateNewMarket}
@@ -246,7 +246,7 @@ export default class CreateMarketForm extends Component {
           endDate={p.newMarket.endDate}
           branch={p.branch}
           currentStep={p.newMarket.currentStep}
-          takerFee={p.newMarket.takerFee}
+          settlementFee={p.newMarket.settlementFee}
           makerFee={p.newMarket.makerFee}
           initialLiquidityEth={p.newMarket.initialLiquidityEth}
           initialLiquidityGas={p.newMarket.initialLiquidityGas}

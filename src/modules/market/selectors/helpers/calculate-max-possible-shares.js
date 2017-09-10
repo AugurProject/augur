@@ -10,11 +10,11 @@ import speedomatic from 'speedomatic';
  * @param loginAccount {Object}
  * @param orders {Array}
  * @param makerFee {String}
- * @param takerFee {String}
+ * @param settlementFee {String}
  * @param range {String}
  * @param outcomeTradeInProgress {Object} used to bust memoizerific cache
  */
-export const calculateMaxPossibleShares = memoize((loginAccount, orders, makerFee, takerFee, range, outcomeTradeInProgress, scalarMinValue) => {
+export const calculateMaxPossibleShares = memoize((loginAccount, orders, makerFee, settlementFee, range, outcomeTradeInProgress, scalarMinValue) => {
   if (loginAccount.address == null) {
     return null;
   }
@@ -23,7 +23,7 @@ export const calculateMaxPossibleShares = memoize((loginAccount, orders, makerFe
     return '0';
   }
   const ordersLength = orders.length;
-  const { tradingFee, makerProportionOfFee } = augur.trading.fees.calculateFxpTradingFees(new BigNumber(makerFee, 10), new BigNumber(takerFee, 10));
+  const { tradingFee, makerProportionOfFee } = augur.trading.fees.calculateFxpTradingFees(new BigNumber(makerFee, 10), new BigNumber(settlementFee, 10));
   let runningCost = ZERO;
   let updatedRunningCost;
   let maxPossibleShares = ZERO;

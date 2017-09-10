@@ -11,8 +11,8 @@ export function loadReportDescriptors(callback) {
       const marketData = marketsData[report.marketID];
       report.isScalar = marketData.type === SCALAR;
       report.isCategorical = marketData.type === CATEGORICAL;
-      report.minValue = marketData.minValue;
-      report.maxValue = marketData.maxValue;
+      report.minPrice = marketData.minPrice;
+      report.maxPrice = marketData.maxPrice;
       if (report.reportedOutcomeID === undefined) {
         report.isIndeterminate = false;
         branchReports[eventID] = report;

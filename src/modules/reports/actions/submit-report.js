@@ -10,7 +10,7 @@ export const submitReport = (market, reportedOutcomeID, isIndeterminate, history
   }
   const branchID = branch.id;
   console.log(`committing to report ${reportedOutcomeID} on market ${market.id} period ${branch.reportPeriod}...`);
-  const fixedReport = augur.reporting.format.fixReport(reportedOutcomeID, market.minValue, market.maxValue, market.type, isIndeterminate);
+  const fixedReport = augur.reporting.format.fixReport(reportedOutcomeID, market.minPrice, market.maxPrice, market.type, isIndeterminate);
   const report = {
     marketID: market.id,
     period: branch.reportPeriod,

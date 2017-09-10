@@ -336,12 +336,12 @@ export default class CreateMarketPreview extends Component {
                       </li>
                       <li
                         className={classNames('prop-container', {
-                          'is-null': !newMarket.takerFee || newMarket.validations.indexOf(NEW_MARKET_FEES) === -1,
-                          'has-value': newMarket.takerFee && (newMarket.validations.indexOf(NEW_MARKET_FEES) > -1 || newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES)
+                          'is-null': !newMarket.settlementFee || newMarket.validations.indexOf(NEW_MARKET_FEES) === -1,
+                          'has-value': newMarket.settlementFee && (newMarket.validations.indexOf(NEW_MARKET_FEES) > -1 || newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES)
                         })}
                       >
                         <span className="null-mask" />
-                        <span className="prop-value">{(newMarket.takerFee && (newMarket.validations.indexOf(NEW_MARKET_FEES) > -1 || newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES) && <span>Taker Fee: <span className="market-property-value">{newMarket.takerFee}%</span></span>) || '\u00a0'}</span>
+                        <span className="prop-value">{(newMarket.settlementFee && (newMarket.validations.indexOf(NEW_MARKET_FEES) > -1 || newMarketCreationOrder[newMarket.currentStep] === NEW_MARKET_FEES) && <span>Taker Fee: <span className="market-property-value">{newMarket.settlementFee}%</span></span>) || '\u00a0'}</span>
                       </li>
                     </ul>
                   </button>

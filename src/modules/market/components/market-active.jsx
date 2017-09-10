@@ -103,11 +103,11 @@ export default class MarketActive extends Component {
     const shareDenomination = getValue(this.props, `scalarShareDenomination.markets.${marketID}`);
 
     if (!shareDenomination) {
-      const maxValue = getValue(this.props, 'market.maxValue');
+      const maxPrice = getValue(this.props, 'market.maxPrice');
 
-      if (maxValue >= 10000000) {
+      if (maxPrice >= 10000000) {
         this.props.scalarShareDenomination.updateSelectedShareDenomination(marketID, MICRO_SHARE);
-      } else if (maxValue >= 10000) {
+      } else if (maxPrice >= 10000) {
         this.props.scalarShareDenomination.updateSelectedShareDenomination(marketID, MILLI_SHARE);
       } else {
         this.props.scalarShareDenomination.updateSelectedShareDenomination(marketID, SHARE);
@@ -123,8 +123,8 @@ export default class MarketActive extends Component {
     const tradeSummary = getValue(p, 'market.tradeSummary');
     const submitTrade = getValue(p, 'market.onSubmitPlaceTrade');
     const marketType = getValue(p, 'market.type');
-    const minValue = getValue(p, 'market.minValue');
-    const maxValue = getValue(p, 'market.maxValue');
+    const minPrice = getValue(p, 'market.minPrice');
+    const maxPrice = getValue(p, 'market.maxPrice');
 
     const selectedShareDenomination = getValue(p, `scalarShareDenomination.markets.${marketID}`);
     const shareDenominations = getValue(p, 'scalarShareDenomination.denominations');
@@ -148,8 +148,8 @@ export default class MarketActive extends Component {
             updateSelectedTradeSide={this.updateSelectedTradeSide}
             updateTradeFromSelectedOrder={this.updateTradeFromSelectedOrder}
             outcomeTradeNavItems={p.outcomeTradeNavItems}
-            minLimitPrice={minValue}
-            maxLimitPrice={maxValue}
+            minLimitPrice={minPrice}
+            maxLimitPrice={maxPrice}
           />
           <OrderBook
             marketType={marketType}
@@ -176,8 +176,8 @@ export default class MarketActive extends Component {
               selectedShareDenomination={selectedShareDenomination}
               updateSelectedTradeSide={this.updateSelectedTradeSide}
               outcomeTradeNavItems={p.outcomeTradeNavItems}
-              minLimitPrice={minValue}
-              maxLimitPrice={maxValue}
+              minLimitPrice={minPrice}
+              maxLimitPrice={maxPrice}
             />
           </div>
         }

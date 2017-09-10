@@ -9,49 +9,53 @@ import makePath from 'modules/app/helpers/make-path';
 
 import { BUY, SELL } from 'modules/transactions/constants/types';
 import { BINARY, CATEGORICAL, SCALAR } from 'modules/markets/constants/market-types';
-import { CATEGORICAL_OUTCOMES_SEPARATOR, CATEGORICAL_OUTCOME_SEPARATOR } from 'modules/markets/constants/market-outcomes';
 import { TRANSACTIONS } from 'modules/app/constants/views';
 
 export function submitNewMarket(newMarket, history) {
   return (dispatch, getState) => {
-    const { branch, loginAccount } = getState();
+    const { branch, loginAccount, contractAddresses } = getState();
 
     // General Properties
     const formattedNewMarket = {
-      branch: branch.id,
-      description: newMarket.description,
-      expDate: newMarket.endDate.timestamp / 1000,
-      resolution: newMarket.expirySource,
-      takerFee: newMarket.takerFee / 100,
-      makerFee: newMarket.makerFee / 100,
-      extraInfo: newMarket.detailsText,
-      tags: [
-        newMarket.topic,
-        ...(newMarket.keywords || [])
-      ]
+      _branch: branch.id,
+      _endTime: parseInt(newMarket.endDate.timestamp / 1000, 10),
+      settlementFee: (newMarket.settlementFee / 100).toString(),
+      _denominationToken: contractAddresses.Cash,
+      _automatedReporterAddress: loginAccount.address, // FIXME prompt user for actual automated reporter address
+      _topic: newMarket.topic,
+      _extraInfo: {
+        description: newMarket.description,
+        longDescription: newMarket.detailsText,
+        resolution: newMarket.expirySource,
+        tags: (newMarket.keywords || [])
+      }
     };
 
     // Type Specific Properties
+    let createMarket;
     switch (newMarket.type) {
       case CATEGORICAL:
-        formattedNewMarket.minValue = 1;
-        formattedNewMarket.maxValue = newMarket.outcomes.length;
-        formattedNewMarket.numOutcomes = newMarket.outcomes.length;
-        formattedNewMarket.description = newMarket.description + CATEGORICAL_OUTCOMES_SEPARATOR + newMarket.outcomes.map(outcome => outcome).join(CATEGORICAL_OUTCOME_SEPARATOR);
+        formattedNewMarket._minDisplayPrice = '0';
+        formattedNewMarket._maxDisplayPrice = '1';
+        formattedNewMarket._numOutcomes = newMarket.outcomes.length;
+        formattedNewMarket._extraInfo.outcomeNames = newMarket.outcomes;
+        createMarket = augur.create.createCategoricalMarket;
         break;
       case SCALAR:
-        formattedNewMarket.minValue = newMarket.scalarSmallNum;
-        formattedNewMarket.maxValue = newMarket.scalarBigNum;
-        formattedNewMarket.numOutcomes = 2;
+        formattedNewMarket._minDisplayPrice = newMarket.scalarSmallNum.toString();
+        formattedNewMarket._maxDisplayPrice = newMarket.scalarBigNum.toString();
+        formattedNewMarket._numOutcomes = 2;
+        createMarket = augur.create.createScalarMarket;
         break;
       case BINARY:
       default:
-        formattedNewMarket.minValue = 1;
-        formattedNewMarket.maxValue = 2;
-        formattedNewMarket.numOutcomes = 2;
+        formattedNewMarket._minDisplayPrice = '0';
+        formattedNewMarket._maxDisplayPrice = '1';
+        formattedNewMarket._numOutcomes = 2;
+        createMarket = augur.create.createCategoricalMarket;
     }
 
-    augur.create.createSingleEventMarket({
+    createMarket({
       ...formattedNewMarket,
       _signer: loginAccount.privateKey,
       onSent: (res) => {
@@ -59,18 +63,19 @@ export function submitNewMarket(newMarket, history) {
         dispatch(clearNewMarket());
       },
       onSuccess: (res) => {
+        const marketID = res.callReturn;
         if (Object.keys(newMarket.orderBook).length) {
           eachOfSeries(Object.keys(newMarket.orderBook), (outcome, index, seriesCB) => {
             eachLimit(newMarket.orderBook[outcome], constants.PARALLEL_LIMIT, (order, orderCB) => {
               const outcomeID = newMarket.type === CATEGORICAL ? index + 1 : 2; // NOTE -- Both Scalar + Binary only trade against one outcome, that of outcomeID 2
 
-              dispatch(updateTradesInProgress(res.callReturn, outcomeID, order.type === BUY ? BUY : SELL, order.quantity, order.price, null, (tradingActions) => {
+              dispatch(updateTradesInProgress(marketID, outcomeID, order.type === BUY ? BUY : SELL, order.quantity, order.price, null, (tradingActions) => {
                 const tradeToExecute = {
                   [outcomeID]: tradingActions
                 };
 
                 if (tradeToExecute) {
-                  dispatch(placeTrade(res.callReturn, outcomeID, tradeToExecute, null, (err) => {
+                  dispatch(placeTrade(marketID, outcomeID, tradeToExecute, null, (err) => {
                     if (err) return console.error('ERROR: ', err);
 
                     orderCB();
