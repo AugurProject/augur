@@ -18,7 +18,7 @@ describe("trading/simulation/simulate-trade", function () {
   test({
     description: "simulate trade (buy)",
     params: {
-      orderType: 1,
+      orderType: 0,
       outcome: 1,
       shares: "3",
       shareBalances: ["0", "5"],
@@ -63,7 +63,7 @@ describe("trading/simulation/simulate-trade", function () {
   test({
     description: "simulate trade (sell)",
     params: {
-      orderType: 2,
+      orderType: 1,
       outcome: 1,
       shares: "3",
       shareBalances: ["0", "5"],

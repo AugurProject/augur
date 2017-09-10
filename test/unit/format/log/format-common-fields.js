@@ -15,7 +15,7 @@ describe("formatCommonFields", function () {
     msg: {
       sender: "0x1",
       timestamp: 15000000,
-      type: 1,
+      orderType: 0,
       price: "500000000000000000",
       amount: "10000000000000000000"
     },
@@ -23,7 +23,7 @@ describe("formatCommonFields", function () {
       assert.deepEqual(msg, {
         sender: "0x0000000000000000000000000000000000000001",
         timestamp: 352321536,
-        type: "buy",
+        orderType: "buy",
         price: "0.5",
         amount: "10"
       });
@@ -33,7 +33,7 @@ describe("formatCommonFields", function () {
     msg: {
       sender: "0x2",
       timestamp: 15000000,
-      type: 2,
+      orderType: "1",
       price: "750000000000000000",
       amount: "25000000000000000000"
     },
@@ -41,7 +41,7 @@ describe("formatCommonFields", function () {
       assert.deepEqual(msg, {
         sender: "0x0000000000000000000000000000000000000002",
         timestamp: 352321536,
-        type: "sell",
+        orderType: "sell",
         price: "0.75",
         amount: "25"
       });

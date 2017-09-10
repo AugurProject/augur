@@ -6,7 +6,7 @@ var assert = require("chai").assert;
 var speedomatic = require("speedomatic");
 var formatLogMessage = require("../../../../src/format/log/format-log-message");
 
-describe("formatLogMessage", function () {
+describe("format/log/format-log-message", function () {
   var test = function (t) {
     it(JSON.stringify(t), function () {
       t.assertions(formatLogMessage(t.label, t.msg));
@@ -78,13 +78,13 @@ describe("formatLogMessage", function () {
     msg: {
       owner: "0x1",
       outcome: "1",
-      type: "2"
+      orderType: "1"
     },
     assertions: function (msg) {
       assert.deepEqual(msg, {
         owner: "0x0000000000000000000000000000000000000001",
         outcome: 1,
-        type: "sell"
+        orderType: "sell"
       });
     }
   });
@@ -155,14 +155,14 @@ describe("formatLogMessage", function () {
       sender: "0x1",
       amount: speedomatic.fix("10"),
       price: speedomatic.fix("5"),
-      type: "1"
+      orderType: "0"
     },
     assertions: function (msg) {
       assert.deepEqual(msg, {
         sender: "0x0000000000000000000000000000000000000001",
         amount: "10",
         price: "5",
-        type: "buy"
+        orderType: "buy"
       });
     }
   });
