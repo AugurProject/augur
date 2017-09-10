@@ -9,14 +9,9 @@ export const login = (loginID, password, callback = logError) => (dispatch, getS
   if (!accountObject || !accountObject.keystore) {
     return callback({ code: 0, message: 'could not decode login ID' });
   }
-  augur.accounts.login({ keystore: accountObject.keystore, password }, (account) => {
-    if (!account) {
-      return callback({ code: 0, message: 'failed to login' });
-    } else if (account.error) {
-      return callback({ code: account.error, message: account.message });
-    } else if (!account.address) {
-      return callback(account);
-    }
+  augur.accounts.login({ keystore: accountObject.keystore, password }, (err, account) => {
+    if (err) return callback(err);
+    if (account && !account.address) return callback(account);
     dispatch(updateIsLoggedIn(true));
     dispatch(loadAccountData({ ...account, loginID, name: accountObject.name }, true));
     callback(null);

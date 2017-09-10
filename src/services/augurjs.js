@@ -1,7 +1,7 @@
 import Augur from 'augur.js';
 import logError from 'utils/log-error';
 
-export const connect = (env, callback) => {
+export const connect = (env, callback = logError) => {
   const options = {
     httpAddresses: [],
     wsAddresses: []

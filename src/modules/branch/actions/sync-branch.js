@@ -1,8 +1,6 @@
-import { isZero } from 'utils/math';
 import { augur } from 'services/augurjs';
 import getReportingCycle from 'modules/branch/selectors/reporting-cycle';
 import { updateBranch } from 'modules/branch/actions/update-branch';
-import { checkPeriod } from 'modules/reports/actions/check-period';
 import { updateAssets } from 'modules/auth/actions/update-assets';
 import { claimProceeds } from 'modules/my-positions/actions/claim-proceeds';
 import logError from 'utils/log-error';
@@ -25,8 +23,6 @@ export const syncBranch = (callback = logError) => (dispatch, getState) => {
     dispatch(updateAssets((err, balances) => {
       if (err) return callback(err);
       dispatch(claimProceeds());
-      if (!balances.rep || isZero(balances.rep)) return callback(null);
-      dispatch(syncReporterData(callback));
     }));
   });
 };

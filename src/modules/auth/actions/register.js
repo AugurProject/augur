@@ -5,12 +5,8 @@ import { updateIsLoggedIn } from 'modules/auth/actions/update-is-logged-in';
 import logError from 'utils/log-error';
 
 export const register = (password, callback = logError) => dispatch => (
-  augur.accounts.register({ password }, (account) => {
-    if (!account || !account.address) {
-      return callback({ code: 0, message: 'failed to register' });
-    } else if (account.error) {
-      return callback({ code: account.error, message: account.message });
-    }
+  augur.accounts.register({ password }, (err, account) => {
+    if (err) return callback(err);
     dispatch(updateIsLoggedIn(true));
     callback(null, base58Encode(account));
   })
