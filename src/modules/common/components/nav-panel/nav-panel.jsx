@@ -23,8 +23,6 @@ function makeSearch(location, param, isItemDefault) {
 }
 
 export default function NavPanel(p) {
-  const selectNav = parseQuery(p.location.search)[CONNECT_NAV] || null
-
   return (
     <div className={Styles.NavPanel}>
       <aside className={Styles.NavPanel__controls}>
@@ -35,8 +33,8 @@ export default function NavPanel(p) {
               className={classNames(
                 Styles.NavPanel__control,
                 {
-                  [Styles['NavPanel__control--active']]: selectNav != null ?
-                    item.param === selectNav :
+                  [Styles['NavPanel__control--active']]: p.selectedNav != null ?
+                    item.param === p.selectedNav :
                     item.default
                 }
               )}
