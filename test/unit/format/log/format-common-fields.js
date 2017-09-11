@@ -5,7 +5,7 @@
 var assert = require("chai").assert;
 var formatCommonFields = require("../../../../src/format/log/format-common-fields");
 
-describe("formatCommonFields", function () {
+describe("format/log/format-common-fields", function () {
   var test = function (t) {
     it(JSON.stringify(t), function () {
       t.assertions(formatCommonFields(t.msg));

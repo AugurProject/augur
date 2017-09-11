@@ -28,39 +28,6 @@ describe("format/log/format-log-message", function () {
     }
   });
   test({
-    label: "Deposit",
-    msg: {
-      value: speedomatic.fix("100")
-    },
-    assertions: function (msg) {
-      assert.deepEqual(msg, {
-        value: "100"
-      });
-    }
-  });
-  test({
-    label: "MakeOrder",
-    msg: {
-      outcome: speedomatic.hex("1")
-    },
-    assertions: function (msg) {
-      assert.deepEqual(msg, {
-        outcome: 1
-      });
-    }
-  });
-  test({
-    label: "MakeOrder",
-    msg: {
-      outcome: speedomatic.hex("2")
-    },
-    assertions: function (msg) {
-      assert.deepEqual(msg, {
-        outcome: 2
-      });
-    }
-  });
-  test({
     label: "CancelOrder",
     msg: {
       outcome: speedomatic.hex("2"),
@@ -70,21 +37,6 @@ describe("format/log/format-log-message", function () {
       assert.deepEqual(msg, {
         outcome: 2,
         cashRefund: "100.5034"
-      });
-    }
-  });
-  test({
-    label: "TakeOrder",
-    msg: {
-      owner: "0x1",
-      outcome: "1",
-      orderType: "1"
-    },
-    assertions: function (msg) {
-      assert.deepEqual(msg, {
-        owner: "0x0000000000000000000000000000000000000001",
-        outcome: 1,
-        orderType: "sell"
       });
     }
   });
@@ -122,6 +74,92 @@ describe("format/log/format-log-message", function () {
     }
   });
   test({
+    label: "DepositEther",
+    msg: {
+      value: speedomatic.fix("100")
+    },
+    assertions: function (msg) {
+      assert.deepEqual(msg, {
+        value: "100"
+      });
+    }
+  });
+  test({
+    label: "MakeOrder",
+    msg: {
+      outcome: speedomatic.hex("1")
+    },
+    assertions: function (msg) {
+      assert.deepEqual(msg, {
+        outcome: 1
+      });
+    }
+  });
+  test({
+    label: "MakeOrder",
+    msg: {
+      outcome: speedomatic.hex("2")
+    },
+    assertions: function (msg) {
+      assert.deepEqual(msg, {
+        outcome: 2
+      });
+    }
+  });
+  test({
+    label: "RedeemWinningTokens",
+    msg: {
+      reporter: "0xb0b",
+      market: "0xa",
+      amountRedeemed: "0x246ddf97976680000",
+      reportingFeesReceived: "0x487a9a304539440000",
+      payoutNumerators: ["0x0", "0x1", "0x0", "0x0"]
+    },
+    assertions: function (msg) {
+      assert.deepEqual(msg, {
+        reporter: "0x0000000000000000000000000000000000000b0b",
+        market: "0x000000000000000000000000000000000000000a",
+        amountRedeemed: "42",
+        reportingFeesReceived: "1337",
+        payoutNumerators: ["0", "1", "0", "0"]
+      });
+    }
+  });
+  test({
+    label: "SubmitReport",
+    msg: {
+      reporter: "0xb0b",
+      market: "0xa",
+      amountStaked: "0x246ddf97976680000",
+      reportingToken: "0xb",
+      payoutNumerators: ["0x0", "0x1", "0x0", "0x0"]
+    },
+    assertions: function (msg) {
+      assert.deepEqual(msg, {
+        reporter: "0x0000000000000000000000000000000000000b0b",
+        market: "0x000000000000000000000000000000000000000a",
+        amountStaked: "42",
+        reportingToken: "0x000000000000000000000000000000000000000b",
+        payoutNumerators: ["0", "1", "0", "0"]
+      });
+    }
+  });
+  test({
+    label: "TakeOrder",
+    msg: {
+      owner: "0x1",
+      outcome: "1",
+      orderType: "1"
+    },
+    assertions: function (msg) {
+      assert.deepEqual(msg, {
+        owner: "0x0000000000000000000000000000000000000001",
+        outcome: 1,
+        orderType: "sell"
+      });
+    }
+  });
+  test({
     label: "Transfer",
     msg: {
       _from: "3",
@@ -137,7 +175,7 @@ describe("format/log/format-log-message", function () {
     }
   });
   test({
-    label: "Withdraw",
+    label: "WithdrawEther",
     msg: {
       to: "0x1",
       value: speedomatic.fix("153.25")
