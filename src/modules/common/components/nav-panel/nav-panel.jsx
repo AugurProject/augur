@@ -44,7 +44,10 @@ export default function NavPanel(p) {
                 search: makeSearch(p.location, item.param, item.default)
               }}
             >
-              {item.title}
+              <div className={Styles.NavPanel__icon}>
+                {item.icon}
+              </div>
+              <span className={Styles.NavPanel__title}>{item.title}</span>
             </Link>
           ))
         }
