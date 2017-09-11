@@ -115,3 +115,97 @@ export const uPort = (
     </g>
   </svg>
 )
+
+export const Trezor = (
+  <svg id="95007830-37d6-4982-8573-1f6d27b2f0dd" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30.28 45.2">
+    <defs>
+      <style>
+        {
+          `.\\33 e03130b-26ad-44ba-9a96-afce36420a03 {
+            fill: none;
+            stroke: #fff;
+          }`
+        }
+      </style>
+    </defs>
+    <title>Trezor</title>
+    <g id="053ac296-c68d-46df-b61c-170cfcd30748" data-name="Symbols">
+      <g id="a9ff1b5b-ad6d-4890-8b84-13afa64d537d" data-name="Icon/Trezor">
+        <g id="34d6c3e5-5684-402c-982b-e7ed12c2fb56" data-name="Page-1">
+          <path id="da272c69-7d51-4842-933a-edff0f4f6a71" data-name="Stroke-1" className="3e03130b-26ad-44ba-9a96-afce36420a03" d="M35.34,18.57V13.7a11.78,11.78,0,0,0-23.56,0v4.87Q17.67,18,23.56,18T35.34,18.57Z" transform="translate(-8.42 -1.42)" />
+          <path id="75d68b99-d377-4392-9a37-cbc55eba2e6a" data-name="Stroke-3" className="3e03130b-26ad-44ba-9a96-afce36420a03" d="M11.78,18.57c-1,.09-1.9.18-2.86.3V40l14.93,6.08L38.2,40V18.87c-1-.11-1.9-.21-2.86-.3" transform="translate(-8.42 -1.42)" />
+        </g>
+      </g>
+    </g>
+  </svg>
+)
+
+export const Keystore = (
+  <svg id="d7c32dda-f36e-456a-9079-f98a93957648" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32.8 45.87">
+    <defs>
+      <style>
+        {`
+          .\\34 c40df67-28a7-4a63-8b5b-b71b5465b1d2 {
+            fill: #fff;
+          }
+
+          .b86f50e5-9448-4f13-acb3-2e5ce5cb5c88 {
+            mask: url(#d745dd27-237d-4b73-8097-e409b9656b0d);
+          }
+        `}
+      </style>
+      <mask id="d745dd27-237d-4b73-8097-e409b9656b0d" x="0" y="0" width="32.8" height="45.87" maskUnits="userSpaceOnUse">
+        <g transform="translate(-7 -1)">
+          <g id="4708e3e3-8419-4e42-93ac-d8099574375a" data-name="mask-2">
+            <polygon id="d947e9fc-cd44-4d8e-82a8-25ea2ec44ef6" data-name="path-1" className="4c40df67-28a7-4a63-8b5b-b71b5465b1d2" points="39.8 46.87 39.8 1 7 1 7 46.87 39.8 46.87" />
+          </g>
+        </g>
+      </mask>
+    </defs>
+    <title>Keystore</title>
+    <g id="9a6727d5-4c46-4752-beaa-86185de6066c" data-name="Symbols">
+      <g id="74dc2734-732e-49ba-a63f-42a6a6a5a65d" data-name="Icon/Keystore">
+        <g id="81659e52-4b0a-43f3-af99-a2849a814b35" data-name="Page-1">
+          <g className="b86f50e5-9448-4f13-acb3-2e5ce5cb5c88">
+            <path id="739fafef-728f-4419-a199-b2c0392606ca" data-name="Fill-1" className="4c40df67-28a7-4a63-8b5b-b71b5465b1d2" d="M29.23,11.39h8.59L29.23,2.94Zm9.5,1.09H28.95c-.62,0-.78-.16-.78-.77q0-4.59,0-9.19V2.08H8.08v43.7H38.73ZM7,23.9V1.83c0-.68.15-.83.84-.83H28.41a1.15,1.15,0,0,1,.87.36q5.07,5,10.16,10a1.1,1.1,0,0,1,.36.86q0,16.91,0,33.82c0,.68-.14.82-.84.82H7.84c-.69,0-.84-.14-.84-.83Z" transform="translate(-7 -1)" />
+          </g>
+        </g>
+      </g>
+    </g>
+  </svg>
+)
+
+export const Key = (
+  <svg id="986dc871-bd7c-4cd5-a999-a53f5690d6ab" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 44.93 32.02">
+    <defs>
+      <style>
+        {`
+          .dcf9129a-67e1-4c58-a125-e1bb2403b70c {
+            fill: #fff;
+          }
+
+          .\\30 1e2ccdd-4c3f-4d69-9ea0-7fda68f93707 {
+            mask: url(#c9d7d845-6b4c-437b-973b-584e80f5db37);
+          }
+        `}
+      </style>
+      <mask id="c9d7d845-6b4c-437b-973b-584e80f5db37" x="-1.44" y="-0.62" width="47.7" height="32.89" maskUnits="userSpaceOnUse">
+        <g transform="translate(-1.5 -10.62)">
+          <g id="bedc9bc9-7454-447f-ba14-70b9f3bc2325" data-name="mask-2">
+            <polygon id="7d4e6d25-d732-4fea-8f25-dfda7a71fbd0" data-name="path-1" className="dcf9129a-67e1-4c58-a125-e1bb2403b70c" points="2.14 10 0.06 39.7 45.69 42.89 47.76 13.19 2.14 10" />
+          </g>
+        </g>
+      </mask>
+    </defs>
+    <title>Key</title>
+    <g id="68d4e0f8-a82b-4bc2-a984-abe467433c09" data-name="Symbols">
+      <g id="da4ef49b-c5a5-4957-8f63-62f92d56d2ee" data-name="Icon/Key">
+        <g id="2f65728b-36d5-460c-9c20-e0c82f228079" data-name="Page-1">
+          <g className="01e2ccdd-4c3f-4d69-9ea0-7fda68f93707">
+            <path id="9591d5cc-ef25-49b8-95f7-0379a74d07af" data-name="Fill-1" className="dcf9129a-67e1-4c58-a125-e1bb2403b70c" d="M18,16.25a8.2,8.2,0,0,0-10.7-3.91,7.72,7.72,0,0,0-4,10.33A8.21,8.21,0,0,0,14,26.6a7.7,7.7,0,0,0,4-10.35m27.25,16.5-8.09-3-.14.33-2.57,6.67a1.61,1.61,0,0,1-.15.33.51.51,0,0,1-.65.2.47.47,0,0,1-.32-.58,2.31,2.31,0,0,1,.12-.34L36,29.76a2.77,2.77,0,0,1,.17-.32L19,23.16A9.25,9.25,0,0,1,7,27.57,8.8,8.8,0,0,1,2,16.38,9.18,9.18,0,0,1,12.92,10.9a8.9,8.9,0,0,1,6.43,11.27,3.16,3.16,0,0,1,.43.1l26,9.49c.75.27.8.4.52,1.13L42.74,42a2.08,2.08,0,0,1-.14.33.51.51,0,0,1-.67.23.48.48,0,0,1-.31-.59,2.09,2.09,0,0,1,.12-.34L45,33.1c0-.12.12-.24.17-.35" transform="translate(-1.5 -10.62)" />
+          </g>
+        </g>
+      </g>
+    </g>
+  </svg>
+)
