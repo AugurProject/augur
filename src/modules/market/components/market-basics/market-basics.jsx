@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 
 import MarketPreviewOutcomes from 'modules/market/components/market-preview-outcomes/market-preview-outcomes'
 import MarketLink from 'modules/market/components/market-link/market-link'
-import { MarketStatusOpen, MarketStatusReported, MarketStatusClosed } from 'modules/common/components/spritemap/spritemap'
+import { MarketStatusOpen, MarketStatusReported, MarketStatusClosed } from 'modules/common/components/icons/icons'
 
 import toggleTag from 'utils/toggle-tag'
 

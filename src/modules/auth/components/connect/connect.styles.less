@@ -1,0 +1,39 @@
+@import '~assets/styles/shared.less';
+
+.Connect {
+  &:extend(.view);
+
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}
+
+.Connect--constrained {
+  &:extend(.view--constrained);
+
+  align-items: flex-start;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+}
+
+.Connect__header {
+  h1 {
+    &:extend(.caps);
+
+    color: @color-text-light;
+  }
+
+  align-items: flex-end;
+  display: flex;
+  flex: 1;
+}
+
+.Connect__content {
+  height: 40vh;
+}
+
+.Connect__faq {
+  flex: 1;
+}
