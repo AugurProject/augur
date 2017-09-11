@@ -15,9 +15,9 @@ const Routes = p => (
       <Route exact path={makePath(VIEWS.DEFAULT_VIEW)} component={COMPONENTS.Topics} />
       <Route path={makePath(VIEWS.MARKETS)} component={COMPONENTS.Markets} />
       <Route path={makePath(VIEWS.MARKET)} component={COMPONENTS.Market} />
-      <Route path={makePath(VIEWS.AUTHENTICATION)} component={COMPONENTS.AuthLander} />
-      <Route path={makePath(VIEWS.SIGNUP)} component={COMPONENTS.Signup} />
-      <Route path={makePath(VIEWS.LOGIN)} component={COMPONENTS.Login} />
+      <Route path={makePath(VIEWS.AUTHENTICATION)} component={COMPONENTS.Auth} />
+      <Route path={makePath(VIEWS.CONNECT)} component={COMPONENTS.Connect} />
+      <Route path={makePath(VIEWS.CREATE)} component={COMPONENTS.Create} />
       <Route path={makePath(VIEWS.STYLE_SANDBOX)} component={COMPONENTS.StyleSandbox} />
       <AuthenticatedRoute path={makePath(VIEWS.FAVORITES)} component={COMPONENTS.Markets} />
       <AuthenticatedRoute path={makePath(VIEWS.MY_POSITIONS)} component={COMPONENTS.Portfolio} />

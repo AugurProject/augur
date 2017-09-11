@@ -7,26 +7,28 @@ export const Topics = asyncComponent({
   loader: () => import(/* webpackChunkName: 'topics' */ 'modules/topics/container')
     .then(module => module.default)
 })
+
 export const Markets = asyncComponent({
   moduleName: 'Markets',
   loader: () => import(/* webpackChunkName: 'markets' */ 'modules/markets/container')
     .then(module => module.default)
 })
-export const AuthLander = asyncComponent({
-  moduleName: 'AuthLander',
-  loader: () => import(/* webpackChunkName: 'auth' */ 'modules/auth/containers/auth-lander')
+
+export const Auth = asyncComponent({
+  moduleName: 'Auth',
+  loader: () => import(/* webpackChunkName: 'auth' */ 'modules/auth/containers/auth')
     .then(module => module.default)
 })
 
-export const Signup = asyncComponent({
-  moduleName: 'Signup',
-  loader: () => import(/* webpackChunkName: 'signup' */ 'modules/auth/containers/auth-signup')
+export const Connect = asyncComponent({
+  moduleName: 'Connect',
+  loader: () => import(/* webpackChunkName: 'connect' */ 'modules/auth/containers/connect')
     .then(module => module.default)
 })
 
-export const Login = asyncComponent({
-  moduleName: 'Login',
-  loader: () => import(/* webpackChunkName: 'login' */ 'modules/auth/containers/auth-login')
+export const Create = asyncComponent({
+  moduleName: 'Create',
+  loader: () => import(/* webpackChunkName: 'create' */ 'modules/auth/containers/create')
     .then(module => module.default)
 })
 
