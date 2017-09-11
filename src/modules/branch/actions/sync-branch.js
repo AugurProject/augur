@@ -32,18 +32,14 @@ const syncBranch = (callback = logError) => (dispatch, getState) => {
   }, (err, branchReportingWindowData) => {
     if (err) return callback(err);
     dispatch(updateBranch(branchReportingWindowData));
-    const reportingWindowPayload = { tx: { to: branchReportingWindowData.currentReportingWindowAddress } };
     // TODO skip if not registered
-    augur.api.ReportingWindow.getLimitedReporterMarkets(reportingWindowPayload, (err, limitedReporterMarkets) => {
+    // TODO log scan for limited reporter markets
+    if (!loginAccount.address) return callback(null);
+    dispatch(updateAssets((err, balances) => {
       if (err) return callback(err);
-      dispatch(updateBranch({ limitedReporterMarkets }));
-      if (!loginAccount.address) return callback(null);
-      dispatch(updateAssets((err, balances) => {
-        if (err) return callback(err);
-        dispatch(claimProceeds());
-        callback(null);
-      }));
-    });
+      dispatch(claimProceeds());
+      callback(null);
+    }));
   });
 };
 
