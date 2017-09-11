@@ -24,11 +24,13 @@
 }
 
 .NavPanel__control {
+  align-items: center;
   background: @color-purple;
   border: none;
   border-bottom: 1px solid @color-grayish-purple;
   color: @color-white;
   cursor: pointer;
+  display: flex;
   font-family: @din-pro;
   font-size: 0.87rem;
   font-weight: 300;
@@ -68,10 +70,11 @@
 }
 
 .NavPanel__icon {
+  color: @color-text-light;
+  height: 2.25em;
   margin-right: 1.5rem;
-  max-height: 2.25rem;
-  max-width: 2.25rem;
   vertical-align: middle;
+  width: 2.25em;
 }
 
 .NavPanel--flipped .NavPanel__icon {
@@ -82,6 +85,6 @@
   vertical-align: auto;
 }
 
-.NavPanel__content {
-  background: @color-white;
+.NavPanel__title {
+  flex: 1;
 }

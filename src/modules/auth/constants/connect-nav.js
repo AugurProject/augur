@@ -12,7 +12,7 @@ export const ITEMS = [
   {
     param: PARAMS.AIRBITZ,
     title: 'Airbitz',
-    Icon: MarketStatusOpen,
+    icon: MarketStatusOpen,
     default: true
   },
   {
@@ -23,16 +23,16 @@ export const ITEMS = [
   {
     param: PARAMS.KEYSTORE,
     title: 'Keystore',
-    Icon: MarketStatusOpen
+    icon: MarketStatusOpen
   },
   {
     param: PARAMS.TREZOR,
     title: 'Trezor',
-    Icon: MarketStatusOpen
+    icon: MarketStatusOpen
   },
   {
     param: PARAMS.LEDGER,
     title: 'Ledger',
-    Icon: MarketStatusOpen
+    icon: MarketStatusOpen
   }
 ]
