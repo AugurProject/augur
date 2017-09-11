@@ -1,4 +1,4 @@
-import { MarketStatusOpen, Ledger } from 'modules/common/components/icons/icons'
+import { MarketStatusOpen, Ledger, Airbitz } from 'modules/common/components/icons/icons'
 
 export const PARAMS = {
   AIRBITZ: 'airbitz',
@@ -12,7 +12,7 @@ export const ITEMS = [
   {
     param: PARAMS.AIRBITZ,
     title: 'Airbitz',
-    icon: MarketStatusOpen,
+    icon: Airbitz,
     default: true
   },
   {
