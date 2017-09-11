@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 
 import classNames from 'classnames'
 
@@ -9,43 +10,42 @@ import { CONNECT_NAV } from 'modules/routes/constants/param-names'
 
 import Styles from 'modules/common/components/nav-panel/nav-panel.styles'
 
-// TODO --
-// param to observe
-// nav items
-// update param accordingly
+function makeSearch(location, param, isItemDefault) {
+  const updatedSearch = parseQuery(location.search)
+
+  if (isItemDefault) {
+    delete updatedSearch[CONNECT_NAV]
+  } else {
+    updatedSearch[CONNECT_NAV] = param
+  }
+
+  return makeQuery(updatedSearch)
+}
 
 export default function NavPanel(p) {
   const selectNav = parseQuery(p.location.search)[CONNECT_NAV] || null
-  // const selectedNavId = decodeURIComponent(parseQuery(p.location.search)[NAVPANEL_ID_PARAM_NAME] || '')
-  //
-  // const toggleNavId = (id) => {
-  //   const searchParams = makeQuery({
-  //     ...(parseQuery(p.location.search)),
-  //     [NAVPANEL_ID_PARAM_NAME]: id
-  //   })
-  //
-  //   p.history.push({
-  //     ...p.location,
-  //     search: searchParams
-  //   })
-  // }
 
   return (
     <div className={Styles.NavPanel}>
       <aside className={Styles.NavPanel__controls}>
         {
           p.items.map(item => (
-            <button
+            <Link
               key={item.title}
               className={classNames(
                 Styles.NavPanel__control,
                 {
-                  [Styles['NavPanel__control--active']]: selectNav != null ? item.param === selectNav : item.default
+                  [Styles['NavPanel__control--active']]: selectNav != null ?
+                    item.param === selectNav :
+                    item.default
                 }
               )}
+              to={{
+                search: makeSearch(p.location, item.param, item.default)
+              }}
             >
               {item.title}
-            </button>
+            </Link>
           ))
         }
       </aside>
@@ -59,27 +59,3 @@ NavPanel.propTypes = {
   items: PropTypes.array.isRequired,
   param: PropTypes.string.isRequired
 }
-
-// <item.icon />
-
-// <aside className={Styles.NavPanel__controls}>
-//   {p.items && p.items.map((item, ind) => {
-//     const Icon = item.iconComponent
-//     const active = selectedNavId === item.title
-//
-//     return (
-//       <button
-//         className={classNames(
-//           Styles.NavPanel__control,
-//           {
-//             [Styles['NavPanel__control--active']]: active
-//           })}
-//         key={`${item.title}${ind - p.items.length}`}
-//         onClick={() => toggleNavId(item.title)}
-//       >
-//         <Icon className={Styles.NavPanel__icon} />
-//         {item.title}
-//       </button>
-//     )
-//   })}
-// </aside>
