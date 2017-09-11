@@ -17,6 +17,9 @@ export const CATEGORIES = 'categories'
 
 export const DEFAULT_VIEW = CATEGORIES
 
+// NOTE -- if the view is conditionally displayed based on a param, it's value should be housed withint the resepective constant file
+// Most of these will be progressively being refactored out
+
 // SUB VIEWS
 //  Portfolio
 export const MY_POSITIONS = 'my-positions'

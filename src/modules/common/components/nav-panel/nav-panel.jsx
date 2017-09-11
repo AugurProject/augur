@@ -2,67 +2,84 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import classNames from 'classnames'
-import Styles from 'modules/common/components/nav-panel/nav-panel.styles'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
 import makeQuery from 'modules/routes/helpers/make-query'
-import { NAVPANEL_ID_PARAM_NAME } from 'modules/routes/constants/param-names'
+import { CONNECT_NAV } from 'modules/routes/constants/param-names'
 
-const NavPanel = (p) => {
-  const selectedNavId = decodeURIComponent(parseQuery(p.location.search)[NAVPANEL_ID_PARAM_NAME] || '')
+import Styles from 'modules/common/components/nav-panel/nav-panel.styles'
 
-  const toggleNavId = (id) => {
-    const searchParams = makeQuery({
-      ...(parseQuery(p.location.search)),
-      [NAVPANEL_ID_PARAM_NAME]: id
-    })
+// TODO --
+// param to observe
+// nav items
+// update param accordingly
 
-    p.history.push({
-      ...p.location,
-      search: searchParams
-    })
-  }
+export default function NavPanel(p) {
+  const selectNav = parseQuery(p.location.search)[CONNECT_NAV] || null
+  // const selectedNavId = decodeURIComponent(parseQuery(p.location.search)[NAVPANEL_ID_PARAM_NAME] || '')
+  //
+  // const toggleNavId = (id) => {
+  //   const searchParams = makeQuery({
+  //     ...(parseQuery(p.location.search)),
+  //     [NAVPANEL_ID_PARAM_NAME]: id
+  //   })
+  //
+  //   p.history.push({
+  //     ...p.location,
+  //     search: searchParams
+  //   })
+  // }
 
   return (
-    <div
-      className={classNames({
-        [Styles.NavPanel]: true,
-        [Styles['NavPanel--flipped']]: p.flipped
-      })}
-    >
+    <div className={Styles.NavPanel}>
       <aside className={Styles.NavPanel__controls}>
-        {p.items && p.items.map((item, ind) => {
-          const Icon = item.iconComponent
-          const active = selectedNavId === item.title
-
-          return (
+        {
+          p.items.map(item => (
             <button
+              key={item.title}
               className={classNames(
                 Styles.NavPanel__control,
                 {
-                  [Styles['NavPanel__control--active']]: active
-                })}
-              key={`${item.title}${ind - p.items.length}`}
-              onClick={() => toggleNavId(item.title)}
+                  [Styles['NavPanel__control--active']]: selectNav != null ? item.param === selectNav : item.default
+                }
+              )}
             >
-              <Icon className={Styles.NavPanel__icon} />
               {item.title}
             </button>
-          )
-        })}
+          ))
+        }
       </aside>
-      <div className={Styles.NavPanel__content}>
-        {p.children}
-      </div>
     </div>
   )
 }
 
 NavPanel.propTypes = {
-  flipped: PropTypes.bool,
+  location: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
   items: PropTypes.array.isRequired,
-  location: PropTypes.object.isRequired
+  param: PropTypes.string.isRequired
 }
 
-export default NavPanel
+// <item.icon />
+
+// <aside className={Styles.NavPanel__controls}>
+//   {p.items && p.items.map((item, ind) => {
+//     const Icon = item.iconComponent
+//     const active = selectedNavId === item.title
+//
+//     return (
+//       <button
+//         className={classNames(
+//           Styles.NavPanel__control,
+//           {
+//             [Styles['NavPanel__control--active']]: active
+//           })}
+//         key={`${item.title}${ind - p.items.length}`}
+//         onClick={() => toggleNavId(item.title)}
+//       >
+//         <Icon className={Styles.NavPanel__icon} />
+//         {item.title}
+//       </button>
+//     )
+//   })}
+// </aside>
