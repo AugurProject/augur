@@ -1,4 +1,4 @@
-import { MarketStatusOpen, Ledger, Airbitz, uPort } from 'modules/common/components/icons/icons'
+import { Ledger, Airbitz, uPort, Trezor, Key } from 'modules/common/components/icons/icons'
 
 export const PARAMS = {
   AIRBITZ: 'airbitz',
@@ -23,12 +23,12 @@ export const ITEMS = [
   {
     param: PARAMS.KEYSTORE,
     title: 'Keystore',
-    icon: MarketStatusOpen
+    icon: Key
   },
   {
     param: PARAMS.TREZOR,
     title: 'Trezor',
-    icon: MarketStatusOpen
+    icon: Trezor
   },
   {
     param: PARAMS.LEDGER,
