@@ -1,11 +1,11 @@
 import { MarketStatusOpen } from 'modules/common/components/icons/icons'
 
 export const PARAMS = {
-  AIRBITZ: 'AIRBITZ',
-  UPORT: 'UPORT',
-  KEYSTORE: 'KEYSTORE',
-  TREZOR: 'TREZOR',
-  LEDGER: 'LEDGER'
+  AIRBITZ: 'airbitz',
+  UPORT: 'uport',
+  KEYSTORE: 'keystore',
+  TREZOR: 'trezor',
+  LEDGER: 'ledger'
 }
 
 export const ITEMS = [
