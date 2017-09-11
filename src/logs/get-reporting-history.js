@@ -15,7 +15,7 @@ var ZERO = require("../constants").ZERO;
  * @param {string=} p.market Look up reports submitted on this market.
  * @param {number=} p.fromBlock Block number to start looking up logs (default: 1).
  * @param {number=} p.toBlock Block number where the log lookup should stop (default: latest).
- * @param {function} callback Called after all chunks have been received and parsed (default: noop).
+ * @param {function} callback Called when reporting history has been received and parsed.
  * @return {Object} Reporting history, keyed by market ID.
  */
 function getReportingHistory(p, callback) {

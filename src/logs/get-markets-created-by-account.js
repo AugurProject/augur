@@ -9,8 +9,7 @@ var noop = require("../utils/noop");
  * @param {string} p.creator Lookup all markets created by this Ethereum address.
  * @param {number=} p.fromBlock Block number to start looking up logs (default: 1).
  * @param {number=} p.toBlock Block number where the log lookup should stop (default: latest).
- * @param {function=} onChunkReceived Called when a chunk is received and parsed (default: noop).
- * @param {function=} onComplete Called after all chunks have been received and parsed (default: noop).
+ * @param {function} callback Called when all data has been received and parsed.
  */
 function getMarketsCreatedByAccount(p, onChunkReceived, onComplete) {
   if (!isFunction(onChunkReceived)) onChunkReceived = noop;
