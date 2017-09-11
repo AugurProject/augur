@@ -12,6 +12,8 @@ export const CREATE_MARKET = 'create-market'
 export const TRANSACTIONS = 'transactions'
 export const ACCOUNT = 'account'
 export const AUTHENTICATION = 'authentication'
+export const CONNECT = 'connect'
+export const CREATE = 'create'
 export const PORTFOLIO = 'portfolio'
 export const TOPICS = 'topics'
 
@@ -37,10 +39,6 @@ export const MARKET_USER_DATA_NAV_OPEN_ORDERS = 'open-orders'
 export const ACCOUNT_DEPOSIT = 'deposit-funds'
 export const ACCOUNT_TRANSFER = 'transfer-funds'
 export const ACCOUNT_EXPORT = 'export-account'
-
-// Authentication
-export const SIGNUP = 'sign-up'
-export const LOGIN = 'login'
 
 // Dev only
 export const STYLE_SANDBOX = 'style-sandbox'

@@ -6,9 +6,9 @@ import GraphBG from 'modules/common/components/graph-background/graph-background
 
 import makePath from 'modules/routes/helpers/make-path'
 
-import { SIGNUP, LOGIN } from 'modules/routes/constants/views'
+import { CONNECT, CREATE } from 'modules/routes/constants/views'
 
-import Styles from 'modules/auth/components/auth-lander/auth-lander.styles'
+import Styles from 'modules/auth/components/auth/auth.styles'
 
 export default function AuthLander(p) {
   return (
@@ -22,15 +22,16 @@ export default function AuthLander(p) {
           <h1 className={Styles.AuthView__header}>Link an ethereum account {!p.isMobile && <br />} to bet on anything from anywhere</h1>
         </div>
         <div className={Styles.AuthView__actions}>
+
           <Link
             className={Styles.AuthView__button}
-            to={makePath(LOGIN)}
+            to={makePath(CONNECT)}
           >
             connect account
           </Link>
           <Link
             className={Styles.AuthView__button}
-            to={makePath(SIGNUP)}
+            to={makePath(CREATE)}
           >
             create account
           </Link>
