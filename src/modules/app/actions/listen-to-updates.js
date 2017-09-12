@@ -27,11 +27,95 @@ export function listenToUpdates() {
           dispatch(syncBranch());
         },
 
+        Approval: (msg) => {
+          if (msg) {
+            console.log('Approval:', msg);
+            const { address } = getState().loginAccount;
+            if (msg._owner === address || msg._spender === address) {
+              dispatch(updateAssets());
+              dispatch(convertLogsToTransactions(TYPES.APPROVAL, [msg]));
+            }
+          }
+        },
+
+        // order removed from orderbook
+        CancelOrder: (msg) => {
+          console.log('CancelOrder:', msg);
+          if (msg && msg.market && msg.outcome != null) {
+            // if this is the user's order, then add it to the transaction display
+            if (msg.sender === getState().loginAccount.address) {
+              dispatch(updateAccountCancelsData({
+                [msg.market]: { [msg.outcome]: [msg] }
+              }));
+              dispatch(updateAssets());
+            }
+          }
+        },
+
+        // new market: msg = { marketID }
+        CreateMarket: (msg) => {
+          if (msg && msg.marketID) {
+            console.log('CreateMarket:', msg);
+            dispatch(loadMarketsInfo([msg.marketID]));
+            if (msg.sender === getState().loginAccount.address) {
+              dispatch(updateAssets());
+              dispatch(convertLogsToTransactions(TYPES.CREATE_MARKET, [msg]));
+            }
+          }
+        },
+
+        DepositEther: (msg) => {
+          if (msg && msg.sender === getState().loginAccount.address) {
+            console.log('DepositEther:', msg);
+            dispatch(updateAssets());
+            dispatch(convertLogsToTransactions(TYPES.DEPOSIT_ETHER, [msg]));
+          }
+        },
+
+        Finalize: (msg) => {
+          if (msg && msg.market) {
+            console.log('Finalize:', msg);
+            const { branch, loginAccount } = getState();
+            if (branch.id === msg.branch) {
+              dispatch(loadMarketsInfo([msg.market], () => {
+                const { volume } = getState().marketsData[msg.market];
+                dispatch(updateMarketTopicPopularity(msg.market, speedomatic.bignum(volume).neg().toNumber()));
+                if (loginAccount.address) dispatch(claimProceeds());
+              }));
+            }
+          }
+        }
+
+        // order added to orderbook
+        MakeOrder: (msg) => {
+          console.log('MakeOrder:', msg);
+          if (msg && msg.market && msg.outcome != null) {
+
+            // if this is the user's order, then add it to the transaction display
+            if (msg.sender === getState().loginAccount.address) {
+              dispatch(updateAccountBidsAsksData({
+                [msg.market]: {
+                  [msg.outcome]: [msg]
+                }
+              }));
+              dispatch(updateAssets());
+            }
+          }
+        },
+
         Payout: (msg) => {
           if (msg && msg.sender === getState().loginAccount.address) {
             console.log('payout:', msg);
             dispatch(updateAssets());
             dispatch(convertLogsToTransactions(TYPES.PAYOUT, [msg]));
+          }
+        },
+
+        RedeemWinningTokens: (msg) => {
+          if (msg && msg.reporter === getState().loginAccount.address) {
+            console.log('RedeemWinningTokens:', msg);
+            dispatch(updateAssets());
+            dispatch(convertLogsToTransactions(TYPES.REDEEM_WINNING_TOKENS, [msg]));
           }
         },
 
@@ -72,60 +156,9 @@ export function listenToUpdates() {
           }
         },
 
-        // order added to orderbook
-        MakeOrder: (msg) => {
-          console.log('MakeOrder:', msg);
-          if (msg && msg.market && msg.outcome != null) {
-
-            // if this is the user's order, then add it to the transaction display
-            if (msg.sender === getState().loginAccount.address) {
-              dispatch(updateAccountBidsAsksData({
-                [msg.market]: {
-                  [msg.outcome]: [msg]
-                }
-              }));
-              dispatch(updateAssets());
-            }
-          }
-        },
-
-        // order removed from orderbook
-        CancelOrder: (msg) => {
-          console.log('CancelOrder:', msg);
-          if (msg && msg.market && msg.outcome != null) {
-            // if this is the user's order, then add it to the transaction display
-            if (msg.sender === getState().loginAccount.address) {
-              dispatch(updateAccountCancelsData({
-                [msg.market]: { [msg.outcome]: [msg] }
-              }));
-              dispatch(updateAssets());
-            }
-          }
-        },
-
-        // new market: msg = { marketID }
-        CreateMarket: (msg) => {
-          if (msg && msg.marketID) {
-            console.log('CreateMarket:', msg);
-            dispatch(loadMarketsInfo([msg.marketID]));
-            if (msg.sender === getState().loginAccount.address) {
-              dispatch(updateAssets());
-              dispatch(convertLogsToTransactions(TYPES.CREATE_MARKET, [msg]));
-            }
-          }
-        },
-
-        Deposit: (msg) => {
+        WithdrawEther: (msg) => {
           if (msg && msg.sender === getState().loginAccount.address) {
-            console.log('Deposit:', msg);
-            dispatch(updateAssets());
-            dispatch(convertLogsToTransactions(TYPES.DEPOSIT_ETHER, [msg]));
-          }
-        },
-
-        Withdraw: (msg) => {
-          if (msg && msg.sender === getState().loginAccount.address) {
-            console.log('Withdraw:', msg);
+            console.log('WithdrawEther:', msg);
             dispatch(updateAssets());
             dispatch(convertLogsToTransactions(TYPES.WITHDRAW_ETHER, [msg]));
           }
@@ -140,32 +173,8 @@ export function listenToUpdates() {
               dispatch(convertLogsToTransactions(TYPES.TRANSFER, [msg]));
             }
           }
-        },
-
-        Approval: (msg) => {
-          if (msg) {
-            console.log('Approval:', msg);
-            const { address } = getState().loginAccount;
-            if (msg._owner === address || msg._spender === address) {
-              dispatch(updateAssets());
-              dispatch(convertLogsToTransactions(TYPES.APPROVAL, [msg]));
-            }
-          }
-        },
-
-        CloseMarket: (msg) => {
-          if (msg && msg.market) {
-            console.log('CloseMarket:', msg);
-            const { branch, loginAccount } = getState();
-            if (branch.id === msg.branch) {
-              dispatch(loadMarketsInfo([msg.market], () => {
-                const { volume } = getState().marketsData[msg.market];
-                dispatch(updateMarketTopicPopularity(msg.market, speedomatic.bignum(volume).neg().toNumber()));
-                if (loginAccount.address) dispatch(claimProceeds());
-              }));
-            }
-          }
         }
+
       }
     }, () => console.log('Listening for events'));
   };
