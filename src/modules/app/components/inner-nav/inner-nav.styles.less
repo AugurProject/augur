@@ -16,6 +16,10 @@
 }
 
 .InnerNav__menu-item {
+  height: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out, height 0.5s ease-in-out;
+
   *:hover {
     background: @color-lightpurple;
   }
@@ -39,12 +43,24 @@
     text-decoration: none;
     text-overflow: ellipsis;
     text-transform: uppercase;
+    transform: scaleY(0);
+    transition: transform 0.5s ease-in-out;
     white-space: nowrap;
     width: 100%;
 
     &:hover {
       text-decoration: none;
     }
+  }
+}
+
+.InnerNav__menu-item--visible {
+  height: 26px;
+  opacity: 1;
+
+  a,
+  button {
+    transform: scaleY(1);
   }
 }
 
