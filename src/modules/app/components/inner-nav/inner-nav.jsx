@@ -6,7 +6,7 @@ import { mobileMenuStates } from 'modules/app/components/app/app'
 
 import Styles from 'modules/app/components/inner-nav/inner-nav.styles'
 
-import { concat, difference, flatMap, uniq, isEqual } from 'lodash'
+import { concat, difference, map, flatMap, uniq, isEqual } from 'lodash'
 import parseQuery from 'modules/routes/helpers/parse-query'
 import parseStringToArray from 'modules/routes/helpers/parse-string-to-array'
 import makeQuery from 'modules/routes/helpers/make-query'
@@ -55,47 +55,44 @@ export default class InnerNav extends Component {
     let filteredKeywords = flatMap(marketsFilteredSorted, index => (markets[index] ? markets[index].tags : null))
     .filter(keyword => Boolean(keyword))
 
-    filteredKeywords = concat(filteredKeywords, selectedKeywords)
+    filteredKeywords = concat(filteredKeywords, selectedKeywords).map(keyword => keyword.toLowerCase())
     filteredKeywords = uniq(filteredKeywords)
     .slice(0, 50)
 
-    newKeywords = difference(filteredKeywords, this.state.actualCurrentKeywords)
-    oldKeywords = difference(this.state.actualCurrentKeywords, filteredKeywords)
-    addKeywords(newKeywords)
-    removeKeywords(oldKeywords)
-
+    const newKeywords = difference(filteredKeywords, this.state.actualCurrentKeywords)
+    const oldKeywords = difference(this.state.actualCurrentKeywords, filteredKeywords)
+    if (newKeywords.length > 0) this.addKeywords(newKeywords)
+    
     this.setState({ actualCurrentKeywords: filteredKeywords, selectedKeywords })
   }
 
   addKeywords(keywords) {
-    const newKeywords = keywords.reduce((obj, keyword) => {
-      obj[keyword] = { visible: false }
+    const newKeywords = {}
+    keywords.forEach((keyword) => {
+      newKeywords[keyword] = { visible: false }
     })
 
-    const visibleKeywords = { ..this.state.visibleKeywords, ..newKeywords };
+    const visibleKeywords = { ...this.state.visibleKeywords, ...newKeywords };
     this.setState({ visibleKeywords });
 
     // animate keywords after mounting
     window.setTimeout(() => {
-      const animKeywords = keywords.reduce(() => {
-        obj[keyword] = { visible: true }
+      const animKeywords = {}
+      keywords.forEach((keyword) => {
+        animKeywords[keyword] = { visible: true }
       })
-      const visibleKeywords = { ..this.state.visibleKeywords, ..animKeywords }
+      const visibleKeywords = { ...this.state.visibleKeywords, ...animKeywords }
       this.setState({ visibleKeywords })
     }, 50)
   }
 
   removeKeywords(keywords) {
-    const oldKeywords = keywords.reduce((obj, keyword) => {
-      obj[keyword] = { visible: false }
+    const oldKeywords = {}
+    keywords.forEach((keyword) => {
+      oldKeywords[keyword] = { visible: false }
     });
-    const visibleKeywords = { ..this.state.visibleKeywords, ..oldKeywords }
+    const visibleKeywords = { ...this.state.visibleKeywords, ...oldKeywords }
     this.setState({ visibleKeywords })
-
-    // capture CSS3 animation event and remove keywords after state re-render
-    window.setTimeout(() => {
-      // event goes here
-    }, 50)
   }
 
   toggleKeyword(keyword) {
@@ -151,6 +148,7 @@ export default class InnerNav extends Component {
             <MenuItem
               isSelected={isSelected}
               key={item.topic}
+              visible={true}
             >
               <Link
                 to={{
@@ -184,13 +182,14 @@ export default class InnerNav extends Component {
           [Styles['InnerNav__menu--submenu--mobileshow']]: showKeywords })}
         style={animatedStyle}
       >
-        {this.state.filteredKeywords.map((item, index) => (
+        {map(this.state.visibleKeywords, (keywordState, keyword) => (
           <MenuItem
-            isSelected={item.isSelected}
-            key={item.name}
+            isSelected={(this.state.selectedKeywords.indexOf(keyword) > -1)}
+            key={keyword}
+            visible={keywordState.visible}
           >
-            <button onClick={() => this.toggleKeyword(item.name)}>
-              {item.name}
+            <button onClick={() => this.toggleKeyword(keyword)}>
+              {keyword}
             </button>
           </MenuItem>
         ))}
