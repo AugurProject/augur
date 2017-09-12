@@ -6,7 +6,7 @@ import { mobileMenuStates } from 'modules/app/components/app/app'
 
 import Styles from 'modules/app/components/inner-nav/inner-nav.styles'
 
-import _, { isEqual } from 'lodash'
+import { concat, difference, flatMap, uniq, isEqual } from 'lodash'
 import parseQuery from 'modules/routes/helpers/parse-query'
 import parseStringToArray from 'modules/routes/helpers/parse-string-to-array'
 import makeQuery from 'modules/routes/helpers/make-query'
@@ -32,16 +32,17 @@ export default class InnerNav extends Component {
   constructor() {
     super()
     this.state = {
-      filteredKeywords: []
+      actualCurrentKeywords: [],
+      visibleKeywords: {},
+      selectedKeywords: []
     }
   }
 
   componentWillReceiveProps(nextProps) {
-    const searchChanged = !isEqual(this.props.location.search, nextProps.location.search)
     if (
       !isEqual(this.props.markets, nextProps.markets) ||
       !isEqual(this.props.marketsFilteredSorted, nextProps.marketsFilteredSorted) ||
-      searchChanged
+      !isEqual(this.props.location.search, nextProps.location.search)
     ) {
       this.updateFilteredKeywords(nextProps.markets, nextProps.marketsFilteredSorted, nextProps.location)
     }
@@ -50,26 +51,51 @@ export default class InnerNav extends Component {
   updateFilteredKeywords(markets, marketsFilteredSorted, location) {
     // make sure all selected tags are displayed, even if markets haven't loaded yet
     const selectedKeywords = parseStringToArray(decodeURIComponent(parseQuery(location.search)[TAGS_PARAM_NAME] || ''), '+')
-    const selectedCategory = parseQuery(location.search)[TOPIC_PARAM_NAME]
 
-    let catFilteredMarkets = markets
-    if (selectedCategory) catFilteredMarkets = _.filter(markets, market => market.topic === selectedCategory)
-
-    const filteredKeywords = _(marketsFilteredSorted)
-    .intersection(catFilteredMarkets)
-    .map(index => (markets[index] ? markets[index].tags : null))
-    .flatten()
+    let filteredKeywords = flatMap(marketsFilteredSorted, index => (markets[index] ? markets[index].tags : null))
     .filter(keyword => Boolean(keyword))
-    .concat(selectedKeywords)
-    .uniq()
-    .slice(0, 50)
-    .map(keyword => ({
-      name: keyword,
-      isSelected: (selectedKeywords || []).indexOf(keyword) !== -1
-    }))
-    .value()
 
-    this.setState({ filteredKeywords })
+    filteredKeywords = concat(filteredKeywords, selectedKeywords)
+    filteredKeywords = uniq(filteredKeywords)
+    .slice(0, 50)
+
+    newKeywords = difference(filteredKeywords, this.state.actualCurrentKeywords)
+    oldKeywords = difference(this.state.actualCurrentKeywords, filteredKeywords)
+    addKeywords(newKeywords)
+    removeKeywords(oldKeywords)
+
+    this.setState({ actualCurrentKeywords: filteredKeywords, selectedKeywords })
+  }
+
+  addKeywords(keywords) {
+    const newKeywords = keywords.reduce((obj, keyword) => {
+      obj[keyword] = { visible: false }
+    })
+
+    const visibleKeywords = { ..this.state.visibleKeywords, ..newKeywords };
+    this.setState({ visibleKeywords });
+
+    // animate keywords after mounting
+    window.setTimeout(() => {
+      const animKeywords = keywords.reduce(() => {
+        obj[keyword] = { visible: true }
+      })
+      const visibleKeywords = { ..this.state.visibleKeywords, ..animKeywords }
+      this.setState({ visibleKeywords })
+    }, 50)
+  }
+
+  removeKeywords(keywords) {
+    const oldKeywords = keywords.reduce((obj, keyword) => {
+      obj[keyword] = { visible: false }
+    });
+    const visibleKeywords = { ..this.state.visibleKeywords, ..oldKeywords }
+    this.setState({ visibleKeywords })
+
+    // capture CSS3 animation event and remove keywords after state re-render
+    window.setTimeout(() => {
+      // event goes here
+    }, 50)
   }
 
   toggleKeyword(keyword) {

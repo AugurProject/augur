@@ -8,10 +8,17 @@
   margin: 0;
   padding: 0;
 
-  > li button {
-    background: none;
+  > li {
     border-bottom: 1px solid #553580;
-    height: 64px;
+
+    &:last-child { border: none; }
+  }
+
+  > li a {
+    background: none;
+    display: block;
+    font-size: 0.625rem;
+    height: 4rem;
     margin: 0;
     padding: 0;
     position: relative;
@@ -30,11 +37,11 @@
     &:last-child { border: none; }
 
     span {
-      bottom: 13px;
+      bottom: 0.8rem;
       color: @color-white;
       font-weight: 300;
       left: 0;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.01875rem;
       position: absolute;
       right: 0;
       text-align: center;
@@ -42,18 +49,18 @@
     }
 
     svg {
-      height: 24px;
-      transform: translateY(-8px);
-      width: 24px;
+      height: 1.5rem;
+      transform: translateY(0.5rem);
+      width: 1.5rem;
     }
 
     svg.nav-create-icon {
-      margin-top: 2px;
-      transform: scale(0.85), translateY(-8px);
+      margin-top: 0.125rem;
+      transform: translateY(0.5rem) scale(0.85);
     }
 
     svg.nav-portfolio-icon {
-      transform: scale(0.95), translateY(-8px);
+      transform: translateY(0.5rem) scale(0.95);
     }
   }
 }
@@ -75,7 +82,7 @@
     border: none;
     padding-left: 16px;
 
-    > li {
+    > ul li {
       border: none;
       height: 70px;
       padding: 0;
