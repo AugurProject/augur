@@ -2,7 +2,7 @@
 
 module.exports = {
   orderBook: require("./order-book"),
-  payout: require("./payout"),
+  claimMarketsProceeds: require("./claim-markets-proceeds"),
   simulation: require("./simulation"),
   calculateProfitLoss: require("./profit-loss"),
   normalizePrice: require("./normalize-price"),
