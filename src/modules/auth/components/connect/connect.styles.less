@@ -32,8 +32,14 @@
 
 .Connect__content {
   display: flex;
-  height: 40vh;
+  min-height: 500px;
   width: 100%;
+
+  @media @breakpoint-mobile {
+    & {
+      flex-direction: column;
+    }
+  }
 }
 
 .Connect__connections {

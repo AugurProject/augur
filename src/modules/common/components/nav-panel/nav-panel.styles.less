@@ -1,26 +1,21 @@
 @import '~assets/styles/shared.less';
 
 .NavPanel {
-  display: grid;
-  grid-template-columns: 15rem auto;
-  height: 100%;
-}
-
-.NavPanel--flipped {
-  display: block;
-  grid-template-columns: none;
+  display: flex;
+  min-height: 100%;
+  min-width: 15em;
 }
 
 .NavPanel__controls {
-  background: red;
-  display: grid;
-  grid-template-rows: auto;
-}
+  display: flex;
+  flex: 1;
+  flex-direction: column;
 
-.NavPanel--flipped .NavPanel__controls {
-  display: block;
-  font-size: 0;
-  grid-template-rows: none;
+  @media @breakpoint-mobile {
+    & {
+      flex-flow: row wrap;
+    }
+  }
 }
 
 .NavPanel__control {
@@ -31,6 +26,7 @@
   color: @color-white;
   cursor: pointer;
   display: flex;
+  flex: 1;
   font-family: @din-pro;
   font-size: 0.87rem;
   font-weight: 300;
@@ -45,23 +41,12 @@
   &:last-child {
     border-bottom: none;
   }
-}
 
-.NavPanel--flipped .NavPanel__control {
-  border-right: 1px solid @color-grayish-purple;
-  display: inline-block;
-  font-size: 0.75rem;
-  height: 3.4375rem;
-  padding: 0;
-  text-align: center;
-  width: 33.33%;
-
-  &:nth-child(3n) {
-    border-right: none;
-  }
-
-  &:nth-last-child(-n+3) {
-    border-bottom: none;
+  @media @breakpoint-mobile {
+    & {
+      flex-basis: 33%;
+      flex-flow: wrap column;
+    }
   }
 }
 
@@ -75,14 +60,6 @@
   margin-right: 1.5rem;
   vertical-align: middle;
   width: 2.25em;
-}
-
-.NavPanel--flipped .NavPanel__icon {
-  display: block;
-  margin: 0 auto;
-  max-height: 1.5rem;
-  max-width: 1.5rem;
-  vertical-align: auto;
 }
 
 .NavPanel__title {

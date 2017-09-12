@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
-
 import classNames from 'classnames'
 
 import parseQuery from 'modules/routes/helpers/parse-query'
@@ -24,7 +23,7 @@ function makeSearch(location, param, isItemDefault) {
 
 export default function NavPanel(p) {
   return (
-    <div className={Styles.NavPanel}>
+    <div className={Styles.NavPanel} >
       <aside className={Styles.NavPanel__controls}>
         {
           p.items.map(item => (
