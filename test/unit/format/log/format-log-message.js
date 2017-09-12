@@ -111,6 +111,7 @@ describe("format/log/format-log-message", function () {
     msg: {
       reporter: "0xb0b",
       market: "0xa",
+      branch: "0xb",
       amountRedeemed: "0x246ddf97976680000",
       reportingFeesReceived: "0x487a9a304539440000",
       payoutNumerators: ["0x0", "0x1", "0x0", "0x0"]
@@ -119,6 +120,7 @@ describe("format/log/format-log-message", function () {
       assert.deepEqual(msg, {
         reporter: "0x0000000000000000000000000000000000000b0b",
         market: "0x000000000000000000000000000000000000000a",
+        branch: "0x000000000000000000000000000000000000000b",
         amountRedeemed: "42",
         reportingFeesReceived: "1337",
         payoutNumerators: ["0", "1", "0", "0"]
@@ -130,6 +132,7 @@ describe("format/log/format-log-message", function () {
     msg: {
       reporter: "0xb0b",
       market: "0xa",
+      branch: "0xb",
       amountStaked: "0x246ddf97976680000",
       reportingToken: "0xb",
       payoutNumerators: ["0x0", "0x1", "0x0", "0x0"]
@@ -138,6 +141,7 @@ describe("format/log/format-log-message", function () {
       assert.deepEqual(msg, {
         reporter: "0x0000000000000000000000000000000000000b0b",
         market: "0x000000000000000000000000000000000000000a",
+        branch: "0x000000000000000000000000000000000000000b",
         amountStaked: "42",
         reportingToken: "0x000000000000000000000000000000000000000b",
         payoutNumerators: ["0", "1", "0", "0"]

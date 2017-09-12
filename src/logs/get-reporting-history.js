@@ -13,6 +13,7 @@ var ZERO = require("../constants").ZERO;
  * @param {Object} p Parameters object.
  * @param {string=} p.reporter Look up reports submitted by this Ethereum address.
  * @param {string=} p.market Look up reports submitted on this market.
+ * @param {string=} p.branch Look up reports submitted on markets within this branch.
  * @param {number=} p.fromBlock Block number to start looking up logs (default: 1).
  * @param {number=} p.toBlock Block number where the log lookup should stop (default: latest).
  * @param {function} callback Called when reporting history has been received and parsed.

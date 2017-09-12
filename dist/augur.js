@@ -1205,6 +1205,7 @@ var formatLogMessage = function formatLogMessage(label, msg) {
       fmt = formatCommonFields(msg);
       fmt.reporter = speedomatic.formatEthereumAddress(msg.reporter); // indexed
       fmt.market = speedomatic.formatEthereumAddress(msg.market); // indexed
+      fmt.branch = speedomatic.formatEthereumAddress(msg.branch); // indexed
       fmt.payoutNumerators = msg.payoutNumerators.map(function (payoutNumerator) {
         return new BigNumber(payoutNumerator, 16).toFixed();
       });
@@ -1216,6 +1217,7 @@ var formatLogMessage = function formatLogMessage(label, msg) {
       fmt = formatCommonFields(msg);
       fmt.reporter = speedomatic.formatEthereumAddress(msg.reporter); // indexed
       fmt.market = speedomatic.formatEthereumAddress(msg.market); // indexed
+      fmt.branch = speedomatic.formatEthereumAddress(msg.branch); // indexed
       fmt.amountStaked = speedomatic.unfix(msg.amountStaked, "string");
       fmt.reportingToken = speedomatic.formatEthereumAddress(msg.reportingToken);
       fmt.payoutNumerators = msg.payoutNumerators.map(function (payoutNumerator) {
@@ -1338,7 +1340,7 @@ keythereum.constants.pbkdf2.c = ROUNDS;
 keythereum.constants.scrypt.n = ROUNDS;
 
 function Augur() {
-  this.version = "4.1.5";
+  this.version = "4.1.6";
   this.options = {
     debug: {
       broadcast: false, // broadcast debug logging in ethrpc
