@@ -72,7 +72,7 @@ export default class SideNav extends Component {
 
           return (
             <li
-              className={classNames({ [`${Styles.selected}`]: selected })}
+              className={classNames({ [Styles['SideNav__item--selected']]: selected })}
               key={item.title}
             >
               <Link
