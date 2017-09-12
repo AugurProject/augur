@@ -20,8 +20,8 @@ export default function (reports = {}, action) {
         ...reports,
         [action.branchID]: {
           ...branchReports,
-          [action.eventID]: {
-            ...(branchReports[action.eventID] || { eventID: action.eventID }),
+          [action.marketID]: {
+            ...(branchReports[action.marketID] || { marketID: action.marketID }),
             ...action.report
           }
         }
@@ -31,9 +31,9 @@ export default function (reports = {}, action) {
       const branchReports = reports[action.branchID] || {};
       return {
         ...reports,
-        [action.branchID]: Object.keys(branchReports).reduce((p, eventID) => {
-          if (branchReports[eventID].period >= action.currentReportingWindowAddress) {
-            p[eventID] = branchReports[eventID];
+        [action.branchID]: Object.keys(branchReports).reduce((p, marketID) => {
+          if (branchReports[marketID].period >= action.currentReportingWindowAddress) {
+            p[marketID] = branchReports[marketID];
           }
           return p;
         }, {})

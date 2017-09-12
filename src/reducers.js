@@ -21,6 +21,7 @@ import favorites from 'modules/markets/reducers/favorites';
 import marketsFilteredSorted from 'modules/markets/reducers/markets-filtered-sorted';
 
 import reports from 'modules/reports/reducers/reports';
+import hasLoadedReports from 'modules/reports/reducers/has-loaded-reports';
 import eventsWithAccountReport from 'modules/my-reports/reducers/events-with-account-report';
 
 import orderBooks from 'modules/bids-asks/reducers/order-books';
@@ -75,6 +76,7 @@ export function createReducer() {
     marketsFilteredSorted,
 
     reports,
+    hasLoadedReports,
     eventsWithAccountReport,
 
     selectedMarketID,

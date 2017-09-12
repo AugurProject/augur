@@ -27,8 +27,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
-  loadMarkets: branchID => dispatch(loadMarkets(branchID)),
-  loadMarketsByTopic: (topic, branchID) => dispatch(loadMarketsByTopic(topic, branchID)),
+  loadMarkets: () => dispatch(loadMarkets()),
+  loadMarketsByTopic: topic => dispatch(loadMarketsByTopic(topic)),
   updateMarketsFilteredSorted: filteredMarkets => dispatch(updateMarketsFilteredSorted(filteredMarkets)),
   clearMarketsFilteredSorted: () => dispatch(clearMarketsFilteredSorted()),
   toggleFavorite: marketID => dispatch(toggleFavorite(marketID)),
@@ -36,15 +36,14 @@ const mapDispatchToProps = dispatch => ({
 });
 
 const mergeProps = (stateProps, dispatchProps, ownProps) => {
-  const { branch } = stateProps;
   const { loadMarkets, loadMarketsByTopic } = dispatchProps;
 
   return {
     ...stateProps,
     ...dispatchProps,
     ...ownProps,
-    loadMarkets: () => loadMarkets(branch.id),
-    loadMarketsByTopic: topic => loadMarketsByTopic(topic, branch.id)
+    loadMarkets: () => loadMarkets(),
+    loadMarketsByTopic: topic => loadMarketsByTopic(topic)
   };
 };
 
