@@ -55,14 +55,18 @@ export default class InnerNav extends Component {
     let filteredKeywords = flatMap(marketsFilteredSorted, index => (markets[index] ? markets[index].tags : null))
     .filter(keyword => Boolean(keyword))
 
-    filteredKeywords = concat(filteredKeywords, selectedKeywords).map(keyword => keyword.toLowerCase())
+    filteredKeywords = concat(filteredKeywords, selectedKeywords)
+    // TODO: discuss uppercase/lowercase variant keywords and how they function differently
+    // lowercasing all keywords will make some function improperly re: markets view expects
+    // correct "original" capitalization
     filteredKeywords = uniq(filteredKeywords)
     .slice(0, 50)
 
     const newKeywords = difference(filteredKeywords, this.state.actualCurrentKeywords)
     const oldKeywords = difference(this.state.actualCurrentKeywords, filteredKeywords)
     if (newKeywords.length > 0) this.addKeywords(newKeywords)
-    
+    if (oldKeywords.length > 0) this.removeKeywords(oldKeywords)
+
     this.setState({ actualCurrentKeywords: filteredKeywords, selectedKeywords })
   }
 
@@ -72,8 +76,8 @@ export default class InnerNav extends Component {
       newKeywords[keyword] = { visible: false }
     })
 
-    const visibleKeywords = { ...this.state.visibleKeywords, ...newKeywords };
-    this.setState({ visibleKeywords });
+    const visibleKeywords = { ...this.state.visibleKeywords, ...newKeywords }
+    this.setState({ visibleKeywords })
 
     // animate keywords after mounting
     window.setTimeout(() => {
@@ -90,9 +94,15 @@ export default class InnerNav extends Component {
     const oldKeywords = {}
     keywords.forEach((keyword) => {
       oldKeywords[keyword] = { visible: false }
-    });
+    })
     const visibleKeywords = { ...this.state.visibleKeywords, ...oldKeywords }
     this.setState({ visibleKeywords })
+
+    // TODO: consider removing keywords from state when transition ends?
+    // main difficulty is grabbing the correct DOM element to bind events.
+    // currently, the behavior works perfectly visually
+    // plus the likelihood of keyword reuse is high, so removal likely
+    // is useless because the keyword would be re-added soon
   }
 
   toggleKeyword(keyword) {
@@ -148,7 +158,7 @@ export default class InnerNav extends Component {
             <MenuItem
               isSelected={isSelected}
               key={item.topic}
-              visible={true}
+              visible
             >
               <Link
                 to={{
