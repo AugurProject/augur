@@ -36,8 +36,7 @@ let config = {
   output: {
     filename: '[name].[chunkhash].js',
     chunkFilename: '[name].[chunkhash].js',
-    path: PATHS.BUILD,
-    publicPath: '/'
+    path: PATHS.BUILD
   },
   resolve: {
     modules: ['node_modules', PATHS.APP],
@@ -88,6 +87,10 @@ let config = {
       {
         test: /\.json/,
         loader: 'json'
+      },
+      {
+        test: /\.(woff|woff2)/,
+        loader: 'file'
       }
     ]
   },
@@ -124,6 +127,10 @@ let config = {
       },
       {
         from: path.resolve(PATHS.APP, 'sitemap.xml'),
+        to: PATHS.BUILD
+      },
+      {
+        from: path.resolve(PATHS.APP, 'loaderio-e6f0536ecc4759035b4106efb3b1f225.txt'),
         to: PATHS.BUILD
       }
     ]),

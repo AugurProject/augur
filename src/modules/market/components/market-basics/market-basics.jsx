@@ -8,7 +8,9 @@ import MarketOutcomesCategorical from 'modules/market/components/market-outcomes
 import MarketLink from 'modules/market/components/market-link/market-link'
 import { MarketStatusOpen, MarketStatusReported, MarketStatusClosed } from 'modules/common/components/spritemap/spritemap'
 
-import toggleTag from 'modules/app/helpers/toggle-tag'
+import toggleTag from 'utils/toggle-tag'
+
+import { BINARY, SCALAR } from 'modules/markets/constants/market-types'
 
 import Styles from 'modules/market/components/market-basics/market-basics.styles'
 
@@ -56,7 +58,7 @@ const MarketBasics = (p) => {
           </MarketLink>
         </h1>
 
-        {(p.type === 'binary' || p.type === 'scalar') &&
+        {(p.type === BINARY || p.type === SCALAR) &&
           <MarketOutcomesBinaryScalar outcomes={p.outcomes} min={p.minValue} max={p.maxValue} type={p.type} />
         }
 

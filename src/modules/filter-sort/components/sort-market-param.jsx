@@ -3,12 +3,12 @@ import PropTypes from 'prop-types'
 
 import Dropdown from 'modules/common/components/dropdown'
 
-import parseQuery from 'modules/app/helpers/parse-query'
-import makeQuery from 'modules/app/helpers/make-query'
+import parseQuery from 'modules/routes/helpers/parse-query'
+import makeQuery from 'modules/routes/helpers/make-query'
 import getValue from 'utils/get-value'
 import isEqual from 'lodash/isEqual'
 
-import { SORT_MARKET_PARAM, SORT_MARKET_ORDER_PARAM } from 'modules/app/constants/param-names'
+import { SORT_MARKET_PARAM, SORT_MARKET_ORDER_PARAM } from 'modules/routes/constants/param-names'
 
 export default class SortMarketParam extends Component {
   static propTypes = {

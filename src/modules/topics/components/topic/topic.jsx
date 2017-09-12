@@ -5,12 +5,12 @@ import classNames from 'classnames'
 
 import Styles from 'modules/topics/components/topic/topic.styles'
 
-import makePath from 'modules/app/helpers/make-path'
-import makeQuery from 'modules/app/helpers/make-query'
+import makePath from 'modules/routes/helpers/make-path'
+import makeQuery from 'modules/routes/helpers/make-query'
 
 import { TOPIC_VOLUME_INCREASED, TOPIC_VOLUME_DECREASED } from 'modules/topics/constants/topic-popularity-change'
-import { MARKETS } from 'modules/app/constants/views'
-import { TOPIC_PARAM_NAME } from 'modules/app/constants/param-names'
+import { MARKETS } from 'modules/routes/constants/views'
+import { TOPIC_PARAM_NAME } from 'modules/routes/constants/param-names'
 
 export default class Topic extends Component {
   static propTypes = {

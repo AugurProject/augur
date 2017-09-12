@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { Helmet } from 'react-helmet'
 
 import shouldComponentUpdatePure from 'utils/should-component-update-pure'
 import debounce from 'utils/debounce'
@@ -23,7 +24,7 @@ import NavPortfolioIcon from 'modules/common/components/nav-portfolio-icon'
 
 import Styles from 'modules/app/components/app/app.styles'
 
-import { MARKETS, ACCOUNT, MY_POSITIONS, CREATE_MARKET } from 'modules/app/constants/views'
+import { MARKETS, ACCOUNT, MY_POSITIONS, CREATE_MARKET } from 'modules/routes/constants/views'
 
 export const mobileMenuStates = { // TODO -- move to a constants file
   CLOSED: 0,
@@ -231,6 +232,10 @@ export default class AppView extends Component {
 
     return (
       <main className={Styles.App}>
+        <Helmet
+          defaultTitle="Decentralized Prediction Markets | Augur"
+          titleTemplate="%s | Augur"
+        />
         <section className={Styles.SideBar}>
           <Origami
             isMobile={p.isMobile}

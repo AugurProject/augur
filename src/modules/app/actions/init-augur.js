@@ -68,7 +68,7 @@ export function initAugur(cb) {
         })
       }
     }
-    xhttp.open('GET', '/config/env.json', true)
+    xhttp.open('GET', 'config/env.json', true)
     xhttp.send()
   }
 }

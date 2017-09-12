@@ -5,10 +5,10 @@ import classNames from 'classnames'
 
 import ValueDenomination from 'modules/common/components/value-denomination/value-denomination'
 
-import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/app/constants/views'
+import { MY_POSITIONS, MY_MARKETS, MY_REPORTS } from 'modules/routes/constants/views'
 
 import debounce from 'utils/debounce'
-import makePath from 'modules/app/helpers/make-path'
+import makePath from 'modules/routes/helpers/make-path'
 
 export default class PortfolioNavs extends Component {
   static propTypes = {

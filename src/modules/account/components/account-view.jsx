@@ -5,7 +5,7 @@ import { Helmet } from 'react-helmet'
 import ComponentNav from 'modules/common/components/component-nav'
 
 import { ACCOUNT_NAV_ITEMS } from 'modules/account/constants/account-nav-items'
-import { ACCOUNT_DEPOSIT, ACCOUNT_TRANSFER, ACCOUNT_EXPORT } from 'modules/app/constants/views'
+import { ACCOUNT_DEPOSIT, ACCOUNT_TRANSFER, ACCOUNT_EXPORT } from 'modules/routes/constants/views'
 
 import AccountDetails from 'modules/account/components/account-details'
 import AccountDeposit from 'modules/account/components/account-deposit'

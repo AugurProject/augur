@@ -12,9 +12,9 @@ import { selectMarketFromEventID } from 'modules/market/selectors/market'
 import selectWinningPositions from 'modules/my-positions/selectors/winning-positions'
 import { addNotification } from 'modules/notifications/actions/update-notifications'
 
-import makePath from 'modules/app/helpers/make-path'
+import makePath from 'modules/routes/helpers/make-path'
 
-import { TRANSACTIONS } from 'modules/app/constants/views'
+import { TRANSACTIONS } from 'modules/routes/constants/views'
 
 export const constructRelayTransaction = (tx, status) => (dispatch, getState) => {
   const hash = tx.hash

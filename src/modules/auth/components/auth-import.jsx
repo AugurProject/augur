@@ -3,8 +3,8 @@ import classNames from 'classnames'
 
 import Input from 'modules/common/components/input'
 
-import makePath from 'modules/app/helpers/make-path'
-import { DEFAULT_VIEW } from 'modules/app/constants/views'
+import makePath from 'modules/routes/helpers/make-path'
+import { DEFAULT_VIEW } from 'modules/routes/constants/views'
 
 export default class AuthImport extends Component {
   constructor(props) {
