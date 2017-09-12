@@ -15,6 +15,7 @@ const loadReports = (callback = logError) => (dispatch, getState) => {
     } else if (isObject(reports) && Object.keys(reports).length) {
       dispatch(clearReports());
       dispatch(updateReports(reports));
+      dispatch(updateHasLoadedReports(true));
       callback(null, reports);
     }
   });

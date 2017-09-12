@@ -84,7 +84,7 @@ export function listenToUpdates() {
               }));
             }
           }
-        }
+        },
 
         // order added to orderbook
         MakeOrder: (msg) => {
@@ -105,7 +105,7 @@ export function listenToUpdates() {
 
         Payout: (msg) => {
           if (msg && msg.sender === getState().loginAccount.address) {
-            console.log('payout:', msg);
+            console.log('Payout:', msg);
             dispatch(updateAssets());
             dispatch(convertLogsToTransactions(TYPES.PAYOUT, [msg]));
           }
@@ -156,14 +156,6 @@ export function listenToUpdates() {
           }
         },
 
-        WithdrawEther: (msg) => {
-          if (msg && msg.sender === getState().loginAccount.address) {
-            console.log('WithdrawEther:', msg);
-            dispatch(updateAssets());
-            dispatch(convertLogsToTransactions(TYPES.WITHDRAW_ETHER, [msg]));
-          }
-        },
-
         Transfer: (msg) => {
           if (msg) {
             console.log('Transfer:', msg);
@@ -172,6 +164,14 @@ export function listenToUpdates() {
               dispatch(updateAssets());
               dispatch(convertLogsToTransactions(TYPES.TRANSFER, [msg]));
             }
+          }
+        },
+
+        WithdrawEther: (msg) => {
+          if (msg && msg.sender === getState().loginAccount.address) {
+            console.log('WithdrawEther:', msg);
+            dispatch(updateAssets());
+            dispatch(convertLogsToTransactions(TYPES.WITHDRAW_ETHER, [msg]));
           }
         }
 

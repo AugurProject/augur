@@ -14,6 +14,7 @@ const loadMarkets = (callback = logError) => (dispatch, getState) => {
     } else if (isObject(marketsData) && Object.keys(marketsData).length) {
       dispatch(clearMarketsData());
       dispatch(updateMarketsData(marketsData));
+      dispatch(updateHasLoadedMarkets(true));
       callback(null, marketsData);
     }
   });
