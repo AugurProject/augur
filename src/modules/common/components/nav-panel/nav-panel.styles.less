@@ -21,18 +21,14 @@
 .NavPanel__control {
   align-items: center;
   background: @color-purple;
-  border: none;
   border-bottom: 1px solid @color-grayish-purple;
   color: @color-white;
   cursor: pointer;
   display: flex;
   flex: 1;
-  font-family: @din-pro;
-  font-size: 0.87rem;
+  font-size: @font-size-medium;
   font-weight: 300;
-  outline: none;
-  padding-left: 2rem;
-  text-align: left;
+  padding: 0 0 0 2rem;
 
   &:hover {
     background: @color-grayish-purple;
@@ -44,8 +40,11 @@
 
   @media @breakpoint-mobile {
     & {
+      border-bottom: none; // TODO - fix border in mobile
       flex-basis: 33%;
       flex-flow: wrap column;
+      height: 6em;
+      padding: 1em;
     }
   }
 }
@@ -56,12 +55,29 @@
 
 .NavPanel__icon {
   color: @color-text-light;
-  height: 2.25em;
-  margin-right: 1.5rem;
+  margin-right: 1.5em;
   vertical-align: middle;
   width: 2.25em;
+
+  @media @breakpoint-mobile {
+    align-items: center;
+    display: flex;
+    flex: 1;
+    height: 100%;
+    justify-content: center;
+    margin-bottom: 0.5em;
+    margin-right: 0;
+
+    svg {
+      height: 100%;
+    }
+  }
 }
 
 .NavPanel__title {
   flex: 1;
+
+  @media @breakpoint-mobile {
+    flex: none;
+  }
 }
