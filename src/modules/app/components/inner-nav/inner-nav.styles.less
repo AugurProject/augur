@@ -18,7 +18,7 @@
 .InnerNav__menu-item {
   height: 0;
   opacity: 0;
-  transition: opacity 0.5s ease-in-out, height 0.5s ease-in-out;
+  transition: opacity 0.3s ease-in-out, height 0.3s ease-in-out;
 
   *:hover {
     background: @color-lightpurple;
@@ -43,8 +43,8 @@
     text-decoration: none;
     text-overflow: ellipsis;
     text-transform: uppercase;
-    transform: scaleY(0);
-    transition: transform 0.5s ease-in-out;
+    transform: translateY(-50%) scaleY(0);
+    transition: transform 0.3s ease-in-out;
     white-space: nowrap;
     width: 100%;
 
@@ -60,7 +60,7 @@
 
   a,
   button {
-    transform: scaleY(1);
+    transform: translateY(0) scaleY(1);
   }
 }
 
@@ -95,7 +95,8 @@
     }
   }
 
-  .InnerNav__menu {
+  .InnerNav__menu-item {
+    font-size: 0.87rem;
     line-height: 55px;
     padding-left: 50px;
 
@@ -111,6 +112,7 @@
   .InnerNav__menu--main,
   .InnerNav__menu--submenu {
     width: 100%;
+    z-index: @above-all-content;
   }
 
   .InnerNav__menu--submenu {

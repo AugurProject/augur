@@ -1,5 +1,9 @@
 @import '~assets/styles/shared';
 
+.SideNav {
+  background: @color-purple;
+}
+
 .SideNav__nav {
   border: 1px solid #553580;
   border-left: none;
@@ -67,6 +71,7 @@
 
 @media @breakpoint-mobile {
   .SideNav {
+    height: 100vh;
     left: -200px;
     padding-top: 70px;
     position: absolute;
@@ -82,7 +87,7 @@
     border: none;
     padding-left: 16px;
 
-    > ul li {
+    > li {
       border: none;
       height: 70px;
       padding: 0;
