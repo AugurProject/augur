@@ -1,7 +1,6 @@
-import cancelOrder from 'modules/bids-asks/actions/cancel-order';
-import logError from 'utils/log-error';
+import { cancelOrder } from 'modules/bids-asks/actions/cancel-order';
 
-const cancelOpenOrdersInClosedMarkets = (callback = logError) => (dispatch) => {
+const cancelOpenOrdersInClosedMarkets = () => (dispatch) => {
   const openOrders = require('modules/user-open-orders/selectors/open-orders');
   if (openOrders && openOrders.length) {
     const numMarketsWithOpenOrders = openOrders.length;
@@ -16,8 +15,8 @@ const cancelOpenOrdersInClosedMarkets = (callback = logError) => (dispatch) => {
             console.log('found open orders:', outcome.id, outcome.userOpenOrders);
             for (let k = 0; k < numOrders; ++k) {
               const openOrder = outcome.userOpenOrders[k];
-              console.log('cancelling order:', openOrder);
-              dispatch(cancelOrder(openOrder.id, market.id, openOrder.type));
+              console.log('cancelling order:', cancelOrder, openOrder.id, market.id, outcome.id, openOrder.type);
+              dispatch(cancelOrder(openOrder.id, market.id, outcome.id, openOrder.type));
             }
           }
         }

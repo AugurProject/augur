@@ -17,11 +17,11 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
     getTxGasEth: sinon.stub()
   };
   const updateOrderStatus = actionCreator();
-  const cancelOrder = proxyquire('../../../src/modules/bids-asks/actions/cancel-order', {
+  const action = proxyquire('../../../src/modules/bids-asks/actions/cancel-order', {
     speedomatic: { bignum: sinon.stub().returns(new BigNumber('1', 10)) },
     '../../../services/augurjs': { augur },
     '../../bids-asks/actions/update-order-status': { updateOrderStatus }
-  }).default;
+  });
 
   const store = mockStore({
     ...state,
@@ -48,9 +48,9 @@ describe('modules/bids-asks/actions/cancel-order.js', () => {
 
   describe('cancelOrder', () => {
     it(`shouldn't dispatch if order doesn't exist`, () => {
-      store.dispatch(cancelOrder('nonExistingOrderID', 'testMarketID', 2, BUY));
-      store.dispatch(cancelOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'nonExistingMarketID', 2, BUY));
-      store.dispatch(cancelOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'testMarketID', 2, SELL));
+      store.dispatch(action.cancelOrder('nonExistingOrderID', 'testMarketID', 2, BUY));
+      store.dispatch(action.cancelOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'nonExistingMarketID', 2, BUY));
+      store.dispatch(action.cancelOrder('0xdbd851cc394595f9c50f32c1554059ec343471b49f84a4b72c44589a25f70ff3', 'testMarketID', 2, SELL));
       assert.deepEqual(store.getActions(), []);
     });
   });
